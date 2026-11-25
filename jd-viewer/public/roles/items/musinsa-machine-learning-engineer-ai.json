@@ -1,0 +1,1063 @@
+{
+ "id": "musinsa-machine-learning-engineer-ai",
+ "company": "무신사",
+ "role": "Machine Learning Engineer",
+ "team": "무신사 테크 · 코어 카탈로그·검색 AI",
+ "jobs": [
+  "ats-greeting:musinsa:233126"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "상품 사진과 글을 읽는 AI 모델로 **사진으로 같은 상품 찾기(비주얼 서치)** 와 **상품 속성(색·넥라인·소재 같은 항목) 자동 채우기**를 만들어, 무신사의 상품 정보(카탈로그)와 검색을 고칩니다.[1]",
+  "env": "PyTorch·Hugging Face 로 실험하고 FastAPI·Triton·ONNX·MLflow·Docker·Airflow 로 서비스에 올립니다. AWS 와 사내 GPU, Databricks 를 같이 씁니다.[1] 정답 데이터는 Data Operation 팀이 만들고 검수합니다.[1][2]",
+  "oneline": "공개 모델을 빨리 실험해 **틀리지 않는 수준까지** 끌어올리는 5년 차 이상 비전·멀티모달 엔지니어. 논문보다 **정답셋으로 재고 고치는 반복**이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "비주얼 서치, 카탈로그 속성 추출 등 패션 도메인 핵심 과제에 Vision·멀티모달 모델을 연구·실험하고 프로덕션 수준으로 고도화합니다.",
+   "short": "사진으로 같은 옷 찾기와 상품 속성 자동 추출을 실험 단계에서 실제 서비스 품질까지 끌어올린다.",
+   "why": "무신사는 2026-10 사진을 올리면 같은 상품·비슷한 상품을 보여 주는 **무신사 렌즈**를 열었습니다. 사진에서 상품을 찾는 모델(검출)과 상품끼리 얼마나 닮았는지 재는 모델(유사도)을 회사가 직접 학습했다고 밝혔고, 모델을 더 고치고 29CM 에도 붙이겠다고 했습니다.[6][7] 속성은 입점사가 상품을 올리면 AI 가 카테고리·색·소재를 추론하는 방식으로 이미 쓰고 있습니다.[10] 같은 조직 공고는 렌즈를 Data Operation 팀이 골든셋(사람이 정답을 단 평가용 표본)으로 검증하는 제품으로 적었습니다.[2]",
+   "actually": {
+    "intro": "회사가 공개한 것과, 같은 회사 다른 팀이 AWS 와 만든 시제품입니다.",
+    "items": [
+     "**검출 → 임베딩 → 이웃 찾기** — 사진 한 장에서 상품을 최대 8개까지 따로 찾아낸다(렌즈).[6] 찾은 조각을 숫자 벡터(임베딩)로 바꿔, 미리 벡터로 만들어 둔 상품 사진 중 가장 가까운 것을 꺼낸다.[8]",
+     "**회사의 다른 시제품** — 스냅(코디 사진) 팀은 패션 데이터로 다시 학습한 검출 모델(YOLOS-Fashionpedia)과 사진·글을 한 공간에 넣는 FashionCLIP 2.0, 벡터 검색은 Amazon OpenSearch 로 시제품을 만들었다.[8]",
+     "**재는 법** — 그 시제품은 Precision@1 72%·Precision@5 81%·MRR 0.76 을 보고했고, 단색 기본 티셔츠·니트처럼 특징이 적은 상품은 벡터만으로 맞히기 어렵다고 적었다.[8] 렌즈가 어떤 모델·숫자인지는 공개되지 않았다.",
+     "**속성 추출** — 상품 사진·상품명을 보고 정해진 항목(예: 색·소매 길이·넥라인)을 정해진 값 목록 안에서 고른다. 같은 조직 공고에 '상품 표준속성 AI 매핑 검수'가 예로 나온다.[2]",
+     "**정확도 기준이 높다** — 공고는 편집샵처럼 골라 놓은 상품이라 **노이즈(틀린 값)를 허용하지 않는다**고 적었다.[1] 그래서 확신이 낮은 답은 자동으로 넣지 않고 사람에게 돌리는 설계가 따라온다 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "비주얼 서치 한 번의 흐름 — 회사 시제품 구성 기준[8]",
+     "steps": [
+      "사진 받기 · 앱에서 올린 사진",
+      "상품 검출 · 상의·신발 같은 조각을 상자로",
+      "임베딩 · 조각마다 벡터",
+      "벡터 검색 · 가까운 상품 사진 K개",
+      "다시 정렬·거르기 · 품절·카테고리·가격 {추론}"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "검색 품질을 숫자로 — Recall@K 와 MRR",
+     "body": "질의 사진 3장의 정답이 몇 번째에 나왔는지로 잽니다. 1등에 맞힌 건 1장(Recall@1 0.333), 3등 안에는 다 있고(Recall@3 1.0), 정답 순위 역수의 평균이 MRR 0.667 입니다. 회사 시제품이 보고한 Precision@k·MRR 도 같은 생각입니다.[8][28] 가상 값, 직접 돌린 출력.",
+     "lang": "python",
+     "code": "import numpy as np\n\ndef normalize(x):\n    return x / np.linalg.norm(x, axis=1, keepdims=True)\n\nqueries = normalize(np.array([[1.0, 0.1], [0.2, 1.0], [0.7, 0.7]]))\ngallery = normalize(np.array([[0.9, 0.2], [1.0, 0.0], [0.1, 1.0], [0.6, 0.8], [0.8, 0.6]]))\nanswer = [0, 2, 3]  # 질의마다 정답 상품 번호\n\nranks = np.argsort(-(queries @ gallery.T), axis=1)  # 코사인 유사도 높은 순\n\ndef recall_at_k(k):\n    return np.mean([answer[i] in ranks[i, :k] for i in range(len(answer))])\n\ndef mrr():\n    return np.mean([1 / (list(ranks[i]).index(answer[i]) + 1) for i in range(len(answer))])\n\nprint(\"Recall@1 =\", round(recall_at_k(1), 3))  # 0.333\nprint(\"Recall@3 =\", round(recall_at_k(3), 3))  # 1.0\nprint(\"MRR      =\", round(mrr(), 3))          # 0.667"
+    }
+   ],
+   "how_far": "'연구·실험'은 새 모델을 처음부터 만드는 일이라기보다 **공개 모델을 빨리 붙여 보고 정답셋으로 재서 고르는 일**입니다 — 팀 소개가 '최신 연구 결과와 공개 모델을 빠르게 실험하고 프로덕션 수준으로 끌어올리는 역할'이라고 적었습니다.[1] 출시 기준(정확도 몇 %면 내보내나)은 Data Operation 팀의 사인오프를 거칩니다.[2] 이 자리는 그 기준을 넘는 모델과 그 숫자를 재현할 수 있는 실험 기록까지 맡는다고 보면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    6,
+    7,
+    8,
+    10,
+    28
+   ],
+   "study": [
+    "aws-musinsa-snap",
+    "clip-paper",
+    "fashionclip-paper",
+    "faiss-doc",
+    "ir-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LLM, 멀티모달 모델을 활용해 상품 카탈로그 데이터를 강화하고 서비스 품질을 개선합니다.",
+   "short": "입점사가 비워 두거나 제각각 쓴 상품 정보를 LLM·VLM 으로 표준 값으로 채워 검색·필터가 잘 걸리게 한다.",
+   "why": "상품 정보는 상세 페이지·추천·검색·주문까지 이어지는 데이터라, 얼마나 정확하냐가 매출에 바로 걸린다고 카탈로그 조직이 적었습니다.[4] 무신사는 플랫폼 여러 개(무신사·29CM·글로벌)의 상품 데이터를 하나로 맞추는 통합 카탈로그를 짓는 중입니다.[4] 팀 소개도 '패션 특화 속성을 정의하고 AI 로 추출·서비스'한다고 했습니다.[1]",
+   "actually": {
+    "items": [
+     "**속성 채우기** — 사진과 상품명·설명을 VLM(사진을 읽는 언어 모델)[34] 에 넣고, 정해진 항목·값 목록 안에서 JSON 으로 답하게 한다. 같은 조직의 Data Operations 공고가 'LLM·AI 모델을 활용한 상품 속성 데이터 추출 결과'를 평가한다고 적었다.[3]",
+     "**값 맞추기(매핑)** — 입점사가 쓴 '곤색'·'NAVY'·'네이비'를 표준 값 하나로. 공고 예시의 '상품 표준속성 AI 매핑'이 이것이다.[2]",
+     "**사전 밖 답 거르기** — 모델이 목록에 없는 값(예: '헨리넥')을 내면 자동으로 넣지 않고 검수로 보낸다(아래 예시) {추론}.",
+     "**프롬프트도 같이 고친다** — Data Operation 팀이 LLM·VLM 출력을 검수하며 프롬프트를 고친다고 적었다 — 엔지니어와 같이 돌리는 반복이다.[2]",
+     "**결과가 쓰이는 곳** — 리뷰 2,100만 건 요약 같은 다른 AI 기능과 함께, 속성 추출·태깅이 쇼핑 전 과정에 붙었다고 보도됐다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "모델 답을 바로 넣을지 사람에게 보낼지",
+     "body": "값 목록 밖의 답과 확신이 낮은 답은 검수로 보냅니다. 문턱 값 0.85 와 모델 답은 가상 값입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import json\n\nALLOWED = {\n    \"color\": {\"블랙\", \"화이트\", \"네이비\", \"그레이\", \"베이지\"},\n    \"neck\": {\"라운드넥\", \"브이넥\", \"터틀넥\", \"카라\"},\n    \"sleeve\": {\"반팔\", \"긴팔\", \"민소매\"},\n}\nTHRESHOLD = 0.85\nraw = '{\"color\": [\"네이비\", 0.97], \"neck\": [\"헨리넥\", 0.91], \"sleeve\": [\"긴팔\", 0.62]}'\n\ndef route(raw):\n    out = json.loads(raw)\n    auto, review = {}, {}\n    for key, allowed in ALLOWED.items():\n        if key not in out:\n            review[key] = \"빠짐\"\n            continue\n        value, conf = out[key]\n        if value not in allowed:\n            review[key] = f\"사전에 없는 값: {value}\"\n        elif conf < THRESHOLD:\n            review[key] = f\"확신 낮음: {value} ({conf})\"\n        else:\n            auto[key] = value\n    return auto, review\n\nauto, review = route(raw)\nprint(\"자동 반영:\", auto)\nprint(\"검수 대기:\", review)\n# 자동 반영: {'color': '네이비'}\n# 검수 대기: {'neck': '사전에 없는 값: 헨리넥', 'sleeve': '확신 낮음: 긴팔 (0.62)'}"
+    }
+   ],
+   "how_far": "어떤 속성을 둘지(속성 사전)는 카탈로그 조직·PM·Data Operation 이 같이 정합니다.[2][4] 엔지니어는 **그 사전 안에서만 답하는 추출기**를 만들고, 항목별 정확도와 자동 반영 비율을 숫자로 보고합니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    34
+   ],
+   "study": [
+    "handson-llm",
+    "hf-transformers",
+    "llava-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모델 학습·실험에 필요한 데이터를 가공하고, 학습 및 배포 파이프라인 구성에 기여합니다.",
+   "short": "정답셋·학습 데이터를 다듬고, 학습한 모델을 FastAPI·Triton 으로 서비스에 올리는 길을 같이 만든다.",
+   "why": "공고가 적은 배포 도구가 FastAPI·Triton·ONNX·MLflow·Docker·Airflow 이고, 인프라는 AWS·사내 GPU·Databricks 입니다.[1] 데이터는 Data Operation 팀이 만든 골든 데이터셋과 사람 검수(human-in-the-loop) 결과로 모델을 다시 학습하는 반복이라고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**데이터 가공** — 상품 사진 자르기(검출 상자)·중복 사진 지우기·같은 상품의 다른 사진을 '정답 쌍'으로 묶기. 무신사는 예전에 후기 사진 약 1만 장을 22명이 5일 동안 분류하게 해(약 980달러) 학습 데이터를 만든 적이 있다.[9]",
+     "**틀린 정답 찾기** — 사람이 단 정답도 틀린다. 모델 예측과 정답이 크게 어긋나는 표본을 골라 다시 보게 하는 방법(confident learning)이 있다.[26]",
+     "**실험 기록** — MLflow 로 실험마다 데이터 버전·설정·점수·모델 파일을 같이 남긴다.[22]",
+     "**모델 변환·서빙** — PyTorch 모델을 ONNX 로 바꿔[21] Triton 에 올리면 여러 요청을 묶어(동적 배치) GPU 한 장으로 더 많이 처리한다.[20] FastAPI 는 그 앞에서 전처리·후처리를 맡는다 {추론}.",
+     "**미리 계산** — 상품 수십만 개의 임베딩은 Airflow 배치로 미리 만들어 벡터 색인에 넣고, 새 상품만 매일 더한다 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "학습 → 배포 한 바퀴[1]",
+     "steps": [
+      "골든셋·검수 결과 · Data Operation",
+      "데이터 가공 · 자르기·중복 제거·쌍 만들기",
+      "학습·실험 기록 · PyTorch·MLflow",
+      "변환 · ONNX",
+      "서빙 · Triton + FastAPI",
+      "임베딩 배치 · Airflow → 벡터 색인 {추론}"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "'기여'라고 쓴 만큼 파이프라인 전체를 혼자 짓는 자리는 아닙니다 {추론}. 최소선은 **내 모델을 ONNX·Triton 으로 올려 응답 시간과 정확도가 실험 때와 같은지 확인**하고, 다음 사람이 같은 실험을 다시 돌릴 수 있게 기록하는 것입니다 {추론}.",
+   "refs": [
+    1,
+    9,
+    20,
+    21,
+    22,
+    26
+   ],
+   "study": [
+    "mlsys-book",
+    "triton-doc",
+    "onnxruntime-doc",
+    "mlflow-doc",
+    "cs25-serving"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "최신 AI 기술 동향을 빠르게 흡수하고 팀 내 적용을 제안합니다.",
+   "short": "새로 나온 공개 모델·논문을 우리 정답셋에 바로 돌려 보고, 나은지 숫자로 보여 주며 제안한다.",
+   "why": "팀 소개가 이 자리를 '최신 연구 결과와 공개 모델을 빠르게 실험'하는 역할로 적었습니다.[1] 패션 검색용 공개 모델은 계속 나옵니다 — CLIP(2021)[13] 위에 패션 데이터로 다시 학습한 FashionCLIP[14], 학습 손실을 바꾼 SigLIP[15] 위의 패션 모델 Marqo-FashionSigLIP[16] 처럼요.",
+   "actually": {
+    "items": [
+     "**같은 잣대로 비교** — 새 모델이 나오면 우리 골든셋에서 Recall@K·속성 정확도를 기존 모델과 나란히 잰다. 모델 회사가 낸 점수는 자기 측정이다.[16]",
+     "**비용도 같이** — 정확도가 조금 올라도 임베딩 크기·추론 시간이 두 배면 상품 수십만 개를 다시 계산해야 한다 {추론}.",
+     "**회사 분위기** — 무신사는 사내 AI 해커톤을 열고 Claude·Cursor 같은 도구를 전사에 쓴다고 밝혔다.[12] 분기마다 AI 실험에 상을 준다는 인터뷰도 있다.[10]"
+    ]
+   },
+   "how_far": "읽고 소개하는 데서 끝나지 않고 **우리 데이터로 돌린 비교표**를 들고 오는 것이 기대치입니다 {추론}. 채용을 맡은 디렉터도 알고리즘 실력보다 문제를 정의하고 성공 지표를 말하는 능력을 먼저 본다고 했습니다.[10]",
+   "refs": [
+    1,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "marqo-fashionsiglip",
+    "cs336-multimodal",
+    "fashionclip-paper"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM, Multi-modal, Vision 모델 및 관련 서비스 개발 경험이 5년 이상이신 분",
+   "short": "모델을 만들어 실제 서비스에 올리고 운영까지 해 본 기간이 5년 이상이어야 한다는 뜻.",
+   "why": "'모델 및 관련 서비스 개발'이라 연구만 한 경력보다 서비스에 붙인 경력을 봅니다.[1] 지원서도 왜 그 문제를 풀었고 어떤 전략으로 무슨 성과를 냈는지, 프로젝트별 기여도를 표시해 쓰라고 합니다.[1]",
+   "actually": {
+    "items": [
+     "**셋 다일 필요는 없다** — 'LLM, Multi-modal, Vision' 중 이 자리의 중심은 사진(비전)과 사진+글(멀티모달)이다 — 업무 첫 줄이 비주얼 서치·속성 추출이다.[1]",
+     "**서비스 경험의 뜻** — 출시 뒤 정확도가 떨어졌을 때 원인을 찾고, 응답 시간·비용을 맞춰 본 경험.[27]",
+     "**전형** — 서류 → 화상 라이브 코딩 → 화상 시스템 디자인 → 컬처핏 → 처우 협의 순서다.[1]"
+    ]
+   },
+   "how_far": "5년은 회사가 정한 문턱입니다. 경력이 짧다면 **사진 검색이나 속성 분류를 끝까지 서비스해 본 한 건**을 숫자(정확도·응답 시간·처리량)와 함께 설명할 수 있는지가 대신 보일 것입니다 {추론}.",
+   "refs": [
+    1,
+    27
+   ],
+   "study": [
+    "mlsys-book",
+    "rules-of-ml",
+    "cs231n"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "PyTorch, HuggingFace 등 최신 프레임워크 활용 능력이 있으신 분",
+   "short": "공개 모델을 Hugging Face 에서 받아 PyTorch 로 우리 데이터에 다시 학습시키는 일이 매일 하는 일이라서.",
+   "why": "공고 기술 스택의 Framework 칸이 PyTorch·Hugging Face 둘입니다.[1] 같은 회사 개인화 팀도 같은 두 도구를 씁니다.[5]",
+   "level": {
+    "basic": "Dataset·DataLoader·학습 반복문 · 사전 학습 모델 불러와 추론 · GPU 메모리 감 잡기",
+    "work": "대조 학습(사진·글 쌍) 미세 조정 · LoRA 같은 일부만 학습(PEFT) · 혼합 정밀도(AMP) · 체크포인트·재현",
+    "team": "검출+임베딩 모델을 패션 데이터로 다시 학습 · ONNX 변환 뒤 결과 대조 · VLM 을 정해진 JSON 으로 답하게"
+   },
+   "actually": {
+    "items": [
+     "**공개 모델 받기** — Transformers 의 AutoModel·AutoProcessor 로 CLIP·SigLIP 계열 모델과 전처리를 한 번에 불러온다.[23]",
+     "**일부만 학습** — 큰 모델 전체 대신 작은 덧붙인 층만 학습하는 LoRA 가 PEFT 라이브러리에 있다.[24]",
+     "**빠르게** — 혼합 정밀도로 학습하면 같은 GPU 에서 더 큰 배치를 돌린다.[36]",
+     "**대조 학습의 뜻** — 맞는 사진·글 쌍은 가깝게, 다른 쌍은 멀게 벡터를 배우는 방식이 CLIP 이다.[13]"
+    ]
+   },
+   "how_far": "프레임워크 이름보다 **모델 하나를 받아 우리 정답셋으로 미세 조정하고 점수가 오른 것을 보여 줄 수 있는가**입니다. 라이브 코딩이 첫 면접이라 손에 익은 정도가 드러납니다.[1] {추론}",
+   "refs": [
+    1,
+    5,
+    13,
+    23,
+    24,
+    36
+   ],
+   "study": [
+    "hf-transformers",
+    "hf-llm-course",
+    "handson-llm",
+    "cs231n"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "복잡하고 모호한 문제를 체계적으로 해결할 수 있는 분석적 사고를 가지신 분",
+   "short": "'검색이 별로다' 같은 막연한 말을 측정할 수 있는 문제로 바꾸고 어디서 틀리는지 쪼개 보는 힘.",
+   "why": "무신사 코어 AI 디렉터는 AI 개발자를 뽑을 때 진짜 문제가 무엇인지, 어떤 지표가 성공인지 말하는 능력을 알고리즘 실력보다 먼저 본다고 했습니다.[10] 공고의 두 번째 면접이 시스템 디자인입니다.[1]",
+   "actually": {
+    "items": [
+     "**틀린 것 나누기** — 렌즈가 틀렸다면 검출이 상품을 못 찾은 것인지, 찾았는데 벡터가 엉뚱한지, 비슷한 상품이 너무 많은지로 나눈다.[8] {추론}",
+     "**어려운 묶음 따로 재기** — 회사 시제품이 단색 기본 상품에서 약했던 것처럼, 카테고리·색·사진 종류별로 점수를 쪼개 본다.[8]",
+     "**가장 쉬운 기준선부터** — 복잡한 모델 전에 단순한 방법의 점수를 먼저 재 둔다는 것이 구글의 ML 규칙 첫 장이다.[27]"
+    ]
+   },
+   "how_far": "면접에서는 '사진으로 같은 상품 찾기' 같은 과제를 받고 **지표 정의 → 데이터 → 모델 → 서빙 → 실패 대응**을 순서대로 설명하는 정도가 기대될 것입니다 {추론}.",
+   "refs": [
+    1,
+    8,
+    10,
+    27
+   ],
+   "study": [
+    "rules-of-ml",
+    "mlsys-book",
+    "aws-musinsa-snap"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모델 성능을 지속적으로 최적화하는 끈기와 집요함이 있으신 분",
+   "short": "몇 %p 를 더 올리려고 틀린 사례를 하나씩 보고, 데이터·문턱·모델을 계속 고치는 반복을 견디는 것.",
+   "why": "공고가 '노이즈를 허용하지 않고 높은 정확도'를 경쟁력이라고 적었고, 골든셋과 사람 검수로 **빠르게 모델을 개선하는 반복 학습 사이클**을 이 자리의 경험으로 내세웠습니다.[1] 출시는 Data Operation 팀의 품질 관문을 통과해야 합니다.[2]",
+   "actually": {
+    "items": [
+     "**정확도와 자동 비율 맞바꾸기** — 확신도 문턱을 올리면 틀린 값은 줄지만 사람이 볼 몫이 늘어난다(아래 예시).",
+     "**확신도 믿을 수 있게** — 신경망의 확신도는 실제 정답률보다 높게 나오는 경향이 있어 보정(calibration)이 필요하다.[25]",
+     "**틀린 표본 다시 넣기** — 검수자가 고친 답을 다음 학습에 넣는 것이 공고의 human-in-the-loop 다.[1]",
+     "**자동 채점으로** — Data Operation 팀은 손으로 하던 평가를 AI Judge·자동 채점으로 바꾸는 중이다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "문턱을 어디에 둘까 — 정확도 대 자동 비율",
+     "body": "골든셋 12건의 가상 결과입니다. 문턱 0.92 면 넣은 값은 다 맞지만 42% 만 자동으로 들어가고, 나머지는 사람이 봅니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "conf    = [0.99, 0.98, 0.97, 0.95, 0.93, 0.91, 0.90, 0.88, 0.86, 0.80, 0.75, 0.70]\ncorrect = [1,    1,    1,    1,    1,    0,    1,    1,    0,    1,    0,    0]\n\ndef at(threshold):\n    picked = [c for p, c in zip(conf, correct) if p >= threshold]\n    precision = sum(picked) / len(picked) if picked else 0\n    coverage = len(picked) / len(conf)\n    return precision, coverage\n\nfor t in (0.70, 0.85, 0.92):\n    p, cov = at(t)\n    print(f\"문턱 {t:.2f}: 정확도 {p:.2f} · 자동 비율 {cov:.2f}\")\n# 문턱 0.70: 정확도 0.67 · 자동 비율 1.00\n# 문턱 0.85: 정확도 0.78 · 자동 비율 0.75\n# 문턱 0.92: 정확도 1.00 · 자동 비율 0.42"
+    }
+   ],
+   "how_far": "끈기는 지원서에서 **'몇 번을 고쳐 몇에서 몇으로 올렸다'는 기록**으로 보입니다 — 공고가 성공·실패를 떠나 문제 정의·전략·성과를 쓰라고 한 이유입니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    25
+   ],
+   "study": [
+    "calibration-paper",
+    "confident-learning",
+    "precision-recall"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 학술지 논문 저자 또는 관련 오픈소스 기여자이신 분",
+   "short": "최신 연구를 직접 읽고 재현할 수 있다는 증거라서. 공개 모델을 빨리 실험하는 자리에 바로 쓰인다.",
+   "why": "이 자리는 최신 연구 결과와 공개 모델을 빠르게 실험하는 역할입니다.[1] 논문·오픈소스 기여는 그 일을 이미 해 봤다는 공개된 기록이 됩니다 {추론}.",
+   "actually": {
+    "items": [
+     "**논문** — 패션 검색 쪽은 FashionCLIP 처럼 학술지에 실린 것부터 Fashionpedia 같은 데이터셋 논문까지 있다.[14][17]",
+     "**오픈소스** — Hugging Face Transformers 는 버그 고치기·문서·새 모델 추가 기여 방법을 공식으로 안내한다.[35]"
+    ]
+   },
+   "how_far": "우대 사항이라 없어도 지원할 수 있습니다. 대신 **공개 모델 하나를 패션 데이터로 재현·비교한 글이나 저장소**가 비슷한 신호가 됩니다 {추론}.",
+   "refs": [
+    1,
+    14,
+    17,
+    35
+   ],
+   "study": [
+    "hf-contrib",
+    "fashionclip-paper"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 환경(AWS) 기반 서비스 운영 경험이 있으신 분",
+   "short": "모델이 도는 곳이 AWS 와 사내 GPU 라서. 서버·저장소·벡터 검색을 직접 다뤄 본 경험이 바로 쓰인다.",
+   "why": "공고 인프라 칸이 AWS·사내 GPU·Databricks 입니다.[1] 무신사의 이미지 시제품은 Lambda·SageMaker 엔드포인트·OpenSearch 로 짜였고[8], 후기 사진 분류 모델도 SageMaker 로 학습했습니다.[9]",
+   "actually": {
+    "items": [
+     "**벡터 검색** — OpenSearch 의 k-NN 기능으로 가까운 벡터를 찾는다. 정확히 다 비교하지 않고 근사로 빠르게 찾는 방식(HNSW 등)을 고른다.[19][18]",
+     "**GPU 비용** — 늘 켜 둘 서버와 배치로만 쓸 GPU 를 나눈다 {추론}.",
+     "**모니터링** — 응답 시간·오류율·입력 사진 분포가 달라지는지 본다.[27]"
+    ]
+   },
+   "how_far": "클라우드 인프라 구축은 플랫폼 팀 몫이고, 이 자리는 **내 모델 서버의 비용·응답 시간을 스스로 책임질 수 있는** 정도면 됩니다 {추론}.",
+   "refs": [
+    1,
+    8,
+    9,
+    18,
+    19,
+    27
+   ],
+   "study": [
+    "opensearch-knn",
+    "faiss-doc",
+    "aws-musinsa-review"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "기술 리더십 혹은 AI 프로젝트 리딩 경험이 있으신 분",
+   "short": "PM·검수 팀·서버 팀 사이에서 AI 과제의 목표 지표와 일정을 정하고 끌고 가 본 경험.",
+   "why": "이 자리의 일은 혼자 끝나지 않습니다 — 정답셋은 Data Operation, 상품 데이터는 카탈로그 조직, 서비스는 검색·PM 과 맞물립니다.[2][4] Data Operation 팀은 AI·검색 PM 의 분기 OKR 과제를 받아 공수를 나눈다고 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**성공 지표 먼저 합의** — 무엇을 재면 성공인지부터 정하는 것이 이 회사가 AI 인력에게 먼저 보는 능력이다.[10]",
+     "**과제 나누기** — 검출·임베딩·속성 추출·서빙을 누가 언제 맡는지 쪼갠다 {추론}.",
+     "**결과 공유** — 실험 결과와 실패도 팀에 남겨 다음 결정에 쓰게 한다 {추론}."
+    ]
+   },
+   "how_far": "직함보다 **AI 과제 하나를 목표 지표부터 출시까지 이끈 사례**를 지원서에 기여도와 함께 적는 것이 공고가 요구한 형식입니다.[1]",
+   "refs": [
+    1,
+    2,
+    4,
+    10
+   ],
+   "study": [
+    "mlsys-book",
+    "rules-of-ml"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "틀린 사례를 하나씩 열어 보는 일이 지루하지 않은 사람[1]",
+   "패션 상품을 세밀하게 구분하는 데 관심이 있는 사람[1]",
+   "논문 결과를 우리 데이터로 다시 재 보는 것이 즐거운 사람[1]",
+   "검수 팀과 같이 정답 기준을 다듬는 협업이 편한 사람[2]"
+  ],
+  "hard": [
+   "출시에 품질 관문(Data Operation 사인오프)이 있어 내 판단만으로 내보낼 수 없다[2]",
+   "경력 5년 이상이 문턱이다[1]",
+   "새 모델 연구보다 데이터·문턱·서빙을 고치는 시간이 길다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "사진 한 장으로 같은 상품을 찾는 시스템을 설계해 보세요. 사진에 옷이 여러 벌이면요?",
+   "a": "전형에 시스템 디자인 면접이 있고[1], 렌즈가 한 사진에서 상품 8개까지 따로 찾는다.[6]"
+  },
+  {
+   "q": "검색 품질을 무엇으로 재나요? Recall@K 와 MRR 은 무엇이 다른가요?",
+   "a": "회사 시제품이 Precision@k·MRR 로 보고했다.[8][28]"
+  },
+  {
+   "q": "단색 기본 티셔츠처럼 비슷한 상품이 많을 때 벡터 검색이 틀리면 어떻게 고치나요?",
+   "a": "회사 시제품이 적은 한계.[8]"
+  },
+  {
+   "q": "속성 추출 모델이 '확신도 0.9'라고 할 때 그 숫자를 믿어도 되나요?",
+   "a": "보정 문제와 검수로 보낼 문턱.[25][2]"
+  },
+  {
+   "q": "PyTorch 모델을 ONNX·Triton 으로 옮긴 뒤 결과가 같은지 어떻게 확인하나요?",
+   "a": "공고 배포 스택.[1][20][21]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 · Machine Learning Engineer (AI)",
+   "url": "https://www.musinsacareers.com/ko/o/233126",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "팀 소개·이런 경험·업무·자격·우대·기술 스택·전형"
+  },
+  {
+   "n": 2,
+   "title": "무신사 채용 · Data Operations AI Part Lead",
+   "url": "https://www.musinsacareers.com/ko/o/240047",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 Core Engineering 조직 — 골든셋·품질 관문(사인오프)·무신사 렌즈·상품 표준속성 AI 매핑 검수"
+  },
+  {
+   "n": 3,
+   "title": "인크루트 · 무신사 Data Operations Manager",
+   "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610120004926",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "같은 팀 공고 사본 — LLM·AI 상품 속성 추출 결과 평가, 골든셋 검수"
+  },
+  {
+   "n": 4,
+   "title": "무신사 채용 · Product Engineer (Catalog)",
+   "url": "https://www.musinsacareers.com/ko/o/222714",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "Core Catalog 조직 소개 — 통합 카탈로그, 상품 데이터가 추천·검색·주문으로 이어짐"
+  },
+  {
+   "n": 5,
+   "title": "무신사 채용 · Data Scientist (Personalization)",
+   "url": "https://www.musinsacareers.com/ko/o/240567",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 ML 팀 기술 스택(PyTorch·Hugging Face·Triton·MLflow)"
+  },
+  {
+   "n": 6,
+   "title": "디지털투데이 · Musinsa expands AI search, launches Lens to find identical, similar products by image",
+   "url": "https://www.digitaltoday.co.kr/en/view/120992/musinsa-expands-ai-search-launches-lens-to-find-identical-similar-products-by-image",
+   "kind": "news",
+   "date": "2026-10-29",
+   "note": "검출·유사도 모델 자체 학습, 한 사진에서 최대 8개, 4분기 필터·정렬, 29CM 도입 계획"
+  },
+  {
+   "n": 7,
+   "title": "허프포스트코리아 · 무신사 렌즈 출시",
+   "url": "https://www.huffingtonpost.kr/article/261630",
+   "kind": "news",
+   "date": "2026-10",
+   "note": "무신사 테크 조직이 이미지 인식 모델 자체 개발"
+  },
+  {
+   "n": 8,
+   "title": "AWS 기술 블로그 · 무신사의 AI 기반 상품 추천 및 검색 시스템 구현 사례",
+   "url": "https://aws.amazon.com/ko/blogs/tech/musinsa-ai-base-product-recommendation/",
+   "kind": "company",
+   "note": "무신사 스냅인플루언서 개발팀 + AWS 시제품. 본문을 직접 열지 못해 검색 요약(YOLOS-Fashionpedia·FashionCLIP 2.0·OpenSearch·SageMaker·Precision@1 72%·@5 81%·MRR 0.76·단색 기본 상품 한계)만 인용"
+  },
+  {
+   "n": 9,
+   "title": "AWS 한국 블로그 · Amazon SageMaker 로 후기 이미지 자동 검수 서비스 만들기(무신사)",
+   "url": "https://aws.amazon.com/ko/blogs/korea/develop-an-automatic-review-image-inspection-service-with-amazon-sagemaker/",
+   "kind": "company",
+   "note": "Ground Truth 로 약 1만 장·22명·5일·약 980달러, 수작업 43% 감소(검색 요약)"
+  },
+  {
+   "n": 10,
+   "title": "CIO 코리아 · AI 리더십 인사이드 — 무신사, AI로 업무를 스타일링하다",
+   "url": "https://www.cio.com/article/4219031/",
+   "kind": "news",
+   "date": "2026-09-08",
+   "note": "길기용 코어 AI·CX 엔지니어링 디렉터 인터뷰 — 상품 등록 때 카테고리·색·소재 추론, 채용 기준, 분기 AI 시상"
+  },
+  {
+   "n": 11,
+   "title": "한국금융신문(다음) · 검색창이 사라진다…무신사가 바꾸는 쇼핑의 공식 [AI가 바꾸는 유통현장 ②]",
+   "url": "https://v.daum.net/v/20260706000243628",
+   "kind": "news",
+   "date": "2026-07-06",
+   "note": "AI 속성 추출·태깅, 후기 요약, AI 트렌드 큐레이션"
+  },
+  {
+   "n": 12,
+   "title": "무신사 뉴스룸 · 전사적 AI 리터러시 강화",
+   "url": "https://about.musinsa.com/newsroom/2025-1120",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "AI 해커톤, Claude·Cursor·Junie 사용, ML 엔지니어 상시 채용"
+  },
+  {
+   "n": 13,
+   "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+   "url": "https://arxiv.org/abs/2103.00020",
+   "kind": "reference",
+   "date": "2021"
+  },
+  {
+   "n": 14,
+   "title": "Contrastive language and vision learning of general fashion concepts (FashionCLIP)",
+   "url": "https://arxiv.org/abs/2204.03972",
+   "kind": "reference",
+   "date": "2022",
+   "note": "Scientific Reports 게재"
+  },
+  {
+   "n": 15,
+   "title": "Sigmoid Loss for Language Image Pre-Training (SigLIP)",
+   "url": "https://arxiv.org/abs/2303.15343",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 16,
+   "title": "Hugging Face · Marqo-FashionSigLIP 모델 카드",
+   "url": "https://huggingface.co/Marqo/marqo-fashionSigLIP",
+   "kind": "reference",
+   "note": "FashionCLIP 2.0 과 비교한 점수는 모델 회사의 자기 측정"
+  },
+  {
+   "n": 17,
+   "title": "Fashionpedia: Ontology, Segmentation, and an Attribute Localization Dataset",
+   "url": "https://arxiv.org/abs/2004.12276",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 18,
+   "title": "FAISS (Meta) · 벡터 유사도 검색 라이브러리",
+   "url": "https://github.com/facebookresearch/faiss",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "OpenSearch 문서 · k-NN search",
+   "url": "https://docs.opensearch.org/latest/vector-search/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "NVIDIA Triton Inference Server 사용자 가이드",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+   "kind": "reference",
+   "note": "동적 배치·여러 모델 형식"
+  },
+  {
+   "n": 21,
+   "title": "ONNX Runtime 문서",
+   "url": "https://onnxruntime.ai/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "MLflow 문서 · Tracking",
+   "url": "https://mlflow.org/docs/latest/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Hugging Face Transformers 문서",
+   "url": "https://huggingface.co/docs/transformers/index",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Hugging Face PEFT 문서(LoRA)",
+   "url": "https://huggingface.co/docs/peft/index",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "On Calibration of Modern Neural Networks",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "kind": "reference",
+   "date": "2017"
+  },
+  {
+   "n": 26,
+   "title": "Confident Learning: Estimating Uncertainty in Dataset Labels",
+   "url": "https://arxiv.org/abs/1911.00068",
+   "kind": "reference",
+   "date": "2019"
+  },
+  {
+   "n": 27,
+   "title": "Google · Rules of Machine Learning",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Introduction to Information Retrieval · 8장 검색 평가",
+   "url": "https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-in-information-retrieval-1.html",
+   "kind": "reference",
+   "note": "Manning·Raghavan·Schütze, 무료 공개판"
+  },
+  {
+   "n": 29,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "같은 회사 다른 풀이에서 옮긴 항목. 페이지에 변경될 수 있다는 문구"
+  },
+  {
+   "n": 30,
+   "title": "무신사 기업정보 — 자소설닷컴",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "같은 회사 다른 풀이에서 옮긴 값(페이지 직접 열람은 403)"
+  },
+  {
+   "n": 31,
+   "title": "무신사 — 원티드 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "평균연봉 6,082만원 표기 — 같은 회사 다른 풀이에서 옮긴 값"
+  },
+  {
+   "n": 32,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company"
+  },
+  {
+   "n": 33,
+   "title": "무신사, 성수동 캠퍼스 N1 으로 본사 이전 (일간스포츠)",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09"
+  },
+  {
+   "n": 34,
+   "title": "Visual Instruction Tuning (LLaVA)",
+   "url": "https://arxiv.org/abs/2304.08485",
+   "kind": "reference",
+   "date": "2023",
+   "note": "사진을 읽는 언어 모델(VLM)의 대표 구조"
+  },
+  {
+   "n": 35,
+   "title": "Hugging Face Transformers · Contribute to Transformers",
+   "url": "https://huggingface.co/docs/transformers/contributing",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "PyTorch 문서 · Automatic Mixed Precision (torch.amp)",
+   "url": "https://docs.pytorch.org/docs/stable/amp.html",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "2026-11 공고와 보도로 쓴 풀이입니다. 무신사 렌즈가 쓰는 모델·점수·속성 추출 모델의 구조는 공개되지 않았습니다. 회사 근거는 이 공고·같은 조직 공고(Data Operation·Catalog)·렌즈 출시 보도·CIO 인터뷰, 그리고 다른 팀(스냅인플루언서)이 AWS 와 만든 시제품 글입니다 — 그 AWS 글은 본문을 직접 열지 못해 검색 요약의 숫자만 옮겼습니다. 팀 발표 영상은 찾지 못했습니다. 나머지는 공개 논문·공식 문서로 '보통 이런 것'을 보였습니다. 연봉은 집계 사이트 값뿐입니다.",
+ "resources": [
+  {
+   "id": "aws-musinsa-snap",
+   "title": "무신사의 AI 기반 상품 추천 및 검색 시스템 구현 사례",
+   "by": "AWS 기술 블로그",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://aws.amazon.com/ko/blogs/tech/musinsa-ai-base-product-recommendation/",
+   "why": "같은 회사가 사진 → 검출 → 임베딩 → 벡터 검색을 어떻게 엮고 어떻게 쟀는지. 업무 첫 줄의 전체 그림을 한국어로 먼저 본다."
+  },
+  {
+   "id": "aws-musinsa-review",
+   "title": "Amazon SageMaker 를 활용한 후기 이미지 자동 검수 서비스 개발",
+   "by": "AWS 한국 블로그",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://aws.amazon.com/ko/blogs/korea/develop-an-automatic-review-image-inspection-service-with-amazon-sagemaker/",
+   "why": "무신사가 사람 라벨링으로 학습 데이터를 만든 비용·인원·기간 — 데이터 가공 업무와 AWS 우대 사항의 실제 예."
+  },
+  {
+   "id": "clip-paper",
+   "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+   "by": "Radford 외 · OpenAI · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2103.00020",
+   "why": "사진과 글을 한 공간에 넣는 대조 학습의 원전. 비주얼 서치·텍스트로 사진 찾기의 바탕."
+  },
+  {
+   "id": "fashionclip-paper",
+   "title": "Contrastive language and vision learning of general fashion concepts",
+   "by": "Chia 외 · Scientific Reports · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2204.03972",
+   "why": "CLIP 을 패션 상품 데이터로 다시 학습한 FashionCLIP — 회사 시제품이 쓴 모델 계열. 도메인 미세 조정이 무엇을 얻나."
+  },
+  {
+   "id": "marqo-fashionsiglip",
+   "title": "Marqo-FashionSigLIP 모델 카드",
+   "by": "Marqo · Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://huggingface.co/Marqo/marqo-fashionSigLIP",
+   "why": "공개 패션 임베딩 모델을 바로 받아 돌려 보는 예. 모델 카드의 비교표를 우리 데이터로 다시 재 보는 연습감."
+  },
+  {
+   "id": "llava-paper",
+   "title": "Visual Instruction Tuning (LLaVA)",
+   "by": "Liu 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2304.08485",
+   "why": "사진을 읽는 언어 모델(VLM)이 어떻게 생겼나 — 속성 추출에 VLM 을 쓰는 업무 둘째 줄의 바탕."
+  },
+  {
+   "id": "hf-transformers",
+   "title": "Hugging Face Transformers 문서",
+   "by": "Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://huggingface.co/docs/transformers/index",
+   "why": "CLIP·SigLIP·VLM 을 불러와 추론·미세 조정하는 공식 방법. 자격요건 둘째 줄의 기본기."
+  },
+  {
+   "id": "hf-llm-course",
+   "title": "Hugging Face LLM Course",
+   "by": "Hugging Face",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://huggingface.co/learn/llm-course",
+   "why": "Transformers·Datasets·학습 반복을 순서대로 손으로 따라 하는 무료 강의."
+  },
+  {
+   "id": "hf-contrib",
+   "title": "Contribute to Transformers",
+   "by": "Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://huggingface.co/docs/transformers/contributing",
+   "why": "오픈소스 기여 우대 사항 — 작은 버그·문서 고치기부터 시작하는 공식 절차."
+  },
+  {
+   "id": "handson-llm",
+   "title": "핸즈온 LLM",
+   "by": "제이 알아마르 · 마르턴 흐루턴도르스트 · 박해선 옮김 · 한빛미디어 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%95%B8%EC%A6%88%EC%98%A8%20LLM",
+   "why": "임베딩·시맨틱 검색·멀티모달·미세 튜닝을 한국어로. 업무 첫째·둘째 줄을 코드로 따라 하기 좋다."
+  },
+  {
+   "id": "mlsys-book",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 김대근·김영민 옮김 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84",
+   "why": "데이터·평가·배포·모니터링까지 모델을 서비스로 만드는 전 과정. 학습·배포 파이프라인 업무와 시스템 디자인 면접 준비."
+  },
+  {
+   "id": "cs231n",
+   "title": "CS231n: Deep Learning for Computer Vision",
+   "by": "Stanford",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://cs231n.stanford.edu/",
+   "why": "이미지 분류·검출·임베딩의 기초. 비전 경력이 짧다면 여기서 시작한다."
+  },
+  {
+   "id": "cs336-multimodal",
+   "title": "Stanford CS336 Lecture 17: Alignment - Multimodality — 강의 노트",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/26FtD08ZpOU",
+   "why": "언어 모델에 사진을 붙이는 방법의 최근 흐름 — 동향을 흡수하는 업무 넷째 줄."
+  },
+  {
+   "id": "cs25-serving",
+   "title": "Stanford CS25: Serving Transformers — Lessons from the Trenches — 강의 노트",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/ZUdIsRZhWXI",
+   "why": "트랜스포머 모델을 실제로 서빙할 때 부딪히는 것 — 배포 파이프라인 업무."
+  },
+  {
+   "id": "precision-recall",
+   "title": "The Sensitivity, Specificity, Precision, Recall Sing-a-Long — 강의 노트",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/PWvfrTgaPBI",
+   "why": "정밀도·재현율을 헷갈리지 않게 — 문턱을 정하는 성능 최적화 요건의 기초."
+  },
+  {
+   "id": "ir-book",
+   "title": "Introduction to Information Retrieval",
+   "by": "Manning · Raghavan · Schütze · Cambridge University Press · 2008",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nlp.stanford.edu/IR-book/",
+   "why": "8장이 검색 평가(정밀도·재현율·순위 지표). 비주얼 서치를 숫자로 재는 법."
+  },
+  {
+   "id": "faiss-doc",
+   "title": "FAISS",
+   "by": "Meta",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/facebookresearch/faiss",
+   "why": "벡터 수십만 개에서 가까운 것을 빠르게 찾는 색인(IVF·HNSW)을 노트북에서 바로 돌려 본다."
+  },
+  {
+   "id": "opensearch-knn",
+   "title": "OpenSearch Vector search",
+   "by": "OpenSearch 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.opensearch.org/latest/vector-search/",
+   "why": "회사 시제품이 쓴 벡터 검색 — 색인 만들기·근사 검색·필터 걸기."
+  },
+  {
+   "id": "triton-doc",
+   "title": "NVIDIA Triton Inference Server 사용자 가이드",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+   "why": "공고 배포 스택의 Triton — 모델 저장소 구조·동적 배치·여러 모델 동시 서빙."
+  },
+  {
+   "id": "onnxruntime-doc",
+   "title": "ONNX Runtime 문서",
+   "by": "Microsoft · ONNX Runtime",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://onnxruntime.ai/docs/",
+   "why": "PyTorch 모델을 ONNX 로 내보내고 결과가 같은지 확인하는 법."
+  },
+  {
+   "id": "mlflow-doc",
+   "title": "MLflow 문서",
+   "by": "MLflow",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mlflow.org/docs/latest/index.html",
+   "why": "실험 기록·모델 등록 — 같은 실험을 다시 돌릴 수 있게 남기는 법."
+  },
+  {
+   "id": "calibration-paper",
+   "title": "On Calibration of Modern Neural Networks",
+   "by": "Guo 외 · ICML 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "why": "모델 확신도가 실제 정답률과 어긋나는 이유와 온도 조절로 고치는 법 — 자동 반영 문턱을 믿을 수 있게."
+  },
+  {
+   "id": "confident-learning",
+   "title": "Confident Learning: Estimating Uncertainty in Dataset Labels",
+   "by": "Northcutt 외 · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1911.00068",
+   "why": "사람이 단 정답 중 틀린 것을 찾아내는 방법 — 골든셋·검수 데이터를 다듬는 업무."
+  },
+  {
+   "id": "rules-of-ml",
+   "title": "Rules of Machine Learning",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "why": "기준선부터·지표부터·운영하며 고치기 — 모호한 문제를 체계적으로 푸는 요건의 짧은 규칙집."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사가 하는 일 그림 잡기",
+   "time": "1주",
+   "goal": "비주얼 서치와 속성 추출이 어떤 단계로 돌고 무엇으로 재는지 설명할 수 있다.",
+   "resources": [
+    "aws-musinsa-snap",
+    "aws-musinsa-review",
+    "ir-book",
+    "precision-recall"
+   ],
+   "task": "위 풀이의 Recall@K·MRR 예시를 고쳐, 가상 질의 20개·상품 200개에서 K 를 1·5·10 으로 바꿔 점수표를 만든다."
+  },
+  {
+   "title": "공개 모델로 사진 검색 만들기",
+   "time": "2~3주",
+   "goal": "CLIP 계열 공개 모델로 사진 → 비슷한 상품 검색을 돌리고 점수를 잰다.",
+   "resources": [
+    "hf-transformers",
+    "clip-paper",
+    "fashionclip-paper",
+    "marqo-fashionsiglip",
+    "faiss-doc"
+   ],
+   "task": "직접 찍거나 공개 라이선스로 받은 옷 사진 수백 장에 같은 상품끼리 번호를 붙이고, 공개 패션 임베딩 모델 두 개를 FAISS 로 검색해 Recall@5 를 비교한다. 단색 기본 상품만 따로 점수를 낸다."
+  },
+  {
+   "title": "속성 추출과 사람 검수",
+   "time": "2주",
+   "goal": "정해진 값 목록 안에서만 답하는 속성 추출기와 검수로 보낼 문턱을 만든다.",
+   "resources": [
+    "handson-llm",
+    "llava-paper",
+    "calibration-paper",
+    "confident-learning"
+   ],
+   "task": "속성 3개(색·소매·넥라인)의 값 목록을 정하고, 공개 VLM 으로 사진 100장의 답을 JSON 으로 받는다. 직접 단 정답과 비교해 문턱별 정확도·자동 비율 표를 만든다."
+  },
+  {
+   "title": "서비스로 올리기",
+   "time": "2주",
+   "goal": "모델을 ONNX·Triton 으로 올리고 실험 때와 같은 결과·응답 시간을 확인한다.",
+   "resources": [
+    "onnxruntime-doc",
+    "triton-doc",
+    "mlflow-doc",
+    "cs25-serving",
+    "mlsys-book"
+   ],
+   "task": "2단계 임베딩 모델을 ONNX 로 내보내 PyTorch 결과와 벡터 차이를 재고, Triton + FastAPI 로 올려 동적 배치를 켜고 끈 처리량을 비교한다. 실험은 MLflow 에 남긴다."
+  },
+  {
+   "title": "동향 따라가기 (계속)",
+   "time": "계속",
+   "goal": "새 공개 모델을 내 평가셋에 바로 돌려 비교표로 제안할 수 있다.",
+   "resources": [
+    "cs336-multimodal",
+    "hf-contrib",
+    "rules-of-ml"
+   ],
+   "task": "새 모델이 나올 때마다 2·3단계 평가셋에서 정확도·속도·임베딩 크기를 한 줄씩 더한 비교표를 저장소에 쌓는다."
+  }
+ ],
+ "pay": {
+  "summary": "초봉 2,313만원 · 직원 평균 3,453만원(자소설 집계) — 원티드 표기 평균은 6,082만원으로 기준이 다르다. 공고에 연봉은 없고 '처우 협의'다.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아니라 회사 전체 값이며 연도 표기는 확인하지 못했다.[30]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 경력직이 섞인 회사 전체 평균이다.[30]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위 값과 크게 달라 산출 방식·시점이 다른 것으로 보인다.[31]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시 평균 급여가 없습니다. 위 숫자는 모두 집계이고 **초봉이 아니라 경력직이 섞인 평균**입니다. 이 공고는 경력 5년 이상 자리라 이 평균들과 거리가 멀고, 전형 끝에 '처우 협의' 단계가 따로 있습니다.[1] 수습 3개월 동안도 급여는 100% 지급된다고 적었습니다.[1]"
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "코어타임 11~16시, 휴가 1일·0.5일·0.25일 단위 사용"
+   },
+   {
+    "name": "업무 장비",
+    "detail": "전사 AI 에이전트(Claude·Cursor 등), 허먼 밀러 의자, 업무 물품 지원"
+   },
+   {
+    "name": "사내 식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 '아즈니섬' 임직원 55% 할인"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기당 150만원"
+   },
+   {
+    "name": "장기근속",
+    "detail": "3년마다 리프레시 휴가 7일 + 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "매달 쇼핑 지원금 10만원(무신사·29CM·솔드아웃), 생일 지원금 20만원, 월 할인 쿠폰(무신사 최대 40% 7장·29CM 20% 5장·엠프티 최대 30% 2장)"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험(구성원·법적 배우자·자녀), 연 1회 건강검진(당일 0.5일 검진휴가), 연 10회 심리상담"
+   }
+  ],
+  "note": "무신사 채용 사이트 복지 페이지 항목을 같은 회사의 다른 풀이에서 옮겼다. 페이지에 날짜가 없고(첨부 이미지는 2025-07 등록), 근무 장소·기간·시점에 따라 일부 변경될 수 있다는 문구가 있다. 직무별 차이는 적혀 있지 않다.[29]"
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 약 6분",
+  "note": "공고의 근무지 표기는 '무신사 성수 오피스'.[1] 주소는 무신사 상품 페이지 하단 사업자 정보 표기.[32] 2022-09 성수 캠퍼스 N1 이전과 도보 거리는 보도.[33]"
+ }
+}

@@ -233,6 +233,7 @@
   "ats-greeting:musinsa:240567": "musinsa-data-scientist-personalization",
   "ats-greeting:musinsa:202445": "musinsa-dba-foundation-platform",
   "ats-greeting:musinsa:229966": "musinsa-infra-platform-engineering-manager",
+  "ats-greeting:musinsa:233126": "musinsa-machine-learning-engineer-ai",
   "ats-greeting:musinsa:242044": "musinsa-network-engineer",
   "wanted-366283": "musinsa-network-security-engineer-sase-casb",
   "ats-greeting:musinsa:242055": "musinsa-payments-cert-vulnerability",
@@ -2521,6 +2522,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 26
+  },
+  {
+   "id": "musinsa-machine-learning-engineer-ai",
+   "company": "무신사",
+   "role": "Machine Learning Engineer",
+   "jobs": [
+    "ats-greeting:musinsa:233126"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 11
   },
   {
    "id": "musinsa-network-engineer",
