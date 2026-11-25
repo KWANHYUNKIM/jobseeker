@@ -1,0 +1,760 @@
+{
+  "id": "biztechi-web-solution-expense",
+  "company": "비즈테크아이",
+  "role": "Web 기반 솔루션 개발 및 운영 담당자",
+  "team": "경비전표·인사 솔루션",
+  "jobs": [
+    "ats-lg:group:1001799"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "LG 그룹사가 같이 쓰는 **경비전표 시스템(직원이 쓴 법인카드·영수증을 회계 전표로 바꾸는 웹 시스템)**을 운영하고, 같은 솔루션을 새 고객사(OPEN 고객사)에 구축하는 Java 개발자 자리입니다. 매일 모니터링하고, 정기·긴급 이관(운영 반영)을 하고, 장애를 처리해 보고합니다.[1]",
+    "env": "LG CNS 자회사인 IT 서비스 회사입니다.[1] 회사는 경영정보 시스템 구축·운영 고도화를 사업으로 소개하고[2], 2017년 LG CNS BPO 사업부(BizTech)를 흡수합병했다가 2022년 IT 사업과 BPO 사업을 나눴습니다.[4] 공고는 앞으로 Java와 **AI OCR(사진 속 글자를 읽는 AI)** 을 쓴 솔루션, PM/PL 업무로 넓힌다고 적었습니다.[1]",
+    "oneline": "**회계 규칙 + Java 웹 개발 + 운영 절차**를 같이 드는 5년 차 이상 솔루션 개발·운영 자리."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "경비전표 시스템 분석, 설계 및 개발 수행",
+      "short": "직원이 쓴 경비를 증빙과 묶어 회계 전표로 만드는 웹 시스템을 고객 규칙에 맞게 분석·설계·개발하는 일이다.",
+      "why": "공고는 이 자리가 경비전표·인사 시스템 같은 **솔루션 기반 시스템**의 구축과 유지보수를 맡고, 입사 후 경비전표 시스템의 그룹사 운영을 지원하며 OPEN 고객사 구축에 들어간다고 적었습니다.[1] 법인은 사업 거래의 증명서류를 5년간 보관해야 하고, 사업자에게서 산 것은 신용카드 매출전표·현금영수증·세금계산서·계산서 중 하나를 받아야 합니다.[8] 경비전표 시스템은 이 의무를 직원 수천 명의 지출에서 매일 지키게 해 주는 장치입니다.{추론}",
+      "actually": {
+        "intro": "회사가 이 시스템의 화면·구조를 공개하지 않아, 아래는 같은 일을 하는 경비 시스템의 보통 흐름입니다.{추론}",
+        "items": [
+          "**지출 수집** — 법인카드 사용 내역을 카드사에서 받아 오고, 개인카드·현금은 직원이 영수증을 올린다.{추론}",
+          "**증빙 판정** — 건당 3만원(부가세 포함)을 넘는데 적격증빙(카드 매출전표·현금영수증·세금계산서·계산서)이 없으면 걸러 낸다.[8][9]",
+          "**계정 정하기** — '야근 식대'는 복리후생비, '택시'는 여비교통비처럼 사용 목적을 계정과목으로 바꾼다. 규칙은 고객사 회계팀이 정한다.{추론}",
+          "**결재** — 팀장·회계 담당 결재선을 탄다. 회사마다 금액·계정별 결재선이 다르다.{추론}",
+          "**전표 생성** — 차변(비용)·대변(갚을 돈)이 맞는 전표를 만들어 ERP(회계 원장)로 넘긴다.{추론}",
+          "**분석·설계 산출물** — 요구사항 정의서, 화면·테이블 설계, 인터페이스(카드사·ERP) 정의서. 회사는 구축 방식으로 Waterfall과 MSA 기반 Agile을 상황에 맞게 쓴다고 밝힌다.[2]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "경비 한 건이 전표가 되기까지 — 보통의 흐름{추론}",
+          "steps": [
+            "사용 · 직원이 법인카드로 결제",
+            "수집 · 카드사 승인 내역이 시스템에 들어옴",
+            "작성 · 직원이 목적·참석자 입력, 영수증 첨부",
+            "점검 · 증빙·한도·중복 규칙 검사",
+            "결재 · 팀장 → 회계 담당",
+            "전표 · 차변·대변 전표 생성",
+            "연계 · ERP 원장에 반영, 지급"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "examples": [
+        {
+          "title": "경비 한 건 → 전표, 증빙 규칙 검사 — 직접 돌린 출력",
+          "body": "카드·현금영수증이면 금액의 1/11을 부가세대급금으로 떼고(공제 가능 여부는 실제로 업종·용도마다 다르다 — 단순화한 가상 규칙{추론}), 3만원 초과인데 적격증빙이 없으면 가산세 2%를 경고합니다.[8][10] 출력: `택시 [('차변','여비교통비',18700), ('대변','미지급금',18700)] 균형` / `야근 식대 [('차변','복리후생비',50000), ('차변','부가세대급금',5000), ('대변','미지급금(법인카드)',55000)] 균형` / `소모품 [... 42000] 균형 적격증빙 없음 -> 가산세 2% = 840원`",
+          "lang": "python",
+          "code": "from decimal import Decimal, ROUND_DOWN\n\nPROOF = {\"카드\", \"현금영수증\", \"세금계산서\", \"계산서\"}\n\ndef voucher(item, total, proof, account):\n    total = Decimal(total)\n    vat = (total / 11).quantize(Decimal(\"1\"), ROUND_DOWN) if proof in {\"카드\", \"현금영수증\", \"세금계산서\"} else Decimal(0)\n    lines = [(\"차변\", account, total - vat)]\n    if vat:\n        lines.append((\"차변\", \"부가세대급금\", vat))\n    lines.append((\"대변\", \"미지급금(법인카드)\" if proof == \"카드\" else \"미지급금\", total))\n    warn = \"\"\n    if total > 30000 and proof not in PROOF:\n        warn = f\"적격증빙 없음 -> 가산세 2% = {int(total * Decimal('0.02'))}원\"\n    return lines, warn\n\nfor args in [(\"택시\", 18700, \"간이영수증\", \"여비교통비\"),\n             (\"야근 식대\", 55000, \"카드\", \"복리후생비\"),\n             (\"소모품\", 42000, \"간이영수증\", \"소모품비\")]:\n    lines, warn = voucher(*args)\n    dr = sum(a for s, _, a in lines if s == \"차변\")\n    cr = sum(a for s, _, a in lines if s == \"대변\")\n    print(args[0], [(s, n, int(a)) for s, n, a in lines], \"균형\" if dr == cr else \"불균형\", warn)"
+        }
+      ],
+      "how_far": "회계 규칙(계정·증빙·결재선)은 **고객사 회계팀이 정하고**, 개발자는 그 규칙을 화면·검사·전표 로직으로 옮기고 예외를 찾아 묻는 쪽입니다.{추론} 최소선은 차변·대변이 맞아야 저장된다는 원리와 적격증빙 네 가지를 설명할 수 있는 것입니다.[8]",
+      "refs": [1, 2, 8, 9, 10],
+      "study": ["accounting-book", "law-116", "toby-spring"]
+    },
+    {
+      "section": "task",
+      "quote": "운영 업무 내 SI 지원 수행",
+      "short": "운영 계약 안에서 들어오는 기능 추가·개선 같은 작은 구축(SI) 일을 같이 맡는 일이다.",
+      "why": "SI(System Integration)는 시스템을 새로 만들거나 크게 바꾸는 구축이고, SM(System Management)은 돌아가는 시스템을 지키는 운영입니다.{추론} 공고는 그룹사 운영을 지원하면서 OPEN 고객사 구축 프로젝트에도 들어간다고 적었고[1], 회사는 구축과 운영 고도화를 같은 사업 안에 둡니다.[2]",
+      "actually": {
+        "items": [
+          "**개선 요청** — \"출장비 정산 화면에 해외 환율을 넣어 달라\" 같은 기능 추가. 요구 → 설계 → 개발 → 테스트 → 이관.{추론}",
+          "**규정 변경 반영** — 고객사 경비 규정이나 세법이 바뀌면 검사 규칙·화면을 고친다.[8]",
+          "**새 계열사 붙이기** — 그룹 안의 다른 회사가 같은 솔루션을 쓰게 될 때 조직·계정·결재선을 그 회사에 맞춘다.{추론}",
+          "**공수 산정** — 운영 인력이 몇 일을 쓸지 먼저 적고 승인받는다.{추론}"
+        ]
+      },
+      "how_far": "운영 담당자가 맡는 SI는 대개 몇 주 단위 개선입니다. 범위가 커지면 별도 프로젝트로 떼는 판단을 PL과 같이 합니다.{추론} 요구사항을 문서로 남기고, 바뀐 기능의 테스트 결과를 남기는 것까지가 최소선입니다.{추론}",
+      "refs": [1, 2, 8],
+      "study": ["practical-testing"]
+    },
+    {
+      "section": "task",
+      "quote": "담당 고객사 대상 시스템 모니터링(Daily monitoring) 수행",
+      "short": "매일 아침 배치·인터페이스·오류 로그·응답 속도를 보고, 사용자가 알기 전에 이상을 찾는 일이다.",
+      "why": "구글 SRE 책은 사용자 앞에 놓인 시스템이라면 최소한 **지연·트래픽·오류·포화** 네 신호를 보라고 권합니다.[12] 경비 시스템은 카드 내역 수집·ERP 전송이 밤사이 배치로 도는 경우가 많아, 아침에 그 결과부터 확인합니다.{추론}",
+      "actually": {
+        "items": [
+          "**배치 결과** — 밤사이 카드사 승인 내역 수집, ERP 전표 전송이 몇 건 성공·실패했나.{추론}",
+          "**인터페이스 실패 건** — ERP가 거절한 전표(계정 없음·기간 마감)를 골라 원인별로 나눈다.{추론}",
+          "**오류 로그·응답 시간** — WAS(웹 애플리케이션 서버) 로그의 예외 수, 느린 화면.[12]",
+          "**저장 공간·접속자** — 디스크·DB 공간, 월말 마감 날 몰리는 접속(포화 신호).[12]",
+          "**일일 보고** — 고객사에 '이상 없음' 또는 조치 내용을 보낸다. 회사는 ERP 사업에서 요청을 기록하고 통계를 내는 헬프데스크(BIZcare3.0)를 소개한다.[5]"
+        ]
+      },
+      "how_far": "점검 항목표(무엇을·몇 시에·기준이 무엇인지)를 지키고, 기준을 넘으면 바로 알리는 것이 최소선입니다.{추론} 같은 확인을 매일 손으로 하면 자동 알림으로 바꾸는 것이 운영 개선의 첫걸음입니다.[13]",
+      "refs": [5, 12, 13],
+      "study": ["sre-monitoring", "sre-toil"]
+    },
+    {
+      "section": "task",
+      "quote": "정기 이관 수행 및 긴급 이관 지원·대응",
+      "short": "고친 코드를 정해진 날 운영 서버에 반영하고, 급한 수정은 절차를 줄여 바로 내보내는 일이다.",
+      "why": "이관은 개발·테스트 서버에서 확인한 변경을 운영 서버에 옮기는 것입니다.{추론} 구글 SRE 책은 릴리스를 재현할 수 있게 빌드하고, 절차를 사람 기억이 아니라 도구로 강제하라고 권합니다.[14]",
+      "actually": {
+        "items": [
+          "**정기 이관** — 주·월 단위로 정해진 날에 모아 반영. 이관 요청서(무엇을·왜·테스트 결과·되돌리는 법)를 쓰고 고객 승인을 받는다.{추론}",
+          "**긴급 이관** — 월말 마감 중 전표가 안 만들어지는 장애처럼 기다릴 수 없을 때. 승인은 사후로 돌리되 기록은 남긴다.{추론}",
+          "**반영 순서** — 백업 → DB 변경(테이블·코드값) → 애플리케이션 배포 → 재기동 → 확인 테스트.{추론}",
+          "**되돌리기(rollback)** — 반영 뒤 오류가 나면 이전 버전으로 돌아갈 준비를 먼저 한다.[14]"
+        ]
+      },
+      "how_far": "이관 날짜·승인 규칙은 고객사 IT 담당과 운영 계약이 정하고, 개발자는 이관 대상 목록·테스트 증적·되돌리기 절차를 준비합니다.{추론} 운영 서버에서 직접 고치지 않는다는 규칙을 지키는 것이 최소선입니다.{추론}",
+      "refs": [14],
+      "study": ["sre-release", "docker-book"]
+    },
+    {
+      "section": "task",
+      "quote": "시스템 장애 처리 및 결과 보고",
+      "short": "장애가 나면 먼저 업무를 살리고, 원인·조치·재발 방지를 보고서로 남기는 일이다.",
+      "why": "구글 SRE 책은 장애 때 지휘·기록·연락 역할을 나누라고 하고[15], 끝난 뒤에는 사람을 탓하지 않는 사후 분석(postmortem)으로 원인과 재발 방지책을 남기라고 권합니다.[16]",
+      "actually": {
+        "items": [
+          "**먼저 살리기** — 원인을 다 찾기 전에 재기동·이전 버전 복귀·수작업 우회로 업무를 돌린다.[15]",
+          "**영향 범위** — 몇 개 회사·몇 명·몇 건의 전표가 막혔나.{추론}",
+          "**원인 찾기** — 로그·최근 이관 내역·데이터 확인. 최근 이관이 원인인 경우가 흔하다.{추론}",
+          "**결과 보고** — 발생·인지·복구 시각, 원인, 조치, 재발 방지책. 탓하지 않는 문장으로.[16]"
+        ]
+      },
+      "how_far": "장애 등급과 보고 시한은 고객사와 맺은 운영 계약이 정합니다.{추론} 개발자는 시간 순서 기록과 원인 분석을 맡고, 고객 앞 보고는 PL과 같이 합니다.{추론}",
+      "refs": [15, 16],
+      "study": ["sre-postmortem", "sre-incident"]
+    },
+    {
+      "section": "qualification",
+      "quote": "학력: 4년제 정규대학 학사학위 이상 보유자",
+      "short": "4년제 학사 이상만 서류를 낼 수 있다는 지원 조건이다.",
+      "why": "공고가 정한 지원 자격입니다.[1] 회사의 경력 채용은 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의 순서입니다.[22]",
+      "actually": {
+        "items": [
+          "**전공** — 공고는 전공을 정하지 않았다.[1]",
+          "**증빙** — 합격 단계에서 졸업증명서를 내는 것이 보통이다.{추론}"
+        ]
+      },
+      "how_far": "문턱 조건이라 더 할 것은 없습니다. 학위가 없으면 이 공고에는 지원할 수 없습니다.[1]",
+      "refs": [1, 22]
+    },
+    {
+      "section": "qualification",
+      "quote": "경력: 관련업무 5년 이상",
+      "short": "웹 시스템 개발·운영, 특히 회계·인사 쪽 경력이 5년 넘게 있어야 한다는 뜻이다.",
+      "why": "입사 후 바로 그룹사 운영을 지원하고, 나중에 PM/PL을 맡을 사람으로 뽑기 때문입니다.[1]",
+      "actually": {
+        "items": [
+          "**'관련업무'의 뜻** — 공고 업무(경비전표 개발·운영)와 자격요건(회계 시스템·Java)을 보면 Java 웹 개발·운영 경력으로 읽힌다.{추론}",
+          "**경력 증빙** — SI 업계에서는 한국소프트웨어산업협회 기술자 경력 관리 시스템의 경력증명을 흔히 쓴다.[17]",
+          "**회사가 말하는 개발 직무** — 회사 직무소개는 Application Development를 업무 이해 → 요구사항 분석 → 설계 → 개발 → 테스트 → 전개로 적는다. 그 전 과정을 겪어 본 경력이 맞다.[3]",
+          "**프로젝트 목록** — 기간·고객·역할·기술을 줄마다 적은 표가 이력서의 중심이 된다.{추론}"
+        ]
+      },
+      "how_far": "연차만큼 중요한 것은 **혼자 맡아 끝낸 일**입니다 — 모듈 하나를 설계부터 운영까지 맡은 경험을 숫자로 적을 수 있으면 됩니다.{추론}",
+      "refs": [1, 3, 17]
+    },
+    {
+      "section": "qualification",
+      "quote": "회계 시스템 구축 및 운영 경험을 보유하신 분",
+      "short": "전표·계정·결산이 시스템에서 어떻게 흐르는지 직접 만들거나 지켜 본 경험이 필요하다는 뜻이다.",
+      "why": "경비전표 시스템은 결국 회계 전표를 만드는 시스템이라, 회계 용어로 현업과 말이 통해야 합니다.[1] 공고는 회계·인사 분야 전문성으로 LG그룹과 여러 고객사의 업무 분석을 맡는 사람으로 키운다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**복식부기** — 모든 거래를 차변·대변 두 쪽에 같은 금액으로 적는다. 합이 다르면 전표가 저장되지 않는다.{추론}",
+          "**계정과목** — 비용 계정(복리후생비·여비교통비·접대비 성격의 기업업무추진비)과 부채 계정(미지급금).{추론}",
+          "**증빙과 세금** — 적격증빙 네 가지와 3만원 기준, 증빙을 못 받으면 금액의 2% 가산세.[8][9][10]",
+          "**마감** — 월말·분기 마감 뒤에는 그 기간 전표를 못 넣게 막는다. 마감 날 요청이 몰린다.{추론}",
+          "**ERP 연계** — 전표를 회계 원장(SAP 같은 ERP)에 넘기고 실패 건을 다시 보낸다. 같은 회사의 SAP 운영 공고도 모듈 사이 값의 흐름을 다룬다.[18]"
+        ]
+      },
+      "how_far": "회계사 수준은 아닙니다. 전표 하나를 손으로 분개하고, 마감·증빙 규칙이 코드 어디에 들어가는지 설명할 수 있으면 됩니다.{추론}",
+      "refs": [1, 8, 9, 10, 18],
+      "study": ["accounting-book", "law-116"]
+    },
+    {
+      "section": "qualification",
+      "quote": "중급(Skill Level) 이상의 기술 역량을 보유하신 분",
+      "short": "SI 업계에서 말하는 '중급 기술자' — 지시 없이 맡은 기능을 설계·개발·운영할 수준이라는 뜻이다.",
+      "why": "SI 업계는 오래 학력·경력으로 초급·중급·고급·특급 기술자 등급을 매겼습니다. 이 등급제는 법에서 삭제됐지만 현장에서는 여전히 사업 대가를 셈할 때 쓰인다고 보도됐습니다.[17] 공고의 '중급'도 이 말투로 보입니다.{추론}",
+      "actually": {
+        "items": [
+          "**옛 등급의 한계** — 학력·경력만 봐서 10년 넘으면 특급이 쏟아진다는 문제가 지적됐다.[17]",
+          "**역량 체계** — 대신 학력·자격·현장 경력·교육·수상을 같이 보는 9수준 역량 체계(ITSQF)가 소개됐다.[17]",
+          "**실제로 보는 것** — 면접에서는 등급표보다 '혼자 맡은 기능', '장애를 어떻게 풀었나'를 묻는 것이 보통이다.{추론}"
+        ]
+      },
+      "how_far": "회사가 '중급'을 무엇으로 재는지는 공개되지 않았습니다.{추론} 5년 경력 요건과 같이 읽으면, 설계서를 읽고 혼자 기능을 끝내며 후배의 코드 리뷰를 할 수 있는 정도로 보는 것이 안전합니다.{추론}",
+      "refs": [17]
+    },
+    {
+      "section": "qualification",
+      "quote": "Java 기반 개발 경험 및 기술 역량을 보유하신 분",
+      "short": "경비전표 솔루션의 서버 쪽이 Java라, Java 웹(보통 Spring) 개발·디버깅을 혼자 할 수 있어야 한다.",
+      "why": "공고 기술 스택이 Java이고, 앞으로 Java와 AI OCR을 쓴 솔루션 역량을 키운다고 적었습니다.[1] 국내 기업·공공 SI의 Java 웹은 Spring 기반 프레임워크가 많고, 공공 쪽 표준인 전자정부 표준프레임워크도 Spring 위에 서 있습니다.[19]",
+      "actually": {
+        "items": [
+          "**웹 계층** — 화면 요청을 받는 컨트롤러, 업무 규칙을 담는 서비스, DB를 다루는 계층으로 나눈다.[19]",
+          "**SQL** — 경비 조회·집계·전표 생성은 결국 SQL이다. 실행 계획을 보고 느린 조회를 고친다.{추론}",
+          "**트랜잭션** — 전표 헤더와 줄이 같이 저장되거나 같이 취소돼야 한다.[20]",
+          "**외부 연동** — 카드사 파일·ERP 인터페이스·OCR API 호출.[11]",
+          "**운영 디버깅** — 로그로 원인을 찾고, 운영 데이터로 재현한다.{추론}"
+        ]
+      },
+      "level": {
+        "basic": "Java 문법·컬렉션·예외, Spring으로 CRUD 화면 하나.",
+        "work": "트랜잭션 경계를 정하고, SQL을 튜닝하고, 로그로 장애 원인을 찾는다.",
+        "team": "남이 만든 솔루션 코드를 빨리 읽고 고객사마다 다른 규칙을 설정·확장으로 푼다.{추론}"
+      },
+      "how_far": "새 프레임워크를 만드는 자리는 아닙니다. 이미 있는 솔루션 위에서 고객 규칙을 넣고 장애를 고치는 실무 Java가 기준입니다.{추론}",
+      "refs": [1, 11, 19, 20],
+      "study": ["toby-spring", "book-spring-core", "book-spring-db-1", "jpa-book"]
+    },
+    {
+      "section": "preference",
+      "quote": "Bizactor 및 회계 시스템 관련 업무 경험이 있으신 분",
+      "short": "LG CNS의 코딩 없는 개발 도구 DevOn NCD 안에서 서버 로직을 만드는 BizActor를 써 본 사람을 우대한다는 뜻이다.",
+      "why": "LG CNS는 개발 언어를 직접 치지 않고 순서도(flow chart) 아이콘을 끌어 놓아 프로그램을 만드는 DevOn NCD를 2021년 무료 공개했고, 6년간 1,000여 개 프로젝트에 썼다고 밝혔습니다.[6] 공개 교재 소개에 따르면 DevOn NCD는 화면을 만드는 UI Prototyper와 업무 로직을 만드는 BizActor로 나뉘고, 둘을 UI-BIZ Connector로 잇습니다.[7] 이 공고에 BizActor가 적힌 것으로 보아 경비전표 솔루션의 일부가 이 도구로 만들어졌을 가능성이 있습니다.{추론}",
+      "actually": {
+        "items": [
+          "**흐름도로 로직 만들기** — 조회·검사·저장 같은 기능 블록을 순서도로 이어 서비스를 만든다.[6][7]",
+          "**서비스 재사용** — 만든 서비스를 다른 서비스에서 다시 부른다.[7]",
+          "**화면과 잇기** — 화면 쪽 요청과 서버 로직의 입출력을 연결한다.[7]",
+          "**결국 SQL과 업무 규칙** — 도구가 코딩을 줄여도 테이블 설계·SQL·회계 규칙은 사람이 안다.{추론}"
+        ]
+      },
+      "how_far": "우대사항이라 없어도 됩니다.[1] 써 본 적이 없다면 LG CNS가 무료 공개한 자료로 흐름도 하나를 만들어 보는 정도면 면접에서 말할 거리가 됩니다.[6]",
+      "refs": [1, 6, 7],
+      "study": ["ncd-book", "ncd-release"]
+    },
+    {
+      "section": "preference",
+      "quote": "AI 기술을 활용한 솔루션 개발 경험이 있으신 분",
+      "short": "영수증 사진을 AI OCR로 읽어 전표 칸을 미리 채우는 식의 기능을 만들어 본 경험을 우대한다는 뜻이다.",
+      "why": "공고는 앞으로 Java와 **AI OCR**을 활용한 솔루션, AI 기반 시스템 개발 역량을 키운다고 적었습니다.[1] 같은 회사는 AI 엔지니어·AI PM/PL 공고도 따로 냈습니다.[21]",
+      "actually": {
+        "intro": "공개 OCR 서비스 하나(네이버클라우드 CLOVA OCR 영수증 모델)의 문서로 보통의 모양을 보입니다.[11]",
+        "items": [
+          "**영수증 읽기** — 영수증 전용 모델이 상호·사업자번호·결제 일자·카드 승인번호·총액을 칸별(key-value)로 돌려준다.[11]",
+          "**신뢰도** — 칸마다 인식 신뢰도(confidenceScore)가 같이 온다. 낮으면 사람에게 확인을 돌린다.[11]",
+          "**대조** — OCR 결과를 카드 승인 내역과 맞춰 금액·승인번호가 같은지 본다.{추론}",
+          "**계정 추천** — 상호·업종으로 계정과목을 추천하는 것도 AI 기능의 흔한 예다.{추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "OCR 응답 → 전표 초안 · 확인 필요 칸 — 직접 돌린 출력",
+          "body": "응답 칸 이름은 CLOVA OCR 영수증 문서의 구조를 따랐고 값은 가상입니다.[11] 신뢰도 0.8 미만 칸만 사람에게 돌리고, 승인번호로 카드 내역과 금액을 맞춥니다. 출력: `{'상호': '한빛식당', '사업자번호': '123-45-67890', '일자': '2026-11-20', '승인번호': '30012345', '금액': '55,000'}` / `확인 필요 칸: ['사업자번호'] | 카드 승인 금액 일치: True`",
+          "lang": "python",
+          "code": "ocr = {\n    \"storeInfo\": {\"name\": {\"text\": \"한빛식당\", \"confidenceScore\": 0.97},\n                  \"bizNum\": {\"text\": \"123-45-67890\", \"confidenceScore\": 0.62}},\n    \"paymentInfo\": {\"date\": {\"text\": \"2026-11-20\", \"confidenceScore\": 0.99},\n                    \"confirmNum\": {\"text\": \"30012345\", \"confidenceScore\": 0.95}},\n    \"totalPrice\": {\"price\": {\"text\": \"55,000\", \"confidenceScore\": 0.93}},\n}\ncard_approvals = {\"30012345\": 55000}\n\ndef draft(o, limit=0.8):\n    f = {\"상호\": o[\"storeInfo\"][\"name\"], \"사업자번호\": o[\"storeInfo\"][\"bizNum\"],\n         \"일자\": o[\"paymentInfo\"][\"date\"], \"승인번호\": o[\"paymentInfo\"][\"confirmNum\"],\n         \"금액\": o[\"totalPrice\"][\"price\"]}\n    low = [k for k, v in f.items() if v[\"confidenceScore\"] < limit]\n    amount = int(f[\"금액\"][\"text\"].replace(\",\", \"\"))\n    matched = card_approvals.get(f[\"승인번호\"][\"text\"]) == amount\n    return {k: v[\"text\"] for k, v in f.items()}, low, matched\n\nfields, low, matched = draft(ocr)\nprint(fields)\nprint(\"확인 필요 칸:\", low, \"| 카드 승인 금액 일치:\", matched)"
+        }
+      ],
+      "how_far": "모델을 직접 학습시키는 자리는 아닙니다. OCR·LLM API를 불러 결과를 검증하고, 틀린 결과가 전표로 넘어가지 않게 막는 쪽이 이 공고의 AI입니다.{추론}",
+      "refs": [1, 11, 21],
+      "study": ["clova-receipt"]
+    }
+  ],
+  "resources": [
+    {
+      "id": "law-116",
+      "title": "법인세법 제116조(지출증명서류의 수취 및 보관) · 시행령 제158조",
+      "by": "국가법령정보센터",
+      "kind": "doc",
+      "url": "https://www.law.go.kr/법령/법인세법/제116조",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "경비전표 시스템이 지키는 규칙의 원문 — 적격증빙 네 가지, 3만원 기준, 5년 보관. 검사 로직을 짜기 전에 한 번 읽는다."
+    },
+    {
+      "id": "accounting-book",
+      "title": "읽으면 읽을수록 빠져드는 회계책",
+      "by": "길벗",
+      "kind": "book",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%BD%EC%9C%BC%EB%A9%B4%20%EC%9D%BD%EC%9D%84%EC%88%98%EB%A1%9D%20%EB%B9%A0%EC%A0%B8%EB%93%9C%EB%8A%94%20%ED%9A%8C%EA%B3%84%EC%B1%85",
+      "lang": "ko",
+      "free": false,
+      "level": "입문",
+      "why": "복식부기·계정과목을 처음 잡는 입문서. '회계 시스템 경험' 요건에서 현업과 말이 통할 바탕."
+    },
+    {
+      "id": "toby-spring",
+      "title": "토비의 스프링 3.1",
+      "by": "이일민 · 에이콘출판",
+      "kind": "book",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%ED%86%A0%EB%B9%84%EC%9D%98%20%EC%8A%A4%ED%94%84%EB%A7%81%203.1",
+      "lang": "ko",
+      "free": false,
+      "level": "심화",
+      "why": "오래된 기업용 Spring 코드가 왜 그렇게 생겼는지 설명하는 책. 남이 만든 솔루션 코드를 읽는 힘을 준다."
+    },
+    {
+      "id": "book-spring-core",
+      "title": "스프링 핵심 원리 — 기본편",
+      "by": "우리 사이트의 책",
+      "kind": "internal",
+      "url": "/wiki/spring-core",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "Java 요건의 기본 — 빈·의존관계 주입을 실행 결과로 확인한다."
+    },
+    {
+      "id": "book-spring-db-1",
+      "title": "스프링 DB 1편",
+      "by": "우리 사이트의 책",
+      "kind": "internal",
+      "url": "/wiki/spring-db-1",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "커넥션·트랜잭션 로그로 '전표 헤더와 줄은 같이 저장된다'를 눈으로 본다."
+    },
+    {
+      "id": "jpa-book",
+      "title": "자바 ORM 표준 JPA 프로그래밍",
+      "by": "김영한 · 에이콘출판",
+      "kind": "book",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "why": "새 고객사 구축에서 Spring + JPA를 만날 때를 위한 기본서. 솔루션이 MyBatis·SQL 중심이면 SQL 쪽을 더 본다{추론}."
+    },
+    {
+      "id": "practical-testing",
+      "title": "Practical Testing — 실용적인 테스트 가이드",
+      "by": "우리 사이트의 책",
+      "kind": "internal",
+      "url": "/wiki/practical-testing",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "운영 중 개선(SI 지원)에서 '고친 것이 다른 걸 안 깨뜨렸나'를 테스트로 남기는 법."
+    },
+    {
+      "id": "docker-book",
+      "title": "개발자를 위한 도커",
+      "by": "우리 사이트의 책",
+      "kind": "internal",
+      "url": "/wiki/docker",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "이관을 '같은 것을 다시 만들 수 있는 배포'로 생각하는 연습 — 컨테이너로 버전을 올리고 되돌려 본다."
+    },
+    {
+      "id": "sre-monitoring",
+      "title": "Site Reliability Engineering — Monitoring Distributed Systems",
+      "by": "Google",
+      "kind": "doc",
+      "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "Daily monitoring 항목표를 지연·트래픽·오류·포화로 짜는 기준."
+    },
+    {
+      "id": "sre-toil",
+      "title": "Site Reliability Engineering — Eliminating Toil",
+      "by": "Google",
+      "kind": "doc",
+      "url": "https://sre.google/sre-book/eliminating-toil/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "매일 손으로 하는 점검을 자동화로 바꿀 근거와 말."
+    },
+    {
+      "id": "sre-release",
+      "title": "Site Reliability Engineering — Release Engineering",
+      "by": "Google",
+      "kind": "doc",
+      "url": "https://sre.google/sre-book/release-engineering/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "정기·긴급 이관을 재현 가능하고 되돌릴 수 있게 만드는 원칙."
+    },
+    {
+      "id": "sre-incident",
+      "title": "Site Reliability Engineering — Managing Incidents",
+      "by": "Google",
+      "kind": "doc",
+      "url": "https://sre.google/sre-book/managing-incidents/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "장애 중 역할 나누기와 기록 — '장애 처리' 줄."
+    },
+    {
+      "id": "sre-postmortem",
+      "title": "Site Reliability Engineering — Postmortem Culture",
+      "by": "Google",
+      "kind": "doc",
+      "url": "https://sre.google/sre-book/postmortem-culture/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "'결과 보고'를 탓하지 않는 사후 분석 문서로 쓰는 법."
+    },
+    {
+      "id": "ncd-release",
+      "title": "LG CNS, '데브온 NCD' 무료 공개 (보도자료)",
+      "by": "LG CNS · 2021",
+      "kind": "doc",
+      "url": "https://lg.co.kr/media/release/23089",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "BizActor가 속한 DevOn NCD가 무엇이고 어디에 쓰였는지 — 우대사항 첫 줄의 출발점."
+    },
+    {
+      "id": "ncd-book",
+      "title": "아직도 개발할 때 코딩하니? 이제 코딩없이 개발한다! 경이로운 DevOn NCD",
+      "by": "위키독스",
+      "kind": "book",
+      "url": "https://wikidocs.net/book/5632",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "UI Prototyper·BizActor·UI-BIZ Connector 구성과 서비스 만들기를 다루는 공개 교재. BizActor를 써 본 적 없을 때 흐름도 하나를 따라 만든다."
+    },
+    {
+      "id": "clova-receipt",
+      "title": "CLOVA OCR — Document OCR 영수증 API",
+      "by": "NAVER Cloud",
+      "kind": "doc",
+      "url": "https://api.ncloud-docs.com/docs/ai-application-service-ocr-ocrdocumentocr-receipt",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "영수증 OCR이 어떤 칸·신뢰도를 돌려주는지. AI OCR 우대와 공고의 성장 방향을 손으로 만져 볼 재료."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "경비 한 건을 손으로 분개하기",
+      "time": "1주",
+      "goal": "경비 한 건이 어떤 계정의 차변·대변이 되고, 어떤 증빙이 있어야 하는지 설명할 수 있다.",
+      "task": "가상 직원 5명의 한 달 경비 30건(식대·택시·출장·소모품·접대)을 표로 만들고, 건마다 계정·증빙 종류·3만원 초과 여부·전표를 손으로 적은 뒤 위 파이썬 예처럼 균형과 증빙을 검사한다.",
+      "resources": ["accounting-book", "law-116"]
+    },
+    {
+      "title": "Java로 작은 경비 시스템 만들기",
+      "time": "3~4주",
+      "goal": "Spring으로 경비 작성 → 결재 → 전표 생성 화면·API를 만들고, 전표 헤더와 줄을 한 트랜잭션으로 저장한다.",
+      "task": "1단계 표를 DB에 넣고 '작성·결재·전표' 세 API와 마감월 전표 거부 규칙을 구현한다. 차대 불균형·마감월·증빙 누락 테스트를 하나씩 쓴다.",
+      "resources": ["book-spring-core", "book-spring-db-1", "toby-spring", "practical-testing"]
+    },
+    {
+      "title": "운영처럼 지키기 — 점검·이관·장애 보고",
+      "time": "2주",
+      "goal": "매일 점검 항목표를 만들고, 버전을 올렸다 되돌리고, 장애 보고서 한 장을 쓴다.",
+      "task": "2단계 시스템을 컨테이너로 띄워 v1 → v2 이관(테이블 변경 포함)과 되돌리기를 해 보고, 일부러 낸 장애(ERP 전송 실패 10건)에 대해 시간 순서·원인·재발 방지책을 적은 사후 분석을 쓴다.",
+      "resources": ["docker-book", "sre-monitoring", "sre-release", "sre-postmortem"]
+    },
+    {
+      "title": "영수증 OCR 붙이기",
+      "time": "1~2주",
+      "goal": "OCR 결과를 전표 초안으로 바꾸고, 믿을 수 없는 칸은 사람에게 돌린다.",
+      "task": "직접 찍은 영수증 사진(개인 정보는 가린 것) 몇 장이나 가상 응답으로 OCR 결과 → 전표 초안 → 카드 승인 내역 대조를 구현하고, 신뢰도 기준을 바꿔 가며 사람 확인 건수가 어떻게 변하는지 표로 남긴다.",
+      "resources": ["clova-receipt"]
+    },
+    {
+      "title": "BizActor 맛보기 (선택)",
+      "time": "1주",
+      "goal": "흐름도로 만든 서비스와 Java 코드로 만든 서비스의 차이를 말할 수 있다.",
+      "task": "공개 교재를 따라 '경비 목록 조회' 서비스 하나를 흐름도로 만들어 보고, 2단계 Java 코드와 무엇이 같고 다른지 한 쪽으로 정리한다.",
+      "resources": ["ncd-book", "ncd-release"]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원** — 경력 5년 이상 자리라 처우협의가 기준이다",
+    "rows": [
+      {
+        "label": "신입 초봉",
+        "value": "약 3,811만원",
+        "amount": 3811,
+        "basis": "공공데이터 집계",
+        "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없다 [23]"
+      },
+      {
+        "label": "직원 평균 연봉",
+        "value": "약 5,748만원",
+        "amount": 5748,
+        "basis": "공공데이터 집계",
+        "note": "같은 집계, 사원수 945명 기준. 경력직이 섞인 회사 전체 값이다 [23]"
+      },
+      {
+        "label": "LG CNS 초봉",
+        "value": "약 5,071만원",
+        "amount": 5071,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "모회사, 같은 집계 사이트 값 [24]"
+      },
+      {
+        "label": "LG CNS 평균",
+        "value": "약 7,802만원",
+        "amount": 7802,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "모회사, 같은 집계 사이트 값 [24]"
+      }
+    ],
+    "how": "공고에는 연봉이 없다 [1]. 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 경력 전형은 평판조회 뒤 **처우협의** 단계에서 연봉을 정한다 [22]. 평균은 경력직이 섞인 회사 전체 값이라 이 자리 연봉으로 읽으면 안 된다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "가족",
+        "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+      },
+      {
+        "name": "건강",
+        "detail": "종합건강검진·단체보험, 전문 심리 상담"
+      },
+      {
+        "name": "금융",
+        "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+      },
+      {
+        "name": "배움",
+        "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+      },
+      {
+        "name": "조직 문화",
+        "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"
+      }
+    ],
+    "note": "비즈테크아이 공식 사이트의 복리후생 페이지(2026-11 확인)다 [25]. 항목 이름만 있고 금액·조건은 적혀 있지 않다."
+  },
+  "location": {
+    "name": "비즈테크아이 본사 (상암 DDMC)",
+    "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+    "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [26]",
+    "note": "회사 사이트 '오시는 길'과 하단 회사 정보의 주소다 [26]. 공고 근무지는 '서울특별시'로만 적혀 있고 [1], 그룹사·고객사 운영은 상주일 수 있다 {추론}."
+  },
+  "fit": {
+    "good": [
+      "Java 웹 개발·운영 5년 이상에 회계(전표·결산) 시스템을 만져 본 사람[1]",
+      "개발만이 아니라 업무 분석·PM/PL로 크고 싶은 사람 — 공고가 그 길을 적었다[1]",
+      "OCR·AI를 실제 업무 시스템에 붙여 보고 싶은 사람[1]"
+    ],
+    "hard": [
+      "운영(매일 점검·이관·장애)과 구축(새 고객사)이 섞여 일의 결이 바뀐다[1]",
+      "월말 마감 날 요청과 장애가 몰린다{추론}",
+      "남이 만든 솔루션과 BizActor 같은 사내 도구 위에서 일해 쓰는 기술을 고르기 어렵다{추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "법인카드 5만 5천원 식대 한 건을 전표로 만들면 어떻게 됩니까? 증빙이 간이영수증뿐이라면요?",
+      "a": "회계 시스템 경험과 증빙 규칙을 같이 보는 질문 — 경비전표 줄과 회계 요건 줄.[8][10]"
+    },
+    {
+      "q": "월말 마감 날 아침, ERP로 넘어간 전표 300건이 실패했습니다. 무엇부터 합니까?",
+      "a": "모니터링·장애 처리 줄. 먼저 업무를 살리고 영향 범위를 재는 순서를 보는 질문.[15]"
+    },
+    {
+      "q": "긴급 이관을 해야 하는데 테스트 서버 확인을 할 시간이 없다면?",
+      "a": "이관 줄. 되돌리기 준비와 사후 기록을 말할 수 있는지.[14]"
+    },
+    {
+      "q": "OCR이 읽은 금액이 카드 승인 금액과 다르면 시스템은 어떻게 해야 합니까?",
+      "a": "AI 우대 줄. AI 결과를 그대로 믿지 않고 대조·사람 확인으로 막는 설계.[11]"
+    },
+    {
+      "q": "전표 헤더는 저장됐는데 줄이 저장되지 않았다는 신고가 왔습니다. 코드의 어디를 봅니까?",
+      "a": "Java 요건 줄. 트랜잭션 경계를 이해하는지.[20]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "LG Careers · [비즈테크아이] Web 기반 솔루션 개발 및 운영 담당자 모집 (경력)",
+      "url": "https://careers.lg.com/apply/detail?id=1001799",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "업무·요건·우대, 경비전표·인사 솔루션, Java·AI OCR, PM/PL 성장, 마감 2026-12-31"
+    },
+    {
+      "n": 2,
+      "title": "비즈테크아이 · DX/AX — 시스템 구축/운영",
+      "url": "https://www.biztechi.com/business/dx-ax/01",
+      "kind": "company",
+      "note": "경영관리: 경영정보 시스템 제안·구축·운영 고도화, Waterfall·MSA 기반 Agile"
+    },
+    {
+      "n": 3,
+      "title": "비즈테크아이 · 직무소개",
+      "url": "https://www.biztechi.com/recruit/03",
+      "kind": "company",
+      "note": "Application Development·Software Engineer 직무 설명"
+    },
+    {
+      "n": 4,
+      "title": "비즈테크아이 · History",
+      "url": "https://www.biztechi.com/about/02",
+      "kind": "company",
+      "note": "2017 BizTech(LG CNS BPO 사업부) 흡수합병, 2022 IT·BPO 분할 사명 변경"
+    },
+    {
+      "n": 5,
+      "title": "비즈테크아이 · ERP — Solution (BIZcare3.0 등)",
+      "url": "https://www.biztechi.com/business/erp/09",
+      "kind": "company",
+      "note": "온라인 헬프데스크: 요청 기록·분석, 서비스 통계 — ERP 사업 페이지"
+    },
+    {
+      "n": 6,
+      "title": "LG · LG CNS, 데브온 NCD 무료 공개 (보도자료)",
+      "url": "https://lg.co.kr/media/release/23089",
+      "kind": "company",
+      "date": "2021-03",
+      "note": "순서도 아이콘으로 개발, 1개월 교육, 6년간 1,000여 개 프로젝트, 프로젝트당 5,000여 기능"
+    },
+    {
+      "n": 7,
+      "title": "위키독스 · 아직도 개발할 때 코딩하니? 이제 코딩없이 개발한다! 경이로운 DevOn NCD",
+      "url": "https://wikidocs.net/book/5632",
+      "kind": "reference",
+      "note": "UI Prototyper·BizActor·UI-BIZ Connector 구성, 흐름도로 서비스 작성·재사용 — 본문은 봇 확인 화면으로 열리지 않아 검색 요약으로 확인"
+    },
+    {
+      "n": 8,
+      "title": "국가법령정보센터 · 법인세법 제116조(지출증명서류의 수취 및 보관)",
+      "url": "https://www.law.go.kr/법령/법인세법/제116조",
+      "kind": "reference",
+      "note": "5년 보관, 신용카드 매출전표·현금영수증·세금계산서·계산서"
+    },
+    {
+      "n": 9,
+      "title": "국가법령정보센터 · 법인세법 시행령 제158조",
+      "url": "https://www.law.go.kr/법령/법인세법시행령/제158조",
+      "kind": "reference",
+      "note": "건당 거래금액(부가세 포함) 3만원 이하는 예외"
+    },
+    {
+      "n": 10,
+      "title": "국가법령정보센터 · 법인세법 제75조의5(증명서류 수취 불성실 가산세)",
+      "url": "https://www.law.go.kr/법령/법인세법/제75조의5",
+      "kind": "reference",
+      "note": "받지 않거나 사실과 다르게 받은 금액의 100분의 2"
+    },
+    {
+      "n": 11,
+      "title": "NAVER Cloud · CLOVA OCR Document OCR — 영수증(receipt) API",
+      "url": "https://api.ncloud-docs.com/docs/ai-application-service-ocr-ocrdocumentocr-receipt",
+      "kind": "reference",
+      "note": "특화 모델이 key-value 추출: storeInfo·paymentInfo·totalPrice, 칸별 confidenceScore"
+    },
+    {
+      "n": 12,
+      "title": "Google SRE Book · Monitoring Distributed Systems",
+      "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+      "kind": "reference",
+      "note": "네 황금 신호: 지연·트래픽·오류·포화"
+    },
+    {
+      "n": 13,
+      "title": "Google SRE Book · Eliminating Toil",
+      "url": "https://sre.google/sre-book/eliminating-toil/",
+      "kind": "reference",
+      "note": "손으로 반복하는 운영 일을 줄이는 법"
+    },
+    {
+      "n": 14,
+      "title": "Google SRE Book · Release Engineering",
+      "url": "https://sre.google/sre-book/release-engineering/",
+      "kind": "reference",
+      "note": "재현 가능한 빌드, 절차를 도구로 강제"
+    },
+    {
+      "n": 15,
+      "title": "Google SRE Book · Managing Incidents",
+      "url": "https://sre.google/sre-book/managing-incidents/",
+      "kind": "reference",
+      "note": "장애 지휘·기록·연락 역할 나누기"
+    },
+    {
+      "n": 16,
+      "title": "Google SRE Book · Postmortem Culture",
+      "url": "https://sre.google/sre-book/postmortem-culture/",
+      "kind": "reference",
+      "note": "비난 없는 사후 분석"
+    },
+    {
+      "n": 17,
+      "title": "전자신문 · [신 SW역량인정체계] 내년 새로운 SW역량 인정체계 ITSQF 나온다",
+      "url": "https://www.etnews.com/20161209000218",
+      "kind": "news",
+      "date": "2016-12",
+      "note": "학력·경력 중심 등급제는 법에서 삭제됐으나 대가 산정에 여전히 쓰임, ITSQF 9수준, KOSA 기술자 경력관리"
+    },
+    {
+      "n": 18,
+      "title": "LG Careers · [비즈테크아이] SAP SM 모듈 운영 담당자 모집(경력)",
+      "url": "https://careers.lg.com/apply/detail?id=1001499",
+      "kind": "posting",
+      "note": "같은 회사의 ERP 운영 공고 — 회계 원장 쪽"
+    },
+    {
+      "n": 19,
+      "title": "전자정부 표준프레임워크",
+      "url": "https://www.egovframe.go.kr/",
+      "kind": "reference",
+      "note": "Spring 기반 공공 SI 표준 개발 프레임워크 — 다른 곳의 공개 자료"
+    },
+    {
+      "n": 20,
+      "title": "Spring Framework 문서 · Transaction Propagation",
+      "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+      "kind": "reference"
+    },
+    {
+      "n": 21,
+      "title": "LG Careers · [비즈테크아이] AI 엔지니어 PM/PL 모집",
+      "url": "https://careers.lg.com/apply/detail?id=1001506",
+      "kind": "posting",
+      "note": "같은 회사의 AI 이행 조직 공고"
+    },
+    {
+      "n": 22,
+      "title": "비즈테크아이 · 채용 프로세스",
+      "url": "https://www.biztechi.com/recruit/02",
+      "kind": "company",
+      "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"
+    },
+    {
+      "n": 23,
+      "title": "자소설닷컴 · 비즈테크아이 기업정보",
+      "url": "https://jasoseol.com/companies/14512",
+      "kind": "reference",
+      "note": "초봉 3,811만·평균 5,748만, 사원수 945명 — 공공데이터 집계"
+    },
+    {
+      "n": 24,
+      "title": "자소설닷컴 · LG CNS 기업정보",
+      "url": "https://jasoseol.com/companies/57",
+      "kind": "reference",
+      "note": "초봉 5,071만·평균 7,802만 — 같은 집계"
+    },
+    {
+      "n": 25,
+      "title": "비즈테크아이 · 복리후생",
+      "url": "https://www.biztechi.com/culture/03",
+      "kind": "company"
+    },
+    {
+      "n": 26,
+      "title": "비즈테크아이 · 오시는 길",
+      "url": "https://www.biztechi.com/about/05",
+      "kind": "company"
+    }
+  ],
+  "caveat": "경비전표 솔루션의 이름·화면·구조, 어느 그룹사를 맡는지는 공개 자료가 없어 공고 문장과 회사 사업 페이지, 세법 원문, 공개 OCR·SRE 문서로 '보통 이런 일'을 보였습니다. 회사·팀의 기술 발표 영상은 찾지 못했습니다. BizActor는 LG CNS 보도자료와 공개 교재 소개(검색 요약)로만 확인했습니다. 연봉은 공시 숫자가 없는 비상장사라 집계 값뿐입니다."
+}
