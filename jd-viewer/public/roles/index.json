@@ -75,6 +75,7 @@
   "ats-lg:group:1001414": "biztechi-sap-fico-sd-consultant",
   "ats-lg:group:1001499": "biztechi-sap-sm-operations",
   "ats-lg:group:1001678": "biztechi-server-infra-engineer",
+  "ats-lg:group:1000948": "biztechi-talent-pool",
   "ats-lg:group:1002219": "biztechi-vdi-ta-infra",
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
@@ -1163,6 +1164,16 @@
    "role": "서버 인프라 엔지니어(TA/SM)",
    "jobs": [
     "ats-lg:group:1001678"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 11
+  },
+  {
+   "id": "biztechi-talent-pool",
+   "company": "비즈테크아이",
+   "role": "상시 인재 채용 (인재 Pool)",
+   "jobs": [
+    "ats-lg:group:1000948"
    ],
    "researched_at": "2026-11-25",
    "lines": 11
