@@ -1,0 +1,1312 @@
+{
+ "id": "42dot-senior-cv-engineer-ad",
+ "company": "포티투닷(42dot)",
+ "role": "Senior Computer Vision Engineer (Autonomous Driving)",
+ "team": "자율주행(Atria AI) · 3D 인지 비전 모델",
+ "jobs": [
+  "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "여러 카메라(+학습용 LiDAR)로 차 주변을 3D 로 읽는 **통합 비전 모델**을 만들고, 그 모델을 **수천 장 GPU 로 학습하는 방법**과 **정답 없는 주행 데이터로 사전학습하는 방법**을 연구합니다.[1][11]",
+  "env": "현대차그룹 자율주행 Atria AI — HD 지도 없이 카메라 8대·400 TOPS 급 NPU 로 도는 end-to-end 주행 [8], 데이터 플라이휠(수집 → 학습 → 어려운 사례 → 가상 검증)[9] 위에서 일합니다.",
+  "oneline": "8년 이상 비전 연구자를 찾는 시니어 연구·개발 자리. 논문 구현보다 **3D 기하 · 다중 과제 학습 · 대규모 분산 학습 · 실패 원인 가르기**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Multi-Camera, LiDAR 기반 3D Perception 개발\nDesign and Development of Multi-Camera and LiDAR-Based 3D Perception Decoders and Prediction Heads",
+   "short": "여러 대의 카메라·LiDAR 신호를 받아 차 주변을 3D 로 읽어 내는 모델의 '머리' 부분을 직접 설계한다.",
+   "why": "이 자리는 대규모 주행 데이터로 3D 객체 검출·도로 구조·occupancy(주변 공간이 차 있나 비었나) 같은 3D 장면 이해 과제를 함께 학습하는 통합 비전 모델을 만든다고 팀 소개에 적었습니다.[1] 42dot 의 자율주행 Atria AI 는 HD 지도 없이 차에 달린 카메라 8대로 주변을 인지하고 400 TOPS 급 NPU 에서 돈다고 회사가 소개했습니다.[8] 보도에 따르면 시험차는 카메라 8대 + 앞 레이더 1대이고 LiDAR 가 없지만, 데이터 수집차(약 40대)는 카메라 최대 12대·LiDAR 1대·레이더 5대를 답니다.[10] 그래서 공고의 'LiDAR 기반'은 학습 데이터 쪽 LiDAR 를 함께 쓰는 일로 읽힙니다.{추론} 모델이 차에서 돌 때는 따로 있는 AD Framework 팀이 GPU·NPU 추론과 차량 통합을 맡습니다.[2] 그래서 이 줄은 **학습되는 모델 구조**, 특히 영어 문장이 짚은 decoder(특징을 결과로 푸는 부분)와 prediction head(과제별 출력 층)가 중심입니다.[1]",
+   "actually": {
+    "intro": "다중 카메라 3D 인지의 공개된 대표 구조입니다. 42dot 이 이 중 무엇을 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**이미지 → 3D 올리기** — 픽셀마다 깊이 분포를 예측해 특징을 3D 로 들어 올린 뒤 위에서 본 평면(BEV, bird's-eye view)에 모은다(Lift-Splat).[21]",
+     "**3D → 이미지 묻기** — BEV 칸마다 질의(query)를 두고, 그 칸이 비치는 카메라 영역에 attention 으로 특징을 받아 온다. 이전 시점 BEV 도 같이 본다(BEVFormer).[22]",
+     "**깊이를 따로 가르치기** — LiDAR 점을 이미지에 찍어 깊이 정답으로 쓰면 카메라 깊이 추정이 좋아진다(BEVDepth).[23]",
+     "**LiDAR 를 선생으로** — 42dot 연구원이 참여한 LabelDistill(ECCV 2024)은 LiDAR 모델과 정답 라벨을 선생으로 삼아 카메라 3D 검출을 가르쳐 nuScenes 에서 mAP 를 5.1 올렸다.[6]",
+     "**다른 센서로 깊이 보정** — 같은 저자가 참여한 CRAB 은 레이더의 드문드문하지만 정확한 거리로 카메라 깊이의 애매함을 줄였다.[5]",
+     "**head 붙이기** — 공유한 BEV 특징 위에 검출(상자)·차선(선)·occupancy(격자) head 를 각각 얹는다.[24][25]"
+    ]
+   },
+   "how_far": "센서 배치·차량 연산 예산은 차량·플랫폼 쪽이 정하고, 차에서의 추론 최적화는 AD Framework 팀이 맡습니다.[2] 이 자리는 **어떤 표현과 head 구조가 성능을 내는지** 설계하고 실험으로 증명하는 쪽입니다. 시니어 공고라 논문 구조를 재현하는 수준이 아니라 우리 데이터·센서에 맞게 고치고 그 이유를 설명할 수 있어야 합니다.{추론} 42dot 은 Pleos 25 에서 '실도로에 배포하는 end-to-end 자율주행 모델'을 주제로 발표했습니다.[13] 인지 결과가 결국 그 주행 모델의 입력·학습 신호가 됩니다.{추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    8,
+    10,
+    21,
+    22,
+    23,
+    24,
+    25,
+    13
+   ],
+   "study": [
+    "lss",
+    "bevformer",
+    "labeldistill",
+    "geiger-sdc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "3D Object Detection, Motion Prediction, Traffic Light Detection, Lane & Road Geometry, Occupancy Prediction 등 인지 Task 개발 및 고도화\nDevelopment and Enhancement of Perception Tasks, including 3D Object Detection, Motion Prediction, Traffic Light Detection, Lane & Road Geometry Estimation, and Occupancy Prediction",
+   "short": "물체·움직임 예측·신호등·차선·빈 공간 같은 인지 결과 하나하나를 만들고 실제 주행 수준까지 끌어올린다.",
+   "why": "자율주행 계획(경로 짜기)은 이 결과들을 입력으로 씁니다. 신호등 색 하나, 차선 하나를 놓치면 판단이 바로 틀어지므로 과제마다 따로 '고도화'가 필요합니다.{추론} 42dot 이 공개한 시험 주행 영상에도 비전으로 신호등 상태를 읽고 좌회전, 철제 구조물 터널 통과 뒤 신호에 맞춰 정차, 주차장 안 보행자·차량 피하기 장면이 나옵니다.[8] 회사 블로그는 보행자가 몰린 곳에서 상자가 겹쳐 나오는 문제를 고친 3D 검출 개선기를 실었습니다.[7] UniAD 는 이런 과제들을 계획을 위해 한 네트워크로 묶은 대표 예입니다.[24]",
+   "actually": {
+    "intro": "과제별로 출력과 재는 법이 다릅니다.",
+    "items": [
+     "**3D Object Detection** — 물체마다 3D 상자(중심·크기·방향·속도). nuScenes 는 mAP 와 NDS(종합 점수)로 잰다.[38]",
+     "**Motion Prediction** — 주변 차·사람이 몇 초 뒤 어디에 있을지 여러 갈래 궤적으로 낸다.[24]",
+     "**Traffic Light Detection** — 작은 물체라 멀리서 색·화살표를 읽어야 하고, 내 차선에 해당하는 신호를 골라야 한다.{추론}",
+     "**Lane & Road Geometry** — 차선·도로 경계를 선(점 열)으로 낸다. 지도 없이 도는 차에선 이것이 실시간 지도 역할이다.{추론}",
+     "**Occupancy Prediction** — 주변 공간을 작은 정육면체(voxel)로 나눠 칸마다 차 있음·비었음·종류를 낸다. 상자로 못 그리는 공사 구조물 같은 것을 잡는다. Occ3D 가 이 과제의 공개 기준이다.[25]"
+    ]
+   },
+   "how_far": "과제마다 '얼마면 차에 올라가나' 기준은 평가·안전 쪽 요구로 정해집니다.{추론} 개발자는 과제별 지표를 올리고, 지표가 실제 주행 실패와 어긋나는 곳을 찾아 지표나 데이터를 고칩니다. 업무 3번(성능 저하 분석)과 이어집니다.[1]",
+   "refs": [
+    1,
+    7,
+    8,
+    24,
+    25,
+    38
+   ],
+   "study": [
+    "uniad",
+    "occ3d",
+    "nuscenes"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Multi-view geometry와 3D scene representation에 대한 이해를 바탕으로, 3D 객체 검출·도로 구조 인식·occupancy 등 다양한 자율주행 인식 과제를 통합하는 multi-task learning 모델과 학습 전략 연구·개발\nResearch and develop multi-task learning models and training strategies that integrate autonomous driving perception tasks, including 3D object detection, road structure understanding, and occupancy prediction, grounded in multi-view geometry and 3D scene representation.",
+   "short": "검출·도로 구조·occupancy 를 모델 하나가 같이 배우게 묶고, 그 학습 방법을 연구한다.",
+   "why": "과제마다 모델을 따로 두면 차에서 같은 카메라 영상을 여러 번 처리해야 합니다. 백본(공유 특징 추출부)을 나눠 쓰면 연산을 아끼고, 과제끼리 도움을 줄 수도 있습니다.{추론} 팀 소개도 이 자리의 일을 '통합 비전 모델'이라고 적었습니다.[1] 차에서 돌릴 모델은 GPU·NPU 한계 안에 들어가야 합니다.[2] 같은 팀의 비시니어 공고도 같은 소개를 달았습니다.[12]",
+   "actually": {
+    "items": [
+     "**공유할 곳과 나눌 곳 정하기** — 백본·BEV 까지 공유하고 head 만 나누나, 과제마다 BEV 해상도를 다르게 하나.{추론}",
+     "**같은 3D 공간에 맞추기** — 과제마다 좌표 범위·격자 크기가 다르면 합치기 전에 맞춘다. 공고가 'multi-view geometry 이해를 바탕으로'라고 쓴 이유다.[1]",
+     "**한 묶음에 다른 정답** — 어떤 장면은 상자 정답만, 어떤 장면은 차선 정답만 있다. 정답 없는 과제의 loss 는 빼고 계산한다.{추론}",
+     "**학습 전략** — 과제 하나씩 먼저 학습하고 합칠지, 처음부터 같이 할지, 어느 단계에서 백본을 얼릴지.{추론}"
+    ]
+   },
+   "how_far": "'연구·개발'이라 남의 방법을 적용하는 데서 끝나지 않고, 이 데이터에서 무엇이 효과 있었는지 실험 근거로 정리해 팀의 학습 방법으로 만드는 데까지입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    12
+   ],
+   "study": [
+    "mtl-survey",
+    "uniad",
+    "kendall"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Task 간 상호작용을 분석하고, 데이터 구성·sampling·loss balancing·학습 스케줄을 개선하여 개별 task 성능과 통합 모델 성능 향상\nAnalyze interactions between tasks and improve data composition, sampling, loss balancing, and training schedules to enhance both individual task performance and overall model performance.",
+   "short": "과제끼리 서로 방해하는지 재고, 데이터 섞는 비율·loss 무게·학습 순서를 바꿔 전체 성능을 올린다.",
+   "why": "같이 배우면 한 과제가 좋아질 때 다른 과제가 나빠지는 일이 흔합니다. loss 크기가 수십 배 차이 나면 큰 쪽이 학습을 독차지합니다.[26][27] 그래서 공고가 개별 성능과 통합 성능을 둘 다 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**loss 무게 배우기** — 과제마다 불확실성 값을 같이 학습해 무게를 정한다(Kendall).[26]",
+     "**기울기 크기 맞추기** — 과제별 기울기 크기를 재서 늦게 배우는 과제를 끌어올린다(GradNorm).[27]",
+     "**기울기 충돌 없애기** — 두 과제의 기울기 방향이 반대면 서로 수직인 쪽으로 깎는다(PCGrad).[28]",
+     "**데이터 섞기·sampling** — 신호등 장면이 드물면 그 장면을 더 자주 뽑는다. 너무 뽑으면 다른 과제가 나빠진다.{추론}",
+     "**학습 스케줄** — 과제마다 학습률·켜는 시점을 달리한다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "두 과제의 기울기가 부딪치는지 재기(직접 돌린 출력)",
+     "body": "공유 파라미터 기준으로 검출·차선 기울기의 코사인이 -0.994 면 거의 정반대입니다. 그냥 더하면 크기 0.3 으로 서로 지워지고, PCGrad 는 상대에 수직인 성분만 남깁니다.[28] 출력: `cos = -0.994` · `그냥 더함 = [ 0.2 -0.1  0.2] 크기 0.3` · `PCGrad 뒤 = [-0.089 -0.098  0.126]`",
+     "lang": "python",
+     "code": "import numpy as np\ng_det = np.array([0.8, -0.2, 0.5])\ng_lane = np.array([-0.6, 0.1, -0.3])\ncos = g_det @ g_lane / np.linalg.norm(g_det) / np.linalg.norm(g_lane)\nprint(\"cos =\", round(float(cos), 3))\ns = g_det + g_lane\nprint(\"그냥 더함 =\", s.round(3), \"크기\", round(float(np.linalg.norm(s)), 3))\n\n\ndef proj(a, b):  # PCGrad: 부딪치면 상대 기울기에 수직인 쪽으로 깎는다\n    return a - (a @ b) / (b @ b) * b if a @ b < 0 else a\n\n\nprint(\"PCGrad 뒤 =\", (proj(g_det, g_lane) + proj(g_lane, g_det)).round(3))"
+    }
+   ],
+   "how_far": "어떤 방법을 쓸지는 이 자리의 판단입니다. 최소선은 과제별 기울기·loss 크기를 기록해 '어느 과제가 어느 과제를 방해하나'를 숫자로 보여 주는 것입니다.{추론}",
+   "refs": [
+    1,
+    26,
+    27,
+    28
+   ],
+   "study": [
+    "kendall",
+    "gradnorm",
+    "pcgrad"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 multi-GPU·multi-node 학습의 연산, 메모리, 통신 및 데이터 파이프라인 병목 분석·최적화\nIdentify and optimize computation, memory, communication, and data pipeline bottlenecks in large-scale multi-GPU and multi-node training.",
+   "short": "GPU 수십~수백 장으로 학습할 때 느린 곳(계산·메모리·통신·데이터 읽기)을 찾아 없앤다.",
+   "why": "42dot 자율주행 데이터 팀 공고는 수백만 장면 규모의 데이터셋과 학습용 데이터 SDK·분산 데이터 로더를 다룬다고 적었습니다.[3][4] 42dot AI 인프라 공고는 여러 데이터센터에 걸친 수천 장 GPU 로 자율주행 모델을 학습한다고 적었습니다.[11] 이 규모에서는 GPU 가 노는 몇 %가 그대로 큰 비용입니다.{추론}",
+   "actually": {
+    "items": [
+     "**계산** — 프로파일러로 연산별 시간을 보고, 혼합 정밀도(bf16)로 바꿔 빠르게 한다.[31][32]",
+     "**메모리** — 파라미터·기울기·옵티마이저 상태를 GPU 마다 나눠 갖는 FSDP, activation 다시 계산하기로 큰 해상도 BEV 를 올린다.[30][34]",
+     "**통신** — 기울기를 모으는 all-reduce 를 역전파와 겹치게(DDP 버킷) 하고, NCCL 설정과 노드 사이 망을 확인한다.[29][33]",
+     "**데이터 파이프라인** — 카메라 6~11대 이미지·LiDAR 를 디코딩하느라 GPU 가 노는지 본다. 로더 프로세스 수·미리 읽기·캐시를 조정한다.[3][31]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "기울기 모으기에 드는 통신량(직접 돌린 출력)",
+     "body": "ring all-reduce 는 GPU 하나가 한 step 에 기울기 크기의 약 2배를 보냅니다. 3억 파라미터 모델이면 GPU 64대·fp32 에서 2.36 GB, 25 GB/s 망이면 94 ms — 역전파와 겹치지 않으면 그대로 손해입니다. bf16 기울기면 절반입니다.{추론}",
+     "lang": "python",
+     "code": "params = 300e6\nfor dtype, b in [(\"fp32\", 4), (\"bf16\", 2)]:\n    for n in [8, 64]:\n        sent = 2 * (n - 1) / n * params * b\n        print(f\"{dtype} GPU {n:3d}대: GPU당 {sent/1e9:.2f} GB/step, 25 GB/s 면 {sent/25e9*1000:.0f} ms\")"
+    }
+   ],
+   "how_far": "클러스터·스케줄러는 플랫폼·인프라 팀 몫입니다.[3] 이 자리는 **자기 모델의 학습 코드**에서 병목을 찾고 고치는 데까지 — 프로파일 결과를 읽고 '이 step 의 몇 %가 통신·데이터 대기'라고 말할 수 있어야 합니다.{추론}",
+   "refs": [
+    3,
+    4,
+    11,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34
+   ],
+   "study": [
+    "ddp",
+    "fsdp",
+    "profiler",
+    "ultrascale"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모델 변경과 실제 주행 평가에서 발견되는 성능 저하 및 실패 사례를 재현하고, 정량·정성 분석을 통해 원인 규명\nReproduce performance regressions and failure cases identified through model changes and real-world driving evaluation, and determine their causes through quantitative and qualitative analysis.",
+   "short": "새 모델이나 실제 주행에서 성능이 떨어진 사례를 똑같이 재현하고, 숫자와 눈으로 원인을 찾는다.",
+   "why": "모델을 바꾸면 평균 점수는 올라도 특정 장면에서 나빠질 수 있고, 실제 주행 평가는 오프라인 지표가 못 본 실패를 찾아냅니다.{추론} 팀 소개도 실제 주행과 평가에서 발견되는 성능 저하의 원인 분석을 이 자리의 일로 적었습니다.[1] 현대차그룹은 2026-09 자율주행 발표에서 데이터를 모으고 → 학습하고 → 어려운 사례를 골라 다시 학습하고 → 3D 가우시안 스플래팅으로 만든 가상 환경에서 검증하는 '데이터 플라이휠'을 돌린다고 밝혔습니다.[9] 수집차는 예상 못 한 상황이 나오면 그 앞뒤 15초를 저장한다고 보도됐습니다.[10]",
+   "actually": {
+    "items": [
+     "**재현** — 실패한 주행 구간(scene)을 데이터 플랫폼에서 찾아 같은 모델 버전·같은 입력으로 다시 돌린다. 데이터 팀 공고가 장면 검색 SDK 를 만든다고 한 것이 이 용도다.[3][4]",
+     "**정량** — 장면을 날씨·밤낮·거리·물체 크기로 쪼개 이전 모델과 지표를 나란히 비교한다.{추론}",
+     "**정성** — 예측 상자·차선을 카메라 영상과 BEV 위에 겹쳐 그려 눈으로 본다.{추론}",
+     "**원인 후보** — 학습 데이터에 그런 장면이 적나, 정답이 틀렸나, 센서 보정이 어긋났나, 차에 올릴 때 바뀌었나.[1]"
+    ]
+   },
+   "how_far": "실패를 찾는 건 평가·주행 팀이어도, 원인을 '이것'이라고 증명하고 고칠 방향을 내는 건 이 자리입니다.[1] 최소선은 실패 사례를 다시 돌려 같은 결과가 나오게 만드는 것입니다 — 재현이 안 되면 원인도 못 가립니다.{추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    9,
+    10
+   ],
+   "study": [
+    "blog-active",
+    "nuscenes",
+    "waymo-open"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터·GT 품질, 전처리, 모델 구조, 학습 조건 및 배포 과정의 영향을 구분하는 가설 수립과 ablation 실험 수행\nFormulate hypotheses and conduct ablation studies to distinguish the effects of data and ground-truth quality, preprocessing, model architecture, training conditions, and deployment.",
+   "short": "원인이 데이터·정답·전처리·모델·학습·배포 중 어디인지 가르는 실험을 하나씩 짜서 돌린다.",
+   "why": "성능 저하에는 원인이 여럿 섞여 있어 한 번에 여러 개를 바꾸면 무엇이 효과였는지 알 수 없습니다. 그래서 한 번에 하나만 바꾸는 ablation(하나씩 빼 보기) 실험이 필요합니다.{추론} 공고는 그 원인 후보를 여섯 갈래로 적었습니다.[1]",
+   "actually": {
+    "intro": "갈래마다 하나씩 바꿔 보는 예입니다.{추론}",
+    "items": [
+     "**데이터·GT** — 같은 모델을 정답을 다시 검수한 데이터로 학습해 차이를 본다.",
+     "**전처리** — 이미지 크기 조정·색 변환·카메라 보정값을 학습 때와 차에서 똑같이 쓰는지 대조한다.",
+     "**모델 구조** — 새 모듈만 빼고 나머지를 같게 둔다.",
+     "**학습 조건** — 같은 설정을 시드만 바꿔 여러 번 돌려 우연 차이 폭을 먼저 잰다.",
+     "**배포** — 학습 환경 출력과 차량용으로 바꾼(양자화·변환) 모델 출력을 같은 입력에서 비교한다. 차량 쪽 변환은 AD Framework 팀 일이다.[2]"
+    ]
+   },
+   "how_far": "가설과 실험 설계·결론까지가 이 자리입니다. 결론에는 '시드 차이보다 큰 차이인가'가 들어가야 합니다 — 차이가 시드 흔들림 안이면 효과라고 말하지 않습니다.{추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "karpathy-recipe"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 비라벨 주행 데이터를 활용한 representation learning 및 self-supervised learning 기법 연구·개발\nResearch and develop representation learning and self-supervised learning methods using large-scale unlabeled driving data.",
+   "short": "정답을 달지 않은 대량의 주행 영상으로 먼저 '보는 법'을 배우게 해, 적은 정답으로도 잘 되게 한다.",
+   "why": "차는 매일 엄청난 영상을 모으지만 3D 상자·차선 정답을 사람이 다는 건 비쌉니다. 42dot 데이터 팀은 수집 차량의 원본 데이터를 장면으로 가공하고 자동 라벨링까지 한다고 적었습니다 — 정답 없는 데이터가 정답 있는 것보다 훨씬 많다는 뜻입니다.[4] 보도로는 데이터 수집차 약 40대가 한 대당 주 80시간 넘게 달립니다.[10] 회사 블로그도 약한 사례와 닮은 데이터를 모아 느린 오프라인 모델로 처리한 뒤 그 지식을 차량용 실시간 모델에 증류(distillation, 큰 모델의 답을 작은 모델이 따라 배우기)한다고 적었습니다.[7] 팀 소개는 다양한 주행 환경에 일반화하는 시각 표현을 이 방법으로 만들겠다고 했습니다.[1]",
+   "actually": {
+    "items": [
+     "**가려서 맞히기** — 이미지 조각 75%를 가리고 원래 픽셀을 복원하게 한다(MAE).[36]",
+     "**같은 것끼리 가깝게** — 같은 이미지의 두 변형이 같은 특징을 내게 한다. 선생 모델 출력을 학생이 따라 하는 자기 증류(DINOv2).[35]",
+     "**3D 로 맞히기** — 미래 시점 LiDAR 점이나 occupancy 를 예측하게 해 3D 감각을 기른다.{추론}",
+     "**평가** — 사전학습 백본 위에 검출·차선 head 를 학습해, 같은 정답량에서 처음부터 학습한 것보다 얼마나 나은지 본다.[35]"
+    ]
+   },
+   "how_far": "'연구·개발'이라 이미 나온 방법을 우리 데이터에 맞게 고치는 데서 새 방법까지 열려 있습니다. 최소선은 사전학습이 실제로 downstream(나중 과제) 성능을 올렸는지 정답량을 바꿔 가며 보이는 것입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    7,
+    10,
+    35,
+    36
+   ],
+   "study": [
+    "mae",
+    "dinov2",
+    "blog-active"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Self-supervision, knowledge distillation, auxiliary supervision을 결합한 multi-view·temporal 정보와 기하학적 관계를 활용하는 pre-training recipe 설계·검증\nDesign and validate pre-training recipes combining self-supervision, knowledge distillation, and auxiliary supervision.",
+   "short": "자기지도·증류·보조 과제를 섞어, 여러 카메라·여러 시점·3D 관계를 쓰는 사전학습 방법을 설계한다.",
+   "why": "일반 사진용 사전학습은 한 장씩 봅니다. 차는 여러 카메라가 같은 순간을 서로 다른 각도로 보고, 연속 영상이 있고, 카메라 위치를 정확히 압니다 — 이 정보를 쓰지 않으면 아깝습니다.{추론} 공고는 그 세 가지(multi-view·temporal·기하 관계)를 recipe(학습 처방)에 넣으라고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**self-supervision** — 정답 없이 데이터 자체에서 과제를 만든다(가리고 맞히기·같은 장면 맞추기).[35][36]",
+     "**knowledge distillation** — 이미 잘 학습된 큰 이미지 모델(예: DINOv2)의 특징을 우리 모델이 따라 하게 한다.[35] 42dot 연구원이 참여한 LabelDistill 은 LiDAR 선생 → 카메라 학생 방향의 증류다.[6]",
+     "**auxiliary supervision** — 깊이처럼 LiDAR 로 공짜로 얻는 정답을 보조 과제로 붙인다.[23]",
+     "**기하 관계** — 두 카메라가 겹쳐 보는 영역에서 같은 3D 점의 특징이 같게 한다(카메라 내·외부 파라미터로 대응점을 계산).{추론}"
+    ]
+   },
+   "how_far": "recipe 는 '무엇을 섞고 얼마나 오래·어떤 비율로'까지 정한 처방입니다. 설계에서 끝나지 않고 공고 문장대로 '검증' — 비교 실험 표로 낫다는 것을 보이는 데까지입니다.[1]",
+   "refs": [
+    1,
+    6,
+    23,
+    35,
+    36
+   ],
+   "study": [
+    "dinov2",
+    "bevdepth",
+    "labeldistill"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Representation collapse와 학습 불안정성을 분석하고, 학습된 표현의 품질 및 downstream task로의 전이 효과 평가\nInvestigate representation collapse and training instability, and evaluate representation quality and transfer to downstream tasks.",
+   "short": "사전학습이 모든 입력에 같은 답을 내는 '붕괴'에 빠지거나 흔들리지 않는지 보고, 나중 과제에 도움이 되는지 잰다.",
+   "why": "정답 없는 학습은 모델이 늘 같은 출력을 내면 손실이 0 이 되는 지름길이 있습니다. 이걸 representation collapse(표현 붕괴)라고 하고, SimSiam 논문은 stop-gradient 를 빼면 출력이 바로 상수로 무너지는 것을 보였습니다.[37]",
+   "actually": {
+    "items": [
+     "**붕괴 신호** — 출력 특징의 채널별 표준편차가 0 으로 간다. SimSiam 이 쓴 지표다.[37]",
+     "**불안정** — loss 가 튀거나 NaN, bf16 에서 값이 넘치는지 본다.[32]",
+     "**표현 품질** — 백본을 얼리고 얇은 층만 학습하는 linear probe, 가까운 이웃 찾기로 잰다.[35]",
+     "**전이 효과** — 실제 3D 검출·occupancy 학습에 붙였을 때 점수와 필요한 정답량.[1]"
+    ]
+   },
+   "how_far": "학습 곡선만 보고 '잘 됐다'고 하지 않는 것이 최소선입니다. 붕괴 지표와 전이 결과를 같이 기록해 다음 recipe 를 고를 근거로 남깁니다.{추론}",
+   "refs": [
+    1,
+    32,
+    35,
+    37
+   ],
+   "study": [
+    "simsiam",
+    "dinov2"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터비전 및 딥러닝에 대한 깊은 이해와 8년 이상의 모델 연구·개발 경험\nA deep understanding of computer vision and deep learning, with at least 8 years of experience researching and developing models.",
+   "short": "비전·딥러닝 모델을 8년 넘게 직접 연구·개발해, 혼자서 문제를 정의하고 끝까지 갈 수 있어야 해서.",
+   "why": "업무 네 갈래가 모두 '연구·개발'이고, 방법을 고르는 판단을 이 자리가 합니다.[1] 연차 숫자는 그 판단을 여러 번 해 본 경험을 보는 기준입니다.{추론}",
+   "how_far": "8년은 석·박사 연구 기간을 포함해 보는 경우가 많습니다 — 셈법은 공고에 없으니 지원 전에 문의하는 편이 안전합니다.{추론} 이력서에는 '무엇을 바꿔서 지표가 얼마 올랐나'를 프로젝트마다 적습니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "cs231n"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "3D geometry, 카메라 모델 및 좌표 변환, multi-view geometry에 대한 이해와 이를 활용한 3D vision 모델 개발 경험\nAn understanding of 3D geometry, camera models, coordinate transformations, and multi-view geometry, with experience applying these concepts to 3D vision model development.",
+   "short": "카메라가 3D 세상을 어떻게 2D 픽셀로 찍는지 수식으로 알고, 그걸 모델 안에 넣어 본 경험.",
+   "why": "여러 카메라와 LiDAR 를 한 3D 공간에 모으는 모든 단계가 좌표 변환입니다. 공고도 통합 모델 연구를 'multi-view geometry 이해를 바탕으로' 한다고 적었습니다.[1]",
+   "level": {
+    "basic": "핀홀 카메라 모델 · 내부 파라미터(K) · 회전·이동(외부 파라미터) · 동차 좌표",
+    "work": "자차·카메라·LiDAR·세계 좌표계 사이 변환 · 렌즈 왜곡 · 투영·역투영 · 시점 사이 자차 움직임 보정",
+    "team": "BEV 변환(LSS·BEVFormer)에 기하를 넣기 · 보정 오차가 성능에 주는 영향 · 다중 시점 대응"
+   },
+   "actually": {
+    "items": [
+     "**투영** — 3D 점을 카메라 좌표로 옮기고(R, t) 깊이로 나눈 뒤 K 를 곱해 픽셀을 얻는다.[20]",
+     "**역투영** — 픽셀 + 깊이로 3D 점을 되찾는다. LSS 의 '들어 올리기'가 이것이다.[21]",
+     "**시간 맞추기** — 이전 시점 BEV 를 지금 쓰려면 그 사이 자차 움직임만큼 옮겨야 한다.[22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "자차 앞 20m 점이 앞 카메라의 어느 픽셀에 찍히나(직접 돌린 출력)",
+     "body": "앞 20m 는 화면 가운데 (960, 618.9), 왼쪽 2m 로 옮기면 854.7 로 왼쪽에 찍히고, 40m 로 멀어지면 가운데로 모입니다. 뒤 5m 점은 카메라 뒤라 None 입니다.",
+     "lang": "python",
+     "code": "import numpy as np\n\nK = np.array([[1000, 0, 960], [0, 1000, 540], [0, 0, 1.0]])   # 초점거리 1000px, 1920x1080\nR = np.array([[0, -1, 0], [0, 0, -1], [1, 0, 0.0]])             # 자차(x앞 y왼 z위) -> 카메라(x오른 y아래 z앞)\nt = np.array([0, 1.5, -1.0])                                      # 카메라: 앞 1m, 높이 1.5m\n\n\ndef to_pixel(p_ego):\n    p_cam = R @ p_ego + t\n    if p_cam[2] <= 0:\n        return None                   # 카메라 뒤\n    uv = K @ (p_cam / p_cam[2])\n    return round(float(uv[0]), 1), round(float(uv[1]), 1), round(float(p_cam[2]), 1)\n\n\nfor p in [(20, 0, 0), (20, 2, 0), (40, 2, 0), (-5, 0, 0)]:\n    print(p, to_pixel(np.array(p, float)))"
+    }
+   ],
+   "how_far": "수식을 외우는 수준이 아니라, 좌표계가 하나 어긋났을 때 결과 그림이 어떻게 틀어지는지 보고 원인을 짚는 수준입니다.{추론}",
+   "refs": [
+    1,
+    20,
+    21,
+    22
+   ],
+   "study": [
+    "mvg",
+    "cmu-16822",
+    "hanbit-cv"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Multi-GPU 분산 학습 경험과 학습 성능·메모리·수치적 안정성 문제를 분석하고 개선한 경험\nExperience with multi-GPU distributed training and diagnosing and improving training performance, memory usage, and numerical stability.",
+   "short": "GPU 여러 장으로 학습해 보고, 느림·메모리 부족·NaN 같은 문제를 직접 잡아 본 경험.",
+   "why": "업무 2번의 대규모 학습 병목 분석과 바로 이어집니다.[1] 수치적 안정성은 저정밀도(bf16·fp16) 학습에서 값이 넘치거나 사라지는 문제를 말합니다.[32]",
+   "level": {
+    "basic": "DDP 로 학습 띄우기 · 배치 크기와 학습률 관계 · 체크포인트",
+    "work": "프로파일러로 병목 읽기 · AMP·GradScaler · FSDP·activation checkpointing · 데이터 로더 튜닝",
+    "team": "여러 노드 통신(NCCL) 문제 진단 · loss 튐·NaN 원인 추적 · 다중 과제 모델의 메모리 계획"
+   },
+   "actually": {
+    "items": [
+     "**성능** — step 시간을 계산·통신·데이터 대기로 쪼개 본다.[31]",
+     "**메모리** — OOM 이 나면 activation 다시 계산하기, 상태 나눠 갖기(FSDP), 배치 줄이고 기울기 누적.[30]",
+     "**수치 안정성** — fp16 은 작은 기울기가 0 이 되므로 loss 를 키웠다 줄이는 GradScaler 를 쓴다. bf16 은 범위가 넓어 보통 필요 없다.[32]"
+    ]
+   },
+   "how_far": "'경험'과 '분석하고 개선한 경험'이 같이 적혀 있습니다 — 써 본 것만이 아니라, 문제를 만났고 원인을 찾아 숫자로 개선한 사례 하나 이상을 설명할 수 있어야 합니다.[1]",
+   "refs": [
+    1,
+    30,
+    31,
+    32
+   ],
+   "study": [
+    "ddp",
+    "fsdp",
+    "amp",
+    "ultrascale"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Multi-task learning, representation learning, self-supervised learning 중 하나 이상에 대한 심도 있는 연구 또는 개발 경험\nIn-depth research or development experience in at least one of multi-task learning, representation learning, or self-supervised learning.",
+   "short": "다중 과제·표현 학습·자기지도 중 적어도 하나는 깊이 연구하거나 만들어 본 사람이어야 해서.",
+   "why": "업무 2번(다중 과제)과 4번(사전학습)이 이 세 주제입니다.[1] 셋 다 넓어서 공고는 '하나 이상'을 깊이 요구했습니다.[1]",
+   "how_far": "'심도 있는'은 논문을 읽은 정도가 아니라 직접 방법을 바꿔 보고 실패·성공 이유를 설명할 수 있는 정도입니다.{추론} 셋 중 내 강점 하나를 골라 이력서와 면접의 중심에 둡니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "mtl-survey",
+    "dinov2",
+    "kendall"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "컴퓨터비전, 로보틱스 또는 기계학습 관련 전공의 박사학위 보유\nA PhD in a field related to computer vision, robotics, or machine learning.",
+   "short": "박사학위가 있으면 우대 — 혼자 연구 주제를 정하고 끝까지 검증해 본 훈련으로 보기 때문.",
+   "why": "업무 대부분이 '연구·개발'이고 가설과 ablation 을 요구합니다.[1] 박사 과정은 그 훈련을 공식으로 거친 경력입니다.{추론}",
+   "how_far": "필수가 아니라 우대입니다.[1] 학위가 없으면 같은 깊이의 실험·결과물(공개 코드·기술 보고서)로 대신 보여 줍니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "cs231n"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "컴퓨터비전, 로보틱스 또는 기계학습 분야의 Top-tier 학회에서 연구를 발표한 경력\nA record of presenting research at top-tier conferences in computer vision, robotics, or machine learning.",
+   "short": "CVPR·ICCV·ECCV·NeurIPS·ICRA 같은 최고 학회에 논문을 낸 적이 있으면 우대.",
+   "why": "연구 결과를 남이 검증하는 자리에서 인정받았다는 증거입니다.{추론} 42dot 연구원도 KAIST 와 함께 카메라 3D 검출 증류(LabelDistill, ECCV 2024)[6]·카메라-레이더 BEV 융합(CRAB)[5] 논문을 냈습니다.",
+   "how_far": "우대 조건입니다.[1] 주제가 이 공고의 3D 인지·다중 과제·자기지도와 가까울수록 의미가 큽니다.{추론}",
+   "refs": [
+    1,
+    5,
+    6
+   ],
+   "study": [
+    "labeldistill",
+    "crab"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 multi-node 학습의 scaling 효율과 GPU 자원 활용도를 개선한 경험\nExperience improving scaling efficiency and GPU resource utilization in large-scale multi-node training.",
+   "short": "노드를 늘렸을 때 속도가 그만큼 빨라지게(scaling) 하고, GPU 가 노는 시간을 줄여 본 경험.",
+   "why": "GPU 를 두 배로 늘려도 통신·데이터 대기 때문에 속도가 두 배가 안 되는 일이 흔합니다.[34] 노는 GPU 는 그대로 돈이라 업무 2번의 병목 최적화를 해낸 증거가 됩니다.[1]",
+   "actually": {
+    "items": [
+     "**scaling 효율** — GPU N 대 처리량 ÷ (1대 처리량 × N). 1에 가까울수록 좋다.[34]",
+     "**GPU 활용도** — 실제 낸 연산 ÷ GPU 최대 연산(MFU). 데이터 대기·통신 대기가 이 값을 깎는다.[34]",
+     "**고치는 곳** — 통신 겹치기·기울기 묶음 크기·노드 사이 망 설정, 데이터 로더 병목.[29][33]"
+    ]
+   },
+   "how_far": "우대입니다.[1] '몇 대에서 몇 대로 늘렸을 때 효율이 몇 %에서 몇 %로'처럼 숫자로 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    1,
+    29,
+    33,
+    34
+   ],
+   "study": [
+    "ultrascale",
+    "nccl"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Loss balancing, task interference, negative transfer 등 multi-task learning의 주요 문제를 해결한 경험\nExperience addressing loss balancing, task interference, negative transfer, or other key challenges in multi-task learning.",
+   "short": "과제끼리 방해하거나(task interference) 같이 배워 오히려 나빠지는(negative transfer) 문제를 풀어 본 경험.",
+   "why": "업무 2번에서 반드시 만나는 문제입니다.[1] negative transfer 는 따로 학습한 것보다 같이 학습한 성능이 낮아지는 현상이고, 기울기 충돌이 대표 원인으로 연구됐습니다.[28]",
+   "actually": {
+    "items": [
+     "**loss balancing** — 불확실성 가중·GradNorm 같은 무게 조절.[26][27]",
+     "**충돌 해소** — PCGrad 같은 기울기 투영.[28]",
+     "**구조로 풀기** — 서로 방해하는 과제는 head 를 더 일찍 나눈다.{추론}"
+    ]
+   },
+   "how_far": "우대입니다.[1] '해결한 경험'이니 방법 이름보다 '어떤 과제가 몇 점 떨어졌고 무엇으로 회복했나'가 중심입니다.{추론}",
+   "refs": [
+    1,
+    26,
+    27,
+    28
+   ],
+   "study": [
+    "pcgrad",
+    "gradnorm",
+    "mtl-survey"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Multi-camera·temporal 정보를 활용한 BEV 또는 PV 기반 3D scene representation 개발 경험\nExperience developing BEV- or PV-based 3D scene representations using multi-camera and temporal information.",
+   "short": "여러 카메라와 시간 정보를 써서 BEV(위에서 본 평면) 또는 PV(카메라 시점) 방식으로 3D 장면을 표현해 본 경험.",
+   "why": "업무 1번 3D 인지의 중심 표현입니다.[1] BEV 는 여러 카메라를 한 평면에 모아 계획에 바로 쓰기 좋고, PV 는 카메라 시점 특징을 그대로 써 BEV 로 바꿀 때 생기는 손실이 없습니다.{추론}",
+   "actually": {
+    "items": [
+     "**BEV — 깊이로 올리기** — LSS·BEVDepth.[21][23]",
+     "**BEV — 질의로 묻기** — BEVFormer, 이전 시점 BEV 를 같이 본다(temporal).[22]",
+     "**PV** — 카메라 시점에서 3D 상자를 바로 낸다. 멀리 있는 작은 물체에 유리할 수 있다.{추론}",
+     "**temporal** — 몇 프레임을 쌓으면 속도 추정과 가려진 물체 처리가 좋아진다.[22]"
+    ]
+   },
+   "how_far": "우대입니다.[1] 공개 데이터셋(nuScenes 등)에서 한 방식을 재현하고 개선해 본 결과면 시작점으로 충분합니다.{추론}",
+   "refs": [
+    1,
+    21,
+    22,
+    23,
+    38
+   ],
+   "study": [
+    "lss",
+    "bevformer",
+    "bevdepth",
+    "nuscenes"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "카메라 기하와 딥러닝을 둘 다 좋아하는 사람",
+   "점수 0.5 점 차이가 진짜인지 시드부터 의심하는 사람{추론}",
+   "실제 도로에서 차가 왜 틀렸는지 끝까지 파고드는 사람[1]",
+   "GPU 프로파일 보는 일이 귀찮지 않은 사람"
+  ],
+  "hard": [
+   "자격요건이 8년 이상 연구·개발 경력이다[1]",
+   "결과가 실제 주행 평가로 바로 드러난다[1][9]",
+   "학습·데이터·차량 추론이 여러 팀에 나뉘어 있어 협업 범위가 넓다[2][3][4]",
+   "실도로와 시뮬레이션에서 반복 시험하는 팀이라 실험 한 바퀴가 길 수 있다[18]{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "카메라 외부 파라미터가 1° 틀어지면 BEV 위의 40m 앞 물체는 얼마나 밀리나요?",
+   "a": "투영 수식으로 직접 계산 — 약 0.7m.[20]{추론}"
+  },
+  {
+   "q": "검출과 차선을 같이 학습했더니 차선만 떨어졌습니다. 무엇부터 보겠어요?",
+   "a": "loss 크기·기울기 코사인·데이터 비율.[26][27][28]"
+  },
+  {
+   "q": "GPU 를 8대에서 64대로 늘렸는데 4배밖에 안 빨라졌어요. 어디를 보나요?",
+   "a": "통신 겹치기·데이터 대기·배치와 학습률.[29][34]"
+  },
+  {
+   "q": "새 모델이 밤 장면에서만 나빠졌습니다. 원인이 데이터인지 모델인지 어떻게 가리나요?",
+   "a": "한 번에 하나만 바꾸는 ablation 과 시드 폭.[1]"
+  },
+  {
+   "q": "자기지도 사전학습이 붕괴했는지 loss 말고 무엇으로 알 수 있나요?",
+   "a": "출력 표준편차·linear probe.[35][37]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "42dot 채용 · Senior Computer Vision Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/bcc7a6ab-d770-4220-ace9-4458e0bcba72",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대·전형(한국어·영어 병기)"
+  },
+  {
+   "n": 2,
+   "title": "42dot 채용 · Edge AI SW Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/96c1501f-070c-4c0f-b883-af957746e84c",
+   "kind": "posting",
+   "note": "AD Framework 팀 — 차량 GPU·NPU 추론·배포·성능 검증"
+  },
+  {
+   "n": 3,
+   "title": "42dot 채용 · Senior ML Platform Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/44a90406-9eef-495b-b994-c28a64e2be83",
+   "kind": "posting",
+   "note": "수백만 장면 데이터 플랫폼·학습/평가 플랫폼·데이터 SDK"
+  },
+  {
+   "n": 4,
+   "title": "42dot 채용 · Senior AI Data Pipeline Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/75e6abe9-9195-43c3-abdf-60feff10bd47",
+   "kind": "posting",
+   "note": "수집 차량 원본 → 장면 데이터, 자동 라벨링 파이프라인"
+  },
+  {
+   "n": 5,
+   "title": "CRAB: Camera-Radar Fusion for Reducing Depth Ambiguity in Backward Projection based View Transformation",
+   "url": "https://arxiv.org/abs/2509.05785",
+   "kind": "company",
+   "date": "2025-09",
+   "note": "KAIST·42dot 등 공동 — 저자 중 42dot 소속"
+  },
+  {
+   "n": 6,
+   "title": "LabelDistill: Label-guided Cross-modal Knowledge Distillation for Camera-based 3D Object Detection (ECCV 2024)",
+   "url": "https://arxiv.org/abs/2407.10164",
+   "kind": "company",
+   "date": "2024-07",
+   "note": "KAIST·42dot 연구원 참여 — nuScenes mAP +5.1·NDS +4.9"
+  },
+  {
+   "n": 7,
+   "title": "42dot 블로그 · Active Learning 을 통한 지속적인 모델 성능 개선",
+   "url": "https://www.42dot.ai/ko/stories/blog-news/active-learning-3d-object-detection",
+   "kind": "company",
+   "date": "2024-09-02",
+   "note": "AD Algorithm 팀 — 3D 검출·약한 사례 데이터 수집·오프라인 모델 증류"
+  },
+  {
+   "n": 8,
+   "title": "42dot 유튜브 · 42dot의 end-to-end 자율주행",
+   "url": "https://www.youtube.com/watch?v=1ZG63np_HoU",
+   "kind": "company",
+   "date": "2025-12-06",
+   "note": "1분 49초, 자막 없음 — 장면 14장의 화면 설명과 영상 소개문 전부 확인"
+  },
+  {
+   "n": 9,
+   "title": "현대자동차그룹 · AI 데이터 플라이휠로 자율주행 혁신 가속",
+   "url": "https://www.hyundaimotorgroup.com/en/news/hyundai-motor-group-accelerates-autonomous-driving-innovation-with-ai-powered-data-flywheel",
+   "kind": "company",
+   "date": "2026-09-13",
+   "note": "자율주행 미디어 데이 — Atria AI·데이터 플라이휠·3DGS 가상 검증"
+  },
+  {
+   "n": 10,
+   "title": "아이뉴스24 · 현대차그룹 자율주행 미디어 데이 시승·데이터 수집차",
+   "url": "https://inews24.com/view/2004893",
+   "kind": "news",
+   "date": "2026-09-13",
+   "note": "시험차 센서 구성·수집차 약 40대·주 80시간·이벤트 앞뒤 15초 저장"
+  },
+  {
+   "n": 11,
+   "title": "42dot 채용 · AI Infrastructure Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/fa24b02d-a231-4e0c-affa-319d47c19b58",
+   "kind": "posting",
+   "note": "여러 데이터센터의 수천 장 GPU 로 자율주행 모델 학습"
+  },
+  {
+   "n": 12,
+   "title": "42dot 채용 · Computer Vision Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/594198ad-2f9e-4b06-b726-956d6b1507be",
+   "kind": "posting",
+   "note": "같은 팀의 비시니어 공고 — 같은 팀 소개"
+  },
+  {
+   "n": 13,
+   "title": "Pleos 25 발표 일정 (Track C)",
+   "url": "https://developers.pleos.ai/pleos25/schedule",
+   "kind": "company",
+   "date": "2025-03-28",
+   "note": "42dot 발표 'End-to-End Autonomous Driving Models for Real-World Deployment' 등 — 영상 링크 없음"
+  },
+  {
+   "n": 14,
+   "title": "42dot 채용 · 복리후생 프로그램",
+   "url": "https://42dot.ai/careers/program",
+   "kind": "company",
+   "note": "한국 본사 기준(해외 법인은 다를 수 있음), 하단 회사 주소 — 2026-11-25 확인"
+  },
+  {
+   "n": 15,
+   "title": "원티드 · 포티투닷 회사 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "국민연금 기반 평균연봉·가입 사원수, 기준일 표시 없음"
+  },
+  {
+   "n": 16,
+   "title": "뉴스스페이스 · 포티투닷 2025년 감사보고서",
+   "url": "https://www.newsspace.kr/mobile/article.html?no=15231",
+   "kind": "news",
+   "date": "2026-09-14",
+   "note": "급여·상여 총액, 매출·영업손실"
+  },
+  {
+   "n": 17,
+   "title": "CIO Korea · 포티투닷 경력 개발자 채용",
+   "url": "https://www.cio.com/article/4121874/",
+   "kind": "news",
+   "date": "2026-01-26",
+   "note": "Atria AI 고도화 인력 약 50명, 임직원 800명 넘음·개발 인력 70% 넘음"
+  },
+  {
+   "n": 18,
+   "title": "42dot 블로그 · 42dot Work&Way l Autonomous Driving편",
+   "url": "https://www.42dot.ai/ko/stories/blog-news/workandway4",
+   "kind": "company",
+   "date": "2026-09-07",
+   "note": "Atria AI Group 소속 AD 팀 인터뷰 — 실도로·시뮬레이션 반복 시험"
+  },
+  {
+   "n": 19,
+   "title": "판교 제2테크노밸리 소프트웨어드림센터 입주기업 모집 공고",
+   "url": "https://www.venturesquare.net/announcement/1094320",
+   "kind": "reference",
+   "note": "소프트웨어드림센터 주소 — 창업로40번길 20"
+  },
+  {
+   "n": 20,
+   "title": "Multiple View Geometry in Computer Vision (Hartley · Zisserman, 2nd ed.)",
+   "url": "https://www.cambridge.org/core/books/multiple-view-geometry-in-computer-vision/0B6F289C78B2B23F596CAA76D3D43F7A",
+   "kind": "reference",
+   "date": "2004",
+   "note": "카메라 모델·투영·다중 시점 기하 표준 교재"
+  },
+  {
+   "n": 21,
+   "title": "Lift, Splat, Shoot (Philion · Fidler)",
+   "url": "https://arxiv.org/abs/2008.05711",
+   "kind": "reference",
+   "date": "2020",
+   "note": "픽셀별 깊이 분포로 특징을 3D 로 올려 BEV 에 모으기"
+  },
+  {
+   "n": 22,
+   "title": "BEVFormer (Li et al.)",
+   "url": "https://arxiv.org/abs/2203.17270",
+   "kind": "reference",
+   "date": "2022",
+   "note": "BEV 질의 + 카메라 공간 attention + 이전 시점 BEV"
+  },
+  {
+   "n": 23,
+   "title": "BEVDepth (Li et al.)",
+   "url": "https://arxiv.org/abs/2206.10092",
+   "kind": "reference",
+   "date": "2022",
+   "note": "LiDAR 로 카메라 깊이를 직접 가르치기"
+  },
+  {
+   "n": 24,
+   "title": "UniAD: Planning-oriented Autonomous Driving (Hu et al., CVPR 2023)",
+   "url": "https://arxiv.org/abs/2212.10156",
+   "kind": "reference",
+   "date": "2022",
+   "note": "검출·추적·지도·움직임 예측·occupancy·계획을 한 네트워크로"
+  },
+  {
+   "n": 25,
+   "title": "Occ3D (Tian et al.)",
+   "url": "https://arxiv.org/abs/2304.14365",
+   "kind": "reference",
+   "date": "2023",
+   "note": "3D occupancy 예측 기준 데이터"
+  },
+  {
+   "n": 26,
+   "title": "Multi-Task Learning Using Uncertainty to Weigh Losses (Kendall · Gal · Cipolla)",
+   "url": "https://arxiv.org/abs/1705.07115",
+   "kind": "reference",
+   "date": "2017",
+   "note": "과제별 불확실성으로 loss 무게 학습"
+  },
+  {
+   "n": 27,
+   "title": "GradNorm (Chen et al.)",
+   "url": "https://arxiv.org/abs/1711.02257",
+   "kind": "reference",
+   "date": "2017",
+   "note": "과제별 기울기 크기 맞추기"
+  },
+  {
+   "n": 28,
+   "title": "Gradient Surgery for Multi-Task Learning — PCGrad (Yu et al.)",
+   "url": "https://arxiv.org/abs/2001.06782",
+   "kind": "reference",
+   "date": "2020",
+   "note": "충돌하는 기울기를 상대의 수직 방향으로 투영"
+  },
+  {
+   "n": 29,
+   "title": "PyTorch · Getting Started with Distributed Data Parallel",
+   "url": "https://docs.pytorch.org/tutorials/intermediate/ddp_tutorial.html",
+   "kind": "reference",
+   "note": "DDP 공식 입문"
+  },
+  {
+   "n": 30,
+   "title": "PyTorch · Getting Started with Fully Sharded Data Parallel (FSDP2)",
+   "url": "https://docs.pytorch.org/tutorials/intermediate/FSDP_tutorial.html",
+   "kind": "reference",
+   "note": "파라미터·기울기·옵티마이저 상태 나눠 갖기"
+  },
+  {
+   "n": 31,
+   "title": "PyTorch · Performance Tuning Guide / Profiler recipe",
+   "url": "https://docs.pytorch.org/tutorials/recipes/recipes/tuning_guide.html",
+   "kind": "reference",
+   "note": "데이터 로더·혼합 정밀도·프로파일링"
+  },
+  {
+   "n": 32,
+   "title": "PyTorch · Automatic Mixed Precision (torch.amp)",
+   "url": "https://docs.pytorch.org/docs/stable/amp.html",
+   "kind": "reference",
+   "note": "autocast·GradScaler"
+  },
+  {
+   "n": 33,
+   "title": "NVIDIA NCCL Documentation",
+   "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html",
+   "kind": "reference",
+   "note": "GPU 집합 통신(all-reduce 등) 라이브러리"
+  },
+  {
+   "n": 34,
+   "title": "The Ultra-Scale Playbook (Hugging Face nanotron)",
+   "url": "https://huggingface.co/spaces/nanotron/ultrascale-playbook",
+   "kind": "reference",
+   "date": "2025",
+   "note": "대규모 학습의 병렬화·메모리·통신 겹치기·MFU"
+  },
+  {
+   "n": 35,
+   "title": "DINOv2 (Oquab et al.)",
+   "url": "https://arxiv.org/abs/2304.07193",
+   "kind": "reference",
+   "date": "2023",
+   "note": "정답 없이 학습한 범용 이미지 특징, 자기 증류"
+  },
+  {
+   "n": 36,
+   "title": "Masked Autoencoders Are Scalable Vision Learners (He et al.)",
+   "url": "https://arxiv.org/abs/2111.06377",
+   "kind": "reference",
+   "date": "2021",
+   "note": "이미지 조각 75% 가리고 복원"
+  },
+  {
+   "n": 37,
+   "title": "Exploring Simple Siamese Representation Learning — SimSiam (Chen · He)",
+   "url": "https://arxiv.org/abs/2011.10566",
+   "kind": "reference",
+   "date": "2020",
+   "note": "stop-gradient 없으면 표현 붕괴, 출력 표준편차로 확인"
+  },
+  {
+   "n": 38,
+   "title": "nuScenes",
+   "url": "https://www.nuscenes.org/",
+   "kind": "reference",
+   "note": "카메라 6대·LiDAR·레이더 공개 주행 데이터, mAP·NDS"
+  }
+ ],
+ "caveat": "42dot 은 이 팀의 모델 구조·학습 설정을 공개하지 않았습니다. 업무 풀이의 구조와 방법은 같은 일을 다루는 공개 논문·공식 문서로 '보통 이런 것'을 보였고, 회사 근거는 공고·자매 공고·회사 블로그·영상·2026-09 발표 보도에서 왔습니다. 시험차 센서 구성은 보도 기준입니다.[10]",
+ "resources": [
+  {
+   "id": "blog-active",
+   "title": "Active Learning 을 통한 지속적인 모델 성능 개선",
+   "by": "42dot AD Algorithm 팀 블로그 · 2024",
+   "kind": "doc",
+   "url": "https://www.42dot.ai/ko/stories/blog-news/active-learning-3d-object-detection",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "이 회사가 3D 검출의 약점을 어떻게 찾고 데이터·증류로 메우는지 회사 말로 읽는다 — 업무 3·4번의 출발점."
+  },
+  {
+   "id": "labeldistill",
+   "title": "LabelDistill (ECCV 2024)",
+   "by": "KAIST · 42dot 연구원 참여",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2407.10164",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "LiDAR·라벨을 선생으로 카메라 3D 검출을 가르치는 증류 — 'LiDAR 기반'과 'knowledge distillation' 요건을 한 편으로."
+  },
+  {
+   "id": "crab",
+   "title": "CRAB: Camera-Radar Fusion",
+   "by": "KAIST · 42dot 등",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2509.05785",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "다른 센서로 카메라 깊이를 바로잡아 BEV 를 만드는 법 — 다중 센서 3D 인지 요건."
+  },
+  {
+   "id": "hanbit-cv",
+   "title": "IT CookBook, 컴퓨터 비전과 딥러닝",
+   "by": "오일석 · 한빛아카데미 · 2023",
+   "kind": "book",
+   "url": "https://www.hanbit.co.kr/books/B8870109394",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "고전 비전에서 딥러닝·ViT 까지 한국어로 한 번에 — 요건 1번의 바탕을 다시 다지기."
+  },
+  {
+   "id": "mvg",
+   "title": "Multiple View Geometry in Computer Vision (2nd ed.)",
+   "by": "Hartley · Zisserman · Cambridge University Press",
+   "kind": "book",
+   "url": "https://www.cambridge.org/core/books/multiple-view-geometry-in-computer-vision/0B6F289C78B2B23F596CAA76D3D43F7A",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "카메라 모델·좌표 변환·다중 시점 기하 — 요건 2번 그 자체. 6장(카메라 모델)부터."
+  },
+  {
+   "id": "cmu-16822",
+   "title": "CMU 16-822 Geometry-based Methods in Vision",
+   "by": "Carnegie Mellon University",
+   "kind": "course",
+   "url": "https://geometric3d.github.io/pages/old_versions/2023/index.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "투영·에피폴라·다중 시점 복원을 과제로 직접 구현 — 기하를 손에 익히기."
+  },
+  {
+   "id": "learning3d",
+   "title": "CMU 16-825 Learning for 3D Vision",
+   "by": "Carnegie Mellon University",
+   "kind": "course",
+   "url": "https://learning3d.github.io/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "3D 표현(점·격자·암묵 표현)을 딥러닝으로 다루기 — occupancy·3D 장면 표현 요건."
+  },
+  {
+   "id": "cs231n",
+   "title": "CS231n: Deep Learning for Computer Vision",
+   "by": "Stanford University",
+   "kind": "course",
+   "url": "https://cs231n.stanford.edu/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "비전 딥러닝 기본기 점검 — 시니어 지원자라도 빈 곳을 찾는 용도로."
+  },
+  {
+   "id": "geiger-sdc",
+   "title": "Lecture: Self-Driving Cars",
+   "by": "Andreas Geiger · University of Tübingen",
+   "kind": "video",
+   "url": "https://www.youtube.com/playlist?list=PL05umP7R6ij321zzKXK6XCQXAaaYjQbzr",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "자율주행 인지·예측·계획 전체 그림을 강의로 — 업무 1번이 전체 시스템 어디에 붙는지."
+  },
+  {
+   "id": "lss",
+   "title": "Lift, Splat, Shoot",
+   "by": "Philion · Fidler",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2008.05711",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "깊이로 올리는 BEV 의 시작점 — 업무 1번·우대 5번."
+  },
+  {
+   "id": "bevformer",
+   "title": "BEVFormer",
+   "by": "Li et al.",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2203.17270",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "질의로 묻는 BEV 와 시간 정보 — 업무 1번·우대 5번."
+  },
+  {
+   "id": "bevdepth",
+   "title": "BEVDepth",
+   "by": "Li et al.",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2206.10092",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "LiDAR 를 깊이 보조 정답으로 쓰기 — auxiliary supervision 의 예."
+  },
+  {
+   "id": "uniad",
+   "title": "UniAD: Planning-oriented Autonomous Driving",
+   "by": "Hu et al. · CVPR 2023",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2212.10156",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "여러 인지·예측 과제를 한 네트워크로 묶는 법 — 업무 1·2번."
+  },
+  {
+   "id": "occ3d",
+   "title": "Occ3D",
+   "by": "Tian et al.",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2304.14365",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "occupancy 과제의 정답·평가 방식 — 업무 1번 Occupancy Prediction."
+  },
+  {
+   "id": "nuscenes",
+   "title": "nuScenes",
+   "by": "Motional",
+   "kind": "doc",
+   "url": "https://www.nuscenes.org/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "카메라 6대·LiDAR 공개 데이터와 mAP·NDS — 직접 학습·평가해 볼 무대."
+  },
+  {
+   "id": "waymo-open",
+   "title": "Waymo Open Dataset",
+   "by": "Waymo",
+   "kind": "doc",
+   "url": "https://waymo.com/open/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "다른 센서 구성의 공개 데이터 — 장면별 성능 저하 분석 연습."
+  },
+  {
+   "id": "mtl-survey",
+   "title": "Multi-Task Learning for Dense Prediction Tasks: A Survey",
+   "by": "Vandenhende et al.",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2004.13379",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "공유 구조·loss 균형·과제 간섭을 한 번에 정리 — 업무 2번 전체 지도."
+  },
+  {
+   "id": "kendall",
+   "title": "Multi-Task Learning Using Uncertainty to Weigh Losses",
+   "by": "Kendall · Gal · Cipolla",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1705.07115",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "loss balancing 의 기본 — 업무 2번·우대 4번."
+  },
+  {
+   "id": "gradnorm",
+   "title": "GradNorm",
+   "by": "Chen et al.",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1711.02257",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "기울기 크기로 과제 균형 잡기 — 우대 4번."
+  },
+  {
+   "id": "pcgrad",
+   "title": "Gradient Surgery for Multi-Task Learning (PCGrad)",
+   "by": "Yu et al.",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2001.06782",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "task interference 를 기울기 방향으로 재고 고치기 — 우대 4번."
+  },
+  {
+   "id": "ddp",
+   "title": "Getting Started with Distributed Data Parallel",
+   "by": "PyTorch",
+   "kind": "doc",
+   "url": "https://docs.pytorch.org/tutorials/intermediate/ddp_tutorial.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "여러 GPU 학습의 기본 — 요건 3번 출발점."
+  },
+  {
+   "id": "fsdp",
+   "title": "Getting Started with FSDP2",
+   "by": "PyTorch",
+   "kind": "doc",
+   "url": "https://docs.pytorch.org/tutorials/intermediate/FSDP_tutorial.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "메모리를 나눠 큰 모델·큰 BEV 를 올리기 — 요건 3번 메모리."
+  },
+  {
+   "id": "profiler",
+   "title": "PyTorch Profiler recipe",
+   "by": "PyTorch",
+   "kind": "doc",
+   "url": "https://docs.pytorch.org/tutorials/recipes/recipes/profiler_recipe.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "step 시간을 쪼개 병목 찾기 — 업무 2번 병목 분석."
+  },
+  {
+   "id": "amp",
+   "title": "Automatic Mixed Precision (torch.amp)",
+   "by": "PyTorch",
+   "kind": "doc",
+   "url": "https://docs.pytorch.org/docs/stable/amp.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "bf16·fp16 학습과 수치 안정성 — 요건 3번."
+  },
+  {
+   "id": "nccl",
+   "title": "NCCL Documentation",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "노드 사이 통신 설정·진단 — 우대 3번."
+  },
+  {
+   "id": "ultrascale",
+   "title": "The Ultra-Scale Playbook",
+   "by": "Hugging Face nanotron",
+   "kind": "doc",
+   "url": "https://huggingface.co/spaces/nanotron/ultrascale-playbook",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "병렬화·통신 겹치기·MFU 를 실험 숫자와 함께 — 업무 2번·우대 3번."
+  },
+  {
+   "id": "mae",
+   "title": "Masked Autoencoders Are Scalable Vision Learners",
+   "by": "He et al.",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2111.06377",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "가려서 맞히는 자기지도 — 업무 4번."
+  },
+  {
+   "id": "dinov2",
+   "title": "DINOv2",
+   "by": "Oquab et al.",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2304.07193",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "자기 증류로 만든 범용 특징과 linear probe 평가 — 업무 4번."
+  },
+  {
+   "id": "simsiam",
+   "title": "Exploring Simple Siamese Representation Learning",
+   "by": "Chen · He",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2011.10566",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "표현 붕괴가 어떻게 생기고 어떻게 재나 — 업무 4번 마지막 줄."
+  },
+  {
+   "id": "karpathy-recipe",
+   "title": "A Recipe for Training Neural Networks",
+   "by": "Andrej Karpathy · 2019",
+   "kind": "doc",
+   "url": "https://karpathy.github.io/2019/04/25/recipe/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "기준선 고정·한 번에 하나 바꾸기·데이터 먼저 보기 — 업무 3번 ablation 의 습관."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사가 하는 일 읽기",
+   "time": "3~5일",
+   "goal": "Atria AI 의 센서 구성·데이터 흐름과 이 자리가 맡는 칸을 설명할 수 있다.",
+   "resources": [
+    "blog-active",
+    "labeldistill",
+    "crab"
+   ],
+   "task": "회사 영상·블로그·두 논문을 읽고 '데이터 수집 → 자동 라벨 → 학습 → 평가 → 차량 배포' 그림에 이 공고의 업무 네 갈래를 표시한 한 장짜리 그림을 그린다."
+  },
+  {
+   "title": "카메라 기하 손에 익히기",
+   "time": "2~3주",
+   "goal": "여러 카메라·LiDAR 를 한 좌표계로 모으고 투영·역투영을 코드로 쓸 수 있다.",
+   "resources": [
+    "mvg",
+    "cmu-16822",
+    "hanbit-cv"
+   ],
+   "task": "nuScenes mini 의 한 장면에서 LiDAR 점을 카메라 6대 이미지에 찍어 깊이 색으로 그린다. 외부 파라미터를 일부러 1° 틀어 보고 점이 얼마나 밀리는지 잰다."
+  },
+  {
+   "title": "BEV 3D 인지 재현",
+   "time": "3~4주",
+   "goal": "BEV 모델 하나를 학습·평가하고 head 를 바꿔 끼울 수 있다.",
+   "resources": [
+    "lss",
+    "bevformer",
+    "bevdepth",
+    "nuscenes",
+    "occ3d"
+   ],
+   "task": "공개 구현으로 LSS 계열 검출 모델을 nuScenes mini 로 학습하고, 같은 BEV 에 occupancy head 를 하나 더 붙여 두 과제를 같이 학습한다."
+  },
+  {
+   "title": "다중 과제 균형과 ablation",
+   "time": "2~3주",
+   "goal": "과제 간 간섭을 숫자로 보이고 균형 방법의 효과를 시드 차이와 구분해 말할 수 있다.",
+   "resources": [
+    "mtl-survey",
+    "kendall",
+    "gradnorm",
+    "pcgrad",
+    "karpathy-recipe"
+   ],
+   "task": "3단계 모델로 ① 과제 따로 ② 그냥 합 ③ 불확실성 가중 ④ PCGrad 를 시드 3개씩 돌려 표 하나로 정리하고, 과제별 기울기 코사인을 학습 내내 기록한다."
+  },
+  {
+   "title": "분산 학습과 자기지도",
+   "time": "3~4주",
+   "goal": "여러 GPU 학습의 병목을 프로파일로 설명하고, 사전학습의 붕괴·전이를 잴 수 있다.",
+   "resources": [
+    "ddp",
+    "fsdp",
+    "profiler",
+    "amp",
+    "ultrascale",
+    "mae",
+    "dinov2",
+    "simsiam"
+   ],
+   "task": "GPU 2대 이상에서 DDP·bf16 으로 바꾸며 step 시간을 계산·통신·데이터 대기로 나눈 표를 만든다. 정답 없이 MAE 로 백본을 사전학습하고, 정답 10%·100% 에서 처음부터 학습한 것과 비교하며 출력 표준편차를 같이 그린다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 원티드 집계 평균은 **약 6,032만원**(국민연금 기준, 기준일 미표시) — 신입부터 섞인 전 직원 값이라 8년차 이상 시니어 몫과 다르다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계(국민연금)",
+    "note": "원티드 회사 정보의 평균연봉, 국민연금 가입 사원 804명 기준. 기준일이 적혀 있지 않다 [15]"
+   },
+   {
+    "label": "2025년 급여·상여 총액",
+    "value": "급여 891억원 · 상여 472억원",
+    "basis": "감사보고서 · 2025년(기사 인용)",
+    "note": "전년보다 급여 46%·상여 127% 늘었다. 인원이 같이 적혀 있지 않아 1인당 금액은 계산하지 않는다 [16]"
+   }
+  ],
+  "how": "비상장사라 사업보고서의 '직원 1인 평균 급여액'이 없다. 공고의 전형은 서류 → 1차 면접(화상 1시간) → 2차 면접(3시간) → **처우 협의**라 연봉은 사람마다 정한다 [1]. 임직원은 800명이 넘고 70% 넘게 개발 인력이다 [17]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "재량근무·선택적근무, 최고 사양 업무 장비"
+   },
+   {
+    "name": "회복 휴가",
+    "detail": "법정 연차 외에 매달 하루 유급"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진 전액, 단체 상해보험(본인·배우자·자녀·본인 부모), 사내 1:1 PT·GX, 상주 간호사"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당에서 하루 세 끼 무료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 최대 300만원, 설·추석 포인트 별도"
+   },
+   {
+    "name": "장기근속",
+    "detail": "근속 연수에 따라 휴가와 포상금"
+   },
+   {
+    "name": "전기차",
+    "detail": "구매 때 차값의 최대 15%(1,000만원 한도) 지원, 전기차 대여 프로그램"
+   },
+   {
+    "name": "성장",
+    "detail": "국내외 교육·세미나·학회 참가비, 워크숍 비용"
+   },
+   {
+    "name": "주거·생활",
+    "detail": "근속에 따라 1,000만~5,000만원 무이자 대출, 직장 어린이집, 휴양시설 월별 추첨"
+   }
+  ],
+  "note": "42dot 채용 사이트의 복리후생 프로그램. 한국 본사 기준이고 해외 법인은 다를 수 있다고 적혀 있다. 페이지에 날짜가 없어 2026-11-25 에 본 내용이다 [14]"
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥(소프트웨어드림센터 A동)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "판교 제2테크노밸리 {추론}",
+  "note": "주소는 42dot 채용 사이트 하단 회사 정보다 [14]. 같은 주소가 소프트웨어드림센터 건물이라 공고의 'Pangyo (Software Dream Center)'와 같은 곳으로 본다 [19]. 공고 근무지에 '(Remote)'가 같이 붙어 있어 원격 근무 범위는 면접에서 확인한다 [1]."
+ }
+}
