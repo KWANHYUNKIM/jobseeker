@@ -1,0 +1,515 @@
+{
+  "id": "coupang-catalog-quality-senior-pm",
+  "company": "쿠팡",
+  "role": "Senior Program Manager (카탈로그 품질 및 데이터 분석)",
+  "team": "카탈로그 조직 · 카탈로그 품질",
+  "jobs": ["ats-greenhouse:coupang:8275940"],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쿠팡 상품 정보(상품명·이미지·속성·카테고리)가 **얼마나 틀렸는지 재는 방법**을 정하고, 무엇이 맞는 등록인지 **정책으로 적고**, 자주 틀리는 원인을 찾아 프로덕트·운영 팀이 고치게 만듭니다.[1]",
+    "env": "카탈로그는 수십억 개 상품과 하루 수억 건 수정이 오가는 규모입니다.[6] 검수(오딧) 팀·검수(인스펙션) 팀·셀렉션 품질 오딧 팀이 따로 있어서, 이 자리는 그 결과를 모아 **기준과 지표를 만드는 쪽**입니다.[3][4][5]",
+    "oneline": "코드를 짜는 자리가 아니라 **품질의 정의·표본 설계·KPI·설득**을 맡는 시니어 PM입니다. 경력 8년 이상·SQL·영어가 문턱입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "쿠팡 상품 카탈로그의 품질을 측정, 관리 및 개선하는 방식을 정의하고 확장할 카탈로그 품질 Senior Program Manager를 모십니다.",
+      "short": "상품 정보가 맞는지 '어떻게 재고, 누가 관리하고, 어떻게 고치나'의 틀 자체를 만드는 자리.",
+      "why": "카탈로그 품질은 이미 여러 팀이 손으로 다루고 있습니다 — 상품명·이미지·속성·옵션 묶음의 결함을 찾는 품질 PM,[2] 리스팅의 신뢰성·안전성을 보는 CX 오딧 팀,[3] 속성 데이터를 검수하는 인스펙션 팀[4]. 이 공고는 그 위에서 **측정 방식 자체를 정의하고 확장**하는 사람을 찾습니다.[1]",
+      "actually": {
+        "items": [
+          "'측정' — 무엇을 결함으로 셀지, 몇 건을 뽑아 볼지, 어떤 숫자로 보고할지를 정한다(아래 KPI 줄).",
+          "'관리' — 기준 문서(정책·가이드라인)와 그 기준을 바꾸는 절차를 맡는다(아래 정책 줄).",
+          "'확장' — 사람이 다 볼 수 없는 규모라 자동 탐지·AI 검수로 넓힌다(우대 4번째 줄).[7]"
+        ]
+      },
+      "how_far": "검수를 직접 하는 자리가 아니라 **검수가 따를 틀을 만드는 자리**입니다 {추론}.",
+      "refs": [1, 2, 3, 4, 7],
+      "study": []
+    },
+    {
+      "section": "task",
+      "quote": "본 직무는 정책, 프로그램 관리, 데이터 분석의 접점에 위치한 Cross-functional 역할입니다. 고객 및 비즈니스 문제를 명확한 카탈로그 표준으로 전환하고, 품질 격차를 식별하고 정량화하기 위한 프로그램과 측정 체계를 구축합니다. 프로덕트 엔지니어링, 운영, 데이터 사이언스 및 비즈니스 팀과의 협업을 통해 시스템적 개선을 이끌어냅니다.",
+      "short": "'고객이 헷갈린다'를 '이 속성은 필수, 이 표기는 금지' 같은 표준으로 바꾸고, 어긋난 정도를 숫자로 재는 일.",
+      "why": "정책만 쓰면 지켜지는지 모르고, 분석만 하면 무엇이 정답인지 정할 사람이 없습니다. 그래서 세 가지(정책·프로그램·분석)를 한 사람에게 묶었습니다.[1]",
+      "actually": {
+        "items": [
+          "**고객 문제 → 표준** — 예: '용량이 틀려 반품된다' → '용량은 숫자+단위(ml)로, 옵션마다 따로' 같은 등록 규칙 {추론}.",
+          "**품질 격차 정량화** — 표준대로 등록된 비율을 카테고리별로 재서 '어디가 얼마나 모자라나'를 줄 세운다 {추론}.",
+          "**시스템적 개선** — 셀러가 한 건씩 고치게 하지 않고 등록 화면·자동 검사를 바꿔 같은 실수가 다시 안 나게 한다 {추론}."
+        ]
+      },
+      "how_far": "코드는 프로덕트 엔지니어링이, 검수는 운영이 합니다. 이 자리는 **무엇을 왜 바꾸고 다 됐는지 어떻게 아나**를 정합니다 {추론}.",
+      "refs": [1],
+      "study": ["google-spec"]
+    },
+    {
+      "section": "task",
+      "quote": "이 역할은 단순 상품 등록 오류를 찾는 수준에 그치지 않습니다. Senior Program Manager는 오딧 결과, 고객 신호, 대규모 카탈로그 데이터를 활용해 품질 문제가 존재하는 위치와 원인을 파악하고, 고객에게 가장 큰 영향을 미칠 개입 방안을 도출합니다. 이러한 인사이트는 정책 변경, 제품 개선, 탐지 및 제재 전략, 운영 프로그램 실행에 반영됩니다.",
+      "short": "검수 결과·고객 불만·전체 데이터를 합쳐 '어디서, 왜, 무엇부터 고칠까'를 정하는 일.",
+      "why": "오류를 하나씩 찾는 일은 검수 팀이 이미 합니다.[3][4] 이 자리는 그 결과를 모아 **고객이 실제로 많이 마주치는 결함**부터 고르게 합니다.[1]",
+      "actually": {
+        "items": [
+          "**세 가지 재료** — 오딧 결과(표본을 사람이 본 판정), 고객 신호(반품 사유·문의·리뷰의 '설명과 다름'), 전체 데이터(속성 빈칸·표기 흔들림 비율) {추론}.",
+          "**영향 크기로 줄 세우기** — 같은 결함률이라도 많이 보는 카테고리가 먼저다. 아래 예처럼 상품 수로 센 값과 조회로 센 값이 다르다.",
+          "**네 갈래 개입** — 정책 변경(기준 고치기) · 제품 개선(등록 화면) · 탐지·제재(자동 검사와 노출 제한) · 운영 프로그램(검수 강화).[1]",
+          "쿠팡 셀렉션 품질 오딧 조직은 부정확하거나 악의적으로 등록된 상품을 찾아 막는 일을 따로 한다 — '제재' 쪽의 실행 팀이다.[5]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "상품 수로 센 결함률 vs 고객이 본 결함률 (가상 표본, 직접 실행)",
+          "body": "카테고리마다 200건씩 검수했습니다. 상품 수 기준으로는 공구(20%)가 가장 나쁘지만, 고객 조회로 가중하면 결함의 63%를 고객은 **패션**에서 마주칩니다. 출력: 상품 수 기준 9.8% / 조회 가중 7.1% / 식품 21% · 패션 63% · 가전 2% · 공구 14%.",
+          "lang": "python",
+          "code": "rows = [(\"식품\",200,6,0.50),(\"패션\",200,30,0.30),(\"가전\",200,2,0.15),(\"공구\",200,40,0.05)]\nsimple = sum(d for _,n,d,_ in rows)/sum(n for _,n,_,_ in rows)\nweighted = sum(w*d/n for _,n,d,w in rows)\nprint(f\"{simple:.1%} {weighted:.1%}\")   # 9.8% 7.1%\nfor c,n,d,w in rows:\n    print(c, f\"{w*d/n/weighted:.0%}\")    # 식품 21% 패션 63% 가전 2% 공구 14%"
+        }
+      ],
+      "how_far": "숫자를 직접 뽑아 '이것부터'라고 말할 수 있어야 합니다. 개입을 실행하는 건 각 팀입니다 {추론}.",
+      "refs": [1, 3, 4, 5],
+      "study": ["sql-recipe", "lean-analytics"]
+    },
+    {
+      "section": "task",
+      "quote": "해당 포지션은 합리적인 분석적 판단력, 구조화된 문제 해결 능력, 프로그램 리더십을 갖춰야 합니다. 상세한 데이터 분석과 모호한 정책 이슈 사이를 유연하게 넘나들며, 복잡한 분석 결과를 명확한 원칙으로 변환하고, 다양한 조직의 주요 임원진 및 이해관계자에게 영향을 미칠 수 있는 인재분들을 모시고 있습니다.",
+      "short": "쿼리 결과를 직접 읽다가도 '이건 허용할까'를 정하고, 그 결론을 임원에게 설득할 수 있어야 한다.",
+      "why": "품질 기준에는 정답이 없는 회색 지대가 많습니다(예: 호환 제품의 브랜드 표기). 숫자로 근거를 대고 원칙으로 정리해야 여러 조직이 따릅니다.[1]",
+      "actually": {
+        "items": [
+          "**분석 → 원칙** — '옵션 이미지 불일치 결함의 80%가 묶음 상품에서 나온다' → '묶음은 구성품마다 대표 이미지 필수' {추론}.",
+          "**모호한 정책** — 법·셀러 부담·고객 경험이 부딪치는 문제를 선택지와 영향 숫자로 정리해 결정을 받는다 {추론}."
+        ]
+      },
+      "how_far": "임원 앞에서 '권고안 하나 + 근거 숫자 + 반대 의견의 비용'을 한 쪽으로 낼 수 있는 수준 {추론}.",
+      "refs": [1],
+      "study": []
+    },
+    {
+      "section": "task",
+      "quote": "정책 및 거버넌스 표준 정의",
+      "short": "업무 첫 묶음 — 무엇이 '좋은 상품 등록'인지 규칙으로 적고, 그 규칙을 누가 어떻게 바꾸는지 정한다.",
+      "why": "아래 두 줄의 머리말입니다. 거버넌스(규칙을 정하고 바꾸는 절차)가 없으면 팀마다 다른 기준으로 검수합니다.[1]",
+      "refs": [1],
+      "study": []
+    },
+    {
+      "section": "task",
+      "quote": "고품질 상품 등록을 보장하기 위한 카탈로그 품질 정책, 가이드라인, 의사결정 체계를 정의하고 발전",
+      "short": "상품명·이미지·속성마다 '되는 것/안 되는 것'과 애매할 때 누가 정하는지를 문서로 만드는 일.",
+      "why": "수십만 셀러가 직접 올리는 상품은 같은 기준을 보지 않으면 제각각이 됩니다.[6] 공개된 예로 구글은 상품 데이터 기준에 제목 길이, 이미지에 홍보 문구를 넣지 않기 같은 규칙을 적어 둡니다.[18]",
+      "actually": {
+        "intro": "쿠팡의 내부 기준은 공개되지 않았습니다. 공개 기준으로 보면 이런 항목입니다.[18]",
+        "items": [
+          "**상품명** — 브랜드·제품명·핵심 속성(용량·색) 순서, 금지어(최저가·무료배송 같은 홍보 문구), 길이.",
+          "**이미지** — 흰 배경 대표 이미지, 글자·워터마크 금지, 옵션과 같은 상품.",
+          "**속성** — 카테고리마다 필수 속성과 허용 값 목록, 단위 표기.",
+          "**의사결정 체계** — 애매한 사례는 누가 판정하고, 판정을 기준에 언제 반영하나(사례집 → 개정) {추론}."
+        ]
+      },
+      "how_far": "정책 문서의 주인입니다. 검수자가 같은 상품을 보고 같은 판정을 내릴 수 있게 쓰였는지를 일치도로 확인하는 데까지 {추론}.[12]",
+      "refs": [6, 12, 18],
+      "study": ["google-spec", "tspa"]
+    },
+    {
+      "section": "task",
+      "quote": "정책 공백과 리스크를 식별하고, 비즈니스 니즈, 법적 요구사항, 고객 경험의 균형을 맞춘 데이터 기반 표준을 제안",
+      "short": "규칙이 없는 빈칸과 법 위반 위험을 찾아, 셀러 부담·법·고객 경험을 숫자로 견줘 새 기준을 내는 일.",
+      "why": "한국에서는 온라인 판매 상품마다 보여 줘야 할 정보(제조국·제조연월·인증 등)를 공정거래위원회 고시가 품목별로 정합니다.[9] 빠지면 플랫폼도 제재 대상이 될 수 있어 '법적 요구사항'이 표준에 들어갑니다.",
+      "actually": {
+        "items": [
+          "**법이 정한 칸** — 품목별 필수 정보(제조자·원산지·인증 여부 등)가 비었는지 재고, 새 품목 규정이 생기면 표준에 더한다. 고시는 2017년 개정 때 안전 관련 항목을 더했다.[9]",
+          "**정책 공백 찾기** — 반품·문의가 많은데 해당 기준이 없는 카테고리를 데이터로 찾는다 {추론}.",
+          "**균형** — 필수 속성을 늘리면 셀러 등록이 어려워진다. 제안서에 '등록 포기율 예상'과 '반품 감소 예상'을 같이 적는다 {추론}."
+        ]
+      },
+      "how_far": "법 해석은 법무가 합니다. 이 자리는 **법무가 말한 요건을 등록 기준과 측정 항목으로 옮기는** 쪽입니다 {추론}.",
+      "refs": [9],
+      "study": ["ftc-notice", "tspa"]
+    },
+    {
+      "section": "task",
+      "quote": "분석 및 품질 측정",
+      "short": "업무 둘째 묶음 — 품질을 숫자로 재는 방법을 정하고, 반복되는 결함의 원인을 찾는다.",
+      "why": "아래 두 줄의 머리말입니다. 쿠팡 카탈로그 품질 PM 공고도 SLA·결함률을 관리 지표로 적었습니다.[2]",
+      "refs": [2],
+      "study": []
+    },
+    {
+      "section": "task",
+      "quote": "카탈로그 품질을 평가하고 품질 문제를 정량화하기 위한 KPI 및 측정 방법론 수립",
+      "short": "'결함률 몇 %'를 믿을 수 있게 — 무엇을 결함으로 세고, 몇 건을 어떻게 뽑고, 무엇으로 나눌지 정하는 일.",
+      "why": "같은 '결함률'도 분모(상품 수냐 조회 수냐)와 표본 뽑는 법에 따라 크게 달라집니다(위 예 9.8% vs 7.1%). 측정 방법이 흔들리면 개선했는지 알 수 없습니다.",
+      "actually": {
+        "items": [
+          "**결함 정의** — 결함 유형 목록(용량 틀림·이미지 불일치·필수 정보 누락…)과 심각도(구매 판단을 바꾸나).",
+          "**표본 크기** — 결함률 5% 근처를 ±2%p로 재려면 약 457건, ±1%p면 약 1,825건(신뢰 95%).[11]",
+          "**층화 표본** — 카테고리별로 나눠 뽑아야 작은 카테고리도 숫자가 나온다. 쇼피파이는 전체 지표가 가리는 문제 때문에 분류 단계·민감 카테고리별로 따로 쟀다.[27]",
+          "**분모 고르기** — 상품 수 기준(셀러 관리용)과 고객 노출 가중(고객 영향용)을 둘 다 둔다 {추론}.",
+          "**판정의 신뢰도** — 두 검수자의 일치도(코헨 카파)가 낮으면 결함률 자체를 믿을 수 없다.[12]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "표본 크기와 검수자 일치도 (직접 실행)",
+          "body": "n = 1.96²·p(1−p)/e². 일치율 90%·우연 일치 68%면 카파 0.69.",
+          "lang": "python",
+          "code": "import math\nfor p,e in [(0.95,0.02),(0.95,0.01)]:\n    print(e, math.ceil(1.96**2*p*(1-p)/e**2))\n# 0.02 457\n# 0.01 1825\npo, pe = 0.90, 0.68\nprint(round((po-pe)/(1-pe), 2))  # 0.69"
+        }
+      ],
+      "how_far": "KPI 정의서(정의·분모·표본·주기·책임 팀)를 직접 씁니다. 대시보드 구현은 데이터 팀과 함께 {추론}.",
+      "level": {
+        "basic": "비율·신뢰구간·표본 크기를 계산하고 설명한다.",
+        "work": "층화 표본과 가중 결함률을 설계한다.",
+        "team": "카테고리 수천 개에 걸친 정기 오딧의 표본·문턱을 정한다 {추론}."
+      },
+      "refs": [11, 12, 27],
+      "study": ["nist-sample", "sklearn-kappa", "lean-analytics"]
+    },
+    {
+      "section": "task",
+      "quote": "반복되는 결함의 근본 원인을 분석하고, 유관팀에 실행 가능한 개선 프로젝트를 제안",
+      "short": "같은 결함이 왜 계속 나오나(셀러 입력·등록 화면·자동 분류)를 찾아 고칠 팀에 일감으로 넘기는 일.",
+      "why": "결함을 한 건씩 고치면 다음 달에 또 나옵니다. 원인이 등록 화면이면 프로덕트, 자동 분류면 데이터 사이언스가 고쳐야 끝납니다.[1]",
+      "actually": {
+        "items": [
+          "**원인별로 묶기(파레토)** — 결함을 원인 칸으로 나눠 세면 소수 원인이 대부분을 차지하는 경우가 많다(아래 예).",
+          "**원인 예** — 셀러 수기 입력, 등록 화면에서 선택 항목이라 비워 둠, 옵션 묶음 오류, 단위 변환 누락, 자동 분류 오답 {추론}.",
+          "**AI가 원인일 때** — 쿠팡은 카테고리 분류를 LLM 분류기 하나로 바꿨다.[7] 자동 분류 오답이 늘면 데이터 사이언스 팀에 오답 표본을 넘긴다 {추론}.",
+          "**실행 가능한 제안** — '어느 팀이, 무엇을, 고치면 결함 몇 % 감소'까지 적는다 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "결함 원인별 누적 비율 (가상 10건, SQLite 로 직접 실행)",
+          "body": "원인 칸으로 묶어 많은 순으로 누적합니다. 출력: 셀러 수기 입력 4건 40% → 등록 화면 선택 항목 2건 60% → 옵션 묶음 오류 2건 80% → 단위 변환 누락 90% → 자동 분류 오답 100%. 위 세 원인만 고쳐도 80%.",
+          "lang": "sql",
+          "code": "select cause, count(*) n,\n  round(100.0*sum(count(*)) over (order by count(*) desc rows unbounded preceding)\n        /sum(count(*)) over (), 0) cum_pct\nfrom defect group by cause order by n desc;"
+        }
+      ],
+      "how_far": "원인 분석서와 개선 제안까지가 이 자리. 고치는 것은 유관팀이고, 고친 뒤 결함률이 내려갔는지 다시 재는 것은 이 자리입니다 {추론}.",
+      "refs": [1, 7],
+      "study": ["sql-recipe", "coupang-llm"]
+    },
+    {
+      "section": "task",
+      "quote": "다각적 협업 및 커뮤니케이션",
+      "short": "업무 셋째 묶음 — 우선순위가 다른 팀들을 맞추고, 결론을 한국어·영어로 경영진에 전한다.",
+      "why": "아래 두 줄의 머리말입니다. 쿠팡 카탈로그 조직의 이해관계자는 여러 나라에 걸쳐 있습니다.[6]",
+      "refs": [6],
+      "study": []
+    },
+    {
+      "section": "task",
+      "quote": "상충되는 우선순위를 가진 다양한 이해관계자(법무, 제품, 데이터 사이언스, 테크, 비즈니스 채널) 간의 의견을 조율",
+      "short": "법무는 위험을, 사업은 셀러 이탈을, 테크는 개발 비용을 먼저 보는데 그 사이에서 합의를 만드는 일.",
+      "why": "품질 기준 하나가 여러 팀의 일을 바꿉니다 — 필수 속성 하나를 늘리면 셀러 등록 화면(제품·테크), 셀러 관리(비즈니스), 법적 표시(법무)가 같이 움직입니다 {추론}.",
+      "actually": {
+        "items": [
+          "팀마다 걱정을 숫자로 바꾼다 — 법무: 위반 가능 상품 수 / 사업: 등록 포기 예상 / 테크: 개발 기간 {추론}.",
+          "단계 출시 — 한 카테고리에서 먼저 해 보고 결과로 다음 결정을 받는다 {추론}.[17]"
+        ]
+      },
+      "how_far": "결정권자가 아니라 **결정이 나게 만드는 사람**입니다 {추론}.",
+      "refs": [17],
+      "study": ["kohavi-ko"]
+    },
+    {
+      "section": "task",
+      "quote": "복잡한 정책 및 분석 인사이트를 한국어와 영어 모두로 경영진에게 명확하고 데이터에 기반한 서사로 전달",
+      "short": "분석 결과를 '문제 → 숫자 → 권고' 이야기로 묶어 한국어·영어 둘 다로 보고하는 일.",
+      "why": "공고가 영문 이력서를 요구하고,[1] 같은 조직의 디렉터 공고는 한국·해외 이해관계자와 일한다고 적었습니다.[6]",
+      "actually": {
+        "items": [
+          "한 쪽 요약 — 결론 한 줄, 근거 숫자 셋, 요청 사항 {추론}.",
+          "같은 숫자의 두 번역 — 경영진에는 '고객이 마주친 결함 30% 감소', 운영에는 '검수 대기 하루 몇 건 감소' {추론}."
+        ]
+      },
+      "refs": [1, 6],
+      "study": []
+    },
+    {
+      "section": "qualification",
+      "quote": "경영학, 경제학, 통계학, 컴퓨터공학, 정보시스템, 공학 또는 관련 분야 학사 학위를 보유하신 분",
+      "short": "경영·경제·통계·컴공·공학 등 학사면 된다 — 전공 범위가 넓다.",
+      "why": "정책·분석·프로그램을 다 하는 자리라 특정 전공을 고집하지 않습니다.[1]",
+      "how_far": "학사가 최소선입니다. 전공보다 아래 경력 요건이 더 큰 문턱입니다 {추론}.",
+      "refs": [1],
+      "study": []
+    },
+    {
+      "section": "qualification",
+      "quote": "이커머스, 마켓플레이스, 테크 기업 또는 기타 대규모 디지털 플랫폼 내 프로그램 관리, 비즈니스 분석, 정책, 제품 운영, 전략 등 관련 분야 경력이 8년 이상이신 분",
+      "short": "큰 플랫폼에서 PM·분석·정책·운영·전략 중 하나로 8년 넘게 일한 사람.",
+      "why": "Senior 직급이고, 여러 조직의 임원을 설득해야 해서 경력 문턱이 높습니다.[1] 같은 조직의 택소노미 PM 공고는 5년이었습니다.[28] 쿠팡 상품 커머스의 활성 고객은 2025년 4분기 2,460만 명이라 기준 하나가 닿는 사람이 많습니다.[8]",
+      "actually": {
+        "items": [
+          "개발자 경력도 '제품 운영'이나 '분석'에 가까운 일(검색 품질·데이터 파이프라인·운영 도구)이었다면 셀 수 있다 {추론}.",
+          "순수 백엔드 경력만이라면 다음 줄(프로그램 주도 경험)을 따로 보여 줘야 한다 {추론}."
+        ]
+      },
+      "how_far": "8년은 최소선입니다. 직급은 전체 경력을 보고 바뀔 수 있다고 공고에 적혀 있습니다.[1]",
+      "refs": [1],
+      "study": []
+    },
+    {
+      "section": "qualification",
+      "quote": "문제 정의부터 실행 및 측정에 이르기까지 복잡한 Cross-functional 프로그램을 주도한 경험이 있으신 분",
+      "short": "여러 팀이 얽힌 일을 '문제 정의 → 실행 → 효과 측정'까지 끝까지 끌고 간 사례가 있어야 한다.",
+      "why": "이 자리의 일 자체가 그 순서입니다 — 기준 정의, 개선 프로젝트 제안, 다시 측정.[1]",
+      "actually": {
+        "items": [
+          "사례 하나에 세 단계가 다 있어야 한다 — '무엇이 문제였나(숫자)', '누구와 무엇을 했나', '얼마나 바뀌었나(숫자)' {추론}.",
+          "측정까지 했다는 증거로 전후 비교나 실험 결과를 댄다.[17]"
+        ]
+      },
+      "refs": [1, 17],
+      "study": ["kohavi-ko"]
+    },
+    {
+      "section": "qualification",
+      "quote": "대규모 데이터셋을 다루고, 패턴 식별, 가설 수립 및 분석 결과를 비즈니스 의사결정으로 전환할 수 있는 뛰어난 분석 역량을 보유하신 분",
+      "short": "큰 데이터에서 '이상한 곳'을 찾고 가설을 세워 확인한 뒤, 그걸 결정으로 바꿀 수 있어야 한다.",
+      "why": "카탈로그는 수십억 상품 규모라 사람이 훑어볼 수 없습니다.[6] 결함은 표본과 집계로만 보입니다.",
+      "actually": {
+        "items": [
+          "**패턴** — 특정 셀러군·카테고리·등록 경로에서 결함이 몰리는지 본다 {추론}.",
+          "**가설** — '대량 등록 도구로 올린 상품은 용량 속성이 비어 있다' → 등록 경로별 결함률로 확인 {추론}.",
+          "**결정으로** — 확인되면 '대량 등록 양식에 용량 칸 필수'로 정책·제품 변경을 제안 {추론}."
+        ]
+      },
+      "refs": [6],
+      "study": ["sql-recipe", "pandas-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "SQL 및 고급 스프레드시트/데이터 분석 툴 활용 능력을 갖춘 분",
+      "short": "검수 결과·상품 데이터를 SQL로 직접 뽑아 집계하고, 스프레드시트로 정리할 수 있어야 한다.",
+      "why": "가설 하나 확인할 때마다 데이터 팀에 부탁하면 며칠씩 걸립니다. 위 예시(가중 결함률·원인별 누적)가 매일 쓰는 쿼리입니다 {추론}.",
+      "level": {
+        "basic": "group by · join · case when 으로 카테고리별 결함률 표를 만든다.",
+        "work": "윈도 함수로 누적 비율·기간 비교, 가중 평균, 표본 추출(층별 무작위).",
+        "team": "수십억 행 카탈로그에서 정기 오딧 표본과 KPI를 자동으로 뽑는다 {추론}."
+      },
+      "refs": [],
+      "study": ["sql-recipe", "pandas-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "KPI, 측정 방법론 또는 품질 프레임워크 정의 경험이 있으신 분",
+      "short": "'무엇을 숫자로 재고 그 숫자를 어떻게 믿게 할지'를 직접 정해 본 경험.",
+      "why": "업무 'KPI 및 측정 방법론 수립'을 맡을 사람이라서입니다.[1]",
+      "actually": {
+        "items": [
+          "좋은 KPI 정의서에는 정의·분모·표본·주기·목표·책임 팀이 다 있다 {추론}.",
+          "숫자 하나에 매달리면 그 숫자만 좋아지는 일이 생긴다 — 결함률과 함께 등록 처리 시간 같은 '지켜야 할 지표'를 같이 둔다.[17]"
+        ]
+      },
+      "refs": [1, 17],
+      "study": ["lean-analytics", "kohavi-ko"]
+    },
+    {
+      "section": "qualification",
+      "quote": "주요 이해관계자에게 제안 사항을 효과적으로 전달할 수 있는 우수한 서면 및 구두 커뮤니케이션 능력을 갖추신 분",
+      "short": "제안서를 짧고 분명하게 쓰고, 회의에서 결정을 받아 낼 수 있어야 한다.",
+      "why": "업무 마지막 줄(경영진 보고)과 같은 요구입니다.[1]",
+      "how_far": "면접에서 '반대하던 팀을 무엇으로 설득했나'를 사례로 말할 수 있으면 됩니다 {추론}.",
+      "refs": [1],
+      "study": []
+    },
+    {
+      "section": "qualification",
+      "quote": "비즈니스 수준의 영어 구사 능력을 보유하신 분",
+      "short": "영어로 문서를 쓰고 회의를 할 수 있어야 한다 — 이력서도 영문이다.",
+      "why": "공고가 영문 이력서를 필수로 요구하고 영어 보고를 업무로 적었습니다.[1]",
+      "how_far": "원어민 수준이 아니라 업무가 막히지 않는 수준. 영문 이력서를 직접 쓰는 것이 출발점입니다 {추론}.",
+      "refs": [1],
+      "study": []
+    },
+    {
+      "section": "preference",
+      "quote": "이커머스 마켓플레이스 또는 대규모 테크 플랫폼에서 정책, 표준, 거버넌스 프레임워크, 품질 프로그램을 개발한 경험이 있으신 분",
+      "short": "큰 플랫폼에서 등록·콘텐츠 정책이나 품질 프로그램을 직접 만들어 본 사람이면 더 좋다.",
+      "why": "업무 첫 묶음(정책·거버넌스)을 처음부터 해 본 사람이면 바로 일할 수 있습니다.[1] 트러스트앤세이프티 업계는 정책을 만들고 집행하는 일을 별도 직무 분야로 정리해 두었습니다.[16]",
+      "refs": [1, 16],
+      "study": ["tspa"]
+    },
+    {
+      "section": "preference",
+      "quote": "카탈로그, 상품 정보, 마켓플레이스 Integrity, Trust & Safety, 콘텐츠 품질 또는 이와 유사한 영역에서 근무한 경험이 있으신 분",
+      "short": "상품 정보 관리, 부정 등록 막기(무결성·T&S), 콘텐츠 품질 같은 일을 해 봤으면 좋다.",
+      "why": "쿠팡에는 정보가 부정확하거나 악의적으로 등록된 상품을 찾아 막는 오딧 조직이 있습니다.[5] 이런 일이 '마켓플레이스 Integrity(무결성 — 플랫폼에 속임수가 없게 지키는 일)'입니다.",
+      "actually": {
+        "items": [
+          "개발자라면 상품 데이터 정제·중복 상품 묶기·스팸/어뷰징 탐지 경험이 가깝다. 쿠팡도 중복 상품 찾기를 카탈로그 품질 과제로 다뤘다.[19]",
+          "T&S 의 기본 일 — 정책 만들기, 신고·탐지, 판정, 제재, 투명성 보고.[16]"
+        ]
+      },
+      "refs": [5, 16, 19],
+      "study": ["tspa"]
+    },
+    {
+      "section": "preference",
+      "quote": "Audit 방법론, 샘플링 프레임워크, 결함 측정, 품질 보증(QA) 프로그램 설계 경험이 있으신 분",
+      "short": "몇 건을 어떻게 뽑아 볼지, 몇 개까지 틀리면 통과시킬지를 설계해 본 경험이면 좋다.",
+      "why": "쿠팡 카탈로그 품질 PM 공고도 대규모 품질 관리·오딧 프로그램 운영을 우대했습니다.[2] 공장 품질 관리의 **합격 판정 표본 검사**(표본 n개 중 결함이 c개 이하면 통과)가 같은 생각입니다.[10]",
+      "actually": {
+        "items": [
+          "**(n, c) 계획** — 표본 크기 n과 허용 결함 수 c로 묶음(셀러·카테고리·AI 결과 한 묶음)을 통과·반려한다.[10]",
+          "**AQL** — 받아들일 수 있는 품질 수준. 이보다 좋은 묶음은 높은 확률로 통과해야 한다.[10]",
+          "**운영 특성 곡선** — 실제 결함률에 따라 통과 확률이 어떻게 바뀌나를 보고 n·c를 고른다(아래 예).",
+          "**QA 프로그램** — 정기 표본 검사로 품질 저하를 감시하고, 확신이 낮은 것만 사람에게 보낸다.[14]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "표본 125건, 결함 3건까지 통과 — 통과 확률 (이항분포, 직접 실행)",
+          "body": "실제 결함률 1%면 96.3% 통과, 2% 75.9%, 3% 48.1%, 5% 12.4%. 3% 묶음도 절반은 통과한다 — 더 엄격히 거르려면 n을 키우거나 c를 줄인다.",
+          "lang": "python",
+          "code": "from math import comb\ndef p_accept(n, c, p):\n    return sum(comb(n,k)*p**k*(1-p)**(n-k) for k in range(c+1))\nfor p in (0.01, 0.02, 0.03, 0.05):\n    print(f\"{p:.0%} {p_accept(125, 3, p):.1%}\")\n# 1% 96.3%  2% 75.9%  3% 48.1%  5% 12.4%"
+        }
+      ],
+      "refs": [2, 10, 14],
+      "study": ["nist-accept", "nist-sample"]
+    },
+    {
+      "section": "preference",
+      "quote": "품질 측정, 탐지, 운영 프로세스의 확장을 위해 자동화, 머신러닝, AI 보조 시스템을 활용한 경험이 있으신 분",
+      "short": "사람 검수를 LLM·규칙 검사로 넓히고, 그 AI 판정이 맞는지까지 재 본 경험이면 좋다.",
+      "why": "쿠팡은 카테고리 분류를 LLM 하나로 바꾸고 속성 추출에도 LLM을 씁니다.[7] 같은 조직의 디렉터 공고는 LLM 속성 추출과 정밀도 추적을 요구합니다.[6]",
+      "actually": {
+        "intro": "다른 회사가 공개한 방식입니다 — 쿠팡의 검수 자동화 구조는 공개되지 않았습니다.",
+        "items": [
+          "**문턱으로 나누기** — 월마트는 정확도가 속성별 문턱(보통 90~95%+)을 넘는 것만 바로 반영하고 나머지는 검증 모델로 한 번 더 본다.[13]",
+          "**확신 낮은 것만 사람에게** — 인스타카트는 LLM 판정에 확신 점수를 매겨 낮은 것을 사람 검수로 보낸다.[14]",
+          "**LLM으로 상품 정보 점검** — 아마존은 카테고리별 모델 대신 범용 LLM으로 상품 정보의 오류·누락을 찾는다.[15]",
+          "**AI 판정도 표본으로** — AI 검수 결과를 사람이 정기적으로 표본 검사해 일치도를 잰다.[12][14]"
+        ]
+      },
+      "how_far": "모델을 만들지는 않습니다. **AI에게 맡길 범위·통과 문턱·사람 검수로 보낼 조건**을 정하는 쪽 {추론}.",
+      "refs": [6, 7, 12, 13, 14, 15],
+      "study": ["walmart-llm", "instacart-parse", "amazon-listings", "coupang-llm"]
+    },
+    {
+      "section": "preference",
+      "quote": "전략적 문제 정의와 실무적인 데이터 분석을 자유롭게 넘나들 수 있는 뛰어난 역량을 보유하신 분",
+      "short": "'올해 무엇을 고칠까'를 정하다가도 직접 쿼리를 돌려 확인할 수 있는 사람.",
+      "why": "직무 소개의 '상세한 데이터 분석과 모호한 정책 이슈 사이를 넘나든다'와 같은 요구입니다.[1]",
+      "refs": [1],
+      "study": ["lean-analytics"]
+    },
+    {
+      "section": "preference",
+      "quote": "* 영문 이력서 제출 필수",
+      "short": "지원서는 영문 이력서로 낸다.",
+      "why": "영어 보고가 업무에 들어가 있고, 해외 이해관계자가 서류를 봅니다.[1][6]",
+      "how_far": "성과를 숫자로 적는다 — '결함률 X%→Y%', '검수 N건/일 자동화' {추론}.",
+      "refs": [1, 6],
+      "study": []
+    }
+  ],
+  "fit": {
+    "good": [
+      "규칙을 만들고 그 규칙이 지켜지는지 숫자로 확인하는 걸 좋아하는 사람",
+      "'결함률 몇 %'라는 숫자를 그냥 믿지 않고 분모와 표본부터 묻는 사람",
+      "여러 팀 사이에서 합의를 만드는 일이 즐거운 사람[1]",
+      "영어로 일하는 데 거리낌이 없는 사람[1]"
+    ],
+    "hard": [
+      "코드를 짜는 시간이 거의 없다 — 개발을 계속하고 싶다면 맞지 않는다 {추론}",
+      "경력 8년 이상 문턱[1]",
+      "법무·사업·테크의 합의로 결정이 나서 속도가 느릴 수 있다 {추론}"
+    ]
+  },
+  "interview": [
+    { "q": "카테고리마다 200건씩 검수했더니 공구 결함률이 가장 높아요. 공구부터 고치겠어요?", "a": "상품 수 기준과 고객 노출 가중 결함률의 차이." },
+    { "q": "결함률 5% 근처를 ±1%p로 재려면 몇 건을 봐야 하나요? 카테고리가 3,000개라면요?", "a": "표본 크기와 층화 표본.[11]" },
+    { "q": "검수자 둘의 판정이 90% 일치해요. 기준이 잘 쓰였다고 할 수 있나요?", "a": "우연 일치를 뺀 카파.[12]" },
+    { "q": "필수 속성을 하나 늘리자는 안에 사업 팀이 반대해요. 어떻게 결정을 받겠어요?", "a": "균형 — 셀러 부담과 반품 감소를 숫자로, 단계 출시.[17]" },
+    { "q": "LLM 검수를 들였더니 결함 탐지가 두 배가 됐어요. 무엇을 먼저 확인하겠어요?", "a": "AI 판정의 정밀도를 사람 표본으로.[13][14]" }
+  ],
+  "resources": [
+    { "id": "nist-accept", "title": "NIST/SEMATECH e-Handbook — Lot Acceptance Sampling", "by": "미국 국립표준기술연구소(NIST)", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://itl.nist.gov/div898/handbook/pmc/section2/pmc23.htm", "why": "표본 n·허용 결함 c·AQL·운영 특성 곡선 — 우대 'Audit 방법론·샘플링 프레임워크' 줄의 교과서적 바탕." },
+    { "id": "nist-sample", "title": "NIST/SEMATECH e-Handbook — Sample sizes required (비율)", "by": "미국 국립표준기술연구소(NIST)", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://itl.nist.gov/div898/handbook/prc/section2/prc242.htm", "why": "결함률을 원하는 오차로 재려면 몇 건을 봐야 하나. KPI 측정 방법론의 출발점." },
+    { "id": "sklearn-kappa", "title": "scikit-learn · cohen_kappa_score", "by": "scikit-learn 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html", "why": "검수자끼리(또는 사람과 AI) 판정이 우연 이상으로 맞는지 재는 함수. 정책이 잘 쓰였는지 확인할 때." },
+    { "id": "ftc-notice", "title": "전자상거래 등에서의 상품 등의 정보제공에 관한 고시", "by": "공정거래위원회 · 국가법령정보센터", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.law.go.kr/행정규칙/전자상거래등에서의상품등의정보제공에관한고시", "why": "품목별로 반드시 보여 줘야 하는 상품 정보 목록. '법적 요구사항'을 등록 기준·측정 항목으로 옮길 때 원문." },
+    { "id": "google-spec", "title": "Google Merchant Center · Product data specification", "by": "Google", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://support.google.com/merchants/answer/7052112", "why": "상품명·이미지·속성 기준을 공개한 예. 카탈로그 품질 정책을 어떤 단위로 쓰는지 본보기." },
+    { "id": "tspa", "title": "Trust & Safety Curriculum", "by": "Trust & Safety Professional Association(TSPA)", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.tspa.org/curriculum/ts-curriculum/", "why": "정책 만들기·집행·투명성 보고 등 T&S 업무의 기본 장들. 우대 'Integrity·T&S' 줄의 개념 잡기." },
+    { "id": "walmart-llm", "title": "How Walmart uses LLMs to manage its massive product catalogs", "by": "Walmart Global Tech · 2025-05", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://tech.walmart.com/content/walmart-global-tech/en_us/blog/post/using-llms-to-manage-product-catalogs.html", "why": "추출·검증 모델을 나누고 문턱으로 바로 반영할지 가르는 구조. AI 보조 품질 측정의 실제 예." },
+    { "id": "instacart-parse", "title": "Scaling Catalog Attribute Extraction with Multi-modal LLMs", "by": "Instacart · 2025-08", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://company.instacart.com/tech-innovation/scaling-catalog-attribute-extraction-with-multi-modal-llms", "why": "확신 점수로 사람 검수를 고르고 정기 표본으로 품질을 지키는 방법." },
+    { "id": "amazon-listings", "title": "Using LLMs to improve Amazon product listings", "by": "Amazon Science", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.amazon.science/blog/using-llms-to-improve-amazon-product-listings", "why": "범용 LLM으로 상품 정보의 오류·누락을 찾는 방식. 탐지 자동화의 범위를 정할 때." },
+    { "id": "coupang-llm", "title": "Accelerating Coupang's AI Journey with LLMs", "by": "Coupang Engineering · 2024-10", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/", "why": "쿠팡이 카탈로그 분류·속성 추출에 LLM을 어떻게 쓰는지 — 이 자리가 검증할 AI가 무엇인지 회사가 직접 쓴 글." },
+    { "id": "kohavi-ko", "title": "A/B 테스트 — 신뢰할 수 있는 온라인 종합 대조 실험", "by": "론 코하비 · 다이앤 탕 · 야 쉬 지음, 이기홍 · 김기영 옮김", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://experimentguide.com/wp-content/uploads/2022/07/2022-07-04-Trustworthy-Online-Controlled-Experiments_Korean_Chapter1.pdf", "why": "정책·제품 변경의 효과를 실험으로 증명하고 지표를 고르는 법(지켜야 할 지표 포함). 1장은 무료." },
+    { "id": "sql-recipe", "title": "데이터 분석을 위한 SQL 레시피", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942290", "why": "집계·윈도 함수·이상 수치 찾기 예제 모음. SQL 요건과 원인 분석 쿼리를 위해." },
+    { "id": "pandas-book", "title": "파이썬 라이브러리를 활용한 데이터 분석", "by": "웨스 매키니", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://search.kyobobook.co.kr/search?keyword=%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EB%A5%BC%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%B6%84%EC%84%9D", "why": "스프레드시트를 넘는 '데이터 분석 툴' — 검수 결과를 Python으로 정리·집계하는 기본기." },
+    { "id": "lean-analytics", "title": "린 분석", "by": "앨리스테어 크롤 · 벤저민 요스코비츠", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%B0%20%EB%B6%84%EC%84%9D", "why": "지금 가장 중요한 지표 하나를 고르고 좋은 지표의 조건을 따지는 법. KPI 정의 경험 요건을 위해." }
+  ],
+  "study_path": [
+    { "title": "품질 기준 읽기", "time": "1~2주", "goal": "상품 정보 기준이 어떤 항목으로 쓰이고, 법이 정한 칸이 무엇인지 설명할 수 있다.", "task": "구글 상품 데이터 기준과 공정위 고시에서 한 품목(예: 화장품)을 골라 '필수 정보·금지 표기·이미지 규칙' 표를 만들고, 쿠팡 상품 10개를 그 표로 직접 검수해 결함을 적는다.", "resources": ["google-spec", "ftc-notice", "tspa"] },
+    { "title": "결함을 숫자로", "time": "2주", "goal": "표본 크기·층화 표본·가중 결함률·검수자 일치도로 '결함률 몇 %'를 믿을 수 있게 만든다.", "task": "가상 상품 1만 개(카테고리 5개, 조회 비중 다르게)에서 층별로 표본을 뽑아 결함률을 상품 수 기준·조회 가중 두 가지로 내고, 친구와 같은 50건을 검수해 카파를 계산한다.", "resources": ["nist-sample", "sklearn-kappa", "pandas-book"] },
+    { "title": "오딧 설계와 원인 분석", "time": "2주", "goal": "(n, c) 표본 검사 계획을 고르고, 결함을 원인별로 묶어 개선 제안을 쓸 수 있다.", "task": "셀러 묶음 단위로 (n, c) 계획 두 개의 통과 확률 곡선을 그려 비교하고, 가상 결함 100건을 SQL로 원인별 누적 비율로 묶어 상위 원인 셋의 개선 제안서를 한 쪽으로 쓴다.", "resources": ["nist-accept", "sql-recipe"] },
+    { "title": "AI 검수 넓히기", "time": "2주", "goal": "LLM 검수의 범위·문턱·사람 검수 조건을 정하고 AI 판정을 표본으로 검증한다.", "task": "상품명 100개를 LLM에게 '필수 정보 누락 여부'로 판정하게 한 뒤 직접 만든 정답과 비교해 정밀도·재현율을 내고, 확신이 낮은 것만 사람에게 보내는 규칙을 적는다.", "resources": ["coupang-llm", "walmart-llm", "instacart-parse", "amazon-listings"] },
+    { "title": "KPI와 설득", "time": "1~2주", "goal": "KPI 정의서를 쓰고, 변경 효과를 실험으로 재서 한국어·영어로 보고할 수 있다.", "task": "2단계 결함률을 KPI 정의서(정의·분모·표본·주기·지켜야 할 지표)로 적고, 3단계 제안의 실험 계획을 붙여 영어 한 쪽 요약과 한국어 한 쪽 요약을 쓴다.", "resources": ["lean-analytics", "kohavi-ko"] }
+  ],
+  "pay": {
+    "summary": "공고에 연봉 표기는 없다. 집계 사이트 기준 쿠팡(주) 초봉 **약 3,531만원**·평균 **약 5,175만원** — 물류·운영 인력이 섞인 회사 전체 값이라 이 자리(경력 8년 이상 시니어 PM)와는 거리가 크다",
+    "rows": [
+      { "label": "신입 초봉", "value": "약 3,531만원", "amount": 3531, "basis": "공공데이터 집계", "note": "자소설닷컴 쿠팡 회사 페이지. 기업이 공공데이터에 낸 정보로 계산한 값이고 기준 연도·직군 구분이 없다 [20]" },
+      { "label": "직원 평균 연봉", "value": "약 5,175만원", "amount": 5175, "basis": "공공데이터 집계", "note": "같은 페이지의 평균. 경력직·전 직군이 섞인 값 [20]" },
+      { "label": "직원 평균 연봉 (원티드)", "value": "5,856만원", "amount": 5856, "basis": "공공데이터 집계", "note": "원티드 회사 페이지 표기, 기준일 표기 없음 [22]" },
+      { "label": "네이버 평균", "value": "약 7,602만원", "amount": 7602, "peer": true, "basis": "공공데이터 집계", "note": "자소설닷컴 같은 방식의 값 [21]" },
+      { "label": "지마켓 평균", "value": "6,032만원", "amount": 6032, "peer": true, "basis": "공공데이터 집계", "note": "원티드 같은 방식의 값 [23]" }
+    ],
+    "how": "쿠팡(주)은 미국 상장사 쿠팡 Inc.의 국내 자회사라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **공시 숫자 없음**. 위 값은 집계 사이트 것이고, 운영·물류 직군이 섞여 시니어 PM 경력직 연봉보다 낮게 나올 가능성이 크다 {추론}. 직급과 업무 범위는 후보자 경력으로 정하고 최종 합격 전에 알려 준다고 공고에 적혀 있다 [1]."
+  },
+  "benefits": {
+    "items": [
+      { "name": "근무", "detail": "주 5일 유연근무제" },
+      { "name": "휴가", "detail": "사유 없이 연차 사용" },
+      { "name": "보험", "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원" },
+      { "name": "쇼핑", "detail": "쿠팡 구매금액 5% 캐시백(연 최대 400만원)" },
+      { "name": "건강", "detail": "연 1회 건강검진" },
+      { "name": "상여·경조", "detail": "명절 상여금, 경조금·경조휴가" },
+      { "name": "배움", "detail": "사내 기술 공유 스터디, 외국어·직무 교육 프로그램" },
+      { "name": "사내 시설", "detail": "휴게 공간, 커피·차·간식, 사내 식당" }
+    ],
+    "note": "이 공고에는 복리후생 칸이 없다 [1]. 위 항목은 같은 회사 카탈로그 공고의 '혜택 및 복지' 칸(원티드, 2026-11) [28]과 쿠팡 채용 사이트 'Why Coupang' 소개 [24]다. 금액은 그 공고 칸의 것이고, 이 자리에 똑같이 적용되는지는 처우 협의 때 확인한다 {추론}. 수습 12주가 있다 [1]."
+  },
+  "location": {
+    "name": "쿠팡 본사 (이스트폴 타워)",
+    "address": "서울특별시 광진구 아차산로 412, 이스트폴 타워 A",
+    "postal": "05050",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+    "near": "2호선 구의역 [25]",
+    "note": "공고 근무지 표기는 'Seoul, South Korea'뿐이다 [1]. 쿠팡 채용 사이트 서울 근무지에 광진구 구의 사무실(이스트폴 타워)이 있고 [24], 도로명 주소는 같은 회사 다른 공고의 근무지 표기다 [26]. 이 팀 자리가 이 건물인지는 공고에 적혀 있지 않다 {추론}."
+  },
+  "sources": [
+    { "n": 1, "title": "Coupang Careers · [쿠팡] Senior Program Manager (카탈로그 품질 및 데이터 분석)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8275940", "kind": "posting", "date": "2026-11", "note": "직무 소개·업무·자격·우대·전형(서류 → 직무 적합성 → 핵심 역량 → 합격)·수습 12주. 연봉·복지 칸 없음" },
+    { "n": 2, "title": "리멤버 · [쿠팡] Catalog Quality PM (로켓그로스 리스팅·카탈로그 품질 개선)", "url": "https://career.rememberapp.co.kr/job/posting/344670", "kind": "posting", "note": "상품명·이미지·속성·그룹핑·번들 품질 이슈 발굴, 운영 인력 6~10명, SLA·결함률, 품질 관리·오딧 프로그램 우대 — 검색 결과 요약으로 확인" },
+    { "n": 3, "title": "리멤버 · [쿠팡] Catalog CX Audit 시니어 매니저", "url": "https://career.rememberapp.co.kr/job/posting/276624", "kind": "posting", "date": "2025-12", "note": "리스팅의 품질·신뢰성·안전성 책임, 마감된 공고 — 검색 결과 요약으로 확인" },
+    { "n": 4, "title": "원티드 · [쿠팡] Catalog Product Operations · Inspection 팀", "url": "https://www.wanted.co.kr/wd/394515", "kind": "posting", "note": "카탈로그 속성 데이터 QA·검수 정확도·SOP 개선 — 검색 결과 요약으로 확인" },
+    { "n": 5, "title": "리멤버 · [쿠팡] Selection Quality Audit", "url": "https://career.rememberapp.co.kr/job/posting/254553", "kind": "posting", "note": "노출 상품의 적절성 검토, 부정확·악의적 등록 상품 식별·차단 — 검색 결과 요약으로 확인" },
+    { "n": 6, "title": "Coupang Careers · Director, Product Management (Catalog)", "url": "https://www.coupang.jobs/kr/jobs/8178960/director-product-management-catalog/", "kind": "posting", "date": "2026-11", "note": "수십억 상품·하루 수억 건 갱신, LLM 속성 추출·자동 택소노미 분류, 정밀도 추적, 여러 나라 이해관계자" },
+    { "n": 7, "title": "Coupang Engineering · Accelerating Coupang's AI Journey with LLMs", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/", "kind": "company", "date": "2024-10", "note": "카테고리별 모델 → LLM 분류기 하나, 속성 추출" },
+    { "n": 8, "title": "Coupang Announces Results for Fourth Quarter 2025", "url": "https://ir.aboutcoupang.com/news-events/news/news-details/2026/Coupang-Announces-Results-for-Fourth-Quarter-2025/default.aspx", "kind": "company", "date": "2026-02", "note": "상품 커머스 활성 고객 2,460만 명" },
+    { "n": 9, "title": "국가법령정보센터 · 전자상거래 등에서의 상품 등의 정보제공에 관한 고시(공정거래위원회)", "url": "https://www.law.go.kr/행정규칙/전자상거래등에서의상품등의정보제공에관한고시", "kind": "reference", "note": "품목별 필수 상품 정보, 2017 개정으로 안전 관련 항목 추가 — 개정 내용은 검색 결과 요약으로 확인, 현행 원문 재확인 필요" },
+    { "n": 10, "title": "NIST/SEMATECH e-Handbook · Lot Acceptance Sampling", "url": "https://itl.nist.gov/div898/handbook/pmc/section2/pmc23.htm", "kind": "reference", "note": "(n, c) 단일 표본 계획, AQL" },
+    { "n": 11, "title": "NIST/SEMATECH e-Handbook · Sample sizes required", "url": "https://itl.nist.gov/div898/handbook/prc/section2/prc242.htm", "kind": "reference", "note": "비율의 표본 크기" },
+    { "n": 12, "title": "scikit-learn · cohen_kappa_score", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html", "kind": "reference", "note": "평가자 간 일치도" },
+    { "n": 13, "title": "Walmart Global Tech · How Walmart uses LLMs to manage its massive product catalogs", "url": "https://tech.walmart.com/content/walmart-global-tech/en_us/blog/post/using-llms-to-manage-product-catalogs.html", "kind": "reference", "date": "2025-05", "note": "다른 회사 — 추출·검증 두 모델, 속성별 문턱 90~95%+" },
+    { "n": 14, "title": "Instacart · Scaling Catalog Attribute Extraction with Multi-modal LLMs", "url": "https://company.instacart.com/tech-innovation/scaling-catalog-attribute-extraction-with-multi-modal-llms", "kind": "reference", "date": "2025-08", "note": "다른 회사 — 확신 점수·사람 검수·정기 표본" },
+    { "n": 15, "title": "Amazon Science · Using LLMs to improve Amazon product listings", "url": "https://www.amazon.science/blog/using-llms-to-improve-amazon-product-listings", "kind": "reference", "note": "다른 회사 — 범용 LLM으로 상품 정보 점검" },
+    { "n": 16, "title": "TSPA · Trust & Safety Curriculum", "url": "https://www.tspa.org/curriculum/ts-curriculum/", "kind": "reference", "note": "업계 단체의 커리큘럼 — 정책 만들기·집행, 투명성 보고 장부터 공개" },
+    { "n": 17, "title": "Trustworthy Online Controlled Experiments 한국어판 1장", "url": "https://experimentguide.com/wp-content/uploads/2022/07/2022-07-04-Trustworthy-Online-Controlled-Experiments_Korean_Chapter1.pdf", "kind": "reference", "note": "온라인 대조 실험으로 변화의 효과 재기" },
+    { "n": 18, "title": "Google Merchant Center · Product data specification", "url": "https://support.google.com/merchants/answer/7052112", "kind": "reference", "note": "상품명·이미지·속성의 공개 기준" },
+    { "n": 19, "title": "Coupang Engineering · Matching duplicate items to improve catalog quality", "url": "https://medium.com/coupang-engineering/matching-duplicate-items-to-improve-catalog-quality-ca4abc827f94", "kind": "company", "note": "본문은 접근이 막혀(403) 제목·주제만 확인" },
+    { "n": 20, "title": "자소설닷컴 · 쿠팡", "url": "https://jasoseol.com/companies/192", "kind": "reference", "note": "공공데이터 기반 초봉·평균, 기준 연도 없음(검색 결과로 확인)" },
+    { "n": 21, "title": "자소설닷컴 · 네이버", "url": "https://jasoseol.com/companies/511", "kind": "reference", "note": "같은 방식의 비교 값(검색 결과로 확인)" },
+    { "n": 22, "title": "원티드 · 쿠팡 회사 정보", "url": "https://www.wanted.co.kr/company/53", "kind": "reference", "note": "평균연봉" },
+    { "n": 23, "title": "원티드 · 지마켓 회사 정보", "url": "https://www.wanted.co.kr/company/373", "kind": "reference", "note": "같은 방식의 비교 값" },
+    { "n": 24, "title": "Coupang Careers · Why Coupang / 서울 근무지", "url": "https://www.coupang.jobs/kr/why-coupang/", "kind": "company", "note": "복지 항목(금액 없음). 서울 근무지 페이지에 광진구 구의 사무실(이스트폴 타워)" },
+    { "n": 25, "title": "아시아경제 · 이스트폴(구의역 KT 부지 개발)과 쿠팡 입주", "url": "https://www.asiae.co.kr/en/article/2025081219080020350", "kind": "news", "date": "2025-08", "note": "구의역 인근" },
+    { "n": 26, "title": "원티드 · 쿠팡 공고(근무지 주소 표기)", "url": "https://www.wanted.co.kr/wd/395969", "kind": "posting", "note": "근무지 서울 광진구 아차산로 412, 이스트폴 타워 A" },
+    { "n": 27, "title": "Shopify Engineering · Using Rich Image and Text Data to Categorize Products at Scale", "url": "https://shopify.engineering/using-rich-image-text-data-categorize-products", "kind": "reference", "date": "2021-09", "note": "다른 회사 — 단계별 정밀도·재현율·커버리지, 민감 칸 문턱 수동 조정" },
+    { "n": 28, "title": "원티드 · [쿠팡] 카탈로그 Taxonomy 및 데이터 분석 PM", "url": "https://www.wanted.co.kr/wd/396324", "kind": "posting", "date": "2026-11", "note": "같은 카탈로그 조직 공고 — '혜택 및 복지' 칸" }
+  ],
+  "caveat": "쿠팡은 카탈로그 품질의 결함 정의·오딧 표본·KPI를 공개하지 않았습니다. 회사 근거는 이 공고, 같은 카탈로그 조직의 다른 공고(일부는 검색 결과 요약으로만 확인), ML 플랫폼 블로그 한 편이고 팀 발표 영상은 찾지 못했습니다. 측정·표본 검사·AI 검수는 NIST 품질 핸드북과 월마트·인스타카트·아마존·쇼피파이의 공개 자료로 '보통 이런 것'을 보였습니다. 연봉은 공시가 없어 집계 사이트 값입니다."
+}

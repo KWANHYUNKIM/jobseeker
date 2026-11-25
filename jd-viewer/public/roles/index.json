@@ -6,6 +6,7 @@
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8398431": "coupang-audit-ai-ops-analyst-bengaluru",
   "ats-greenhouse:coupang:8385253": "coupang-audit-ai-ops-pm-bengaluru",
+  "ats-greenhouse:coupang:8275940": "coupang-catalog-quality-senior-pm",
   "wanted-396324": "coupang-catalog-taxonomy-pm",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
@@ -321,6 +322,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 31
+  },
+  {
+   "id": "coupang-catalog-quality-senior-pm",
+   "company": "쿠팡",
+   "role": "Senior Program Manager (카탈로그 품질 및 데이터 분석)",
+   "jobs": [
+    "ats-greenhouse:coupang:8275940"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 27
   },
   {
    "id": "coupang-catalog-taxonomy-pm",
