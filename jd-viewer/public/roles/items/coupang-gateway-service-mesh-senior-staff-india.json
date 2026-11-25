@@ -1,0 +1,1070 @@
+{
+ "id": "coupang-gateway-service-mesh-senior-staff-india",
+ "company": "쿠팡",
+ "role": "Senior Staff Backend Engineer (Service Mesh)",
+ "team": "Gateway Services 팀 (인도 · 벵갈루루)",
+ "jobs": [
+  "ats-greenhouse:coupang:7496873"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡의 수많은 사내 서비스가 **서로 부를 때 지나가는 길**(어디로 보낼지 찾기·나눠 보내기·실패하면 끊기·암호화·누가 불렀나 확인)을 회사 전체에 하나로 까는 **서비스 메시**(service mesh — 서비스마다 옆에 붙은 프록시가 통신을 대신 맡는 층)를 설계하고 만드는 자리입니다.[1]",
+  "env": "공고는 정책·설정을 한곳에서 관리하는 **관리 평면**, 회사 전체의 **세밀한 트래픽 제어**, 서비스 사이 **mTLS 암호화와 신원 기반 인증·인가**를 할 일로 적었습니다.[1] 백엔드 API 는 Java·Spring Boot, 인프라 부품은 Go 로 만들고, Istio·Envoy 경험을 우대합니다.[1] 쿠팡은 예전에 하나의 큰 프로그램을 수많은 마이크로서비스로 쪼개며 API Gateway 와 장애 차단기 Valve 를 직접 만든 회사입니다.[2]",
+  "oneline": "애플리케이션 개발자가 아니라 **다른 모든 개발팀이 밟고 서는 통신 바닥**을 짓는 경력 13년 이상 플랫폼 엔지니어 자리입니다. Istio·Envoy 를 설정하는 수준을 넘어, 그 위에 회사용 제어 부품을 Go 로 짜는 일이 중심입니다 {추론}."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "As a Senior Staff Software Engineer in the Gateway Services team, you will partner with leaders of multiple Platform teams.",
+   "short": "배포·보안·관측 같은 여러 플랫폼 팀의 리더와 짝을 이뤄 일한다.",
+   "why": "공고는 Gateway Services 팀이 서비스끼리 통신하게 하는 **인프라 층**을 맡고, 그 핵심이 서비스 찾기(discovery)·나눠 보내기(load balancing)·트래픽 회복력·트래픽 관리·실패 복구·관측이라고 적었습니다.[1] 이 층은 모든 서비스가 지나가서, 여기서 생긴 문제는 곧 회사 전체 장애가 됩니다 {추론}.",
+   "actually": {
+    "intro": "여기서 '고객'은 쇼핑 고객이 아니라 **이 플랫폼을 쓰는 사내 개발팀**입니다 {추론}.",
+    "items": [
+     "**배포 플랫폼 팀과** — 새 버전을 띄울 때 트래픽을 조금씩 옮기는 일(카나리)을 메시가 맡는다.[11]",
+     "**보안·신원 팀과** — 서비스 사이 인증서·신원을 어디서 받나. 쿠팡 IAM 공고는 서비스 사이 인증과 기계 신원을 그 팀 일로 적었다.[5]",
+     "**관측 팀과** — 프록시가 남기는 요청 수·지연·오류 지표를 어디로 보내나.[14]",
+     "**운영 수준 올리기** — 장애 회고·경보·플레이북을 다른 팀에도 기준으로 퍼뜨린다 {추론}."
+    ]
+   },
+   "how_far": "Senior Staff 는 혼자 기능을 만드는 것보다 **여러 팀이 같은 방향으로 가게 하는 설계와 결정**으로 평가받는 경우가 많습니다.[22] 그래도 이 공고는 구현 문장이 많아 손을 놓는 자리는 아닙니다.[1]",
+   "refs": [
+    1,
+    5,
+    11,
+    14,
+    22
+   ],
+   "study": [
+    "staff-eng",
+    "building-ms"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "You will implement simple solutions to complex infrastructure problems, building a highly scalable, reliable, and efficient platform for our customers.",
+   "short": "복잡한 인프라 문제를 단순하게 풀어, 사내 개발팀이 쓰는 크고 튼튼하고 값싼 통신 플랫폼을 만든다.",
+   "why": "메시는 모든 서비스에 같은 기능(재시도·암호화·지표)을 코드 수정 없이 주는 대신, 그 자체가 복잡해지기 쉽습니다.[12][13] 쓰는 팀이 규칙 몇 줄만 알면 되게 단순하게 감싸는 것이 플랫폼 팀의 일입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**기본값 잘 정하기** — 대부분의 서비스가 아무것도 안 써도 맞는 타임아웃·재시도·mTLS 를 받게 {추론}.",
+     "**효율** — 파드마다 붙는 프록시의 CPU·메모리가 파드 수만큼 늘어난다. 줄이는 방법(앰비언트 모드 등)을 고른다.[13]",
+     "**믿을 만함** — 제어 평면이 잠깐 죽어도 프록시는 마지막 설정으로 계속 요청을 나른다 {추론}."
+    ]
+   },
+   "refs": [
+    12,
+    13
+   ],
+   "study": [
+    "istio-in-action"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "You will be accountable for raising the bar on engineering and operational excellence.",
+   "short": "팀의 설계·코드·운영 기준을 끌어올리는 책임을 진다.",
+   "why": "공고는 '운영 수준(operational excellence)'을 업무 줄에서 두 번 적었습니다.[1] 메시 장애는 회사 전체 장애라 운영 기준이 곧 제품 품질입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**목표(SLO)** — 메시를 지나는 요청의 성공률·추가 지연 목표를 정하고 경보를 건다.[32]",
+     "**장애 회고** — 탓하지 않는 회고로 뿌리 원인과 재발 방지를 적는다.[32]",
+     "**변경 안전** — 설정 변경도 코드처럼 리뷰·단계 배포·자동 되돌리기 {추론}."
+    ]
+   },
+   "refs": [
+    1,
+    32
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Build Service Mesh components collaborating actively within a tightly knit talented team.",
+   "short": "서비스 메시의 부품(제어 서버·프록시 설정·정책 처리기)을 팀과 같이 직접 만든다.",
+   "why": "서비스 메시는 두 층입니다 — 요청을 실제로 나르는 **데이터 평면**(서비스 옆의 Envoy 프록시)과, 프록시마다 '어디로·어떻게 보낼지' 설정을 내려 주는 **제어 평면**(Istio 의 istiod).[12][15] 회사 고유 규칙은 대개 제어 평면 쪽에 부품을 더해 넣습니다 {추론}.",
+   "actually": {
+    "intro": "보통 메시에서 회사가 직접 만드는 부품들입니다. 쿠팡이 무엇을 만들었는지는 공개되지 않았습니다.",
+    "items": [
+     "**설정 서버(xDS)** — Envoy 는 리스너·경로·클러스터·엔드포인트 설정을 xDS 라는 gRPC 프로토콜로 받는다. 이걸 내려 주는 서버를 Go 로 짜는 라이브러리(go-control-plane)가 있다.[16][17]",
+     "**설정 변환기** — 개발팀이 쓴 짧은 규칙(\"v2 로 10%\")을 프록시 설정으로 바꿔 검사하고 내려보낸다.[11]",
+     "**프록시 확장** — 회사 공통 헤더·인증 검사를 Envoy 필터로 넣는다.[15]",
+     "**옮기기 도구** — 메시 밖 서비스와 안 서비스가 섞인 동안 둘 다 통하게 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "설정 한 줄이 요청에 닿기까지 (Istio·Envoy 의 보통 흐름)[11][12][16]",
+     "steps": [
+      "개발팀이 규칙 작성 · \"reviews 는 v1 90% / v2 10%\"",
+      "제어 평면이 받아 검사 · 충돌·오타·권한",
+      "프록시 설정으로 번역 · 경로·클러스터·가중치",
+      "xDS 로 모든 프록시에 내려보냄",
+      "프록시가 요청마다 적용"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "refs": [
+    11,
+    12,
+    15,
+    16,
+    17
+   ],
+   "study": [
+    "istio-in-action",
+    "envoy-docs",
+    "go-control-plane"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Design and implement back-end APIs using REST/Hibernate using Java SpringBoot and infrastructure components using Go.",
+   "short": "설정·정책을 받는 관리 API 는 Java·Spring Boot 로, 프록시 곁에서 도는 인프라 부품은 Go 로 만든다.",
+   "why": "공고는 정책·설정을 한곳에서 관리하는 '관리 평면'을 할 일로 적었습니다.[1] 규칙을 저장·조회·승인하는 쪽은 DB 를 쓰는 평범한 백엔드라 Spring Boot·Hibernate(자바 ORM), 많은 프록시와 붙는 제어 부품은 Envoy·Istio·쿠버네티스 생태계가 Go 라 Go 로 나눈 것으로 보입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**관리 API(Java)** — 서비스별 라우팅 규칙·타임아웃·재시도·접근 정책을 등록·수정·이력 조회하는 REST API. 누가 언제 바꿨나를 남긴다 {추론}.",
+     "**검증** — 저장하기 전에 \"가중치 합이 100인가\", \"없는 서비스로 보내지 않나\"를 막는다 {추론}.",
+     "**제어 부품(Go)** — 저장된 규칙을 읽어 xDS 설정으로 만들어 프록시에 밀어 준다.[16][17]",
+     "**쿠버네티스 연동(Go)** — 서비스·파드가 생기고 없어지는 걸 지켜보며(controller) 엔드포인트를 갱신한다.[18]"
+    ]
+   },
+   "how_far": "두 언어 다 **실무로 깊게**가 요구입니다(자격요건의 Go/Java/Python 줄).[1] 관리 API 는 흔한 CRUD 지만, 잘못된 설정 하나가 전체 트래픽을 끊을 수 있어 검증·단계 배포·되돌리기가 기본입니다 {추론}.",
+   "refs": [
+    1,
+    16,
+    17,
+    18
+   ],
+   "study": [
+    "spring-boot-docs",
+    "learning-go",
+    "go-control-plane"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Architect workload and service management infrastructure by designing and developing critical infrastructure components.",
+   "short": "서비스와 그 실행 단위(워크로드)를 등록·찾기·관리하는 핵심 인프라 부품을 설계한다.",
+   "why": "마이크로서비스는 수시로 새로 뜨고 사라집니다. 쿠팡은 하루에 마이크로서비스 100~200개를 배포하고 그때마다 새 인스턴스 2,000개 넘게 생긴다고 밝혔습니다.[2] 그러면 '지금 이 서비스의 살아 있는 주소가 어디냐'를 계속 맞춰 주는 장치가 있어야 합니다.",
+   "actually": {
+    "items": [
+     "**서비스 목록(레지스트리)** — 서비스 이름 → 살아 있는 주소 목록. 쿠버네티스에서는 Service·EndpointSlice 가 이 일을 한다.[18]",
+     "**워크로드 신원** — 각 실행 단위에 '나는 결제 서비스다'를 증명하는 짧은 인증서를 준다(SPIFFE).[19]",
+     "**메시 밖 것 등록** — 가상 머신에서 도는 옛 서비스·외부 API 도 메시가 알게 한다.[11]",
+     "**건강 상태 반영** — 죽은 주소를 목록에서 빨리 뺀다 — 다음 줄들의 바탕."
+    ]
+   },
+   "refs": [
+    2,
+    11,
+    18,
+    19
+   ],
+   "study": [
+    "k8s-service",
+    "spiffe-docs",
+    "istio-in-action"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Decompose complex problems into simple, straightforward solutions following Coupang's leadership principles \"Move with Urgency\" and \"Ruthless Prioritization\".",
+   "short": "복잡한 문제를 단순한 조각으로 쪼개고, 급한 것부터 빠르게 처리한다 — 쿠팡의 리더십 원칙 둘.",
+   "why": "공고가 쿠팡 리더십 원칙 두 개('서둘러 움직여라'·'가차 없이 우선순위를 정하라')를 이름으로 적었습니다.[1] 메시처럼 모든 서비스에 닿는 일은 한 번에 다 바꾸면 위험해서, 쪼개서 조금씩 옮기는 능력이 곧 속도입니다 {추론}.",
+   "how_far": "면접에서는 \"수천 개 서비스를 메시로 옮긴다면 무엇부터?\" 같은 질문으로 쪼개는 순서와 버리는 것을 물을 가능성이 큽니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "staff-eng"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Demonstrate excellence resulting in scalable systems and services with the highest quality architecture and design.",
+   "short": "서비스 수와 트래픽이 커져도 버티는 구조로 설계해 결과로 보여 준다.",
+   "why": "메시의 제어 평면은 서비스·프록시 수가 늘수록 내려보낼 설정이 커지고, 데이터 평면은 요청마다 지연과 CPU 를 더합니다.[13] 쿠팡 캐시 층 하나가 분당 최대 1억 건을 받는다고 했으니, 프록시가 더하는 1ms 도 큰 비용입니다.[4] {추론}",
+   "actually": {
+    "items": [
+     "**설정 크기 줄이기** — 프록시마다 회사 전체 서비스 목록을 다 주지 않고, 그 서비스가 실제로 부르는 곳만 준다(Istio Sidecar 자원의 egress 범위).[11]",
+     "**바뀐 것만 보내기** — 전체 설정 대신 달라진 부분만 내려보내는 증분 xDS.[16]",
+     "**사이드카 비용** — 파드마다 프록시가 붙으면 CPU·메모리가 파드 수만큼 는다. Istio 는 이를 줄이려 사이드카 없는 앰비언트 모드를 내놓았다.[13]",
+     "**지연 예산** — 요청 경로의 프록시 홉마다 더해지는 지연을 재고 목표 안에 둔다 {추론}."
+    ]
+   },
+   "refs": [
+    4,
+    11,
+    13,
+    16
+   ],
+   "study": [
+    "ddia",
+    "istio-in-action"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Dive deep into critical system issues, proactively addressing similar root causes, and raising the bar on Operational Excellence.",
+   "short": "큰 장애의 뿌리 원인까지 파고들고, 같은 원인이 다른 곳에서 터지기 전에 막는다.",
+   "why": "쿠팡은 캐시 노드 하나가 부분적으로 고장 났을 때, 차단기가 전체 트래픽 중 작은 몫의 이상이라 알아채지 못했던 경험을 공개했습니다.[4] 이런 '조금만 아픈' 장애가 메시가 가장 잘 잡아야 하는 종류입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**이상 서버 빼기(outlier detection)** — Envoy 는 기본으로 연속 5xx 5번이면 그 서버를 잠시(기본 30초부터) 목록에서 뺀다. 서버 단위라 '하나만 아픈' 경우를 잡는다.[20]",
+     "**연쇄 장애 끊기** — 한 서비스가 느려지면 부르는 쪽 연결·스레드가 쌓여 같이 죽는다. 쿠팡이 Valve 를 만든 이유가 이것이다.[2][21]",
+     "**재시도 폭풍** — 층마다 재시도하면 맨 아래 서비스의 요청이 곱으로 늘어난다(아래 계산).[23]",
+     "**비슷한 원인 찾기** — 한 서비스의 타임아웃 설정 실수를 고쳤으면 같은 설정을 가진 모든 서비스를 찾아 같이 고친다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "연속 5xx 5번이면 30초 빼기 · 층마다 재시도 3번이면",
+     "body": "Envoy 이상 서버 빼기 기본값[20]을 흉내 낸 것과 재시도 증폭 계산입니다(가상 주소, 직접 돌린 출력). 3층이 각자 3번씩 시도하면 맨 아래는 최대 27배를 받습니다 — 그래서 재시도는 한 층에서만, 예산을 정해 둡니다.[23]",
+     "lang": "python",
+     "code": "o = Outlier(limit=5, eject_s=30)\nfor t, st in enumerate([200, 503, 503, 503, 503, 503]):\n    msg = o.report(\"10.0.1.7\", st, t)\n    if msg: print(f\"t={t}s\", msg)\nprint(\"t=10s 보낼까:\", o.healthy(\"10.0.1.7\", 10), \"/ t=40s 보낼까:\", o.healthy(\"10.0.1.7\", 40))\nfor layers in (1, 2, 3):\n    print(f\"{layers}층 x 시도 3번 -> 맨 아래 서비스가 받는 요청 최대 {3**layers}배\")\n# t=5s 10.0.1.7 제외 ~35s\n# t=10s 보낼까: False / t=40s 보낼까: True\n# 1층 x 시도 3번 -> 맨 아래 서비스가 받는 요청 최대 3배\n# 2층 x 시도 3번 -> 맨 아래 서비스가 받는 요청 최대 9배\n# 3층 x 시도 3번 -> 맨 아래 서비스가 받는 요청 최대 27배"
+    }
+   ],
+   "refs": [
+    2,
+    4,
+    20,
+    21,
+    23
+   ],
+   "study": [
+    "release-it",
+    "sre-book",
+    "envoy-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Collaborate with other Coupang technical leaders to make the service extensible to unlock opportunities for innovations.",
+   "short": "다른 팀 기술 리더들과 같이, 메시 위에 새 기능을 얹을 수 있게 확장 지점을 열어 둔다.",
+   "why": "메시가 모든 요청을 지나가게 하면 인증·속도 제한·실험 분기 같은 공통 기능을 서비스 코드를 안 고치고 한곳에 넣을 수 있습니다.[12][15] 다른 팀이 그걸 쓰려면 메시가 꽂을 자리를 열어 둬야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**프록시 필터 꽂기** — Envoy 필터 사슬에 회사 필터를 넣는 방식(네이티브 C++·Lua·Wasm).[15]",
+     "**정책 판정 붙이기** — 인가 판정을 외부 서비스(예: OPA)에 묻게 하는 외부 인가 필터.[24]",
+     "**트래픽 복제** — 실제 요청을 새 버전에도 복사해 보내 응답만 비교(mirroring).[11]",
+     "**실험 분기** — 헤더·사용자 조건으로 일부 요청만 새 경로로.[11]"
+    ]
+   },
+   "refs": [
+    11,
+    12,
+    15,
+    24
+   ],
+   "study": [
+    "envoy-docs",
+    "istio-docs-traffic"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "13+ years of professional software development experience",
+   "short": "소프트웨어 개발 경력 13년 이상.",
+   "why": "Senior Staff 는 개발자 사다리의 위쪽이라, 큰 시스템을 여러 번 짓고 운영해 본 이력을 연수로 거릅니다 {추론}. 같은 회사의 같은 직급 이름 미국 공고에 적힌 기본급 범위가 그 무게를 보여 줍니다.[6]",
+   "how_far": "'메시 경력 13년'이 아니라 **개발 경력**입니다. 메시 경험은 우대사항에 따로 있습니다.[1]",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience in designing and implementing traffic management solutions to handle requests at scale.",
+   "short": "많은 요청을 어디로·얼마나·언제 끊고 보낼지 정하는 트래픽 관리를 직접 설계·구현해 봤어야 한다.",
+   "why": "공고 첫머리가 '회사 전체의 세밀한 트래픽 제어'입니다.[1] 쿠팡은 예전부터 수많은 서비스 API 를 관리하려고 자체 API Gateway 를, 한 서비스 장애가 번지지 않게 Valve 를 만들었습니다.[2]",
+   "actually": {
+    "items": [
+     "**나눠 보내기** — 라운드 로빈·최소 요청 수 같은 부하 분산 방식 고르기.[11]",
+     "**가중치 경로** — 새 버전에 10%만(카나리), 문제 없으면 늘리기(아래 예).[11]",
+     "**타임아웃·재시도** — 경로마다 기한과 재시도 횟수, 재시도는 멱등한 요청만 {추론}.",
+     "**과부하 막기** — 동시 연결·대기 요청 상한(Envoy circuit breaking), 넘치면 빨리 거절.[25][26]",
+     "**속도 제한** — 한 호출자가 너무 많이 부르면 막기.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "카나리 90:10 — 1만 번 보내 보면",
+     "body": "가중치대로 고르는 아주 작은 라우터입니다(직접 돌린 출력, seed 7). 실제로는 프록시가 요청마다 이렇게 고릅니다.[11]",
+     "lang": "python",
+     "code": "import random, collections\nrandom.seed(7)\nroutes = [(\"reviews-v1\", 90), (\"reviews-v2\", 10)]\ndef pick():\n    r = random.uniform(0, 100); acc = 0\n    for name, w in routes:\n        acc += w\n        if r < acc: return name\nprint(dict(collections.Counter(pick() for _ in range(10_000))))\n# {'reviews-v1': 9004, 'reviews-v2': 996}"
+    }
+   ],
+   "how_far": "'designing and implementing'이라 남이 만든 게이트웨이를 설정만 해 본 것보다 **트래픽 규칙을 처리하는 부품을 직접 짜 본** 경험을 봅니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    11,
+    15,
+    25,
+    26
+   ],
+   "study": [
+    "istio-docs-traffic",
+    "release-it",
+    "aws-retries"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Hands-on experience in designing and developing large scale distributed systems for at least the past 4 years.",
+   "short": "최근 4년 이상 큰 분산 시스템을 직접 설계하고 개발해 왔어야 한다.",
+   "why": "메시는 그 자체가 분산 시스템입니다 — 제어 평면 하나가 수천 개 프록시에 설정을 내려야 하고, 일부만 새 설정을 받은 상태가 늘 생깁니다.[16] '최근 4년'은 손을 놓지 않은 사람을 찾는다는 뜻입니다 {추론}.",
+   "level": {
+    "basic": "타임아웃 · 재시도 · 멱등성 · 부하 분산",
+    "work": "최종 일관성(설정이 늦게 퍼지는 동안의 동작) · 장애 격리 · 백프레셔 · 관측 지표",
+    "team": "수천 프록시에 설정을 안전하게 퍼뜨리기 · 제어 평면이 죽어도 데이터 평면은 마지막 설정으로 계속 돌기"
+   },
+   "refs": [
+    16
+   ],
+   "study": [
+    "ddia",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Excellent development skills in Go/Java/Python with a proven track record of delivering mission critical systems.",
+   "short": "Go·Java·Python 중에서 뛰어난 개발 실력과, 멈추면 안 되는 시스템을 내보낸 실적.",
+   "why": "업무 줄이 Java(Spring Boot)와 Go 를 이름으로 적었습니다.[1] 메시는 멈추면 그 위의 서비스가 다 멈춰서 '미션 크리티컬'입니다 {추론}.",
+   "level": {
+    "basic": "Go 의 고루틴·채널·context(취소·기한) · Java 의 Spring Boot·JPA/Hibernate",
+    "work": "Go 로 gRPC 서버·쿠버네티스 컨트롤러 · 동시성 버그(경쟁 상태) 잡기 · 프로파일링",
+    "team": "많은 연결을 오래 붙잡는 서버(xDS 스트림)의 메모리·GC 관리 · 장애 때 안전하게 멈추기"
+   },
+   "refs": [
+    1
+   ],
+   "study": [
+    "learning-go",
+    "go-control-plane",
+    "spring-boot-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience with cloud computing using AWS or Azure or GCP.",
+   "short": "AWS·Azure·GCP 중 하나의 클라우드에서 일해 본 경험.",
+   "why": "쿠팡은 AWS 를 쓰고 사내 GPU 클러스터와 함께 운영해 왔다고 밝혔습니다.[7] 메시는 클라우드의 가상 네트워크·부하 분산기 위에 올라가서, 그 밑을 알아야 문제를 가를 수 있습니다 {추론}.",
+   "refs": [
+    7
+   ],
+   "study": [
+    "aws-vpc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Strong experience in designing and implementing Service Mesh (Istio/Envoy) features.",
+   "short": "Istio·Envoy 로 메시 기능을 직접 설계·구현해 본 경험이 있으면 좋다.",
+   "why": "Istio 는 Envoy 를 데이터 평면으로 쓰는 대표 메시입니다.[12] 공고가 이 둘을 이름으로 적었지만 쿠팡이 운영에서 쓰는지는 밝히지 않았습니다.[1]",
+   "actually": {
+    "items": [
+     "**트래픽** — VirtualService(경로·가중치·재시도)·DestinationRule(부하 분산·이상 서버 빼기)·Gateway(메시 입구).[11]",
+     "**보안** — PeerAuthentication 으로 mTLS 를 켜고, AuthorizationPolicy 로 '어느 서비스가 어느 서비스를 불러도 되나'를 정한다.[14]",
+     "**인증서 자동화** — istiod 가 각 프록시에 짧은 인증서를 발급·갱신한다. 신원은 SPIFFE 형식이다.[14][19]",
+     "**관측** — 프록시가 모든 요청의 지표·추적을 남겨, 서비스 코드를 안 고치고 호출 지도를 그린다.[12]"
+    ]
+   },
+   "how_far": "'features'를 설계·구현이라 했으니 YAML 을 써 본 것보다 **Envoy 설정이 어떻게 생기고 왜 그렇게 동작하는지** 프록시 설정 덤프를 읽을 수 있는 수준이 차이를 만듭니다 {추론}.",
+   "refs": [
+    1,
+    11,
+    12,
+    14,
+    19
+   ],
+   "study": [
+    "istio-in-action",
+    "istio-docs-traffic",
+    "istio-docs-security",
+    "envoy-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Deep understanding of network components (virtual networks, route tables, subnets, and gateways).",
+   "short": "가상 네트워크·라우팅 테이블·서브넷·게이트웨이를 깊이 알면 좋다 — 메시 밑의 네트워크.",
+   "why": "메시는 서비스 사이의 L7(HTTP·gRPC) 통신을 다루지만, 그 밑은 클라우드의 가상 네트워크(AWS 는 VPC)입니다.[8] 요청이 안 닿을 때 프록시 설정 문제인지, 라우팅·보안 규칙 문제인지 가르려면 둘 다 알아야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**VPC·서브넷** — 주소 범위(CIDR)를 잘게 나눠 영역별로 둔다(아래 예).[8]",
+     "**라우팅 테이블** — '이 주소 범위로 가는 건 어디로'의 표. 인터넷 게이트웨이·NAT 게이트웨이·다른 VPC 로 가는 길.[8]",
+     "**게이트웨이** — 클라우드의 게이트웨이(인터넷·NAT·트랜짓)와 메시의 게이트웨이(입구·출구 프록시)는 이름만 같고 층이 다르다.[8][11]",
+     "**여러 클러스터·지역** — 메시를 여러 쿠버네티스 클러스터에 걸치면 클러스터 사이 네트워크가 이어져 있는지가 구성 방식을 바꾼다.[27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "/16 을 /20 서브넷으로 나누기",
+     "body": "파이썬 표준 라이브러리로 주소 범위를 나누고 한 주소가 어느 서브넷에 드는지 봅니다(가상 주소, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "import ipaddress\nvpc = ipaddress.ip_network(\"10.20.0.0/16\")\nsubs = list(vpc.subnets(new_prefix=20))[:3]\nfor s in subs: print(s, \"주소\", s.num_addresses, \"개\")\nprint(\"10.20.17.5 는\", [str(s) for s in subs if ipaddress.ip_address(\"10.20.17.5\") in s])\n# 10.20.0.0/20 주소 4096 개\n# 10.20.16.0/20 주소 4096 개\n# 10.20.32.0/20 주소 4096 개\n# 10.20.17.5 는 ['10.20.16.0/20']"
+    }
+   ],
+   "refs": [
+    8,
+    11,
+    27
+   ],
+   "study": [
+    "aws-vpc",
+    "istio-in-action"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Deep understanding of modern web applications design architecture and API design patterns with high performance and scale.",
+   "short": "빠르고 큰 웹 애플리케이션의 구조와 API 설계 패턴을 깊이 알면 좋다.",
+   "why": "메시를 쓰는 쪽은 결국 웹·API 서비스입니다. 쿠팡 백엔드는 모든 네트워크 연결을 차단기로 감싸 한 지점의 장애가 번지지 않게 한다고 밝혔습니다.[3] 서비스가 어떻게 생겼는지 알아야 메시 기본값(타임아웃·재시도)을 맞게 정합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**API 패턴** — 자원 중심 REST, 페이지 나누기, 멱등 키, 오류 형식 통일.[28]",
+     "**HTTP/2·gRPC** — 한 연결에 여러 요청이 섞여 연결 단위 부하 분산이 치우친다. 그래서 L7 프록시가 요청 단위로 나눈다 {추론}.",
+     "**게이트웨이 패턴** — 바깥 요청은 API Gateway, 서비스 사이는 메시로 나누는 흔한 구성.[2][9]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    9,
+    28
+   ],
+   "study": [
+    "google-api-design",
+    "building-ms"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Ability to handle multiple competing priorities in a fast-paced environment and lead the delivery of large-scale services for complex business offerings.",
+   "short": "급한 일이 겹치는 환경에서 우선순위를 가르고, 큰 서비스를 끝까지 이끌어 내보내는 힘.",
+   "why": "메시 팀에는 여러 플랫폼 팀·서비스 팀의 요청이 동시에 옵니다.[1] 업무 줄의 '가차 없는 우선순위' 원칙과 같은 이야기입니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "staff-eng"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Type of work model",
+   "short": "근무 방식 안내 — 요건이 아니다.",
+   "why": "공고 끝의 근무 방식 안내 머리말입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Hybrid / Onsite / Remote working",
+   "short": "하이브리드·사무실·원격 중 하나 — 이 자리가 어느 쪽인지는 따로 적혀 있지 않다.",
+   "why": "쿠팡 공고에 공통으로 붙는 표기이고, 바로 아래에 하이브리드 설명이 이어집니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Our Hybrid work model: Coupang hybrid work model is designed to enable a culture of collaboration that acts a catalyst to enrich the experience of employees. Employees are required to work at least 3 days in the office per week, with the flexibility to work from home 2 days a week, depending on the role requirement. Some businesses may require more time in office due to nature of work.",
+   "short": "하이브리드면 주 3일 이상 사무실, 직무에 따라 주 2일 재택. 사업에 따라 더 출근할 수 있다.",
+   "why": "공고 원문의 근무 조건입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to consider",
+   "short": "참고 사항 머리말 — 요건이 아니다.",
+   "why": "공고 끝의 안내 머리말입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Those eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.",
+   "short": "보훈 대상자·장애인 등 고용 보호 대상자는 법에 따라 우대받을 수 있다.",
+   "why": "쿠팡 공고에 공통으로 붙는 법정 안내입니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "다른 개발자가 쓰는 바닥을 만드는 게 즐거운 플랫폼 엔지니어",
+   "\"요청 하나가 왜 느렸나\"를 프록시 로그·설정 덤프까지 따라가 보는 사람",
+   "Go 와 Java 를 둘 다 실무로 쓰는 사람[1]",
+   "장애가 번지는 모양(연쇄 장애·재시도 폭풍)에 관심이 많은 사람[2][4]"
+  ],
+  "hard": [
+   "경력 13년 이상이 필수다[1]",
+   "근무지가 인도(벵갈루루)이고 하이브리드면 주 3일 이상 출근이다 — 취업 자격 요건은 공고에 없어 지원 전에 확인한다[1]",
+   "설정 하나가 회사 전체 트래픽을 끊을 수 있어 변경마다 단계 배포·되돌리기 절차가 무겁다 {추론}",
+   "쿠팡이 지금 메시를 무엇으로 운영하는지(Istio 인지 자체 제작인지) 공개 자료가 없어 면접에서 물어야 한다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "서버 하나만 가끔 503 을 냅니다. 전체 오류율은 0.5% 라 경보가 안 울려요. 메시에서 어떻게 잡겠어요?",
+   "a": "쿠팡 캐시 층이 실제로 겪은 부분 장애와 서버 단위 이상 탐지.[4][20]"
+  },
+  {
+   "q": "새 버전을 회사 전체에 10%부터 내보내는 기능을 메시로 만든다면, 설정이 잘못 퍼지면 어떻게 되돌리나요?",
+   "a": "가중치 경로·단계 배포 — 트래픽 관리 줄.[11]"
+  },
+  {
+   "q": "게이트웨이·서비스 A·서비스 B 가 각자 3번씩 재시도합니다. 무슨 일이 생기고 어떻게 바꾸겠어요?",
+   "a": "재시도 증폭 27배와 재시도 예산.[23]"
+  },
+  {
+   "q": "제어 평면(istiod)이 10분간 죽었습니다. 요청은 어떻게 되나요? 그 사이 새 파드가 뜨면요?",
+   "a": "데이터 평면은 마지막 설정으로 돈다 · 새 엔드포인트는 못 받는다 — 분산 시스템 줄 {추론}"
+  },
+  {
+   "q": "프록시마다 회사 전체 서비스 목록을 내려보내면 무엇이 문제고 어떻게 줄이나요?",
+   "a": "설정 크기·메모리 — Sidecar egress 범위와 증분 xDS.[11][16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior Staff Backend Engineer (Service Mesh)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7496873",
+   "kind": "posting",
+   "date": "2026-10-01",
+   "note": "Gateway Services 팀 — discovery·load balancing·트래픽 회복력·관리·실패 복구·관측, 회사 전체 세밀한 트래픽 제어, 중앙 관리 평면, mTLS·신원 기반 인증·인가, Java Spring Boot + Go. 근무지 Bengaluru(공고 데이터는 'India'), 하이브리드 주 3일 이상 출근. 연봉·복지 표기 없음. 날짜는 사이트의 갱신일"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Engineering · Integrating Coupang platform services to a microservice architecture (행복을 찾기 위한 우리의 여정)",
+   "url": "https://medium.com/coupang-engineering/%ED%96%89%EB%B3%B5%EC%9D%84-%EC%B0%BE%EA%B8%B0-%EC%9C%84%ED%95%9C-%EC%9A%B0%EB%A6%AC%EC%9D%98-%EC%97%AC%EC%A0%95-a31fc2d5a572",
+   "kind": "company",
+   "note": "회사 기술 블로그 — 하나의 큰 프로그램에서 마이크로서비스로, API Gateway(많은 서비스 API 를 자동화·관리), 장애 차단기 Valve(한 서비스 장애가 번지지 않게, 중앙에서 플랫폼 서비스와 맞물림), 하루 마이크로서비스 100~200개 배포·새 인스턴스 2,000개 넘게. Medium 이 이 환경에서 403 이라 검색 발췌로만 확인"
+  },
+  {
+   "n": 3,
+   "title": "Coupang Engineering · Our backend strategy to handle massive traffic",
+   "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+   "kind": "company",
+   "note": "core serving layer — 모든 네트워크 연결을 차단기로 감싸 I/O 지점의 장애가 번지지 않게. 검색 발췌로 확인"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Engineering · Lessons learned from handling massive traffic with cache",
+   "url": "https://medium.com/coupang-engineering/lessons-learned-from-operating-our-data-serving-layer-4e9e4f68fe85",
+   "kind": "company",
+   "note": "캐시 층마다 노드 60~100대·분당 최대 1억 요청, 노드 하나의 부분 장애를 차단기가 알아채지 못한 경험. 검색 발췌로 확인"
+  },
+  {
+   "n": 5,
+   "title": "Coupang Careers · Senior Staff Backend Engineer (IAM)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8068982",
+   "kind": "posting",
+   "note": "같은 회사 다른 자리(벵갈루루) — 서비스 사이 인증·기계 신원"
+  },
+  {
+   "n": 6,
+   "title": "Coupang Careers · Senior Staff Backend Engineer - Cloud Infrastructure (Seattle)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7438944",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "다른 조직·같은 직급 이름 — 기본급 범위와 연 보너스 0~20%(다른 풀이에서 확인)"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+   "kind": "company",
+   "date": "2023-09-08",
+   "note": "쿠버네티스 위 학습·서빙, 사내 GPU 클러스터 + AWS 혼합"
+  },
+  {
+   "n": 8,
+   "title": "AWS 문서 · How Amazon VPC works",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/how-it-works.html",
+   "kind": "reference",
+   "note": "VPC·서브넷·라우팅 테이블·인터넷/NAT 게이트웨이"
+  },
+  {
+   "n": 9,
+   "title": "Sam Newman · Building Microservices (2판)",
+   "url": "https://www.oreilly.com/library/view/building-microservices-2nd/9781492034018/",
+   "kind": "reference",
+   "note": "API Gateway 와 서비스 메시의 역할 구분 — 일반론"
+  },
+  {
+   "n": 10,
+   "title": "Coupang Careers · Bengaluru",
+   "url": "https://www.coupang.jobs/en/locations/bengaluru/",
+   "kind": "company",
+   "note": "Coupang Dev Center 벵갈루루 주소"
+  },
+  {
+   "n": 11,
+   "title": "Istio 문서 · Traffic Management",
+   "url": "https://istio.io/latest/docs/concepts/traffic-management/",
+   "kind": "reference",
+   "note": "VirtualService·DestinationRule·Gateway·ServiceEntry·Sidecar, 가중치 경로·타임아웃·재시도·미러링·부하 분산"
+  },
+  {
+   "n": 12,
+   "title": "Istio 문서 · Architecture",
+   "url": "https://istio.io/latest/docs/ops/deployment/architecture/",
+   "kind": "reference",
+   "note": "데이터 평면(Envoy)·제어 평면(istiod), 관측"
+  },
+  {
+   "n": 13,
+   "title": "Istio 문서 · Ambient mode overview",
+   "url": "https://istio.io/latest/docs/ambient/overview/",
+   "kind": "reference",
+   "note": "사이드카 없는 데이터 평면 — 파드마다 프록시가 붙는 비용을 줄이는 방식"
+  },
+  {
+   "n": 14,
+   "title": "Istio 문서 · Security",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "kind": "reference",
+   "note": "자동 mTLS·인증서 발급·PeerAuthentication·AuthorizationPolicy"
+  },
+  {
+   "n": 15,
+   "title": "Envoy 문서 · What is Envoy",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/intro/what_is_envoy",
+   "kind": "reference",
+   "note": "L3/L4·L7 필터 사슬, HTTP/2·gRPC, 동적 설정, 관측"
+  },
+  {
+   "n": 16,
+   "title": "Envoy 문서 · xDS REST and gRPC protocol",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/api-docs/xds_protocol",
+   "kind": "reference",
+   "note": "LDS·RDS·CDS·EDS, 증분(delta) xDS"
+  },
+  {
+   "n": 17,
+   "title": "GitHub · envoyproxy/go-control-plane",
+   "url": "https://github.com/envoyproxy/go-control-plane",
+   "kind": "reference",
+   "note": "Go 로 xDS 제어 평면을 짜는 공식 라이브러리"
+  },
+  {
+   "n": 18,
+   "title": "Kubernetes 문서 · Service",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+   "kind": "reference",
+   "note": "서비스 이름 → 엔드포인트, EndpointSlice"
+  },
+  {
+   "n": 19,
+   "title": "SPIFFE · Concepts",
+   "url": "https://spiffe.io/docs/latest/spiffe-about/spiffe-concepts/",
+   "kind": "reference",
+   "note": "워크로드 신원·짧은 인증서"
+  },
+  {
+   "n": 20,
+   "title": "Envoy 문서 · Outlier detection (설정 항목)",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/outlier_detection.proto",
+   "kind": "reference",
+   "note": "consecutive_5xx 기본 5번·base_ejection_time 기본 30초, 제외 시간은 연속 제외 횟수만큼 곱해지고 max_ejection_time 에서 멈춤(동작 설명은 arch_overview/upstream/outlier)"
+  },
+  {
+   "n": 21,
+   "title": "Google SRE Book · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Will Larson · Staff Engineer: Leadership beyond the management track",
+   "url": "https://staffeng.com/book",
+   "kind": "reference",
+   "note": "Staff 이상 엔지니어의 역할 — 일반론"
+  },
+  {
+   "n": 23,
+   "title": "Amazon Builders' Library · Timeouts, retries, and backoff with jitter",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "kind": "reference",
+   "note": "층마다 재시도하면 부하가 곱으로 늘어남, 한 지점에서만 재시도"
+  },
+  {
+   "n": 24,
+   "title": "Envoy 문서 · External Authorization",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/security/ext_authz_filter",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Envoy 문서 · Circuit breaking",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/circuit_breaking",
+   "kind": "reference",
+   "note": "최대 연결·대기 요청·요청·재시도 상한"
+  },
+  {
+   "n": 26,
+   "title": "Amazon Builders' Library · Using load shedding to avoid overload",
+   "url": "https://aws.amazon.com/builders-library/using-load-shedding-to-avoid-overload/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Istio 문서 · Deployment Models",
+   "url": "https://istio.io/latest/docs/ops/deployment/deployment-models/",
+   "kind": "reference",
+   "note": "여러 클러스터·한 네트워크/여러 네트워크 구성"
+  },
+  {
+   "n": 28,
+   "title": "Google Cloud · API Design Guide",
+   "url": "https://cloud.google.com/apis/design",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Coupang Careers · Why Coupang",
+   "url": "https://www.coupang.jobs/en/why-coupang/",
+   "kind": "company",
+   "note": "전 세계 공통 복지 소개 — 직무·지역·자격에 따라 다르다고 적힘, 금액 없음"
+  },
+  {
+   "n": 30,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 보수 중간값(CEO 보수 배율 항목)"
+  },
+  {
+   "n": 31,
+   "title": "CXOToday · Coupang Expands India Tech Footprint with Hyderabad Office Launch",
+   "url": "https://cxotoday.com/press-release/coupang-expands-india-tech-footprint-with-hyderabad-office-launch-strengthens-global-innovation-leadership/",
+   "kind": "news",
+   "date": "2025-08-20",
+   "note": "회사 보도자료 — 인도 개발 센터 2023년 말 개소"
+  },
+  {
+   "n": 32,
+   "title": "Google SRE Book · 차례(Service Level Objectives · Postmortem Culture 장)",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "kind": "reference",
+   "note": "목표(SLO) 정하기와 탓하지 않는 장애 회고 — 일반론"
+  }
+ ],
+ "caveat": "쿠팡 Gateway Services 팀이 메시를 직접 설명한 글·발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 쿠팡 엔지니어링 블로그의 마이크로서비스·트래픽 글 셋인데, 블로그(Medium)가 이 환경에서 403 이라 **검색 발췌로만** 확인했고 게시 연도도 확인하지 못했습니다 — 몇 년 전 글이라 지금 구조와 다를 수 있습니다. 쿠팡이 운영에서 Istio·Envoy 를 쓰는지는 공고가 밝히지 않아, 메시의 모양은 Istio·Envoy·쿠버네티스·AWS 공식 문서로 '보통 이런 것'을 보였습니다. 예제의 주소·서비스 이름·숫자는 가상입니다.",
+ "resources": [
+  {
+   "id": "istio-in-action",
+   "title": "Istio in Action",
+   "by": "Christian Posta · Rinor Maloku · Manning · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/istio-in-action",
+   "why": "트래픽 경로·회복력(재시도·이상 서버 빼기)·mTLS·관측·여러 클러스터·Envoy 설정 덤프 읽기까지 — 우대사항 첫 줄을 한 권으로."
+  },
+  {
+   "id": "istio-docs-traffic",
+   "title": "Istio · Traffic Management",
+   "by": "Istio 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://istio.io/latest/docs/concepts/traffic-management/",
+   "why": "가중치 경로·타임아웃·재시도·미러링의 정확한 정의. 트래픽 관리 요건의 공통어."
+  },
+  {
+   "id": "istio-docs-security",
+   "title": "Istio · Security",
+   "by": "Istio 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "why": "공고의 'mTLS·신원 기반 인증·인가'가 메시에서 어떻게 켜지고 판정되는지."
+  },
+  {
+   "id": "envoy-docs",
+   "title": "Envoy Proxy 문서 · Architecture overview",
+   "by": "Envoy 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/arch_overview",
+   "why": "필터 사슬·이상 서버 빼기·차단기·xDS — Istio 밑에서 실제로 요청을 나르는 프록시의 동작 원리."
+  },
+  {
+   "id": "go-control-plane",
+   "title": "envoyproxy/go-control-plane",
+   "by": "Envoy 프로젝트 · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/envoyproxy/go-control-plane",
+   "why": "Go 로 xDS 설정 서버를 짜는 공식 라이브러리와 예제. '인프라 부품은 Go 로'를 직접 연습하는 바탕."
+  },
+  {
+   "id": "learning-go",
+   "title": "Learning Go (2판)",
+   "by": "Jon Bodner · O'Reilly · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/learning-go-2nd/9781098139285/",
+   "why": "Go 를 Go 답게 — 동시성·context·오류 처리·제네릭. Java 개발자가 Go 인프라 코드로 넘어올 때."
+  },
+  {
+   "id": "spring-boot-docs",
+   "title": "Spring Boot Reference Documentation",
+   "by": "Spring 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "why": "관리 API 쪽(REST·데이터 접근·운영 지표)의 기준 문서."
+  },
+  {
+   "id": "k8s-service",
+   "title": "Kubernetes · Services, Load Balancing, and Networking",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/",
+   "why": "서비스 찾기·엔드포인트의 바탕. 메시가 그 위에 무엇을 더하는지 보려면 먼저."
+  },
+  {
+   "id": "spiffe-docs",
+   "title": "SPIFFE · Concepts",
+   "by": "SPIFFE 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spiffe.io/docs/latest/spiffe-about/spiffe-concepts/",
+   "why": "메시가 서비스마다 주는 신원(인증서)의 표준 — mTLS·신원 기반 인증 줄."
+  },
+  {
+   "id": "aws-vpc",
+   "title": "Amazon VPC User Guide",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
+   "why": "가상 네트워크·서브넷·라우팅 테이블·게이트웨이 — 우대사항 네트워크 줄 그대로."
+  },
+  {
+   "id": "release-it",
+   "title": "Release It! (2판)",
+   "by": "Michael T. Nygard · Pragmatic Bookshelf · 2018",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/",
+   "why": "차단기·격벽·타임아웃 같은 안정성 패턴의 원전. 쿠팡 Valve 가 막으려던 연쇄 장애를 이해하는 책."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly · 2016 (온라인 무료)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "과부하 다루기·연쇄 장애·목표(SLO) 장 — 운영 수준 올리기 줄."
+  },
+  {
+   "id": "aws-retries",
+   "title": "Timeouts, retries, and backoff with jitter",
+   "by": "Amazon Builders' Library",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "why": "타임아웃·재시도를 어디서 몇 번 — 메시 기본값을 정할 때의 근거."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "분산 시스템의 문제들(부분 장애·늦게 퍼지는 상태·타임아웃) — '큰 분산 시스템 4년' 요건의 바탕."
+  },
+  {
+   "id": "building-ms",
+   "title": "Building Microservices (2판)",
+   "by": "Sam Newman · O'Reilly · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/building-microservices-2nd/9781492034018/",
+   "why": "서비스 사이 통신·API Gateway 와 서비스 메시의 자리·옮기는 순서 — 메시를 쓰는 쪽의 눈."
+  },
+  {
+   "id": "google-api-design",
+   "title": "API Design Guide",
+   "by": "Google Cloud",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cloud.google.com/apis/design",
+   "why": "자원 중심 설계·표준 메서드·오류 형식 — API 설계 패턴 줄."
+  },
+  {
+   "id": "staff-eng",
+   "title": "Staff Engineer: Leadership beyond the management track",
+   "by": "Will Larson · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://staffeng.com/book",
+   "why": "여러 팀이 같은 방향으로 가게 하는 법 — 플랫폼 팀 리더와 협업·우선순위 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "메시 밑바닥 — 네트워크와 쿠버네티스",
+   "time": "1~2주",
+   "goal": "요청이 파드에서 다른 파드까지 어떤 주소·경로로 가는지 그림으로 설명한다.",
+   "resources": [
+    "aws-vpc",
+    "k8s-service",
+    "building-ms"
+   ],
+   "task": "가상 VPC(10.20.0.0/16)를 서브넷 셋으로 나눈 표와 라우팅 테이블을 직접 쓰고, kind 로 띄운 로컬 쿠버네티스에서 Service 이름 → 파드 주소가 바뀌는 걸 확인한다."
+  },
+  {
+   "title": "Istio 로 트래픽 다루기",
+   "time": "2~3주",
+   "goal": "가중치 경로·타임아웃·재시도·이상 서버 빼기를 켜고, 결과를 지표로 확인한다.",
+   "resources": [
+    "istio-in-action",
+    "istio-docs-traffic",
+    "aws-retries",
+    "release-it"
+   ],
+   "task": "가상 서비스 둘(v1·v2)에 90:10 카나리를 걸고, v2 가 일부러 503 을 내게 해 이상 서버 빼기가 동작하는지, 재시도를 두 층에 걸면 요청이 몇 배로 느는지 숫자로 남긴다."
+  },
+  {
+   "title": "mTLS 와 서비스 사이 권한",
+   "time": "1~2주",
+   "goal": "메시 안 통신을 암호화하고 '누가 누구를 불러도 되나'를 정책으로 막는다.",
+   "resources": [
+    "istio-docs-security",
+    "spiffe-docs"
+   ],
+   "task": "STRICT mTLS 를 켜고, AuthorizationPolicy 로 order 서비스만 payment 를 부르게 한 뒤 다른 서비스의 요청이 403 으로 막히는 걸 확인한다."
+  },
+  {
+   "title": "제어 평면 부품을 Go 로",
+   "time": "3~4주",
+   "goal": "Envoy 에 설정을 내려 주는 작은 xDS 서버를 만들고, 설정을 바꾸면 요청 경로가 바뀌게 한다.",
+   "resources": [
+    "learning-go",
+    "go-control-plane",
+    "envoy-docs"
+   ],
+   "task": "go-control-plane 으로 서버를 만들어 Envoy 하나에 경로를 내려 주고, 가중치를 REST 로 바꾸는 작은 관리 API(Spring Boot 든 Go 든)를 붙인다. 가중치 합이 100이 아니면 거부하는 검증도 넣는다."
+  },
+  {
+   "title": "규모와 운영 (계속)",
+   "time": "계속",
+   "goal": "프록시 수천 개에 설정을 안전하게 퍼뜨리고, 장애의 뿌리 원인을 같은 종류까지 막는 설계를 문서로 쓴다.",
+   "resources": [
+    "ddia",
+    "sre-book",
+    "staff-eng"
+   ],
+   "task": "'서비스 1,000개를 메시로 옮기기' 설계 문서 한 장(쪼개는 순서·되돌리기·설정 크기 줄이기·SLO)을 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없고 인도 법인 숫자도 공개되지 않았다. 공시로 확인되는 것은 **전 세계 직원 보수 중간값(2025년 3만 3,831달러)** 뿐이고, 비교로 같은 회사 **같은 직급 이름의 미국 시애틀 공고 기본급($174,000~$299,000)** 을 싣는다 — 둘 다 이 자리 연봉이 아니다",
+  "rows": [
+   {
+    "label": "쿠팡 Inc. 전 직원 보수 중간값",
+    "value": "3만 3,831달러 / 년",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "CEO 를 뺀 전 세계 직원의 가운데 값. 한국 물류·현장 직원이 많이 섞인 값이다 [30]"
+   },
+   {
+    "label": "다른 자리 비교 — 미국 Senior Staff Backend 기본급",
+    "value": "$174,000 ~ $299,000 / 년",
+    "peer": true,
+    "basis": "공고 · 2026년 (미국 시애틀)",
+    "note": "Cloud Infrastructure 조직의 같은 직급 이름 공고. 기본급만이고 연 보너스 0~20% 는 따로다 [6]"
+   }
+  ],
+  "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없고, 인도 법인의 보수 공시도 없다 — **인도 숫자 없음**. 중간값은 회사 전체 가운데 값이라 경력 13년 이상 개발자 연봉으로 읽으면 안 된다 {추론}. 미국 공고 금액은 미국 시장의 범위라 인도 금액과 같지 않다. 처우는 마지막 협의 단계에서 확인한다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "하이브리드 — 주 3일 이상 사무실, 직무에 따라 주 2일 재택(일부 사업은 더 출근)"
+   },
+   {
+    "name": "의료",
+    "detail": "본인과 직계가족을 보장하는 의료보험"
+   },
+   {
+    "name": "경조 휴가",
+    "detail": "축하·애도 때 유급 휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "외국어·소프트 스킬 강좌, 여러 나라가 함께하는 프로젝트"
+   },
+   {
+    "name": "행사·시설",
+    "detail": "팀·회사 행사, 라운지, 하루 세 끼 카페테리아"
+   },
+   {
+    "name": "유연 근무",
+    "detail": "유연한 근무 시간 또는 재택"
+   }
+  ],
+  "note": "근무 방식은 이 공고 [1], 나머지는 쿠팡 채용 사이트 'Why Coupang' 의 전 세계 공통 소개다 [29]. 사이트는 복지가 직무·지역·자격에 따라 다를 수 있다고 적었고 금액·조건은 없다 — 인도 사무소 적용 범위는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 인도 개발 센터 (Coupang Dev Center) — 벵갈루루",
+  "address": "6th Floor, RMZ Ecoworld, Campus 20, Units 601 & 602, Bhoganahalli Village, Varthur Hobli, Bengaluru Urban, Karnataka, India",
+  "map_url": "https://map.naver.com/p/search/RMZ%20Ecoworld%20Campus%2020%20Bengaluru",
+  "note": "공고 페이지의 근무지는 'Bengaluru'이고(공고 데이터에는 'India') [1], 주소는 쿠팡 채용 사이트의 벵갈루루 안내다 [10]. 인도 개발 센터는 2023년 말 문을 열었다 [31]."
+ }
+}
