@@ -4,6 +4,7 @@
   "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-395344": "autoever-india-security-expat",
   "wanted-359170": "cj-oliveyoung-data-analyst",
+  "ats-greenhouse:coupang:8386063": "coupang-app-infra-director-us",
   "ats-greenhouse:coupang:8398431": "coupang-audit-ai-ops-analyst-bengaluru",
   "ats-greenhouse:coupang:8385253": "coupang-audit-ai-ops-pm-bengaluru",
   "ats-greenhouse:coupang:8275940": "coupang-catalog-quality-senior-pm",
@@ -17,6 +18,7 @@
   "ats-greenhouse:coupang:8413572": "coupang-fc-logistics-network-engineer",
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
   "ats-greenhouse:coupang:6137112": "coupang-got-backend-manager-seoul",
+  "ats-greenhouse:coupang:8393917": "coupang-iam-access-management-senior-mtv",
   "ats-greenhouse:coupang:8059287": "coupang-india-senior-staff-backend-serving",
   "ats-greenhouse:coupang:8203405": "coupang-network-security-engineer-detection-ops",
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
@@ -321,6 +323,16 @@
    "lines": 13
   },
   {
+   "id": "coupang-app-infra-director-us",
+   "company": "쿠팡 (Coupang)",
+   "role": "Director of Backend Engineering",
+   "jobs": [
+    "ats-greenhouse:coupang:8386063"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
+  },
+  {
    "id": "coupang-audit-ai-ops-analyst-bengaluru",
    "company": "쿠팡 (Coupang)",
    "role": "Analyst, Audit AI OPS (벵갈루루)",
@@ -431,6 +443,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 14
+  },
+  {
+   "id": "coupang-iam-access-management-senior-mtv",
+   "company": "쿠팡",
+   "role": "Senior Identity & Access Management Systems Engineer",
+   "jobs": [
+    "ats-greenhouse:coupang:8393917"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "coupang-india-senior-staff-backend-serving",
