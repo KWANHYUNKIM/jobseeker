@@ -1,0 +1,1144 @@
+{
+ "id": "xcena-senior-sw-tpm",
+ "company": "엑시나",
+ "role": "Senior SW Technical Program Manager",
+ "team": "SW팀",
+ "jobs": [
+  "ats-greeting:xcena:241584"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "CXL 연산 메모리 칩 MX1 위에서 도는 **펌웨어·드라이버·런타임·SDK·컴파일러**의 개발 계획을 한 일정으로 엮고, 검증·릴리즈·고객 적용까지 끌고 가는 자리입니다.[1]",
+  "env": "MX1 은 2026년 말 양산, 2027년 본격 공급을 목표로 하이퍼스케일러·AI 인프라 회사와 실제 워크로드 검증(PoC)을 하는 중입니다.[28][8] SW 영역마다 따로 뽑는 엔지니어 팀(SQA·런타임/SDK·펌웨어·컴파일러)과 PE/Validation·마케팅 사이에 섭니다.[2][3][5][7]",
+  "oneline": "코드를 짜는 자리가 아니라 **시스템 SW 를 이해하는 출시 책임자**. 일정·범위·품질의 선택지를 숫자로 내놓는 사람입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "엑시나의 CXL Computational Memory 제품이 고객 환경에서 안정적으로 도입되고 운영될 수 있도록, SW 제품 개발부터 검증·릴리즈·고객 적용까지 전 과정을 연결하는 역할입니다.",
+   "short": "칩이 고객 서버에서 실제로 돌게 하려면 SW 가 개발→검증→출시→고객 설치까지 끊기지 않아야 해서, 그 줄을 잇는 일.",
+   "why": "MX1 은 CXL(CPU 와 메모리·가속기를 잇는 PCIe 기반 표준)로 서버에 꽂는 메모리 장치이고, 그 안에 수천 개의 RISC-V 코어가 있어 데이터 옆에서 계산까지 합니다.[9][10] 칩만으로는 쓸 수 없고 드라이버·런타임·SDK 가 같이 가야 하며, 회사는 고객이 개발 방식을 새로 배우지 않도록 SDK·런타임으로 필요한 작업만 넘기는 것을 목표로 한다고 말했습니다.[8] 대표는 이제 개발·검증한 기술을 고객의 실제 운영 환경에 적용할 때라고 했습니다.[13]",
+   "actually": {
+    "intro": "‘전 과정’은 보통 이렇게 이어집니다.",
+    "items": [
+     "**개발** — SW 영역별 기능 목록과 일정(펌웨어·드라이버·런타임·SDK·컴파일러).[1]",
+     "**검증** — SQA 가 SDK·드라이버·펌웨어 통합 시험, Intel Xeon·AMD EPYC 같은 CPU 플랫폼 호환성, AI·DB 워크로드 성능을 본다.[2]",
+     "**릴리즈** — 버전 번호·릴리즈 노트·패키지를 내보낸다. SDK 패키징·배포 자동화는 런타임/SDK 엔지니어 몫이다.[3]",
+     "**고객 적용** — 고객 온보딩 자료(Bring-up 가이드·릴리즈 노트·Errata(알려진 결함 목록))는 PE 가 낸다.[4]"
+    ]
+   },
+   "how_far": "각 칸의 실제 작업은 그 팀이 합니다. 이 자리는 칸 사이의 **넘겨받는 조건**(무엇이 끝나야 다음이 시작되나)을 정하고 지키게 하는 것이 몫입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    8,
+    9,
+    10,
+    13
+   ],
+   "study": [
+    "tpm-handbook",
+    "xcena-hotchips"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "MX1의 고객 도입 확대와 양산 준비에 맞춰, SW팀 소속으로 펌웨어·드라이버·런타임·SDK·컴파일러 등 여러 SW 영역의 개발 계획과 제품 요구사항을 조율합니다. SQA, Product Engineering(PE)/Validation, 마케팅 및 고객 접점 조직과 함께 기능별 우선순위, 검증 범위, 릴리즈 일정과 고객 전달 내용을 일치시킵니다.",
+   "short": "양산을 앞두고 SW 다섯 갈래의 계획을 하나로 맞추고, 품질·검증·마케팅이 고객에게 같은 말을 하게 만드는 일.",
+   "why": "회사는 2025년 FMS 에서 2026년에 양산판을 내겠다고 했고, 2026년 Hot Chips 에서 양산형 MX1(Expand·Compute 두 갈래)을 공개했습니다.[11][8] 양산 시점에는 시제품 때보다 고객 수와 버전 조합이 늘어 ‘누가 무엇을 언제 받나’를 한 곳에서 맞춰야 합니다. {추론}",
+   "actually": {
+    "intro": "이 회사 SW 영역마다 따로 공고가 있어 갈래가 보입니다.",
+    "items": [
+     "**펌웨어** — 부팅 순서·메모리 초기화·실리콘 Bring-up(처음 나온 칩을 켜 보며 기능을 확인하는 일)·CXL/NVMe 메모리 확장 통합.[5]",
+     "**드라이버·런타임·SDK** — 리눅스 드라이버 인터페이스(DKMS·devdax), 멀티 디바이스 커널 실행·스케줄링, PyTorch·PyArrow 연동 Python 바인딩.[3]",
+     "**컴파일러** — LLVM 기반으로 RISC-V 표준 명령과 자체 확장 명령을 위한 코드 생성.[7]",
+     "**SQA** — CXL 3.0 프로토콜, 메모리 풀링, CPU 플랫폼 호환성, 벡터 DB·LLM 가속 시험.[2]",
+     "**PE/Validation** — 출하 단계별 평가, 신뢰성 시험(RDT), 외부 검증 파트너, 고객 샘플·문서.[4]"
+    ]
+   },
+   "how_far": "다섯 갈래 기술을 직접 만들 필요는 없지만, 갈래 사이의 **의존**(펌웨어가 늦으면 드라이버·PE 평가가 같이 밀린다)은 엔지니어와 같은 말로 따질 수 있어야 합니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    11
+   ],
+   "study": [
+    "kernel-cxl",
+    "xcena-hotchips"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객과 사업의 요구를 실행 가능한 개발 계획으로 구체화하고, 일정과 품질의 위험을 조기에 드러내며, 합의한 사항이 실제 제품과 고객 경험으로 이어질 때까지 관리합니다. 개발 목표 조율과 일정 관리, 부서 간 조율, 자료 취합과 고객 후속 대응을 체계화하는 것이 이 역할의 중요한 목표입니다.",
+   "short": "‘고객이 원한다’를 누가·언제·어떤 완료 기준으로 만들지로 바꾸고, 늦어질 것 같으면 먼저 알리는 일.",
+   "why": "회사가 MX1 고객 확보·상용화를 맡길 사업 총괄(CBO)을 2026년 10월에 새로 영입했습니다.[13] 사업 쪽 약속이 늘수록 SW 쪽에서 그 약속을 일정·범위로 번역하는 사람이 필요해집니다. {추론}",
+   "how_far": "‘체계화’가 핵심 낱말입니다. 한 번 하고 끝나는 조율이 아니라 **반복되는 틀**(요구 접수 양식·주간 현황·위험 목록·고객 후속 처리 표)을 만들어 두는 것까지입니다.[1] {추론}",
+   "refs": [
+    1,
+    13
+   ],
+   "study": [
+    "tpm-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SW 요구사항 및 우선순위 관리 — 고객·마케팅·PE/Validation의 요청을 취합하고, 개발팀과 함께 사용 시나리오, 완료 기준, 제품별 지원 범위와 우선순위를 구체화",
+   "short": "여기저기서 오는 요청을 한 목록에 모아, ‘어떤 상황에서 무엇이 되면 끝’인지와 어느 제품에 해 줄지를 정하는 일.",
+   "why": "MX1 은 메모리만 늘리는 Expand 와 계산까지 하는 Compute 두 갈래이고[8], 고객 검증은 성능·호환성·SW 통합·운영 안정성·경제성을 본다고 했습니다.[8] 같은 요청이라도 제품별로 지원 여부가 갈리니 ‘제품별 지원 범위’를 따로 적습니다.",
+   "actually": {
+    "items": [
+     "**사용 시나리오** — ‘추론 서버 여러 대가 CXL 메모리 풀로 KV 캐시를 나눠 쓴다’처럼 고객이 실제로 하려는 일로 적는다(회사가 OCP 2026 에서 보인 데모가 이런 꼴).[10][14]",
+     "**완료 기준** — ‘지원한다’ 대신 ‘Llama-3.1-8B·vLLM 에서 첫 토큰 시간이 DRAM 대비 몇 배 이내’처럼 잴 수 있게. 회사가 Hot Chips 에서 보인 측정이 이런 단위다.[9]",
+     "**제품별 지원 범위** — 기능 × 제품(Expand·Compute) × 플랫폼(Xeon·EPYC) 표.[2][8]",
+     "**우선순위** — 고객 영향·사업 일정·개발 비용으로 줄 세우고, 미루는 것은 미룬다고 적는다.[19]"
+    ]
+   },
+   "how_far": "우선순위의 최종 결정권은 보통 사업·제품 책임자에게 있고, 이 자리는 **결정에 필요한 표를 만들고 결정을 기록**합니다. {추론}",
+   "refs": [
+    2,
+    8,
+    9,
+    10,
+    14,
+    19
+   ],
+   "study": [
+    "wiegers-req",
+    "firefox-triage"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "통합 개발 일정 운영 — SW 영역별 개발·통합·검증·배포 계획을 연결하고, 담당자·의존성·주요 마일스톤·위험 요소를 관리하며 일정 또는 범위 변경 시 영향과 대안을 조율",
+   "short": "영역별 일정을 하나의 의존 그래프로 묶어, 한 곳이 밀리면 출시일이 얼마나 밀리는지 바로 답하는 일.",
+   "why": "같은 회사의 주니어 코디네이터 공고가 이 일의 도구를 그대로 적었습니다 — 마스터 일정, 마일스톤 추적, 주간 현황, 액션 아이템·이슈 추적, 위험·의존성 관리, 대시보드·현황 보고.[6]",
+   "actually": {
+    "items": [
+     "**의존 그래프** — 드라이버는 펌웨어 뒤, SDK 통합은 런타임·컴파일러 뒤, 릴리즈는 SQA·PE 뒤.",
+     "**가장 긴 줄(크리티컬 패스)** — 그 줄의 작업이 하루 늦으면 출시가 하루 늦는다. 다른 줄은 여유가 있다.",
+     "**변경 영향** — ‘기능 하나 추가’가 오면 어느 줄에 얹히는지, 무엇을 빼면 날짜가 지켜지는지 대안 두세 개로 낸다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "어느 작업이 늦으면 출시가 밀리나 (가상 일정, 직접 돌린 출력)",
+     "body": "컴파일러가 2주 늦어도 출시일(16주)은 그대로입니다 — 여유가 5주 있기 때문입니다. 드라이버가 2주 늦으면 18주로 밀립니다. 그래서 위험 회의에서 먼저 보는 것은 가장 긴 줄입니다.",
+     "lang": "python",
+     "code": "tasks = {  # 작업: (기간 주, 앞선 작업들)\n    \"FW 1.2\": (4, []), \"드라이버 1.2\": (3, [\"FW 1.2\"]),\n    \"런타임 1.2\": (3, [\"드라이버 1.2\"]), \"컴파일러 1.2\": (5, []),\n    \"SDK 통합\": (2, [\"런타임 1.2\", \"컴파일러 1.2\"]),\n    \"SQA 검증\": (3, [\"SDK 통합\"]), \"PE 호환성\": (2, [\"FW 1.2\"]),\n    \"릴리즈\": (1, [\"SQA 검증\", \"PE 호환성\"]),\n}\n\ndef plan(tasks):\n    end, why = {}, {}\n    def finish(t):\n        if t not in end:\n            dur, deps = tasks[t]\n            start = max((finish(d) for d in deps), default=0)\n            why[t] = max(deps, key=finish) if deps else None\n            end[t] = start + dur\n        return end[t]\n    total = finish(\"릴리즈\")\n    path, t = [], \"릴리즈\"\n    while t:\n        path.append(t); t = why[t]\n    return total, path[::-1]\n\nprint(plan(tasks))\ntasks[\"컴파일러 1.2\"] = (7, [])            # 컴파일러 2주 지연\nprint(plan(tasks))\ntasks[\"컴파일러 1.2\"] = (5, [])\ntasks[\"드라이버 1.2\"] = (5, [\"FW 1.2\"])  # 드라이버 2주 지연\nprint(plan(tasks))\n\n# (16, ['FW 1.2', '드라이버 1.2', '런타임 1.2', 'SDK 통합', 'SQA 검증', '릴리즈'])\n# (16, ['FW 1.2', '드라이버 1.2', '런타임 1.2', 'SDK 통합', 'SQA 검증', '릴리즈'])\n# (18, ['FW 1.2', '드라이버 1.2', '런타임 1.2', 'SDK 통합', 'SQA 검증', '릴리즈'])"
+    }
+   ],
+   "how_far": "일정 도구(Jira·엑셀·간트)는 무엇이든 됩니다. 최소선은 **‘이게 늦으면 무엇이 같이 늦나’를 담당자에게 묻지 않고도 답할 수 있는 상태**를 유지하는 것입니다. {추론}",
+   "refs": [
+    6
+   ],
+   "study": [
+    "tpm-handbook",
+    "swe-google"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "릴리즈 계획 및 실행 관리 — 정기 마일스톤과 긴급 수정의 운영 기준을 정립하고, 기능 확정·코드 동결·검증·배포 일정을 조율하며 성능 및 호환성 평가 현황 관리",
+   "short": "정기 출시와 급한 패치를 어떤 규칙으로 낼지 정하고, 기능 확정→코드 동결→검증→배포 날짜를 지키게 하는 일.",
+   "why": "이 회사 공고에는 릴리즈 규칙이 공개돼 있지 않습니다. 공개된 큰 프로젝트들은 이렇게 합니다 — 리눅스 커널은 약 2주 기능을 받고(머지 윈도우) rc1 뒤로는 고침만 받아 보통 rc6~rc9 에서 냅니다.[15] 크롬은 main 에서 2주 개발 후 브랜치를 잘라 3주 안정화합니다.[23] 구글은 릴리즈 브랜치를 따고, 고침은 main 에 먼저 넣은 뒤 승인받은 것만 브랜치로 옮깁니다(체리픽).[18]",
+   "actually": {
+    "intro": "‘보통 이런 것’을 이 제품에 얹으면 {추론}",
+    "items": [
+     "**기능 확정** — 이번 판에 들어갈 목록을 닫는다. 늦게 온 요청은 다음 판으로.",
+     "**코드 동결** — 릴리즈 브랜치를 딴다. 이후에는 승인된 고침만.[18]",
+     "**검증** — SQA 통합 시험, PE 의 플랫폼 호환성·성능 평가를 그 브랜치 빌드로.[2][4]",
+     "**긴급 수정** — 고객 장애용 패치 판(예: 1.2.1). 버전 규칙은 유의적 버전처럼 ‘호환 깨짐=MAJOR, 기능 추가=MINOR, 고침=PATCH’.[21]",
+     "**성능 현황** — 판마다 같은 벤치마크로 이전 판과 비교. 이 회사는 성능 회귀(새 판이 느려짐) 자동 탐지 도구를 만드는 엔지니어를 따로 뽑는다.[25]"
+    ]
+   },
+   "how_far": "규칙 문서를 쓰고 날짜를 지키게 하는 것이 몫이고, 브랜치·빌드 자동화는 CI/CD 엔지니어가 맡습니다.[26] 예외(동결 뒤 기능 추가)를 누가 승인하는지까지 정해 두는 것이 최소선입니다.[18] {추론}",
+   "refs": [
+    2,
+    4,
+    15,
+    18,
+    21,
+    23,
+    25,
+    26
+   ],
+   "study": [
+    "kernel-process",
+    "sre-release",
+    "chromium-release",
+    "semver-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SQA 및 PE/Validation 협업 — 고객 사용 환경과 제품 요구사항에 맞는 검증 범위·완료 기준·역할 분담을 합의하고, 결함 우선순위와 재검증 현황을 추적하여 릴리즈 판단에 필요한 근거 취합",
+   "short": "SW 품질팀과 제품 검증팀이 무엇을 어디까지 시험할지 나누고, 남은 결함으로 ‘내도 되나’의 근거를 모으는 일.",
+   "why": "이 회사에는 두 검증 조직이 있습니다. SQA 는 SDK·드라이버·펌웨어·응용 SW 의 통합 시험과 결함 원인 분석을[2], PE/Validation 은 장치·호스트·시스템 수준 검증, 스펙 기반 시험 항목, 양산 시험과 품질 이슈를 맡습니다.[24][4] 겹치는 곳과 빈 곳을 나누지 않으면 같은 시험을 두 번 하거나 아무도 안 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**역할 분담 표** — 시험 항목 × 담당(SQA·PE·외부 검증 파트너). PE 는 외주 검증 파트너도 운영한다.[4]",
+     "**결함 우선순위** — 심각도(얼마나 나쁜가)와 우선순위(언제 고치나)를 따로 매긴다. 파이어폭스는 우선순위를 P1 이번 판·P2 다음 한두 판·P3 백로그로 쓴다.[19]",
+     "**재검증 현황** — 고친 결함이 다시 시험을 통과했는지. 고침마다 회귀 시험(예전에 되던 것이 깨지지 않았나)을 같이 돈다.[24]",
+     "**릴리즈 근거** — 남은 결함 수·통과율·막힌 시험을 미리 합의한 기준과 대조한 한 장."
+    ]
+   },
+   "examples": [
+    {
+     "title": "릴리즈 판단 한 장 (가상 숫자, 직접 돌린 출력)",
+     "body": "기준은 미리 합의해 둡니다. 통과율이 99.5% 여도 S2 결함이 기준을 넘고 막힌 시험이 있으면 ‘조건부’입니다 — 이때 일은 결정을 대신하는 게 아니라 잔여 위험을 설명하는 것입니다.",
+     "lang": "python",
+     "code": "open_bugs = {\"S1\": 0, \"S2\": 2, \"S3\": 9}\nlimit     = {\"S1\": 0, \"S2\": 1, \"S3\": 15}\ntests = {\"pass\": 1182, \"fail\": 6, \"blocked\": 12, \"total\": 1200}\n\nfor s in limit:\n    mark = \"OK\" if open_bugs[s] <= limit[s] else \"기준 초과\"\n    print(s, open_bugs[s], \"/\", limit[s], mark)\nrun = tests[\"pass\"] + tests[\"fail\"]\nprint(f\"실행 {run}/{tests['total']} ({run/tests['total']:.1%}), 통과율 {tests['pass']/run:.1%}\")\n\n# S1 0 / 0 OK\n# S2 2 / 1 기준 초과\n# S3 9 / 15 OK\n# 실행 1188/1200 (99.0%), 통과율 99.5%"
+    }
+   ],
+   "how_far": "시험을 직접 설계하지는 않지만, 시험 계획서·결과 보고서를 읽고 **빠진 칸**(이 플랫폼은 누가 봤나)을 짚을 수 있어야 합니다. {추론}",
+   "refs": [
+    2,
+    4,
+    19,
+    24
+   ],
+   "study": [
+    "firefox-triage",
+    "swe-google"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "내부 의사결정 및 대외 커뮤니케이션 조율 — 개발 가능 범위와 검증 결과를 바탕으로 기능·성능·일정에 대한 설명을 일치시키고, 고객 약속이나 우선순위 변경이 필요한 사안의 의사결정 지원과 후속 실행 관리",
+   "short": "영업·마케팅이 고객에게 하는 말이 실제 개발·검증 결과와 어긋나지 않게 맞추고, 약속을 바꿀 땐 결정을 받아 실행까지 챙기는 일.",
+   "why": "이 회사는 성능 숫자를 밖에서 자주 말합니다 — 처리량 최대 4.7배·에너지 효율 최대 18.7배 같은 값이고, 대표도 모든 워크로드에서 같은 결과가 나오지는 않는다고 덧붙였습니다.[8][9] 이런 숫자는 어떤 조건에서 잰 것인지가 같이 다녀야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**한 벌의 사실표** — 지원 기능·측정 조건·알려진 제약을 한 문서로 두고 마케팅 자료·고객 답변이 그것을 가리키게.",
+     "**결정 자료** — 선택지(날짜를 지키고 기능을 뺀다 / 기능을 넣고 2주 미룬다)와 각각의 비용·위험.",
+     "**후속 실행** — 결정 뒤 담당자·기한을 적고 끝났는지 확인."
+    ]
+   },
+   "how_far": "결정은 경영진·사업 책임자가 합니다. 이 자리는 **결정이 필요하다는 것을 제때 알리고 자료를 만드는 것**까지입니다. {추론}",
+   "refs": [
+    8,
+    9
+   ],
+   "study": [
+    "tpm-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 기술 대응 조율 — 필요 시 마케팅 및 고객 접점 조직과 함께 기술 미팅에 참여하고, 문의·이슈의 초기 분류와 재현 정보 확보, 담당 조직 연결, 대응 일정·진행 상황 안내 및 해결 여부 확인",
+   "short": "고객 문제가 오면 먼저 분류하고 재현에 필요한 정보를 받아 맞는 팀에 넘긴 뒤, 끝날 때까지 고객에게 진행을 알리는 일.",
+   "why": "PE 는 고객 피드백·이슈의 초동 기술 대응과 내부 공유·추적을[4], 고객 쪽 기술 접점은 FAE(현장 응용 엔지니어) 자리가 따로 있습니다.[1] 이 자리는 SW 이슈가 어느 팀(펌웨어·드라이버·런타임·컴파일러) 것인지 가르는 첫 칸입니다. {추론}",
+   "actually": {
+    "intro": "재현 정보는 보통 이런 것입니다 — 리눅스 커널의 문제 보고 안내가 요구하는 것을 이 제품에 옮겼습니다.[16]",
+    "items": [
+     "**버전** — 커널(`cat /proc/version`), 배포판, 그리고 이 제품이면 펌웨어·드라이버·SDK 판.",
+     "**환경** — CPU 플랫폼·BIOS·장치 구성(몇 장, 어느 슬롯).",
+     "**재현 절차** — 무엇을 하면 매번 나는가, 얼마나 자주.",
+     "**로그** — `dmesg` 전체, 오류 메시지.",
+     "**회귀 여부** — 이전 판에서는 됐나. 됐다면 마지막으로 되던 판과 처음 깨진 판."
+    ]
+   },
+   "how_far": "직접 디버깅하는 자리는 아닙니다. 최소선은 **‘정보 부족’으로 엔지니어와 고객 사이를 두 번 왕복하지 않게** 첫 연락에서 위 항목을 받아 오는 것입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    16
+   ],
+   "study": [
+    "kernel-reporting"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 펌웨어·드라이버·런타임·SDK·컴파일러 등 시스템 SW의 전반적인 구성과 주요 의존성을 이해하고, 각 영역의 기술 담당자와 함께 담당 범위와 해결 순서를 정리할 수 있는 분",
+   "short": "칩 위에 SW 가 몇 층으로 쌓이고 어느 층이 어느 층에 기대는지 알아야, 문제를 누가 먼저 풀지 정할 수 있어서.",
+   "why": "MX1 의 SW 는 위아래로 쌓입니다 — 장치 안 RISC-V 코어의 펌웨어, 호스트 리눅스의 드라이버, 그 위의 런타임(PXL 이라는 MapReduce 꼴 런타임), 개발자가 쓰는 SDK 와 C/C++·Rust 커널을 장치용으로 바꾸는 컴파일러.[9][3][7] 호스트와 장치 코어는 하나의 가상 주소 공간을 공유합니다.[9]",
+   "flows": [
+    {
+     "caption": "MX1 SW 층 — 아래가 끝나야 위가 돈다[3][5][7][9]",
+     "steps": [
+      "펌웨어 · 장치 부팅·메모리 초기화·SSD 연동",
+      "리눅스 드라이버 · CXL 장치를 OS 에 보이게(DKMS·devdax)",
+      "런타임 · 커널 실행·스케줄링·메모리 할당(PXL)",
+      "컴파일러 · C/C++·Rust 커널 → RISC-V 코드",
+      "SDK · Python 바인딩, PyTorch·PyArrow 연동"
+     ]
+    }
+   ],
+   "how_far": "층마다 ‘무엇을 받고 무엇을 내놓나’를 한 문장으로 말할 수 있으면 됩니다. 리눅스 CXL 드라이버 문서의 목차(장치 종류·플랫폼 설정·메모리 할당)를 읽고 따라갈 수 있는 정도가 기준입니다.[17] {추론}",
+   "refs": [
+    3,
+    5,
+    7,
+    9,
+    17
+   ],
+   "study": [
+    "kernel-cxl",
+    "xcena-hotchips"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 고객의 요청을 그대로 전달하는 데서 나아가 사용 목적과 문제를 파악하고, 개발팀이 판단할 수 있는 요구사항과 완료 기준으로 구체화할 수 있는 분",
+   "short": "‘메모리 더 빠르게’ 같은 요청을 ‘이 워크로드·이 조건에서 이 숫자’로 바꿔야 개발팀이 할지 말지 정할 수 있어서.",
+   "why": "회사가 고객과 검증하는 항목은 성능·호환성·SW 통합·운영 안정성·경제성으로 넓고[8], 데이터 이동이 많은 일(벡터 검색·데이터 분석·KV 캐시)일수록 이점이 크다고 했습니다.[8] 요청의 목적을 알아야 이 제품이 맞는 일인지부터 가릴 수 있습니다.",
+   "how_far": "요구사항 한 건에 **목적·사용 시나리오·완료 기준(잴 수 있는 숫자)·범위 밖**을 적을 수 있으면 됩니다. {추론}",
+   "refs": [
+    8
+   ],
+   "study": [
+    "wiegers-req"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 개발 완료, 검증 완료, 고객 배포 가능 상태의 차이를 이해하고, 테스트 결과와 잔여 위험을 바탕으로 릴리즈 준비 수준을 설명할 수 있는 분",
+   "short": "‘코드 다 짰다’와 ‘시험 통과했다’와 ‘고객에게 줘도 된다’는 다른 상태라서, 지금 어디인지 근거로 말해야 해서.",
+   "why": "이 회사 PE 는 출하 단계마다 기능·성능 평가 전략을 따로 세우고 신뢰성 시험·승인 절차를 운영합니다.[4] 같은 SW 라도 고객에게 가려면 그 단계의 문을 지나야 합니다.",
+   "actually": {
+    "items": [
+     "**개발 완료** — 기능이 들어가고 개발자 시험을 통과.",
+     "**검증 완료** — SQA·PE 가 합의한 범위의 시험을 통과, 남은 결함이 기준 안.[2][4]",
+     "**고객 배포 가능** — 패키지·설치 문서·릴리즈 노트·알려진 결함(Errata) 준비, 지원 플랫폼 표 확정.[4]"
+    ]
+   },
+   "how_far": "위 ‘릴리즈 판단 한 장’ 예처럼 **통과율 하나가 아니라 남은 결함·막힌 시험·지원 범위**로 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    2,
+    4
+   ],
+   "study": [
+    "sre-release",
+    "changelog-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 기술적 제약과 사업적 우선순위를 함께 이해하고, 일정·범위·품질 간 선택지를 명확히 제시할 수 있는 분",
+   "short": "‘다 된다’도 ‘안 된다’도 아닌, 날짜·기능·품질 중 무엇을 내주면 무엇을 얻는지 두세 안으로 내놓아야 해서.",
+   "why": "양산·공급 목표(2026년 말 양산, 2027년 본격 공급)가 정해진 제품이라 날짜를 움직이기 어렵습니다.[28][8] 그러면 남는 손잡이는 범위와 품질입니다. {추론}",
+   "how_far": "선택지마다 **무엇이 빠지고·누가 영향받고·위험이 무엇인지**를 한 줄씩. 위 일정 예처럼 ‘이 작업을 줄이면 날짜가 지켜진다’를 계산으로 보이는 것이 좋습니다. {추론}",
+   "refs": [
+    8,
+    28
+   ],
+   "study": [
+    "tpm-handbook"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 회의와 현황 보고에서 끝내지 않고, 결정 사항의 담당자·기한·완료 기준을 명확히 하여 실제 실행과 종료까지 챙기는 분",
+   "short": "회의에서 정한 일이 담당자·기한 없이 흩어지면 아무도 안 해서, 끝날 때까지 쫓아가야 해서.",
+   "why": "같은 회사의 코디네이터 공고에도 회의록·후속 조치, 액션 아이템 추적이 업무로 적혀 있습니다.[6]",
+   "how_far": "결정마다 **누가·언제까지·무엇이 되면 끝**을 회의록에 남기고, 다음 회의 첫머리에서 확인하는 습관이면 됩니다. {추론}",
+   "refs": [
+    6
+   ],
+   "study": [
+    "tpm-handbook"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 개발팀, SQA, PE/Validation, 마케팅과 고객의 서로 다른 관점을 이해하고, 합의를 이끌어낼 수 있는 분",
+   "short": "개발은 시간, 품질팀은 범위, 마케팅은 날짜, 고객은 기능을 먼저 보니, 그 사이에서 하나의 답을 만들어야 해서.",
+   "why": "이 자리가 함께 일하는 조직이 공고 첫머리에 다섯 곳이나 나옵니다.[1] 조직마다 공고에 적힌 관심사가 다릅니다 — SQA 는 커버리지와 품질 지표[2], PE 는 신뢰성 시험과 고객 인증[4], 마케팅은 외부 발표와 측정값입니다.[12]",
+   "how_far": "합의는 결론보다 **근거를 같은 표에 올리는 것**에서 시작합니다(같은 결함 목록·같은 일정표). {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    12
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 불확실하거나 지연되는 사안을 조기에 공유하고, 확인된 사실과 미확인 사항을 구분하여 후속 조치를 구체화하는 분",
+   "short": "나쁜 소식은 일찍 알릴수록 고를 수 있는 대안이 많아서. 그때 확인된 것과 추측을 섞지 않아야 해서.",
+   "why": "고객 이슈 초기에는 원인이 모르는 상태입니다. PE 공고도 이슈의 재현과 원인 분석을 단계로 나눠 적었습니다.[4]",
+   "how_far": "현황 보고를 **확인됨 / 확인 중(언제까지) / 모름** 세 칸으로 쓰는 정도면 됩니다. {추론}",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 필요한 정보가 한 번 정리되어 여러 팀에서 활용되도록 업무를 단순화하는 분",
+   "short": "같은 질문(지원 플랫폼·버전 조합·알려진 결함)에 팀마다 따로 답하면 어긋나서, 한 곳에 두고 가리키게 하려고.",
+   "why": "고객 온보딩 자료(Bring-up 가이드·릴리즈 노트·Errata)는 PE 가 만들고[4], 마케팅·FAE 도 같은 내용을 고객에게 말합니다.[1] 한 벌로 관리하면 서로 다른 답이 나가지 않습니다. {추론}",
+   "how_far": "버전 호환 표·지원 범위 표·알려진 결함 목록 같은 **한 벌짜리 문서**를 만들고 고치는 사람을 정해 두는 것. {추론}",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "changelog-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 변화가 빠른 환경에서 직접 문서를 작성하고 이슈를 정리하며, 조직 규모에 맞는 실용적인 프로세스를 만들어가는 분",
+   "short": "스타트업이라 정해진 절차가 아직 없어서, 큰 회사 절차를 들여오기보다 지금 인원에 맞는 만큼만 직접 만들어야 해서.",
+   "why": "엑시나는 2022년에 세워진 팹리스(설계만 하고 생산은 맡기는 반도체 회사)이고[11], 시리즈 B 를 포함해 누적 약 2,800억 원을 투자받았습니다.[1] 개발 SW 영역마다 엔지니어를 지금 뽑고 있습니다.[2][3][7]",
+   "how_far": "직접 쓴다는 것이 핵심입니다 — 릴리즈 노트·현황표·회의록을 비서 없이 스스로 씁니다. 절차는 **지금 겪는 문제 하나를 줄이는 만큼만**. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    7,
+    11
+   ],
+   "study": [
+    "swe-google"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• SW 개발, 시스템 SW, 기술 기반 Product/Program Management 등 관련 실무 경력 8년 이상",
+   "short": "엔지니어와 기술 쟁점을 같은 눈높이로 따지려면 직접 만들었거나 오래 곁에서 조율한 경험이 있어야 해서.",
+   "why": "공고 제목이 Senior 이고, 이 자리는 주니어 코디네이터(같은 회사가 따로 뽑는 자리)보다 위에서 SW 전체 출시를 맡습니다.[6][1] 공고 머리 칸은 ‘경력 5년↑’로 표시돼 있지만 본문 필수 요건은 8년 이상입니다.[1]",
+   "how_far": "개발자 출신이면 시스템 SW 개발 경력, PM 출신이면 기술 제품 PM 경력 — 둘 중 하나로 8년입니다.[1]",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 여러 기술 조직이 참여하는 SW 제품 또는 플랫폼의 개발·검증·릴리즈를 주도적으로 조율한 경험",
+   "short": "한 팀 일정 관리와 여러 팀이 서로 기대는 일정 관리는 난도가 달라서.",
+   "why": "이 자리의 일정은 SW 다섯 갈래와 SQA·PE·마케팅을 엮습니다.[1] 팀 하나의 스프린트 관리와 달리 팀 사이 의존이 일의 대부분입니다. {추론}",
+   "how_far": "지원서에 **팀 수·의존 관계·내가 정한 규칙·지킨/못 지킨 날짜와 이유**를 구체로 쓸 수 있는 경험이면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "tpm-handbook"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 시스템 SW 또는 HW와 연계된 SW 제품의 개발 생명주기에 대한 이해와, 엔지니어와 기술적 쟁점·의존성·위험을 논의할 수 있는 역량",
+   "short": "하드웨어에 붙는 SW 는 칩 일정·실리콘 문제에 끌려다녀서, 웹 서비스와 다른 생명주기를 알아야 해서.",
+   "why": "이 회사 펌웨어 공고는 설계 단계 검토 → 시뮬레이션·FPGA 검증 → 실리콘 Bring-up → 호스트·OS 연동 → 성능·신뢰성 평가로 이어지는 흐름을 적었습니다.[5] 칩에서 문제가 나오면 SW 가 우회(워크어라운드)해야 할 때가 많습니다. {추론}",
+   "flows": [
+    {
+     "caption": "HW 에 붙는 SW 의 생명주기 — 이 회사 공고들에서[5][6][4]",
+     "steps": [
+      "설계 · 아키텍처·메모리 맵 검토",
+      "시뮬레이션·FPGA · 칩 전에 SW 먼저",
+      "Tape-out → 실리콘 Bring-up · 첫 칩을 켠다",
+      "샘플 출하 · 단계별 평가·고객 PoC",
+      "양산 · 신뢰성 시험·품질 관리"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "칩 회사 경험이 없더라도 ‘하드웨어 문제를 SW 로 막을지, 다음 칩에서 고칠지’를 엔지니어와 따져 본 경험이면 통합니다. {추론}",
+   "refs": [
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "kernel-cxl",
+    "xcena-hotchips"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 요구사항과 우선순위를 정리하고, 일정·변경 사항·이슈를 관리하여 제품 출시 또는 고객 적용까지 연결한 경험",
+   "short": "요구사항 정리에서 끝나지 않고 실제 출시·고객 설치까지 간 경험이 있어야 끝까지 챙기는 감이 있어서.",
+   "why": "업무 첫 줄이 ‘고객 적용까지 전 과정을 연결’입니다.[1]",
+   "how_far": "출시 한 건을 처음부터 끝까지 맡아, **변경 요청이 몇 번 왔고 어떻게 처리했나**를 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "wiegers-req"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 고객 또는 외부 파트너와 기술 요구사항, 이슈 및 일정을 협의하고 내부 개발 조직의 대응을 조율한 경험",
+   "short": "고객 앞에서 약속하는 것과 안에서 그 약속을 지키게 하는 것을 둘 다 해 봐야 해서.",
+   "why": "MX1 은 하이퍼스케일러·AI 인프라 회사와 실제 워크로드 검증 중이고[8], SK하이닉스와는 MX1 기반 하이브리드 메모리를 같이 검증하고 있습니다.[14] 삼성전자와는 Hot Chips·OCP 에서 공동 발표를 했습니다.[9][14]",
+   "how_far": "외부와 일정을 정하고, 안에서 늦어졌을 때 **밖에 언제 어떻게 다시 알렸나**까지 해 본 경험. {추론}",
+   "refs": [
+    8,
+    9,
+    14
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 기술 문서, 릴리즈 노트, 진행 현황 및 의사결정 자료를 목적과 대상에 맞게 작성할 수 있는 역량",
+   "short": "같은 릴리즈라도 엔지니어·경영진·고객이 알아야 할 것이 달라서, 읽는 사람마다 다르게 써야 해서.",
+   "why": "릴리즈 노트는 고객 온보딩 자료의 하나로 적혀 있습니다.[4] 변경 기록의 공개 관례(Keep a Changelog)는 변경을 추가·변경·폐기 예정·제거·수정·보안 여섯 가지로 나누고, 사람을 위해 쓰며 커밋 로그를 그대로 붙이지 말라고 합니다.[22]",
+   "examples": [
+    {
+     "title": "릴리즈 노트 뼈대 (관례[22]를 이 제품에 얹은 가상 예)",
+     "body": "고객용에는 지원 플랫폼과 올려야 할 버전 조합을 맨 위에 둡니다. 엔지니어용 변경 목록과 따로 씁니다. {추론}",
+     "lang": "markdown",
+     "code": "## [1.2.0] - 2026-12-15\n필요 버전: 드라이버 1.2 이상 · 펌웨어 2.1 이상\n지원 플랫폼: (검증한 CPU·OS 목록)\n\n### 추가\n- 멀티 디바이스 커널 실행\n### 수정\n- 장치 2장 구성에서 초기화가 가끔 실패하던 문제\n### 알려진 문제\n- (재현 조건과 우회 방법)"
+    }
+   ],
+   "how_far": "고객용 릴리즈 노트·주간 현황·결정 요청서 세 가지를 각각 한 장으로 쓸 수 있으면 됩니다. {추론}",
+   "refs": [
+    4,
+    22
+   ],
+   "study": [
+    "changelog-ko",
+    "semver-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 글로벌 고객 및 파트너와 기술 문서와 이메일을 주고받고, 업무 미팅을 진행할 수 있는 영어 커뮤니케이션 역량",
+   "short": "고객 대부분이 미국 하이퍼스케일러·클라우드이고 미국 지사가 있어서, 문서·회의가 영어로 오가서.",
+   "why": "본사는 판교, 미국 지사는 실리콘밸리에 있고[1], 회사의 주요 발표 무대(FMS·Hot Chips·OCP)와 고객 검증 대상이 미국입니다.[8][10][12] 사업 총괄도 미국 업계 출신을 영입했습니다.[13]",
+   "how_far": "기술 회의를 영어로 진행하고, 이슈 현황·일정 변경을 영어 이메일로 쓸 수 있는 정도. {추론}",
+   "refs": [
+    1,
+    8,
+    10,
+    12,
+    13
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 전산·컴퓨터·전기전자공학 또는 관련 분야 학사 이상, 혹은 이에 준하는 실무 경험",
+   "short": "시스템 SW·하드웨어 쟁점을 이해할 바탕을 보는 것이고, 실무 경험으로 대신할 수 있다고 적혀 있다.",
+   "why": "이 회사 SW 공고 대부분이 같은 전공 문구를 씁니다.[3][5]",
+   "how_far": "‘이에 준하는 실무 경험’이 붙어 있어 전공보다 경력 내용이 먼저 읽힙니다.[1]",
+   "refs": [
+    1,
+    3,
+    5
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 반도체, 서버, 스토리지, 네트워크, 가속기 또는 임베디드 제품의 Technical Program Manager, Technical Product Manager, SW Project Lead 경험",
+   "short": "하드웨어 제품에 붙은 SW 출시를 해 본 사람은 칩 일정·플랫폼 호환·현장 지원의 감이 이미 있어서.",
+   "why": "엑시나는 삼성전자·SK하이닉스 출신 설계자들이 세웠고[1], 대표는 SK하이닉스에서 SSD 펌웨어를 맡았습니다.[8] 메모리·스토리지 제품의 출시 방식이 회사의 바탕입니다. {추론}",
+   "how_far": "넷 중 어느 제품이든, 직함보다 **HW 에 붙은 SW 의 출시를 책임졌나**가 핵심입니다. {추론}",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 펌웨어, Linux 드라이버, 런타임, SDK 또는 컴파일러의 직접 개발 경험",
+   "short": "직접 짜 봤으면 엔지니어의 일정 추정이 맞는지, 쟁점이 어디서 막히는지 더 빨리 알아봐서.",
+   "why": "이 다섯이 이 자리가 엮는 SW 갈래 그대로입니다.[1] 런타임/SDK 공고는 커널·드라이버와 유저 공간 사이 인터페이스 경험을[3], 펌웨어 공고는 부트로더·BSP·드라이버 경험을 요구합니다.[5]",
+   "how_far": "다섯 중 하나면 충분합니다. 나머지는 ‘무엇을 받고 무엇을 내놓나’ 수준으로 압니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5
+   ],
+   "study": [
+    "kernel-cxl"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• CXL·PCIe·메모리 시스템과 데이터센터 SW 환경에 대한 이해",
+   "short": "제품이 CXL 메모리 장치라, 고객 질문과 호환성 문제 대부분이 이 낱말들로 오가서.",
+   "why": "MX1 은 CXL 3.2 Type 3(메모리를 내주는 종류) 장치로 PCIe 6.0 x8 두 갈래로 붙고, DRAM 을 최대 2TB 까지 꽂으며 SSD 를 메모리처럼 붙이는 InfiniteMemory 기능이 있습니다.[10] 리눅스에서는 CXL 메모리가 ACPI 테이블·디코더 설정·DAX 장치·메모리 핫플러그를 거쳐 보입니다.[17]",
+   "actually": {
+    "items": [
+     "**CXL 세 갈래** — .io(장치 설정, PCIe 와 같음)·.cache·.mem. 메모리 장치는 .io + .mem.[24][17]",
+     "**호환성 인증** — CXL 컨소시엄 컴플라이언스 행사에서 기능·상호운용을 시험하고, 통과한 제품이 Integrators List 에 오른다. 성능 보증은 아니다.[27]",
+     "**데이터센터 SW** — 고객 데모는 vLLM·LMCache(KV 캐시)·FAISS(벡터 검색)·PyTorch 같은 것 위에서 돌았다.[9]"
+    ]
+   },
+   "how_far": "프로토콜 세부까지는 아니고, **이 장치가 OS 에 어떻게 보이고 어떤 소프트웨어 위에서 쓰이나**를 설명할 수 있는 정도. {추론}",
+   "refs": [
+    9,
+    10,
+    17,
+    24,
+    27
+   ],
+   "study": [
+    "kernel-cxl",
+    "cxl-consortium",
+    "xcena-hotchips"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 실리콘 Bring-up부터 양산, 고객 평가·PoC·현장 배포까지 이어지는 제품 개발 과정에 참여한 경험",
+   "short": "MX1 이 지금 정확히 그 길(시제품 PoC → 양산 → 공급) 위에 있어서.",
+   "why": "2025년 8월 공개 → 2025년 10월 일부 파트너에게 작동 샘플 → 2026년 양산판 공개, 시제품 MX1P 는 PoC 에 쓰이는 중 → 2026년 말 양산 → 2027년 고객 매출 순서입니다.[11][12][28][8]",
+   "how_far": "그 과정 중 한 구간이라도 SW 쪽에서 맡아 봤으면 됩니다. {추론}",
+   "refs": [
+    8,
+    11,
+    12,
+    28
+   ],
+   "study": [
+    "xcena-hotchips"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• SQA 및 PE/Validation 조직과 검증 기준, 결함 관리, 릴리즈 승인 절차를 구축하거나 개선한 경험",
+   "short": "이 회사는 이 절차를 지금 세우는 중이라, 만들어 본 사람이 바로 쓸모 있어서.",
+   "why": "회사는 FMS 2026 에서 ‘MX1 검증 — 정형화된 출하 상태 평가 방법론이 필요하다’는 발표를 했습니다.[12] CXL 장치를 평가하는 공통 기준이 아직 업계에 없다는 문제의식입니다. {추론}",
+   "how_far": "결함 심각도·우선순위 정의, 릴리즈 기준, 승인자 — 셋 중 하나라도 직접 정하고 굴려 본 경험. {추론}",
+   "refs": [
+    12
+   ],
+   "study": [
+    "firefox-triage",
+    "sre-release"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 여러 제품·고객 환경에 걸친 SW/FW 버전, 호환성, 유지보수 및 긴급 패치 운영 경험",
+   "short": "펌웨어·드라이버·SDK 판이 고객마다 다르게 깔리니, 어느 조합이 되는지와 급한 고침을 어디에 낼지 관리해야 해서.",
+   "why": "이 제품은 장치 펌웨어와 호스트 드라이버·SDK 가 따로 올라갑니다.[3][5] 공개된 비슷한 예로 NVIDIA 는 CUDA 판마다 필요한 최소 드라이버(예: 12.x 는 525 이상)를 표로 내고, 같은 메이저 안에서는 낮은 드라이버에서도 기능 일부를 빼고 돌게 합니다.[20]",
+   "examples": [
+    {
+     "title": "고객 환경이 지원 조합인가 (가상 버전, 직접 돌린 출력)",
+     "body": "버전 문자열을 숫자 묶음으로 바꿔 비교합니다(문자열로 비교하면 1.10 이 1.9 보다 작게 나옵니다).",
+     "lang": "python",
+     "code": "need = {\"SDK 1.1\": (\"drv 1.1\", \"fw 2.0\"), \"SDK 1.2\": (\"drv 1.2\", \"fw 2.1\")}\nv = lambda s: tuple(int(x) for x in s.split()[1].split(\".\"))\n\ncustomers = {\n    \"A사\": (\"SDK 1.2\", \"drv 1.2\", \"fw 2.1\"),\n    \"B사\": (\"SDK 1.2\", \"drv 1.1\", \"fw 2.1\"),\n    \"C사\": (\"SDK 1.1\", \"drv 1.2\", \"fw 1.9\"),\n}\nfor name, (sdk, drv, fw) in customers.items():\n    nd, nf = need[sdk]\n    bad = [x for x, n in ((drv, nd), (fw, nf)) if v(x) < v(n)]\n    print(name, sdk, \"OK\" if not bad else \"올려야 함: \" + \", \".join(bad))\n\n# A사 SDK 1.2 OK\n# B사 SDK 1.2 올려야 함: drv 1.1\n# C사 SDK 1.1 올려야 함: fw 1.9"
+    }
+   ],
+   "how_far": "버전 규칙(유의적 버전)[21], 지원 조합 표, 긴급 패치를 어느 판까지 거꾸로 내 줄지(지원 기간) 정해 본 경험. {추론}",
+   "refs": [
+    3,
+    5,
+    20,
+    21
+   ],
+   "study": [
+    "cuda-compat",
+    "semver-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 성장 단계의 기술 조직에서 개발팀의 협업 부담을 줄이고 제품 전달 체계를 정착시킨 경험",
+   "short": "엔지니어가 회의·보고·고객 응대에 시간을 빼앗기지 않게 하면서 출시는 굴러가게 만든 경험이 있으면 좋아서.",
+   "why": "투자와 채용이 한꺼번에 늘어나는 시기입니다 — 시리즈 B 2,018억 원을 받았고[1] SW 영역마다 사람을 뽑는 중입니다.[2][3][7] 인원이 늘면 조율 비용이 커집니다. {추론}",
+   "how_far": "도입한 절차 하나와 그 뒤 **엔지니어가 덜 하게 된 일**을 숫자로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    7
+   ],
+   "study": [
+    "swe-google"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "시스템 SW 를 짜 봤지만 이제 여러 팀의 출시를 끌고 싶은 사람",
+   "‘언제 돼요?’에 숫자와 근거로 답하는 게 편한 사람",
+   "정해진 절차가 없는 곳에서 직접 문서를 쓰고 틀을 만드는 걸 즐기는 사람[1]",
+   "양산 직전 칩 회사의 첫 출시를 겪어 보고 싶은 사람[8][12]"
+  ],
+  "hard": [
+   "직접 코드를 짜는 시간은 거의 없다 {추론}",
+   "필수 경력 8년 이상 — 공고 머리 칸의 ‘5년↑’보다 높다[1]",
+   "미국 고객·지사와 영어로 일해서 시차가 생긴다[1] {추론}",
+   "결정권 없이 결정을 끌어내야 하는 자리다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "펌웨어가 2주 늦어진다는 소식이 왔습니다. 출시일에 어떤 영향이 있는지 어떻게 판단하고, 누구에게 무엇을 말하겠어요?",
+   "a": "의존 그래프와 가장 긴 줄, 대안 두세 개."
+  },
+  {
+   "q": "통과율 99.5% 인데 S2 결함이 두 건 남았습니다. 내보내야 할까요?",
+   "a": "미리 합의한 기준·잔여 위험·결정자.[19]"
+  },
+  {
+   "q": "고객이 ‘가끔 장치가 안 보인다’고 메일을 보냈습니다. 첫 답장에 무엇을 물어보겠어요?",
+   "a": "버전·환경·재현 절차·로그·회귀 여부.[16]"
+  },
+  {
+   "q": "코드 동결 뒤에 큰 고객이 기능 하나를 꼭 넣어 달라고 합니다.",
+   "a": "예외 승인 규칙, 체리픽, 다음 판으로 미루는 선택지.[18]"
+  },
+  {
+   "q": "드라이버 1.2 와 펌웨어 2.0 을 쓰는 고객에게 SDK 1.2 를 줘도 되나요? 어떻게 확인하나요?",
+   "a": "지원 조합 표와 최소 버전 규칙.[20][21]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "엑시나 채용 · [SW] Senior SW Technical Program Manager",
+   "url": "https://xcena.career.greetinghr.com/ko/o/241584",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "회사 소개·포지션 소개·담당 업무·이런 분·업무 스타일·필수·우대·근무지·복리후생"
+  },
+  {
+   "n": 2,
+   "title": "엑시나 채용 · [SW] 소프트웨어 품질보증 엔지니어",
+   "url": "https://xcena.career.greetinghr.com/ko/o/161103",
+   "kind": "posting",
+   "note": "같은 회사 — SDK·드라이버·펌웨어 통합 시험, CPU 플랫폼 호환성, 워크로드 성능 검증"
+  },
+  {
+   "n": 3,
+   "title": "엑시나 채용 · [SW] System Software Engineer, Device Runtime & SDK",
+   "url": "https://xcena.career.greetinghr.com/ko/o/110622",
+   "kind": "posting",
+   "note": "같은 회사 — 런타임·멀티 디바이스 스케줄링·DKMS/devdax·Python 바인딩·SDK 배포"
+  },
+  {
+   "n": 4,
+   "title": "엑시나 채용 · Product Engineer",
+   "url": "https://xcena.career.greetinghr.com/ko/o/161178",
+   "kind": "posting",
+   "note": "같은 회사 PE — 출하 단계별 평가·RDT·외부 검증 파트너·샘플·Bring-up 가이드·릴리즈 노트·Errata"
+  },
+  {
+   "n": 5,
+   "title": "엑시나 채용 · [SW] System Firmware Engineer",
+   "url": "https://xcena.career.greetinghr.com/ko/o/110624",
+   "kind": "posting",
+   "note": "같은 회사 — 아키텍처 공동 설계·실리콘 Bring-up·CXL/NVMe 통합·성능·신뢰성 평가"
+  },
+  {
+   "n": 6,
+   "title": "엑시나 채용 · Junior Technical Project/Product Coordinator",
+   "url": "https://xcena.career.greetinghr.com/ko/o/233340",
+   "kind": "posting",
+   "note": "같은 회사 — 마스터 일정·마일스톤·위험·의존성·회의록, RTL→Tape-out→Bring-up→양산"
+  },
+  {
+   "n": 7,
+   "title": "엑시나 채용 · [SW] 컴파일러 엔지니어",
+   "url": "https://xcena.career.greetinghr.com/ko/o/235024",
+   "kind": "posting",
+   "note": "같은 회사 — LLVM·RISC-V 확장 명령·회귀 시험과 CI"
+  },
+  {
+   "n": 8,
+   "title": "뉴스1 · 김진영 엑시나 대표 ‘AI 인프라 승부처, 연산 아닌 메모리 효율확장’",
+   "url": "https://www.news1.kr/industry/sb-founded/6279286",
+   "kind": "news",
+   "date": "2026-09-04",
+   "note": "대표 인터뷰 — MX1 Expand·Compute, SDK·런타임 방향, 고객 검증 항목, 2027년 본격 공급"
+  },
+  {
+   "n": 9,
+   "title": "ServeTheHome · XCENA MX1 CXL Computational Memory Device at Hot Chips 2026",
+   "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026",
+   "kind": "news",
+   "date": "2026-08-25",
+   "note": "회사 발표 슬라이드 정리 — RISC-V 코어·PXL 런타임·C/C++·Rust 커널·KV 캐시 측정·삼성 공동 부분"
+  },
+  {
+   "n": 10,
+   "title": "StorageReview · XCENA MX1 shares a KV cache across inference servers at OCP 2026",
+   "url": "https://www.storagereview.com/news/xcena-mx1-cxl-computational-memory-kv-cache-sk-hynix-ocp-2026",
+   "kind": "news",
+   "date": "2026-10-16",
+   "note": "CXL 3.2 Type 3·PCIe 6.0 x8 두 갈래·DRAM 2TB·InfiniteMemory, 본사 성남·미국 서니베일"
+  },
+  {
+   "n": 11,
+   "title": "TechNode(PR Newswire) · XCENA to Launch MX1 Computational Memory in October",
+   "url": "https://technode.global/prnasia/xcena-to-launch-mx1-computational-memory-in-october-recognized-for-innovation-at-fms-2025/",
+   "kind": "news",
+   "date": "2025-08-06",
+   "note": "회사 보도자료 — 2025년 10월 파트너 샘플, 2026년 양산판, SDK(드라이버·런타임·도구), 2022년 설립"
+  },
+  {
+   "n": 12,
+   "title": "HPCwire(회사 보도자료) · XCENA Unveils MX1 Production Lineup",
+   "url": "https://www.hpcwire.com/off-the-wire/xcena-unveils-mx1-production-lineup-to-accelerate-push-into-hyperscale-ai-infrastructure/",
+   "kind": "news",
+   "date": "2026-07-31",
+   "note": "MX1 Compute·Expand 양산 라인업, MX1P 는 PoC 중, FMS 2026 검증 방법론 발표 제목"
+  },
+  {
+   "n": 13,
+   "title": "벤처스퀘어 · 엑시나, 스티브 핑거허트 CBO 영입",
+   "url": "https://www.venturesquare.net/1119845/",
+   "kind": "news",
+   "date": "2026-10-14",
+   "note": "글로벌 영업·사업개발·제품 기획·MX1 상용화 총괄, 대표 발언"
+  },
+  {
+   "n": 14,
+   "title": "한국경제 · 엑시나, OCP 글로벌 서밋 2026 참가",
+   "url": "https://www.hankyung.com/article/202610166019O",
+   "kind": "news",
+   "date": "2026-10-16",
+   "note": "KV 캐시 공유·RAG 벡터 검색 데모, SK하이닉스 협업 검증, 삼성전자 공동 발표"
+  },
+  {
+   "n": 15,
+   "title": "Linux 커널 문서 · How the development process works",
+   "url": "https://docs.kernel.org/process/2.Process.html",
+   "kind": "reference",
+   "note": "머지 윈도우 약 2주, rc 주 1회, 보통 rc6~rc9 에서 릴리즈"
+  },
+  {
+   "n": 16,
+   "title": "Linux 커널 문서 · Reporting issues",
+   "url": "https://docs.kernel.org/admin-guide/reporting-issues.html",
+   "kind": "reference",
+   "note": "문제 보고에 넣을 것 — 버전·환경·재현 절차·dmesg·회귀 여부"
+  },
+  {
+   "n": 17,
+   "title": "Linux 커널 문서 · Compute Express Link",
+   "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+   "kind": "reference",
+   "note": "CXL 장치 종류·플랫폼 설정(ACPI CEDT 등)·디코더·DAX·메모리 핫플러그"
+  },
+  {
+   "n": 18,
+   "title": "Google SRE Book · 8장 Release Engineering",
+   "url": "https://sre.google/sre-book/release-engineering/",
+   "kind": "reference",
+   "note": "릴리즈 브랜치·main 먼저 고치고 체리픽·승인·같은 환경 빌드"
+  },
+  {
+   "n": 19,
+   "title": "Firefox 소스 문서 · 버그 우선순위(Priority)·심각도(Severity)",
+   "url": "https://firefox-source-docs.mozilla.org/bug-mgmt/guides/priority.html",
+   "kind": "reference",
+   "note": "P1 이번 판·P2 다음 한두 판·P3 백로그, 심각도와 우선순위를 따로"
+  },
+  {
+   "n": 20,
+   "title": "NVIDIA · CUDA Compatibility",
+   "url": "https://docs.nvidia.com/deploy/cuda-compatibility/",
+   "kind": "reference",
+   "note": "다른 회사 예 — 판별 최소 드라이버(12.x 는 525 이상), 마이너 버전 호환"
+  },
+  {
+   "n": 21,
+   "title": "유의적 버전 2.0.0 (한국어)",
+   "url": "https://semver.org/lang/ko/",
+   "kind": "reference",
+   "note": "MAJOR·MINOR·PATCH 규칙"
+  },
+  {
+   "n": 22,
+   "title": "Keep a Changelog 1.1.0 (한국어)",
+   "url": "https://keepachangelog.com/ko/1.1.0/",
+   "kind": "reference",
+   "note": "변경 여섯 갈래, 사람을 위한 변경 기록"
+  },
+  {
+   "n": 23,
+   "title": "Chromium 문서 · Release cycle",
+   "url": "https://chromium.googlesource.com/chromium/src/+/main/docs/process/release_cycle.md",
+   "kind": "reference",
+   "note": "main 2주 개발 → 브랜치 3주 안정화 → stable"
+  },
+  {
+   "n": 24,
+   "title": "엑시나 채용 · DQA Validation & HW FA Engineer",
+   "url": "https://xcena.career.greetinghr.com/ko/o/245888",
+   "kind": "posting",
+   "note": "같은 회사 PE — 장치·호스트·시스템 검증, CXL.io/.cache/.mem 시험, 회귀 시험, 양산 시험"
+  },
+  {
+   "n": 25,
+   "title": "엑시나 채용 · [SW] 시스템 소프트웨어 엔지니어 – 성능 분석 및 개발자 도구",
+   "url": "https://xcena.career.greetinghr.com/ko/o/224149",
+   "kind": "posting",
+   "note": "같은 회사 — 벤치마크 프레임워크·성능 회귀 자동 탐지"
+  },
+  {
+   "n": 26,
+   "title": "엑시나 채용 · [SW] 테스트 자동화 및 CI/CD 엔지니어",
+   "url": "https://xcena.career.greetinghr.com/ko/o/147042",
+   "kind": "posting",
+   "note": "같은 회사 — CI/CD 파이프라인·배포 프로세스"
+  },
+  {
+   "n": 27,
+   "title": "CXL Consortium · Integrators List",
+   "url": "https://computeexpresslink.org/integrators-list/",
+   "kind": "reference",
+   "note": "컴플라이언스 시험(기능·상호운용, 성능 보증 아님)을 통과한 제품 목록"
+  },
+  {
+   "n": 28,
+   "title": "Business Wire(회사 보도자료) · XCENA Details MX1 Architecture at Hot Chips 2026",
+   "url": "https://www.businesswire.com/news/home/20260825275952/en",
+   "kind": "news",
+   "date": "2026-08-25",
+   "note": "2026년 말 양산 시작, 2027년 첫 고객 매출 목표, SDK 의 Arrow·PyTorch·벡터 DB 연동 확장(본문은 자동 접근이 막혀 검색 발췌로 확인)"
+  }
+ ],
+ "caveat": "엑시나 SW팀의 릴리즈 규칙·결함 기준·일정 도구는 공개된 적이 없습니다. 회사 자신의 자료(같은 회사 다른 공고·대표 인터뷰·발표 정리 기사)로 제품과 조직을 보였고, 릴리즈·결함·호환성 운영은 리눅스 커널·구글·크롬·파이어폭스·NVIDIA 의 공개 문서로 ‘보통 이런 것’을 보였습니다. 회사 발표 영상은 찾지 못해 자막을 읽지 않았습니다. 연봉은 비상장사라 공시가 없고 집계 사이트가 막혀 비워 두었습니다.",
+ "resources": [
+  {
+   "id": "tpm-handbook",
+   "title": "Technical Program Manager's Handbook",
+   "by": "Joshua Alan Teter · Packt · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.packtpub.com/en-us/product/technical-program-managers-handbook-9781804613559",
+   "why": "TPM 이 프로젝트 관리와 시스템 설계 이해를 어떻게 같이 쓰는지 — 이 공고의 일정·위험·이해관계자 관리 줄 전체의 틀. 2024년 2판도 있다."
+  },
+  {
+   "id": "swe-google",
+   "title": "Software Engineering at Google",
+   "by": "Titus Winters · Tom Manshreck · Hyrum Wright · O'Reilly · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://abseil.io/resources/swe-book",
+   "why": "큰 조직이 시험·코드 리뷰·지속적 배포를 어떻게 굴리나. 개발팀 협업 부담을 줄이는 절차(우대 마지막 줄)를 고를 때 기준이 된다. 저자 공개 무료판."
+  },
+  {
+   "id": "sre-release",
+   "title": "Site Reliability Engineering · 8장 Release Engineering",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/release-engineering/",
+   "why": "릴리즈 브랜치·체리픽 승인·같은 환경 빌드. 코드 동결 뒤 예외를 어떻게 다루나(업무 ‘릴리즈 계획’)."
+  },
+  {
+   "id": "kernel-process",
+   "title": "How the development process works",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.kernel.org/process/2.Process.html",
+   "why": "머지 윈도우 → rc → 릴리즈 → stable 로 가는 가장 유명한 정기 릴리즈 방식. 정기 마일스톤과 긴급 수정 규칙을 세울 때 본보기."
+  },
+  {
+   "id": "chromium-release",
+   "title": "Chromium Release cycle",
+   "by": "Chromium 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://chromium.googlesource.com/chromium/src/+/main/docs/process/release_cycle.md",
+   "why": "개발 2주·안정화 3주처럼 날짜로 굴리는 출시 열차. 커널과 견주면 ‘정기 마일스톤’의 다른 설계가 보인다."
+  },
+  {
+   "id": "kernel-reporting",
+   "title": "Reporting issues",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.kernel.org/admin-guide/reporting-issues.html",
+   "why": "좋은 문제 보고에 들어갈 것(버전·재현 절차·로그·회귀). 고객 이슈 접수 양식을 만들 때 그대로 빌린다."
+  },
+  {
+   "id": "kernel-cxl",
+   "title": "Compute Express Link (driver-api/cxl)",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+   "why": "CXL 메모리가 리눅스에 어떻게 보이나(장치 종류·ACPI 테이블·디코더·DAX·핫플러그). 펌웨어·드라이버 층의 의존을 이해하는 바탕."
+  },
+  {
+   "id": "cxl-consortium",
+   "title": "Compute Express Link Consortium",
+   "by": "CXL Consortium",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.computeexpresslink.org/",
+   "why": "CXL 사양 판·소개 자료·컴플라이언스 프로그램. 우대 ‘CXL·PCIe 이해’의 출발점."
+  },
+  {
+   "id": "xcena-hotchips",
+   "title": "XCENA MX1 CXL Computational Memory Device at Hot Chips 2026",
+   "by": "ServeTheHome · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026",
+   "why": "회사 발표 슬라이드를 따라가며 MX1 구조·런타임·측정 방식을 정리한 글. 지원 전에 제품을 한 번에 훑기."
+  },
+  {
+   "id": "wiegers-req",
+   "title": "소프트웨어 요구사항 3",
+   "by": "칼 위거스 · 조이 비티 · 위키북스 · 2017",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4%20%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD%203",
+   "why": "요청을 사용 시나리오·완료 기준·우선순위로 바꾸는 방법. 업무 ‘SW 요구사항 및 우선순위 관리’와 자격 ‘완료 기준으로 구체화’."
+  },
+  {
+   "id": "firefox-triage",
+   "title": "Firefox 버그 우선순위·심각도 안내",
+   "by": "Mozilla 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://firefox-source-docs.mozilla.org/bug-mgmt/guides/priority.html",
+   "why": "심각도와 우선순위를 나눠 매기는 실제 규칙. 결함 우선순위·릴리즈 판단 기준을 세울 때 본보기."
+  },
+  {
+   "id": "cuda-compat",
+   "title": "CUDA Compatibility",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deploy/cuda-compatibility/",
+   "why": "가속기 회사가 드라이버·툴킷 판 호환을 어떻게 약속하고 표로 내나. 펌웨어·드라이버·SDK 호환 표의 본보기."
+  },
+  {
+   "id": "semver-ko",
+   "title": "유의적 버전 2.0.0",
+   "by": "semver.org (한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://semver.org/lang/ko/",
+   "why": "판 번호가 호환성을 말하게 하는 규칙. 긴급 패치·버전 운영 줄의 기본."
+  },
+  {
+   "id": "changelog-ko",
+   "title": "Keep a Changelog 1.1.0",
+   "by": "keepachangelog.com (한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://keepachangelog.com/ko/1.1.0/",
+   "why": "사람이 읽는 릴리즈 노트의 꼴. 자격 ‘릴리즈 노트를 대상에 맞게’."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "제품과 SW 층 알기",
+   "time": "1주",
+   "goal": "MX1 의 SW 다섯 층이 각각 무엇을 받고 무엇을 내놓는지 한 문장씩 말할 수 있다.",
+   "resources": [
+    "xcena-hotchips",
+    "cxl-consortium",
+    "kernel-cxl"
+   ],
+   "task": "위 풀이의 ‘MX1 SW 층’ 흐름을 종이에 그리고, 층마다 ‘이 층이 늦으면 위에서 멈추는 것’을 한 줄씩 적는다."
+  },
+  {
+   "title": "요구사항을 완료 기준으로",
+   "time": "1~2주",
+   "goal": "막연한 고객 요청을 시나리오·잴 수 있는 완료 기준·범위 밖으로 바꿔 쓸 수 있다.",
+   "resources": [
+    "wiegers-req",
+    "tpm-handbook"
+   ],
+   "task": "가상 고객 요청 5개(‘KV 캐시를 더 크게’, ‘AMD 서버에서도’ 등)를 요구사항 카드로 바꾸고 제품(Expand·Compute)별 지원 표와 우선순위를 붙인다."
+  },
+  {
+   "title": "통합 일정과 위험",
+   "time": "1~2주",
+   "goal": "의존 그래프로 가장 긴 줄을 찾고, 지연 소식이 오면 출시 영향과 대안을 하루 안에 낸다.",
+   "resources": [
+    "tpm-handbook"
+   ],
+   "task": "업무 ‘통합 개발 일정’ 예의 코드를 고쳐 작업 12개짜리 가상 일정을 만들고, 지연 세 가지를 넣어 각각 출시일 변화와 대안 두 개를 한 장으로 쓴다."
+  },
+  {
+   "title": "릴리즈 규칙과 판단",
+   "time": "2주",
+   "goal": "정기 판·긴급 패치 규칙, 결함 기준, 지원 조합 표, 릴리즈 노트를 한 벌로 만든다.",
+   "resources": [
+    "kernel-process",
+    "chromium-release",
+    "sre-release",
+    "firefox-triage",
+    "semver-ko",
+    "changelog-ko",
+    "cuda-compat"
+   ],
+   "task": "가상 SDK 의 릴리즈 규칙 1장(동결·예외 승인자·패치 번호), 결함 기준표, 펌웨어·드라이버·SDK 호환 표, 고객용 릴리즈 노트를 쓰고 ‘릴리즈 판단 한 장’ 예로 조건부 판정을 설명해 본다."
+  },
+  {
+   "title": "고객 이슈 접수",
+   "time": "1주",
+   "goal": "첫 답장에서 재현에 필요한 정보를 다 받아 맞는 팀에 넘긴다.",
+   "resources": [
+    "kernel-reporting"
+   ],
+   "task": "고객 이슈 접수 양식(영어)을 만들고, 가상 이슈 3건을 펌웨어·드라이버·런타임 중 어디로 보낼지 근거와 함께 분류한다."
+  }
+ ],
+ "benefits": {
+  "items": [
+   {
+    "name": "MX Day",
+    "detail": "한 달에 한 번 전사가 함께 쉬는 유급 휴일, 연 12회"
+   },
+   {
+    "name": "유연근무",
+    "detail": "선택적 근로시간제 기반 유연근무제"
+   },
+   {
+    "name": "식대",
+    "detail": "점심 식대 지원"
+   },
+   {
+    "name": "복지포인트",
+    "detail": "복지포인트 지급(금액은 공고에 없음)"
+   },
+   {
+    "name": "건강검진",
+    "detail": "임직원 및 임직원 가족 건강검진 지원"
+   }
+  ],
+  "note": "이 공고의 복리후생 칸(2026-11)이고 같은 회사 다른 공고에도 같은 문구가 있다 [1][2]. 금액·조건의 세부는 적혀 있지 않다."
+ },
+ "location": {
+  "name": "엑시나 본사",
+  "address": "경기도 성남시 분당구 판교역로241번길 20, 9층 (삼평동, 미래에셋벤처타워)",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C241%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선 판교역 근처 판교테크노밸리 {추론}",
+  "note": "공고의 근무지 칸 주소다 [1]. 미국 지사는 실리콘밸리에 있다고 공고 회사 소개에 적혀 있다 [1]."
+ }
+}
