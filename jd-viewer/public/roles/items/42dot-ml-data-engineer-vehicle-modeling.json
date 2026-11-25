@@ -1,0 +1,784 @@
+{
+ "id": "42dot-ml-data-engineer-vehicle-modeling",
+ "company": "포티투닷(42dot)",
+ "role": "머신러닝·데이터 엔지니어 — 차량 모델링",
+ "team": "미국 서니베일 · AI(Artificial Intelligence) 조직 · Vehicle Modeling",
+ "jobs": [
+  "ats-ashby:42dot:d118c92f-1378-404a-a98f-058948606d28"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "실제 차에서 모은 운행 기록(텔레메트리)으로 **차량·부품 모델이 어디서 틀리는지 찾고**, 파라미터를 다시 맞추거나 물리 모델에 ML 을 덧붙여 예측을 고칩니다. 그 일을 받치는 **데이터 파이프라인과 클라우드 실험 환경**까지 만듭니다.[1]",
+  "env": "물리 기반 모델·시뮬레이션·대규모 차량 데이터를 한데 섞는 서니베일 AI 조직의 자리이고[1], 그룹은 남양연구소 시뮬레이터처럼 차량 시험을 가상 공간으로 옮기는 중입니다.[2]",
+  "oneline": "모델을 '맞추는' ML·데이터 엔지니어. 큰 딥러닝 모델 하나보다 **물리 식 + 파라미터 추정 + 시계열 파이프라인**이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Develop machine learning and hybrid physics-data approaches to improve vehicle and component model accuracy.",
+   "short": "물리 식으로 만든 차량·부품 모델이 실제와 어긋나는 몫을 ML 로 메워 예측을 더 맞게 하는 일.",
+   "why": "공고는 이 자리를 물리 기반 모델·ML·시뮬레이션·대규모 차량 데이터를 합치는 곳으로 소개하고, **물리 모델만으로 모자란 곳의 예측을 고치는 것**을 핵심으로 적었습니다.[1] 현대차그룹은 남양연구소 시뮬레이터에서 부품 특성을 바로 바꿔 시제품 없이 여러 설정을 검증한다고 밝혔고, 앞으로 차량 동역학 모델과 가상 환경을 묶어 AI 기반 검증으로 넓힌다고 했습니다.[2] 가상 검증은 그 안의 차량 모델이 실제와 맞아야 믿을 수 있습니다.{추론}",
+   "actually": {
+    "intro": "'물리 + 데이터(하이브리드)' 모델링에서 보통 쓰는 방식입니다. 포티투닷이 어느 것을 쓰는지는 공개되지 않았습니다.[8][9][10]",
+    "items": [
+     "**잔차(residual) 모델** — 물리 모델 예측과 실측의 차이만 신경망으로 배운다. 큰 줄기는 물리 식이 맡아 학습이 쉬워진다. 한 연구는 단순한 3자유도(앞뒤·옆·회전) 차량 모델 위에 이렇게 얹어 상태 예측 오차를 두 데이터셋에서 평균 92.3%·59.9% 줄였다고 보고했다.[9]",
+     "**회색 상자(grey-box)** — 물리 식의 모양은 그대로 두고 계수만 데이터로 맞춘다(업무② 참고). 왜 그렇게 예측했는지 설명하기 가장 쉽다.[8]",
+     "**식 찾기(SINDy)** — 후보 항(v, v², sin θ …)을 잔뜩 놓고 희소 회귀(대부분 계수를 0으로 만드는 회귀)로 몇 개만 남겨, 사람이 읽을 수 있는 운동 방정식을 되찾는다.[10]",
+     "**시뮬레이션과 실제의 틈 줄이기** — 하이브리드 방법은 파라미터·상태 추정을 돕고 시뮬레이션과 현실의 차이(sim-to-real gap)를 좁히는 데 쓰인다.[8]",
+     "**부품 단위로 고치기** — 공고는 차량 모델과 **부품(component) 모델**을 함께 적었다.[1] 모터·배터리·타이어처럼 부품 모델을 따로 고친 뒤 차 전체로 다시 묶는 방식이 흔하다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "오르막을 모르는 물리 모델 + 잔차 보정",
+     "body": "물리 모델은 경사를 모릅니다. 실측과의 차이(잔차)를 경사 한 변수로 직선 맞춤했더니, 떼어 둔 100개에서 오차(RMSE)가 0.312 → 0.019 m/s² 로 줄었고 배운 기울기는 중력값(−9.81)에 가깝습니다. 진짜 일에서는 직선 대신 신경망을 쓰고, 이렇게 **물리로 해석되는지**도 같이 봅니다(가상 데이터, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "# 물리 모델 + 잔차(residual) 보정 — 물리가 못 맞힌 몫만 데이터로 배운다\nimport random\nrandom.seed(1)\nm = 2000.0\n\ndef physics(F, v):                      # 가속도 = (구동력 - 주행 저항) / 질량\n    return (F - (150 + 2.0 * v + 0.40 * v * v)) / m\n\ndef real(F, v, slope):                  # 실제 차: 모델이 모르는 오르막 몫 + 잡음\n    return physics(F, v) - 9.81 * slope + random.gauss(0, 0.02)\n\ndata = []\nfor _ in range(400):\n    F, v, s = random.uniform(500, 4000), random.uniform(5, 30), random.uniform(-0.04, 0.06)\n    data.append((F, v, s, real(F, v, s)))\ntrain, test = data[:300], data[300:]\n\n# 잔차 r = 실제 - 물리 를 기울기(slope) 한 변수로 직선 맞춤\nxs = [s for _, _, s, _ in train]\nrs = [a - physics(F, v) for F, v, s, a in train]\nmx, mr = sum(xs) / len(xs), sum(rs) / len(rs)\nk = sum((x - mx) * (r - mr) for x, r in zip(xs, rs)) / sum((x - mx) ** 2 for x in xs)\nb = mr - k * mx\n\ndef rmse(pred):\n    return (sum((a - pred(F, v, s)) ** 2 for F, v, s, a in test) / len(test)) ** 0.5\n\nprint(f\"잔차 기울기 k = {k:.2f} (참값 -9.81)\")\nprint(f\"물리만     RMSE {rmse(lambda F, v, s: physics(F, v)):.3f} m/s²\")\nprint(f\"물리+잔차  RMSE {rmse(lambda F, v, s: physics(F, v) + k * s + b):.3f} m/s²\")\n\n# 출력\n# 잔차 기울기 k = -9.87 (참값 -9.81)\n# 물리만     RMSE 0.312 m/s²\n# 물리+잔차  RMSE 0.019 m/s²"
+    }
+   ],
+   "how_far": "어떤 물리 모델을 기준으로 삼을지·허용 오차는 차량 모델링·시뮬레이션 쪽과 같이 정합니다.{추론} 최소선은 **물리만 쓴 기준선보다 오차가 줄었음을 학습에 안 쓴 데이터로 보이는 것**, 그리고 학습 범위를 벗어난 조건에서 물리적으로 말이 안 되는 값을 내지 않게 막는 것입니다.{추론} 공고에 자격요건 칸이 없어 기대 깊이는 코딩 테스트·면접에서 정해집니다.[1]",
+   "refs": [
+    1,
+    2,
+    8,
+    9,
+    10
+   ],
+   "study": [
+    "brunton-book",
+    "dytr",
+    "pysindy",
+    "hmg-sim"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Develop methods for model calibration, parameter estimation, adaptive modeling, and data-driven model improvement across different vehicle states and operating conditions.",
+   "short": "모델 식 속 숫자(저항 계수·질량·배터리 저항 등)를 실측에서 다시 뽑고, 조건마다 다르면 따로 맞추는 일.",
+   "why": "공고는 **차량 상태와 운전 조건이 다를 때 모델 파라미터를 추정하는 일**을 이 자리의 할 일로 직접 들었습니다.[1] 같은 차라도 주행 저항은 속도에 따라 달라지고[11], 배터리는 추울수록 내부 저항이 커져 같은 전류에서 전압이 더 떨어집니다.[12] 남양 시뮬레이터도 파라미터를 바꿔 가며 여러 보정(calibration) 설정을 견주는 것을 장점으로 들었습니다.[2]",
+   "actually": {
+    "items": [
+     "**주행 저항 A·B·C** — 타력 주행(coastdown, 동력을 끊고 속도가 줄어드는 기록)에서 F = A + B·v + C·v² 의 계수를 뽑는다. 미국 SAE J2263 이 이 측정법을 정해 둔 기준이다.[11]",
+     "**오프라인 추정** — 쌓인 주행 기록 전체로 최소제곱·최적화를 돌려 계수를 찾는다. MATLAB Simulink Design Optimization 에 같은 일을 하는 도구가 있다.[13]",
+     "**조건별 표(lookup)** — 온도·충전량(SOC)·속도 칸마다 따로 추정해 표로 둔다. 배터리 저항이 대표적이다(아래 예).[12]",
+     "**적응(adaptive) 추정** — 달리는 동안 칼만 필터(잡음 속에서 숨은 값을 조금씩 고쳐 가는 계산)로 질량·계수를 갱신한다.[14]",
+     "**식별 가능성 보기** — 데이터에 그 계수를 가를 정보가 있는지 먼저 본다. 저속 기록뿐이면 v² 항(공기 저항)과 v 항을 잘 못 가른다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "주행 저항 계수 뽑기 — 계수와 예측은 따로 본다",
+     "body": "잡음 섞인 66개 점으로 A·B·C 를 뽑았습니다. B 는 2.98(참값 2.0)로 꽤 어긋나는데 100km/h 저항은 1N 차이입니다 — 계수끼리 서로 메워 주기 때문입니다. 그래서 '계수가 맞나'와 '예측이 맞나'를 따로 잽니다(가상 데이터, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "# 주행 저항 F = A + B·v + C·v² 의 A·B·C 를 측정값에서 추정 (최소제곱)\nimport random\n\ndef fit_abc(vs, fs):\n    X = [[1.0, v, v * v] for v in vs]\n    M = [[sum(r[i] * r[j] for r in X) for j in range(3)] +\n         [sum(r[i] * f for r, f in zip(X, fs))] for i in range(3)]\n    for c in range(3):  # 가우스 소거\n        for r in range(3):\n            if r != c:\n                k = M[r][c] / M[c][c]\n                M[r] = [a - k * b for a, b in zip(M[r], M[c])]\n    return [M[i][3] / M[i][i] for i in range(3)]\n\nrandom.seed(0)\ntrue = (150.0, 2.0, 0.40)                      # N, N/(m/s), N/(m/s)^2\nvs = [v / 2 for v in range(4, 70)]             # 2 ~ 34.5 m/s\nfs = [true[0] + true[1] * v + true[2] * v * v + random.gauss(0, 15) for v in vs]\nA, B, C = fit_abc(vs, fs)\nv = 100 / 3.6\nprint(f\"A={A:.1f}  B={B:.2f}  C={C:.3f}\")\nprint(f\"100km/h 저항  추정 {A + B*v + C*v*v:.0f} N / 참값 {true[0] + true[1]*v + true[2]*v*v:.0f} N\")\n\n# 출력\n# A=142.2  B=2.98  C=0.376\n# 100km/h 저항  추정 515 N / 참값 514 N"
+    },
+    {
+     "title": "온도 칸마다 배터리 저항 따로 추정",
+     "body": "같은 셀을 온도대로 나누니 영하 8.0mΩ, 20도 이상 2.0mΩ 입니다. 한 값(3.4mΩ)으로 두면 영하에서 전압 강하를 절반 넘게 작게 봅니다(가상 숫자, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "# 같은 배터리라도 온도마다 내부 저항 R 이 다르다 — 조건 칸마다 따로 추정\n# 측정: 전압 V = OCV - I·R  →  R = (OCV - V) / I\nfrom collections import defaultdict\nfrom statistics import median\n\nrows = [  # (셀 온도 °C, 개방전압 V, 전류 A, 측정 전압 V)\n    (-10, 3.70, 50, 3.30), (-10, 3.70, 80, 3.06), (-12, 3.68, 60, 3.17),\n    (10, 3.70, 50, 3.53), (12, 3.70, 80, 3.43), (9, 3.69, 60, 3.49),\n    (30, 3.70, 50, 3.60), (31, 3.70, 80, 3.54), (29, 3.69, 60, 3.57),\n]\n\ndef band(t):\n    return \"영하\" if t < 0 else (\"0~20도\" if t < 20 else \"20도+\")\n\nby = defaultdict(list)\nfor t, ocv, i, v in rows:\n    by[band(t)].append((ocv - v) / i * 1000)   # mΩ\nfor k in (\"영하\", \"0~20도\", \"20도+\"):\n    print(f\"{k:6s} R = {median(by[k]):.1f} mΩ  (n={len(by[k])})\")\nprint(\"한 값(전체 중앙값):\", f\"{median(x for v in by.values() for x in v):.1f} mΩ\")\n\n# 출력\n# 영하     R = 8.0 mΩ  (n=3)\n# 0~20도  R = 3.4 mΩ  (n=3)\n# 20도+   R = 2.0 mΩ  (n=3)\n# 한 값(전체 중앙값): 3.4 mΩ"
+    }
+   ],
+   "how_far": "어떤 파라미터를 몇 칸으로 나눌지는 모델 담당과 정하고{추론}, 이 자리는 **같은 데이터로 다시 돌리면 같은 값이 나오는 추정 작업**과 함께 그 값의 불확실성·사용한 데이터 범위를 남기는 데까지 맡는 것으로 읽힙니다.{추론}",
+   "refs": [
+    1,
+    2,
+    11,
+    12,
+    13,
+    14
+   ],
+   "study": [
+    "rajamani",
+    "kalman-labbe",
+    "sldo"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Build scalable workflows for comparing model predictions with test, simulation, and real-world vehicle data and identifying opportunities for model improvement.",
+   "short": "모델 예측을 시험·시뮬레이션·실도로 기록과 대량으로 맞대 보고, 어디서 가장 틀리는지 줄 세우는 일.",
+   "why": "공고는 **실제 차량 데이터로 모델 성능의 빈틈을 찾는 것**을 이 자리의 핵심이라고 적었습니다.[1] 그룹은 수집차 데이터를 학습하고 어려운 사례를 골라 다시 학습하는 '데이터 플라이휠'을 돌린다고 밝혔고[3], 같은 서니베일의 Vehicle Intelligence 공고는 텔레메트리(차가 보내는 운행 신호)·날씨·교통·충전 패턴·차량 묶음(fleet) 데이터와 시뮬레이션·디지털 트윈을 함께 쓴다고 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**같은 입력 다시 넣기(replay)** — 실차 기록의 입력(페달·조향·속도)을 모델에 넣고, 모델 출력을 실측 옆에 나란히 둔다.{추론}",
+     "**세 가지 데이터** — 시험(조건을 통제한 기록)·시뮬레이션·실도로(조건이 다양한 기록)에서 같은 지표를 같은 방식으로 센다.[1]",
+     "**조건 칸별 오차** — 온도·속도·경사·차종 칸마다 오차를 모아 큰 칸부터 줄 세운다(아래 예).{추론}",
+     "**오차 성격 나누기** — 늘 한쪽으로 틀리면(치우침) 파라미터 문제, 흩어지면 모델 구조나 빠진 변수 문제일 때가 많다.{추론}",
+     "**기록마다 나눠 돌리기** — 주행 기록끼리 독립이라 클라우드에서 나눠 동시에 계산한다(업무⑤).{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "조건 칸마다 소비 예측 오차 줄 세우기",
+     "body": "영하 칸에서 모델이 소비를 20% 넘게 적게 봅니다 — 다음에 고칠 곳(난방·배터리 저항 파라미터)이 여기라는 뜻입니다. 실제로는 칸마다 표본 수가 적으면 순위를 믿지 않습니다(가상 숫자, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "# 모델 예측 vs 실측 — 조건 칸마다 오차를 세어 '어디서 틀리나'를 줄 세운다\nfrom collections import defaultdict\n\nlogs = [  # (온도대, 속도대, 예측 소비 kWh/100km, 실측)\n    (\"영하\", \"고속\", 18.0, 23.5), (\"영하\", \"고속\", 18.2, 24.1), (\"영하\", \"도심\", 14.0, 17.9),\n    (\"상온\", \"고속\", 17.5, 17.9), (\"상온\", \"고속\", 17.8, 18.0), (\"상온\", \"도심\", 13.5, 13.2),\n    (\"더위\", \"고속\", 18.0, 19.4), (\"더위\", \"도심\", 14.0, 15.6), (\"상온\", \"도심\", 13.8, 13.9),\n]\ncell = defaultdict(list)\nfor temp, spd, pred, meas in logs:\n    cell[(temp, spd)].append((meas - pred) / meas * 100)    # % 오차 (+ 면 모델이 적게 봄)\n\nrank = sorted(cell.items(), key=lambda kv: -abs(sum(kv[1]) / len(kv[1])))\nfor (temp, spd), errs in rank:\n    print(f\"{temp}·{spd}  평균 오차 {sum(errs)/len(errs):+5.1f}%  n={len(errs)}\")\n\n# 출력\n# 영하·고속  평균 오차 +23.9%  n=2\n# 영하·도심  평균 오차 +21.8%  n=1\n# 더위·도심  평균 오차 +10.3%  n=1\n# 더위·고속  평균 오차  +7.2%  n=1\n# 상온·고속  평균 오차  +1.7%  n=2\n# 상온·도심  평균 오차  -0.8%  n=2"
+    }
+   ],
+   "how_far": "'scalable' 이 핵심입니다. 기록 몇 개를 노트북에서 비교하는 것을 넘어 **새 기록이 들어오면 자동으로 다시 세어지는 작업**이 최소선으로 보입니다.{추론} 무엇을 먼저 고칠지는 모델 담당과 같이 고릅니다.{추론}",
+   "refs": [
+    1,
+    3,
+    4
+   ],
+   "study": [
+    "hmg-flywheel",
+    "huyen-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Build pipelines for ingesting, cleaning, synchronizing, transforming, storing, and accessing large-scale vehicle telemetry and time-series data.",
+   "short": "차에서 나온 CAN 신호·GPS·센서 시계열을 받아 정리하고 시각을 맞춰, 분석·학습에 바로 쓸 표로 쌓는 일.",
+   "why": "공고는 이 자리의 두 번째 축으로 **대규모 차량 데이터를 받고·정리하고·처리하는 데이터·클라우드 기반**을 꼽았습니다.[1] 차량 신호는 저마다 다른 주기로 기록돼, 시각을 맞추지 않으면 업무②③의 추정·비교가 엉뚱한 짝끼리 계산됩니다.{추론}",
+   "actually": {
+    "intro": "차량 데이터 파이프라인의 일반적인 단계입니다. 포티투닷의 원본 형식·도구는 공개되지 않았습니다.[21]",
+    "items": [
+     "**받기(ingest)** — 차량 기록 파일(CAN 로그, MCAP 같은 센서 기록 묶음 형식)을 클라우드 저장소로 올리고 빠짐·중복을 표시한다.[15][21]",
+     "**풀기(decode)** — CAN 메시지는 바이트 묶음이라 신호 정의 파일(DBC)로 속도·토크 같은 물리 값으로 바꾼다. 파이썬 cantools 가 이 일을 한다.[16]",
+     "**청소(clean)** — 튀는 값·끊긴 구간·단위 오류를 거르고, 고친 곳에 표시를 남긴다.{추론}",
+     "**시각 맞추기(synchronize)** — 100Hz 차량 신호에 1Hz GPS 를 '직전 값, 허용 오차 안'으로 붙인다. pandas merge_asof 가 같은 규칙이다.[17]",
+     "**저장** — 차·날짜로 나눈 열 기반 파일(Parquet)에 쌓아 필요한 열만 읽는다.[18]",
+     "**꺼내 쓰기(access)** — '영하·고속·이 차종' 같은 조건으로 구간을 찾아 주는 함수·표를 둔다.{추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "차량 기록에서 분석 표까지 — 일반적인 흐름 {추론}[21]",
+     "steps": [
+      "차량 · CAN·GPS·센서 기록",
+      "받기 · 클라우드 저장소, 빠짐·중복 표시",
+      "풀기 · DBC 로 물리 값",
+      "청소·시각 맞추기 · 튀는 값, 주기 맞춤",
+      "저장 · Parquet, 차·날짜 칸",
+      "꺼내 쓰기 · 조건으로 구간 찾기"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "주기가 다른 신호 붙이기 — 짝이 없으면 빈칸",
+     "body": "GPS 가 3초 근처에서 빠졌습니다. 허용 오차 1초로 붙이면 3.5초에는 짝이 없어 빈칸(None)이 됩니다 — 오래된 값을 억지로 끌어오지 않는 게 요점입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "# 주기가 다른 두 신호 맞추기 — 100Hz 차량 신호에 1Hz GPS 를 '직전 값, 허용 오차 안'으로 붙인다\nfrom bisect import bisect_right\n\ncan = [(t / 100, 20 + t / 100) for t in range(0, 500, 50)]   # (시각 s, 속도 m/s) 0.5초 간격만 출력\ngps = [(0.02, \"A\"), (1.01, \"B\"), (2.03, \"C\"), (4.00, \"E\")]   # 3초 근처 GPS 가 빠졌다\n\ndef asof(t, series, tol):\n    i = bisect_right([x for x, _ in series], t) - 1\n    if i >= 0 and t - series[i][0] <= tol:\n        return series[i][1]\n    return None                                              # 짝 없음 → 빈칸으로 표시\n\nfor t, v in can:\n    print(f\"t={t:.2f}s  v={v:.1f}  gps={asof(t, gps, tol=1.0)}\")\n\n# 출력\n# t=0.00s  v=20.0  gps=None\n# t=0.50s  v=20.5  gps=A\n# t=1.00s  v=21.0  gps=A\n# t=1.50s  v=21.5  gps=B\n# t=2.00s  v=22.0  gps=B\n# t=2.50s  v=22.5  gps=C\n# t=3.00s  v=23.0  gps=C\n# t=3.50s  v=23.5  gps=None\n# t=4.00s  v=24.0  gps=E\n# t=4.50s  v=24.5  gps=E"
+    }
+   ],
+   "how_far": "최소선은 **같은 원본을 두 번 넣어도 같은 결과**(멱등)가 나오고, 고친 값마다 왜 고쳤는지 표시가 남는 것입니다.{추론} 어떤 신호를 받을지는 차량·모델 담당이 정하고, 파이프라인 구조는 이 자리가 짜는 것으로 읽힙니다.{추론}",
+   "refs": [
+    1,
+    15,
+    16,
+    17,
+    18,
+    21
+   ],
+   "study": [
+    "ddia-ko",
+    "pandas-asof",
+    "cantools-doc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Develop cloud-based infrastructure for data processing, model training, simulation, evaluation, and validation. ",
+   "short": "데이터 처리·학습·시뮬레이션·평가를 클라우드에서 대량으로 돌릴 수 있게 작업 틀과 자원을 꾸리는 일.",
+   "why": "공고는 데이터 처리·모델 학습·시뮬레이션·평가·검증용 클라우드 기반을 직접 만든다고 적었습니다.[1] 같은 서니베일 사무소에는 데이터·ML 작업용 클라우드 인프라를 맡는 별도 공고도 있어[7], 이 자리는 그 위에서 **모델링 작업에 맞는 틀**을 꾸리는 쪽으로 읽힙니다.{추론}",
+   "actually": {
+    "items": [
+     "**나눠 돌리기** — '주행 기록 1만 개 × 파라미터 후보 20개'처럼 서로 독립인 계산을 컨테이너로 쪼개 동시에 돌리고 결과를 모은다.{추론}",
+     "**시뮬레이션 꾸러미** — 다른 도구로 만든 차량·부품 모델을 표준 꾸러미(FMU — FMI 표준의 모델 파일)로 받아 클라우드에서 돌린다.[19]",
+     "**자원 나누기** — 신경망 잔차 모델 학습은 GPU, 파라미터 추정·시뮬레이션은 CPU 로 돌려 비용을 맞춘다.{추론}",
+     "**검증 관문** — 새 모델은 정해진 평가 묶음에서 기준선보다 나빠지지 않아야 다음 단계로 간다(지속 학습·배포 파이프라인).[20]",
+     "**권한** — 차량 기록에는 위치가 들어 있어 누가 어느 데이터를 볼 수 있는지 나눈다.{추론}"
+    ]
+   },
+   "how_far": "네트워크·계정 같은 클라우드 바닥은 인프라 쪽 공고가 맡는 것으로 보입니다.[7]{추론} 이 자리는 **모델링하는 사람이 명령 한 줄로 대량 계산을 돌리고 결과를 모아 볼 수 있게** 하는 데까지입니다.{추론}",
+   "refs": [
+    1,
+    7,
+    19,
+    20
+   ],
+   "study": [
+    "mlops-google",
+    "fmi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Build tools and workflows for dataset management, model evaluation, experiment tracking, and reproducible model development.",
+   "short": "어떤 데이터·코드·설정으로 그 모델을 만들었는지 남겨, 누가 언제 다시 돌려도 같은 결과가 나오게 하는 일.",
+   "why": "파라미터를 다시 뽑거나 잔차 모델을 다시 학습할 때마다 모델 판이 바뀝니다. 시뮬레이션 결과를 믿으려면 어느 판으로 계산했는지 되짚을 수 있어야 합니다.{추론} 공고는 이 일을 '재현 가능한 모델 개발'로 따로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**데이터 판(version)** — 학습·평가에 쓴 주행 기록 목록을 해시와 함께 판으로 고정한다. DVC 가 이런 도구다.[22]",
+     "**실험 기록** — 실행마다 코드 커밋·설정·지표·결과 파일을 남겨 나란히 비교한다. MLflow Tracking 이 이런 도구다.[23]",
+     "**평가 묶음 고정** — '영하 고속 기록 50개'처럼 늘 같은 평가 묶음을 두고 새 모델을 거기서 잰다.{추론}",
+     "**모델 등록** — 쓸 모델·파라미터 표를 판 번호로 등록하고, 시뮬레이션 쪽은 판 번호로 받아 간다.[20]",
+     "**다시 돌려 확인** — 같은 판으로 다시 돌려 같은 숫자가 나오는지 자동으로 확인한다(난수 시드·라이브러리 판 고정).{추론}"
+    ]
+   },
+   "how_far": "최소선은 **어떤 결과 숫자에서든 데이터 판·코드 커밋·설정으로 거슬러 올라갈 수 있는 것**입니다.{추론} 도구를 새로 만들기보다 MLflow·DVC 같은 것을 팀 흐름에 붙이는 일이 많습니다.{추론}",
+   "refs": [
+    1,
+    20,
+    22,
+    23
+   ],
+   "study": [
+    "mlflow-doc",
+    "dvc-doc",
+    "huyen-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Support data processing, model evaluation, and analysis workflows used by vehicle intelligence",
+   "short": "차량 지능(차가 에너지·충전·경로를 스스로 판단하는 기능) 팀이 쓰는 데이터 처리·평가·분석을 받쳐 주는 일.",
+   "why": "공고 끝 문장은 'vehicle intelligence' 에서 끊겨 있고, 역할 소개는 이 자리가 차량 지능과 자율주행 개발을 함께 받친다고 적었습니다.[1] 같은 서니베일의 Vehicle Intelligence 공고(2026-07 내려감)는 그 팀이 사용자 의도·주행 맥락·차량 상태를 이해해 에너지·편의·충전·경로를 조율하는 기능을 만들고, 텔레메트리·충전 패턴·차량 묶음 데이터를 쓴다고 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**같은 표 같이 쓰기** — 그 팀도 텔레메트리를 쓰므로[4], 업무④에서 정리한 표를 그대로 넘겨 쓰게 한다.{추론}",
+     "**예: 남은 주행거리** — 차가 남은 거리나 충전 시점을 판단하려면 온도·속도별로 고친 소비 모델(업무②③)이 바탕이 된다.{추론}",
+     "**평가 받쳐 주기** — 그 팀 모델도 같은 실험 기록·평가 묶음(업무⑥)에 올려 잰다.{추론}",
+     "**디지털 트윈** — 그 팀 공고는 시뮬레이션·디지털 트윈에서 검증한다고 적었고[4], 그 트윈 속 차량 모델이 이 자리가 고치는 모델이다.{추론}"
+    ]
+   },
+   "how_far": "'Support' 이니 그 팀의 기능 모델을 직접 만드는 자리라기보다 **그 팀이 데이터·평가 도구를 기다리지 않게 대는** 쪽입니다.{추론}",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "huyen-ko"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "물리 식과 데이터를 둘 다 다루고 싶은 사람 — 기계·전기·제어 전공에서 넘어온 개발자에게 맞는 자리[1]{추론}",
+   "예측과 실측 그래프를 겹쳐 놓고 어긋난 칸을 끝까지 파고드는 사람{추론}",
+   "모델링과 파이프라인을 한 사람이 같이 맡는 것을 즐기는 사람[1]"
+  ],
+  "hard": [
+   "최신 대형 모델 연구가 중심인 자리를 원하면 맞지 않을 수 있다 — 물리 모델 보정과 파라미터 추정이 핵심이다[1]",
+   "공고에 자격요건·우대사항이 없어 기대 수준(연차·학위)을 미리 가늠하기 어렵다[1]",
+   "판교 본사와 시간대가 달라 이른 아침·늦은 저녁 회의가 생길 수 있다{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "주행 저항 계수를 기록마다 추정했더니 B 값이 매번 크게 흔들립니다. 왜 그렇고, 어떻게 하나요?",
+   "a": "식별 가능성 — 속도 범위가 좁으면 v 항과 v² 항을 못 가른다. 계수와 예측을 따로 재는 업무② 예시.[11]"
+  },
+  {
+   "q": "잔차 모델이 학습 데이터에서는 잘 맞는데 처음 보는 조건에서 물리적으로 말이 안 되는 값을 냅니다.",
+   "a": "외삽과 물리 제약 — 잔차의 크기 제한, 학습 범위 밖 표시.[8][9]"
+  },
+  {
+   "q": "100Hz 차량 신호에 1Hz GPS 를 붙이는데 GPS 가 3초 끊겼습니다. 어떻게 하나요?",
+   "a": "직전 값 + 허용 오차, 짝 없으면 빈칸 — 업무④ 예시.[17]"
+  },
+  {
+   "q": "같은 모델을 다시 학습했는데 지표가 다르게 나옵니다. 무엇부터 보나요?",
+   "a": "데이터 판·코드 커밋·시드·라이브러리 판 — 업무⑥.[22][23]"
+  },
+  {
+   "q": "영하에서만 소비 예측이 20% 넘게 틀립니다. 파라미터 문제인지 모델 구조 문제인지 어떻게 가르나요?",
+   "a": "치우침 vs 흩어짐, 조건 칸별 오차 — 업무③ 예시와 배터리 저온 특성.[12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · Machine Learning & Data Engineer, Vehicle Modeling",
+   "url": "https://jobs.ashbyhq.com/42dot/d118c92f-1378-404a-a98f-058948606d28",
+   "kind": "posting",
+   "date": "2026-11-13",
+   "note": "이 공고. 역할 소개·업무 7줄·전형. 자격요건·우대·보수 칸 없음. 팀 표기 Artificial Intelligence(AI). 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "현대자동차 뉴스룸 · [Inside HMG's Digital R&D Revolution ①] Driving Simulator",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001222",
+   "kind": "company",
+   "date": "2026-07-13",
+   "note": "남양연구소 시뮬레이터 — 부품 특성 바로 바꿔 여러 설정 검증, 1mm 간격 시험장 디지털 복제, 차량 동역학 모델과 가상 환경을 AI 검증으로 확장"
+  },
+  {
+   "n": 3,
+   "title": "현대자동차그룹 · AI 데이터 플라이휠로 자율주행 혁신 가속",
+   "url": "https://www.hyundaimotorgroup.com/en/news/hyundai-motor-group-accelerates-autonomous-driving-innovation-with-ai-powered-data-flywheel",
+   "kind": "company",
+   "date": "2026-09-13",
+   "note": "포티투닷 자율주행 미디어 데이 — 수집·학습·어려운 사례 재학습·가상 검증"
+  },
+  {
+   "n": 4,
+   "title": "Built In · 42dot ML/AI Engineer – Vehicle Intelligence",
+   "url": "https://builtin.com/job/ml-ai-engineer-vehicle-intelligence/9704638",
+   "kind": "posting",
+   "note": "같은 서니베일 — 차량 지능 팀 소개, 텔레메트리·충전 패턴·fleet 데이터·시뮬레이션·디지털 트윈, 보수 범위. 2026-07-01 내려간 공고"
+  },
+  {
+   "n": 5,
+   "title": "포티투닷 채용 · Evaluation, Validation & Simulation Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/88d850a1-7e2f-4388-ab41-6823634620f1",
+   "kind": "posting",
+   "note": "같은 서니베일 — 보수 범위"
+  },
+  {
+   "n": 6,
+   "title": "포티투닷 채용 · Calibration Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/81643cad-831a-429c-8cc5-05cabd651056",
+   "kind": "posting",
+   "note": "같은 서니베일 — 센서 보정, 보수 범위"
+  },
+  {
+   "n": 7,
+   "title": "포티투닷 채용 · Cloud Infrastructure Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/905f1b60-158a-4aca-a3c3-376cbfdcefa9",
+   "kind": "posting",
+   "note": "같은 서니베일 — 데이터·ML 작업용 클라우드 인프라, 보수 범위"
+  },
+  {
+   "n": 8,
+   "title": "TU Wien · Hybrid Machine Learning & Digital Twin Technology",
+   "url": "https://www.tuwien.at/en/mwbw/mec/e325-01-research-unit-of-technical-dynamics-and-vehicle-system-dynamics/research-focus/hybrid-machine-learning-digital-twin-technology",
+   "kind": "reference",
+   "note": "다른 곳 — 물리 모델 + 데이터, 파라미터·상태 추정, sim-to-real gap"
+  },
+  {
+   "n": 9,
+   "title": "Residual Learning towards High-fidelity Vehicle Dynamics Modeling with Transformer",
+   "url": "https://arxiv.org/abs/2502.11800",
+   "kind": "reference",
+   "date": "2025-02",
+   "note": "다른 곳 — 3자유도 모델 위 잔차 학습, 오차 평균 92.3%·59.9% 감소(저자 수치)"
+  },
+  {
+   "n": 10,
+   "title": "Brunton·Proctor·Kutz · Discovering governing equations from data by sparse identification of nonlinear dynamical systems (PNAS)",
+   "url": "https://www.pnas.org/doi/10.1073/pnas.1517384113",
+   "kind": "reference",
+   "date": "2016",
+   "note": "SINDy 원 논문"
+  },
+  {
+   "n": 11,
+   "title": "SAE J2263 · Road Load Measurement Using Onboard Anemometry and Coastdown Techniques",
+   "url": "https://saemobilus.sae.org/standards/j2263_202005-road-load-measurement-using-onboard-anemometry-coastdown-techniques",
+   "kind": "reference",
+   "date": "2020-05",
+   "note": "주행 저항 측정 기준 — 115→15km/h 타력 주행으로 속도별 주행 저항 식을 구한다"
+  },
+  {
+   "n": 12,
+   "title": "Battery University · BU-502: Discharging at High and Low Temperatures",
+   "url": "https://batteryuniversity.com/article/bu-502-discharging-at-high-and-low-temperatures",
+   "kind": "reference",
+   "note": "저온에서 내부 저항 증가·성능 저하"
+  },
+  {
+   "n": 13,
+   "title": "MathWorks · Simulink Design Optimization",
+   "url": "https://www.mathworks.com/help/sldo/",
+   "kind": "reference",
+   "note": "모델 파라미터 추정 도구"
+  },
+  {
+   "n": 14,
+   "title": "Roger Labbe · Kalman and Bayesian Filters in Python",
+   "url": "https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python",
+   "kind": "reference",
+   "note": "칼만 필터 무료 교재"
+  },
+  {
+   "n": 15,
+   "title": "MCAP",
+   "url": "https://mcap.dev/",
+   "kind": "reference",
+   "note": "로봇·차량 센서 기록용 열린 파일 형식"
+  },
+  {
+   "n": 16,
+   "title": "cantools (GitHub)",
+   "url": "https://github.com/cantools/cantools",
+   "kind": "reference",
+   "note": "DBC 로 CAN 메시지 해석"
+  },
+  {
+   "n": 17,
+   "title": "pandas 문서 · merge_asof",
+   "url": "https://pandas.pydata.org/docs/reference/api/pandas.merge_asof.html",
+   "kind": "reference",
+   "note": "직전 값 붙이기·tolerance"
+  },
+  {
+   "n": 18,
+   "title": "Apache Parquet Documentation",
+   "url": "https://parquet.apache.org/docs/",
+   "kind": "reference",
+   "note": "열 기반 저장 형식"
+  },
+  {
+   "n": 19,
+   "title": "Functional Mock-up Interface (FMI)",
+   "url": "https://fmi-standard.org/",
+   "kind": "reference",
+   "note": "시뮬레이션 모델 교환 표준(FMU)"
+  },
+  {
+   "n": 20,
+   "title": "Google Cloud · MLOps: Continuous delivery and automation pipelines in machine learning",
+   "url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+   "kind": "reference",
+   "note": "검증·모델 등록·자동화 단계"
+  },
+  {
+   "n": 21,
+   "title": "AWS Architecture Blog · Building an Autonomous Driving and ADAS Data Lake on AWS",
+   "url": "https://aws.amazon.com/blogs/architecture/field-notes-building-an-autonomous-driving-and-adas-data-lake-on-aws/",
+   "kind": "reference",
+   "note": "다른 곳 — 차량 데이터 레이크 참고 구조"
+  },
+  {
+   "n": 22,
+   "title": "DVC Documentation",
+   "url": "https://dvc.org/doc",
+   "kind": "reference",
+   "note": "데이터 판 관리"
+  },
+  {
+   "n": 23,
+   "title": "MLflow Documentation",
+   "url": "https://mlflow.org/docs/latest/",
+   "kind": "reference",
+   "note": "실험 기록·모델 등록"
+  },
+  {
+   "n": 24,
+   "title": "포티투닷 채용 · Sr. Machine Learning Engineer, Autonomy",
+   "url": "https://jobs.ashbyhq.com/42dot/97aa7ffc-9d16-468f-b0f6-8fbe3a4f8895",
+   "kind": "posting",
+   "note": "같은 서니베일 시니어 ML — 보수 범위"
+  },
+  {
+   "n": 25,
+   "title": "California Labor Commissioner · Pay Transparency",
+   "url": "https://www.dir.ca.gov/dlse/Pay-Transparency.htm",
+   "kind": "reference",
+   "note": "캘리포니아 공고 급여 범위 표기(SB 1162)"
+  },
+  {
+   "n": 26,
+   "title": "Dun & Bradstreet · 42Dot Inc. 회사 정보",
+   "url": "https://www.dnb.com/business-directory/company-profiles.42dot_inc.def7cddb34743142dccfcd05cd4b8a33.html",
+   "kind": "reference",
+   "note": "미국 법인 주소 380 N Pastoria Ave, Sunnyvale, CA 94085"
+  },
+  {
+   "n": 27,
+   "title": "포티투닷 채용 · Locations",
+   "url": "https://42dot.ai/en/careers/locations",
+   "kind": "company",
+   "note": "회사 거점 목록"
+  },
+  {
+   "n": 28,
+   "title": "포티투닷 · 업무 몰입 프로그램(복리후생)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준 — 해외 법인은 다를 수 있다고 적혀 있어 이 자리에는 싣지 않았다"
+  }
+ ],
+ "caveat": "포티투닷 차량 모델링 팀의 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고, 같은 서니베일 공고들(차량 지능·평가·보정·클라우드 인프라), 2026-07 현대차그룹 시뮬레이터 글과 2026-09 데이터 플라이휠 발표입니다. 이 공고에는 **자격요건·우대사항·보수 칸이 없어** 업무 7줄만 풀었습니다[1]. 어떤 물리 모델·부품을 다루는지, 데이터 형식·클라우드 도구는 공개되지 않아 SAE·MathWorks·pandas·MLflow·DVC 공식 문서와 공개 논문으로 '보통 이런 일'을 보였습니다. 공고 마지막 줄은 원문에서 'vehicle intelligence' 로 끊겨 있습니다. 미국 법인 복리후생은 공식 자료를 찾지 못했고, 회사 복지 페이지는 한국 본사 기준이라 싣지 않았습니다[28]. 코드 예시 5개는 직접 돌린 출력입니다. 2026-11-25 기준.",
+ "resources": [
+  {
+   "id": "hmg-sim",
+   "title": "[Inside HMG's Digital R&D Revolution ①] Driving Simulator",
+   "by": "현대자동차 뉴스룸 · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001222",
+   "why": "그룹이 차량 시험을 시뮬레이터로 옮기는 이유와 차량 동역학 모델을 AI 검증으로 넓히는 계획 — 업무①②가 왜 필요한지 먼저 잡는다."
+  },
+  {
+   "id": "hmg-flywheel",
+   "title": "Hyundai Motor Group Accelerates Autonomous Driving Innovation with AI-Powered Data Flywheel",
+   "by": "현대자동차그룹 뉴스룸 · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundaimotorgroup.com/en/news/hyundai-motor-group-accelerates-autonomous-driving-innovation-with-ai-powered-data-flywheel",
+   "why": "수집 → 학습 → 어려운 사례 → 가상 검증 주기. 업무③④의 실차 데이터가 어디서 오는지."
+  },
+  {
+   "id": "rajamani",
+   "title": "Vehicle Dynamics and Control (2nd ed.)",
+   "by": "Rajesh Rajamani · Springer · 2012",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://link.springer.com/book/10.1007/978-1-4614-1433-9",
+   "why": "종·횡방향 차량 모델과 타이어 모델, 파라미터 추정 장이 있다. 업무②에서 '무슨 계수를 맞추는지'를 여기서 배운다."
+  },
+  {
+   "id": "brunton-book",
+   "title": "Data-Driven Science and Engineering (2nd ed.)",
+   "by": "Steven L. Brunton · J. Nathan Kutz · Cambridge University Press · 2022",
+   "kind": "book",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://databookuw.com/",
+   "why": "회귀·SINDy·물리를 섞은 ML 을 한 권으로. 업무①의 하이브리드 방법 지도. 저자 강의 영상도 같은 사이트에서 이어진다."
+  },
+  {
+   "id": "pysindy",
+   "title": "PySINDy documentation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://pysindy.readthedocs.io/",
+   "why": "SINDy 를 파이썬으로 바로 돌려 보는 공식 문서. 업무①의 '식 찾기'를 손으로 해 본다."
+  },
+  {
+   "id": "dytr",
+   "title": "Residual Learning towards High-fidelity Vehicle Dynamics Modeling with Transformer",
+   "by": "Jinyu Miao 외 · arXiv · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2502.11800",
+   "why": "물리 차량 모델 + 잔차 신경망의 최근 공개 사례. 업무① 잔차 모델이 실제로 얼마나 줄이는지 숫자로 본다."
+  },
+  {
+   "id": "kalman-labbe",
+   "title": "Kalman and Bayesian Filters in Python",
+   "by": "Roger R. Labbe",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python",
+   "why": "주피터 노트북으로 된 무료 책. 업무②의 적응 추정(달리면서 계수 고치기)을 코드로 따라간다."
+  },
+  {
+   "id": "sldo",
+   "title": "Simulink Design Optimization 문서 — Parameter Estimation",
+   "by": "MathWorks",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.mathworks.com/help/sldo/",
+   "why": "업계에서 쓰는 모델 보정 도구의 절차(데이터 가져오기 → 추정할 계수 고르기 → 검증). 업무②를 파이썬으로 옮길 때 기준 절차로 본다."
+  },
+  {
+   "id": "huyen-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/meosinreoning-siseutem-seolgye/9791169210850/",
+   "why": "데이터 관리·평가·실험·재현성을 운영 관점에서 다룬다. 업무③⑥⑦의 틀."
+  },
+  {
+   "id": "ddia-ko",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "저장 형식·일괄 처리·스트림 처리의 원리. 업무④ 파이프라인 설계의 바탕."
+  },
+  {
+   "id": "pandas-asof",
+   "title": "pandas.merge_asof",
+   "by": "pandas 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://pandas.pydata.org/docs/reference/api/pandas.merge_asof.html",
+   "why": "주기가 다른 시계열을 '직전 값 + 허용 오차'로 붙이는 표준 함수. 업무④ 시각 맞추기."
+  },
+  {
+   "id": "cantools-doc",
+   "title": "cantools",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://github.com/cantools/cantools",
+   "why": "DBC 파일로 CAN 메시지를 물리 값으로 푸는 파이썬 도구. 업무④의 '풀기'."
+  },
+  {
+   "id": "mlops-google",
+   "title": "MLOps: Continuous delivery and automation pipelines in machine learning",
+   "by": "Google Cloud",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+   "why": "학습·검증·등록·배포를 자동화하는 단계. 업무⑤⑥의 검증 관문·모델 등록."
+  },
+  {
+   "id": "fmi",
+   "title": "Functional Mock-up Interface (FMI)",
+   "by": "Modelica Association",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://fmi-standard.org/",
+   "why": "시뮬레이션 모델을 도구끼리 주고받는 표준. 업무⑤에서 차량 모델을 클라우드로 옮길 때 만난다."
+  },
+  {
+   "id": "mlflow-doc",
+   "title": "MLflow Tracking",
+   "by": "MLflow 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://mlflow.org/docs/latest/",
+   "why": "실험마다 설정·지표·결과 파일을 남기는 도구. 업무⑥ 실험 기록."
+  },
+  {
+   "id": "dvc-doc",
+   "title": "DVC Documentation",
+   "by": "Iterative",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://dvc.org/doc",
+   "why": "큰 데이터 파일을 git 처럼 판으로 묶는 도구. 업무⑥ 데이터 판."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사가 하려는 것",
+   "time": "2~3일",
+   "goal": "시뮬레이터·데이터 플라이휠이 이 자리에 무엇을 요구하는지 말할 수 있다.",
+   "resources": [
+    "hmg-sim",
+    "hmg-flywheel"
+   ],
+   "task": "두 글을 읽고 '실차 기록 → 모델과 비교 → 파라미터·잔차 고치기 → 시뮬레이터' 그림을 한 장 그린 뒤, 화살표마다 이 공고의 업무 줄 번호를 붙인다."
+  },
+  {
+   "title": "차량 모델 기초",
+   "time": "2~3주",
+   "goal": "종방향 차량 모델을 식으로 쓰고 계수가 무슨 뜻인지 설명할 수 있다.",
+   "resources": [
+    "rajamani"
+   ],
+   "task": "구동력 − 주행 저항 = 질량 × 가속도 모델을 파이썬으로 만들고, 가상 타력 주행 기록에서 A·B·C 를 최소제곱으로 뽑는다. 저속 기록만 줬을 때 계수가 어떻게 흔들리는지 본다."
+  },
+  {
+   "title": "파라미터 추정과 적응",
+   "time": "2주",
+   "goal": "조건별 표와 달리면서 고치는 추정을 둘 다 만들 수 있다.",
+   "resources": [
+    "kalman-labbe",
+    "sldo"
+   ],
+   "task": "짐을 실어 질량이 바뀌는 가상 주행 기록에 칼만 필터를 붙여 질량을 따라가게 하고, 가상 배터리 기록으로 온도대별 내부 저항 표를 만든다."
+  },
+  {
+   "title": "물리 + 데이터",
+   "time": "2~3주",
+   "goal": "잔차 모델과 SINDy 로 물리 모델을 고치고, 떼어 둔 데이터로 개선을 증명할 수 있다.",
+   "resources": [
+    "brunton-book",
+    "pysindy",
+    "dytr"
+   ],
+   "task": "경사를 모르는 물리 모델에 작은 신경망 잔차를 붙여 RMSE 를 견주고, PySINDy 로 가상 데이터에서 운동 방정식을 되찾는다."
+  },
+  {
+   "title": "파이프라인과 재현성",
+   "time": "2~4주",
+   "goal": "시계열 기록을 받아 시각을 맞추고, 실험을 다시 돌려 같은 숫자를 얻을 수 있다.",
+   "resources": [
+    "ddia-ko",
+    "pandas-asof",
+    "cantools-doc",
+    "huyen-ko",
+    "mlflow-doc",
+    "dvc-doc"
+   ],
+   "task": "가상 CAN·GPS 기록 → 시각 맞추기 → Parquet → 조건 칸별 오차 리포트를 만들고, 각 실행을 MLflow 로 기록하고 입력 데이터를 DVC 로 판을 붙인다."
+  }
+ ],
+ "pay": {
+  "summary": "이 공고에는 연봉이 적혀 있지 않다. 같은 서니베일 사무소의 비시니어 엔지니어 공고는 **연 $145,000 ~ $240,000** 폭이다(시니어 ML 은 $210,000 ~ $300,000)",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "적혀 있지 않음",
+    "basis": "공고 · 2026-11 수집",
+    "note": "공고에 'Compensation' 칸이 없고, 채용 시스템 공개 목록에서도 이 공고만 보수 표시가 꺼져 있다. 캘리포니아는 공고에 급여 범위를 적게 하고, 같은 사무소 다른 공고들은 범위를 적었다 [1][25]"
+   },
+   {
+    "label": "같은 사무소 · Evaluation, Validation & Simulation Engineer",
+    "value": "$145,000 ~ $210,000",
+    "basis": "공고 · 2026",
+    "peer": true,
+    "note": "시뮬레이션·평가 쪽 비시니어 공고 [5]"
+   },
+   {
+    "label": "같은 사무소 · Calibration Engineer",
+    "value": "$150,000 ~ $205,000",
+    "basis": "공고 · 2026",
+    "peer": true,
+    "note": "보정(센서) 쪽, 2~4년 경력 요구 [6]"
+   },
+   {
+    "label": "같은 사무소 · Cloud Infrastructure Engineer",
+    "value": "$145,000 ~ $240,000",
+    "basis": "공고 · 2026",
+    "peer": true,
+    "note": "데이터·ML 작업용 클라우드 인프라 [7]"
+   },
+   {
+    "label": "같은 사무소 · ML/AI Engineer, Vehicle Intelligence",
+    "value": "$189,000 ~ $261,000",
+    "basis": "공고 · 2026(7월 내려감)",
+    "peer": true,
+    "note": "업무⑦이 받쳐 주는 차량 지능 팀 공고, 3년 이상 경력 요구 [4]"
+   },
+   {
+    "label": "같은 사무소 · Sr. Machine Learning Engineer, Autonomy",
+    "value": "$210,000 ~ $300,000",
+    "basis": "공고 · 2026",
+    "peer": true,
+    "note": "시니어 ML 공고 [24]"
+   }
+  ],
+  "how": "범위 안 어디에 놓일지는 전형 끝의 '처우 협의'(Offer Negotiation)에서 정한다 [1]. 이 공고는 제목에 Sr·Staff 가 없어 비시니어 공고들과 견주는 게 가깝다 {추론}. 비상장사라 미국 법인 평균 급여 공시는 없다."
+ },
+ "location": {
+  "name": "42dot Inc. 서니베일 사무소",
+  "address": "380 N Pastoria Ave, Sunnyvale, CA 94085, USA",
+  "postal": "94085",
+  "map_url": "https://map.naver.com/p/search/380%20N%20Pastoria%20Ave%2C%20Sunnyvale%2C%20CA%2094085",
+  "note": "공고 근무지는 'Sunnyvale, United States' 다 [1]. 번지는 Dun & Bradstreet 의 42Dot Inc. 회사 정보 [26]이고, 회사 채용 사이트 거점 목록에도 서니베일이 있다 [27]. 채용 시스템의 주소 칸에는 'San Francisco' 로 적혀 있어 실제 자리는 지원 때 확인한다 {추론}."
+ }
+}
