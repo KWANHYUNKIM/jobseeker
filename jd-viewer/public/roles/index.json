@@ -12,6 +12,7 @@
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
   "ats-greenhouse:coupang:8364554": "coupang-data-ingestion-analytics-director-us",
+  "ats-greenhouse:coupang:8275812": "coupang-eats-android-senior-bengaluru",
   "ats-greenhouse:coupang:8333651": "coupang-eats-ios-engineering-manager",
   "ats-greenhouse:coupang:8318669": "coupang-eats-ios-engineering-manager",
   "wanted-394250": "coupang-eats-ios-engineering-manager",
@@ -412,6 +413,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 18
+  },
+  {
+   "id": "coupang-eats-android-senior-bengaluru",
+   "company": "쿠팡",
+   "role": "시니어 안드로이드 엔지니어 (쿠팡이츠, 벵갈루루)",
+   "jobs": [
+    "ats-greenhouse:coupang:8275812"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 11
   },
   {
    "id": "coupang-eats-ios-engineering-manager",
