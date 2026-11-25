@@ -170,6 +170,8 @@
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8201153003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:6652141003": "daangn-feed-ml-data-platform-backend",
+  "ats-greenhouse:daangn:7774455003": "daangn-lessons-tutoring-frontend",
+  "jobkorea-50227006": "daangn-lessons-tutoring-frontend",
   "ats-greenhouse:daangn:8201152003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:7659289003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
@@ -2039,6 +2041,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 22
+  },
+  {
+   "id": "daangn-lessons-tutoring-frontend",
+   "company": "당근",
+   "role": "프론트엔드 엔지니어 — 로컬 잡스 레슨/과외 팀",
+   "jobs": [
+    "ats-greenhouse:daangn:7774455003",
+    "jobkorea-50227006"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 30
   },
   {
    "id": "daangn-mydaangn-backend-intern",
