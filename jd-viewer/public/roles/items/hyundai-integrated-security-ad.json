@@ -1,0 +1,607 @@
+{
+  "id": "hyundai-integrated-security-ad",
+  "company": "현대자동차",
+  "role": "AD 보안 엔지니어",
+  "team": "통합보안 (현대차·기아·연구소 보안 조직을 합친 통합보안센터 산하로 보임 {추론})",
+  "jobs": [
+    "saramin-55605795"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "회사 PC·서버의 계정과 권한을 한곳에서 관리하는 **Active Directory(AD, 윈도우 회사망의 계정·권한 명부)** 를 공격자 눈으로 점검하고, 찾은 구멍을 운영팀과 함께 실제로 막은 뒤, 다시 공격해 막혔는지 확인합니다.[1]",
+    "env": "현대차·기아·연구소의 보안 조직을 묶은 **통합보안센터**(2024)와 그룹 단위 **그룹사이버위협대응팀**(2025)이 있는 조직이고, 근무지는 양재 본사입니다.[1][4][5]",
+    "oneline": "AD 를 '설치·운영하는 사람'이 아니라 **'뚫리는 길을 찾아 끊는 사람'** — 점검 도구(BloodHound·PingCastle·Purple Knight)와 Kerberos·NTLM·티어 모델을 실무로 다뤄 본 3년 이상 경력자 자리입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "- 엔터프라이즈 Active Directory 환경 전반에 대한 보안을 담당하며, AD 취약점 점검뿐 아니라 도출된 문제에 대한 개선 방안을 설계하고 운영팀과 협업하여 실제 적용하는 업무를 수행합니다.",
+      "short": "점검 보고서로 끝내지 않고, 찾은 AD 구멍을 운영팀과 함께 실제로 막는 데까지 책임지는 자리다.",
+      "why": "AD 는 회사 안의 거의 모든 윈도우 PC·서버가 '이 사람이 누구고 무엇을 할 수 있나'를 묻는 곳이라, 여기를 장악하면 회사망 전체를 장악합니다 {추론}. 실제로 2019년 국내 여러 기업에 퍼진 CLOP 랜섬웨어는 AD 관리 방식의 허점을 타고 번졌고, KISA 는 감염 대부분이 관리자 그룹 계정 탈취에서 시작됐다고 분석했습니다.[23] 2021년 KISA 보고서도 2019년 이후 AD 랜섬웨어 사고 대부분이 같은 수법(계정 탈취 → 도메인 컨트롤러 장악 → 내부 확산)을 썼다고 정리했습니다.[24]",
+      "actually": {
+        "intro": "공고가 한 문장에 묶은 일을 풀면 이렇게 돕니다 {추론}.",
+        "items": [
+          "**점검** — 도구와 손으로 AD 설정·권한·계정을 훑어 위험한 곳을 찾는다.",
+          "**설계** — '무엇을 어떻게 바꾸면 그 길이 끊기나'를 운영에 지장 없게 짠다.",
+          "**적용** — 실제 변경은 AD 운영팀이 한다. 이 자리는 순서·영향 범위·되돌리는 법을 같이 만든다.",
+          "**검증** — 바꾼 뒤 같은 공격을 다시 해서 정말 막혔는지 본다(업무 ④)."
+        ]
+      },
+      "flows": [
+        {
+          "caption": "한 번 도는 고리 {추론}",
+          "steps": [
+            "점검 · 도구 결과와 공격 경로",
+            "우선순위 · 도메인 관리자까지 가는 길부터",
+            "개선 설계 · 바꿀 것·영향·되돌리기",
+            "운영팀 적용 · 변경 작업",
+            "재공격 검증 · 막혔나 확인",
+            "기준·가이드로 남기기"
+          ],
+          "mine_from": 0
+        }
+      ],
+      "how_far": "운영팀이 손을 움직이고 이 자리는 **무엇을 왜 바꾸는지와 바꾼 뒤 확인**을 맡습니다. 그래서 '이걸 바꾸면 어떤 업무 시스템이 깨질 수 있다'까지 말할 수 있어야 운영팀이 받아들입니다 {추론}.",
+      "refs": [1, 23, 24],
+      "study": ["ms-bp", "asd-guide", "kisa-6"]
+    },
+    {
+      "section": "task",
+      "quote": "■ AD 보안 점검 및 개선 · AD 환경 보안 아키텍처 검토 및 하드닝 가이드 수립",
+      "short": "도메인 컨트롤러·관리자 PC·신뢰 관계가 어떻게 엮였는지 보고, 잠가야 할 설정을 문서로 정하는 일.",
+      "why": "마이크로소프트의 AD 보안 권고는 공격면 줄이기 — 권한 과다 부여 피하기, 안전한 관리용 PC 쓰기, 도메인 컨트롤러 지키기 — 와 감시, 침해 대비를 큰 줄기로 둡니다.[8] 하드닝(쓰지 않는 기능을 끄고 설정을 조여 공격받을 틈을 줄이는 일)은 '어디를 얼마나 조일지' 기준이 있어야 회사 전체에 똑같이 적용됩니다 {추론}.",
+      "actually": {
+        "intro": "아키텍처 검토에서 보통 보는 것과, 공개 권고가 꼽는 하드닝 항목입니다.",
+        "items": [
+          "**구조 보기** — 포리스트·도메인이 몇 개고 서로 믿는 관계(트러스트)가 어디로 열려 있나. 해외 법인·연구소 도메인이 섞인 그룹사는 이게 길다 {추론}.",
+          "**Tier 0 목록** — 도메인 컨트롤러·인증서 서버(AD CS)·AD FS·Entra Connect 처럼 계정 명부를 직접 움직이는 자산을 따로 묶는다.[7]",
+          "**관리 경로** — 관리자는 낮은 등급 PC 에서 높은 등급 계정으로 로그온하지 않는다. 관리는 등급마다 전용 관리 PC(PAW)에서.[7][8]",
+          "**도메인 컨트롤러 설정** — 프린트 스풀러 끄기, LDAP 서명·채널 바인딩 켜기, SMBv1·LLMNR·NetBIOS·NTLMv1·RC4/DES 쓰는 곳 찾기, 중요 패치는 몇 주가 아니라 며칠 안에.[22]",
+          "**가이드로 쓰기** — 항목마다 '왜·어떻게·확인법·예외 신청'을 적어 운영팀이 그대로 따라 할 수 있게 {추론}."
+        ]
+      },
+      "how_far": "가이드는 '좋은 말 모음'이 아니라 **확인할 수 있는 설정값 목록**이어야 합니다. 항목마다 GPO(그룹 정책) 경로나 점검 명령으로 '됐다/안 됐다'를 가를 수 있으면 충분합니다 {추론}.",
+      "refs": [7, 8, 22],
+      "study": ["ms-bp", "ms-tier", "adtier-bp"]
+    },
+    {
+      "section": "task",
+      "quote": "· AD 취약점 점검 및 공격 경로(Attack Path) 분석",
+      "short": "평범한 직원 계정에서 도메인 관리자까지 이어지는 권한의 사슬을 그래프로 찾아내는 일.",
+      "why": "AD 공격은 취약점 하나보다 **권한의 연결**로 일어납니다. 직원 A 가 속한 그룹이 PC B 의 관리자고, 그 PC 에 도메인 관리자가 로그온해 있으면 A 는 세 걸음 만에 도메인 관리자가 됩니다 {추론}. BloodHound 는 이런 AD·Entra ID 의 숨은 관계를 그래프 이론으로 드러내는 도구이고, 공고가 이 도구를 이름으로 적었습니다.[1][18]",
+      "actually": {
+        "items": [
+          "**수집** — SharpHound(BloodHound 수집기)로 그룹 소속·로컬 관리자·로그온 세션·권한(ACL)을 모은다.[18]",
+          "**경로 찾기** — '도메인 관리자 그룹까지 가는 가장 짧은 길'을 묻는다. 길이 많은 계정·그룹이 우선 점검 대상이다.",
+          "**Tier 0 정하기** — SpecterOps 는 Tier Zero 를 '회사 계정 명부를 쥔 자산과 그 자산이 기대는 것들'로 본다. 그 집합에 들어오는 길을 끊는 게 목표다.[21]",
+          "**자주 나오는 고리** — GPO 를 고칠 수 있는 일반 그룹(GPO 를 바꾸면 그 GPO 가 걸린 PC 전부에 명령을 심을 수 있다)[16], 서비스 계정 비밀번호 깨기(커버로스팅)[13], 복제 권한 남용(DCSync)[14]."
+        ]
+      },
+      "examples": [
+        {
+          "title": "가상 AD 관계에서 도메인 관리자까지 가는 길 찾기",
+          "body": "BloodHound 가 하는 일을 아주 작게 흉내 낸 것입니다(가상 계정, 직접 돌린 출력). kim 은 네 걸음 만에 도메인 관리자에 닿고, park 은 길이 없습니다.",
+          "lang": "python",
+          "code": "from collections import deque\nedges = [\n    (\"user:kim\", \"MemberOf\", \"group:HelpDesk\"),\n    (\"group:HelpDesk\", \"AdminTo\", \"pc:WS-042\"),\n    (\"pc:WS-042\", \"HasSession\", \"user:adm_lee\"),\n    (\"user:adm_lee\", \"MemberOf\", \"group:Domain Admins\"),\n    (\"user:park\", \"MemberOf\", \"group:Sales\"),\n]\ng = {}\nfor s, r, d in edges:\n    g.setdefault(s, []).append((r, d))\ndef path(src, dst):\n    q, seen = deque([(src, [])]), {src}\n    while q:\n        n, p = q.popleft()\n        if n == dst:\n            return p\n        for r, d in g.get(n, []):\n            if d not in seen:\n                seen.add(d); q.append((d, p + [f\"{n} -{r}-> {d}\"]))\nfor who in [\"user:kim\", \"user:park\"]:\n    p = path(who, \"group:Domain Admins\")\n    print(who, \"->\", \"경로 없음\" if p is None else f\"{len(p)}단계\")\n    for step in p or []:\n        print(\"   \", step)\n# user:kim -> 4단계\n#     user:kim -MemberOf-> group:HelpDesk\n#     group:HelpDesk -AdminTo-> pc:WS-042\n#     pc:WS-042 -HasSession-> user:adm_lee\n#     user:adm_lee -MemberOf-> group:Domain Admins\n# user:park -> 경로 없음"
+        }
+      ],
+      "how_far": "그래프를 뽑는 것보다 **'이 길에서 어느 고리 하나를 끊으면 가장 많은 길이 같이 끊기나'** 를 고르는 눈이 이 줄의 핵심입니다 {추론}. 위 예라면 도메인 관리자가 일반 PC 에 로그온하지 못하게 하는 것 하나로 길이 끊깁니다.[7]",
+      "refs": [1, 7, 13, 14, 16, 18, 21],
+      "study": ["bloodhound-docs", "tier0", "attack"]
+    },
+    {
+      "section": "task",
+      "quote": "· 도출된 취약점에 대한 개선 방안 설계 및 운영팀 협업 통한 실제 적용",
+      "short": "무엇을 바꾸면 길이 끊기는지 정하고, 업무가 멈추지 않게 순서를 짜서 운영팀과 함께 바꾸는 일.",
+      "why": "AD 설정은 회사 전체에 한꺼번에 걸립니다. NTLM 을 끄거나 RC4 를 막으면 오래된 장비·업무 프로그램이 로그인을 못 할 수 있어서, 마이크로소프트조차 NTLM 을 끄는 일을 '먼저 어디서 쓰는지 보이게 → 막히는 곳 해결 → 기본값으로 끄기' 세 단계로 나눴습니다.[12] 회사 안에서도 같은 순서가 필요합니다 {추론}.",
+      "actually": {
+        "items": [
+          "**영향 먼저 재기** — 바꾸기 전에 감사(audit) 모드로 '이걸 막으면 누가 걸리나' 기록부터 모은다. 윈도우 서버 2025·윈도우 11 24H2 부터는 NTLM 사용처를 더 자세히 감사할 수 있다.[12]",
+          "**작게 시작** — 시험 OU(조직 단위 폴더) 하나에 GPO 를 걸고, 문제가 없으면 넓힌다 {추론}.",
+          "**되돌리기 준비** — 변경 전 설정을 백업하고 되돌리는 절차를 함께 적는다 {추론}.",
+          "**흔한 개선 거리** — 관리자 그룹에서 사람 빼기, 서비스 계정을 gMSA(비밀번호를 AD 가 알아서 바꾸는 서비스 계정)로 바꾸기[22], PC 마다 다른 로컬 관리자 비밀번호(LAPS)[10], 중요 관리자를 Protected Users 그룹에 넣기[9]."
+        ]
+      },
+      "how_far": "운영팀이 '이건 왜 하냐, 뭐가 깨지냐'를 물을 때 근거를 대고, 일정을 같이 짤 수 있으면 됩니다 {추론}. 실제 변경 버튼은 운영팀이 누르는 구조로 보입니다(공고 문장이 '운영팀 협업 통한 실제 적용'이다).[1]",
+      "refs": [1, 9, 10, 12, 22],
+      "study": ["ms-laps", "ms-protected", "adtier-bp"]
+    },
+    {
+      "section": "task",
+      "quote": "· 모의 공격을 통한 하드닝 적용 효과 검증 글로벌 차량 보안 이슈 모니터링 (뉴스, SNS, 컨퍼런스 등)",
+      "short": "고친 뒤 같은 공격을 다시 해서 정말 막혔는지 확인한다. 뒤의 '차량 보안 이슈'는 다른 공고 문구가 붙은 듯하다.",
+      "why": "설정을 바꿨다는 것과 공격이 막혔다는 것은 다릅니다 {추론}. LG CNS 퍼플랩도 AD 공격 10가지를 정리하면서 모의해킹 기반 방어 훈련을 주기적으로 하라고 권했습니다.[25] 줄 뒷부분의 '글로벌 차량 보안 이슈 모니터링(뉴스·SNS·컨퍼런스)'은 2024년 같은 이름(Mobility Security Engineer)의 차량보안 공고 업무에 있던 문구라, 두 문장이 줄바꿈 없이 붙은 것으로 보입니다.[2] {추론}",
+      "actually": {
+        "items": [
+          "**같은 공격 다시** — 점검 때 성공한 공격(예: 서비스 계정 티켓 깨기, 도메인 관리자까지의 경로)을 고친 뒤 똑같이 해 본다.",
+          "**탐지도 같이 본다** — 막히지 않더라도 관제에 경보가 떴는지 확인한다. MITRE 는 커버로스팅을 RC4 로 암호화된 서비스 티켓 요청(이벤트 4769, 암호화 종류 0x17)이 짧은 시간에 몰리는 것으로 잡으라고 한다.[13]",
+          "**결과 기록** — '고치기 전 성공 / 고친 뒤 실패 / 경보 있음·없음'을 표로 남긴다 {추론}.",
+          "**차량 보안 동향** — 원래 차량보안 자리에서는 해외 차량 해킹 사례를 지켜보고 원인을 재현하는 일이었다.[2] 이 자리에서 얼마나 맡는지는 면접에서 확인할 것 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "커버로스팅 시도 찾기 — 가상 4769 이벤트",
+          "body": "평소 요청은 AES(0x12)인데 park 이 새벽에 RC4(0x17) 서비스 티켓을 8개 몰아 받았습니다. 고친 뒤 재공격 때 이 경보가 뜨는지가 검증 항목 하나입니다(직접 돌린 출력).",
+          "lang": "python",
+          "code": "from collections import Counter\n# (시각, 요청 계정, 서비스, 암호화 종류)\nev = [(\"09:00\", \"kim\", \"MSSQLSvc/db01\", \"0x12\"),\n      (\"09:01\", \"lee\", \"HTTP/web01\", \"0x12\")]\nev += [(f\"02:1{i}\", \"park\", f\"svc{i}/host{i}\", \"0x17\") for i in range(8)]\nrc4 = [e for e in ev if e[3] == \"0x17\"]  # 0x17 = RC4\nfor user, n in Counter(e[1] for e in rc4).items():\n    verdict = \"경보(커버로스팅 의심)\" if n >= 5 else \"관찰\"\n    print(f\"{user}: RC4 서비스 티켓 {n}건 -> {verdict}\")\n# park: RC4 서비스 티켓 8건 -> 경보(커버로스팅 의심)"
+        }
+      ],
+      "how_far": "공개 공격 도구로 AD 공격 몇 가지를 시험 환경에서 직접 재현해 본 경험이 최소선입니다 {추론}. 운영 AD 에 하는 모의 공격은 범위·시간을 미리 승인받고 합니다 {추론}.",
+      "refs": [2, 13, 25],
+      "study": ["attack", "packt-isakov", "asd-guide"]
+    },
+    {
+      "section": "task",
+      "quote": "■ AD 보안 프로세스 기획 및 운영 · AD 보안 정책 수립 및 정기 점검 프로세스 운영",
+      "short": "한 번 고치고 끝이 아니라, 정해진 주기로 같은 잣대로 다시 재는 틀을 만들고 돌리는 일.",
+      "why": "AD 는 매일 바뀝니다 — 사람이 들어오고 나가고, 그룹에 누가 추가되고, 새 서버가 붙습니다 {추론}. 마이크로소프트 쪽 티어 모델 커뮤니티 문서도 '티어 모델을 깔았다고 끝이 아니다'라며 지속 관리를 강조합니다.[22] PingCastle 은 스스로를 신원 보안 성숙도 여정의 '평가' 단계 도구로 소개합니다 — 정기적으로 같은 도구로 재야 나아졌는지 보입니다.[19]",
+      "actually": {
+        "items": [
+          "**정책** — 관리자 그룹 소속 승인 절차, 비밀번호·인증 방식, 쓰지 않는 계정 처리 기한 같은 규칙을 문서로 {추론}.",
+          "**주기** — 예: 매주 특권 그룹 변경 확인, 매월 점검 도구 돌리기, 분기마다 공격 경로 재분석 {추론}.",
+          "**지표** — 도메인 관리자 수, 오래 안 쓴 계정 수, 도메인 관리자까지 길이 있는 일반 계정 수, 점검 점수 추이 {추론}.",
+          "**KRBTGT 키 교체** — 골든 티켓(위조 로그인 증표)을 무효로 만들려면 KRBTGT 계정 비밀번호를 두 번 바꾼다. MITRE 는 180일마다 바꾸기를 제안한다.[15]"
+        ]
+      },
+      "how_far": "정책 문서와 점검 일정, 그리고 **매번 같은 숫자를 뽑는 방법**까지 만들면 됩니다 {추론}.",
+      "refs": [15, 19, 22],
+      "study": ["adtier-bp", "pingcastle", "asd-guide"]
+    },
+    {
+      "section": "task",
+      "quote": "· 도메인 컨트롤러, 서비스 계정, 관리자 계정에 대한 보안 기준 수립 및 관리",
+      "short": "가장 위험한 세 가지 — 명부 서버, 프로그램용 계정, 관리자 계정 — 에 따로 지킬 기준을 세우는 일.",
+      "why": "KISA 가 CLOP 랜섬웨어 사고에서 뽑은 '피해야 할 운영 사례' 여섯 개 중 다섯이 바로 이 셋입니다 — 모든 계정이 관리자 그룹에 들어 있음, 관리자 계정으로 서버마다 로그온, 관리자 계정으로 도는 서비스, 바꾸기 어려운 관리자 비밀번호, 패치 안 된 서버.[23]",
+      "actually": {
+        "items": [
+          "**도메인 컨트롤러** — Tier 0 전용 관리 PC 에서만 관리, 불필요한 프로그램 없음, 보안 로그는 SIEM(로그를 모아 검사하는 시스템)으로 보냄, 패치는 며칠 안에.[7][22]",
+          "**서비스 계정** — 가능하면 gMSA·dMSA, 못 바꾸는 옛 계정은 25자 넘는 무작위 비밀번호와 SPN(서비스 이름표) 점검.[13][22] 권한은 꼭 필요한 만큼만.[13]",
+          "**관리자 계정** — 마이크로소프트가 가장 높은 권한으로 꼽는 기본 그룹은 Enterprise Admins·Domain Admins·Administrators 셋이다. 평소엔 비워 두고 필요할 때만.[8]",
+          "**Protected Users** — 이 그룹에 넣은 계정은 NTLM 로그인이 막히고, Kerberos 에서 DES·RC4 를 못 쓰고, 로그인 증표(TGT)가 4시간을 넘지 못하며, 위임도 막힌다. 서비스·컴퓨터 계정은 넣지 않는다.[9]",
+          "**로컬 관리자** — Windows LAPS 로 PC 마다 다른 비밀번호를 자동으로 바꿔 한 PC 에서 훔친 비밀번호로 옆 PC 에 못 가게.[10]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "티어 위반 로그온 찾기 — 가상 로그",
+          "body": "Tier 0 관리자 adm_lee 가 일반 PC(Tier 2)에 로그온했습니다. 이 PC 가 뚫리면 관리자 증표도 같이 털립니다 — 앞의 공격 경로 예와 같은 고리입니다(직접 돌린 출력).",
+          "lang": "python",
+          "code": "tier_acct = {\"adm_lee\": 0, \"srv_ops\": 1, \"kim\": 2}\ntier_host = {\"DC01\": 0, \"APP01\": 1, \"WS-042\": 2}\nlogons = [(\"adm_lee\", \"DC01\"), (\"adm_lee\", \"WS-042\"), (\"srv_ops\", \"APP01\"), (\"kim\", \"WS-042\")]\nfor a, h in logons:\n    ta, th = tier_acct[a], tier_host[h]\n    print(f\"{a}(T{ta}) -> {h}(T{th})\", \"위반\" if ta < th else \"정상\")\n# adm_lee(T0) -> DC01(T0) 정상\n# adm_lee(T0) -> WS-042(T2) 위반\n# srv_ops(T1) -> APP01(T1) 정상\n# kim(T2) -> WS-042(T2) 정상"
+        }
+      ],
+      "how_far": "세 가지 각각에 '해야 할 것·하지 말 것·확인 방법'이 한 장씩 있으면 됩니다 {추론}. 서비스 계정은 주인(담당 부서)을 찾는 일이 가장 오래 걸리는 편입니다 {추론}.",
+      "refs": [7, 8, 9, 10, 13, 22, 23],
+      "study": ["ms-protected", "ms-laps", "kisa-6"]
+    },
+    {
+      "section": "task",
+      "quote": "· AD 보안 점검 도구 운영 및 결과 분석 (BloodHound, PingCastle, Purpleknight 등)",
+      "short": "세 도구는 보는 눈이 다르다 — 권한 길(BloodHound), 설정 점수(PingCastle·Purple Knight). 결과를 읽고 고칠 순서를 낸다.",
+      "why": "공고가 도구 이름을 직접 적었습니다.[1] 셋은 겹치지 않습니다. BloodHound 는 관계 그래프로 공격 경로를 보여 주고[18], PingCastle 은 AD·Entra ID 의 보안 위험을 평가하며(2024년 Netwrix 가 인수)[19], Purple Knight 는 AD·Entra ID·Okta 의 노출 지표와 침해 지표 232개 넘게를 검사하는 무료 도구입니다.[20]",
+      "actually": {
+        "items": [
+          "**BloodHound** — 무료 공개판(CE)과 SaaS 판이 있다. CE 는 수집기 SharpHound(AD)·AzureHound(Entra ID)로 모아 그래프로 본다.[18]",
+          "**PingCastle** — 무료 커뮤니티판이 있고, AD·Entra ID 설정의 보안 위험을 평가한다 — 스스로를 '평가' 단계 도구로 소개한다.[19]",
+          "**Purple Knight** — 보고서가 다섯 영역으로 점수를 매긴다.[20]",
+          "**결과 분석** — 도구가 낸 수십 개 경고를 '도메인 관리자까지 길이 되는 것 / 설정 위생' 으로 나누고, 같은 원인(예: 한 서비스 계정)을 하나로 묶는다 {추론}.",
+          "**오탐·예외** — 업무상 필요해서 남긴 설정은 이유와 기한을 적어 예외로 관리한다 {추론}."
+        ]
+      },
+      "level": {
+        "basic": "세 도구를 시험 AD 에 돌려 보고 보고서 항목이 무슨 뜻인지 안다.",
+        "work": "보고서를 받아 고칠 순서와 운영팀 요청서를 쓸 수 있다.",
+        "team": "점수가 아니라 공격 경로 기준으로 우선순위를 정하고, 고친 뒤 다시 돌려 숫자로 개선을 보여 준다 {추론}."
+      },
+      "how_far": "도구는 누구나 돌립니다. 이 자리가 보는 건 **결과를 회사 사정에 맞게 번역하는 능력**입니다 {추론}. 수집할 때 쓰는 계정·범위를 승인받는 절차도 알아 둡니다 {추론}.",
+      "refs": [1, 18, 19, 20],
+      "study": ["bloodhound-docs", "pingcastle", "purpleknight"]
+    },
+    {
+      "section": "task",
+      "quote": "· 운영팀 대상 AD 보안 가이드 제공",
+      "short": "AD 를 매일 만지는 운영팀이 실수로 구멍을 내지 않게, 따라 하면 되는 글을 써 주는 일.",
+      "why": "AD 의 많은 구멍은 운영 습관에서 생깁니다 — 관리자 계정으로 아무 서버에나 로그온하기, 서비스를 관리자 계정으로 돌리기 같은 것입니다.[23] 보안팀이 매번 막을 수 없으니 운영팀이 처음부터 안전하게 하도록 글로 남깁니다 {추론}.",
+      "actually": {
+        "items": [
+          "**작업별 안내** — 새 서비스 계정 만들 때, 관리자 권한 줄 때, 새 서버를 도메인에 붙일 때 할 일 {추론}.",
+          "**하면 안 되는 것** — KISA 여섯 사례처럼 짧은 금지 목록.[23]",
+          "**왜인지** — 금지마다 '이걸 하면 이런 공격 길이 생긴다'를 한 줄로(공격 경로 분석 결과를 그대로 쓴다) {추론}.",
+          "**그룹 담당자 규칙** — 티어 N 그룹의 관리 담당(managedBy)은 반드시 같은 티어 관리자 계정이어야 한다는 식의 규칙.[22]"
+        ]
+      },
+      "how_far": "운영자가 읽고 바로 할 수 있는 단계와 확인 명령이 있으면 됩니다 {추론}. 보안 용어보다 운영자가 쓰는 말로 씁니다.",
+      "refs": [22, 23],
+      "study": ["kisa-6", "adtier-bp"]
+    },
+    {
+      "section": "qualification",
+      "quote": "· 학사 이상의 학위를 보유하신 분",
+      "short": "학사 이상이면 된다. 전공은 공고에 적혀 있지 않다.",
+      "why": "같은 통합보안 조직의 다른 경력 공고들도 학사 이상을 문턱으로 둡니다(그룹 사이버보안 공고는 IT/보안 분야 학사).[29] 이 공고는 전공을 따로 적지 않았습니다.[1]",
+      "how_far": "문서상 조건이라 경력이 더 중요하게 보입니다 {추론}.",
+      "refs": [1, 29]
+    },
+    {
+      "section": "qualification",
+      "quote": "· 3년 이상의 Active Directory 보안 업무 수행 경력을 보유하신 분",
+      "short": "AD 운영만이 아니라 'AD 보안'을 3년 넘게 — 점검·하드닝·탐지 중 하나 이상을 주업으로 해 본 경력.",
+      "why": "업무 대부분이 남의 AD 를 공격자 눈으로 보고 고치게 하는 일이라, 처음 배우면서 할 수 있는 자리가 아닙니다 {추론}. 2024년 같은 이름의 차량보안 공고도 경력 3년 이상을 요구했습니다.[2]",
+      "actually": {
+        "intro": "경력으로 인정받기 쉬운 일 {추론}",
+        "items": [
+          "AD 보안 컨설팅·모의해킹(내부망 침투) 수행",
+          "기업 AD 보안 담당 — 특권 계정 관리·GPO 하드닝·티어 모델 도입",
+          "보안 관제에서 AD 공격 탐지 규칙 개발",
+          "AD 운영자로 일하며 보안 개선 과제를 주도한 경험(운영만 했다면 보안 성과를 따로 보여야 한다)"
+        ]
+      },
+      "how_far": "이력서에는 기간보다 **무엇을 찾아 무엇을 바꿨나**를 씁니다 — 다음 줄이 바로 그걸 묻습니다 {추론}.",
+      "refs": [2],
+      "study": ["packt-isakov", "asd-guide"]
+    },
+    {
+      "section": "qualification",
+      "quote": "· AD 취약점 점검 및 실제 개선을 수행한 경험을 보유하신 분 (권한 정리, GPO 하드닝, Tier 모델 적용 등)",
+      "short": "찾기만 한 게 아니라 실제로 바꿔 본 경험 — 남는 권한 걷어 내기, 그룹 정책 조이기, 관리자 등급 나누기.",
+      "why": "업무 첫 문장이 '점검뿐 아니라 실제 적용'입니다.[1] 괄호 안의 세 가지가 이 회사가 하려는 개선의 중심으로 보입니다 {추론}.",
+      "actually": {
+        "items": [
+          "**권한 정리** — 관리자 그룹에 들어간 사람·그룹 줄이기, 필요 없는 위임 권한(ACL) 걷기, 오래 안 쓴 계정 끄기. 기본 최고 권한 그룹 셋은 비워 두는 게 권고다.[8]",
+          "**GPO 하드닝** — 그룹 정책으로 NTLM 제한·SMB 서명·LDAP 서명·RC4 차단·로컬 관리자 제한을 회사 전체에 건다.[22] 반대로 GPO 를 고칠 권한 자체가 공격 길이 되므로 GPO 권한도 BloodHound 로 점검한다.[16]",
+          "**Tier 모델 적용** — 자산과 관리자 계정을 Tier 0(명부를 쥔 것)·Tier 1(업무 서버)·Tier 2(사용자 PC)로 나누고, 높은 등급 계정이 낮은 등급 기기에 로그온하지 못하게 막는다. 등급마다 전용 관리 PC(PAW).[7]",
+          "**모델의 위치** — 마이크로소프트는 이 티어 모델을 더 넓은 '엔터프라이즈 액세스 모델'의 한 부분으로 설명한다.[7]"
+        ]
+      },
+      "how_far": "한 가지라도 '전에는 이랬고, 이렇게 바꿨고, 무엇이 깨질 뻔했고, 결과가 어땠다'를 숫자와 함께 말할 수 있어야 합니다 {추론}.",
+      "refs": [1, 7, 8, 16, 22],
+      "study": ["ms-tier", "adtier-bp", "ms-bp"]
+    },
+    {
+      "section": "qualification",
+      "quote": "· Windows 인증 프로토콜에 대한 기본적인 이해를 보유하신 분 (Kerberos, NTLM)",
+      "short": "윈도우 로그인이 어떤 증표를 주고받는지 알아야 그 증표를 훔치고 위조하는 공격을 이해할 수 있다.",
+      "why": "AD 공격의 대부분은 인증 과정을 노립니다 — 커버로스팅은 서비스 티켓을[13], 골든 티켓은 KRBTGT 키로 만든 위조 증표를[15], 해시 전달(pass-the-hash)은 NTLM 을 씁니다.[25] 마이크로소프트는 NTLM 을 2024년 6월부터 폐기 예정 기능으로 두고 기본으로 끄는 단계를 밟고 있어, 회사 안에서 NTLM 을 쓰는 곳을 찾아 줄이는 일이 생깁니다.[12]",
+      "actually": {
+        "intro": "'기본적인 이해'로 설명할 수 있어야 할 것입니다.",
+        "items": [
+          "**Kerberos 흐름** — 로그인하면 도메인 컨트롤러의 KDC(증표 발급소)에서 TGT(입장권)를 받고, 서비스를 쓸 때 TGT 를 내고 서비스 티켓을 받아 그 서버에 낸다. 서버는 매번 도메인 컨트롤러에 묻지 않는다.[11]",
+          "**NTLM** — 오래된 도전·응답 방식. 클라이언트가 서버가 진짜인지 확인하지 못한다.[11] Kerberos 를 못 쓸 때 대신 쓰이는 경우가 많다.[12]",
+          "**암호화 종류** — RC4 로 암호화된 서비스 티켓은 밖으로 가져가 비밀번호를 깨기 쉽다 — 그래서 AES 로 바꾼다.[13]",
+          "**이벤트 번호** — 4768(TGT 요청)·4769(서비스 티켓 요청)·4624/4625(로그온 성공·실패) 정도는 외워 둔다 {추론}."
+        ]
+      },
+      "flows": [
+        {
+          "caption": "Kerberos 로 파일 서버에 들어가기[11]",
+          "steps": [
+            "로그인 · 사용자 → KDC, TGT 받기",
+            "서비스 티켓 요청 · TGT 를 내고 파일 서버용 티켓 받기",
+            "접속 · 파일 서버에 티켓 제시",
+            "확인 · 서버가 티켓을 풀어 사용자 확인"
+          ]
+        }
+      ],
+      "level": {
+        "basic": "TGT 와 서비스 티켓의 차이, NTLM 과 Kerberos 의 차이를 그림으로 설명한다.",
+        "work": "로그에서 4768·4769 를 읽고 암호화 종류·요청 계정으로 이상을 가른다.",
+        "team": "NTLM 을 끄면 어디가 깨지는지 감사 로그로 미리 찾고 단계별로 줄일 계획을 낸다 {추론}."
+      },
+      "how_far": "공고는 '기본적인 이해'라고 했습니다.[1] 프로토콜 명세를 외울 필요는 없고, 공격마다 '어느 단계의 무엇을 노리나'를 짚을 수 있으면 됩니다 {추론}.",
+      "refs": [1, 11, 12, 13, 15, 25],
+      "study": ["ms-kerberos", "ms-protected", "attack"]
+    },
+    {
+      "section": "qualification",
+      "quote": "· AD 공격 기법 및 방어 체계에 대한 실무 이해도를 보유하신 분",
+      "short": "대표 AD 공격을 직접 해 봤고, 각각을 무엇으로 막고 무엇으로 잡는지 짝지어 말할 수 있는 수준.",
+      "why": "미국 CISA·NSA 와 영국·캐나다·뉴질랜드 기관이 호주 ASD 와 함께 낸 지침은 AD 를 무너뜨리는 데 흔히 쓰이는 기법 17가지와 막는 법을 정리했습니다.[17] 국내에서도 LG CNS 퍼플랩이 커버로스팅·DCSync·패스더해시·골든 티켓 등 10가지를 꼽았습니다.[25]",
+      "actually": {
+        "intro": "공격 하나마다 '어떻게 → 막기 → 잡기'를 짝지어 둡니다.",
+        "items": [
+          "**커버로스팅** — 서비스 티켓을 받아 밖에서 비밀번호를 깬다 → AES·25자 넘는 비밀번호·gMSA → RC4 서비스 티켓(4769, 0x17) 몰림.[13]",
+          "**DCSync** — 복제 권한으로 도메인 컨트롤러인 척 비밀번호 해시를 받아 간다 → '디렉터리 변경 복제' 권한을 가진 계정 점검 → 도메인 컨트롤러가 아닌 곳의 복제 요청.[14]",
+          "**골든 티켓** — KRBTGT 해시로 아무 계정의 증표나 위조 → KRBTGT 두 번 바꾸기 → 이상한 증표 수명·암호화 종류, TGT 없이 온 서비스 티켓 요청.[15]",
+          "**GPO 변조** — GPO 를 고쳐 예약 작업·계정 생성을 심는다 → GPO 권한 점검·적용 범위 좁히기.[16]",
+          "**해시 전달·옆으로 이동** — 한 PC 의 관리자 해시로 다른 PC 에 → LAPS·티어 분리.[7][10]"
+        ]
+      },
+      "how_far": "'실무 이해도'라서 책으로 아는 것보다 **시험 AD 에서 직접 해 보고 로그가 어떻게 남는지 본 경험**이 필요해 보입니다 {추론}. 면접에서 공격 하나를 골라 단계마다 남는 이벤트를 묻기 쉽습니다 {추론}.",
+      "refs": [7, 10, 13, 14, 15, 16, 17, 25],
+      "study": ["asd-guide", "attack", "packt-isakov"]
+    }
+  ],
+  "resources": [
+    {
+      "id": "ms-bp",
+      "title": "Best Practices for Securing Active Directory",
+      "by": "Microsoft Learn",
+      "kind": "doc",
+      "url": "https://learn.microsoft.com/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "AD 공격면 줄이기·감시·침해 대비의 큰 줄기. 하드닝 가이드 목차를 짤 때 뼈대로 쓴다."
+    },
+    {
+      "id": "ms-tier",
+      "title": "Active Directory tier model (AD DS)",
+      "by": "Microsoft Learn",
+      "kind": "doc",
+      "url": "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/tier-model",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "자격요건의 'Tier 모델 적용' 원문. Tier 0·1·2 에 무엇이 들어가고 관리 PC(PAW)를 어떻게 나누는지."
+    },
+    {
+      "id": "adtier-bp",
+      "title": "Active Directory Tier Model — Best Practices, Governance & AD Hardening",
+      "by": "microsoft.github.io/ActiveDirectoryTierModel",
+      "kind": "doc",
+      "url": "https://microsoft.github.io/ActiveDirectoryTierModel/best-practices/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "티어 모델을 깐 뒤의 관리 규칙과 도메인 컨트롤러 하드닝 항목(스풀러·LDAP 서명·NTLMv1·RC4·패치 주기). 하드닝 가이드와 운영팀 가이드에 바로 옮길 수 있다."
+    },
+    {
+      "id": "ms-protected",
+      "title": "Protected Users security group",
+      "by": "Microsoft Learn",
+      "kind": "doc",
+      "url": "https://learn.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/protected-users-security-group",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "관리자 계정 보안 기준에 넣을 수 있는 그룹 — NTLM·RC4 차단, TGT 4시간, 위임 차단과 넣으면 안 되는 계정."
+    },
+    {
+      "id": "ms-laps",
+      "title": "Windows LAPS overview",
+      "by": "Microsoft Learn",
+      "kind": "doc",
+      "url": "https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "PC 마다 다른 로컬 관리자 비밀번호를 자동으로 돌리는 법. 해시 전달·옆으로 이동을 끊는 개선안의 단골."
+    },
+    {
+      "id": "ms-kerberos",
+      "title": "Kerberos authentication overview",
+      "by": "Microsoft Learn",
+      "kind": "doc",
+      "url": "https://learn.microsoft.com/en-us/windows-server/security/kerberos/kerberos-authentication-overview",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "자격요건의 Kerberos 기본 — KDC·TGT·서비스 티켓 흐름과 NTLM 과의 차이."
+    },
+    {
+      "id": "attack",
+      "title": "MITRE ATT&CK — Steal or Forge Kerberos Tickets 외 AD 기법",
+      "by": "MITRE",
+      "kind": "doc",
+      "url": "https://attack.mitre.org/techniques/T1558/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "커버로스팅·골든 티켓·DCSync·GPO 변조 기법마다 막는 법과 잡는 법이 정리돼 있다. '공격 → 막기 → 잡기' 짝을 만들 때 쓴다."
+    },
+    {
+      "id": "asd-guide",
+      "title": "Detecting and Mitigating Active Directory Compromises",
+      "by": "호주 ASD · 미국 CISA·NSA · 캐나다·영국·뉴질랜드 사이버보안센터",
+      "kind": "doc",
+      "url": "https://www.cisa.gov/resources-tools/resources/detecting-and-mitigating-active-directory-compromises",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "why": "AD 를 무너뜨리는 흔한 기법 17가지와 막는 법을 정부 기관들이 함께 정리했다. 정기 점검 항목의 체크리스트로 쓰기 좋다."
+    },
+    {
+      "id": "bloodhound-docs",
+      "title": "BloodHound 문서 (Community Edition)",
+      "by": "SpecterOps",
+      "kind": "doc",
+      "url": "https://bloodhound.specterops.io/get-started/introduction",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "공고에 적힌 도구. 설치·SharpHound 수집·공격 경로 질의를 시험 AD 에 직접 해 본다."
+    },
+    {
+      "id": "tier0",
+      "title": "What is Tier Zero — Part 1",
+      "by": "SpecterOps · 2023",
+      "kind": "doc",
+      "url": "https://specterops.io/blog/2023/06/22/what-is-tier-zero-part-1/",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "why": "Tier 0 에 무엇을 넣어야 하는지 — '그 자산이 기대는 것까지'라는 생각. 공격 경로 분석에서 목적지를 정할 때."
+    },
+    {
+      "id": "pingcastle",
+      "title": "PingCastle",
+      "by": "Netwrix (2024 인수)",
+      "kind": "doc",
+      "url": "https://www.pingcastle.com",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "공고에 적힌 도구. 무료 커뮤니티판으로 시험 AD 를 평가해 보고 보고서 항목 뜻을 익힌다."
+    },
+    {
+      "id": "purpleknight",
+      "title": "Purple Knight",
+      "by": "Semperis",
+      "kind": "doc",
+      "url": "https://www.semperis.com/purple-knight/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "공고에 적힌 도구. AD·Entra ID 노출 지표를 검사하는 무료 도구 — PingCastle 결과와 견주어 본다."
+    },
+    {
+      "id": "kisa-6",
+      "title": "보안뉴스 · KISA 'AD 관리자가 피해야 할 6가지 운영사례'",
+      "by": "보안뉴스 · 2019",
+      "kind": "doc",
+      "url": "http://www.boannews.com/news/articleView.html?idxno=78424",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "국내 랜섬웨어 사고에서 나온 AD 운영 실수 여섯 가지. 계정 보안 기준과 운영팀 가이드의 '하지 말 것' 목록 출발점."
+    },
+    {
+      "id": "packt-isakov",
+      "title": "Pentesting Active Directory and Windows-based Infrastructure",
+      "by": "Denis Isakov · Packt · 2023",
+      "kind": "book",
+      "url": "https://www.oreilly.com/library/view/pentesting-active-directory/9781804611364/",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "AD·AD CS·Exchange·SCCM 공격을 실습하면서 탐지와 개선까지 같이 다룬다. '공격 기법 및 방어 체계 실무 이해'를 손으로 채우는 책."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "인증과 AD 구조 잡기",
+      "time": "1~2주",
+      "goal": "Kerberos·NTLM 흐름과 Tier 0·1·2 구분을 그림으로 설명할 수 있다.",
+      "task": "윈도우 서버 평가판으로 도메인 컨트롤러 1대·PC 1대 시험 AD 를 만들고, 로그인 한 번에 4768·4769 이벤트가 어떻게 남는지 캡처해 정리한다.",
+      "resources": ["ms-kerberos", "ms-tier", "ms-bp"]
+    },
+    {
+      "title": "공격을 직접 해 보기",
+      "time": "2~4주",
+      "goal": "커버로스팅·DCSync·골든 티켓·GPO 변조를 시험 AD 에서 재현하고 남는 흔적을 안다.",
+      "task": "가상 서비스 계정에 약한 비밀번호와 SPN 을 주고 커버로스팅을 해 본 뒤, 4769 의 암호화 종류가 어떻게 찍히는지 표로 만든다.",
+      "resources": ["attack", "packt-isakov", "asd-guide"]
+    },
+    {
+      "title": "도구로 점검하기",
+      "time": "1~2주",
+      "goal": "BloodHound·PingCastle·Purple Knight 결과를 읽고 고칠 순서를 낸다.",
+      "task": "시험 AD 에 일부러 위험한 설정 5개(도메인 관리자 세션이 남은 PC, 위임 권한 등)를 심고 세 도구로 찾아 '찾았다/못 찾았다' 표를 만든다.",
+      "resources": ["bloodhound-docs", "pingcastle", "purpleknight", "tier0"]
+    },
+    {
+      "title": "고치고 다시 공격하기",
+      "time": "2~3주",
+      "goal": "하드닝을 적용하고 같은 공격이 막혔는지 검증할 수 있다.",
+      "task": "앞 단계 문제를 gMSA·LAPS·Protected Users·GPO 로 고치고, 같은 공격을 다시 해 '고치기 전/후 성공 여부·경보' 표와 한 장짜리 운영팀 가이드를 쓴다.",
+      "resources": ["ms-laps", "ms-protected", "adtier-bp", "kisa-6"]
+    }
+  ],
+  "pay": {
+    "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+    "rows": [
+      {
+        "label": "신입 초봉",
+        "value": "약 5,010만원",
+        "amount": 5010,
+        "basis": "공공데이터 집계",
+        "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분이 없다. 이 자리는 경력 3년 이상이라 해당하지 않는다 [27]"
+      },
+      {
+        "label": "직원 평균(집계)",
+        "value": "약 7,708만원",
+        "amount": 7708,
+        "basis": "공공데이터 집계",
+        "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [27]"
+      },
+      {
+        "label": "직원 1인 평균 급여",
+        "value": "1억 3,100만원",
+        "amount": 13100,
+        "basis": "사업보고서 · 2025년",
+        "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [26]"
+      },
+      {
+        "label": "기아 1인 평균 급여",
+        "value": "1억 3,400만원",
+        "amount": 13400,
+        "basis": "사업보고서 · 2025년",
+        "peer": true,
+        "note": "같은 기사의 같은 공시 값, 전년보다 1.5% 줄었다 [26]"
+      }
+    ],
+    "how": "공고의 급여 칸은 '면접 후 결정'이다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 실제 금액은 경력과 직급으로 정해진다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      { "name": "선택적 근로시간제", "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨" },
+      { "name": "사내 어린이집", "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳" },
+      { "name": "육아휴직", "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)" },
+      { "name": "육아기 근로시간 단축", "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가" },
+      { "name": "배우자 출산 휴가", "detail": "출산일로부터 90일 안에 최대 10일" },
+      { "name": "가족돌봄 휴직", "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일" },
+      { "name": "심리 상담", "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스" },
+      { "name": "피트니스 센터", "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램" },
+      { "name": "퇴직연금", "detail": "전 직원 대상, 준비금 사외 적립" }
+    ],
+    "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [28]. 이 공고에는 복지 칸이 없고 [1], 금액이 걸린 항목은 공식 자료에서 확인하지 못해 뺐다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "현대자동차 양재 본사(현대기아자동차빌딩)",
+    "address": "서울특별시 서초구 헌릉로 12 (양재동)",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%ED%97%8C%EB%A6%89%EB%A1%9C%2012",
+    "near": "신분당선 양재시민의숲역 근처 {추론}",
+    "note": "공고 근무지는 '양재본사'다 [1]. 지속가능성 보고서의 본사 주소를 옮겼다 [28]. 2024년 같은 이름의 차량보안 공고는 판교 근무였다 [2]."
+  },
+  "fit": {
+    "good": [
+      "내부망 모의해킹이나 AD 점검을 해 보고 '고치는 것까지 끝내고 싶다'고 느낀 사람",
+      "운영팀과 일정·영향을 조율하며 설정을 바꿔 가는 일이 맞는 사람 {추론}",
+      "그래프로 권한 관계를 따라가는 퍼즐이 재미있는 사람",
+      "그룹이 보안에 돈과 사람을 늘리는 시기에 들어가고 싶은 사람[6]"
+    ],
+    "hard": [
+      "새 취약점을 찾는 연구만 원하면 아쉬울 수 있다 — 업무 절반이 정책·정기 점검·가이드다[1]",
+      "AD 변경은 회사 전체에 걸려 한 번에 크게 못 바꾼다 — 단계적으로 오래 간다[12] {추론}",
+      "우대사항이 비어 있고 한 줄에 차량 보안 문구가 섞여 있어, 실제 맡을 범위는 면접에서 확인해야 한다[1][2]"
+    ]
+  },
+  "interview": [
+    { "q": "일반 직원 계정에서 도메인 관리자까지 가는 길을 찾았다면, 어느 고리부터 끊겠어요?", "a": "공격 경로 분석과 개선 설계가 업무 첫 묶음이다.[1][18]" },
+    { "q": "티어 모델을 적용할 때 운영팀이 가장 크게 반발하는 지점은 어디였고 어떻게 풀었나요?", "a": "자격요건이 'Tier 모델 적용' 경험을 직접 든다.[1][7]" },
+    { "q": "커버로스팅을 막는 법과 잡는 법을 각각 말해 주세요. 4769 에서 무엇을 보나요?", "a": "Kerberos 이해와 공격·방어 실무 이해를 함께 묻는 질문.[13]" },
+    { "q": "NTLM 을 끄려면 무엇부터 하겠어요?", "a": "마이크로소프트가 NTLM 을 단계적으로 끄고 있고, 개선은 운영 영향부터 재야 한다.[12]" },
+    { "q": "PingCastle 점수와 BloodHound 결과가 서로 다른 걸 우선하라고 하면 어떻게 정하나요?", "a": "공고가 세 도구 운영과 결과 분석을 적었다.[1][18][19]" }
+  ],
+  "sources": [
+    { "n": 1, "title": "사람인 · 현대자동차 [통합보안] Mobility Security Engineer - AD보안", "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55605795", "kind": "posting", "note": "업무·요건(우대 칸 없음), 경력 3년 이상, 정규직, 급여 면접 후 결정, 근무지 양재본사, 접수 2026-11-16 ~ 11-30, 서류 → 면접(인성검사) → 채용검진" },
+    { "n": 2, "title": "KAIST 전기및전자공학부 채용 게시판 · 현대자동차 [통합보안] Mobility Security Engineer 채용", "url": "https://ee.kaist.ac.kr/jobs/%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8-%ED%86%B5%ED%95%A9%EB%B3%B4%EC%95%88-mobility-security-engineer-%EC%B1%84%EC%9A%A9/", "kind": "posting", "date": "2024-07-16", "note": "같은 이름의 앞선 차량보안 공고 — 글로벌 차량 보안 이슈 모니터링·사고 재현·UNECE R-155, IT 취약점 분석, 경력 3년 이상, 근무지 판교" },
+    { "n": 4, "title": "파이낸셜뉴스 · 현대차그룹, 보안 컨트롤타워 '통합보안센터' 신설", "url": "https://www.fnnews.com/news/202407221558354508", "kind": "news", "date": "2024-07-22", "note": "현대차·기아 정보보호센터·사이버 시큐리티랩·연구개발정보보호팀 통합" },
+    { "n": 5, "title": "보안뉴스 · 현대차그룹, 사이버보안 전담 조직 '그룹사이버위협대응팀' 신설", "url": "http://www.boannews.com/news/articleView.html?idxno=140397", "kind": "news", "date": "2025-11-18" },
+    { "n": 6, "title": "CEO스코어데일리 · 사이버 보안 힘 주는 현대차·기아", "url": "https://ceoscoredaily.com/page/view/2025111810004037005", "kind": "news", "date": "2025-11-19", "note": "KISA 공시 기준 정보보호 투자 2025년 621억 4천만원, 전담 인력 262.2명(현대차·기아 합산)" },
+    { "n": 7, "title": "Microsoft Learn · Active Directory tier model", "url": "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/tier-model", "kind": "reference", "note": "Tier 0·1·2 정의, 등급별 PAW, 엔터프라이즈 액세스 모델의 한 부분" },
+    { "n": 8, "title": "Microsoft Learn · Best Practices for Securing Active Directory", "url": "https://learn.microsoft.com/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory", "kind": "reference", "note": "공격면 줄이기·감시·침해 대비, 최고 권한 기본 그룹 셋" },
+    { "n": 9, "title": "Microsoft Learn · Protected Users security group", "url": "https://learn.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/protected-users-security-group", "kind": "reference" },
+    { "n": 10, "title": "Microsoft Learn · Windows LAPS overview", "url": "https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview", "kind": "reference" },
+    { "n": 11, "title": "Microsoft Learn · Kerberos authentication overview", "url": "https://learn.microsoft.com/en-us/windows-server/security/kerberos/kerberos-authentication-overview", "kind": "reference" },
+    { "n": 12, "title": "Microsoft Windows IT Pro Blog · Advancing Windows security: disabling NTLM by default", "url": "https://techcommunity.microsoft.com/blog/windows-itpro-blog/advancing-windows-security-disabling-ntlm-by-default/4489526", "kind": "reference", "date": "2026-01-29", "note": "3단계(감사 → 막히는 곳 해결 → 다음 주요 윈도우 서버에서 기본으로 끔), 일정은 바뀔 수 있음" },
+    { "n": 13, "title": "MITRE ATT&CK · T1558.003 Kerberoasting", "url": "https://attack.mitre.org/techniques/T1558/003/", "kind": "reference" },
+    { "n": 14, "title": "MITRE ATT&CK · T1003.006 DCSync", "url": "https://attack.mitre.org/techniques/T1003/006/", "kind": "reference" },
+    { "n": 15, "title": "MITRE ATT&CK · T1558.001 Golden Ticket", "url": "https://attack.mitre.org/techniques/T1558/001/", "kind": "reference" },
+    { "n": 16, "title": "MITRE ATT&CK · T1484.001 Group Policy Modification", "url": "https://attack.mitre.org/techniques/T1484/001/", "kind": "reference" },
+    { "n": 17, "title": "CISA · Detecting and Mitigating Active Directory Compromises", "url": "https://www.cisa.gov/resources-tools/resources/detecting-and-mitigating-active-directory-compromises", "kind": "reference", "note": "호주 ASD 주도, 미국 CISA·NSA, 캐나다 CCCS, 영국 NCSC, 뉴질랜드 NCSC 공동. 흔한 기법 17가지" },
+    { "n": 18, "title": "SpecterOps · BloodHound 소개", "url": "https://bloodhound.specterops.io/get-started/introduction", "kind": "reference", "note": "CE(무료·공개)와 Enterprise, 수집기 SharpHound·AzureHound" },
+    { "n": 19, "title": "PingCastle", "url": "https://www.pingcastle.com", "kind": "reference", "note": "AD·Entra ID 위험 평가, 무료 커뮤니티판, 2024년 Netwrix 인수" },
+    { "n": 20, "title": "Semperis · Purple Knight", "url": "https://www.semperis.com/purple-knight/", "kind": "reference", "note": "AD·Entra ID·Okta, 노출·침해 지표 232개 이상, 다섯 영역 점수" },
+    { "n": 21, "title": "SpecterOps · What is Tier Zero — Part 1", "url": "https://specterops.io/blog/2023/06/22/what-is-tier-zero-part-1/", "kind": "reference", "date": "2023-06-22" },
+    { "n": 22, "title": "Active Directory Tier Model · Best Practices, Governance & AD Hardening", "url": "https://microsoft.github.io/ActiveDirectoryTierModel/best-practices/", "kind": "reference", "note": "커뮤니티 요청에서 시작한 문서 — gMSA/dMSA·25자 이상, LDAP 서명·채널 바인딩, DC 스풀러 끄기, 패치는 며칠 안에, managedBy 같은 티어 규칙" },
+    { "n": 23, "title": "보안뉴스 · KISA 'AD 관리자가 피해야 할 6가지 운영사례'", "url": "http://www.boannews.com/news/articleView.html?idxno=78424", "kind": "news", "date": "2019-04-04", "note": "2019년 2월부터 국내 기업 AD 환경 CLOP 랜섬웨어 감염 사고" },
+    { "n": 24, "title": "보안뉴스 · AD 환경을 노린 랜섬웨어 공격, 어떻게 대응해야 하나(KISA ATT&CK 기반 보고서)", "url": "http://www.boannews.com/news/articleView.html?idxno=98083", "kind": "news", "date": "2021-06-04" },
+    { "n": 25, "title": "LG · LG CNS 퍼플랩 AD 공격 분석 보고서", "url": "https://www.lg.co.kr/media/release/28109", "kind": "news", "date": "2024-09-09", "note": "AD 공격 10가지 — 커버로스팅·DCSync·모니커링크·패스더해시·골든 티켓 등, 모의해킹 방어훈련 권고" },
+    { "n": 26, "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다", "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190", "kind": "news", "date": "2026-04-08", "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여" },
+    { "n": 27, "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)", "url": "https://jasoseol.com/companies/1472", "kind": "reference", "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음" },
+    { "n": 28, "title": "2024 현대자동차 지속가능성 보고서", "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf", "kind": "company", "date": "2024-06", "note": "62쪽 맞춤형 복리후생 지원, 본사 주소" },
+    { "n": 29, "title": "사람인 · 현대자동차 [통합보안] Information Security Inspection - 그룹 사이버보안", "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55605890", "kind": "posting", "note": "같은 통합보안 조직의 동시 공고 — IT/보안 분야 학사 이상, 경력 4년 이상" }
+  ],
+  "caveat": "현대자동차가 AD 를 어떻게 구성했는지(도메인 수·티어 모델 적용 정도·쓰는 탐지 제품)는 공개된 발표·글이 없어 찾지 못했습니다. 회사 근거는 이 공고, 같은 이름의 2024년 차량보안 공고, 같은 조직의 동시 공고, 조직 신설 보도뿐이고, 나머지 '보통 이런 일'은 마이크로소프트 문서·MITRE ATT&CK·정부 기관 공동 지침·KISA 사고 분석으로 보였습니다. 업무 ④ 뒷부분의 차량 보안 문구는 다른 공고 문구가 붙은 것으로 보지만 확인되지 않았습니다. 호주 ASD 지침 원문(PDF)은 이번에 열리지 않아 기법 목록은 CISA 소개 페이지 기준입니다."
+}

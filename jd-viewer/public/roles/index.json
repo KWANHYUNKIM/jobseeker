@@ -166,6 +166,7 @@
   "ats-hkmc:hyundai:2026N2420": "hyundai-ict-sw-architect",
   "ats-hkmc:hyundai:2026N2425": "hyundai-infra-security-public-cloud",
   "wanted-398820": "hyundai-infra-security-public-cloud",
+  "saramin-55605795": "hyundai-integrated-security-ad",
   "ats-hkmc:hyundai:2026N2366": "hyundai-lunar-rover-autonomy-sw",
   "ats-hkmc:hyundai:2026N2363": "hyundai-lunar-rover-thermal-control",
   "saramin-55604144": "hyundai-manufacturing-vision-ai-ops",
@@ -1895,6 +1896,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "hyundai-integrated-security-ad",
+   "company": "현대자동차",
+   "role": "AD 보안 엔지니어",
+   "jobs": [
+    "saramin-55605795"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 14
   },
   {
    "id": "hyundai-lunar-rover-autonomy-sw",
