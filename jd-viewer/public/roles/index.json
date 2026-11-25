@@ -62,12 +62,16 @@
   "ats-lg:group:1002199": "biztechi-ai-engineer",
   "saramin-55458469": "biztechi-ai-engineer",
   "ats-lg:group:1001506": "biztechi-ai-pm-pl",
+  "ats-lg:group:1002184": "biztechi-cloud-operations",
+  "dev-579987": "biztechi-cloud-operations",
   "ats-lg:group:1002372": "biztechi-data-engineering-pl",
   "jobkorea-50373063": "biztechi-data-engineering-pl",
   "jobkorea-50317228": "biztechi-data-engineering-pl",
   "dev-579992": "biztechi-data-engineering-pl",
   "ats-lg:group:1001890": "biztechi-database-operations",
   "dev-579980": "biztechi-database-operations",
+  "ats-lg:group:1002072": "biztechi-finance-it-pm-pl",
+  "saramin-55458459": "biztechi-finance-it-pm-pl",
   "ats-lg:group:1002386": "biztechi-m365-operations-engineer",
   "ats-lg:group:1001568": "biztechi-m365-si-sm-senior",
   "ats-lg:group:1002187": "biztechi-mes-pl",
@@ -1079,6 +1083,17 @@
    "lines": 15
   },
   {
+   "id": "biztechi-cloud-operations",
+   "company": "비즈테크아이",
+   "role": "클라우드 운영 담당자",
+   "jobs": [
+    "ats-lg:group:1002184",
+    "dev-579987"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 10
+  },
+  {
    "id": "biztechi-data-engineering-pl",
    "company": "비즈테크아이",
    "role": "데이터엔지니어링 PL",
@@ -1101,6 +1116,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 22
+  },
+  {
+   "id": "biztechi-finance-it-pm-pl",
+   "company": "비즈테크아이",
+   "role": "금융IT PM/PL, 분석·설계·개발, 사업관리 담당자",
+   "jobs": [
+    "ats-lg:group:1002072",
+    "saramin-55458459"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 11
   },
   {
    "id": "biztechi-m365-operations-engineer",

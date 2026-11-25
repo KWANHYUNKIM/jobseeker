@@ -1,0 +1,1094 @@
+{
+ "id": "biztechi-cloud-operations",
+ "company": "비즈테크아이",
+ "role": "클라우드 운영 담당자",
+ "team": "클라우드서비스사업팀",
+ "jobs": [
+  "ats-lg:group:1002184",
+  "dev-579987"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "LG 계열사와 외부 고객의 **AWS·Azure·GCP 클라우드를 맡아 운영**합니다 — 감시, 가상 서버(VM) 유지보수, 클라우드 네트워크, 반복 작업 자동화, 그리고 AI 서비스가 도는 인프라까지입니다.[1][3]",
+  "env": "회사는 LG전자·LG화학·LG에너지솔루션·스마트팩토리(MES) 클라우드 운영과 금융·유통·공공 고객 운영을 사업으로 내세우고, 사내 서버와 클라우드를 섞은 하이브리드·멀티 클라우드 SI/SM 을 합니다.[3] 모회사 LG CNS 의 클라우드 운영 서비스(MSP) 틀 안에서 일하는 자리입니다.[7][9]",
+  "oneline": "세 클라우드를 **안 멈추게, 덜 비싸게, 손 덜 가게** 지키는 2년차 이상 클라우드 운영 엔지니어 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "퍼블릭 클라우드 인프라 운영 (담당 CSP: aws , Azure, GCP)",
+   "short": "고객이 빌려 쓰는 AWS·Azure·GCP 의 서버·저장소·네트워크를 대신 맡아 돌보는 일.",
+   "why": "회사는 하이브리드(사내 서버 ↔ 클라우드)·멀티 클라우드(AWS·Azure·GCP) 기반 SI/SM 을 사업으로 적었고, 최근에는 NCP·알리바바·텐센트 같은 국내·중국 클라우드로도 넓히고 있다고 밝혔습니다.[3] 이런 운영 대행을 MSP(Managed Service Provider, 클라우드 관리 서비스 회사)라고 합니다 — CSP(Cloud Service Provider, 클라우드를 빌려주는 회사)가 인프라를 주면, MSP 는 고객 시스템을 그 위로 옮기고 운영합니다.[7]",
+   "actually": {
+    "intro": "클라우드 운영 대행에서 '인프라 운영'에 드는 일입니다. 클라우드 회사가 맡는 칸과 쓰는 쪽이 맡는 칸이 나뉘어 있어서, 운영자는 쓰는 쪽 칸을 대신 맡습니다.[16]",
+    "items": [
+     "**자원 관리** — VM·디스크·스냅숏·로드밸런서·보안 그룹을 요청대로 만들고 바꾸고 지운다. 같은 일을 세 클라우드에서 이름만 다르게 한다(AWS EC2 · Azure Virtual Machines · GCP Compute Engine). {추론}",
+     "**계정·권한** — 고객사 사람마다 필요한 만큼만 권한을 준다(IAM). 클라우드 회사는 데이터센터를 지키고, 계정·데이터·설정은 쓰는 쪽 책임이다.[16]",
+     "**백업·재해복구** — 스냅숏·백업 정책을 걸고, 다른 지역으로 복구할 수 있게 한다. 회사는 재해복구(DR) 설계·구축을 서비스로 적었다.[3]",
+     "**비용** — 쓰지 않는 자원을 찾고 크기를 맞춘다. 회사는 CSP 맞춤 빌링을 통한 비용 최적화(FinOps)를 내세운다.[3][8]",
+     "**설계 점검** — 클라우드 회사가 낸 설계 기준(Well-Architected — 운영·보안·안정성·성능·비용·지속가능성 여섯 축)으로 고객 환경을 주기적으로 본다.[3][17]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "클라우드 운영 대행에서 고객 요청 한 건이 흐르는 길 — 일반적인 틀[7][35] {추론}",
+     "steps": [
+      "요청 · 고객사가 VM 증설·포트 열기·권한 추가를 요청",
+      "검토 · 보안·비용 영향 확인, 필요하면 고객 승인",
+      "작업 · 콘솔 또는 코드(IaC)로 변경, 작업 기록",
+      "확인 · 감시 화면에서 정상 동작 확인",
+      "보고 · 월간 운영·비용 보고에 반영"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "세 클라우드를 모두 깊게 알아야 하는 것은 아닙니다. 공고는 '담당 CSP' 라고 적었으니 맡는 고객에 따라 주력이 정해질 것입니다.[1] {추론} 2년차라면 한 클라우드는 혼자 운영하고, 나머지 둘은 같은 개념(VM·네트워크·권한·감시)이 어디에 있는지 찾아갈 수 있으면 출발선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    7,
+    8,
+    16,
+    17,
+    35
+   ],
+   "study": [
+    "biztechi-cloud",
+    "aws-ops-book",
+    "aws-shared",
+    "aws-wa",
+    "lgcns-proops"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드 환경 모니터링 및 운영",
+   "short": "세 클라우드의 감시 도구로 서버·서비스 상태를 지켜보다가, 경보가 오면 먼저 받아 처리하는 일.",
+   "why": "회사 인프라 사업은 24시간 365일 장애 조치·상태 감시를 운영 서비스로 내걸고 있고[5], 모회사의 클라우드 운영 서비스도 하이브리드·멀티 클라우드 통합 감시와 인프라·애플리케이션·DB 튜닝을 앞세웁니다.[9] 고객의 공장·업무 시스템이 클라우드 위에서 돌기 때문에 먼저 알아차리는 것이 운영의 시작입니다. {추론}",
+   "actually": {
+    "intro": "클라우드마다 기본 감시 도구가 있고, 운영자는 이것들을 한 화면으로 모아 봅니다.[18][19][20]",
+    "items": [
+     "**지표** — CPU·메모리·디스크·네트워크 사용률, 응답 시간. AWS CloudWatch · Azure Monitor · Google Cloud Observability 가 각자 모은다.[18][19][20]",
+     "**상태 검사** — AWS 는 VM 마다 '시스템 상태 검사'(클라우드 쪽 하드웨어·네트워크)와 '인스턴스 상태 검사'(운영체제 쪽)를 따로 보여 줘서, 어느 쪽 문제인지 가를 수 있다.[24]",
+     "**경보 설계** — 사용자가 느끼는 네 가지(지연·트래픽·오류·포화)를 먼저 보고, 사람이 깨어나야 하는 경보만 남긴다.[34]",
+     "**장애 대응** — 경보를 받으면 영향 범위를 판단하고 복구한 뒤 고객에게 원인·조치를 보고한다.[35]",
+     "**클라우드 쪽 장애 확인** — 클라우드 회사 자체의 장애·점검 공지(서비스 상태 페이지)를 같이 본다. {추론}"
+    ]
+   },
+   "how_far": "감시 도구를 새로 만드는 자리가 아니라, 정해진 감시 체계에서 경보를 받아 1차 원인을 가르고 기록하는 일이 중심입니다. {추론} 야간·주말 당직이나 교대 근무 여부는 공고에 없으니 면접에서 묻습니다.[1]",
+   "refs": [
+    1,
+    5,
+    9,
+    18,
+    19,
+    20,
+    24,
+    34,
+    35
+   ],
+   "study": [
+    "cloudwatch",
+    "azmonitor",
+    "gcp-obs",
+    "sre-monitoring",
+    "sre-incident"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드 VM 유지 보수",
+   "short": "클라우드 위 가상 서버의 패치·크기 조정·디스크·백업을 손봐서 계속 멀쩡히 돌게 하는 일.",
+   "why": "클라우드에서도 가상 서버(VM) 안의 운영체제·패치·데이터는 쓰는 쪽 책임입니다.[16] 회사가 클라우드 운영 고객으로 든 제조 계열사들은 사내 서버에서 옮겨 온 시스템을 VM 위에 그대로 돌리는 경우가 많습니다.[3] {추론}",
+   "actually": {
+    "intro": "VM 유지보수에서 하는 일입니다.[23][24]",
+    "items": [
+     "**OS 패치** — 정해진 창에 보안 패치를 건다. AWS 는 Systems Manager Patch Manager 로 여러 VM 에 패치 기준을 정해 한꺼번에 적용할 수 있다.[23]",
+     "**크기 조정** — 늘 한가한 VM 은 작은 사양으로, 꽉 차는 VM 은 큰 사양으로 바꾼다(재부팅이 필요한 경우가 많아 작업 시간을 잡는다). {추론}",
+     "**디스크** — 디스크를 늘리고 운영체제 안에서 파일시스템도 같이 키운다. 스냅숏이 쌓여 비용을 먹지 않게 정리한다. {추론}",
+     "**고장 대응** — 클라우드 쪽 하드웨어 문제로 상태 검사가 실패하면 VM 을 멈췄다 켜서 다른 물리 서버로 옮긴다.[24]",
+     "**예정된 점검** — 클라우드 회사가 미리 알리는 물리 서버 점검 일정을 보고, 고객과 시간을 맞춰 옮긴다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한가한 VM·주인 없는 VM 찾기 — 점검 스크립트의 가장 작은 꼴",
+     "body": "세 클라우드에서 모은 VM 목록(가상 값)에서 담당자(owner)·용도(env) 태그가 없거나 7일 평균 CPU 가 5% 밑인 것을 고른다. 실제로는 각 클라우드의 API·CLI 로 목록을 받는다. {추론}",
+     "lang": "python",
+     "code": "vms = [\n    {\"id\": \"vm-01\", \"cloud\": \"aws\", \"tags\": {\"owner\": \"mes\", \"env\": \"prd\"}, \"cpu7d\": 41},\n    {\"id\": \"vm-02\", \"cloud\": \"azure\", \"tags\": {\"env\": \"dev\"}, \"cpu7d\": 2},\n    {\"id\": \"vm-03\", \"cloud\": \"gcp\", \"tags\": {}, \"cpu7d\": 0.4},\n    {\"id\": \"vm-04\", \"cloud\": \"aws\", \"tags\": {\"owner\": \"erp\", \"env\": \"dev\"}, \"cpu7d\": 3},\n]\nfor v in vms:\n    miss = [k for k in (\"owner\", \"env\") if k not in v[\"tags\"]]\n    idle = v[\"cpu7d\"] < 5\n    if miss or idle:\n        print(v[\"id\"], v[\"cloud\"], \"태그없음:\" + \",\".join(miss) if miss else \"\", \"한가함(7일 평균 CPU %.1f%%)\" % v[\"cpu7d\"] if idle else \"\")\n# 출력\n# vm-02 azure 태그없음:owner 한가함(7일 평균 CPU 2.0%)\n# vm-03 gcp 태그없음:owner,env 한가함(7일 평균 CPU 0.4%)\n# vm-04 aws  한가함(7일 평균 CPU 3.0%)"
+    }
+   ],
+   "level": {
+    "basic": "콘솔에서 VM 을 멈추고 켜고, 사양을 바꾸고, 디스크를 늘린다.",
+    "work": "패치 기준을 정해 여러 VM 에 일괄 적용하고, 상태 검사 실패를 보고 클라우드 쪽인지 운영체제 쪽인지 가른다.[23][24]",
+    "team": "세 클라우드의 VM 을 같은 점검표로 유지보수하는 수준 — 공고가 담당 CSP 셋을 함께 적었다.[1] {추론}"
+   },
+   "how_far": "리눅스·윈도우 서버 기본기(서비스·디스크·로그)가 바탕입니다. 클라우드 VM 은 결국 운영체제가 깔린 서버라서, 운영체제 안의 문제는 사내 서버와 같은 방법으로 풉니다. {추론}",
+   "refs": [
+    1,
+    3,
+    16,
+    23,
+    24
+   ],
+   "study": [
+    "aws-ops-book",
+    "patch-manager",
+    "ec2-status",
+    "linux-this"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드 네트워크 모니터링 및 운영",
+   "short": "클라우드 안의 사설망(VPC)·서브넷·방화벽 규칙·사내망 연결을 지켜보고 바꾸는 일.",
+   "why": "회사는 사내 서버와 클라우드를 잇는 하이브리드 운영을 사업으로 적었습니다.[3] 사내망과 클라우드를 이으면 주소가 겹치지 않아야 하고, 연결 구간(VPN·전용선)이 끊기면 공장·업무 시스템이 멈춥니다. {추론}",
+   "actually": {
+    "intro": "클라우드 네트워크 운영에서 하는 일입니다.[21][22]",
+    "items": [
+     "**사설망 설계 지키기** — 클라우드 안에 VPC(AWS·GCP)·VNet(Azure)이라는 사설망을 두고 서브넷으로 나눈다. AWS 는 서브넷마다 주소 5개를 자기 용도로 남겨 둔다.[21]",
+     "**방화벽 규칙** — 보안 그룹·네트워크 ACL 로 어느 포트를 누구에게 열지 정한다. 요청이 올 때마다 연다면 꼭 필요한 범위만 연다. {추론}",
+     "**트래픽 기록** — VPC 흐름 로그(Flow Logs)로 어떤 주소에서 어디로 접속이 허용·거부됐는지 남겨, '접속이 안 된다'를 가른다.[22]",
+     "**사내망 연결** — VPN·전용선(AWS Direct Connect·Azure ExpressRoute 같은 것) 상태와 경로를 감시한다. {추론}",
+     "**주소 겹침 점검** — 새 망을 붙이기 전에 기존 망과 주소가 겹치는지 확인한다(아래 예)."
+    ]
+   },
+   "examples": [
+    {
+     "title": "사내망·클라우드 주소가 겹치나 — 연결 전에 하는 계산",
+     "body": "사내망과 세 클라우드의 주소 대역(가상 값)이 겹치는지 표준 라이브러리 ipaddress 로 확인한다. 겹치면 VPN·전용선으로 이어도 경로가 헷갈린다. /24 서브넷 하나는 주소 256개지만 AWS 에서는 5개를 빼고 쓴다.[21]",
+     "lang": "python",
+     "code": "import ipaddress as ip\nnets = {\"onprem\": \"10.10.0.0/16\", \"aws-vpc\": \"10.20.0.0/16\", \"azure-vnet\": \"10.10.128.0/20\", \"gcp-vpc\": \"172.16.0.0/20\"}\nn = {k: ip.ip_network(v) for k, v in nets.items()}\nkeys = list(n)\nfor i, a in enumerate(keys):\n    for b in keys[i + 1:]:\n        if n[a].overlaps(n[b]):\n            print(f\"겹침: {a} {nets[a]} ↔ {b} {nets[b]}\")\nprint(\"aws-vpc 를 /24 로 나누면\", len(list(n[\"aws-vpc\"].subnets(new_prefix=24))), \"개, 한 칸 주소\", n[\"aws-vpc\"].subnets(new_prefix=24).__next__().num_addresses)\n# 출력\n# 겹침: onprem 10.10.0.0/16 ↔ azure-vnet 10.10.128.0/20\n# aws-vpc 를 /24 로 나누면 256 개, 한 칸 주소 256"
+    }
+   ],
+   "how_far": "IP·서브넷·라우팅·방화벽 개념을 알고, 흐름 로그를 보고 '어디서 막혔나'를 찾을 수 있으면 됩니다. {추론} 사내망 장비(스위치·전용선 장비) 쪽은 보통 네트워크 담당이 따로 있습니다 — 회사 인프라 사업에도 네트워크 운영이 따로 있습니다.[5]",
+   "refs": [
+    3,
+    5,
+    21,
+    22
+   ],
+   "study": [
+    "cloudnet-aws",
+    "vpc-docs",
+    "flowlogs",
+    "nw-intro"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영환경 개선 및 자동화",
+   "short": "손으로 하던 자원 만들기·점검·비용 정리를 코드(IaC)와 스크립트로 바꾸는 일.",
+   "why": "회사는 Terraform·Pulumi·CDK·CloudFormation 같은 코드형 인프라(IaC — 서버·망을 코드로 적어 만드는 것) 자동화 관리와 DevOps(인프라 준비·운영 절차 자동화)를 클라우드 사업 강점으로 적었고, 테라폼으로 클라우드 아키텍처를 자동화한다고 밝혔습니다.[3][4] 모회사는 쓰지 않는 시간에 자원을 자동으로 끄는 파워스케줄링을 비용 진단 서비스에 넣었습니다.[8]",
+   "actually": {
+    "intro": "클라우드 운영에서 흔히 자동화하는 일입니다.[25][26]",
+    "items": [
+     "**IaC** — 망·VM·보안 그룹을 Terraform 파일로 적고, 바꿀 때 '무엇이 바뀌는지'(plan)를 먼저 보고 적용한다.[25]",
+     "**파워스케줄링** — 개발·검증 VM 을 밤·주말에 자동으로 끈다(아래 예).[8]",
+     "**정기 점검** — 태그 없는 자원·공개된 저장소·오래된 스냅숏을 매일 찾아 보고한다(위 VM 줄의 예). {추론}",
+     "**패치 자동화** — 패치 기준과 작업 창을 정해 두고 자동으로 돌린다.[23]",
+     "**반복 업무 줄이기** — 손으로 반복하는 운영 일(토일)은 시스템이 커질수록 늘어서, 무엇부터 줄일지 고른다.[26]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "개발 VM 을 평일 낮에만 켜면 얼마나 아끼나",
+     "body": "시간당 0.192달러(가상 단가)인 VM 을 늘 켜 둘 때와 평일 22일 × 10시간만 켤 때를 비교한다. 모회사는 비슷한 비용 관리로 20~30% 넘게 줄인 사례를 밝혔다 — 자원 전체가 아니라 끌 수 있는 자원 하나의 계산이다.[8]",
+     "lang": "python",
+     "code": "hourly = 0.192  # USD/시간, 가상 단가\nalways = hourly * 24 * 30\nweekday_hours = 10 * 22\nsched = hourly * weekday_hours\nprint(f\"늘 켜 둠: ${always:.1f}/월, 평일 10시간만: ${sched:.1f}/월, 절감 {1-sched/always:.0%}\")\n# 출력\n# 늘 켜 둠: $138.2/월, 평일 10시간만: $42.2/월, 절감 69%"
+    }
+   ],
+   "how_far": "셸·파이썬 스크립트로 점검을 묶고, Terraform 으로 작은 망 하나를 만들고 바꿔 본 경험이 있으면 출발선입니다. {추론} 고객 운영 환경을 코드로 얼마나 관리하는지(콘솔 작업이 많은지)는 고객마다 달라 면접에서 묻는 것이 좋습니다.[1] {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    8,
+    23,
+    25,
+    26
+   ],
+   "study": [
+    "terraform-docs",
+    "tf-book",
+    "sre-toil",
+    "finops"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 인프라 환경 운영",
+   "short": "AI 모델을 학습·서비스하는 GPU 서버와 클라우드 AI 서비스가 도는 바탕을 운영하는 일.",
+   "why": "회사는 AWS Bedrock·SageMaker, Google·Azure ML, OpenAI, Copilot 같은 AI·ML 도구로 맞춤형 플랫폼을 구축·운영한다고 밝혔습니다.[3] 모회사 LG CNS 는 에이전틱 AI 플랫폼 '에이전틱웍스'를 내놓았고[31], 같은 회사의 다른 공고는 LG CNS 의 DAP MLDL·GenAI·AgenticWorks 플랫폼 설치·패치·기술지원 자리를 따로 뽑고 있습니다.[32] 이 공고가 말하는 'AI 인프라'가 그중 무엇인지는 적혀 있지 않습니다.[1]",
+   "actually": {
+    "intro": "클라우드에서 'AI 인프라 운영'이라고 하면 보통 이런 일입니다.[28][29][33]",
+    "items": [
+     "**GPU VM·클러스터** — GPU 가 달린 VM 의 드라이버·사용률·온도·메모리를 감시하고, 비싼 자원이라 놀고 있으면 끄거나 줄인다. {추론}",
+     "**컨테이너 위 GPU** — 쿠버네티스에서는 장치 플러그인을 깔아야 GPU 를 컨테이너에 나눠 줄 수 있다.[33]",
+     "**관리형 AI 서비스** — SageMaker(모델 학습·배포) · Bedrock(생성형 AI 모델을 API 로) 같은 서비스의 권한·망 연결·사용량·비용을 관리한다.[28][29]",
+     "**한도(쿼터)** — GPU VM·AI 서비스는 계정마다 쓸 수 있는 양이 정해져 있어, 미리 늘려 달라고 요청한다. {추론}",
+     "**데이터 경로** — 학습 데이터가 있는 저장소와 GPU 사이 망·권한을 잇고, 외부로 새지 않게 막는다. {추론}"
+    ]
+   },
+   "how_far": "AI 모델을 만드는 자리가 아니라 모델이 도는 바탕을 지키는 자리입니다.[1] {추론} GPU VM 을 띄워 드라이버가 잡히는지 확인하고, 관리형 AI 서비스의 권한·비용을 설명할 수 있으면 충분히 말할 거리가 됩니다. {추론} 어느 플랫폼을 맡는지는 면접에서 확인합니다.",
+   "refs": [
+    1,
+    3,
+    28,
+    29,
+    31,
+    32,
+    33
+   ],
+   "study": [
+    "sagemaker",
+    "bedrock",
+    "k8s-gpu",
+    "book-k8s"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "학력 : 4년제 정규대학 학사학위 이상 보유자",
+   "short": "4년제 대학 학사 학위가 있어야 지원할 수 있다는 서류 조건.",
+   "why": "이 회사의 다른 경력 공고들도 같은 학력 조건을 적었습니다.[6][32] 전공 조건은 없습니다.[1]",
+   "how_far": "학력은 서류 단계의 문턱이고 실제 평가는 경력 내용으로 합니다. {추론}",
+   "refs": [
+    1,
+    6,
+    32
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력 : 클라우드 운영 업무 2년 이상",
+   "short": "클라우드를 실제로 운영해 본 경력이 2년 넘어서, 혼자 경보·요청을 처리할 수 있어야 한다는 뜻.",
+   "why": "운영 대행은 고객 요청과 장애를 첫날부터 받아야 해서 실무 경력을 요구합니다. {추론} 같은 공고의 다른 사이트 사본도 '경력 2년 이상', 근무지 서울 마포구로 적었습니다.[2]",
+   "actually": {
+    "intro": "'클라우드 운영 업무'로 보통 인정받을 만한 경력입니다. {추론}",
+    "items": [
+     "MSP·SI 회사에서 고객 클라우드 운영",
+     "회사 안에서 AWS·Azure·GCP 계정·서버 운영(인프라·DevOps·SRE 직무)",
+     "사내 서버에서 클라우드로 옮기는 전환 사업 뒤의 운영",
+     "VMware·오픈스택 같은 사설 클라우드 운영 — 퍼블릭 클라우드 경력과 같게 칠지는 회사가 정한다"
+    ]
+   },
+   "how_far": "경력직 전형은 서류 → LG Way Fit Test(인성·적성 검사) → 면접 → 평판조회 → 채용검진·처우협의 순서입니다.[14] 면접에서는 직접 겪은 장애·비용 절감·자동화 사례 하나씩을 숫자와 함께 설명할 수 있게 준비합니다. {추론}",
+   "refs": [
+    2,
+    14
+   ],
+   "study": [
+    "sre-incident",
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Public Cloud 사용경험 경험을 보유하신 분",
+   "short": "AWS·Azure·GCP 같은 퍼블릭 클라우드를 직접 써 본 경험이 있으면 좋다는 뜻.",
+   "why": "필수 경력이 '클라우드 운영'이라 사설 클라우드 경력자도 지원할 수 있는데, 업무는 퍼블릭 클라우드 셋이 중심이라 이 경험을 따로 우대한 것으로 읽힙니다.[1] {추론}",
+   "actually": {
+    "intro": "'사용 경험'으로 말할 수 있는 것입니다. {추론}",
+    "items": [
+     "콘솔·CLI 로 VM·저장소·망을 만들고 지워 봤다",
+     "권한(IAM)을 나눠 줘 봤다",
+     "감시 도구로 경보를 만들어 봤다",
+     "청구서를 보고 무엇이 비용을 먹는지 찾아봤다"
+    ]
+   },
+   "how_far": "개인 실습이라도 무엇을 만들고 무엇을 지켜봤는지 구체적으로 말할 수 있으면 됩니다. 세 클라우드 모두 무료 체험 범위가 있습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "aws-ops-book",
+    "cloudnet-aws",
+    "aws-shared"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Public Cloud 관련 자격을 보유하신 분",
+   "short": "AWS·Azure·GCP 의 운영 자격증이 있으면 좋다는 뜻 — 운영자라면 관리자 급 자격이 맞는다.",
+   "why": "모회사는 클라우드 사업을 키우며 CSP 3사 자격증을 갖춘 전문가를 전면에 배치했다고 밝혔고, CSP 3사 모두와 파트너 자격을 갖고 있습니다.[7][9] 파트너 자격은 자격증 보유 인원과 이어져 있어 자격증을 우대하는 것으로 보입니다. {추론}",
+   "actually": {
+    "intro": "운영 업무와 가장 가까운 자격입니다.",
+    "items": [
+     "**AWS Certified CloudOps Engineer – Associate(SOA-C03)** — 예전 이름은 SysOps Administrator – Associate. 2025-09-30 부터 새 이름으로 시험을 보고, 컨테이너가 범위에 들어왔다.[30]",
+     "**Microsoft Azure Administrator Associate(AZ-104)** — Azure 의 ID·저장소·VM·가상 네트워크·감시 관리.[27]",
+     "**Google Cloud Associate Cloud Engineer** — GCP 에서 배포·감시·운영.[36]"
+    ]
+   },
+   "how_far": "주력 클라우드 하나의 관리자 급(Associate) 자격이 먼저입니다. {추론} 자격은 서류에서 기본기를 빨리 보여 주는 수단이고, 자격이 없어도 실제 운영 사례가 더 강합니다. {추론} 회사 복리후생에 '자격증 지원'이 있습니다.[12]",
+   "refs": [
+    7,
+    9,
+    12,
+    27,
+    30,
+    36
+   ],
+   "study": [
+    "soa-c03",
+    "az104",
+    "gcp-ace"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "한 클라우드에서 운영해 본 뒤 세 클라우드로 넓히고 싶은 2~5년차[1][3]",
+   "LG 계열 제조사(공장·MES) 같은 큰 고객 환경을 운영해 보고 싶은 사람[3]",
+   "콘솔 작업을 Terraform·스크립트로 바꾸는 일이 재미있는 사람[3][4]",
+   "GPU·AI 서비스가 도는 인프라를 다뤄 보고 싶은 운영 엔지니어[1][3]"
+  ],
+  "hard": [
+   "고객 시스템을 맡는 운영 대행이라 작업 시간·변경 일정을 고객이 정하고, 장애 때 야간 대응이 있을 수 있다 {추론}",
+   "새 서비스를 직접 만드는 개발보다 요청 처리·점검·보고가 많다 {추론}",
+   "공공데이터 집계 기준 평균 연봉이 모회사보다 낮다[10][11]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "AWS 에서 VM 의 상태 검사 두 개 중 하나만 실패합니다. 무엇이 다르고 어떻게 하겠어요?",
+   "a": "시스템 상태(클라우드 쪽)와 인스턴스 상태(운영체제 쪽)를 가르는가 — VM 유지보수 줄.[24]"
+  },
+  {
+   "q": "고객이 '클라우드 서버에 접속이 안 된다'고 합니다. 어떤 순서로 보나요?",
+   "a": "보안 그룹·ACL·라우팅·흐름 로그·OS 방화벽 순서로 경로를 따라가는가 — 네트워크 줄.[21][22]"
+  },
+  {
+   "q": "이번 달 클라우드 비용이 지난달보다 40% 늘었습니다. 무엇부터 보겠어요?",
+   "a": "자원별·태그별 비용, 끄지 않은 자원, 스냅숏·데이터 전송 비용 — 인프라 운영·자동화 줄.[8][37]"
+  },
+  {
+   "q": "같은 망 구성을 고객 세 곳에 만들어야 합니다. 어떻게 하겠어요?",
+   "a": "IaC 로 적고 plan 으로 변경을 확인한 뒤 적용 — 자동화 줄.[25]"
+  },
+  {
+   "q": "클라우드에서 보안 사고가 나면 누구 책임인가요?",
+   "a": "공동 책임 모델 — 클라우드 회사의 칸과 쓰는 쪽의 칸.[16]"
+  },
+  {
+   "q": "경보가 너무 많아 다들 무시합니다. 어떻게 줄이겠어요?",
+   "a": "사용자가 느끼는 증상 위주로 남기고 사람이 할 일이 없는 경보는 없앤다 — 모니터링 줄.[34]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "LG Careers · [비즈테크아이] 클라우드 운영 담당자 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1002184",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "클라우드서비스사업팀, 업무 6·요건 2·우대 2, 근무지 서울특별시, 마감 2026-12-31 — 우리 수집본으로 읽음"
+  },
+  {
+   "n": 2,
+   "title": "캐치 · 클라우드 운영 담당자 (경력) 채용",
+   "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/579987",
+   "kind": "posting",
+   "date": "2026-11-06",
+   "note": "같은 공고의 다른 사이트 사본 — 경력 2년 이상, 서울 마포구, 대졸(4년) 이상, 정규직"
+  },
+  {
+   "n": 3,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 클라우드",
+   "url": "https://www.biztechi.com/business/cloud/02",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "LG전자·LG화학·LG에너지솔루션·스마트팩토리(MES) 클라우드 운영과 금융·유통·서비스·공공 대외 운영, Hybrid·Multi(AWS·Azure·GCP) SI/SM, NCP·Alibaba·Tencent 로 확장, DevOps·MSA, FinOps 맞춤 빌링, Well-Architected, IaC(Terraform·Pulumi·CDK·CF), DR 설계, AWS Bedrock/SageMaker·Google/Azure ML·OpenAI·Copilot 맞춤형 플랫폼 구축·운영 (2026-11-25 브라우저 렌더로 읽음)"
+  },
+  {
+   "n": 4,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD",
+   "url": "https://www.biztechi.com/business/cloud/01",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "Public/Private 클라우드·서버·스토리지·네트워크·가상화·VDI 전문 기술자, LG그룹 계열사 스마트팩토리·데이터센터 IT 운영, 테라폼 적용 클라우드 아키텍처 자동화 (2026-11-25 브라우저 렌더로 읽음)"
+  },
+  {
+   "n": 5,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 인프라",
+   "url": "https://www.biztechi.com/business/cloud/03",
+   "kind": "company",
+   "note": "인프라·네트워크 SM(24시간 365일 장애조치·상태 감시)·정기점검 — 같은 회사 네트워크 운영 풀이에서 확인한 내용"
+  },
+  {
+   "n": 6,
+   "title": "LG Careers · [비즈테크아이] 데이터베이스 담당자 모집 (경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001890",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 클라우드서비스사업팀 공고 — 팀 소개: 클라우드·온프레미스 하이브리드 인프라 구축·운영, LG유플러스 핵심 시스템 DB 운영"
+  },
+  {
+   "n": 7,
+   "title": "LG 보도자료 · LG CNS, 클라우드 통합 운영 서비스 '클라우드엑스퍼 프로옵스' 출시",
+   "url": "https://www.lg.co.kr/media/release/23310",
+   "kind": "company",
+   "date": "2021-04",
+   "note": "모회사. MSP·CSP 정의, 하이브리드·멀티 클라우드 통합 관리와 자원 사용 시각화, 보안 점검 자동화, 프로비저닝·비용 절감, CSP 3사 자격증 보유 전문가 800여 명 배치"
+  },
+  {
+   "n": 8,
+   "title": "LG 보도자료 · LG CNS, 클라우드 비용 진단 서비스 '핀옵스 클리닉' 출시",
+   "url": "https://www.lg.co.kr/media/release/26043",
+   "kind": "company",
+   "note": "모회사. 정보제공·최적화·운영 3단계, 비정상 비용 실시간 탐지, 3개월 사용 데이터로 최적 사양 추천, 파워스케줄링(미사용 자원 자동 중단), 사례 20%·30% 이상 절감"
+  },
+  {
+   "n": 9,
+   "title": "LG CNS · CloudXper ProOps (Cloud Operations and Management)",
+   "url": "https://www.lgcns.com/en/business/cloud/cloudxper-proops",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "모회사. 하이브리드·멀티 클라우드 운영 관리 체계, 인프라·애플리케이션·DB 통합 감시·튜닝, TAM, CSP 3사 모두 최고 등급 파트너"
+  },
+  {
+   "n": 10,
+   "title": "자소설닷컴 · 비즈테크아이 기업정보",
+   "url": "https://jasoseol.com/companies/14512",
+   "kind": "reference",
+   "note": "초봉 3,811만·평균 5,748만, 사원수 945명 — 공공데이터 집계, 초봉 갱신 메모 2026-10-26 (같은 회사 풀이에서 확인한 값)"
+  },
+  {
+   "n": 11,
+   "title": "자소설닷컴 · LG CNS 기업정보",
+   "url": "https://jasoseol.com/companies/57",
+   "kind": "reference",
+   "note": "초봉 5,071만·평균 7,802만 — 같은 집계"
+  },
+  {
+   "n": 12,
+   "title": "비즈테크아이 · 복리후생",
+   "url": "https://www.biztechi.com/culture/03",
+   "kind": "company"
+  },
+  {
+   "n": 13,
+   "title": "비즈테크아이 · 오시는 길",
+   "url": "https://www.biztechi.com/about/05",
+   "kind": "company",
+   "note": "서울 마포구 매봉산로 75, DDMC 12층 — 회사 사이트 하단 회사 정보에도 같은 주소(2026-11-25 확인)"
+  },
+  {
+   "n": 14,
+   "title": "비즈테크아이 · 채용 프로세스",
+   "url": "https://www.biztechi.com/recruit/02",
+   "kind": "company",
+   "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"
+  },
+  {
+   "n": 15,
+   "title": "비즈테크아이 · 인사제도",
+   "url": "https://www.biztechi.com/culture/02",
+   "kind": "company",
+   "note": "리더 Path·전문가 Path, 성과에 걸맞은 대우"
+  },
+  {
+   "n": 16,
+   "title": "AWS · Shared Responsibility Model",
+   "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+   "kind": "reference",
+   "note": "클라우드 회사는 클라우드 '의' 보안, 고객은 클라우드 '안' 의 보안(OS·패치·계정·데이터·방화벽 설정)"
+  },
+  {
+   "n": 17,
+   "title": "AWS Well-Architected Framework",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "kind": "reference",
+   "note": "여섯 축: 운영 우수성·보안·안정성·성능 효율·비용 최적화·지속가능성"
+  },
+  {
+   "n": 18,
+   "title": "Amazon CloudWatch 사용 설명서",
+   "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Microsoft Learn · Azure Monitor overview",
+   "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Google Cloud Observability 문서",
+   "url": "https://cloud.google.com/stackdriver/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Amazon VPC · Subnet CIDR blocks",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/subnet-sizing.html",
+   "kind": "reference",
+   "note": "서브넷마다 처음 4개와 마지막 1개 주소를 AWS 가 남겨 둔다"
+  },
+  {
+   "n": 22,
+   "title": "Amazon VPC · Logging IP traffic using VPC Flow Logs",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "AWS Systems Manager · Patch Manager",
+   "url": "https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager.html",
+   "kind": "reference",
+   "note": "패치 기준(baseline)·작업 창으로 여러 노드에 패치 적용"
+  },
+  {
+   "n": 24,
+   "title": "Amazon EC2 · Status checks for your instances",
+   "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html",
+   "kind": "reference",
+   "note": "시스템 상태 검사(AWS 쪽)와 인스턴스 상태 검사(OS 쪽), 멈췄다 켜면 다른 호스트로 옮겨짐"
+  },
+  {
+   "n": 25,
+   "title": "HashiCorp · Terraform documentation",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "kind": "reference",
+   "note": "write → plan → apply"
+  },
+  {
+   "n": 26,
+   "title": "Google SRE Book · Eliminating Toil",
+   "url": "https://sre.google/sre-book/eliminating-toil/",
+   "kind": "reference",
+   "date": "2016"
+  },
+  {
+   "n": 27,
+   "title": "Microsoft Learn · Microsoft Certified: Azure Administrator Associate (AZ-104)",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Amazon SageMaker AI 개발자 안내서",
+   "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Amazon Bedrock 사용 설명서",
+   "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "AWS Certified CloudOps Engineer – Associate",
+   "url": "https://aws.amazon.com/certification/certified-cloudops-engineer-associate/",
+   "kind": "reference",
+   "note": "예전 SysOps Administrator – Associate. SOA-C02 마지막 응시 2025-09-29, SOA-C03 첫 응시 2025-09-30, 컨테이너가 범위에 추가 (AWS 교육·자격 블로그)"
+  },
+  {
+   "n": 31,
+   "title": "LG 보도자료 · LG CNS, '에이전틱 AI 생태계' 본격 가동 (에이전틱웍스)",
+   "url": "https://lg.co.kr/media/release/29289",
+   "kind": "company",
+   "note": "모회사 에이전틱 AI 플랫폼 — 같은 회사 AI 엔지니어 풀이에서 확인한 내용"
+  },
+  {
+   "n": 32,
+   "title": "LG Careers · [비즈테크아이] 어플리케이션 아키텍트(클라우드·컨테이너) 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1002107",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 공고 — LG CNS DAP MLDL·GenAI·AgenticWorks 플랫폼 설치·패치·기술지원, Public Cloud·Docker·Kubernetes, 우대 CKA"
+  },
+  {
+   "n": 33,
+   "title": "Kubernetes · Schedule GPUs",
+   "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+   "kind": "reference",
+   "note": "GPU 제조사의 장치 플러그인을 깔아야 컨테이너에 GPU 를 배정"
+  },
+  {
+   "n": 34,
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "date": "2016",
+   "note": "네 가지 황금 신호: 지연·트래픽·오류·포화"
+  },
+  {
+   "n": 35,
+   "title": "Google SRE Book · Managing Incidents",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "kind": "reference",
+   "date": "2016"
+  },
+  {
+   "n": 36,
+   "title": "Google Cloud · Associate Cloud Engineer",
+   "url": "https://cloud.google.com/learn/certification/cloud-engineer",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "FinOps Foundation · FinOps Framework",
+   "url": "https://www.finops.org/framework/",
+   "kind": "reference",
+   "note": "클라우드 비용을 알기(Inform)·줄이기(Optimize)·운영하기(Operate)"
+  }
+ ],
+ "caveat": "비즈테크아이 클라우드서비스사업팀의 기술 블로그·발표 영상은 찾지 못했습니다(모회사 LG CNS 의 AWS Summit 발표 영상도 검색에서 나오지 않았습니다). 회사 근거는 이 공고와 다른 사이트 사본, 같은 팀의 DB 공고, 회사 사이트의 클라우드 사업 소개(이번에 브라우저로 직접 읽음), 모회사의 클라우드 운영·비용 진단 보도자료와 서비스 페이지입니다. 고객사별 운영 범위, 'AI 인프라'가 어느 플랫폼인지, 당직·교대 여부는 공개되지 않았습니다. 운영 절차의 구체 내용은 AWS·Microsoft·Google·HashiCorp·Kubernetes 공식 문서와 Google SRE·FinOps Foundation 공개 문서로 '보통 이런 것'을 보였습니다. 연봉은 공시가 없어 공공데이터 집계값입니다.",
+ "resources": [
+  {
+   "id": "biztechi-cloud",
+   "title": "비즈테크아이 사업 소개 — CLOUD · 클라우드",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.biztechi.com/business/cloud/02",
+   "why": "이 팀이 고객에게 약속하는 운영 범위(FinOps·IaC·DR·AI 플랫폼) — 면접 전에 업무 여섯 줄과 맞춰 본다.",
+   "by": "비즈테크아이",
+   "free": true
+  },
+  {
+   "id": "lgcns-proops",
+   "title": "LG CNS, 클라우드 통합 운영 서비스 '클라우드엑스퍼 프로옵스' 출시",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.lg.co.kr/media/release/23310",
+   "why": "MSP 가 무엇이고 모회사가 클라우드 운영 대행에 무엇을 더하는지 — 인프라 운영 줄의 큰 그림.",
+   "by": "LG CNS",
+   "free": true
+  },
+  {
+   "id": "aws-ops-book",
+   "title": "IT 엔지니어를 위한 AWS 운영의 기본과 노하우",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754042897",
+   "why": "EC2·RDS·S3 운영, 백업·복구, 보안·감사 서비스를 운영자 순서로 — 인프라 운영·VM 유지보수 줄의 한국어 바탕."
+  },
+  {
+   "id": "cloudnet-aws",
+   "title": "CloudNet@ · AWS 네트워킹 입문",
+   "kind": "course",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.inflearn.com/course/cloudneta-aws-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%82%B9-%EC%9E%85%EB%AC%B8",
+   "why": "VPC·서브넷·라우팅·VPN 을 실습으로 — 클라우드 네트워크 줄. 책 「따라하며 배우는 AWS 네트워크 입문」을 바탕으로 한 강의다.",
+   "by": "CloudNet@ · 인프런"
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "IP·서브넷·라우팅·방화벽의 기본 — 클라우드 망도 같은 개념 위에 있다.",
+   "by": "고재성 · 이상훈 · 길벗"
+  },
+  {
+   "id": "linux-this",
+   "title": "이것이 리눅스다 (with Rocky Linux)",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%9D%B4%EA%B2%83%EC%9D%B4%20%EB%A6%AC%EB%88%85%EC%8A%A4%EB%8B%A4",
+   "why": "클라우드 VM 안은 결국 리눅스 서버 — VM 유지보수 줄의 운영체제 기본기.",
+   "by": "우재남 · 한빛미디어"
+  },
+  {
+   "id": "tf-book",
+   "title": "테라폼 업 앤 러닝",
+   "kind": "book",
+   "lang": "ko",
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%ED%85%8C%EB%9D%BC%ED%8F%BC%20%EC%97%85%20%EC%95%A4%20%EB%9F%AC%EB%8B%9D",
+   "why": "모듈·상태 파일·팀 작업 흐름까지 — 회사가 내세우는 테라폼 자동화와 자동화 줄.",
+   "by": "Yevgeniy Brikman"
+  },
+  {
+   "id": "book-k8s",
+   "title": "쿠버네티스 입문 (우리 사이트의 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "파드·노드·Pending 읽기 — GPU 를 컨테이너에 나눠 주는 AI 인프라 줄의 바탕.",
+   "by": "우리 사이트의 책",
+   "free": true
+  },
+  {
+   "id": "aws-shared",
+   "title": "AWS Shared Responsibility Model",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+   "why": "클라우드에서 무엇이 운영자 몫인지 — 인프라 운영 줄과 면접의 보안 책임 질문.",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "aws-wa",
+   "title": "AWS Well-Architected Framework",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "why": "회사가 설계·운영 기준으로 내세우는 여섯 축 — 운영 개선 줄의 점검표.",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "cloudwatch",
+   "title": "Amazon CloudWatch 사용 설명서",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
+   "why": "지표·로그·경보 만들기 — 모니터링 줄(AWS).",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "azmonitor",
+   "title": "Azure Monitor overview",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/overview",
+   "why": "같은 일을 Azure 에서 — 모니터링 줄(Azure).",
+   "by": "Microsoft Learn",
+   "free": true
+  },
+  {
+   "id": "gcp-obs",
+   "title": "Google Cloud Observability 문서",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://cloud.google.com/stackdriver/docs",
+   "why": "같은 일을 GCP 에서 — 모니터링 줄(GCP).",
+   "by": "Google Cloud",
+   "free": true
+  },
+  {
+   "id": "ec2-status",
+   "title": "Amazon EC2 · Status checks for your instances",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html",
+   "why": "VM 고장이 클라우드 쪽인지 OS 쪽인지 가르는 법 — VM 유지보수 줄.",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "patch-manager",
+   "title": "AWS Systems Manager · Patch Manager",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager.html",
+   "why": "여러 VM 패치를 기준·작업 창으로 자동화 — VM 유지보수·자동화 줄.",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "vpc-docs",
+   "title": "Amazon VPC · Subnet CIDR blocks",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/subnet-sizing.html",
+   "why": "서브넷 크기와 남겨 둔 주소 — 클라우드 네트워크 줄.",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "flowlogs",
+   "title": "Amazon VPC Flow Logs",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+   "why": "'접속이 안 된다'를 허용·거부 기록으로 가르는 법 — 네트워크 모니터링 줄.",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform documentation",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "write → plan → apply 흐름 — 자동화 줄의 첫 실습.",
+   "by": "HashiCorp",
+   "free": true
+  },
+  {
+   "id": "finops",
+   "title": "FinOps Framework",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.finops.org/framework/",
+   "why": "클라우드 비용을 알고·줄이고·운영하는 틀 — 회사가 내세우는 FinOps 와 비용 질문.",
+   "by": "FinOps Foundation",
+   "free": true
+  },
+  {
+   "id": "sre-monitoring",
+   "title": "Site Reliability Engineering · Monitoring Distributed Systems",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "why": "무엇을 경보로 남길지 — 모니터링 줄의 경보 설계.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "sre-incident",
+   "title": "Site Reliability Engineering · Managing Incidents",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "why": "장애 때 역할 나누기·기록·소통 — 모니터링 줄과 면접의 장애 경험 질문.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Site Reliability Engineering · Postmortem Culture",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "고객에게 내는 장애 보고서의 뼈대 — 경력 2년 요건을 사례로 보일 때.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "sre-toil",
+   "title": "Site Reliability Engineering · Eliminating Toil",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://sre.google/sre-book/eliminating-toil/",
+   "why": "무엇부터 자동화할지 고르는 기준 — 운영환경 개선 및 자동화 줄.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "sagemaker",
+   "title": "Amazon SageMaker AI 개발자 안내서",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html",
+   "why": "회사가 쓴다고 밝힌 관리형 ML 서비스 — AI 인프라 줄.",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "bedrock",
+   "title": "Amazon Bedrock 사용 설명서",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+   "why": "생성형 AI 모델을 API 로 쓰는 서비스의 권한·사용량 — AI 인프라 줄.",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "k8s-gpu",
+   "title": "Kubernetes · Schedule GPUs",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+   "why": "컨테이너에 GPU 를 나눠 주는 방법 — AI 인프라 줄.",
+   "by": "Kubernetes",
+   "free": true
+  },
+  {
+   "id": "soa-c03",
+   "title": "AWS Certified CloudOps Engineer – Associate",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://aws.amazon.com/certification/certified-cloudops-engineer-associate/",
+   "why": "AWS 운영 자격의 새 이름·범위 — 우대 자격 줄.",
+   "by": "AWS",
+   "free": true
+  },
+  {
+   "id": "az104",
+   "title": "Azure Administrator Associate (AZ-104)",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+   "why": "Azure 운영 자격 범위와 무료 학습 경로 — 우대 자격 줄.",
+   "by": "Microsoft Learn",
+   "free": true
+  },
+  {
+   "id": "gcp-ace",
+   "title": "Google Cloud Associate Cloud Engineer",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://cloud.google.com/learn/certification/cloud-engineer",
+   "why": "GCP 운영 자격 범위 — 우대 자격 줄.",
+   "by": "Google Cloud",
+   "free": true
+  }
+ ],
+ "study_path": [
+  {
+   "title": "한 클라우드에서 기본 운영",
+   "time": "3~4주",
+   "goal": "VM·저장소·권한을 만들고 공동 책임의 경계를 설명한다.",
+   "resources": [
+    "aws-ops-book",
+    "aws-shared",
+    "linux-this",
+    "lgcns-proops"
+   ],
+   "task": "무료 범위 계정에 리눅스 VM 하나를 띄우고, 권한을 최소로 준 사용자를 따로 만들고, 디스크를 늘려 운영체제 안 파일시스템까지 키운 과정을 명령과 화면으로 기록한다."
+  },
+  {
+   "title": "클라우드 네트워크",
+   "time": "2~3주",
+   "goal": "VPC·서브넷·라우팅·방화벽 규칙을 직접 짜고 '접속 안 됨'을 흐름 로그로 가른다.",
+   "resources": [
+    "cloudnet-aws",
+    "nw-intro",
+    "vpc-docs",
+    "flowlogs"
+   ],
+   "task": "공개·비공개 서브넷 두 개짜리 VPC 를 만들고 비공개 VM 에 일부러 포트를 막은 뒤, 흐름 로그에서 거부(REJECT) 기록을 찾아 원인을 한 쪽으로 적는다."
+  },
+  {
+   "title": "감시와 장애 대응",
+   "time": "2주",
+   "goal": "경보를 설계하고 장애 보고서를 쓴다.",
+   "resources": [
+    "cloudwatch",
+    "azmonitor",
+    "gcp-obs",
+    "ec2-status",
+    "sre-monitoring",
+    "sre-incident",
+    "sre-postmortem"
+   ],
+   "task": "VM 에 CPU 부하를 걸어 CPU 80% 경보가 울리게 하고, 받은 순간부터 복구까지를 감지·원인·조치·재발 방지 네 칸짜리 장애 보고서로 쓴다."
+  },
+  {
+   "title": "자동화와 비용",
+   "time": "3주",
+   "goal": "같은 환경을 코드로 다시 만들고, 비용을 줄일 자리를 찾는다.",
+   "resources": [
+    "terraform-docs",
+    "tf-book",
+    "patch-manager",
+    "sre-toil",
+    "finops",
+    "aws-wa"
+   ],
+   "task": "2단계 VPC 를 Terraform 으로 다시 적어 plan 결과를 확인하고, 개발 VM 을 평일 낮에만 켜는 스케줄을 걸어 한 달 예상 비용을 늘 켤 때와 비교한 표를 만든다."
+  },
+  {
+   "title": "두 번째 클라우드·AI 인프라·자격",
+   "time": "계속",
+   "goal": "다른 클라우드에서 같은 일을 찾아가고, GPU·관리형 AI 서비스 운영 범위를 설명한다.",
+   "resources": [
+    "biztechi-cloud",
+    "sagemaker",
+    "bedrock",
+    "k8s-gpu",
+    "book-k8s",
+    "soa-c03",
+    "az104",
+    "gcp-ace"
+   ],
+   "task": "1단계 작업을 Azure 또는 GCP 에서 다시 하고 세 클라우드의 이름 대응표(VM·사설망·감시·권한)를 만든 뒤, 주력 클라우드의 관리자 급 자격 범위와 내 실습을 칸마다 맞춰 본다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원**(둘 다 집계값) — 공시 숫자는 없고, 경력 전형이라 처우 협의가 기준이다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,811만원",
+    "amount": 3811,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없고, 2026-10-26에 초봉을 고쳤다는 메모가 있다 [10]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,748만원",
+    "amount": 5748,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계, 사원수 945명 기준. 경력직이 섞인 회사 전체 값이다 [10]"
+   },
+   {
+    "label": "LG CNS 초봉",
+    "value": "약 5,071만원",
+    "amount": 5071,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [11]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "약 7,802만원",
+    "amount": 7802,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [11]"
+   }
+  ],
+  "how": "공고에는 연봉이 없다 [1]. 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자는 없다. 경력 전형은 평판조회 뒤 **처우협의** 단계에서 연봉을 정하고 [14], 회사는 '성과에 걸맞은 대우'를 인사 원칙으로 적었다 [15]. 평균은 경력직이 섞인 회사 전체 값이라 초봉도 이 자리의 제시액도 아니다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "가족",
+    "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진·단체보험, 전문 심리 상담"
+   },
+   {
+    "name": "금융",
+    "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+   },
+   {
+    "name": "배움",
+    "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+   },
+   {
+    "name": "조직 문화",
+    "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"
+   }
+  ],
+  "note": "비즈테크아이 공식 사이트의 복리후생 페이지 내용으로, 같은 회사의 다른 풀이에서 2026-11 에 확인한 목록이다 [12]. 항목 이름만 있고 금액·조건은 적혀 있지 않다. 우대 자격(클라우드 자격증)을 준비한다면 '자격증 지원'의 범위를 면접에서 확인할 만하다 {추론}."
+ },
+ "location": {
+  "name": "비즈테크아이 본사 (상암 DDMC)",
+  "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+  "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [13]",
+  "note": "회사 사이트 '오시는 길'과 하단 회사 정보의 본사 주소다 [13]. 공고는 근무지를 '서울특별시', 다른 사이트 사본은 '서울 마포구'로 적어 본사 근무로 보인다 [1][2]. 운영 대행이라 고객사 현장에 나가는 일이 있는지는 공개되지 않았다 {추론}."
+ }
+}
