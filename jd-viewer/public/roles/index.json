@@ -77,6 +77,7 @@
   "ats-lg:group:1001678": "biztechi-server-infra-engineer",
   "ats-lg:group:1000948": "biztechi-talent-pool",
   "ats-lg:group:1002219": "biztechi-vdi-ta-infra",
+  "ats-lg:group:1001798": "biztechi-web-solution-pm-pl",
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7793770": "coupang-ai-foundations-senior-staff-mle-mtv",
@@ -1187,6 +1188,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 14
+  },
+  {
+   "id": "biztechi-web-solution-pm-pl",
+   "company": "비즈테크아이",
+   "role": "Web 기반 솔루션 운영 및 PM/PL",
+   "jobs": [
+    "ats-lg:group:1001798"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
   },
   {
    "id": "cj-oliveyoung-data-analyst",
