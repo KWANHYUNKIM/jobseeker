@@ -3,9 +3,7 @@
   "company": "쿠팡",
   "role": "Senior Staff Backend Engineer, Security",
   "team": "Security Infrastructure 팀 · 인증·인가(IAM) 플랫폼 (마운틴뷰)",
-  "jobs": [
-    "ats-greenhouse:coupang:7342961"
-  ],
+  "jobs": ["ats-greenhouse:coupang:7342961", "ats-greenhouse:coupang:8047690"],
   "researched_at": "2026-11-25",
   "tldr": {
     "what": "쿠팡의 **모든 서비스가 가져다 쓰는 보안 서비스와 라이브러리**, 그중에서도 고객(shopper)·판매자(seller)·공급사(vendor)가 **누구인지 확인하고(인증) 무엇을 해도 되는지 판정하는(인가)** 플랫폼을 Java·Go 로 직접 설계하고 만드는 자리입니다.[1] 공고는 이 팀의 일이 쿠팡의 **수천 개 마이크로서비스**를 받친다고 적었습니다.[1]",
@@ -39,6 +37,33 @@
       "how_far": "이 팀은 '제품을 사서 설정'보다 **플랫폼을 직접 만드는** 쪽입니다 — 공고가 Java·Go 로 백엔드 API 를 쓴다고 적었습니다.[1] 시니어 스태프라면 부품 하나가 아니라 **토큰·키·판정이 어떻게 맞물리는지 전체 설계**를 설명할 수 있어야 합니다 {추론}.",
       "refs": [1, 14, 15, 16, 17, 18, 20, 21, 30],
       "study": ["oauth-in-action", "wilson-iam", "rfc8725"]
+    },
+    {
+      "section": "task",
+      "quote": "Develop our customer authentication and authorization platforms, and rapidly iterate while collaborating actively as part of a small, highly talented team.",
+      "short": "고객 로그인(인증)과 권한 판정(인가) 플랫폼, 특히 위험 신호를 보고 판단을 바꾸는 '동적 권한 엔진'을 만든다.",
+      "why": "싱가포르 공고는 이 자리가 맡는 것을 **동적 권한 엔진**(dynamic authorization engine)이라고 콕 집었습니다 — 모든 고객 상호작용에서 평소와 다르거나 악의적일 수 있는 움직임의 신호를 찾아 보안 위험을 관리하는 시스템입니다.[35] 같은 조직의 디렉터 공고도 동적 권한 팀이 모든 API 호출의 위험 신호를 본다고 적었습니다.[3] 2025년 쿠팡 개인정보 유출은 서명만 맞으면 통과시킨 구조가 원인으로 지목됐습니다 — '토큰이 진짜인가'만 보고 '이 요청이 평소답나'는 보지 않은 셈입니다.[7] {추론}",
+      "actually": {
+        "intro": "동적 권한은 '역할로 허용됐나' 위에 '지금 이 요청이 위험해 보이나'를 한 겹 더 얹는 일입니다.",
+        "items": [
+          "**정적 판정** — 역할·관계로 이 사람이 이 일을 해도 되는지 먼저 본다(위 IAM 플랫폼 줄과 같은 부품).[20][21]",
+          "**신호 모으기** — 새 기기, 처음 보는 나라, 연속 실패, 짧은 시간의 대량 조회 같은 신호를 요청마다 붙인다. 제로 트러스트 기준은 접근을 신원·기기 상태와 행동·환경 속성까지 본 **동적 정책**으로 정하라고 한다.[19]",
+          "**결과가 셋** — 허용 / 추가 인증 요구(다시 로그인·OTP) / 거부. 이미 낸 세션도 위험이 오르면 끊는다 — 그런 사건을 서비스끼리 주고받는 표준 형식이 OpenID CAEP 다.[37]",
+          "**모든 호출 앞에** — 수천 개 마이크로서비스를 받친다고 적었으니[35] 판정은 메시·게이트웨이에서 외부 판정 서비스를 부르는 꼴이 된다(Envoy ext_authz).[23]",
+          "**속도와 실패 처리** — 모든 고객 요청 앞에 끼므로 판정이 느리거나 죽으면 쇼핑이 멈춘다. 판정 서비스가 답을 못 할 때 열지(허용) 닫을지(거부)도 설정이다.[23] {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "역할 검사 뒤에 위험 점수를 더한 판정 — 가상 신호",
+          "body": "점수·문턱은 가상입니다. 실제로는 신호마다 가중치를 데이터로 정하고, 문턱을 바꾸면 추가 인증이 몇 % 늘어나는지부터 잽니다 {추론}.",
+          "lang": "python",
+          "code": "SIGNALS = {\"new_device\": 30, \"new_country\": 40, \"many_fails\": 25, \"bulk_read\": 35}\ndef decide(req):\n    if req[\"action\"] not in req[\"role_allows\"]:\n        return \"거부(역할)\"\n    score = sum(SIGNALS[s] for s in req[\"signals\"])\n    if score >= 70: return f\"거부(위험 {score})\"\n    if score >= 30: return f\"추가 인증 요구(위험 {score})\"\n    return f\"허용(위험 {score})\"\n\n# 출력\n# 고객A 주문조회: 허용(위험 0)\n# 고객A 새 기기: 추가 인증 요구(위험 30)\n# 고객B 해외+새 기기: 거부(위험 70)\n# 고객C 정산 조회: 거부(역할)\n# 토큰D 배송지 대량조회: 추가 인증 요구(위험 35)"
+        }
+      ],
+      "how_far": "신호의 가중치·문턱(무엇을 위험으로 볼지)은 보안·사기 대응 쪽과 함께 정하고, 이 자리는 **그 판정을 모든 요청 앞에서 빠르고 안 죽게 돌리는 엔진**을 맡는다고 보는 것이 공고 문장에 맞습니다.[35] {추론} 면접에서는 '정적 RBAC 만 있을 때 막지 못하는 공격'과 '동적 판정이 틀렸을 때(정상 고객 차단) 어떻게 되돌리나'를 둘 다 말할 수 있으면 좋습니다. {추론}",
+      "refs": [3, 7, 19, 20, 21, 23, 35, 37],
+      "study": ["nist-800-207", "zanzibar", "owasp-api"]
     },
     {
       "section": "task",
@@ -190,6 +215,31 @@
     },
     {
       "section": "qualification",
+      "quote": "Bachelor’s degree in computer science or related technical field.",
+      "short": "컴퓨터공학 또는 관련 기술 전공 학사. 이 자리의 출발선.",
+      "why": "싱가포르 공고의 기본 자격입니다.[35] 마운틴뷰 공고는 전기공학·수학까지 적었고 이쪽은 '관련 기술 분야'로 묶었습니다 — 뜻은 같습니다.[1][35]",
+      "how_far": "학위 자체가 기준이고, 실제로 무거운 것은 아래 경력·리드 줄입니다.[35]",
+      "refs": [1, 35]
+    },
+    {
+      "section": "qualification",
+      "quote": "8+ years professional software development experience, or 6 years’ experience with advanced degree.",
+      "short": "소프트웨어 개발 경력 8년 이상(석·박사면 6년). Staff 급 경력직 자리라는 뜻.",
+      "why": "공고 제목이 'Senior Staff / Staff' 둘을 같이 뽑는다고 적었습니다.[35] 마운틴뷰 공고는 '백엔드 8년'이었고 이쪽은 '소프트웨어 개발 8년'이라 백엔드만이 아니어도 됩니다.[1][35] 같은 조직 디렉터는 12년 이상입니다.[3]",
+      "how_far": "8년 안팎이면 Staff, 그보다 길고 큰 시스템을 이끈 사람이면 Senior Staff 로 갈릴 수 있습니다 — 공고는 직함이 경력에 따라 제안 전에 바뀔 수 있다고 적었습니다.[35] {추론}",
+      "refs": [1, 3, 35]
+    },
+    {
+      "section": "qualification",
+      "quote": "2+ years’ experience leading technical projects.",
+      "short": "기술 프로젝트를 2년 이상 이끈 경험 — 사람 관리가 아니라 설계·일정·결정을 앞에서 맡은 것.",
+      "why": "업무 줄에 여러 팀과 함께 플랫폼 도입을 끌고 가고, 다른 엔지니어의 본보기가 되라는 말이 있습니다.[35] 이 요건은 마운틴뷰 공고에 없던 것입니다.[1]",
+      "how_far": "'리드'는 매니저가 아니라 기술 리드(TL)입니다 — 설계 문서를 쓰고, 다른 팀의 반대를 조율하고, 일정을 지킨 프로젝트 하나를 처음부터 끝까지 설명할 수 있으면 됩니다.[26][34] {추론}",
+      "refs": [1, 26, 34, 35],
+      "study": ["staff-eng", "design-docs"]
+    },
+    {
+      "section": "qualification",
       "quote": "Bachelor's degree in Computer Science, Electrical Engineering, Math, or a closely related field",
       "short": "컴퓨터공학·전기공학·수학 같은 이공계 학사가 기본선이다.",
       "why": "미국 공고의 표준 문구입니다.[1] 같은 회사의 비슷한 미국 공고들도 같은 줄로 시작합니다.[5][6]",
@@ -235,6 +285,23 @@
       "how_far": "'고가용성을 했다'가 아니라 **목표 수치(SLO)·실제 장애·고친 것**을 말할 수 있어야 합니다.[25]",
       "refs": [1, 9, 21, 23, 25],
       "study": ["ddia", "sre-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Proven track record of delivering mission critical systems.",
+      "short": "멈추면 사업이 멈추는 시스템을 실제로 내보내고 운영해 본 이력.",
+      "why": "공고는 이 엔진을 고객과 회사를 악성 활동으로부터 지키는 '중요한 시스템'이라고 불렀습니다.[35] 권한 판정은 모든 요청 앞에 있어, 이게 죽으면 로그인도 주문도 같이 멈춥니다. {추론}",
+      "actually": {
+        "intro": "'미션 크리티컬'을 이력으로 보이는 보통의 방법입니다.",
+        "items": [
+          "가용성 목표(SLO)와 오류 예산을 정하고 지킨 숫자.[25]",
+          "단계적 배포·되돌리기·기능 플래그로 사고 없이 바꾼 경험.[25] {추론}",
+          "장애 회고를 쓰고 같은 장애가 다시 안 나게 고친 사례.[25]"
+        ]
+      },
+      "how_far": "'내가 만든 것이 몇 %의 가용성으로, 몇 년, 어떤 장애를 겪으며 돌았나'를 숫자로 말할 수 있으면 됩니다. {추론}",
+      "refs": [25, 35],
+      "study": ["sre-book", "bsrs"]
     },
     {
       "section": "preference",
@@ -403,6 +470,94 @@
       "how_far": "API 하나를 '누가 부르고, 얼마나 자주, 실패하면 어떻게' 세 질문으로 설계 문서에 적을 수 있으면 됩니다 {추론}.",
       "refs": [1, 14, 15, 18, 29],
       "study": ["api-sec-action", "design-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience handling multiple competing priorities in a fast-paced environment and leading the delivery of large-scale services for complex business offerings.",
+      "short": "급한 일이 겹치는 곳에서 우선순위를 정하고, 여러 사업을 받치는 큰 서비스를 끝까지 내보낸 경험.",
+      "why": "이 엔진은 쿠팡 전체 팀과 수천 개 마이크로서비스를 받칩니다.[35] 새 서비스의 연동 요구와 사고 대응이 동시에 오는 자리라, 같은 문장이 디렉터 공고에도 있습니다.[3] {추론}",
+      "how_far": "동시에 들어온 일 셋 중 하나를 미룬 결정과 그 결과를 설명할 수 있는 정도입니다 — 업무 줄의 '무자비하게 우선순위를 정하라'와 같은 이야기입니다.[35] {추론}",
+      "refs": [3, 35],
+      "study": ["staff-eng"]
+    },
+    {
+      "section": "preference",
+      "quote": "Recruitment Process",
+      "short": "아래는 채용 절차 안내 — 공고 원문이 우대사항 칸 뒤에 붙여 놓은 것.",
+      "why": "요건이 아니라 안내 문단 제목입니다.[35]",
+      "refs": [35]
+    },
+    {
+      "section": "preference",
+      "quote": "Application Review - Phone Interview - Onsite (or Virtual Onsite) Interview – Offer",
+      "short": "서류 → 전화 면접 → 현장(또는 화상) 면접 → 처우 제안 순서.",
+      "why": "공고에 적힌 전형입니다.[35] 같은 조직 디렉터 공고는 '직무 적합 면접 → 집중 면접'으로 적어 직급마다 이름이 다릅니다.[3]",
+      "how_far": "현장 면접은 보통 설계 면접과 코딩 면접이 여러 차례 이어지는 하루 일정입니다 — 이 팀 일이라면 인증·권한 시스템 설계를 한 번은 그려 보고 가는 것이 좋습니다. {추론}",
+      "refs": [3, 35]
+    },
+    {
+      "section": "preference",
+      "quote": "The exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.",
+      "short": "직무나 일정에 따라 전형이 달라질 수 있다는 안내.",
+      "why": "공고 끝의 일반 안내입니다.[35]",
+      "refs": [35]
+    },
+    {
+      "section": "preference",
+      "quote": "Interview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+      "short": "면접 일정과 결과는 지원 때 적은 이메일로 온다.",
+      "why": "공고 끝의 일반 안내입니다.[35]",
+      "refs": [35]
+    },
+    {
+      "section": "preference",
+      "quote": "Details to Consider",
+      "short": "아래는 지원 전 알아 둘 점.",
+      "why": "안내 문단 제목입니다.[35]",
+      "refs": [35]
+    },
+    {
+      "section": "preference",
+      "quote": "This role is open to Singapore Citizens and Permanent Residents only",
+      "short": "싱가포르 시민권자·영주권자만 지원할 수 있다 — 취업 비자를 새로 받아야 하는 사람은 대상이 아니다.",
+      "why": "이 공고에서 가장 중요한 지원 조건입니다.[35] 같은 일을 하는 마운틴뷰 공고에는 이런 줄이 없습니다.[1]",
+      "how_far": "한국 개발자가 이 자리로 바로 옮기기는 어렵습니다 — 같은 일을 하는 마운틴뷰 등 다른 근무지 공고를 보는 편이 현실적입니다.[1] {추론}",
+      "refs": [1, 35]
+    },
+    {
+      "section": "preference",
+      "quote": "This job posting may be closed prior to the stated end date for application if all openings are filled.",
+      "short": "자리가 차면 마감일 전에 닫힐 수 있다.",
+      "why": "공고 끝의 일반 안내입니다.[35]",
+      "refs": [35]
+    },
+    {
+      "section": "preference",
+      "quote": "Coupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.",
+      "short": "지원서에 거짓이 있으면 합격(오퍼)을 취소할 수 있다.",
+      "why": "일반 안내 문구입니다.[35] 보안 직군은 경력 검증이 꼼꼼한 편이라 사고 경험을 부풀리지 않는 게 좋습니다 {추론}.",
+      "refs": [35]
+    },
+    {
+      "section": "preference",
+      "quote": "Those eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.",
+      "short": "보훈 대상자·장애인 등은 관련 법에 따라 채용에서 우대받을 수 있다는 표준 문구.",
+      "why": "쿠팡 공고에 공통으로 붙는 문구입니다.[35][3]",
+      "refs": [3, 35]
+    },
+    {
+      "section": "preference",
+      "quote": "Job titles and responsibilities may be subject to change depending on the candidate’s overall experience, etc. This will be communicated to the candidate at the appropriate time before the offer.",
+      "short": "직함(Staff·Senior Staff)과 맡는 범위는 경력에 따라 오퍼 전에 정해진다.",
+      "why": "제목이 두 직급을 같이 적은 공고라 이 문장이 실제로 쓰입니다 — 면접 결과에 따라 어느 쪽으로 제안할지 정한다는 뜻입니다.[35] {추론}",
+      "refs": [35]
+    },
+    {
+      "section": "preference",
+      "quote": "Hiring may be restricted in case the legal qualifications required for hiring and work performance is not met.",
+      "short": "법적 채용 자격(여기서는 시민권·영주권)을 못 채우면 채용이 제한될 수 있다.",
+      "why": "공고 끝의 일반 안내이고, 이 공고에서는 위 시민권·영주권 줄과 이어집니다.[35] {추론}",
+      "refs": [35]
     }
   ],
   "fit": {
@@ -682,9 +837,32 @@
       "url": "https://www.industrialempathy.com/posts/design-docs-at-google/",
       "kind": "reference",
       "note": "다른 회사의 설계 문서 관례 — 목표·비목표·대안"
+    },
+    {
+      "n": 35,
+      "title": "Coupang Careers · Senior Staff / Staff Backend Engineer (Security Infrastructure), Singapore",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8047690",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "싱가포르 공고 — 동적 권한 엔진(모든 고객 상호작용의 이상·악성 신호 감시), 수천 개 마이크로서비스, 8년 이상(석·박사 6년)·기술 리드 2년, 싱가포르 시민·영주권자만, 연봉 없음"
+    },
+    {
+      "n": 36,
+      "title": "Coupang Careers · Singapore 근무지",
+      "url": "https://www.coupang.jobs/en/locations/singapore/",
+      "kind": "company",
+      "note": "Suntec Tower 5 사무실 주소·가까운 역"
+    },
+    {
+      "n": 37,
+      "title": "OpenID · Continuous Access Evaluation Profile (CAEP) 1.0",
+      "url": "https://openid.net/specs/openid-caep-1_0.html",
+      "kind": "reference",
+      "date": "2025-08-29",
+      "note": "session-revoked·credential-change·risk-level-change 같은 보안 사건 형식(Shared Signals)"
     }
   ],
-  "caveat": "쿠팡 Security Infrastructure 팀이 직접 설명한 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고, 같은 보안 인프라 갈래의 다른 공고들, 2018년 MSA 블로그(검색 요약), 2026년 2월 정부 조사 결과 보도입니다. 토큰·키·판정·메시의 모양은 RFC·OIDC·NIST·Istio·Envoy·gRPC 문서와 구글 Zanzibar 논문으로 '보통 이런 것'을 보였고, 예제의 키·계정·숫자는 가상입니다. 공고의 기본급 하한 '$174,00' 은 오타로 보여 $174,000 으로 읽었습니다.",
+  "caveat": "쿠팡 Security Infrastructure 팀이 직접 설명한 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고, 같은 보안 인프라 갈래의 다른 공고들, 2018년 MSA 블로그(검색 요약), 2026년 2월 정부 조사 결과 보도입니다. 토큰·키·판정·메시의 모양은 RFC·OIDC·NIST·Istio·Envoy·gRPC 문서와 구글 Zanzibar 논문으로 '보통 이런 것'을 보였고, 예제의 키·계정·숫자는 가상입니다. 공고의 기본급 하한 '$174,00' 은 오타로 보여 $174,000 으로 읽었습니다. 2026-11-25 에 같은 일의 싱가포르 공고(Senior Staff / Staff, 시민권·영주권자 한정)를 붙였습니다 — 그 공고가 밝힌 '동적 권한 엔진' 줄과 리드 경력·전형 안내 줄을 더했고, 연봉·복지는 미국 근무지 기준 그대로입니다.",
   "resources": [
     {"id": "oauth-in-action", "title": "OAuth 2 in Action", "by": "Justin Richer · Antonio Sanso · Manning · 2017", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://www.manning.com/books/oauth-2-in-action", "why": "인가 서버·클라이언트·보호 자원을 직접 구현하며 흔한 취약점을 본다. 인증 플랫폼을 '내주는 쪽'인 이 자리에 가장 직접 닿는다."},
     {"id": "wilson-iam", "title": "Solving Identity Management in Modern Applications (2판)", "by": "Yvonne Wilson · Abhishek Hingnikar · Apress · 2022", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.oreilly.com/library/view/-/9781484282618", "why": "계정 생성부터 OAuth 2·OIDC 로그인, 수명 관리까지 한 권 — 업무 첫 줄과 IdP·RBAC 우대의 바탕."},
@@ -753,7 +931,7 @@
       {"label": "그 밖의 보상", "value": "금액 표기 없음", "basis": "공고 · 2026년", "note": "기본급이 전체 보상의 한 부분이라고만 적었다 [1]"},
       {"label": "이전 보안 백엔드 공고 (마운틴뷰)", "value": "연 $159,000 ~ $324,000", "basis": "공고 · 마감", "peer": true, "note": "같은 회사·같은 근무지의 이전 Senior Staff Backend Security Engineer 공고, 제3자 사이트에 남은 본문 [2]"}
     ],
-    "how": "캘리포니아는 직원 15명 이상 회사가 공고에 급여 범위를 적게 한다(2023년부터) — 그래서 한국 공고와 달리 숫자가 있다 [13]. 범위가 넓은 건 여러 미국 지역 시장을 한 범위에 담았기 때문이라고 공고가 적었다 [1]. 같은 회사 시애틀 공고들은 0~20% 연 보너스를 적었지만 이 공고에는 없어, 오퍼 단계에서 확인한다 {추론}. 한국 쿠팡(주)의 집계 평균과는 나라·기준이 달라 나란히 놓지 않았다."
+    "how": "캘리포니아는 직원 15명 이상 회사가 공고에 급여 범위를 적게 한다(2023년부터) — 그래서 한국 공고와 달리 숫자가 있다 [13]. 범위가 넓은 건 여러 미국 지역 시장을 한 범위에 담았기 때문이라고 공고가 적었다 [1]. 같은 회사 시애틀 공고들은 0~20% 연 보너스를 적었지만 이 공고에는 없어, 오퍼 단계에서 확인한다 {추론}. 한국 쿠팡(주)의 집계 평균과는 나라·기준이 달라 나란히 놓지 않았다. 싱가포르 공고(같은 일, 시민권·영주권자 한정)에는 연봉이 적혀 있지 않다 — 위 숫자는 미국 근무지 기준이라 싱가포르 금액과 같지 않다 [35] {추론}."
   },
   "benefits": {
     "items": [
@@ -774,6 +952,7 @@
     "postal": "94043",
     "map_url": "https://map.naver.com/p/search/605%20Fairchild%20Dr%20Mountain%20View",
     "near": "스탠퍼드 대학교·팰로앨토 도심 근처 [11]",
-    "note": "공고 근무지는 'Mountain View, USA'이고[1], 주소는 쿠팡 채용 사이트의 마운틴뷰 안내다 [11]. 미국 사무실 소개 글도 있다 [12]."
-  }
+    "note": "공고 근무지는 'Mountain View, USA'이고[1], 주소는 쿠팡 채용 사이트의 마운틴뷰 안내다 [11]. 미국 사무실 소개 글도 있다 [12]. 같은 일의 싱가포르 공고 근무지는 쿠팡 싱가포르 사무실(5 Temasek Boulevard, Suntec Tower 5, 17층, Promenade 역 근처)이다 [35][36]."
+  },
+  "updated_at": "2026-11-25"
 }
