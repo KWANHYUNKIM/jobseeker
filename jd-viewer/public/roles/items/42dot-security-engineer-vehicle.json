@@ -1,0 +1,859 @@
+{
+ "id": "42dot-security-engineer-vehicle",
+ "company": "포티투닷(42dot)",
+ "role": "Security Engineer (차량 보안)",
+ "team": "판교 · SDV 보안(보안 요구사항 수립 · 설계 평가 · 보안 기능 개발과 검증)",
+ "jobs": [
+  "ats-ashby:42dot:1b595f84-2557-4468-b4f8-29a0cf12f713"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "차 안 컴퓨터에서 **열쇠(암호 키)를 만들고 숨기고 쓰고 지우는 기능**과, 켜질 때 **서명이 맞는 소프트웨어만 돌게 하는 검사**를 C/C++ 로 짭니다. 열쇠는 일반 OS 가 못 보는 칸(OP-TEE)과 칩 안 보안 엔진(HSE)에 둡니다.[1]",
+  "env": "SDV(소프트웨어로 기능이 바뀌는 차) 플랫폼 위의 임베디드 리눅스 · 보안 칩. 회사는 차량 사이버보안 관리체계(ISO/SAE 21434) 인증을 받았고, 다른 공고에서도 NXP 보안 엔진 HSE 를 씁니다.[5][7]",
+  "oneline": "암호 이론가가 아니라 **암호를 안전하게 '배선'하는 임베디드 개발자** 자리. 5년 넘게 C/C++ 로 임베디드·리눅스를 짠 사람이 보안으로 넘어오는 길입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "OP-TEE 및 HSE 기반 보안 기능 개발",
+   "short": "일반 OS 가 못 들여다보는 보안 구역(OP-TEE)과 칩 안 보안 엔진(HSE)에서 도는 암호 기능을 만든다.",
+   "why": "포티투닷 차의 통합 제어기(HPVC)는 LTE/5G·와이파이로 바깥과 통신하고 OTA 를 받습니다.[4] 바깥과 이어지는 순간 공격 대상이 됩니다.{추론} 포티투닷은 2023년 UL솔루션즈에서 ISO/SAE 21434 기반 사이버보안 관리체계(CSMS) 인증을 받았고, 대표는 미래차에서 사이버보안이 차 성능만큼의 경쟁력이라고 말했습니다.[5][6] 관리체계가 정한 요구는 결국 차 안 코드로 구현돼야 하는데, 그 코드가 놓일 곳이 OP-TEE 와 HSE 입니다.[1]{추론}",
+   "flows": [
+    {
+     "caption": "한 칩 안의 두 세계 — Arm TrustZone 구조 {추론}[10][13]",
+     "steps": [
+      "일반 세계 · 리눅스와 앱(공격받을 수 있다고 본다)",
+      "드라이버 · 리눅스 OP-TEE 드라이버가 SMC 명령으로 문을 두드린다",
+      "모니터 · 두 세계를 바꿔 주는 문지기(TF-A)",
+      "보안 세계 · OP-TEE OS 와 그 위의 TA(신뢰 앱)",
+      "HSE · 따로 떨어진 보안 코어가 키를 쥐고 암호 계산"
+     ],
+     "mine_from": 3
+    }
+   ],
+   "actually": {
+    "intro": "OP-TEE 는 Arm 칩의 보안 세계에서 도는 작은 OS 이고, HSE 는 NXP 차량용 칩에 들어 있는 별도 보안 코어입니다.[10][13]",
+    "items": [
+     "**TA(Trusted Application) 짜기** — 보안 세계에서 도는 작은 프로그램. 키를 꺼내지 않고 '이 데이터에 서명해 줘', '이걸 복호화해 줘' 같은 요청만 받는다. 함수 이름은 GlobalPlatform TEE 표준을 따른다.[12]",
+     "**일반 세계 쪽 입구** — 리눅스 앱이 GlobalPlatform TEE Client API(libteec)로 TA 를 열고 명령을 보낸다. TA 파일 읽기·시간 같은 일은 리눅스의 tee-supplicant 가 대신해 준다.[10]",
+     "**HSE 서비스 부르기** — 키 저장 칸(키 카탈로그)을 만들고, 키를 넣고, AES·RSA·ECC 계산을 요청한다. HSE 는 RSA 4096비트·ECC 521비트까지, 키 생성·가져오기·ECDH 키 교환을 지원한다.[13][14]",
+     "**두 곳 나누기** — 큰 데이터·복잡한 규칙은 OP-TEE TA, 칩 밖으로 절대 나가면 안 되는 뿌리 키와 부팅 검사는 HSE 에 두는 식의 역할 분담. {추론}",
+     "**리눅스 커널과 잇기** — 커널의 'trusted keys' 기능은 TEE 를 신뢰의 뿌리로 쓸 수 있어, 디스크 암호화 키 등을 TEE 가 감싼 채로 다룬다.[18]"
+    ]
+   },
+   "how_far": "어떤 기능이 필요한지(요구사항)와 위협 분석은 보안 설계 쪽에서 정하지만, 이 팀은 요구사항 수립·설계 평가·개발·검증을 다 맡는다고 공고가 적었습니다.[1] 최소선은 **TA 하나와 그것을 부르는 리눅스 앱을 직접 짜서 QEMU 에서 돌려 본 정도** {추론}.",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    10,
+    12,
+    13,
+    14,
+    18
+   ],
+   "study": [
+    "optee-docs",
+    "gp-tee",
+    "nxp-hse"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "차량 내 Secret/Key 관리 체계 설계 및 구현",
+   "short": "차 안의 비밀번호·인증서·암호 키를 누가, 어디에, 어떤 계층으로 두는지 정하고 코드로 만든다.",
+   "why": "OTA(무선 업데이트) 서명 검증 키, 서버와 통신하는 인증서, 저장 데이터 암호화 키처럼 차 안에는 용도가 다른 비밀이 많습니다. 하나가 새면 전체가 열리지 않도록 **용도별로 나누고 뿌리에서 갈라져 나오게** 하는 것이 관리 체계입니다.[17]{추론}",
+   "actually": {
+    "intro": "OP-TEE 의 보안 저장소가 쓰는 계층이 좋은 본보기입니다.[11]",
+    "items": [
+     "**뿌리 키(HUK)** — 칩마다 다르게 퓨즈에 구워져 있고 보안 세계만 읽는다.[18]",
+     "**기기 키(SSK)** — HUK 와 칩 ID 로 만든다. 다른 칩으로 옮긴 파일은 풀 수 없다.[11]",
+     "**앱 키(TSK)** — SSK 와 TA 의 UUID 로 만든다. TA 마다 자기 키만 쓴다.[11]",
+     "**파일 키(FEK)** — 파일마다 무작위로 만들고, 위 키로 감싸서 파일 머리에 같이 둔다.[11]",
+     "**어디에 두나** — 기본은 리눅스 파일 시스템(암호화한 채로), 빌드 옵션으로 eMMC 의 보호 구역(RPMB)에 둘 수 있다.[11]",
+     "**용도 나누기** — 서명용·암호화용·키 감싸기용을 섞어 쓰지 않는다. 한 키 = 한 용도.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "뿌리 키에서 키를 갈라 내기 (OP-TEE 식 계층을 흉내 낸 것)",
+     "body": "HMAC-SHA256 으로 HUK → SSK → TSK 를 만듭니다. 값은 가상이고, 실제 OP-TEE 의 입력 형식과 똑같지는 않습니다.[11] 칩 ID 하나만 달라도 결과 키가 완전히 달라집니다(직접 돌린 출력: `SSK 927d5e13f8913b00 ...` / `TSK 18677185a0a4d528 ...` / `칩 ID 가 다르면 TSK 도 다르다: True`).",
+     "lang": "python",
+     "code": "import hmac, hashlib\nhuk = bytes.fromhex(\"00112233445566778899aabbccddeeff\")   # 칩마다 다른 하드웨어 고유 키(가상)\nssk = hmac.new(huk, b\"CHIP-0001\" + b\"static_string\", hashlib.sha256).digest()\nta_uuid = bytes.fromhex(\"8aaaf200245011e4abe20002a5d5c51b\")\ntsk = hmac.new(ssk, ta_uuid, hashlib.sha256).digest()\nprint(\"SSK\", ssk.hex()[:16], \"...\")\nprint(\"TSK\", tsk.hex()[:16], \"...\")\nssk2 = hmac.new(huk, b\"CHIP-0002\" + b\"static_string\", hashlib.sha256).digest()\nother = hmac.new(ssk2, ta_uuid, hashlib.sha256).digest()\nprint(\"칩 ID 가 다르면 TSK 도 다르다:\", tsk != other)"
+    }
+   ],
+   "how_far": "**설계 및 구현** 이라 표를 그리는 데서 끝나지 않고 코드까지 갑니다.[1] 키 종류·용도·저장 위치·누가 쓸 수 있나를 한 장의 표로 만들고, 그대로 동작하는 코드를 내는 수준. {추론}",
+   "refs": [
+    1,
+    11,
+    17,
+    18
+   ],
+   "study": [
+    "optee-docs",
+    "nist-800-57",
+    "rwc-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Key 생성, 저장, 조회, 삭제 등 기본 Key 생명주기 기능 구현",
+   "short": "키를 만들고·넣어 두고·꺼내 쓰고·지우는 네 가지 기본 동작을 빈틈없이 만든다.",
+   "why": "키는 쓰는 기간이 정해져 있고(암호 기간), 다 쓰면 확실히 없애야 합니다. 미국 NIST 키 관리 권고는 키가 '활성 전 → 활성 → 비활성 → 파기'(그리고 '유출됨') 상태를 지난다고 정리합니다.[17]",
+   "actually": {
+    "items": [
+     "**생성** — 칩의 진짜 난수 발생기로 만들고, 가능하면 보안 구역 안에서 만들어 밖으로 꺼내지 않는다.[13][17]",
+     "**저장** — 감싼(암호화한) 채로 저장하고, 키마다 용도·허용 동작·상태를 같이 적는다.[11]",
+     "**조회** — 키 값을 돌려주는 게 아니라 '키 번호'만 돌려주고, 쓸 때는 번호로 계산을 요청한다.[12]{추론}",
+     "**삭제** — 저장소에서 지우고 메모리에 남은 값도 0으로 덮는다. 상태는 되돌릴 수 없다.[17]",
+     "**잘못된 순서 막기** — 이미 파기한 키를 다시 활성으로 바꾸는 요청은 거부한다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "키 상태 기계 (NIST 상태 이름을 단순화)",
+     "body": "'정지(suspended)' 상태는 뺐습니다.[17] 직접 돌린 출력: `ota-verify-key destroyed 남은 값 합: 0` / `ota-verify-key: destroyed -> active 금지`. 실제 차에서는 C 로, 그리고 OP-TEE 나 HSE 안에서 이 규칙을 지킵니다.",
+     "lang": "python",
+     "code": "from enum import Enum\n\nclass S(Enum):\n    PRE = \"pre-activation\"\n    ACTIVE = \"active\"\n    DEACTIVATED = \"deactivated\"\n    COMPROMISED = \"compromised\"\n    DESTROYED = \"destroyed\"\n\nALLOWED = {\n    S.PRE: {S.ACTIVE, S.DESTROYED, S.COMPROMISED},\n    S.ACTIVE: {S.DEACTIVATED, S.COMPROMISED},\n    S.DEACTIVATED: {S.DESTROYED, S.COMPROMISED},\n    S.COMPROMISED: {S.DESTROYED},\n    S.DESTROYED: set(),\n}\n\nclass Slot:\n    def __init__(self, kid):\n        self.kid, self.state, self.key = kid, S.PRE, bytearray(b\"\\xaa\" * 32)\n\n    def move(self, to):\n        if to not in ALLOWED[self.state]:\n            raise ValueError(f\"{self.kid}: {self.state.value} -> {to.value} 금지\")\n        if to is S.DESTROYED:\n            for i in range(len(self.key)):\n                self.key[i] = 0          # 지울 때는 값부터 0으로\n        self.state = to\n\nk = Slot(\"ota-verify-key\")\nk.move(S.ACTIVE); k.move(S.DEACTIVATED); k.move(S.DESTROYED)\nprint(k.kid, k.state.value, \"남은 값 합:\", sum(k.key))\ntry:\n    k.move(S.ACTIVE)\nexcept ValueError as e:\n    print(e)"
+    }
+   ],
+   "how_far": "공고가 '기본' 생명주기라고 적었습니다.[1] 키 교체(회전)·원격 폐기 같은 운영 기능보다, **네 동작이 정전·실패·잘못된 입력에서도 안전하게 끝나는지**가 먼저입니다. {추론}",
+   "refs": [
+    1,
+    11,
+    12,
+    13,
+    17
+   ],
+   "study": [
+    "nist-800-57",
+    "gp-tee"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "단위 테스트 및 통합 테스트 수행, 보안 기능 검증",
+   "short": "만든 보안 기능이 맞게 돌 뿐 아니라, 틀린 입력·변조·공격에도 제대로 '거부'하는지 시험한다.",
+   "why": "보안 기능은 성공하는 경우보다 **실패해야 하는 경우**가 더 중요합니다. 이 팀은 개발과 함께 검증까지 책임진다고 공고에 적었고,[1] 회사의 CSMS 범위에도 위협 분석과 업데이트 관리가 들어 있습니다.[6]",
+   "actually": {
+    "items": [
+     "**단위 시험** — 키 상태 기계의 모든 전이, 경계값(키 길이 0·최대), 잘못된 키 번호.{추론}",
+     "**음성 시험** — 서명 1바이트 바꾸기, 다른 키로 서명하기, 예전 버전으로 되돌리기(롤백)를 넣고 모두 거부되는지 본다.[16]{추론}",
+     "**통합 시험** — 리눅스 앱 → libteec → TA → HSE 까지 실제 보드에서 한 번에 돈다.[10]",
+     "**표준 벡터 맞추기** — 공개된 시험 값(알려진 입력·출력)으로 암호 계산이 정확한지 대조.{추론}",
+     "**OP-TEE 자체 시험** — OP-TEE 프로젝트는 xtest 시험 묶음을 함께 낸다(보안 저장소·암호 API 시험 포함).[9]"
+    ]
+   },
+   "how_far": "시험 조직이 따로 있어도 보안 기능의 첫 검증은 만든 사람이 합니다.[1][8] 실패해야 하는 경우의 목록을 기능마다 먼저 쓰는 습관이 최소선. {추론}",
+   "refs": [
+    1,
+    6,
+    8,
+    9,
+    10,
+    16
+   ],
+   "study": [
+    "optee-docs",
+    "hhh"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Secure Boot 및 Firmware 무결성 검증 로직 개발",
+   "short": "전원이 켜질 때 단계마다 다음 단계 소프트웨어의 서명을 확인하고, 맞을 때만 넘겨주는 코드를 만든다.",
+   "why": "부팅 순서 중간 하나만 바꿔치기돼도 그 위의 모든 보안이 무너집니다. 그래서 '바꿀 수 없는 첫 단계'에서 시작해 단계마다 다음을 검사하는 **신뢰의 사슬**을 만듭니다.[16] 같은 회사의 미국 공고도 HSE 위의 보안 부팅과 서명 검증을 따로 뽑고 있습니다.[7]",
+   "flows": [
+    {
+     "caption": "NXP S32G 에서 흔히 쓰는 부팅 사슬[24][16]",
+     "steps": [
+      "BootROM · 칩에 박힌 첫 코드",
+      "HSE 펌웨어 · 다음 이미지를 검사",
+      "TF-A · 보안 세계(OP-TEE)와 U-Boot 를 검사해 띄움",
+      "U-Boot · 리눅스 커널 이미지 검사",
+      "리눅스 · 앱과 파일 시스템"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**뿌리 공개키 고정** — 서명 검증용 공개키(또는 그 해시)를 바꿀 수 없는 곳(OTP 퓨즈·보안 엔진)에 넣는다. TF-A 는 ROTPK 해시를 칩의 루트 키 저장 칸과 대조한다.[16]",
+     "**인증서 사슬** — TF-A 는 X.509 v3 인증서로 단계별 키를 잇고, 검사가 하나라도 실패하면 멈춘다(panic).[16]",
+     "**HSE 보안 부팅 설정** — 키 카탈로그 만들기 → 키 넣기 → 검사할 메모리 영역(SMR)과 부팅 방식(CR) 설정.[14] MCU(S32K3) 쪽도 HSE 로 보안 부팅을 한다.[15]",
+     "**펌웨어 무결성** — 이미지 해시를 계산해 서명과 맞춰 보고, 버전 번호가 거꾸로 가지 않는지(롤백 방지)도 본다.{추론}",
+     "**실패하면** — 멈출지, 예비 이미지로 돌아갈지 정해 둔다. 차는 '안 켜짐'도 위험이라 이 선택이 설계의 큰 부분이다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "서명 검증 — 1바이트만 바뀌어도 거부",
+     "body": "ECDSA P-256 으로 서명하고 공개키로만 검사합니다. 차에는 비밀키가 없고 공개키만 있습니다(직접 돌린 출력: `원본: OK` / `1바이트 바뀜: 거부`). 실제 부팅 코드는 C 로, 계산은 HSE 에 맡깁니다.[13]",
+     "lang": "python",
+     "code": "from cryptography.hazmat.primitives.asymmetric import ec\nfrom cryptography.hazmat.primitives import hashes\nfrom cryptography.exceptions import InvalidSignature\n\npriv = ec.generate_private_key(ec.SECP256R1())   # 서명 서버의 비밀키(가상)\npub = priv.public_key()                           # 차에는 공개키만\nfw = b\"firmware v1.2.3 ...\"\nsig = priv.sign(fw, ec.ECDSA(hashes.SHA256()))\n\ndef verify(img, s):\n    try:\n        pub.verify(s, img, ec.ECDSA(hashes.SHA256()))\n        return \"OK\"\n    except InvalidSignature:\n        return \"거부\"\n\nprint(\"원본:\", verify(fw, sig))\nprint(\"1바이트 바뀜:\", verify(fw[:-1] + b\"!\", sig))"
+    }
+   ],
+   "how_far": "어떤 서명 방식·키 길이를 쓸지는 설계에서 정하고, 이 자리는 **검사 로직을 정확하게 짜고 실패 경로까지 시험**합니다.[1]{추론} 부팅 사슬 각 단계가 무엇을 검사하는지 그림으로 설명할 수 있는 것이 최소선.",
+   "refs": [
+    1,
+    7,
+    13,
+    14,
+    15,
+    16,
+    24
+   ],
+   "study": [
+    "tfa-tbb",
+    "nxp-an13465",
+    "nxp-hse"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 이상의 C/C++ 기반 임베디드 또는 Linux 개발 경험",
+   "short": "보안 기능도 결국 C 로 짠 임베디드 코드라서. 보안 경력보다 '오래 C 를 짠 경력'을 본다.",
+   "why": "OP-TEE 의 TA, HSE 를 부르는 드라이버, 부팅 코드는 모두 C/C++ 입니다.[9][13] 메모리 실수(버퍼 넘침·해제 후 사용) 하나가 곧 보안 구멍이라, 보안 지식보다 C 를 안전하게 쓰는 손이 먼저입니다. {추론}",
+   "level": {
+    "basic": "포인터 · 구조체 · 메모리 배치 · 비트 연산 · 크로스 컴파일 · Makefile/CMake",
+    "work": "리눅스 시스템 프로그래밍(파일·ioctl·mmap) · 디버거(gdb) · 정적 분석 · 메모리 오류 도구",
+    "team": "보안 세계와 일반 세계 사이에 넘기는 버퍼를 믿지 않고 검사하기 · 비밀 값을 지울 때 컴파일러가 지우는 코드를 없애지 않게 하기 · 시간 차이로 정보가 새지 않는 비교"
+   },
+   "how_far": "공고는 '임베디드 **또는** Linux' 라 둘 중 하나면 됩니다.[1] 보안 경력 연수는 따로 요구하지 않습니다.[1]",
+   "refs": [
+    1,
+    9,
+    13
+   ],
+   "study": [
+    "kr-embedded-os",
+    "ldd3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "운영체제 및 컴퓨터 구조에 대한 기본 이해",
+   "short": "보안 세계·일반 세계, 권한 단계, 메모리 보호가 OS·CPU 구조 위에서 돌아가서.",
+   "why": "TrustZone 은 CPU 가 '지금 보안 세계인가'를 표시하고, 모니터가 두 세계를 바꿔 줍니다.[10] 인터럽트도 보안 쪽 것은 OP-TEE 가, 일반 쪽 것은 리눅스가 받습니다.[10] 이런 그림을 이해하려면 예외 단계·가상 메모리·인터럽트를 알아야 합니다.",
+   "actually": {
+    "items": [
+     "**권한 단계** — Arm 의 EL0(앱)·EL1(OS)·EL3(모니터) 같은 층과, 보안/일반 표시.[10]",
+     "**메모리** — 가상 주소·페이지 표·캐시, 보안 세계 메모리를 일반 세계가 못 보게 막는 하드웨어.{추론}",
+     "**시스템 콜과 SMC** — 앱이 OS 를 부르는 것과 OS 가 보안 세계를 부르는 것은 같은 모양이다.[10]",
+     "**부팅** — 리셋 뒤 무엇이 먼저 돌고 누가 누구를 띄우는지.[16]"
+    ]
+   },
+   "how_far": "'기본 이해' 라 교과서 수준이면 됩니다.[1] 위 TrustZone 그림을 화이트보드에 그리며 설명할 수 있는 정도. {추론}",
+   "refs": [
+    1,
+    10,
+    16
+   ],
+   "study": [
+    "ostep"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "암호학 기본 개념 이해 (대칭키/비대칭키, 해시 등)",
+   "short": "어떤 일에 어떤 암호 도구를 써야 하는지 고를 줄 알아야 해서. 수학 증명은 아니다.",
+   "why": "키 관리·보안 부팅의 모든 줄이 '대칭키로 암호화, 비대칭키로 서명, 해시로 무결성' 세 도구의 조합입니다.[13][16]",
+   "actually": {
+    "items": [
+     "**대칭키(AES)** — 같은 열쇠로 잠그고 연다. 빠르다. 저장 데이터·파일 키(FEK).[11]",
+     "**비대칭키(RSA·ECC)** — 비밀키로 서명, 공개키로 검사. 차에는 공개키만 둔다. 보안 부팅·OTA.[16]",
+     "**해시(SHA-256)** — 데이터의 지문. 1비트만 바뀌어도 전혀 다른 값. 펌웨어 무결성.{추론}",
+     "**MAC(HMAC·CMAC)** — 같은 비밀을 가진 쪽끼리 '바뀌지 않았다'를 확인. HSE 보안 부팅의 CMAC 계산.[14]",
+     "**키 갈라 내기(KDF)** — 뿌리 키에서 용도별 키를 만들기(업무② 예시).[11]",
+     "**하지 말 것** — 암호를 직접 발명하지 않는다, 같은 키를 여러 용도에 쓰지 않는다.[17]"
+    ]
+   },
+   "how_far": "알고리즘 내부보다 **고르는 법과 잘못 쓰는 법**을 아는 수준입니다. {추론}",
+   "refs": [
+    11,
+    13,
+    14,
+    16,
+    17
+   ],
+   "study": [
+    "rwc-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Secure Boot, TrustZone, TEE 등에 대한 기본 이해 또는 학습 경험",
+   "short": "이 세 가지가 업무 그 자체라서. 써 본 적 없어도 '공부해 봤다'면 된다고 열어 두었다.",
+   "why": "업무 다섯 줄 중 셋이 OP-TEE(TEE)·HSE·Secure Boot 입니다.[1] '또는 학습 경험' 이라 실무 경험이 없어도 지원할 수 있게 문을 열어 두었습니다.[1]",
+   "how_far": "학습 경험을 보여 주려면 **QEMU 에서 OP-TEE 를 띄우고 예제 TA 를 고쳐 본 기록**이 가장 확실합니다. OP-TEE 는 QEMU 용 빌드를 공식으로 지원합니다.[9]{추론}",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "optee-docs",
+    "tfa-tbb"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "차량/임베디드 플랫폼 개발 경험",
+   "short": "차는 메모리·전력·부팅 시간·안전 규칙이 빡빡해서, 그 제약을 아는 사람이 빨리 적응한다.",
+   "why": "차 안 보안 기능은 부팅 시간 안에 검사를 끝내야 하고, 실패하면 차가 안 켜질 수 있습니다.{추론} 같은 회사의 보안 부팅 공고는 기능안전 최고 등급(ASIL-D) 플랫폼에서 보안과 안전 규칙을 함께 지키라고 적었습니다.[7]",
+   "refs": [
+    7
+   ],
+   "study": [
+    "kr-embedded-os"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "보안 관련 프로젝트 또는 CTF 경험",
+   "short": "공격자처럼 생각해 본 경험이 있으면, 무엇을 막아야 하는지 먼저 보인다.",
+   "why": "CTF(해킹 대회)는 메모리 버그·암호 오용·리버싱을 문제로 풀어 보는 대회입니다. 보안 기능을 만드는 사람이 공격 쪽을 알면 '거부해야 하는 경우' 목록이 길어집니다. {추론}",
+   "how_far": "대회 입상이 아니라 **풀어 본 문제와 풀이 기록**이면 충분히 이야깃거리가 됩니다. picoCTF 같은 상시 연습장이 있습니다.[22]{추론}",
+   "refs": [
+    22
+   ],
+   "study": [
+    "picoctf",
+    "hhh"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Linux 커널 또는 드라이버 개발 경험",
+   "short": "보안 세계와 이어지는 다리(OP-TEE 드라이버)와 보안 엔진 드라이버가 커널 안에 있어서.",
+   "why": "리눅스의 OP-TEE 드라이버는 커널 안(drivers/tee/optee)에서 SMC 명령으로 보안 세계를 부릅니다.[10][23] 커널의 trusted keys 같은 기능도 TEE 와 이어집니다.[18] 보안 엔진을 리눅스에서 쓰려면 드라이버가 필요합니다.{추론}",
+   "refs": [
+    10,
+    18,
+    23
+   ],
+   "study": [
+    "ldd3",
+    "kernel-tee"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ISO 21434 등 차량 보안 표준에 대한 이해",
+   "short": "회사가 이 표준으로 인증을 받아, 만드는 기능마다 '왜 필요한지'가 이 표준의 위협 분석에서 나와서.",
+   "why": "포티투닷은 ISO/SAE 21434 기반 CSMS 인증을 받았습니다.[5][6] 기사에 따르면 이 관리체계는 위협 분석·업데이트 관리·개발 뒤 보고·단종 뒤 보안 지원을 다루고, 유엔(UNECE) 협약국에서는 2024년 7월부터 모든 새 차에 CSMS 인증이 필요합니다.[6]",
+   "actually": {
+    "items": [
+     "**TARA** — 위협 분석과 위험 평가. 자산(키·펌웨어)을 적고, 공격 경로와 피해를 따져 보안 목표를 만든다.[19]",
+     "**보안 요구사항** — 목표에서 '부팅 이미지는 서명 검증한다' 같은 요구가 나오고, 이 자리가 그것을 구현·검증한다.[1][19]{추론}",
+     "**수명 전체** — 개발에서 끝나지 않고 양산 뒤 취약점 대응·단종까지 이어진다.[6][19]"
+    ]
+   },
+   "how_far": "우대사항이라 표준 문서를 다 외울 필요는 없습니다. 자기가 만든 기능이 **어떤 위협에서 나왔는지 추적할 수 있다**는 정도면 됩니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    19
+   ],
+   "study": [
+    "iso21434"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "C 를 오래 짰고 보안으로 넘어가고 싶은 임베디드·리눅스 개발자",
+   "'어떻게 해야 안 뚫리나'를 끝까지 따지는 사람",
+   "칩 데이터시트·표준 문서를 읽는 게 괴롭지 않은 사람",
+   "요구사항 수립부터 검증까지 한 기능을 끝까지 맡고 싶은 사람[1]"
+  ],
+  "hard": [
+   "칩 회사 보안 문서 상당수가 비밀유지계약(NDA) 뒤에 있어 혼자 공부할 자료가 적다{추론}",
+   "결과가 눈에 보이지 않는다 — 잘하면 '아무 일도 없음'이 성과다{추론}",
+   "실패하면 차가 안 켜질 수 있어 작은 변경도 검증이 길다{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "OP-TEE 의 TA 와 리눅스 앱은 어떻게 이야기하나요? 그 사이에서 무엇을 의심해야 하나요?",
+   "a": "업무 첫 줄. 일반 세계가 넘긴 버퍼를 믿지 않는 습관을 본다.[10][12]"
+  },
+  {
+   "q": "칩마다 다른 키를 두면서 TA 마다 다른 키를 쓰게 하려면 어떻게 하죠?",
+   "a": "HUK → SSK → TSK 계층.[11]"
+  },
+  {
+   "q": "파기한 키가 메모리에 남지 않게 하려면 C 에서 무엇을 조심하나요?",
+   "a": "키 생명주기의 삭제와 컴파일러 최적화.[17]{추론}"
+  },
+  {
+   "q": "보안 부팅에서 검증 공개키 자체가 바꿔치기되면요?",
+   "a": "바꿀 수 없는 곳에 둔 뿌리 키(ROTPK 해시).[16]"
+  },
+  {
+   "q": "서명은 맞는데 예전 버전 펌웨어라면 막아야 하나요?",
+   "a": "롤백 방지 — 무결성 검증 줄의 음성 시험.{추론}"
+  },
+  {
+   "q": "AES · RSA · SHA-256 · HMAC 를 각각 어디에 쓰겠어요?",
+   "a": "암호 기본 개념 요건.[13][14]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · Security Engineer (차량 보안)",
+   "url": "https://jobs.ashbyhq.com/42dot/1b595f84-2557-4468-b4f8-29a0cf12f713",
+   "kind": "posting",
+   "note": "이 공고. 팀 소개(SDV 보안 요구사항 수립·설계 평가·개발·검증)·업무 5·자격 4·우대 4·전형(서류 → 1차 화상 1시간 → 2차 3시간 → 처우 협의). 근무지 Pangyo (Software Dream Center), (Remote) 표기. 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 · 업무 몰입 프로그램(복리후생)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준(같은 회사 다른 풀이에서 2026-11-25 확인)"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 홈페이지(하단 회사 정보)",
+   "url": "https://42dot.ai/ko",
+   "kind": "company"
+  },
+  {
+   "n": 4,
+   "title": "포티투닷 블로그 · 42dot at CES 2024: Software-Defined Vehicle Technology",
+   "url": "https://42dot.ai/ko/stories/blog-news/ces-2024-software-defined-vehicle",
+   "kind": "company",
+   "date": "2024-03-28",
+   "note": "HPVC·구역 제어기·SDV OS"
+  },
+  {
+   "n": 5,
+   "title": "스마트투데이 · 포티투닷, 차량 사이버보안 국제 인증 획득",
+   "url": "https://www.smarttoday.co.kr/ko-kr/articles/33883",
+   "kind": "news",
+   "date": "2023-08-22",
+   "note": "UL솔루션즈 ISO/SAE 21434 사이버보안 관리체계 인증"
+  },
+  {
+   "n": 6,
+   "title": "아시아경제(영문) · FortyTwoDot Obtains International Certification for Vehicle Cybersecurity",
+   "url": "https://www.asiae.co.kr/en/article/2023082208492588352",
+   "kind": "news",
+   "date": "2023-08-22",
+   "note": "CSMS 범위(위협 분석·업데이트 관리·개발 뒤 보고·단종 뒤 지원), 2024년 7월부터 새 차 전부 CSMS 필요, ISO 27001. 기계 번역 기사"
+  },
+  {
+   "n": 7,
+   "title": "포티투닷 채용 · Sr. Staff Firmware Engineer (Secure Boot & OTA implementation)",
+   "url": "https://jobs.ashbyhq.com/42dot/63196d96-2810-4348-8aa5-077d8c0ee710",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고. NXP S32K3급 칩 + HSE 위의 보안 부팅·서명 검증, ASIL-D(기능안전)"
+  },
+  {
+   "n": 8,
+   "title": "포티투닷 채용 · System Test Engineer (SW Update)",
+   "url": "https://jobs.ashbyhq.com/42dot/403e89b4-fdf4-4168-a115-163706830174",
+   "kind": "posting",
+   "note": "같은 회사 OTA 통합 검증 공고(기능·성능·복구·보안)"
+  },
+  {
+   "n": 9,
+   "title": "OP-TEE 문서 · About OP-TEE",
+   "url": "https://optee.readthedocs.io/en/4.0.0/general/about.html",
+   "kind": "reference",
+   "note": "구성 요소(OP-TEE OS·클라이언트·supplicant·xtest), 2019-09 TrustedFirmware.org 로 이관 — 검색 요약으로 확인"
+  },
+  {
+   "n": 10,
+   "title": "OP-TEE 문서 · Core architecture",
+   "url": "https://optee.readthedocs.io/en/latest/architecture/core.html",
+   "kind": "reference",
+   "note": "보안 모니터·SMC·인터럽트 나누기·리눅스 드라이버·TEE supplicant·libteec"
+  },
+  {
+   "n": 11,
+   "title": "OP-TEE 문서 · Secure storage",
+   "url": "https://optee.readthedocs.io/en/latest/architecture/secure_storage.html",
+   "kind": "reference",
+   "note": "HUK → SSK → TSK → FEK 계층, REE FS 기본·RPMB 선택. 본문 접속이 막혀(429) 판별 문서 검색 요약으로 확인"
+  },
+  {
+   "n": 12,
+   "title": "GlobalPlatform · TEE Internal Core API Specification",
+   "url": "https://globalplatform.org/specs-library/tee-internal-core-api-specification/",
+   "kind": "reference",
+   "date": "2025-11",
+   "note": "v1.4 (GPD_SPE_010)"
+  },
+  {
+   "n": 13,
+   "title": "NXP · Hardware Security Engine (HSE) Product Brief",
+   "url": "https://www.nxp.com/docs/en/product-brief/HSEPB.pdf",
+   "kind": "reference",
+   "date": "2022",
+   "note": "Rev. 1.3. RSA 4096·ECC 521, 키 생성·가져오기·ECDH — 검색 요약으로 확인"
+  },
+  {
+   "n": 14,
+   "title": "NXP 커뮤니티 · S32G Secure boot (2024-01-25, v2)",
+   "url": "https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/nxp-designs%40tkb/736/9/S32G_Secure_boot_20240125_v2_Eng.pdf",
+   "kind": "community",
+   "date": "2024-01",
+   "note": "키 카탈로그 만들기 → 키 넣기 → CMAC → SMR·CR 설정 — 검색 요약으로 확인"
+  },
+  {
+   "n": 15,
+   "title": "NXP AN13465 · S32K3xx Secure Boot",
+   "url": "https://www.nxp.com/docs/en/application-note/AN13465.pdf",
+   "kind": "reference",
+   "note": "MCU 쪽 HSE 보안 부팅"
+  },
+  {
+   "n": 16,
+   "title": "Trusted Firmware-A · Trusted Board Boot",
+   "url": "https://trustedfirmware-a.readthedocs.io/en/latest/design/trusted-board-boot.html",
+   "kind": "reference",
+   "note": "ROTPK 해시·X.509 v3 인증서 사슬·실패 시 panic"
+  },
+  {
+   "n": 17,
+   "title": "NIST SP 800-57 Part 1 Rev. 5 · Recommendation for Key Management",
+   "url": "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final",
+   "kind": "reference",
+   "date": "2020-05",
+   "note": "키 상태(활성 전·활성·정지·비활성·유출·파기)와 암호 기간"
+  },
+  {
+   "n": 18,
+   "title": "Linux 커널 문서 · Trusted and Encrypted Keys",
+   "url": "https://www.kernel.org/doc/html/latest/security/keys/trusted-encrypted.html",
+   "kind": "reference",
+   "note": "TEE(OP-TEE)를 신뢰 근원으로, HUK 는 퓨즈에 있고 TEE 만 읽는다"
+  },
+  {
+   "n": 19,
+   "title": "ISO/SAE 21434:2021 · Road vehicles — Cybersecurity engineering",
+   "url": "https://www.iso.org/standard/70918.html",
+   "kind": "reference",
+   "note": "유료 표준. TARA·사이버보안 수명 주기"
+  },
+  {
+   "n": 20,
+   "title": "원티드 · 포티투닷(42dot) 기업 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "평균연봉 6,032만원 · 국민연금 가입 사원 804명 표기(같은 회사 다른 풀이에서 2026-11-25 확인)"
+  },
+  {
+   "n": 21,
+   "title": "벤처스퀘어 · 판교 제2테크노밸리 소프트웨어드림센터 스타트업 입주기업 모집 공고",
+   "url": "https://www.venturesquare.net/announcement/955032",
+   "kind": "reference",
+   "note": "소재지 창업로40번길 20 소프트웨어드림센터"
+  },
+  {
+   "n": 22,
+   "title": "picoCTF",
+   "url": "https://picoctf.org/",
+   "kind": "reference",
+   "note": "카네기멜런대 상시 CTF 연습장"
+  },
+  {
+   "n": 23,
+   "title": "Linux 커널 문서 · OP-TEE (Open Portable Trusted Execution Environment)",
+   "url": "https://docs.kernel.org/tee/op-tee.html",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "NXP 커뮤니티 · Understanding secure boot provisioning on S32G",
+   "url": "https://community.nxp.com/t5/S32G/Understanding-secure-boot-provisioning-on-S32G/m-p/1616076",
+   "kind": "community",
+   "note": "NXP 지원 답변 — BootROM → HSE 펌웨어 → TF-A FIP(U-Boot 포함) 검사. 공식 문서 아님"
+  }
+ ],
+ "caveat": "포티투닷이 차량 보안 구현(OP-TEE·HSE·키 관리)을 다룬 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고·같은 회사의 보안 부팅·OTA 공고 두 건·CSMS 인증 보도이고, 쓰는 칩도 공고에 적혀 있지 않습니다. 부팅 사슬·키 계층은 OP-TEE·TF-A·NXP 공개 문서와 NIST 권고로 '보통 이런 것'을 보인 것입니다. OP-TEE 보안 저장소·HSE 제품 소개는 본문 접속이 막혀 검색 요약으로 확인했습니다. 2026-11-25 기준.",
+ "resources": [
+  {
+   "id": "rwc-ko",
+   "title": "리얼월드 암호학",
+   "by": "데이비드 웡 · 임지순 옮김 · 제이펍 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005150418",
+   "why": "해시·MAC·대칭·비대칭·서명·난수를 실무 쓰임새로 설명한다. '암호학 기본 개념' 요건과 '어디에 무엇을 쓰나'를 한국어로."
+  },
+  {
+   "id": "optee-docs",
+   "title": "OP-TEE Documentation",
+   "by": "TrustedFirmware.org",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://optee.readthedocs.io/en/latest/",
+   "why": "구조·보안 저장소·QEMU 빌드·예제 TA. 업무 첫 줄을 직접 해 볼 출발점."
+  },
+  {
+   "id": "gp-tee",
+   "title": "TEE Internal Core API Specification v1.4",
+   "by": "GlobalPlatform · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://globalplatform.org/specs-library/tee-internal-core-api-specification/",
+   "why": "TA 안에서 쓰는 저장 객체·암호 연산 함수의 원래 정의. 키 생성·저장·조회·삭제를 표준 함수로 짤 때 본다."
+  },
+  {
+   "id": "nist-800-57",
+   "title": "SP 800-57 Part 1 Rev. 5 · Recommendation for Key Management",
+   "by": "NIST · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final",
+   "why": "키 종류·용도 나누기·상태·암호 기간. 키 관리 체계 설계와 생명주기 줄의 기준."
+  },
+  {
+   "id": "tfa-tbb",
+   "title": "Trusted Firmware-A · Trusted Board Boot",
+   "by": "Trusted Firmware 프로젝트 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://trustedfirmware-a.readthedocs.io/en/latest/design/trusted-board-boot.html",
+   "why": "Arm 응용 칩의 신뢰 사슬(ROTPK·인증서)을 공개 코드로. 보안 부팅 줄의 본보기."
+  },
+  {
+   "id": "nxp-hse",
+   "title": "Hardware Security Engine (HSE) Product Brief",
+   "by": "NXP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.nxp.com/docs/en/product-brief/HSEPB.pdf",
+   "why": "HSE 가 무슨 암호·키 기능을 주는지 한 장으로. 자세한 참조 설명서는 NXP 계정·계약이 필요하다."
+  },
+  {
+   "id": "nxp-an13465",
+   "title": "AN13465 · S32K3xx Secure Boot",
+   "by": "NXP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.nxp.com/docs/en/application-note/AN13465.pdf",
+   "why": "같은 회사가 쓰는 MCU 계열에서 HSE 보안 부팅을 칩 회사가 설명한 문서."
+  },
+  {
+   "id": "kernel-tee",
+   "title": "Linux 커널 문서 · TEE 하위 시스템과 Trusted Keys",
+   "by": "kernel.org",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.kernel.org/tee/op-tee.html",
+   "why": "리눅스에서 OP-TEE 를 부르는 드라이버 구조. 커널 우대사항과 업무 첫 줄을 잇는다."
+  },
+  {
+   "id": "iso21434",
+   "title": "ISO/SAE 21434:2021",
+   "by": "ISO · SAE",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/70918.html",
+   "why": "TARA 와 사이버보안 수명 주기의 원문(유료). 회사 인증의 기준이다."
+  },
+  {
+   "id": "kr-embedded-os",
+   "title": "임베디드 OS 개발 프로젝트",
+   "by": "이만우 · 인사이트 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003160848",
+   "why": "ARM 위에서 부트 코드·인터럽트·컨텍스트 전환을 직접 만든다. 컴퓨터 구조·임베디드 요건의 한국어 출발점."
+  },
+  {
+   "id": "ldd3",
+   "title": "Linux Device Drivers, 3rd Edition",
+   "by": "Jonathan Corbet · Alessandro Rubini · Greg Kroah-Hartman · O'Reilly · 2005",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://lwn.net/Kernel/LDD3/",
+   "why": "드라이버 구조·메모리·ioctl 의 고전(무료 공개). 커널이 많이 바뀌어 개념 위주로 읽는다."
+  },
+  {
+   "id": "ostep",
+   "title": "Operating Systems: Three Easy Pieces",
+   "by": "Remzi · Andrea Arpaci-Dusseau",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+   "why": "가상 메모리·프로세스·동시성·파일 시스템. '운영체제 기본 이해' 요건을 무료로 채운다."
+  },
+  {
+   "id": "hhh",
+   "title": "The Hardware Hacking Handbook",
+   "by": "Jasper van Woudenberg · Colin O'Flynn · No Starch Press · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://nostarch.com/hardwarehacking",
+   "why": "보안 부팅을 깨는 글리치·부채널 공격을 공격자 쪽에서. 검증 줄의 '거부해야 할 경우'를 늘린다."
+  },
+  {
+   "id": "picoctf",
+   "title": "picoCTF",
+   "by": "Carnegie Mellon University",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://picoctf.org/",
+   "why": "상시 열려 있는 CTF 연습 문제. 우대사항 'CTF 경험'을 기록으로 남길 수 있다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "암호 도구 고르기",
+   "time": "1~2주",
+   "goal": "대칭·비대칭·해시·MAC·KDF 를 어디에 쓰는지 예로 설명할 수 있다.",
+   "resources": [
+    "rwc-ko",
+    "nist-800-57"
+   ],
+   "task": "위 풀이의 서명 검증·키 갈라 내기 예시를 직접 돌리고, '파일 암호화 + 변조 확인'을 AES-GCM 으로 덧붙여 본다."
+  },
+  {
+   "title": "TrustZone 과 OP-TEE 띄우기",
+   "time": "2~3주",
+   "goal": "QEMU 에서 OP-TEE 를 빌드해 띄우고, 예제 TA 를 고쳐 리눅스 앱에서 부를 수 있다.",
+   "resources": [
+    "optee-docs",
+    "ostep",
+    "kernel-tee"
+   ],
+   "task": "'키를 만들고 번호만 돌려주는' TA 와, 그 번호로 서명을 요청하는 리눅스 앱을 만든다. 키 값은 일반 세계에 한 번도 나오지 않게."
+  },
+  {
+   "title": "키 생명주기를 표준 API 로",
+   "time": "2주",
+   "goal": "보안 저장 객체로 생성·저장·조회·삭제를 짜고, 잘못된 순서를 거부한다.",
+   "resources": [
+    "gp-tee",
+    "nist-800-57"
+   ],
+   "task": "2단계 TA 에 상태 기계(활성 전 → 활성 → 비활성 → 파기)를 넣고, 파기 뒤 재사용·잘못된 번호·빈 입력을 넣는 음성 시험 10개를 쓴다."
+  },
+  {
+   "title": "보안 부팅 사슬",
+   "time": "2~3주",
+   "goal": "단계마다 무엇이 무엇을 검사하는지 그리고, 서명 검사·롤백 방지를 구현해 본다.",
+   "resources": [
+    "tfa-tbb",
+    "nxp-hse",
+    "nxp-an13465",
+    "hhh"
+   ],
+   "task": "가상 '부트로더'가 펌웨어 파일의 서명과 버전을 검사하고, 서명 1바이트 변조·예전 버전·다른 키 서명을 모두 거부하는지 확인하는 작은 프로그램과 시험을 만든다."
+  },
+  {
+   "title": "표준과 공격 쪽 시선 (선택)",
+   "time": "계속",
+   "goal": "만든 기능을 위협 분석(TARA)으로 설명하고, 공격 문제를 풀어 본다.",
+   "resources": [
+    "iso21434",
+    "picoctf",
+    "ldd3"
+   ],
+   "task": "3·4단계 결과물의 자산·위협·대책을 한 장 표로 정리하고, picoCTF 의 암호·바이너리 문제 몇 개의 풀이를 기록한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 원티드 기업 정보의 평균연봉 표기는 **6,032만원** — 공시가 아니라 집계값이고, 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 원티드 기업 정보(2026-11 확인)",
+    "note": "같은 화면의 국민연금 가입 사원 수 804명. 원티드가 이 값을 어떤 자료로 계산했는지는 화면에서 확인하지 못했다 [20]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 공시가 없다{추론}. 공고에 연봉은 없고 전형 끝에 처우 협의 단계가 있다 [1]. 이 공고는 5년 이상 경력을 요구해, 연차가 섞인 회사 평균을 제안 금액으로 읽으면 안 된다{추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "리커버리 휴가",
+    "detail": "법정 연차와 별도로 매월 1회 유급"
+   },
+   {
+    "name": "유연근무제",
+    "detail": "재량근무·선택적근무 운영"
+   },
+   {
+    "name": "식사",
+    "detail": "Kitchen 42 — 셰프가 만든 식사 하루 세 끼 무료, Cafe 42 음료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "여가·건강 등에 자유 사용, 연간 최대 300만원. 설·추석에 복지 포인트 추가"
+   },
+   {
+    "name": "건강",
+    "detail": "프리미엄 건강검진 전액 지원, 단체상해보험(본인·배우자·자녀·본인 부모), 상주 간호사·심리·재무·법률 상담(EAP)"
+   },
+   {
+    "name": "운동",
+    "detail": "Fitness 42 — 사내 피트니스, 1:1 PT·GX"
+   },
+   {
+    "name": "전기차",
+    "detail": "구매 시 차량 가격 최대 15%(한도 1,000만원) 지원, 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 사내 대출",
+    "detail": "근속 연수에 따라 1,000만~5,000만원, 이자 0%"
+   },
+   {
+    "name": "교육",
+    "detail": "국내외 교육·세미나·학회 참가비 지원"
+   },
+   {
+    "name": "직장 어린이집",
+    "detail": "임직원 자녀 대상, 특별활동 운영"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "최신 업무 기기, 장기근속 포상(휴가·포상금), 휴양시설 매월 추첨, 경조사 지원, 인재 추천 보상, 자발적 팀 워크숍 비용"
+   }
+  ],
+  "note": "포티투닷 채용 사이트 '업무 몰입 프로그램' 페이지 기준(게시일 표시 없음, 같은 회사 다른 풀이에서 2026-11-25 확인). 한국 본사 기준이고 해외 법인은 현지 정책을 따른다고 적혀 있다 [2]"
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥(소프트웨어드림센터)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/경기도 성남시 수정구 창업로40번길 20",
+  "note": "주소는 포티투닷 홈페이지 하단 회사 정보 [3]이고, 같은 주소가 소프트웨어드림센터 소재지로 공고된 바 있다 [21]. 공고 근무지는 'Pangyo (Software Dream Center)'에 '(Remote)' 표기가 붙어 있지만 원격 범위는 적혀 있지 않아 처우 협의 때 확인한다 [1]{추론}"
+ }
+}
