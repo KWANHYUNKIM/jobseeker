@@ -178,6 +178,7 @@
   "ats-hkmc:hyundai:2026N2322": "hyundai-robotics-perceptive-ai",
   "wanted-387529": "hyundai-robotics-perceptive-ai",
   "wanted-387536": "hyundai-sdf-data-architect",
+  "ats-hkmc:hyundai:2026N2396": "hyundai-sdf-logistics-integrated-ops",
   "ats-hkmc:hyundai:2026N2387": "hyundai-sdv-controller-sw-integration",
   "wanted-393817": "hyundai-sdv-controller-sw-integration",
   "ats-hkmc:hyundai:2026N298": "hyundai-shucle-data-engineer",
@@ -1991,6 +1992,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 14
+  },
+  {
+   "id": "hyundai-sdf-logistics-integrated-ops",
+   "company": "현대자동차",
+   "role": "사내/사외 물류 통합운영 시스템 기획/개발",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2396"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "hyundai-sdv-controller-sw-integration",

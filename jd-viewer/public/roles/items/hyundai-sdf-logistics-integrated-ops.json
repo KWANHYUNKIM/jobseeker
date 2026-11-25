@@ -1,0 +1,1027 @@
+{
+ "id": "hyundai-sdf-logistics-integrated-ops",
+ "company": "현대자동차",
+ "role": "사내/사외 물류 통합운영 시스템 기획/개발",
+ "team": "제조물류지능화 · SDF 물류 컨트롤 타워 · 의왕연구소",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2396"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "완성차 공장 안 부품 물류(사내)와 공장 밖 물류(사외)를 돌리는 **운영 시스템을 직접 기획하고 서버·화면까지 개발**하고, 현장의 다른 시스템과 이어 붙이는 자리입니다.[1]",
+  "env": "그룹은 공장을 소프트웨어 중심(SDF)으로 바꾸는 중이고 물류로봇(AMR) 주행 제어도 직접 개발했습니다.[2] 이 팀은 그 방향의 물류 컨트롤 타워로 소개됩니다.[1] 언어는 Java 또는 C#, 연동은 Kafka·RabbitMQ·DB·소켓·REST 입니다.[1]",
+  "oneline": "5년 넘게 물류·시스템 기획을 해 온 사람이 **공장 물류 시스템을 처음부터 끝까지(설계 → 개발 → 연동 → 운영 → 양산) 끌고 가는** 자리. 일반 웹 백엔드보다 **연동·현장 검증**이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "본 직무는 완성차 공장을 중심으로 운영되는 물류 프로세스를 설계하고 물류 운영을 위한 시스템의 기획과 내재화 개발하는 업무를 수행합니다.",
+   "short": "공장 물류를 설계하고 그 물류를 돌리는 시스템을 직접 기획·개발하는 일의 총괄 문장.",
+   "why": "공고의 팀 소개는 이 조직을 SDF 물류 컨트롤 타워라고 부릅니다.[1] SDF(소프트웨어 중심 공장)는 공장 설비의 성능과 생산성을 소프트웨어 업데이트로 올리는 방향이고, 현대차그룹은 물류로봇(AMR) 주행 제어까지 직접 개발했다고 밝혔습니다.[2] '내재화'는 그 방향의 물류 쪽 이름으로 읽힙니다 {추론}.",
+   "actually": {
+    "items": [
+     "**물류 프로세스 설계** — 부품이 입고 → 보관 → 라인 옆 공급까지 어떻게 흐르는지 그리는 일. 현대차그룹의 미국 공장(HMGMA)은 완성차 1대분 부품을 묶어(원키트) 컨베이어와 같은 속도로 보내는 방식을 썼다.[4]",
+     "**운영 시스템 기획** — 현장이 무엇을 보고 무엇을 누르는지(요청·재고·로봇 상태)를 화면과 규칙으로 정한다 {추론}.",
+     "**내재화 개발** — 외부 솔루션을 사 쓰는 대신 직접 만든다. 이 공고가 '직접 개발'을 되풀이하는 이유다.[1]"
+    ]
+   },
+   "how_far": "한 줄 요약 문장이라 따로 풀 것은 없습니다. 아래 ■ 묶음 한 개와 여섯 줄이 실제 일입니다.",
+   "refs": [
+    1,
+    2,
+    4
+   ],
+   "study": [
+    "hmg-etech",
+    "hmgma-onekit"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 자동차 공장 내 물류 운영 시스템 기획 및 개발",
+   "short": "아래 여섯 줄이 모두 '공장 안 물류 운영 시스템'을 기획부터 현장 검증까지 한 사람이 끌고 가는 일이라는 묶음 머리.",
+   "why": "여섯 줄은 설계 → 개발 → 연동 → 운영 → 양산 → 검증으로 이어져 한 시스템의 일생을 따릅니다.[1] 기획과 개발을 같은 사람이 맡는 것이 이 공고의 특징입니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 물류 운영 시스템 아키텍처 설계 및 Back/Front단 직접 개발",
+   "short": "물류 운영 시스템의 전체 구조를 그리고, 서버(Back)와 화면(Front)을 직접 짠다.",
+   "why": "공장 물류는 요청을 받고, 어느 로봇·차량이 갈지 정하고, 재고를 맞추고, 작업자가 화면으로 확인하는 일이 한 덩어리입니다. 미국 공장에서 AMR 200여 대가 같이 돌고[3] 물류센터는 재고와 필요량을 실시간으로 예측한다[4]고 하니, 이 모든 것이 하나의 운영 시스템 위에서 맞물려야 합니다 {추론}.",
+   "actually": {
+    "intro": "공고가 이름을 든 도구와 일반 구조로 풀면 이렇습니다. 이 팀의 실제 구조는 공개되지 않았습니다.",
+    "items": [
+     "**구조 그리기** — 시스템·컨테이너(서버·DB·메시지 큐)·구성 요소 순으로 확대해 가며 그림을 나누면 읽는 사람이 길을 잃지 않는다(C4 모델).[12]",
+     "**글로 그리는 그림** — Mermaid 처럼 글로 적는 다이어그램은 코드와 같이 깃에 두고 고칠 수 있다. 공고가 이 도구들을 이름으로 든다.[13][23]",
+     "**층 나누기** — 센서·설비 → 제어 → 생산 관리(MES) → 전사(ERP)의 층 모델(ISA-95) 위에서 이 시스템이 어느 층 사이를 잇는지 먼저 정한다.[7]",
+     "**Back/Front 를 둘 다** — 서버는 요청 접수·배정·재고 계산, 화면은 현황판·예외 처리. 우대에 Java·C# 웹 개발이 적힌 이유다.[1]"
+    ]
+   },
+   "how_far": "'아키텍처 설계'는 처음부터 큰 그림을 확정하는 일이 아니라, **현장 시스템과 어떤 모양으로 연결할지(경계)를 정하고 바꿔도 되는 곳을 남기는 일**입니다 {추론}. 직접 개발한다고 했으니 그림만 그리는 자리는 아닙니다.[1]",
+   "refs": [
+    1,
+    3,
+    4,
+    7,
+    12,
+    13,
+    23
+   ],
+   "study": [
+    "c4",
+    "mermaid",
+    "enterprise-architect",
+    "isa95",
+    "wiki-spring-boot"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· AI 기반 물류 운영 최적화 알고리즘 및 예측 모델 개발",
+   "short": "물류에서 '어디로 얼마나 보낼지'를 계산하는 최적화와 '다음에 뭐가 모자랄지'를 맞히는 예측 모델을 만든다.",
+   "why": "글로비스 물류센터는 수요 데이터를 실시간으로 분석해 보유 재고와 필요량을 예측하고 있고[4], 위아의 통합 관제는 공장 상황을 보고 스케줄링으로 물류 효율을 높이도록 만들었다고 소개됐습니다.[5] 같은 방향의 일이 이 자리에도 있다는 뜻입니다 {추론}.",
+   "actually": {
+    "intro": "'AI 기반'의 안을 보통 이렇게 나눕니다. 이 팀이 쓰는 모델은 공개되지 않았습니다.",
+    "items": [
+     "**배정(최적화)** — 요청 N건과 로봇 M대를 짝지어 이동 거리·대기 시간을 줄인다. 적재량·시간 창 같은 제약을 걸어 푸는 것이 정석이다.[11]",
+     "**수요 예측** — 어느 부품이 언제 얼마나 필요한지 생산 계획과 과거 사용량으로 맞힌다. 틀리면 라인이 서거나 재고가 쌓인다.[4]",
+     "**규칙 먼저, 모델은 다음** — 현장에는 지켜야 할 약속(안전 구역·작업 순서)이 많아 AI 가 제안하고 규칙이 걸러 내는 구조가 흔하다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "순서대로 배정 vs 전체를 보고 짝짓기 (가상 값)",
+     "body": "로봇은 0m·100m 에 있고 요청은 10·40·60·90m 에서 옵니다. 앞에 온 두 요청(10m, 40m)을 그때 가장 가까운 로봇에 순서대로 배정하면 10+60=70m, 네 요청 가운데 두 건을 골라 짝짓는 최소는 10+10=20m 입니다(직접 돌린 출력). 같은 로봇 두 대로도 정하는 방식에 따라 이동 거리가 3배 넘게 달라집니다.",
+     "lang": "python",
+     "code": "from itertools import permutations\n\nrobots = [0, 100]\njobs = [10, 40, 60, 90]\nfree = [0, 1]\ng = 0\nfor j in jobs[:2]:\n    r = min(free, key=lambda r: abs(robots[r] - j))\n    free.remove(r)\n    g += abs(robots[r] - j)\nbest = min(sum(abs(robots[r] - jobs[j]) for r, j in zip((0, 1), p)) for p in permutations(range(4), 2))\nprint(g, best)  # 앞 두 요청 순서대로 70 m / 두 건을 골라 짝짓는 최소 20 m"
+    }
+   ],
+   "how_far": "첫 단계는 **규칙으로 만든 기준선을 두고 모델이 그보다 나은지 재는 것**입니다. 박사 수준의 알고리즘 연구라기보다 현장 데이터를 모아 기준선과 견주는 엔지니어링이 중심입니다 {추론}.",
+   "refs": [
+    4,
+    5,
+    11
+   ],
+   "study": [
+    "ortools",
+    "ddia-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 생산공장 내 타 시스템 인터페이스 구축 (Kafka/RabbitMQ MessageQueue, DB to DB, Socket, REST API 등)",
+   "short": "공장 안 다른 시스템(생산·설비·로봇)과 메시지 큐·DB·소켓·REST 로 말을 주고받게 이어 붙인다.",
+   "why": "공장에는 생산 계획, 로봇 관제, 창고, 설비 제어가 따로 돌고 이 사이를 이어야 물류가 움직입니다. 그룹은 SDF 를 하드웨어·제어·데이터 플랫폼·애플리케이션 4개 층으로 나눠 각 층을 독립적으로 개발한다고 설명했습니다.[2] 층 사이는 약속(인터페이스)으로만 만나야 하기 때문에 연결 방식이 여러 가지 필요합니다 {추론}.",
+   "actually": {
+    "intro": "공고가 적은 방식마다 따로 챙길 것이 다릅니다. 이 팀이 어느 시스템과 어떤 방식으로 잇는지는 공개되지 않았습니다.",
+    "items": [
+     "**메시지 큐(Kafka·RabbitMQ)** — 보내는 쪽과 받는 쪽의 속도·가동 시간이 달라도 되게 사이에 두는 우편함. 같은 메시지가 두 번 올 수 있어 받는 쪽이 '이미 처리한 것'을 알아야 한다.[8][9]",
+     "**DB to DB** — 상대 DB 의 표(인터페이스 테이블)에 상태 칸(READY → SENT)을 두고 한 번씩만 가져간다. 단순하지만 폴링 주기·잠금·재처리가 약속이다.",
+     "**소켓** — 바이트가 흐를 뿐이라 메시지 경계(길이 머리말·구분자)를 직접 정해야 한다.[17]",
+     "**REST API** — 요청·응답이 분명해 새 시스템과 가장 쉽게 붙지만 상대가 느리거나 죽었을 때(시간 제한·재시도)를 정해 둬야 한다.",
+     "**패턴 이름 알기** — 변환기·멱등 수신자·죽은 편지 큐 같은 이름이 통신 설계 대화를 짧게 해 준다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "메시지가 두 번 와도 한 번만 반영 (가상 값)",
+     "body": "T-001 이 두 번 도착하는 경우입니다. 이미 처리한 번호를 기억해 두 번째는 건너뜁니다(직접 돌린 출력: 재고 KIT-A 2 → 0, KIT-B 1 → 0).",
+     "lang": "python",
+     "code": "msgs = [(\"T-001\", \"KIT-A\", 1), (\"T-002\", \"KIT-B\", 1), (\"T-001\", \"KIT-A\", 1), (\"T-003\", \"KIT-A\", 1)]\ndone = set()\nstock = dict([(\"KIT-A\", 2), (\"KIT-B\", 1)])\nfor mid, kit, q in msgs:\n    if mid in done:\n        print(\"중복 건너뜀\", mid)\n        continue\n    stock[kit] -= q\n    done.add(mid)\n    print(\"처리\", mid, kit, stock)\n# 처리 T-001 ... / 처리 T-002 ... / 중복 건너뜀 T-001 / 처리 T-003 KIT-A {'KIT-A': 0, 'KIT-B': 0}"
+    },
+    {
+     "title": "DB to DB — 상태 칸으로 한 번씩만 가져가기 (가상 값)",
+     "body": "READY 인 행만 가져가며 SENT 로 바꿉니다. 중간에 새로 들어온 4번만 다음 회차에 나오고 그다음은 빈 목록입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import sqlite3\nc = sqlite3.connect(\":memory:\")\nc.execute(\"create table if_order(id int primary key, kit text, status text default 'READY')\")\nc.executemany(\"insert into if_order(id,kit) values(?,?)\", [(1, 'A'), (2, 'B'), (3, 'A')])\n\ndef pull():\n    rows = c.execute(\"select id,kit from if_order where status='READY' order by id\").fetchall()\n    for i, _ in rows:\n        c.execute(\"update if_order set status='SENT' where id=?\", (i,))\n    return rows\n\nprint(pull())  # [(1,'A'),(2,'B'),(3,'A')]\nc.execute(\"insert into if_order(id,kit) values(4,'C')\")\nprint(pull())  # [(4,'C')]\nprint(pull())  # []"
+    },
+    {
+     "title": "소켓 — 쪼개져 와도 메시지 경계 찾기 (가상 메시지)",
+     "body": "앞 2바이트를 길이로 쓰고 쪼개 받은 조각을 이어 붙입니다. 세 조각으로 쪼개져도 두 메시지가 온전히 나옵니다(직접 돌린 출력: MOVE A1->B2, DONE A1).[17]",
+     "lang": "python",
+     "code": "import struct\n\ndef frame(b):\n    return struct.pack('>H', len(b)) + b\n\nstream = frame(b'MOVE A1->B2') + frame(b'DONE A1')\nchunks = [stream[:7], stream[7:15], stream[15:]]\nbuf = b''\nfor c in chunks:\n    buf += c\n    while len(buf) >= 2:\n        n = struct.unpack('>H', buf[:2])[0]\n        if len(buf) < 2 + n:\n            break\n        print(buf[2:2 + n].decode())\n        buf = buf[2 + n:]"
+    }
+   ],
+   "how_far": "다 깊게 아는 것보다 **방식마다 '중복·누락·지연이 났을 때 무엇이 깨지는가'를 설명할 수 있는 것**이 기준입니다 {추론}. 상대 시스템의 사양은 상대 팀이 정하고, 이 자리는 약속을 문서로 맺고 시험하는 쪽입니다.",
+   "refs": [
+    2,
+    8,
+    9,
+    10,
+    17
+   ],
+   "study": [
+    "wiki-kafka",
+    "kafka-docs",
+    "rabbit",
+    "eip",
+    "socket-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 코드 레벨 디버깅 — 소프트웨어 이슈 모니터링 및 코드 수정/배포",
+   "short": "운영 중인 시스템에서 문제가 나면 로그와 코드를 따라가 원인을 찾아 고치고, 그 수정을 배포한다.",
+   "why": "공장 물류가 멈추면 라인이 서므로 문제를 계속 지켜보고 빨리 고치는 일이 업무로 적혀 있습니다.[1] 가동 중인 시스템을 고칠 때는 일부에만 먼저 내보내 비교하는 조심스러운 배포가 일반적입니다.[16]",
+   "actually": {
+    "items": [
+     "**이슈 모니터링** — 로그·큐 적체·로봇 상태에서 평소와 다른 신호를 본다. 평균보다 늦은 쪽 끝(분위수)을 같이 본다 {추론}.",
+     "**코드 레벨 디버깅** — 화면이 아니라 코드와 로그로 '어느 메시지가 어느 줄에서 어긋났는지'를 따라간다. 연동이 많아서 상대 시스템 쪽 원인도 가려내야 한다.",
+     "**수정·배포** — 변경은 작게, 되돌릴 길을 두고, 일부 설비·라인에서 먼저 확인한다.[16]",
+     "**장애를 글로 남기기** — 원인·조치·재발 방지를 문서로 남기는 습관이 다음 장애를 줄인다 {추론}."
+    ]
+   },
+   "how_far": "'모니터링'은 별도 관제 인력이 아니라 **내가 만든 시스템을 내가 지켜보고 고치는 것**입니다. 야간·휴일 대응이 있는지는 공고에 없어 면접에서 확인할 부분입니다 {추론}.",
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "sre-canary",
+    "release-it"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 양산 전환 시 SW 품질 기준 수립 및 물류 운영 기술 지원",
+   "short": "시험 생산에서 양산으로 넘어갈 때 '이 소프트웨어는 이 기준을 넘어야 한다'를 정하고, 현장 물류 운영을 기술로 돕는다.",
+   "why": "신차·새 공장은 시험 생산 뒤 대량 생산(양산)으로 넘어가는데, 그때 물류 시스템이 멈추면 생산이 멈춥니다 {추론}. 머니투데이는 싱가포르 혁신센터(HMGICS)의 기술이 미국 공장·울산으로 넓어진다고 전했습니다.[6] 한 곳에서 맞춰 본 소프트웨어가 다른 공장으로 옮겨 가는 모양이 이 직무의 배경일 수 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**품질 기준 정하기** — 응답 시간·오류율·복구 시간 같은 숫자를 '넘어야 할 선'으로 문서화한다. 정적 분석(코드 냄새·버그)과 시험 통과율도 선에 넣을 수 있다.[15]",
+     "**양산 전 점검** — 대량·동시 요청, 네트워크 끊김, 로봇 대수 증가 같은 상황을 미리 시험하고 모자란 곳을 고친다.",
+     "**기술 지원** — 라인 시작 직후 현장이 겪는 문제(요청이 안 들어온다, 재고가 안 맞는다)를 곁에서 푼다 {추론}."
+    ]
+   },
+   "how_far": "기준은 **공장 쪽 요구와 시스템 한계를 맞춘 숫자**이고, 개발자가 일방적으로 정하지 않습니다 {추론}. 양산 직후 현장 지원이 있어 사무실에서만 일하는 자리는 아닐 수 있습니다.",
+   "refs": [
+    6,
+    15
+   ],
+   "study": [
+    "sonarqube",
+    "sre-canary"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 통합 테스트 시나리오 설계 및 현장 검증",
+   "short": "현장에서 일어날 수 있는 일들을 시나리오로 적고, 실제 공장 설비와 같이 돌려 맞는지 확인한다.",
+   "why": "물류 시스템은 로봇·창고·생산 설비와 같이 돌아야 의미가 있어서 개발 PC 의 시험만으로는 알 수 없는 문제가 현장에서 드러납니다.[3] 사람이 지나가면 AMR 이 피해 가는 것처럼[3] 현장 상황은 시험표에 다 적히지 않습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**시나리오 설계** — 정상 흐름(요청 → 배정 → 도착 → 완료)과 예외(로봇 정지·재고 없음·메시지 중복·상대 시스템 다운)를 표로 적는다.",
+     "**통합 시험** — 연동한 시스템들을 한 번에 이어 돌려 처음부터 끝까지 흐름이 맞는지 본다.",
+     "**현장 검증** — 실제 라인에서 요청을 내보내 보고 시간·정확도를 잰다. 안전이 걸린 부분은 현장 책임자와 함께 한다 {추론}."
+    ]
+   },
+   "how_far": "'설계'는 시험 절차서를 쓰는 일이고 '현장 검증'은 그것을 현장에서 실행해 결과를 남기는 일입니다. 안전·생산 중단에 관한 승인은 현장 쪽 책임자가 맡습니다 {추론}.",
+   "refs": [
+    3
+   ],
+   "study": [
+    "cd-book",
+    "sre-canary"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 산업공학/물류/소프트웨어 관련 학과의 학사 이상의 학위를 보유하신 분",
+   "short": "학위 요건이라 코드가 아니라 서류로 걸리는 문턱 — 산업공학·물류 전공도 들어간다는 점이 특징.",
+   "why": "물류 흐름을 숫자로 푸는 것은 산업공학 쪽 도구이고 시스템을 짜는 것은 소프트웨어 쪽이라, 공고는 두 갈래를 모두 학위로 인정합니다.[1]",
+   "how_far": "학사 이상이면 되고 전공은 세 갈래 중 하나입니다. 다른 전공이면 아래 경력 줄을 어떻게 채웠는지가 설명 대상입니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 5년 이상의 물류 운영 시스템 설계/개발 또는 SW시스템 기획 경력을 보유하신 분",
+   "short": "물류 운영 시스템을 5년 넘게 설계·개발했거나, 소프트웨어 시스템 기획을 5년 넘게 해 본 경력이 필요하다.",
+   "why": "기획에서 개발까지 맡고 현장 장애와 양산 전환까지 챙기는 자리라 시스템이 실제로 돌아간 경험을 요구합니다.[1]",
+   "how_far": "'물류 운영 시스템' 경력이 아니어도 **소프트웨어 시스템 기획 경력**으로 갈음할 수 있다고 적혀 있어, 물류 도메인이 없는 시스템 기획자도 대상에 들어갑니다. 대신 물류의 낱말(재고·입출고·배정)은 입사 전에 익혀야 합니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "isa95",
+    "hmg-etech"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 주요 소프트웨어 설계 툴 활용 능력을 보유하신 분 (Enterprise Architect, Mermaid, draw.io 등)",
+   "short": "구조를 그림으로 그려 다른 사람과 합의하는 능력 — Enterprise Architect·Mermaid·draw.io 중 하나 이상을 써 본 것.",
+   "why": "기획과 개발을 오가는 자리에서 그림은 현장·타 시스템 담당자와 말을 맞추는 약속의 도구입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**Enterprise Architect** — UML·구조·요구를 한 모델에 모으는 설계 도구.[23]",
+     "**Mermaid** — 글로 적는 다이어그램이라 코드와 같이 깃에서 고친다.[13]",
+     "**draw.io** — 무료 그림 도구. 발표·회의용 그림에 많이 쓴다.",
+     "**표기 정하기** — 도구보다 '그림 하나에 한 수준만' 담는 규칙이 중요하다(C4 모델).[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "인터페이스 흐름을 글로 그리기 (Mermaid 예)",
+     "body": "물류 요청이 시스템 사이를 지나가는 순서를 글로 적은 예입니다. 가상의 이름이며 실제 현대차 구조가 아닙니다.[13]",
+     "lang": "text",
+     "code": "sequenceDiagram\n  participant 생산 as 생산 계획 시스템\n  participant 물류 as 물류 운영 시스템\n  participant 관제 as 로봇 관제\n  생산->>물류: 부품 요청 (REST)\n  물류->>관제: 운반 지시 (메시지 큐)\n  관제-->>물류: 도착 보고\n  물류-->>생산: 공급 완료"
+    }
+   ],
+   "how_far": "도구 숙련도보다 그림으로 시스템 경계와 흐름을 설명하는 능력이 핵심입니다. 세 도구 중 하나라도 실제 문서로 낸 경험을 보여 주면 됩니다.",
+   "refs": [
+    12,
+    13,
+    23
+   ],
+   "study": [
+    "c4",
+    "mermaid",
+    "enterprise-architect"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 시스템 간 인터페이스 설계 및 개발 경험을 보유하신 분 (MessageQueue, DB to DB, Socket, REST API 등)",
+   "short": "상대 시스템과 약속을 맺는 경험 — 메시지 큐·DB to DB·소켓·REST 중 실제로 연결해 본 적이 있어야 한다.",
+   "why": "연동 줄이 업무와 요건 양쪽에 있는 만큼 이 자리의 가장 큰 기술 축입니다.[1] 연결 방식이 바뀌면 중복·지연·장애 방식이 달라져 경험이 없으면 시험 단계에서 놓칩니다 {추론}.",
+   "actually": {
+    "items": [
+     "**설계** — 누가 보내고 누가 받는지, 메시지 모양, 실패 시 재시도·알림을 문서로 정한다.",
+     "**개발** — 보내는 쪽은 재시도, 받는 쪽은 중복 방지(번호 기억)와 순서가 중요하다.[8][9]",
+     "**시험** — 상대 시스템이 느리거나 죽은 상황을 일부러 만들어 본다.",
+     "**기록** — 어떤 메시지가 언제 어디까지 갔는지 남겨 문제가 났을 때 따라간다."
+    ]
+   },
+   "how_far": "네 방식을 다 써 봤어야 하는 것은 아닙니다. **한두 방식으로 실제 연결해 본 경험과 실패 방식을 설명하는 능력**이 있으면 나머지는 배우면서 합니다 {추론}.",
+   "refs": [
+    1,
+    8,
+    9,
+    10,
+    17
+   ],
+   "study": [
+    "wiki-kafka",
+    "kafka-docs",
+    "rabbit",
+    "eip",
+    "socket-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 대규모 물류 관련 시스템 개발 프로젝트 수행 경험을 보유하신 분",
+   "short": "큰 규모의 물류 시스템을 만들어 본 경험 — 요청 건수·로봇 대수·재고 품목이 많은 현장.",
+   "why": "그룹의 미국 공장은 AMR 200여 대가 한 공장 안에서 도는 규모입니다.[3] 규모가 커지면 중복·지연·동시 처리 문제가 한꺼번에 드러납니다 {추론}.",
+   "how_far": "'대규모'는 정해진 숫자가 없습니다. 일 몇만 건 처리나 수백 대 설비 연결처럼 **규모를 숫자로 말할 수 있으면** 충분합니다 {추론}.",
+   "refs": [
+    3
+   ],
+   "study": [
+    "ddia-ko",
+    "release-it"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· JAVA 또는 C# 활용 Web 기반 시스템 개발 경험을 보유하신 분",
+   "short": "Java 또는 C# 으로 웹 서비스를 만들어 본 경험 — 이 팀의 Back 단 언어가 둘 중 하나라는 신호.",
+   "why": "공고의 기술 목록에 Java·C# 이 함께 올라 있습니다.[1] 자동차 공장 안에서는 C# 도 흔한 현장 시스템 언어라고 알려져 있습니다 {추론}.",
+   "how_far": "둘 중 하나로 서버와 화면을 낸 경험이면 됩니다. Java 쪽은 스프링 부트가 사실상 기본이라 공식 문서가 출발점입니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "spring-boot-docs",
+    "wiki-spring-boot"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 완성차 공장 물류 운영 또는 사내/사외 물류 프로세스 수행 경험을 보유하신 분",
+   "short": "완성차 공장에서 부품·완성차가 어떻게 들어오고 나가는지 일해 본 경험 — 낱말을 아는 것이 큰 장점.",
+   "why": "원키트·부품 공급·완성차 출하는 이 업계의 낱말입니다.[4] 도메인을 알면 현장과 말이 빨리 통합니다 {추론}.",
+   "how_far": "없어도 지원할 수 있는 우대 줄입니다. 없으면 HMGMA 기사로 흐름을 익혀 면접에서 낱말을 맞게 쓰는 것이 최소선입니다 {추론}.",
+   "refs": [
+    3,
+    4
+   ],
+   "study": [
+    "hmgma-visit",
+    "hmgma-onekit"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· SW품질 지표 관리 체계 개발 및 CI/CD 프로그램 툴 활용 경험을 보유하신 분 (Jenkins, Git/SVN , Docker, Sonarqube 등)",
+   "short": "코드 품질을 숫자로 재서 관리하고, 빌드·시험·배포를 자동으로 돌려 본 경험 — Jenkins·Git/SVN·Docker·SonarQube.",
+   "why": "공고가 도구 이름을 그대로 적은 줄입니다.[1] 양산 전환 때 품질 기준을 세우는 업무와 이어져 기준을 도구로 자동 점검하는 일이 따라옵니다 {추론}.",
+   "actually": {
+    "items": [
+     "**Jenkins** — 커밋마다 빌드·시험을 자동으로 돌리는 서버. 단계를 Jenkinsfile 에 적는다.[14]",
+     "**Git/SVN** — 버전 관리. 공고가 SVN 도 적은 것은 오래된 코드가 남아 있기 때문으로 보인다 {추론}.",
+     "**Docker** — 실행 환경을 포장해 개발·시험·현장에서 똑같이 돌린다.",
+     "**SonarQube** — 정적 분석 점수를 보고 기준 미달이면 합치기를 막는 '품질 관문'.[15]"
+    ]
+   },
+   "how_far": "도구 네 개를 다 쓸 필요는 없고 **파이프라인을 직접 만들어 기준 미달이면 막아 본 경험**이 핵심입니다 {추론}.",
+   "refs": [
+    1,
+    14,
+    15
+   ],
+   "study": [
+    "jenkins-pipeline",
+    "wiki-docker",
+    "docker-docs",
+    "sonarqube",
+    "cd-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 제조 협력사 관리 및 양산 이관 경험을 보유하신 분",
+   "short": "협력사가 만든 설비·소프트웨어를 관리하고, 시험 생산에서 양산으로 넘겨 본 경험.",
+   "why": "공고가 본문에서 '내재화'를 강조하지만 현장 설비와 로봇은 협력사 제품이 많습니다. 위아 같은 계열사·협력사의 로봇이 현장에 들어옵니다.[4][5] 그 협력사와 약속을 맞추고 넘겨받는 일이 따릅니다 {추론}.",
+   "how_far": "'양산 이관'은 시험 단계의 결과물을 운영 조직에 넘기는 절차(문서·교육·시험 합격)입니다. 경험이 없다면 위 양산 전환 줄의 점검표 형식으로 설명할 수 있으면 충분합니다 {추론}.",
+   "refs": [
+    4
+   ],
+   "study": [
+    "release-it",
+    "cd-book"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "서버와 화면, 그리고 상대 시스템과의 연결까지 한 사람이 끌고 가는 일이 맞는 사람[1]",
+   "현장(공장)에서 내가 만든 시스템이 실제로 돌아가는 것을 보고 싶은 사람[3]",
+   "물류·재고·배정 같은 문제를 숫자로 풀어 보고 싶은 사람[11]"
+  ],
+  "hard": [
+   "경력 5년 이상이 필수라 문턱이 높다[1]",
+   "연동 대상이 많아 상대 팀과의 합의·문서가 일의 큰 몫이다 {추론}",
+   "근무지가 의왕이고 양산 직후 현장 지원이 있을 수 있다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "상대 시스템이 같은 메시지를 두 번 보냈습니다. 재고가 두 번 줄면 어떻게 막겠어요?",
+   "a": "받는 쪽의 중복 방지(번호 기억)와 전달 보장 설명.[8][10]"
+  },
+  {
+   "q": "소켓으로 받은 데이터가 중간에 잘려 왔습니다. 메시지를 어떻게 나누겠어요?",
+   "a": "길이 머리말·구분자 같은 경계 약속.[17]"
+  },
+  {
+   "q": "로봇 10대에 요청 30건을 배정합니다. 어떤 기준으로 정하겠어요?",
+   "a": "기준선(규칙)과 최적화 비교, 제약.[11]"
+  },
+  {
+   "q": "양산 직전에 이 시스템이 넘어야 할 기준을 숫자로 말해 보세요.",
+   "a": "응답·오류·복구와 품질 관문.[15]"
+  },
+  {
+   "q": "운영 중 요청이 안 들어온다는 신고를 받았습니다. 첫 확인은?",
+   "a": "로그·큐 적체·상대 시스템 상태, 일부 배포.[16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · [제조물류지능화] 사내/사외 물류 통합운영 시스템 기획/개발",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=396",
+   "kind": "posting",
+   "note": "팀 소개(SDF 물류 컨트롤 타워)·업무·요건·우대, 근무지 의왕연구소, 경력, 마감 2026-11-30"
+  },
+  {
+   "n": 2,
+   "title": "현대자동차그룹 저널 · 이포레스트 테크데이 2024 — 미래 공장을 만나다",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000162953",
+   "kind": "company",
+   "date": "2024-10-23",
+   "note": "SDF 정의·4개 층, 물류로봇(AMR) 주행 제어 내재화(전후진·선회), 이포레스트 약 200건 전시"
+  },
+  {
+   "n": 3,
+   "title": "한국경제 · 사람보다 로봇이 더 많은 공장…현대차그룹 美 HMGMA 가보니",
+   "url": "https://www.hankyung.com/article/202503307844i",
+   "kind": "news",
+   "date": "2025-03-30",
+   "note": "AMR 200여 대가 부품 이송, 작업자를 만나면 피해 이동, 주차 로봇 — 기자 현장 취재"
+  },
+  {
+   "n": 4,
+   "title": "한국경제 · '글로비스' 드론이 부품망 관리하고 '위아' 로봇이 운반",
+   "url": "https://www.hankyung.com/article/202503269681i",
+   "kind": "news",
+   "date": "2025-03-27",
+   "note": "글로비스 물류센터 재고·필요량 예측, 원키트 AGV, 위아 AGV 가 부품을 공정에 적시 공급"
+  },
+  {
+   "n": 5,
+   "title": "디지털데일리 · 현대위아, 자율주행 물류로봇 실전 투입… 美 현대차 공장에 공급",
+   "url": "https://www.ddaily.co.kr/page/view/2023042516001350796",
+   "kind": "news",
+   "date": "2023-04-25",
+   "note": "AMR·AGV 상용화, 통합 관제 시스템(스케줄링)·라이다 + 3D 카메라 — 계획 발표 기사"
+  },
+  {
+   "n": 6,
+   "title": "머니투데이(영문) · Hyundai Motor, Kia accelerate smart factory upgrades with homegrown technology",
+   "url": "https://www.mt.co.kr/en/industry/2026/10/18/2026101616321010350",
+   "kind": "news",
+   "date": "2026-10",
+   "note": "E-FOREST Polaris(운영 정보 통합·원인 분석 표준화)·단일 표준 제조 플랫폼 발언 — 기계 번역판"
+  },
+  {
+   "n": 7,
+   "title": "ISA · ISA-95 Standard (IEC 62264)",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+   "kind": "reference",
+   "note": "제조 시스템 층(0~4)과 MES·ERP 사이 정보 교환"
+  },
+  {
+   "n": 8,
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference",
+   "note": "최소 한 번·최대 한 번·정확히 한 번"
+  },
+  {
+   "n": 9,
+   "title": "RabbitMQ Tutorials",
+   "url": "https://www.rabbitmq.com/tutorials",
+   "kind": "reference",
+   "note": "작업 큐·발행/구독·확인 응답(ack)"
+  },
+  {
+   "n": 10,
+   "title": "Enterprise Integration Patterns",
+   "url": "https://www.enterpriseintegrationpatterns.com/",
+   "kind": "reference",
+   "note": "메시징 패턴 목록(채널·변환·멱등 수신자 등)"
+  },
+  {
+   "n": 11,
+   "title": "Google OR-Tools · Vehicle Routing",
+   "url": "https://developers.google.com/optimization/routing",
+   "kind": "reference",
+   "note": "차량 경로·시간 창·적재량 제약 예제"
+  },
+  {
+   "n": 12,
+   "title": "The C4 model",
+   "url": "https://c4model.com/",
+   "kind": "reference",
+   "note": "구조 그림 네 단계 표기법"
+  },
+  {
+   "n": 13,
+   "title": "Mermaid 문서",
+   "url": "https://mermaid.js.org/intro/",
+   "kind": "reference",
+   "note": "글로 적는 다이어그램"
+  },
+  {
+   "n": 14,
+   "title": "Jenkins User Handbook · Pipeline",
+   "url": "https://www.jenkins.io/doc/book/pipeline/",
+   "kind": "reference",
+   "note": "Jenkinsfile 로 단계를 코드화"
+  },
+  {
+   "n": 15,
+   "title": "SonarQube 문서",
+   "url": "https://docs.sonarsource.com/sonarqube-server/",
+   "kind": "reference",
+   "note": "품질 관문(quality gate)"
+  },
+  {
+   "n": 16,
+   "title": "Google SRE Workbook · Canarying Releases",
+   "url": "https://sre.google/workbook/canarying-releases/",
+   "kind": "reference",
+   "note": "일부 먼저 내보내 비교"
+  },
+  {
+   "n": 17,
+   "title": "Beej's Guide to Network Programming",
+   "url": "https://beej.us/guide/bgnet/",
+   "kind": "reference",
+   "note": "소켓은 바이트 흐름 — 메시지 경계는 직접 정한다"
+  },
+  {
+   "n": 18,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 19,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 20,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원"
+  },
+  {
+   "n": 21,
+   "title": "모두의주차장 · 현대자동차 의왕연구소",
+   "url": "https://app.modu.kr/p/258665",
+   "kind": "reference",
+   "note": "도로명 주소 철도박물관로 37"
+  },
+  {
+   "n": 22,
+   "title": "현대자동차 연구개발본부 교육원 · 오시는 길",
+   "url": "https://rnd-edu.hyundai-ngv.com/main/page.jsp?pid=intro.location",
+   "kind": "company",
+   "note": "의왕시 삼동 460-30(지번)"
+  },
+  {
+   "n": 23,
+   "title": "Sparx Systems · Enterprise Architect",
+   "url": "https://sparxsystems.com/products/ea/",
+   "kind": "reference",
+   "note": "UML·구조 모델링 도구"
+  }
+ ],
+ "caveat": "이 팀(SDF 물류 컨트롤 타워)이 직접 낸 발표·글은 찾지 못했고 시스템 구조·사용 언어 비율·AI 모델은 공개되지 않았습니다. 그룹의 SDF 소개와 AMR 주행 제어 내재화 글(2024), 미국 공장 보도(2025)로 '왜 필요한가'를 보였고, 연동·배정 최적화·양산 전환의 구체적 방법은 메시징 공식 문서·OR-Tools·표준 문서로 '보통 이런 것'을 보였습니다. 미국 공장 AMR 이 모두 현대위아 제품인지, 이 팀이 그 시스템을 만드는지는 확인되지 않았습니다. 받은 영상은 없습니다.",
+ "resources": [
+  {
+   "id": "hmg-etech",
+   "title": "이포레스트 테크데이 2024 — 미래 공장을 만나다",
+   "by": "현대자동차그룹 저널 · 2024-10-23",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000162953",
+   "why": "SDF 4개 층(하드웨어·제어·데이터 플랫폼·애플리케이션)과 물류로봇(AMR) 주행 제어 내재화가 한 글에 있다. 이 팀이 어디에 서 있는지 먼저 잡는 자료."
+  },
+  {
+   "id": "hmgma-visit",
+   "title": "사람보다 로봇이 더 많은 공장…현대차그룹 美 HMGMA 가보니",
+   "by": "한국경제 · 2025-03-30",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hankyung.com/article/202503307844i",
+   "why": "AMR 200여 대가 부품을 나르고 사람을 피해 가는 현장. 물류 운영 시스템이 실제로 무엇을 움직이는지 그림을 얻는다."
+  },
+  {
+   "id": "hmgma-onekit",
+   "title": "'글로비스' 드론이 부품망 관리하고 '위아' 로봇이 운반",
+   "by": "한국경제 · 2025-03-27",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hankyung.com/article/202503269681i",
+   "why": "완성차 1대분 부품을 AGV 에 실어 컨베이어와 같은 속도로 보내는 원키트(One-Kit) 물류와 물류센터 재고 예측. 공고의 '사내/사외 물류'가 이어지는 모습."
+  },
+  {
+   "id": "isa95",
+   "title": "ISA-95 framework and layers",
+   "by": "Siemens",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.siemens.com/en-us/technology/isa-95-framework-layers/",
+   "why": "센서·PLC·MES·ERP가 어느 층인지 한 장으로. 제조 IT 대화에서 서로 같은 그림을 보게 해 준다."
+  },
+  {
+   "id": "enterprise-architect",
+   "title": "Sparx Systems Enterprise Architect",
+   "by": "Sparx Systems",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://sparxsystems.com/products/ea/",
+   "why": "공고가 이름을 든 설계 도구. UML·시스템 구조·요구 사항을 한 모델에 모아 그린다. 평가판으로 눈에 익힐 수 있다."
+  },
+  {
+   "id": "c4",
+   "title": "The C4 model",
+   "by": "Simon Brown",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://c4model.com/",
+   "why": "누구나 같은 방식으로 구조 그림을 그리게 하는 네 단계 표기법. 교육 자료와 리뷰 문서 양식에 쓴다."
+  },
+  {
+   "id": "mermaid",
+   "title": "Mermaid 문서 — 글로 그리는 다이어그램",
+   "by": "Mermaid",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://mermaid.js.org/intro/",
+   "why": "순서도·시퀀스·클래스 그림을 글로 적어 깃에 같이 두는 법. 인터페이스 흐름을 문서로 남길 때 쓴다."
+  },
+  {
+   "id": "kafka-docs",
+   "title": "Apache Kafka Documentation",
+   "by": "Apache Kafka 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kafka.apache.org/documentation/",
+   "why": "파티션·복제·소비자 그룹 설계 — 메시징 플랫폼 용량·가용성 결정을 따질 때."
+  },
+  {
+   "id": "wiki-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "명령을 직접 치고 오간 레코드를 본다. '보냈다'와 '처리됐다' 사이 — 중복과 누락이 생기는 자리."
+  },
+  {
+   "id": "kafka-guide",
+   "title": "카프카 핵심 가이드 (개정증보판)",
+   "by": "그웬 샤피라 외 · 제이펍 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%B4%ED%94%84%EC%B9%B4%20%ED%95%B5%EC%8B%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "파티션·소비자 그룹·offset·전달 보장. 업무⑤ ingestion 과 우대 Kafka 줄."
+  },
+  {
+   "id": "rabbit",
+   "title": "RabbitMQ Tutorials",
+   "by": "RabbitMQ 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.rabbitmq.com/tutorials",
+   "why": "작업 큐·발행/구독·라우팅·RPC 를 예제로. 메시지 큐 인터페이스 요건의 첫걸음."
+  },
+  {
+   "id": "eip",
+   "title": "Enterprise Integration Patterns",
+   "by": "Gregor Hohpe · Bobby Woolf",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.enterpriseintegrationpatterns.com/",
+   "why": "EAI의 말(채널·변환·라우터·정규화)을 정리한 원전. 사이트에 패턴 목록이 무료로 있어 필요한 것만 찾아본다."
+  },
+  {
+   "id": "socket-book",
+   "title": "윤성우의 열혈 TCP/IP 소켓 프로그래밍",
+   "by": "윤성우",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%97%B4%ED%98%88%20TCP%2FIP%20%EC%86%8C%EC%BC%93%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+   "why": "소켓 요건 — 리눅스 C 소켓으로 TCP 서버·클라이언트, 멀티플렉싱(epoll)까지 손으로."
+  },
+  {
+   "id": "ddia-ko",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "why": "복제·분할·일관성 장. 멀티 리전 데이터 환경과 분산 시스템 우대 요건의 기초."
+  },
+  {
+   "id": "release-it",
+   "title": "Release It! (2판)",
+   "by": "Michael T. Nygard · Pragmatic Bookshelf · 2018",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/",
+   "why": "차단기·격벽·타임아웃 같은 안정성 패턴의 원전. 쿠팡 Valve 가 막으려던 연쇄 장애를 이해하는 책."
+  },
+  {
+   "id": "ortools",
+   "title": "OR-Tools · Vehicle Routing",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developers.google.com/optimization/routing",
+   "why": "제약(시간 창·적재량)과 목표(거리·비용)를 코드로 적는 법을 예제로. 최적 알고리즘 줄을 손으로 해 보는 가장 빠른 길."
+  },
+  {
+   "id": "spring-boot-docs",
+   "title": "Spring Boot Reference Documentation",
+   "by": "Spring 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "why": "관리 API 쪽(REST·데이터 접근·운영 지표)의 기준 문서."
+  },
+  {
+   "id": "wiki-spring-boot",
+   "title": "스프링 부트 — 핵심 원리와 활용 (우리 사이트 책)",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/spring-boot",
+   "why": "Java 웹 시스템의 Back 단을 처음 만들 때 — 기동 로그와 엔드포인트 응답으로 부트가 대신해 주는 일을 본다."
+  },
+  {
+   "id": "jenkins-pipeline",
+   "title": "Jenkins User Handbook — Pipeline",
+   "by": "Jenkins",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.jenkins.io/doc/book/pipeline/",
+   "why": "Jenkinsfile 로 단계를 코드로 적는 법. CI/CD 요건과 Jenkins 우대 줄."
+  },
+  {
+   "id": "docker-docs",
+   "title": "Docker Get started",
+   "by": "Docker 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.docker.com/get-started/",
+   "why": "Docker 요건 — 이미지·컨테이너·볼륨·네트워크 기초."
+  },
+  {
+   "id": "wiki-docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "실제로 친 명령과 출력으로 이미지·컨테이너를 익힌다. 요건② Docker 부분."
+  },
+  {
+   "id": "sonarqube",
+   "title": "SonarQube 문서",
+   "by": "Sonar",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.sonarsource.com/sonarqube-server/",
+   "why": "코드 냄새·버그·커버리지를 점수로 보고 '품질 관문(quality gate)'을 거는 법. SW 품질 지표 우대 줄."
+  },
+  {
+   "id": "sre-canary",
+   "title": "Google SRE Workbook · Canarying Releases",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/workbook/canarying-releases/",
+   "why": "일부에만 먼저 내보내 비교하고 넓히는 배포. 가동 중인 공장 시스템을 고칠 때의 조심성."
+  },
+  {
+   "id": "cd-book",
+   "title": "Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation",
+   "by": "Jez Humble · David Farley · Addison-Wesley · 2010",
+   "kind": "book",
+   "url": "https://www.martinfowler.com/books/continuousDelivery.html",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "파이프라인 설계·표준화 줄 — 커밋부터 출시까지 하나의 '배포 파이프라인'과 결과물 한 번만 빌드하기 원칙을 처음 정리한 책입니다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 직무가 서 있는 곳 읽기",
+   "time": "1주",
+   "goal": "SDF 4개 층과 AMR·AGV 물류가 공장 안에서 어떻게 맞물리는지 말로 그릴 수 있다.",
+   "resources": [
+    "hmg-etech",
+    "hmgma-visit",
+    "hmgma-onekit",
+    "isa95"
+   ],
+   "task": "세 글을 읽고 '요청 → 배정 → 이송 → 공급' 흐름을 한 장 그림(Mermaid)으로 그리고, 그 위에 어느 줄이 어떤 시스템인지 이름을 붙인다."
+  },
+  {
+   "title": "연결 방식 네 가지 손으로 해 보기",
+   "time": "2~3주",
+   "goal": "메시지 큐·DB to DB·소켓·REST 로 같은 물류 요청을 보내고 받으며 중복·지연을 설명할 수 있다.",
+   "resources": [
+    "rabbit",
+    "wiki-kafka",
+    "kafka-docs",
+    "socket-book",
+    "eip"
+   ],
+   "task": "가상 '부품 요청' 메시지를 네 방식으로 보내고 받는 작은 프로그램을 만든다. 같은 메시지를 일부러 두 번 보내 한 번만 반영되게 고치고 결과를 표로 비교한다."
+  },
+  {
+   "title": "웹 시스템(Back/Front) 한 벌 만들기",
+   "time": "3~4주",
+   "goal": "Java 스프링 부트로 요청 접수·배정·현황 화면이 있는 작은 물류 운영 시스템을 만든다.",
+   "resources": [
+    "wiki-spring-boot",
+    "spring-boot-docs",
+    "ddia-ko"
+   ],
+   "task": "요청 등록 → 로봇 배정 → 완료 처리 API 와 현황 화면을 만든다. 가상 로봇 5대·요청 100건으로 시뮬레이션해 배정 방식을 두 가지 견줘 이동 거리를 표로 비교한다."
+  },
+  {
+   "title": "배정 최적화·품질 자동화",
+   "time": "2~3주",
+   "goal": "제약이 있는 배정을 풀어 보고 코드 품질 관문을 자동으로 건다.",
+   "resources": [
+    "ortools",
+    "jenkins-pipeline",
+    "docker-docs",
+    "sonarqube"
+   ],
+   "task": "OR-Tools 로 시간 창·적재량 제약이 있는 배정을 풀고 앞 단계 시스템에 붙인다. Jenkins 에서 빌드·시험·정적 분석을 돌려 기준 미달이면 막는다."
+  },
+  {
+   "title": "운영·양산 전환 연습",
+   "time": "계속",
+   "goal": "장애를 따라가 원인을 찾고 양산 전 점검표를 쓸 수 있다.",
+   "resources": [
+    "release-it",
+    "sre-canary",
+    "cd-book",
+    "c4"
+   ],
+   "task": "앞 시스템에 상대 시스템 다운·메시지 중복·로봇 정지를 일부러 일으키고 로그로 원인을 찾아 포스트모템 한 장을 쓴다. 양산 전 점검표(성능·복구·모니터링)도 한 장 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 1인 평균 급여 **1억 3,100만원**(2025), 공공데이터 집계 평균 **약 7,708만원** — 기준이 달라 차이가 크고, 이 자리는 경력 5년 이상이라 개인 협의로 정해진다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다. 생산직을 포함한 전 직원 값 [18]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일이 적혀 있지 않다 [19]"
+   },
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 초봉. 이 자리는 경력 5년 이상이라 해당하지 않는다 [19]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값 [18]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 달라 섞어 비교하지 않는다. 경력 5년 이상 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "주중 출산휴가 지원",
+    "detail": "본인·배우자 임신 6개월~출산 12개월 안에 회사 지정 호텔 숙식(최대 2박)"
+   },
+   {
+    "name": "임신기 근로시간 단축",
+    "detail": "임신 12주 이내·36주 이상 하루 2시간 단축"
+   },
+   {
+    "name": "수유 시간",
+    "detail": "생후 1년 미만 영아가 있는 여직원 하루 120분 유급"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [20]. 공고의 복지 칸은 '홈페이지 참조'뿐이고 [1], 주택·학자금·차량 구입 지원 같은 금액 항목은 공식 자료에서 확인하지 못해 뺐다. 보고서의 어린이집·피트니스 센터 목록에 의왕연구소는 따로 적혀 있지 않다 [20]. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차그룹 의왕연구소",
+  "address": "경기도 의왕시 철도박물관로 37 (삼동)",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%9D%98%EC%99%95%EC%8B%9C%20%EC%B2%A0%EB%8F%84%EB%B0%95%EB%AC%BC%EA%B4%80%EB%A1%9C%2037",
+  "note": "공고의 근무지가 의왕연구소이고 [1], 도로명 주소는 주차 안내 사이트에서 [21], 지번 삼동 460-30 은 현대차 연구개발본부 교육원 안내에서 확인했다 [22]. 의왕연구소에는 현대차 외 계열사 연구소도 같이 있어 팀 건물이 다를 수 있다 {추론}."
+ }
+}
