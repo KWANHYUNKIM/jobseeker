@@ -1,0 +1,1350 @@
+{
+ "id": "42dot-test-automation-ivi-system",
+ "company": "포티투닷(42dot)",
+ "role": "Test Automation Engineer",
+ "team": "IVI(인포테인먼트) 시스템 시험 자동화 — 팀 이름은 공고에 없음",
+ "jobs": [
+  "wanted-395192"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "포티투닷이 Android Automotive OS(차량용 안드로이드, AAOS) 위에 만든 인포테인먼트(IVI — 차 화면 시스템)를 **사람 손 없이 매일 밤 시험하는 체계**를 만듭니다.[1] 화면 터치부터 그 아래 차량 신호(공조·차량 설정 값)까지 한 번에 확인하는 끝에서 끝(E2E) 시험을 짜고, 빌드마다 돌려 통과한 것만 내보냅니다.[1]",
+  "env": "포티투닷은 AAOS 를 바탕으로 IVI 를 직접 만들고, 외부 개발사에 SDK·에뮬레이터(Pleos Playground)를 줍니다.[4] 결과물은 2026년 5월 신형 그랜저부터 실린 Pleos Connect 이고[5], 앱 마켓 앱은 국내 차종 기준 18종이 됐습니다.[8] 시험은 HIL/SIL·시험 벤치 위에서 CI/CD 파이프라인과 이어 돌아갑니다.[1]",
+  "oneline": "안드로이드 UI 자동화(Appium·UI Automator·Maestro) + **차량 신호 주입(VHAL)** + CI 게이팅을 한 사람이 엮는 자리. 경력 3~5년입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "• SDV Zonal/중앙 집중형 아키텍처 환경에서 AAOS IVI 플랫폼 및 주요 서비스(HVAC, 차량 설정, 클러스터 연동, 미디어 등)에 대한 단계별 검증 전략을 수립합니다.",
+   "short": "공조·차량 설정·계기판·미디어 기능을 '어느 단계에서 무엇으로 시험할지' 나눠 정하는 일.",
+   "why": "현대차그룹은 Pleos 25 에서 여러 제어기를 고성능 차량 컴퓨터(HPVC)와 구역 제어기(zone controller — 차의 앞·뒤·좌·우 구역 장치를 묶어 맡는 제어기)로 통합한다고 밝혔습니다.[39] 그러면 화면에서 누른 '온도 올리기'가 IVI → 중앙 컴퓨터 → 구역 제어기 → 공조 장치로 여러 단계를 지나게 됩니다.[40]{추론} 그래서 한 기능을 앱 단위·플랫폼 단위·차 전체 단위로 나눠 시험해야 합니다.",
+   "flows": [
+    {
+     "caption": "IVI 기능 하나를 시험하는 단계 — 일반적인 나눔{추론}",
+     "steps": [
+      "단위 · 앱·서비스 코드 하나(가짜 차량 신호)",
+      "에뮬레이터 · 차량용 안드로이드 가상 기기(AVD)에 신호 주입[36]",
+      "SIL · 가상 제어기와 함께 PC 안에서[7]",
+      "HIL·벤치 · 진짜 IVI 기기 + 가짜 차 신호[1][7]",
+      "실차 · 차에 실어 마지막 확인"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**기능별로 신호 길 그리기** — 공조(HVAC)는 '화면 → CarPropertyManager → CarService → VHAL → 차량망'으로 값이 내려가고, 결과가 거꾸로 올라온다.[10][12]",
+     "**단계마다 볼 것 정하기** — 에뮬레이터에서는 화면과 신호가 맞물리는지, 벤치에서는 실제 지연·통신 오류, 실차에서는 사람이 느끼는 품질을 본다.{추론}",
+     "**클러스터 연동** — 계기판(클러스터)에 내비 안내·미디어 정보가 뜨는 기능은 IVI 와 다른 화면이 함께 맞아야 해서 벤치 단계가 필요하다.{추론}",
+     "**미디어** — 외부 개발사가 만든 음악·라디오 앱이 앱 마켓으로 들어오므로[8], 자사 앱만이 아니라 남의 앱이 깔린 상태도 시험 범위에 든다.{추론}",
+     "**플랫폼 아래까지** — 같은 회사 IVI OS 공고는 이 AAOS 위의 카메라 HAL·차량 카메라 층을 직접 만든다고 적었다.[38] 자사가 바닥부터 고친 층이 많을수록 앱만이 아니라 플랫폼 층도 시험 범위에 든다.{추론}"
+    ]
+   },
+   "how_far": "제품 요구사항은 기획·시스템 쪽이 정합니다.{추론} 이 자리는 **그 요구를 '어느 환경에서 무엇으로 재면 통과인가'의 표로 만드는** 쪽입니다.[1] 경력 3~5년 자리라 전략을 혼자 처음부터 쓰기보다 팀 전략의 IVI 몫을 맡는다고 읽는 것이 맞습니다.{추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    10,
+    12,
+    36,
+    38,
+    39,
+    40
+   ],
+   "study": [
+    "aosp-vhal",
+    "aaos-avd"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• Nightly/Release 빌드 게이팅을 위한 Smoke, Sanity, Regression 자동화 검증 범위를 정의합니다.",
+   "short": "밤마다·출시 때 빌드를 통과시킬지 막을지 정하는 시험 묶음(빠른 것→넓은 것)을 고르는 일.",
+   "why": "게이팅(gating)은 시험을 통과한 빌드만 다음 단계로 보내는 문입니다.{추론} Pleos Connect 는 OTA(무선 업데이트)로 기능을 계속 더하므로[5], 새 빌드가 나올 때마다 망가진 것을 일찍 막아야 합니다. 팀 소개도 릴리스 품질 게이트와 '시프트 레프트'(시험을 개발 앞쪽으로 당겨 결함을 일찍 잡는 것[42])를 목표로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**Smoke** — 부팅되나·주요 화면이 뜨나 같은 몇 분짜리 확인. 실패하면 뒤 시험을 돌리지 않는다.{추론}",
+     "**Sanity** — 바뀐 기능 주변이 기본적으로 도는지 보는 수십~백여 개.{추론}",
+     "**Regression** — 예전에 되던 것이 그대로 되는지 보는 넓은 묶음. 밤새 돌린다.{추론}",
+     "**고르는 기준** — 고객이 자주 쓰는 기능·안전과 이어지는 기능·최근에 자주 깨진 곳을 앞 단계에 넣는다.{추론}",
+     "**공개된 본보기** — AOSP 의 차량 시험 묶음 CATBox 는 기능 시험 계획 약 50개와 성능 시험 계획 15개(냉시작 시간·화면 끊김)를 나눠 둔다.[14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "앞 단계가 실패하면 뒤를 돌리지 않는다 (가상 숫자, 직접 돌린 출력)",
+     "body": "세 단계의 시험 수와 걸리는 시간을 가정하고, Sanity 에서 2건이 실패한 밤을 흉내 냅니다. 3시간짜리 Regression 을 아끼는 것이 게이팅의 핵심입니다.{추론}",
+     "lang": "python",
+     "code": "tiers = [(\"Smoke\", 20, 2), (\"Sanity\", 120, 10), (\"Regression\", 1500, 180)]\nfor name, n, minutes in tiers:\n    print(\"%-10s %5d개 · 약 %3d분\" % (name, n, minutes))\nresults = {\"Smoke\": (20, 0), \"Sanity\": (118, 2)}\nfor t, (ok, fail) in results.items():\n    print(t, \"통과\" if fail == 0 else \"실패 %d건 → 빌드 막음\" % fail)\n    if fail: break\n# Smoke         20개 · 약   2분\n# Sanity       120개 · 약  10분\n# Regression  1500개 · 약 180분\n# Smoke 통과\n# Sanity 실패 2건 → 빌드 막음"
+    }
+   ],
+   "how_far": "어떤 기능이 출시를 막을 만큼 중요한지는 품질·제품 쪽과 같이 정합니다.{추론} 개발자는 **각 묶음이 정해진 시간 안에 끝나고, 실패가 진짜 결함인지 시험 문제인지 가려 주는** 것까지 맡습니다.{추론}",
+   "refs": [
+    1,
+    5,
+    14,
+    42
+   ],
+   "study": [
+    "aosp-catbox",
+    "swe-google"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• AAOS UI 상호작용 및 차량 신호 인터페이스(CarProperty/VHAL)를 아우르는 E2E 테스트 케이스를 설계합니다.",
+   "short": "화면을 누르면 차량 신호가 바뀌고, 신호가 바뀌면 화면이 따라 바뀌는지 양쪽을 한 시험으로 잇는 일.",
+   "why": "AAOS 에서 차량 값(온도·속도·기어 등)은 '프로퍼티'라는 단위로 VHAL(차량 하드웨어 추상화 층)이 정의하고, 앱은 CarPropertyManager 로 읽고 씁니다.[10][12] 화면만 보는 시험은 버튼이 눌렸는지만 알고, 값이 실제로 내려갔는지는 모릅니다.{추론}",
+   "actually": {
+    "intro": "AOSP 문서의 프로퍼티 개념으로 본 E2E 시험의 모양입니다. 포티투닷 시험 케이스는 공개되지 않았습니다.",
+    "items": [
+     "**아래로 가는 시험** — 공조 화면에서 온도를 24.5도로 올린다 → HVAC_TEMPERATURE_SET(공조 목표 온도, 섭씨) 값이 24.5 가 됐는지 읽는다.[12]",
+     "**위로 오는 시험** — 차량 쪽 값을 디버그 명령으로 바꿔 넣는다(주입) → 화면 숫자가 따라 바뀌는지 UI 로 확인한다.[41]",
+     "**영역(area)** — 좌석·문·창문처럼 자리마다 값이 따로 있는 프로퍼티는 영역 id(예: 1열 왼쪽)로 나뉜다. 운전석만 바꿨는데 조수석이 바뀌면 결함이다.[11]",
+     "**바뀜 방식** — 프로퍼티는 STATIC(부팅 뒤 안 바뀜)·ON_CHANGE(바뀔 때 알림)·CONTINUOUS(구독한 주기로 알림)로 나뉜다.[11] 같은 값을 다시 넣으면 '바뀜'이 없으므로, 이벤트를 기다리는 시험은 시간 초과로 실패할 수 있다.{추론}",
+     "**쓰기 실패도 시험 대상** — 값 쓰기는 접근 거부·프로퍼티 없음·다시 시도 같은 오류 코드로 실패할 수 있어, 화면이 그때 무엇을 보여 주는지도 본다.[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "값을 넣고 이벤트를 기다리는 시험 (가짜 VHAL, 직접 돌린 출력)",
+     "body": "ON_CHANGE 프로퍼티를 흉내 낸 작은 모형입니다.[11] 같은 값을 두 번 넣으면 두 번째에는 알림이 없어 시험이 시간 초과로 실패합니다 — 시험을 짤 때 '먼저 다른 값으로 바꿔 두기'가 필요한 이유입니다.{추론}",
+     "lang": "python",
+     "code": "import queue, threading, time\nclass FakeVhal:\n    def __init__(s): s.props = {\"HVAC_TEMPERATURE_SET\": 22.0}; s.subs = []\n    def subscribe(s, cb): s.subs.append(cb)\n    def inject(s, name, val):\n        old = s.props.get(name); s.props[name] = val\n        if old != val:                       # ON_CHANGE: 값이 바뀔 때만 알린다\n            for cb in s.subs: cb(name, val)\nv = FakeVhal(); q = queue.Queue(); v.subscribe(lambda n, x: q.put((n, x)))\ndef expect(name, val, timeout=1.0):\n    t0 = time.monotonic()\n    while time.monotonic() - t0 < timeout:\n        try: n, x = q.get(timeout=0.05)\n        except queue.Empty: continue\n        if (n, x) == (name, val): return \"OK %s=%s\" % (name, val)\n    return \"FAIL %s=%s 이벤트 없음 (%.1fs 초과)\" % (name, val, timeout)\nthreading.Timer(0.2, v.inject, (\"HVAC_TEMPERATURE_SET\", 24.5)).start()\nprint(expect(\"HVAC_TEMPERATURE_SET\", 24.5))\nv.inject(\"HVAC_TEMPERATURE_SET\", 24.5)       # 같은 값 → 알림 없음\nprint(expect(\"HVAC_TEMPERATURE_SET\", 24.5, timeout=0.3))\n# OK HVAC_TEMPERATURE_SET=24.5\n# FAIL HVAC_TEMPERATURE_SET=24.5 이벤트 없음 (0.3s 초과)"
+    }
+   ],
+   "how_far": "프로퍼티 목록과 뜻은 플랫폼·VHAL 개발 쪽이 정합니다.{추론} 이 자리는 **그 목록을 보고 '화면 ↔ 신호' 짝을 시험 케이스로 만드는** 쪽이고, 최소선은 프로퍼티·영역·바뀜 방식을 설명할 수 있는 정도입니다.{추론}",
+   "refs": [
+    10,
+    11,
+    12,
+    41
+   ],
+   "study": [
+    "aosp-vhal",
+    "carpropertymanager"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 단순 단품 앱 검증을 넘어, 상위 Display 터치 이벤트부터 하위 통신 버스 연동까지 고려한 통합 테스트 조건을 수립합니다.",
+   "short": "앱 하나가 아니라 '터치 → 안드로이드 → 차량망'까지 이어진 길 전체가 맞는지 보는 시험 조건을 정한다.",
+   "why": "팀 소개가 UI 상호작용부터 하위 차량 제어기 통신(CarProperty·VHAL·DDS 등)까지의 E2E 자동화를 이 자리의 몫으로 적었습니다.[1] 같은 회사 SIL/HIL 인프라 공고는 진짜 제어기와 가상 환경 모델을 붙인 HIL 벤치를 직접 짓는다고 적었습니다.[7]",
+   "flows": [
+    {
+     "caption": "터치 한 번이 지나가는 길[10][12]{추론}",
+     "steps": [
+      "디스플레이 · 터치 이벤트",
+      "앱 · 공조 화면",
+      "Car API · CarPropertyManager",
+      "CarService · 권한·전달",
+      "VHAL · 프로퍼티 → 차량 신호",
+      "차량망 · 이더넷·CAN 등 → 구역 제어기"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**조건 늘리기** — 같은 터치라도 시동 상태·기어·속도·사용자 계정에 따라 결과가 달라야 하면 그 조합을 시험 조건으로 둔다(예: 주행 중에는 일부 설정 화면을 막는다).{추론}",
+     "**버스 쪽 확인** — 벤치에서는 화면 조작 뒤 차량망에 맞는 메시지가 나갔는지 버스 기록으로 확인한다.[7]{추론}",
+     "**거꾸로 오는 길** — 구역 제어기가 '창문 열림'을 보내면 IVI 화면과 계기판이 같이 바뀌는지 본다.{추론}",
+     "**지연 재기** — 터치부터 신호까지 몇 ms 걸렸는지를 조건에 넣으면 성능 결함도 같은 시험으로 잡는다.{추론}"
+    ]
+   },
+   "how_far": "차량망 메시지 정의는 시스템·제어기 쪽 몫입니다.{추론} 이 자리는 **IVI 쪽에서 들어간 것과 버스에서 나온 것을 같은 시험 결과로 맞대는** 데까지입니다.[1]{추론}",
+   "refs": [
+    1,
+    7,
+    10,
+    12
+   ],
+   "study": [
+    "aosp-vhal",
+    "mathworks-hil"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• Android/AAOS 환경에 최적화된 UI 자동화 프레임워크(Maestro, UI Automator, Appium 등)와 테스트 러너(Pytest 등)를 기반으로 테스트 스크립트를 개발하고 유지보수합니다.",
+   "short": "화면을 대신 눌러 주는 도구로 시험 스크립트를 쓰고, 화면이 바뀌어도 안 깨지게 계속 고친다.",
+   "why": "IVI 기능 대부분이 화면에서 시작하므로 사람이 누르던 것을 도구가 눌러야 밤새 돌릴 수 있습니다.{추론} AOSP 도 차량용 안드로이드 UI 시험 틀(Spectatio)을 UI Automator 위에 만들어 공개했습니다.[13]",
+   "actually": {
+    "items": [
+     "**UI Automator** — 시험 대상 앱 프로세스 **밖**에서 시스템 화면·다른 앱까지 누르는 안드로이드 공식 도구. 요소를 찾을 때 기본 10초까지 기다린다.[15] 차 화면처럼 여러 앱이 겹치는 곳에 맞다.{추론}",
+     "**Espresso** — 앱 안에서 돌며, 화면 메시지 큐가 비고 IdlingResource 가 한가해질 때까지 스스로 기다린 뒤 누른다.[16]",
+     "**Appium** — HTTP 서버로 떠서 W3C WebDriver 규약으로 기기를 조종한다. 안드로이드는 UiAutomator2 드라이버로 시작한다.[17] PC 의 파이썬 시험에서 부르기 좋다.{추론}",
+     "**Maestro** — 시험을 YAML 로 적고 컴파일 없이 돌리며, sleep() 없이 화면·애니메이션이 안정될 때까지 기다린다.[18]",
+     "**Pytest** — 픽스처(fixture — 시험 전 준비·yield 뒤 정리)·conftest.py·매개변수화로 위 도구들을 묶는 러너.[21]",
+     "**유지보수** — 화면 요소 찾는 규칙을 한곳에 모은다. AOSP 의 Spectatio 는 기기마다 다른 화면 요소를 JSON 설정 파일로 빼 adb push 로 넣는다.[13]"
+    ]
+   },
+   "how_far": "도구를 새로 만드는 자리는 아닙니다.{추론} **기존 도구로 시험을 쓰고, 화면이 바뀌어도 고칠 곳이 한 군데이게 구조를 잡는** 수준을 봅니다.{추론}",
+   "refs": [
+    13,
+    15,
+    16,
+    17,
+    18,
+    21
+   ],
+   "study": [
+    "uiautomator",
+    "espresso",
+    "appium",
+    "maestro",
+    "pytest-docs",
+    "aosp-spectatio"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• ADB, shell 스크립트, CarPropertyManager API를 활용하여 Property Injection 및 이벤트 검증 자동화 파이프라인을 구축합니다.",
+   "short": "차 없이도 '차가 이런 값을 보냈다'고 가짜 신호를 넣고(주입), 앱이 제대로 반응하는지 자동으로 본다.",
+   "why": "책상 위 IVI 기기에는 진짜 차가 붙어 있지 않습니다. 그래서 속도·기어·온도 같은 차량 값을 사람이 대신 넣어야 시험이 됩니다.{추론} 포티투닷 Vehicle OS 팀도 차 없이 인터페이스로 먼저 개발·시험하는 '오프사이클 개발'을 한다고 소개했습니다.[6]",
+   "actually": {
+    "items": [
+     "**VHAL 에 바로 넣기** — adb root 뒤 dumpsys 로 VHAL 서비스를 불러 --get 으로 값을 읽고, --set <프로퍼티> -a <영역> -i <값> 으로 바꾼다.[41]",
+     "**에뮬레이터** — 차량용 에뮬레이터는 확장 제어의 Car data 에서 실행 중 프로퍼티(예: 차속)를 바꾼다. 속도를 0 이 아니게, 기어를 P 가 아니게 두면 주행 중을 흉내 낸다.[36]",
+     "**가짜 차량 하드웨어** — AOSP 의 기본 VHAL 은 차량망 대신 메모리 표(FakeVehicleHardware)를 쓰는 에뮬레이터용 구현이라, 차 없이 값을 넣고 빼기 좋다.[37]",
+     "**앱 쪽에서 듣기** — 시험 앱이 CarPropertyManager.subscribePropertyEvents 로 그 프로퍼티를 구독해 이벤트가 왔는지·값이 맞는지 확인한다. 동기 읽기는 몇 초 걸릴 수 있어 메인 스레드 밖에서 부른다.[12]",
+     "**로그 남기기** — adb logcat -d 로 그 순간까지의 로그를 받아 실패 원인을 남긴다.[20]",
+     "**파이프라인으로 묶기** — '값 넣기 → 기다리기 → 화면·이벤트 확인 → 로그 저장'을 Pytest 시험으로 감싸 CI 에서 돌린다.[21]{추론}"
+    ]
+   },
+   "how_far": "VHAL 구현 자체는 플랫폼 팀 몫입니다.{추론} 이 자리는 **디버그 명령과 API 로 신호를 넣고 확인하는 일을 사람 없이 반복되게** 만드는 데까지입니다.[1]",
+   "refs": [
+    1,
+    6,
+    12,
+    20,
+    21,
+    36,
+    37,
+    41
+   ],
+   "study": [
+    "aosp-vhal",
+    "carpropertymanager",
+    "adb-docs",
+    "aaos-avd",
+    "aosp-vhal-ref"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• Flaky Test(간헐적 실패)를 최소화하고 병렬 테스트 실행 효율을 높여 피드백 루프를 단축시키는 검증 프로세스 고도화를 추진합니다.",
+   "short": "코드가 같은데 됐다 안 됐다 하는 시험을 줄이고, 여러 기기에 나눠 돌려 결과를 빨리 받게 한다.",
+   "why": "구글은 자사 시험 실행의 약 1.5% 가 '간헐적 실패(같은 코드에서 통과도 실패도 함)' 결과를 냈고, 시험의 약 16% 에 그런 성질이 있었다고 밝혔습니다.[28] 시험이 많아질수록 아무 결함이 없어도 한 번은 빨갛게 되므로, 그대로 두면 게이팅이 매일 막힙니다.{추론}",
+   "actually": {
+    "items": [
+     "**원인 찾기** — 격리 부족(앞 시험이 남긴 상태)·비동기(다 뜨기 전에 누름)·바깥 서비스·시간·자원 누수가 흔한 원인이다.[29]",
+     "**기다리는 법 고치기** — 맨 sleep 대신 콜백이나 폴링(될 때까지 묻기)으로 기다린다.[29] Espresso·Maestro 는 이 기다림을 도구가 맡는다.[16][18]",
+     "**격리하고 재시도는 표시와 함께** — 흔들리는 시험은 따로 떼어(quarantine) 고친다.[29] pytest-rerunfailures 의 --reruns·@pytest.mark.flaky 로 다시 돌릴 수 있지만[22], 재시도로 통과한 시험은 목록으로 남긴다.{추론}",
+     "**병렬** — pytest-xdist 의 -n auto 로 CPU 마다 작업자를 둔다.[23] 기기가 여럿이면 긴 시험부터 덜 바쁜 기기에 넣어야 끝나는 시간이 고르다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "시험마다 1% 만 흔들려도 (직접 돌린 출력)",
+     "body": "시험 하나가 결함 없이 1% 확률로 실패한다고 가정하면, 300개 묶음이 전부 초록일 확률은 4.9% 입니다. 한 번 다시 돌리면 97% 로 오르지만 원인은 그대로 남습니다.{추론}",
+     "lang": "python",
+     "code": "p = 0.01\nfor n in (50, 300, 1000):\n    print(\"시험 %d개: 재시도 없음 %.3f%% / 1회 재시도 %.1f%%\" % (n, (1-p)**n*100, (1-p*p)**n*100))\n# 시험 50개: 재시도 없음 60.501% / 1회 재시도 99.5%\n# 시험 300개: 재시도 없음 4.904% / 1회 재시도 97.0%\n# 시험 1000개: 재시도 없음 0.004% / 1회 재시도 90.5%"
+    },
+    {
+     "title": "긴 시험부터 기기에 나눠 넣기 (가상 시간, 직접 돌린 출력)",
+     "body": "시험 12개(합 1,755초)를 기기 수에 따라 나눴을 때 끝나는 시간입니다.",
+     "lang": "python",
+     "code": "import heapq\ndur = [310, 280, 240, 200, 190, 150, 120, 90, 60, 45, 40, 30]\nprint(\"합계\", sum(dur), \"초\")\nfor k in (1, 2, 4):\n    h = [(0, i) for i in range(k)]\n    for d in sorted(dur, reverse=True):\n        t, i = heapq.heappop(h); heapq.heappush(h, (t + d, i))\n    print(\"기기 %d대: %d초\" % (k, max(t for t, _ in h)))\n# 합계 1755 초\n# 기기 1대: 1755초\n# 기기 2대: 880초\n# 기기 4대: 450초"
+    }
+   ],
+   "how_far": "흔들리는 시험을 0 으로 만들 수는 없습니다.{추론} **흔들림을 재서(어느 시험이 몇 % 로 흔들리나) 줄여 가고, 게이팅이 흔들림 때문에 막히지 않게** 하는 것이 목표입니다.{추론}",
+   "refs": [
+    16,
+    18,
+    22,
+    23,
+    28,
+    29
+   ],
+   "study": [
+    "google-flaky",
+    "fowler-nondeterminism",
+    "pytest-docs",
+    "swe-google"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 3년 이상 소프트웨어 테스트 자동화 또는 QA 엔지니어링 실무 경험을 보유하신 분",
+   "short": "시험을 손으로가 아니라 코드로 짜서 돌려 본 경력 3년 이상 — 차량 경력이 아니어도 된다.",
+   "why": "공고 경력란은 '3~5년'입니다.[1] 요건 문장이 '소프트웨어' 테스트 자동화라 웹·모바일 시험 자동화 경력도 출발점이 됩니다.{추론}",
+   "level": {
+    "basic": "시험 케이스 설계(경계값·상태 전이), 결함 보고서 쓰기",
+    "work": "자동 시험 코드를 직접 쓰고 CI 에서 매일 돌려 본 경험",
+    "team": "기기(안드로이드)를 붙인 자동 시험을 여러 대에서 돌리고 흔들림을 관리해 본 경험"
+   },
+   "how_far": "수동 시험 경력만으로는 업무 대부분이 코드 작성이라 부족합니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "istqb-ctfl",
+    "swe-google"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• Android 또는 AAOS(Android Automotive OS) 플랫폼 기반 테스트 자동화 구축 및 운영 경험이 있으신 분",
+   "short": "안드로이드 기기를 붙여 자동 시험을 '만들고 계속 돌려 본' 경험 — 휴대폰 경력도 된다.",
+   "why": "'Android 또는 AAOS' 라서 휴대폰 앱·기기 시험 자동화 경력이 그대로 인정됩니다.[1] AAOS 는 안드로이드 위에 차량 서비스(CarService)와 VHAL 을 더한 것이라[10], 차량 쪽은 입사 뒤 채울 수 있는 몫입니다.{추론}",
+   "level": {
+    "basic": "에뮬레이터·실기기에서 계측 시험(instrumentation test) 돌리기",
+    "work": "여러 기기를 CI 에 붙여 매일 돌리고, 기기가 멈추거나 끊길 때 되살리기",
+    "team": "차량용 안드로이드 이미지·에뮬레이터에서 차량 신호까지 넣는 시험 운영"
+   },
+   "actually": {
+    "items": [
+     "'구축'은 처음 판을 까는 것, '운영'은 매일 깨지는 기기·시험을 고치며 굴리는 것이다. 공고가 둘 다 적었다.[1]",
+     "AOSP 의 CATBox 는 Tradefed 위에서 Spectatio 시험을 돌리고 결과를 XML·HTML 로 남긴다 — 차량용 안드로이드 시험을 운영하는 공개된 꼴이다.[14]"
+    ]
+   },
+   "refs": [
+    1,
+    10,
+    14
+   ],
+   "study": [
+    "aosp-catbox",
+    "aaos-avd"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• Python 기반의 테스트 프레임워크(Pytest, Robot Framework 등)를 활용하실 수 있는 분",
+   "short": "파이썬 시험 러너로 시험을 구조 있게(준비·정리·매개변수) 짤 수 있어야 한다.",
+   "why": "업무에 Pytest 가 직접 적혀 있습니다.[1] Robot Framework 는 '키워드' 단위로 시험을 적는 파이썬 기반 공개 도구라, 시험을 사람이 읽기 쉬운 표로 남길 때 씁니다.[24]",
+   "level": {
+    "basic": "pytest 시험 함수·assert·픽스처, Robot 의 키워드 시험",
+    "work": "conftest 로 기기 연결 픽스처를 나눠 쓰기, 매개변수화, 묶음(Smoke/Regression) 나누기",
+    "team": "재시도·병렬 플러그인, 기기 할당, 결과 보고서를 CI 와 잇기"
+   },
+   "actually": {
+    "items": [
+     "**픽스처** — '기기에 연결 → 앱 초기화 → 시험 → yield 뒤 로그 받기·정리'를 픽스처로 묶고 conftest.py 로 여러 파일이 나눠 쓴다. 범위는 함수~세션까지 고른다.[21]",
+     "**멈추기** — -x 는 첫 실패에서, --maxfail=2 는 두 번째 실패에서 멈춘다 — Smoke 묶음에 맞다.[21]{추론}",
+     "**매개변수화** — @pytest.mark.parametrize 로 같은 공조 시험을 온도 16·22·28도와 좌석 영역마다 돌린다.[21]{추론}",
+     "**Robot Framework** — 시험을 '키워드' 줄로 적어 파이썬 코드를 모르는 사람도 읽게 한다.[24]"
+    ]
+   },
+   "refs": [
+    1,
+    21,
+    24
+   ],
+   "study": [
+    "pytest-docs",
+    "robot-framework"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• Maestro, UI Automator, Espresso, Appium 과 같은 모바일/IVI UI 자동화 도구를 활용하여 시나리오를 작성하실 수 있는 분",
+   "short": "네 도구 중 하나 이상으로 '이 화면에서 이걸 누르면 저게 뜬다' 시나리오를 써 봤어야 한다.",
+   "why": "'과 같은'이라 넷을 다 할 필요는 없고, 하나를 깊게 써 본 경험이면 됩니다.{추론} 도구마다 보는 범위가 다릅니다 — Espresso 는 앱 안, UI Automator 는 앱 밖까지, Appium 은 PC 에서 원격 조종.[15][16][17]",
+   "level": {
+    "basic": "화면 요소를 id·문구·설명으로 찾아 누르고 확인하기",
+    "work": "기다림을 도구에 맡기고, 화면 요소 찾는 규칙을 한곳(페이지 객체 등)에 모으기",
+    "team": "차 화면(여러 디스플레이·시스템 UI·다른 사용자)을 넘나드는 시나리오"
+   },
+   "actually": {
+    "items": [
+     "UI Automator 는 앱 밖에서 시스템·설치된 앱을 넘나들며 시험하고 API 18 이상에서 돈다. 공식 문서는 흔한 앱 UI 시험에는 동기화가 더 많은 Espresso 를 권한다.[15]",
+     "Espresso 는 화면이 한가해질 때까지 스스로 기다려 기다리기 코드가 거의 필요 없다. 오래 걸리는 작업은 IdlingResource 로 알려 준다.[16]",
+     "Maestro 는 시험을 YAML 로 적고 화면이 늦게 떠도 기다려 준다.[18]",
+     "Spectatio 처럼 화면 요소를 문구·설명·리소스 id 로 찾되, 기기마다 다른 부분은 설정 파일로 뺄 수 있다.[13]"
+    ]
+   },
+   "refs": [
+    13,
+    15,
+    16,
+    17,
+    18
+   ],
+   "study": [
+    "uiautomator",
+    "espresso",
+    "appium",
+    "maestro"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• ADB(Android Debug Bridge), Logcat, Shell Script를 활용한 디바이스 제어 및 이슈 트러블슈팅 경험과 역량을 보유하신 분",
+   "short": "PC 에서 기기를 명령으로 다루고, 로그를 읽어 '왜 실패했나'를 찾아 본 경험이 있어야 한다.",
+   "why": "업무의 신호 주입이 ADB·shell 로 이뤄지고[1], 밤새 돈 시험이 실패하면 남는 것은 로그뿐입니다.{추론}",
+   "level": {
+    "basic": "adb devices·install·shell·push/pull, logcat 태그·수준으로 거르기",
+    "work": "logcat 버퍼(main·system·crash·events) 나눠 보기, 실패 때 로그·화면 자동 수집, bugreport",
+    "team": "CarService·VHAL 디버그 명령으로 차량 상태 읽기·넣기"
+   },
+   "actually": {
+    "items": [
+     "adb 는 PC 의 클라이언트·PC 의 서버(TCP 5037)·기기의 데몬(adbd) 세 부분으로 돈다. 기기가 여럿이면 -s 로 고른다.[19]",
+     "실패 순간의 화면은 adb exec-out screencap 으로, 영상은 screenrecord(최대 180초)로 남긴다.[19]",
+     "logcat 은 -b 로 버퍼(main·system·crash·events 등)를 고르고, 태그:수준으로 거르고, -d 로 지금까지 것만 찍고 끝낸다. 기본 형식은 threadtime 이다.[20]",
+     "시험이 실패하면 FATAL EXCEPTION(앱 죽음)·ANR(앱 응답 없음) 줄부터 찾는다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "로그에서 앱이 죽은 줄과 응답 없음 줄만 뽑기 (가상 로그, 직접 돌린 출력)",
+     "body": "logcat 의 기본 줄 형식(threadtime — 날짜 시각 PID TID 수준 태그: 내용)[20]을 나눠, 오류 수준(E) 중 앱 죽음·ANR 만 고릅니다.{추론}",
+     "lang": "python",
+     "code": "import re\nlog = \"\"\"11-25 10:00:01.120  1234  1250 I CarService: onPropertyEvent HVAC_TEMPERATURE_SET 24.5\n11-25 10:00:01.300  2001  2001 E AndroidRuntime: FATAL EXCEPTION: main\n11-25 10:00:01.301  2001  2001 E AndroidRuntime: Process: com.example.hvac, PID: 2001\n11-25 10:00:03.900   900   950 E ActivityManager: ANR in com.example.media\n11-25 10:00:04.000  1234  1250 W CarService: property not available\"\"\"\npat = re.compile(r\"^(\\S+ \\S+)\\s+(\\d+)\\s+(\\d+) ([VDIWEF]) ([^:]+): (.*)$\")\nfor line in log.splitlines():\n    ts, pid, tid, lv, tag, msg = pat.match(line).groups()\n    if lv == \"E\" and (\"FATAL EXCEPTION\" in msg or msg.startswith(\"ANR in\")):\n        print(ts, \"[\" + tag + \"]\", msg)\n# 11-25 10:00:01.300 [AndroidRuntime] FATAL EXCEPTION: main\n# 11-25 10:00:03.900 [ActivityManager] ANR in com.example.media"
+    }
+   ],
+   "refs": [
+    1,
+    19,
+    20
+   ],
+   "study": [
+    "adb-docs",
+    "logcat-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• Git 등의 형상 관리 도구 및 Jenkins, Buildkite, GitHub Actions 등의 CI/CD 파이프라인에 대한 기본적 이해를 갖추신 분",
+   "short": "시험 코드를 Git 으로 관리하고, 빌드가 나오면 시험이 저절로 도는 CI 의 원리를 알면 된다 — '기본적 이해'다.",
+   "why": "팀 소개가 IVI 시험을 CI/CD/CT(지속 시험) 파이프라인과 이어 무인 회귀 검증을 완성하는 것을 목표로 적었습니다.[1] 시험 기기는 책상·벤치에 꽂혀 있으므로 CI 작업이 회사 안 기계에서 돌아야 합니다.{추론} Buildkite 는 실행기(에이전트)를 자기 기계에 두는 방식이고, GitHub Actions 도 원하는 하드웨어로 자체 실행기를 둘 수 있습니다.[25][26]",
+   "level": {
+    "basic": "브랜치·머지 요청, 파이프라인 단계(빌드 → 시험 → 결과), 결과물(artifact)",
+    "work": "시험 단계를 파이프라인 파일로 적고, 기기가 붙은 기계에만 작업이 가게 큐·라벨 나누기",
+    "team": "야간 빌드 게이팅, 시험 결과를 머지·출시 판단에 잇기"
+   },
+   "actually": {
+    "items": [
+     "Jenkins 는 파이프라인을 코드(Jenkinsfile)로 적는다.[27]",
+     "Buildkite 작업은 파이프라인이 가리킨 큐의 첫 빈 에이전트로 간다 — 기기가 꽂힌 기계만 그 큐에 넣으면 시험이 그리로 간다.[25]{추론}",
+     "같은 회사 SIL/HIL 공고는 GitLab CI·Jenkins 로 회귀 시험 농장(regression farm)을 자주 돌린다고 적었다.[7]"
+    ]
+   },
+   "how_far": "파이프라인 플랫폼 운영은 DevOps 쪽이 맡는다고 보는 것이 자연스럽습니다.{추론} 이 자리는 **시험 단계를 파이프라인에 넣고 결과를 읽는** 수준이면 됩니다.[1]",
+   "refs": [
+    1,
+    7,
+    25,
+    26,
+    27
+   ],
+   "study": [
+    "buildkite-agent",
+    "gha-self-hosted",
+    "jenkins-pipeline",
+    "progit-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• AAOS VHAL(Vehicle HAL), CarService, CarPropertyManager 아키텍처에 대한 이해 및 검증 경험",
+   "short": "차량 값이 앱까지 올라오는 세 층(VHAL·CarService·CarPropertyManager)을 알고 시험해 봤다면 앞선다.",
+   "why": "업무의 E2E 시험과 신호 주입이 모두 이 세 층 위에 있습니다.[1] 휴대폰 시험 경력자와 차량 시험 경력자를 가르는 곳이 여기입니다.{추론}",
+   "flows": [
+    {
+     "caption": "차량 값이 앱까지 가는 길[10][12]{추론}",
+     "steps": [
+      "차량망 · 구역 제어기·다른 제어기",
+      "VHAL · 프로퍼티 정의·읽기·쓰기·구독",
+      "CarService · 권한 확인·여러 앱에 나눠 줌",
+      "Car API · CarPropertyManager",
+      "앱 · 공조·설정 화면"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "VHAL 은 안드로이드 13부터 AIDL(안드로이드 인터페이스 정의 언어) 판이고, 새 기능은 AIDL 에만 들어간다. CarService 는 둘 다 받되 AIDL 을 먼저 쓴다.[10]",
+     "프로퍼티 id 는 고유 번호·자료형·영역 종류·묶음(SYSTEM/VENDOR)을 합친 값이다. 예: INFO_VIN = 0x11100100.[11]",
+     "CarPropertyManager 는 값 읽기·쓰기와 구독을 주고, 구독 주기는 FASTEST 100Hz·FAST 10Hz·UI 5Hz·NORMAL 1Hz 같은 상수로 고른다.[12]"
+    ]
+   },
+   "refs": [
+    1,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "aosp-vhal",
+    "carpropertymanager"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 차량 네트워크 통신(Ethernet, DDS, SOME/IP, CAN 등) 인터페이스 검증 경험",
+   "short": "IVI 아래 차량망 말(이더넷 위 DDS·SOME/IP, CAN)을 읽고 시험해 봤다면 앞선다.",
+   "why": "팀 소개가 하위 차량 제어기 통신으로 DDS 를 이름까지 적었습니다.[1] 구역 제어기 구조에서는 중앙 컴퓨터와 구역 사이가 이더넷 위 서비스 통신으로 가는 경우가 많습니다.[40]{추론}",
+   "actually": {
+    "items": [
+     "**DDS** — OMG 의 데이터 분배 표준(1.4, 2015). 데이터 중심 발행·구독(DCPS) 모델이다 — 보내는 쪽이 '주제'에 내놓고 받는 쪽이 구독한다.[30]",
+     "**SOME/IP** — 'IP 위의 확장 가능한 서비스 지향 미들웨어'의 줄임말로, AUTOSAR 기기용 차량 통신 규약이다. Wireshark 가 SOME/IP 와 서비스 찾기(SOME/IP-SD)를 풀어 보여 주므로 버스 기록을 읽을 수 있다.[31]",
+     "**CAN** — 아이디로 우선순위를 겨루는 차량 버스. 신호표(DBC)로 메시지를 값으로 푼다.{추론}",
+     "**검증** — 화면 조작 뒤 망에 맞는 메시지가 맞는 주기로 나갔는지, 망에서 넣은 값이 화면에 뜨는지 본다.{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    30,
+    31,
+    40
+   ],
+   "study": [
+    "omg-dds",
+    "autosar-someip"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• REST API 자동화 또는 디바이스 원격 제어(스마트 PDU, 릴레이 모듈 등) 스크립팅 경험",
+   "short": "벤치 장비의 전원을 코드로 껐다 켜고, 서버 API 를 스크립트로 부를 줄 알면 앞선다.",
+   "why": "무인으로 밤새 돌리다 기기가 멈추면 사람 대신 전원을 껐다 켜야 합니다.{추론} 스마트 PDU(원격으로 콘센트별 전원을 켜고 끄는 멀티탭)는 웹(REST) API 로 부를 수 있습니다 — 한 제조사 문서는 콘센트 번호별 상태를 PUT 으로 바꾸고, 껐다 켜기를 POST 한 번으로 한다고 적었습니다.[32]",
+   "actually": {
+    "items": [
+     "**전원 다시 넣기** — 기기가 adb 에서 사라지면 PDU 콘센트를 끄고 몇 초 뒤 켜고, 부팅 완료를 기다린 뒤 시험을 이어 간다.{추론}",
+     "**전원 시험** — 차량 기기는 시동·배터리 상태 변화가 잦아, 릴레이로 전원을 끊었다 넣는 것 자체가 시험 조건이 된다.{추론}",
+     "**REST API 자동화** — 시험 결과 서버·기기 관리 서버·차량 연결 서버 API 를 스크립트로 부르고 응답을 확인한다.{추론}"
+    ]
+   },
+   "refs": [
+    32
+   ],
+   "study": [
+    "pdu-rest"
+   ],
+   "examples": [
+    {
+     "title": "멈춘 기기 전원을 다시 넣는 순서 (가상 장비, 직접 돌린 출력)",
+     "body": "실제 장비 대신 함수로 흉내 냈습니다. 콘센트를 껐다 켜는 요청 꼴은 제조사 문서의 REST 경로를 따랐습니다.[32]",
+     "lang": "python",
+     "code": "BASE = \"http://192.168.0.100/restapi/relay/outlets\"\ndef cycle(outlet):\n    return \"POST %s/%d/cycle/\" % (BASE, outlet)\ndef adb_devices(t):          # 가상: 전원을 넣고 40초 뒤 다시 보인다\n    return [\"ivi-bench-2\"] if t >= 40 else []\nprint(\"adb 에서 사라짐 → \" + cycle(2))\nfor t in range(0, 61, 20):\n    seen = adb_devices(t)\n    print(\"%2d초: %s\" % (t, seen or \"아직 없음\"))\n    if seen: print(\"부팅 확인 → 시험 이어 감\"); break\n# adb 에서 사라짐 → POST http://192.168.0.100/restapi/relay/outlets/2/cycle/\n#  0초: 아직 없음\n# 20초: 아직 없음\n# 40초: ['ivi-bench-2']\n# 부팅 확인 → 시험 이어 감"
+    }
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• ISO 26262, A-SPICE 등 차량 소프트웨어 품질 프로세스에 대한 이해",
+   "short": "차량 소프트웨어의 안전 표준(ISO 26262)과 개발 과정 평가 모델(A-SPICE)이 시험에 무엇을 요구하는지 알면 앞선다.",
+   "why": "포티투닷은 차량 기능안전 개발 프로세스로 ISO 26262 인증을 받았다고 알려졌습니다.[35] A-SPICE 는 요구사항 → 시험 케이스 → 결과의 추적을 시험 과정마다 요구합니다.[34]",
+   "actually": {
+    "items": [
+     "**ISO 26262** — 전기·전자 고장으로 생기는 위험을 줄이는 차량 기능안전 표준.[33]",
+     "**A-SPICE** — 소프트웨어 시험(SWE.6)·시스템 시험(SYS.5) 같은 과정마다 시험 명세·결과·요구사항 추적을 평가한다.[34]",
+     "**시험 자동화와 이어지는 곳** — 자동 시험 결과를 요구사항 id 와 이어 두면, 출시 때 추적 증거를 사람이 따로 만들 필요가 줄어든다.{추론}"
+    ]
+   },
+   "how_far": "인포테인먼트는 안전 등급이 높은 제동·조향보다 덜 엄격한 경우가 많지만, 같은 과정 모델로 평가받습니다.{추론} **요구사항 id 와 시험 결과를 잇는 습관**이 최소선입니다.{추론}",
+   "refs": [
+    33,
+    34,
+    35
+   ],
+   "study": [
+    "aspice-pam",
+    "iso26262"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "휴대폰·앱 시험 자동화를 해 왔고 차 화면으로 넓히고 싶은 사람[1]",
+   "'화면에서 누른 것이 진짜 차량 값까지 갔나'를 끝까지 확인하는 일이 즐거운 사람[1]",
+   "흔들리는 시험의 원인을 파고들어 게이팅을 믿을 만하게 만드는 일을 좋아하는 사람[28][29]",
+   "양산 차에 실리는 소프트웨어의 품질 문을 맡고 싶은 사람[5]"
+  ],
+  "hard": [
+   "UI 자동화·차량 신호·CI·장비 제어까지 요건이 넓다[1]",
+   "AAOS 차량 층(VHAL·CarService)은 공개 자료가 휴대폰 안드로이드보다 적다{추론}",
+   "벤치·실기기가 있어야 연습할 수 있는 부분이 많다(에뮬레이터로 일부만 된다)[36]",
+   "2차 면접이 대면 3시간 내외다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "공조 화면에서 온도를 올리는 E2E 시험을 짜 보세요. 무엇을 확인하나요?",
+   "a": "UI 와 프로퍼티 양쪽 확인, 영역 id, ON_CHANGE 알림.[11][12]"
+  },
+  {
+   "q": "차 없이 '주행 중' 상태를 만들려면 어떻게 하나요?",
+   "a": "VHAL 디버그 명령·에뮬레이터로 프로퍼티 주입.[36][41]"
+  },
+  {
+   "q": "같은 시험이 열 번에 한 번 실패합니다. 어떻게 하겠어요?",
+   "a": "비동기 기다림·격리·시간 원인, 재시도는 표시와 함께.[28][29]"
+  },
+  {
+   "q": "Espresso 와 UI Automator 중 무엇을 고르겠어요? 차 화면에서는?",
+   "a": "앱 안 vs 앱 밖, 시스템 UI·여러 앱.[15][16]"
+  },
+  {
+   "q": "Nightly 게이팅에 Smoke·Sanity·Regression 을 어떻게 나누겠어요?",
+   "a": "앞 단계 실패 시 중단, 시간 예산, 위험이 큰 기능 먼저.[1][14]"
+  },
+  {
+   "q": "밤새 돌던 기기가 adb 에서 사라졌습니다. 사람 없이 되살리려면?",
+   "a": "스마트 PDU 전원 재투입, 부팅 대기, 시험 재개.[32]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "aosp-vhal",
+   "title": "Android Automotive — VHAL overview · Property configuration · Debug the VHAL",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/automotive/vhal",
+   "why": "프로퍼티·영역·바뀜 방식·접근, AIDL VHAL, 디버그 명령. E2E 시험·신호 주입·VHAL 우대의 바탕."
+  },
+  {
+   "id": "carpropertymanager",
+   "title": "CarPropertyManager (API reference)",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/reference/android/car/hardware/property/CarPropertyManager",
+   "why": "앱 쪽에서 차량 값을 읽고·쓰고·구독하는 API. 시험 앱이 이벤트를 확인하는 방법."
+  },
+  {
+   "id": "aaos-avd",
+   "title": "Test using the Android Automotive OS emulator",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/training/cars/testing/emulator",
+   "why": "차 없이 차량용 에뮬레이터를 띄우고 Car data 로 차속·기어 같은 프로퍼티를 바꾸는 법. 연습 환경."
+  },
+  {
+   "id": "aosp-spectatio",
+   "title": "Spectatio: Automotive test framework",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/automotive/tools/spectatio",
+   "why": "UI Automator 위에 만든 차량용 UI 시험 틀 — 앱별 도우미, 기기별 JSON 설정. UI 자동화 업무의 공개된 본보기."
+  },
+  {
+   "id": "aosp-catbox",
+   "title": "CATBox (Compatibility Automotive Test Box)",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/automotive/tools/catbox",
+   "why": "Tradefed 로 차량 기능·성능 시험 계획을 돌리고 결과를 남기는 공개 묶음. 게이팅 묶음 나누기·운영의 본보기."
+  },
+  {
+   "id": "uiautomator",
+   "title": "Write automated tests with UI Automator",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/training/testing/other-components/ui-automator",
+   "why": "앱 밖 화면까지 누르는 공식 도구. UI 자동화 요건."
+  },
+  {
+   "id": "espresso",
+   "title": "Espresso",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/training/testing/espresso",
+   "why": "앱 안 UI 시험과 자동 기다림(IdlingResource). 흔들림 줄이기의 출발."
+  },
+  {
+   "id": "appium",
+   "title": "Appium Documentation · UiAutomator2 Driver",
+   "by": "Appium (OpenJS Foundation)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://appium.io/docs/en/latest/intro/appium/",
+   "why": "PC 의 파이썬 시험에서 안드로이드 기기를 원격 조종하는 법. Pytest 와 묶는 요건."
+  },
+  {
+   "id": "maestro",
+   "title": "Maestro Documentation",
+   "by": "mobile.dev",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.maestro.dev/get-started/what-is-maestro",
+   "why": "YAML 흐름으로 시나리오를 빨리 쓰는 도구. 공고 맨 앞에 적힌 도구."
+  },
+  {
+   "id": "pytest-docs",
+   "title": "pytest documentation · pytest-xdist · pytest-rerunfailures",
+   "by": "pytest-dev",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.pytest.org/en/stable/how-to/fixtures.html",
+   "why": "픽스처·마커·매개변수화, 병렬(-n)·재시도(--reruns). 러너 요건과 흔들림·병렬 업무."
+  },
+  {
+   "id": "robot-framework",
+   "title": "Robot Framework User Guide",
+   "by": "Robot Framework Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://robotframework.org/",
+   "why": "키워드 기반 시험 — 요건의 두 번째 프레임워크."
+  },
+  {
+   "id": "adb-docs",
+   "title": "Android Debug Bridge (adb)",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/tools/adb",
+   "why": "기기 제어 명령 전체. ADB 요건과 신호 주입 업무."
+  },
+  {
+   "id": "logcat-docs",
+   "title": "Logcat command-line tool",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/tools/logcat",
+   "why": "버퍼·거르기·출력 형식. 트러블슈팅 요건."
+  },
+  {
+   "id": "google-flaky",
+   "title": "Flaky Tests at Google and How We Mitigate Them",
+   "by": "Google Testing Blog · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
+   "why": "큰 조직에서 흔들리는 시험이 얼마나 흔하고 어떻게 다루나. Flaky 업무의 숫자 근거."
+  },
+  {
+   "id": "fowler-nondeterminism",
+   "title": "Eradicating Non-Determinism in Tests",
+   "by": "Martin Fowler · 2011",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://martinfowler.com/articles/nonDeterminism.html",
+   "why": "흔들림의 원인(격리·비동기·바깥 서비스·시간·자원)과 고치는 법."
+  },
+  {
+   "id": "swe-google",
+   "title": "구글 엔지니어는 이렇게 일한다",
+   "by": "타이터스 윈터스 외 · 한빛미디어 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942639",
+   "why": "시험 크기·범위, 대규모 시험 운영, CI 를 다룬 장들. 게이팅·흔들림 업무의 큰 그림."
+  },
+  {
+   "id": "istqb-ctfl",
+   "title": "ISTQB Certified Tester Foundation Level (CTFL) v4.0 Syllabus",
+   "by": "ISTQB",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
+   "why": "시험 수준·종류·설계 기법의 공통 낱말. 테스트 경력 요건의 기초."
+  },
+  {
+   "id": "buildkite-agent",
+   "title": "Buildkite Agent overview",
+   "by": "Buildkite",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://buildkite.com/docs/agent/v3",
+   "why": "에이전트를 자기 기계에 두는 CI — 기기가 꽂힌 기계에서 시험 돌리기."
+  },
+  {
+   "id": "gha-self-hosted",
+   "title": "About self-hosted runners",
+   "by": "GitHub Docs",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners",
+   "why": "GitHub Actions 작업을 회사 안 기계에서 돌리는 법."
+  },
+  {
+   "id": "jenkins-pipeline",
+   "title": "Jenkins User Handbook — Pipeline",
+   "by": "Jenkins",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jenkins.io/doc/book/pipeline/",
+   "why": "파이프라인을 코드로 적는 법. CI/CD 요건."
+  },
+  {
+   "id": "progit-ko",
+   "title": "Pro Git (2판, 한국어)",
+   "by": "Scott Chacon · Ben Straub",
+   "kind": "book",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://git-scm.com/book/ko/v2",
+   "why": "형상 관리 요건의 기본 — 브랜치·머지."
+  },
+  {
+   "id": "omg-dds",
+   "title": "Data Distribution Service (DDS) 1.4",
+   "by": "Object Management Group",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.omg.org/spec/DDS/",
+   "why": "데이터 중심 발행·구독 모델의 원문. 팀 소개에 적힌 DDS 를 읽는 바탕."
+  },
+  {
+   "id": "autosar-someip",
+   "title": "AUTOSAR SOME/IP Protocol Specification (R22-11)",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/FO/AUTOSAR_PRS_SOMEIPProtocol.pdf",
+   "why": "이더넷 위 서비스 통신 규약 원문. 차량망 우대."
+  },
+  {
+   "id": "pdu-rest",
+   "title": "Digital Loggers — REST API (Web Power Switch)",
+   "by": "Digital Loggers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.digital-loggers.com/rest.html",
+   "why": "콘센트별 전원을 REST 로 켜고·끄고·껐다 켜는 실제 명령. 장비 원격 제어 우대 — 다른 회사 PDU 도 꼴이 비슷하다."
+  },
+  {
+   "id": "aspice-pam",
+   "title": "Automotive SPICE PAM 4.0",
+   "by": "VDA QMC · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+   "why": "시험 과정(SWE.6·SYS.5)이 무엇을 남겨야 하나. 품질 프로세스 우대."
+  },
+  {
+   "id": "iso26262",
+   "title": "ISO 26262-1:2018 Road vehicles — Functional safety — Vocabulary",
+   "by": "ISO",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/68383.html",
+   "why": "기능안전 표준의 낱말. 품질 프로세스 우대."
+  },
+  {
+   "id": "mathworks-hil",
+   "title": "What Is Hardware-in-the-Loop (HIL)?",
+   "by": "MathWorks",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.mathworks.com/discovery/hardware-in-the-loop-hil.html",
+   "why": "HIL·SIL 이 무엇인지. 벤치 환경에서의 통합 시험 줄."
+  },
+  {
+   "id": "aosp-vhal-ref",
+   "title": "VHAL reference implementation (FakeVehicleHardware)",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://source.android.com/docs/automotive/vhal/reference-implementation",
+   "why": "차량망 없이 메모리 표로 도는 에뮬레이터용 VHAL. 신호 주입 시험이 실제로 무엇을 건드리는지 안쪽에서 본다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "안드로이드 UI 자동화 손에 익히기",
+   "time": "2주",
+   "goal": "Espresso·UI Automator·Appium 중 둘로 같은 시나리오를 짜고 차이를 설명할 수 있다.",
+   "resources": [
+    "uiautomator",
+    "espresso",
+    "appium",
+    "maestro"
+   ],
+   "task": "설정 앱의 '밝기 바꾸기'를 UI Automator 와 Maestro 로 각각 자동화하고, 기다리기 코드 없이 열 번 연속 통과하는지 센다."
+  },
+  {
+   "title": "Pytest 로 묶고 로그 남기기",
+   "time": "1~2주",
+   "goal": "기기 연결·정리를 픽스처로, 실패 때 logcat·화면을 자동으로 남기는 시험 틀을 만든다.",
+   "resources": [
+    "pytest-docs",
+    "adb-docs",
+    "logcat-docs"
+   ],
+   "task": "Appium 시험 셋을 pytest 로 묶고 smoke/regression 마커로 나눈다. 실패하면 logcat -d 와 화면 캡처를 결과 폴더에 저장하게 한다."
+  },
+  {
+   "title": "차량용 안드로이드와 차량 신호",
+   "time": "2~3주",
+   "goal": "AAOS 에뮬레이터에서 프로퍼티를 넣고 화면이 따라 바뀌는 E2E 시험을 짤 수 있다.",
+   "resources": [
+    "aaos-avd",
+    "aosp-vhal",
+    "carpropertymanager",
+    "aosp-spectatio",
+    "aosp-vhal-ref"
+   ],
+   "task": "차량용 에뮬레이터를 띄우고 공조 온도·기어 프로퍼티를 adb 로 넣는다. 화면 숫자가 바뀌는지 UI 로, 앱이 이벤트를 받는지 CarPropertyManager 구독으로 확인하는 시험 둘을 만든다."
+  },
+  {
+   "title": "CI 에 붙이고 흔들림 재기",
+   "time": "2주",
+   "goal": "자체 러너에서 야간 게이팅을 돌리고, 흔들리는 시험을 숫자로 골라낼 수 있다.",
+   "resources": [
+    "gha-self-hosted",
+    "buildkite-agent",
+    "google-flaky",
+    "fowler-nondeterminism",
+    "swe-google"
+   ],
+   "task": "집 PC 에 GitHub Actions 자체 러너를 깔고 에뮬레이터 시험을 밤마다 돌린다. 2주간 결과를 모아 시험별 실패율 표를 만들고, 1위 시험의 원인을 고친다."
+  },
+  {
+   "title": "차량망과 품질 프로세스 맛보기",
+   "time": "1~2주",
+   "goal": "DDS·SOME/IP 가 무엇을 주고받는지, 시험 결과를 요구사항에 잇는 이유를 설명할 수 있다.",
+   "resources": [
+    "omg-dds",
+    "autosar-someip",
+    "aspice-pam",
+    "mathworks-hil"
+   ],
+   "task": "가상 요구사항 다섯 줄(REQ-1~5)을 만들고, 앞 단계 시험마다 요구사항 id 를 마커로 달아 '요구사항 → 시험 → 결과' 표를 자동으로 뽑는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고·공시에 연봉이 없다 — 공공데이터 집계 평균 **6,032만원**(회사 전체, 경력직 포함). 이 자리는 경력 3~5년이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 원티드 기업 정보(2026-11 확인)",
+    "note": "같은 화면의 국민연금 가입 사원 수 804명. 기준월은 적혀 있지 않다 [9]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 공시가 없다{추론}. 공고에는 연봉이 없다 [1]. 평균은 신입·경력·직군이 섞인 회사 전체 값이라 이 자리(경력 3~5년)의 제안 금액으로 읽으면 안 된다{추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "유연근무제",
+    "detail": "재량·선택 근무"
+   },
+   {
+    "name": "리커버리 휴가",
+    "detail": "법정 연차와 별도로 매월 1회 유급"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당 하루 세 끼 무료, 사내 카페"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연간 최대 300만원, 명절 복지 포인트 추가"
+   },
+   {
+    "name": "건강",
+    "detail": "프리미엄 종합검진 전액 지원, 단체상해보험(본인·배우자·자녀·본인 부모), 상주 간호사·심리·재무·법률 상담(EAP)"
+   },
+   {
+    "name": "운동",
+    "detail": "사내 피트니스, 1:1 PT·GX 수업"
+   },
+   {
+    "name": "전기차",
+    "detail": "구매 시 차량 가격 최대 15%(한도 1,000만원) 지원, 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 사내 대출",
+    "detail": "근속에 따라 1,000만~5,000만원, 금리 0%"
+   },
+   {
+    "name": "교육",
+    "detail": "국내외 교육·세미나·워크숍·컨퍼런스 참가비 지원(금액 표기 없음)"
+   },
+   {
+    "name": "직장 어린이집",
+    "detail": "임직원 자녀 대상, 특별활동 운영"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "장기근속 포상, 휴양시설(매월 추첨), 경조사 지원, 인재 추천 보상"
+   }
+  ],
+  "note": "포티투닷 채용 사이트 '업무 몰입 프로그램' 페이지 기준(게시일 표기 없음, 2026-11-25 확인). 한국 본사 기준이고 해외 법인은 다를 수 있다고 적혀 있다 [2]. 이 공고의 혜택 칸도 같은 페이지를 가리킨다 [1]."
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥 (소프트웨어 드림센터 A동)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "판교 제2테크노밸리 {추론}",
+  "note": "주소는 포티투닷 홈페이지 하단 회사 정보 [3]. 공고 근무지 표기는 '경기 성남시'다 [1]."
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · 포티투닷 Test Automation Engineer (IVI System)",
+   "url": "https://www.wanted.co.kr/wd/395192",
+   "kind": "posting",
+   "date": "2026-11-17",
+   "note": "이 공고. 팀 소개(HIL/SIL·Test Bench, CI/CD/CT 무인 회귀, CarProperty·VHAL·DDS, Shift-left·릴리스 품질 게이트)·업무 7·자격 6·우대 4·전형(서류 → 1차 화상 1시간 → 2차 대면 3시간 → 최종), 경력 3~5년, 수습 3개월 가능"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 · 42dot만의 업무 몰입 프로그램",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준(해외 법인은 다를 수 있음), 게시일 표기 없음"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 홈페이지 · 하단 회사 정보",
+   "url": "https://42dot.ai/ko",
+   "kind": "company",
+   "note": "경기도 성남시 수정구 창업로40번길 20, A동"
+  },
+  {
+   "n": 4,
+   "title": "포티투닷 · 인포테인먼트 (Android Automotive OS 기반 차세대 IVI 시스템)",
+   "url": "https://42dot.ai/ko/sdv/infotainment",
+   "kind": "company",
+   "note": "AAOS 기반 자체 개발, Vehicle API·Cloud API, Pleos Playground(SDK·Devbox·Emulator). 게시일 표기 없음"
+  },
+  {
+   "n": 5,
+   "title": "현대자동차그룹 · Pleos Connect 차세대 인포테인먼트 공개",
+   "url": "https://www.hyundaimotorgroup.com/news/hyundai-motor-group-redefines-in-vehicle-experience-with-pleos-connect-next-generation-infotainment-system",
+   "kind": "company",
+   "date": "2026-04-30",
+   "note": "5월 신형 그랜저 첫 탑재, OTA 로 기능 추가, 개발에 포티투닷 참여"
+  },
+  {
+   "n": 6,
+   "title": "42dot Work&Way l 개발자가 일하는 방식 - Vehicle OS 편",
+   "url": "https://www.youtube.com/watch?v=OohOT91cuwQ",
+   "kind": "company",
+   "date": "2026-09-07",
+   "note": "Vehicle API 팀 직원 인터뷰(약 4분). 차 없이 먼저 개발·시험하는 오프사이클 개발. 같은 회사 다른 풀이(IVI OS Camera)에서 자막을 전부 읽은 영상 — 이번 회차에 다시 받지 않음"
+  },
+  {
+   "n": 7,
+   "title": "포티투닷 채용 · Sr. Test Automation Engineer (SIL/HIL Infrastructure)",
+   "url": "https://jobs.ashbyhq.com/42dot/3d96a60d-be22-4d72-a50a-320e79d1b21c",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고(미국 서니베일). vECU·SIL/MIL/HIL, 진짜 ECU 를 붙인 HIL 벤치 구축, GitLab CI·Jenkins 회귀 시험 농장, Pytest·OpenHTF, ASPICE 추적"
+  },
+  {
+   "n": 8,
+   "title": "벤처스퀘어 · 스마트폰 연결 없이 멜론·카카오내비 쓴다…포티투닷, 차량용 앱 18종으로 확대",
+   "url": "https://www.venturesquare.net/1111191/",
+   "kind": "news",
+   "date": "2026-09-07",
+   "note": "Pleos Connect 앱 마켓에 7종 추가, 국내 차종 기준 18종(내비 3·음악 4 등), 더 뉴 그랜저·디 올 뉴 아반떼, Pleos Playground 로 외부 개발사에 차량 API·개발 도구 제공"
+  },
+  {
+   "n": 9,
+   "title": "원티드 · 포티투닷(42dot) 기업 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "평균연봉 6,032만원 · 국민연금 가입 사원 804명 표기(공공데이터 집계, 기준월 표기 없음)"
+  },
+  {
+   "n": 10,
+   "title": "AOSP · Vehicle Hardware Abstraction Layer (VHAL) overview",
+   "url": "https://source.android.com/docs/automotive/vhal",
+   "kind": "reference",
+   "note": "VHAL 이 프로퍼티와 메타데이터를 정의, 읽기·쓰기·구독. 안드로이드 13부터 AIDL(새 기능은 AIDL 에만), CarService 는 AIDL 을 먼저 쓴다"
+  },
+  {
+   "n": 11,
+   "title": "AOSP · VHAL property configuration",
+   "url": "https://source.android.com/docs/automotive/vhal/property-configuration",
+   "kind": "reference",
+   "note": "프로퍼티 id 구성, 영역 종류(GLOBAL·WINDOW·MIRROR·SEAT·DOOR·WHEEL), 바뀜 방식 STATIC·ON_CHANGE·CONTINUOUS, 접근 READ·WRITE·READ_WRITE, 표본 주기는 CONTINUOUS 만"
+  },
+  {
+   "n": 12,
+   "title": "Android Developers · CarPropertyManager",
+   "url": "https://developer.android.com/reference/android/car/hardware/property/CarPropertyManager",
+   "kind": "reference",
+   "note": "get/set(동기는 몇 초 걸릴 수 있어 메인 스레드 밖에서), subscribePropertyEvents(updateRateHz), 주기 상수 FASTEST 100·FAST 10·UI 5·NORMAL 1Hz, 쓰기 오류 코드(ACCESS_DENIED·PROPERTY_NOT_AVAILABLE·TRY_AGAIN 등)"
+  },
+  {
+   "n": 13,
+   "title": "AOSP · Spectatio: Automotive test framework",
+   "url": "https://source.android.com/docs/automotive/tools/spectatio",
+   "kind": "reference",
+   "note": "실제·가상 기기의 AAOS 시험, UI Automator 위에 구축, 앱별 도우미(설정·전화·미디어), 기기별 화면 요소는 JSON 설정(adb push)"
+  },
+  {
+   "n": 14,
+   "title": "AOSP · CATBox",
+   "url": "https://source.android.com/docs/automotive/tools/catbox",
+   "kind": "reference",
+   "note": "Tradefed 러너 + Spectatio, 기능 시험 계획 약 50 · 성능 시험 계획 15(냉시작·끊김), 결과 XML/HTML. 통과해도 호환성 보장은 아님(CTS·VTS 권장)"
+  },
+  {
+   "n": 15,
+   "title": "Android Developers · Write automated tests with UI Automator",
+   "url": "https://developer.android.com/training/testing/other-components/ui-automator",
+   "kind": "reference",
+   "note": "앱 프로세스 밖에서 시험, onElement 기본 기다림 10,000ms, waitForStable. 옛 판 문서: 시스템·설치 앱을 넘나드는 시험, API 18 이상"
+  },
+  {
+   "n": 16,
+   "title": "Android Developers · Espresso",
+   "url": "https://developer.android.com/training/testing/espresso",
+   "kind": "reference",
+   "note": "동작 전에 메시지 큐가 비고 AsyncTask 가 없고 IdlingResource 가 모두 한가해질 때까지 기다린다"
+  },
+  {
+   "n": 17,
+   "title": "Appium Documentation · Intro to Appium",
+   "url": "https://appium.io/docs/en/latest/intro/appium/",
+   "kind": "reference",
+   "date": "2026-10-20",
+   "note": "HTTP 서버로 돌고 W3C WebDriver 규약을 따른다, 드라이버가 플랫폼 호출로 바꾼다(안드로이드 시작 안내는 UiAutomator2 드라이버)"
+  },
+  {
+   "n": 18,
+   "title": "Maestro Documentation · What is Maestro",
+   "url": "https://docs.maestro.dev/get-started/what-is-maestro",
+   "kind": "reference",
+   "note": "흔들림·화면 안정을 자동으로 처리, sleep() 없이 네트워크·애니메이션을 기다림, YAML 시험, 컴파일 없음"
+  },
+  {
+   "n": 19,
+   "title": "Android Developers · Android Debug Bridge (adb)",
+   "url": "https://developer.android.com/tools/adb",
+   "kind": "reference",
+   "note": "클라이언트·서버(TCP 5037)·데몬(adbd) 세 부분, -s 로 기기 고르기, exec-out screencap 으로 화면 저장, screenrecord 최대 180초"
+  },
+  {
+   "n": 20,
+   "title": "Android Developers · Logcat command-line tool",
+   "url": "https://developer.android.com/tools/logcat",
+   "kind": "reference",
+   "note": "-b 버퍼(main·system·crash·events·radio, 기본 main+system+crash), tag:priority 거르기, 기본 형식 threadtime, -d 로 찍고 끝냄"
+  },
+  {
+   "n": 21,
+   "title": "pytest documentation · fixtures · failures · parametrize",
+   "url": "https://docs.pytest.org/en/stable/how-to/fixtures.html",
+   "kind": "reference",
+   "note": "픽스처 범위(function~session), yield 뒤 정리, conftest.py 로 나눠 쓰기, -x·--maxfail, @pytest.mark.parametrize"
+  },
+  {
+   "n": 22,
+   "title": "PyPI · pytest-rerunfailures",
+   "url": "https://pypi.org/project/pytest-rerunfailures/",
+   "kind": "reference",
+   "date": "2026-09-17",
+   "note": "--reruns N·--reruns-delay·@pytest.mark.flaky(reruns=N)·--only-rerun"
+  },
+  {
+   "n": 23,
+   "title": "PyPI · pytest-xdist",
+   "url": "https://pypi.org/project/pytest-xdist/",
+   "kind": "reference",
+   "date": "2025-07-01",
+   "note": "pytest -n auto 로 CPU 마다 작업자 하나"
+  },
+  {
+   "n": 24,
+   "title": "Robot Framework",
+   "url": "https://robotframework.org/",
+   "kind": "reference",
+   "note": "시험 자동화·RPA 용 공개 도구, 키워드 기반, 파이썬으로 구현, 비영리 재단이 관리"
+  },
+  {
+   "n": 25,
+   "title": "Buildkite Docs · Agent",
+   "url": "https://buildkite.com/docs/agent/v3",
+   "kind": "reference",
+   "note": "리눅스·맥·윈도우 등 자기 기계에 두는 빌드 실행기(호스팅 에이전트도 있음), 작업은 큐의 첫 빈 에이전트로"
+  },
+  {
+   "n": 26,
+   "title": "GitHub Docs · About self-hosted runners",
+   "url": "https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners",
+   "kind": "reference",
+   "note": "직접 깔고 관리하는 실행 기계, 원하는 하드웨어 구성"
+  },
+  {
+   "n": 27,
+   "title": "Jenkins User Handbook · Pipeline",
+   "url": "https://www.jenkins.io/doc/book/pipeline/",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Google Testing Blog · Flaky Tests at Google and How We Mitigate Them (John Micco)",
+   "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
+   "kind": "reference",
+   "date": "2016-05-27",
+   "note": "시험 실행의 약 1.5% 가 flaky 결과, 시험의 약 16% 에 흔들림 — 본문이 스크립트로 떠서 검색 요약으로 확인"
+  },
+  {
+   "n": 29,
+   "title": "Martin Fowler · Eradicating Non-Determinism in Tests",
+   "url": "https://martinfowler.com/articles/nonDeterminism.html",
+   "kind": "reference",
+   "date": "2011-04-14",
+   "note": "원인: 격리 부족·비동기·바깥 서비스·시간·자원 누수. 격리(quarantine), 맨 sleep 대신 콜백·폴링, 시계 감싸기"
+  },
+  {
+   "n": 30,
+   "title": "OMG · Data Distribution Service (DDS) 1.4",
+   "url": "https://www.omg.org/spec/DDS/",
+   "kind": "reference",
+   "date": "2015-03",
+   "note": "데이터 중심 발행·구독(DCPS) 모델"
+  },
+  {
+   "n": 31,
+   "title": "SOME/IP (some-ip.com)",
+   "url": "https://some-ip.com/",
+   "kind": "reference",
+   "note": "Scalable service-Oriented MiddlewarE over IP, AUTOSAR 기기용 차량 미들웨어, Wireshark 가 SOME/IP·SOME/IP-SD·SOME/IP-TP 를 풀어 보여 줌"
+  },
+  {
+   "n": 32,
+   "title": "Digital Loggers · REST API (Web Power Switch)",
+   "url": "https://www.digital-loggers.com/rest.html",
+   "kind": "reference",
+   "note": "콘센트 상태를 PUT .../restapi/relay/outlets/<번호>/state/ 로 켜고 끔, POST .../cycle/ 로 껐다 켜기, 번호는 0부터 — 한 제조사의 예"
+  },
+  {
+   "n": 33,
+   "title": "ISO · ISO 26262-1:2018 Road vehicles — Functional safety — Vocabulary",
+   "url": "https://www.iso.org/standard/68383.html",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "VDA QMC · Automotive SPICE PAM 4.0",
+   "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "바이라인네트워크 · 포티투닷 차량 기능안전 개발 프로세스, 국제 표준 인증 획득",
+   "url": "https://byline.network/2023/09/25-289/",
+   "kind": "news",
+   "date": "2023-09-25",
+   "note": "DNV ISO 26262 인증"
+  },
+  {
+   "n": 36,
+   "title": "Android Developers · Test using the Android Automotive OS emulator",
+   "url": "https://developer.android.com/training/cars/testing/emulator",
+   "kind": "reference",
+   "note": "확장 제어의 Car data 로 실행 중 VHAL 프로퍼티(PERF_VEHICLE_SPEED 등) 바꾸기, 속도 0 아님 + 기어 P 아님 = 주행 흉내, 로터리 입력 도구, API 28~35 이미지"
+  },
+  {
+   "n": 37,
+   "title": "AOSP · VHAL reference implementation",
+   "url": "https://source.android.com/docs/automotive/vhal/reference-implementation",
+   "kind": "reference",
+   "note": "DefaultVehicleHal + FakeVehicleHardware(차량망 없이 메모리 표) — 에뮬레이터용, 업체가 그대로 쓰면 안 됨. 안드로이드 14부터 설정 JSON 을 vendor 에서 읽음"
+  },
+  {
+   "n": 38,
+   "title": "원티드 · 포티투닷 IVI OS Engineer (Camera System)",
+   "url": "https://www.wanted.co.kr/wd/310540",
+   "kind": "posting",
+   "note": "같은 회사 IVI 공고"
+  },
+  {
+   "n": 39,
+   "title": "현대자동차 · Hyundai Motor Group Launches 'Pleos' Software Brand",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000000921",
+   "kind": "company",
+   "note": "Pleos 25 — 제어기를 HPVC 와 zone controller 로 통합, Pleos Vehicle OS"
+  },
+  {
+   "n": 40,
+   "title": "Aptiv · Zone Controller 백서",
+   "url": "https://www.aptiv.com/docs/default-source/white-papers/2021_aptiv_whitepaper_zonecontroller.pdf",
+   "kind": "reference",
+   "note": "위치 기준으로 센서·모터를 구역 제어기에 연결, 중앙 컴퓨터와 이더넷 백본"
+  },
+  {
+   "n": 41,
+   "title": "AOSP · Debug the VHAL",
+   "url": "https://source.android.com/docs/automotive/vhal/vhal_debug",
+   "kind": "reference",
+   "note": "adb root 후 dumpsys android.hardware.automotive.vehicle.IVehicle/default --get <프로퍼티> / --set <프로퍼티> -a <영역> -i <값>, --help 로 명령 목록"
+  },
+  {
+   "n": 42,
+   "title": "IBM · What is shift-left testing?",
+   "url": "https://www.ibm.com/think/topics/shift-left-testing",
+   "kind": "reference",
+   "date": "2023-06-13",
+   "note": "시험 활동을 개발 앞쪽으로 당기는 방식(2026-06-22 갱신)"
+  }
+ ],
+ "caveat": "회사 근거는 이 공고, 같은 회사 SIL/HIL 시험 자동화 공고, 포티투닷 인포테인먼트 소개 페이지, 현대차그룹 Pleos 발표(Pleos 25 · Pleos Connect 2026-04-30), 앱 마켓 18종 보도(2026-09-07), Vehicle OS 편 영상입니다. 포티투닷이 IVI 시험을 어떻게 자동화하는지 다룬 글·발표는 찾지 못해, 그 부분은 AOSP(VHAL·Spectatio·CATBox·에뮬레이터)·Android Developers(UI Automator·Espresso·adb·logcat)·Appium·Maestro·pytest 문서, 구글 시험 블로그·Fowler 글, OMG·AUTOSAR·ASPICE 문서로 '보통 이런 것'을 보였고 판단은 {추론}으로 표시했습니다. 예시 코드는 모두 가상의 숫자로 직접 돌린 것입니다. 2026-11-25 기준."
+}

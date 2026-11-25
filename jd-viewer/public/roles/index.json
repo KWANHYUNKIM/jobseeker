@@ -36,6 +36,7 @@
   "ats-ashby:42dot:efbd4971-b841-410f-aa6b-e333c64cfe23": "42dot-sw-test-engineer-diagnostics",
   "ats-ashby:42dot:403e89b4-fdf4-4168-a115-163706830174": "42dot-system-test-engineer-sw-update",
   "ats-ashby:42dot:2276c44d-d0d6-48d5-ad44-014e8da6fa55": "42dot-system-test-engineer-verification",
+  "wanted-395192": "42dot-test-automation-ivi-system",
   "ats-ashby:42dot:c184cf35-51e2-4e80-87bc-579089f07472": "42dot-tts-deep-learning-engineer",
   "ats-ashby:42dot:beb84dde-9182-4441-a25b-c03644640854": "42dot-vehicle-system-integration",
   "wanted-335089": "aldagram-kanna-web-engineer",
@@ -714,6 +715,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "42dot-test-automation-ivi-system",
+   "company": "포티투닷(42dot)",
+   "role": "Test Automation Engineer",
+   "jobs": [
+    "wanted-395192"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "42dot-tts-deep-learning-engineer",
