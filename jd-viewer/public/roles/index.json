@@ -97,6 +97,7 @@
   "wanted-387536": "hyundai-sdf-data-architect",
   "ats-hkmc:hyundai:2026N2387": "hyundai-sdv-controller-sw-integration",
   "wanted-393817": "hyundai-sdv-controller-sw-integration",
+  "ats-hkmc:hyundai:2026N2294": "hyundai-shucle-service-ux-planning",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
   "wanted-391370": "litalico-data-engineer",
@@ -1117,6 +1118,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 45
+  },
+  {
+   "id": "hyundai-shucle-service-ux-planning",
+   "company": "현대자동차",
+   "role": "모빌리티 서비스 UX 기획",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2294"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 27
   },
   {
    "id": "ldf-ebookjapan-web-frontend",
