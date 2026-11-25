@@ -9,6 +9,8 @@
   "ats-ashby:42dot:fa24b02d-a231-4e0c-affa-319d47c19b58": "42dot-ai-infrastructure-engineer",
   "wanted-392726": "42dot-ai-infrastructure-engineer",
   "ats-ashby:42dot:a895dce5-3a9d-4472-8b05-04bbd99aea60": "42dot-android-build-system",
+  "ats-ashby:42dot:bad819ef-25e5-4c20-87c3-252f922c7f3b": "42dot-backend-open-platform",
+  "wanted-392718": "42dot-backend-open-platform",
   "ats-ashby:42dot:905f1b60-158a-4aca-a3c3-376cbfdcefa9": "42dot-cloud-infrastructure-engineer",
   "ats-ashby:42dot:70c5a672-9bd9-4195-a305-245b578a35dc": "42dot-data-engineer-data-governance",
   "ats-ashby:42dot:96c1501f-070c-4c0f-b883-af957746e84c": "42dot-edge-ai-sw-engineer-ad",
@@ -27,6 +29,7 @@
   "ats-ashby:42dot:08d5a10e-10f6-4821-ba21-66cda54064ef": "42dot-senior-devops-cicd",
   "ats-ashby:42dot:4e0a3e0c-ad0e-47e2-b937-cdc9633fd52b": "42dot-senior-ml-engineer-ai-data",
   "ats-ashby:42dot:44a90406-9eef-495b-b994-c28a64e2be83": "42dot-senior-ml-platform-engineer-ad",
+  "ats-ashby:42dot:befd1e35-1b6f-4c0e-b2fe-6a135b246463": "42dot-senior-network-engineer",
   "ats-ashby:42dot:e505b80b-4b42-401c-a36e-eb11fb422931": "42dot-senior-platform-engineer-warsaw",
   "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c": "42dot-senior-release-engineer",
   "ats-ashby:42dot:406f59e5-d04b-4f9b-a519-19da3b4c895c": "42dot-senior-service-architect-playground",
@@ -452,6 +455,17 @@
    "lines": 23
   },
   {
+   "id": "42dot-backend-open-platform",
+   "company": "포티투닷",
+   "role": "Backend Engineer",
+   "jobs": [
+    "ats-ashby:42dot:bad819ef-25e5-4c20-87c3-252f922c7f3b",
+    "wanted-392718"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
+  },
+  {
    "id": "42dot-cloud-infrastructure-engineer",
    "company": "포티투닷(42dot)",
    "role": "Cloud Infrastructure Engineer",
@@ -630,6 +644,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 19
+  },
+  {
+   "id": "42dot-senior-network-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "Senior Network Engineer",
+   "jobs": [
+    "ats-ashby:42dot:befd1e35-1b6f-4c0e-b2fe-6a135b246463"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
   },
   {
    "id": "42dot-senior-platform-engineer-warsaw",
