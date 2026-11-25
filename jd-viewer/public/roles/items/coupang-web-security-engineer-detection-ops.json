@@ -1,0 +1,533 @@
+{
+ "id": "coupang-web-security-engineer-detection-ops",
+ "company": "쿠팡",
+ "role": "시니어~스태프 웹 보안 엔지니어",
+ "team": "Digital Trust(보안 조직) · Detection Operations 팀",
+ "jobs": [
+  "ats-greenhouse:coupang:8206706"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡의 바깥에 열린 웹사이트·API 앞에 서 있는 **WAF(웹 방화벽)·봇 차단·디도스 방어 서비스의 정책을 운영**하고, 그 정책이 진짜 공격만 막고 진짜 손님은 통과시키도록 로그로 계속 다듬습니다.[1]",
+  "env": "웹·네트워크·이메일·엔드포인트 보안을 한 팀이 나눠 맡고, 장비보다 **외부 서비스(3rd Party·SaaS)** 를 많이 씁니다.[1] 같은 보안 조직에 탐지 엔지니어링·위협 헌팅·공격 표면 관리 팀이 있습니다.[4][5] 2025년 고객정보 유출 뒤라 비정상 접속 탐지와 로그 보존이 정부 권고 항목입니다.[10]",
+  "oneline": "공격을 막는 규칙을 쓰는 사람이자, 그 규칙이 **손님을 막지 않게** 책임지는 사람. 웹 보안 실무 5년 이상(다른 사이트 공고는 5~20년)의 경력직 자리입니다.[1][2]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Detection Operations 팀은 웹 보안, 네트워크 보안, 이메일 보안, 엔드포인트 보안 전반에 걸쳐 보안 Appliance 장비, Endpoint 보안 솔루션, 그리고 다양한 SaaS 기반 보안 서비스를 운영 및 관리하고 있습니다.",
+   "short": "팀 소개 — 한 팀이 웹·네트워크·이메일·PC 보안 도구를 나눠 맡고, 이 자리는 그중 웹을 맡는다.",
+   "why": "같은 팀의 네트워크 보안 자리가 IDC 장비를 맡고[3], 이 자리는 바깥에 열린 웹·API 를 맡습니다.[1] 쿠팡 2025 회계연도 연차보고서는 보안 조직이 200명 넘는다고 적었습니다.[9]",
+   "refs": [1, 3, 9]
+  },
+  {
+   "section": "task",
+   "quote": "우리는 쿠팡의 광범위한 Attack Surface 전반에서 발생하는 사이버 위협을 탐지하고 차단하여 보안 사고로 인한 피해를 최소화하는 동시에, 정확한 원인 분석을 통해 재발 방지 체계를 구축하는 핵심 역할을 수행하고 있습니다.",
+   "short": "막는 것에서 끝나지 않고, 왜 들어왔는지 찾아 다시 안 들어오게 만드는 팀이라는 뜻.",
+   "why": "Attack Surface(공격 표면)는 공격이 들어올 수 있는 모든 입구입니다. 웹사이트·API 는 그중 가장 넓게 열린 입구입니다 {추론}. 쿠팡 보안 조직은 레드팀이 찾은 ‘탐지 안 된 약점’을 탐지로 되먹인다고 발표했습니다.[8]",
+   "refs": [8]
+  },
+  {
+   "section": "task",
+   "quote": "Detection Operations 팀에 합류하시면, 웹, 네트워크, 엔드포인트, 이메일 보안 등 다양한 보안 영역을 아우르는 실무 경험을 쌓을 수 있으며 각 영역을 담당하는 여러 전문가들과의 긴밀한 협업을 통해 자연스럽게 보안 전반에 대한 시야와 전문성을 확장할 수 있습니다. 필요에 따라 특정 도메인에 국한되지 않고 여러 보안 솔루션과 서비스에 직접 참여하고 경험해볼 수 있는 기회가 열려 있습니다.",
+   "short": "웹으로 들어가지만 필요하면 네트워크·이메일·PC 보안 일도 같이 하게 된다는 뜻.",
+   "why": "공고가 ‘특정 도메인에 국한되지 않고’라고 직접 적었습니다.[1] 웹 공격 사고도 결국 서버·계정·네트워크 흔적과 엮어 봐야 해서 옆 영역을 알면 원인 분석이 빨라집니다 {추론}.",
+   "refs": [1]
+  },
+  {
+   "section": "task",
+   "quote": "이를 통해 단일 기술에 국한되지 않은, 폭넓고 탄탄한 보안 운영 역량을 갖춘 엔지니어로 성장할 수 있는 환경을 제공합니다.",
+   "short": "한 제품 전문가보다 보안 운영 전반을 아는 사람으로 키우겠다는 팀의 약속.",
+   "why": "팀이 웹·네트워크·이메일·엔드포인트를 함께 운영하기 때문입니다.[1] 반대로 한 분야만 깊이 파고 싶은 사람에게는 맞지 않을 수 있습니다 {추론}.",
+   "refs": [1]
+  },
+  {
+   "section": "task",
+   "quote": "3rd Party 서비스/솔루션 활용하여 다양한 웹 공격으로부터 외부에 노출된 Web/API 서비스에 대한 보안 정책 배포 및 관리",
+   "short": "직접 만든 방어기가 아니라 외부 보안 서비스(WAF·CDN·봇 차단)에 규칙을 넣고 관리하는 일.",
+   "why": "팀 소개가 이 팀의 운영 대상을 보안 장비·엔드포인트 솔루션과 **SaaS 기반 보안 서비스**라고 적었습니다.[1] 웹 방어는 보통 사이트 앞단(CDN — 전 세계에 흩어진 캐시 서버)에 붙은 서비스로 하기 때문에, 이 자리의 일은 코드를 짜는 것보다 **그 서비스의 정책을 정확히 거는 것**입니다 {추론}.",
+   "actually": {
+    "intro": "회사가 어떤 제품을 쓰는지는 공개되지 않았습니다. 공개 문서로 보면 ‘정책’은 보통 이런 칸으로 이뤄집니다.[17][19][40]",
+    "items": [
+     "**관리형 규칙** — 서비스 회사가 만들어 주는 SQL 주입·XSS 같은 공격 규칙 묶음. 켜고 끄고, 민감도를 고른다.[17][18]",
+     "**직접 만든 규칙** — 특정 경로·국가·헤더·요청 빈도로 막거나 허용한다.[19]",
+     "**봇 규칙** — 검색 엔진처럼 착한 봇은 통과, 사람인 척하는 봇은 차단·확인 문제(CAPTCHA).[40]",
+     "**적용 범위** — 어느 도메인·어느 API 에 어떤 규칙 묶음을 걸지. 새 서비스가 열리면 빠지지 않게 붙인다.",
+     "**배포 절차** — 바로 막지 않고 ‘세기만 하는(count)’ 상태로 먼저 걸어 영향을 본 뒤 차단으로 바꾼다.[41]"
+    ]
+   },
+   "how_far": "서비스 하나의 콘솔을 다룰 줄 아는 것은 기본이고, **규칙이 손님 요청에 미칠 영향을 배포 전에 숫자로 말하는 것**이 경력직의 몫입니다 {추론}.",
+   "refs": [1, 17, 18, 19, 40, 41],
+   "study": ["aws-waf-docs", "crs-docs", "web-app-sec-ko"]
+  },
+  {
+   "section": "task",
+   "quote": "WAF 정/오탐 분석 및 조치, 미탐 영역 개선, 정책 배포 및 관리, CVE 대응",
+   "short": "WAF 가 막은 것이 진짜 공격인지(정탐) 손님인지(오탐), 못 막은 공격(미탐)은 없는지 보고 규칙을 고친다.",
+   "why": "WAF 의 오탐은 곧 **결제·리뷰 작성이 막힌 손님**입니다. 한 국내 대형 오픈마켓(쿠팡 아님)의 공개 사례도 이전 방어가 오탐으로 실제 구매를 막은 것을 문제로 꼽았습니다.[31] 같은 회사의 이전 웹 보안 공고도 WAF 정/오탐 구분을 첫 업무로 적었습니다.[6]",
+   "actually": {
+    "intro": "OWASP 의 공개 WAF 규칙 묶음(CRS)은 요청마다 점수를 매겨 문턱을 넘으면 막고, 규칙의 ‘예민함 단계(paranoia level)’를 올릴수록 오탐이 늘어난다고 설명합니다.[17][18]",
+    "items": [
+     "**오탐 찾기** — 막힌 요청을 규칙 × 경로로 묶어 센다. 한 경로에 몰려 있으면 그 경로의 정상 입력이 규칙과 닮은 것이다.",
+     "**좁게 예외** — 규칙을 끄지 않고 ‘이 경로의 이 칸만’ 검사에서 뺀다. 규칙 전체를 끄면 다른 경로의 공격도 통과한다 {추론}.",
+     "**미탐 찾기** — 사고·위협 헌팅·외부 제보로 들어온 공격 요청을 로그에서 찾아 ‘왜 안 걸렸나’를 본다.",
+     "**CVE 대응** — 새 취약점(CVE — 공개 취약점 번호)이 나오면 패치 전까지 WAF 에 임시 차단 규칙(가상 패치)을 건다 {추론}. 무엇부터 할지는 실제 악용 여부로 고른다.[24][25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "오탐이 한 경로에 몰리는지 보기 (가상 숫자, SQLite, 직접 돌린 출력)",
+     "body": "SQL 주입 규칙에 걸린 155건 중 143건이 리뷰 작성 API 였고, 그중 140건이 정상 리뷰(본문의 ‘select’ 같은 낱말)였다고 합시다. 규칙을 끄는 대신 /api/review 의 본문 칸만 예외로 빼면, 검색 API 의 진짜 공격 12건은 계속 막힙니다. 리뷰 쪽 진짜 공격 3건은 다른 방어(입력 검증)로 넘겨야 합니다 {추론}.",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE waf(rule TEXT, uri TEXT, verdict TEXT)\")\nrows  = [(\"SQLi-body\", \"/api/review\", \"fp\")] * 140\nrows += [(\"SQLi-body\", \"/api/search\", \"tp\")] * 12\nrows += [(\"SQLi-body\", \"/api/review\", \"tp\")] * 3\nrows += [(\"XSS-query\", \"/product\", \"tp\")] * 25\ndb.executemany(\"INSERT INTO waf VALUES (?,?,?)\", rows)\nq = \"\"\"SELECT rule, uri, COUNT(*) n, SUM(verdict='fp') fp,\n       ROUND(100.0*SUM(verdict='fp')/COUNT(*),1) fp_pct\nFROM waf GROUP BY rule, uri ORDER BY fp DESC\"\"\"\nfor r in db.execute(q):\n    print(r)\n# ('SQLi-body', '/api/review', 143, 140, 97.9)\n# ('SQLi-body', '/api/search', 12, 0, 0.0)\n# ('XSS-query', '/product', 25, 0, 0.0)"
+    }
+   ],
+   "how_far": "정·오탐 판정을 근거(요청 원문·사용자 흐름)와 함께 남기고, 예외를 **가장 좁은 범위**로 거는 것까지가 이 줄입니다. 규칙 문법보다 판정 근거를 쓰는 습관이 먼저입니다 {추론}.",
+   "refs": [6, 17, 18, 24, 25, 31],
+   "study": ["crs-docs", "portswigger", "kev", "epss"]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 BOT 요청 탐지/차단, 정/오탐 구분 및 미탐 영역 개선, 정책 고도화, 배포 및 관리",
+   "short": "가격 긁기·계정 털기·한정 상품 싹쓸이 같은 자동화 요청을 사람·착한 봇과 갈라 막는 일.",
+   "why": "OWASP 는 웹 자동화 공격을 따로 목록으로 만들었습니다 — 계정 대입(크리덴셜 스터핑), 싹쓸이(스캘핑), 긁기(스크래핑) 등.[15] 상품·가격·재고가 핵심인 쇼핑몰은 이 목록의 거의 전부가 해당합니다 {추론}. 봇은 웹 공격 규칙(SQL 주입 등)에 걸리지 않는 **정상 모양의 요청**이라 따로 다뤄야 합니다.",
+   "actually": {
+    "intro": "봇 판별 신호는 보통 여러 겹입니다.[40]",
+    "items": [
+     "**신원 신호** — 사용자 에이전트, 출발지(데이터센터 IP 인가 가정집인가), 검색 엔진처럼 확인 가능한 착한 봇인가.",
+     "**브라우저 확인** — 자바스크립트로 진짜 브라우저인지 시험하고, 애매하면 확인 문제를 낸다.",
+     "**행동 신호** — 한 세션이 1초에 상품 100개를 본다, 로그인 실패가 수백 계정에 고르게 퍼진다.",
+     "**대응 단계** — 차단만 있는 게 아니다. 세기만·확인 문제·속도 늦추기·차단 중 손님 피해가 적은 쪽부터.",
+     "**착한 봇 예외** — 검색 엔진·제휴사·우리 앱의 자동 호출이 막히면 그게 오탐이다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "IP 당 횟수 제한이 분산 계정 대입을 못 잡는 이유 (가상 숫자, 직접 돌린 출력)",
+     "body": "IP 50개가 10분 동안 분당 한 번씩 서로 다른 계정으로 로그인을 시도합니다. IP 마다 10번이라 ‘IP 당 10분에 10번 넘으면 차단’에 하나도 안 걸립니다. 그런데 전체로 보면 실패 503건이 501개 계정에 퍼져 있습니다 — 이 모양이 계정 대입입니다. 그래서 IP 기준 말고 **계정 수·실패율 같은 전체 지표**를 같이 봅니다.[16]",
+     "lang": "python",
+     "code": "from collections import Counter\nbot = [(m, f\"198.51.100.{i}\", f\"user{m*50+i}\") for m in range(10) for i in range(50)]\nhuman = [(m, \"203.0.113.7\", \"kim\") for m in (2, 2, 3)]\nfails = bot + human\nLIMIT = 10  # IP 하나당 10분에 10번 넘으면 차단\nper_ip = Counter(ip for _, ip, _ in fails)\nprint(\"IP 기준 차단:\", sum(1 for c in per_ip.values() if c > LIMIT), \"개 IP\")\nper_min = Counter(m for m, _, _ in fails)\naccounts = len({a for _, _, a in fails})\nprint(\"전체 실패\", len(fails), \"건 · 서로 다른 계정\", accounts, \"개 · 분당 최대\", max(per_min.values()), \"건\")\n# IP 기준 차단: 0 개 IP\n# 전체 실패 503 건 · 서로 다른 계정 501 개 · 분당 최대 52 건"
+    }
+   ],
+   "refs": [15, 16, 40],
+   "study": ["owasp-oat", "cred-stuffing-cs", "aws-waf-docs"]
+  },
+  {
+   "section": "task",
+   "quote": "DDoS 공격에 대한 탐지 및 차단 정책 강화",
+   "short": "트래픽 폭주로 사이트를 쓰러뜨리려는 공격을 앞단에서 거르고, 웹 요청 폭주는 빈도 규칙으로 막는다.",
+   "why": "디도스는 층에 따라 막는 자리가 다릅니다. 네트워크를 채우는 대용량 공격은 CDN·클라우드 앞단이 흡수하고, 정상 모양의 웹 요청을 쏟아붓는 공격(L7)은 WAF 의 빈도 규칙으로 막는다고 AWS 백서가 설명합니다.[21] 같은 팀의 네트워크 보안 자리는 IDC 쪽 디도스 장비를 맡습니다.[3]",
+   "actually": {
+    "items": [
+     "**빈도 규칙(rate-based)** — ‘한 출발지가 정해진 시간 안에 몇 번’을 넘으면 막는다. AWS WAF 는 그 시간을 1·2·5·10분 중에서 고르고[19], 2024년부터 문턱을 10건까지 낮출 수 있다.[20]",
+     "**묶는 기준** — IP 만이 아니라 헤더·쿠키·경로별로 셀 수 있다. 봇넷은 IP 가 많아 IP 기준만으로는 새어 나간다 {추론}.",
+     "**평소 기준선** — 행사·특가 때 손님 폭주와 공격 폭주를 가르려면 평소와 행사 때 요청량을 알고 있어야 한다 {추론}.",
+     "**흡수 구조** — 정적 파일은 CDN 캐시가 받게 해서 원본 서버까지 오는 요청을 줄인다.[21]"
+    ]
+   },
+   "how_far": "문턱을 정할 때 **지난 행사 날의 정상 최대치**를 근거로 대는 것이 최소선입니다. 숫자 없이 정한 문턱은 행사 날 손님을 막습니다 {추론}.",
+   "refs": [3, 19, 20, 21],
+   "study": ["aws-ddos-wp", "aws-waf-docs"]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 Web Threat Hunting 을 기반으로한 탐지 및 차단 정책 강화",
+   "short": "경보가 울리기를 기다리지 않고, 접근 로그를 먼저 뒤져 아직 안 잡힌 공격 흔적을 찾아 규칙으로 바꾼다.",
+   "why": "같은 보안 조직의 위협 헌팅 팀은 통계·행동 기준선으로 이상을 찾고 다른 팀과 나눈다고 적었습니다.[4][5] 쿠팡 위협 관리 팀장은 공격자가 들어와 머무는 시간을 줄이는 것을 목표로 말했습니다.[7] 웹 쪽 헌팅의 결과물은 **새 WAF·봇 규칙**입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**가설에서 시작** — 예: ‘최근 공개된 CVE 를 노린 탐색 요청이 우리 도메인에도 왔나?’ → 그 경로 패턴으로 접근 로그 검색.",
+     "**드문 것 찾기** — 처음 보는 경로, 평소 안 쓰는 HTTP 메서드, 404 가 한 IP 에 몰리는 것(경로 훑기).",
+     "**통과한 것 보기** — WAF 가 막은 것보다 **통과시킨 것** 중 수상한 것이 헌팅 대상이다 {추론}.",
+     "**결과 남기기** — 찾은 것을 규칙으로 만들고, 공격 기법 번호(ATT&CK — 예: 외부 노출 앱 공격 T1190)를 붙인다.[26]"
+    ]
+   },
+   "refs": [4, 5, 7, 26],
+   "study": ["attack", "tde-ko", "athena-waf"]
+  },
+  {
+   "section": "task",
+   "quote": "SOP 개발, 문서화, Flow 자동화 구현",
+   "short": "규칙 배포·예외 요청·CVE 대응 같은 반복 일을 누가 해도 같게 문서로 만들고, 그 흐름을 스크립트로 돌린다.",
+   "why": "같은 회사의 이전 웹 보안 공고도 SOP 와 자동화를 같은 줄에 묶었습니다.[6] 규칙 하나를 잘못 배포하면 전 사이트 손님이 막히므로 **배포 순서가 문서로 정해져 있어야** 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "규칙 변경 SOP — 요청 → 세기만 모드 적용 → 영향 확인(몇 건이 걸리나) → 차단 전환 → 기록 → 되돌리기 방법.[41]",
+     "예외 요청 SOP — 다른 팀이 ‘우리 API 가 막혀요’라고 할 때 받는 양식(경로·시간·요청 ID).",
+     "자동화 예 — 서비스 API 로 차단 IP 목록 일괄 반영, 매일 규칙별 차단 수를 집계해 급변하면 알림.",
+     "규칙을 코드로 — 콘솔 클릭 대신 설정 파일로 관리하면 누가 언제 무엇을 바꿨는지 남는다. 같은 조직 탐지 엔지니어링이 탐지 로직을 코드처럼 관리한다고 적었다.[4]"
+    ]
+   },
+   "refs": [4, 6, 41],
+   "study": ["palantir-ads", "aws-waf-docs"]
+  },
+  {
+   "section": "task",
+   "quote": "API Security 영역에 대한 탐지 이벤트 분석 및 대응 Flow 개선",
+   "short": "앱·웹이 부르는 API 에서 남의 주문 보기·대량 조회 같은 이상 호출을 찾아 대응 순서를 다듬는다.",
+   "why": "API 공격은 SQL 주입 같은 이상한 문자열이 아니라 **정상 모양의 호출**로 남의 데이터를 꺼내는 경우가 많습니다. OWASP API 보안 Top 10(2023) 의 1번이 ‘객체 단위 권한 확인 실패(남의 번호로 바꿔 부르면 남의 데이터가 나옴)’입니다.[14] 2025년 쿠팡 사고도 위·변조한 출입 토큰으로 정상 접근처럼 들어온 것이었고, 조사단은 비정상 접속을 탐지·차단하지 못했다고 지적했습니다.[10][11]",
+   "actually": {
+    "items": [
+     "**한 토큰·한 계정의 조회량** — 평소 몇 건을 보는 사용자가 하루에 수만 건을 본다.[14]",
+     "**번호 훑기** — 주문 번호·회원 번호를 1씩 바꿔 가며 부른다(API1).[14]",
+     "**업무 흐름 남용** — 쿠폰 받기·재고 잡기처럼 사업상 민감한 흐름을 자동으로 반복한다(API6).[14]",
+     "**목록에 없는 API** — 문서에 없거나 옛 버전 API 가 열려 있다(API9 — 자산 관리 실패).[14]",
+     "**대응 흐름** — 탐지 → 토큰·계정 차단 → 서비스 팀에 권한 확인 수정 요청 → 같은 모양 재발 규칙."
+    ]
+   },
+   "how_far": "권한 확인 자체는 서비스 개발 팀의 코드입니다. 이 자리는 **이상 호출을 찾아 알리고 임시로 막는 쪽**이고, 근본 수정을 요청할 근거(로그·재현 순서)를 만들어 넘깁니다 {추론}.",
+   "refs": [10, 11, 14],
+   "study": ["owasp-api", "portswigger"]
+  },
+  {
+   "section": "task",
+   "quote": "SIEM log / Access log 분석 및 리포트, 통계 생성",
+   "short": "WAF·접근 로그를 SIEM·SQL 로 모아 무엇이 몇 건 막혔고 무엇이 늘었는지 숫자로 보고한다.",
+   "why": "2025년 사고 조사에서 정부는 웹 로그 25.6TB·6,642억 건을 분석했고[12], 로그 보존 설정 때문에 웹 로그 약 5개월치가 지워진 것이 문제가 됐습니다.[10] 이 공고의 우대 사항도 SIEM·AWS Athena(파일로 쌓인 로그를 SQL 로 바로 묻는 서비스)를 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**쌓기** — WAF 로그를 저장소(S3 등)에 날짜별로 쌓고, 날짜로 나눠(파티션) 묻는 범위를 줄인다. 나누지 않으면 비용·속도가 나빠진다고 AWS 문서가 권한다.[22]",
+     "**묻기** — 규칙별 차단 수, 차단이 많은 IP·국가·경로, 특정 시간대 요청.[23]",
+     "**통계** — 주간 차단 추이, 오탐으로 판정된 비율, 새로 만든 규칙의 효과.",
+     "**보존** — 사고 분석에 충분한 기간을 정한다. 조사단 권고 항목이다.[10][30]"
+    ]
+   },
+   "refs": [1, 10, 12, 22, 23, 30],
+   "study": ["athena-waf", "sql-levelup", "nist-800-92"]
+  },
+  {
+   "section": "task",
+   "quote": "유관부서들과 협업을 통한 사건 대응 및 프로세스 생성/문제점 개선",
+   "short": "웹 공격이 사고로 커지면 서비스·인프라·관제 팀과 함께 막고, 다음엔 덜 아프도록 절차를 고친다.",
+   "why": "팀 소개가 ‘정확한 원인 분석을 통한 재발 방지 체계’를 핵심 역할로 적었습니다.[1] 2025년 사고에서는 법정 신고 시간(24시간)을 넘겨 과태료 대상이 됐습니다[12] — 사고 때는 기술만큼 보고 절차가 중요합니다.",
+   "actually": {
+    "intro": "NIST 사고 대응 지침(2025 개정)의 순서를 웹 쪽에 대입하면 이렇습니다.[29]",
+    "items": [
+     "**증거 보전** — 해당 시간대 WAF·접근 로그를 따로 떠 둔다(보존 기간이 지나 지워지지 않게).",
+     "**임시 차단** — 공격 패턴 규칙을 넣되 손님 영향을 서비스 팀과 확인.",
+     "**넘기기** — 사고 대응·관제 팀에 무엇을 봤고 무엇을 못 봤는지 같이 넘긴다.[6]",
+     "**회고** — ‘이걸 잡을 규칙은 무엇이었나’를 이 팀의 개선 목록으로."
+    ]
+   },
+   "refs": [1, 6, 12, 29],
+   "study": ["nist-800-61", "cisa-playbook"]
+  },
+  {
+   "section": "task",
+   "quote": "모니터링을 위한 Usecase/Playbook 생성",
+   "short": "‘이런 공격이면 이런 경보가 뜬다’(유스케이스)와 ‘뜨면 누가 무엇을 하나’(플레이북)를 문서로 만든다.",
+   "why": "같은 팀의 네트워크 보안 자리도 시나리오·플레이북 작성을 업무로 적었습니다.[3] 플레이북이 있어야 새벽에 경보가 떠도 사람마다 다르게 대응하지 않습니다 {추론}.",
+   "actually": {
+    "intro": "Palantir 의 공개 탐지 전략 틀(ADS)과 CISA 플레이북 순서가 흔한 뼈대입니다.[27][28]",
+    "items": [
+     "**유스케이스** — 예: ‘로그인 실패가 10분에 300개 넘는 계정에 퍼짐’ → 계정 대입 의심.",
+     "**사각지대·오탐** — 이 경보가 못 잡는 경우, 정상인데 울리는 경우(대규모 비밀번호 초기화 공지 날).[27]",
+     "**판단 기준** — 성공한 로그인이 섞였나, 같은 출발지가 다른 API 에도 왔나.",
+     "**조치** — 확인 문제로 올리기 → 차단 → 성공 로그인 계정은 회원 보호 팀에 넘기기.[28]"
+    ]
+   },
+   "refs": [3, 27, 28],
+   "study": ["palantir-ads", "cisa-playbook"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Access, Detection 로그 분석 및 문제해결 능력 보유",
+   "short": "접근 로그(누가 무엇을 불렀나)와 탐지 로그(무엇이 왜 걸렸나)를 엮어 원인을 찾는 능력.",
+   "why": "업무 줄의 절반(오탐 분석·헌팅·API 이상 호출·리포트)이 이 두 로그를 읽는 일입니다.[1] 탐지 로그만 보면 ‘막았다’까지만 알고, 접근 로그를 같이 봐야 ‘그 전후에 무엇을 했나’가 보입니다 {추론}.",
+   "level": {
+    "basic": "HTTP 요청 줄·상태 코드·헤더 읽기 · 시간대로 거르기 · 한 IP·한 세션 따라가기",
+    "work": "WAF 로그의 규칙 ID·동작·매칭된 칸 읽기 · 접근 로그와 요청 ID 로 엮기",
+    "team": "수억 건에서 SQL·SIEM 검색으로 한 공격의 앞뒤를 재구성하기"
+   },
+   "refs": [1],
+   "study": ["nist-800-92", "athena-waf"]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터와 통찰력을 근거로 사람들을 설득하고 공감대를 형성해갈 수 있는 뛰어난 의사소통 능력 보유",
+   "short": "‘이 규칙을 켜자’ ‘이 예외는 안 된다’를 차단 숫자와 손님 영향으로 설득하는 능력.",
+   "why": "WAF 규칙을 바꾸면 서비스 팀의 API 가 영향을 받습니다. 서비스 팀은 손님 불편을, 보안 팀은 공격을 봅니다 — 둘을 같은 숫자로 보여 줘야 합의가 됩니다 {추론}. 전형에 ‘핵심 역량 인터뷰’가 따로 있습니다.[1]",
+   "how_far": "면접에서 ‘숫자로 다른 팀을 움직인 경험’ 하나를 상황·근거·결과로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [1]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터 혹은 사이버보안관련 학사학위 취득자 또는 동등한 수준의 실무 경험 보유",
+   "short": "관련 학사, 아니면 그만한 실무 경험. 학위가 없어도 문이 열려 있다.",
+   "why": "‘또는 동등한 실무 경험’이 붙어 있습니다.[1] 같은 팀 네트워크 보안 공고는 학사 이상만 적었으니[3] 이 자리가 더 열려 있습니다.",
+   "how_far": "학위가 없으면 이력서에서 웹 보안 실무 5년과 다룬 서비스·규칙 경험으로 메웁니다 {추론}.",
+   "refs": [1, 3]
+  },
+  {
+   "section": "qualification",
+   "quote": "Route53, DNS, DDoS, Web Attack, Bot, CVE 대응 경험",
+   "short": "이 팀의 실제 일 목록이다 — DNS(Route53)·디도스·웹 공격·봇·새 취약점을 직접 막아 본 경험.",
+   "why": "Route53 은 AWS 의 DNS 서비스입니다. DNS 가 쓰러지면 사이트 주소를 못 찾아 **WAF 앞에서 이미 끝납니다**. AWS 백서는 Route53 이 요청을 가까운 거점으로 흩는 방식(애니캐스트)과 고객마다 다른 서버 묶음을 주는 방식(셔플 샤딩)으로 DNS 디도스를 견딘다고 설명합니다.[21]",
+   "actually": {
+    "items": [
+     "**DNS** — 어느 도메인이 어느 CDN·WAF 를 거치는지. 원본 서버 주소가 DNS 기록으로 새면 WAF 를 건너뛰고 직접 공격받는다 {추론}.",
+     "**디도스** — 빈도 규칙과 CDN 흡수.[19][21]",
+     "**웹 공격** — OWASP Top 10 분류로 말할 수 있는 수준.[13]",
+     "**봇** — 계정 대입·긁기·싹쓸이.[15]",
+     "**CVE** — 실제 악용 목록(CISA KEV)과 악용 가능성 점수(EPSS)로 순서를 정한다.[24][25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CVE 를 무엇부터 막나 — 점수(CVSS)만 보면 순서가 틀린다 (가상 값, 직접 돌린 출력)",
+     "body": "CVSS 9.8 이라도 우리 밖에 안 열린 시스템이면 뒤로 갑니다. 실제 악용이 확인됐고(KEV) 바깥에 열린 7.5 짜리가 먼저입니다. KEV 는 이미 악용된 목록, EPSS 는 30일 안에 악용될 확률 추정입니다.[24][25]",
+     "lang": "python",
+     "code": "cves = [  # (CVE, CVSS, EPSS, KEV 등재, 우리 외부 노출)\n    (\"CVE-A\", 9.8, 0.02, False, False),\n    (\"CVE-B\", 7.5, 0.91, True,  True),\n    (\"CVE-C\", 9.1, 0.40, False, True),\n    (\"CVE-D\", 5.3, 0.01, False, True),\n]\ndef rank(c):\n    _, cvss, epss, kev, exposed = c\n    return (exposed, kev, epss, cvss)\nfor c in sorted(cves, key=rank, reverse=True):\n    print(c[0], \"노출\" if c[4] else \"내부\", \"KEV\" if c[3] else \"-\", f\"EPSS {c[2]:.2f}\", f\"CVSS {c[1]}\")\n# CVE-B 노출 KEV EPSS 0.91 CVSS 7.5\n# CVE-C 노출 - EPSS 0.40 CVSS 9.1\n# CVE-D 노출 - EPSS 0.01 CVSS 5.3\n# CVE-A 내부 - EPSS 0.02 CVSS 9.8"
+    }
+   ],
+   "refs": [13, 15, 19, 21, 24, 25],
+   "study": ["aws-ddos-wp", "owasp-top10", "kev", "epss"]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 이상 웹 보안 실무 경험 보유",
+   "short": "웹 보안 실무 5년이 최소선. 같은 자리의 원티드 공고는 5~20년으로 적었다.",
+   "why": "공고 제목이 Senior~Staff 이고[1], 같은 자리 원티드 공고의 경력 범위가 5~20년입니다.[2] 직급은 후보자 경력으로 정한다고 공고에 적혀 있습니다.[1]",
+   "how_far": "‘웹 보안’에는 보안 관제(웹 경보 분석), WAF·CDN 운영, 웹 취약점 진단이 다 들어갈 수 있습니다 {추론}. 이 공고 업무와 가장 가까운 것은 **WAF·봇 정책 운영**이라 그 경험을 앞에 둡니다.",
+   "refs": [1, 2]
+  },
+  {
+   "section": "qualification",
+   "quote": "해외 출장 시 필요한 비자, 여권 등 관련 서류에 문제가 없어야 하며, 개인적 또는 법적 결격 사유가 없어야 함",
+   "short": "해외 팀·거점과 일할 때 출장을 갈 수 있어야 한다.",
+   "why": "쿠팡 보안 조직에는 한국·미국·대만 팀이 있고 위협 관리 팀도 대만으로 넓힐 계획이라고 했습니다.[7] 같은 팀의 네트워크 보안 공고도 같은 요건을 적었습니다.[3]",
+   "refs": [3, 7]
+  },
+  {
+   "section": "preference",
+   "quote": "사이버 보안 관련 자격증 (예: CISSP, 정보처리기사, 정보보안기사, 등)",
+   "short": "자격증은 우대일 뿐이다. 국제(CISSP)와 국내(정보보안기사·정보처리기사)가 같은 줄에 있다.",
+   "why": "CISSP 는 ISC2 의 보안 관리 자격으로 8개 영역·실무 5년을 요구합니다.[32] 국내 자격을 같이 적어 문턱을 낮췄습니다.[1]",
+   "how_far": "웹 보안 5년이면 CISSP 경력 조건도 채울 수 있습니다.[32] 자격증보다 WAF·봇 경험이 먼저입니다 {추론}.",
+   "refs": [1, 32],
+   "study": ["cissp"]
+  },
+  {
+   "section": "preference",
+   "quote": "WebSecurity CDN 서비스 경험 보유",
+   "short": "WAF·봇 차단·디도스 방어가 함께 붙은 CDN 서비스를 운영해 본 경험.",
+   "why": "업무 첫 줄이 3rd Party 서비스로 웹 정책을 배포하는 것입니다.[1] 요즘 웹 보안 서비스는 대개 CDN 위에 얹혀 있어서 캐시·원본 보호·WAF 를 한 콘솔에서 다룹니다 {추론}. AWS 백서도 CDN(CloudFront)·WAF·디도스 방어(Shield)를 한 묶음으로 설명합니다.[21]",
+   "actually": {
+    "items": [
+     "**원본 보호** — 원본 서버는 CDN 에서 온 요청만 받게 막는다. 아니면 WAF 를 돌아서 직접 공격당한다 {추론}.",
+     "**캐시와 보안의 순서** — 캐시가 먼저 답하는 요청은 원본까지 안 간다. 어떤 검사가 캐시 앞에서 도는지 알아야 한다 {추론}.",
+     "**설정 범위** — 도메인·경로별로 다른 규칙 묶음."
+    ]
+   },
+   "refs": [1, 21],
+   "study": ["aws-ddos-wp", "aws-waf-docs"]
+  },
+  {
+   "section": "preference",
+   "quote": "SQL 쿼리, 데이터 시각화 등 데이터 분석관련 업무 지식(SIEM, AWS Athena, ETC)",
+   "short": "WAF·접근 로그를 SQL(Athena)·SIEM 으로 집계하고 그래프로 보이는 능력.",
+   "why": "업무에 로그 분석·리포트·통계가 있고[1], AWS 는 WAF 로그를 Athena 로 묻는 표 정의와 예시 질의를 공식 문서로 줍니다.[22][23] 같은 조직의 탐지 엔지니어 자리도 SQL 을 요구합니다.[4]",
+   "level": {
+    "basic": "SELECT · WHERE · GROUP BY · COUNT(DISTINCT) · 시간 조건",
+    "work": "중첩된 로그 칸(JSON) 펼치기 · 파티션(날짜)으로 범위 좁히기 · 윈도우 함수로 평소 대비 비교",
+    "team": "같은 탐지를 SIEM 검색어와 SQL 두 가지로 써 보고 결과를 맞춰 보기"
+   },
+   "refs": [1, 4, 22, 23],
+   "study": ["athena-waf", "sql-levelup"]
+  },
+  {
+   "section": "preference",
+   "quote": "Python, JavaScript 등 와 같은 컴퓨터 프로그래밍 언어 사용 능력 보유",
+   "short": "자동화용 Python, 그리고 봇 판별·브라우저 확인 코드를 읽을 JavaScript.",
+   "why": "업무에 ‘Flow 자동화’가 있고[1], 같은 회사 이전 웹 보안 공고도 Python·Go·JavaScript 를 적었습니다.[6] 봇 차단 서비스는 브라우저에서 도는 자바스크립트로 진짜 브라우저인지 확인하므로, 그 코드가 우리 페이지에서 어떻게 도는지 읽을 수 있어야 문제를 가를 수 있습니다 {추론}.",
+   "how_far": "서비스 개발 수준이 아니라 **API 호출·JSON 처리·로그 파싱·스케줄 실행**이 되면 됩니다. 위 예제들을 스스로 짤 수 있는 것이 최소선입니다 {추론}.",
+   "refs": [1, 6]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 플랫폼(예: AWS, Azure, GCP) 관련 지식",
+   "short": "웹 보안 서비스·로그가 클라우드에 있어서, 그 위의 네트워크·권한·로그 구조를 알아야 한다.",
+   "why": "요건에 Route53·Athena 처럼 AWS 서비스 이름이 직접 나옵니다.[1] 같은 조직 탐지 엔지니어 자리도 AWS 보안 로그를 요구했습니다.[4]",
+   "actually": {
+    "items": [
+     "WAF 를 어디에 붙이나 — CDN·로드밸런서·API 게이트웨이.[21]",
+     "로그가 어디로 가나 — 저장소·로그 서비스·SIEM 으로 보내는 길.[22]",
+     "권한 — 누가 규칙을 바꿀 수 있나. 규칙 변경 권한이 넓으면 그것이 위험이다 {추론}."
+    ]
+   },
+   "refs": [1, 4, 21, 22],
+   "study": ["aws-waf-docs", "aws-ddos-wp"]
+  },
+  {
+   "section": "preference",
+   "quote": "E-commerce 환경에서의 웹 보안 영역에 대한 보안 이벤트 대응 경험",
+   "short": "쇼핑몰만의 공격 — 계정 털기·쿠폰·재고 싹쓸이·가격 긁기·특가 날 폭주 — 를 겪어 본 경험.",
+   "why": "OWASP 자동화 위협 목록의 많은 항목(계정 대입·싹쓸이·긁기·카드 도용 시험)이 쇼핑몰의 일상입니다.[15] 한 국내 대형 오픈마켓(쿠팡 아님)의 공개 사례도 봇·디도스·SQL 주입과 오탐으로 막힌 실제 구매를 함께 문제로 꼽았습니다.[31]",
+   "actually": {
+    "items": [
+     "**특가·한정판 날** — 손님 폭주와 봇 폭주가 동시에 온다. 둘을 가르는 기준을 미리 준비.",
+     "**계정 대입** — 다른 사이트에서 샌 비밀번호로 로그인 시도. 다단계 인증이 가장 강한 대책이라고 OWASP 가 적었다.[16]",
+     "**긁기** — 가격·리뷰·상품 정보를 대량으로 가져가는 봇.[15]",
+     "**결제 흐름 보호** — 오탐 하나가 매출 손실이라 결제 경로는 차단보다 확인을 먼저 쓴다 {추론}."
+    ]
+   },
+   "refs": [15, 16, 31],
+   "study": ["owasp-oat", "cred-stuffing-cs"]
+  },
+  {
+   "section": "preference",
+   "quote": "OWASP, MITRE ATT&CK 관련 지식 또는 적용 경험",
+   "short": "웹 공격 분류(OWASP)와 공격자 기법 사전(ATT&CK)으로 ‘우리가 무엇을 막고 못 막나’를 말하는 능력.",
+   "why": "OWASP Top 10 은 웹 애플리케이션 위험의 표준 목록이고 지금 판은 2025년판입니다.[13] 같은 조직의 공격 표면 관리(CTEM) 팀은 ATT&CK 으로 탐지 범위를 잰다고 적었습니다.[5]",
+   "actually": {
+    "items": [
+     "OWASP Top 10·API Top 10·자동화 위협 목록을 각각 WAF·API·봇 규칙의 분류표로 쓴다.[13][14][15]",
+     "ATT&CK — 외부 노출 앱 공격(T1190) 같은 기법 번호로 ‘이 규칙이 잡는다’ 표를 만든다.[26]"
+    ]
+   },
+   "refs": [5, 13, 14, 15, 26],
+   "study": ["owasp-top10", "owasp-api", "attack"]
+  },
+  {
+   "section": "preference",
+   "quote": "영어 커뮤니케이션 능력",
+   "short": "해외 팀·보안 서비스 회사와 일하고 문서가 대부분 영어라서.",
+   "why": "이 공고는 쿠팡의 글로벌 채용 사이트에 영어 제목으로 올라와 있고[1], 같은 조직의 CTEM 자리도 글로벌 협업용 영어를 적었습니다.[5] 보안 서비스의 문서·지원 창구도 대부분 영어입니다 {추론}.",
+   "refs": [1, 5]
+  },
+  {
+   "section": "preference",
+   "quote": "유관 부서들과의 원활한 소통을 위한 문서 작성 및 커뮤니케이션 능력",
+   "short": "SOP·플레이북·예외 안내처럼 다른 팀이 읽고 따라 할 문서를 쓰는 능력.",
+   "why": "업무에 SOP 문서화·플레이북·프로세스 생성이 있습니다.[1] 서비스 팀이 ‘왜 막혔나’를 스스로 확인할 수 있는 안내가 있으면 문의가 줄어듭니다 {추론}.",
+   "refs": [1]
+  }
+ ],
+ "fit": {
+  "good": [
+   "WAF·CDN·봇 차단 서비스를 운영하며 오탐과 씨름해 본 사람",
+   "로그를 SQL 로 뒤져 숫자로 말하는 것이 편한 사람",
+   "쇼핑몰의 특가 날·계정 대입 같은 공격을 겪어 봤고 그 경험을 규칙으로 바꾸고 싶은 사람",
+   "웹 밖의 네트워크·이메일·엔드포인트 보안으로 넓히고 싶은 사람 — 팀 소개가 꼽은 장점[1]"
+  ],
+  "hard": [
+   "웹 보안 실무 5년이 최소선이고 다른 사이트 공고는 5~20년이다 — 주니어에게는 문이 좁다[1][2]",
+   "규칙 하나의 실수가 전 사이트 손님을 막을 수 있어 배포마다 긴장이 따른다 {추론}",
+   "큰 사고 뒤라 규제·감사 대응과 보고 압박이 크다[10][12]",
+   "직접 만드는 일보다 외부 서비스 정책 운영·문서화 비중이 크다[1]"
+  ]
+ },
+ "interview": [
+  {"q": "리뷰 작성 API 에서 SQL 주입 규칙 오탐이 하루 수백 건입니다. 어떻게 하겠어요?", "a": "규칙을 끄지 않고 경로·칸으로 좁게 예외, 남는 위험은 다른 방어로 — 업무 둘째 줄.[17]"},
+  {"q": "IP 당 빈도 제한을 걸었는데 계정 대입이 계속됩니다. 왜일까요?", "a": "분산 봇넷은 IP 당 횟수가 낮다 — 계정 수·실패율로 본다.[16]"},
+  {"q": "특가 행사 날 요청이 평소의 20배입니다. 디도스인지 손님인지 어떻게 가르겠어요?", "a": "평소·지난 행사 기준선, 행동 신호, 확인 문제 단계.[21][40]"},
+  {"q": "새 CVE 가 아침에 공개됐습니다. 패치 전까지 무엇을 하겠어요?", "a": "노출 여부·KEV·EPSS 로 순서, WAF 가상 패치, 세기만 모드로 영향 확인.[24][25][41]"},
+  {"q": "정상 토큰으로 남의 주문을 대량 조회하는 호출을 어떻게 찾겠어요?", "a": "API1·API6, 한 토큰의 조회량·번호 훑기 — 2025년 사고 조사단 지적.[10][14]"}
+ ],
+ "sources": [
+  {"n": 1, "title": "Coupang Careers · Senior~Staff, Security Engineer (Web Security)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8206706", "kind": "posting", "date": "2026-11-25", "note": "팀 소개·업무·요건·우대·전형(서류 → 직무 적합성 → 핵심 역량 → 합격)·정규직 수습 12주. 연봉·복지 표기 없음"},
+  {"n": 2, "title": "원티드 · [쿠팡] Senior~Staff, Security Engineer (Web Security)", "url": "https://www.wanted.co.kr/wd/394615", "kind": "posting", "note": "같은 자리 — 경력 5~20년, 상시채용, 근무지 아차산로 412 이스트폴 타워 A. 우대·복지 칸 없음"},
+  {"n": 3, "title": "Coupang Careers · Senior, Network Security Engineer (Detection Operations)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8203405", "kind": "posting", "note": "같은 팀 네트워크 보안 자리 — IDC 보안 장비·디도스 장비·플레이북, 학사 이상"},
+  {"n": 4, "title": "원티드 · [쿠팡] Sr. Threat Detection Engineer (Detection Engineering)", "url": "https://www.wanted.co.kr/wd/388331", "kind": "posting", "note": "같은 보안 조직 — Detection-as-Code, SIEM 룰(SQL·Python·SPL), AWS 보안 로그"},
+  {"n": 5, "title": "원티드 · [쿠팡] CTEM Platform Engineer (GHOST)", "url": "https://www.wanted.co.kr/wd/390009", "kind": "posting", "note": "같은 조직 — ATT&CK 탐지 범위, 탐지 빈칸 분석, SQL, 영어"},
+  {"n": 6, "title": "원티드 · [쿠팡] Web Security Engineer (Blue Operations, 마감)", "url": "https://www.wanted.co.kr/wd/327332", "kind": "posting", "note": "이전 웹 보안 공고 — WAF 정/오탐 구분, BOT 탐지·차단, SOP·자동화, Python/Go/JavaScript, SOC·DART 협업"},
+  {"n": 7, "title": "Forrester · Inside An E-Commerce Giant’s Threat Intelligence Strategy", "url": "https://www.forrester.com/blogs/inside-an-e-commerce-giants-threat-intelligence-strategy/", "kind": "company", "date": "2025-10-05", "note": "쿠팡 위협 관리 팀장 인터뷰 — 체류 시간 단축, 한국·미국·대만, 대만 확장"},
+  {"n": 8, "title": "보안뉴스 · [ISEC 2025] 쿠팡 ‘레드팀-위협정보팀 협업 기반 선제적 보안’", "url": "https://www.boannews.com/news/articleView.html?idxno=138898", "kind": "company", "date": "2025-08-26", "note": "쿠팡 디렉터 키노트 기사 — 레드팀이 탐지 안 된 약점 찾기, 위협 정보로 탐지·제거"},
+  {"n": 9, "title": "Board Cybersecurity · Coupang 10-K(2025 회계연도) 사이버보안 항목 정리", "url": "https://www.board-cybersecurity.com/annual-reports/tracker/20260226-coupang-inc-cybersecurity-10k", "kind": "reference", "date": "2026-02-26", "note": "보안 조직 200명 이상, ISO 27001·ISMS-P"},
+  {"n": 10, "title": "바이라인네트워크 · 쿠팡 3367만건 고객정보 유출 공식 확인", "url": "https://byline.network/2026/02/10-611/", "kind": "news", "date": "2026-02-10", "note": "민관합동조사단 — 위·변조 출입 토큰으로 게이트웨이 통과, 비정상 접속 미탐지, 웹 로그 약 5개월 삭제, 권고: 비정상 접속 탐지 강화·로그 보존"},
+  {"n": 11, "title": "머니투데이 · 조사단이 밝힌 쿠팡의 잘못", "url": "https://www.mt.co.kr/tech/2026/02/10/2026021013535454383", "kind": "news", "date": "2026-02-10", "note": "위·변조 출입증 접속 미탐지·미차단"},
+  {"n": 12, "title": "뉴시스 · 쿠팡 해킹 개인정보, 제3자 전송 확인 안돼…재발 방지책 마련", "url": "https://www.newsis.com/view/NISX20260210_0003510021", "kind": "news", "date": "2026-02-10", "note": "웹 로그 25.6TB·6,642억 건 분석, 24시간 넘겨 신고 → 과태료"},
+  {"n": 13, "title": "OWASP Top 10", "url": "https://owasp.org/www-project-top-ten/", "kind": "reference", "note": "현재 2025년판"},
+  {"n": 14, "title": "OWASP API Security Top 10 (2023)", "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/", "kind": "reference", "date": "2023", "note": "API1 객체 단위 권한 확인 실패 · API6 민감한 업무 흐름 무제한 접근 · API9 부적절한 자산 관리 등 10개"},
+  {"n": 15, "title": "OWASP Automated Threats to Web Applications", "url": "https://owasp.org/www-project-automated-threats-to-web-applications/", "kind": "reference", "note": "웹 자동화 위협 목록(OAT) — 계정 대입 OAT-008, 싹쓸이 OAT-005 등"},
+  {"n": 16, "title": "OWASP Cheat Sheet · Credential Stuffing Prevention", "url": "https://cheatsheetseries.owasp.org/cheatsheets/Credential_Stuffing_Prevention_Cheat_Sheet.html", "kind": "reference", "note": "다단계 인증이 가장 강한 대책, 보조 대책들"},
+  {"n": 17, "title": "OWASP CRS · Anomaly Scoring", "url": "https://coreruleset.org/docs/concepts/anomaly_scoring", "kind": "reference", "note": "요청마다 점수를 쌓아 문턱으로 차단 — 탐지와 차단을 떼어 놓음"},
+  {"n": 18, "title": "OWASP CRS · Paranoia Levels", "url": "https://coreruleset.org/docs/concepts/paranoia_levels", "kind": "reference", "note": "PL1(기본)~PL4, 올릴수록 오탐이 늘어남"},
+  {"n": 19, "title": "AWS WAF 개발자 안내서 · Rate-based rule high-level settings", "url": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-rate-based-high-level-settings.html", "kind": "reference", "note": "평가 창 60·120·300·600초, 묶는 기준(IP·헤더 등)"},
+  {"n": 20, "title": "AWS What’s New · AWS WAF enhances rate-based rules to support lower rate limits", "url": "https://aws.amazon.com/about-aws/whats-new/2024/08/aws-waf-rate-based-rules-lower-rate-limits", "kind": "reference", "date": "2024-08", "note": "최소 문턱 100 → 10"},
+  {"n": 21, "title": "AWS Best Practices for DDoS Resiliency · Using Route 53 for DNS availability", "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-best-practices-ddos-resiliency/using-route53-for-dns-availability.html", "kind": "reference", "note": "셔플 샤딩·애니캐스트로 DNS 디도스 견디기, CloudFront·WAF·Shield 묶음. HTML 판은 과거 참고용 표시"},
+  {"n": 22, "title": "Amazon Athena · Create a table for AWS WAF S3 logs using partition projection", "url": "https://docs.aws.amazon.com/athena/latest/ug/create-waf-table-partition-projection.html", "kind": "reference", "note": "WAF 로그 표 정의, 파티션 없는 표는 비용·성능상 권하지 않음"},
+  {"n": 23, "title": "Amazon Athena · Example queries for AWS WAF logs", "url": "https://docs.aws.amazon.com/athena/latest/ug/query-examples-waf-logs.html", "kind": "reference"},
+  {"n": 24, "title": "CISA · Known Exploited Vulnerabilities Catalog", "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog", "kind": "reference", "note": "실제 악용이 확인된 CVE 목록, 우선순위 입력으로 쓰라고 권함(CSV·JSON)"},
+  {"n": 25, "title": "FIRST · Exploit Prediction Scoring System (EPSS)", "url": "https://www.first.org/epss/", "kind": "reference", "note": "30일 안 악용 확률 추정(0~1), 2025-03 v4"},
+  {"n": 26, "title": "MITRE ATT&CK · T1190 Exploit Public-Facing Application", "url": "https://attack.mitre.org/techniques/T1190/", "kind": "reference"},
+  {"n": 27, "title": "Palantir · Alerting and Detection Strategy Framework", "url": "https://github.com/palantir/alerting-detection-strategy-framework", "kind": "reference", "note": "룰마다 목적·사각지대·오탐·검증 칸"},
+  {"n": 28, "title": "CISA · Federal Government Cybersecurity Incident and Vulnerability Response Playbooks", "url": "https://www.cisa.gov/resources-tools/resources/federal-government-cybersecurity-incident-and-vulnerability-response-playbooks", "kind": "reference"},
+  {"n": 29, "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations", "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final", "kind": "reference", "date": "2025-04-03"},
+  {"n": 30, "title": "NIST SP 800-92 · Guide to Computer Security Log Management", "url": "https://csrc.nist.gov/pubs/sp/800/92/final", "kind": "reference", "date": "2006-09"},
+  {"n": 31, "title": "Cloudflare 고객 사례 · Major South Korean ecommerce marketplace", "url": "https://www.cloudflare.com/case-studies/major-south-korean-ecommerce-marketplace", "kind": "reference", "note": "회사 이름 비공개, 2000년 창업 오픈마켓(쿠팡 아님) — 봇·디도스·SQL 주입, 오탐으로 실제 구매 차단. 판매사 자료"},
+  {"n": 32, "title": "ISC2 · CISSP", "url": "https://www.isc2.org/certifications/cissp", "kind": "reference", "note": "8개 영역, 실무 경력 5년"},
+  {"n": 33, "title": "자소설닷컴 · 쿠팡", "url": "https://jasoseol.com/companies/192", "kind": "reference", "note": "공공데이터 기반 초봉·평균, 기준 연도 없음"},
+  {"n": 34, "title": "자소설닷컴 · 네이버", "url": "https://jasoseol.com/companies/511", "kind": "reference", "note": "같은 방식의 비교 값"},
+  {"n": 35, "title": "원티드 · 쿠팡 회사 정보", "url": "https://www.wanted.co.kr/company/53", "kind": "reference", "note": "평균연봉 표기"},
+  {"n": 36, "title": "원티드 · 지마켓 회사 정보", "url": "https://www.wanted.co.kr/company/373", "kind": "reference", "note": "같은 방식의 비교 값"},
+  {"n": 37, "title": "원티드 · [쿠팡] 카탈로그 Taxonomy 및 데이터 분석 PM (혜택 및 복지 칸)", "url": "https://www.wanted.co.kr/wd/396324", "kind": "posting", "date": "2026-11", "note": "같은 회사 다른 공고의 복리후생 — 금액이 적힌 항목"},
+  {"n": 38, "title": "아시아경제 · 이스트폴(구의역 KT 부지 개발)과 쿠팡 입주", "url": "https://www.asiae.co.kr/en/article/2025081219080020350", "kind": "news", "date": "2025-08", "note": "구의역 인근"},
+  {"n": 39, "title": "리멤버 · [쿠팡] 네트워크 보안 엔지니어 (Detection Operations) 경력직", "url": "https://career.rememberapp.co.kr/job/posting/341558", "kind": "posting", "note": "같은 팀 다른 자리 — 연봉협의, 복지 태그(금액 없음)"},
+  {"n": 40, "title": "AWS WAF 개발자 안내서 · AWS WAF Bot Control", "url": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-bot-control.html", "kind": "reference", "note": "착한 봇 확인·브라우저 확인·행동 기반 판별, 차단·확인 문제 단계"},
+  {"n": 41, "title": "AWS WAF 개발자 안내서 · Testing and tuning your AWS WAF protections", "url": "https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-testing.html", "kind": "reference", "note": "세기만(count) 모드로 먼저 걸어 영향 확인 후 차단"}
+ ],
+ "caveat": "쿠팡 Detection Operations 팀이 어떤 WAF·CDN·봇 차단 제품을 쓰는지, 규칙을 어떻게 관리하는지는 공개 발표가 없습니다(회사 기술 블로그·발표 영상에서 웹 보안 글을 찾지 못했다). 같은 보안 조직의 다른 공고·인터뷰·키노트 기사와 2026년 2월 정부 조사 결과로 이 팀이 놓인 상황을 보였고, 규칙·봇·디도스·CVE 대응은 OWASP·AWS·CISA·FIRST 공개 문서로 ‘보통 이런 것’을 보였습니다. AWS 문서를 많이 쓴 것은 요건에 Route53·Athena 가 나오기 때문이고, 쿠팡이 AWS WAF 를 쓴다는 뜻은 아닙니다. 31번 사례는 쿠팡이 아닌 다른 국내 오픈마켓입니다.",
+ "resources": [
+  {"id": "coupang-isec", "title": "[ISEC 2025] 쿠팡 ‘레드팀-위협정보팀 협업 기반 선제적 보안’", "by": "보안뉴스 · 2025-08", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.boannews.com/news/articleView.html?idxno=138898", "why": "이 팀이 속한 보안 조직이 미탐을 어떻게 찾아 탐지로 되먹이는지 — 면접 전에 읽는다."},
+  {"id": "web-app-sec-ko", "title": "웹 애플리케이션 보안: 정찰, 공격, 방어 세 단계로 배우는 웹 애플리케이션 보안의 모든 것", "by": "앤드루 호프먼 · 최용 옮김 · 한빛미디어 · 2021", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://www.oreilly.com/library/view/web-aepeulrikeisyeon-boan/9791162243930/", "why": "웹 공격이 어떻게 생기고 어떻게 막는지를 한국어로 한 흐름에 — WAF 규칙이 무엇을 노리는지 이해하는 바탕."},
+  {"id": "portswigger", "title": "Web Security Academy", "by": "PortSwigger", "kind": "course", "lang": "en", "free": true, "level": "실무", "url": "https://portswigger.net/web-security", "why": "무료 실습실에서 SQL 주입·XSS·권한 우회·API 공격을 직접 해 본다 — 정탐/오탐을 가르려면 공격 요청이 어떻게 생겼는지 손으로 알아야 한다."},
+  {"id": "owasp-top10", "title": "OWASP Top 10 (2025)", "by": "OWASP", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://owasp.org/www-project-top-ten/", "why": "웹 위험 분류의 공용어 — 우대 요건이자 WAF 규칙 분류표."},
+  {"id": "owasp-api", "title": "OWASP API Security Top 10 (2023)", "by": "OWASP", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/", "why": "API 보안 탐지 업무의 기준 — 정상 모양의 호출로 남의 데이터를 꺼내는 공격들."},
+  {"id": "owasp-oat", "title": "OWASP Automated Threats to Web Applications", "by": "OWASP", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://owasp.org/www-project-automated-threats-to-web-applications/", "why": "봇 업무의 분류표 — 계정 대입·싹쓸이·긁기를 이름으로 나눠 말하게 된다."},
+  {"id": "cred-stuffing-cs", "title": "Credential Stuffing Prevention Cheat Sheet", "by": "OWASP Cheat Sheet Series", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://cheatsheetseries.owasp.org/cheatsheets/Credential_Stuffing_Prevention_Cheat_Sheet.html", "why": "쇼핑몰에서 가장 흔한 봇 공격의 대책 목록 — 빈도 제한만으로 안 되는 이유."},
+  {"id": "crs-docs", "title": "OWASP CRS Documentation", "by": "OWASP CRS Project", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://coreruleset.org/docs/", "why": "공개 WAF 규칙 묶음의 점수제·예민함 단계·예외 거는 법 — 상용 WAF 의 관리형 규칙도 같은 생각으로 돈다."},
+  {"id": "aws-waf-docs", "title": "AWS WAF Developer Guide", "by": "AWS 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html", "why": "관리형 규칙·빈도 규칙·봇 차단·세기만 모드 — 웹 보안 서비스의 정책이 어떤 칸으로 이뤄지는지 공식 문서로 본다."},
+  {"id": "aws-ddos-wp", "title": "AWS Best Practices for DDoS Resiliency", "by": "AWS 백서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-best-practices-ddos-resiliency/aws-best-practices-ddos-resiliency.html", "why": "Route53·CDN·WAF 로 층마다 디도스를 막는 구조 — 요건의 Route53·DNS·DDoS 를 한 번에."},
+  {"id": "athena-waf", "title": "Querying AWS WAF logs (Amazon Athena)", "by": "AWS 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.aws.amazon.com/athena/latest/ug/query-examples-waf-logs.html", "why": "WAF 로그를 SQL 로 묻는 표 정의와 예시 질의 — 우대 요건의 Athena 그대로."},
+  {"id": "kev", "title": "Known Exploited Vulnerabilities Catalog", "by": "CISA", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog", "why": "실제로 악용된 CVE 목록 — CVE 대응 순서를 정하는 첫 기준."},
+  {"id": "epss", "title": "Exploit Prediction Scoring System (EPSS)", "by": "FIRST", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.first.org/epss/", "why": "악용될 확률 점수 — CVSS 점수만으로 정한 순서를 바로잡는다."},
+  {"id": "tde-ko", "title": "실전 위협 탐지 엔지니어링", "by": "메건 로디 · 제이슨 데이알싱 · 게리 J. 캐츠 · 서도현 옮김 · 에이콘출판 · 2026", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012746248", "why": "탐지 규칙의 설계·검증·효과 측정 — 정/오탐/미탐 분석과 헌팅을 규칙으로 바꾸는 일."},
+  {"id": "palantir-ads", "title": "Alerting and Detection Strategy Framework", "by": "Palantir", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://github.com/palantir/alerting-detection-strategy-framework", "why": "규칙마다 목적·사각지대·오탐·검증을 적는 양식 — 유스케이스·SOP 문서화."},
+  {"id": "attack", "title": "MITRE ATT&CK", "by": "MITRE", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://attack.mitre.org/", "why": "공격 기법 사전 — 우대 요건, 헌팅 결과에 번호 붙이기."},
+  {"id": "cisa-playbook", "title": "Cybersecurity Incident & Vulnerability Response Playbooks", "by": "CISA", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.cisa.gov/resources-tools/resources/federal-government-cybersecurity-incident-and-vulnerability-response-playbooks", "why": "플레이북이 실제로 어떻게 생겼나 — Usecase/Playbook 업무의 본보기."},
+  {"id": "nist-800-61", "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations", "by": "NIST · 2025", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final", "why": "최신 사고 대응 지침 — 유관 부서와의 사건 대응·회고."},
+  {"id": "nist-800-92", "title": "NIST SP 800-92 · Guide to Computer Security Log Management", "by": "NIST · 2006", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://csrc.nist.gov/pubs/sp/800/92/final", "why": "로그 수집·보존·분석 체계 — 로그 분석 요건과 보존 기간 정하기."},
+  {"id": "sql-levelup", "title": "SQL 레벨업", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85", "why": "CASE·윈도우 함수로 한 번에 집계하기 — 로그 통계와 SQL 우대 요건."},
+  {"id": "cissp", "title": "CISSP", "by": "ISC2", "kind": "course", "lang": "en", "free": false, "level": "심화", "url": "https://www.isc2.org/certifications/cissp", "why": "우대 자격증 — 8개 영역으로 보안 전반을 한 번 훑는다."}
+ ],
+ "study_path": [
+  {"title": "공격 요청을 손으로 알기", "time": "2~4주", "goal": "SQL 주입·XSS·권한 우회·API 번호 훑기 요청이 실제로 어떻게 생겼는지 알아보고, OWASP 분류로 이름을 붙인다.", "resources": ["portswigger", "web-app-sec-ko", "owasp-top10", "owasp-api"], "task": "Web Security Academy 의 SQL 주입·XSS·접근 제어·API 실습을 풀고, 푼 요청마다 ‘정상 요청과 어디가 다른가’를 한 줄씩 적은 표를 만든다."},
+  {"title": "WAF 규칙 걸고 오탐 줄이기", "time": "2~3주", "goal": "공개 WAF 규칙 묶음을 세기만 모드로 걸어 오탐을 찾고, 경로·칸 단위로 좁게 예외를 건다.", "resources": ["crs-docs", "aws-waf-docs"], "task": "로컬에 작은 리뷰 게시판을 띄우고 CRS 를 붙인 뒤, 정상 리뷰 문장 100개와 1단계 공격 요청을 흘려 규칙별 정탐·오탐을 위 SQLite 예제처럼 집계한다. 예외 하나 전후를 비교한다."},
+  {"title": "봇과 디도스 숫자로 가르기", "time": "1~2주", "goal": "IP 당 빈도 제한이 어디서 새는지 보이고, 계정 수·실패율 같은 전체 지표로 봇을 잡는다.", "resources": ["owasp-oat", "cred-stuffing-cs", "aws-ddos-wp"], "task": "가상 로그인 로그(사람·단일 IP 봇·분산 봇·특가 날 폭주)를 만들어, IP 기준·계정 기준·실패율 기준 규칙이 각각 무엇을 잡고 놓치는지 표로 만든다."},
+  {"title": "로그로 헌팅하고 보고하기", "time": "2~3주", "goal": "WAF·접근 로그를 SQL 로 묻고, 통과한 요청 중 수상한 것을 찾아 규칙과 주간 리포트로 바꾼다.", "resources": ["athena-waf", "sql-levelup", "nist-800-92", "tde-ko", "attack"], "task": "2단계 로그를 날짜별 파일로 쌓아 DuckDB 나 SQLite 로 묻고, ‘404 가 한 IP 에 몰림’·‘처음 보는 경로’ 질의 두 개로 찾은 것을 ATT&CK 번호와 함께 규칙으로 적은 뒤 주간 차단 통계 한 장을 만든다."},
+  {"title": "CVE 대응과 플레이북 (계속)", "time": "계속", "goal": "새 CVE 의 순서를 KEV·EPSS·노출로 정하고, 경보 하나의 대응을 문서로 만든다.", "resources": ["kev", "epss", "palantir-ads", "cisa-playbook", "nist-800-61"], "task": "이번 달 KEV 에 오른 웹 관련 CVE 3개를 골라 가상 자산 목록과 대조해 순서를 매기고, 하나는 가상 패치 규칙·세기만 확인·차단 전환까지 SOP 로, ‘분산 계정 대입’은 ADS 양식 플레이북으로 쓴다."}
+ ],
+ "pay": {
+  "summary": "공고에 연봉 표기는 없다. 집계 사이트 기준 쿠팡(주) 초봉 **약 3,531만원**·평균 **약 5,175만원** — 물류·운영 인력이 섞인 회사 전체 값이라 경력 5~20년 웹 보안 엔지니어와는 거리가 크다",
+  "rows": [
+   {"label": "신입 초봉", "value": "약 3,531만원", "amount": 3531, "basis": "공공데이터 집계", "note": "자소설닷컴 쿠팡 회사 페이지. 기업이 공공데이터에 낸 정보로 계산한 값이고 기준 연도·직군 구분이 없다 [33]"},
+   {"label": "직원 평균 연봉", "value": "약 5,175만원", "amount": 5175, "basis": "공공데이터 집계", "note": "같은 페이지의 평균. 경력직·전 직군이 섞인 값 [33]"},
+   {"label": "직원 평균 연봉 (원티드)", "value": "5,856만원", "amount": 5856, "basis": "공공데이터 집계", "note": "원티드 회사 페이지 표기, 기준일 표기 없음 [35]"},
+   {"label": "네이버 평균", "value": "약 7,602만원", "amount": 7602, "peer": true, "basis": "공공데이터 집계", "note": "자소설닷컴 같은 방식의 값 [34]"},
+   {"label": "지마켓 평균", "value": "6,032만원", "amount": 6032, "peer": true, "basis": "공공데이터 집계", "note": "원티드 같은 방식의 값 [36]"}
+  ],
+  "how": "쿠팡(주)은 미국 상장사 쿠팡 Inc.의 국내 자회사라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **공시 숫자 없음**. 같은 팀 다른 자리의 리멤버 공고는 '연봉협의'다 [39]. 직급과 업무 범위는 후보자 경력으로 정하고 최종 합격 전에 알려 준다고 공고에 적혀 있다 [1]. 위 평균은 운영·물류 직군이 섞여 시니어 보안 경력직 연봉보다 낮게 나올 가능성이 크다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {"name": "근무", "detail": "주 5일 유연근무제"},
+   {"name": "휴가", "detail": "사유 없이 연차 사용"},
+   {"name": "보험", "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"},
+   {"name": "쇼핑", "detail": "쿠팡 구매금액 5% 캐시백(연 최대 400만원)"},
+   {"name": "건강", "detail": "연 1회 건강검진"},
+   {"name": "상여·경조", "detail": "명절 상여금, 경조금·경조휴가"},
+   {"name": "배움", "detail": "사내 기술 공유 스터디, 외국어·직무 교육 프로그램"},
+   {"name": "사내 시설", "detail": "휴게 공간, 커피·차·간식, 사내 식당"}
+  ],
+  "note": "이 공고(그린하우스)와 같은 자리 원티드 공고에는 복지 칸이 없다 [1][2]. 위 금액·조건은 같은 회사 다른 공고의 '혜택 및 복지' 칸(2026-11) [37]이다. 회사 공통 항목으로 보이지만 이 팀에 그대로 적용되는지는 처우 협의 때 확인한다 {추론}. 수습 12주가 있다 [1]."
+ },
+ "location": {
+  "name": "쿠팡 본사 (이스트폴 타워)",
+  "address": "서울특별시 광진구 아차산로 412, 이스트폴 타워 A",
+  "postal": "05050",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 [38]",
+  "note": "이 공고의 근무지 표기는 'Seoul, South Korea' 뿐이다 [1]. 같은 자리 원티드 공고가 근무지를 아차산로 412 이스트폴 타워 A 로 적었다 [2]."
+ }
+}
