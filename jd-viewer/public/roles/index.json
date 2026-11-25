@@ -10,6 +10,7 @@
   "wanted-396324": "coupang-catalog-taxonomy-pm",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
+  "ats-greenhouse:coupang:8382219": "coupang-fashion-program-manager",
   "ats-greenhouse:coupang:8413572": "coupang-fc-logistics-network-engineer",
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
   "ats-greenhouse:coupang:6137112": "coupang-got-backend-manager-seoul",
@@ -364,6 +365,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 41
+  },
+  {
+   "id": "coupang-fashion-program-manager",
+   "company": "쿠팡",
+   "role": "패션 이커머스 Senior, Program Manager (사업운영·데이터분석)",
+   "jobs": [
+    "ats-greenhouse:coupang:8382219"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 25
   },
   {
    "id": "coupang-fc-logistics-network-engineer",
