@@ -160,6 +160,7 @@
   "saramin-55605890": "hyundai-group-cyber-threat-detection",
   "saramin-55605963": "hyundai-ict-ax-project-manager",
   "ats-hkmc:hyundai:2026N2415": "hyundai-ict-backend-architecture-owners-app",
+  "saramin-55605652": "hyundai-ict-mlops-backend",
   "ats-hkmc:hyundai:2026N2420": "hyundai-ict-sw-architect",
   "ats-hkmc:hyundai:2026N2425": "hyundai-infra-security-public-cloud",
   "wanted-398820": "hyundai-infra-security-public-cloud",
@@ -182,6 +183,8 @@
   "wanted-387545": "hyundai-shucle-data-engineer",
   "ats-hkmc:hyundai:2026N2224": "hyundai-shucle-map-software-engineer",
   "wanted-387543": "hyundai-shucle-map-software-engineer",
+  "ats-hkmc:hyundai:2026N299": "hyundai-shucle-platform-infra-engineer",
+  "wanted-387540": "hyundai-shucle-platform-infra-engineer",
   "ats-hkmc:hyundai:2026N2386": "hyundai-shucle-platform-ux-planning",
   "ats-hkmc:hyundai:2026N2294": "hyundai-shucle-service-ux-planning",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
@@ -1836,6 +1839,16 @@
    "lines": 20
   },
   {
+   "id": "hyundai-ict-mlops-backend",
+   "company": "현대자동차",
+   "role": "[ICT] Backend Developer - MLOps 개발",
+   "jobs": [
+    "saramin-55605652"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
+  },
+  {
    "id": "hyundai-ict-sw-architect",
    "company": "현대자동차",
    "role": "SW Architect",
@@ -2000,6 +2013,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 24
+  },
+  {
+   "id": "hyundai-shucle-platform-infra-engineer",
+   "company": "현대자동차",
+   "role": "모빌리티 플랫폼 Infra Engineer (셔클)",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N299",
+    "wanted-387540"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "hyundai-shucle-platform-ux-planning",
