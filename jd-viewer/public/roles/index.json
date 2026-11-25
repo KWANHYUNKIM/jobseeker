@@ -167,6 +167,7 @@
   "ats-greenhouse:coupang:8206706": "coupang-web-security-engineer-detection-ops",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
   "ats-greenhouse:daangn:7990084003": "daangn-ai-platform-software-engineer",
+  "ats-greenhouse:daangn:4300801003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8201153003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:6652141003": "daangn-feed-ml-data-platform-backend",
@@ -2016,10 +2017,11 @@
    "company": "당근",
    "role": "Software Engineer — 테크코어 AI Platform",
    "jobs": [
-    "ats-greenhouse:daangn:7990084003"
+    "ats-greenhouse:daangn:7990084003",
+    "ats-greenhouse:daangn:4300801003"
    ],
    "researched_at": "2026-11-25",
-   "lines": 28
+   "lines": 41
   },
   {
    "id": "daangn-community-backend-intern",

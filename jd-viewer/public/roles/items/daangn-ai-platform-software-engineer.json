@@ -4,7 +4,8 @@
  "role": "Software Engineer — 테크코어 AI Platform",
  "team": "테크코어 · AI Platform 팀",
  "jobs": [
-  "ats-greenhouse:daangn:7990084003"
+  "ats-greenhouse:daangn:7990084003",
+  "ats-greenhouse:daangn:4300801003"
  ],
  "researched_at": "2026-11-25",
  "tldr": {
@@ -309,6 +310,174 @@
    ]
   },
   {
+   "section": "task",
+   "quote": "고성능의 확장 가능한 데이터 처리 시스템(배치/스트리밍)을 설계해요",
+   "short": "앱 로그·서비스 DB 를 분석 창고(BigQuery)로 옮기는 길을, 늦지 않고 무너지지 않게 짜는 일이다.",
+   "why": "당근은 서비스마다 MySQL·PostgreSQL·DynamoDB·MongoDB 를 따로 쓰고, 이 모두를 BigQuery 한곳에 모아 분석하게 하는 것이 데이터 가치화팀의 일이라고 팀 글이 밝힙니다.[28] 지금 200개가 넘는 DB 가 한국·일본·캐나다 세 리전, alpha·prod 두 환경에서 BigQuery 로 들어갑니다.[30] 공고는 '미래에 병목이 되지 않을 데이터 시스템'을 이 자리의 임무로 적었습니다.[26]",
+   "actually": {
+    "intro": "팀 글에 나온 배치·스트리밍 시스템들입니다.",
+    "items": [
+     "**스트리밍** 앱 행동 로그: 이벤트 서버 → GCP Pub/Sub(메시지 대기열) → Dataflow 에서 실시간 검증·짧은 시간 중복 제거·펼치기 → GCS·BigQuery.[27]",
+     "**배치** 그 로그를 시간 창 기준으로 한 번 더 중복 제거해 정확도를 올립니다.[27]",
+     "**CDC(변경분만 받기)** 큰 MongoDB 컬렉션을 매번 통째로 덤프하니 DB CPU 가 튀어서, 변경 로그만 읽는 Flink CDC 로 바꿨습니다. 목표는 CPU 60% 이하·2시간 안 전달(SLO)이었습니다.[28]",
+     "**ELT 플랫폼** 서비스 DB → BigQuery 덤프를 화면에서 선언하면 Airflow DAG 이 자동으로 생기고 Spark(EMR on EKS)가 돕니다.[30]",
+     "**실시간이 꼭 답은 아니다** CDC 뒷단은 실시간이 아니라 매시간 배치로 뒀습니다. 2시간 SLO 면 충분했고, 배치가 재처리·멱등성(여러 번 돌려도 결과가 같음)에 쉬웠기 때문입니다.[28]"
+    ]
+   },
+   "how_far": "'배치냐 스트리밍이냐'를 요구 지연 시간(SLO)·DB 부하·재처리 쉬움으로 고르고 그 이유를 말할 수 있으면 됩니다. 팀 글처럼 '실시간이 필요 없어서 hourly 배치'라고 답하는 것도 설계입니다.[28] 처음부터 Flink·Dataflow 를 다 다뤄 봤을 필요는 없습니다. {추론}",
+   "refs": [
+    26,
+    27,
+    28,
+    30
+   ],
+   "study": [
+    "daangn-data-blog",
+    "fde-ko",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "안정적이고 테스트 가능한 데이터 파이프라인을 설계하고 운영해요",
+   "short": "파이프라인도 코드처럼 PR 마다 미리 돌려 보고, 다시 돌려도 같은 결과가 나오게 만드는 일이다.",
+   "why": "팀은 데이터 엔지니어가 아닌 구성원도 DBT 모델을 만들게 하려고, 실수로 운영 데이터를 덮어쓰거나 큰 쿼리로 비용을 내는 일을 미리 막는 테스트 환경을 따로 만들었다고 밝혔습니다.[32]",
+   "actually": {
+    "intro": "팀 글에 나온 '테스트 가능'의 실제 장치입니다.",
+    "items": [
+     "**PR 마다 테스트 환경** PR 을 열면 그 PR 전용 Airflow 와 dbt 문서가 배포되고, 의존성 설정이 틀리면 CI 에서 걸립니다.[32]",
+     "**dry run(실행 없이 계획만)** 컴파일된 쿼리가 몇 바이트를 읽을지 먼저 재고, 기본 1TB 를 넘으면 실패시킵니다.[32]",
+     "**dbt test** 결과는 `_test` 가 붙은 데이터셋에 쓰고 unique·not_null 같은 검사를 돌립니다.[32][36]",
+     "**순서 지키기** 원천 테이블 적재가 끝나기 전에 모델이 돌면 데이터가 비므로, ExternalTaskSensor(다른 DAG 완료를 기다리는 태스크)로 묶었습니다.[32]",
+     "**백필(과거 다시 채우기)** 전체 재계산 대신 모델·날짜 범위를 받아 날짜마다 따로 돌립니다(30일이면 30개 태스크).[32]",
+     "**옮길 때의 검증** CDC 로 바꿀 때 기존 덤프와 2주간 나란히 돌리며 건수·신선도·중복 ID 를 비교하고, 마지막엔 같은 ID 의 모든 필드를 체크섬으로 맞췄습니다.[28]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CDC 변경 이벤트를 최종 테이블로 접기 (가상 값, 직접 돌린 출력)",
+     "body": "기본 키마다 가장 늦은 이벤트만 남기고, 삭제면 지웁니다. 늦게 다시 온 중복(ts=3)이 와도 결과가 같습니다 — 이것이 멱등입니다. 출력: `[('1', {'v': 'C'}), ('3', {'v': 'old'})]`",
+     "lang": "python",
+     "code": "events = [\n    {\"_id\": \"1\", \"op\": \"insert\", \"ts\": 1, \"doc\": {\"v\": \"A\"}},\n    {\"_id\": \"2\", \"op\": \"insert\", \"ts\": 2, \"doc\": {\"v\": \"X\"}},\n    {\"_id\": \"1\", \"op\": \"update\", \"ts\": 3, \"doc\": {\"v\": \"B\"}},\n    {\"_id\": \"2\", \"op\": \"delete\", \"ts\": 4, \"doc\": None},\n    {\"_id\": \"1\", \"op\": \"update\", \"ts\": 5, \"doc\": {\"v\": \"C\"}},\n    {\"_id\": \"1\", \"op\": \"update\", \"ts\": 3, \"doc\": {\"v\": \"B\"}},  # 늦게 다시 온 중복\n]\nsnapshot = {\"3\": {\"v\": \"old\"}}          # 처음 한 번 통째로 받은 것\nlast = {}\nfor e in events:\n    if e[\"_id\"] not in last or e[\"ts\"] > last[e[\"_id\"]][\"ts\"]:\n        last[e[\"_id\"]] = e\nfinal = dict(snapshot)\nfor pk, e in last.items():\n    if e[\"op\"] == \"delete\":\n        final.pop(pk, None)\n    else:\n        final[pk] = e[\"doc\"]\nprint(sorted(final.items()))"
+    }
+   ],
+   "how_far": "최소선은 '같은 날짜를 두 번 돌려도 결과가 같다(insert_overwrite·MERGE)', '원천이 늦으면 기다린다', '읽는 양을 미리 잰다' 세 가지를 직접 해 본 것입니다.[32] 면접에서는 '이 파이프라인이 틀렸다는 걸 어떻게 아나'에 답할 검사 목록을 준비합니다. {추론}",
+   "refs": [
+    28,
+    32,
+    36
+   ],
+   "study": [
+    "airflow-book",
+    "dbt-tests",
+    "daangn-data-blog"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구성원들이 이벤트를 쉽게 추가할 수 있도록 자동화된 이벤트 로깅을 구현하고, 대용량의 이벤트를 유실 없이 안정적으로 수집할 수 있는 로그 시스템을 만들어요",
+   "short": "'버튼 눌렀다' 같은 행동 로그를 누구나 클릭 몇 번으로 정의하고, 하루 수억 건을 빠짐없이 받게 하는 일이다.",
+   "why": "예전에는 이벤트 하나를 더하려면 Spark StructType JSON 스키마를 손으로 쓰고 PR·CI·데이터팀 리뷰를 몇 번씩 오가야 했고, 이름도 `home_feed`·`homeFeed`, `show`·`shown` 처럼 제각각이었다고 팀 글이 밝힙니다.[27] 그래서 이벤트센터(로그 관리 플랫폼)를 만들었습니다.[27]",
+   "actually": {
+    "intro": "이벤트센터 글에 나온 '자동화'와 '유실 없이'의 실제입니다.",
+    "items": [
+     "**이름 규칙** `client_{action}_{service}_{screen}_{object}` — 행동은 과거형, 요소 사이는 snake_case, 요소 안은 camelCase.[27]",
+     "**UI 로 정의** 화면을 고르고 이벤트를 등록하면 규칙 적용·스키마 생성·검증·BigQuery 뷰 생성이 자동으로 됩니다.[27]",
+     "**코드 생성 CLI** 정의 하나로 iOS(Swift)·Android(Kotlin)·웹뷰(TypeScript) 타입을 만들어 필드 이름 오타가 컴파일 에러가 됩니다.[27]",
+     "**QA** 개발자가 자기 기기에서 행동하고 자기 ID 로 검색하면 방금 쌓인 이벤트를 거의 바로 봅니다.[27]",
+     "**유실·중복** 잘못된 이벤트는 버리지 않고 DLQ(못 처리한 것을 따로 모으는 대기열)로 보내 따로 저장하고, 중복은 스트리밍에서 한 번·배치에서 한 번 지웁니다.[27] '정확히 한 번'은 비싸서 보통 '최소 한 번 보내고 받는 쪽에서 중복 제거'로 짭니다.[37]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "이벤트 이름 규칙 검사 (직접 돌린 출력)",
+     "body": "이벤트센터가 사람 대신 하는 일의 아주 작은 판입니다. 출력: `OK client_clicked_…`, `NG client_click_…`(과거형 아님), `NG home_feed_show_article`, `NG client_shown_community_home_feed_banner`(요소 안에 snake_case — 자리 수가 어긋남).",
+     "lang": "python",
+     "code": "import re\nPART = r\"[a-z][a-zA-Z0-9]*\"\nNAME = re.compile(rf\"^client_({PART})_({PART})_({PART})_({PART})$\")\nfor n in [\"client_clicked_secondhand_articleDetail_chatButton\",\n          \"client_click_secondhand_articleDetail_chatButton\",\n          \"home_feed_show_article\",\n          \"client_shown_community_home_feed_banner\"]:\n    m = NAME.match(n)\n    ok = bool(m) and m.group(1).endswith((\"ed\", \"wn\"))\n    print((\"OK \" if ok else \"NG \") + n)"
+    }
+   ],
+   "how_far": "두 갈래입니다 — 하나는 정의·검증·코드 생성 같은 **개발자 경험**, 하나는 대기열·DLQ·중복 제거 같은 **수집 신뢰성**.[27] 이벤트센터 글은 프론트엔드 엔지니어가 어드민·CLI 를, 데이터 엔지니어가 파이프라인과 품질을 맡았다고 적었으니 이 자리는 뒤쪽이 중심입니다.[27] '최소 한 번 + 멱등 키' 설계를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    27,
+    37
+   ],
+   "study": [
+    "daangn-data-blog",
+    "beam-guide",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전사 구성원들의 데이터 기반 의사결정을 돕는 데이터 제품(지표 플랫폼, 실험 플랫폼 등)을 개발하고 지속적으로 개선해요",
+   "short": "PM·분석가가 스스로 지표를 만들고 A/B 실험을 돌리게 하는 사내 도구를 만드는 일이다.",
+   "why": "실험플랫폼은 누적 실험 350개·오너 80명에서 누적 4,600개·오너 280명·월 진행 실험 290개로 커졌고, 지표를 코드(YAML+SQL)로 정의하느라 1~2시간과 데이터팀 리뷰가 병목이 됐다고 팀이 밝혔습니다.[31] 같은 화면의 실험끼리 섞여 결과를 못 가르는 문제도 생겼습니다.[31]",
+   "actually": {
+    "intro": "실험플랫폼 글의 세 가지 변화와 그 밑의 데이터 레이어입니다.",
+    "items": [
+     "**지표를 UI 로** 이벤트 → 사용자 행동 → 지표(count·ratio·sum) 세 단계를 한 화면에서 만들고 버튼 하나로 테스트 실행. 1~2시간이 몇 분으로.[31]",
+     "**상호배제 그룹** 사용자를 ID 해시로 1~10,000 슬롯에 고정 배정하고, 섞이면 안 되는 실험에 겹치지 않는 슬롯을 줍니다. 레이어를 두면 슬롯이 자동 분배됩니다.[31]",
+     "**대가** 슬롯을 10개 실험이 나누면 표본이 1/10 이 되어 효과를 잡기 어려워져서, 간섭할 실험만 묶습니다. CUPED(실험 전 데이터로 분산 줄이기)로 일부 보완합니다.[31]",
+     "**Experiment MCP** 실험 생성·지표 등록·결과 조회를 LLM 이 호출하는 도구로 열고, 후속 분석은 스킬로 줍니다.[31]",
+     "**지표의 밑바닥** 신규·유지·복귀 같은 활성 상태를 팀마다 따로 계산하지 않게 공통 Activation 레이어를 만들고, 날짜별 스냅샷으로 매일·백필 모두 하루치만 읽게 했습니다.[33]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "해시 슬롯으로 두 실험 상호배제 (가상 사용자 10만, 직접 돌린 출력)",
+     "body": "A 는 1~3000, B 는 3001~6000 슬롯. 출력: `{'A': 29747, 'B': 30034, '둘 다': 0, '없음': 40219} 같은 사람 다시: True` — 둘 다 들어간 사람이 0이고, 같은 사람은 늘 같은 슬롯입니다.",
+     "lang": "python",
+     "code": "import hashlib\ndef slot(user_id, salt=\"home-ui\"):\n    h = hashlib.sha256(f\"{salt}:{user_id}\".encode()).hexdigest()\n    return int(h, 16) % 10000 + 1\nA = range(1, 3001); B = range(3001, 6001)\ncnt = {\"A\": 0, \"B\": 0, \"둘 다\": 0, \"없음\": 0}\nfor u in range(100000):\n    s = slot(u)\n    a, b = s in A, s in B\n    cnt[\"둘 다\" if a and b else \"A\" if a else \"B\" if b else \"없음\"] += 1\nprint(cnt, \"같은 사람 다시:\", slot(42) == slot(42))"
+    }
+   ],
+   "how_far": "통계 방법을 정하는 것은 Data Scientist·분석가 쪽이고(실험플랫폼 첫 글이 'Data Scientist, Decision' 이름으로 나왔습니다), 이 자리는 그 계산이 대규모로 매일 틀림없이 돌게 하는 **제품과 파이프라인**을 맡습니다.[31] {추론} 해시 배정·지표 정의·스캔 비용을 설명할 수 있으면 됩니다.",
+   "refs": [
+    31,
+    33
+   ],
+   "study": [
+    "kohavi-ab",
+    "daangn-data-blog"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전사 구성원들이 데이터를 신뢰하고 사용할 수 있도록 데이터 시스템의 관측성(Observability)을 지속적으로 확보하고, 자동화된 데이터 품질(Quality) 체크를 통해 문제를 조기에 발견하고 해결해요",
+   "short": "파이프라인이 늦거나 틀리면 사람보다 먼저 알고, 어디까지 번졌는지 바로 짚게 만드는 일이다.",
+   "why": "한 테이블이 실패하자 그걸 참조하는 테이블들이 줄줄이 실패했는데 영향 범위를 몰라 몇 시간을 썼고, MySQL 컬럼 하나를 지울 때도 어디가 깨질지 몰랐다고 팀 글이 적었습니다.[29] CDC 글은 '파이프라인에서 가장 중요한 건 신뢰'라고 결론지었습니다.[28]",
+   "actually": {
+    "intro": "팀이 실제로 보는 것들입니다.",
+    "items": [
+     "**작업 지표** Flink 작업 상태·처리량·DB 읽기 부하·BigQuery 적재 성공률·backpressure(뒤가 막혀 앞이 밀리는 정도)·체크포인트를 그라파나로 보고, 작업 상태와 backpressure 는 SLO 를 넘으면 알림.[28]",
+     "**데이터 검사** 건수 일치·신선도(시간마다 들어오나)·ID 중복을 상시 지표로.[28] DBT 모델 열에는 unique·not_null 테스트.[32][36]",
+     "**자동 복구** 작업이 죽으면 Flink Kubernetes Operator 가 마지막 체크포인트에서 재시작(보통 3분 안), DB 연결이 끊기면 점점 간격을 늘려 재연결하고 10분 넘으면 알림.[28]",
+     "**컬럼 리니지(데이터 족보)** 모든 프로젝트의 INFORMATION_SCHEMA.JOBS 쿼리 기록을 sqlglot 으로 파싱해 하루 테이블 약 15,000개·컬럼 의존 80만 개를 추적하고, 품질 테스트가 실패하면 영향받는 테이블과 최근 사용자를 Slack 에 같이 보냅니다.[29]",
+     "**보통 이런 것** 파이프라인 SLO 는 신선도·정확성·완전성으로 잡는 것이 흔합니다.[38]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "덤프와 CDC 결과 대조 검사 (가상 값, 직접 돌린 출력)",
+     "body": "출력: `건수 일치: 통과` · `중복 없음: 실패` · `신선도(2시간 안): 실패` — 건수가 맞아도 중복이 숨어 있을 수 있어서 검사는 여럿을 같이 둡니다.",
+     "lang": "python",
+     "code": "from datetime import datetime, timedelta\nfull = [{\"id\": i} for i in range(1, 1001)]\ncdc = [{\"id\": i} for i in range(1, 1001)] + [{\"id\": 77}]   # 중복 하나\nloaded_at = datetime(2026, 11, 25, 9, 10)\nnow = datetime(2026, 11, 25, 12, 0)\nids = [r[\"id\"] for r in cdc]\nchecks = {\n    \"건수 일치\": len(set(ids)) == len(full),\n    \"중복 없음\": len(ids) == len(set(ids)),\n    \"신선도(2시간 안)\": now - loaded_at <= timedelta(hours=2),\n}\nfor k, v in checks.items():\n    print(f\"{k}: {'통과' if v else '실패'}\")"
+    }
+   ],
+   "how_far": "'무엇을 재고, 언제 깨우고, 깨운 뒤 무엇을 보여 주나'까지가 이 줄입니다. 알림만 많고 영향 범위를 못 짚으면 반쪽입니다 — 팀이 리니지를 품질 알림에 붙인 이유입니다.[29] {추론}",
+   "refs": [
+    28,
+    29,
+    32,
+    36,
+    38
+   ],
+   "study": [
+    "sre-data-pipelines",
+    "dbt-tests",
+    "daangn-data-blog"
+   ]
+  },
+  {
    "section": "qualification",
    "quote": "빌더로서 아이디어를 실제 결과물로 만들어내는 것을 좋아하는 분 아이디어나 논의에 머무르지 않고 직접 만들어 빠르게 검증하고, 사용자 피드백을 바탕으로 반복적으로 개선해 실제로 쓰이는 제품과 시스템으로 발전시켜 나가는 분",
    "short": "말보다 만든 것으로 보여 주는 사람 — 써 본 사람의 피드백으로 계속 고친 경험이 핵심.",
@@ -444,6 +613,65 @@
    ]
   },
   {
+   "section": "qualification",
+   "quote": "하나 이상의 프로그래밍 언어에 능숙하신 분 (Python / Java / Scala / Kotlin / Go 등)",
+   "short": "언어는 상관없고 하나를 깊게 — 팀 코드에는 Python 과 Scala 가 섞여 있다.",
+   "why": "기존 ELT 파이프라인 설정을 알려면 'Python 코드와 Scala 코드를 직접 읽어야 했다'고 팀이 적었고, DT Platform 이관 때도 그 Python/Scala 소스를 파싱했습니다.[30] Airflow DAG·dbt·sqlglot 은 Python, Spark 는 Scala/Python 입니다.[29][32]",
+   "how_far": "면접에 라이브 코딩이 있으니(공고 우대 끝 줄) 고른 언어로 자료구조·정렬·해시를 막힘 없이 쓰는 것이 최소선입니다.[26] SQL 은 별도로 실무 수준이 필요합니다 — 팀 글의 예시가 거의 다 SQL 입니다.[32] {추론}",
+   "level": "실무",
+   "refs": [
+    26,
+    29,
+    30,
+    32
+   ],
+   "study": [
+    "learning-spark"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 트래픽 처리를 위한 확장 가능한 데이터 아키텍처의 구성에 대한 관심이 있으신 분",
+   "short": "'관심'이면 된다 — 다만 왜 그렇게 나눴는지는 설명할 수 있어야 한다.",
+   "why": "수십억 행 테이블이 드물지 않아 Airbyte 로는 한 번 동기화에 며칠이 걸렸고, 그래서 파티션 키 병렬화를 하는 자체 Spark 실행층을 유지했다고 팀이 밝혔습니다.[30]",
+   "actually": {
+    "intro": "팀 글에 나온 '확장 가능'의 구체 예입니다.",
+    "items": [
+     "**정의와 실행을 떼기** 화면의 설정은 JSON DSL 한 장으로 S3 에 두고, Airflow·Spark 는 그것을 읽어 실행만.[30]",
+     "**두 단계 테이블** MongoDB 원본을 JSON 그대로 1단계에 두고, 스키마가 바뀌면 2단계만 다시 만들어 반영 시간을 2~3시간 → 20분 안으로.[28]",
+     "**읽는 양 고정** 큰 Fact 는 날짜 파티션·insert_overwrite, 활성 상태는 날짜별 스냅샷으로 하루치만 스캔.[32][33][41]"
+    ]
+   },
+   "how_far": "파티션·증분·멱등·정의와 실행 분리 같은 낱말을 자기 경험이나 작은 실습으로 설명하면 충분합니다. {추론}",
+   "refs": [
+    28,
+    30,
+    32,
+    33,
+    41
+   ],
+   "study": [
+    "fde-ko",
+    "ddia",
+    "bq-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS, GCP 등 클라우드 환경에서 개발/운영 경험이 있거나 그에 준하는 지식을 갖추신 분",
+   "short": "두 클라우드를 같이 쓴다 — 데이터 창고는 GCP(BigQuery), 계산·저장은 AWS 쪽도 있다.",
+   "why": "이벤트 로그는 GCP Pub/Sub·Dataflow·GCS·BigQuery 를 지나고,[27] ELT 는 AWS S3 에 설정을 두고 EMR on EKS 에서 Spark 를 돌립니다.[30]",
+   "how_far": "'그에 준하는 지식'이라 개인 계정 무료 한도로 BigQuery 파티션 테이블을 만들고 쿼리 비용을 재 본 정도로도 이야기가 됩니다. 권한(IAM)·비용·리전 차이를 아는지가 운영 경험의 표시입니다. {추론}",
+   "level": "기본",
+   "refs": [
+    27,
+    30
+   ],
+   "study": [
+    "bq-guide"
+   ]
+  },
+  {
    "section": "preference",
    "quote": "현재 팀에서는 아래 기술을 주로 사용하고 있어요. 비슷한 환경에서의 경험이 있다면 더 좋아요. Python, FastAPI 기반 백엔드 개발",
    "short": "라우터·플랫폼 API가 이 위에 있다 — 비동기 API 서버를 만들고 운영할 줄 아는 수준.",
@@ -540,6 +768,81 @@
   },
   {
    "section": "preference",
+   "quote": "Spark, Flink, Beam, BigQuery 등 빅데이터 프레임워크 사용 경험이 있으신 분",
+   "short": "팀이 실제로 넷 다 쓴다 — Spark 는 덤프, Flink 는 CDC, Beam 은 로그 스트리밍, BigQuery 는 창고.",
+   "why": "MongoDB 첫 전체 덤프는 Flink 로 하다 느려서 이미 운영하던 Spark 로 돌렸고,[28] 변경분은 Flink CDC,[28] 앱 로그는 GCP Dataflow(Beam 을 돌리는 서비스),[27][35] 모두 BigQuery 로 모입니다.[30]",
+   "actually": {
+    "intro": "각 도구를 고른 이유가 팀 글에 있습니다.",
+    "items": [
+     "**Flink** MongoDB Change Stream 을 바로 읽고, 재개 지점(resume token)이 체크포인트와 맞물려 장애 뒤 정확한 곳에서 이어 갑니다.[28][34]",
+     "**Spark** 단순 대량 읽기에서 가장 빨랐습니다.[28] 컬럼 리니지의 대량 쿼리 파싱도 Spark 로 병렬 처리합니다.[29]",
+     "**BigQuery** 운영 DB 에 분석 쿼리를 날리지 않으려고 분석을 떼어 낸 곳입니다.[28]"
+    ]
+   },
+   "how_far": "한 도구로 '파티션을 어떻게 나눴고 느릴 때 무엇을 봤나'를 말할 수 있으면 됩니다. 넷 다는 필요 없습니다. {추론}",
+   "refs": [
+    27,
+    28,
+    29,
+    30,
+    34,
+    35
+   ],
+   "study": [
+    "learning-spark",
+    "flink-docs",
+    "beam-guide",
+    "bq-guide"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "분산 환경에서 대용량 데이터 처리(배치/스트리밍) 경험이 있으신 분",
+   "short": "여러 대에 나눠 돌릴 때만 생기는 문제 — 늦게 온 데이터, 중복, 한쪽만 느린 것 — 를 겪어 봤느냐는 뜻이다.",
+   "why": "팀은 늦게 도착한 이벤트를 회수하려고 시간 창을 넉넉히 두고, 체크포인트로 정확히 한 번을 지키고, backpressure 를 알림으로 봅니다.[28] 같은 이벤트가 두 번 오는 것은 스트리밍·배치 두 번의 중복 제거로 막습니다.[27]",
+   "how_far": "워터마크(이 시각 전 데이터는 다 왔다고 보는 선)·셔플·데이터 쏠림(skew) 중 하나를 실제로 고쳐 본 이야기가 있으면 강합니다.[35] 없으면 공개 데이터로 Spark 작업을 돌려 실행 계획을 읽어 본 경험으로 대신합니다. {추론}",
+   "refs": [
+    27,
+    28,
+    35
+   ],
+   "study": [
+    "ddia",
+    "learning-spark",
+    "beam-guide"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kubernetes 등 컨테이너 오케스트레이션 시스템을 활용한 운영 경험이 있으신 분",
+   "short": "Spark·Flink 작업이 쿠버네티스 위에서 돈다 — 죽으면 다시 띄우는 것까지 그 위에서 한다.",
+   "why": "ELT 의 Spark 는 EMR on EKS(AWS 의 쿠버네티스)에 제출되고,[30] CDC 의 Flink 작업은 Flink Kubernetes Operator 가 실패 시 자동 재시작합니다.[28]",
+   "how_far": "파드·리소스 요청/한도·재시작 정책을 알고, 메모리 부족(OOMKilled)으로 죽은 작업의 로그를 읽을 수 있으면 됩니다.[39] {추론}",
+   "refs": [
+    28,
+    30,
+    39
+   ],
+   "study": [
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, GCP 등 클라우드 환경에서 IaC를 활용한 데이터 인프라 설계 및 운용 경험이 있으신 분",
+   "short": "BigQuery 데이터셋·권한·버킷을 손 클릭이 아니라 코드(Terraform 등)로 만들고 고친 경험이다.",
+   "why": "DT Platform 은 PII 컬럼 자동 제외·데이터셋 분리·자격 증명 관리를 플랫폼 수준에서 한꺼번에 적용한다고 밝혔습니다.[30] 세 리전 × 두 환경을 똑같이 맞추려면 코드로 관리하는 쪽이 흔합니다.[40] 당근이 어떤 IaC 도구를 쓰는지는 공개 글에서 찾지 못했습니다. {추론}",
+   "how_far": "plan 으로 바뀔 것을 먼저 보고 apply 하는 흐름, 상태 파일, 환경별 변수 분리를 해 봤으면 됩니다.[40] {추론}",
+   "refs": [
+    30,
+    40
+   ],
+   "study": [
+    "terraform-iac"
+   ]
+  },
+  {
+   "section": "preference",
    "quote": "당근에서는 자율과 책임의 문화를 중요하게 생각해요. 문제를 더 잘 해결할 수 있다면 새로운 기술을 스스로 검토하고 제안해 직접 도입할 수 있어요.",
    "short": "쓸 기술을 스스로 검토·제안·도입할 수 있다 — 그 결과도 직접 책임진다는 뜻.",
    "why": "회사 블로그도 플랫폼이 자율·빠른 실험 위에서 자랐다고 했습니다.[2] 위 기술 목록은 '지금 쓰는 것'이지 정답이 아닙니다.[1]",
@@ -556,6 +859,17 @@
    "refs": [
     1,
     24
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Software Engineer, Data 포지션은 화상/직무 면접에서 라이브 코딩 테스트가 예정되어 있어요",
+   "short": "화상·직무 면접 중에 실제로 코드를 쓴다 — 데이터 직무라도 알고리즘·구현을 본다.",
+   "why": "공고가 이 포지션에만 따로 적은 안내입니다.[26] 팀 글들이 Python 파서·Airflow 코드·Spark 작업을 직접 짜는 모습이어서, 데이터 엔지니어를 '소프트웨어 엔지니어'로 뽑는다는 뜻으로 읽힙니다.[26][29] {추론}",
+   "how_far": "고른 언어로 해시맵·정렬·두 포인터 수준 문제를 말하며 풀고, 끝나면 시간 복잡도를 말하는 연습을 합니다. SQL(윈도 함수·중복 제거)도 같이 나올 수 있다고 보고 준비합니다. {추론}",
+   "refs": [
+    26,
+    29
    ]
   },
   {
@@ -792,6 +1106,120 @@
    "url": "https://byline.network/2026/03/27_192874-2/",
    "kind": "news",
    "date": "2026-03-27"
+  },
+  {
+   "n": 26,
+   "title": "당근 채용 · Software Engineer, Data - 데이터 가치화",
+   "url": "https://about.daangn.com?gh_jid=4300801003",
+   "kind": "posting",
+   "note": "팀 비전·미션·업무·요건·우대·전형, 팀 글 다섯 편 링크"
+  },
+  {
+   "n": 27,
+   "title": "당근 기술 블로그 · 당근의 사용자 행동 로그 관리 플랫폼: 이벤트센터 개발기",
+   "url": "https://medium.com/daangn/e3c240945882",
+   "kind": "company",
+   "date": "2026-01-08",
+   "note": "데이터가치화팀 — 수집 흐름(SDK→이벤트 서버→Pub/Sub→Dataflow→GCS·BigQuery, DLQ), 이름 규칙, UI 스키마 등록·CLI 코드 생성. Medium RSS 로 본문 전부 확인"
+  },
+  {
+   "n": 28,
+   "title": "당근 기술 블로그 · 매번 다 퍼올 필요 없잖아? 당근의 MongoDB CDC 구축기",
+   "url": "https://medium.com/daangn/302ae8a0dc23",
+   "kind": "company",
+   "date": "2025-12-08",
+   "note": "2시간 SLO·CPU 60%, Flink CDC 선택 이유, hourly 배치 4단계, 두 단계 테이블, 정합성 검증 2주, 장애 시나리오. 본문 전부 확인"
+  },
+  {
+   "n": 29,
+   "title": "당근 기술 블로그 · 당근 데이터 지도를 그리다: 컬럼 레벨 리니지 구축기",
+   "url": "https://medium.com/daangn/15cd862c7743",
+   "kind": "company",
+   "date": "2025-12-04",
+   "note": "INFORMATION_SCHEMA.JOBS + sqlglot + Spark + Airflow, 하루 테이블 약 15,000·컬럼 의존 80만, 리니지 MCP. 본문 전부 확인"
+  },
+  {
+   "n": 30,
+   "title": "당근 기술 블로그 · 당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
+   "url": "https://medium.com/daangn/65a499b4967a",
+   "kind": "company",
+   "date": "2026-06-04",
+   "note": "한국·일본·캐나다 × alpha/prod, Airbyte 검토, JSON DSL → Airflow 동적 DAG → EMR on EKS Spark, 203개 2주 이관. 본문 전부 확인"
+  },
+  {
+   "n": 31,
+   "title": "당근 기술 블로그 · 실험을 더 편하게 설계할 수 있게: 당근 실험플랫폼 이야기",
+   "url": "https://medium.com/daangn/3fa344b4391b",
+   "kind": "company",
+   "date": "2026-08-04",
+   "note": "누적 실험 4,600·오너 280·월 290개, 지표 UI 등록, 1~10,000 슬롯 상호배제·레이어, Experiment MCP. 본문 전부 확인"
+  },
+  {
+   "n": 32,
+   "title": "당근 기술 블로그 · DBT와 Airflow 도입하며 마주한 7가지 문제들",
+   "url": "https://medium.com/daangn/61250a9904ab",
+   "kind": "company",
+   "date": "2024-01-29",
+   "note": "base/dimension/fact, PR 별 테스트 Airflow·dry run 1TB 제한, ExternalTaskSensor, 국가별 태그, 날짜 범위 백필. 본문 전부 확인"
+  },
+  {
+   "n": 33,
+   "title": "당근 기술 블로그 · Activation을 전사 공통 레이어로 만들며 해결한 3가지: 신뢰성, 비용, 생산성",
+   "url": "https://medium.com/daangn/f40d362107ff",
+   "kind": "company",
+   "date": "2026-01-02",
+   "note": "신규·유지·복귀 상태, FirstLast 날짜별 스냅샷으로 스캔을 하루치로 고정, 품질 모니터링. 앞부분 확인"
+  },
+  {
+   "n": 34,
+   "title": "Apache Flink 문서 · Stateful Stream Processing (체크포인트)",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "Apache Beam Programming Guide (윈도·트리거·늦게 온 데이터)",
+   "url": "https://beam.apache.org/documentation/programming-guide/",
+   "kind": "reference",
+   "note": "GCP Dataflow 가 돌리는 프로그래밍 모델"
+  },
+  {
+   "n": 36,
+   "title": "dbt 문서 · Data tests",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference",
+   "note": "최대 한 번·최소 한 번·정확히 한 번"
+  },
+  {
+   "n": 38,
+   "title": "Google SRE Workbook · Data Processing Pipelines",
+   "url": "https://sre.google/workbook/data-processing/",
+   "kind": "reference",
+   "note": "파이프라인 SLO(신선도·정확성·완전성)"
+  },
+  {
+   "n": 39,
+   "title": "Running Spark on Kubernetes · Apache Spark 공식 문서",
+   "url": "https://spark.apache.org/docs/latest/running-on-kubernetes.html",
+   "kind": "reference"
+  },
+  {
+   "n": 40,
+   "title": "HashiCorp · What is Terraform",
+   "url": "https://developer.hashicorp.com/terraform/intro",
+   "kind": "reference"
+  },
+  {
+   "n": 41,
+   "title": "Google Cloud 문서 · BigQuery 파티션을 나눈 테이블 소개",
+   "url": "https://cloud.google.com/bigquery/docs/partitioned-tables",
+   "kind": "reference"
   }
  ],
  "caveat": "회사 블로그는 2025년 12월, 에이전트 발표는 2025년 11월 것이라 지금 구조는 달라졌을 수 있습니다. 공고의 도전 과제 넷(모델 자동 선택·에이전트 권한·A2A·메모리)은 앞으로 할 일이라 당근의 설계가 공개되지 않았고, 공개 연구·표준으로 '보통 이런 방식'을 보였습니다. Krayon은 공개 설명을 찾지 못했습니다.",
@@ -1015,6 +1443,127 @@
    "level": "실무",
    "url": "https://docs.claude.com/en/docs/agents-and-tools/tool-use/overview",
    "why": "도구 정의·호출·결과 돌려주기 형식. OpenAI 형식과 나란히 놓고 차이를 보면 라우터가 하는 번역이 보인다."
+  },
+  {
+   "id": "daangn-data-blog",
+   "title": "당근 기술 블로그 · 데이터 가치화팀 글 모음(이벤트센터·MongoDB CDC·컬럼 리니지·DT Platform·실험플랫폼·DBT)",
+   "by": "당근 데이터 가치화팀",
+   "kind": "doc",
+   "url": "https://medium.com/daangn",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "이 공고의 다섯 업무 줄이 실제로 어떤 시스템인지 팀이 직접 쓴 글. 면접 전에 전부 읽는다."
+  },
+  {
+   "id": "fde-ko",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/-/9791169211222/",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "수집·저장·변환·서빙의 전체 지도. '확장 가능한 데이터 아키텍처' 요건을 말로 설명할 뼈대."
+  },
+  {
+   "id": "learning-spark",
+   "title": "러닝 스파크 (개정판)",
+   "by": "쥘 S. 담지 외 · 박종영·이성수 옮김 · 제이펍",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%9F%AC%EB%8B%9D%20%EC%8A%A4%ED%8C%8C%ED%81%AC",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "DataFrame·파티션·셔플·Structured Streaming. 우대 '빅데이터 프레임워크'·'배치/스트리밍'의 첫 책."
+  },
+  {
+   "id": "airflow-book",
+   "title": "Apache Airflow 기반의 데이터 파이프라인",
+   "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "멱등한 태스크·백필·센서·테스트. '안정적이고 테스트 가능한 파이프라인' 줄."
+  },
+  {
+   "id": "flink-docs",
+   "title": "Apache Flink · Stateful Stream Processing",
+   "by": "Apache Flink 공식 문서",
+   "kind": "doc",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "체크포인트로 장애 뒤 이어 가는 원리. 팀이 MongoDB CDC 에 Flink 를 고른 이유를 이해하려면."
+  },
+  {
+   "id": "beam-guide",
+   "title": "Apache Beam Programming Guide",
+   "by": "Apache Beam 공식 문서",
+   "kind": "doc",
+   "url": "https://beam.apache.org/documentation/programming-guide/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "윈도·워터마크·늦게 온 데이터. 이벤트 로그가 지나가는 Dataflow 단계의 언어."
+  },
+  {
+   "id": "dbt-tests",
+   "title": "dbt · Data tests",
+   "by": "dbt Labs 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "unique·not_null 같은 품질 검사를 모델에 붙이는 법 — 팀 DBT 글의 예시와 같은 문법."
+  },
+  {
+   "id": "sre-data-pipelines",
+   "title": "SRE Workbook · Data Processing Pipelines",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://sre.google/workbook/data-processing/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "파이프라인에 신선도·정확성 SLO 를 거는 법. 관측성 줄."
+  },
+  {
+   "id": "kohavi-ab",
+   "title": "A/B 테스트 — 신뢰도 높은 온라인 통제 실험",
+   "by": "론 코하비·다이앤 탕·야 쉬 · 이기홍·김기영 옮김 · 에이콘출판 · 2022",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296254070",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "실험 플랫폼이 왜 그렇게 생겼나(배정·지표·간섭). '데이터 제품(실험 플랫폼)' 줄."
+  },
+  {
+   "id": "terraform-iac",
+   "title": "테라폼으로 시작하는 IaC (개정판)",
+   "by": "김민수·김재준·이규석·이유종 · 한빛미디어 · 2024",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=346369474",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "plan/apply·상태 파일·모듈. 우대 'IaC 로 데이터 인프라'."
+  },
+  {
+   "id": "bq-guide",
+   "title": "구글 빅쿼리 완벽 가이드",
+   "by": "발리아파 락쉬마난 · 조던 티가니 · 2021",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002986366",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "파티션·클러스터링·스캔 비용. 팀의 저장소가 BigQuery 하나라서."
   }
  ],
  "study_path": [
@@ -1155,5 +1704,6 @@
   "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
   "near": "9호선 신논현역 앞 {추론}",
   "note": "공고 근무지 표기는 'SEOUL'이고, 주소는 당근 채용 사이트 하단의 회사 정보다 [5]. 회사 소개 사이트(about.daangn.com) 하단에는 계열사 당근서비스의 구로구 주소가 따로 적혀 있다. 팀 자리 층은 다를 수 있다 {추론}."
- }
+ },
+ "updated_at": "2026-11-25"
 }
