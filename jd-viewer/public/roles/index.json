@@ -1,8 +1,11 @@
 {
- "updated_at": "2026-11-23",
+ "updated_at": "2026-11-25",
  "jobs": {
   "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-395344": "autoever-india-security-expat",
+  "wanted-359170": "cj-oliveyoung-data-analyst",
+  "wanted-396324": "coupang-catalog-taxonomy-pm",
+  "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
   "wanted-389061": "datachain-senior-sre-stablecoin",
   "wanted-395987": "datax-software-engineer-japan",
@@ -275,6 +278,36 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 25
+  },
+  {
+   "id": "cj-oliveyoung-data-analyst",
+   "company": "CJ올리브영",
+   "role": "Data Analyst",
+   "jobs": [
+    "wanted-359170"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
+  },
+  {
+   "id": "coupang-catalog-taxonomy-pm",
+   "company": "쿠팡",
+   "role": "카탈로그 Taxonomy 및 데이터 분석 PM",
+   "jobs": [
+    "wanted-396324"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 23
+  },
+  {
+   "id": "coupang-pay-staff-backend-rocketpay",
+   "company": "쿠팡페이",
+   "role": "Staff Back-end Engineer",
+   "jobs": [
+    "wanted-381767"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 17
   },
   {
    "id": "creationline-fullstack-sherpa-japan",
