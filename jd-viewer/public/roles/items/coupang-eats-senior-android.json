@@ -1,0 +1,1170 @@
+{
+ "id": "coupang-eats-senior-android",
+ "company": "쿠팡",
+ "role": "쿠팡이츠 시니어 안드로이드 엔지니어",
+ "team": "쿠팡이츠 · 프런트엔드(모바일) 엔지니어링 — 쿠팡 본사 소속",
+ "jobs": [
+  "ats-greenhouse:coupang:8395151",
+  "wanted-398432"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡이츠 **고객 앱(안드로이드)**의 새 기능을 만들고, 여러 팀이 같이 고쳐도 무너지지 않는 앱 구조와 공통 모듈을 세웁니다. 시니어라 프로젝트를 이끌고 팀원의 설계를 봐 주는 일까지 맡습니다.[1]",
+  "env": "공고가 밝힌 팀 기술: Kotlin · Jetpack Compose(코드로 화면을 그리는 도구) · Coroutines/Flow · Hilt · MVVM/Clean Architecture · Retrofit/OkHttp · JUnit/MockK/Espresso/UIAutomator · CircleCI · Firebase.[1] 쿠팡이츠는 고객·가게·배달 세 영역으로 나뉘고, 기능 조직 위에 목표별 스크럼 팀을 꾸려 일합니다.[7]",
+  "oneline": "주문 → 조리 → 배달까지 **상태가 계속 바뀌는 앱**을 빠르고 안 죽게 만드는 자리. 경력 4년 이상이지만 업무 6줄 중 3줄이 구조·공통 모듈·가이드라 '혼자 잘 짜는 사람'보다 '팀이 잘 짜게 만드는 사람'을 찾습니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "쿠팡이츠 앱의 신규 기능 개발",
+   "short": "음식 배달에서 장보기·쇼핑으로 넓어지는 쿠팡이츠 고객 앱의 새 화면·기능을 만든다.",
+   "why": "공고 회사 소개가 쿠팡이츠를 '음식배달을 시작으로 장보기와 쇼핑까지' 넓히는 중이라고 적었습니다.[1] 2025년 10월 쿠팡이츠 월간 사용자는 1,230만 명으로 전년보다 32% 늘어 배달 앱 2위였고[10], 2026년 7월에는 와우 회원에 이어 일반 회원까지 배달비 0원을 넓혔습니다.[38] 서비스가 넓어지는 속도만큼 새 기능이 계속 들어갑니다.",
+   "actually": {
+    "intro": "쿠팡이츠 앱에서 새 기능이 보통 거치는 일입니다. 같은 조직 iOS 리드의 인터뷰와 공고를 바탕으로 했고, 세부 순서는 {추론}입니다.[7][1]",
+    "items": [
+     "**기획 읽기** — 프로덕트 오너가 정한 목표(예: 장보기 묶음 할인)를 화면 흐름과 서버 응답 모양으로 바꿔 본다.[7]",
+     "**화면 만들기** — Compose 로 화면을 짜고, 상태는 ViewModel 이 Flow 로 내려 준다(공고의 MVVM · Coroutines/Flow).[1][12][18]",
+     "**서버 붙이기** — Retrofit · OkHttp 로 API 를 부르고, 실패·느림·빈 응답 화면까지 만든다.[1][36]",
+     "**켜고 끄는 스위치** — 다 만든 기능도 원격 설정으로 일부 사용자에게만 먼저 연다(공고의 Firebase).[1][25]",
+     "**테스트** — ViewModel 은 JUnit · MockK, 화면은 Espresso, 앱 밖(알림·권한 창)까지는 UIAutomator.[1][20]",
+     "**출시 뒤** — 비정상 종료·멈춤 지표를 보고 단계적 출시를 이어 갈지 정한다.[16][26]"
+    ]
+   },
+   "how_far": "무엇을 만들지는 프로덕트·UX 가 정합니다. 개발자는 **기획이 놓친 경우(네트워크 끊김·주문 취소·재진입)를 먼저 묻고**, 출시 뒤 숫자까지 책임집니다. 시니어라면 기능 하나를 혼자 처음부터 끝까지 낼 수 있는 것이 최소선입니다. {추론}",
+   "refs": [
+    1,
+    7,
+    10,
+    12,
+    16,
+    18,
+    20,
+    25,
+    26,
+    36,
+    38
+   ],
+   "study": [
+    "compose-docs",
+    "android-arch-guide",
+    "nia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "확장성 있는 앱 아키텍쳐 설계",
+   "short": "기능·팀이 늘어도 서로 부딪히지 않게 앱을 층과 모듈로 나누는 설계를 한다.",
+   "why": "쿠팡 앱은 2018년에 이미 MVC 를 MVP 로 바꾸고 앱을 핵심 모듈 13개로 나눴습니다 — 한 덩어리 앱이 커지며 고치기 어려워졌기 때문입니다.[9] 2022년 글은 화면끼리 메시지를 주고받는 방식을 세 번 바꿔 화면 간 연동 개발 시간을 50% 줄였다고 했습니다.[8] 쿠팡이츠도 고객·가게·배달 영역별 스크럼 팀이 한 앱을 같이 고칩니다.[7]",
+   "actually": {
+    "intro": "'확장성 있는 구조'를 안드로이드 공식 지침으로 풀면 이렇습니다.[12][13]",
+    "items": [
+     "**층 나누기** — 화면(UI) 층 · 데이터 층, 필요하면 그 사이 도메인 층. 화면은 데이터가 어디서 오는지 모른다(공고의 Clean Architecture).[12]",
+     "**한 방향 흐름** — 상태는 ViewModel 에서 화면으로 내려가고, 사용자 행동은 이벤트로 올라간다.[12][18]",
+     "**기능 모듈** — 홈·가게·장바구니·주문 추적을 모듈로 떼어, 한 팀이 고쳐도 다른 팀 빌드가 깨지지 않게.[13]",
+     "**공개 범위** — 모듈 밖에 보여 줄 것만 열어 둔다(Kotlin `internal`). 너무 잘게 쪼개면 빌드 설정만 늘어난다는 함정도 공식 지침이 적었다.[13]",
+     "**의존성 주입** — Hilt 로 객체를 만들어 넣어 주면, 테스트에서 가짜로 바꿔 끼우기 쉽다.[1][19]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "공식 지침의 층과 흐름[12]",
+     "steps": [
+      "Compose 화면 · 상태를 그리기만",
+      "ViewModel · 화면 상태(StateFlow)",
+      "UseCase(선택) · 여러 저장소를 엮는 규칙",
+      "Repository · 서버·로컬 데이터 감추기",
+      "Retrofit / DB · 실제 데이터"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "모든 층을 다 쓰라는 게 아니라 **어디까지 나눌지 근거를 대는 것**이 핵심입니다. 시니어 면접에서는 '이 기능은 왜 모듈을 뗐나·안 뗐나'를 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    9,
+    12,
+    13,
+    18,
+    19
+   ],
+   "study": [
+    "android-arch-guide",
+    "android-modularization",
+    "coupang-arch",
+    "arch-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "빠르고 안정적인 사용성을 위한 앱 개선",
+   "short": "배고픈 사람이 여는 앱이라 켜지는 속도·스크롤·비정상 종료를 숫자로 재고 줄인다.",
+   "why": "구글 플레이는 사용자 체감 비정상 종료율 1.09%, ANR(앱이 5초 넘게 응답 없음) 0.47%를 넘으면 앱 노출을 줄이고 경고를 띄웁니다.[16] 같은 쿠팡이츠 앱의 벵갈루루 공고들도 '앱 성능 개선'을 업무로 적었습니다.[4][5]",
+   "actually": {
+    "items": [
+     "**켜지는 시간** — 콜드 스타트(처음 켜기)를 재고, 시작 때 하는 일을 미룬다.[16]",
+     "**Baseline Profile** — 자주 쓰는 코드 길을 미리 컴파일해 두면 첫 실행부터 약 30% 빨라진다고 구글이 밝혔다.[15]",
+     "**Compose 다시 그리기 줄이기** — 바뀌지 않은 값을 '안정(stable)'으로 알려 필요 없는 다시 그리기를 막는다.[14]",
+     "**메인 스레드 비우기** — 네트워크·디스크·큰 계산은 코루틴으로 다른 스레드에. ANR 의 대부분이 여기서 난다.[37][16]",
+     "**현장 기록** — Crashlytics 로 비정상 종료를 모으고, 느린 구간은 Perfetto 추적으로 본다.[25][39]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "단계적 출시를 멈출지 — 1.09% 기준 (직접 돌린 출력)",
+     "body": "새 버전을 1%·10% 사용자에게 먼저 내보내고[26] 비정상 종료율이 구글 기준[16]을 넘으면 멈춥니다. 숫자는 가상입니다.",
+     "lang": "python",
+     "code": "sessions = {\"1%\": (20_000, 95), \"10%\": (200_000, 2_310)}\nfor stage, (users, crashed) in sessions.items():\n    rate = crashed / users * 100\n    print(stage, f\"{rate:.2f}%\", \"멈춤\" if rate > 1.09 else \"계속\")\n# 1% 0.47% 계속\n# 10% 1.16% 멈춤"
+    }
+   ],
+   "how_far": "'빠르게 해 봤다'가 아니라 **재고 → 고치고 → 다시 잰 숫자**를 말할 수 있으면 됩니다. 지표 기준(1.09%·0.47%)과 측정 도구 한두 개를 직접 써 본 것이 최소선입니다. {추론}",
+   "refs": [
+    4,
+    5,
+    14,
+    15,
+    16,
+    25,
+    26,
+    37,
+    39
+   ],
+   "study": [
+    "android-vitals",
+    "baseline-profiles",
+    "compose-perf",
+    "perfetto"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "재사용이 가능한 공통 모듈과 프레임워크 개발",
+   "short": "여러 팀이 같이 쓰는 버튼·네트워크·로그·화면 이동 같은 바탕 코드를 만든다.",
+   "why": "쿠팡 안드로이드 팀은 화면 간 메시지를 주고받는 공통 장치를 직접 만들었고(ElegantLiveDataBus), 그걸로 연동 코드를 60% 줄였다고 밝혔습니다.[8] 이번 공고와 벵갈루루 공고 셋이 모두 이 줄을 넣었습니다.[1][4][5][6]",
+   "actually": {
+    "intro": "공통 모듈에 보통 들어가는 것입니다. 쿠팡이츠의 실제 모듈 목록은 공개되지 않았습니다.[13]",
+    "items": [
+     "**디자인 시스템** — 색·글꼴·버튼·가격 표시를 Compose 부품으로 묶어 모든 화면이 같게.[13]",
+     "**네트워크 층** — OkHttp 인터셉터로 인증 헤더·재시도·로그를 한곳에서.[36]",
+     "**로그·실험** — 클릭·노출 기록과 A/B 실험 스위치를 한 인터페이스로.[25]",
+     "**화면 이동** — 모듈끼리 서로를 직접 알지 않고 주소(딥링크)로 이동.[13]",
+     "**메시지 전달** — 쿠팡은 LiveData 의 '끈적임'(늦게 구독해도 옛 값을 받음) 문제를 고쳐 전용 버스를 만들었다.[8]"
+    ]
+   },
+   "how_far": "공통 모듈은 **쓰는 사람이 고객**입니다. API 를 작게 열고, 문서·예제·테스트를 같이 내고, 바꿀 때 쓰는 팀을 깨지 않는 것까지가 이 일입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    8,
+    13,
+    25,
+    36
+   ],
+   "study": [
+    "coupang-msgbus",
+    "android-modularization",
+    "effective-kotlin"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Product, UX, Backend 및 Mobile 팀과 긴밀히 협업하여 프로젝트 리드",
+   "short": "기능 하나를 맡아 기획·디자인·서버·iOS 와 일정·범위를 맞추며 끝까지 끌고 간다.",
+   "why": "쿠팡이츠는 프로덕트·UX·엔지니어링·BA 가 기능 조직으로 있고, 목표마다 그 사람들을 모은 스크럼 팀이 일합니다.[7] 같은 기능이 안드로이드·iOS 둘로 나가니 '모바일 팀'과 맞추는 일이 따로 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**API 모양 먼저 정하기** — 서버 팀과 응답 필드·오류 코드를 먼저 합의하고 가짜 응답으로 화면을 먼저 만든다. {추론}",
+     "**iOS 와 맞추기** — 같은 기능이 두 앱에서 다르게 동작하지 않게 상태·문구·로그 이름을 맞춘다. {추론}",
+     "**범위 자르기** — 일정 안에 낼 것과 다음에 낼 것을 나눠 프로덕트와 합의한다. {추론}",
+     "**설계 문서** — 왜 이렇게 만드는지 남겨 두는 짧은 결정 기록(ADR).[28]"
+    ]
+   },
+   "how_far": "여기서 '리드'는 사람 관리가 아니라 **프로젝트 리드**입니다(사람 관리는 같은 조직의 매니저 공고 몫).[1] 일정이 밀릴 때 먼저 알리고 대안을 내는 것이 핵심입니다. {추론}",
+   "refs": [
+    1,
+    7,
+    28
+   ],
+   "study": [
+    "adr",
+    "scrum"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "팀 엔지니어들이 좋은 품질의 아키텍쳐 및 디자인을 만들 수 있도록 가이드",
+   "short": "코드 리뷰·설계 리뷰·팀 규칙으로 다른 엔지니어의 설계 수준을 끌어올린다.",
+   "why": "같은 앱을 서울과 벵갈루루의 안드로이드 엔지니어가 함께 만든 것으로 보입니다 — 벵갈루루 공고 셋이 모두 쿠팡이츠 앱이고 2년·5년·8년 경력으로 나뉘어 있었습니다.[4][5][6] 경력이 다른 사람들이 한 구조를 지키게 하려면 기준을 세우고 설명하는 사람이 필요합니다. {추론}",
+   "actually": {
+    "items": [
+     "**코드 리뷰 기준** — 구글은 '코드베이스 건강을 조금이라도 낫게 하면 승인', 리뷰 응답은 늦어도 한 영업일 안을 기준으로 둔다.[27]",
+     "**설계 리뷰** — 새 기능 전에 짧은 설계 문서를 돌려 층·모듈 경계를 미리 합의.[28]",
+     "**본보기 코드** — 구글의 Now in Android 처럼 '이렇게 짜면 된다'는 예제 모듈.[40]",
+     "**자동 검사** — 규칙을 말로 하지 않고 정적 분석·CI 로 막는다.[24]"
+    ]
+   },
+   "how_far": "가르치는 게 아니라 **왜 그렇게 하는지 근거를 대는 것**입니다. 리뷰 코멘트에 공식 문서·측정값을 붙일 수 있으면 충분합니다. {추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    24,
+    27,
+    28,
+    40
+   ],
+   "study": [
+    "google-eng",
+    "nia",
+    "staff-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Android 앱 개발 경력 최소 4년 이상인 분",
+   "short": "실서비스 앱을 몇 번 출시·운영해 봐서 구조·성능 문제를 겪어 본 사람이라는 뜻이다.",
+   "why": "같은 앱의 예전 서울 공고는 5~15년이었고[3], 이번 원티드 사본은 4~10년입니다.[2] 벵갈루루는 2년(엔지니어)·5년(시니어)·8년(스태프)이었습니다.[4][5][6] 이번 자리는 그 사이의 '시니어'입니다.",
+   "how_far": "연수보다 **그동안 무엇을 책임졌나**가 면접 질문입니다(전형: 서류 → 직무 적합성 인터뷰 → 핵심 역량 인터뷰).[1] 직급과 업무 범위는 경력에 따라 바뀔 수 있다고 공고에 적혀 있습니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Android 플랫폼과 Kotlin 언어에 대한 높은 이해도를 가진 분",
+   "short": "화면 수명주기·스레드·메모리가 어떻게 도는지, Kotlin 코루틴이 어떻게 취소되는지 설명할 수 있어야 한다.",
+   "why": "팀 기술 목록이 Kotlin·Compose·Coroutines/Flow 로 시작합니다.[1] 쿠팡 안드로이드 팀이 직접 겪은 문제도 LiveData 의 동작(늦게 구독해도 옛 값을 받음, postValue 를 빨리 여러 번 부르면 앞 값이 사라짐)을 깊게 알아야 풀 수 있는 것이었습니다.[8]",
+   "level": {
+    "basic": "Activity/Fragment 수명주기 · ViewModel · 코루틴 launch/async · data class · null 안전성",
+    "work": "구조화된 동시성(취소·예외 전파) · StateFlow/SharedFlow 차이 · Compose 상태·재구성 · 화면 회전·프로세스 종료 뒤 복원",
+    "team": "Compose 안정성과 다시 그리기 비용 · 메인 스레드·ANR 원인 읽기 · 모듈 경계와 Hilt 범위 · 플랫폼 버전별 동작 차이(알림·백그라운드 제한)"
+   },
+   "actually": {
+    "items": [
+     "**수명주기와 코루틴** — 화면이 사라지면 그 화면의 요청도 같이 취소되게(viewModelScope).[37]",
+     "**StateFlow vs SharedFlow** — 화면 상태는 늘 최신 값이 있는 StateFlow, 한 번만 보여 줄 알림은 다른 방식으로.[18]",
+     "**Compose 의 다시 그리기** — 상태가 바뀐 부분만 다시 그리게 안정성을 이해해야 성능이 나온다.[14]",
+     "**백그라운드 제한** — 배달 추적처럼 앱이 꺼져 있어도 상태를 보여 줘야 할 때 플랫폼이 허락하는 길(푸시·진행 알림).[17][35]"
+    ]
+   },
+   "how_far": "API 이름을 외우는 게 아니라 **'왜 이렇게 동작하나'를 설명**하는 수준. 쿠팡의 LiveData 글[8]을 읽고 두 함정을 직접 재현해 볼 수 있으면 이 줄을 채운 것입니다. {추론}",
+   "refs": [
+    1,
+    8,
+    14,
+    17,
+    18,
+    35,
+    37
+   ],
+   "study": [
+    "kia2",
+    "coroutine-book",
+    "kotlin-coroutines-doc",
+    "coupang-msgbus"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "뛰어난 문제 해결 능력이 있으신 분",
+   "short": "재현이 안 되는 비정상 종료·느려짐을 기록으로 좁혀 원인을 찾고 다시 안 나게 막는 능력이다.",
+   "why": "모바일 앱은 사용자 기기 수천 종에서 돌고, 고쳐도 사용자가 업데이트해야 반영됩니다. 그래서 출시 전에 막고, 출시 뒤엔 기록으로 찾아야 합니다.[16][26]",
+   "actually": {
+    "items": [
+     "**좁히기** — Crashlytics 에서 기기·OS·버전별로 나눠 언제부터 늘었는지 본다.[25]",
+     "**재현** — 느린 네트워크·적은 메모리·화면 회전·프로세스 종료를 일부러 만든다.[16]",
+     "**추적** — Perfetto 로 메인 스레드가 어디서 막혔는지 본다.[39]",
+     "**재발 방지** — 원인을 테스트로 남기고, 큰 변경은 스위치 뒤에 숨겨 출시한다.[20][25]"
+    ]
+   },
+   "how_far": "면접에서는 **실제로 풀었던 문제 하나를 원인 → 근거 → 해결 → 결과 숫자** 순으로 말하게 될 가능성이 큽니다. {추론}",
+   "refs": [
+    16,
+    20,
+    25,
+    26,
+    39
+   ],
+   "study": [
+    "perfetto",
+    "android-vitals"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "적극적으로 동료들과 소통하고 책임감이 있으신 분",
+   "short": "여러 직군·여러 나라 동료와 일하니 먼저 알리고, 맡은 기능은 출시 뒤까지 챙기라는 뜻이다.",
+   "why": "쿠팡이츠는 목표별 스크럼 팀으로 일하고[7], 같은 앱 엔지니어가 벵갈루루에도 있었습니다.[4][5][6] 이 줄은 예전 서울 공고와 벵갈루루 공고에 똑같이 들어 있던 문장입니다.[3][4]",
+   "how_far": "막혔을 때 혼자 붙잡지 않고 **언제 무엇을 말하나**를 보여 주는 예가 있으면 됩니다(예: 서버 응답이 바뀌어 일정이 밀린다는 걸 하루 안에 알린 일). {추론}",
+   "refs": [
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "O2O 또는 eCommerce 도메인 경험이 있으신 분",
+   "short": "주문 상태가 실시간으로 바뀌고 돈·재고·배달이 얽힌 앱을 만들어 봤으면 바로 일할 수 있어서.",
+   "why": "O2O(온라인 주문 → 오프라인 배달)는 고객 앱 화면이 가게와 배달 파트너의 행동에 따라 계속 바뀝니다. 쿠팡이츠는 배달 예상 시간과 경로를 위해 지도 서비스까지 직접 만들었습니다.[11] 이 우대 줄은 예전 서울·벵갈루루 공고 모두에 있었습니다.[3][4][5][6]",
+   "actually": {
+    "items": [
+     "**주문 상태 화면** — 접수 → 조리 중 → 픽업 → 배달 중 → 완료. 푸시가 순서대로 온다는 보장이 없다. {추론}",
+     "**앱 밖 진행 표시** — 안드로이드 16 의 진행 중심 알림은 차량 호출·배달·길 안내를 대표 사례로 들고, 단계와 점으로 진행을 보여 준다.[17]",
+     "**폴링 vs 푸시** — 화면이 서버에 몇 초마다 묻는 방식은 사용자 수만큼 서버 부담이 된다. 푸시(FCM)와 섞어 쓴다.[35]",
+     "**장바구니·결제** — 가게마다 다른 최소 주문 금액·쿠폰·배달비 규칙이 화면 계산에 얽힌다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "늦게 도착한 옛 푸시가 화면을 되돌리지 않게 (직접 돌린 출력)",
+     "body": "상태에 번호(version)를 붙여, 이미 본 것보다 옛 소식이면 버립니다. 쿠팡이츠의 실제 방식은 공개되지 않았습니다 {추론}.",
+     "lang": "python",
+     "code": "ORDER = [\"접수\", \"조리중\", \"픽업\", \"배달중\", \"완료\"]\n\ndef reduce(state, ev):          # state, ev = (version, status)\n    if ev[0] <= state[0]:\n        return state            # 옛 소식은 버린다\n    if ORDER.index(ev[1]) < ORDER.index(state[1]):\n        return state            # 뒤로 가는 상태도 버린다\n    return ev\n\ns = (0, \"접수\")\nfor ev in [(2, \"픽업\"), (1, \"조리중\"), (4, \"완료\"), (3, \"배달중\")]:\n    s = reduce(s, ev)\n    print(ev[1], \"도착 →\", s[1])\n# 픽업 도착 → 픽업\n# 조리중 도착 → 픽업\n# 완료 도착 → 완료\n# 배달중 도착 → 완료"
+    },
+    {
+     "title": "주문 추적을 폴링으로만 하면 (직접 돌린 출력)",
+     "body": "30만 명이 동시에 주문 추적 화면을 열어 둔 가상 상황입니다.",
+     "lang": "python",
+     "code": "users = 300_000\nfor sec in (3, 10, 30):\n    print(f\"{users:,}명이 {sec}초마다 물으면 초당 {users // sec:,}건\")\n# 300,000명이 3초마다 물으면 초당 100,000건\n# 300,000명이 10초마다 물으면 초당 30,000건\n# 300,000명이 30초마다 물으면 초당 10,000건"
+    }
+   ],
+   "how_far": "우대라 없어도 지원할 수 있습니다. 없다면 **주문 상태 기계와 진행 알림을 작게 만들어 본 것**으로 이 줄의 질문(순서가 뒤바뀐 푸시, 앱이 꺼졌을 때)에 답할 수 있습니다. {추론}",
+   "refs": [
+    3,
+    4,
+    5,
+    6,
+    11,
+    17,
+    35
+   ],
+   "study": [
+    "live-updates-codelab",
+    "fcm-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CI/자동화 개발환경에 대한 이해도가 있으신 분",
+   "short": "코드를 올리면 빌드·테스트·검사가 알아서 돌게 하는 파이프라인(팀은 CircleCI)을 다룰 줄 알아서.",
+   "why": "팀 기술 목록에 CircleCI 와 Firebase 가 있고[1], 테스트 도구가 JUnit · MockK · Espresso · UIAutomator 네 겹입니다.[1] 여러 팀이 한 앱에 코드를 넣으니 사람이 일일이 확인할 수 없습니다. 같은 우대 줄이 벵갈루루 스태프 공고에도 있었습니다.[4]",
+   "actually": {
+    "items": [
+     "**PR 마다** — 빌드 · 단위 테스트(JUnit/MockK) · 정적 분석을 돌려 통과해야 합칠 수 있게.[20][21][24]",
+     "**기기 테스트** — Espresso(앱 안 화면)·UIAutomator(알림·권한 창 같은 앱 밖)는 에뮬레이터·기기에서.[22][23]",
+     "**빌드 시간 줄이기** — 모듈을 나누면 바뀐 모듈만 다시 빌드·테스트할 수 있다.[13]",
+     "**배포 자동화** — 서명한 빌드를 내부 테스트 → 단계적 출시로.[26]"
+    ]
+   },
+   "how_far": "CI 서버를 운영하라는 게 아니라 **파이프라인 설정 파일을 읽고 고칠 줄 아는 것**, 느린 테스트·자주 깨지는 테스트를 골라낼 줄 아는 것이면 됩니다. {추론}",
+   "refs": [
+    1,
+    4,
+    13,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26
+   ],
+   "study": [
+    "android-testing",
+    "mockk",
+    "circleci-android"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 기반 개발 도구를 적극 활용하여 개발 생산성 및 코드 품질을 향상시킨 경험이 있는 분",
+   "short": "AI 코딩 도구를 써서 실제로 빨라졌거나 품질이 좋아진 일을 숫자·사례로 말할 수 있으면 좋다.",
+   "why": "예전 서울·벵갈루루 공고에는 없던 줄이 이번에 새로 들어갔습니다.[3][4][5][6][1] 다만 효과는 상황마다 다릅니다 — 통제 실험에서 Copilot 을 쓴 쪽이 과제를 55.8% 빨리 끝냈지만[29], 익숙한 큰 오픈소스 저장소에서 일한 숙련 개발자들은 AI 를 쓰면 오히려 19% 더 걸렸고 본인들은 빨라졌다고 느꼈습니다.[30]",
+   "actually": {
+    "items": [
+     "**도구** — 안드로이드 스튜디오의 Gemini 는 코드 설명·생성·비정상 종료 원인 찾기 등을 돕는다.[31]",
+     "**쓰기 좋은 곳** — 테스트 초안, 반복 코드, 낯선 API 예제, 리뷰 전 셀프 점검. {추론}",
+     "**조심할 곳** — 수명주기·동시성 코드는 그럴듯하지만 틀린 답이 나오기 쉬워 테스트로 확인한다. {추론}",
+     "**재는 법** — '빨라졌다'는 느낌 대신 PR 처리 시간·리뷰 지적 수·결함 수 같은 숫자로 비교한다.[30]"
+    ]
+   },
+   "how_far": "'써 봤다'가 아니라 **무엇에 쓰고 무엇엔 안 쓰는지, 결과를 어떻게 확인했는지**를 말할 수 있으면 이 줄을 채웁니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    29,
+    30,
+    31
+   ],
+   "study": [
+    "gemini-studio",
+    "metr-2025"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "앱 구조와 공통 코드를 만들어 다른 사람이 편해지는 게 즐거운 사람[1]",
+   "주문·배달처럼 실시간으로 바뀌는 화면을 다뤄 보고 싶은 사람[11][17]",
+   "Compose · 코루틴 중심의 최신 안드로이드 스택을 쓰고 싶은 사람[1]",
+   "서비스가 빠르게 커지는 곳에서 일하고 싶은 사람 — 월 사용자 1,230만 명, 전년 대비 32% 증가(2025년 10월)[10]"
+  ],
+  "hard": [
+   "업무 절반이 구조·가이드·협업이라 기능만 빨리 짜고 싶은 사람에겐 맞지 않을 수 있다[1]",
+   "여러 직군·여러 나라 동료와 일해 맞추는 비용이 든다[4][7]",
+   "공고 근무지가 원티드는 강남구, 회사 서울 사무소 소개는 광진구 — 실제 자리를 면접 때 확인해야 한다[2][34]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "주문 상태 푸시가 순서가 뒤바뀌어 오면 화면은 어떻게 하나요? 앱이 꺼져 있으면요?",
+   "a": "O2O 우대 줄의 핵심 — 상태 번호와 진행 알림.[17][35]"
+  },
+  {
+   "q": "기능 모듈을 어디서 나누나요? 너무 잘게 쪼개면 무엇이 나빠지나요?",
+   "a": "쿠팡이 2018년 앱을 모듈로 나눈 이유와 공식 지침의 함정.[9][13]"
+  },
+  {
+   "q": "LiveData 를 늦게 구독하면 옛 값을 받는 문제, postValue 를 빠르게 부르면 생기는 문제를 설명해 보세요.",
+   "a": "쿠팡 안드로이드 팀이 직접 고친 두 함정.[8]"
+  },
+  {
+   "q": "비정상 종료율이 갑자기 올랐습니다. 무엇부터 보나요? 출시를 멈출 기준은요?",
+   "a": "플레이 기준 1.09% · 단계적 출시.[16][26]"
+  },
+  {
+   "q": "Compose 화면이 스크롤할 때 버벅입니다. 어디를 보나요?",
+   "a": "안정성과 다시 그리기 · Baseline Profile.[14][15]"
+  },
+  {
+   "q": "AI 도구로 무엇을 빨리 했고, 결과가 맞는지 어떻게 확인했나요?",
+   "a": "새로 들어간 우대 줄. 느낌과 측정이 다를 수 있다는 연구.[30]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior, Android Engineer (Coupang Eats)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8395151",
+   "kind": "posting",
+   "date": "2026-11-17",
+   "note": "그린하우스 원문(한국어) — 회사·조직 소개, 팀 기술스택, 업무 6·요건 4·우대 3, 전형(서류 → 직무 적합성 → 핵심 역량 → 최종). 첫 게시 11-17, 갱신 11-23(그린하우스 API). 연봉·복지 칸 없음"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 쿠팡 Senior, Android Engineer (Coupang Eats)",
+   "url": "https://www.wanted.co.kr/wd/398432",
+   "kind": "posting",
+   "date": "2026-11-20",
+   "note": "같은 자리의 사본 — 경력 4~10년, 근무지 서울 강남구, 혜택 및 복지, 정규직 수습 12주"
+  },
+  {
+   "n": 3,
+   "title": "리멤버 · [쿠팡이츠] Android Engineer",
+   "url": "https://career.rememberapp.co.kr/job/posting/284175",
+   "kind": "posting",
+   "note": "마감된 예전 서울 공고 — 경력 5~15년, Kotlin·Java·MVVM·Coroutine·Compose, 업무 6줄 같음, 우대 O2O/이커머스·CI. 근무지 '선릉역 4번 출구 앞 HJ 타워'"
+  },
+  {
+   "n": 4,
+   "title": "Built In · Staff Android Engineer (Coupang, Bengaluru)",
+   "url": "https://builtin.com/job/staff-android-engineer/8022190",
+   "kind": "posting",
+   "note": "2026-06-07 내려감. 쿠팡이츠 앱 — 업무 6줄 같음, 8년 이상, 우대 O2O/이커머스·Compose/Coroutines/단위 테스트·CI, 주 3일 이상 출근"
+  },
+  {
+   "n": 5,
+   "title": "Built In · Senior Android Engineer (Coupang, Bengaluru)",
+   "url": "https://builtin.com/job/senior-android-engineer/8055508",
+   "kind": "posting",
+   "note": "2026-04-06 내려감. 쿠팡이츠 앱 — 새 기능·성능·공통 모듈·협업, 5년 이상"
+  },
+  {
+   "n": 6,
+   "title": "Built In · Android Engineer (Coupang, Bengaluru)",
+   "url": "https://builtin.com/job/android-engineer/8055319",
+   "kind": "posting",
+   "note": "2026-04-16 내려감. 쿠팡이츠 앱 — 2년 이상, 우대 Compose·Coroutines·단위 테스트"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Careers · Connecting every step of the food delivery journey through technology",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/connecting-every-step-of-the-food-delivery-journey-through-technology/",
+   "kind": "company",
+   "date": "2025-06-04",
+   "note": "쿠팡이츠 프런트엔드 팀 리더·iOS 테크 리드 인터뷰 — 앱·웹 제품 전부 담당, 고객·가게·배달 세 영역, 기능 조직 위 목표별 스크럼 팀"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Engineering Blog · The evolution of our Android message passing mechanism",
+   "url": "https://medium.com/coupang-engineering/the-evolution-of-our-android-message-passing-mechanism-44b87e8cdf74",
+   "kind": "company",
+   "date": "2022-05-06",
+   "note": "쿠팡 앱(이츠 전용 아님) — 세 시기, LiveData 끈적임·postValue 유실 수정, 연동 개발 시간 50%·코드 60% 감소. 같은 회사 다른 풀이에서 웹 아카이브로 전부 읽은 글"
+  },
+  {
+   "n": 9,
+   "title": "Coupang Engineering · The Android app modularization (Part 2)",
+   "url": "https://medium.com/coupang-tech/coupang-android-architecture-part-2-3448d8f1099b",
+   "kind": "company",
+   "date": "2018-10-30",
+   "note": "MVC → MVP(1부), 앱 모듈 1 + 핵심 모듈 13, 모듈별 커버리지 80%. 본문이 막혀 검색 요약으로 확인"
+  },
+  {
+   "n": 10,
+   "title": "바이라인네트워크 · '역대 최대' 기록한 쿠팡이츠·땡겨요·먹깨비",
+   "url": "https://byline.network/2025/11/25_12837731/",
+   "kind": "news",
+   "date": "2025-11-25",
+   "note": "와이즈앱·리테일 2025년 10월 MAU — 쿠팡이츠 1,230만(전년 대비 32%↑, 배달 앱 2위)"
+  },
+  {
+   "n": 11,
+   "title": "Coupang Engineering · Building in-house map service at Eats",
+   "url": "https://medium.com/coupang-engineering/building-in-house-map-service-at-eats-268d5c8913f6",
+   "kind": "company",
+   "date": "2022-10",
+   "note": "배달 예상 시간·경로 계획을 위한 자체 지도 서비스. 미디엄이 자동 접속을 막아 검색 요약으로 확인"
+  },
+  {
+   "n": 12,
+   "title": "Android Developers · Guide to app architecture",
+   "url": "https://developer.android.com/topic/architecture",
+   "kind": "reference",
+   "note": "UI·데이터 계층, 선택적 도메인 계층, 한 방향 데이터 흐름"
+  },
+  {
+   "n": 13,
+   "title": "Android Developers · Guide to Android app modularization",
+   "url": "https://developer.android.com/topic/modularization",
+   "kind": "reference",
+   "note": "재사용·공개 범위·빌드 시간, 너무 잘게/너무 크게 나누는 함정, 공통 패턴"
+  },
+  {
+   "n": 14,
+   "title": "Android Developers · Stability in Compose",
+   "url": "https://developer.android.com/develop/ui/compose/performance/stability",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Android Developers · Baseline Profiles overview",
+   "url": "https://developer.android.com/baseline-profiles",
+   "kind": "reference",
+   "note": "포함된 코드 길은 첫 실행부터 약 30% 빨라진다(인터프리트·JIT 단계 생략) — 구글이 밝힌 값"
+  },
+  {
+   "n": 16,
+   "title": "Android Developers · Android vitals",
+   "url": "https://developer.android.com/topic/performance/vitals",
+   "kind": "reference",
+   "note": "사용자 체감 비정상 종료율 1.09%·ANR 0.47%(전체), 넘으면 노출 감소·경고"
+  },
+  {
+   "n": 17,
+   "title": "Android Developers · Progress-centric notifications (Android 16)",
+   "url": "https://developer.android.com/about/versions/16/features/progress-centric-notifications",
+   "kind": "reference",
+   "note": "Notification.ProgressStyle — 차량 호출·배달·길 안내가 대표 사례, 단계(segment)와 점(point)"
+  },
+  {
+   "n": 18,
+   "title": "Android Developers · StateFlow and SharedFlow",
+   "url": "https://developer.android.com/kotlin/flow/stateflow-and-sharedflow",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Android Developers · Dependency injection with Hilt",
+   "url": "https://developer.android.com/training/dependency-injection/hilt-android",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Android Developers · Testing strategies",
+   "url": "https://developer.android.com/training/testing/fundamentals/strategies",
+   "kind": "reference",
+   "note": "단위·통합·화면 테스트의 범위와 비중"
+  },
+  {
+   "n": 21,
+   "title": "MockK · Mocking library for Kotlin",
+   "url": "https://mockk.io/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Android Developers · Espresso",
+   "url": "https://developer.android.com/training/testing/espresso",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Android Developers · UI Automator",
+   "url": "https://developer.android.com/training/testing/other-components/ui-automator",
+   "kind": "reference",
+   "note": "앱 밖(알림·설정·권한 창)까지 다루는 화면 테스트"
+  },
+  {
+   "n": 24,
+   "title": "CircleCI · Android orb",
+   "url": "https://circleci.com/developer/orbs/orb/circleci/android",
+   "kind": "reference",
+   "note": "CircleCI 에서 안드로이드 빌드·에뮬레이터 테스트를 돌리는 공식 구성 묶음"
+  },
+  {
+   "n": 25,
+   "title": "Firebase · Crashlytics / Remote Config",
+   "url": "https://firebase.google.com/docs/crashlytics",
+   "kind": "reference",
+   "note": "비정상 종료 수집, 앱 업데이트 없이 기능 켜고 끄기(Remote Config) — 공고의 Firebase 를 무엇에 쓰는지는 공개되지 않음"
+  },
+  {
+   "n": 26,
+   "title": "Play Console 고객센터 · 단계적 출시로 앱 업데이트 배포",
+   "url": "https://support.google.com/googleplay/android-developer/answer/6346149",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Google Engineering Practices · Code Review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference",
+   "note": "코드베이스 건강을 낫게 하면 승인, 리뷰 응답은 늦어도 한 영업일"
+  },
+  {
+   "n": 28,
+   "title": "Michael Nygard · Documenting Architecture Decisions",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "kind": "reference",
+   "date": "2011-11-15",
+   "note": "짧은 결정 기록(ADR)의 원형"
+  },
+  {
+   "n": 29,
+   "title": "Peng 외 · The Impact of AI on Developer Productivity: Evidence from GitHub Copilot (arXiv 2302.06590)",
+   "url": "https://arxiv.org/abs/2302.06590",
+   "kind": "reference",
+   "date": "2023-02",
+   "note": "HTTP 서버 과제 통제 실험 — 55.8% 빨라짐"
+  },
+  {
+   "n": 30,
+   "title": "METR · Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+   "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+   "kind": "reference",
+   "date": "2025-07",
+   "note": "숙련 개발자 16명·과제 246개 — AI 허용 시 19% 더 걸림, 본인들은 20% 빨라졌다고 느낌. 저자도 일반화하지 말라고 밝힘"
+  },
+  {
+   "n": 31,
+   "title": "Android Developers · Gemini in Android Studio",
+   "url": "https://developer.android.com/studio/gemini/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "쿠팡(주) 값, 기준일 표기 없음. 사이트가 자동 접속을 막아 검색 결과 값으로 확인(같은 회사 다른 풀이와 같은 값)"
+  },
+  {
+   "n": 33,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 보수 중간값(달러 환산) — 같은 회사 다른 풀이에서 읽은 값"
+  },
+  {
+   "n": 34,
+   "title": "Coupang Careers · Seoul",
+   "url": "https://www.coupang.jobs/en/locations/seoul/",
+   "kind": "company",
+   "note": "서울 사무소 — 이스트폴 타워(광진구 아차산로 412)·로켓랩(강남구)"
+  },
+  {
+   "n": 35,
+   "title": "Firebase · Cloud Messaging",
+   "url": "https://firebase.google.com/docs/cloud-messaging",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "Square · Retrofit / OkHttp",
+   "url": "https://square.github.io/okhttp/",
+   "kind": "reference",
+   "note": "HTTP 클라이언트 — 인터셉터·시간 제한. Retrofit 은 https://square.github.io/retrofit/"
+  },
+  {
+   "n": 37,
+   "title": "Kotlin 공식 문서 · Coroutines",
+   "url": "https://kotlinlang.org/docs/coroutines-overview.html",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "CEO스코어데일리 · 쿠팡이츠, 와우 회원 이어 일반 회원까지 '배달비 0원' 확대",
+   "url": "https://ceoscoredaily.com/page/view/2026070715543203302",
+   "kind": "news",
+   "date": "2026-07-07",
+   "note": "제목·검색 요약으로 확인"
+  },
+  {
+   "n": 39,
+   "title": "Perfetto · Documentation",
+   "url": "https://perfetto.dev/docs/",
+   "kind": "reference",
+   "note": "안드로이드 시스템 추적 — 메인 스레드가 어디서 막혔는지"
+  },
+  {
+   "n": 40,
+   "title": "GitHub · android/nowinandroid",
+   "url": "https://github.com/android/nowinandroid",
+   "kind": "reference",
+   "note": "구글의 다중 모듈·Compose·코루틴 기준 예제 앱"
+  },
+  {
+   "n": 41,
+   "title": "원티드 · [쿠팡][쿠팡이츠] Sr Manager, iOS Engineering",
+   "url": "https://www.wanted.co.kr/wd/394078",
+   "kind": "posting",
+   "note": "같은 쿠팡이츠 모바일 조직 — 근무지 서울 강남구 테헤란로 332 HJ타워(같은 회사 다른 풀이에서 확인)"
+  }
+ ],
+ "caveat": "쿠팡이츠 안드로이드 팀이 직접 쓴 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 원티드 사본, 같은 앱의 예전 공고 넷(서울 1·벵갈루루 3), 쿠팡이츠 프런트엔드 팀 인터뷰, 쿠팡 앱 전체의 안드로이드 글(2018 구조 연재·2022 메시지 버스)입니다 — 쿠팡 앱 글이 쿠팡이츠 앱에도 그대로 맞는다는 보장은 없습니다. 주문 상태·성능·테스트·CI 부분은 안드로이드·Firebase 공식 문서로 '보통 이런 것'을 보였습니다. 코드 예시는 이 실행 환경에 Kotlin 이 없어 같은 로직을 파이썬으로 옮겨 돌렸습니다.",
+ "resources": [
+  {
+   "id": "coupang-msgbus",
+   "title": "The evolution of our Android message passing mechanism",
+   "by": "Coupang Engineering Blog · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://medium.com/coupang-engineering/the-evolution-of-our-android-message-passing-mechanism-44b87e8cdf74",
+   "why": "쿠팡 안드로이드 팀이 공통 장치를 어떻게 만들고 LiveData 의 어떤 함정을 고쳤는지. 업무 '공통 모듈'·요건 'Kotlin·플랫폼 이해' 줄의 이 회사 수준."
+  },
+  {
+   "id": "coupang-arch",
+   "title": "The Android app modularization (Coupang Android Architecture Part 2)",
+   "by": "Coupang Engineering · 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://medium.com/coupang-tech/coupang-android-architecture-part-2-3448d8f1099b",
+   "why": "쿠팡 앱을 핵심 모듈 13개로 나눈 과정. 업무 '확장성 있는 앱 아키텍처' 줄의 배경."
+  },
+  {
+   "id": "android-arch-guide",
+   "title": "Guide to app architecture",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/topic/architecture",
+   "why": "UI·데이터·도메인 층과 한 방향 흐름 — 공고의 MVVM/Clean Architecture 를 말할 때의 공통 말(한국어 번역 있음)."
+  },
+  {
+   "id": "android-modularization",
+   "title": "Guide to Android app modularization",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/topic/modularization",
+   "why": "기능 모듈·공통 모듈을 어디서 나누고 무엇을 감추나. 업무 '구조'·'공통 모듈' 두 줄."
+  },
+  {
+   "id": "nia",
+   "title": "Now in Android",
+   "by": "Google · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/android/nowinandroid",
+   "why": "Compose·코루틴·Hilt·다중 모듈을 한 앱에 다 쓴 구글 예제. 팀 기술스택과 거의 같아 본보기로 읽기 좋다."
+  },
+  {
+   "id": "compose-docs",
+   "title": "Jetpack Compose",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/compose",
+   "why": "팀이 화면을 Compose 로 만든다. 상태·재구성·목록·테마를 공식 경로로."
+  },
+  {
+   "id": "compose-perf",
+   "title": "Stability in Compose",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://developer.android.com/develop/ui/compose/performance/stability",
+   "why": "필요 없는 다시 그리기를 막는 법. 업무 '빠르고 안정적인 사용성' 줄의 Compose 쪽."
+  },
+  {
+   "id": "baseline-profiles",
+   "title": "Baseline Profiles overview",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/baseline-profiles",
+   "why": "첫 실행 속도를 올리는 공식 방법과 측정(Macrobenchmark)."
+  },
+  {
+   "id": "android-vitals",
+   "title": "Android vitals",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/topic/performance/vitals",
+   "why": "비정상 종료율·ANR 의 기준 숫자. '안정적'을 숫자로 말하려면."
+  },
+  {
+   "id": "perfetto",
+   "title": "Perfetto Documentation",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://perfetto.dev/docs/",
+   "why": "느려짐·ANR 을 추적 기록으로 좁히는 도구. 요건 '문제 해결 능력'을 사례로 만들 때."
+  },
+  {
+   "id": "kia2",
+   "title": "Kotlin in Action, Second Edition",
+   "by": "Svetlana Isakova · Sebastian Aigner · Roman Elizarov · Manning · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/kotlin-in-action-second-edition",
+   "why": "Kotlin 언어부터 코루틴·Flow 까지. 요건 'Kotlin 언어에 대한 높은 이해도'의 바탕."
+  },
+  {
+   "id": "effective-kotlin",
+   "title": "이펙티브 코틀린",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%EC%BD%94%ED%8B%80%EB%A6%B0",
+   "why": "안전성·가독성·재사용성 아이템. 공통 모듈 API 와 팀 코딩 기준을 정할 때 근거로."
+  },
+  {
+   "id": "coroutine-book",
+   "title": "코틀린 코루틴의 정석",
+   "by": "조세영 · 에이콘출판 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000007956109",
+   "why": "구조화된 동시성·취소·예외 전파. 화면이 사라질 때 요청을 바르게 끊는 법(공고의 Coroutines/Flow)."
+  },
+  {
+   "id": "kotlin-coroutines-doc",
+   "title": "Coroutines",
+   "by": "Kotlin 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kotlinlang.org/docs/coroutines-overview.html",
+   "why": "코루틴·Flow 의 정확한 정의. 책과 같이 본다."
+  },
+  {
+   "id": "arch-book",
+   "title": "아키텍처를 알아야 앱 개발이 보인다",
+   "by": "옥수환 · 비제이퍼블릭 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002986668",
+   "why": "안드로이드 앱 구조와 의존성 주입을 한국어로 한 권에. 예제는 Dagger2·RxJava 기준이라 Hilt·Flow 는 공식 문서로 보충."
+  },
+  {
+   "id": "live-updates-codelab",
+   "title": "Rich Experiences with Live Updates (codelab)",
+   "by": "Android Developers",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/devsite/codelabs/notifications-rich-experience-live-updates",
+   "why": "가상 주문을 알림으로 따라가는 예제 앱을 직접 고쳐 본다. 우대 'O2O' 줄을 손으로 채우는 가장 가까운 과제."
+  },
+  {
+   "id": "fcm-docs",
+   "title": "Firebase Cloud Messaging",
+   "by": "Firebase 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://firebase.google.com/docs/cloud-messaging",
+   "why": "주문 상태를 푸시로 받는 기본. 데이터 메시지와 알림 메시지의 차이."
+  },
+  {
+   "id": "android-testing",
+   "title": "Testing strategies",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/training/testing/fundamentals/strategies",
+   "why": "단위·통합·화면 테스트를 어떤 비율로 둘지. 팀 도구(JUnit·Espresso·UIAutomator)의 자리 잡기."
+  },
+  {
+   "id": "mockk",
+   "title": "MockK",
+   "by": "MockK 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mockk.io/",
+   "why": "Kotlin 코드(코루틴 포함)를 가짜 객체로 테스트. 팀 기술스택의 테스트 도구."
+  },
+  {
+   "id": "circleci-android",
+   "title": "CircleCI Android orb",
+   "by": "CircleCI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://circleci.com/developer/orbs/orb/circleci/android",
+   "why": "CircleCI 에서 안드로이드 빌드·에뮬레이터 테스트를 돌리는 공식 구성. 우대 'CI/자동화' 줄."
+  },
+  {
+   "id": "google-eng",
+   "title": "Google Engineering Practices — Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "리뷰 기준·속도·코멘트 쓰는 법. 업무 '팀 엔지니어 가이드' 줄."
+  },
+  {
+   "id": "staff-path",
+   "title": "The Staff Engineer's Path",
+   "by": "Tanya Reilly · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "why": "관리자가 아닌 채로 프로젝트를 끌고 가고 팀의 기준을 올리는 법. 업무 '프로젝트 리드'·'가이드' 줄."
+  },
+  {
+   "id": "adr",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · 2011",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "why": "한 쪽짜리 결정 기록의 원형. 설계를 여러 팀과 합의할 때 남기는 형식."
+  },
+  {
+   "id": "scrum",
+   "title": "The Scrum Guide",
+   "by": "Ken Schwaber · Jeff Sutherland",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "why": "쿠팡이츠가 일하는 목표별 스크럼 팀의 공통 말."
+  },
+  {
+   "id": "gemini-studio",
+   "title": "Gemini in Android Studio",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/studio/gemini/overview",
+   "why": "안드로이드 스튜디오 안의 AI 도구로 무엇을 할 수 있나. 우대 'AI 기반 개발 도구' 줄."
+  },
+  {
+   "id": "metr-2025",
+   "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+   "by": "METR · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+   "why": "느낌과 측정이 다를 수 있다는 실험. AI 도구 효과를 숫자로 말해야 하는 이유."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 기준 코드 읽기",
+   "time": "1주",
+   "goal": "쿠팡 안드로이드 팀이 겪은 문제와 구글 기준 구조를 말로 설명할 수 있다.",
+   "resources": [
+    "coupang-msgbus",
+    "coupang-arch",
+    "android-arch-guide",
+    "nia"
+   ],
+   "task": "Now in Android 를 받아 모듈 그림을 손으로 그리고, 쿠팡 메시지 버스 글의 두 함정(늦은 구독·postValue 유실)을 작은 앱에서 재현한다."
+  },
+  {
+   "title": "Kotlin · 코루틴 · Compose 다지기",
+   "time": "2~3주",
+   "goal": "화면 수명에 맞춰 요청을 취소하고, StateFlow 로 화면 상태를 내려 Compose 로 그린다.",
+   "resources": [
+    "kia2",
+    "coroutine-book",
+    "kotlin-coroutines-doc",
+    "compose-docs"
+   ],
+   "task": "가상 가게 목록 API(가짜 JSON)로 목록 → 가게 → 장바구니 세 화면을 만든다. 화면을 나가면 요청이 취소되는지 로그로 확인한다."
+  },
+  {
+   "title": "주문 추적 만들기 (O2O)",
+   "time": "1~2주",
+   "goal": "순서가 뒤바뀐 푸시에도 화면이 되돌아가지 않고, 앱이 꺼져도 진행 알림으로 보여 준다.",
+   "resources": [
+    "live-updates-codelab",
+    "fcm-docs"
+   ],
+   "task": "주문 상태 5단계에 번호를 붙인 상태 기계를 만들고 단위 테스트(뒤바뀐 순서 4가지)를 쓴다. 진행 알림 코드랩을 이 상태에 붙인다."
+  },
+  {
+   "title": "모듈 · 테스트 · CI",
+   "time": "2주",
+   "goal": "앱을 기능·공통 모듈로 나누고, PR 마다 단위·화면 테스트가 도는 파이프라인을 만든다.",
+   "resources": [
+    "android-modularization",
+    "android-testing",
+    "mockk",
+    "circleci-android",
+    "effective-kotlin"
+   ],
+   "task": "2·3단계 앱을 :feature:store · :feature:order · :core:ui · :core:network 로 나누고, MockK 단위 테스트와 Espresso 화면 테스트 하나를 CircleCI 에서 돌린다."
+  },
+  {
+   "title": "성능 재기와 설계 남기기",
+   "time": "계속",
+   "goal": "고치기 전과 뒤의 숫자로 성능 개선을 말하고, 설계 결정을 문서로 남긴다.",
+   "resources": [
+    "baseline-profiles",
+    "compose-perf",
+    "android-vitals",
+    "perfetto",
+    "adr",
+    "google-eng"
+   ],
+   "task": "Baseline Profile 을 넣기 전후 콜드 스타트를 재 비교표를 만들고, 모듈을 나눈 이유를 ADR 한 장으로 쓴다. AI 도구로 테스트 초안을 만들었다면 고친 줄 수를 같이 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 쿠팡(주) 집계(초봉 약 3,531만 · 평균 약 5,175만)는 물류 현장 인력이 섞인 회사 전체 값이라 **경력 4년 이상 시니어 개발자 연봉과 거리가 멀다**",
+  "rows": [
+   {
+    "label": "쿠팡(주) 신입 초봉",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값. 직군 구분이 없고 기준일 표기가 없다 [32]"
+   },
+   {
+    "label": "쿠팡(주) 직원 평균",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 개발자 연봉으로 읽으면 안 된다 [32]"
+   },
+   {
+    "label": "쿠팡 Inc. 전 직원 보수 중간값",
+    "value": "3만 3,831달러 / 년",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "CEO 를 뺀 전 세계 직원의 가운데 값을 달러로 바꾼 것 [33]"
+   }
+  ],
+  "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **국내 공시 숫자 없음**. 위 값은 모두 경력·직군이 섞인 회사 전체 값이고 평균은 초봉이 아니다. 공고는 직급·업무 범위가 경력에 따라 바뀔 수 있고 최종 합격 통지 전에 알린다고 적었다 [1]. 금액은 그 무렵 협의에서 확인한다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 대상 실손보험 지원"
+   },
+   {
+    "name": "휴게·식사",
+    "detail": "휴게공간, 한강뷰 카페테리아, 무료 조식·석식"
+   },
+   {
+    "name": "쇼핑 캐시백",
+    "detail": "쿠팡 구매금액의 5% (연간 구매액 기준 최대 400만원까지)"
+   },
+   {
+    "name": "동호회",
+    "detail": "사내 동호회와 동호회비 지원"
+   },
+   {
+    "name": "휴양",
+    "detail": "임직원가 휴양콘도 사용"
+   },
+   {
+    "name": "장비",
+    "detail": "최신 장비 지원"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조휴가"
+   }
+  ],
+  "note": "이 공고의 원티드 사본 '혜택 및 복지' 칸이다(2026-11 게시) [2]. 그린하우스 원문에는 복지 칸이 없다 [1]. '한강뷰 카페테리아'는 광진구 사무소 이야기로 보여, 강남 자리에서도 같은지는 확인이 필요하다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡이츠 모바일 조직 (HJ타워)",
+  "address": "서울특별시 강남구 테헤란로 332 (HJ타워)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20332",
+  "near": "2호선·수인분당선 선릉역 4번 출구 앞 [3]",
+  "note": "이 공고의 원티드 사본 근무지는 '서울 강남구'이고 [2], 같은 앱의 예전 안드로이드 공고가 '선릉역 4번 출구 앞 HJ 타워'로 [3], 같은 쿠팡이츠 모바일 조직의 iOS 공고가 테헤란로 332 HJ타워로 적었다 [41]. 쿠팡 서울 사무소 소개에는 광진구 이스트폴 타워도 있어 [34] 실제 자리는 면접 때 확인한다 {추론}."
+ }
+}

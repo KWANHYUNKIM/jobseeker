@@ -17,9 +17,13 @@
   "ats-greenhouse:coupang:8333651": "coupang-eats-ios-engineering-manager",
   "ats-greenhouse:coupang:8318669": "coupang-eats-ios-engineering-manager",
   "wanted-394250": "coupang-eats-ios-engineering-manager",
+  "ats-greenhouse:coupang:8395151": "coupang-eats-senior-android",
+  "wanted-398432": "coupang-eats-senior-android",
   "ats-greenhouse:coupang:8382219": "coupang-fashion-program-manager",
   "ats-greenhouse:coupang:8413572": "coupang-fc-logistics-network-engineer",
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
+  "ats-greenhouse:coupang:8102540": "coupang-financial-lending-staff-backend",
+  "wanted-394186": "coupang-financial-lending-staff-backend",
   "ats-greenhouse:coupang:6810667": "coupang-got-backend-developer-seoul",
   "ats-greenhouse:coupang:6137112": "coupang-got-backend-manager-seoul",
   "ats-greenhouse:coupang:8393917": "coupang-iam-access-management-senior-mtv",
@@ -448,6 +452,17 @@
    "lines": 21
   },
   {
+   "id": "coupang-eats-senior-android",
+   "company": "쿠팡",
+   "role": "쿠팡이츠 시니어 안드로이드 엔지니어",
+   "jobs": [
+    "ats-greenhouse:coupang:8395151",
+    "wanted-398432"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
+  },
+  {
    "id": "coupang-fashion-program-manager",
    "company": "쿠팡",
    "role": "패션 이커머스 Senior, Program Manager (사업운영·데이터분석)",
@@ -476,6 +491,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 23
+  },
+  {
+   "id": "coupang-financial-lending-staff-backend",
+   "company": "쿠팡파이낸셜",
+   "role": "Staff 백엔드 엔지니어 — 대출 엔지니어링",
+   "jobs": [
+    "ats-greenhouse:coupang:8102540",
+    "wanted-394186"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "coupang-got-backend-developer-seoul",
