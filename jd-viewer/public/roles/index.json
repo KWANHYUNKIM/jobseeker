@@ -351,6 +351,7 @@
   "wanted-400001": "nextsecurities-internal-platform-backend",
   "jobkorea-50360739": "nextsecurities-overseas-order-backend",
   "jobkorea-50356663": "nextsecurities-senior-ai-governance",
+  "ats-greeting:nextsecurities:245526": "nextsecurities-trading-backend",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
@@ -3538,6 +3539,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 24
+  },
+  {
+   "id": "nextsecurities-trading-backend",
+   "company": "넥스트증권",
+   "role": "Backend Engineer — Trading (국내·해외 주식·파생 주문·체결)",
+   "jobs": [
+    "ats-greeting:nextsecurities:245526"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "nhn-japan-frontend",

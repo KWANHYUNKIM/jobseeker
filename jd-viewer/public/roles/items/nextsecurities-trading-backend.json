@@ -1,0 +1,533 @@
+{
+  "id": "nextsecurities-trading-backend",
+  "company": "넥스트증권",
+  "role": "Backend Engineer — Trading (국내·해외 주식·파생 주문·체결)",
+  "team": "코어트레이딩플랫폼팀 · Trading 파트",
+  "jobs": ["ats-greeting:nextsecurities:245526"],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "국내 주식·미국 주식·옵션 같은 파생상품의 **주문을 받아 거래소·해외 브로커로 보내고, 돌아온 체결을 잔고에 틀림없이 반영하는 서버**를 만듭니다.[1] 종목 정보표와 배당·분할 같은 권리 이벤트도 이 파트가 다룹니다.[1]",
+    "env": "파생 중개·기업금융을 하던 증권사가 개인투자자용으로 넘어가는 중이고, **미국주식 오픈 API를 먼저**(2026년 4분기 비공개 베타), 새 MTS는 2027년 1분기 예정입니다.[8][9] Kotlin/Java · Spring Boot · AWS · Kubernetes · Kafka · Redis · PostgreSQL/Oracle, 도메인과 인프라 분리 · 테스트 기본 · ADR.[1]",
+    "oneline": "같은 팀 주문 공고들(국내·해외, 5년 이상)을 한 자리로 합친 **7년 이상 시니어** 자리. 시장이 여럿이라 **세션·주문 유형·권리 조정**을 한 모델로 묶는 것이 일입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "국내·해외 주식 및 파생상품 주문·체결·잔고 도메인의 백엔드 시스템 설계·개발·운영",
+      "short": "국내 주식·미국 주식·옵션을 사고팔 때 '주문 → 체결 → 내 잔고'로 이어지는 서버 전체를 맡는다.",
+      "why": "같은 팀은 이 도메인을 시장별로 나눈 공고도 따로 냈습니다 — 국내 주식 주문/체결[3]과 해외(미국) 주식 주문/체결[2]은 각각 경력 5년 이상입니다. 이 공고는 둘에 **파생상품까지 더해** 한 도메인으로 묶었고 7년 이상을 요구합니다.[1] 회사는 개인용 서비스를 미국주식 오픈 API부터 열고, 그 API에 매수·매도 주문과 주문 관리·잔고 조회가 들어갑니다.[8]",
+      "actually": {
+        "intro": "세 낱말이 각각 하나의 상태 기계(정해진 상태 사이만 오가는 규칙)입니다.",
+        "items": [
+          "**주문** — 접수 → 거래소·브로커 전송 → 접수 확인 → 일부 체결 → 전부 체결 / 취소 / 거부. 업계 표준 메시지(FIX)의 주문 상태 값이 이 이름들을 씁니다.[16]",
+          "**체결** — 시장이 '몇 주(몇 계약)가 얼마에 거래됐다'고 알려 오는 보고. 주문 하나에 여러 번 옵니다.[17]",
+          "**잔고** — 체결을 받아 보유 수량·평균 단가·주문 가능 금액을 고칩니다. 국내 주식은 체결 이틀 뒤(T+2)[29], 미국 주식은 다음 영업일(T+1)[32]에 결제돼 '체결됐다'와 '결제됐다'가 다른 날입니다.",
+          "**시장마다 다른 것** — 세션 시간표, 받는 주문 유형, 가격 단위, 결제일. 같은 '매수 주문'이라도 시장별 규칙표를 거쳐야 합니다 {추론}."
+        ]
+      },
+      "how_far": "이 공고는 시장별 공고보다 범위가 넓고 연차가 높아, **세 시장을 한 주문 모델로 묶는 설계**와 그 판단을 팀에 설명하는 일까지 기대하는 자리로 읽힙니다 {추론}. 계좌·입출금은 Accounts & Transfers 파트[4], 거래소·브로커 통신 규격과 시세는 Market Data & FEP 파트[5]가 따로 있어 이 파트는 그 서비스들을 부르는 쪽입니다 {추론}.",
+      "refs": [1, 2, 3, 4, 5, 8, 16, 17, 29, 32],
+      "study": ["trading-exchanges", "ddd-start"]
+    },
+    {
+      "section": "task",
+      "quote": "거래소·해외 브로커 연동 및 시장·거래 세션에 따른 주문 처리",
+      "short": "한국거래소·대체거래소·미국 브로커가 열려 있는 시간과 규칙이 달라서, 그 시간표대로 주문을 갈라 처리한다.",
+      "why": "국내 주식은 2026년 9월 14일부터 한국거래소(KRX)가 16~20시 애프터마켓을 열었고, 대체거래소 넥스트레이드(NXT)는 08:00~08:50·15:30~20:00에도 거래합니다.[18][19][20] 시간표가 바뀐 그날 큰 증권사들의 주문이 꼬였다고 보도됐습니다.[18] 미국은 프리마켓 04:00~09:30 · 정규장 09:30~16:00 · 애프터마켓 16:00~20:00(미국 동부시간)입니다.[14] 넥스트증권은 미국 증권사 인터랙티브브로커스에서 전략적 투자를 받았지만 어느 브로커와 어떻게 붙는지는 공개되지 않았습니다.[10]",
+      "actually": {
+        "intro": "시장·세션마다 받는 주문이 다릅니다. 아래는 공개된 규칙의 예입니다.",
+        "items": [
+          "**국내 단일가·접속매매** — 시가 단일가 08:30~09:00, 정규 접속매매 09:00~15:20, 종가 단일가 15:20~15:30. 단일가는 모았다가 한 가격에 체결합니다.[19]",
+          "**국내 애프터마켓** — 16:00~20:00 실시간 체결. 정규장에서 안 된 주문은 넘어가지 않아 새로 내야 합니다.[47]",
+          "**주문 유형도 세션을 탄다** — 최유리·최우선지정가·IOC·FOK는 정규장 시간(09:00~15:20)에만 받는다는 증권사 안내가 있고, 조건부지정가는 KRX에만 있습니다(검색 요약 기준).[22]",
+          "**두 거래소** — 둘 다 열린 시간엔 유리한 쪽으로 나눠 보내고(SOR), 한쪽만 열린 시간엔 그쪽으로만 보냅니다.[20]",
+          "**미국 연장 세션** — 다른 미국 증권사(Alpaca)는 장 전·장 후 주문을 지정가·당일 유효만 받습니다.[46]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "같은 매수 주문, 유효 조건만 다를 때 (가상 호가창)",
+          "body": "10,050원 이하로 100주를 사려는데 그 가격 안에 매도 물량이 80주뿐입니다. 당일 유효(DAY)·IOC·FOK가 각각 다르게 끝납니다. 직접 돌린 결과입니다.",
+          "lang": "python",
+          "code": "asks = [(10000, 30), (10050, 50), (10100, 100)]\ndef match(asks, limit, qty, tif):\n    can = sum(q for p, q in asks if p <= limit)\n    if tif == \"FOK\" and can < qty:\n        return \"전량 취소(체결 가능 %d주 < %d주)\" % (can, qty)\n    fills, left = [], qty\n    for p, q in asks:\n        if p > limit or left == 0:\n            break\n        f = min(q, left); fills.append((p, f)); left -= f\n    rest = {\"IOC\": \"잔량 %d주 취소\" % left, \"DAY\": \"잔량 %d주 호가창에 대기\" % left}[tif]\n    return \"체결 %s, %s\" % (fills, rest)\nfor tif in [\"DAY\", \"IOC\", \"FOK\"]:\n    print(tif, match(asks, 10050, 100, tif))\n\n# 출력\n# DAY 체결 [(10000, 30), (10050, 50)], 잔량 20주 호가창에 대기\n# IOC 체결 [(10000, 30), (10050, 50)], 잔량 20주 취소\n# FOK 전량 취소(체결 가능 80주 < 100주)"
+        }
+      ],
+      "how_far": "세션 시간과 받는 주문 유형은 거래소가 정하고, 어느 거래소로 보낼지는 회사의 최선집행 기준이 정합니다.[20] 개발자는 **세션·주문 유형 규칙을 코드에 흩지 않고 표·설정으로 두고**, 세션이 바뀌는 순간 남은 주문을 어떻게 할지 테스트로 고정합니다 {추론}. 통신 규격 자체는 FEP 파트와 나눠 맡습니다.[5]",
+      "refs": [5, 10, 14, 18, 19, 20, 22, 46, 47],
+      "study": ["krx-orders", "alpaca-docs", "fix-spec"]
+    },
+    {
+      "section": "task",
+      "quote": "종목 기준정보 및 권리 이벤트 데이터 관리",
+      "short": "사고팔 수 있는 종목의 정보표와, 배당·증자·분할처럼 종목 조건을 바꾸는 사건을 주문 쪽에 맞게 관리한다.",
+      "why": "주문 서버는 주문을 받을 때마다 '이 종목을 지금 이 가격 단위로 살 수 있나'를 종목 정보표로 판단합니다 {추론}. 같은 팀 계좌·종목/상품 파트 공고는 종목·상품 마스터와 권리(Corporate Action) 계좌 반영을 업무로 적었고[48], 회사에는 국내 주식 결제·권리 업무를 하는 운영 직무도 따로 있습니다.[7]",
+      "actually": {
+        "items": [
+          "**식별자** — 국제 표준 12자리 코드(ISIN)와 국내 6자리 코드, 미국 티커를 서로 잇습니다.[30]",
+          "**주문에 쓰는 속성** — 시장, 거래 단위, 가격 단위, 거래 정지·관리 종목 표시. 하루에도 바뀝니다 {추론}.",
+          "**권리 이벤트의 종류** — 국제 표준 통지 메시지(MT564)는 현금배당·무상·권리 발행 같은 사건에 정해진 이름표를 붙입니다.[26] 국내 권리 일정은 예탁원이 관리하는 공공 API로도 받을 수 있습니다.[27]",
+          "**주문 쪽에 미치는 것** — 권리락 날 기준가가 낮아지고(유상: (기준 주가 + 발행가 × 비율) ÷ (1 + 비율))[28], 미국 옵션은 주식이 분할되면 계약 조건이 바뀝니다(아래 우대 다섯째 줄).[25]"
+        ]
+      },
+      "how_far": "종목 정보표의 원본은 같은 팀 계좌·종목/상품 파트가 만들고 이 파트가 쓰는 구조로 보입니다 — 그 공고에 '종목·상품 마스터'와 '권리 이벤트 계좌 반영'이 업무로 있습니다[48] {추론}. 이 파트는 **권리 이벤트가 걸린 날 미체결 주문·가격 제한·옵션 계약을 어떻게 바꿀지**를 맡는 쪽으로 읽힙니다 {추론}.",
+      "refs": [7, 25, 26, 27, 28, 30],
+      "study": ["groves-ca", "mt564", "data-go-rights", "isin-wiki"]
+    },
+    {
+      "section": "task",
+      "quote": "대량 주문과 실시간 체결 이벤트를 안정적으로 처리하는 아키텍처 설계·고도화",
+      "short": "주문이 한꺼번에 몰려도 체결이 순서대로, 빠짐없이, 한 번씩만 처리되게 구조를 짠다.",
+      "why": "장이 크게 흔들리는 날 주문이 몰립니다. 2024년 8월 5일 미국 대체거래소 블루오션은 거래량 급증으로 용량이 부족했다며 체결을 일괄 취소했고, 국내 19개 증권사·약 9만 계좌가 영향을 받았습니다.[31] 기술 스택에 Kafka·Redis가 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**순서** — Kafka는 파티션 안에서만 순서를 지킵니다. 계좌나 주문 번호를 키로 하면 같은 계좌의 체결이 순서대로 처리됩니다.[35]",
+          "**중복** — 기본 전달이 '적어도 한 번'이라 같은 이벤트가 두 번 올 수 있어 받는 쪽이 이벤트 번호로 거릅니다.[35]",
+          "**DB와 이벤트를 같이** — 주문을 DB에 쓰고 이벤트를 보내는 사이에 죽으면 둘이 어긋납니다. 같은 트랜잭션에 '보낼 이벤트 표'(아웃박스)를 씁니다.[36]",
+          "**한 줄로 세우기** — 거래소급 주문 처리를 한 스레드에서 순서대로 하고 입력 이벤트를 남겨 다시 재생하는 구조(LMAX)도 공개돼 있습니다.[42]",
+          "**재시도 조심** — 몰릴 때 무작정 재시도하면 부하가 곱절이 됩니다. 지수 백오프와 지터(무작위 간격)를 씁니다.[43]"
+        ]
+      },
+      "how_far": "주문 건수는 공개되지 않았습니다. '고도화'까지 적힌 시니어 공고라, 키를 고르는 이유·중복 처리·몰릴 때 무엇을 먼저 거절할지를 **설계 문서로 설명하는 것**이 최소선으로 읽힙니다 {추론}.",
+      "refs": [1, 31, 35, 36, 42, 43],
+      "study": ["kafka-guide", "wiki-kafka", "outbox", "fowler-lmax", "ddia-ko"]
+    },
+    {
+      "section": "task",
+      "quote": "거래 무결성과 데이터 정합성을 보장하는 도메인 모델 및 트랜잭션 설계",
+      "short": "체결 한 건이 잔고에 정확히 한 번 반영되고, 잔고가 언제나 체결 기록의 합과 맞게 설계한다.",
+      "why": "팀은 도메인과 인프라를 분리해 도메인 로직이 프레임워크에 기대지 않게 설계한다고 적었습니다.[1] 주문 규칙을 순수한 코드로 두면 DB·브로커 없이 시험할 수 있다는 것이 그 구조(헥사고날)의 원래 뜻입니다.[33]",
+      "actually": {
+        "items": [
+          "**한 번만 반영** — 체결 보고의 실행 번호(ExecID)를 DB 유일 키로 둬 같은 보고가 두 번 와도 잔고를 두 번 고치지 않습니다.[16]",
+          "**누적 수량 검사** — 누적 체결 + 남은 수량 = 주문 수량.[17]",
+          "**동시 요청** — 같은 주식의 매도 두 건이 동시에 오면 보유 수량을 넘지 않게 잠금이나 격리 수준으로 막습니다.[37]",
+          "**복식부기** — 돈·주식이 옮겨질 때 빼기와 더하기를 한 묶음으로 적고, 원장은 고치지 않고 쌓습니다.[41]",
+          "**대사(對査)** — 잔고 표를 체결 기록의 합으로 다시 계산해 맞춰 봅니다(아래 예시) {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "잔고 = 체결 합계인지 맞춰 보기 (가상 데이터)",
+          "body": "체결 기록으로 다시 센 수량과 잔고 표가 다른 계좌를 찾습니다. 직접 돌린 결과입니다.",
+          "lang": "python",
+          "code": "from collections import defaultdict\nfills = [(\"A1\", \"005930\", +10), (\"A1\", \"005930\", +5), (\"A1\", \"005930\", -3), (\"A2\", \"000660\", +7)]\nbalance = {(\"A1\", \"005930\"): 12, (\"A2\", \"000660\"): 8}   # 잔고 표(가상)\ncalc = defaultdict(int)\nfor acct, code, q in fills:\n    calc[(acct, code)] += q\nfor k in sorted(set(calc) | set(balance)):\n    ok = calc[k] == balance.get(k, 0)\n    print(k, \"체결합\", calc[k], \"잔고\", balance.get(k, 0), \"OK\" if ok else \"어긋남\")\n\n# 출력\n# ('A1', '005930') 체결합 12 잔고 12 OK\n# ('A2', '000660') 체결합 7 잔고 8 어긋남"
+        }
+      ],
+      "how_far": "면접에서 **체결 중복·순서 뒤바뀜·부분 체결 뒤 취소·이미 반영한 체결의 취소 통보**를 어떻게 다루는지 설명할 수 있으면 최소선입니다 {추론}. 2024년 블루오션 사례처럼 바깥에서 체결 취소가 나중에 올 수 있습니다.[31]",
+      "refs": [1, 16, 17, 31, 33, 37, 41],
+      "study": ["ddd-start", "hombergs-clean", "ddia-ko", "internal-spring-db-1"]
+    },
+    {
+      "section": "preference",
+      "quote": "재현이 어려운 문제도 원인을 찾을 때까지 깊이 파고드는 분",
+      "short": "세션 경계·몰림 순간에만 터지는 문제도 로그와 시각을 맞춰 끝까지 원인을 찾는 사람.",
+      "why": "주문 문제는 세션이 바뀌는 순간이나 주문이 몰린 순간에만 나는 일이 많아 개발 환경에서 다시 보기 어렵습니다 {추론}. 같은 팀의 해외 주식 주문 공고에도 같은 문장이 있습니다.[2]",
+      "how_far": "'재현 안 되던 버그를 어떻게 잡았나' 한 가지를 시간 순으로 준비해 가면 됩니다 {추론}.",
+      "refs": [2]
+    },
+    {
+      "section": "preference",
+      "quote": "여러 시스템과 연결되는 환경에서 예외 상황을 미리 예상하고 대응 전략까지 고민하는 분",
+      "short": "거래소·브로커·예탁원처럼 우리가 못 고치는 바깥 시스템이 늦거나 틀리게 답할 때를 미리 생각해 두는 사람.",
+      "why": "2024년 8월엔 바깥 대체거래소가 이미 끝난 체결을 취소했고[31], 2026년 9월엔 거래소 시간표가 바뀐 날 SOR 적용 시간을 늘리다 주문이 꼬였습니다.[18]",
+      "actually": {
+        "items": [
+          "**응답이 안 오면** — 주문이 접수됐는지 모를 때 다시 보내지 않고 먼저 상태를 묻습니다. 다시 보낼 거라면 같은 주문 번호로 보내 받는 쪽이 중복을 알게 합니다.[45]",
+          "**체결 취소가 나중에 오면** — 잔고에 넣은 체결을 되돌리는 흐름. FIX 실행 보고에도 '체결 취소' 종류가 있습니다.[16]",
+          "**타임아웃·재시도** — 재시도에 간격과 무작위성을 둡니다.[43]"
+        ]
+      },
+      "refs": [16, 18, 31, 43, 45],
+      "study": ["release-it", "aws-retry", "aws-idem"]
+    },
+    {
+      "section": "preference",
+      "quote": "숫자 하나, 예외 케이스 하나도 그냥 넘기지 않는 분",
+      "short": "수량 1주, 소수점 하나, 계약 승수 하나 어긋난 것도 그냥 두지 않는 사람.",
+      "why": "코스피200 옵션은 가격 1포인트가 25만원입니다.[23] 가격 단위 하나(0.01포인트)가 계약당 2,500원이라[24] 계산이 조금만 틀려도 고객 돈이 틀립니다 {추론}.",
+      "actually": {
+        "items": [
+          "**금액은 고정 소수로** — 부동소수(double)는 0.1 + 0.2가 0.30000000000000004가 됩니다. Kotlin·Java에선 BigDecimal을 씁니다 {추론}.",
+          "**단위 섞임** — 주식은 '주', 옵션은 '계약 × 승수', 미국 옵션은 '계약당 100주'라 같은 수량 칸에 다른 뜻이 들어가지 않게 타입으로 나눕니다.[23][25] {추론}"
+        ]
+      },
+      "refs": [23, 24, 25]
+    },
+    {
+      "section": "preference",
+      "quote": "기술적 의사결정의 이유를 설명할 수 있고, 동료의 의견에도 열린 자세를 가진 분",
+      "short": "왜 이렇게 정했는지 말로 설명하고, 반대 의견을 듣고 바꿀 수 있는 사람.",
+      "why": "팀은 중요한 기술적 의사결정을 ADR로 기록하고 함께 리뷰해 정한다고 적었습니다.[1] ADR은 결정 하나마다 맥락·결정·결과를 짧게 적어 저장소에 두는 방식입니다.[34]",
+      "actually": {
+        "items": [
+          "**한 장** — 제목 · 상태(제안/채택/대체됨) · 맥락 · 결정 · 결과.[34]",
+          "**예** — '체결 이벤트 파티션 키를 계좌 번호로 한다 — 같은 계좌의 순서를 지키려고, 대신 큰 계좌에 쏠린다.' {추론}",
+          "**고치지 않고 대체** — 결정이 바뀌면 옛 ADR을 지우지 않고 새 ADR이 대체한다고 적습니다.[34]"
+        ]
+      },
+      "refs": [1, 34],
+      "study": ["fundamentals-arch"]
+    },
+    {
+      "section": "preference",
+      "quote": "금융 도메인 경험이 없더라도 적극적으로 배우며 함께 만들어갈 분",
+      "short": "증권을 몰라도 배울 생각이 있으면 된다는 뜻 — 대신 우대 줄의 낱말은 미리 읽어 가는 게 좋다.",
+      "why": "회사는 임직원을 2024년 6월 94명에서 2026년 6월 189명으로 늘리는 중이라[8] 다른 업계 출신도 받는다는 신호로 읽힙니다 {추론}. 다만 선호 자격요건 여섯 줄이 전부 증권 낱말이라 7년차 시니어에게는 빨리 따라잡는 속도를 볼 것으로 보입니다 {추론}.",
+      "how_far": "주문 유형(지정가·시장가·IOC·FOK)[21], 세션, 결제일(T+2·T+1)[29][32], 옵션 승수[23] 정도는 입사 전에 읽어 가면 대화가 됩니다 {추론}.",
+      "refs": [8, 21, 23, 29, 32],
+      "study": ["trading-exchanges", "krx-orders"]
+    },
+    {
+      "section": "qualification",
+      "quote": "백엔드 개발 경력 7년 이상",
+      "short": "서비스를 만들고 운영까지 해 본 백엔드 경력 7년 이상 — 같은 팀 시장별 공고(5년)보다 높다.",
+      "why": "같은 팀의 국내 주식·해외 주식 주문/체결 공고는 5년 이상입니다.[2][3] 이 공고는 국내·해외·파생을 함께 맡아 범위가 넓고 연차를 7년으로 올렸습니다.[1]",
+      "how_far": "연차보다 아래 줄들(정합성·대량 트랜잭션·테스트)을 실제로 겪은 이야기와, 그때 내린 설계 판단을 설명할 수 있는지가 중요합니다 {추론}. 5~6년차라면 시장별 공고[2][3]도 같이 보는 편이 맞습니다 {추론}.",
+      "refs": [1, 2, 3]
+    },
+    {
+      "section": "qualification",
+      "quote": "Kotlin 또는 Java / Spring Boot 기반의 백엔드 서비스 설계·개발 경험",
+      "short": "Kotlin이나 Java로 Spring Boot 서버를 설계부터 만들어 본 경험.",
+      "why": "기술 스택이 Kotlin·Java·Spring Boot입니다.[1] 같은 팀 해외 주식 공고는 테스트 도구로 Kotlin용 Kotest를 적어 Kotlin 비중이 높은 팀으로 읽힙니다.[2][40] {추론}",
+      "level": {
+        "basic": "Spring Boot로 REST API·트랜잭션·설정을 다룬다.",
+        "work": "Kotlin 널 안전·데이터 클래스·sealed 클래스로 주문 상태를 표현하고, 트랜잭션 경계를 의도대로 잡는다.",
+        "team": "도메인 코드를 Spring에 기대지 않게 두고 어댑터만 Spring으로 붙인다(팀의 일하는 방식[1]) {추론}."
+      },
+      "how_far": "'또는'이라 Java만 했어도 지원할 수 있습니다.[1] Kotlin은 입사 전 문법·널 안전 정도만 익혀 가면 됩니다 {추론}.",
+      "refs": [1, 2, 40],
+      "study": ["kia2", "internal-spring", "spring-boot-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "RDBMS 기반의 데이터 모델링 및 성능 최적화 경험",
+      "short": "주문·체결·잔고 표를 설계하고, 느린 쿼리를 실행 계획·인덱스로 고쳐 본 경험.",
+      "why": "데이터베이스가 PostgreSQL과 Oracle입니다.[1] 체결은 쌓이기만 하는 기록이라 금방 커지고, 잔고는 자주 고쳐져 두 표의 설계가 다릅니다 {추론}.",
+      "actually": {
+        "items": [
+          "**주문 표·체결 표 분리** — 주문 하나에 체결 여러 건(1:N), 체결 표의 실행 번호에 유일 키 {추론}.",
+          "**시장별 칸** — 옵션 체결은 계약 수·승수, 미국 주식은 통화가 따로 붙어 한 표에 억지로 넣지 않는다 {추론}.",
+          "**격리 수준** — 동시에 고치는 잔고는 격리 수준과 잠금의 차이를 알아야 합니다.[37]",
+          "**성능** — 실행 계획(EXPLAIN)을 읽고 계좌·일자 조회에 맞는 복합 인덱스를 고릅니다.[38]"
+        ]
+      },
+      "level": {
+        "basic": "정규화·인덱스·조인을 설명한다.",
+        "work": "실행 계획을 읽고 인덱스로 느린 쿼리를 고친다. 격리 수준별로 무슨 이상 현상이 막히는지 안다.[37][38]",
+        "team": "Oracle과 PostgreSQL이 함께 있어 두 DB의 차이(시퀀스·잠금 동작)를 감안한다 {추론}."
+      },
+      "refs": [1, 37, 38],
+      "study": ["internal-spring-db-1", "pg-explain", "ddia-ko"]
+    },
+    {
+      "section": "qualification",
+      "quote": "대량 트랜잭션 처리 및 서비스 성능 개선 경험",
+      "short": "트래픽이 몰릴 때 처리량·지연을 숫자로 재고 병목을 찾아 고쳐 본 경험.",
+      "why": "장 시작 직후·급락장에 주문이 몰립니다. 2024년 8월 블루오션은 거래량 급증으로 용량이 부족했다고 밝혔습니다.[31]",
+      "actually": {
+        "items": [
+          "**재기** — 초당 처리 건수·p99 지연(가장 느린 1%)을 부하 시험으로 잽니다 {추론}.",
+          "**병목 가르기** — 지연·트래픽·오류·포화 네 신호로 DB 잠금 대기·커넥션 풀·외부 호출 중 어디인지 봅니다.[44]",
+          "**재시도 조심** — 지수 백오프와 지터.[43]"
+        ]
+      },
+      "how_far": "'몇 TPS에서 무엇이 병목이었고 무엇을 바꿔 몇이 됐다'를 숫자로 말할 수 있으면 됩니다 {추론}.",
+      "refs": [31, 43, 44],
+      "study": ["release-it", "aws-retry", "wiki-jvm"]
+    },
+    {
+      "section": "qualification",
+      "quote": "테스트 코드를 기반으로 안정적인 서비스를 개발·운영해 본 경험",
+      "short": "테스트를 깔고 그 위에서 고치며, 테스트가 실제로 버그를 막아 준 경험.",
+      "why": "팀은 테스트 코드 작성을 기본 원칙으로 둡니다.[1] 같은 팀 해외 공고는 JaCoCo 커버리지까지 적었는데, JaCoCo는 줄과 분기를 따로 셉니다.[2][39]",
+      "actually": {
+        "items": [
+          "**주문 규칙 테스트** — 세션 경계 시각, 휴장일, 부분 체결 뒤 취소, 중복 체결 보고, 권리락 날 가격 제한을 하나씩 고정합니다 {추론}.",
+          "**표로 많이** — 시장 × 주문 유형 × 세션 조합을 데이터 표 테스트로 돌립니다(Kotest 데이터 기반 테스트).[40] {추론}",
+          "**도메인은 가짜 어댑터로** — 거래소·브로커 없이 빠르게, 실제 DB·Kafka는 통합 테스트로 따로 {추론}."
+        ]
+      },
+      "how_far": "커버리지 숫자보다 '이 테스트가 어떤 버그를 막나'를 설명할 수 있는지가 면접 쟁점입니다 {추론}.",
+      "refs": [1, 2, 39, 40],
+      "study": ["khorikov-unit", "internal-practical-testing"]
+    },
+    {
+      "section": "preference",
+      "quote": "증권 주문·체결·원장 등 데이터 정합성이 중요한 시스템의 설계·운영 경험",
+      "short": "주문·체결·원장처럼 한 건도 틀리면 안 되는 시스템을 설계하고 운영해 본 경험이면 좋다.",
+      "why": "업무 다섯째 줄 그대로입니다.[1] 증권이 아니어도 결제·원장 경험이면 같은 원리(복식부기·멱등·대사)를 씁니다.[41][45] {추론}",
+      "actually": {
+        "items": [
+          "**원장은 쌓기만** — 고치지 않고 반대 거래를 더해 바로잡습니다.[41]",
+          "**대사** — 우리 기록과 거래소·브로커·예탁원 기록을 하루 한 번 맞춰 봅니다. 회사의 결제·권리 운영 공고에도 약정대사가 업무로 있습니다.[7]",
+          "**멱등** — 같은 요청이 두 번 와도 한 번과 같게.[45]"
+        ]
+      },
+      "refs": [1, 7, 41, 45],
+      "study": ["stripe-idem", "aws-idem", "ddia-ko"]
+    },
+    {
+      "section": "preference",
+      "quote": "국내·해외 주식 시장 구조와 주문 유형에 대한 이해",
+      "short": "단일가·접속매매, 거래소 둘(KRX·NXT), 지정가·시장가·IOC·FOK 같은 주문 유형을 아는 것.",
+      "why": "업무 둘째 줄의 세션별 주문 처리를 만들려면 시장 규칙을 알아야 합니다.[1] 국내는 주문 유형이 지정가·시장가·최유리·최우선·조건부지정가에 IOC·FOK 조건이 붙고[21][22], 미국은 연장 세션에 받는 유형이 좁아집니다.[46]",
+      "actually": {
+        "items": [
+          "**지정가** — 사는 쪽은 그 가격 이하, 파는 쪽은 그 가격 이상에서만 체결.[21]",
+          "**최유리지정가** — 접수 순간 상대편 가장 좋은 가격으로 정해져 바로 체결을 노림. **최우선지정가** — 내 쪽 가장 좋은 가격에 줄을 섬.[22]",
+          "**조건부지정가** — 장중엔 지정가, 안 되면 종가 단일가 때 시장가로 바뀜. KRX에만 있다(검색 요약 기준).[22]",
+          "**IOC·FOK** — 되는 만큼만 체결하고 나머지 취소 / 전부 안 되면 전부 취소(업무 둘째 줄 예시).[22]"
+        ]
+      },
+      "how_far": "모든 유형을 외울 필요는 없고, **주문 유형 × 세션 × 거래소 조합을 표로 그려 '받는다/거절/바꿔 보낸다'를 채울 수 있으면** 됩니다 {추론}.",
+      "refs": [1, 21, 22, 46],
+      "study": ["krx-orders", "trading-exchanges", "alpaca-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "FIX 등 거래소·브로커 연동 경험",
+      "short": "증권사·거래소가 주문과 체결을 주고받는 국제 표준 메시지(FIX)로 연동해 본 경험이면 좋다.",
+      "why": "해외 브로커와는 FIX로 주문·체결을 주고받는 것이 일반적이고 같은 팀 해외 공고는 FIX 연동을 업무로 적었습니다.[2][15] 같은 팀 Market Data & FEP 파트도 거래소·브로커 전문 규격과 FIX를 다룹니다.[5]",
+      "actually": {
+        "items": [
+          "**새 주문** — 우리 주문 번호(ClOrdID)·종목·수량·가격·유효 조건.[16]",
+          "**실행 보고** — 접수·일부 체결·전부 체결·취소·거부를 주문 상태(OrdStatus)와 '왜 보냈나'(ExecType)로 따로 알려 옵니다.[16][17]",
+          "**세션** — 로그온·하트비트·순번. 끊겼다 붙으면 빠진 순번을 다시 달라고 해 체결 보고를 놓치지 않습니다.[15]"
+        ]
+      },
+      "how_far": "FIX 세션 층은 보통 검증된 엔진을 쓰고, 이 파트는 **메시지를 우리 주문 모델로 옮기는 어댑터**와 끊김·중복·순서 처리를 맡는 쪽으로 읽힙니다 {추론}.",
+      "refs": [2, 5, 15, 16, 17],
+      "study": ["fix-spec"]
+    },
+    {
+      "section": "preference",
+      "quote": "옵션 등 파생상품 거래 시스템 개발 경험",
+      "short": "옵션처럼 '계약 × 승수'로 값이 정해지고 만기가 있는 상품의 주문·체결을 만들어 본 경험이면 좋다.",
+      "why": "넥스트증권은 원래 파생 중개를 하던 증권사이고[9], 지금도 파생상품 백오피스 차세대 시스템을 만든다며 계좌·증거금·담보(대용) 경험자를 뽑고 있습니다.[6] 주식과 달리 파생은 만기·증거금이 있어 주문 모델이 달라집니다 {추론}.",
+      "actually": {
+        "intro": "코스피200 옵션으로 본 주식과 다른 점입니다.",
+        "items": [
+          "**승수** — 거래 금액 = 옵션 가격(포인트) × 25만원.[23]",
+          "**가격 단위가 가격대마다 다르다** — 10포인트 미만 0.01포인트, 10포인트 이상 0.05포인트(검색 요약 기준).[24]",
+          "**만기** — 결제월 둘째 목요일이 최종거래일이고 그날만 권리를 행사하는 유럽형(검색 요약 기준).[24] 만기가 지난 종목은 주문을 받으면 안 됩니다 {추론}.",
+          "**증거금** — 주식처럼 전액이 아니라 위험에 맞춘 증거금을 묶습니다. 회사 파생 공고가 증거금·담보(대용)를 따로 적었습니다.[6]",
+          "**미국 옵션** — 한 계약이 보통 주식 100주이고, 주식이 분할되면 계약 수나 인도 주식 수가 바뀝니다(아래 권리 줄).[25]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "옵션 금액과 가격 단위 (코스피200 옵션 규칙)",
+          "body": "포인트를 원으로 바꿀 때 승수와 가격대별 단위를 같이 씁니다.[23][24] 직접 돌린 결과입니다.",
+          "lang": "python",
+          "code": "from decimal import Decimal as D\nMULT = 250_000  # 코스피200 옵션 거래승수(원)\ndef tick(premium):\n    return D(\"0.01\") if premium < 10 else D(\"0.05\")\nfor prem, n in [(D(\"2.35\"), 3), (D(\"12.40\"), 1)]:\n    print(f\"프리미엄 {prem}pt x {n}계약 = {int(prem*MULT*n):,}원 · 호가 단위 {tick(prem)}pt = {int(tick(prem)*MULT):,}원\")\n\n# 출력\n# 프리미엄 2.35pt x 3계약 = 1,762,500원 · 호가 단위 0.01pt = 2,500원\n# 프리미엄 12.40pt x 1계약 = 3,100,000원 · 호가 단위 0.05pt = 12,500원"
+        }
+      ],
+      "how_far": "옵션 가격 이론(그릭스)까지 알 필요는 없어 보이고, **승수·가격 단위·만기·증거금이 주문 검증과 잔고에 어떻게 들어가는지**를 설명할 수 있으면 됩니다 {추론}. 증거금 계산 규칙은 거래소와 운영 부서가 정합니다.[6] {추론}",
+      "refs": [6, 9, 23, 24, 25],
+      "study": ["hull-options", "krx-k200-options"]
+    },
+    {
+      "section": "preference",
+      "quote": "종목 기준정보·권리(Corporate Action) 데이터 처리 경험",
+      "short": "종목 정보표와 배당·증자·분할 같은 권리 사건 데이터를 받아 맞추고 반영해 본 경험이면 좋다.",
+      "why": "업무 셋째 줄 그대로입니다.[1] 권리 사건은 주식 잔고뿐 아니라 그 주식에 걸린 주문과 옵션 계약까지 바꿉니다.[25][28]",
+      "actually": {
+        "items": [
+          "**국내 권리락** — 무상증자 1:1이면 전날 종가의 절반 근처로 기준가가 다시 정해집니다. 유상증자는 발행가를 섞어 계산합니다.[28]",
+          "**배당 기준일** — 국내는 결제가 이틀이라 기준일 2영업일 전까지 사야 배당을 받습니다.[29]",
+          "**미국 옵션 조정** — 2:1 분할이면 계약이 둘로 늘고 행사가가 절반, 3:2처럼 나누어떨어지지 않으면 계약당 인도 주식 수가 150주로 바뀝니다(아래 예시).[25]",
+          "**원천 데이터** — 국내 권리 일정은 공공 API[27], 국제 통지는 MT564의 이름표[26]."
+        ]
+      },
+      "examples": [
+        {
+          "title": "주식 분할에 따른 미국 옵션 계약 조정",
+          "body": "행사가 $60, 100주짜리 옵션 1계약이 분할 비율에 따라 어떻게 바뀌는지입니다(OIC 설명의 두 사례).[25] 직접 돌린 결과입니다.",
+          "lang": "python",
+          "code": "from fractions import Fraction as F\ndef adjust(contracts, deliver, strike, new, old):\n    r = F(new, old)\n    if r.denominator == 1:  # 2:1 같은 정수 분할 — 계약 수를 늘린다\n        return contracts * r.numerator, deliver, strike / r\n    return contracts, deliver * r, strike / r  # 3:2 같은 비정수 — 인도 주식 수를 바꾼다\nfor new, old in [(2, 1), (3, 2)]:\n    c, d, k = adjust(1, 100, F(60), new, old)\n    print(f\"{new}:{old} 분할 → {c}계약 · 계약당 {d}주 · 행사가 ${float(k):.2f}\")\n\n# 출력\n# 2:1 분할 → 2계약 · 계약당 100주 · 행사가 $30.00\n# 3:2 분할 → 1계약 · 계약당 150주 · 행사가 $40.00"
+        }
+      ],
+      "how_far": "조정 비율과 날짜는 발행 회사·예탁원·청산 기관이 정합니다.[25][27] 개발자는 **받은 사건으로 잔고·주문·계약을 날짜 순서대로 바꾸고, 원천과 맞는지 대사하는 로직**을 만듭니다 {추론}.",
+      "refs": [1, 25, 26, 27, 28, 29],
+      "study": ["groves-ca", "simmons-ca", "mt564", "data-go-rights"]
+    },
+    {
+      "section": "preference",
+      "quote": "Kafka 등 메시지 브로커를 활용한 이벤트 기반 아키텍처 설계·운영 경험",
+      "short": "Kafka로 주문·체결 이벤트를 흘리는 구조를 설계하고 운영(지연·재처리)까지 해 본 경험이면 좋다.",
+      "why": "Kafka가 기술 스택에 있고[1], 체결 하나를 잔고·알림·거래내역이 각자 읽는 구조가 업무 넷째 줄의 '실시간 체결 이벤트'입니다 {추론}.",
+      "actually": {
+        "items": [
+          "**운영** — 소비자 지연(lag), 재처리, 파티션 수 정하기.[35]",
+          "**Redis는 사본** — 빠르지만 원장이 아니므로 잔고의 정답은 DB에 둡니다 {추론}.",
+          "**아웃박스** — DB와 이벤트를 어긋나지 않게 내보내기.[36]"
+        ]
+      },
+      "refs": [1, 35, 36],
+      "study": ["kafka-guide", "wiki-kafka", "msa-patterns", "outbox"]
+    },
+    {
+      "section": "qualification",
+      "quote": "서류접수 → AI Screening→ 1차 인터뷰 → 2차 인터뷰 → 처우논의 → 최종합격",
+      "short": "서류 뒤에 AI 면접이 먼저 있고, 실무 면접 두 번을 거쳐 연봉(처우)을 논의한다.",
+      "why": "공고는 1차 실무 면접 전에 AI 면접을 보며, 직무 역량과 의사소통 역량을 보는 참고 자료로 쓴다고 적었습니다.[1] 같은 회사의 운영 직무(파생 업무개발) 공고에는 AI Screening 단계가 없습니다.[6]",
+      "how_far": "AI 면접에서 녹음·녹화된 답은 채용 평가 목적에만 쓴다고 밝혔습니다.[1] 업무 줄의 낱말(세션·체결 중복·권리 조정)로 짧게 답하는 연습이면 충분해 보입니다 {추론}. 같은 기간 여러 포지션 동시 지원은 제한될 수 있어 시장별 공고[2][3]와 이 공고 중 하나를 고르는 편이 안전합니다.[1]",
+      "refs": [1, 2, 3, 6]
+    },
+    {
+      "section": "qualification",
+      "quote": "전형 단계 중 필요 시, 사전 동의 후 레퍼런스 체크 진행",
+      "short": "필요하면 지원자 동의를 받고 이전 동료·상사에게 평판을 묻는다.",
+      "why": "공고 유의사항에 같은 내용이 다시 있고, 제출 내용이 사실과 다르면 합격 뒤라도 취소될 수 있다고 적었습니다.[1]",
+      "how_far": "7년차 공고라 이력서에 적은 설계·성능 개선 숫자를 전 동료가 확인해 줄 수 있는 범위로 쓰는 것이 좋습니다 {추론}.",
+      "refs": [1]
+    }
+  ],
+  "fit": {
+    "good": [
+      "국내·미국·파생을 한 주문 모델로 묶는 큰 그림을 직접 그리고 싶은 시니어 — 시장별로 나뉜 공고보다 범위가 넓다[1][2][3]",
+      "결제·원장 경험이 있는데 증권은 처음인 사람 — 공고가 금융 경험 없이도 오라고 적었다[1]",
+      "도메인/인프라 분리·테스트 기본·ADR처럼 정해진 방식으로 일하는 팀을 좋아하는 사람[1]",
+      "파생상품 주문을 다뤄 본 적이 있는 사람 — 회사가 원래 파생 중개 증권사다[9]"
+    ],
+    "hard": [
+      "미국 장이 한국 저녁~아침에 열려(세션 표[14]) 장애 대응이 밤에 걸릴 수 있다 {추론}",
+      "MTS 출시가 세 번 미뤄졌다 — 일정이 바뀌는 환경이다[8]",
+      "어느 브로커와 어떻게 붙는지, 파생 주문이 어디까지 개인용으로 열리는지 공개되지 않았다",
+      "필수 7년에 선호 줄이 전부 증권 낱말이라 문턱이 높다[1]"
+    ]
+  },
+  "interview": [
+    {"q": "정규장에 낸 지정가 매수 주문이 15:20까지 일부만 체결됐습니다. 종가 단일가·KRX 애프터마켓·NXT 애프터마켓으로 넘어갈 때 이 주문은 어떻게 돼야 합니까? 그 규칙을 어디에 두겠습니까?", "a": "세션 줄 — 애프터마켓으로 이월되지 않는 점, 세션·거래소 규칙을 표·설정으로.[19][20][47]"},
+    {"q": "미국 주식이 3:2로 분할됐습니다. 고객의 그 종목 옵션 1계약과 미체결 지정가 주문은 각각 어떻게 바꿔야 합니까?", "a": "권리 줄 — 인도 주식 150주·행사가 $40, 미체결 주문 처리 정책.[25]"},
+    {"q": "100주 주문에 체결 보고가 30·50·50·20으로 왔는데 두 번째 50이 같은 실행 번호입니다. 서버가 중간에 재시작되면요?", "a": "정합성 줄 — 실행 번호 유일 키, 누적 수량 검사.[16][17]"},
+    {"q": "이미 잔고에 반영한 체결을 바깥 시장이 나중에 취소한다고 알려 왔습니다. 무엇을 되돌려야 하나요?", "a": "2024년 블루오션 일괄 취소 사례와 FIX 체결 취소.[16][31]"},
+    {"q": "코스피200 옵션 가격 12.40을 원으로 바꾸고 다음 호가를 계산하는 코드에서 무엇이 틀릴 수 있습니까?", "a": "승수 25만원·가격대별 단위·BigDecimal.[23][24]"},
+    {"q": "체결 이벤트를 Kafka로 보낼 때 파티션 키를 무엇으로 정하겠습니까? 그 결정을 ADR로 쓴다면 '결과' 칸에 무엇을 적나요?", "a": "파티션 안 순서, ADR 형식.[34][35]"}
+  ],
+  "resources": [
+    {"id": "krx-orders", "title": "KRX · Limit Orders 외 주문 유형 안내(영문)", "by": "한국거래소", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://global.krx.co.kr/contents/GLB/06/0602/0602010201/GLB0602010201T2.jsp", "why": "국내 주문 유형의 거래소 원래 정의. 선호 '주문 유형' 줄과 업무 둘째 줄의 세션별 처리."},
+    {"id": "krx-k200-options", "title": "KRX · KOSPI 200 Options 상품 안내(영문)", "by": "한국거래소", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://global.krx.co.kr/contents/GLB/02/0201/0201040202/GLB0201040202.jsp", "why": "승수·가격 단위·만기·결제 방식을 거래소 원문으로. 파생 줄의 주문 검증 규칙 재료."},
+    {"id": "hull-options", "title": "Options, Futures, and Other Derivatives", "by": "John C. Hull · Pearson", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://www.pearson.com/en-us/subject-catalog/p/options-futures-and-other-derivatives/P200000005938", "why": "옵션·선물의 계약 구조와 증거금의 표준 교과서. 파생 줄을 처음 볼 때 앞쪽 장(계약 명세·증거금)만 읽어도 된다."},
+    {"id": "fix-spec", "title": "FIX 4.4 (FIX Trading Community 표준 자료)", "by": "FIX Trading Community", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.fixtrading.org/standards/fix-4-4/", "why": "브로커 연동 줄. 새 주문·실행 보고·세션 메시지의 뜻을 원본에서 확인한다."},
+    {"id": "trading-exchanges", "title": "Trading and Exchanges: Market Microstructure for Practitioners", "by": "Larry Harris · Oxford University Press · 2002", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://www.barnesandnoble.com/w/trading-and-exchanges-larry-harris/1101401630", "why": "주문 유형·경매 방식(단일가·접속매매)·시장 구조를 실무자 눈높이로. 금융 경험 없이 들어올 때의 바닥."},
+    {"id": "alpaca-docs", "title": "Alpaca 문서 · Orders at Alpaca / Paper Trading", "by": "Alpaca", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://docs.alpaca.markets/docs/orders-at-alpaca", "why": "다른 미국 증권사의 공개 API. 주문 상태·연장 시간 주문 규칙이 어떻게 생겼는지 본보기로 읽는다."},
+    {"id": "groves-ca", "title": "Corporate Actions – A Concise Guide", "by": "Francis Groves · Harriman House · 2008", "kind": "book", "lang": "en", "free": false, "level": "입문", "url": "https://www.harriman-house.com/authors/francis-groves/corporate-actions-a-concise-guide/9781905641673", "why": "배당·증자·분할 같은 권리 사건을 하나씩 짧게 설명하는 입문서. 업무 셋째 줄과 선호 '권리' 줄의 낱말을 잡는다."},
+    {"id": "simmons-ca", "title": "Corporate Actions: A Guide to Securities Event Management", "by": "Michael Simmons · Elaine Dalgleish · Wiley · 2006", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://gov.wiley.com/WileyCDA/WileyTitle/productCd-0470870664.html", "why": "증권사 쪽에서 권리 사건을 처리·통지·대사하는 운영 흐름까지."},
+    {"id": "mt564", "title": "MT564 Corporate Action Notification — Field 22F", "by": "ISO 15022 표준 안내", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.iso20022.org/15022/uhb/mt564-5-field-22f.htm", "why": "권리 사건의 국제 표준 이름표. 이벤트 종류를 표로 설계할 때 기준."},
+    {"id": "data-go-rights", "title": "금융위원회_주식권리일정정보 오픈 API", "by": "공공데이터포털 · 한국예탁결제원 관리", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.data.go.kr/data/15059609/openapi.do", "why": "실제 국내 권리 일정 데이터를 무료로 받아 볼 수 있다. 로드맵 과제의 재료."},
+    {"id": "isin-wiki", "title": "International Securities Identification Number", "by": "Wikipedia", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://en.wikipedia.org/wiki/International_Securities_Identification_Number", "why": "종목 코드 구조와 검증 숫자. 종목 기준정보의 식별자 설계."},
+    {"id": "hombergs-clean", "title": "만들면서 배우는 클린 아키텍처", "by": "톰 홈버그 · 박소은 옮김 · 위키북스", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005295801", "why": "도메인과 인프라를 떼는 구조(포트와 어댑터)를 Java·Spring 코드로 직접 짠다. 팀의 일하는 방식 첫 줄."},
+    {"id": "ddd-start", "title": "도메인 주도 개발 시작하기", "by": "최범균 · 한빛미디어 · 2022", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8F%84%EB%A9%94%EC%9D%B8%20%EC%A3%BC%EB%8F%84%20%EA%B0%9C%EB%B0%9C%20%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0", "why": "주문·체결을 애그리거트로 나누고 트랜잭션 경계를 잡는 법. 정합성 줄."},
+    {"id": "khorikov-unit", "title": "Unit Testing Principles, Practices, and Patterns", "by": "Vladimir Khorikov · Manning · 2020", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.manning.com/books/unit-testing", "why": "어떤 테스트가 버그를 막고 어떤 테스트가 짐이 되나. 테스트 줄."},
+    {"id": "fundamentals-arch", "title": "Documenting Architecture Decisions", "by": "Michael Nygard · 2011", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions", "why": "ADR을 처음 제안한 짧은 글. 맥락·결정·결과 한 장 쓰는 법."},
+    {"id": "ddia-ko", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 위키북스", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://wikibook.co.kr/data-intensive-applications/", "why": "트랜잭션 격리·분산 시스템의 중복·순서 문제. 정합성·대량 트랜잭션 줄의 이론 바닥."},
+    {"id": "kafka-guide", "title": "카프카 핵심 가이드 (개정증보판)", "by": "그웬 샤피라 외 · 제이펍 · 2023", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%B4%ED%94%84%EC%B9%B4%20%ED%95%B5%EC%8B%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C", "why": "파티션·소비자 그룹·전달 보장. 체결 이벤트를 순서대로, 빠짐없이 흘리는 법."},
+    {"id": "wiki-kafka", "title": "아파치 카프카 애플리케이션 프로그래밍", "by": "우리 사이트의 책", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/kafka", "why": "실제로 친 명령과 오간 레코드로 Kafka를 손에 익힌다."},
+    {"id": "msa-patterns", "title": "마이크로서비스 패턴", "by": "크리스 리처드슨 · 길벗", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4%20%EB%A6%AC%EC%B2%98%EB%93%9C%EC%8A%A8", "why": "아웃박스·사가 등 서비스 사이 정합성 패턴. 주문 → 잔고 → 계좌처럼 여러 파트가 걸린 흐름."},
+    {"id": "outbox", "title": "Pattern: Transactional outbox", "by": "microservices.io", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://microservices.io/patterns/data/transactional-outbox.html", "why": "DB 쓰기와 이벤트 보내기를 어긋나지 않게 하는 가장 짧은 설명."},
+    {"id": "fowler-lmax", "title": "The LMAX Architecture", "by": "Martin Fowler · 2011", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://martinfowler.com/articles/lmax.html", "why": "거래소급 주문을 한 스레드·이벤트 재생으로 처리한 사례. 업무 넷째 줄의 구조 감."},
+    {"id": "stripe-idem", "title": "Idempotent requests", "by": "Stripe API 문서", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://docs.stripe.com/api/idempotent_requests", "why": "멱등 키를 API에 어떻게 노출하는지의 본보기. 오픈 API로 주문을 받을 때 같은 주문이 두 번 들어오지 않게."},
+    {"id": "aws-idem", "title": "Making retries safe with idempotent APIs", "by": "AWS Builders' Library", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-apis/", "why": "두 번 와도 한 번만 반영하기. 대외계 예외 줄의 '다시 보내기'."},
+    {"id": "release-it", "title": "Release It! (2판)", "by": "Michael T. Nygard · Pragmatic Bookshelf · 2018", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/", "why": "대외계가 느리거나 죽을 때 버티는 법(타임아웃·서킷 브레이커)."},
+    {"id": "aws-retry", "title": "Timeouts, retries, and backoff with jitter", "by": "AWS Builders' Library", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/", "why": "재시도가 부하를 곱하는 이유와 지터. 몰림·대외계 줄."},
+    {"id": "kia2", "title": "Kotlin in Action, Second Edition", "by": "Svetlana Isakova · Sebastian Aigner · Roman Elizarov · Manning · 2024", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.manning.com/books/kotlin-in-action-second-edition", "why": "Java에서 넘어올 때 Kotlin 문법·널 안전을 한 권으로."},
+    {"id": "internal-spring", "title": "스프링 핵심 원리 — 기본편", "by": "우리 사이트의 책", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/spring-core", "why": "빈·의존성 주입을 실행 결과로. 어댑터를 Spring으로 붙일 때의 바닥."},
+    {"id": "spring-boot-docs", "title": "Spring Boot Reference Documentation", "by": "Spring 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.spring.io/spring-boot/reference/", "why": "설정·액추에이터(상태·지표 엔드포인트)."},
+    {"id": "internal-spring-db-1", "title": "스프링 DB 1편", "by": "우리 사이트의 책", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/spring-db-1", "why": "커넥션·트랜잭션 로그로 트랜잭션 경계를 눈으로 본다. RDBMS·정합성 줄."},
+    {"id": "pg-explain", "title": "PostgreSQL 문서 · Using EXPLAIN", "by": "PostgreSQL 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.postgresql.org/docs/current/using-explain.html", "why": "실행 계획 읽기. RDBMS 줄의 '성능 최적화'."},
+    {"id": "internal-practical-testing", "title": "Practical Testing — 실용적인 테스트 가이드", "by": "우리 사이트의 책", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/practical-testing", "why": "실제로 돌린 테스트 결과로 단위·통합 테스트를 익힌다. 테스트 줄."},
+    {"id": "wiki-jvm", "title": "자바 성능 튜닝 — JVM 과 GC", "by": "우리 사이트의 책", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/jvm-tuning", "why": "몰릴 때 지연을 만드는 GC를 로그로 읽는다. 성능 개선 줄."}
+  ],
+  "study_path": [
+    {"title": "세 시장의 주문 규칙을 표 하나로", "time": "1~2주", "goal": "국내(KRX·NXT)·미국 주식·코스피200 옵션의 세션·주문 유형·가격 단위·결제일을 한 표로 설명할 수 있다.", "resources": ["krx-orders", "krx-k200-options", "alpaca-docs", "trading-exchanges"], "task": "'시장 × 세션 × 주문 유형' 표를 만들고 칸마다 받는다/거절/바꿔 보낸다를 채운다. 가상 주문 12개(지정가·IOC·FOK, 정규장·애프터마켓, 옵션 만기일)를 표에 넣어 결과를 적는다."},
+    {"title": "도메인을 떼어 주문 모델 짜기", "time": "2~3주", "goal": "Spring 없이 도는 주문·체결·잔고 모델에 시장별 규칙을 끼워 넣을 수 있다.", "resources": ["hombergs-clean", "ddd-start", "kia2", "khorikov-unit"], "task": "Kotlin으로 주문 애그리거트와 '시장 규칙'·'브로커' 포트를 만들고, 가짜 브로커가 부분 체결·중복 보고·체결 취소를 내게 해 데이터 표 테스트로 시장 × 유형 조합을 시험한다."},
+    {"title": "DB와 이벤트를 어긋나지 않게", "time": "2~3주", "goal": "체결이 두 번 와도, 서버가 중간에 죽어도 잔고와 이벤트가 맞는다.", "resources": ["internal-spring-db-1", "pg-explain", "ddia-ko", "outbox", "kafka-guide", "wiki-kafka", "aws-idem"], "task": "PostgreSQL에 주문·체결(실행 번호 유일 키)·잔고·아웃박스 표를 만들고 계좌 번호를 키로 Kafka에 체결을 낸다. 같은 체결 두 번·강제 종료를 해 본 뒤 잔고 = 체결 합계 대사 쿼리를 쓴다."},
+    {"title": "권리 사건이 잔고·주문·옵션을 바꾸는 날", "time": "1~2주", "goal": "배당·무상증자·주식 분할이 잔고·미체결 주문·옵션 계약에 미치는 변화를 계산할 수 있다.", "resources": ["groves-ca", "mt564", "data-go-rights", "simmons-ca"], "task": "공공 API에서 실제 권리 일정 몇 건을 받아 가상 계좌 다섯 개에 반영하고, 같은 날 걸린 미체결 주문·옵션 계약(2:1, 3:2 분할)을 어떻게 바꿀지 규칙과 결과를 표로 남긴다. 결정 하나를 ADR로 쓴다."},
+    {"title": "몰림과 바깥 장애에 버티기", "time": "2주", "goal": "부하 시험으로 병목을 찾고, 브로커가 느리거나 끊길 때의 동작을 정해 둔다.", "resources": ["release-it", "aws-retry", "fowler-lmax", "wiki-jvm"], "task": "가짜 브로커에 지연·끊김·체결 취소를 넣고 초당 주문을 늘려 p99 지연과 오류율을 잰다. 재시도 정책을 ADR로 남긴다."}
+  ],
+  "pay": {
+    "summary": "공고에 연봉이 없고 공시 숫자도 찾지 못했다 — 공공데이터 집계 평균 **약 6,032만원**(경력직이 섞인 회사 전체 값)뿐이다",
+    "rows": [
+      {"label": "직원 평균 연봉", "value": "6,032만원", "amount": 6032, "basis": "공공데이터 집계", "note": "원티드 기업 정보 — 금감원 공시정보와 국민연금 가입 사업장 자료로 계산한 집계. 기준 연월이 적혀 있지 않다 [12]"}
+    ],
+    "how": "공고는 연봉을 적지 않았고 전형 끝에 '처우논의' 단계를 둔다 [1]. 넥스트증권의 사업보고서 '직원 1인 평균 급여액'은 찾지 못했다(공시 숫자 없음). 위 평균은 경력직이 대부분인 회사 전체 값이고 파생·기업금융 인력이 섞여 있어, 7년차 이상 개발자가 받는 금액으로 읽으면 안 된다 {추론}. 회사 복지 안내에는 반기 성과 목표에 따라 성과급이 '지급될 수 있다'고 적혀 있다 [11]."
+  },
+  "benefits": {
+    "items": [
+      {"name": "유연 출퇴근", "detail": "월 단위 선택적 유연근무, 오전 7시~10시 사이 자율 출근"},
+      {"name": "원격 근무", "detail": "주 1회"},
+      {"name": "비포괄임금제", "detail": "초과근로수당 별도 지급"},
+      {"name": "자기개발 지원", "detail": "연간 최대 200만원"},
+      {"name": "복지카드", "detail": "연간 150만원"},
+      {"name": "단체보험", "detail": "임직원·배우자·자녀 실손 의료비 보장"},
+      {"name": "건강검진", "detail": "매년 종합건강검진"},
+      {"name": "성과급", "detail": "반기별 성과 목표 달성에 따라 지급될 수 있음"},
+      {"name": "직원 대출", "detail": "주택자금·생활안정자금"},
+      {"name": "특별상여·기념일", "detail": "설·추석 귀성비, 가정의 달 효도비, 연말 지원비 등 연 110만원"},
+      {"name": "특별휴가", "detail": "1년 이상 근무자에게 매년 3일"},
+      {"name": "장기근속 포상", "detail": "10년 근속 400만원과 기념 트로피(20년 포상도 운영)"},
+      {"name": "경조 지원", "detail": "경조 지원"}
+    ],
+    "note": "넥스트증권 채용 사이트의 'Life at Next' 복리후생 안내다 [11]. 작성 연도가 적혀 있지 않고, 공고는 복지가 내부 규정·근로 형태에 따라 달라질 수 있다고 적었다 [1]."
+  },
+  "location": {
+    "name": "넥스트증권 여의도 본사 (Three IFC)",
+    "address": "서울특별시 영등포구 국제금융로 10, Three IFC 12층·15층",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%98%81%EB%93%B1%ED%8F%AC%EA%B5%AC%20%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C%2010",
+    "near": "5·9호선 여의도역 근처 IFC 단지 {추론}",
+    "note": "채용 사이트 하단의 회사 주소다 [11]. 이 공고의 근무지는 '넥스트증권 여의도 본사'이고 [1], 같은 팀 Platform 공고는 근무지를 '3IFC 15층'으로 적었다 [13]."
+  },
+  "sources": [
+    {"n": 1, "title": "넥스트증권 채용 · Backend Engineer(Trading)", "url": "https://nextsecurities.career.greetinghr.com/ko/o/245526", "kind": "posting", "date": "2026-11", "note": "이 공고 — 코어트레이딩플랫폼팀 Trading 파트 소개·일하는 방식(도메인/인프라 분리·테스트·ADR)·업무·기술 스택·필수(7년)·선호·전형(AI Screening)·유의사항"},
+    {"n": 2, "title": "잡코리아 · 넥스트증권 Backend Engineer(해외 주식 주문/체결)", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50360739", "kind": "posting", "note": "같은 팀 시장별 공고 — 5년 이상, FIX 연동·세션 업무, Kotest·JaCoCo"},
+    {"n": 3, "title": "잡코리아 · 넥스트증권 Backend Engineer(국내 주식 주문/체결)", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50360883", "kind": "posting", "note": "같은 팀 시장별 공고 — KRX 연동·시장 세션, 5년 이상"},
+    {"n": 4, "title": "넥스트증권 채용 · Backend Engineer(Accounts & Transfers)", "url": "https://nextsecurities.career.greetinghr.com/ko/o/245528", "kind": "posting", "note": "같은 팀 다른 파트 — 고객·계좌·입출금·이체"},
+    {"n": 5, "title": "넥스트증권 채용 · Backend Engineer(Market Data & FEP)", "url": "https://nextsecurities.career.greetinghr.com/ko/o/245530", "kind": "posting", "note": "같은 팀 대외계 파트 — 거래소·브로커 연계, 실시간 시세, 전문 규격, FIX"},
+    {"n": 6, "title": "넥스트증권 채용 · 파생 업무개발 담당자 (정규직)", "url": "https://nextsecurities.career.greetinghr.com/ko/o/231113", "kind": "posting", "note": "같은 회사 운영 직무 — 파생상품 백오피스 차세대 시스템, 계좌·증거금·담보(대용) 우대, 전형에 AI Screening 없음"},
+    {"n": 7, "title": "넥스트증권 채용 · 국내 주식 결제 및 권리 업무", "url": "https://nextsecurities.career.greetinghr.com/ko/o/172327", "kind": "posting", "note": "같은 회사 운영 직무 — 매매결제·배당 등 권리처리, 예탁원 연계·약정대사"},
+    {"n": 8, "title": "이코노미스트 · MTS 세 번 미룬 넥스트증권…미국주식 API 먼저 꺼낸 이유", "url": "https://economist.co.kr/article/view/ecn202611090035", "kind": "news", "date": "2026-11-16", "note": "오픈 API 기능, 4분기 비공개 베타, MTS 2027년 1분기, 임직원 94→189명"},
+    {"n": 9, "title": "이코노미스트 · 김승연 넥스트증권 대표 연임, 리테일 전환 가속", "url": "https://economist.co.kr/article/view/ecn202611020025", "kind": "news", "date": "2026-11-02", "note": "파생 중개·IB 중심에서 리테일로, 오픈 API → MTS 순서"},
+    {"n": 10, "title": "CEO스코어데일리 · 순익 1000% 오른 넥스트증권…'제2의 토스증권' 성장 가능할까", "url": "https://www.ceoscoredaily.com/page/view/2025031315540734424", "kind": "news", "date": "2025-03-21", "note": "인터랙티브브로커스 150억원 전략적 투자"},
+    {"n": 11, "title": "넥스트증권 채용 · Life at Next(복리후생)", "url": "https://nextsecurities.career.greetinghr.com/ko/lifeatnext", "kind": "company", "note": "복지 항목과 금액, 사이트 하단 회사 주소"},
+    {"n": 12, "title": "원티드 · 넥스트증권 기업 정보(평균연봉)", "url": "https://www.wanted.co.kr/company/52490", "kind": "reference", "note": "금감원 공시정보·국민연금 가입 사업장 공공데이터로 계산한 집계 — 기준 연월 표기 없음"},
+    {"n": 13, "title": "원티드 · 넥스트증권 Backend Engineer(Platform) — 코어트레이딩플랫폼팀", "url": "https://www.wanted.co.kr/wd/400203", "kind": "posting", "note": "같은 팀 다른 공고 — 근무지 주소"},
+    {"n": 14, "title": "Nasdaq · Trading Schedule", "url": "https://www.nasdaq.com/stock-market-trading-hours-for-nasdaq", "kind": "reference", "note": "프리마켓 04:00~09:30, 정규장 09:30~16:00, 애프터마켓 16:00~20:00 ET"},
+    {"n": 15, "title": "FIX Trading Community · FIX 4.4", "url": "https://www.fixtrading.org/standards/fix-4-4/", "kind": "reference", "note": "표준 자료 — 세션(로그온·하트비트·순번)"},
+    {"n": 16, "title": "OnixS FIX 4.4 사전 · OrdStatus(39)", "url": "https://www.onixs.biz/fix-dictionary/4.4/tagNum_39.html", "kind": "reference", "note": "주문 상태 값, 실행 보고의 ExecID·ExecType(체결·체결 취소)"},
+    {"n": 17, "title": "Cboe Titanium U.S. Equities FIX 규격 · Execution Report Message Fields", "url": "https://www.cboe.com/document/tech-spec/content/technical-specifications/cboe-titanium-u.s.-equities-fix-specification/fix-messages/order-protocol---cboe-to-member/execution-report-message-fields", "kind": "reference", "note": "CumQty·LeavesQty·OrdStatus"},
+    {"n": 18, "title": "경북매일 · 미래에셋·삼성, 아침부터 주문 차질…KRX 애프터마켓 개장 앞두고 혼선", "url": "https://kbmaeil.com/article/20260914500303", "kind": "news", "date": "2026-09-14", "note": "KRX 16~20시 애프터마켓 개장, SOR 적용 시간 연장 중 장애"},
+    {"n": 19, "title": "알파스퀘어 · 9월 14일부터 KRX시장 밤 8시까지 거래 가능", "url": "https://alphasquare.co.kr/home/insight/posts/941994a5-b760-4675-8693-ba08d50374f1", "kind": "reference", "date": "2026-09-02", "note": "세션표(시가·종가 단일가, 정규 접속매매, 시간외 종가)"},
+    {"n": 20, "title": "뉴시스 · \"퇴근 후에도 주식거래\"…뭐가 달라지나[제2 증권거래소 출범①]", "url": "https://www.newsis.com/view/NISX20250214_0003065753", "kind": "news", "date": "2025-02-15", "note": "NXT 프리 08:00~08:50·애프터 15:30~20:00, SOR 최선집행"},
+    {"n": 21, "title": "KRX · Limit Orders(주문 유형 안내)", "url": "https://global.krx.co.kr/contents/GLB/06/0602/0602010201/GLB0602010201T2.jsp", "kind": "reference", "note": "지정가 정의 — 매수는 그 가격 이하, 매도는 그 가격 이상. 검색 요약으로 확인"},
+    {"n": 22, "title": "한화투자증권 · 복수시장 주식거래 안내", "url": "https://www.hanwhawm.com/main/center/info/CS181_4p.cmd", "kind": "reference", "note": "다른 증권사 안내 — 최유리·최우선지정가, 조건부지정가 KRX 전용, IOC·FOK, 일부 유형은 09:00~15:20만. 검색 요약으로 확인"},
+    {"n": 23, "title": "KRX · KOSPI 200 Options", "url": "https://global.krx.co.kr/contents/GLB/02/0201/0201040202/GLB0201040202.jsp", "kind": "reference", "note": "계약 규모 = 옵션 가격 × 25만원. 검색 요약으로 확인"},
+    {"n": 24, "title": "다올투자증권 · 코스피200 옵션 상품 안내", "url": "https://www.daolsecurities.com/customer/guide/FuturesIndex03.jsp", "kind": "reference", "note": "다른 증권사 안내 — 가격 단위(10pt 미만 0.01, 이상 0.05), 최종거래일 둘째 목요일, 유럽형. 검색 요약으로 확인"},
+    {"n": 25, "title": "Options Industry Council · Splits, Mergers, Spinoffs & Bankruptcies", "url": "https://www.optionseducation.org/referencelibrary/faq/splits-mergers-spinoffs-bankruptcies", "kind": "reference", "note": "OCC 계약 조정 — 2:1 분할은 계약 2개·행사가 절반, 3:2는 인도 150주·행사가 $40. 검색 요약으로 확인"},
+    {"n": 26, "title": "ISO 15022 MT564 · Field 22F Indicator(Corporate Action Event)", "url": "https://www.iso20022.org/15022/uhb/mt564-5-field-22f.htm", "kind": "reference", "note": "권리 통지 메시지의 사건 종류 코드"},
+    {"n": 27, "title": "공공데이터포털 · 금융위원회_주식권리일정정보", "url": "https://www.data.go.kr/data/15059609/openapi.do", "kind": "reference", "note": "권리 사유별 일정 REST API, 관리 한국예탁결제원"},
+    {"n": 28, "title": "생글생글(한국경제) · 권리락 주가 계산", "url": "https://sgsg.hankyung.com/article/2005111521821", "kind": "reference", "note": "유상·무상 권리락 계산식 — 검색 요약으로 확인, 현행 규정과 다를 수 있다"},
+    {"n": 29, "title": "KB Think · 배당기준일 vs 배당락일", "url": "https://kbthink.com/investment/101/dividend-date.html", "kind": "reference", "note": "국내 결제 이틀(T+2)이라 기준일 2영업일 전까지 매수"},
+    {"n": 30, "title": "Wikipedia · International Securities Identification Number", "url": "https://en.wikipedia.org/wiki/International_Securities_Identification_Number", "kind": "reference", "note": "ISO 6166 — 국가 코드 2 + 9자리 + 검증 숫자 1"},
+    {"n": 31, "title": "아시아경제 · 美주간거래 취소 일파만파…블루오션 \"거래량 급증에 용량 초과\"", "url": "https://core.asiae.co.kr/article/2024080809122174177", "kind": "news", "date": "2024-08-08", "note": "체결 일괄 취소, 19개사·약 9만 계좌"},
+    {"n": 32, "title": "SEC · SEC Finalizes Rules to Reduce Risks in Clearance and Settlement (2023-29)", "url": "https://www.sec.gov/newsroom/press-releases/2023-29", "kind": "reference", "date": "2023-02-15", "note": "T+1 결제, 준수일 2024년 5월 28일"},
+    {"n": 33, "title": "Alistair Cockburn · Hexagonal architecture (2005)", "url": "https://alistair.cockburn.us/hexagonal-architecture/", "kind": "reference", "note": "포트와 어댑터의 원래 글"},
+    {"n": 34, "title": "Michael Nygard · Documenting Architecture Decisions", "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions", "kind": "reference", "date": "2011-11-15"},
+    {"n": 35, "title": "Apache Kafka 문서 · Message Delivery Semantics", "url": "https://kafka.apache.org/documentation/#semantics", "kind": "reference", "note": "파티션 안 순서, 적어도 한 번 전달"},
+    {"n": 36, "title": "microservices.io · Pattern: Transactional outbox", "url": "https://microservices.io/patterns/data/transactional-outbox.html", "kind": "reference"},
+    {"n": 37, "title": "PostgreSQL 문서 · Transaction Isolation", "url": "https://www.postgresql.org/docs/current/transaction-iso.html", "kind": "reference"},
+    {"n": 38, "title": "PostgreSQL 문서 · Using EXPLAIN", "url": "https://www.postgresql.org/docs/current/using-explain.html", "kind": "reference"},
+    {"n": 39, "title": "JaCoCo 문서 · Coverage Counters", "url": "https://www.jacoco.org/jacoco/trunk/doc/counters.html", "kind": "reference", "note": "명령·분기·줄·메서드·클래스"},
+    {"n": 40, "title": "Kotest 문서 · Data Driven Testing", "url": "https://kotest.io/docs/framework/datatesting/data-driven-testing.html", "kind": "reference"},
+    {"n": 41, "title": "Modern Treasury · Accounting for Developers, Part I", "url": "https://www.moderntreasury.com/journal/accounting-for-developers-part-i", "kind": "reference", "note": "복식부기 — 짝 기록, 원장은 고치지 않고 쌓는다"},
+    {"n": 42, "title": "Martin Fowler · The LMAX Architecture", "url": "https://martinfowler.com/articles/lmax.html", "kind": "reference", "note": "한 스레드 순차 처리와 입력 이벤트 재생"},
+    {"n": 43, "title": "AWS Builders' Library · Timeouts, retries, and backoff with jitter", "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/", "kind": "reference"},
+    {"n": 44, "title": "Google SRE Book · Monitoring Distributed Systems", "url": "https://sre.google/sre-book/monitoring-distributed-systems/", "kind": "reference", "note": "네 가지 황금 신호"},
+    {"n": 45, "title": "AWS Builders' Library · Making retries safe with idempotent APIs", "url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-apis/", "kind": "reference"},
+    {"n": 46, "title": "Alpaca 문서 · Orders at Alpaca", "url": "https://docs.alpaca.markets/docs/orders-at-alpaca", "kind": "reference", "note": "다른 증권사 — 주문 상태, 연장 시간 주문은 지정가·당일 유효"},
+    {"n": 47, "title": "SBS Biz · 퇴근길 중소형주도 산다…ETF는 언제?", "url": "https://biz.sbs.co.kr/amp/article/20000334555", "kind": "news", "date": "2026-09-14", "note": "KRX 애프터마켓 — 정규장 미체결 주문은 이월 안 됨"},
+    {"n": 48, "title": "잡코리아 · 넥스트증권 Backend Engineer(계좌 및 종목/상품)", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50360975", "kind": "posting", "note": "같은 팀 다른 파트 — 계좌 코어, 종목·상품 마스터, 배당·유상증자·권리락 계좌 반영"}
+  ],
+  "caveat": "넥스트증권은 기술 블로그·컨퍼런스 발표를 내지 않아 회사 근거는 이 공고·같은 회사 다른 공고·보도 기사뿐입니다. 어느 브로커와 어떤 방식으로 붙는지, 파생상품 주문을 개인 고객에게 어디까지 여는지, 세션별 주문 규칙은 공개되지 않아 거래소 안내·다른 증권사 안내·국제 표준(FIX·MT564·OCC 조정)으로 '보통 이런 것'을 보였습니다. 주문 유형·옵션 규격 일부는 페이지를 직접 열지 못하고 검색 요약으로 확인했습니다(출처 메모에 표시). 일정과 세션은 2026년 11월 기준이라 바뀔 수 있습니다."
+}
