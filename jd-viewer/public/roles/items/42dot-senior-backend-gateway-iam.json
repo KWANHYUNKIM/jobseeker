@@ -1,0 +1,1170 @@
+{
+ "id": "42dot-senior-backend-gateway-iam",
+ "company": "포티투닷",
+ "role": "Senior Backend Engineer",
+ "team": "Open Platform Engineering 팀 (API Gateway · IAM)",
+ "jobs": [
+  "wanted-384995"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "포티투닷 플랫폼의 **API 입구(API Gateway)**와 **누가 누구이고 무엇을 해도 되는지 정하는 시스템(IAM, 인증·인가)**을 설계하고 운영합니다. 같은 팀의 다른 공고는 이 팀이 내부와 외부의 수많은 API 입구를 책임진다고 적었습니다.[1][2]",
+  "env": "게이트웨이 제품으로 **Tyk(오픈소스 API 게이트웨이)**를 이름까지 적었고, 우대사항에 Kubernetes·Istio·Envoy 가 있습니다.[1] 현대차그룹은 그룹 디지털 서비스를 하나의 계정(**Pleos 계정**)으로 묶고 외부 개발자용 플랫폼(Pleos Playground)을 열었는데, 이 팀이 그 어느 부분을 맡는지는 공고에 없습니다.[7][10][35]{추론}",
+  "oneline": "모든 API 요청이 지나가는 **문지기와 출입증 발급소**를 만드는 7년 차 이상 백엔드. OAuth 2.0·OpenID Connect·권한 모델·트래픽 제한을 실무로 다뤄 봤는지를 봅니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "API Gateway 및 서비스 연동 아키텍처를 설계하고 운영합니다.",
+   "short": "밖에서 들어오는 모든 API 요청이 먼저 지나는 관문을 짓고, 뒤의 서비스들과 어떻게 이을지 정해 운영하는 일.",
+   "why": "팀 소개는 이 팀이 **다양한 서비스가 안전하고 안정적으로 연결되는 핵심 플랫폼**을 만든다고 적었고[1], 같은 팀의 다른 공고는 '내부와 외부의 수많은 API의 입구'를 책임진다고 했습니다.[2] 서비스마다 로그인·제한·기록을 따로 만들면 규칙이 갈리므로, 공통 일을 입구 한 곳에 모으는 것이 게이트웨이를 두는 보통의 이유입니다.{추론}[25]",
+   "actually": {
+    "intro": "Tyk 같은 게이트웨이가 하는 일입니다. 포티투닷의 실제 구성(어떤 서비스가 뒤에 있는지, 몇 대인지)은 공개되지 않았습니다.[11][12][13]",
+    "items": [
+     "**길 안내(라우팅)** — 주소·버전·헤더를 보고 요청을 알맞은 뒤쪽 서비스로 보낸다.",
+     "**신원 확인** — API 키·JWT(서명된 출입증)·OAuth 2.0·mTLS(서로 인증서를 확인하는 TLS) 중 API 마다 정한 방식으로 요청자를 확인한다.[11]",
+     "**정책 묶음** — 요청자마다 접근할 수 있는 API·초당 한도·기간 할당량을 '보안 정책(Security Policy)'으로 묶어 붙인다.[11][12]",
+     "**확장(플러그인)** — 기본 기능에 없는 검사는 Go·gRPC·JavaScript 플러그인으로 끼워 넣는다. Tyk 게이트웨이 자체는 MPL 2.0 오픈소스이고 운영에는 Redis 가 필요하다.[13]",
+     "**신원 옮기기** — 넷플릭스는 입구에서 토큰을 확인한 뒤 뒤쪽에는 토큰 대신 내부용 신원 객체(Passport)만 넘겨, 토큰이 입구 너머로 가지 않게 했다.[25]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "요청 하나가 게이트웨이를 지나는 순서 — 보통 이런 것[11][12]",
+     "steps": [
+      "클라이언트 · 앱·파트너 서버·차량",
+      "TLS 종료 · 암호화 풀기",
+      "인증 · 키·JWT·OAuth 토큰 확인",
+      "정책 · 접근 가능 API·한도·할당량",
+      "변환·플러그인 · 헤더 정리, 내부 신원 붙이기",
+      "뒤쪽 서비스 · 실제 처리",
+      "기록 · 접근 로그·지표"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "어떤 서비스를 열지는 각 서비스 팀과 제품 쪽이 정하고{추론}, 이 자리는 **입구의 구조와 규칙을 정하고 그것이 늘 살아 있게** 하는 쪽입니다. 시니어 공고라 '설정을 넣어 봤다'보다 '왜 이 구조로 했고 장애 때 어떻게 됐나'를 설명할 수 있어야 합니다{추론}.",
+   "refs": [
+    1,
+    2,
+    11,
+    12,
+    13,
+    25
+   ],
+   "study": [
+    "tyk-docs",
+    "netflix-edge",
+    "api-security-in-action"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사용자, 서비스 및 API를 위한 인증(Authentication)·인가(Authorization) 시스템을 설계하고 개발합니다.",
+   "short": "'너는 누구냐'(인증)와 '이걸 해도 되냐'(인가)를 사람·서버·API 세 종류 상대에 대해 답하는 시스템을 만든다.",
+   "why": "공고가 상대를 **사용자·서비스·API** 셋으로 나눠 적었습니다.[1] 같은 그룹은 Pleos 계정을 그룹 디지털 서비스를 하나로 쓰는 통합 계정이라고 안내하고[7], Pleos ID 로 로그인하면 차종과 관계없이 내 설정·프로필이 따라온다고 설명합니다.[8] 외부 개발자 콘솔은 프로젝트마다 클라이언트 ID·시크릿을 발급합니다.[9] 이 팀이 그 계정·발급을 직접 만드는지는 공개되지 않았습니다{추론}.",
+   "actually": {
+    "intro": "상대마다 쓰는 방식이 다릅니다 — 표준 문서가 정한 보통의 짝입니다.[14][15][16][34]",
+    "items": [
+     "**사람(사용자)** — 로그인은 OpenID Connect(OAuth 위에 '누가 로그인했나'를 얹은 표준)로, 앱은 인가 코드 + PKCE 흐름으로 토큰을 받는다.[15][16]",
+     "**서버(서비스)** — 사람 없이 도는 서버끼리는 클라이언트 자격 증명(client credentials)이나 mTLS 로 서로를 확인한다.[14][34]",
+     "**API(권한 범위)** — 토큰에 담긴 scope·aud(이 토큰을 받을 대상)로 '어느 API 의 어떤 동작까지'를 정한다.[14][18]",
+     "**토큰 수명** — 짧은 액세스 토큰 + 갱신 토큰. 서명만 보는 JWT 는 만료 전에 되돌릴 수 없어, 즉시 끊어야 하면 토큰 조회(introspection)를 쓴다.[11][19]",
+     "**토큰 바꾸기** — 서비스가 다른 서비스를 대신 부를 때 받은 토큰을 그 대상용으로 바꾸는 표준(Token Exchange)도 있다.[32]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "PKCE — 앱이 '방금 코드를 요청한 게 나'임을 증명하는 법",
+     "body": "앱이 무작위 문자열(verifier)을 만들고 그 SHA-256 값(challenge)만 먼저 보냅니다. 코드를 토큰으로 바꿀 때 원래 문자열을 내면 서버가 맞춰 봅니다. RFC 7636 부록의 예를 직접 돌린 출력입니다.[16]",
+     "lang": "python",
+     "code": "import hashlib, base64\nverifier = \"dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk\"   # RFC 7636 부록 B 의 예\nchallenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b\"=\").decode()\nprint(challenge)   # E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM\nprint(challenge == \"E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM\")   # True"
+    }
+   ],
+   "how_far": "로그인 화면·약관은 제품 쪽 몫이고{추론}, 이 자리는 **토큰을 누가 어떤 조건으로 발급·검증·폐기하는지**를 설계합니다. 최소선은 인가 코드 + PKCE 흐름을 그림 없이 순서대로 말하고, 액세스·갱신·ID 토큰의 차이를 설명하는 것입니다{추론}[15][16].",
+   "refs": [
+    1,
+    7,
+    8,
+    9,
+    11,
+    14,
+    15,
+    16,
+    18,
+    19,
+    32,
+    34
+   ],
+   "study": [
+    "oauth2-in-action",
+    "rfc6749",
+    "oidc-core",
+    "rfc7636"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "안정성, 보안 및 확장성을 고려한 Backend Architecture를 설계하고 기술적 의사결정을 주도합니다.",
+   "short": "입구가 멈추면 모든 서비스가 멈추므로, 안 죽고·뚫리지 않고·늘어나도 버티는 구조를 고르고 그 결정을 이끈다.",
+   "why": "게이트웨이와 인증은 모든 요청이 거치는 길이라, 여기가 느려지거나 멈추면 뒤의 서비스가 멀쩡해도 전부 쓸 수 없습니다{추론}. 같은 팀 공고는 이 팀의 과제로 '고가용성 플랫폼 운영'과 'API 거버넌스(API 를 만들고 여는 규칙)'를 함께 꼽았습니다.[2]",
+   "actually": {
+    "intro": "이런 결정들입니다. 포티투닷이 각각 무엇을 골랐는지는 공개되지 않았습니다.",
+    "items": [
+     "**상태를 어디 두나** — 토큰을 서명만으로 검증(JWT)하면 인증 서버가 잠시 멈춰도 돌지만 즉시 폐기가 어렵고, 매번 조회하면 그 반대다.[11][19]",
+     "**공유 저장소** — Tyk 는 한도·토큰 저장에 Redis 를 쓰므로, Redis 가 죽었을 때 '모두 막을지·모두 열지'를 미리 정해야 한다.[13]{추론}",
+     "**과부하 때** — 다 받다가 다 같이 죽기보다, 덜 중요한 요청을 먼저 거절하고 재시도 폭주를 막는다.[29][30]",
+     "**규칙의 기록** — 왜 그렇게 정했는지 남기는 짧은 결정 문서(ADR, 맥락·결정·결과)로 다음 사람이 같은 논쟁을 되풀이하지 않게 한다.[36]"
+    ]
+   },
+   "how_far": "'기술적 의사결정을 주도'는 혼자 정하라는 뜻이 아니라, 선택지와 대가를 적어 다른 팀과 합의를 끌어내라는 뜻으로 읽힙니다{추론}. 7년 차 이상 요건이라 **고른 이유와 버린 대안**을 말할 수 있는 결정 사례가 필요합니다.[1]{추론}",
+   "refs": [
+    1,
+    2,
+    11,
+    13,
+    19,
+    29,
+    30,
+    36
+   ],
+   "study": [
+    "sre-book",
+    "system-design-ko",
+    "adr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "API 보안 정책, 접근 제어 및 트래픽 관리 체계를 구축하고 운영합니다.",
+   "short": "누가 어떤 API 를 얼마나 자주 부를 수 있는지 규칙으로 정하고, 넘치면 막는 장치를 입구에 거는 일.",
+   "why": "OWASP 의 API 보안 10대 위험(2023)은 **남의 데이터를 번호만 바꿔 읽는 객체 수준 인가 실패**를 1위에, 자원을 무제한으로 쓰게 두는 것을 4위에 올렸습니다.[21] 같은 팀 공고는 '외부 트래픽 흐름에 맞춘 보안 정책 및 접근 제어 로직'을 업무로 적었습니다.[2]",
+   "actually": {
+    "intro": "Tyk 문서가 정리한 트래픽 관리의 실제 모양입니다.[12]",
+    "items": [
+     "**초당 한도(rate limit)와 기간 할당량(quota)은 다르다** — 한도를 넘으면 429, 할당량을 다 쓰면 403 을 돌려준다.",
+     "**한도 계산 방식** — 기본은 게이트웨이마다 나눠 세는 토큰 버킷(DRL, 근사치), 정확한 전체 한도가 필요하면 Redis 에 모아 세는 슬라이딩 윈도.",
+     "**층** — API 전체 한도와 요청자(키)별 한도가 따로 있고, 엔드포인트별로도 건다. API 전체 한도가 먼저 적용된다.",
+     "**묶어 세기** — 여러 키가 하나의 한도를 나눠 쓰게 할 수도 있다(같은 파트너사의 여러 키 등).",
+     "**보안 정책** — 접근 가능한 API 목록·허용 메서드·IP 같은 조건을 정책으로 붙이고, 차단·허용을 기록한다.[11][21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "토큰 버킷 — 초당 5건, 한꺼번에 10건까지",
+     "body": "통에 토큰이 초당 5개씩 차고 최대 10개까지 쌓입니다. 0초에 12건이 몰리면 10건만 통과하고 2건은 429 입니다. 0.2초 뒤에는 토큰 1개만 찼으므로 다음 두 건은 200, 429 입니다(직접 돌린 출력).[12]",
+     "lang": "python",
+     "code": "class TokenBucket:\n    def __init__(self, rate, burst):\n        self.rate, self.burst = rate, burst      # 초당 채움, 최대 보관\n        self.tokens, self.last = burst, 0.0\n    def allow(self, now):\n        self.tokens = min(self.burst, self.tokens + (now - self.last) * self.rate)\n        self.last = now\n        if self.tokens >= 1:\n            self.tokens -= 1\n            return 200\n        return 429\n\nb = TokenBucket(rate=5, burst=10)\nfirst = [b.allow(0.0) for _ in range(12)]\nprint(first.count(200), first.count(429))   # 10 2\nprint(b.allow(0.2), b.allow(0.2))           # 200 429"
+    }
+   ],
+   "how_far": "한도 숫자는 서비스 팀·계약(파트너 등급)이 정하고{추론}, 이 자리는 **그 숫자를 정확히 지키는 장치와, 숫자를 바꾸는 절차**를 만듭니다. 최소선은 고정 창·슬라이딩 창·토큰 버킷의 차이와 여러 대에서 셀 때의 오차를 설명하는 것입니다.[12]{추론}",
+   "refs": [
+    2,
+    11,
+    12,
+    21
+   ],
+   "study": [
+    "tyk-ratelimit",
+    "owasp-api",
+    "system-design-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "코드 및 설계 리뷰를 통해 기술 품질을 향상시키고, 다양한 조직과 협업하여 기술 문제를 해결합니다.",
+   "short": "인증·게이트웨이는 작은 실수가 곧 보안 구멍이라, 남의 코드와 설계를 같이 읽어 거르고 다른 팀 문제를 함께 푼다.",
+   "why": "게이트웨이·IAM 은 모든 서비스 팀이 붙어 쓰는 플랫폼이라, 연동 방식이 틀리면 여러 팀에 한꺼번에 문제가 퍼집니다{추론}. 공고 자격요건에도 '다양한 이해관계자와 협업하며 기술적 의사결정'이 따로 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**설계 리뷰** — 새 서비스가 게이트웨이에 붙을 때 어떤 인증 방식·scope·한도를 쓸지 같이 정한다{추론}.",
+     "**보안 관점 리뷰** — 토큰 검증 누락, 헤더의 alg 를 믿는 실수, 오류 메시지에 내부 정보가 새는 것 같은 흔한 구멍을 본다.[20][21]",
+     "**리뷰의 기준** — 구글 엔지니어링 실무 문서는 '코드베이스 전체 건강을 나아지게 하면 승인'을 기준으로 든다.[37]",
+     "**문제 같이 풀기** — 401·403·429 가 났을 때 게이트웨이 탓인지 서비스 탓인지 가르는 기록·추적을 함께 본다{추론}."
+    ]
+   },
+   "how_far": "리뷰어로서 **왜 위험한지 근거를 들어** 말하고, 다른 팀이 혼자 붙을 수 있게 연동 안내를 남기는 수준입니다{추론}.",
+   "refs": [
+    1,
+    20,
+    21,
+    37
+   ],
+   "study": [
+    "google-review",
+    "owasp-api"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "플랫폼의 안정성과 운영 효율성을 지속적으로 개선합니다.",
+   "short": "입구가 덜 멈추게, 멈춰도 빨리 돌아오게, 운영에 드는 손이 줄게 계속 고쳐 나가는 일.",
+   "why": "게이트웨이·인증은 하루라도 멈추면 모든 서비스가 같이 멈추는 자리라 '지속적으로'가 붙어 있습니다{추론}. 구글 SRE 책은 과부하가 다른 서버로 번지는 연쇄 장애를 막는 법을 따로 다룹니다.[30]",
+   "actually": {
+    "intro": "보통 이런 일입니다 — 회사의 실제 지표·목표값은 공개되지 않았습니다.",
+    "items": [
+     "**지표** — 요청 수·지연·오류율을 API·요청자별로 보고, 인증 실패율이 갑자기 오르면 경보{추론}.",
+     "**과부하 대응** — 재시도에 한도를 두고, 서버가 감당 못 하면 일찍 거절한다.[29][30]",
+     "**설정 배포** — 정책·한도 변경을 손으로 하지 않고 코드처럼 검토·배포·되돌리기{추론}.",
+     "**사후 분석** — 장애 뒤 사람 탓이 아니라 원인과 재발 방지를 적는다.[31]"
+    ]
+   },
+   "refs": [
+    29,
+    30,
+    31
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Backend 시스템 설계, 개발 및 운영 전반에 대한 7년 이상의 실무 경험",
+   "short": "만들기만이 아니라 운영·장애까지 겪어 본 7년 이상. 같은 팀의 다른 공고는 3년 이상을 뽑는다.",
+   "why": "같은 Open Platform Engineering 팀이 '경력 3년 이상'의 Backend Engineer 공고를 따로 냈습니다.[2] 이 공고는 7년 이상에 업무에 '아키텍처 설계와 기술적 의사결정 주도'가 더 붙어, 팀의 방향을 잡는 자리로 읽힙니다.[1]{추론}",
+   "how_far": "연차 숫자보다 **설계 → 개발 → 운영(장애 대응 포함)을 한 시스템에서 끝까지** 해 본 이력이 중요합니다{추론}. 원티드 표기 경력은 7~14년입니다.[1]",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "system-design-ko",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "API Gateway(Tyk 또는 유사 솔루션) 구축 및 운영 경험",
+   "short": "Tyk 를 직접 썼거나 Kong·Envoy 같은 비슷한 게이트웨이를 세우고 운영해 봤어야 한다.",
+   "why": "제품 이름까지 적은 것은 Tyk 를 쓰고 있거나 쓸 계획이라는 신호입니다{추론}. 같은 팀 공고는 'Tyk 또는 유사한 API Gateway 운영 및 **커스터마이징**'이라 적어, 설정을 넘어 플러그인으로 고쳐 쓰는 일까지 봅니다.[2]",
+   "actually": {
+    "intro": "Tyk 로 하면 보통 이런 일입니다.[11][12][13]",
+    "items": [
+     "**API 정의** — 주소·뒤쪽 서비스·인증 방식·버전을 API 마다 설정한다.",
+     "**키·정책 관리** — 요청자 세션에 정책을 붙여 접근 범위·한도·할당량을 준다.[11]",
+     "**플러그인** — Go(가장 빠름)·gRPC(아무 언어)·JavaScript 로 요청 전후에 검사·변환을 끼운다.[13]",
+     "**운영** — 게이트웨이 여러 대 + Redis. 무료 오픈소스는 게이트웨이·Pump(지표 내보내기)이고, 대시보드·개발자 포털은 유료 제품이다.[13]",
+     "**버전 따라가기** — 외부 OpenID Connect 연동 같은 옛 방식이 5.7 에서 폐기 예정이 되고 5.14 의 새 방식으로 바뀌는 식이라, 업그레이드 계획이 필요하다.[11]"
+    ]
+   },
+   "how_far": "Tyk 경험이 없어도 '유사 솔루션'이 허용됩니다.[1] 최소선은 게이트웨이 한 종류를 직접 세워 인증·한도·플러그인을 걸어 보고, 몇 대로 늘렸을 때 무엇이 공유돼야 하는지 설명하는 것입니다{추론}.",
+   "refs": [
+    1,
+    2,
+    11,
+    12,
+    13
+   ],
+   "study": [
+    "tyk-docs",
+    "tyk-ratelimit"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "IAM(Identity & Access Management), 인증·인가 및 권한 관리에 대한 이해와 실무 경험",
+   "short": "계정을 만들고, 로그인시키고, 권한을 주고 빼는 전 과정을 직접 만들거나 운영해 봤어야 한다.",
+   "why": "이 팀의 이름에 IAM 이 들어 있습니다.[1] 같은 팀 공고는 IAM 도메인을 '인증·인가, 사용자 관리, 권한 모델'로 풀어 적었습니다.[2]",
+   "actually": {
+    "intro": "IAM 이 다루는 것 — 보통 이런 범위입니다.",
+    "items": [
+     "**신원** — 사람 계정·서비스 계정·외부 클라이언트(앱) 등록과 그 수명(만들기·정지·삭제){추론}.",
+     "**인증** — 비밀번호·소셜 로그인·다중 인증, 그 결과로 토큰 발급.[15]",
+     "**인가** — 역할·속성·관계로 '이 동작을 해도 되나'를 판정.[22][23][24]",
+     "**권한 관리** — 권한 주기·회수, 오래 안 쓴 권한 정리, 누가 언제 바꿨는지 기록{추론}.",
+     "**통합 계정** — 한 계정으로 여러 서비스를 쓰는 구조. 현대차그룹은 2025-10-29 부터 새 계정을 Pleos 계정으로만 만들게 했다.[7]"
+    ]
+   },
+   "how_far": "IAM 제품(Keycloak 등)을 붙여 본 것과 직접 만든 것 둘 다 실무 경험입니다{추론}. 최소선은 **인증과 인가를 섞지 않고 설명**하고, 권한을 어디에 저장해 어디서 판정하는지 그려 보는 것입니다{추론}.",
+   "refs": [
+    1,
+    2,
+    7,
+    15,
+    22,
+    23,
+    24
+   ],
+   "study": [
+    "api-security-in-action",
+    "oauth2-in-action"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "OAuth 2.0, OpenID Connect 등 인증·인가 표준 프로토콜에 대한 이해",
+   "short": "남의 서비스가 사용자 대신 API 를 부르게 하는 표준(OAuth)과, 로그인 결과를 알려 주는 표준(OIDC)을 안다.",
+   "why": "같은 그룹의 외부 개발자 콘솔이 프로젝트마다 클라이언트 ID·시크릿을 준다는 것은 OAuth 식 클라이언트 등록을 뜻합니다.[9]{추론} Tyk 도 OAuth 2.0 서버 역할과 외부 OIDC 제공자의 토큰 검증 둘 다를 지원합니다.[11]",
+   "actually": {
+    "intro": "'이해'는 보통 이런 것을 말할 수 있는 수준입니다.[14][15][16][17]",
+    "items": [
+     "**역할 넷** — 자원 소유자(사용자)·클라이언트(앱)·인가 서버(토큰 발급)·자원 서버(API).[14]",
+     "**흐름 고르기** — 사람이 있으면 인가 코드 + PKCE, 서버끼리는 클라이언트 자격 증명. 2025-01 의 보안 권고(RFC 9700)는 토큰을 바로 돌려주는 암묵적(implicit) 흐름을 쓰지 말라고 했다.[17]",
+     "**PKCE 는 모두에게** — 같은 권고는 공개 클라이언트(앱)에 PKCE 를 필수로, 시크릿을 지키는 서버에도 권장으로 바꿨고 S256 방식을 쓰라고 했다.[17]",
+     "**OIDC 가 더하는 것** — ID 토큰(누가 언제 어디서 로그인했나)·사용자 정보 엔드포인트·nonce(재사용 막기).[15]",
+     "**JWT 검증** — 서명·만료(exp)·발급자(iss)·대상(aud)을 다 본다. 헤더의 alg 를 그대로 믿지 않는다.[18][20]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "JWT 검증 — 무엇을 빼먹으면 뚫리나",
+     "body": "표준 라이브러리만으로 HS256 토큰을 만들고 검증한 직접 돌린 출력입니다. 대상이 다른 API, 만료, alg 를 none 으로 바꾼 토큰, 내용을 바꾼 토큰이 모두 걸러집니다.[18][20] 출력은 위에서부터 통과: user-1 / 거부: 대상(aud) / 거부: 만료 / 거부: alg / 거부: 서명. 실무에서는 검증된 라이브러리를 쓰고, 이건 검사 항목을 보이려는 예입니다.",
+     "lang": "python",
+     "code": "import base64, hashlib, hmac, json\ndef b64(b): return base64.urlsafe_b64encode(b).rstrip(b\"=\").decode()\ndef ub64(s): return base64.urlsafe_b64decode(s + \"=\" * (-len(s) % 4))\nKEY = b\"demo-secret\"\ndef mac(h, p): return b64(hmac.new(KEY, f\"{h}.{p}\".encode(), hashlib.sha256).digest())\ndef sign(payload, alg=\"HS256\"):\n    h = b64(json.dumps({\"alg\": alg, \"typ\": \"JWT\"}).encode())\n    p = b64(json.dumps(payload).encode())\n    return f\"{h}.{p}.{mac(h, p) if alg == 'HS256' else ''}\"\ndef verify(tok, aud, now):\n    h, p, s = tok.split(\".\")\n    if json.loads(ub64(h))[\"alg\"] != \"HS256\":\n        return \"거부: alg\"                      # 헤더가 말하는 alg 를 믿지 않는다\n    if not hmac.compare_digest(s, mac(h, p)):\n        return \"거부: 서명\"\n    c = json.loads(ub64(p))\n    if c[\"exp\"] <= now:\n        return \"거부: 만료\"\n    if c[\"aud\"] != aud:\n        return \"거부: 대상(aud)\"\n    return \"통과: \" + c[\"sub\"]\n\nnow = 1_800_000_000\nok = sign({\"sub\": \"user-1\", \"aud\": \"vehicle-api\", \"exp\": now + 300})\nprint(verify(ok, \"vehicle-api\", now))        # 통과: user-1\nprint(verify(ok, \"billing-api\", now))\nprint(verify(ok, \"vehicle-api\", now + 301))\nprint(verify(sign({\"sub\": \"admin\", \"aud\": \"vehicle-api\", \"exp\": now + 300}, alg=\"none\"), \"vehicle-api\", now))\nh, p, s = ok.split(\".\")\nforged = h + \".\" + b64(json.dumps({\"sub\": \"admin\", \"aud\": \"vehicle-api\", \"exp\": now + 300}).encode()) + \".\" + s\nprint(verify(forged, \"vehicle-api\", now))"
+    }
+   ],
+   "how_far": "RFC 를 외우는 것이 아니라 **흐름마다 무엇을 막으려고 그 단계가 있는지** 설명할 수 있는 정도입니다{추론}. 면접에서 '왜 implicit 을 안 쓰나', '왜 PKCE 인가'는 바로 나올 만한 질문입니다{추론}[17].",
+   "refs": [
+    9,
+    11,
+    14,
+    15,
+    16,
+    17,
+    18,
+    20
+   ],
+   "study": [
+    "oauth2-in-action",
+    "rfc6749",
+    "oidc-core",
+    "rfc9700",
+    "rfc7636"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "API 보안, 접근 제어 및 트래픽 관리 경험",
+   "short": "API 를 노리는 흔한 공격을 막고, 남의 데이터 접근을 차단하고, 몰리는 요청을 조절해 본 경험.",
+   "why": "업무 넷째 줄(보안 정책·접근 제어·트래픽 관리)을 그대로 해 봤는지 묻는 요건입니다.[1] OWASP API 보안 10대 위험의 상위 항목이 인가 실패와 자원 무제한 사용입니다.[21]",
+   "actually": {
+    "intro": "OWASP API Security Top 10(2023)에서 이 자리와 직접 닿는 것들입니다.[21]",
+    "items": [
+     "**객체 수준 인가(1위)** — /vehicles/123 의 123 을 124 로 바꾸면 남의 차가 보이는 문제. 입구만이 아니라 서비스 안에서도 소유를 확인해야 한다.",
+     "**인증 결함(2위)** — 토큰 검증 누락, 무차별 대입에 한도가 없는 로그인.",
+     "**자원 무제한 사용(4위)** — 한도·크기 제한이 없어 비용·장애로 이어지는 것.",
+     "**기능 수준 인가(5위)** — 일반 사용자가 관리자 API 를 부를 수 있는 것.",
+     "**관리 안 된 API(9위)** — 옛 버전·시험용 API 가 문 열린 채 남는 것 — 게이트웨이 목록이 곧 API 재고표가 된다{추론}."
+    ]
+   },
+   "how_far": "이 중 몇 가지를 **실제로 막아 본 사례**(무엇을 보고 알았고, 어디에 무엇을 걸었나)를 말할 수 있어야 합니다{추론}.",
+   "refs": [
+    1,
+    21
+   ],
+   "study": [
+    "owasp-api",
+    "api-security-in-action"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 이해관계자와 협업하며 기술적인 의사결정을 이끌어본 경험",
+   "short": "플랫폼을 쓰는 여러 팀·보안·제품 쪽 사이에서 기술 선택을 설명하고 합의를 끌어내 본 경험.",
+   "why": "게이트웨이·IAM 은 거의 모든 서비스 팀이 쓰는 플랫폼이라 한 번의 결정(예: 토큰 형식 바꾸기)이 여러 팀 일정을 건드립니다{추론}. 업무 셋째 줄의 '기술적 의사결정 주도'와 짝입니다.[1]",
+   "actually": {
+    "items": [
+     "**결정 문서** — 맥락·선택지·결정·결과를 짧게 적어 공유하고 남긴다(ADR).[36]",
+     "**옮겨 가기 계획** — 인증 방식을 바꾸면 옛 방식과 새 방식을 한동안 같이 받고, 팀별로 옮긴 뒤 끈다{추론}.",
+     "**다른 언어로 설명** — 보안 담당에게는 위험, 서비스 팀에게는 바꿔야 할 코드, 제품 쪽에게는 사용자 영향으로{추론}."
+    ]
+   },
+   "how_far": "'이끌어 본'이라 참여가 아니라 **내가 제안하고 반대를 받아 조정한** 사례가 필요합니다{추론}. 면접 2차가 3시간 내외로 길어 이런 사례를 깊게 물을 여지가 있습니다.[1]{추론}",
+   "refs": [
+    1,
+    36
+   ],
+   "study": [
+    "adr"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "고성능·고가용성 인증 시스템 또는 API 플랫폼 설계 경험",
+   "short": "모든 요청이 인증을 거치므로, 인증이 빠르고 절대 멈추지 않게 설계해 본 경험이면 좋다.",
+   "why": "요청마다 인증·인가 판정이 들어가므로 이 판정의 지연이 곧 모든 API 의 지연에 더해집니다{추론}. 구글의 권한 시스템 Zanzibar 는 수백 개 서비스의 권한 판정을 맡으며 3년간 95% 지연 10ms 미만, 가용성 99.999% 넘게 유지했다고 발표했습니다.[24]",
+   "actually": {
+    "intro": "보통 쓰는 방법입니다.",
+    "items": [
+     "**로컬 검증** — 서명 토큰(JWT)은 공개키만 있으면 게이트웨이가 인증 서버에 묻지 않고 검증한다. 대신 폐기가 늦다.[11][18]",
+     "**조회 결과 캐시** — 토큰 조회(introspection)를 쓰면 결과를 잠시 캐시하되, 캐시 시간은 토큰 만료를 넘기지 않는다.[11]",
+     "**공개키 교체** — 서명 키를 바꿀 때 옛 키와 새 키를 한동안 같이 공개해 검증이 끊기지 않게 한다{추론}.",
+     "**여러 대·여러 지역** — 한도·세션 저장소(Redis)를 어떻게 나누고 복제할지가 곧 가용성이다.[12][13]"
+    ]
+   },
+   "refs": [
+    11,
+    12,
+    13,
+    18,
+    24
+   ],
+   "study": [
+    "zanzibar",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "RBAC, ABAC 등 권한 모델 설계 및 운영 경험",
+   "short": "권한을 역할로 줄지(RBAC), 조건으로 판정할지(ABAC) 정하고 그 규칙을 운영해 본 경험이면 좋다.",
+   "why": "같은 팀 공고는 이를 '복합 권한 모델'이라 부르고 '외부 파트너 또는 다양한 클라이언트 환경'에 맞춘 인증 설계를 함께 우대했습니다.[2] 파트너마다·차량마다·사용자마다 다른 권한이 필요하다는 뜻으로 읽힙니다{추론}.",
+   "actually": {
+    "intro": "두 모델의 표준 설명입니다.[22][23]",
+    "items": [
+     "**RBAC(역할 기반)** — 사람에게 역할을 주고 역할에 권한을 단다. 이해가 쉽지만 조건이 늘면 역할이 폭발한다.[23]",
+     "**ABAC(속성 기반)** — 사용자·대상·환경의 속성(소속·소유·시간·상태)으로 규칙을 판정한다. NIST SP 800-162 가 정의와 구성 요소를 정리했다.[22]",
+     "**관계 기반(ReBAC)** — '이 문서의 편집자'처럼 관계로 권한을 잇는다. 구글 Zanzibar 가 대표 예.[24]",
+     "**정책을 코드로** — 규칙을 별도 정책 엔진(OPA 등)에 두고 서비스는 '허용?'만 묻는다.[33]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "역할만 보면 되는 것 vs 조건까지 봐야 하는 것",
+     "body": "가상의 차량 관리 권한입니다. 역할(fleet-admin)만 보면 원격 명령이 허용되지만, '같은 회사 차일 것', '서 있을 것'이라는 속성 조건을 더하면 남의 회사 차와 달리는 차는 막힙니다(직접 돌린 출력). 규칙은 예시일 뿐 포티투닷의 실제 규칙이 아닙니다.",
+     "lang": "python",
+     "code": "ROLES = {\"fleet-admin\": {\"vehicle:read\", \"vehicle:command\"}, \"viewer\": {\"vehicle:read\"}}\n\ndef rbac(user, action):\n    return any(action in ROLES[r] for r in user[\"roles\"])\n\ndef abac(user, action, vehicle):\n    if not rbac(user, action):\n        return False\n    same_org = user[\"org\"] == vehicle[\"owner_org\"]\n    if action == \"vehicle:command\":\n        return same_org and vehicle[\"speed_kmh\"] == 0\n    return same_org\n\nkim = {\"roles\": [\"fleet-admin\"], \"org\": \"A렌터카\"}\nprint(rbac(kim, \"vehicle:command\"))                                          # True\nprint(abac(kim, \"vehicle:command\", {\"owner_org\": \"A렌터카\", \"speed_kmh\": 0}))   # True\nprint(abac(kim, \"vehicle:command\", {\"owner_org\": \"B물류\", \"speed_kmh\": 0}))     # False\nprint(abac(kim, \"vehicle:command\", {\"owner_org\": \"A렌터카\", \"speed_kmh\": 60}))  # False"
+    }
+   ],
+   "refs": [
+    2,
+    22,
+    23,
+    24,
+    33
+   ],
+   "study": [
+    "nist-abac",
+    "zanzibar",
+    "opa-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kubernetes, Istio, Envoy 등 Cloud Native 환경에서의 플랫폼 개발 경험",
+   "short": "입구 뒤의 서비스끼리도 서로 인증하고 권한을 따지는 쿠버네티스·서비스 메시 환경을 다뤄 봤으면 좋다.",
+   "why": "공고의 기술 태그에 Kubernetes 가 있고[1], 같은 팀 공고는 같은 줄을 '클라우드 네이티브 환경에서의 **보안 통합** 경험'으로 적었습니다.[2] 게이트웨이가 바깥 입구라면, Istio·Envoy 는 안쪽 서비스 사이의 길목에서 비슷한 일을 합니다{추론}.",
+   "actually": {
+    "intro": "공식 문서가 설명하는 안쪽 보안입니다.[26][27][28]",
+    "items": [
+     "**서비스 사이 mTLS** — Istio 는 서비스마다 인증서를 주고 서로 확인하게 한다(서비스의 신원).[26]",
+     "**요청 인증** — Istio 의 RequestAuthentication 으로 들어온 JWT 를 검증하고, AuthorizationPolicy 로 누가 어느 경로를 부를지 허용·거부한다.[26]",
+     "**외부 판정 맡기기** — Envoy 의 ext_authz 필터는 요청마다 바깥 인가 서비스에 '허용?'을 묻는다 — 우리 IAM 을 여기에 붙일 수 있다.[27]",
+     "**클러스터 자체 권한** — 쿠버네티스 API 를 누가 쓰나는 쿠버네티스 RBAC 로 따로 정한다.[28]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    26,
+    27,
+    28
+   ],
+   "study": [
+    "istio-in-action",
+    "istio-security",
+    "envoy-extauthz",
+    "k8s-rbac"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 트래픽 환경에서의 성능 최적화 및 장애 대응 경험",
+   "short": "요청이 몰릴 때 입구가 느려지거나 무너지지 않게 다듬고, 무너졌을 때 빨리 되살려 본 경험이면 좋다.",
+   "why": "현대차그룹은 Pleos 를 2030년까지 2,000만 대 넘는 차에 싣겠다고 밝혔습니다.[10] 차·앱·파트너 서버가 모두 API 를 부르면 입구의 트래픽도 그만큼 커집니다{추론}.",
+   "actually": {
+    "intro": "구글 SRE 책이 정리한 과부하·연쇄 장애 대응입니다.[29][30]",
+    "items": [
+     "**일찍 거절하기** — 감당 못 할 요청은 오래 붙잡지 말고 바로 거절해 나머지를 살린다.[29]",
+     "**재시도 제한** — 실패하면 모두가 다시 보내 부하가 몇 배가 된다. 재시도 횟수·예산을 두고 간격을 벌린다.[30]",
+     "**중요도 나누기** — 같은 과부하라도 로그인·결제 같은 중요한 요청을 먼저 받는다{추론}[29].",
+     "**병목 찾기** — 게이트웨이 지연이 인증 조회·Redis·플러그인·뒤쪽 서비스 중 어디서 오는지 구간별로 잰다{추론}."
+    ]
+   },
+   "refs": [
+    10,
+    29,
+    30
+   ],
+   "study": [
+    "sre-book",
+    "system-design-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "신규 기술 검토(PoC)부터 서비스 적용 및 운영까지 주도한 경험",
+   "short": "새 기술을 작게 시험해 보고(PoC), 쓸 만하면 실제 서비스에 넣어 운영까지 끌고 가 본 경험이면 좋다.",
+   "why": "팀 소개에 '차세대 API 플랫폼의 기술 방향을 함께 만들어갑니다'가 있습니다.[1] 게이트웨이 제품의 인증 방식도 판이 바뀌며 옛 방식이 폐기 예정이 되므로, 새 방식을 검토해 옮기는 일이 실제로 생깁니다.[11]",
+   "actually": {
+    "items": [
+     "**검토 기준 먼저** — 성능·운영 부담·보안·비용·라이선스를 표로 정하고 시험한다{추론}.",
+     "**작게 시험** — 트래픽 일부만 새 경로로 보내 비교한다{추론}.",
+     "**퍼뜨리기** — 같은 팀 공고는 이를 'PoC 수행 및 **전파**'로 적었다 — 결과를 문서·발표로 다른 팀에 알리는 것까지.[2]"
+    ]
+   },
+   "how_far": "PoC 로 끝난 이야기보다 **운영까지 간(또는 접은) 이유**를 말할 수 있는 사례가 이 줄에 맞습니다{추론}.",
+   "refs": [
+    1,
+    2,
+    11
+   ],
+   "study": [
+    "adr"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "tyk-docs",
+   "title": "Tyk Documentation · Client Authentication",
+   "by": "Tyk Technologies",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://tyk.io/docs/api-management/client-authentication",
+   "why": "Tyk 요건 — 지원하는 인증 방식(키·JWT·OAuth·mTLS·HMAC), 세션과 보안 정책의 관계, JWT 폐기 문제와 토큰 조회를 한 페이지에서."
+  },
+  {
+   "id": "tyk-ratelimit",
+   "title": "Tyk Documentation · Rate Limiting",
+   "by": "Tyk Technologies",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://tyk.io/docs/api-management/rate-limit",
+   "why": "트래픽 관리 요건 — 토큰 버킷(DRL)과 Redis 슬라이딩 윈도의 차이, API·키·엔드포인트 층, 429 와 403(할당량)의 구분."
+  },
+  {
+   "id": "oauth2-in-action",
+   "title": "OAuth 2 in Action",
+   "by": "Justin Richer · Antonio Sanso · Manning · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/oauth-2-in-action",
+   "why": "OAuth 2.0 요건 — 클라이언트·인가 서버·자원 서버를 직접 짜 보며 흐름을 익힌다. 출판 뒤 나온 RFC 9700 권고(implicit 금지·PKCE)는 따로 본다."
+  },
+  {
+   "id": "api-security-in-action",
+   "title": "API Security in Action",
+   "by": "Neil Madden · Manning · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/api-security-in-action",
+   "why": "API 보안 요건 전반 — 인증·인가·감사 로그·처리율 제한·토큰을 하나의 API 를 만들며 차례로. 서비스 사이 인증(마이크로서비스·쿠버네티스)도 다룬다."
+  },
+  {
+   "id": "system-design-ko",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "why": "트래픽 관리 — 처리율 제한 장치 설계 장에서 알고리즘(토큰 버킷·고정 창·이동 창)과 여러 서버에서 셀 때의 문제를 한국어로."
+  },
+  {
+   "id": "rfc6749",
+   "title": "RFC 6749 · The OAuth 2.0 Authorization Framework",
+   "by": "IETF · 2012",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://datatracker.ietf.org/doc/html/rfc6749",
+   "why": "OAuth 2.0 원문 — 1장(역할·흐름 그림)과 4장(허가 방식)만 먼저."
+  },
+  {
+   "id": "oidc-core",
+   "title": "OpenID Connect Core 1.0",
+   "by": "OpenID Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "why": "OpenID Connect 요건 — ID 토큰의 항목과 검증 순서, nonce."
+  },
+  {
+   "id": "rfc7636",
+   "title": "RFC 7636 · Proof Key for Code Exchange (PKCE)",
+   "by": "IETF · 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7636",
+   "why": "앱 로그인 흐름 — verifier·challenge 계산과 부록의 예로 직접 맞춰 본다."
+  },
+  {
+   "id": "rfc9700",
+   "title": "RFC 9700 · Best Current Practice for OAuth 2.0 Security",
+   "by": "IETF · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://datatracker.ietf.org/doc/html/rfc9700",
+   "why": "OAuth 를 '안전하게' 쓰는 지금의 기준 — implicit 금지, 모든 클라이언트에 PKCE, 토큰 재사용 막기. 면접 질문이 여기서 나온다."
+  },
+  {
+   "id": "owasp-api",
+   "title": "OWASP API Security Top 10 — 2023",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+   "why": "API 보안·접근 제어 요건 — 실제로 자주 뚫리는 열 가지와 막는 법. 리뷰 점검표로 쓴다."
+  },
+  {
+   "id": "nist-abac",
+   "title": "NIST SP 800-162 · Guide to Attribute Based Access Control (ABAC) Definition and Considerations",
+   "by": "NIST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://csrc.nist.gov/pubs/sp/800/162/upd2/final",
+   "why": "ABAC 우대 — 속성·정책·판정 지점(PDP)·집행 지점(PEP)을 표준 용어로."
+  },
+  {
+   "id": "zanzibar",
+   "title": "Zanzibar: Google's Consistent, Global Authorization System",
+   "by": "Ruoming Pang 외 · USENIX ATC 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.usenix.org/conference/atc19/presentation/pang",
+   "why": "고성능·고가용성 권한 시스템 우대 — 수백 개 서비스의 권한 판정을 한 시스템이 맡는 설계(관계 기반 모델·일관성·캐시)."
+  },
+  {
+   "id": "netflix-edge",
+   "title": "Edge Authentication and Token-Agnostic Identity Propagation",
+   "by": "Netflix Technology Blog · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://netflixtechblog.com/edge-authentication-and-token-agnostic-identity-propagation-514e47e0b602",
+   "why": "게이트웨이 + 인증 구조 — 입구에서 토큰을 확인하고 안쪽에는 내부 신원만 넘기는 실제 사례."
+  },
+  {
+   "id": "istio-in-action",
+   "title": "Istio in Action",
+   "by": "Christian E. Posta · Rinor Maloku · Manning · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.manning.com/books/istio-in-action",
+   "why": "Istio·Envoy 우대 — 서비스 메시의 트래픽 제어·mTLS·인가 정책을 실습으로."
+  },
+  {
+   "id": "istio-security",
+   "title": "Istio · Security Concepts",
+   "by": "Istio",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "why": "서비스 신원·mTLS·RequestAuthentication·AuthorizationPolicy 가 어떻게 맞물리는지."
+  },
+  {
+   "id": "envoy-extauthz",
+   "title": "Envoy · External Authorization filter",
+   "by": "Envoy Proxy",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/ext_authz_filter",
+   "why": "우리 IAM 을 프록시에 붙이는 방법 — 요청마다 바깥 인가 서비스에 묻는 필터."
+  },
+  {
+   "id": "k8s-rbac",
+   "title": "Kubernetes · Using RBAC Authorization",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+   "why": "RBAC 를 실제로 쓰는 가장 흔한 예 — Role·RoleBinding 으로 역할 모델을 손으로 익힌다."
+  },
+  {
+   "id": "opa-docs",
+   "title": "Open Policy Agent Documentation",
+   "by": "OPA (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.openpolicyagent.org/docs/latest/",
+   "why": "정책 기반 접근 제어 — 권한 규칙을 코드(Rego)로 써서 서비스 밖에서 판정하는 방법."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (무료 웹판)",
+   "by": "Google · O'Reilly · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "안정성·장애 대응 — 과부하 다루기·연쇄 장애·사후 분석 장. 입구가 무너지지 않게 하는 법."
+  },
+  {
+   "id": "adr",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · 2011",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "why": "기술적 의사결정 요건 — 결정을 맥락·결정·결과로 짧게 남기는 형식."
+  },
+  {
+   "id": "google-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "코드·설계 리뷰 업무 — 무엇을 보고 언제 승인하는지의 기준."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "흐름을 손으로 그리기 — OAuth·OIDC",
+   "time": "2주",
+   "goal": "인가 코드 + PKCE, 클라이언트 자격 증명, 토큰 갱신을 순서대로 말하고 각 단계가 무엇을 막는지 설명할 수 있다.",
+   "resources": [
+    "oauth2-in-action",
+    "rfc6749",
+    "oidc-core",
+    "rfc7636",
+    "rfc9700"
+   ],
+   "task": "Keycloak 같은 오픈소스 인가 서버를 로컬에 띄우고, 가상의 '차량 앱'으로 PKCE 로그인 → 토큰 받기 → 갱신 → 로그아웃을 해 본다. 오간 요청을 기록해 각 단계 옆에 '이게 없으면 무슨 공격이 되나'를 적는다."
+  },
+  {
+   "title": "게이트웨이 세우기 — 인증·정책·한도",
+   "time": "2주",
+   "goal": "게이트웨이에 API 를 등록하고 JWT 검증·정책·초당 한도·할당량을 걸어, 429 와 403 이 언제 나는지 재현한다.",
+   "resources": [
+    "tyk-docs",
+    "tyk-ratelimit",
+    "system-design-ko"
+   ],
+   "task": "Tyk 오픈소스 게이트웨이 + Redis 를 띄워 가짜 API 두 개 앞에 둔다. 1단계 인가 서버의 토큰으로만 통과하게 하고, 파트너 등급 둘(초당 5건·50건)을 정책으로 만들어 부하 도구로 한도를 넘겨 본다. 게이트웨이를 두 대로 늘렸을 때 한도가 정확히 지켜지는지 잰다."
+  },
+  {
+   "title": "권한 모델 — RBAC 에서 ABAC 로",
+   "time": "1~2주",
+   "goal": "역할만으로 안 되는 조건을 속성 규칙으로 옮기고, 규칙을 서비스 밖(정책 엔진)에서 판정하게 만든다.",
+   "resources": [
+    "nist-abac",
+    "opa-docs",
+    "zanzibar",
+    "k8s-rbac"
+   ],
+   "task": "가상 차량 관리 서비스(회사·차량·운전자)를 두고, '같은 회사 차만, 서 있을 때만 원격 명령' 규칙을 OPA 정책으로 쓴다. 게이트웨이 플러그인이나 서비스가 OPA 에 묻게 하고, 허용·거부를 감사 로그로 남긴다."
+  },
+  {
+   "title": "안쪽까지 — 서비스 메시와 장애",
+   "time": "2주",
+   "goal": "서비스 사이 mTLS·JWT 검증·인가 정책을 걸고, 과부하·인증 서버 장애 때 입구가 어떻게 버티는지 시험한다.",
+   "resources": [
+    "istio-in-action",
+    "istio-security",
+    "envoy-extauthz",
+    "sre-book"
+   ],
+   "task": "kind 같은 로컬 쿠버네티스에 Istio 를 깔고 2단계의 가짜 API 를 올린다. ext_authz 로 3단계 정책 판정을 붙인 뒤, 인가 서버를 죽였을 때와 요청을 10배 보냈을 때 무엇이 막히고 무엇이 살아남는지 기록한다."
+  },
+  {
+   "title": "결정 남기기",
+   "time": "1주",
+   "goal": "위에서 고른 것(로컬 검증 vs 조회, 한도 방식, 장애 때 열기/막기)을 결정 문서로 설명할 수 있다.",
+   "resources": [
+    "adr",
+    "owasp-api",
+    "google-review"
+   ],
+   "task": "결정 셋을 ADR 형식으로 한 쪽씩 쓰고, OWASP API 10대 위험 표로 1~4단계 결과물을 스스로 점검해 구멍 목록을 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 원티드 기업 정보의 평균연봉 표기는 **6,032만원** — 공시가 아니라 집계값이고, 경력직이 섞인 회사 전체 값이라 7년 차 이상 자리의 제안 금액과는 다르다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 원티드 기업 정보(2026-11 확인)",
+    "note": "같은 화면의 국민연금 가입 사원 수 804명. 원티드가 이 값을 어떤 자료로 계산했는지는 화면에서 확인하지 못했다(같은 회사 다른 풀이에서 2026-11-25 확인) [6]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 공시가 없다{추론}. 공고에 연봉은 없고 원티드 표기 경력은 7~14년이다 [1]. 평균은 연차·직군이 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 되고{추론}, 금액은 최종 합격 뒤 처우 협의에서 정해진다 [2]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "리커버리 휴가",
+    "detail": "법정 연차와 별도로 매월 1회 유급"
+   },
+   {
+    "name": "유연근무제",
+    "detail": "재량근무·선택적근무 운영"
+   },
+   {
+    "name": "식사",
+    "detail": "Kitchen 42 — 셰프가 만든 식사 하루 세 끼 무료, Cafe 42 음료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "여가·건강 등에 자유 사용, 연간 최대 300만원. 설·추석에 복지 포인트 추가"
+   },
+   {
+    "name": "건강",
+    "detail": "프리미엄 건강검진 전액 지원, 단체상해보험(본인·배우자·자녀·본인 부모), 상주 간호사·심리·재무·법률 상담(EAP)"
+   },
+   {
+    "name": "운동",
+    "detail": "Fitness 42 — 사내 피트니스, 1:1 PT·GX"
+   },
+   {
+    "name": "전기차",
+    "detail": "구매 시 차량 가격 최대 15%(한도 1,000만원) 지원, 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 사내 대출",
+    "detail": "근속 연수에 따라 1,000만~5,000만원, 이자 0%"
+   },
+   {
+    "name": "교육",
+    "detail": "국내외 교육·세미나·학회 참가비 지원"
+   },
+   {
+    "name": "직장 어린이집",
+    "detail": "임직원 자녀 대상, 특별활동 운영"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "최신 업무 기기, 장기근속 포상(휴가·포상금), 휴양시설 매월 추첨, 경조사 지원, 인재 추천 보상, 자발적 팀 워크숍 비용"
+   }
+  ],
+  "note": "공고의 복리후생 칸이 가리키는 포티투닷 채용 사이트 '업무 몰입 프로그램' 페이지 기준(게시일 표시 없음, 같은 회사 다른 풀이에서 2026-11-25 확인). 한국 본사 기준이고 해외 법인은 현지 정책을 따른다고 적혀 있다 [1][4]"
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥(소프트웨어드림센터)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/경기도 성남시 수정구 창업로40번길 20",
+  "note": "주소는 포티투닷 홈페이지 하단 회사 정보 [5]. 이 공고의 근무지 표기는 '경기 성남시'이고 [1], 같은 팀 공고의 근무지는 'Pangyo (Software Dream Center)'에 '(Remote)'가 붙어 있지만 원격 범위는 적혀 있지 않다 [3]. 같은 주소가 소프트웨어드림센터 소재지로 공고된 바 있다 [38]"
+ },
+ "fit": {
+  "good": [
+   "로그인·토큰·권한이 '그냥 되는 것'이 아니라 왜 그렇게 생겼는지 파고드는 게 재미있는 사람.{추론}",
+   "여러 팀이 쓰는 플랫폼을 만들고 그 팀들을 설득하는 일을 즐기는 사람.[1][2]",
+   "게이트웨이를 설정만이 아니라 플러그인으로 고쳐 써 본 사람.[2][13]"
+  ],
+  "hard": [
+   "백엔드 7년 미만 — 같은 팀의 3년 이상 공고가 더 맞을 수 있다.[1][2]",
+   "새 기능을 빠르게 내보내고 싶은 사람 — 모든 서비스가 거치는 자리라 바꿀 때 옮겨 가기·호환이 늘 따라온다.{추론}",
+   "보안 사고·장애가 나면 맨 앞에 서야 하는 운영 부담이 싫은 사람.{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "앱 로그인에 인가 코드 + PKCE 를 쓰는 이유는요? implicit 흐름은 왜 안 쓰나요?",
+   "a": "OAuth 표준 요건의 기본이자 2025 보안 권고의 첫 내용.[16][17]"
+  },
+  {
+   "q": "JWT 로 인증하는데 사용자의 권한을 지금 당장 빼야 한다면 어떻게 하나요?",
+   "a": "서명 토큰은 만료 전 폐기가 안 된다 — 짧은 수명·토큰 조회·캐시 시간의 대가.[11][19]"
+  },
+  {
+   "q": "게이트웨이 세 대가 파트너 한 곳에 초당 100건 한도를 정확히 지키게 하려면요? Redis 가 죽으면요?",
+   "a": "Tyk 의 DRL(근사) 대 Redis 한도, 장애 때 열기/막기 결정.[12][13]"
+  },
+  {
+   "q": "/vehicles/{id} API 에서 남의 차 정보를 못 보게 하는 책임은 게이트웨이에 있나요, 서비스에 있나요?",
+   "a": "OWASP API 1위 객체 수준 인가 실패.[21]"
+  },
+  {
+   "q": "역할(RBAC)로 시작한 권한이 조건이 늘어 역할이 수백 개가 됐습니다. 어떻게 바꾸겠어요?",
+   "a": "권한 모델 우대 — ABAC·관계 기반·정책 엔진.[22][24][33]"
+  },
+  {
+   "q": "인증 방식을 바꿔야 하는데 붙어 있는 팀이 수십 개입니다. 어떻게 옮기겠어요?",
+   "a": "이해관계자 협업·의사결정 요건과 게이트웨이 버전 교체.[1][11][36]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · 포티투닷 Senior Backend Engineer (Gateway/IAM)",
+   "url": "https://www.wanted.co.kr/wd/384995",
+   "kind": "posting",
+   "note": "이 공고. 팀 소개(Open Platform Engineering)·업무 6·자격 6·우대 5·전형(서류 → 코딩테스트 → 화상 1시간 → 대면/화상 3시간 → 최종). 경력 7~14년, 근무지 경기 성남시, 기술 태그 Kubernetes. 등록 2026-09-07, 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 포티투닷 Backend Engineer (Open Platform)",
+   "url": "https://www.wanted.co.kr/wd/392718",
+   "kind": "posting",
+   "note": "같은 팀의 다른 공고(경력 3년 이상). 내부·외부 API 입구, 고가용성·API 거버넌스, Tyk 운영 및 커스터마이징, 외부 파트너 인증 흐름·복합 권한 모델·감사 로깅·PoC 전파 우대, 처우 협의"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 채용 · Backend Engineer (Open Platform Engineering)",
+   "url": "https://jobs.ashbyhq.com/42dot/bad819ef-25e5-4c20-87c3-252f922c7f3b",
+   "kind": "posting",
+   "note": "[2] 와 같은 공고의 회사 채용 사이트판. 근무지 Pangyo (Software Dream Center), South Korea (Remote)"
+  },
+  {
+   "n": 4,
+   "title": "포티투닷 · 업무 몰입 프로그램(복리후생)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company"
+  },
+  {
+   "n": 5,
+   "title": "포티투닷 홈페이지(하단 회사 정보)",
+   "url": "https://42dot.ai/ko",
+   "kind": "company"
+  },
+  {
+   "n": 6,
+   "title": "원티드 · 포티투닷(42dot) 기업 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "평균연봉 6,032만원 · 국민연금 가입 사원 804명 표기(공공데이터 집계)"
+  },
+  {
+   "n": 7,
+   "title": "제네시스 고객지원 · Pleos 계정 자주 묻는 질문",
+   "url": "https://www.genesis.com/kr/ko/support/faq/pleos/faq_tab.html",
+   "kind": "company",
+   "note": "같은 그룹. Pleos 계정 = 현대자동차그룹 글로벌 원 아이디(통합 계정), 10월 29일부터 신규 가입은 Pleos 계정으로만(검색 요약으로 확인)"
+  },
+  {
+   "n": 8,
+   "title": "현대자동차 브랜드 저널 · Pleos Connect",
+   "url": "https://www.hyundai.com/worldwide/ko/brand-journal/mobility-solution/pleos-connect",
+   "kind": "company",
+   "note": "같은 그룹. Pleos ID 로그인 시 차종·차량과 관계없이 내 설정·프로필(검색 요약으로 확인)"
+  },
+  {
+   "n": 9,
+   "title": "Pleos 문서 · Create a Project and Request SDK Access",
+   "url": "https://document.pleos.ai/en/docs/pleos-only/create-my-project",
+   "kind": "company",
+   "note": "프로젝트 ID·클라이언트 ID/시크릿 발급, SDK 사용 신청(같은 회사 다른 풀이에서 2026-11-25 확인)"
+  },
+  {
+   "n": 10,
+   "title": "현대자동차 뉴스룸 · Hyundai Motor Group Launches 'Pleos' Software Brand",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000000921",
+   "kind": "news",
+   "note": "Playground = 서드파티 개발자용 열린 개발 플랫폼, 2030년 2,000만 대 넘게"
+  },
+  {
+   "n": 11,
+   "title": "Tyk 문서 · Client Authentication / Authentication & Authorization",
+   "url": "https://tyk.io/docs/api-management/client-authentication",
+   "kind": "reference",
+   "note": "키·JWT·OAuth 2.0(자체 서버·외부 IdP)·mTLS·HMAC·basic·플러그인, 세션↔보안 정책, JWT 는 만료 전 폐기 불가 → 토큰 조회(RFC 7662), 캐시는 exp 를 넘기지 않게. 외부 OAuth·OIDC 옛 방식 5.7 폐기 예정 → 5.14 External IdP"
+  },
+  {
+   "n": 12,
+   "title": "Tyk 문서 · Rate Limiting",
+   "url": "https://tyk.io/docs/api-management/rate-limit",
+   "kind": "reference",
+   "note": "DRL(토큰 버킷·근사) / Redis 슬라이딩 윈도 / 고정 창, API·키·엔드포인트 층, API 한도 우선, 한도 429·할당량 403, 여러 키 묶어 세기"
+  },
+  {
+   "n": 13,
+   "title": "Tyk 문서 · Tyk Gateway",
+   "url": "https://tyk.io/docs/getting-started/tyk-components/gateway",
+   "kind": "reference",
+   "note": "게이트웨이·Pump 는 MPL 2.0 오픈소스, 대시보드·개발자 포털은 유료. 운영에 Redis 필수. Go·gRPC·JavaScript 플러그인. 2026-10-28 갱신, 5.16.0"
+  },
+  {
+   "n": 14,
+   "title": "RFC 6749 · The OAuth 2.0 Authorization Framework",
+   "url": "https://datatracker.ietf.org/doc/html/rfc6749",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "OpenID Connect Core 1.0",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "RFC 7636 · Proof Key for Code Exchange by OAuth Public Clients",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7636",
+   "kind": "reference",
+   "note": "부록 B 의 verifier → challenge 예를 직접 돌려 같은 값 확인"
+  },
+  {
+   "n": 17,
+   "title": "RFC 9700 · Best Current Practice for OAuth 2.0 Security",
+   "url": "https://datatracker.ietf.org/doc/html/rfc9700",
+   "kind": "reference",
+   "date": "2025-01",
+   "note": "implicit 등 인가 응답으로 토큰을 주는 방식 쓰지 말 것, 공개 클라이언트 PKCE 필수·기밀 클라이언트 권장, S256"
+  },
+  {
+   "n": 18,
+   "title": "RFC 7519 · JSON Web Token (JWT)",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7519",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "RFC 7662 · OAuth 2.0 Token Introspection",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7662",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "RFC 8725 · JSON Web Token Best Current Practices",
+   "url": "https://datatracker.ietf.org/doc/html/rfc8725",
+   "kind": "reference",
+   "note": "알고리즘을 정해 두고 검증, 'none' 거부, 대상(aud) 확인"
+  },
+  {
+   "n": 21,
+   "title": "OWASP API Security Top 10 — 2023",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+   "kind": "reference",
+   "note": "1 객체 수준 인가 실패 · 2 인증 결함 · 4 자원 무제한 사용 · 5 기능 수준 인가 실패 · 9 API 재고 관리 부실"
+  },
+  {
+   "n": 22,
+   "title": "NIST SP 800-162 · Guide to Attribute Based Access Control (ABAC)",
+   "url": "https://csrc.nist.gov/pubs/sp/800/162/upd2/final",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "NIST · Role Based Access Control 프로젝트",
+   "url": "https://csrc.nist.gov/projects/role-based-access-control",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "USENIX ATC 2019 · Zanzibar: Google's Consistent, Global Authorization System",
+   "url": "https://www.usenix.org/conference/atc19/presentation/pang",
+   "kind": "reference",
+   "note": "다른 회사 — 수백 개 서비스의 권한 판정, 3년간 95% 지연 10ms 미만·가용성 99.999% 넘게"
+  },
+  {
+   "n": 25,
+   "title": "Netflix Technology Blog · Edge Authentication and Token-Agnostic Identity Propagation",
+   "url": "https://netflixtechblog.com/edge-authentication-and-token-agnostic-identity-propagation-514e47e0b602",
+   "kind": "reference",
+   "date": "2021",
+   "note": "다른 회사 — 입구(Zuul)에서 토큰 확인, 안쪽에는 내부 신원 객체 Passport 만 전달(검색 요약으로 확인)"
+  },
+  {
+   "n": 26,
+   "title": "Istio 문서 · Security",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Envoy 문서 · External Authorization (ext_authz) filter",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/ext_authz_filter",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Kubernetes 문서 · Using RBAC Authorization",
+   "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Google SRE Book · Handling Overload",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Google SRE Book · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Google SRE Book · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "RFC 8693 · OAuth 2.0 Token Exchange",
+   "url": "https://datatracker.ietf.org/doc/html/rfc8693",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "Open Policy Agent 문서",
+   "url": "https://www.openpolicyagent.org/docs/latest/",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "RFC 8705 · OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens",
+   "url": "https://datatracker.ietf.org/doc/html/rfc8705",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "Pleos Playground · 개발자 사이트",
+   "url": "https://developers.pleos.ai/playground?locale=ko-KR",
+   "kind": "company",
+   "note": "같은 그룹의 외부 개발자 플랫폼(같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 36,
+   "title": "Michael Nygard · Documenting Architecture Decisions",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "Google Engineering Practices · The Standard of Code Review",
+   "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "벤처스퀘어 · 판교 제2테크노밸리 소프트웨어드림센터 스타트업 입주기업 모집 공고",
+   "url": "https://www.venturesquare.net/announcement/955032",
+   "kind": "reference",
+   "note": "소재지 창업로40번길 20 소프트웨어드림센터"
+  }
+ ],
+ "caveat": "포티투닷이 API Gateway·IAM 을 직접 다룬 기술 글이나 발표는 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 같은 팀의 3년 이상 공고, 같은 그룹의 Pleos 계정 안내·Pleos 개발자 문서·뉴스룸입니다. 이 팀이 Pleos 계정이나 Playground 의 어느 부분을 맡는지, 실제로 Tyk 를 쓰는지(공고는 'Tyk 또는 유사 솔루션'), 트래픽 규모·권한 모델은 공개되지 않아 Tyk 공식 문서·IETF 표준·OWASP·NIST·구글·넷플릭스의 공개 자료로 '보통 이런 것'을 보였고 판단은 {추론}으로 표시했습니다. 제네시스 FAQ·현대차 브랜드 저널·넷플릭스 글은 검색 요약으로 확인했습니다. 코드 예시는 직접 돌린 출력입니다. 2026-11-25 기준."
+}
