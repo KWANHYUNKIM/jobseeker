@@ -272,6 +272,8 @@
   "wanted-387540": "hyundai-shucle-platform-infra-engineer",
   "ats-hkmc:hyundai:2026N2386": "hyundai-shucle-platform-ux-planning",
   "ats-hkmc:hyundai:2026N2294": "hyundai-shucle-service-ux-planning",
+  "saramin-55022364": "hyundai-vehicle-cybersecurity-tech",
+  "wanted-387512": "hyundai-vehicle-cybersecurity-tech",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
   "wanted-391370": "litalico-data-engineer",
@@ -2802,6 +2804,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 27
+  },
+  {
+   "id": "hyundai-vehicle-cybersecurity-tech",
+   "company": "현대자동차",
+   "role": "차량 사이버보안 기술 — 연구·개발과 모의해킹",
+   "jobs": [
+    "saramin-55022364",
+    "wanted-387512"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "ldf-ebookjapan-web-frontend",

@@ -1,0 +1,1041 @@
+{
+ "id": "hyundai-vehicle-cybersecurity-tech",
+ "company": "현대자동차",
+ "role": "차량 사이버보안 기술 — 연구·개발과 모의해킹",
+ "team": "차량 사이버보안(판교) — 공고에 팀 이름은 없음",
+ "jobs": [
+  "saramin-55022364",
+  "wanted-387512"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "차에 넣을 **보안 기술**(신기술 연구 → 개발 → 차종 사양에 넣고 양산까지)을 만들고, 그 차를 **직접 공격해 보는 모의해킹**으로 출시 전에 구멍을 찾아 고치게 합니다. 찾은 펌웨어 취약점은 다음부터 자동으로 걸리도록 점검 도구로 만듭니다.[1]",
+  "env": "근무지는 판교(판교역로 152)입니다.[2] 현대차그룹은 판교를 SW 연구 거점으로 키우고 있고[28], 2026년 9월 KISA 와 정부 부처가 현대차·기아 **판교 첨단차플랫폼(AVP) 본부**에서 차량 해킹 대응 훈련을 했습니다.[7] 보안 조직은 차·앱·웹·공장·서버·클라우드를 함께 다룬다고 스스로 소개합니다.[5]",
+  "oneline": "양산 후 사고를 받는 자리가 아니라 **양산 전에 뚫어 보고 막는** 자리. C/C++·리눅스·펌웨어 분석 손기술과 영어 문서가 같이 필요합니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "차량에서 발생할 수 있는 사이버보안 위협에 대응하기 위해 지속적으로 차량 사이버보안 기술을 연구ㆍ개발합니다. 또한 보안성 검토 및 모의해킹을 통해 사전에 취약점을 식별하고 개선이 이루어질 수 있도록 지원하는 업무를 수행합니다.",
+   "short": "차에 넣을 보안 기술을 만들고, 출시 전에 직접 뚫어 보며 구멍을 미리 찾아 고치게 하는 일.",
+   "why": "유엔 차량 사이버보안 규정(UNECE R155)은 차종 형식승인 때 위험을 분석하고, 대책을 넣고, **그 대책이 실제로 먹히는지 충분히 시험**하라고 요구합니다.[10] 국내도 자동차관리법이 바뀌어 CSMS(사이버보안 관리체계) 인증이 없으면 팔 수 없고, 현대차는 2022년 유럽 CSMS 인증을 받았습니다.[24] 공격이 실제로 늘고 있어서 — 2026년 1월 해킹 대회 Pwn2Own Automotive 에서만 차량 인포테인먼트(차 안 화면 장치)·전기차 충전기에서 새 취약점 76개가 나왔습니다.[16]",
+   "actually": {
+    "intro": "업무 문장이 공고의 두 ■ 덩어리로 나뉩니다.[1]",
+    "items": [
+     "**만드는 쪽** — 새 보안 기술을 조사하고, 개발하고, 차종 사양서에 넣어 양산까지 따라간다.",
+     "**뚫는 쪽** — 공격 시나리오를 짜고 모의해킹을 돌리고, 결과를 검토해 급한 것부터 고치게 한다.",
+     "**남기는 쪽** — 찾은 펌웨어 취약점을 다음부터 자동으로 걸러 낼 스크립트·도구를 만든다."
+    ]
+   },
+   "how_far": "같은 회사의 다른 차량보안 공고(양재)는 **이미 팔린 차의 사고와 규제 심사**를 맡습니다. 이 자리는 그 앞 단계, 개발 중인 차를 다룹니다. 둘 다 '보안'이지만 결과물이 다릅니다 — 여기는 기술·사양·모의해킹 보고서입니다. {추론}",
+   "refs": [
+    1,
+    10,
+    16,
+    24
+   ],
+   "study": [
+    "unece-r155",
+    "car-hackers-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 차량 사이버보안 기술 연구ㆍ개발",
+   "short": "차를 지키는 기술(통신 인증·보안 부팅·키 관리·침입 탐지)을 조사하고 직접 만드는 덩어리.",
+   "why": "현대차·기아 차량사이버보안개발팀은 2023년 개발자 컨퍼런스에서 CAN·이더넷 통신을 보는 **침입 탐지(IDS)**를 연구해 왔다고 발표했습니다.[6] 같은 그룹 현대오토에버는 차량에 방화벽·보안 칩(HSM)·서명 검증 업데이트(시큐어 플래시)·무선 업데이트(OTA)를 넣는다고 설명했습니다.[9]",
+   "actually": {
+    "intro": "차량 보안 기술은 보통 이런 층으로 나뉩니다. 이 공고가 어느 층을 맡는지는 적혀 있지 않습니다.",
+    "items": [
+     "**제어기 안** — 보안 부팅(켜질 때 소프트웨어가 바뀌지 않았나 확인), 보안 칩(HSM)에 키 넣기, 서명된 업데이트만 받기.[9]",
+     "**제어기 사이** — 차 안 통신 메시지에 위조 방지 표(MAC)를 붙이는 SecOC(AUTOSAR 표준).[20]",
+     "**네트워크 감시** — 사용자가 내리지 않은 명령을 '침입'으로 보고 잡는 IDS.[6]",
+     "**차 밖** — 앱·서버·디지털 키. 2022년 현대차 앱 서버 허점으로 남의 차 문이 열린 제보가 실제로 있었다.[13]"
+    ]
+   },
+   "refs": [
+    6,
+    9,
+    13,
+    20
+   ],
+   "study": [
+    "autosar-secoc",
+    "nasser-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 차량 사이버보안 신기술 연구",
+   "short": "새 공격법·새 방어 기술을 따라가며 우리 차에 쓸 만한지 시험해 보는 일. 퍼징·에뮬레이션이 예다.",
+   "why": "2024년 같은 회사 차량보안 공고(판교)는 '신사업 보안·선행 연구'로 전기차 충전·로보틱스 점검과 함께 **퍼징**(이상한 입력을 대량으로 넣어 프로그램을 쓰러뜨려 보기)·**하드웨어 에뮬레이션**(실물 없이 펌웨어를 가상으로 돌리기) 연구를 적었습니다.[3] 이 자리가 같은 줄기인지는 공고에 나오지 않습니다. {추론}",
+   "actually": {
+    "items": [
+     "**퍼징** — 진단 명령·통신 메시지·파일 해석기에 깨진 입력을 넣어 멈추는 곳을 찾는다. 2026년 Pwn2Own Automotive 우승 팀 이름이 퍼징 연구 팀(Fuzzware.io)이었다.[16]",
+     "**에뮬레이션** — 제어기 펌웨어를 실물 없이 가상으로 돌려 분석한다. 공개 펌웨어 분석기 EMBA 도 정적 분석과 에뮬레이션 동적 분석을 같이 한다.[17]",
+     "**암호** — 현대차 통합보안센터 사이버보안랩 신입 연구원들이 2024년 암호분석경진대회 최우수상을 받았다.[4]"
+    ]
+   },
+   "how_far": "논문을 쓰는 연구가 아니라 **우리 차에 쓸 수 있나를 시험해 보는 선행 개발**에 가깝습니다. 새 기법 하나를 골라 작은 대상에 직접 돌려 보고 결과를 문서로 남기는 정도가 최소선입니다. {추론}",
+   "refs": [
+    3,
+    4,
+    16,
+    17
+   ],
+   "study": [
+    "emba",
+    "hardware-hacking-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 차량 사이버보안 기술 개발",
+   "short": "연구한 보안 기능을 실제로 돌아가는 코드·도구로 만든다. 제어기 쪽은 C/C++ 가 기본이다.",
+   "why": "자격요건에 C/C++ 와 리눅스가 들어 있습니다.[1] 차량 제어기 소프트웨어와 보안 모듈이 대부분 C 로 짜이기 때문입니다 — AUTOSAR 의 보안 통신(SecOC)·암호 서비스도 C 모듈 규격입니다.[20] {추론}",
+   "actually": {
+    "intro": "보안 기능이 하는 일을 작게 흉내 내면 이렇습니다.",
+    "items": [
+     "**위조 방지** — 메시지 내용과 순번에 키로 계산한 짧은 표를 붙이고, 받는 쪽이 다시 계산해 맞춰 본다. 실제 규격은 AES-CMAC 을 쓴다.[20][21]",
+     "**재전송 막기** — 순번(freshness)이 예전 것이면 표가 맞아도 버린다.[20]",
+     "**키 보관** — 키는 보안 칩(HSM) 안에 두고 소프트웨어는 '계산해 달라'고만 한다.[9]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "통신 메시지 위조·재전송 막기 흉내 (직접 돌린 출력)",
+     "body": "실제 차량은 AES-CMAC 과 HSM 안의 키를 씁니다.[20][21] 여기서는 파이썬 표준 라이브러리 HMAC 으로 생각만 보입니다.",
+     "lang": "python",
+     "code": "import hmac, hashlib\nKEY = b\"ecu-shared-key-16\"\n\ndef tag(can_id, counter, data):\n    msg = can_id.to_bytes(2, \"big\") + counter.to_bytes(1, \"big\") + data\n    return hmac.new(KEY, msg, hashlib.sha256).digest()[:3]   # 24비트로 잘라 붙인다\n\ndef check(can_id, counter, data, mac, last_counter):\n    if counter <= last_counter:\n        return \"거부: 옛 메시지 다시 보내기(재전송)\"\n    if not hmac.compare_digest(tag(can_id, counter, data), mac):\n        return \"거부: MAC 불일치(위조·변조)\"\n    return \"수락\"\n\ndoor = bytes([0x01])                      # 문 열기 명령\nm = tag(0x321, 7, door)\nprint(check(0x321, 7, door, m, last_counter=6))\nprint(check(0x321, 7, door, m, last_counter=7))\nprint(check(0x321, 8, bytes([0x02]), m, last_counter=7))\n\n# 수락\n# 거부: 옛 메시지 다시 보내기(재전송)\n# 거부: MAC 불일치(위조·변조)"
+    }
+   ],
+   "how_far": "제어기 소프트웨어를 다 짜는 건 개발 조직·협력사 몫입니다. 이 자리는 **보안 기능의 설계·시험 코드·점검 도구**를 직접 만들 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    9,
+    20,
+    21
+   ],
+   "study": [
+    "autosar-secoc",
+    "nasser-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 사이버보안 기술이 차량에 적용될 수 있도록 사양 관리 및 양산 지원",
+   "short": "보안 기능을 차종 사양서에 요구사항으로 적고, 협력사가 그대로 만들어 양산까지 가는지 챙긴다.",
+   "why": "차 안 제어기는 상당수 협력사가 만듭니다. 보안 기능이 들어가려면 완성차가 **사양서(요구사항)**로 적어 줘야 하고, 양산 전에 맞게 들어갔는지 확인해야 합니다. {추론} R155 는 공급망(협력사)에서 오는 위험도 관리하라고 요구합니다.[10] 2026년 9월 판교 훈련도 **협력사가 뚫려 업데이트 파일이 바뀌는** 상황을 가정했습니다.[7]",
+   "flows": [
+    {
+     "caption": "보안 기능이 차에 들어가는 보통 흐름 {추론}[11]",
+     "steps": [
+      "위협 분석(TARA) · 무엇을 막아야 하나",
+      "보안 요구사항 · 사양서에 적기",
+      "협력사 개발 · 제어기에 구현",
+      "검증 · 시험·모의해킹",
+      "양산 · 출시 뒤 관리로 넘김"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**사양** — '이 제어기는 진단 접근에 인증을 건다', '업데이트는 서명 검증 뒤에만 쓴다' 같은 문장을 차종·제어기별로 관리한다. {추론}",
+     "**근거 연결** — 요구사항마다 어느 위협(TARA)을 막으려는 것인지 이어 둔다. ISO/SAE 21434 가 이 연결을 요구한다.[11][12]",
+     "**양산 지원** — 협력사 질문에 답하고, 시험 결과를 보고 사양을 지켰는지 판정한다. {추론}"
+    ]
+   },
+   "how_far": "사양을 '쓰는' 것보다 **쓴 사양이 실제 제품에 들어갔는지 끝까지 확인하는** 끈기가 중요합니다. 영어 문서 작성 요건이 붙은 이유 중 하나입니다 — 협력사·해외 법인과 사양을 주고받습니다. {추론}",
+   "refs": [
+    7,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "iso-21434",
+    "nasser-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 차량 사이버보안 모의해킹",
+   "short": "공격자처럼 우리 차·제어기·앱을 직접 공격해 보고, 뚫린 곳을 고치게 하는 덩어리.",
+   "why": "R155 는 대책이 실제로 먹히는지 시험하라고 요구하고[10], ISO/SAE 21434 는 검증 방법의 하나로 침투 시험(모의해킹)을 둡니다.[11] 현대차는 2024년 국제 해킹 컨퍼런스 POC 에 최고 등급으로 후원하고 채용 부스를 열며, 해커 친화 문화와 보안 연구로 사람을 뽑겠다고 밝혔습니다.[5]",
+   "actually": {
+    "intro": "차량 모의해킹은 보통 이런 대상을 봅니다.[29][16]",
+    "items": [
+     "**인포테인먼트** — 웹 브라우저·USB·블루투스·업데이트 파일. 2022년 현대차 인포테인먼트에서 업데이트 서명에 공개 예제 키가 쓰인 것이 외부 연구자에게 발견됐다.[14]",
+     "**차 안 통신** — CAN 메시지 엿보기·보내기, 진단 명령(UDS).[29]",
+     "**텔레매틱스·앱·서버** — 원격 문 열기·시동 같은 기능의 API.[13]",
+     "**충전** — 전기차 충전기와 그 통신. Pwn2Own Automotive 는 충전기를 따로 종목으로 둔다.[16]"
+    ]
+   },
+   "refs": [
+    5,
+    10,
+    11,
+    13,
+    14,
+    16,
+    29
+   ],
+   "study": [
+    "car-hackers-handbook",
+    "practical-iot-hacking"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 모의해킹 시나리오 수립",
+   "short": "무엇을, 어디로 들어가, 어디까지 뚫어 볼지 정한 공격 계획을 위협 분석에 맞춰 짠다.",
+   "why": "차는 공격면이 넓어 전부 볼 수 없습니다. 위협 분석(TARA)에서 위험이 높게 나온 경로부터 시나리오로 만들어야 시간을 쓸 곳이 정해집니다.[12] R155 부록 5 에는 차량 위협과 취약점 예시 목록이 있어 시나리오의 출발점이 됩니다.[10]",
+   "actually": {
+    "items": [
+     "**들어가는 길** — 원격(셀룰러·와이파이·블루투스), 근거리(키·충전 단자), 차 안(OBD 진단 단자·USB)으로 나눈다.[12]",
+     "**목표** — '다른 사람 차 문 열기', '서명 안 된 펌웨어 올리기'처럼 피해 시나리오 하나에 시나리오 하나.[12]",
+     "**범위와 규칙** — 실차/벤치(제어기만 책상에 올린 시험대), 파괴 시험 허용 여부, 기간. {추론}",
+     "**전제 조건** — 공격자가 가진 것(차 열쇠가 있나, 기판을 뜯을 수 있나)을 적는다 — TARA 의 '공격 실현 가능성' 축과 같다.[12]"
+    ]
+   },
+   "how_far": "시나리오를 직접 다 수행하기보다 **무엇을 시험할지 정하고 외부·협력 모의해킹 업체에 일을 나누는** 몫이 큽니다 — 아래 '보고서 검토' 줄이 그 근거입니다.[1] {추론}",
+   "refs": [
+    1,
+    10,
+    12
+   ],
+   "study": [
+    "nasser-handbook",
+    "car-hackers-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 모의해킹 이슈 대응 및 보고서 검토",
+   "short": "모의해킹 결과 보고서가 맞는지·재현되는지 확인하고, 개발팀·협력사 질문에 답한다.",
+   "why": "보고서를 '검토'한다는 말은 모의해킹을 직접 한 사람이 따로 있을 수 있다는 뜻입니다.[1] {추론} 보고서의 취약점이 정말 재현되는지, 위험도가 맞게 매겨졌는지 가려야 개발팀이 고칠 순서를 정합니다.",
+   "actually": {
+    "items": [
+     "**재현** — 보고서대로 다시 해서 같은 결과가 나오나. 안 되면 조건(버전·설정)을 묻는다. 제품보안 국제 틀은 재현을 분석 단계의 핵심으로 둔다.[22]",
+     "**위험도** — 점수 체계(예: CVSS — 공격 경로·필요 권한·피해로 0~10점)와 TARA 위험값이 맞는지.[33][12]",
+     "**이슈 대응** — '이건 사양상 의도된 동작이다' 같은 개발팀 반론을 근거로 정리한다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    12,
+    22,
+    33
+   ],
+   "study": [
+    "cvss4",
+    "first-psirt"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 도출된 취약점 중 긴급 조치 대상 건에 대한 보고 및 조치 지원",
+   "short": "찾은 것 중 원격·대량·주행 안전에 닿는 건을 골라 바로 윗선에 알리고, 고칠 때까지 같이 간다.",
+   "why": "같은 '취약점'이라도 차 안에 앉아야 되는 것과 원격으로 수만 대가 되는 것은 급이 다릅니다. 2022년 앱 서버 제보 때 현대차는 며칠 안에 대책을 넣었다고 밝혔습니다.[13] 유럽 사이버복원력법(CRA)은 악용 중인 취약점을 알게 된 지 24시간 안에 조기 경보를 내게 합니다(차량 형식승인 대상 밖 제품 기준).[32]",
+   "actually": {
+    "items": [
+     "**긴급 판단 축** — 원격이냐, 인증 없이 되냐, 주행 안전에 닿냐, 몇 차종에 들어갔냐.[12][33]",
+     "**보고** — 무엇이·어디까지·임시 대책은 무엇인지 한 장으로. {추론}",
+     "**조치 지원** — 서버는 바로 고치고, 차 안 소프트웨어는 무선 업데이트(OTA)나 정비 방문이 필요하다.[9]"
+    ]
+   },
+   "how_far": "고치는 건 개발 조직·협력사입니다. 이 자리는 **급을 정하고, 고친 게 맞는지 다시 확인하는** 쪽입니다. {추론}",
+   "refs": [
+    9,
+    12,
+    13,
+    32,
+    33
+   ],
+   "study": [
+    "cvss4",
+    "first-psirt"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 차량 사이버보안 해킹 동향 분석 및 당사 영향도 분석",
+   "short": "해킹 대회·학회·공지에 나온 새 공격을 읽고, 같은 부품·구조가 우리 차에 있는지 따진다.",
+   "why": "차량 해킹 연구는 한 해에도 크게 쌓입니다 — 2026년 1월 Pwn2Own Automotive 사흘 동안 새 취약점 76개, 상금 104만 7천 달러가 나왔습니다.[16] 다른 회사 인포테인먼트·충전기의 구멍도 같은 부품·운영체제를 쓰면 우리 일이 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "**읽을 곳** — 해킹 대회 결과, 보안 학회 발표, 부품·오픈소스 취약점 공지(CVE).[16]",
+     "**대 보기** — 차종·제어기별 소프트웨어 목록(SBOM)과 버전을 대조해 '영향 있음/없음/모름'으로 나눈다. {추론}",
+     "**같은 원인 찾기** — 공개 사례의 뿌리(입력 검증·키 관리)를 우리 설계에도 묻는다. 현대차 인포테인먼트 건은 고친 뒤에도 다시 분석돼 공개됐다.[14][15]"
+    ]
+   },
+   "refs": [
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "zdi-p2o",
+    "car-hackers-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 사이버보안 사고 대응",
+   "short": "실제 사고가 나면 원인 분석·영향 범위·복구를 기술 쪽에서 받친다. 사고 주무는 다른 조직과 나눈다.",
+   "why": "2026년 9월 판교 AVP 본부 훈련에서 현대차·기아는 차량 이상을 탐지하고 사고 대응 조직을 가동해 복구하는 역할을 맡았습니다(협력사 해킹으로 업데이트 파일이 바뀌어 와이퍼·창문이 오작동하는 가정, 도상훈련).[7][8] 그룹은 2025년 11월 그룹 사이버위협대응팀도 만들었습니다.[23]",
+   "flows": [
+    {
+     "caption": "판교 훈련이 다룬 범위[7]",
+     "steps": [
+      "탐지 · 차량 이상",
+      "격리·신고 · 협력사",
+      "공격 경로 분석 · KISA",
+      "차량 복구 · 현대차·기아",
+      "공격자 추적 · 경찰"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "양산 후 사고 대응을 총괄하는 조직은 따로 공고가 나와 있습니다(통합보안 차량보안).[1] 이 자리는 **모의해킹·기술 개발에서 쌓은 이해로 원인 분석을 돕는** 쪽으로 읽힙니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    23
+   ],
+   "study": [
+    "first-psirt"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 도출된 펌웨어 취약점 자동 점검 스크립트ㆍ툴 개발",
+   "short": "한 번 찾은 펌웨어 취약점을 다음 차종·버전에서 자동으로 걸러 내는 스크립트를 만든다.",
+   "why": "모의해킹은 사람이 시간을 들이는 일이라 같은 실수를 매번 손으로 찾을 수 없습니다. 2022년 예제 키 건처럼 펌웨어 안에 남은 키·비밀번호는 기계로 찾기 쉬운 종류입니다.[14] {추론}",
+   "actually": {
+    "intro": "공개 도구로 뼈대를 세우고 회사 규칙을 얹는 것이 보통입니다.",
+    "items": [
+     "**풀기** — binwalk 가 펌웨어 덩어리 안의 파일 시스템·압축을 찾아 푼다.[18]",
+     "**정적 점검** — 하드코딩된 키·빈 비밀번호·켜진 디버그 서비스·위험 함수. EMBA 는 이런 점검과 SBOM 생성, 보고서를 한 번에 낸다.[17]",
+     "**바이너리 패턴** — cwe_checker 는 실행 파일에서 버퍼 넘침 같은 CWE 유형을 찾는다.[19]",
+     "**회사 규칙** — 이전 모의해킹에서 나온 건을 규칙으로 더하고, 새 펌웨어가 나올 때마다 돌린다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "풀어 놓은 펌웨어에서 남은 키·빈 비밀번호·디버그 셸 찾기 (가상 데이터, 직접 돌린 출력)",
+     "body": "실제로는 binwalk 로 푼 폴더에 돌리고[18], 규칙은 지난 모의해킹 결과에서 늘려 갑니다. {추론}",
+     "lang": "python",
+     "code": "import re, tempfile, pathlib\nroot = pathlib.Path(tempfile.mkdtemp())\nfor d in (\"etc/init.d\", \"usr/bin\"):\n    (root / d).mkdir(parents=True)\n(root / \"etc/shadow\").write_text(\"root::0:0:99999:7:::\\nuser:$6$abc$xyz:0:0:::\\n\")\n(root / \"etc/init.d/S50telnet\").write_text(\"telnetd -l /bin/sh &\\n\")\n(root / \"usr/bin/updater\").write_bytes(b\"\\x7fELF..-----BEGIN RSA PRIVATE KEY-----\\nMIIE..\")\n(root / \"usr/bin/diag\").write_bytes(b\"\\x7fELF..\\x00strcpy\\x00gets\\x00\")\n\nRULES = [\n    (\"긴급\", \"개인키가 펌웨어 안에 있음\", re.compile(rb\"-----BEGIN (RSA |EC )?PRIVATE KEY-----\")),\n    (\"높음\", \"telnet 디버그 셸이 켜짐\", re.compile(rb\"telnetd\")),\n    (\"보통\", \"위험 함수(strcpy/gets) 가져다 씀\", re.compile(rb\"\\x00(strcpy|gets)\\x00\")),\n]\nfound = []\nfor p in sorted(root.rglob(\"*\")):\n    if not p.is_file():\n        continue\n    data, rel = p.read_bytes(), p.relative_to(root).as_posix()\n    for level, name, rx in RULES:\n        if rx.search(data):\n            found.append((level, rel, name))\n    if p.name == \"shadow\":\n        for line in data.splitlines():\n            f = line.split(b\":\")\n            if len(f) > 1 and f[1] == b\"\":\n                found.append((\"긴급\", rel, f\"비밀번호 없는 계정 {f[0].decode()}\"))\n\norder = {\"긴급\": 0, \"높음\": 1, \"보통\": 2}\nfor level, rel, name in sorted(found, key=lambda x: order[x[0]]):\n    print(f\"[{level}] {rel}: {name}\")\nprint(f\"총 {len(found)}건, 긴급 {sum(x[0]=='긴급' for x in found)}건 → 긴급만 바로 보고\")\n\n# [긴급] etc/shadow: 비밀번호 없는 계정 root\n# [긴급] usr/bin/updater: 개인키가 펌웨어 안에 있음\n# [높음] etc/init.d/S50telnet: telnet 디버그 셸이 켜짐\n# [보통] usr/bin/diag: 위험 함수(strcpy/gets) 가져다 씀\n# 총 4건, 긴급 2건 → 긴급만 바로 보고"
+    }
+   ],
+   "how_far": "도구를 처음부터 다 짜는 게 아니라 **공개 도구를 엮고 회사 규칙을 더해 매번 같은 결과가 나오게** 하는 수준입니다. 파이썬·셸 스크립트와 리눅스 명령에 익숙하면 됩니다. {추론}",
+   "refs": [
+    14,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "emba",
+    "binwalk",
+    "ghidra"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 보안/컴퓨터공학/전자공학 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "보안·컴퓨터·전자 계열 학사가 문턱. 전자공학이 들어간 건 기판·통신을 만지는 일이라서.",
+   "why": "다른 현대차 보안 공고(양재 통합보안)는 '정보보안 및 전산계열'만 적었는데, 이 공고는 **전자공학**을 넣었습니다.[1] 제어기 기판의 디버그 단자, 차량 통신, 하드웨어 공격을 다루는 자리라 그렇게 보입니다. {추론}",
+   "how_far": "전공이 달라도 펌웨어·하드웨어 분석 경험(공개 보고서·CTF·버그 신고)으로 메울 수 있습니다. 2024년 같은 회사 판교 차량보안 공고는 CTF·0-day 발견·버그 바운티 경험을 우대로 적었습니다.[3]",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 3년 이상의 보안 관련 경력을 보유하신 분",
+   "short": "차량 보안이 아니어도 된다. 모의해킹·취약점 분석·보안 개발 같은 '보안 관련' 3년이면 된다.",
+   "why": "공고는 차량 경력을 요구하지 않고 '보안 관련'만 적었습니다. 우대사항 칸도 없습니다.[1][2] 현대차는 보안 조직이 차·앱·웹·공장·서버·클라우드를 두루 다룬다고 소개합니다.[5]",
+   "how_far": "가장 잘 맞는 경력은 **임베디드·IoT 모의해킹이나 펌웨어 분석**입니다. 웹·앱 모의해킹 경력도 텔레매틱스 앱·서버 쪽에 바로 쓰입니다 — 실제 현대차 제보 사례가 앱 서버 API 였습니다.[13] {추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    13
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 비즈니스 영어 커뮤니케이션 및 문서 작성 역량을 보유하신 분",
+   "short": "규정·표준·해외 연구 원문이 영어이고, 협력사·해외 법인과 보고서·사양을 영어로 주고받아서.",
+   "why": "R155·ISO/SAE 21434·AUTOSAR 규격이 모두 영어 원문입니다.[10][11][20] 해킹 대회·학회 발표도 영어로 나옵니다.[16] 현대차 유럽 법인의 취약점 신고 창구도 영어로 받습니다.[31]",
+   "how_far": "말하기보다 **영어 기술 문서를 정확히 읽고, 재현 절차·위험·대책을 영어 보고서로 쓰는** 쪽이 먼저입니다. {추론}",
+   "refs": [
+    10,
+    11,
+    16,
+    20,
+    31
+   ],
+   "study": [
+    "unece-r155",
+    "iso-21434"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 보안 취약점 분석 경험 또는 보안 신기술 연구ㆍ개발 경험을 보유하신 분",
+   "short": "'또는'이다 — 뚫어 본 경험(취약점 분석)이나 만들어 본 경험(보안 기술 개발) 중 하나면 된다.",
+   "why": "업무가 연구·개발 덩어리와 모의해킹 덩어리 둘이라 요건도 둘 중 하나로 열어 둔 구성입니다.[1] {추론}",
+   "actually": {
+    "items": [
+     "**분석 쪽** — 공개 취약점을 재현해 보고서로 쓴 경험, CTF, 버그 신고. 2024년 같은 회사 판교 공고는 IoT·바이너리 0-day 발견, 무선·암호 프로토콜 분석, RTOS·커널 취약점 분석을 우대로 적었다.[3]",
+     "**개발 쪽** — 보안 부팅·키 관리·IDS·퍼저 같은 보안 기능이나 도구를 만든 경험. 같은 공고는 퍼저 개발 경험도 우대했다.[3]"
+    ]
+   },
+   "how_far": "지원서에 **무엇을, 어떤 도구로, 어떻게 재현하고, 무엇이 고쳐졌나**를 한 건이라도 끝까지 적을 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "practical-iot-hacking",
+    "hardware-hacking-handbook"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· C/C++ 언어 및 리눅스 OS 사용 경험을 보유하신 분",
+   "short": "제어기 펌웨어가 C/C++ 라 읽고 고칠 줄 알아야 하고, 분석 도구·인포테인먼트가 리눅스 위에서 돈다.",
+   "why": "펌웨어 취약점을 찾으려면 C 코드와 그 기계어(디스어셈블)를 읽어야 합니다. 위험 함수·버퍼 넘침이 C 에서 나옵니다.[19] 차 안 통신 분석 도구(can-utils)와 펌웨어 분석기(EMBA)가 리눅스용입니다.[17][30]",
+   "level": {
+    "basic": "포인터·메모리 배치·구조체 · 리눅스 셸·파일 권한·프로세스",
+    "work": "버퍼 넘침이 왜 생기나 · gdb 로 따라가기 · 크로스 컴파일 · 리눅스 네트워크·서비스 설정",
+    "team": "디스어셈블한 펌웨어 읽기(Ghidra) · 임베디드 리눅스 부팅 구조 · 가상 CAN 으로 통신 재현"
+   },
+   "actually": {
+    "items": [
+     "**읽기** — 펌웨어를 Ghidra 같은 역공학 도구로 열어 C 비슷한 코드로 되돌려 읽는다.[34]",
+     "**찾기** — 길이 검사 없는 복사(strcpy 류), 정수 넘침, 하드코딩된 비밀. cwe_checker 가 이런 유형을 기계로 찾는다.[19]",
+     "**통신** — 리눅스의 가상 CAN(vcan)과 can-utils 로 메시지를 보내고 받아 본다.[30][29]"
+    ]
+   },
+   "refs": [
+    17,
+    19,
+    29,
+    30,
+    34
+   ],
+   "study": [
+    "ghidra",
+    "can-utils",
+    "car-hackers-handbook"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "기기를 뜯어 펌웨어를 꺼내고 '왜 뚫렸나'를 끝까지 파는 게 즐거운 사람",
+   "찾은 구멍을 자동 점검 도구로 남겨 두는 걸 좋아하는 사람[1]",
+   "IoT·임베디드·웹 보안 경력을 차량으로 넓히고 싶은 사람[1]",
+   "해킹 대회·학회 동향을 꾸준히 읽는 사람[5][16]"
+  ],
+  "hard": [
+   "사양 관리·양산 지원처럼 문서와 협력사 조율이 일의 큰 몫이다[1]",
+   "보고서 '검토'가 업무에 있어, 직접 해킹만 하고 싶다면 기대와 다를 수 있다[1]",
+   "차·제어기·앱·충전까지 대상이 넓어 깊이와 폭을 같이 요구받는다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "인포테인먼트 업데이트 파일 하나를 받았습니다. 무엇부터 보겠어요?",
+   "a": "풀기 → 서명 구조 → 키 → 서비스 순서와, 현대차 인포테인먼트에서 실제로 나온 예제 키 사례.[14][18]"
+  },
+  {
+   "q": "차 안 통신 메시지에 MAC 을 붙였는데도 재전송 공격이 되는 이유는?",
+   "a": "순번(freshness) 처리 — SecOC 규격의 핵심.[20]"
+  },
+  {
+   "q": "모의해킹 업체 보고서에 '긴급' 취약점이 10건입니다. 진짜 긴급을 어떻게 고르나요?",
+   "a": "재현 여부, 원격·인증·주행 안전·영향 차종 축, CVSS 와 TARA 위험값.[12][33]"
+  },
+  {
+   "q": "협력사가 만든 제어기에 보안 기능이 사양대로 들어갔는지 어떻게 확인하나요?",
+   "a": "요구사항 ↔ 위협 연결과 검증·침투 시험 — 판교 훈련의 공급망 가정도 같은 문제.[7][11]"
+  },
+  {
+   "q": "한 번 찾은 펌웨어 취약점을 다음 차종에서 자동으로 잡으려면 무엇을 만들겠어요?",
+   "a": "공개 도구(binwalk·EMBA·cwe_checker) + 회사 규칙 — 이 공고 마지막 업무 줄.[1][17][18][19]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "사람인 · 현대자동차 차량 사이버보안 기술",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55022364",
+   "kind": "posting",
+   "note": "업무·자격요건(우대 칸 없음), 경력 3년 이상, 정규직, 급여 면접 후 결정, 근무지 판교, 접수 2026-11-01 ~ 11-30, 서류 → 면접(인성검사) → 채용검진"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차그룹 차량 사이버보안 기술",
+   "url": "https://www.wanted.co.kr/wd/387512",
+   "kind": "posting",
+   "note": "같은 공고 — 근무지역 경기도 성남시 분당구 판교역로 152, 마감 2026-12-31, 우대·복지 칸 없음"
+  },
+  {
+   "n": 3,
+   "title": "KAIST 전기및전자공학부 채용 게시판 · 현대자동차 [통합보안] Mobility Security Engineer 채용",
+   "url": "https://ee.kaist.ac.kr/jobs/%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8-%ED%86%B5%ED%95%A9%EB%B3%B4%EC%95%88-mobility-security-engineer-%EC%B1%84%EC%9A%A9/",
+   "kind": "posting",
+   "date": "2024-07-16",
+   "note": "앞선 판교 차량보안 공고 — 신사업 보안·선행 연구(충전·로보틱스·퍼징·하드웨어 에뮬레이션), 우대: CTF·0-day·버그 바운티·프로토콜·RTOS·퍼저 개발"
+  },
+  {
+   "n": 4,
+   "title": "현대자동차그룹 · 2024 암호분석경진대회 최우수상 받은 신입 연구원들",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000165248",
+   "kind": "company",
+   "date": "2024-11-27",
+   "note": "현대차·기아 통합보안센터 사이버보안랩 — 차량·IT 시스템 취약점 진단, 제품·IT 보안 기술 개발, 차량 보안 사고 대응·CSMS"
+  },
+  {
+   "n": 5,
+   "title": "현대자동차그룹 뉴스 · 현대자동차, 국제 해킹·보안 컨퍼런스 POC2024 최대 후원사로 참여",
+   "url": "https://www.hyundaimotorgroup.com/ko/news/CONT0000000000163415",
+   "kind": "company",
+   "date": "2024-10-29",
+   "note": "Diamond 후원, 채용 부스, 보안 조직이 차·앱·웹·공장·서버·클라우드를 다룬다는 소개"
+  },
+  {
+   "n": 6,
+   "title": "KIDD · SDV 차량 제어를 위한 보안·개발 방법은?(제3회 HMG 개발자 컨퍼런스)",
+   "url": "https://kidd.co.kr/news/234803",
+   "kind": "news",
+   "date": "2023-11-14",
+   "note": "현대차·기아 차량사이버보안개발팀 발표 요약 — 침입 정의, CAN·이더넷 IDS, 자동 차단 주의"
+  },
+  {
+   "n": 7,
+   "title": "MTN · 협력사 뚫리자 차량까지 이상...KISA, 현대차·기아 공급망 해킹 대응 훈련",
+   "url": "https://news.mtn.co.kr/news-detail/2026091516490429841",
+   "kind": "news",
+   "date": "2026-09-15",
+   "note": "판교 첨단차플랫폼(AVP) 본부, 협력사 해킹 → 업데이트 파일 변조 가정, 기관별 역할"
+  },
+  {
+   "n": 8,
+   "title": "아이뉴스24 · 완성차 대신 협력사부터 뚫는다…車 해킹, 공급망 타고 확산",
+   "url": "https://www.inews24.com/view/2006430",
+   "kind": "news",
+   "date": "2026-09-18",
+   "note": "같은 훈련이 도상훈련이었다는 점, 부품 협력사 피해 신고"
+  },
+  {
+   "n": 9,
+   "title": "현대자동차그룹 저널 · 사이버 공격에 대비하다, 현대오토에버의 사이버보안 관리 체계",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000046565",
+   "kind": "company",
+   "date": "2022-08-04",
+   "note": "같은 그룹 회사 — 방화벽·HSM·시큐어 플래시·OTA, CSMS 인증 범위"
+  },
+  {
+   "n": 10,
+   "title": "UNECE · UN Regulation No. 155 — Cyber security and cyber security management system",
+   "url": "https://unece.org/transport/documents/2021/03/standards/un-regulation-no-155-cyber-security-and-cyber-security",
+   "kind": "reference",
+   "note": "형식승인 때 위험 분석·대책·시험, 공급망 위험, 부록 5 위협 목록"
+  },
+  {
+   "n": 11,
+   "title": "ISO/SAE 21434:2021 Road vehicles — Cybersecurity engineering",
+   "url": "https://www.iso.org/standard/70918.html",
+   "kind": "reference",
+   "note": "차량 사이버보안 개발 표준(유료) — 요구사항·검증(침투 시험 포함)"
+  },
+  {
+   "n": 12,
+   "title": "arXiv · Security Risk Analysis Methodologies for Automotive Systems",
+   "url": "https://arxiv.org/abs/2307.02261",
+   "kind": "reference",
+   "date": "2023-07",
+   "note": "ISO/SAE 21434 TARA 단계 해설 — 피해 영향·공격 경로·실현 가능성"
+  },
+  {
+   "n": 13,
+   "title": "ITPro · Hyundai vulnerability allowed remote hacking of locks, engine",
+   "url": "https://www.itpro.com/security/369617/hyundai-vulnerability-allowed-remote-hacking-of-locks-engine",
+   "kind": "news",
+   "date": "2022-11-30",
+   "note": "외부 연구자 제보 — 앱 서버 이메일 검증 허점, 현대차는 며칠 안에 대책 적용"
+  },
+  {
+   "n": 14,
+   "title": "Schneier on Security · Hyundai Uses Example Keys for Encryption System",
+   "url": "https://www.schneier.com/blog/archives/2022/08/hyundai-uses-example-keys-for-encryption-system.html",
+   "kind": "news",
+   "date": "2022-08",
+   "note": "2021년식 아이오닉 인포테인먼트 — 업데이트 서명에 예제 키"
+  },
+  {
+   "n": 15,
+   "title": "Hackaday · Hacking A Hyundai Ioniq's Infotainment System Again After Security Fixes",
+   "url": "https://hackaday.com/2023/06/08/hacking-a-hyundai-ioniqs-infotainment-system-again-after-security-fixes",
+   "kind": "news",
+   "date": "2023-06-08",
+   "note": "새 펌웨어 뒤에도 다시 분석된 과정"
+  },
+  {
+   "n": 16,
+   "title": "Zero Day Initiative · Pwn2Own Automotive 2026 — Day Three Results and the Master of Pwn",
+   "url": "https://www.zerodayinitiative.com/blog/2026/1/23/pwn2own-automotive-2026-day-three-results-and-the-master-of-pwn",
+   "kind": "reference",
+   "date": "2026-01-22",
+   "note": "사흘 합계 상금 1,047,000달러, 새 취약점 76개, 우승 Fuzzware.io, 대상 인포테인먼트·충전기"
+  },
+  {
+   "n": 17,
+   "title": "EMBA — The firmware security analyzer",
+   "url": "https://github.com/e-m-b-a/emba",
+   "kind": "reference",
+   "note": "펌웨어 풀기·정적/에뮬레이션 동적 분석·SBOM·보고서, GPL-3.0"
+  },
+  {
+   "n": 18,
+   "title": "binwalk",
+   "url": "https://github.com/ReFirmLabs/binwalk",
+   "kind": "reference",
+   "note": "펌웨어 안에 든 파일·데이터 찾기와 풀기, 엔트로피 분석, MIT"
+  },
+  {
+   "n": 19,
+   "title": "cwe_checker",
+   "url": "https://github.com/fkie-cad/cwe_checker",
+   "kind": "reference",
+   "note": "실행 파일에서 CWE 유형(버퍼 넘침·널 포인터 등) 찾기, Ghidra 기반"
+  },
+  {
+   "n": 20,
+   "title": "AUTOSAR CP R22-11 · Specification of Secure Onboard Communication",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_SecureOnboardCommunication.pdf",
+   "kind": "reference",
+   "note": "차 안 메시지 인증(MAC)과 순번(freshness)"
+  },
+  {
+   "n": 21,
+   "title": "RFC 4493 · The AES-CMAC Algorithm",
+   "url": "https://datatracker.ietf.org/doc/html/rfc4493",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "FIRST · PSIRT Services Framework v1.1",
+   "url": "https://www.first.org/standards/frameworks/psirts/psirt_services_framework_v1.1",
+   "kind": "reference",
+   "note": "제품보안 대응 — 분류·분석(재현)·수정"
+  },
+  {
+   "n": 23,
+   "title": "CEO스코어데일리 · KT 해킹 사태 의식했나…사이버 보안 힘 주는 현대차·기아",
+   "url": "https://ceoscoredaily.com/page/view/2025111810004037005",
+   "kind": "news",
+   "date": "2025-11-19",
+   "note": "그룹사이버위협대응팀 신설(팀장 현대차 통합보안센터장)"
+  },
+  {
+   "n": 24,
+   "title": "아이뉴스24 · \"보안은 생존과 직결\"⋯車 업계, 통합보안체계 대응 강화",
+   "url": "https://www.inews24.com/view/1892143",
+   "kind": "news",
+   "date": "2025-09-30",
+   "note": "자동차관리법 CSMS 인증 의무, 현대차 2022년 유럽 CSMS 인증"
+  },
+  {
+   "n": 25,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 27,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원"
+  },
+  {
+   "n": 28,
+   "title": "전자신문 · 현대차그룹, 판교 R&D 인력 1000명으로 늘린다",
+   "url": "https://m.etnews.com/20250715000287",
+   "kind": "news",
+   "date": "2025-07-15",
+   "note": "판교테크원·제2테크노밸리 소프트웨어드림센터"
+  },
+  {
+   "n": 29,
+   "title": "No Starch Press · The Car Hacker's Handbook",
+   "url": "https://nostarch.com/carhacking",
+   "kind": "reference",
+   "date": "2016-03",
+   "note": "CAN 버스·진단·ECU·인포테인먼트 점검 입문서"
+  },
+  {
+   "n": 30,
+   "title": "linux-can · can-utils",
+   "url": "https://github.com/linux-can/can-utils",
+   "kind": "reference",
+   "note": "리눅스 SocketCAN 도구(candump·cansend 등)"
+  },
+  {
+   "n": 31,
+   "title": "Hyundai Motor Europe · Vulnerability Disclosure",
+   "url": "https://www.hyundai.com/eu/en/vulnerability-disclosure.html",
+   "kind": "company",
+   "note": "영어 신고 창구·보낼 내용"
+  },
+  {
+   "n": 32,
+   "title": "European Commission · Cyber Resilience Act — Reporting obligations",
+   "url": "https://digital-strategy.ec.europa.eu/en/policies/cra-reporting",
+   "kind": "reference",
+   "note": "2026-09-11부터 악용 중 취약점 24시간 조기 경보·72시간 신고"
+  },
+  {
+   "n": 33,
+   "title": "FIRST · CVSS v4.0 Specification Document",
+   "url": "https://www.first.org/cvss/v4-0/specification-document",
+   "kind": "reference",
+   "note": "취약점 심각도 점수(0~10) 체계"
+  },
+  {
+   "n": 34,
+   "title": "Ghidra Software Reverse Engineering Framework",
+   "url": "https://github.com/NationalSecurityAgency/ghidra",
+   "kind": "reference",
+   "note": "NSA 공개 역공학 도구 — 디스어셈블·디컴파일"
+  }
+ ],
+ "caveat": "이 공고는 팀 이름·팀 소개·우대사항이 없습니다. 어느 조직(통합보안센터 사이버보안랩인지, 연구개발 쪽 차량사이버보안개발팀인지)의 자리인지는 공개 자료로 확인하지 못했고, 회사 근거는 같은 회사의 2024년 판교 차량보안 공고, 사이버보안랩 소개 글, POC 후원 보도, 2023년 개발자 컨퍼런스 발표 요약, 2026년 판교 AVP 본부 훈련 보도입니다. 모의해킹 대상·도구·사양 관리 방식의 '보통 이런 것'은 규제(R155)·표준(ISO/SAE 21434·AUTOSAR)·해킹 대회 결과·공개 도구 문서로 보였습니다.",
+ "resources": [
+  {
+   "id": "hyundai-cslab",
+   "title": "현대자동차그룹 · 2024 암호분석경진대회 최우수상 받은 신입 연구원들",
+   "by": "현대자동차그룹 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000165248",
+   "why": "현대차 보안 연구 조직이 무엇을 하는지(차량·IT 취약점 진단, 보안 기술 개발)와 연구원이 학생 때 해 본 일(스마트키 공격 재현·AVNT 취약점 찾기)을 회사 글로 본다."
+  },
+  {
+   "id": "car-hackers-handbook",
+   "title": "The Car Hacker's Handbook",
+   "by": "Craig Smith · No Starch Press · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://nostarch.com/carhacking",
+   "why": "모의해킹 덩어리의 손기술 입문 — CAN 메시지 읽고 보내기, 진단 명령, ECU·인포테인먼트 점검. 규제 부분은 오래돼 R155 로 보충."
+  },
+  {
+   "id": "practical-iot-hacking",
+   "title": "Practical IoT Hacking",
+   "by": "Fotios Chantzis 외 · No Starch Press · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://nostarch.com/practical-iot-hacking",
+   "why": "임베디드 기기 모의해킹의 순서(위협 모델 → 하드웨어 단자 → 펌웨어 → 무선). 시나리오 수립과 취약점 분석 요건을 채운다."
+  },
+  {
+   "id": "hardware-hacking-handbook",
+   "title": "The Hardware Hacking Handbook",
+   "by": "Jasper van Woudenberg · Colin O'Flynn · No Starch Press · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://nostarch.com/hardwarehacking",
+   "why": "기판의 디버그 단자·부채널·오류 주입 — 전자공학 요건과 '신기술 연구'에서 하드웨어 공격을 다룰 때."
+  },
+  {
+   "id": "emba",
+   "title": "EMBA — The firmware security analyzer",
+   "by": "EMBA 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/e-m-b-a/emba",
+   "why": "펌웨어 자동 점검 도구 개발 줄의 뼈대. 풀기·정적 점검·에뮬레이션·SBOM 이 어떻게 이어지는지 실제로 돌려 본다."
+  },
+  {
+   "id": "binwalk",
+   "title": "binwalk",
+   "by": "ReFirmLabs",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://github.com/ReFirmLabs/binwalk",
+   "why": "펌웨어 덩어리를 파일 시스템으로 푸는 첫 단계. 자동 점검 스크립트의 입구."
+  },
+  {
+   "id": "ghidra",
+   "title": "Ghidra Software Reverse Engineering Framework",
+   "by": "미국 NSA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/NationalSecurityAgency/ghidra",
+   "why": "C/C++ 요건의 실전판 — 소스 없는 펌웨어를 디컴파일해 읽는다. cwe_checker 도 이 위에서 돈다."
+  },
+  {
+   "id": "can-utils",
+   "title": "linux-can · can-utils",
+   "by": "Linux CAN 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://github.com/linux-can/can-utils",
+   "why": "리눅스 요건과 차 안 통신 재현 — 가상 CAN(vcan)에서 candump·cansend 로 메시지를 보고 보낸다."
+  },
+  {
+   "id": "autosar-secoc",
+   "title": "AUTOSAR CP R22-11 · Specification of Secure Onboard Communication",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_SecureOnboardCommunication.pdf",
+   "why": "보안 기술 개발 줄 — 차 안 메시지 인증과 순번 처리가 규격으로 어떻게 정해졌나. 개요 장과 freshness 장부터."
+  },
+  {
+   "id": "unece-r155",
+   "title": "UN Regulation No. 155 — Cyber security and CSMS",
+   "by": "UNECE WP.29",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://unece.org/transport/documents/2021/03/standards/un-regulation-no-155-cyber-security-and-cyber-security",
+   "why": "왜 출시 전에 시험해야 하나의 원문. 부록 5 위협 목록은 모의해킹 시나리오의 출발점이 된다."
+  },
+  {
+   "id": "iso-21434",
+   "title": "ISO/SAE 21434:2021 Road vehicles — Cybersecurity engineering",
+   "by": "ISO · SAE",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/70918.html",
+   "why": "사양 관리(요구사항 ↔ 위협)와 검증·침투 시험의 원전(유료). 지원 전에는 아래 해설서로 대신한다."
+  },
+  {
+   "id": "nasser-handbook",
+   "title": "Automotive Cybersecurity Engineering Handbook",
+   "by": "Ahmad MK Nasser · Packt · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.packtpub.com/en-se/product/automotive-cybersecurity-engineering-handbook-9781801072632",
+   "why": "21434·R155 와 TARA, 보안 요구사항·보안 기술(보안 부팅·키·통신 인증)을 개발 순서로 묶었다. 연구·개발 덩어리 전체를 한 권으로."
+  },
+  {
+   "id": "cvss4",
+   "title": "CVSS v4.0 Specification Document",
+   "by": "FIRST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.first.org/cvss/v4-0/specification-document",
+   "why": "보고서 검토·긴급 조치 판단 줄 — 공격 경로·필요 권한·피해로 점수를 매기는 공통 언어."
+  },
+  {
+   "id": "first-psirt",
+   "title": "PSIRT Services Framework v1.1",
+   "by": "FIRST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.first.org/standards/frameworks/psirts/psirt_services_framework_v1.1",
+   "why": "긴급 보고·조치 지원·사고 대응 줄 — 재현·분류·수정을 어떤 기능으로 나누는지."
+  },
+  {
+   "id": "zdi-p2o",
+   "title": "Pwn2Own Automotive 2026 — Day Three Results and the Master of Pwn",
+   "by": "Zero Day Initiative · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.zerodayinitiative.com/blog/2026/1/23/pwn2own-automotive-2026-day-three-results-and-the-master-of-pwn",
+   "why": "해킹 동향 분석 줄 — 올해 어떤 차량 기기(인포테인먼트·충전기)가 어떤 종류의 버그로 뚫렸는지 한눈에."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 자리의 그림 잡기",
+   "time": "1주",
+   "goal": "출시 전 보안(연구·개발·모의해킹)이 왜 판매 자격과 이어지는지, 차의 공격면이 어디인지 말로 설명할 수 있다.",
+   "resources": [
+    "hyundai-cslab",
+    "unece-r155",
+    "zdi-p2o"
+   ],
+   "task": "R155 부록 5 위협 목록에서 10개를 골라 '들어가는 길(원격·근거리·차 안) · 목표 · 막는 기술'을 한 줄씩 적은 표를 만든다."
+  },
+  {
+   "title": "리눅스·CAN 으로 손 풀기",
+   "time": "2~3주",
+   "goal": "가상 CAN 에서 메시지를 보고 보내고, 순번·MAC 이 없을 때 재전송이 왜 되는지 보인다.",
+   "resources": [
+    "can-utils",
+    "car-hackers-handbook",
+    "autosar-secoc"
+   ],
+   "task": "리눅스 vcan 에 가상 '문 열기' 메시지를 만들고 candump 로 잡아 cansend 로 다시 보내 본다. 이어서 위 풀이의 MAC·순번 예제를 붙여 재전송이 거부되는 것을 확인한다."
+  },
+  {
+   "title": "펌웨어 풀고 읽기",
+   "time": "3~5주",
+   "goal": "공개 펌웨어를 풀어 하드코딩된 비밀·위험 함수를 찾고, 디컴파일한 코드로 원인을 설명할 수 있다.",
+   "resources": [
+    "binwalk",
+    "ghidra",
+    "practical-iot-hacking",
+    "hardware-hacking-handbook"
+   ],
+   "task": "제조사가 공개 배포한 오픈소스 공유기 펌웨어 하나를 binwalk 로 풀고 Ghidra 로 서비스 바이너리 하나를 읽어, 찾은 것과 재현 절차를 영어 보고서 한 장으로 쓴다(남의 기기·차에는 하지 않는다)."
+  },
+  {
+   "title": "자동 점검 도구로 남기기",
+   "time": "2~3주",
+   "goal": "3단계에서 찾은 유형을 다음 펌웨어에서 자동으로 걸러 내는 스크립트를 만든다.",
+   "resources": [
+    "emba",
+    "cvss4"
+   ],
+   "task": "위 풀이의 점검 스크립트에 규칙 3개를 더하고 EMBA 결과와 나란히 비교한다. 결과마다 CVSS 점수와 '긴급/높음/보통'을 매겨 긴급만 모은 요약을 뽑는다."
+  },
+  {
+   "title": "시나리오와 사양으로 잇기 (선택)",
+   "time": "계속",
+   "goal": "한 기능의 TARA 를 쓰고, 거기서 모의해킹 시나리오와 보안 요구사항을 같이 뽑을 수 있다.",
+   "resources": [
+    "nasser-handbook",
+    "iso-21434",
+    "first-psirt"
+   ],
+   "task": "가상 '원격 문 열기' 기능으로 위협 분석 → 보안 요구사항 5줄 → 각 요구사항을 확인할 모의해킹 시나리오 5개를 대응표로 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 1인 평균 급여 **1억 3,100만원**(2025), 공공데이터 집계 평균 **약 7,708만원** — 기준이 달라 차이가 크고, 이 자리는 경력 3년 이상이라 경력·직급으로 정해진다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 생산직을 포함한 전 직원 값 [25]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일이 적혀 있지 않다 [26]"
+   },
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 초봉. 이 자리는 경력직이라 참고만 한다 [26]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값 [25]"
+   }
+  ],
+  "how": "공고의 급여는 '면접 후 결정'이다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이라 경력 3년 차가 받는 금액으로 읽으면 안 되고, 집계 사이트 값과는 기준이 달라 섞어 비교하지 않는다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [27]. 공고에는 복지 칸이 없고 [1][2], 판교 근무지에 어린이집·피트니스가 있는지는 보고서에 없다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 판교 근무지",
+  "address": "경기도 성남시 분당구 판교역로 152",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 근처 {추론}",
+  "note": "사람인 공고의 근무지는 '판교'이고 [1], 같은 공고를 실은 원티드의 근무지역이 판교역로 152 다 [2]. 현대차그룹은 판교에 SW 거점(판교테크원·제2테크노밸리 소프트웨어드림센터)을 두고 있다 [28]. 시험 차량·장비가 있는 남양연구소 등으로 오갈 수 있다 {추론}."
+ }
+}
