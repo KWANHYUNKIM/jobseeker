@@ -1,0 +1,643 @@
+{
+  "id": "xcena-junior-technical-project-coordinator",
+  "company": "엑시나",
+  "role": "Junior Technical Project/Product Coordinator",
+  "team": "SoC 개발 프로젝트 운영 · Project Manager 와 함께",
+  "jobs": [
+    "ats-greeting:xcena:233340"
+  ],
+  "researched_at": "2026-11-26",
+  "tldr": {
+    "what": "SoC(여러 기능을 한 칩에 담은 반도체) 개발 프로젝트의 **일정·이슈·위험을 매주 챙기고**, 칩을 같이 만드는 바깥 회사(디자인하우스·파운드리·IP·패키지·테스트·보드)와의 **계약 서류·견적·납품물**을 관리합니다.[1]",
+    "env": "엑시나는 공장 없이 설계만 하는 팹리스이고, 삼성 파운드리 4나노로 만든 CXL 메모리 칩 MX1 이 시제품·샘플 출하를 지나 **양산 준비** 단계에 있습니다.[6][8][9][10]",
+    "oneline": "코드를 쓰는 자리가 아니라 **엔지니어와 협력사 여러 곳의 일정을 한 장으로 묶고 끝까지 따라가는** 자리. 칩이 만들어지는 전 과정을 옆에서 보게 됩니다.[1]"
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "1. Technical Project Management\nProject Manager와 함께 SoC 개발 프로젝트를 운영합니다.",
+      "short": "PM 옆에서 칩 한 개가 설계부터 양산 준비까지 가는 일정을 같이 굴리는 일.",
+      "why": "공고는 이 자리가 RTL 설계(회로를 코드로 적는 단계)부터 Tape-out(설계 도면을 공장에 넘김), Silicon Bring-up(처음 나온 칩에 전원 넣어 보기), 평가 보드, 규격 인증 시험, 양산 준비까지 **전 과정을 경험**한다고 적었습니다.[1] 회사는 투자금으로 MX1 의 고객 검증과 양산 준비를 앞당기겠다고 했고[8], 직원은 85명 남짓이라[9] 한 사람이 여러 팀 일정을 묶어 줄 사람이 필요합니다.{추론}",
+      "actually": {
+        "intro": "SoC 한 개가 지나가는 큰 단계입니다(설계 흐름은 Synopsys 설명[13], 뒤 단계는 이 공고[1]).",
+        "items": [
+          "**설계** — 구조를 정하고 RTL 을 쓰고 시뮬레이션으로 검증.[13]",
+          "**구현** — 합성(코드 → 논리 게이트) → 배치·배선(게이트를 실제 자리에 놓고 잇기) → 사인오프(타이밍·전력·도면 규칙 최종 점검).[13][29]",
+          "**Tape-out** — 파운드리에 도면을 넘긴다. 그 뒤 웨이퍼 생산 → 패키징 → 테스트.[13][19]",
+          "**Bring-up · 평가** — 평가 보드(EVB)에 칩을 올려 처음 켜 보고, 기능·성능을 확인한다.[3][15]",
+          "**인증 · 양산 준비** — PCIe·CXL 규격 인증 시험, 신뢰성 시험(Qual), 샘플 출하와 고객 평가.[1][4][16][17]"
+        ]
+      },
+      "how_far": "무엇을 언제까지 할지는 PM 과 각 팀 리더가 정합니다. 이 자리는 그 결정을 **표·일정·회의록으로 남기고, 약속한 날 지켜졌는지 확인**하는 쪽입니다. 단계 이름을 듣고 무엇이 끝나야 다음으로 가는지 말할 수 있으면 출발선입니다.{추론}",
+      "refs": [1, 3, 4, 8, 9, 13, 15, 16, 19, 29],
+      "study": ["synopsys-asic", "wikidocs-flow"]
+    },
+    {
+      "section": "task",
+      "quote": "Project Master Schedule 관리",
+      "short": "설계·구현·생산·평가의 모든 일을 한 장의 큰 일정표(마스터 일정)로 묶어 고쳐 가는 일.",
+      "why": "칩 일정은 한 팀 안에서 끝나지 않습니다. 설계 동결 날짜가 밀리면 배치·배선, 사인오프, 파운드리 생산 예약이 줄줄이 밀립니다.[13][14] 그래서 팀별 일정 위에 전체를 잇는 한 장이 따로 필요합니다.{추론}",
+      "actually": {
+        "items": [
+          "팀별 일정(설계·검증·구현·패키지·보드·SW)을 받아 **한 표로 합친다**.",
+          "일마다 **앞선 일(의존)**을 이어 둔다 — 그래야 하나가 밀릴 때 어디까지 번지는지 바로 보인다.[24]",
+          "**가장 긴 줄(임계 경로)**을 표시한다 — 여기 있는 일이 하루 밀리면 끝도 하루 밀린다.[24]",
+          "바뀐 날짜는 **언제·왜·누가 바꿨는지** 남기고 기준 일정과 나란히 둔다.{추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "IP 납품이 4주 늦으면 끝은 몇 주 밀리나 (가상 일정, 직접 돌린 출력)",
+          "body": "RTL 동결(8주)과 IP 납품(6주)이 둘 다 끝나야 배치·배선을 시작합니다. IP 는 2주 여유가 있어서 4주 늦어도 끝은 **2주만** 밀리고, 임계 경로가 IP 쪽으로 바뀝니다.",
+          "lang": "python",
+          "code": "tasks = {\n    \"IP 납품\": (6, []),\n    \"RTL 동결\": (8, []),\n    \"합성·배치배선\": (6, [\"RTL 동결\", \"IP 납품\"]),\n    \"사인오프\": (3, [\"합성·배치배선\"]),\n    \"패키지 설계\": (8, [\"RTL 동결\"]),\n    \"테이프아웃\": (0, [\"사인오프\", \"패키지 설계\"]),\n    \"웨이퍼 생산\": (12, [\"테이프아웃\"]),\n    \"패키징·테스트\": (4, [\"웨이퍼 생산\"]),\n    \"보드 Bring-up\": (2, [\"패키징·테스트\"]),\n}\n# plan(): 앞선 일 중 가장 늦게 끝나는 것을 따라 끝 주와 임계 경로를 구한다\nprint(plan(tasks))\n# (35, 'RTL 동결 → 합성·배치배선 → 사인오프 → 테이프아웃 → 웨이퍼 생산 → 패키징·테스트 → 보드 Bring-up')\nslip = dict(tasks); slip[\"IP 납품\"] = (10, [])\nprint(plan(slip))\n# (37, 'IP 납품 → 합성·배치배선 → 사인오프 → 테이프아웃 → 웨이퍼 생산 → 패키징·테스트 → 보드 Bring-up')"
+        }
+      ],
+      "how_far": "일정 도구를 직접 만들 필요는 없습니다. 엑셀이나 일정 도구로 **의존을 이은 일정표를 만들고, 한 칸이 밀릴 때 끝이 얼마나 밀리는지 설명**할 수 있으면 됩니다.{추론}",
+      "refs": [13, 14, 24],
+      "study": ["pmbok", "google-pm", "excel-gantt"]
+    },
+    {
+      "section": "task",
+      "quote": "Project Milestone Tracking",
+      "short": "Tape-out·첫 칩 입고·Bring-up 완료 같은 큰 고비 날짜가 지켜지는지 따라가는 일.",
+      "why": "칩 일정에는 늦으면 몇 달이 날아가는 날짜가 있습니다. 여러 회사가 한 웨이퍼를 나눠 쓰는 MPW(시제품 공동 생산)는 정해진 출발일이 있어서, 마감을 놓치면 다음 차례까지 몇 주~몇 달을 기다립니다.[14]",
+      "actually": {
+        "items": [
+          "고비 목록 — RTL 동결 · 사인오프 · Tape-out · 웨이퍼 입고 · 패키지 완료 · Bring-up · 인증 시험 · 샘플 출하.[1][13]",
+          "고비마다 **통과 조건**을 적는다(예: 사인오프 = 타이밍·도면 규칙 검사 통과).[14][29]",
+          "계획 날짜 · 예상 날짜 · 실제 날짜를 나란히 두고 차이를 본다.{추론}",
+          "파운드리·패키지 회사가 받는 **예약 마감일**을 거꾸로 세어 안쪽 마감을 잡는다.[14]"
+        ]
+      },
+      "how_far": "고비를 정하는 건 PM 입니다. 이 자리는 날짜가 흔들리는 신호(검증 미완·IP 지연)를 **미리 알리는 것**까지 맡는다고 보면 됩니다.{추론}",
+      "refs": [1, 13, 14, 29],
+      "study": ["anysilicon-mpw", "pmbok"]
+    },
+    {
+      "section": "task",
+      "quote": "개발 일정 조율 및 Follow-up",
+      "short": "팀끼리 날짜가 부딪히면 맞춰 주고, 약속한 날에 정말 끝났는지 다시 묻는 일.",
+      "why": "같은 회사의 시니어 TPM 공고는 이 일을 \"회의와 현황 보고에서 끝내지 않고 담당자·기한·완료 기준을 정해 끝까지 챙기는 것\"으로 설명합니다.[2] 이 자리는 그 일을 SoC 쪽에서 하는 주니어 자리입니다.{추론}",
+      "actually": {
+        "items": [
+          "한 팀의 결과물이 다른 팀의 입력이면(보드 설계 ← 패키지 핀 배치[3]) 두 팀 날짜를 같이 본다.",
+          "날짜가 밀리면 영향(뒤에 걸린 일)과 대안(순서 바꾸기·범위 줄이기)을 정리해 PM 에게 올린다.[2]",
+          "약속한 날 전후로 담당자에게 확인하고 결과를 일정표에 바로 반영한다.{추론}"
+        ]
+      },
+      "how_far": "날짜를 바꾸는 결정은 하지 않습니다. **사실(끝났나·언제 끝나나)을 모아 결정할 사람 앞에 놓는 것**이 몫입니다.[2]",
+      "refs": [2, 3],
+      "study": ["pmbok"]
+    },
+    {
+      "section": "task",
+      "quote": "Weekly Progress Update",
+      "short": "매주 무엇이 끝났고·무엇이 늦고·무엇이 막혔는지 짧게 정리해 공유하는 일.",
+      "why": "여러 팀과 바깥 회사가 같이 움직이면 각자 아는 상태가 어긋납니다. 매주 같은 틀로 정리한 한 장이 있으면 회의가 짧아지고 결정이 빨라집니다.{추론} 시니어 TPM 공고도 \"한 번 정리한 정보를 여러 팀이 쓰게\" 하라고 적었습니다.[2]",
+      "actually": {
+        "items": [
+          "틀 — 이번 주 끝낸 것 · 다음 주 할 것 · 늦는 것(이유·새 날짜) · 막힌 것(누가 풀어야 하나).{추론}",
+          "고비 날짜 표와 상태 색(정상·주의·위험)을 맨 위에.",
+          "**확인된 사실과 아직 모르는 것을 나눠** 적는다 — 시니어 TPM 공고의 요구다.[2]"
+        ]
+      },
+      "how_far": "보고서를 예쁘게 만드는 것보다 **매주 같은 날, 같은 틀로, 빠짐없이** 내는 것이 기준입니다.{추론}",
+      "refs": [2],
+      "study": ["google-pm"]
+    },
+    {
+      "section": "task",
+      "quote": "Action Item 및 Issue Tracking",
+      "short": "회의에서 나온 할 일과 문제를 목록에 올려 담당자·기한·상태를 끝날 때까지 쫓는 일.",
+      "why": "칩 개발에는 \"보드에서 신호가 안 잡힌다\" 같은 문제가 계속 나오고, 설계·펌웨어·보드 팀이 같이 봐야 풀립니다.[3][5] 목록이 없으면 누가 들고 있는지 사라집니다.{추론}",
+      "actually": {
+        "items": [
+          "한 줄에 — 무엇 · 담당자 · 기한 · 상태 · 마지막 갱신일.{추론}",
+          "담당자는 **한 사람**으로 적는다(여럿이면 책임이 흐려진다) — 역할표(RACI)의 '책임자' 개념.[25]",
+          "기한 넘긴 것·2주 넘게 안 움직인 것을 매주 위로 올린다.{추론}",
+          "문제(issue)는 재현 조건·영향·원인·조치를 남긴다 — 검증 팀 공고가 요구하는 기록 방식.[5]"
+        ]
+      },
+      "how_far": "문제를 푸는 건 엔지니어입니다. 이 자리는 **목록이 늘 최신이고, 닫힌 것은 근거와 함께 닫히게** 하는 사람입니다.{추론}",
+      "refs": [3, 5, 25],
+      "study": ["google-pm"]
+    },
+    {
+      "section": "task",
+      "quote": "Risk 및 Dependency 관리",
+      "short": "아직 안 터졌지만 터지면 일정이 밀릴 일(위험)과, 남의 결과를 기다리는 일(의존)을 미리 적어 두는 일.",
+      "why": "팹리스는 공장·IP·패키지·테스트를 모두 바깥에 맡기므로 일정의 많은 부분이 **남의 손**에 있습니다.[11][19] 첫 칩에서 버그가 나오면 다음 판 칩(스테핑)으로 고쳐야 하고 일정이 크게 밀릴 수 있습니다.[15]",
+      "actually": {
+        "items": [
+          "위험 목록 — 내용 · 일어날 가능성 · 터지면 영향 · 미리 할 일 · 담당자.[20]",
+          "의존 목록 — 우리가 기다리는 것(IP 납품, 파운드리 공정 자료, 패키지 도면)과 남이 우리를 기다리는 것.[11]",
+          "여유(slack)가 작은 의존부터 자주 확인한다 — 위 예시처럼 여유가 2주면 2주까지는 끝이 안 밀린다.[24]",
+          "예: 고성능 부품 수급이 늦는 위험 → 대체 부품을 미리 검토.{추론}"
+        ]
+      },
+      "how_far": "위험 점수 매기는 공식을 외울 필요는 없습니다. **위험을 일찍 적어 올리고, 미리 할 일이 정해졌는지 확인**하는 데까지입니다.[20]",
+      "refs": [11, 15, 19, 20, 24],
+      "study": ["pmbok", "post-si"]
+    },
+    {
+      "section": "task",
+      "quote": "Project Dashboard 및 Status Report 작성",
+      "short": "경영진·PM 이 한눈에 보는 상태판과 보고서를 만들어 숫자를 최신으로 유지하는 일.",
+      "why": "투자자에게 양산 일정과 고객 검증을 약속한 회사라[8][9] 경영진이 일정·위험을 자주 봐야 합니다.{추론} 시니어 TPM 공고도 진행 현황과 의사결정 자료를 대상에 맞게 쓰는 능력을 필수로 적었습니다.[2]",
+      "actually": {
+        "items": [
+          "상태판 — 고비 날짜(계획·예상), 열린 문제 수와 추이, 위험 상위 5개, 협력사별 상태.{추론}",
+          "보고서 — 대상에 따라 다르게: 경영진엔 결정할 것 한 장, 팀엔 세부 표.[2]",
+          "숫자는 원본(일정표·문제 목록)에서 뽑아 **손으로 다시 치지 않게** 엮는다.{추론}"
+        ]
+      },
+      "how_far": "엑셀·파워포인트로 충분합니다(자격 6번[1]). 원본 표가 바뀌면 상태판도 같이 바뀌게 만들면 한 단계 위입니다.{추론}",
+      "refs": [1, 2, 8, 9],
+      "study": ["excel-gantt"]
+    },
+    {
+      "section": "task",
+      "quote": "Meeting Minutes 작성 및 Follow-up",
+      "short": "회의에서 정한 것과 할 일을 바로 적어 돌리고, 할 일을 목록으로 옮겨 쫓는 일.",
+      "why": "바깥 회사와의 회의는 나중에 견적·계약·책임 다툼의 근거가 됩니다.{추론} 시니어 TPM 공고가 말한 \"결정 사항의 담당자·기한·완료 기준\"이 남는 곳이 회의록입니다.[2]",
+      "actually": {
+        "items": [
+          "틀 — 날짜·참석자 · 정한 것 · 할 일(담당자·기한) · 다음 회의.{추론}",
+          "협력사 회의는 **영어로** 써서 그날 보낸다 — 해외 협력사가 많다(업무 2번).[1]",
+          "할 일은 위 Action Item 목록으로 옮긴다.{추론}"
+        ]
+      },
+      "how_far": "말한 내용을 다 받아 적는 게 아니라 **결정과 할 일만 빠짐없이**. 회의 끝나고 하루 안에 돌리는 것이 기본입니다.{추론}",
+      "refs": [1, 2],
+      "study": ["owl-email"]
+    },
+    {
+      "section": "task",
+      "quote": "개발 Infra 관리",
+      "short": "설계 도구 사용권·서버·협업 도구처럼 엔지니어가 일하는 데 필요한 바탕을 챙기는 일.",
+      "why": "공고는 무엇을 뜻하는지 더 적지 않았습니다.[1] 반도체 설계 회사에서는 보통 EDA(설계 자동화 소프트웨어) 사용권과 계산 서버가 크게 들어가고, 여러 사람이 서버를 나눠 쓰도록 작업 배분 도구를 씁니다.[28]{추론}",
+      "actually": {
+        "intro": "반도체 설계 회사에서 '개발 인프라' 로 흔히 묶이는 것입니다 — 엑시나가 이 중 무엇을 맡기는지는 공개되지 않았습니다.{추론}",
+        "items": [
+          "**EDA 사용권** — 몇 개를 언제까지 쓰는지, 갱신일과 비용.[13]{추론}",
+          "**계산 서버** — 시뮬레이션·검증을 나눠 돌리는 서버 묶음과 작업 배분 도구(예: LSF).[28]",
+          "**협업 도구** — 문제 목록·문서·계정 관리(입사·퇴사 때 권한).{추론}",
+          "**보안** — 협력사와 주고받는 설계 자료의 보관·접근 권한(NDA 와 이어진다).[21]{추론}"
+        ]
+      },
+      "how_far": "서버를 직접 운영하는 자리가 아닙니다(IT 담당은 따로 뽑는다). 면접에서 **무엇을 맡는지 물어보는 것**이 가장 정확합니다.{추론}",
+      "refs": [1, 13, 21, 28],
+      "study": ["lsf-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "2. External Partner Management\n국내외 협력사와의 프로젝트 운영을 지원합니다.",
+      "short": "칩의 각 부분을 맡은 바깥 회사들과의 일정·서류·연락을 이어 주는 일.",
+      "why": "팹리스는 설계만 하고 생산은 파운드리, 패키징·테스트는 외주 회사(OSAT)에 맡기는 분업 구조입니다.[19] 엑시나는 삼성 파운드리 4나노로 칩을 만들었고[6][9], 미국 서니베일에도 사무소가 있어[7][9] 협력사가 국내외에 걸칩니다.",
+      "how_far": "협력사와 기술 내용을 깊이 협상하는 건 엔지니어와 PM 입니다. 이 자리는 **서류·일정·연락 창구**를 맡는다고 공고 아래 줄들이 말해 줍니다.[1]",
+      "refs": [1, 6, 7, 9, 19],
+      "study": ["chipwar", "wikidocs-flow"]
+    },
+    {
+      "section": "task",
+      "quote": "협업 대상\nDesign House\nFoundry\nIP Vendor\nPackage Vendor\nTest House\nODM Partner",
+      "short": "칩 만들기를 나눠 맡는 여섯 종류의 바깥 회사 — 누가 무엇을 주고받는지 알아야 일정을 묶는다.",
+      "why": "여섯 곳이 각자 다른 결과물을 주고, 하나가 늦으면 다음이 멈춥니다.[1][19] 이름만 알아도 회의에서 무엇을 기다리는지 따라갈 수 있습니다.{추론}",
+      "actually": {
+        "items": [
+          "**Design House(디자인하우스)** — 팹리스와 파운드리 사이에서 설계 구현을 돕고, 생산을 뺀 패키징·테스트 외주까지 관리해 주기도 한다. 삼성 파운드리 쪽은 DSP(디자인솔루션파트너)라 부른다.[11] 계약은 맡은 일만 하는 용역(NRE)과 통째로 맡는 턴키로 나뉜다.[12]",
+          "**Foundry(파운드리)** — 웨이퍼를 실제로 찍는 공장. 엑시나 MX1 은 삼성 파운드리 4나노.[6]",
+          "**IP Vendor** — 남이 만든 회로 블록(PCIe·메모리 연결 회로 등)을 사용권으로 판다. 납품 날짜와 판(버전)이 일정에 걸린다.[13]{추론}",
+          "**Package Vendor** — 다이(잘라 낸 칩 조각)를 보호하고 바깥과 전기로 잇는 패키지를 만든다.[18][19]",
+          "**Test House** — 완성 칩이 정상인지 가려내는 시험을 대신 해 준다(웨이퍼 시험 EDS·최종 시험).[18]",
+          "**ODM Partner** — 칩을 얹은 카드·보드를 설계·생산해 주는 회사. MX1 은 서버에 꽂는 확장 카드(MX1 Compute · Expand)로 나온다.[7]{추론}"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "팹리스 칩이 지나가는 바깥 회사들[11][19]",
+          "steps": [
+            "팹리스 설계 + IP 업체 회로 블록",
+            "디자인하우스 구현",
+            "파운드리 웨이퍼 생산",
+            "패키지 업체 조립",
+            "테스트 업체 시험",
+            "ODM 카드·보드"
+          ]
+        }
+      ],
+      "how_far": "각 회사가 **무엇을 받아 무엇을 넘기는지**(입력·출력)를 한 줄씩 말할 수 있으면 충분합니다. 공정 세부는 일하며 배운다고 공고가 적었습니다.[1]",
+      "refs": [1, 6, 7, 11, 12, 13, 18, 19],
+      "study": ["wikidocs-flow", "samsung-8", "chipwar"]
+    },
+    {
+      "section": "task",
+      "quote": "NDA 진행",
+      "short": "협력사와 설계 자료를 주고받기 전에 비밀유지계약(NDA)을 맺도록 서류를 돌리는 일.",
+      "why": "견적을 받으려면 칩 사양을 보여 줘야 하고, 파운드리 공정 자료도 계약 없이는 받을 수 없습니다.{추론} 정부의 기술보호 안내도 표준 비밀유지계약서의 핵심을 **제공 목적·비밀 범위·위반 시 배상**으로 든다.[21]",
+      "actually": {
+        "items": [
+          "어느 회사와 · 어떤 범위로 · 언제까지 맺었는지 **목록**으로 관리한다.{추론}",
+          "상대가 보낸 양식이면 법무·대표 검토를 거쳐 서명을 돌린다.{추론}",
+          "NDA 가 맺어지기 전에는 사양서를 보내지 않는다 — 순서를 지키는 것이 이 줄의 핵심.{추론}"
+        ]
+      },
+      "how_far": "조항을 고치는 건 법무 몫입니다. 이 자리는 **언제 필요한지 알고, 빠짐없이 맺고, 만료를 챙기는 것**까지입니다.{추론}",
+      "refs": [21],
+      "study": ["ultari"]
+    },
+    {
+      "section": "task",
+      "quote": "RFQ 발송 및 관리",
+      "short": "여러 협력사에 같은 조건으로 견적 요청서(RFQ)를 보내고 답을 기한까지 받아 내는 일.",
+      "why": "RFQ 는 같은 조건을 여러 공급자에게 보내 값을 비교하려고 쓰는 요청서입니다.[22] 조건이 회사마다 다르면 받은 값을 비교할 수 없습니다.{추론}",
+      "actually": {
+        "items": [
+          "요청서에 — 사양 · 수량(시제품·양산) · 납기 · 회신 기한 · 통화 · 조건을 **똑같이** 적는다.[22]",
+          "누구에게 언제 보냈고 언제 답이 왔는지 표로 남긴다.{추론}",
+          "질문이 오면 답을 **모든 업체에 같이** 돌린다(한 곳만 알면 공정하지 않다).{추론}"
+        ]
+      },
+      "how_far": "무엇을 살지는 엔지니어·PM 이 정하고 이 자리는 **요청서를 빠짐없이 만들고 회신을 모으는** 쪽입니다.{추론}",
+      "refs": [22],
+      "study": ["pmbok"]
+    },
+    {
+      "section": "task",
+      "quote": "견적 비교 및 정리",
+      "short": "받은 견적을 같은 잣대(통화·수량·한 번 내는 비용·개당 값·납기)로 맞춰 한 표로 비교하는 일.",
+      "why": "반도체 외주 견적은 보통 **한 번 내는 개발비(NRE)**와 **개당 값**이 따로 옵니다.[23] 수량에 따라 싼 곳이 뒤바뀌기 때문에 값 하나만 보면 틀립니다.{추론}",
+      "examples": [
+        {
+          "title": "수량에 따라 1등이 바뀐다 (가상 견적, 직접 돌린 출력)",
+          "body": "A사 NRE 3억 + 개당 9천 원, B사 NRE 15만 달러 + 개당 6달러, C사 NRE 없음 + 개당 1만 5천 원. 환율은 1,400원으로 가정해 표에 같이 적습니다. 1만 개면 C사, 10만 개면 B사가 가장 쌉니다 — 대신 B사는 납기가 가장 깁니다.",
+          "lang": "python",
+          "code": "quotes = [\n    (\"A사\", \"KRW\", 300_000_000, 9_000, 10),\n    (\"B사\", \"USD\", 150_000, 6.0, 14),\n    (\"C사\", \"KRW\", 0, 15_000, 8),\n]\nfx = {\"KRW\": 1, \"USD\": 1_400}  # 비교 기준 환율(가정)\nfor qty in (10_000, 100_000):\n    rows = sorted(((nre + unit * qty) * fx[cur], name, lead)\n                  for name, cur, nre, unit, lead in quotes)\n    print(qty, \"개:\", \", \".join(f\"{n} {t/1e8:.2f}억({l}주)\" for t, n, l in rows))\n# 10000 개: C사 1.50억(8주), B사 2.94억(14주), A사 3.90억(10주)\n# 100000 개: B사 10.50억(14주), A사 12.00억(10주), C사 15.00억(8주)"
+        }
+      ],
+      "how_far": "고르는 결정은 하지 않습니다. **같은 잣대로 맞춘 표와 '수량이 얼마면 누가 싸다'는 한 줄**을 올리면 이 줄의 몫은 끝납니다.{추론}",
+      "refs": [23],
+      "study": ["excel-gantt"]
+    },
+    {
+      "section": "task",
+      "quote": "개발 일정 Follow-up",
+      "short": "협력사가 약속한 납기·중간 결과를 날짜마다 확인하고 늦으면 바로 알리는 일.",
+      "why": "바깥 회사의 지연은 우리 일정의 의존(남의 결과를 기다리는 일)이 됩니다.[24] 시제품 공동 생산처럼 출발일이 정해진 일정은 늦으면 다음 차례로 밀립니다.[14]",
+      "actually": {
+        "items": [
+          "협력사별 약속 날짜를 마스터 일정에 이어 둔다.{추론}",
+          "날짜 며칠 전에 진행 상황을 묻고, 늦을 것 같으면 새 날짜와 이유를 받아 PM 에 올린다.{추론}",
+          "시차가 있는 해외 협력사는 메일로 질문을 한 번에 묶어 보낸다.{추론}"
+        ]
+      },
+      "how_far": "협력사를 압박하는 건 PM·구매의 몫이고, 이 자리는 **늦어지는 걸 가장 먼저 알아채는 사람**입니다.{추론}",
+      "refs": [14, 24],
+      "study": ["owl-email"]
+    },
+    {
+      "section": "task",
+      "quote": "Deliverable 관리",
+      "short": "협력사가 넘겨야 할 결과물(도면·보고서·샘플)이 다 왔는지, 맞는 판인지 확인하고 보관하는 일.",
+      "why": "칩 개발에서 주고받는 결과물은 다음 단계의 입력입니다 — 예: 패키지 핀 배치가 와야 보드 설계를 검토한다.[3] 엑시나 PE 공고도 샘플 출하 때 Bring-up 안내서·릴리즈 노트·Errata(알려진 결함 목록) 같은 문서 묶음을 챙기라고 적었습니다.[4]",
+      "actually": {
+        "items": [
+          "협력사별 **결과물 목록**(무엇·언제·몇 판)을 계약·견적 때 정해 둔다.{추론}",
+          "받으면 판 번호·날짜를 기록하고 담당 엔지니어에게 확인(승인)을 받는다.{추론}",
+          "예: IP 판이 바뀌었는데 설계팀이 옛 판을 쓰고 있지 않은지 확인.{추론}"
+        ]
+      },
+      "how_far": "결과물 내용이 맞는지는 엔지니어가 봅니다. 이 자리는 **목록과 실제가 일치하는지, 누가 확인했는지**를 지킵니다.{추론}",
+      "refs": [3, 4],
+      "study": ["google-pm"]
+    },
+    {
+      "section": "task",
+      "quote": "Vendor Action Item 관리",
+      "short": "협력사 쪽에 걸린 할 일만 따로 모아, 회의마다 닫혔는지 확인하는 일.",
+      "why": "내부 할 일과 섞이면 협력사 몫이 묻힙니다.{추론} 엑시나 PE 공고도 외부 검증 협력사의 이슈를 따로 추적하라고 적었습니다.[4]",
+      "actually": {
+        "items": [
+          "협력사 이름별로 할 일 · 기한 · 상태를 나눈 표.{추론}",
+          "정기 회의 첫머리에 지난 할 일부터 확인한다.{추론}",
+          "닫을 때 근거(받은 메일·결과물)를 같이 남긴다.{추론}"
+        ]
+      },
+      "how_far": "위 Action Item 목록과 같은 방식을 협력사 단위로 한 번 더 — 그 정도면 됩니다.{추론}",
+      "refs": [4],
+      "study": ["google-pm"]
+    },
+    {
+      "section": "preference",
+      "quote": "3. Preferred Qualifications Education\n전자공학\n컴퓨터공학\n반도체공학\n관련 공학 계열",
+      "short": "필수는 아니고 우대 — 엔지니어가 하는 말을 알아듣기 쉬운 전공이라서.",
+      "why": "회의·문제 목록이 RTL·사인오프·PCIe 같은 말로 채워집니다.[1][5] 한 집계 사이트의 엑시나 최근 공고 지원자 통계에서 전공 1위는 전자공학(48.8%), 2위는 컴퓨터공학(18.6%)이었습니다(설계직 공고 기준).[27]",
+      "how_far": "비전공이면 **SoC 개발 단계와 협력사 구조를 자기 말로 설명할 수 있게** 준비하면 이 우대를 상당 부분 메웁니다(공고도 일하며 배울 수 있다고 적었다).[1]{추론}",
+      "refs": [1, 5, 27],
+      "study": ["samsung-8", "synopsys-asic"]
+    },
+    {
+      "section": "preference",
+      "quote": "4. Preferred Experience\n다음 경험 중 하나 이상이 있다면 우대합니다.\n반도체 업종 개발/생산 PM 경험",
+      "short": "반도체 일정의 생김새(긴 생산 기간·정해진 예약일)를 이미 겪어 본 사람이 빨리 적응해서.",
+      "why": "웨이퍼 생산은 몇 달이 걸리고 시제품 공동 생산은 정해진 출발일이 있어[14], 소프트웨어 일정과 감이 다릅니다.{추론} 엑시나는 양산 준비 단계라[8][10] 생산 쪽 경험도 같이 본다고 읽힙니다.{추론}",
+      "how_far": "우대 셋 중 **하나만** 있으면 됩니다.[1] 없다면 아래 로드맵 과제처럼 칩 일정표를 직접 짜 본 것을 보여 주는 것이 대안입니다.{추론}",
+      "refs": [1, 8, 10, 14],
+      "study": ["anysilicon-mpw"]
+    },
+    {
+      "section": "preference",
+      "quote": "Fabless / Design House 근무 경험",
+      "short": "협력사를 바깥에 두고 일하는 회사의 하루를 이미 알아서.",
+      "why": "디자인하우스는 팹리스와 파운드리 사이에서 설계 구현과 외주 관리를 맡는 회사라[11], 이 자리가 상대할 회사들을 반대편에서 겪어 본 셈입니다.{추론}",
+      "how_far": "직무가 PM 이 아니어도(예: 설계 지원·검증) 그 회사의 일정·협력 구조를 설명할 수 있으면 경험으로 씁니다.{추론}",
+      "refs": [11],
+      "study": ["wikidocs-flow"]
+    },
+    {
+      "section": "preference",
+      "quote": "Hardware 개발/생산 PM 경험",
+      "short": "보드·완제품을 만들어 본 PM 이면 시제품 → 평가 → 양산의 흐름이 같아서.",
+      "why": "엑시나 제품은 칩만이 아니라 서버에 꽂는 카드로 나가고[7], 보드 개발·Bring-up·규격 인증이 같이 굴러갑니다.[3]",
+      "how_far": "부품 수급·시제품 일정·인증 시험을 관리해 본 경험이면 반도체가 아니어도 우대 대상입니다.[1]{추론}",
+      "refs": [1, 3, 7],
+      "study": ["post-si"]
+    },
+    {
+      "section": "preference",
+      "quote": "5. Technical Knowledge\n다음 기술을 경험했거나 관심이 있는 분\nSoC Development Flow",
+      "short": "SoC 가 설계 → 구현 → Tape-out → 생산 → Bring-up 순서로 간다는 큰 흐름을 아는 것.",
+      "why": "일정표의 칸이 곧 이 흐름입니다.[1][13] 흐름을 모르면 어느 날짜가 진짜 위험한지 가릴 수 없습니다.{추론}",
+      "actually": {
+        "items": [
+          "구조 정의 → RTL → 기능 검증 → 합성 → 배치·배선 → 사인오프 → Tape-out.[13]",
+          "사인오프에는 타이밍 맞추기, 전력 예산, 도면 규칙 검사(DRC·LVS)가 들어간다.[29]",
+          "Tape-out 뒤 — 생산 → 패키지 → 테스트 → Bring-up → 특성 평가.[15][19]",
+          "엑시나는 이 SoC 를 검증하는 팀(SoC 디자인 검증)과 보드 팀을 따로 둔다.[3][5]"
+        ]
+      },
+      "how_far": "각 단계를 엔지니어 수준으로 할 필요는 없고 **무엇이 끝나야 다음으로 가는지**를 알면 됩니다.[1]{추론}",
+      "refs": [1, 3, 5, 13, 15, 19, 29],
+      "study": ["synopsys-asic", "wikidocs-flow"]
+    },
+    {
+      "section": "preference",
+      "quote": "반도체 공정 Flow.",
+      "short": "웨이퍼 한 장이 칩이 되기까지의 공장 단계 — 왜 생산에 몇 달이 걸리는지 알게 된다.",
+      "why": "Tape-out 뒤 몇 달은 공장 안의 일이라 우리가 당길 수 없습니다.{추론} 그 몇 달이 무엇으로 채워지는지 알면 협력사 일정을 읽을 수 있습니다.{추론}",
+      "actually": {
+        "intro": "삼성반도체 뉴스룸이 초보자용으로 나눈 8단계입니다.[18]",
+        "items": [
+          "웨이퍼 제조 → 산화 → 포토 → 식각 → 증착·이온 주입 → 금속 배선",
+          "EDS — 웨이퍼 상태에서 좋은 칩과 나쁜 칩을 가르는 시험",
+          "패키징 — 칩을 보호하고 바깥과 전기로 잇는다"
+        ]
+      },
+      "how_far": "단계 이름과 순서, 앞 6단계는 파운드리·뒤 2단계는 테스트·패키지 회사가 맡는다는 것 정도면 됩니다.[18][19]",
+      "refs": [18, 19],
+      "study": ["samsung-8"]
+    },
+    {
+      "section": "preference",
+      "quote": "반도체 설계 IP, EDA에 대한 기본 지식.",
+      "short": "IP 는 사 오는 회로 블록, EDA 는 설계 소프트웨어 — 둘 다 돈·사용권·납기가 걸린 일정 항목이다.",
+      "why": "이 자리가 IP 업체 일정을 따라가고(업무 2번) 개발 인프라를 챙기니(업무 1번)[1], 두 낱말이 매주 나옵니다.{추론}",
+      "actually": {
+        "items": [
+          "**IP** — 남이 만들어 검증한 회로 블록. 사서 칩에 넣는다(예: PCIe 연결 회로). 규격 인증을 먼저 통과한 IP 도 있다.[16]",
+          "**EDA** — 합성·배치배선·검증을 하는 소프트웨어. 단계마다 쓰는 도구가 다르다.[13]",
+          "**MX1 에 들어간 것** — CXL·PCIe 6.0 연결, DDR5 메모리 4채널, RISC-V 코어 3,072개(엑시나 발표).[6]"
+        ]
+      },
+      "how_far": "IP·EDA 를 직접 다룰 일은 없습니다. **무엇을 사 오고, 판이 바뀌면 누가 영향을 받는지**를 알면 됩니다.{추론}",
+      "refs": [1, 6, 13, 16],
+      "study": ["synopsys-asic", "hotchips-sth"]
+    },
+    {
+      "section": "preference",
+      "quote": "Fabless, Foundry biz. 대한 기본 지식.",
+      "short": "팹리스는 설계, 파운드리는 생산 — 누가 무엇으로 돈을 벌고 무엇을 요구하는지 아는 것.",
+      "why": "협력사와 견적·계약을 다루려면 상대가 무엇으로 돈을 버는지 알아야 합니다.{추론} 디자인하우스 계약도 용역(NRE)과 턴키로 나뉘어 돈 받는 방식이 다릅니다.[12]",
+      "actually": {
+        "items": [
+          "팹리스 — 공장 없이 설계·판매. 생산은 파운드리, 후공정은 OSAT 에 맡긴다.[19]",
+          "파운드리 — 주문받아 생산. 삼성 파운드리는 디자인하우스(DSP)들과 고객을 넓힌다.[11][12]",
+          "돈의 흐름 — 시제품 때는 한 번 내는 비용(NRE·마스크)이 크고, 양산 때는 개당 값이 중요해진다.[23]{추론}"
+        ]
+      },
+      "how_far": "산업 기사를 읽고 누가 누구의 고객인지 말할 수 있는 정도입니다.{추론}",
+      "refs": [11, 12, 19, 23],
+      "study": ["chipwar", "wikidocs-flow"]
+    },
+    {
+      "section": "preference",
+      "quote": "※ 모든 기술을 알고 있을 필요는 없습니다. 업무를 통해 충분히 학습할 수 있습니다.",
+      "short": "위 기술 지식은 다 알 필요 없다는 뜻 — 대신 빨리 배우는 사람을 본다.",
+      "why": "회사가 직접 그렇게 적었습니다.[1] 제목이 Junior 인 것과 맞닿는 문장입니다.{추론}",
+      "how_far": "면접 전에 아래 로드맵 1단계(칩 흐름·협력사 구조) 정도만 해 두면 '관심이 있다'를 보여 줄 수 있습니다.{추론}",
+      "refs": [1],
+      "study": ["samsung-8"]
+    },
+    {
+      "section": "qualification",
+      "quote": "6. Required Skills\n체계적인 일정 관리 능력",
+      "short": "할 일을 쪼개고, 순서를 잇고, 밀리면 영향을 계산하는 습관 — 이 자리의 첫째 요건.",
+      "why": "업무 1번 아홉 줄 중 다섯 줄이 일정·고비·조율·위험입니다.[1]",
+      "actually": {
+        "items": [
+          "할 일을 1~2주 크기로 쪼갠다(크면 늦는 걸 늦게 안다).{추론}",
+          "앞뒤 의존을 잇고 임계 경로를 안다.[24]",
+          "기준 일정을 남겨 두고 바뀐 것과 비교한다.[20]"
+        ]
+      },
+      "how_far": "자격증(PMP 등)은 요구하지 않았습니다.[1] 학교·동아리·이전 회사에서 **여러 사람 일정을 묶어 끝낸 예**를 숫자(기간·인원·밀린 날)로 말할 수 있으면 됩니다.{추론}",
+      "refs": [1, 20, 24],
+      "study": ["pmbok", "google-pm"]
+    },
+    {
+      "section": "qualification",
+      "quote": "뛰어난 Communication Skill",
+      "short": "엔지니어·경영진·협력사에게 같은 사실을 각자 알아듣는 말로 전하는 능력.",
+      "why": "같은 회사 시니어 TPM 공고는 개발·검증·마케팅·고객의 다른 관점을 이해하고 합의를 끌어내는 사람을 찾는다고 적었습니다.[2]",
+      "how_far": "말솜씨보다 **짧고 정확하게** — 무엇이 문제인지, 언제까지, 누가 결정해야 하는지를 한 단락에 담는 것.{추론}",
+      "refs": [2],
+      "study": ["owl-email"]
+    },
+    {
+      "section": "qualification",
+      "quote": "다양한 이해관계자와 협업하는 능력",
+      "short": "설계·검증·보드·SW 팀과 국내외 협력사 여섯 종류 — 원하는 게 다른 사람들 사이에서 일하는 능력.",
+      "why": "업무 2번의 협업 대상만 여섯 종류이고[1], 회사 안에도 SoC 설계·검증·보드·SW·제품 검증 팀이 따로 있습니다.[2][3][4][5]",
+      "how_far": "누가 무엇을 결정하는지(역할표)를 먼저 파악하고, 결정할 사람에게 사실을 가져가는 것.[25]{추론}",
+      "refs": [1, 2, 3, 4, 5, 25],
+      "study": ["google-pm"]
+    },
+    {
+      "section": "qualification",
+      "quote": "문서 작성 능력 (Excel, PowerPoint)",
+      "short": "일정표·견적 비교·상태판은 엑셀, 보고는 파워포인트 — 이 자리의 결과물 대부분이다.",
+      "why": "업무 줄의 결과물(마스터 일정·대시보드·견적 비교·회의록)이 거의 다 문서입니다.[1]",
+      "level": {
+        "basic": "표 정리 · 정렬·필터 · 합계 · 조건부 서식 · 간단한 차트",
+        "work": "VLOOKUP/XLOOKUP · 피벗 표 · 날짜 계산(영업일) · 간트 차트",
+        "team": "원본 표 하나에서 상태판·보고서가 같이 바뀌게 엮기"
+      },
+      "how_far": "엑셀로 위 견적 비교 표를 만들고 간트 차트를 그릴 수 있으면 됩니다.{추론}",
+      "refs": [1],
+      "study": ["excel-gantt"]
+    },
+    {
+      "section": "qualification",
+      "quote": "적극적인 Follow-up 및 실행력",
+      "short": "누가 묻기 전에 먼저 확인하고, 정해진 일은 끝날 때까지 놓지 않는 태도.",
+      "why": "업무 줄에 Follow-up 이 세 번 나옵니다(일정 조율·회의록·협력사 일정).[1] 시니어 TPM 공고도 \"결정 사항을 실제 실행과 종료까지 챙기는 사람\"을 찾습니다.[2]",
+      "how_far": "면접에서는 '내가 먼저 확인해서 늦어질 일을 막은 예'를 하나 준비하면 좋습니다.{추론}",
+      "refs": [1, 2],
+      "study": ["google-pm"]
+    },
+    {
+      "section": "qualification",
+      "quote": "논리적인 문제 해결 능력",
+      "short": "일정이 밀리거나 협력사와 엇갈릴 때 사실을 나눠 원인과 선택지를 정리하는 능력.",
+      "why": "시니어 TPM 공고는 일정·범위·품질 사이의 선택지를 분명히 제시하는 사람을 원한다고 적었습니다.[2]",
+      "actually": {
+        "items": [
+          "무슨 일이 — 확인된 사실과 추측을 나눈다.[2]",
+          "왜 — 어느 의존이 늦었나(일정표에서 찾는다).[24]",
+          "선택지 — 순서 바꾸기 · 범위 줄이기 · 사람·돈 더 쓰기, 각각 끝이 얼마나 바뀌나.{추론}"
+        ]
+      },
+      "how_far": "답을 고르는 건 PM 이어도, **선택지 두세 개와 영향**을 표로 내미는 것까지가 이 자리입니다.{추론}",
+      "refs": [2, 24],
+      "study": ["pmbok"]
+    },
+    {
+      "section": "qualification",
+      "quote": "영어 Email 및 문서 작성 능력",
+      "short": "해외 파운드리·IP·패키지 회사와 메일·회의록·요청서를 영어로 주고받아서.",
+      "why": "협력사가 국내외에 있고(업무 2번)[1], 회사는 미국 서니베일에 사무소를 두고 해외 행사(Hot Chips·OCP)에서 제품을 발표합니다.[6][7] 시니어 TPM 공고도 글로벌 고객·협력사와의 영어 메일·문서를 필수로 적었습니다.[2]",
+      "actually": {
+        "items": [
+          "메일 한 통에 요청 하나, 제목에 요청과 기한을 적는다.[26]{추론}",
+          "RFQ·회의록·할 일 목록을 영어 틀로 만들어 둔다.{추론}",
+          "날짜는 2026-12-03 처럼 헷갈리지 않는 꼴로, 시간대를 같이 쓴다.{추론}"
+        ]
+      },
+      "how_far": "유창한 회화보다 **오해 없는 짧은 메일**이 기준입니다. 받은 메일의 요청을 빠짐없이 답할 수 있으면 출발선입니다.{추론}",
+      "refs": [1, 2, 6, 7, 26],
+      "study": ["owl-email"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "목록을 만들고 하나씩 지우는 게 즐거운 사람",
+      "칩이 만들어지는 전 과정을 옆에서 보고 싶은 사람[1]",
+      "엔지니어에게 모르는 걸 묻는 게 부담 없는 사람",
+      "영어 메일을 쓰는 게 겁나지 않는 사람[1]"
+    ],
+    "hard": [
+      "직접 설계·코딩을 하고 싶다면 이 자리는 아니다 — 결과물이 문서와 일정이다{추론}",
+      "남의 일정에 기대는 일이 많아, 내가 못 당기는 지연을 견뎌야 한다[11][19]",
+      "제목은 Junior 지만 수집된 공고 정보에는 경력 3년↑로 잡혀 있다 — 지원 전에 원문을 확인한다{추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "SoC 가 설계부터 양산까지 가는 단계를 순서대로 말해 보세요. Tape-out 은 어디인가요?",
+      "a": "공고 About the Role 의 흐름과 설계 단계.[1][13]"
+    },
+    {
+      "q": "IP 납품이 4주 늦어진다는 연락을 받았어요. 끝 일정은 몇 주 밀리나요? 무엇부터 확인하나요?",
+      "a": "여유(slack)와 임계 경로.[24]"
+    },
+    {
+      "q": "세 곳 견적이 통화도 다르고 NRE·개당 값도 다르게 왔어요. 어떻게 비교하나요?",
+      "a": "같은 잣대로 맞추고 수량별로 본다.[23]"
+    },
+    {
+      "q": "디자인하우스·파운드리·패키지·테스트 회사는 각각 무엇을 받고 무엇을 넘기나요?",
+      "a": "팹리스 분업 구조.[11][19]"
+    },
+    {
+      "q": "협력사에 사양서를 보내기 전에 꼭 해야 할 것은?",
+      "a": "NDA — 목적·범위·배상.[21]"
+    },
+    {
+      "q": "회의에서 정한 할 일이 2주째 안 움직여요. 어떻게 하나요?",
+      "a": "담당자·기한·완료 기준을 다시 정하고 위로 올린다.[2]"
+    }
+  ],
+  "sources": [
+    {"n": 1, "title": "엑시나 채용 · Junior Technical Project/Product Coordinator", "url": "https://xcena.career.greetinghr.com/ko/o/233340", "kind": "posting", "note": "역할 소개·업무·우대·필수 역량·근무지·복리후생"},
+    {"n": 2, "title": "엑시나 채용 · [SW] Senior SW Technical Program Manager", "url": "https://xcena.career.greetinghr.com/ko/o/241584", "kind": "posting", "note": "같은 회사의 TPM 자리 — 일하는 방식·요구 역량"},
+    {"n": 3, "title": "엑시나 채용 · HW 보드 개발", "url": "https://xcena.career.greetinghr.com/ko/o/237697", "kind": "posting", "note": "패키지 핀 배치 검토·EVB Bring-up·PCIe 전기 규격 인증"},
+    {"n": 4, "title": "엑시나 채용 · Product Engineer", "url": "https://xcena.career.greetinghr.com/ko/o/161178", "kind": "posting", "note": "신뢰성 시험(Qual)·외부 검증 협력사·샘플 출하 문서"},
+    {"n": 5, "title": "엑시나 채용 · CXL Product Engineer", "url": "https://xcena.career.greetinghr.com/ko/o/237698", "kind": "posting", "note": "검증·결함 재현·원인 분석·양산 시험"},
+    {"n": 6, "title": "ServeTheHome · XCENA MX1 CXL Computational Memory Device at Hot Chips 2026", "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026", "kind": "news", "date": "2026-08-25", "note": "엑시나 발표 슬라이드 정리 — 삼성 4나노, RISC-V 3,072코어, DDR5 4채널"},
+    {"n": 7, "title": "StorageReview · XCENA MX1 at OCP 2026", "url": "https://www.storagereview.com/news/xcena-mx1-cxl-computational-memory-kv-cache-sk-hynix-ocp-2026", "kind": "news", "date": "2026-10-16", "note": "MX1 Compute·Expand 카드, 서니베일 법인, SK하이닉스 협업"},
+    {"n": 8, "title": "뉴스1 · 엑시나 시리즈B 2018억 유치", "url": "https://www.news1.kr/industry/sb-founded/6185394", "kind": "news", "date": "2026-06-02", "note": "투자금으로 MX1 고객 검증·양산 준비"},
+    {"n": 9, "title": "머니투데이 · 엑시나 김진영 대표", "url": "https://www.mt.co.kr/future/2026/01/06/2025122412575632950", "kind": "news", "date": "2026-01-06", "note": "삼성 파운드리 4나노 시제품 완료, 전체 85명, 서니베일 사무소"},
+    {"n": 10, "title": "EE Times Japan · 엑시나 MX1", "url": "https://eetimes.itmedia.co.jp/ee/spv/2610/02/news025_2.html", "kind": "news", "date": "2026-10-02", "note": "샘플 출하 중, 양산 계획"},
+    {"n": 11, "title": "디지털데일리 · 팹리스와 디자인하우스(DSP)", "url": "https://www.ddaily.co.kr/page/view/2021121601382103490", "kind": "news", "date": "2021-12-16", "note": "DSP 는 생산을 뺀 공정 전반(패키징·테스트 외주)을 관리"},
+    {"n": 12, "title": "ZDNet Korea · 삼성 파운드리 DSP 연합", "url": "https://zdnet.co.kr/view/?no=20221013163813", "kind": "news", "date": "2022-10-13", "note": "턴키와 용역(NRE) 계약 구분"},
+    {"n": 13, "title": "Synopsys · What is ASIC Design?", "url": "https://www.synopsys.com/ko-kr/glossary/what-is-asic-design.html", "kind": "reference", "note": "설계 흐름(구조 → RTL → 검증 → 합성 → 구현 → Tape-out)"},
+    {"n": 14, "title": "AnySilicon · Multi-Project Wafer (MPW) Schedule", "url": "https://anysilicon.com/multi-project-wafer-schedule/", "kind": "reference", "note": "정해진 출발일, 놓치면 다음 차례, 사인오프 검사"},
+    {"n": 15, "title": "Wikipedia · Post-silicon validation", "url": "https://en.wikipedia.org/wiki/Post-silicon_validation", "kind": "reference", "note": "첫 칩 이후 검증·Bring-up·버그와 다음 판"},
+    {"n": 16, "title": "Synopsys 블로그 · PCIe 5.0 IP 규격 인증과 Integrators List", "url": "https://www.synopsys.com/blogs/chip-design/pcie-5-ip-solutions-pass-compliance-testing.html", "kind": "reference", "note": "PCI-SIG 인증 워크숍을 통과하면 목록에 오른다"},
+    {"n": 17, "title": "CXL Consortium · Compliance Program Overview 웨비나 Q&A", "url": "https://computeexpresslink.org/?p=521", "kind": "reference", "note": "CXL 규격 인증과 Integrators List"},
+    {"n": 18, "title": "삼성반도체 뉴스룸 · 반도체 8대 공정 시리즈", "url": "https://news.samsungsemiconductor.com/kr/tag/%EB%B0%98%EB%8F%84%EC%B2%B48%EB%8C%80%EA%B3%B5%EC%A0%95", "kind": "reference", "note": "초보자용 공정 8단계, EDS·패키징"},
+    {"n": 19, "title": "아시아경제 · OSAT 비중 확대 보고서", "url": "https://view.asiae.co.kr/article/2026073114384166948", "kind": "news", "date": "2026-07-31", "note": "팹리스 설계 → 파운드리 전공정 → OSAT 후공정 분업"},
+    {"n": 20, "title": "PMI · PMBOK Guide", "url": "https://www.pmi.org/standards/pmbok", "kind": "reference", "note": "프로젝트 관리 표준 — 일정·위험·이해관계자"},
+    {"n": 21, "title": "기술보호울타리(중소벤처기업부) · 표준 비밀유지계약서", "url": "https://www.ultari.go.kr", "kind": "reference", "note": "제공 목적·비밀 범위·위반 시 배상"},
+    {"n": 22, "title": "Wikipedia · Request for quotation", "url": "https://en.wikipedia.org/wiki/Request_for_quotation", "kind": "reference"},
+    {"n": 23, "title": "Wikipedia · Non-recurring engineering", "url": "https://en.wikipedia.org/wiki/Non-recurring_engineering", "kind": "reference", "note": "한 번 내는 개발비와 개당 비용"},
+    {"n": 24, "title": "Wikipedia · Critical path method", "url": "https://en.wikipedia.org/wiki/Critical_path_method", "kind": "reference", "note": "임계 경로·여유(float)"},
+    {"n": 25, "title": "Wikipedia · Responsibility assignment matrix (RACI)", "url": "https://en.wikipedia.org/wiki/Responsibility_assignment_matrix", "kind": "reference"},
+    {"n": 26, "title": "Purdue OWL · Email Etiquette", "url": "https://owl.purdue.edu/owl/general_writing/academic_writing/email_etiquette.html", "kind": "reference"},
+    {"n": 27, "title": "자소설닷컴 · 엑시나 기업정보", "url": "https://jasoseol.com/companies/15972/insights", "kind": "reference", "note": "공공데이터 기반 기업 정보(사원 60명·주소), 최근 공고 지원자 전공 통계. 신입 연봉은 '수집 중'"},
+    {"n": 28, "title": "IBM · Spectrum LSF 문서", "url": "https://www.ibm.com/docs/en/spectrum-lsf", "kind": "reference", "note": "여러 사람이 계산 서버를 나눠 쓰는 작업 배분 도구"},
+    {"n": 29, "title": "SemiAnalysis · The EDA Primer: From RTL to Silicon", "url": "https://newsletter.semianalysis.com/p/the-eda-primer-from-rtl-to-silicon", "kind": "reference", "note": "사인오프 = 타이밍·전력·DRC/LVS"},
+    {"n": 30, "title": "엑시나 공식 사이트(하단 회사 정보)", "url": "https://www.xcena.com", "kind": "company", "note": "주소·대표·사업자 정보"}
+  ],
+  "caveat": "엑시나는 이 자리의 일하는 방식을 따로 발표한 적이 없어, 공고 문장과 같은 회사의 다른 공고(시니어 TPM·보드·제품 검증)를 먼저 쓰고, 나머지는 반도체 업계 공개 자료와 프로젝트 관리 일반론으로 '보통 이런 일'을 보였습니다. '개발 Infra 관리'의 범위는 공개되지 않았습니다. 수집된 공고 정보의 경력 표기(3년↑)와 제목(Junior)이 엇갈리니 원문을 확인하세요. 비상장사라 공시 연봉이 없고 집계 사이트의 신입 연봉도 '수집 중'이라 연봉 칸은 비웠습니다.[27]",
+  "resources": [
+    {"id": "synopsys-asic", "title": "What is ASIC Design? (한국어)", "by": "Synopsys 용어집", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.synopsys.com/ko-kr/glossary/what-is-asic-design.html", "why": "업무 1번·기술 지식 'SoC Development Flow' 용. 설계 단계가 무엇이고 왜 그 순서인지 한 페이지로 잡는다."},
+    {"id": "wikidocs-flow", "title": "Fabless → Foundry → Packaging 프로세스 한눈에 보기", "by": "위키독스", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://wikidocs.net/280137", "why": "업무 2번 협력사 여섯 종류가 어떤 순서로 이어지는지 한국어로 빠르게 본다."},
+    {"id": "samsung-8", "title": "반도체 8대 공정 시리즈", "by": "삼성반도체 뉴스룸", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://news.samsungsemiconductor.com/kr/tag/%EB%B0%98%EB%8F%84%EC%B2%B48%EB%8C%80%EA%B3%B5%EC%A0%95", "why": "기술 지식 '반도체 공정 Flow' 용. Tape-out 뒤 몇 달이 무엇으로 채워지는지 안다."},
+    {"id": "chipwar", "title": "칩 워, 누가 반도체 전쟁의 최후 승자가 될 것인가", "by": "크리스 밀러 · 노정태 옮김 · 부키 · 2023", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005219400", "why": "'Fabless, Foundry biz.' 용. 팹리스·파운드리 분업이 왜 생겼고 누가 누구의 고객인지 역사로 이해한다."},
+    {"id": "anysilicon-mpw", "title": "Multi-Project Wafer (MPW) Schedule", "by": "AnySilicon", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://anysilicon.com/multi-project-wafer-schedule/", "why": "고비 날짜 관리 용. 파운드리 예약 마감이 일정에 어떻게 걸리는지, 사인오프에 무엇이 들어가는지."},
+    {"id": "post-si", "title": "Post-silicon validation", "by": "Wikipedia", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://en.wikipedia.org/wiki/Post-silicon_validation", "why": "Bring-up·평가 단계와 첫 칩 버그가 일정에 주는 위험을 이해한다."},
+    {"id": "hotchips-sth", "title": "XCENA MX1 CXL Computational Memory Device at Hot Chips 2026", "by": "ServeTheHome", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026", "why": "면접 전 이 회사 칩이 무엇으로 이뤄졌는지(공정·코어·메모리·연결) 한 번 훑는다."},
+    {"id": "pmbok", "title": "PMBOK 가이드 8판 (한국어판)", "by": "Project Management Institute", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://www.pmi.org/standards/pmbok", "why": "일정·위험·이해관계자 관리의 표준 낱말. 필요한 장만 골라 읽는다."},
+    {"id": "google-pm", "title": "Google Project Management Professional Certificate", "by": "Google · Coursera", "kind": "course", "lang": "en", "free": false, "level": "입문", "url": "https://www.coursera.org/professional-certificates/google-project-management", "why": "일정표·위험 목록·회의록·상태 보고를 손으로 만들어 보는 과제가 있는 입문 과정 — 필수 역량 1~3번 연습."},
+    {"id": "excel-gantt", "title": "Present your data in a Gantt chart in Excel", "by": "Microsoft 지원", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://support.microsoft.com/en-us/excel/present-your-data-in-a-gantt-chart-in-excel", "why": "'문서 작성 능력(Excel)' 용. 마스터 일정을 엑셀 간트 차트로 그리는 공식 안내."},
+    {"id": "owl-email", "title": "Email Etiquette", "by": "Purdue OWL", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://owl.purdue.edu/owl/general_writing/academic_writing/email_etiquette.html", "why": "'영어 Email' 용. 제목·길이·말투 등 업무 메일의 기본기."},
+    {"id": "ultari", "title": "기술보호울타리 — 표준 비밀유지계약서", "by": "중소벤처기업부", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.ultari.go.kr", "why": "'NDA 진행' 용. 비밀유지계약에 무엇이 들어가는지 표준 양식으로 본다."},
+    {"id": "lsf-docs", "title": "IBM Spectrum LSF 문서", "by": "IBM", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://www.ibm.com/docs/en/spectrum-lsf", "why": "'개발 Infra' 가 계산 서버까지 포함한다면 — 작업 배분 도구가 무엇을 하는지 개요만."}
+  ],
+  "study_path": [
+    {"title": "칩이 만들어지는 길", "time": "1주", "goal": "SoC 개발 단계와 협력사 여섯 종류가 무엇을 주고받는지 말로 설명할 수 있다.", "resources": ["synopsys-asic", "wikidocs-flow", "samsung-8", "chipwar"], "task": "가상의 칩 하나를 정하고 설계 → Tape-out → 생산 → 패키지 → 테스트 → 보드 → 인증까지 단계마다 '맡는 회사 · 받는 것 · 넘기는 것'을 한 줄씩 표로 쓴다."},
+    {"title": "마스터 일정 짜기", "time": "1~2주", "goal": "의존을 이은 일정표를 만들고, 한 칸이 밀릴 때 끝이 얼마나 밀리는지 계산한다.", "resources": ["pmbok", "excel-gantt", "anysilicon-mpw"], "task": "1단계 표로 엑셀 간트 차트를 만든다. 임계 경로를 칠하고, IP 4주 지연·MPW 마감 놓침 두 경우의 새 끝 날짜를 구해 한 장으로 정리한다."},
+    {"title": "추적 도구 세트", "time": "1~2주", "goal": "할 일·문제·위험·협력사 할 일 목록과 주간 보고 틀을 갖춘다.", "resources": ["google-pm", "post-si"], "task": "가상 회의 3번의 회의록을 쓰고, 나온 할 일을 목록으로 옮겨 기한 넘긴 것을 걸러 내는 주간 보고 한 장(엑셀 원본에서 자동으로 갱신)을 만든다."},
+    {"title": "협력사 서류", "time": "1주", "goal": "NDA → RFQ → 견적 비교 순서를 알고 영어로 요청할 수 있다.", "resources": ["ultari", "owl-email"], "task": "가상의 패키지 업체 세 곳에 보낼 영어 RFQ 메일과 요청서를 쓰고, 통화·NRE·개당 값이 다른 가상 견적 세 개를 수량별로 비교한 표를 만든다."},
+    {"title": "이 회사 제품 알기", "time": "며칠", "goal": "MX1 이 무엇이고 지금 어느 단계인지 면접에서 말할 수 있다.", "resources": ["hotchips-sth"], "task": "MX1 의 공정·연결·메모리·제품 형태와 양산 일정 보도를 반 쪽으로 요약하고, 이 자리가 그 일정에서 무엇을 맡을지 세 줄로 적는다."}
+  ],
+  "benefits": {
+    "items": [
+      {"name": "MX Day", "detail": "한 달에 한 번 전사가 함께 쉬는 유급 휴일, 연 12회"},
+      {"name": "유연근무", "detail": "선택적 근로시간제 기반"},
+      {"name": "식대", "detail": "점심 식대 지원"},
+      {"name": "복지포인트", "detail": "지급(금액은 공고에 없음)"},
+      {"name": "건강검진", "detail": "임직원과 임직원 가족"}
+    ],
+    "note": "이 공고의 복리후생 칸이다(2026-11 수집, 같은 회사 다른 공고와 같은 문구) [1]. 금액·조건은 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "엑시나 본사",
+    "address": "경기도 성남시 분당구 판교역로241번길 20, 9층 (삼평동, 미래에셋벤처타워)",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C241%EB%B2%88%EA%B8%B8%2020",
+    "near": "신분당선 판교역 인근 판교테크노밸리 {추론}",
+    "note": "공고의 근무지 칸 주소이고, 회사 사이트 하단 주소와 같다 [1][30]. 미국 사무소(서니베일)는 따로 있다 [7]."
+  }
+}
