@@ -17,6 +17,7 @@
   "ats-ashby:42dot:4efa5e05-972f-4887-b3bd-f87862200f86": "42dot-llm-training-engineer",
   "ats-ashby:42dot:c4af7536-c24f-4754-9fe9-d92d237403f3": "42dot-msphd-intern-ai-engineer",
   "ats-ashby:42dot:810a8fe2-0790-42cf-b973-df16b553fa08": "42dot-mts-foundation-models",
+  "ats-ashby:42dot:2b5a9e26-853d-4131-a11e-123aa2ba9139": "42dot-os-tools-software-engineer",
   "ats-ashby:42dot:442d28d0-1c6a-40a1-8729-9e8db1ab14f9": "42dot-sdv-vehicle-connect-software-engineer",
   "ats-ashby:42dot:75e6abe9-9195-43c3-abdf-60feff10bd47": "42dot-senior-ai-data-pipeline-engineer",
   "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
@@ -25,6 +26,7 @@
   "ats-ashby:42dot:e505b80b-4b42-401c-a36e-eb11fb422931": "42dot-senior-platform-engineer-warsaw",
   "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c": "42dot-senior-release-engineer",
   "ats-ashby:42dot:406f59e5-d04b-4f9b-a519-19da3b4c895c": "42dot-senior-service-architect-playground",
+  "ats-ashby:42dot:17f5f7af-b165-491b-adcc-0bc64e5cb767": "42dot-software-update-application",
   "ats-ashby:42dot:6e9418ea-6dfa-4ca2-b419-e564e1479a1b": "42dot-sr-embedded-software-engineer",
   "ats-ashby:42dot:a82b98bb-2519-4b69-990b-77300b8d136b": "42dot-staff-embedded-software-engineer",
   "ats-ashby:42dot:17ff2b4f-2d65-47a3-aa6f-39835d39a21a": "42dot-stt-wake-word-engineer",
@@ -522,6 +524,16 @@
    "lines": 26
   },
   {
+   "id": "42dot-os-tools-software-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "OS Tools Software Engineer",
+   "jobs": [
+    "ats-ashby:42dot:2b5a9e26-853d-4131-a11e-123aa2ba9139"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
+  },
+  {
    "id": "42dot-sdv-vehicle-connect-software-engineer",
    "company": "포티투닷",
    "role": "SDV Vehicle Connect Software Engineer",
@@ -600,6 +612,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "42dot-software-update-application",
+   "company": "포티투닷(42dot)",
+   "role": "Software Update Engineer",
+   "jobs": [
+    "ats-ashby:42dot:17f5f7af-b165-491b-adcc-0bc64e5cb767"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "42dot-sr-embedded-software-engineer",
