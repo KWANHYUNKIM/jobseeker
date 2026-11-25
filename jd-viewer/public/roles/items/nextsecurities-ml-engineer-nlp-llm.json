@@ -1,0 +1,1214 @@
+{
+ "id": "nextsecurities-ml-engineer-nlp-llm",
+ "company": "넥스트증권",
+ "role": "ML엔지니어(NLP·LLM)",
+ "team": "AI서비스개발팀",
+ "jobs": [
+  "saramin-54906376"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "뉴스·공시에서 **회사·종목·숫자를 뽑아(NER) 금융 온톨로지(종목·기업·섹터·테마를 이어 둔 지도)에 붙이고**, 그 지도로 근거 있는 답을 만드는 LLM·RAG 엔진을 만듭니다. 증권 앱(MTS)의 여러 AI 기능이 이 엔진 하나를 같이 씁니다.[1][2]",
+  "env": "Python·PyTorch·HuggingFace·AWS.[1] 같은 회사의 콘텐츠 플랫폼은 AI 로 종목을 태깅해 금융 숏폼 원고를 만들고[5], 콘텐츠 안전 전담 조직(T&S)이 결과를 검수합니다.[6] AI·영상 MTS 는 2027년 1분기로 미뤄진 출시 전 단계입니다.[7]",
+  "oneline": "모델을 '붙여 보는' 사람이 아니라 **틀린 종목 연결과 근거 없는 문장을 숫자로 재고 줄이는** 4년차 이상 NLP 엔지니어. 랭킹·추천 엔지니어의 대타까지 맡습니다.[1][3]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "NLP 모델 개발: 뉴스·공시 대상 NER, 클러스터링, 요약·생성 모델과 RAG 파이프라인을 개발합니다.",
+   "short": "기사·공시에서 회사·날짜·금액을 뽑고, 같은 사건 기사를 묶고, 근거를 찾아 붙여 요약하는 모델을 만드는 일.",
+   "why": "회사는 이 자리를 '뉴스·공시를 이해하는 언어 모델 파이프라인'을 만드는 자리로 소개합니다.[2] 같은 회사의 콘텐츠 플랫폼은 이미 사 온 뉴스·데이터에 AI 로 종목을 태깅해 숏폼 원고를 쓰고 있어[5], 그 앞단의 '읽기'를 모델로 맡길 사람이 필요합니다. {추론}",
+   "actually": {
+    "intro": "네 가지가 한 줄로 이어집니다. 회사가 내부 구조를 공개하지 않아 공개 연구로 보통의 모양을 보입니다.",
+    "items": [
+     "**NER(개체명 인식)** — 문장에서 '가나전자(기관)·3분기(날짜)·1조 2천억원(수량)'을 찾아 이름표를 단다. 한국어 공개 기준 KLUE 는 사람·장소·기관·날짜·시간·수량 6종을 **글자 단위**로 단다.[13]",
+     "**클러스터링** — 같은 사건을 다룬 기사 수십 건을 한 묶음으로. 문장을 벡터로 바꾸고 밀도 기반으로 묶은 뒤 묶음마다 대표 낱말을 뽑는 방식(BERTopic)이 널리 쓰인다.[33]",
+     "**요약·생성** — 묶음 하나를 몇 줄로. 숫자는 원문에서 그대로 가져와야 한다(품질 줄 참고).",
+     "**RAG(검색 증강 생성)** — 답을 쓰기 전에 관련 공시·기사를 찾아 프롬프트에 붙인다. 원 논문은 검색해 온 문서가 지어낸 답을 줄인다고 보였다.[22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "NER 은 개체 단위로 잰다 — 경계가 한 글자만 틀려도 틀림 (가상 문장)",
+     "body": "'1조 2천억'처럼 '원'을 빼먹으면 맞은 것으로 치지 않습니다. KLUE 도 개체 단위 F1 을 주 지표로 씁니다.[13] 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "# 개체 단위 F1 — 경계가 한 글자만 틀려도 틀린 것으로 센다 (가상 문장)\ngold = {(\"가나전자\", \"ORG\"), (\"3분기\", \"DATE\"), (\"1조 2천억원\", \"QTY\"), (\"다라소재\", \"ORG\")}\npred = {(\"가나전자\", \"ORG\"), (\"3분기\", \"DATE\"), (\"1조 2천억\", \"QTY\"), (\"다라\", \"ORG\"), (\"반도체\", \"ORG\")}\n\ntp = len(gold & pred)\np, r = tp / len(pred), tp / len(gold)\nf1 = 2 * p * r / (p + r)\nprint(f\"맞힘 {tp} · 정밀도 {p:.2f} · 재현율 {r:.2f} · F1 {f1:.2f}\")\nprint(\"놓치거나 경계가 틀린 것:\", sorted(gold - pred))\nprint(\"없는데 만든 것:\", sorted(pred - gold))\n\n# 출력\n# 맞힘 2 · 정밀도 0.40 · 재현율 0.50 · F1 0.44\n# 놓치거나 경계가 틀린 것: [('1조 2천억원', 'QTY'), ('다라소재', 'ORG')]\n# 없는데 만든 것: [('1조 2천억', 'QTY'), ('다라', 'ORG'), ('반도체', 'ORG')]"
+    }
+   ],
+   "how_far": "모델을 처음부터 학습시키는 일보다 **공개 한국어 모델을 우리 데이터로 조여 프로덕션에 올리고, 묶음·요약이 틀렸을 때 어디서 틀렸는지 찾는** 쪽이 중심입니다. {추론} 네 단계를 각각 따로 평가할 수 있게 짜는 것이 최소선입니다.",
+   "refs": [
+    2,
+    5,
+    13,
+    22,
+    33
+   ],
+   "study": [
+    "hf-llm-course",
+    "hands-on-llm",
+    "hf-token-cls",
+    "klue"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "엔티티 연결(Entity Linking): 뉴스·공시에서 추출한 엔티티를 금융 온톨로지의 종목·기업·섹터·테마와 연결합니다.",
+   "short": "기사 속 '가나'가 가나전자인지 가나바이오인지 골라, 회사 지도 위 한 점(종목 코드)에 못 박는 일.",
+   "why": "NER 은 '가나'라는 글자만 찾습니다. 증권 앱은 그 글자가 **어느 종목인지** 알아야 시세·관련 기사·테마를 붙일 수 있습니다. 같은 회사 랭킹·추천 공고도 금융 분류체계·온톨로지의 관계를 랭킹 재료(피처)로 쓴다고 적었습니다[3] — 연결이 틀리면 뒤의 모든 기능이 같이 틀립니다. {추론}",
+   "actually": {
+    "items": [
+     "**후보 뽑기** — 별칭 사전(약칭·영문명·옛 이름)과 벡터 검색으로 후보 몇 개를 뽑는다. 메타의 BLINK 는 후보를 벡터로 먼저 뽑고(bi-encoder) 문장과 후보를 같이 읽는 모델(cross-encoder)로 다시 고르는 2단계이고, 590만 개 후보를 약 2ms 에 훑었다.[14]",
+     "**문맥으로 고르기** — 같은 문장의 '메모리·반도체'는 전자, '신약·임상'은 바이오 쪽 증거.",
+     "**NIL(연결 없음)** — 사전에 없는 회사(새로 상장한 곳)나 증거가 모자란 경우는 억지로 붙이지 않고 '모름'으로 둔다. {추론}",
+     "**섹터·테마** — 종목에 붙으면 온톨로지를 따라 섹터·테마는 저절로 따라온다. 금융 개념을 표준으로 정리한 공개 온톨로지로 EDM Council 의 FIBO 가 있다(OWL 로 작성).[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "별칭 → 후보 → 문맥 점수 → 자신 없으면 NIL (가상 온톨로지)",
+     "body": "'가나 주가 급등'처럼 문맥이 없으면 두 후보 점수가 같아 연결하지 않습니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "# 엔티티 연결 — 별칭 사전으로 후보를 뽑고, 문맥 낱말로 고르고, 자신 없으면 NIL (가상 온톨로지)\nONTO = {\n    \"E001\": {\"name\": \"가나전자\",   \"alias\": {\"가나전자\", \"가나\"},       \"ctx\": {\"반도체\", \"메모리\", \"스마트폰\"}},\n    \"E002\": {\"name\": \"가나바이오\", \"alias\": {\"가나바이오\", \"가나\"},     \"ctx\": {\"신약\", \"임상\", \"바이오\"}},\n    \"E003\": {\"name\": \"다라소재\",   \"alias\": {\"다라소재\", \"다라\"},       \"ctx\": {\"양극재\", \"소재\", \"2차전지\"}},\n}\n\ndef link(mention, sentence, min_score=1):\n    cands = [eid for eid, e in ONTO.items() if mention in e[\"alias\"]]\n    if not cands:\n        return \"NIL(사전에 없음)\", []\n    words = set(sentence.split())\n    scored = sorted(((len(ONTO[c][\"ctx\"] & words), c) for c in cands), reverse=True)\n    best, eid = scored[0]\n    tie = len(scored) > 1 and scored[1][0] == best\n    if best < min_score or tie:\n        return \"NIL(근거 부족)\", scored\n    return ONTO[eid][\"name\"], scored\n\ntests = [\n    (\"가나\", \"가나 메모리 가격 반등에 3분기 실적 개선\", \"가나전자\"),\n    (\"가나\", \"가나 신약 임상 2상 결과 발표\", \"가나바이오\"),\n    (\"가나\", \"가나 주가 급등\", \"NIL\"),\n    (\"마바\", \"마바홀딩스 신규 상장\", \"NIL\"),\n]\nok = 0\nfor m, s, gold in tests:\n    got, scored = link(m, s)\n    hit = got.startswith(gold)\n    ok += hit\n    print(f\"{s[:18]:<20} → {got:<12} {'O' if hit else 'X'}  후보점수={scored}\")\nprint(f\"정확도 {ok}/{len(tests)}\")\n\n# 출력\n# 가나 메모리 가격 반등에 3분기    → 가나전자         O  후보점수=[(1, 'E001'), (0, 'E002')]\n# 가나 신약 임상 2상 결과 발표    → 가나바이오        O  후보점수=[(2, 'E002'), (0, 'E001')]\n# 가나 주가 급등             → NIL(근거 부족)   O  후보점수=[(0, 'E002'), (0, 'E001')]\n# 마바홀딩스 신규 상장          → NIL(사전에 없음)  O  후보점수=[]\n# 정확도 4/4"
+    }
+   ],
+   "how_far": "온톨로지의 칸(어떤 테마를 둘지)은 데이터·콘텐츠 쪽과 같이 정하고 {추론}, 이 자리는 **연결 모델과 '모름' 문턱**을 맡습니다. 최소선은 정답셋으로 연결 정확도·NIL 정확도를 따로 재는 것입니다.",
+   "refs": [
+    3,
+    14,
+    21
+   ],
+   "study": [
+    "blink",
+    "fibo",
+    "hands-on-llm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "온톨로지 기반 검색·추론: 온톨로지를 활용한 RAG·Graph RAG를 구현하고 금융 엔티티 간 관계 추론을 다룹니다.",
+   "short": "'이 회사에 소재를 대는 곳은 어느 테마에 있나'처럼 관계를 두세 걸음 따라가 찾은 근거로 답하게 하는 일.",
+   "why": "보통의 RAG 는 질문과 비슷한 문단만 찾아서, '공급사 → 고객사 → 테마'처럼 여러 문서에 흩어진 관계는 놓칩니다. 마이크로소프트의 GraphRAG 는 문서에서 엔티티 그래프를 먼저 만들고 가까운 엔티티 묶음마다 요약을 미리 써 두어, 100만 토큰 규모 자료 전체를 묻는 질문에서 보통 RAG 보다 답의 포괄성·다양성이 좋았다고 보고했습니다.[15] 회사도 온톨로지 기반 RAG·Graph RAG 로 근거 있는 답을 만든다고 밝혔습니다.[2]",
+   "actually": {
+    "items": [
+     "**그래프 만들기** — '주어–관계–대상' 세 쌍(다라소재–공급–가나전자)으로 저장한다. W3C RDF 가 이 꼴의 표준이다.[37]",
+     "**질문에서 출발점 찾기** — 질문 속 엔티티를 위 줄의 연결로 종목에 못 박는다.",
+     "**걸어가기** — 출발점에서 한두 걸음 관계를 따라가 후보 엔티티·문서를 모은다(아래 예).",
+     "**글과 합치기** — 그래프로 모은 문서와 벡터 검색 결과를 함께 프롬프트에 붙인다. 순위 섞기는 RRF 가 흔하다.[23]",
+     "**관계 추론 검사** — 모델이 '공급한다'고 말했으면 그 세 쌍이 그래프(또는 출처 문서)에 있어야 한다. 없으면 답에서 뺀다 — 오류 통제 줄과 이어진다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "두 걸음 걷기와 '그래프에 없는 관계' 걸러내기 (가상 그래프)",
+     "body": "모델이 만든 두 번째 관계는 그래프에 없어 답에서 뺍니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "# 온톨로지 위에서 2단계 관계 찾기 + LLM 이 만든 관계가 그래프에 있는지 검사 (가상 그래프)\nEDGES = {\n    (\"가나전자\", \"속함\", \"반도체 섹터\"),\n    (\"가나전자\", \"속함\", \"HBM 테마\"),\n    (\"다라소재\", \"공급\", \"가나전자\"),\n    (\"다라소재\", \"속함\", \"2차전지 테마\"),\n    (\"마바반도체\", \"속함\", \"HBM 테마\"),\n}\n\ndef neighbors(node):\n    return [(r, b) for a, r, b in EDGES if a == node] + [(f\"←{r}\", a) for a, r, b in EDGES if b == node]\n\ndef two_hop(start):\n    out = []\n    for r1, mid in neighbors(start):\n        for r2, end in neighbors(mid):\n            if end != start:\n                out.append(f\"{start} -{r1}-> {mid} -{r2}-> {end}\")\n    return out\n\nprint(\"뉴스 엔티티 '다라소재' 에서 두 걸음:\")\nfor path in sorted(two_hop(\"다라소재\")):\n    print(\"  \", path)\n\ngenerated = [(\"다라소재\", \"공급\", \"가나전자\"), (\"다라소재\", \"공급\", \"마바반도체\")]\nfor g in generated:\n    print(g, \"→\", \"그래프에 있음\" if g in EDGES else \"근거 없는 관계 — 답에서 뺀다\")\n\n# 출력\n# 뉴스 엔티티 '다라소재' 에서 두 걸음:\n#    다라소재 -공급-> 가나전자 -속함-> HBM 테마\n#    다라소재 -공급-> 가나전자 -속함-> 반도체 섹터\n# ('다라소재', '공급', '가나전자') → 그래프에 있음\n# ('다라소재', '공급', '마바반도체') → 근거 없는 관계 — 답에서 뺀다"
+    }
+   ],
+   "how_far": "그래프 DB 를 운영하는 일보다 **어떤 질문에 그래프가 필요한지 가르고, 걸음 수·관계 종류를 정해 검색 품질을 숫자로 비교하는** 일이 중심입니다. {추론} GraphRAG 는 미리 요약을 쓰는 비용이 커서, 질문 종류별로 보통 RAG 와 나눠 쓰는 판단까지가 이 자리 몫입니다. {추론}",
+   "refs": [
+    2,
+    15,
+    23,
+    37
+   ],
+   "study": [
+    "graphrag",
+    "rag-lecture",
+    "hands-on-llm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "품질·안전성 관리: 금융 용어의 정확성, 출처 정합성, 할루시네이션을 통제하고 모델 평가체계를 설계·운영합니다.",
+   "short": "답에 나온 숫자·용어가 원문과 같은지, 단 출처가 진짜 그 말을 하는지를 매번 기계로 재는 틀을 만드는 일.",
+   "why": "증권사 화면에 틀린 실적 숫자가 나가면 투자 판단을 그르치게 합니다. 회사는 영상·AI 투자 콘텐츠의 안전성과 법규 준수를 따로 검토하는 T&S 조직을 만들었고[6], AI 거버넌스 공고는 모델·프롬프트를 바꿀 때 다시 평가하라고 요구합니다.[8] 금융위원회의 금융분야 AI 가이드라인도 신뢰성을 원칙으로 둡니다.[40]",
+   "actually": {
+    "items": [
+     "**정확성** — 답을 '원자 사실'로 쪼개 하나씩 근거가 있는지 센다. FActScore 는 이 비율을 점수로 쓰고, 자동 채점기의 오차를 2% 미만으로 보고했다.[17]",
+     "**출처 정합성** — 문장에 단 [출처]가 실제로 그 문장을 뒷받침하는지(인용 정밀도), 문장을 뒷받침하는 출처가 빠짐없이 달렸는지(인용 재현율). ALCE 벤치마크가 이 둘을 잰다.[18]",
+     "**할루시네이션** — 정답 없이도 '찾아 온 문서에 근거하나(faithfulness)'를 재는 RAGAS[16], 같은 질문을 여러 번 물어 답이 흔들리면 지어낸 것으로 보는 SelfCheckGPT[26].",
+     "**판정 모델** — 사람 대신 LLM 이 채점하면 사람과 80% 넘게 일치했지만 앞에 놓인 답·긴 답을 편드는 치우침이 있었다.[25] 그래서 사람이 단 정답셋으로 판정 모델을 먼저 검증한다.",
+     "**금융 용어** — '영업이익/당기순이익', '전년 대비/전분기 대비'처럼 비슷한 말이 바뀌면 숫자는 맞아도 틀린 문장이다 — 용어 사전과 대조. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "주장 단위로 쪼개 숫자가 출처에 있는지 보기 (가상 공시·요약)",
+     "body": "실제로는 숫자 대조 + 판정 모델 + 사람 표본 검수를 겹칩니다. 여기서는 가장 싸고 확실한 첫 겹(숫자 대조)만 보였습니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "import re\n# 요약문을 주장 단위로 쪼개고, 각 주장의 숫자가 인용한 원문에 실제로 있는지 본다 (가상 공시·요약)\nsources = {\n    \"D1\": \"가나전자 3분기 매출 12조 4천억원, 영업이익 1조 2천억원. 전년 동기 대비 영업이익 35% 증가.\",\n    \"D2\": \"가나전자는 다라소재와 양극재 공급 계약을 체결했다. 계약 기간은 3년.\",\n}\nclaims = [\n    (\"가나전자 3분기 영업이익은 1조 2천억원이다\", \"D1\"),\n    (\"영업이익은 전년보다 35% 늘었다\", \"D1\"),\n    (\"다라소재와 5년 공급 계약을 맺었다\", \"D2\"),          # 숫자가 원문과 다름\n    (\"가나전자는 다라소재의 최대주주다\", None),            # 출처 없음\n]\n\ndef nums(text):\n    return set(re.findall(r\"\\d+(?:조|천억|억|%|년)?\", text))\n\nsupported = 0\nfor text, src in claims:\n    if src is None:\n        verdict = \"출처 없음\"\n    else:\n        missing = nums(text) - nums(sources[src])\n        verdict = \"근거 있음\" if not missing else f\"숫자 불일치 {sorted(missing)}\"\n    supported += verdict == \"근거 있음\"\n    print(f\"[{src or '-'}] {text:<24} → {verdict}\")\nprint(f\"근거 있는 주장 비율 {supported}/{len(claims)} = {supported/len(claims):.0%}\")\n\n# 출력\n# [D1] 가나전자 3분기 영업이익은 1조 2천억원이다 → 근거 있음\n# [D1] 영업이익은 전년보다 35% 늘었다       → 근거 있음\n# [D2] 다라소재와 5년 공급 계약을 맺었다      → 숫자 불일치 ['5년']\n# [-] 가나전자는 다라소재의 최대주주다        → 출처 없음\n# 근거 있는 주장 비율 2/4 = 50%"
+    }
+   ],
+   "how_far": "무엇이 '금지 표현'인지는 T&S·컴플라이언스가 정합니다[6]. 이 자리는 **그 기준을 자동 채점으로 옮기고, 모델·프롬프트가 바뀔 때마다 같은 정답셋으로 다시 돌려 점수가 떨어지면 배포를 막는** 틀을 맡습니다.[8] {추론}",
+   "refs": [
+    6,
+    8,
+    16,
+    17,
+    18,
+    25,
+    26,
+    40
+   ],
+   "study": [
+    "ai-engineering",
+    "llm-eval-lecture",
+    "ragas-docs",
+    "factscore"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "오류 통제: 엔티티 연결 오류와 근거 없는 관계 생성을 정량적으로 평가하고 통제합니다.",
+   "short": "'종목을 잘못 붙인 비율'과 '근거 없이 지어낸 관계 비율'을 숫자로 내고, 문턱을 넘으면 막는 일.",
+   "why": "앞 줄이 답 문장의 품질이라면, 이 줄은 **온톨로지에 쌓이는 연결과 관계** 자체의 오류입니다. 틀린 연결은 지도에 남아 다른 기능(추천·검색)으로 번집니다 — 랭킹 공고가 온톨로지 관계를 피처로 쓰기 때문입니다.[3] {추론}",
+   "actually": {
+    "items": [
+     "**연결 오류 나누기** — 다른 종목에 붙임 / 붙여야 할 걸 NIL 로 둠 / NIL 이어야 할 걸 붙임. 셋은 고치는 법이 달라 따로 센다. {추론}",
+     "**관계 근거율** — 모델이 만든 세 쌍 중 출처 문장이 있는 비율. 출처 없는 관계는 그래프에 넣지 않거나 '추정'으로 표시한다(Graph RAG 줄의 예).",
+     "**문턱과 보류** — 확신도가 낮은 연결은 사람 검수 대기열로. 같은 회사 데이터 엔지니어 공고도 정확성·최신성·출처 관리를 요구한다.[4]",
+     "**표본 감사** — 매주 무작위 표본을 사람이 다시 보고, 오류율의 신뢰구간이 문턱을 넘으면 경보. {추론}"
+    ]
+   },
+   "how_far": "'몇 % 까지 허용'은 서비스·T&S 와 같이 정하고, 이 자리는 **그 숫자를 매일 계산하고 넘으면 자동으로 막는 장치**를 만듭니다. {추론}",
+   "refs": [
+    3,
+    4
+   ],
+   "study": [
+    "blink",
+    "ai-engineering",
+    "factscore"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "공통 엔진 운영: MTS AI 피처가 공통으로 사용하는 LLM·RAG 엔진과 fallback을 운영합니다.",
+   "short": "앱의 여러 AI 기능이 같이 부르는 엔진 하나를 지키고, 모델이 죽거나 느려도 대체 경로로 답이 나가게 하는 일.",
+   "why": "회사는 이 자리가 MTS 여러 AI 기능이 공유하는 LLM·RAG 엔진을 맡는다고 소개합니다.[2] 한 곳에서 터지면 모든 AI 기능이 같이 멈추므로 대체 경로(fallback)가 업무에 따로 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**대체 순서** — 주 모델 → 보조 모델(다른 업체·작은 자체 모델) → LLM 없이 원문 근거만 보여 주기. {추론}",
+     "**제한 시간·재시도** — 시간 제한을 두고, 재시도는 간격을 늘리며 무작위로 흩어(지터) 몰리지 않게.[30]",
+     "**회로 차단기** — 실패가 이어지면 한동안 그 모델을 부르지 않고 바로 대체 경로로.[31]",
+     "**비용·지연 기록** — 기능별로 토큰·지연·대체 경로로 간 비율을 남겨 어느 기능이 엔진을 무겁게 하는지 본다. {추론}",
+     "**버전 관리** — 프롬프트·모델을 바꾸면 평가를 다시 돌리고 바꾼 기록을 남긴다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "주 모델 실패 → 보조 모델 → 원문 근거만 (가상)",
+     "body": "마지막 경로는 '틀린 요약보다 요약 없음이 낫다'는 선택입니다. {추론} 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "# 공통 엔진의 대체 경로 — 주 모델이 늦거나 실패하면 보조 모델, 그것도 안 되면 '근거만 보여 주기'\nclass Timeout(Exception): pass\n\ndef primary(q):   raise Timeout(\"2초 초과\")\ndef secondary(q): return f\"[보조 모델] {q} 요약: 3분기 영업이익 1조 2천억원 [D1]\"\ndef extractive(q, docs): return \"[요약 없이 원문 제시] \" + docs[0]\n\ndef answer(q, docs, chain=(primary, secondary)):\n    for model in chain:\n        try:\n            out = model(q)\n            print(f\"  {model.__name__}: 성공\")\n            return out\n        except Exception as e:\n            print(f\"  {model.__name__}: 실패({e}) → 다음\")\n    return extractive(q, docs)\n\ndocs = [\"가나전자 3분기 영업이익 1조 2천억원 (공시 D1)\"]\nprint(answer(\"가나전자 실적\", docs))\nprint(answer(\"가나전자 실적\", docs, chain=(primary,)))\n\n# 출력\n#   primary: 실패(2초 초과) → 다음\n#   secondary: 성공\n# [보조 모델] 가나전자 실적 요약: 3분기 영업이익 1조 2천억원 [D1]\n#   primary: 실패(2초 초과) → 다음\n# [요약 없이 원문 제시] 가나전자 3분기 영업이익 1조 2천억원 (공시 D1)"
+    }
+   ],
+   "how_far": "서버·네트워크 바닥은 플랫폼 쪽이 맡을 가능성이 크고 {추론}, 이 자리는 **엔진의 품질·대체 경로·비용 숫자**를 책임집니다. 최소선은 '모델 하나가 1시간 죽어도 기능이 어떻게 보이는가'를 설명하고 실험해 보인 것입니다.",
+   "refs": [
+    1,
+    2,
+    8,
+    30,
+    31
+   ],
+   "study": [
+    "ai-engineering",
+    "aws-backoff"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "역할 이중화: Ranking/Recommendation ML 엔지니어와 AI/ML 영역을 상호 이중화하여 부재 시 대응합니다.",
+   "short": "랭킹·추천 담당이 자리를 비우면 그 모델을 대신 지키고, 그쪽도 이쪽을 대신 지키는 짝꿍 관계.",
+   "why": "같은 회사의 ML엔지니어(랭킹·추천) 공고가 짝입니다 — 종목·뉴스·콘텐츠를 보여 줄 순서를 정하고, 온톨로지 관계를 피처로 쓰고, nDCG·MRR 같은 순위 지표와 A/B 결과를 보고, 품질이 떨어지면 기본 랭킹으로 되돌리는 자리입니다.[3] ML 인력이 적은 출시 전 조직이라 한 사람이 빠져도 서비스가 멈추지 않게 둘을 묶은 것으로 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "**겹치는 바닥** — 둘 다 온톨로지·임베딩·fallback 을 쓴다.[1][3] 그래서 상대 시스템의 입력은 이미 내 산출물이다.",
+     "**대신 볼 것** — 랭킹 모델의 지표 대시보드, 드리프트 경보, '기본 랭킹으로 되돌리기' 절차.[3]",
+     "**플레이북** — 장애 때 할 일을 미리 적어 두면 복구 시간이 약 3배 줄었다는 구글 SRE 의 경험이 있다.[32]",
+     "**순위 지표 기본** — 아래 Recall@k·MRR 은 리트리버와 랭킹이 같이 쓰는 말이다(RAG 줄의 예)."
+    ]
+   },
+   "how_far": "랭킹 모델을 새로 짜는 수준까지는 아니고 {추론}, **상대 시스템의 지표를 읽고, 이상하면 되돌리고, 무엇이 깨졌는지 짝에게 넘길 수 있는** 수준입니다. 면접에서 랭킹 지표를 물어도 당황하지 않을 정도는 준비합니다.",
+   "refs": [
+    1,
+    3,
+    32
+   ],
+   "study": [
+    "hands-on-llm",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "4년 이상의 ML 엔지니어 경력 (NLP 또는 LLM 응용 중심)",
+   "short": "연구보다 '서비스에 올린' NLP·LLM 경험이 4년 이상 — 모델을 내놓고 운영해 본 햇수를 본다.",
+   "why": "업무 일곱 줄이 모두 운영(평가체계 운영·엔진 운영·이중화)을 말합니다.[1] 연구 성과보다 프로덕션에서 망가진 걸 고쳐 본 경험이 필요한 자리입니다. {추론}",
+   "actually": {
+    "items": [
+     "NLP 중심이면: 분류·NER·검색 모델을 배포·재학습해 본 이야기.",
+     "LLM 응용 중심이면: RAG·평가·프롬프트 버전 관리를 운영해 본 이야기.",
+     "LLM 시기(2023~)만으로 4년을 채우기 어려워 그 전의 BERT 류 NLP 경력이 같이 인정되는 구조로 읽힌다. {추론}"
+    ]
+   },
+   "how_far": "'4년 이상'은 최소선입니다. 숫자보다 **이력서에 '무엇을 재서 얼마나 바꿨나'가 있느냐**가 서류에서 갈릴 것입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "한국어 텍스트 대상 NER, 분류, 클러스터링 모델을 프로덕션에 적용해보신 분",
+   "short": "띄어쓰기·조사·약칭이 섞인 한국어 기사에 개체 인식·분류·묶기 모델을 실제 서비스로 돌려 본 경험.",
+   "why": "업무 첫 줄(뉴스·공시 NER·클러스터링)이 그대로 요건이 됐습니다.[1] 한국어는 '가나전자가'처럼 조사가 붙어 낱말 경계가 흐려서, KLUE 는 NER 이름표를 아예 **글자 단위**로 달았습니다.[13]",
+   "actually": {
+    "items": [
+     "**토크나이저 경계** — 낱말 조각 단위 모델의 예측을 글자·개체 단위로 되돌리는 처리. HuggingFace 토큰 분류 안내가 이 맞추기를 다룬다.[34]",
+     "**분류** — 기사 주제(실적·공급계약·소송…)나 공시 종류. 사람이 단 라벨의 기준표부터 맞춘다. {추론}",
+     "**클러스터링** — 묶음 수를 미리 모르니 밀도 기반으로 묶고, 묶음이 너무 크거나 잘게 쪼개지면 문턱을 고친다.[33]",
+     "**프로덕션** — 새 종목·새 용어가 계속 생겨 성능이 서서히 떨어지므로(드리프트) 주기적으로 다시 잰다. {추론}"
+    ]
+   },
+   "how_far": "공개 데이터(KLUE)로 끝난 실험은 '프로덕션'이 아닙니다. **실제 사용자·실제 트래픽에서 오류를 보고 고친 경험**이 요구선입니다. 없다면 공개 뉴스로 파이프라인을 끝까지(수집 → 추론 → 평가 → 재학습) 만들어 보이는 것이 차선입니다. {추론}",
+   "refs": [
+    1,
+    13,
+    33,
+    34
+   ],
+   "study": [
+    "klue",
+    "hf-token-cls",
+    "hf-llm-course",
+    "cs224n"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "RAG 파이프라인(청킹, 임베딩, 리트리버, 리랭커, 프롬프트)을 설계하고 운영해보신 분",
+   "short": "문서를 자르고, 벡터로 바꾸고, 찾고, 다시 줄 세우고, 프롬프트에 끼우는 다섯 단계를 각각 재며 고쳐 본 경험.",
+   "why": "괄호 안의 다섯 단계는 RAG 를 이루는 부품 목록입니다. 공통 엔진을 맡을 사람이라[2] 어느 부품이 틀렸는지 갈라 볼 수 있어야 합니다. {추론}",
+   "flows": [
+    {
+     "caption": "RAG 다섯 단계 — 앞 단계가 틀리면 뒤에서 못 고친다 {추론}",
+     "steps": [
+      "청킹 · 공시를 항목·표 단위로 자르기",
+      "임베딩 · 조각을 벡터로",
+      "리트리버 · 벡터+글자 검색으로 후보 수십 개",
+      "리랭커 · 질문과 같이 읽어 상위 몇 개로",
+      "프롬프트 · 근거를 끼우고 인용 규칙 걸기"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**청킹** — 조각에 '어느 회사 몇 분기 공시의 어느 항목'인지 앞머리를 붙이면 검색 실패가 줄었다는 보고가 있다(앤트로픽 Contextual Retrieval: 실패 49% 감소, 리랭킹까지 67%).[24]",
+     "**임베딩** — 한국어·긴 문서를 다루는 다국어 모델이 필요하다. BGE-M3 는 100개 넘는 언어, 8,192 토큰까지, 한 모델로 밀집·희소·다중 벡터를 낸다.[20]",
+     "**리트리버** — 회사명·종목 코드는 글자 검색이 강하고 뜻은 벡터가 강해 둘을 RRF 로 섞는다.[23]",
+     "**리랭커** — 질문과 후보를 함께 읽는 cross-encoder 로 다시 줄 세운다(BLINK 와 같은 2단계).[14][36]",
+     "**프롬프트** — 근거를 너무 많이 넣으면 가운데 것을 놓친다(긴 문맥의 U자 곡선).[19] 그래서 상위 몇 개만, 중요한 것을 앞에."
+    ]
+   },
+   "examples": [
+    {
+     "title": "정답셋으로 리트리버를 잰다 — Recall@3 · MRR (가상 질문 4개)",
+     "body": "Recall@3 은 '정답 문서가 상위 3개 안에 들었나', MRR 은 '첫 정답이 몇 번째에 나왔나'의 역수 평균입니다. 리랭커를 붙인 전후를 같은 정답셋으로 비교합니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "# 정답셋으로 리트리버 재기 — Recall@3 와 MRR (가상 질문 4개)\ngold = {\"q1\": {\"D1\"}, \"q2\": {\"D7\", \"D9\"}, \"q3\": {\"D4\"}, \"q4\": {\"D2\"}}\nbefore = {\"q1\": [\"D3\", \"D1\", \"D5\"], \"q2\": [\"D7\", \"D8\", \"D6\"], \"q3\": [\"D5\", \"D6\", \"D8\"], \"q4\": [\"D2\", \"D1\", \"D3\"]}\nafter  = {\"q1\": [\"D1\", \"D3\", \"D5\"], \"q2\": [\"D7\", \"D9\", \"D6\"], \"q3\": [\"D6\", \"D4\", \"D8\"], \"q4\": [\"D2\", \"D1\", \"D3\"]}\n\ndef score(run, k=3):\n    rec, rr = 0, 0\n    for q, docs in run.items():\n        top = docs[:k]\n        rec += len(gold[q] & set(top)) / len(gold[q])\n        rr += next((1 / i for i, d in enumerate(top, 1) if d in gold[q]), 0)\n    n = len(run)\n    return rec / n, rr / n\n\nfor name, run in ((\"리랭커 전\", before), (\"리랭커 후\", after)):\n    r, m = score(run)\n    print(f\"{name}: Recall@3 {r:.3f} · MRR {m:.3f}\")\n\n# 출력\n# 리랭커 전: Recall@3 0.625 · MRR 0.625\n# 리랭커 후: Recall@3 1.000 · MRR 0.875"
+    }
+   ],
+   "how_far": "LangChain 같은 틀로 이어 붙여 본 것으로는 부족합니다. **단계마다 지표를 두고(검색 Recall·MRR, 답의 근거율) 한 단계씩 바꿔 숫자로 비교해 본** 경험이 '설계하고 운영'입니다. {추론}",
+   "refs": [
+    2,
+    14,
+    19,
+    20,
+    23,
+    24,
+    36
+   ],
+   "study": [
+    "rag-lecture",
+    "hands-on-llm",
+    "sbert-docs",
+    "bge-m3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM 산출물의 품질을 정량적으로 평가하는 체계를 직접 만들어보신 분 (정답셋 구축, 근거 추적, 할루시네이션 측정 등)",
+   "short": "'좋아 보인다'가 아니라 정답셋·근거 대조·환각 비율로 점수를 내는 틀을 직접 만들어 본 경험.",
+   "why": "업무의 품질·오류 통제 두 줄을 해 본 사람을 찾는 요건입니다.[1] 괄호의 세 가지가 그 틀의 뼈대입니다.",
+   "actually": {
+    "items": [
+     "**정답셋 구축** — 실제 질문을 모아 사람이 정답·정답 문서를 단다. 라벨 기준표와 두 사람 일치도부터. {추론}",
+     "**근거 추적** — 답의 문장마다 어느 문서의 어느 문장에서 왔는지 남기고, 인용 정밀도·재현율로 잰다.[18]",
+     "**할루시네이션 측정** — 원자 사실의 근거율(FActScore)[17], 정답 없는 근거 충실도(RAGAS)[16].",
+     "**판정 모델 검증** — LLM 채점기를 쓰면 사람 정답셋과의 일치율을 먼저 재고 치우침(위치·길이)을 막는다.[25]",
+     "**회귀 시험** — 프롬프트·모델을 바꿀 때마다 같은 세트로 돌려 떨어지면 배포 중단.[8]"
+    ]
+   },
+   "how_far": "남이 만든 벤치마크 점수를 보고한 것은 해당하지 않습니다. **우리 서비스 질문으로 세트를 만들고, 그 점수로 무엇을 바꿨는지** 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    8,
+    16,
+    17,
+    18,
+    25
+   ],
+   "study": [
+    "llm-eval-lecture",
+    "ai-engineering",
+    "ragas-docs",
+    "factscore"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python에 능숙하고 PyTorch, HuggingFace 등 프레임워크 활용 능력이 있으신 분",
+   "short": "모델을 불러 학습·추론하는 코드를 직접 짜고, 남의 모델 코드를 읽고 고칠 수 있는 수준.",
+   "why": "공고의 기술 태그가 Python·PyTorch·HuggingFace·AWS 입니다.[1] NER·임베딩·파인튜닝 모두 이 도구 위에서 합니다.",
+   "level": {
+    "basic": "Python 자료구조·제너레이터·타입 힌트, transformers 의 pipeline·AutoModel 로 추론",
+    "work": "PyTorch 학습 루프·DataLoader·혼합 정밀도, Trainer·토크나이저 정렬(토큰 ↔ 글자), 데이터셋 처리(datasets)",
+    "team": "PEFT 로 파인튜닝, 모델·프롬프트 버전 관리, 추론 서버(vLLM 등)와 프로파일링 {추론}"
+   },
+   "actually": {
+    "items": [
+     "토큰 분류(NER) 미세조정의 표준 예제가 HuggingFace 문서에 있다 — 토큰과 라벨 맞추기가 핵심이다.[34]",
+     "문장 임베딩·cross-encoder 리랭커는 Sentence Transformers 로 학습·평가한다.[36]",
+     "평가 스크립트(위 예들)도 결국 Python 이다 — 평가체계 요건과 이어진다."
+    ]
+   },
+   "how_far": "프레임워크 API 를 외우는 것보다 **오류가 나면 소스를 열어 원인을 찾는** 정도. {추론}",
+   "refs": [
+    1,
+    34,
+    36
+   ],
+   "study": [
+    "hf-llm-course",
+    "hf-token-cls",
+    "sbert-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "임베딩 모델 또는 소형 언어 모델의 파인튜닝·평가 경험이 있으신 분",
+   "short": "금융 낱말을 잘 구분하도록 임베딩을 조이거나, 작은 모델을 우리 일에 맞게 다시 가르쳐 본 경험.",
+   "why": "범용 임베딩은 '영업이익'과 '순이익'을 가깝게 둘 수 있습니다. {추론} 또 공통 엔진의 대체 경로·비용 절감에는 큰 상용 모델 대신 쓸 작은 자체 모델이 필요합니다.[1] {추론}",
+   "actually": {
+    "items": [
+     "**임베딩 파인튜닝** — (질문, 정답 조각, 헷갈리는 오답 조각) 세 쌍으로 대조 학습. 성공 여부는 리트리버 Recall·MRR 로 잰다(RAG 줄의 예).[36]",
+     "**소형 모델 파인튜닝** — 원래 가중치는 얼리고 작은 행렬만 학습하는 LoRA. GPT-3 175B 기준 학습할 숫자를 1만분의 1로, GPU 메모리를 1/3 로 줄였다.[27]",
+     "**증류** — 큰 모델의 답을 작은 모델이 따라 배우게 한다.[35]",
+     "**평가** — 파인튜닝 전후를 같은 정답셋으로, 그리고 원래 잘하던 일을 잊지 않았는지도 같이."
+    ]
+   },
+   "how_far": "처음부터 사전학습할 필요는 없습니다. **공개 모델 + LoRA/대조 학습 + 전후 비교표** 한 벌을 해 봤으면 요건을 채웁니다. {추론}",
+   "refs": [
+    1,
+    27,
+    35,
+    36
+   ],
+   "study": [
+    "peft-docs",
+    "sbert-docs",
+    "llm-tuning-lecture",
+    "hands-on-llm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모델 서빙 및 추론 성능·비용 최적화 경험이 있으신 분",
+   "short": "같은 답을 더 빨리, 더 싸게 — 배치·캐시·양자화·작은 모델로 지연과 GPU 비용을 줄여 본 경험.",
+   "why": "공통 엔진은 앱의 여러 기능이 같이 부르므로 호출 수가 곧 비용입니다.[2] 출시 전 회사라 비용 숫자가 특히 중요합니다.[7] {추론}",
+   "actually": {
+    "items": [
+     "**서빙 엔진** — vLLM 은 KV 캐시를 쪽(page) 단위로 관리해 같은 지연에서 처리량을 2~4배 올렸다.[28]",
+     "**양자화** — AWQ 처럼 가중치를 4비트로 줄이되 중요한 가중치를 보호해 품질 손실을 줄인다.[29]",
+     "**작은 모델로 나누기** — 분류·NER 은 작은 인코더, 긴 요약만 큰 모델에. {추론}",
+     "**캐시** — 같은 공시 요약은 한 번만 만들고 재사용. {추론}",
+     "**재기** — 기능별 지연 분위수(p50·p95)와 요청당 토큰·비용."
+    ]
+   },
+   "how_far": "GPU 커널을 짜는 수준은 아닙니다. **'요청당 비용 X원 → Y원, p95 지연 A초 → B초'를 품질 점수를 지킨 채로** 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    2,
+    7,
+    28,
+    29
+   ],
+   "study": [
+    "vllm-docs",
+    "inference-lecture",
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL 및 대용량 텍스트 데이터 처리 경험이 있으신 분",
+   "short": "수년 치 기사·공시를 SQL 로 골라 내고, 수백만 문서를 나눠 처리해 학습·평가 데이터로 만들어 본 경험.",
+   "why": "정답셋·학습 데이터·오류 표본은 모두 쌓인 기사·공시에서 뽑습니다. 같은 회사 데이터 엔지니어가 뉴스·공시를 수집해 저장소에 쌓고[4], 공시 원문은 금감원 Open DART 가 API 로 줍니다.[41]",
+   "level": {
+    "basic": "JOIN·GROUP BY·날짜 조건으로 '지난 분기 실적 공시 전부' 뽑기",
+    "work": "윈도우 함수로 같은 공시의 정정본 중 최신만, 중복 기사 제거, 표본 추출",
+    "team": "텍스트 수백만 건을 나눠 처리(배치·분산), 중간 산출물 버전 관리 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**정정 공시** — 같은 공시가 정정돼 다시 나오므로 최신본만 남기는 쿼리가 기본이다. {추론}",
+     "**중복 기사** — 통신사 기사를 여러 매체가 옮겨 실어 거의 같은 글이 많다 — 학습·평가 세트에 같은 글이 양쪽에 들어가지 않게. {추론}",
+     "**대용량** — 임베딩·NER 을 전량 다시 돌릴 때는 나눠서, 실패한 조각만 다시. {추론}"
+    ]
+   },
+   "how_far": "데이터 파이프라인 운영은 데이터 엔지니어 몫이고[4], 이 자리는 **그 위에서 원하는 표본을 정확히 뽑아 내는** 수준입니다. {추론}",
+   "refs": [
+    4,
+    41
+   ],
+   "study": [
+    "hf-llm-course"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 등 퍼블릭 클라우드 환경에 익숙하신 분",
+   "short": "모델 학습·서빙·저장을 AWS 위에서 해 봐서, GPU 서버·저장소·권한 설정 때문에 막히지 않는 수준.",
+   "why": "공고 기술 태그에 AWS 가 있고[1], 같은 회사 콘텐츠 플랫폼 공고들도 AWS 환경을 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "GPU 인스턴스로 학습·추론 서버 띄우기, 모델 파일은 S3 에. {추론}",
+     "상용 LLM 을 클라우드 관리형 서비스로 부를 때의 지역·할당량 제한 — 대체 경로 설계와 이어진다. {추론}",
+     "외부 API 호출의 재시도·제한 시간.[30]",
+     "금융사라 데이터가 어느 지역·어느 계정에 있는지, 누가 볼 수 있는지 권한이 엄격하다. {추론}"
+    ]
+   },
+   "how_far": "클라우드 설계자 수준은 아닙니다. **혼자 GPU 서버를 띄워 모델을 올리고, 비용이 어디서 나가는지 볼 줄 아는** 정도. {추론}",
+   "refs": [
+    1,
+    4,
+    30
+   ],
+   "study": [
+    "aws-backoff"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "모델 점수보다 '어디서 틀렸나'를 파고드는 게 재밌는 사람[1]",
+   "공시·실적 기사를 원래 읽는 사람 — 금융 용어 감이 곧 품질이다{추론}",
+   "평가셋·채점기 같은 바닥을 처음부터 짓고 싶은 사람[2]",
+   "NLP 와 랭킹·추천을 둘 다 넓게 보고 싶은 사람[3]"
+  ],
+  "hard": [
+   "출시가 세 번 미뤄진 제품이라 일정·우선순위가 바뀔 수 있다[7]",
+   "공통 엔진이라 장애가 나면 앱의 모든 AI 기능이 같이 멈춘다[2]",
+   "T&S·거버넌스 검토가 있어 모델을 바꾸는 데 절차가 붙는다[6][8]",
+   "남의 영역(랭킹·추천)까지 대신 지켜야 한다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "기사에 '가나'만 나왔습니다. 가나전자와 가나바이오 중 어디에 붙이고, 둘 다 아니면 어떻게 하나요?",
+   "a": "엔티티 연결 업무의 핵심 — 후보 뽑기·문맥으로 고르기·NIL 문턱.[14]"
+  },
+  {
+   "q": "요약에 '5년 계약'이라고 나왔는데 공시는 3년입니다. 이걸 배포 전에 어떻게 잡나요?",
+   "a": "품질·오류 통제 — 원자 사실 근거율과 숫자 대조, 회귀 시험.[17][8]"
+  },
+  {
+   "q": "RAG 답이 틀렸습니다. 청킹·임베딩·리트리버·리랭커·프롬프트 중 어디 문제인지 어떻게 가르나요?",
+   "a": "자격요건 RAG 다섯 단계를 단계별 지표로 재는 법.[19][24]"
+  },
+  {
+   "q": "LLM 채점기를 믿어도 되나요? 어떻게 검증하나요?",
+   "a": "판정 모델의 일치율·치우침.[25]"
+  },
+  {
+   "q": "주 모델 업체가 한 시간 동안 응답하지 않습니다. 앱의 AI 기능들은 어떻게 보여야 하나요?",
+   "a": "공통 엔진 fallback 운영.[30][31]"
+  },
+  {
+   "q": "랭킹 담당이 휴가인데 추천 클릭률이 급락했습니다. 무엇부터 보나요?",
+   "a": "역할 이중화 — 랭킹 공고의 지표·드리프트·기본 랭킹 되돌리기.[3]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "사람인 · 넥스트증권 ML엔지니어(NLP·LLM)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=54906376",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "이 공고 — 업무 7 · 자격 9, 경력 4년 이상, 접수 2026-11-01~11-30, 급여 면접 후 결정, 근무지 강남 오피스, 기술 태그 AWS·HuggingFace·PyTorch·Python"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 넥스트증권 ML엔지니어(NLP·LLM)",
+   "url": "https://www.wanted.co.kr/wd/380178",
+   "kind": "posting",
+   "note": "같은 공고의 원티드 판 — 소속 AI서비스개발팀, 뉴스·공시를 이해하는 언어 모델 파이프라인·MTS 공통 LLM·RAG 엔진 소개, 근무지 강남대로 464 비제바노빌딩 3~6층"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · 넥스트증권 ML엔지니어(랭킹·추천)",
+   "url": "https://www.wanted.co.kr/wd/380181",
+   "kind": "posting",
+   "note": "이중화 짝 — AI데이터플랫폼팀, 금융 분류체계·온톨로지 피처, nDCG·MRR·A/B, 기본 랭킹 fallback (조사 시점 마감 표시)"
+  },
+  {
+   "n": 4,
+   "title": "원티드 · 넥스트증권 Data Engineer (AI Content Platform)",
+   "url": "https://www.wanted.co.kr/wd/388893",
+   "kind": "posting",
+   "date": "2026",
+   "note": "뉴스·공시 수집과 관계 모델링, 정확성·최신성·출처 관리, AWS, 혜택 및 복지·전형(처우 논의)"
+  },
+  {
+   "n": 5,
+   "title": "디지털데일리 · [일잘러AI] 비개발자가 구축한 '금융 숏폼' 자동화",
+   "url": "https://www.ddaily.co.kr/page/view/2026070916490405274",
+   "kind": "news",
+   "date": "2026-07",
+   "note": "넥스트증권 콘텐츠 플랫폼실 PM 인터뷰 — 데이터 구매, AI 종목 태깅·분류, 원고 작성 흐름"
+  },
+  {
+   "n": 6,
+   "title": "아시아경제 CORE · 넥스트증권, 콘텐츠 신뢰·안전(T&S) 전담 조직 신설",
+   "url": "https://core.asiae.co.kr/article/2026040208362905858",
+   "kind": "news",
+   "date": "2026-04",
+   "note": "영상·AI 투자 콘텐츠의 안전성·법규 준수 검토, AI 검수 엔진"
+  },
+  {
+   "n": 7,
+   "title": "이코노미스트 · MTS 세 번 미룬 넥스트증권…미국주식 API 먼저",
+   "url": "https://economist.co.kr/article/view/ecn202611090035",
+   "kind": "news",
+   "date": "2026-11",
+   "note": "AI MTS 2027년 1분기로 연기"
+  },
+  {
+   "n": 8,
+   "title": "잡코리아 · 넥스트증권 Senior AI Governance Specialist",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50356663",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "AI 검증 기준·도입·변경 심의 — 모델·프롬프트 변경 때 재평가"
+  },
+  {
+   "n": 9,
+   "title": "원티드 · 넥스트증권 회사 정보",
+   "url": "https://www.wanted.co.kr/company/52490",
+   "kind": "reference",
+   "note": "평균 연봉 집계(금감원 공시정보·국민연금 가입 사업장 자료) — 기준 연월 표기 없음"
+  },
+  {
+   "n": 10,
+   "title": "넥스트증권 채용 · Life at Next(복리후생)",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/lifeatnext",
+   "kind": "company",
+   "note": "복지 항목과 금액"
+  },
+  {
+   "n": 11,
+   "title": "SBS Biz · 넥스트증권, 신논현 오피스 새 거점…유연근무제 도입",
+   "url": "https://biz.sbs.co.kr/amp/article/20000340240",
+   "kind": "news",
+   "date": "2026-10",
+   "note": "일부 프로덕트·기술 조직 입주, 주 1회 원격"
+  },
+  {
+   "n": 12,
+   "title": "넥스트증권 채용 사이트",
+   "url": "https://nextsecurities.career.greetinghr.com/",
+   "kind": "company",
+   "note": "하단 회사 정보(본사 주소)"
+  },
+  {
+   "n": 13,
+   "title": "Park 외 · KLUE: Korean Language Understanding Evaluation",
+   "url": "https://arxiv.org/abs/2105.09680",
+   "kind": "reference",
+   "date": "2021-05",
+   "note": "8개 과제 중 NER — 6종 개체, 글자 단위 이름표, 개체·글자 단위 F1"
+  },
+  {
+   "n": 14,
+   "title": "Wu 외 · Scalable Zero-shot Entity Linking with Dense Entity Retrieval (BLINK)",
+   "url": "https://arxiv.org/abs/1911.03814",
+   "kind": "reference",
+   "date": "2020",
+   "note": "bi-encoder 후보 → cross-encoder 재정렬, 590만 후보 약 2ms"
+  },
+  {
+   "n": 15,
+   "title": "Edge 외 · From Local to Global: A Graph RAG Approach to Query-Focused Summarization",
+   "url": "https://arxiv.org/abs/2404.16130",
+   "kind": "reference",
+   "date": "2024-04",
+   "note": "엔티티 그래프 + 묶음 요약, 100만 토큰 규모 전체 질문에서 포괄성·다양성 향상. 구현 github.com/microsoft/graphrag"
+  },
+  {
+   "n": 16,
+   "title": "Es 외 · Ragas: Automated Evaluation of Retrieval Augmented Generation",
+   "url": "https://arxiv.org/abs/2309.15217",
+   "kind": "reference",
+   "date": "2023-09",
+   "note": "정답 없이 faithfulness·답 관련성·문맥 관련성"
+  },
+  {
+   "n": 17,
+   "title": "Min 외 · FActScore",
+   "url": "https://arxiv.org/abs/2305.14251",
+   "kind": "reference",
+   "date": "2023-05",
+   "note": "원자 사실 근거율, 자동 추정 오차 2% 미만"
+  },
+  {
+   "n": 18,
+   "title": "Gao 외 · Enabling Large Language Models to Generate Text with Citations (ALCE)",
+   "url": "https://arxiv.org/abs/2305.14627",
+   "kind": "reference",
+   "date": "2023-05",
+   "note": "인용 재현율·정밀도"
+  },
+  {
+   "n": 19,
+   "title": "Liu 외 · Lost in the Middle: How Language Models Use Long Contexts",
+   "url": "https://arxiv.org/abs/2307.03172",
+   "kind": "reference",
+   "date": "2023-07",
+   "note": "관련 정보가 가운데 있으면 성능 하락(U자)"
+  },
+  {
+   "n": 20,
+   "title": "Chen 외 · BGE M3-Embedding",
+   "url": "https://arxiv.org/abs/2402.03216",
+   "kind": "reference",
+   "date": "2024-02",
+   "note": "100개+ 언어, 8,192 토큰, 밀집·희소·다중 벡터"
+  },
+  {
+   "n": 21,
+   "title": "EDM Council · FIBO (Financial Industry Business Ontology)",
+   "url": "https://spec.edmcouncil.org/fibo/",
+   "kind": "reference",
+   "note": "OWL 로 쓴 금융 개념 온톨로지, OMG 표준"
+  },
+  {
+   "n": 22,
+   "title": "Lewis 외 · Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 23,
+   "title": "Cormack 외 · Reciprocal Rank Fusion",
+   "url": "https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf",
+   "kind": "reference",
+   "date": "2009",
+   "note": "SIGIR 2009 — 순위 역수 합, k=60"
+  },
+  {
+   "n": 24,
+   "title": "Anthropic · Introducing Contextual Retrieval",
+   "url": "https://www.anthropic.com/news/contextual-retrieval",
+   "kind": "reference",
+   "date": "2024-09",
+   "note": "조각 앞에 맥락 설명 — 검색 실패 49% 감소, 리랭킹 더해 67%"
+  },
+  {
+   "n": 25,
+   "title": "Zheng 외 · Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "kind": "reference",
+   "date": "2023-06",
+   "note": "사람 판정과 80% 이상 일치, 위치·길이 치우침"
+  },
+  {
+   "n": 26,
+   "title": "Manakul 외 · SelfCheckGPT",
+   "url": "https://arxiv.org/abs/2303.08896",
+   "kind": "reference",
+   "date": "2023-03",
+   "note": "여러 번 뽑은 답의 불일치로 환각 탐지"
+  },
+  {
+   "n": 27,
+   "title": "Hu 외 · LoRA: Low-Rank Adaptation of Large Language Models",
+   "url": "https://arxiv.org/abs/2106.09685",
+   "kind": "reference",
+   "date": "2021"
+  },
+  {
+   "n": 28,
+   "title": "Kwon 외 · vLLM / PagedAttention",
+   "url": "https://arxiv.org/abs/2309.06180",
+   "kind": "reference",
+   "date": "2023",
+   "note": "같은 지연에서 처리량 2~4배"
+  },
+  {
+   "n": 29,
+   "title": "Lin 외 · AWQ: Activation-aware Weight Quantization",
+   "url": "https://arxiv.org/abs/2306.00978",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 30,
+   "title": "Amazon Builders' Library · Timeouts, retries, and backoff with jitter",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Martin Fowler · CircuitBreaker",
+   "url": "https://martinfowler.com/bliki/CircuitBreaker.html",
+   "kind": "reference",
+   "date": "2014"
+  },
+  {
+   "n": 32,
+   "title": "Google SRE Book · Introduction",
+   "url": "https://sre.google/sre-book/introduction/",
+   "kind": "reference",
+   "note": "미리 적어 둔 플레이북으로 평균 복구 시간 약 3배 개선"
+  },
+  {
+   "n": 33,
+   "title": "Grootendorst · BERTopic",
+   "url": "https://arxiv.org/abs/2203.05794",
+   "kind": "reference",
+   "date": "2022-03",
+   "note": "문장 임베딩 → 차원 축소 → 밀도 기반 묶기 → 묶음별 대표 낱말"
+  },
+  {
+   "n": 34,
+   "title": "Hugging Face 문서 · Token classification",
+   "url": "https://huggingface.co/docs/transformers/tasks/token_classification",
+   "kind": "reference",
+   "note": "NER 미세조정, 토큰과 라벨 맞추기"
+  },
+  {
+   "n": 35,
+   "title": "Hinton 외 · Distilling the Knowledge in a Neural Network",
+   "url": "https://arxiv.org/abs/1503.02531",
+   "kind": "reference",
+   "date": "2015"
+  },
+  {
+   "n": 36,
+   "title": "Sentence Transformers 문서",
+   "url": "https://www.sbert.net/",
+   "kind": "reference",
+   "note": "문장 임베딩·cross-encoder 리랭커 학습과 평가"
+  },
+  {
+   "n": 37,
+   "title": "W3C · RDF 1.1 Primer",
+   "url": "https://www.w3.org/TR/rdf11-primer/",
+   "kind": "reference",
+   "note": "주어–관계–대상 세 쌍"
+  },
+  {
+   "n": 38,
+   "title": "원티드 · 넥스트증권 AI Governance Manager",
+   "url": "https://www.wanted.co.kr/wd/395829",
+   "kind": "posting",
+   "note": "강남 근무지 주소(강남대로 464 비제바노빌딩 3~6층)"
+  },
+  {
+   "n": 40,
+   "title": "법률신문 · 금융위원회의 '금융분야 인공지능 가이드라인' 발표",
+   "url": "https://www.lawtimes.co.kr/news/articleView.html?idxno=223806",
+   "kind": "news",
+   "date": "2026-07",
+   "note": "7대 원칙(신뢰성 등) — 로펌 기고"
+  },
+  {
+   "n": 41,
+   "title": "금융감독원 · Open DART(전자공시 오픈API)",
+   "url": "https://opendart.fss.or.kr/",
+   "kind": "reference",
+   "note": "공시 목록·원문 API"
+  }
+ ],
+ "caveat": "넥스트증권은 AI서비스개발팀의 NER·엔티티 연결·온톨로지·평가 구조를 공개하지 않았고, 회사 기술 블로그나 발표 영상도 이번 조사에서 찾지 못했습니다(받은 영상 없음). 회사 자료는 이 공고와 원티드 판, 이중화 짝인 랭킹·추천 공고, 같은 회사의 다른 공고, 보도뿐입니다. 실제 일은 KLUE·BLINK·GraphRAG·RAGAS·FActScore 등 공개 연구로 '보통 이런 것'을 보였습니다. 예시의 회사·숫자는 모두 가상입니다.",
+ "resources": [
+  {
+   "id": "hands-on-llm",
+   "title": "핸즈온 LLM",
+   "by": "제이 알아마르 · 마르턴 흐루턴도르스트 · 박해선 옮김 · 한빛미디어 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%95%B8%EC%A6%88%EC%98%A8%20LLM",
+   "why": "토큰·임베딩·텍스트 분류·클러스터링·시맨틱 검색·RAG·미세조정을 그림과 코드로 — 업무 첫 줄의 네 가지와 RAG 요건을 한 권으로 훑는다."
+  },
+  {
+   "id": "ai-engineering",
+   "title": "AI 엔지니어링",
+   "by": "칩 후옌 · 변성윤 옮김 · 한빛미디어 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=AI%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "평가(판정 모델 포함)·RAG·파인튜닝·추론 최적화를 서비스 관점으로 — 품질 평가체계 요건과 공통 엔진 운영의 뼈대."
+  },
+  {
+   "id": "hf-llm-course",
+   "title": "Hugging Face LLM Course",
+   "by": "Hugging Face",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://huggingface.co/learn/llm-course",
+   "why": "transformers·datasets·토크나이저·미세조정을 손으로 따라 한다. Python/PyTorch/HuggingFace 요건의 출발점."
+  },
+  {
+   "id": "hf-token-cls",
+   "title": "Token classification (Transformers 문서)",
+   "by": "Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://huggingface.co/docs/transformers/tasks/token_classification",
+   "why": "NER 미세조정의 표준 예제 — 낱말 조각과 라벨을 맞추는 부분이 한국어 NER 요건의 첫 함정."
+  },
+  {
+   "id": "klue",
+   "title": "KLUE: Korean Language Understanding Evaluation",
+   "by": "Park 외 · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2105.09680",
+   "why": "한국어 NER·분류의 공개 기준과 데이터. NER 장에서 글자 단위 이름표와 평가 방식을 본다."
+  },
+  {
+   "id": "cs224n",
+   "title": "Stanford CS224N 1강 — 소개와 단어 벡터 (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/DzpHeXVSC5I",
+   "why": "단어를 벡터로 바꾸는 생각의 출발점 — 임베딩·클러스터링 요건의 기초."
+  },
+  {
+   "id": "rag-lecture",
+   "title": "Stanford CS329Z 3강 — RAG: BM25 부터 Agentic RAG 까지 (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/psLc-46GqY0",
+   "why": "글자 검색(BM25)·벡터 검색·리랭킹·에이전트 RAG 를 한 강의로 — RAG 다섯 단계 요건의 지도."
+  },
+  {
+   "id": "llm-eval-lecture",
+   "title": "Stanford CME295 8강 — LLM 평가 (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/8fNP4N46RRo",
+   "why": "정답셋·판정 모델·평가의 함정 — 품질 평가체계 요건."
+  },
+  {
+   "id": "llm-tuning-lecture",
+   "title": "Stanford CME295 5강 — LLM 튜닝 (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/PmW_TMQ3l0I",
+   "why": "미세조정과 LoRA 같은 효율적 튜닝 — 소형 모델 파인튜닝 요건."
+  },
+  {
+   "id": "inference-lecture",
+   "title": "Stanford CS336 10강 — 추론 (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/EfM546A79aM",
+   "why": "KV 캐시·배치·양자화가 왜 추론 비용을 줄이나 — 서빙·비용 최적화 요건."
+  },
+  {
+   "id": "blink",
+   "title": "Scalable Zero-shot Entity Linking with Dense Entity Retrieval (BLINK)",
+   "by": "Wu 외 · Meta AI · EMNLP 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1911.03814",
+   "why": "후보 뽑기 → 재정렬의 2단계 엔티티 연결 — 업무 '엔티티 연결'의 표준 구조. 코드도 공개."
+  },
+  {
+   "id": "fibo",
+   "title": "FIBO — Financial Industry Business Ontology",
+   "by": "EDM Council",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://spec.edmcouncil.org/fibo/",
+   "why": "금융 개념(기업·증권·관계)을 어떻게 온톨로지로 나누는지 공개 표준으로 본다. 우리 온톨로지 칸을 설계할 때 참고."
+  },
+  {
+   "id": "graphrag",
+   "title": "GraphRAG (논문 · 공개 구현)",
+   "by": "Microsoft Research · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/microsoft/graphrag",
+   "why": "문서에서 엔티티 그래프를 만들고 묶음 요약으로 답하는 구현 — 업무 'Graph RAG'를 직접 돌려 볼 수 있다."
+  },
+  {
+   "id": "ragas-docs",
+   "title": "Ragas 문서",
+   "by": "Ragas",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.ragas.io/",
+   "why": "근거 충실도·문맥 정밀도 같은 RAG 지표를 코드로 — 할루시네이션 측정 요건."
+  },
+  {
+   "id": "factscore",
+   "title": "FActScore",
+   "by": "Min 외 · EMNLP 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2305.14251",
+   "why": "답을 원자 사실로 쪼개 근거율을 세는 법 — 금융 숫자 정확성 평가의 설계 바탕."
+  },
+  {
+   "id": "sbert-docs",
+   "title": "Sentence Transformers 문서",
+   "by": "UKP Lab · Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.sbert.net/",
+   "why": "임베딩 모델과 cross-encoder 리랭커를 학습·평가하는 법 — 임베딩 파인튜닝과 리랭커 요건."
+  },
+  {
+   "id": "bge-m3",
+   "title": "BGE M3-Embedding",
+   "by": "Chen 외 · BAAI · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2402.03216",
+   "why": "한국어를 포함한 다국어·긴 문서 임베딩 — 공시 같은 긴 글을 다루는 임베딩 선택의 기준."
+  },
+  {
+   "id": "peft-docs",
+   "title": "PEFT 문서",
+   "by": "Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://huggingface.co/docs/peft",
+   "why": "LoRA 로 작은 모델을 적은 GPU 로 파인튜닝 — 소형 언어 모델 요건."
+  },
+  {
+   "id": "vllm-docs",
+   "title": "vLLM 문서",
+   "by": "vLLM 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.vllm.ai/",
+   "why": "오픈 모델을 띄워 처리량·지연을 재고 양자화 모델을 올리는 법 — 서빙·비용 요건."
+  },
+  {
+   "id": "aws-backoff",
+   "title": "Timeouts, retries, and backoff with jitter",
+   "by": "Amazon Builders' Library",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "why": "외부 모델 API 가 느리거나 실패할 때의 제한 시간·재시도 — fallback 운영의 기본기."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "장애 대응·플레이북·당번 — 공통 엔진 운영과 역할 이중화를 '절차'로 만드는 법. 온라인 무료."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "한국어 NLP 기본기",
+   "time": "2~3주",
+   "goal": "공개 한국어 모델로 NER·분류를 미세조정하고 개체 단위 F1 로 잴 수 있다.",
+   "resources": [
+    "hands-on-llm",
+    "hf-llm-course",
+    "hf-token-cls",
+    "klue"
+   ],
+   "task": "KLUE NER 로 작은 모델을 미세조정하고, 가상 공시 문장 50개에 회사·날짜·금액 이름표를 직접 달아 개체 단위 F1 을 잰다. 틀린 것을 '경계 오류/종류 오류/놓침'으로 나눠 적는다."
+  },
+  {
+   "title": "엔티티 연결과 작은 온톨로지",
+   "time": "2주",
+   "goal": "기사 속 이름을 종목에 붙이고, 자신 없으면 '모름'으로 둔다.",
+   "resources": [
+    "blink",
+    "fibo",
+    "sbert-docs"
+   ],
+   "task": "가상 상장사 30곳(약칭·옛 이름 포함)과 섹터·테마 세 쌍 100개로 온톨로지를 만들고, 별칭 + 임베딩 후보 → 문맥 재정렬 → NIL 문턱 연결기를 짠다. 정답 100건으로 연결 정확도·NIL 정확도를 따로 낸다."
+  },
+  {
+   "title": "RAG 를 단계별로 재기",
+   "time": "2~3주",
+   "goal": "청킹·임베딩·리트리버·리랭커·프롬프트를 하나씩 바꿔 숫자로 비교한다.",
+   "resources": [
+    "rag-lecture",
+    "bge-m3",
+    "sbert-docs",
+    "graphrag"
+   ],
+   "task": "가상 공시·기사 500건과 질문 50개 정답셋을 만들고, 글자 검색·벡터 검색·RRF·리랭커 조합별 Recall@5·MRR 표를 만든다. 두 걸음 관계 질문 10개는 그래프 검색을 더했을 때와 비교한다."
+  },
+  {
+   "title": "품질 평가체계",
+   "time": "2주",
+   "goal": "답의 근거율·인용 정확도·환각 비율을 매번 자동으로 내고, 떨어지면 배포를 막는다.",
+   "resources": [
+    "ai-engineering",
+    "llm-eval-lecture",
+    "ragas-docs",
+    "factscore"
+   ],
+   "task": "3단계의 답을 주장 단위로 쪼개 숫자 대조 + 판정 모델로 채점하는 스크립트를 짜고, 사람이 단 30건과의 일치율을 잰다. 프롬프트를 바꿨을 때 점수가 떨어지면 실패하는 회귀 시험으로 묶는다."
+  },
+  {
+   "title": "서빙·비용·대체 경로",
+   "time": "1~2주",
+   "goal": "모델을 띄워 지연·비용을 재고, 주 모델이 죽어도 답이 나가게 한다.",
+   "resources": [
+    "vllm-docs",
+    "peft-docs",
+    "inference-lecture",
+    "llm-tuning-lecture",
+    "aws-backoff"
+   ],
+   "task": "작은 오픈 모델을 vLLM 으로 띄우고 4비트 양자화 전후의 p95 지연·처리량·근거율을 비교한다. 주 모델 → 보조 모델 → 원문 근거만 보여 주기 순서의 대체 경로를 붙이고, 주 모델을 일부러 끈 실험 결과를 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고 급여는 '면접 후 결정'. 집계 사이트의 회사 평균은 **약 6,032만원**뿐이고, 4년차 이상 ML 엔지니어 제시액과는 다르다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드 회사 정보 — 금감원 공시정보와 국민연금 가입 사업장 자료로 계산한 집계. 기준 연월이 적혀 있지 않다 [9]"
+   }
+  ],
+  "how": "이 공고는 급여를 '면접 후 결정'으로 적었고 [1], 같은 회사 공고는 전형 끝에 **처우 논의** 단계를 둔다 [4]. 넥스트증권의 사업보고서 '직원 1인 평균 급여액'은 찾지 못했다(공시 숫자 없음). 위 평균은 신입·경력과 여러 직군이 섞인 회사 전체 값이라 4년차 이상 ML 엔지니어 제시액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "복지카드",
+    "detail": "연 150만원, 사용처 제한 없음(유흥업·택시 제외). 중도 입사는 입사 3개월 뒤부터 연말까지 월할"
+   },
+   {
+    "name": "상해보험",
+    "detail": "본인·배우자·자녀 실손 의료비 지원"
+   },
+   {
+    "name": "건강검진",
+    "detail": "매년 종합건강검진"
+   },
+   {
+    "name": "특별상여",
+    "detail": "연 110만원 — 설·추석 귀성비, 가정의 달 효도비, 연말 지원비(중도 입사는 입사 시점부터)"
+   },
+   {
+    "name": "특별휴가",
+    "detail": "1년 이상 재직 시 매년 3일"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10년·20년 근속 시 장려금 400만원"
+   },
+   {
+    "name": "자기개발",
+    "detail": "업무 관련 교육 지원(채용 사이트 안내는 연간 최대 200만원)"
+   },
+   {
+    "name": "비포괄임금제",
+    "detail": "초과근로수당 별도 지급"
+   },
+   {
+    "name": "유연 출퇴근",
+    "detail": "오전 7시~10시 사이 자율 출근"
+   },
+   {
+    "name": "재택근무",
+    "detail": "주 1회"
+   },
+   {
+    "name": "호칭",
+    "detail": "대표부터 인턴까지 '님' 호칭"
+   }
+  ],
+  "note": "이 공고에는 복지 칸이 없다 [1]. 위 목록은 같은 회사 Data Engineer (AI Content Platform) 공고의 '혜택 및 복지' 칸이고 [4], 자기개발 금액은 채용 사이트 'Life at Next' 안내다 [10]. 회사 공통 복지로 보이지만 이 자리에 그대로 적용되는지는 처우 논의 때 확인한다 {추론}. 2026년 10월 보도는 신논현 거점과 함께 유연근무·주 1회 원격을 소개했다 [11]."
+ },
+ "location": {
+  "name": "넥스트증권 강남 오피스(신논현)",
+  "address": "서울특별시 강남구 강남대로 464 비제바노빌딩 3~6층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20464",
+  "near": "9호선 신논현역 근처 강남대로 {추론}",
+  "note": "공고의 근무지는 '넥스트증권 강남 오피스'이고 [1], 같은 공고의 원티드 판과 같은 회사 AI Governance Manager 공고가 주소를 강남대로 464 비제바노빌딩 3~6층으로 적었다 [2][38]. 신논현 거점에 프로덕트·기술 조직 일부가 입주했다 [11]. 본사 주소는 채용 사이트 하단 회사 정보에 있다 [12]."
+ }
+}

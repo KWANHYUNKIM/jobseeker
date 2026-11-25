@@ -360,6 +360,7 @@
   "ats-greeting:nextsecurities:231238": "nextsecurities-it-admin",
   "ats-greeting:nextsecurities:245523": "nextsecurities-it-planner",
   "ats-greeting:nextsecurities:245530": "nextsecurities-market-data-fep",
+  "saramin-54906376": "nextsecurities-ml-engineer-nlp-llm",
   "jobkorea-50360739": "nextsecurities-overseas-order-backend",
   "jobkorea-50356663": "nextsecurities-senior-ai-governance",
   "ats-greeting:nextsecurities:245526": "nextsecurities-trading-backend",
@@ -3640,6 +3641,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 23
+  },
+  {
+   "id": "nextsecurities-ml-engineer-nlp-llm",
+   "company": "넥스트증권",
+   "role": "ML엔지니어(NLP·LLM)",
+   "jobs": [
+    "saramin-54906376"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 16
   },
   {
    "id": "nextsecurities-overseas-order-backend",
