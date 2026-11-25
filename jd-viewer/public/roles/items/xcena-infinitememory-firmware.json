@@ -1,0 +1,891 @@
+{
+  "id": "xcena-infinitememory-firmware",
+  "company": "엑시나",
+  "role": "Firmware Engineer – InfiniteMemory",
+  "team": "SW 개발 · InfiniteMemory 펌웨어",
+  "jobs": [
+    "ats-greeting:xcena:224152"
+  ],
+  "researched_at": "2026-11-26",
+  "tldr": {
+    "what": "엑시나 칩 MX1 카드 뒤에 SSD 를 붙이고, 서버에는 그 SSD 를 **아주 큰 메모리처럼** 보이게 하는 기능(InfiniteMemory)의 펌웨어를 만듭니다. 주소 바꾸기, 자주 쓰는 데이터를 DRAM 에 두는 일, 어떤 페이지를 SSD 로 내보낼지 고르는 일이 핵심입니다.[1][3]",
+    "env": "칩 안의 RISC-V 코어 위에서 도는 펌웨어입니다. 주소 변환표 조회는 회로가 하고, 표에 없는 페이지(미스)를 채우는 일은 펌웨어가 합니다.[3] 2026년 말 양산을 앞둔 시기이고[6], SK하이닉스도 이 기능 위에 'CXL Hybrid Memory' 를 만들어 시연했습니다.[4]",
+    "oneline": "SSD 펌웨어(FTL) 기술을 **메모리 쪽으로 옮겨 오는** 자리. 자료구조·교체 알고리즘·지연 측정이 중심이고, 화면이나 웹은 없습니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "엑시나는 차세대 메모리 제품인 InfiniteMemory의 핵심 펌웨어를 개발할 펌웨어 엔지니어를 찾고 있습니다. 이 포지션은 CXL 인터페이스를 통해 DRAM 수준의 접근 지연과 대용량 스토리지를 동시에 제공하기 위해 메모리 계층 관리, 주소 변환, 데이터 이동 및 배치 정책을 직접 설계하고 구현합니다.",
+      "short": "SSD 를 '빠른 메모리처럼' 보이게 하려고, 어떤 데이터를 DRAM 에 두고 SSD 로 뺄지 정하는 코드를 짜는 자리다.",
+      "why": "MX1 은 CXL(PCIe 위에서 메모리를 꽂는 규격) 메모리 카드인데, 카드 뒤에 SSD 를 붙이는 PCIe 포트를 따로 가집니다.[3][4] 서버는 SSD 전체 용량을 바이트 단위로 읽고 쓰는 메모리로 보고, 카드 안 DRAM 이 SSD 페이지를 캐시(자주 쓰는 것을 가까이 두는 임시 저장소)합니다.[3] 회사 CPO 도 발표에서 SSD 페이지를 DRAM 에 알아서 캐시해 응용은 메모리처럼 쓰기만 하면 된다고 설명했습니다.[2] DRAM 은 빠르지만 비싸고 SSD 는 크지만 느려서, 둘 사이를 잇는 규칙이 제품의 성능을 정합니다. {추론}",
+      "actually": {
+        "intro": "공고가 말한 네 가지는 이렇게 이어집니다.",
+        "items": [
+          "**메모리 계층 관리** — 호스트 캐시 → 호스트 DRAM → 카드 DRAM → SSD 순서로 느려지는 층을 관리한다.[3]",
+          "**주소 변환** — 서버가 준 메모리 주소를 '카드 DRAM 의 몇 번 칸' 또는 'SSD 의 몇 번 페이지'로 바꾼다.[1][3]",
+          "**데이터 이동** — DRAM 에 없는 페이지를 SSD 에서 읽어 오고, 자리가 모자라면 다른 페이지를 SSD 로 내보낸다.[1]",
+          "**배치 정책** — 어느 페이지를 DRAM 에 묶어 둘지, 미리 읽어 올지를 정한다. 발표에서는 자주 쓰는 앞부분을 고정(pin)하거나 미리 읽기를 켜면 DRAM 에 가까운 속도가 나왔다.[3]"
+        ]
+      },
+      "how_far": "경력 3년↑ 자리입니다.[1] 전체 구조를 처음부터 혼자 그릴 필요는 없지만, 매핑표·교체 알고리즘 중 하나는 '내가 짜서 성능을 재 봤다'고 말할 수 있어야 합니다. {추론}",
+      "refs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "study": [
+        "veloxcon",
+        "ostep-ssd"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "SSD 기반 FTL에서 축적된 알고리즘 기법(Mapping, GC, Wear-Leveling, Write Amplification 관리 등)을 CXL 메모리 디바이스 관점에서 재해석해 제품화하는 역할로, 성능·지연시간·내구성 사이의 trade-off를 다루고 실제 디바이스 위에서 동작과 성능을 검증하는 데 관심이 있는 분에게 적합합니다.",
+      "short": "SSD 펌웨어가 쓰던 기법(주소표·쓰레기 정리·고른 마모)을 메모리 지연 기준으로 다시 맞추는 일이다.",
+      "why": "FTL(Flash Translation Layer)은 SSD 안에서 '논리 주소 → 플래시 실제 위치'를 바꿔 주는 펌웨어 층입니다.[13] 플래시는 덮어쓰기가 안 되고 큰 블록 단위로 지워야 하며, 너무 자주 쓰면 닳습니다.[13] 그래서 SSD 펌웨어는 오래전부터 매핑·GC·마모 평준화를 해 왔고, InfiniteMemory 도 SSD 를 뒤에 두므로 같은 문제를 떠안습니다.[1][3] 다른 점은 기준입니다 — 저장장치는 수십~수백 마이크로초를 견디지만 메모리처럼 쓰이면 한 번의 미스가 CPU 를 기다리게 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**Mapping** — 주소표를 페이지 단위로 둘지, 묶음 단위로 둘지. 작게 쪼갤수록 표가 커진다(예시 1).[13]",
+          "**GC(Garbage Collection)** — 덮어쓴 옛 데이터를 치워 빈 블록을 만든다. 많이 할수록 쓰기 증폭이 커진다.[13]",
+          "**Wear-Leveling** — 쓰기를 블록마다 고르게 퍼뜨려 한쪽만 먼저 닳지 않게 한다.[13]",
+          "**Write Amplification** — 서버가 1만큼 썼는데 플래시에는 몇 배가 쓰이는가. 남는 공간(과잉 공간)을 늘리면 줄어든다(예시 2).[13]",
+          "**메모리 쪽 재해석** — 메모리 접근은 64바이트 같은 작은 단위로 오므로, 작은 쓰기를 모아 SSD 페이지 단위로 내보내는 것이 수명과 성능에 같이 걸린다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "예시 1 · 주소표는 얼마나 클까 (직접 돌린 출력, 가상 값)",
+          "body": "항목 하나를 4바이트로 잡으면 16TB SSD 를 4KB 로 쪼갤 때 표만 16GiB 입니다. MX1 처럼 64KB 페이지[3]로 쪼개면 1GiB 로 줄지만, 칩의 맵 캐시 1,024칸[3]이 한 번에 덮는 범위는 64MB 뿐입니다. 나머지 표는 DRAM 에 두고 캐시 미스 때 펌웨어가 채웁니다.[3]",
+          "lang": "python",
+          "code": "TB = 1024**4\ndef table_bytes(capacity, page, entry=4):\n    return capacity // page * entry\nfor page in (4*1024, 64*1024):\n    print(f\"16TB SSD, page {page//1024}KB -> map {table_bytes(16*TB, page)/1024**3:.0f} GiB\")\nprint(\"1024-slot map cache covers\", 1024*64//1024, \"MB\")\n# 16TB SSD, page 4KB -> map 16 GiB\n# 16TB SSD, page 64KB -> map 1 GiB\n# 1024-slot map cache covers 64 MB"
+        },
+        {
+          "title": "예시 2 · 남는 공간과 쓰기 증폭 (탐욕 GC 장난감 모의실험, 가상 값)",
+          "body": "블록 256개·블록당 페이지 64개짜리 가상 플래시에 무작위 덮어쓰기 30만 번을 하고, 유효 페이지가 가장 적은 블록부터 치웠습니다. 과잉 공간이 7% 면 서버가 1을 쓸 때 플래시에는 7.3배가 쓰였고, 28% 면 2배 아래로 내려왔습니다. 크기를 줄인 모형이라 실제 SSD 숫자와는 다릅니다 — 경향만 봅니다.",
+          "lang": "python",
+          "code": "import random\ndef write_amp(op, blocks=256, ppb=64, writes=300000, seed=1):\n    random.seed(seed)\n    logical = int(blocks * ppb * (1 - op))\n    valid = [set() for _ in range(blocks)]\n    where = {}\n    free = list(range(1, blocks)); state = {\"cur\": 0, \"fill\": 0, \"flash\": 0}\n    def put(lpn):\n        if state[\"fill\"] == ppb:\n            state[\"cur\"] = free.pop(); state[\"fill\"] = 0\n        valid[state[\"cur\"]].add(lpn); where[lpn] = state[\"cur\"]\n        state[\"fill\"] += 1; state[\"flash\"] += 1\n    for lpn in range(logical): put(lpn)\n    base = state[\"flash\"]\n    for _ in range(writes):\n        lpn = random.randrange(logical)\n        valid[where[lpn]].discard(lpn); put(lpn)\n        while len(free) < 2:                    # greedy GC: block with fewest valid pages\n            used = [b for b in range(blocks) if b != state[\"cur\"] and b not in free]\n            v = min(used, key=lambda b: len(valid[b]))\n            moved = list(valid[v]); valid[v].clear(); free.insert(0, v)\n            for m in moved: put(m)\n    return (state[\"flash\"] - base) / writes\nfor op in (0.07, 0.15, 0.28):\n    print(f\"over-provision {op:.0%} -> WAF {write_amp(op):.2f}\")\n# over-provision 7% -> WAF 7.30\n# over-provision 15% -> WAF 3.49\n# over-provision 28% -> WAF 1.97"
+        }
+      ],
+      "how_far": "네 낱말을 그림 한 장으로 설명하고, 쓰기 증폭이 왜 과잉 공간에 달렸는지 계산으로 보일 수 있으면 출발선입니다. {추론} SSD 경력이 없다면 자격요건 3번의 '이에 준하는 Mapping 알고리즘' 경험으로 이 줄을 채웁니다.[1]",
+      "refs": [
+        1,
+        3,
+        13
+      ],
+      "study": [
+        "ostep-ssd"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "InfiniteMemory Core Firmware 아키텍처를 설계하고 구현합니다",
+      "short": "미스 처리·내보내기·미리 읽기·SSD 명령이 칩의 어느 코어에서 어떤 순서로 도는지 펌웨어 뼈대를 짜는 일이다.",
+      "why": "MX1 은 RISC-V 코어를 수천 개 넣은 칩이고[3][5], 맵 캐시 미스는 이 코어들 위의 펌웨어가 채웁니다.[3] 서버 요청을 받는 쪽(CXL)과 SSD 를 부리는 쪽(PCIe 루트 포트)이 한 칩에 같이 있어서[3][4], 그 사이에서 일을 나누고 줄 세우는 펌웨어 구조가 따로 필요합니다. {추론}",
+      "actually": {
+        "items": [
+          "**일 나누기** — 미스 처리, 내보낸 페이지 쓰기, 미리 읽기, 통계 모으기를 어느 코어·어느 작업으로 둘지. {추론}",
+          "**줄(큐)** — 미스 요청이 한꺼번에 몰릴 때 같은 페이지 요청을 한 번만 SSD 로 보내기(중복 합치기). {추론}",
+          "**SSD 쪽 명령** — NVMe(PCIe 위의 SSD 명령 규격)는 명령 큐와 완료 큐를 짝으로 쓴다.[18] 카드가 SSD 의 호스트 노릇을 하므로 이 큐를 펌웨어가 직접 채운다. {추론}",
+          "**호스트와 이야기하는 길** — 엑시나가 공개한 리눅스 드라이버는 메일박스·명령 큐로 카드와 주고받는다.[12] 설정·통계 명령은 이 길로 들어온다. {추론}"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "서버가 InfiniteMemory 주소를 읽을 때 (공개 발표 + 일반 구조, 칸 사이 세부는 {추론})",
+          "steps": [
+            "서버 CPU · 메모리 읽기 명령이 CXL 로 카드에 온다[3]",
+            "맵 캐시(회로) · 1,024칸 표에서 주소를 찾는다 — 맞으면 바로 DRAM 에서 답한다[3]",
+            "미스 처리(펌웨어) · 표 밖이면 펌웨어가 큰 주소표에서 위치를 찾는다[3]",
+            "자리 만들기 · DRAM 이 차 있으면 내보낼 페이지를 골라 SSD 로 쓴다",
+            "SSD 읽기 · 64KB 페이지를 NVMe 명령으로 읽어 DRAM 에 둔다[3][18]",
+            "응답 · 맵 캐시를 고치고 서버에 데이터를 돌려준다"
+          ],
+          "mine_from": 2
+        }
+      ],
+      "how_far": "칩 회로(맵 캐시)는 하드웨어 팀이 정하고, 이 자리는 미스 이후의 흐름을 맡습니다.[3] 경계 자체를 정하는 일은 Co-design Architect 공고가 따로 있습니다.[9] {추론}",
+      "refs": [
+        3,
+        4,
+        5,
+        9,
+        12,
+        18
+      ],
+      "study": [
+        "mxdriver",
+        "nvme-spec",
+        "making-embedded"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Address Translation과 Mapping Table을 관리합니다",
+      "short": "서버 주소를 DRAM 칸·SSD 페이지로 바꾸는 표를 작게, 빠르게, 안 깨지게 유지하는 일이다.",
+      "why": "주소표가 틀리면 다른 데이터를 돌려주게 되고, 표가 크면 DRAM 을 잡아먹습니다(예시 1). 그래서 SSD 업계는 표 전체를 두지 않고 자주 쓰는 부분만 캐시하는 방법(DFTL)을 써 왔습니다.[13][14] MX1 도 1,024칸 맵 캐시 + 펌웨어 채우기 구조라 같은 생각입니다.[3]",
+      "actually": {
+        "items": [
+          "**두 겹 표** — 칩 안 맵 캐시(작고 빠름) + DRAM 의 전체 표(크고 느림). 미스 때 아래에서 위로 올린다.[3][14]",
+          "**표의 한 칸** — '지금 DRAM 몇 번 칸에 있다 / SSD 몇 번 페이지에 있다 / 더럽다(SSD 와 다르다)' 같은 상태 비트. {추론}",
+          "**같이 고치기** — 페이지를 옮기는 중에 서버가 같은 주소를 읽으면? 옮기는 동안 그 칸을 잠그거나 옛 위치에서 답한다. {추론}",
+          "**전원 꺼짐** — 표가 DRAM 에만 있으면 전원이 나갈 때 사라진다. SSD 는 표를 플래시에 다시 쌓는 방법을 쓴다.[13] 메모리로 쓰일 때 어디까지 지켜야 하는지는 제품 약속에 달렸다. {추론}"
+        ]
+      },
+      "how_far": "표의 모양(해시·트리·배열)과 한 칸의 비트 배치를 스스로 정하고, 그 선택이 메모리를 얼마나 쓰는지 숫자로 말할 수 있어야 합니다. {추론}",
+      "refs": [
+        3,
+        13,
+        14
+      ],
+      "study": [
+        "ostep-ssd",
+        "dftl"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Hot/Cold 데이터를 식별하고 계층 간 Migration·Eviction 알고리즘을 개발합니다",
+      "short": "자주 쓰는 페이지는 DRAM 에 남기고 안 쓰는 페이지는 SSD 로 빼는 규칙을 만들고 재는 일이다.",
+      "why": "DRAM 자리가 모자라면 누군가는 나가야 하고, 잘못 내보내면 곧바로 다시 SSD 에서 읽어 와야 해서 지연이 튑니다. {추론} 발표에서도 아무 정책 없이 쓰면 DRAM 대비 1.57배, 자주 쓰는 앞부분을 고정하면 1.13배였습니다(LLM 서빙의 첫 토큰 시간).[3] 메타는 CXL 메모리를 쓰는 서버에서 차가운 페이지를 미리 느린 층으로 내리고 뜨거운 페이지를 올리는 방식(TPP)으로 성능 손해를 1% 안으로 줄였다고 발표했습니다.[15]",
+      "actually": {
+        "items": [
+          "**뜨겁다/차갑다 재기** — 접근 비트·횟수를 일정 시간마다 모아 본다. 리눅스 DAMON 은 주소 영역을 나눠 표본을 뽑아 이를 싸게 잰다.[16]",
+          "**내보낼 페이지 고르기(Eviction)** — LRU(가장 오래 안 쓴 것), CLOCK(한 바퀴 돌며 표시 비트 확인), 2Q(한 번 본 것은 잠깐 대기실에 두기) 등.[17]",
+          "**한 번 훑고 지나가는 접근 막기** — 전체를 한 번 읽는 작업이 오면 LRU 는 뜨거운 페이지를 다 밀어낸다. 2Q 는 이걸 버틴다(예시).[17]",
+          "**올리기(Migration)** — SSD → DRAM 만이 아니라, 카드 DRAM 과 서버 DRAM 사이의 이동은 서버 운영체제 몫이다.[15] 카드 펌웨어가 어디까지 맡는지 경계를 알아야 한다. {추론}",
+          "**더러운 페이지** — 내보낼 때 바뀐 페이지만 SSD 에 쓴다. 바뀐 게 많으면 내보내기가 느려지고 SSD 수명도 줄어든다.[13]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "1,024칸 캐시에서 LRU 와 2Q 비교 (직접 돌린 출력, 가상 값)",
+          "body": "페이지 2만 개 중 일부만 자주 쓰는 접근 10만 번 → 전체 훑기 3만 번 → 다시 10만 번. 훑기가 LRU 의 뜨거운 페이지를 밀어내서, 처음 본 페이지를 대기실(256칸)에 두는 2Q 가 적중률이 더 높게 나왔습니다.",
+          "lang": "python",
+          "code": "import random\nfrom collections import OrderedDict\nrandom.seed(7)\nN, SLOTS = 20000, 1024\nw = [1/(i+1)**0.9 for i in range(N)]\ntrace = random.choices(range(N), weights=w, k=100000)\ntrace += [random.randrange(N) for _ in range(30000)]   # one-time scan\ntrace += random.choices(range(N), weights=w, k=100000)\n\ndef lru(tr):\n    c, hit = OrderedDict(), 0\n    for p in tr:\n        if p in c: hit += 1; c.move_to_end(p)\n        else:\n            c[p] = 1\n            if len(c) > SLOTS: c.popitem(last=False)\n    return hit/len(tr)\n\ndef two_q(tr, probation=256):\n    a1, am, hit = OrderedDict(), OrderedDict(), 0\n    for p in tr:\n        if p in am: hit += 1; am.move_to_end(p)\n        elif p in a1:\n            hit += 1; del a1[p]; am[p] = 1\n            if len(am) > SLOTS - probation: am.popitem(last=False)\n        else:\n            a1[p] = 1\n            if len(a1) > probation: a1.popitem(last=False)\n    return hit/len(tr)\n\nprint(f\"LRU hit {lru(trace):.3f}\")\nprint(f\"2Q  hit {two_q(trace):.3f}\")\n# LRU hit 0.422\n# 2Q  hit 0.481"
+        }
+      ],
+      "how_far": "알고리즘 이름을 아는 것보다 **내 작업 부하에서 재 봤다**가 중요합니다. 같은 흔적(trace)으로 두세 정책을 돌려 적중률·꼬리 지연을 비교한 표를 보일 수 있으면 됩니다. {추론}",
+      "refs": [
+        3,
+        13,
+        15,
+        16,
+        17
+      ],
+      "study": [
+        "tpp",
+        "damon",
+        "twoq"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "성능, 지연시간, 내구성의 trade-off를 고려한 Data Placement 정책을 설계합니다",
+      "short": "빠르게(DRAM 에 오래), 꾸준히(꼬리 지연 작게), 오래(SSD 덜 쓰기) 사이에서 어디에 무엇을 둘지 정하는 일이다.",
+      "why": "세 목표가 서로 당깁니다. 자주 내보내면 DRAM 은 여유로워도 SSD 쓰기가 늘어 수명이 줄고, 안 내보내면 새 페이지가 들어올 자리가 없어 미스가 느려집니다.[13] {추론} 발표가 보인 '고정'과 '미리 읽기'도 배치 정책의 한 형태입니다.[3]",
+      "actually": {
+        "items": [
+          "**고정(pin)** — 꼭 빨라야 하는 영역(예: LLM 의 공통 앞부분 KV 캐시)은 DRAM 에서 안 나가게 한다.[3]",
+          "**미리 읽기(prefetch)** — 카드가 한가할 때 다음에 쓸 페이지를 먼저 올린다. 발표에서는 이걸로 DRAM 에 거의 붙었다.[3]",
+          "**쓰기 모으기** — 작은 쓰기를 DRAM 에 모아 SSD 페이지 단위로 한 번에 쓴다. 쓰기 증폭을 줄인다.[13] {추론}",
+          "**수명별로 나눠 쓰기** — 금방 다시 바뀔 데이터와 오래 그대로일 데이터를 SSD 의 다른 블록에 쓰면 GC 가 덜 옮긴다. NVMe 에도 이런 배치를 돕는 기능이 표준에 들어 있다.[18] {추론}",
+          "**한 영역만 닳지 않게** — 같은 주소에 쓰기가 몰리면 그 SSD 블록만 닳는다. 마모 평준화가 필요하다.[13]"
+        ]
+      },
+      "how_far": "정책 하나를 고를 때 '얻는 것·잃는 것'을 숫자(적중률·p99 지연·하루 SSD 쓰기량)로 같이 적는 습관이면 됩니다. 제품 목표(예: 몇 년 수명)는 회사가 정하고, 개발자는 그 안에서 정책을 맞춥니다. {추론}",
+      "refs": [
+        3,
+        13,
+        18
+      ],
+      "study": [
+        "ostep-ssd"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "실제 디바이스에서 Bring-up을 수행하고 성능을 측정·튜닝합니다",
+      "short": "실제 칩·카드에서 기능을 처음 켜 보고, 지연을 재서 느린 곳을 고치는 일이다.",
+      "why": "모의실험과 실제 칩은 다릅니다 — SSD 지연이 들쭉날쭉하고, 코어 사이 경합과 링크 속도가 숫자를 바꿉니다. {추론} 엑시나는 2026년 말 양산을 목표로 하고[6], 이 기능을 SK하이닉스와 함께 실제 AI 서빙 환경에서 검증하고 있다고 했습니다.[4]",
+      "actually": {
+        "items": [
+          "**Bring-up** — 칩이 켜진 뒤 SSD 가 루트 포트에 잡히는지, 맵 캐시 미스가 펌웨어로 넘어오는지, 첫 페이지가 제대로 오는지부터 본다.[3] {추론}",
+          "**호스트 쪽 확인** — 리눅스에서 CXL 메모리는 memdev·region·DAX 같은 이름으로 보인다.[19] 엑시나 드라이버도 공개돼 있다.[12]",
+          "**지연 재기** — 평균만이 아니라 p99(100번 중 가장 느린 1번)를 본다. 미스 한 번이 SSD 읽기라 꼬리가 길다. {추론}",
+          "**튜닝** — 페이지 크기·대기실 크기·미리 읽기 깊이·동시 SSD 명령 수를 바꿔 가며 같은 작업 부하로 다시 잰다. {추론}"
+        ]
+      },
+      "how_far": "보드·전원 같은 첫 실리콘 Bring-up 은 System Firmware 공고가 맡고[7], 이 자리는 InfiniteMemory 기능이 실제 칩에서 도는지·얼마나 빠른지를 맡습니다. {추론}",
+      "refs": [
+        3,
+        4,
+        6,
+        7,
+        12,
+        19
+      ],
+      "study": [
+        "kernel-cxl",
+        "sysperf"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "전산·컴퓨터·전기전자공학 또는 SW 관련 분야의 학사, 석사 또는 박사 학위를 보유한 분",
+      "short": "컴퓨터·전자 쪽 학위가 필요하다 — 학사부터 된다.",
+      "why": "운영체제·자료구조·컴퓨터 구조를 바탕으로 하는 일이라 관련 전공을 요건으로 적었습니다.[1] 같은 회사 PCIe/CXL 펌웨어 공고도 같은 문장을 씁니다.[8]",
+      "actually": {
+        "items": [
+          "학사·석사·박사 어느 것이든 된다고 적혀 있다.[1]",
+          "공고에 '이에 준하는 경험' 문구는 없다 — System Firmware 공고에는 있다.[1][7]"
+        ]
+      },
+      "how_far": "학위 이름보다 운영체제(가상 메모리·페이지 교체)와 자료구조 수업을 제대로 들었는지가 면접에서 드러납니다. {추론}",
+      "refs": [
+        1,
+        7,
+        8
+      ],
+      "study": [
+        "ostep"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "3년 이상 펌웨어를 개발한 경험이 있는 분",
+      "short": "운영체제 없이(또는 아주 얇은 위에서) 하드웨어 가까이 도는 코드를 3년 넘게 짜 본 사람이다.",
+      "why": "이 펌웨어는 칩 안 코어에서 돌고, 맵 캐시 미스처럼 회로가 넘겨준 일을 받아 처리합니다.[3] 메모리 할당·스레드 같은 편의가 적고 시간 제약이 큽니다. {추론}",
+      "actually": {
+        "items": [
+          "SSD 컨트롤러·임베디드 장치·네트워크 카드·저장장치 펌웨어 모두 '펌웨어'로 본다. {추론}",
+          "인터럽트·큐·DMA(CPU 대신 데이터를 옮기는 장치)를 직접 다뤄 봤는지가 핵심이다. {추론}"
+        ]
+      },
+      "how_far": "연차보다 '무엇을 끝까지 맡았나'를 말할 수 있어야 합니다. 경력 3년↑ 공고입니다.[1] {추론}",
+      "refs": [
+        1,
+        3
+      ],
+      "study": [
+        "making-embedded"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "FTL 또는 이에 준하는 Mapping 알고리즘을 직접 구현해 본 경험이 있는 분",
+      "short": "SSD FTL 이 아니어도, '주소 → 실제 위치' 표를 직접 만들고 고친 경험이면 된다.",
+      "why": "이 자리의 한가운데가 주소 변환과 매핑표입니다.[1] 공고가 '이에 준하는'을 붙여 SSD 밖의 경험도 열어 두었습니다.[1]",
+      "actually": {
+        "intro": "'이에 준하는'의 예 {추론}",
+        "items": [
+          "**운영체제 페이지 표·TLB** — 가상 주소 → 물리 주소. 맵 캐시가 하는 일과 같다.[3]",
+          "**데이터베이스 버퍼 풀** — 디스크 페이지를 메모리에 캐시하고 교체한다.[17]",
+          "**로그 구조 저장소** — 덮어쓰지 않고 뒤에 붙이며 색인으로 위치를 찾는다. FTL 과 같은 생각이다.[13]",
+          "**하이퍼바이저의 2단계 주소 변환·가상 디스크의 블록 지도** 등."
+        ]
+      },
+      "how_far": "'직접 구현'이 요건입니다.[1] 라이브러리를 쓴 경험이 아니라 표의 구조·갱신·일관성을 내가 정한 경험을 말해야 합니다. {추론}",
+      "refs": [
+        1,
+        3,
+        13,
+        17
+      ],
+      "study": [
+        "ostep-ssd",
+        "dftl",
+        "ddia"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "C 또는 C++ 기반의 임베디드·펌웨어 개발 역량을 보유한 분",
+      "short": "메모리 한 바이트까지 신경 쓰는 C/C++ 로 펌웨어를 짤 수 있어야 한다.",
+      "why": "칩 안 코어의 펌웨어는 보통 C/C++ 로 씁니다. {추론} 엑시나가 공개한 호스트 드라이버도 C 입니다.[12] 매핑표 한 칸이 4바이트냐 8바이트냐가 표 전체 크기를 두 배로 바꿉니다(예시 1). {추론}",
+      "actually": {
+        "items": [
+          "비트 필드·구조체 정렬로 표 한 칸을 작게 만든다. {추론}",
+          "동적 할당 없이 미리 잡아 둔 풀에서 꺼내 쓴다. {추론}",
+          "여러 코어가 같은 표를 볼 때 원자 연산·메모리 장벽을 쓴다. {추론}",
+          "volatile·캐시 무효화 같은 하드웨어 가까운 C 를 안다.[12] {추론}"
+        ]
+      },
+      "level": {
+        "basic": "포인터·구조체·비트 연산, 고정 크기 배열로 해시 표 만들기",
+        "work": "동시성(락·원자 연산), 메모리 풀, 캐시 라인을 의식한 자료 배치",
+        "team": "칩 안 코어 수천 개 중 일부에서 도는 펌웨어 — 공개 자료가 없어 실제 수준은 면접에서 확인 {추론}"
+      },
+      "how_far": "C++ 의 고급 문법보다 C 수준의 메모리 감각이 중요합니다. {추론}",
+      "refs": [
+        12
+      ],
+      "study": [
+        "making-embedded",
+        "mxdriver"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "FTL을 개발한 경험이 있는 분",
+      "short": "SSD 회사에서 FTL 을 짜 본 사람이면 바로 쓸 수 있다.",
+      "why": "공고가 FTL 기법을 메모리 쪽으로 '재해석'하는 자리라고 적었으니[1], 원래 기법을 몸으로 아는 사람이 가장 빨리 들어옵니다. 엑시나는 삼성전자·SK하이닉스 출신이 세운 회사입니다.[1]",
+      "actually": {
+        "items": [
+          "매핑·GC·마모 평준화·쓰기 증폭을 실제 제품에서 다뤘다.[13]",
+          "다만 SSD 는 '쓰고 나서 확인'이 늦어도 되지만 메모리는 미스 한 번이 곧 CPU 대기다 — 기준을 바꿔야 한다. {추론}"
+        ]
+      },
+      "how_far": "우대사항입니다 — 없으면 자격요건의 '이에 준하는 Mapping' 경험으로 갑니다.[1]",
+      "refs": [
+        1,
+        13
+      ],
+      "study": [
+        "ostep-ssd"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "NVMe 디바이스 펌웨어를 개발한 경험이 있는 분",
+      "short": "SSD 가 명령을 받는 쪽을 짜 봤으면, 카드가 SSD 에 명령을 내리는 쪽도 금방 안다.",
+      "why": "MX1 은 SSD 를 칩의 PCIe 루트 포트(별도 루트 컴플렉스)에 붙입니다.[3][4] SSD 와는 NVMe 규격으로 이야기하므로[18], 그 규격의 큐·명령·오류 처리를 아는 것이 바로 도움이 됩니다. {추론} 같은 회사 PCIe/CXL 펌웨어 공고도 NVMe 경험을 CXL 로 넓힐 수 있다고 적었습니다.[8]",
+      "actually": {
+        "items": [
+          "**명령 큐·완료 큐·초인종 레지스터** — 명령을 넣고 SSD 에 알리고 완료를 받는 순서.[18]",
+          "**동시 명령 수(큐 깊이)** — 미스가 몰릴 때 SSD 에 몇 개를 한꺼번에 보낼지. {추론}",
+          "**오류·시간 초과** — SSD 가 답이 없을 때 메모리 읽기를 어떻게 끝낼지. {추론}"
+        ]
+      },
+      "how_far": "디바이스 쪽 경험이면 충분하고, 이 자리에서는 방향이 반대(카드가 호스트 노릇)라는 것만 알면 됩니다. {추론}",
+      "refs": [
+        3,
+        4,
+        8,
+        18
+      ],
+      "study": [
+        "nvme-spec"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "DRAM/NVM 하이브리드 또는 Tiered Memory 시스템을 개발한 경험이 있는 분",
+      "short": "빠른 메모리와 느린 메모리를 섞어 한 덩어리처럼 쓰는 시스템을 만들어 본 경험이다.",
+      "why": "InfiniteMemory 가 바로 DRAM 과 SSD(NVM — 전원이 꺼져도 남는 메모리)를 섞는 계층 메모리입니다.[3] SK하이닉스도 이걸 바탕으로 'CXL Hybrid Memory'를 시연했습니다.[4]",
+      "actually": {
+        "items": [
+          "**운영체제 쪽 계층 메모리** — 리눅스는 CXL 메모리를 CPU 없는 NUMA 노드로 보고, 느린 노드의 성능 값을 알려 준다.[20]",
+          "**페이지 올리기·내리기** — 메타 TPP 는 그 노드 사이에서 페이지를 옮겨 손해를 줄였다.[15]",
+          "**카드 안 계층** — InfiniteMemory 는 그 아래, 카드 안에서 DRAM ↔ SSD 를 한 번 더 나눈다.[3]",
+          "인텔 옵테인 같은 영구 메모리를 써 본 경험도 이 줄에 든다. {추론}"
+        ]
+      },
+      "how_far": "운영체제 쪽 계층 메모리만 해 봤어도 '어느 층이 무엇을 결정하나'를 설명할 수 있으면 됩니다. {추론}",
+      "refs": [
+        3,
+        4,
+        15,
+        20
+      ],
+      "study": [
+        "tpp",
+        "kernel-cxl"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Hash, B-Tree, Log-structured 등을 활용해 대규모 Mapping Table을 메모리 효율적으로 관리한 경험이 있는 분",
+      "short": "수억 칸짜리 주소표를 해시·B-트리·로그 구조로 작게 담아 본 경험이다.",
+      "why": "SSD 가 크면 64KB 페이지로 나눠도 표가 GB 단위가 됩니다(예시 1). 어떤 자료구조를 쓰느냐에 따라 표 크기와 찾는 시간이 달라집니다. {추론}",
+      "actually": {
+        "items": [
+          "**해시** — 주소로 바로 칸을 찾는다. 평균은 빠르지만 충돌이 몰리면 느려진다.[21]",
+          "**B-트리** — 정렬된 큰 표를 몇 단계만에 찾는다. 연속 구간을 한 칸으로 줄이기 좋다.[21]",
+          "**로그 구조** — 바뀐 것만 뒤에 붙이고 가끔 합친다. 플래시의 '덮어쓰기 금지'와 잘 맞는다.[13][21]",
+          "**일부만 캐시** — 표 전체 대신 쓰는 부분만 빠른 메모리에 둔다(DFTL).[14]",
+          "**연속 구간 묶기** — 연속된 주소가 연속된 위치면 한 칸(시작·길이)으로 적는다. {추론}"
+        ]
+      },
+      "how_far": "자료구조마다 '한 칸에 몇 바이트, 찾는 데 몇 번 메모리 접근'을 계산해 고른 경험을 말할 수 있으면 됩니다. {추론}",
+      "refs": [
+        13,
+        14,
+        21
+      ],
+      "study": [
+        "ddia",
+        "dftl"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "실시간 성능 프로파일링 및 지연 분석 경험이 있는 분",
+      "short": "돌아가는 시스템에서 어디가 느린지 재고, 꼬리 지연의 원인을 찾아 본 경험이다.",
+      "why": "메모리처럼 쓰이는 장치는 평균보다 가장 느린 몇 번이 문제를 만듭니다. {추론} 발표도 정책마다 DRAM 대비 몇 배인지를 견주어 보였습니다.[3]",
+      "actually": {
+        "items": [
+          "**구간마다 시각 찍기** — 미스 도착 → 위치 찾기 → SSD 명령 → 완료 → 응답의 각 구간을 칩 타이머로 잰다. {추론}",
+          "**분포로 보기** — 평균 대신 p50·p99·최대, 히스토그램·지연 열 지도를 본다.[22]",
+          "**사용률·포화·오류** — 자원마다 이 셋을 확인하는 방법론(USE).[22]",
+          "**호스트 쪽** — 리눅스에서 CXL 메모리 접근 지연을 재는 도구·통계를 같이 본다.[19][20]"
+        ]
+      },
+      "how_far": "리눅스 perf 같은 도구 사용 경험이 있으면 좋고, 핵심은 '느린 원인을 숫자로 짚었다'는 이야기입니다. {추론}",
+      "refs": [
+        3,
+        19,
+        20,
+        22
+      ],
+      "study": [
+        "sysperf"
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "SSD 펌웨어 경험을 AI 서버 메모리로 넓히고 싶은 사람 {추론}",
+      "자료구조·캐시 교체 알고리즘을 숫자로 겨루는 게 즐거운 사람",
+      "모의실험 결과를 실제 칩에서 확인해 보고 싶은 사람[1]",
+      "운영체제의 가상 메모리·페이지 교체를 실무로 써 보고 싶은 사람 {추론}"
+    ],
+    "hard": [
+      "공개된 참고 구현이 거의 없는 새 기능이라 스스로 기준을 세워야 한다 {추론}",
+      "성능·지연·수명이 서로 당겨서 한쪽을 고치면 다른 쪽이 나빠질 수 있다[1]",
+      "양산을 앞둔 시기라 일정 압박이 있을 수 있다[6] {추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "16TB SSD 를 64KB 페이지로 나누고 한 칸을 4바이트로 잡으면 주소표가 얼마나 되나요? 1,024칸 캐시는 몇 MB 를 덮나요?",
+      "a": "1GiB · 64MB — 표를 어디에 두고 미스를 어떻게 채우는지로 이어진다.[3][13]"
+    },
+    {
+      "q": "전체를 한 번 훑는 작업이 들어오면 LRU 캐시에 무슨 일이 생기나요? 어떻게 막겠어요?",
+      "a": "뜨거운 페이지가 밀려난다 — 2Q·ARC 같은 대기실 방식, 또는 순차 감지.[17]"
+    },
+    {
+      "q": "과잉 공간을 7% 에서 28% 로 늘리면 쓰기 증폭이 왜 줄어드나요?",
+      "a": "GC 가 고를 블록에 유효 페이지가 적어 옮길 것이 줄어든다.[13]"
+    },
+    {
+      "q": "페이지를 SSD 로 내보내는 도중에 서버가 그 주소를 읽으면 어떻게 하나요?",
+      "a": "매핑표 일관성 — 잠금·옛 위치 응답·완료 뒤 전환."
+    },
+    {
+      "q": "평균 지연은 좋은데 고객이 느리다고 합니다. 무엇을 다시 재겠어요?",
+      "a": "p99 꼬리 지연과 미스 비율, 미리 읽기 효과 — 발표의 정책별 배수 비교.[3]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "엑시나 채용 · [SW] Firmware Engineer – InfiniteMemory(CXL+SSD)",
+      "url": "https://xcena.career.greetinghr.com/ko/o/224152",
+      "kind": "posting",
+      "note": "회사 소개·직무 소개·업무·요건·근무지·복리후생"
+    },
+    {
+      "n": 2,
+      "title": "VeloxCon · Introducing HW Accelerated Velox with CXL Computational Memory (Harry Kim, XCENA)",
+      "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+      "kind": "company",
+      "date": "2025-05",
+      "note": "엑시나 CPO 발표 15분 — 같은 회사 System Firmware 풀이에서 자막·장면 전부 확인(SSD 페이지를 DRAM 에 캐시해 메모리처럼 쓰는 InfiniteMemory 설명)"
+    },
+    {
+      "n": 3,
+      "title": "ServeTheHome · XCENA MX1 CXL Computational Memory Device at Hot Chips 2026 with Samsung",
+      "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026",
+      "kind": "news",
+      "date": "2026-08-25",
+      "note": "회사 발표 현장 기록(Patrick Kennedy) — SSD 는 MX1 루트 포트, 64KB 페이지, 1,024칸 맵 캐시(TLB), 미스는 MU 코어의 펌웨어가 채움, KV 캐시 TTFT DRAM 대비 고정 1.13배·고정 없음 1.57배·SSD 직접 1.86배, 미리 읽기로 거의 DRAM 수준. 쓰기·마모·FTL 은 다루지 않음"
+    },
+    {
+      "n": 4,
+      "title": "StorageReview · XCENA MX1 shares a KV cache across inference servers and powers SK hynix CXL Hybrid Memory at OCP 2026",
+      "url": "https://www.storagereview.com/news/xcena-mx1-cxl-computational-memory-kv-cache-sk-hynix-ocp-2026",
+      "kind": "news",
+      "date": "2026-10-16",
+      "note": "InfiniteMemory 용 SSD 는 별도 PCIe 6.0 루트 컴플렉스에, SK하이닉스 'CXL Hybrid Memory' 가 InfiniteMemory 기반·실제 AI 서빙 환경에서 검증 중. 지연·용량 숫자는 공개 안 됨"
+    },
+    {
+      "n": 5,
+      "title": "ServeTheHome · XCENA MX1 RISC-V Computational Memory in CXL 3.0",
+      "url": "https://www.servethehome.com/xcena-mx1-risc-v-computational-memory-in-cxl-3-0/",
+      "kind": "news",
+      "date": "2025-08-24",
+      "note": "FMS 2025 첫 공개"
+    },
+    {
+      "n": 6,
+      "title": "StorageNewsletter · Hot Chips 2026: XCENA Details MX1 Architecture",
+      "url": "https://www.storagenewsletter.com/2026/08/28/hot-chips-2026-xcena-details-mx1-architecture-integrating-memory-expansion-and-near-memory-computing/",
+      "kind": "news",
+      "date": "2026-08-28",
+      "note": "회사 보도자료 — 2026년 말 양산, 2027년 첫 고객 매출 목표(같은 회사 다른 풀이의 조사)"
+    },
+    {
+      "n": 7,
+      "title": "엑시나 채용 · [SW] System Firmware Engineer",
+      "url": "https://xcena.career.greetinghr.com/ko/o/110624",
+      "kind": "posting",
+      "note": "같은 회사 다른 공고 — 부팅·첫 실리콘 Bring-up·호스트 연동"
+    },
+    {
+      "n": 8,
+      "title": "엑시나 채용 · [SW] PCIe/CXL Firmware 개발",
+      "url": "https://xcena.career.greetinghr.com/ko/o/110623",
+      "kind": "posting",
+      "note": "같은 회사 다른 공고 — NVMe Host Interface 경험을 CXL 로 확장 가능"
+    },
+    {
+      "n": 9,
+      "title": "엑시나 채용 · [SW] HW SW Co-design Architect",
+      "url": "https://xcena.career.greetinghr.com/ko/o/240539",
+      "kind": "posting",
+      "note": "같은 회사 다른 공고 — 하드웨어·펌웨어 경계 정의"
+    },
+    {
+      "n": 10,
+      "title": "엑시나 채용 · 복리후생",
+      "url": "https://xcena.career.greetinghr.com/ko/benefits",
+      "kind": "company",
+      "note": "복지 목록(같은 회사 다른 풀이의 조사)"
+    },
+    {
+      "n": 11,
+      "title": "엑시나 채용 홈 · 회사 정보",
+      "url": "https://xcena.career.greetinghr.com/ko/home",
+      "kind": "company",
+      "note": "본사·미국 지사 주소(같은 회사 다른 풀이의 조사)"
+    },
+    {
+      "n": 12,
+      "title": "GitHub xcena-dev/mxdriver — 호스트 리눅스 커널 모듈",
+      "url": "https://github.com/xcena-dev/mxdriver",
+      "kind": "company",
+      "note": "메일박스·명령 큐·DMA 를 쓰는 C 드라이버(같은 회사 다른 풀이에서 코드 확인)"
+    },
+    {
+      "n": 13,
+      "title": "OSTEP · Flash-based SSDs (Operating Systems: Three Easy Pieces 44장)",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-ssd.pdf",
+      "kind": "reference",
+      "note": "지우기 단위·FTL·페이지/블록/하이브리드 매핑·GC·쓰기 증폭·과잉 공간·마모 평준화·TRIM(PDF 본문 확인)"
+    },
+    {
+      "n": 14,
+      "title": "Gupta · Kim · Urgaonkar · DFTL: a Flash Translation Layer Employing Demand-Based Selective Caching of Page-Level Address Mappings (ASPLOS 2009)",
+      "url": "https://dl.acm.org/doi/10.1145/1508244.1508271",
+      "kind": "reference",
+      "date": "2009-03",
+      "note": "쓰는 부분의 매핑만 메모리에 캐시 — OSTEP 44장 참고문헌과 본문 설명으로 확인(ACM 페이지는 자동 접근 403)"
+    },
+    {
+      "n": 15,
+      "title": "Maruf 외 · TPP: Transparent Page Placement for CXL-Enabled Tiered-Memory",
+      "url": "https://arxiv.org/abs/2206.02878",
+      "kind": "reference",
+      "date": "2022-06 (v2 2023-05)",
+      "note": "메타 — 차가운 페이지를 CXL 쪽으로 미리 내리고 뜨거운 페이지를 올림, 이상적 기준 대비 1% 안, 리눅스 대비 18% 나음, 패치 대부분이 v5.18 에 합쳐짐"
+    },
+    {
+      "n": 16,
+      "title": "Linux 커널 문서 · DAMON: Data Access MONitoring and Access-aware System Operations",
+      "url": "https://docs.kernel.org/admin-guide/mm/damon/index.html",
+      "kind": "reference",
+      "note": "가상·물리 주소 공간의 접근을 영역별로 싸게 재는 커널 기능, sysfs·DAMO 도구"
+    },
+    {
+      "n": 17,
+      "title": "Johnson · Shasha · 2Q: A Low Overhead High Performance Buffer Management Replacement Algorithm (VLDB 1994)",
+      "url": "https://www.vldb.org/conf/1994/P439.PDF",
+      "kind": "reference",
+      "date": "1994",
+      "note": "데이터베이스 버퍼 풀의 페이지 교체 — 한 번만 본 페이지를 대기 줄에 둬 훑기 접근을 견딤"
+    },
+    {
+      "n": 18,
+      "title": "NVM Express · Specifications",
+      "url": "https://nvmexpress.org/specifications/",
+      "kind": "reference",
+      "note": "NVMe 2.x 규격 묶음(Base·NVM Command Set·ZNS 등) — 명령/완료 큐 구조"
+    },
+    {
+      "n": 19,
+      "title": "Linux 커널 문서 · Compute Express Link",
+      "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+      "kind": "reference",
+      "note": "memdev·디코더·region·DAX"
+    },
+    {
+      "n": 20,
+      "title": "Linux 커널 문서 · NUMA Memory Performance",
+      "url": "https://docs.kernel.org/admin-guide/mm/numaperf.html",
+      "kind": "reference",
+      "note": "CPU 없는 메모리 노드, 접근 등급, 지연·대역폭 속성, 메모리 쪽 캐시"
+    },
+    {
+      "n": 21,
+      "title": "Martin Kleppmann · Designing Data-Intensive Applications 3장(저장소와 검색)",
+      "url": "https://dataintensive.net/",
+      "kind": "reference",
+      "note": "해시 색인·SSTable/LSM 트리·B-트리 비교"
+    },
+    {
+      "n": 22,
+      "title": "Brendan Gregg · The USE Method · Latency Heat Maps",
+      "url": "https://www.brendangregg.com/usemethod.html",
+      "kind": "reference",
+      "note": "사용률·포화·오류 방법론, 지연 분포 시각화(Systems Performance 의 저자)"
+    }
+  ],
+  "caveat": "InfiniteMemory 의 펌웨어 구조·매핑표 형식·교체 정책은 공개되지 않았습니다. 공개된 것은 행사 발표를 옮긴 기사의 숫자(64KB 페이지·1,024칸 맵 캐시·미스는 펌웨어·정책별 지연 배수)[3]와 SK하이닉스 협력 소식[4]뿐이라, 칩 안쪽은 OSTEP·DFTL·TPP·2Q 같은 공개 문서로 '보통 이런 것'을 보였습니다. 쓰기 처리·마모·수명 숫자는 어느 자료에도 없습니다. 예시 코드는 모두 가상 값의 장난감 모형입니다. 회사 블로그(Medium)는 조사 때 자동 접근이 막혔습니다.",
+  "resources": [
+    {
+      "id": "veloxcon",
+      "title": "Introducing HW Accelerated Velox with CXL Computational Memory",
+      "by": "Harry Kim(엑시나 CPO) · VeloxCon · 15분",
+      "kind": "video",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+      "why": "MX1 이 무엇이고 SSD 를 메모리처럼 쓰는 InfiniteMemory 가 어디에 있는지 회사가 직접 설명한다. 지원 전에 꼭 볼 것."
+    },
+    {
+      "id": "ostep-ssd",
+      "title": "Operating Systems: Three Easy Pieces — 44장 Flash-based SSDs",
+      "by": "Remzi H. Arpaci-Dusseau · Andrea C. Arpaci-Dusseau",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/file-ssd.pdf",
+      "why": "FTL·매핑 방식·GC·쓰기 증폭·마모 평준화를 한 장에 그림과 함께 푼다. 업무 2번 줄(FTL 기법)의 출발점."
+    },
+    {
+      "id": "ostep",
+      "title": "Operating Systems: Three Easy Pieces (v1.10)",
+      "by": "Remzi H. Arpaci-Dusseau · Andrea C. Arpaci-Dusseau",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+      "why": "가상 메모리·TLB·페이지 교체(스와핑 정책) 장이 무료로 공개돼 있다. 맵 캐시와 교체 알고리즘의 바탕이고, 학위 요건의 운영체제 기초를 다시 다진다."
+    },
+    {
+      "id": "dftl",
+      "title": "DFTL: a Flash Translation Layer Employing Demand-Based Selective Caching of Page-Level Address Mappings",
+      "by": "Aayush Gupta · Youngjae Kim · Bhuvan Urgaonkar · ASPLOS 2009",
+      "kind": "doc",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://dl.acm.org/doi/10.1145/1508244.1508271",
+      "why": "큰 주소표 중 쓰는 부분만 캐시하는 고전. MX1 의 '작은 맵 캐시 + 펌웨어 채우기'와 같은 생각이라 매핑표 줄에 바로 닿는다."
+    },
+    {
+      "id": "tpp",
+      "title": "TPP: Transparent Page Placement for CXL-Enabled Tiered-Memory",
+      "by": "Hasan Al Maruf 외 · Meta · arXiv 2022",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2206.02878",
+      "why": "CXL 메모리를 낀 서버에서 뜨거운/차가운 페이지를 올리고 내리는 실제 설계와 측정. Hot/Cold·Tiered Memory 줄용."
+    },
+    {
+      "id": "damon",
+      "title": "DAMON: Data Access MONitoring",
+      "by": "Linux 커널 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.kernel.org/admin-guide/mm/damon/index.html",
+      "why": "접근 빈도를 싸게 재는 방법(영역 나누기·표본 뽑기). Hot/Cold 식별을 직접 해 보는 도구."
+    },
+    {
+      "id": "twoq",
+      "title": "2Q: A Low Overhead High Performance Buffer Management Replacement Algorithm",
+      "by": "Theodore Johnson · Dennis Shasha · VLDB 1994",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.vldb.org/conf/1994/P439.PDF",
+      "why": "LRU 가 훑기 접근에 약한 이유와 대기 줄로 막는 법. Eviction 알고리즘 줄의 예시를 이해하는 원문."
+    },
+    {
+      "id": "ddia",
+      "title": "데이터 중심 애플리케이션 설계 (Designing Data-Intensive Applications)",
+      "by": "Martin Kleppmann",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+      "why": "3장의 해시 색인·LSM·B-트리 비교가 'Hash, B-Tree, Log-structured 로 큰 매핑표' 우대사항과 그대로 겹친다."
+    },
+    {
+      "id": "nvme-spec",
+      "title": "NVM Express Base Specification",
+      "by": "NVM Express",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://nvmexpress.org/specifications/",
+      "why": "명령 큐·완료 큐·초인종 레지스터. 카드가 SSD 에 명령을 내리는 쪽을 짤 때 원문."
+    },
+    {
+      "id": "kernel-cxl",
+      "title": "Compute Express Link 드라이버 문서",
+      "by": "Linux 커널 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+      "why": "서버 쪽에서 CXL 메모리가 어떻게 보이는지. Bring-up·성능 측정 때 호스트 쪽 확인용."
+    },
+    {
+      "id": "mxdriver",
+      "title": "xcena-dev/mxdriver",
+      "by": "엑시나 · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://github.com/xcena-dev/mxdriver",
+      "why": "이 회사 장치의 호스트 드라이버 원본. 카드와 호스트가 명령을 주고받는 모양과 회사의 C 코드 습관을 본다."
+    },
+    {
+      "id": "making-embedded",
+      "title": "Making Embedded Systems (2판)",
+      "by": "Elecia White · O'Reilly · 2024",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "입문",
+      "url": "https://www.oreilly.com/library/view/making-embedded-systems/9781098151539/",
+      "why": "펌웨어 구조·메모리 다루기·디버깅. 'C/C++ 임베디드·펌웨어 역량' 요건의 기초."
+    },
+    {
+      "id": "sysperf",
+      "title": "Systems Performance (2판)",
+      "by": "Brendan Gregg · Addison-Wesley · 2020",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+      "why": "지연 분포·USE 방법론·리눅스 측정 도구. 성능 측정·튜닝 업무와 프로파일링 우대사항."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "제품과 문제 감 잡기",
+      "time": "3~5일",
+      "goal": "InfiniteMemory 가 무엇이고 펌웨어가 어디서 무엇을 결정하는지 그림으로 설명한다.",
+      "resources": [
+        "veloxcon",
+        "ostep-ssd"
+      ],
+      "task": "발표를 보고 '서버 → CXL → 맵 캐시 → 펌웨어 → DRAM/SSD' 그림을 그린 뒤, 예시 1처럼 SSD 용량·페이지 크기별 주소표 크기 표를 직접 계산해 붙인다."
+    },
+    {
+      "title": "FTL 손으로 만들기",
+      "time": "2~3주",
+      "goal": "페이지 매핑·GC·쓰기 증폭을 코드로 재현하고 과잉 공간과의 관계를 숫자로 보인다.",
+      "resources": [
+        "ostep-ssd",
+        "dftl"
+      ],
+      "task": "블록·페이지만 있는 가상 플래시를 C 로 만들고, 탐욕 GC 와 '오래된 블록 우선' GC 를 붙여 과잉 공간 7·15·28% 에서 쓰기 증폭과 블록별 지우기 횟수 편차를 표로 낸다."
+    },
+    {
+      "title": "교체 정책 겨루기",
+      "time": "2주",
+      "goal": "같은 흔적으로 LRU·CLOCK·2Q 를 돌려 적중률과 꼬리 지연을 비교한다.",
+      "resources": [
+        "twoq",
+        "ostep",
+        "damon"
+      ],
+      "task": "가상 접근 흔적(뜨거운 페이지 + 한 번 훑기 + 다시 뜨거운 페이지)을 만들어 1,024칸 캐시에서 세 정책을 C 로 짜고, 미스 한 번을 SSD 읽기 80µs 로 가정해 p50·p99 지연을 계산한다."
+    },
+    {
+      "title": "큰 매핑표와 계층 메모리",
+      "time": "2~3주",
+      "goal": "해시·B-트리·로그 구조로 수천만 칸 표를 담고, 운영체제 쪽 계층 메모리와 경계를 설명한다.",
+      "resources": [
+        "ddia",
+        "tpp",
+        "kernel-cxl"
+      ],
+      "task": "1억 칸 가상 매핑표를 배열·해시·연속 구간 묶음 세 가지로 담아 메모리 사용량과 찾기 시간을 재고, TPP 를 읽어 '서버가 하는 일 / 카드가 하는 일' 표를 한 쪽으로 쓴다."
+    },
+    {
+      "title": "NVMe 와 측정 (선택)",
+      "time": "계속",
+      "goal": "SSD 명령 큐를 직접 다루고 지연 분포로 병목을 짚는다.",
+      "resources": [
+        "nvme-spec",
+        "sysperf",
+        "mxdriver",
+        "making-embedded"
+      ],
+      "task": "리눅스에서 fio 로 SSD 의 큐 깊이 1·8·32 별 4KB·64KB 읽기 지연 분포를 재고, 3단계 모의실험의 'SSD 읽기 80µs' 가정을 실측값으로 바꿔 다시 돌린다."
+    }
+  ],
+  "pay": {
+    "summary": "공개된 연봉 숫자가 없다 — 비상장 회사라 사업보고서 평균 급여가 없고, 공고에도 적혀 있지 않다",
+    "rows": [
+      {
+        "label": "공고 표기 연봉",
+        "value": "적혀 있지 않음",
+        "basis": "공고",
+        "note": "경력 3년↑ 공고이고 급여 칸이 없다 [1]"
+      }
+    ],
+    "how": "공시 숫자 없음 — 비상장이라 사업보고서 '직원 1인 평균 급여액'이 없다. 공공데이터 집계 사이트(자소설닷컴)의 회사 페이지는 같은 회사 다른 풀이의 조사 때 숫자가 '수집 중'이었다. 경력직이라 처우는 개인별 협의로 정해진다고 보는 것이 자연스럽다 {추론}. 시리즈 B 2,018억 원을 포함해 누적 약 2,800억 원을 투자받았다고 공고가 밝혔다 [1]."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "MX Day",
+        "detail": "한 달에 한 번 전사가 함께 쉬는 유급 휴일, 연 12회"
+      },
+      {
+        "name": "유연근무",
+        "detail": "선택적 근로시간제 기반"
+      },
+      {
+        "name": "식대",
+        "detail": "점심 식대 지원"
+      },
+      {
+        "name": "복지포인트",
+        "detail": "지급(금액은 밝히지 않음)"
+      },
+      {
+        "name": "건강검진",
+        "detail": "임직원과 임직원 가족"
+      }
+    ],
+    "note": "이 공고의 복리후생 칸 [1] — 2026년 11월 확인. 채용 홈페이지 복지 목록 [10]도 같은 항목을 싣는다. 금액·조건은 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "엑시나 본사 · 미래에셋벤처타워",
+    "address": "경기도 성남시 분당구 판교역로241번길 20, 9층 (삼평동, 미래에셋벤처타워)",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C241%EB%B2%88%EA%B8%B8%2020",
+    "near": "신분당선·경강선 판교역 근처 판교테크노밸리 {추론}",
+    "note": "주소는 공고 근무지 [1]. 채용 홈페이지 회사 정보에도 같은 건물로 적혀 있다 [11]. 미국 지사는 실리콘밸리에 있다 [1]."
+  }
+}
