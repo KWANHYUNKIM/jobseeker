@@ -1,0 +1,1277 @@
+{
+ "id": "42dot-firmware-secure-boot-ota",
+ "company": "포티투닷(42dot)",
+ "role": "Sr. Staff Firmware Engineer (Secure Boot & OTA)",
+ "team": "미국 서니베일 · ASIL-D 안전 펌웨어 플랫폼(부트·OTA 영역)",
+ "jobs": [
+  "ats-ashby:42dot:63196d96-2810-4348-8aa5-077d8c0ee710"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "차 안의 작은 제어 칩(MCU)이 켜질 때 **서명이 맞는 코드만 돌게 하는 부팅 코드**와, 그 칩에 새 펌웨어를 안전하게 깔아 주는 **업데이트 클라이언트(Uptane)** 를 직접 짭니다. 플랫폼의 모든 배포가 이 두 부품을 지나갑니다.[1]",
+  "env": "새로 짓는 **ASIL-D 펌웨어 플랫폼**(NXP S32K3급 칩 + 보안 엔진 HSE). MISRA C · 정적 분석 예외 0 · 동적 메모리 금지 · MC/DC 커버리지 · 요구사항 추적이 기본 규칙입니다.[1]",
+  "oneline": "부트로더를 맨바닥부터 써 본 15년 차 펌웨어 엔지니어 자리. 보안 설계는 아키텍트가, **구현과 증거**는 이 사람이 맡습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Secure Boot-Chain Implementation: Write and own the multi-stage boot sequence on the target MCU — startup code, linker command files and memory maps, flash drivers, hardware security engine integration (key catalogs, secure-boot configuration, signature-verification services),",
+   "short": "전원이 들어온 순간부터 앱까지, 단계마다 다음 단계의 서명을 확인하고 넘기는 부팅 코드를 직접 짠다.",
+   "why": "이 플랫폼에서 JTAG(칩에 직접 붙는 디버그 선)은 보드마다 **한 번**, 칩을 깨우고 바꿀 수 없는 부트로더를 굽는 데만 쓰고, 그 뒤의 모든 배포는 Uptane 으로 간다고 공고가 적었습니다. 그래서 부트 체인이 안 되면 아무것도 나가지 못합니다.[1] 부트로더 요구사항은 '바꿀 수 없는(immutable) 것'과 '바꿀 수 있는(mutable) 것' 두 벌로 이미 나뉘어 있고, 이 자리는 그것을 물려받아 마저 채우고 구현합니다.[1]",
+   "flows": [
+    {
+     "caption": "이 공고의 부트 체인 {추론}[1][13]",
+     "steps": [
+      "칩 ROM · 보안 엔진(HSE)이 먼저 깨어난다",
+      "바꿀 수 없는 부트로더 · JTAG 으로 한 번 굽는다",
+      "바꿀 수 있는 부트로더 · Uptane 으로 갱신",
+      "앱 · 플랫폼 수명 관리자 아래"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "intro": "MCU 부트로더를 처음부터 쓸 때 실제로 만드는 것들입니다.",
+    "items": [
+     "**시작 코드(startup)** — 리셋 직후 스택과 벡터 테이블(인터럽트마다 어디로 뛸지 적은 표)을 잡고, 초기값 있는 변수를 플래시에서 RAM 으로 복사하고, 나머지를 0으로 채운 뒤 main 을 부른다.[16]",
+     "**링커 스크립트 · 메모리 맵** — 부트로더 · A/B 슬롯 · 설정 영역이 플래시 어디에 몇 KB 씩 놓이는지 정하는 파일. 앱이 부트로더 뒤 주소에서 시작하도록 맞춘다.[16]",
+     "**플래시 드라이버** — 섹터 지우기 · 쓰기 · 다시 읽어 확인. 지우는 단위와 쓰는 단위가 달라 그 차이를 맞추는 코드가 대부분이다. {추론}",
+     "**보안 엔진 연동** — S32K3 의 HSE 에 키를 '키 카탈로그'로 등록하고, 어느 영역을 어떤 키로 검증할지 보안 부팅 설정을 넣고, 서명 검증을 HSE 에 맡긴다. NXP 는 이 보안 부팅 방식들을 응용 노트로 설명한다.[13]"
+    ]
+   },
+   "how_far": "누가 무엇을 검증하고 키를 어떻게 나눌지는 플랫폼의 **펌웨어 보안 아키텍트**가 정합니다. 이 자리는 공고 표현으로 '손(hands)'이지만, 하드웨어나 타이밍이 구조가 틀렸다고 말하면 **반박하라**고 적혀 있습니다.[1]",
+   "refs": [
+    1,
+    13,
+    16
+   ],
+   "study": [
+    "interrupt-boot",
+    "kr-embedded-os",
+    "nxp-an13465"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "anti-rollback counters in HSE-protected storage or OTP, and recovery and fail-safe boot — with boot time measured against budget.",
+   "short": "옛 취약 버전으로 되돌리기를 막는 카운터, 망가져도 살아나는 복구 부팅, 부팅 시간 예산까지 맡는다.",
+   "why": "옛 버전도 회사가 서명한 '정품'이라, 알려진 취약점이 있는 옛 이미지를 다시 깔면 서명 검증만으로는 못 막습니다. 그래서 버전 숫자를 되돌릴 수 없는 곳(보안 엔진이 지키는 저장소나 OTP)에 두고 그보다 낮은 이미지는 거절합니다.[10][13] 공고는 부팅 시간을 **예산 대비로 재라**고 따로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**안티 롤백 카운터** — 보안 버전을 OTP(한 번 켜면 끌 수 없는 퓨즈 비트)에 쌓는다. 비트를 켤 수만 있으니 숫자가 내려가지 않는다(아래 예). 비트 수만큼만 올릴 수 있어서 보통 매 배포가 아니라 취약점을 막을 때만 올린다. {추론}",
+     "**복구 · 안전 부팅** — 두 슬롯이 다 깨졌을 때도 진단 통신으로 다시 받을 수 있는 최소 모드로 들어가게 한다. {추론}",
+     "**부팅 시간** — 서명 검증 시간은 검증할 크기에 따라 늘어난다. 단계마다 걸린 시간을 재서 예산 안인지 증거로 남긴다.[1] 같은 회사 미국 임베디드 리눅스 공고도 부팅 시간 최적화를 업무로 둔다.[9]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "OTP 비트로 만든 안티 롤백 (직접 돌린 출력)",
+     "body": "켠 비트 수가 카운터입니다. 카운터보다 낮은 보안 버전은 서명이 맞아도 거절합니다. 실제 칩에서 OTP 를 어떻게 쓰는지는 칩 문서를 따릅니다.",
+     "lang": "python",
+     "code": "otp_bits = 0\ndef burn_to(version):\n    global otp_bits\n    otp_bits |= (1 << version) - 1   # 켠 비트는 못 끈다\ndef counter():\n    return bin(otp_bits).count(\"1\")\n\nburn_to(3); print(\"counter\", counter())\nfor v in (2, 3, 4):\n    print(\"image sec-version\", v, \"accept\" if v >= counter() else \"reject\")\nburn_to(4); print(\"after update counter\", counter(), \"v3\", \"accept\" if 3 >= counter() else \"reject\")\n\n# counter 3\n# image sec-version 2 reject\n# image sec-version 3 accept\n# image sec-version 4 accept\n# after update counter 4 v3 reject"
+    }
+   ],
+   "how_far": "카운터를 HSE 보호 저장소에 둘지 OTP 에 둘지는 칩 기능과 보안 구조가 정합니다. 이 자리는 **언제 올리고 어떻게 검사하는지**를 코드로 옮기고, 부팅 시간을 재어 증거로 남깁니다.[1]",
+   "refs": [
+    1,
+    9,
+    10,
+    13
+   ],
+   "study": [
+    "nxp-an13465",
+    "uptane-std"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Fail-Safe A/B Update Layouts: Implement atomic A/B firmware-slot and dual-bank schemes: the low-level state machines for partition switching, background flashing, verify-before-activate and automatic runtime fallback.",
+   "short": "펌웨어를 A·B 두 칸에 두고, 도는 동안 빈 칸에 새 판을 쓰고, 검증 뒤 바꾸고, 안 되면 옛 칸으로 돌아온다.",
+   "why": "업데이트 중 전원이 끊기거나 새 판이 뜨지 않으면 제어기가 멈춥니다. 칸을 둘 두면 언제나 하나는 멀쩡합니다. S32K3 에서는 보안 엔진의 A/B 스왑 기능으로 두 칸을 바꾸고, NXP 지원 답변은 스왑 전에 빈 칸에 유효한 앱과 그에 맞는 서명(보안 부팅 설정)이 있어야 한다고 했습니다.[14]",
+   "actually": {
+    "items": [
+     "**뒤에서 쓰기** — 앱이 한쪽 뱅크에서 도는 동안 다른 뱅크를 지우고 쓴다. 뱅크가 둘이라 읽기와 쓰기가 같이 된다.[14]",
+     "**검증 뒤 활성화** — 다 쓴 다음 서명 · 해시가 맞을 때만 '다음 부팅은 B' 표시를 남긴다.[1][15]",
+     "**자동 되돌리기** — MCUboot 는 새 이미지를 '시험'으로 띄우고, 새 이미지가 스스로 '괜찮다'고 표시하지 않으면 다음 부팅에 옛 이미지로 되돌린다.[15]",
+     "**원자성** — '바꿨다'는 표시는 한 번에 써지거나 아예 안 써져야 한다. 쓰다 끊겨도 어느 칸으로 부팅할지 정해져 있어야 한다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "확인을 못 받은 새 칸은 세 번 뒤 되돌린다 (직접 돌린 출력)",
+     "body": "새 이미지가 매번 확정 전에 죽는다고 가정한 상태 기계입니다. 시도 횟수는 가상의 값입니다.",
+     "lang": "python",
+     "code": "def boot(state):\n    if state[\"pending\"]:\n        if state[\"tries\"] >= 3:\n            state[\"pending\"] = None\n            return \"rollback -> \" + state[\"active\"]\n        state[\"tries\"] += 1\n        return \"try \" + state[\"pending_slot\"] + \" (\" + str(state[\"tries\"]) + \")\"\n    return \"boot \" + state[\"active\"]\n\ns = {\"active\": \"A\", \"pending\": \"v2\", \"pending_slot\": \"B\", \"tries\": 0}\nfor _ in range(4):\n    print(boot(s))\n\n# try B (1)\n# try B (2)\n# try B (3)\n# rollback -> A"
+    }
+   ],
+   "how_far": "칩이 주는 스왑 기능을 쓰는 것에서 끝나지 않고, **전환 · 쓰기 · 검증 · 되돌리기의 저수준 상태 기계**를 이 자리가 씁니다.[1] 시험할 때는 단계마다 전원을 끊어 보고 어느 칸으로 살아나는지 확인하는 것이 최소선입니다. {추론}",
+   "refs": [
+    1,
+    14,
+    15
+   ],
+   "study": [
+    "mcuboot-design",
+    "nxp-an13465"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Uptane Client: Implement the on-device update client — metadata parsing and signature/threshold verification across the Root, Timestamp, Snapshot and Targets roles in constrained, statically allocated C;",
+   "short": "차 안의 업데이트 클라이언트 — 무엇을 깔지 적은 서명 문서(메타데이터)를 동적 메모리 없이 C 로 검증한다.",
+   "why": "Uptane 은 차량 소프트웨어 업데이트용 보안 표준입니다. 키 하나가 털려도 차 전체가 넘어가지 않도록 역할을 나누고, 역할마다 믿는 키 서명이 몇 개 이상(threshold) 있어야 믿습니다.[10][12]",
+   "actually": {
+    "items": [
+     "**네 역할** — Root(어느 키가 어느 역할인지 정함) · Targets(어떤 이미지를 깔지) · Snapshot(지금 유효한 메타데이터 판 번호들) · Timestamp(가장 최신이 무엇인지, 자주 갱신).[12]",
+     "**threshold** — 한 역할의 메타데이터에 믿는 키의 서명이 정해진 수 이상일 때만 받는다. 같은 키의 서명을 두 번 세면 안 된다(아래 예).[12]",
+     "**정적 할당** — 플랫폼 규칙이 정적 메모리라 malloc 없이 버퍼 크기를 미리 정한다.[1] 그래서 메타데이터를 한 번에 다 올리지 못하고 정해진 크기로 나눠 읽는 파서가 필요하다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "서명 개수 세기 — 같은 키는 한 번만 (직접 돌린 출력)",
+     "body": "서명은 문자열로 흉내 냈습니다. 둘째 줄은 같은 키 서명 두 개, 셋째 줄은 믿지 않는 키라 거절됩니다.",
+     "lang": "python",
+     "code": "TRUSTED = {\"k1\", \"k2\", \"k3\"}\nTHRESHOLD = 2\n\ndef verify(sigs, payload):\n    good = set()\n    for keyid, sig in sigs:\n        if keyid in TRUSTED and sig == \"sig(\" + keyid + \",\" + payload + \")\":\n            good.add(keyid)   # 같은 키는 한 번만 센다\n    return len(good) >= THRESHOLD\n\np = \"targets v7\"\nprint(verify([(\"k1\", \"sig(k1,targets v7)\"), (\"k2\", \"sig(k2,targets v7)\")], p))\nprint(verify([(\"k1\", \"sig(k1,targets v7)\"), (\"k1\", \"sig(k1,targets v7)\")], p))\nprint(verify([(\"k1\", \"sig(k1,targets v7)\"), (\"kX\", \"sig(kX,targets v7)\")], p))\n\n# True\n# False\n# False"
+    }
+   ],
+   "how_far": "표준을 읽고 **역할별 검증 순서와 거절 조건을 빠짐없이** 옮기는 것이 핵심입니다. 리눅스용 Uptane 클라이언트(aktualizr, C++)가 공개돼 있지만 이 자리는 그것을 MCU 의 정적 C 로 다시 짓는 쪽입니다.[1][34] {추론}",
+   "refs": [
+    1,
+    10,
+    12,
+    34
+   ],
+   "study": [
+    "uptane-std",
+    "tuf-spec"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "image transfer from the Primary over the platform's Ethernet middleware; staging to flash; the install → verify → activate → confirm/rollback state machine; delta application; and ECU version reporting",
+   "short": "중앙 컴퓨터(Primary)에서 이미지를 받아 플래시에 두고, 설치→검증→활성화→확정/되돌리기 후 버전을 보고한다.",
+   "why": "Uptane 에서 차 밖 서버와 이야기하는 것은 Primary 이고, 각 제어기(Secondary)는 Primary 를 거쳐 이미지를 받습니다. 제어기마다 지금 깔린 버전을 서명해 보고하고, 서버(Director)는 그 보고로 다음에 무엇을 깔지 정합니다.[10]",
+   "flows": [
+    {
+     "caption": "공고에 적힌 설치 상태 기계[1]",
+     "steps": [
+      "받기 · Primary 에서 이더넷으로",
+      "플래시에 두기(staging)",
+      "설치",
+      "검증",
+      "활성화",
+      "확정 또는 되돌리기",
+      "ECU 버전 보고"
+     ]
+    }
+   ],
+   "actually": {
+    "items": [
+     "**받기** — 플랫폼의 이더넷 미들웨어 위로 Primary 가 보낸 이미지를 조각조각 받아 빈 칸에 쓴다.[1]",
+     "**차분 적용** — 이미지 전체가 아니라 바뀐 부분(delta)만 받아 옛 이미지와 합쳐 새 이미지를 만든다.[1][19]",
+     "**끊김** — 받는 도중 시동이 꺼져도 처음부터 다시 받지 않고 이어 받게 한다(요건의 'resumable transfer').[1]",
+     "**보고** — 설치 결과와 버전을 서명해 보고한다.[10]"
+    ]
+   },
+   "how_far": "중앙 컴퓨터 쪽 클라이언트는 범위 밖일 수 있고(다음 줄), 이 자리의 기본은 **제어기 쪽 상태 기계**입니다.[1]",
+   "refs": [
+    1,
+    10,
+    19
+   ],
+   "study": [
+    "uptane-std",
+    "detools"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "as an ASIL-D mandatory application under the platform's lifecycle manager. [SCOPE DECISION: the partial-verification Secondary is core scope; include the full-verification Primary client on the vehicle's central compute only if it stays in this team.]",
+   "short": "이 클라이언트 자체가 ASIL-D 필수 앱이다. 핵심은 부분 검증 Secondary, 전체 검증 Primary 는 팀에 남을 때만.",
+   "why": "Uptane 모범 사례 문서는 제어기를 **전체 검증**과 **부분 검증**으로 나눕니다. 부분 검증은 Director 가 준 Targets 메타데이터의 서명만 보고, 전체 검증은 Image 저장소 메타데이터와 해시 · 크기까지 맞춥니다. 부분 검증은 Director 의 Targets 키를 가진 공격자에게 약하고, 나머지 검증을 Primary 에 기댑니다.[11]",
+   "actually": {
+    "items": [
+     "**부분 검증 Secondary** — 작은 MCU 용. Director Targets 서명 확인 + 이미지 해시 확인.[11]",
+     "**전체 검증 Primary** — 차의 중앙 컴퓨터. 두 저장소의 네 역할을 다 확인한다.[10][11]",
+     "**필수 앱** — 공고는 업데이트 클라이언트를 플랫폼 수명 관리자 아래의 ASIL-D 필수 앱으로 둔다.[1] 업데이트 경로가 안전 등급 코드라는 뜻이라, 위의 정적 할당 · MC/DC 규칙이 이 코드에도 그대로 걸린다. {추론}"
+    ]
+   },
+   "how_far": "공고 문장 안에 '범위 결정(SCOPE DECISION)' 메모가 그대로 남아 있습니다. 팀 경계가 아직 확정되지 않은 **새로 짓는 플랫폼**이라는 뜻으로 읽히니, 면접에서 Primary 가 누구 몫인지 묻는 것이 좋습니다. {추론}",
+   "refs": [
+    1,
+    10,
+    11
+   ],
+   "study": [
+    "uptane-bp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Hardware-Enforced Isolation: Configure resource-domain controllers (NXP XRDC-class domain IDs, MDAC, PAC) and core MPUs across boot stages and the handoff to the application,",
+   "short": "버스 단위 출입 통제(XRDC)와 코어별 메모리 보호(MPU)를 부팅 단계마다, 앱에 넘길 때도 다시 건다.",
+   "why": "부트로더가 쓰던 키 · 플래시 쓰기 권한을 앱이 그대로 물려받으면 앱 버그 하나로 부트로더가 덮일 수 있습니다. NXP 지원 엔지니어는 XRDC 를 버스 교차점에 앉아 마스터와 슬레이브를 갈라놓는 시스템 단위 MPU 로 설명했고[17], SDK 문서는 MDAC 가 코어 아닌 버스 마스터의 도메인 번호를 정한다고 적습니다.[18]",
+   "actually": {
+    "items": [
+     "**도메인 번호** — 코어 · DMA · 보안 엔진 같은 버스 마스터마다 번호를 준다(MDAC).[18]",
+     "**주변장치 · 메모리 출입** — 도메인마다 어느 주변장치 · 메모리 구역을 읽고 쓸 수 있는지 정한다(PAC · MRC).[17] {추론}",
+     "**코어 MPU** — 코어 안에서 구역별 읽기 · 쓰기 · 실행 권한. 스택 넘침을 잡는 데도 쓴다. {추론}",
+     "**넘겨주기** — 부트로더는 앱으로 뛰기 전에 자기 구역을 잠그고 권한을 낮춘다. 단계마다 설정이 다르다. {추론}"
+    ]
+   },
+   "refs": [
+    17,
+    18
+   ],
+   "study": [
+    "yiu-m33",
+    "nxp-an13465"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "to the isolation policy set by the Security Architect, and validate the resulting memory protections and security states in the lab.",
+   "short": "누가 무엇에 닿을지는 보안 아키텍트가 정하고, 이 자리는 설정한 뒤 실험실에서 정말 막히는지 확인한다.",
+   "why": "레지스터를 썼다고 막히는 것이 아닙니다. 일부러 금지된 주소를 건드려 오류가 나는지 봐야 정책이 걸렸다고 말할 수 있습니다. {추론} NXP 포럼에는 HSE 의 도메인 번호를 레지스터로 읽었더니 블록도와 다른 값이 나왔다는 질문이 있습니다 — 문서와 실물이 다를 수 있다는 예입니다.[37]",
+   "how_far": "정책 문서는 받는 쪽이고 **설정과 검증 증거**가 이 자리 몫입니다.[1] 금지 접근 시험을 자동 시험으로 만들어 회귀에 넣는 데까지 가면 좋습니다. {추론}",
+   "refs": [
+    1,
+    37
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Bandwidth & Storage Optimization: Implement delta application and compression-aware flash budgeting on embedded MCU flash to minimize bus bandwidth and program/erase cycles.",
+   "short": "바뀐 부분만 보내 차 안 네트워크를 덜 쓰고, 플래시를 덜 지우고 쓰게 해서 수명을 아낀다.",
+   "why": "플래시는 지우고 쓰는 횟수에 수명이 있고 차 안 네트워크는 느립니다. 바뀐 부분만 보내면 둘 다 아낍니다. detools 는 bsdiff 계열로 차분을 만들고, 적용 쪽을 작은 하드웨어용 C 로 둡니다.[19][20]",
+   "actually": {
+    "items": [
+     "**차분 만들기** — 서버(호스트)에서 옛 이미지와 새 이미지를 비교해 패치를 만든다. bsdiff 는 Colin Percival 이 실행 파일 차이를 위해 만든 알고리즘이다.[20]",
+     "**제자리 적용 vs 순차 적용** — 같은 칸에 덮어쓰는 제자리(in-place) 패치는 공간을 아끼지만 끊기면 위험해, detools 는 이를 이어서 할 수 있게 만들었다.[19]",
+     "**압축을 고려한 예산** — 압축된 차분 크기 · 풀 때 쓸 RAM · 지울 섹터 수를 미리 계산해 넘치지 않게 한다. {추론}"
+    ]
+   },
+   "refs": [
+    19,
+    20
+   ],
+   "study": [
+    "detools"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Diagnostic Reprogramming: Implement the diagnostic reprogramming entry (security access, transfer services)",
+   "short": "정비소 진단기로 펌웨어를 다시 쓰는 길(UDS 진단 재프로그래밍)의 입구를 만든다.",
+   "why": "모든 수리가 OTA 로 되지는 않습니다. 차량 진단 표준 UDS(ISO 14229)는 잠금 풀기(0x27 SecurityAccess, 2020년 판에 더 현대적인 0x29 Authentication)와 내려받기(0x34 · 0x36 · 0x37)를 정의합니다.[21]",
+   "actually": {
+    "intro": "흔히 쓰는 순서입니다. 정확한 순서와 오류 응답은 표준과 자동차 회사 사양이 정합니다.[21]",
+    "items": [
+     "0x10 프로그래밍 세션으로 들어간다.",
+     "0x27 시드 · 키(또는 0x29 인증)로 잠금을 푼다.",
+     "0x34 RequestDownload 로 쓸 주소 · 크기를 알린다.",
+     "0x36 TransferData 로 블록을 순번과 함께 보낸다(순번이 틀리면 거절).",
+     "0x37 로 전송을 끝낸다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "1 MiB 이미지는 블록 몇 개, 순번은 어떻게 도나 (직접 돌린 출력)",
+     "body": "최대 블록 길이 0x802(서비스 번호 · 순번 2바이트 포함)는 가정한 값입니다. 순번은 1부터 시작해 255 다음 0으로 돌아갑니다.",
+     "lang": "python",
+     "code": "image = 1024 * 1024\nmax_block = 0x802\npayload = max_block - 2\nblocks = -(-image // payload)\nprint(\"payload\", payload, \"blocks\", blocks)\nseq = [(i % 256) for i in range(1, blocks + 1)]\nprint(\"first\", seq[:3], \"around wrap\", seq[253:258], \"last\", seq[-1])\n\n# payload 2048 blocks 512\n# first [1, 2, 3] around wrap [254, 255, 0, 1, 2] last 0"
+    }
+   ],
+   "refs": [
+    21
+   ],
+   "study": [
+    "uds-wiki"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "where OEM service processes require it, on the platform's transport, without importing an AUTOSAR diagnostic stack.",
+   "short": "AUTOSAR 진단 스택을 통째로 들이지 않고, 플랫폼 자체 통신 위에 필요한 만큼만 직접 만든다.",
+   "why": "이 플랫폼은 처음부터 새로 짓는 ASIL-D 펌웨어 플랫폼이고[1], 42dot 은 SDV OS 를 Rust 로 짓는 등 자체 소프트웨어 스택을 내세웁니다.[5] 큰 진단 스택을 들이면 안전 인증을 받아야 할 코드도 그만큼 늘어납니다. {추론}",
+   "how_far": "UDS 전체가 아니라 **재프로그래밍에 필요한 서비스만**, 자동차 회사 정비 절차가 요구하는 곳에서만입니다.[1]",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Defensive Engineering: Harden the verification path against voltage and clock glitching, fault injection and side channels — redundant checks, constant-time comparisons, fail-closed defaults — and feed findings back into the threat model.",
+   "short": "전압·클럭을 흔들어 검증을 건너뛰게 하는 공격에 대비해 검사는 두 번, 비교는 같은 시간에, 실패면 닫히게.",
+   "why": "서명 검증이 수학적으로 완벽해도, 공격자가 '같다/다르다'를 가르는 순간에 전압을 잠깐 떨어뜨리면 명령 하나가 건너뛰어집니다. The Hardware Hacking Handbook 은 공개된 제품 공격에서 결함 주입이 가장 흔한 기법이었다고 정리합니다.[23]",
+   "actually": {
+    "items": [
+     "**두 번 검사** — 분기 조건을 두 번 평가하고, 가능하면 사이에 무작위 지연을 둔다.[22]",
+     "**복잡한 상수** — 참 · 거짓을 1 · 0 대신 비트가 많이 다른 값으로 둬서 비트 하나 뒤집기로 바뀌지 않게 한다.[22]",
+     "**루프 끝 확인** — 반복이 끝난 뒤 카운터가 기대한 값인지 다시 본다.[22]",
+     "**상수 시간 비교** — 처음 다른 바이트에서 멈추면 걸린 시간으로 몇 바이트가 맞았는지 샌다. 끝까지 비교한다(아래 예). {추론}",
+     "**닫힌 채 실패** — 어떤 경로로 빠져도 기본값이 '거절'이 되게 짠다.[1] 컴파일러가 중복 검사를 지워 대책이 사라질 수 있다는 점도 확인한다.[23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "일찍 멈추는 비교는 몇 바이트 맞았는지 흘린다 (직접 돌린 출력)",
+     "body": "첫 바이트가 다르면 1번, 마지막 바이트가 다르면 32번 돌고 멈춥니다. 표준 라이브러리의 비교는 이런 차이를 두지 않도록 만들어졌습니다. MCU 에서는 같은 생각을 C 로 짭니다.",
+     "lang": "python",
+     "code": "import hmac, hashlib\n\ndef naive_eq(a, b):\n    steps = 0\n    for x, y in zip(a, b):\n        steps += 1\n        if x != y:\n            return False, steps\n    return True, steps\n\nmac = hashlib.sha256(b\"image\").digest()\nbad_first = bytes([mac[0] ^ 1]) + mac[1:]\nbad_last = mac[:-1] + bytes([mac[-1] ^ 1])\nprint(naive_eq(mac, bad_first), naive_eq(mac, bad_last))\nprint(hmac.compare_digest(mac, bad_first), hmac.compare_digest(mac, bad_last))\n\n# (False, 1) (False, 32)\n# False False"
+    }
+   ],
+   "how_far": "찾은 약점을 **위협 모델에 되먹이는 것**까지가 업무입니다.[1] 직접 글리치 장비로 공격해 보는 경험은 우대사항(Hardening)에 따로 있습니다.[1]",
+   "refs": [
+    1,
+    22,
+    23
+   ],
+   "study": [
+    "tfm-fi",
+    "hhh"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Deterministic Firmware Development: Write high-performance, deterministic embedded C for bare-metal and RTOS targets with freedom from interference,",
+   "short": "같은 입력이면 늘 정해진 시간 안에 끝나는 C 를, 다른 기능이 망가뜨릴 수 없게(간섭 배제) 쓴다.",
+   "why": "ISO 26262 는 안전 등급이 다른 소프트웨어가 한 칩에 같이 돌 때, 낮은 쪽이 높은 쪽을 망가뜨리지 않음(freedom from interference)을 보이라고 요구합니다 — 메모리 · 시간 · 주고받는 정보 세 갈래입니다.[24] 공고의 플랫폼 규칙도 정적 메모리입니다.[1]",
+   "actually": {
+    "items": [
+     "**정해진 시간** — 루프 횟수에 상한을 두고, 인터럽트를 막는 구간을 짧게 한다. 최악 실행 시간(WCET)을 잴 수 있는 코드여야 한다. {추론}",
+     "**정해진 메모리** — 동적 할당 · 재귀를 쓰지 않는다. MISRA C 같은 코딩 규칙이 이런 것을 막는다.[26] {추론}",
+     "**간섭 배제** — 위의 MPU · XRDC 구역 나누기가 메모리 쪽 근거이고, 워치독 · 시간 감시가 시간 쪽 근거다.[24] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    24,
+    26
+   ],
+   "study": [
+    "making-embedded",
+    "misra"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "using Python exclusively for host-side tooling such as secure payload wrapping and test automation.",
+   "short": "파이썬은 차에 안 올라간다 — 이미지에 서명해 감싸는 도구와 시험 자동화에만 쓴다.",
+   "why": "수집된 공고의 기술 태그에 Python 이 붙어 있지만, 공고 문장은 **호스트 쪽 도구에만**이라고 못 박았습니다.[1] 같은 서니베일의 SIL/HIL 시험 자동화 공고도 Python 으로 자동 시험 틀을 만듭니다.[8]",
+   "actually": {
+    "items": [
+     "**서명 감싸기** — 빌드한 이미지에 버전 · 크기 · 해시를 적은 머리말을 붙이고 서명한다. MCUboot 도 이미지 머리말과 끝부분(trailer)에 이런 정보를 둔다.[15]",
+     "**시험 자동화** — 벤치 보드에 이미지를 올리고, 전원을 끊고, 결과를 읽는 스크립트.[8] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    8,
+    15
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Certification Evidence: Produce the ISO 26262 work products for your components: requirements and design in the traceability system, unit and integration tests with structural coverage,",
+   "short": "내가 짠 부품의 ISO 26262 산출물 — 요구사항·설계를 추적 도구에 잇고, 커버리지까지 잰 시험을 낸다.",
+   "why": "42dot 은 2023년 DNV 로부터 차량 컴퓨터 · 소프트웨어 개발 프로세스에 대해 ISO 26262 ASIL D 인증을 받았습니다.[6] 안전 인증에서는 코드만이 아니라 요구사항 → 설계 → 코드 → 시험이 끊김 없이 이어진 증거를 봅니다.[24]",
+   "actually": {
+    "items": [
+     "**추적** — 요구사항 하나마다 그것을 구현한 설계 · 코드와 확인한 시험이 연결돼야 한다. 빈칸이 곧 지적 사항이다. {추론}",
+     "**구조 커버리지** — 시험이 코드의 어느 문장 · 분기 · 조건까지 건드렸나. ASIL D 단위 시험에서는 MC/DC 가 강력 권장이다.[25]",
+     "**MC/DC** — 조건 하나하나가 다른 조건은 그대로 둔 채 결과를 바꿀 수 있음을 보이는 시험 쌍을 갖춘다(아래 예).[25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "(a && b) || c 의 MC/DC 최소 시험 (직접 돌린 출력)",
+     "body": "조건마다 결과를 뒤집는 쌍을 찾고, 셋을 다 덮는 가장 작은 시험 묶음을 고릅니다. 조건이 3개면 4개(조건 수 + 1)면 됩니다.",
+     "lang": "python",
+     "code": "import itertools\nf = lambda a, b, c: (a and b) or c\nrows = list(itertools.product([0, 1], repeat=3))\npairs = {}\nfor i, name in enumerate(\"abc\"):\n    for r in rows:\n        r2 = list(r); r2[i] = 1 - r2[i]; r2 = tuple(r2)\n        if f(*r) != f(*r2):\n            pairs.setdefault(name, set()).add(tuple(sorted([r, r2])))\nbest = None\nfor n in range(1, 9):\n    for combo in itertools.combinations(rows, n):\n        cs = set(combo)\n        if all(any(a in cs and b in cs for a, b in pairs[k]) for k in \"abc\"):\n            best = combo; break\n    if best: break\nprint(\"min tests\", len(best), best)\n\n# min tests 4 ((0, 1, 0), (0, 1, 1), (1, 0, 0), (1, 1, 0))"
+    }
+   ],
+   "refs": [
+    6,
+    24,
+    25
+   ],
+   "study": [
+    "iso26262-6",
+    "parasoft-cov"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "static-analysis results, WCET and boot-timing evidence, and freedom-from-interference analysis between bootloader stages and the application.",
+   "short": "정적 분석 결과, 최악 실행 시간(WCET)·부팅 시간 증거, 부트로더와 앱이 서로 못 건드린다는 분석을 낸다.",
+   "why": "플랫폼 규칙이 **정적 분석 예외 0**이라, 규칙 위반을 '사유서'로 넘기지 않고 고쳐서 0을 만들어야 합니다.[1] 간섭 배제 분석은 ISO 26262 의 요구이고[24], 이 자리는 그것을 부트로더 단계와 앱 사이에 대해 씁니다.[1]",
+   "actually": {
+    "items": [
+     "**정적 분석** — MISRA C 규칙 검사기를 돌리고 남은 위반을 0으로 만든 결과.[1][26]",
+     "**WCET** — 가장 오래 걸리는 경로의 실행 시간. 측정값과 분석값을 같이 내는 경우가 많다. {추론}",
+     "**부팅 시간 증거** — 단계별 시간을 재서 예산과 비교한 기록.[1]",
+     "**간섭 배제 분석** — 앱이 부트로더 구역 · 키에 닿을 수 없음을 XRDC · MPU 설정과 시험으로 보인다.[1][24] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    24,
+    26
+   ],
+   "study": [
+    "misra",
+    "iso26262-6"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Low-Level Hardware Integration: Lead bring-up on bench EVKs and production silicon with JTAG/SWD debuggers, logic analyzers and oscilloscopes; integrate the boot chain with the safety SBC's watchdog and safe-state behavior; and make the Uptane path the deployment mechanism for the platform's hermetic CI.",
+   "short": "평가 보드와 양산 칩을 처음 깨우고, 안전 칩의 워치독과 맞추고, CI 배포도 Uptane 경로로 돌게 만든다.",
+   "why": "FS26 같은 안전 SBC(전원과 감시를 맡는 옆 칩)는 창 워치독과 안전 출력(RSTb · FS0b · FS1b)을 갖고, MCU 가 정해진 때에 바르게 응답하지 않으면 리셋 · 안전 상태로 보냅니다.[27] 부팅이 길어 첫 응답을 놓치면 리셋이 되풀이될 수 있어 부트 체인과 같이 설계해야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**브링업** — 새 보드에 처음 전원을 넣고 JTAG/SWD 로 붙어 클럭 · 메모리 · 플래시가 도는지 확인한다. 안 되면 로직 분석기 · 오실로스코프로 신호를 본다. {추론}",
+     "**워치독 · 안전 상태** — 부팅 단계마다 언제 워치독에 응답할지, 검증 실패 때 어떤 안전 출력을 낼지 맞춘다.[27] {추론}",
+     "**CI 도 Uptane 으로** — JTAG 은 보드당 한 번이고 CI 까지 Uptane 으로 배포한다.[1] 매일 모든 엔지니어가 이 경로를 쓰게 된다.[1] 빌드는 같은 입력이면 같은 결과가 나오는 밀폐형(hermetic)이다.[30]"
+    ]
+   },
+   "refs": [
+    1,
+    27,
+    30
+   ],
+   "study": [
+    "fs26",
+    "making-embedded"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Engineering Leadership: Set the implementation pattern others follow, review the work of engineers who later join the boot/OTA area, and own the bench when it breaks.",
+   "short": "부트·OTA 영역의 첫 사람으로서 구현 본보기를 세우고, 뒤에 올 사람의 코드를 리뷰하고, 벤치를 책임진다.",
+   "why": "'나중에 합류할 엔지니어'라는 표현대로 이 영역은 지금 이 사람부터 시작합니다.[1] 2024년 보도는 현대차그룹이 실리콘밸리에 소프트웨어 연구 거점을 세워 북부 캘리포니아의 빅테크 엔지니어를 모으려 한다고 전했습니다.[7]",
+   "how_far": "관리자가 아니라 **손을 계속 쓰는 기술 리더**입니다. 벤치가 고장 나면 고치는 사람도 이 자리라고 적혀 있습니다.[1]",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Tenure: 15+ years of firmware engineering; expert-level C for bare-metal and RTOS targets.",
+   "short": "펌웨어 15년 이상, 운영체제 없는 환경(bare-metal)과 RTOS 에서 C 를 전문가 수준으로.",
+   "why": "플랫폼 전체가 기대는 두 부품을 이 사람이 처음 쓰고, 다른 사람이 따라 할 본보기를 세웁니다.[1] Sr. Staff 급이라 경력 기준이 높습니다.",
+   "level": {
+    "basic": "포인터 · volatile · 비트 연산 · 구조체 배치 · 인터럽트 처리",
+    "work": "링커 스크립트 · 시작 코드 · 임계 구역 · RTOS 태스크와 우선순위 · MISRA 규칙",
+    "team": "동적 메모리 없는 파서 · 상태 기계, 이중 검사 · 상수 시간 비교, 실행 시간 상한을 의식한 코드"
+   },
+   "how_far": "15년은 이 자리의 문턱이라 경력이 짧으면 지원 대상이 아닙니다. 아래 로드맵은 이런 자리를 향해 기반을 쌓는 순서입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "kr-embedded-os",
+    "making-embedded"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bootloader Authorship: Have personally written and shipped a bootloader on a Cortex-M or automotive MCU (S32K, AURIX/TriCore, RH850, STM32-class): the flash drivers, linker scripts, startup code and memory map were yours, not a vendor's. Linux/U-Boot-only experience does not meet this bar.",
+   "short": "벤더 예제가 아니라 직접 쓴 MCU 부트로더를 양산까지 낸 경험. 리눅스·U-Boot 만으로는 안 된다.",
+   "why": "리눅스 보드에서는 U-Boot 같은 범용 부트로더가 많은 일을 대신합니다. 이 자리는 MCU 에서 시작 코드 · 링커 스크립트 · 플래시 드라이버를 맨바닥부터 씁니다.[1][16]",
+   "how_far": "'직접 썼다'를 증명할 수 있어야 합니다 — 메모리 맵을 왜 그렇게 나눴는지, 플래시 쓰기 중 전원이 끊기면 어떻게 되는지 설명할 수 있는 정도. {추론}",
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "interrupt-boot",
+    "yiu-m33"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Verified Boot & A/B: Have integrated cryptographic verification into a boot or update path — signature verification through an HSM/secure element or a crypto library, key handling, anti-rollback — and implemented A/B or dual-bank activation with a recovery path.",
+   "short": "서명 검증을 부팅·업데이트 경로에 넣고(키·안티 롤백 포함), A/B 전환과 복구 경로까지 구현해 본 경험.",
+   "why": "업무의 부트 체인 · A/B 줄을 그대로 해 본 사람이라는 뜻입니다.[1] 공개 구현으로는 MCUboot 가 서명 검증 · 시험 부팅 · 되돌리기를 다 갖고 있어 구조를 비교해 보기 좋습니다.[15]",
+   "how_far": "보안 칩(HSM)을 쓰든 소프트웨어 암호 라이브러리를 쓰든 상관없고, **검증 · 키 · 안티 롤백 · 복구**가 다 들어간 경로를 끝까지 만들어 봤어야 합니다.[1]",
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "mcuboot-design",
+    "nxp-an13465"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "On-Target Update Agent: Have built or substantially owned a software-update agent for constrained embedded devices (vehicle strongly preferred):",
+   "short": "작은 임베디드 기기 안에서 도는 업데이트 에이전트를 만들었거나 사실상 맡아 본 경험(차량이면 더 좋다).",
+   "why": "업무의 Uptane 클라이언트가 바로 이 '기기 안의 에이전트'입니다.[1]",
+   "how_far": "'사실상 맡았다'면 일부만 고친 것이 아니라 설계와 결함 처리를 책임진 정도입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "uptane-bp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "flash management, resumable transfer, verify-before-activate, rollback. Cloud or campaign-tooling-only experience does not meet this bar.",
+   "short": "플래시 관리·이어 받기·검증 후 활성화·되돌리기를 해 봤어야 하고, 서버·배포 도구 쪽 경험만으로는 안 된다.",
+   "why": "OTA 에는 서버에서 '어느 차에 언제 보낼지' 정하는 쪽(캠페인)과 기기 안에서 받아 까는 쪽이 있습니다. 이 자리는 기기 쪽입니다.[1] 차량 업데이트 규정(UNECE R156)은 회사의 업데이트 관리 체계와 별도로 차량 쪽 업데이트 처리기도 심사합니다.[33]",
+   "refs": [
+    1,
+    33
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Certification Evidence: ISO 26262 (or DO-178C / IEC 61508) work products as an author: MISRA C compliance, static analysis to zero deviations, requirements-based testing with structural coverage (MC/DC at the highest levels), and traceability tooling.",
+   "short": "ISO 26262(또는 항공 DO-178C·산업 IEC 61508) 산출물을 직접 써 본 경험 — MISRA, 예외 0, MC/DC, 추적.",
+   "why": "업무의 '인증 증거' 줄을 직접 써 본 사람이어야 합니다.[1] 항공 · 산업 표준 경험도 인정하는 것은 요구사항 기반 시험 · 구조 커버리지 · 추적이 세 표준에서 비슷한 모양이기 때문으로 보입니다. {추론}",
+   "how_far": "'작성자로서'가 핵심입니다 — 검토만 받아 본 것이 아니라 요구사항 · 시험 · 커버리지 보고서를 내 손으로 낸 경험.[1] MISRA 의 현재 판은 MISRA C:2023 입니다.[26]",
+   "refs": [
+    1,
+    26
+   ],
+   "study": [
+    "misra",
+    "iso26262-6",
+    "parasoft-cov"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bench Fluency: JTAG/SWD, logic analyzer, oscilloscope; reads schematics; works from the reference manual at register level.",
+   "short": "디버거·로직 분석기·오실로스코프를 쓰고, 회로도를 읽고, 칩 설명서를 레지스터 단위로 보며 일한다.",
+   "why": "벤치 보드 · 양산 칩 브링업과 벤치 책임이 업무에 들어 있습니다.[1] 보안 엔진 · XRDC 같은 기능은 예제보다 참조 설명서와 응용 노트에 자세히 있습니다.[13][17]",
+   "refs": [
+    1,
+    13,
+    17
+   ],
+   "study": [
+    "making-embedded"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Silicon: NXP S32K3 with HSE_B (key catalogs, secure boot, A/B swap); FS26-class safety SBC integration.",
+   "short": "이 플랫폼의 칩(S32K3 + 보안 엔진 HSE_B)과 안전 칩(FS26급)을 이미 다뤄 봤으면 바로 일할 수 있다.",
+   "why": "공고가 대상을 S32K3급 락스텝(두 코어가 같은 일을 하며 서로 검사하는) MCU 와 보안 엔진으로 밝혔습니다.[1] NXP 는 S32K3 보안 부팅 응용 노트를 2026년 1월 판으로 냈습니다.[13] FS26 은 ASIL B~D 용 안전 SBC 입니다.[27]",
+   "refs": [
+    1,
+    13,
+    27
+   ],
+   "study": [
+    "nxp-an13465",
+    "fs26"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Open-Source Fingerprints: Uptane / TUF / aktualizr / MCUboot / SUIT — contributor rather than user.",
+   "short": "Uptane·TUF·aktualizr·MCUboot 같은 공개 프로젝트에 '쓴 사람'이 아니라 '고친 사람'이면 좋다.",
+   "why": "업무의 두 부품과 같은 일을 하는 공개 프로젝트들입니다 — TUF 는 Uptane 의 바탕이 된 업데이트 보안 틀[12], aktualizr 는 Uptane C++ 클라이언트(지금은 보관 상태)[34], MCUboot 는 MCU 보안 부트로더입니다.[15]",
+   "how_far": "기여 이력은 공개 기록으로 남아 '직접 썼다'를 증명하는 가장 쉬운 방법입니다. {추론}",
+   "refs": [
+    12,
+    15,
+    34
+   ],
+   "study": [
+    "mcuboot-design",
+    "tuf-spec"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Delta Technology: bsdiff-class delta tooling and compression-aware flash budgeting on MCUs.",
+   "short": "bsdiff 계열 차분 도구와 압축을 고려한 플래시 예산을 MCU 에서 해 봤으면 좋다.",
+   "why": "업무의 대역폭 · 저장 공간 줄과 같은 내용입니다.[1] bsdiff 원작과 MCU 용 적용 코드를 가진 detools 가 출발점입니다.[19][20]",
+   "refs": [
+    1,
+    19,
+    20
+   ],
+   "study": [
+    "detools"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Toolchain: Safety-certified RTOS (PX5, SafeRTOS or similar) and hermetic build systems (Bazel).",
+   "short": "안전 인증 RTOS(PX5·SafeRTOS 등)와 밀폐형 빌드(Bazel)를 써 봤으면 좋다.",
+   "why": "PX5 RTOS 는 2024년 ISO 26262 ASIL D 등의 기능안전 인증을 받았다고 발표했고[28], SafeRTOS 는 TÜV SÜD 의 IEC 61508 SIL 3 · ISO 26262 ASIL D 사전 인증을 내세웁니다.[29] Bazel 은 빌드가 바깥 환경에 기대지 않는 밀폐성(hermeticity)을 목표로 둡니다.[30]",
+   "refs": [
+    28,
+    29,
+    30
+   ],
+   "study": [
+    "bazel-herm"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Diagnostics: UDS (ISO 14229) security access and reprogramming services ($27/$29, $34/$36/$37).",
+   "short": "UDS 의 잠금 풀기(27·29)와 내려받기(34·36·37) 서비스를 구현해 봤으면 좋다.",
+   "why": "업무의 진단 재프로그래밍 줄에서 쓰는 서비스 번호 그대로입니다.[1][21]",
+   "refs": [
+    1,
+    21
+   ],
+   "study": [
+    "uds-wiki"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Networking & Middleware: Embedded pub/sub middleware (Zenoh / zenoh-pico, DDS) and automotive Ethernet (100BASE-T1, 10BASE-T1S).",
+   "short": "MCU 용 발행·구독 미들웨어(zenoh-pico 등)와 차량용 이더넷(100BASE-T1·10BASE-T1S)을 알면 좋다.",
+   "why": "업데이트 이미지가 플랫폼의 이더넷 미들웨어로 옵니다.[1] zenoh-pico 는 작은 기기용 Zenoh C 구현이고[31], 10BASE-T1S 는 한 쌍의 선에 여러 노드를 다는 차량 · 산업용 이더넷으로 영역(zonal) 구조에 맞는다고 소개됩니다.[32]",
+   "refs": [
+    1,
+    31,
+    32
+   ],
+   "study": [
+    "zenoh-pico"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Hardening: Fault-injection or side-channel countermeasure experience in a boot path.",
+   "short": "부팅 경로에 결함 주입·부채널 대책을 실제로 넣어 본 경험이 있으면 좋다.",
+   "why": "업무의 방어 공학 줄을 이미 해 본 사람이라는 뜻입니다.[1] 공개된 대책 목록으로는 TF-M 의 물리 공격 완화 문서가 있습니다.[22]",
+   "refs": [
+    1,
+    22
+   ],
+   "study": [
+    "tfm-fi",
+    "hhh"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Assessor Exposure: Direct interaction with certification bodies (TÜV, exida, UL) during assessment.",
+   "short": "인증 심사 때 TÜV·exida·UL 같은 인증 기관 심사원을 직접 상대해 봤으면 좋다.",
+   "why": "ISO 26262 는 확인 조치(검토 · 감사 · 기능안전 평가)를 요구하고[35], 이 플랫폼은 SEooC(특정 차를 정하지 않은 안전 요소)로 개발됩니다.[1] 심사원 질문에 산출물로 답해 본 경험이 그대로 쓰입니다. {추론}",
+   "refs": [
+    1,
+    35
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Education: MS or PhD in Computer Engineering, Electrical Engineering or a related field.",
+   "short": "컴퓨터공학·전기공학 등 관련 분야 석사·박사면 좋다(필수 아님).",
+   "why": "필수 요건이 아니라 우대사항에 있습니다.[1] 필수 요건은 모두 실무 경험입니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "부트로더 · 플래시 드라이버를 맨바닥부터 쓰는 것이 즐거운 사람[1]",
+   "'처음 짓는 플랫폼'에서 본보기를 세우고 싶은 사람[1]",
+   "보안 구조가 틀렸으면 하드웨어 근거로 반박할 수 있는 사람[1]",
+   "벤치에서 오실로스코프를 들고 끝까지 파고드는 사람[1]"
+  ],
+  "hard": [
+   "15년 이상 경력 · MCU 부트로더 직접 작성 · 기기 안 업데이트 에이전트가 모두 필수다[1]",
+   "MISRA · 예외 0 · MC/DC · 추적 문서 작성이 일의 큰 몫이다[1]",
+   "근무지가 미국 서니베일이라 한국 지원자는 현지 근무 자격이 먼저 문제다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "A/B 전환 표시를 쓰는 도중 전원이 끊기면 다음 부팅은 어느 칸으로 가나요?",
+   "a": "원자적 표시와 시험 부팅 · 되돌리기.[15]"
+  },
+  {
+   "q": "서명이 맞는 옛 이미지를 다시 깔려는 공격은 어떻게 막나요? 카운터는 언제 올리나요?",
+   "a": "안티 롤백 카운터와 보안 버전.[10][13]"
+  },
+  {
+   "q": "부분 검증 Secondary 는 무엇을 못 막나요?",
+   "a": "Director Targets 키 탈취.[11]"
+  },
+  {
+   "q": "서명 비교 if 문 하나를 글리치로 건너뛰려는 공격을 코드로 어떻게 막나요? 컴파일러가 지우지 않게 하려면?",
+   "a": "두 번 검사 · 복잡한 상수 · 닫힌 채 실패.[22][23]"
+  },
+  {
+   "q": "조건 3개짜리 분기의 MC/DC 를 채우려면 시험이 몇 개 필요한가요?",
+   "a": "조건 수 + 1, 위의 예.[25]"
+  },
+  {
+   "q": "안전 SBC 워치독 첫 응답 시간보다 서명 검증이 길면 어떻게 하나요?",
+   "a": "부팅 시간 예산과 워치독 설계.[1][27]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · Sr. Staff Firmware Engineer (Secure Boot & OTA implementation)",
+   "url": "https://jobs.ashbyhq.com/42dot/63196d96-2810-4348-8aa5-077d8c0ee710",
+   "kind": "posting",
+   "note": "이 공고. 역할 소개 · 업무 · 요건 · 우대 · 전형 · 연봉 범위. 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 · 업무 몰입 프로그램(복리후생)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준, 해외 법인은 현지 정책을 따른다고 적혀 있다(같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 채용 · Locations",
+   "url": "https://42dot.ai/en/careers/locations",
+   "kind": "company",
+   "note": "회사 거점 목록"
+  },
+  {
+   "n": 4,
+   "title": "Dun & Bradstreet · 42Dot Inc. 회사 정보",
+   "url": "https://www.dnb.com/business-directory/company-profiles.42dot_inc.def7cddb34743142dccfcd05cd4b8a33.html",
+   "kind": "reference",
+   "note": "미국 법인 주소 380 N Pastoria Ave, Sunnyvale, CA 94085"
+  },
+  {
+   "n": 5,
+   "title": "포티투닷 블로그 · 42dot at CES 2024: Software-Defined Vehicle Technology",
+   "url": "https://42dot.ai/ko/stories/blog-news/ces-2024-software-defined-vehicle",
+   "kind": "company",
+   "date": "2024-03-28",
+   "note": "HPVC · 영역 제어기 · Rust 로 만든 SDV OS"
+  },
+  {
+   "n": 6,
+   "title": "바이라인네트워크 · 포티투닷 차량 기능안전 개발 프로세스, 국제 표준 인증 획득",
+   "url": "https://byline.network/2023/09/25-289/",
+   "kind": "news",
+   "date": "2023-09-25",
+   "note": "DNV ISO 26262 인증(ASIL D)"
+  },
+  {
+   "n": 7,
+   "title": "KED Global · Hyundai Motor to set up software R&D center in Silicon Valley",
+   "url": "https://www.kedglobal.com/newsView/ked202407010005",
+   "kind": "news",
+   "date": "2024-07-01"
+  },
+  {
+   "n": 8,
+   "title": "포티투닷 채용 · Sr. Test Automation Engineer (SIL/HIL Infrastructure)",
+   "url": "https://jobs.ashbyhq.com/42dot/3d96a60d-be22-4d72-a50a-320e79d1b21c",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고. Python 시험 자동화 · UDS · DoIP · 연봉 범위"
+  },
+  {
+   "n": 9,
+   "title": "포티투닷 채용 · Embedded SW Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/be911f50-1c25-4598-bc12-ef502a27f165",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고. 임베디드 리눅스 부팅 시간 최적화 · 연봉 범위"
+  },
+  {
+   "n": 10,
+   "title": "Uptane Standard for Design and Implementation 2.1.0",
+   "url": "https://uptane.org/docs/2.1.0/standard/uptane-standard",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Uptane Deployment Best Practices 2.0.0",
+   "url": "https://uptane.org/docs/2.0.0/deployment/best-practices",
+   "kind": "reference",
+   "note": "전체 검증 · 부분 검증 Secondary 의 차이와 약점"
+  },
+  {
+   "n": 12,
+   "title": "The Update Framework (TUF) Specification",
+   "url": "https://theupdateframework.io/specification",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "NXP AN13465 · S32K3xx Secure Boot",
+   "url": "https://www.nxp.com/docs/en/application-note/AN13465.pdf",
+   "kind": "reference",
+   "date": "2026-01",
+   "note": "Rev. 1.0. 이번에는 개요만 확인"
+  },
+  {
+   "n": 14,
+   "title": "NXP 커뮤니티 · Dual-application bootloader with A/B swap OTA update - S32K3XX",
+   "url": "https://community.nxp.com/t5/S32K/Dual-application-bootloader-with-A-B-swap-OTA-update-S32K3XX/td-p/2088933",
+   "kind": "community",
+   "note": "NXP 지원 답변 — 공식 문서 아님"
+  },
+  {
+   "n": 15,
+   "title": "MCUboot · Bootloader design",
+   "url": "https://docs.mcuboot.com/design.html",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Interrupt (Memfault) · From Zero to main(): How to Write a Bootloader from Scratch",
+   "url": "https://interrupt.memfault.com/blog/how-to-write-a-bootloader-from-scratch",
+   "kind": "reference",
+   "date": "2019-08-13"
+  },
+  {
+   "n": 17,
+   "title": "NXP 커뮤니티 · Regarding MRC in S32K3",
+   "url": "https://community.nxp.com/t5/S32K/Regarding-MRC-in-S32K3/m-p/1649539",
+   "kind": "community",
+   "note": "NXP 지원 엔지니어의 XRDC 설명"
+  },
+  {
+   "n": 18,
+   "title": "MCUXpresso SDK API Reference · XRDC",
+   "url": "https://mcuxpresso.nxp.com/api_doc/dev/4263/a00063.html",
+   "kind": "reference",
+   "note": "다른 NXP 칩의 SDK 문서 — 개념 설명용"
+  },
+  {
+   "n": 19,
+   "title": "detools · Binary delta encoding utility",
+   "url": "https://detools.readthedocs.io/en/latest/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Colin Percival · Binary diff/patch utility (bsdiff)",
+   "url": "https://www.daemonology.net/bsdiff/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Wikipedia · Unified Diagnostic Services",
+   "url": "https://en.wikipedia.org/wiki/Unified_Diagnostic_Services",
+   "kind": "reference",
+   "note": "표준 원문(ISO 14229-1)은 유료"
+  },
+  {
+   "n": 22,
+   "title": "Trusted Firmware-M · Physical attack mitigation",
+   "url": "https://trustedfirmware-m.readthedocs.io/en/latest/design_docs/tfm_physical_attack_mitigation.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "No Starch Press · The Hardware Hacking Handbook",
+   "url": "https://nostarch.com/hardwarehacking",
+   "kind": "reference",
+   "date": "2021-11"
+  },
+  {
+   "n": 24,
+   "title": "ISO 26262-6:2018 · Product development at the software level",
+   "url": "https://www.iso.org/standard/68388.html",
+   "kind": "reference",
+   "note": "유료 표준. 간섭 배제 · 단위 시험 커버리지"
+  },
+  {
+   "n": 25,
+   "title": "Parasoft · ISO 26262 code coverage",
+   "url": "https://www.parasoft.com/learning-center/iso-26262/code-coverage/",
+   "kind": "reference",
+   "note": "도구 회사 설명 — 표준 표 원문 아님"
+  },
+  {
+   "n": 26,
+   "title": "MISRA · Publications (MISRA C:2023)",
+   "url": "https://misra.org.uk/publications",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "NXP · FS26 Safety System Basis Chip for ASIL D",
+   "url": "https://www.nxp.com/products/FS26",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "eeNews Europe · Functional safety certification for the PX5 RTOS",
+   "url": "https://www.eenewseurope.com/en/functional-safety-certification-for-the-px5-rtos",
+   "kind": "news",
+   "date": "2024"
+  },
+  {
+   "n": 29,
+   "title": "TI · WITTENSTEIN SAFERTOS",
+   "url": "https://www.ti.com/tool/WHIS-3P-SAFERTOS",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Bazel · Hermeticity",
+   "url": "https://bazel.build/basics/hermeticity",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "GitHub · eclipse-zenoh/zenoh-pico",
+   "url": "https://github.com/eclipse-zenoh/zenoh-pico",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "UNH-IOL · 10BASE-T1S/L Connects Sensors in Cars and Buildings",
+   "url": "https://www.iol.unh.edu/news/2024/06/27/10base-t1s-l-connects-sensors-cars-and-buildings",
+   "kind": "reference",
+   "date": "2024-06-27"
+  },
+  {
+   "n": 33,
+   "title": "UL Solutions · Software Update Management Systems According to UNECE R156",
+   "url": "https://www.ul.com/sis/insights/software-update-management-systems-according-unece-r156",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "GitHub · advancedtelematic/aktualizr",
+   "url": "https://github.com/advancedtelematic/aktualizr",
+   "kind": "reference",
+   "note": "Uptane C++ 클라이언트, 보관(archived) 상태"
+  },
+  {
+   "n": 35,
+   "title": "ISO 26262-2:2018 · Management of functional safety",
+   "url": "https://www.iso.org/standard/68384.html",
+   "kind": "reference",
+   "note": "확인 조치(검토 · 감사 · 평가)"
+  },
+  {
+   "n": 36,
+   "title": "California Labor Commissioner · Pay Transparency",
+   "url": "https://www.dir.ca.gov/dlse/Pay-Transparency.htm",
+   "kind": "reference",
+   "note": "캘리포니아 공고의 급여 범위 기재 의무(SB 1162)"
+  },
+  {
+   "n": 37,
+   "title": "NXP 커뮤니티 · S32k328 HSE DomainID",
+   "url": "https://community.nxp.com/t5/S32K/S32k328-HSE-DomainID/m-p/2381899",
+   "kind": "community"
+  }
+ ],
+ "caveat": "이 플랫폼(영역 제어기용 ASIL-D 펌웨어 · Uptane 경로)을 다룬 포티투닷의 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 같은 서니베일 공고 두 건, CES 2024 블로그, ISO 26262 인증 보도이고, 나머지는 Uptane · TUF 표준, NXP 문서 · 커뮤니티 답변, MCUboot · TF-M 문서로 '보통 이런 것'을 보였습니다. NXP 응용 노트와 ISO 26262 표는 원문을 다 읽지 못해 개요 · 2차 자료 기준입니다. 미국 법인 복리후생은 공식 자료를 찾지 못했고, 회사 복지 페이지는 한국 본사 기준이라 싣지 않았습니다[2]. 2026-11-25 기준.",
+ "resources": [
+  {
+   "id": "interrupt-boot",
+   "title": "From Zero to main(): How to Write a Bootloader from Scratch",
+   "by": "François Baldassari · Interrupt(Memfault) · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://interrupt.memfault.com/blog/how-to-write-a-bootloader-from-scratch",
+   "why": "Cortex-M 에서 메모리 맵 정하기 · 부트로더 짜기 · 앱을 부트로더 뒤로 옮기기를 한 번에. 같은 연재의 시작 코드 · 링커 스크립트 글과 함께 본다."
+  },
+  {
+   "id": "kr-embedded-os",
+   "title": "임베디드 OS 개발 프로젝트",
+   "by": "이만우 · 인사이트 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003160848",
+   "why": "ARM 위에서 부트 코드 · 인터럽트 · 태스크 · 컨텍스트 전환을 직접 만들며 RTOS 를 짓는다. 'bare-metal 과 RTOS 의 C' 요건의 한국어 출발점."
+  },
+  {
+   "id": "making-embedded",
+   "title": "Making Embedded Systems (2판)",
+   "by": "Elecia White · O'Reilly · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/making-embedded-systems/9781098151539/",
+   "why": "회로도 · 데이터시트 읽기, 디버깅, 펌웨어 구조. 벤치 요건과 결정적인 코드 습관의 기초."
+  },
+  {
+   "id": "yiu-m33",
+   "title": "Definitive Guide to Arm Cortex-M23 and Cortex-M33 Processors",
+   "by": "Joseph Yiu · Newnes · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/definitive-guide-to/9780128207369/",
+   "why": "Cortex-M 의 예외 처리 · MPU 장 · 보안 확장. 부트로더가 앱에 넘길 때 무엇을 잠그는지 이해하는 데 필요하다."
+  },
+  {
+   "id": "nxp-an13465",
+   "title": "AN13465 · S32K3xx Secure Boot",
+   "by": "NXP · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.nxp.com/docs/en/application-note/AN13465.pdf",
+   "why": "이 공고의 칩에서 보안 부팅 방식 · 키 · A/B 스왑과의 관계를 칩 회사가 설명한 문서."
+  },
+  {
+   "id": "mcuboot-design",
+   "title": "MCUboot · Bootloader design",
+   "by": "MCUboot 프로젝트 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.mcuboot.com/design.html",
+   "why": "슬롯 · 스왑 방식 · 이미지 끝부분(trailer) · 시험 부팅과 되돌리기. A/B 상태 기계를 설계하기 전에 비교할 공개 설계."
+  },
+  {
+   "id": "uptane-std",
+   "title": "Uptane Standard for Design and Implementation 2.1.0",
+   "by": "Uptane(Joint Development Foundation)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://uptane.org/docs/2.1.0/standard/uptane-standard",
+   "why": "업데이트 클라이언트가 지켜야 할 검증 순서 · 메타데이터 · 버전 보고의 원문. 업무 Uptane 줄 전체의 기준."
+  },
+  {
+   "id": "uptane-bp",
+   "title": "Uptane Deployment Best Practices 2.0.0",
+   "by": "Uptane",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://uptane.org/docs/2.0.0/deployment/best-practices",
+   "why": "부분 검증 · 전체 검증 Secondary 의 선택과 약점, 작은 MCU 에서의 현실적인 제약."
+  },
+  {
+   "id": "tuf-spec",
+   "title": "The Update Framework Specification",
+   "by": "TUF 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://theupdateframework.io/specification",
+   "why": "Root · Targets · Snapshot · Timestamp 역할과 서명 개수(threshold)의 원래 정의. Uptane 이 이 위에 서 있다."
+  },
+  {
+   "id": "tfm-fi",
+   "title": "Trusted Firmware-M · Physical attack mitigation",
+   "by": "Trusted Firmware 프로젝트 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://trustedfirmware-m.readthedocs.io/en/latest/design_docs/tfm_physical_attack_mitigation.html",
+   "why": "두 번 검사 · 무작위 지연 · 복잡한 상수 · 루프 확인 — 방어 공학 줄의 대책을 실제 펌웨어가 어떻게 넣었나."
+  },
+  {
+   "id": "hhh",
+   "title": "The Hardware Hacking Handbook",
+   "by": "Jasper van Woudenberg · Colin O'Flynn · No Starch Press · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://nostarch.com/hardwarehacking",
+   "why": "전압 · 클럭 글리치와 부채널 공격을 공격자 쪽에서 직접 해 보는 책. 무엇을 막아야 하는지 감을 준다."
+  },
+  {
+   "id": "misra",
+   "title": "MISRA C:2023",
+   "by": "MISRA",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://misra.org.uk/publications",
+   "why": "안전 등급 C 코딩 규칙의 현재 판. 정적 분석 예외 0 요건의 기준."
+  },
+  {
+   "id": "iso26262-6",
+   "title": "ISO 26262-6:2018",
+   "by": "ISO",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/68388.html",
+   "why": "소프트웨어 단계의 요구 — 단위 시험 · 커버리지 · 간섭 배제. 인증 산출물 줄의 원문(유료)."
+  },
+  {
+   "id": "parasoft-cov",
+   "title": "ISO 26262 code coverage",
+   "by": "Parasoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.parasoft.com/learning-center/iso-26262/code-coverage/",
+   "why": "문장 · 분기 · MC/DC 커버리지가 ASIL 별로 어떻게 권장되는지 무료로 먼저 훑기."
+  },
+  {
+   "id": "uds-wiki",
+   "title": "Unified Diagnostic Services",
+   "by": "Wikipedia",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://en.wikipedia.org/wiki/Unified_Diagnostic_Services",
+   "why": "UDS 서비스 번호 표와 세션 · 잠금 · 내려받기 흐름. 표준 원문 전에 지도를 잡는다."
+  },
+  {
+   "id": "detools",
+   "title": "detools 문서",
+   "by": "Erik Moqvist · 오픈소스",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://detools.readthedocs.io/en/latest/index.html",
+   "why": "bsdiff 계열 차분 만들기와 MCU 용 C 적용 코드, 제자리 · 순차 패치의 차이."
+  },
+  {
+   "id": "zenoh-pico",
+   "title": "zenoh-pico",
+   "by": "Eclipse Zenoh",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/eclipse-zenoh/zenoh-pico",
+   "why": "MCU 에서 도는 발행 · 구독 미들웨어. 이미지가 오는 통신 길을 이해하는 우대사항용."
+  },
+  {
+   "id": "bazel-herm",
+   "title": "Bazel · Hermeticity",
+   "by": "Bazel 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://bazel.build/basics/hermeticity",
+   "why": "같은 입력이면 같은 결과가 나오는 빌드가 무엇이고 어디서 깨지는지. 밀폐형 CI 우대사항용."
+  },
+  {
+   "id": "fs26",
+   "title": "FS26 Safety System Basis Chip",
+   "by": "NXP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.nxp.com/products/FS26",
+   "why": "워치독 · 안전 출력 · 자가 진단이 무엇인지. 부트 체인과 안전 칩을 맞추는 업무의 상대편."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "MCU 를 맨바닥부터 켜기",
+   "time": "3~4주",
+   "goal": "시작 코드 · 링커 스크립트 · 벡터 테이블을 직접 써서 main 까지 가고, 부트로더 → 앱으로 뛸 수 있다.",
+   "resources": [
+    "kr-embedded-os",
+    "interrupt-boot",
+    "making-embedded"
+   ],
+   "task": "값싼 Cortex-M 보드(또는 QEMU)에서 벤더 예제 없이 부트로더 16KB + 앱 영역을 나눈 링커 스크립트를 쓰고, 부트로더가 앱의 벡터 테이블로 뛰게 만든다."
+  },
+  {
+   "title": "서명 검증과 A/B",
+   "time": "3~4주",
+   "goal": "서명이 맞을 때만 앱으로 뛰고, A/B 두 칸 중 확정된 쪽으로 부팅하며, 확정이 없으면 되돌린다.",
+   "resources": [
+    "mcuboot-design",
+    "yiu-m33",
+    "nxp-an13465"
+   ],
+   "task": "1단계 부트로더에 이미지 머리말(버전 · 크기 · 해시) + 서명 검증을 붙이고, 두 칸 상태 기계와 안티 롤백 숫자를 넣는다. 쓰기 단계마다 전원을 끊어 보고 어느 칸으로 살아나는지 표로 남긴다."
+  },
+  {
+   "title": "Uptane 메타데이터 읽기",
+   "time": "2~3주",
+   "goal": "네 역할의 메타데이터를 순서대로 검증하고 threshold · 만료 · 버전 역행을 거절할 수 있다.",
+   "resources": [
+    "tuf-spec",
+    "uptane-std",
+    "uptane-bp"
+   ],
+   "task": "호스트에서 Python 으로 가상의 Director Targets 메타데이터를 만들고 서명한 뒤, 고정 크기 버퍼만 쓰는 C 검증기로 받아 본다. 같은 키 두 번 · 만료 · 낮은 버전을 각각 거절하는 시험을 붙인다."
+  },
+  {
+   "title": "안전 등급으로 다듬기",
+   "time": "3~4주",
+   "goal": "MISRA 검사 위반 0, 분기 · MC/DC 커버리지 보고, 요구사항 ↔ 시험 추적표를 낼 수 있다.",
+   "resources": [
+    "misra",
+    "parasoft-cov",
+    "iso26262-6"
+   ],
+   "task": "3단계 검증기에 요구사항 10줄을 적고, 줄마다 시험을 잇고, 커버리지 도구로 MC/DC 를 재서 빈 곳을 채운다. 정적 분석 위반을 사유서 없이 0으로 만든다."
+  },
+  {
+   "title": "공격자처럼 보기 (선택)",
+   "time": "계속",
+   "goal": "검증 경로의 분기를 글리치 관점에서 다시 짜고, 차분 업데이트 · UDS 재프로그래밍 입구를 붙일 수 있다.",
+   "resources": [
+    "tfm-fi",
+    "hhh",
+    "detools",
+    "uds-wiki"
+   ],
+   "task": "서명 비교를 상수 시간 + 두 번 검사 + 복잡한 상수로 바꾸고 컴파일 결과에서 중복 검사가 남았는지 확인한다. detools 로 두 판의 차분을 만들어 크기를 비교한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 **연 $189,240 ~ $266,760**(미국 서니베일 기준 기본급 범위로 보임)이 적혀 있다. 같은 회사 서니베일 공고들은 $185,000 ~ $303,030 사이다",
+  "rows": [
+   {
+    "label": "이 공고 연봉 범위",
+    "value": "$189,240 ~ $266,760",
+    "basis": "공고 · 2026-11 수집",
+    "note": "공고의 Compensation 칸. 기본급인지 총보상인지는 적혀 있지 않다 [1]"
+   },
+   {
+    "label": "Embedded SW Engineer (서니베일)",
+    "value": "$214,970 ~ $303,030",
+    "basis": "공고 · 2026-11 수집",
+    "peer": true,
+    "note": "같은 회사 공고, 경력 10년 이상 요구 [9]"
+   },
+   {
+    "label": "Sr. Test Automation Engineer (서니베일)",
+    "value": "$185,000 ~ $250,000",
+    "basis": "공고 · 2026-11 수집",
+    "peer": true,
+    "note": "같은 회사 공고, Senior 5년 · Staff 8년 이상 [8]"
+   }
+  ],
+  "how": "캘리포니아는 일정 규모 이상 회사가 공고에 급여 범위를 적도록 한다 [36]. 범위 안 어디에 놓이는지는 전형 끝의 처우 협의(Offer Negotiation) 단계에서 정해진다 [1]. 한국 본사의 집계 평균(원티드)과는 나라 · 통화 · 기준이 달라 나란히 놓지 않았다{추론}."
+ },
+ "location": {
+  "name": "42dot Inc. 서니베일 사무소",
+  "address": "380 N Pastoria Ave, Sunnyvale, CA 94085, USA",
+  "postal": "94085",
+  "map_url": "https://map.naver.com/p/search/380%20N%20Pastoria%20Ave%2C%20Sunnyvale%2C%20CA%2094085",
+  "note": "공고 근무지는 'Sunnyvale, United States' [1]. 번지는 Dun & Bradstreet 의 42Dot Inc. 회사 정보 [4]이고, 회사 채용 사이트 거점 목록에도 서니베일이 있다 [3]. 팀 자리가 이 주소와 다를 수 있다{추론}."
+ }
+}

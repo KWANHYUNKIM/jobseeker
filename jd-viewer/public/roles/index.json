@@ -3,6 +3,7 @@
  "jobs": {
   "ats-ashby:42dot:fa24b02d-a231-4e0c-affa-319d47c19b58": "42dot-ai-infrastructure-engineer",
   "wanted-392726": "42dot-ai-infrastructure-engineer",
+  "ats-ashby:42dot:63196d96-2810-4348-8aa5-077d8c0ee710": "42dot-firmware-secure-boot-ota",
   "ats-ashby:42dot:a83b4909-4d4f-41c5-b212-a1db321965a5": "42dot-llm-optimization-engineer",
   "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
   "ats-ashby:42dot:beb84dde-9182-4441-a25b-c03644640854": "42dot-vehicle-system-integration",
@@ -92,6 +93,8 @@
   "wanted-385521": "hyundai-autoever-smart-tag-service-engineer",
   "saramin-55604373": "hyundai-energy-tech-market-research",
   "ats-hkmc:hyundai:2026N2366": "hyundai-lunar-rover-autonomy-sw",
+  "saramin-55604144": "hyundai-manufacturing-vision-ai-ops",
+  "wanted-398824": "hyundai-manufacturing-vision-ai-ops",
   "ats-hkmc:hyundai:2026N2209": "hyundai-npu-dl-compiler",
   "ats-hkmc:hyundai:2026N2331": "hyundai-robotics-joint-robot-production",
   "wanted-387536": "hyundai-sdf-data-architect",
@@ -331,6 +334,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "42dot-firmware-secure-boot-ota",
+   "company": "포티투닷(42dot)",
+   "role": "Sr. Staff Firmware Engineer (Secure Boot & OTA)",
+   "jobs": [
+    "ats-ashby:42dot:63196d96-2810-4348-8aa5-077d8c0ee710"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 34
   },
   {
    "id": "42dot-llm-optimization-engineer",
@@ -1077,6 +1090,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 33
+  },
+  {
+   "id": "hyundai-manufacturing-vision-ai-ops",
+   "company": "현대자동차",
+   "role": "제조 비전 AI 모델 운영 및 최적화",
+   "jobs": [
+    "saramin-55604144",
+    "wanted-398824"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 30
   },
   {
    "id": "hyundai-npu-dl-compiler",
