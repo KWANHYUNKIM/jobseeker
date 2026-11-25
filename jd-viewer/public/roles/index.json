@@ -62,6 +62,7 @@
   "ats-greenhouse:coupang:8345323": "coupang-ppe-data-engineer-bengaluru",
   "ats-greenhouse:coupang:8248619": "coupang-retail-ops-planning-ai-manager",
   "ats-greenhouse:coupang:8258122": "coupang-rocket-content-editor",
+  "ats-greenhouse:coupang:7834206": "coupang-search-ai-engineer-senior-staff-mtv",
   "ats-greenhouse:coupang:8239021": "coupang-search-discovery-senior-staff-ds",
   "ats-greenhouse:coupang:8207116": "coupang-security-automation-engineer-seattle",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
@@ -882,6 +883,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 22
+  },
+  {
+   "id": "coupang-search-ai-engineer-senior-staff-mtv",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior Staff II AI Engineer — 검색(Search) 생성형 AI 앱 (L7-2)",
+   "jobs": [
+    "ats-greenhouse:coupang:7834206"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 25
   },
   {
    "id": "coupang-search-discovery-senior-staff-ds",
