@@ -1,0 +1,990 @@
+{
+ "id": "skax-hris-pm-pl",
+ "company": "SK AX",
+ "role": "HRIS 구축 PM/PL",
+ "team": "AX ERP서비스팀",
+ "jobs": [
+  "ats-skcareers:sk:R262566"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "고객사의 **인사 시스템(HRIS)** — 조직·발령·근태·급여·평가·채용을 한곳에서 다루는 시스템 — 을 새로 까는 프로젝트를 앞에서 이끄는 자리입니다. 제품은 SAP HCM·SAP SuccessFactors·Workday·국산 HR 솔루션 중에서 고객에 맞는 것을 고르고, 일정·품질·위험과 수행 인력을 관리합니다.[1]",
+  "env": "SAP 의 옛 설치형 인사 시스템(ERP HCM)은 기본 유지보수가 2027년 말에 끝나 고객사들이 클라우드(SuccessFactors)나 S/4HANA 판으로 옮겨야 하는 때입니다.[5] SK AX 는 그 위에 얹는 자체 HR AI 플랫폼 'Talent AX' 를 2025~2026년에 내놓았고, 공고도 'AI 기반 HR 업무 혁신'을 같이 맡깁니다.[1][2][3]",
+  "oneline": "코드보다 **인사 업무(급여·근태·평가)의 규칙과 프로젝트 관리**가 중심인 자리. HRIS 구축 PM/PL 경험이 필수라 신입·전환자 자리는 아니고, 개발자 출신이라면 '패키지 설정·연계·데이터 이관을 아는 PL' 로 들어가는 길입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "AX ERP서비스팀을 소개합니다 😊 AX ERP서비스팀은 기업의 HRIS(Human Resources Information System)를 구축하고 운영하는 조직으로, 다양한 고객사의 인사 시스템 혁신을 수행하고 있습니다.",
+   "short": "회사 밖 고객사의 인사 시스템을 지어 주고(구축) 돌려 주는(운영) 팀이다.",
+   "why": "HRIS 는 사람에 관한 기록 — 누가 어느 조직에 있고, 얼마를 받고, 언제 일했고, 어떤 평가를 받았나 — 을 모아 두고 인사 업무를 처리하는 시스템입니다. 이 팀은 그것을 **여러 고객사에** 만들어 주는 일을 합니다.[1] 같은 'AX ERP서비스' 이름의 팀이 SAP 재무회계·분석 자리도 뽑고 있어, ERP 를 업무 영역별로 나눠 맡는 조직으로 읽힙니다.{추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "국내/외 다양한 HR Solution(SAP HCM, SAP SuccessFactors, Workday, 국산 HR Solution 등)에 대한 구축 경험을 바탕으로 고객에게 가장 적합한 HRIS를 제안하고 성공적으로 구축합니다.",
+   "short": "제품 하나를 파는 게 아니라 SAP·Workday·국산 중 고객에 맞는 것을 골라 준다.",
+   "why": "네 제품은 성격이 다릅니다. SAP HCM 은 고객 서버에 까는 옛 설치형, SuccessFactors 는 SAP 의 클라우드 인사 제품군, Workday 는 클라우드 전용 인사·재무 제품입니다.[5][10] 국산 솔루션은 한국 법(근로기준법·세법)에 맞춘 패키지로, 예를 들어 LG CNS 는 조직·인사행정·근태·급여·연말정산을 담은 클라우드 인사 제품을 냈습니다.[13]",
+   "actually": {
+    "items": [
+     "**설치형(SAP HCM)** — 고객이 맞춤 개발을 많이 할 수 있지만, 기본 유지보수가 2027년 말에 끝나고 선택 연장은 2030년 말까지다.[5]",
+     "**클라우드(SuccessFactors·Workday)** — 제품 회사가 정기적으로 판을 올린다. SuccessFactors 는 한 해 두 번(상반기·하반기) 새 판을 낸다.[18] 맞춤 개발보다 설정으로 맞춘다.",
+     "**국산** — 한국 급여·연말정산·근태 규칙이 처음부터 들어 있고 법이 바뀌면 패치를 준다고 알린다.[13]",
+     "**섞어 쓰기** — 핵심 인사는 클라우드, 급여는 기존 설치형에 두는 '하이브리드' 구성도 흔하다.[5]"
+    ]
+   },
+   "refs": [
+    5,
+    10,
+    13,
+    18
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "단순한 시스템 구축이 아닌, 고객의 HR 업무 혁신과 디지털 전환을 함께 만들어가는 것이 우리의 역할입니다.",
+   "short": "옛 업무를 그대로 옮기지 않고, 새 시스템에 맞춰 인사 업무 방식 자체를 바꾸게 돕는다.",
+   "why": "클라우드 제품은 맞춤 개발 여지가 작아서, 표준 기능에 업무를 맞추는 쪽으로 설계합니다. SAP 의 도입 방법론은 '표준에 가깝게, 바꾸려면 사업상 이유를' 을 기본 권고로 둡니다.[11] 그래서 구축이 곧 업무 개선이 됩니다.",
+   "refs": [
+    11
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "최근에는 AI 기술을 활용한 HR Agent 및 HR 업무 자동화까지 사업 영역을 확대하며 차세대 HR 플랫폼을 만들어가고 있습니다.",
+   "short": "SK AX 가 만든 HR AI 플랫폼(Talent AX)을 기존 인사 시스템 위에 얹는 사업이 새로 붙었다.",
+   "why": "SK AX 는 'AXgenticWire Talent AX' 를 채용·성과관리·육성·인재추천·HR서비스·HR Admin 의 여섯 에이전트(스스로 일을 나눠 처리하는 AI 프로그램)로 설명합니다. 담당자가 채팅으로 요청하면 중심 에이전트가 필요한 하위 에이전트를 골라 일의 순서를 짜고 실행합니다.[2] 기존 HRIS·학습 시스템을 바꾸지 않고 그 위에 AI 층을 얹는 방식이라고 밝혔습니다.[2] 2026년 6월에는 HR 컨설팅사 머서와 협약을 맺어, 머서가 조직·인사 제도를 설계하고 SK AX 가 플랫폼을 짓는 역할을 나눴습니다.[3]",
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 산업의 대형 고객사 HRIS 구축 프로젝트를 수행하며 전문성을 높일 수 있습니다. 특정 솔루션만 경험하는 것이 아니라 SAP HCM, SuccessFactors, Workday, 국산 HR Solution 등 다양한 솔루션을 경험할 수 있습니다. 고객의 비즈니스에 가장 적합한 Solution을 제안하는 HR Technology Consultant로 성장할 수 있습니다. AI 기반 HR Agent, 차세대 HR 플랫폼 등 최신 기술을 함께 경험할 수 있습니다.",
+   "short": "프로젝트마다 고객 산업·제품이 바뀐다. 한 제품 전문가보다 '여러 제품을 비교해 고르는 사람'으로 큰다.",
+   "why": "회사가 내세우는 성장 경로입니다.[1] 제품마다 자격·방법론이 따로라서(SAP 는 인증 시험, Workday 는 파트너 소속 컨설턴트가 같은 방법론으로 구축)[9][10] 여러 제품을 다뤄 본 경력은 드뭅니다.{추론}",
+   "refs": [
+    1,
+    9,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "수평적인 조직문화를 지향하며 구성원의 성장과 전문성을 가장 중요한 가치로 생각합니다.",
+   "short": "팀이 스스로를 그렇게 소개한다. 실제 분위기는 면접에서 묻는다.",
+   "why": "공고의 팀 소개 문장입니다.[1] 근거를 더 찾지 못해 그대로 둡니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 프로젝트에 따라 근무 환경이 변경될 수 있으며 주로 서울/분당 등 수도권에서 근무하게 됩니다.",
+   "short": "고객사에 가서 일하는 경우가 많다. 프로젝트가 바뀌면 출근지도 바뀐다.",
+   "why": "구축 프로젝트는 고객사 현업(인사팀)과 매일 회의하고 테스트해야 해서 보통 고객사나 프로젝트 사무실에 모입니다.{추론} 공고는 근무지를 서울·분당 등 수도권으로 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "HRIS 구축 프로젝트의 PM/PL을 수행합니다.",
+   "short": "PM 은 프로젝트 전체(돈·일정·사람·고객)를, PL 은 한 영역(예: 급여·근태)의 설계와 구축을 책임진다.",
+   "why": "공고는 PM 과 PL 을 한 자리로 묶었습니다.[1] 프로젝트 규모에 따라 PM 으로 전체를 맡거나, 큰 프로젝트에서 한 모듈의 PL 을 맡게 됩니다.{추론}",
+   "actually": {
+    "intro": "인사 시스템 구축은 보통 업무 영역(모듈)별로 PL 을 둡니다.{추론}",
+    "items": [
+     "**조직·인사행정** — 조직도, 발령(입사·이동·승진·퇴사), 인사 기록.",
+     "**근태** — 출퇴근·연장근로·휴가, 주 52시간 관리.",
+     "**급여** — 기본급·수당·4대보험·원천세·연말정산.",
+     "**평가·보상** — 목표·평가 주기, 연봉 조정.",
+     "**채용·교육** — 지원자 관리, 교육 이력."
+    ]
+   },
+   "how_far": "PM 은 계약 범위 안에서 결과를 내는 사람입니다. 개발자 출신이 처음 맡는다면 **연계·데이터 이관·권한** 같은 기술 영역 PL 이 들어가기 쉬운 자리입니다.{추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 요구사항 분석 및 HRIS 구축 전략을 수립합니다.",
+   "short": "인사팀이 지금 어떻게 일하고 무엇이 불편한지 듣고, 무엇을 어떤 순서로 바꿀지 계획을 세운다.",
+   "why": "같은 '인사 시스템' 이라도 계열사가 몇 개인지, 해외 법인이 있는지, 급여를 직접 계산하는지에 따라 범위가 크게 다릅니다.{추론} 전략은 범위·제품·단계(한 번에 전부 vs 회사·나라별로 차례로)를 정하는 일입니다.[12]",
+   "actually": {
+    "items": [
+     "**현황(As-Is) 조사** — 지금 쓰는 시스템, 엑셀로 하는 일, 인터페이스(급여 → 회계, 근태 → 출입 시스템).",
+     "**요구사항 목록** — 업무별로 '반드시·있으면 좋음' 을 나눈다.",
+     "**단계 정하기** — 핵심 인사 먼저, 급여·평가는 다음 단계처럼.[12]",
+     "**전환 방식** — 한 번에 바꾸기 vs 회사·나라별 차례로 바꾸기. 여러 나라면 대표 지역에서 시범 후 넓히는 방식을 흔히 권한다.[12]"
+    ]
+   },
+   "refs": [
+    12
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 환경에 적합한 HR Solution을 (SAP HCM / SAP SuccessFactors / Workday / 국산 Solution) 제안합니다.",
+   "short": "고객 규모·해외 법인·기존 ERP·예산을 보고 네 제품 중 무엇이 맞는지 근거를 들어 권한다.",
+   "why": "제품 선택이 이후 몇 년의 운영 비용과 방식을 정합니다. 기존에 SAP ERP 를 쓰는 고객은 2027년 유지보수 종료 때문에 다음 길을 정해야 합니다.[5]",
+   "actually": {
+    "intro": "비교할 때 보는 것들입니다.{추론}",
+    "items": [
+     "**해외 법인** — 여러 나라 급여·법규를 한 제품으로 맞출 수 있나. SuccessFactors 급여 제품은 60개국 법규·세법 대응을 내세운다.[6]",
+     "**한국 규칙** — 연말정산·4대보험·근로기준법 가산수당을 표준 기능으로 하나, 추가 개발이 필요한가.[13][15][17]",
+     "**기존 시스템** — SAP 재무를 쓰면 급여 전표 연계가 쉬운 쪽.",
+     "**맞춤 정도** — 설치형은 고칠 수 있는 만큼 유지보수 비용도 크고, 클라우드는 판 올림을 따라가야 한다.[5][11]",
+     "**AI** — 제품 회사도 HR 에이전트를 붙이고 있다(SAP 는 2025년 하반기 판에 성과·목표 에이전트).[18]"
+    ]
+   },
+   "refs": [
+    5,
+    6,
+    11,
+    13,
+    15,
+    17,
+    18
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구축 일정, 품질, 리스크 및 프로젝트 수행 조직을 관리합니다.",
+   "short": "계획 대비 진척을 숫자로 보고, 터질 일을 미리 적어 두고, 누가 무엇을 하는지 조직을 짠다.",
+   "why": "인사 시스템은 **급여일**이라는 움직일 수 없는 날짜가 있습니다. 오픈이 밀리면 월급이 안 나가는 위험이 생겨, 일정·위험 관리가 특히 중요합니다.{추론}",
+   "actually": {
+    "items": [
+     "**일정** — 일을 잘게 쪼갠 표(WBS)와 단계별 점검일. Workday 는 계획 → 설계·설정 → 테스트 → 배포 네 단계, 단계마다 통과 기준을 맞춰야 넘어간다.[10]",
+     "**진척을 숫자로** — 획득가치(EVM): 계획한 일의 값(PV)·끝낸 일의 값(EV)·쓴 돈(AC)으로 일정 지수 SPI = EV/PV, 비용 지수 CPI = EV/AC.[27]",
+     "**위험** — 데이터 이관 품질, 급여 병행 계산 불일치, 현업 담당자 부재 같은 것을 목록으로 관리.{추론}",
+     "**수행 조직** — 고객 인사팀·우리 컨설턴트·제품 회사·협력사 개발자 역할표."
+    ]
+   },
+   "examples": [
+    {
+     "title": "진척을 숫자로 보기 (직접 돌린 출력)",
+     "body": "지금까지 6억 원어치 일을 하기로 했는데 4.8억 원어치만 끝냈고 5.4억 원을 썼다면 — 일정은 80%, 돈 1원당 0.89원어치 일을 하고 있습니다. 이대로 가면 12억 원 예산이 13.5억 원이 됩니다.[27]",
+     "lang": "python",
+     "code": "PV, EV, AC = 600, 480, 540   # 백만원\nprint(\"SPI\", round(EV / PV, 2), \"CPI\", round(EV / AC, 2))   # SPI 0.8 CPI 0.89\nBAC = 1200\nprint(\"EAC\", round(BAC / (EV / AC)))                        # EAC 1350"
+    }
+   ],
+   "how_far": "공식은 간단합니다. 어려운 건 EV 를 정직하게 매기는 것 — '90% 끝남' 이 몇 주째 그대로인 일을 잡아내는 것입니다.{추론}",
+   "refs": [
+    10,
+    27
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "HR 프로세스(To-Be) 설계 및 시스템에 적용합니다.",
+   "short": "'앞으로 이렇게 일한다'(To-Be) 흐름을 그리고, 그대로 시스템 설정·결재선·규칙으로 옮긴다.",
+   "why": "클라우드 제품은 표준 기능을 먼저 보여 주고 차이(gap)만 따로 다루는 방식으로 설계합니다 — SAP 는 이것을 'fit-to-standard' 라고 부릅니다.[11] Workday 도 설계·설정 단계에서 앞으로의 업무 흐름·보고서·권한·연계를 정합니다.[10]",
+   "actually": {
+    "items": [
+     "**흐름도** — 예: 승진 발령 = 팀장 요청 → 인사 검토 → 임원 승인 → 발령일에 직급·급여 반영.",
+     "**조직 기준 정보 먼저** — 회사·사업부·부서·직무·근무지 같은 기준 정보가 있어야 직원 기록을 넣을 수 있다. SuccessFactors 는 이를 'Foundation Objects' 라 부르고, 대부분 유효일자가 붙는다.[7]",
+     "**유효일자로 쌓기** — 기록은 덮어쓰지 않고 '언제부터' 를 붙여 쌓는다. 그래야 '6월 30일 기준 누가 어느 부서였나' 에 답한다.[7]",
+     "**차이 목록** — 표준으로 안 되는 것은 설정·확장·업무 변경 중 무엇으로 풀지 정한다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "유효일자 기록에서 '그날의 부서' 찾기 (직접 돌린 출력)",
+     "body": "7월 1일 자 발령 하나로 6월 30일과 7월 1일의 답이 갈립니다. 평가 기준일·급여 원가 귀속이 이 날짜로 정해집니다.{추론}",
+     "lang": "python",
+     "code": "from datetime import date\njob = [\n    {\"emp\": \"E100\", \"dept\": \"인사팀\",   \"start\": date(2024, 3, 1), \"end\": date(2025, 6, 30)},\n    {\"emp\": \"E100\", \"dept\": \"HR기획팀\", \"start\": date(2025, 7, 1), \"end\": date(9999, 12, 31)},\n]\ndef as_of(emp, d):\n    return next(r[\"dept\"] for r in job if r[\"emp\"] == emp and r[\"start\"] <= d <= r[\"end\"])\nprint(as_of(\"E100\", date(2025, 6, 30)), as_of(\"E100\", date(2025, 7, 1)))\n# 인사팀 HR기획팀"
+    }
+   ],
+   "refs": [
+    7,
+    10,
+    11
+   ],
+   "study": [
+    "sap-ec-academy-ko",
+    "sap-activate"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구축 파트너 및 고객사와의 커뮤니케이션 및 의사결정을 지원합니다.",
+   "short": "고객 인사팀·제품 회사·협력사 사이에서 쟁점을 정리하고, 누가 언제 결정할지 판을 깐다.",
+   "why": "Workday 방법론은 계획 단계부터 제품 회사 쪽 관리자와 파트너 PM 이 같이 목표·일정·책임을 정하게 합니다.[10] 여러 회사가 한 프로젝트에 들어오니, 결정이 늦어지는 것이 가장 흔한 지연 원인이 됩니다.{추론}",
+   "how_far": "결정은 고객이 합니다. PM 은 선택지·장단점·마감일을 한 장으로 만들어 결정을 받아 내고, 결정 기록을 남깁니다.{추론}",
+   "refs": [
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 기반 HR 업무 혁신 및 차세대 HR Platform 구축 프로젝트에 참여합니다.",
+   "short": "HR 에이전트(채용 서류 검토·면접 안내·인재 추천 등)를 고객사 인사 시스템에 붙이는 일에 들어간다.",
+   "why": "SK AX 는 Talent AX 의 첫 적용 영역을 채용(AI 서류 평가·면접 가이드·AI 면접관·실무 AI 역량 시험)이라고 소개했습니다.[2] SK AI SUMMIT 2025 에서는 흩어진 채용·평가·육성 정보를 사람 단위로 묶는 데이터 구조를 핵심으로 설명했습니다.[4]",
+   "actually": {
+    "items": [
+     "**데이터 잇기** — 에이전트가 쓸 직원 프로필(직무·성과·경험)을 HRIS·학습 시스템에서 모은다.[2][4]",
+     "**권한** — 평가·급여는 민감 정보라, 에이전트가 누구 데이터를 볼 수 있는지 HRIS 권한과 맞춘다.{추론}",
+     "**사람 확인** — 채용·평가 결정에 AI 가 쓰이면 최종 판단은 사람이 하도록 흐름을 짠다. {추론}"
+    ]
+   },
+   "refs": [
+    2,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨",
+   "short": "이 아래가 필수 요건이다. 공통 요건으로 '채용 분야 경력 3년 이상'도 따로 붙어 있다.",
+   "why": "공고 맨 아래 공통 요건에 채용 분야 경력 3년 이상이 있습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "HRIS 구축 프로젝트 PM 또는 PL을 경험하신 분",
+   "short": "인사 시스템 구축에서 PM 이나 PL 을 직접 해 봤어야 한다. 팀원 경험만으로는 부족하다.",
+   "why": "이 자리는 들어오자마자 고객 앞에서 프로젝트를 맡는 자리라 바로 쓸 수 있는 경험을 첫 줄에 뒀습니다.[1]",
+   "how_far": "규모보다 **오픈까지 끝까지 가 본 경험**이 중요합니다. 면접에서 '가장 위험했던 순간과 어떻게 넘겼나' 를 숫자(인원·기간·이관 건수)로 말할 수 있어야 합니다.{추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SAP HCM, SAP SuccessFactors, Workday 또는 국산 HR Solution 구축 경험을 보유하신 분",
+   "short": "네 제품 중 하나라도 실제로 구축해 봤으면 된다. 모두 알 필요는 없다.",
+   "why": "'또는' 입니다.[1] 제품마다 데이터 구조와 방법론이 다르지만, 기준 정보 → 직원 기록 → 업무 흐름 → 연계 → 이관 순서는 비슷해 하나를 깊이 알면 나머지를 빨리 익힙니다.{추론}",
+   "actually": {
+    "items": [
+     "**SuccessFactors** — 기준 정보(Foundation)·사람(Person)·고용(Employment) 세 덩어리로 데이터를 나눈다.[7]",
+     "**SAP HCM** — 인포타입(정보 단위 화면·표)과 조직 관리(OM)의 개체·관계로 짠다.[12]",
+     "**Workday** — 업무 흐름(비즈니스 프로세스)·보고서·보안 역할·연계를 설계·설정 단계에서 만든다.[10]",
+     "**국산** — 한국 급여·근태 규칙이 들어 있는 패키지를 고객 제도에 맞게 조정.[13]"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    10,
+    12,
+    13
+   ],
+   "study": [
+    "sap-ec-academy-ko",
+    "sap-press-ec",
+    "workday-method"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "HR 업무 프로세스를 (인사, 조직, 채용, 평가, 보상, 급여, 근태 등) 이해하시는 분",
+   "short": "인사팀이 매달·매년 무엇을 하는지 알아야 한다. 특히 급여와 근태는 법 규칙이 숫자로 들어간다.",
+   "why": "인사 시스템의 숫자는 법에서 옵니다. 연장근로는 통상임금의 50% 이상을 더 줘야 하고[17], 4대보험 요율은 해마다 바뀝니다 — 2026년 국민연금 9.5%(전년 9%)[16], 건강보험 7.19%(전년 7.09%)·장기요양 0.9448%[15].",
+   "actually": {
+    "items": [
+     "**인사·조직** — 발령 종류(입사·전보·승진·휴직·퇴사)와 발령일.",
+     "**근태** — 연장·야간·휴일근로 가산, 연차.[17]",
+     "**급여** — 기본급·수당 → 4대보험·소득세 공제 → 실지급, 매년 1월 요율 교체.[15][16]",
+     "**평가·보상** — 평가 주기와 등급 → 연봉 조정·성과급.",
+     "**채용** — 공고 → 지원 → 전형 → 입사 발령으로 이어지는 흐름."
+    ]
+   },
+   "examples": [
+    {
+     "title": "급여 공제와 연장수당 — 요율은 연도별 표로 (직접 돌린 출력)",
+     "body": "월 400만 원(비과세·상한 무시, 원 미만 버림으로 단순화)의 근로자 부담 4대보험과 연장 10시간 수당입니다. 요율이 바뀌자 공제 합계가 376,164원 → 388,695원으로 달라집니다.[15][16] 통상시급은 월 통상임금 ÷ 209시간(주 40시간 + 주휴 8시간의 월 환산), 연장은 1.5배입니다.[17] 장기요양은 건강보험료에 '장기요양률 ÷ 건강보험률' 을 곱합니다.[15]",
+     "lang": "python",
+     "code": "from decimal import Decimal as D, ROUND_DOWN\nRATES = {  # 근로자 부담분 — 해마다 바뀌니 연도별 표로\n    2025: {\"pension\": D(\"0.045\"),  \"health\": D(\"0.03545\"), \"ltc_ratio\": D(\"0.9182\") / D(\"7.09\"), \"employ\": D(\"0.009\")},\n    2026: {\"pension\": D(\"0.0475\"), \"health\": D(\"0.03595\"), \"ltc_ratio\": D(\"0.9448\") / D(\"7.19\"), \"employ\": D(\"0.009\")},\n}\ndef won(x): return x.quantize(D(\"1\"), rounding=ROUND_DOWN)\ndef deductions(monthly, year):\n    r = RATES[year]; health = won(monthly * r[\"health\"])\n    return {\"국민연금\": won(monthly * r[\"pension\"]), \"건강보험\": health,\n            \"장기요양\": won(health * r[\"ltc_ratio\"]), \"고용보험\": won(monthly * r[\"employ\"])}\ndef overtime(monthly_ordinary, hours):\n    return won(monthly_ordinary / D(209) * D(\"1.5\") * hours)\npay = D(4_000_000)\nfor y in (2025, 2026):\n    d = deductions(pay, y); print(y, d, \"합계\", sum(d.values()))\nprint(\"연장 10시간 수당\", overtime(pay, 10))\n# 2025 {'국민연금': 180000, '건강보험': 141800, '장기요양': 18364, '고용보험': 36000} 합계 376164\n# 2026 {'국민연금': 190000, '건강보험': 143800, '장기요양': 18895, '고용보험': 36000} 합계 388695\n# 연장 10시간 수당 287081"
+    }
+   ],
+   "how_far": "제도는 고객 인사팀이 정합니다. PM/PL 은 **제도를 규칙으로 옮겼을 때 빈칸이 어디인지** 물을 수 있으면 됩니다 — '월 중간 입사자 수당은 날짜 비례인가', '요율 바뀌는 달 소급은 어떻게 하나' 같은 것.{추론} 실제 공제는 상·하한과 끝수 처리 규칙이 더 있어 위 예와 다를 수 있습니다.",
+   "refs": [
+    15,
+    16,
+    17
+   ],
+   "study": [
+    "hrm-book",
+    "law-lsa",
+    "nhis-2026"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "고객 요구사항 분석 및 To-Be 프로세스 설계를 경험하신 분",
+   "short": "인사팀 말을 듣고 '앞으로의 업무 흐름도'와 차이 목록으로 바꿔 본 경험.",
+   "why": "업무④의 To-Be 설계를 실제로 해 봤는지 보는 줄입니다.[1] 클라우드 구축에서는 표준 기능을 먼저 보여 주고 차이를 찾는 워크숍이 이 일의 중심입니다.[11]",
+   "how_far": "흐름도만이 아니라 **차이마다 '설정 / 확장 개발 / 업무 변경 / 포기' 중 하나로 결론**을 내 본 경험이 핵심입니다.[11]",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "sap-activate"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "프로젝트 일정, 품질, 리스크 관리를 수행해보신 분",
+   "short": "일정표·결함 목록·위험 목록을 직접 굴려 본 경험.",
+   "why": "업무⑤를 바로 맡길 수 있는지 보는 줄입니다.[1]",
+   "actually": {
+    "items": [
+     "**일정** — WBS, 단계별 점검일, 진척 지수(SPI).[27]",
+     "**품질** — 테스트 단계마다 통과 기준. Workday 방법론은 테스트 단계의 통과 기준을 맞춰야 배포로 넘어간다.[10]",
+     "**급여 병행 계산** — 새 시스템과 옛 시스템으로 같은 달 급여를 둘 다 계산해 차이를 0 으로 만든 뒤 오픈하는 것이 인사 시스템 품질의 핵심이다.{추론}",
+     "**위험** — 목록·담당자·대응 계획, 주간 보고."
+    ]
+   },
+   "refs": [
+    1,
+    10,
+    27
+   ],
+   "study": [
+    "pmbok7-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 기반 HR 혁신 또는 차세대 HR Technology에 대한 관심을 갖고 계신 분",
+   "short": "경험까지는 아니고 '관심' 이다. Talent AX 같은 HR 에이전트가 무엇을 하는지는 알고 가야 한다.",
+   "why": "회사가 HR AI 플랫폼을 새 사업으로 밀고 있습니다.[2][3] 제품 회사들도 HR 에이전트를 내고 있어(SAP 의 성과·목표 에이전트)[18], 고객이 '우리도 AI' 를 물을 때 답할 수 있어야 합니다.{추론}",
+   "refs": [
+    2,
+    3,
+    18
+   ],
+   "study": [
+    "skax-talent-ax"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍",
+   "short": "이 아래는 있으면 좋은 것들이다.",
+   "why": "공고의 우대사항 머리말입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "그룹사, 대기업 HRIS 구축 프로젝트 PM을 경험하신 분",
+   "short": "계열사 여러 곳의 서로 다른 인사 제도를 한 시스템에 담아 본 경험이면 크게 유리하다.",
+   "why": "그룹 단위 구축은 회사마다 직급·평가·급여 제도가 달라, 공통으로 둘 것과 회사별로 둘 것을 가르는 일이 핵심입니다. 여러 나라 구축에서 '공통 틀(템플릿) + 나라별 조정' 을 나누는 것과 같은 구조입니다.[12]",
+   "refs": [
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SAP HCM 또는 SAP SuccessFactors 자격증을 보유하신 분",
+   "short": "SAP 공식 인증. 예: SuccessFactors Employee Central Core 구현 컨설턴트 인증(C_THR81).",
+   "why": "SAP 는 제품별 인증 시험을 둡니다. Employee Central Core 시험은 기준 정보·직원 데이터·업무 규칙·결재 같은 범위를 봅니다.[9] 고객이 컨설턴트 자격을 요구하는 경우가 있어 우대합니다.{추론}",
+   "how_far": "시험 코드 끝에 판(예: 2311)이 붙고, 클라우드 제품은 판이 바뀔 때마다 자격 유지 과정을 거칩니다.[9] 지금 판을 확인하고 준비합니다.",
+   "refs": [
+    9
+   ],
+   "study": [
+    "c-thr81",
+    "sap-ec-academy-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Workday 구축 또는 운영해보신 분",
+   "short": "Workday 는 파트너 소속으로 같은 방법론을 따라 구축한다. 국내에선 경험자가 드물어 우대한다.",
+   "why": "Workday 는 자사 컨설턴트와 파트너가 모두 같은 방법론(계획 → 설계·설정 → 테스트 → 배포)과 도구로 구축한다고 밝힙니다.[10] 국내 대기업 해외 법인·글로벌 기업 고객에서 수요가 생깁니다.{추론}",
+   "refs": [
+    10
+   ],
+   "study": [
+    "workday-method"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "국산 HR Solution을 구축해보신 분",
+   "short": "한국 급여·연말정산·근태 규칙이 든 국산 패키지를 고객 제도에 맞춰 본 경험.",
+   "why": "국산 솔루션은 세법·근로기준법·개인정보보호법 변화를 따라 패치를 준다고 알립니다.[13] 한국 인력이 대부분인 고객은 글로벌 제품보다 국산을 고르는 경우가 있습니다.{추론}",
+   "refs": [
+    13
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "PI(업무혁신) 또는 ISP 프로젝트 수행 경험을 보유하신 분",
+   "short": "시스템을 짓기 전 단계 — 업무를 다시 설계하는 PI, 정보화 전략·계획을 세우는 ISP 를 해 봤으면 좋다.",
+   "why": "구축 전략·제품 제안(업무②③)은 사실상 작은 ISP 입니다.{추론} 공공 쪽에서는 기획재정부·NIA 가 ISP·ISMP 수립 공통가이드로 방법론과 산출물 기준을 정해 둘 만큼 정형화된 일입니다.[19]",
+   "refs": [
+    19
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Global HR Template을 구축해보신 분",
+   "short": "여러 나라 법인이 같이 쓸 '공통 인사 틀'을 먼저 만들고, 나라별로 필요한 것만 덧붙여 본 경험.",
+   "why": "SAP HCM 글로벌 템플릿 글은 공통 업무 흐름·데이터 모델을 템플릿에 담고, 법·규제 때문에 생기는 나라별 조정은 대략 25% 정도로 잡으라고 권합니다.[12] 해외 법인이 많은 대기업 고객에 필요합니다.",
+   "actually": {
+    "items": [
+     "**공통** — 발령 종류, 조직 구조, 직무 체계, 결재 흐름.[12]",
+     "**나라별** — 그 나라 법 때문에 필요한 정보 항목·발령, 개인정보 규정.[12]",
+     "**번역** — 선택 목록 값을 템플릿에 같이 두고 그 나라 사람이 검수.[12]",
+     "**차례로 넓히기** — 대표 지역 시범 → 나라별 확산.[12]"
+    ]
+   },
+   "refs": [
+    12
+   ],
+   "study": [
+    "sapinsider-template"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI Agent, Copilot, 업무 자동화 프로젝트를 경험하신 분",
+   "short": "사내 AI 비서나 업무 자동화를 실제로 붙여 본 경험 — Talent AX 같은 사업에 바로 쓰인다.",
+   "why": "회사가 HR 에이전트 플랫폼을 사업으로 키우고 있습니다.[2][3] 에이전트를 붙이려면 어떤 데이터를 쓰게 하고, 어떤 일은 사람이 확인하게 할지 정해야 합니다.[2] {추론}",
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "제품 회사(SAP·Workday) 지원 창구, 해외 법인 인사 담당자와 영어로 일할 일이 있다.",
+   "why": "글로벌 템플릿·해외 법인 확산 프로젝트에서는 나라별 인사 담당자와 요구사항을 맞춰야 합니다.[12] 제품 문서와 교육도 대부분 영어입니다.[7][10]",
+   "refs": [
+    7,
+    10,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "고객의 문제를 함께 고민하고 해결하는 것을 즐기는 분\n다양한 이해관계자와 원활하게 커뮤니케이션하고 헙업할 수 있는 분",
+   "short": "인사팀·임원·제품 회사·협력사 사이에서 말을 옮기고 합의를 만드는 일이 많다.",
+   "why": "업무⑥처럼 여러 회사가 한 프로젝트에 들어오는 일이라, 성향 줄도 그 일에 맞춰져 있습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "새로운 HR Technology를 배우고 도전하는 것을 좋아하는 분\n맡은 프로젝트를 끝까지 책임감 있게 리딩할 수 있는 분\n구성원과 함께 성장하는 문화를 지향하는 분",
+   "short": "클라우드 제품은 해마다 판이 바뀐다. 새 기능을 계속 따라가며 오픈까지 끌고 가는 사람.",
+   "why": "SuccessFactors 는 한 해 두 번 새 판을 내고[18], 인증도 판마다 유지 과정이 있습니다.[9] 배우기를 멈추면 금방 낡는 분야입니다.{추론}",
+   "refs": [
+    9,
+    18
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "인사 제도(급여·근태·평가)를 규칙으로 옮기는 게 재밌는 사람",
+   "한 제품에 묶이지 않고 여러 HR 제품을 비교해 고르는 컨설턴트로 크고 싶은 사람[1]",
+   "개발·연계·데이터 이관을 해 봤고 PM/PL 로 넘어가려는 사람 {추론}",
+   "HR 에이전트를 실제 인사 시스템 위에 얹는 일을 해 보고 싶은 사람[2]"
+  ],
+  "hard": [
+   "HRIS 구축 PM/PL 경험이 필수다 — 신입·전환자 자리가 아니다[1]",
+   "고객사 상주로 근무지가 프로젝트마다 바뀐다[1]",
+   "급여일·연말정산 같은 움직일 수 없는 날짜가 있어 오픈 전후에 일이 몰린다 {추론}",
+   "직접 코딩보다 회의·문서·조율이 일의 대부분이다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "SAP ERP HCM 을 쓰는 고객이 다음 시스템을 묻습니다. 무엇을 기준으로 권하겠어요?",
+   "a": "2027년 기본 유지보수 종료·2030년 연장, 클라우드·S/4HANA 판·하이브리드 선택지.[5]"
+  },
+  {
+   "q": "새 급여 시스템을 언제 오픈해도 된다고 판단하겠어요?",
+   "a": "옛·새 시스템 병행 계산 차이가 0 이 되고 테스트 통과 기준을 맞췄을 때.[10] {추론}"
+  },
+  {
+   "q": "7월 1일 자 조직 개편인데 데이터가 7월 3일에 들어갔습니다. 무엇이 틀어지나요?",
+   "a": "유효일자 기록과 소급 — 그 사이 급여·결재·권한.[7]"
+  },
+  {
+   "q": "여러 나라 법인에 같은 인사 시스템을 깔 때 무엇을 공통으로 두나요?",
+   "a": "공통 흐름·데이터 모델은 템플릿, 법·규제 차이는 나라별 조정.[12]"
+  },
+  {
+   "q": "표준 기능으로 안 되는 요구가 나오면 어떻게 하나요?",
+   "a": "fit-to-standard — 설정·확장·업무 변경 중 하나, 바꾸려면 사업상 이유.[11]"
+  },
+  {
+   "q": "채용 서류 검토에 AI 에이전트를 붙이자는 요청이 왔습니다. 무엇부터 정하겠어요?",
+   "a": "볼 수 있는 데이터·권한, 최종 판단은 사람.[2] {추론}"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · HRIS 구축 PM/PL 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262566",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대·전형(서류 → SKCT → 면접 2회 → 채용검진/처우협의)·공통 요건 경력 3년 이상·근무지 서울/분당 등 수도권"
+  },
+  {
+   "n": 2,
+   "title": "SK AX 인사이트 · AXgenticWire Talent AX, 모두의 일하는 방식을 바꾸는 AI Native HR 시스템",
+   "url": "https://www.skax.co.kr/insight/trend/3834/",
+   "kind": "company",
+   "date": "2026-08-21",
+   "note": "흩어진 HR 데이터, 여섯 에이전트, 중심 에이전트가 하위 에이전트를 골라 실행, 첫 적용은 채용, 기존 HRIS·LMS 위에 AI 층 — 회사 홍보 성격"
+  },
+  {
+   "n": 3,
+   "title": "SK AX 뉴스룸 · SK AX, 글로벌 기업 Mercer와 기업 운영방식 AI로 재설계한다",
+   "url": "https://www.skax.co.kr/company/news-room/sk-ax-글로벌-기업-mercer와-기업-운영방식-ai로-재설계한다/",
+   "kind": "company",
+   "date": "2026-06-08",
+   "note": "머서 = 조직 운영 모델·인사 제도 설계, SK AX = 지능형 HR 플랫폼 구축"
+  },
+  {
+   "n": 4,
+   "title": "SK AX 인사이트 · SK AI SUMMIT 2025 리뷰: 실무를 바꾸는 AX 인사이트",
+   "url": "https://www.skax.co.kr/insight/trend/3580/",
+   "kind": "company",
+   "date": "2025-12-05",
+   "note": "Talent AX 전시·발표 — 채용·평가·육성·이동 정보가 흩어진 문제, 사람별 역량 프로필"
+  },
+  {
+   "n": 5,
+   "title": "SAP Community · SAP Business Suite 7 Extension: What This Means for SAP ERP Human Capital Management",
+   "url": "https://community.sap.com/t5/enterprise-resource-planning-blog-posts-by-sap/sap-business-suite-7-extension-what-this-means-for-sap-erp-human-capital/ba-p/13424955",
+   "kind": "reference",
+   "note": "설치형 HCM·급여 기본 유지보수 2027년 말, 선택 연장 2030년 말, S/4HANA 위 HCM(H4S4) 2040년까지, 클라우드·하이브리드 선택지 — 본문 접속이 막혀 검색 요약으로 확인"
+  },
+  {
+   "n": 6,
+   "title": "SAP 코리아 · SAP SuccessFactors Employee Central Payroll",
+   "url": "https://www.sap.com/korea/products/hcm/employee-central-payroll.html",
+   "kind": "reference",
+   "note": "60개국 현지 법규·세법 대응을 내세움(제품 홍보), 한국 세부 설정은 없음"
+  },
+  {
+   "n": 7,
+   "title": "SAP Learning · Introducing Foundation Objects (Employee Central Core Administration)",
+   "url": "https://learning.sap.com/courses/sap-successfactors-employee-central-core-administration/introducing-foundation-objects",
+   "kind": "reference",
+   "note": "법인·사업부·부서·코스트센터·근무지·직무 분류, 직원 데이터보다 먼저 있어야 함, 대부분 유효일자"
+  },
+  {
+   "n": 9,
+   "title": "SAP Training · C_THR81 SAP SuccessFactors Employee Central Core 인증",
+   "url": "https://training.sap.com/certification/C_THR81_2311",
+   "kind": "reference",
+   "note": "시험 범위(기준 정보·직원 데이터·업무 규칙·결재), 코드 끝의 판 표시, 판별 자격 유지"
+  },
+  {
+   "n": 10,
+   "title": "Workday · Workday Methodology Overview (Customer Deployment Guide)",
+   "url": "https://community-content.workday.com/en-us/public/learn/resources/customer-deployment/workday-methodology-overview-student-customer-deployment-guide.html",
+   "kind": "reference",
+   "date": "2026-07-21",
+   "note": "공개 문서(대학 학사 판) — 계획·설계와 설정·테스트·배포, 단계별 통과 기준, Workday 관리자와 파트너 PM"
+  },
+  {
+   "n": 11,
+   "title": "SAP · SAP Activate 방법론",
+   "url": "https://www.sap.com/products/erp/activate-methodology.html",
+   "kind": "reference",
+   "note": "Discover·Prepare·Explore·Realize·Deploy·Run 여섯 단계, Explore 의 fit-to-standard, 표준에 가깝게"
+  },
+  {
+   "n": 12,
+   "title": "SAPinsider · Key Considerations for Creating an SAP ERP HCM Global Template",
+   "url": "https://sapinsider.org/key-considerations-for-creating-an-sap-erp-hcm-global-template/",
+   "kind": "reference",
+   "note": "템플릿 = 공통 흐름·데이터 모델(인포타입·OM), 나라별 조정 약 25%, 번역 검수 — 글이 오래됨(2012년 무렵으로 보임)"
+  },
+  {
+   "n": 13,
+   "title": "LG · LG CNS 클라우드 인사관리 솔루션 'Next HR' 출시",
+   "url": "https://www.lg.co.kr/media/release/21520",
+   "kind": "news",
+   "date": "2020-01-30",
+   "note": "국산 HR 솔루션의 예 — 조직·인사행정·근태·급여·연말정산, 세법·근로기준법·개인정보보호법 변화에 패치 제공(회사 발표)"
+  },
+  {
+   "n": 15,
+   "title": "국민건강보험공단 · 2026년 달라지는 건강·장기요양제도 안내",
+   "url": "https://www.nhis.or.kr/renewal_popup/poster/20260204_poster_longdesc_1.html",
+   "kind": "reference",
+   "note": "건강보험료율 7.19%(2025년 7.09%), 장기요양보험료율 0.9448%(2025년 0.9182%)"
+  },
+  {
+   "n": 16,
+   "title": "뉴시스 · 월급 309만원 직장인, 내년부터 국민연금 보험료 매달 14만6700원 낸다",
+   "url": "https://www.newsis.com/view/NISX20251229_0003457395",
+   "kind": "news",
+   "date": "2025-12-29",
+   "note": "2026년 1월부터 9% → 9.5%, 2033년까지 해마다 0.5%p"
+  },
+  {
+   "n": 17,
+   "title": "국가법령정보센터 · 근로기준법",
+   "url": "https://www.law.go.kr/법령/근로기준법",
+   "kind": "reference",
+   "note": "제56조 연장·야간·휴일근로 통상임금 50% 이상 가산. 209시간은 법조문이 아닌 관행 환산값"
+  },
+  {
+   "n": 18,
+   "title": "SAP News · SAP SuccessFactors 2H 2025 Release",
+   "url": "https://news.sap.com/2025/10/sap-successfactors",
+   "kind": "reference",
+   "date": "2025-10-13",
+   "note": "하반기 판, 성과·목표 에이전트, Joule — 제품 회사 홍보. 판 이름(2H)이 상·하반기 주기를 보여 준다"
+  },
+  {
+   "n": 19,
+   "title": "전자신문(영문) · 기획재정부·NIA ISP·ISMP 수립 공통가이드 개정",
+   "url": "https://english.etnews.com/20220531200001",
+   "kind": "news",
+   "date": "2022-05-31",
+   "note": "공공 정보화의 ISP·ISMP 방법론·산출물 기준"
+  },
+  {
+   "n": 20,
+   "title": "FETV · '월급이 연봉 수준' SK그룹, 급여 Top 계열사는 어디?",
+   "url": "http://www.fetv.co.kr/news/articleView.html?idxno=198852",
+   "kind": "news",
+   "date": "2025-08-14",
+   "note": "2024년 사업보고서 기준 상장사 1인 평균 급여"
+  },
+  {
+   "n": 21,
+   "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+   "url": "https://zdnet.co.kr/view/?no=20250816174726",
+   "kind": "news",
+   "date": "2025-08-16",
+   "note": "2025년 반기보고서 기준 6개월치 1인 평균 급여"
+  },
+  {
+   "n": 22,
+   "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보",
+   "url": "https://www.wanted.co.kr/company/25949",
+   "kind": "reference",
+   "note": "공공 자료로 계산한 평균 연봉 집계 — 계산 기간 표기 없음"
+  },
+  {
+   "n": 23,
+   "title": "SK㈜ · Careers Policy(복리후생)",
+   "url": "https://sk.co.kr/en/careers/policy.jsp",
+   "kind": "company",
+   "note": "항목만 있고 금액·조건·작성일 없음"
+  },
+  {
+   "n": 24,
+   "title": "SK Careers · Culture",
+   "url": "https://www.skcareers.com/Culture",
+   "kind": "company",
+   "note": "그룹 채용 사이트의 문화·근무 제도 소개 — 금액·연도 없음"
+  },
+  {
+   "n": 25,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company",
+   "note": "SK u-타워·판교 캠퍼스·수내 오피스 등 주소"
+  },
+  {
+   "n": 26,
+   "title": "KRX KIND · SK 주식회사 분기보고서(제34기 1분기)",
+   "url": "https://kind.krx.co.kr/external/2024/05/16/002060/20240516004803/11013.htm",
+   "kind": "company",
+   "date": "2024-05-16",
+   "note": "표지의 본점 주소(종로 26)"
+  },
+  {
+   "n": 27,
+   "title": "PMI · PMBOK 지침서 제7판 및 프로젝트 관리 표준(한국어판)",
+   "url": "https://blackwells.co.uk/bookshop/product/A-Guide-to-the-Project-Management-Body-of-Knowledge-PMBOK-Guide-The-Standard-for-Project-Management-KOREAN-by-Project-Management-Institute/9781628257113",
+   "kind": "reference",
+   "date": "2021",
+   "note": "ISBN 9781628257113 · 측정 성과 영역의 획득가치(PV·EV·AC, SPI·CPI) — 공식 자체는 업계 표준"
+  }
+ ],
+ "caveat": "AX ERP서비스팀이 지금 어느 고객사의 HRIS 를 맡고 있는지, 팀이 주로 쓰는 제품·방법론이 무엇인지는 공개 자료가 없습니다. SK AX 가 HRIS 구축을 직접 다룬 기술 글·발표 영상도 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 Talent AX 소개 글·머서 협약 보도자료·SK AI SUMMIT 리뷰(모두 홍보 성격)이고, 제품 구조·방법론은 SAP·Workday 공식 학습 자료와 SAPinsider 글로 '보통 이런 것'을 보였습니다. SAP 유지보수 일정 글[5]은 본문 접속이 막혀 검색 요약으로 확인했으니 계획에 쓰려면 SAP 공지를 다시 봅니다. 4대보험·연장수당 예시는 상·하한·비과세·끝수 처리를 뺀 단순화입니다.",
+ "resources": [
+  {
+   "id": "skax-talent-ax",
+   "title": "AXgenticWire Talent AX, 모두의 일하는 방식을 바꾸는 AI Native HR 시스템",
+   "by": "SK AX 인사이트 · 2026-08",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/insight/trend/3834/",
+   "why": "이 회사가 HR 에이전트를 어떻게 설명하는지 한글로 본다. 'AI 기반 HR 업무 혁신' 업무와 'AI Agent' 우대의 배경."
+  },
+  {
+   "id": "sap-ec-academy-ko",
+   "title": "SAP SuccessFactors Employee Central Core 시작하기 (한국어)",
+   "by": "SAP Learning",
+   "kind": "course",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://learning.sap.com/courses/sap-successfactors-employee-central-core-academy-ko/summarizing-the-functionality-of-employee-central_cac3e7b0-0cf1-42bd-b2d1-061a91527f91",
+   "why": "기준 정보·직원 데이터·발령(트랜잭션)·업무 규칙 설정을 한국어로 따라간다. 'SuccessFactors 구축 경험' 요건과 To-Be 설계를 화면 단위로 이해하는 첫걸음."
+  },
+  {
+   "id": "sap-ec-admin",
+   "title": "SAP SuccessFactors Employee Central Core Administration",
+   "by": "SAP Learning",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learning.sap.com/courses/sap-successfactors-employee-central-core-administration",
+   "why": "Foundation Objects·유효일자·전파 규칙을 관리자 입장에서. 조직 개편·발령 데이터가 어떻게 쌓이는지."
+  },
+  {
+   "id": "sap-press-ec",
+   "title": "SAP SuccessFactors Employee Central: The Comprehensive Guide (3판)",
+   "by": "Luke Marson · Rebecca Murray · Brandon Toombs · SAP PRESS · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.sap-press.com/sap-successfactors-employee-central_5352/",
+   "why": "구현·데이터 이관·연계·확장까지 한 권에. PL 로서 고객 요구를 설정과 확장 중 무엇으로 풀지 판단하는 근거."
+  },
+  {
+   "id": "c-thr81",
+   "title": "C_THR81 · SAP SuccessFactors Employee Central Core 인증",
+   "by": "SAP Training",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://training.sap.com/certification/C_THR81_2311",
+   "why": "'SuccessFactors 자격증' 우대 — 시험 범위와 비중을 보고 공부할 곳을 고른다. 지금 판 코드를 먼저 확인."
+  },
+  {
+   "id": "workday-method",
+   "title": "Workday Methodology Overview",
+   "by": "Workday · 공개 고객 배포 안내",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://community-content.workday.com/en-us/public/learn/resources/customer-deployment/workday-methodology-overview-student-customer-deployment-guide.html",
+   "why": "Workday 구축의 네 단계와 단계별 통과 기준. 'Workday 구축' 우대와 일정·품질 관리 업무."
+  },
+  {
+   "id": "sap-activate",
+   "title": "SAP Activate 방법론",
+   "by": "SAP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.sap.com/products/erp/activate-methodology.html",
+   "why": "여섯 단계와 fit-to-standard. 'To-Be 프로세스 설계' 를 표준 기능 먼저 보여 주는 방식으로 하는 이유."
+  },
+  {
+   "id": "sapinsider-template",
+   "title": "Key Considerations for Creating an SAP ERP HCM Global Template",
+   "by": "SAPinsider",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://sapinsider.org/key-considerations-for-creating-an-sap-erp-hcm-global-template/",
+   "why": "공통 템플릿에 무엇을 담고 나라별로 무엇을 덧붙이나. 'Global HR Template' 우대와 그룹사 구축."
+  },
+  {
+   "id": "pmbok7-ko",
+   "title": "PMBOK 지침서 제7판 및 프로젝트 관리 표준 (한국어판)",
+   "by": "PMI · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=PMBOK",
+   "why": "일정·품질·위험·이해관계자 관리의 공용어. '일정, 품질, 리스크 관리' 요건과 진척 지수(EVM). 제8판 한국어판도 나와 있다."
+  },
+  {
+   "id": "hrm-book",
+   "title": "디지로그시대의 인적자원관리",
+   "by": "박영사 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000007148799",
+   "why": "채용·평가·보상·교육 같은 인사 업무가 왜 그렇게 돌아가는지. 'HR 업무 프로세스 이해' 요건의 바닥."
+  },
+  {
+   "id": "law-lsa",
+   "title": "근로기준법",
+   "by": "국가법령정보센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.law.go.kr/법령/근로기준법",
+   "why": "근로시간·연장근로 가산·연차 조항. 근태·급여 모듈 규칙의 원본."
+  },
+  {
+   "id": "nhis-2026",
+   "title": "2026년 달라지는 건강·장기요양제도 안내",
+   "by": "국민건강보험공단",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.nhis.or.kr/renewal_popup/poster/20260204_poster_longdesc_1.html",
+   "why": "해마다 바뀌는 보험료율의 공식 출처. 급여 요율을 연도별 표로 관리해야 하는 이유."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "인사 업무 감 잡기",
+   "time": "1~2주",
+   "goal": "발령·근태·급여·평가가 한 해 동안 어떤 순서로 돌아가는지 말로 설명할 수 있다.",
+   "resources": [
+    "hrm-book",
+    "law-lsa",
+    "nhis-2026"
+   ],
+   "task": "가상 회사 직원 20명의 1년 인사 달력(입사·승진·연봉 조정·연말정산·평가)을 그리고, 위 급여 예시 코드에 '월 중간 입사자 날짜 비례' 규칙을 더해 본다."
+  },
+  {
+   "title": "제품 하나를 깊이 — SuccessFactors",
+   "time": "3~4주",
+   "goal": "기준 정보·사람·고용 데이터와 유효일자 발령을 직접 설명하고 설정 순서를 짤 수 있다.",
+   "resources": [
+    "sap-ec-academy-ko",
+    "sap-ec-admin",
+    "sap-press-ec"
+   ],
+   "task": "가상 회사(법인 2·부서 8·직무 12)의 기준 정보 표를 만들고, 직원 20명의 2년치 발령 이력을 유효일자로 쌓아 '어느 날 기준 조직도'를 뽑는 작은 프로그램을 만든다."
+  },
+  {
+   "title": "방법론과 To-Be 설계",
+   "time": "2주",
+   "goal": "표준 기능을 먼저 보여 주고 차이를 설정·확장·업무 변경으로 나누는 워크숍을 진행할 수 있다.",
+   "resources": [
+    "sap-activate",
+    "workday-method",
+    "sapinsider-template"
+   ],
+   "task": "승진 발령·연장근로 신청 두 업무의 As-Is/To-Be 흐름도를 그리고, 요구 15개를 fit/설정/확장/업무 변경으로 분류한 차이 목록을 만든다. 해외 법인 1곳을 가정해 나라별 조정 항목도 적는다."
+  },
+  {
+   "title": "프로젝트 관리",
+   "time": "2주",
+   "goal": "WBS·위험 목록·진척 지수로 주간 보고를 쓸 수 있다.",
+   "resources": [
+    "pmbok7-ko",
+    "workday-method"
+   ],
+   "task": "6개월짜리 HRIS 구축(설계 → 설정 → 이관 → 급여 병행 2회 → 오픈)의 WBS 와 위험 10개를 쓰고, 3개월 차 가상 수치로 SPI·CPI 를 계산해 한 장 보고서를 만든다."
+  },
+  {
+   "title": "인증과 HR AI (선택)",
+   "time": "계속",
+   "goal": "SAP 인증을 준비하고, HR 에이전트를 인사 시스템 위에 얹을 때의 데이터·권한 문제를 설명할 수 있다.",
+   "resources": [
+    "c-thr81",
+    "skax-talent-ax"
+   ],
+   "task": "Talent AX 의 여섯 에이전트 중 채용 에이전트를 골라, 읽어야 할 HRIS 데이터·볼 수 없어야 할 데이터·사람이 확인할 단계를 표로 정리한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다(처우 협의). SK㈜ 전체 평균 **약 1억 1,600만원**(2024년 사업보고서), 기사가 따로 실은 SK AX 값은 **반년에 7,300만원**(2025년 상반기)",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여(SK㈜ 전체)",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "note": "SK㈜ 전체 값이라 지주 부문과 사업 부문이 섞여 있다 [20]"
+   },
+   {
+    "label": "SK AX 직원 1인 평균 급여 (6개월)",
+    "value": "7,300만원",
+    "amount": 7300,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "1~6월 반년치이고 1년 연봉이 아니다. 전년 같은 기간 7,100만원 [21]"
+   },
+   {
+    "label": "SK AX 평균 연봉(집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "채용 사이트가 공공 자료로 계산한 값, 계산 기간 표기 없음 [22]"
+   },
+   {
+    "label": "삼성SDS 평균 (6개월)",
+    "value": "6,600만원",
+    "amount": 6600,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 같은 기준 [21]"
+   },
+   {
+    "label": "LG CNS 평균 (6개월)",
+    "value": "6,500만원",
+    "amount": 6500,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 같은 기준 [21]"
+   }
+  ],
+  "how": "전형이 서류 → SKCT → 면접 2회 → **채용검진/처우협의** 순서라 연봉은 경력에 따라 따로 정한다 [1]. 위 평균은 경력이 오래된 직원과 여러 부문이 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}. 경력 3년 이상 공고라 신입 초봉은 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "재산 형성",
+    "detail": "저축 장려, 우리사주조합, 주택 구입·전세 자금 지원"
+   },
+   {
+    "name": "교육",
+    "detail": "본인 학자금, 자녀 학비 지원"
+   },
+   {
+    "name": "생활",
+    "detail": "경조사 지원, 휴양소, 여가·취미 활동 지원"
+   },
+   {
+    "name": "건강·노후",
+    "detail": "건강검진, 의료보험, 개인연금, 퇴직 관리 지원"
+   },
+   {
+    "name": "근무 방식",
+    "detail": "출퇴근 시간을 스스로 정하는 근무제, 그날의 근무 장소 선택"
+   },
+   {
+    "name": "성장",
+    "detail": "그룹 학습 플랫폼 mySUNI 와 육성 프로그램"
+   }
+  ],
+  "note": "앞 네 줄은 SK㈜ 공식 채용 정책 페이지 [23], 뒤 두 줄은 SK 그룹 채용 사이트의 문화 소개다 [24]. 둘 다 금액·조건·작성 연도가 없고 이 팀에 그대로 적용되는지도 적혀 있지 않다. 고객사 상주 중에는 근무 장소 선택이 제한될 수 있다 {추론}. 처우 협의 때 확인한다."
+ },
+ "location": {
+  "name": "SK AX 분당 사무실 (SK u-타워)",
+  "address": "경기도 성남시 분당구 성남대로 343번길 9 에스케이유타워",
+  "postal": "13558",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+  "near": "신분당선·수인분당선 정자역 근처 {추론}",
+  "note": "공고 근무지는 '주로 서울/분당 등 수도권'이고 고객 프로젝트에 따라 바뀐다 [1]. 분당 주소는 SK AX 사업장 안내 [25], 서울은 SK㈜ 본점(서울특별시 종로구 종로 26) [26] 쪽으로 읽힌다 {추론}. 고객사 상주면 그 고객사 건물이 근무지가 된다 {추론}."
+ }
+}

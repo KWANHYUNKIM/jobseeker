@@ -206,6 +206,7 @@
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
   "ats-skcareers:sk:R262429": "skax-digital-twin-developer",
   "ats-skcareers:sk:R262544": "skax-hotel-ito-app-ops-pl",
+  "ats-skcareers:sk:R262566": "skax-hris-pm-pl",
   "ats-skcareers:sk:R262274": "skax-ict-application-contract",
   "ats-skcareers:sk:R262281": "skax-ict-application-ops",
   "ats-skcareers:sk:R262415": "skax-mfg-data-engineer-k8s",
@@ -2206,6 +2207,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 21
+  },
+  {
+   "id": "skax-hris-pm-pl",
+   "company": "SK AX",
+   "role": "HRIS 구축 PM/PL",
+   "jobs": [
+    "ats-skcareers:sk:R262566"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 32
   },
   {
    "id": "skax-ict-application-contract",
