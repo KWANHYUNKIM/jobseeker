@@ -1,0 +1,721 @@
+{
+  "id": "coupang-data-ingestion-analytics-director-us",
+  "company": "쿠팡 (Coupang)",
+  "role": "Director, Back-end Engineering — 데이터 수집·분석 플랫폼",
+  "team": "Data Ingestion & Analytics Platform 팀 (미국 마운틴뷰·시애틀)",
+  "jobs": [
+    "ats-greenhouse:coupang:8364554"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쿠팡의 모든 데이터가 처음 들어오는 문(수집)과 그 데이터를 표·지표로 바꿔 보여 주는 바닥(분석 플랫폼)을 맡은 **엔지니어링 조직의 책임자**입니다.[1] 회사는 하루 페타바이트 단위로 데이터를 모은다고 적었고[1], 2022년 발표 기준으로 분당 710만 건의 로그를 받아 하루 12만 개 작업을 돌렸습니다.[2]",
+    "env": "미국 마운틴뷰 또는 시애틀 근무입니다.[1] 바닥은 S3 데이터 레이크 · Hive · Spark · Presto · Redshift · Airflow 이고(2022년 글 기준)[3][4], 쓰는 사람은 제품·데이터 과학·경영진입니다.[1]",
+    "oneline": "사람을 뽑고 키우면서, 초당 10만 건 넘게 들어오는 수집 서비스가 멈추지 않게 책임지는 데이터 웨어하우스 15년 차 리더 자리."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "You will work closely with product and data scientist teams and lead the planning, execution and success of complex technical projects.",
+      "short": "제품·데이터 과학 팀이 원하는 데이터를 큰 프로젝트로 묶어 계획하고 끝까지 끌고 가서.",
+      "why": "이 팀이 만드는 것은 다른 팀이 쓰는 바닥이라, 일감이 제품·데이터 과학 쪽 요구에서 나옵니다.[1] 쿠팡은 모든 기능을 A/B 테스트(사용자를 무작위로 둘로 나눠 비교하는 실험)로 내보내고, 그 실험 지표를 데이터 플랫폼의 배치 계산으로 만듭니다.[2] 데이터 과학 팀이 \"이 지표가 하루 늦다\"고 하면 그게 곧 이 팀 프로젝트가 됩니다. {추론}",
+      "actually": {
+        "intro": "쿠팡 데이터 플랫폼 글에 나온 '복잡한 기술 프로젝트'는 이런 크기였습니다.",
+        "items": [
+          "**수집 틀 바꾸기** — 원천마다 손으로 짜던 파이프라인을 원천을 가리지 않는 자동 수집 틀(UDI)로 바꿨다. 70여 개 원천이 대상이었다.[3]",
+          "**창고 쪼개기** — 한 덩어리였던 Redshift(아마존의 분석용 DB)를 처리용·조회용 클러스터로 나눠 동시 조회가 몰려도 느려지지 않게 했다.[4]",
+          "**Hive 작업을 Spark 로** — EMR(아마존의 관리형 Hadoop) 위 데이터 마트로 옮기는 일.[4]",
+          "**실험 지표 엔진** — 설계 → 구현(무작위 배정·로그) → 감시(경보) → 셀프 분석 → 출시 결정까지 실험 한 바퀴를 받치는 배치 계층.[2]",
+          "**로그 신뢰 되찾기** — 로그 명세가 없어 지표가 망가지던 문제를, 스키마 등록·검증 플랫폼을 새로 만들어 풀었다.[5]"
+        ]
+      },
+      "how_far": "디렉터는 직접 다 짜는 사람이 아니라 **무엇을 먼저 할지 정하고, 여러 팀이 같은 날짜를 향해 움직이게 하는** 사람입니다. 최소선은 몇 분기짜리 플랫폼 이전(예: 수집 틀 교체, 창고 이전)을 계획서·마일스톤·위험 목록으로 이끌어 끝내 본 경험입니다. {추론}",
+      "refs": [1, 2, 3, 4, 5],
+      "study": ["cp-reinvent", "cp-dp-2022a", "cp-dp-2022b", "fde-book"]
+    },
+    {
+      "section": "task",
+      "quote": "Hire world class talent and provide technical guidance, career development, and mentoring to team members",
+      "short": "팀을 키우는 게 첫 번째 일이라서 — 뽑고, 기술 방향을 잡아 주고, 성장 경로를 함께 짠다.",
+      "why": "공고는 역할을 **팀을 이끌고 키우며 팀원이 기술적·직업적으로 크게 돕는 것**이라고 소개합니다.[1] 자격요건에도 '5년 넘게 팀을 이끌고 관리하고 뽑아 본 경험'이 따로 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**채용** — 뽑을 자리의 기준(무엇을 할 수 있어야 하나)을 정하고, 면접관을 맞추고, 최종 결정을 한다. 쿠팡 전형은 서류 → 직무 적합 면접 → 집중 면접 → 제안 순서다.[1]",
+          "**팀 나누기** — 한 팀이 너무 커지면 둘로 나누고 매니저를 세운다. 흔히 쓰는 기준은 매니저 한 명이 6~8명을 맡는 것이다.[17]",
+          "**1:1 과 성장 계획** — 팀원마다 다음 단계(시니어·스태프·매니저)에 무엇이 모자란지 같이 적고 일감을 그쪽으로 준다.[18]",
+          "**기술 지도** — 설계 리뷰에서 '왜 이 방식인가'를 묻고, 운영 사고 뒤 사후 분석을 같이 쓴다. {추론}"
+        ]
+      },
+      "how_far": "디렉터 자리라 **매니저를 관리하는 매니저**일 가능성이 큽니다. 공고에 팀 크기는 없습니다. {추론} 최소선은 직접 뽑은 사람이 성장해 시니어·매니저가 된 사례를 이름 없이 숫자로(몇 명 뽑아 몇 명이 승진) 말할 수 있는 정도입니다. {추론}",
+      "refs": [1, 17, 18],
+      "study": ["manager-path", "elegant-puzzle"]
+    },
+    {
+      "section": "task",
+      "quote": "Participate in key technical and design discussions with technical leads in the team as a hands-on manager",
+      "short": "중요한 설계 결정 자리에 직접 들어가 기술 리드들과 같이 따진다 — 손 놓은 관리자는 안 된다.",
+      "why": "공고가 굳이 'hands-on manager(직접 손대는 관리자)'라고 적었습니다.[1] 수집 서비스는 작은 설계 실수가 바로 데이터 유실·지연으로 이어지는 자리라, 위에서 숫자만 보는 관리자로는 판단이 어렵습니다. {추론}",
+      "actually": {
+        "intro": "이 팀에서 '핵심 설계 논의'가 될 만한 주제입니다. 쿠팡이 공개한 고민과 이어지는 것만 골랐습니다.",
+        "items": [
+          "**배치냐 흐름이냐** — 로그를 몇 분 단위로 모아 넣을지, 들어오는 대로 흘려 넣을지. 실험 플랫폼은 배치 계층과 빠른 계층(speed layer)을 둘 다 둔다.[2]",
+          "**증분이냐 전체 재계산이냐** — 쿠팡 실험 팀은 누적 지표를 '어제 값 + 오늘'로만 이어 가면 빠르지만 한 번 틀린 날이 뒤로 계속 번진다는 교훈을 발표했다.[2]",
+          "**스팟 장비를 쓸까** — 값싼 스팟 인스턴스로 EMR 비용을 25% 줄였지만[6], 성수기에 스팟이 끊겨 99.9% 적재 시각 약속을 놓친 일이 있었다.[4]",
+          "**한 창고냐 나눈 창고냐** — Redshift 를 처리·조회로 나눌지, 레이크 위 엔진(Presto)으로 바로 읽게 할지.[3][4]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "증분 누적이 한 번 틀리면 (직접 돌린 출력)",
+          "body": "쿠팡 실험 팀 발표의 '누적 계산' 교훈[2]을 가상 숫자로 따라 했습니다. 10/2 적재가 중복돼 1,200 으로 들어가면, 증분 방식은 10/2 부터 10/5 까지 **4일 치 누적이 다 틀립니다.** 출력: `증분(오류 포함): {'10/1': 100, '10/2': 1300, '10/3': 1390, '10/4': 1500, '10/5': 1605}` / `다시 계산: {'10/1': 100, '10/2': 220, '10/3': 310, '10/4': 420, '10/5': 525}` / `틀린 날 수: 4`. 그래서 발표는 '다시 시작할 수 있게(resumability) 계획하라'를 공통 교훈으로 꼽았습니다.[2]",
+          "lang": "python",
+          "code": "daily = {\"10/1\": 100, \"10/2\": 120, \"10/3\": 90, \"10/4\": 110, \"10/5\": 105}\nbad = dict(daily)\nbad[\"10/2\"] = 1200  # 10/2 적재가 중복돼 10배로 들어갔다\n\ndef incremental(d):\n    out, s = {}, 0\n    for k, v in d.items():\n        s += v\n        out[k] = s\n    return out\n\nwrong = incremental(bad)\nfixed = incremental(daily)\nprint(\"증분(오류 포함):\", wrong)\nprint(\"다시 계산:     \", fixed)\nprint(\"틀린 날 수:\", sum(1 for k in daily if wrong[k] != fixed[k]))"
+        }
+      ],
+      "how_far": "결정은 기술 리드와 같이 내리되, **비용·일정·위험의 맞바꿈을 숫자로 설명하고 책임지는 것**이 디렉터 몫입니다. 최소선은 위 같은 주제에서 한쪽을 골랐던 이유와 그 결과(좋았던 것·후회한 것)를 말할 수 있는 정도입니다. {추론}",
+      "refs": [1, 2, 3, 4, 6],
+      "study": ["cp-reinvent", "ddia", "cp-dp-2022b"]
+    },
+    {
+      "section": "task",
+      "quote": "Partner with key business stakeholders to prioritize work and create amazing products to support our data platform ingestion dn analytics team.",
+      "short": "사업 쪽 핵심 사람들과 '무엇부터 할지'를 정하고, 수집·분석 플랫폼을 쓸 만한 제품으로 만든다.",
+      "why": "데이터 플랫폼은 요청이 늘 할 수 있는 양보다 많습니다. 쿠팡 2022년 글은 로그 데이터가 1년에 약 3배 늘고 작업 수가 2배가 되는 동안 비용은 거의 그대로 두려 했다고 적었습니다.[4] 무엇을 먼저 할지 정하지 않으면 다 늦어집니다. {추론} (공고 원문의 'dn' 은 'and' 의 오타로 보입니다. {추론})",
+      "actually": {
+        "items": [
+          "**요청 모으기** — 팀마다 '새 원천을 붙여 달라', '이 표를 더 빨리', '이 대시보드가 느리다'를 한 목록에 모은다. {추론}",
+          "**값으로 줄 세우기** — 몇 팀이 쓰나, 매출·실험 결정에 얼마나 걸리나, 지금 손으로 하는 시간이 얼마나 되나. {추론}",
+          "**셀프서비스로 바꾸기** — 쿠팡은 사용자(데이터 엔지니어가 아닌 사람)가 직접 수집을 걸 수 있게 수집 틀을 만들었고[3], 행동 로그 분석을 셀프 도구(ClickHouse·Superset)로 바꿔 사용자가 40% 늘었다.[4]",
+          "**믿을 수 있는 표 표시** — 2022년 기준 데이터 세트 15만 개 중 5,500 개가 '인증된(certified)' 데이터 세트였다.[2] 아무 표나 쓰지 않고 검증된 표를 쓰게 하는 것도 제품이다. {추론}"
+        ]
+      },
+      "how_far": "우선순위는 사업 쪽과 같이 정하지만 **'안 하는 것'을 말하는 건 디렉터**입니다. 최소선은 분기 계획에서 요청 몇 개를 근거를 들어 미뤘고, 그래도 관계가 깨지지 않은 경험입니다. {추론}",
+      "refs": [2, 3, 4],
+      "study": ["cp-dp-2022a", "cp-dp-2022b", "team-topologies"]
+    },
+    {
+      "section": "task",
+      "quote": "Provide technical leadership to your team by giving guidance on designs and coding when time allows.",
+      "short": "시간이 나면 설계 문서와 코드 리뷰에도 직접 의견을 낸다 — 코드를 읽을 줄 알아야 한다.",
+      "why": "앞 줄의 'hands-on manager' 와 같은 뜻이고, 여기에 **코딩**까지 들어갔습니다.[1] 'when time allows(시간이 되면)'가 붙어 주 업무는 아니라는 것도 같이 말합니다.[1]",
+      "actually": {
+        "items": [
+          "**설계 문서 리뷰** — 새 수집 경로의 장애 시 동작(다시 보내기·중복 제거·순서)을 묻는다. {추론}",
+          "**코드 리뷰** — 핵심 저장소의 큰 변경(스키마 변경·재처리 로직)을 본다. {추론}",
+          "**기준 세우기** — Airflow 작업은 같은 날짜를 다시 돌려도 결과가 같게(멱등) 짜라 같은 팀 규칙을 정한다.[15]"
+        ]
+      },
+      "how_far": "매일 코드를 쓰는 자리는 아닙니다. 최소선은 Spark·SQL·Python 코드 리뷰에서 **버그와 성능 문제를 찾아낼 수 있는 손감각**을 유지하는 것입니다. {추론}",
+      "refs": [1, 15],
+      "study": ["airflow-bp", "spark-guide"]
+    },
+    {
+      "section": "task",
+      "quote": "Platform Operations & SLA Ownership: Maintaining high availability across high QPS ingestions services.",
+      "short": "초당 요청이 엄청난 수집 서비스가 멈추지 않게 하고, 약속한 수준(SLA)을 지키는 책임자라서.",
+      "why": "2022년 re:Invent 발표에서 쿠팡 데이터 플랫폼 책임자는 플랫폼 규모를 **분당 로그 710만 건 수집, 하루 작업 12만 개, 하루 조회 50만 건, 하루 EMR 노드 5만 5천 대**로 소개했습니다.[2] 수집이 멈추면 그 뒤의 모든 표·실험·대시보드가 같이 멈춥니다. {추론} 실제로 성수기 스팟 장비 중단으로 99.9% 적재 시각 SLA 를 놓쳐 큰 백필과 낡은 데이터로 결정하는 일이 생겼다고 적었습니다.[4]",
+      "actually": {
+        "intro": "QPS 는 초당 요청 수, SLA 는 사용자와 맺은 서비스 수준 약속입니다(재는 값 SLI, 목표 SLO, 약속 SLA).[12]",
+        "items": [
+          "**재는 값 고르기** — 수집 서비스는 받은 요청 중 성공 비율, 받고 나서 레이크에 닿기까지 걸린 시간, 유실률. {추론}",
+          "**오류 예산** — 목표를 99.9% 로 잡으면 30일에 43분만 멈출 수 있다. 예산이 남으면 배포하고, 다 쓰면 안정화에 집중한다.[13]",
+          "**적재 시각 약속** — 쿠팡은 매일 오전 9시(한국 시간)에 마트 표가 준비됐는지 사용자에게 메일로 알렸다.[5]",
+          "**미리 알기** — 메타데이터로 Airflow 작업을 만들고 SLA 를 놓칠 것 같은 작업을 미리 감지해 당번에게 알린다.[5]",
+          "**용량** — 성수기(할인 행사) 트래픽을 견딜 여유를 둔다. 스팟 장비는 싸지만 끊길 수 있다.[4][6]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "분당 710만 건이면 초당 몇 건, 99.9% 면 몇 분 (직접 돌린 출력)",
+          "body": "발표 숫자[2]를 초 단위로 바꾸고, 피크를 2~3배로 가정했습니다(가정). 출력: `평균 초당 118,333건` / `피크 2배 → 초당 236,667건` / `피크 3배 → 초당 355,000건` / `99.9% → 30일에 43.2분` / `99.95% → 30일에 21.6분` / `99.99% → 30일에 4.3분`.",
+          "lang": "python",
+          "code": "per_min = 7_100_000\navg = per_min / 60\nprint(f\"평균 초당 {avg:,.0f}건\")\nfor peak in (2, 3):\n    print(f\"피크 {peak}배 → 초당 {avg*peak:,.0f}건\")\nfor slo in (99.9, 99.95, 99.99):\n    mins = 30 * 24 * 60 * (100 - slo) / 100\n    print(f\"{slo}% → 30일에 {mins:.1f}분\")"
+        }
+      ],
+      "how_far": "장애 당번을 직접 서지 않더라도 **SLA 를 몇으로 정할지, 놓쳤을 때 누가 무엇을 하는지, 사후 분석이 실제로 고쳐지는지**는 디렉터가 책임집니다. 최소선은 초당 수만 건 이상 받는 서비스를 운영하며 SLO·오류 예산·당번 체계를 직접 세워 본 경험입니다. {추론}",
+      "refs": [2, 4, 5, 6, 12, 13],
+      "study": ["sre-book", "cp-reinvent", "cp-dp-2019"]
+    },
+    {
+      "section": "task",
+      "quote": "Partner closely with product management, data science, and senior executive stakeholders across business units to prioritize platform capabilities and deliver scalable analytics infrastructure.",
+      "short": "여러 사업부의 제품·데이터 과학·임원과 플랫폼 기능 순서를 정하고, 커져도 버티는 분석 바닥을 만든다.",
+      "why": "쿠팡 데이터 플랫폼 사용자는 2022년 기준 **1,300명이 넘었습니다.**[2] 쿠팡은 한국·대만 등 여러 나라와 쇼핑·이츠·플레이 같은 여러 사업부를 두고 있어, 사업부마다 원하는 것이 다릅니다. {추론} 2022년 글 제목도 '페타바이트 단위의 세계 확장'이었습니다.[3]",
+      "actually": {
+        "items": [
+          "**임원용 숫자** — 매출·재무 데이터는 주로 Redshift 창고에 두었다.[4] 임원 보고 숫자가 틀리면 플랫폼 신뢰가 한 번에 무너진다. {추론}",
+          "**동시 조회 버티기** — 양과 조회가 늘자 Redshift 동시성 문제가 생겨 처리·조회 클러스터를 나누고 데이터를 공유하게 했다.[4]",
+          "**나라별 분리** — 나라마다 개인정보·데이터 위치 규칙이 달라 같은 플랫폼을 지역별로 나눠 띄워야 할 수 있다. {추론}",
+          "**비용 보이기** — 쿠팡은 AWS 비용 보고서를 대시보드로 보며 팀별 예산을 관리한다.[6]"
+        ]
+      },
+      "how_far": "'scalable(확장 가능)'은 데이터가 3배가 돼도 사람·비용이 3배로 늘지 않는다는 뜻입니다.[4] 최소선은 임원에게 플랫폼 투자(장비·인력)를 숫자로 설득해 본 경험입니다. {추론}",
+      "refs": [2, 3, 4, 6],
+      "study": ["cp-dp-2022b", "cp-cost", "swd"]
+    },
+    {
+      "section": "qualification",
+      "quote": "15+ years’ experience in data warehouse engineering and business intelligence",
+      "short": "데이터 웨어하우스와 BI 만 15년 이상 — 이 분야 세대 교체를 여러 번 겪은 사람을 찾아서.",
+      "why": "15년이면 오라클·테라데이타 같은 전용 장비 창고 → Hadoop → 클라우드 창고(Redshift 등)·레이크로 이어진 변화를 다 겪은 세대입니다. {추론} 쿠팡도 MySQL → Hive 연결로 시작해 Hadoop 위 수집 틀, S3 레이크, Redshift 로 바뀌어 왔습니다.[3][4] (공고 원문에는 'DW Appliance(창고 전용 장비) 경험은 가산점'이라는 줄도 있습니다.[1])",
+      "actually": {
+        "items": [
+          "**데이터 웨어하우스(DW)** — 여러 시스템의 데이터를 분석하기 좋게 한곳에 모은 창고. 한 줄의 뜻(결)을 정하고 사실 표·차원 표로 나누는 방식이 표준이다.[14]",
+          "**BI(Business Intelligence)** — 그 창고 위에서 보고서·대시보드로 사업 판단을 돕는 일.",
+          "**15년의 의미** — 표 설계, 수집, 품질, 운영, 사용자 지원을 다 겪어 봤다는 것. {추론}"
+        ]
+      },
+      "how_far": "숫자가 딱 정해진 문턱이지만, 쿠팡 미국 디렉터 공고들은 대개 '15년 이상'을 씁니다. {추론} 최소선은 창고를 처음부터 세우거나 통째로 옮겨 본 경험 한 번 이상입니다. {추론}",
+      "refs": [1, 3, 4, 14],
+      "study": ["kimball", "fde-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "5+ years leading, managing and hiring a team of talented engineers",
+      "short": "엔지니어 팀을 이끌고 사람을 뽑아 본 지 5년 이상 — 매니저 경험을 따로 센다.",
+      "why": "업무 줄의 첫째가 채용·육성이라[1] 기술 경력과 별도로 관리 경력을 봅니다. '뽑아 본(hiring)'이 따로 적힌 건 팀을 새로 키울 자리라는 뜻으로 읽힙니다. {추론}",
+      "actually": {
+        "items": [
+          "**이끌기** — 방향과 우선순위를 정한다.",
+          "**관리하기** — 평가·보상·성장 계획·성과 문제를 다룬다.[18]",
+          "**뽑기** — 자리 기준을 쓰고, 면접관을 훈련하고, 최종 결정을 한다.",
+          "**팀 모양 바꾸기** — 커지면 나누고, 맡은 일이 바뀌면 다시 묶는다.[17][19]"
+        ]
+      },
+      "how_far": "최소선은 직속 팀원을 두고 평가·채용 결정을 직접 해 본 5년입니다. 기술 리드(평가 권한 없음) 경력은 따로 셀 가능성이 큽니다. {추론}",
+      "refs": [1, 17, 18, 19],
+      "study": ["manager-path", "elegant-puzzle", "team-topologies"]
+    },
+    {
+      "section": "qualification",
+      "quote": "5+ years in building large scale, high-volume data warehouse environment",
+      "short": "작은 창고가 아니라 대규모·대용량 창고를 5년 넘게 만들어 본 경험이 필요해서.",
+      "why": "쿠팡 데이터는 2022년에 이미 31.5PB(페타바이트, 1PB = 1,000TB)였고 데이터 세트가 15만 개였습니다.[2] 이 크기에서는 작은 창고에서 안 보이던 문제 — 작은 파일, 동시 조회, 비용 — 가 주된 일이 됩니다. {추론}",
+      "actually": {
+        "items": [
+          "**동시성** — 사용자가 늘면 같은 창고에 조회가 몰린다. 쿠팡은 처리·조회 클러스터를 나눴다.[4]",
+          "**저장 비용** — S3 50PB 넘게 접근 빈도에 따라 저장 계층을 자동으로 옮기게 했고, 객체가 작고 수십억 개면 오히려 비싸지는 함정을 피했다.[6]",
+          "**계산 비용** — EMR 인스턴스 구성을 바꿔 EMR 비용을 25% 줄였다.[6]",
+          "**파티션·파일 형식** — 날짜로 나누고 열 단위 형식(ORC·Parquet)으로 두어 필요한 칸·날짜만 읽는다. {추론}"
+        ]
+      },
+      "how_far": "'대규모'의 문턱은 공고에 없습니다. 최소선은 수백 TB 이상의 창고에서 비용·성능 문제를 숫자로 줄여 본 경험입니다. {추론}",
+      "refs": [2, 4, 6],
+      "study": ["cp-cost", "cp-dp-2022b", "spark-guide"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Deep expertise with database development skills including SQL.",
+      "short": "창고의 언어가 SQL 이라서 — 리더도 SQL 로 원인을 직접 찾을 수 있어야 한다.",
+      "why": "쿠팡 창고의 주 엔진(Hive·Spark·Presto·Redshift)은 모두 SQL 로 다룹니다.[3][4] 하루 조회가 50만 건이었습니다.[2]",
+      "actually": {
+        "items": [
+          "**사실·차원 조인** — 주문 사실 표에 상품 차원을 붙여 범주별로 센다.[14]",
+          "**창 함수** — 누적 합·순위·전주 대비처럼 줄을 지우지 않고 앞뒤를 같이 보는 계산.",
+          "**실행 계획 읽기** — 느린 조회가 어디서 전체를 훑는지(파티션을 못 탔는지) 본다. {추론}",
+          "**DB 개발** — 표·인덱스·뷰 설계와 저장 프로시저. {추론}"
+        ]
+      },
+      "level": {
+        "basic": "SELECT·JOIN·GROUP BY 로 하루 매출을 범주별로 낸다.",
+        "work": "창 함수로 누적·순위를 내고, 1:N 조인으로 숫자가 부풀지 않게 먼저 묶는다.",
+        "team": "수억 줄 조회의 실행 계획을 읽고 파티션·조인 순서를 고쳐 몇 배 빠르게 만든다 {추론}."
+      },
+      "examples": [
+        {
+          "title": "사실 표 + 차원 표 + 누적 합 (직접 돌린 출력)",
+          "body": "가상 주문 6건. 범주별 하루 매출과 그때까지의 누적을 한 문장으로 냅니다. 출력: `('2026-11-01', '가전', 300000, 300000)` / `('2026-11-01', '식품', 20000, 20000)` / `('2026-11-02', '가전', 250000, 550000)` / `('2026-11-02', '식품', 24000, 44000)`",
+          "lang": "python",
+          "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\nCREATE TABLE dim_product(product_id INT PRIMARY KEY, category TEXT);\nCREATE TABLE fact_order(order_id INT, order_date TEXT, product_id INT, amount INT);\nINSERT INTO dim_product VALUES (1,'가전'),(2,'식품'),(3,'식품');\nINSERT INTO fact_order VALUES\n (101,'2026-11-01',1,300000),(102,'2026-11-01',2,12000),(103,'2026-11-01',3,8000),\n (104,'2026-11-02',2,15000),(105,'2026-11-02',1,250000),(106,'2026-11-02',3,9000);\n\"\"\")\nq = \"\"\"\nSELECT order_date, category, SUM(amount) AS sales,\n       SUM(SUM(amount)) OVER (PARTITION BY category ORDER BY order_date) AS running\nFROM fact_order f JOIN dim_product p USING(product_id)\nGROUP BY order_date, category ORDER BY order_date, category\n\"\"\"\nfor r in db.execute(q):\n    print(r)"
+        }
+      ],
+      "how_far": "'Deep expertise(깊은 전문성)'라 디렉터라도 SQL 을 남에게 맡기기만 하면 모자랍니다. 최소선은 위 '이 팀' 수준 — 느린 조회를 직접 고쳐 본 경험입니다. {추론}",
+      "refs": [2, 3, 4, 14],
+      "study": ["sql-tanimura", "kimball"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Expertise with various ETL technologies and familiar with ETL tools.",
+      "short": "원천에서 뽑아 바꿔 싣는 ETL 방식을 여럿 알아야 — 수집 팀의 본업이라서.",
+      "why": "ETL 은 뽑고(Extract) → 바꾸고(Transform) → 싣는(Load) 일이고, 이 팀 이름이 곧 수집(Ingestion)입니다.[1] 쿠팡은 처음 MySQL → Hive 파이프라인으로 시작해 Hadoop 위 끼워 쓰는(plug-in) 수집 틀을 만들었고, 그 틀은 운영 DB 에 부담이 안 가게 한 번에 가져올 양을 스스로 정합니다.[3]",
+      "actually": {
+        "items": [
+          "**전체 복사 vs 변경분 복사** — 매일 표 전체를 뜰지, 바뀐 줄만(변경 데이터 캡처, CDC) 가져올지. CDC 는 DB 의 변경 기록(로그)을 읽어 줄 단위 변경을 흘려보낸다.[20]",
+          "**ETL vs ELT** — 바꿔서 싣거나, 원본대로 레이크에 먼저 싣고 창고 안에서 바꾸거나. 쿠팡은 S3 레이크에 싣고 Spark 로 바꾼다(ELT).[3]",
+          "**작업 순서** — Airflow 로 작업 사이 순서·재시도·백필(지난 날짜 다시 돌리기)을 건다.[3][15]",
+          "**행동 로그** — 앱·웹 로그는 스키마를 먼저 등록하고 들어오는 로그를 그 스키마와 대조한다.[5]",
+          "**품질 검사** — 원천과 결과의 행 수·행 해시를 맞추고 기본 키·NULL 을 본다.[5]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "쿠팡 데이터가 지나가는 길 (2019·2022년 글 기준)",
+          "steps": [
+            "원천 · 서비스 DB(MySQL 등)·앱/웹 로그",
+            "수집 · UDI 자동 수집 틀, 로그 플랫폼(스키마 검증)",
+            "레이크 · S3 원본 저장",
+            "변환 · Spark·Hive 작업, Airflow 순서",
+            "창고 · Hive 표·Redshift·인증된 데이터 세트",
+            "보기 · Presto 즉석 조회·셀프 분석 도구·대시보드"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "how_far": "도구 이름보다 **'왜 그 방식인가'를 고를 줄 아는 것**이 중요합니다. 최소선은 배치 복사와 CDC 를 둘 다 운영해 보고 유실·중복을 어떻게 잡았는지 말할 수 있는 정도입니다. {추론}",
+      "refs": [1, 3, 5, 15, 20],
+      "study": ["fde-book", "airflow-book", "cp-dp-2022a"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Have solid understanding of both relational and NoSQL database technologies.",
+      "short": "수집 원천이 관계형 DB 와 NoSQL 로 섞여 있어서 — 둘 다 어떻게 읽어 오는지 알아야 한다.",
+      "why": "수집 틀은 원천을 가리지 않게 만들어졌고 70여 개 원천을 다룹니다.[3] 원천의 종류가 다양하면 각 DB 의 저장 방식과 변경 기록 방식이 다 다릅니다. {추론}",
+      "actually": {
+        "items": [
+          "**관계형(MySQL·PostgreSQL 등)** — 표·스키마·트랜잭션이 분명하다. 변경 기록(binlog 등)으로 CDC 가 쉽다.[20]",
+          "**NoSQL(키-값·문서·와이드 컬럼)** — 스키마가 느슨해 같은 필드가 문서마다 다를 수 있다. 창고로 옮길 때 스키마를 정하는 일이 생긴다. {추론}",
+          "**고를 기준** — 쓰기가 많나 읽기가 많나, 일관성이 얼마나 중요한가, 조인이 필요한가. {추론}",
+          "**창고 쪽** — 분석은 열 단위 저장(ORC·Parquet·Redshift)이 빠르다. 서비스 DB 는 줄 단위다. {추론}"
+        ]
+      },
+      "how_far": "최소선은 원천 DB 의 종류별로 '어떻게 뽑아야 서비스에 부담을 안 주나'를 설명하는 정도입니다. 쿠팡 수집 틀이 가져올 양을 스스로 정하는 것도 이 이유입니다.[3]",
+      "refs": [3, 20],
+      "study": ["ddia"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience with visualization, data mining, or statistical tools",
+      "short": "만든 데이터가 결국 그림·분석으로 쓰이니 — 쓰는 쪽 도구를 알아야 바닥을 맞게 만든다.",
+      "why": "이 팀 이름에 '분석(Analytics)'이 들어 있습니다.[1] 쿠팡은 행동 로그 분석을 셀프 도구로 바꿔 사용자가 40% 늘었고[4], 실험 플랫폼은 셀프 분석 단계를 둡니다.[2]",
+      "actually": {
+        "items": [
+          "**시각화** — 대시보드 도구(Superset·Tableau 등). 쿠팡은 ClickHouse·Superset 을 붙였다.[4]",
+          "**데이터 마이닝** — 고객 묶기·이상치 찾기 같은 패턴 찾기. {추론}",
+          "**통계** — A/B 테스트에서 두 그룹 차이가 우연인지 본다.[2]",
+          "**노트북** — 쿠팡은 Zeppelin 에 Presto 해석기를 고쳐 붙여 즉석 분석에 썼다.[21]"
+        ]
+      },
+      "how_far": "직접 대시보드를 만드는 자리는 아닙니다. 최소선은 데이터 과학자가 쓰는 도구의 불편을 알아듣고 바닥(표·속도)으로 풀어 줄 수 있는 정도입니다. {추론}",
+      "refs": [1, 2, 4, 21],
+      "study": ["swd", "cp-dp-2022b"]
+    },
+    {
+      "section": "preference",
+      "quote": "Excellent critical thinking, problem solving and analytical skills.",
+      "short": "숫자가 이상할 때 '왜'를 끝까지 파고드는 사고력 — 데이터 플랫폼의 기본 체력이라서.",
+      "why": "쿠팡은 로그 명세가 없어 눈치채지 못한 변경과 버그가 지표를 망가뜨린 경험을 적었습니다.[5] 지표가 갑자기 반으로 줄면 앱 버그인지, 수집 유실인지, 진짜 매출 하락인지 가려야 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**가설 나누기** — 원천 문제·수집 문제·계산 문제·진짜 변화 중 무엇인가. {추론}",
+          "**빨리 잡기** — 쿠팡은 쓰인 직후 이상을 알리는 도구로 로그 유실 발견을 3일에서 2시간 안으로 줄였다.[5]",
+          "**뜻밖의 발견** — 발표의 공통 교훈 하나가 '찾던 것이 아닌 것을 찾기도 한다'였다.[2]"
+        ]
+      },
+      "how_far": "면접에서 실제 사고 하나를 골라 원인을 어떻게 좁혔는지 순서대로 말할 수 있으면 됩니다. {추론}",
+      "refs": [2, 5],
+      "study": ["cp-dp-2019"]
+    },
+    {
+      "section": "preference",
+      "quote": "Excellent communication skills, and the ability to work effectively with others",
+      "short": "여러 팀·여러 나라 사람과 일하는 자리라 — 말과 글로 설득하는 힘이 성과를 가른다.",
+      "why": "쿠팡 미국 사무실은 한국·대만·인도 등과 같이 일하는 글로벌 조직의 일부입니다.[9] 플랫폼 결정(스키마 변경·작업 중단)은 다른 팀 일정을 흔들기 때문에 미리, 분명하게 알려야 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**바뀜 알리기** — 쿠팡 로그 플랫폼은 스키마가 바뀌면 등록된 소비자에게 알림을 보낸다.[5]",
+          "**장애 소통** — 누가 지휘하고 누가 고치고 누가 바깥에 알리는지 역할을 나눈다.[16]",
+          "**글 쓰기** — 시간대가 다른 동료와는 설계 문서가 회의를 대신한다. {추론}"
+        ]
+      },
+      "how_far": "영어로 설계·장애 보고를 글로 쓰고 회의를 이끌 수 있어야 합니다. 미국 근무 자리라 업무 언어는 영어로 봐야 합니다. {추론}",
+      "refs": [5, 9, 16],
+      "study": ["staffeng"]
+    },
+    {
+      "section": "preference",
+      "quote": "Excellent people skills to partner with various key business stakeholders.",
+      "short": "사업 쪽 핵심 사람들과 신뢰를 쌓아야 우선순위 조율이 된다 — 업무 줄 둘이 이걸 요구해서.",
+      "why": "업무 줄 두 개가 사업 쪽·임원과의 협업입니다.[1] 플랫폼 팀은 직접 매출을 내지 않아, 다른 팀이 그 가치를 알아줘야 투자를 받습니다. {추론}",
+      "actually": {
+        "items": [
+          "**정기 검토** — 사업부별로 플랫폼 요청과 진행을 같이 본다. {추론}",
+          "**숫자로 말하기** — '적재가 2시간 빨라져 오전 회의에 어제 숫자가 들어간다' 같은 사업 언어. {추론}",
+          "**거절하는 법** — 안 되는 이유와 대신 할 수 있는 것을 같이 낸다. {추론}"
+        ]
+      },
+      "how_far": "최소선은 다른 부서 임원과 맺은 약속(마감·지표)을 지키거나, 못 지킬 때 먼저 알린 경험입니다. {추론}",
+      "refs": [1],
+      "study": ["team-topologies"]
+    },
+    {
+      "section": "preference",
+      "quote": "BS degree in Computer Science or equivalent.",
+      "short": "컴퓨터공학 학사 또는 그만한 지식 — 'or equivalent' 라 경력으로 대신할 수 있다.",
+      "why": "'or equivalent(그에 준하는)'가 붙어 있어 전공 자체보다 같은 수준의 지식·경력을 봅니다.[1] {추론}",
+      "how_far": "15년 경력을 보는 자리라 학위보다 경력이 훨씬 무겁게 읽힐 가능성이 큽니다. {추론}",
+      "refs": [1]
+    }
+  ],
+  "fit": {
+    "good": [
+      "데이터 창고를 여러 세대(장비 → Hadoop → 클라우드) 거치며 직접 옮겨 본 15년 차[3][4]",
+      "수집 서비스의 가용성·SLA 를 숫자로 책임져 본 엔지니어링 매니저[1][2]",
+      "데이터 과학·제품 쪽과 실험·지표를 같이 만들어 본 사람 — 쿠팡은 모든 기능을 A/B 테스트한다[2]",
+      "팀을 처음부터 뽑아 키운 경험이 있는 사람[1]"
+    ],
+    "hard": [
+      "경력 문턱이 높다 — 창고·BI 15년, 관리 5년, 대규모 창고 5년이 따로 적혀 있다[1]",
+      "미국 근무 — 미국 취업 자격(비자)이 필요하고 공고에 비자 지원 언급은 없다[1]",
+      "수집 서비스는 멈추면 회사 전체 숫자가 멈추는 자리라 장애 책임이 무겁다 {추론}",
+      "한국·대만·인도 동료와 시간대가 달라 이른 아침·늦은 밤 회의가 생길 수 있다 {추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "분당 700만 건 들어오는 로그 수집 서비스의 SLO 를 무엇으로, 몇으로 잡겠어요? 놓치면요?",
+      "a": "쿠팡 발표의 실제 규모와 SLI·SLO·오류 예산의 기본.[2][12][13]"
+    },
+    {
+      "q": "성수기에 스팟 장비가 끊겨 적재가 늦어졌습니다. 다음 성수기 전에 무엇을 바꾸겠어요?",
+      "a": "쿠팡이 실제로 99.9% 적재 SLA 를 놓친 원인과 비용 절감의 맞바꿈.[4][6]"
+    },
+    {
+      "q": "누적 지표를 증분으로 계산하다 사흘 전 값이 틀린 걸 알았습니다. 어떻게 고치고, 설계를 어떻게 바꾸겠어요?",
+      "a": "쿠팡 실험 팀이 발표한 누적 계산 교훈과 '다시 시작할 수 있게 계획하라'.[2]"
+    },
+    {
+      "q": "Redshift 에 조회가 몰려 임원 대시보드가 느립니다. 어떤 선택지가 있나요?",
+      "a": "쿠팡이 처리·조회 클러스터를 나눈 일.[4]"
+    },
+    {
+      "q": "새 원천 30개를 붙여 달라는 요청이 한꺼번에 왔습니다. 팀은 다섯 명입니다. 어떻게 하겠어요?",
+      "a": "우선순위 조율과 셀프서비스 수집 틀(UDI).[1][3]"
+    },
+    {
+      "q": "직접 뽑은 사람 중 기대에 못 미친 사람이 있었나요? 어떻게 했나요?",
+      "a": "채용·육성이 업무 첫 줄이고 관리 5년이 따로 요건이다.[1][18]"
+    }
+  ],
+  "resources": [
+    {
+      "id": "cp-reinvent",
+      "title": "Using data analytics to improve product quality and customer satisfaction (STG222 발표 자료)",
+      "by": "Seshu Adunuthula · Aldi Tjahjadi(쿠팡) · Seth Markle(Amazon S3) · AWS re:Invent 2022",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://d1.awsstatic.com/events/Summits/reinvent2022/STG222_Using-data-analytics-to-improve-product-quality-and-customer-satisfaction.pdf",
+      "why": "쿠팡 데이터 플랫폼 책임자가 직접 밝힌 규모(분당 710만 건 수집·하루 12만 작업)와 A/B 테스트 지표 엔진의 누적 계산 교훈. 'SLA·높은 QPS' 줄과 설계 논의 줄의 회사 쪽 원본."
+    },
+    {
+      "id": "cp-dp-2019",
+      "title": "Evolving the Coupang Data Platform",
+      "by": "Coupang Engineering · 2019",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://medium.com/coupang-engineering/evolving-the-coupang-data-platform-308e305a9c45",
+      "why": "로그 신뢰를 잃었다가 스키마 등록·검증·품질 검사·오전 9시 적재 알림으로 되찾은 이야기. 'SLA'·'문제 해결' 줄."
+    },
+    {
+      "id": "cp-dp-2022a",
+      "title": "Data platform 2022: Global expansion in petabytes",
+      "by": "Coupang Engineering · 2022",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://medium.com/coupang-engineering/data-platform-2022-global-expansion-in-petabytes-3dbbbf27f6fe",
+      "why": "이 팀 앞단인 수집 플랫폼(UDI)과 S3·Hive·Spark·Presto 바닥. 'ETL 기술'·'관계형·NoSQL' 줄."
+    },
+    {
+      "id": "cp-dp-2022b",
+      "title": "Data platform 2022: Transforming bytes to business insights",
+      "by": "Coupang Engineering · 2022",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://medium.com/coupang-engineering/data-platform-2022-transforming-bytes-to-business-insights-9885ab9dce37",
+      "why": "이 팀 뒷단인 분석 플랫폼 — Redshift 동시성, 스팟 중단으로 놓친 99.9% SLA, 셀프 분석 도구. '확장 가능한 분석 바닥' 줄."
+    },
+    {
+      "id": "cp-cost",
+      "title": "Cloud expenditure optimization for cost efficiency",
+      "by": "Coupang Engineering",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/cloud-expenditure-optimization-for-cost-efficiency/",
+      "why": "EMR 25%·S3 저장 계층 같은 대용량 창고 비용을 실제로 줄인 방법. '대규모 창고' 줄."
+    },
+    {
+      "id": "manager-path",
+      "title": "개발 7년차, 매니저 1일차",
+      "by": "카미유 푸르니에 · 한빛미디어",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423",
+      "why": "원서 The Manager's Path. 1:1 → 팀 관리 → 매니저의 매니저까지 — '채용·육성'과 '관리 5년' 줄."
+    },
+    {
+      "id": "elegant-puzzle",
+      "title": "An Elegant Puzzle: Systems of Engineering Management",
+      "by": "Will Larson · Stripe Press",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://press.stripe.com/an-elegant-puzzle",
+      "why": "팀 크기·나누기·채용 깔때기 같은 조직 설계를 숫자로. 여러 팀을 맡는 디렉터의 일."
+    },
+    {
+      "id": "team-topologies",
+      "title": "Team Topologies",
+      "by": "Matthew Skelton · Manuel Pais · IT Revolution",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://teamtopologies.com/book",
+      "why": "플랫폼 팀이 다른 팀과 어떻게 맞물리나 — 셀프서비스로 남의 짐을 덜어 주는 팀 모양. '사업 쪽과 우선순위' 줄."
+    },
+    {
+      "id": "staffeng",
+      "title": "Staff Engineer: Leadership beyond the management track",
+      "by": "Will Larson",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://staffeng.com/book",
+      "why": "기술 리드들이 실제로 하는 일(설계 문서·방향 잡기). 디렉터가 그들과 설계 논의를 어떻게 나누나."
+    },
+    {
+      "id": "kimball",
+      "title": "The Data Warehouse Toolkit (3판)",
+      "by": "Ralph Kimball · Margy Ross · Wiley · 2013",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/",
+      "why": "사실 표·차원 표·결. '데이터 웨어하우스 15년' 줄의 표준 교과서."
+    },
+    {
+      "id": "fde-book",
+      "title": "견고한 데이터 엔지니어링",
+      "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B2%AC%EA%B3%A0%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+      "why": "수집 → 저장 → 변환 → 서빙의 수명 주기 지도. 팀이 맡은 전 구간을 한눈에."
+    },
+    {
+      "id": "ddia",
+      "title": "데이터 중심 애플리케이션 설계",
+      "by": "마틴 클레프만 · 위키북스",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "심화",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+      "why": "관계형·NoSQL 저장 방식, 복제·변경 기록, 배치와 흐름 처리. '관계형·NoSQL' 줄과 설계 논의의 공통 언어."
+    },
+    {
+      "id": "sql-tanimura",
+      "title": "SQL로 시작하는 데이터 분석",
+      "by": "캐시 타니무라 · 한빛미디어 · 2022",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=SQL%EB%A1%9C%20%EC%8B%9C%EC%9E%91%ED%95%98%EB%8A%94%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%B6%84%EC%84%9D",
+      "why": "창 함수·코호트·시계열을 SQL 로. 'SQL 깊은 전문성' 줄."
+    },
+    {
+      "id": "spark-guide",
+      "title": "스파크 완벽 가이드",
+      "by": "빌 체임버스 · 마테이 자하리아 · 한빛미디어 · 2019",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%8C%8C%ED%81%AC%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+      "why": "쿠팡 변환의 주 엔진. 코드 리뷰에서 셔플·작은 파일 문제를 알아볼 눈."
+    },
+    {
+      "id": "airflow-book",
+      "title": "Apache Airflow 기반의 데이터 파이프라인",
+      "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+      "why": "작업 순서·재실행·백필·센서. 'ETL 도구' 줄."
+    },
+    {
+      "id": "airflow-bp",
+      "title": "Airflow Best Practices",
+      "by": "Apache Airflow 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html",
+      "why": "다시 돌려도 결과가 같은(멱등) 작업 — 팀 코딩 기준으로 세울 규칙."
+    },
+    {
+      "id": "sre-book",
+      "title": "Site Reliability Engineering",
+      "by": "Google · O'Reilly · 2016 (온라인 무료)",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://sre.google/books/",
+      "why": "SLI·SLO·오류 예산·장애 대응. '플랫폼 운영·SLA 책임' 줄의 틀."
+    },
+    {
+      "id": "swd",
+      "title": "Storytelling with Data",
+      "by": "Cole Nussbaumer Knaflic · Wiley · 2015",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "입문",
+      "url": "https://www.storytellingwithdata.com/books",
+      "why": "임원에게 숫자 한 장으로 말하는 법. '시각화' 요건과 임원 협업 줄."
+    },
+    {
+      "id": "book-kafka",
+      "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/wiki/kafka",
+      "why": "높은 QPS 수집의 흔한 바닥인 메시지 큐 — 보냈다는 것과 처리됐다는 것의 차이. 수집 서비스 가용성을 이해하는 첫걸음."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "쿠팡 데이터 플랫폼 지도 그리기",
+      "time": "1주",
+      "goal": "쿠팡 데이터가 원천 → 수집 → 레이크 → 변환 → 창고 → 보기로 지나가는 길을 그리고, 각 칸에서 회사가 겪은 문제를 하나씩 말할 수 있다.",
+      "task": "쿠팡 글 셋과 re:Invent 발표를 읽고, 한 장짜리 그림에 단계마다 '쓰는 도구 · 겪은 문제 · 숫자'를 적는다(예: 레이크 · S3 · 작은 객체 비용).",
+      "resources": ["cp-reinvent", "cp-dp-2019", "cp-dp-2022a", "cp-dp-2022b"]
+    },
+    {
+      "title": "작은 수집 파이프라인과 SLA",
+      "time": "2~3주",
+      "goal": "가상 로그를 받아 레이크에 쌓고 하루 표를 만드는 파이프라인을 만들고, 적재 시각 SLO 를 재서 보고할 수 있다.",
+      "task": "가짜 클릭 로그를 초당 수천 건 내는 생성기 → 큐(Kafka) → 시간별 Parquet 파일 → Airflow 로 일간 표를 만든다. 매일 적재 완료 시각을 기록해 30일 달성률과 남은 오류 예산을 계산한다.",
+      "resources": ["book-kafka", "airflow-book", "airflow-bp", "sre-book"]
+    },
+    {
+      "title": "창고 설계와 SQL",
+      "time": "2주",
+      "goal": "사실·차원 표를 설계하고 창 함수로 누적·전주 대비를 내며, 느린 조회의 실행 계획을 읽는다.",
+      "task": "2단계 표로 주문 사실 표·상품/날짜 차원 표를 만들고, 범주별 누적 매출·전주 대비를 내는 SQL 을 쓴다. 날짜 파티션이 있을 때와 없을 때 같은 조회의 실행 시간을 비교한다.",
+      "resources": ["kimball", "sql-tanimura", "spark-guide"]
+    },
+    {
+      "title": "다시 계산할 수 있게 — 증분과 백필",
+      "time": "1~2주",
+      "goal": "누적 지표를 증분으로 계산하면서도, 틀린 날을 고쳤을 때 뒤의 날을 자동으로 다시 계산하게 만들 수 있다.",
+      "task": "3단계 누적 매출 작업에 일부러 중복 적재를 하루 넣고, 그 날을 고친 뒤 Airflow 백필로 이후 날짜만 다시 돌려 결과가 전체 재계산과 같은지 확인한다.",
+      "resources": ["cp-reinvent", "airflow-bp", "ddia"]
+    },
+    {
+      "title": "조직을 설계하는 사람 (경력자)",
+      "time": "계속",
+      "goal": "플랫폼 조직의 팀 나누기·채용 계획·분기 우선순위를 문서로 내고 설득할 수 있다.",
+      "task": "가상의 '수집·분석 플랫폼 25명' 조직도를 그리고, 팀마다 맡을 일·SLO·다음 분기 채용 수를 적는다. 사업부 요청 10개를 받아 무엇을 미룰지 근거와 함께 한 쪽짜리 계획서로 쓴다.",
+      "resources": ["manager-path", "elegant-puzzle", "team-topologies", "staffeng"]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 **기본급 연 17만 4천 ~ 29만 9천 달러**와 기본급의 0~20% 연간 보너스가 적혀 있다 — 미국 근무 기준이고, 기본급은 전체 보상의 한 부분이다",
+    "rows": [
+      {
+        "label": "공고 표기 기본급 (하한)",
+        "value": "연 $174,000",
+        "basis": "공고 · 2026년",
+        "note": "미국 여러 지역 노동시장의 비용을 반영한 범위의 가장 낮은 지역 값. 지역·지식·기술·경력에 따라 달라진다고 적었다 [1]"
+      },
+      {
+        "label": "공고 표기 기본급 (상한)",
+        "value": "연 $299,000",
+        "basis": "공고 · 2026년",
+        "note": "같은 범위의 가장 높은 지역 값 [1]"
+      },
+      {
+        "label": "연간 보너스",
+        "value": "기본급의 0~20%",
+        "basis": "공고 · 2026년",
+        "note": "공고의 복리후생 칸 [1]. 주식 등 '그 밖의 보상'이 있을 수 있다고만 적었다"
+      },
+      {
+        "label": "다른 조직의 같은 직급 공고 (Director of Backend Engineering)",
+        "value": "연 $159,000 ~ $324,000",
+        "basis": "공고 · 2026년",
+        "peer": true,
+        "note": "같은 회사·같은 미국 근무지(마운틴뷰·시애틀)의 다른 조직 디렉터 공고 [10]. 같은 기준(공고 표기 기본급)끼리의 비교"
+      }
+    ],
+    "how": "워싱턴주는 직원 15명 이상 회사가 공고에 급여 범위와 복리후생 개요를 적게 한다(2023년부터) — 그래서 한국 공고와 달리 숫자가 있다 [11]. 범위가 넓은 것은 근무지(마운틴뷰·시애틀)와 경력·면접 결과에 따라 자리를 정하기 때문이라고 공고가 적었다 [1]. 기본급은 전체 보상의 한 부분이라 보너스·그 밖의 보상은 제안 단계에서 확인한다 [1]. 한국 쿠팡(주)의 집계 평균과는 나라·기준이 달라 나란히 놓지 않았다."
+  },
+  "benefits": {
+    "items": [
+      { "name": "보험", "detail": "의료·치과·안과·생명보험, 상해 사망·장해(AD&D)" },
+      { "name": "의료비 계좌", "detail": "FSA(유연 지출 계좌)·HSA(건강 저축 계좌)" },
+      { "name": "장단기 장애 보장", "detail": "Long-term/Short-term Disability" },
+      { "name": "직원 지원 프로그램", "detail": "EAP" },
+      { "name": "퇴직연금", "detail": "401K, 회사 매칭" },
+      { "name": "유급 휴가", "detail": "근속에 따라 연 18~21일 PTO + 유급 공휴일 12일" },
+      { "name": "육아 휴직", "detail": "유급 육아 휴직(기간은 공고에 없음)" },
+      { "name": "출퇴근", "detail": "세전 통근비 혜택" }
+    ],
+    "note": "이 공고의 'General Description of All Benefits' 칸이다(2026년 공고, 미국 근무자 기준) [1]. 한국 쿠팡 공고의 복지와는 다르다."
+  },
+  "location": {
+    "name": "쿠팡 마운틴뷰 오피스",
+    "address": "605 Fairchild Dr, Mountain View, CA 94043, USA",
+    "postal": "94043",
+    "map_url": "https://map.naver.com/p/search/605%20Fairchild%20Dr%20Mountain%20View",
+    "near": "NASA 에임스 연구센터 맞은편, 몇 분 거리에 칼트레인·VTA 경전철이 서는 마운틴뷰 다운타운 환승센터, 건물에 주차 무제한 [7]",
+    "note": "공고 근무지는 'Mountain View, USA; Seattle, USA' 둘 중 하나다 [1]. 시애틀 사무실은 720 Olive Way, Suite 600, Seattle, WA 98101 [8]. 주소는 쿠팡 채용 사이트의 지역 안내다 [7][8]. 쿠팡은 2014년 실리콘밸리 멘로파크에 사무실을 열었다가 마운틴뷰로 옮겼다 [9]."
+  },
+  "sources": [
+    { "n": 1, "title": "Coupang Careers · Director, Back-end Engineering (Data Ingestion & Analytics Platform)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8364554", "kind": "posting", "date": "2026-11-24", "note": "역할 소개(하루 페타바이트 수집, Data Ingestion & Analytics Platform 팀을 이끌고 키운다)·업무·요건·우대·기본급 범위·복리후생·전형, 근무지 마운틴뷰·시애틀. 'DW Appliance 경험은 가산점' 줄은 원문 본문에만 있다" },
+    { "n": 2, "title": "AWS re:Invent 2022 · STG222 Using data analytics to improve product quality and customer satisfaction (발표 자료)", "url": "https://d1.awsstatic.com/events/Summits/reinvent2022/STG222_Using-data-analytics-to-improve-product-quality-and-customer-satisfaction.pdf", "kind": "company", "date": "2022-12", "note": "쿠팡 데이터 플랫폼 책임자 Seshu Adunuthula·Data Intelligence 디렉터 Aldi Tjahjadi 발표 — 31.5PB, 사용자 1,300명 넘음, 하루 작업 12만·조회 50만, 분당 로그 710만 건 수집, 하루 EMR 노드 5만 5천, 데이터 세트 15만·인증 5,500. 실험 한 바퀴(설계·구현·감시·셀프 분석·결정), A/B 인프라(SDK·설정·빠른 계층·배치 지표 엔진, S3·EMR·RDS), 누적 계산 교훈, '다시 시작할 수 있게 계획하라'. 발표 영상은 찾지 못해 자료(PDF)로 읽음" },
+    { "n": 3, "title": "Coupang Engineering · Data platform 2022: Global expansion in petabytes", "url": "https://medium.com/coupang-engineering/data-platform-2022-global-expansion-in-petabytes-3dbbbf27f6fe", "kind": "company", "date": "2022-06-17", "note": "수집 플랫폼 — MySQL → Hive 로 시작해 Hadoop 위 끼워 쓰는 수집 틀, 원천 무관·자동·사용자 주도 UDI(70여 원천, 가져올 양 자동 추정), S3 레이크·Hive·Spark·Presto. 미디엄 원문은 자동 접속이 막혀 검색 요약과 같은 사이트의 다른 풀이(웹 아카이브 사본으로 읽은 메모)로 확인" },
+    { "n": 4, "title": "Coupang Engineering · Data platform 2022: Transforming bytes to business insights", "url": "https://medium.com/coupang-engineering/data-platform-2022-transforming-bytes-to-business-insights-9885ab9dce37", "kind": "company", "date": "2022-06-24", "note": "분석 플랫폼 — Redshift(매출·재무 데이터) 동시성 문제와 처리·조회 클러스터 분리·데이터 공유, Hive → EMR 위 Spark 마트, 스팟 중단으로 99.9% 적재 SLA 를 놓친 일, 로그 데이터 1년 약 3배, ClickHouse·Superset 셀프 분석(사용자 40% 증가). 원문 접근은 [3] 과 같음" },
+    { "n": 5, "title": "Coupang Engineering · Evolving the Coupang Data Platform", "url": "https://medium.com/coupang-engineering/evolving-the-coupang-data-platform-308e305a9c45", "kind": "company", "date": "2019-11-13", "note": "로그 명세가 없어 지표 신뢰가 깨진 일 → 스키마 등록·소유자·구독자 Web Logging Platform, 행 수·행 해시·기본 키·NULL 품질 검사, 이상 알림으로 유실 발견 3일 → 2시간, 매일 오전 9시 마트 준비 메일, 메타데이터로 Airflow DAG 생성·백필·SLA 조기 감지. 원문 접근은 [3] 과 같음" },
+    { "n": 6, "title": "Coupang Engineering · Cloud expenditure optimization for cost efficiency", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/cloud-expenditure-optimization-for-cost-efficiency/", "kind": "company", "note": "스팟·인스턴스 플릿으로 EMR 비용 25% 절감, S3 50PB 넘게 Intelligent-Tiering(작은 객체 수십억 개면 오히려 비쌈), 비용 보고서 대시보드로 팀별 예산" },
+    { "n": 7, "title": "Coupang Careers · Mountain View", "url": "https://www.coupang.jobs/en/locations/mountain-view/", "kind": "company", "note": "605 Fairchild Dr, Mountain View, CA 94043 — NASA 에임스 맞은편, 스탠퍼드·팰로앨토 다운타운 가까움, 다운타운 환승센터(칼트레인·VTA), 주차 무제한" },
+    { "n": 8, "title": "Coupang Careers · Seattle", "url": "https://www.coupang.jobs/en/locations/seattle/", "kind": "company", "note": "720 Olive Way, Suite 600, Seattle, WA 98101" },
+    { "n": 9, "title": "Coupang Careers · Coupang Global Office Tour: The U.S.", "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/coupang-global-office-tour-the-us/", "kind": "company", "date": "2022-12-28", "note": "2014년 멘로파크 → 마운틴뷰, 실리콘밸리 인재 거점, 시애틀·리버사이드 사무실, 다른 나라 조직과 함께 일함" },
+    { "n": 10, "title": "Coupang Careers · Director of Backend Engineering (Mountain View · Seattle)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8386063", "kind": "posting", "date": "2026-11", "note": "다른 조직의 같은 직급 미국 공고 — 기본급 범위 $159,000~$324,000, 보너스 0~20% (같은 사이트의 다른 풀이에서 확인한 값)" },
+    { "n": 11, "title": "Washington L&I · Equal Pay and Opportunities Act", "url": "https://www.lni.wa.gov/workers-rights/wages/equal-pay-opportunities-act/", "kind": "reference", "note": "직원 15명 이상 고용주는 공고에 급여 범위와 복리후생 개요를 적어야 한다(2023-01-01 시행)" },
+    { "n": 12, "title": "Google SRE Book · Service Level Objectives", "url": "https://sre.google/sre-book/service-level-objectives/", "kind": "reference", "note": "SLI·SLO·SLA" },
+    { "n": 13, "title": "Google SRE Book · Embracing Risk", "url": "https://sre.google/sre-book/embracing-risk/", "kind": "reference", "note": "오류 예산 — 남으면 배포, 다 쓰면 안정화" },
+    { "n": 14, "title": "Kimball Group · Dimensional Modeling Techniques", "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/", "kind": "reference", "note": "사실 표·차원 표, 결(grain) 먼저 정하기" },
+    { "n": 15, "title": "Apache Airflow 공식 문서 · Best Practices", "url": "https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html", "kind": "reference", "note": "멱등한 작업" },
+    { "n": 16, "title": "Google SRE Book · Managing Incidents", "url": "https://sre.google/sre-book/managing-incidents/", "kind": "reference", "note": "장애 지휘·운영·소통 역할 나누기" },
+    { "n": 17, "title": "Will Larson · Sizing engineering teams", "url": "https://lethain.com/sizing-engineering-teams/", "kind": "reference", "note": "팀 6~8명, 커지면 둘로, 매니저 한 명이 8명 넘게 맡지 않기" },
+    { "n": 18, "title": "개발 7년차, 매니저 1일차 (카미유 푸르니에 · 한빛미디어)", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423", "kind": "reference", "note": "원서 The Manager's Path — 1:1, 성장 계획, 매니저의 매니저" },
+    { "n": 19, "title": "Team Topologies (Matthew Skelton · Manuel Pais)", "url": "https://teamtopologies.com/book", "kind": "reference", "note": "플랫폼 팀·흐름 정렬 팀, 인지 부하" },
+    { "n": 20, "title": "Debezium 문서 · Features", "url": "https://debezium.io/documentation/reference/stable/features.html", "kind": "reference", "note": "DB 변경 기록(로그)을 읽어 줄 단위 변경을 흘려보내는 변경 데이터 캡처(CDC)" },
+    { "n": 21, "title": "SlideShare · Journey to the Continuous and Scalable Big Data Platform (쿠팡 정재화)", "url": "https://fr.slideshare.net/blrunner/journey-to-the-continuous-and-scalable-big-data-platform", "kind": "company", "note": "쿠팡 빅데이터 플랫폼 발표 자료 — 사내 Airflow 서비스, Zeppelin 에 고친 Presto 해석기. 행사·날짜는 확인 못 했고 검색 요약으로 확인" }
+  ],
+  "caveat": "쿠팡 데이터 플랫폼 글은 2019·2022년 것이고 발표 숫자도 2022년 것이라 지금 규모·도구는 달라졌을 수 있습니다. 미디엄 원문은 자동 접속이 막혀, 같은 사이트의 다른 공고 풀이가 웹 아카이브 사본으로 읽고 남긴 메모와 검색 요약으로 확인했습니다[3][4][5]. 발표 영상은 찾지 못해 공개된 발표 자료(PDF)로 읽었습니다[2]. 팀 크기·조직도는 공고에 없습니다. 원문 본문에는 'Experience with DW Appliance is a plus' 줄이 더 있지만 공고 칸 나누기에서 빠져 자격요건 첫 줄의 풀이에 함께 적었습니다. 지금 채용 페이지의 시각화 요건 문장은 수집된 문장과 조금 다를 수 있습니다."
+}
