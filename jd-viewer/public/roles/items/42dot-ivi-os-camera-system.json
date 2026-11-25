@@ -1,0 +1,1198 @@
+{
+ "id": "42dot-ivi-os-camera-system",
+ "company": "포티투닷(42dot)",
+ "role": "IVI OS Engineer",
+ "team": "Android 기반 차량용 카메라 시스템 — 팀 이름은 공고에 없음",
+ "jobs": [
+  "wanted-310540"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "포티투닷이 Android Automotive OS(차량용 안드로이드, AAOS) 위에 직접 만든 인포테인먼트(IVI — 차 화면 시스템)에서 **카메라 쪽 바닥**을 맡습니다.[4] 카메라 하드웨어를 안드로이드에 잇는 HAL(하드웨어 추상화 층)을 짜고, 다른 기기에서 네트워크로 들어오는 영상을 카메라처럼 보이게 하고, 그 위에 블랙박스·서라운드 뷰 같은 앱을 올립니다.[1]",
+  "env": "안드로이드 카메라 길이 두 갈래입니다 — 일반 앱이 쓰는 **Camera2**(밑에 Camera3 HAL)와 차량 전용 **EVS**(후방·서라운드 뷰처럼 부팅 직후 바로 떠야 하는 화면용).[10][12] 결과물은 2026년 5월 신형 그랜저부터 실린 Pleos Connect 에 들어갑니다.[5] {추론}",
+  "oneline": "안드로이드 카메라 HAL 을 직접 짜 본 5년 이상 경력자가 차 안팎 카메라와 원격 영상까지 한 파이프라인으로 묶는 자리. 앱보다 **프레임워크 아래**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "1) Camera HAL 및 EVS HAL 연동",
+   "short": "카메라 하드웨어를 안드로이드의 두 카메라 길(Camera2·EVS)에 잇는 일 — 이 자리의 첫째 업무다.",
+   "why": "AAOS 는 카메라 API 를 둘 둡니다. Camera2 는 안드로이드가 다 켜진 뒤에 쓰고 일반 앱도 쓸 수 있는 길, EVS 는 안드로이드 시스템 서비스에 거의 기대지 않고 시스템·자사 앱만 쓰는 길입니다.[10] 같은 카메라를 두 길로 내보내려면 두 HAL 을 모두 다뤄야 합니다.",
+   "flows": [
+    {
+     "caption": "안드로이드 차량 카메라의 두 길[10][12][15]",
+     "steps": [
+      "카메라 센서 · 차체·실내 카메라(직렬 링크·USB 등)",
+      "커널 드라이버 · V4L2(리눅스 영상 장치 표준)",
+      "HAL · Camera3(카메라 제공자) / EVS HAL",
+      "서비스 · cameraserver / EVS Manager",
+      "API · Camera2 / CarEvsService",
+      "앱 · 블랙박스·영상통화 / 후방·서라운드 뷰"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "센서·직렬 링크·보드는 하드웨어·임베디드 조직, 화면은 UI/UX 팀, 앱은 앱 개발자가 맡는다고 공고에 적혀 있습니다.[1] 이 자리는 **드라이버 위·프레임워크 아래**를 맡는다고 읽는 것이 맞습니다.{추론}",
+   "refs": [
+    1,
+    10,
+    12,
+    15
+   ],
+   "study": [
+    "aaos-camera",
+    "aosp-camera-hal"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• Camera HAL(Camera3)과 EVS HAL을 개발 및 최적화하여 하드웨어와 안정적으로 연동되도록 구성하고, Android HAL 계층을 목적에 맞게 커스터마이징합니다.",
+   "short": "카메라 HAL 두 벌을 직접 구현·튜닝하고, 차량 용도(빠른 후방·여러 카메라·동기화)에 맞게 고친다.",
+   "why": "안드로이드 앱이 카메라를 열면 요청은 cameraserver 를 거쳐 HAL 로 내려가고, 하드웨어와 실제로 이야기하는 코드는 HAL 입니다.[15] 그런데 일반 카메라 서비스 위에 후방 카메라 앱을 만들면 **부팅에서 너무 늦게** 뜨기 때문에 차량용 EVS HAL 이 따로 있습니다.[12] 결국 같은 카메라에 대해 두 HAL 을 회사 하드웨어에 맞게 만들어야 합니다.",
+   "actually": {
+    "intro": "AOSP 문서가 정한 두 HAL 의 핵심 계약입니다. 포티투닷 구현은 공개되지 않았습니다.",
+    "items": [
+     "**Camera3 HAL 의 흐름** — 카메라 목록 → 열기 → 스트림 구성(해상도·형식·용도) → 기본 설정 받기 → 촬영 요청 처리. 요청 하나에 결과 메타데이터와 버퍼가 돌아오고, **요청 순서대로** 답해야 하며 여러 요청이 동시에 떠 있을 수 있다.[17]",
+     "**AIDL 로 옮겨 가기** — 안드로이드 13부터 카메라 HAL 은 AIDL(안드로이드 인터페이스 정의 언어)로 만들고, 13 이후 새 기능은 AIDL HAL 로만 쓸 수 있다.[16]",
+     "**EVS HAL 의 흐름** — 열거(카메라·디스플레이 목록) → 카메라 열기 → 스트림 시작 → 프레임을 받아 쓰고 돌려주기(doneWithFrame). 스트림 시작 뒤 **500ms 안에 첫 프레임**, 이후 **최소 10fps** 를 지켜야 하고 이 시간이 후방 카메라 기동 시간에 그대로 들어간다.[12]",
+     "**버퍼 관리** — EVS 는 버퍼가 몇 개뿐이라 앱이 늦게 돌려주면 그 사이 프레임을 버린다. 받을 수 있는 형식은 NV21·YV12·YUYV·RGBA·BGRA.[12]",
+     "**여러 카메라 묶기** — EVS 1.1 은 물리 카메라 여럿을 논리 카메라 하나로 묶는다. 하드웨어로 셔터를 맞춘 카메라(예: GMSL2 동기 카메라)는 CALIBRATED, 아니면 APPROXIMATE 로 표시한다.[13]",
+     "**HAL 은 입력을 믿지 않는다** — 카메라 서비스가 넘긴 값도 검증하지 않은 것으로 보고 HAL 이 직접 확인해야 한다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "EVS 버퍼를 늦게 돌려주면 생기는 일 (가상 숫자, 직접 돌린 출력)",
+     "body": "setMaxFramesInFlight(3) 으로 앱이 3장까지 들고 있을 수 있을 때, 앱이 세 프레임마다 한 장씩만 돌려주면 7프레임 중 2장을 버립니다. 문서의 '버퍼가 다 떨어지면 프레임을 건너뛴다'를 줄인 모형입니다.[12]",
+     "lang": "python",
+     "code": "max_in_flight, held, dropped = 3, [], 0\nfor f in range(1, 8):\n    if len(held) == max_in_flight:\n        dropped += 1; print(f\"프레임{f}: 빈 버퍼 없음 → 버림\")\n    else:\n        held.append(f); print(f\"프레임{f}: 앱에 전달 (들고 있는 수 {len(held)})\")\n    if f % 3 == 0 and held:\n        print(f\"  앱이 doneWithFrame({held.pop(0)})\")\nprint(\"버린 프레임:\", dropped)\n# ... 프레임5: 빈 버퍼 없음 → 버림 / 프레임6: 빈 버퍼 없음 → 버림 ... 버린 프레임: 2"
+    }
+   ],
+   "how_far": "공고가 '개발 및 최적화'라고 적었으므로 샘플 HAL 을 띄우는 수준이 아니라 **회사 하드웨어용 HAL 을 처음부터 짜고 지연·프레임 누락을 줄여 본** 수준을 봅니다.[1] 최소선은 Camera3 의 요청-결과 모델과 EVS 의 버퍼 돌려주기 규칙을 그림 없이 설명할 수 있는 정도입니다.{추론}",
+   "refs": [
+    1,
+    12,
+    13,
+    15,
+    16,
+    17
+   ],
+   "study": [
+    "aosp-camera-hal",
+    "aosp-evs",
+    "embedded-android"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• Camera2 API 또는 EVS 기반 애플리케이션과의 호환성을 위해 앱 개발자와 긴밀히 협업합니다.",
+   "short": "HAL 이 바뀌어도 위의 앱(Camera2 앱·EVS 앱)이 깨지지 않게, 앱 개발자와 계약을 맞춘다.",
+   "why": "Camera2 는 시스템·자사 앱뿐 아니라 **외부 회사 앱도** 쓰는 길입니다.[10] 포티투닷은 Pleos Playground 로 외부 개발사에 SDK·Devbox·에뮬레이터를 주고 앱 마켓을 운영하므로[4], HAL 이 내놓는 카메라 특성이 앱 쪽 기대와 어긋나면 남의 앱까지 깨집니다.{추론}",
+   "actually": {
+    "items": [
+     "**카메라 특성 맞추기** — 차량 카메라는 위치(android.automotive.location)·렌즈 방향(android.automotive.lens.facing) 같은 차량용 특성을 HAL 이 알려 준다. 앱은 이 값으로 '후방 카메라'를 찾는다.[14]",
+     "**권한 맞추기** — 사용자가 바뀌어도 후방 영상이 끊기지 않게 하는 헤드리스 시스템 사용자 권한, 개인정보 토글이 켜져도 카메라를 쓸 수 있는 예외 목록(안전 앱)을 플랫폼이 정한다. 헤드리스 사용자의 카메라 데이터는 기기 밖으로 보내면 안 된다.[14]",
+     "**EVS 공유 규칙** — EVS Manager 는 여러 클라이언트가 같은 카메라를 보게 하지만, 화면을 쓰는 주인은 하나이고 나머지는 읽기만 한다.[12]",
+     "**이전 계획 알리기** — AOSP 는 카메라 용도의 EVS API 를 폐기할 계획이라 밝히고 Camera2 기반(ACS)으로 옮기는 안내를 냈다. HAL 쪽이 어느 길로 갈지는 앱 팀과 같이 정해야 한다.[10]"
+    ]
+   },
+   "how_far": "앱 화면을 직접 짜는 것은 앱 개발자 몫입니다.[1] 이 자리는 **앱이 기대하는 것(형식·해상도·지연·권한)을 문서와 테스트로 약속하고 지키는** 쪽입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    10,
+    12,
+    14
+   ],
+   "study": [
+    "aaos-camera",
+    "camera2-ref"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "2) 원격 카메라 스트림 연동",
+   "short": "차에 직접 꽂힌 카메라가 아니라, 다른 기기에서 네트워크로 들어오는 영상을 안드로이드 카메라처럼 쓰게 하는 일.",
+   "why": "포티투닷 Connectivity Framework 팀은 휴대폰·액세서리가 차에 붙고, 사람이 차 안에 없어도 밖에서 연결되는 것을 목표로 개발한다고 소개했습니다. 차와 주고받는 메시지 형식으로 CAP(Car Accessory Protocol)을 국책 과제로 만들고 있다고 했습니다.[7] 공고의 '원격 장치'가 정확히 무엇인지는 공개되지 않았습니다 — 무선 액세서리 카메라, 다른 제어기에 달린 카메라 등이 후보입니다.{추론}",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "ww-connectivity"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 시스템 소프트웨어 엔지니어와 협업하여 원격 장치로부터 수신되는 카메라 스트림을 가공/처리하고, Android 카메라 프레임워크로 연동합니다.",
+   "short": "네트워크로 받은 압축 영상을 풀고 형식을 바꿔, 앱이 보통 카메라처럼 열 수 있게 프레임워크에 넣는다.",
+   "why": "안드로이드에는 USB 웹캠을 카메라로 붙이는 외부 카메라 HAL 이 있지만, 문서는 이것이 영상통화·키오스크 같은 가벼운 용도이고 **고해상도·고속 스트리밍용이 아니라고** 적었습니다.[18] 네트워크 영상을 카메라로 보이게 하려면 회사가 직접 HAL 이나 그 아래를 만들어야 합니다.{추론}",
+   "actually": {
+    "intro": "네트워크 영상을 '카메라'로 만드는 일반적인 단계입니다. 포티투닷 구조는 공개되지 않아 공개 문서로 보입니다.",
+    "items": [
+     "**받기** — RTP 패킷을 순서 번호로 다시 줄 세우고 빠진 것을 센다.[24]",
+     "**버퍼링** — 도착이 들쭉날쭉하니 잠깐 모아 두었다 내보낸다. 예를 들어 GStreamer 의 RTSP 수신 요소는 기본 2,000ms 를 모아 둔다 — 화면용으로는 길어서 줄이는 것이 보통이다.[28] {추론}",
+     "**풀기** — 하드웨어 디코더로 H.264·H.265 를 원본 프레임으로 푼다.{추론}",
+     "**형식 맞추기** — 앱·HAL 이 받는 형식(EVS 는 NV21·YV12·YUYV·RGBA·BGRA)으로 바꾸고 크기를 맞춘다.[12]",
+     "**카메라로 내보이기** — 외부 카메라 HAL 처럼 카메라 제공자를 하나 더 등록해(예: external/0) 카메라 목록에 나타나게 한다.[18]",
+     "**시각 맞추기** — 한 요청의 출력들은 같은 타임스탬프를 가져야 한다. 보낸 쪽 RTP 시각을 기기 시계로 옮겨 붙인다.[17][24]"
+    ]
+   },
+   "how_far": "네트워크·연결 계층은 시스템 소프트웨어 엔지니어와 나눠 맡는다고 공고에 적혀 있습니다.[1] 이 자리는 **받은 영상이 카메라 프레임워크에 들어가는 지점부터**를 책임진다고 읽힙니다.{추론}",
+   "refs": [
+    1,
+    12,
+    17,
+    18,
+    24,
+    28
+   ],
+   "study": [
+    "aosp-external-cam",
+    "gst-rtspsrc",
+    "rfc-rtp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• RTSP, RTCP, WebRTC 등 다양한 실시간 스트리밍 프로토콜을 기반으로 원격 스트림을 처리하고, 수신된 스트림을 Camera HAL 또는 상위 계층으로 전달합니다.",
+   "short": "영상이 오는 방식(RTSP·WebRTC)마다 받는 법을 갖추고, 받은 영상을 HAL 또는 그 위로 넘긴다.",
+   "why": "보내는 기기에 따라 쓰는 프로토콜이 다릅니다. IP 카메라류는 RTSP 로 재생을 제어하고 RTP 로 영상을 보내는 경우가 많고, 휴대폰·브라우저 쪽은 WebRTC 가 표준입니다.[23][27] {추론}",
+   "actually": {
+    "items": [
+     "**RTSP** — 영상 자체가 아니라 '틀어 줘·멈춰·끝내'를 주고받는 제어 프로토콜. DESCRIBE(무슨 영상인지 SDP 로 받기) → SETUP(전송 방식 정하기) → PLAY → TEARDOWN 순서. 영상 전달은 따로(보통 RTP).[23]",
+     "**RTP / RTCP** — RTP 머리에는 순서 번호·타임스탬프·출처 번호(SSRC)가 있고, RTCP 는 받은 쪽이 손실률·지터(도착 간격 흔들림)를 보고한다. RTCP 몫은 세션 대역의 5% 를 권장한다.[24] 영상 RTP 시계는 90kHz 다.[25]",
+     "**WebRTC** — 기기끼리 직접 잇기 위해 ICE·STUN·TURN 으로 길을 찾고[27], 모든 미디어는 SRTP 로 암호화해야 하며 키는 DTLS 로 나눈다.[26]",
+     "**어느 층으로 넘기나** — 카메라 앱이 그대로 열어야 하면 HAL 로, 화면에만 띄우면 되면 상위(앱·서비스)로 넘기는 선택이 공고 문장에 들어 있다.[1] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "RTCP 가 보고하는 지터 계산 (가상 도착 시각, 직접 돌린 출력)",
+     "body": "30fps 영상은 90kHz 시계로 프레임당 3,000틱입니다.[25] RFC 3550 의 식 J += (|D| − J)/16 으로 도착 간격 흔들림을 누적합니다.[24]",
+     "lang": "python",
+     "code": "CLOCK = 90000\nsend_ts = [0, 3000, 6000, 9000, 12000]       # 보낸 쪽 RTP 타임스탬프\narrive_ms = [0.0, 33.0, 70.0, 100.0, 140.0]  # 받은 시각(ms)\nJ = 0.0\nfor i in range(1, len(send_ts)):\n    R_prev, R = arrive_ms[i-1] * CLOCK / 1000, arrive_ms[i] * CLOCK / 1000\n    D = (R - R_prev) - (send_ts[i] - send_ts[i-1])\n    J += (abs(D) - J) / 16\n    print(f\"패킷{i}: D={D/CLOCK*1000:+.1f}ms  J={J/CLOCK*1000:.2f}ms\")\n# 패킷1: D=-0.3ms  J=0.02ms\n# 패킷2: D=+3.7ms  J=0.25ms\n# 패킷3: D=-3.3ms  J=0.44ms\n# 패킷4: D=+6.7ms  J=0.83ms"
+    }
+   ],
+   "how_far": "프로토콜을 새로 만드는 자리가 아닙니다. **이미 있는 스택(GStreamer·WebRTC 라이브러리 등)으로 받아 지연·끊김을 재고 줄이는** 수준이 요구됩니다.{추론} 자격요건도 '이해'라고 적었습니다.[1]",
+   "refs": [
+    1,
+    23,
+    24,
+    25,
+    26,
+    27
+   ],
+   "study": [
+    "rfc-rtsp",
+    "rfc-rtp",
+    "webrtc-book",
+    "webrtc-w3c"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "3) 차량용 카메라를 활용한 다양한 애플리케이션 개발",
+   "short": "HAL 위에 실제 기능(블랙박스·서라운드 뷰)을 올려, 카메라 바닥이 제품이 되게 하는 일.",
+   "why": "Pleos Connect 는 2026년 5월 신형 그랜저부터 실렸고 OTA(무선 업데이트)로 기능을 계속 더한다고 그룹이 밝혔습니다.[5] 카메라 앱도 HAL 을 아는 사람이 같이 만들어야 지연·저장 문제를 바닥부터 풀 수 있습니다.{추론}",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• Dash Cam (블랙박스): 실내(in-cabin) 카메라로 주행 영상을 녹화하고 관리합니다.",
+   "short": "실내 카메라 영상을 끊김 없이 파일로 쓰고, 카드가 차면 오래된 것부터 지우고 사고 영상은 지키는 일.",
+   "why": "현대차는 이미 전·후방 빌트인 캠(순정 블랙박스)을 팔고 있고, 사용설명서에 녹화 방식·화질·저장 용량이 자세히 적혀 있습니다.[32] 이 공고의 블랙박스는 **실내** 카메라를 쓴다는 점이 다릅니다.[1]",
+   "actually": {
+    "intro": "순정 빌트인 캠 사양(현대 사용설명서)으로 본 블랙박스가 하는 일입니다. 포티투닷 실내 블랙박스의 사양은 공개되지 않았습니다.[32]",
+    "items": [
+     "**녹화 방식 나누기** — 주행 상시(30fps)·주차 상시(2fps)·주차 중 움직임 감지(5fps)·주행 이벤트(30fps)·주차 이벤트(10fps)·수동·타임랩스.[32]",
+     "**파일 쪼개기** — 64GB 카드에 주행 상시는 1분 파일로 최대 약 4시간, 주차 상시는 30분 파일로 최대 약 40시간.[32]",
+     "**고리 녹화** — 칸이 차면 가장 오래된 일반 파일부터 지우고, 이벤트·수동 영상은 따로 개수(각 최대 40개)를 둔다.[32]",
+     "**파일 형식** — 안드로이드의 MediaMuxer 는 MP4·WebM·3GP 로 쓸 수 있고, 시간·위치 같은 메타데이터 트랙은 MP4 에서만 된다.[22]",
+     "**개인정보** — 실내 카메라는 탑승자를 찍는다. 안드로이드는 카메라 개인정보 토글과 그 예외 목록을 플랫폼이 관리한다.[14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "고리 녹화 — 오래된 일반 파일부터 지우고 이벤트는 지킨다 (가상, 직접 돌린 출력)",
+     "body": "일반 칸 4개, 5분째에 충격이 감지된 경우입니다.",
+     "lang": "python",
+     "code": "from collections import deque\nCAP = 4\nnormal, event = deque(), []\nfor minute in range(1, 8):\n    name = f\"drive_{minute:02d}.mp4\"\n    if minute == 5:\n        event.append(name); print(f\"{name} → 이벤트 보관\"); continue\n    if len(normal) == CAP:\n        print(f\"꽉 참: {normal.popleft()} 삭제\")\n    normal.append(name)\nprint(\"일반:\", list(normal)); print(\"이벤트:\", event)\n# drive_05.mp4 → 이벤트 보관\n# 꽉 참: drive_01.mp4 삭제\n# 꽉 참: drive_02.mp4 삭제\n# 일반: ['drive_03.mp4', 'drive_04.mp4', 'drive_06.mp4', 'drive_07.mp4']\n# 이벤트: ['drive_05.mp4']"
+    },
+    {
+     "title": "64GB 에 4시간이면 비트레이트는? (직접 돌린 출력)",
+     "body": "사용설명서의 '64GB · 주행 상시 최대 4시간(전·후방)'[32]을 거꾸로 계산하면 두 카메라 합 약 35.6Mbps, 한 대 약 17.8Mbps 입니다. 실내 카메라를 하나 더하면 같은 카드에서 녹화 시간이 그만큼 줄어듭니다.{추론}",
+     "lang": "python",
+     "code": "gb, hours = 64, 4\nmbps = gb * 1e9 * 8 / (hours * 3600) / 1e6\nprint(f\"두 카메라 합 ≈ {mbps:.1f} Mbps, 한 대 ≈ {mbps/2:.1f} Mbps\")\n# 두 카메라 합 ≈ 35.6 Mbps, 한 대 ≈ 17.8 Mbps"
+    }
+   ],
+   "how_far": "녹화 정책(몇 fps·몇 분 파일·무엇을 이벤트로 볼지)은 제품 기획이 정합니다.{추론} 개발자는 **전원이 갑자기 끊겨도 파일이 깨지지 않고, 카드가 차도 녹화가 멈추지 않게** 만드는 쪽입니다.{추론}",
+   "refs": [
+    1,
+    14,
+    22,
+    32
+   ],
+   "study": [
+    "hyundai-builtin-cam",
+    "mediamuxer"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• Surround View: 다중 카메라를 사용해 차량 주변 360° 영상을 시각화합니다.",
+   "short": "차 앞뒤·양옆 카메라 넷의 영상을 펴고 이어 붙여, 위에서 내려다본 듯한 한 장면을 만든다.",
+   "why": "EVS 는 처음부터 후방 카메라와 **서라운드 뷰 화면**을 위해 만든 층입니다.[11] AOSP 에는 차 주변에 대략의 3D 표면을 만들고 원하는 시점에서 본 가상 영상을 그리는 서라운드 뷰 3D 인터페이스도 있습니다.[29]",
+   "actually": {
+    "items": [
+     "**렌즈 펴기** — 서라운드 뷰 카메라는 보통 어안 렌즈라 휜 영상을 편다. OpenCV 어안 모델은 카메라 행렬 K 와 왜곡 계수 k1~k4 를 보정으로 구한다.[30] {추론}",
+     "**바닥에 투영하기** — 카메라마다 차에 붙은 위치·각도(외부 보정값)로 영상을 바닥 평면에 옮긴다. 평면 사이의 이 변환이 호모그래피다.[31]",
+     "**이어 붙이기** — 네 영상이 겹치는 모서리를 섞고 밝기를 맞춘다.{추론}",
+     "**동시에 찍기** — 네 카메라가 같은 순간을 찍어야 이음매가 안 어긋난다. EVS 1.1 의 논리 카메라 묶음과 동기화 종류(CALIBRATED/APPROXIMATE)가 이 문제다.[13]",
+     "**3D 시점** — 차 주변 그릇 모양 표면에 영상을 입히고 원하는 시점으로 돌려 본다. 차 그림·주차선 같은 덧그림도 올린다.[29]"
+    ]
+   },
+   "how_far": "보정 알고리즘 자체는 비전 팀이나 부품 회사가 줄 수도 있습니다.{추론} 이 자리는 **네 카메라를 같은 시각에 받아 GPU 로 그리고, 기어를 R 에 넣자마자 뜨게** 하는 쪽이 중심입니다.{추론}",
+   "refs": [
+    11,
+    13,
+    29,
+    30,
+    31
+   ],
+   "study": [
+    "aosp-sv3d",
+    "opencv-fisheye",
+    "mvg-book",
+    "opencv-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 그 외에도 UI/UX팀 및 임베디드 시스템 조직과 협업하여 신뢰성 높은 성능을 구현합니다.",
+   "short": "카메라 화면은 위로는 UI, 아래로는 보드·드라이버에 걸쳐 있어 양쪽과 같이 숫자(지연·fps)를 맞춘다.",
+   "why": "포티투닷 인포테인먼트는 센터 디스플레이에서 최대 3개 화면을 동시에 쓰는 멀티 윈도우를 내세웁니다.[4] 카메라 영상이 그 안에 뜨려면 UI 쪽 화면 배치와 아래쪽 보드 성능이 같이 맞아야 합니다.{추론} Vehicle OS 팀은 차가 없어도 인터페이스를 쓰는 앱을 미리 짜고 시험하는 '오프사이클 개발'을 한다고 소개했습니다.[6]",
+   "actually": {
+    "items": [
+     "**후방 영상 시간 예산** — 미국 안전기준(FMVSS 111)은 후진을 시작하고 2.0초 안에 후방 영상이 떠야 한다고 정한다.[33] EVS 샘플 앱도 전원 후 2초 안을 목표로 한다.[12]",
+     "**예산 나누기** — EVS 는 스트림 시작부터 첫 프레임까지 500ms 를 쓰므로, 2초에서 빼면 부팅·서비스 기동에 남는 것은 약 1.5초다.[12][33] {추론}",
+     "**같은 기준으로 재기** — 화면에 뜬 시각, fps, 버린 프레임 수를 UI·임베디드 쪽과 같은 도구로 잰다. 같은 회사 IVI 시험 자동화 공고도 ADB·Logcat 과 HIL/SIL 시험대를 쓴다.[8]"
+    ]
+   },
+   "refs": [
+    4,
+    6,
+    8,
+    12,
+    33
+   ],
+   "study": [
+    "ww-vehicle-os",
+    "aaos-avd"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• Camera3 HAL 개발 경험",
+   "short": "안드로이드 카메라 HAL 을 직접 짜 본 경험 — 앱이 아니라 HAL 쪽이다.",
+   "why": "업무 첫 줄이 Camera3 HAL 개발·최적화입니다.[1] 카메라 HAL 은 카메라 제공자·장치·세션 세 인터페이스를 구현해야 하고[15], 안드로이드 13부터는 AIDL 판이 기준입니다.[16]",
+   "level": {
+    "basic": "요청 → 결과 모델, 스트림 구성, 메타데이터(3A — 자동 노출·초점·화이트밸런스) 이해",
+    "work": "HAL 구현 · V4L2 드라이버와 버퍼 주고받기 · 셔터 알림·결과 순서 지키기 · VTS 통과",
+    "team": "차량 카메라(직렬 링크·여러 대·조기 기동)에 맞춘 HAL, 원격 스트림을 카메라로 내보이기"
+   },
+   "actually": {
+    "items": [
+     "**시작 순서** — 카메라 목록 → 열기 → 스트림 구성 → 기본 설정 → 요청 처리. 요청 처리는 다음 요청을 받을 준비가 될 때까지 멈춰 있어야 한다.[17]",
+     "**셔터와 결과** — 노출이 시작되면 SHUTTER 알림을 보내고, 결과는 받은 요청 순서대로 돌려준다.[17]",
+     "**3A** — 자동 노출이 켜져 있으면 앱이 준 노출 값은 무시하고, HAL 이 실제로 고른 값을 결과 메타데이터에 적어야 한다.[17]"
+    ]
+   },
+   "how_far": "샘플 HAL 을 빌드해 본 것으로는 부족하고, **실제 센서·보드에서 HAL 을 띄워 프레임을 앱까지 보낸** 경험이 최소선입니다.{추론}",
+   "refs": [
+    1,
+    15,
+    16,
+    17
+   ],
+   "study": [
+    "aosp-camera-hal",
+    "embedded-android"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• Camera2 API 기반의 Android 애플리케이션 개발 경험",
+   "short": "HAL 을 쓰는 쪽(앱)의 눈으로 카메라를 다뤄 봐야, HAL 이 무엇을 약속해야 하는지 안다.",
+   "why": "Camera2 패키지는 카메라를 '한 장씩 찍는 요청을 받는 파이프라인'으로 모델링합니다 — 요청은 순서대로 처리되고 여러 개가 동시에 떠 있을 수 있으며, 결과는 메타데이터와 Surface 로 가는 버퍼입니다.[20] HAL3 의 요청-결과 모델과 같은 모양이라[17] 앱을 짜 보면 HAL 의 계약이 보입니다.{추론}",
+   "actually": {
+    "items": [
+     "CameraManager 로 카메라를 찾고, CameraDevice 를 열고, CameraCaptureSession 에 CaptureRequest 를 반복 요청으로 건다.[20]",
+     "ImageReader 로 프레임을 받을 때 acquireLatestImage 는 오래된 프레임을 버리고 최신 것만 준다 — 미리보기·분석에 맞는 방식이다.[21]",
+     "같은 카메라를 차량에서는 일반 앱도 Camera2 로 열 수 있다.[10]"
+    ]
+   },
+   "refs": [
+    10,
+    17,
+    20,
+    21
+   ],
+   "study": [
+    "camera2-ref"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• EVS HAL 구조에 대한 이해 및 연동되는 앱 개발 경험",
+   "short": "차량 전용 카메라 길(EVS)의 층 구조를 알고, 그 위 앱(후방·서라운드)까지 만들어 봤어야 한다.",
+   "why": "EVS 는 EVS 앱 · EVS Manager · EVS HAL · 커널 드라이버 넷으로 나뉩니다. 샘플 앱은 전원 후 2초 안을 목표로 하고, Manager 는 여러 클라이언트에게 같은 카메라를 나눠 줍니다.[12]",
+   "flows": [
+    {
+     "caption": "EVS 의 층[12]",
+     "steps": [
+      "EVS 앱 · 후방·서라운드 화면(샘플은 C++)",
+      "EVS Manager · 여러 앱이 같은 카메라를 보게 나눠 줌",
+      "EVS HAL · 열거·카메라·디스플레이 인터페이스",
+      "커널 드라이버 · V4L2 샘플 드라이버 제공"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "디스플레이는 NOT_VISIBLE → VISIBLE_ON_NEXT_FRAME → VISIBLE 같은 상태를 거친다. 처음엔 안 보이는 상태로 시작한다.[12]",
+     "EVS 1.1 에는 이벤트·프레임 알림, 카메라 제어 값, 프레임 메타데이터, 디스플레이 프록시, 다중 카메라가 더해졌다.[11]",
+     "AOSP 는 카메라 용도의 EVS API 를 폐기할 계획이고, 조기 카메라 접근을 Camera2 쪽(ACS)으로 옮기는 중이다 — 특권 클라이언트가 부팅이 끝나기 전에 차체 바깥 카메라를 열 수 있다.[10][14]"
+    ]
+   },
+   "how_far": "EVS 와 함께 그 후계(ACS 조기 접근)까지 알고 있으면 대화가 수월합니다.{추론}",
+   "refs": [
+    10,
+    11,
+    12,
+    14
+   ],
+   "study": [
+    "aosp-evs",
+    "aaos-camera"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• RTSP, RTCP, WebRTC 등 실시간 스트리밍 프로토콜에 대한 이해",
+   "short": "영상이 네트워크로 어떻게 오고(RTP), 어떻게 제어되고(RTSP), 어떻게 품질을 보고하나(RTCP)를 안다.",
+   "why": "업무②가 이 프로토콜들로 원격 스트림을 받는 일입니다.[1] 요건은 '이해'라서 스택을 새로 짜기보다 **문제가 났을 때 어느 층인지 가려내는** 힘을 봅니다.{추론}",
+   "level": {
+    "basic": "RTSP 순서(DESCRIBE·SETUP·PLAY·TEARDOWN), RTP 머리(순서 번호·타임스탬프·SSRC), SDP",
+    "work": "RTCP 보고서로 손실·지터 읽기, 지터 버퍼 크기 정하기, UDP 와 TCP 전송 차이",
+    "team": "WebRTC 연결(ICE·STUN·TURN)과 암호화(DTLS-SRTP), 받은 영상을 카메라 시각에 맞추기"
+   },
+   "actually": {
+    "items": [
+     "RTSP 2.0(RFC 7826, 2016)은 이전 RFC 2326 을 대체했다. 제어만 하고 영상 전달 방식에는 중립이다.[23]",
+     "RTCP 의 손실률은 직전 보고 이후 잃은 패킷 비율을 8비트로 보낸다.[24]",
+     "GStreamer RTSP 수신은 UDP 유니캐스트 → 멀티캐스트 → TCP 순으로 전송을 시도한다.[28]",
+     "WebRTC 는 연결 전에 ICE 로 상대가 닿는지 확인해야 하고, 연결 뒤에도 계속 동의를 확인한다.[26]"
+    ]
+   },
+   "refs": [
+    1,
+    23,
+    24,
+    26,
+    28
+   ],
+   "study": [
+    "rfc-rtsp",
+    "rfc-rtp",
+    "webrtc-book",
+    "gst-rtspsrc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 원격 스트림을 Android 카메라 파이프라인과 연동한 경험",
+   "short": "네트워크 영상을 안드로이드 카메라로 보이게 만든 경험 — 업무② 그 자체다.",
+   "why": "안드로이드 기본 외부 카메라 HAL 은 USB(UVC) 카메라용이고 고해상도·고속 스트리밍을 위한 것이 아니라고 문서가 밝혔습니다.[18] 네트워크 영상은 이 틀 밖이라, 해 본 사람이 드뭅니다.{추론}",
+   "actually": {
+    "items": [
+     "외부 카메라 제공자는 AIDL 인스턴스 external/0 으로 붙고, 설정 파일(external_camera_config.xml)로 내부 장치를 빼는 등 조정한다 — 새 제공자를 붙이는 방식의 본보기다.[18]",
+     "카메라 하나에 여러 출력을 낼 때는 모든 출력의 타임스탬프가 같아야 한다.[17]",
+     "가상 카메라처럼 프레임을 HAL 에 먹이는 방법, 앱 층에서 디코딩해 Surface 에 그리는 방법 중 무엇을 고를지가 설계의 첫 갈림길이다.{추론}"
+    ]
+   },
+   "refs": [
+    17,
+    18
+   ],
+   "study": [
+    "aosp-external-cam",
+    "aosp-camera-hal"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 차량 실내 카메라를 이용한 블랙박스 기능 개발 경험",
+   "short": "실내 카메라로 녹화·저장·관리까지 해 본 경험 — 업무③의 블랙박스다.",
+   "why": "공고의 블랙박스는 실내 카메라 기반입니다.[1] 순정 블랙박스는 녹화 방식별 fps·파일 길이·보관 개수가 정해져 있고[32], 실내는 탑승자 개인정보 문제가 더해집니다.[14] {추론}",
+   "how_far": "블랙박스 기기 회사 경력이든 차량 IVI 경력이든, **상시·이벤트 녹화와 저장 공간 관리**를 실제 제품으로 내 본 경험을 봅니다.{추론}",
+   "refs": [
+    1,
+    14,
+    32
+   ],
+   "study": [
+    "hyundai-builtin-cam",
+    "mediamuxer"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• Surround View 시스템 또는 유사한 다중 카메라 기반 애플리케이션 개발 경험",
+   "short": "카메라 여러 대를 동시에 받아 하나로 합쳐 본 경험 — 서라운드 뷰가 아니어도 된다.",
+   "why": "'또는 유사한'이라 서라운드 뷰 그 자체가 아니어도 됩니다.[1] 핵심은 여러 카메라를 같은 순간에 받는 일이고, 안드로이드는 이를 논리 멀티 카메라(물리 카메라 여럿을 하나로 묶음)로 다룹니다.[19][13]",
+   "actually": {
+    "items": [
+     "안드로이드 9부터 같은 방향의 물리 카메라 여럿을 논리 카메라 하나로 앱에 보인다. 앱은 물리 카메라 id 를 골라 각각의 결과를 받을 수 있다.[19]",
+     "EVS 1.1 은 차량용으로 같은 개념을 두고, 묶음은 설정 XML 에 정적으로 적는다.[13]",
+     "네 영상을 바닥에 투영해 잇는 계산은 호모그래피와 카메라 보정이 바탕이다.[30][31]"
+    ]
+   },
+   "refs": [
+    1,
+    13,
+    19,
+    30,
+    31
+   ],
+   "study": [
+    "aosp-sv3d",
+    "opencv-fisheye",
+    "opencv-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• Camera3 HAL customization 경험",
+   "short": "남이 준 HAL 을 쓰기만 한 게 아니라, 용도에 맞게 고쳐 본 경험이면 더 좋다.",
+   "why": "업무 문장이 'HAL 계층을 목적에 맞게 커스터마이징'입니다.[1] 차량은 위치·렌즈 방향 같은 차량용 카메라 특성을 HAL 이 알려야 하고[14], 원격 스트림처럼 표준 HAL 이 생각하지 않은 입력도 붙여야 합니다.[18] {추론}",
+   "refs": [
+    1,
+    14,
+    18
+   ],
+   "study": [
+    "aosp-camera-hal",
+    "aaos-camera"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• EVS HAL customization 경험",
+   "short": "EVS HAL 을 회사 보드·카메라 묶음에 맞게 고쳐 본 경험이면 더 좋다.",
+   "why": "EVS 는 샘플 구현(합성 테스트 영상)과 V4L2 샘플 드라이버만 공개돼 있고[12], 다중 카메라 묶음·동기화 종류는 차마다 설정해야 합니다.[13] 실제 차에 붙이려면 고칠 수밖에 없습니다.{추론}",
+   "refs": [
+    12,
+    13
+   ],
+   "study": [
+    "aosp-evs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• Android 기반의 Camera device 관련 업무 경험",
+   "short": "휴대폰·태블릿 등 안드로이드 기기의 카메라를 만들어 본 경력도 쳐 준다.",
+   "why": "카메라 HAL 구조는 휴대폰과 차가 같습니다 — 앱 → 카메라 서비스 → HAL.[15] 차량만의 것은 EVS·조기 접근·차량 특성 정도라[10][14], 휴대폰 카메라 경력이 그대로 옮겨 옵니다.{추론}",
+   "refs": [
+    10,
+    14,
+    15
+   ],
+   "study": [
+    "aosp-camera-hal",
+    "camera2-ref"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 상품화 수준의 차량에 탑재되는 소프트웨어를 구현하고 관련된 문제들을 해결해 본 경험",
+   "short": "시제품이 아니라 실제 팔리는 차에 소프트웨어를 실어 본 경험 — 기한·규정·양산 문제를 겪어 봤나.",
+   "why": "Pleos Connect 는 2026년 5월 신형 그랜저를 시작으로 양산 차에 실리고, 아이오닉 3 로 유럽에도 나갑니다.[5] 양산 차의 카메라는 후방 영상 2초 같은 규정을 지켜야 하고[33], 안드로이드 호환성 시험(CTS·VTS)도 통과해야 합니다.[34]",
+   "actually": {
+    "items": [
+     "**규정** — 후진 시작 2.0초 안에 후방 영상, 2018년 5월 이후 생산 승용차에 적용(미국).[33]",
+     "**호환성 시험** — CTS·VTS 로 안드로이드 API·HAL 동작을 확인한다.[34]",
+     "**시험대** — 같은 회사 IVI 공고는 HIL/SIL 시험대와 CI/CD 에 묶인 자동 시험을 운영한다.[8]"
+    ]
+   },
+   "refs": [
+    5,
+    8,
+    33,
+    34
+   ],
+   "study": [
+    "aosp-cts"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "카메라 프레임 하나가 센서에서 화면까지 가는 길을 끝까지 따라가 보고 싶은 사람[12][15]",
+   "지연(ms)·fps·버린 프레임을 숫자로 재고 줄이는 일이 즐거운 사람{추론}",
+   "네트워크 영상과 카메라를 한 파이프라인으로 묶는, 아직 정답이 없는 문제를 좋아하는 사람[18]",
+   "양산 차에 실리는 소프트웨어를 만들고 싶은 사람[5]"
+  ],
+  "hard": [
+   "경력 5년 이상에 Camera3 HAL·EVS·스트리밍·블랙박스·서라운드 뷰까지 요건 폭이 넓다[1]",
+   "앱 개발 경력만으로는 첫 요건(HAL 개발)을 못 채운다[1]",
+   "EVS 는 폐기 예정이 공지돼 있어 두 길(EVS·ACS)을 같이 챙겨야 한다[10]",
+   "2차 면접이 3시간 내외이고 그 뒤 코딩테스트가 따로 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "Camera3 HAL 에서 요청 하나가 들어와 결과가 나갈 때까지 무엇이 오가나요? 결과 순서는 왜 지켜야 하나요?",
+   "a": "요청-결과 모델, SHUTTER 알림, 순서 규칙.[17]"
+  },
+  {
+   "q": "후방 카메라를 왜 Camera2 가 아니라 EVS 로 띄우나요? 지금은 어떻게 바뀌고 있나요?",
+   "a": "부팅이 늦다는 이유, EVS 폐기 계획과 ACS 조기 접근.[10][12][14]"
+  },
+  {
+   "q": "EVS 앱이 프레임을 늦게 돌려주면 무슨 일이 생기나요?",
+   "a": "유한 버퍼와 프레임 건너뛰기, setMaxFramesInFlight.[12]"
+  },
+  {
+   "q": "RTSP 로 받은 영상이 가끔 끊깁니다. 어디부터 보나요?",
+   "a": "RTCP 손실률·지터, 지터 버퍼, UDP/TCP 전송.[24][28]"
+  },
+  {
+   "q": "네트워크로 들어오는 영상을 앱이 보통 카메라처럼 열게 하려면 어느 층에 무엇을 만들겠어요?",
+   "a": "외부 카메라 제공자 본보기와 그 한계.[18]"
+  },
+  {
+   "q": "서라운드 뷰에서 이음매가 움직일 때마다 어긋납니다. 원인은?",
+   "a": "카메라 동기화(CALIBRATED/APPROXIMATE)와 보정.[13][30]"
+  },
+  {
+   "q": "후진 2초 안에 영상을 띄워야 합니다. 시간 예산을 어떻게 나누겠어요?",
+   "a": "규정 2.0초, EVS 첫 프레임 500ms.[12][33]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "aaos-camera",
+   "title": "Android Automotive — Camera (overview) · Android Camera Service",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://source.android.com/docs/automotive/camera",
+   "why": "차량 카메라의 두 길(Camera2·EVS), EVS 폐기 계획, ACS 의 조기 접근·헤드리스 사용자·개인정보 예외. 업무①·EVS 요건의 지도."
+  },
+  {
+   "id": "aosp-evs",
+   "title": "Extended View System (EVS) 1.1 · Vehicle Camera HAL · Multi-camera support",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/automotive/camera/evs/camera-hal",
+   "why": "EVS 앱·Manager·HAL·드라이버의 층과 인터페이스, 500ms·10fps 규칙, 버퍼 돌려주기, 논리 카메라. EVS 요건·우대를 채우는 1차 자료."
+  },
+  {
+   "id": "aosp-camera-hal",
+   "title": "Camera HAL · HAL3 overview · HAL subsystem (requests)",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/core/camera/camera3",
+   "why": "카메라 제공자·장치·세션 인터페이스, AIDL 전환, 요청-결과 모델과 3A. 'Camera3 HAL 개발 경험' 요건의 바탕."
+  },
+  {
+   "id": "aosp-external-cam",
+   "title": "External USB cameras",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/core/camera/external-usb-cameras",
+   "why": "카메라 제공자를 하나 더 붙이는 본보기(external/0)와 그 한계. 원격 스트림을 카메라로 내보이는 설계의 출발점."
+  },
+  {
+   "id": "camera2-ref",
+   "title": "android.hardware.camera2 · ImageReader (API reference)",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/reference/android/hardware/camera2/package-summary",
+   "why": "앱 쪽에서 본 카메라 파이프라인 — CameraManager·CameraDevice·CaptureSession·CaptureRequest, 프레임 받기. Camera2 앱 요건."
+  },
+  {
+   "id": "mediamuxer",
+   "title": "MediaMuxer (API reference)",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/reference/android/media/MediaMuxer",
+   "why": "인코딩한 영상을 MP4 파일로 쓰는 법과 메타데이터 트랙. 블랙박스 녹화 줄."
+  },
+  {
+   "id": "rfc-rtsp",
+   "title": "RFC 7826 — Real-Time Streaming Protocol Version 2.0",
+   "by": "IETF · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.rfc-editor.org/rfc/rfc7826",
+   "why": "RTSP 메서드와 세션의 흐름. 스트리밍 프로토콜 요건의 원문 — 2장 개요와 메서드 표만 먼저 읽는다."
+  },
+  {
+   "id": "rfc-rtp",
+   "title": "RFC 3550 — RTP: A Transport Protocol for Real-Time Applications · RFC 3551 (AV profile)",
+   "by": "IETF · 2003",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.rfc-editor.org/rfc/rfc3550",
+   "why": "RTP 머리·RTCP 보고서·지터 식, 영상 90kHz 시계. RTCP 요건과 원격 스트림 시각 맞추기."
+  },
+  {
+   "id": "webrtc-w3c",
+   "title": "WebRTC: Real-Time Communication in Browsers (W3C Recommendation)",
+   "by": "W3C · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.w3.org/TR/webrtc/",
+   "why": "WebRTC 연결 API 와 ICE·STUN·TURN. 암호화 규칙은 RFC 8827 을 같이 본다."
+  },
+  {
+   "id": "webrtc-book",
+   "title": "Real-Time Communication with WebRTC",
+   "by": "Salvatore Loreto · Simon Pietro Romano · O'Reilly · 2014",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/real-time-communication-with/9781449371869/",
+   "why": "예제로 WebRTC 연결이 맺어지는 순서를 따라가는 얇은 책. 판이 오래돼 API 세부는 W3C 문서로 확인한다."
+  },
+  {
+   "id": "gst-rtspsrc",
+   "title": "GStreamer — rtspsrc",
+   "by": "GStreamer Good Plug-ins",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://gstreamer.freedesktop.org/documentation/rtsp/rtspsrc.html",
+   "why": "RTSP 수신 요소의 전송 시도 순서와 지연(latency) 버퍼. 원격 스트림을 실제로 받아 보는 도구."
+  },
+  {
+   "id": "aosp-sv3d",
+   "title": "ISurroundView3dSession.hal (automotive/sv/1.0)",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://android.googlesource.com/platform/hardware/interfaces/+/2658c0da40fabf8fff9a765ebd5c5b293c4b57e8/automotive/sv/1.0/ISurroundView3dSession.hal",
+   "why": "AOSP 가 정의한 서라운드 뷰 3D 세션 — 시점·설정·덧그림·카메라 점 투영. 서라운드 뷰 업무의 인터페이스 본보기."
+  },
+  {
+   "id": "opencv-fisheye",
+   "title": "OpenCV — Fisheye camera model (calib3d)",
+   "by": "OpenCV",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.opencv.org/4.x/db/d58/group__calib3d__fisheye.html",
+   "why": "어안 렌즈 보정(K·k1~k4)과 펴기. 서라운드 뷰의 첫 단계."
+  },
+  {
+   "id": "mvg-book",
+   "title": "Multiple View Geometry in Computer Vision (2nd ed.)",
+   "by": "Richard Hartley · Andrew Zisserman · Cambridge University Press · 2004",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.robots.ox.ac.uk/~vgg/hzbook/",
+   "why": "호모그래피·카메라 모델·보정의 교과서. 서라운드 뷰를 '왜 이렇게 계산하나'까지 알고 싶을 때."
+  },
+  {
+   "id": "opencv-ko",
+   "title": "OpenCV 4로 배우는 컴퓨터 비전과 머신 러닝",
+   "by": "황선규",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754025931",
+   "why": "한국어로 영상 변환·기하 변환(투시 변환)·보정을 손으로 해 보는 책. 서라운드 뷰 요건의 입문."
+  },
+  {
+   "id": "embedded-android",
+   "title": "Embedded Android",
+   "by": "Karim Yaghmour · O'Reilly · 2013",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/embedded-android/9781449327958/",
+   "why": "기기용 안드로이드의 층(커널·HAL·시스템 서비스)을 처음부터 짚는 책. 판이 오래돼 HIDL·AIDL 이전 내용이라 구조 이해용."
+  },
+  {
+   "id": "aaos-avd",
+   "title": "Android Automotive — Android Virtual Device as a development platform",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://source.android.com/docs/devices/automotive/start/avd/android_virtual_device",
+   "why": "차량용 안드로이드를 에뮬레이터로 띄우는 법. 실제 차 없이 EVS·Camera2 를 만져 보는 길."
+  },
+  {
+   "id": "aosp-cts",
+   "title": "Compatibility Test Suite (CTS) · Vendor Test Suite (VTS)",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/compatibility/cts",
+   "why": "HAL 을 고친 뒤 무엇으로 검증하나. 상품화 우대 줄."
+  },
+  {
+   "id": "hyundai-builtin-cam",
+   "title": "현대자동차 사용설명서 · 빌트인 캠 사양",
+   "by": "현대자동차",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://ownersmanual.hyundai.com/full_webhelp/LX3/2026/ko_KR/id23C63000XQY.html",
+   "why": "순정 블랙박스가 녹화 방식별로 몇 fps·몇 분 파일·몇 개를 보관하나. 블랙박스 업무의 기준표."
+  },
+  {
+   "id": "ww-connectivity",
+   "title": "42dot Work&Way l 개발자가 일하는 방식 - Connectivity Framework팀 편",
+   "by": "포티투닷 · 2026",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=h4p-iI8Nl9s",
+   "why": "휴대폰·액세서리를 차에 잇는 팀의 4분 소개(CAP). '원격 장치' 쪽이 회사에서 어떤 그림인지 본다."
+  },
+  {
+   "id": "ww-vehicle-os",
+   "title": "42dot Work&Way l 개발자가 일하는 방식 - Vehicle OS 편",
+   "by": "포티투닷 · 2026",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=OohOT91cuwQ",
+   "why": "차 없이 인터페이스로 먼저 개발·시험하는 '오프사이클 개발' 소개. 협업 줄의 회사 쪽 맥락."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "앱 쪽에서 카메라 보기",
+   "time": "1~2주",
+   "goal": "Camera2 로 미리보기·녹화 앱을 만들고, 요청-결과·Surface·ImageReader 가 무엇인지 설명할 수 있다.",
+   "resources": [
+    "camera2-ref",
+    "mediamuxer",
+    "aaos-camera"
+   ],
+   "task": "휴대폰이나 차량 에뮬레이터에서 1분 단위로 MP4 를 끊어 쓰는 미니 블랙박스 앱을 만든다. 저장 칸이 차면 오래된 파일부터 지우고 '이벤트' 버튼을 누른 파일은 지키게 한다."
+  },
+  {
+   "title": "HAL 쪽으로 내려가기",
+   "time": "2~3주",
+   "goal": "카메라 HAL 의 인터페이스와 시작 순서를 따라가고, 차량 에뮬레이터에서 EVS 샘플을 띄워 층을 구분할 수 있다.",
+   "resources": [
+    "aosp-camera-hal",
+    "aosp-evs",
+    "aaos-avd",
+    "embedded-android"
+   ],
+   "task": "차량용 에뮬레이터 이미지를 구워 EVS 샘플 앱·Manager·HAL 을 띄우고, logcat 으로 첫 프레임까지 걸린 시간을 잰다. 프레임을 일부러 늦게 돌려주게 고쳐 버려지는 프레임 수를 표로 남긴다."
+  },
+  {
+   "title": "네트워크 영상 받기",
+   "time": "2주",
+   "goal": "RTSP·RTP·RTCP 의 흐름을 패킷으로 확인하고, 지연 버퍼 크기에 따른 지연·끊김을 설명할 수 있다.",
+   "resources": [
+    "rfc-rtsp",
+    "rfc-rtp",
+    "gst-rtspsrc",
+    "webrtc-book",
+    "webrtc-w3c"
+   ],
+   "task": "노트북 웹캠을 GStreamer 로 RTSP 서버처럼 내보내고 다른 기기에서 받는다. 지연 버퍼를 2000·500·100ms 로 바꿔 화면 지연과 끊김을 재고, 패킷 캡처로 RTCP 손실률·지터를 읽는다."
+  },
+  {
+   "title": "원격 영상을 카메라로",
+   "time": "2~3주",
+   "goal": "네트워크 영상을 안드로이드 카메라 목록에 나타나게 하는 설계를 두 가지 이상 비교해 설명할 수 있다.",
+   "resources": [
+    "aosp-external-cam",
+    "aosp-camera-hal",
+    "ww-connectivity"
+   ],
+   "task": "3단계의 RTSP 영상을 풀어 가상 카메라로 먹이는 방법(HAL 쪽)과 앱에서 바로 그리는 방법(앱 쪽)을 각각 작게 만들고, 첫 화면까지 시간·CPU 사용을 비교한 한 장짜리 설계 문서를 쓴다."
+  },
+  {
+   "title": "여러 카메라 합치기",
+   "time": "2주",
+   "goal": "어안 보정·바닥 투영·이어 붙이기로 위에서 본 장면을 만들고, 동기화가 왜 필요한지 설명할 수 있다.",
+   "resources": [
+    "opencv-ko",
+    "opencv-fisheye",
+    "mvg-book",
+    "aosp-sv3d"
+   ],
+   "task": "웹캠 하나를 네 방향으로 돌려 찍은 사진(또는 공개 체커보드 사진)으로 보정값을 구하고, 바닥의 체커보드를 위에서 본 그림으로 펴서 네 장을 잇는다. 한 장을 일부러 0.1초 늦은 사진으로 바꿔 이음매가 어긋나는 것을 확인한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고·공시에 연봉이 없다 — 공공데이터 집계 평균 **6,032만원**(회사 전체, 경력직 포함). 이 자리는 경력 5년 이상이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 원티드 기업 정보(2026-11 확인)",
+    "note": "같은 화면의 국민연금 가입 사원 수 804명. 기준월은 적혀 있지 않다 [9]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 공시가 없다{추론}. 공고에는 연봉이 없고 전형 마지막에 처우 협의 단계가 있다 [1]. 평균은 신입·경력·직군이 섞인 회사 전체 값이라 이 자리(경력 5년 이상)의 제안 금액으로 읽으면 안 된다{추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "유연근무제",
+    "detail": "재량·선택 근무"
+   },
+   {
+    "name": "리커버리 휴가",
+    "detail": "법정 연차와 별도로 매월 1회 유급"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당 하루 세 끼 무료, 사내 카페"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연간 최대 300만원, 명절 복지 포인트 추가"
+   },
+   {
+    "name": "건강",
+    "detail": "프리미엄 종합검진 전액 지원, 단체상해보험(본인·배우자·자녀·본인 부모), 상주 간호사·심리·재무·법률 상담(EAP)"
+   },
+   {
+    "name": "운동",
+    "detail": "사내 피트니스, 1:1 PT·GX 수업"
+   },
+   {
+    "name": "전기차",
+    "detail": "구매 시 차량 가격 최대 15%(한도 1,000만원) 지원, 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 사내 대출",
+    "detail": "근속에 따라 1,000만~5,000만원, 금리 0%"
+   },
+   {
+    "name": "교육",
+    "detail": "국내외 교육·세미나·워크숍·컨퍼런스 참가비 지원(금액 표기 없음)"
+   },
+   {
+    "name": "직장 어린이집",
+    "detail": "임직원 자녀 대상, 특별활동 운영"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "장기근속 포상, 휴양시설(매월 추첨), 경조사 지원, 인재 추천 보상"
+   }
+  ],
+  "note": "포티투닷 채용 사이트 '업무 몰입 프로그램' 페이지 기준(게시일 표기 없음, 2026-11-25 확인). 한국 본사 기준이고 해외 법인은 다를 수 있다고 적혀 있다 [2]. 이 공고의 복리후생 칸도 같은 페이지를 가리킨다 [1]. 휴양시설·전기차 지원은 Vehicle OS 편 영상에서 직원이 직접 이용담을 말했다 [6]."
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥 (소프트웨어 드림센터 A동)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "판교 제2테크노밸리 {추론}",
+  "note": "주소는 포티투닷 홈페이지 하단 회사 정보 [3]. 공고 근무지 표기는 '경기 성남시'다 [1]."
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · 포티투닷 IVI OS Engineer (Camera System)",
+   "url": "https://www.wanted.co.kr/wd/310540",
+   "kind": "posting",
+   "date": "2026-07-24",
+   "note": "이 공고. 팀 소개·업무·요건·우대·전형(서류 → 1차 화상 1시간 → 2차 3시간 → 코딩테스트 → 처우 협의), 경력 5년 이상"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 · 42dot만의 업무 몰입 프로그램",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준(해외 법인은 다를 수 있음), 게시일 표기 없음"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 홈페이지 · 하단 회사 정보",
+   "url": "https://42dot.ai/ko",
+   "kind": "company",
+   "note": "경기도 성남시 수정구 창업로40번길 20, A동"
+  },
+  {
+   "n": 4,
+   "title": "포티투닷 · 인포테인먼트 (Android Automotive OS 기반 차세대 IVI 시스템)",
+   "url": "https://42dot.ai/ko/sdv/infotainment",
+   "kind": "company",
+   "note": "AAOS 기반 자체 개발, Vehicle API·Cloud API, 센터 디스플레이 최대 3화면 멀티 윈도우, Pleos Playground(SDK·Devbox·Emulator). 게시일 표기 없음"
+  },
+  {
+   "n": 5,
+   "title": "현대자동차그룹 · Pleos Connect 차세대 인포테인먼트 공개",
+   "url": "https://www.hyundaimotorgroup.com/news/hyundai-motor-group-redefines-in-vehicle-experience-with-pleos-connect-next-generation-infotainment-system",
+   "kind": "company",
+   "date": "2026-04-30",
+   "note": "5월 신형 그랜저 첫 탑재, 아이오닉 3 유럽 첫 모델, OTA 로 기능 추가, 개발에 포티투닷 참여. 카메라 언급은 없음"
+  },
+  {
+   "n": 6,
+   "title": "42dot Work&Way l 개발자가 일하는 방식 - Vehicle OS 편",
+   "url": "https://www.youtube.com/watch?v=OohOT91cuwQ",
+   "kind": "company",
+   "date": "2026-09-07",
+   "note": "Vehicle API 팀 직원 인터뷰(약 4분). 분산 OS, 차 없이 먼저 개발·시험하는 오프사이클 개발, 휴양시설·전기차 지원. 자막·장면 전부 확인"
+  },
+  {
+   "n": 7,
+   "title": "42dot Work&Way l 개발자가 일하는 방식 - Connectivity Framework팀 편",
+   "url": "https://www.youtube.com/watch?v=h4p-iI8Nl9s",
+   "kind": "company",
+   "date": "2026-09-07",
+   "note": "모바일·액세서리를 차에 연결(차 밖에서도), 국책 과제로 개발 중인 CAP(Car Accessory Protocol), 서드파티 SDK. 자막·장면 전부 확인"
+  },
+  {
+   "n": 8,
+   "title": "원티드 · 포티투닷 Test Automation Engineer (IVI System)",
+   "url": "https://www.wanted.co.kr/wd/395192",
+   "kind": "posting",
+   "note": "같은 회사 공고. AAOS IVI 시험 자동화, HIL/SIL·CI/CD, CarProperty·VHAL·DDS, ADB·Logcat"
+  },
+  {
+   "n": 9,
+   "title": "원티드 · 포티투닷(42dot) 기업 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "평균연봉 6,032만원 · 국민연금 가입 사원 804명 표기(공공데이터 집계, 기준월 표기 없음)"
+  },
+  {
+   "n": 10,
+   "title": "AOSP · Android Automotive Camera (overview)",
+   "url": "https://source.android.com/docs/automotive/camera",
+   "kind": "reference",
+   "note": "Camera2 와 EVS 두 API, EVS 카메라 API 폐기 계획, ACS 이전 안내"
+  },
+  {
+   "n": 11,
+   "title": "AOSP · Extended View System (EVS) 1.1",
+   "url": "https://source.android.com/docs/automotive/camera/evs",
+   "kind": "reference",
+   "note": "후방·서라운드 뷰 표시용, 1.1 의 추가 기능 목록"
+  },
+  {
+   "n": 12,
+   "title": "AOSP · Vehicle Camera HAL (EVS)",
+   "url": "https://source.android.com/docs/automotive/camera/evs/camera-hal",
+   "kind": "reference",
+   "note": "전용 HAL 이유(부팅 지연), 앱 2초 목표, Manager 공유 규칙, 500ms·10fps, 버퍼·형식, 디스플레이 상태"
+  },
+  {
+   "n": 13,
+   "title": "AOSP · EVS Multi-camera support",
+   "url": "https://source.android.com/docs/automotive/camera/evs/multi_camera",
+   "kind": "reference",
+   "note": "논리 카메라, CALIBRATED(GMSL2 동기 카메라)/APPROXIMATE, 설정 XML"
+  },
+  {
+   "n": 14,
+   "title": "AOSP · Android Camera Service (Automotive)",
+   "url": "https://source.android.com/docs/automotive/camera/acs",
+   "kind": "reference",
+   "note": "조기 접근(특권 UID, 차체 외부 카메라), 헤드리스 시스템 사용자, 개인정보 예외 목록, 차량용 카메라 특성"
+  },
+  {
+   "n": 15,
+   "title": "AOSP · Camera (HAL architecture)",
+   "url": "https://source.android.com/docs/core/camera",
+   "kind": "reference",
+   "note": "앱 → 카메라 서비스 → HAL, 제공자·장치·세션 인터페이스, HAL 은 입력을 믿지 않는다"
+  },
+  {
+   "n": 16,
+   "title": "AOSP · Camera HAL3 overview",
+   "url": "https://source.android.com/docs/core/camera/camera3",
+   "kind": "reference",
+   "note": "안드로이드 13부터 AIDL, 이후 새 기능은 AIDL HAL 로만"
+  },
+  {
+   "n": 17,
+   "title": "AOSP · HAL subsystem (camera3 requests)",
+   "url": "https://source.android.com/docs/core/camera/camera3_requests_hal",
+   "kind": "reference",
+   "note": "시작 순서, 순서대로 처리, SHUTTER 알림, 같은 타임스탬프, 3A"
+  },
+  {
+   "n": 18,
+   "title": "AOSP · External USB cameras",
+   "url": "https://source.android.com/docs/core/camera/external-usb-cameras",
+   "kind": "reference",
+   "note": "UVC·V4L, 가벼운 용도(고해상도·고속 스트리밍용 아님), external/0, 설정 파일"
+  },
+  {
+   "n": 19,
+   "title": "AOSP · Multi-camera support (logical camera)",
+   "url": "https://source.android.com/docs/core/camera/multi-camera",
+   "kind": "reference",
+   "note": "안드로이드 9 논리 멀티 카메라, 물리 카메라 id"
+  },
+  {
+   "n": 20,
+   "title": "Android Developers · android.hardware.camera2 package summary",
+   "url": "https://developer.android.com/reference/android/hardware/camera2/package-summary",
+   "kind": "reference",
+   "note": "파이프라인 모델, 순서 처리, 여러 요청 동시, 메타데이터 + 버퍼"
+  },
+  {
+   "n": 21,
+   "title": "Android Developers · ImageReader",
+   "url": "https://developer.android.com/reference/android/media/ImageReader",
+   "kind": "reference",
+   "note": "acquireLatestImage 는 오래된 프레임을 버린다"
+  },
+  {
+   "n": 22,
+   "title": "Android Developers · MediaMuxer",
+   "url": "https://developer.android.com/reference/android/media/MediaMuxer",
+   "kind": "reference",
+   "note": "MP4·WebM·3GP 출력, 메타데이터 트랙은 MP4 만"
+  },
+  {
+   "n": 23,
+   "title": "IETF RFC 7826 · Real-Time Streaming Protocol Version 2.0",
+   "url": "https://www.rfc-editor.org/rfc/rfc7826",
+   "kind": "reference",
+   "date": "2016-12",
+   "note": "RFC 2326 대체, 메서드, 제어와 전달의 분리, SDP"
+  },
+  {
+   "n": 24,
+   "title": "IETF RFC 3550 · RTP: A Transport Protocol for Real-Time Applications",
+   "url": "https://www.rfc-editor.org/rfc/rfc3550",
+   "kind": "reference",
+   "note": "RTP 머리, RTCP SR/RR·손실률·지터 식, RTCP 5%"
+  },
+  {
+   "n": 25,
+   "title": "IETF RFC 3551 · RTP Profile for Audio and Video Conferences",
+   "url": "https://www.rfc-editor.org/rfc/rfc3551",
+   "kind": "reference",
+   "note": "영상 RTP 타임스탬프 90,000Hz"
+  },
+  {
+   "n": 26,
+   "title": "IETF RFC 8827 · WebRTC Security Architecture",
+   "url": "https://www.rfc-editor.org/rfc/rfc8827",
+   "kind": "reference",
+   "note": "ICE 필수, DTLS-SRTP, 모든 미디어 SRTP, 동의 확인"
+  },
+  {
+   "n": 27,
+   "title": "W3C · WebRTC: Real-Time Communication in Browsers",
+   "url": "https://www.w3.org/TR/webrtc/",
+   "kind": "reference",
+   "date": "2025-03-13",
+   "note": "ICE·STUN·TURN 으로 연결"
+  },
+  {
+   "n": 28,
+   "title": "GStreamer · rtspsrc",
+   "url": "https://gstreamer.freedesktop.org/documentation/rtsp/rtspsrc.html",
+   "kind": "reference",
+   "note": "latency 기본 2000ms, UDP 유니캐스트 → 멀티캐스트 → TCP"
+  },
+  {
+   "n": 29,
+   "title": "AOSP · ISurroundView3dSession.hal",
+   "url": "https://android.googlesource.com/platform/hardware/interfaces/+/2658c0da40fabf8fff9a765ebd5c5b293c4b57e8/automotive/sv/1.0/ISurroundView3dSession.hal",
+   "kind": "reference",
+   "note": "차 주변 근사 3D 표면, 원하는 시점의 가상 뷰, 덧그림, 카메라 점 투영"
+  },
+  {
+   "n": 30,
+   "title": "OpenCV · Fisheye camera model",
+   "url": "https://docs.opencv.org/4.x/db/d58/group__calib3d__fisheye.html",
+   "kind": "reference",
+   "note": "K·D(k1~k4) 보정, 펴기"
+  },
+  {
+   "n": 31,
+   "title": "Hartley · Zisserman · Multiple View Geometry in Computer Vision (2nd ed.)",
+   "url": "https://www.robots.ox.ac.uk/~vgg/hzbook/",
+   "kind": "reference",
+   "date": "2004",
+   "note": "호모그래피·카메라 모델 교과서"
+  },
+  {
+   "n": 32,
+   "title": "현대자동차 사용설명서 · 빌트인 캠 사양",
+   "url": "https://ownersmanual.hyundai.com/full_webhelp/LX3/2026/ko_KR/id23C63000XQY.html",
+   "kind": "reference",
+   "note": "64GB microSD(64~512GB), 전·후방 2980×1440, 약 125도, 녹화 방식별 fps·파일 길이·보관 개수. 실내 카메라 언급 없음"
+  },
+  {
+   "n": 33,
+   "title": "eCFR · 49 CFR 571.111 (FMVSS 111 Rear visibility)",
+   "url": "https://www.ecfr.gov/current/title-49/subtitle-B/chapter-V/part-571/subpart-B/section-571.111",
+   "kind": "reference",
+   "note": "S5.5.3 후진 시작 2.0초 안에 후방 영상, 2018-05-01 이후 생산 승용차 전면 적용(미국 기준)"
+  },
+  {
+   "n": 34,
+   "title": "AOSP · Compatibility Test Suite (CTS)",
+   "url": "https://source.android.com/docs/compatibility/cts",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "회사 근거는 이 공고, 같은 회사 IVI 시험 자동화 공고, 포티투닷 인포테인먼트 소개 페이지, 현대차그룹 Pleos Connect 발표(2026-04-30), Work&Way 영상 둘(Vehicle OS·Connectivity Framework — 자막·장면 전부 읽음)입니다. 포티투닷이 카메라 HAL·EVS·원격 스트림·블랙박스·서라운드 뷰를 어떻게 만드는지 다룬 글이나 발표는 찾지 못해, 그 부분은 AOSP·Android 공식 문서, IETF RFC, W3C, GStreamer·OpenCV 문서, 현대차 빌트인 캠 사용설명서로 '보통 이런 것'을 보였고 판단은 {추론}으로 표시했습니다. 공고의 '원격 장치'가 무엇인지는 공개되지 않았습니다. 예시 코드는 모두 가상의 숫자로 직접 돌린 것입니다. 2026-11-25 기준."
+}
