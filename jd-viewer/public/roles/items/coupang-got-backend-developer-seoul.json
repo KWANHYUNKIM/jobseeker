@@ -1,0 +1,970 @@
+{
+ "id": "coupang-got-backend-developer-seoul",
+ "company": "쿠팡",
+ "role": "Global Operations Technology 개발자 (집중 채용)",
+ "team": "Global Operations Technology(GOT) — 배송·물류 시스템 전체, 서울",
+ "jobs": [
+  "ats-greenhouse:coupang:6810667"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "로켓배송의 뒤쪽 — 주문이 들어온 뒤 **어느 물류센터에서 어떻게 보낼지 정하고, 센터와 배송 현장 사람들이 쓰는 화면(Front/Back office)과 그 뒤의 서버**를 Java·Spring 으로 만듭니다.[1] 같은 조직은 물류센터 안(창고 관리)과 밖(운송)을 모두 맡습니다.[5][7]",
+  "env": "Java · Spring 위의 **마이크로서비스(MSA)** 환경입니다. 공고 기술 칸은 Java · Spring · MSA · Redis 이고, 같은 공고의 영어판과 다른 사본은 AWS 를 더 적었습니다.[1][2][4] 근무지는 서울입니다.[1]",
+  "oneline": "경력 7년 이상 Java 백엔드 개발자가 **물류라는 현실 세계의 규칙**(재고·마감 시각·운송비)을 코드로 옮기고, 그 코드를 대규모 트래픽에서도 안 멈추게 하는 자리. 직급 이름이 없는 '집중 채용' 공고라 여러 연차를 한 번에 뽑는 창구로 보입니다. {추론}"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Global Operations Technology 시스템 아키텍처 설계 및 개발하여 안정적인 운영이 가능 하도록 함",
+   "short": "물류 시스템을 서비스 단위로 나누고 이어 붙이는 설계를 하고, 하루 종일 멈추지 않게 운영하는 일.",
+   "why": "GOT 는 주문 몇 시간 안에 배송하는 로켓배송을 뒷받침하는 시스템을 맡은 조직입니다.[7] 물류센터는 24시간 돌고,[20] 시스템이 멈추면 그 시간만큼 출고와 배송이 밀립니다. 그래서 공고가 '설계'와 '안정적인 운영'을 한 문장에 넣었습니다.[1] {추론}",
+   "actually": {
+    "intro": "같은 조직 사람들이 밝힌 설계의 모습입니다.",
+    "items": [
+     "**칸 나누기(셀 구조)** — 같은 조직의 시니어 스태프 엔지니어는 창고 관리 시스템(WMS, 물류센터의 재고·작업을 관리하는 프로그램)을 다시 짜면서, 사고가 나도 일부 칸만 멈추게 시스템을 셀로 나눴다고 했다.[6][26]",
+     "**오래 걸리는 작업 이어 가기** — 같은 글에서 Temporal 워크플로(중간에 죽어도 기록된 단계부터 다시 시작하는 도구)와 이벤트 소싱(바뀐 사실을 차례로 쌓아 상태를 만드는 방식)을 쓴다고 했다.[6]",
+     "**층 나누기** — 물류 시뮬레이션 플랫폼은 매일 도는 배치 · 작업을 지휘하는 층 · 상태 없는 계산 서버 세 층으로 나눴고, 과부하가 오면 요청량을 스스로 줄였다(AIMD).[9]",
+     "**병목 찾기** — 같은 글은 DB 호출 수백 번이 병목이었다고 적었다. 설계는 '어디서 느려지나'를 숫자로 찾는 일까지 간다.[9]",
+     "**운영 목표 정하기** — 보통은 '주문 API 응답의 99.9%가 0.3초 안' 같은 목표(SLO)를 먼저 정하고 그걸 지키는지 잰다. 쿠팡 GOT 의 목표 숫자는 공개되지 않았다.[27]"
+    ]
+   },
+   "how_far": "직급 없는 공고라 범위는 연차에 따라 다릅니다. 같은 문장을 쓴 Staff 공고와 테크리드 공고(경력 9년 이상)는 이 줄을 조직 전체 설계로 읽고,[2][3] 7년 차 지원자라면 **맡은 서비스 하나의 설계 문서를 쓰고, 다른 서비스와의 경계와 장애 때 어떻게 되는지 설명**할 수 있는 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    7,
+    9,
+    20,
+    26,
+    27
+   ],
+   "study": [
+    "coupang-twin",
+    "msa-patterns",
+    "cell-arch",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Java platform 기반의 Front/Back office 웹 서비스 개발",
+   "short": "고객 앱이 아니라 물류센터·배송 현장·운영팀이 매일 쓰는 업무 화면과 그 뒤 서버를 Java 로 만드는 일.",
+   "why": "주문이 들어온 뒤의 일은 사람이 화면으로 처리합니다 — 입고 예약, 재고 확인, 집품·출고 지시, 배송 기사의 적재 순서 안내 같은 것들입니다.[10][19] 이 화면들이 백오피스(사내 업무용 서비스)이고, 영어판 공고는 '개발과 운영'이라고 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**입고 예약** — 납품사가 트럭을 몇 대 보낼지 미리 받는 화면. 쿠팡은 이 숫자를 머신러닝으로 예측해 날짜 변경을 67.9% 줄였다.[10]",
+     "**배송 기사 도구** — 경험 많은 배송 기사의 트럭 적재 방식을 학습해 적재 순서·위치를 추천하는 시스템을 2020년 개발자 대회에서 소개했다.[19]",
+     "**배송 구역 관리** — 배송 구역을 지도 위 육각형 칸(H3)으로 관리하는 시스템. 한국 전체가 약 217억 칸이라 칸마다 DB 에 넣지 않고 다각형으로 압축했다.[11]",
+     "**공급 관리(SCM) 도구** — 같은 회사 SCM 개발자는 프로그래밍을 모르는 운영자가 블록으로 업무 앱을 만드는 노코드 플랫폼을 만들었다.[14]"
+    ]
+   },
+   "how_far": "'Front' 는 프런트엔드 전담이 아니라 **사내 화면을 서버와 함께 끝까지 만드는** 뜻으로 읽힙니다 — 자격요건이 Java·Spring 뿐이고 프런트엔드 기술이 없습니다.[1] {추론} 최소선은 Spring 으로 REST API 와 권한(누가 어느 센터 데이터를 보나)을 갖춘 업무 화면 하나를 운영해 본 경험입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    10,
+    11,
+    14,
+    19
+   ],
+   "study": [
+    "spring-mvc-1",
+    "jpa-app-1",
+    "coupang-h3",
+    "coupang-inbound"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "여러 도메인과 dependency를 도출하고 시스템 연동 개발",
+   "short": "주문·재고·출고·운송처럼 나뉜 서비스들이 서로 무엇을 주고받는지 찾고, 그 연결을 만드는 일.",
+   "why": "쿠팡은 2013년 10월부터 한 덩어리 시스템을 마이크로서비스로 나누기 시작했고(Vitamin 프로젝트), 2018년에는 수백 개 마이크로서비스가 도는 구조가 됐다고 밝혔습니다.[15][16] 서비스가 많으면 '이 기능을 바꾸면 누가 깨지나'를 아는 사람이 필요합니다. {추론}",
+   "actually": {
+    "intro": "쿠팡이 밝힌 연결 방식과, 보통 쓰는 연결 방식입니다.",
+    "items": [
+     "**이벤트로 잇기** — 쿠팡의 첫 MSA 글은 주문이 생기면 메시지 큐(Vitamin MQ)가 '배송 요청' 이벤트를 만들어 다음 서비스로 넘긴다고 설명했다.[15]",
+     "**의존 지도 그리기** — 주문 → 재고 차감 → 출고 지시 → 운송 배정 → 배송 완료처럼 어떤 서비스가 어떤 데이터를 누구에게 받는지 표로 적는다. {추론}",
+     "**동기 호출 vs 비동기 이벤트** — 바로 답이 필요하면(재고 있나?) API 호출, 나중에 처리해도 되면(배송 완료 알림) 이벤트. 동기 호출이 길게 이어지면 하나만 멈춰도 전부 멈춘다.[28]",
+     "**외부 시스템** — 물류센터 자동화 장비(무인 운반 로봇·자동 포장기·분류기)는 회사마다 신호가 달라, 쿠팡은 약 2년 걸려 이를 한 바탕으로 모았다.[12]",
+     "**DB 와 이벤트를 같이 맞추기** — 'DB 에는 저장됐는데 이벤트는 안 나갔다'를 막으려 이벤트를 같은 트랜잭션의 표에 먼저 적고 나중에 내보낸다(트랜잭셔널 아웃박스).[36]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "주문 한 건이 지나가는 서비스들 (일반적인 물류 흐름 · 쿠팡 실제 서비스 이름은 비공개)",
+     "steps": [
+      "주문 · 결제 완료",
+      "약속 · 언제 도착하는지 정한다",
+      "배정 · 어느 물류센터에서 보낼지",
+      "센터 작업 · 집품 → 포장 → 분류",
+      "운송 · 트럭·배송 기사 배정",
+      "배송 완료 · 고객 알림과 정산"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "도메인 경계는 보통 여러 팀이 같이 정하고, 개발자는 **맡은 서비스의 입력·출력과 실패했을 때의 약속(재시도·중복·순서)을 문서와 코드로** 남깁니다. {추론} 면접에서는 '이 연동에서 상대 서비스가 30초 멈추면 우리 쪽은 어떻게 되나'에 답할 수 있어야 합니다. {추론}",
+   "refs": [
+    12,
+    15,
+    16,
+    28,
+    36
+   ],
+   "study": [
+    "msa-patterns",
+    "fowler-msa",
+    "outbox",
+    "kafka-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "비즈니스 업무 개발 시 새로운 기술 도입을 검토하고 효율적인 개발 및 운영이 가능하도록 시스템 구입",
+   "short": "일을 하다 더 나은 도구가 보이면 비교·검증해 들여오고, 개발·운영이 덜 힘들게 바꾸는 일.",
+   "why": "쿠팡 CTO 는 2020년 개발자 대회에서 기술 스택을 여러 번 통째로 다시 만들었고, 낡은 시스템을 끄는 것이 유지 비용과 불안정을 줄인다고 말했습니다.[19] 같은 조직 사람 소개 글에서도 리더십이 핵심 아키텍처 결정을 팀에 맡긴다고 했습니다.[6] 마지막 낱말 '구입'은 영어판에서 'Review the introduction of new technologies' 로만 적혀, 실제 뜻은 '시스템 구축'에 가깝게 읽힙니다.[2] {추론}",
+   "actually": {
+    "items": [
+     "**쿠팡 사례** — 재고 시스템의 핵심 ID 를 SQL DB 에서 NoSQL 로, 서비스를 멈추지 않고 옮긴 방법으로 특허를 냈다.[13]",
+     "**쿠팡 사례** — 오래 걸리는 물류 작업에 Temporal, 상태 관리에 이벤트 소싱을 들였다.[6]",
+     "**들이는 절차(보통)** — 문제 정의 → 후보 2~3개 비교표(성능·운영 부담·비용·팀 학습) → 작은 시험 → 일부 트래픽에만 적용 → 넓히기. {추론}",
+     "**옮기는 법(보통)** — 도는 시스템을 멈추지 않고 새 시스템이 기능을 하나씩 가져가게 한다(스트랭글러 패턴).[29]"
+    ]
+   },
+   "how_far": "새 기술을 '써 봤다'보다 **왜 골랐고 무엇을 포기했는지, 옮길 때 무엇을 비교해 안전하다고 판단했는지** 말할 수 있어야 합니다. 쿠팡 풀필먼트 팀도 새 모델을 실제 주문과 같은 그림자 환경에서 비교한 뒤 올렸습니다.[8]",
+   "refs": [
+    2,
+    6,
+    8,
+    13,
+    19,
+    29
+   ],
+   "study": [
+    "strangler",
+    "adr",
+    "temporal",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "룰 기반 최소 비용으로 빠르게 고객의 주문을 배송할 수 있는 방법을 찾기 위한 최적 알고리즘 도입",
+   "short": "재고·마감 시각 같은 규칙으로 안 되는 경우를 거르고, 남은 방법 중 가장 싸고 빠른 배송 경로를 고르는 일.",
+   "why": "쿠팡 풀필먼트 최적화 팀은 수백만 건 주문을 100곳 넘는 물류센터에 나눌 때 주문마다 수천 가지 경로를 따지고, 목표를 '전체 풀필먼트 비용 최소화'로 잡았다고 밝혔습니다.[8] 같은 회사 SCM 개발자는 상품이 한 센터에 몰리지 않게 센터 사이 물량을 알고리즘으로 나눈다고 했습니다.[14]",
+   "actually": {
+    "intro": "'룰 기반'과 '최적'이 한 문장에 있는 이유 — 보통은 규칙으로 후보를 줄이고, 남은 것 중 비용이 가장 작은 것을 고릅니다. 쿠팡의 실제 규칙과 식은 공개되지 않았습니다.",
+    "items": [
+     "**규칙(제약)** — 재고가 있나, 약속한 도착 시각 안에 닿나, 상품을 같이 포장할 수 있나, 센터 처리량이 남았나. {추론}",
+     "**비용(목표)** — 운송비 + 센터 작업비 + 상자 수(한 주문이 두 센터로 나뉘면 상자가 둘). 쿠팡은 '전체 비용'을 목표로 하고 재무 등 다섯 부서와 같이 설계했다고 했다.[8]",
+     "**큰 문제는 전용 도구로** — 배송 차량 경로처럼 경우의 수가 폭발하는 문제는 OR-Tools 같은 최적화 도구로 푼다. 공식 문서가 시간 창·적재량 제약을 넣는 법을 보인다.[35]",
+     "**미리 시험** — 쿠팡은 물류센터를 컴퓨터 안에 똑같이 만든 디지털 트윈으로 새 규칙을 돌려 보고 연 수천만 달러를 아꼈다고 했다.[9]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "센터 넷 중 하나 고르기 — 규칙으로 거르고 비용 최소 (가상 숫자)",
+     "body": "가장 싼 A센터는 재고가 없고, C센터는 약속 시각을 넘깁니다. 남은 B·D 중 싼 B가 뽑힙니다. 실제로는 수백만 주문을 한꺼번에 놓고 센터 처리량까지 따지기 때문에 하나씩 고르는 이 방식이 전체 최소는 아닙니다 — 그래서 '최적 알고리즘'이 따로 필요합니다. {추론}",
+     "lang": "python",
+     "code": "order = {\"qty\": 2, \"promise_hour\": 7}\nfcs = [\n    {\"fc\": \"A센터\", \"stock\": 0,  \"ship_cost\": 1200, \"arrive_hour\": 6},\n    {\"fc\": \"B센터\", \"stock\": 50, \"ship_cost\": 1500, \"arrive_hour\": 6},\n    {\"fc\": \"C센터\", \"stock\": 80, \"ship_cost\": 1300, \"arrive_hour\": 9},\n    {\"fc\": \"D센터\", \"stock\": 99, \"ship_cost\": 2600, \"arrive_hour\": 7},\n]\nrules = [\n    (\"재고 부족\", lambda f: f[\"stock\"] >= order[\"qty\"]),\n    (\"약속 시각 넘김\", lambda f: f[\"arrive_hour\"] <= order[\"promise_hour\"]),\n]\nok = []\nfor f in fcs:\n    why = [name for name, r in rules if not r(f)]\n    print(f[\"fc\"], \"통과\" if not why else \"탈락: \" + \", \".join(why))\n    if not why:\n        ok.append(f)\nbest = min(ok, key=lambda f: f[\"ship_cost\"])\nprint(\"선택:\", best[\"fc\"], best[\"ship_cost\"], \"원\")\n\n# 출력\n# A센터 탈락: 재고 부족\n# B센터 통과\n# C센터 탈락: 약속 시각 넘김\n# D센터 통과\n# 선택: B센터 1500 원"
+    }
+   ],
+   "how_far": "규칙과 비용의 기준은 운영·재무 쪽과 함께 정하고,[8] 개발자는 그 규칙을 **빠르고 틀리지 않게 돌리는 코드, 규칙을 바꿔도 재배포 없이 반영되는 구조, 바꾼 결과를 비교하는 방법**을 만듭니다. {추론} 수리 최적화 전공까지는 아니어도, 제약과 목표를 나눠 말하고 작은 문제를 직접 풀어 볼 수 있으면 됩니다. {추론}",
+   "refs": [
+    8,
+    9,
+    14,
+    35
+   ],
+   "study": [
+    "coupang-fulfillment",
+    "coupang-twin",
+    "ortools"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java 및 Spring 프레임웍을 이용한 Web Application 개발 경험하신 분",
+   "short": "쿠팡 서비스의 기본 틀이 Java 라서 — Spring 으로 웹 서비스를 처음부터 끝까지 만들어 봤는지 본다.",
+   "why": "쿠팡은 MSA 로 옮길 때부터 내부 라이브러리와 표준 뼈대 코드를 묶은 **Java 기반 프레임워크(Vitamin Framework)**를 만들어 썼습니다.[15] 업무 둘째 줄도 'Java platform 기반'이라고 적었습니다.[1]",
+   "level": {
+    "basic": "Spring Boot 로 REST API 를 만들고, 요청 → 컨트롤러 → 서비스 → 저장소 흐름과 트랜잭션 범위를 설명한다.",
+    "work": "설정·예외 처리·검증·로그·테스트를 갖춘 서비스를 운영해 봤다. 느린 API 를 로그와 쿼리로 찾아 고쳐 봤다.",
+    "team": "여러 서비스가 같은 뼈대를 쓰는 환경에서, 공통 라이브러리 버전과 다른 팀 API 변경에 맞춰 안전하게 고친다. {추론}"
+   },
+   "how_far": "'경험하신 분'이지만 다음 두 줄(경력 7년·실무 5년)과 묶여 있어 **업무로 운영한 경험**을 봅니다.[1]",
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "spring-core",
+    "spring-boot",
+    "spring-mvc-1"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "프로그래밍 경력 7년 이상인 분",
+   "short": "혼자 맡은 서비스를 설계부터 운영까지 책임질 만큼 시행착오를 겪은 사람을 찾아서.",
+   "why": "같은 업무 문장을 쓴 다른 GOT 공고들의 경력 칸은 7~20년(백엔드), 9년 이상(테크리드)입니다.[3][4] 이 공고는 7년을 아래 문턱으로 두고 위를 열어 두었습니다.[1]",
+   "how_far": "숫자는 문턱일 뿐이고, 면접은 **그 기간에 무엇을 맡았나**(장애를 직접 수습했나, 설계를 결정했나)를 봅니다. {추론} 영어판 공고는 이 줄을 'Java·Spring 기반 웹 개발 7년 이상'으로 적어, 다른 언어 경력은 덜 쳐줄 수 있습니다.[2]",
+   "refs": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "study": [
+    "sysdesign"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "웹 어플리케이션 개발, 운영 경험자로 실무 5년차 이상 또는 그에 준하는 역량 보유하신 분",
+   "short": "만드는 것만이 아니라 띄워 놓고 장애·배포·모니터링까지 직접 해 본 기간을 봐서.",
+   "why": "업무 첫째 줄이 '안정적인 운영'이고,[1] 영어판도 '개발과 운영(develop and operate)'이라고 적었습니다.[2] 물류센터는 쉬는 날 없이 24시간 돌아[20] 운영 경험이 곧 실력입니다. {추론}",
+   "actually": {
+    "intro": "'운영 경험'으로 보통 이야기하는 것들입니다.",
+    "items": [
+     "장애가 났을 때 로그·지표로 원인을 좁히고, 되돌리기(rollback)를 결정해 봤다.",
+     "배포를 나눠서(일부 서버 → 전체) 해 봤다.",
+     "지표와 경보 기준(SLO)을 정해 봤다.[27]",
+     "사고 뒤 '누구 탓' 대신 원인과 재발 방지를 글로 남겼다.[27]"
+    ]
+   },
+   "how_far": "'그에 준하는 역량'이 있어 연차가 모자라도 **운영 사례를 구체적으로** 말하면 길이 열려 있습니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    20,
+    27
+   ],
+   "study": [
+    "sre-book",
+    "dora"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "쿠팡의 글로벌 수준의 물류 시스템과 다양한 도메인을 경험하고자 하는 분",
+   "short": "물류는 화면 뒤의 현실(센터·트럭·로봇)이 복잡해서, 그 도메인을 배우려는 마음이 있는지 본다.",
+   "why": "GOT 는 서울과 미국·중국·인도에 흩어져 있고,[5][12] 같은 조직 리더는 나라 사이 수준 맞추기와 자동화·로봇 확대를 과제로 들었습니다.[7] 대구 물류센터 하나에만 무인 운반 로봇 1,000대 넘게 돕니다.[20]",
+   "actually": {
+    "items": [
+     "**센터 안** — 입고 → 진열 → 재고 → 집품 → 포장 → 출고.[5]",
+     "**센터 밖** — 운송, 배송 구역, 배송 기사 도구.[11][19]",
+     "**장비** — 무인 운반 로봇이 선반을 사람 앞으로 가져오고(평균 2분), 분류 로봇이 송장을 읽어 배송지별로 나눈다.[20]",
+     "**데이터** — 입고 트럭 수 예측, 재고 배분, 시뮬레이션.[9][10]"
+    ]
+   },
+   "how_far": "물류 경험이 없어도 되는 줄입니다 — '경험하고자 하는'이라 **관심과 학습 의지**를 봅니다.[1] 면접 전에 위 흐름을 그림으로 그려 보고, 쿠팡 엔지니어링 글 몇 편을 읽어 두면 충분합니다. {추론}",
+   "refs": [
+    1,
+    5,
+    7,
+    9,
+    10,
+    11,
+    12,
+    19,
+    20
+   ],
+   "study": [
+    "coupang-fulfillment",
+    "coupang-inbound",
+    "coupang-h3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "MSA 환경의 대규모 트래픽, 고 가용성 시스템 개발에 관심이 있는 분",
+   "short": "수백 개 서비스가 엮인 곳에서 요청이 몰려도 안 멈추는 시스템에 흥미가 있는지 본다.",
+   "why": "쿠팡은 수백 개 마이크로서비스를 돌리고,[16] 고객 화면에 데이터를 주는 층은 분당 최대 1억 요청을 받으며 그중 약 95%를 캐시로 답한다고 밝혔습니다.[17][18]",
+   "actually": {
+    "items": [
+     "**캐시** — 자주 읽는 데이터는 DB 대신 메모리 저장소에서 꺼낸다. 쿠팡 서빙 층은 캐시 층마다 60~100대 노드를 둔다.[18]",
+     "**장애 격리** — 한 서비스가 느려지면 기다리지 않고 끊는다(타임아웃·서킷 브레이커). 셀로 나눠 일부만 멈추게 한다.[26]",
+     "**몰림 대비** — 행사·명절에는 주문과 출고가 몰린다. 영어판 공고는 가장 바쁜 시기에도 정시 배송이 되게 한다고 적었다.[2]"
+    ]
+   },
+   "how_far": "자격요건이지만 '관심이 있는 분'이라 경험보다 **이해**를 봅니다 — 경험은 우대사항 첫째 줄이 따로 봅니다.[1] 가용성 숫자를 시간으로 바꿔 말할 수 있으면 좋습니다: 99.9% 는 한 달에 약 43분, 99.99% 는 약 4분 멈출 수 있다는 뜻입니다.[27]",
+   "refs": [
+    1,
+    2,
+    16,
+    17,
+    18,
+    26,
+    27
+   ],
+   "study": [
+    "sysdesign",
+    "ddia",
+    "cell-arch"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Microservices 아키텍처 기반의 시스템 개발 경험이나 이해가 있으신 분",
+   "short": "쿠팡이 2013년부터 MSA 라서 — 서비스 사이 경계·통신·데이터 분리를 해 본 사람이면 바로 붙는다.",
+   "why": "쿠팡은 2013년 10월 한 덩어리 시스템을 마이크로서비스로 바꾸기로 하고 Vitamin 프로젝트를 시작했습니다.[15] 이 공고의 기술 칸에도 MSA 가 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**서비스마다 DB 따로** — 다른 서비스의 표를 직접 읽지 않고 API·이벤트로 받는다.[28]",
+     "**여러 서비스에 걸친 일** — 주문 → 재고 차감 → 결제가 중간에 실패하면 앞 단계를 되돌리는 보상 작업을 둔다(사가). {추론}",
+     "**배포를 따로** — 서비스마다 다른 날 배포해도 서로 안 깨지게 API 버전을 지킨다.[28]"
+    ]
+   },
+   "how_far": "'경험이나 이해'라 MSA 를 운영해 보지 않았어도 **나눌 때 생기는 문제**(분산 트랜잭션·중복 이벤트·장애 전파)와 그 대책을 설명할 수 있으면 됩니다.[1] {추론}",
+   "refs": [
+    1,
+    15,
+    28
+   ],
+   "study": [
+    "msa-patterns",
+    "fowler-msa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Cloud 환경에서의 서비스 개발 및 운영 경험이나 이해가 있으신 분",
+   "short": "쿠팡 인프라가 AWS 라서 — 클라우드에서 서비스를 띄우고 늘리고 비용을 본 경험이 도움된다.",
+   "why": "쿠팡은 2017년 IT 인프라 전체를 AWS 클라우드로 옮겼다고 알려졌고,[34] 같은 GOT 공고의 다른 사본은 기술 칸에 AWS 를 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "컨테이너로 서비스를 묶어 띄우고, 요청이 늘면 서버 수를 자동으로 늘린다. {추론}",
+     "여러 가용 영역(데이터센터 묶음)에 나눠 두어 한 곳이 멈춰도 버틴다.[26]",
+     "관리형 서비스(DB·큐·캐시)를 고를 때 운영 부담과 비용을 같이 본다. {추론}"
+    ]
+   },
+   "how_far": "인프라 전담 팀이 따로 있는 큰 회사라 개발자는 **내 서비스의 배포 설정·자원 크기·지표를 직접 보고 고치는** 수준이면 됩니다. {추론}",
+   "refs": [
+    4,
+    26,
+    34
+   ],
+   "study": [
+    "docker",
+    "kubernetes",
+    "cell-arch"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대용량 처리를 위한 비동기 Event Driven Architecture 경험이 있으신 분",
+   "short": "주문·출고·배송 완료가 이벤트로 흘러가서 — 중복·순서·유실을 다뤄 본 경험을 본다.",
+   "why": "쿠팡의 MSA 는 처음부터 메시지 큐로 주문 이벤트를 배송 요청으로 넘겼고,[15] 같은 조직 엔지니어는 이벤트 소싱을 쓴다고 했습니다.[6][13] 같은 운송 조직의 인도 공고는 하루 3천만~4천만 건 이벤트를 다룬다고 적었습니다.[37]",
+   "actually": {
+    "items": [
+     "**최소 한 번 전달** — Kafka 같은 큐는 기본이 '최소 한 번'이라 같은 이벤트가 두 번 올 수 있다. 받는 쪽이 중복을 걸러야 한다(멱등).[25]",
+     "**순서** — 같은 파티션 안에서만 순서가 지켜진다. 그래서 주문 번호처럼 순서가 중요한 단위를 키로 쓴다.[25]",
+     "**실패 처리** — 계속 실패하는 메시지는 따로 모아 두고(실패 큐) 나중에 다시 본다. {추론}",
+     "**DB 와 같이** — 저장과 이벤트 발행을 아웃박스 표로 묶는다.[36]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "'배송 완료'가 두 번 와도 배송비는 한 번만 (가상 데이터)",
+     "body": "이벤트 id 를 기억해 두면 재전송된 e-101 을 건너뛰어 O1 정산이 3,000원 한 번으로 남습니다. 실제로는 기억 장소를 Redis 나 DB 유니크 키로 두고, 기억하는 기간도 정합니다.[25][31]",
+     "lang": "python",
+     "code": "events = [\n    {\"event_id\": \"e-101\", \"order\": \"O1\"},\n    {\"event_id\": \"e-102\", \"order\": \"O2\"},\n    {\"event_id\": \"e-101\", \"order\": \"O1\"},  # 재전송\n]\nseen = set()  # 실제로는 Redis SET NX 나 DB 유니크 키\npaid = {}\nfor e in events:\n    if e[\"event_id\"] in seen:\n        print(\"건너뜀(중복):\", e[\"event_id\"])\n        continue\n    seen.add(e[\"event_id\"])\n    paid[e[\"order\"]] = paid.get(e[\"order\"], 0) + 3000\n    print(\"처리:\", e[\"event_id\"])\nprint(\"정산:\", paid)\n\n# 출력\n# 처리: e-101\n# 처리: e-102\n# 건너뜀(중복): e-101\n# 정산: {'O1': 3000, 'O2': 3000}"
+    }
+   ],
+   "how_far": "Kafka 를 '써 봤다'보다 **중복·순서·유실 셋 중 무엇을 어떻게 막았나**를 사례로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    6,
+    13,
+    15,
+    25,
+    31,
+    36,
+    37
+   ],
+   "study": [
+    "kafka-book",
+    "kafka-docs",
+    "spring-kafka",
+    "outbox"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "코드 품질을 향상 시키기 위한 개발 경험이 있으신 분",
+   "short": "수백 개 서비스를 여러 나라 팀이 같이 고쳐서 — 테스트·리뷰·리팩터링으로 코드를 지켜 본 경험.",
+   "why": "GOT 는 여러 나라 팀이 같은 시스템을 나눠 만들고,[5][12] 쿠팡은 모든 기능에 A/B 실험을 붙여 연간 수천 개 실험을 돌린다고 했습니다.[19] 코드가 자주 바뀌는 만큼 바꿔도 안 깨지는 장치가 필요합니다. {추론}",
+   "actually": {
+    "items": [
+     "**테스트** — 규칙(배정·정산)은 단위 테스트로, 서비스 연결은 통합 테스트로 지킨다. {추론}",
+     "**코드 리뷰** — 구글 공개 지침은 리뷰의 기준을 '완벽'이 아니라 '코드 건강을 조금이라도 낫게 하는가'로 둔다.[33]",
+     "**리팩터링** — 낡은 코드를 기능 변경 없이 작은 단계로 고친다. 쿠팡 CTO 는 레거시를 끄는 일을 강조했다.[19]",
+     "**지표** — 배포 빈도·변경 실패율 같은 숫자로 품질을 잰다.[32]"
+    ]
+   },
+   "how_far": "'린트를 붙였다'보다 **무엇이 문제였고 고친 뒤 무엇이 줄었나**(장애 건수·리뷰 시간·실패 배포)를 숫자로 말하면 강합니다. {추론}",
+   "refs": [
+    5,
+    12,
+    19,
+    32,
+    33
+   ],
+   "study": [
+    "practical-testing",
+    "eng-review",
+    "dora"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "JPA, Hibernate등 ORM사용과 도메인 모델링 경험이 있으신 분",
+   "short": "주문·재고·출고 같은 물류 개념을 객체로 잘 나누고, ORM 이 내는 SQL 을 통제해 본 경험.",
+   "why": "같은 업무 문장을 쓴 테크리드 공고는 기술 칸에 DDD(도메인 주도 설계)를 적었습니다.[3] 물류는 '주문 한 건이 두 센터로 나뉜다' 같은 규칙이 많아 도메인 모델이 곧 업무 규칙입니다. {추론}",
+   "actually": {
+    "items": [
+     "**도메인 모델링** — 주문·출고 지시·상자·운송장을 어떤 객체로 나누고, 상태(접수 → 집품 → 출고 → 배송 중 → 완료)를 어디서 바꾸게 할지 정한다. {추론}",
+     "**N+1 문제** — 목록을 읽은 뒤 항목마다 연관 데이터를 따로 읽으면 쿼리가 목록 길이만큼 더 나간다. Hibernate 문서는 페치 조인 등 가져오기 전략을 설명한다.[30]",
+     "**잠금** — 두 작업자가 같은 재고를 동시에 차감하지 않게 버전 번호로 충돌을 잡는다(낙관적 잠금).[30]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "주문 10건의 배송 상태 읽기 — 쿼리 11번 vs 1번 (SQLite, 가상 데이터)",
+     "body": "주문마다 배송 정보를 따로 읽으면 1 + 10 = 11번, 조인 한 번이면 1번입니다. JPA 에서 지연 로딩된 연관을 반복문에서 건드리면 앞쪽처럼 됩니다.[30]",
+     "lang": "python",
+     "code": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"create table orders(id int)\")\ndb.execute(\"create table shipment(order_id int, status text)\")\ndb.executemany(\"insert into orders values(?)\", [(i,) for i in range(10)])\ndb.executemany(\"insert into shipment values(?,?)\", [(i, \"출고\") for i in range(10)])\ncount = 0\n\ndef q(sql, *a):\n    global count\n    count += 1\n    return db.execute(sql, a).fetchall()\n\nfor (oid,) in q(\"select id from orders\"):\n    q(\"select status from shipment where order_id=?\", oid)\nprint(\"주문마다 따로:\", count, \"번\")\ncount = 0\nq(\"select o.id, s.status from orders o join shipment s on s.order_id = o.id\")\nprint(\"한 번에 조인:\", count, \"번\")\n\n# 출력\n# 주문마다 따로: 11 번\n# 한 번에 조인: 1 번"
+    }
+   ],
+   "how_far": "엔티티를 그려 보이고, **그 화면 하나에서 SQL 이 몇 번 나가는지** 알고 줄여 본 경험이면 충분합니다. {추론}",
+   "refs": [
+    3,
+    30
+   ],
+   "study": [
+    "jpa-basic",
+    "jpa-app-2",
+    "hibernate-guide"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "E-Commerce 서비스 개발 경험이 있으신 분",
+   "short": "주문·결제·취소·반품이 물류 이벤트의 출발점이라, 그 흐름을 아는 사람이 빨리 적응해서.",
+   "why": "GOT 는 '주문이 접수된 후'를 맡는 조직이라 주문 시스템과 맞닿아 있습니다.[1] 같은 운송 조직의 인도 공고도 커머스·운송·물류 경험을 우대했습니다.[37]",
+   "actually": {
+    "items": [
+     "주문 취소가 출고 직전에 들어오면 센터 작업을 멈춰야 한다. {추론}",
+     "반품은 배송의 반대 방향 물류(회수 → 검수 → 재입고)다. {추론}",
+     "행사 날 주문이 몰리면 물류 처리량도 그만큼 미리 잡아야 한다.[2]"
+    ]
+   },
+   "how_far": "우대사항입니다. 커머스 경험이 없으면 **주문 상태가 바뀔 때 물류 쪽에서 무슨 일이 생기는지** 표로 정리해 가면 대신할 수 있습니다. {추론}",
+   "refs": [
+    1,
+    2,
+    37
+   ],
+   "study": [
+    "sysdesign",
+    "msa-patterns"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "빌드/테스트/배포 자동화 경험이 있으신 분",
+   "short": "서비스가 수백 개라 손으로 빌드·배포하면 못 버텨서 — 파이프라인을 만들고 고쳐 본 경험.",
+   "why": "쿠팡은 수백 개 마이크로서비스를 돌리고,[16] 연간 수천 개 실험을 돌린다고 했습니다.[19] 영어판 공고는 이 줄을 CI/CD 로 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "코드를 올리면 빌드 → 테스트 → 이미지 만들기 → 배포가 자동으로 이어진다. {추론}",
+     "일부 서버에 먼저 배포하고 지표를 본 뒤 넓힌다(카나리). {추론}",
+     "배포가 얼마나 자주·안전하게 되는지는 배포 빈도·변경 리드 타임·변경 실패율·복구 시간 넷으로 잰다.[32]"
+    ]
+   },
+   "how_far": "공통 파이프라인은 플랫폼 팀이 줄 가능성이 크고, 개발자는 **내 서비스의 테스트·배포 단계를 직접 고치고, 실패하면 왜 실패했는지 읽는** 수준이면 됩니다. {추론}",
+   "refs": [
+    2,
+    16,
+    19,
+    32
+   ],
+   "study": [
+    "docker",
+    "kubernetes",
+    "dora"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "NoSQL(Memcached, Redis)을 이용한 대용량 데이터 처리 경험이 있으신 분",
+   "short": "많이 읽는 데이터를 메모리 저장소에 둬 DB 를 지키는 일을 해 봤는지 — 공고 기술 칸에 Redis 가 있다.",
+   "why": "이 공고의 기술 칸 넷 중 하나가 Redis 입니다.[1] 쿠팡 서빙 층은 분당 최대 1억 요청 중 약 95%를 캐시로 답하고, 캐시 노드 일부가 죽었을 때·트래픽이 한쪽으로 몰릴 때의 교훈을 따로 글로 남겼습니다.[17][18] 재고 시스템도 SQL 에서 NoSQL 로 옮겼습니다.[13]",
+   "actually": {
+    "items": [
+     "**캐시** — 읽기 먼저 캐시를 보고 없으면 DB 에서 읽어 채운다(read-through). 쿠팡은 이와 별도로 실시간 캐시 층을 뒀다.[18]",
+     "**만료** — 데이터마다 얼마 뒤 지울지(TTL) 정한다. 너무 길면 낡고, 너무 짧으면 DB 가 맞는다.[31]",
+     "**중복 막기·잠금** — Redis 의 '없을 때만 쓰기(SET NX)'로 같은 요청을 한 번만 처리한다.[31]",
+     "**몰림** — 인기 키 하나에 요청이 몰리면 노드 하나가 터진다. 쿠팡은 로컬 캐시로 급증을 흡수했다고 했다.[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "캐시 적중률이 DB 를 얼마나 지키나 (분당 1억 요청 가정)",
+     "body": "적중률 95%와 99%의 차이는 4%p 지만 DB 로 가는 요청은 500만 건과 100만 건, 다섯 배 차이입니다. 그래서 캐시 노드 일부가 죽으면 DB 가 갑자기 몇 배를 맞습니다.[18]",
+     "lang": "python",
+     "code": "req = 100_000_000\nfor hit in (0.80, 0.95, 0.99):\n    print(f\"적중 {hit:.0%}: DB 로 {req * (1 - hit):,.0f} 건/분\")\n\n# 출력\n# 적중 80%: DB 로 20,000,000 건/분\n# 적중 95%: DB 로 5,000,000 건/분\n# 적중 99%: DB 로 1,000,000 건/분"
+    }
+   ],
+   "how_far": "캐시를 붙인 경험에 더해 **캐시가 낡거나 비었을 때 무슨 일이 생기는지**(정합성·DB 폭주)와 그 대책을 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    13,
+    17,
+    18,
+    31
+   ],
+   "study": [
+    "redis-docs",
+    "coupang-cache",
+    "ddia"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "화면보다 **물건이 제때 정확히 움직이는지**를 코드로 보장하는 게 재밌는 사람[1]",
+   "규칙이 많은 업무를 깔끔한 도메인 모델로 정리하는 걸 좋아하는 사람[3]",
+   "물류센터·트럭·로봇처럼 현실과 맞닿은 소프트웨어를 만들고 싶은 사람[12][20]",
+   "'싸고 빠르게'를 숫자로 비교하고 실험으로 확인하는 게 편한 사람[8]"
+  ],
+  "hard": [
+   "자격요건에 경력 7년 이상·실무 5년 이상이 함께 있다[1]",
+   "직급 이름이 없는 집중 채용이라 어느 팀·직급으로 갈지 공고만으로는 모른다 — 면접에서 확인해야 한다 {추론}",
+   "여러 나라 팀과 일해 영어 소통이 있을 수 있다[5][12] {추론}",
+   "24시간 도는 현장 시스템이라 장애 대응 부담이 있을 수 있다[20] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "주문 하나를 어느 물류센터에서 보낼지 정하는 서비스를 설계해 보세요. 규칙이 자주 바뀐다면요?",
+   "a": "업무 다섯째 줄 — 규칙(제약)과 비용(목표)을 나누고, 규칙 변경을 재배포 없이 반영하고, 바꾼 결과를 그림자 환경에서 비교하는지.[8][9]"
+  },
+  {
+   "q": "'배송 완료' 이벤트가 두 번 와서 기사 정산이 두 번 됐습니다. 어디서부터 막겠어요?",
+   "a": "최소 한 번 전달과 멱등 처리, 아웃박스 — 비동기 이벤트 우대 줄.[25][36]"
+  },
+  {
+   "q": "출고 지시 API 가 재고 서비스를 동기로 부르는데 재고 서비스가 30초 멈췄습니다. 무슨 일이 생기고 어떻게 바꾸겠어요?",
+   "a": "도메인 의존성·연동 줄과 고가용성 줄 — 타임아웃·장애 격리·비동기 전환.[26][28]"
+  },
+  {
+   "q": "센터별 재고 화면이 느립니다. 쿼리 로그를 보니 같은 SELECT 가 수백 번 나갑니다.",
+   "a": "JPA N+1 — ORM 우대 줄. 쿠팡 시뮬레이션 플랫폼도 DB 호출 수백 번을 병목으로 꼽았다.[9][30]"
+  },
+  {
+   "q": "Redis 캐시 노드 하나가 죽었더니 DB 가 넘어갔습니다. 왜 그렇고, 미리 무엇을 했어야 하나요?",
+   "a": "적중률과 DB 부하의 관계, 몰림 대비 — NoSQL 우대 줄과 쿠팡 캐시 운영 교훈.[18]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Global Operations Technology(GOT) 개발자 집중 채용",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=6810667",
+   "kind": "posting",
+   "note": "이 공고(그린하우스 보드에서 2026-11-24 처음 봄). 조직 소개·업무 5·자격 5·우대 8·전형(서류 → 전화면접 → 대면면접 → 최종 합격), 근무지 Seoul, 기술 칸 Java·Spring·MSA·Redis. 복리후생 칸 없음. 2026-11-25 에는 페이지가 400 으로 열리지 않아 수집본으로 읽음"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · Staff, Back-end Engineer (Global Operations Technology)",
+   "url": "https://www.coupang.jobs/en/jobs/7230867/staff-back-end-engineer-global-operations-technology/",
+   "kind": "posting",
+   "date": "2026-10-01",
+   "note": "업데이트일 기준. 이 공고와 같은 업무·자격·우대 줄의 영어판 — '개발과 운영', 'Java·Spring 7년 이상', 'CI/CD', 가장 바쁜 시기에도 정시 배송. 전형은 서류 → 1차 → 2차 면접"
+  },
+  {
+   "n": 3,
+   "title": "리멤버 · 쿠팡 Back-end Engineer 테크리드 (Global Operations Technology)",
+   "url": "https://career.rememberapp.co.kr/job/posting/307116",
+   "kind": "posting",
+   "note": "같은 업무 문장(룰 기반 최적 알고리즘 포함), 경력 9년 이상·실무 8년차 이상, 기술 칸 Java·Spring·DDD·MSA, 근무지 서울·경기, 복지 태그"
+  },
+  {
+   "n": 4,
+   "title": "리멤버 · 쿠팡 Back-end engineer (Global Operations Technology)",
+   "url": "https://career.rememberapp.co.kr/job/posting/322129",
+   "kind": "posting",
+   "note": "같은 조직 백엔드 공고 — 경력 7~20년, 기술 칸 Java·Spring·AWS, 근무지 서울, 복지 태그(유연근무제·식대·저녁 제공·성과급·임신/출산 지원·카페테리아·경조금·도서 구입비)"
+  },
+  {
+   "n": 5,
+   "title": "Coupang Careers · Meet Andrew, GOT Engineering",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-andrew-got-engineering/",
+   "kind": "company",
+   "date": "2023-06-13",
+   "note": "GOT 물류센터 쪽 기술 전략(WMS·데이터 사이언스·자동화/로보틱스), 서울·마운틴뷰·시애틀·상하이"
+  },
+  {
+   "n": 6,
+   "title": "Coupang Careers · Meet Amit, Senior Staff Back-end Engineer with Global Operations Technology",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-amit-senior-staff-back-end-engineer-with-global-operations-technology/",
+   "kind": "company",
+   "date": "2025-02-10",
+   "note": "WMS 재설계, 셀 구조·Temporal 워크플로·이벤트 소싱, 팀이 핵심 아키텍처 결정"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Careers · Meet Rajiv, Senior Director of Engineering with Global Operations Technology",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-rajiv-senior-director-of-engineering-with-global-operations-technology/",
+   "kind": "company",
+   "date": "2025-06-10",
+   "note": "GOT = 주문 몇 시간 안 배송을 가능하게 하는 시스템. 자동화·로보틱스 확대, 나라 사이 수준 맞추기"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Careers · Fulfillment optimization: the engine behind Coupang's recognition as one of Fast Company's most innovative companies",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/fulfillment-optimization-the-engine-behind-coupang-s-recognition-as-one-of-fast-company-s-most-innovative-companies/",
+   "kind": "company",
+   "date": "2025-06-19",
+   "note": "수백만 주문·100곳 넘는 물류센터·주문마다 수천 경로, 전체 풀필먼트 비용 최소화, 재무 등 다섯 부서와 설계, 그림자 환경 비교 후 반영"
+  },
+  {
+   "n": 9,
+   "title": "Coupang Engineering · Building a digital twin discrete event simulation platform for fulfillment optimization",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/building-a-digital-twin-discrete-event-simulation-platform-for-fulfillment-optimization/",
+   "kind": "company",
+   "date": "2026-11-20",
+   "note": "세 층 구조, AIMD 과부하 조절, DB 호출 수백 번 병목, 연 수천만 달러 절감"
+  },
+  {
+   "n": 10,
+   "title": "Coupang Engineering · Optimizing the inbound process with a machine learning model",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/optimizing-the-inbound-process-with-a-machine-learning-model/",
+   "kind": "company",
+   "date": "2023-03-09",
+   "note": "입고 트럭 수 예측, 날짜 변경 67.9% 감소"
+  },
+  {
+   "n": 11,
+   "title": "Coupang Engineering · Coupang Rocket Delivery's spatial index-based delivery management system",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/coupang-rocket-delivery-s-spatial-index-based-delivery-management-system/",
+   "kind": "company",
+   "date": "2023-04-17",
+   "note": "H3 14단계, 한국 약 217억 칸, 다각형 + 압축"
+  },
+  {
+   "n": 12,
+   "title": "Coupang Engineering · The Digital Nervous System: How Coupang Powers Next-Gen Automation",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/the-digital-nervous-system-how-coupang-powers-next-gen-automation/",
+   "kind": "company",
+   "date": "2026-11-08",
+   "note": "여러 회사 자동화 장비 데이터를 한 바탕으로, 약 2년"
+  },
+  {
+   "n": 13,
+   "title": "Coupang Careers · From high-scale inventory to building digital twins: Lakshmanan's journey at Coupang",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/from-high-scale-inventory-to-building-digital-twins-lakshmanan-s-journey-at-coupang/",
+   "kind": "company",
+   "date": "2026-07-03",
+   "note": "차세대 재고 시스템, 재고 ID 를 SQL → NoSQL 로 서비스 중단 없이 옮긴 방법 특허, 이벤트 소싱, 최적화 모델 서빙 마이크로서비스"
+  },
+  {
+   "n": 14,
+   "title": "Coupang Careers · Meet Atin, a developer helping drive efficiency at our Coupang FCs",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-atin-a-developer-helping-drive-efficiency-at-our-coupang-fcs/",
+   "kind": "company",
+   "date": "2023-01-03",
+   "note": "SCM 팀 — 발주·센터 배분, 센터 사이 물량 균형 알고리즘, 노코드 자동화 플랫폼"
+  },
+  {
+   "n": 15,
+   "title": "Coupang Engineering · How Coupang built a microservice architecture (행복을 찾기 위한 우리의 여정)",
+   "url": "https://medium.com/coupang-tech/행복을-찾기-위한-우리의-여정-94678fe9eb61",
+   "kind": "company",
+   "note": "Medium 이 자동 접속을 막아(403) 검색 결과 요약으로만 확인 — 2013년 10월 MSA 전환 결정(Vitamin 프로젝트), Java 기반 Vitamin Framework, Vitamin MQ 가 주문 → 배송 요청 이벤트를 만든다"
+  },
+  {
+   "n": 16,
+   "title": "Coupang Engineering · Integrating Coupang platform services to a microservice architecture",
+   "url": "https://medium.com/coupang-engineering/행복을-찾기-위한-우리의-여정-a31fc2d5a572",
+   "kind": "company",
+   "date": "2018-05-25",
+   "note": "2부작의 2부. 403 — 검색 결과 요약으로만 확인: 수백 개 마이크로서비스가 도는 복잡한 구조"
+  },
+  {
+   "n": 17,
+   "title": "Coupang Engineering · Our backend strategy to handle massive traffic",
+   "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+   "kind": "company",
+   "date": "2022-08",
+   "note": "403 — 검색 결과 요약으로만 확인: 고객 화면에 데이터를 주는 코어 서빙 층, 통합 NoSQL 저장소와 실시간 캐시"
+  },
+  {
+   "n": 18,
+   "title": "Coupang Engineering · Lessons learned from handling massive traffic with cache",
+   "url": "https://medium.com/coupang-engineering/lessons-learned-from-operating-our-data-serving-layer-4e9e4f68fe85",
+   "kind": "company",
+   "date": "2022-08",
+   "note": "403 — 검색 결과 요약으로만 확인: read-through 캐시와 실시간 캐시, 캐시 층마다 60~100 노드, 분당 최대 1억 요청, 약 95% 캐시 응답, 노드 일부 장애·트래픽 균형·로컬 캐시로 급증 흡수"
+  },
+  {
+   "n": 19,
+   "title": "바이라인네트워크 · 이커머스 기업 '쿠팡'은 왜 개발자대회를 열었을까?",
+   "url": "https://byline.network/2020/12/13-105/",
+   "kind": "news",
+   "date": "2020-12-14",
+   "note": "개발자 대회 'Reveal 2020' — CTO 발언(리더십 원칙 15개, 모든 기능 A/B 실험·연간 수천 개, 기술 스택 여러 번 재구축·레거시 종료), 배송 기사 적재 순서 추천 시스템"
+  },
+  {
+   "n": 20,
+   "title": "지디넷코리아 · 쿠팡, 아시아 최대 규모 '대구 풀필먼트센터' 공개",
+   "url": "https://zdnet.co.kr/view/?no=20230207082554",
+   "kind": "news",
+   "date": "2023-02-07",
+   "note": "투자 3,200억원 이상, 축구장 46개 규모, 무인 운반 로봇(AGV) 1,000대 이상·평균 2분 내 선반 전달, 분류 로봇 수백 대, 24시간 가동"
+  },
+  {
+   "n": 21,
+   "title": "Coupang Careers · Why Coupang (리더십 원칙·문화와 복지제도)",
+   "url": "https://www.coupang.jobs/kr/why-coupang/",
+   "kind": "company",
+   "note": "복지 8가지(금액·조건 없음)"
+  },
+  {
+   "n": 22,
+   "title": "Coupang Careers · Seoul",
+   "url": "https://www.coupang.jobs/en/locations/seoul/",
+   "kind": "company",
+   "note": "서울 사무소 — 이스트폴 타워(광진구 아차산로 412)·로켓랩(강남구 역삼동), 가까운 역 구의"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "쿠팡(주) 값, 기준일 표기 없음. 사이트가 자동 접속을 막아 검색 결과에 실린 값으로 확인(같은 회사 다른 풀이와 같은 값)"
+  },
+  {
+   "n": 24,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 보수 중간값 — 달러 환산"
+  },
+  {
+   "n": 25,
+   "title": "Apache Kafka Documentation · Design (Message Delivery Semantics)",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference",
+   "note": "파티션 안 순서, 최소 한 번·최대 한 번·정확히 한 번"
+  },
+  {
+   "n": 26,
+   "title": "AWS Whitepaper · Reducing the Scope of Impact with Cell-Based Architecture",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/reducing-scope-of-impact-with-cell-based-architecture.html",
+   "kind": "reference",
+   "note": "셀 구조 — 장애 범위 줄이기, 가용 영역"
+  },
+  {
+   "n": 27,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·오류 예산. 사후 검토는 같은 책 다른 장. 분당 환산(99.9% ≈ 월 43분)은 우리 계산"
+  },
+  {
+   "n": 28,
+   "title": "Martin Fowler · Microservices",
+   "url": "https://martinfowler.com/articles/microservices.html",
+   "kind": "reference",
+   "note": "다른 곳의 공개 글 — 서비스마다 데이터 따로, 독립 배포, 장애를 견디는 설계"
+  },
+  {
+   "n": 29,
+   "title": "Martin Fowler · Strangler Fig Application",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Hibernate ORM User Guide",
+   "url": "https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html",
+   "kind": "reference",
+   "note": "가져오기 전략(fetching)·낙관적 잠금"
+  },
+  {
+   "n": 31,
+   "title": "Redis Docs · SET (NX·EX 옵션)",
+   "url": "https://redis.io/docs/latest/commands/set/",
+   "kind": "reference",
+   "note": "없을 때만 쓰기·만료 시간"
+  },
+  {
+   "n": 32,
+   "title": "DORA · DORA's software delivery metrics: the four keys",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "Google Engineering Practices · Code Review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference",
+   "note": "다른 회사 — 리뷰 기준(코드 건강을 낫게 하나)"
+  },
+  {
+   "n": 34,
+   "title": "바이라인네트워크 · 쿠팡, IT인프라 전체를 AWS 클라우드로 이전했다",
+   "url": "https://byline.network/2017/08/10-6",
+   "kind": "news",
+   "date": "2017-08",
+   "note": "검색 결과의 제목으로 확인"
+  },
+  {
+   "n": 35,
+   "title": "Google OR-Tools · Vehicle Routing",
+   "url": "https://developers.google.com/optimization/routing",
+   "kind": "reference",
+   "note": "다른 곳의 공개 문서 — 차량 경로 문제, 시간 창·적재량 제약"
+  },
+  {
+   "n": 36,
+   "title": "microservices.io · Pattern: Transactional outbox",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "Coupang Careers · Senior Manager - Backend Engineering (Bengaluru)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8076295",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 운송 조직의 인도 공고 — 하루 3천만~4천만 건 이벤트 기반 시스템, 커머스·운송·물류 경험 우대"
+  }
+ ],
+ "caveat": "이 공고는 직급·팀 이름 없이 GOT 개발자를 한꺼번에 뽑는 '집중 채용'이라, 붙으면 어느 팀(창고 관리·운송·최적화 등)으로 가는지 공고에 없습니다. 쿠팡 GOT 의 실제 서비스 구성·배정 규칙·SLO 숫자는 공개되지 않았습니다. 회사 근거는 이 공고, 같은 업무 문장의 영어판·사본 3건, 같은 조직 사람 소개 글 4편(2023~2026), 쿠팡 엔지니어링 글 4편(2023·2026), MSA·캐시 글 4편(2018·2022 — Medium 이 막아 검색 요약으로만), 2020 개발자 대회·대구 물류센터 기사입니다. 회사 발표 영상은 찾지 못했습니다(받은 영상 없음). MSA·이벤트·캐시·최적화의 일반론은 Fowler·Kafka·Redis·Hibernate·OR-Tools·구글 문서로 '보통 이런 것'을 보였습니다. 공고 페이지는 2026-11-25 에 열리지 않아 11-24 수집본으로 읽었습니다.",
+ "resources": [
+  {"id": "coupang-fulfillment", "title": "Fulfillment optimization: the engine behind Coupang's recognition as one of Fast Company's most innovative companies", "by": "Coupang Careers · 2025-06-19", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/fulfillment-optimization-the-engine-behind-coupang-s-recognition-as-one-of-fast-company-s-most-innovative-companies/", "why": "업무 다섯째 줄 '최소 비용 배송 알고리즘'을 회사가 직접 설명한 글. 목표를 무엇으로 잡고 어떻게 검증했는지."},
+  {"id": "coupang-twin", "title": "Building a digital twin discrete event simulation platform for fulfillment optimization", "by": "Coupang Engineering · 2026-11-20", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/building-a-digital-twin-discrete-event-simulation-platform-for-fulfillment-optimization/", "why": "이 조직 가까이의 최근 설계 글 — 층 나누기·과부하 조절·DB 병목. 아키텍처 설계 줄의 실례."},
+  {"id": "coupang-h3", "title": "Coupang Rocket Delivery's spatial index-based delivery management system", "by": "Coupang Engineering · 2023-04-17", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/coupang-rocket-delivery-s-spatial-index-based-delivery-management-system/", "why": "배송 쪽 백오피스가 규모를 먼저 세고 저장 방식을 고른 예. Front/Back office 줄."},
+  {"id": "coupang-inbound", "title": "Optimizing the inbound process with a machine learning model", "by": "Coupang Engineering · 2023-03-09", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/optimizing-the-inbound-process-with-a-machine-learning-model/", "why": "물류센터 입고 예약 업무가 어떻게 생겼나. 물류 도메인 줄."},
+  {"id": "coupang-cache", "title": "Lessons learned from handling massive traffic with cache", "by": "Coupang Engineering · 2022", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://medium.com/coupang-engineering/lessons-learned-from-operating-our-data-serving-layer-4e9e4f68fe85", "why": "쿠팡이 캐시를 운영하며 겪은 장애·몰림 사례. NoSQL(Redis) 우대 줄과 고가용성 줄."},
+  {"id": "msa-patterns", "title": "마이크로서비스 패턴", "by": "크리스 리처드슨 · 길벗", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4%20%EB%A6%AC%EC%B2%98%EB%93%9C%EC%8A%A8", "why": "서비스 분해·사가·아웃박스를 Java·Spring 예제로. 업무 첫째·셋째 줄과 MSA 우대 줄의 바탕."},
+  {"id": "fowler-msa", "title": "Microservices", "by": "James Lewis · Martin Fowler", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://martinfowler.com/articles/microservices.html", "why": "MSA 가 무엇을 약속하고 무엇을 대가로 치르는지 가장 짧게. MSA 이해 우대 줄."},
+  {"id": "outbox", "title": "Pattern: Transactional outbox", "by": "microservices.io", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://microservices.io/patterns/data/transactional-outbox.html", "why": "DB 저장과 이벤트 발행을 어긋나지 않게 묶는 법. 시스템 연동 줄과 비동기 이벤트 줄."},
+  {"id": "cell-arch", "title": "Reducing the Scope of Impact with Cell-Based Architecture", "by": "AWS Well-Architected 백서", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/reducing-scope-of-impact-with-cell-based-architecture.html", "why": "같은 조직이 쓴다고 한 셀 구조. 고가용성 줄에서 '어디까지 같이 멈추나'를 설명하는 바탕."},
+  {"id": "temporal", "title": "Temporal Docs · Workflows", "by": "Temporal", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.temporal.io/workflows", "why": "같은 조직이 들인 워크플로 도구. 새 기술 도입 줄의 실례."},
+  {"id": "strangler", "title": "Strangler Fig Application", "by": "Martin Fowler", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://martinfowler.com/bliki/StranglerFigApplication.html", "why": "도는 시스템을 멈추지 않고 새 기술로 옮기는 기본 전략. 새 기술 도입 줄."},
+  {"id": "adr", "title": "Architectural Decision Records", "by": "ADR GitHub organization", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://adr.github.io/", "why": "왜 골랐고 무엇을 포기했나를 한 장으로 남기는 형식. 기술 도입 검토를 보여 주는 도구."},
+  {"id": "ortools", "title": "OR-Tools · Vehicle Routing", "by": "Google", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://developers.google.com/optimization/routing", "why": "제약(시간 창·적재량)과 목표(거리·비용)를 코드로 적는 법을 예제로. 최적 알고리즘 줄을 손으로 해 보는 가장 빠른 길."},
+  {"id": "kafka-book", "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/kafka", "why": "토픽·파티션·키·소비자 그룹을 실제 명령과 레코드로. 중복·순서 문제를 손으로 확인한다 — 비동기 이벤트 우대 줄."},
+  {"id": "kafka-docs", "title": "Apache Kafka 문서 · Message Delivery Semantics", "by": "Apache Kafka", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://kafka.apache.org/documentation/#semantics", "why": "최소 한 번·정확히 한 번이 실제로 무엇을 보장하나. 배송 완료·정산 이벤트를 다룰 때의 기준."},
+  {"id": "spring-kafka", "title": "Spring for Apache Kafka Reference", "by": "Spring 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.spring.io/spring-kafka/reference/", "why": "Spring 에서 메시지 받기·재시도·실패 큐. Java·Spring 요건과 이벤트 우대 줄을 한 번에."},
+  {"id": "spring-core", "title": "스프링 핵심 원리 — 기본편 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/spring-core", "why": "컨테이너·빈·의존성 주입을 실행 결과로. Java·Spring 자격 줄의 바닥."},
+  {"id": "spring-mvc-1", "title": "스프링 MVC 1편 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/spring-mvc-1", "why": "요청이 컨트롤러까지 가는 길을 실제 HTTP 로. 웹 애플리케이션·백오피스 줄."},
+  {"id": "spring-boot", "title": "스프링 부트 — 핵심 원리와 활용 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/spring-boot", "why": "기동 로그·설정·엔드포인트(헬스 체크·지표). 운영 경험 자격 줄."},
+  {"id": "jpa-basic", "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/jpa-basic", "why": "엔티티 매핑과 실제로 나가는 SQL. ORM·도메인 모델링 우대 줄."},
+  {"id": "jpa-app-1", "title": "스프링 부트와 JPA 활용 1편 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/jpa-app-1", "why": "주문 도메인을 처음부터 설계하는 예제. 백오피스 서비스 줄과 도메인 모델링 줄."},
+  {"id": "jpa-app-2", "title": "스프링 부트와 JPA 활용 2편 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/jpa-app-2", "why": "같은 응답을 쿼리 31번에서 3번으로 줄이는 과정. N+1 을 직접 겪고 고친다."},
+  {"id": "hibernate-guide", "title": "Hibernate ORM User Guide", "by": "Hibernate 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html", "why": "가져오기 전략과 잠금의 원전. 재고 동시 차감 같은 문제를 ORM 에서 막는 법."},
+  {"id": "redis-docs", "title": "Redis Docs · SET", "by": "Redis 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://redis.io/docs/latest/commands/set/", "why": "없을 때만 쓰기(NX)·만료(EX). 캐시·중복 막기·잠금의 기본 명령 — 공고 기술 칸의 Redis."},
+  {"id": "practical-testing", "title": "Practical Testing — 실용적인 테스트 가이드 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/practical-testing", "why": "단위·통합 테스트를 실제 결과로. 코드 품질 우대 줄."},
+  {"id": "eng-review", "title": "Google Engineering Practices · Code Review", "by": "Google", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://google.github.io/eng-practices/review/", "why": "리뷰에서 무엇을 보고 어떻게 말하나. 코드 품질 우대 줄."},
+  {"id": "dora", "title": "DORA's software delivery metrics: the four keys", "by": "DORA", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://dora.dev/guides/dora-metrics-four-keys/", "why": "배포·품질을 숫자로 말하는 기준. 빌드/배포 자동화·코드 품질 줄."},
+  {"id": "docker", "title": "개발자를 위한 도커 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/docker", "why": "서비스를 이미지로 묶고 띄우는 명령과 출력. 클라우드·배포 자동화 줄."},
+  {"id": "kubernetes", "title": "쿠버네티스 입문 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/kubernetes", "why": "배포·늘리기·장애 상태 읽기. 클라우드 운영 줄."},
+  {"id": "sre-book", "title": "사이트 신뢰성 엔지니어링", "by": "벳시 베이어 외 · 제이펍 · 2018 (원서는 sre.google 에서 무료)", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%82%AC%EC%9D%B4%ED%8A%B8%20%EC%8B%A0%EB%A2%B0%EC%84%B1%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81", "why": "SLO·오류 예산·사후 검토. '안정적인 운영'과 운영 경험 자격 줄의 바탕."},
+  {"id": "ddia", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 정재부·김영준·이도경 옮김 · 위키북스 · 2018", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://wikibook.co.kr/data-intensive-applications/", "why": "복제·분할·캐시·스트림을 한 그림으로. 대규모 트래픽·NoSQL·기술 선택 줄."},
+  {"id": "sysdesign", "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초", "by": "알렉스 쉬 · 인사이트", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88", "why": "규모 추정·캐시·메시지 큐를 면접 형식으로. 고가용성 관심 줄과 대면 면접 준비."}
+ ],
+ "study_path": [
+  {
+   "title": "로켓배송 뒤쪽이 어떻게 생겼나",
+   "time": "1주",
+   "goal": "주문 → 배정 → 센터 작업 → 운송 → 배송 완료 흐름과, 단계마다 어떤 서비스·이벤트가 생기는지 그림으로 설명할 수 있다.",
+   "resources": ["coupang-fulfillment", "coupang-inbound", "coupang-h3", "coupang-twin"],
+   "task": "가상 물류센터 세 곳·주문 100건의 하루를 단계별 이벤트 목록(이벤트 이름·누가 내나·누가 받나)으로 적는다."
+  },
+  {
+   "title": "Spring 으로 물류 백오피스 하나 만들기",
+   "time": "2주",
+   "goal": "주문·출고 지시·운송장 도메인을 JPA 로 설계하고, 한 화면에서 나가는 SQL 개수를 세고 줄일 수 있다.",
+   "resources": ["spring-core", "spring-mvc-1", "jpa-basic", "jpa-app-1", "jpa-app-2"],
+   "task": "센터별 출고 대기 목록 API 를 만들고, 쿼리 로그로 N+1 을 찾아 1~2번으로 줄인 전후 로그를 남긴다."
+  },
+  {
+   "title": "서비스를 나누고 이벤트로 잇기",
+   "time": "2주",
+   "goal": "주문 서비스와 출고 서비스를 Kafka 로 잇고, 중복·순서·유실을 각각 어떻게 막는지 코드로 보일 수 있다.",
+   "resources": ["msa-patterns", "fowler-msa", "outbox", "kafka-book", "spring-kafka"],
+   "task": "같은 '출고 완료' 이벤트를 일부러 두 번 보내고, 아웃박스 + 이벤트 id 유니크 키로 정산이 한 번만 되는 것을 테스트로 확인한다."
+  },
+  {
+   "title": "몰려도 안 멈추게",
+   "time": "1~2주",
+   "goal": "Redis 캐시와 타임아웃을 붙이고, 캐시가 죽거나 다른 서비스가 느려질 때 무슨 일이 생기는지 숫자로 설명할 수 있다.",
+   "resources": ["redis-docs", "coupang-cache", "cell-arch", "sre-book", "ddia"],
+   "task": "재고 조회 API 에 캐시를 붙이고 부하 도구로 적중률 80%·95%·99% 일 때 DB 요청 수를 재어 표로 만든다. 캐시를 끈 순간의 응답 시간도 같이 적는다."
+  },
+  {
+   "title": "규칙 + 최소 비용 배정 풀어 보기",
+   "time": "1주",
+   "goal": "제약과 목표를 나눠 적고, 작은 배정·경로 문제를 직접 풀고 결과를 규칙만 쓴 방식과 비교할 수 있다.",
+   "resources": ["ortools", "coupang-fulfillment", "adr"],
+   "task": "가상 센터 3곳·주문 20건을 '하나씩 가장 싼 곳' 방식과 OR-Tools 로 푼 방식으로 각각 배정하고, 총비용 차이와 고른 이유를 결정 기록(ADR) 한 장으로 남긴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 쿠팡(주) 집계(초봉 약 3,531만 · 평균 약 5,175만)와 쿠팡 Inc. 전 직원 보수 중간값(2025년 3만 3,831달러)은 물류 현장 인력이 섞인 회사 전체 값이라 **경력 7년 이상 개발자 연봉과는 거리가 멀다**",
+  "rows": [
+   {
+    "label": "쿠팡(주) 신입 초봉",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값. 직군 구분이 없다. 사이트가 자동 접속을 막아 검색 결과에 실린 값으로 확인했다 [23]"
+   },
+   {
+    "label": "쿠팡(주) 직원 평균",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 경력 개발자 연봉으로 읽으면 안 된다 [23]"
+   },
+   {
+    "label": "쿠팡 Inc. 전 직원 보수 중간값",
+    "value": "3만 3,831달러 / 년",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "CEO 를 뺀 전 세계 직원의 가운데 값을 2025년 평균 환율로 달러로 바꾼 것 [24]"
+   }
+  ],
+  "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **국내 공시 숫자 없음**. 위 값은 모두 경력·직군이 섞인 회사 전체 값이고 평균은 초봉이 아니다. 같은 조직 다른 사본의 복지 태그에 '성과급'이 있지만 금액은 없다 [4]. 전형에 처우 단계가 따로 적혀 있지 않아 금액은 최종 합격 무렵 협의에서 확인한다 [1] {추론}."
+ },
+ "benefits": {
+  "items": [
+   {"name": "유연근무", "detail": "근무시간 조정, 재택근무 가능 (Why Coupang)"},
+   {"name": "보험", "detail": "임직원과 직계가족을 보장하는 단체 상해보험"},
+   {"name": "휴가", "detail": "가족 행사·모임을 위한 유급휴가"},
+   {"name": "교육", "detail": "외국어와 업무 스킬 교육 프로그램"},
+   {"name": "글로벌 협업", "detail": "여러 나라가 함께하는 프로젝트와 협업 기회"},
+   {"name": "열린 문화", "detail": "칸막이와 위계 대신 열린 업무 공간"},
+   {"name": "사내 행사", "detail": "게임·음식이 있는 사내 이벤트"},
+   {"name": "휴게·식당", "detail": "휴게 공간과 사내 카페테리아 '쿠테리아'"},
+   {"name": "같은 조직 공고의 복지 태그", "detail": "유연근무제 · 식대 · 저녁 제공 · 성과급 · 임신/출산 지원 · 카페테리아 · 경조금 · 도서 구입비 (금액·조건 없음)"}
+  ],
+  "note": "앞 여덟 줄은 쿠팡 채용 사이트 'Why Coupang'(한국어)의 '문화와 복지제도'로 쿠팡 전체에 해당하고 금액·조건이 없다 [21]. 마지막 줄은 같은 GOT 백엔드 공고의 리멤버 사본에 달린 복지 태그다 [4]. 이 공고 자체에는 복리후생 칸이 없다 [1]."
+ },
+ "location": {
+  "name": "쿠팡 서울 사무소 (이스트폴 타워)",
+  "address": "서울특별시 광진구 아차산로 412",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 [22]",
+  "note": "공고 근무지는 'Seoul, South Korea' 뿐이다 [1]. 쿠팡 채용 사이트는 서울 사무소로 이스트폴 타워(아차산로 412)와 로켓랩(강남구 역삼동)을 든다 [22]. 같은 문장의 테크리드 공고는 근무지를 서울·경기로 적었다 [3]. 이 자리가 어느 건물인지는 공고에 없어 대표 사무소를 적었다 {추론}."
+ }
+}

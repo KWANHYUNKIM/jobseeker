@@ -18,6 +18,7 @@
   "ats-greenhouse:coupang:8382219": "coupang-fashion-program-manager",
   "ats-greenhouse:coupang:8413572": "coupang-fc-logistics-network-engineer",
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
+  "ats-greenhouse:coupang:6810667": "coupang-got-backend-developer-seoul",
   "ats-greenhouse:coupang:6137112": "coupang-got-backend-manager-seoul",
   "ats-greenhouse:coupang:8393917": "coupang-iam-access-management-senior-mtv",
   "ats-greenhouse:coupang:8059287": "coupang-india-senior-staff-backend-serving",
@@ -444,6 +445,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 23
+  },
+  {
+   "id": "coupang-got-backend-developer-seoul",
+   "company": "쿠팡",
+   "role": "Global Operations Technology 개발자 (집중 채용)",
+   "jobs": [
+    "ats-greenhouse:coupang:6810667"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "coupang-got-backend-manager-seoul",
