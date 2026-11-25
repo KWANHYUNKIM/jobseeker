@@ -289,6 +289,8 @@
   "wanted-387512": "hyundai-vehicle-cybersecurity-tech",
   "ats-greeting:kakaomobility:225964": "kakaomobility-ad-ai-perception",
   "ats-kakao:group:S-4725": "kakaomobility-ad-ai-perception",
+  "ats-greeting:kakaomobility:205613": "kakaomobility-ad-ai-planning-e2e",
+  "ats-kakao:group:S-4680": "kakaomobility-ad-ai-planning-e2e",
   "ats-greeting:kakaomobility:227958": "kakaomobility-av-hw-technician",
   "ats-greeting:kakaomobility:230974": "kakaomobility-av-system-engineer",
   "ats-kakao:group:S-4737": "kakaomobility-av-system-engineer",
@@ -2966,6 +2968,17 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 19
+  },
+  {
+   "id": "kakaomobility-ad-ai-planning-e2e",
+   "company": "카카오모빌리티",
+   "role": "자율주행 AI 엔지니어 (E2E·AI 플래닝)",
+   "jobs": [
+    "ats-greeting:kakaomobility:205613",
+    "ats-kakao:group:S-4680"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 13
   },
   {
    "id": "kakaomobility-av-hw-technician",
