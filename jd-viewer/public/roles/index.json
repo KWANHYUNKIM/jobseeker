@@ -70,10 +70,12 @@
   "dev-579980": "biztechi-database-operations",
   "ats-lg:group:1002386": "biztechi-m365-operations-engineer",
   "ats-lg:group:1001568": "biztechi-m365-si-sm-senior",
+  "ats-lg:group:1002187": "biztechi-mes-pl",
   "ats-lg:group:1001888": "biztechi-network-operations",
   "ats-lg:group:1001514": "biztechi-sap-ewm-tm-consultant",
   "ats-lg:group:1001414": "biztechi-sap-fico-sd-consultant",
   "ats-lg:group:1001499": "biztechi-sap-sm-operations",
+  "ats-lg:group:1001420": "biztechi-scp-inhouse-pm-pl",
   "ats-lg:group:1001678": "biztechi-server-infra-engineer",
   "ats-lg:group:1000948": "biztechi-talent-pool",
   "ats-lg:group:1002219": "biztechi-vdi-ta-infra",
@@ -1121,6 +1123,16 @@
    "lines": 14
   },
   {
+   "id": "biztechi-mes-pl",
+   "company": "비즈테크아이",
+   "role": "MES 구축/운영 프로젝트 PL",
+   "jobs": [
+    "ats-lg:group:1002187"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 12
+  },
+  {
    "id": "biztechi-network-operations",
    "company": "비즈테크아이",
    "role": "네트워크 운영 담당자",
@@ -1159,6 +1171,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 15
+  },
+  {
+   "id": "biztechi-scp-inhouse-pm-pl",
+   "company": "비즈테크아이",
+   "role": "SCP In-house 프로젝트 개발 PM/PL",
+   "jobs": [
+    "ats-lg:group:1001420"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 10
   },
   {
    "id": "biztechi-server-infra-engineer",
