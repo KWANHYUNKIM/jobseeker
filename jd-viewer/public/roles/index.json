@@ -214,12 +214,16 @@
   "jobkorea-50308626": "skax-mfg-data-engineer-k8s",
   "ats-skcareers:sk:R262571": "skax-mfg-pt-ai-mes-contract",
   "dev-583964": "skax-mfg-pt-ai-mes-contract",
+  "ats-skcareers:sk:R262586": "skax-mfg-system-ops-mes",
   "jobkorea-50340705": "skax-nova-bss-oss-app-dev",
   "wanted-396834": "skax-nova-bss-oss-app-dev",
   "jobkorea-50122605": "skax-plant-energy-chem-ai-dt",
   "wanted-391836": "skax-plant-energy-chem-aidt",
   "ats-skcareers:sk:R262159": "skax-plant-energy-chem-aidt",
   "boards-incruit:it:2610070000063": "skax-plant-energy-chem-ai-dt",
+  "ats-skcareers:sk:R262570": "skax-pt-mes-ai-agent",
+  "wanted-400234": "skax-pt-mes-ai-agent",
+  "dev-583963": "skax-pt-mes-ai-agent",
   "ats-skcareers:sk:R262150": "skax-salesforce-crm",
   "ats-skcareers:sk:R262392": "skax-sap-bw-bdc-data-analytics",
   "ats-skcareers:sk:R262105": "skax-sap-fi-module",
@@ -2264,6 +2268,16 @@
    "lines": 39
   },
   {
+   "id": "skax-mfg-system-ops-mes",
+   "company": "SK주식회사(AX)",
+   "role": "제조 시스템 운영 담당자",
+   "jobs": [
+    "ats-skcareers:sk:R262586"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 36
+  },
+  {
    "id": "skax-nova-bss-oss-app-dev",
    "company": "SK주식회사(AX)",
    "role": "AI 기반 차세대 통신 BSS/OSS(NOVA) 응용개발 전문가",
@@ -2297,6 +2311,18 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 24
+  },
+  {
+   "id": "skax-pt-mes-ai-agent",
+   "company": "SK주식회사(AX)",
+   "role": "제조 P&T AI, MES 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262570",
+    "wanted-400234",
+    "dev-583963"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 31
   },
   {
    "id": "skax-salesforce-crm",

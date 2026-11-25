@@ -1,0 +1,1273 @@
+{
+ "id": "skax-mfg-system-ops-mes",
+ "company": "SK주식회사(AX)",
+ "role": "제조 시스템 운영 담당자",
+ "team": "제조AX서비스2팀",
+ "jobs": [
+  "ats-skcareers:sk:R262586"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "SK하이닉스 등 반도체 공장의 **생산관리(MES)·장비 연결(EAP)·공정 보정(APC)·품질(수율)·기준정보(BOM)** 시스템 중 한 영역을 맡아 장애를 끄고, 직접 코드를 고치고, 현장 책임자(현장대리인)를 겸합니다.[1]",
+  "env": "고객사 공장 시스템은 **C#·Java·Oracle**로 되어 있고,[1] 팀은 장애 대응을 AI 에이전트로 바꾸는 중입니다.[2][9] 근무지는 이천(공장)·분당(본사).[1]",
+  "oneline": "반도체 공장 IT의 운영 개발자 — 새로 짓기보다 '멈추지 않게, 틀리지 않게' 굴리고 고치는 경력 3년 이상 자리."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "제조AX서비스2팀을 소개합니다 😊",
+   "short": "공고를 낸 곳은 SK AX 안의 '제조AX서비스2팀' — 반도체 공장 IT 시스템을 굴리는 운영 팀이다.",
+   "why": "같은 팀이 같은 달에 운영 모니터링 AI 전환 PM/PL,[2] 미국 인디애나 FAB(반도체 공장) 구축의 시스템 운영 PM/PL,[3] 운영 품질관리(ITSM/ITIL) 전문가[4]도 뽑고 있습니다. 이 공고는 그중 **영역별로 시스템을 맡아 돌리는 실무자** 자리입니다.[1] SK AX는 별도 법인이 아니라 SK주식회사 안의 사업 조직(옛 SK C&C)이라 회사 이름이 'SK주식회사(AX)'로 적힙니다.[16]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    16
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SK하이닉스 등 주요 계열사 및 대외 제조 고객의 반도체 제조 현장에서 MES, 장비제어, 생산자동화, 시스템 운영(ITO) 등 제조 IT 시스템을 안정적으로 운영하고 고도화하는 조직입니다.",
+   "short": "공장이 멈추지 않게 생산관리(MES)·장비 연결·자동화 시스템을 대신 맡아 운영하는 팀이라서.",
+   "why": "MES(Manufacturing Execution System, 생산 실행 시스템)는 웨이퍼 묶음(로트)이 어느 공정·어느 장비에 있고 다음에 어디로 가야 하는지 정하고 기록하는 시스템입니다.[25] ITO(IT Outsourcing)는 고객사의 IT 시스템 운영을 계약으로 맡는 방식이고, SK AX는 이 방식을 운영 서비스의 한 형태로 소개합니다.[9] 고객사 SK하이닉스는 팹에서 장비·물류 데이터를 실시간 분석해 장애 징후를 미리 잡고 공정 지연을 막는 것을 AX 과제로 꼽습니다.[11]",
+   "actually": {
+    "items": [
+     "**MES** — 로트 투입·공정 진행(Track-In/Out)·보류(Hold)·이력. 공장의 '지금 상태'를 쥔다.[25]",
+     "**장비제어** — 장비와 MES 사이 통신(SECS/GEM 표준)을 맡는 프로그램. 레시피를 내려보내고 이벤트를 받는다.[23][24]",
+     "**생산자동화** — 웨이퍼 통(FOUP)을 실어 나르는 반송·배차, 사람 손 없이 장비에 싣고 내리는 흐름.[10]",
+     "**시스템 운영(ITO)** — 위 시스템들의 장애 대응·변경·배포·모니터링을 계약 범위 안에서 책임진다.[9]"
+    ]
+   },
+   "how_far": "운영 팀이라 처음부터 새로 짓기보다 **이미 돌고 있는 시스템을 이해하고, 장애를 빨리 끄고, 고칠 곳을 개발로 고치는** 일이 중심입니다.[1] {추론}",
+   "refs": [
+    9,
+    11,
+    25
+   ],
+   "study": [
+    "isa95",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시스템 운영의 AI 전환(AX)을 선도하며, Agentic AI 기반 장애 대응·모니터링·품질관리 체계를 구축하고 글로벌 FAB으로 확산하고 있습니다.",
+   "short": "장애를 사람이 먼저 보고 고치던 운영을, AI 에이전트가 찾고·원인을 좁히고·조치를 돕게 바꾸는 중이라서.",
+   "why": "같은 팀의 동시 공고가 구체적입니다 — 운영 AI 에이전트 SOPIA의 장애 사례 검색·서비스데스크 도우미를 고도화하고, 1선 분석 도구 ARIA를 붙여 **장애 초도 대응 시간을 줄이고 1선 대응을 AI로 바꾸는** 과제입니다.[2] SK AX가 2026년 4월 공개한 운영 서비스도 탐지 → 원인 분석 → 영향도 판단 → 조치를 에이전트가 나눠 맡는 구조입니다.[9]",
+   "actually": {
+    "items": [
+     "**장애 사례 검색** — 비슷한 과거 장애 보고서·조치 기록을 찾아 1선 담당자에게 보여 준다.[2]",
+     "**원인 좁히기** — 로그·알람·변경 이력을 묶어 '어디서부터 봐야 하나'를 제안한다.[2][9]",
+     "**품질관리** — 운영 품질 지표(KPI)와 새 운영 기준을 세우는 일은 별도 공고가 맡는다.[4]",
+     "**확산** — 이천에서 만든 체계를 미국 인디애나 등 해외 팹으로 옮긴다.[3]"
+    ]
+   },
+   "how_far": "이 자리(운영 실무)가 AI를 만드는 사람은 아닙니다 — 그건 PM/PL 공고의 몫입니다.[2] 이 자리에서는 **장애 기록을 AI가 읽을 수 있게 남기고, AI가 낸 제안이 맞는지 현장에서 확인해 주는** 사람이 됩니다. {추론}",
+   "refs": [
+    2,
+    9,
+    13
+   ],
+   "study": [
+    "anthropic-agents",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "최고 수준의 운영 노하우와 기술력을 바탕으로 고객의 제조 경쟁력과 생산 안정성 향상을 이끌어가고 있습니다.",
+   "short": "팀의 성과는 '공장이 덜 멈추고 덜 틀리는 것'으로 매겨져서 — 생산 안정성이 첫 번째 목표다.",
+   "why": "옛 SK C&C는 반도체 고객사의 장비 통신 단말(HSMS)이 무중단이어야 한다는 이유로, 링크가 끊기면 보조 링크로 자동 전환하는 이중화 장비를 직접 만들어 넣었습니다.[8] 장비 쪽 연결 하나가 끊겨도 생산이 멈추기 때문입니다. {추론}",
+   "refs": [
+    8
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "주 근무지는 경기도 이천/분당입니다.",
+   "short": "이천(SK하이닉스 공장)과 분당(SK AX 본사) 두 곳 — 운영 담당은 공장 쪽 근무가 많다고 보는 게 맞다.",
+   "why": "같은 팀의 구축·품질 공고는 근무지를 '경기도 이천'으로 따로 적었습니다.[3][4] SK하이닉스 본사·이천캠퍼스 주소는 경기도 이천시 부발읍 경충대로 2091입니다.[22] {추론}: 현장대리인 업무가 붙은 자리라 고객 현장에 상주할 가능성이 큽니다.",
+   "refs": [
+    3,
+    4,
+    22
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "수평적인 조직문화를 지향하며, 다양한 아이디어를 자유롭게 제안하고 실현할 수 있는 문화를 추구합니다.",
+   "short": "운영 개선 아이디어(자동화·AI 적용)를 스스로 내라는 뜻 — 공통 업무의 '신규 과제 발굴'과 이어진다.",
+   "why": "이 공고의 공통 업무에 '담당 영역의 신규 과제를 발굴'이 들어 있습니다.[1] 문화 소개 문장은 그 일을 할 여지가 있다는 회사의 설명입니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구성원의 역량 성장이 팀 KPI이며, AI 등 신기술 교육과 자기계발을 지속적으로 지원합니다.",
+   "short": "운영 담당도 AI 같은 새 기술을 배우는 게 팀 목표에 들어 있어서 — 교육 예산·사내 대학이 있다.",
+   "why": "SK AX 채용 사이트의 복리후생 페이지는 사내 교육 체계(mySUNI·College)와 해마다 쓰는 Learning Account 예산을 적고 있습니다.[20]",
+   "refs": [
+    20
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "프로젝트에 따라 글로벌 제조 사업장과 협업하며 해외 프로젝트 경험을 쌓을 수 있습니다.",
+   "short": "이천에서 굴리는 시스템을 해외 팹으로 옮기는 일이 있어서 — 영어 소통과 출장이 따라온다.",
+   "why": "같은 팀이 미국 인디애나 FAB DT 구축의 시스템 운영 영역(미들웨어 등 8개 과제) PM/PL을 뽑고 있고, 끝나면 '글로벌 FAB 확산'을 맡긴다고 적었습니다.[3] 후공정 MES 팀도 시스템을 여러 해외 사업장으로 확산 중이라고 했습니다.[5]",
+   "refs": [
+    3,
+    5
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "담당 업무 - 제조 IT 시스템(ITO) 영역별 운영 및 현장대리인 업무를 수행합니다.",
+   "short": "아래 일곱 영역 중 하나를 맡아 운영하고, 그 영역 계약의 '현장 책임자(현장대리인)'를 겸한다.",
+   "why": "ITO는 계약으로 운영을 맡는 일이라 고객 현장에서 수행사를 대표하는 사람이 필요합니다. 공공 계약 일반조건은 현장대리인을 **현장에 상주하며 계약문서와 발주자 지시에 따라 현장 관리를 처리하는 사람**으로 둡니다(공사 계약 기준).[26] SW 운영 용역에서 그 역할의 범위는 사업마다 제안요청서가 정하고, 한 공공기관 운영 용역 제안요청서는 운영 인력 체계와 담당자별 역할·책임을 따로 적게 했습니다.[34] 공고의 일곱 영역 대부분에 '현장대리인 역할'이 붙어 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**운영** — 장애 접수·조치, 정기 점검, 배포, 사용자 문의 응대.",
+     "**현장대리인** — 수행사를 대표해 현장에 상주하는 자리.[26] 고객 요청을 받아 범위를 정리하고 우리 쪽 인력에 나눠 주며 보고한다.[34] {추론}",
+     "**개발** — 기능 개선 요청을 직접 코드로 고친다(C#/Java/Oracle).[1]"
+    ]
+   },
+   "how_far": "영역 하나를 맡는다고 읽는 게 자연스럽습니다(어느 영역인지는 지원자 경력에 따라 정할 것). {추론} 현장대리인은 기술보다 **고객 요청을 정리하고 약속을 지키는** 책임이 큽니다.[26] {추론}",
+   "refs": [
+    1,
+    26,
+    34
+   ],
+   "study": [
+    "sw-contract",
+    "itil4"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "WorkPlace·EDP 파트를 리딩하고 시스템을 운영하며, Sub 파트 그룹의 현장대리인 역할을 수행합니다.",
+   "short": "FI(공장 통합) 쪽 화면·데이터 시스템 파트를 이끌고, 아래 파트들의 현장 책임을 진다.",
+   "why": "WorkPlace·EDP가 정확히 무엇인지는 공개 자료가 없습니다. 이름으로 보면 WorkPlace는 현장 작업자·엔지니어가 쓰는 업무 화면, EDP는 엔지니어링 데이터(장비·계측 값)를 다루는 시스템으로 읽힙니다. {추론} 'FI'는 반도체 업계에서 Factory Integration(장비·MES·물류를 하나로 엮는 일)을 흔히 가리킵니다. {추론}",
+   "how_far": "'리딩'이 붙어 있어 이 영역은 **파트장급**(여러 명을 이끄는) 자리입니다.[1] 운영 파트 리딩 경험 우대 줄과 이어집니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "itil4"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "✅ 장비 자동화 운영",
+   "short": "장비와 MES 사이를 잇고, 장비 데이터를 모으고, 공정 값을 자동으로 고치는 영역이다.",
+   "why": "팹 장비는 수백 대이고 사람 손 없이 레시피를 받고 결과를 보고해야 해서, 그 연결을 맡는 시스템 묶음이 따로 있습니다.[23][24] 같은 사업부 4팀이 이 영역의 구축·개발을 맡고 있습니다.[6]",
+   "refs": [
+    6,
+    23,
+    24
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "smartDCP·smartAPC·smartEAP 시스템을 운영하고, 기능 개선을 위한 개발을 수행합니다.",
+   "short": "장비 데이터 수집(DCP)·공정 자동 보정(APC)·장비 연결 프로그램(EAP)을 운영하고 직접 고친다.",
+   "why": "smart~ 이름은 이 고객사 시스템의 고유 이름이라 공개 설명이 없습니다. 접미어는 업계 일반 용어와 같습니다 — **EAP**(Equipment Automation Program)는 장비와 MES 사이 SECS/GEM 통신을 맡고,[23][24] **APC**(Advanced Process Control)는 계측 결과로 다음 런의 레시피를 고치며,[27] DCP는 장비 데이터 수집(Data Collection Plan)으로 읽힙니다. {추론} 같은 사업부 4팀은 '장비 연계·공정 제어·장비 데이터 수집 및 분석' 시스템을 설계·개발한다고 적었습니다.[6]",
+   "actually": {
+    "items": [
+     "**EAP** — 장비가 보낸 이벤트(예: 작업 시작·끝·알람)를 받아 MES에 Track-In/Out·장비 보류를 호출. 반대로 MES가 고른 레시피를 장비에 내린다.[23][24]",
+     "**SECS/GEM** — 장비 통신 표준. 메시지 내용은 SECS-II(E5), 동작 모델은 GEM(E30), TCP/IP 전송은 HSMS(E37).[23][24]",
+     "**APC(Run-to-Run)** — 측정값이 목표에서 벗어난 만큼 다음 로트의 시간·온도를 조금씩 고친다.[27]",
+     "**DCP** — 장비 센서·상태 값을 무엇을 얼마나 자주 모을지 정하고 받는다. 받은 값은 이상 감지(FDC)·분석에 쓰인다. {추론}",
+     "**장애 예** — 새 장비가 붙었는데 이벤트 번호(CEID) 매핑이 빠져 Track-Out이 안 올라온다, 통신 링크가 끊긴다.[8] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "EAP가 하는 일 — 장비 이벤트를 MES 호출로 바꾸기(가상, 직접 돌린 출력)",
+     "body": "실제 EAP는 SECS-II 메시지(S6F11 이벤트 보고)를 해석하지만, 뼈대는 '이벤트 번호 → MES 동작' 매핑입니다.[23] 매핑에 없는 번호는 무시되는데, 운영 장애의 상당수가 이 매핑 누락에서 나옵니다. {추론}",
+     "lang": "python",
+     "code": "CEID = {101: \"TRACK_IN\", 102: \"TRACK_OUT\", 900: \"ALARM\"}\n\ndef handle(eqp, ceid, v):\n    ev = CEID.get(ceid)\n    if ev is None:\n        return f\"IGNORE ceid={ceid}\"\n    if ev == \"TRACK_IN\":\n        return f\"MES.trackIn(lot={v['LOTID']}, eqp={eqp})\"\n    if ev == \"TRACK_OUT\":\n        return f\"MES.trackOut(lot={v['LOTID']}, eqp={eqp})\"\n    return f\"MES.holdEqp(eqp={eqp}, alarm={v['ALID']})\"\n\nprint(handle(\"ETCH07\", 101, {\"LOTID\": \"L001\"}))  # MES.trackIn(lot=L001, eqp=ETCH07)\nprint(handle(\"ETCH07\", 900, {\"ALID\": \"2301\"}))   # MES.holdEqp(eqp=ETCH07, alarm=2301)\nprint(handle(\"ETCH07\", 555, {}))                  # IGNORE ceid=555"
+    },
+    {
+     "title": "APC Run-to-Run — 장비가 조금씩 틀어질 때(가상, 직접 돌린 출력)",
+     "body": "식각 깊이 = 치우침 + 2 × 시간, 목표 100. 지수가중평균(EWMA, λ=0.3)으로 치우침을 추정해 다음 런 시간을 고칩니다.[27] 장비 치우침이 5 → 8로 커져도 결과가 105 → 103.4로 목표 쪽에 붙습니다.",
+     "lang": "python",
+     "code": "T, b, lam = 100.0, 2.0, 0.3\na_hat = 0.0\nfor run, a in enumerate([5, 5, 6, 7, 8], 1):\n    u = (T - a_hat) / b\n    y = a + b * u\n    a_hat = lam * (y - b * u) + (1 - lam) * a_hat\n    print(f\"run{run}: time={u:.2f}s depth={y:.2f}\")\n# run1: time=50.00s depth=105.00\n# run2: time=49.25s depth=103.50\n# run5: time=47.70s depth=103.39"
+    }
+   ],
+   "how_far": "표준 문서를 다 외울 필요는 없습니다. **SECS 메시지 로그를 읽고 '장비가 뭘 보냈고 MES가 뭘 했나'를 따라갈 수 있는 것**, 그리고 매핑·설정을 고쳐 다시 배포하는 것이 최소선입니다. {추론}",
+   "refs": [
+    6,
+    23,
+    24,
+    27
+   ],
+   "study": [
+    "secsgem-intro",
+    "r2r-ref"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "✅ 품질 시스템 운영",
+   "short": "검사·계측 결과로 수율과 불량을 관리하는 영역이다.",
+   "why": "같은 사업부 4팀이 '제조 품질 및 수율 관리 시스템'을 설계·개발한다고 적었고,[6] 이 자리는 그 운영 쪽입니다.[1]",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "smartYES 시스템을 운영하고, 현장대리인 역할을 수행합니다.",
+   "short": "품질·수율 시스템을 운영한다 — 검사·계측 결과를 모아 불량이 어디서 왜 났는지 보게 하는 시스템.",
+   "why": "smartYES의 공개 설명은 없습니다. 공고가 '품질 시스템'으로 분류했고,[1] 반도체에서 YES는 수율(Yield) 관리 시스템을 가리키는 이름으로 흔히 쓰입니다. {추론} 같은 사업부 4팀이 '제조 품질 및 수율 관리 시스템'을 설계·개발하고, 장비 로그·품질 데이터를 엮은 AI 에이전트를 만든다고 적었습니다.[6]",
+   "actually": {
+    "items": [
+     "**수율 계산** — 웨이퍼 한 장의 칩 중 합격 칩 비율, 로트·제품·기간별로 모은다. {추론}",
+     "**관리도(SPC)** — 측정값이 관리 한계 밖이거나, 한계 안이어도 한쪽으로 줄지어 가면(예: 6점 넘게 연속 상승) 경보.[28][36]",
+     "**불량 추적** — 불량 웨이퍼가 거친 장비·챔버·레시피를 거꾸로 찾아 공통점을 본다. {추론}",
+     "**운영 장애 예** — 계측 데이터가 안 들어와 차트가 비었다, 경보가 과하게 울린다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한계 안인데 경보 — 추세 규칙(가상, 직접 돌린 출력)",
+     "body": "안정 구간 10개로 관리 한계(평균 ± 3σ)를 잡으면 49.46~50.60입니다. 새 값 7개가 모두 한계 안이어도 **6점 넘게 연속 상승**이면 공정이 움직이고 있다는 신호로 봅니다(넬슨 규칙 3).[36]",
+     "lang": "python",
+     "code": "import statistics as st\nbase = [50.1, 49.8, 50.3, 50.0, 49.9, 50.2, 50.1, 49.7, 50.0, 50.2]\nm, s = st.mean(base), st.stdev(base)\nprint(f\"UCL={m+3*s:.3f} LCL={m-3*s:.3f}\")\nnew = [50.1, 50.2, 50.3, 50.4, 50.5, 50.55, 50.58]\nprint(all(m-3*s <= x <= m+3*s for x in new),\n      all(q > p for p, q in zip(new, new[1:])))\n# UCL=50.597 LCL=49.463\n# True True"
+    }
+   ],
+   "how_far": "통계 기준(어떤 규칙을 켤지)은 고객 품질 엔지니어가 정합니다. 운영 담당은 **데이터가 빠짐없이 제때 들어오고, 규칙이 정한 대로 울리게** 하는 쪽입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    28,
+    36
+   ],
+   "study": [
+    "nist-spc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "✅ 후공정(P&T) MES 운영",
+   "short": "칩을 검사·포장하는 후공정(P&T, Package & Test) 공장의 생산관리 영역이다.",
+   "why": "후공정 MES 개발은 같은 사업부 3팀이 맡고,[5] 고객사는 후공정을 테스트와 패키지로 나눠 설명합니다.[29][35]",
+   "refs": [
+    5,
+    29,
+    35
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "양산 및 R&D용 smartMES(WT/WLP/PKG/PKT)를 운영하고, 현장대리인 역할을 수행합니다.",
+   "short": "반도체 후공정(테스트·패키지)의 MES를 운영한다 — 칩을 검사하고 포장하는 공장의 생산관리.",
+   "why": "후공정 MES는 같은 사업부 3팀이 개발·구축하고 있고, 그 팀은 대상 공정을 Wafer Test·Package·Module·WLP로 적었습니다.[5] 이 자리는 그 시스템의 **운영** 쪽입니다.[1]",
+   "actually": {
+    "items": [
+     "**WT(Wafer Test)** — 포장 전에 탐침(프로브 카드)을 칩에 대어 전기 특성과 불량을 검사한다.[29]",
+     "**WLP(Wafer Level Package)** — 칩을 자르기 전에 웨이퍼 단위로 포장 공정의 일부나 전부를 한다.[33]",
+     "**PKG(Package)** — 칩을 감싸 보호하고, 칩과 시스템을 전기적으로 잇고, 열을 내보내는 껍데기를 씌운다.[35]",
+     "**PKT(Package Test)** — 포장한 칩을 소켓·보드에 꽂아 데이터시트대로 동작하는지 다시 검사한다.[29]",
+     "**후공정 MES의 차이** — 웨이퍼 한 장이 수백 개 칩으로 나뉘고 다시 묶이므로, 로트가 쪼개지고 합쳐지는 이력(분할·병합)과 칩 단위 추적이 많다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "로트 이력에서 '지금 장비에 들어가 있는 로트' 찾기(SQLite로 돌린 결과 — 오라클도 같은 문법)",
+     "body": "운영 문의 1순위는 '이 로트 지금 어디 있어요?'입니다. {추론} 로트별 마지막 이벤트를 윈도우 함수로 고르면 됩니다.",
+     "lang": "sql",
+     "code": "SELECT lot, step, eqp, ts FROM (\n  SELECT h.*, ROW_NUMBER() OVER (PARTITION BY lot ORDER BY ts DESC) rn\n  FROM lot_hist h)\nWHERE rn = 1 AND ev = 'TRACK_IN';\n-- ('L001', 'PKG', 'DA03', '2026-11-25 10:05')\n-- L002 는 마지막이 TRACK_OUT 이라 빠진다"
+    }
+   ],
+   "how_far": "양산과 R&D 두 벌이 있어 같은 기능도 규칙이 다를 수 있습니다.[1] 운영 담당은 공정 순서(WT → PKG → PKT)와 로트 상태 변화를 **표로 설명할 수 있어야** 문의에 답합니다. {추론}",
+   "refs": [
+    1,
+    5,
+    29,
+    33,
+    35
+   ],
+   "study": [
+    "hynix-backend",
+    "isa95"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "✅ FAB MOS 자동화 운영",
+   "short": "앞공정 팹(웨이퍼에 회로를 만드는 공장)의 자동화 영역이다 — MOS 의 뜻은 공개되지 않았다.",
+   "why": "공고는 이 영역의 시스템으로 ESP 하나를 적었습니다.[1] MOS 가 무엇의 줄임말인지는 공개 자료에서 찾지 못했습니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ESP 시스템을 운영하고, 현장대리인 역할을 수행합니다.",
+   "short": "FAB 앞공정의 자동화 시스템(ESP)을 운영한다 — 이름의 뜻은 공개되지 않았다.",
+   "why": "ESP와 MOS의 뜻은 공개 자료에서 찾지 못했습니다. 공고는 이 영역을 'FAB MOS 자동화 운영'으로 묶었습니다.[1] 앞공정 팹 자동화라면 보통 장비 배차(어느 로트를 어느 장비에 먼저 넣나)·반송(FOUP 운반) 연계가 들어갑니다.[10] {추론}",
+   "how_far": "입사 뒤 인수인계로 배울 고객 고유 시스템입니다. 면접에서는 **비슷한 자동화 시스템을 운영해 본 경험**을 묻는다고 보는 게 맞습니다. {추론}",
+   "refs": [
+    1,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "✅ R&D 생산자동화 운영",
+   "short": "연구개발용 생산 라인의 자동화 — 마스크 제작·추적 시스템을 운영한다.",
+   "why": "공고는 R&D 생산자동화 영역의 시스템으로 Mask MES·MTS 를 적었습니다.[1] 마스크는 노광 공정의 회로 원판입니다.[30]",
+   "refs": [
+    1,
+    30
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Mask MES·MTS 시스템을 운영하고, 현장대리인 역할을 수행합니다.",
+   "short": "회로 원판(포토마스크)을 만드는 공장의 생산관리·추적 시스템을 운영한다(R&D 쪽).",
+   "why": "포토마스크는 노광(빛으로 회로를 찍는) 공정에서 웨이퍼에 회로를 옮기는 원판입니다.[30] 한 장이 수많은 웨이퍼에 쓰이므로 마스크 한 장의 이력(제작·검사·수리·사용 횟수)이 그만큼의 웨이퍼 품질에 닿습니다. {추론} MTS의 공개 설명은 없고, 마스크 추적(Mask Tracking) 시스템으로 읽힙니다. {추론}",
+   "actually": {
+    "items": [
+     "**Mask MES** — 마스크 제작 공정의 진행·이력. 웨이퍼 MES와 같은 원리지만 단위가 '마스크 한 장'이다. {추론}",
+     "**MTS** — 마스크가 지금 어디(보관함·노광 장비·세정)에 있고 몇 번 썼는지 추적. {추론}"
+    ]
+   },
+   "how_far": "R&D용이라 양산보다 공정 변경이 잦습니다.[1] {추론}: 기능 요청이 자주 바뀌는 환경에 익숙하면 유리합니다.",
+   "refs": [
+    1,
+    30
+   ],
+   "study": [
+    "hynix-mask"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Standard BOM을 운영합니다.",
+   "short": "제품 하나를 만드는 데 들어가는 칩·기판·자재 목록(BOM)의 표준본을 관리하는 시스템을 운영한다.",
+   "why": "BOM(Bill of Materials, 자재 명세)은 기준정보(MDM)의 한 축입니다. SK하이닉스는 2017년 전사 TF로 제품·공정·장비·자재·설비 기준정보 표준 체계를 다시 세웠고 '1물1코드'(한 물건에 코드 하나)를 원칙으로 삼았습니다.[14] 같은 사업부 5팀이 MDM·BOM 시스템 개발을 따로 뽑고 있어,[7] 이 자리는 **운영** 쪽입니다.[1]",
+   "actually": {
+    "items": [
+     "**BOM 전개** — 완제품 → 칩 → 웨이퍼처럼 층층이 내려가며 필요 수량을 곱한다.",
+     "**변경 관리** — 자재가 바뀌면 언제부터 새 BOM을 쓰는지(유효 일자)와 승인 기록을 남긴다.[15] {추론}",
+     "**문의 예** — '이 제품에 왜 이 자재가 잡혀요?', 코드 중복·누락.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "BOM 전개 — 재귀 쿼리(가상 데이터, SQLite로 돌린 결과)",
+     "body": "16GB 패키지 = 8Gb 칩 2개 + 기판 1 + 와이어 8, 칩 1개 = 웨이퍼 몫 1. 오라클은 같은 재귀 WITH나 CONNECT BY로 씁니다.[31]",
+     "lang": "sql",
+     "code": "WITH RECURSIVE x(item, lvl, qty) AS (\n  SELECT 'PKG-16GB', 0, 1\n  UNION ALL\n  SELECT b.child, x.lvl+1, x.qty*b.qty\n  FROM bom b JOIN x ON b.parent = x.item)\nSELECT lvl, item, qty FROM x ORDER BY lvl, item;\n-- (0,'PKG-16GB',1) (1,'DIE-8Gb',2) (1,'SUBSTRATE',1)\n-- (1,'WIRE',8) (2,'WAFER-300',2)"
+    }
+   ],
+   "refs": [
+    1,
+    7,
+    14,
+    15
+   ],
+   "study": [
+    "hynix-mdm",
+    "oracle-hier"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시스템 장애에 대응하고, 기능 개선을 위한 개발을 수행합니다.",
+   "short": "어느 영역이든 공통 — 장애가 나면 먼저 끄고 원인을 찾고, 같은 장애가 다시 안 나게 코드로 고친다.",
+   "why": "같은 팀은 '장애 초도 대응 시간 단축'을 과제 목표로 걸었습니다.[2] 운영의 일반 원칙으로는 먼저 서비스를 살리고(완화), 원인은 그다음에 찾고, 끝나면 비난 없는 사후 분석(포스트모템)으로 재발을 막습니다.[32]",
+   "flows": [
+    {
+     "caption": "장애 한 건의 흐름[32] {추론}",
+     "steps": [
+      "탐지 · 알람·현장 전화",
+      "1선 접수 · 영향 범위(몇 대·몇 로트)",
+      "완화 · 재기동·우회·장비 보류",
+      "원인 분석 · 로그·변경 이력",
+      "개선 개발 · 코드·설정 수정",
+      "사후 분석 · 재발 방지 기록"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "새벽 장애 호출(당직)이 있을 수 있습니다. {추론} 최소선은 **로그를 읽고 재현해 원인을 말하고, 고친 걸 안전하게 배포하는 것**입니다.",
+   "refs": [
+    2,
+    32
+   ],
+   "study": [
+    "sre-book",
+    "itil4"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "담당 영역의 신규 과제를 발굴하고, 개발 과제 간 협업을 수행합니다.",
+   "short": "반복되는 장애·수작업을 찾아 자동화·AI 과제로 올리고, 다른 팀의 개발 과제와 맞물리게 한다.",
+   "why": "운영 기록이 쌓이는 자리라 개선 과제를 가장 잘 보는 사람이기 때문입니다. {추론} 같은 팀의 AI 전환 과제(SOPIA·ARIA)도 결국 운영 현장의 장애 기록과 1선 업무에서 나왔습니다.[2]",
+   "refs": [
+    2
+   ],
+   "study": [
+    "anthropic-agents"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨",
+   "short": "아래 두 줄이 필수 요건이다 — 개발 언어와 제조 시스템 경험.",
+   "why": "필수 요건은 두 줄뿐이고, 공통 요건으로 **채용 분야 경력 3년 이상**이 따로 붙습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C#/Java/Oracle 기반 개발 역량을 보유하고 실제 개발이 가능하신 분",
+   "short": "고객사 제조 시스템이 C#·Java 코드와 오라클 DB로 되어 있어서 — 운영하면서 직접 고쳐야 한다.",
+   "why": "같은 사업부의 다른 공고도 같은 조합을 요구합니다 — 장비·품질 자동화는 'Java 또는 C# 백엔드·API, Oracle 기반 데이터 연계',[6] 후공정 MES는 'C#, Java, React, Spring Boot … Oracle SQL'입니다.[5] 공고가 '실제 개발이 가능'을 굳이 붙여, 운영만 해 본 사람과 구분합니다.[1]",
+   "actually": {
+    "items": [
+     "**C#** — 장비 PC·현장 화면 쪽에 많다(윈도우 기반 장비 환경). {추론}",
+     "**Java** — MES 서버·백엔드 쪽.[6]",
+     "**Oracle** — 로트·장비 이력·기준정보가 모이는 DB. 운영 문의 대부분이 SQL 조회로 시작한다. {추론}"
+    ]
+   },
+   "level": {
+    "basic": "C# 또는 Java로 클래스·컬렉션·예외 처리·파일/네트워크 입출력 · Oracle SELECT/JOIN/GROUP BY",
+    "work": "남이 짠 큰 코드에서 원인 찾기(디버거·로그) · 윈도우 함수·재귀 쿼리 · 실행계획 읽기 · 트랜잭션·잠금",
+    "team": "장비 쪽 C# 프로그램(EAP 등)과 서버 쪽 Java를 오가며 고치기 · 운영 DB에서 안전하게 데이터 바로잡기 {추론}"
+   },
+   "how_far": "새 언어를 깊게 파기보다 **두 언어로 남의 코드를 읽고 고치는 힘**이 핵심입니다. 후공정 MES 공고도 '기존 제조시스템의 구조와 소스 코드를 파악하여 오류를 분석·수정'을 요건으로 적었습니다.[5]",
+   "refs": [
+    1,
+    5,
+    6
+   ],
+   "study": [
+    "csharp-book",
+    "sql-tuning"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "제조 시스템(MES, 장비/품질/자동화 등) 운영 또는 개발 경험이 있으신 분",
+   "short": "로트·공정·장비 상태 같은 공장 말을 알아야 장애 문의를 바로 알아듣기 때문이다.",
+   "why": "공통 요건이 **채용 분야 경력 3년 이상**이라 경력직 공고입니다.[1] 제조 시스템은 MES가 생산 실행을, 그 위·아래로 ERP(계획)와 장비 제어가 붙는 층 구조입니다.[25]",
+   "flows": [
+    {
+     "caption": "제조 시스템의 층(ISA-95)[25]",
+     "steps": [
+      "4층 · 경영·계획(ERP)",
+      "3층 · 생산 실행(MES·품질·기준정보)",
+      "2층 · 감시·제어(EAP·APC·SCADA)",
+      "1·0층 · 장비·센서"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "'운영 **또는** 개발'이라 MES·장비·품질 중 한 곳만 3년 넘게 해 봤어도 됩니다.[1] 반도체가 아니어도 되고, 반도체는 우대 줄로 따로 있습니다.[1]",
+   "refs": [
+    1,
+    25
+   ],
+   "study": [
+    "isa95",
+    "mesa11"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍",
+   "short": "아래는 우대 — 없어도 지원할 수 있고, 있으면 맞는 영역에 바로 배치된다.",
+   "why": "우대 다섯 줄 가운데 셋이 업무 영역 이름(EAP·후공정·Mask·MOS·BOM)이나 파트 리딩과 겹칩니다.[1] 뒤의 '성향 및 캐릭터' 네 줄은 같은 팀의 다른 공고에도 똑같이 들어 있습니다.[2][3]",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Hi-Tech 영역(반도체, 2차전지, LCD) MES 개발/운영 경험이 있으신 분",
+   "short": "반도체·배터리·디스플레이 공장 MES는 로트·레시피·장비 자동화 수준이 높아 곧바로 일할 수 있어서.",
+   "why": "이 세 산업은 장비 자동화와 데이터 수집 수준이 높은 공장입니다. SK AX는 반도체뿐 아니라 배터리(SK온) 공장도 고객으로 둡니다.[7] 옛 SK C&C는 미국 반도체 글라스 기판 공장에도 생산·자재·설비·품질·반송 전 영역 플랫폼을 깔았습니다.[10]",
+   "refs": [
+    7,
+    10
+   ],
+   "study": [
+    "mesa11"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "EAP 등 장비 자동화 영역 또는 Back-end(Java 등) 개발 경력이 있으신 분",
+   "short": "장비 자동화(smartEAP 등)를 고칠 사람, 또는 서버 쪽을 고칠 사람 — 둘 중 하나면 된다.",
+   "why": "업무의 '장비 자동화 운영'은 운영과 함께 '기능 개선을 위한 개발'을 적었습니다.[1] 장비 쪽은 SECS/GEM,[23][24] 서버 쪽은 Java 백엔드입니다.[6]",
+   "how_far": "'또는'이라 EAP 경험이 없어도 Java 백엔드 경력이면 우대에 듭니다.[1]",
+   "refs": [
+    1,
+    6,
+    23,
+    24
+   ],
+   "study": [
+    "secsgem-intro"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "반도체 후공정(P&T), Mask, MOS, BOM/MDM 등 해당 영역 도메인 지식을 보유하신 분",
+   "short": "업무 일곱 영역 중 하나에 맞는 공장 지식이 있으면 그 영역에 바로 배치할 수 있어서.",
+   "why": "이 줄의 낱말이 업무 영역 이름과 그대로 겹칩니다 — 후공정 MES, Mask MES, FAB MOS, Standard BOM.[1] 영역별 기초는 고객사 뉴스룸의 공정 설명[29][30][33]과 기준정보 글[14][15]로 잡을 수 있습니다.",
+   "refs": [
+    1,
+    14,
+    15,
+    29,
+    30,
+    33
+   ],
+   "study": [
+    "hynix-backend",
+    "hynix-mask",
+    "hynix-mdm"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "운영 파트 리딩 경험이 있으신 분",
+   "short": "FI 영역처럼 파트를 이끌고 현장대리인을 맡는 자리가 있어서 — 사람·일정·보고를 다뤄 봤으면 좋다.",
+   "why": "업무 첫 영역이 'WorkPlace·EDP 파트를 리딩'이고, 일곱 영역 대부분에 현장대리인 역할이 붙어 있습니다.[1] 현장대리인은 수행사를 대표해 현장에 상주하며 현장 관리를 맡는 자리입니다.[26]",
+   "refs": [
+    1,
+    26
+   ],
+   "study": [
+    "itil4",
+    "sw-contract"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "해외 팹으로 시스템을 옮기고 현지 담당자와 장애를 같이 보는 일이 있어서.",
+   "why": "같은 팀이 미국 인디애나 FAB 구축과 글로벌 확산을 진행 중입니다.[3]",
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "제조 현장의 업무와 요구를 이해하고 책임감 있게 시스템을 운영·개선할 수 있는 분",
+   "short": "현장 엔지니어가 원하는 것을 알아듣고, 시스템 탓에 생산이 멈추지 않게 끝까지 챙길 사람.",
+   "why": "팀 소개의 목표가 '생산 안정성 향상'입니다.[1] 같은 문장이 사업부의 다른 공고에도 공통으로 들어 있습니다.[2][3]",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "새로운 기술(AI 등)을 빠르게 습득하고 업무에 적극 적용해 보는 분",
+   "short": "팀이 운영을 AI 에이전트 쪽으로 바꾸는 중이라, 운영 담당도 그 도구를 쓰고 고쳐 봐야 해서.",
+   "why": "팀 소개가 Agentic AI 기반 장애 대응을 직접 언급하고,[1] 같은 팀 PM/PL 공고는 LLM 에이전트·RAG 경험을 우대합니다.[2]",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "anthropic-agents"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "고객 및 동료와 원활히 소통하며 협업을 이끌어 낼 수 있는 분",
+   "short": "고객사 현장에서 요청을 받아 우리 쪽 개발자에게 나눠 주는 다리 역할이 많아서.",
+   "why": "현장대리인은 발주자(고객)의 지시를 받아 현장을 처리하는 수행사 쪽 사람이라,[26] 고객과 우리 쪽 개발자 사이의 창구가 됩니다. {추론}",
+   "refs": [
+    26
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "업무상 필요한 해외 출장이 가능하신 분",
+   "short": "해외 팹 확산·구축 지원으로 출장이 생길 수 있어서.",
+   "why": "공통 요건에 '해외여행에 결격사유가 없는 분'이 있고,[1] 같은 팀의 해외 FAB 구축 과제가 진행 중입니다.[3]",
+   "refs": [
+    1,
+    3
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · 제조 시스템 운영(MES/장비/품질/자동화) 담당자 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262586",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "제조AX서비스2팀 소개·일곱 영역(FI·장비 자동화·품질·후공정 MES·FAB MOS·R&D 생산자동화·MDM)·요건·우대·전형(서류 > SKCT > 면접 2회 > 처우협의)·공통 요건(경력 3년 이상). 마감 2027-01-28"
+  },
+  {
+   "n": 2,
+   "title": "SK Careers · 제조 시스템 모니터링 AI 전환 과제 PM/PL 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262584",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 팀 동시 공고 — SOPIA(System Operation Integrated AI) 에이전트의 장애 사례 검색·ServiceDesk 도우미, 1선 분석 도구 ARIA, 장애 초도 대응 시간 단축, 경력 6년 이상"
+  },
+  {
+   "n": 3,
+   "title": "SK Careers · 해외 FAB 구축 System Operation PM/PL 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262585",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 팀 — 인디애나 FAB DT 구축 시스템 운영 영역 8개 과제(미들웨어·ICS·ELIS 등), 근무지 이천"
+  },
+  {
+   "n": 4,
+   "title": "SK Careers · 제조 IT 운영 품질관리(ITSM/ITIL) 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262582",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 팀 — 제조 ITO 운영 품질 기준·KPI, AI SDD 프로세스, 근무지 이천"
+  },
+  {
+   "n": 5,
+   "title": "SK Careers · 제조 P&T AI, MES 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262570",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "제조AX서비스3팀 — 후공정(Wafer Test·Package·Module·WLP) MES 개발·구축, C#·Java·React·Spring Boot·Oracle SQL·Informatica"
+  },
+  {
+   "n": 6,
+   "title": "SK Careers · 제조AI 장비/품질 자동화 시스템 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262568",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "제조AX서비스4팀 — 장비 연계·공정 제어·장비 데이터 수집·품질/수율 관리 시스템, Java/C# 백엔드·Oracle 연계"
+  },
+  {
+   "n": 7,
+   "title": "SK Careers · 반도체 제조 기준정보 (MDM) 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262564",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "제조AX서비스5팀 — SK하이닉스·SK온, 제품·공정·장비·자재·설비 등 9대 Master, PLM·BOM"
+  },
+  {
+   "n": 8,
+   "title": "SK AX 사례 · 반도체 제조 H사의 이중화 전자패치 도입 사례",
+   "url": "https://www.skax.co.kr/case-study/story/2776",
+   "kind": "company",
+   "date": "2024-08-20",
+   "note": "설비 HSMS 통신 단말의 무중단 요구, 10G 링크 감시·자동 전환 장비(IFS)"
+  },
+  {
+   "n": 9,
+   "title": "CEO스코어데일리 · SK AX, 에이전틱 AI 기반 운영 서비스 '엑스젠틱와이어 NPO' 선봬",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040212224246417",
+   "kind": "news",
+   "date": "2026-04-02",
+   "note": "탐지·분석·영향도·조치 에이전트, 설치형·BPO·ITO 세 가지 도입 방식, 제조는 설비·공정 이상 징후"
+  },
+  {
+   "n": 10,
+   "title": "뉴스토마토 · SK㈜ C&C, 반도체 부품 공장 공정 자동화 위한 플랫폼 선보인다",
+   "url": "https://newstomato.com/ReadNews.aspx?no=1166479",
+   "kind": "news",
+   "date": "2022-12-14",
+   "note": "I-FACTs 로 미국 글라스 기판 공장 — 생산·자재·설비·품질·반송물류, 물류자동화 장비 연계, MSA"
+  },
+  {
+   "n": 11,
+   "title": "SK하이닉스 뉴스룸 · [하이피디아] 데이터부터 팹, 일하는 방식까지… 'AX'",
+   "url": "https://news.skhynix.co.kr/?p=68874",
+   "kind": "company",
+   "date": "2026-11-17",
+   "note": "고객사 쪽 설명 — 장비·물류 데이터 실시간 분석으로 장애 징후 선제 파악·공정 지연 방지"
+  },
+  {
+   "n": 12,
+   "title": "SK AX · iFacts 제조 플랫폼 솔루션 소개서(미리보기)",
+   "url": "https://www.skax.co.kr/wp-content/uploads/SK-AX_iFacts_%EC%A0%9C%EC%A1%B0%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%86%94%EB%A3%A8%EC%85%98-%EC%86%8C%EA%B0%9C-preview.pdf",
+   "kind": "company",
+   "note": "SK AX 제조 플랫폼의 모듈 구성 — 고객사 고유 시스템(smart~)과 같은지는 적혀 있지 않다"
+  },
+  {
+   "n": 13,
+   "title": "SK AX 인사이트 · 제조 산업을 위한 Vertical AI 전략: SK AX 에이전틱 AI 포트폴리오",
+   "url": "https://www.skax.co.kr/insight/trend/3638",
+   "kind": "company",
+   "date": "2026-01-30",
+   "note": "생산·품질·설비 에이전트를 잇는 공정 운영 지능 에이전트"
+  },
+  {
+   "n": 14,
+   "title": "SK하이닉스 뉴스룸 · 디지털 혁신의 근간, 데이터를 잡아라! Master Data 표준 체계 재정립",
+   "url": "https://news.skhynix.co.kr/?p=17712",
+   "kind": "company",
+   "date": "2020-09-21",
+   "note": "2017년 전사 TF, 설비·자재·제품·장비·공정 우선, 1물1코드"
+  },
+  {
+   "n": 15,
+   "title": "SK하이닉스 뉴스룸 · 왜 지금 다시 '마스터 데이터(Master Data)'가 중요한가?",
+   "url": "https://news.skhynix.co.kr/?p=17215",
+   "kind": "company",
+   "date": "2021-01-15",
+   "note": "중복·분류 체계·일관성·생애주기 문제"
+  },
+  {
+   "n": 16,
+   "title": "KPI뉴스 · SK C&C, 'SK㈜ AX'로 이름 바꿔",
+   "url": "https://kpinews.kr/newsView/1065576140213162",
+   "kind": "news",
+   "date": "2025-05"
+  },
+  {
+   "n": 17,
+   "title": "FETV · SK 계열사 직원 평균 급여(2024 사업보고서)",
+   "url": "https://www.fetv.co.kr/news/articleView.html?idxno=198852",
+   "kind": "news",
+   "date": "2025-08-14"
+  },
+  {
+   "n": 18,
+   "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+   "url": "https://zdnet.co.kr/view/?no=20250816174726",
+   "kind": "news",
+   "date": "2025-08-16",
+   "note": "4사 2025년 반기보고서 1인 평균 급여"
+  },
+  {
+   "n": 19,
+   "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보",
+   "url": "https://www.wanted.co.kr/company/25949",
+   "kind": "reference",
+   "note": "평균 연봉(집계값)"
+  },
+  {
+   "n": 20,
+   "title": "SK AX Careers · 복리후생",
+   "url": "https://skax.skcareers.com/page/HR/Welfare",
+   "kind": "company",
+   "note": "연도 표기 없음"
+  },
+  {
+   "n": 21,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company"
+  },
+  {
+   "n": 22,
+   "title": "SK하이닉스 홈페이지(회사 주소)",
+   "url": "https://www.skhynix.com/",
+   "kind": "company",
+   "note": "본사 경기도 이천시 부발읍 경충대로 2091"
+  },
+  {
+   "n": 23,
+   "title": "PDF Solutions(Cimetrix) · Introduction to the SEMI E30 Standard",
+   "url": "https://www.pdf.com/standards/semi-e30/",
+   "kind": "reference",
+   "note": "GEM(E30)은 동작 모델, 메시지는 SECS-II(E5), 전송은 HSMS(E37)·SECS-I(E4)"
+  },
+  {
+   "n": 24,
+   "title": "SEMI · Intro to SEMI Communication Standards",
+   "url": "https://semi.org/en/standards-watch-2022-Sept/intro-to-semi-communication-standards",
+   "kind": "reference",
+   "note": "호스트(MES 쪽)와 장비 사이 통신 표준 묶음 소개"
+  },
+  {
+   "n": 25,
+   "title": "Wikipedia · Manufacturing execution system",
+   "url": "https://en.wikipedia.org/wiki/Manufacturing_execution_system",
+   "kind": "reference",
+   "note": "ISA-95 에서 MES 는 3층 — ERP(4층)와 제어(0~2층) 사이"
+  },
+  {
+   "n": 26,
+   "title": "(계약예규) 공사계약일반조건 — 제14조 공사현장대리인",
+   "url": "https://www.law.go.kr/LSW/flDownload.do?flSeq=163011817",
+   "kind": "reference",
+   "date": "2026-04-30 시행",
+   "note": "현장대리인은 현장에 상주하며 계약문서·감독관 지시에 따라 현장 관리를 처리. 공사 계약 기준이고, SW 사업 지침에는 같은 조항을 찾지 못했다"
+  },
+  {
+   "n": 27,
+   "title": "Sachs·Hu·Ingolfsson · Run by run process control: combining SPC and feedback control (IEEE Trans. Semiconductor Manufacturing 8(1), 1995)",
+   "url": "https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=Run%20by%20run%20process%20control%3A%20combining%20SPC%20and%20feedback%20control",
+   "kind": "reference",
+   "date": "1995",
+   "note": "반도체 Run-to-Run 제어의 기본인 EWMA 제어기 — 선형 모델의 치우침 항만 갱신"
+  },
+  {
+   "n": 28,
+   "title": "NIST/SEMATECH e-Handbook of Statistical Methods",
+   "url": "https://www.itl.nist.gov/div898/handbook/",
+   "kind": "reference",
+   "note": "6장 공정·제품 관리 — 관리도와 관리 한계"
+  },
+  {
+   "n": 29,
+   "title": "SK하이닉스 뉴스룸 · [반도체 후공정 1편] 반도체 테스트의 이해",
+   "url": "https://news.skhynix.co.kr/seominsuk-column-test/",
+   "kind": "company",
+   "date": "2022-09-30",
+   "note": "웨이퍼 테스트(프로브 카드)와 패키지 테스트(소켓·보드)"
+  },
+  {
+   "n": 30,
+   "title": "SK하이닉스 뉴스룸 · 포토 공정 칼럼",
+   "url": "https://news.skhynix.co.kr/post/jeonginseong-column-photo",
+   "kind": "company",
+   "note": "노광 공정과 마스크. 마스크 MES 자체를 다룬 공개 글은 찾지 못했다"
+  },
+  {
+   "n": 31,
+   "title": "Oracle Database SQL Language Reference · Hierarchical Queries",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Hierarchical-Queries.html",
+   "kind": "reference",
+   "note": "CONNECT BY 계층 질의"
+  },
+  {
+   "n": 32,
+   "title": "Google · Site Reliability Engineering (무료 온라인판)",
+   "url": "https://sre.google/books/",
+   "kind": "reference",
+   "note": "장애 관리(먼저 완화)·비난 없는 포스트모템 장"
+  },
+  {
+   "n": 33,
+   "title": "SK하이닉스 뉴스룸 · [반도체 후공정 7편] 웨이퍼 레벨 패키지 공정",
+   "url": "https://news.skhynix.co.kr/seominsuk-column-wafer-level-package/",
+   "kind": "company",
+   "date": "2023-04-17"
+  },
+  {
+   "n": 34,
+   "title": "기상청 · 정보시스템 운영 용역 제안요청서(공개 문서)",
+   "url": "https://www.kma.go.kr/kma/flexer/html/gongzi/2022/09/27/ATC202209270940052_a5702787-003f-454c-94f8-803ef28f1e3b.hwp.files/Sections1.html",
+   "kind": "reference",
+   "date": "2022-09",
+   "note": "운영 인력 체계·담당자별 역할과 책임을 적게 한 공공 SW 운영 용역의 예"
+  },
+  {
+   "n": 35,
+   "title": "SK하이닉스 뉴스룸 · [반도체 후공정 2편] 반도체 패키지의 정의와 역할",
+   "url": "https://news.skhynix.co.kr/seominsuk-column-package-definition/",
+   "kind": "company",
+   "date": "2022-10-27"
+  },
+  {
+   "n": 36,
+   "title": "Wikipedia · Nelson rules",
+   "url": "https://en.wikipedia.org/wiki/Nelson_rules",
+   "kind": "reference",
+   "note": "규칙 3 — 6점 이상 연속 상승·하락"
+  }
+ ],
+ "resources": [
+  {
+   "id": "hynix-backend",
+   "title": "[반도체 후공정] 연재 — 1편 반도체 테스트의 이해 외",
+   "by": "SK하이닉스 뉴스룸 · 2022~2023",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://news.skhynix.co.kr/seominsuk-column-test/",
+   "why": "고객사가 직접 쓴 후공정 설명. 후공정 MES(WT·WLP·PKG·PKT) 영역과 P&T 도메인 우대 줄을 위한 기초."
+  },
+  {
+   "id": "hynix-mask",
+   "title": "포토 공정 칼럼",
+   "by": "SK하이닉스 뉴스룸",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://news.skhynix.co.kr/post/jeonginseong-column-photo",
+   "why": "마스크가 공정에서 무슨 일을 하는지. Mask MES·MTS 영역을 맡기 전에 볼 바탕."
+  },
+  {
+   "id": "hynix-mdm",
+   "title": "디지털 혁신의 근간, 데이터를 잡아라! Master Data 표준 체계 재정립",
+   "by": "SK하이닉스 뉴스룸 · 2020",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://news.skhynix.co.kr/?p=17712",
+   "why": "고객사 기준정보 체계(1물1코드·분야별 우선순위). Standard BOM 운영 줄의 배경."
+  },
+  {
+   "id": "semi-book",
+   "title": "반도체 제조기술의 이해",
+   "by": "곽노열 외 · 한올출판사",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002956993",
+   "why": "앞공정(노광·식각·증착)부터 후공정까지 한 권. 공장 말(로트·레시피·계측)을 알아듣기 위한 바탕."
+  },
+  {
+   "id": "isa95",
+   "title": "ISA-95 Enterprise-Control System Integration",
+   "by": "ISA",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+   "why": "ERP·MES·장비 제어가 어느 층에서 무엇을 주고받나. 제조 시스템 경험 요건을 설명할 뼈대."
+  },
+  {
+   "id": "mesa11",
+   "title": "MES, ISA-95, MESA-11, cMES, NAMUR – Why So Many Standards?",
+   "by": "Tulip · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://tulip.co/blog/mes-isa-95-mes-11-cmes-namur/",
+   "why": "MES 기능 11가지(일정·배정·추적·품질·설비·데이터 수집…)를 한 장으로. MES 운영 경험을 말로 정리할 때."
+  },
+  {
+   "id": "secsgem-intro",
+   "title": "Introduction to the SEMI E30 Standard",
+   "by": "PDF Solutions(Cimetrix)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.pdf.com/standards/semi-e30/",
+   "why": "EAP 가 쓰는 SECS/GEM 통신의 층(E5·E30·E37). smartEAP 운영과 EAP 우대 줄."
+  },
+  {
+   "id": "gem300",
+   "title": "SEMI GEM300 Standards",
+   "by": "PDF Solutions(Cimetrix)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.pdf.com/standards/semi-gem-300-standards/",
+   "why": "300mm 팹의 캐리어(E87)·프로세스 잡(E40)·컨트롤 잡(E94)·기판 추적(E90). 자동화 장애 로그를 읽을 때 나오는 낱말."
+  },
+  {
+   "id": "r2r-ref",
+   "title": "Run by run process control: combining SPC and feedback control",
+   "by": "E. Sachs · A. Hu · A. Ingolfsson · IEEE Trans. Semiconductor Manufacturing · 1995",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=Run%20by%20run%20process%20control%3A%20combining%20SPC%20and%20feedback%20control",
+   "why": "APC 의 기본 계산(EWMA Run-to-Run). smartAPC 가 무엇을 고치는지 원리로 이해."
+  },
+  {
+   "id": "nist-spc",
+   "title": "NIST/SEMATECH e-Handbook of Statistical Methods",
+   "by": "NIST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.itl.nist.gov/div898/handbook/",
+   "why": "관리도·관리 한계·공정 능력. 품질 시스템(smartYES) 운영 때 경보가 왜 울리는지 설명할 말."
+  },
+  {
+   "id": "csharp-book",
+   "title": "이것이 C#이다 (3판)",
+   "by": "박상현 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%EA%B2%83%EC%9D%B4%20C%23%EC%9D%B4%EB%8B%A4",
+   "why": "C# 문법·컬렉션·비동기·네트워크. C#/Java/Oracle 요건 중 C# 쪽."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형 · 디비안 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D",
+   "why": "오라클 인덱스·조인·실행계획. 이력 테이블이 큰 운영 DB 에서 조회를 안전하게 빠르게."
+  },
+  {
+   "id": "oracle-hier",
+   "title": "Oracle SQL Language Reference — Hierarchical Queries",
+   "by": "Oracle",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Hierarchical-Queries.html",
+   "why": "CONNECT BY 로 BOM 을 펼치는 법. Standard BOM 운영 문의에 바로 쓰는 쿼리."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/books/",
+   "why": "장애 대응·모니터링·포스트모템. '시스템 장애에 대응' 공통 업무의 표준 교과서(온라인 무료)."
+  },
+  {
+   "id": "itil4",
+   "title": "ITIL Foundation, ITIL 4 Edition",
+   "by": "AXELOS · TSO · 2019",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.vanharen.net/store/9780113316076-itil-foundation-itil-4-edition-paperback",
+   "why": "인시던트·문제·변경 관리 용어. 운영 파트 리딩·현장대리인으로 고객과 운영 품질을 말할 때."
+  },
+  {
+   "id": "sw-contract",
+   "title": "(계약예규) 공사계약일반조건",
+   "by": "재정경제부 계약예규 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.law.go.kr/LSW/flDownload.do?flSeq=163011817",
+   "why": "현장대리인의 상주·현장 관리 의무가 적힌 공공 계약 조건(공사 기준). 현장대리인이 어떤 자리인지 감 잡기."
+  },
+  {
+   "id": "anthropic-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.anthropic.com/research/building-effective-agents",
+   "why": "LLM 에이전트의 기본 구조와 한계. 팀의 Agentic AI 장애 대응을 쓰는 쪽에서 이해하기."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "공장 말 익히기",
+   "time": "1~2주",
+   "goal": "로트·레시피·Track-In/Out·Hold·수율을 설명하고, 앞공정과 후공정(WT→PKG→PKT)의 순서를 그린다.",
+   "task": "가상 메모리 제품 하나의 공정 흐름(앞공정 5단계·후공정 4단계)을 표로 만들고, 단계마다 MES 가 남겨야 할 이력 칸(로트·장비·시각·결과)을 적는다.",
+   "resources": [
+    "semi-book",
+    "hynix-backend",
+    "mesa11",
+    "isa95"
+   ]
+  },
+  {
+   "title": "MES 이력 DB 와 SQL",
+   "time": "2~3주",
+   "goal": "로트 이력·장비 상태·BOM 표를 만들고 운영 문의('이 로트 어디?', '이 제품에 왜 이 자재?')에 쿼리로 답한다.",
+   "task": "Oracle(무료판)이나 SQLite 에 로트 1,000개 × 공정 10단계 가상 이력을 넣고, 현재 위치·공정별 대기 시간·장비별 처리량·BOM 전개(재귀 쿼리) 네 개 쿼리를 만든 뒤 인덱스 전후 실행계획을 비교한다.",
+   "resources": [
+    "sql-tuning",
+    "oracle-hier",
+    "hynix-mdm"
+   ]
+  },
+  {
+   "title": "장비 연결과 공정 보정 흉내 내기",
+   "time": "2~3주",
+   "goal": "장비 이벤트를 받아 MES 를 부르는 작은 EAP 와, 계측값으로 다음 런을 고치는 Run-to-Run 을 만든다.",
+   "task": "C# 또는 Java 로 가상 장비(TCP 로 이벤트 번호·로트 ID 를 보냄)와 EAP(매핑표로 Track-In/Out·Hold 호출)를 만들고, 매핑에 없는 이벤트·연결 끊김 때 로그가 어떻게 남는지 본다. EWMA R2R 로 치우침이 커지는 장비를 보정해 본다.",
+   "resources": [
+    "secsgem-intro",
+    "gem300",
+    "r2r-ref",
+    "csharp-book"
+   ]
+  },
+  {
+   "title": "품질 경보와 장애 대응",
+   "time": "1~2주",
+   "goal": "관리도 경보 규칙을 구현하고, 장애 한 건을 탐지부터 포스트모템까지 기록한다.",
+   "task": "2단계 이력에 계측값을 붙여 관리 한계·6점 연속 상승 경보를 만든다. 일부러 EAP 매핑을 지워 Track-Out 이 빠지는 장애를 내고, 영향 로트를 찾는 쿼리·완화 조치·재발 방지까지 한 장짜리 포스트모템으로 쓴다.",
+   "resources": [
+    "nist-spc",
+    "sre-book",
+    "itil4"
+   ]
+  },
+  {
+   "title": "운영 기록을 AI 가 읽게(선택)",
+   "time": "1주~",
+   "goal": "포스트모템 여러 장을 검색해 비슷한 장애와 조치를 찾아 주는 작은 도구를 만든다.",
+   "task": "4단계 형식으로 가상 장애 기록 30건을 쓰고, 새 장애 증상을 넣으면 비슷한 기록 3건과 그때의 조치를 보여 주는 검색을 만든다(키워드 검색 → 임베딩 검색 순서로).",
+   "resources": [
+    "anthropic-agents"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없고 SK AX만의 연간 공시도 없다 — SK주식회사 전체 평균 **1억 1,600만원**(2024 사업보고서), SK AX 상반기 평균 **7,300만원**(6개월치)",
+  "rows": [
+   {
+    "label": "직원 평균 급여(SK주식회사 전체)",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "note": "SK AX 는 SK주식회사 안의 사업 조직이라[16] 지주 부문을 합친 회사 전체 값이다 [17]"
+   },
+   {
+    "label": "SK AX 1인 평균 급여 (6개월)",
+    "value": "7,300만원",
+    "amount": 7300,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "1~6월 반년치다. 1년 연봉이 아니다 [18]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "채용 사이트가 공공 자료로 계산한 값, 계산 기간은 적혀 있지 않다 [19]"
+   },
+   {
+    "label": "삼성SDS 평균 (6개월)",
+    "value": "6,600만원",
+    "amount": 6600,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 같은 기준 [18]"
+   },
+   {
+    "label": "LG CNS 평균 (6개월)",
+    "value": "6,500만원",
+    "amount": 6500,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 같은 기준 [18]"
+   }
+  ],
+  "how": "경력 3년 이상 경력직 공고이고 전형 끝에 **채용검진/처우협의** 단계가 있어 연봉은 사람마다 정한다 [1]. 평균은 신입부터 고참까지, 지주 부문까지 섞인 회사 전체 값이라 이 자리 제안 금액으로 읽으면 안 된다 {추론}. 초봉 공개 자료는 찾지 못했다. 당직·현장 상주 수당 여부는 공고에 없으니 처우협의 때 묻는다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "성장",
+    "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 직무 공모"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10·15·20·25·30년에 포상금과 포상 휴가"
+   },
+   {
+    "name": "주택 자금",
+    "detail": "구입·전세 최대 6,000만원, 생활안정자금 최대 1,500만원(100만원 단위)"
+   },
+   {
+    "name": "자녀 학자금",
+    "detail": "유치원부터 대학까지, 자녀 수 제한 없음"
+   },
+   {
+    "name": "식대·통신비",
+    "detail": "식대 월 4만원, 통신비 월 7만원(SKT 가입자)"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 OK캐쉬백 20만 포인트"
+   },
+   {
+    "name": "동호회",
+    "detail": "분기 최대 150만원"
+   },
+   {
+    "name": "건강",
+    "detail": "나이에 따라 종합 25만원·정밀 40만원 검진, 난임 지원, 단체보험 3종, 사내 의원 With Care, 심리 상담 공감플러스+"
+   },
+   {
+    "name": "시설",
+    "detail": "피트니스(트레이너), 행복날개수련원, 제휴 리조트(호텔 60%·콘도 법인가), 어린이집·수유실"
+   },
+   {
+    "name": "그 밖",
+    "detail": "외부 사이트 근무자 복지 포인트, 통근·셔틀 버스, 경조 휴가·경조금"
+   }
+  ],
+  "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음, 다른 풀이에서 2026-11-23 확인) [20]. 고객사 현장(이천) 근무자에게는 '외부 사이트 근무자 복지 포인트'가 해당될 수 있다 {추론}. 공고 자체에는 복리후생 칸이 없다 [1]."
+ },
+ "location": {
+  "name": "근무지 이천 (SK하이닉스 이천캠퍼스) · 분당 (SK AX 본사)",
+  "address": "경기도 이천시 부발읍 경충대로 2091",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%9D%B4%EC%B2%9C%EC%8B%9C%20%EB%B6%80%EB%B0%9C%EC%9D%8D%20%EA%B2%BD%EC%B6%A9%EB%8C%80%EB%A1%9C%202091",
+  "near": "경강선 부발역 근처 {추론}",
+  "note": "공고 근무지는 '경기도 이천/분당'이다 [1]. 위 주소는 SK하이닉스 본사 주소다 [22]. 분당은 SK AX 본사 SK u-타워(경기도 성남시 분당구 성남대로 343번길 9)다 [21]. 영역마다 어느 쪽에 앉는지는 공고에 없다 — 같은 팀의 구축·품질 공고는 이천만 적었다 [3][4]."
+ },
+ "fit": {
+  "good": [
+   "MES·장비 자동화·품질 시스템 중 하나를 3년 넘게 운영하며 직접 코드도 고쳐 본 사람[1]",
+   "장애 로그를 따라가 원인을 찾는 일이 즐겁고, 같은 장애를 두 번 안 나게 만드는 데 보람을 느끼는 사람 {추론}",
+   "고객 현장에서 요청을 정리하고 작은 파트를 이끌어 본 사람(현장대리인·파트 리딩)[1]",
+   "운영 기록을 AI 에이전트가 쓰는 쪽으로 바꾸는 흐름에 올라타고 싶은 사람[2][9]"
+  ],
+  "hard": [
+   "채용 분야 경력 3년 이상 공통 조건이라 신입은 지원이 어렵다[1]",
+   "영역 이름(smartDCP·smartYES·ESP·MTS…)이 고객사 고유 시스템이라 입사 전에 공부할 공개 자료가 거의 없다 {추론}",
+   "공장은 24시간 돌기 때문에 장애 호출·당직이 있을 수 있다 {추론}",
+   "새 시스템을 설계하는 일보다 기존 시스템을 지키는 일이 중심이다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "장비가 작업을 끝냈는데 MES 에 Track-Out 이 안 올라왔어요. 어디부터 보나요?",
+   "a": "장비 자동화(EAP) 운영 줄 — 장비 이벤트 → EAP 매핑 → MES 호출 중 어디서 끊겼나.[23]"
+  },
+  {
+   "q": "SECS-II·GEM·HSMS 는 각각 무엇을 정하나요?",
+   "a": "EAP 우대 줄과 장비 자동화 영역.[23][24]"
+  },
+  {
+   "q": "APC 가 다음 로트의 레시피를 고쳤는데 결과가 더 나빠졌어요. 무엇을 의심하나요?",
+   "a": "smartAPC 운영 — 계측값 오류·모델 가정·보정 폭(λ).[27]"
+  },
+  {
+   "q": "관리 한계 안의 값인데 품질 경보가 울렸다는 문의가 왔어요. 어떻게 설명하나요?",
+   "a": "품질 시스템 운영 — 추세 규칙.[28][36]"
+  },
+  {
+   "q": "이력 테이블이 수억 건인데 '이 로트 지금 어디?' 쿼리가 느려요. 어떻게 고치나요?",
+   "a": "C#/Java/Oracle 요건 — 윈도우 함수·인덱스·실행계획.[31]"
+  },
+  {
+   "q": "새벽에 생산이 멈췄어요. 원인을 찾기 전에 먼저 할 일은?",
+   "a": "공통 업무의 장애 대응 — 먼저 완화, 그다음 원인, 끝나면 포스트모템.[32]"
+  },
+  {
+   "q": "현장대리인으로서 고객이 계약 범위 밖의 개발을 급하게 요청하면 어떻게 하나요?",
+   "a": "현장대리인 역할과 파트 리딩 우대.[26][34]"
+  }
+ ],
+ "caveat": "smartDCP·smartAPC·smartEAP·smartYES·smartMES·ESP·MTS·WorkPlace·EDP 는 고객사 고유 시스템 이름이라 공개 설명을 찾지 못했다 — 본문의 풀이는 이름 뒤의 업계 일반 용어(EAP·APC·MES·수율)로 '보통 이런 것'을 보인 것이고, MOS·ESP 의 뜻은 비워 두었다. 회사 근거는 이 공고와 같은 사업부의 동시 공고 여섯, SK AX 의 HSMS 이중화 사례·에이전틱 AI 운영 서비스 보도·제조 플랫폼 소개서[12]·에이전틱 AI 포트폴리오[13], 고객사 SK하이닉스 뉴스룸뿐이다. 이 팀·SK AX 의 제조 운영 관련 발표 영상은 찾지 못했다. 현장대리인의 법적 정의는 공사 계약 일반조건에서 가져왔고 SW 운영 계약에는 사업마다 다르다."
+}
