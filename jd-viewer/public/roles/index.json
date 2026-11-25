@@ -93,6 +93,7 @@
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7793770": "coupang-ai-foundations-senior-staff-mle-mtv",
+  "ats-greenhouse:coupang:8022956": "coupang-aik-foundation-model-mle-sg",
   "ats-greenhouse:coupang:8386063": "coupang-app-infra-director-us",
   "ats-greenhouse:coupang:8160905": "coupang-attack-surface-identification-senior-staff",
   "ats-greenhouse:coupang:8398431": "coupang-audit-ai-ops-analyst-bengaluru",
@@ -164,6 +165,7 @@
   "ats-greenhouse:coupang:8078331": "coupang-spir-security-devops-senior",
   "ats-greenhouse:coupang:8094014": "coupang-taiwan-catalog-ai-tpm-director",
   "ats-greenhouse:coupang:8300309": "coupang-taiwan-security-engineering-director",
+  "ats-greenhouse:coupang:8188040": "coupang-threat-detection-engineer-seoul",
   "ats-greenhouse:coupang:8076295": "coupang-transportation-backend-senior-manager-bengaluru",
   "ats-greenhouse:coupang:8206706": "coupang-web-security-engineer-detection-ops",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
@@ -1397,6 +1399,16 @@
    "lines": 17
   },
   {
+   "id": "coupang-aik-foundation-model-mle-sg",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior Staff / Staff Machine Learning Engineer — AI and Knowledge Engineering (싱가포르)",
+   "jobs": [
+    "ats-greenhouse:coupang:8022956"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
+  },
+  {
    "id": "coupang-app-infra-director-us",
    "company": "쿠팡 (Coupang)",
    "role": "Director of Backend Engineering",
@@ -2033,6 +2045,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 19
+  },
+  {
+   "id": "coupang-threat-detection-engineer-seoul",
+   "company": "쿠팡",
+   "role": "Senior Threat Detection Engineer",
+   "jobs": [
+    "ats-greenhouse:coupang:8188040"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 33
   },
   {
    "id": "coupang-transportation-backend-senior-manager-bengaluru",

@@ -1,0 +1,1138 @@
+{
+  "id": "coupang-aik-foundation-model-mle-sg",
+  "company": "쿠팡 (Coupang)",
+  "role": "Senior Staff / Staff Machine Learning Engineer — AI and Knowledge Engineering (싱가포르)",
+  "team": "AI and Knowledge Engineering 팀 (싱가포르 Suntec Tower 5 사무실 출근 근무)",
+  "jobs": [
+    "ats-greenhouse:coupang:8022956"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쇼핑에 맞춘 **기초 모델(foundation model — 여러 일에 두루 쓰도록 크게 미리 학습한 모델)**을 직접 학습시키고, 그 위에 LLM·이미지 모델·AI 에이전트를 얹어 쿠팡의 복잡한 쇼핑 문제를 푸는 자리입니다.[1] 모델을 학습시키는 실험 설계부터 저장·서빙하는 파이프라인, 팀원 지도까지 공고에 함께 적혀 있습니다.[1]",
+    "env": "팀은 지식 그래프·개체명 인식·대화형 에이전트·번역·LLM 전용 추론 엔진을 다루고, 범용 LLM 보다 나은 쇼핑 번역 모델을 만들었다고 소개했습니다.[5] 쿠팡 ML 플랫폼은 LLM 을 쿠버네티스 위 PyTorchJob·DeepSpeed ZeRO 로 학습시키고, 데이터 준비는 Spark, 서빙은 Triton·Ray+vLLM 으로 합니다.[3] 학습 데이터의 원본은 아시아·태평양 지역의 데이터 레이크입니다.[7]",
+    "oneline": "모델을 '불러 쓰는' 자리가 아니라 **쇼핑 데이터로 기초 모델을 직접 학습·후학습(post-training)하는** 자리이고, 동시에 데이터 과학(통계·차원 축소·시각화)과 데이터 플랫폼(SQL·Spark·BigQuery)까지 요구하는 폭이 넓은 공고입니다.[1] 부서 칸은 팀 이름이 아니라 '상시 채용(Evergreen)' 묶음입니다.[1]"
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "Work on GenAI, AI agents' systems to solve complex eCommerce scenarios.",
+      "short": "생성형 AI 와 AI 에이전트(스스로 도구를 골라 쓰며 여러 단계를 푸는 프로그램)로 복잡한 쇼핑 문제를 푼다.",
+      "why": "이 팀은 공고 소개에서 지식 그래프·AI 에이전트·LLM·멀티모달 모델을 함께 다룬다고 적었고[1], 회사 글에서도 대화형 에이전트를 팀의 주제로 꼽았습니다.[5] '복잡한 시나리오'는 한 번의 모델 호출로 끝나지 않는 일 — 검색·비교·주문처럼 여러 단계를 거치는 일입니다 {추론}.",
+      "actually": {
+        "intro": "공개 문서에서 '에이전트 시스템'이 하는 일의 기본 꼴입니다. 쿠팡 에이전트의 구조는 공개되지 않았습니다.",
+        "items": [
+          "**생각하고 행동하기(ReAct)** — 모델이 '무엇을 할지' 생각을 쓰고, 도구(검색·DB 조회)를 부르고, 결과를 보고 다시 생각하는 순환입니다.[16]",
+          "**쇼핑 예** — '캠핑용 5만 원 아래 의자 비교해 줘' → 상품 검색 도구 → 가격·리뷰 조회 → 비교표 작성 {추론}.",
+          "**지식 그래프와 잇기** — 상품·브랜드·속성을 이어 둔 그래프를 에이전트의 도구로 주면 지어낸 답이 줄어듭니다 {추론}. 팀은 지식 그래프를 주제로 들었습니다.[5]",
+          "**평가** — 최종 답만이 아니라 단계마다(도구 선택이 맞았나) 채점합니다 {추론}."
+        ]
+      },
+      "how_far": "에이전트 프레임워크를 써 본 정도가 아니라 **에이전트가 부르는 모델 자체를 쇼핑 데이터로 개선**하는 데까지가 이 자리입니다 — 같은 공고가 기초 모델 학습을 주요 업무로 적었기 때문입니다[1] {추론}.",
+      "refs": [1, 5, 16],
+      "study": ["react-paper", "lec-cs329z-patterns", "lec-cme295-agentic"]
+    },
+    {
+      "section": "task",
+      "quote": "Develop large language and vision understanding/generation models for predictive and compound AI Models",
+      "short": "글과 이미지를 이해·생성하는 큰 모델을 만들어 예측 모델과 '여러 부품을 엮은 AI 시스템'에 넣는다.",
+      "why": "쿠팡은 이미지와 글을 함께 배우는 모델이 더 좋은 임베딩(내용을 담은 숫자 벡터)을 만든다며 CLIP·TrOCR 을 골라 광고 검색·비슷한 상품·추천 특징에 썼다고 밝혔습니다.[3] '복합 AI(compound AI)'는 모델 하나가 아니라 여러 모델 호출·검색기·도구가 함께 일하는 시스템을 말합니다.[12]",
+      "actually": {
+        "items": [
+          "**예측 쪽** — LLM 이 만든 임베딩을 작은 랭킹·추천 모델의 입력으로 넘깁니다. 쿠팡이 실제 서비스에 넣는 길로 적은 방법입니다.[3]",
+          "**이해 쪽** — 상품 사진·설명에서 속성(용량·색상)을 읽고 분류를 고릅니다 {추론}.",
+          "**생성 쪽** — 상품 설명·요약 같은 글을 만들고, 이미지를 보고 글로 답하는 모델(시각 지시 학습, LLaVA 방식)을 씁니다.[31]",
+          "**복합 쪽** — 검색기 + LLM + 검증 규칙을 엮어 한 모델보다 나은 결과를 냅니다.[12]"
+        ]
+      },
+      "how_far": "모델 하나의 점수보다 **그 모델이 들어간 시스템 전체의 결과**(검색 품질·전환)로 판단하는 데까지입니다 {추론}. 쿠팡은 관련성 논문에서도 효과를 실제 서비스 지표로 보고했습니다.[6]",
+      "refs": [3, 6, 12, 31],
+      "study": ["compound-ai", "lec-cs231n-vl", "coupang-llm-blog"]
+    },
+    {
+      "section": "task",
+      "quote": "Train foundational models that can help with building learning systems.",
+      "short": "다른 팀이 그 위에 자기 모델을 얹을 수 있도록, 쇼핑 데이터로 바탕 모델을 직접 학습시킨다.",
+      "why": "쿠팡 ML 플랫폼 글은 LLM 학습을 위해 모델 병렬 학습(모델을 여러 GPU 에 나눠 싣는 학습)을 쿠버네티스 위 PyTorchJob 으로 돌리고, DeepSpeed ZeRO 를 가장 많이 쓴다고 적었습니다.[3] 10억 개 넘는 파라미터 모델은 A100-80GB 로 섞은 정밀도(mixed precision) 학습을 한다고 밝혔습니다.[3]",
+      "actually": {
+        "items": [
+          "**계속 사전학습(CPT)** — 공개 모델에 쇼핑 글(상품명·리뷰·검색어)을 더 읽혀 쇼핑 낱말에 익숙하게 만듭니다. 쿠팡이 쓰는 방법 넷(ICL·RAG·SFT·CPT) 중 하나입니다.[3]",
+          "**메모리 나누기** — ZeRO 는 옵티마이저 상태·기울기·파라미터를 GPU 마다 나눠 들게 해 한 장에 안 들어가는 모델을 학습시킵니다.[33]",
+          "**데이터 양 정하기** — 모델 크기와 학습 토큰 수를 같이 늘려야 같은 계산량에서 가장 좋다는 연구가 기준선입니다.[32]",
+          "**데이터 길** — 데이터 레이크 → 분산 캐시 → GPU 클러스터. 쿠팡은 캐시로 클라우드 병렬 파일 시스템보다 입출력이 약 40% 빨라졌다고 발표했습니다.[7]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "7B 모델을 학습할 때 GPU 한 장에 드는 메모리 — ZeRO 단계별 어림",
+          "body": "섞은 정밀도 + Adam 은 파라미터 하나에 16바이트(가중치 2 + 기울기 2 + 옵티마이저 12)가 든다는 ZeRO 논문의 셈법입니다.[33] 7B × 16바이트 = 112GB 라 80GB 한 장에 안 들어가지만, GPU 8장에 옵티마이저·기울기·파라미터를 다 나누면(3단계) 한 장에 14GB 입니다(활성값은 따로). 7×(2+2+12/8)=38.5, 7×(2+(2+12)/8)=26.25 로 직접 셈했습니다.",
+          "lang": "text",
+          "code": "모델 7B, GPU 8장, 바이트/파라미터 = 가중치 2 + 기울기 2 + 옵티마이저 12\n나누지 않음   : 7 × 16          = 112.0 GB / GPU\n1단계(옵티마이저): 7 × (2+2+12/8)  =  38.5 GB / GPU\n2단계(+기울기)  : 7 × (2+14/8)    =  26.25 GB / GPU\n3단계(+파라미터): 7 × 16/8        =  14.0 GB / GPU"
+        }
+      ],
+      "how_far": "처음부터 거대 모델을 만드는 연구소 일보다 **공개 모델을 쇼핑 데이터로 계속 학습·후학습해 사내 기초 모델로 만드는 일**에 가깝다고 보는 게 맞습니다 — 쿠팡이 3B~20B 크기를 즐겨 쓴다고 밝혔기 때문입니다[3] {추론}.",
+      "refs": [3, 7, 32, 33],
+      "study": ["lec-cs336-parallel", "lec-cs336-data", "zero-paper", "coupang-llm-blog"]
+    },
+    {
+      "section": "task",
+      "quote": "Define process and experiments for an E2E foundation model.",
+      "short": "기초 모델을 데이터 → 학습 → 평가 → 배포까지 어떤 순서·실험으로 만들지 판을 짠다.",
+      "why": "학습 한 번에 GPU 비용이 크게 들기 때문에, 무엇을 어떤 순서로 실험할지가 곧 비용입니다 {추론}. 쿠팡은 GPU 부족·비용을 LLM 의 큰 어려움으로 꼽았고, 탐색 단계에서 70B 넘는 모델과 10B 밑 모델을 견주는 실험을 한다고 적었습니다.[3]",
+      "flows": [
+        "데이터 고르기·정제(중복·개인정보 제거)",
+        "작은 모델로 데이터 배합·하이퍼파라미터 탐색",
+        "본 학습(계속 사전학습)",
+        "후학습(지도 미세조정 → 선호 학습)",
+        "평가 묶음 채점 · 서비스 A/B 실험",
+        "배포·감시·다음 회차 데이터로 되먹임"
+      ],
+      "mine_from": 0,
+      "actually": {
+        "items": [
+          "**작은 모델로 먼저** — 큰 학습 전에 작은 모델로 데이터 배합을 비교하고 결과를 큰 모델로 옮깁니다(크기·데이터의 규칙성).[32]",
+          "**평가 묶음 고정** — 회차마다 같은 문항으로 채점해야 '나아졌나'를 말할 수 있습니다 {추론}.",
+          "**기록** — 데이터 판·코드 판·설정을 실험마다 남겨 다시 돌릴 수 있게 합니다. 쿠팡 플랫폼은 Polyaxon 으로 학습 생애주기를 관리한다고 적었습니다.[3]"
+        ]
+      },
+      "how_far": "Senior Staff·Staff 직급이라 실험 하나를 돌리는 것보다 **팀 전체가 따를 학습 절차와 판정 기준을 정하는 것**이 몫입니다 {추론}.",
+      "refs": [3, 32],
+      "study": ["lec-cs336-eval", "lec-cs336-data", "kohavi-book"]
+    },
+    {
+      "section": "task",
+      "quote": "Build E2E AI pipelines for storing/servicing foundational models.",
+      "short": "학습한 모델을 저장·버전 관리하고, 다른 서비스가 불러 쓸 수 있게 서빙까지 잇는 파이프라인을 만든다.",
+      "why": "쿠팡은 실시간 추론을 AWS EKS 위 NVIDIA Triton 으로, 대량 처리를 Ray + vLLM 으로 돌리고 vLLM 으로 여러 작업에서 처리량이 약 20배 올랐다고 밝혔습니다.[3] 학습과 서빙이 클라우드·사내 GPU 에 걸쳐 있어 저장소·네트워크를 맞추는 것이 어려움이라고 적었습니다.[3]",
+      "actually": {
+        "items": [
+          "**모델 저장소** — 체크포인트·토크나이저·평가 결과를 버전과 함께 둡니다 {추론}.",
+          "**실시간 서빙** — 지연이 중요한 검색·추천에는 작은 모델(증류한 것)을 Triton 같은 서버에 올립니다.[3]",
+          "**대량 처리** — 번역·요약·속성 뽑기처럼 실시간이 아닌 일은 vLLM 으로 몰아서 돌립니다. vLLM 은 KV 캐시(앞에서 계산한 값)를 쪽 단위로 나눠 메모리 낭비를 줄입니다.[3][17]",
+          "**임베딩 내보내기** — 모델이 만든 벡터를 다른 팀 모델의 입력으로 내보내는 길도 서빙의 한 꼴입니다.[3]"
+        ]
+      },
+      "how_far": "플랫폼 자체는 ML 플랫폼 팀이 맡고[4], 이 자리는 **그 위에 기초 모델이 학습 → 저장 → 서빙으로 끊김 없이 흐르게 잇는 것**까지로 보입니다 {추론}.",
+      "refs": [3, 4, 17],
+      "study": ["vllm-paper", "lec-cs25-serving", "coupang-ml-platform"]
+    },
+    {
+      "section": "task",
+      "quote": "Mentor and guide team members on frameworks, methodologies related to data lakes, data normalization, dimension reduction, visualization, statistical models.",
+      "short": "데이터 레이크·정규화·차원 축소·시각화·통계 모델을 팀원에게 가르치고 방법을 잡아 준다.",
+      "why": "이 팀은 ML 엔지니어·데이터 과학자·ML 인프라 전문가가 섞여 있다고 소개했습니다.[5] 공고가 '데이터 과학 5년'을 첫 자격으로 적은 것도[1] 모델 학습과 데이터 분석을 한 사람이 이어 줘야 하는 팀이라는 뜻입니다 {추론}.",
+      "actually": {
+        "items": [
+          "**데이터 레이크** — 원본을 그대로 쌓아 두는 저장소. 쿠팡 학습 데이터의 원본은 아시아·태평양 지역의 객체 저장소 레이크입니다.[7]",
+          "**정규화** — 특징마다 단위가 다르면(가격 원 단위 vs 평점 1~5) 평균 0·표준편차 1 로 맞춥니다.[24]",
+          "**차원 축소** — 수백 차원 임베딩을 정보 손실이 적게 몇 차원으로 줄입니다(PCA·UMAP).[24][25]",
+          "**통계 모델** — 실험 결과의 신뢰 구간, 지표 차이가 우연인지 판정.[29]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "정규화 + 주성분 분석(PCA) — 64차원 임베딩에서 진짜 정보가 몇 방향인가",
+          "body": "가상 상품 임베딩 1,000개(64차원)에 실제 정보는 3방향에만 넣었습니다. 정규화 후 특잇값 분해로 보면 앞 3개 성분이 정보의 98.6% 를 담습니다. 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "import numpy as np\nrng = np.random.default_rng(0)\nbase = rng.normal(size=(1000, 3)) * [5, 3, 2]\nX = base @ rng.normal(size=(3, 64)) + rng.normal(scale=0.5, size=(1000, 64))\nX = (X - X.mean(0)) / X.std(0)\nU, S, Vt = np.linalg.svd(X, full_matrices=False)\nratio = S**2 / (S**2).sum()\nprint(\"앞 5개 성분 설명 비율\", ratio[:5].round(3))\nprint(\"3개로 남는 정보\", round(float(ratio[:3].sum()), 3))\nprint(\"64차원 ->\", (X @ Vt[:3].T).shape)\n# 앞 5개 성분 설명 비율 [0.473 0.37  0.142 0.002 0.001]\n# 3개로 남는 정보 0.986\n# 64차원 -> (1000, 3)"
+        }
+      ],
+      "how_far": "직접 분석하는 것을 넘어 **팀이 같은 방식(같은 정규화·같은 검정·같은 그림)으로 일하게 기준을 세우는 것**이 '지도(guide)'의 뜻입니다 {추론}.",
+      "refs": [1, 5, 7, 24, 25, 29],
+      "study": ["sklearn-decomp", "lec-cs229-pca", "umap-paper"]
+    },
+    {
+      "section": "task",
+      "quote": "Ensure Model training is security, compliance aware.",
+      "short": "학습 데이터에 개인정보·민감 정보가 새지 않게 하고, 나라별 법·사내 규정을 지키며 모델을 학습시킨다.",
+      "why": "LLM 은 학습한 글을 그대로 토해 낼 수 있어서, 학습 데이터에 섞인 이름·전화번호가 공격으로 뽑혀 나온 사례가 연구로 보고됐습니다.[20] 근무지 싱가포르의 개인정보 감독기관(PDPC)은 AI 추천·결정 시스템을 만들 때 개인정보를 어떻게 다뤄야 하는지 지침을 냈습니다(2024-03).[18]",
+      "actually": {
+        "items": [
+          "**지우고 넣기** — 주문·리뷰 글에서 이름·주소·전화번호를 학습 전에 가립니다 {추론}.",
+          "**외워 버림 점검** — 학습한 모델에 데이터 앞부분을 주고 뒷부분을 그대로 이어 쓰는지 시험합니다.[20]",
+          "**목적·동의** — 개인정보를 모델 개발에 쓸 때 동의·예외 조항(사업 개선·연구)과 고지를 어떻게 하는지가 지침의 내용입니다.[18]",
+          "**데이터 위치** — 학습 데이터가 어느 지역 저장소에 있고 어느 GPU 클러스터로 옮겨지는지가 규정과 닿습니다. 쿠팡은 여러 지역 클러스터를 쓴다고 밝혔습니다.[3][7]"
+        ]
+      },
+      "how_far": "법 해석은 법무·보안 조직이 정하고, 이 자리는 **학습 파이프라인 안에 가림·점검·접근 기록을 기본으로 넣는 것**을 맡는다고 보는 게 맞습니다 {추론}.",
+      "refs": [3, 7, 18, 20],
+      "study": ["pdpc-ai", "extract-paper"]
+    },
+    {
+      "section": "task",
+      "quote": "Collaborate with cross-team members to understand the requirements ensuring the foundational models; knowledge captured aligns with the company’s overall AI strategy.",
+      "short": "검색·카탈로그·광고 팀이 무엇을 원하는지 듣고, 기초 모델과 지식 그래프가 회사 AI 방향에 맞게 가게 한다.",
+      "why": "쿠팡은 LLM 을 검색·광고·카탈로그·추천 여러 곳에 쓴다고 적었고[3], 이 팀의 번역 모델은 영어권 고객의 검색 품질을 올리는 데 쓰였다고 소개했습니다.[5] 기초 모델은 쓰는 팀이 있어야 값이 있습니다 {추론}.",
+      "how_far": "요구를 받아 적는 데서 그치지 않고 **여러 팀의 요구를 한 모델이 감당할지, 팀별 미세조정으로 나눌지**를 정하는 것까지입니다 {추론}.",
+      "refs": [3, 5]
+    },
+    {
+      "section": "qualification",
+      "quote": "5+ years of demonstrated data science, experience in building large scale foundational models for eCommerce scenarios.",
+      "short": "데이터 과학 5년 이상, 그리고 쇼핑 분야에서 큰 기초 모델을 만들어 본 경험.",
+      "why": "직급이 'Senior Staff / Staff' 둘을 함께 적은 공고라 경력에 따라 직급이 갈립니다.[1] 같은 회사 마운틴뷰 Senior Staff ML 공고는 관련 경력 8년 이상을 적었습니다.[34]",
+      "how_far": "'쇼핑 기초 모델'을 처음부터 만들어 본 사람은 드물어서, **상품·검색·추천 데이터로 큰 모델을 계속 학습·미세조정해 서비스에 넣은 경험**이면 이 줄에 닿는다고 봅니다 {추론}. 전형은 서류 → 직무 적합 면접 → 집중 면접 → 제안입니다.[1]",
+      "refs": [1, 34]
+    },
+    {
+      "section": "qualification",
+      "quote": "Expertise in large language model post-training and deployment.",
+      "short": "사전학습이 끝난 LLM 을 지시 따르기·선호에 맞게 다듬는 후학습과, 그 모델을 실제로 배포하는 일의 전문성.",
+      "why": "쿠팡이 가장 많이 쓰는 방법은 프롬프트 예시 넣기(ICL)와 지도 미세조정(SFT)이라고 밝혔습니다.[3] 사전학습만 한 모델은 질문에 답하는 습관이 없어서, 사람이 쓴 답으로 가르치고 사람 선호로 다듬는 단계가 필요합니다.[13]",
+      "actually": {
+        "items": [
+          "**지도 미세조정(SFT)** — 질문·모범 답 쌍으로 학습합니다.[13]",
+          "**선호 학습** — 두 답 중 나은 쪽을 고른 데이터로 다듬습니다. 보상 모델 + 강화학습(RLHF)[13] 또는 보상 모델 없이 바로 학습하는 DPO.[14]",
+          "**가벼운 미세조정(LoRA)** — 큰 가중치는 얼리고 작은 행렬만 학습해 비용을 줄입니다.[15]",
+          "**배포** — 증류·양자화로 작게 만들어 지연 안에 넣습니다.[3]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "DPO 손실 — 좋은 답의 확률을 더 올릴수록 손실이 준다",
+          "body": "기준 모델의 로그확률을 둘 다 −12 로 두고, 학습 중인 모델이 좋은 답·나쁜 답에 준 로그확률을 바꿔 봅니다(β=0.1).[14] 같으면 손실 log 2 ≈ 0.693, 좋은 답을 더 높이면 0.513, 거꾸로면 0.913. 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "import math\ndef dpo_loss(pw, pl, rw, rl, beta=0.1):\n    margin = beta * ((pw - rw) - (pl - rl))\n    return -math.log(1 / (1 + math.exp(-margin))), margin\nfor pw, pl in [(-12.0, -12.0), (-10.0, -14.0), (-14.0, -10.0)]:\n    loss, m = dpo_loss(pw, pl, -12.0, -12.0)\n    print(f\"logp(좋은 답)={pw} logp(나쁜 답)={pl} -> 차이 {m:+.1f}, 손실 {loss:.3f}\")\n# logp(좋은 답)=-12.0 logp(나쁜 답)=-12.0 -> 차이 +0.0, 손실 0.693\n# logp(좋은 답)=-10.0 logp(나쁜 답)=-14.0 -> 차이 +0.4, 손실 0.513\n# logp(좋은 답)=-14.0 logp(나쁜 답)=-10.0 -> 차이 -0.4, 손실 0.913"
+        }
+      ],
+      "level": {
+        "basic": "SFT·RLHF·DPO 의 차이를 설명하고 공개 라이브러리로 작은 모델을 미세조정한다",
+        "work": "쇼핑 데이터로 선호 데이터를 만들고 후학습해 평가 묶음과 서비스 지표로 효과를 보인다",
+        "team": "후학습 → 증류 → 서빙의 전 과정을 설계하고 어느 단계에 GPU 를 쓸지 정한다"
+      },
+      "how_far": "'전문성(expertise)'이라 라이브러리를 돌려 본 수준이 아니라 **데이터 품질·손실 선택·과적합 징후를 스스로 판단**하는 수준입니다 {추론}.",
+      "refs": [3, 13, 14, 15],
+      "study": ["lec-cs336-post", "lec-cme295-tuning", "instructgpt-paper", "dpo-paper", "lora-paper"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Deep understanding of AI/LLM/AIGC/ML architecture.",
+      "short": "AI·LLM·생성형 AI(AIGC)·머신러닝 모델의 안쪽 구조를 깊이 안다.",
+      "why": "기초 모델을 직접 학습시키려면 구조 선택(어텐션·위치 표현·정규화)과 그 비용을 알아야 합니다 {추론}. 쿠팡은 한국어·중국어의 띄어쓰기·글자 표기 때문에 토크나이저(글을 토큰으로 자르는 장치)가 품질을 흔든다고 적었습니다.[3]",
+      "actually": {
+        "items": [
+          "**트랜스포머** — 어텐션·피드포워드·정규화가 어떻게 쌓이는지.[35]",
+          "**토크나이저** — 같은 상품명이 몇 토큰으로 잘리는지가 비용·품질을 바꿉니다.[3]",
+          "**이미지-글 모델** — 이미지 인코더를 LLM 에 잇는 구조(LLaVA).[31]",
+          "**생성형 이미지(AIGC)** — 확산 모델 같은 생성 구조 {추론}."
+        ]
+      },
+      "how_far": "구조도를 외우는 것이 아니라 **'이 문제에 이 구조를 고르면 학습·서빙 비용이 어떻게 바뀌나'를 숫자로 말하는 것**이 깊은 이해입니다 {추론}.",
+      "refs": [3, 31, 35],
+      "study": ["lec-cs336-arch", "lec-cs231n-vl"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Strong statistical/mathematical background in defining metrics, learning functions, and result analysis.",
+      "short": "지표를 정하고, 학습에 쓸 손실 함수를 고르고, 결과를 통계로 해석하는 수학 기초가 탄탄해야 한다.",
+      "why": "쿠팡의 관련성 논문은 오프라인 점수와 함께 서비스의 결함 비율·구매율로 효과를 보고했습니다.[6] 무엇을 재느냐(지표)와 무엇을 줄이느냐(손실 함수)가 맞지 않으면 학습이 엉뚱한 쪽으로 갑니다 {추론}.",
+      "actually": {
+        "items": [
+          "**지표 정하기** — 검색 결과는 위쪽 자리의 무게를 크게 두는 NDCG 로 잽니다.[30]",
+          "**손실 함수** — 분류는 교차 엔트로피, 선호 학습은 DPO 손실처럼 일마다 다릅니다.[14]",
+          "**결과 분석** — A/B 실험의 차이가 우연인지 신뢰 구간으로 봅니다.[29]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "NDCG@5 — 관련 상품을 위로 올리면 점수가 얼마나 오르나",
+          "body": "검색 결과 다섯 칸의 관련도(0~3, 가상)를 옛 모델 [1,3,0,2,0], 새 모델 [3,2,1,0,0] 으로 두었습니다.[30] 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "import math\ndef ndcg(rels, k):\n    dcg = sum((2**r - 1) / math.log2(i + 2) for i, r in enumerate(rels[:k]))\n    ideal = sorted(rels, reverse=True)\n    idcg = sum((2**r - 1) / math.log2(i + 2) for i, r in enumerate(ideal[:k]))\n    return dcg / idcg\nprint(\"옛 모델 NDCG@5\", round(ndcg([1, 3, 0, 2, 0], 5), 3))\nprint(\"새 모델 NDCG@5\", round(ndcg([3, 2, 1, 0, 0], 5), 3))\n# 옛 모델 NDCG@5 0.714\n# 새 모델 NDCG@5 1.0"
+        }
+      ],
+      "how_far": "지표 하나를 계산하는 것보다 **'이 지표가 오르면 고객에게 무엇이 좋아지나'를 설명하고 지표끼리 충돌할 때 고르는 것**까지입니다 {추론}.",
+      "refs": [6, 14, 29, 30],
+      "study": ["kohavi-book", "lec-cme295-eval"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Significant experience in SQL, Python, PySpark, Scala and R",
+      "short": "SQL·파이썬·PySpark·스칼라·R 을 실무에서 많이 써 봤어야 한다. 데이터 준비가 일의 큰 몫이다.",
+      "why": "쿠팡 ML 플랫폼은 Spark·Hive·Presto 같은 대용량 처리 엔진과 붙어 있고[4], LLM 데이터 준비는 대부분 Zeppelin 노트북에서 쿠버네티스 위 Spark 로 돌린다고 적었습니다.[3] 다섯 언어를 다 깊이 쓰기보다 데이터 쪽 언어를 두루 읽을 수 있어야 한다는 뜻입니다 {추론}.",
+      "level": {
+        "basic": "SQL 로 조인·집계·윈도 함수를 쓰고, 파이썬으로 데이터를 다듬는다",
+        "work": "PySpark 로 수억 줄의 학습 데이터를 중복 제거·필터링하고 파티션·셔플 비용을 줄인다",
+        "team": "기존 스칼라 Spark 잡·R 분석 코드를 읽고 고쳐 학습 데이터 파이프라인에 잇는다"
+      },
+      "how_far": "파이썬·SQL·PySpark 는 매일 쓰는 수준, 스칼라·R 은 **남이 쓴 코드를 읽고 고칠 수 있는 수준**이 현실적인 최소선입니다 {추론}.",
+      "refs": [3, 4],
+      "study": ["pyspark-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Proficiency in PyTorch/TensorFlow, Spark, BigQuery",
+      "short": "모델은 PyTorch(또는 TensorFlow), 데이터는 Spark·BigQuery 로 능숙하게 다룬다.",
+      "why": "쿠팡의 LLM 학습은 PyTorch 분산 학습 연산자(PyTorchJob)와 DeepSpeed 위에서 돕니다.[3] BigQuery 는 구글 클라우드의 서버 없는 데이터 웨어하우스(분석용 저장소)로, SQL 로 대량 데이터를 바로 질의합니다.[22] 쿠팡 글에 BigQuery 이야기는 없어 어느 데이터에 쓰는지는 알 수 없습니다 {추론}.",
+      "how_far": "PyTorch 로 **분산 학습 스크립트를 직접 쓰고 고칠 수 있는 것**이 핵심이고, BigQuery 는 SQL 을 알면 며칠이면 익숙해지는 도구입니다 {추론}.",
+      "refs": [3, 22],
+      "study": ["bq-docs", "lec-cs336-parallel"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Proficiency in AI coding Cursor/Windsurf/Claude Code/Codex.",
+      "short": "Cursor·Windsurf·Claude Code·Codex 같은 AI 코딩 도구를 일에 능숙하게 쓴다.",
+      "why": "공고가 도구 이름을 넷이나 적었습니다 — AI 를 만드는 팀이 일하는 방식에도 AI 를 쓰기를 바란다는 뜻입니다[1] {추론}. Claude Code 는 터미널에서 코드베이스를 읽고 고치고 명령을 돌리는 에이전트형 코딩 도구입니다.[26]",
+      "how_far": "자동 완성을 받는 수준보다 **에이전트에게 데이터 파이프라인·실험 코드를 맡기고, 결과를 검토·시험으로 확인하는 습관**이 '능숙'입니다 {추론}. 면접에서 어떻게 쓰는지 물을 수 있습니다 {추론}.",
+      "refs": [1, 26],
+      "study": ["claude-code-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience creating complex data visualization tools, frameworks, and techniques.",
+      "short": "복잡한 데이터를 한눈에 보이게 하는 시각화 도구·틀을 직접 만들어 봤어야 한다.",
+      "why": "주요 업무에 팀원에게 시각화 방법을 지도하는 일이 있습니다.[1] 기초 모델 실험은 손실 곡선·평가 점수·임베딩 분포처럼 볼 것이 많아 그림 없이는 판단이 느립니다 {추론}.",
+      "actually": {
+        "items": [
+          "**학습 곡선판** — 실험마다 손실·평가 점수를 겹쳐 그려 어느 설정이 나은지 봅니다 {추론}.",
+          "**임베딩 지도** — 상품 임베딩을 2차원으로 줄여(UMAP) 분류끼리 뭉치는지 봅니다.[25]",
+          "**오류 분석판** — 틀린 답을 분야·길이·언어별로 쪼개 봅니다 {추론}."
+        ]
+      },
+      "how_far": "그래프 한 장이 아니라 **팀이 매일 쓰는 대시보드·재사용 라이브러리**를 만들어 본 경험이 이 줄입니다 {추론}.",
+      "refs": [1, 25],
+      "study": ["umap-paper"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience in dimension reduction in big data.",
+      "short": "수억 건·수백 차원 데이터를 정보 손실 적게 몇 차원으로 줄여 본 경험.",
+      "why": "LLM 임베딩은 수백~수천 차원이라 저장·검색·시각화 비용이 큽니다 {추론}. 주요 업무에도 차원 축소 지도가 들어 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**PCA** — 분산이 큰 방향 몇 개만 남깁니다. 데이터가 크면 무작위 SVD·부분 학습(incremental) 판을 씁니다.[24]",
+          "**UMAP** — 이웃 관계를 지키며 2~3차원으로 줄여 그림에 씁니다.[25]",
+          "**큰 데이터에서** — 표본을 뽑아 축을 학습하고 전체에 적용하거나, Spark 의 분산 PCA 를 씁니다 {추론}."
+        ]
+      },
+      "how_far": "기법 이름보다 **'몇 차원으로 줄이면 검색 정확도가 얼마나 떨어지나'를 재서 정하는 것**까지입니다 {추론}.",
+      "refs": [1, 24, 25],
+      "study": ["sklearn-decomp", "lec-cs229-pca"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Proficient in cloud analytical stacks [ Lakes, warehouse, ETL pipelines]",
+      "short": "클라우드의 데이터 레이크·웨어하우스·ETL(뽑기·바꾸기·싣기) 파이프라인을 능숙하게 다룬다.",
+      "why": "쿠팡의 학습 데이터 원본은 아시아·태평양 지역 객체 저장소 레이크이고, 분산 캐시가 그 데이터를 GPU 클러스터로 끌어옵니다.[7] 레이크(원본을 싸게 쌓음)와 웨어하우스(정리해서 빠르게 질의)를 합친 '레이크하우스'가 흔한 구조입니다.[21]",
+      "flows": [
+        "원본 수집(주문·검색·상품 글) → 레이크",
+        "ETL 로 정제·중복 제거·가림",
+        "웨어하우스 표(분석·지표)",
+        "학습용 묶음(토큰화) → 캐시 → GPU"
+      ],
+      "mine_from": 1,
+      "how_far": "인프라를 세우는 건 데이터 플랫폼 팀이고, 이 자리는 **학습 데이터용 ETL 을 직접 짜고 비용·신선도를 관리하는 것**이라고 보는 게 맞습니다 {추론}.",
+      "refs": [7, 21],
+      "study": ["lakehouse-paper", "pyspark-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience with inference platforms in AWS, Azure, and other open-source platforms.",
+      "short": "AWS·Azure 의 추론 서비스와 오픈소스 서빙 도구(vLLM·Triton 등)로 모델을 띄워 본 경험.",
+      "why": "쿠팡은 실시간 추론을 AWS EKS 위 Triton 으로 돌린다고 밝혔습니다.[3] AWS SageMaker 와 Azure ML 은 모델을 올리면 호출 주소(엔드포인트)를 주는 관리형 추론 서비스입니다.[27][28]",
+      "how_far": "한 플랫폼에 깊이, 다른 곳은 **같은 모델을 옮겨 띄울 수 있는 정도**면 됩니다 {추론}. 지연·처리량·비용을 재서 어느 길이 나은지 말할 수 있어야 합니다 {추론}.",
+      "refs": [3, 27, 28],
+      "study": ["vllm-paper", "lec-cs336-inference"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Result-oriented, with a bias towards customer obsession, flexibility, and impact.",
+      "short": "결과로 말하고, 고객을 먼저 생각하고, 계획이 바뀌어도 유연하게 영향 큰 일을 고른다.",
+      "why": "쿠팡 회사 소개는 고객이 '쿠팡 없이 어떻게 살았나'라고 말하게 하는 것을 존재 이유로 적었습니다.[1] 팀 글도 '고객을 놀라게 하는' 정신을 팀의 사명으로 적었습니다.[5]",
+      "how_far": "면접에서 **'그 모델로 고객 경험이 무엇이 바뀌었나'를 숫자로** 답할 사례를 준비하는 것이 최소선입니다 {추론}.",
+      "refs": [1, 5]
+    },
+    {
+      "section": "qualification",
+      "quote": "Strong written and verbal communication and teamwork skills",
+      "short": "글과 말로 설명하고 팀으로 일하는 능력. 여러 나라 팀과 영어로 일하는 자리다.",
+      "why": "팀은 전 세계에 흩어져 있다고 소개했고[5], 싱가포르 공고 본문도 영어입니다.[1] 기초 모델을 여러 팀이 쓰게 하려면 설계 문서와 결과 보고가 필요합니다 {추론}.",
+      "how_far": "실험 결과를 **한 쪽짜리 문서로 결론부터** 쓰고, 다른 팀 사람이 그걸 보고 결정할 수 있게 하는 수준입니다 {추론}.",
+      "refs": [1, 5]
+    },
+    {
+      "section": "qualification",
+      "quote": "Passion for Large language models, NLP, and Machine Learning at scale",
+      "short": "LLM·자연어 처리·대규모 머신러닝에 대한 열정 — 최신 흐름을 스스로 따라가는 사람.",
+      "why": "팀은 지식 그래프·AI 에이전트·LLM·강화학습을 함께 다루는 '세계 수준의 팀'을 만들겠다고 적었습니다.[1]",
+      "how_far": "열정은 말보다 **최근 직접 돌려 본 실험·읽은 논문·공개한 코드**로 보입니다 {추론}.",
+      "refs": [1],
+      "study": ["hands-on-llm", "ai-eng-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Education: B.S, M.S in Computer science or Mathematics, or related field",
+      "short": "컴퓨터공학이나 수학 또는 관련 전공 학사·석사. 박사는 요건이 아니다.",
+      "why": "연구 성격이 강한 자리지만 공고는 학사·석사만 적었습니다.[1] 수학을 따로 적은 것은 통계·수학 기초를 자격으로 요구한 줄과 이어집니다.[1]",
+      "how_far": "통계·전기전자·물리 같은 관련 전공이면 됩니다 {추론}. 논문·박사는 공고에 없는 가산점입니다 {추론}.",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "Application Review - Job Fit Interview - Focus Interview – Offer",
+      "short": "서류 → 직무 적합 면접 → 집중 면접 → 처우 제안 순서다. 일정·결과는 지원서의 이메일로 온다.",
+      "why": "쿠팡 공고에 공통으로 붙는 전형 안내입니다. 직무·일정에 따라 바뀔 수 있다고 적었습니다.[1]",
+      "how_far": "연봉은 공고에 없고 마지막 제안 단계에서 정해집니다.[1] 직급(Senior Staff 인지 Staff 인지)도 경험에 따라 바뀔 수 있다고 적었습니다.[1]",
+      "refs": [1]
+    }
+  ],
+  "resources": [
+    {
+      "id": "coupang-llm-blog",
+      "title": "Accelerating Coupang's AI Journey with LLMs",
+      "by": "쿠팡 ML 플랫폼 팀 · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/",
+      "why": "쿠팡이 LLM 을 어떻게 학습(PyTorchJob·DeepSpeed)·서빙(Triton·vLLM)하고 어떤 크기를 쓰는지. 업무 '기초 모델 학습·서빙 파이프라인'의 회사 쪽 그림."
+    },
+    {
+      "id": "coupang-ml-platform",
+      "title": "Meet Coupang's Machine Learning Platform",
+      "by": "쿠팡 ML 플랫폼 팀 · 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+      "why": "Spark·Hive·Presto 와 붙은 플랫폼, 사내·클라우드 GPU — 이 자리의 파이프라인이 올라설 바닥."
+    },
+    {
+      "id": "coupang-aik-story",
+      "title": "Inside Coupang's AI and Knowledge Engineering team",
+      "by": "쿠팡 채용 사이트 · 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/inside-coupang-s-ai-and-knowledge-engineering-team-wowing-customers-and-the-world/",
+      "why": "이 팀이 다루는 주제(지식 그래프·개체명 인식·에이전트·번역·추론 엔진)와 사람 구성. 지원 전 가장 먼저 읽을 팀 소개."
+    },
+    {
+      "id": "csrm-paper",
+      "title": "CSRM-LLM: Embracing Multilingual LLMs for Cold-Start Relevance Matching in Emerging E-commerce Markets",
+      "by": "쿠팡 · CIKM 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2509.01566",
+      "why": "쿠팡이 직접 쓴 쇼핑 LLM 논문 — 큰 모델을 작은 모델로 증류하고 효과를 서비스 지표로 재는 법. 자격 '지표 정하기·결과 분석'의 본보기."
+    },
+    {
+      "id": "ai-eng-book",
+      "title": "AI 엔지니어링 — 기초 모델로 애플리케이션 구축하기",
+      "by": "칩 후옌 · 변성윤 옮김 · 2025",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=AI%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+      "why": "기초 모델의 평가·미세조정·데이터·추론 최적화를 한국어 한 권으로. 공고 전체의 지도."
+    },
+    {
+      "id": "hands-on-llm",
+      "title": "핸즈온 LLM",
+      "by": "제이 알아마르 · 마르턴 흐루턴도르스트 · 박해선 옮김 · 한빛미디어",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "입문",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%ED%95%B8%EC%A6%88%EC%98%A8%20LLM",
+      "why": "토크나이저·임베딩·미세조정을 그림과 코드로. 자격 'LLM 구조 이해'의 입문."
+    },
+    {
+      "id": "instructgpt-paper",
+      "title": "Training language models to follow instructions with human feedback (InstructGPT)",
+      "by": "Ouyang 외 · OpenAI · 2022",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2203.02155",
+      "why": "SFT → 보상 모델 → 강화학습으로 이어지는 후학습의 원형. 자격 'LLM 후학습'."
+    },
+    {
+      "id": "dpo-paper",
+      "title": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+      "by": "Rafailov 외 · NeurIPS 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2305.18290",
+      "why": "보상 모델 없이 선호 데이터로 바로 다듬는 법. 후학습에서 가장 흔히 쓰는 손실."
+    },
+    {
+      "id": "lora-paper",
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "by": "Hu 외 · Microsoft · 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2106.09685",
+      "why": "큰 모델을 싸게 미세조정하는 기본기 — 팀별 미세조정을 여러 벌 둘 때."
+    },
+    {
+      "id": "zero-paper",
+      "title": "ZeRO: Memory Optimizations Toward Training Trillion Parameter Models",
+      "by": "Rajbhandari 외 · Microsoft · 2019",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/1910.02054",
+      "why": "쿠팡이 가장 많이 쓴다는 DeepSpeed ZeRO 의 원리 — 업무 '기초 모델 학습'에서 메모리를 어떻게 나누나."
+    },
+    {
+      "id": "compound-ai",
+      "title": "The Shift from Models to Compound AI Systems",
+      "by": "Berkeley AI Research (BAIR) · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/",
+      "why": "공고의 'compound AI' 가 무슨 뜻인지 — 모델·검색기·도구를 엮은 시스템."
+    },
+    {
+      "id": "react-paper",
+      "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+      "by": "Yao 외 · ICLR 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2210.03629",
+      "why": "생각 → 도구 호출 → 관찰의 에이전트 기본 꼴. 업무 'AI 에이전트 시스템'."
+    },
+    {
+      "id": "vllm-paper",
+      "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+      "by": "Kwon 외 · SOSP 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2309.06180",
+      "why": "쿠팡이 대량 처리에 쓰는 vLLM 의 원리 — 업무 '서빙 파이프라인'·자격 '추론 플랫폼'."
+    },
+    {
+      "id": "pdpc-ai",
+      "title": "Advisory Guidelines on Use of Personal Data in AI Recommendation and Decision Systems",
+      "by": "싱가포르 개인정보보호위원회(PDPC) · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.pdpc.gov.sg/guidelines-and-consultation/2024/02/advisory-guidelines-on-use-of-personal-data-in-ai-recommendation-and-decision-systems",
+      "why": "근무지 싱가포르에서 개인정보로 AI 를 만들 때의 기준 — 업무 '보안·규정을 지키는 학습'."
+    },
+    {
+      "id": "extract-paper",
+      "title": "Extracting Training Data from Large Language Models",
+      "by": "Carlini 외 · USENIX Security 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2012.07805",
+      "why": "학습 데이터가 모델에서 새어 나오는 실제 사례 — 학습 전에 왜 가려야 하나."
+    },
+    {
+      "id": "lakehouse-paper",
+      "title": "Lakehouse: A New Generation of Open Platforms that Unify Data Warehousing and Advanced Analytics",
+      "by": "Armbrust 외 · CIDR 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf",
+      "why": "레이크·웨어하우스·ETL 이 어떻게 한 구조로 묶이나 — 자격 '클라우드 분석 스택'."
+    },
+    {
+      "id": "bq-docs",
+      "title": "BigQuery overview",
+      "by": "Google Cloud 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://cloud.google.com/bigquery/docs/introduction",
+      "why": "공고에 적힌 BigQuery 의 기본 — 서버 없는 웨어하우스에서 SQL 로 대량 질의."
+    },
+    {
+      "id": "pyspark-docs",
+      "title": "PySpark Documentation",
+      "by": "Apache Spark 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://spark.apache.org/docs/latest/api/python/index.html",
+      "why": "학습 데이터 준비의 주 도구. 자격 'PySpark·Spark'."
+    },
+    {
+      "id": "sklearn-decomp",
+      "title": "scikit-learn User Guide · Decomposing signals in components (PCA 등)",
+      "by": "scikit-learn 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://scikit-learn.org/stable/modules/decomposition.html",
+      "why": "PCA·무작위 SVD·부분 학습 PCA — 자격 '큰 데이터 차원 축소'의 출발점."
+    },
+    {
+      "id": "umap-paper",
+      "title": "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction",
+      "by": "McInnes · Healy · Melville · 2018",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/1802.03426",
+      "why": "임베딩을 2차원 지도로 그릴 때 가장 흔히 쓰는 방법 — 시각화·차원 축소 요건."
+    },
+    {
+      "id": "claude-code-docs",
+      "title": "Claude Code overview",
+      "by": "Anthropic 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.anthropic.com/en/docs/claude-code/overview",
+      "why": "공고에 이름이 적힌 AI 코딩 도구 중 하나 — 에이전트에게 코드 작업을 맡기는 법."
+    },
+    {
+      "id": "kohavi-book",
+      "title": "Trustworthy Online Controlled Experiments",
+      "by": "Ron Kohavi · Diane Tang · Ya Xu · Cambridge University Press · 2020",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://experimentguide.com/",
+      "why": "A/B 실험으로 효과를 믿을 수 있게 재는 법 — 자격 '결과 분석'."
+    },
+    {
+      "id": "lec-cs336-post",
+      "title": "Stanford CS336 Lecture 15: Mid/Post-Training 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/2oH6PWPrYFo",
+      "why": "중간 학습·후학습의 전체 그림. 자격 'LLM 후학습'."
+    },
+    {
+      "id": "lec-cs336-rlvr",
+      "title": "Stanford CS336 Lecture 16: Post-Training — RLVR 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "심화",
+      "url": "/lectures/dIFAi87Ws4E",
+      "why": "확인 가능한 보상으로 하는 강화학습 후학습 — 후학습의 최신 흐름."
+    },
+    {
+      "id": "lec-cme295-tuning",
+      "title": "Stanford CME295 Lecture 5: LLM tuning 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/PmW_TMQ3l0I",
+      "why": "SFT·선호 학습·LoRA 를 한 강의로. 후학습 입문."
+    },
+    {
+      "id": "lec-cme295-agentic",
+      "title": "Stanford CME295 Lecture 7: Agentic LLMs 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/h-7S6HNq0Vg",
+      "why": "LLM 이 도구를 쓰는 에이전트가 되는 원리. 업무 'AI 에이전트 시스템'."
+    },
+    {
+      "id": "lec-cs329z-patterns",
+      "title": "Stanford CS329Z Lecture 6: AI Agent Design Patterns 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/JC_pLC5EX_w",
+      "why": "ReAct·CodeAct 같은 에이전트 설계 꼴 비교."
+    },
+    {
+      "id": "lec-cs336-parallel",
+      "title": "Stanford CS336 Lecture 7: Parallelism 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "심화",
+      "url": "/lectures/SzpOcwdIL0Y",
+      "why": "데이터·모델 병렬과 ZeRO — 큰 모델을 여러 GPU 로 학습시키는 법."
+    },
+    {
+      "id": "lec-cs336-data",
+      "title": "Stanford CS336 Lecture 14: Data 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/5sxHosTLPF8",
+      "why": "학습 데이터 거르기·중복 제거·배합 — 기초 모델 실험의 첫 단계."
+    },
+    {
+      "id": "lec-cs336-eval",
+      "title": "Stanford CS336 Lecture 12: Evaluation 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/JpAxdTWQJxM",
+      "why": "언어 모델을 어떻게 재나 — 실험 절차의 평가 묶음 정하기."
+    },
+    {
+      "id": "lec-cs336-arch",
+      "title": "Stanford CS336 Lecture 3: Architectures 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/lVynu4bo1rY",
+      "why": "트랜스포머 구조의 선택지 — 자격 'LLM 구조 이해'."
+    },
+    {
+      "id": "lec-cs336-inference",
+      "title": "Stanford CS336 Lecture 10: Inference 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/EfM546A79aM",
+      "why": "추론 지연·메모리·KV 캐시 — 자격 '추론 플랫폼'."
+    },
+    {
+      "id": "lec-cs25-serving",
+      "title": "Stanford CS25 V6: Serving Transformers — Lessons from the Trenches 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/ZUdIsRZhWXI",
+      "why": "실제 서빙 현장의 병목 — 업무 '서빙 파이프라인'."
+    },
+    {
+      "id": "lec-cs231n-vl",
+      "title": "Stanford CS231N Lecture 16: Vision and Language 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/mQOK0Mfyrkk",
+      "why": "이미지-글 모델의 원리 — 업무 '언어·시각 이해·생성 모델'."
+    },
+    {
+      "id": "lec-cs229-pca",
+      "title": "Stanford CS229 Lecture 20: GMM (EM), PCA 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/J7CossjMvEg",
+      "why": "PCA 를 수식부터 — 차원 축소를 팀원에게 가르칠 바탕."
+    },
+    {
+      "id": "lec-cme295-eval",
+      "title": "Stanford CME295 Lecture 8: LLM Evaluation 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/8fNP4N46RRo",
+      "why": "LLM 평가 지표와 함정 — 자격 '지표 정하기·결과 분석'."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "회사 글로 쿠팡의 LLM 지도 그리기",
+      "time": "1주",
+      "goal": "쿠팡이 LLM 을 어디에 쓰고 어떻게 학습·서빙하는지 한 장 그림으로 설명한다",
+      "task": "팀 소개·ML 플랫폼 글 두 편·CSRM 논문을 읽고 '데이터 레이크 → Spark 준비 → PyTorchJob 학습 → Triton/vLLM 서빙' 흐름도를 직접 그린다",
+      "resources": ["coupang-aik-story", "coupang-llm-blog", "coupang-ml-platform", "csrm-paper"]
+    },
+    {
+      "title": "학습 데이터 파이프라인",
+      "time": "2주",
+      "goal": "PySpark 로 쇼핑 글을 정제·중복 제거·가림해 학습용 묶음을 만든다",
+      "task": "가상 상품 설명·리뷰 100만 줄을 만들어 PySpark 로 전화번호·이메일을 가리고 거의 같은 글을 지운 뒤, 남은 양과 처리 시간을 표로 남긴다",
+      "resources": ["pyspark-docs", "lakehouse-paper", "lec-cs336-data", "pdpc-ai", "extract-paper"]
+    },
+    {
+      "title": "후학습 직접 해 보기",
+      "time": "3주",
+      "goal": "작은 공개 모델에 SFT → DPO 를 해서 쇼핑 질문 답이 나아졌는지 숫자로 보인다",
+      "task": "가상 쇼핑 질문·모범 답 500쌍으로 LoRA SFT, 좋은 답/나쁜 답 300쌍으로 DPO 를 돌리고, 고정 평가 묶음 100문항 정답률을 단계마다 비교한다",
+      "resources": ["lec-cme295-tuning", "lec-cs336-post", "instructgpt-paper", "dpo-paper", "lora-paper", "hands-on-llm"]
+    },
+    {
+      "title": "분산 학습과 서빙",
+      "time": "2주",
+      "goal": "모델 크기·GPU 수로 메모리를 어림하고, 학습한 모델을 vLLM 으로 띄워 처리량을 잰다",
+      "task": "ZeRO 단계별 메모리를 표로 계산하고, 3단계에서 후학습한 모델을 vLLM 으로 띄워 동시 요청 수에 따른 초당 토큰 수를 그래프로 만든다",
+      "resources": ["zero-paper", "lec-cs336-parallel", "vllm-paper", "lec-cs336-inference", "lec-cs25-serving"]
+    },
+    {
+      "title": "분석·시각화·에이전트",
+      "time": "2주",
+      "goal": "임베딩을 차원 축소해 그림으로 보이고, 모델을 도구로 쓰는 작은 쇼핑 에이전트를 평가한다",
+      "task": "가상 상품 임베딩을 PCA·UMAP 으로 2차원 지도로 그리고, 상품 검색 도구를 쓰는 ReAct 에이전트를 만들어 단계별 정답률·NDCG 를 기록하는 대시보드를 만든다",
+      "resources": ["sklearn-decomp", "umap-paper", "lec-cs229-pca", "react-paper", "lec-cme295-agentic", "lec-cme295-eval", "kohavi-book"]
+    }
+  ],
+  "pay": {
+    "summary": "싱가포르 공고에는 연봉이 없다. 같은 회사 **마운틴뷰 Senior Staff MLE 공고는 기본급 $174,000~299,000**(+연 보너스 0~20%)를 적었지만 미국 근무지 기준이고, 공시로 확인되는 쿠팡 Inc. 전 직원 중위 보수는 **$33,831**(2025년) — 둘 다 이 자리 숫자가 아니다",
+    "rows": [
+      {
+        "label": "같은 회사 미국 Senior Staff MLE 공고 기본급",
+        "value": "$174,000 ~ $299,000 / 년",
+        "basis": "공고 · 2026년 (미국)",
+        "peer": true,
+        "note": "마운틴뷰 AI Foundations 자리 — 기본급만이고 지역 시장·경력에 따라 다르다고 적었다. 연 보너스 0~20%, 주식 등은 따로 [34]"
+      },
+      {
+        "label": "쿠팡 Inc. 전 직원 중위 보수",
+        "value": "$33,831 / 년",
+        "basis": "공시(미국 위임장) · 2025년",
+        "note": "미국 SEC 위임장 설명서(DEF 14A)의 CEO 보수 배율 공시. 한국 물류·현장 직원이 대부분인 회사 전체의 가운데 값을 달러로 환산한 것이다 [11]"
+      }
+    ],
+    "how": "이 공고에 연봉 칸이 없고 전형 마지막이 처우 제안(Offer)이다 [1]. 미국 공고의 숫자는 미국 지역 시장을 반영한다고 적혀 있어 싱가포르 금액과 같지 않다 [34]. 쿠팡은 미국 상장사라 국내 사업보고서의 '직원 1인 평균 급여'가 없고, 싱가포르 법인 보수 공시도 찾지 못했다 — **싱가포르 숫자 없음**. 중위 보수는 회사 전체 가운데 값이라 이 자리 연봉으로 읽으면 안 된다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      { "name": "의료 보험", "detail": "본인과 직계 가족" },
+      { "name": "가족 휴가", "detail": "경조사 유급 휴가" },
+      { "name": "배움", "detail": "외국어·소프트 스킬 강좌" },
+      { "name": "글로벌 프로젝트", "detail": "직무에 따라 여러 나라 팀과 협업" },
+      { "name": "행사", "detail": "팀·회사 행사" },
+      { "name": "사내 시설", "detail": "커피·차·간식 라운지, 하루 세 끼 카페테리아" },
+      { "name": "유연 근무", "detail": "유연 근무 시간 또는 재택" },
+      { "name": "열린 문화", "detail": "칸막이·직급·직함 대신 열린 협업" }
+    ],
+    "note": "이 공고에는 복리후생 칸이 없어 쿠팡 채용 사이트 'Why Coupang'의 전 세계 공통 소개를 옮겼다(같은 회사 싱가포르 풀이에서 확인) [9]. 금액은 없고 직무·근무지·자격에 따라 달라진다고 적었다 [9]. 사본은 이 자리를 사무실 출근으로 적어[2] 공통 소개의 재택이 그대로 적용되는지는 처우 제안 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "쿠팡 싱가포르 사무실 (Suntec Tower 5)",
+    "address": "5 Temasek Boulevard, Suntec Tower 5, 17층, Singapore 038985",
+    "postal": "038985",
+    "map_url": "https://map.naver.com/p/search/Suntec%20Tower%205%20Temasek%20Boulevard%20Singapore",
+    "near": "Promenade 역 걸어서 약 3분 [8]",
+    "note": "공고 근무지는 'Singapore' [1]. 층·가까운 역은 쿠팡 채용 사이트의 싱가포르 근무지 안내(Suntec City, Downtown Core) [8], 우편번호는 같은 공고의 Built In 사본 [2]."
+  },
+  "fit": {
+    "good": [
+      "쇼핑·검색·추천 데이터로 LLM 을 계속 학습·후학습하고 서비스에 넣어 본 사람 [1][3]",
+      "모델 학습만큼 데이터 준비(Spark·SQL)와 통계 분석도 즐기는 사람 — 공고가 데이터 과학 5년을 첫 자격으로 적었다 [1]",
+      "팀원에게 방법을 가르치고 기준을 세우는 것이 편한 사람 [1]"
+    ],
+    "hard": [
+      "API 로 LLM 을 불러 기능을 붙이는 경험이 주 경력인 사람 — 이 자리는 기초 모델 학습이다 [1]",
+      "요건 폭이 넓다(후학습·에이전트·Spark·BigQuery·스칼라·R·시각화) — 다 갖춘 사람은 드물어 무엇이 강점인지 분명히 해야 한다 {추론}",
+      "부서 칸이 상시 채용 묶음이라 실제 배치 과제는 면접에서 확인해야 하고, 사무실 출근 근무다 [1][2]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "공개 7B 모델을 쇼핑용 기초 모델로 만든다면 데이터 → 계속 사전학습 → 후학습 → 평가를 어떤 순서·실험으로 진행하겠습니까?",
+      "a": "업무 'E2E 기초 모델의 절차·실험 정하기'[1]와 쿠팡의 CPT·SFT 사용[3]에서 나온 질문입니다. 작은 실험으로 먼저 방향을 보고 평가 묶음을 고정하는지 봅니다 {추론}."
+    },
+    {
+      "q": "SFT 만 한 모델과 DPO 까지 한 모델이 서비스에서 다르게 행동한다면 무엇을 보겠습니까?",
+      "a": "자격 'LLM 후학습 전문성'[1] — 선호 데이터의 품질과 과적합 징후, 기준 모델과의 거리를 말하는지 봅니다[14] {추론}."
+    },
+    {
+      "q": "주문·리뷰 글로 모델을 학습시킬 때 개인정보가 새지 않게 파이프라인에 무엇을 넣겠습니까?",
+      "a": "업무 '보안·규정을 지키는 학습'[1]과 학습 데이터 추출 연구[20], 싱가포르 지침[18]에서 나온 질문입니다 {추론}."
+    },
+    {
+      "q": "상품 임베딩 768차원을 64차원으로 줄이자는 제안이 왔습니다. 어떻게 판단하겠습니까?",
+      "a": "자격 '큰 데이터 차원 축소'[1] — 설명 비율만이 아니라 검색 지표(NDCG)의 손실을 재는지 봅니다[24][30] {추론}."
+    },
+    {
+      "q": "AI 코딩 도구를 실제로 어떻게 쓰고, 그 결과를 어떻게 검증합니까?",
+      "a": "공고가 도구 이름을 넷이나 적은 자격입니다.[1] 맡기는 범위와 검토·시험 습관을 묻는 질문으로 보입니다 {추론}."
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "Coupang Careers · Senior Staff / Staff Machine Learning Engineer (싱가포르)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8022956",
+      "kind": "posting",
+      "date": "2026-06-26",
+      "note": "이 공고. 그린하우스 정보로 첫 게시 2026-06-26·갱신 2026-10-02, 부서 칸 'zz-Evergreen Requisition', 채용 번호 8907, 근무지 Singapore. 팀 소개(AI and Knowledge Engineering — 지식 그래프·에이전트·LLM·AIGC·멀티모달), 업무 8줄·자격 15줄, 연봉·복리후생 칸 없음, 전형(서류 → 직무 적합 → 집중 면접 → 제안), 직급·직무가 경험에 따라 바뀔 수 있다는 안내, 회사 소개"
+    },
+    {
+      "n": 2,
+      "title": "Built In Singapore · Senior Staff / Staff Machine Learning Engineer (Coupang)",
+      "url": "https://builtinsingapore.com/job/senior-staff-staff-machine-learning-engineer/9952191",
+      "kind": "posting",
+      "note": "같은 공고의 사본 — 사무실 출근(In-Office), Suntec Tower 5, 5 Temasek Blvd, 17F, Singapore 038985, 2026-11 기준 '3개월 전 다시 게시', 연봉 없음"
+    },
+    {
+      "n": 3,
+      "title": "Coupang Engineering · Accelerating Coupang's AI Journey with LLMs",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/",
+      "kind": "company",
+      "date": "2024-10-15",
+      "note": "ML 플랫폼 팀 — 검색·광고·카탈로그·추천, ICL·RAG·SFT·CPT(ICL·SFT 가장 많이), 3B~20B 선호, 70B+ 대 10B 밑 비교, CLIP·TrOCR, 모델 병렬 학습을 쿠버네티스 PyTorchJob·Polyaxon·DeepSpeed ZeRO 로, 데이터 준비는 Zeppelin → 쿠버네티스 위 Spark, A100-80GB(1B 넘는 모델 섞은 정밀도)·A10G·사내 A100/H100, 아시아·태평양·미국 여러 지역 클러스터, Triton(EKS) 실시간·Ray+vLLM 대량(약 20배), 증류·임베딩 내보내기, 한국어·중국어 토크나이저 문제, GPU 부족·비용, 하이브리드 클라우드 저장소·네트워크 맞추기"
+    },
+    {
+      "n": 4,
+      "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+      "kind": "company",
+      "date": "2023-09-08",
+      "note": "ML 플랫폼이 Spark·Hive·Presto 같은 대용량 처리 엔진과 데이터 저장소에 붙어 있음, 사내·클라우드 GPU"
+    },
+    {
+      "n": 5,
+      "title": "Coupang Careers · Inside Coupang's AI and Knowledge Engineering team",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/inside-coupang-s-ai-and-knowledge-engineering-team-wowing-customers-and-the-world/",
+      "kind": "company",
+      "date": "2025-04-22",
+      "note": "ML 엔지니어·데이터 과학자·ML 인프라 전문가, 전 세계에 흩어진 팀, 지식 그래프·개체명 인식·NLP·대화형 에이전트·기계 번역·LLM 전용 추론 엔진, 범용 LLM·오픈소스보다 나은 쇼핑 번역 모델로 검색 품질과 영어권 고객의 탐색·구매 개선(숫자 없음), '고객을 놀라게 하는' 사명"
+    },
+    {
+      "n": 6,
+      "title": "CSRM-LLM: Embracing Multilingual LLMs for Cold-Start Relevance Matching in Emerging E-commerce Markets (arXiv 2509.01566)",
+      "url": "https://arxiv.org/abs/2509.01566",
+      "kind": "company",
+      "date": "2025-09-01",
+      "note": "쿠팡 연구진, CIKM 2025 — 큰 LLM 을 두 탑 모델로 증류, 온라인 결함 비율·구매율로 효과 보고(같은 회사 다른 풀이에서 읽은 내용)"
+    },
+    {
+      "n": 7,
+      "title": "Alluxio · How Coupang Leverages Distributed Cache to Accelerate Machine Learning Model Training",
+      "url": "https://www.alluxio.io/blog/how-coupang-leverages-distributed-cache-to-accelerate-machine-learning-model-training",
+      "kind": "company",
+      "date": "2025-04-25",
+      "note": "쿠팡 Staff Backend Engineer 의 발표를 Alluxio 가 요약한 글 — 아시아·태평양 지역 객체 저장소 데이터 레이크가 학습 데이터의 원본, AWS 여러 지역·사내 쿠버네티스 GPU 클러스터, 분산 캐시로 클라우드 병렬 파일 시스템보다 입출력 약 40% 향상"
+    },
+    {
+      "n": 8,
+      "title": "Coupang Careers · Singapore 근무지",
+      "url": "https://www.coupang.jobs/en/locations/singapore/",
+      "kind": "company",
+      "note": "Suntec Tower 5, 5 Temasek Blvd, 17F · Suntec City(Downtown Core) · Promenade 역 걸어서 약 3분"
+    },
+    {
+      "n": 9,
+      "title": "Coupang Careers · Why Coupang (Culture and benefits)",
+      "url": "https://www.coupang.jobs/en/why-coupang/",
+      "kind": "company",
+      "note": "전 세계 공통 복리후생 여덟 가지 — 금액 없음, 직무·근무지·자격에 따라 다르다는 단서(같은 회사 싱가포르 풀이에서 확인)"
+    },
+    {
+      "n": 11,
+      "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+      "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+      "kind": "company",
+      "date": "2026",
+      "note": "2025 회계연도 전 직원 중위 보수 — 달러 환산 $33,831 (같은 회사 다른 풀이에서 확인)"
+    },
+    {
+      "n": 12,
+      "title": "BAIR · The Shift from Models to Compound AI Systems",
+      "url": "https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/",
+      "kind": "reference",
+      "date": "2024-02-18",
+      "note": "여러 모델 호출·검색기·도구가 함께 일하는 시스템이 최고 성능을 내는 흐름 — '복합 AI 시스템'의 정의"
+    },
+    {
+      "n": 13,
+      "title": "Ouyang 외 · Training language models to follow instructions with human feedback (arXiv 2203.02155)",
+      "url": "https://arxiv.org/abs/2203.02155",
+      "kind": "reference",
+      "date": "2022-03",
+      "note": "지도 미세조정 → 보상 모델 → 강화학습(RLHF)의 후학습 절차"
+    },
+    {
+      "n": 14,
+      "title": "Rafailov 외 · Direct Preference Optimization (arXiv 2305.18290)",
+      "url": "https://arxiv.org/abs/2305.18290",
+      "kind": "reference",
+      "date": "2023-05",
+      "note": "보상 모델 없이 선호 쌍으로 바로 학습하는 손실 — 기준 모델 대비 로그확률 차이에 β 를 곱한 시그모이드"
+    },
+    {
+      "n": 15,
+      "title": "Hu 외 · LoRA: Low-Rank Adaptation of Large Language Models (arXiv 2106.09685)",
+      "url": "https://arxiv.org/abs/2106.09685",
+      "kind": "reference",
+      "date": "2021-06",
+      "note": "원래 가중치는 얼리고 작은 저차원 행렬만 학습"
+    },
+    {
+      "n": 16,
+      "title": "Yao 외 · ReAct: Synergizing Reasoning and Acting in Language Models (arXiv 2210.03629)",
+      "url": "https://arxiv.org/abs/2210.03629",
+      "kind": "reference",
+      "date": "2022-10",
+      "note": "생각 쓰기와 도구 행동을 번갈아 하는 에이전트 꼴"
+    },
+    {
+      "n": 17,
+      "title": "Kwon 외 · Efficient Memory Management for LLM Serving with PagedAttention (vLLM, arXiv 2309.06180)",
+      "url": "https://arxiv.org/abs/2309.06180",
+      "kind": "reference",
+      "date": "2023-09",
+      "note": "KV 캐시를 쪽 단위로 나눠 메모리 낭비를 줄이고 처리량을 올린다"
+    },
+    {
+      "n": 18,
+      "title": "PDPC · Advisory Guidelines on Use of Personal Data in AI Recommendation and Decision Systems",
+      "url": "https://www.pdpc.gov.sg/guidelines-and-consultation/2024/02/advisory-guidelines-on-use-of-personal-data-in-ai-recommendation-and-decision-systems",
+      "kind": "reference",
+      "date": "2024-03-01",
+      "note": "싱가포르 개인정보보호법(PDPA)을 AI 개발·배포 단계별로 적용하는 지침 — 동의·사업 개선/연구 예외·고지, 외부 개발사의 개인정보 보호"
+    },
+    {
+      "n": 20,
+      "title": "Carlini 외 · Extracting Training Data from Large Language Models (arXiv 2012.07805)",
+      "url": "https://arxiv.org/abs/2012.07805",
+      "kind": "reference",
+      "date": "2020-12",
+      "note": "GPT-2 에서 학습 데이터 속 이름·연락처 같은 글을 그대로 뽑아낸 공격"
+    },
+    {
+      "n": 21,
+      "title": "Armbrust 외 · Lakehouse (CIDR 2021)",
+      "url": "https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf",
+      "kind": "reference",
+      "date": "2021",
+      "note": "데이터 레이크 위에 웨어하우스 기능을 얹어 분석과 ML 을 한 저장소에서"
+    },
+    {
+      "n": 22,
+      "title": "Google Cloud · BigQuery overview",
+      "url": "https://cloud.google.com/bigquery/docs/introduction",
+      "kind": "reference",
+      "note": "서버 없는 관리형 데이터 웨어하우스 — SQL 로 대량 데이터 분석"
+    },
+    {
+      "n": 24,
+      "title": "scikit-learn · Decomposing signals in components (PCA·무작위 SVD·Incremental PCA) / Preprocessing",
+      "url": "https://scikit-learn.org/stable/modules/decomposition.html",
+      "kind": "reference",
+      "note": "주성분 분석과 큰 데이터용 판들, 표준화(평균 0·분산 1)"
+    },
+    {
+      "n": 25,
+      "title": "McInnes · Healy · Melville · UMAP (arXiv 1802.03426)",
+      "url": "https://arxiv.org/abs/1802.03426",
+      "kind": "reference",
+      "date": "2018-02",
+      "note": "이웃 관계를 지키는 차원 축소 — 시각화에 널리 쓰임"
+    },
+    {
+      "n": 26,
+      "title": "Anthropic · Claude Code overview",
+      "url": "https://docs.anthropic.com/en/docs/claude-code/overview",
+      "kind": "reference",
+      "note": "터미널에서 코드베이스를 읽고 고치고 명령을 돌리는 에이전트형 코딩 도구"
+    },
+    {
+      "n": 27,
+      "title": "AWS · Amazon SageMaker real-time inference",
+      "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints.html",
+      "kind": "reference",
+      "note": "모델을 올리면 관리형 실시간 추론 엔드포인트를 준다"
+    },
+    {
+      "n": 28,
+      "title": "Microsoft Learn · Online endpoints for real-time inference (Azure Machine Learning)",
+      "url": "https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online",
+      "kind": "reference",
+      "note": "Azure 의 관리형 실시간 추론 엔드포인트"
+    },
+    {
+      "n": 29,
+      "title": "Kohavi · Tang · Xu · Trustworthy Online Controlled Experiments",
+      "url": "https://experimentguide.com/",
+      "kind": "reference",
+      "date": "2020",
+      "note": "온라인 A/B 실험 교과서 — 지표 설계·신뢰 구간·함정"
+    },
+    {
+      "n": 30,
+      "title": "Järvelin · Kekäläinen · Cumulated gain-based evaluation of IR techniques (ACM TOIS 2002)",
+      "url": "https://doi.org/10.1145/582415.582418",
+      "kind": "reference",
+      "date": "2002",
+      "note": "자리마다 할인한 누적 이득(DCG)과 정규화(NDCG) — 검색 순위 지표"
+    },
+    {
+      "n": 31,
+      "title": "Liu 외 · Visual Instruction Tuning (LLaVA, arXiv 2304.08485)",
+      "url": "https://arxiv.org/abs/2304.08485",
+      "kind": "reference",
+      "date": "2023-04",
+      "note": "이미지 인코더를 LLM 에 잇고 지시 데이터로 학습한 이미지-글 모델"
+    },
+    {
+      "n": 32,
+      "title": "Hoffmann 외 · Training Compute-Optimal Large Language Models (Chinchilla, arXiv 2203.15556)",
+      "url": "https://arxiv.org/abs/2203.15556",
+      "kind": "reference",
+      "date": "2022-03",
+      "note": "같은 계산량에서 모델 크기와 학습 토큰 수를 같은 비율로 늘리는 것이 가장 좋다 — 트랜스포머 언어 모델 학습 실험"
+    },
+    {
+      "n": 33,
+      "title": "Rajbhandari 외 · ZeRO: Memory Optimizations Toward Training Trillion Parameter Models (arXiv 1910.02054)",
+      "url": "https://arxiv.org/abs/1910.02054",
+      "kind": "reference",
+      "date": "2019-10",
+      "note": "섞은 정밀도 Adam 은 파라미터당 16바이트 — 옵티마이저 상태·기울기·파라미터를 GPU 마다 나눠 드는 세 단계"
+    },
+    {
+      "n": 34,
+      "title": "Coupang Careers · Senior Staff Machine Learning Engineer (Coupang AI Foundations, 마운틴뷰)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7793770",
+      "kind": "posting",
+      "date": "2026-04-08",
+      "note": "같은 회사 같은 직군의 미국 자리 — 관련 경력 8년 이상, 기본급 $174,000~299,000·연 보너스 0~20%(미국 근무지 기준), 부서 칸도 상시 채용 묶음(같은 회사 다른 풀이에서 확인)"
+    },
+    {
+      "n": 35,
+      "title": "Vaswani 외 · Attention Is All You Need (arXiv 1706.03762)",
+      "url": "https://arxiv.org/abs/1706.03762",
+      "kind": "reference",
+      "date": "2017-06",
+      "note": "어텐션과 피드포워드 층을 쌓은 트랜스포머 구조의 원 논문"
+    }
+  ],
+  "caveat": "공고에 팀 이름이 부서 칸이 아니라 소개 문장('AI and Knowledge Engineering')으로만 나오고 부서 칸은 상시 채용 묶음이라, 실제 배치 과제는 면접에서 확인해야 한다. 이 팀의 발표 영상·기술 글은 찾지 못했고(받은 영상 없음), 학습·서빙 방식은 쿠팡 ML 플랫폼 글[3]과 쿠팡 엔지니어 발표 요약[7]에서 왔다. 후학습·차원 축소·보안 설명의 상당 부분은 공개 논문·공식 문서의 일반론이며 쿠팡이 그대로 한다는 뜻이 아니다. 연봉은 싱가포르 숫자를 찾지 못했다. 2026-11-25 기준."
+}
