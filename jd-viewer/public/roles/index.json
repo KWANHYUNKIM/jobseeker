@@ -324,6 +324,7 @@
   "saramin-55282490": "nextsecurities-channel-backend",
   "jobkorea-50357268": "nextsecurities-data-platform-engineer",
   "wanted-388957": "nextsecurities-data-platform-engineer",
+  "wanted-400000": "nextsecurities-frontend-internal-platform",
   "wanted-400001": "nextsecurities-internal-platform-backend",
   "jobkorea-50356663": "nextsecurities-senior-ai-governance",
   "wanted-394722": "nhn-japan-frontend",
@@ -3297,6 +3298,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 28
+  },
+  {
+   "id": "nextsecurities-frontend-internal-platform",
+   "company": "넥스트증권",
+   "role": "Frontend Engineer",
+   "jobs": [
+    "wanted-400000"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 43
   },
   {
    "id": "nextsecurities-internal-platform-backend",
