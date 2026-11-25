@@ -339,6 +339,7 @@
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
   "jobkorea-50360975": "nextsecurities-account-instrument-backend",
   "jobkorea-50360883": "nextsecurities-account-instrument-backend",
+  "ats-greeting:nextsecurities:245528": "nextsecurities-accounts-transfers-backend",
   "jobkorea-50361255": "nextsecurities-ai-content-backend",
   "wanted-388893": "nextsecurities-ai-content-data-engineer",
   "jobkorea-50361414": "nextsecurities-ai-engineer-video",
@@ -3442,6 +3443,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 39
+  },
+  {
+   "id": "nextsecurities-accounts-transfers-backend",
+   "company": "넥스트증권",
+   "role": "Backend Engineer — Accounts & Transfers (고객·계좌·자금 이동)",
+   "jobs": [
+    "ats-greeting:nextsecurities:245528"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 22
   },
   {
    "id": "nextsecurities-ai-content-backend",
