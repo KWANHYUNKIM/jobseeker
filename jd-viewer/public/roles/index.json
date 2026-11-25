@@ -17,6 +17,7 @@
   "ats-greenhouse:coupang:8413572": "coupang-fc-logistics-network-engineer",
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
   "ats-greenhouse:coupang:6137112": "coupang-got-backend-manager-seoul",
+  "ats-greenhouse:coupang:8059287": "coupang-india-senior-staff-backend-serving",
   "ats-greenhouse:coupang:8203405": "coupang-network-security-engineer-detection-ops",
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
   "ats-greenhouse:coupang:8312121": "coupang-pay-it-ai-compliance",
@@ -30,6 +31,7 @@
   "ats-greenhouse:coupang:8207116": "coupang-security-automation-engineer-seattle",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
+  "ats-greenhouse:coupang:8078331": "coupang-spir-security-devops-senior",
   "ats-greenhouse:coupang:8094014": "coupang-taiwan-catalog-ai-tpm-director",
   "ats-greenhouse:coupang:8300309": "coupang-taiwan-security-engineering-director",
   "ats-greenhouse:coupang:8076295": "coupang-transportation-backend-senior-manager-bengaluru",
@@ -429,6 +431,16 @@
    "lines": 14
   },
   {
+   "id": "coupang-india-senior-staff-backend-serving",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior Staff Backend Engineer",
+   "jobs": [
+    "ats-greenhouse:coupang:8059287"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
+  },
+  {
    "id": "coupang-network-security-engineer-detection-ops",
    "company": "쿠팡",
    "role": "시니어 네트워크 보안 엔지니어",
@@ -548,6 +560,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 24
+  },
+  {
+   "id": "coupang-spir-security-devops-senior",
+   "company": "쿠팡",
+   "role": "시니어 Security DevOps 엔지니어",
+   "jobs": [
+    "ats-greenhouse:coupang:8078331"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
   },
   {
    "id": "coupang-taiwan-catalog-ai-tpm-director",

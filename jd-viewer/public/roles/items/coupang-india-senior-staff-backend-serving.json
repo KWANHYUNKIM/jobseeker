@@ -1,0 +1,436 @@
+{
+  "id": "coupang-india-senior-staff-backend-serving",
+  "company": "쿠팡 (Coupang)",
+  "role": "Senior Staff Backend Engineer",
+  "team": "인도 개발 센터(벵갈루루·하이데라바드) · 데이터 파이프라인과 온라인 서빙 플랫폼 (팀 이름은 공고에 없음)",
+  "jobs": ["ats-greenhouse:coupang:8059287"],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쿠팡 인도 개발 센터에서 **데이터 파이프라인과 온라인 서빙 플랫폼**(사용자 요청에 바로 답하는 서버 층)의 설계 품질을 책임지는 최상위급 개발자 자리입니다.[1] 공고는 분산 시스템·데이터 처리 파이프라인·차세대 플랫폼을 다루고, 그 결과가 매일 수천만 명에게 닿는다고 적었습니다.[1]",
+    "env": "벵갈루루 또는 하이데라바드, 주 3일 이상 출근하는 하이브리드입니다.[1][4][5] 경력 12년 이상, Java·Python, AWS, Java·IntelliJ·Spring 환경을 요구합니다.[1] 여러 나라의 개발자와 같이 일하는 자리입니다.[1]",
+    "oneline": "팀장은 아니지만 **여러 팀이 기대는 플랫폼의 설계 방향을 정하고, 큰 장애가 나면 맨 앞에서 파고드는** 사람. 코드를 짜면서 로드맵과 합의까지 끌고 가야 합니다 {추론}."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "Drive the highest quality of architecture and design of data pipeline and system.",
+      "short": "데이터 파이프라인과 그 시스템의 구조·설계 품질을 가장 높은 수준으로 끌고 가는 일.",
+      "why": "공고 소개는 이 자리가 분산 시스템과 **데이터 처리 파이프라인**을 다룬다고 적었습니다.[1] 쿠팡의 파이프라인은 규모가 큽니다 — 개인화 첫 화면 파이프라인은 하루 수십억 건의 기록을 처리하고 수천 개 고객 묶음을 갱신한다고 회사가 소개했습니다.[14]",
+      "actually": {
+        "intro": "'설계 품질을 끌고 간다'는 남의 설계를 검토하고, 기준을 세우고, 핵심은 직접 설계한다는 뜻으로 읽힙니다 {추론}.",
+        "items": [
+          "배치(모아서 한 번에)와 실시간(흐르는 대로) 중 무엇으로 갈지 정하기 — 쿠팡 물류 시뮬레이션 플랫폼은 매일 도는 배치 작업이 날짜별로 나눈 데이터를 클라우드 저장소에 쓰는 구조입니다.[10]",
+          "같은 피처(모델 입력값)를 학습용(오프라인)과 서빙용(온라인)으로 둘 다 두는 구조 — 쿠팡 ML 플랫폼은 오픈소스 Feast 위에 두 저장소를 같이 둡니다.[11]",
+          "늦게 오거나 두 번 오는 데이터를 견디게 하기(다시 돌려도 같은 결과 — 멱등) [21]",
+          "파이프라인이 멈췄을 때 어디서부터 다시 돌리나(체크포인트·날짜 칸 단위 재처리) {추론}",
+          "설계 리뷰 — 쿠팡은 펠로급 엔지니어가 아키텍처 설계 리뷰와 장애 리뷰에 들어온다고 소개했습니다.[9]"
+        ]
+      },
+      "how_far": "모든 파이프라인을 혼자 만들지 않습니다. 팀들이 낸 설계에서 데이터 유실·재처리·확장의 빈틈을 짚고, 공통 기준(설계 문서 형식·리뷰 체크리스트)을 세우는 것이 이 직급의 몫입니다 {추론}[20].",
+      "refs": [1, 9, 10, 11, 14, 20, 21],
+      "study": ["ddia", "design-docs", "staffeng"]
+    },
+    {
+      "section": "task",
+      "quote": "Draw a roadmaps and vision for the scalable and robust growth of the online serving platform.",
+      "short": "온라인 서빙 플랫폼이 커져도 버티게 하려는 앞으로 1~2년의 방향과 로드맵을 그리는 일.",
+      "why": "공고가 '온라인 서빙 플랫폼'을 따로 이름 붙였습니다.[1] 쿠팡은 여러 마이크로서비스에 흩어진 상품 데이터를 한 서빙 층으로 모으고 그 위에 실시간 캐시를 얹은 구조를 공개한 적이 있습니다.[22] 모든 쿠팡 서비스가 마이크로서비스로 이뤄졌다고 회사가 밝혔습니다.[9]",
+      "actually": {
+        "items": [
+          "지금 구조의 한계를 숫자로 적기 — 최대 초당 요청, 응답 시간 분포(p99), 캐시 적중률, 비용 {추론}",
+          "캐시 층 — 적중률 1%포인트가 뒤쪽 DB 부하를 크게 바꿉니다(아래 예시)[16]",
+          "서빙 층이 여러 출처의 데이터를 모을 때, 출처 하나가 느려져도 전체가 느려지지 않게 하기(시간 제한·부분 응답) {추론}",
+          "모델 예측을 서빙하는 길 — 쿠팡 ML 플랫폼은 모델마다 따로 자동 확장되는 서비스로 쿠버네티스에 올립니다.[11]",
+          "로드맵 문서 — 지금 문제, 목표 상태, 단계, 단계마다 버리는 것 {추론}[20]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "캐시 적중률 90% 와 99% 의 차이",
+          "body": "앞단 요청은 같아도 적중률이 90% → 99% 로 오르면 DB 가 받는 요청은 10분의 1이 됩니다. 초당 5만 건은 예시로 둔 값입니다 {추론}.",
+          "lang": "python",
+          "code": "qps = 50_000\nfor hit in (0.90, 0.99):\n    print(f\"초당 {qps:,}건, 캐시 적중 {hit:.0%} -> DB 로 가는 요청 초당 {qps*(1-hit):,.0f}건\")\n# 초당 50,000건, 캐시 적중 90% -> DB 로 가는 요청 초당 5,000건\n# 초당 50,000건, 캐시 적중 99% -> DB 로 가는 요청 초당 500건"
+        }
+      ],
+      "how_far": "무엇을 먼저 할지 최종 결정은 조직 리더와 함께 합니다 {추론}. Senior Staff 는 근거(지표·비용·위험)가 있는 방향 문서를 쓰고, 여러 팀이 그 방향에 동의하게 만드는 데까지 맡습니다 {추론}[20].",
+      "refs": [1, 9, 11, 16, 20, 22],
+      "study": ["builders-cache", "staffeng", "sysdesign"]
+    },
+    {
+      "section": "task",
+      "quote": "Collaborate with other engineering teams to make the platform open and extensible to unlock innumerable opportunities for innovations.",
+      "short": "다른 팀이 플랫폼 위에 스스로 기능을 얹을 수 있게, 열려 있고 넓히기 쉬운 구조로 만드는 일.",
+      "why": "플랫폼은 남이 쓰라고 만드는 것이라, 쓰는 팀이 플랫폼 팀을 기다리지 않고 붙일 수 있어야 합니다 {추론}. 쿠팡은 마이크로서비스 수백 개를 쓰는 회사라 플랫폼 한 곳의 병목이 여러 팀을 막습니다 {추론}[9].",
+      "actually": {
+        "items": [
+          "공개 API·이벤트 형식을 정하고, 바꿀 때 옛 형식을 일정 기간 같이 받기(하위 호환) {추론}",
+          "확장 지점 — 새 데이터 출처·새 계산 단계를 설정이나 플러그인으로 붙이는 자리 {추론}",
+          "쓰는 팀을 위한 문서·예제·셀프서비스 도구(신청 없이 만들고 지우기) {추론}",
+          "쓰는 팀끼리 서로 영향 주지 않게 나누기(멀티테넌트 — 한 플랫폼에 여러 팀을 싣고 자원·데이터를 갈라 두기). 쿠팡 시애틀 Staff 엔지니어도 여러 실험이 동시에 도는 멀티테넌트 구조를 만든다고 소개했습니다.[13]"
+        ]
+      },
+      "how_far": "다른 팀의 요구를 다 넣는 것이 아니라, 무엇은 플랫폼이 맡고 무엇은 쓰는 팀 몫인지 경계를 글로 정하는 것이 핵심입니다 {추론}.",
+      "refs": [9, 13],
+      "study": ["ddia", "staffeng"]
+    },
+    {
+      "section": "task",
+      "quote": "Align with stakeholders and lead engineers on mission critical projects.",
+      "short": "멈추면 안 되는 핵심 과제에서 관계자·각 팀 리드 엔지니어와 방향을 맞추는 일.",
+      "why": "여러 나라 개발자와 함께 일하는 자리라고 공고가 적었습니다.[1] 쿠팡 개발자들은 한국·미국·인도 팀과 정기적으로 같이 일한다고 말합니다.[13] 인도 개발 센터의 한 조직(운송 시스템)도 한국·인도 팀이 함께 만든다고 소개했습니다 — 이 공고의 팀이 그 조직이라는 뜻은 아닙니다.[2]",
+      "actually": {
+        "items": [
+          "과제의 목표·성공 지표·범위를 한 쪽 문서로 먼저 합의 {추론}[19]",
+          "결정이 필요한 지점마다 대안 2~3개와 고른 이유를 남기기 — 쿠팡 엔지니어는 대안을 비교하고 장기 확장성·안정성·유지보수성으로 판단하라고 권한다고 말합니다.[13]",
+          "팀 사이 의존(누가 무엇을 언제까지)을 표로 {추론}",
+          "시간대가 다른 팀과 문서 중심으로 일하기 — 쿠팡은 나라 사이 기술 발표 모임(Tech Talk)을 연다고 소개했습니다.[9]"
+        ]
+      },
+      "how_far": "사람을 관리하는 자리가 아니라 권한 없이 설득해야 합니다 {추론}[20]. 근거 있는 문서와 리뷰로 리드 엔지니어들이 같은 방향을 보게 하는 것이 최소선입니다 {추론}.",
+      "refs": [1, 9, 13, 19, 20],
+      "study": ["staffeng", "design-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "Decompose complex problems into simple, straightforward solutions.",
+      "short": "복잡한 문제를 나눠, 누구나 이해하고 만들 수 있는 단순한 해법으로 바꾸는 일.",
+      "why": "큰 플랫폼 문제는 한 사람이 다 풀 수 없어 여러 팀이 나눠 맡을 조각으로 쪼개야 합니다 {추론}. 쿠팡 엔지니어는 SQL 에 있던 재고 id 를 운영을 멈추지 않고 NoSQL 로 옮기는 방법으로 특허 출원까지 했다고 소개했습니다 — 큰 이관을 끊김 없는 단계로 나눈 예입니다.[13]",
+      "actually": {
+        "items": [
+          "'무엇이 안 되나'를 지표 하나로 줄이기 {추론}",
+          "문제를 서로 의존이 적은 조각으로 — 조각마다 담당 팀과 끝나는 기준 {추론}",
+          "가장 단순한 해법부터 검토하고, 복잡한 해법은 단순한 것이 안 되는 이유를 적은 뒤에 {추론}",
+          "설계 문서에 '하지 않는 것(Non-goals)' 칸 두기 [19]"
+        ]
+      },
+      "how_far": "쪼갠 결과가 팀들이 몇 주 안에 끝낼 수 있는 일감이 되면 됩니다 {추론}.",
+      "refs": [13, 19],
+      "study": ["design-docs", "sysdesign"]
+    },
+    {
+      "section": "task",
+      "quote": "Leverage knowledge of internal and industry best practices in design.",
+      "short": "쿠팡 안의 설계 관례와 업계에서 검증된 방식을 알고 설계에 가져다 쓰는 일.",
+      "why": "공고 소개도 업계 모범 사례를 팀에 가져오는 것을 이 자리의 역할로 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "회사 안: 이미 있는 공통 플랫폼(ML 플랫폼의 피처 저장소·모델 서빙 등)을 다시 만들지 않고 쓰기 [11]",
+          "업계: 캐시 전략(만료·없는 키 캐시·몰림 막기)[16], 가용성 설계(타임아웃·재시도·격리)[18]",
+          "업계: 서비스 수준 목표(SLO)로 '충분히 안정적인가'를 숫자로 정하기 [17]",
+          "새 방식을 들일 때 작은 범위에서 먼저 시험하고 결과를 공유 — 쿠팡의 한 팀은 작업 전에 계획을, 배포 전에 성능 시험 결과를 공유한다고 밝혔습니다.[9]"
+        ]
+      },
+      "how_far": "유행하는 기술을 들이는 것이 아니라, 이 문제에 맞는지 근거를 대고 고르는 것입니다 {추론}.",
+      "refs": [1, 9, 11, 16, 17, 18],
+      "study": ["builders-cache", "aws-reliability", "sre-book"]
+    },
+    {
+      "section": "task",
+      "quote": "Deep-dive and handle critical system issues.",
+      "short": "큰 장애·성능 문제가 나면 원인을 끝까지 파고들어 해결하는 일.",
+      "why": "쿠팡은 고객에게 보인 증상에서 '왜?'를 최소 다섯 번 묻는 근본 원인 문화를 소개했습니다.[9] 쿠팡 이츠는 가용성 99.99%(1년에 약 1시간)를 목표로 둔다고 밝혔습니다.[9]",
+      "actually": {
+        "intro": "쿠팡이 직접 공개한 예: 포장 API 가 느린데 CPU 는 한가했습니다. 단계별 측정을 붙여 보니 요청마다 설정 DB 조회가 수백 번 나가고 있었고, 원인은 약한 캐시와 **없는 키를 캐시하지 않은 것**이었습니다. 없는 키까지 캐시하고 적중률을 감시해 풀었다고 합니다.[10]",
+        "items": [
+          "단계별로 시간을 재는 측정(트레이싱)을 먼저 붙이기 — 'CPU 는 낮은데 느리다'는 기다리는 곳이 따로 있다는 뜻 [10]",
+          "JVM GC 로그·스레드 덤프로 멈춤 원인 보기 {추론}",
+          "장애 뒤 사람 탓 없는 사후 검토와 재발 방지 [17]",
+          "쿠팡은 당번(온콜) 검토를 AI 로 돕기 시작했지만 중요한 결정은 사람이 한다고 밝혔습니다.[13]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "없는 키를 캐시하지 않으면 DB 가 계속 맞는다",
+          "body": "키 200개 중 100개만 DB 에 있을 때 요청 1만 건을 보냅니다. 없는 키를 캐시하지 않으면 그 키는 올 때마다 DB 로 갑니다 — 쿠팡 사례의 원인과 같은 모양입니다.[10]",
+          "lang": "python",
+          "code": "import random\nrandom.seed(7)\ndb = {f\"P{i}\": i for i in range(100)}\nreqs = [f\"P{random.randint(0, 199)}\" for _ in range(10_000)]\ndef run(negative):\n    cache, calls = {}, 0\n    for k in reqs:\n        if k in cache:\n            continue\n        calls += 1\n        v = db.get(k)\n        if v is not None or negative:\n            cache[k] = v\n    return calls\nprint(\"없는 키를 캐시 안 함: DB 조회\", run(False), \"번\")\nprint(\"없는 키도 캐시(None):  DB 조회\", run(True), \"번\")\n# 없는 키를 캐시 안 함: DB 조회 4993 번\n# 없는 키도 캐시(None):  DB 조회 200 번"
+        }
+      ],
+      "how_far": "장애 대응을 혼자 하는 것이 아니라, 아무도 원인을 못 찾는 문제에 마지막으로 불려 가는 사람입니다 {추론}. 원인을 찾고 구조적으로 다시 안 나게 하는 것까지가 몫입니다 {추론}.",
+      "refs": [9, 10, 13, 17],
+      "study": ["builders-cache", "jvm-tuning", "sre-book"]
+    },
+    {
+      "section": "task",
+      "quote": "Collaborate with other teams to make the platform open and extensible to unlock innumerable opportunities for innovations.",
+      "short": "세 번째 줄과 같은 내용 — 다른 팀이 쓰기 쉽게 플랫폼을 여는 일을 한 번 더 강조했다.",
+      "why": "공고에 거의 같은 문장이 두 번 실렸습니다('engineering' 한 낱말 차이).[1] 그만큼 플랫폼을 남이 쓰게 하는 일을 중요하게 본다는 뜻으로 읽힙니다 {추론}.",
+      "how_far": "위 '열려 있고 넓히기 쉬운 구조' 줄의 풀이를 보면 됩니다 {추론}.",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "Bachelor's degree and/or master’s degree in computer science or equivalent.",
+      "short": "컴퓨터공학 학사·석사 또는 그에 맞먹는 경력.",
+      "why": "'또는 그에 맞먹는 것'이라 학위가 없어도 같은 수준의 실무 경력이면 된다고 열어 두었습니다.[1]",
+      "actually": {
+        "items": ["실제 문턱은 다음 줄의 경력 12년 이상입니다 {추론}"]
+      },
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "Minimum 12 years of experience working on software design and development in Java,Python.",
+      "short": "Java·Python 으로 소프트웨어를 설계·개발한 경력 최소 12년.",
+      "why": "Senior Staff 는 팀 하나를 넘어 여러 팀의 기술 방향에 영향을 주는 직급이라 긴 경력을 요구합니다 {추론}[20]. Java 는 서빙 서버, Python 은 데이터 파이프라인·ML 쪽에서 많이 쓰입니다 {추론}.",
+      "actually": {
+        "items": [
+          "Java: 동시성(스레드 풀·락), JVM 메모리·GC, 대량 요청 서버 {추론}",
+          "Python: 데이터 처리 작업, 파이프라인 스크립트, ML 쪽 연동 — 쿠팡 ML 플랫폼은 Python 모델 래퍼를 서빙에 씁니다.[11]",
+          "'설계'를 따로 적었습니다 — 경력 중 설계를 맡은 과제를 구체적으로 말할 수 있어야 합니다 {추론}[1]"
+        ]
+      },
+      "level": {
+        "basic": "Java 로 운영 서비스를, Python 으로 데이터 작업을 만들어 봤다",
+        "work": "Java 서버의 동시성·GC 문제를 진단해 고쳤고, 둘을 섞은 시스템을 설계했다",
+        "team": "여러 팀이 쓰는 플랫폼의 핵심 설계를 맡아 수년 운영했다 [1]"
+      },
+      "how_far": "12년은 최소선입니다.[1] 햇수보다 그동안 맡은 시스템의 규모와 내린 설계 결정이 면접에서 확인됩니다 {추론}.",
+      "refs": [1, 11, 20],
+      "study": ["java-thread", "jvm-tuning"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Hands-on experience with designing, building, and deploying scalable, high available systems.",
+      "short": "커져도 버티고 잘 안 멈추는 시스템을 직접 설계·구현·배포해 본 경험.",
+      "why": "공고는 큰 규모의 문제를 높은 안정성으로 푼다고 적었습니다.[1] 쿠팡은 주문에서 배송까지의 핵심 경로에서 덜 중요한 서비스를 떼어 내 장애가 주문을 멈추지 않게 한다고 밝혔습니다.[9]",
+      "actually": {
+        "items": [
+          "가용성을 숫자로 — 99.9% 와 99.99% 는 1년에 멈춰도 되는 시간이 열 배 차이(아래 예시)",
+          "차례로 부르는 서비스가 많을수록 전체 가용성이 떨어진다 — 그래서 핵심 경로를 짧게, 나머지는 떼어 낸다 [9][18]",
+          "여러 가용 영역(AZ)에 나눠 두기, 자동 확장, 시간 제한·재시도·서킷 브레이커 [18]",
+          "배포를 조금씩 — 쿠팡 ML 플랫폼은 검증 뒤 일부에만 먼저 내는 카나리 단계를 거쳐 늘립니다.[11]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "가용성 숫자를 멈춤 시간으로",
+          "body": "99.99% 는 1년에 약 53분입니다(쿠팡이 말한 '약 1시간'[9]). 99.99% 서비스 다섯 개를 차례로 부르면 전체는 99.95% 로 떨어집니다 — 서로 독립이라고 가정한 계산입니다 {추론}.",
+          "lang": "python",
+          "code": "year_min = 365 * 24 * 60\nfor a in (0.999, 0.9999):\n    print(f\"가용성 {a*100:.2f}% -> 1년에 멈춰도 되는 시간 {year_min*(1-a):,.0f}분\")\nchain = 0.9999 ** 5\nprint(f\"99.99% 서비스 5개를 차례로 부르면 {chain*100:.3f}% -> 1년 {year_min*(1-chain):,.0f}분\")\n# 가용성 99.90% -> 1년에 멈춰도 되는 시간 526분\n# 가용성 99.99% -> 1년에 멈춰도 되는 시간 53분\n# 99.99% 서비스 5개를 차례로 부르면 99.950% -> 1년 263분"
+        }
+      ],
+      "level": {
+        "basic": "로드밸런서 뒤에 여러 대를 두고 무중단 배포를 해 봤다",
+        "work": "SLO 를 정하고, 의존 서비스가 죽어도 핵심 기능이 도는 구조를 만들었다",
+        "team": "수천만 사용자 규모에서 가용성 목표를 지킨 시스템을 설계·운영했다 [1]"
+      },
+      "how_far": "'직접(hands-on)'이라 설계만 한 것이 아니라 만들고 배포·운영까지 한 경험을 봅니다.[1] {추론}",
+      "refs": [1, 9, 11, 18],
+      "study": ["aws-reliability", "sre-book", "ddia"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Large system architecture design and development experience.",
+      "short": "큰 시스템 전체의 구조를 설계하고 개발해 본 경험.",
+      "why": "이 자리의 첫 업무가 파이프라인과 시스템의 구조 설계라서입니다.[1]",
+      "actually": {
+        "items": [
+          "여러 서비스·저장소·이벤트 흐름을 한 그림으로 그리고 각 경계의 이유를 설명하기 {추론}",
+          "저장소 고르기 — 관계형과 NoSQL 을 용도에 따라, 바꿀 때 끊김 없이 옮기기 [13][21]",
+          "규모가 열 배 커지면 어디가 먼저 터지나를 미리 짚기 {추론}",
+          "비용도 구조의 일부 — 쿠팡은 개발·시험 환경을 필요할 때만 띄워 그 비용을 25% 줄였다고 밝혔습니다.[12]"
+        ]
+      },
+      "how_far": "면접에서 직접 설계한 큰 시스템 하나를 그림과 숫자(요청 수·데이터 양·지연)로 끝까지 설명할 수 있어야 합니다 {추론}.",
+      "refs": [1, 12, 13, 21],
+      "study": ["ddia", "sysdesign"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience with cloud computing with AWS.",
+      "short": "AWS 클라우드를 써서 시스템을 만들고 운영해 본 경험.",
+      "why": "쿠팡은 자체 GPU·저장 장비와 함께 필요할 때 늘리는 AWS 를 섞어 쓴다고 밝혔습니다.[11] 비용 최적화 글에는 EC2·S3·EBS·EMR·CloudWatch·Athena 같은 AWS 서비스가 나옵니다.[12]",
+      "actually": {
+        "items": [
+          "계산: EC2(가상 서버), 값싼 Spot 인스턴스, ARM 기반 Graviton — 쿠팡 비용 글에 나온 선택지 [12]",
+          "저장: S3(객체 저장소)와 수명 주기 규칙 — 작은 파일이 수십억 개면 자동 계층 이동이 오히려 비쌀 수 있다는 교훈 [12]",
+          "데이터 처리: EMR(관리형 Hadoop·Spark), 조회 Athena [12]",
+          "여러 가용 영역에 나눠 배치해 한 곳이 죽어도 버티기 [18]"
+        ]
+      },
+      "level": {
+        "basic": "EC2·S3·RDS 로 서비스를 올리고 CloudWatch 로 지켜봤다",
+        "work": "여러 가용 영역 설계, 자동 확장, 비용을 보며 인스턴스를 고른 적이 있다",
+        "team": "큰 데이터 파이프라인·서빙을 AWS 위에서 비용과 안정성을 같이 맞춰 운영했다 [12]"
+      },
+      "how_far": "자격증보다 실제로 운영하며 겪은 문제(용량·비용·장애)를 말할 수 있으면 됩니다 {추론}.",
+      "refs": [11, 12, 18],
+      "study": ["aws-reliability"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience of developing container-based testing environment.",
+      "short": "컨테이너로 진짜 DB·메시지 큐를 띄워 시험하는 환경을 만들어 본 경험.",
+      "why": "서빙·파이프라인은 DB·캐시·메시지 큐와 맞물려야 돌아서, 가짜 객체(목)만으로는 연동 문제를 못 잡습니다 {추론}. 쿠팡의 한 팀은 배포에 손으로 하는 QA 가 많아 테스트를 자동화하고 있다고 밝혔습니다.[9]",
+      "actually": {
+        "intro": "흔한 방법은 Testcontainers(시험 코드 안에서 Docker 로 실제 DB·브로커를 잠깐 띄웠다 지우는 오픈소스 라이브러리)입니다.[15]",
+        "items": [
+          "통합 시험 — 시험 시작 때 MySQL·Kafka 컨테이너를 띄우고, 끝나면 지우기 [15]",
+          "CI(자동 빌드) 에서도 똑같이 돌게 — 개발자 컴퓨터와 같은 환경 [15]",
+          "시험 데이터 준비·정리를 코드로(매번 같은 상태에서 시작) {추론}",
+          "느린 통합 시험과 빠른 단위 시험을 나눠, 무엇을 어디서 시험할지 정하기 {추론}",
+          "필요할 때만 띄우는 시험 환경 — 쿠팡은 비운영 환경을 필요할 때만 띄우도록 자동화했다고 밝혔습니다.[12]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "컨테이너 기반 통합 시험의 보통 흐름",
+          "steps": ["시험 시작 · 필요한 DB·브로커 컨테이너 띄우기", "준비 · 스키마·시험 데이터 넣기", "실행 · 실제 연결로 서비스 코드 시험", "확인 · 결과·저장 상태 검사", "정리 · 컨테이너 지우기"],
+          "mine_from": 0
+        }
+      ],
+      "level": {
+        "basic": "Docker Compose 나 Testcontainers 로 DB 를 띄워 통합 시험을 짜 봤다",
+        "work": "여러 서비스가 쓰는 공통 시험 환경·도구를 만들어 CI 에 붙였다",
+        "team": "플랫폼을 쓰는 다른 팀도 그대로 쓸 수 있는 시험 환경을 제공했다 {추론}"
+      },
+      "how_far": "'개발해 본 경험'이라 남이 만든 환경을 쓴 것보다, 시험 환경 자체를 만든 경험을 봅니다 {추론}[1].",
+      "refs": [1, 9, 12, 15],
+      "study": ["testcontainers", "docker-book", "practical-testing"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience with Java / IntelliJ / Spring environment.",
+      "short": "Java · IntelliJ(개발 도구) · Spring 으로 개발하는 환경에 익숙할 것.",
+      "why": "팀의 개발 환경을 그대로 적은 줄입니다.[1] 공고의 기술 목록에도 Java·Spring 이 있습니다.[1]",
+      "actually": {
+        "items": [
+          "Spring Boot 서비스 — 설정·빈·트랜잭션·관측(액추에이터) {추론}",
+          "Spring 의 프록시 동작(트랜잭션·AOP 가 왜 같은 클래스 안 호출에서 안 먹나) {추론}",
+          "IntelliJ 디버거·프로파일러로 느린 곳 찾기 {추론}"
+        ]
+      },
+      "level": {
+        "basic": "Spring Boot 로 API 서버를 만들어 운영했다",
+        "work": "Spring 내부 동작(프록시·트랜잭션 경계)으로 생긴 문제를 고쳤다",
+        "team": "여러 팀이 쓰는 Spring 공통 라이브러리·규칙을 만들었다 {추론}"
+      },
+      "refs": [1],
+      "study": ["spring-advanced", "spring-boot"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Type of work model:",
+      "short": "근무 방식 안내 머리말 — 아래 줄이 그 내용이다.",
+      "why": "쿠팡 공고에 공통으로 붙는 안내 머리말입니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "Hybrid - Our Hybrid work model: Coupang hybrid work model is designed to enable a culture of collaboration",
+      "short": "주 3일 이상 사무실 출근, 직무에 따라 주 2일 재택이 가능한 하이브리드다.",
+      "why": "쿠팡 공통 근무 규칙입니다. 주 3일 이상 출근, 직무에 따라 주 2일 재택이 가능하고, 일부 사업은 더 출근할 수 있다고 적었습니다.[1]",
+      "how_far": "근무지는 벵갈루루·하이데라바드 두 곳이 적혀 있습니다 — 어느 쪽인지는 지원·면접 때 확인합니다 {추론}[1].",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "Details to consider",
+      "short": "채용 관련 법정 안내 머리말이다.",
+      "why": "쿠팡 공고에 공통으로 붙는 안내 머리말입니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "Those eligible for employment protection (recipients of veteran",
+      "short": "보훈 대상자·장애인 등 고용 보호 대상은 관련 법에 따라 우대될 수 있다는 안내다.",
+      "why": "쿠팡 공고에 공통으로 붙는 법정 안내입니다.[1]",
+      "refs": [1]
+    }
+  ],
+  "resources": [
+    {"id": "ddia", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 정재부·김영준·이도경 옮김 · 위키북스 · 2018", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://wikibook.co.kr/data-intensive-applications/", "why": "복제·분할·배치·스트림 처리를 한 그림으로. '데이터 파이프라인 설계'와 '큰 시스템 구조' 요건의 바탕이고, 설계 리뷰에서 물을 질문을 준다."},
+    {"id": "sysdesign", "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초", "by": "알렉스 쉬 · 인사이트", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88", "why": "규모 추정·캐시·분할을 면접 형식으로. Senior Staff 면접의 시스템 설계 질문을 연습한다."},
+    {"id": "staffeng", "title": "Staff Engineer: Leadership beyond the management track", "by": "Will Larson · 2021", "kind": "book", "lang": "en", "free": true, "level": "실무", "url": "https://staffeng.com/book", "why": "팀장이 아닌 최상위 엔지니어가 방향을 정하고 권한 없이 합의를 끌어내는 법. 로드맵·관계자 조율 업무 줄을 위해. 웹에서 무료."},
+    {"id": "design-docs", "title": "Design Docs at Google", "by": "Malte Ubl · industrialempathy.com", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.industrialempathy.com/posts/design-docs-at-google/", "why": "목표·하지 않는 것·대안 비교가 있는 설계 문서 형식. '복잡한 문제를 단순하게 쪼갠다'를 글로 보여 주는 도구."},
+    {"id": "builders-cache", "title": "Caching challenges and strategies", "by": "Amazon Builders' Library", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://aws.amazon.com/builders-library/caching-challenges-and-strategies/", "why": "서빙 층 캐시의 함정(없는 키 캐시·몰림·만료)과 대책. 쿠팡이 공개한 '없는 키를 캐시 안 해 DB 가 맞은' 사례를 일반화해 본다."},
+    {"id": "aws-reliability", "title": "AWS Well-Architected Framework — Reliability Pillar", "by": "AWS 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html", "why": "가용성 계산·여러 가용 영역·장애 격리를 AWS 기준으로. '고가용 시스템'과 'AWS' 요건을 함께 채운다."},
+    {"id": "sre-book", "title": "사이트 신뢰성 엔지니어링", "by": "벳시 베이어 외 · 제이펍 · 2018 (원서는 sre.google 에서 무료)", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%82%AC%EC%9D%B4%ED%8A%B8%20%EC%8B%A0%EB%A2%B0%EC%84%B1%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81", "why": "SLO·사후 검토·장애 대응. '큰 장애를 파고든다'와 '안정성' 요건을 팀 규칙으로 바꾸는 법."},
+    {"id": "testcontainers", "title": "Testcontainers for Java", "by": "Testcontainers 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://java.testcontainers.org/", "why": "시험 코드에서 실제 DB·Kafka 를 컨테이너로 띄우는 법. '컨테이너 기반 시험 환경' 요건에 가장 직접적인 자료."},
+    {"id": "docker-book", "title": "개발자를 위한 도커 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/docker", "why": "컨테이너를 실제 명령과 출력으로 익힌다. 시험 환경을 컨테이너로 만들기 전 바탕."},
+    {"id": "practical-testing", "title": "Practical Testing — 실용적인 테스트 가이드 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/practical-testing", "why": "단위·통합 시험을 어디서 나누나, Spring 시험 환경 구성. 시험 환경을 설계할 때의 기준."},
+    {"id": "java-thread", "title": "실전 자바 — 멀티스레드와 동시성 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/java-thread", "why": "스레드 이름과 실행 순서를 찍어 보며 동시성을 익힌다. 대량 요청 Java 서버의 바탕."},
+    {"id": "jvm-tuning", "title": "자바 성능 튜닝 — JVM 과 GC (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "심화", "url": "/wiki/jvm-tuning", "why": "GC 로그를 읽어 지연이 튀는 원인을 찾는다. '큰 장애를 파고든다' 줄에서 Java 쪽 도구."},
+    {"id": "spring-advanced", "title": "스프링 핵심 원리 — 고급편 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "심화", "url": "/wiki/spring-advanced", "why": "프록시·AOP 가 실제로 어떻게 끼어드는지 빈의 진짜 클래스 이름으로 확인. 'Spring 환경' 요건의 깊은 쪽."},
+    {"id": "spring-boot", "title": "스프링 부트 — 핵심 원리와 활용 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/spring-boot", "why": "자동 구성·액추에이터를 기동 로그와 응답으로. Spring 서비스 운영의 바탕."}
+  ],
+  "study_path": [
+    {"title": "쿠팡이 공개한 구조 읽기", "time": "1주", "goal": "쿠팡의 서빙·파이프라인·ML 플랫폼이 어떻게 생겼는지 회사 글 기준으로 설명할 수 있다.", "task": "가상의 '상품 상세 화면' 요청 하나가 서빙 층 → 캐시 → 여러 마이크로서비스 → 저장소로 가는 그림을 그리고, 각 칸이 죽으면 화면에 무엇이 보일지 적는다.", "resources": ["design-docs"]},
+    {"title": "서빙 층과 캐시 손으로 확인", "time": "2주", "goal": "캐시 적중률·없는 키 캐시·만료가 뒤쪽 부하에 주는 영향을 숫자로 말할 수 있다.", "task": "가상 상품 1만 개를 Redis 앞에 둔 Spring Boot 조회 API 를 만들고, 없는 상품 id 를 섞은 부하를 걸어 '없는 키 캐시' 전후의 DB 조회 수와 p99 지연을 표로 비교한다.", "resources": ["builders-cache", "sysdesign", "spring-boot"]},
+    {"title": "가용성을 설계로", "time": "2주", "goal": "SLO 를 정하고, 의존 서비스가 죽어도 핵심 기능이 도는 구조를 만들 수 있다.", "task": "위 API 에 '추천' 의존 서비스를 붙이고 일부러 느리게 만든 뒤, 시간 제한·부분 응답으로 상품 상세가 계속 뜨게 하고 가용성 목표 대비 결과를 적는다.", "resources": ["aws-reliability", "sre-book", "ddia"]},
+    {"title": "컨테이너 기반 시험 환경 만들기", "time": "1~2주", "goal": "다른 팀도 그대로 쓸 수 있는 통합 시험 환경을 만든다.", "task": "Testcontainers 로 MySQL·Kafka 를 띄워 '주문 저장 → 이벤트 발행 → 소비'를 끝까지 시험하는 예제 저장소를 만들고, CI 에서도 같은 시험이 도는 것을 확인한다.", "resources": ["testcontainers", "docker-book", "practical-testing"]},
+    {"title": "로드맵 문서 한 장", "time": "1주", "goal": "플랫폼의 1년 방향을 근거·단계·하지 않는 것이 있는 문서로 쓸 수 있다.", "task": "가상의 '서빙 플랫폼 1년 로드맵'을 쓴다 — 지금 지표, 목표, 단계 3개, 단계마다 버리는 것, 다른 팀이 직접 기능을 붙이는 확장 지점.", "resources": ["staffeng", "design-docs"]}
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없고 인도 법인 숫자도 공개되지 않았다. 공시로 확인되는 것은 **전 세계 직원 보수 중간값(2025년 3만 3,831달러)** 뿐이고, 비교로 같은 회사 **같은 직급의 미국 시애틀 공고 기본급($174,000~$299,000)** 을 싣는다 — 둘 다 이 자리 연봉이 아니다",
+    "rows": [
+      {"label": "쿠팡 Inc. 전 직원 보수 중간값", "value": "3만 3,831달러 / 년", "basis": "공시(미국 위임장) · 2025년", "note": "CEO 를 뺀 전 세계 직원의 가운데 값. 한국 물류·현장 직원이 많이 섞인 값이다 [7]"},
+      {"label": "다른 자리 비교 — 미국 Senior Staff Backend 기본급", "value": "$174,000 ~ $299,000 / 년", "peer": true, "basis": "공고 · 2026년 (미국 시애틀)", "note": "같은 직급 이름의 Cloud Infrastructure 조직 공고. 기본급만이고 연 보너스는 기본급의 0~20% 로 따로 적혀 있다. 지역 시장에 따라 달라진다고 공고가 밝혔다 [8]"}
+    ],
+    "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없고, 인도 법인의 보수 공시도 없다 — **인도 숫자 없음**. 중간값은 회사 전체 가운데 값이라 경력 12년 이상 개발자 연봉으로 읽으면 안 된다 {추론}. 미국 공고 금액은 미국 시장을 반영한 범위라 인도 금액과 같지 않다 [8]. 처우는 마지막 협의 단계에서 확인한다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {"name": "근무 방식", "detail": "하이브리드 — 주 3일 이상 사무실, 직무에 따라 주 2일 재택 가능(일부 사업은 더 출근)"},
+      {"name": "의료", "detail": "본인과 직계가족을 보장하는 의료보험"},
+      {"name": "가족 휴가", "detail": "가족 관련 휴가"},
+      {"name": "배움", "detail": "학습 프로그램, 여러 나라가 함께하는 프로젝트"},
+      {"name": "행사·시설", "detail": "팀·회사 행사, 라운지·카페테리아"}
+    ],
+    "note": "근무 방식은 이 공고 [1], 나머지는 쿠팡 채용 사이트 'Why Coupang' 의 전 세계 공통 소개다 [6]. 사이트는 복지가 직무·지역·자격에 따라 다를 수 있다고 적었고 금액·조건은 없다 — 인도 사무소 적용 범위는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "쿠팡 인도 개발 센터 (Coupang Dev Center) — 벵갈루루 또는 하이데라바드",
+    "address": "6th Floor, RMZ Ecoworld, Campus 20, Units 601 & 602, Bhoganahalli Village, Varthur Hobli, Bengaluru Urban, Karnataka, India",
+    "map_url": "https://map.naver.com/p/search/RMZ%20Ecoworld%20Campus%2020%20Bengaluru",
+    "note": "공고 근무지는 'Bengaluru; Hyderabad' 두 곳이다 [1]. 위 주소는 쿠팡 채용 사이트의 벵갈루루 안내 [4], 하이데라바드는 5th Floor, RMZ Spire, Silpa Gram Craft Village, HITEC City, Hyderabad, Telangana 다 [5]. 벵갈루루 센터는 2023년 말, 하이데라바드 사무소는 2025년 7월에 문을 열었다 [3]."
+  },
+  "fit": {
+    "good": [
+      "팀장보다 기술로 여러 팀의 방향을 정하는 길을 가고 싶은 12년 이상 개발자[1][20]",
+      "데이터 파이프라인과 사용자 요청을 바로 받는 서빙 층을 둘 다 다뤄 본 사람[1]",
+      "아무도 원인을 못 찾는 장애를 끝까지 파는 것이 재미있는 사람[9][10]",
+      "Java·Spring·AWS 를 오래 써 왔고 시험 환경까지 직접 만들어 본 사람[1]"
+    ],
+    "hard": [
+      "경력 12년 이상이 최소선이다[1]",
+      "인도 벵갈루루·하이데라바드 근무, 주 3일 이상 출근[1]",
+      "팀 이름·맡을 시스템이 공고에 없다 — 면접에서 직접 물어 확인해야 한다[1]",
+      "권한 없이 여러 나라 팀과 합의를 끌어내야 한다[1][13]"
+    ]
+  },
+  "interview": [
+    {"q": "응답이 느린데 CPU 는 한가합니다. 어디부터 보시겠어요?", "a": "단계별 측정으로 기다리는 곳 찾기 — 쿠팡이 공개한 '없는 키 캐시' 사례의 모양.[10]"},
+    {"q": "서빙 층이 다섯 개 서비스의 데이터를 모읍니다. 하나가 느려지면 전체를 어떻게 지키겠어요?", "a": "시간 제한·부분 응답·핵심 경로 분리 — 고가용 요건과 쿠팡의 핵심 경로 분리.[9][18]"},
+    {"q": "99.99% 가용성이면 1년에 몇 분 멈춰도 되나요? 의존 서비스가 늘면 어떻게 되죠?", "a": "가용성 숫자 감각과 의존 사슬의 곱.[9]"},
+    {"q": "운영을 멈추지 않고 관계형 DB 의 데이터를 NoSQL 로 옮긴다면 단계를 어떻게 나누겠어요?", "a": "'복잡한 문제를 단순하게 쪼갠다'와 큰 구조 변경 — 쿠팡 엔지니어의 이관 사례.[13]"},
+    {"q": "다른 팀이 플랫폼 팀을 기다리지 않고 새 데이터 출처를 붙이게 하려면 무엇을 만들겠어요?", "a": "두 번 적힌 '열려 있고 넓히기 쉬운 플랫폼' 업무.[1]"},
+    {"q": "MySQL 과 Kafka 를 쓰는 서비스의 통합 시험 환경을 어떻게 만들겠어요? CI 에서는요?", "a": "컨테이너 기반 시험 환경 요건.[15]"}
+  ],
+  "sources": [
+    {"n": 1, "title": "Coupang Careers · Senior Staff Backend Engineer (Bengaluru; Hyderabad)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8059287", "kind": "posting", "date": "2026-11", "note": "역할 소개(분산 시스템·데이터 처리 파이프라인·차세대 플랫폼, 여러 나라 개발자와 협업, 매일 수천만 명)·업무·요건·하이브리드 근무"},
+    {"n": 2, "title": "Coupang Careers · Engineering at scale, innovation at heart: welcoming Sunil, India Dev Center's new Senior Director of Engineering", "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/engineering-at-scale-innovation-at-heart-welcoming-sunil-coupang-india-dev-center-s-new-senior-director-of-engineering/", "kind": "company", "date": "2025-06-10", "note": "인도 개발 센터의 운송 시스템 조직 소개(한국·인도 팀 협업) — 이 공고의 팀이 이 조직인지는 공고에 없다"},
+    {"n": 3, "title": "CXOToday · Coupang Expands India Tech Footprint with Hyderabad Office Launch", "url": "https://cxotoday.com/press-release/coupang-expands-india-tech-footprint-with-hyderabad-office-launch-strengthens-global-innovation-leadership/", "kind": "news", "date": "2025-08-20", "note": "회사 보도자료 — 인도 개발 센터 2023년 말 개소, 하이데라바드 2025-07"},
+    {"n": 4, "title": "Coupang Careers · Bengaluru", "url": "https://www.coupang.jobs/en/locations/bengaluru/", "kind": "company", "note": "Coupang Dev Center 벵갈루루 주소"},
+    {"n": 5, "title": "Coupang Careers · Hyderabad", "url": "https://www.coupang.jobs/en/locations/hyderabad/", "kind": "company", "note": "Coupang Dev Center 하이데라바드 주소(RMZ Spire, HITEC City)"},
+    {"n": 6, "title": "Coupang Careers · Why Coupang (리더십 원칙·복지)", "url": "https://www.coupang.jobs/en/why-coupang/", "kind": "company", "note": "복지 소개 — 직무·지역에 따라 다를 수 있다고 적혀 있음"},
+    {"n": 7, "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)", "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm", "kind": "company", "date": "2026", "note": "2025 회계연도 전 직원 보수 중간값 — 달러 환산"},
+    {"n": 8, "title": "Coupang Careers · Senior Staff Backend Engineer - Cloud Infrastructure (Seattle)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7438944", "kind": "posting", "date": "2026-11", "note": "다른 조직·같은 직급 이름 — 기본급 범위와 보너스 비율"},
+    {"n": 9, "title": "Coupang Careers · The way engineers work at Coupang", "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/the-way-engineers-work-at-coupang/", "kind": "company", "date": "2021-06-17", "note": "모든 서비스가 마이크로서비스, 핵심 경로에서 덜 중요한 서비스 분리, 쿠팡 이츠 99.99% 목표, '왜'를 다섯 번, 펠로급의 설계·장애 리뷰 참여, 계획·성능 시험 결과 공유, 테스트 자동화, 나라 사이 Tech Talk — 2021년 글"},
+    {"n": 10, "title": "Coupang Engineering · Building a digital twin discrete event simulation platform for fulfillment optimization", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/building-a-digital-twin-discrete-event-simulation-platform-for-fulfillment-optimization/", "kind": "company", "date": "2026-11-20", "note": "날짜별 배치 파이프라인 → 객체 저장소, 행위자 기반 엔진, 포장 API 지연의 원인(설정 DB 중복 조회·없는 키 미캐시)과 해결"},
+    {"n": 11, "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/", "kind": "company", "date": "2023-09-08", "note": "Feast 기반 오프라인·온라인 피처 저장소, 쿠버네티스 위 모델 서빙(모델마다 자동 확장), 검증·카나리 배포, 자체 장비 + AWS 혼합"},
+    {"n": 12, "title": "Coupang Engineering · Cloud expenditure optimization for cost efficiency", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/cloud-expenditure-optimization-for-cost-efficiency/", "kind": "company", "date": "2024-03-21", "note": "EC2·S3·EBS·EMR·CloudWatch·Athena·Graviton·Spot, 비운영 환경 필요할 때만 띄워 25% 절감, S3 자동 계층의 작은 파일 함정"},
+    {"n": 13, "title": "Coupang Careers · From High-Scale Inventory to building Digital Twins: Lakshmanan's Journey at Coupang", "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/from-high-scale-inventory-to-building-digital-twins-lakshmanan-s-journey-at-coupang/", "kind": "company", "date": "2026-07-03", "note": "시애틀 Staff 엔지니어 — 이벤트 소싱 재고 원장, 운영 중 SQL→NoSQL 재고 id 이관 특허 출원, 멀티테넌트 시뮬레이션, 대안 비교 문화, 당번 검토에 AI, 한국·미국·인도 협업"},
+    {"n": 14, "title": "Coupang Careers · Inventing at scale: Coupang's Karthik Dondapati", "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/inventing-at-scale-coupang-s-karthik-dondapati/", "kind": "company", "date": "2026-03-05", "note": "개인화 첫 화면 데이터 파이프라인 — 수천 개 고객 묶음, 하루 수십억 건, 실시간 ML 모델 연동"},
+    {"n": 15, "title": "Testcontainers for Java · 공식 문서", "url": "https://java.testcontainers.org/", "kind": "reference", "note": "시험 코드에서 Docker 로 실제 DB·브로커를 잠깐 띄우는 오픈소스 라이브러리"},
+    {"n": 16, "title": "Amazon Builders' Library · Caching challenges and strategies", "url": "https://aws.amazon.com/builders-library/caching-challenges-and-strategies/", "kind": "reference", "note": "캐시 적중률·없는 키 캐시·몰림 — 일반론"},
+    {"n": 17, "title": "Google SRE Book · Service Level Objectives", "url": "https://sre.google/sre-book/service-level-objectives/", "kind": "reference", "note": "SLI·SLO·SLA 정의"},
+    {"n": 18, "title": "AWS Well-Architected · Reliability Pillar", "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html", "kind": "reference", "note": "가용성 계산·여러 가용 영역·장애 격리·시간 제한과 재시도"},
+    {"n": 19, "title": "Malte Ubl · Design Docs at Google", "url": "https://www.industrialempathy.com/posts/design-docs-at-google/", "kind": "reference", "note": "목표·하지 않는 것·대안이 있는 설계 문서 — 다른 회사 관례"},
+    {"n": 20, "title": "Will Larson · Staff Engineer: Leadership beyond the management track", "url": "https://staffeng.com/book", "kind": "reference", "note": "Staff 이상 엔지니어의 역할(방향 설정·권한 없는 합의) — 일반론"},
+    {"n": 21, "title": "데이터 중심 애플리케이션 설계 (마틴 클레프만 · 위키북스)", "url": "https://wikibook.co.kr/data-intensive-applications/", "kind": "reference", "note": "배치·스트림·복제·분할 — 일반 교재"},
+    {"n": 22, "title": "Coupang Engineering (Medium) · Our backend strategy to handle massive traffic", "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2", "kind": "company", "date": "2022-08", "note": "흩어진 상품 데이터를 핵심 서빙 층으로 모으고 실시간 캐시를 얹은 구조(시리즈 1편). 본문은 자동 수집이 막혀(403) 검색 요약으로만 확인했다"}
+  ],
+  "caveat": "공고는 팀 이름과 맡을 서빙 플랫폼(상품·검색·광고 등)을 밝히지 않았습니다. 그래서 회사 근거는 이 공고와, 쿠팡이 공개한 엔지니어링 글(물류 시뮬레이션 2026-11, ML 플랫폼 2023-09, 클라우드 비용 2024-03, 서빙 층 2022-08 — 마지막 것은 본문을 못 읽고 요약만 확인)·직원 인터뷰(2021·2026)로 '쿠팡에서는 보통 이렇게 한다'를 보였고, 그것이 이 팀의 구조라는 뜻은 아닙니다. 회사 발표 영상은 찾지 못했습니다(받은 영상 없음). 캐시·가용성·시험 환경은 AWS·Google·Testcontainers 공식 문서로 '보통 이런 것'을 보였습니다. 연봉은 인도 숫자가 없어 미국 공시 중간값과 미국 같은 직급 공고만 실었습니다."
+}
