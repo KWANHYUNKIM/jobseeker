@@ -1,0 +1,848 @@
+{
+ "id": "smilegate-ai-web-service-dev",
+ "company": "스마일게이트",
+ "role": "AI 웹서비스 개발 담당",
+ "team": "AI센터",
+ "jobs": [
+  "boards-gamejob:dev:286445",
+  "ats-smilegate:group:6145"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "AI센터가 만든 AI 기능을 직원과 사용자가 **웹 화면으로 쓰게 하는** 서비스 — 먼저 'AX 포털'(AI 전환을 위한 사내 입구로 보인다 {추론})의 기능을 늘리고 고치는 일을 Java·Spring으로 합니다.[1][2]",
+  "env": "Java · Spring Boot 백엔드가 중심이고, 화면(React·Vue)·DB 설계·쿠버네티스 배포까지 손이 닿으면 좋은 자리입니다.[1] AI센터는 그룹의 **업무 효율**과 서비스 확장을 맡은 조직입니다.[4]",
+  "oneline": "AI 모델을 만드는 사람이 아니라, **AI 모델을 쓸 수 있는 웹 서비스로 감싸는** 경력 3년 이상 Java 백엔드 개발자."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "AX 포털 고도화 및 신규 기능 추가 업무",
+   "short": "이미 돌아가는 사내 AI 포털에 새 기능을 붙이고, 느리거나 불편한 곳을 고치는 일.",
+   "why": "'고도화'라는 말은 포털이 이미 있다는 뜻입니다.[1] 스마일게이트 AI센터는 그룹의 업무 효율을 높이는 일을 맡았다고 소개돼 왔고[4], 2023년 네이버클라우드와 맺은 HyperCLOVA X(네이버의 대형 언어 모델) 협력에서도 **업무 생산성 향상**을 기대 효과로 들었습니다.[5] 같은 그룹은 '사내 시스템 AX(AI 전환) 추진'을 맡을 팀장급도 따로 뽑았습니다.[3] 포털의 실제 화면·기능은 공개되지 않았습니다.",
+   "actually": {
+    "intro": "회사가 포털 구성을 밝히지 않아, 사내 AI 포털에 보통 들어가는 기능으로 보입니다 {추론}. 아래 기술 조각은 Spring 진영의 공식 AI 모듈 문서에 있는 것입니다.[8][9]",
+    "items": [
+     "**대화 화면** — 직원이 묻고 모델이 답한다. 답은 글자 단위로 흘러 들어오게(스트리밍) 해야 기다리는 느낌이 줄어든다.[8][11]",
+     "**사내 문서 검색 붙이기(RAG)** — 질문과 비슷한 사내 문서를 먼저 찾아 모델에게 같이 건넨다. Spring AI에는 이 일을 하는 Advisor(요청 앞뒤에 끼는 처리기)가 있다.[9]",
+     "**권한** — 부서·직급마다 쓸 수 있는 모델·문서가 다르다. 로그인(사내 계정 연동)과 접근 제어를 웹 서비스가 맡는다 {추론}.",
+     "**사용량·비용 집계** — 누가 어떤 모델로 토큰(모델이 세는 글자 조각)을 얼마나 썼는지 모아 부서별로 보여 준다 {추론}.",
+     "**관리자 화면** — 공지·모델 목록·프롬프트 템플릿(자주 쓰는 질문 틀)을 바꾸는 운영 화면 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "부서별 AI 사용 비용 집계 (가상 단가)",
+     "body": "모델 단가는 보통 '1백만 토큰당 얼마'로 입력·출력을 따로 매깁니다. 아래 단가와 사용량은 지어낸 숫자이고, 계산 방식만 보입니다. 돈 계산이라 float 대신 Decimal을 썼습니다(직접 돌린 출력: 게임개발 0.8550 / 인사 0.0195).",
+     "lang": "python",
+     "code": "from decimal import Decimal as D\nprice = {\"model-a\": (D(\"2.50\"), D(\"10.00\")), \"model-b\": (D(\"0.15\"), D(\"0.60\"))}  # (입력, 출력) 달러\nlogs = [(\"게임개발\", \"model-a\", 120_000, 30_000),\n        (\"게임개발\", \"model-b\", 900_000, 200_000),\n        (\"인사\",     \"model-b\", 50_000, 20_000)]\ntotal = {}\nfor dept, model, tin, tout in logs:\n    pin, pout = price[model]\n    cost = (pin * tin + pout * tout) / D(1_000_000)\n    total[dept] = total.get(dept, D(0)) + cost\nfor dept, c in total.items():\n    print(dept, c.quantize(D(\"0.0001\")))\n# 게임개발 0.8550\n# 인사 0.0195"
+    }
+   ],
+   "how_far": "어떤 기능을 넣을지는 AX 과제를 기획하는 쪽이 정합니다 — 그룹은 그 일을 맡을 사람을 따로 뽑았습니다.[3] 개발자는 **정해진 기능을 기존 포털 코드에 깨뜨리지 않고 붙이는 것**이 최소선입니다. 남이 짠 Spring 코드를 읽고 고치는 능력이 새로 짜는 능력만큼 중요합니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    8,
+    9,
+    11
+   ],
+   "study": [
+    "spring-ai-docs",
+    "wiki-spring-boot",
+    "mdn-sse"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 활용 웹 서비스 및 서비스 플랫폼 비즈니스 구조를 설계하고 개발하는 업무",
+   "short": "AI 기능을 여러 서비스가 같이 쓰도록 '공통 바닥(플랫폼)'과 그 위 서비스의 구조를 짜는 일.",
+   "why": "AI센터의 기술은 한 곳이 아니라 그룹의 캐릭터·챗봇 등 여러 서비스에 조금씩 쓰여 왔습니다.[6] 서비스마다 모델 호출·권한·기록을 따로 만들면 같은 일을 여러 번 하게 되니, 공통 부분을 플랫폼으로 묶는 설계가 필요합니다 {추론}. '비즈니스 구조'는 기능을 어떤 단위(누가 무엇을 하나)로 나누느냐는 뜻으로 읽힙니다 {추론}.",
+   "flows": [
+    {
+     "caption": "AI 웹 서비스의 보통 구조 — 이 자리는 웹 서버부터 {추론}[8][9]",
+     "steps": [
+      "화면 · React/Vue 웹",
+      "웹 서버 · Spring Boot REST API, 로그인·권한",
+      "AI 공통층 · 모델 고르기, 프롬프트 틀, 문서 검색(RAG), 사용량 기록",
+      "모델 · 외부 모델 API 또는 AI센터 자체 모델"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**모델을 바꿔 끼울 수 있게** — Spring AI는 여러 회사의 모델을 같은 ChatClient 인터페이스로 부르게 해서, 모델을 바꿔도 서비스 코드가 덜 바뀐다.[8]",
+     "**앞뒤 처리 줄 세우기** — 기록 남기기·대화 기억·문서 검색 같은 처리를 Advisor로 끼우고, order 값이 작은 것부터 돈다.[9]",
+     "**공통 API 정하기** — 여러 서비스가 쓰는 API는 주소·버전·오류 모양을 처음부터 맞춘다.[12][13]",
+     "**도메인 나누기** — 사용자·조직, 대화, 문서, 사용량, 관리 설정을 서로 다른 모듈(표·패키지)로 나눈다 {추론}."
+    ]
+   },
+   "how_far": "경력 3년 이상 자리라[1] 시키는 API만 만드는 것보다 **모듈을 어떻게 나눌지 그림(설계 문서)으로 제안할 수 있는** 수준을 기대한다고 보는 게 맞습니다 {추론}. 우대사항의 UML·DB 스키마 설계가 이 줄과 이어집니다.[1]",
+   "refs": [
+    1,
+    6,
+    8,
+    9,
+    12,
+    13
+   ],
+   "study": [
+    "spring-ai-docs",
+    "toby-spring",
+    "ms-rest"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 기술을 탑재한 웹 기반 서비스를 개발하고 관리하는 업무",
+   "short": "만들고 끝이 아니라, 모델 답이 느리거나 틀리거나 위험할 때를 대비해 서비스를 계속 지키는 일.",
+   "why": "AI 기능은 일반 웹 기능과 달리 응답이 느리고(수 초), 같은 질문에도 답이 달라지고, 입력에 숨은 지시로 엉뚱하게 움직일 수 있습니다.[10][11] 같은 센터는 AI 결과물을 현업에 적용할 때의 품질 기준·리스크 관리를 맡을 사람도 뽑고 있어[7], '관리'가 가벼운 말이 아닙니다.",
+   "actually": {
+    "items": [
+     "**스트리밍 연결 관리** — 답을 SSE(서버가 한 연결로 조각을 계속 보내는 방식)로 흘려 보낼 때 끊김·타임아웃을 다룬다.[11]",
+     "**프롬프트 주입 막기** — 사용자가 넣은 글이나 검색해 온 문서 안의 지시가 시스템 지시를 덮어쓰는 공격. OWASP는 LLM 앱 위험 1위로 꼽고, 모델 권한 줄이기·중요한 동작은 사람 승인을 권한다.[10]",
+     "**민감 정보** — 직원이 붙여 넣은 개인정보·사내 비밀이 모델·기록으로 새지 않게 거르고 남긴다.[10]",
+     "**장애 대응** — 외부 모델이 느리면 시간 제한·재시도·다른 모델로 돌리기 {추론}.",
+     "**운영 지표** — 응답 시간·실패율·사용량을 보고 이상을 알린다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "SSE 조각 이어 붙이기",
+     "body": "모델 API의 스트리밍 응답은 보통 `data: ...` 줄을 빈 줄로 나눠 보냅니다.[11] 아래는 그 조각을 받는 대로 화면에 붙이는 흐름만 보인 것입니다(직접 돌린 출력: '화면: 안녕' → '화면: 안녕하세요'). 실제 서비스에서는 Spring 쪽에서 Flux·SseEmitter로 같은 일을 합니다 {추론}.",
+     "lang": "python",
+     "code": "import json\nraw = 'data: {\"t\":\"안녕\"}\\n\\ndata: {\"t\":\"하세요\"}\\n\\ndata: [DONE]\\n\\n'\nout = []\nfor block in raw.split(\"\\n\\n\"):\n    if not block.startswith(\"data: \"):\n        continue\n    body = block[len(\"data: \"):]\n    if body == \"[DONE]\":\n        break\n    out.append(json.loads(body)[\"t\"])\n    print(\"화면:\", \"\".join(out))\n# 화면: 안녕\n# 화면: 안녕하세요"
+    }
+   ],
+   "how_far": "모델 자체를 학습시키는 일은 AI센터 연구 조직 몫입니다 {추론}. 이 자리는 **모델을 블랙박스로 두고 그 앞뒤를 안전하고 빠르게 만드는** 쪽입니다. 품질 기준은 프로덕트·품질 담당과 같이 정합니다.[7]",
+   "refs": [
+    7,
+    10,
+    11
+   ],
+   "study": [
+    "owasp-llm",
+    "mdn-sse",
+    "spring-ai-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터 관련 학과 대학교 졸업(학사) 이상 이신 분",
+   "short": "컴퓨터 관련 학사 이상이 서류 조건이라서. 다른 전공이면 바로 아래 '그에 준하는 역량' 쪽을 본다.",
+   "why": "공고가 정한 최소 학력입니다.[1] 회사 채용 페이지 판에는 이 줄이 없고 필요역량 세 줄만 있어[2], 이 줄이 얼마나 엄격하게 적용되는지는 공개되지 않았습니다 {추론}.",
+   "how_far": "학과가 다르면 다음 줄의 '그에 준하는 역량'을 경력기술서·포트폴리오로 보이는 수밖에 없습니다 — 이 공고는 둘 다 내라고 합니다.[1]",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java 개발 경력 3년 이상 (혹은 그에 준하는 역량을 갖춘 분)",
+   "short": "남이 만든 Spring 서비스를 바로 읽고 고칠 수 있는 정도 — 보통 실무 3년쯤에 생기는 힘이라서.",
+   "why": "업무 첫 줄이 이미 있는 포털의 '고도화'라 입사하자마자 기존 코드를 다뤄야 합니다.[1] 괄호 안 '그에 준하는 역량'은 연차보다 결과물을 보겠다는 말로 읽힙니다 {추론}.",
+   "level": {
+    "basic": "컬렉션·예외·제네릭·람다/스트림, 객체를 나눠 설계하기",
+    "work": "Spring 빈·트랜잭션, JPA나 MyBatis로 DB 다루기, 테스트 작성, 로그 보고 장애 찾기",
+    "team": "기존 포털 코드를 깨지 않고 기능 추가, 외부 AI API 호출의 시간 제한·재시도·동시성 다루기 {추론}"
+   },
+   "how_far": "경력이 3년이 안 되면 **운영해 본 Spring 서비스 하나**(로그인·DB·배포까지)와 그 과정에서 고친 문제를 경력기술서에 구체적으로 적는 것이 최소선입니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "wiki-spring-core",
+    "toby-spring",
+    "wiki-practical-testing"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java / Spring Framework / Spring Boot 사용 경험",
+   "short": "포털 백엔드가 Spring 위에 있어서. Spring이 대신해 주는 일(빈·설정·트랜잭션)을 알고 쓰는 수준.",
+   "why": "두 판의 공고 모두 이 줄을 첫 필요역량으로 둡니다.[1][2] Spring 진영에는 AI 모델 호출을 Spring 방식(빈·설정 파일)으로 붙이는 공식 모듈 Spring AI도 있어, Spring을 아는 사람이 AI 기능을 붙이기 쉽습니다.[8]",
+   "actually": {
+    "items": [
+     "**Spring Framework** — 객체를 컨테이너가 만들고 이어 준다(빈·의존성 주입). 트랜잭션·AOP(공통 처리 끼우기)가 여기서 나온다.[14]",
+     "**Spring Boot** — 설정을 자동으로 해 주고 서버를 내장해 jar 하나로 띄운다. 설정은 application.yml, 상태 확인은 Actuator.[14]",
+     "**AI 붙이기** — Spring AI의 ChatClient로 모델을 부르고, 동기 응답과 스트리밍 응답을 둘 다 지원한다.[8]"
+    ]
+   },
+   "how_far": "Spring 내부를 다 알 필요는 없지만, **자동 설정이 무엇을 만들었는지 로그로 확인하고 바꿀 줄** 아는 정도는 필요합니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    8,
+    14
+   ],
+   "study": [
+    "wiki-spring-core",
+    "wiki-spring-boot",
+    "spring-ai-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java를 활용한 웹서비스 설계 및 개발 경험",
+   "short": "요청이 들어와 응답이 나가기까지(컨트롤러 → 서비스 → DB)를 혼자 그리고 만들 수 있어야 해서.",
+   "why": "업무 둘째 줄이 '구조를 설계하고 개발'입니다.[1] 기능 하나를 맡으면 화면이 부를 API, 그 뒤의 로직, 저장할 표까지 한 사람이 그리게 됩니다 {추론}.",
+   "actually": {
+    "items": [
+     "요청 흐름: 필터(로그인 확인) → 컨트롤러(입력 검사) → 서비스(업무 규칙·트랜잭션) → 저장소(DB) {추론}.",
+     "AI 호출은 느리고 실패할 수 있어, DB 트랜잭션 안에서 부르지 않고 따로 떼어 둔다 {추론}.",
+     "오류 응답 모양을 하나로 맞춘다 — 표준 문서 RFC 9457은 type·title·status·detail 칸을 쓴다.[13]"
+    ]
+   },
+   "refs": [
+    1,
+    13
+   ],
+   "study": [
+    "wiki-spring-mvc-1",
+    "springboot-aws",
+    "wiki-jpa-basic"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Restful API 활용 경험",
+   "short": "화면과 서버, 서버와 AI 모델이 모두 HTTP API로 말을 주고받아서 — 만들 줄도, 부를 줄도 알아야 한다.",
+   "why": "이 자리에서 REST API는 두 방향입니다. 포털 화면이 부르는 API를 **만들고**, 외부·사내 AI 모델의 HTTP API를 **부릅니다**.[8] '활용'이라는 말에는 남이 만든 API를 문서만 보고 붙이는 일이 들어 있습니다 {추론}.",
+   "level": {
+    "basic": "HTTP 메서드(GET·POST·PUT·DELETE)와 상태 코드, JSON, 경로·쿼리 매개변수",
+    "work": "자원 이름 짓기, 페이지 나누기, 버전, 일관된 오류 응답, 인증 헤더",
+    "team": "느린 AI API 호출의 시간 제한·재시도·스트리밍 응답(SSE) 다루기 {추론}"
+   },
+   "actually": {
+    "items": [
+     "자원은 명사로, 동작은 메서드로 — 예: `POST /conversations/{id}/messages` {추론}.",
+     "마이크로소프트의 공개 REST 가이드라인은 이름 규칙·페이지 나누기·버전·오류 형식을 한곳에 정리해 둔 대표 문서다.[12]",
+     "오류는 RFC 9457 형식(application/problem+json)으로 내면 부르는 쪽이 한 가지 방법으로 처리한다.[13]"
+    ]
+   },
+   "refs": [
+    8,
+    12,
+    13
+   ],
+   "study": [
+    "wiki-http-basic",
+    "ms-rest",
+    "rfc9457"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "React, Vue.js 등의 Javascript 기반의 Front-end 기술에 경험 있으신 분",
+   "short": "포털은 결국 화면이라서 — 백엔드 개발자가 대화 화면·관리 화면을 직접 고칠 수 있으면 빠르다.",
+   "why": "공고 제목이 '웹서비스 개발'이고 첫 업무가 포털입니다.[1] AI 대화 화면은 답이 조각으로 들어와 계속 다시 그려야 해서, 화면 쪽 사정을 아는 백엔드가 API를 덜 불편하게 만듭니다 {추론}.",
+   "how_far": "우대사항이라 전문 프론트엔드 수준은 아닙니다. **컴포넌트·상태·API 호출 정도를 고칠 수 있는** 수준이면 됩니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "react-docs",
+    "vue-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "UML 기반의 분석 설계에 경험 있으신 분",
+   "short": "구조를 말 대신 그림(클래스·시퀀스 다이어그램)으로 보여 주고 합의할 수 있어서.",
+   "why": "업무 둘째 줄의 '플랫폼 구조 설계'는 기획·품질 담당·다른 개발자와 같이 정해야 하고[1][7], UML(객체 설계를 그리는 표준 그림 언어)은 그때 쓰는 공용어입니다.[19]",
+   "actually": {
+    "items": [
+     "**시퀀스 다이어그램** — '사용자 → 포털 → AI 공통층 → 모델' 순서로 누가 누구를 부르는지 {추론}.",
+     "**클래스 다이어그램** — 대화·메시지·사용자·부서 같은 도메인 객체와 관계 {추론}.",
+     "**유스케이스** — 직원·관리자가 포털에서 무엇을 하나 {추론}."
+    ]
+   },
+   "how_far": "표준 전체가 아니라 **실무에서 자주 쓰는 몇 가지 그림을 바로 그릴 수 있는** 정도면 됩니다 — UML Distilled가 바로 그 범위를 다룹니다 {추론}.",
+   "refs": [
+    1,
+    7,
+    19
+   ],
+   "study": [
+    "uml-distilled"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "DB 스키마 설계에 경험 있으신 분",
+   "short": "대화 기록·사용량·권한·설정을 어떤 표에 어떻게 나눠 담을지 정하는 일이 이 자리 몫이라서.",
+   "why": "AI 포털은 사용자·부서, 대화와 메시지, 사용량, 프롬프트 틀처럼 쌓이는 데이터가 많고, 사용량처럼 매일 크게 늘어나는 표도 있습니다 {추론}. 업무 둘째 줄의 '구조 설계'에는 표 설계가 들어갑니다.[1]",
+   "actually": {
+    "items": [
+     "대화 1 : 메시지 N, 메시지마다 모델·토큰 수·응답 시간을 남긴다 {추론}.",
+     "사용량은 원본 기록과 부서·일 단위 집계 표를 나눈다 {추론}.",
+     "자주 찾는 조건(사용자·날짜)에 맞춰 인덱스를 건다 {추론}."
+    ]
+   },
+   "refs": [
+    1
+   ],
+   "study": [
+    "real-mysql",
+    "wiki-jpa-basic"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 서비스 프로토타입 개발에 관심이 많으신 분",
+   "short": "새 AI 기능을 빨리 시험판으로 만들어 현업 반응을 보고 살릴지 정하는 일이 잦아서.",
+   "why": "AI센터는 연구 결과를 그룹 서비스에 적용하는 조직이고[4][6], 같은 센터는 R&D 결과물을 현업에 적용하는 일을 맡을 사람을 따로 뽑습니다.[7] 연구 결과가 쓸모 있는지 보려면 먼저 써 볼 수 있는 화면이 있어야 합니다 {추론}.",
+   "how_far": "'관심'이라 경험이 꼭 필요하진 않습니다. 모델 API에 화면을 붙인 작은 시험판을 하루이틀 안에 만들어 본 경험이 있으면 말할 거리가 됩니다 {추론}.",
+   "refs": [
+    4,
+    6,
+    7
+   ],
+   "study": [
+    "spring-ai-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "K8S, CI/CD에 관심 있으신 분",
+   "short": "만든 서비스를 컨테이너로 띄우고, 고친 코드가 자동으로 검사·배포되게 하는 흐름에 낄 수 있어서.",
+   "why": "공고에 K8S(쿠버네티스, 컨테이너를 여러 대에 나눠 띄우고 관리하는 도구)와 CI/CD(코드를 올리면 자동으로 빌드·테스트·배포)가 같이 적혀 있습니다.[1] 이 팀이 실제로 어떤 배포 도구를 쓰는지는 공개되지 않았습니다.",
+   "actually": {
+    "items": [
+     "Spring Boot 앱을 컨테이너 이미지로 만들고, 쿠버네티스 Deployment로 띄운다.[15]",
+     "준비가 됐는지 쿠버네티스가 물어보는 readiness·liveness 검사를 Actuator 상태 주소에 잇는다.[14][15]",
+     "코드를 올리면 테스트 → 이미지 빌드 → 배포가 도는 파이프라인(예: GitHub Actions).[16]"
+    ]
+   },
+   "how_far": "'관심'이라 클러스터를 운영할 필요는 없습니다. **내 서비스가 어떻게 띄워지는지 설정 파일을 읽고 고칠 수 있는** 정도면 충분합니다 {추론}.",
+   "refs": [
+    1,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "wiki-docker",
+    "wiki-kubernetes",
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "신기술 도전에 두려움이 없으신 분",
+   "short": "AI 모델·도구가 몇 달마다 바뀌어서 — 새 모델·라이브러리를 금방 써 보고 붙일 수 있어야 한다.",
+   "why": "Spring AI 문서만 해도 한 해 사이 1.0에서 2.x까지 판이 여러 번 올라갔습니다.[8] AI센터가 쓰는 모델도 바뀌어 왔고(2023년 HyperCLOVA X 협력[5]), 포털은 그때마다 새 모델을 붙여야 합니다 {추론}.",
+   "how_far": "면접에서는 최근에 혼자 써 본 새 기술 하나와, 그걸 실제 코드에 붙이며 부딪힌 문제를 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    5,
+    8
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "AI 모델을 직접 만들기보다 **쓰게 만드는 쪽**이 재미있는 Java 백엔드 개발자",
+   "화면·DB·배포까지 한 기능을 끝까지 맡고 싶은 사람[1]",
+   "사내 사용자(동료 직원)의 불편을 바로 듣고 고치는 일이 맞는 사람 {추론}",
+   "새 모델·도구를 먼저 써 보는 걸 즐기는 사람[1]"
+  ],
+  "hard": [
+   "모델 학습·연구를 하고 싶다면 이 자리가 아니다 — 이 자리는 웹 서비스 쪽이다 {추론}",
+   "AX 포털이 무엇인지 공개 자료가 없어 입사 전에 일의 범위를 알기 어렵다",
+   "경력 3년 이상이 자격요건이라 신입에게는 문이 좁다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "모델 답이 10초 걸린다면 웹 화면과 서버를 어떻게 설계하겠어요?",
+   "a": "스트리밍(SSE)과 시간 제한 — 업무 셋째 줄의 '관리'.[11]"
+  },
+  {
+   "q": "사내 문서를 검색해 답에 넣는 기능을 Spring으로 붙인다면 어디에 끼우나요?",
+   "a": "Advisor 같은 요청 앞뒤 처리기와 RAG.[9]"
+  },
+  {
+   "q": "직원이 넣은 글에 '이전 지시를 무시해' 같은 문장이 있으면요?",
+   "a": "OWASP LLM 위험 1위인 프롬프트 주입 — 모델 밖에서 막는 법.[10]"
+  },
+  {
+   "q": "부서별 AI 사용량·비용 화면을 만든다면 표를 어떻게 나누겠어요?",
+   "a": "원본 기록과 집계 표, 인덱스 — 우대사항의 DB 스키마 설계.[1]"
+  },
+  {
+   "q": "외부 모델을 다른 회사 것으로 바꾸라는 요청이 오면 코드가 얼마나 바뀌나요?",
+   "a": "모델을 인터페이스 뒤에 두는 설계.[8]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "게임잡 · [AI센터] AI 웹서비스 개발 담당 모집",
+   "url": "https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=286445",
+   "kind": "posting",
+   "note": "업무·자격요건·필요역량·우대사항·제출서류(경력기술서·포트폴리오)"
+  },
+  {
+   "n": 2,
+   "title": "Smilegate Careers · [AI센터] AI 웹서비스 개발 담당",
+   "url": "https://careers.smilegate.com/apply/announce/view?seq=6145",
+   "kind": "posting",
+   "note": "회사 채용 페이지 판 — 자격요건으로 필요역량 세 줄만 실림. 마감 2026-11-30"
+  },
+  {
+   "n": 3,
+   "title": "Smilegate Careers · [IT/시스템] 사내 시스템 기획 및 프로젝트 관리 담당(팀장급)",
+   "url": "https://careers.smilegate.com/apply/announce/view?seq=6146",
+   "kind": "posting",
+   "note": "같은 그룹 — '사내 시스템 AX 추진 기획 및 관리'. 지금은 마감"
+  },
+  {
+   "n": 4,
+   "title": "아시아경제 · 스마일게이트 제2회 AI 테크 데이",
+   "url": "https://www.asiae.co.kr/en/article/2023121909420609269",
+   "kind": "news",
+   "date": "2023-12",
+   "note": "AI센터가 그룹의 업무 효율 개선과 서비스·IP 생태계 확장을 맡는다는 소개"
+  },
+  {
+   "n": 5,
+   "title": "아시아경제 · 스마일게이트 AI센터–네이버클라우드 HyperCLOVA X 협력 MOU",
+   "url": "https://www.asiae.co.kr/en/article/2023081809254114490",
+   "kind": "news",
+   "date": "2023-08",
+   "note": "기대 효과로 업무 생산성 향상 연구·게임 리소스 제작 효율화"
+  },
+  {
+   "n": 6,
+   "title": "스마일게이트 뉴스룸 · [AI Revolution] 스마일게이트 — 휴먼라이크 AI",
+   "url": "https://newsroom.smilegate.com/eng/1684893399",
+   "kind": "company",
+   "date": "2023-05",
+   "note": "AI센터 기술이 그룹 캐릭터·챗봇에 부분 적용. 페이지 하단에 회사 주소"
+  },
+  {
+   "n": 7,
+   "title": "Smilegate Careers · [AI센터] AI 프로덕트 운영·품질 관리 담당",
+   "url": "https://careers.smilegate.com/apply/announce/view?seq=5938",
+   "kind": "posting",
+   "note": "같은 센터 — AI 결과물 현업 적용의 스펙·품질 기준·리스크 관리"
+  },
+  {
+   "n": 8,
+   "title": "Spring AI Reference — ChatClient",
+   "url": "https://docs.spring.io/spring-ai/reference/api/chatclient.html",
+   "kind": "reference",
+   "note": "Spring 공식 AI 모듈. 동기·스트리밍 호출, 여러 모델 공급자"
+  },
+  {
+   "n": 9,
+   "title": "Spring AI Reference — Advisors API",
+   "url": "https://docs.spring.io/spring-ai/reference/api/advisors.html",
+   "kind": "reference",
+   "note": "요청 앞뒤 처리기, order 순서, RAG용 QuestionAnswerAdvisor"
+  },
+  {
+   "n": 10,
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference",
+   "note": "LLM 앱 위험 목록 — 1위 프롬프트 주입, 민감 정보 노출, 과도한 권한"
+  },
+  {
+   "n": 11,
+   "title": "MDN · 서버 전송 이벤트(Server-sent events) 사용하기",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Server-sent_events/Using_server-sent_events",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Microsoft REST API Guidelines",
+   "url": "https://github.com/microsoft/api-guidelines",
+   "kind": "reference",
+   "note": "다른 회사의 공개 API 설계 규칙"
+  },
+  {
+   "n": 13,
+   "title": "RFC 9457 · Problem Details for HTTP APIs",
+   "url": "https://www.rfc-editor.org/rfc/rfc9457",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Spring Boot Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "쿠버네티스 문서 · 개념",
+   "url": "https://kubernetes.io/ko/docs/concepts/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "GitHub Actions 문서",
+   "url": "https://docs.github.com/ko/actions",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "스마일게이트 채용 · LIFE AT SMILEGATE",
+   "url": "https://careers.smilegate.com/life",
+   "kind": "company",
+   "note": "복지 목록 — 연도 표기 없음"
+  },
+  {
+   "n": 18,
+   "title": "자소설닷컴 · 스마일게이트 기업 정보",
+   "url": "https://jasoseol.com/companies/11383",
+   "kind": "reference",
+   "note": "초봉·평균 연봉(공공데이터 집계). 같은 회사 다른 풀이에서 검색 결과 요약으로 확인한 값"
+  },
+  {
+   "n": 19,
+   "title": "OMG · Unified Modeling Language(UML) 명세",
+   "url": "https://www.omg.org/spec/UML/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "'AX 포털'의 화면·기능·기술 구성은 회사가 공개하지 않았습니다. AI센터의 역할(2023년 기사)과 같은 그룹의 다른 공고로 방향만 확인했고, 포털 안의 기능은 Spring AI·OWASP 같은 공개 문서로 '보통 이런 것'을 보였습니다 — {추론} 표시가 많은 이유입니다.",
+ "resources": [
+  {
+   "id": "wiki-spring-core",
+   "title": "스프링 핵심 원리 — 기본편",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "url": "/wiki/spring-core",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "빈·의존성 주입·컨테이너 — 'Spring Framework 사용 경험'의 바닥."
+  },
+  {
+   "id": "wiki-spring-boot",
+   "title": "스프링 부트 — 핵심 원리와 활용",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "url": "/wiki/spring-boot",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "자동 설정·외부 설정·Actuator — 부트가 대신한 일을 로그로 읽는 법. 기존 포털 코드를 읽을 때 필요."
+  },
+  {
+   "id": "wiki-spring-mvc-1",
+   "title": "스프링 MVC 1편",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "url": "/wiki/spring-mvc-1",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "요청이 컨트롤러까지 오는 길과 JSON 응답 — 웹서비스 설계·개발 요건."
+  },
+  {
+   "id": "wiki-http-basic",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "url": "/wiki/http-basic",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "메서드·상태 코드·헤더 — 'Restful API 활용 경험'의 기본기."
+  },
+  {
+   "id": "wiki-jpa-basic",
+   "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "url": "/wiki/jpa-basic",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "엔티티와 표를 잇는 법, 연관관계 — 대화·메시지 같은 표를 설계하고 저장할 때."
+  },
+  {
+   "id": "wiki-practical-testing",
+   "title": "Practical Testing — 실용적인 테스트 가이드",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "url": "/wiki/practical-testing",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "남의 코드에 기능을 붙여도 안 깨진다는 것을 보이는 테스트 — 포털 '고도화'의 안전망."
+  },
+  {
+   "id": "wiki-docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "url": "/wiki/docker",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "Spring Boot 앱을 이미지로 만드는 법 — K8S·CI/CD 우대의 첫걸음."
+  },
+  {
+   "id": "wiki-kubernetes",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "url": "/wiki/kubernetes",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "Deployment·Service·상태 검사, Pending·CrashLoopBackOff 읽기 — 내 서비스 배포 설정을 고치는 수준까지."
+  },
+  {
+   "id": "spring-ai-docs",
+   "title": "Spring AI Reference Documentation",
+   "by": "Spring 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.spring.io/spring-ai/reference/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "ChatClient·Advisor·RAG·스트리밍 — Spring 서비스에 AI 모델을 붙이는 공식 방법. 업무 세 줄 모두에 걸린다."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications",
+   "by": "OWASP GenAI Security Project",
+   "kind": "doc",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "프롬프트 주입·민감 정보 노출 같은 AI 서비스 위험과 막는 법 — '개발하고 관리하는' 업무의 관리 쪽."
+  },
+  {
+   "id": "mdn-sse",
+   "title": "서버 전송 이벤트 사용하기",
+   "by": "MDN Web Docs",
+   "kind": "doc",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Server-sent_events/Using_server-sent_events",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "AI 답을 글자 단위로 흘려 보내는 SSE 형식과 브라우저 쪽 받기."
+  },
+  {
+   "id": "ms-rest",
+   "title": "Microsoft REST API Guidelines",
+   "by": "Microsoft · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/microsoft/api-guidelines",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "여러 서비스가 같이 쓰는 API의 이름·버전·페이지 나누기·오류 규칙 — 플랫폼 구조 설계 줄."
+  },
+  {
+   "id": "rfc9457",
+   "title": "RFC 9457 · Problem Details for HTTP APIs",
+   "by": "IETF · 2023",
+   "kind": "doc",
+   "url": "https://www.rfc-editor.org/rfc/rfc9457",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "오류 응답을 한 모양으로 맞추는 표준. Spring 6의 ProblemDetail이 이 형식이다."
+  },
+  {
+   "id": "toby-spring",
+   "title": "토비의 스프링 3.1",
+   "by": "이일민 · 에이콘출판 · 2012",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%86%A0%EB%B9%84%EC%9D%98%20%EC%8A%A4%ED%94%84%EB%A7%81%203.1",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "why": "Spring이 왜 그렇게 생겼는지(의존성 주입·AOP·트랜잭션 추상화)를 코드를 고쳐 가며 보인다. 3년 차 수준의 '설계' 말하기에 좋다. 오래된 판이라 설정 방식은 부트 문서로 보충."
+  },
+  {
+   "id": "springboot-aws",
+   "title": "스프링 부트와 AWS로 혼자 구현하는 웹 서비스",
+   "by": "이동욱 · 프리렉 · 2019",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20AWS%EB%A1%9C%20%ED%98%BC%EC%9E%90%20%EA%B5%AC%ED%98%84%ED%95%98%EB%8A%94%20%EC%9B%B9%20%EC%84%9C%EB%B9%84%EC%8A%A4",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "게시판 하나를 로그인·테스트·자동 배포까지 혼자 끝내는 흐름 — 경력이 짧을 때 '그에 준하는 역량'을 보일 결과물의 뼈대. 버전이 낡아 최신 부트로 바꿔 따라 한다."
+  },
+  {
+   "id": "real-mysql",
+   "title": "Real MySQL 8.0",
+   "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "인덱스·실행계획·파티션 — 사용량처럼 빨리 커지는 표를 설계할 때 필요한 장만 골라 읽는다."
+  },
+  {
+   "id": "uml-distilled",
+   "title": "UML Distilled (3판)",
+   "by": "Martin Fowler · Addison-Wesley · 2003",
+   "kind": "book",
+   "url": "https://martinfowler.com/books/uml.html",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "UML 전체가 아니라 실무에서 자주 쓰는 클래스·시퀀스 다이어그램만 얇게 — UML 우대사항에 딱 맞는 범위."
+  },
+  {
+   "id": "react-docs",
+   "title": "React 공식 문서 · 학습하기",
+   "by": "React",
+   "kind": "doc",
+   "url": "https://ko.react.dev/learn",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "컴포넌트·상태·이펙트 — 대화 화면을 고칠 수 있는 수준까지."
+  },
+  {
+   "id": "vue-docs",
+   "title": "Vue.js Guide",
+   "by": "Vue.js 공식 문서",
+   "kind": "doc",
+   "url": "https://vuejs.org/guide/introduction.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "포털 화면이 Vue라면 이쪽. 템플릿·반응형 상태·컴포넌트 기초."
+  },
+  {
+   "id": "k8s-docs",
+   "title": "쿠버네티스 문서 · 개념",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "url": "https://kubernetes.io/ko/docs/concepts/",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "Deployment·프로브(readiness·liveness)의 정확한 정의 — 책과 같이 본다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "Spring 바닥 다지기",
+   "time": "2~3주",
+   "goal": "Spring Boot 서비스의 요청 흐름과 자동 설정을 설명하고, 남의 코드에서 기능 추가 자리를 찾을 수 있다.",
+   "resources": [
+    "wiki-spring-core",
+    "wiki-spring-boot",
+    "wiki-spring-mvc-1",
+    "toby-spring"
+   ],
+   "task": "가상의 '사내 공지' REST API(목록·상세·작성·수정)를 Spring Boot로 만들고, 일부러 남이 짠 것처럼 한 주 묵혀 둔 뒤 '공지 고정' 기능을 테스트와 함께 덧붙인다."
+  },
+  {
+   "title": "REST API를 규칙대로",
+   "time": "1~2주",
+   "goal": "자원 이름·버전·페이지 나누기·오류 응답이 일관된 API를 설계하고 문서로 낼 수 있다.",
+   "resources": [
+    "wiki-http-basic",
+    "ms-rest",
+    "rfc9457"
+   ],
+   "task": "1단계 API에 페이지 나누기와 ProblemDetail(RFC 9457) 오류 응답을 붙이고, 잘못된 요청 다섯 가지에 대한 응답을 표로 정리한다."
+  },
+  {
+   "title": "AI 기능 붙이기",
+   "time": "2~3주",
+   "goal": "Spring AI로 모델을 부르고, 답을 SSE로 흘려 보내고, 사내 문서 검색(RAG)을 끼울 수 있다.",
+   "resources": [
+    "spring-ai-docs",
+    "mdn-sse"
+   ],
+   "task": "가상 사내 규정 문서 10개를 넣은 작은 'AI 질문 포털'을 만든다 — 스트리밍 대화 화면, 문서 검색 Advisor, 메시지마다 모델·토큰 수·응답 시간 기록."
+  },
+  {
+   "title": "지키기 — 표·보안·사용량",
+   "time": "1~2주",
+   "goal": "대화·사용량 표를 설계하고, 프롬프트 주입·민감 정보를 막는 장치를 설명할 수 있다.",
+   "resources": [
+    "owasp-llm",
+    "real-mysql",
+    "wiki-jpa-basic",
+    "uml-distilled"
+   ],
+   "task": "3단계 포털에 부서별 월 사용 비용 집계 화면을 붙이고(원본 기록 표 + 집계 표), 시퀀스 다이어그램 한 장과 '문서 안에 숨은 지시' 공격을 넣어 본 결과를 정리한다."
+  },
+  {
+   "title": "띄우고 자동으로 배포 (선택)",
+   "time": "1~2주",
+   "goal": "포털을 컨테이너로 만들어 쿠버네티스에 띄우고, 코드를 올리면 테스트·배포가 돌게 할 수 있다.",
+   "resources": [
+    "wiki-docker",
+    "wiki-kubernetes",
+    "k8s-docs"
+   ],
+   "task": "4단계 포털을 이미지로 만들어 로컬 쿠버네티스(kind·minikube)에 띄우고, Actuator 상태 주소를 readiness·liveness 검사에 잇고, GitHub Actions로 테스트 → 빌드를 자동화한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없습니다. 집계 사이트 기준 스마일게이트의 초봉은 **약 4,619만원**, 평균은 **약 7,107만원**이고, 경력 3년 이상 자리라 실제 제안은 처우 협의로 정해집니다.",
+  "rows": [
+   {
+    "label": "신입 초봉(집계)",
+    "value": "약 4,619만원",
+    "amount": 4619,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 기업 페이지의 초봉. 공공데이터 기반이라고 적혀 있으나 기준일·직군 구분이 없다 [18]"
+   },
+   {
+    "label": "전체 평균 연봉(집계)",
+    "value": "약 7,107만원",
+    "amount": 7107,
+    "basis": "공공데이터 집계",
+    "note": "같은 페이지의 평균 연봉(사원 수 958명 표기). 경력직이 섞인 회사 전체 값이다 [18]"
+   }
+  ],
+  "how": "비상장이라 사업보고서의 '직원 1인 평균 급여' 같은 공시 숫자가 없어 집계 값만 실었다. 이 자리는 **경력 3년 이상**이라 초봉과는 다르고, 평균도 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "복지포인트",
+    "detail": "건강관리·자기계발·여행/문화에 사용"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진, EAP(심리 상담)"
+   },
+   {
+    "name": "가족",
+    "detail": "직장어린이집 '스마일토리', 콘도·하계휴양소 지원, 단체 상해보험, 경조사 지원"
+   },
+   {
+    "name": "일과 삶",
+    "detail": "선택적 근무제도, 직무도서 구입비 지원, 출근 셔틀버스(12개 노선), 힐링룸"
+   },
+   {
+    "name": "장기근속",
+    "detail": "장기근속 포상(휴가·여행비)"
+   },
+   {
+    "name": "동료·성장",
+    "detail": "스마일카페, 동호회, 사내 게임장, 학습 프로그램(트렌드·노하우·직무 센터 등)"
+   }
+  ],
+  "note": "스마일게이트 채용 사이트의 복지 소개 [17]. 글에 연도·적용 범위가 적혀 있지 않아, AI센터에 그대로 적용되는지·지금도 같은지는 처우 협의 때 확인한다 {추론}. 공고는 수습 3개월 동안에도 복리후생이 같다고 적었다 [2]."
+ },
+ "location": {
+  "name": "스마일게이트 판교 사옥 (쏠리드 스페이스 빌딩)",
+  "address": "경기도 성남시 분당구 판교역로 220 (삼평동) 쏠리드 스페이스 빌딩 5층",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20220",
+  "near": "신분당선 판교역 근처 {추론}",
+  "note": "주소는 스마일게이트 뉴스룸 페이지 하단의 회사 주소 [6]. 공고 근무지 표기는 '경기 > 성남시'이다 [1]. AI센터의 자리가 이 사옥인지는 공고에 적혀 있지 않다 {추론}."
+ }
+}

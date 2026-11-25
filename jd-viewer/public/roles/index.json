@@ -462,6 +462,8 @@
   "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
   "boards-gamejob:dev:285958": "smilegate-ai-qa-automation-rnd-intern",
   "ats-smilegate:group:6262": "smilegate-ai-qa-automation-rnd-intern",
+  "boards-gamejob:dev:286445": "smilegate-ai-web-service-dev",
+  "ats-smilegate:group:6145": "smilegate-ai-web-service-dev",
   "boards-gamejob:dev:285795": "smilegate-lostark-game-data-engineer",
   "ats-smilegate:group:4590": "smilegate-lostark-game-data-engineer",
   "wanted-386999": "speee-dx-sre",
@@ -4374,6 +4376,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 13
+  },
+  {
+   "id": "smilegate-ai-web-service-dev",
+   "company": "스마일게이트",
+   "role": "AI 웹서비스 개발 담당",
+   "jobs": [
+    "boards-gamejob:dev:286445",
+    "ats-smilegate:group:6145"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 14
   },
   {
    "id": "smilegate-lostark-game-data-engineer",
