@@ -1,0 +1,1241 @@
+{
+ "id": "42dot-edge-ai-sw-engineer-ad",
+ "company": "포티투닷(42dot)",
+ "role": "Edge AI 소프트웨어 엔지니어 — 자율주행",
+ "team": "AD Framework 팀 · 자율주행 AI 모델을 차량 GPU·NPU 에서 돌리는 프레임워크·실행 환경",
+ "jobs": [
+  "ats-ashby:42dot:96c1501f-070c-4c0f-b883-af957746e84c"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "학습이 끝난 **자율주행 AI 모델을 실제 차 안의 GPU·NPU 칩에서 제시간에 돌게** 만듭니다 — 카메라 입력 전처리, 추론 최적화, 출력 후처리, 그리고 새 모델이 나올 때마다 차에서 얼마나 걸릴지 미리 재는 검증 틀까지.[1] 대상은 포티투닷과 현대차그룹이 만드는 엔드투엔드 자율주행 **Atria AI**(약 1억 파라미터, 카메라 8대)입니다.[4]",
+  "env": "Linux·QNX 위의 C/C++·CUDA, 변환·시험은 Python·Shell.[1] 차에는 400 TOPS 급 NPU 가 실린다고 보도됐고[5], 그룹은 NVIDIA DRIVE Thor 도 쓴다고 발표했습니다.[8]",
+  "oneline": "모델을 만드는 사람이 아니라 **모델을 차 칩에 맞춰 넣는 사람**. 딥러닝 지식보다 임베디드·C++·프로파일링 실력이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "AI 모델이 GPU/NPU 등 하드웨어 가속기에서 효율적으로 추론될 수 있도록 소프트웨어를 개발하고 실행 환경을 최적화합니다.",
+   "short": "학습이 끝난 자율주행 모델을 차 안 GPU·NPU 칩에서 제시간에 돌게 만드는 일 — 아래 네 줄의 묶음.",
+   "why": "팀 소개가 바로 이것입니다 — AD Framework 팀은 자율주행 AI 모델이 **실제 차량에서** 안정적이고 효율적으로 돌도록 프레임워크와 실행 환경을 만듭니다.[1] 현대차그룹은 포티투닷과 함께 만드는 엔드투엔드 자율주행 **Atria AI**(약 1억 파라미터)를 소개하며 양자화로 모델을 최적화한다고 밝혔고[4], 차에는 400 TOPS(초당 400조 번 연산) 급 NPU 가 실린다고 보도됐습니다.[5] 서버 GPU 와 달리 차 칩은 연산·메모리·전력 한도가 정해져 있어, 모델을 그 안에 맞추는 사람이 따로 필요합니다. {추론}",
+   "actually": {
+    "items": [
+     "**모델 변환** — PyTorch 모델을 ONNX(표준 모델 형식)로 내보내고, 칩 회사 도구(NVIDIA 라면 TensorRT)로 그 칩 전용 실행 엔진을 굽는다.[12][30]",
+     "**정밀도 낮추기** — FP32 → FP16·INT8 로 바꿔 속도·메모리를 얻고 정확도 손실을 잰다. NVIDIA 의 BEVFusion 차량 예제도 INT8 로 Orin 에서 약 25FPS 를 냈다고 밝혔다.[15][16]",
+     "**실행 환경** — 카메라 입력 → 전처리 → 추론 → 후처리를 스레드·CUDA 스트림으로 겹쳐 돌리고 메모리를 미리 잡아 둔다.[23] {추론}",
+     "**검증** — 변환 전후 출력이 같은지(수치 차이), 지연이 예산 안인지 매번 확인한다.[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "약 1억 파라미터 모델 — 메모리보다 연산 효율이 관건 (직접 돌린 출력)",
+     "body": "Atria AI 는 약 1억 개 파라미터라고 소개됐고[4], 차에는 400 TOPS 급 NPU 가 실린다고 보도됐습니다.[5] 가중치를 한 번 다 읽는 시간은 Orin 급 대역폭(204.8GB/s)[10] 기준 INT8 에서 0.5ms 입니다. 반면 한 프레임에 1조 번 연산이 든다고 가정하면, 칩 성능의 20%만 쓸 때 12.5ms, 40%면 6.3ms 입니다. 카메라 모델은 가중치보다 **활성값(중간 결과)과 연산 효율**이 더 큰 문제일 때가 많습니다. {추론}",
+     "lang": "python",
+     "code": "p = 100e6\nfor bits in (32, 16, 8):\n    gb = p * bits / 8 / 1e9\n    print(f\"{bits}bit: {gb*1000:.0f} MB, 한 번 읽기 {gb/204.8*1000:.2f} ms\")\nfor util in (0.4, 0.2):\n    print(f\"효율 {util:.0%}: 1e12 연산 {1e12/(400e12*util)*1000:.2f} ms\")\n# 32bit: 400 MB, 한 번 읽기 1.95 ms\n# 16bit: 200 MB, 한 번 읽기 0.98 ms\n# 8bit: 100 MB, 한 번 읽기 0.49 ms\n# 효율 40%: 1e12 연산 6.25 ms\n# 효율 20%: 1e12 연산 12.50 ms"
+    }
+   ],
+   "how_far": "모델 구조는 모델 팀(AD Algorithm·Atria AI 개발·통합 비전 모델 공고의 팀)이 정합니다.[3][6][7] 이 자리는 **받은 모델을 차 칩에서 정해진 지연·정확도 안에 돌게 만드는 쪽**입니다. 최소선은 PyTorch 모델 하나를 ONNX → TensorRT(또는 다른 런타임)로 옮기고, FP16·INT8 에서 정확도와 지연을 표로 비교하는 것입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    7,
+    12,
+    15,
+    16,
+    23,
+    30
+   ],
+   "study": [
+    "trt-docs",
+    "cuda-bevfusion",
+    "cs336-inference",
+    "sze-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "이미지 등 AI 모델의 입력 신호에 대한 인코딩 및 전처리와 모델 출력 신호에 대한 디코딩 및 후처리 기능을 구현합니다.",
+   "short": "카메라 원본을 모델 입력으로 바꾸고(전처리), 모델이 낸 숫자를 상자·차선·경로로 풀어 내는(후처리) 코드를 짠다.",
+   "why": "모델은 '정규화된 텐서'만 먹고 '숫자 덩어리'만 냅니다. 그 앞뒤가 느리면 모델을 아무리 줄여도 전체가 느립니다. 카메라 8대가 동시에 들어오는 차에서는 전처리 양부터 큽니다.[4] {추론}",
+   "actually": {
+    "items": [
+     "**색 변환** — 카메라가 내는 YUV(NV12)를 RGB 로 바꾼다. NVIDIA VPI 같은 라이브러리가 GPU·전용 가속기에서 이 일을 한다.[17]",
+     "**크기·자르기·정규화** — 모델 입력 크기로 줄이고, 평균을 빼고 표준편차로 나누고, 채널 순서(HWC → CHW)를 바꾼다.[17]",
+     "**카메라 기하** — BEV(위에서 내려다본 지도) 모델은 카메라 내부·외부 보정값으로 이미지 픽셀을 3D 공간에 투영한다. 이 행렬 계산도 입력 준비의 일부다.[38]",
+     "**디코딩** — 출력 텐서를 상자 중심·크기·방향·점수로 푼다. 엔드투엔드 모델이면 앞으로 갈 궤적(경로 점들)으로 푼다.[26]",
+     "**후처리** — 겹친 상자 지우기(NMS), 점수 문턱, 좌표를 차량 기준으로 바꾸기.[40]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "카메라 8대의 한 프레임은 얼마나 무겁나 (직접 돌린 출력)",
+     "body": "시험차는 카메라 8대입니다.[4] 해상도와 모델 입력 크기는 공개되지 않아, 1920×1080 NV12(카메라가 흔히 내는 YUV 형식)와 BEV 계열 공개 모델이 쓰는 704×256 입력[16]을 가정해 계산했습니다. 원본은 24.9MB인데 모델이 먹는 것은 8.7MB입니다 — 그 사이의 색 변환·크기 조정·정규화가 전처리입니다.",
+     "lang": "python",
+     "code": "cams = 8\nnv12 = 1920 * 1080 * 3 // 2          # Y 한 장 + UV 반 장\nrgb_in = 3 * 256 * 704                # 모델 입력 C×H×W\nprint(\"NV12 1장:\", nv12 / 1e6, \"MB\")\nprint(\"8대 원본:\", cams * nv12 / 1e6, \"MB\")\nprint(\"8대 입력 FP16:\", cams * rgb_in * 2 / 1e6, \"MB\")\nprint(\"10Hz 원본:\", cams * nv12 * 10 / 1e9, \"GB/s\")\n# NV12 1장: 3.1104 MB\n# 8대 원본: 24.8832 MB\n# 8대 입력 FP16: 8.650752 MB\n# 10Hz 원본: 0.248832 GB/s"
+    },
+    {
+     "title": "후처리의 대표 — 겹친 상자 지우기(NMS) (직접 돌린 출력)",
+     "body": "검출 모델은 같은 물체에 상자를 여러 개 냅니다. 점수 높은 것부터 남기고, 그것과 많이 겹치는(IoU 0.5 이상) 상자를 지웁니다.[40] 상자 5개 → 2개. 차량에서는 이 반복문이 CPU에서 돌면 지연의 꼬리를 만들기 쉬워 GPU 커널로 옮기기도 합니다. {추론}",
+     "lang": "python",
+     "code": "import numpy as np\n\ndef iou(b, bs):\n    x1 = np.maximum(b[0], bs[:, 0]); y1 = np.maximum(b[1], bs[:, 1])\n    x2 = np.minimum(b[2], bs[:, 2]); y2 = np.minimum(b[3], bs[:, 3])\n    inter = np.clip(x2 - x1, 0, None) * np.clip(y2 - y1, 0, None)\n    a = (b[2] - b[0]) * (b[3] - b[1])\n    ab = (bs[:, 2] - bs[:, 0]) * (bs[:, 3] - bs[:, 1])\n    return inter / (a + ab - inter)\n\ndef nms(boxes, scores, thr=0.5):\n    order = scores.argsort()[::-1]; keep = []\n    while order.size:\n        i = order[0]; keep.append(int(i))\n        order = order[1:][iou(boxes[i], boxes[order[1:]]) < thr]\n    return keep\n\nboxes = np.array([[10,10,50,50],[12,12,52,52],[100,100,140,140],\n                  [11,9,49,51],[98,102,141,139]], float)\nscores = np.array([0.9, 0.8, 0.75, 0.6, 0.3])\nprint(nms(boxes, scores))\n# [0, 2]"
+    }
+   ],
+   "how_far": "공식(정규화 값·투영 행렬·출력 형식)은 모델 팀이 줍니다. 이 자리는 그 공식을 **파이썬 학습 코드와 같은 결과를 내는 C++/CUDA 코드로 옮기고 빠르게** 만드는 것입니다. 최소선: 파이썬 기준 구현과 C++ 구현의 출력 차이를 숫자로 비교하는 시험을 스스로 짜는 것. {추론}",
+   "refs": [
+    4,
+    16,
+    17,
+    26,
+    38,
+    40
+   ],
+   "study": [
+    "vpi-docs",
+    "lss-paper",
+    "cuda-bevfusion",
+    "pmpp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Embedded System 환경에서 AI 모델 및 Application의 성능을 프로파일링하고, 하드웨어 리소스 활용과 추론 성능을 최적화합니다.",
+   "short": "차량 보드 위에서 '어디서 시간이 새나'를 재고, CPU·GPU·NPU·메모리를 놀지 않게 배치해 빠르게 한다.",
+   "why": "임베디드 보드는 CPU·GPU·가속기가 메모리를 함께 씁니다. 한쪽이 메모리 대역폭을 먹으면 다른 쪽이 느려집니다.[10] 그래서 모델 하나만 재는 것이 아니라 **차량 앱 전체**를 같이 잽니다. 같은 회사 ML Performance Optimization 공고도 CPU·GPU·NPU 성능 분석과 시스템 프로파일링을 요구했습니다.[2]",
+   "actually": {
+    "items": [
+     "**시간표 보기** — Nsight Systems 로 CPU 스레드·GPU 커널·메모리 복사가 언제 겹치고 언제 비는지 본다.[18]",
+     "**커널 하나 보기** — 오래 걸린 커널의 메모리·연산 사용률을 Nsight Compute 로 본다.[19]",
+     "**CPU 쪽** — Linux perf 로 전처리·후처리 함수의 핫스폿과 캐시 미스를 센다.[29]",
+     "**병목 가르기** — 바이트당 연산이 적으면 메모리, 많으면 연산이 막힌 것(루프라인).[20]",
+     "**고치기** — 연산 합치기, 복사 없애기(같은 메모리 공유), 전처리를 GPU·가속기로 옮기기, 스트림으로 겹치기. {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "병목을 좁혀 가는 순서",
+     "steps": [
+      "전체 지연 재기 · 카메라 입력부터 결과까지 프레임마다 시각 찍기",
+      "시간표 · Nsight Systems 로 CPU·GPU·복사가 비는 구간[18]",
+      "핫스폿 · perf(CPU) 또는 Nsight Compute(GPU 커널)[19][29]",
+      "고치고 다시 재기 · 같은 입력·같은 전력 모드로 전후 비교"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "프로파일 화면을 여는 것이 아니라 **\"GPU 가 매 프레임 9ms 쉬는데, 그동안 CPU 가 NMS 를 돌고 있다\"처럼 원인을 한 문장으로 말하고 고친 뒤 숫자로 보이는 것**이 기준입니다. {추론}",
+   "refs": [
+    2,
+    10,
+    18,
+    19,
+    20,
+    29
+   ],
+   "study": [
+    "nsight-systems",
+    "nsight-compute",
+    "brrr",
+    "gregg-perf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 모델의 지속적인 업데이트와 배포에 대응할 수 있도록 Application 및 관련 소프트웨어 프레임워크를 개선합니다.",
+   "short": "모델이 자주 바뀌어도 차량 앱을 다시 짜지 않고 새 모델을 끼워 넣을 수 있게 프레임워크를 만든다.",
+   "why": "현대차그룹은 수집 차량 40여 대가 매주 차당 80시간 넘게 모은 데이터로 모델을 계속 다시 학습하는 '데이터 플라이휠'을 돌린다고 밝혔습니다.[4][6] 회사 블로그도 약한 사례를 모아 모델을 계속 고친다고 적었습니다.[7] 모델이 자주 바뀌니 그때마다 손으로 옮기면 따라갈 수 없습니다. {추론}",
+   "actually": {
+    "items": [
+     "**모델과 앱 떼기** — 입력·출력 모양과 전후처리 설정을 파일로 빼서, 모델이 바뀌어도 앱 코드는 그대로 두게 한다. {추론}",
+     "**자동 변환 파이프라인** — 새 체크포인트 → ONNX → 칩 엔진 굽기 → 정확도·지연 시험 → 통과하면 배포 묶음 생성.[12] {추론}",
+     "**버전 맞추기** — 엔진 파일은 TensorRT 버전·칩마다 다시 구워야 한다. 어떤 모델이 어떤 런타임에서 구워졌는지 기록한다.[12]",
+     "**새 연산 대응** — 모델 팀이 새 층을 넣으면 런타임이 지원하는지 확인하고, 없으면 플러그인(직접 만든 연산)을 붙인다.[12]"
+    ]
+   },
+   "how_far": "배포 시스템 전체(무선 업데이트 등)는 다른 팀 몫입니다. 이 자리는 **모델이 바뀌어도 차량 쪽 추론 코드가 깨지지 않게** 하는 범위입니다. {추론}",
+   "refs": [
+    4,
+    6,
+    7,
+    12
+   ],
+   "study": [
+    "trt-docs",
+    "onnxruntime"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "차량에서의 AI 모델 성능을 사전에 분석하고 예측할 수 있는 성능 검증 프레임워크 개발에 참여합니다.",
+   "short": "새 모델을 차에 올리기 전에 '차에서 몇 ms 걸릴지·예산을 넘을지'를 미리 재고 맞히는 시험 틀을 만든다.",
+   "why": "그룹은 3D 가우시안 스플래팅으로 만든 가상 환경과 닫힌 고리 시뮬레이션으로 모델을 검증한다고 밝혔습니다.[4] 모델 품질뿐 아니라 **차 칩에서 시간 안에 도느냐**도 올리기 전에 알아야 합니다. 시험차를 매번 탈 수는 없기 때문입니다. {추론}",
+   "actually": {
+    "items": [
+     "**같은 조건으로 재기** — 고정 입력(녹화된 장면)·전력 모드·클럭으로 모델별 지연을 잰다. MLPerf 도 지연을 꼬리 백분위로 정의한다.[28]",
+     "**층별 표** — 층마다 연산량·메모리량을 세고 실측과 비교해, 새 모델의 지연을 측정 전에 어림한다(루프라인).[20]",
+     "**회귀 시험** — 모델이 바뀔 때마다 지연·메모리·정확도가 이전보다 나빠졌는지 자동으로 알린다. {추론}",
+     "**꼬리 보기** — 중앙값과 함께 p99·최댓값, 예산 초과 프레임 수. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균이 아니라 꼬리(p99)를 본다 (직접 돌린 출력)",
+     "body": "가상의 1만 프레임입니다. 추론이 평소 38ms인데 1%의 프레임만 다른 작업과 겹쳐 25ms 늦어진다고 두었습니다. 중앙값 합계는 48ms로 넉넉하지만, 15Hz 예산(66.7ms)을 넘긴 프레임이 100장(1%) 나옵니다. 자율주행에서는 늦은 한 장이 곧 놓친 한 장이라 꼬리를 잽니다.[28] {추론}",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(1)\npre = rng.normal(4, 0.5, 10000).clip(2)\ninf = rng.normal(38, 3, 10000) + (rng.random(10000) < 0.01) * 25\npost = rng.normal(6, 1, 10000).clip(3)\ntot = pre + inf + post\nfor name, v in ((\"pre\", pre), (\"infer\", inf), (\"post\", post), (\"total\", tot)):\n    print(f\"{name:6s} p50={np.percentile(v,50):5.1f} p99={np.percentile(v,99):5.1f} max={v.max():5.1f}\")\nprint(\"66.7ms 넘김:\", int((tot > 66.7).sum()), f\"{(tot > 66.7).mean():.2%}\")\n# pre    p50=  4.0 p99=  5.2 max=  6.0\n# infer  p50= 38.0 p99= 56.9 max= 68.3\n# post   p50=  6.0 p99=  8.3 max= 10.4\n# total  p50= 48.0 p99= 66.1 max= 80.5\n# 66.7ms 넘김: 100 1.00%"
+    }
+   ],
+   "how_far": "\"참여\"입니다. 틀 전체를 혼자 설계하기보다 **측정 도구·예측 모델·자동 보고서 일부를 맡는** 것으로 읽힙니다. {추론}",
+   "refs": [
+    4,
+    20,
+    28
+   ],
+   "study": [
+    "mlperf-paper",
+    "roofline",
+    "brrr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Embedded Software, AI Software, Computer Vision 또는 관련 분야에서 5년 이상의 개발 경험",
+   "short": "임베디드·AI 소프트웨어·컴퓨터 비전 중 하나에서 5년. 셋이 겹치는 자리라 한쪽 출신도 된다.",
+   "why": "업무가 세 분야의 교차점입니다 — 임베디드(보드·리눅스), AI 소프트웨어(런타임·양자화), 비전(이미지 전후처리).[1] 같은 회사의 ML Performance Optimization 공고도 경력 연수 대신 비슷한 세 축을 요구했습니다.[2]",
+   "how_far": "세 분야 중 '또는'입니다. 임베디드 5년이면 AI 런타임을, 비전 5년이면 임베디드 보드를 보강해서 오면 됩니다. 이력서에는 **줄인 지연·메모리 숫자**가 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Software Engineering, Computer Vision, 인공지능, 머신러닝/딥러닝 관련 분야의 석사 이상 학위 또는 이에 준하는 실무 경험",
+   "short": "석사 이상, 아니면 그만큼의 실무. 학위보다 '모델을 이해하고 고칠 수 있나'를 본다.",
+   "why": "모델 팀이 넘겨주는 구조(attention·BEV 투영 등)를 이해해야 바꿔도 되는 곳과 안 되는 곳을 압니다.[26][38] 같은 회사의 비슷한 공고도 같은 문장을 썼습니다.[2]",
+   "how_far": "'이에 준하는 실무 경험'이 붙어 있습니다. 학사라도 모델을 칩에 올려 성능을 낸 결과물이 있으면 이 줄을 채운다고 볼 수 있습니다. {추론}",
+   "refs": [
+    2,
+    26,
+    38
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "머신러닝 및 딥러닝 모델의 구조와 추론 과정에 대한 이해",
+   "short": "모델이 어떤 층으로 되어 있고, 입력이 들어가 출력이 나오기까지 어떤 계산을 몇 번 하는지 아는 것.",
+   "why": "어느 층이 무거운지 알아야 어디를 줄일지 정합니다. 카메라 BEV 모델은 이미지 인코더(CNN·트랜스포머) → 시점 변환 → BEV 처리 → 머리(검출·궤적)로 이어지고, 무거운 곳이 단계마다 다릅니다.[16][38] 엔드투엔드 모델은 인지·예측·계획을 한 망에 묶습니다.[26]",
+   "actually": {
+    "items": [
+     "**층별 연산량** — 합성곱·행렬곱의 곱셈 횟수를 손으로 센다.[39]",
+     "**추론 그래프** — 학습 때와 달리 드롭아웃이 꺼지고 배치 정규화가 앞 층에 합쳐진다.[12]",
+     "**메모리** — 가중치보다 중간 활성값이 더 클 때가 많다(고해상도 이미지 8장). {추론}"
+    ]
+   },
+   "level": {
+    "basic": "CNN·트랜스포머 층 구조, 층별 연산량 계산, 학습/추론 차이",
+    "work": "ONNX 그래프를 열어 층을 읽고 병목 층 찾기, BN 합치기·연산 합치기",
+    "team": "BEV 시점 변환·엔드투엔드 궤적 머리처럼 자율주행 모델 특유의 연산 이해"
+   },
+   "refs": [
+    16,
+    26,
+    38
+   ],
+   "study": [
+    "sze-book",
+    "lss-paper",
+    "uniad-paper",
+    "cs336-inference"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "CPU, GPU, NPU 등 하드웨어 아키텍처에 대한 이해 및 Low-level 성능 최적화 경험",
+   "short": "칩마다 잘하는 연산·메모리 구조가 달라서, 그 차이를 알고 코드 수준에서 빠르게 해 본 경험.",
+   "why": "같은 모델도 CPU(분기·작은 일), GPU(대량 병렬), NPU(정해진 행렬 연산·정수)에서 성능이 크게 다릅니다.[39] 그룹은 NVIDIA DRIVE Thor 를 차량 지능에 쓴다고 발표했고[8], 보도는 400 TOPS 급 NPU 를 말했습니다[5] — 칩이 한 종류가 아니라는 뜻입니다.",
+   "actually": {
+    "items": [
+     "**메모리 층** — 레지스터 → 캐시(공유 메모리) → DRAM 으로 갈수록 느리다. 데이터를 가까운 층에서 여러 번 쓰게 짜는 것이 최적화의 대부분이다.[20][23]",
+     "**NPU 의 한계** — 지원하는 연산·모양이 정해져 있고, 지원 안 되는 층은 CPU·GPU 로 떨어져 느려진다. {추론}",
+     "**정수 연산** — INT8 로 곱하고 INT32 로 더한다.[13]"
+    ]
+   },
+   "level": {
+    "basic": "캐시·메모리 대역폭·SIMD·GPU 워프 개념, 루프라인으로 병목 가르기",
+    "work": "캐시를 고려한 반복문·데이터 배치, CUDA 커널 작성, 정수 양자화",
+    "team": "차량 SoC 에서 CPU·GPU·NPU 에 일을 나눠 배치하고 메모리 대역폭 다툼 줄이기"
+   },
+   "examples": [
+    {
+     "title": "INT8 로 곱하고 INT32 로 더한다 (직접 돌린 출력)",
+     "body": "NPU·GPU 의 정수 연산은 8비트끼리 곱하고 32비트에 더합니다.[13] 512개를 더하니 누적값이 60,759 — 16비트 한도(32,767)를 넘습니다. 그래서 누적기는 32비트입니다. 눈금(scale) 하나로 줄였을 때 결과 오차는 1.4%, 가중치는 4분의 1입니다.",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(0)\nW = rng.normal(0, 0.05, (256, 512)).astype(np.float32)\nx = rng.normal(0, 1, 512).astype(np.float32)\n\ndef q(t):\n    s = np.abs(t).max() / 127\n    return np.clip(np.round(t / s), -127, 127).astype(np.int8), s\n\nWq, sw = q(W); xq, sx = q(x)\nacc = Wq.astype(np.int32) @ xq.astype(np.int32)   # INT8 곱 -> INT32 누적\ny_int = acc * sw * sx\ny = W @ x\nprint(\"최대 누적값:\", int(np.abs(acc).max()))\nprint(\"상대 오차:\", round(float(np.linalg.norm(y - y_int) / np.linalg.norm(y)), 4))\nprint(\"바이트 FP32/INT8:\", W.nbytes, Wq.nbytes)\n# 최대 누적값: 60759\n# 상대 오차: 0.014\n# 바이트 FP32/INT8: 524288 131072"
+    }
+   ],
+   "refs": [
+    5,
+    8,
+    11,
+    20,
+    23,
+    39
+   ],
+   "study": [
+    "csapp",
+    "pmpp",
+    "cuda-kr",
+    "cs336-gpu",
+    "sze-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C/C++ 및 Shell/Python을 활용한 숙련된 소프트웨어 개발 역량",
+   "short": "차에서 도는 코드는 C/C++, 변환·시험·자동화는 Python 과 Shell.",
+   "why": "차량 추론 런타임과 전후처리는 C++/CUDA 로 짭니다 — NVIDIA 의 차량 예제도 C++·CUDA 입니다.[15] 모델 변환·정확도 비교·벤치마크 자동화는 Python·Shell 로 합니다.[12] {추론}",
+   "level": {
+    "basic": "C++ 메모리·포인터·빌드(CMake), Python numpy, Shell 스크립트",
+    "work": "C++17 이상, 멀티스레드, 크로스 컴파일(ARM 보드용), Python 으로 기준 구현·비교 시험",
+    "team": "실시간 루프에서 동적 할당 없애기, CUDA 와 C++ 섞어 쓰기, 프로파일 기반 수정"
+   },
+   "refs": [
+    12,
+    15
+   ],
+   "study": [
+    "optimized-cpp",
+    "c-opt-kr",
+    "cuda-bevfusion"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Linux 또는 QNX 기반의 소프트웨어 개발 경험",
+   "short": "차량 컴퓨터의 운영체제 — 리눅스나 실시간 OS 인 QNX 위에서 개발해 본 경험.",
+   "why": "차량 소프트웨어는 리눅스 또는 QNX(자동차에 많이 쓰는 실시간 운영체제) 위에서 돕니다.[24] 같은 회사 ML Performance Optimization 공고도 Linux·QNX·RTOS 경험을 들었습니다.[2]",
+   "actually": {
+    "items": [
+     "**리눅스** — 스레드 우선순위·CPU 고정(affinity), perf 로 성능 재기.[29]",
+     "**QNX** — 마이크로커널 실시간 OS. 메시지 전달·우선순위 기반 스케줄링.[24]",
+     "**크로스 개발** — PC 에서 ARM 보드용으로 빌드하고 원격으로 올려 돌린다. {추론}"
+    ]
+   },
+   "how_far": "QNX 경험이 없어도 리눅스 임베디드 보드(Jetson 같은)에서 실시간성을 다뤄 봤으면 같은 결입니다. {추론}",
+   "refs": [
+    2,
+    24,
+    29
+   ],
+   "study": [
+    "qnx-docs",
+    "gregg-perf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Embedded System 환경에서 소프트웨어 성능 분석 및 최적화 문제를 해결할 수 있는 역량",
+   "short": "재고 → 원인 찾고 → 고치고 → 다시 재는 고리를 보드 위에서 스스로 돌릴 수 있는 것.",
+   "why": "업무 세 번째 줄 그대로입니다.[1] 임베디드에서는 전력 모드·온도에 따라 클럭이 바뀌어 같은 코드도 다르게 나옵니다.[10] 그래서 측정 조건을 고정하는 습관부터 봅니다. {추론}",
+   "how_far": "면접에서는 \"무엇을 쟀고, 무엇이 원인이었고, 몇 ms 줄었나\"를 한 사례로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    10,
+    18,
+    20
+   ],
+   "study": [
+    "gregg-perf",
+    "nsight-systems",
+    "roofline"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "머신러닝 및 딥러닝 Workload의 성능 분석 및 최적화 경험",
+   "short": "일반 프로그램이 아니라 딥러닝 계산(행렬곱·합성곱·attention)을 재고 빠르게 해 본 경험.",
+   "why": "딥러닝 계산은 몇 가지 큰 연산이 시간을 다 먹고, 메모리 대역폭에 묶이는 경우가 많아 일반 코드와 보는 곳이 다릅니다.[31] 같은 회사 비슷한 공고에도 같은 우대 줄이 있습니다.[2]",
+   "refs": [
+    2,
+    31
+   ],
+   "study": [
+    "brrr",
+    "cs336-kernels",
+    "sze-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "딥러닝 연산에 사용되는 선형대수 루틴의 최적화 및 성능 분석 경험",
+   "short": "행렬곱(GEMM)·합성곱 같은 기본 루틴을 캐시·SIMD 에 맞게 쪼개 빠르게 해 본 경험.",
+   "why": "딥러닝 시간의 대부분은 행렬곱입니다. 고성능 행렬곱은 데이터를 캐시 크기에 맞춰 블록으로 쪼개고, 가장 안쪽을 SIMD 명령으로 채워 만듭니다.[25] 라이브러리(MKL·cuBLAS)가 맞지 않는 작은·특이한 모양은 직접 짜야 할 때가 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**블록 나누기** — 행렬을 L1·L2 캐시에 들어가는 조각으로 나눠 재사용한다.[25]",
+     "**안쪽 커널** — 레지스터에 쌓아 두고 SIMD 로 여러 곱셈을 한 번에.[25]",
+     "**성능 기준** — 이론 최대 FLOPS 대비 몇 % 나오는지로 잰다.[20]"
+    ]
+   },
+   "refs": [
+    22,
+    25
+   ],
+   "study": [
+    "goto-gemm",
+    "pmpp",
+    "roofline"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Image Processing, Computer Vision 또는 Robotics Algorithm의 시스템 수준 최적화 경험",
+   "short": "이미지 처리·비전·로보틱스 알고리즘을 시스템 전체(복사·스레드·가속기) 관점에서 빠르게 해 본 경험.",
+   "why": "전처리·후처리 업무 줄과 이어집니다.[1] 알고리즘 하나보다 **카메라 8대 데이터가 어디서 복사되고 어느 칩에서 처리되나**가 시스템 수준 최적화입니다.[4][17] {추론}",
+   "refs": [
+    1,
+    4,
+    17
+   ],
+   "study": [
+    "vpi-docs",
+    "cuda-bevfusion"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CUDA, MKL, SIMD, NEON 등을 활용한 하드웨어 가속 및 연산 최적화 경험",
+   "short": "GPU(CUDA), 인텔 CPU(MKL), ARM CPU(NEON) 같은 칩별 가속 도구로 직접 빠르게 해 본 경험.",
+   "why": "차량 보드는 대개 ARM CPU 에 GPU·NPU 가 붙은 구조라, CPU 쪽은 NEON(ARM 의 SIMD)을, GPU 쪽은 CUDA 를 씁니다.[10][21][23] MKL 은 인텔 CPU 용 수학 라이브러리로, PC·서버에서 기준값을 잴 때 씁니다.[22] {추론}",
+   "actually": {
+    "items": [
+     "**CUDA** — 전처리·후처리 커널, 스트림으로 겹치기.[23]",
+     "**NEON** — 한 명령으로 8~16개 값을 처리하는 ARM 내장 함수(intrinsics).[21]",
+     "**MKL** — 최적화된 행렬곱·FFT 를 불러 쓰는 라이브러리.[22]"
+    ]
+   },
+   "refs": [
+    10,
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "cuda-guide",
+    "neon-docs",
+    "pmpp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "차량용 AI 모델의 추론 환경 구축 또는 Embedded AI Application 개발 경험",
+   "short": "차나 로봇 같은 임베디드 기기에서 AI 앱을 처음부터 돌아가게 꾸려 본 경험.",
+   "why": "이 자리의 업무 그 자체입니다.[1] 차량용 칩은 NVIDIA Orin·Thor 처럼 로봇용 Jetson 과 같은 계열이라, Jetson 보드 경험이 가까운 연습입니다.[10][11] {추론}",
+   "how_far": "차량 경험이 없으면 Jetson 보드에서 카메라 → 검출 모델 → 결과까지 실시간으로 돌리고 지연을 잰 결과물이 같은 결의 증거가 됩니다. {추론}",
+   "refs": [
+    1,
+    10,
+    11,
+    15
+   ],
+   "study": [
+    "jetson",
+    "cuda-bevfusion",
+    "trt-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "VLA 또는 End-to-End 자율주행 AI 모델의 차량 적용 및 성능 검증 경험",
+   "short": "카메라에서 바로 주행 경로를 내는 엔드투엔드 모델, 또는 시각·언어·행동을 한 모델로 묶은 VLA 를 차에 올려 본 경험.",
+   "why": "Atria AI 는 인지부터 판단·제어까지 한 모델이 하는 엔드투엔드 방식이고[5], 그룹은 VLA(이미지와 말을 이해하고 행동을 내는 모델) 개발에도 들어가 2026년 말~2027년 초 실차 시험을 계획한다고 밝혔습니다.[4] VLA 는 언어 모델이 섞여 일반 비전 모델보다 훨씬 무겁습니다.[27] {추론}",
+   "actually": {
+    "items": [
+     "**엔드투엔드** — 인지·예측·계획을 한 망으로 묶어 계획 결과로 같이 학습한다(UniAD).[26]",
+     "**VLA** — 비전·언어 모델이 행동을 토큰으로 내게 한다(RT-2).[27]",
+     "**차량 일정** — 그룹은 Atria AI 기반 레벨 2++ 양산을 2029년 하반기 목표로 밝혔다.[6]"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    6,
+    26,
+    27
+   ],
+   "study": [
+    "uniad-paper",
+    "rt2-paper",
+    "cs336-inference"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "ms 단위 숫자를 줄이는 게 즐거운 사람",
+   "보드 위에서 디버깅해 본 임베디드 개발자 중 AI 쪽으로 넓히고 싶은 사람",
+   "비전 모델을 만들어 봤는데 '실제로 돌리는 쪽'이 더 궁금한 사람",
+   "C++·CUDA 를 깊게 쓰고 싶은 사람"
+  ],
+  "hard": [
+   "경력 5년 이상·석사 또는 그에 준하는 실무를 요구한다[1]",
+   "회사가 차량 칩·런타임을 공개하지 않아 들어가기 전에는 실제 스택을 알기 어렵다",
+   "모델이 자주 바뀌어(데이터 플라이휠) 최적화를 한 번 하고 끝낼 수 없다[4]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "카메라 8대 입력을 10Hz 로 처리할 때 전처리에서 무엇이 병목이 될 수 있나요?",
+   "a": "전처리 업무 줄 — 원본 크기·복사·색 변환 위치.[4][17]"
+  },
+  {
+   "q": "FP16 에서 INT8 로 바꿨더니 정확도가 떨어졌습니다. 무엇부터 보나요?",
+   "a": "양자화 눈금·보정 데이터·민감한 층.[13][14]"
+  },
+  {
+   "q": "모델 지연 중앙값은 예산 안인데 가끔 넘칩니다. 어떻게 찾나요?",
+   "a": "꼬리 지연과 시간표 프로파일링.[18][28]"
+  },
+  {
+   "q": "NPU 가 지원하지 않는 연산이 모델에 들어왔습니다. 선택지는?",
+   "a": "연산 바꾸기·플러그인·다른 칩으로 넘기기.[12][30]"
+  },
+  {
+   "q": "행렬곱을 CPU 에서 빠르게 하려면 무엇을 바꾸나요?",
+   "a": "캐시 블록·SIMD(NEON).[21][25]"
+  },
+  {
+   "q": "새 모델이 차에서 몇 ms 걸릴지 측정 전에 어떻게 어림하나요?",
+   "a": "성능 예측 프레임워크 업무 줄 — 루프라인.[20]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · Edge AI SW Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/96c1501f-070c-4c0f-b883-af957746e84c",
+   "kind": "posting",
+   "note": "이 공고. AD Framework 팀 소개·업무·요건·우대·전형(서류 → 코딩 테스트 → 1차 화상 1시간 → 2차 3시간 → 처우 협의). 근무지 판교(Remote 표기). 수집 2026-11-24"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 채용 · ML Performance Optimization Engineer (AD Division) — 채용 사이트 사본",
+   "url": "https://jobs.spacecapital.com/companies/42dot-2/jobs/80938185-ml-performance-optimization-engineer",
+   "kind": "posting",
+   "date": "2026-05-29",
+   "note": "같은 AD 본부의 비슷한 자리(마감) — GPU/NPU 최적화, CPU·GPU·NPU 성능 분석, Linux·QNX·RTOS, CUDA·MKL·SIMD·NEON 우대"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 채용 · Senior Computer Vision Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/bcc7a6ab-d770-4220-ace9-4458e0bcba72",
+   "kind": "posting",
+   "note": "모델을 만드는 옆 팀 — 통합 비전 모델"
+  },
+  {
+   "n": 4,
+   "title": "현대자동차그룹 · 자율주행 데이터 플라이휠(미디어데이 이야기)",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/hyundai-motor-group-autonomous-driving-data-flywheel",
+   "kind": "company",
+   "date": "2026-09-14",
+   "note": "Atria AI 약 1억 파라미터·양자화 기반 최적화, 시험차 카메라 8대·레이더 1대, 수집차 40여 대·차당 주 80시간, 3DGS 가상 검증·닫힌 고리 시뮬레이션, VLA 실차 시험 2026년 말~2027년 초"
+  },
+  {
+   "n": 5,
+   "title": "아시아경제 · 초당 400조 번 연산 'Atria AI'(영문판, AI 번역)",
+   "url": "https://www.asiae.co.kr/en/article/automobile/2026051507295729148",
+   "kind": "news",
+   "date": "2026-05-15",
+   "note": "400 TOPS 급 NPU(제조사 미공개), 카메라 8대·전방 레이더 1대, 인지~제어 한 모델 — 기사의 설명"
+  },
+  {
+   "n": 6,
+   "title": "아이뉴스24 · 현대차, 엔비디아 협업·아트리아AI 개발로 '투트랙'",
+   "url": "https://inews24.com/view/2004894",
+   "kind": "news",
+   "date": "2026-09-13",
+   "note": "엔비디아 기반 레벨 2+ 2028년 상반기, Atria AI 레벨 2++ 2029년 하반기 목표, 포티투닷 AD 본부·Atria AI·VLA 개발 그룹장"
+  },
+  {
+   "n": 7,
+   "title": "포티투닷 블로그 · Active Learning 을 통한 지속적인 모델 성능 개선",
+   "url": "https://www.42dot.ai/ko/stories/blog-news/active-learning-3d-object-detection",
+   "kind": "company",
+   "date": "2024-09-02",
+   "note": "AD Algorithm 팀 — 약한 사례 수집·오프라인 모델을 차량용 모델로 증류"
+  },
+  {
+   "n": 8,
+   "title": "NVIDIA 보도자료 · 현대자동차그룹 AI 팩토리",
+   "url": "https://nvidianews.nvidia.com/news/hyundai-motor-group-ai-factory",
+   "kind": "news",
+   "date": "2025-10-30",
+   "note": "DRIVE AGX Thor 를 ADAS·차량 지능에 — 그룹 단위, 포티투닷 이름은 없음"
+  },
+  {
+   "n": 9,
+   "title": "Pleos 25 발표 일정 (Track C)",
+   "url": "https://developers.pleos.ai/pleos25/schedule",
+   "kind": "company",
+   "date": "2025-03-28",
+   "note": "포티투닷 발표 'End-to-End Autonomous Driving Models for Real-World Deployment' — 영상 링크 없음"
+  },
+  {
+   "n": 10,
+   "title": "NVIDIA Jetson AGX Orin 제품 페이지",
+   "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/",
+   "kind": "reference",
+   "note": "64GB 모듈 204.8GB/s, CPU·GPU 통합 메모리, 전력 모드"
+  },
+  {
+   "n": 11,
+   "title": "NVIDIA Jetson Thor 제품 페이지",
+   "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/",
+   "kind": "reference",
+   "note": "차량용 DRIVE Thor 와 같은 세대의 로봇용 모듈"
+  },
+  {
+   "n": 12,
+   "title": "NVIDIA TensorRT 문서",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+   "kind": "reference",
+   "note": "ONNX 가져오기·정밀도(FP16·INT8)·플러그인·엔진 호환성"
+  },
+  {
+   "n": 13,
+   "title": "Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference (Jacob 외, CVPR 2018)",
+   "url": "https://arxiv.org/abs/1712.05877",
+   "kind": "reference",
+   "note": "INT8 곱·INT32 누적, 눈금(scale)·영점"
+  },
+  {
+   "n": 14,
+   "title": "Quantizing deep convolutional networks for efficient inference: A whitepaper (Krishnamoorthi)",
+   "url": "https://arxiv.org/abs/1806.08342",
+   "kind": "reference",
+   "note": "학습 후 양자화·양자화 인식 학습"
+  },
+  {
+   "n": 15,
+   "title": "NVIDIA-AI-IOT · Lidar_AI_Solution (CUDA-BEVFusion)",
+   "url": "https://github.com/NVIDIA-AI-IOT/Lidar_AI_Solution",
+   "kind": "reference",
+   "note": "BEVFusion 을 CUDA·TensorRT 로 옮긴 예제, INT8 양자화 인식 학습 안내"
+  },
+  {
+   "n": 16,
+   "title": "MIT HAN Lab · BEVFusion (GitHub)",
+   "url": "https://github.com/mit-han-lab/bevfusion",
+   "kind": "reference",
+   "note": "카메라 입력 704×256 설정, NVIDIA 의 TensorRT 배포로 Jetson Orin 약 25FPS 언급"
+  },
+  {
+   "n": 17,
+   "title": "NVIDIA VPI (Vision Programming Interface) 문서",
+   "url": "https://docs.nvidia.com/vpi/",
+   "kind": "reference",
+   "note": "색 변환·크기 조정·리맵을 CPU·GPU·전용 가속기에서"
+  },
+  {
+   "n": 18,
+   "title": "NVIDIA Nsight Systems 사용자 안내서",
+   "url": "https://docs.nvidia.com/nsight-systems/UserGuide/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "NVIDIA Nsight Compute 프로파일링 안내서",
+   "url": "https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Roofline: An Insightful Visual Performance Model for Multicore Architectures (Williams·Waterman·Patterson, CACM 2009)",
+   "url": "https://dl.acm.org/doi/10.1145/1498765.1498785",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Arm Developer · Intrinsics(NEON)",
+   "url": "https://developer.arm.com/architectures/instruction-sets/intrinsics/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Intel oneAPI Math Kernel Library (oneMKL)",
+   "url": "https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "CUDA C++ Programming Guide",
+   "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html",
+   "kind": "reference",
+   "note": "메모리 층·스트림"
+  },
+  {
+   "n": 24,
+   "title": "QNX 개발자 문서",
+   "url": "https://www.qnx.com/developers/docs/",
+   "kind": "reference",
+   "note": "QNX Neutrino 실시간 OS"
+  },
+  {
+   "n": 25,
+   "title": "Anatomy of High-Performance Matrix Multiplication (Goto·van de Geijn, ACM TOMS 2008)",
+   "url": "https://dl.acm.org/doi/10.1145/1356052.1356053",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Planning-oriented Autonomous Driving (UniAD, CVPR 2023)",
+   "url": "https://arxiv.org/abs/2212.10156",
+   "kind": "reference",
+   "note": "인지·예측·계획을 한 망으로"
+  },
+  {
+   "n": 27,
+   "title": "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control",
+   "url": "https://arxiv.org/abs/2307.15818",
+   "kind": "reference",
+   "note": "VLA — 행동을 토큰으로"
+  },
+  {
+   "n": 28,
+   "title": "MLPerf Inference Benchmark (Reddi 외, ISCA 2020)",
+   "url": "https://arxiv.org/abs/1911.02549",
+   "kind": "reference",
+   "note": "단일 스트림 지연을 90 백분위로 재는 등 측정 규칙"
+  },
+  {
+   "n": 29,
+   "title": "Linux perf 위키",
+   "url": "https://perf.wiki.kernel.org/index.php/Main_Page",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "ONNX Runtime 문서 · Execution Providers",
+   "url": "https://onnxruntime.ai/docs/execution-providers/",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Horace He · Making Deep Learning Go Brrrr From First Principles",
+   "url": "https://horace.io/brrr_intro.html",
+   "kind": "reference",
+   "note": "계산·메모리·부르는 비용 세 갈래"
+  },
+  {
+   "n": 32,
+   "title": "원티드 · 포티투닷 회사 정보(국민연금 기반 평균 연봉·인원)",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "2026-11-25 확인 — 기준 월 표기 없음"
+  },
+  {
+   "n": 33,
+   "title": "원티드 · 현대오토에버 회사 정보(같은 집계)",
+   "url": "https://www.wanted.co.kr/company/4730",
+   "kind": "reference",
+   "note": "검색 요약으로 확인 — 페이지는 열지 않음"
+  },
+  {
+   "n": 34,
+   "title": "42dot 회사 사이트 하단 회사 정보",
+   "url": "https://42dot.ai",
+   "kind": "company"
+  },
+  {
+   "n": 35,
+   "title": "42dot 채용 · 복리후생(Employee Engagement Program)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준, 날짜 표기 없음(© 2026)"
+  },
+  {
+   "n": 36,
+   "title": "42dot 채용 · 채용 절차",
+   "url": "https://42dot.ai/ko/careers/hiring-process",
+   "kind": "company",
+   "note": "면접 통과 뒤 연봉·입사 조건을 정하는 처우 협의"
+  },
+  {
+   "n": 37,
+   "title": "뉴스스페이스 · 포티투닷 2025년 연결 감사보고서",
+   "url": "https://newsspace.kr/news/article.html?no=15231",
+   "kind": "news",
+   "date": "2026-09-14",
+   "note": "급여 891억원(+46%), 영업손실 3,498억원 — 직원 수가 없어 평균은 계산하지 않음"
+  },
+  {
+   "n": 38,
+   "title": "Lift, Splat, Shoot: Encoding Images from Arbitrary Camera Rigs by Implicitly Unprojecting to 3D (ECCV 2020)",
+   "url": "https://arxiv.org/abs/2008.05711",
+   "kind": "reference",
+   "note": "여러 카메라 이미지를 보정값으로 BEV 로 옮기기"
+  },
+  {
+   "n": 39,
+   "title": "Efficient Processing of Deep Neural Networks (Sze·Chen·Yang·Emer, Springer 2020)",
+   "url": "https://link.springer.com/978-3-031-00638-8",
+   "kind": "reference",
+   "note": "층별 연산량·하드웨어별 데이터 흐름"
+  },
+  {
+   "n": 40,
+   "title": "torchvision 문서 · ops.nms",
+   "url": "https://pytorch.org/vision/stable/generated/torchvision.ops.nms.html",
+   "kind": "reference",
+   "note": "IoU 문턱으로 겹친 상자 지우기"
+  }
+ ],
+ "caveat": "포티투닷이 이 팀(AD Framework)의 차량 칩·런타임·최적화 방법을 설명한 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음 — Pleos 25 의 엔드투엔드 발표는 일정표만 있고 영상 링크가 없다[9]). 회사 근거는 이 공고, 같은 본부의 비슷한 공고(마감), 현대차그룹 미디어데이 이야기(약 1억 파라미터·양자화·카메라 8대), 400 TOPS NPU 보도, 회사 블로그입니다. 차에 어느 회사 칩이 들어가는지는 공개되지 않았습니다. 기법 풀이는 공식 문서·논문·NVIDIA 공개 예제로 '보통 이런 것'을 보였고, 코드 예시 다섯 개는 직접 돌려 출력을 확인했습니다(카메라 해상도·입력 크기·지연 분포는 가정값). 2026-11-25 기준.",
+ "resources": [
+  {
+   "id": "cs336-gpu",
+   "title": "Stanford CS336 · Lecture 5: GPUs, TPUs (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/izZba4UA7iY",
+   "why": "GPU 구조·메모리 층·루프라인 — 하드웨어 아키텍처 요건의 출발점."
+  },
+  {
+   "id": "cs336-kernels",
+   "title": "Stanford CS336 · Lecture 6: Kernels, Triton, XLA (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/xnDHaNUvHBg",
+   "why": "연산 합치기와 커널 짜기 — 딥러닝 워크로드 최적화 우대 줄."
+  },
+  {
+   "id": "cs336-inference",
+   "title": "Stanford CS336 · Lecture 10: Inference (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/EfM546A79aM",
+   "why": "추론이 학습과 어떻게 다르고 어디서 느린지 — 모델 추론 과정 이해 요건. LLM 중심이지만 원리는 같다."
+  },
+  {
+   "id": "sze-book",
+   "title": "Efficient Processing of Deep Neural Networks",
+   "by": "Vivienne Sze · Yu-Hsin Chen · Tien-Ju Yang · Joel Emer · Springer · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://link.springer.com/978-3-031-00638-8",
+   "why": "층별 연산량 세기, CPU·GPU·가속기의 데이터 흐름, 양자화·가지치기를 하드웨어 눈으로 — NPU 를 이해하는 교과서."
+  },
+  {
+   "id": "pmpp",
+   "title": "Programming Massively Parallel Processors (4판)",
+   "by": "Wen-mei Hwu · David Kirk · Izzat El Hajj · Morgan Kaufmann · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://shop.elsevier.com/books/programming-massively-parallel-processors/hwu/978-0-323-91231-0",
+   "why": "CUDA 교과서. 합성곱·행렬곱·리덕션을 메모리 층에 맞게 짜는 법 — 전처리 커널과 CUDA 우대 줄."
+  },
+  {
+   "id": "cuda-kr",
+   "title": "CUDA 기반 병렬 처리 프로그래밍",
+   "by": "김덕수",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005221060",
+   "why": "SM·워프 같은 실행 모델과 스트림을 한국어로. CUDA 를 처음 잡을 때."
+  },
+  {
+   "id": "cuda-guide",
+   "title": "CUDA C++ Programming Guide",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html",
+   "why": "스트림·메모리 종류의 정확한 정의 — 전처리·추론을 겹쳐 돌릴 때 찾아 보는 사전."
+  },
+  {
+   "id": "csapp",
+   "title": "Computer Systems: A Programmer's Perspective (3판)",
+   "by": "Randal Bryant · David O'Hallaron · Pearson · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://csapp.cs.cmu.edu/",
+   "why": "캐시·메모리 계층·반복문 최적화 장이 'Low-level 성능 최적화' 요건의 바탕. 한국어 번역판은 서점에서 확인."
+  },
+  {
+   "id": "optimized-cpp",
+   "title": "Optimized C++",
+   "by": "Kurt Guntheroth · O'Reilly · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/optimized-c/9781491922057/",
+   "why": "C++ 에서 할당·복사·자료구조 선택이 성능을 어떻게 바꾸나 — 숙련된 C/C++ 요건."
+  },
+  {
+   "id": "c-opt-kr",
+   "title": "임베디드 프로그래밍 C 코드 최적화",
+   "by": "김유진 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9E%84%EB%B2%A0%EB%94%94%EB%93%9C%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20C%20%EC%BD%94%EB%93%9C%20%EC%B5%9C%EC%A0%81%ED%99%94",
+   "why": "자원이 정해진 임베디드에서 C 코드를 빠르게 하는 기법을 한국어로 — 임베디드 최적화 요건의 첫 책."
+  },
+  {
+   "id": "gregg-perf",
+   "title": "Systems Performance (2판)",
+   "by": "Brendan Gregg · Addison-Wesley · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "why": "리눅스에서 CPU·메모리·스케줄러를 재는 방법론과 perf 사용법 — 임베디드 성능 분석 요건."
+  },
+  {
+   "id": "nsight-systems",
+   "title": "NVIDIA Nsight Systems 사용자 안내서",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/nsight-systems/UserGuide/index.html",
+   "why": "CPU·GPU 시간표를 찍는 법 — 프로파일링 업무 줄의 첫 도구(Jetson 에서도 쓴다)."
+  },
+  {
+   "id": "nsight-compute",
+   "title": "NVIDIA Nsight Compute 프로파일링 안내서",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html",
+   "why": "커널 하나의 대역폭·연산 사용률 읽는 법."
+  },
+  {
+   "id": "brrr",
+   "title": "Making Deep Learning Go Brrrr From First Principles",
+   "by": "Horace He",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://horace.io/brrr_intro.html",
+   "why": "계산·메모리·부르는 비용 중 무엇이 막혔나를 가르는 생각 틀."
+  },
+  {
+   "id": "roofline",
+   "title": "Roofline: An Insightful Visual Performance Model for Multicore Architectures",
+   "by": "Williams · Waterman · Patterson · CACM 2009",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://dl.acm.org/doi/10.1145/1498765.1498785",
+   "why": "재기 전에 상한을 계산하는 법 — 성능 예측 프레임워크 업무 줄의 바탕."
+  },
+  {
+   "id": "trt-docs",
+   "title": "NVIDIA TensorRT 문서",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+   "why": "ONNX → 엔진 굽기, FP16·INT8, 플러그인, 버전 호환 — 모델 변환·배포 업무 줄."
+  },
+  {
+   "id": "onnxruntime",
+   "title": "ONNX Runtime · Execution Providers",
+   "by": "Microsoft 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://onnxruntime.ai/docs/execution-providers/",
+   "why": "한 모델을 CPU·GPU·NPU 실행기로 바꿔 돌리는 법 — 모델과 앱을 떼는 설계 연습."
+  },
+  {
+   "id": "cuda-bevfusion",
+   "title": "Lidar_AI_Solution · CUDA-BEVFusion",
+   "by": "NVIDIA-AI-IOT · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/NVIDIA-AI-IOT/Lidar_AI_Solution",
+   "why": "자율주행 BEV 모델을 C++·CUDA·TensorRT INT8 로 Orin 에 올린 실제 코드 — 전처리·후처리·양자화가 한곳에 있다."
+  },
+  {
+   "id": "vpi-docs",
+   "title": "NVIDIA VPI 문서",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/vpi/",
+   "why": "색 변환·크기 조정을 가속기에서 — 입력 전처리 업무 줄."
+  },
+  {
+   "id": "lss-paper",
+   "title": "Lift, Splat, Shoot",
+   "by": "Philion · Fidler · ECCV 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2008.05711",
+   "why": "여러 카메라를 BEV 로 옮기는 기본 방법 — 카메라 기하 전처리와 모델 구조 이해."
+  },
+  {
+   "id": "uniad-paper",
+   "title": "Planning-oriented Autonomous Driving (UniAD)",
+   "by": "Hu 외 · CVPR 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2212.10156",
+   "why": "엔드투엔드 자율주행 모델의 모양 — 엔드투엔드 우대 줄."
+  },
+  {
+   "id": "rt2-paper",
+   "title": "RT-2: Vision-Language-Action Models",
+   "by": "Brohan 외 · Google DeepMind · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2307.15818",
+   "why": "VLA 가 무엇인지 — VLA 우대 줄."
+  },
+  {
+   "id": "goto-gemm",
+   "title": "Anatomy of High-Performance Matrix Multiplication",
+   "by": "Goto · van de Geijn · ACM TOMS 2008",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://dl.acm.org/doi/10.1145/1356052.1356053",
+   "why": "행렬곱을 캐시 블록과 SIMD 커널로 짜는 고전 — 선형대수 루틴 우대 줄."
+  },
+  {
+   "id": "neon-docs",
+   "title": "Arm Intrinsics (NEON)",
+   "by": "Arm 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.arm.com/architectures/instruction-sets/intrinsics/",
+   "why": "ARM CPU 의 SIMD 내장 함수 목록 — NEON 우대 줄."
+  },
+  {
+   "id": "qnx-docs",
+   "title": "QNX 개발자 문서",
+   "by": "BlackBerry QNX",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.qnx.com/developers/docs/",
+   "why": "QNX 의 프로세스·메시지·스케줄링 — Linux 또는 QNX 요건."
+  },
+  {
+   "id": "jetson",
+   "title": "NVIDIA Jetson Orin · Thor 제품 사양",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/",
+   "why": "차량 칩과 같은 계열 보드의 메모리·대역폭·전력 모드 — 집에서 해 볼 수 있는 연습 환경."
+  },
+  {
+   "id": "mlperf-paper",
+   "title": "MLPerf Inference Benchmark",
+   "by": "Reddi 외 · ISCA 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1911.02549",
+   "why": "지연·꼬리 백분위를 어떻게 공정하게 재나 — 성능 검증 프레임워크 업무 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "추론이 어디서 느린지 숫자로 잡기",
+   "time": "1~2주",
+   "goal": "층별 연산량·메모리량을 세고, 칩 사양만으로 지연 상한을 어림할 수 있다.",
+   "resources": [
+    "cs336-gpu",
+    "brrr",
+    "roofline",
+    "sze-book"
+   ],
+   "task": "작은 검출 모델(ResNet18 백본 정도)의 층별 곱셈 수를 세어 표로 만들고, 내 GPU 에서 잰 층별 시간과 비교해 '메모리에 묶인 층'과 '연산에 묶인 층'을 가른다."
+  },
+  {
+   "title": "변환과 양자화",
+   "time": "2~3주",
+   "goal": "PyTorch → ONNX → TensorRT(또는 ONNX Runtime)로 옮기고 FP32·FP16·INT8 의 정확도·지연을 비교한다.",
+   "resources": [
+    "trt-docs",
+    "onnxruntime",
+    "cs336-inference"
+   ],
+   "task": "공개 검출 모델을 세 정밀도로 굽고, 가상 이미지 200장에서 출력 상자 차이와 p50·p99 지연을 표 하나로 정리한다. INT8 은 보정 데이터 크기를 바꿔 가며 정확도 변화를 본다."
+  },
+  {
+   "title": "전처리·후처리를 C++/CUDA 로",
+   "time": "2~4주",
+   "goal": "파이썬 기준 구현과 같은 결과를 내는 C++/CUDA 전처리(NV12 → RGB → 정규화)와 NMS 를 만든다.",
+   "resources": [
+    "pmpp",
+    "cuda-kr",
+    "cuda-guide",
+    "vpi-docs",
+    "optimized-cpp"
+   ],
+   "task": "가짜 NV12 프레임 8장을 만들어 CPU(numpy)·C++·CUDA 세 구현의 출력 최대 차이와 처리 시간을 비교하고, 스트림으로 전처리와 추론을 겹쳤을 때 전체 지연이 얼마나 주는지 잰다."
+  },
+  {
+   "title": "보드 위에서 재고 고치기",
+   "time": "3~4주",
+   "goal": "임베디드 리눅스 보드에서 카메라 → 모델 → 결과 고리를 돌리고 Nsight·perf 로 병목을 찾아 고친다.",
+   "resources": [
+    "jetson",
+    "nsight-systems",
+    "nsight-compute",
+    "gregg-perf",
+    "c-opt-kr",
+    "neon-docs",
+    "qnx-docs"
+   ],
+   "task": "Jetson(없으면 ARM 보드나 PC) 위에서 녹화 영상 → 검출 → NMS 를 실시간으로 돌리고, 전력 모드 두 가지에서 프레임별 지연 분포를 잰 뒤, 가장 큰 병목 하나를 고쳐 전후 p99 를 비교한다."
+  },
+  {
+   "title": "자율주행 모델과 성능 예측 (심화)",
+   "time": "계속",
+   "goal": "BEV·엔드투엔드 모델의 구조를 읽고, 새 모델의 차량 지연을 측정 전에 예측하는 틀을 만든다.",
+   "resources": [
+    "lss-paper",
+    "uniad-paper",
+    "rt2-paper",
+    "cuda-bevfusion",
+    "mlperf-paper",
+    "goto-gemm",
+    "cs336-kernels"
+   ],
+   "task": "CUDA-BEVFusion 예제를 읽고 단계별 시간을 표로 옮긴 뒤, 층별 연산량으로 만든 예측값과 실측의 오차를 재는 작은 '성능 예측기'를 만든다. 모델을 바꿀 때마다 지연·메모리 회귀를 알리는 스크립트를 붙인다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 국민연금 기반 집계로 직원 평균 **약 6,032만원** — 신입 초봉 숫자는 찾지 못했고, 평균은 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 국민연금 납부액으로 추정한 회사 전체 평균(국민연금 가입 804명), 기준 월 표기 없음. 2026-11-25 확인 [32]"
+   },
+   {
+    "label": "현대오토에버 평균",
+    "value": "9,423만원",
+    "amount": 9423,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "같은 그룹 소프트웨어 회사, 같은 원티드 국민연금 집계(5,598명) — 검색 요약으로 확인 [33]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여'가 없다(공시 숫자 없음). 2025년 감사보고서의 급여 총액은 891억원이지만 직원 수가 함께 나오지 않아 평균을 계산하지 않았다 [37]. 국민연금 기반 집계는 납부 상한이 있어 실제보다 낮게 나오는 경향이 있다 {추론}. 이 자리는 5년 이상 경력직이라 회사 평균과 다를 수 있고, 연봉은 면접을 통과한 뒤 **처우 협의** 단계에서 사람마다 정한다 [1][36]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "재량근무·선택근무, 최고 사양 업무 장비"
+   },
+   {
+    "name": "회복의 날",
+    "detail": "법정 연차와 별도로 매월 유급 하루"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당 하루 세 끼 무료, 사내 카페 음료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 최대 300만원, 설·추석 명절 포인트"
+   },
+   {
+    "name": "전기차 구매 지원",
+    "detail": "차량 가격의 최대 15%, 1,000만원 한도 · 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 대출",
+    "detail": "근속에 따라 1,000만~5,000만원, 이자 0%"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진 전액, 사내 간호사·심리·재무·법률 상담(EAP), 사내 피트니스(1:1 PT·그룹 수업)"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·자녀·부모 — 실손·입원·통원·치과·도수치료"
+   },
+   {
+    "name": "성장",
+    "detail": "국내외 교육·세미나·컨퍼런스 지원, 팀 워크숍비"
+   },
+   {
+    "name": "가족",
+    "detail": "직장 어린이집, 수유실, 경조금·경조휴가"
+   },
+   {
+    "name": "그 밖의",
+    "detail": "장기근속 휴가·포상, 휴양 시설 추첨, 추천 보상"
+   }
+  ],
+  "note": "포티투닷 채용 사이트의 복리후생 페이지(한국 본사 기준, 날짜 표기 없음 · © 2026)다 [35]. 금액이 적히지 않은 항목은 비웠다. 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "포티투닷 본사 · 소프트웨어드림센터 A동 (판교 제2테크노밸리)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선·경강선 판교역에서 버스로 가는 거리 {추론}",
+  "note": "주소는 42dot 사이트 하단 회사 정보다 [34]. 공고의 근무지 표기는 'Pangyo (Software Dream Center), South Korea (Remote)'인데, 원격 근무 범위는 공고에 적혀 있지 않다 [1]."
+ }
+}
