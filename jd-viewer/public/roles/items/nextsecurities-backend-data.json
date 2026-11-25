@@ -1,0 +1,1007 @@
+{
+ "id": "nextsecurities-backend-data",
+ "company": "넥스트증권",
+ "role": "Backend Engineer(Data)",
+ "team": "AI데이터플랫폼팀",
+ "jobs": [
+  "jobkorea-50361059"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "앱·웹에서 사용자가 누른 것(행동 로그)과 시세·거래 데이터를 **받는 서버부터 레이크하우스에 쌓이기까지**의 길을 만들고, 그 위의 광고 분석·A/B 실험 도구를 운영합니다.[1][2] 같은 팀의 다른 자리가 창고(레이크하우스)와 마트를 맡고, 이 자리는 **데이터가 들어오는 입구와 배관**을 맡습니다.[4][5]",
+  "env": "AWS 위에서 스트리밍 → Databricks·Delta Lake로 잇고, Prometheus·Grafana로 지켜보며 Terraform으로 인프라를 코드로 둡니다.[1][5] 회사는 새 증권 앱(MTS)을 아직 내지 않은 채 오픈 API부터 열고 있어, 수집 체계를 처음부터 짜는 시기입니다.[9]",
+  "oneline": "데이터 엔지니어보다 **백엔드 + 운영** 쪽이 짙은 자리. 5년 차 이상, '로그가 몇 % 빠졌나'를 숫자로 말하고 새벽 장애를 직접 받는 사람을 찾습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "ㆍ데이터 수집·적재 파이프라인 설계·운영: 다양한 소스(앱·웹 로그, 시장/거래 데이터 등)를 스트리밍을 거쳐 레이크하우스로 잇는 파이프라인을 설계하고 총괄합니다.",
+   "short": "앱 클릭 로그·시세·거래 기록이 실시간으로 흘러 들어와 분석 창고에 쌓이기까지의 길 전체를 맡는 일.",
+   "why": "넥스트증권 데이터 조직은 Databricks Delta Lake 위에 원천 → 정제 → 사용(Bronze·Silver·Gold) 층을 쌓고, 원천은 DB 변경 기록(CDC)과 Kafka 스트리밍으로 받습니다.[4][5] 이 공고는 그 맨 앞 — 원천을 Bronze까지 들이는 길 — 을 '총괄'한다고 적었습니다.[1]",
+   "flows": [
+    {
+     "caption": "같은 팀 공고들로 본 데이터의 길[1][4][5]",
+     "steps": [
+      "앱·웹 SDK · 시세·거래 시스템",
+      "수집 서버(API)",
+      "스트리밍(Kafka 등)",
+      "레이크하우스 원천층(Bronze)",
+      "정제·마트(Silver·Gold)",
+      "분석·실험·AI"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "intro": "보통 이런 결정과 작업입니다. 넥스트증권이 고른 세부 도구는 공개되지 않았습니다.",
+    "items": [
+     "**소스마다 받는 법 정하기** — 앱 로그는 수집 API로, 서비스 DB는 변경 기록(CDC)으로, 시세는 스트림으로.[4] {추론}",
+     "**스트림 → 레이크하우스** — 스트림에서 읽어 Delta 표에 이어 붙이거나, 파일로 떨어진 것은 Auto Loader(새 파일만 골라 읽고 처리한 위치를 체크포인트에 남기는 Databricks 기능)로 읽는다.[16]",
+     "**한 번만 쌓기** — 체크포인트와 Delta 쓰기를 묶으면 같은 파일이 두 번 들어가지 않는다.[16][17]",
+     "**나눠 담기** — 날짜·이벤트 종류로 파티션을 나눠 '어제 치만 다시 돌리기'가 되게 한다.[17] {추론}",
+     "**총괄** — 소스가 늘 때 새 배관을 손으로 만들지 않도록 틀(템플릿·설정)을 만든다. {추론}"
+    ]
+   },
+   "how_far": "어떤 마트를 만들지는 데이터 엔지니어·분석 엔지니어가 정합니다.[4][5] 이 자리는 **원천이 빠짐없이, 늦지 않게, 한 번만** 원천층에 닿게 하는 것까지가 몫이고, 지원자는 스트리밍 소비자 하나를 끝까지 운영해 본 경험을 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    16,
+    17
+   ],
+   "study": [
+    "fde",
+    "kafka-guide",
+    "autoloader",
+    "delta-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㆍ고객 여정 플랫폼 운영: 이벤트/데이터 수집 서버, 광고 분석 플랫폼, 실험(A/B·피처플래그) 플랫폼 등 데이터 제품의 배포와 운영을 담당합니다.",
+   "short": "사용자가 광고를 보고 들어와 가입·주문까지 가는 길을 재는 도구들(수집 서버·광고 분석·실험)을 띄우고 지키는 일.",
+   "why": "같은 회사 채널 백엔드 공고에는 앱 SDK가 부르는 분석 API, 이벤트 수집·적재, A/B 테스트·피처 플래그 배정을 맡는 'Activation Platform' 분야가 있습니다.[6] 이 자리는 그 도구들을 **데이터 제품으로 배포·운영**하는 쪽입니다.[1]",
+   "actually": {
+    "items": [
+     "**수집 서버** — 앱이 모아 보낸 이벤트 묶음을 받아 검사하고 스트림에 넣는 API 서버. 트래픽이 가장 많은 서버라 늘리고 줄이는 기준이 필요하다. {추론}",
+     "**광고 분석 플랫폼** — AppsFlyer·Airbridge 같은 도구는 어느 캠페인·매체·채널이 앱 설치를 가져왔는지 가려 준다(어트리뷰션).[13] 그 결과를 받아 우리 데이터와 잇는다.",
+     "**실험 플랫폼** — 사용자를 집단에 늘 같게 나누고(해시 배정), 기능 스위치로 켜고 끈다.[22][23]",
+     "**배포와 운영** — 이 도구들의 설정·버전·키를 관리하고, 상용 도구로 나가는 데이터에 개인정보가 섞이지 않게 막는다.[26] {추론}"
+    ]
+   },
+   "how_far": "무엇을 실험할지는 기획·마케팅이 정합니다. 개발자는 **도구가 늘 떠 있고, 들어온 숫자가 믿을 만하게** 합니다. 상용 분석 도구는 설정·연동 경험이 있으면 충분하고 내부 구조까지 알 필요는 없습니다. {추론}",
+   "refs": [
+    1,
+    6,
+    13,
+    22,
+    23,
+    26
+   ],
+   "study": [
+    "kohavi-ab",
+    "feature-toggles",
+    "openfeature"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㆍ데이터 신뢰성 관리: 대용량 로그의 유실률, DLQ, 재처리, 정합성, 데이터 품질과 SLA를 정의하고 지표로 관리합니다.",
+   "short": "로그가 몇 % 빠졌는지, 처리 못 한 건 어디 모였는지, 언제까지 도착하는지를 숫자로 정해 매일 재는 일.",
+   "why": "공고는 '정의하고 지표로 관리'라고 적었습니다 — 느낌이 아니라 숫자로 약속하라는 뜻입니다.[1] 앞선 같은 자리 공고도 같은 문장을 썼습니다.[3]",
+   "actually": {
+    "items": [
+     "**유실률** — 앱이 이벤트마다 순번을 매기면 비어 있는 번호로 빠진 것을 센다. 마지막 몇 개가 빠진 것은 순번만으로 모르니 앱이 보낸 개수와 받은 개수를 따로 맞춘다. {추론}",
+     "**DLQ(죽은 편지함)** — 처리에 실패한 메시지를 따로 모으는 곳. AWS SQS는 '몇 번 받아 가고도 못 지우면 옮긴다'(maxReceiveCount)를 정하고, 너무 낮게 두면 한 번 실패로 바로 넘어간다고 경고한다.[14] Kafka Connect는 실패 레코드를 지정한 토픽으로 보내고 실패 원인을 헤더에 붙일 수 있다.[15]",
+     "**재처리** — DLQ에 모인 것을 고친 뒤 원래 길로 되돌린다(SQS의 redrive).[14] 되돌려도 두 번 쌓이지 않게 이벤트 id로 중복을 막는다.[25]",
+     "**정합성** — 원천 건수와 레이크하우스 건수를 시간 칸마다 대조한다. {추론}",
+     "**SLA** — 데이터를 쓰는 팀과 '어제 치는 오전 7시까지' 같은 약속을 정하고, 그 아래 목표(SLO)와 재는 숫자(SLI)를 둔다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "순번으로 유실, id로 중복 세기(직접 돌린 출력)",
+     "body": "가상 이벤트 7건. 재전송으로 한 건이 두 번 왔고, 기기 d1의 3·4번이 빠졌습니다.",
+     "lang": "python",
+     "code": "# 앱이 매긴 순번(seq)으로 유실을, event_id 로 중복을 센다\nevents = [  # (device, seq, event_id)\n    (\"d1\", 1, \"e1\"), (\"d1\", 2, \"e2\"), (\"d1\", 2, \"e2\"),   # e2 두 번 도착(재전송)\n    (\"d1\", 5, \"e5\"),                                    # 3·4 빠짐\n    (\"d2\", 1, \"e7\"), (\"d2\", 2, \"e8\"), (\"d2\", 3, \"e9\"),\n]\nseen, uniq = set(), []\nfor d, s, eid in events:\n    if eid in seen:\n        continue\n    seen.add(eid)\n    uniq.append((d, s))\ndup = len(events) - len(uniq)\nexpected = lost = 0\nfor dev in sorted({d for d, _ in uniq}):\n    seqs = sorted(s for d, s in uniq if d == dev)\n    span = seqs[-1] - seqs[0] + 1\n    expected += span\n    lost += span - len(seqs)\nprint(f\"도착 {len(events)} · 중복 {dup} · 고유 {len(uniq)}\")\nprint(f\"기대 {expected} · 유실 {lost} · 유실률 {lost/expected:.1%}\")\n# 도착 7 · 중복 1 · 고유 6\n# 기대 8 · 유실 2 · 유실률 25.0%"
+    }
+   ],
+   "how_far": "숫자의 목표치(유실 0.1% 이하 등)는 데이터를 쓰는 팀과 같이 정합니다. 개발자는 **그 숫자를 자동으로 재는 장치와, 넘으면 울리는 알림**까지 만듭니다. {추론}",
+   "refs": [
+    1,
+    3,
+    14,
+    15,
+    19,
+    25
+   ],
+   "study": [
+    "sqs-dlq",
+    "connect-dlq",
+    "ddia",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㆍ관측성·장애 대응: Prometheus·Grafana 기반 모니터링 체계를 운영하고, primary 온콜로 장애를 대응합니다.",
+   "short": "서버·배관 상태를 그래프로 띄워 두고, 문제가 나면 당번 1순위로 맨 먼저 전화를 받는 일.",
+   "why": "수집이 멈추면 그 시간의 행동 기록은 다시 만들 수 없습니다 {추론}. 그래서 공고는 모니터링 '운영'과 primary(1차) 온콜을 함께 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**Prometheus** — 서버가 내놓는 숫자(요청 수·지연·소비 지연)를 주기적으로 긁어 저장하고, 규칙에 걸리면 알림을 낸다.[27]",
+     "**지연은 히스토그램으로** — 서버 여러 대의 p95(느린 쪽 5%)는 대마다 낸 p95를 평균하면 틀린 값이 된다. 구간별 개수(히스토그램)를 합친 뒤 `histogram_quantile`로 계산한다.[18]",
+     "**데이터 쪽 지표** — 스트림 소비 지연(얼마나 밀렸나), DLQ 쌓인 수, 원천층 마지막 도착 시각. {추론}",
+     "**Grafana** — 위 숫자를 대시보드로 묶어 당번이 한 화면에서 본다. {추론}",
+     "**온콜** — 알림은 사람이 바로 손써야 할 것만, 끝나면 원인과 재발 방지를 적는 사후 검토(포스트모템).[19]"
+    ]
+   },
+   "how_far": "primary라 장애를 처음 받고 1차로 막는 것까지가 이 자리입니다. 지원자는 '알림이 왔을 때 무엇부터 봤나'를 실제 장애 하나로 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    18,
+    19,
+    27
+   ],
+   "study": [
+    "prom-docs",
+    "prom-histograms",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㆍ인프라 자동화: Terraform 등 IaC로 플랫폼 인프라를 코드로 관리하고 운영합니다.",
+   "short": "서버·스트림·권한 설정을 화면에서 손으로 누르지 않고 코드로 적어, 리뷰를 거쳐 똑같이 찍어 내는 일.",
+   "why": "같은 팀 플랫폼 엔지니어 공고도 데이터 인프라·워크스페이스·권한·네트워크를 Terraform과 CI/CD로 코드화한다고 적었습니다.[5] 증권사는 누가 언제 무엇을 바꿨는지 남아야 하니 코드 이력이 그 기록이 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "**상태 파일** — Terraform은 실제로 만든 것을 상태(state)에 적어 두고, 코드와의 차이만 바꾼다. 팀이 같이 쓰려면 원격 저장과 잠금이 필요하다.[20]",
+     "**모듈** — '수집 서버 + 큐 + 알림' 묶음을 모듈로 만들어 개발·운영 환경에 같은 꼴로 찍는다.[20]",
+     "**계획 → 적용** — 바꾸기 전에 `plan`으로 무엇이 바뀌는지 보고 리뷰한 뒤 `apply`.[20]"
+    ]
+   },
+   "how_far": "이 자리는 플랫폼 전체가 아니라 **자기가 운영하는 수집·실험 도구의 인프라**를 코드로 둡니다. 공통 네트워크·계정 틀은 데이터 플랫폼 쪽과 나눠 맡을 것입니다.[5] {추론}",
+   "refs": [
+    5,
+    20
+   ],
+   "study": [
+    "terraform-book",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Backend Engineer ㆍ5년 이상의 백엔드 엔지니어링 경력",
+   "short": "장애·유실처럼 겪어 봐야 아는 일이 많아 중간 이상 연차를 찾는다.",
+   "why": "앞선 같은 자리 공고와 채용 사이트 공고 모두 경력 5년 이상입니다.[2][3] 같은 회사 개발 공고 대부분이 같은 기준입니다.[5][6]",
+   "how_far": "연차보다 아래 줄들을 '직접 해 봤다'고 말할 수 있는지가 실제 기준일 것입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "ㆍ대규모 트래픽을 처리하는 API 서버를 개발하고 운영해보신 분",
+   "short": "수집 서버는 앱의 모든 화면·클릭이 몰려드는 곳이라, 많이 받아도 안 넘어지는 서버를 만들어 봤어야 한다.",
+   "why": "이벤트 수집 서버는 사용자 한 명이 화면을 넘길 때마다 요청이 오는 자리라 주문 서버보다 요청이 훨씬 많습니다 {추론}. 업무②가 이 서버의 운영입니다.[1]",
+   "actually": {
+    "items": [
+     "**묶어 받기** — 앱이 이벤트를 모아 한 번에 보내게 하고, 서버는 바로 스트림에 넘기고 빨리 답한다. {추론}",
+     "**밀려도 버티기** — 스트림이 느려질 때 서버가 같이 멈추지 않게 큐·타임아웃을 둔다. {추론}",
+     "**늘리고 줄이기** — 지연 지표를 보고 서버 수를 조절한다.[18]"
+    ]
+   },
+   "how_far": "몇 TPS를 받아 봤는지보다 **병목이 어디였고 어떻게 풀었는지**를 설명하는 게 중요합니다. {추론}",
+   "refs": [
+    1,
+    18
+   ],
+   "study": [
+    "ddia",
+    "prom-histograms"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "ㆍ대용량 로그를 수집·적재하는 파이프라인을 구축하고 운영해보신 분",
+   "short": "업무①을 이미 해 본 사람 — 로그를 받아 스트림을 거쳐 저장소에 쌓는 길을 직접 만들고 돌려 봤어야 한다.",
+   "why": "공고의 첫 업무가 이것이고, 같은 팀은 스트리밍과 레이크하우스를 씁니다.[1][4]",
+   "actually": {
+    "items": [
+     "**Kafka 같은 스트림** — 받은 쪽이 처리한 위치(오프셋)를 언제 남기느냐에 따라 '최대 한 번'·'최소 한 번'이 갈린다. 저장까지 끝난 뒤 남기면 최소 한 번이고, 그러면 중복이 생길 수 있어 id로 거른다.[25]",
+     "**작은 파일 문제** — 스트림을 짧은 간격으로 쓰면 파일이 잘게 쪼개져 읽기가 느려진다. Delta는 OPTIMIZE로 합친다.[17]",
+     "**백필** — 로직을 고친 뒤 지난 며칠 치를 다시 만들 수 있어야 한다.[17] {추론}"
+    ]
+   },
+   "how_far": "도구 이름(Kafka·Kinesis·Fluent Bit)보다 **유실·중복·지연을 어떻게 다뤘나**가 핵심입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    17,
+    25
+   ],
+   "study": [
+    "kafka-guide",
+    "wiki-kafka",
+    "delta-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "ㆍ데이터 수집 플랫폼을 운영하며 안정성을 관리해보신 분",
+   "short": "만드는 것보다 매일 지키는 쪽 — 지표·알림·장애 대응을 해 본 사람.",
+   "why": "업무③④(신뢰성 지표, 모니터링·온콜)를 해 본 경험을 묻는 줄입니다.[1]",
+   "how_far": "'유실률을 재 봤다', 'DLQ를 비우고 재처리해 봤다', '새벽 알림을 받아 봤다' 중 둘 이상을 실제 사례로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    14,
+    19
+   ],
+   "study": [
+    "sre-book",
+    "sqs-dlq"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "ㆍ클라우드 환경에서 CI/CD를 운영해보신 분",
+   "short": "코드를 합치면 자동으로 시험·빌드·배포되는 길을 클라우드에서 직접 굴려 봤어야 한다.",
+   "why": "업무②가 데이터 제품의 '배포와 운영'이고, 같은 팀은 인프라도 CI/CD와 함께 코드로 관리합니다.[1][5]",
+   "actually": {
+    "items": [
+     "**서버 배포** — 수집 서버를 컨테이너로 만들어 단계적으로 바꿔 끼운다. 수집은 멈추면 기록이 사라지니 무중단이 기본이다. {추론}",
+     "**인프라 배포** — PR마다 `terraform plan` 결과를 붙여 리뷰하고, 합치면 `apply`.[20]",
+     "**데이터 작업 배포** — 스트리밍 작업은 체크포인트를 이어받게 바꿔야 처음부터 다시 읽지 않는다.[16] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    16,
+    20
+   ],
+   "study": [
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "ㆍAWS 등 퍼블릭 클라우드 환경에 익숙하신 분",
+   "short": "회사 데이터 인프라가 AWS 위에 있어서 — 서버·큐·저장소·권한을 AWS 화면과 코드로 다룰 줄 알아야 한다.",
+   "why": "같은 팀 플랫폼 공고는 AWS 위에서 Databricks·EKS·RDS를 운영한다고 적었습니다.[5]",
+   "how_far": "AWS 자격증보다 **S3·IAM 권한·큐(SQS)·컨테이너 실행 환경**을 직접 써 본 것이 중요합니다. {추론}",
+   "refs": [
+    5,
+    14
+   ],
+   "study": [
+    "sqs-dlq"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ㆍDatabricks, Delta Lake 등 레이크하우스로의 적재 파이프라인 경험이 있으신 분",
+   "short": "회사가 실제로 쓰는 저장소가 Databricks·Delta Lake라서, 거기에 넣어 본 사람은 바로 일할 수 있다.",
+   "why": "같은 팀 공고들이 Databricks Delta Lake·Unity Catalog를 이름으로 적었습니다.[4][5]",
+   "actually": {
+    "items": [
+     "**Auto Loader** — 새로 도착한 파일만 골라 읽고, 처리한 파일 목록을 체크포인트에 남겨 다시 읽지 않는다. 파일 처리 순서는 보장하지 않는다.[16]",
+     "**MERGE** — 같은 키가 다시 오면 덮어쓰고 없으면 넣는다 — 재처리해도 두 번 쌓이지 않게.[17]",
+     "**time travel** — 표의 지난 버전을 볼 수 있어, 잘못 쌓았을 때 비교·복구에 쓴다.[17]"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    16,
+    17
+   ],
+   "study": [
+    "autoloader",
+    "delta-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ㆍTerraform 등 IaC 도구를 활용한 인프라 자동화 경험이 있으신 분",
+   "short": "업무⑤를 바로 맡을 수 있는 사람 — 이미 Terraform으로 인프라를 찍어 내고 고쳐 봤다.",
+   "why": "업무⑤와 같은 팀 플랫폼 공고가 모두 Terraform을 이름으로 적었습니다.[1][5]",
+   "how_far": "모듈을 나눠 여러 환경에 쓴 경험, 상태 파일이 꼬였을 때 다뤄 본 경험이 있으면 충분합니다.[20] {추론}",
+   "refs": [
+    1,
+    5,
+    20
+   ],
+   "study": [
+    "terraform-book",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ㆍ이벤트 스키마·택소노미를 설계하고 버전·호환성을 관리하거나 조직 표준으로 정착시켜보신 분",
+   "short": "'어떤 이벤트를 무슨 이름·속성으로 남길지'를 정하고, 바꿀 때 옛 소비자가 안 깨지게 관리해 본 사람.",
+   "why": "택소노미(이벤트 분류 체계)가 흔들리면 같은 행동이 팀마다 다른 이름으로 쌓여 숫자가 안 맞습니다. Amplitude는 택소노미를 '무엇을 남기고, 어떻게 이름 붙이고, 서로 어떻게 잇는가'의 약속으로 정의합니다.[11] 같은 회사 채널 공고도 이벤트 스키마 검증을 업무로 적었습니다.[6]",
+   "actually": {
+    "items": [
+     "**목표에서 거꾸로** — 사업 목표 → 핵심 지표 → 그 지표에 필요한 이벤트·속성 순으로 정한다. 중요한 지표부터 남기고 차츰 늘린다.[11]",
+     "**이름 규칙** — 대소문자·문법을 하나로. Amplitude 기본은 '명사 + 과거형 동사'(Song Played).[11]",
+     "**설계표** — Airbridge 예시는 이벤트마다 언제 남기나·분류·행동·라벨·값·속성 칸을 두고, 표준 이벤트 이름(airbridge.ecommerce.order.completed)을 쓴다.[12]",
+     "**호환성** — 스키마 저장소는 새 판이 옛 판과 호환되는지(뒤로·앞으로 호환) 검사하고 어긋나면 거부한다.[21]",
+     "**조직 표준** — 설계표 하나를 원본으로, 수집 서버가 그 표로 들어오는 이벤트를 검사한다.[6][11] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "스키마 바꿀 때 뒤로 호환인가(직접 돌린 출력)",
+     "body": "선택 칸을 더하는 건 괜찮고, 타입을 바꾸거나 새 필수 칸을 넣으면 옛 이벤트·옛 소비자가 깨집니다.[21] 실제 규칙(Avro·Protobuf)은 더 많지만 뼈대는 같습니다.",
+     "lang": "python",
+     "code": "# 이벤트 스키마를 바꿀 때 '옛 소비자가 안 깨지나'(뒤로 호환) 간단 점검\ndef backward_ok(old, new):\n    problems = []\n    for f, spec in old.items():\n        if f not in new and spec[\"required\"]:\n            problems.append(f\"필수 칸 삭제: {f}\")\n        elif f in new and new[f][\"type\"] != spec[\"type\"]:\n            problems.append(f\"타입 변경: {f} {spec['type']}→{new[f]['type']}\")\n    for f, spec in new.items():\n        if f not in old and spec[\"required\"]:\n            problems.append(f\"새 필수 칸(옛 이벤트엔 없음): {f}\")\n    return problems or [\"OK\"]\n\nv1 = {\"event\": {\"type\": \"str\", \"required\": True},\n      \"symbol\": {\"type\": \"str\", \"required\": True},\n      \"qty\": {\"type\": \"int\", \"required\": True}}\nv2 = dict(v1, screen={\"type\": \"str\", \"required\": False})          # 선택 칸 추가\nv3 = dict(v1, qty={\"type\": \"float\", \"required\": True},\n          market={\"type\": \"str\", \"required\": True})                # 타입 변경 + 새 필수 칸\nprint(\"v1→v2:\", backward_ok(v1, v2))\nprint(\"v1→v3:\", backward_ok(v1, v3))\n# v1→v2: ['OK']\n# v1→v3: ['타입 변경: qty int→float', '새 필수 칸(옛 이벤트엔 없음): market']"
+    }
+   ],
+   "refs": [
+    6,
+    11,
+    12,
+    21
+   ],
+   "study": [
+    "amplitude-taxonomy",
+    "airbridge-taxonomy",
+    "sr-compat"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ㆍ행동 및 광고 분석 플랫폼(ThinkingAI, Amplitude, AppsFlyer, Airbridge 등)을 운영해보신 분",
+   "short": "앱 안 행동을 보는 도구(Amplitude 등)와 광고 성과를 가르는 도구(AppsFlyer·Airbridge)를 붙이고 굴려 본 사람.",
+   "why": "업무② '광고 분석 플랫폼'의 실제 이름들입니다.[1] 두 종류가 다릅니다 — Amplitude류는 앱 안의 행동을 보고[11], AppsFlyer·Airbridge류는 설치·가입이 어느 광고에서 왔는지를 가립니다(어트리뷰션).[13]",
+   "actually": {
+    "items": [
+     "**SDK 연동** — 앱에 도구의 SDK를 넣고 이벤트를 우리 택소노미에 맞춰 보낸다. 자동 수집되는 설치·열기는 따로 넣지 않는다.[12]",
+     "**이중 수집 맞추기** — 같은 가입 이벤트를 우리 서버와 상용 도구가 각각 받으면 숫자가 어긋난다. 어느 쪽을 정답으로 할지 정하고 차이를 잰다. {추론}",
+     "**원본 받아오기** — 상용 도구의 원본 데이터를 레이크하우스로 내려받아 우리 데이터와 잇는다. {추론}"
+    ]
+   },
+   "how_far": "목록의 도구를 다 써 봤을 필요는 없고, 하나라도 **이벤트 설계부터 숫자 대조까지** 해 봤으면 됩니다. {추론}",
+   "refs": [
+    1,
+    11,
+    12,
+    13
+   ],
+   "study": [
+    "amplitude-taxonomy",
+    "airbridge-taxonomy"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ㆍA/B 테스트·피처 플래그 플랫폼을 운영하고 실험 설계를 지원해보신 분",
+   "short": "사용자를 공정하게 두 집단으로 나누고, 결과를 믿을 수 있는지 점검해 주는 도구를 운영해 본 사람.",
+   "why": "업무②의 실험 플랫폼입니다.[1] 기능 스위치(피처 플래그)는 출시용·실험용·운영용·권한용으로 쓰임이 갈리고, 실험용은 같은 사용자를 늘 같은 집단에 둬야 합니다.[23]",
+   "actually": {
+    "items": [
+     "**배정** — (실험 이름 + 사용자 id)의 해시로 집단을 정하면 저장하지 않아도 늘 같다.[22]",
+     "**집단 비율 점검(SRM)** — 50:50으로 설계했는데 실제가 45:55면 결과를 믿지 말고 원인(배정·수집 오류)부터 찾는다.[22]",
+     "**공통 규격** — OpenFeature는 스위치 서비스를 바꿔도 앱 코드가 그대로이게 하는 규격이다.[24]",
+     "**설계 지원** — 몇 명·며칠이 필요한지, 무엇을 성공 지표로 볼지 기획과 미리 정한다.[22]"
+    ]
+   },
+   "refs": [
+    1,
+    22,
+    23,
+    24
+   ],
+   "study": [
+    "kohavi-ab",
+    "feature-toggles",
+    "openfeature"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ㆍ행동 데이터 및 광고 성과 관련 퍼널 지표를 산출해본 경험이 있으신 분",
+   "short": "'앱 열기 → 종목 보기 → 주문'처럼 단계마다 몇 %가 남는지를 행동 로그로 직접 계산해 본 사람.",
+   "why": "수집한 데이터가 제대로인지는 결국 퍼널 같은 숫자로 드러납니다 {추론}. Amplitude도 택소노미를 핵심 지표에서 거꾸로 짜라고 합니다 — 퍼널을 계산할 수 있어야 남길 이벤트를 고를 수 있습니다.[11]",
+   "actually": {
+    "items": [
+     "**순서 지키기** — 단계 2가 단계 1보다 먼저 찍힌 사람은 퍼널에 넣지 않는다.",
+     "**기간 정하기** — '7일 안에 주문'처럼 단계 사이 시간 제한을 둔다. {추론}",
+     "**광고 성과와 잇기** — 어트리뷰션 결과(어느 캠페인으로 들어왔나)를 붙이면 캠페인별 퍼널이 된다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "SQL로 3단계 퍼널(직접 돌린 출력)",
+     "body": "가상 사용자 4명. u4는 종목을 먼저 보고 앱을 연 것으로 찍혀 순서가 맞지 않아 1단계만 셉니다.",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE ev(user_id TEXT, name TEXT, ts INTEGER)\")\ndb.executemany(\"INSERT INTO ev VALUES (?,?,?)\", [\n    (\"u1\", \"app_open\", 1), (\"u1\", \"stock_view\", 2), (\"u1\", \"order_submit\", 3),\n    (\"u2\", \"app_open\", 1), (\"u2\", \"stock_view\", 5),\n    (\"u3\", \"app_open\", 2),\n    (\"u4\", \"stock_view\", 1), (\"u4\", \"app_open\", 2),   # 순서가 거꾸로 — 안 센다\n])\nq = \"\"\"\nWITH f AS (\n  SELECT user_id,\n         MIN(CASE WHEN name='app_open'     THEN ts END) AS t1,\n         MIN(CASE WHEN name='stock_view'   THEN ts END) AS t2,\n         MIN(CASE WHEN name='order_submit' THEN ts END) AS t3\n  FROM ev GROUP BY user_id)\nSELECT COUNT(t1), SUM(t2 > t1), SUM(t3 > t2 AND t2 > t1) FROM f\"\"\"\no, v, r = db.execute(q).fetchone()\nprint(f\"앱 열기 {o} → 종목 보기 {v} ({v/o:.0%}) → 주문 {r} ({r/o:.0%})\")\n# 앱 열기 4 → 종목 보기 2 (50%) → 주문 1 (25%)"
+    }
+   ],
+   "refs": [
+    11,
+    13
+   ],
+   "study": [
+    "amplitude-taxonomy",
+    "kohavi-ab"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "'몇 % 빠졌나'를 숫자로 재야 마음이 놓이는 사람[1]",
+   "백엔드 서버와 데이터 배관을 둘 다 만지고 싶은 사람",
+   "앱을 열기 전부터 수집 표준을 처음 짜 보고 싶은 사람[9]",
+   "마케팅·기획이 믿고 쓰는 숫자를 대는 데 보람을 느끼는 사람"
+  ],
+  "hard": [
+   "primary 온콜 당번이 있다[1]",
+   "상용 분석 도구 설정·대조 같은 덜 화려한 일이 섞여 있다[1]",
+   "회사 데이터 기술 발표·블로그가 없어 입사 전에 구조를 알기 어렵다",
+   "근무지가 강남 오피스이고 본사는 여의도라 팀 자리를 확인해야 한다[2][7]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "앱 로그 유실률을 어떻게 재겠어요? 마지막 몇 건이 빠진 건요?",
+   "a": "순번의 빈칸 + 보낸 개수 대조.[1]"
+  },
+  {
+   "q": "DLQ에 1만 건이 쌓였습니다. 무엇부터 하고 어떻게 되돌리나요?",
+   "a": "원인 분류 → 고친 뒤 redrive, id로 중복 방지.[14][15]"
+  },
+  {
+   "q": "Kafka 소비자가 저장 뒤에 오프셋을 남기면 무엇이 생기나요?",
+   "a": "최소 한 번 — 중복을 막아야 한다.[25]"
+  },
+  {
+   "q": "서버 10대의 p95 지연을 어떻게 구하나요?",
+   "a": "p95 평균이 아니라 히스토그램 합산 후 계산.[18]"
+  },
+  {
+   "q": "이벤트에 필수 칸 하나를 더하려면 어떻게 배포하나요?",
+   "a": "먼저 선택 칸으로, 소비자 준비 뒤 필수로 — 호환 규칙.[21]"
+  },
+  {
+   "q": "A/B 실험 집단이 48:52로 나왔습니다. 결과를 믿어도 되나요?",
+   "a": "집단 비율 점검(SRM)부터.[22]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "잡코리아 · 넥스트증권 Backend Engineer(Data)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50361059",
+   "kind": "posting",
+   "date": "2026-11-12",
+   "note": "이 공고 — 주요업무·필수·선호"
+  },
+  {
+   "n": 2,
+   "title": "넥스트증권 채용 · Backend Engineer(Data)",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/o/232377",
+   "kind": "posting",
+   "note": "같은 자리 — AI데이터플랫폼팀, 강남 오피스, 원격근무 가능 표시, 제출 서류"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · 넥스트증권 Backend Engineer(Data)",
+   "url": "https://www.wanted.co.kr/wd/380891",
+   "kind": "posting",
+   "note": "같은 자리의 앞선 공고 — 근무지 주소"
+  },
+  {
+   "n": 4,
+   "title": "원티드 · 넥스트증권 Data Engineer (금융 데이터)",
+   "url": "https://www.wanted.co.kr/wd/378013",
+   "kind": "posting",
+   "note": "같은 팀(마감) — Bronze/Silver/Gold, CDC, Kafka 스트리밍, 데이터 계약"
+  },
+  {
+   "n": 5,
+   "title": "원티드 · 넥스트증권 Data Engineer (Data Platform)",
+   "url": "https://www.wanted.co.kr/wd/388957",
+   "kind": "posting",
+   "note": "같은 팀 — Databricks·Unity Catalog·Kafka·EKS·RDS, Terraform·CI/CD"
+  },
+  {
+   "n": 6,
+   "title": "잡코리아 · 넥스트증권 Backend Engineer (채널 서비스/플랫폼)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50361209",
+   "kind": "posting",
+   "note": "같은 회사 — Activation Platform 분야(분석 API·이벤트 수집·스키마 검증·A/B·피처 플래그)"
+  },
+  {
+   "n": 7,
+   "title": "넥스트증권 채용 · Life at Next(복리후생)",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/lifeatnext",
+   "kind": "company",
+   "note": "복지 항목과 금액, 사이트 하단 회사 주소"
+  },
+  {
+   "n": 8,
+   "title": "원티드 · 넥스트증권 기업 정보(평균연봉)",
+   "url": "https://www.wanted.co.kr/company/52490",
+   "kind": "reference",
+   "note": "금감원 공시정보·국민연금 가입 사업장 자료로 계산한 집계 — 기준 연월 표기 없음"
+  },
+  {
+   "n": 9,
+   "title": "이코노미스트 · 넥스트증권 MTS 출시 또 연기… 미국주식 오픈API 먼저",
+   "url": "https://economist.co.kr/article/view/ecn202611090035",
+   "kind": "news",
+   "date": "2026-11",
+   "note": "오픈 API 비공개 베타, MTS 2027년 1분기 예정"
+  },
+  {
+   "n": 10,
+   "title": "SBS Biz · 넥스트증권, 신논현 오피스 새 거점…유연근무제 도입",
+   "url": "https://biz.sbs.co.kr/amp/article/20000340240",
+   "kind": "news",
+   "date": "2026-10-15",
+   "note": "일부 프로덕트·기술 조직 입주, 선택적 근로시간제·주 1회 원격"
+  },
+  {
+   "n": 11,
+   "title": "Amplitude 문서 · Plan your taxonomy",
+   "url": "https://amplitude.com/docs/data/data-planning-playbook",
+   "kind": "reference",
+   "note": "목표 → 지표 → 이벤트 3단계, 이름 규칙"
+  },
+  {
+   "n": 12,
+   "title": "Airbridge 도움말 · 이벤트 택소노미 예시",
+   "url": "https://help.airbridge.io/ko/guides/4-appendix-event-taxonomy-examples",
+   "kind": "reference",
+   "note": "설계표 칸·표준 이벤트 이름 — 다른 회사의 도구 문서"
+  },
+  {
+   "n": 13,
+   "title": "AppsFlyer · Mobile attribution",
+   "url": "https://www.appsflyer.com/glossary/mobile-attribution/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Amazon SQS 문서 · Dead-letter queues",
+   "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+   "kind": "reference",
+   "note": "maxReceiveCount, redrive"
+  },
+  {
+   "n": 15,
+   "title": "Confluent 문서 · Kafka Connect(Dead Letter Queue)",
+   "url": "https://docs.confluent.io/platform/current/connect/index.html",
+   "kind": "reference",
+   "note": "errors.tolerance, errors.deadletterqueue.topic.name"
+  },
+  {
+   "n": 16,
+   "title": "Databricks 문서 · Auto Loader",
+   "url": "https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Delta Lake 문서",
+   "url": "https://docs.delta.io/latest/index.html",
+   "kind": "reference",
+   "note": "MERGE·time travel·OPTIMIZE"
+  },
+  {
+   "n": 18,
+   "title": "Prometheus 문서 · Histograms and summaries",
+   "url": "https://prometheus.io/docs/practices/histograms/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Google · Site Reliability Engineering",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "kind": "reference",
+   "note": "SLI·SLO, 알림, 온콜, 포스트모템"
+  },
+  {
+   "n": 20,
+   "title": "HashiCorp · Terraform 문서",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Confluent 문서 · Schema Evolution and Compatibility",
+   "url": "https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "A/B 테스트: 신뢰할 수 있는 온라인 종합 대조 실험(코하비 외 · 에이콘출판)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "kind": "reference",
+   "note": "해시 배정·집단 비율 어긋남(SRM) 점검"
+  },
+  {
+   "n": 23,
+   "title": "Pete Hodgson · Feature Toggles (martinfowler.com)",
+   "url": "https://martinfowler.com/articles/feature-toggles.html",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "OpenFeature 문서 · Introduction",
+   "url": "https://openfeature.dev/docs/reference/intro",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "OWASP Cheat Sheet · Logging",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Prometheus 문서 · Overview",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "넥스트증권은 데이터 수집·실험 플랫폼에 관한 기술 블로그·발표를 공개하지 않았습니다. 회사 근거는 이 자리와 같은 팀·같은 회사의 다른 공고, 보도뿐이고, 유실률·DLQ·택소노미를 '보통 어떻게 하나'는 각 도구의 공식 문서로 보였습니다. 공고에 적힌 ThinkingAI의 공식 소개는 확인하지 못해 따로 풀지 않았습니다.",
+ "resources": [
+  {
+   "id": "fde",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://product.kyobobook.co.kr/detail/S000202731288",
+   "why": "수집 → 저장 → 변환 → 서빙의 전체 지도. 이 자리가 맨 앞 '수집'과 그 밑의 운영을 맡는다는 걸 잡기 좋다."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://product.kyobobook.co.kr/detail/S000001766328",
+   "why": "스트림 처리·전달 보장·중복 제거 장이 유실률·재처리·정합성 요건의 이론 바탕이다."
+  },
+  {
+   "id": "kafka-guide",
+   "title": "카프카 핵심 가이드 (개정판)",
+   "by": "그웬 샤피라 외 · 제이펍 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://product.kyobobook.co.kr/detail/S000201464167",
+   "why": "신뢰성 있는 전달·컨슈머 오프셋·Connect 장이 로그 수집 파이프라인 요건과 맞는다."
+  },
+  {
+   "id": "wiki-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "토픽·파티션·오프셋을 실제 명령과 레코드로 먼저 손에 익힌다."
+  },
+  {
+   "id": "autoloader",
+   "title": "Auto Loader",
+   "by": "Databricks 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/",
+   "why": "레이크하우스 적재 우대 줄 — 새 파일만 읽고 체크포인트로 한 번만 쌓는 방식."
+  },
+  {
+   "id": "delta-docs",
+   "title": "Delta Lake Documentation",
+   "by": "Delta Lake 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.delta.io/latest/index.html",
+   "why": "MERGE·time travel·OPTIMIZE — 재처리해도 중복 없이, 작은 파일 없이 쌓기."
+  },
+  {
+   "id": "sqs-dlq",
+   "title": "Amazon SQS dead-letter queues",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+   "why": "업무③의 DLQ·재처리(redrive)를 가장 짧게 정리한 문서."
+  },
+  {
+   "id": "connect-dlq",
+   "title": "Kafka Connect (Dead Letter Queue)",
+   "by": "Confluent 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.confluent.io/platform/current/connect/index.html",
+   "why": "Kafka 쪽 DLQ 설정 — 실패 레코드를 따로 모으고 원인을 헤더에 남기기."
+  },
+  {
+   "id": "sr-compat",
+   "title": "Schema Evolution and Compatibility",
+   "by": "Confluent 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html",
+   "why": "우대 '버전·호환성 관리' 줄의 기준 — 뒤로·앞으로 호환 규칙."
+  },
+  {
+   "id": "amplitude-taxonomy",
+   "title": "Plan your taxonomy",
+   "by": "Amplitude 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://amplitude.com/docs/data/data-planning-playbook",
+   "why": "목표 → 지표 → 이벤트로 택소노미를 짜는 법과 이름 규칙. 택소노미·퍼널 줄의 출발점."
+  },
+  {
+   "id": "airbridge-taxonomy",
+   "title": "이벤트 택소노미 예시",
+   "by": "Airbridge 도움말",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://help.airbridge.io/ko/guides/4-appendix-event-taxonomy-examples",
+   "why": "광고 분석 도구에 넣을 이벤트 설계표의 실제 칸을 한국어로 본다."
+  },
+  {
+   "id": "kohavi-ab",
+   "title": "A/B 테스트: 신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비·다이앤 탕·야 쉬 지음, 이기홍·김기영 옮김 · 에이콘출판",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "why": "실험 플랫폼 운영과 '실험 설계 지원' 줄 — 배정·SRM 점검·지표 고르기."
+  },
+  {
+   "id": "feature-toggles",
+   "title": "Feature Toggles (aka Feature Flags)",
+   "by": "Pete Hodgson · martinfowler.com",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/articles/feature-toggles.html",
+   "why": "피처 플래그의 종류와 수명 — 실험용 스위치를 따로 다루는 이유."
+  },
+  {
+   "id": "openfeature",
+   "title": "OpenFeature 문서",
+   "by": "OpenFeature (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://openfeature.dev/docs/reference/intro",
+   "why": "스위치 서비스를 바꿔도 앱 코드가 그대로이게 하는 공통 규격."
+  },
+  {
+   "id": "prom-docs",
+   "title": "Prometheus Overview",
+   "by": "Prometheus 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "why": "업무④ — 지표 수집·저장·알림의 구조."
+  },
+  {
+   "id": "prom-histograms",
+   "title": "Histograms and summaries",
+   "by": "Prometheus 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://prometheus.io/docs/practices/histograms/",
+   "why": "여러 서버의 지연을 바르게 합치는 법 — 대규모 API 서버 운영의 기본."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · 온라인 무료판",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "SLO·알림·온콜·포스트모템 장이 업무③④의 기준 문서다."
+  },
+  {
+   "id": "terraform-book",
+   "title": "테라폼 업앤러닝",
+   "by": "예브게니 브릭만 · 루비페이퍼 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://product.kyobobook.co.kr/detail/S000001891106",
+   "why": "상태 관리·모듈·팀 운영. 업무⑤와 IaC 우대 줄. 원서 2판 번역이라 최신 문법은 공식 문서로."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform 문서",
+   "by": "HashiCorp 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "원격 상태·잠금·plan/apply — 책 이후의 최신 기능."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "길 전체 그리기",
+   "time": "1주",
+   "goal": "앱 클릭 하나가 수집 서버 → 스트림 → 레이크하우스까지 가는 길과 이 자리가 맡는 칸을 설명할 수 있다.",
+   "resources": [
+    "fde",
+    "wiki-kafka"
+   ],
+   "task": "위 풀이의 '데이터의 길'을 내 말로 다시 그리고, 업무 5줄을 칸마다 붙인 한 장짜리 그림을 만든다."
+  },
+  {
+   "title": "수집 서버와 스트림",
+   "time": "2~3주",
+   "goal": "이벤트를 묶어 받는 API 서버를 만들고 Kafka에 넣어, 중복·유실을 숫자로 잰다.",
+   "resources": [
+    "kafka-guide",
+    "ddia",
+    "prom-histograms"
+   ],
+   "task": "도커로 Kafka를 띄우고 가상 앱 이벤트(순번·id 포함)를 받는 작은 수집 서버를 만든다. 소비자를 일부러 죽였다 살려 중복이 생기는지 보고, 유실률·중복률을 계산해 기록한다."
+  },
+  {
+   "title": "실패를 모으고 되돌리기",
+   "time": "1~2주",
+   "goal": "처리 못 한 이벤트를 DLQ에 모으고, 고친 뒤 두 번 쌓이지 않게 재처리한다.",
+   "resources": [
+    "sqs-dlq",
+    "connect-dlq",
+    "delta-docs"
+   ],
+   "task": "2단계 소비자에 '스키마가 틀린 이벤트는 DLQ 토픽으로'를 넣고, 재처리 스크립트를 짜서 원천 표에 MERGE로 다시 넣는다. 두 번 돌려도 건수가 같은지 확인한다."
+  },
+  {
+   "title": "택소노미와 실험",
+   "time": "2주",
+   "goal": "가상 증권 앱의 이벤트 설계표를 만들고, 그 표로 퍼널과 A/B 결과를 계산한다.",
+   "resources": [
+    "amplitude-taxonomy",
+    "airbridge-taxonomy",
+    "sr-compat",
+    "kohavi-ab",
+    "feature-toggles"
+   ],
+   "task": "'앱 열기 → 종목 보기 → 주문' 이벤트 10개 이하의 설계표(이름·언제·속성·버전)를 쓰고, 해시로 집단을 나눈 가상 데이터로 퍼널과 집단 비율 점검을 SQL로 계산한다."
+  },
+  {
+   "title": "지켜보고 코드로 두기 (선택)",
+   "time": "계속",
+   "goal": "수집 지표를 대시보드·알림으로 만들고 인프라를 Terraform으로 찍어 낸다.",
+   "resources": [
+    "prom-docs",
+    "sre-book",
+    "terraform-book",
+    "terraform-docs"
+   ],
+   "task": "2단계 서버에 요청 지연 히스토그램·소비 지연·DLQ 건수를 붙여 Prometheus로 긁고, 'DLQ 100건 넘으면 알림' 규칙을 건다. 큐·버킷을 Terraform 모듈로 dev/prod 두 벌 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없고 공시 숫자도 찾지 못했다 — 공공데이터 집계 평균 **약 6,032만원**(경력직이 섞인 회사 전체 값)뿐이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 — 금감원 공시정보와 국민연금 가입 사업장 자료로 계산한 집계. 기준 연월이 적혀 있지 않고, 기준 인원 164명(국민연금 가입) [8]"
+   }
+  ],
+  "how": "공고와 채용 사이트 공고 모두 연봉을 적지 않았다 [1][2]. 넥스트증권은 비상장사라 사업보고서 '직원 1인 평균 급여액'은 찾지 못했다(공시 숫자 없음). 위 평균은 신입·지원 부서·파생·IB 인력이 섞인 회사 전체 값이라 5년 차 이상 백엔드 엔지니어가 받는 금액으로 읽으면 안 된다 {추론}. 회사 복지 안내에는 반기 성과 목표에 따라 성과급이 '지급될 수 있다'고 적혀 있다 [7]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "유연 출퇴근",
+    "detail": "월 단위 선택적 유연근무, 오전 7시~10시 사이 자율 출근"
+   },
+   {
+    "name": "원격 근무",
+    "detail": "주 1회"
+   },
+   {
+    "name": "비포괄임금제",
+    "detail": "초과근로수당 별도 지급"
+   },
+   {
+    "name": "자기개발 지원",
+    "detail": "연간 최대 200만원"
+   },
+   {
+    "name": "복지카드",
+    "detail": "연간 150만원"
+   },
+   {
+    "name": "단체보험",
+    "detail": "임직원·배우자·자녀 실손 의료비 보장"
+   },
+   {
+    "name": "건강검진",
+    "detail": "매년 종합건강검진"
+   },
+   {
+    "name": "성과급",
+    "detail": "반기별 성과 목표 달성에 따라 지급될 수 있음"
+   },
+   {
+    "name": "직원 대출",
+    "detail": "주택자금·생활안정자금"
+   },
+   {
+    "name": "특별상여·기념일",
+    "detail": "설·추석 귀성비, 가정의 달 효도비, 연말 지원비 등 연 110만원"
+   },
+   {
+    "name": "특별휴가",
+    "detail": "1년 이상 근무자에게 매년 3일"
+   },
+   {
+    "name": "장기근속 포상",
+    "detail": "10년 근속 400만원과 기념 트로피(20년 포상도 운영)"
+   }
+  ],
+  "note": "넥스트증권 채용 사이트의 'Life at Next' 복리후생 안내다 [7]. 작성 연도가 적혀 있지 않다. 이 공고의 채용 사이트 판은 복지가 회사 규정·근로계약에 따라 바뀔 수 있다고 적었으니 처우 협의 때 확인한다 [2]. 2026년 10월 보도로는 선택적 근로시간제와 주 1회 원격을 넓혔다고 한다 [10]."
+ },
+ "location": {
+  "name": "넥스트증권 강남 오피스 (비제바노빌딩)",
+  "address": "서울특별시 강남구 강남대로 464, 비제바노빌딩 3~6층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20464",
+  "near": "9호선 신논현역 근처 강남대로 {추론}",
+  "note": "같은 자리의 채용 사이트 공고와 원티드 공고가 근무지를 강남 오피스로 적었고 [2][3], 이 공고의 근무지 표기도 '서울 강남구'다 [1]. 본사는 여의도 Three IFC(영등포구 국제금융로 10)다 [7]. 회사는 2026년 10월 신논현에 기술 조직 거점을 열었다고 보도됐다 [10]."
+ }
+}

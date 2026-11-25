@@ -344,6 +344,7 @@
   "wanted-388893": "nextsecurities-ai-content-data-engineer",
   "jobkorea-50361414": "nextsecurities-ai-engineer-video",
   "jobkorea-50361367": "nextsecurities-ai-governance-manager",
+  "jobkorea-50361059": "nextsecurities-backend-data",
   "jobkorea-50361209": "nextsecurities-channel-backend",
   "saramin-55282490": "nextsecurities-channel-backend",
   "wanted-388908": "nextsecurities-data-analytics-engineer",
@@ -3493,6 +3494,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 20
+  },
+  {
+   "id": "nextsecurities-backend-data",
+   "company": "넥스트증권",
+   "role": "Backend Engineer(Data)",
+   "jobs": [
+    "jobkorea-50361059"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 17
   },
   {
    "id": "nextsecurities-channel-backend",
