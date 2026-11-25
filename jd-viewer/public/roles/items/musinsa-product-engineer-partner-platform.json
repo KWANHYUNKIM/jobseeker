@@ -1,0 +1,1429 @@
+{
+ "id": "musinsa-product-engineer-partner-platform",
+ "company": "무신사",
+ "role": "Product Engineer (Partner Platform)",
+ "team": "Partner Platform",
+ "jobs": [
+  "ats-greeting:musinsa:246226"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사·29CM·글로벌의 **브랜드 파트너 플랫폼** — 파트너 어드민, 통합 Open API, 해외 오픈마켓 연동, 정산 — 의 서버를 설계하고 이끕니다.[1]",
+  "env": "Java·Kotlin · Spring · Kafka · AWS · Kubernetes 위에서 프론트엔드와 한 팀으로, AI 코딩 도구를 쓰는 Product Engineer 직군입니다.[1]",
+  "oneline": "1만 브랜드의 돈과 재고가 오가는 서버의 Tech Lead. **멱등·대사·무중단 전환**이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "파트너 어드민과 Open API, 해외 오픈마켓 연동, 정산에 걸친 Partner Platform의 핵심 도메인을 설계하고 구현합니다. 요구사항 정리부터 배포·운영까지 책임집니다.",
+   "short": "입점부터 정산까지 파트너가 쓰는 시스템의 핵심 서버를 만들고 운영까지 책임지는 일.",
+   "why": "Partner Platform 은 1만여 개 브랜드가 매일 쓰는 파트너 어드민과 그 뒤의 API·외부 채널 연동·정산을 한 팀이 맡는다고 소개합니다.[1] 무신사는 OCMP(One Core Multi Platform, 상품·회원·데이터를 하나의 코어로 모으는 구조)를 구축한다고 밝혔습니다.[3]",
+   "actually": {
+    "items": [
+     "세 영역이 이어진다 — 파트너 경험(입점·계약·어드민·계정 권한·통합 Open API), 글로벌 연동(조조타운·티몰 글로벌 같은 해외 오픈마켓), 정산(지급액 계산·대사·지급).[1]",
+     "'요구사항 정리부터 배포·운영까지'는 만들고 끝이 아니라 새벽 알림을 받는 자리까지 포함한다는 뜻입니다.[1]",
+     "한 기능이 어드민 화면 → API → 채널 전송 → 정산표로 번지므로 한 군데 정의가 어긋나면 세 곳이 같이 틀어집니다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "범위는 공고가 정했습니다. 어느 영역을 먼저 맡을지는 입사 뒤 팀이 정하고, 개발자는 맡은 영역의 설계·구현·운영 전체를 끌고 갑니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "spring-core-int",
+    "ddd-start",
+    "ms-patterns"
+   ],
+   "flows": [
+    {
+     "caption": "파트너 한 건이 지나가는 길 (공고 소개 기준)",
+     "steps": [
+      "입점·계약 · 파트너 등록",
+      "상품 등록 · 한 번 등록",
+      "판매 · 무신사·29CM·해외 채널",
+      "주문·클레임 수신",
+      "정산 · 계산·대사·지급"
+     ],
+     "mine_from": 0
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Tech Lead로서 HLD·ADR 같은 설계 문서를 쓰고 아키텍처 리뷰를 이끕니다. 데이터 모델, API 규격, 서비스 간 경계처럼 팀이 오래 안고 가는 기술 결정을 주도합니다.",
+   "short": "HLD·ADR 같은 설계 문서를 쓰고 리뷰를 이끌며, 팀이 오래 안고 갈 기술 결정을 정하는 Tech Lead 일.",
+   "why": "공고가 'Tech Lead'를 직접 적었고 데이터 모델·API 규격·서비스 간 경계를 주도한다고 합니다.[1] 한 번 정한 DB 모델·API 는 바꾸는 비용이 커서 결정의 이유를 남깁니다.[14]",
+   "actually": {
+    "items": [
+     "HLD(High-Level Design, 큰 그림 설계서) — 구성요소·데이터 흐름·장애 시 동작을 한두 장으로.",
+     "ADR(Architecture Decision Record) — '무엇을 왜 골랐고 무엇을 버렸나'를 결정 하나당 한 쪽으로 남기는 기록.[14]",
+     "아키텍처 리뷰 — 설계서를 유관 조직 앞에서 설명하고 반대 의견을 받아 고친다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "문서 분량 기준은 공고에 없습니다. 최소선은 '결정·대안·고른 이유·되돌리는 비용' 네 줄이 있는 ADR 이고 {추론}, 팀 규칙이 있으면 그 틀을 따릅니다.",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "adr-nygard",
+    "hard-parts",
+    "ms-patterns"
+   ],
+   "examples": [
+    {
+     "title": "ADR 한 장의 틀(가상 예)",
+     "body": "제목: 채널 전송은 아웃박스로 한다 / 상태: 채택 / 배경: 상품 수정과 채널 전송이 따로 실패한다 / 결정: DB 트랜잭션 안에 이벤트 행을 같이 쓰고 별도 발행기가 보낸다 / 버린 안: 직접 호출(실패 시 불일치), 2PC(채널이 지원 안 함) / 결과: 지연이 늘고 중복 가능 → 소비자가 멱등 처리."
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "플랫폼마다 따로 운영해 온 파트너 시스템과 레거시 어드민을 하나의 플랫폼으로 옮기는 전환 과제를, 파트너가 쓰는 화면과 API를 멈추지 않고 진행하도록 설계합니다.",
+   "short": "옛 어드민과 플랫폼별 파트너 시스템을 파트너가 쓰는 중에 하나로 갈아타게 설계하는 일.",
+   "why": "무신사는 플랫폼마다 따로 만든 파트너 시스템을 하나로 합치는 중이라고 밝혔습니다.[1][3] 1만여 브랜드가 매일 쓰는 화면이라 멈춘 채 옮길 수 없습니다.[1]",
+   "actually": {
+    "items": [
+     "Strangler Fig 방식 — 새 시스템이 기능을 하나씩 가져오고 옛 것은 다 비면 끈다.[12]",
+     "Parallel Change(expand → migrate → contract) — 새 필드·API 를 먼저 추가하고 쓰는 쪽을 옮긴 뒤 옛 것을 지운다.[13]",
+     "전환기 이중 읽기 — 옛 값과 새 값을 견줘 다르면 옛 값을 돌려주고 불일치를 기록한다(아래 예시).",
+     "파트너 단위(브랜드 몇 곳)로 점진 전환하고 문제가 생기면 되돌릴 수 있게 한다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "전환 순서·일정은 팀이 정합니다. 개발자는 '언제든 되돌릴 수 있는 단계'로 나누고 단계마다 일치를 재는 방법을 설계서에 적는 데까지입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    12,
+    13
+   ],
+   "study": [
+    "strangler",
+    "parallel-change",
+    "release-it"
+   ],
+   "examples": [
+    {
+     "title": "이중 읽기 비교(가상 값, 직접 실행)",
+     "body": "옛·새 응답을 비교해 다른 건만 기록하고 옛 값을 돌려준다.",
+     "lang": "python",
+     "code": "old={'p1':{'price':1000,'stock':5},'p2':{'price':2000,'stock':0}}\nnew={'p1':{'price':1000,'stock':5},'p2':{'price':2000,'stock':1}}\ndef read(pid):\n    if old[pid]!=new[pid]: print('불일치',pid,old[pid],new[pid])\n    return old[pid]\nfor p in old: read(p)\n# 출력: 불일치 p2 {'price': 2000, 'stock': 0} {'price': 2000, 'stock': 1}"
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "정산 금액이나 외부 채널로 보내는 상품·재고·주문 데이터가 어긋나지 않도록 멱등 처리, 재시도, 데이터 대사 구조를 설계하고 개선합니다.",
+   "short": "같은 이벤트가 두 번 와도, 실패 뒤 다시 보내도 금액·재고가 한 번만 맞게 구조를 짜는 일.",
+   "why": "정산액과 외부 채널로 나가는 상품·재고·주문이 어긋나면 파트너 돈과 판매가 틀어집니다.[1] 메시지·HTTP 호출은 재전송이 흔해 '두 번 와도 한 번만'을 설계에 넣는 것이 업계 표준입니다.[8][9]",
+   "actually": {
+    "items": [
+     "멱등 처리 — 요청마다 고유 키(event_id)를 받아 이미 처리했으면 결과만 돌려준다.[8]",
+     "재시도 — 실패하면 간격을 늘려 다시 보내되, 받는 쪽이 멱등이어야 안전하다. {추론}",
+     "아웃박스 — DB 변경과 이벤트 기록을 한 트랜잭션에 묶고 별도 발행기가 보낸다.[10][27]",
+     "대사(reconciliation) — 우리 원장과 채널 정산서를 주기적으로 견줘 차이를 찾는다(아래 예시)."
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "무엇이 '맞음'인지(원장이 정본인지 채널이 정본인지)는 재무·사업이 정하고, 개발자는 차이를 자동으로 찾고 되돌리는 구조까지 맡습니다. {추론}",
+   "refs": [
+    1,
+    8,
+    9,
+    10,
+    27
+   ],
+   "study": [
+    "ddia",
+    "stripe-idem",
+    "outbox",
+    "kafka-int"
+   ],
+   "examples": [
+    {
+     "title": "중복 이벤트 + 대사(가상 값, 직접 실행)",
+     "body": "e1 이 두 번 와도 원장은 2건·42,000원. 대사는 B(1,000 차이)·C(채널에 없음)·D(우리에 없음)를 잡는다.",
+     "lang": "python",
+     "code": "ledger,seen=[],set()\nfor e in [{'id':'e1','amt':30000},{'id':'e2','amt':12000},{'id':'e1','amt':30000}]:\n    if e['id'] in seen: print('중복 건너뜀',e['id']); continue\n    seen.add(e['id']); ledger.append(e)\nprint(len(ledger), sum(x['amt'] for x in ledger))\nours={'A':30000,'B':12000,'C':8000}; theirs={'A':30000,'B':11000,'D':5000}\nfor k in sorted(set(ours)|set(theirs)):\n    o,t=ours.get(k),theirs.get(k)\n    if o!=t: print(k,'우리',o,'채널',t,'차이',(o or 0)-(t or 0))\n# 출력: 중복 건너뜀 e1 / 2 42000 / B 우리 12000 채널 11000 차이 1000 / C 우리 8000 채널 None 차이 8000 / D 우리 None 채널 5000 차이 -5000"
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SLO와 모니터링·알림 기준을 정하고, 장애 대응과 Post-mortem을 이끌어 재발 방지 조치까지 마무리합니다. 반복되는 운영 업무는 어드민 기능과 자동화로 줄입니다.",
+   "short": "목표 수치(SLO)와 알림 기준을 정하고, 장애를 이끌어 재발 방지까지 닫는 운영 일.",
+   "why": "공고는 SLO·모니터링 기준 수립, 장애 대응, Post-mortem 주도를 적었습니다.[1] SLO·무책임(blameless) 포스트모템은 구글 SRE 가 공개한 방식이 표준처럼 쓰입니다.[15][16]",
+   "actually": {
+    "items": [
+     "SLO — '파트너 API 요청의 99.9%가 1초 안에 성공' 같은 목표. 남는 오차(error budget)로 배포 속도를 조절한다.[16]",
+     "알림 기준 — 사용자 영향이 있는 것만 깨우고 나머지는 낮에 본다. {추론}",
+     "Post-mortem — 누구 탓이 아니라 시간순 경위·원인·재발 방지 항목(담당·기한)을 적는다.[15]",
+     "반복 운영 업무(수동 재처리·데이터 보정)는 어드민 기능이나 자동화로 바꿔 줄인다.[1]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "SLO 숫자는 사업 영향으로 합의합니다. 최소선은 '핵심 API 하나의 성공률·지연 목표 + 그걸 깨면 울리는 알림 하나'입니다. {추론}",
+   "refs": [
+    1,
+    15,
+    16
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook",
+    "release-it"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "PM, 사업 조직, 카탈로그·주문·배송·재무 등 유관 조직과 함께 요구사항을 구체화하고, 프론트엔드 엔지니어와 한 팀에서 과제를 작게 나누어 빠르게 출시합니다.",
+   "short": "PM·사업·카탈로그·주문·배송·재무와 요구를 구체화하고, 프론트 엔지니어와 작게 쪼개 빨리 내는 일.",
+   "why": "파트너 플랫폼은 카탈로그·주문·배송·재무 조직의 데이터가 만나는 자리이고, 백엔드·프론트가 한 팀에서 책임진다고 소개합니다.[1]",
+   "actually": {
+    "items": [
+     "유관 조직마다 같은 말이 다르게 쓰입니다 — '정산 기준일'이 재무와 주문에서 다를 수 있어 용어부터 맞춘다. {추론}",
+     "과제를 '화면 하나+API 하나' 크기로 쪼개 매주 내보낸다. {추론}",
+     "백엔드가 API 계약(요청·응답 모양)을 먼저 내면 프론트가 동시에 개발할 수 있다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "우선순위는 PM 이 정하고 개발자는 기술 위험·비용을 근거와 함께 말해 범위를 조정합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddd-start",
+    "spring-mvc-int"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "코드 리뷰와 설계 리뷰로 팀의 기술 기준을 높이고, 동료 엔지니어가 더 큰 과제를 맡을 수 있도록 돕습니다.",
+   "short": "코드·설계 리뷰로 팀의 기준을 올리고 동료가 더 큰 일을 맡도록 돕는 일.",
+   "why": "Tech Lead 자리이므로 구현량만이 아니라 팀의 수준을 올리는 일이 평가에 들어갑니다.[1] 구글은 리뷰의 기준을 '코드 상태가 조금이라도 나아지면 승인'으로 공개했습니다.[25]",
+   "actually": {
+    "items": [
+     "리뷰 기준 — 설계·정확성·테스트·가독성을 본다.[25]",
+     "설계 리뷰는 구현 전에 — 되돌리기 쉬운 단계에서 방향을 잡는다. {추론}",
+     "동료 성장 — 큰 과제를 단계로 쪼개 한 단계씩 맡기고 리뷰로 받쳐 준다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "팀 규칙(리뷰어 수·승인 조건)은 팀이 정합니다. 최소선은 리뷰에 '왜'를 적어 주는 것입니다. {추론}",
+   "refs": [
+    1,
+    25
+   ],
+   "study": [
+    "eng-practices",
+    "practical-int"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 코딩 도구를 설계·구현·리뷰에 일상적으로 활용하고, 효과가 확인된 방식을 팀의 개발 방식으로 정착시킵니다.",
+   "short": "AI 코딩 도구를 설계·구현·리뷰에 매일 쓰고, 효과가 확인된 방식만 팀 규칙으로 만드는 일.",
+   "why": "무신사는 서버·웹·모바일 엔지니어를 Product Engineer 로 묶고, AI 에이전트로 문제를 끝까지 풀되 결과물 품질은 직접 검증·책임지라고 밝혔습니다.[1]",
+   "actually": {
+    "items": [
+     "설계 초안·테스트 생성·리뷰 보조에 쓰고, 결과는 테스트·리뷰로 사람이 검증한다.[24]",
+     "'효과가 확인된'이라는 조건 — 도입 전후의 리드타임·결함 수 같은 숫자로 비교한다. {추론}",
+     "팀 규칙화 — 프로젝트 지침 파일에 빌드·테스트 명령과 금지 사항을 적어 같은 방식으로 쓰게 한다.[24]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "쓰는 도구는 팀이 고릅니다. 최소선은 '도구가 낸 코드를 내가 설명하고 테스트로 막아 둘 수 있다'입니다.[1]",
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "claude-code-doc",
+    "practical-int"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java, Kotlin, Spring Framework 기반의 백엔드 시스템 개발 경력이 7년 이상이거나, 이에 준하는 역량을 보유하신 분",
+   "short": "Java·Kotlin·Spring 서버를 7년 정도 만들어 본 경력(또는 그에 준하는 역량).",
+   "why": "파트너 플랫폼의 기술 스택이 Java·Kotlin·Spring 이고 공고의 기술 태그도 같습니다.[1] 7년은 설계를 주도하는 Tech Lead 자리의 연차 기준입니다.[1]",
+   "actually": {
+    "items": [
+     "Spring 의 빈·트랜잭션·MVC 를 동작 원리까지 설명할 수 있어야 장애 때 원인을 좁힙니다. {추론}",
+     "Kotlin 은 Java 와 섞어 쓰는 경우가 많아 두 언어의 널 처리·코루틴 차이를 안다. {추론}",
+     "'이에 준하는 역량'이라 연차가 모자라도 설계·운영 실적으로 대신할 수 있다고 읽힙니다.[1]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "연차의 엄격한 하한은 공고 문구상 열려 있습니다. 최소선은 Spring 서버를 운영까지 맡은 실적 1건을 설명하는 것입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "spring-core-int",
+    "jpa-basic-int",
+    "spring-db-int"
+   ],
+   "level": {
+    "basic": "빈·DI·트랜잭션 어노테이션을 쓸 수 있다",
+    "work": "프록시·전파 옵션·N+1 을 원인까지 설명한다",
+    "team": "여러 서비스에 걸친 트랜잭션 경계를 설계한다 {추론}"
+   }
+  },
+  {
+   "section": "qualification",
+   "quote": "여러 서비스에 걸친 시스템 아키텍처를 직접 설계하고, 설계 의사결정의 근거를 문서화하고 리뷰를 통해 유관 조직 및 이해관계자와 합의를 이끌어낸 경험이 있으신 분",
+   "short": "여러 서비스에 걸친 구조를 직접 설계하고, 결정 근거를 문서로 남겨 이해관계자와 합의한 경험.",
+   "why": "설계 문서·리뷰·합의가 Tech Lead 업무의 중심으로 앞서 나옵니다.[1][14]",
+   "actually": {
+    "items": [
+     "경험을 말할 때 '문제 → 대안 2~3개 → 고른 이유 → 결과'로 풀어야 합니다.[14]",
+     "이해관계자(재무·사업·다른 팀)의 걱정을 설계서 안에 미리 답으로 적는다. {추론}",
+     "합의 증거는 리뷰 코멘트·ADR 상태 변경 같은 기록입니다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "규모 기준은 없습니다. 서비스 둘 이상에 걸친 결정을 문서로 남긴 사례 하나면 시작선입니다. {추론}",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "adr-nygard",
+    "hard-parts"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Kafka 등 메시징 큐를 활용한 이벤트 기반 비동기 처리 및 분산 시스템 설계·운영 경험이 있으신 분",
+   "short": "Kafka 같은 메시지 큐로 이벤트 기반 비동기 처리를 설계·운영해 본 경험.",
+   "why": "외부 채널·정산 데이터를 비동기로 흘려보내는 구조에서 Kafka 는 기본 도구입니다.[1][9] 전달이 '최소 한 번'이라 중복 처리가 따라옵니다.[9]",
+   "actually": {
+    "items": [
+     "토픽·파티션(순서는 파티션 안에서만 보장)·컨슈머 그룹·오프셋 커밋을 안다.[9]",
+     "실패 처리 — 재시도 토픽·DLQ(처리 못 한 메시지를 따로 모으는 곳). {추론}",
+     "운영 — 컨슈머 랙(밀린 양)을 보고 늘릴지 정한다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "클러스터 운영은 플랫폼 팀이 맡는 경우가 많고 {추론}, 이 자리는 토픽 설계와 컨슈머 안정성에 책임이 있다고 읽힙니다.",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "kafka-int",
+    "kafka-guide",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "금액, 주문, 재고 등 높은 수준의 데이터 정합성이 요구되는 도메인에서 RDBMS 모델링 및 데이터 정합성을 고려한 시스템 설계 경험이 있으신 분",
+   "short": "금액·주문·재고처럼 틀리면 안 되는 데이터를 RDBMS 로 모델링하고 정합성을 지킨 경험.",
+   "why": "정산액과 재고는 한 칸만 어긋나도 돈·판매 사고입니다.[1]",
+   "actually": {
+    "items": [
+     "금액은 정수(원 단위) 또는 DECIMAL 로 저장하고 부동소수점을 쓰지 않는다.[23]",
+     "트랜잭션 격리·락·유니크 제약으로 이중 반영을 막는다. {추론}",
+     "원장은 수정 대신 '보정 행'을 추가해 이력을 남긴다.[17]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "도메인 규칙(반올림·세금)은 재무가 정하고 개발자는 그것을 제약·테스트로 고정합니다. {추론}",
+   "refs": [
+    1,
+    17,
+    23
+   ],
+   "study": [
+    "spring-db-int",
+    "jpa-basic-int",
+    "ddia",
+    "money"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "외부 시스템 또는 다른 조직에서 사용하는 API를 설계하고, 버전 관리 및 하위 호환성을 유지하며 운영한 경험이 있으신 분",
+   "short": "다른 조직·외부가 쓰는 API 를 설계하고 버전·하위 호환을 지키며 운영한 경험.",
+   "why": "통합 Open API 는 파트너 자사 시스템이 직접 붙는 약속이라 필드 하나 삭제도 파트너 장애입니다.[1][21]",
+   "actually": {
+    "items": [
+     "하위 호환 — 필드 추가는 되지만 삭제·의미 변경은 새 버전으로.[21][22]",
+     "버전 정책 — 경로(/v1) 또는 헤더로 구분하고 폐기 일정을 공지한다. {추론}",
+     "멱등 키·페이지네이션·오류 형식을 처음부터 정해 둔다.[8]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "공개 수준의 규격 문서는 팀이 정하고, 개발자는 계약 변경이 파트너를 깨는지 판정하는 기준을 맡습니다. {추론}",
+   "refs": [
+    1,
+    8,
+    21,
+    22
+   ],
+   "study": [
+    "aip180",
+    "ms-api",
+    "stripe-idem"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "불명확한 요구사항을 구체화하고, 여러 유관 조직과 협업하여 과제를 서비스 출시까지 주도한 경험이 있으신 분",
+   "short": "모호한 요구를 구체화하고 여러 조직과 맞춰 출시까지 이끈 경험.",
+   "why": "카탈로그·주문·배송·재무와 함께 일하는 자리라 요구가 흐릿한 채로 옵니다.[1]",
+   "actually": {
+    "items": [
+     "질문으로 구체화 — 누가·언제·무엇이 달라지면 성공인가.",
+     "한 쪽짜리 문제 정리나 프로토타입으로 논의를 먼저 연다.[1]",
+     "합의 사항은 기록하고 범위가 늘면 다시 합의한다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "경험 서술은 '내가 이끌었다'를 보이는 결정·일정·결과 3가지면 충분합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddd-start",
+    "hard-parts"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "상품, 주문, 정산 등 커머스 도메인에 대한 이해가 있거나, 새로운 도메인을 빠르게 학습하고 시스템 설계까지 주도한 경험이 있으신 분",
+   "short": "상품·주문·정산 같은 커머스 도메인을 알거나, 새 도메인을 빨리 익혀 설계까지 간 경험.",
+   "why": "공고가 둘 중 하나를 허용합니다 — 도메인 지식이 없어도 학습 속도로 증명할 수 있다는 뜻입니다.[1]",
+   "actually": {
+    "items": [
+     "주문 → 결제 → 배송 → 구매확정 → 정산의 흐름과 클레임(취소·반품)이 정산에 되돌려지는 과정.",
+     "수수료·정산 주기·반품 차감 같은 규칙을 '용어집'으로 먼저 만든다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "도메인 전문가는 재무·사업 조직이고 개발자는 그 규칙을 코드와 문서로 옮깁니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddd-start",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "구현에 머무르지 않고 고객 문제를 함께 정의하고, 출시 이후의 지표로 결과를 확인하며 일해 오신 분",
+   "short": "구현에 그치지 않고 고객 문제를 같이 정의하고 출시 뒤 지표로 확인하는 일.",
+   "why": "무신사 PE 의 공통 방식으로 소개됩니다 — 지표가 바뀌었는지까지 확인합니다.[1]",
+   "actually": {
+    "items": [
+     "출시 전에 성공 지표(예: 상품 등록 소요 시간)를 정하고 출시 뒤 값을 비교한다.[26]",
+     "고객 = 파트너 브랜드 담당자. 문의·사용 기록에서 문제를 찾는다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "지표 정의는 PM 과 함께 정하고 개발자는 측정할 수 있게 이벤트·로그를 넣습니다. {추론}",
+   "refs": [
+    1,
+    26
+   ],
+   "study": [
+    "kohavi"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기술적 의사결정을 트레이드오프와 함께 문서로 정리하고, 이를 비즈니스 맥락에서 설명할 수 있는 분",
+   "short": "기술 결정을 트레이드오프와 함께 문서로 쓰고 사업 맥락에서 설명하는 능력.",
+   "why": "기술 결정이 비용·일정으로 번역돼야 사업 쪽이 승인합니다.[1][14]",
+   "actually": {
+    "items": [
+     "트레이드오프 표 — 안마다 비용·위험·되돌리기·일정.",
+     "사업 언어로 — '지연 2초 증가'가 아니라 '정산 반영이 하루 늦어짐'. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "문서 형식은 ADR 한 장이면 시작선입니다.[14]",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "adr-nygard",
+    "hard-parts"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 코딩 에이전트(Codex, Claude Code 등)를 실무에 적극 활용하고, 그 결과물의 품질을 스스로 검증하고 책임질 수 있는 분",
+   "short": "AI 코딩 에이전트(Codex, Claude Code 등)를 실무에 쓰고 결과 품질을 직접 검증·책임지는 능력.",
+   "why": "공고가 '검증하고 책임진다'를 요구해 사용 경험보다 검증 방식이 평가 대상입니다.[1][24]",
+   "actually": {
+    "items": [
+     "도구가 만든 코드를 테스트·정적 분석·리뷰로 확인하고 모르는 부분은 직접 읽는다.[24]",
+     "실패 사례를 설명한다 — 도구가 틀린 곳과 잡은 방법. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "도구 종류는 불문이고 지원서·면접에서 검증 방법을 말하는 것이 시작선입니다.[1]",
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "claude-code-doc",
+    "practical-int"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "셀러·파트너 어드민, 백오피스, B2B 플랫폼 등 사업자가 일상적으로 사용하는 시스템을 설계하고 운영한 경험이 있으신 분",
+   "short": "셀러·파트너 어드민·백오피스처럼 사업자가 매일 쓰는 시스템을 만들고 운영한 경험.",
+   "why": "이 자리의 제품이 바로 1만여 브랜드가 쓰는 파트너 어드민입니다.[1]",
+   "actually": {
+    "items": [
+     "권한·감사 로그·대량 작업(엑셀 업로드)·검색 조건 저장 같은 B2B 화면의 요구.",
+     "일괄 처리는 비동기 작업과 진행 상태 표시로 만든다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "개발자는 사용 로그·문의를 보고 개선 우선순위를 PM 과 정합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "spring-mvc-int",
+    "ddd-start"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "정산, 결제, 회계 등 금액을 다루는 시스템에서 원장 구조 및 대사 체계를 설계한 경험이 있으신 분",
+   "short": "금액을 다루는 시스템의 원장 구조와 대사 체계를 설계한 경험.",
+   "why": "정산은 원장(거래 기록)과 대사(외부와 견주기)가 핵심입니다.[1][17]",
+   "actually": {
+    "items": [
+     "복식부기식 원장 — 한 거래를 차변·대변 두 줄로 남기고 합이 0 인지 늘 확인.[17]",
+     "수정은 삭제가 아니라 반대 부호 행 추가.",
+     "대사 결과(일치·불일치·한쪽 누락)를 상태로 남겨 담당자가 처리한다(위 예시)."
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "회계 기준은 재무가 정하고 개발자는 원장 구조·불일치 탐지·재처리 흐름을 만듭니다. {추론}",
+   "refs": [
+    1,
+    17
+   ],
+   "study": [
+    "square-ledger",
+    "ddia",
+    "money"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "오픈마켓, 판매 채널 연동 또는 Open API 플랫폼 등 외부 사업자와 데이터를 연동하는 시스템을 설계하고 운영한 경험이 있으신 분",
+   "short": "오픈마켓·판매 채널 연동이나 Open API 로 외부 사업자와 데이터를 연동한 경험.",
+   "why": "해외 오픈마켓(조조타운·티몰 글로벌)과 통합 Open API 가 팀의 두 영역입니다.[1]",
+   "actually": {
+    "items": [
+     "채널마다 상품·주문·클레임 모양과 호출 제한이 달라 어댑터로 감싸고 내부 모델은 하나로 둔다. {추론}",
+     "채널 장애에 대비해 큐에 쌓아 두고 재전송한다.[10]",
+     "웹훅·폴링 어느 쪽이든 멱등으로 받는다.[8]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "채널과의 계약·정책은 사업 조직이 맺고 개발자는 연동 규격을 구현합니다. {추론}",
+   "refs": [
+    1,
+    8,
+    10
+   ],
+   "study": [
+    "ms-patterns",
+    "stripe-idem"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "운영 중인 레거시 시스템을 서비스 중단 없이 새로운 아키텍처로 전환한 경험이 있으신 분",
+   "short": "운영 중인 레거시를 서비스 중단 없이 새 구조로 옮긴 경험.",
+   "why": "이 팀의 핵심 과제가 같은 종류의 전환입니다.[1]",
+   "actually": {
+    "items": [
+     "Strangler Fig 로 기능 단위 전환.[12]",
+     "데이터는 이중 쓰기 → 대조 → 읽기 전환 → 옛 쓰기 종료 순서. {추론}",
+     "스키마 변경은 expand/contract.[13]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "경험 서술은 '중단 없이'를 어떻게 확인했는지(대조·롤백)를 말합니다. {추론}",
+   "refs": [
+    1,
+    12,
+    13
+   ],
+   "study": [
+    "strangler",
+    "parallel-change"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "계정 및 권한 관리(RBAC), OAuth 2.0, OIDC 등 인증·인가 표준을 기반으로 시스템을 설계한 경험이 있으신 분",
+   "short": "RBAC·OAuth 2.0·OIDC 같은 표준으로 계정·권한을 설계한 경험.",
+   "why": "파트너 계정·권한과 '한 번의 인증으로' 여러 플랫폼 API 를 다루는 구조가 팀 영역입니다.[1]",
+   "actually": {
+    "items": [
+     "RBAC — 사용자에게 역할을, 역할에 권한을. 브랜드 단위 접근 제한이 따른다. {추론}",
+     "OAuth 2.0 — 파트너 앱이 비밀번호 없이 토큰으로 API 를 호출.[18]",
+     "OIDC — OAuth 위에 '누구인가'(ID 토큰)를 얹은 표준.[19]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "표준을 직접 구현하기보다 검증된 라이브러리(Spring Security)로 구성하고 정책을 설계합니다.[20]",
+   "refs": [
+    1,
+    18,
+    19,
+    20
+   ],
+   "study": [
+    "oauth-rfc",
+    "oidc",
+    "spring-sec-int"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "멀티 플랫폼 또는 글로벌 서비스(다국어, 다통화) 환경에서 시스템을 설계하고 운영한 경험이 있으신 분",
+   "short": "다국어·다통화 등 멀티 플랫폼·글로벌 환경에서 시스템을 설계·운영한 경험.",
+   "why": "무신사·29CM·글로벌과 해외 오픈마켓을 한 플랫폼으로 합치는 과제입니다.[1]",
+   "actually": {
+    "items": [
+     "금액에 통화 코드를 항상 붙이고 환산 시점의 환율을 기록한다.[23]",
+     "문구는 번역 키와 로캘로 분리. {추론}",
+     "시간대는 UTC 저장·표시에서 변환. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "환율·세금 정책은 재무가 정하고 개발자는 값 객체(금액+통화)로 오류를 막습니다. {추론}",
+   "refs": [
+    1,
+    23
+   ],
+   "study": [
+    "money",
+    "ddia"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, Kubernetes 환경에서 서비스를 운영하고 CI/CD 파이프라인을 구축한 경험이 있으신 분",
+   "short": "AWS·Kubernetes 에서 서비스를 운영하고 CI/CD 를 만든 경험.",
+   "why": "공고의 기술 태그에 AWS·Kubernetes 가 있습니다.[1]",
+   "actually": {
+    "items": [
+     "배포 파이프라인 — 빌드·테스트·이미지·롤링 배포.[28]",
+     "readiness/liveness 점검·리소스 요청·오토스케일 기본.[28]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "클러스터 자체는 플랫폼 조직이 맡고 개발자는 서비스 매니페스트·배포 안전성까지 보는 경우가 많습니다. {추론}",
+   "refs": [
+    1,
+    28
+   ],
+   "study": [
+    "k8s-int",
+    "docker-int"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 코딩 도구를 팀의 개발 프로세스에 도입하고 활용하여 개발 생산성 또는 코드 품질을 실질적으로 개선한 경험이 있으신 분",
+   "short": "AI 코딩 도구를 팀 프로세스에 도입해 생산성·품질을 실제로 개선한 경험.",
+   "why": "공고가 '팀 개발 방식으로 정착'을 담당 업무로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "도입 전후를 숫자로 비교한다(리뷰 시간·결함 수). {추론}",
+     "공통 지침 파일·리뷰 체크리스트로 같은 품질을 만든다.[24]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "숫자가 없으면 '무엇을 바꿨고 무엇이 달라졌나'를 서술하는 것이 시작선입니다. {추론}",
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "비즈니스 KPI를 기술로 개선하고 수치로 증명해 본 경험이 있으신 분",
+   "short": "비즈니스 KPI 를 기술로 개선하고 수치로 증명한 경험.",
+   "why": "출시 뒤 지표로 확인하는 것이 PE 방식입니다.[1]",
+   "actually": {
+    "items": [
+     "예: 정산 대사 시간 하루 → 한 시간, 상품 전송 실패율 감소처럼 전후 수치.",
+     "측정 방법(어디서 어떻게 셌나)을 함께 말한다.[26]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "수치가 크지 않아도 전후 비교와 측정 방법이 있으면 충분합니다. {추론}",
+   "refs": [
+    1,
+    26
+   ],
+   "study": [
+    "kohavi"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "가설 수립 → 실험 → 데이터 검증을 거쳐 제품 의사결정에 참여해 본 경험이 있으신 분",
+   "short": "가설→실험→데이터 검증을 거쳐 제품 결정에 참여한 경험.",
+   "why": "PM 과 함께 지표로 다음 개선을 잇는 방식이 소개됩니다.[1]",
+   "actually": {
+    "items": [
+     "A/B 실험 — 무작위로 나눠 한 가지만 다르게 하고 지표를 비교.[26]",
+     "표본이 적은 B2B 에서는 전후 비교·파트너 인터뷰가 더 흔합니다. {추론}"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "통계 해석은 데이터 조직이 돕고 개발자는 실험 분기와 로그를 구현합니다. {추론}",
+   "refs": [
+    1,
+    26
+   ],
+   "study": [
+    "kohavi"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 개발 프로세스에 도입해 팀 단위 생산성이나 품질을 개선한 경험이 있으신 분",
+   "short": "AI 를 개발 프로세스에 도입해 팀 생산성·품질을 개선한 경험(앞 줄과 같은 취지).",
+   "why": "AI 활용이 공고 전반에서 반복됩니다.[1]",
+   "actually": {
+    "items": [
+     "개인 사용이 아니라 팀 단위 — 공유 규칙·교육·리뷰 기준.[24]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "앞 줄과 같게 준비합니다.",
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 활용해 클라이언트 밖의 영역(서버 API, 데이터 파이프라인 등)까지 직접 문제를 풀어 본 경험이 있으신 분",
+   "short": "AI 로 클라이언트 밖(서버 API·데이터 파이프라인)까지 직접 문제를 푼 경험.",
+   "why": "서버·웹·모바일 경계를 허무는 PE 직군의 취지입니다.[1]",
+   "actually": {
+    "items": [
+     "서버 API·배치를 AI 도구와 함께 만들고 테스트로 검증한 사례.[24]"
+    ],
+    "intro": "회사가 이 영역의 설계를 공개한 기술 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "프론트 출신이 서버로 넓힌 경험도 해당하고, 서버 출신은 반대 방향도 보여 줄 수 있습니다. {추론}",
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "claude-code-doc",
+    "practical-int"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "spring-core-int",
+   "title": "스프링 핵심 원리 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/spring-core",
+   "lang": "ko",
+   "level": "입문",
+   "why": "Spring 서버 요건의 바닥 — 빈·의존관계 주입.",
+   "free": true
+  },
+  {
+   "id": "jpa-basic-int",
+   "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/jpa-basic",
+   "lang": "ko",
+   "level": "실무",
+   "why": "JPA 가 만드는 SQL 을 직접 보며 정산·상품 모델을 짜는 감각.",
+   "free": true
+  },
+  {
+   "id": "spring-db-int",
+   "title": "스프링 DB 1편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/spring-db-1",
+   "lang": "ko",
+   "level": "실무",
+   "why": "트랜잭션 경계 — 금액·재고 정합성의 바탕.",
+   "free": true
+  },
+  {
+   "id": "spring-mvc-int",
+   "title": "스프링 MVC 1편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/spring-mvc-1",
+   "lang": "ko",
+   "level": "입문",
+   "why": "어드민·Open API 의 요청·응답 흐름.",
+   "free": true
+  },
+  {
+   "id": "spring-sec-int",
+   "title": "스프링 시큐리티 완전 정복 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/spring-security",
+   "lang": "ko",
+   "level": "실무",
+   "why": "파트너 계정·권한(RBAC)과 인증 흐름을 필터 목록으로 보기.",
+   "free": true
+  },
+  {
+   "id": "kafka-int",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/kafka",
+   "lang": "ko",
+   "level": "실무",
+   "why": "보냈다는 것과 처리됐다는 것 사이 — 중복·재처리를 직접 본다.",
+   "free": true
+  },
+  {
+   "id": "k8s-int",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/kubernetes",
+   "lang": "ko",
+   "level": "입문",
+   "why": "Pod 상태를 읽는 법 — 운영 요건.",
+   "free": true
+  },
+  {
+   "id": "docker-int",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/docker",
+   "lang": "ko",
+   "level": "입문",
+   "why": "컨테이너 이미지·실행 기본.",
+   "free": true
+  },
+  {
+   "id": "practical-int",
+   "title": "Practical Testing (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/practical-testing",
+   "lang": "ko",
+   "level": "실무",
+   "why": "AI 가 만든 코드를 테스트로 막아 두는 습관.",
+   "free": true
+  },
+  {
+   "id": "kafka-guide",
+   "title": "카프카 핵심 가이드",
+   "by": "한빛미디어",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=카프카+핵심+가이드",
+   "lang": "ko",
+   "level": "심화",
+   "why": "프로듀서·컨슈머·전달 보장을 깊게 — 메시징 요건."
+  },
+  {
+   "id": "ddd-start",
+   "title": "도메인 주도 개발 시작하기",
+   "by": "최범균 · 길벗",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=도메인+주도+개발+시작하기",
+   "lang": "ko",
+   "level": "실무",
+   "why": "주문·정산 같은 도메인을 모델로 옮기는 법과 용어 맞추기."
+  },
+  {
+   "id": "ddia",
+   "title": "Designing Data-Intensive Applications",
+   "by": "Martin Kleppmann · O'Reilly, 2017",
+   "kind": "book",
+   "url": "https://dataintensive.net/",
+   "lang": "en",
+   "level": "심화",
+   "why": "복제·로그·스트림·정합성의 틀 — 정합성·이벤트 요건 전반.",
+   "free": false
+  },
+  {
+   "id": "ms-patterns",
+   "title": "Microservices Patterns",
+   "by": "Chris Richardson · Manning, 2018",
+   "kind": "book",
+   "url": "https://microservices.io/book",
+   "lang": "en",
+   "level": "심화",
+   "why": "Saga·아웃박스·API 구성 — 서비스 간 정합성과 설계 요건.",
+   "free": false
+  },
+  {
+   "id": "hard-parts",
+   "title": "Software Architecture: The Hard Parts",
+   "by": "Neal Ford 외 · O'Reilly, 2021",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/software-architecture-the/9781492086888/",
+   "lang": "en",
+   "level": "심화",
+   "why": "트레이드오프 분석과 ADR — Tech Lead 요건.",
+   "free": false
+  },
+  {
+   "id": "adr-nygard",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · 2011",
+   "kind": "doc",
+   "url": "https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "lang": "en",
+   "level": "입문",
+   "why": "ADR 의 원형 글 — 한 쪽짜리 결정 기록 틀.",
+   "free": true
+  },
+  {
+   "id": "stripe-idem",
+   "title": "Idempotent requests",
+   "by": "Stripe API 문서",
+   "kind": "doc",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "lang": "en",
+   "level": "입문",
+   "why": "같은 요청 두 번에 한 번만 처리하는 방식의 공개 설명.",
+   "free": true
+  },
+  {
+   "id": "outbox",
+   "title": "Transactional outbox",
+   "by": "microservices.io · Chris Richardson",
+   "kind": "doc",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "lang": "en",
+   "level": "실무",
+   "why": "DB 변경과 이벤트 발행을 어긋나지 않게 묶는 패턴.",
+   "free": true
+  },
+  {
+   "id": "strangler",
+   "title": "Strangler Fig Application",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "lang": "en",
+   "level": "입문",
+   "why": "레거시를 멈추지 않고 갈아타는 대표 방식.",
+   "free": true
+  },
+  {
+   "id": "parallel-change",
+   "title": "Parallel Change",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "url": "https://martinfowler.com/bliki/ParallelChange.html",
+   "lang": "en",
+   "level": "입문",
+   "why": "expand/contract — API·스키마를 호환 유지한 채 바꾸기.",
+   "free": true
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (Postmortem Culture 장)",
+   "by": "Google · O'Reilly, 2016",
+   "kind": "doc",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "lang": "en",
+   "level": "입문",
+   "why": "무책임 포스트모템 쓰는 법.",
+   "free": true
+  },
+  {
+   "id": "sre-workbook",
+   "title": "The Site Reliability Workbook — Implementing SLOs",
+   "by": "Google · O'Reilly, 2018",
+   "kind": "doc",
+   "url": "https://sre.google/workbook/implementing-slos/",
+   "lang": "en",
+   "level": "실무",
+   "why": "SLO·오차 예산을 정하는 실제 절차.",
+   "free": true
+  },
+  {
+   "id": "release-it",
+   "title": "Release It! 2nd Edition",
+   "by": "Michael Nygard · Pragmatic Bookshelf, 2018",
+   "kind": "book",
+   "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/",
+   "lang": "en",
+   "level": "실무",
+   "why": "타임아웃·서킷 브레이커 — 운영 중 장애 대비.",
+   "free": false
+  },
+  {
+   "id": "square-ledger",
+   "title": "Books, an immutable double-entry accounting database service",
+   "by": "Square Developer Blog",
+   "kind": "doc",
+   "url": "https://developer.squareup.com/blog/books-an-immutable-double-entry-accounting-database-service/",
+   "lang": "en",
+   "level": "실무",
+   "why": "원장 구조를 실제 결제 회사가 설명한 글 — 우대 '원장·대사'.",
+   "free": true
+  },
+  {
+   "id": "money",
+   "title": "Money pattern",
+   "by": "Martin Fowler · PoEAA",
+   "kind": "doc",
+   "url": "https://martinfowler.com/eaaCatalog/money.html",
+   "lang": "en",
+   "level": "입문",
+   "why": "금액+통화를 한 값으로 다루기 — 부동소수점·통화 혼합 방지.",
+   "free": true
+  },
+  {
+   "id": "oauth-rfc",
+   "title": "RFC 6749 — The OAuth 2.0 Authorization Framework",
+   "by": "IETF",
+   "kind": "doc",
+   "url": "https://datatracker.ietf.org/doc/html/rfc6749",
+   "lang": "en",
+   "level": "실무",
+   "why": "Open API 인증의 표준 원문.",
+   "free": true
+  },
+  {
+   "id": "oidc",
+   "title": "OpenID Connect Core 1.0",
+   "by": "OpenID Foundation",
+   "kind": "doc",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "lang": "en",
+   "level": "실무",
+   "why": "ID 토큰·로그인 표준 원문.",
+   "free": true
+  },
+  {
+   "id": "aip180",
+   "title": "AIP-180 Backwards compatibility",
+   "by": "Google API Improvement Proposals",
+   "kind": "doc",
+   "url": "https://google.aip.dev/180",
+   "lang": "en",
+   "level": "실무",
+   "why": "무엇이 API 호환을 깨는지의 공개 기준.",
+   "free": true
+  },
+  {
+   "id": "ms-api",
+   "title": "Microsoft REST API Guidelines",
+   "by": "Microsoft",
+   "kind": "doc",
+   "url": "https://github.com/microsoft/api-guidelines",
+   "lang": "en",
+   "level": "실무",
+   "why": "버전·오류 형식·페이지네이션 규칙.",
+   "free": true
+  },
+  {
+   "id": "eng-practices",
+   "title": "Google Engineering Practices — Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://google.github.io/eng-practices/review/",
+   "lang": "en",
+   "level": "입문",
+   "why": "리뷰어·작성자 지침 — 팀 기준 올리기.",
+   "free": true
+  },
+  {
+   "id": "claude-code-doc",
+   "title": "Claude Code overview",
+   "by": "Anthropic 문서",
+   "kind": "doc",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "lang": "en",
+   "level": "입문",
+   "why": "AI 코딩 에이전트 사용·지침 파일 구성.",
+   "free": true
+  },
+  {
+   "id": "kohavi",
+   "title": "Trustworthy Online Controlled Experiments",
+   "by": "Kohavi·Tang·Xu · Cambridge University Press, 2020",
+   "kind": "book",
+   "url": "https://experimentguide.com/",
+   "lang": "en",
+   "level": "심화",
+   "why": "가설→실험→지표 확인 요건의 정석.",
+   "free": false
+  }
+ ],
+ "study_path": [
+  {
+   "title": "서버 바탕과 돈 모델",
+   "time": "2주",
+   "goal": "Spring+JPA 로 파트너·상품·정산 표를 만들고 금액을 정수로 다룬다",
+   "task": "파트너·주문·정산 3개 표와 API 를 만들고 나가는 SQL·반올림 규칙 테스트까지",
+   "resources": [
+    "spring-core-int",
+    "jpa-basic-int",
+    "spring-db-int",
+    "money"
+   ]
+  },
+  {
+   "title": "이벤트를 한 번만 처리",
+   "time": "2주",
+   "goal": "재전송이 섞여도 건수·금액이 맞는 소비자를 만든다",
+   "task": "가상 주문 이벤트 1만 건에 중복 20% 를 섞어 Kafka→DB 로 쌓고 아웃박스로 전송하기",
+   "resources": [
+    "kafka-int",
+    "stripe-idem",
+    "outbox",
+    "ddia"
+   ]
+  },
+  {
+   "title": "원장과 대사",
+   "time": "1~2주",
+   "goal": "원장에 보정 행을 쌓고 채널 정산서와 견줘 차이를 낸다",
+   "task": "원장+채널 파일 가상 데이터로 일치·불일치·누락 보고서 만들기",
+   "resources": [
+    "square-ledger",
+    "ddia"
+   ]
+  },
+  {
+   "title": "API 와 전환 설계",
+   "time": "2주",
+   "goal": "하위 호환을 지키며 API·스키마를 바꾸고 레거시를 갈아탄다",
+   "task": "v1 API 에 필드를 expand/contract 로 바꾸고 이중 읽기 비교 로그 남기기",
+   "resources": [
+    "aip180",
+    "ms-api",
+    "strangler",
+    "parallel-change",
+    "spring-sec-int",
+    "oauth-rfc"
+   ]
+  },
+  {
+   "title": "운영·설계 문서·AI 도구",
+   "time": "1~2주",
+   "goal": "SLO·알림·ADR 을 쓰고 AI 도구 산출물을 검증한다",
+   "task": "위 서비스에 SLO 하나와 알림, ADR 2장, AI 가 쓴 테스트를 사람이 고친 기록 남기기",
+   "resources": [
+    "sre-workbook",
+    "sre-book",
+    "adr-nygard",
+    "k8s-int",
+    "claude-code-doc",
+    "practical-int"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "초봉 2,313만원 · 직원 평균 3,453만원(집계) — 원티드 표기 평균 6,082만원과 기준이 다릅니다. 이 공고에는 연봉이 없습니다.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아니라 회사 전체 값이며 연도 표기는 확인하지 못했다.[4]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 경력직이 섞인 회사 전체 평균이다.[4]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위 값과 크게 달라 산출 방식·시점이 다른 것으로 보인다.[5]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시 평균 급여가 없습니다. 위 숫자는 모두 집계이고 **초봉이 아니라 경력직이 섞인 평균**입니다. 이 자리는 경력 7년 이상 Tech Lead 라 개인 처우는 협의로 정해질 것입니다.[1] {추론}"
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "월 소정 근로시간 내 유연 근무, 코어타임 11~16시"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원, 복지카드 연동"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기 근속",
+    "detail": "근속 3년당 리프레시 휴가 7일, 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기마다 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 월 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "허먼 밀러 의자 등 프리미엄 업무 장비, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급"
+   }
+  ],
+  "note": "회사 채용 사이트 복지 페이지(같은 회사의 다른 풀이에서 2026-11 확인한 것)를 옮겼다.[2] '근무 장소·기간·시점에 따라 일부 변경될 수 있다'고 적혀 있다.[2]"
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 6분",
+  "note": "주소는 무신사 상품 페이지 하단 사업자 정보 표기다.[6] 성수 본사 이전은 2022년 보도.[7] 이 공고에는 근무지 칸이 없다.[1]"
+ },
+ "fit": {
+  "good": [
+   "돈·재고처럼 틀리면 안 되는 서버를 운영해 본 사람 {추론}",
+   "설계 문서로 합의를 이끌어 본 사람"
+  ],
+  "hard": [
+   "7년 이상 Spring 서버와 Tech Lead 역할이 요구된다.[1]",
+   "회사가 이 영역의 구조를 공개한 글을 찾지 못해 세부는 면접에서 직접 물어야 한다."
+  ]
+ },
+ "interview": [
+  {
+   "q": "같은 이벤트가 두 번 와도 정산이 한 번만 반영되게 어떻게 하나요?",
+   "a": "공고가 멱등 처리·재시도·대사를 직접 적었다.[1][8]"
+  },
+  {
+   "q": "레거시 어드민을 파트너가 쓰는 중에 어떻게 옮기나요?",
+   "a": "전환 과제가 공고 업무에 직접 있다.[1][12]"
+  },
+  {
+   "q": "AI 가 낸 코드를 어떻게 검증하나요?",
+   "a": "공고가 검증·책임을 요구한다.[1][24]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Product Engineer (Partner Platform)",
+   "url": "https://www.musinsacareers.com/ko/o/246226",
+   "kind": "posting",
+   "date": "2026-11"
+  },
+  {
+   "n": 2,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company"
+  },
+  {
+   "n": 3,
+   "title": "무신사 뉴스룸 — OCMP 구축 착수(2024-10)",
+   "url": "https://newsroom.musinsa.com/newsroom-menu/2024-1028-2",
+   "kind": "company",
+   "date": "2024-10",
+   "note": "검색 결과 요약으로 읽음"
+  },
+  {
+   "n": 4,
+   "title": "무신사 기업정보 — 자소설닷컴",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "페이지 직접 열람은 403 이라 같은 회사 다른 풀이의 표기를 옮김"
+  },
+  {
+   "n": 5,
+   "title": "무신사 — 원티드 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "같은 회사 다른 풀이의 표기를 옮김"
+  },
+  {
+   "n": 6,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company"
+  },
+  {
+   "n": 7,
+   "title": "무신사, 성수동 캠퍼스 N1 으로 본사 이전 (일간스포츠)",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09"
+  },
+  {
+   "n": 8,
+   "title": "Idempotent requests — Stripe",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "Apache Kafka Documentation",
+   "url": "https://kafka.apache.org/documentation/",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "Transactional outbox — microservices.io",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Strangler Fig Application — Martin Fowler",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Parallel Change — Martin Fowler",
+   "url": "https://martinfowler.com/bliki/ParallelChange.html",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Documenting Architecture Decisions — Michael Nygard",
+   "url": "https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "kind": "reference",
+   "date": "2011"
+  },
+  {
+   "n": 15,
+   "title": "Postmortem Culture — Google SRE book",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Implementing SLOs — Google SRE workbook",
+   "url": "https://sre.google/workbook/implementing-slos/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Books, an immutable double-entry accounting database service — Square",
+   "url": "https://developer.squareup.com/blog/books-an-immutable-double-entry-accounting-database-service/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "RFC 6749 OAuth 2.0",
+   "url": "https://datatracker.ietf.org/doc/html/rfc6749",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "OpenID Connect Core 1.0",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Spring Security Reference",
+   "url": "https://docs.spring.io/spring-security/reference/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "AIP-180 Backwards compatibility — Google",
+   "url": "https://google.aip.dev/180",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Microsoft REST API Guidelines",
+   "url": "https://github.com/microsoft/api-guidelines",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Money pattern — Martin Fowler",
+   "url": "https://martinfowler.com/eaaCatalog/money.html",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Claude Code overview — Anthropic",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Google Engineering Practices — Code Review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Trustworthy Online Controlled Experiments",
+   "url": "https://experimentguide.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Outbox Event Router — Debezium",
+   "url": "https://debezium.io/documentation/reference/transformations/outbox-event-router.html",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Kubernetes Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "2026-11-25 기준. 무신사가 파트너 플랫폼·정산 구조를 공개한 기술 글·발표는 찾지 못해(받은 영상 없음) 설계 설명은 같은 일을 하는 곳의 공개 문서에 기댔다. 연봉·복지·주소는 같은 회사의 다른 풀이에서 확인한 값을 가져왔다."
+}
