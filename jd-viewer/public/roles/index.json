@@ -238,6 +238,7 @@
   "ats-greeting:musinsa:236337": "musinsa-product-engineer-platform-innovation",
   "ats-greeting:musinsa:235686": "musinsa-product-engineer-scm-platform",
   "ats-greeting:musinsa:172721": "musinsa-product-engineering-manager-core-partner",
+  "ats-greeting:musinsa:183840": "musinsa-security-compliance-manager",
   "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
   "wanted-394722": "nhn-japan-frontend",
@@ -304,7 +305,9 @@
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
   "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
   "boards-gamejob:dev:285958": "smilegate-ai-qa-automation-rnd-intern",
+  "ats-smilegate:group:6262": "smilegate-ai-qa-automation-rnd-intern",
   "boards-gamejob:dev:285795": "smilegate-lostark-game-data-engineer",
+  "ats-smilegate:group:4590": "smilegate-lostark-game-data-engineer",
   "wanted-386999": "speee-dx-sre",
   "wanted-393877": "speee-realestate-senior-product-engineer",
   "wanted-389900": "technopro-cloud-engineer-aws-japan",
@@ -2576,6 +2579,16 @@
    "lines": 32
   },
   {
+   "id": "musinsa-security-compliance-manager",
+   "company": "무신사",
+   "role": "Security Compliance Manager",
+   "jobs": [
+    "ats-greeting:musinsa:183840"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
+  },
+  {
    "id": "musinsa-security-engineer-mail-cds",
    "company": "무신사",
    "role": "Security Engineer (스팸 메일·망연계 운영)",
@@ -3061,7 +3074,8 @@
    "company": "스마일게이트",
    "role": "AI QA 자동화 기술 R&D (인턴 6개월)",
    "jobs": [
-    "boards-gamejob:dev:285958"
+    "boards-gamejob:dev:285958",
+    "ats-smilegate:group:6262"
    ],
    "researched_at": "2026-11-25",
    "lines": 13
@@ -3071,7 +3085,8 @@
    "company": "스마일게이트",
    "role": "[LOST ARK] 게임 데이터엔지니어",
    "jobs": [
-    "boards-gamejob:dev:285795"
+    "boards-gamejob:dev:285795",
+    "ats-smilegate:group:4590"
    ],
    "researched_at": "2026-11-25",
    "lines": 18
