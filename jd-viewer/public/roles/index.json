@@ -7,6 +7,7 @@
   "ats-greenhouse:coupang:8385253": "coupang-audit-ai-ops-pm-bengaluru",
   "wanted-396324": "coupang-catalog-taxonomy-pm",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
+  "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
@@ -323,6 +324,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 31
+  },
+  {
+   "id": "coupang-dart-taiwan-manager",
+   "company": "쿠팡",
+   "role": "보안 엔지니어링 매니저 — DART 대만",
+   "jobs": [
+    "ats-greenhouse:coupang:8188073"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 41
   },
   {
    "id": "coupang-financial-credit-strategy-ds",

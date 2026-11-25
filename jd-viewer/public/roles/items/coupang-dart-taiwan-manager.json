@@ -1,0 +1,1395 @@
+{
+ "id": "coupang-dart-taiwan-manager",
+ "company": "쿠팡",
+ "role": "보안 엔지니어링 매니저 — DART 대만",
+ "team": "Digital Trust · DART(Detection and Response Team) Taiwan",
+ "jobs": [
+  "ats-greenhouse:coupang:8188073"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "대만에서 일어나는(또는 의심되는) 보안 사고를 **직접 분석하고 대응을 이끄는** 팀장 자리입니다. 새로 세우는 DART 대만 팀원을 관리하고, 경보가 안 울린 위협을 먼저 찾는 위협 사냥도 합니다.[1]",
+  "env": "한국·미국 DART와 한 체계입니다. 24시간 관제 센터(CSOC)가 SIEM·SOAR로 1·2차를 거르고 심각한 사건을 3차인 DART로 올립니다.[3] 2025년 유출 사고로 대만 계정 약 20만 개가 조회돼 대만 당국이 조사에 나선 뒤의 자리입니다.[12][13]",
+  "oneline": "손으로 직접 로그를 파는 사고 대응 팀장. 보안 15년·사고 분석 8년 이상의 시니어 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "DART(Detection and Response Team) is responsible for detecting and responding to cyber threats across Coupang, with the objective of minimizing the potential impact of cybersecurity incidents on the organization",
+   "short": "팀 소개 — DART는 쿠팡 전체의 사이버 위협을 찾아내고 대응해, 사고가 나도 피해를 작게 만드는 팀이다.",
+   "why": "쿠팡의 탐지·대응 조직은 여러 겹입니다. 24시간 돌아가는 관제 센터(CSOC)가 1·2차로 거르고, 심각한 사건은 그 위 조직인 DART로 올라와 깊게 분석됩니다.[3] 한국 DART 공고도 같은 팀 소개를 쓰고, 일의 끝을 '근본 원인 → 격리·완화 → 장기 예방 통제'로 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**탐지(Detection)** — 관제 규칙이 울린 경보, 사람이 위협 사냥으로 찾은 흔적.[1][3]",
+     "**대응(Response)** — 진짜 사고인지 판정 → 원인 찾기 → 막기(격리) → 보고서 → 재발 방지.[2]",
+     "**피해 최소화가 목표** — 사고를 0으로 만드는 게 아니라, 들어온 공격자가 머무는 시간을 줄이는 것. 쿠팡 위협 관리 책임자도 팀 목표를 '공격자 체류 시간 줄이기'로 말했습니다.[8]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    3,
+    8
+   ],
+   "study": [
+    "nist-61"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "and the team currently operates through DART KR and DART US and is expanding its global coverage with the establishment of DART TW.",
+   "short": "지금은 한국·미국 DART가 있고, 대만 DART를 새로 세우는 중이다 — 이 자리가 그 첫 팀장.",
+   "why": "쿠팡은 2022년 10월부터 대만에 진출해 물류센터를 넷까지 늘렸고, 2025년 한 해에 9억 달러 넘게 투자했습니다.[30] 2025년 11월 공개된 개인정보 유출 사고에서 대만 계정도 약 20만 개가 조회된 것으로 2026년 2월 확인됐고,[12] 대만 디지털발전부(MODA)는 현장 점검 뒤 개인정보보호법 위반 여부를 법적으로 조사하겠다고 밝혔습니다.[13] 쿠팡 위협 관리 팀도 2025년 인터뷰에서 대만 인력을 늘릴 계획을 말했습니다.[8]",
+   "actually": {
+    "items": [
+     "**같은 회사 대만 보안 공고가 함께 열려 있다** — 대만·일본 CISO 아래 대만 보안 엔지니어링 디렉터(결제 서비스 규제 대비),[5] 침투 테스터·위협 인텔리전스 분석가 등.",
+     "**한국·미국 팀과 한 체계** — 미국 DART 공고의 업무 문장이 이 공고와 거의 같다. 같은 방식으로 일하는 세 번째 거점이다.[4]",
+     "**대만 쪽 사고를 대만에서 직접 맡는다** — 업무 줄의 '특히 대만에서 일어나는 사고' 문구.[1]"
+    ]
+   },
+   "how_far": "팀을 '처음 세우는' 자리라서 절차·당번표·보고 양식을 한국·미국 것을 바탕으로 대만에 맞게 옮기는 일이 처음 몇 달의 큰 몫일 것입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    8,
+    12,
+    13,
+    30
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CSOC(The Cyber Security Operations Center) proactively prevents security incidents through established detection rules and response procedures.",
+   "short": "앞단의 관제 센터(CSOC)가 미리 만든 탐지 규칙과 대응 절차로 1차를 거른다 — DART는 그 뒤에 선다.",
+   "why": "한국 관제 공고에 따르면 CSOC는 **24시간 365일**, SIEM(로그를 한곳에 모아 검색·경보하는 시스템)과 SOAR(경보 처리를 자동으로 엮는 시스템)로 일합니다. 1차 분석가가 경보를 집고, 2차가 올라온 것을 보고, 심각한 건 3차인 DART로 넘깁니다.[3]",
+   "actually": {
+    "items": [
+     "탐지 규칙은 따로 '탐지 엔지니어링' 팀이 코드처럼 관리한다(Detection-as-Code).[6]",
+     "보안 장비(IPS·NDR·방화벽·EDR) 자체 운영은 Detection Ops 팀 몫이다.[7]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "쿠팡의 경보가 지나가는 길[3]",
+     "steps": [
+      "탐지 규칙(Usecase) · SIEM이 로그를 보고 울림",
+      "Tier 1 · 경보를 집고 정탐/오탐 1차 판단",
+      "Tier 2 · 올라온 경보 분석·초동 조치, 비업무 시간 온콜",
+      "Tier 3 = DART · 깊은 분석·사고 대응·재발 방지"
+     ],
+     "mine_from": 3
+    }
+   ],
+   "how_far": "규칙을 직접 만들고 장비를 운영하는 자리가 아닙니다. 다만 '이 규칙은 왜 놓쳤나'를 찾아 탐지 팀에 되돌려 주는 것은 DART의 일입니다.[1][6]",
+   "refs": [
+    1,
+    3,
+    6,
+    7
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "When a potential security incident is identified, DART analyzes the event to determine whether it is a true or false positive and assesses its potential impact.",
+   "short": "올라온 의심 사건이 진짜 공격인지(정탐) 잘못 울린 건지(오탐) 가리고, 진짜라면 얼마나 큰지 잰다.",
+   "why": "경보의 상당수는 오탐입니다. 오탐에 사람을 쓰면 진짜 사건에 늦습니다. NIST 사고 대응 지침도 '그 사건이 사고인가, 얼마나 심각한가'를 먼저 정하라고 합니다.[17]",
+   "actually": {
+    "items": [
+     "**정탐/오탐 판정** — 예: '관리자 계정 로그인 실패 20번 뒤 성공' 경보 → 그 시각 그 사람이 비밀번호를 바꿨나(정상), 처음 보는 나라에서 왔나(의심)를 로그로 확인.",
+     "**영향 재기** — 몇 대의 서버·몇 명의 고객 데이터가 닿았나, 지금도 진행 중인가, 결제·로그인 정보가 걸렸나.",
+     "**실제 사례의 숫자** — 2025년 쿠팡 사고는 처음 약 4,500개 계정으로 신고됐다가 조사 중 약 3,370만 개로 커졌습니다.[11] 영향 평가가 처음에 작게 나오면 신고·통지도 다시 해야 합니다."
+    ]
+   },
+   "refs": [
+    11,
+    17
+   ],
+   "study": [
+    "nist-61"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "For confirmed incidents, DART identifies the root cause, implements containment and mitigation measures to prevent further damage",
+   "short": "사고로 확정되면 근본 원인을 찾고, 더 번지지 않게 격리·완화 조치를 한다.",
+   "why": "NIST 지침은 사고 대응을 '탐지·분석 → 격리·제거·복구 → 사후 개선'으로 돌립니다.[17] 격리를 늦추면 피해가 커지고, 원인을 모르고 막으면 다른 문으로 다시 들어옵니다.",
+   "actually": {
+    "items": [
+     "**격리(containment)** — 감염 노트북을 EDR로 네트워크에서 떼기, 도난된 키·토큰 폐기, 공격 IP 차단.",
+     "**근본 원인** — '어느 문으로 들어왔나'. 2025년 쿠팡 사고 조사에서는 퇴사한 인증 담당 개발자가 갖고 있던 **토큰 서명키**가 갱신되지 않은 채 남아 있었고, 그 키로 만든 토큰으로 API를 불러 정보를 긁어 간 것으로 드러났습니다.[9][10]",
+     "**한 곳만 막으면 안 된다** — 조사단은 쿠팡이 모의해킹으로 인증 구조의 결함을 이미 알았는데 발견 지점만 임시로 막고 토큰 검증 체계 전체는 보지 않았다고 지적했습니다.[10]",
+     "**클라우드에서의 격리** — AWS 지침은 의심 인스턴스를 격리 보안 그룹으로 옮기고, 지우기 전에 디스크 스냅숏(증거)을 먼저 뜨라고 합니다.[21]"
+    ]
+   },
+   "how_far": "원인을 '사람 탓'에서 멈추지 않고 '어떤 통제가 없어서 가능했나'(키 갱신 절차, 퇴사자 권한 회수)까지 내려가는 것이 이 자리의 수준입니다. {추론}",
+   "refs": [
+    9,
+    10,
+    17,
+    21
+   ],
+   "study": [
+    "nist-61",
+    "aws-ir",
+    "applied-ir"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "and collaborates with cross-functional stakeholders to develop and execute long-term preventive controls, reducing the likelihood of similar incidents recurring.",
+   "short": "여러 부서와 함께 같은 사고가 다시 안 나게 오래 갈 예방 통제를 만들고 실제로 시행시킨다.",
+   "why": "재발 방지는 DART 혼자 못 합니다. 키 관리는 개발팀, 퇴사자 권한은 인사·IAM, 규칙은 탐지팀 몫입니다. 쿠팡 사고 뒤 정부는 재발 방지 이행 계획을 내게 하고 이행(3~5월)·점검(6~7월) 일정을 잡았습니다.[10]",
+   "actually": {
+    "items": [
+     "**예** — 서명키를 키 관리 시스템에만 두고 정기 교체, 퇴사 당일 개인 키 폐기, 같은 패턴을 잡는 새 탐지 규칙, 버그바운티(외부 제보) 열기.",
+     "**대만의 실제 예** — 쿠팡 대만은 2026년 5월 HackerOne과 손잡고 공개 버그바운티를 연다고 밝혔습니다.[15]"
+    ]
+   },
+   "refs": [
+    10,
+    15
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "In addition to incident response activities, DART conducts threat hunting by analyzing a wide range of logs and artifacts collected through the SIEM platform.",
+   "short": "사고 대응 말고도, SIEM에 모인 로그와 흔적을 뒤져 경보가 안 울린 위협을 먼저 찾아 나선다(위협 사냥).",
+   "why": "탐지 규칙은 '알려진 수법'만 잡습니다. 쿠팡 사고는 2025년 6월 24일 시작돼 약 5개월 이어진 뒤 11월 18일에야 확인됐습니다.[11] 위협 사냥은 이런 '조용한' 공격을 경보 없이 찾는 일입니다.",
+   "actually": {
+    "items": [
+     "**가설로 시작** — '도난된 정상 계정으로 들어온 공격자가 있다면 어떤 흔적이 남을까?' (ATT&CK의 '유효한 계정 악용' 기법).[18]",
+     "**로그로 확인** — 평소와 다른 나라·시간대의 로그인, 한 출발지가 짧은 시간에 수많은 고객 계정을 조회한 기록(쿠팡 사고에서 배송지 목록 페이지가 1억 4,800만여 번 조회됐습니다[10]).",
+     "**흔적(artifact)** — 로그 말고 PC·서버에 남은 것: 실행 기록, 예약 작업, 새로 생긴 계정, 메모리."
+    ]
+   },
+   "refs": [
+    10,
+    11,
+    18
+   ],
+   "study": [
+    "book-threat-hunting",
+    "attack"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "This enables the team to identify and address threats that may have evaded existing detection mechanisms, further strengthening the organization's overall security posture.",
+   "short": "기존 탐지를 빠져나간 위협을 찾아 처리하고, 그 결과로 전체 방어를 한 단계 올린다.",
+   "why": "사냥에서 찾은 수법은 다시 탐지 규칙이 되어야 다음엔 자동으로 잡힙니다. 쿠팡 위협 관리 팀은 위협 인텔리전스·위협 사냥·공격 모의·탐지 엔지니어링을 한 팀 일로 묶었습니다.[8]",
+   "actually": {
+    "items": [
+     "사냥 결과 → 새 규칙 요청(쿠팡은 탐지 규칙을 배포 전 시험하고 배포 후 성능을 본다)[6] → 같은 수법이 다시 오면 CSOC가 1차에서 잡음."
+    ]
+   },
+   "refs": [
+    6,
+    8
+   ],
+   "study": [
+    "book-detection-eng",
+    "sigma"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Lead and analyze and responses to security incidents, and need hands-on skills",
+   "short": "사고 분석·대응을 이끌되, 지시만 하지 않고 직접 로그를 파고 손으로 분석한다.",
+   "why": "공고 제목은 매니저지만 첫 업무 줄이 '직접 손으로 하는 능력'입니다.[1] 대만 팀이 이제 생기는 단계라 팀장이 가장 숙련된 분석가 역할도 해야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "사고가 나면 지휘(누가 무엇을 맡나, 언제 누구에게 보고하나)와 분석(직접 SIEM 검색·호스트 조사)을 동시에.",
+     "NIST 지침은 사고마다 역할(지휘·분석·소통)을 정해 두라고 합니다.[17]"
+    ]
+   },
+   "refs": [
+    1,
+    17
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Manage DART Taiwan members",
+   "short": "대만 DART 팀원을 뽑고 키우고 관리한다 — 사람 관리가 포함된 자리.",
+   "why": "새 거점이라 채용·교육·당번 짜기부터 해야 합니다. 한국 관제 공고에도 '1차 분석가 교육'이 상위 단계의 일로 적혀 있습니다.[3]",
+   "actually": {
+    "items": [
+     "팀원 수준 맞추기(한국·미국과 같은 절차로 일하게), 온콜 당번표, 업무 배분, 평가."
+    ]
+   },
+   "how_far": "공고에 팀 규모는 적혀 있지 않습니다.[1] 처음엔 작은 팀을 손수 가르치며 시작한다고 보는 게 자연스럽습니다. {추론}",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Analyze and respond to security anomalies, intrusion attempts, and breaches, and root cause analysis, containment, creating the report",
+   "short": "이상 징후·침입 시도·실제 침해를 분석·대응하고, 원인 분석·격리를 거쳐 보고서까지 쓴다.",
+   "why": "세 단어는 크기가 다릅니다. **이상 징후**(평소와 다름) ⊃ **침입 시도**(공격은 있었음) ⊃ **침해**(실제로 뚫림). 크기에 따라 대응 강도와 보고 대상이 달라집니다.[17]",
+   "actually": {
+    "items": [
+     "**보고서** — 언제 무엇이 일어났나(시간표), 영향 범위, 원인, 한 조치, 남은 위험, 재발 방지. 경영진용 한 장과 기술용 상세본을 나눈다.",
+     "**시간표 만들기** — 여러 시스템 로그의 시각을 하나의 기준(UTC)으로 맞춰 줄 세운다. 로그 관리 지침이 시각 동기화를 강조하는 이유다.[19]"
+    ]
+   },
+   "refs": [
+    17,
+    19
+   ],
+   "study": [
+    "nist-61",
+    "nist-92"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "(In particular, candidates are expected to take direct ownership and lead the response to security incidents and suspected security incidents occurring in Taiwan)",
+   "short": "특히 대만에서 일어난(또는 의심되는) 사고는 이 사람이 직접 책임지고 대응을 이끈다.",
+   "why": "대만 사고는 대만 법·당국과 엮입니다. 2025년 11월 개정된 대만 개인정보보호법은 독립 감독기구(PDPC)를 세우고, 기준에 맞는 유출 사고를 당국에도 신고하게 바꿨습니다(시행일·신고 기한은 하위 규정으로 정한다).[16] 2026년 2월 대만 당국은 쿠팡 대만이 유출 사실을 제때 알리지 않았다고 지적했습니다.[13]",
+   "actually": {
+    "items": [
+     "**현지 시간·현지 언어로 첫 대응** — 한국 밤 시간에 대만에서 난 사고를 대만 팀이 바로 잡는다.",
+     "**당국 대응 자료** — 무엇이 언제 확인됐는지 기록이 곧 신고의 근거. 쿠팡 대만은 처음엔 대만 이용자 피해가 없다고 했다가[14] 석 달 뒤 약 20만 계정 조회를 확인했습니다.[12]"
+    ]
+   },
+   "how_far": "법률 판단은 법무·개인정보 담당이 합니다. DART는 '무엇이 언제 어디까지 닿았나'를 증거로 정확히 내놓는 쪽입니다. {추론}",
+   "refs": [
+    12,
+    13,
+    14,
+    16
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Threat hunting to find undetected security threat from the CSOC using data from end points, servers, clouds, network and other sources",
+   "short": "CSOC가 못 잡은 위협을 PC·서버·클라우드·네트워크 데이터를 넘나들며 찾는다.",
+   "why": "한 곳의 로그로는 공격 전체가 안 보입니다. 피싱 메일(이메일) → 노트북 악성코드(엔드포인트) → 클라우드 키 탈취(클라우드) → 대량 전송(네트워크)처럼 공격은 여러 층을 지나갑니다. 미국 DART 공고도 같은 문장으로 이 일을 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**엔드포인트** — EDR 프로세스 실행 기록, PowerShell 실행 내용 로그(이벤트 4104).[31]",
+     "**서버** — 리눅스 인증 로그·명령 기록.",
+     "**클라우드** — AWS CloudTrail(누가 어떤 API를 불렀나), GuardDuty 같은 위협 탐지 결과.[21][35]",
+     "**네트워크** — 넷플로(누가 누구와 얼마나 주고받았나).[24]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "평소의 몇 배를 내보냈나 — 넷플로로 대량 전송 찾기",
+     "body": "가상의 넷플로 요약을 호스트별로 더해 지난 30일 하루 평균과 견줍니다. 10.1.1.44 한 대만 평소의 1만 6,000배를 밖으로 보냈습니다(직접 돌린 출력: `10.1.1.20 0.2MB x1 ok` / `10.1.1.31 0.1MB x1 ok` / `10.1.1.44 4800.0MB x16,000 ALERT`). 실제로는 백업 서버처럼 원래 많이 보내는 호스트를 예외로 빼는 일이 더 큽니다. {추론}",
+     "lang": "python",
+     "code": "flows = [  # (출발지, 목적지, 바이트)\n    (\"10.1.1.20\", \"52.0.0.1\", 120_000), (\"10.1.1.20\", \"52.0.0.1\", 80_000),\n    (\"10.1.1.31\", \"52.0.0.9\", 90_000),\n    (\"10.1.1.44\", \"185.0.0.3\", 4_800_000_000),\n]\nbaseline = {\"10.1.1.20\": 250_000, \"10.1.1.31\": 100_000, \"10.1.1.44\": 300_000}  # 지난 30일 하루 평균\nout = {}\nfor src, dst, b in flows:\n    out[src] = out.get(src, 0) + b\nfor host, total in sorted(out.items()):\n    ratio = total / baseline[host]\n    print(f\"{host} {total/1e6:.1f}MB x{ratio:,.0f}\", \"ALERT\" if ratio > 100 else \"ok\")"
+    }
+   ],
+   "refs": [
+    4,
+    21,
+    24,
+    31,
+    35
+   ],
+   "study": [
+    "book-threat-hunting",
+    "botsv3"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Ticket review, and security analysis escalated from CSOC",
+   "short": "CSOC가 올린 티켓을 검토하고, 위로 올라온(에스컬레이션) 사건을 분석한다.",
+   "why": "3단 구조에서 DART는 마지막 단입니다. 2차 분석가가 '내 선에서 못 끝낸다'고 올린 것이 DART로 옵니다.[3]",
+   "actually": {
+    "items": [
+     "**티켓 검토** — 1·2차의 판정이 맞았나, 근거 로그가 붙었나, 놓친 연결고리는 없나.",
+     "**되먹임** — 오탐이 반복되는 규칙은 고치게, 판단이 흔들린 유형은 대응 절차(Playbook)에 적게.[3]"
+    ]
+   },
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Improvement of incident response policies and procedures, and process",
+   "short": "사고 대응 정책·절차·일하는 과정을 계속 고친다.",
+   "why": "NIST 사고 대응 지침 3판(2025년 4월)은 사고 대응을 따로 떨어진 일이 아니라 회사 전체 위험 관리의 일부로 다루고, 사고마다 배운 것을 절차에 되돌리라고 합니다.[17]",
+   "actually": {
+    "items": [
+     "사고 뒤 회고(누구 탓이 아니라 무엇이 없었나), 절차서·플레이북 개정, 연락망·보고 기준(어느 크기면 누구에게 몇 시간 안에) 정리.",
+     "대만은 개정 개인정보보호법의 신고 규정이 정해지는 대로 보고 기준을 맞춰야 합니다.[16]"
+    ]
+   },
+   "refs": [
+    16,
+    17
+   ],
+   "study": [
+    "nist-61"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Oncall to response urgent security events or security issues",
+   "short": "급한 보안 사건이 나면 업무 시간 밖에도 연락을 받고 대응하는 당번(온콜)을 선다.",
+   "why": "공격은 업무 시간을 가리지 않습니다. 한국 DART 공고에도 온콜이 적혀 있고,[2] 관제 2차는 비업무 시간에 1차를 돕고 DART와 함께 깊은 분석을 합니다.[3]",
+   "actually": {
+    "items": [
+     "Google SRE 책은 당번이 지치지 않게 한 사람이 받는 호출 수와 당번 주기를 관리하라고 권합니다.[25]"
+    ]
+   },
+   "how_far": "팀장이므로 당번표를 '짜는' 사람이기도 합니다. 대만·한국·미국의 시차를 쓰면 밤 당번을 나눌 수 있는지 면접에서 물어볼 만합니다. {추론}",
+   "refs": [
+    2,
+    3,
+    25
+   ],
+   "study": [
+    "sre-oncall"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Collaborate effectively with internal teams through efficient communication",
+   "short": "사내 여러 팀과 짧고 정확하게 소통하며 함께 일한다.",
+   "why": "사고 중에는 개발·인프라·법무·홍보·경영진이 같은 사실을 다른 말로 필요로 합니다. 대만 자리는 한국 본사·미국 팀·대만 현지 조직과 동시에 일합니다.[1][5]",
+   "actually": {
+    "items": [
+     "사고 중 정기 상황 공유(무엇을 알고, 무엇을 모르고, 다음 보고는 언제), 기술팀에 정확한 조치 요청(어떤 키를, 언제까지, 어떻게 폐기)."
+    ]
+   },
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "15+ years of experience in information security with at least 8+ years as a Cyber Security Incident Analyst",
+   "short": "보안 경력 15년 이상, 그중 사고 분석가로 8년 이상 — 신입·주니어 자리가 아니다.",
+   "why": "같은 일을 하는 한국 DART Staff 공고는 12년·8년,[2] 미국 DART Senior 분석가 공고는 우대 기준이 8년·5년이었습니다.[4] 이 자리는 팀장이라 기준이 가장 높습니다.",
+   "how_far": "연차보다 '직접 맡아 끝낸 사고'가 중요합니다. 침해 사고 몇 건을 처음부터 보고서까지 끌고 간 경험을 구체적으로 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    2,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "English proficiency is required",
+   "short": "영어는 필수 — 한국·미국 팀, 본사와 일하는 공용어라서.",
+   "why": "DART는 한국·미국·대만 세 거점이고,[1] 대만 보안 디렉터는 대만·일본 CISO에게 보고합니다.[5] 사고 보고서·회의·티켓이 거점 사이를 오갑니다.",
+   "how_far": "사고 중 회의에서 상황을 설명하고 기술 보고서를 영어로 쓸 수 있는 정도. 현지 대응에는 중국어(번체)가 필요할 가능성이 큽니다 {추론}.",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience of analyzing security event and knowledge of AWS or Cloud environment",
+   "short": "클라우드(AWS 등)에서 일어나는 보안 사건을 분석할 줄 알아야 한다 — 쿠팡 서비스가 클라우드 위에 있어서.",
+   "why": "한국 DART·관제 공고 모두 퍼블릭 클라우드 이해와 클라우드 사고 분석을 요구합니다.[2][3] 클라우드 사고는 서버가 아니라 **API 호출과 권한**에서 일어나는 경우가 많습니다.",
+   "actually": {
+    "items": [
+     "**누가 무엇을 불렀나** — CloudTrail로 키 하나가 언제 어떤 API를 불렀는지 시간순으로.",
+     "**키 유출 대응** — 액세스 키 비활성화, 임시 자격증명 무효화, 그 키로 만든 자원 찾기.[21]",
+     "**탐지 결과 읽기** — GuardDuty 같은 서비스의 발견 항목을 보고 진짜인지 확인.[35]"
+    ]
+   },
+   "level": {
+    "basic": "IAM(사용자·역할·정책) · CloudTrail · VPC 흐름 로그 읽기",
+    "work": "키 유출·권한 상승·스토리지 공개 사고를 처음부터 끝까지 대응",
+    "team": "여러 계정·지역 로그를 SIEM에서 엮어 공격 경로 재구성"
+   },
+   "refs": [
+    2,
+    3,
+    21,
+    35
+   ],
+   "study": [
+    "aws-ir"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience of analyzing system logs of Windows/Linux/Mac systems.",
+   "short": "윈도우·리눅스·맥 세 운영체제의 시스템 로그를 읽고 무슨 일이 있었는지 알아낼 줄 알아야 한다.",
+   "why": "사내 PC는 윈도우·맥이 섞이고 서버는 리눅스입니다. 운영체제마다 로그가 남는 곳과 생김새가 다릅니다.",
+   "actually": {
+    "items": [
+     "**윈도우** — 보안 이벤트 로그: 4624(로그인 성공), 4625(로그인 실패, 실패 이유 코드 포함)[20], PowerShell 실행 내용(4104).[31]",
+     "**리눅스** — /var/log/auth.log·secure(SSH 로그인), journald, auditd.",
+     "**맥** — 통합 로그(unified logging, `log show` 명령으로 조회).[32]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "실패 여러 번 뒤 성공 — 윈도우 로그인 이벤트로 찾기",
+     "body": "같은 계정·같은 출발지에서 60초 안에 4625가 3번 이상 나온 뒤 4624가 나오면 경보. 직접 돌린 출력: `ALERT admin from 10.0.0.5: 4 fails then success at t=20` / `ok kim from 10.0.0.8`.[20]",
+     "lang": "python",
+     "code": "events = [  # (초, 이벤트 ID, 계정, 출발지)\n    (0, 4625, \"admin\", \"10.0.0.5\"), (5, 4625, \"admin\", \"10.0.0.5\"),\n    (9, 4625, \"admin\", \"10.0.0.5\"), (14, 4625, \"admin\", \"10.0.0.5\"),\n    (20, 4624, \"admin\", \"10.0.0.5\"), (30, 4624, \"kim\", \"10.0.0.8\"),\n]\nfails = {}\nfor t, eid, user, src in events:\n    key = (user, src)\n    if eid == 4625:\n        fails.setdefault(key, []).append(t)\n    elif eid == 4624:\n        recent = [x for x in fails.get(key, []) if t - x <= 60]\n        if len(recent) >= 3:\n            print(f\"ALERT {user} from {src}: {len(recent)} fails then success at t={t}\")\n        else:\n            print(f\"ok {user} from {src}\")"
+    }
+   ],
+   "refs": [
+    20,
+    31,
+    32
+   ],
+   "study": [
+    "ms-4625",
+    "applied-ir"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience and skills querying SIEM for analyzing security events from the logs",
+   "short": "SIEM에 검색어(쿼리)를 직접 써서 로그 속 보안 사건을 찾아낼 줄 알아야 한다.",
+   "why": "DART의 사냥과 분석은 SIEM 위에서 합니다.[1] 한국 DART 공고도 'SIEM 쿼리 작성'을 요건으로 적었습니다.[2] 쿠팡 대만이 어떤 SIEM 제품을 쓰는지는 공고에 없습니다.",
+   "actually": {
+    "items": [
+     "**검색 → 묶기 → 세기** — '최근 24시간, 이 계정, 로그인 성공, 나라별 개수' 같은 질문을 쿼리로.",
+     "**제품마다 말이 다르다** — Splunk의 SPL, Microsoft의 KQL, Elastic의 쿼리. 원리는 같고 문법만 다르다 {추론}.",
+     "**규칙 공용어** — Sigma는 제품과 상관없이 탐지 규칙을 적는 공개 형식이라 여러 SIEM 문법으로 바꿀 수 있습니다.[22]"
+    ]
+   },
+   "level": {
+    "basic": "필터·시간 범위·필드로 원하는 로그 꺼내기",
+    "work": "집계·조인·시간 창 계산으로 '평소와 다름' 찾기",
+    "team": "수십억 건에서 빠르게 도는 쿼리, 쿼리를 규칙으로 바꿔 탐지 팀에 넘기기"
+   },
+   "refs": [
+    1,
+    2,
+    22
+   ],
+   "study": [
+    "splunk-intro",
+    "botsv3",
+    "sigma"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Skill to analyze big data or big size logs",
+   "short": "로그가 수억~수천억 건이라 큰 데이터를 다루는 요령이 필요하다.",
+   "why": "2025년 쿠팡 사고 조사단은 접속 로그 **25.6TB, 6,642억 건**을 전수 분석했습니다.[10] 이 정도 규모에서는 '전부 읽기'가 아니라 줄이고 세고 비교하는 기술이 필요합니다.",
+   "actually": {
+    "items": [
+     "**좁히기** — 시간·경로·출발지로 먼저 자르고 본다.",
+     "**세기** — 한 출발지가 몇 개의 서로 다른 계정을 건드렸나(고유값 세기).",
+     "**도구** — SIEM이 느리면 로그를 내려받아 파이썬·SQL·Spark 같은 도구로 따로 센다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 IP가 몇 개 계정을 조회했나",
+     "body": "고객 한 명은 자기 배송지만 봅니다. 한 출발지가 10분 안에 서로 다른 계정 5개 이상을 조회하면 경보(직접 돌린 출력: `203.0.113.7 6 ALERT` / `198.51.100.4 1 ok`). 쿠팡 사고처럼 정상 토큰을 쓴 크롤링은 로그인 실패가 없어서 이런 '양'으로 잡아야 합니다.[9][10]",
+     "lang": "python",
+     "code": "from collections import defaultdict\nlogs = [  # (분, 출발지 IP, 조회한 계정, 경로)\n    (1, \"203.0.113.7\", \"u1\", \"/my/address\"), (1, \"203.0.113.7\", \"u2\", \"/my/address\"),\n    (2, \"203.0.113.7\", \"u3\", \"/my/address\"), (2, \"203.0.113.7\", \"u4\", \"/my/address\"),\n    (3, \"203.0.113.7\", \"u5\", \"/my/address\"), (3, \"198.51.100.4\", \"u9\", \"/my/address\"),\n    (4, \"198.51.100.4\", \"u9\", \"/my/orders\"), (4, \"203.0.113.7\", \"u6\", \"/my/address\"),\n]\nTHRESHOLD = 5  # 한 IP가 10분 안에 계정 5개 이상이면 경보\nseen = defaultdict(set)\nfor minute, ip, account, path in logs:\n    if minute <= 10:\n        seen[ip].add(account)\nfor ip, accounts in seen.items():\n    flag = \"ALERT\" if len(accounts) >= THRESHOLD else \"ok\"\n    print(ip, len(accounts), flag)"
+    }
+   ],
+   "refs": [
+    9,
+    10
+   ],
+   "study": [
+    "automate-boring"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience of Host based security investigation (Windows, Linux, Network/Security appliances)",
+   "short": "PC·서버·네트워크 장비 '한 대'를 직접 열어 무슨 일이 있었는지 조사(포렌식)할 줄 알아야 한다.",
+   "why": "로그만으로 부족할 때는 기기 자체를 봅니다. NIST 포렌식 지침은 수집 → 검사 → 분석 → 보고 순서와, 증거를 바꾸지 않게 다루는 법을 적었습니다.[34]",
+   "actually": {
+    "items": [
+     "**휘발성부터** — 메모리·접속 중인 연결·실행 중 프로세스는 전원을 끄면 사라지므로 먼저 뜬다.[34]",
+     "**윈도우** — 실행 흔적, 예약 작업·서비스·시작 프로그램(공격자가 남는 자리), 새 계정.",
+     "**리눅스** — cron, ~/.ssh/authorized_keys, 셸 기록, 이상한 setuid 파일.",
+     "**장비** — 방화벽·VPN 설정 변경 기록, 관리자 로그인."
+    ]
+   },
+   "refs": [
+    34
+   ],
+   "study": [
+    "applied-ir"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience of analyzing security event from network security solutions (IPS/IDS, Network Monitoring solutions, Netflow, etc)",
+   "short": "침입 탐지·차단 장비(IDS/IPS), 네트워크 감시 도구, 넷플로가 낸 경보를 분석할 줄 알아야 한다.",
+   "why": "네트워크 장비 운영은 Detection Ops 팀이 하고(IDS/IPS·NDR·방화벽 등),[7] DART는 그 장비들이 낸 경보를 사건으로 엮습니다.",
+   "actually": {
+    "items": [
+     "**IDS/IPS 경보** — 시그니처가 맞았다고 다 공격은 아니다. 실제 응답이 성공했는지(서버가 200을 줬나)까지 본다.",
+     "**넷플로** — 내용 없이 '누가 누구와 몇 바이트를 언제' 주고받았는지만 남는 기록. 표준은 RFC 3954(NetFlow v9).[24]",
+     "**네트워크 감시의 기본서** — Bejtlich의 책은 경보·세션·전체 패킷 데이터를 단계별로 쓰는 법을 다룹니다."
+    ]
+   },
+   "refs": [
+    7,
+    24
+   ],
+   "study": [
+    "nsm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience of analyzing security event from endpoint security solutions (EDR, HIPS, Anti-Virus, DLP, etc)",
+   "short": "PC·서버에 깔린 보안 제품(EDR·HIPS·백신·DLP)의 경보를 분석할 줄 알아야 한다.",
+   "why": "한국 DART·관제 공고가 같은 네 가지를 적었습니다.[2][3]",
+   "actually": {
+    "items": [
+     "**EDR** — 프로세스 부모-자식 관계(워드가 PowerShell을 띄웠다 = 의심), 네트워크 연결, 파일 변경을 기록하고 격리 버튼이 있다.",
+     "**HIPS** — 호스트에서 정해진 행동(레지스트리 변경 등)을 막는 규칙형 방어.",
+     "**백신** — 알려진 악성 파일. '탐지됐다'와 '지워졌다'는 다르다.",
+     "**DLP** — 개인정보·기밀이 메일·USB·업로드로 나가는 것을 감시. 내부자 사고에서 중요하다."
+    ]
+   },
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience of analyzing security event from application (Web application, Mobile app, Email security, etc)",
+   "short": "웹·모바일 앱·메일 보안 쪽에서 나온 사건도 분석할 줄 알아야 한다 — 쇼핑몰의 공격면이 거기라서.",
+   "why": "쿠팡 사고는 서버 침투가 아니라 정상 화면(배송지 목록·주문 목록) 요청을 토큰으로 대량 호출한 것이었습니다.[10] 미국 DART 공고는 CDN 보안 제품(Akamai·Cloudflare)과 메일 보안 사건 대응을 업무로 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**웹** — WAF·CDN 로그에서 공격 요청과 정상 요청 가르기, 계정 탈취 시도(크리덴셜 스터핑).",
+     "**앱 로그 설계** — OWASP 로깅 지침: 인증 성공/실패, 권한 실패, 입력 검증 실패를 남기고 개인정보는 남기지 말 것.[33]",
+     "**메일** — 피싱 메일의 링크·첨부를 열어 본 사람 찾기, 같은 메일 일괄 회수."
+    ]
+   },
+   "refs": [
+    4,
+    10,
+    33
+   ],
+   "study": [
+    "owasp-logging"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience in Automation and Scripting using Bash, Python, PowerShell",
+   "short": "반복 분석을 Bash·Python·PowerShell 스크립트로 자동화할 줄 알아야 한다.",
+   "why": "쿠팡은 탐지·대응 자동화를 따로 하는 엔지니어를 두고 SIEM·EDR·위협 인텔리전스·티켓 시스템을 엮습니다.[6] DART는 그 자동화를 쓰고, 사고 중 필요한 작은 도구는 직접 짭니다. {추론}",
+   "actually": {
+    "items": [
+     "**Bash** — 리눅스 서버에서 로그 자르기·세기(grep·awk·sort|uniq -c).",
+     "**Python** — API로 SIEM·EDR 결과 받아 합치기, 위 예시 같은 집계.",
+     "**PowerShell** — 윈도우 여러 대에서 같은 정보(실행 서비스·로그인 기록) 한 번에 모으기."
+    ]
+   },
+   "refs": [
+    6
+   ],
+   "study": [
+    "automate-boring",
+    "ps-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Proactive and proactive work attitude",
+   "short": "시키기 전에 먼저 찾아 움직이는 태도 — 위협 사냥 자체가 '먼저 찾기'라서.",
+   "why": "공고 원문은 같은 단어를 두 번 썼습니다(아마 오타).[1] 위협 사냥과 새 팀 세우기 모두 시키는 일이 아니라 찾아서 하는 일입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "BS degree or equivalent practical experience",
+   "short": "학사 학위 또는 그에 맞는 실무 경력 — 학위가 없어도 경력으로 대신할 수 있다.",
+   "why": "한국 DART 공고도 같은 문구입니다.[2] 15년 경력을 요구하는 자리라 학위보다 경력이 판단의 중심입니다. {추론}",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Knowledge of container environments (e.g., Kubernetes, Docker)",
+   "short": "컨테이너(도커·쿠버네티스) 환경을 알면 좋다 — 서비스가 컨테이너로 돌면 사고도 거기서 난다.",
+   "why": "컨테이너는 몇 분 살다 사라져서 기존 서버 포렌식 방식이 잘 안 통합니다. 쿠버네티스는 API 서버가 누가 무엇을 했는지 감사 로그로 남길 수 있습니다.[23]",
+   "actually": {
+    "items": [
+     "**감사 로그** — 누가 어떤 파드를 만들고 어떤 비밀값(Secret)을 읽었나.[23]",
+     "**흔한 사고** — 노출된 대시보드·과한 권한의 서비스 계정, 컨테이너 안에서 노드로 탈출, 이미지에 박힌 키.",
+     "**증거 남기기** — 컨테이너가 지워지기 전에 로그와 파일시스템을 떠 둔다 {추론}."
+    ]
+   },
+   "refs": [
+    23
+   ],
+   "study": [
+    "book-docker",
+    "book-k8s",
+    "k8s-audit"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Current understanding of Network Traffic/Packet analysis and forensic",
+   "short": "네트워크 패킷을 직접 열어 보고 분석·포렌식할 수 있으면 좋다.",
+   "why": "넷플로는 '얼마나'만 알려 주고, 패킷은 '무엇을'까지 보여 줍니다. 다만 요즘 트래픽 대부분이 암호화돼 있어서 무엇을 볼 수 있고 없는지 아는 것이 '현재의 이해'입니다. {추론}",
+   "actually": {
+    "items": [
+     "Wireshark로 세션 따라가기, DNS·HTTP·TLS 핸드셰이크(서버 이름·인증서) 읽기, 비콘(일정 간격 접속) 찾기."
+    ]
+   },
+   "refs": [
+    24
+   ],
+   "study": [
+    "ppa3",
+    "wireshark-guide"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience in Automation and Scripting using Bash, Python, PowerShell",
+   "short": "자격요건과 같은 문장이 우대에도 있다 — 자동화를 그만큼 중요하게 본다는 뜻.",
+   "why": "자격요건 줄과 같은 내용입니다.[1] 요건은 '할 줄 안다', 우대는 '팀에 쓸 도구를 만들어 본 적 있다'로 읽으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "automate-boring"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Recruitment Process and Others",
+   "short": "아래는 채용 절차와 안내 — 공고 원문이 우대사항 칸 뒤에 붙여 놓은 것.",
+   "why": "요건이 아니라 안내 문단입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Application Review - Job Fit Interview - Focus Interview – Offer",
+   "short": "서류 → 직무 적합 면접 → 심층 면접 → 처우 제안(오퍼) 순서.",
+   "why": "면접이 두 번이고, 연봉은 마지막 오퍼 단계에서 정해집니다.[1] 심층 면접에서는 실제로 맡았던 사고를 깊게 묻는다고 보는 게 자연스럽습니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "The exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.",
+   "short": "자리나 일정에 따라 절차가 바뀔 수 있다는 안내.",
+   "why": "일반 안내 문구입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Interview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "면접 일정과 결과는 지원할 때 낸 이메일로 알려 준다.",
+   "why": "일반 안내 문구입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to Consider",
+   "short": "아래는 지원 전 알아 둘 점.",
+   "why": "안내 문단 제목입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "This job posting may be closed prior to the stated end date for application if all openings are filled.",
+   "short": "사람을 다 뽑으면 마감일 전에 닫힐 수 있다.",
+   "why": "상시 채용 공고의 일반 안내입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Coupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.",
+   "short": "지원서에 거짓이 있으면 합격(오퍼)을 취소할 수 있다.",
+   "why": "일반 안내 문구입니다. 보안 직군은 경력 검증이 꼼꼼한 편이라 사고 경험을 부풀리지 않는 게 좋습니다 {추론}.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Those eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.",
+   "short": "보훈 대상자·장애인 등 고용 보호 대상은 법에 따라 우대받을 수 있다.",
+   "why": "법에 따른 일반 안내 문구입니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "nist-61",
+   "title": "NIST SP 800-61 Rev. 3 — Incident Response Recommendations",
+   "by": "NIST · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "why": "사고 판정·격리·회고·역할 나누기의 공통 틀. 업무 줄 '절차 개선'을 할 때 뼈대가 된다."
+  },
+  {
+   "id": "nist-92",
+   "title": "NIST SP 800-92 — Guide to Computer Security Log Management",
+   "by": "NIST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://csrc.nist.gov/pubs/sp/800/92/final",
+   "why": "어떤 로그를 얼마나 남기고 시각을 어떻게 맞추나 — 시간표를 만드는 보고서 업무의 기초."
+  },
+  {
+   "id": "aws-ir",
+   "title": "AWS Security Incident Response Guide",
+   "by": "AWS 백서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-security-incident-response-guide/welcome.html",
+   "why": "클라우드에서 키 유출·인스턴스 격리·증거 보존을 어떻게 하나. 'AWS 사건 분석' 요건용."
+  },
+  {
+   "id": "attack",
+   "title": "MITRE ATT&CK",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://attack.mitre.org/",
+   "why": "공격 수법을 이름 붙여 정리한 표. 위협 사냥 가설을 세우고 보고서에 수법을 적을 때 공용어."
+  },
+  {
+   "id": "sigma",
+   "title": "Sigma 탐지 규칙 저장소",
+   "by": "SigmaHQ · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "why": "제품과 상관없는 규칙 형식. 사냥에서 찾은 수법을 규칙으로 바꿔 넘기는 연습."
+  },
+  {
+   "id": "book-threat-hunting",
+   "title": "위협 인텔리전스와 데이터 기반 위협 사냥",
+   "by": "발렌티나 코스타 가즈콘 · 박지수 옮김 · 에이콘출판 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000009265024",
+   "why": "ATT&CK·Sigma로 가설을 세우고 ELK 실습실에서 직접 사냥한다. 업무 '위협 사냥' 두 줄을 한국어로 가장 가깝게 연습하는 책."
+  },
+  {
+   "id": "book-detection-eng",
+   "title": "실전 위협 탐지 엔지니어링",
+   "by": "메건 로디 외 · 서도현 옮김 · 에이콘출판 · 2026",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012746248",
+   "why": "탐지 규칙을 설계·검증하고 범위를 재는 법. DART가 탐지 팀에 '무엇을 왜 놓쳤나'를 되돌려 줄 때 필요한 말."
+  },
+  {
+   "id": "applied-ir",
+   "title": "Applied Incident Response",
+   "by": "Steve Anson · Wiley · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.wiley.com/en-us/Applied+Incident+Response-p-9781119560265",
+   "why": "윈도우 중심 사고 대응 — 원격 증거 수집·메모리·로그 분석·사냥. 호스트 조사 요건용."
+  },
+  {
+   "id": "nsm",
+   "title": "The Practice of Network Security Monitoring",
+   "by": "Richard Bejtlich · No Starch Press · 2013",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://nostarch.com/nsm",
+   "why": "네트워크 경보·세션·패킷 데이터로 사건을 찾는 방법. IDS/IPS·넷플로 요건용."
+  },
+  {
+   "id": "ppa3",
+   "title": "Practical Packet Analysis (3rd Edition)",
+   "by": "Chris Sanders · No Starch Press · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://nostarch.com/packetanalysis3",
+   "why": "Wireshark로 패킷을 열어 읽는 입문서. 우대 '패킷 분석'의 첫 책."
+  },
+  {
+   "id": "wireshark-guide",
+   "title": "Wireshark User's Guide",
+   "by": "Wireshark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+   "why": "필터·세션 따라가기·통계 기능 사용법. 책과 같이 본다."
+  },
+  {
+   "id": "splunk-intro",
+   "title": "Intro to Splunk (무료 e러닝)",
+   "by": "Splunk Education",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.splunk.com/en_us/training/courses/intro-to-splunk.html",
+   "why": "SIEM 검색 언어(SPL)의 기초. 'SIEM 쿼리' 요건의 출발점(쿠팡 대만이 쓰는 제품은 공개되지 않았다)."
+  },
+  {
+   "id": "botsv3",
+   "title": "Boss of the SOC (BOTS) v3 데이터셋",
+   "by": "Splunk · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/splunk/botsv3",
+   "why": "실제 공격이 섞인 공개 로그 묶음. 윈도우·클라우드·네트워크 로그를 넘나드는 사냥 연습에 쓴다."
+  },
+  {
+   "id": "ms-4625",
+   "title": "Microsoft Learn · 4625(F): An account failed to log on",
+   "by": "Microsoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4625",
+   "why": "로그인 실패 이벤트의 필드·실패 코드 뜻. 윈도우 로그 요건의 기본."
+  },
+  {
+   "id": "ps-docs",
+   "title": "PowerShell 설명서",
+   "by": "Microsoft Learn(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/ko-kr/powershell/",
+   "why": "윈도우 여러 대에서 정보를 한 번에 모으는 스크립트 — 자동화 요건 중 PowerShell 몫."
+  },
+  {
+   "id": "automate-boring",
+   "title": "Automate the Boring Stuff with Python",
+   "by": "Al Sweigart · No Starch Press",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://automatetheboringstuff.com/",
+   "why": "파일·CSV·정규식·웹 요청을 파이썬으로 다루는 실용서(온라인 무료). 로그 집계 스크립트의 기초."
+  },
+  {
+   "id": "owasp-logging",
+   "title": "OWASP Logging Cheat Sheet",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html",
+   "why": "애플리케이션이 무엇을 로그로 남겨야 사고 때 쓸 수 있나. 웹·앱 사건 분석 요건용."
+  },
+  {
+   "id": "k8s-audit",
+   "title": "Kubernetes · Auditing",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+   "why": "쿠버네티스 감사 로그의 단계·정책. 컨테이너 사고에서 누가 무엇을 했나를 찾는 기초."
+  },
+  {
+   "id": "book-docker",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "실제로 친 명령과 출력으로 컨테이너가 어떻게 생기고 사라지는지 — 우대 '컨테이너' 줄의 첫걸음."
+  },
+  {
+   "id": "book-k8s",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 출력 읽기, 파드·서비스 계정 — 컨테이너 사고 조사 전에 알아야 할 바닥."
+  },
+  {
+   "id": "sre-oncall",
+   "title": "Google SRE Book · Being On-Call",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/being-on-call/",
+   "why": "당번이 지치지 않게 호출 수·주기를 관리하는 법. 팀장으로 온콜 당번표를 짤 때."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "사고 대응의 틀 잡기",
+   "time": "1~2주",
+   "goal": "사고를 판정·격리·회고 단계로 나눠 말하고, 쿠팡 2025년 사고를 그 틀로 설명할 수 있다.",
+   "task": "위 풀이의 쿠팡 사고 사실(시작일·확인일·원인·조사단 지적)로 한 장짜리 가상 사고 보고서(시간표·영향·원인·조치·재발 방지)를 써 본다.",
+   "resources": [
+    "nist-61",
+    "nist-92"
+   ]
+  },
+  {
+   "title": "운영체제 로그 읽기",
+   "time": "2~3주",
+   "goal": "윈도우·리눅스·맥의 로그인·실행 기록이 어디에 어떤 모양으로 남는지 안다.",
+   "task": "가상 머신 한 대에 일부러 로그인 실패를 내고, 4625·4624와 리눅스 auth.log에서 같은 사건을 찾아 위 예시 스크립트로 경보를 만들어 본다.",
+   "resources": [
+    "ms-4625",
+    "applied-ir",
+    "ps-docs"
+   ]
+  },
+  {
+   "title": "SIEM 검색과 위협 사냥",
+   "time": "3~4주",
+   "goal": "가설을 세우고 SIEM 쿼리로 확인해, 찾은 수법을 규칙으로 바꿀 수 있다.",
+   "task": "BOTS v3 데이터에서 '유효한 계정 악용' 가설 하나를 골라 쿼리로 증거를 찾고, Sigma 규칙 한 개로 적는다.",
+   "resources": [
+    "splunk-intro",
+    "botsv3",
+    "book-threat-hunting",
+    "attack",
+    "sigma"
+   ]
+  },
+  {
+   "title": "네트워크·클라우드 넓히기",
+   "time": "3~4주",
+   "goal": "넷플로·패킷·CloudTrail로 데이터가 어디로 나갔는지 추적할 수 있다.",
+   "task": "가상 넷플로로 대량 전송 호스트를 찾는 위 예시를 늘려, 한 호스트의 패킷을 Wireshark로 열어 목적지·서버 이름을 확인하는 흐름을 정리한다.",
+   "resources": [
+    "nsm",
+    "ppa3",
+    "wireshark-guide",
+    "aws-ir"
+   ]
+  },
+  {
+   "title": "자동화와 컨테이너 (우대)",
+   "time": "계속",
+   "goal": "반복 분석을 스크립트로 돌리고, 컨테이너 환경 사고를 감사 로그로 조사할 수 있다.",
+   "task": "로그 CSV를 읽어 출발지별 고유 계정 수를 세는 파이썬 도구를 만들고, 로컬 쿠버네티스에 감사 로그를 켜 'Secret을 읽은 사람'을 찾아본다.",
+   "resources": [
+    "automate-boring",
+    "book-docker",
+    "book-k8s",
+    "k8s-audit",
+    "book-detection-eng"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없고 오퍼 단계에서 정한다. 비교할 공개 숫자는 같은 팀 미국 공고의 기본급 범위(연 10만 8천~23만 2천 달러)와 대만 정보통신업 중앙값(연 80.7만 대만달러)뿐이다",
+  "rows": [
+   {
+    "label": "같은 팀 미국 공고 기본급 범위",
+    "value": "연 10만 8,000 ~ 23만 2,000달러",
+    "basis": "공고 · 2025년",
+    "peer": true,
+    "note": "시애틀 DART Senior Security Analyst 공고(2025-12 내려감)의 미국 지역별 최저~최고 범위. 매니저가 아니라 분석가 자리이고, 보너스·주식은 따로라고 적혀 있다 [4]"
+   },
+   {
+    "label": "쿠팡 Inc. 직원 총보상 중앙값",
+    "value": "3만 3,831달러",
+    "basis": "공시 · 2025 회계연도",
+    "note": "미국 위임장(DEF 14A)의 CEO 보수 비율 항목 — CEO와의 비율 약 95:1. 물류 현장을 포함한 전 세계 직원의 한가운데 값이라 이 자리와는 거리가 멀다 [26]"
+   },
+   {
+    "label": "대만 출판·영상·정보통신업 연간 총급여 중앙값",
+    "value": "80.7만 대만달러",
+    "basis": "정부 통계 · 2024년",
+    "peer": true,
+    "note": "행정원 주계총처 113년 피고용인 연간 총급여 중앙값(업종 3위). 전체 산업은 54.6만, 1위 금융·보험업은 110.6만 대만달러 [27]"
+   }
+  ],
+  "how": "공고의 전형은 서류 → 직무 적합 면접 → 심층 면접 → 오퍼 순서이고 연봉은 오퍼에서 정해진다 [1]. 쿠팡 대만 법인 직원의 공시 평균은 없다 — **공시 숫자 없음**. 위 통계 중앙값은 업종 전체 직원의 한가운데 값이라, 15년 경력 팀장 자리는 이보다 훨씬 위에서 협상된다고 보는 게 자연스럽다 {추론}. 통화가 달라 막대 그래프는 넣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "유연 근무",
+    "detail": "유연 근무 시간 또는 재택"
+   },
+   {
+    "name": "연차",
+    "detail": "입사 첫해부터 유급 연차 15일, 필요할 때 신청"
+   },
+   {
+    "name": "의료 보험",
+    "detail": "본인과 직계 가족 의료 보험"
+   },
+   {
+    "name": "배움",
+    "detail": "외국어·소프트 스킬 강좌 선택 참여"
+   },
+   {
+    "name": "휴게 공간·카페테리아",
+    "detail": "쉬는 시간에 커피·차·디저트"
+   },
+   {
+    "name": "팀·회사 행사",
+    "detail": "게임·음식이 있는 사내 행사"
+   },
+   {
+    "name": "열린 문화",
+    "detail": "칸막이·직함 없는 사무실"
+   }
+  ],
+  "note": "쿠팡 채용 사이트의 대만(번체) 'Why Coupang' 페이지 '문화와 복지' 항목이다(날짜 표기 없음) [29]. 페이지는 나라를 따로 적지 않았고 직무·근무지에 따라 복지가 다를 수 있다고 밝혔다 — 처우 때 대만 법인 기준으로 다시 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 타이베이 사무실 (타이베이 101)",
+  "address": "13F, No. 7, Sec. 5, Xinyi Rd., Xinyi Dist., Taipei City, Taiwan (타이베이시 신이구 신이로 5단 7호 13층)",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=13F%2C%20No.%207%2C%20Sec.%205%2C%20Xinyi%20Rd.%2C%20Xinyi%20Dist.%2C%20Taipei%20City",
+  "near": "MRT 타이베이101/세계무역센터역 바로 옆 [28]",
+  "note": "공고 근무지는 'Taipei, Taiwan'이고 [1], 주소는 쿠팡 채용 사이트의 타이베이 근무지 페이지에 적힌 것이다 [28]. 해외 주소라 네이버 지도 대신 구글 지도 검색 링크를 달았다. 이 팀 자리가 이 건물인지는 공고에 없다 {추론}."
+ },
+ "fit": {
+  "good": [
+   "사고 한 건을 처음부터 보고서까지 끝까지 끌고 가 본 사람[1]",
+   "팀장이 돼서도 직접 SIEM을 두드리고 싶은 사람[1]",
+   "새 거점을 처음 세우는 일 — 절차·당번·채용을 맨땅에서 — 이 즐거운 사람[1]",
+   "영어로 다른 나라 팀과 매일 일하는 게 편한 사람[1]"
+  ],
+  "hard": [
+   "보안 15년·사고 분석 8년 — 경력 문턱이 매우 높다[1]",
+   "온콜이 있다 — 밤·주말 호출을 받을 수 있다[1][2]",
+   "2025년 사고 이후 대만 당국의 조사·점검이 이어지는 시기라 외부 시선과 보고 압박이 크다[13]",
+   "대만 근무 — 공고는 비자·이주 지원을 적지 않았다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "정상적으로 발급된 토큰으로 고객 정보를 대량 조회하는 공격을 어떻게 탐지하겠어요?",
+   "a": "2025년 쿠팡 사고의 실제 수법 — 로그인 실패가 없어서 '양'과 '패턴'으로 잡아야 한다.[9][10]"
+  },
+  {
+   "q": "처음엔 피해 4,500건이라고 판단했는데 조사 중 수천만 건으로 늘었다면, 무엇을 다르게 했어야 하나요?",
+   "a": "영향 평가의 범위 — 실제 쿠팡 사고의 숫자 변화.[11]"
+  },
+  {
+   "q": "CSOC에서 올라온 경보가 오탐인지 진짜인지 어떤 순서로 판단하나요?",
+   "a": "DART가 3차로 받는 일의 핵심.[1][3]"
+  },
+  {
+   "q": "CSOC 규칙에 안 걸린 위협을 찾으려면 어떤 가설부터 세우겠어요?",
+   "a": "업무 줄의 위협 사냥.[1][18]"
+  },
+  {
+   "q": "대만에서 개인정보 유출이 의심될 때 첫 24시간에 누구에게 무엇을 알리겠어요?",
+   "a": "개정 개인정보보호법의 신고 의무와 2026년 당국 지적.[13][16]"
+  },
+  {
+   "q": "새 팀의 온콜 당번표를 어떻게 짜겠어요? 한국·미국 팀과 시차는 어떻게 쓰나요?",
+   "a": "팀장 자리의 온콜 운영.[1][25]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Manager, Security Engineering _ DART Taiwan",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188073",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "팀 소개·업무·자격·우대·전형"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · [쿠팡] Staff Security Engineer (DART)",
+   "url": "https://www.wanted.co.kr/wd/393511",
+   "kind": "posting",
+   "note": "한국 DART — 업무·요건(12년·8년)·온콜, 근무지 이스트폴 타워"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · [쿠팡] 보안 관제 담당자(Tier2 SOC Analyst)",
+   "url": "https://www.wanted.co.kr/wd/371036",
+   "kind": "posting",
+   "note": "마감된 공고 — CSOC 24x7·SIEM/SOAR·Tier1→Tier2→Tier3(DART)·Playbook"
+  },
+  {
+   "n": 4,
+   "title": "Built In · Coupang Blue Team DART – Senior Security Analyst (Seattle)",
+   "url": "https://builtin.com/job/blue-team-dart-senior-security-analyst/7087254",
+   "kind": "posting",
+   "date": "2025-12",
+   "note": "2025-12-18 내려간 공고 — 업무·요건·CDN/메일 보안·기본급 범위"
+  },
+  {
+   "n": 5,
+   "title": "Coupang Careers · Director, Security Engineering, Taiwan",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8300309",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "대만·일본 CISO에게 보고, 대만 결제 서비스 보안·규제 대비"
+  },
+  {
+   "n": 6,
+   "title": "Coupang Careers · Security Automation Engineer",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8207116",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "Digital Trust 조직 탐지 엔지니어링 팀 — Detection-as-Code·AI-SOC·SIEM/EDR/CTI/티켓 연동"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Careers · Senior, Network Security Engineer (Detection Operations)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8203405",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "Detection Ops 팀 — 보안 장비·탐지 룰 운영"
+  },
+  {
+   "n": 8,
+   "title": "Forrester · Inside An E-Commerce Giant's Threat Intelligence Strategy",
+   "url": "https://www.forrester.com/blogs/inside-an-e-commerce-giants-threat-intelligence-strategy/",
+   "kind": "news",
+   "date": "2025-10-05",
+   "note": "쿠팡 위협 관리 책임자 인터뷰 — 2024년 중반 결성, 대만 인력 확대 계획"
+  },
+  {
+   "n": 9,
+   "title": "바이라인네트워크 · 청문회로 드러난 쿠팡의 '보안 구멍' 3가지",
+   "url": "https://byline.network/2025/12/18-536/",
+   "kind": "news",
+   "date": "2025-12-19",
+   "note": "쿠팡 CISO 설명 — 퇴사자가 복사한 인증키로 API 크롤링"
+  },
+  {
+   "n": 10,
+   "title": "뉴시스 · 쿠팡 합동조사단, 정보유출 3367만건·무단 조회 확인",
+   "url": "https://mobile.newsis.com/view/NISX20260210_0003510149",
+   "kind": "news",
+   "date": "2026-02-10",
+   "note": "민관합동조사단 발표 — 서명키 관리·모의해킹 후속 미흡·로그 25.6TB 분석·재발 방지 일정"
+  },
+  {
+   "n": 11,
+   "title": "CIO Korea · 쿠팡 3370만 계정 개인정보 유출…인증키 관리 부실",
+   "url": "https://www.cio.com/article/4098352/",
+   "kind": "news",
+   "date": "2025-12-01",
+   "note": "2025-06-24 시작 추정, 11-18 확인, 4,500 → 3,370만 계정"
+  },
+  {
+   "n": 12,
+   "title": "Coupang · Update on the November 29 personal information incident",
+   "url": "https://www.aboutcoupang.com/?p=3511",
+   "kind": "company",
+   "date": "2026-02-24",
+   "note": "대만 약 20만 계정 조회 확인, Mandiant·Palo Alto 포렌식, 2025-11 차단"
+  },
+  {
+   "n": 13,
+   "title": "Taiwan News · Digital ministry investigates Coupang Taiwan data breach",
+   "url": "https://www.taiwannews.com.tw/news/6311508",
+   "kind": "news",
+   "date": "2026-03-01",
+   "note": "MODA 2-25 현장 점검, 개인정보보호법 위반 조사·늦은 신고 지적"
+  },
+  {
+   "n": 14,
+   "title": "Taipei Times · Taiwanese accounts unaffected in Coupang's recent data leak: MODA",
+   "url": "https://www.taipeitimes.com/News/taiwan/archives/2025/12/04/2003848322",
+   "kind": "news",
+   "date": "2025-12-04",
+   "note": "초기 발표 — 대만 피해 없음"
+  },
+  {
+   "n": 15,
+   "title": "DIGITIMES · Coupang Taiwan details local response to 2025 breach, launches bug bounty",
+   "url": "https://www.digitimes.com/news/a20260508PD222.html",
+   "kind": "news",
+   "date": "2026-05-10",
+   "note": "CYBERSEC 2026 쿠팡 대만 CISO 발표 보도(앞부분만 공개) — HackerOne 버그바운티"
+  },
+  {
+   "n": 16,
+   "title": "Baker McKenzie · Taiwan: Amendment to Personal Data Protection Act",
+   "url": "https://www.bakermckenzie.com/en/insight/publications/alerts/2025/10/taiwan-amendment-to-personal-data-protection-act",
+   "kind": "reference",
+   "date": "2025-10",
+   "note": "2025-10-17 입법원 통과·11-11 공포, PDPC 설립·유출 신고 의무(세부는 하위 규정)"
+  },
+  {
+   "n": 17,
+   "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "kind": "reference",
+   "date": "2025-04"
+  },
+  {
+   "n": 18,
+   "title": "MITRE ATT&CK · T1078 Valid Accounts",
+   "url": "https://attack.mitre.org/techniques/T1078/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "NIST SP 800-92 · Guide to Computer Security Log Management",
+   "url": "https://csrc.nist.gov/pubs/sp/800/92/final",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Microsoft Learn · 4625(F): An account failed to log on",
+   "url": "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4625",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "AWS 백서 · AWS Security Incident Response Guide",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-security-incident-response-guide/welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "SigmaHQ · Sigma 탐지 규칙 저장소",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Kubernetes · Auditing",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "RFC 3954 · Cisco Systems NetFlow Services Export Version 9",
+   "url": "https://www.rfc-editor.org/rfc/rfc3954",
+   "kind": "reference",
+   "date": "2004"
+  },
+  {
+   "n": 25,
+   "title": "Google SRE Book · Being On-Call",
+   "url": "https://sre.google/sre-book/being-on-call/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A) — CEO Pay Ratio",
+   "url": "https://www.sec.gov/Archives/edgar/data/1834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026-04-27",
+   "note": "2025 회계연도 직원 총보상 중앙값"
+  },
+  {
+   "n": 27,
+   "title": "104職場力 · 主計總處 113年 受僱員工全年總薪資中位數(聯合報 전재)",
+   "url": "https://blog.104.com.tw/?p=219329",
+   "kind": "news",
+   "date": "2025-11-26",
+   "note": "행정원 주계총처 통계 — 업종별 중앙값"
+  },
+  {
+   "n": 28,
+   "title": "Coupang Careers · Taipei",
+   "url": "https://www.coupang.jobs/en/locations/taipei/",
+   "kind": "company",
+   "note": "타이베이 사무실 주소·지하철"
+  },
+  {
+   "n": 29,
+   "title": "Coupang Careers · 為什麼選擇 Coupang (Why Coupang, 대만 페이지)",
+   "url": "https://www.coupang.jobs/tw/why-coupang/",
+   "kind": "company",
+   "note": "문화와 복지 — 나라 구분 없음, 직무·근무지에 따라 다를 수 있다고 명시"
+  },
+  {
+   "n": 30,
+   "title": "Korea Times · Coupang turns to Taiwan as key hub for global growth",
+   "url": "https://www.koreatimes.co.kr/business/companies/20260919/coupang-turns-to-taiwan-as-key-hub-for-global-growth",
+   "kind": "news",
+   "date": "2026-09-19"
+  },
+  {
+   "n": 31,
+   "title": "Microsoft Learn · about_Logging_Windows (PowerShell 스크립트 블록 로깅)",
+   "url": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_logging_windows",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Apple Developer · Logging (unified logging)",
+   "url": "https://developer.apple.com/documentation/os/logging",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "OWASP Cheat Sheet Series · Logging Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "NIST SP 800-86 · Guide to Integrating Forensic Techniques into Incident Response",
+   "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
+   "kind": "reference",
+   "date": "2006"
+  },
+  {
+   "n": 35,
+   "title": "Amazon GuardDuty 사용 설명서",
+   "url": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "쿠팡이 DART나 사고 대응 방식을 직접 설명한 기술 블로그·발표 영상은 찾지 못했습니다(받은 영상 없음). 2026년 5월 CYBERSEC 2026의 쿠팡 대만 CISO 발표는 보도 앞부분만 읽었고 영상은 찾지 못했습니다. 그래서 팀 구조는 같은 회사의 다른 공고(한국 DART·관제, 미국 DART, 대만 보안 디렉터, 탐지 자동화·탐지 운영)로, 일의 방법은 NIST·AWS·MITRE·OWASP 같은 공개 기준으로 '보통 이런 것'을 보였습니다. 쿠팡 대만이 쓰는 SIEM·EDR 제품, 팀 규모는 공개되지 않았습니다. 2025년 사고의 사실은 보도·정부 조사 발표·쿠팡 발표에서 왔고, 대만 개정 개인정보보호법은 시행일과 신고 기한이 하위 규정으로 정해질 예정이라 지원 시점에 다시 확인해야 합니다."
+}
