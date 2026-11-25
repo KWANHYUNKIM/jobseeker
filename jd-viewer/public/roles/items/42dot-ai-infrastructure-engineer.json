@@ -1,0 +1,1243 @@
+{
+ "id": "42dot-ai-infrastructure-engineer",
+ "company": "포티투닷(42dot)",
+ "role": "AI 인프라 엔지니어",
+ "team": "AI Infrastructure (자율주행·AI 모델 학습용 GPU 클러스터)",
+ "jobs": [
+  "ats-ashby:42dot:fa24b02d-a231-4e0c-affa-319d47c19b58",
+  "wanted-392726"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "자율주행·AI 모델을 학습시키는 **GPU 수천 장짜리 클러스터**를 Kubernetes·Slurm으로 운영합니다 — 고장 나면 찾아서 빼고, 팀마다 GPU를 나눠 주고, 반복 작업을 자동화합니다.[1]",
+  "env": "2024년 A100 320장 자체 클러스터[3]에서, 현대차그룹의 블랙웰 GPU 5만 장 AI 팩토리 계획[4][5] 쪽으로 커지는 중입니다. 여러 데이터센터에 걸쳐 있습니다.[1]",
+  "oneline": "연구자가 아니라 **연구자의 GPU를 살려 두는 사람**. 리눅스·쿠버네티스·장애 대응이 중심이고 ML 지식은 우대입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Kubernetes 및 Slurm을 활용하여 여러 데이터 센터에 분산된 수천 개 규모의 대규모 GPU 클러스터 운영 및 유지 보수 / Operate and maintain a large-scale GPU cluster consisting of thousands of GPUs across multiple data centers using Kubernetes and Slurm.",
+   "short": "GPU 수천 장을 여러 팀이 나눠 쓰도록, 작업 관리자 두 가지(Kubernetes·Slurm)를 늘 살려 두는 일.",
+   "why": "포티투닷은 2024년에 이미 **A100 80GB 320장짜리 자체 학습 클러스터**를 꾸려 자체 언어 모델을 약 1주일 만에 학습했다고 밝혔습니다.[3] 2025년 10월 현대차그룹은 엔비디아 **블랙웰 GPU 5만 장**으로 자율주행·로봇 등의 AI 모델을 학습·검증하고 지역 데이터센터를 세우겠다고 발표했습니다.[4][6] 공고가 말하는 '여러 데이터센터에 흩어진 수천 개'가 이 흐름 위에 있습니다.[1] 같은 회사 LLM 학습 공고는 지원자에게 **Slurm·DDP 같은 분산 학습 도구 경험**을 요구합니다 — 연구자가 큰 학습을 Slurm으로 던진다는 뜻입니다.[11]",
+   "actually": {
+    "intro": "Slurm은 '작업을 줄 세워 빈 GPU에 넣는 대기열(일괄 작업 스케줄러)', Kubernetes는 '컨테이너(앱을 담은 상자)를 서버에 놓고 계속 살려 두는 관리자'입니다. GPU 클러스터에서 실제로 하는 일입니다.",
+    "items": [
+     "**노드 들이기** — 새 GPU 서버에 드라이버·컨테이너 툴킷·장치 플러그인·모니터링 수집기를 깐다. 쿠버네티스에서는 NVIDIA GPU Operator가 이것들을 한 번에 설치·관리한다.[18]",
+     "**Slurm에 GPU 알리기** — slurm.conf 에 GPU 종류를, 노드마다 gres.conf 에 GPU 장치를 적는다(AutoDetect=nvml 로 자동 감지). 실제 장치가 설정보다 적으면 그 노드는 **DRAIN**(새 작업을 안 받음)으로 빠진다.[17]",
+     "**쿠버네티스에 GPU 알리기** — GPU는 `nvidia.com/gpu` 라는 '확장 자원'으로 보이고, 작업은 limits 칸에 몇 장 쓸지 적는다. 컨테이너끼리 GPU 한 장을 나눠 쓰지 않는다(기본 설정).[26]",
+     "**둘을 같이** — Slurm을 만든 SchedMD가 쿠버네티스 위에서 Slurm을 돌리는 Slinky(slurm-operator)를 낸다. 두 관리자를 한 하드웨어 위에 얹는 방법 중 하나다.[21] 포티투닷이 어떤 방식인지는 공개되지 않았다.",
+     "**업그레이드·재고** — 드라이버·CUDA·쿠버네티스 버전을 노드 묶음씩 굴려 올리고, 데이터센터마다 어떤 GPU가 몇 장 살아 있는지 관리한다. {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "학습 작업 한 건이 GPU에 닿기까지 {추론}[17][26]",
+     "steps": [
+      "연구자 · sbatch(Slurm) 또는 kubectl apply(쿠버네티스)로 작업 제출",
+      "스케줄러 · 쿼터·우선순위 검사, 빈 GPU 찾기",
+      "노드 배정 · GRES·장치 플러그인이 GPU 번호를 넘김",
+      "컨테이너 · 드라이버·CUDA·NCCL 위에서 실행",
+      "학습 · 체크포인트 저장, 끝나면 GPU 반납"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "공고 경력이 3~8년이라[2] 클러스터를 처음부터 설계하는 자리라기보다 **이미 있는 클러스터를 매일 살려 두는** 일이 중심입니다. 최소선은 Slurm의 `sinfo`·`squeue`·`scontrol show node`, 쿠버네티스의 `kubectl describe node` 로 \"이 GPU가 왜 안 잡히나\"를 설명할 수 있는 정도입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    11,
+    17,
+    18,
+    21,
+    26
+   ],
+   "study": [
+    "slurm-docs",
+    "k8s-gpu",
+    "gpu-operator",
+    "wiki-kubernetes",
+    "slinky"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "GPU 하드웨어 및 소프트웨어 스택 전반의 장애를 모니터링하고 진단하여 고가용성 유지 및 신속한 장애 복구 수행 / Monitor and diagnose failures across the GPU hardware and software stacks to ensure high availability and rapid recovery.",
+   "short": "GPU·드라이버·네트워크 중 어디가 고장 났는지 빨리 찾아 노드를 빼고, 학습이 다시 돌게 하는 일.",
+   "why": "GPU가 많아지면 고장은 '가끔'이 아니라 '매일'입니다. Meta는 H100 16,384장으로 Llama 3를 학습한 54일 동안 **예상 못 한 중단이 419번** 있었고, 그중 약 78%가 하드웨어 탓이었으며 GPU 고장 148건·GPU 메모리(HBM3) 72건이 가장 많았다고 보고했습니다.[13] 포티투닷은 어려운 장면을 골라 다시 학습시키는 **지속 학습(Continuous Training)** 을 데이터 플라이휠의 중심에 두고 있어[7], 클러스터가 멈추면 개선 주기 전체가 늦어집니다. {추론}",
+   "actually": {
+    "items": [
+     "**드라이버 오류(Xid) 읽기** — NVIDIA 드라이버는 GPU 오류를 커널 로그에 'Xid 번호'로 남긴다. 예를 들어 79번은 GPU가 버스에서 떨어져 나간 것이다. 번호별 뜻은 NVIDIA의 Xid 목록에서 찾는다.[14]",
+     "**지표 보기** — DCGM 수집기가 GPU 사용률(`DCGM_FI_DEV_GPU_UTIL_RATIO`), 마지막 Xid(`DCGM_FI_DEV_XID_ERROR`), 온도(`DCGM_FI_DEV_GPU_TEMP_CELSIUS`) 같은 값을 내보낸다.[19]",
+     "**격리 → 진단 → 복귀** — 의심 노드를 Slurm에서는 drain, 쿠버네티스에서는 cordon(새 작업 금지)으로 빼고, 진단·수리·교체 뒤 돌려놓는다. {추론}",
+     "**느린 노드 찾기** — GPU 사이 통신이 느린 노드 하나가 전체 학습을 늦춘다. nccl-tests 로 노드 묶음의 통신 대역폭을 재서 기준보다 낮은 곳을 찾는다.[20]",
+     "**빨리 다시 돌리기** — Meta는 통신 라이브러리를 고쳐(NCCLX) 실패 위치를 빨리 찾고 PyTorch의 기록 장치(flight recorder)로 멈춘 지점을 봐서, 잦은 중단 속에서도 실제 학습 시간을 90% 넘게 지켰다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "수천 장이면 고장은 하루에 한두 번",
+     "body": "Meta의 숫자[13]를 GPU 장수에 비례해 줄여 본 것입니다(고장률이 장수에 비례한다는 단순 가정 {추론}). 2,000~4,000장이면 **하루 한두 번** 무언가가 멈춥니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "unexpected, days, gpus = 419, 54, 16384      # Llama 3 보고서의 숫자\nper_day = unexpected / days\nprint(f\"하루 {per_day:.2f}번 = 약 {24/per_day:.1f}시간마다 한 번\")\nfor n in (1000, 2000, 4000):\n    print(f\"GPU {n:5d}장이면 하루 약 {per_day * n / gpus:.2f}번\")\n# 하루 7.76번 = 약 3.1시간마다 한 번\n# GPU  1000장이면 하루 약 0.47번\n# GPU  2000장이면 하루 약 0.95번\n# GPU  4000장이면 하루 약 1.89번"
+    },
+    {
+     "title": "커널 로그에서 Xid를 뽑아 노드 처리 정하기",
+     "body": "가상의 로그입니다. 79번만 '노드 빼기'로 정한 예시이고, 어떤 번호를 빼고 볼지는 팀 정책입니다(직접 돌린 출력).[14]",
+     "lang": "python",
+     "code": "import re\n\ndmesg = \"\"\"\\\n[Mon Nov 24 03:12:01 2026] NVRM: Xid (PCI:0000:1b:00): 79, pid=0, GPU has fallen off the bus.\n[Mon Nov 24 03:15:44 2026] NVRM: Xid (PCI:0000:3d:00): 13, pid=4121, Graphics Exception\n[Mon Nov 24 04:01:09 2026] eth0: link up\n\"\"\"\nHARD = {79}   # 노드를 빼고 볼 번호 — 목록은 팀 정책으로 정한다\nfor line in dmesg.splitlines():\n    m = re.search(r\"Xid \\(PCI:([0-9a-f:]+)\\): (\\d+)\", line)\n    if not m:\n        continue\n    bus, xid = m.group(1), int(m.group(2))\n    print(f\"{bus} xid={xid} -> {'drain' if xid in HARD else 'watch'}\")\n# 0000:1b:00 xid=79 -> drain\n# 0000:3d:00 xid=13 -> watch"
+    }
+   ],
+   "how_far": "하드웨어 교체(RMA)·데이터센터 작업은 벤더·현장 인력과 같이 합니다. 개발자의 최소선은 로그와 지표로 **'GPU냐, 네트워크냐, 사용자 코드냐'를 가르고** 문제 노드를 격리하는 것입니다. {추론}",
+   "refs": [
+    7,
+    13,
+    14,
+    19,
+    20
+   ],
+   "study": [
+    "llama3",
+    "xid-docs",
+    "dcgm-exporter",
+    "nccl-tests",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Python 또는 Shell을 활용한 자동화 도구 및 스크립트를 개발하여 반복적인 인프라 관리 업무를 효율화 / Develop automation tools and scripts using Python or Shell to streamline repetitive infrastructure management tasks and improve operational efficiency.",
+   "short": "노드 점검·빼기·되돌리기·계정 만들기처럼 매일 반복되는 손일을 스크립트로 바꾸는 일.",
+   "why": "수천 장 규모면 고장이 하루 한두 번 나고(위 계산, [13]) 노드도 데이터센터 여러 곳에 흩어져 있어[1], 같은 점검을 사람이 손으로 하면 놓치는 곳이 생깁니다. {추론}",
+   "actually": {
+    "intro": "GPU 클러스터에서 흔히 자동화하는 일입니다. 포티투닷 내부 도구는 공개되지 않았습니다.",
+    "items": [
+     "**노드 점검** — 정해진 주기로 `nvidia-smi`·커널 로그·DCGM 값을 보고 기준을 넘으면 노드를 빼고 알림을 보낸다.[14][19]",
+     "**새 노드 받아들이기 시험** — 들여온 서버에 nccl-tests 를 돌려 통신 대역폭이 기준에 맞을 때만 대기열에 넣는다.[20]",
+     "**사용자 온보딩** — 새 연구자의 계정·Slurm 계정 묶음(association)·쿠버네티스 네임스페이스와 쿼터를 한 번에 만든다.[15][16]",
+     "**사용량 보고** — 팀별 GPU 사용 시간·쿼터 대비 사용률을 매주 뽑는다. {추론}"
+    ]
+   },
+   "how_far": "한 번 쓰고 버리는 코드가 아니라 **운영 도구**입니다. 두 번 돌려도 같은 결과(멱등), 실패하면 멈추고 알림, 실제로 바꾸기 전에 무엇을 바꿀지 보여 주는 dry-run 정도는 갖춰야 합니다. {추론}",
+   "refs": [
+    1,
+    13,
+    14,
+    15,
+    16,
+    19,
+    20
+   ],
+   "study": [
+    "tlcl",
+    "linux-kernel-story",
+    "nccl-tests"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "GPU 리소스 쿼터(Quota) 관리 및 ML 개발자를 위한 기술 지원을 통해 컴퓨팅 자원의 최적 활용 보장 / Manage GPU resource quotas and provide technical support to ML researchers to ensure optimal utilization of computing resources.",
+   "short": "팀마다 GPU 몫을 정해 공정하게 나누고, \"왜 내 작업이 안 돌아요?\"에 답하는 일.",
+   "why": "포티투닷에는 자율주행 인지·데이터·LLM 학습·음성처럼 GPU를 쓰는 팀이 여럿이고(같은 회사 공고들), 자율주행 쪽은 **수백만 장면** 규모 데이터로 학습합니다.[10][11] GPU는 비싸고 늘 모자라서 누가 얼마나 쓰는지 규칙이 없으면 한 팀이 클러스터를 차지합니다. {추론}",
+   "actually": {
+    "items": [
+     "**Slurm 쿼터** — 계정 묶음(association)에 `GrpTRES=gres/gpu=50` 처럼 '동시에 쓸 수 있는 GPU 총량'을 건다. 넘는 작업은 대기열에서 기다린다. 사람당 한도는 QOS의 `MaxTRESPerUser`. 설정만으로는 안 되고 `AccountingStorageEnforce` 에 limits 를 켜야 실제로 막는다.[16]",
+     "**쿠버네티스 쿼터** — 네임스페이스에 ResourceQuota로 `requests.nvidia.com/gpu: 4` 처럼 건다. GPU 같은 확장 자원은 requests 쪽만 쿼터로 걸 수 있다.[15]",
+     "**노는 GPU 찾기** — 받아 놓고 사용률이 낮은 작업을 DCGM 사용률로 찾아 알려 준다.[19]",
+     "**문의 대응** — '작업이 Pending'(쿼터·자원 부족), 'GPU 메모리 부족', '통신 타임아웃'처럼 연구자가 막히는 곳을 같이 본다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "팀별 쿼터 대비 사용량",
+     "body": "가상의 숫자입니다. llm 팀이 몫의 150%를 쓰고 있어 표시가 붙습니다 — 실제 Slurm이라면 넘는 작업은 대기열에서 기다립니다.[16](직접 돌린 출력)",
+     "lang": "python",
+     "code": "from collections import defaultdict\n\nquota = {\"perception\": 512, \"planning\": 256, \"llm\": 128}\njobs = [(\"perception\", 256), (\"perception\", 192), (\"planning\", 64), (\"llm\", 128), (\"llm\", 64)]\nused = defaultdict(int)\nfor team, gpus in jobs:\n    used[team] += gpus\nfor team, q in quota.items():\n    u = used[team]\n    print(f\"{team:10s} {u:4d}/{q:<4d} {u/q:6.1%} {'OVER' if u > q else ''}\")\n# perception  448/512   87.5%\n# planning     64/256   25.0%\n# llm         192/128  150.0% OVER"
+    }
+   ],
+   "how_far": "누가 몇 장을 받을지는 조직·리더가 정합니다. 개발자는 그 규칙을 **스케줄러 설정으로 옮기고, 사용량을 보여 주고, 막힌 사람을 돕는** 쪽입니다. {추론}",
+   "refs": [
+    10,
+    11,
+    15,
+    16,
+    19
+   ],
+   "study": [
+    "slurm-docs",
+    "k8s-quota",
+    "dcgm-exporter"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 자율주행 모델 학습을 위한 분산 학습 환경의 아키텍처 설계 및 성능 튜닝 참여 / Participate in the architectural design and performance tuning of distributed training environments for large-scale autonomous driving models.",
+   "short": "GPU 여러 장이 한 모델을 같이 배울 때 통신·저장소가 병목이 안 되게 설계·조정하는 데 함께하는 일.",
+   "why": "현대차그룹의 자율주행 소프트웨어 아트리아 AI는 수집 → 학습 → 검증 → 배포가 도는 데이터 플라이휠로 개발되고[7], 포티투닷 자율주행 데이터 플랫폼은 **수백만 장면**의 데이터를 학습에 공급합니다.[10] 같은 회사 AI 데이터 공고는 저장소 입출력·GPU 사용률·학습 데이터 로딩의 병목을 찾는 일을 따로 뽑습니다.[28] 모델이 클수록 GPU끼리 주고받는 양이 늘어 인프라가 학습 속도를 좌우합니다. {추론}",
+   "actually": {
+    "items": [
+     "**분산 실행의 바탕** — PyTorch의 torchrun 은 프로세스마다 `RANK`·`LOCAL_RANK`·`WORLD_SIZE`·`MASTER_ADDR` 같은 환경 변수를 넣어 준다. Slurm 작업 스크립트가 이 값을 노드마다 맞게 넘겨야 한다.[22]",
+     "**통신 재기** — 데이터 병렬 학습은 매 걸음 기울기를 all-reduce(모두 더해 나눠 갖기)한다. nccl-tests 는 크기 ÷ 시간(algbw)과, 하드웨어 최고치와 비교하도록 고친 busbw(all-reduce 는 × 2(n−1)/n)를 보여 준다.[20]",
+     "**배치 위치** — 같은 스위치 아래 노드를 한 작업에 묶을수록 통신이 빠르다. 스케줄러가 어떤 노드 묶음을 고르게 할지 정한다. {추론}",
+     "**체크포인트** — 학습 중간 저장. Meta는 체크포인트·작업 시작·종료 때 데이터센터 전력이 수십 MW씩 출렁였다고 적었다 — 저장 주기도 인프라 설계 거리다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "algbw 와 busbw",
+     "body": "1 GiB 를 12 ms 에 all-reduce 했을 때입니다. 같은 시간이어도 GPU 수(n)가 늘면 실제로 선을 지나간 양(busbw)은 커집니다 — 그래서 하드웨어 한계와 비교할 땐 busbw 를 봅니다.[20](직접 돌린 출력)",
+     "lang": "python",
+     "code": "size = 1 << 30            # 1 GiB 를 all-reduce\nt = 0.012                 # 12 ms 걸렸다\nfor n in (2, 8, 16):\n    algbw = size / t / 1e9\n    busbw = algbw * 2 * (n - 1) / n\n    print(f\"n={n:2d} algbw={algbw:6.1f} GB/s busbw={busbw:6.1f} GB/s\")\n# n= 2 algbw=  89.5 GB/s busbw=  89.5 GB/s\n# n= 8 algbw=  89.5 GB/s busbw= 156.6 GB/s\n# n=16 algbw=  89.5 GB/s busbw= 167.8 GB/s"
+    }
+   ],
+   "how_far": "공고 문장이 '참여'입니다. 모델을 어떻게 쪼갤지(병렬화 전략)는 ML 엔지니어가 정하고, 이 자리는 **통신·저장소·스케줄링 쪽에서 병목을 재고 고치는** 몫입니다. {추론}",
+   "refs": [
+    7,
+    10,
+    13,
+    20,
+    22,
+    28
+   ],
+   "study": [
+    "lec-cs336-parallel",
+    "lec-cs231n-dist",
+    "nccl-tests",
+    "torchrun-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Linux 운영체제에 대한 깊은 이해 (커널 동작, 프로세스 관리, 시스템 보안 등) / Strong proficiency in Linux operating systems, including a solid understanding of kernel operations, process management, and system security.",
+   "short": "GPU 고장도 결국 리눅스 위에서 보이므로, 커널 로그·프로세스·권한을 읽을 줄 알아야 해서.",
+   "why": "GPU 드라이버 오류는 커널 로그로 나옵니다.[14] 컨테이너도 리눅스 커널 기능(cgroup·네임스페이스) 위에서 돌고, 수천 대 서버에서 문제가 생기면 결국 한 대에 들어가 리눅스 명령으로 봅니다. {추론}",
+   "level": {
+    "basic": "프로세스·시그널·파일 권한·systemd·journalctl·dmesg",
+    "work": "/proc 읽기·cgroup과 네임스페이스(컨테이너의 바탕)·메모리 부족 시 강제 종료(OOM killer)·커널 모듈·sudo·SSH 키 관리",
+    "team": "드라이버 모듈과 커널 버전 충돌, PCIe·NUMA(CPU와 GPU 거리) 확인, 서버 수천 대에 같은 설정 유지 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**첫 60초 점검** — Netflix 성능 팀은 서버 문제를 볼 때 `uptime`·`dmesg`·`vmstat`·`mpstat`·`iostat`·`free`·`sar`·`top` 순으로 1분 안에 훑는다.[29]",
+     "**'시스템 보안'** — 여러 팀이 한 클러스터를 쓰니 사용자 권한 분리, 루트 권한 최소화, 컨테이너가 호스트를 건드리지 못하게 막는 일이 들어간다. {추론}"
+    ]
+   },
+   "how_far": "'깊은 이해'라도 커널을 고치는 수준은 아닙니다. 증상을 보고 **어느 층(하드웨어·커널·드라이버·컨테이너·앱)을 볼지 아는** 수준이 목표입니다. {추론}",
+   "refs": [
+    14,
+    29
+   ],
+   "study": [
+    "linux-kernel-story",
+    "sysperf",
+    "netflix60",
+    "tlcl"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Docker 및 Kubernetes 등 컨테이너 기반 기술 및 오케스트레이션 실무 경험 / Practical experience with containerization technologies (Docker) and orchestration (Kubernetes), including building, managing, and troubleshooting containerized environments.",
+   "short": "학습 작업이 컨테이너로 돌고, 그 컨테이너를 GPU 노드에 놓는 게 쿠버네티스라서.",
+   "why": "쿠버네티스에서 GPU를 쓰려면 장치 플러그인·드라이버·컨테이너 툴킷이 노드마다 맞아야 하고[18][26], 같은 회사 AI 데이터 공고도 Docker·Kubernetes 위에 ML·데이터 작업을 올려 운영한 경험을 요구합니다.[28]",
+   "level": {
+    "basic": "이미지·컨테이너·Pod·Deployment·Service, kubectl 기본",
+    "work": "Pending·CrashLoopBackOff 원인 읽기, 자원 requests/limits, DaemonSet(노드마다 하나), Helm 차트, 노드 cordon·drain",
+    "team": "장치 플러그인·GPU Operator, 확장 자원 쿼터, 노드 업그레이드 순서, 컨테이너 안의 CUDA 버전 맞추기[15][18][26]"
+   },
+   "how_far": "'구축, 관리, 트러블슈팅'까지 적혀 있어 써 본 사용자를 넘어 **노드가 왜 Pod를 안 받는지 직접 고쳐 본** 경험을 봅니다. {추론}",
+   "refs": [
+    15,
+    18,
+    26,
+    28
+   ],
+   "study": [
+    "wiki-docker",
+    "wiki-kubernetes",
+    "k8s-in-action",
+    "cka"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "TCP/IP, HTTP(S) 등 네트워크 기본 원리에 대한 이해 및 기초적인 네트워크 트러블슈팅 능력 / Solid understanding of networking fundamentals, including TCP/IP and HTTP(S), with the ability to perform basic network troubleshooting.",
+   "short": "노드 수천 대가 서로·저장소·사용자와 통신하므로, 안 될 때 어느 층이 문제인지 가려야 해서.",
+   "why": "분산 학습은 GPU 사이 통신(NCCL) 위에 서 있고[20], NCCL은 어떤 네트워크 인터페이스를 쓸지 환경 변수로 고르며 `NCCL_DEBUG=INFO` 로 연결 과정을 찍어 볼 수 있습니다.[27] 쿠버네티스 API·모니터링·저장소도 다 네트워크 너머에 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**이름 → 주소 → 연결 → 응답** 순서로 끊어 본다: `dig`(DNS), `ping`·`traceroute`(경로), `ss`·`nc`(포트), `curl -v`(HTTP·TLS 인증서). {추론}",
+     "**학습 통신이 느리거나 멈출 때** — NCCL 로그로 어떤 인터페이스를 잡았는지 확인하고, 엉뚱한 인터페이스면 `NCCL_SOCKET_IFNAME` 으로 고정한다.[27]"
+    ]
+   },
+   "how_far": "공고 스스로 '기초적인'이라고 적었습니다. 고속 네트워크(InfiniBand 등) 설계는 네트워크 전문 인력 몫이고, 이 자리는 **문제를 좁혀 넘길 수 있는** 수준이면 됩니다. {추론}",
+   "refs": [
+    20,
+    27
+   ],
+   "study": [
+    "net-intro",
+    "wiki-http",
+    "nccl-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python 또는 Shell을 활용하여 유지보수가 용이한 자동화/시스템 관리 스크립트 작성 역량 / Ability to write clean and maintainable scripts in Python or Shell for automation and system administration.",
+   "short": "남이 고치고 밤에 혼자 돌아도 안전한 운영 스크립트를 써야 해서 — 한 번 쓰고 버리는 코드가 아니라.",
+   "why": "업무③의 자동화 도구를 쓰는 언어입니다.[1] 운영 스크립트는 수천 대에 같은 일을 하므로 실수 하나가 클러스터 전체에 퍼집니다. {추론}",
+   "level": {
+    "basic": "변수·조건·반복·함수, 파이프와 grep·awk, Python 표준 라이브러리(subprocess·json·re)",
+    "work": "Shell은 `set -euo pipefail`·인자 검사·종료 코드, Python은 로깅·예외 처리·argparse·테스트",
+    "team": "멱등(두 번 돌려도 같은 결과), dry-run, 재시도와 타임아웃, 남이 읽는 코드 리뷰 {추론}"
+   },
+   "how_far": "'유지보수가 용이한'이 핵심입니다. 길고 영리한 한 줄보다 **이름이 분명하고, 실패하면 이유를 말하고, 테스트가 있는** 스크립트를 보여 줄 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "tlcl",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "복잡하고 거대한 시스템에서 근본 원인을 찾아 해결하는 논리적인 문제 해결 능력 / Logical approach to problem-solving with the persistence to identify and resolve root causes in complex, large-scale systems.",
+   "short": "'학습이 느려요' 같은 증상은 GPU·네트워크·저장소·코드 어디서나 나오므로, 한 겹씩 지워 원인까지 가야 해서.",
+   "why": "Meta의 중단 원인 표만 봐도 GPU 고장·GPU 메모리·소프트웨어 버그·네트워크 스위치와 케이블·서버 점검 등으로 갈립니다.[13] 학습 처리량이 **낮 시간에 1~2%** 떨어진 원인이 데이터센터 온도였던 사례도 같은 보고서에 있습니다.[13]",
+   "actually": {
+    "items": [
+     "**같은 증상 다른 원인** — 처리량 하락 하나에도 느린 GPU 한 장, 느린 링크 하나, 저장소 지연, 사용자 코드 변경이 다 후보다. 노드를 바꿔 다시 돌려 보며 후보를 지운다. {추론}",
+     "**사후 분석** — 장애가 끝나면 누구 탓이 아니라 무엇이 일어났고 무엇을 바꿀지를 글로 남긴다(구글 SRE의 '비난 없는 사후 분석').[30]"
+    ]
+   },
+   "refs": [
+    13,
+    30
+   ],
+   "study": [
+    "sre-book",
+    "llama3",
+    "sysperf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 유관 부서 및 파트너와 원활하게 소통할 수 있는 커뮤니케이션 역량 / Strong communication skills to effectively collaborate with cross-functional teams and external partners.",
+   "short": "GPU를 쓰는 연구팀·데이터센터·벤더 사이에서 일정과 고장을 조율하는 자리라서.",
+   "why": "포티투닷은 한국·미국 팀이 시차를 이용해 이어서 개발하는 'Follow-the-Sun' 방식을 쓴다고 밝혔고[7], 800명이 넘는 임직원이 한국·미국·폴란드에 흩어져 있으며[9],클러스터는 여러 데이터센터에 걸쳐 있으며[1], 현대차그룹은 엔비디아와 AI 팩토리를 함께 짓습니다.[4] 공고가 한국어·영어로 함께 올라온 것도 같은 맥락입니다. {추론}",
+   "actually": {
+    "items": [
+     "**공지** — 점검·업그레이드 일정을 연구팀에 미리 알리고 학습 중단을 최소화한다. {추론}",
+     "**외부 파트너** — 고장 GPU 교체·드라이버 문제를 서버 업체·엔비디아에 근거(로그·Xid 번호)와 함께 넘긴다. {추론}[14]"
+    ]
+   },
+   "refs": [
+    1,
+    4,
+    7,
+    14
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Prometheus, Grafana, Datadog 등을 활용한 대규모 클러스터의 관측성(Observability) 스택 구축 경험 / Experience in building observability stacks with Prometheus, Grafana, and Datadog for large-scale clusters.",
+   "short": "GPU 수천 장의 온도·사용률·오류를 한 화면에서 보고, 이상하면 알림이 오게 만들어 본 경험.",
+   "why": "업무②의 '모니터링'을 실제로 받치는 것이 관측성 스택입니다.[1] GPU 지표는 DCGM 수집기가 Prometheus 형식으로 내보냅니다.[19]",
+   "actually": {
+    "items": [
+     "**모으기** — 노드마다 dcgm-exporter·node-exporter → Prometheus 가 주기적으로 긁어 간다.[18][19]",
+     "**보기·알리기** — Grafana 대시보드(데이터센터 → 랙 → 노드 → GPU), 'Xid 발생'·'온도 기준 초과' 같은 알림 규칙. {추론}",
+     "**규모 문제** — GPU 수천 장 × 지표 수십 개 × 짧은 주기면 저장할 시계열이 폭발한다. 라벨을 줄이고 오래된 값은 거칠게 모아 두는 설계가 필요하다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    18,
+    19
+   ],
+   "study": [
+    "prom-book",
+    "prom-docs",
+    "dcgm-exporter"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, GCP 등 퍼블릭 클라우드 플랫폼 상의 인프라 구축 및 운영 경험 / Experience in building or operating infrastructure on public cloud platforms such as AWS or GCP.",
+   "short": "자체 GPU만으로 모자라거나 데이터·파이프라인이 클라우드에 있을 때 그쪽도 같이 다뤄야 해서.",
+   "why": "포티투닷 자율주행 데이터 플랫폼 공고는 학습·평가·배포·모니터링을 **클라우드 환경**에서 한다고 적었고[10], 회사 블로그는 MLOps·DataOps 환경으로 빠르게 고친다고 소개합니다.[12] 블로그 분류 태그에도 AWS가 있습니다.[31]",
+   "how_far": "이 자리의 중심은 자체 GPU 클러스터이고, 클라우드는 '구축·운영 경험'이 있으면 좋은 정도입니다. 클라우드 GPU 인스턴스·네트워크·저장소를 다뤄 본 정도면 충분합니다. {추론}",
+   "refs": [
+    10,
+    12,
+    31
+   ],
+   "study": [
+    "terraform-iac"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "드라이버, CUDA, NCCL 등을 포함한 NVIDIA 가속 컴퓨팅 스택에 대한 지식 / Knowledge of the NVIDIA accelerated computing stack, including drivers, CUDA, and NCCL.",
+   "short": "드라이버·CUDA·NCCL 버전이 서로 안 맞으면 GPU가 있어도 학습이 안 돌아서.",
+   "why": "GPU Operator가 깔아 주는 것도 드라이버·컨테이너 툴킷·장치 플러그인·모니터링으로 이 스택 그대로입니다.[18] 분산 학습 장애의 상당수가 이 층에서 나옵니다(통신 문제·GPU 오류).[13]",
+   "actually": {
+    "items": [
+     "**드라이버** — 커널 모듈. Xid 오류가 여기서 나온다.[14]",
+     "**CUDA** — GPU에 계산을 시키는 도구 모음. 컨테이너 안의 CUDA와 노드 드라이버가 서로 맞아야 한다. {추론}",
+     "**NCCL** — GPU끼리 all-reduce 등을 하는 통신 라이브러리. 환경 변수로 인터페이스·로그를 조정하고[27], nccl-tests 로 성능을 잰다.[20]"
+    ]
+   },
+   "refs": [
+    13,
+    14,
+    18,
+    20,
+    27
+   ],
+   "study": [
+    "nccl-docs",
+    "nccl-tests",
+    "gpu-operator",
+    "cuda-book",
+    "lec-cs336-gpu"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ML 모델 학습 라이프사이클 및 PyTorch, TensorFlow 등 딥러닝 프레임워크에 대한 이해 / Familiarity with the ML model training lifecycle and deep learning frameworks such as PyTorch or TensorFlow.",
+   "short": "연구자가 무엇을 언제 돌리는지 알아야 학습·평가·체크포인트에 맞게 자원을 나눌 수 있어서.",
+   "why": "포티투닷의 자율주행 학습은 데이터 수집 → 자동 라벨 → 학습 → 검증 → 배포가 도는 구조이고[7][10], 회사 블로그는 어려운 사례를 모아 다시 학습시키는 액티브 러닝(Active Learning) 파이프라인을 소개합니다.[32]",
+   "actually": {
+    "items": [
+     "**긴 학습 vs 짧은 실험** — 며칠 도는 대형 학습과 몇 분짜리 실험·평가는 필요한 자원·우선순위가 다르다. {추론}",
+     "**PyTorch 분산 실행** — torchrun 이 프로세스마다 순번·전체 수를 넘겨 준다. 재시작하면 순번이 바뀔 수 있다는 점도 문서에 있다.[22]"
+    ]
+   },
+   "how_far": "모델을 직접 만들 필요는 없습니다. **작은 모델을 GPU 두 장 이상으로 분산 학습시켜 보고**, 중간에 하나를 죽였을 때 무슨 일이 나는지 아는 정도면 연구자와 같은 말을 할 수 있습니다. {추론}",
+   "refs": [
+    7,
+    10,
+    22,
+    32
+   ],
+   "study": [
+    "lec-cs231n-dist",
+    "torchrun-docs",
+    "lec-cs336-parallel"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kubernetes 또는 Slurm과 같은 대규모 워크로드 매니저 및 리소스 스케줄링 도구 활용 경험 / Experience with large-scale workload managers or resource scheduling tools such as Kubernetes or Slurm.",
+   "short": "업무①을 이미 해 본 사람 — 대기열·우선순위·한도를 직접 설정해 봤으면 바로 일할 수 있어서.",
+   "why": "업무①·④가 바로 이 도구로 하는 일입니다.[1] Slurm은 계정 묶음(association)과 QOS로 한도를 걸고, 둘 다 걸리면 QOS 한도가 이깁니다.[16]",
+   "actually": {
+    "items": [
+     "**Slurm** — `sacctmgr` 로 계정·사용자·QOS를 만들고, 작업은 `--qos`·`--gpus` 로 요청한다.[16][17]",
+     "**쿠버네티스** — 학습 작업은 여러 Pod가 **한꺼번에** 시작해야 하는데 기본 스케줄러는 Pod 하나씩 놓는다. 그래서 묶음 스케줄링 도구를 더하거나 Slurm을 얹는다(Slinky).[21] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    16,
+    17,
+    21
+   ],
+   "study": [
+    "slurm-docs",
+    "slinky",
+    "k8s-quota"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Terraform 등 Infrastructure as Code(IaC) 도구를 활용한 복잡한 인프라 관리 경험 / Familiarity with Infrastructure as Code (IaC) tools such as Terraform to manage complex infrastructure.",
+   "short": "클러스터·네트워크·클라우드 설정을 코드로 남겨, 데이터센터마다 똑같이 다시 만들 수 있게 해서.",
+   "why": "데이터센터가 여러 곳이면[1] 같은 설정을 손으로 반복할수록 곳마다 조금씩 달라집니다. 코드로 두면 변경 내역이 남고 리뷰할 수 있습니다. {추론} 포티투닷 블로그 태그에는 IaC·AWS CDK도 있습니다.[31]",
+   "how_far": "Terraform 상태(state) 파일 관리, 모듈로 나누기, plan 을 보고 apply 하는 흐름을 해 본 정도. {추론}",
+   "refs": [
+    1,
+    31
+   ],
+   "study": [
+    "terraform-iac",
+    "terraform-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "로그를 뒤져 원인을 찾아내는 게 즐거운 사람",
+   "손으로 두 번 한 일은 스크립트로 만드는 사람",
+   "큰 숫자(수천 장·여러 데이터센터)에서 생기는 문제가 궁금한 사람[1]",
+   "연구자 질문에 차분히 답할 수 있는 사람"
+  ],
+  "hard": [
+   "고장은 밤낮을 가리지 않는다 — 대응 당번이 있을 수 있다 {추론}",
+   "모델을 직접 만드는 자리가 아니다 — 연구가 하고 싶다면 맞지 않는다",
+   "하드웨어·벤더·데이터센터 일정처럼 내가 못 정하는 것이 많다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "학습 작업이 갑자기 느려졌다는 문의가 왔어요. 무엇부터 보나요?",
+   "a": "GPU·통신·저장소·코드로 원인을 가르는 순서 — 요건⑤와 Meta의 원인 표.[13]"
+  },
+  {
+   "q": "커널 로그에 Xid 79가 찍혔습니다. 어떻게 처리하나요?",
+   "a": "GPU가 버스에서 떨어진 것 — 노드 격리와 벤더 넘기기.[14]"
+  },
+  {
+   "q": "한 팀이 GPU를 계속 독차지해요. Slurm·쿠버네티스에서 어떻게 막나요?",
+   "a": "GrpTRES·QOS·ResourceQuota와 실제로 막으려면 켜야 하는 설정.[15][16]"
+  },
+  {
+   "q": "nccl-tests 결과에서 algbw 와 busbw 는 무엇이 다른가요?",
+   "a": "하드웨어 한계와 비교하는 값이 무엇인지.[20]"
+  },
+  {
+   "q": "GPU 노드는 있는데 쿠버네티스가 GPU를 0개로 보고 있어요.",
+   "a": "장치 플러그인·드라이버·GPU Operator 층을 차례로 확인.[18][26]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · AI Infrastructure Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/fa24b02d-a231-4e0c-affa-319d47c19b58",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대·전형(한국어·영어 병기)"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 포티투닷 AI Infrastructure Engineer",
+   "url": "https://www.wanted.co.kr/wd/392726",
+   "kind": "posting",
+   "note": "같은 공고 — 경력 3~8년·근무지 창업로40번길 20 A동·상시채용"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 블로그 · 42dot LLM 1.3B",
+   "url": "https://42dot.ai/ko/stories/blog-news/42dot-llm-1-3b",
+   "kind": "company",
+   "date": "2024-03-29",
+   "note": "자체 GPU 학습 클러스터 A100 80G 320장, 사전학습 49,152 GPU시간·약 1주"
+  },
+  {
+   "n": 4,
+   "title": "NVIDIA 뉴스룸 · NVIDIA and Hyundai Motor Group Team on AI Factory",
+   "url": "https://nvidianews.nvidia.com/news/hyundai-motor-group-ai-factory",
+   "kind": "news",
+   "date": "2025-10-30",
+   "note": "블랙웰 GPU 5만 장·약 30억 달러·지역 데이터센터"
+  },
+  {
+   "n": 5,
+   "title": "현대자동차그룹 뉴스룸 · NVIDIA Blackwell AI Factory",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001041",
+   "kind": "company",
+   "date": "2025-10-31",
+   "note": "같은 발표 — 회사 자신의 보도자료"
+  },
+  {
+   "n": 6,
+   "title": "뉴데일리 · '최신 GPU' 5만장 약속 지킬까",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2025/11/05/2025110500196.html",
+   "kind": "news",
+   "date": "2025-11-05",
+   "note": "블랙웰(GB200) 5만 장, 한국 공급 26만 장 중 일부"
+  },
+  {
+   "n": 7,
+   "title": "현대자동차그룹 뉴스룸 · 데이터 플라이휠로 아트리아 AI 개발",
+   "url": "https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-group-atria-ai-data-flywheel-seoul",
+   "kind": "company",
+   "date": "2026-09-13",
+   "note": "포티투닷 본사 미디어데이 — 수집 차량 약 40대, Hard Example Mining·Continuous Training, Follow-the-Sun"
+  },
+  {
+   "n": 8,
+   "title": "아시아경제(영문) · Atria AI with 400 Trillion Calculations per Second",
+   "url": "https://www.asiae.co.kr/en/article/automobile/2026051507295729148",
+   "kind": "news",
+   "date": "2026-05-15",
+   "note": "기계 번역 영문판 — '고성능 GPU 2,000대 이상' 표현, 한국어 원문 미확인"
+  },
+  {
+   "n": 9,
+   "title": "CIO Korea · 포티투닷, 아트리아AI 중심 자율주행 인재 50여 명 확보",
+   "url": "https://www.cio.com/article/4121874/",
+   "kind": "news",
+   "date": "2026-01-26",
+   "note": "국내외 임직원 800명 이상, 70% 넘게 개발 인력"
+  },
+  {
+   "n": 10,
+   "title": "포티투닷 채용 · Senior ML Platform Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/44a90406-9eef-495b-b994-c28a64e2be83",
+   "kind": "posting",
+   "note": "수백만 장면 데이터 플랫폼·클라우드 학습/평가·Cloud Infra 팀과 협업"
+  },
+  {
+   "n": 11,
+   "title": "포티투닷 채용 · LLM Engineer (LLM Training)",
+   "url": "https://jobs.ashbyhq.com/42dot/4efa5e05-972f-4887-b3bd-f87862200f86",
+   "kind": "posting",
+   "note": "분산 학습 도구(Slurm·DDP·Horovod) 경험 요구"
+  },
+  {
+   "n": 12,
+   "title": "포티투닷 블로그 · 42dot at CES 2024: Software-Defined Vehicle Technology",
+   "url": "https://42dot.ai/ko/stories/blog-news/ces-2024-software-defined-vehicle",
+   "kind": "company",
+   "date": "2024-03-28",
+   "note": "CI/CD·MLOps·DataOps 환경"
+  },
+  {
+   "n": 13,
+   "title": "The Llama 3 Herd of Models (Meta)",
+   "url": "https://arxiv.org/abs/2407.21783",
+   "kind": "reference",
+   "date": "2024-07",
+   "note": "다른 회사 — H100 16K, 54일 중단 466번(예상 못 한 것 419), 하드웨어 약 78%, 실제 학습 시간 90% 이상"
+  },
+  {
+   "n": 14,
+   "title": "NVIDIA · Xid Errors",
+   "url": "https://docs.nvidia.com/deploy/xid-errors/index.html",
+   "kind": "reference",
+   "note": "Xid 정의·79번(버스에서 떨어짐)·번호 목록"
+  },
+  {
+   "n": 15,
+   "title": "Kubernetes 문서 · Resource Quotas",
+   "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+   "kind": "reference",
+   "note": "확장 자원은 requests. 접두사로만 쿼터"
+  },
+  {
+   "n": 16,
+   "title": "Slurm 문서 · Resource Limits / QOS",
+   "url": "https://slurm.schedmd.com/resource_limits.html",
+   "kind": "reference",
+   "note": "GrpTRES·MaxTRESPerUser·AccountingStorageEnforce·QOS 우선"
+  },
+  {
+   "n": 17,
+   "title": "Slurm 문서 · Generic Resource (GRES) Scheduling",
+   "url": "https://slurm.schedmd.com/gres.html",
+   "kind": "reference",
+   "note": "GresTypes·gres.conf·AutoDetect=nvml·장치 부족 시 DRAIN"
+  },
+  {
+   "n": 18,
+   "title": "NVIDIA GPU Operator 문서",
+   "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html",
+   "kind": "reference",
+   "note": "드라이버·컨테이너 툴킷·장치 플러그인·GFD·DCGM·MIG Manager"
+  },
+  {
+   "n": 19,
+   "title": "NVIDIA dcgm-exporter · 기본 지표 목록",
+   "url": "https://github.com/NVIDIA/dcgm-exporter/blob/main/etc/default-counters.csv",
+   "kind": "reference",
+   "note": "사용률·Xid·온도·전력 지표 이름"
+  },
+  {
+   "n": 20,
+   "title": "NVIDIA nccl-tests · PERFORMANCE.md",
+   "url": "https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md",
+   "kind": "reference",
+   "note": "algbw·busbw, all-reduce 2(n−1)/n"
+  },
+  {
+   "n": 21,
+   "title": "SlinkyProject · slurm-operator",
+   "url": "https://github.com/SlinkyProject/slurm-operator",
+   "kind": "reference",
+   "note": "SchedMD — 쿠버네티스 위에서 Slurm 운영"
+  },
+  {
+   "n": 22,
+   "title": "PyTorch 문서 · torchrun (Elastic Launch)",
+   "url": "https://docs.pytorch.org/docs/stable/elastic/run.html",
+   "kind": "reference",
+   "note": "RANK·LOCAL_RANK·WORLD_SIZE·MASTER_ADDR, 재시작 시 RANK 바뀜"
+  },
+  {
+   "n": 23,
+   "title": "포티투닷 · 42dot만의 업무 몰입 프로그램",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준(해외 법인은 다를 수 있음), 게시일 표기 없음"
+  },
+  {
+   "n": 24,
+   "title": "포티투닷 홈페이지 · 하단 회사 정보",
+   "url": "https://42dot.ai/ko",
+   "kind": "company",
+   "note": "경기도 성남시 수정구 창업로40번길 20, A동"
+  },
+  {
+   "n": 25,
+   "title": "원티드 · 포티투닷 회사 정보(평균연봉·국민연금 가입자 수)",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "공공데이터 집계 — 기준월 표기 없음"
+  },
+  {
+   "n": 26,
+   "title": "Kubernetes 문서 · Schedule GPUs",
+   "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+   "kind": "reference",
+   "note": "장치 플러그인·nvidia.com/gpu·limits"
+  },
+  {
+   "n": 27,
+   "title": "NVIDIA NCCL 사용자 가이드 · Environment Variables",
+   "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html",
+   "kind": "reference",
+   "note": "NCCL_DEBUG·NCCL_SOCKET_IFNAME 등"
+  },
+  {
+   "n": 28,
+   "title": "포티투닷 채용 · Senior ML Engineer (AI Data)",
+   "url": "https://jobs.ashbyhq.com/42dot/4e0a3e0c-ad0e-47e2-b937-cdc9633fd52b",
+   "kind": "posting",
+   "note": "저장소 I/O·GPU 사용률·학습 데이터 로딩 병목, Docker·Kubernetes 기반 ML 작업"
+  },
+  {
+   "n": 29,
+   "title": "Netflix Tech Blog · Linux Performance Analysis in 60,000 Milliseconds",
+   "url": "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55",
+   "kind": "reference",
+   "date": "2015-11",
+   "note": "다른 회사 — 첫 60초 점검 명령"
+  },
+  {
+   "n": 30,
+   "title": "Google SRE Book · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "note": "비난 없는 사후 분석"
+  },
+  {
+   "n": 31,
+   "title": "포티투닷 블로그 · Blog & News 목록",
+   "url": "https://42dot.ai/ko/stories/blog-news",
+   "kind": "company",
+   "note": "분류 태그 #MLOps·#Kubeflow·#AWS·#AWSCDK·#IaC"
+  },
+  {
+   "n": 32,
+   "title": "포티투닷 블로그 · Active Learning을 통한 지속적인 모델 성능 개선",
+   "url": "https://42dot.ai/ko/stories/blog-news/active-learning-3d-object-detection",
+   "kind": "company",
+   "date": "2024-09-02",
+   "note": "액티브 러닝 파이프라인"
+  }
+ ],
+ "caveat": "포티투닷 AI 인프라 팀의 발표·기술 글은 찾지 못했습니다(받은 영상 없음). 회사가 밝힌 것은 2024년 A100 320장 클러스터[3], 그룹의 블랙웰 5만 장 계획[4], 데이터 플라이휠[7]까지이고, Kubernetes와 Slurm을 어떻게 나눠 쓰는지·GPU 종류·장수·쿼터 규칙은 공개되지 않아 다른 곳의 공개 문서로 \"보통 이런 일\"을 보였습니다. '고성능 GPU 2,000대 이상'이라는 보도는 기계 번역 영문 기사 한 건뿐이라 본문에 쓰지 않았습니다.[8] 공고 근무지에 'Remote' 표기가 있지만 재택 범위는 적혀 있지 않습니다.[1]",
+ "resources": [
+  {
+   "id": "42dot-llm",
+   "title": "42dot LLM 1.3B",
+   "by": "포티투닷 블로그 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://42dot.ai/ko/stories/blog-news/42dot-llm-1-3b",
+   "why": "이 회사가 직접 밝힌 GPU 클러스터 규모(A100 320장)와 학습에 든 GPU 시간. 지원 전에 회사가 어떤 학습을 돌리는지 감 잡기."
+  },
+  {
+   "id": "wiki-docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "실제로 친 명령과 출력으로 이미지·컨테이너를 익힌다. 요건② Docker 부분."
+  },
+  {
+   "id": "wiki-kubernetes",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "Pending·CrashLoopBackOff 를 읽는 법이 절반 — 업무①·요건②의 '왜 안 잡히나'를 보는 눈."
+  },
+  {
+   "id": "wiki-http",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "와이어에 오간 요청·응답 원문으로 HTTP(S) 기본을 잡는다. 요건③."
+  },
+  {
+   "id": "lec-cs336-gpu",
+   "title": "Stanford CS336 Lecture 5: GPUs 강의 노트",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/izZba4UA7iY",
+   "why": "GPU가 어떻게 계산하고 메모리가 왜 병목인지. 우대③ NVIDIA 스택을 이해하는 바탕."
+  },
+  {
+   "id": "lec-cs336-parallel",
+   "title": "Stanford CS336 Lecture 7: Parallelism 강의 노트",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/SzpOcwdIL0Y",
+   "why": "데이터·모델 병렬과 GPU 간 통신(all-reduce)을 강의로. 업무⑤ 분산 학습 환경의 말을 익힌다."
+  },
+  {
+   "id": "lec-cs231n-dist",
+   "title": "Stanford CS231N Lecture 11: Large Scale Distributed Training 강의 노트",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/9MvD-XsowsE",
+   "why": "대규모 분산 학습의 전체 그림. 업무⑤·우대④."
+  },
+  {
+   "id": "linux-kernel-story",
+   "title": "DevOps와 SE를 위한 리눅스 커널 이야기",
+   "by": "강진우 · 인사이트 · 2017",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=115452679",
+   "why": "운영자가 실제로 만나는 커널 동작(프로세스·메모리·OOM·네트워크 튜닝)을 사례로. 요건① '커널 동작·프로세스 관리'."
+  },
+  {
+   "id": "sysperf",
+   "title": "시스템 성능 분석과 최적화",
+   "by": "브렌던 그레그 · 오현석·서형국 옮김 · 위키북스 · 2015",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=71353228",
+   "why": "증상에서 원인으로 가는 분석 방법론. 요건⑤ 근본 원인 찾기의 교과서(필요한 장만)."
+  },
+  {
+   "id": "netflix60",
+   "title": "Linux Performance Analysis in 60,000 Milliseconds",
+   "by": "Netflix Technology Blog",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55",
+   "why": "서버에 들어가서 1분 안에 볼 명령 10개. 요건①을 바로 손에 익힌다."
+  },
+  {
+   "id": "tlcl",
+   "title": "The Linux Command Line",
+   "by": "William Shotts (한국어판: 리눅스 커맨드라인 완벽 입문서, 비제이퍼블릭)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "why": "셸 기본부터 스크립트 작성까지 무료 공개. 요건④ Shell 스크립트."
+  },
+  {
+   "id": "k8s-in-action",
+   "title": "쿠버네티스 인 액션",
+   "by": "마르코 룩샤 · 강인호 외 옮김 · 에이콘출판 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=235962702",
+   "why": "스케줄러·노드·자원 요청이 내부에서 어떻게 움직이는지. 요건② '구축, 관리, 트러블슈팅'."
+  },
+  {
+   "id": "cka",
+   "title": "Certified Kubernetes Administrator (CKA)",
+   "by": "Linux Foundation · CNCF",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+   "why": "클러스터 관리·노드 유지보수·트러블슈팅을 실기로 보는 자격. 요건②를 증명할 수단."
+  },
+  {
+   "id": "k8s-gpu",
+   "title": "Kubernetes 문서 · Schedule GPUs",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+   "why": "장치 플러그인으로 GPU를 노출하고 작업이 요청하는 방법. 업무①."
+  },
+  {
+   "id": "k8s-quota",
+   "title": "Kubernetes 문서 · Resource Quotas",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+   "why": "네임스페이스별 GPU 쿼터를 거는 법. 업무④."
+  },
+  {
+   "id": "slurm-docs",
+   "title": "Slurm 문서 · Resource Limits · QOS · GRES",
+   "by": "SchedMD",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://slurm.schedmd.com/resource_limits.html",
+   "why": "계정 묶음·QOS·GPU 한도와 GRES 설정. 업무①④·우대⑤의 원문."
+  },
+  {
+   "id": "slinky",
+   "title": "Slinky slurm-operator",
+   "by": "SchedMD · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/SlinkyProject/slurm-operator",
+   "why": "쿠버네티스 위에서 Slurm을 돌리는 방법. 공고가 두 도구를 같이 적은 이유를 이해하기."
+  },
+  {
+   "id": "gpu-operator",
+   "title": "NVIDIA GPU Operator 문서",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html",
+   "why": "GPU 노드에 무엇이 깔려야 하는지 한 장에. 업무①·우대③."
+  },
+  {
+   "id": "xid-docs",
+   "title": "NVIDIA Xid Errors",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deploy/xid-errors/index.html",
+   "why": "드라이버 오류 번호를 읽는 법. 업무② 장애 진단의 첫 자료."
+  },
+  {
+   "id": "dcgm-exporter",
+   "title": "NVIDIA dcgm-exporter",
+   "by": "NVIDIA · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/NVIDIA/dcgm-exporter",
+   "why": "GPU 지표를 Prometheus로 내보내는 도구와 지표 목록. 업무②④·우대①."
+  },
+  {
+   "id": "nccl-tests",
+   "title": "nccl-tests · PERFORMANCE.md",
+   "by": "NVIDIA · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md",
+   "why": "GPU 간 통신 성능을 재고 algbw·busbw 를 읽는 법. 업무②⑤."
+  },
+  {
+   "id": "nccl-docs",
+   "title": "NVIDIA NCCL 사용자 가이드",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/overview.html",
+   "why": "NCCL이 무엇을 하고 어떤 환경 변수로 조정·진단하나. 요건③·우대③."
+  },
+  {
+   "id": "torchrun-docs",
+   "title": "PyTorch 문서 · torchrun",
+   "by": "PyTorch",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.pytorch.org/docs/stable/elastic/run.html",
+   "why": "분산 학습 프로세스가 어떻게 뜨고 서로를 찾는지. 업무⑤·우대④."
+  },
+  {
+   "id": "llama3",
+   "title": "The Llama 3 Herd of Models (3장 인프라·신뢰성)",
+   "by": "Meta · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2407.21783",
+   "why": "1만 6천 장 규모에서 실제로 무엇이 얼마나 고장 났고 어떻게 버텼나. 업무② 의 현실을 숫자로."
+  },
+  {
+   "id": "toss-gpu",
+   "title": "고성능 GPU 클러스터 도입기 #1",
+   "by": "토스증권 ML Engineer · Toss Tech · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/securities_llm_1",
+   "why": "국내 회사가 GPU 클러스터를 들이며 정한 것들을 한국어로. 업무① 감 잡기."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (구글 SRE 책)",
+   "by": "Google · 웹 무료(한국어판: 사이트 신뢰성 엔지니어링 · 제이펍 · 2018)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "모니터링·자동화·사후 분석의 기본. 업무②③·요건⑤."
+  },
+  {
+   "id": "prom-book",
+   "title": "프로메테우스, 오픈소스 모니터링 시스템",
+   "by": "브라이언 브라질 · 김영기·김현진 옮김 · 책만 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=212221193",
+   "why": "수집기·PromQL·알림을 처음부터. 우대① 관측성 스택."
+  },
+  {
+   "id": "prom-docs",
+   "title": "Prometheus 공식 문서",
+   "by": "Prometheus",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "why": "최신 기능·알림 규칙은 공식 문서로 보충."
+  },
+  {
+   "id": "net-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "by": "고재성 · 이상훈 · 길벗 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "TCP/IP·스위치·라우팅을 운영자 눈높이로. 요건③ 기초 트러블슈팅."
+  },
+  {
+   "id": "cuda-book",
+   "title": "CUDA 기반 GPU 병렬 처리 프로그래밍",
+   "by": "김덕수 · 비제이퍼블릭 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=316754356",
+   "why": "CUDA가 GPU에서 어떻게 도는지 한국어로. 우대③ — 커널을 짤 필요는 없고 앞부분 구조만."
+  },
+  {
+   "id": "terraform-iac",
+   "title": "테라폼으로 시작하는 IaC (개정판)",
+   "by": "김민수·김재준·이규석·이유종 · 한빛미디어 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=346369474",
+   "why": "상태 파일·모듈·plan/apply 흐름. 우대②⑥."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "공식 문법·프로바이더. 책과 함께."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "리눅스와 셸",
+   "time": "2~3주",
+   "goal": "서버에 들어가 1분 안에 상태를 훑고, 반복 점검을 안전한 스크립트로 만든다.",
+   "resources": [
+    "tlcl",
+    "netflix60",
+    "linux-kernel-story"
+   ],
+   "task": "가상 머신 하나에서 Netflix 60초 점검 명령을 돌려 결과를 해석하고, 그 결과를 JSON으로 남기는 Shell·Python 스크립트를 `set -euo pipefail`·dry-run·로그와 함께 만든다."
+  },
+  {
+   "title": "컨테이너와 쿠버네티스",
+   "time": "3~4주",
+   "goal": "Pod가 Pending·CrashLoopBackOff 인 이유를 읽고 노드를 cordon·drain 할 수 있다.",
+   "resources": [
+    "wiki-docker",
+    "wiki-kubernetes",
+    "k8s-in-action",
+    "cka"
+   ],
+   "task": "kind·minikube로 노드 3개 클러스터를 만들고, 네임스페이스 두 개에 ResourceQuota를 걸어 넘치는 Pod가 막히는 것을 확인한다. 노드 하나를 drain 해 Pod가 옮겨 가는 과정을 기록한다."
+  },
+  {
+   "title": "GPU 스케줄러 — Slurm과 쿼터",
+   "time": "2~3주",
+   "goal": "Slurm 계정·QOS로 팀별 GPU 한도를 걸고, 쿠버네티스 GPU 요청 방식과 비교해 설명한다.",
+   "resources": [
+    "slurm-docs",
+    "k8s-gpu",
+    "k8s-quota",
+    "slinky",
+    "toss-gpu"
+   ],
+   "task": "컨테이너로 작은 Slurm 클러스터(컨트롤러 1·노드 2)를 띄워 가짜 GPU GRES를 설정하고, 계정 두 개에 GrpTRES 한도를 걸어 초과 작업이 대기하는 것을 확인한다."
+  },
+  {
+   "title": "GPU 관측과 장애 대응",
+   "time": "2~3주",
+   "goal": "GPU 지표로 대시보드·알림을 만들고, Xid 로그에서 노드 처리까지 자동으로 잇는다.",
+   "resources": [
+    "dcgm-exporter",
+    "xid-docs",
+    "prom-book",
+    "prom-docs",
+    "llama3",
+    "sre-book"
+   ],
+   "task": "가짜 지표(사용률·온도·Xid)를 내보내는 작은 수집기를 만들어 Prometheus·Grafana에 붙이고, 'Xid 79 → 노드 drain + 알림' 규칙과 사후 분석 문서 한 장을 쓴다."
+  },
+  {
+   "title": "분산 학습과 NVIDIA 스택 (우대)",
+   "time": "계속",
+   "goal": "분산 학습이 어떻게 뜨고 통신하는지 알고, 통신 성능 숫자를 읽는다.",
+   "resources": [
+    "lec-cs336-gpu",
+    "lec-cs336-parallel",
+    "lec-cs231n-dist",
+    "torchrun-docs",
+    "nccl-docs",
+    "nccl-tests",
+    "gpu-operator"
+   ],
+   "task": "CPU만으로도 되는 gloo 백엔드로 torchrun 프로세스 4개짜리 작은 학습을 돌려 RANK·WORLD_SIZE를 찍어 보고, 중간에 하나를 죽였을 때 무슨 일이 나는지 기록한다. nccl-tests 결과 표(공개 예시)를 보고 algbw·busbw를 손으로 다시 계산한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고·공시에 연봉이 없다 — 공공데이터 집계 평균 **약 6,032만원**(회사 전체, 경력직 포함). 이 자리는 경력 3~8년이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 국민연금 가입 정보로 계산해 보여 주는 값이다. 기준월이 적혀 있지 않고, 같은 화면의 국민연금 가입자는 804명이다 [25]"
+   }
+  ],
+  "how": "포티투닷은 비상장 회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 위 평균은 신입·경력·직군이 섞인 회사 전체 값이라 이 자리(경력 3~8년[2])가 받는 금액으로 읽으면 안 된다 {추론}. 전형 마지막에 **처우 협의** 단계가 따로 있어 연봉은 사람마다 정한다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "유연근무제",
+    "detail": "재량·선택 근무"
+   },
+   {
+    "name": "리커버리 휴가",
+    "detail": "법정 연차와 별도로 매월 1회 유급"
+   },
+   {
+    "name": "건강검진",
+    "detail": "프리미엄 종합검진 전액 지원"
+   },
+   {
+    "name": "단체상해보험",
+    "detail": "본인·배우자·자녀·본인 부모 — 실손·입원·통원·치과·도수 치료"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당 하루 세 끼 무료, 사내 카페"
+   },
+   {
+    "name": "사내 의료·상담",
+    "detail": "상주 간호사·응급 처치·만성질환 관리·예방접종, 심리·재무·법률·가족 상담(EAP)"
+   },
+   {
+    "name": "운동",
+    "detail": "사내 피트니스, 1:1 PT·GX 수업"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연간 최대 300만원"
+   },
+   {
+    "name": "전기차 구매 지원",
+    "detail": "차량 가격의 최대 15%(최대 1,000만원 한도), 전기차 대여 프로그램"
+   },
+   {
+    "name": "교육비",
+    "detail": "국내외 교육·세미나·워크숍·컨퍼런스 참가비 지원(금액 표기 없음)"
+   },
+   {
+    "name": "무이자 사내 대출",
+    "detail": "근속에 따라 1,000만원~5,000만원, 금리 0%"
+   },
+   {
+    "name": "직장 어린이집",
+    "detail": "임직원 자녀 대상, 언어·골프·승마 프로그램"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "장기근속 포상, 휴양시설(매월 추첨), 명절 복지 포인트, 경조사 지원, 추천 보상금"
+   }
+  ],
+  "note": "포티투닷 채용 사이트의 '업무 몰입 프로그램' 페이지다 [23]. 페이지는 한국 본사 기준이며 해외 법인은 다를 수 있다고 적었고, 게시일은 적혀 있지 않다. 이 공고 자체에는 복리후생 칸이 없다 [1]."
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥 (소프트웨어 드림센터 A동)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "판교 제2테크노밸리 {추론}",
+  "note": "주소는 포티투닷 홈페이지 하단 [24]과 원티드 공고의 근무지 [2]가 같다. 채용 사이트의 근무지 표기는 'Pangyo (Software Dream Center), South Korea (Remote)'다 [1]. GPU가 있는 데이터센터는 따로이며 위치는 공개되지 않았다 {추론}."
+ }
+}
