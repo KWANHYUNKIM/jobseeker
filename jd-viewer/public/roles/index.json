@@ -468,6 +468,8 @@
   "ats-smilegate:group:5329": "smilegate-lostark-data-platform-engineer",
   "boards-gamejob:dev:285795": "smilegate-lostark-game-data-engineer",
   "ats-smilegate:group:4590": "smilegate-lostark-game-data-engineer",
+  "boards-gamejob:dev:286389": "smilegate-nextgen-ue5-client",
+  "ats-smilegate:group:6198": "smilegate-nextgen-ue5-client",
   "jobkorea-50244585": "smilegate-security-analysis-lead",
   "ats-smilegate:group:6270": "smilegate-security-analysis-lead",
   "wanted-386999": "speee-dx-sre",
@@ -4416,6 +4418,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 18
+  },
+  {
+   "id": "smilegate-nextgen-ue5-client",
+   "company": "스마일게이트",
+   "role": "차세대 게임 클라이언트 담당 (언리얼 5)",
+   "jobs": [
+    "boards-gamejob:dev:286389",
+    "ats-smilegate:group:6198"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 12
   },
   {
    "id": "smilegate-security-analysis-lead",
