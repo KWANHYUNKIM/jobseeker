@@ -23,6 +23,7 @@
   "ats-ashby:42dot:406f59e5-d04b-4f9b-a519-19da3b4c895c": "42dot-senior-service-architect-playground",
   "ats-ashby:42dot:6e9418ea-6dfa-4ca2-b419-e564e1479a1b": "42dot-sr-embedded-software-engineer",
   "ats-ashby:42dot:a82b98bb-2519-4b69-990b-77300b8d136b": "42dot-staff-embedded-software-engineer",
+  "ats-ashby:42dot:17ff2b4f-2d65-47a3-aa6f-39835d39a21a": "42dot-stt-wake-word-engineer",
   "ats-ashby:42dot:1cfd36d5-26ce-4928-be2a-712c125d6d71": "42dot-sw-test-engineer-body",
   "ats-ashby:42dot:efbd4971-b841-410f-aa6b-e333c64cfe23": "42dot-sw-test-engineer-diagnostics",
   "ats-ashby:42dot:403e89b4-fdf4-4168-a115-163706830174": "42dot-system-test-engineer-sw-update",
@@ -575,6 +576,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 20
+  },
+  {
+   "id": "42dot-stt-wake-word-engineer",
+   "company": "포티투닷",
+   "role": "Deep Learning Engineer (음성 인식 및 wake word detection 개발)",
+   "jobs": [
+    "ats-ashby:42dot:17ff2b4f-2d65-47a3-aa6f-39835d39a21a"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "42dot-sw-test-engineer-body",

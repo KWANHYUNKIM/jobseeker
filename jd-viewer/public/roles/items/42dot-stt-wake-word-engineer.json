@@ -1,0 +1,776 @@
+{
+  "id": "42dot-stt-wake-word-engineer",
+  "company": "포티투닷",
+  "role": "Deep Learning Engineer (음성 인식 및 wake word detection 개발)",
+  "team": "Gleo AI · 음성 인식(STT)·호출어(WWD)",
+  "jobs": [
+    "ats-ashby:42dot:17ff2b4f-2d65-47a3-aa6f-39835d39a21a"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "차량용 음성 AI 에이전트 **글레오 AI**의 '귀' — 운전자가 \"글레오\"라고 부른 순간을 알아채는 호출어(WWD) 모델과, 그 뒤의 말을 글자로 바꾸는 음성 인식(STT) 모델을 만들고 차 안·서버에서 돌게 합니다.[1][2]",
+    "env": "2026년 5월 신형 그랜저부터 실린 제품입니다. 회사는 음성 전처리·언어별 음성 인식을 자체 개발했고, 지연이 중요한 일은 차 안(온디바이스), 무거운 계산은 클라우드에서 하는 하이브리드 구조라고 밝혔습니다.[2][3] 좌석마다 누가 말했는지도 가립니다.[2][3]",
+    "oneline": "연구와 제품 사이. **음성 신호처리 + 최신 STT/WWD 모델 + 리눅스·안드로이드에서 실시간으로 돌리기**가 한 사람에게 모입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "STT 음향/언어 모델 설계 및 음성 데이터베이스 구축",
+      "short": "말소리를 글자로 바꾸는 모델(음향)과 말이 되는 문장을 고르는 모델(언어)을 만들고, 학습할 음성을 모으는 일.",
+      "why": "글레오 AI 는 LLM 이 의도를 읽기 전에 먼저 말을 글자로 받아야 합니다.[2] 회사는 언어별 음성 인식을 자체 개발했다고 밝혔고[2], 사투리나 덜 끝난 문장에서도 의도를 읽는다는 시연이 보도됐습니다.[3] 인식이 틀리면 뒤의 LLM 이 아무리 좋아도 엉뚱한 일을 합니다 {추론}.",
+      "actually": {
+        "intro": "포티투닷 STT 의 구조는 공개되지 않았습니다. 아래는 공개 논문이 보여 주는 '보통 이런 일'입니다.",
+        "items": [
+          "**음향 모델 고르기** — 소리 특징 → 글자 확률. 합성곱과 트랜스포머를 섞은 Conformer 가 대표적인 뼈대다.[8]",
+          "**출력 방식 고르기** — CTC(칸마다 글자 또는 '빈칸'을 내고 겹친 것을 줄임)[12], RNN-T(스트리밍에 맞춘 방식)[13], 주의(attention) 기반 인코더–디코더(AED)[11] 중 하나 또는 섞어 쓴다.",
+          "**언어 모델 붙이기** — 음향 점수가 비슷한 후보 중 '말이 되는' 문장을 고르게 언어 모델 점수를 더한다(shallow fusion 등).[19] 장소 이름처럼 드문 낱말에서 효과가 크다 {추론}.",
+          "**데이터베이스 만들기** — 녹음·전사(받아쓰기)·정제·나누기. 한국어 공개 자료로는 2,000명 969시간의 KsponSpeech 가 있다.[21] 차량 소음·좌석 위치·사투리처럼 제품 환경을 닮은 녹음이 따로 필요하다 {추론}.",
+          "**늘리기** — 학습 때 주파수·시간 일부를 가려 강하게 만드는 SpecAugment.[20] 차 소음을 섞어 넣는 것도 흔하다 {추론}.",
+          "**재기** — 한국어는 띄어쓰기가 흔들려 낱말 오류율(WER)보다 글자 오류율(CER)을 함께 본다(아래 출력). {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "띄어쓰기만 다른데 WER 은 80% (직접 돌린 출력)",
+          "body": "같은 말을 띄어쓰기만 다르게 받아쓴 경우와 숫자 한 글자를 틀린 경우입니다. 공백을 빼고 센 CER 은 진짜 틀린 글자만 잡습니다.",
+          "lang": "python",
+          "code": "def ed(a, b):\n    d = list(range(len(b) + 1))\n    for i, x in enumerate(a, 1):\n        p, d[0] = d[0], i\n        for j, y in enumerate(b, 1):\n            p, d[j] = d[j], min(d[j] + 1, d[j - 1] + 1, p + (x != y))\n    return d[-1]\n\nref = \"에어컨 이십삼 도로 맞춰 줘\"\nfor hyp in [\"에어컨 이십 삼도로 맞춰줘\", \"에어컨 이십 사도로 맞춰줘\"]:\n    r, h = ref.replace(\" \", \"\"), hyp.replace(\" \", \"\")\n    cer = ed(r, h) / len(r)\n    wer = ed(ref.split(), hyp.split()) / len(ref.split())\n    print(f\"{hyp}  CER {cer:.3f}  WER {wer:.3f}\")\n# 에어컨 이십 삼도로 맞춰줘  CER 0.000  WER 0.800\n# 에어컨 이십 사도로 맞춰줘  CER 0.091  WER 0.800"
+        },
+        {
+          "title": "CTC 가 칸마다 낸 글자를 줄이는 법 (직접 돌린 출력)",
+          "body": "'_' 는 빈칸입니다. 같은 글자가 이어지면 하나로 줄이고 빈칸을 지웁니다.[12]",
+          "lang": "python",
+          "code": "frames = list(\"__에에_어컨컨__\")\nout, prev = [], None\nfor c in frames:\n    if c != prev and c != \"_\":\n        out.append(c)\n    prev = c\nprint(\"\".join(out))\n# 에어컨"
+        }
+      ],
+      "how_far": "모델 구조를 처음부터 발명하라는 뜻은 아닙니다. 공개 구조(Conformer·Whisper 계열 등)를 고르고 **우리 데이터로 학습·평가해 어디서 틀리는지 찾아 고치는 것**까지가 중심입니다 {추론}. 데이터 구축은 녹음 업체·전사 작업자와 같이 하더라도 무엇을 얼마나 모을지, 전사 규칙(숫자·외래어 표기)을 정하는 것은 이 자리의 몫으로 읽힙니다 {추론}.",
+      "refs": [2, 3, 8, 11, 12, 13, 19, 20, 21],
+      "study": ["slp3", "hf-audio", "conformer", "whisper", "kspon", "lm-fusion"]
+    },
+    {
+      "section": "task",
+      "quote": "WWD 모델 설계 및 음성 데이터베이스 구축",
+      "short": "\"글레오\" 한 마디를 늘 듣고 있다가 그때만 깨어나는 작은 모델을 만들고, 그 말소리를 모으는 일.",
+      "why": "시연은 \"글레오, 성심당 가자\"처럼 이름을 부르며 시작됐습니다.[3] 차는 늘 켜져 듣고 있으므로 이 모델은 **작고, 빠르고, 엉뚱하게 깨어나지 않아야** 합니다 {추론}. 애플도 같은 문제를 '작은 탐지기를 늘 돌리고, 의심되면 큰 검사기로 다시 본다'는 단계로 풀었다고 밝혔습니다.[17][18]",
+      "actually": {
+        "intro": "호출어 탐지(WWD, 키워드 검출 KWS 라고도 부른다)에서 실제로 정하는 것들입니다. 포티투닷의 방식은 공개되지 않았습니다.",
+        "items": [
+          "**모델 크기** — 마이크로컨트롤러에서 돌리는 KWS 연구는 메모리·연산 예산 안에서 DNN·CNN·RNN·DS-CNN 을 비교했다.[15]",
+          "**두 단계** — 늘 도는 작은 1차 탐지기 + 의심될 때만 도는 정밀 검사기. 애플은 1차에 낮은 예비 문턱을 두어 어려운 환경에서도 잘 깨어나게 했다고 적었다.[17][18]",
+          "**재는 숫자 둘** — 불렀는데 못 깨어남(놓침, FRR)과, 안 불렀는데 깨어남(오작동, 보통 시간당 횟수).[17] 문턱 하나로 둘이 맞바뀐다(아래 출력).",
+          "**음성 데이터베이스** — 여러 사람·나이·사투리·좌석 위치에서 녹음한 호출어, 그리고 비슷한 발음과 라디오·대화 같은 '아닌 소리'를 많이 모은다 {추론}. 공개 예로는 짧은 명령어 35개를 모은 Speech Commands 가 있다.[14]",
+          "**고정 호출어 vs 바꿀 수 있는 호출어** — 공개 도구 sherpa-onnx 는 모델을 다시 학습하지 않고 키워드를 바꾸는 '열린 어휘' KWS 와 키워드별 문턱을 제공한다.[22]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "문턱 하나로 놓침과 오작동이 맞바뀐다 (직접 돌린 출력)",
+          "body": "가상 점수입니다. 호출어 200번과, 호출어가 없는 10시간(1초 창 36,000개)의 점수를 만들고 문턱만 바꿨습니다. 실제 제품 숫자가 아닙니다.",
+          "lang": "python",
+          "code": "import numpy as np\nrng = np.random.default_rng(0)\npos = np.clip(rng.normal(0.85, 0.1, 200), 0, 1)\nneg = np.clip(rng.normal(0.2, 0.15, 36000), 0, 1)\nfor t in [0.5, 0.6, 0.7]:\n    frr = (pos < t).mean(); fa = (neg >= t).sum() / 10\n    print(f\"문턱 {t}: 놓침 {frr:.1%}  오작동 {fa:.1f}회/시간\")\n# 문턱 0.5: 놓침 0.0%  오작동 83.8회/시간\n# 문턱 0.6: 놓침 0.0%  오작동 14.2회/시간\n# 문턱 0.7: 놓침 4.0%  오작동 1.3회/시간"
+        }
+      ],
+      "how_far": "모델 자체는 STT 보다 훨씬 작습니다. 어려운 것은 **오작동을 아주 낮게 누르면서 놓침을 지키는 것**, 그리고 그걸 재려면 몇십~몇백 시간의 '아닌 소리'가 필요하다는 점입니다 {추론}. 문턱을 정하는 최종 기준(시간당 몇 번까지 허용하나)은 제품 쪽과 같이 정하고, 개발자는 그 곡선을 숫자로 내놓는 사람입니다 {추론}.",
+      "refs": [3, 14, 15, 17, 18, 22],
+      "study": ["kws-overview", "hello-edge", "hey-siri", "speech-commands", "sherpa-kws"]
+    },
+    {
+      "section": "task",
+      "quote": "Server/On-device용 batch/streaming 음성 application 개발 (linux, android)",
+      "short": "모델을 실제 프로그램으로 감싸, 서버에서는 한꺼번에(배치), 차 안에서는 말하는 동안(스트리밍) 돌게 하는 일.",
+      "why": "글레오 AI 는 지연이 중요한 기능은 차 안에서, 계산이 큰 일은 클라우드에서 한다고 밝혔습니다.[2] 앞으로 온디바이스 비중을 늘리겠다고도 했습니다.[4] 차량 인포테인먼트는 안드로이드 기반 플랫폼(플레오스 커넥트) 위에서 돕니다.[3] 그래서 같은 모델을 리눅스 서버와 안드로이드 두 곳에 올려야 합니다 {추론}.",
+      "actually": {
+        "items": [
+          "**배치** — 녹음 파일 여러 개를 GPU 에 묶어 한꺼번에 인식. 데이터 정제·평가·자동 전사에 쓴다 {추론}.",
+          "**스트리밍** — 마이크 소리를 작은 조각(chunk)으로 받아 말하는 중에도 글자를 내보낸다. Emformer 같은 구조가 조각 단위 처리와 짧은 '앞보기(lookahead)'로 지연을 줄인다.[23]",
+          "**마이크 받기** — 안드로이드는 AudioRecord 로 PCM(날것 소리 숫자)을 받는다.[26] 받은 소리를 특징으로 바꾸는 코드도 앱 안에 들어간다 {추론}.",
+          "**런타임** — 학습한 PyTorch 모델을 ONNX 등으로 내보내 C++ 런타임에서 돌린다. sherpa-onnx 는 같은 모델로 리눅스·안드로이드 스트리밍 인식과 KWS 를 돌리는 공개 예다.[22]",
+          "**끝점 찾기** — 사용자가 말을 끝냈는지 판단해 LLM 에 넘기는 시점을 정한다 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "조각 크기가 곧 기다림이다 (직접 돌린 출력)",
+          "body": "16kHz 소리를 25ms 창·10ms 간격으로 자르면 1초에 98칸입니다. 스트리밍에서는 조각 하나와 앞보기만큼을 기다려야 글자가 나옵니다(계산 시간은 뺀 값).",
+          "lang": "python",
+          "code": "sr = 16000; win = int(0.025 * sr); hop = int(0.010 * sr)\nprint(\"frames/1s\", 1 + (sr - win) // hop, \"win\", win, \"hop\", hop)\nfor chunk_ms, look in [(160, 0), (320, 0), (640, 160)]:\n    print(f\"chunk {chunk_ms}ms lookahead {look}ms -> 최대 대기 {chunk_ms + look}ms\")\n# frames/1s 98 win 400 hop 160\n# chunk 160ms lookahead 0ms -> 최대 대기 160ms\n# chunk 320ms lookahead 0ms -> 최대 대기 320ms\n# chunk 640ms lookahead 160ms -> 최대 대기 800ms"
+        }
+      ],
+      "flows": [
+        {
+          "caption": "\"글레오, 에어컨 꺼 줘\"가 글자가 되기까지 {추론}[2][3]",
+          "steps": [
+            "마이크·전처리 · 여러 마이크로 소음을 줄이고 말한 좌석을 가린다",
+            "호출어 탐지 · \"글레오\"를 듣고 깨어난다",
+            "스트리밍 STT · 조각마다 글자를 내보낸다",
+            "끝점 판단 · 말이 끝났는지 정한다",
+            "LLM 에이전트 · 의도를 읽고 기능을 실행한다"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "how_far": "음성 전처리(소음·좌석)와 LLM 은 다른 칸입니다[2] — 이 자리는 호출어부터 글자를 넘기는 데까지를 맡는 것으로 읽힙니다 {추론}. 최소선은 **내 모델을 리눅스에서 스트리밍으로 돌리고, 안드로이드 앱에서 마이크 입력으로 돌려 본 경험**입니다 {추론}.",
+      "refs": [2, 3, 4, 22, 23, 26],
+      "study": ["sherpa-kws", "torchaudio-online", "android-audiorecord", "android-ndk"]
+    },
+    {
+      "section": "task",
+      "quote": "Hardware efficient 모델 개발 및 최적화",
+      "short": "차 안의 작은 칩에서도 제시간에 돌도록 모델을 작게·빠르게 만드는 일.",
+      "why": "온디바이스 비중을 늘리겠다는 계획[4]과 바로 이어지는 일입니다. 호출어 모델은 늘 켜져 있어 전력과 메모리를 계속 씁니다 {추론}. 애플은 이 부담 때문에 호출어 탐지를 저전력 칩과 메인 프로세서로 나눴다고 밝혔습니다.[17][18]",
+      "actually": {
+        "items": [
+          "**양자화** — 숫자를 32비트에서 8비트로 줄이면 무게 파일이 4분의 1이 된다(아래 출력). ONNX Runtime 은 트랜스포머·RNN 에는 동적, CNN 에는 정적 양자화를 권한다.[27]",
+          "**작은 구조 고르기** — 깊이별 분리 합성곱(DS-CNN)처럼 같은 정확도를 적은 연산으로 내는 구조.[15]",
+          "**스트리밍 구조** — 매번 전체 문장을 다시 보지 않게 앞 조각의 계산을 기억해 다시 쓴다.[23]",
+          "**재기** — 실시간 비율(RTF, 처리 시간 ÷ 소리 길이), 첫 글자까지 걸린 시간, 최대 메모리, 그리고 줄인 뒤 CER·오작동이 얼마나 나빠졌나 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "호출어 모델과 STT 모델의 무게 (직접 돌린 출력)",
+          "body": "매개변수 25만 개(작은 KWS 급)와 1억 개(서버 STT 급)를 가정한 계산입니다. 실제 제품 크기가 아닙니다.",
+          "lang": "python",
+          "code": "for name, p in [(\"WWD 25만\", 250_000), (\"STT 1억\", 100_000_000)]:\n    print(name, \"FP32\", round(p * 4 / 2**20, 1), \"MB  INT8\", round(p / 2**20, 1), \"MB\")\n# WWD 25만 FP32 1.0 MB  INT8 0.2 MB\n# STT 1억 FP32 381.5 MB  INT8 95.4 MB"
+        }
+      ],
+      "how_far": "칩 회사의 전용 도구까지 처음부터 알 필요는 없습니다 {추론}. **양자화 전후 정확도·속도를 같은 평가셋으로 재서 표로 보여 줄 수 있는 것**이 최소선입니다 {추론}.",
+      "refs": [4, 15, 17, 18, 23, 27],
+      "study": ["ort-quant", "hello-edge", "lec-cs336-inference"]
+    },
+    {
+      "section": "qualification",
+      "quote": "유관 경력 2년 이상 (석사 신입 지원 가능)",
+      "short": "음성·딥러닝 경력 2년, 또는 이 분야 석사면 신입도 된다 — 연구 경험을 경력처럼 본다.",
+      "why": "같은 Gleo AI 의 TTS 공고는 'TTS 유관 경력 3년 이상'을 적었습니다.[5] 이 자리는 2년이고 석사 신입을 열어 둬, 대학원 연구를 경력에 가깝게 보는 것으로 읽힙니다 {추론}.",
+      "how_far": "'유관'이라 STT·WWD 만이 아니라 화자 인식·음성 향상·오디오 분류 경력도 이어질 수 있습니다 {추론}. 석사 신입이라면 논문이나 재현 코드가 경력 칸을 대신합니다 {추론}.",
+      "refs": [1, 5]
+    },
+    {
+      "section": "qualification",
+      "quote": "음성 신호처리에 대한 기본 개념/지식을 보유하신 분",
+      "short": "소리가 숫자로 어떻게 담기고(샘플링), 어떻게 주파수 그림(스펙트로그램)이 되는지 아는 것.",
+      "why": "모델 입력은 마이크의 날것 소리를 잘라 주파수 그림으로 바꾼 것입니다.[16] 차 안은 엔진·바람·음악 소리가 섞이고 마이크가 여러 개라, 소리가 어떻게 생겼는지 알아야 데이터와 오류를 읽을 수 있습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**샘플링** — 16kHz 는 1초에 16,000개 숫자. 음성 인식에 흔한 값이다.[14]",
+          "**창과 간격** — 25ms 창, 10ms 간격으로 잘라 푸리에 변환(STFT) → 멜 스펙트로그램·MFCC.[16] 1초면 98칸(위 출력).",
+          "**잡음과 반향** — 신호 대 잡음비(SNR), 잔향, 스피커 소리가 마이크로 되돌아오는 에코 {추론}.",
+          "**여러 마이크** — 마이크 사이의 소리 도착 시간 차이로 말한 방향(좌석)을 가린다 {추론}. 글레오 AI 는 좌석별 인식을 한다.[2][3]"
+        ]
+      },
+      "how_far": "디지털 신호처리 교과서를 다 떼라는 뜻은 아닙니다. **샘플링·STFT·멜 필터·SNR 을 코드로 직접 뽑고 그림으로 설명할 수 있으면** '기본 개념'에 닿습니다 {추론}.",
+      "refs": [2, 3, 14, 16],
+      "study": ["torchaudio-feat", "hf-audio", "rabiner"]
+    },
+    {
+      "section": "qualification",
+      "quote": "STT 또는 WWD 관련 분야에서 최신 기계학습/인공지능에 대한 연구경험을 보유하신 분",
+      "short": "최신 음성 인식·호출어 논문을 읽고, 직접 실험해 본 경험 — 대학원 연구나 회사 연구 모두.",
+      "why": "팀 소개는 최신 연구를 빠르게 서비스에 넣고, 성과를 세계 최고 수준 학회·저널에 발표한다고 적었습니다.[1] 같은 Gleo AI 의 음성 합성 쪽은 실제로 ICASSP·Interspeech 에 논문을 냈습니다.[6][7]",
+      "actually": {
+        "intro": "'최신'의 큰 갈래입니다(공개 논문 기준).",
+        "items": [
+          "**자기지도 사전학습** — 받아쓰기 없는 소리로 먼저 배우는 wav2vec 2.0·HuBERT.[9][24]",
+          "**대규모 약지도 학습** — 68만 시간으로 여러 언어를 한 모델에 담은 Whisper.[10]",
+          "**스트리밍 구조** — Conformer·Emformer·RNN-T.[8][13][23]",
+          "**KWS** — 작은 모델·두 단계 탐지·열린 어휘 키워드.[15][16][22]"
+        ]
+      },
+      "how_far": "논문이 필수라고 적지는 않았습니다(논문 저자는 우대 줄에 따로 있습니다).[1] **한 가지 문제를 정하고, 공개 모델을 기준선으로 세워 내 방법이 얼마나 나은지 숫자로 보인 경험**이면 '연구 경험'으로 설명할 수 있습니다 {추론}.",
+      "refs": [1, 6, 7, 8, 9, 10, 13, 15, 16, 22, 23, 24],
+      "study": ["wav2vec2", "hubert", "whisper", "conformer", "kws-overview"]
+    },
+    {
+      "section": "qualification",
+      "quote": "On-device (edge device) 에서의 application 개발 능력을 보유하신 분 (linux, android)",
+      "short": "서버가 아니라 차·폰 같은 기기 안에서 모델이 돌아가는 앱을 만들어 본 능력.",
+      "why": "지연이 중요한 차량 기능은 차 안에서 처리합니다.[2] 호출어는 네트워크가 끊겨도 들어야 하므로 기기 안에서 돌 수밖에 없습니다 {추론}.",
+      "level": {
+        "basic": "리눅스에서 C++ 또는 파이썬으로 ONNX 모델을 불러 녹음 파일을 인식하기",
+        "work": "안드로이드 앱에서 AudioRecord 로 마이크를 받아 JNI·NDK 로 C++ 추론을 부르고, 실시간으로 결과 띄우기[26][28]",
+        "team": "차량 칩에서 늘 켜진 호출어 + 스트리밍 STT 를 메모리·CPU 예산 안에 두고 지연을 재기 {추론}"
+      },
+      "actually": {
+        "items": [
+          "**교차 빌드** — PC 에서 기기용(ARM) 실행 파일을 만든다 {추론}.",
+          "**네이티브 코드** — 안드로이드는 NDK 로 C/C++ 를 앱에 넣는다.[28]",
+          "**자원 재기** — CPU 사용률·메모리 최대치·발열·배터리 {추론}.",
+          "**공개 예** — sherpa-onnx 는 안드로이드용 스트리밍 인식·KWS 앱을 낸다.[22]"
+        ]
+      },
+      "refs": [2, 22, 26, 28],
+      "study": ["android-ndk", "android-audiorecord", "sherpa-kws", "tlcl"]
+    },
+    {
+      "section": "qualification",
+      "quote": "독창적인 기술 제시 및 문제 해결을 위한 프로그래밍 능력을 보유하신 분 (C/C++/Python/shell 등)",
+      "short": "학습은 파이썬, 기기에서 도는 부분은 C/C++, 데이터 처리는 셸 — 셋을 다 손으로 짤 수 있는 것.",
+      "why": "학습·평가는 PyTorch(파이썬)로 하고[1], 온디바이스 앱은 C/C++ 로 돕니다(앞 줄). 수천 시간 녹음을 나누고 거르는 일은 셸 스크립트가 빠릅니다 {추론}.",
+      "actually": {
+        "items": [
+          "**파이썬** — 데이터 로더·학습 루프·CER 평가(첫 줄의 예시처럼) {추론}.",
+          "**C/C++** — 링 버퍼(고리 모양 소리 버퍼), 특징 추출, 런타임 호출 {추론}.",
+          "**셸** — 파일 목록·전사 정리·여러 GPU 작업 돌리기 {추론}."
+        ]
+      },
+      "how_far": "'독창적인 기술 제시'는 코딩 시험보다 **문제를 정하고 직접 실험 코드를 짜서 확인하는 능력**으로 읽힙니다 {추론}. 2차 면접이 3시간 내외라 깊은 기술 토론이나 과제가 있을 수 있습니다.[1] {추론}",
+      "refs": [1],
+      "study": ["tlcl", "lec-cs336-pytorch"]
+    },
+    {
+      "section": "qualification",
+      "quote": "오픈소스 기반 딥 러닝 프레임워크 활용 능력을 보유하신 분 (PyTorch/TensorFlow/Keras/Caffe 등)",
+      "short": "PyTorch 같은 공개 도구로 모델을 짜고 학습·저장·내보내기까지 해 본 것.",
+      "why": "공개 음성 모델 대부분이 PyTorch 코드로 나옵니다(Whisper·sherpa-onnx 의 학습 쪽 등).[10][22] 학습한 모델을 기기로 옮기려면 내보내기(ONNX 등)까지 다뤄야 합니다.[27]",
+      "how_far": "프레임워크 이름은 '등'입니다.[1] **하나를 깊게(학습 루프를 직접 짜고, 여러 GPU 로 돌리고, ONNX 로 내보내기)** 하면 충분합니다 {추론}.",
+      "refs": [1, 10, 22, 27],
+      "study": ["lec-cs336-pytorch", "hf-audio", "ort-quant"]
+    },
+    {
+      "section": "preference",
+      "quote": "vcs(git)에 대한 이해와 사용해본 경험이 있으신 분",
+      "short": "코드를 git 으로 나눠 관리하고 남과 합쳐 본 경험 — 연구실 출신에게 특히 묻는 기본기.",
+      "why": "연구 코드가 제품 코드로 넘어갈 때 여러 사람이 같은 저장소를 고칩니다 {추론}. 석사 신입을 받는 자리라 기본기를 따로 적은 것으로 읽힙니다 {추론}.",
+      "how_far": "브랜치·머지·리베이스·풀 리퀘스트 리뷰를 해 봤으면 됩니다[29] {추론}. 모델 무게처럼 큰 파일은 git 에 넣지 않는 법도 알아 두면 좋습니다 {추론}.",
+      "refs": [1, 29],
+      "study": ["progit"]
+    },
+    {
+      "section": "preference",
+      "quote": "단위 테스트, 정적 분석, 테스트 자동화 및 CI/CD에 대한 기본 개념을 알고 계신분",
+      "short": "코드를 고칠 때마다 자동으로 시험하고 빌드하는 흐름을 아는 것 — 모델도 제품 코드라서.",
+      "why": "차에 실린 기능은 업데이트(OTA)로 고도화한다고 밝혔습니다.[4] 새 모델·새 코드가 나갈 때마다 같은 평가를 자동으로 돌려야 나빠진 것을 잡습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**단위 테스트** — 특징 추출 함수가 같은 입력에 같은 값을 내는지, CER 계산이 맞는지 {추론}.",
+          "**정적 분석** — C/C++ 코드의 메모리 실수를 실행 전에 찾는 도구 {추론}.",
+          "**CI/CD** — 저장소에 올리면 빌드·테스트·평가셋 CER 이 자동으로 돌고 기준보다 나쁘면 막는다.[30] {추론}"
+        ]
+      },
+      "refs": [4, 29, 30],
+      "study": ["pytest", "gh-actions"]
+    },
+    {
+      "section": "preference",
+      "quote": "STT 기술을 개발하여 실제 상용화/서비스를 한 경험이 있으신 분",
+      "short": "만든 음성 인식이 실제 사용자에게 나간 경험 — 논문 점수와 현장 오류가 다르다는 걸 아는 사람.",
+      "why": "글레오 AI 는 이미 양산 차에 실렸습니다.[2][3] 실제 사용자 말은 평가셋과 달라서, 서비스 경험이 있으면 어떤 오류가 실제로 문제가 되는지 압니다 {추론}.",
+      "how_far": "상용화 경험이 없으면, 공개 모델을 내 녹음(차 안·소음)으로 시험해 '평가셋 CER 과 현장 CER 의 차이'를 보고서로 만든 것이 대신 말해 줍니다 {추론}.",
+      "refs": [2, 3]
+    },
+    {
+      "section": "preference",
+      "quote": "SSL(Self Supervised Learning), AED(Attention based Encoder-Decoder) 기반의 STT 연구 경험을 보유하신 분",
+      "short": "받아쓰기 없는 소리로 먼저 배우는 방법(SSL)과, 주의 기반 인코더–디코더(AED) 음성 인식을 연구해 본 것.",
+      "why": "받아쓰기(전사)는 비쌉니다. 자기지도 사전학습은 전사 없는 소리로 먼저 배워, 적은 전사로도 좋은 인식을 냅니다 — wav2vec 2.0 은 전사 10분으로도 학습해 보였습니다.[9] AED 는 인코더가 소리를 읽고 디코더가 글자를 차례로 쓰는 구조로, Whisper 가 대표 예입니다.[10][11]",
+      "actually": {
+        "items": [
+          "**SSL** — 소리 일부를 가리고 맞히게 한다(wav2vec 2.0 의 대조 학습, HuBERT 의 숨은 단위 예측).[9][24]",
+          "**AED** — LAS 가 처음 보인 구조, Whisper 가 대규모로 키웠다.[10][11]",
+          "**맞바꿈** — AED 는 문장 전체를 보고 쓰기 좋지만 스트리밍은 CTC·RNN-T 쪽이 자연스럽다 {추론}. 둘을 섞는 방식도 흔하다 {추론}."
+        ]
+      },
+      "refs": [9, 10, 11, 24],
+      "study": ["wav2vec2", "hubert", "whisper"]
+    },
+    {
+      "section": "preference",
+      "quote": "Multi lingual STT 연구 경험을 보유하신 분",
+      "short": "한 모델로 여러 언어를 알아듣게 만들어 본 경험.",
+      "why": "회사는 '언어별 음성 인식'을 개발했다고 밝혔습니다.[2] 한국어 안에도 영어 노래 제목·지명이 섞이고, 같은 Gleo AI 의 합성 쪽 논문도 여러 언어를 다뤘습니다.[6][7] 현대차그룹 차량이 해외에도 팔리므로 다른 언어로 넓힐 수 있다 {추론}.",
+      "actually": {
+        "items": [
+          "**다국어 사전학습** — XLS-R 은 128개 언어 약 43만 시간으로 사전학습했다.[25]",
+          "**대규모 다국어 인식** — Whisper 는 한 모델로 여러 언어 받아쓰기·번역을 한다.[10]",
+          "**섞인 말** — 한 문장에 한국어와 영어가 섞이는 코드 스위칭 {추론}."
+        ]
+      },
+      "refs": [2, 6, 7, 10, 25],
+      "study": ["xlsr", "whisper"]
+    },
+    {
+      "section": "preference",
+      "quote": "음성인식용 언어모델 관련 연구 경험을 보유하신 분",
+      "short": "소리만으로 헷갈리는 후보 중 '말이 되는' 문장을 고르게 해 주는 언어 모델을 다뤄 본 경험.",
+      "why": "차 안 명령에는 가게·장소 이름처럼 드문 낱말이 많습니다(시연의 \"성심당\").[3] 이런 낱말은 음향만으로는 비슷한 다른 낱말로 잘못 받기 쉽고, 언어 모델이 바로잡습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**합치는 방법** — 음향 모델 점수에 언어 모델 점수를 가중합하는 shallow fusion, 학습 때 합치는 deep·cold fusion 등을 비교한 연구가 있다.[19]",
+          "**문맥 넣기** — 사용자의 연락처·목적지 목록 같은 개인 문맥을 인식에 반영한다 {추론}. 팀 소개는 Personal Context 를 함께 다룬다고 적었다.[1]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "언어 모델 가중치 하나로 답이 바뀐다 (직접 돌린 출력)",
+          "body": "가상 점수(로그 확률)입니다. 소리 점수만 보면 '성신당'이 근소하게 이기지만, 언어 모델 점수를 0.3배 더하면 '성심당'이 이깁니다.[19]",
+          "lang": "python",
+          "code": "cands = {\"성심당 가자\": (-4.1, -6.0), \"성신당 가자\": (-3.9, -9.5)}  # (음향, 언어)\nfor lam in [0.0, 0.3]:\n    best = max(cands, key=lambda k: cands[k][0] + lam * cands[k][1])\n    print(\"lambda\", lam, \"->\", best)\n# lambda 0.0 -> 성신당 가자\n# lambda 0.3 -> 성심당 가자"
+        }
+      ],
+      "refs": [1, 3, 19],
+      "study": ["lm-fusion", "slp3"]
+    },
+    {
+      "section": "preference",
+      "quote": "음성인식/기계학습/인공지능 분야 상위급 저널/학회 논문 저자",
+      "short": "ICASSP·Interspeech 같은 학회에 논문을 낸 사람을 우대 — 팀도 실제로 낸다.",
+      "why": "팀 소개는 성과를 세계 최고 수준 학회·저널에 발표한다고 적었습니다.[1] 같은 Gleo AI 음성 합성 쪽 논문이 ICASSP 2023·Interspeech 2023 에 실렸습니다.[6][7] 음성 분야 대표 학회 Interspeech 의 논문은 ISCA 아카이브에 공개됩니다.[31]",
+      "how_far": "우대 사항입니다.[1] 논문이 없다면 학회 논문 하나를 골라 재현하고 결과 차이를 정리한 글이 '논문을 읽고 다룰 수 있다'는 증거가 됩니다 {추론}.",
+      "refs": [1, 6, 7, 31]
+    },
+    {
+      "section": "preference",
+      "quote": "상기 관련 분야 석/박사 학위 보유 및 수료자",
+      "short": "음성·기계학습 대학원 과정을 마쳤거나 수료한 사람을 우대 — 필수는 아니다.",
+      "why": "이 줄은 우대 사항이고, 필수 요건은 경력 2년 또는 석사 신입입니다.[1] '수료자'까지 적어 학위를 마치지 않은 박사 과정도 열어 둔 것으로 읽힙니다 {추론}.",
+      "refs": [1]
+    }
+  ],
+  "fit": {
+    "good": [
+      "\"왜 이 말만 틀릴까\"를 오디오를 직접 들으며 파고드는 게 즐거운 사람 {추론}",
+      "논문 모델을 실제 기기에서 돌려 숫자를 재 보고 싶은 사람[1]",
+      "연구 성과를 학회에 내면서도 제품에 실리는 걸 보고 싶은 사람[1][2]",
+      "내가 만든 인식이 실제 차에서 쓰이는 걸 보고 싶은 사람[3]"
+    ],
+    "hard": [
+      "호출어 오작동은 아주 드문 일을 재는 일이라 많은 녹음과 긴 시험이 필요하다 {추론}",
+      "양산 차에 실린 기능이라 새 모델을 바로 넣지 못하고 검증을 거친다 {추론}",
+      "파이썬 연구 코드와 안드로이드·C++ 기기 코드를 오가야 한다[1]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "띄어쓰기만 다른데 WER 이 80% 나왔어요. 이 숫자를 믿어도 되나요?",
+      "a": "한국어 평가는 CER 을 함께 보고, 띄어쓰기·숫자 표기 정규화 규칙을 먼저 맞춘다. {추론}"
+    },
+    {
+      "q": "호출어 오작동을 시간당 0.1회 이하로 낮추려면 시험에 몇 시간짜리 소리가 필요할까요?",
+      "a": "드문 사건을 재려면 수십 시간 이상 '아닌 소리'가 필요하다 — 두 단계 탐지로 1차 문턱을 낮추는 설계.[17][18] {추론}"
+    },
+    {
+      "q": "스트리밍 인식에서 조각을 키우면 무엇이 좋아지고 무엇이 나빠지나요?",
+      "a": "문맥이 늘어 정확도는 오르고, 기다림(지연)은 길어진다.[23]"
+    },
+    {
+      "q": "전사 데이터가 100시간뿐인데 사전학습 모델을 어떻게 쓰나요?",
+      "a": "자기지도 사전학습 모델을 미세 조정 — wav2vec 2.0 의 적은 전사 실험.[9]"
+    },
+    {
+      "q": "\"성심당\"을 계속 \"성신당\"으로 받아요. 음향 모델을 다시 학습하지 않고 고칠 방법은?",
+      "a": "언어 모델 결합·문맥 편향(장소 목록) — shallow fusion 가중치.[19]"
+    }
+  ],
+  "resources": [
+    {
+      "id": "slp3",
+      "title": "Speech and Language Processing (3rd ed. draft)",
+      "by": "Daniel Jurafsky · James H. Martin",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://web.stanford.edu/~jurafsky/slp3/",
+      "why": "무료 공개 교과서. 음성 특징·음성 인식(CTC·인코더–디코더)·WER 을 한 장으로 — 업무① 과 요건②의 바탕."
+    },
+    {
+      "id": "rabiner",
+      "title": "Fundamentals of Speech Recognition",
+      "by": "Lawrence Rabiner · Biing-Hwang Juang · Prentice Hall · 1993",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://www.google.com/search?tbm=bks&q=Fundamentals+of+Speech+Recognition+Rabiner+Juang",
+      "why": "딥러닝 이전 음성 인식의 고전. 요건② 신호처리(특징·잡음)를 깊게 볼 때."
+    },
+    {
+      "id": "hf-audio",
+      "title": "Hugging Face Audio Course",
+      "by": "Hugging Face",
+      "kind": "course",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://huggingface.co/learn/audio-course",
+      "why": "오디오 데이터·멜 그림부터 음성 인식 단원(사전학습 모델·미세 조정·평가)까지 코드로. 업무①·요건②⑥의 출발점."
+    },
+    {
+      "id": "torchaudio-feat",
+      "title": "torchaudio 문서 · Audio Feature Extractions",
+      "by": "PyTorch",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.pytorch.org/audio/stable/tutorials/audio_feature_extractions_tutorial.html",
+      "why": "STFT·멜 스펙트로그램·MFCC 를 직접 뽑아 보기. 요건② 신호처리."
+    },
+    {
+      "id": "torchaudio-online",
+      "title": "torchaudio 문서 · Online ASR with Emformer RNN-T",
+      "by": "PyTorch",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.pytorch.org/audio/2.0.1/tutorials/online_asr_tutorial.html",
+      "why": "조각 단위(예제는 16kHz 0.16초)와 앞보기(right context)로 소리를 넣어 말하는 중에 글자를 받는 스트리밍 인식 실습. 업무③."
+    },
+    {
+      "id": "conformer",
+      "title": "Conformer: Convolution-augmented Transformer for Speech Recognition",
+      "by": "Anmol Gulati 외 · Google · Interspeech 2020",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2005.08100",
+      "why": "지금 음향 모델의 대표 뼈대. 업무① 음향 모델 설계와 요건③."
+    },
+    {
+      "id": "whisper",
+      "title": "Robust Speech Recognition via Large-Scale Weak Supervision (Whisper)",
+      "by": "Alec Radford 외 · OpenAI · 2022",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2212.04356",
+      "why": "68만 시간 다국어 AED 모델. 우대④ AED·우대⑤ 다국어의 기준선, 공개 코드로 실습."
+    },
+    {
+      "id": "wav2vec2",
+      "title": "wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations",
+      "by": "Alexei Baevski 외 · Facebook AI · NeurIPS 2020",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2006.11477",
+      "why": "자기지도 사전학습의 대표 논문. 우대④ SSL, 적은 전사로 학습하기."
+    },
+    {
+      "id": "hubert",
+      "title": "HuBERT: Self-Supervised Speech Representation Learning by Masked Prediction of Hidden Units",
+      "by": "Wei-Ning Hsu 외 · Meta · 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2106.07447",
+      "why": "wav2vec 2.0 다음 갈래의 SSL. 우대④ 면접에서 둘의 차이를 설명할 때."
+    },
+    {
+      "id": "xlsr",
+      "title": "XLS-R: Self-supervised Cross-lingual Speech Representation Learning at Scale",
+      "by": "Arun Babu 외 · Meta · 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2111.09296",
+      "why": "128개 언어 사전학습. 우대⑤ 다국어 STT."
+    },
+    {
+      "id": "lm-fusion",
+      "title": "A Comparison of Techniques for Language Model Integration in Encoder-Decoder Speech Recognition",
+      "by": "Shubham Toshniwal 외 · SLT 2018",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/1807.10857",
+      "why": "shallow·deep·cold fusion 비교. 업무① 언어 모델과 우대⑥."
+    },
+    {
+      "id": "kspon",
+      "title": "KsponSpeech: Korean Spontaneous Speech Corpus for Automatic Speech Recognition",
+      "by": "방정욱 외 · ETRI · Applied Sciences 2020",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.mdpi.com/2076-3417/10/19/6936",
+      "why": "한국어 자유 대화 969시간 말뭉치와 전사 규칙(철자·발음 두 벌). 업무① 한국어 음성 데이터베이스 설계의 본보기."
+    },
+    {
+      "id": "kws-overview",
+      "title": "Deep Spoken Keyword Spotting: An Overview",
+      "by": "Iván López-Espejo 외 · IEEE Access 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2111.10592",
+      "why": "KWS 의 특징·모델·학습·평가를 한 지도로. 업무② WWD 면접 대비."
+    },
+    {
+      "id": "hello-edge",
+      "title": "Hello Edge: Keyword Spotting on Microcontrollers",
+      "by": "Yundong Zhang 외 · Arm · 2017",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/1711.07128",
+      "why": "메모리·연산 예산 안에서 KWS 모델 구조를 고르는 법. 업무②④."
+    },
+    {
+      "id": "speech-commands",
+      "title": "Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition",
+      "by": "Pete Warden · Google · 2018",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://arxiv.org/abs/1804.03209",
+      "why": "짧은 명령어 공개 데이터와 그 수집·평가 방식. 업무② 호출어 데이터베이스 설계의 본보기, 첫 실습 재료."
+    },
+    {
+      "id": "hey-siri",
+      "title": "Hey Siri: An On-device DNN-powered Voice Trigger for Apple's Personal Assistant",
+      "by": "Apple Machine Learning Research · 2017",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://machinelearning.apple.com/research/hey-siri",
+      "why": "제품 호출어의 두 단계 탐지·문턱·오작동 재기를 회사가 직접 설명한 글. 업무②④."
+    },
+    {
+      "id": "sherpa-kws",
+      "title": "sherpa-onnx 문서 · Keyword spotting",
+      "by": "k2-fsa",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://k2-fsa.github.io/sherpa/onnx/kws/index.html",
+      "why": "열린 어휘 KWS·스트리밍 인식을 리눅스·안드로이드에서 돌리는 공개 도구. 업무②③·요건④ 실습."
+    },
+    {
+      "id": "ort-quant",
+      "title": "ONNX Runtime 문서 · Quantize ONNX models",
+      "by": "Microsoft",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html",
+      "why": "정적·동적 양자화와 보정. 업무④ 하드웨어 효율."
+    },
+    {
+      "id": "android-audiorecord",
+      "title": "Android 문서 · AudioRecord",
+      "by": "Google",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.android.com/reference/android/media/AudioRecord",
+      "why": "안드로이드에서 마이크 PCM 을 받는 기본 API. 업무③·요건④."
+    },
+    {
+      "id": "android-ndk",
+      "title": "Android NDK 가이드",
+      "by": "Google",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/ndk/guides",
+      "why": "C/C++ 추론 코드를 안드로이드 앱에 넣는 법. 요건④⑤."
+    },
+    {
+      "id": "tlcl",
+      "title": "The Linux Command Line",
+      "by": "William Shotts",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://linuxcommand.org/tlcl.php",
+      "why": "셸 기본부터 스크립트까지 무료. 요건④⑤ 리눅스·shell."
+    },
+    {
+      "id": "progit",
+      "title": "Pro Git (한국어판)",
+      "by": "Scott Chacon · Ben Straub",
+      "kind": "book",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://git-scm.com/book/ko/v2",
+      "why": "브랜치·머지·리베이스까지 무료 한국어. 우대①."
+    },
+    {
+      "id": "pytest",
+      "title": "pytest 문서",
+      "by": "pytest",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.pytest.org/",
+      "why": "특징 추출·CER 계산 같은 함수에 단위 테스트 달기. 우대②."
+    },
+    {
+      "id": "gh-actions",
+      "title": "GitHub Actions 문서",
+      "by": "GitHub",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.github.com/ko/actions",
+      "why": "올릴 때마다 테스트·평가를 자동으로 돌리는 CI. 우대②."
+    },
+    {
+      "id": "lec-cs336-pytorch",
+      "title": "Stanford CS336 Lecture 2: PyTorch (einops) 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/kuYAsz7zspQ",
+      "why": "텐서 모양·연산량을 세며 PyTorch 를 쓰는 법. 요건⑤⑥."
+    },
+    {
+      "id": "lec-cs336-inference",
+      "title": "Stanford CS336 Lecture 10: Inference 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/EfM546A79aM",
+      "why": "추론의 지연·메모리·양자화. 업무④를 이해하는 바탕."
+    },
+    {
+      "id": "lec-elevenlabs",
+      "title": "Stanford CS153 · ElevenLabs Mati Staniszewski — The Future of Voice Systems 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/vfF011ko89o",
+      "why": "음성 AI 회사가 보는 음성 제품의 흐름. 음성 인터페이스 전체에서 STT 의 자리를 큰 그림으로."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "소리와 음성 인식 기본",
+      "time": "2~3주",
+      "goal": "샘플링·STFT·멜 스펙트로그램·SNR 을 직접 뽑고, CTC·AED·RNN-T 가 무엇이 다른지 설명한다.",
+      "resources": ["hf-audio", "torchaudio-feat", "slp3", "lec-elevenlabs"],
+      "task": "내 목소리로 차량 명령 20개를 녹음하고 자동차 소음을 SNR 20·10·0dB 로 섞어 멜 그림을 나란히 그린다. 공개 Whisper 로 받아쓰게 해 소음별 CER 표를 만든다."
+    },
+    {
+      "title": "한국어 STT 하나를 끝까지",
+      "time": "4~5주",
+      "goal": "사전학습 모델을 한국어 데이터로 미세 조정하고, 정규화 규칙을 정해 CER 로 평가한다.",
+      "resources": ["wav2vec2", "conformer", "kspon", "whisper", "lec-cs336-pytorch"],
+      "task": "KsponSpeech 일부(또는 공개 한국어 음성 일부)로 wav2vec 2.0 계열 모델을 CTC 로 미세 조정한다. 숫자·띄어쓰기 정규화 전후 CER 을 비교하고 많이 틀린 낱말 20개를 정리한다."
+    },
+    {
+      "title": "호출어 모델",
+      "time": "3주",
+      "goal": "작은 KWS 모델을 학습하고 놓침·시간당 오작동 곡선을 그린다.",
+      "resources": ["speech-commands", "hello-edge", "kws-overview", "hey-siri"],
+      "task": "Speech Commands 의 한 낱말을 가상 호출어로 정해 DS-CNN 을 학습한다. 라디오·대화 녹음 수 시간을 '아닌 소리'로 흘려 문턱별 놓침·오작동 표를 만들고, 두 단계(작은 모델 → 큰 모델 재확인)로 오작동이 얼마나 주는지 잰다."
+    },
+    {
+      "title": "기기에서 실시간으로",
+      "time": "3~4주",
+      "goal": "같은 모델을 리눅스·안드로이드에서 스트리밍으로 돌리고 지연·메모리를 잰다.",
+      "resources": ["torchaudio-online", "sherpa-kws", "ort-quant", "android-audiorecord", "android-ndk", "lec-cs336-inference"],
+      "task": "앞 단계 KWS + 스트리밍 STT 를 ONNX 로 내보내 INT8 로 줄이고, 안드로이드 앱에서 마이크로 \"호출어 → 명령\"을 받는다. FP32·INT8 판의 첫 글자 지연·RTF·메모리·CER 을 한 장에 정리한다."
+    },
+    {
+      "title": "연구 갈래와 제품 습관 (우대)",
+      "time": "계속",
+      "goal": "SSL·AED·다국어·언어 모델 결합 중 하나를 골라 기준선 대비 개선을 숫자로 보이고, 코드를 테스트·CI 로 지킨다.",
+      "resources": ["hubert", "xlsr", "lm-fusion", "progit", "pytest", "gh-actions"],
+      "task": "가상 목적지 목록(가게 이름 200개)으로 작은 언어 모델을 만들어 shallow fusion 가중치별 고유명사 CER 을 잰다. 평가 스크립트에 단위 테스트를 달고 GitHub Actions 로 CER 이 기준보다 나빠지면 실패하게 만든다."
+    }
+  ],
+  "pay": {
+    "summary": "공고·공시에 연봉이 없다 — 공공데이터 집계 평균 **약 6,032만원**(회사 전체, 경력직 포함). 이 자리는 경력 2년 이상 또는 석사 신입이다",
+    "rows": [
+      {
+        "label": "직원 평균 연봉",
+        "value": "6,032만원",
+        "amount": 6032,
+        "basis": "공공데이터 집계",
+        "note": "원티드가 국민연금 가입 정보로 계산해 보여 주는 값이다. 기준월이 적혀 있지 않다 [32]"
+      }
+    ],
+    "how": "포티투닷은 비상장 회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 위 평균은 신입·경력·직군이 섞인 회사 전체 값이라 이 자리(경력 2년 이상 또는 석사 신입[1])가 받는 금액으로 읽으면 안 된다 {추론}. 전형 마지막에 **처우 협의** 단계가 따로 있어 연봉은 사람마다 정한다 [1]."
+  },
+  "benefits": {
+    "items": [
+      { "name": "유연근무제", "detail": "재량·선택 근무" },
+      { "name": "리커버리 휴가", "detail": "법정 연차와 별도로 매월 1회 유급" },
+      { "name": "건강검진", "detail": "프리미엄 종합검진 전액 지원" },
+      { "name": "단체상해보험", "detail": "본인·배우자·자녀·본인 부모 — 실손·입원·통원·치과·도수 치료" },
+      { "name": "식사", "detail": "사내 식당 하루 세 끼 무료, 사내 카페" },
+      { "name": "사내 의료·상담", "detail": "상주 간호사·응급 처치·만성질환 관리·예방접종, 심리·재무·법률·가족 상담(EAP)" },
+      { "name": "운동", "detail": "사내 피트니스, 1:1 PT·GX 수업" },
+      { "name": "복지 포인트", "detail": "연간 최대 300만원" },
+      { "name": "전기차 구매 지원", "detail": "차량 가격의 최대 15%(최대 1,000만원 한도), 전기차 대여 프로그램" },
+      { "name": "교육비", "detail": "국내외 교육·세미나·워크숍·컨퍼런스 참가비 지원(금액 표기 없음)" },
+      { "name": "무이자 사내 대출", "detail": "근속에 따라 1,000만원~5,000만원, 금리 0%" },
+      { "name": "직장 어린이집", "detail": "임직원 자녀 대상, 언어·골프·승마 프로그램" },
+      { "name": "그 밖에", "detail": "장기근속 포상, 휴양시설(매월 추첨), 명절 복지 포인트, 경조사 지원, 추천 보상금" }
+    ],
+    "note": "포티투닷 채용 사이트의 '업무 몰입 프로그램' 페이지다 [33]. 페이지는 한국 본사 기준이며 해외 법인은 다를 수 있다고 적었고, 게시일은 적혀 있지 않다. 이 공고 자체에는 복리후생 칸이 없다 [1]."
+  },
+  "location": {
+    "name": "포티투닷 판교 사옥 (소프트웨어 드림센터 A동)",
+    "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+    "near": "판교 제2테크노밸리 {추론}",
+    "note": "주소는 포티투닷 홈페이지 하단 회사 정보다 [34]. 공고의 근무지 표기는 'Pangyo (Software Dream Center), South Korea (Remote)'이고 재택 범위는 적혀 있지 않다 [1]."
+  },
+  "sources": [
+    { "n": 1, "title": "포티투닷 채용 · Deep Learning Engineer (음성 인식 및 wake word detection 개발)", "url": "https://jobs.ashbyhq.com/42dot/17ff2b4f-2d65-47a3-aa6f-39835d39a21a", "kind": "posting", "note": "Gleo AI 팀 소개(STT·WWD·On-device AI·LLM·Personal Context)·업무·요건·우대·전형(2차 면접 3시간 내외)" },
+    { "n": 2, "title": "포티투닷 · '사람처럼 자연스러운 대화' 가능한 차량용 음성 AI 에이전트 '글레오 AI' 기술 공개", "url": "https://42dot.ai/ko/stories/blog-news/42dot-unveils-gleo-ai", "kind": "company", "date": "2026-05-21", "note": "음성 전처리·언어별 음성 인식·합성 자체 개발, 좌석 위치 인식, 하이브리드(온디바이스·클라우드), 초저지연. 지연 숫자·모델·칩은 없다. 목록 게시일은 2026-07-15" },
+    { "n": 3, "title": "뉴시스 · \"성심당 빵 메뉴까지 추천\"…현대차그룹 '글레오AI 에이전트' 뭐길래", "url": "https://www.newsis.com/view/NISX20260429_0003610848", "kind": "news", "date": "2026-04-30", "note": "\"글레오, 성심당 가자\" 시연, 사투리·불완전한 문장, 실내 존별 음성 인식, 플레오스 커넥트, 기능에 따라 외부 LLM API" },
+    { "n": 4, "title": "헤럴드경제 · 포티투닷, 車 AI 비서 '글레오 AI' 공개", "url": "https://www.heraldk.com/article/2026052016554565137", "kind": "news", "date": "2026-05-20", "note": "2024년 개발 착수, 자체 LLM·온디바이스 확대, OTA 고도화 계획" },
+    { "n": 5, "title": "포티투닷 채용 · Deep Learning Engineer (음성 합성 개발)", "url": "https://jobs.ashbyhq.com/42dot/c184cf35-51e2-4e80-87bc-579089f07472", "kind": "posting", "note": "같은 Gleo AI 의 TTS 공고 — TTS 유관 경력 3년 이상" },
+    { "n": 6, "title": "CrossSpeech (ICASSP 2023) · arXiv 2302.14370", "url": "https://arxiv.org/abs/2302.14370", "kind": "company", "date": "2023-02", "note": "42dot 저자 — 교차 언어 음성 합성. 음성 인식 논문은 찾지 못했다" },
+    { "n": 7, "title": "FACTSpeech (Interspeech 2023)", "url": "https://www.isca-archive.org/interspeech_2023/yang23x_interspeech.html", "kind": "company", "date": "2023-08", "note": "저자 모두 42dot — 음역 텍스트 발음 제어" },
+    { "n": 8, "title": "Conformer: Convolution-augmented Transformer for Speech Recognition · arXiv 2005.08100", "url": "https://arxiv.org/abs/2005.08100", "kind": "reference", "date": "2020-05", "note": "다른 회사(구글) — 합성곱 + 트랜스포머 음향 모델" },
+    { "n": 9, "title": "wav2vec 2.0 · arXiv 2006.11477", "url": "https://arxiv.org/abs/2006.11477", "kind": "reference", "date": "2020-06", "note": "다른 회사(Facebook AI) — 자기지도 사전학습, 전사 10분 미세 조정 실험" },
+    { "n": 10, "title": "Robust Speech Recognition via Large-Scale Weak Supervision (Whisper) · arXiv 2212.04356", "url": "https://arxiv.org/abs/2212.04356", "kind": "reference", "date": "2022-12", "note": "다른 회사(OpenAI) — 68만 시간 다국어, 인코더–디코더" },
+    { "n": 11, "title": "Listen, Attend and Spell · arXiv 1508.01211", "url": "https://arxiv.org/abs/1508.01211", "kind": "reference", "date": "2015-08", "note": "주의 기반 인코더–디코더 음성 인식(AED)의 출발점" },
+    { "n": 12, "title": "Connectionist Temporal Classification (Graves 외, ICML 2006)", "url": "https://www.cs.toronto.edu/~graves/icml_2006.pdf", "kind": "reference", "date": "2006", "note": "CTC — 빈칸 기호와 겹친 출력 줄이기" },
+    { "n": 13, "title": "Sequence Transduction with Recurrent Neural Networks (RNN-T) · arXiv 1211.3711", "url": "https://arxiv.org/abs/1211.3711", "kind": "reference", "date": "2012-11", "note": "RNN-T — 스트리밍 음성 인식에 널리 쓰는 출력 방식" },
+    { "n": 14, "title": "Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition · arXiv 1804.03209", "url": "https://arxiv.org/abs/1804.03209", "kind": "reference", "date": "2018-04", "note": "다른 회사(구글) — 짧은 명령어 공개 데이터, 16kHz 1초 녹음" },
+    { "n": 15, "title": "Hello Edge: Keyword Spotting on Microcontrollers · arXiv 1711.07128", "url": "https://arxiv.org/abs/1711.07128", "kind": "reference", "date": "2017-11", "note": "다른 회사(Arm) — 메모리·연산 예산별 KWS 모델 비교, DS-CNN" },
+    { "n": 16, "title": "Deep Spoken Keyword Spotting: An Overview · arXiv 2111.10592", "url": "https://arxiv.org/abs/2111.10592", "kind": "reference", "date": "2021-11", "note": "KWS 특징 추출·모델·평가 정리" },
+    { "n": 17, "title": "Apple ML Research · Hey Siri: An On-device DNN-powered Voice Trigger for Apple's Personal Assistant", "url": "https://machinelearning.apple.com/research/hey-siri", "kind": "reference", "date": "2017-10", "note": "다른 회사(애플) — 두 단계 탐지·예비 문턱, 오작동은 보통 시간당으로 잰다" },
+    { "n": 18, "title": "Apple ML Research · Voice Trigger System for Siri", "url": "https://machinelearning.apple.com/research/voice-trigger", "kind": "reference", "note": "다른 회사(애플) — 높은 재현율 스트리밍 탐지기 → 메인 프로세서의 정밀 검사기 → 기기를 향한 말인지 판단" },
+    { "n": 19, "title": "A Comparison of Techniques for Language Model Integration in Encoder-Decoder Speech Recognition · arXiv 1807.10857", "url": "https://arxiv.org/abs/1807.10857", "kind": "reference", "date": "2018-07", "note": "shallow·deep·cold fusion 비교" },
+    { "n": 20, "title": "SpecAugment · arXiv 1904.08779", "url": "https://arxiv.org/abs/1904.08779", "kind": "reference", "date": "2019-04", "note": "다른 회사(구글) — 주파수·시간 가리기 데이터 늘리기" },
+    { "n": 21, "title": "KsponSpeech: Korean Spontaneous Speech Corpus for Automatic Speech Recognition (Applied Sciences 10(19) 6936)", "url": "https://www.mdpi.com/2076-3417/10/19/6936", "kind": "reference", "date": "2020-10", "note": "ETRI — 2,000명 969시간 622,545 발화, 철자·발음 전사와 머뭇거림 표시, AI Hub 배포" },
+    { "n": 22, "title": "sherpa-onnx 문서 · Keyword spotting", "url": "https://k2-fsa.github.io/sherpa/onnx/kws/index.html", "kind": "reference", "note": "열린 어휘 KWS(재학습 없이 키워드 지정), 키워드별 부스팅 점수·문턱, 안드로이드 앱, 스트리밍 인식 모델" },
+    { "n": 23, "title": "Emformer: Efficient Memory Transformer Based Acoustic Model for Low Latency Streaming Speech Recognition · arXiv 2010.10759", "url": "https://arxiv.org/abs/2010.10759", "kind": "reference", "date": "2020-10", "note": "다른 회사(Facebook) — 조각 단위 처리·앞보기·메모리로 스트리밍 지연 줄이기" },
+    { "n": 24, "title": "HuBERT · arXiv 2106.07447", "url": "https://arxiv.org/abs/2106.07447", "kind": "reference", "date": "2021-06", "note": "숨은 단위 가려 맞히기 자기지도 학습" },
+    { "n": 25, "title": "XLS-R · arXiv 2111.09296", "url": "https://arxiv.org/abs/2111.09296", "kind": "reference", "date": "2021-11", "note": "128개 언어 약 43만 시간 사전학습" },
+    { "n": 26, "title": "Android 문서 · AudioRecord", "url": "https://developer.android.com/reference/android/media/AudioRecord", "kind": "reference", "note": "마이크 PCM 입력 API" },
+    { "n": 27, "title": "ONNX Runtime · Quantize ONNX models", "url": "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html", "kind": "reference", "note": "동적·정적 양자화, 트랜스포머·RNN 동적 / CNN 정적 권장" },
+    { "n": 28, "title": "Android NDK 가이드", "url": "https://developer.android.com/ndk/guides", "kind": "reference", "note": "C/C++ 코드를 안드로이드 앱에 넣기, JNI" },
+    { "n": 29, "title": "Pro Git (한국어판)", "url": "https://git-scm.com/book/ko/v2", "kind": "reference", "note": "git 기본" },
+    { "n": 30, "title": "GitHub Actions 문서", "url": "https://docs.github.com/ko/actions", "kind": "reference", "note": "CI/CD 자동화" },
+    { "n": 31, "title": "ISCA Archive", "url": "https://www.isca-archive.org/", "kind": "reference", "note": "Interspeech 등 음성 학회 논문 공개 아카이브" },
+    { "n": 32, "title": "원티드 · 포티투닷 회사 정보(평균연봉·국민연금 가입자 수)", "url": "https://www.wanted.co.kr/company/8794", "kind": "reference", "note": "공공데이터 집계 — 기준월 표기 없음" },
+    { "n": 33, "title": "포티투닷 · 42dot만의 업무 몰입 프로그램", "url": "https://42dot.ai/ko/careers/employee-engagement-program", "kind": "company", "note": "한국 본사 기준(해외 법인은 다를 수 있음), 게시일 표기 없음" },
+    { "n": 34, "title": "포티투닷 홈페이지 · 하단 회사 정보", "url": "https://42dot.ai/ko", "kind": "company", "note": "경기도 성남시 수정구 창업로40번길 20, A동" }
+  ],
+  "caveat": "포티투닷 음성 인식·호출어 팀의 기술 발표·블로그 글·논문은 찾지 못했습니다(받은 영상 없음 — 42dot 저자의 음성 논문은 합성 쪽 둘[6][7]만 확인). 회사가 밝힌 것은 '음성 전처리·언어별 음성 인식 자체 개발 · 좌석 위치 인식 · 하이브리드 구조 · 초저지연'[2]과 시연 보도[3]까지이고, 호출어 방식·STT 모델 구조·차량 칩·지연 숫자·데이터 규모는 공개되지 않아 공개 논문과 공식 문서로 \"보통 이런 일\"을 보였습니다. 예시의 점수·크기는 모두 가상 값입니다."
+}
