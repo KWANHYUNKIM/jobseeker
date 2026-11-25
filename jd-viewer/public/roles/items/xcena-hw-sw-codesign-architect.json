@@ -1,0 +1,1282 @@
+{
+ "id": "xcena-hw-sw-codesign-architect",
+ "company": "엑시나",
+ "role": "HW SW Co-design Architect",
+ "team": "SW 개발",
+ "jobs": [
+  "ats-greeting:xcena:240539"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "CXL 로 서버에 꽂는 메모리 칩 MX1(DDR5 + SSD 포트 + RISC-V 코어 3,072개)의 **다음 칩**이 무엇을 잘해야 하는지 — 코어·캐시·메모리 길·하드웨어와 펌웨어 사이 약속 — 를 워크로드를 재서 정하는 자리입니다.[1][7]",
+  "env": "하드웨어 설계팀·펌웨어팀·런타임/SDK팀 사이에 서서, 계산 모델·시뮬레이터·실제 칩 측정 세 가지 숫자를 오가며 일합니다. 첫 칩은 2026년 말 양산을 목표로 합니다.[1][9]",
+  "oneline": "경력 7년↑ 설계 자리. **성능 모델 · 메모리 대역폭 감각 · 레지스터·명령 규약 설계 · C/C++ 펌웨어**가 중심이고, 회로를 직접 그리지는 않습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "타겟 워크로드(ML 추론·학습, 데이터 엔지니어링 등) 분석을 통한 연산·메모리·대역폭 특성 도출",
+   "short": "칩이 돌릴 일(LLM 추론·데이터 분석)이 계산을 많이 하나, 메모리를 많이 읽나를 숫자로 잰다.",
+   "why": "엑시나는 이 칩을 '계산보다 데이터 이동이 문제인 일'에 쓰려고 만들었습니다. CPO 는 CXL 메모리에 큰 데이터를 두고 CPU 가 읽어 오면 느리고 전력을 버린다며, scan·filter 같은 연산자를 메모리 쪽으로 내려보내는 것이 접근법이라고 발표했습니다.[2] 어떤 일이 그런 일인지 가려내는 것이 이 줄입니다.",
+   "actually": {
+    "intro": "회사가 발표한 대상 워크로드와, 그 특성을 재는 공개된 방법입니다.",
+    "items": [
+     "**대상 목록** — 벡터 DB·Spark/Presto 같은 분석 엔진·그래프·DNA 분석(VeloxCon 발표[2]), KV 캐시·RAG 벡터 검색(Hot Chips 2026[7]).",
+     "**연산 강도(arithmetic intensity)** — 바이트 하나를 읽을 때 계산을 몇 번 하나(FLOP/바이트). 행렬곱 M×N×K 의 강도는 MNK/(MK+NK+MN) 으로 구하고, 한쪽이 1 인 행렬-벡터 곱은 1 보다 작아 늘 메모리에 묶인다.[17]",
+     "**루프라인(roofline)** — 가로축 연산 강도, 세로축 성능. 낼 수 있는 성능은 '최대 계산 성능'과 '대역폭 × 강도' 중 작은 값이다.[16]",
+     "**접근 모양** — 차례로 읽나(scan) · 띄엄띄엄 읽나(포인터 따라가기·해시 조인) · 같은 데이터를 다시 읽나(재사용). 엑시나는 포인터가 많은 자료구조를 바꾸지 않고 내려보내려고 가상 주소를 공유한다고 했다.[2]",
+     "**LLM 추론의 두 단계** — 프롬프트를 한꺼번에 읽는 단계는 계산에, 토큰을 하나씩 만드는 단계는 KV 캐시 읽기에 묶인다. KV 캐시 메모리 관리가 처리량을 정한다는 연구가 vLLM 이다.[29]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "어느 일이 대역폭에 묶이나 — 루프라인 한 줄 계산 (직접 돌린 출력)",
+     "body": "발표된 숫자(벡터 엔진 피크 약 3 TFLOPS, 칩 안 DDR5 268.8GB/s, 호스트 링크 PCIe Gen6 x8 64GB/s)[7]를 넣었습니다. 연산 강도 1 근처인 일은 계산기가 놀고 대역폭이 성능을 정합니다. 같은 일을 메모리 옆에서 하면 링크 너머보다 약 4배 — 이것이 '데이터 옆에서 계산'의 근거가 되는 계산입니다. 강도 값은 NVIDIA 문서의 행렬곱 예[17]와 단순 가정입니다.",
+     "lang": "python",
+     "code": "def attainable(peak, bw, ai):  # ai = FLOP/byte\n    return min(peak, bw * ai)\n\nPEAK, DDR, LINK = 3000, 268.8, 64  # GFLOPS, GB/s, GB/s\nfor name, ai in [(\"LLM 디코드 GEMV fp16\", 1.0), (\"벡터 L2 거리 fp32\", 0.75), (\"큰 GEMM 8192^3 fp16\", 2730.0)]:\n    print(f\"{name:20s} AI={ai:7.2f}  메모리옆 {attainable(PEAK, DDR, ai):7.1f}  링크너머 {attainable(PEAK, LINK, ai):7.1f} GFLOPS\")\nprint(\"꺾이는 점: 메모리옆\", round(PEAK / DDR, 1), \"/ 링크너머\", round(PEAK / LINK, 1), \"FLOP/B\")\n\n# LLM 디코드 GEMV fp16    AI=   1.00  메모리옆   268.8  링크너머    64.0 GFLOPS\n# 벡터 L2 거리 fp32        AI=   0.75  메모리옆   201.6  링크너머    48.0 GFLOPS\n# 큰 GEMM 8192^3 fp16   AI=2730.00  메모리옆  3000.0  링크너머  3000.0 GFLOPS\n# 꺾이는 점: 메모리옆 11.2 / 링크너머 46.9 FLOP/B"
+    }
+   ],
+   "how_far": "워크로드를 고르는 것은 사업·제품 쪽과 같이 정합니다. 이 자리는 **고른 워크로드를 연산 강도·접근 모양·작업 크기 같은 숫자로 바꿔 표 한 장에 놓는 일**을 맡습니다. 큰 GEMM 처럼 계산에 묶이는 일은 이 칩이 아니라 GPU 몫이라고 말할 수 있는 판단까지가 이 줄입니다. {추론}",
+   "refs": [
+    2,
+    7,
+    16,
+    17,
+    29
+   ],
+   "study": [
+    "roofline",
+    "nvidia-matmul",
+    "veloxcon",
+    "vllm-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "애플리케이션 요구사항으로부터 HW/SoC Requirement 정의 및 우선순위화 (연산 유닛, 메모리 계층, 데이터패스 등)",
+   "short": "\"이 일을 빠르게 하려면 코어 몇 개·캐시 얼마·어떤 데이터 길이 필요하다\"를 정하고 순서를 매긴다.",
+   "why": "MX1 의 구조 자체가 이런 결정의 결과입니다. 엑시나는 큰 코어 몇 개 대신 **단순한 순차 실행 RISC-V 코어 3,072개**를 넣었고, 이유로 대상 일이 대역폭에 묶이고 전력에 민감하다는 점을 들었습니다.[7] 벡터 검색·KV 캐시 점수 계산을 위한 벡터 엔진도 따로 넣었습니다.[7]",
+   "actually": {
+    "intro": "MX1 에서 실제로 정해진 칸들입니다.[7]",
+    "items": [
+     "**연산 유닛** — 코어 3,072개 = 서브시스템 24 × 클러스터 4 × 코어 32. 서브시스템이 호스트가 일을 나눠 주는 단위다.",
+     "**메모리 계층** — 코어 4개가 8KB 명령 캐시를, 32개가 256KB 데이터 캐시를 나눠 쓰고, 그 위에 128MB 공용 캐시, 맨 아래 DDR5-8400 4채널 최대 2TB.",
+     "**데이터패스** — 호스트 쪽 CXL 링크, 안쪽 DDR5, SSD 쪽 PCIe 루트 포트 — 세 길을 칩 하나가 다룬다.[2]",
+     "**전용 회로** — 벡터 엔진(내적 약 3 TFLOPS)과 코어마다 명령 큐.",
+     "**우선순위 매기기** — 같은 면적·전력으로 코어를 늘릴까 캐시를 늘릴까. 예시의 리틀의 법칙처럼 '대역폭을 다 쓰려면 몇 개의 요청이 동시에 떠 있어야 하나'가 판단 재료가 된다.[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "대역폭을 다 쓰려면 요청이 몇 개 떠 있어야 하나 (직접 돌린 출력)",
+     "body": "리틀의 법칙(머무는 수 = 도착률 × 머무는 시간)[18]을 메모리에 쓰면 '동시에 날아가 있어야 할 요청 수 = 대역폭 × 지연 ÷ 한 번에 읽는 크기'입니다. 지연 100ns·250ns 는 가정한 값입니다. 코어 하나가 요청을 한두 개만 낼 수 있다면 수백~천 개의 코어가 있어야 DDR5 4채널을 채운다는 것 — 코어를 많이 넣는 쪽의 근거가 되는 계산입니다 {추론}.",
+     "lang": "python",
+     "code": "LINE = 64  # 캐시 줄 64바이트\nfor label, bw, lat in [(\"DDR5 4채널, 지연 100ns 가정\", 268.8, 100),\n                       (\"DDR5 4채널, 지연 250ns 가정\", 268.8, 250),\n                       (\"호스트 CXL 링크, 지연 250ns 가정\", 64, 250)]:\n    print(f\"{label:28s} -> 동시 요청 {bw * lat / LINE:6.0f}개\")\n\n# DDR5 4채널, 지연 100ns 가정        -> 동시 요청    420개\n# DDR5 4채널, 지연 250ns 가정        -> 동시 요청   1050개\n# 호스트 CXL 링크, 지연 250ns 가정      -> 동시 요청    250개"
+    }
+   ],
+   "how_far": "회로의 크기·타이밍을 확정하는 것은 SoC 설계팀입니다. 이 자리는 **요구를 '무엇을 · 얼마나 · 왜'로 적고, 면적·전력이 모자랄 때 무엇부터 빼는지의 순서**를 근거와 함께 내놓습니다. 경력 7년↑ 자리라 이 판단을 실제 칩에서 해 본 사례를 기대한다고 보는 것이 자연스럽습니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    18
+   ],
+   "study": [
+    "hp-quant",
+    "xcena-hotchips",
+    "cod-riscv"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "HW/SW Interface 설계 — 레지스터 맵, 커맨드 프로토콜, 메모리 모델, 동기화 방식 등 HW와 펌웨어·런타임 간 계약 정의",
+   "short": "칩과 소프트웨어가 서로 무엇을 어떤 순서로 주고받을지 '계약서'를 쓴다. 칩이 나오면 못 고친다.",
+   "why": "회로는 한 번 찍으면 바꿀 수 없고, 펌웨어·드라이버·런타임은 그 약속 위에서만 짤 수 있습니다 {추론}. 엑시나가 공개한 리눅스 드라이버에 이 계약의 바깥쪽이 그대로 보입니다 — 메일박스·명령 큐·장치 생존 확인이 정해진 칸과 순서로 짜여 있습니다.[3]",
+   "actually": {
+    "intro": "네 가지 칸이 계약의 내용입니다. 엑시나 칩 안쪽 계약은 공개되지 않았고, 공개된 드라이버[3]와 표준 문서로 '보통 이런 것'을 보입니다.",
+    "items": [
+     "**레지스터 맵** — 어느 주소의 몇 번 비트가 무엇인가, 읽기만·쓰기만·1을 써서 지우기(W1C) 중 무엇인가. 엑시나 드라이버는 메일박스 상태 64비트를 큐 크기·head·tail 칸으로 나눠 다룬다.[3]",
+     "**커맨드 프로토콜** — 명령 한 칸의 모양(명령 코드·명령 번호·주소·길이)과, 큐에 넣고 초인종(doorbell) 레지스터를 두드리고 완료를 받는 순서. 엑시나 드라이버는 NVMe 와 같은 꼴의 큐를 쓴다.[3][28]",
+     "**메모리 모델** — 한쪽이 쓴 값이 다른 쪽에 언제 보이나. 호스트와 장치 코어가 같은 가상 주소를 쓰고 캐시 일관성을 지원하는 칩이라[2][7] 이 규칙이 특히 중요하다. 규칙의 기초는 일관성(consistency)·코히런스 입문서가 다룬다.[23]",
+     "**동기화 방식** — 끝났음을 인터럽트(MSI)로 알리나 폴링으로 보나[3], 여러 호스트가 같은 CXL 메모리를 쓸 때 잠금은 어떻게 하나. 회사 블로그는 CXL 공유 메모리에 호스트 사이 원자 연산이 없어 소유권 조율 라이브러리를 따로 만들었다고 썼다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "계약을 코드로 적어 두고 어긋남을 잡기 (직접 돌린 출력)",
+     "body": "명령 한 칸을 32바이트로 약속한 가상의 장치입니다. 드라이버 쪽만 칸 하나(tag)를 끼우면 정렬 때문에 주소 칸이 0x8 에서 0x10 으로 밀리는데, 펌웨어는 여전히 0x8 을 읽습니다 — 크기·위치를 검사하는 한 줄이 이것을 빌드 때 잡습니다. C 에서는 `static_assert(sizeof(struct cmd) == 32)` 가 같은 일을 합니다.",
+     "lang": "python",
+     "code": "import ctypes as C\n\nclass Cmd(C.LittleEndianStructure):\n    _fields_ = [(\"opcode\", C.c_uint8), (\"flags\", C.c_uint8), (\"cid\", C.c_uint16),\n                (\"len\", C.c_uint32), (\"src\", C.c_uint64), (\"dst\", C.c_uint64),\n                (\"rsvd\", C.c_uint64)]\nassert C.sizeof(Cmd) == 32\nprint(\"size\", C.sizeof(Cmd), \"| src @\", hex(Cmd.src.offset), \"| dst @\", hex(Cmd.dst.offset))\n\nclass CmdBad(C.LittleEndianStructure):  # 드라이버 쪽만 tag 를 끼웠다\n    _fields_ = [(\"opcode\", C.c_uint8), (\"flags\", C.c_uint8), (\"cid\", C.c_uint16),\n                (\"len\", C.c_uint32), (\"tag\", C.c_uint32), (\"src\", C.c_uint64),\n                (\"dst\", C.c_uint64), (\"rsvd\", C.c_uint64)]\nprint(\"bad size\", C.sizeof(CmdBad), \"| src @\", hex(CmdBad.src.offset), \"<- 펌웨어는 여전히 0x8 에서 읽는다\")\n\nREADY, ERR, QSHIFT = 1 << 0, 1 << 1, 8   # bit1 ERR 는 1을 써서 지운다(W1C)\nst = READY | ERR | (24 << QSHIFT)\nprint(\"ready\", st & READY, \"err\", (st & ERR) >> 1, \"qdepth\", (st >> QSHIFT) & 0xFF)\nprint(\"ERR 지우기 ->\", hex(st & ~ERR), \"(READY·큐 깊이는 그대로)\")\n\n# size 32 | src @ 0x8 | dst @ 0x10\n# bad size 40 | src @ 0x10 <- 펌웨어는 여전히 0x8 에서 읽는다\n# ready 1 err 1 qdepth 24\n# ERR 지우기 -> 0x1801 (READY·큐 깊이는 그대로)"
+    }
+   ],
+   "how_far": "계약의 **초안을 쓰고 세 팀(하드웨어·펌웨어·런타임)의 서명을 받는 사람**입니다. 같은 회사 펌웨어 공고도 이 경계를 정하는 논의에 펌웨어 엔지니어가 같이 앉는다고 적었습니다.[10] 최소선은 '이 비트를 이렇게 두면 펌웨어가 경쟁 상태에 빠진다'를 예로 들어 설명할 수 있는 것입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    5,
+    7,
+    10,
+    23,
+    28
+   ],
+   "study": [
+    "mxdriver",
+    "primer-mcc",
+    "kernel-barriers",
+    "nvme-spec"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "상위 수준 시스템 모델링을 통한 아키텍처 후보 비교 및 설계 의사결정 지원 (analytical model, performance simulator 등)",
+   "short": "회로를 만들기 전에 계산식·시뮬레이터로 후보 A·B 의 성능을 미리 재 보고 고르게 돕는다.",
+   "why": "칩 하나를 찍는 데 드는 시간과 돈이 커서 후보를 만들어 보고 고를 수가 없습니다 {추론}. 그래서 종이 위 계산식(analytical model)과 소프트웨어 흉내(시뮬레이터)로 먼저 견줍니다. 엑시나는 SDK 에 시뮬레이터를 같이 둔다고 발표했습니다.[2]",
+   "actually": {
+    "intro": "칩 설계 업계에서 공개적으로 쓰는 도구와 방식입니다. 엑시나가 안에서 무엇을 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**계산식 모델** — 루프라인[16], 리틀의 법칙[18], 암달의 법칙[32] 같은 식을 스프레드시트·파이썬으로 엮는다. 몇 초 만에 수백 개 후보를 훑는다.",
+     "**사이클 근사 시뮬레이터** — CPU 코어·캐시·메모리 시스템을 흉내 내는 gem5[19], DRAM 타이밍을 흉내 내는 Ramulator 2(DDR5 포함)[20]. 느리지만 경합·큐 대기가 보인다.",
+     "**가속기 데이터 흐름 모델** — Timeloop 은 텐서 연산 가속기에서 데이터를 어떻게 나눠 옮길지(매핑)를 견준다.[21]",
+     "**후보 비교 표** — 후보마다 워크로드별 처리량·지연·면적·전력을 한 표에 놓고 '어느 가정이 바뀌면 순위가 뒤집히나'를 같이 적는다. {추론}"
+    ]
+   },
+   "how_far": "시뮬레이터를 처음부터 만들 필요는 없습니다. **질문에 맞는 정밀도를 고르는 감각** — 계산식으로 충분한 질문과 시뮬레이터가 필요한 질문을 가르고, 모델 숫자를 실제 측정과 맞춰 본 경험 — 이 핵심입니다. 우대사항의 '시스템 레벨 성능 모델링·시뮬레이션'이 이 줄을 해 본 사람입니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    16,
+    18,
+    19,
+    20,
+    21,
+    32
+   ],
+   "study": [
+    "roofline",
+    "gem5",
+    "ramulator2",
+    "timeloop",
+    "hp-quant"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "성능 검증 및 병목 분석 — 모델·시뮬레이션·실디바이스 측정을 연결해 구조적 병목 식별 및 개선 방향 제시",
+   "short": "계산식이 말한 숫자와 진짜 칩에서 잰 숫자가 다르면 그 차이에서 구조의 막힌 곳을 찾는다.",
+   "why": "엑시나는 성능을 조건과 함께 밖에 발표합니다 — 분석 커널에서 CXL 너머 호스트 대비 최대 4.7배, 로컬 DRAM 대비 2배 처리량, Intel Xeon 6 기준, 유휴 전력 제외.[7] KV 캐시도 'DRAM 대비 첫 토큰 시간 몇 배'로 재서 고정한 경우 1.13배, 고정 안 한 경우 1.57배, SSD 만 쓴 경우 1.86배였다고 했습니다.[7] 이 숫자가 왜 그렇게 나왔는지 설명하는 것이 이 줄입니다.",
+   "actually": {
+    "items": [
+     "**세 숫자 맞추기** — 계산식 예측 · 시뮬레이터 · 실제 칩 측정. 셋이 어긋나는 지점이 모델이 놓친 구조(큐 대기·캐시 충돌·링크 재시도)다. {추론}",
+     "**병목 가르기** — 계산에 묶였나, 칩 안 메모리 대역폭인가, 호스트 링크인가, SSD 페이지 미스 처리(펌웨어가 채운다)인가.[7]",
+     "**구조적 병목 vs 구현 병목** — 펌웨어·런타임을 고쳐 풀리는 것인가, 다음 칩에서 회로를 바꿔야 하는 것인가. 엑시나는 KV 캐시에서 장치가 노는 시간을 써서 미리 읽기(lookahead prefetch)를 하자 거의 DRAM 수준이 됐다고 발표했다[7] — 소프트웨어로 푼 예다.",
+     "**측정 도구** — 같은 회사는 벤치마크 프레임워크와 성능 회귀 자동 탐지를 맡는 성능 분석 도구 엔지니어를 따로 뽑는다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "일부만 내려보내면 전체는 얼마나 빨라지나 (직접 돌린 출력)",
+     "body": "암달의 법칙[32]입니다. 연산자 하나가 4.7배 빨라져도 그 연산자가 질의 시간의 60% 면 전체는 1.9배, 결과를 되돌려 받는 데 5% 가 더 들면 1.73배로 내려갑니다. 비중과 되돌림 비용은 가정한 값입니다 — 발표 숫자를 고객 질의 전체의 숫자로 읽으면 안 되는 이유입니다. {추론}",
+     "lang": "python",
+     "code": "def overall(frac, speedup, copy_frac=0.0):\n    return 1 / ((1 - frac) + frac / speedup + copy_frac)\n\nfor frac in (0.3, 0.6, 0.9):\n    print(f\"scan·filter 비중 {int(frac*100)}%  가속 4.7배 -> 전체 {overall(frac, 4.7):.2f}배\"\n          f\"  | 되돌림 5% 더하면 {overall(frac, 4.7, 0.05):.2f}배\")\nprint(\"비중 60%면 무한히 빨라도 상한\", round(1 / 0.4, 2), \"배\")\n\n# scan·filter 비중 30%  가속 4.7배 -> 전체 1.31배  | 되돌림 5% 더하면 1.23배\n# scan·filter 비중 60%  가속 4.7배 -> 전체 1.90배  | 되돌림 5% 더하면 1.73배\n# scan·filter 비중 90%  가속 4.7배 -> 전체 3.43배  | 되돌림 5% 더하면 2.93배\n# 비중 60%면 무한히 빨라도 상한 2.5 배"
+    }
+   ],
+   "how_far": "측정 자체는 성능 도구·품질 팀과 나눕니다.[13] 이 자리는 **'어느 단계가 몇 %를 먹고, 그건 회로 문제다/펌웨어 문제다'를 근거와 함께 말하고 개선 방향을 고르는 사람**입니다. {추론}",
+   "refs": [
+    7,
+    13,
+    32
+   ],
+   "study": [
+    "sysperf",
+    "xcena-hotchips",
+    "hp-quant"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "인터페이스 검증과 초기 Bring-up을 위한 Firmware·Driver 작성 및 디버깅",
+   "short": "자기가 정한 계약이 진짜 칩에서 맞는지, 처음 켤 때 쓸 펌웨어·드라이버를 직접 짜서 확인한다.",
+   "why": "계약서를 쓴 사람이 직접 돌려 봐야 문서와 회로가 어긋난 곳을 가장 빨리 찾습니다 {추론}. 엑시나의 호스트 드라이버는 리눅스 커널 모듈(C)로 공개돼 있고, 메일박스·큐·DMA·생존 확인 코드가 들어 있습니다.[3]",
+   "actually": {
+    "items": [
+     "**인터페이스 검증** — 레지스터를 하나씩 읽고 써 기본값·읽기 전용·W1C 동작이 문서대로인지, 명령 하나가 큐를 지나 완료로 돌아오는지 본다.",
+     "**Bring-up** — 처음 받은 칩에서 부팅·DDR 초기화·링크 학습이 되는지 하나씩 살린다. 같은 회사 펌웨어 공고의 업무가 이 단계다.[10]",
+     "**칩 없이 먼저** — QEMU 는 CXL 메모리 장치를 흉내 내 리눅스 CXL 드라이버를 칩 없이 돌려 보게 한다.[25] 리눅스 CXL 드라이버 문서가 memdev·region·decoder 같은 낱말을 정의한다.[24]",
+     "**호스트에서 보이는 사슬** — 엑시나 진단 스크립트는 PCI → memdev → region → DAX → 드라이버 순으로 확인한다.[4]"
+    ]
+   },
+   "how_far": "제품 드라이버·펌웨어를 끝까지 책임지는 것은 펌웨어·런타임 팀입니다.[10][12] 이 자리는 **계약을 확인할 만큼의 최소 코드**를 짜고 디버깅할 수 있으면 됩니다 — 필수 요건의 'C/C++ 시스템·펌웨어 개발 경험'이 이 줄 때문입니다.[1]",
+   "refs": [
+    1,
+    3,
+    4,
+    10,
+    12,
+    24,
+    25
+   ],
+   "study": [
+    "mxdriver",
+    "qemu-cxl",
+    "kernel-cxl",
+    "ldd3"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "HW 설계팀, 펌웨어팀, 런타임·SDK팀 사이의 기술적 정렬과 트레이드오프 조율",
+   "short": "회로로 할까 펌웨어로 할까 같은 갈림길에서 세 팀이 같은 숫자를 보고 정하게 만든다.",
+   "why": "엑시나 소프트웨어는 여러 층입니다 — 장치 코어 위 펌웨어, 리눅스 드라이버, PXL 런타임(MapReduce 꼴), 데이터 전용 API, 그리고 C/C++ 를 장치용으로 바꾸는 컴파일러.[2][7][14] 회사는 SSD 페이지 미스를 회로가 아니라 **코어 위 펌웨어가 채우도록** 나눴다고 발표했습니다[7] — 이런 나눔이 세 팀 모두에게 일을 만듭니다.",
+   "actually": {
+    "items": [
+     "**회로 vs 펌웨어** — 자주·빠르게 일어나는 주소 변환 조회는 1,024칸 맵 캐시(회로)로, 가끔·복잡한 미스 채우기는 펌웨어로.[7]",
+     "**장치 vs 호스트** — CPO 는 병렬성이 크면 장치에서, 한 줄기 성능이 중요하면 CPU 에서 연산자를 돌리고 어떤 경우엔 원래 엔진으로 되돌린다고 설명했다.[2]",
+     "**컴파일러 vs 회로** — 같은 회사 컴파일러 공고는 RISC-V 확장 명령을 다룬다[14] — 새 명령을 넣을지는 컴파일러가 그것을 쓸 수 있느냐와 같이 정한다. {추론}",
+     "**런타임 vs 펌웨어** — 일을 서브시스템 단위로 나눠 줄 때 스케줄링을 어느 쪽이 하나.[7][12]"
+    ]
+   },
+   "how_far": "조율은 '모두를 만족시키기'가 아니라 **비용(면적·일정·소프트웨어 공수)과 이득(성능)을 같은 표에 놓고 결정을 문서로 남기는 것**입니다. 업무 스타일의 '국소 최적화를 경계'가 이 줄입니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    12,
+    14
+   ],
+   "study": [
+    "veloxcon",
+    "xcena-hotchips",
+    "hp-quant"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "하드웨어 아키텍처와 시스템 소프트웨어를 모두 이해하고, 둘 사이의 경계에서 설계 결정을 내려본 경험이 있는 분",
+   "short": "회로만 알거나 소프트웨어만 알면 경계를 못 정해서. '내가 정한 경계' 사례가 있어야 한다.",
+   "why": "이 자리의 업무 일곱 줄이 모두 경계 위의 일입니다.[1] 포지션 소개도 추상적인 워크로드 요구가 실제 실리콘의 마이크로아키텍처와 인터페이스로 모여 가는 과정의 중심에 선다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**경계 결정의 예** — 이 기능을 회로로 넣을까 펌웨어로 둘까, 장치가 인터럽트를 줄까 호스트가 폴링할까, 캐시 일관성을 하드웨어가 지킬까 소프트웨어가 비울까. {추론}",
+     "**MX1 에서 공개된 경계** — 맵 캐시 조회는 회로, 미스는 펌웨어[7]; 명령 주소는 물리, 데이터 주소는 호스트 가상 주소[7]."
+    ]
+   },
+   "how_far": "면접에서 **'무엇을 두고 고민했고, 어떤 숫자로 정했고, 칩이 나온 뒤 맞았나 틀렸나'**를 한 사례로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "hp-quant",
+    "cod-riscv"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "애플리케이션의 동작 특성을 분석해 \"하드웨어가 무엇을 잘해야 하는가\"라는 요구사항으로 번역할 수 있는 분",
+   "short": "\"LLM 이 느리다\"를 \"KV 캐시 읽기 대역폭이 모자라다\"처럼 회로가 알아듣는 말로 바꿔야 해서.",
+   "why": "엑시나는 PyTorch·Velox(분석 엔진)·벡터 검색 라이브러리 같은 응용 쪽에서 칩을 쓰게 하려 합니다.[2][7] 응용의 말(질의·토큰·검색 수)과 회로의 말(바이트·사이클·채널)을 잇는 사람이 필요합니다.",
+   "actually": {
+    "items": [
+     "**번역 사슬** — 질의 하나 → 연산자 몇 개 → 연산자마다 읽는 바이트·계산 수 → 필요한 대역폭·코어 수. {추론}",
+     "**회사가 실제로 한 번역** — 벡터 검색·KV 점수 계산이 많다 → 벡터 엔진과 코어별 명령 큐를 넣었다.[7]",
+     "**프로파일링** — 응용을 돌리며 시간이 어디서 쓰이는지, 캐시 미스·메모리 대역폭을 잰다.[31]"
+    ]
+   },
+   "how_far": "응용을 잘 짜는 사람일 필요는 없습니다. **응용 하나를 골라 '바이트·FLOP·접근 모양' 표로 바꿔 본 경험**이면 출발선입니다. {추론}",
+   "refs": [
+    2,
+    7,
+    31
+   ],
+   "study": [
+    "roofline",
+    "sysperf",
+    "vllm-paper"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "메모리 대역폭·레이턴시·연산 처리량 등 저수준 성능 지표를 해석하고, 이를 마이크로아키텍처 선택과 연결 지을 수 있는 분",
+   "short": "GB/s·ns·FLOPS 숫자를 보고 \"그러니 캐시를 키운다/코어를 늘린다\"로 이어야 해서.",
+   "why": "CPO 는 CXL 메모리가 용량·대역폭을 더해 주지만 지연은 메인 메모리보다 조금 느리다고 짚었습니다.[2] 이 장단점을 칩 구조로 메우는 것이 엑시나 칩의 설계 출발점입니다.[2][7]",
+   "actually": {
+    "items": [
+     "**대역폭 → 동시 요청 수** — 리틀의 법칙으로 필요한 미결 요청 수를 구하고, 코어·큐 깊이를 정한다(업무 2 예시).[18]",
+     "**지연 → 캐시·미리 읽기** — 지연이 길면 캐시를 키우거나 미리 읽기로 숨긴다. MX1 은 128MB 공용 캐시를 두었다.[7]",
+     "**처리량 → 전용 회로** — 같은 계산이 반복되면 벡터 엔진처럼 전용 회로로 뺀다.[7]",
+     "**읽는 법** — 피크 숫자보다 **실제로 나온 비율**(대역폭의 몇 %를 썼나)과 꼬리 지연을 본다. {추론}"
+    ]
+   },
+   "how_far": "면접에서 '이 일은 대역폭의 30% 밖에 못 쓴다 — 왜?'에 동시성·접근 모양·뱅크 충돌 순으로 가설을 세울 수 있으면 됩니다. {추론}",
+   "refs": [
+    2,
+    7,
+    18
+   ],
+   "study": [
+    "hp-quant",
+    "csapp",
+    "sysperf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "정량 모델이나 시뮬레이션으로 아키텍처 후보를 비교하고, 그 근거로 설계를 설득할 수 있는 분",
+   "short": "의견이 아니라 숫자로 팀을 움직여야 해서. 모델을 만들고, 그 모델의 한계까지 말할 수 있어야 한다.",
+   "why": "업무 4번(모델링으로 후보 비교)과 짝을 이루는 요건입니다.[1] 설계 결정은 하드웨어·펌웨어·런타임 세 팀의 일을 바꾸므로 근거가 공유돼야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**좋은 비교 자료** — 후보 · 가정 · 결과 · 민감도(가정이 20% 틀리면?) · 모델로 못 보는 것.",
+     "**루프라인 한 장** — 후보 칩들의 지붕을 한 그림에 그리고 워크로드 점을 찍으면 '이 일엔 B 가 낫다'가 한눈에 보인다.[16]"
+    ]
+   },
+   "how_far": "**모델이 틀린 경우를 먼저 말하는 습관**이 설득력을 만듭니다. 실제 칩 측정과 모델을 맞춰 본 사례가 하나 있으면 좋습니다. {추론}",
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "roofline",
+    "gem5"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "정답이 정해지지 않은 설계 공간에서 가설을 세우고 데이터로 좁혀가는 과정을 즐기는 분",
+   "short": "처음 만드는 종류의 칩이라 베낄 정답이 없어서. 가설 → 측정 → 좁히기를 반복한다.",
+   "why": "엑시나는 CXL 메모리 안에 수천 개 코어를 넣은 칩을 만드는 회사이고[7], 2022년 설립 뒤 2025년에 첫 칩을 공개하고[8] 첫 제품 양산을 앞두고 있습니다.[9][30] 참고할 앞선 제품이 적은 영역입니다 {추론}.",
+   "how_far": "'처음엔 A 라고 봤는데 측정해 보니 B 였다'는 경험을 이야기할 수 있으면 됩니다. {추론}",
+   "refs": [
+    7,
+    8,
+    9,
+    30
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "HW와 SW 사이에서 양쪽의 제약과 언어를 모두 이해하고 다리를 놓는 역할에 보람을 느끼는 분",
+   "short": "직접 만든 코드보다 두 팀이 맞물려 돌아가는 것이 성과로 남는 자리라서.",
+   "why": "업무 7번이 HW 설계팀·펌웨어팀·런타임/SDK팀 사이의 조율입니다.[1] 회사의 직군은 SoC 개발과 SW 개발로 나뉘고, 이 자리는 SW 쪽에서 SoC 쪽과 맞닿습니다.[1][34]",
+   "how_far": "회로팀에 '이 레지스터는 소프트웨어에서 이렇게 쓰여 문제'를, 소프트웨어팀에 '이건 회로 타이밍상 안 된다'를 각자의 말로 전할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    34
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "전체 시스템 관점에서 국소 최적화를 경계하고, 균형 잡힌 설계를 추구하는 분",
+   "short": "코어만 빠르게 해도 메모리·링크에서 막히면 소용없어서. 가장 좁은 곳을 먼저 본다.",
+   "why": "MX1 의 칩 안 DDR5 대역폭은 268.8GB/s, 호스트 링크는 64GB/s 로 네 배 넘게 차이 납니다.[7] 어느 한 곳만 키우면 다른 곳이 병목이 됩니다 — 업무 5번의 '구조적 병목'이 이 이야기입니다.[1]",
+   "actually": {
+    "items": [
+     "**균형의 예** — 업무 1 예시처럼 같은 일을 메모리 옆에서 하면 링크 너머보다 약 4배 낼 수 있지만, 결과를 돌려보내는 양이 크면 다시 링크가 막힌다(업무 5 예시의 되돌림 비용). {추론}"
+    ]
+   },
+   "how_far": "'이걸 두 배로 하면 전체가 몇 배?'를 암달의 법칙으로 바로 계산하는 습관이면 됩니다.[32] {추론}",
+   "refs": [
+    1,
+    7,
+    32
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "깊게 파고드는 분석과 팀 간 설계 논의를 모두 편하게 오갈 수 있는 분",
+   "short": "혼자 모델을 파는 시간과 여러 팀 앞에서 설명하는 시간이 반반쯤인 자리라서.",
+   "why": "업무 일곱 줄 중 앞 다섯은 분석, 뒤 두 줄은 디버깅과 조율입니다.[1]",
+   "how_far": "분석 결과를 설계 리뷰에서 10분 안에 설명하는 문서·그림을 만든 경험이면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "전산·컴퓨터·전기전자공학 또는 SW 관련 분야 학사 이상",
+   "short": "컴퓨터 구조·운영체제·회로 기초를 학교에서 배운 바탕이 필요해서.",
+   "why": "이 자리는 회로 사양서와 시스템 소프트웨어를 둘 다 읽습니다.[1] 전공 범위에 'SW 관련 분야'도 넣어 소프트웨어 출신도 받습니다.[1]",
+   "how_far": "학위보다 **컴퓨터 구조(캐시·가상 메모리·메모리 시스템)를 설명할 수 있는지**가 실제 기준일 것입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "cod-riscv",
+    "csapp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "하드웨어 아키텍처와 시스템 소프트웨어를 아우르는 설계 또는 분석 경험",
+   "short": "이 자리의 일 전체가 그 경계라서. 둘 중 한쪽 경력만으로는 부족하다.",
+   "why": "'기술적으로' 첫 줄과 같은 요구를 필수 요건으로 다시 적었습니다.[1] 경력 7년↑ 자리입니다.[1]",
+   "actually": {
+    "items": [
+     "**설계 경험의 예** — SoC 사양 정의, 가속기의 명령 규약 설계, 드라이버·펌웨어 구조 설계. {추론}",
+     "**분석 경험의 예** — 시스템 성능 모델링, 메모리 계층 분석, 하드웨어 카운터로 병목 찾기. {추론}"
+    ]
+   },
+   "how_far": "'설계 **또는** 분석'입니다. 둘 중 하나를 실제 제품에서 했으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "hp-quant"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C/C++ 기반 시스템·펌웨어 소프트웨어 개발 경험 (메모리 모델, 동시성, 하드웨어 인터페이스 등을 실무에서 다뤄본 수준)",
+   "short": "계약을 직접 코드로 확인하고(업무 6), 메모리 순서·동시성 문제를 몸으로 알아야 해서.",
+   "why": "엑시나의 드라이버는 C 이고 비트 칸 공용체·메모리 장벽·DMA 매핑을 직접 다룹니다.[3] 장치 코어용 커널도 C/C++·Rust 로 쓴다고 발표했습니다.[7]",
+   "level": {
+    "basic": "포인터·구조체 배치·비트 연산 · volatile 과 MMIO 읽기/쓰기",
+    "work": "메모리 장벽·원자 연산 · 링 버퍼·락 없는 큐 · DMA 와 캐시 일관성 · 인터럽트 문맥",
+    "team": "호스트·장치가 같은 가상 주소를 공유할 때의 순서 규칙 · 여러 호스트 사이 공유 메모리 동기화[5][7]"
+   },
+   "actually": {
+    "items": [
+     "**메모리 모델** — CPU·컴파일러가 읽기·쓰기 순서를 바꿀 수 있어서, 장치에 명령을 쓴 뒤 초인종을 두드리기 전에 장벽이 필요하다. 리눅스 커널 메모리 장벽 문서가 이 규칙을 설명한다.[22]",
+     "**동시성** — 여러 코어·여러 호스트가 같은 큐를 만질 때. 회사 블로그는 64개 참가자가 한 자원을 다툴 때 소유권 획득이 약 144μs, 흩어 놓으면 약 7μs 였다고 측정했다.[5]",
+     "**하드웨어 인터페이스** — 레지스터 비트 칸, W1C, 명령 구조체 크기 고정(업무 3 예시)."
+    ]
+   },
+   "how_far": "'실무에서 다뤄 본 수준'이라고 못 박았습니다.[1] **장벽을 빼서 생긴 버그를 실제로 고쳐 본 경험**이 있으면 가장 좋습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    7,
+    22
+   ],
+   "study": [
+    "kernel-barriers",
+    "primer-mcc",
+    "ldd3",
+    "csapp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "성능 데이터를 해석하고 하드웨어·소프트웨어 동작과 연결 지어 병목을 분석해본 경험",
+   "short": "업무 5번(모델·시뮬·실측으로 병목 찾기)을 바로 맡아야 해서.",
+   "why": "이 회사는 성능 숫자를 측정 조건과 함께 밖에 발표하고[7], 고객 검증 항목에 성능이 들어갑니다.[15] 숫자가 왜 그렇게 나왔는지를 설명할 사람이 필요합니다.",
+   "actually": {
+    "items": [
+     "**방법** — 자원마다 사용률·포화·오류를 차례로 보는 USE 방법 같은 체계로 빠짐없이 훑는다.[31]",
+     "**하드웨어 카운터** — 캐시 미스·메모리 대역폭·명령 처리 수를 읽어 소프트웨어 동작과 잇는다.[31]",
+     "**가설 하나씩** — 조건을 하나만 바꾸고 다시 잰다. {추론}"
+    ]
+   },
+   "how_far": "'느리다'가 아니라 **'어느 단계가 몇 %, 원인은 무엇, 고치면 몇 배'**를 근거 숫자와 함께 말한 사례 하나면 됩니다. {추론}",
+   "refs": [
+    7,
+    15,
+    31
+   ],
+   "study": [
+    "sysperf",
+    "roofline"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "새로운 하드웨어·아키텍처 문서를 읽고 시스템 추상화 구조를 스스로 도출할 수 있는 역량",
+   "short": "새 칩은 예제 코드가 없어서 사양서만 보고 소프트웨어 층을 어떻게 나눌지 정해야 한다.",
+   "why": "엑시나는 이 칩 위에 세 층의 소프트웨어 추상화를 쌓았습니다 — 장치 자원을 직접 다루는 저수준 API, MapReduce 꼴의 PXL, 분석·벡터 검색 전용 API. CPO 는 맨 아래 층이 너무 복잡해 사용자에게 권하지 않는다고 했습니다.[2] 이런 층을 나누는 눈이 이 요건입니다.",
+   "actually": {
+    "items": [
+     "**문서 → 구조** — 사양서의 자원(코어·큐·메모리 영역)을 보고 '무엇을 숨기고 무엇을 드러낼지' 정한다. 발표 슬라이드의 저수준 API 는 계산·메모리·데이터 이동·작업·콜백·동기화·커널 내려보내기를 다룬다.[2]",
+     "**비교 대상** — GPU 의 CUDA[26]·OpenCL[27] 은 장치·메모리·커널 실행을 어떻게 추상화했나. CPO 도 CUDA 를 견줘 설명했다.[2]",
+     "**호스트 쪽 추상화** — 리눅스 CXL 드라이버는 장치를 memdev·region·decoder 로 나눠 보여 준다.[24]"
+    ]
+   },
+   "how_far": "새 장치 문서를 받아 **'드라이버·런타임·API 를 이렇게 나누겠다'는 그림 한 장**을 그려 본 경험이면 됩니다. {추론}",
+   "refs": [
+    2,
+    24,
+    26,
+    27
+   ],
+   "study": [
+    "veloxcon",
+    "cuda-guide",
+    "opencl",
+    "kernel-cxl"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "HW/SW Co-design, SoC 아키텍처 정의 또는 마이크로아키텍처 설계 참여 경험",
+   "short": "이 자리의 이름이 Co-design 이라서. 칩 정의 단계에 앉아 본 사람이면 바로 맞는다.",
+   "why": "포지션 소개가 CXL Computational Memory 장치의 아키텍처를 하드웨어·소프트웨어 양쪽 관점에서 함께 설계하는 역할이라고 적었습니다.[1] 회사는 첫 칩 양산을 2026년 말, 첫 매출을 2027년으로 잡고 있어[9] 다음 칩 정의가 이어질 시기입니다 {추론}.",
+   "how_far": "칩 전체가 아니어도 됩니다. 한 블록(DMA 엔진·캐시·명령 큐)의 정의에 참여한 경험이면 우대 대상입니다. {추론}",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "hp-quant",
+    "cod-riscv"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "가속기 런타임·드라이버(CUDA, OpenCL 등) 또는 디바이스 펌웨어 개발 경험",
+   "short": "가속기 소프트웨어가 어떻게 생겼는지 알면 MX1 의 런타임·펌웨어와 계약을 바로 짤 수 있어서.",
+   "why": "엑시나는 자기 소프트웨어를 GPU 의 CUDA 에 견줘 설명합니다 — 하드웨어를 쓰려면 CUDA 같은 강한 소프트웨어 스택이 필요하다고 했고, 분석 엔진 연동 방식도 NVIDIA 의 cuDF 방식과 비슷하다고 했습니다.[2] 다만 CXL 메모리는 호스트 메모리의 일부라 GPU 처럼 데이터를 복사해 넣고 빼지 않아도 된다는 점이 다릅니다.[2]",
+   "actually": {
+    "items": [
+     "**공통점** — 장치 문맥·메모리 할당·커널 실행·동기화.[26][27]",
+     "**다른 점** — 명시적 복사 대신 같은 주소를 공유하고 캐시 일관성을 쓴다.[2] 같은 회사 런타임/SDK 공고는 멀티 디바이스 커널 실행·스케줄링을 다룬다.[12]"
+    ]
+   },
+   "how_far": "CUDA 커널을 잘 짜는 것보다 **런타임·드라이버 층이 장치와 무엇을 주고받는지**를 아는 것이 더 쓰입니다. {추론}",
+   "refs": [
+    2,
+    12,
+    26,
+    27
+   ],
+   "study": [
+    "cuda-guide",
+    "opencl",
+    "mxdriver"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "시스템 레벨 성능 모델링·시뮬레이션(analytical model, cycle-approximate simulator 등) 경험",
+   "short": "업무 4번(모델로 후보 비교)을 첫날부터 할 수 있어서.",
+   "why": "업무 4번과 5번이 계산식 모델과 성능 시뮬레이터를 이름으로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**계산식 모델** — 루프라인[16]·리틀[18]·암달[32]을 엮은 표.",
+     "**사이클 근사 시뮬레이터** — gem5(코어·캐시·메모리 시스템)[19], Ramulator 2(DRAM 타이밍)[20].",
+     "**가속기 매핑 모델** — Timeloop[21]."
+    ]
+   },
+   "how_far": "도구 이름보다 **모델을 실측에 맞춘(보정한) 경험**이 중요합니다. {추론}",
+   "refs": [
+    1,
+    16,
+    18,
+    19,
+    20,
+    21,
+    32
+   ],
+   "study": [
+    "gem5",
+    "ramulator2",
+    "timeloop"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "HW/SW Interface(레지스터 맵, 커맨드 프로토콜, ABI 등) 설계 경험",
+   "short": "업무 3번(계약 정의)을 '쓰는 쪽'이 아니라 '정하는 쪽'에서 해 본 사람이라서.",
+   "why": "업무 3번이 레지스터 맵·커맨드 프로토콜·메모리 모델·동기화 방식을 HW 와 펌웨어·런타임 간 계약이라고 불렀습니다.[1]",
+   "actually": {
+    "items": [
+     "**ABI** — 함수 호출 규약·구조체 배치처럼 '컴파일된 코드끼리의 약속'. 펌웨어·런타임이 따로 빌드돼도 맞물리게 한다. {추론}",
+     "**좋은 계약의 습관** — 예약 칸을 남겨 두기, 버전 칸 두기, 크기·위치를 빌드 때 검사하기(업무 3 예시). {추론}",
+     "**본보기** — NVMe 는 명령 큐·완료 큐·초인종 레지스터로 된 공개 계약이다.[28]"
+    ]
+   },
+   "how_far": "직접 정한 계약이 나중에 바뀌어야 했던 경험과 그때 어떻게 옛 소프트웨어와 맞췄는지를 말할 수 있으면 좋습니다. {추론}",
+   "refs": [
+    1,
+    28
+   ],
+   "study": [
+    "nvme-spec",
+    "mxdriver"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CXL·NUMA 등 메모리 아키텍처 및 메모리 계층 구조에 대한 이해",
+   "short": "이 회사 제품이 CXL 메모리이고, 호스트에선 CPU 없는 NUMA 노드로 보여서.",
+   "why": "CXL 은 PCIe 위에서 메모리를 GPU 카드처럼 꽂게 하는 규격이고, 메모리 풀링·공유와 캐시 일관성을 지원합니다.[2][6] MX1 은 CXL 메모리(Type 3)이면서 SSD 를 뒤에 둔 계층(InfiniteMemory)까지 만듭니다.[7][11]",
+   "actually": {
+    "items": [
+     "**CXL 의 세 통로** — CXL.io(설정), CXL.cache(장치가 호스트 메모리를 캐시), CXL.mem(호스트가 장치 메모리를 읽고 씀).[6]",
+     "**NUMA** — 리눅스에서 CXL 메모리는 보통 별도 메모리 노드로 잡히고, 지연·대역폭 정보는 ACPI 표로 전해진다.[24]",
+     "**계층** — 호스트 캐시 → 호스트 DRAM → CXL DRAM → SSD(64KB 페이지, 1,024칸 맵 캐시).[7]",
+     "**공유의 함정** — 호스트 여러 대가 같은 CXL 메모리를 써도 원자 연산은 따로 없다.[5]"
+    ]
+   },
+   "how_far": "QEMU 로 CXL 메모리를 흉내 내 리눅스에서 region 을 만들고 NUMA 노드로 붙여 본 정도면 출발선입니다.[25] {추론}",
+   "refs": [
+    2,
+    5,
+    6,
+    7,
+    11,
+    24,
+    25
+   ],
+   "study": [
+    "kernel-cxl",
+    "qemu-cxl",
+    "primer-mcc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ML/데이터 워크로드의 연산·메모리 특성 분석 경험",
+   "short": "업무 1번(워크로드 특성 도출)의 대상이 ML 추론·학습과 데이터 엔지니어링이라서.",
+   "why": "회사가 내세우는 쓰임새가 KV 캐시·RAG 벡터 검색·분석 질의입니다.[7][33] 대표는 데이터 이동이 많은 일일수록 이점이 크다고 했습니다.[15]",
+   "actually": {
+    "items": [
+     "**LLM 추론** — 토큰 생성 단계는 KV 캐시를 읽는 일이 많아 메모리에 묶인다. KV 캐시를 페이지로 나눠 관리하는 방식이 vLLM 이다.[29]",
+     "**벡터 검색** — 거리 계산은 벡터를 한 번 읽고 몇 번 계산하는 일이라 연산 강도가 낮다(업무 1 예시).[7]",
+     "**데이터 분석** — scan·filter 는 차례로 읽고 조금 계산한다. 엑시나는 이런 연산자를 메모리 쪽으로 내린다.[2]"
+    ]
+   },
+   "how_far": "모델·엔진을 만드는 사람일 필요는 없습니다. **한 워크로드의 바이트·FLOP 를 세어 본 경험**이면 충분합니다. {추론}",
+   "refs": [
+    2,
+    7,
+    15,
+    29,
+    33
+   ],
+   "study": [
+    "vllm-paper",
+    "nvidia-matmul",
+    "veloxcon"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "\"왜 이 칩은 이렇게 생겼나\"를 숫자로 설명하는 게 즐거운 사람",
+   "회로와 소프트웨어 중 한쪽 경력이 길고, 반대편으로 넓히고 싶은 사람 {추론}",
+   "모델을 만들고 실측과 맞춰 보는 과정을 좋아하는 사람[1]",
+   "다음 세대 칩의 정의 단계에 앉고 싶은 사람 {추론}"
+  ],
+  "hard": [
+   "경력 7년↑이고 필수 요건이 '경계에서 설계·분석한 경험'이라 한쪽 경력만으로는 어렵다[1]",
+   "코드를 많이 쓰는 날보다 문서·모델·회의가 많은 날이 많을 수 있다 {추론}",
+   "엑시나 칩 안쪽 구조는 공개 자료가 적어 입사 전에 미리 익힐 수 있는 범위가 좁다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "이 워크로드가 계산에 묶였는지 메모리에 묶였는지 어떻게 판단하겠어요?",
+   "a": "연산 강도와 루프라인 — 업무 1번의 기본 도구.[16][17]"
+  },
+  {
+   "q": "DDR5 4채널 대역폭을 다 쓰려면 요청이 몇 개 동시에 떠 있어야 하나요? 그럼 코어 수는요?",
+   "a": "리틀의 법칙으로 구조를 정하는 연습.[18]"
+  },
+  {
+   "q": "SSD 페이지 미스를 회로로 처리할지 펌웨어로 처리할지, 무엇을 보고 정하겠어요?",
+   "a": "MX1 이 실제로 펌웨어 쪽으로 나눈 결정.[7]"
+  },
+  {
+   "q": "장치에 명령을 쓰고 초인종 레지스터를 두드렸는데 가끔 장치가 옛 명령을 읽습니다. 왜일까요?",
+   "a": "메모리 장벽·쓰기 순서 — 계약의 메모리 모델 칸.[22]"
+  },
+  {
+   "q": "연산자 하나를 4.7배 빠르게 했는데 고객 질의는 1.5배밖에 안 빨라졌습니다. 어떻게 설명하겠어요?",
+   "a": "암달의 법칙과 되돌림 비용.[7][32]"
+  },
+  {
+   "q": "시뮬레이터 예측과 실제 칩 측정이 30% 어긋납니다. 어디부터 보겠어요?",
+   "a": "업무 5번 — 세 숫자를 잇는 일.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "엑시나 채용 · [SW] HW SW Co-design Architect",
+   "url": "https://xcena.career.greetinghr.com/ko/o/240539",
+   "kind": "posting",
+   "note": "회사 소개·포지션 소개·업무·이런 분·업무 스타일·필수·우대·근무지·복리후생"
+  },
+  {
+   "n": 2,
+   "title": "VeloxCon · Introducing HW Accelerated Velox with CXL Computational Memory (Harry Kim, XCENA)",
+   "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+   "kind": "company",
+   "date": "2025",
+   "note": "엑시나 CPO 발표 15분 · 자막 전부와 슬라이드 장면 확인 — 연산자 내려보내기, 가상 주소 공유·캐시 일관성, SDK(컴파일러·라이브러리·시뮬레이터), API 세 층, 장치/CPU 연산자 배치"
+  },
+  {
+   "n": 3,
+   "title": "GitHub xcena-dev/mxdriver — 호스트 리눅스 커널 모듈",
+   "url": "https://github.com/xcena-dev/mxdriver",
+   "kind": "company",
+   "note": "메일박스·NVMe 꼴 큐·DMA·MSI·생존 확인(같은 회사 펌웨어 풀이에서 코드 확인)"
+  },
+  {
+   "n": 4,
+   "title": "GitHub xcena-dev/public_sdk_release — 호스트 진단 스크립트",
+   "url": "https://github.com/xcena-dev/public_sdk_release",
+   "kind": "company",
+   "note": "PCI → memdev → region → DAX → 드라이버 순 확인"
+  },
+  {
+   "n": 5,
+   "title": "XCENA BLOG · CXL Gave Us Shared Memory. It Did Not Give Us a Mutex.",
+   "url": "https://medium.com/xcena-blog/cxl-gave-us-shared-memory-it-did-not-give-us-a-mutex-514b9cb025b3",
+   "kind": "company",
+   "date": "2026-08-20"
+  },
+  {
+   "n": 6,
+   "title": "XCENA BLOG · CXL Unpacked",
+   "url": "https://medium.com/xcena-blog/cxl-unpacked-enabling-scalable-flexible-and-fast-memory-for-the-ai-era-e3e9df3c08ea",
+   "kind": "company",
+   "date": "2025-08-08"
+  },
+  {
+   "n": 7,
+   "title": "ServeTheHome · XCENA MX1 CXL Computational Memory Device at Hot Chips 2026",
+   "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026",
+   "kind": "news",
+   "date": "2026-08-25",
+   "note": "회사 발표 슬라이드 현장 기록 — 코어 3,072(24×4×32)·캐시 계층·DDR5-8400 4채널 2TB·벡터 엔진 약 3 TFLOPS·64KB 페이지·1,024칸 맵 캐시·미스는 펌웨어·PXL·분석 커널 4.7배(Xeon 6, 유휴 전력 제외)·KV 캐시 TTFT 배수. 기자가 오타 가능성을 밝혔다"
+  },
+  {
+   "n": 8,
+   "title": "ServeTheHome · XCENA MX1 RISC-V Computational Memory in CXL 3.0",
+   "url": "https://www.servethehome.com/xcena-mx1-risc-v-computational-memory-in-cxl-3-0/",
+   "kind": "news",
+   "date": "2025-08-24",
+   "note": "FMS 2025 첫 공개"
+  },
+  {
+   "n": 9,
+   "title": "EE Times Japan · 메모리 근처에 1,000개 넘는 RISC-V 코어를 둔 CXL 장치",
+   "url": "https://eetimes.itmedia.co.jp/ee/spv/2610/02/news025.html",
+   "kind": "news",
+   "date": "2026-10-02",
+   "note": "양산 2026년 말·첫 매출 2027년 목표"
+  },
+  {
+   "n": 10,
+   "title": "엑시나 채용 · [SW] System Firmware Engineer",
+   "url": "https://xcena.career.greetinghr.com/ko/o/110624",
+   "kind": "posting",
+   "note": "같은 회사 — 아키텍처 공동 설계·Bring-up·부트 펌웨어"
+  },
+  {
+   "n": 11,
+   "title": "엑시나 채용 · [SW] Firmware Engineer – InfiniteMemory(CXL+SSD)",
+   "url": "https://xcena.career.greetinghr.com/ko/o/224152",
+   "kind": "posting",
+   "note": "같은 회사 — SSD 를 메모리로 쓰는 매핑·교체"
+  },
+  {
+   "n": 12,
+   "title": "엑시나 채용 · [SW] System Software Engineer, Device Runtime & SDK",
+   "url": "https://xcena.career.greetinghr.com/ko/o/110622",
+   "kind": "posting",
+   "note": "같은 회사 — 런타임·멀티 디바이스 스케줄링"
+  },
+  {
+   "n": 13,
+   "title": "엑시나 채용 · [SW] 시스템 소프트웨어 엔지니어 – 성능 분석 및 개발자 도구",
+   "url": "https://xcena.career.greetinghr.com/ko/o/224149",
+   "kind": "posting",
+   "note": "같은 회사 — 벤치마크 프레임워크·성능 회귀 자동 탐지"
+  },
+  {
+   "n": 14,
+   "title": "엑시나 채용 · [SW] 컴파일러 엔지니어",
+   "url": "https://xcena.career.greetinghr.com/ko/o/235024",
+   "kind": "posting",
+   "note": "같은 회사 — LLVM·RISC-V 확장 명령"
+  },
+  {
+   "n": 15,
+   "title": "뉴스1 · 김진영 엑시나 대표 'AI 인프라 승부처, 연산 아닌 메모리 효율확장'",
+   "url": "https://www.news1.kr/industry/sb-founded/6279286",
+   "kind": "news",
+   "note": "대표 인터뷰 — 고객 검증 항목, 데이터 이동이 많은 일일수록 이점"
+  },
+  {
+   "n": 16,
+   "title": "Williams · Waterman · Patterson · Roofline: An Insightful Visual Performance Model for Multicore Architectures (CACM 52(4), 2009)",
+   "url": "https://doi.org/10.1145/1498765.1498785",
+   "kind": "reference",
+   "date": "2009-04"
+  },
+  {
+   "n": 17,
+   "title": "NVIDIA · Matrix Multiplication Background User's Guide (Math and Memory Bounds)",
+   "url": "https://docs.nvidia.com/deeplearning/performance/dl-performance-matrix-multiplication/index.html",
+   "kind": "reference",
+   "note": "연산 강도 MNK/(MK+NK+MN), 8192³ GEMM 강도 2730, 행렬-벡터 곱은 1 미만"
+  },
+  {
+   "n": 18,
+   "title": "Wikipedia · Little's law",
+   "url": "https://en.wikipedia.org/wiki/Little%27s_law",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "gem5 · Documentation",
+   "url": "https://www.gem5.org/documentation/",
+   "kind": "reference",
+   "note": "CPU 모델(SimpleCPU·O3·Minor)·Classic/Ruby 메모리 시스템"
+  },
+  {
+   "n": 20,
+   "title": "GitHub CMU-SAFARI/ramulator2 — 사이클 단위 DRAM 시뮬레이터",
+   "url": "https://github.com/CMU-SAFARI/ramulator2",
+   "kind": "reference",
+   "note": "DDR5·LPDDR5·HBM 등 지원"
+  },
+  {
+   "n": 21,
+   "title": "Timeloop/Accelergy (MIT)",
+   "url": "https://timeloop.csail.mit.edu/",
+   "kind": "reference",
+   "note": "텐서 연산 가속기의 데이터 흐름·매핑 평가"
+  },
+  {
+   "n": 22,
+   "title": "Linux Kernel Memory Barriers",
+   "url": "https://www.kernel.org/doc/Documentation/memory-barriers.txt",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Nagarajan · Sorin · Hill · Wood · A Primer on Memory Consistency and Cache Coherence (2판, 2020)",
+   "url": "https://link.springer.com/10.1007/978-3-031-01764-3",
+   "kind": "reference",
+   "note": "오픈 액세스 — 가속기(GPU) 일관성 장 포함"
+  },
+  {
+   "n": 24,
+   "title": "Linux 커널 문서 · Compute Express Link",
+   "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "QEMU 문서 · Compute Express Link (CXL)",
+   "url": "https://www.qemu.org/docs/master/system/devices/cxl.html",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "NVIDIA · CUDA Programming Guide",
+   "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Khronos · OpenCL",
+   "url": "https://www.khronos.org/opencl/",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "NVM Express · Specifications",
+   "url": "https://nvmexpress.org/specifications/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Kwon 외 · Efficient Memory Management for Large Language Model Serving with PagedAttention (SOSP 2023)",
+   "url": "https://arxiv.org/abs/2309.06180",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "엑시나 채용 홈 · 회사 정보",
+   "url": "https://xcena.career.greetinghr.com/ko/home",
+   "kind": "company",
+   "note": "설립 2022년, 본사·미국 지사 주소"
+  },
+  {
+   "n": 31,
+   "title": "Brendan Gregg · Systems Performance (2판)",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "kind": "reference",
+   "note": "USE 방법·하드웨어 카운터·메모리 분석"
+  },
+  {
+   "n": 32,
+   "title": "Wikipedia · Amdahl's law",
+   "url": "https://en.wikipedia.org/wiki/Amdahl%27s_law",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "StorageReview · XCENA MX1 shares a KV cache across inference servers at OCP 2026",
+   "url": "https://www.storagereview.com/news/xcena-mx1-cxl-computational-memory-kv-cache-sk-hynix-ocp-2026",
+   "kind": "news",
+   "date": "2026-10",
+   "note": "추론 서버 여러 대가 CXL 메모리로 KV 캐시 공유 데모"
+  },
+  {
+   "n": 34,
+   "title": "엑시나 채용 · 팀·문화",
+   "url": "https://xcena.career.greetinghr.com/ko/team-and-culture",
+   "kind": "company",
+   "note": "직군(SoC 개발·SW 개발)"
+  },
+  {
+   "n": 35,
+   "title": "엑시나 채용 · 복리후생",
+   "url": "https://xcena.career.greetinghr.com/ko/benefits",
+   "kind": "company",
+   "note": "복지 목록"
+  },
+  {
+   "n": 36,
+   "title": "자소설닷컴 · 엑시나 기업정보",
+   "url": "https://jasoseol.com/companies/15972",
+   "kind": "reference",
+   "note": "공공데이터 기반 — 신입·평균 연봉 '아직 수집 중'(같은 회사 PE 풀이 조사 때 확인)"
+  }
+ ],
+ "caveat": "엑시나 칩 안쪽의 레지스터 맵·명령 규약·성능 모델·시뮬레이터는 공개되지 않았습니다. 회사 발표(VeloxCon·Hot Chips 보도)·공개 드라이버·같은 회사 공고로 바깥 모습을 보이고, 모델링·계약 설계는 루프라인·리틀·암달 같은 공개 기법과 gem5·Ramulator·NVMe·커널 문서로 '보통 이런 것'을 보였습니다. 예시 코드의 지연·비중 값은 가정입니다. Hot Chips 숫자는 현장 기록이라 기자가 오타 가능성을 밝혔습니다.",
+ "resources": [
+  {
+   "id": "veloxcon",
+   "title": "Introducing HW Accelerated Velox with CXL Computational Memory",
+   "by": "Harry Kim(엑시나 CPO) · VeloxCon · 15분",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+   "why": "왜 연산을 메모리 쪽으로 내리나, 가상 주소 공유, 소프트웨어 세 층 — 이 자리가 다룰 설계 결정의 출발점을 회사 사람이 직접 설명한다."
+  },
+  {
+   "id": "xcena-hotchips",
+   "title": "XCENA MX1 CXL Computational Memory Device at Hot Chips 2026",
+   "by": "ServeTheHome · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026",
+   "why": "MX1 의 코어·캐시·메모리 구조와 성능 측정 조건이 슬라이드째 정리돼 있다. 업무 1·2·5번의 '현재 칩' 기준선."
+  },
+  {
+   "id": "mxdriver",
+   "title": "xcena-dev/mxdriver",
+   "by": "엑시나 · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/xcena-dev/mxdriver",
+   "why": "공개된 HW/SW 계약의 바깥쪽(메일박스·큐·DMA·생존 확인)을 코드로 읽을 수 있다. 업무 3·6번 연습 재료."
+  },
+  {
+   "id": "hp-quant",
+   "title": "Computer Architecture: A Quantitative Approach (6판)",
+   "by": "John L. Hennessy · David A. Patterson · Morgan Kaufmann · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://shop.elsevier.com/books/computer-architecture/hennessy/978-0-12-811905-1",
+   "why": "정량적 설계·메모리 계층·데이터 병렬(벡터·GPU)·멀티프로세서 — '숫자로 구조를 고른다'는 이 자리의 기본 교과서. 예제가 RISC-V 다."
+  },
+  {
+   "id": "cod-riscv",
+   "title": "컴퓨터 구조 및 설계 — RISC-V 에디션 (2판)",
+   "by": "David A. Patterson · John L. Hennessy · 한티미디어 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000008268454",
+   "why": "MX1 코어와 같은 RISC-V 로 캐시·메모리 계층·병렬성 기초를 다진다. 도메인 특화 구조(DSA) 절이 더해진 판."
+  },
+  {
+   "id": "csapp",
+   "title": "Computer Systems: A Programmer's Perspective (3판)",
+   "by": "Randal E. Bryant · David R. O'Hallaron · Pearson · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://csapp.cs.cmu.edu/",
+   "why": "소프트웨어 개발자 눈으로 본 캐시·가상 메모리·링킹·동시성. 시스템 소프트웨어 쪽 바탕."
+  },
+  {
+   "id": "roofline",
+   "title": "Roofline: An Insightful Visual Performance Model for Multicore Architectures",
+   "by": "Samuel Williams · Andrew Waterman · David Patterson · CACM · 2009",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://doi.org/10.1145/1498765.1498785",
+   "why": "워크로드를 연산 강도 하나로 칩 위에 찍는 법. 업무 1·4번과 '정량 모델로 설득' 요건의 첫 도구."
+  },
+  {
+   "id": "nvidia-matmul",
+   "title": "Matrix Multiplication Background User's Guide",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/performance/dl-performance-matrix-multiplication/index.html",
+   "why": "ML 연산의 연산 강도를 실제 숫자로 계산하는 예(계산에 묶이나 메모리에 묶이나). ML 워크로드 분석 우대사항용."
+  },
+  {
+   "id": "vllm-paper",
+   "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+   "by": "Woosuk Kwon 외 · SOSP 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2309.06180",
+   "why": "KV 캐시가 LLM 추론의 메모리를 어떻게 차지하나. 엑시나가 KV 캐시를 대상 워크로드로 삼은 이유를 이해한다."
+  },
+  {
+   "id": "primer-mcc",
+   "title": "A Primer on Memory Consistency and Cache Coherence (2판)",
+   "by": "Vijay Nagarajan · Daniel J. Sorin · Mark D. Hill · David A. Wood · Springer · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://link.springer.com/10.1007/978-3-031-01764-3",
+   "why": "계약의 '메모리 모델' 칸을 정하는 데 필요한 일관성·코히런스 기초. 가속기 일관성 장이 있다(오픈 액세스)."
+  },
+  {
+   "id": "kernel-barriers",
+   "title": "Linux Kernel Memory Barriers",
+   "by": "Linux 커널 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.kernel.org/doc/Documentation/memory-barriers.txt",
+   "why": "장치 레지스터·DMA 를 다룰 때 순서를 지키는 법. 필수 요건의 '메모리 모델·동시성을 실무에서 다뤄 본 수준'."
+  },
+  {
+   "id": "ldd3",
+   "title": "Linux Device Drivers, 3rd Edition",
+   "by": "Jonathan Corbet · Alessandro Rubini · Greg Kroah-Hartman · O'Reilly · 2005",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://lwn.net/Kernel/LDD3/",
+   "why": "PCI·DMA·인터럽트 드라이버의 기본 구조. 업무 6번(검증·Bring-up 용 드라이버)을 위한 바탕(커널 판은 오래됐다)."
+  },
+  {
+   "id": "nvme-spec",
+   "title": "NVM Express Specifications",
+   "by": "NVM Express",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://nvmexpress.org/specifications/",
+   "why": "공개된 명령 규약의 본보기 — 큐·완료·초인종 레지스터. 커맨드 프로토콜을 설계할 때 견줄 기준."
+  },
+  {
+   "id": "gem5",
+   "title": "gem5 Documentation",
+   "by": "gem5 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.gem5.org/documentation/",
+   "why": "코어·캐시·메모리 시스템을 흉내 내는 공개 시뮬레이터. '성능 시뮬레이터로 후보 비교'를 직접 해 볼 수 있다."
+  },
+  {
+   "id": "ramulator2",
+   "title": "Ramulator 2",
+   "by": "CMU SAFARI · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/CMU-SAFARI/ramulator2",
+   "why": "DDR5 를 포함한 DRAM 타이밍 시뮬레이터. 메모리 채널·뱅크 수가 대역폭·지연에 주는 영향을 잰다."
+  },
+  {
+   "id": "timeloop",
+   "title": "Timeloop/Accelergy",
+   "by": "MIT",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://timeloop.csail.mit.edu/",
+   "why": "가속기에서 데이터를 어떻게 나눠 옮기느냐(매핑)를 견주는 모델. 벡터 엔진 같은 전용 회로를 검토할 때 참고."
+  },
+  {
+   "id": "sysperf",
+   "title": "Systems Performance (2판)",
+   "by": "Brendan Gregg · Addison-Wesley · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "why": "USE 방법·CPU/메모리 분석·하드웨어 카운터. '성능 데이터를 해석해 병목을 분석' 요건의 실무서."
+  },
+  {
+   "id": "kernel-cxl",
+   "title": "Compute Express Link (driver-api/cxl)",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+   "why": "호스트가 CXL 메모리를 memdev·region·decoder·NUMA 노드로 어떻게 보나. CXL·NUMA 우대사항용."
+  },
+  {
+   "id": "qemu-cxl",
+   "title": "QEMU · Compute Express Link (CXL)",
+   "by": "QEMU 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.qemu.org/docs/master/system/devices/cxl.html",
+   "why": "칩 없이 CXL 메모리 장치를 흉내 내 리눅스에서 붙여 본다."
+  },
+  {
+   "id": "cuda-guide",
+   "title": "CUDA Programming Guide",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html",
+   "why": "가속기 런타임이 장치·메모리·커널 실행을 어떻게 추상화했나 — 엑시나가 견주는 대상."
+  },
+  {
+   "id": "opencl",
+   "title": "OpenCL",
+   "by": "Khronos Group",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.khronos.org/opencl/",
+   "why": "회사마다 다른 가속기를 하나의 API 로 묶은 표준. 장치 추상화를 설계할 때 비교 대상."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사의 설계 결정 읽기",
+   "time": "1주",
+   "goal": "MX1 이 왜 '작은 코어 많이 + 메모리 옆 계산'인지 자기 말로 설명한다.",
+   "resources": [
+    "veloxcon",
+    "xcena-hotchips",
+    "mxdriver"
+   ],
+   "task": "발표와 기사에서 MX1 의 결정 다섯 개(코어 수·캐시·벡터 엔진·미스는 펌웨어·가상 주소 공유)를 뽑아 '대안은 무엇이었고 왜 이쪽인가'를 한 줄씩 적는다."
+  },
+  {
+   "title": "숫자로 구조 고르기",
+   "time": "3~4주",
+   "goal": "루프라인·리틀·암달로 워크로드와 칩 후보를 견줄 수 있다.",
+   "resources": [
+    "hp-quant",
+    "cod-riscv",
+    "roofline",
+    "nvidia-matmul"
+   ],
+   "task": "가상의 칩 후보 두 개(코어 2,048개 + 캐시 256MB / 코어 3,072개 + 캐시 128MB)와 워크로드 세 개(GEMV·벡터 거리·scan)를 놓고 루프라인 그림과 필요한 동시 요청 수 표를 파이썬으로 만든다."
+  },
+  {
+   "title": "시뮬레이터로 확인하기",
+   "time": "3~4주",
+   "goal": "계산식 예측을 사이클 근사 시뮬레이터 결과와 견주고 차이를 설명한다.",
+   "resources": [
+    "gem5",
+    "ramulator2",
+    "timeloop"
+   ],
+   "task": "Ramulator 2 로 DDR5 채널 수를 2·4·8 로 바꿔 대역폭·지연을 재고, 2단계 계산식 예측과 다른 곳을 '모델이 놓친 것' 목록으로 정리한다."
+  },
+  {
+   "title": "하드웨어·소프트웨어 계약 써 보기",
+   "time": "2~3주",
+   "goal": "레지스터 맵·명령 규약·메모리 순서 규칙을 문서와 코드로 정의할 수 있다.",
+   "resources": [
+    "nvme-spec",
+    "primer-mcc",
+    "kernel-barriers",
+    "ldd3",
+    "qemu-cxl"
+   ],
+   "task": "가상의 '메모리 옆 scan 엔진'을 위한 계약서를 쓴다 — 레지스터 표(W1C 포함), 32바이트 명령 칸, 큐·초인종 순서, 장벽 위치. C 구조체에 크기 검사를 걸고, 스레드 두 개(호스트·장치 흉내)로 큐를 돌려 장벽을 뺐을 때 깨지는지 본다."
+  },
+  {
+   "title": "워크로드를 요구사항으로 (선택·계속)",
+   "time": "계속",
+   "goal": "ML·데이터 워크로드 하나를 하드웨어 요구 목록으로 번역한다.",
+   "resources": [
+    "vllm-paper",
+    "sysperf",
+    "kernel-cxl",
+    "cuda-guide",
+    "opencl"
+   ],
+   "task": "작은 LLM 디코드(가상 크기: 레이어 32·문맥 8K)의 토큰당 KV 캐시 읽기 바이트를 계산하고, 1단계의 칩 숫자로 초당 토큰 상한을 구한 뒤 '무엇을 바꾸면 두 배가 되나'를 요구사항 세 줄로 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공개된 연봉 숫자가 없다 — 비상장이라 사업보고서 평균 급여가 없고, 공고에도 적혀 있지 않다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "적혀 있지 않음",
+    "basis": "공고",
+    "note": "경력 7년↑ 공고이고 급여 칸이 없다 [1]"
+   }
+  ],
+  "how": "공시 숫자 없음 — 비상장이라 사업보고서 '직원 1인 평균 급여액'이 없다. 공공데이터 집계 사이트(자소설닷컴)는 신입·평균 연봉을 '아직 수집 중'으로 두고 있다 [36]. 경력 7년↑ 자리라 처우는 개인별 협의로 정해진다고 보는 것이 자연스럽다 {추론}. 시리즈 B 2,018억 원을 포함해 누적 약 2,800억 원을 투자받았다고 공고가 밝혔다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "MX Day",
+    "detail": "한 달에 한 번 전사가 함께 쉬는 유급 휴일, 연 12회"
+   },
+   {
+    "name": "유연근무",
+    "detail": "선택적 근로시간제 기반"
+   },
+   {
+    "name": "식대",
+    "detail": "점심 식대 지원"
+   },
+   {
+    "name": "복지포인트",
+    "detail": "지급(금액은 밝히지 않음)"
+   },
+   {
+    "name": "건강검진",
+    "detail": "임직원과 임직원 가족"
+  }
+  ],
+  "note": "이 공고의 복리후생 칸 [1]. 채용 홈페이지의 복지 목록 [35]에도 같은 항목이 있다 — 2026년 11월 확인. 금액·조건은 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "엑시나 본사 · 미래에셋벤처타워",
+  "address": "경기도 성남시 분당구 판교역로241번길 20, 9층 (삼평동, 미래에셋벤처타워)",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C241%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선·경강선 판교역 근처 판교테크노밸리 {추론}",
+  "note": "주소는 공고 근무지 [1]. 채용 홈페이지 회사 정보에도 같은 건물로 적혀 있다 [30]. 미국 지사는 실리콘밸리에 있다 [1]."
+ }
+}
