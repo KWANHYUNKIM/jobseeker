@@ -1,0 +1,542 @@
+{
+  "id": "42dot-software-update-application",
+  "company": "포티투닷(42dot)",
+  "role": "Software Update Engineer",
+  "team": "Software Update Application — 공고 제목의 괄호에서 온 이름, 팀 규모는 공개되지 않았다",
+  "jobs": [
+    "ats-ashby:42dot:17f5f7af-b165-491b-adcc-0bc64e5cb767"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "차 소프트웨어를 무선으로 바꾸는 프로그램(OTA — Over-The-Air 업데이트)의 **차 안 쪽**을 만듭니다 — 업데이트 묶음을 받고, 검사하고, 여러 제어기에 설치하고, 상태를 서버에 알리는 흐름 전체입니다.[1]",
+    "env": "현대차그룹 소프트웨어 중심 차(SDV)의 고성능 차량 컴퓨터(HPVC)가 통신으로 업데이트를 받고[4], 중앙 제어기가 인포테인먼트·차체·섀시 영역 업데이트를 통제하는 구조라고 공개됐습니다.[9] 언어는 C++ 또는 Rust, 리눅스 위에서 일합니다.[1]",
+    "oneline": "OTA **업데이트 프로그램을 짓는 개발자**. 시험 담당이 아니라 받기·설치·되돌리기 코드를 쓰고, 양산 차에 나간 업데이트의 문제를 직접 잡는 사람.[1][6]"
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "소프트웨어 업데이트 시스템의 개발 및 유지보수",
+      "short": "차 안에서 업데이트를 받고·검사하고·설치하고·되돌리는 프로그램을 만들고 계속 고쳐 나가는 일.",
+      "why": "공고 소개문은 이 팀이 업데이트 묶음의 전달·검증·설치·상태 관리 전체를 설계·구현·운영한다고 적었습니다.[1] 포티투닷은 HPVC 가 셀룰러·와이파이로 OTA 를 받는다고 밝혔으니[4], 그 수신부터 제어기 설치까지가 이 팀의 코드가 도는 자리입니다.{추론}",
+      "actually": {
+        "items": [
+          "**받기** — 서버에서 업데이트 묶음을 내려받고, 끊기면 받은 곳부터 이어 받는다. 안드로이드는 묶음을 저장하지 않고 받으면서 바로 쉬는 칸에 쓰는 스트리밍 방식도 공개했습니다.[16]",
+          "**검사** — 서명·해시로 파일이 바뀌지 않았는지, 이 차·이 버전용이 맞는지 본다. 공개 OTA 보안 표준 Uptane 은 변조·옛 버전 되돌리기(롤백 공격)·멈춤 공격 막기를 요건으로 둡니다.[13]",
+          "**설치** — 쉬는 칸(A/B 중 지금 안 쓰는 쪽)에 쓰고 재부팅으로 바꾸는 방식이 흔하다. 안드로이드는 새 칸이 성공 표시 없이 부팅에 거듭 실패하면 부트로더가 옛 칸으로 되돌린다고 설명합니다.[16]",
+          "**상태 기억** — 설치 도중 전원이 꺼져도 다시 켜지면 어디까지 했는지 알고 이어 가야 한다(아래 예시).{추론}",
+          "**유지보수** — 새 제어기·새 차종이 붙을 때마다 설치 방식(칸 수·저장장치·통신)을 하나 더 다룬다.{추론}"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "차 안 업데이트의 흐름(일반적인 꼴 — 포티투닷의 실제 구성은 공개되지 않았다)",
+          "steps": [
+            "서버 · 대상 차·버전 고르기, 묶음 서명",
+            "받기 · HPVC 가 통신으로 받고 이어 받기",
+            "검사 · 서명·해시·대상 차·버전 확인",
+            "배포 · 차 안 망으로 각 제어기에 나눠 보냄",
+            "설치 · 제어기별 쓰기(A/B 면 쉬는 칸에)",
+            "전환 · 재부팅·자체 점검, 확정 또는 되돌리기",
+            "보고 · 결과·새 버전을 서버에 올림"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "examples": [
+        {
+          "title": "재부팅 뒤 어디서부터 이어 하나",
+          "body": "끝낸 단계를 저장해 두면 다시 켜졌을 때 남은 단계만 한다. 실제 돌린 출력:\n처음: ['download', 'verify', 'install', 'activate', 'report']\ninstall 중 재부팅: ['install', 'activate', 'report']\n실제 구현에서는 '끝냈다'는 기록 자체가 전원이 끊겨도 깨지지 않게 저장돼야 한다.{추론}",
+          "lang": "python",
+          "code": "STEPS = [\"download\", \"verify\", \"install\", \"activate\", \"report\"]\ndef resume(saved):\n    done = saved.get(\"done\", [])\n    return [s for s in STEPS if s not in done]\nprint(\"처음:\", resume({}))\nprint(\"install 중 재부팅:\", resume({\"done\": [\"download\", \"verify\"]}))"
+        }
+      ],
+      "how_far": "서버(캠페인·배포 대상 고르기)와 제어기 안 부트로더는 다른 팀 몫일 가능성이 큽니다 — 같은 회사는 보안 부팅·OTA 펌웨어와 OTA 통합 시험을 따로 뽑습니다.[6][7] 이 자리는 **차 안에서 받기부터 보고까지의 프로그램**이 중심이고, 최소선은 '어느 단계에서 끊겨도 차가 쓸 수 있는 버전으로 남는다'를 코드로 지키는 것입니다.{추론}",
+      "refs": [1, 4, 6, 7, 13, 16],
+      "study": ["aosp-ab", "uptane-std", "mcuboot-design"]
+    },
+    {
+      "section": "task",
+      "quote": "소프트웨어 업데이트 관련 통신 프로토콜, 데이터 인터페이스 정의 및 구현",
+      "short": "서버·HPVC·각 제어기가 업데이트 얘기를 어떤 메시지로 주고받을지 정하고 코드로 만드는 일.",
+      "why": "업데이트는 서버 ↔ 차, 차 안 컴퓨터 ↔ 제어기 두 겹의 대화입니다.{추론} 중앙 제어기가 여러 영역의 업데이트를 통제한다는 구조라면[9], 영역마다 '지금 몇 % 했나·실패했나·어느 버전인가'를 같은 말로 주고받아야 합니다.{추론}",
+      "actually": {
+        "items": [
+          "**메시지 정하기** — 시작·진행률·완료·실패 이유·현재 버전 같은 필드와 그 크기·순서를 정한다(아래 예시).{추론}",
+          "**형식 고르기** — 서버와는 HTTPS 위 JSON·Protocol Buffers(구조를 정의 파일로 적고 코드를 만들어 주는 직렬화 형식)가 흔하다.[24] 차 안 이더넷에서는 차용 서비스 통신 규약 SOME/IP 가 쓰인다.[25]",
+          "**옛 제어기** — CAN 에 붙은 옛 제어기는 진단 규약 UDS 의 다운로드 서비스로 이미지를 받는 경우가 많다.[19]",
+          "**버전 맞추기** — 메시지 형식에 버전 번호를 넣어 새 HPVC 와 옛 제어기가 같이 있어도 서로 알아듣게 한다.{추론}",
+          "**Uptane 의 역할 나누기** — 대표 제어기(Primary)가 받아 검사하고 보조 제어기(Secondary)에 넘기는 구조와, 보조 쪽의 전체·부분 검사 차이를 표준이 정해 둡니다.[13][14]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "진행 메시지 9바이트 — 한 바이트만 바뀌어도 버린다",
+          "body": "버전(1)·제어기 번호(2)·상태(1)·진행률(1) 뒤에 CRC32(4)를 붙인 가상 형식. 실제 돌린 출력:\n01071002287d308f1c 9 바이트 -> (1, 1808, 2, 40)\n진행률 한 바이트 바뀜 -> CRC 틀림 — 버린다\n(CRC 는 우연한 깨짐만 잡는다 — 일부러 바꾼 것은 서명으로 막는다.[13])",
+          "lang": "python",
+          "code": "import struct, zlib\ndef pack(ver, ecu, state, pct):\n    body = struct.pack(\">BHBB\", ver, ecu, state, pct)\n    return body + struct.pack(\">I\", zlib.crc32(body))\ndef unpack(b):\n    body, crc = b[:-4], struct.unpack(\">I\", b[-4:])[0]\n    if zlib.crc32(body) != crc:\n        return \"CRC 틀림 — 버린다\"\n    return struct.unpack(\">BHBB\", body)\nm = pack(1, 0x0710, 2, 40)\nprint(m.hex(), len(m), \"바이트 ->\", unpack(m))\nbad = m[:4] + bytes([41]) + m[5:]\nprint(\"진행률 한 바이트 바뀜 ->\", unpack(bad))"
+        }
+      ],
+      "how_far": "'정의 및 구현'이라 문서로 형식을 정하는 것과 그 형식을 읽고 쓰는 코드가 둘 다 이 자리 몫입니다.[1] 최소선은 **필드·크기·바이트 순서·오류 처리를 문서로 남기고, 깨진 메시지를 받아도 죽지 않는 파서**를 쓰는 것입니다.{추론}",
+      "refs": [1, 9, 13, 14, 19, 24, 25],
+      "study": ["protobuf", "someip-prs", "uptane-std", "uds-wiki"]
+    },
+    {
+      "section": "task",
+      "quote": "SDV(Software Defined Vehicle) 기반 양산 차량의 소프트웨어 업데이트 대응",
+      "short": "이미 팔려 고객이 타는 차에 업데이트를 내보내고, 거기서 난 문제를 맞는 일.",
+      "why": "현대차는 2026-10-30 차세대 인포테인먼트 플레오스 커넥트의 무선 업데이트를 더 뉴 그랜저부터 순차로 내보낸다고 밝혔습니다.[10] 현대차그룹은 2022년에 2025년까지 모든 차종에 OTA 를 넣겠다는 계획을 밝힌 바 있습니다.[30] 양산 차는 시험차와 달리 수가 많고, 통신·배터리·사용 상황이 제각각입니다.{추론} 포티투닷은 기능안전(ISO 26262) 개발 프로세스와 사이버보안(ISO 21434) 관리체계 인증을 받았다고 보도됐는데[34][33], 업데이트는 안전 기능을 바꾸는 통로이자 공격 통로라 두 기준 모두와 닿습니다.{추론}",
+      "actually": {
+        "items": [
+          "**순차 배포** — 한 번에 전부가 아니라 차종·대수를 나눠 내보내고 결과를 보며 넓힌다. 위 플레오스 커넥트 업데이트도 '순차'로 나갔습니다.[10]",
+          "**조건 맞추기** — 같은 그룹 기아의 영국 안내는 시동 끔·P 단·주차 브레이크·충분한 배터리를 설치 조건으로, 설치 중엔 운전할 수 없다고 적었습니다.[11] 이 조건 확인이 차 안 프로그램의 일이다.{추론}",
+          "**규정** — 유럽 등에서 적용되는 UN R156 은 업데이트 관리 체계(SUMS)와 차에서 읽을 수 있는 소프트웨어 식별 번호(RXSWIN)를 요구한다고 정리됩니다.[12]",
+          "**현장 문제** — '특정 지역·특정 옵션 차만 설치 실패' 같은 보고를 받아 차가 올린 결과·로그로 원인을 좁힌다.{추론}"
+        ]
+      },
+      "how_far": "배포 일정·대상 차 고르기는 운영·품질 쪽이 정할 것입니다.{추론} 이 자리는 **차 쪽 프로그램이 원인일 때 고치고, 다음 배포에서 같은 실패가 안 나게 하는** 데까지입니다.{추론}",
+      "refs": [10, 11, 12, 30, 33, 34],
+      "study": ["ul-r156", "uptane-bp"]
+    },
+    {
+      "section": "task",
+      "quote": "다양한 제어기 상 소프트웨어의 업데이트 테스트 및 이슈 대응",
+      "short": "제어기마다 다른 설치 방식에서 업데이트가 끝까지 되는지 돌려 보고, 안 되면 원인을 찾는 일.",
+      "why": "포티투닷 구조는 HPVC·구역 제어기와 옛 제어기가 섞여 있고[4], 인포테인먼트와 계기판은 일부러 서로 다른 운영체제를 쓴다고 공개됐습니다.[9] 제어기마다 OS·저장장치·통신이 다르니 같은 묶음도 다르게 실패합니다.{추론}",
+      "actually": {
+        "items": [
+          "**리눅스 계열 컴퓨터** — 두 칸(A/B) + 재부팅 + 성공 표시. 엔비디아 젯슨 리눅스 문서는 업데이트 엔진이 칸 정보를 보고 부트로더에 어느 칸으로 부팅할지 알린다고 설명합니다.[17]",
+          "**작은 제어기** — 부트로더가 새 이미지를 검사해 교체하고, 시험 부팅이 확인되지 않으면 되돌린다. MCUboot 문서가 이 방식을 공개합니다.[18]",
+          "**묶음 호환** — 여러 제어기를 한 번에 바꿀 때 하나만 실패하면 버전 짝이 깨진다. Uptane 모범 사례는 묶음 설치의 원자성(전부 되거나 전부 안 되거나)을 따로 다룹니다(아래 예시).[14]",
+          "**시험과 나누기** — 같은 회사 System Test Engineer(SW Update) 자리가 통합 시험을 맡으니[6], 이 자리는 개발자 쪽 시험(단위·벤치에서 직접 돌려 보기)과 그 시험이 찾은 결함 고치기가 중심이다.{추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "묶음 업데이트에서 한 제어기만 실패하면",
+          "body": "HPVC 새 버전은 앞 구역 제어기 1.5.0 이상이 있어야 한다고 적어 둔 가상 묶음. 실제 돌린 출력:\nHPVC 2.4.0 는 ZONE-F >=1.5.0 필요 -> 설치 뒤 1.5.0: OK\nZONE-F 만 실패하면 HPVC 조건: 깨짐 -> 묶음 전체를 되돌리거나 HPVC 활성화를 막는다",
+          "lang": "python",
+          "code": "car = {\"HPVC\": \"2.3.0\", \"ZONE-F\": \"1.4.2\", \"ZONE-R\": \"1.4.2\", \"BCM\": \"5.0.1\"}\ncampaign = {\"HPVC\": (\"2.4.0\", {\"ZONE-F\": \">=1.5.0\"}), \"ZONE-F\": (\"1.5.0\", {}), \"BCM\": (\"5.0.2\", {})}\ndef ge(a, b):\n    return tuple(map(int, a.split(\".\"))) >= tuple(map(int, b.split(\".\")))\nafter = dict(car)\nfor ecu, (v, _) in campaign.items():\n    after[ecu] = v\nfor ecu, (v, deps) in campaign.items():\n    for d, cond in deps.items():\n        ok = ge(after[d], cond[2:])\n        print(f\"{ecu} {v} 는 {d} {cond} 필요 -> 설치 뒤 {after[d]}: {'OK' if ok else '깨짐'}\")\nfailed = dict(after); failed[\"ZONE-F\"] = car[\"ZONE-F\"]\nprint(\"ZONE-F 만 실패하면 HPVC 조건:\", \"OK\" if ge(failed[\"ZONE-F\"], \"1.5.0\") else \"깨짐 -> 묶음 전체를 되돌리거나 HPVC 활성화를 막는다\")"
+        }
+      ],
+      "how_far": "제어기 펌웨어 안쪽을 다 알 필요는 없습니다.{추론} **제어기 종류별로 '어떻게 쓰고, 언제 바뀌고, 실패하면 어디로 돌아가나'를 표 하나로 설명할 수 있으면** 이슈를 어느 팀에 넘길지 가를 수 있습니다.{추론}",
+      "refs": [4, 6, 9, 14, 17, 18],
+      "study": ["jetson-ab", "mcuboot-design", "uptane-bp"]
+    },
+    {
+      "section": "task",
+      "quote": "소프트웨어 업데이트 운영 관련 기술 문서 작성 및 개선 활동 참여",
+      "short": "업데이트가 어떻게 돌고, 실패하면 무엇을 보는지를 다른 팀이 읽을 수 있게 적는 일.",
+      "why": "업데이트는 시험·릴리스·운영 팀이 같이 다룹니다 — 같은 회사 Release Engineer 공고는 OTA 업데이트 파이프라인까지 릴리스 수명 주기를 총괄한다고 적었습니다.[8] 여러 팀이 같은 흐름을 보려면 문서가 기준이 됩니다.{추론}",
+      "actually": {
+        "items": [
+          "**인터페이스 문서** — 위 메시지 형식·상태 번호·오류 코드표.{추론}",
+          "**운영 안내서** — '설치 실패 코드 N 이 오면 무엇부터 본다' 같은 대응 순서.{추론}",
+          "**표준과 잇기** — 업데이트 공학 표준 ISO 24089 는 업데이트 묶음을 만들고 배포하는 조직의 절차를 다룹니다.[15] R156 인증 자료도 이런 문서를 근거로 삼는다.[12]{추론}"
+        ]
+      },
+      "how_far": "'참여'라 문서 체계를 혼자 세우는 자리는 아닙니다.[1] **내가 만든 기능의 인터페이스와 실패 대응을 남이 그대로 따라 할 수 있게** 쓰면 최소선입니다.{추론}",
+      "refs": [1, 8, 12, 15],
+      "study": ["iso24089", "ul-r156"]
+    },
+    {
+      "section": "qualification",
+      "quote": "컴퓨터공학(또는 과학), 전자공학 등 관련 전공 학사 학위 또는 이에 준하는 개발 역량",
+      "short": "전공 학위가 기본이지만, 같은 수준의 개발 실력을 보이면 된다는 줄.",
+      "why": "업데이트 프로그램은 운영체제·통신·저장장치를 다 건드려서 컴퓨터 구조와 OS 기초가 필요합니다.{추론} 공고는 '또는 이에 준하는 개발 역량'을 붙여 비전공도 열어 두었습니다.[1]",
+      "actually": {
+        "items": [
+          "전공 과목으로 치면 운영체제·컴퓨터 네트워크·컴퓨터 구조·자료구조가 이 일과 바로 닿는다.{추론}",
+          "비전공이면 리눅스 위 C++·Rust 프로젝트(파일·프로세스·소켓을 다룬 것)를 결과물로 보인다.{추론}"
+        ]
+      },
+      "how_far": "전형에 서류 뒤 화상 1시간·대면 혹은 화상 3시간 면접이 있으니[1], 학위보다 **면접에서 OS·통신 기초를 설명할 수 있는지**가 실제 문턱입니다.{추론}",
+      "refs": [1],
+      "study": ["tlpi"]
+    },
+    {
+      "section": "qualification",
+      "quote": "C++ 또는 Rust  프로그래밍 언어 사용 경험",
+      "short": "업데이트 프로그램을 짓는 언어 — 둘 중 하나로 실제 코드를 써 봤어야 해서.",
+      "why": "포티투닷은 SDV OS 앱을 Rust 로 쓴다고 밝혔습니다.[4] 차 안 프로그램은 메모리·시간 제약이 있고 오래 돌아야 해서 C++·Rust 같은 컴파일 언어를 씁니다.{추론}",
+      "actually": {
+        "items": [
+          "**오류 처리** — 받기·쓰기·검사 모든 단계가 실패할 수 있어서 Rust 의 Result 나 C++ 의 예외·오류 코드를 빠짐없이 다룬다.[23]",
+          "**비동기** — 받는 동안 진행률을 보고하고 취소 요청도 받는다.{추론}",
+          "**자원 관리** — 큰 파일을 메모리에 다 올리지 않고 조각으로 읽고 쓴다.{추론}"
+        ]
+      },
+      "level": {
+        "basic": "C++ 이나 Rust 로 파일 읽기·쓰기, 구조체·클래스, 오류 처리를 쓴다.",
+        "work": "스레드·비동기로 받기와 진행 보고를 같이 돌리고, 바이트 배열을 형식대로 읽고 쓴다.",
+        "team": "전원이 끊겨도 상태가 깨지지 않는 저장, 이어 받기, 칸 전환을 하나의 상태 기계로 쓴다.{추론}"
+      },
+      "how_far": "'사용 경험'이라 두 언어를 다 할 필요는 없습니다.[1] 같은 회사 SDV 공고들이 C++·Rust 를 같이 적은 만큼, **하나를 실무로 쓰고 다른 하나를 읽을 수 있으면** 유리합니다.[5]{추론}",
+      "refs": [1, 4, 5, 23],
+      "study": ["rust-book-ko", "comprehensive-rust-ko", "effective-modern-cpp"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Linux 기반 개발 환경에 대한 이해",
+      "short": "업데이트 프로그램이 리눅스 위에서 돌고, 빌드·디버깅도 리눅스에서 해서.",
+      "why": "HPVC 같은 큰 컴퓨터는 리눅스 계열에서 도는 것이 보통이고{추론}, 엔비디아 젯슨 리눅스처럼 칩 회사가 리눅스용 A/B 업데이트 도구를 함께 냅니다.[17]",
+      "actually": {
+        "items": [
+          "**파일·파티션** — 블록 장치에 이미지를 쓰고, 파티션·마운트를 다룬다.{추론}",
+          "**서비스** — 업데이트 프로그램을 데몬으로 띄우고, 재시작·로그(journalctl)를 다룬다.{추론}",
+          "**안전한 쓰기** — 쓰기가 디스크에 실제로 남았는지(fsync)와 원자적 이름 바꾸기(rename)로 상태 파일이 반쯤 쓰인 채 남지 않게 한다.[36]",
+          "**교차 빌드** — PC 에서 차용 칩(ARM)용으로 빌드해 보드에 올린다.{추론}"
+        ]
+      },
+      "level": {
+        "basic": "셸로 파일·프로세스·로그를 다루고, 패키지를 빌드한다.",
+        "work": "시스템 호출(open·write·fsync·rename)과 프로세스·신호를 이해하고 strace·gdb 로 문제를 찾는다.",
+        "team": "부트로더·파티션 배치를 보고 업데이트가 어느 칸에 쓰이고 언제 바뀌는지 코드로 다룬다.[16][17]"
+      },
+      "how_far": "커널을 고치는 수준은 아닙니다.{추론} **업데이트 중 전원이 끊겨도 파일이 깨지지 않는 이유를 시스템 호출로 설명**할 수 있으면 됩니다.{추론}",
+      "refs": [16, 17, 36],
+      "study": ["tlpi", "jetson-ab"]
+    },
+    {
+      "section": "qualification",
+      "quote": "compiled & statically typed language의 특성과 런타임 동작에 대한 이해를 보유",
+      "short": "컴파일 언어에서 메모리 배치·정수 넘침·정의되지 않은 동작이 실제로 어떻게 터지는지 알아야 해서.",
+      "why": "업데이트 프로그램은 바이트 단위 형식을 읽고 쓰고, 오래 돌며 실패하면 차가 못 쓰게 될 수 있습니다.{추론} 컴파일 언어의 실행 시 동작(메모리 배치, 수명, 넘침)을 모르면 같은 코드가 칩·컴파일러에 따라 다르게 돕니다.{추론}",
+      "actually": {
+        "items": [
+          "**메모리 배치** — 같은 필드라도 정렬(alignment) 때문에 구조체 크기가 달라진다. 그대로 바이트로 내보내면 받는 쪽과 어긋난다(아래 예시).{추론}",
+          "**정수 넘침** — 8비트 진행률이 255 를 넘으면 0 으로 돈다. C++ 에서 부호 있는 정수 넘침은 정의되지 않은 동작이다.[35]",
+          "**수명** — C++ 에서는 해제된 메모리를 쓰는 실수가 컴파일 때 안 잡힐 수 있고, Rust 는 빌림 검사기(borrow checker)가 컴파일 때 막는다.[23]",
+          "**정적 타입의 이점** — 상태를 열거형(enum)으로 두면 '처리 안 한 상태'를 컴파일러가 알려 준다(Rust 의 match).[23]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "같은 세 필드, 12바이트와 7바이트",
+          "body": "u8·u32·u16 세 필드 구조체를 C 와 같은 규칙(ctypes)으로 잰다. 실제 돌린 출력:\n정렬 그대로: 12 바이트 / pack(1): 7 바이트\nu8 진행률 250 + 10 = 4 (넘치면 돌아간다)\n통신 형식은 구조체를 통째로 보내지 말고 필드마다 크기·순서를 정해 직렬화한다.{추론}",
+          "lang": "python",
+          "code": "import ctypes\nclass Hdr(ctypes.Structure):\n    _fields_ = [(\"ver\", ctypes.c_uint8), (\"size\", ctypes.c_uint32), (\"ecu\", ctypes.c_uint16)]\nclass HdrPacked(ctypes.Structure):\n    _pack_ = 1\n    _fields_ = [(\"ver\", ctypes.c_uint8), (\"size\", ctypes.c_uint32), (\"ecu\", ctypes.c_uint16)]\nprint(\"정렬 그대로:\", ctypes.sizeof(Hdr), \"바이트 / pack(1):\", ctypes.sizeof(HdrPacked), \"바이트\")\nprint(\"u8 진행률 250 + 10 =\", ctypes.c_uint8(250 + 10).value, \"(넘치면 돌아간다)\")"
+        }
+      ],
+      "level": {
+        "basic": "스택과 힙, 값 복사와 참조, 정수 크기·부호를 설명한다.",
+        "work": "구조체 정렬·바이트 순서, 수명·소유권, 정의되지 않은 동작의 예를 코드로 보인다.",
+        "team": "전원 차단·메모리 부족 같은 실패에서도 상태를 잃지 않는 코드를 타입으로 강제한다.{추론}"
+      },
+      "how_far": "언어 명세를 외우는 것이 아니라 **'이 코드가 다른 칩·다른 컴파일러에서도 같게 도나'를 따질 수 있는** 정도가 요구 수준입니다.{추론}",
+      "refs": [23, 35],
+      "study": ["rust-book-ko", "effective-modern-cpp", "cppreference-ub"]
+    },
+    {
+      "section": "qualification",
+      "quote": "버전 관리 도구(Git 등) 사용 경험",
+      "short": "여러 사람이 같은 업데이트 코드를 고치고, 어느 버전이 어느 차에 나갔는지 추적해야 해서.",
+      "why": "양산 차에 나간 업데이트 프로그램은 나중에 '그 버전'의 코드로 돌아가 원인을 봐야 합니다.{추론} 같은 회사 Release Engineer 공고는 버전 관리 체계와 Git(GitHub/GitLab)을 릴리스 관리의 기본으로 적었습니다.[8]",
+      "actually": {
+        "items": [
+          "**가지와 태그** — 양산에 나간 버전에 태그를 달고, 그 위에서 고친 것만 따로 내보낸다.[26]",
+          "**코드 리뷰** — 병합 요청(MR/PR)으로 리뷰를 받고 CI 시험을 통과해야 합친다.[32]",
+          "**원인 찾기** — git bisect 로 어느 커밋에서 업데이트가 깨졌는지 반씩 좁혀 찾는다.[26]"
+        ]
+      },
+      "how_far": "명령 몇 개를 아는 것보다 **양산 버전과 개발 버전을 따로 관리하고 고친 것을 옮기는(cherry-pick) 흐름**을 써 본 경험이면 충분합니다.{추론}",
+      "refs": [8, 26, 32],
+      "study": ["pro-git-ko"]
+    },
+    {
+      "section": "qualification",
+      "quote": "다양한 관점을 조율하며, 효과적인 대화를 통해 문제 해결 능력 보유",
+      "short": "업데이트 문제는 서버·제어기·시험·운영 여러 팀에 걸쳐 있어서, 말로 원인과 책임을 가르는 힘.",
+      "why": "업데이트 실패 하나가 서버·HPVC·제어기·망 어디 탓인지에 따라 고칠 팀이 다릅니다.{추론} 포티투닷은 하드웨어와 소프트웨어를 떼어 동시에 개발한다고 밝혔는데[29], 그러면 팀 사이 인터페이스 합의가 더 자주 필요합니다.{추론}",
+      "actually": {
+        "items": [
+          "제어기 팀과 '설치 성공'의 정의(쓰기 끝? 재부팅 뒤 점검 통과?)를 맞춘다.{추론}",
+          "시험 팀이 올린 결함을 재현하고, 내 쪽 문제가 아니면 근거(로그·메시지)와 함께 넘긴다.{추론}",
+          "운영 팀에 배포를 멈출지 계속할지 판단할 숫자를 준다.{추론}"
+        ]
+      },
+      "how_far": "면접에서는 **다른 팀과 원인이 엇갈렸던 일 하나를, 어떤 근거로 어떻게 정리했는지** 말할 수 있으면 됩니다.{추론}",
+      "refs": [29]
+    },
+    {
+      "section": "preference",
+      "quote": "소프트웨어 업데이트 시스템 관련 프로젝트 경험",
+      "short": "OTA·펌웨어 업데이트·앱 업데이트 같은 '배포해서 바꾸는' 시스템을 만들어 봤으면 바로 쓰인다.",
+      "why": "이 팀의 일 전체가 업데이트 시스템입니다.[1] 차가 아니어도 휴대폰·IoT·셋톱박스 업데이트는 받기·검사·두 칸 교체·되돌리기 구조가 비슷합니다.[16][18]{추론}",
+      "actually": {
+        "items": [
+          "안드로이드 A/B·임베디드 리눅스 업데이트 도구·마이크로컨트롤러 부트로더 업데이트를 다뤄 본 경험.[16][18]",
+          "Uptane 오픈소스 구현이나 TUF(소프트웨어 배포 보안 틀) 계열을 써 본 경험.[13]",
+          "차분(delta) 업데이트 — 바뀐 부분만 보내 용량을 줄이는 방식을 다뤄 본 경험.[37]"
+        ]
+      },
+      "how_far": "우대 사항입니다. 경험이 없다면 **작은 보드나 가상 머신에서 A/B 업데이트와 되돌리기를 직접 만들어 본 결과물**로 대신할 수 있습니다.{추론}",
+      "refs": [1, 13, 16, 18, 37],
+      "study": ["aosp-ab", "mcuboot-design", "uptane-std"]
+    },
+    {
+      "section": "preference",
+      "quote": "Android 및 nVidia 소프트웨어 업데이트 프로세스에 대한 이해 보유",
+      "short": "차 안 화면은 안드로이드, 큰 연산 칩은 엔비디아라서 두 쪽의 공식 업데이트 방식을 알면 좋다.",
+      "why": "현대차 플레오스 세미나는 안드로이드 오토모티브 OS 기반 앱 생태계를 다뤘습니다.[9] 엔비디아는 칩과 함께 리눅스용 A/B 업데이트 엔진·도구를 냅니다.[17] 공고가 이 둘을 콕 집은 것은 업데이트 대상에 두 플랫폼이 있다는 뜻으로 읽힙니다.{추론}",
+      "actually": {
+        "items": [
+          "**안드로이드** — update_engine 이 쉬는 칸에 쓰고, boot_control 로 다음 부팅 칸을 정하고, 재부팅 뒤 검사가 통과하면 성공 표시를 한다. 안드로이드 10부터는 가상 A/B 로 바뀌었다.[16]",
+          "**엔비디아(젯슨 리눅스 기준)** — 업데이트 엔진(nv_update_engine)이 칸 정보를 보고 부트로더에 부팅 칸을 알리고, A_·B_ 로 시작하는 부트로더 파티션이 두 벌 있다.[17]",
+          "**자동차용 엔비디아(DRIVE OS)** — 별도 OTA 문서가 있으나 이번에 본문을 읽지 못했다. 젯슨 문서와 같다고 보면 안 된다.{추론}",
+          "**둘을 잇기** — 차 전체 업데이트 프로그램은 각 플랫폼의 업데이트 엔진을 불러 쓰고 결과를 모은다.{추론}"
+        ]
+      },
+      "how_far": "우대 사항입니다. **두 플랫폼에서 '어느 칸에 쓰고, 언제 바뀌고, 실패하면 무엇이 되돌리나'를 그림으로 비교**할 수 있으면 충분합니다.{추론}",
+      "refs": [9, 16, 17],
+      "study": ["aosp-ab", "jetson-ab"]
+    },
+    {
+      "section": "preference",
+      "quote": "진단프로토콜(UDS), ECU System SW 의 이해 보유",
+      "short": "옛 제어기는 진단 규약 UDS 로 이미지를 받아서, 그 순서와 제어기 기본 소프트웨어를 알면 좋다.",
+      "why": "구역 제어기 구조로 바뀌어도 옛 구조 제어기가 함께 남는 차가 있습니다.[4]{추론} 그런 제어기의 재프로그래밍은 보통 UDS(ISO 14229 — 차 진단 통신 규약)의 세션 전환·보안 접근·다운로드 서비스로 합니다.[19][20]",
+      "actually": {
+        "items": [
+          "**순서** — 프로그래밍 세션(0x10 02) → 보안 접근(0x27) → 지우기 루틴(0x31) → 다운로드 요청(0x34) → 데이터 전송(0x36) 여러 번 → 전송 끝(0x37) → 검사 루틴 → 재시작(0x11).[19]",
+          "**블록** — 다운로드 요청의 응답이 알려 준 최대 블록 길이로 이미지를 잘라 보내고, 블록 순번은 1바이트라 돌아간다(아래 예시).[19]",
+          "**기다려 응답** — 제어기가 '처리 중(0x78)'을 보내면 정해진 더 긴 시간까지 기다린다.[19]",
+          "**ECU System SW** — AUTOSAR 같은 층 구조에서 부트로더·진단(DCM)·통신 모듈이 어디 있는지 안다.[21]",
+          "**집에서 연습** — 파이썬 udsoncan 으로 서비스 요청·응답을 만들어 본다.[22]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "3MiB 이미지는 TransferData 몇 번인가",
+          "body": "최대 블록 4,095바이트(예)에서 서비스 번호·순번 2바이트를 빼고 나눈다. 실제 돌린 출력:\n블록당 데이터 4093 바이트 -> TransferData(0x36) 769 번\n순번은 1바이트라 마지막 순번: 1 (255 다음 0 으로 돈다)",
+          "lang": "python",
+          "code": "image = 3_145_728          # 3 MiB\nmax_block = 4095           # RequestDownload(0x34) 응답이 알려 준 최대 블록 길이(예)\npayload = max_block - 2    # 0x36 + 블록 순번 1바이트\nblocks = -(-image // payload)\nprint(\"블록당 데이터\", payload, \"바이트 -> TransferData(0x36)\", blocks, \"번\")\nprint(\"순번은 1바이트라 마지막 순번:\", blocks % 256, \"(255 다음 0 으로 돈다)\")"
+        }
+      ],
+      "how_far": "우대 사항입니다. **재프로그래밍 서비스 순서를 외워 쓰고, 부정 응답 코드를 보고 어느 단계에서 막혔는지 말할** 수 있으면 충분합니다.{추론}",
+      "refs": [4, 19, 20, 21, 22],
+      "study": ["inflearn-uds", "uds-wiki", "udsoncan", "autosar-lsa"]
+    },
+    {
+      "section": "preference",
+      "quote": "유관 직군(embedded software, design, operation) 업무의 이해",
+      "short": "업데이트는 제어기 개발·화면 설계·운영 팀과 맞물려서, 그 사람들의 일을 알면 대화가 빠르다.",
+      "why": "업데이트 프로그램은 제어기 펌웨어(embedded)가 받아 주고, 운전자 화면(design)으로 동의를 받고, 운영(operation)이 배포를 돌려야 끝납니다.{추론} 같은 회사는 보안 부팅·OTA 펌웨어 자리[7]와 릴리스 자리[8]를 따로 둡니다.",
+      "actually": {
+        "items": [
+          "**임베디드** — 제어기 부트로더가 언제 새 이미지를 받아 줄 수 있는지, 쓰는 데 얼마나 걸리는지 안다.[7][18]",
+          "**설계(화면)** — 설치 시간 안내·미루기·설치 중 차를 못 쓰는 시간을 운전자에게 어떻게 보일지 같이 정한다. 기아 안내는 설치 중 운전 불가를 적었습니다.[11]",
+          "**운영** — 순차 배포·실패율 감시·중단 기준을 운영 쪽과 맞춘다.[8][10]"
+        ]
+      },
+      "how_far": "우대 사항입니다. **각 팀이 업데이트에서 무엇을 걱정하는지 한 줄씩 말할 수 있으면** 충분합니다.{추론}",
+      "refs": [7, 8, 10, 11, 18]
+    },
+    {
+      "section": "preference",
+      "quote": "DevOps의 이해 및 유관 툴(CI/CD 툴, orchestration 툴) 사용 경험",
+      "short": "업데이트 프로그램도 빌드·시험·묶음 만들기를 자동으로 돌려야 해서, 파이프라인과 배포 도구 경험이 좋다.",
+      "why": "포티투닷은 2주 스프린트와 CI/CD 를 공개적으로 말했습니다.[4] 같은 회사 Release Engineer 공고는 Jenkins·GitLab CI·ArgoCD, 컨테이너 기반 빌드, GitOps 를 적었습니다.[8]",
+      "actually": {
+        "items": [
+          "**CI** — 커밋마다 교차 빌드·단위 시험·가상 기기 위 업데이트 시험이 돈다.[32]",
+          "**묶음 만들기** — 빌드 결과물로 서명된 업데이트 묶음을 만드는 단계를 파이프라인에 넣는다.{추론}",
+          "**오케스트레이션(orchestration — 여러 컨테이너를 자동으로 띄우고 관리하는 것)** — 서버 쪽 시험 환경이나 업데이트 서버를 쿠버네티스로 띄운다.[31]",
+          "**컨테이너 빌드** — 빌드 도구 버전을 컨테이너로 고정해 누가 빌드해도 같은 결과가 나오게 한다.[8]"
+        ]
+      },
+      "how_far": "우대 사항입니다. **내 프로그램이 CI 에서 빌드·시험되고 결과물이 남는 파이프라인 하나를 직접 짜 본** 경험이면 충분합니다.{추론}",
+      "refs": [4, 8, 31, 32],
+      "study": ["gitlab-ci", "wiki-docker", "wiki-kubernetes"]
+    },
+    {
+      "section": "preference",
+      "quote": "고도화된 문제해결 능력과 분석적 사고 능력 보유",
+      "short": "'몇 대만 가끔 실패'처럼 흐린 문제를 숫자와 로그로 좁혀 가는 힘.",
+      "why": "양산 차의 업데이트 실패는 재현이 어렵고 조건(통신·배터리·옵션)이 섞여 있습니다.{추론} 이 자리가 양산 차 업데이트 대응과 이슈 대응을 맡으니[1] 원인을 좁히는 힘이 곧 일의 질입니다.{추론}",
+      "actually": {
+        "items": [
+          "실패를 단계(받기·검사·설치·전환·보고)별로 나눠 세고, 실패한 차들의 공통 조건을 찾는다.{추론}",
+          "가설을 하나씩 벤치에서 재현해 지운다.{추론}",
+          "고친 뒤 같은 실패가 다시 나는지 다음 배포 숫자로 확인한다.{추론}"
+        ]
+      },
+      "how_far": "2차 면접이 3시간 안팎이라[1] **실제로 풀었던 어려운 문제 하나를 가설 → 확인 → 결론 순서로** 말할 준비를 하는 것이 좋습니다.{추론}",
+      "refs": [1]
+    }
+  ],
+  "fit": {
+    "good": [
+      "'여기서 전원이 끊기면?'을 코드 한 줄마다 따지는 걸 즐기는 시스템 프로그래머.{추론}",
+      "리눅스 위 C++·Rust 로 오래 도는 데몬·통신 프로그램을 만들어 본 사람.[1]",
+      "휴대폰·IoT 업데이트를 만들어 봤고 차로 넓히고 싶은 사람.[16][18]{추론}"
+    ],
+    "hard": [
+      "시험 설계·검증이 주가 되는 일을 원하는 사람 — 그건 같은 회사 System Test Engineer(SW Update) 자리입니다.[6]",
+      "서버·웹 개발만 해 와서 OS·바이트 형식을 다룬 적이 없는 사람.{추론}",
+      "양산 문제 대응(현장에서 온 급한 이슈)이 부담스러운 사람.[1]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "A/B 업데이트에서 새 칸으로 부팅했는데 앱이 계속 죽습니다. 누가, 언제 옛 칸으로 되돌리나요?",
+      "a": "설치·전환 줄 — 성공 표시와 부트로더의 되돌리기.[16][17]"
+    },
+    {
+      "q": "여러 제어기를 한 번에 바꾸는 묶음에서 하나만 실패했습니다. 차를 어떤 상태로 남기겠어요?",
+      "a": "제어기별 테스트 줄과 묶음 설치의 원자성.[14]"
+    },
+    {
+      "q": "업데이트 상태 파일이 전원 차단으로 반쯤 쓰였다면? 어떻게 막겠어요?",
+      "a": "Linux 줄 — fsync·rename 으로 원자적으로 저장하기.[36]"
+    },
+    {
+      "q": "서명은 맞는데 예전 버전인 업데이트가 왔습니다. 받아야 하나요?",
+      "a": "업데이트 시스템 줄 — 롤백 공격 막기.[13]"
+    },
+    {
+      "q": "C++ 구조체를 그대로 소켓에 보내면 무엇이 문제인가요?",
+      "a": "컴파일 언어 런타임 줄 — 정렬·바이트 순서.{추론}"
+    },
+    {
+      "q": "옛 제어기를 UDS 로 다시 쓰는 순서를 말해 보세요. 0x78 응답은 무엇인가요?",
+      "a": "UDS 우대 줄.[19]"
+    }
+  ],
+  "resources": [
+    {"id": "aosp-ab", "title": "A/B (seamless) system updates", "by": "Android Open Source Project", "kind": "doc", "url": "https://source.android.com/docs/core/ota/ab", "lang": "en", "free": true, "level": "실무", "why": "업데이트 시스템·안드로이드 우대 — 쉬는 칸에 쓰기·boot_control·성공 표시·되돌리기를 공식 문서로 봅니다."},
+    {"id": "jetson-ab", "title": "Jetson Linux Developer Guide · Update and Redundancy", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/jetson/archives/r36.4.4/DeveloperGuide/SD/Bootloader/UpdateAndRedundancy.html", "lang": "en", "free": true, "level": "실무", "why": "nVidia 우대 — 엔비디아 칩의 부트로더 A/B 와 업데이트 엔진 동작을 봅니다(자동차용 DRIVE OS 와는 다를 수 있음)."},
+    {"id": "mcuboot-design", "title": "MCUboot · Bootloader design", "by": "MCUboot 프로젝트 문서", "kind": "doc", "url": "https://docs.mcuboot.com/design.html", "lang": "en", "free": true, "level": "실무", "why": "다양한 제어기 줄 — 작은 제어기의 이미지 교체·시험 부팅·되돌리기 방식."},
+    {"id": "uptane-std", "title": "Uptane Standard for Design and Implementation 2.1.0", "by": "Uptane(Joint Development Foundation)", "kind": "doc", "url": "https://uptane.org/docs/2.1.0/standard/uptane-standard", "lang": "en", "free": true, "level": "심화", "why": "업데이트 시스템·인터페이스 줄 — 차 OTA 가 막아야 할 공격과 대표·보조 제어기의 검사 역할."},
+    {"id": "uptane-bp", "title": "Uptane Deployment Best Practices 2.0.0", "by": "Uptane", "kind": "doc", "url": "https://uptane.org/docs/2.0.0/deployment/best-practices", "lang": "en", "free": true, "level": "실무", "why": "양산 대응·제어기별 테스트 — 묶음 설치 실패 처리, 부분 검사 제어기의 약점."},
+    {"id": "ul-r156", "title": "Software Update Management Systems According to UNECE R156", "by": "UL Solutions", "kind": "doc", "url": "https://www.ul.com/sis/insights/software-update-management-systems-according-unece-r156", "lang": "en", "free": true, "level": "입문", "why": "양산 차량 줄 — 업데이트 관리 체계(SUMS)와 소프트웨어 식별 번호(RXSWIN) 요건을 짧게."},
+    {"id": "iso24089", "title": "ISO 24089:2023 Road vehicles — Software update engineering", "by": "ISO", "kind": "doc", "url": "https://www.iso.org/standard/77796.html", "lang": "en", "free": false, "level": "심화", "why": "기술 문서 줄 — 업데이트 공학 표준의 범위를 확인합니다(유료)."},
+    {"id": "protobuf", "title": "Protocol Buffers Documentation", "by": "Google", "kind": "doc", "url": "https://protobuf.dev/", "lang": "en", "free": true, "level": "입문", "why": "데이터 인터페이스 줄 — 메시지 형식을 정의 파일로 적고 C++·여러 언어 코드를 만드는 법."},
+    {"id": "someip-prs", "title": "SOME/IP Protocol Specification (R22-11)", "by": "AUTOSAR", "kind": "doc", "url": "https://www.autosar.org/fileadmin/standards/R22-11/FO/AUTOSAR_PRS_SOMEIPProtocol.pdf", "lang": "en", "free": true, "level": "심화", "why": "통신 프로토콜 줄 — 차 안 이더넷 서비스 통신의 메시지 머리말·직렬화 규칙."},
+    {"id": "inflearn-uds", "title": "자동차 소프트웨어 진단통신", "by": "인프런", "kind": "course", "url": "https://www.inflearn.com/course/자동차-소프트웨어-진단통신", "lang": "ko", "free": false, "level": "입문", "why": "UDS 우대 — 진단 서비스·세션·응답 코드를 한국어로 먼저 익힙니다."},
+    {"id": "uds-wiki", "title": "Unified Diagnostic Services", "by": "Wikipedia", "kind": "doc", "url": "https://en.wikipedia.org/wiki/Unified_Diagnostic_Services", "lang": "en", "free": true, "level": "입문", "why": "UDS 우대 — 서비스 번호·부정 응답 코드 표를 한눈에(표준 원문 ISO 14229-1 은 유료)."},
+    {"id": "udsoncan", "title": "udsoncan 문서", "by": "udsoncan 프로젝트", "kind": "doc", "url": "https://udsoncan.readthedocs.io/", "lang": "en", "free": true, "level": "실무", "why": "UDS 우대 — 파이썬으로 다운로드 서비스 요청·응답을 만들어 순서를 손에 익힙니다."},
+    {"id": "autosar-lsa", "title": "AUTOSAR Layered Software Architecture (R22-11)", "by": "AUTOSAR", "kind": "doc", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf", "lang": "en", "free": true, "level": "실무", "why": "ECU System SW 우대 — 제어기 소프트웨어 층과 부트로더·진단·통신 모듈의 자리."},
+    {"id": "rust-book-ko", "title": "The Rust Programming Language 한국어 번역", "by": "Rust 프로젝트 · 한국 Rust 사용자 그룹(무료 온라인판)", "kind": "book", "url": "https://doc.rust-kr.org/", "lang": "ko", "free": true, "level": "입문", "why": "C++/Rust·정적 타입 줄 — 소유권·빌림·Result·enum 으로 실패를 타입에 담는 법."},
+    {"id": "comprehensive-rust-ko", "title": "Comprehensive Rust 🦀 (한국어)", "by": "Google", "kind": "course", "url": "https://google.github.io/comprehensive-rust/ko/", "lang": "ko", "free": true, "level": "실무", "why": "Rust 줄 — 안드로이드 팀이 만든 강의 자료. 베어메탈·동시성 장까지 있어 차 안 프로그램과 가깝습니다."},
+    {"id": "effective-modern-cpp", "title": "Effective Modern C++", "by": "Scott Meyers · O'Reilly · 2014", "kind": "book", "url": "https://www.oreilly.com/library/view/effective-modern-c/9781491908419/", "lang": "en", "level": "실무", "why": "C++·런타임 줄 — 이동·스마트 포인터·동시성에서 실행 시 무슨 일이 일어나는지."},
+    {"id": "cppreference-ub", "title": "Undefined behavior — cppreference", "by": "cppreference.com", "kind": "doc", "url": "https://en.cppreference.com/w/cpp/language/ub", "lang": "en", "free": true, "level": "실무", "why": "런타임 동작 줄 — 부호 있는 정수 넘침·범위 밖 접근처럼 컴파일러가 무엇이든 할 수 있는 경우."},
+    {"id": "tlpi", "title": "The Linux Programming Interface", "by": "Michael Kerrisk · No Starch Press · 2010", "kind": "book", "url": "https://man7.org/tlpi/", "lang": "en", "level": "심화", "why": "Linux 줄 — 파일 I/O·fsync·프로세스·신호를 시스템 호출 수준에서."},
+    {"id": "pro-git-ko", "title": "Pro Git 2판 (한국어)", "by": "Scott Chacon · Ben Straub(무료 온라인판)", "kind": "book", "url": "https://git-scm.com/book/ko/v2", "lang": "ko", "free": true, "level": "입문", "why": "Git 줄 — 가지·태그·cherry-pick·bisect."},
+    {"id": "gitlab-ci", "title": "GitLab CI/CD", "by": "GitLab Docs", "kind": "doc", "url": "https://docs.gitlab.com/ci/", "lang": "en", "free": true, "level": "실무", "why": "DevOps 우대 — 빌드·시험·묶음 만들기를 파이프라인 단계로 얹는 법."},
+    {"id": "wiki-docker", "title": "개발자를 위한 도커", "by": "우리 사이트의 책", "kind": "internal", "url": "/wiki/docker", "lang": "ko", "free": true, "level": "입문", "why": "DevOps 우대 — 빌드 도구를 컨테이너로 고정하는 법을 실제 명령과 출력으로."},
+    {"id": "wiki-kubernetes", "title": "쿠버네티스 입문", "by": "우리 사이트의 책", "kind": "internal", "url": "/wiki/kubernetes", "lang": "ko", "free": true, "level": "입문", "why": "orchestration 툴 우대 — 시험용 업데이트 서버를 띄우고 Pending·CrashLoopBackOff 를 읽는 법."},
+    {"id": "acorn-auto-sw", "title": "자동차 임베디드 소프트웨어 개발 프로세스와 기술 입문", "by": "에이콘 · 2024", "kind": "book", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000010184723", "lang": "ko", "level": "입문", "why": "유관 직군 우대 — 자동차 제어기 개발·검증 과정과 용어를 한국어로 훑습니다."}
+  ],
+  "study_path": [
+    {
+      "title": "업데이트가 흘러가는 길 익히기",
+      "time": "1~2주",
+      "goal": "서버 → HPVC → 제어기까지 업데이트 단계와 단계별 실패를 설명한다.",
+      "resources": ["aosp-ab", "uptane-bp", "ul-r156", "acorn-auto-sw"],
+      "task": "가상 차(HPVC 1 + 구역 제어기 2 + 옛 제어기 1)의 업데이트 흐름도를 그리고, 단계마다 '여기서 끊기면 차는 어떤 버전으로 남나'를 한 줄씩 적는다."
+    },
+    {
+      "title": "끊겨도 깨지지 않는 업데이트 프로그램",
+      "time": "2~3주",
+      "goal": "받기·검사·설치·전환을 상태 기계로 쓰고, 전원 차단 뒤 이어 간다.",
+      "resources": ["rust-book-ko", "comprehensive-rust-ko", "tlpi"],
+      "task": "Rust 나 C++ 로 '이미지 파일을 조각으로 받아 해시 검사 → 쉬는 칸 파일에 쓰기 → 상태 파일(fsync·rename) 갱신'을 만들고, 단계마다 프로세스를 강제로 죽였다 살려 이어지는지 시험한다."
+    },
+    {
+      "title": "메시지 형식 정하고 구현하기",
+      "time": "1~2주",
+      "goal": "업데이트 진행·결과 메시지를 문서와 코드로 정의하고, 깨진 메시지에 견딘다.",
+      "resources": ["protobuf", "someip-prs", "uptane-std"],
+      "task": "진행·완료·실패 메시지를 Protocol Buffers 로 정의하고, 같은 내용을 바이트 고정 형식으로도 만들어 크기를 비교한다. 무작위로 바이트를 바꾼 메시지 1,000개를 넣어 파서가 죽지 않는지 본다."
+    },
+    {
+      "title": "두 칸 교체와 옛 제어기 다시 쓰기",
+      "time": "2주",
+      "goal": "A/B 전환·되돌리기와 UDS 재프로그래밍 순서를 직접 돌려 본다.",
+      "resources": ["mcuboot-design", "jetson-ab", "inflearn-uds", "udsoncan"],
+      "task": "가상 부트로더(파이썬)로 '시험 부팅 3번 실패 → 옛 칸 복귀'를 만들고, udsoncan 으로 세션 전환 → 다운로드 요청 → 데이터 전송 → 전송 끝 순서의 가짜 제어기 대화를 만든다."
+    },
+    {
+      "title": "파이프라인에 얹기",
+      "time": "1주",
+      "goal": "커밋마다 빌드·시험·서명된 묶음이 만들어진다.",
+      "resources": ["gitlab-ci", "wiki-docker", "pro-git-ko"],
+      "task": "2~4단계 결과물을 컨테이너 빌드 + CI 로 묶고, 태그를 달면 버전 번호가 박힌 업데이트 묶음과 해시 목록이 결과물로 남게 한다."
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉이 없다. 원티드 기업 정보의 평균연봉 표기는 **6,032만원** — 공시가 아니라 집계값이고, 경력직이 섞인 회사 전체 값이다",
+    "rows": [
+      {
+        "label": "직원 평균 연봉(집계)",
+        "value": "6,032만원",
+        "amount": 6032,
+        "basis": "공공데이터 집계 · 원티드 기업 정보(2026-11 확인)",
+        "note": "같은 화면의 국민연금 가입 사원 수 804명. 원티드가 이 값을 어떤 자료로 계산했는지는 화면에서 확인하지 못했다 [27]"
+      }
+    ],
+    "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 공시가 없다{추론}. 공고에 연봉·경력 연차는 없고 전형 끝에 처우 협의 단계가 있다 [1]. 같은 업무 문장의 원티드 공고(마감)는 경력 5~11년으로 적혀 있었다 [5]. 평균은 연차·직군이 섞인 회사 전체 값이라 제안 금액으로 읽으면 안 된다{추론}."
+  },
+  "benefits": {
+    "items": [
+      { "name": "리커버리 휴가", "detail": "법정 연차와 별도로 매월 1회 유급" },
+      { "name": "유연근무제", "detail": "재량근무·선택적근무 운영" },
+      { "name": "식사", "detail": "Kitchen 42 — 셰프가 만든 식사 하루 세 끼 무료, Cafe 42 음료" },
+      { "name": "복지 포인트", "detail": "여가·건강 등에 자유 사용, 연간 최대 300만원. 설·추석에 복지 포인트 추가" },
+      { "name": "건강", "detail": "프리미엄 건강검진 전액 지원, 단체상해보험(본인·배우자·자녀·본인 부모), 상주 간호사·심리·재무·법률 상담(EAP)" },
+      { "name": "운동", "detail": "Fitness 42 — 사내 피트니스, 1:1 PT·GX" },
+      { "name": "전기차", "detail": "구매 시 차량 가격 최대 15%(한도 1,000만원) 지원, 전기차 대여 프로그램" },
+      { "name": "무이자 사내 대출", "detail": "근속 연수에 따라 1,000만~5,000만원, 이자 0%" },
+      { "name": "교육", "detail": "국내외 교육·세미나·학회 참가비 지원" },
+      { "name": "직장 어린이집", "detail": "임직원 자녀 대상, 특별활동 운영" },
+      { "name": "그 밖에", "detail": "최신 업무 기기, 장기근속 포상(휴가·포상금), 휴양시설 매월 추첨, 경조사 지원, 인재 추천 보상, 자발적 팀 워크숍 비용" }
+    ],
+    "note": "포티투닷 채용 사이트 '업무 몰입 프로그램' 페이지 기준(게시일 표시 없음, 같은 회사 다른 풀이에서 2026-11-25 확인). 한국 본사 기준이고 해외 법인은 현지 정책을 따른다고 적혀 있다 [2]"
+  },
+  "location": {
+    "name": "포티투닷 판교 사옥(소프트웨어드림센터)",
+    "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+    "map_url": "https://map.naver.com/p/search/경기도 성남시 수정구 창업로40번길 20",
+    "note": "주소는 포티투닷 홈페이지 하단 회사 정보 [3]와 같은 업무의 원티드 공고 근무지 [5]. 이 공고 근무지는 'Pangyo (Software Dream Center)'이고 '(Remote)' 표기가 붙어 있지만, 출근 비중은 처우 협의 때 확인한다 [1]{추론}. 같은 주소가 소프트웨어드림센터 소재지로 공고된 바 있다 [28]"
+  },
+  "sources": [
+    { "n": 1, "title": "포티투닷 채용 · Software Update Engineer(Software Update Application)", "url": "https://jobs.ashbyhq.com/42dot/17f5f7af-b165-491b-adcc-0bc64e5cb767", "kind": "posting", "note": "이 공고. 팀 소개(업데이트 묶음 전달·검증·설치·상태 관리)·업무 5·자격 6·우대 6·전형(서류 → 1차 화상 1시간 → 2차 3시간 → 처우 협의). 경력 연차 표기 없음. 수집 2026-11-24" },
+    { "n": 2, "title": "포티투닷 · 업무 몰입 프로그램(복리후생)", "url": "https://42dot.ai/ko/careers/employee-engagement-program", "kind": "company" },
+    { "n": 3, "title": "포티투닷 홈페이지(하단 회사 정보)", "url": "https://42dot.ai/ko", "kind": "company" },
+    { "n": 4, "title": "포티투닷 블로그 · 42dot at CES 2024: Software-Defined Vehicle Technology", "url": "https://42dot.ai/ko/stories/blog-news/ces-2024-software-defined-vehicle", "kind": "company", "date": "2024-03-28", "note": "HPVC 의 셀룰러·와이파이로 OTA 수신, 구역 제어기, Rust SDV OS, 2주 스프린트, CI/CD" },
+    { "n": 5, "title": "원티드 · 포티투닷 Software Update Engineer(Software Update)", "url": "https://www.wanted.co.kr/wd/376320", "kind": "posting", "note": "같은 팀 소개·업무·자격 문장의 마감된 공고. 경력 5~11년, 근무지 창업로40번길 20 A동, 우대 항목 없음" },
+    { "n": 6, "title": "포티투닷 채용 · System Test Engineer (SW Update)", "url": "https://jobs.ashbyhq.com/42dot/403e89b4-fdf4-4168-a115-163706830174", "kind": "posting", "note": "같은 회사 OTA 통합 검증 공고(기능·성능·복구·보안)" },
+    { "n": 7, "title": "포티투닷 채용 · Sr. Staff Firmware Engineer (Secure Boot & OTA implementation)", "url": "https://jobs.ashbyhq.com/42dot/63196d96-2810-4348-8aa5-077d8c0ee710", "kind": "posting", "note": "같은 회사 제어기 펌웨어 쪽 보안 부팅·OTA 공고(서니베일)" },
+    { "n": 8, "title": "포티투닷 채용 · Senior Release Engineer", "url": "https://jobs.ashbyhq.com/42dot/95951bc5-2ccd-4b5a-8134-02ec957aae9c", "kind": "posting", "note": "Pleos 릴리스 수명 주기(OTA 업데이트 파이프라인 포함), 버전 관리 체계, Git·Jenkins·GitLab CI·ArgoCD, 컨테이너 빌드, GitOps" },
+    { "n": 9, "title": "이코노미스트 · 현대차 '플레오스' 세미나(한국자동차전문기자협회)", "url": "https://economist.co.kr/article/view/ecn202607220036", "kind": "news", "date": "2026-07-23", "note": "7월 21일 세미나, 포티투닷 팀장 등 발표. 중앙 제어기가 인포테인먼트·차체·섀시 업데이트 통제, 인포테인먼트와 계기판은 다른 OS, 안드로이드 오토모티브 OS 기반 앱 생태계" },
+    { "n": 10, "title": "CEO스코어데일리 · 현대차, '플레오스 커넥트' 무선 소프트웨어 업데이트 실시", "url": "https://m.ceoscoredaily.com/page/view/2026103008512611084", "kind": "news", "date": "2026-10-30", "note": "더 뉴 그랜저부터 순차, 아반떼·투싼은 적용된 채 출고. 설치 시간·조건은 기사에 없음" },
+    { "n": 11, "title": "Kia UK · OTA Controller Updates", "url": "https://www.kia.com/uk/owners/ota-controller-updates/", "kind": "reference", "note": "같은 그룹 기아의 제어기 OTA 안내. 시동 끔·P 단·주차 브레이크·충분한 배터리, 설치 중 운전 불가(같은 회사 다른 풀이에서 확인)" },
+    { "n": 12, "title": "UL Solutions · Software Update Management Systems According to UNECE R156", "url": "https://www.ul.com/sis/insights/software-update-management-systems-according-unece-r156", "kind": "reference", "note": "규정 원문이 아니라 인증 기관 정리" },
+    { "n": 13, "title": "Uptane Standard for Design and Implementation 2.1.0", "url": "https://uptane.org/docs/2.1.0/standard/uptane-standard", "kind": "reference" },
+    { "n": 14, "title": "Uptane Deployment Best Practices 2.0.0", "url": "https://uptane.org/docs/2.0.0/deployment/best-practices", "kind": "reference", "note": "전체·부분 검증 제어기, 묶음 설치의 원자성" },
+    { "n": 15, "title": "ISO · ISO 24089:2023 Road vehicles — Software update engineering", "url": "https://www.iso.org/standard/77796.html", "kind": "reference" },
+    { "n": 16, "title": "Android Open Source Project · A/B (seamless) system updates", "url": "https://source.android.com/docs/core/ota/ab", "kind": "reference", "note": "update_engine·boot_control·update_verifier·markBootSuccessful, 성공 표시 없이 거듭 부팅 실패 시 옛 칸 복귀, Android 8.0 스트리밍 업데이트, Android 10 에서 가상 A/B 로" },
+    { "n": 17, "title": "NVIDIA · Jetson Linux Developer Guide · Update and Redundancy (r36.4.4)", "url": "https://docs.nvidia.com/jetson/archives/r36.4.4/DeveloperGuide/SD/Bootloader/UpdateAndRedundancy.html", "kind": "reference", "note": "nv_update_engine 이 칸 정보로 부팅 칸 지정, A_/B_ 부트로더 파티션. 젯슨 기준 — 자동차용 DRIVE OS OTA 문서는 본문을 읽지 못했다(검색 요약 기준)" },
+    { "n": 18, "title": "MCUboot · Bootloader design", "url": "https://docs.mcuboot.com/design.html", "kind": "reference" },
+    { "n": 19, "title": "Wikipedia · Unified Diagnostic Services", "url": "https://en.wikipedia.org/wiki/Unified_Diagnostic_Services", "kind": "reference", "note": "서비스 번호(0x10·0x11·0x27·0x31·0x34·0x36·0x37)·부정 응답 0x78" },
+    { "n": 20, "title": "ISO · ISO 14229-1 Unified diagnostic services — Application layer", "url": "https://www.iso.org/standard/72439.html", "kind": "reference" },
+    { "n": 21, "title": "AUTOSAR · Layered Software Architecture (R22-11)", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf", "kind": "reference" },
+    { "n": 22, "title": "udsoncan 문서", "url": "https://udsoncan.readthedocs.io/", "kind": "reference" },
+    { "n": 23, "title": "The Rust Programming Language 한국어 번역", "url": "https://doc.rust-kr.org/", "kind": "reference", "note": "소유권·빌림 검사·Result·enum·match" },
+    { "n": 24, "title": "Protocol Buffers Documentation", "url": "https://protobuf.dev/", "kind": "reference" },
+    { "n": 25, "title": "AUTOSAR · SOME/IP Protocol Specification (R22-11)", "url": "https://www.autosar.org/fileadmin/standards/R22-11/FO/AUTOSAR_PRS_SOMEIPProtocol.pdf", "kind": "reference" },
+    { "n": 26, "title": "Pro Git 2판 (한국어)", "url": "https://git-scm.com/book/ko/v2", "kind": "reference" },
+    { "n": 27, "title": "원티드 · 포티투닷(42dot) 기업 정보", "url": "https://www.wanted.co.kr/company/8794", "kind": "reference", "note": "평균연봉 6,032만원 · 국민연금 가입 사원 804명 표기(같은 회사 다른 풀이에서 2026-11-25 확인)" },
+    { "n": 28, "title": "벤처스퀘어 · 판교 제2테크노밸리 소프트웨어드림센터 스타트업 입주기업 모집 공고", "url": "https://www.venturesquare.net/announcement/955032", "kind": "reference", "note": "소재지 창업로40번길 20 소프트웨어드림센터" },
+    { "n": 29, "title": "뉴데일리 · 송창현 \"기존 제조사들의 하드웨어 중심 개발로는 해답 못 찾아\"(HMG 개발자 컨퍼런스 키노트)", "url": "https://biz.newdaily.co.kr/site/data/html/2023/11/13/2023111300204.amp.html", "kind": "news", "date": "2023-11-13", "note": "하드웨어·소프트웨어 분리 → 동시 개발" },
+    { "n": 30, "title": "Hyundai Motor Group · Future Roadmap for Software Defined Vehicles(Unlock the Software Age)", "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/hyundai-motor-group-announces-future-roadmap-for-software-defined-vehicles-at-unlock-the-software-age-global-forum-0000000125", "kind": "company", "date": "2022-10", "note": "2025년까지 모든 차종 OTA 계획(2022년 시점 계획)" },
+    { "n": 31, "title": "Kubernetes 문서(한국어)", "url": "https://kubernetes.io/ko/docs/home/", "kind": "reference" },
+    { "n": 32, "title": "GitLab CI/CD", "url": "https://docs.gitlab.com/ci/", "kind": "reference" },
+    { "n": 33, "title": "스마트투데이 · 포티투닷, 차량 사이버보안 국제 인증 획득", "url": "https://www.smarttoday.co.kr/ko-kr/articles/33883", "kind": "news", "date": "2023-08-22", "note": "UL솔루션즈 ISO 21434 사이버보안 관리체계 인증" },
+    { "n": 34, "title": "바이라인네트워크 · 포티투닷 차량 기능안전 개발 프로세스, 국제 표준 인증 획득", "url": "https://byline.network/2023/09/25-289/", "kind": "news", "date": "2023-09-25" },
+    { "n": 35, "title": "cppreference · Undefined behavior", "url": "https://en.cppreference.com/w/cpp/language/ub", "kind": "reference", "note": "부호 있는 정수 넘침 등" },
+    { "n": 36, "title": "Michael Kerrisk · The Linux Programming Interface", "url": "https://man7.org/tlpi/", "kind": "reference", "note": "파일 I/O 버퍼링·fsync, rename 의 원자성" },
+    { "n": 37, "title": "Colin Percival · Binary diff/patch utility (bsdiff)", "url": "https://www.daemonology.net/bsdiff/", "kind": "reference" }
+  ],
+  "caveat": "포티투닷이 OTA 업데이트 프로그램을 직접 다룬 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고·같은 문장의 마감 공고·같은 회사 OTA 관련 공고 셋·CES 2024 블로그와, 2026-07 플레오스 세미나·2026-10 플레오스 커넥트 OTA 보도입니다. 받기·검사·A/B 교체·되돌리기·UDS 재프로그래밍은 안드로이드·엔비디아 젯슨·MCUboot·Uptane 같은 공개 문서로 '보통 이런 것'을 보였습니다. 엔비디아 자동차용 DRIVE OS 의 OTA 문서는 본문을 읽지 못했습니다. 팀 규모·업데이트 프로그램의 실제 구성·쓰는 통신 형식은 공개되지 않았습니다. 2026-11-25 기준."
+}
