@@ -348,6 +348,7 @@
   "jobkorea-50361059": "nextsecurities-backend-data",
   "jobkorea-50361209": "nextsecurities-channel-backend",
   "saramin-55282490": "nextsecurities-channel-backend",
+  "wanted-378758": "nextsecurities-cloud-architect",
   "wanted-388908": "nextsecurities-data-analytics-engineer",
   "jobkorea-50357268": "nextsecurities-data-platform-engineer",
   "wanted-388957": "nextsecurities-data-platform-engineer",
@@ -3526,6 +3527,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 47
+  },
+  {
+   "id": "nextsecurities-cloud-architect",
+   "company": "넥스트증권",
+   "role": "Cloud Architect",
+   "jobs": [
+    "wanted-378758"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 20
   },
   {
    "id": "nextsecurities-data-analytics-engineer",

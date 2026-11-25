@@ -1,0 +1,1186 @@
+{
+ "id": "nextsecurities-cloud-architect",
+ "company": "넥스트증권",
+ "role": "Cloud Architect",
+ "jobs": [
+  "wanted-378758"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "증권 서비스가 올라갈 **AWS 바닥 전체** — 계정 나누기·네트워크·암호 키·로그 같은 구조를 설계하고, 자원 표준과 운영 자동화를 만들고, 클라우드 비용을 팀별로 보이고 줄이는 자리입니다.[1]",
+  "env": "레거시 없이 AWS **멀티 계정** 위에 새 투자 플랫폼을 짓는 중이고[1][8], MTS 출시는 2027년 1분기로 잡혀 있습니다.[9] 증권사라 **전자금융감독규정**(국내 설치·망분리·로그 보존·클라우드 이용 절차)이 구성을 정합니다.[12]",
+  "oneline": "앱을 만드는 자리가 아니라 **다른 팀이 그 위에서 안전하게 만들게 하는 틀**을 만드는 자리. 설계·운영·비용을 한 사람이 다 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "1/ 클라우드 ​인프라 설계 ​및 아키텍처",
+   "short": "서비스가 요구하는 튼튼함·보안을 AWS 구성도로 바꾸는 일 — 아래 세 줄이 그 내용이다.",
+   "why": "공고는 이 자리를 서비스 요구사항과 **금융 규제**를 클라우드 구조로 옮기고, 회사의 클라우드 표준을 세우는 역할로 소개합니다.[1] 회사는 레거시(오래된 기존 시스템) 없이 새 투자 플랫폼을 짓는 중이라[8] 처음 정한 구조가 그대로 표준이 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "**비기능 요구사항 → 구성** — 얼마나 안 멈춰야 하나·얼마나 늘어나야 하나를 숫자로 받아 구성(이중화·자동 확장)으로 바꾼다.[1][21]",
+     "**민감 정보 칸 나누기** — 개인정보·신용정보가 든 시스템은 저장소·암호 키·네트워크를 따로 둔다.[1][12]",
+     "**결정 남기기** — 리뷰를 거친 설계를 ADR(아키텍처 결정 기록)로 남겨 다음 팀이 그대로 쓰게 한다.[1][22]"
+    ]
+   },
+   "how_far": "세 줄 모두 '그리는 것'으로 끝나지 않고 **다른 팀이 따라 쓰는 표준**이 되는 데까지가 일입니다.[1] {추론}",
+   "refs": [
+    1,
+    8,
+    12,
+    21,
+    22
+   ],
+   "study": [
+    "sa101",
+    "wa-rel"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "증권 서비스의 안정성·확장성·보안성 등 비기능 요구사항을 식별하고, 이를 충족하는 견고한 클라우드 아키텍처를 설계합니다.",
+   "short": "'몇 분까지 멈춰도 되나·몇 배까지 몰리나'를 숫자로 받아, 그 숫자를 지키는 AWS 구성을 정한다.",
+   "why": "비기능 요구사항은 '무엇을 하나'가 아니라 '얼마나 잘 하나'(가용성·확장성·보안)입니다.[21] 증권 앱은 장이 열린 시간에 멈추면 주문을 못 내 손해가 바로 생기고, 넥스트증권은 MTS(모바일 주식 거래 앱) 출시를 2027년 1분기로 잡고 짓는 중입니다.[9] {추론}",
+   "actually": {
+    "intro": "AWS 신뢰성 문서의 계산법입니다. 넥스트증권의 목표 숫자는 공개되지 않았습니다.[21]",
+    "items": [
+     "**목표를 시간으로** — 99.9%는 1년에 8시간 45분, 99.99%는 52분까지 멈춤을 허용한다.[21]",
+     "**꼭 거쳐야 하는 부품은 곱한다** — 99.99% 시스템이 99.99% 부품 둘에 꼭 기대면 이론상 99.97%로 떨어진다.[21]",
+     "**겹쳐 두면 올라간다** — 서로 독립인 99.9% 둘을 나란히 두면 이론상 99.9999%.[21] AWS에선 보통 가용 영역(AZ, 같은 지역 안 떨어진 데이터센터) 둘 이상에 나눠 둔다. {추론}",
+     "**확장성** — 장 시작·급등 때 몰리는 양을 정하고 자동 확장·대기열로 받는다. {추론}",
+     "**비용과 맞바꾸기** — 가용성을 높일수록 비용이 크게 늘어서[21] 모든 시스템을 같은 등급으로 두지 않는다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "부품을 이어 붙이면 가용성이 떨어지고, 겹치면 올라간다 (직접 돌린 출력)",
+     "body": "AWS 문서의 곱셈 규칙[21]을 그대로 코드로 옮겼습니다. 숫자는 가상입니다.",
+     "lang": "python",
+     "code": "def serial(*a):      # 꼭 거쳐야 하는 부품 — 곱한다\n    p = 1.0\n    for x in a:\n        p *= x\n    return p\n\ndef parallel(*a):    # 서로 독립인 복제 — 실패 확률을 곱한다\n    q = 1.0\n    for x in a:\n        q *= 1 - x\n    return 1 - q\n\nMIN = 365 * 24 * 60\nfor name, av in [(\"API 하나\", 0.9995),\n                 (\"API→DB→MQ 직렬\", serial(0.9995, 0.9995, 0.999)),\n                 (\"AZ 두 곳 이중화\", parallel(0.9995, 0.9995))]:\n    print(f\"{name}: {av*100:.5f}% / 1년 {MIN*(1-av):,.1f}분 멈춤\")\n\n# API 하나: 99.95000% / 1년 262.8분 멈춤\n# API→DB→MQ 직렬: 99.80012% / 1년 1,050.5분 멈춤\n# AZ 두 곳 이중화: 99.99997% / 1년 0.1분 멈춤\n"
+    }
+   ],
+   "how_far": "목표 숫자(얼마나 멈춰도 되나)는 서비스 쪽과 경영진이 정합니다. 이 자리는 **그 숫자를 구성으로 바꾸고, 구성이 정말 그 숫자를 내는지 계산으로 보여 주는** 데까지 맡습니다. {추론}",
+   "refs": [
+    9,
+    21
+   ],
+   "study": [
+    "wa-rel",
+    "sa101"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "개인정보·신용정보가 포함된 시스템은 정보보호 정책을 반영하여 저장소 분리, KMS 키 분리, 네트워크 경계, 접근통제 및 감사로그 체계를 설계합니다.",
+   "short": "고객 정보가 든 시스템은 저장소·암호 키·네트워크를 따로 떼고, 누가 언제 열었는지 남게 짠다.",
+   "why": "전자금융감독규정은 사용자 인증수단을 사람마다 주고 접근권한은 최소로 주게 하며, 시스템 접속 기록을 성공·실패와 상관없이 자동으로 남겨 **1년 이상** 보존하게 합니다.[12] 클라우드에서 고유식별정보·개인신용정보를 처리하면 그 시스템은 **국내에** 두어야 합니다.[12] 공고가 '정보보호 정책을 반영하여'라고 쓴 이유입니다.[1] 회사는 2025년 정보보호본부를 따로 만들었습니다.[10]",
+   "actually": {
+    "items": [
+     "**저장소 분리** — 고객 정보가 든 DB·버킷을 다른 데이터와 섞지 않고, 가능하면 다른 AWS 계정에 둔다. 계정은 AWS 권한·결제의 경계다.[17] {추론}",
+     "**KMS 키 분리** — KMS(AWS의 암호 키 관리 서비스)는 키마다 키 정책을 붙이고, 정책이 허용하지 않은 사람은 계정 관리자라도 키를 못 쓴다.[20] 그래서 민감 데이터용 키를 따로 만들면 '누가 풀 수 있나'를 데이터 종류별로 따로 정할 수 있다. {추론}",
+     "**네트워크 경계** — 민감 시스템을 인터넷에서 바로 닿지 않는 구역에 두고, 들어오는 길을 정해 둔다. 감독규정은 내부 업무 시스템과 외부 통신망의 분리를 요구한다(망분리).[12]",
+     "**접근통제** — 사람 계정 대신 역할을 빌려 쓰게 하고, 운영체제 로그인은 이중 인증, 계정 권한·작업 내역은 상시 감시한다.[12]",
+     "**감사로그** — 접속 기록 1년 이상[12], 전산원장을 직접 고친 기록은 5년[12]. 로그를 지울 수 없는 별도 계정에 모은다. {추론}"
+    ]
+   },
+   "how_far": "무엇이 민감 정보이고 얼마나 보관할지는 정보보호 조직과 규정이 정합니다.[10][12] 이 자리는 **그 정책을 계정·키·네트워크·로그 구성으로 옮기고, 새 시스템이 그 틀 밖으로 나가지 못하게** 표준을 세웁니다. {추론}",
+   "refs": [
+    1,
+    10,
+    12,
+    17,
+    20
+   ],
+   "study": [
+    "efsr",
+    "kms-docs",
+    "aws-ma"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "아키텍처 리뷰를 수행하고 ADR을 작성하여 검증된 설계 패턴을 표준화합니다.",
+   "short": "설계를 여럿이 검토하고, 왜 그렇게 정했는지 한두 쪽으로 남겨 다음 팀이 같은 길을 쓰게 한다.",
+   "why": "ADR(Architecture Decision Record)은 2011년 마이클 나이가드가 제안한 짧은 결정 기록입니다 — 제목·상태·맥락·결정·결과로 쓰고, 바뀐 결정도 지우지 않고 '대체됨'으로 남깁니다.[22] 넥스트증권의 다른 개발 공고도 ADR 리뷰를 일하는 방식으로 적었습니다.[6][7] 팀이 2년 만에 두 배로 늘어[9] 같은 질문이 반복되기 쉬운 회사입니다. {추론}",
+   "actually": {
+    "items": [
+     "**아키텍처 리뷰** — 새 서비스 설계를 출시 전에 보고, 가용성·보안·비용 기준에 맞는지 확인한다. {추론}",
+     "**ADR 한 장** — 맥락(무엇이 부딪히나)은 사실로, 결정은 '우리는 ~한다'는 능동 문장으로, 결과는 좋은 것·나쁜 것을 다.[22]",
+     "**번호 붙여 쌓기** — 번호는 다시 쓰지 않고, 바뀐 결정은 새 ADR로 대체 표시한다.[22]",
+     "**패턴으로 굳히기** — 여러 번 통과한 구성(예: 'DB는 다중 AZ + 전용 키')을 표준 모듈로 만든다(아래 IaC 줄). {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "ADR 한 장의 뼈대 (나이가드 형식[22], 내용은 가상)",
+     "body": "**ADR-007 고객 정보 DB 의 암호 키를 서비스마다 따로 둔다** · 상태: 승인 · 맥락: 키 하나를 여러 서비스가 쓰면 한 서비스 권한으로 다른 서비스 데이터도 풀 수 있다. 키가 늘면 관리할 정책도 는다. · 결정: 우리는 개인신용정보를 담는 DB마다 고객 관리형 KMS 키를 따로 만든다. · 결과: 권한 범위가 좁아진다(+), 키 정책 관리 수가 는다(−), 키 이름·태그 규칙이 필요하다(=)."
+    }
+   ],
+   "how_far": "결정 자체는 서비스 팀과 같이 내리고, 이 자리는 **리뷰의 기준표와 ADR 틀을 만들고, 반복되는 결정을 표준으로 끌어올리는** 쪽입니다. {추론}",
+   "refs": [
+    6,
+    7,
+    9,
+    22
+   ],
+   "study": [
+    "nygard-adr",
+    "sa101"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "2/ 클라우드 리소스 표준화 및 운영 자동화",
+   "short": "서버·DB·저장소를 팀마다 제멋대로 만들지 않게 틀을 정하고, 손으로 하던 운영을 코드로 바꾸는 일.",
+   "why": "AWS 계정이 늘어나는 멀티 계정 환경에서는 같은 자원을 팀마다 다르게 만들면 보안 점검·비용 집계가 다 어긋납니다.[17] 넥스트증권의 데이터 플랫폼 쪽도 인프라를 Terraform·CI/CD로 전부 코드로 관리합니다.[3][4] {추론}",
+   "actually": {
+    "items": [
+     "**표준 정의** — 자원 종류마다 '허용 사양·필수 설정·이름·태그'를 정한다.[5] {추론}",
+     "**자동화** — 계정 만들기·권한 부여·패치·백업 점검처럼 반복하는 일을 스크립트·파이프라인으로. {추론}",
+     "**기록** — 무엇이 어디에 있고 누가 바꿨는지(자산·감사 증적)를 늘 볼 수 있게. {추론}"
+    ]
+   },
+   "how_far": "세 줄의 공통점은 **사람이 기억하지 않아도 같은 결과가 나오게** 하는 것입니다. {추론}",
+   "refs": [
+    3,
+    4,
+    5,
+    17
+   ],
+   "study": [
+    "terraform-book",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "컴퓨팅, 스토리지, 데이터베이스, 메시징 등 클라우드 리소스의 표준을 정의하고 수명주기를 관리합니다.",
+   "short": "EC2·S3·RDS·메시지 큐마다 쓸 사양·설정·이름 규칙을 정하고, 만들 때부터 지울 때까지 관리한다.",
+   "why": "같은 회사 다른 공고를 보면 이 회사는 EKS(AWS의 쿠버네티스)·Kafka·Redis·PostgreSQL·Oracle 위에서 서비스를 짓습니다.[5] 자원 종류가 많고 팀도 여럿이라, 정해 둔 틀이 없으면 같은 DB도 팀마다 백업·암호화 설정이 달라집니다. {추론}",
+   "actually": {
+    "items": [
+     "**컴퓨팅** — 컨테이너는 EKS 클러스터 표준(버전·노드 종류·업그레이드 주기), 가상 서버는 허용 사양 목록. {추론}",
+     "**스토리지** — 버킷 기본 암호화·공개 차단·보존 기간(로그는 감독규정 기준 1년 이상[12]).",
+     "**데이터베이스** — 다중 AZ 여부·백업 보존·전용 키를 등급별로. {추론}",
+     "**메시징** — Kafka 주제(토픽) 이름·보존·권한 규칙. 다른 공고에 'Kafka 사용 표준'이 있다.[5]",
+     "**수명주기** — 만들기(요청·승인) → 바꾸기(변경 기록) → 버리기(데이터 지우기·키 폐기 예약). 주인 태그가 없는 자원은 정리 대상. {추론}",
+     "**막는 장치** — SCP(조직 정책)로 허용 리전·금지 작업을 걸면 계정 관리자도 못 넘는다. 단 SCP는 권한을 주지 않고 상한만 정하며, 관리 계정에는 걸리지 않는다.[19]"
+    ]
+   },
+   "how_far": "표준을 만드는 것보다 **표준대로 만들기가 가장 쉬운 길이 되게** 하는 것이 핵심입니다 — Terraform 모듈 하나로 표준 DB가 나오게 하면 사람들이 따라옵니다. {추론}",
+   "refs": [
+    5,
+    12,
+    19
+   ],
+   "study": [
+    "aws-ma",
+    "terraform-book",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "반복되는 운영 업무를 자동화하고 안정적인 운영 체계를 구축합니다.",
+   "short": "사람이 매번 손으로 하던 운영 일을 스크립트·파이프라인으로 옮겨, 실수와 야간 호출을 줄인다.",
+   "why": "구글 SRE 책은 손으로 반복하는 운영 일(toil)을 줄이는 것을 운영 조직의 목표로 둡니다.[36] 넥스트증권의 데이터 백엔드 공고도 온콜·SLA·Terraform을 함께 적었습니다.[4] 금융회사는 배치·변경을 기록과 승인 아래 해야 해서, 자동화하면 기록도 저절로 남습니다.[12] {추론}",
+   "actually": {
+    "items": [
+     "**계정 찍어 내기** — 새 팀 계정을 요청하면 기본 네트워크·로그·권한·태그가 깔린 채로 나온다(Control Tower의 계정 공장이 이 일을 한다).[18]",
+     "**점검 자동화** — 공개된 버킷·암호화 안 된 볼륨·주인 없는 자원을 매일 찾아 알린다. {추론}",
+     "**정기 작업** — 패치·인증서 갱신·백업 복구 시험을 일정대로. {추론}",
+     "**알림 → 조치** — 자주 나는 알림은 런북(대응 절차)대로 자동 조치하고 사람에게는 결과만. {추론}"
+    ]
+   },
+   "how_far": "모든 것을 자동화하지 않습니다. **자주 하고, 틀리면 아프고, 절차가 정해진 일**부터 고릅니다. {추론}",
+   "refs": [
+    4,
+    12,
+    18,
+    36
+   ],
+   "study": [
+    "sre-book",
+    "ct-guide"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드 자산 및 감사 증적을 관리하고, 운영 표준과 런북을 지속적으로 개선합니다.",
+   "short": "무엇이 어디 있고 누가 언제 바꿨는지의 기록을 지키고, 장애 때 따라 할 절차서를 계속 고친다.",
+   "why": "감독규정은 시스템 가동·접속 기록을 1년 이상, 백업 자료를 1년 이상 기록·관리하게 합니다.[12] 금감원 검사나 ISMS-P(정보보호·개인정보보호 관리체계 인증) 심사는 '했다'가 아니라 '했다는 증거'를 봅니다.[16] {추론} 같은 회사 IT기획 공고는 운영 이관 체크리스트를 따로 맡기는데[2], 런북은 이 자리 몫입니다.[1]",
+   "actually": {
+    "items": [
+     "**자산 목록** — 계정·자원·주인·등급을 한 표로. 태그가 곧 자산 대장의 칸이 된다. {추론}",
+     "**감사 증적** — 누가 무엇을 바꿨는지(API 호출 기록), 설정이 언제 어긋났는지를 지울 수 없는 로그 계정에 모은다. AWS는 보안 OU(계정 묶음)에 보안·로그 계정을 두라고 권한다.[17]",
+     "**런북** — 증상 → 확인할 것 → 조치 → 되돌리기 → 연락할 사람 순으로. 장애 뒤 돌아보기에서 고칠 점을 런북에 되먹인다.[36] {추론}",
+     "**운영 표준** — 변경 시간대·승인·배포 방식 같은 규칙을 문서로 두고 실제와 맞는지 주기적으로 본다. {추론}"
+    ]
+   },
+   "how_far": "증적의 보관 기간·범위는 규정·정보보호 조직이 정하고[12], 이 자리는 **자동으로 쌓이고 사람이 지울 수 없는 구조**를 만듭니다. {추론}",
+   "refs": [
+    1,
+    2,
+    12,
+    16,
+    17,
+    36
+   ],
+   "study": [
+    "efsr",
+    "isms-p",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "3/ 클라우드 비용 거버넌스",
+   "short": "AWS 청구서를 팀·서비스별로 쪼개 보이고, 약정 할인으로 깎고, 튀는 지출을 잡는 일 — FinOps.",
+   "why": "FinOps는 클라우드 비용을 재무·개발·구매가 같이 관리하는 방식으로, 보기(Inform) → 줄이기(Optimize) → 실행(Operate)을 반복합니다.[27] 같은 회사 IT기획 공고는 IT 예산과 TCO(총소유비용)를 맡고[2], 그 숫자 중 클라우드 몫을 이 자리가 만듭니다. {추론}",
+   "actually": {
+    "items": [
+     "**보기** — 비용을 계정·팀·서비스로 나눠 보여 준다(아래 Showback 줄).[27]",
+     "**줄이기** — 사용량 줄이기(안 쓰는 자원 끄기·크기 맞추기)와 요금 줄이기(약정 할인) 두 갈래.[27]",
+     "**실행** — 정한 일을 각 팀이 실제로 하게 하고 다시 보기로 돌아간다.[27]"
+    ]
+   },
+   "how_far": "비용을 줄이는 결정은 각 서비스 팀이 하고, 이 자리는 **숫자를 보이게 하고 할인 약정처럼 회사 전체에서 한 번에 하는 일**을 맡습니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    27
+   ],
+   "study": [
+    "finops-framework",
+    "cloud-finops"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전사 클라우드 비용을 계정·팀·서비스 단위로 집계·배분하고, 팀별 Showback 체계를 운영합니다.",
+   "short": "월 AWS 청구서를 계정·팀·서비스별로 나눠, 각 팀이 '우리가 얼마 썼나'를 보게 한다.",
+   "why": "Showback은 비용을 책임 단위별로 **보여 주기만** 하는 보고이고, 실제 장부의 예산에서 떼는 것은 Chargeback입니다.[28] FinOps 재단은 Showback을 모든 FinOps에 필요한 기본으로 봅니다.[28] 멀티 계정이면 계정이 이미 큰 칸이라 집계의 첫 단위가 됩니다.[17] {추론}",
+   "actually": {
+    "items": [
+     "**원천 데이터** — CUR(비용·사용량 보고서)는 서비스·사용 유형·작업별 줄을 시간·일·월 단위로, 태그별로도 S3 버킷에 떨군다. Athena로 SQL을 바로 걸 수 있다.[25]",
+     "**나누는 기준** — 계정 → 팀 태그 → 서비스. 태그는 '비용 할당 태그'로 켜야 비용 보고에 나온다.[24]",
+     "**공통비** — 네트워크(NAT)·로그·보안 도구처럼 주인이 없는 비용은 따로 보이거나 사용 비율로 나눈다. {추론}",
+     "**태그 없는 비용** — 숨기지 않고 한 줄로 보인다. 그 줄이 줄어드는 것이 태그 정책이 먹히는 신호다. {추론}",
+     "**월 마감** — 월 중 보고서는 추정치이고 월말 청구 확정 뒤 최종이 된다.[25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "팀별 Showback — 태그 없는 비용을 따로 세운다 (가상 숫자, 직접 돌린 출력)",
+     "body": "CUR 줄을 팀 태그로 묶은 모양입니다. 태그 없는 11.5%가 다음 달에 얼마나 줄었나가 태그 정책의 성적표입니다. {추론}",
+     "lang": "python",
+     "code": "from collections import defaultdict\n\n# (팀 태그, 서비스, 달러) — CUR 줄을 줄인 모양\nlines = [(\"trading\", \"EC2\", 4200), (\"trading\", \"RDS\", 2600), (\"data\", \"S3\", 900),\n         (\"data\", \"EMR\", 3100), (None, \"NATGateway\", 1100), (None, \"CloudTrail\", 300)]\nby_team = defaultdict(int)\nfor team, svc, usd in lines:\n    by_team[team or \"(태그 없음)\"] += usd\ntotal = sum(by_team.values())\nfor t, v in sorted(by_team.items(), key=lambda x: -x[1]):\n    print(f\"{t:10s} ${v:>6,}  {v/total:6.1%}\")\n\n# trading    $ 6,800   55.7%\n# data       $ 4,000   32.8%\n# (태그 없음)    $ 1,400   11.5%\n"
+    }
+   ],
+   "how_far": "처음엔 Showback(보여 주기)으로 시작해 팀이 숫자를 믿게 만드는 것이 먼저입니다. 실제 예산에서 떼는 Chargeback은 회계 방침에 따라 필요 없을 수도 있습니다.[28]",
+   "refs": [
+    17,
+    24,
+    25,
+    28
+   ],
+   "study": [
+    "cur-docs",
+    "finops-framework",
+    "cloud-finops"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "태그 정책을 수립하고 비용 최적화(Savings Plans, Reserved Instances 등)를 추진합니다.",
+   "short": "모든 자원에 주인·환경 태그를 붙이게 규칙을 만들고, 꾸준히 쓰는 양만큼 1·3년 약정 할인을 산다.",
+   "why": "태그가 없으면 Showback이 안 됩니다. AWS Organizations의 태그 정책은 태그 키·값의 표기와 허용 값을 정하고, 지정한 자원 종류에선 어긋난 태그 달기를 막을 수도 있습니다.[23] 비용 할당 태그는 켠 뒤에야 보고서에 나오고, 지난 12개월까지 거슬러 채울 수 있지만 그때 실제로 붙어 있던 태그만 잡힙니다.[24]",
+   "actually": {
+    "items": [
+     "**필수 태그** — 예: owner(팀)·service·env(운영/개발)·data-class(민감 등급). {추론}",
+     "**태그 정책** — 대소문자·허용 값을 고정하고, 먼저 계정 하나에 걸어 보고 OU·조직으로 넓힌다(AWS 권고).[23]",
+     "**Savings Plans** — 1년·3년 동안 시간당 사용 금액을 약정하고 할인받는다. Compute 형은 최대 66%, EC2 인스턴스 형은 최대 72%, 데이터베이스 형은 최대 35%. 산 뒤에는 약정을 바꿀 수 없다.[26]",
+     "**Reserved Instances** — 특정 자원(DB 등)을 기간 약정하는 예전 방식. 무엇을 RI로, 무엇을 Savings Plans로 덮을지 나눈다. {추론}",
+     "**약정 크기** — 하루 중 가장 낮은 사용량(바닥)에 맞춘다. 약정액은 안 써도 내기 때문이다(아래 예시). {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "약정은 사용량 바닥에 맞춘다 (가상 숫자, 직접 돌린 출력)",
+     "body": "시간당 사용량이 10~18달러로 오르내리는 하루에, 약정가를 온디맨드의 66%로 가정했습니다. 바닥(10달러)을 딱 덮는 6.6달러 약정이 가장 싸고, 더 사면 남는 약정을 버리게 됩니다.",
+     "lang": "python",
+     "code": "hourly = [10] * 8 + [18] * 10 + [12] * 6   # 하루 24시간, 온디맨드 기준 $/h\nrate = 0.66                                # 약정가 = 온디맨드의 66% (가정)\nfor commit in (6, 6.6, 8, 10):\n    cost = 0\n    for h in hourly:\n        covered = min(h, commit / rate)    # 약정으로 덮는 온디맨드 양\n        cost += commit + (h - covered)     # 약정액은 안 써도 낸다\n    print(f\"약정 ${commit}/h → 하루 ${cost:,.1f} (전부 온디맨드면 ${sum(hourly)})\")\n\n# 약정 $6/h → 하루 $257.8 (전부 온디맨드면 $332)\n# 약정 $6.6/h → 하루 $250.4 (전부 온디맨드면 $332)\n# 약정 $8/h → 하루 $250.8 (전부 온디맨드면 $332)\n# 약정 $10/h → 하루 $268.5 (전부 온디맨드면 $332)\n"
+    }
+   ],
+   "how_far": "약정은 수천만 원을 몇 년 묶는 결정이라 재무·IT기획과 같이 합니다.[2] {추론} 이 자리는 **사용량 바닥을 근거로 얼마를 몇 년 살지 계산해 올리는** 쪽입니다. {추론}",
+   "refs": [
+    2,
+    23,
+    24,
+    26
+   ],
+   "study": [
+    "tag-docs",
+    "sp-docs",
+    "cloud-finops"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "예산 대비 비용을 모니터링하고, 이상 지출을 분석하여 소유 조직과 함께 개선합니다.",
+   "short": "팀별 예산과 실제 지출을 매일 견주고, 갑자기 튄 비용은 원인을 찾아 그 팀과 같이 고친다.",
+   "why": "AWS Cost Anomaly Detection은 머신러닝으로 평소와 다른 지출을 하루 약 세 번 찾고, 서비스·계정·리전·사용 유형으로 원인 후보를 보여 줍니다.[29] 단 비용 데이터가 최대 24시간 늦게 들어와 발견도 그만큼 늦을 수 있습니다.[29]",
+   "actually": {
+    "items": [
+     "**예산** — 팀·계정마다 월 예산과 알림 문턱(80%·100%)을 건다. {추론}",
+     "**이상 탐지** — 계정·비용 할당 태그·비용 범주 단위로 감시를 걸고, 알림은 메일이나 SNS로 슬랙에 보낸다.[29]",
+     "**원인 찾기** — 어떤 서비스·사용 유형이 늘었나 → 그 시간에 무엇을 배포했나 → 의도한 증가인가. {추론}",
+     "**같이 고치기** — 주인 팀이 고치게 하고(로그 수준·데이터 전송 경로·남은 테스트 자원), 반복되는 원인은 표준·SCP로 막는다. {추론}"
+    ]
+   },
+   "how_far": "'소유 조직과 함께'라고 적혀 있듯[1], 이 자리가 직접 끄는 것이 아니라 **원인을 숫자로 보여 주고 고칠 방법을 제안**합니다. {추론}",
+   "refs": [
+    1,
+    29
+   ],
+   "study": [
+    "finops-framework",
+    "cur-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 기반 클라우드 인프라 설계 및 운영 경력 3년 이상",
+   "short": "AWS에서 구성을 설계하고, 그 구성이 실제로 돌아가는 것을 3년 넘게 맡아 본 경험.",
+   "why": "회사가 AWS 멀티 계정 위에 플랫폼을 짓고 있어서입니다.[1] '설계 및 운영'이 함께 적힌 것은 그린 구성이 장애·비용·보안 점검에서 어떻게 되는지 겪어 봤어야 표준을 세울 수 있어서로 읽힙니다. {추론}",
+   "level": {
+    "basic": "VPC·서브넷·보안 그룹, IAM 역할·정책, EC2·S3·RDS, CloudWatch 알림",
+    "work": "다중 AZ 설계, EKS, KMS 키 정책, 계정 간 역할 위임, Terraform 모듈, 비용 보고",
+    "team": "여러 계정에 걸친 네트워크·로그·권한 표준, 규제(국내 설치·망분리·로그 보존)를 구성으로"
+   },
+   "how_far": "연차보다 **장애·감사·비용 문제를 구성 변경으로 풀어 본 사례**를 숫자와 함께 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "wa-rel",
+    "aws-ma"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS Organizations 또는 Control Tower 기반 멀티 계정 환경을 설계하거나 운영한 경험",
+   "short": "AWS 계정을 여러 개로 나누고 묶어 정책을 거는 구조를 만들거나 굴려 본 경험 — 이 자리의 바닥이다.",
+   "why": "넥스트증권은 멀티 계정 환경에서 플랫폼을 짓습니다.[1] 계정을 나누는 이유는 결제와 서비스 한도가 계정 단위라서이고[18], AWS Organizations는 계정을 OU(조직 단위)로 묶어 정책을 한꺼번에 겁니다.[17] Control Tower는 Organizations 위에 자동 통제를 얹어 '랜딩 존'을 만들어 줍니다.[18]",
+   "actually": {
+    "intro": "AWS 권장 OU 구조입니다. 넥스트증권의 실제 구조는 공개되지 않았습니다.[17]",
+    "items": [
+     "**Security OU** — 보안 정책·감사·로그를 맡는 계정.[17]",
+     "**Infrastructure OU** — 회사 전체가 같이 쓰는 네트워크·공유 서비스 계정.[17]",
+     "**Workloads OU** — 서비스 계정, 운영과 비운영을 나눠서.[17]",
+     "**Sandbox · Policy Staging · Suspended** — 실험용, 새 정책을 운영 전에 시험하는 곳, 정지한 계정.[17]",
+     "**모든 OU가 필요하진 않다** — 요구에 맞춰 줄이거나 늘린다. 구조를 정하는 책임은 회사에 있다.[17]",
+     "**SCP** — OU에 붙여 계정이 넘을 수 없는 상한을 건다. 먼저 OU 단위로 시험하고 루트에 붙인다.[19]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "계정 하나가 생겨 쓰이기까지 (Control Tower 방식 {추론})[18][19]",
+     "steps": [
+      "요청 · 팀·용도·데이터 등급",
+      "계정 공장 · 기본 네트워크·로그·권한",
+      "OU 배치 · SCP·태그 정책 상속",
+      "서비스 배포 · Terraform",
+      "감시 · 로그 계정·비용 보고"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "'설계하거나 운영한' — 처음부터 짓지 않았어도 됩니다. 기존 OU 구조에서 **계정을 늘리고, SCP를 바꾸고, 그 영향을 확인해 본** 경험이 최소선입니다. {추론}",
+   "refs": [
+    1,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "aws-ma",
+    "ct-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "비기능 요구사항(가용성, 확장성, 보안 등)을 고려하여 클라우드 아키텍처를 설계한 경험",
+   "short": "'잘 돌아가야 하는 정도'를 숫자로 정해 놓고, 그 숫자에 맞춰 구성을 고르고 설명해 본 경험.",
+   "why": "업무 첫 줄이 이것입니다.[1] 마크 리처즈·닐 포드의 책은 아키텍처 특성(가용성·확장성 같은 '~성')을 정의하고 찾아내고 재는 일을 설계자의 중심 일로 다룹니다(공부 자료 참조).",
+   "actually": {
+    "items": [
+     "**특성 고르기** — 다 높이면 비싸져서 이 서비스에 중요한 서너 개만 고른다. {추론}",
+     "**숫자로** — 가용성은 몇 %, 확장성은 초당 몇 건, 복구는 몇 분 안에. 감독규정은 핵심 업무 복구 목표를 3시간 이내로 둔다.[12]",
+     "**맞바꿈 밝히기** — 다중 리전으로 가면 무엇이 비싸지고 복잡해지나를 ADR 결과 칸에.[22] {추론}"
+    ]
+   },
+   "how_far": "면접에서는 '어떤 구성을 했나'보다 **왜 그 숫자를 목표로 했고 무엇을 포기했나**를 묻기 쉽습니다. {추론}",
+   "refs": [
+    1,
+    12,
+    22
+   ],
+   "study": [
+    "sa101",
+    "wa-rel"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 이해관계자의 요구사항을 아키텍처로 구체화하고 문서·다이어그램을 통해 합의를 이끌어낸 경험",
+   "short": "개발·보안·재무가 다르게 원하는 것을 한 장 구성도와 문서로 묶어 '이걸로 가자'를 받아 낸 경험.",
+   "why": "이 자리는 여러 조직과 협업해 플랫폼을 만든다고 공고가 적었습니다.[1] 보안(정보보호본부)[10]은 막고 싶고, 서비스 팀은 빨리 내고 싶고, IT기획은 예산을 지켜야 합니다.[2] {추론}",
+   "actually": {
+    "items": [
+     "**같은 그림** — 계정·네트워크·데이터 흐름 그림을 한 벌로 두고 모두 그걸 보고 말한다. {추론}",
+     "**결정 문서** — 선택지 둘 이상, 각각의 비용·위험, 추천과 이유. ADR이 그 틀이다.[22]",
+     "**합의 기록** — 누가 언제 동의했나를 남겨 같은 논쟁을 다시 하지 않는다.[22] {추론}"
+    ]
+   },
+   "how_far": "경력기술서에는 **누가 무엇을 원했고, 무엇으로 합의했고, 그 뒤 어떻게 됐나**를 한 사례로 쓰면 이 줄이 채워집니다. {추론}",
+   "refs": [
+    1,
+    2,
+    10,
+    22
+   ],
+   "study": [
+    "sa101",
+    "nygard-adr"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "금융권 또는 규제 산업의 클라우드 도입·구축 경험(전자금융감독규정, ISMS-P, 망분리, 클라우드 이용 절차 등)",
+   "short": "금융 클라우드엔 국내 설치·망분리·사전 평가·사후 보고 같은 법정 절차가 있어, 겪어 본 사람이 빠르다.",
+   "why": "전자금융감독규정은 클라우드를 쓰기 전에 업무 중요도와 제공자 안전성을 평가하고, 새 이용 계약 등은 3개월 안에 금융감독원장에게 보고하게 합니다.[12] 2022년 개정으로 평가 항목이 141개에서 54개로 줄고 사전보고가 사후보고로 바뀌었습니다.[14] 2024년 망분리 개선 로드맵은 SaaS 범위 확대와 연구·개발 환경의 분리 완화를 내놓았습니다.[15]",
+   "actually": {
+    "items": [
+     "**국내 설치** — 클라우드에서 고유식별정보·개인신용정보를 처리하면 그 시스템을 국내에 둔다 → 서울 리전을 쓴다.[12] {추론}",
+     "**망분리** — 내부 업무 시스템과 전산실 시스템은 외부 통신망과 분리한다. 개인신용정보를 다루지 않는 연구·개발 목적은 대체 통제와 정보보호위원회 승인으로 예외가 된다.[12]",
+     "**클라우드 이용 절차** — 중요도 평가 → 제공자 평가 → 업무연속성 계획 → 정보보호위원회 심의 → 3개월 안 사후 보고.[12][14]",
+     "**ISMS-P** — 관리체계 16개·보호대책 64개·개인정보 처리 단계 21개 기준으로 심사한다.[16]",
+     "**규정이 바뀐다** — 현행 감독규정은 2026년 7월 시행판이라[13] 조문 번호부터 다시 확인한다. {추론}"
+    ]
+   },
+   "how_far": "조문을 외울 필요는 없고, **규정 한 줄이 구성 어디를 바꾸는지**(예: 국내 설치 → 리전 제한 SCP)를 짝지어 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "efsr",
+    "fsc-cloud",
+    "fsc-netsep",
+    "isms-p"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "FinOps 경험 (AWS CUR 분석, Showback/Chargeback, Savings Plans·Reserved Instances 최적화 등)",
+   "short": "CUR을 SQL로 쪼개 보고, 팀별 비용을 보이거나 떼어 보고, 약정 할인을 계산해 사 본 경험.",
+   "why": "업무 3번 묶음(비용 거버넌스)을 이미 해 본 사람이라는 뜻입니다.[1] 괄호의 세 낱말이 곧 그 세 줄입니다.",
+   "actually": {
+    "items": [
+     "**CUR 분석** — 줄 단위 비용·사용량 파일을 Athena로 묻는다(어느 팀의 어느 서비스가 지난달보다 늘었나).[25]",
+     "**Showback/Chargeback** — 보여 주기와 장부에서 떼기의 차이를 알고 회사에 맞는 쪽을 고른다.[28]",
+     "**약정 최적화** — 약정이 얼마나 쓰였나(사용률)·사용량의 몇 %를 덮었나(적용률)를 달마다 보고 사고 더 살지 정한다. {추론}"
+    ]
+   },
+   "how_far": "큰 회사가 아니어도 됩니다. 한 계정이라도 **비용을 몇 %, 어떻게 줄였나**를 숫자로 말할 수 있으면 우대에 닿습니다. {추론}",
+   "refs": [
+    1,
+    25,
+    28
+   ],
+   "study": [
+    "cur-docs",
+    "sp-docs",
+    "cloud-finops"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "신규 플랫폼 또는 Landing Zone을 처음부터 설계하고 구축한 경험",
+   "short": "빈 AWS 조직에서 계정 구조·네트워크·로그·권한 기본판(랜딩 존)을 처음 깔아 본 경험.",
+   "why": "Landing Zone(랜딩 존)은 보안·규정 준수 모범 사례대로 미리 짜 둔 멀티 계정 환경입니다.[18] AWS는 랜딩 존을 처음 설계할 때 정할 것들을 따로 안내서로 묶어 두었습니다.[35] 넥스트증권은 레거시 없이 새 플랫폼을 짓는 중이라[8] 이 바닥을 깔고 넓히는 일이 지금 진행형입니다. {추론}",
+   "actually": {
+    "items": [
+     "**뼈대** — OU 구조, 로그·감사 계정, 공유 네트워크 계정.[17]",
+     "**기본 통제** — 리전 제한·로그 끄기 금지 같은 SCP, 태그 정책.[19][23]",
+     "**계정 공장** — 새 계정이 기본판을 갖고 태어나게.[18]",
+     "**버전** — Control Tower 랜딩 존도 버전이 있어 판마다 기본 구조가 다르다(예: 4.0판은 Security OU를 꼭 두지 않아도 된다).[18]"
+    ]
+   },
+   "how_far": "회사 규모의 랜딩 존이 아니어도, **개인 AWS 조직에 OU·SCP·로그 계정을 직접 깔아 본** 경험을 설명할 수 있으면 출발점이 됩니다. {추론}",
+   "refs": [
+    8,
+    17,
+    18,
+    19,
+    23,
+    35
+   ],
+   "study": [
+    "ct-guide",
+    "aws-ma"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Terraform 등 Infrastructure as Code를 활용하여 클라우드 인프라를 표준화한 경험",
+   "short": "인프라를 콘솔 클릭 대신 Terraform 코드로 만들고, 표준 모듈로 묶어 팀들이 같은 걸 쓰게 한 경험.",
+   "why": "공고의 기술 태그가 AWS·Terraform입니다.[1] 같은 회사 데이터 플랫폼·데이터 백엔드 공고도 Terraform을 적었습니다.[3][4] IaC(코드로 인프라 관리)는 바꾼 내역이 코드 리뷰로 남아 감사 증적도 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "**모듈** — '표준 RDS'·'표준 버킷' 모듈에 암호화·백업·태그를 넣어 두면 쓰는 쪽은 이름만 넣는다. {추론}",
+     "**계획 → 적용** — 바꾸기 전에 무엇이 바뀌는지(plan)를 리뷰에 붙이고 승인 뒤 적용한다.[30]",
+     "**상태 파일** — Terraform이 기억하는 현재 모습(state)을 원격에 두고 잠근다.[30]",
+     "**정책 검사** — 태그 없음·공개 버킷 같은 위반을 적용 전에 파이프라인에서 막는다. {추론}"
+    ]
+   },
+   "how_far": "Terraform 문법보다 **모듈을 어떻게 나누고 버전을 올리고, 콘솔에서 바뀐 것(드리프트)을 어떻게 잡나**를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    30
+   ],
+   "study": [
+    "terraform-book",
+    "terraform-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "클릭보다 코드로 인프라를 다루는 게 편한 사람[1]",
+   "규정 조항을 구성 설정으로 바꾸는 일이 퍼즐처럼 재미있는 사람[12]",
+   "청구서를 보고 '이건 왜 늘었지'가 궁금한 사람",
+   "새 회사의 바닥을 처음 까는 일을 하고 싶은 사람[8]"
+  ],
+  "hard": [
+   "직접 서비스 기능을 만들지 않는다 — 결과물이 표준·정책·문서·모듈이다",
+   "보안·서비스·재무 사이에서 맞바꿈을 설득해야 해서 합의에 시간이 든다[1]",
+   "금융 규정 때문에 다른 업계보다 막히는 것·남길 것이 많다[12]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "가용성 99.95% 목표의 주문 API가 DB·메시지 큐에 꼭 기댑니다. 구성을 어떻게 잡고 숫자로 어떻게 보이겠어요?",
+   "a": "의존성 곱셈과 이중화 계산.[21]"
+  },
+  {
+   "q": "고객 신용정보가 든 DB의 저장소·키·네트워크·로그를 어떻게 나누겠어요? 감독규정 어느 조항 때문인가요?",
+   "a": "업무 2번 줄 그대로.[12][20]"
+  },
+  {
+   "q": "OU 구조를 처음부터 짠다면 어떤 OU를 두고, SCP는 어디에 먼저 걸겠어요?",
+   "a": "권장 OU와 SCP 시험 순서.[17][19]"
+  },
+  {
+   "q": "태그 없는 비용이 20%입니다. 다음 분기까지 어떻게 줄이겠어요?",
+   "a": "태그 정책·비용 할당 태그·백필.[23][24]"
+  },
+  {
+   "q": "Savings Plans를 얼마나, 몇 년으로 사겠어요? 근거는?",
+   "a": "사용량 바닥과 약정 변경 불가.[26]"
+  },
+  {
+   "q": "반대하는 팀이 있는 설계를 어떻게 합의로 끌고 갔는지 사례를 말해 주세요.",
+   "a": "합의 자격요건과 ADR.[1][22]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · 넥스트증권 Cloud Architect",
+   "url": "https://www.wanted.co.kr/wd/378758",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "이 공고 — 직무 요약·업무 9·자격 4·우대 4·복지·전형(AI 스크리닝 인터뷰)"
+  },
+  {
+   "n": 2,
+   "title": "넥스트증권 채용 · IT Planner",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/o/245523",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 신설 IT기획팀 — IT 예산·TCO·구매·운영 이관 체크리스트"
+  },
+  {
+   "n": 3,
+   "title": "잡코리아 · 넥스트증권 Data Engineer (Data Platform)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50357268",
+   "kind": "posting",
+   "note": "같은 회사 — AWS 위 Terraform·CI/CD 코드화, 전자금융감독규정·ISMS-P"
+  },
+  {
+   "n": 4,
+   "title": "원티드 · 넥스트증권 Backend Engineer(Data)",
+   "url": "https://www.wanted.co.kr/wd/380891",
+   "kind": "posting",
+   "note": "같은 회사 — 온콜·SLA·Terraform"
+  },
+  {
+   "n": 5,
+   "title": "원티드 · 넥스트증권 Backend Engineer(Internal Platform)",
+   "url": "https://www.wanted.co.kr/wd/400001",
+   "kind": "posting",
+   "note": "같은 회사 — 기술 스택(EKS·Kafka·Redis·PostgreSQL·Oracle), Kafka 사용 표준"
+  },
+  {
+   "n": 6,
+   "title": "넥스트증권 채용 · Backend Engineer(Trading)",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/o/245526",
+   "kind": "posting",
+   "note": "같은 회사 — 일하는 방식에 ADR 리뷰"
+  },
+  {
+   "n": 7,
+   "title": "넥스트증권 채용 · ERP Developer",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/o/245534",
+   "kind": "posting",
+   "note": "같은 회사 — ADR, 운영 배포의 분리 승인"
+  },
+  {
+   "n": 8,
+   "title": "아시아경제 · 넥스트증권, 테크 직군 집중채용…7월 여의도 오피스 확장",
+   "url": "https://core.asiae.co.kr/article/2025061208371198678",
+   "kind": "news",
+   "date": "2025-06-12",
+   "note": "레거시 없이 새 플랫폼을 짓는다는 COO 발언"
+  },
+  {
+   "n": 9,
+   "title": "이코노미스트 · MTS 세 번 미룬 넥스트증권…미국주식 API 먼저 꺼낸 이유",
+   "url": "https://economist.co.kr/article/view/ecn202611090035",
+   "kind": "news",
+   "date": "2026-11-16",
+   "note": "MTS 2027년 1분기로 연기, 임직원 94명(2024.6) → 189명(2026.6)"
+  },
+  {
+   "n": 10,
+   "title": "인사이트 · 넥스트증권 테크본부·정보보호본부 신설",
+   "url": "https://www.insight.co.kr/news/520656",
+   "kind": "news",
+   "date": "2025-09-18"
+  },
+  {
+   "n": 11,
+   "title": "SBS Biz · 넥스트증권, 여의도 IFC 오피스 확장…조직·인프라 확대",
+   "url": "https://biz.sbs.co.kr/amp/article/20000250660",
+   "kind": "news",
+   "date": "2025-08-01"
+  },
+  {
+   "n": 12,
+   "title": "전자금융감독규정(제2025-4호, 2025-02-05 시행) 사본",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "date": "2025",
+   "note": "제13조(접근권한 최소·접속기록 1년 이상)·제14조(이중 인증·백업 1년)·제14조의2(클라우드 이용 절차·국내 설치·3개월 보고)·제15조(망분리와 연구·개발 예외)·제23조(복구 3시간)·제27조(원장 기록 5년)"
+  },
+  {
+   "n": 13,
+   "title": "국가법령정보센터 · 전자금융감독규정",
+   "url": "https://www.law.go.kr/행정규칙/전자금융감독규정",
+   "kind": "reference",
+   "date": "2026-07",
+   "note": "현행본(2026-07-15 시행)"
+  },
+  {
+   "n": 14,
+   "title": "금융위원회 · 클라우드 이용 관련 전자금융감독규정 개정 보도자료",
+   "url": "https://fsc.go.kr/no010101/78962",
+   "kind": "reference",
+   "date": "2022",
+   "note": "평가항목 141→54개, 사전보고 → 사후보고"
+  },
+  {
+   "n": 15,
+   "title": "금융위원회 · 금융분야 망분리 개선 로드맵",
+   "url": "https://www.fsc.go.kr/po010101/82885",
+   "kind": "reference",
+   "date": "2024-08-13",
+   "note": "SaaS 범위 확대(보안관리·CRM, 가명정보), 연구·개발 환경 분리 완화, 생성형 AI 샌드박스, 목표·원칙 중심 규제로"
+  },
+  {
+   "n": 16,
+   "title": "개인정보보호위원회 · ISMS-P 인증 기준",
+   "url": "https://pipc.go.kr/np/default/page.do?mCode=D040020000",
+   "kind": "reference",
+   "note": "관리체계 16·보호대책 64·개인정보 처리 단계 21"
+  },
+  {
+   "n": 17,
+   "title": "AWS 백서 · Organizing Your AWS Environment — Recommended OUs and accounts",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/recommended-ous-and-accounts.html",
+   "kind": "reference",
+   "note": "Security·Infrastructure·Workloads·Sandbox·Policy Staging·Suspended OU, 모든 OU가 필요하진 않음"
+  },
+  {
+   "n": 18,
+   "title": "AWS Control Tower 문서 · AWS multi-account strategy for your landing zone",
+   "url": "https://docs.aws.amazon.com/controltower/latest/userguide/aws-multi-account-landing-zone.html",
+   "kind": "reference",
+   "note": "랜딩 존 정의, 결제·한도가 계정 단위, 계정 공장, 4.0판의 OU 변화"
+  },
+  {
+   "n": 19,
+   "title": "AWS Organizations 문서 · Service control policies (SCPs)",
+   "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+   "kind": "reference",
+   "note": "권한을 주지 않고 상한만, 관리 계정 제외, OU에서 먼저 시험"
+  },
+  {
+   "n": 20,
+   "title": "AWS KMS 문서 · Key policies in AWS KMS",
+   "url": "https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html",
+   "kind": "reference",
+   "note": "키마다 키 정책 필수, 명시적으로 허용되지 않으면 루트도 사용 불가"
+  },
+  {
+   "n": 21,
+   "title": "AWS Well-Architected 신뢰성 원칙 · Availability",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/availability.html",
+   "kind": "reference",
+   "note": "가용성별 연간 허용 중단 시간, 의존성 곱셈, 이중화 — 문서는 '참고용 옛판' 표시"
+  },
+  {
+   "n": 22,
+   "title": "Michael Nygard · Documenting Architecture Decisions",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "kind": "reference",
+   "date": "2011-11-15",
+   "note": "ADR 형식(제목·상태·맥락·결정·결과), 번호 재사용 금지·대체 표시"
+  },
+  {
+   "n": 23,
+   "title": "AWS Organizations 문서 · Tag policies",
+   "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html",
+   "kind": "reference",
+   "note": "키·값 표기와 허용 값, 강제(enforced), 계정 하나에서 먼저 시험"
+  },
+  {
+   "n": 24,
+   "title": "AWS Billing 문서 · Cost allocation tags",
+   "url": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html",
+   "kind": "reference",
+   "note": "켜야 보고서에 나옴, 최대 24시간, 백필 최대 12개월(cost-allocation-backfill)"
+  },
+  {
+   "n": 25,
+   "title": "AWS 문서 · What are AWS Cost and Usage Reports?",
+   "url": "https://docs.aws.amazon.com/cur/latest/userguide/what-is-cur.html",
+   "kind": "reference",
+   "note": "줄 단위 비용·사용량, 시간·일·월, S3 전달, Athena, 월 중은 추정치"
+  },
+  {
+   "n": 26,
+   "title": "AWS 문서 · Savings Plans types",
+   "url": "https://docs.aws.amazon.com/savingsplans/latest/userguide/plan-types.html",
+   "kind": "reference",
+   "note": "1·3년, Compute 최대 66%·EC2 Instance 72%·Database 35%·SageMaker 64%, 약정 변경 불가"
+  },
+  {
+   "n": 27,
+   "title": "FinOps Foundation · FinOps Phases",
+   "url": "https://www.finops.org/framework/phases/",
+   "kind": "reference",
+   "note": "Inform·Optimize·Operate"
+  },
+  {
+   "n": 28,
+   "title": "FinOps Foundation · Invoicing & Chargeback",
+   "url": "https://www.finops.org/framework/capabilities/invoicing-chargeback/",
+   "kind": "reference",
+   "note": "Showback과 Chargeback의 차이"
+  },
+  {
+   "n": 29,
+   "title": "AWS 문서 · Detecting unusual spend with AWS Cost Anomaly Detection",
+   "url": "https://docs.aws.amazon.com/cost-management/latest/userguide/manage-ad.html",
+   "kind": "reference",
+   "note": "하루 약 3회, 최대 24시간 지연, 원인 4개 차원, 알림 메일·SNS"
+  },
+  {
+   "n": 30,
+   "title": "HashiCorp · Terraform 문서",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "kind": "reference",
+   "note": "plan·apply, state"
+  },
+  {
+   "n": 31,
+   "title": "넥스트증권 채용 · Life at Next(복리후생)",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/lifeatnext",
+   "kind": "company",
+   "note": "복지 항목과 금액, 사이트 하단 회사 주소"
+  },
+  {
+   "n": 32,
+   "title": "넥스트증권 채용 · 채용 절차",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/howwehire",
+   "kind": "company",
+   "note": "서류 → 1차(직무) → 2차(핵심가치) → 처우 협의"
+  },
+  {
+   "n": 33,
+   "title": "원티드 · 넥스트증권 회사 정보",
+   "url": "https://www.wanted.co.kr/company/52490",
+   "kind": "reference",
+   "note": "평균 연봉 집계 — 기준월 표기 없음"
+  },
+  {
+   "n": 34,
+   "title": "아시아경제 · 넥스트증권 신논현 거점 오피스·유연근무제",
+   "url": "https://core.asiae.co.kr/article/2026101509322299375",
+   "kind": "news",
+   "date": "2026-10",
+   "note": "코어타임 10~15시, 주 1회 원격"
+  },
+  {
+   "n": 35,
+   "title": "AWS Prescriptive Guidance · Designing an AWS Control Tower landing zone",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/designing-control-tower-landing-zone/introduction.html",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "Google · Site Reliability Engineering",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "kind": "reference",
+   "note": "toil 줄이기·온콜·포스트모템"
+  }
+ ],
+ "caveat": "넥스트증권은 클라우드 구조(계정·OU·네트워크·비용 규모)를 공개하지 않았고 회사 기술 발표도 찾지 못했습니다. 회사 자료는 이 공고, 같은 회사 다른 공고, 보도뿐이라 실제 일은 AWS 공식 문서·FinOps 재단·전자금융감독규정·금융위 자료로 '보통 이런 것'을 보였습니다. 감독규정 조문은 2025-02 시행 사본 기준이라 현행본(2026-07 시행)과 다를 수 있습니다. 예시 숫자는 모두 가상입니다.",
+ "resources": [
+  {
+   "id": "aws-ma",
+   "title": "Organizing Your AWS Environment Using Multiple Accounts",
+   "by": "AWS 백서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/organizing-your-aws-environment.html",
+   "why": "왜 계정을 나누고 OU를 어떻게 묶나의 원전. 멀티 계정 자격요건과 저장소 분리 업무의 바탕."
+  },
+  {
+   "id": "ct-guide",
+   "title": "Designing an AWS Control Tower landing zone",
+   "by": "AWS Prescriptive Guidance",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/designing-control-tower-landing-zone/introduction.html",
+   "why": "랜딩 존을 처음 설계할 때 정할 것(OU·로그·계정 공장)을 순서대로. Landing Zone 우대 요건."
+  },
+  {
+   "id": "wa-rel",
+   "title": "AWS Well-Architected — 신뢰성 원칙(Availability)",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/availability.html",
+   "why": "가용성 목표를 분으로 바꾸고 의존성을 곱하는 계산. 비기능 요구사항 업무·자격요건."
+  },
+  {
+   "id": "kms-docs",
+   "title": "Key policies in AWS KMS",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html",
+   "why": "키 정책이 IAM보다 앞선다는 점 — KMS 키 분리 업무를 설계하려면 꼭 알아야 하는 규칙."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정",
+   "by": "금융위원회 · 국가법령정보센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.law.go.kr/행정규칙/전자금융감독규정",
+   "why": "제13·14·14조의2·15·23·27조부터. 접근통제·로그 보존·국내 설치·망분리가 구성 어디를 바꾸는지."
+  },
+  {
+   "id": "fsc-cloud",
+   "title": "클라우드 이용 관련 전자금융감독규정 개정 보도자료",
+   "by": "금융위원회 · 2022",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://fsc.go.kr/no010101/78962",
+   "why": "금융 클라우드 이용 절차가 지금 모양(중요도 평가·사후보고)이 된 이유."
+  },
+  {
+   "id": "fsc-netsep",
+   "title": "금융분야 망분리 개선 로드맵",
+   "by": "금융위원회 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.fsc.go.kr/po010101/82885",
+   "why": "망분리 규제가 어디로 가는지(SaaS·연구개발망·원칙 중심). 규제 산업 우대 요건의 최신 흐름."
+  },
+  {
+   "id": "isms-p",
+   "title": "ISMS-P 인증 기준",
+   "by": "개인정보보호위원회",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://pipc.go.kr/np/default/page.do?mCode=D040020000",
+   "why": "심사가 보는 101개 기준의 틀. 감사 증적·자산 관리 업무에서 무엇을 남겨야 하는지."
+  },
+  {
+   "id": "sa101",
+   "title": "소프트웨어 아키텍처 101",
+   "by": "마크 리처즈 · 닐 포드 · 한빛미디어 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942580",
+   "why": "아키텍처 특성(가용성·확장성 등)을 고르고 재는 법과 도식화·발표. 비기능 요구사항·합의 자격요건."
+  },
+  {
+   "id": "nygard-adr",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · 2011",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "why": "ADR 형식의 원문. 짧아서 한 번에 읽고 바로 써 볼 수 있다."
+  },
+  {
+   "id": "finops-framework",
+   "title": "FinOps Framework",
+   "by": "FinOps Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.finops.org/framework/",
+   "why": "비용 거버넌스 업무 세 줄(Showback·약정·이상 지출)이 이 틀의 능력 이름과 그대로 맞물린다."
+  },
+  {
+   "id": "cloud-finops",
+   "title": "Cloud FinOps, 2nd Edition",
+   "by": "J.R. Storment · Mike Fuller · O'Reilly",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://oreilly.com/library/view/cloud-finops/9781492098348",
+   "why": "비용 배분·약정 할인·팀 문화까지 사례로. FinOps 우대 요건."
+  },
+  {
+   "id": "cur-docs",
+   "title": "What are AWS Cost and Usage Reports?",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/cur/latest/userguide/what-is-cur.html",
+   "why": "CUR 줄의 단위와 갱신 시점. Showback을 직접 계산하려면 이 표의 칸을 알아야 한다."
+  },
+  {
+   "id": "sp-docs",
+   "title": "Savings Plans types",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/savingsplans/latest/userguide/plan-types.html",
+   "why": "약정 종류별 적용 범위와 최대 할인율. 약정 최적화 업무."
+  },
+  {
+   "id": "tag-docs",
+   "title": "Tag policies",
+   "by": "AWS Organizations 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html",
+   "why": "태그 정책 문법과 강제·준수 보고. 태그 정책 수립 업무."
+  },
+  {
+   "id": "terraform-book",
+   "title": "테라폼 업앤러닝",
+   "by": "예브게니 브릭만 · 루비페이퍼 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://product.kyobobook.co.kr/detail/S000001891106",
+   "why": "모듈·상태 파일·팀 작업 흐름. IaC 우대 요건과 리소스 표준화 업무."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform 문서",
+   "by": "HashiCorp 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "책 이후 바뀐 문법과 AWS 공급자 자원 설명."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · 온라인 무료판",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "반복 운영 일(toil) 줄이기·런북·포스트모템. 운영 자동화·런북 업무."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "계정 구조와 규제 읽기",
+   "time": "1~2주",
+   "goal": "AWS 권장 OU 구조를 그리고, 감독규정 조항 다섯 개를 구성 변경 하나씩과 짝지을 수 있다.",
+   "resources": [
+    "aws-ma",
+    "efsr",
+    "fsc-cloud",
+    "fsc-netsep"
+   ],
+   "task": "가상 증권사의 OU 그림(보안·인프라·운영·개발·샌드박스)을 그리고, '국내 설치·망분리·접속기록 1년·권한 최소·복구 3시간'이 각각 어느 계정·SCP·로그 설정으로 가는지 표를 만든다."
+  },
+  {
+   "title": "랜딩 존 직접 깔기",
+   "time": "2~3주",
+   "goal": "개인 AWS 조직에 Control Tower 또는 Organizations로 OU·SCP·로그 계정을 깔고 계정을 하나 찍어 낼 수 있다.",
+   "resources": [
+    "ct-guide",
+    "aws-ma",
+    "tag-docs"
+   ],
+   "task": "프리 티어 범위에서 OU 셋, 서울 외 리전 금지 SCP, 필수 태그 정책을 걸고 새 계정을 만들어 정책이 실제로 막는지 확인한다(끝나면 자원 정리)."
+  },
+  {
+   "title": "비기능 요구를 숫자로, 결정을 ADR로",
+   "time": "1~2주",
+   "goal": "가용성 목표를 분으로 바꾸고 구성 대안 둘을 계산·비교해 ADR로 남길 수 있다.",
+   "resources": [
+    "wa-rel",
+    "sa101",
+    "nygard-adr",
+    "kms-docs"
+   ],
+   "task": "가상 주문 서비스(API→DB→큐)에 99.95% 목표를 주고 단일 AZ·다중 AZ 구성의 가용성을 계산한 뒤, 고객 정보 DB 키 분리까지 ADR 세 장으로 쓴다."
+  },
+  {
+   "title": "Terraform 표준 모듈",
+   "time": "2~3주",
+   "goal": "암호화·백업·태그가 기본으로 들어간 표준 모듈을 만들고 plan 리뷰 흐름을 갖출 수 있다.",
+   "resources": [
+    "terraform-book",
+    "terraform-docs",
+    "sre-book"
+   ],
+   "task": "'표준 S3 버킷'·'표준 RDS' 모듈을 만들어 2단계 계정에 배포하고, 태그 없는 자원이 plan 단계에서 막히게 검사를 붙인다. 장애 하나를 골라 런북 한 장을 쓴다."
+  },
+  {
+   "title": "FinOps 한 바퀴",
+   "time": "1~2주",
+   "goal": "CUR 모양의 데이터로 팀별 Showback과 약정 크기를 계산해 보고서 한 장을 낼 수 있다.",
+   "resources": [
+    "finops-framework",
+    "cur-docs",
+    "sp-docs",
+    "cloud-finops"
+   ],
+   "task": "가상 CUR 줄 1만 개(팀·서비스·시간)를 만들어 SQL로 팀별 비용·태그 없는 비율을 내고, 시간당 사용량 바닥으로 Savings Plans 약정액을 정한 뒤 '이상 지출 하나'를 찾아 원인을 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없고 공시 숫자도 없다. 집계 사이트의 회사 평균은 **약 6,000만원**이지만 기준 시점·직군 구분이 없다",
+  "rows": [
+   {
+    "label": "회사 평균 연봉(집계)",
+    "value": "약 6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 기준월 미표기",
+    "note": "원티드 회사 정보의 평균 연봉 — 국민연금 가입 정보로 계산한 값이고 기준 시점 표기가 없다 [33]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 채용 절차 마지막의 **처우 협의** 단계에서 사람마다 정한다 [32]. 비상장 증권사라 사업보고서의 직원 평균 급여를 찾지 못했다(공시 숫자 없음). 평균은 신입·비개발 직군이 섞인 회사 전체 값이라 경력 3년 이상 클라우드 아키텍트의 제안 금액으로 읽으면 안 된다 {추론}. 근무는 **비포괄임금제**라 초과근로수당이 따로 나온다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "복지카드",
+    "detail": "연 150만원, 사용처 제한 없음(유흥업·택시 제외). 중도 입사는 입사 3개월 뒤부터 연말까지 월할"
+   },
+   {
+    "name": "특별상여",
+    "detail": "연 110만원 — 설·추석 귀성비, 가정의 달 효도비, 연말 지원비(중도 입사는 입사 시점부터)"
+   },
+   {
+    "name": "상해보험",
+    "detail": "본인·배우자·자녀 실손 의료비 지원"
+   },
+   {
+    "name": "건강검진",
+    "detail": "매년 종합건강검진"
+   },
+   {
+    "name": "특별휴가",
+    "detail": "1년 이상 재직 시 매년 3일"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10년·20년 근속 시 장려금 400만원"
+   },
+   {
+    "name": "자기개발",
+    "detail": "업무 관련 교육 지원"
+   },
+   {
+    "name": "근무 형태",
+    "detail": "비포괄임금제(초과근로수당 별도) · 오전 7~10시 자율 출근 · 재택 주 1회"
+   }
+  ],
+  "note": "이 공고의 혜택 및 복지 칸을 옮겼고 [1], 회사 채용 홈페이지의 복리후생 안내(Life at Next)와 같은 내용이다 [31]. 2026년 10월 보도는 코어타임 오전 10시~오후 3시의 유연근무를 소개해 출퇴근 규칙은 바뀌었을 수 있다 [34]. 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "넥스트증권 여의도 본사",
+  "address": "서울특별시 영등포구 국제금융로 10, Three IFC 12층·15층",
+  "postal": "07326",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%98%81%EB%93%B1%ED%8F%AC%EA%B5%AC%20%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C%2010",
+  "near": "여의도 IFC 단지, 5·9호선 여의도역 가까이 {추론}",
+  "note": "공고의 근무지 표기는 '서울 영등포구'이고 [1], 주소는 채용 홈페이지 하단의 회사 정보다 [31]. 회사는 2025년 8월 이 건물에 사무실을 넓혔다 [11]. 신논현에도 일부 기술 조직이 쓰는 거점이 있어 팀 자리는 확인이 필요하다 [34] {추론}."
+ }
+}
