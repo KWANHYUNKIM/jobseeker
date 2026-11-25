@@ -466,6 +466,8 @@
   "ats-smilegate:group:6262": "smilegate-ai-qa-automation-rnd-intern",
   "boards-gamejob:dev:286445": "smilegate-ai-web-service-dev",
   "ats-smilegate:group:6145": "smilegate-ai-web-service-dev",
+  "jobkorea-50274592": "smilegate-game-security-sdk",
+  "ats-smilegate:group:6194": "smilegate-game-security-sdk",
   "boards-gamejob:dev:285794": "smilegate-lostark-data-platform-engineer",
   "ats-smilegate:group:5329": "smilegate-lostark-data-platform-engineer",
   "boards-gamejob:dev:285795": "smilegate-lostark-game-data-engineer",
@@ -4421,6 +4423,17 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 14
+  },
+  {
+   "id": "smilegate-game-security-sdk",
+   "company": "스마일게이트",
+   "role": "게임 보안 SDK 개발 담당",
+   "jobs": [
+    "jobkorea-50274592",
+    "ats-smilegate:group:6194"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 17
   },
   {
    "id": "smilegate-lostark-data-platform-engineer",

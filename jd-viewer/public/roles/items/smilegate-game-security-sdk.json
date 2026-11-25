@@ -1,0 +1,874 @@
+{
+  "id": "smilegate-game-security-sdk",
+  "company": "스마일게이트",
+  "role": "게임 보안 SDK 개발 담당",
+  "team": "정보보안 조직 · 스토브 게임 보안 서비스",
+  "jobs": [
+    "jobkorea-50274592",
+    "ats-smilegate:group:6194"
+  ],
+  "researched_at": "2026-11-26",
+  "tldr": {
+    "what": "스토브(스마일게이트의 게임 플랫폼)에 올라가는 게임에 심는 **보안 SDK**(게임사가 자기 게임에 넣어 쓰는 보안 라이브러리)를 C++로 만들고, 메모리 변조·앱 변조·루팅/탈옥 같은 해킹 환경을 찾아내 막는 기술을 개발합니다.[1][2]",
+    "env": "SDK 하나가 **iOS·Android 네이티브와 Windows**에서 같이 돌아야 하고[1], 게임은 Unity·Unreal 같은 엔진으로 만들어지니 엔진 플러그인 형태로도 나갑니다.[1][18][19] 같은 정보보안 조직이 게임 해킹 분석·대응과 침해사고 대응 자리를 따로 뽑고 있어, 이 자리는 **방어 코드를 만드는 개발자** 몫입니다.[4][5]",
+    "oneline": "해킹 기법을 아는 7년차 이상 C++ 개발자가, 여러 OS에서 도는 '게임에 심는 방패'를 만든다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "스토브 게임 보안 서비스 담당",
+      "short": "스토브에 올라온 게임들이 함께 쓰는 보안 서비스(SDK + 탐지 기록을 받는 서버 쪽)를 맡는 일.",
+      "why": "스토브는 스마일게이트가 직접 운영하는 게임 플랫폼이고, 입점 게임은 스토브 SDK를 붙여 로그인·토큰 확인 같은 기능을 씁니다.[9] 2023년에는 스토브·로스트아크 계정을 노린 대입 공격(다른 곳에서 샌 아이디·비밀번호를 넣어 보는 공격)을 겪고 보안 체계를 바로 손봤습니다.[6] 게임마다 따로 보안을 사 오는 대신 **플랫폼이 공통 보안 서비스를 주는 것**이 이 자리의 출발점입니다 {추론}.",
+      "actually": {
+        "intro": "공고가 '서비스'라고 부른 범위입니다. 스토브 보안 서비스의 내부 구성은 공개되지 않아, 비슷한 상용 서비스(NHN 앱가드)의 구성으로 '보통 이런 것'을 보입니다.[20]",
+        "items": [
+          "**SDK** — 게임 안에서 돌며 변조·해킹 도구를 찾는 코드(이 자리의 본업).[1]",
+          "**정책** — 무엇을 찾으면 경고만 할지, 게임을 끌지를 게임사가 고르게 하는 설정.[20]",
+          "**탐지 기록 수집** — SDK가 찾은 것을 서버로 보내고 게임사가 화면에서 보게 하는 쪽.[20]",
+          "**입점 게임 지원** — 게임사가 SDK를 붙이다 막히면 돕고, 업데이트 때 호환성을 맞추는 일 {추론}.",
+          "**보안 이슈 대응** — 새 치트가 돌면 분석 담당과 함께 막는 코드를 내보내는 일(다음 줄).[4]"
+        ]
+      },
+      "how_far": "서버·화면까지 혼자 다 만드는 자리는 아닙니다 — 우대사항에 Backend·Frontend가 따로 있는 것을 보면 핵심은 **SDK와 그것이 서버와 주고받는 약속(프로토콜)**입니다 {추론}.[1]",
+      "refs": [1, 4, 6, 9, 20],
+      "study": ["stove-pc-sdk", "nhn-appguard"]
+    },
+    {
+      "section": "task",
+      "quote": "게임 보안 SDK 개발 및 보안 이슈 대응",
+      "short": "게임에 넣는 보안 라이브러리를 만들고, 뚫렸다는 보고가 오면 원인을 찾아 새 판을 내는 일.",
+      "why": "보안 SDK는 남의 게임 안에서 돕니다. 게임이 느려지거나 튕기면 SDK가 먼저 의심받고, 치트 제작자는 SDK가 나오면 곧바로 우회법을 찾습니다.[8] 그래서 **만들기와 고치기가 한 사람 몫**으로 묶여 있습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**탐지 기능 구현** — 디버거 붙음, 루팅/탈옥, 앱 위변조, 가상 환경 탐지 같은 검사를 C++로.[10][11]",
+          "**공개 함수(API) 설계** — 게임 개발자가 `Init()`·콜백 몇 개로 붙일 수 있게 얇게.[9]",
+          "**빌드·배포** — Android ABI별 `.so`, iOS 프레임워크, Windows DLL을 같이 굽고 버전을 맞춘다.[16][17]",
+          "**호환성 시험** — 기기·OS 버전·엔진 버전 조합에서 튕김·오탐이 없는지.",
+          "**이슈 대응** — '이 치트가 안 잡힌다'·'이 기기에서 튕긴다'를 재현하고, 원인을 찾아 패치판을 낸다 {추론}."
+        ]
+      },
+      "how_far": "가장 중요한 품질은 **오탐(정상 사용자를 해커로 보는 것)과 튕김이 없는 것**입니다. 탐지를 많이 넣는 것보다, 넣은 탐지가 정상 기기에서 조용한 것이 먼저입니다 {추론}.",
+      "refs": [8, 9, 10, 11, 16, 17],
+      "study": ["owasp-masvs", "owasp-mastg", "ndk-abis"]
+    },
+    {
+      "section": "task",
+      "quote": "메모리/앱 변조, 해킹 환경 등 게임 해킹 기술 분석 및 방어 기술 개발",
+      "short": "치트가 게임 메모리·실행 파일을 어떻게 고치는지 뜯어보고, 그걸 알아채는 코드를 만드는 일.",
+      "why": "게임 해킹의 대부분은 **실행 중인 게임의 메모리 값을 바꾸거나**(골드·체력·속도), **앱 파일을 고쳐 다시 묶거나**, **루팅된 폰·에뮬레이터처럼 감시가 풀린 환경**에서 돌리는 것입니다.[10][20] 같은 조직이 치팅 툴·메모리 변조 분석 자리를 따로 뽑고 있어[4], 이 자리는 분석 결과를 **방어 코드로 바꾸는 쪽**입니다.",
+      "actually": {
+        "intro": "OWASP 모바일 보안 기준(MASVS)의 '버티는 힘(RESILIENCE)' 항목이 이 일을 넷으로 나눕니다.[10]",
+        "items": [
+          "**기기 무결성** — 루팅/탈옥·에뮬레이터·가상 앱 탐지, 그리고 OS가 보증하는 확인(Android Play Integrity[14], Apple App Attest[15]).",
+          "**변조 방지** — 실행 파일·리소스의 해시를 재서 다시 묶인 앱인지, 실행 중 코드가 바뀌었는지.[10]",
+          "**정적 분석 방해** — 문자열·함수 이름 숨기기, 코드 난독화.[10]",
+          "**동적 분석 방해** — 디버거·후킹 도구(Frida 같은 것[21]) 붙음을 계속 확인.[11]",
+          "**값 보호** — 중요한 값을 그대로 두지 않고 섞어 두고 검사값을 같이 둔다(아래 예)."
+        ]
+      },
+      "examples": [
+        {
+          "title": "메모리 편집기로 값을 덮으면 알아채기 (직접 돌린 출력)",
+          "body": "치트 도구는 메모리에서 '1000'을 검색해 그 자리를 바꿉니다.[13] 값을 키와 섞어 두면 검색에 안 걸리고, 검사값이 있으면 덮어쓴 것을 알 수 있습니다. 실제 SDK는 C++로, 키를 바꿔 가며 같은 생각을 구현합니다 {추론}.",
+          "lang": "python",
+          "code": "import hashlib, os\n\nclass Guarded:\n    def __init__(self, v):\n        self._key = int.from_bytes(os.urandom(4), \"little\")\n        self.set(v)\n    def _tag(self, enc):\n        return hashlib.sha256((enc ^ self._key).to_bytes(8, \"little\", signed=True)).digest()[:4]\n    def set(self, v):\n        self._enc = v ^ self._key\n        self._chk = self._tag(self._enc)\n    def get(self):\n        if self._tag(self._enc) != self._chk:\n            raise RuntimeError(\"tamper detected\")\n        return self._enc ^ self._key\n\ngold = Guarded(1000)\nprint(\"정상 읽기:\", gold.get())\nprint(\"메모리에 1000 이 그대로 있나:\", gold._enc == 1000)\ngold._enc = 999999   # 메모리 편집기로 덮었다고 치자\ntry:\n    gold.get()\nexcept RuntimeError as e:\n    print(\"변조 뒤 읽기:\", e)\n\n# 출력\n# 정상 읽기: 1000\n# 메모리에 1000 이 그대로 있나: False\n# 변조 뒤 읽기: tamper detected"
+        }
+      ],
+      "how_far": "기기 안의 검사는 언젠가 뚫린다는 것을 전제로 합니다 — MASTG도 루팅 탐지 하나는 약하고 **여러 검사를 흩어 두는 것**이 낫다고 봅니다.[11] 그래서 중요한 판정(아이템 지급 등)은 서버가 하고, SDK는 '이상하다'는 신호를 모아 보내는 쪽에 무게를 둡니다 {추론}.",
+      "refs": [4, 10, 11, 13, 14, 15, 20, 21],
+      "study": ["owasp-masvs", "owasp-mastg", "game-hacking", "play-integrity", "app-attest"]
+    },
+    {
+      "section": "task",
+      "quote": "(게임 보안 SDK - C++ / iOS·Android Native / Windows)",
+      "short": "코어는 C++ 한 벌로 짜고, iOS·Android·Windows 각자의 방식으로 붙이는 구조라는 뜻.",
+      "why": "같은 탐지 로직을 OS마다 따로 짜면 세 벌을 고쳐야 합니다. C++ 코어 하나를 세 OS용으로 컴파일하고, OS마다 다른 부분(파일 경로·프로세스 정보·기기 확인 API)만 얇게 나누는 것이 보통입니다 {추론}. 이 조직의 예전 공고는 모바일 게임에서 시작해 Windows PC 게임으로 넓힌다고 적었습니다.[3]",
+      "actually": {
+        "items": [
+          "**Android** — NDK(안드로이드용 C/C++ 도구 모음)로 arm64-v8a·armeabi-v7a·x86_64 별 `.so`를 굽고, Java/Kotlin 쪽과는 JNI로 잇는다.[16][17]",
+          "**iOS** — 같은 C++를 Xcode로 정적 라이브러리·프레임워크로 묶고 Objective-C/Swift 쪽에서 부른다.[18]",
+          "**Windows** — DLL로 내고, PE 실행 파일 구조·프로세스 메모리 API를 다룬다.[12][13]",
+          "**공통 코어** — 해시·암호·탐지 규칙·서버 통신은 한 벌 {추론}."
+        ]
+      },
+      "how_far": "세 OS를 다 깊게 아는 사람은 드뭅니다. 최소선은 **C++ 코어를 OS 의존 없이 짜는 법**과 한 OS의 네이티브 빌드를 끝까지 해 본 경험이고, 나머지 OS는 붙이는 법을 익히면 됩니다 {추론}.",
+      "refs": [3, 12, 13, 16, 17, 18],
+      "study": ["ndk-abis", "ndk-toolchain", "unity-native", "pe-format"]
+    },
+    {
+      "section": "qualification",
+      "quote": "C, C++ 개발 경력 7년 이상",
+      "short": "남의 게임 안에서 튕기지 않는 C++을 오래 짜 본 사람 — 메모리·수명 관리를 몸으로 아는 경력.",
+      "why": "SDK의 실수는 수백만 명의 게임을 튕기게 합니다. 메모리 해제 실수·스레드 경합 같은 C++의 함정은 경험으로 피하는 부분이 크고, 해킹 방어 코드는 일부러 낮은 수준(포인터·메모리 보호 속성)을 만지므로 더 위험합니다 {추론}.",
+      "level": {
+        "basic": "포인터·참조·RAII(자원을 객체 수명에 묶는 방식)·스마트 포인터로 누수 없는 코드를 쓴다.[22]",
+        "work": "이동 의미론·템플릿·예외 안전성을 알고, 라이브러리의 ABI(컴파일된 코드끼리의 약속)를 깨지 않게 공개 헤더를 설계한다.",
+        "team": "여러 컴파일러(Clang·MSVC)·여러 OS에서 같은 코드가 같이 동작하게 하고, 튕김 덤프로 원인을 찾는다 {추론}."
+      },
+      "how_far": "연차보다 **'남이 쓰는 C/C++ 라이브러리'를 배포·유지해 본 경험**이 무게가 큽니다. 경력기술서에 어떤 OS·컴파일러에서 무엇을 냈는지 구체적으로 쓰는 편이 낫습니다 {추론}.[1]",
+      "refs": [1, 22],
+      "study": ["cpp-core", "emc"]
+    },
+    {
+      "section": "qualification",
+      "quote": "C++ 디자인 패턴 이해 및 응용 능력",
+      "short": "탐지 기능을 갈아 끼우고 OS마다 다른 부분을 숨기는 구조를 패턴으로 짜는 능력.",
+      "why": "탐지 항목은 계속 늘고 OS마다 구현이 다릅니다. 새 탐지를 넣을 때 기존 코드를 덜 건드리려면 구조가 필요합니다 {추론}.",
+      "actually": {
+        "intro": "보안 SDK에서 자주 쓰일 법한 패턴입니다 {추론}.",
+        "items": [
+          "**전략(Strategy)** — '루팅 탐지'를 인터페이스로 두고 Android·iOS 구현을 갈아 끼운다.",
+          "**관찰자(Observer)** — 탐지가 일어나면 게임 콜백·로그·서버 전송에 한꺼번에 알린다.",
+          "**파사드(Facade)** — 게임 개발자에게는 `Init`·`Check` 같은 몇 개만 보이게.",
+          "**Pimpl** — 공개 헤더에 내부 구조를 숨겨, 내부를 바꿔도 게임을 다시 빌드할 필요가 없게.",
+          "**싱글턴은 조심** — 초기화 순서·스레드 문제로 SDK에서 흔히 사고가 난다."
+        ]
+      },
+      "how_far": "패턴 이름 외우기보다 **왜 그 구조가 바꾸기 쉬운지** 말할 수 있으면 됩니다. 면접에서는 '새 탐지 항목을 넣을 때 몇 파일을 고치나' 같은 질문으로 확인될 가능성이 큽니다 {추론}.",
+      "refs": [],
+      "study": ["gof", "emc"]
+    },
+    {
+      "section": "qualification",
+      "quote": "실행 파일 메모리 구조 및 실행 원리에 대한 이해",
+      "short": "실행 파일이 메모리에 어떻게 올라가 어느 구역이 코드·데이터인지 알아야 변조를 찾을 수 있다는 것.",
+      "why": "치트는 코드 구역을 고쳐 검사를 건너뛰거나 데이터 구역 값을 바꿉니다. 방어 코드는 **'원래 이 구역은 이래야 한다'**를 알아야 바뀐 것을 찾을 수 있습니다.[12][13]",
+      "actually": {
+        "items": [
+          "**PE(Windows)·ELF(Android)·Mach-O(iOS)** — 실행 파일 안에 코드(.text)·읽기 전용 데이터(.rdata)·쓰기 데이터(.data)가 구역별로 나뉘고, 구역마다 읽기·쓰기·실행 권한이 있다.[12]",
+          "**적재** — OS가 파일을 메모리에 올리고(ImageBase), 주소를 맞추고(재배치), 필요한 DLL·.so 함수 주소를 채운다(임포트).[12]",
+          "**코드 무결성 검사** — 실행 중 .text 구역의 해시를 파일의 해시와 비교하면 패치된 것을 안다 {추론}.",
+          "**다른 프로세스의 메모리** — Windows는 권한만 있으면 남의 프로세스 메모리를 읽고 쓰는 API가 있다. 치트 도구가 이걸 쓴다.[13]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "실행 파일의 구역과 권한 읽기 (직접 돌린 출력)",
+          "body": "Windows 메모장(notepad.exe)의 PE 머리말을 읽어 구역 이름·주소·권한을 찍었습니다.[12] 코드 구역(.text)은 읽기+실행(R-X), 데이터(.data)는 읽기+쓰기(RW-)입니다 — '쓰기 + 실행'이 같이 켜진 구역이 생기면 의심할 만합니다 {추론}.",
+          "lang": "python",
+          "code": "import struct\ndata = open(r\"C:\\Windows\\System32\\notepad.exe\", \"rb\").read(4096)\npe = struct.unpack_from(\"<I\", data, 0x3C)[0]            # e_lfanew\nmachine, nsec = struct.unpack_from(\"<HH\", data, pe + 4)\nopt = pe + 24\nentry = struct.unpack_from(\"<I\", data, opt + 16)[0]\nbase = struct.unpack_from(\"<Q\", data, opt + 24)[0]\nprint(f\"machine=0x{machine:04X} sections={nsec}\")\nprint(f\"entry RVA=0x{entry:X}  ImageBase=0x{base:X}\")\nsec = opt + struct.unpack_from(\"<H\", data, pe + 20)[0]\nfor i in range(nsec):\n    name, vsz, va = struct.unpack_from(\"<8sII\", data, sec + 40 * i)\n    ch = struct.unpack_from(\"<I\", data, sec + 40 * i + 36)[0]\n    f = (\"R\" if ch & 0x40000000 else \"-\") + (\"W\" if ch & 0x80000000 else \"-\") + (\"X\" if ch & 0x20000000 else \"-\")\n    print(f\"{name.rstrip(bytes(1)).decode():8} VA=0x{va:06X} size=0x{vsz:06X} {f}\")\n\n# 출력 (Windows 11, 이 머신)\n# machine=0x8664 sections=8\n# entry RVA=0x19C0  ImageBase=0x140000000\n# .text    VA=0x001000 size=0x0267E2 R-X\n# fothk    VA=0x028000 size=0x001000 R-X\n# .rdata   VA=0x029000 size=0x00A6C8 R--\n# .data    VA=0x034000 size=0x002760 RW-\n# .pdata   VA=0x037000 size=0x001218 R--\n# .didat   VA=0x039000 size=0x0000F8 RW-\n# .rsrc    VA=0x03A000 size=0x01E1D0 R--\n# .reloc   VA=0x059000 size=0x00035C R--"
+        }
+      ],
+      "how_far": "세 형식을 다 외울 필요는 없습니다. **한 형식(보통 PE)을 손으로 읽어 보고**, 나머지는 같은 개념(구역·권한·임포트·재배치)이 이름만 다르다는 것을 알면 출발선입니다 {추론}.",
+      "refs": [12, 13],
+      "study": ["pe-format", "reversing-core", "pma"]
+    },
+    {
+      "section": "qualification",
+      "quote": "어셈블리 코드, 크로스 컴파일에 대한 이해",
+      "short": "치트가 고친 기계어를 읽을 줄 알고, 한 PC에서 ARM 폰·x64 PC용 바이너리를 같이 굽는 능력.",
+      "why": "앱 변조는 소스가 아니라 **기계어 몇 바이트**를 바꾸는 일이라, 무엇이 바뀌었는지는 어셈블리로만 보입니다.[11] 또 SDK는 개발 PC와 다른 CPU(폰의 ARM64)용으로 컴파일해야 합니다.[16][17]",
+      "actually": {
+        "items": [
+          "**어셈블리 읽기** — 분기 명령 하나를 바꿔 '탐지됨' 검사를 건너뛰는 패치를 찾아본다.[11]",
+          "**호출 규약** — 함수 인자가 어느 레지스터로 가는지(x64 Windows는 RCX·RDX·R8·R9)를 알아야 후킹을 이해한다.[28]",
+          "**크로스 컴파일** — NDK 툴체인으로 ABI마다 따로 굽고, iOS는 arm64 기기용과 시뮬레이터용을 따로 묶는다.[16][17]",
+          "**빌드 옵션** — 심볼 제거·최적화·스택 보호 옵션이 분석 난이도와 튕김에 영향을 준다 {추론}."
+        ]
+      },
+      "how_far": "어셈블리를 손으로 쓰는 일은 드물고 **읽는 것**이 핵심입니다. 디스어셈블러(IDA·Ghidra 같은)로 자기가 짠 C++ 함수를 열어 보고 대응되는 줄을 짚을 수 있으면 출발선입니다 {추론}.",
+      "refs": [11, 16, 17, 28],
+      "study": ["reversing-core", "ndk-toolchain", "x64-cc"]
+    },
+    {
+      "section": "qualification",
+      "quote": "네트워크 및 비동기 프로그래밍 가능",
+      "short": "탐지 결과를 서버로 보내되 게임 화면을 한 프레임도 멈추지 않게 하는 능력.",
+      "why": "SDK는 게임 프레임(60fps면 한 장에 약 16ms) 안에서 돕니다. 탐지 기록 전송·정책 받기가 게임 스레드를 막으면 곧바로 끊김으로 보입니다 {추론}. 상용 서비스도 탐지 기록을 서버로 모아 정책을 내립니다.[20]",
+      "actually": {
+        "items": [
+          "**전송은 뒤에서** — 별도 스레드·이벤트 루프에서 보내고, 실패하면 물러섰다 다시(지수 백오프), 끝내 안 되면 쌓아 두었다 나중에.",
+          "**위조 방지** — 보낸 기록이 중간에 바뀌거나 재전송되지 않게 서명·시각·일회용 값을 붙인다 {추론}.",
+          "**토큰 확인** — 스토브 PC SDK처럼 런처가 준 토큰을 게임 서버가 인증 서버에 확인받는 흐름과 맞물린다.[9]",
+          "**C++ 쪽 도구** — 표준 스레드·future, 또는 Boost.Asio 같은 비동기 입출력 라이브러리.[23][27]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "게임 루프를 막지 않고 탐지 기록 보내기 (직접 돌린 출력)",
+          "body": "프레임 5장 그리기와 탐지 기록 두 건 전송을 같이 돌렸습니다. 차례로 했다면 약 0.18초인데 같이 돌려 0.12초에 끝났고, 실패하면 다시 시도하는 길도 들어 있습니다. C++에서는 같은 구조를 스레드나 Asio로 짭니다 {추론}.",
+          "lang": "python",
+          "code": "import asyncio, random, time\n\nasync def report(event, attempt_limit=3):\n    for attempt in range(1, attempt_limit + 1):\n        await asyncio.sleep(0.05)                 # 네트워크 왕복\n        if random.random() < 0.5:\n            return f\"{event}: sent (try {attempt})\"\n        await asyncio.sleep(0.01 * 2 ** attempt)  # 지수 백오프\n    return f\"{event}: queued for later\"\n\nasync def game_loop(frames=5):\n    for _ in range(frames):\n        await asyncio.sleep(1 / 60)               # 한 프레임 16ms\n    return f\"{frames} frames rendered\"\n\nasync def main():\n    random.seed(7)\n    t = time.perf_counter()\n    res = await asyncio.gather(game_loop(), report(\"speedhack\"), report(\"debugger\"))\n    print(*res, sep=\"\\n\")\n    print(f\"total {time.perf_counter() - t:.2f}s (차례로 하면 약 0.18s)\")\n\nasyncio.run(main())\n\n# 출력\n# 5 frames rendered\n# speedhack: sent (try 1)\n# debugger: sent (try 1)\n# total 0.12s (차례로 하면 약 0.18s)"
+        }
+      ],
+      "how_far": "서버를 만드는 자리는 아니므로 **클라이언트 쪽 통신을 튼튼하게**(시간 제한·재시도·끊김 처리·스레드 안전) 짤 수 있으면 됩니다 {추론}.",
+      "refs": [9, 20, 23, 27],
+      "study": ["ccia", "asio"]
+    },
+    {
+      "section": "qualification",
+      "quote": "OOP 개념 응용 및 구현 능력",
+      "short": "탐지 항목·OS별 구현을 객체로 나눠, 하나를 고쳐도 나머지가 안 깨지게 짜는 능력.",
+      "why": "앞의 디자인 패턴 줄과 같은 이유입니다 — 탐지는 늘고 OS는 셋이라, 공통 부분과 다른 부분을 객체 경계로 나눠야 유지가 됩니다 {추론}.",
+      "actually": {
+        "items": [
+          "**캡슐화** — 키·검사값 같은 내부 상태는 밖에서 못 만지게.",
+          "**다형성** — `Detector` 인터페이스 하나에 루팅·디버거·변조 탐지를 구현체로.",
+          "**상속보다 조합** — OS별 차이는 상속 계층보다 갈아 끼우는 부품으로.[22]",
+          "**공개 경계** — 게임에 내보내는 C 함수(엔진이 부르기 쉬운 형태) 뒤에 C++ 객체를 숨긴다.[18]"
+        ]
+      },
+      "how_far": "C++의 가상 함수 비용·객체 수명까지 알고 쓰면 충분합니다. 보안 코드에서는 구조가 너무 뻔하면 분석이 쉬워진다는 점도 고려 대상입니다 {추론}.",
+      "refs": [18, 22],
+      "study": ["cpp-core", "gof"]
+    },
+    {
+      "section": "qualification",
+      "quote": "자료구조, 알고리즘에 대한 높은 이해도",
+      "short": "탐지 검사를 프레임 예산 안에 넣으려면 무엇을 어떤 구조로 찾을지 고르는 기본기가 필요하다는 것.",
+      "why": "메모리 구역 해시·모듈 목록 비교·알려진 치트 서명 검색 같은 검사는 매 프레임 혹은 주기적으로 돕니다. 같은 일을 O(n²)로 하면 저사양 폰에서 끊김이 납니다 {추론}.",
+      "actually": {
+        "items": [
+          "**해시 집합** — 허용된 모듈·서명 목록과 비교를 O(1)로.",
+          "**여러 패턴 한 번에 찾기** — 메모리에서 알려진 치트 바이트 묶음 여러 개를 한 번 훑어 찾는 문자열 검색(아호-코라식 같은 것).",
+          "**나눠서 하기** — 큰 구역 해시를 프레임마다 조금씩 나눠 계산.",
+          "**무작위 순서** — 검사 순서·시점을 섞어 우회를 어렵게 {추론}."
+        ]
+      },
+      "how_far": "코딩 테스트 수준의 자료구조·알고리즘에 더해, **'이 검사가 한 프레임에 몇 ms 쓰나'를 재고 줄여 본 경험**을 말할 수 있으면 좋습니다 {추론}.",
+      "refs": [],
+      "study": ["cpp-core"]
+    },
+    {
+      "section": "qualification",
+      "quote": "성능, 안정성, 비동기 기술에 대한 이해 및 문제 해결 능력",
+      "short": "SDK 때문에 게임이 느려지거나 튕기면 안 되니, 재고 고치고 증거로 설명하는 능력.",
+      "why": "보안 SDK는 게임사 입장에서 '안 보이는 비용'입니다. 프레임 저하·튕김·배터리 소모가 생기면 SDK를 빼자는 말이 나옵니다 {추론}. 커널 수준 안티치트가 튕김(BSOD)·충돌로 비판받는 것도 같은 문제입니다.[8]",
+      "actually": {
+        "items": [
+          "**재기** — 검사별 소요 시간, 메모리 사용량, 스레드 수를 기기별로 잰다.",
+          "**튕김 분석** — Android tombstone·iOS 크래시 리포트·Windows 덤프에서 SDK 쪽 스택을 찾는다 {추론}.",
+          "**경합 잡기** — 탐지 스레드와 게임 스레드가 같은 자료를 만질 때 잠금·원자 변수로.[23]",
+          "**안전한 실패** — 검사가 오류를 내면 게임을 끄지 말고 기록만 남기는 쪽으로 {추론}."
+        ]
+      },
+      "how_far": "'빨라졌다'가 아니라 **전후 숫자**로 말하는 습관이 기준입니다. 튕김 하나를 재현·원인·수정까지 끌고 간 사례를 준비하면 좋습니다 {추론}.",
+      "refs": [8, 23],
+      "study": ["ccia", "emc"]
+    },
+    {
+      "section": "qualification",
+      "quote": "창의적이고 능동적인 업무 마인드",
+      "short": "치트 쪽이 먼저 움직이는 싸움이라, 새 우회법을 먼저 찾아보고 막을 거리를 스스로 만드는 태도.",
+      "why": "안티치트는 공격자가 우회법을 찾으면 다시 막는 반복입니다.[8] 알려진 방법만 막으면 늘 한 발 늦으니, 스스로 SDK를 공격해 보는 태도가 요구됩니다 {추론}.",
+      "actually": {
+        "items": [
+          "**자기 SDK 깨 보기** — Frida·디버거로 우리 탐지를 우회해 보고 약한 곳을 적는다.[21]",
+          "**공개 연구 따라가기** — 새 루팅 은닉 도구·후킹 기법이 나오면 재현해 본다 {추론}.",
+          "**분석 담당과 주고받기** — 같은 조직의 게임보안 분석 자리와 탐지 아이디어를 주고받는다.[4]"
+        ]
+      },
+      "how_far": "면접에서는 '스스로 찾아 막은 것' 한두 가지를 구체적으로 묻게 될 가능성이 큽니다. 포트폴리오 제출이 필수라[1] 그 사례를 결과물로 보이는 편이 낫습니다 {추론}.",
+      "refs": [1, 4, 8, 21],
+      "study": ["frida", "game-hacking"]
+    },
+    {
+      "section": "preference",
+      "quote": "Native 모듈 모바일 앱 개발 경험(Android, iOS, Windows)",
+      "short": "C++ 코어를 실제 앱에 붙여 본 경험 — JNI·Objective-C 다리를 놓고 스토어 심사까지 가 본 것.",
+      "why": "SDK가 쓰이는 곳은 결국 앱입니다. 빌드 설정·서명·스토어 정책(예: 사설 API 금지) 때문에 생기는 문제는 앱을 직접 내 본 사람이 빨리 풉니다 {추론}.",
+      "actually": {
+        "items": [
+          "**Android** — Gradle + CMake로 `.so` 넣기, JNI로 Kotlin↔C++ 호출, ABI별 APK/AAB.[16][17]",
+          "**iOS** — 정적 라이브러리를 Xcode에 넣고 서명, 시뮬레이터·기기 아키텍처 구분.[18]",
+          "**Windows** — DLL 배포·서명, 관리자 권한 없이 도는지 {추론}.",
+          "**OS가 주는 확인** — Play Integrity·App Attest 같은 기기 확인을 앱 흐름에 붙이기.[14][15]"
+        ]
+      },
+      "how_far": "우대사항이라 없어도 지원은 됩니다. 한 OS에서라도 **네이티브 라이브러리를 넣은 앱을 끝까지 배포**해 본 경험이면 충분히 말할 거리가 됩니다 {추론}.",
+      "refs": [14, 15, 16, 17, 18],
+      "study": ["ndk-toolchain", "play-integrity", "app-attest"]
+    },
+    {
+      "section": "preference",
+      "quote": "Unity, Unreal Engine Plugin 모듈 개발 경험 (Android, iOS, Windows)",
+      "short": "게임 개발자가 엔진 안에서 바로 쓰도록 SDK를 Unity·Unreal 플러그인으로 감싸 본 경험.",
+      "why": "게임사는 C++ 라이브러리를 직접 붙이지 않고 엔진 플러그인으로 받길 원합니다. 스토브 PC SDK도 Native·Unity·Unreal 연동 안내를 따로 둡니다.[9]",
+      "actually": {
+        "items": [
+          "**Unity** — C# 에서 네이티브 함수를 부르는 P/Invoke, 그래서 C 연결 방식(extern \"C\")의 함수로 내보낸다. iOS는 Xcode 프로젝트에 복사돼 같이 링크된다.[18]",
+          "**Unreal** — 플러그인 안의 서드파티 모듈로 라이브러리를 넣고 `.Build.cs` 에 경로·런타임 의존(DLL)을 적는다.[19]",
+          "**버전 호환** — 엔진 버전·IL2CPP 같은 빌드 방식마다 다르게 깨지는 부분을 시험 {추론}.",
+          "**샘플 프로젝트** — 붙이는 법을 보여 주는 최소 예제를 같이 낸다 {추론}."
+        ]
+      },
+      "how_far": "엔진으로 게임을 만든 경험보다 **엔진에 남의 네이티브 라이브러리를 붙여 본 경험**이 요점입니다 {추론}.",
+      "refs": [9, 18, 19],
+      "study": ["unity-native", "unreal-3p", "stove-pc-sdk"]
+    },
+    {
+      "section": "preference",
+      "quote": "Backend API 서버 및 Frontend 개발 가능자",
+      "short": "SDK가 보낸 탐지 기록을 받는 서버와, 게임사가 그것을 보는 관리 화면까지 손댈 수 있으면 좋다는 것.",
+      "why": "보안 '서비스'는 SDK만으로 끝나지 않고 탐지 기록 수집·정책 배포·통계 화면이 같이 있어야 합니다. 상용 서비스도 콘솔에서 정책을 정하고 탐지 현황을 봅니다.[20]",
+      "actually": {
+        "items": [
+          "**수집 API** — SDK의 탐지 기록을 받아 검증하고 쌓는다.",
+          "**정책 API** — 게임별 차단·경고 정책을 SDK가 받아 간다.[20]",
+          "**관리 화면** — 게임사가 탐지 건수·기기·버전별 현황을 본다.[20]",
+          "**제재 연결** — 게임 서버가 탐지 기록을 계정 제재 판단에 쓴다 {추론}."
+        ]
+      },
+      "how_far": "우대사항입니다. SDK와 서버 사이 **주고받을 자료의 모양**을 같이 설계할 수 있는 정도면 협업에 크게 도움이 됩니다 {추론}.",
+      "refs": [20],
+      "study": ["nhn-appguard"]
+    },
+    {
+      "section": "preference",
+      "quote": "상용 보안 솔루션 서비스 경험",
+      "short": "게임가드·앱가드처럼 남의 게임에 들어가는 보안 제품을 만들거나 운영해 본 경험.",
+      "why": "국내 게임에는 nProtect 게임가드·XIGNCODE 같은 상용 안티치트가 오래 쓰였고, 로스트아크는 해외에서 Easy Anti-Cheat를 씁니다.[8] 상용 제품을 해 본 사람은 오탐 민원·호환성·업데이트 주기처럼 **제품으로서의 보안**을 압니다 {추론}.",
+      "actually": {
+        "items": [
+          "**탐지 방식** — 알려진 치트를 서명(패턴)으로, 모르는 것은 행동(휴리스틱)으로 찾는다.[20]",
+          "**정책 단계** — 탐지되면 기록만 / 경고 / 종료처럼 단계를 고르게 한다.[20]",
+          "**권한 논쟁** — 커널 드라이버로 깊이 볼수록 잘 잡지만 개인정보·안정성 논란이 커진다.[8]",
+          "**고객 지원** — 정상 사용자 오탐 신고를 받아 규칙을 고치는 일 {추론}."
+        ]
+      },
+      "how_far": "없어도 되는 우대사항입니다. 대신 상용 솔루션 문서(정책·탐지 종류)를 읽고 **우리라면 무엇을 다르게 하겠나**를 말할 수 있으면 좋습니다 {추론}.",
+      "refs": [8, 20],
+      "study": ["nhn-appguard", "kocca-anticheat"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "C++로 남이 쓰는 라이브러리를 만들어 본 사람 — 공개 헤더·ABI·호환성을 신경 써 본 사람",
+      "치트가 어떻게 도는지 뜯어보는 것이 재미있는 사람",
+      "모바일 네이티브(NDK·iOS)와 Windows를 오가는 것이 괜찮은 사람[1]",
+      "탐지를 많이 넣는 것보다 오탐·튕김이 없는 것을 더 중요하게 보는 사람"
+    ],
+    "hard": [
+      "C/C++ 7년 이상이 자격요건이다 — 보안 분석만 해 왔다면 개발 경력을 따로 보여 줘야 한다[1]",
+      "치트를 직접 분석해 대응하는 일은 같은 조직의 다른 자리가 주로 맡는다[4]",
+      "포트폴리오 제출이 필수다 — 보안 코드는 공개하기 어려워 따로 만들어야 할 수 있다[1] {추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "루팅 탐지를 넣었는데 특정 제조사 폰에서 정상 사용자가 다 잡힌대요. 어떻게 하겠어요?",
+      "a": "오탐 관리와 여러 검사 흩어 두기.[10][11]"
+    },
+    {
+      "q": "치트가 우리 탐지 함수의 분기 하나를 바꿔 건너뛰고 있어요. 어떻게 알아채겠어요?",
+      "a": "코드 구역 무결성 검사와 어셈블리 읽기.[11][12]"
+    },
+    {
+      "q": "같은 C++ 코어를 Android·iOS·Windows로 내려면 디렉터리·빌드를 어떻게 나누겠어요?",
+      "a": "크로스 컴파일과 OS 의존 부분 나누기.[16][17][18]"
+    },
+    {
+      "q": "탐지 기록 전송 때문에 저사양 폰에서 프레임이 떨어진대요. 무엇부터 재겠어요?",
+      "a": "비동기 전송과 프레임 예산.[23]"
+    },
+    {
+      "q": "Unity 게임사가 IL2CPP 빌드에서 SDK 함수를 못 찾는다고 해요. 어디를 보겠어요?",
+      "a": "엔진 플러그인 연동(C 연결 방식 함수·링크).[18]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "잡코리아 · [스마일게이트] [정보보안] 게임 보안 SDK 개발 담당",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50274592",
+      "kind": "posting",
+      "note": "담당업무·자격요건·필요역량·우대사항·제출서류(경력기술서·포트폴리오)·Culture Fit Test"
+    },
+    {
+      "n": 2,
+      "title": "스마일게이트 채용 · [정보보안] 게임 보안 SDK 개발 담당",
+      "url": "https://careers.smilegate.com/apply/announce/view?seq=6194",
+      "kind": "posting",
+      "note": "같은 공고의 회사 채용 사이트 판(자격요건은 필요역량 세 줄만 실렸다)"
+    },
+    {
+      "n": 3,
+      "title": "Outscal · Game Security Service Development (CTO Division) at Smilegate",
+      "url": "https://outscal.com/job/game-security-service-development-cto-division-at-smilegate-in-seongnam-si-gyeonggi-do-south-korea-2",
+      "kind": "posting",
+      "note": "같은 일의 예전 공고를 옮긴 페이지 — 모바일 게임 보안 SDK에서 시작해 Windows PC 게임으로 넓힌다는 내용. 이 회차에는 페이지가 열리지 않아 검색 결과 요약으로만 확인했다"
+    },
+    {
+      "n": 4,
+      "title": "스마일게이트 채용 · [정보보안] 게임보안 분석 및 대응 담당 (팀장급)",
+      "url": "https://careers.smilegate.com/apply/announce/view?seq=6186",
+      "kind": "posting",
+      "note": "같은 조직의 다른 공고 — 치팅 툴·메모리 변조 분석, 안티치트(같은 회사의 다른 풀이에서 확인)"
+    },
+    {
+      "n": 5,
+      "title": "잡코리아 · [스마일게이트] [정보보안] 보안 위협 분석 및 침해사고 대응 담당",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50274656",
+      "kind": "posting",
+      "note": "같은 조직 — CERT/SOC"
+    },
+    {
+      "n": 6,
+      "title": "한국콘텐츠진흥원 글로벌 게임산업 트렌드 2023년 5+6월호 · 연이은 사이버 공격에 대한 글로벌 게임사의 대응 방안은?",
+      "url": "https://www.kocca.kr/global/2023_5+6/sub02_03.html",
+      "kind": "reference",
+      "date": "2023-06-15",
+      "note": "스토브·로스트아크 계정 대입 공격과 스마일게이트의 보안 체계 업데이트"
+    },
+    {
+      "n": 7,
+      "title": "아시아경제 · 스마일게이트, 통합법인 체제로 전환",
+      "url": "https://www.asiae.co.kr/en/article/2025112615295592284",
+      "kind": "news",
+      "date": "2025-11-26",
+      "note": "2026-01-01 홀딩스·엔터테인먼트·RPG 세 법인 통합"
+    },
+    {
+      "n": 8,
+      "title": "한국콘텐츠진흥원 글로벌 게임산업 트렌드 2025년 9+10월호 · 차세대 안티 치트 기술, 게임 공정성과 사용자 권리 사이의 딜레마",
+      "url": "https://www.kocca.kr/global/2025_9+10/sub02_06.html",
+      "kind": "reference",
+      "date": "2025",
+      "note": "커널 수준 안티치트의 효과와 개인정보·안정성 논란, 국내 게임가드·XIGNCODE, 로스트아크의 EAC"
+    },
+    {
+      "n": 9,
+      "title": "STOVE Studio · PC SDK Native Integrate Guide",
+      "url": "https://studio-docs.onstove.com/en/pc/Integration/native.html",
+      "kind": "company",
+      "note": "스토브 입점 게임용 SDK 연동 — 초기화·토큰 확인. Unity·Unreal 연동 안내가 따로 있다"
+    },
+    {
+      "n": 10,
+      "title": "OWASP MASVS (Mobile Application Security Verification Standard)",
+      "url": "https://mas.owasp.org/MASVS/",
+      "kind": "reference",
+      "note": "MASVS-RESILIENCE — 기기 무결성·변조 방지·정적/동적 분석 방해"
+    },
+    {
+      "n": 11,
+      "title": "OWASP Mobile Application Security Testing Guide (MASTG)",
+      "url": "https://mas.owasp.org/MASTG/",
+      "kind": "reference",
+      "note": "루팅 탐지·디버거 탐지·변조 탐지 시험 방법, 검사 여러 개를 흩어 두는 권고"
+    },
+    {
+      "n": 12,
+      "title": "Microsoft Learn · PE Format",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/debug/pe-format",
+      "kind": "reference"
+    },
+    {
+      "n": 13,
+      "title": "Microsoft Learn · ReadProcessMemory function (memoryapi.h)",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory",
+      "kind": "reference"
+    },
+    {
+      "n": 14,
+      "title": "Android Developers · Play Integrity API",
+      "url": "https://developer.android.com/google/play/integrity",
+      "kind": "reference"
+    },
+    {
+      "n": 15,
+      "title": "Apple Developer · Establishing your app's integrity (App Attest)",
+      "url": "https://developer.apple.com/documentation/devicecheck/establishing-your-app-s-integrity",
+      "kind": "reference"
+    },
+    {
+      "n": 16,
+      "title": "Android NDK · Android ABIs",
+      "url": "https://developer.android.com/ndk/guides/abis",
+      "kind": "reference"
+    },
+    {
+      "n": 17,
+      "title": "Android NDK · Use the NDK with other build systems",
+      "url": "https://developer.android.com/ndk/guides/other_build_systems",
+      "kind": "reference",
+      "note": "NDK 툴체인으로 크로스 컴파일하기"
+    },
+    {
+      "n": 18,
+      "title": "Unity Manual · Introduction to native plug-ins",
+      "url": "https://docs.unity.com/en-us/engine/6000.0/manual/programming-environment/plug-ins/native/overview",
+      "kind": "reference",
+      "note": "P/Invoke·C 연결 방식, iOS 플러그인은 Xcode 프로젝트에서 링크"
+    },
+    {
+      "n": 19,
+      "title": "Unreal Engine · Integrating Third-Party Libraries into Unreal Engine",
+      "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/integrating-third-party-libraries-into-unreal-engine",
+      "kind": "reference"
+    },
+    {
+      "n": 20,
+      "title": "NHN Cloud · NHN AppGuard Overview",
+      "url": "https://docs.nhncloud.com/en/Security/NHN%20AppGuard/en/Overview/",
+      "kind": "reference",
+      "note": "다른 회사의 상용 모바일 게임 보안 서비스 — 코드·메모리·속도 변조 탐지(패턴·휴리스틱), 콘솔 정책, Android·iOS·Unity"
+    },
+    {
+      "n": 21,
+      "title": "Frida 문서",
+      "url": "https://frida.re/docs/home/",
+      "kind": "reference",
+      "note": "실행 중인 앱에 코드를 끼워 넣는 동적 분석 도구 — 공격자와 방어자가 같이 쓴다"
+    },
+    {
+      "n": 22,
+      "title": "C++ Core Guidelines",
+      "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines",
+      "kind": "reference"
+    },
+    {
+      "n": 23,
+      "title": "cppreference · Concurrency support library",
+      "url": "https://en.cppreference.com/w/cpp/thread",
+      "kind": "reference"
+    },
+    {
+      "n": 24,
+      "title": "자소설닷컴 · 스마일게이트 기업 정보",
+      "url": "https://jasoseol.com/companies/11383",
+      "kind": "reference",
+      "note": "초봉·평균 연봉(공공데이터 집계). 기준일·직군 구분 없음, 같은 회사의 다른 풀이에서 확인한 값"
+    },
+    {
+      "n": 25,
+      "title": "스마일게이트 채용 · LIFE AT SMILEGATE",
+      "url": "https://careers.smilegate.com/life",
+      "kind": "company",
+      "note": "복지 목록 — 연도 표기 없음"
+    },
+    {
+      "n": 26,
+      "title": "스마일게이트 뉴스룸 · [AI Revolution] 스마일게이트 — 휴먼라이크 AI",
+      "url": "https://newsroom.smilegate.com/eng/1684893399",
+      "kind": "company",
+      "date": "2023-05",
+      "note": "페이지 하단 회사 주소"
+    },
+    {
+      "n": 27,
+      "title": "Boost.Asio 문서",
+      "url": "https://www.boost.org/doc/libs/release/doc/html/boost_asio.html",
+      "kind": "reference"
+    },
+    {
+      "n": 28,
+      "title": "Microsoft Learn · x64 calling convention",
+      "url": "https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention",
+      "kind": "reference"
+    }
+  ],
+  "caveat": "스마일게이트 정보보안 조직이 게임 보안 SDK에 대해 직접 쓴 기술 글·발표는 이 회차에 찾지 못했습니다. 회사 근거는 이 공고와 같은 조직의 다른 공고, 예전 공고를 옮긴 페이지(검색 요약으로만 확인), 스토브 SDK 공식 문서, 2023년 계정 공격 기록뿐이고, SDK가 실제로 무엇을 탐지하는지는 OWASP 모바일 보안 기준과 다른 회사의 상용 서비스(NHN 앱가드) 문서로 '보통 이런 것'을 보였습니다. 예시 코드는 생각을 보이려는 Python이며 실제 SDK는 C++입니다.",
+  "resources": [
+    {
+      "id": "owasp-masvs",
+      "title": "OWASP MASVS",
+      "by": "OWASP",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://mas.owasp.org/MASVS/",
+      "why": "RESILIENCE 항목이 이 공고의 '메모리/앱 변조·해킹 환경 방어'를 네 갈래로 나눠 준다. 무엇을 만들지의 목록."
+    },
+    {
+      "id": "owasp-mastg",
+      "title": "OWASP Mobile Application Security Testing Guide (MASTG)",
+      "by": "OWASP",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://mas.owasp.org/MASTG/",
+      "why": "루팅·디버거·변조 탐지를 공격자가 어떻게 우회하는지까지 적혀 있어, 만든 탐지를 스스로 시험할 때 쓴다."
+    },
+    {
+      "id": "game-hacking",
+      "title": "Game Hacking: Developing Autonomous Bots for Online Games",
+      "by": "Nick Cano · No Starch Press · 2016",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://nostarch.com/gamehacking",
+      "why": "메모리 스캔·코드 주입·후킹 같은 치트 쪽 기법과 안티치트가 그걸 어떻게 찾는지를 Windows 게임 기준으로. 업무③의 공격 쪽 지식."
+    },
+    {
+      "id": "reversing-core",
+      "title": "리버싱 핵심 원리",
+      "by": "이승원 · 인사이트",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "입문",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%AC%EB%B2%84%EC%8B%B1%20%ED%95%B5%EC%8B%AC%20%EC%9B%90%EB%A6%AC",
+      "why": "PE 구조·코드 인젝션·API 후킹·안티 디버깅을 한국어로 손으로 따라 한다. '실행 파일 메모리 구조'와 '어셈블리' 요건의 출발점."
+    },
+    {
+      "id": "pma",
+      "title": "Practical Malware Analysis",
+      "by": "Michael Sikorski · Andrew Honig · No Starch Press · 2012",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://nostarch.com/malware",
+      "why": "디스어셈블러·디버거로 남의 바이너리를 읽는 법과 안티 디버깅 기법. 치트 바이너리를 분석할 때 같은 손기술이 든다."
+    },
+    {
+      "id": "pe-format",
+      "title": "PE Format",
+      "by": "Microsoft Learn",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/debug/pe-format",
+      "why": "Windows 실행 파일의 머리말·구역·임포트 표 공식 정의. 코드 무결성 검사를 짤 때 그대로 쓴다."
+    },
+    {
+      "id": "x64-cc",
+      "title": "x64 calling convention",
+      "by": "Microsoft Learn",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention",
+      "why": "인자가 어느 레지스터로 가는지 — 후킹·어셈블리를 읽을 때의 기본표."
+    },
+    {
+      "id": "ndk-abis",
+      "title": "Android ABIs",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.android.com/ndk/guides/abis",
+      "why": "SDK를 어떤 CPU용으로 몇 벌 구워야 하는지. 크로스 컴파일 요건의 첫 장."
+    },
+    {
+      "id": "ndk-toolchain",
+      "title": "Use the NDK with other build systems",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/ndk/guides/other_build_systems",
+      "why": "NDK 툴체인으로 직접 크로스 컴파일하는 법. CMake 밖의 빌드에 SDK를 넣을 때."
+    },
+    {
+      "id": "play-integrity",
+      "title": "Play Integrity API",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/google/play/integrity",
+      "why": "OS가 보증하는 기기·앱 확인. 기기 안 탐지만으로는 약한 부분을 서버 확인으로 보완하는 법."
+    },
+    {
+      "id": "app-attest",
+      "title": "Establishing your app's integrity (App Attest)",
+      "by": "Apple Developer",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.apple.com/documentation/devicecheck/establishing-your-app-s-integrity",
+      "why": "iOS 쪽 앱 무결성 확인. Play Integrity와 짝."
+    },
+    {
+      "id": "unity-native",
+      "title": "Unity Manual · Introduction to native plug-ins",
+      "by": "Unity",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.unity.com/en-us/engine/6000.0/manual/programming-environment/plug-ins/native/overview",
+      "why": "C++ SDK를 Unity 플러그인으로 감싸는 법(우대사항 ②)."
+    },
+    {
+      "id": "unreal-3p",
+      "title": "Integrating Third-Party Libraries into Unreal Engine",
+      "by": "Epic Games",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/integrating-third-party-libraries-into-unreal-engine",
+      "why": "Unreal 플러그인에 네이티브 라이브러리를 넣는 법(우대사항 ②)."
+    },
+    {
+      "id": "stove-pc-sdk",
+      "title": "STOVE Studio · PC SDK Native Integrate Guide",
+      "by": "스마일게이트 STOVE",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://studio-docs.onstove.com/en/pc/Integration/native.html",
+      "why": "스토브가 게임사에 SDK를 어떻게 붙이게 하는지 회사 자신의 문서로 본다. 보안 SDK도 이 방식 옆에 놓인다고 짐작할 수 있다."
+    },
+    {
+      "id": "nhn-appguard",
+      "title": "NHN AppGuard Overview",
+      "by": "NHN Cloud",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.nhncloud.com/en/Security/NHN%20AppGuard/en/Overview/",
+      "why": "국내 상용 게임 보안 서비스가 무엇을 탐지하고 정책·콘솔을 어떻게 나누는지. '보안 서비스'의 전체 그림과 우대사항 ④."
+    },
+    {
+      "id": "kocca-anticheat",
+      "title": "차세대 안티 치트 기술, 게임 공정성과 사용자 권리 사이의 딜레마",
+      "by": "한국콘텐츠진흥원 글로벌 게임산업 트렌드 · 2025",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.kocca.kr/global/2025_9+10/sub02_06.html",
+      "why": "커널 안티치트·게임가드를 둘러싼 효과와 논란을 한국어로 짧게. 상용 솔루션이 왜 미움받는지 알고 들어간다."
+    },
+    {
+      "id": "frida",
+      "title": "Frida 문서",
+      "by": "Frida",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://frida.re/docs/home/",
+      "why": "자기 SDK를 공격자 눈으로 우회해 보는 도구. 만든 탐지를 시험할 때."
+    },
+    {
+      "id": "cpp-core",
+      "title": "C++ Core Guidelines",
+      "by": "Bjarne Stroustrup · Herb Sutter 편집",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines",
+      "why": "자원 관리·인터페이스·동시성 규칙. 7년차 C++의 '튕기지 않는 코드' 기준선."
+    },
+    {
+      "id": "emc",
+      "title": "Effective Modern C++",
+      "by": "Scott Meyers · O'Reilly · 2014",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.oreilly.com/library/view/effective-modern-c/9781491908419/",
+      "why": "C++11/14의 이동·스마트 포인터·람다·동시성 함정 42가지. SDK 코어를 현대 C++로 짤 때."
+    },
+    {
+      "id": "ccia",
+      "title": "C++ Concurrency in Action, Second Edition",
+      "by": "Anthony Williams · Manning · 2019",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://www.manning.com/books/c-plus-plus-concurrency-in-action-second-edition",
+      "why": "스레드·원자 변수·메모리 모델. 탐지 스레드와 게임 스레드가 부딪히지 않게 하는 '비동기·안정성' 요건."
+    },
+    {
+      "id": "asio",
+      "title": "Boost.Asio",
+      "by": "Boost",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.boost.org/doc/libs/release/doc/html/boost_asio.html",
+      "why": "C++ 비동기 네트워크의 사실상 표준 라이브러리. 탐지 기록 전송부를 짤 때."
+    },
+    {
+      "id": "gof",
+      "title": "Design Patterns: Elements of Reusable Object-Oriented Software",
+      "by": "Erich Gamma · Richard Helm · Ralph Johnson · John Vlissides · Addison-Wesley · 1994",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=Design%20Patterns%20Elements%20of%20Reusable%20Object-Oriented%20Software",
+      "why": "예제가 C++인 패턴의 원전. '디자인 패턴 응용' 요건에서 전략·관찰자·파사드를 SDK 구조에 대 본다."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "실행 파일과 메모리 읽기",
+      "time": "2~3주",
+      "goal": "PE 구조를 손으로 읽고, 디버거로 함수의 어셈블리를 따라가며 분기를 바꿔 볼 수 있다.",
+      "resources": ["reversing-core", "pe-format", "x64-cc"],
+      "task": "직접 만든 작은 C++ 프로그램(비밀번호 검사 하나)을 빌드해 구역 표를 찍고, 디버거로 검사 분기를 찾아 바이트 하나를 바꿔 우회한 뒤 그 과정을 한 쪽으로 정리한다."
+    },
+    {
+      "title": "치트 쪽 기법 알기",
+      "time": "2~3주",
+      "goal": "메모리 스캔·값 변조·후킹이 어떻게 도는지 설명하고 직접 재현할 수 있다.",
+      "resources": ["game-hacking", "frida", "owasp-mastg"],
+      "task": "가상의 미니 게임(점수·골드 변수가 있는 콘솔 앱)을 만들고, 메모리 편집으로 골드를 바꾸는 것과 Frida로 함수 반환값을 바꾸는 것을 각각 재현한다."
+    },
+    {
+      "title": "방어 코드 만들기",
+      "time": "3~4주",
+      "goal": "값 보호·코드 무결성 검사·디버거 탐지를 C++ 라이브러리로 묶어 2단계 공격을 잡을 수 있다.",
+      "resources": ["owasp-masvs", "cpp-core", "gof", "emc"],
+      "task": "2단계 미니 게임에 붙일 `guard` 라이브러리를 만든다 — 값 섞어 두기 + 검사값, .text 해시 비교, 디버거 붙음 검사를 `Detector` 인터페이스 구현체로 두고, 오탐 없이 2단계 공격이 잡히는지 표로 남긴다."
+    },
+    {
+      "title": "여러 OS와 엔진에 붙이기",
+      "time": "3~4주",
+      "goal": "같은 C++ 코어를 Android `.so`와 Windows DLL로 굽고 Unity 플러그인으로 감쌀 수 있다.",
+      "resources": ["ndk-abis", "ndk-toolchain", "unity-native", "unreal-3p", "play-integrity"],
+      "task": "3단계 라이브러리를 NDK로 arm64-v8a 빌드해 빈 Android 앱과 Unity 샘플 씬에 붙이고, 탐지 기록을 비동기로 작은 서버에 보내 프레임 시간이 얼마나 늘었는지 전후 숫자를 잰다. 이 결과물을 포트폴리오로 쓴다."
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없습니다. 집계 사이트 기준 스마일게이트 초봉 **약 4,619만원**, 전체 평균 **약 7,107만원** — 7년차 이상 경력직 처우는 공개된 숫자가 없습니다.",
+    "rows": [
+      {
+        "label": "신입 초봉(집계)",
+        "value": "약 4,619만원",
+        "amount": 4619,
+        "basis": "공공데이터 집계",
+        "note": "자소설닷컴 기업 페이지의 초봉. 기준일·직군 구분이 없다 [24]"
+      },
+      {
+        "label": "전체 평균 연봉(집계)",
+        "value": "약 7,107만원",
+        "amount": 7107,
+        "basis": "공공데이터 집계",
+        "note": "같은 페이지의 평균(사원 수 958명 표기). 경력직이 섞인 회사 전체 값이라 초봉이 아니다 [24]"
+      }
+    ],
+    "how": "비상장사라 사업보고서의 '직원 1인 평균 급여' 같은 공시 숫자가 없어 집계 값만 실었다(공시 숫자 없음). 집계 기준 법인이 2026년 1월 통합[7] 전의 어느 법인인지도 적혀 있지 않다. 이 자리는 7년 이상 경력직이라 위 평균과 거리가 있고, 연봉은 경력기술서·포트폴리오와 면접을 거쳐 협의로 정해진다고 보는 것이 맞다 [1] {추론}."
+  },
+  "benefits": {
+    "items": [
+      {"name": "복지포인트", "detail": "건강관리·자기계발·여행/문화에 사용"},
+      {"name": "건강", "detail": "종합건강검진, EAP(심리 상담)"},
+      {"name": "가족", "detail": "직장어린이집 '스마일토리', 콘도·하계휴양소 지원, 단체 상해보험, 경조사 지원"},
+      {"name": "일과 삶", "detail": "선택적 근무제도, 직무도서 구입비 지원, 출근 셔틀버스(12개 노선), 힐링룸"},
+      {"name": "장기근속", "detail": "장기근속 포상(휴가·여행비)"},
+      {"name": "동료·성장", "detail": "스마일카페, 동호회, 사내 게임장, 학습 프로그램"}
+    ],
+    "note": "스마일게이트 채용 사이트의 복지 소개다 [25]. 글에 연도·적용 범위가 적혀 있지 않다. 같은 회사의 다른 풀이에서 확인한 목록을 그대로 옮겼다."
+  },
+  "location": {
+    "name": "스마일게이트 판교 사옥 (쏠리드 스페이스 빌딩)",
+    "address": "경기도 성남시 분당구 판교역로 220 (삼평동) 쏠리드 스페이스 빌딩",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20220",
+    "near": "신분당선 판교역 근처 {추론}",
+    "note": "주소는 스마일게이트 뉴스룸 페이지 하단의 회사 주소다 [26]. 공고 근무지는 '경기 성남시'까지만 적혀 있어 [1] 이 팀의 자리가 이 건물인지는 확인하지 못했다 {추론}."
+  }
+}
