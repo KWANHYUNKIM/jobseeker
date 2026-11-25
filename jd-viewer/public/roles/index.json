@@ -167,6 +167,7 @@
   "ats-greenhouse:coupang:8206706": "coupang-web-security-engineer-detection-ops",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
   "ats-greenhouse:daangn:7990084003": "daangn-ai-platform-software-engineer",
+  "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
   "boards-superookie:it:6afd0847a0717c1c4126d602": "daangn-shortform-backend-intern",
   "wanted-389061": "datachain-senior-sre-stablecoin",
@@ -2013,6 +2014,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 28
+  },
+  {
+   "id": "daangn-community-backend-intern",
+   "company": "당근",
+   "role": "Software Engineer, Backend (채용전환형 인턴) — 커뮤니티",
+   "jobs": [
+    "ats-greenhouse:daangn:8201151003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 52
   },
   {
    "id": "daangn-shortform-backend-intern",
