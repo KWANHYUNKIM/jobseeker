@@ -208,6 +208,7 @@
   "ats-skcareers:sk:R262429": "skax-digital-twin-developer",
   "ats-skcareers:sk:R262569": "skax-fab-equipment-quality-ai-agent",
   "dev-583962": "skax-fab-equipment-quality-ai-agent",
+  "ats-skcareers:sk:R262563": "skax-fab-planning-scheduling-simulation",
   "ats-skcareers:sk:R262544": "skax-hotel-ito-app-ops-pl",
   "ats-skcareers:sk:R262566": "skax-hris-pm-pl",
   "ats-skcareers:sk:R262274": "skax-ict-application-contract",
@@ -2234,6 +2235,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "skax-fab-planning-scheduling-simulation",
+   "company": "SK주식회사(AX)",
+   "role": "제조 생산계획·스케줄링·생산 시뮬레이션 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262563"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "skax-hotel-ito-app-ops-pl",

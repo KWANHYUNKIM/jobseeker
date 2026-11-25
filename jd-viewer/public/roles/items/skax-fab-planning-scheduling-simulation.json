@@ -1,0 +1,958 @@
+{
+  "id": "skax-fab-planning-scheduling-simulation",
+  "company": "SK주식회사(AX)",
+  "role": "제조 생산계획·스케줄링·생산 시뮬레이션 전문가",
+  "team": "제조AX서비스5팀",
+  "jobs": [
+    "ats-skcareers:sk:R262563"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "반도체·배터리 공장에서 **무엇을 얼마나 넣고(Planning), 어느 장비에서 언제 돌리고(Scheduling), 지금 이 장비에 어느 로트를 올릴지(Dispatching)** 정하는 프로그램을 만들고 운영합니다. 그 판단을 미리 시험하는 **생산·물류 시뮬레이션**도 맡습니다.[1]",
+    "env": "고객은 SK하이닉스·SK온 같은 계열사와 대외 제조사, 근무지는 이천(SK하이닉스 팹)과 분당 본사입니다.[1] SK하이닉스는 2030년 자율형 팹을 목표로 Omniverse 디지털 트윈을 쓰겠다고 밝혔습니다.[5]",
+    "oneline": "공장 운영 규칙을 코드로 옮기는 자리. **스케줄링·디스패칭 규칙 + 이산 사건 시뮬레이션 + 팹 도메인** 세 축이고, 경력 3년 이상입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "제조AX서비스5팀을 소개합니다 😊\n조직 소개\nSK하이닉스, SK온 등 주요 계열사와 대외 제조 현장에서 Digital Twin 기반 생산/물류 시물레이션 과 이를 바탕으로 생산 라인의 Capacity 극대화, FAB Optimization 연구 조직입니다.",
+      "short": "공장을 가상으로 돌려 보고, 같은 장비로 더 많이 뽑아내는 운영 규칙을 찾는 팀이다.",
+      "why": "반도체 웨이퍼 한 장은 수백 개 공정을 거치고 같은 장비군을 여러 번 다시 지나가서(재진입), 팹을 한 번 통과하는 데 두세 달이 걸립니다.[11] 장비가 비싸서 새로 사기보다 **있는 장비를 더 잘 돌리는 것**이 먼저이고, 그 효과를 실제 라인에서 시험하면 위험하고 비싸서 시뮬레이션으로 먼저 봅니다.[12] SK하이닉스도 디지털 트윈으로 생산 흐름·자재 이동·배치를 미리 검증하겠다고 밝혔습니다.[5]",
+      "actually": {
+        "intro": "조직 소개의 세 낱말이 가리키는 일입니다.",
+        "items": [
+          "**생산 시뮬레이션** — 로트·장비·공정 순서를 모델로 만들고 시간을 앞으로 돌려 \"이 규칙이면 몇 장 나오나, 얼마나 기다리나\"를 본다.[11][12]",
+          "**물류 시뮬레이션** — 천장 레일 반송 로봇(OHT)이 로트를 나르는 시간·정체까지 넣는다. 반송 시간을 상수로 두면 실제와 어긋나서 둘을 묶는 연구가 나온다.[11]",
+          "**Capacity(Capa) 극대화** — 병목 장비를 찾고, 규칙·투입량을 바꿔 같은 장비로 처리량을 올린다.[16]",
+          "**FAB Optimization** — 투입·스케줄·디스패칭·반송 규칙을 팹 전체 목표(처리량·납기·사이클타임)에 맞춰 조정한다.[14]"
+        ]
+      },
+      "how_far": "'연구 조직'이라 적었지만 담당 업무는 프로그램 개발·운영입니다.[1] 논문을 쓰는 자리라기보다 **현장에서 돌아가는 시스템에 규칙과 시뮬레이션을 넣는 자리**로 읽는 편이 맞습니다. {추론}",
+      "refs": [
+        1,
+        5,
+        11,
+        12,
+        14,
+        16
+      ],
+      "study": [
+        "hidden-nix-fab",
+        "factory-physics"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "최첨단 반도체/배터리 분야의 스마트 팩토리를 실현하며, 최고 수준의 기술력과 노하우를 바탕으로 고객의 제조 경쟁력 향상을 이끌어가고 있습니다.",
+      "short": "고객은 주로 반도체(SK하이닉스)와 배터리(SK온) 공장이다.",
+      "why": "같은 팀의 다른 공고도 SK하이닉스·SK온 등 계열사와 대외 제조 현장을 고객으로 적었습니다.[2] SK AX 는 계열사 공장 IT 를 오래 맡아 왔고, 같은 회사의 다른 제조 팀은 SK하이닉스 팹의 MES·장비 제어·생산 자동화 운영을 맡습니다.[3]",
+      "actually": {
+        "items": [
+          "**반도체 전공정(FAB)** — 재진입·배치(여러 로트를 한 번에 굽는 장비)·대기 시간 제한(Q-time)이 있어 스케줄이 가장 어렵다.[11][4]",
+          "**배터리** — 공정 수는 적지만 전극·조립·화성으로 이어지는 흐름 라인이라, 설비 교체(품종 전환)와 라인 균형이 주제다. {추론}",
+          "고객사 쪽 운영 조직과 같이 일한다 — SK하이닉스에는 생산 흐름 자동화를 맡는 'FAB제조자동화 팀'이 따로 있다.[4]"
+        ]
+      },
+      "how_far": "반도체와 배터리를 둘 다 알 필요는 없습니다. 공고 우대 줄도 반도체·배터리·LCD 중 하나의 제조 경험을 적었습니다.[1]",
+      "refs": [
+        1,
+        2,
+        3,
+        4,
+        11
+      ],
+      "study": [
+        "hidden-nix-fab"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "업무 환경 및 문화\n글로벌 파트너들과의 협업을 통해 세계적 수준의 기술력을 확보하고 있습니다.",
+      "short": "NVIDIA 같은 해외 파트너 도구로 일하고, 그쪽과 영어로 협업한다.",
+      "why": "SK그룹은 NVIDIA 와 'AI 팩토리'를 짓고 그 첫 GPU 묶음으로 SK하이닉스 팹 디지털 트윈(Omniverse)을 돌린다고 발표했습니다.[7] 우대 줄에 Omniverse 와 글로벌 커뮤니케이션·해외 출장이 같이 있는 것도 같은 맥락입니다.[1] {추론}",
+      "actually": {
+        "items": [
+          "해외 솔루션(디지털 트윈 플랫폼·스케줄링 패키지)의 문서·기술 지원을 영어로 읽고 묻는다. {추론}",
+          "해외 고객 공장(배터리 해외 공장 등)에 시스템을 깔러 출장 간다 — 우대 줄의 '해외 출장'.[1] {추론}"
+        ]
+      },
+      "refs": [
+        1,
+        7
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "구성원의 성장이 곧 회사의 성장이라는 믿음으로, 지속적인 교육과 자기계발을 지원합니다.\n다양한 아이디어를 자유롭게 제안하고 실현할 수 있는 창의적인 문화를 추구합니다.\n열정 넘치는 팀원들과 함께 전문성을 키우며 성장해 나갈 수 있습니다.",
+      "short": "팀 문화 소개 줄이다 — 업무 요건은 아니다. 교육 지원은 회사 복리후생에 있다.",
+      "why": "회사 복리후생 페이지에 사내 교육 플랫폼(mySUNI)과 해마다 쓰는 학습 예산이 적혀 있습니다.[26] 요건이 아니라서 따로 준비할 것은 없습니다.",
+      "refs": [
+        26
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "담당 업무\n제조 생산 지시 영역(FAB Planning, FAB Scheduling, Dispatching)의 프로그램을 개발하고 운영합니다.",
+      "short": "투입 계획 → 장비별 일정 → 지금 올릴 로트 고르기, 세 겹의 '생산 지시' 프로그램을 만든다.",
+      "why": "팹의 생산 지시는 시간 폭이 다른 세 겹으로 나뉩니다. 반도체 팹 생산계획 교과서도 계획·주문 투입·스케줄링·디스패칭을 따로 다룹니다.[14] Applied Materials 는 기업 계획에서 디스패칭까지 한 틀로 잇는 제품을, 스케줄 결과를 장비별 디스패치 목록으로 바꾸는 구조로 설명합니다.[13]",
+      "flows": [
+        {
+          "caption": "생산 지시가 내려가는 길 (보통 이런 구조 — 회사마다 이름이 다르다)[13][14]",
+          "steps": [
+            "수요·주문 · 영업·SCM 이 정한 주·월 단위 필요량",
+            "FAB Planning · 주·일 단위로 웨이퍼를 언제 몇 장 넣고, 공정 단계마다 목표량을 정한다",
+            "FAB Scheduling · 몇 시간~한 교대 앞을 보고 장비별로 어느 로트를 언제 돌릴지 짠다",
+            "Dispatching · 장비가 비는 그 순간 규칙으로 대기 로트 순위를 매겨 다음 로트를 고른다",
+            "MES·반송 · 실제 작업 지시와 OHT 반송, 실적이 다시 위로 올라간다"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "actually": {
+        "items": [
+          "**Planning** — 목표 출하일에서 거꾸로 계산해 공정 단계별로 '오늘까지 여기를 몇 장 지나야 하나'를 정한다. 국내 스케줄링 업체는 이를 역방향 페깅(backward pegging)이라 부른다.[17] {추론}",
+          "**Scheduling** — 장비 셋업(레시피 교체)·배치 크기·Q-time·장비 점검(PM) 일정을 지키며 장비별 순서를 만든다. 한 연구는 이것을 '장비 단위 작업 계획'이라 부른다.[11]",
+          "**Dispatching** — Seagate 팹의 디스패처는 레시피로 로트를 묶고 우선순위·선입선출 등으로 순위를 매기며, 하루 5,000~10,000개 매개변수와 40개가 넘는 규칙 항목을 쓴다.[12]",
+          "**운영** — 규칙표(우선순위·예외 로트·장비 자격) 변경 요청을 받아 반영하고, 디스패치가 멈추면 장비가 서므로 상시 대응한다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "장비 한 대 앞 로트 5개 — 규칙만 바꿔도 늦는 로트 수가 달라진다",
+          "body": "가공 시간·납기가 다른 가상 로트 5개를 네 가지 고전 규칙으로 줄 세웠습니다(직접 돌린 출력). 선입선출(FIFO)은 3개가 늦고 납기순(EDD)은 1개입니다. 실제 디스패처는 이런 규칙 수십 개를 섞어 점수를 냅니다.[12]",
+          "lang": "python",
+          "code": "lots = [(\"A\",4,20),(\"B\",2,5),(\"C\",6,9),(\"D\",1,30),(\"E\",3,7)]  # (로트, 가공h, 납기h)\ndef run(order):\n    t, late = 0, []\n    for name, p, due in order:\n        t += p\n        if t > due: late.append(f\"{name}+{t-due}h\")\n    return \"\".join(x[0] for x in order), late\nrules = {\"FIFO\": lots,\n         \"SPT\": sorted(lots, key=lambda x: x[1]),\n         \"EDD\": sorted(lots, key=lambda x: x[2]),\n         \"CR\":  sorted(lots, key=lambda x: x[2]/x[1])}\nfor r, o in rules.items():\n    seq, late = run(o)\n    print(f\"{r:<5} 순서 {seq}  늦은 로트 {len(late)}개 {late}\")\n\n# FIFO  순서 ABCDE  늦은 로트 3개 ['B+1h', 'C+3h', 'E+9h']\n# SPT   순서 DBEAC  늦은 로트 1개 ['C+7h']\n# EDD   순서 BECAD  늦은 로트 1개 ['C+2h']\n# CR    순서 CEBAD  늦은 로트 2개 ['E+2h', 'B+6h']"
+        }
+      ],
+      "how_far": "규칙의 목표(무엇을 먼저 살릴지 — 납기·처리량·고객 우선 로트)는 고객사 생산관리 조직이 정합니다.[4] {추론} 개발자는 **그 목표를 규칙·점수 계산으로 옮기고, 매 순간 빠르게(장비가 기다리지 않게) 답을 내며, 바꾼 규칙의 효과를 숫자로 보여 주는 것**까지 맡습니다. {추론}",
+      "refs": [
+        4,
+        11,
+        12,
+        13,
+        14,
+        17
+      ],
+      "study": [
+        "monch-ppc",
+        "wsc13-seagate",
+        "ortools-jobshop"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "최첨단 반도체·배터리 제조 Digital Twin을 기반으로 생산·물류 시뮬레이션을 개발하고 분석합니다.",
+      "short": "가상 팹에서 로트 흐름과 반송을 함께 돌려 '규칙을 바꾸면 어떻게 되나'를 미리 본다.",
+      "why": "SK하이닉스 DT 부문장은 GTC 2026 에서 Omniverse 기반 가상 팹으로 생산 흐름·자재 이동·배치를 미리 검증하고, 생산을 멈추지 않고 시뮬레이션·최적화를 하겠다고 했습니다.[5] 2023년에는 OHT 정체를 피해 돌아가는 AI 반송 알고리즘을 시뮬레이션으로 검증한 뒤 용인 팹 전체에 넣겠다는 보도가 있었습니다.[6]",
+      "actually": {
+        "intro": "공개 연구로 본 '생산 + 물류' 시뮬레이션의 모양입니다. SK 쪽의 구조는 공개되지 않았습니다.",
+        "items": [
+          "**지금 상태로 시작** — 실제 팹의 재공(WIP)·장비 상태로 모델을 초기화하고 앞으로 돌린다(Seagate 의 온라인 시뮬레이션).[12]",
+          "**같은 규칙 쓰기** — 시뮬레이션 안의 디스패치 규칙이 실제와 다르면 결과가 어긋나서, 운영 중인 디스패처 규칙을 그대로 시뮬레이션에 넣었다.[12]",
+          "**두 시뮬레이터 잇기** — 아주대·LG 연구는 스케줄러(MOZART)와 물류 시뮬레이터(PINOKIO)를 TCP 로 이어, 재공·PM·반송 시간 스냅숏을 주고받게 했다.[11]",
+          "**3D 와의 관계** — Omniverse 장면은 보여 주기·배치 검증에 강하고, 수천 로트의 흐름 계산은 보통 이산 사건 엔진이 따로 한다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "가동률을 올리면 대기가 폭발한다 — 장비 한 대 이산 사건 시뮬레이션",
+          "body": "로트가 무작위로 오고 가공 시간도 들쭉날쭉한 장비 한 대를 20만 로트 돌렸습니다(직접 돌린 출력). 가동률 85% → 95% 로 10%p 올리면 평균 대기가 5.6 → 19.7시간이 됩니다. 이론식과 맞는지 보는 것이 시뮬레이터 검증의 첫걸음입니다.[16]",
+          "lang": "python",
+          "code": "import random\ndef sim(util, n=200000, seed=7):\n    rnd = random.Random(seed)\n    t_arr = free_at = wait = 0.0\n    for _ in range(n):\n        t_arr += rnd.expovariate(util)      # 도착 간격(평균 가공 1h 기준)\n        start = max(t_arr, free_at)\n        wait += start - t_arr\n        free_at = start + rnd.expovariate(1)\n    return wait / n\nfor u in (0.70, 0.85, 0.95):\n    print(f\"가동률 {u:.0%}: 평균 대기 {sim(u):.1f}시간 (M/M/1 이론 {u/(1-u):.1f})\")\n\n# 가동률 70%: 평균 대기 2.3시간 (M/M/1 이론 2.3)\n# 가동률 85%: 평균 대기 5.6시간 (M/M/1 이론 5.7)\n# 가동률 95%: 평균 대기 19.7시간 (M/M/1 이론 19.0)"
+        }
+      ],
+      "how_far": "시뮬레이션을 **만드는 것**(모델·엔진)과 **분석하는 것**(시나리오 비교·병목 보고) 둘 다 적혀 있습니다.[1] 최소선은 이산 사건 시뮬레이션을 직접 짜 보고, 결과가 실제 실적과 얼마나 맞는지(검증) 설명할 수 있는 것입니다. {추론}",
+      "refs": [
+        1,
+        5,
+        6,
+        11,
+        12,
+        16
+      ],
+      "study": [
+        "wsc25-rts-rtd",
+        "simpy",
+        "smt2020"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Smart Factory 실현을 위한 FAB Optimization 및 Full Autonomous FAB 구현에 필요한 다양한 기술을 개발합니다.",
+      "short": "사람 판단 없이 팹이 스스로 계획·반송·보정하게 하는 '자율형 팹'의 운영 기술을 만든다.",
+      "why": "SK하이닉스는 2030년까지 자율형 팹을 짓겠다며 세 축 — 운영 AI(두뇌)·피지컬 AI(로봇·OHT)·디지털 트윈 — 을 밝혔습니다.[5] 고객사의 FAB제조자동화 팀도 AI·디지털 트윈·로봇으로 스스로 돌아가는 팹을 중장기 목표로 적었습니다.[4] SK AX 는 디지털 트윈으로 로봇 시나리오를 미리 검증하고 MES 와 묶어 관제하는 '제조 RX' 를 발표했습니다.[8]",
+      "actually": {
+        "items": [
+          "**병목 자동 감지** — 구간별로 쌓이는 로트를 보고 병목을 짚는다. SK하이닉스는 Q-time 관리에 지능형 스케줄링과 구간별 로트 적체·병목 표시를 넣었다.[4]",
+          "**예외 대응 자동화** — 장비가 서거나 반송이 막히면 스케줄을 다시 짜거나 디스패처 판단으로 바꾼다. 한 연구는 스케줄을 무조건 따르기보다 물류 상황에 따라 디스패처 판단을 골라 따르는 편이 효율이 높았다고 보고했다.[11]",
+          "**사람이 하던 조정 줄이기** — 우선순위 변경·예외 로트 처리처럼 엔지니어가 손으로 하던 결정을 규칙·모델로 옮긴다. {추론}"
+        ]
+      },
+      "how_far": "'Full Autonomous FAB' 은 2030년 목표이지 지금 있는 시스템이 아닙니다.[5] 면접에서는 지금 사람이 손대는 결정 하나를 골라 '이걸 어떻게 자동으로 하겠다'를 데이터·규칙·검증 순서로 말할 수 있으면 됩니다. {추론}",
+      "refs": [
+        4,
+        5,
+        8,
+        11
+      ],
+      "study": [
+        "hidden-nix-fab",
+        "wsc25-rts-rtd"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "제조 지능화 및 Autonomous Synchronization 실현을 위한 Planning & Scheduling 프로그램을 개발하고 운영합니다.",
+      "short": "계획·스케줄·현장 실적이 따로 놀지 않고 저절로 맞춰지게 하는 계획 프로그램을 만든다.",
+      "why": "'Autonomous Synchronization' 의 공개 정의는 찾지 못했습니다. 다만 계획·스케줄·디스패치가 서로 다른 시간 폭으로 돌아서, 위에서 짠 계획이 현장 상황(고장·반송 정체)과 어긋나는 것이 이 분야의 오래된 문제입니다.[11][14] 그 어긋남을 사람 없이 메우는 것으로 읽힙니다. {추론}",
+      "actually": {
+        "items": [
+          "**되먹임 주기** — 현장 실적(MES)을 몇 분마다 받아 스케줄을 다시 짠다. Applied 는 몇 분마다 새 스케줄을 만들어 디스패처가 실행하는 구조를 발표했다.[13]",
+          "**서로 같은 그림 보기** — 스케줄러가 PM 일정을 넣었으면 물류 쪽도 같은 PM 을 알아야 어긋나지 않는다.[11]",
+          "**공정 간 연결** — SK하이닉스는 팹 출력과 후공정(P&T) 연계 스케줄링으로 사내 상을 받았다.[4]",
+          "**수요 쪽 연결** — SK AX 수급 관리 페이지는 주문·재고·물류 흐름 기반 납기 관리 자동화를 내세운다.[9]"
+        ]
+      },
+      "how_far": "계획 알고리즘을 새로 만드는 것보다 **기존 계획·스케줄 프로그램을 운영하면서 다시 짜는 주기와 예외 처리를 다듬는 일**이 많을 것입니다. {추론}",
+      "refs": [
+        4,
+        9,
+        11,
+        13,
+        14
+      ],
+      "study": [
+        "monch-ppc",
+        "applied-aps"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "※ 근무지: 경기 (이천/분당)",
+      "short": "이천(SK하이닉스 팹)과 분당 본사(SK u-타워)를 오간다.",
+      "why": "분당은 SK AX 본사 주소이고,[27] 이천은 SK하이닉스 본사 팹이 있는 곳입니다. 고객사 현장에서 운영 대응을 하는 날이 섞일 수 있습니다. {추론}",
+      "refs": [
+        27
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨\n필요 역량 및 경험\n스케줄링 시스템 (FP/FSS/MSS/RTS/RTD 등) 운영/개발 경험을 보유하신 분",
+      "short": "팹 계획·스케줄·디스패치 시스템 중 하나를 실제로 운영하거나 만들어 본 경력이 필요하다.",
+      "why": "이 자리의 본업이 바로 이 시스템들입니다.[1] RTS(Real-Time Scheduler)는 장비 단위 작업 계획을, RTD(Real-Time Dispatcher)는 로트 단위 작업 순서를 맡는다고 정리한 연구가 있습니다.[11] RTD 는 Applied Materials 제품 이름으로도 쓰입니다.[12]",
+      "actually": {
+        "intro": "약자별로 공개 자료에서 확인한 것과 못 한 것입니다.",
+        "items": [
+          "**RTS** — 실시간 스케줄러. 장비별로 몇 시간 앞의 로트 순서를 짠다.[11]",
+          "**RTD** — 실시간 디스패처. 장비가 빌 때 규칙으로 다음 로트를 고른다. 대부분 규칙 기반이다.[12]",
+          "**FP** — 담당 업무 줄의 'FAB Planning' 으로 보인다. {추론}",
+          "**FSS · MSS** — 공개 정의를 찾지 못했다. 고객사 안의 시스템 이름으로 보이며, 면접에서 물어봐도 되는 낱말이다. {추론}",
+          "목록 끝이 '등'이라 다섯 개 전부가 아니라 이 계열 하나의 경험을 묻는 것으로 읽힌다.[1] {추론}"
+        ]
+      },
+      "level": {
+        "basic": "고전 디스패치 규칙(FIFO·EDD·CR)과 셋업·배치·Q-time 이 무엇인지 설명",
+        "work": "규칙표·우선순위로 실제 장비 디스패치 목록을 만들고, 느려지거나 멈출 때 원인을 찾아 고침",
+        "team": "반도체 팹 규모(장비 수백~수천 대, 로트 수만 개)에서 몇 초 안에 답하는 스케줄·디스패치를 운영"
+      },
+      "how_far": "경력 3년 이상이 공통 요건입니다.[1] 반도체 팹이 아니어도 MES 옆의 스케줄링(APS) 시스템을 다뤄 본 경력이면 이 줄에 가깝습니다. 국내에는 반도체·디스플레이 팹용 스케줄링 패키지를 만드는 회사도 있습니다.[17] {추론}",
+      "refs": [
+        1,
+        11,
+        12,
+        17
+      ],
+      "study": [
+        "monch-ppc",
+        "wsc13-seagate",
+        "ks-dispatch"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "생산 시뮬레이션/예측 프로그램 개발 역량을 갖추신 분 (Space 시뮬레이션, Capa. 시뮬레이션, 생산 예측 시뮬레이션, 물류 시뮬레이션 등)",
+      "short": "공간·장비 능력·생산량·반송을 미리 계산해 보는 시뮬레이션 프로그램을 짤 수 있어야 한다.",
+      "why": "반도체 회사는 시뮬레이션을 능력 계획, 생산 예측, 병목 장비 찾기, 디스패치·스케줄 규칙 검증, 투입 규칙 검증에 쓴다는 정리가 있습니다.[12] 괄호 안 네 가지가 그 용도와 거의 겹칩니다.",
+      "actually": {
+        "items": [
+          "**Capa. 시뮬레이션** — 투입량·공정 순서·장비 가공 시간으로 장비군마다 몇 대가 필요한지, 어디가 먼저 꽉 차는지 계산한다(아래 예).[16]",
+          "**생산 예측 시뮬레이션** — 지금 재공에서 출발해 앞으로 며칠간 공정별 통과량·출하량을 미리 돌린다. 국내 업체는 이를 '로딩 시뮬레이션'이라 부른다.[17][12]",
+          "**물류 시뮬레이션** — OHT 대수·레일 배치·반송 요청량으로 반송 시간과 정체를 본다.[11][6]",
+          "**Space 시뮬레이션** — 공개 정의를 찾지 못했다. 장비 배치 공간이나 로트를 쌓아 두는 보관 장치(스토커) 자리를 계산하는 일로 보인다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "Capa 계산과 Little 의 법칙 — 시뮬레이션 전에 손으로 하는 계산",
+          "body": "주 1만 장 투입, 이 장비군을 3번 지나고 장당 1.2분, 고장·PM 빼고 85% 돌 수 있다는 가상 조건입니다(직접 돌린 출력). 재공 = 처리량 × 사이클타임(Little 의 법칙)이라, 사이클타임이 15일 늘면 팹 안에 떠 있는 웨이퍼가 2만 장 넘게 늘어납니다.[16]",
+          "lang": "python",
+          "code": "import math\nstarts, visits, minutes, hours, avail = 10000, 3, 1.2, 168, 0.85\nload = starts * visits * minutes / 60\nneed = load / (hours * avail)\nn = math.ceil(need)\nprint(f\"주당 가공 {load:.0f}시간 -> 장비 {need:.2f}대 -> {n}대 (가동률 {need/n:.0%})\")\nper_day = starts / 7\nfor ct in (45, 60, 75):\n    print(f\"사이클타임 {ct}일 -> 팹 안 재공 {per_day*ct:,.0f}장\")\n\n# 주당 가공 600시간 -> 장비 4.20대 -> 5대 (가동률 84%)\n# 사이클타임 45일 -> 팹 안 재공 64,286장\n# 사이클타임 60일 -> 팹 안 재공 85,714장\n# 사이클타임 75일 -> 팹 안 재공 107,143장"
+        }
+      ],
+      "how_far": "네 가지 중 하나를 직접 만들어 봤고, 나머지는 무엇을 계산하는지 설명할 수 있으면 됩니다. {추론} 상용 엔진(AutoSched AP·MOZART 등)을 썼든 파이썬으로 짰든, **모델 → 검증(실적과 비교) → 시나리오 비교**를 해 본 경험이 핵심입니다.[12][17] {추론}",
+      "refs": [
+        6,
+        11,
+        12,
+        16,
+        17
+      ],
+      "study": [
+        "factory-physics",
+        "simpy",
+        "smt2020"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍\n우대사항\n제조(반도체, 배터리, LCD) 분야 MES/스케쥴링 시스템 개발/운영 경험을 보유하신 분",
+      "short": "로트·장비 상태를 쥐고 있는 MES 를 알면, 스케줄러가 어디서 데이터를 받고 지시를 내리는지 안다.",
+      "why": "스케줄러·디스패처는 혼자 돌지 않습니다. 재공·장비 상태·PM 일정은 MES 와 설비 쪽에서 오고, 결과는 다시 MES·반송 시스템으로 내려갑니다.[11] 공장 시스템 층을 나누는 국제 기준(ISA-95)도 MES 를 설비 제어와 ERP 사이 층에 둡니다.[21]",
+      "actually": {
+        "items": [
+          "**입력** — 로트 위치·상태·우선순위·납기, 장비 상태·PM 이력, 반송 시간.[11]",
+          "**출력** — 장비별 로트 순서와 시작·끝 예정 시각.[11]",
+          "SK AX 는 북미 자동차 부품 공장에서 물류 관리(MCS)·로봇 관제(ACS)를 위쪽 MES 와 양방향으로 잇는 구조를 발표했다.[29]",
+          "같은 회사 다른 팀이 SK하이닉스 팹 MES 운영을 맡고 있어, 데이터·장애 대응을 같이 하게 된다.[3] {추론}"
+        ]
+      },
+      "refs": [
+        3,
+        11,
+        21,
+        29
+      ],
+      "study": [
+        "isa95"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "제조 Digital Twin 구축 프로젝트 또는 Omniverse 기반 생산·물류 시뮬레이션 개발 경험을 보유하신 분",
+      "short": "NVIDIA Omniverse 위 3D 가상 공장에 생산·반송 흐름을 얹어 본 사람.",
+      "why": "SK하이닉스는 Omniverse 로 실제 팹을 가상 공간에 구현해 생산 흐름·자재 이동을 미리 검증하겠다고 했고,[5] SK그룹 AI 팩토리의 첫 GPU 묶음도 팹 디지털 트윈 Omniverse 작업에 쓴다고 발표됐습니다.[7]",
+      "actually": {
+        "items": [
+          "**장면 만들기** — 팹 배치·장비·레일을 OpenUSD(3D 장면 형식)로 쌓는다.[28]",
+          "**흐름 얹기** — 이산 사건 시뮬레이터가 계산한 로트·OHT 위치를 시간대별로 장면에 재생한다. {추론}",
+          "**배치 검증** — 장비를 옮기거나 레일을 늘리기 전에 가상에서 반송 정체를 본다.[5]"
+        ]
+      },
+      "how_far": "우대 줄이라 없어도 됩니다. 필수 줄의 시뮬레이션 역량이 먼저이고, Omniverse 는 그 결과를 3D 로 보여 주는 층입니다. {추론} 같은 회사 Digital Twin 팀 공고가 Omniverse 개발 자체를 주 업무로 따로 뽑고 있습니다.[22]",
+      "refs": [
+        5,
+        7,
+        28
+      ],
+      "study": [
+        "learn-openusd"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "생산·수요 예측, Machine Learning, AI 관련 프로젝트 수행 이력을 보유하신 분",
+      "short": "필요량·출하량·장비 시간을 숫자로 예측해 계획에 넣어 본 사람.",
+      "why": "계획은 예측에서 출발합니다. SK AX 수급 관리 페이지는 계절성·추세·프로모션을 반영한 수요 예측 자동화를,[9] 자원 할당 페이지는 수요 예측 기반 자원 할당 자동화를 내세웁니다.[10] SK하이닉스는 운영 AI 로 정비·불량 분석 처리 시간을 절반 넘게 줄였다고 했습니다.[5]",
+      "actually": {
+        "items": [
+          "**수요 예측** — 제품별 주 단위 필요량. 시계열 기본기(추세·계절성·검증 구간 나누기)가 먼저다.[20]",
+          "**생산 예측** — 공정별 통과량·출하 시점. 시뮬레이션과 ML 을 섞어 쓰기도 한다. {추론}",
+          "**스케줄 입력값 예측** — 장비별 가공 시간·고장 간격·반송 시간을 평균 대신 예측값으로 넣는다. {추론}",
+          "**강화학습 디스패칭** — 학계에서 SMT2020 같은 공개 팹 모델로 시험하는 주제다.[15] {추론}"
+        ]
+      },
+      "refs": [
+        5,
+        9,
+        10,
+        15,
+        20
+      ],
+      "study": [
+        "fpp3"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Python 개발 역량을 보유하신 분",
+      "short": "시뮬레이션·예측·데이터 정리를 파이썬으로 짤 수 있으면 좋다.",
+      "why": "공고 기술 칸에 적힌 언어가 파이썬 하나입니다.[1] 이산 사건 시뮬레이션(SimPy),[18] 스케줄 최적화(OR-Tools),[19] 예측 모델 모두 파이썬 도구가 있습니다.",
+      "actually": {
+        "items": [
+          "**시뮬레이션** — SimPy 로 장비·OHT 를 자원, 로트를 프로세스로 모델링한다.[18]",
+          "**최적화** — OR-Tools CP-SAT 로 작은 잡숍(장비·작업 순서) 문제를 풀어 규칙의 결과와 비교한다.[19]",
+          "**분석** — 시뮬레이션 결과·MES 실적을 pandas 로 비교해 병목 보고서를 만든다. {추론}"
+        ]
+      },
+      "level": {
+        "basic": "pandas 로 실적 표를 읽어 장비별 대기 시간·처리량 집계",
+        "work": "SimPy 로 장비군 몇 개짜리 라인 모델을 짜고 규칙 두 개를 비교",
+        "team": "실제 팹 크기 모델을 빠르게 돌리고 운영 데이터로 초기화·검증"
+      },
+      "refs": [
+        1,
+        18,
+        19
+      ],
+      "study": [
+        "simpy",
+        "ortools-jobshop"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "글로벌 커뮤니케이션이 가능한 어학 능력을 갖추고, 해외 출장에 거부감이 없으신 분",
+      "short": "해외 파트너 문서·회의를 영어로 소화하고, 해외 고객 공장에 출장 갈 수 있으면 좋다.",
+      "why": "팀 소개에 글로벌 파트너 협업이 있고,[1] 디지털 트윈 플랫폼이 NVIDIA 것입니다.[7] 출장지는 공고에 없습니다 — 배터리 해외 공장 같은 곳일 수 있으니 면접에서 묻습니다. {추론}",
+      "refs": [
+        1,
+        7
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "성향 및 캐릭터\n새로운 기술에 대한 호기심과 빠른 습득력을 갖추신 분\n원활한 소통과 열정적인 태도로 팀원들과 시너지를 만들어낼 수 있는 분",
+      "short": "새 도구를 혼자 익히고, 고객사 생산관리 담당자와 말이 통해야 한다.",
+      "why": "규칙의 목표는 고객사 생산 조직이 정하고 시스템은 우리가 만들어서, 둘 사이를 오가는 대화가 일의 절반입니다. {추론} SK하이닉스 FAB제조자동화 팀도 12개 팀이 얽힌 HBM 자동화 과제에서 역할 조율이 가장 어려웠다고 했습니다.[4]",
+      "refs": [
+        4
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "hidden-nix-fab",
+      "title": "[히든닉스 5편] 제조 흐름을 개선해 생산성을 극대화하는 자동화의 마법사 'FAB제조자동화 팀'",
+      "by": "SK하이닉스 뉴스룸 · 2025",
+      "kind": "doc",
+      "url": "https://news.skhynix.co.kr/hidden_nix_ep5/",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "고객사 쪽에서 생산 흐름 자동화·Q-time 스케줄링을 하는 팀의 글. 이 자리가 누구와 무엇을 하는지 감을 잡는다."
+    },
+    {
+      "id": "factory-physics",
+      "title": "Factory Physics (3rd ed.)",
+      "by": "Wallace J. Hopp · Mark L. Spearman · Waveland Press",
+      "kind": "book",
+      "url": "https://factoryphysics.com/books/factory-physics-3rd-edition/",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "Little 의 법칙·가동률과 대기·병목 — Capa 시뮬레이션 요건의 손계산 기본기를 준다."
+    },
+    {
+      "id": "monch-ppc",
+      "title": "Production Planning and Control for Semiconductor Wafer Fabrication Facilities: Modeling, Analysis, and Systems",
+      "by": "Lars Mönch · John W. Fowler · Scott J. Mason · Springer · 2013",
+      "kind": "book",
+      "url": "https://doi.org/10.1007/978-1-4614-4472-5",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "반도체 팹의 디스패칭·스케줄링·투입·생산계획과 그 정보 시스템을 한 권으로. FP/RTS/RTD 요건의 뼈대."
+    },
+    {
+      "id": "wsc13-seagate",
+      "title": "An Integrated Approach to Real Time Dispatching Rules Analysis at Seagate Technology",
+      "by": "Gowling 외 · Winter Simulation Conference · 2013",
+      "kind": "doc",
+      "url": "https://informs-sim.org/wsc13papers/includes/files/332.pdf",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "운영 중인 RTD 규칙을 그대로 시뮬레이션에 넣어 바꾸기 전에 시험하는 법. 디스패처 규칙표가 실제로 어떻게 생겼는지 보인다."
+    },
+    {
+      "id": "wsc25-rts-rtd",
+      "title": "Integrated RTS-RTD Simulation Framework for Semiconductor Manufacturing System",
+      "by": "조성호 · 김동욱 · 박상철 · Winter Simulation Conference · 2025",
+      "kind": "doc",
+      "url": "https://www.informs-sim.org/wsc25papers/con144.pdf",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "스케줄러와 물류 시뮬레이터를 잇고 무엇을 주고받는지(재공·PM·반송 시간) 표로 정리한 국내 연구. 생산·물류 시뮬레이션 줄에 바로 닿는다."
+    },
+    {
+      "id": "ks-dispatch",
+      "title": "시스템 LSI 반도체 FAB의 납기만족을 위한 예약 기반의 디스패칭 룰",
+      "by": "한국과학기술정보연구원 KoreaScience 수록 논문 · 2014",
+      "kind": "doc",
+      "url": "https://koreascience.kr/article/JAKO201426059105565.pub?lang=ko",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "한국어로 읽는 팹 디스패칭 규칙 논문. 납기를 맞추려고 규칙을 어떻게 설계·비교하는지 본다."
+    },
+    {
+      "id": "smt2020",
+      "title": "SMT2020 — A Semiconductor Manufacturing Testbed",
+      "by": "Kopp · Hassoun · Kalir · Mönch · IEEE Transactions on Semiconductor Manufacturing · 2020",
+      "kind": "doc",
+      "url": "https://doi.org/10.1109/TSM.2020.3001933",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "연구자들이 쓰는 공개 팹 모델(재진입·PM·고장 포함). 회사 데이터 없이 스케줄·시뮬레이션을 연습할 무대."
+    },
+    {
+      "id": "simpy",
+      "title": "SimPy 공식 문서",
+      "kind": "doc",
+      "url": "https://simpy.readthedocs.io/en/latest/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "파이썬 이산 사건 시뮬레이션 라이브러리. 장비·OHT 를 자원으로, 로트를 프로세스로 짜는 첫 연습."
+    },
+    {
+      "id": "ortools-jobshop",
+      "title": "OR-Tools · The Job Shop Problem",
+      "by": "Google",
+      "kind": "doc",
+      "url": "https://developers.google.com/optimization/scheduling/job_shop",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "장비·작업 순서 스케줄을 제약 최적화로 푸는 공식 예제. 규칙 기반 디스패치 결과와 비교할 기준점을 만든다."
+    },
+    {
+      "id": "applied-aps",
+      "title": "Advanced Planning and Scheduling Solutions Boost Productivity (Nanochip Fab Solutions)",
+      "by": "Applied Materials · 2021",
+      "kind": "doc",
+      "url": "https://appliedmaterials.com/us/en/nanochip-fab-solutions/spring-2021/advanced-planning-and-scheduling-solutions-boost-productivity.html",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "계획 → 스케줄 → 디스패치가 한 제품군 안에서 어떻게 이어지는지 업체가 설명한 글."
+    },
+    {
+      "id": "fpp3",
+      "title": "Forecasting: Principles and Practice (3rd ed.)",
+      "by": "Rob J Hyndman · George Athanasopoulos · OTexts",
+      "kind": "book",
+      "url": "https://otexts.com/fpp3/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "무료 온라인 예측 교과서. 생산·수요 예측 우대 줄의 시계열 기본기(추세·계절성·검증)."
+    },
+    {
+      "id": "learn-openusd",
+      "title": "Learn OpenUSD",
+      "by": "NVIDIA",
+      "kind": "course",
+      "url": "https://docs.nvidia.com/learn-openusd/latest/index.html",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "Omniverse 장면 형식(OpenUSD) 무료 학습 경로. Omniverse 시뮬레이션 우대 줄의 입구."
+    },
+    {
+      "id": "isa95",
+      "title": "ISA-95 Enterprise-Control System Integration",
+      "by": "ISA",
+      "kind": "doc",
+      "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+      "lang": "en",
+      "free": false,
+      "level": "입문",
+      "why": "MES 가 공장 시스템 층 어디에 있고 스케줄러와 무엇을 주고받는지 그림으로 잡는다(본문 유료, 개요만)."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "팹 운영의 숫자 감 잡기",
+      "time": "1~2주",
+      "goal": "재진입·Q-time·배치·셋업이 왜 스케줄을 어렵게 하는지, Little 의 법칙과 가동률-대기 관계를 말로 설명할 수 있다.",
+      "task": "가상 라인(장비군 4개, 재진입 2번)의 주당 Capa 표를 엑셀이나 파이썬으로 만들고 병목 장비군을 짚는다.",
+      "resources": [
+        "hidden-nix-fab",
+        "factory-physics",
+        "applied-aps"
+      ]
+    },
+    {
+      "title": "디스패칭 규칙 직접 짜기",
+      "time": "2주",
+      "goal": "FIFO·EDD·CR·셋업 묶기 규칙을 구현하고, 같은 대기열에서 규칙별 납기·처리량 차이를 숫자로 보일 수 있다.",
+      "task": "로트 30개·장비 3대 가상 데이터로 규칙 4개를 비교하는 표를 만들고, OR-Tools 로 푼 최적 순서와의 차이를 적는다.",
+      "resources": [
+        "ks-dispatch",
+        "wsc13-seagate",
+        "ortools-jobshop"
+      ]
+    },
+    {
+      "title": "이산 사건 시뮬레이터 만들기",
+      "time": "3~4주",
+      "goal": "SimPy 로 장비·반송을 넣은 작은 팹 모델을 짜고, 이론값과 맞춰 검증한 뒤 규칙 두 개를 시나리오로 비교할 수 있다.",
+      "task": "장비군 5개·OHT 3대 모델에서 가동률을 올려 가며 사이클타임 곡선을 그리고, 디스패치 규칙을 바꾼 결과를 보고서 한 장으로 쓴다.",
+      "resources": [
+        "simpy",
+        "wsc25-rts-rtd",
+        "smt2020"
+      ]
+    },
+    {
+      "title": "계획·예측·3D 로 넓히기",
+      "time": "3~4주",
+      "goal": "주 단위 수요 예측을 투입 계획으로 바꾸고, 시뮬레이션 결과를 3D 장면에 얹는 흐름을 설명할 수 있다.",
+      "task": "가상 제품 3종의 2년치 주별 수요를 예측해 투입 계획을 만들고, 앞 단계 시뮬레이터에 넣어 출하 예측을 낸다. 여유가 되면 OpenUSD 로 장비 배치 장면을 만든다.",
+      "resources": [
+        "fpp3",
+        "monch-ppc",
+        "learn-openusd",
+        "isa95"
+      ]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없다. SK주식회사 전체 직원 평균은 **1억 1,600만원**(2024 사업보고서), SK AX 상반기 평균은 **7,300만원**(6개월치) — 3년 차 이상 경력직 제시액은 처우협의에서 정한다",
+    "rows": [
+      {
+        "label": "직원 평균 급여(SK주식회사 전체)",
+        "value": "1억 1,600만원",
+        "amount": 11600,
+        "basis": "사업보고서 · 2024년",
+        "note": "SK AX 는 SK주식회사 안의 사업 조직이라 지주 부문을 합친 회사 전체 값이다 [23]"
+      },
+      {
+        "label": "SK AX 1인 평균 급여 (6개월)",
+        "value": "7,300만원",
+        "amount": 7300,
+        "basis": "반기보고서 · 2025년 상반기",
+        "note": "1~6월 반년치다. 1년 연봉이 아니다 [24]"
+      },
+      {
+        "label": "평균 연봉",
+        "value": "6,082만원",
+        "amount": 6082,
+        "basis": "공공데이터 집계",
+        "note": "채용 사이트가 공공 자료로 계산한 값, 계산 기간은 적혀 있지 않다 [25]"
+      },
+      {
+        "label": "삼성SDS 평균 (6개월)",
+        "value": "6,600만원",
+        "amount": 6600,
+        "basis": "반기보고서 · 2025년 상반기",
+        "peer": true,
+        "note": "같은 기사의 같은 기준 [24]"
+      },
+      {
+        "label": "LG CNS 평균 (6개월)",
+        "value": "6,500만원",
+        "amount": 6500,
+        "basis": "반기보고서 · 2025년 상반기",
+        "peer": true,
+        "note": "같은 기사의 같은 기준 [24]"
+      }
+    ],
+    "how": "전형 끝에 **채용검진/처우협의** 단계가 있어 연봉은 사람마다 정한다 [1]. 위 평균은 신입부터 고참까지 섞인 회사 전체 값이라 3년 차 이상 경력직의 제시액으로 읽으면 안 된다 {추론}. 이천 현장 근무에 붙는 수당·교통 지원은 공고에 없으니 처우협의 때 묻는다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "성장",
+        "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 직무 공모"
+      },
+      {
+        "name": "장기근속",
+        "detail": "10·15·20·25·30년에 포상금과 포상 휴가"
+      },
+      {
+        "name": "주택 자금",
+        "detail": "구입·전세 최대 6,000만원, 생활안정자금 최대 1,500만원(100만원 단위)"
+      },
+      {
+        "name": "자녀 학자금",
+        "detail": "유치원부터 대학까지, 자녀 수 제한 없음"
+      },
+      {
+        "name": "식대·통신비",
+        "detail": "식대 월 4만원, 통신비 월 7만원(SKT 가입자)"
+      },
+      {
+        "name": "복지 포인트",
+        "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 OK캐쉬백 20만 포인트"
+      },
+      {
+        "name": "건강",
+        "detail": "나이에 따라 종합 25만원·정밀 40만원 검진, 난임 지원, 단체보험 3종, 사내 의원, 심리 상담"
+      },
+      {
+        "name": "그 밖",
+        "detail": "외부 사이트 근무자 복지 포인트, 통근·셔틀 버스, 경조 휴가·경조금"
+      }
+    ],
+    "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음) [26]. 이 공고 자체에는 복리후생 칸이 없다 [1]. '외부 사이트 근무자 복지 포인트'가 이천 고객사 현장 근무에도 적용되는지는 페이지에 없으니 처우협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "SK AX 본사 (SK u-타워)",
+    "address": "경기도 성남시 분당구 성남대로 343번길 9 에스케이유타워",
+    "postal": "13558",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+    "near": "신분당선·수인분당선 정자역 근처 {추론}",
+    "note": "공고의 근무지는 '경기 (이천/분당)'이다 [1]. 분당은 SK AX 사업장 안내의 본사(SK u-타워) 주소다 [27]. 이천은 SK하이닉스 팹이 있는 곳으로, 고객사 현장 근무가 섞일 수 있다 {추론}."
+  },
+  "fit": {
+    "good": [
+      "\"왜 이 로트가 먼저 들어갔지?\"를 규칙과 숫자로 따지는 게 즐거운 사람",
+      "알고리즘과 현장 운영 사이를 오가고 싶은 사람 — 개발하고 운영도 한다[1]",
+      "시뮬레이션 결과를 실제 실적과 맞춰 보는 검증을 귀찮아하지 않는 사람[12]",
+      "자율형 팹(2030 목표) 같은 큰 그림의 운영 쪽을 맡고 싶은 사람[5]"
+    ],
+    "hard": [
+      "필수 요건이 스케줄링 시스템 운영/개발 경력이고 공통 요건이 3년 이상 — 신입·비제조 경력은 문이 좁다[1]",
+      "디스패처가 멈추면 장비가 서서 운영 대응 부담이 있다 {추론}",
+      "FSS·MSS 같은 고객사 내부 낱말이 많아 처음에는 도메인을 따라가는 데 시간이 든다 {추론}",
+      "고객사 현장(이천)과 본사(분당), 해외 출장까지 근무지가 오간다[1]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "장비가 비었을 때 대기 로트가 20개면 무엇으로 순위를 매기겠어요? 납기와 처리량이 부딪히면요?",
+      "a": "디스패칭 규칙 설계 — 실제 디스패처는 수십 개 규칙 항목을 섞는다.[12]"
+    },
+    {
+      "q": "스케줄러가 짠 순서대로 로트가 장비에 못 도착하면(반송 정체) 어떻게 하겠어요?",
+      "a": "스케줄과 디스패치 판단을 골라 따르는 문제.[11]"
+    },
+    {
+      "q": "만든 시뮬레이션이 실제 팹과 맞는지 어떻게 증명하나요?",
+      "a": "실제 상태로 초기화하고 운영 규칙을 그대로 넣는 이유.[12]"
+    },
+    {
+      "q": "가동률을 90%에서 95%로 올리자고 하면 무엇을 경고하겠어요?",
+      "a": "가동률과 대기의 비선형 관계, Little 의 법칙.[16]"
+    },
+    {
+      "q": "Q-time(공정 사이 대기 제한)이 있는 구간에서 로트 투입을 어떻게 막거나 풀겠어요?",
+      "a": "SK하이닉스가 지능형 스케줄링을 넣은 바로 그 영역.[4]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "SK Careers · 제조 생산계획, 스케줄링, 생산 시뮬레이션 전문가 영입",
+      "url": "https://www.skcareers.com/Recruit/Detail/R262563",
+      "kind": "posting",
+      "date": "2027-01-28 마감",
+      "note": "경력 · 제조AX서비스5팀 소개·담당 업무 4줄·요건 2줄·우대 5줄+성향·전형(서류 > SKCT > 면접 2회 > 채용검진/처우협의)·공통 요건(경력 3년 이상). 근무지 이천/분당. 기술 칸 Python. 복리후생 칸 없음"
+    },
+    {
+      "n": 2,
+      "title": "SK Careers · 반도체 제조 기준정보 (MDM) 전문가 영입",
+      "url": "https://www.skcareers.com/Recruit/Detail/R262564",
+      "kind": "posting",
+      "note": "같은 제조AX서비스5팀 공고 — SK하이닉스·SK온 등 계열사와 대외 제조 현장의 기준정보·AI Readable Data 전환"
+    },
+    {
+      "n": 3,
+      "title": "SK Careers · 제조 시스템 운영(MES/장비/품질/자동화) 담당자 영입",
+      "url": "https://www.skcareers.com/Recruit/Detail/R262586",
+      "kind": "posting",
+      "note": "같은 회사 제조AX서비스2팀 — SK하이닉스 등 반도체 제조 현장의 MES·장비제어·생산자동화·시스템 운영"
+    },
+    {
+      "n": 4,
+      "title": "SK하이닉스 뉴스룸 · [히든닉스 5편] FAB제조자동화 팀",
+      "url": "https://news.skhynix.co.kr/hidden_nix_ep5/",
+      "kind": "news",
+      "date": "2025-11-12",
+      "note": "고객사 자료 — 2020년 만든 34명 팀, HBM 자동화 과제(12개 팀, 역할 조율·고객 기준 로트 분할이 어려웠음), Q-time 관리에 지능형 스케줄링·구간별 로트 적체·병목 표시, 팹–P&T 연계 스케줄링으로 사내 상, 자율형 팹 로드맵"
+    },
+    {
+      "n": 5,
+      "title": "아시아경제 · SK Hynix to Build 'Autonomous Fab' by 2030",
+      "url": "https://www.asiae.co.kr/en/article/2026031814572597859",
+      "kind": "news",
+      "date": "2026-03-18",
+      "note": "GTC 2026 패널, SK하이닉스 DT 부문장 — 운영 AI·피지컬 AI·디지털 트윈 세 축, 정비·불량 분석 처리 시간 50% 넘게 단축, AMR 로 부품 재고 약 30% 절감 기대, Omniverse 가상 팹으로 생산 흐름·자재 이동·배치 사전 검증. 영문은 기계 번역판"
+    },
+    {
+      "n": 6,
+      "title": "전자신문 · SK하이닉스, AI로 웨이퍼 옮긴다 '용인 공장 전체 적용'",
+      "url": "https://m.etnews.com/20231124000184",
+      "kind": "news",
+      "date": "2023-11",
+      "note": "OHT 반송 소프트웨어에 AI 경로 알고리즘(그룹 사내 대회 152팀 349명·34일), 이천 약 30km 2층 반송 체계 데이터, 연말 시뮬레이션 검증 후 용인 전체 적용 계획"
+    },
+    {
+      "n": 7,
+      "title": "NVIDIA 뉴스룸 · NVIDIA and SK Group Build AI Factory",
+      "url": "https://nvidianews.nvidia.com/news/sk-group-ai-factory",
+      "kind": "news",
+      "date": "2025-10-30",
+      "note": "SK그룹 AI 팩토리 계획 — 첫 배치 RTX PRO 6000 2,000장 이상이 SK하이닉스 팹 디지털 트윈용 Omniverse 작업을 돌림"
+    },
+    {
+      "n": 8,
+      "title": "SK AX 뉴스룸 · '로봇 도입부터 자율 공장 운영까지' 제조현장 RX 앞당긴다",
+      "url": "https://www.skax.co.kr/company/news-room/sk-ax-%EB%A1%9C%EB%B4%87-%EB%8F%84%EC%9E%85%EB%B6%80%ED%84%B0-%EC%9E%90%EC%9C%A8-%EA%B3%B5%EC%9E%A5-%EC%9A%B4%EC%98%81%EA%B9%8C%EC%A7%80-%EC%A0%9C%EC%A1%B0%ED%98%84%EC%9E%A5-rx",
+      "kind": "company",
+      "date": "2026-07-09",
+      "note": "디지털 트윈으로 로봇 시나리오 사전 검증, 이기종 로봇 통합 관제 + MES 연계, 반도체 검증 후 조선 확장"
+    },
+    {
+      "n": 9,
+      "title": "SK AX · 수급 관리 지능화로 공정 효율 개선 및 생산 유연성 확보",
+      "url": "https://www.skax.co.kr/manufacturing/supply-chain-management",
+      "kind": "company",
+      "note": "날짜 표기 없음 — 계절성·추세·프로모션 반영 수요 예측, 실시간 공급 계획, 주문·재고·물류 기반 납기 관리 자동화. 사례는 석유화학·화학사"
+    },
+    {
+      "n": 10,
+      "title": "SK AX · 데이터 수집 및 분석과 수요 예측으로 자원 할당 자동화 및 최적화",
+      "url": "https://www.skax.co.kr/manufacturing/resource-allocation-automation",
+      "kind": "company",
+      "note": "날짜 표기 없음 — 시장·판매·생산·재고·설비·품질 데이터로 수요·재고·공급 계획, ML 레시피 최적화. 사례는 정유 E사·하이테크 E사 물류"
+    },
+    {
+      "n": 11,
+      "title": "Cho · Kim · Park · Integrated RTS-RTD Simulation Framework for Semiconductor Manufacturing System (WSC 2025)",
+      "url": "https://www.informs-sim.org/wsc25papers/con144.pdf",
+      "kind": "reference",
+      "date": "2025",
+      "note": "아주대·LG생산기술원 — RTS 는 장비 단위 작업 계획, RTD 는 로트 단위 순서. MOZART(스케줄)·PINOKIO(물류) 를 TCP·ZeroMQ 로 연결, 재공·PM·반송 시간 스냅숏 교환, SMT2020·SMAT2022 실험, 디스패처 판단을 골라 따르면 효율 향상. 웨이퍼 한 장 팹 통과 2~3개월"
+    },
+    {
+      "n": 12,
+      "title": "Gowling 외 · An Integrated Approach to Real Time Dispatching Rules Analysis at Seagate Technology (WSC 2013)",
+      "url": "https://informs-sim.org/wsc13papers/includes/files/332.pdf",
+      "kind": "reference",
+      "date": "2013",
+      "note": "Seagate·Applied Materials — AutoSched AP 시뮬레이션을 팹 현재 상태로 초기화하고 운영 중인 APF RTD 규칙을 그대로 사용. 디스패처: 레시피로 묶고 우선순위·FIFO 등으로 순위, 하루 5,000~10,000 매개변수·40개 넘는 항목. 시뮬레이션 용도: 능력 계획·예측·병목·규칙 검증·투입 규칙"
+    },
+    {
+      "n": 13,
+      "title": "Applied Materials · Advanced Planning and Scheduling Solutions Boost Productivity",
+      "url": "https://appliedmaterials.com/us/en/nanochip-fab-solutions/spring-2021/advanced-planning-and-scheduling-solutions-boost-productivity.html",
+      "kind": "reference",
+      "date": "2021",
+      "note": "업체 글 — 기업 계획에서 디스패칭까지 APF 플랫폼 한 틀, 시뮬레이션(AutoSched)이 로트-장비 순서를 만들어 장비별 디스패치 목록으로. 몇 분마다 스케줄을 만들어 RTD 가 실행한다는 설명은 같은 회사 SmartSched 발표(검색 요약)"
+    },
+    {
+      "n": 14,
+      "title": "Mönch · Fowler · Mason · Production Planning and Control for Semiconductor Wafer Fabrication Facilities",
+      "url": "https://doi.org/10.1007/978-1-4614-4472-5",
+      "kind": "reference",
+      "date": "Springer · 2013",
+      "note": "디스패칭·스케줄링·주문 투입·생산계획과 정보 시스템을 다루는 교과서(목차 확인)"
+    },
+    {
+      "n": 15,
+      "title": "Kopp 외 · SMT2020 — A Semiconductor Manufacturing Testbed",
+      "url": "https://doi.org/10.1109/TSM.2020.3001933",
+      "kind": "reference",
+      "date": "IEEE TSM · 2020",
+      "note": "공개 팹 시뮬레이션 모델 4종(대량·소품종 / 소량·다품종 + 엔지니어링 로트), PM·고장 포함. 디스패칭·강화학습 연구의 공용 무대"
+    },
+    {
+      "n": 16,
+      "title": "Hopp · Spearman · Factory Physics (3rd ed.)",
+      "url": "https://factoryphysics.com/books/factory-physics-3rd-edition/",
+      "kind": "reference",
+      "date": "Waveland Press 재간 2011",
+      "note": "Little 의 법칙·가동률과 대기·병목 — 공장 흐름의 기본 법칙. 코드 예시의 M/M/1 이론값도 이 계열 대기 이론"
+    },
+    {
+      "n": 17,
+      "title": "헬로티 · [AW 2026] 브이엠에스솔루션스, 디지털 트윈 기반 APS 'MOZART' 발표",
+      "url": "https://hellot.net/mobile/article.html?no=111160",
+      "kind": "news",
+      "date": "2026-03",
+      "note": "국내 팹 스케줄링 업체(KAIST 창업, 반도체·디스플레이 적용) — 디지털 트윈 기반 계획·스케줄링. 역방향 페깅·로딩 시뮬레이션 용어는 같은 회사 WSC 2013 논문(검색 요약)"
+    },
+    {
+      "n": 18,
+      "title": "SimPy 문서",
+      "url": "https://simpy.readthedocs.io/en/latest/",
+      "kind": "reference",
+      "note": "파이썬 프로세스 기반 이산 사건 시뮬레이션 라이브러리"
+    },
+    {
+      "n": 19,
+      "title": "Google OR-Tools · The Job Shop Problem",
+      "url": "https://developers.google.com/optimization/scheduling/job_shop",
+      "kind": "reference",
+      "note": "CP-SAT 로 작업·장비 순서 문제를 푸는 공식 예제"
+    },
+    {
+      "n": 20,
+      "title": "Hyndman · Athanasopoulos · Forecasting: Principles and Practice (3rd ed.)",
+      "url": "https://otexts.com/fpp3/",
+      "kind": "reference",
+      "note": "무료 온라인 예측 교과서"
+    },
+    {
+      "n": 21,
+      "title": "ISA · ISA-95 Enterprise-Control System Integration",
+      "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+      "kind": "reference",
+      "note": "층 0~4 — 1 센서, 2 PLC·DCS, 3 MES·SCADA, 4 ERP"
+    },
+    {
+      "n": 22,
+      "title": "SK Careers · Digital Twin 개발 전문가 영입",
+      "url": "https://www.skcareers.com/Recruit/Detail/R262429",
+      "kind": "posting",
+      "note": "같은 회사 Digital Twin팀 — Omniverse 기반 Digital Twin 시스템·Robot 관제/학습 시스템 구축이 주 업무"
+    },
+    {
+      "n": 23,
+      "title": "FETV · SK 계열사 직원 평균 급여(2024 사업보고서)",
+      "url": "https://www.fetv.co.kr/news/articleView.html?idxno=198852",
+      "kind": "news",
+      "date": "2025-08-14"
+    },
+    {
+      "n": 24,
+      "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+      "url": "https://zdnet.co.kr/view/?no=20250816174726",
+      "kind": "news",
+      "date": "2025-08-16",
+      "note": "4사 2025년 반기보고서 1인 평균 급여"
+    },
+    {
+      "n": 25,
+      "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보",
+      "url": "https://www.wanted.co.kr/company/25949",
+      "kind": "reference",
+      "note": "평균 연봉(집계값)"
+    },
+    {
+      "n": 26,
+      "title": "SK AX Careers · 복리후생",
+      "url": "https://skax.skcareers.com/page/HR/Welfare",
+      "kind": "company",
+      "note": "연도 표기 없음 — 같은 회사 다른 풀이(skax-digital-twin-developer 등)에서 확인한 항목"
+    },
+    {
+      "n": 27,
+      "title": "SK AX · 사업장 안내",
+      "url": "https://www.skax.co.kr/company/office",
+      "kind": "company",
+      "note": "SK u-타워(13558)·판교 캠퍼스·대덕·보라매 데이터센터"
+    },
+    {
+      "n": 28,
+      "title": "NVIDIA · Learn OpenUSD",
+      "url": "https://docs.nvidia.com/learn-openusd/latest/index.html",
+      "kind": "reference",
+      "note": "Omniverse 장면 형식 OpenUSD 무료 학습 경로"
+    },
+    {
+      "n": 29,
+      "title": "CEO스코어데일리 · SK AX, 북미 자동차 부품 공장에 'AX 물류 자동화' 구축",
+      "url": "https://www.ceoscoredaily.com/page/view/2025111109152278582",
+      "kind": "news",
+      "date": "2025-11-11",
+      "note": "회사 발표 보도 — AMR·자율 지게차, AI 물류정보시스템(MCS)·AMR 관제(ACS)가 위쪽 MES 와 양방향 연동"
+    }
+  ],
+  "caveat": "이 팀(제조AX서비스5팀)이 직접 쓴 기술 글·발표 영상은 찾지 못해 받은 영상이 없습니다. 회사 쪽 근거는 이 공고·같은 팀과 같은 회사의 다른 공고·SK AX 제조 페이지와 발표, 고객사 SK하이닉스의 뉴스룸·GTC 2026 발표 보도입니다. SK하이닉스 팹의 계획·스케줄·디스패치 시스템이 무엇이고 SK AX 가 그중 어디를 맡는지는 공개되지 않았고, 공고의 FSS·MSS·Space 시뮬레이션은 공개 정의를 찾지 못했습니다. 구조 설명은 Seagate·Applied Materials 사례, 국내 대학 연구, 교과서로 '보통 이런 것'을 보였습니다. 코드 예시의 숫자는 모두 가상 값입니다."
+}
