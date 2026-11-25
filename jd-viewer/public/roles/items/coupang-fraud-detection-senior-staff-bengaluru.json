@@ -1,0 +1,1100 @@
+{
+  "id": "coupang-fraud-detection-senior-staff-bengaluru",
+  "company": "쿠팡",
+  "role": "Senior Staff Backend Engineer — 사기 탐지",
+  "team": "Risk, Fraud & Trust Engineering 조직 · 인도 개발 센터(벵갈루루)",
+  "jobs": [
+    "ats-greenhouse:coupang:8064140"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쿠팡 마켓의 주문·결제·판매자 활동을 **실시간으로 보고 \"이거 사기 아닌가\"를 판정하는 시스템**의 데이터·ML 기반(이벤트 파이프라인, 모델을 실제 서비스에 올려 답하게 하는 서빙 층)을 설계하는 최상위급 백엔드 자리입니다.[1] 공고는 이 자리를 데이터 과학(모델을 만드는 쪽)과 엔지니어링(그 모델을 돌리는 쪽) 사이의 **다리**라고 적었습니다.[1]",
+    "env": "벵갈루루, 주 3일 이상 출근하는 하이브리드입니다.[1] 경력 13년 이상, Java 백엔드, Flink·Kafka·Spark Streaming 같은 스트림 처리가 요건입니다.[1] 쿠팡의 ML 플랫폼은 Feast 기반 피처 저장소와 쿠버네티스 위 모델 서빙을 쓴다고 공개했습니다(사기 탐지 팀 얘기는 아닙니다).[2]",
+    "oneline": "모델을 만드는 사람이 아니라, **모델이 수십 밀리초 안에 틀림없이 답하게 만드는 데이터·서빙 기반의 설계자**. 13년 경력의 기술 리더 자리입니다 {추론}."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "Lead the architecture, design, and development of scalable data and ML infrastructure supporting fraud detection, risk evaluation, and trust systems.",
+      "short": "사기 탐지·위험 평가가 기대는 데이터·ML 기반 전체의 구조를 정하고 직접 만든다.",
+      "why": "공고는 이 조직이 거래·판매자 활동·마켓 이벤트를 대량으로 처리하며 **실시간으로 판정하는 플랫폼**을 만든다고 적었습니다.[1] 같은 그룹의 쿠팡페이도 실시간 분석 기반 FDS(이상거래 탐지 시스템)를 따로 운영하고, 쿠팡 대만에는 구매자·판매자·배송 파트너를 지키는 사기·남용 방지 제품 조직이 있습니다.[5][6] 사기 탐지는 한 팀의 기능이 아니라 여러 나라·여러 사업이 기대는 공통 기반이라 구조를 정하는 사람이 필요합니다 {추론}.",
+      "actually": {
+        "intro": "사기 탐지 기반은 보통 이런 층으로 나뉩니다. 쿠팡이 이 구성인지는 공개되지 않았습니다 {추론}.",
+        "items": [
+          "**이벤트 받기** — 주문·결제·로그인·쿠폰 사용·판매자 상품 등록을 이벤트로 받아 Kafka 같은 로그(순서대로 쌓이는 메시지 저장소)에 싣는다.[13]",
+          "**실시간 피처 계산** — \"이 계정이 최근 10분에 주문한 수\", \"이 카드가 쓰인 기기 수\"처럼 판정에 쓸 숫자를 스트림 처리로 계속 갱신한다.[11]",
+          "**피처 저장소** — 학습용(오프라인)과 판정용(온라인) 값을 한곳에서 관리한다. 쿠팡 ML 플랫폼은 Feast 위에 두 저장소를 같이 둔다.[2][14]",
+          "**판정 서비스** — 주문이 들어오면 피처를 모아 모델에 묻고, 점수 + 규칙으로 통과·추가 인증·보류·차단을 정한다. Stripe 는 이 판정을 100ms 안에 낸다고 밝혔다.[15]",
+          "**되먹임** — 고객 신고·차지백(카드사가 되돌린 결제)·검수 결과가 며칠 뒤 정답으로 돌아와 다음 학습 데이터가 된다.[22]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "주문 하나가 판정되기까지 (일반 구조) {추론}",
+          "steps": [
+            "이벤트 · 주문·결제·로그인",
+            "스트림 처리 · 최근 N분 집계",
+            "온라인 피처 저장소 · 밀리초 조회",
+            "모델 서빙 · 사기 점수",
+            "규칙·정책 · 통과/인증/보류/차단",
+            "정답 되먹임 · 신고·차지백 → 재학습"
+          ],
+          "mine_from": 0
+        }
+      ],
+      "how_far": "모델 자체(무슨 알고리즘인가)는 데이터 과학자가, 차단 정책(어느 점수에서 막나)은 리스크·제품 쪽이 정합니다 {추론}. 이 자리는 **그 둘이 바뀌어도 기반을 다시 짜지 않아도 되게** 층을 나누고, 각 층의 지연·처리량·장애 범위를 숫자로 정합니다 {추론}.",
+      "refs": [
+        1,
+        2,
+        5,
+        6,
+        11,
+        13,
+        14,
+        15,
+        22
+      ],
+      "study": [
+        "dmls",
+        "stripe-radar",
+        "coupang-ml"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Build and optimize large-scale batch and real-time data pipelines capable of processing high-volume events with low latency and high reliability.",
+      "short": "대량 이벤트를 빠르고 빠짐없이 처리하는 배치·실시간 파이프라인을 만들고 다듬는다.",
+      "why": "사기는 몇 분 사이에 벌어집니다. 판정에 쓸 숫자가 한 시간 전 값이면 그 사이 털립니다 {추론}. 쿠팡이츠 데이터 플랫폼 글은 ML 피처용으로 30초 안팎의 준실시간 파이프라인과 1초 미만의 순수 실시간 파이프라인을 따로 둔다고 소개했습니다.[3] 동시에 학습용 긴 기간 집계는 배치가 맡습니다.[2]",
+      "actually": {
+        "items": [
+          "**일어난 시각으로 세기** — 모바일 이벤트는 늦게 도착한다. 도착 순서가 아니라 일어난 시각(event time)으로 창을 나누고, 워터마크(\"이 시각까지는 다 왔다\"는 표시)로 늦은 것을 어디까지 받을지 정한다.[11]",
+          "**상태 지키기** — 계정별 최근 집계 같은 상태를 스트림 엔진이 들고 있다가, 체크포인트(정기 저장)로 장애 뒤에도 그 지점부터 다시 시작한다.[12]",
+          "**정확히 한 번** — 같은 주문이 재시도로 두 번 들어와도 두 번 세지 않게. Kafka 의 멱등 생산자·트랜잭션, Flink 의 체크포인트가 이걸 돕는다.[12][13]",
+          "**배치와 실시간의 값 맞추기** — 같은 \"최근 7일 주문 수\"를 배치(학습용)와 스트림(판정용)이 따로 계산하면 값이 어긋난다. 정의 하나로 둘을 만들게 하는 것이 핵심이다.[16]",
+          "**밀릴 때** — 세일 날 이벤트가 몰리면 처리가 밀린다(지연 = 컨슈머 랙). 판정은 그동안 낡은 피처로라도 답해야 하므로 \"피처가 몇 초 낡았나\"를 지표로 둔다 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "늦게 온 이벤트를 '일어난 시각'으로 세기",
+          "body": "계정 A 의 '최근 10분 주문 수'. 4분 주문은 9분 주문 뒤에 도착했지만 일어난 시각으로 세서 4분 시점 값은 3건입니다. 1분 주문은 워터마크(지금까지 본 가장 늦은 시각 15) − 허용 지연 6 = 9 보다 앞이라 따로 보냅니다(직접 돌린 출력: t=0→1, 2→2, 9→3, 4→3, 11→4, 15→3, 1→너무 늦음). Flink 는 이 일을 창·워터마크·늦은 데이터 출력으로 해 줍니다.[11]",
+          "lang": "python",
+          "code": "events = [(0, \"A\"), (2, \"A\"), (3, \"B\"), (9, \"A\"), (4, \"A\"),\n          (11, \"A\"), (15, \"A\"), (1, \"A\")]  # (일어난 시각 분, 계정) 도착 순\nWINDOW, LATENESS = 10, 6\nseen, watermark = [], -1\nfor t, acct in events:\n    if t < watermark - LATENESS:\n        print(f\"t={t:>2} {acct}: 너무 늦음 - 따로 보낸다\")\n        continue\n    seen.append((t, acct))\n    watermark = max(watermark, t)\n    n = sum(1 for s, a in seen if a == acct and t - WINDOW < s <= t)\n    print(f\"t={t:>2} {acct}: 최근 {WINDOW}분 주문 {n}건\")"
+        }
+      ],
+      "how_far": "\"대량\"의 기준은 공고 우대 줄의 **하루 수백만 건 이상**입니다.[1] 최소선은 창·워터마크·체크포인트·정확히 한 번을 말로 설명하고, 장애 뒤 다시 돌렸을 때 숫자가 같음을 시험으로 보이는 것입니다 {추론}.",
+      "refs": [
+        1,
+        2,
+        3,
+        11,
+        12,
+        13,
+        16
+      ],
+      "study": [
+        "flink-docs",
+        "flink-book",
+        "kafka-guide",
+        "wiki-kafka"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Own the end-to-end productionization of machine learning models, ensuring deployment architectures meet performance, scalability, and operational requirements.",
+      "short": "모델 파일을 받아 실제 주문 판정에 쓰이게 올리고, 속도·확장·운영 요건을 끝까지 책임진다.",
+      "why": "공고는 모델이 사업 SLA(약속한 응답 시간·가용성)를 지키며 효율적으로 돌게 하는 것을 이 자리의 책임으로 적었습니다.[1] 모델은 노트북에서 잘 돌아도 하루 수백만 건을 수십 밀리초 안에 답해야 하는 순간 다른 문제가 됩니다 {추론}.",
+      "actually": {
+        "intro": "쿠팡 ML 플랫폼 글이 밝힌 배포 방식입니다(사기 탐지 팀 전용이 아니라 회사 공통 플랫폼).[2]",
+        "items": [
+          "**모델마다 서비스 하나** — 쿠버네티스 위 Seldon 으로 모델을 각자의 서비스로 띄우고 트래픽에 따라 자동으로 늘린다. TFServing·Triton 과 직접 짠 Python 감싸개를 같이 쓴다.[2]",
+          "**배포 전 검증** — 모델 크기, 학습 때와 예측 때 결과가 같은지 시험한 뒤, 일부 트래픽에만 먼저 내보내고(카나리) 점점 넓힌다.[2]",
+          "**무거운 결과는 저장해 두기** — 계산이 비싼 모델의 응답은 온라인 피처 저장소에 캐시로 둔다.[2]",
+          "**그림자 모드** — 새 모델을 실제 판정에는 안 쓰고 옆에서 같이 돌려 점수만 비교하는 단계를 두는 것이 사기 탐지에서 흔하다 {추론}.",
+          "**떨어질 때 정하기** — 모델 서비스가 늦거나 죽으면 규칙만으로 판정할지, 일단 통과시킬지 미리 정해 둔다 {추론}."
+        ]
+      },
+      "how_far": "\"end-to-end\"는 모델 파일 → 서빙 → 감시 → 되돌리기까지입니다.[1][2] 모델 정확도를 올리는 일은 데이터 과학자 몫이지만, **학습 때와 예측 때 같은 입력이 들어가는지**는 이 자리가 보증합니다.[16]",
+      "refs": [
+        1,
+        2,
+        16
+      ],
+      "study": [
+        "coupang-ml",
+        "dmls",
+        "rules-ml",
+        "wiki-k8s"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Partner closely with Data Scientists and Engineering teams to bridge model development and production deployment, translating complex modeling requirements into scalable engineering solutions.",
+      "short": "데이터 과학자의 \"이런 피처·모델이 필요해\"를 운영 가능한 설계로 바꿔 주는 통역 역할이다.",
+      "why": "공고는 이 자리를 **데이터 과학과 엔지니어링 사이의 간극을 메우는** 플랫폼을 이끄는 사람이라고 적었습니다.[1] 연구용 코드가 운영 시스템에 그대로 들어가면 고치기 어려운 빚(접착 코드·파이프라인 정글)이 쌓인다는 것은 구글 논문이 정리한 일반론입니다.[17]",
+      "actually": {
+        "items": [
+          "\"최근 30일 판매자 반품률을 실시간으로\" 같은 요구를 받으면 — 30일 상태를 스트림에 들고 있을지, 배치로 만든 값에 오늘 것만 더할지 비용과 지연으로 고른다 {추론}.",
+          "노트북의 pandas 피처 코드를 운영용 정의(피처 저장소 등록)로 옮겨, 학습과 판정이 같은 정의를 쓰게 한다.[14][16]",
+          "모델의 입력 크기·응답 시간 예산(예: 30ms)을 먼저 합의하고, 그 안에 못 들어가는 피처는 미리 계산해 둔다 {추론}.",
+          "모델이 바뀌어도 판정 서비스의 계약(입력·출력 형식)은 그대로 두게 경계를 긋는다 {추론}."
+        ]
+      },
+      "how_far": "모델을 직접 만들 필요는 없지만, 데이터 과학자가 말하는 **정밀도·재현율·데이터 누수**를 알아듣고 \"그 피처는 판정 시점에 없다\"를 짚을 수 있어야 합니다 {추론}.",
+      "refs": [
+        1,
+        14,
+        16,
+        17
+      ],
+      "study": [
+        "dmls",
+        "ml-debt",
+        "feast-docs"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Define long-term technical vision and roadmap for data processing, ML platform capabilities, and fraud detection infrastructure.",
+      "short": "앞으로 몇 년 동안 데이터 처리·ML 플랫폼·사기 탐지 기반을 어디로 끌고 갈지 정해 글로 남긴다.",
+      "why": "Senior Staff 는 한 기능이 아니라 여러 팀이 기대는 방향을 정하는 자리입니다.[19] 쿠팡 ML 플랫폼 글도 앞으로 할 일로 피처·서빙의 드리프트(입력 분포가 변하는 것) 감지와 LLM·멀티모달용 실시간 GPU 서빙을 적었습니다.[2] 사기 수법이 바뀌면 필요한 피처와 지연도 바뀌어서 기반의 방향이 따로 필요합니다 {추론}.",
+      "actually": {
+        "items": [
+          "지금 구조의 한계를 숫자로 적는다 — 피처가 몇 초 낡는지, 새 피처 하나 올리는 데 며칠 걸리는지, 세일 날 지연이 얼마나 느는지 {추론}.",
+          "선택지와 버린 이유를 담은 설계 문서를 쓴다 — 목표·하지 않을 것·대안.[19]",
+          "단계를 나눈 로드맵 — 예: 1분기 피처 정의 통합, 2분기 그림자 판정, 3분기 GPU 서빙 {추론}.",
+          "생성형 AI 로 판매자 사기 글·이미지를 판정하는 수요가 생기면 서빙 비용·지연을 미리 계산한다.[2] {추론}"
+        ]
+      },
+      "how_far": "로드맵은 혼자 정하지 않고 데이터 과학·제품·다른 엔지니어링 팀의 합의를 받아야 의미가 있습니다.[19] 면접에서는 \"과거에 몇 년짜리 방향을 정하고 실제로 옮겨 간 경험\"을 물을 것으로 보입니다 {추론}.",
+      "refs": [
+        2,
+        19
+      ],
+      "study": [
+        "staffeng"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Lead complex cross-functional initiatives, establish engineering best practices, and raise the bar for system scalability, reliability, and operational excellence.",
+      "short": "여러 직군이 걸친 큰 일을 이끌고, 확장성·신뢰성·운영의 기준을 조직 전체에 세운다.",
+      "why": "사기 탐지는 결제·주문·판매자·고객센터 시스템에 걸쳐 있어 한 팀만으로 끝나는 일이 거의 없습니다 {추론}. 공고는 엄격한 사업 SLA 를 지켜야 한다고 적었고,[1] 신뢰성 기준은 보통 SLO(지킬 목표치)와 오류 예산으로 정합니다.[18]",
+      "actually": {
+        "items": [
+          "판정 서비스의 SLO 를 정한다 — 예: 99.9% 요청이 50ms 안, 월 가용성 99.95% {추론}.[18]",
+          "새 파이프라인을 올릴 때의 공통 점검표 — 체크포인트·재처리 방법·지연 지표·경보 {추론}.",
+          "장애 뒤 사후 분석(누구 탓이 아닌 원인 분석)을 팀 관례로 만든다.[18]",
+          "판정 결과·피처 값을 남겨 \"왜 이 주문을 막았나\"를 나중에 되짚을 수 있게 한다 {추론}."
+        ]
+      },
+      "refs": [
+        1,
+        18
+      ],
+      "study": [
+        "sre-slo",
+        "staffeng"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Mentor senior engineers, drive technical decision-making, and provide leadership during critical production incidents and architectural reviews.",
+      "short": "시니어 엔지니어를 키우고, 큰 기술 결정과 심각한 장애·설계 검토에서 앞장선다.",
+      "why": "Staff 이상은 팀장이 아니면서도 기술로 사람을 끌고 가는 자리입니다.[19] 사기 탐지에서 장애는 두 방향입니다 — 판정이 멈추면 주문이 막히고, 잘못 열리면 사기가 지나갑니다 {추론}.",
+      "actually": {
+        "items": [
+          "장애 때 지휘 — 판정을 규칙만으로 돌릴지, 차단 문턱을 임시로 바꿀지 사업 쪽과 빠르게 정한다 {추론}.",
+          "설계 검토 — 다른 팀이 올린 설계에서 지연 예산·장애 범위·데이터 누수를 짚는다 {추론}.",
+          "시니어 멘토링 — 설계 문서 리뷰, 맡을 문제 고르기를 같이 한다.[19]"
+        ]
+      },
+      "refs": [
+        19
+      ],
+      "study": [
+        "staffeng",
+        "sre-slo"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "13+ years of experience in backend engineering, data engineering, or large-scale distributed systems development",
+      "short": "백엔드·데이터 엔지니어링·대규모 분산 시스템 중 하나로 13년 이상 일한 경력이 최소선이다.",
+      "why": "같은 회사 인도 센터의 다른 Senior Staff 백엔드 공고는 12년 이상을 요구했습니다.[1][21] 이 자리는 데이터·ML 서빙까지 걸쳐 한 해 더 높습니다.",
+      "how_far": "세 갈래 중 **하나**의 경력이면 되지만, 나머지 업무 줄이 스트림 처리와 ML 서빙을 요구하므로 실제로는 둘 이상을 깊게 해 본 사람을 찾는 것으로 보입니다 {추론}.",
+      "refs": [
+        1,
+        21
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Strong experience building large-scale, real-time distributed data processing systems",
+      "short": "여러 서버에 나눠 도는 실시간 데이터 처리 시스템을 크게 만들어 본 경험이 필요하다.",
+      "why": "업무 둘째 줄의 실시간 파이프라인을 설계하려면 직접 만들어 본 경험이 필요합니다.[1] 쿠팡이츠는 1초 미만 지연의 실시간 파이프라인을 운영한다고 밝혔습니다.[3]",
+      "actually": {
+        "items": [
+          "파티션(나눠 담는 칸)을 무엇으로 나눌지 — 계정 id 로 나누면 한 계정의 이벤트가 한 곳에 모여 집계가 쉽지만, 큰 판매자 하나가 한 칸을 막을 수 있다(쏠림) {추론}.[13]",
+          "상태 크기 — 계정 수천만 × 피처 수십 개가 메모리에 다 안 들어가 디스크 기반 상태 저장소를 쓴다.[12]",
+          "재처리 — 로직이 틀렸을 때 지난 이벤트를 다시 흘려 상태를 다시 만드는 방법.[12][13]"
+        ]
+      },
+      "how_far": "\"만들어 봤다\"를 보이려면 처리량(초당 몇 건)·지연(p99 몇 ms)·장애 때 무엇이 일어났나를 숫자로 말할 수 있어야 합니다 {추론}.",
+      "refs": [
+        1,
+        3,
+        12,
+        13
+      ],
+      "study": [
+        "ddia",
+        "flink-book"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Hands-on experience with data streaming technologies such as Apache Flink, Kafka, Spark Streaming, or similar frameworks",
+      "short": "Flink·Kafka·Spark Streaming 같은 스트림 처리 도구를 직접 써 본 경험이다.",
+      "why": "이 플랫폼의 실시간 집계는 이런 도구 위에서 돕니다.[1] 쿠팡이츠의 실시간 파이프라인은 Spark 로 처리하고 결과를 Kafka 에 쓴다고 소개됐습니다.[3]",
+      "level": {
+        "basic": "Kafka 토픽·파티션·컨슈머 그룹·오프셋, 메시지를 보내고 받는 코드",
+        "work": "Flink(또는 Spark Structured Streaming)의 창·워터마크·상태·체크포인트, 컨슈머 랙 감시",
+        "team": "정확히 한 번 처리의 끝에서 끝 보장, 상태 수십 GB 운영, 재처리·백필 설계"
+      },
+      "actually": {
+        "items": [
+          "**Kafka** — 이벤트를 순서대로 오래 보관하는 로그. 같은 키는 같은 파티션에 가서 순서가 지켜진다.[13]",
+          "**Flink** — 이벤트 하나씩 바로 처리하는 엔진. 일어난 시각 기준 창과 상태를 기본으로 다룬다.[11][12]",
+          "**Spark Streaming** — 아주 작은 배치로 끊어 처리한다. 배치와 같은 코드를 쓰기 좋다 {추론}."
+        ]
+      },
+      "refs": [
+        1,
+        3,
+        11,
+        12,
+        13
+      ],
+      "study": [
+        "flink-docs",
+        "kafka-guide",
+        "wiki-kafka",
+        "flink-book"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Strong proficiency in Java-based backend development and distributed system architecture",
+      "short": "Java 백엔드를 깊게 다루고 분산 시스템 구조를 설계할 수 있어야 한다.",
+      "why": "Flink·Kafka 가 JVM(자바 가상 머신) 위에서 돌고, 판정 서비스도 Java 백엔드라 성능 문제를 파고들려면 JVM 을 알아야 합니다 {추론}. 같은 인도 센터의 Senior Staff 공고도 Java·Spring 환경을 요구했습니다.[21]",
+      "level": {
+        "basic": "컬렉션·예외·동시성 기본(스레드 풀·Future)",
+        "work": "GC 로그 읽기, 힙·스레드 덤프로 지연 원인 찾기, 비동기 클라이언트",
+        "team": "p99 지연을 깎는 수준의 튜닝 — GC 멈춤, 객체 할당, 직렬화 비용 {추론}"
+      },
+      "how_far": "판정 서비스의 응답 예산이 수십 ms 라 GC 한 번 멈춤이 곧 SLA 위반이 될 수 있습니다 {추론}. 그 수준까지 들여다볼 수 있으면 됩니다.",
+      "refs": [
+        21
+      ],
+      "study": [
+        "wiki-jvm",
+        "wiki-thread",
+        "ddia"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience designing and building low-latency, high-throughput data pipelines and serving systems",
+      "short": "지연은 짧고 처리량은 큰 파이프라인과, 요청에 바로 답하는 서빙 시스템을 설계해 본 경험이다.",
+      "why": "주문 한 건의 판정은 결제 흐름 한가운데에 끼어 있어 느리면 모든 고객이 기다립니다 {추론}. Stripe 는 판정을 100ms 안에 낸다고 밝혔습니다.[15] 쿠팡 ML 플랫폼은 지연이 중요한 피처를 온라인 저장소에서 바로 꺼내 쓴다고 했습니다.[2]",
+      "actually": {
+        "items": [
+          "**지연 예산 나누기** — 전체 50ms 라면 피처 조회 10ms, 모델 20ms, 규칙·기록 10ms, 여유 10ms 처럼 단계마다 예산을 준다 {추론}.",
+          "**평균이 아니라 p99** — 100건 중 가장 느린 1건이 SLA 를 깬다.[18]",
+          "**미리 계산** — 무거운 집계는 스트림이 미리 만들어 두고 판정 때는 꺼내기만 한다.[2]",
+          "**병렬 조회** — 피처 여러 개를 동시에 묻고, 시간 안에 안 오면 기본값으로 판정한다 {추론}."
+        ]
+      },
+      "refs": [
+        2,
+        15,
+        18
+      ],
+      "study": [
+        "sysdesign",
+        "ddia",
+        "sre-slo"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience deploying, scaling, and optimizing machine learning models in production environments",
+      "short": "ML 모델을 실서비스에 배포하고, 늘리고, 빠르게 만든 경험이 필요하다.",
+      "why": "업무 셋째 줄의 '모델을 운영에 올리는 일 전체'를 맡으려면 해 봐야 합니다.[1] 쿠팡 ML 플랫폼은 모델을 쿠버네티스 위 서비스로 띄우고 자동 확장·카나리 배포를 한다고 밝혔습니다.[2]",
+      "actually": {
+        "items": [
+          "모델을 서빙 형식으로 내보내기(예: ONNX·TorchScript·저장된 트리 모델) {추론}.",
+          "한 번에 여러 요청을 묶어 처리(배칭)해 처리량을 올리되 지연은 지키기 {추론}.",
+          "CPU·GPU 중 무엇에 올릴지 비용으로 고르기 — 쿠팡은 자체 GPU 클러스터와 AWS 를 섞어 쓴다.[2]",
+          "점수 분포 감시 — 배포 뒤 점수 분포가 갑자기 바뀌면 입력이 깨진 것일 수 있다.[2][16]"
+        ]
+      },
+      "refs": [
+        1,
+        2,
+        16
+      ],
+      "study": [
+        "dmls",
+        "coupang-ml",
+        "wiki-k8s",
+        "wiki-docker"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Strong knowledge of system design, scalability, fault tolerance, and operational excellence",
+      "short": "시스템 설계·확장·장애 견디기·운영을 깊이 알아야 한다.",
+      "why": "판정 시스템이 멈추면 주문이 멈추고, 잘못 열리면 사기가 지나갑니다 {추론}. 공고는 엄격한 SLA 를 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**장애 범위 나누기** — 판정 서비스 하나가 죽어도 결제 전체가 멈추지 않게 시간 제한·차단기(회로 차단)·기본 판정을 둔다 {추론}.",
+          "**여러 지역·가용 영역** — 한 데이터센터가 내려가도 돈다 {추론}.",
+          "**운영 지표** — 요청 수·오류율·지연·피처 낡음·점수 분포를 대시보드로.[18]"
+        ]
+      },
+      "refs": [
+        1,
+        18
+      ],
+      "study": [
+        "sysdesign",
+        "sre-slo",
+        "ddia"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience in fraud detection, risk systems, trust & safety, payments risk, or similar domains",
+      "short": "사기 탐지·위험 관리·신뢰와 안전·결제 위험 분야에서 일해 본 경험이면 더 좋다.",
+      "why": "사기 탐지에는 다른 ML 서비스와 다른 성질이 있습니다 — 상대가 사람이라 수법을 바꾸고, 정답이 며칠 뒤에야 오고, 사기는 전체의 아주 작은 비율입니다.[22] 이 성질을 알면 기반을 설계할 때 실수가 줄어듭니다 {추론}.",
+      "actually": {
+        "items": [
+          "**사기가 드물다** — 정확도 99.8% 는 아무것도 안 막아도 나온다(사기 0.2% 일 때). 그래서 정밀도(막은 것 중 진짜 사기)와 재현율(사기 중 잡은 비율)로 본다.[22]",
+          "**정답이 늦게 온다** — 차지백은 몇 주 뒤에 온다. 그 사이 모델은 정답 없이 돈다.[22]",
+          "**막으면 정답이 안 생긴다** — 차단한 주문은 진짜 사기였는지 알 수 없다. 일부를 일부러 통과시켜 정답을 모으는 방법도 쓴다 {추론}.",
+          "**규칙과 모델을 같이** — 사람이 바로 넣는 규칙(이 기기 차단)과 모델 점수를 함께 쓴다.[15]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "문턱을 낮추면 정상 고객이 더 많이 막힌다",
+          "body": "하루 100만 건 중 사기 0.2%(2,000건)라고 가정한 숫자입니다. 문턱을 0.9 → 0.5 로 낮추면 사기는 1,200 → 1,800 건 잡지만, 잘못 막는 정상 주문은 499 → 9,980 건으로 늘고 막은 것 중 진짜 사기는 71% → 15% 로 떨어집니다(직접 돌린 출력). 어디서 끊을지는 사업이 정하고, 기반은 문턱을 바로 바꿀 수 있게 해 둡니다 {추론}.",
+          "lang": "python",
+          "code": "N, rate = 1_000_000, 0.002\nfraud = int(N * rate)\nnormal = N - fraud\nfor th, recall, fpr in [(0.9, 0.60, 0.0005), (0.7, 0.80, 0.003), (0.5, 0.90, 0.01)]:\n    caught, fp = int(fraud * recall), int(normal * fpr)\n    prec = caught / (caught + fp)\n    print(f\"문턱 {th}: 사기 {caught}/{fraud} 잡음, 정상 {fp:,}건 막음, 막은 것 중 사기 {prec:.0%}\")"
+        }
+      ],
+      "refs": [
+        15,
+        22
+      ],
+      "study": [
+        "radar-guide",
+        "stripe-radar"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Familiarity with commerce, marketplace, fintech, or payments ecosystems",
+      "short": "커머스·마켓플레이스·핀테크·결제 생태계를 알면 더 좋다.",
+      "why": "공고는 이 조직이 마켓플레이스 생태계 전체(거래·판매자 활동·마켓 이벤트)를 지킨다고 적었습니다.[1] 마켓에서는 구매자 사기(도용 카드·쿠폰 남용·반품 사기)와 판매자 사기(가짜 상품·리뷰 조작)가 다 일어납니다 {추론}. 쿠팡 대만의 사기 방지 조직도 구매자·판매자·배송 파트너를 같이 지킨다고 적었습니다.[6]",
+      "actually": {
+        "items": [
+          "결제 흐름 — 승인·매입·취소·차지백의 순서와 시점을 알면 정답이 언제 오는지 안다 {추론}.",
+          "마켓 구조 — 판매자·구매자·배송 파트너 세 쪽의 이벤트를 한 그래프로 엮어야 하는 이유(같은 기기·같은 주소) {추론}.",
+          "같은 그룹의 쿠팡페이는 FDS·AML(자금세탁 방지)에 AI·ML 을 붙이는 리스크 엔지니어링 조직을 따로 두고 있다.[5]"
+        ]
+      },
+      "refs": [
+        1,
+        5,
+        6
+      ],
+      "study": [
+        "radar-guide"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience building ML platforms, model-serving infrastructure, feature stores, or inference pipelines",
+      "short": "ML 플랫폼·모델 서빙 기반·피처 저장소·추론 파이프라인을 만들어 본 경험이면 더 좋다.",
+      "why": "쿠팡은 회사 공통 ML 플랫폼(Feast 기반 피처 저장소, Seldon 서빙)을 이미 운영합니다.[2] 사기 탐지 쪽에서 그 위에 무엇을 얹고 무엇을 따로 만들지 고르려면 플랫폼을 만들어 본 눈이 필요합니다 {추론}.",
+      "actually": {
+        "items": [
+          "**피처 저장소의 핵심은 '그때 값'** — 학습 표를 만들 때 주문 시점에 알 수 있던 값만 붙여야 한다(point-in-time join). 최신 값을 붙이면 미래가 학습에 샌다.[14]",
+          "**온라인/오프라인 두 저장소** — 판정용은 밀리초 조회, 학습용은 긴 기간 이력.[2][14]",
+          "**학습과 예측을 같게** — 구글 ML 규칙은 판정 때 쓴 피처를 그대로 기록해 학습에 쓰는 것을 가장 확실한 방법으로 꼽는다.[16]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "'그때 값'으로 붙이지 않으면 생기는 일",
+          "body": "계정 A 의 누적 신고 수가 0 → 1(30분) → 5(60분)로 늘었습니다. 20분 주문(사기)에는 그때 값 0 을, 50분 주문(정상)에는 1 을 붙여야 합니다. 최신 값 5 를 붙이면 두 주문 모두 '신고 5건 계정'이 되어, 모델이 판정 시점에는 없던 정보로 배웁니다(직접 돌린 출력). Feast 는 이 일을 point-in-time join 으로 합니다.[14]",
+          "lang": "python",
+          "code": "history = {\"A\": [(0, 0), (30, 1), (60, 5)]}  # (시각, 누적 신고 수)\norders = [(\"A\", 20, 1), (\"A\", 50, 0)]       # (계정, 주문 시각, 사기였나)\n\ndef as_of(acct, t):\n    v = 0\n    for ts, val in history[acct]:\n        if ts <= t:\n            v = val\n    return v\n\nlatest = history[\"A\"][-1][1]\nfor acct, t, label in orders:\n    print(f\"주문 t={t}: 그때 값={as_of(acct, t)}  최신 값={latest}  정답={label}\")\n# 주문 t=20: 그때 값=0  최신 값=5  정답=1\n# 주문 t=50: 그때 값=1  최신 값=5  정답=0"
+        }
+      ],
+      "refs": [
+        2,
+        14,
+        16
+      ],
+      "study": [
+        "feast-docs",
+        "coupang-ml",
+        "rules-ml"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience operating systems that process millions of events or transactions per day",
+      "short": "하루 수백만 건 이상의 이벤트·거래를 처리하는 시스템을 운영해 본 경험이면 더 좋다.",
+      "why": "공고는 이 플랫폼이 거래·판매자 활동·마켓 이벤트를 대량으로 처리한다고 적었습니다.[1] 쿠팡의 다른 개인화 데이터 파이프라인은 하루 수십억 건을 다룬다고 소개됐습니다.[4]",
+      "actually": {
+        "items": [
+          "하루 수백만 건은 초당 평균 수십~수백 건이지만, 세일·명절에는 평소의 몇 배가 몰린다 — 평균이 아니라 최고치로 용량을 잡는다 {추론}.",
+          "운영 경험은 \"몰렸을 때 무엇이 먼저 터졌나\"를 아는 것이다 — 컨슈머 랙·상태 저장소 디스크·피처 조회 타임아웃 {추론}."
+        ]
+      },
+      "refs": [
+        1,
+        4
+      ],
+      "study": [
+        "ddia",
+        "sre-slo"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience partnering closely with Data Science teams to productionize machine learning models",
+      "short": "데이터 과학 팀과 붙어서 모델을 운영에 올려 본 경험이면 더 좋다.",
+      "why": "업무 넷째 줄(데이터 과학과 엔지니어링의 다리)을 해 본 경험을 묻는 줄입니다.[1] 연구 코드와 운영 코드 사이의 빚은 같이 일하는 방식을 정하지 않으면 쌓입니다.[17]",
+      "how_far": "\"모델을 받아 올렸다\"보다 **\"데이터 과학자가 엔지니어 없이도 새 피처·모델을 올릴 수 있게 길을 만들었다\"**가 이 직급에 맞는 이야기입니다 {추론}.",
+      "refs": [
+        1,
+        17
+      ],
+      "study": [
+        "ml-debt",
+        "dmls"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Familiarity with leveraging GenAI tools for software development, debugging, testing, and engineering productivity",
+      "short": "생성형 AI 도구로 개발·디버깅·시험·생산성을 끌어올리는 데 익숙하면 더 좋다.",
+      "why": "쿠팡 시애틀의 Staff 엔지니어는 당번(장애 대기) 검토에 AI 를 쓴다고 소개했습니다.[23] 이 공고도 같은 흐름에서 AI 도구 활용을 우대 줄에 넣은 것으로 보입니다 {추론}.",
+      "how_far": "도구 이름보다 \"AI 가 쓴 코드를 어떻게 검증했나\"(시험·리뷰)를 설명할 수 있으면 됩니다 {추론}.",
+      "refs": [
+        23
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience working with cloud-native architectures, containerized environments, and modern infrastructure platforms",
+      "short": "클라우드 네이티브·컨테이너·현대적 인프라 위에서 일해 본 경험이면 더 좋다.",
+      "why": "쿠팡 ML 플랫폼은 학습과 서빙을 쿠버네티스 위에서 돌리고 자체 GPU 클러스터와 AWS 를 섞어 씁니다.[2]",
+      "actually": {
+        "items": [
+          "모델·스트림 작업을 컨테이너로 묶어 쿠버네티스에 띄우고 자동 확장한다.[2]",
+          "스트림 작업의 상태를 클러스터가 바뀌어도 잃지 않게 외부 저장소에 체크포인트한다.[12]"
+        ]
+      },
+      "refs": [
+        2,
+        12
+      ],
+      "study": [
+        "wiki-k8s",
+        "wiki-docker"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Type of work model",
+      "short": "근무 방식 안내의 제목 줄이다(요건이 아니다).",
+      "why": "쿠팡 공고에 공통으로 붙는 근무 방식 칸의 머리입니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Hybrid / Onsite / Remote working",
+      "short": "하이브리드·출근·재택 중 어느 방식인지 적는 칸이다 — 아래 줄이 하이브리드라고 밝힌다.",
+      "why": "공고 공통 양식입니다. 이 자리의 실제 방식은 다음 줄의 하이브리드 설명입니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Our Hybrid work model: Coupang hybrid work model is designed to enable a culture of collaboration",
+      "short": "주 3일 이상 사무실 출근, 직무에 따라 주 2일 재택 — 사업에 따라 더 나올 수도 있다.",
+      "why": "공고가 밝힌 쿠팡 하이브리드 근무 규칙입니다. 일부 사업은 일의 성격상 더 출근할 수 있다고 적었습니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Details to consider",
+      "short": "유의사항 칸의 제목 줄이다.",
+      "why": "쿠팡 공고 공통 양식입니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Those eligible for employment protection (recipients of veteran",
+      "short": "보훈 대상자·장애인 등 고용 보호 대상은 관련 법에 따라 우대될 수 있다는 안내다.",
+      "why": "쿠팡 공고에 공통으로 붙는 법정 안내입니다.[1]",
+      "refs": [
+        1
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "coupang-ml",
+      "title": "Meet Coupang's Machine Learning Platform",
+      "by": "쿠팡 엔지니어링 블로그 · 2023",
+      "kind": "doc",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "이 회사가 피처 저장소(Feast)·모델 서빙(Seldon·쿠버네티스)·카나리 배포를 어떻게 하는지 직접 밝힌 글. 업무 셋째 줄과 우대 셋째 줄을 준비하는 출발점."
+    },
+    {
+      "id": "stripe-radar",
+      "title": "How we built it: Stripe Radar",
+      "by": "Stripe 엔지니어링 블로그",
+      "kind": "doc",
+      "url": "https://stripe.com/blog/how-we-built-it-stripe-radar",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "결제 사기 판정을 100ms 안에 내는 시스템이 모델을 어떻게 키워 왔나(로지스틱 회귀 → 심층 신경망)와 그 대가(설명하기 어려움). 사기 탐지 시스템 설계의 실제 사례."
+    },
+    {
+      "id": "radar-guide",
+      "title": "A primer on machine learning for fraud detection",
+      "by": "Stripe",
+      "kind": "doc",
+      "url": "https://stripe.com/radar/guide",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "사기 탐지가 처음이면 — 불균형 데이터, 정밀도·재현율, 늦게 오는 정답, 규칙과 모델을 같이 쓰는 이유를 한 번에. 우대 첫째 줄용."
+    },
+    {
+      "id": "dmls",
+      "title": "머신러닝 시스템 설계",
+      "by": "칩 후옌 · 한빛미디어 · 2023",
+      "kind": "book",
+      "url": "https://www.oreilly.com/library/view/meosinreoning-siseutem-seolgye/9791169210850/",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "why": "피처 엔지니어링·데이터 누수·배포와 예측 서비스·분포 변화 감시까지 모델을 운영에 올리는 전 과정. 업무 셋째·넷째 줄의 교과서."
+    },
+    {
+      "id": "rules-ml",
+      "title": "Rules of Machine Learning: Best Practices for ML Engineering",
+      "by": "Martin Zinkevich · Google",
+      "kind": "doc",
+      "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "학습과 예측의 차이(training-serving skew)를 줄이는 규칙들. '판정 때 쓴 피처를 그대로 기록해 학습에 쓴다'가 이 자리의 핵심 원칙과 같다."
+    },
+    {
+      "id": "ml-debt",
+      "title": "Hidden Technical Debt in Machine Learning Systems",
+      "by": "D. Sculley 외 · NeurIPS 2015",
+      "kind": "doc",
+      "url": "https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "why": "ML 코드보다 그 주변(데이터 의존·접착 코드·파이프라인)이 더 큰 빚이 된다는 논문. 데이터 과학과 엔지니어링을 잇는 기반을 왜 만드는지 설명할 때 쓴다."
+    },
+    {
+      "id": "feast-docs",
+      "title": "Feast — Point-in-time joins",
+      "by": "Feast 공식 문서",
+      "kind": "doc",
+      "url": "https://docs.feast.dev/getting-started/concepts/point-in-time-joins",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "쿠팡 피처 저장소의 바탕인 Feast 에서 '그때 값'으로 학습 표를 만드는 법. 우대 셋째 줄의 피처 저장소 경험을 직접 해 볼 때."
+    },
+    {
+      "id": "flink-docs",
+      "title": "Apache Flink 문서 — Timely Stream Processing · Stateful Stream Processing",
+      "by": "Apache Flink",
+      "kind": "doc",
+      "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/time/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "일어난 시각·워터마크·늦은 데이터, 상태와 체크포인트의 공식 설명. 업무 둘째 줄과 요건 셋째 줄의 기본."
+    },
+    {
+      "id": "flink-book",
+      "title": "Stream Processing with Apache Flink",
+      "by": "Fabian Hueske · Vasiliki Kalavri · O'Reilly · 2019",
+      "kind": "book",
+      "url": "https://www.oreilly.com/library/view/stream-processing-with/9781491974285/",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "Flink 를 만든 사람들이 쓴 책. 창·상태·정확히 한 번 처리·운영을 코드와 함께. 실시간 피처 파이프라인을 직접 설계할 수준까지."
+    },
+    {
+      "id": "kafka-guide",
+      "title": "카프카 핵심 가이드 (개정증보판)",
+      "by": "그웬 샤피라 외 · 제이펍 · 2023",
+      "kind": "book",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%B4%ED%94%84%EC%B9%B4%20%ED%95%B5%EC%8B%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "why": "파티션·복제·컨슈머 그룹·정확히 한 번 의미. 이벤트를 받는 첫 층(Kafka)을 운영 수준으로 알기 위해."
+    },
+    {
+      "id": "wiki-kafka",
+      "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+      "kind": "internal",
+      "url": "/wiki/kafka",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "명령을 직접 치고 오간 레코드를 보며 '보냈다'와 '처리됐다'의 차이를 익힌다. 스트림 요건의 첫걸음."
+    },
+    {
+      "id": "ddia",
+      "title": "데이터 중심 애플리케이션 설계",
+      "by": "마틴 클레프만 · 위키북스 · 2018",
+      "kind": "book",
+      "url": "https://wikibook.co.kr/data-intensive-applications/",
+      "lang": "ko",
+      "free": false,
+      "level": "심화",
+      "why": "분할·복제·배치·스트림(10·11장)·정확히 한 번. 실시간 분산 처리 요건 전반의 바탕."
+    },
+    {
+      "id": "sysdesign",
+      "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+      "by": "알렉스 쉬 · 인사이트",
+      "kind": "book",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+      "lang": "ko",
+      "free": false,
+      "level": "입문",
+      "why": "처리율 제한·캐시·분산 큐를 면접 형식으로. 시스템 설계 면접 대비."
+    },
+    {
+      "id": "sre-slo",
+      "title": "Google SRE Book — Service Level Objectives",
+      "by": "Google",
+      "kind": "doc",
+      "url": "https://sre.google/sre-book/service-level-objectives/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "SLI·SLO·SLA·백분위·오류 예산. 판정 서비스의 '엄격한 SLA'를 숫자로 정하고 지키는 법."
+    },
+    {
+      "id": "staffeng",
+      "title": "Staff Engineer: Leadership beyond the management track",
+      "by": "Will Larson",
+      "kind": "book",
+      "url": "https://staffeng.com/book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "팀장이 아니면서 방향을 정하고 합의를 끌어내는 Staff 이상의 일. 업무 다섯째~일곱째 줄(로드맵·여러 직군·멘토링) 준비."
+    },
+    {
+      "id": "wiki-k8s",
+      "title": "쿠버네티스 입문 (우리 사이트 책)",
+      "kind": "internal",
+      "url": "/wiki/kubernetes",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "모델 서빙과 스트림 작업을 쿠버네티스에 띄우고 Pending·CrashLoopBackOff 를 읽는 법."
+    },
+    {
+      "id": "wiki-docker",
+      "title": "개발자를 위한 도커 (우리 사이트 책)",
+      "kind": "internal",
+      "url": "/wiki/docker",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "모델 서버를 컨테이너로 묶는 법. 클라우드 네이티브 우대 줄의 기본."
+    },
+    {
+      "id": "wiki-jvm",
+      "title": "자바 성능 튜닝 — JVM 과 GC (우리 사이트 책)",
+      "kind": "internal",
+      "url": "/wiki/jvm-tuning",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "GC 로그로 p99 지연의 원인을 찾는 법. 수십 ms 예산의 판정 서비스를 Java 로 지키기 위해."
+    },
+    {
+      "id": "wiki-thread",
+      "title": "실전 자바 — 멀티스레드와 동시성 (우리 사이트 책)",
+      "kind": "internal",
+      "url": "/wiki/java-thread",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "피처를 병렬로 조회하고 시간 안에 안 오면 끊는 코드의 바탕(스레드 풀·Future)."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "사기 탐지가 무엇과 싸우나",
+      "time": "1주",
+      "goal": "불균형 데이터·정밀도/재현율·늦게 오는 정답·규칙과 모델의 역할을 설명할 수 있다.",
+      "task": "가상 주문 1만 건(사기 0.5%)을 만들고 문턱 세 개에서 잡은 사기·잘못 막은 정상 주문 표를 그린다.",
+      "resources": [
+        "radar-guide",
+        "stripe-radar"
+      ]
+    },
+    {
+      "title": "이벤트를 받아 실시간으로 세기",
+      "time": "2~3주",
+      "goal": "Kafka 로 이벤트를 받고, 일어난 시각 기준 창으로 계정별 '최근 10분 주문 수'를 갱신하며, 장애 뒤에도 같은 숫자를 낼 수 있다.",
+      "task": "로컬 Docker 로 Kafka·Flink 를 띄워 가짜 주문 스트림(일부 늦게 도착)을 흘리고, 작업을 중간에 죽였다 살려도 결과가 같음을 시험으로 보인다.",
+      "resources": [
+        "wiki-kafka",
+        "kafka-guide",
+        "flink-docs",
+        "flink-book",
+        "wiki-docker"
+      ]
+    },
+    {
+      "title": "학습과 판정이 같은 피처를 쓰게",
+      "time": "2주",
+      "goal": "피처 저장소로 학습 표는 '그때 값'으로, 판정은 온라인 저장소에서 밀리초로 꺼내 쓸 수 있다.",
+      "task": "Feast 로 2단계의 피처를 등록하고, point-in-time join 으로 학습 표를 만든 뒤 최신 값을 붙였을 때와 모델 성능이 어떻게 다른지 비교한다.",
+      "resources": [
+        "feast-docs",
+        "rules-ml",
+        "dmls"
+      ]
+    },
+    {
+      "title": "모델을 50ms 안에 답하게",
+      "time": "2~3주",
+      "goal": "모델을 서비스로 띄우고 지연 예산·p99·기본 판정·카나리 배포를 갖춘 판정 API 를 만들 수 있다.",
+      "task": "작은 분류 모델을 쿠버네티스에 서빙하고, Java 판정 API 가 피처 조회 + 모델 + 규칙을 묶게 한다. 부하를 걸어 p99 를 재고, 모델 서버를 죽였을 때 규칙만으로 답하는지 확인한다.",
+      "resources": [
+        "coupang-ml",
+        "wiki-k8s",
+        "wiki-jvm",
+        "wiki-thread",
+        "sre-slo"
+      ]
+    },
+    {
+      "title": "방향을 정하고 남이 따라오게",
+      "time": "계속",
+      "goal": "기반의 한계를 숫자로 적고, 대안을 비교한 설계 문서와 로드맵으로 합의를 끌어낼 수 있다.",
+      "task": "1~4단계 시스템의 한계(피처 낡음·새 피처 올리는 데 걸리는 시간)를 재서, 대안 둘을 비교한 A4 두 장 설계 문서와 분기별 로드맵을 쓴다.",
+      "resources": [
+        "staffeng",
+        "ml-debt",
+        "ddia",
+        "sysdesign"
+      ]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없고 인도 법인 숫자도 공개되지 않았다. 공시로 확인되는 것은 **전 세계 직원 보수 중간값(2025년 3만 3,831달러)** 뿐이고, 비교로 같은 회사 **같은 직급의 미국 시애틀 공고 기본급($174,000~$299,000)** 을 싣는다 — 둘 다 이 자리 연봉이 아니다",
+    "rows": [
+      {
+        "label": "쿠팡 Inc. 전 직원 보수 중간값",
+        "value": "3만 3,831달러 / 년",
+        "basis": "공시(미국 위임장) · 2025년",
+        "note": "CEO 를 뺀 전 세계 직원의 가운데 값. 한국 물류·현장 직원이 많이 섞인 값이다 [9]"
+      },
+      {
+        "label": "다른 자리 비교 — 미국 Senior Staff Backend 기본급",
+        "value": "$174,000 ~ $299,000 / 년",
+        "peer": true,
+        "basis": "공고 · 2026년 (미국 시애틀)",
+        "note": "같은 직급 이름의 Cloud Infrastructure 조직 공고. 기본급만이고 연 보너스는 기본급의 0~20% 로 따로 적혀 있다. 지역 시장에 따라 달라진다고 공고가 밝혔다 [10]"
+      }
+    ],
+    "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없고, 인도 법인의 보수 공시도 없다 — **인도 숫자 없음**. 중간값은 회사 전체 가운데 값이라 경력 13년 이상 개발자 연봉으로 읽으면 안 된다 {추론}. 미국 공고 금액은 미국 시장을 반영한 범위라 인도 금액과 같지 않다 [10]. 처우는 마지막 협의 단계에서 확인한다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "근무 방식",
+        "detail": "하이브리드 — 주 3일 이상 사무실, 직무에 따라 주 2일 재택 가능(일부 사업은 더 출근)"
+      },
+      {
+        "name": "의료",
+        "detail": "본인과 직계가족을 보장하는 의료보험"
+      },
+      {
+        "name": "가족 휴가",
+        "detail": "가족 관련 휴가"
+      },
+      {
+        "name": "배움",
+        "detail": "학습 프로그램, 여러 나라가 함께하는 프로젝트"
+      },
+      {
+        "name": "행사·시설",
+        "detail": "팀·회사 행사, 라운지·카페테리아"
+      }
+    ],
+    "note": "근무 방식은 이 공고 [1], 나머지는 쿠팡 채용 사이트 'Why Coupang' 의 전 세계 공통 소개다 [8]. 사이트는 복지가 직무·지역·자격에 따라 다를 수 있다고 적었고 금액·조건은 없다 — 인도 사무소 적용 범위는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "쿠팡 인도 개발 센터 (Coupang Dev Center) — 벵갈루루",
+    "address": "6th Floor, RMZ Ecoworld, Campus 20, Units 601 & 602, Bhoganahalli Village, Varthur Hobli, Bengaluru Urban, Karnataka, India",
+    "map_url": "https://map.naver.com/p/search/RMZ%20Ecoworld%20Campus%2020%20Bengaluru",
+    "note": "공고 근무지는 'Bengaluru' 다 [1]. 주소는 쿠팡 채용 사이트의 벵갈루루 안내다 [7]. 인도 개발 센터는 2023년 말에 문을 열었다 [20]."
+  },
+  "fit": {
+    "good": [
+      "스트림 처리와 ML 서빙을 둘 다 깊게 해 본 13년 이상 엔지니어[1]",
+      "\"모델은 좋은데 운영에 못 올린다\"는 문제를 푸는 게 재미있는 사람[1][17]",
+      "p99 지연 몇 ms 를 깎는 일과 몇 년짜리 로드맵을 둘 다 즐기는 사람[1]",
+      "상대(사기꾼)가 수법을 바꾸는 문제 영역에 끌리는 사람[22]"
+    ],
+    "hard": [
+      "경력 13년 이상이 최소선이다[1]",
+      "벵갈루루 근무, 주 3일 이상 출근[1]",
+      "공고는 맡을 사기 유형(구매자·판매자·결제)과 지금 쓰는 스트림 엔진을 밝히지 않았다 — 면접에서 직접 물어야 한다[1]",
+      "판정이 멈추면 주문이 멈추고 잘못 열리면 사기가 지나가서 장애 부담이 양쪽으로 크다 {추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "계정별 '최근 10분 주문 수'를 실시간 피처로 만듭니다. 모바일 이벤트가 최대 몇 분 늦게 오고, 작업이 중간에 죽을 수 있습니다. 어떻게 설계하나요?",
+      "a": "일어난 시각·워터마크·상태·체크포인트·정확히 한 번 — 업무 둘째 줄과 요건 셋째 줄의 핵심.[11][12]"
+    },
+    {
+      "q": "학습할 때는 성능이 좋았는데 운영에 올리니 떨어졌습니다. 무엇부터 의심하나요?",
+      "a": "학습과 예측의 차이(training-serving skew)와 데이터 누수 — 피처 저장소 우대 줄.[14][16]"
+    },
+    {
+      "q": "주문 판정 API 의 응답 예산이 50ms 입니다. 피처 열 개 중 하나가 자주 늦습니다. 어떻게 하나요?",
+      "a": "지연 예산 나누기·p99·병렬 조회·기본값 — 저지연 서빙 요건.[18]"
+    },
+    {
+      "q": "모델 서빙 클러스터가 통째로 내려갔습니다. 주문을 다 막을까요, 다 통과시킬까요?",
+      "a": "장애 때 판정 정책과 사업 쪽과의 결정 — 장애 지휘 업무 줄.[1]"
+    },
+    {
+      "q": "데이터 과학자가 '최근 30일 판매자 반품률'을 실시간 피처로 원합니다. 비용과 지연을 어떻게 저울질하나요?",
+      "a": "데이터 과학 요구를 설계로 옮기는 업무 넷째 줄 — 긴 창의 상태 비용 vs 배치 + 증분.[1][2]"
+    },
+    {
+      "q": "사기가 전체의 0.2% 입니다. 새 모델이 더 좋은지 어떻게 판단하고, 어떻게 안전하게 내보내나요?",
+      "a": "정밀도·재현율과 그림자 모드·카나리 배포 — 사기 도메인 우대 줄.[2][22]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "Coupang Careers · Senior Staff Backend Engineer - Fraud Detection (Bengaluru)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8064140",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "역할 소개(Risk, Fraud & Trust Engineering 조직, 실시간 판정 플랫폼, 데이터 과학과 엔지니어링의 다리, 엄격한 사업 SLA)·업무·요건·우대·하이브리드 근무"
+    },
+    {
+      "n": 2,
+      "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+      "kind": "company",
+      "date": "2023-09-08",
+      "note": "Feast 기반 오프라인·온라인 피처 저장소(온라인은 무거운 모델 응답 캐시로도), Seldon·TFServing·Triton 서빙, 모델마다 자동 확장, 검증(크기·학습-예측 차이) → 카나리 → 점진 배포, 자체 GPU + AWS, 1년 워크플로 10만+·ML 프로젝트 600+, 드리프트 감지는 계획 — 사기 탐지는 언급 없음"
+    },
+    {
+      "n": 3,
+      "title": "Coupang Engineering (Medium) · Eats data platform: Empowering businesses with data",
+      "url": "https://medium.com/coupang-engineering/eats-data-platform-empowering-businesses-with-data-3cc00fa9968d",
+      "kind": "company",
+      "date": "2022-08",
+      "note": "ML 피처·대시보드용 준실시간(30초 안팎)과 순수 실시간(1초 미만) 파이프라인, Spark 처리 → Kafka. 본문은 자동 접속이 막혀(403) 검색 요약으로만 확인했다"
+    },
+    {
+      "n": 4,
+      "title": "Coupang Careers · Inventing at scale: Coupang's Karthik Dondapati",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/inventing-at-scale-coupang-s-karthik-dondapati/",
+      "kind": "company",
+      "date": "2026-03-05",
+      "note": "개인화 첫 화면 데이터 파이프라인 — 하루 수십억 건, 실시간 ML 모델 연동"
+    },
+    {
+      "n": 5,
+      "title": "원티드 · [쿠팡페이] Staff, Back-end Engineer (Risk Engineering)",
+      "url": "https://www.wanted.co.kr/wd/384796",
+      "kind": "posting",
+      "note": "같은 그룹 다른 회사 — FDS·AML 에 AI·ML 접목, 보안·컴플라이언스 플랫폼. 리멤버·Wellfound 사본의 검색 요약으로 확인했고 게시 상태는 모른다"
+    },
+    {
+      "n": 6,
+      "title": "Built In · Coupang Senior Product Manager - Fraud Detection System (Taipei)",
+      "url": "https://builtin.com/job/senior-product-manager-fraud-detection-system/8274146",
+      "kind": "posting",
+      "note": "쿠팡 대만 신뢰·안전 — 구매자·판매자·배송 파트너를 지키는 사기·남용 방지 제품, 실시간 ML·위험 점수·이상 탐지. 2026-03-04 내려감"
+    },
+    {
+      "n": 7,
+      "title": "Coupang Careers · Bengaluru",
+      "url": "https://www.coupang.jobs/en/locations/bengaluru/",
+      "kind": "company",
+      "note": "Coupang Dev Center 벵갈루루 주소"
+    },
+    {
+      "n": 8,
+      "title": "Coupang Careers · Why Coupang (리더십 원칙·복지)",
+      "url": "https://www.coupang.jobs/en/why-coupang/",
+      "kind": "company",
+      "note": "복지 소개 — 직무·지역에 따라 다를 수 있다고 적혀 있음"
+    },
+    {
+      "n": 9,
+      "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+      "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+      "kind": "company",
+      "date": "2026",
+      "note": "2025 회계연도 전 직원 보수 중간값 — 달러 환산"
+    },
+    {
+      "n": 10,
+      "title": "Coupang Careers · Senior Staff Backend Engineer - Cloud Infrastructure (Seattle)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7438944",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "다른 조직·같은 직급 이름 — 기본급 범위와 보너스 비율"
+    },
+    {
+      "n": 11,
+      "title": "Apache Flink 문서 · Timely Stream Processing",
+      "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/time/",
+      "kind": "reference",
+      "note": "일어난 시각과 처리 시각, 워터마크, 늦은 데이터"
+    },
+    {
+      "n": 12,
+      "title": "Apache Flink 문서 · Stateful Stream Processing",
+      "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/",
+      "kind": "reference",
+      "note": "키별 상태, 상태 저장소, 체크포인트와 정확히 한 번 복구"
+    },
+    {
+      "n": 13,
+      "title": "Apache Kafka 문서 · Message Delivery Semantics",
+      "url": "https://kafka.apache.org/documentation/#semantics",
+      "kind": "reference",
+      "note": "최소 한 번·최대 한 번·정확히 한 번, 멱등 생산자·트랜잭션, 파티션과 순서"
+    },
+    {
+      "n": 14,
+      "title": "Feast 문서 · Point-in-time joins",
+      "url": "https://docs.feast.dev/getting-started/concepts/point-in-time-joins",
+      "kind": "reference",
+      "note": "학습 표를 이벤트 시각 기준 '그때 값'으로 붙이는 법"
+    },
+    {
+      "n": 15,
+      "title": "Stripe · How we built it: Stripe Radar",
+      "url": "https://stripe.com/blog/how-we-built-it-stripe-radar",
+      "kind": "reference",
+      "note": "다른 회사 — 100ms 안 판정, 정상 결제 잘못 차단 약 0.1%, 로지스틱 회귀 → 심층 신경망, 설명 가능성과의 맞바꿈"
+    },
+    {
+      "n": 16,
+      "title": "Google · Rules of Machine Learning",
+      "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+      "kind": "reference",
+      "note": "학습-예측 차이(training-serving skew), 판정 때 쓴 피처를 기록해 학습에 쓰기"
+    },
+    {
+      "n": 17,
+      "title": "Sculley 외 · Hidden Technical Debt in Machine Learning Systems (NeurIPS 2015)",
+      "url": "https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems",
+      "kind": "reference",
+      "note": "접착 코드·파이프라인 정글·데이터 의존 빚"
+    },
+    {
+      "n": 18,
+      "title": "Google SRE Book · Service Level Objectives",
+      "url": "https://sre.google/sre-book/service-level-objectives/",
+      "kind": "reference",
+      "note": "SLI·SLO·SLA, 백분위, 오류 예산"
+    },
+    {
+      "n": 19,
+      "title": "Will Larson · Staff Engineer: Leadership beyond the management track",
+      "url": "https://staffeng.com/book",
+      "kind": "reference",
+      "note": "Staff 이상 엔지니어의 역할(방향 설정·설계 문서·권한 없는 합의·멘토링) — 일반론"
+    },
+    {
+      "n": 20,
+      "title": "CXOToday · Coupang Expands India Tech Footprint with Hyderabad Office Launch",
+      "url": "https://cxotoday.com/press-release/coupang-expands-india-tech-footprint-with-hyderabad-office-launch-strengthens-global-innovation-leadership/",
+      "kind": "news",
+      "date": "2025-08-20",
+      "note": "회사 보도자료 — 인도 개발 센터 2023년 말 개소, 하이데라바드 2025-07"
+    },
+    {
+      "n": 21,
+      "title": "Coupang Careers · Senior Staff Backend Engineer (Bengaluru; Hyderabad)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8059287",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "같은 인도 센터 다른 Senior Staff 자리 — 경력 12년 이상, Java·Spring·AWS"
+    },
+    {
+      "n": 22,
+      "title": "Stripe · A primer on machine learning for fraud detection",
+      "url": "https://stripe.com/radar/guide",
+      "kind": "reference",
+      "note": "다른 회사의 일반 안내 — 불균형 데이터, 정밀도·재현율, 늦게 오는 정답(차지백), 규칙과 모델"
+    },
+    {
+      "n": 23,
+      "title": "Coupang Careers · From High-Scale Inventory to building Digital Twins: Lakshmanan's Journey at Coupang",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/from-high-scale-inventory-to-building-digital-twins-lakshmanan-s-journey-at-coupang/",
+      "kind": "company",
+      "date": "2026-07-03",
+      "note": "시애틀 Staff 엔지니어 — 당번 검토에 AI 활용, 한국·미국·인도 협업"
+    }
+  ],
+  "caveat": "쿠팡이 사기 탐지 시스템의 구조를 다룬 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음). 공고 말고 회사 근거는 쿠팡 공통 ML 플랫폼 글(2023)·쿠팡이츠 데이터 플랫폼 글(2022 — 본문은 못 읽고 검색 요약만)·같은 그룹의 쿠팡페이 리스크 엔지니어링 공고와 쿠팡 대만 사기 방지 PM 공고(검색 요약·내려간 공고)뿐이고, 그것이 이 팀의 구조라는 뜻은 아닙니다. 스트림·피처 저장소·사기 탐지 일반은 Flink·Kafka·Feast 공식 문서와 Stripe·Google 의 공개 자료로 '보통 이런 것'을 보였습니다. 연봉은 인도 숫자가 없어 미국 공시 중간값과 미국 같은 직급 공고만 실었습니다."
+}

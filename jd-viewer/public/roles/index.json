@@ -34,6 +34,7 @@
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
   "ats-greenhouse:coupang:8102540": "coupang-financial-lending-staff-backend",
   "wanted-394186": "coupang-financial-lending-staff-backend",
+  "ats-greenhouse:coupang:8064140": "coupang-fraud-detection-senior-staff-bengaluru",
   "ats-greenhouse:coupang:6810667": "coupang-got-backend-developer-seoul",
   "ats-greenhouse:coupang:6137112": "coupang-got-backend-manager-seoul",
   "ats-greenhouse:coupang:5848138": "coupang-got-senior-staff-backend-seoul",
@@ -619,6 +620,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "coupang-fraud-detection-senior-staff-bengaluru",
+   "company": "쿠팡",
+   "role": "Senior Staff Backend Engineer — 사기 탐지",
+   "jobs": [
+    "ats-greenhouse:coupang:8064140"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 26
   },
   {
    "id": "coupang-got-backend-developer-seoul",
