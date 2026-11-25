@@ -44,6 +44,7 @@
   "ats-greenhouse:coupang:8316795": "coupang-pay-senior-backend-giftcard-cash",
   "ats-greenhouse:coupang:8212656": "coupang-pay-senior-backend-test-ops",
   "ats-greenhouse:coupang:8222501": "coupang-pay-senior-platform-engineer",
+  "ats-greenhouse:coupang:8155846": "coupang-pay-senior-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8194393": "coupang-pay-staff-android",
   "wanted-391099": "coupang-pay-staff-android",
   "ats-greenhouse:coupang:8287908": "coupang-pay-staff-backend-global-payments",
@@ -713,6 +714,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 20
+  },
+  {
+   "id": "coupang-pay-senior-staff-backend-rocketpay",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior Staff Back-end Engineer",
+   "jobs": [
+    "ats-greenhouse:coupang:8155846"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 16
   },
   {
    "id": "coupang-pay-staff-android",
