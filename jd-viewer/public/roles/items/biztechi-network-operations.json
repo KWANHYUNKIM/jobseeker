@@ -1,0 +1,1164 @@
+{
+ "id": "biztechi-network-operations",
+ "company": "비즈테크아이",
+ "role": "네트워크 운영 담당자",
+ "team": "클라우드인프라사업팀 CI2파트 (네트워크 설계·구축·운영)",
+ "jobs": [
+  "ats-lg:group:1001888"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "LG 계열사와 외부 고객사의 **사내망을 운영 위탁(SM)으로 맡아** 24시간 감시·장애조치·정기점검·변경을 하고, 구축 프로젝트를 거듭니다.[1][2] 서울은 운영·구축 지원, 오창은 계열사 사업장 장비와 Cloud 네트워크 관리입니다.[1]",
+  "env": "LG CNS 자회사의 인프라 조직이라 고객사마다 장비 회사와 규모가 다르고, 회사는 OSI 7계층 전 기종 운영을 내세웁니다.[2][5] 하이브리드·멀티 클라우드 운영도 사업 범위입니다.[3]",
+  "oneline": "서울 자리는 **스위칭·OSPF/BGP·방화벽/L4 를 혼자 운영할 수 있는 2년차 이상**, 오창 자리는 **기본기를 갖춘 1년차 이상 현장 운영자**를 찾는 공고입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "LG그룹사 및 오픈 고객 네트워크 운영",
+   "short": "(서울) LG 계열사와 외부 고객사의 망을 24시간 감시하고 장애·변경 요청을 처리하는 일.",
+   "why": "회사는 네트워크 SM(운영 위탁) 업무를 'LG 계열사 네트워크 운영, 24시간 365일 장애조치와 상태 감시, OSI 7계층 전 기종 장비 운영, 기간망·WAN·유무선 LAN'으로 적었습니다.[2] '오픈 고객'은 LG 밖의 고객사이고, 금융 쪽에는 네트워크까지 포함한 SC제일은행 IT 아웃소싱 실적이 있습니다.[6] 고객의 업무망이 이 팀의 운영 대상이라 끊김이 곧 계약 위반이 됩니다. {추론}",
+   "actually": {
+    "intro": "회사가 적은 운영 항목을 일로 풀면 이렇습니다.[2]",
+    "items": [
+     "**상태 감시** — 관제 화면에서 장비·회선의 다운, 포트 오류, 대역폭 사용률 경보를 받아 확인한다.",
+     "**장애조치** — 경보가 오면 원인을 가르고(회선·장비·설정) 우회하거나 복구한 뒤 보고한다.",
+     "**정기점검** — 현장 또는 원격으로 장비 하드웨어·소프트웨어 상태를 정해진 주기로 점검한다.",
+     "**RMA** — 장비 고장이면 제조사 기술지원(TAC)에 접수하고 교체품을 받아 갈아 끼운다.",
+     "**변경 작업** — 고객 요청으로 포트·VLAN·방화벽 정책을 바꾼다. 보통 업무 시간 밖 작업 창에서 한다. {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "운영 위탁(SM)에서 장애 한 건이 흐르는 길 {추론}",
+     "steps": [
+      "감시 · 관제 시스템 경보",
+      "1차 확인 · 장애 등급·영향 범위 판단",
+      "조치 · 우회·복구, 필요하면 제조사 TAC·RMA[2]",
+      "보고 · 고객사에 원인·조치·재발 방지 보고",
+      "후속 · 설정·구성도 현행화"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "경력 2년 이상 자리라 혼자 1차 장애조치와 일상 변경을 끝낼 수 있어야 합니다.[1] 24시간 감시라고 적혀 있으니 교대·당직 여부는 면접에서 확인합니다.[2] {추론}",
+   "refs": [
+    1,
+    2,
+    6
+   ],
+   "study": [
+    "biztechi-infra",
+    "nw-intro",
+    "sre-incident"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LG그룹사 및 오픈 고객 구축 지원",
+   "short": "(서울) 새 망을 깔거나 장비를 바꾸는 프로젝트에서 설계안대로 설정·이관·시험을 거드는 일.",
+   "why": "회사는 네트워크/시스템 TA(SI) 를 '고객 환경에 맞춘 설계·구축, 고가용성 인프라 구축'으로 소개합니다.[2] 직무소개도 인프라 직무를 요구사항 분석 → 성능·가용성·운영 편의 기준의 설계·구축·운영으로 적었습니다.[7] 공고 문장이 '구축 지원'이라 설계 확정보다는 실행 쪽을 맡는다고 읽힙니다. {추론}",
+   "actually": {
+    "items": [
+     "**현행 조사** — 기존 장비 목록·구성도·설정을 모아 바꿀 범위를 정한다.",
+     "**IP·VLAN 계획** — 망을 용도별로 나누고 대역을 배정한다(아래 예시).",
+     "**설정 작성** — 새 장비 설정을 미리 써 두고 시험 장비에서 확인한다.",
+     "**이관(컷오버)** — 정해진 작업 시간에 옛 장비에서 새 장비로 케이블·경로를 옮기고, 안 되면 되돌린다.",
+     "**데이터센터 이전** — 회사는 데이터센터 이전·DR 구축을 클라우드 사업 항목으로 적었다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 층을 /22 하나로 받아 용도별 VLAN 네 개로 나누기",
+     "body": "10.20.0.0/22 를 /24 네 개로 쪼개 VLAN 마다 하나씩 주고 첫 주소를 게이트웨이로 쓰는 흔한 계획입니다. 출력: VLAN 10 업무PC 10.20.0.0/24 GW 10.20.0.1 사용 가능 254대 … VLAN 99 장비관리 10.20.3.0/24 GW 10.20.3.1.",
+     "lang": "python",
+     "code": "import ipaddress\n\nprint(\"# 1 VLAN IP plan\")\nsite = ipaddress.ip_network(\"10.20.0.0/22\")\nvlans = [(10, \"업무PC\"), (20, \"서버\"), (30, \"CCTV\"), (99, \"장비관리\")]\nfor (vid, name), net in zip(vlans, site.subnets(new_prefix=24)):\n    hosts = list(net.hosts())\n    print(f\"VLAN {vid:>2} {name:<5} {net}  GW {hosts[0]}  사용 가능 {len(hosts)}대\")"
+    }
+   ],
+   "how_far": "설계 문서를 읽고 그대로 설정·시험·이관 체크리스트를 돌릴 수 있으면 됩니다. 설계 확정은 보통 TA·PL 이 합니다. {추론}",
+   "refs": [
+    2,
+    3,
+    7
+   ],
+   "study": [
+    "nw-intro",
+    "ccna"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "그룹 계열사 네트워크 장비 및 Cloud 네트워크 관리/운영",
+   "short": "(오창) 계열사 사업장의 스위치·라우터와 클라우드 쪽 가상 네트워크까지 함께 관리하는 일.",
+   "why": "오창에는 LG에너지솔루션의 오창 에너지플랜트가 있습니다.[8] 공고는 어느 계열사인지 밝히지 않아 이 사업장이라고 단정할 수는 없습니다. {추론} 회사는 LG에너지솔루션 등 LG 계열사의 클라우드 운영과 온프레미스 ↔ 클라우드 하이브리드 운영을 사업으로 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**사업장 장비** — 공장·사무동 스위치와 라우터의 상태 확인, 포트 개통, 고장 교체.",
+     "**클라우드 네트워크** — 클라우드 안의 가상 네트워크(서브넷·라우팅 표·보안 규칙)를 요청대로 바꾼다.[29][30]",
+     "**연결 구간** — 사업장과 클라우드를 잇는 VPN·전용선이 살아 있는지 본다.[29]",
+     "**기록** — 장비 목록·구성도·IP 대장을 최신으로 둔다. {추론}"
+    ]
+   },
+   "how_far": "경력 1년 이상 자리라 정해진 절차대로 감시·개통·교체를 하고, 큰 변경은 서울 쪽이나 선임과 같이 한다고 보는 편이 맞습니다.[1] {추론}",
+   "refs": [
+    1,
+    3,
+    8,
+    29,
+    30
+   ],
+   "study": [
+    "huni-cisco",
+    "cloudneta-aws",
+    "aws-hybrid-wp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "학력: 4년제 정규대학 학사학위 이상 보유자",
+   "short": "(공통) 서울·오창 모두 4년제 학사 이상만 지원할 수 있다는 서류 조건.",
+   "why": "공고가 '공통' 요건으로 적었습니다.[1] 전공은 지정하지 않았습니다.[1]",
+   "how_far": "전공 제한은 없지만 비전공이면 자격증·실무 경력으로 네트워크 기본기를 보여 주는 편이 서류에 유리합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력: 네트워크 인프라 운영 또는 구축 또는 유지보수 경험 2년 이상",
+   "short": "(서울) 운영·구축·유지보수 중 하나라도 네트워크 실무 2년이면 된다는 뜻.",
+   "why": "서울 자리는 계열사와 외부 고객 망을 바로 맡기 때문에 공고가 2년을 문턱으로 뒀습니다.[1] 세 가지를 '또는'으로 묶었으니 SM(운영)만 해 본 경력도 인정됩니다.[1]",
+   "actually": {
+    "items": [
+     "운영사 관제·장애 처리 경력",
+     "통신 장비 유지보수 업체의 점검·교체 경력",
+     "SI 구축 프로젝트의 설정·이관 경력"
+    ]
+   },
+   "how_far": "이력서에는 장비 종류·대수, 맡은 망 규모, 처리한 장애 사례를 숫자로 적는 것이 이 줄을 증명하는 방법입니다. {추론} 경력 전형은 평판조회를 거칩니다.[13]",
+   "refs": [
+    1,
+    13
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LAN/WAN, VLAN, STP, LACP 등 네트워크 기본 프로토콜 실무 경험을 보유하신 분",
+   "short": "(서울) 스위치 망을 나누고(VLAN) 고리를 막고(STP) 선을 묶는(LACP) 설정을 직접 해 봤어야 한다는 뜻.",
+   "why": "회사가 운영 범위로 적은 기간망·WAN·유무선 LAN 이 전부 이 프로토콜 위에서 돕니다.[2] 실제 장애의 상당수가 VLAN 누락·루프·묶음 링크 불일치 같은 2계층 문제라서 '실무 경험'을 요구합니다. {추론}",
+   "actually": {
+    "items": [
+     "**LAN/WAN** — 건물 안 망(LAN)과 사업장 사이를 잇는 회선 망(WAN)을 구분하고 각각의 장비·회선을 안다.",
+     "**VLAN** — 한 스위치를 논리적으로 여러 망으로 나누고, 스위치 사이 트렁크(여러 VLAN 을 실어 나르는 포트)에 꼬리표를 붙여 보낸다.[15]",
+     "**STP** — 이중으로 연결한 스위치 사이에 고리가 생기면 한 포트를 막아 브로드캐스트 폭주를 막는다. 루트 스위치·포트 역할을 읽을 줄 알아야 한다.[16]",
+     "**LACP** — 물리 링크 여러 개를 하나로 묶어 대역과 이중화를 얻는다. 흐름(출발지·목적지) 단위로 한 링크에 실리니 링크 둘이라고 한 흐름이 두 배 빨라지지는 않는다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "LACP 는 흐름마다 링크를 고른다",
+     "body": "출발지·목적지 주소로 해시를 내 링크를 고르는 흉내입니다(실제 해시 방식은 장비마다 다름). 출력: 10.20.0.11 → Gi1/0/1, .12 → Gi1/0/2, .13 → Gi1/0/2, .14 → Gi1/0/1 — 같은 흐름은 늘 같은 링크로 갑니다.[17]",
+     "lang": "python",
+     "code": "import zlib\n\nprint(\"# 2 LACP hash\")\nlinks = [\"Gi1/0/1\", \"Gi1/0/2\"]\nflows = [(\"10.20.0.11\", \"10.20.1.5\"), (\"10.20.0.12\", \"10.20.1.5\"),\n         (\"10.20.0.13\", \"10.20.1.5\"), (\"10.20.0.14\", \"10.20.1.5\")]\nfor s, d in flows:\n    i = zlib.crc32(f\"{s}-{d}\".encode()) % len(links)\n    print(f\"{s} -> {d} : {links[i]}\")"
+    }
+   ],
+   "level": {
+    "basic": "VLAN 만들기·트렁크 설정, STP 상태 보기",
+    "work": "루프·VLAN 누락 장애를 로그와 show 명령으로 찾아 고친다",
+    "team": "고객사마다 다른 장비 회사의 같은 기능을 설정할 수 있다(전 기종 운영[2])"
+   },
+   "how_far": "설정을 외우기보다, 장애 때 '어느 포트가 막혔나·어느 VLAN 이 빠졌나'를 명령 출력으로 읽어 내는 수준이 기준입니다. {추론}",
+   "refs": [
+    2,
+    15,
+    16,
+    17
+   ],
+   "study": [
+    "nw-intro",
+    "ccna",
+    "cisco-rstp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "라우팅 프로토콜(OSPF, BGP) 설계 및 운영 경험을 보유하신 분",
+   "short": "(서울) 사내 경로는 OSPF, 회선·외부 연결은 BGP 로 길을 정하고 그 설정을 운영해 봤어야 한다는 뜻.",
+   "why": "계열사 여러 곳과 통신사 회선·클라우드를 잇는 망은 경로를 손으로 다 적을 수 없어 라우팅 프로토콜을 씁니다.[18][19] 클라우드와 사업장을 잇는 VPN·전용선도 BGP 로 경로를 주고받는 구성이 흔합니다.[29]",
+   "actually": {
+    "items": [
+     "**OSPF** — 사내 라우터끼리 연결 상태를 나눠 가지고 비용이 가장 낮은 길을 고른다. 비용은 기준 대역폭 ÷ 링크 대역폭이다.[18]",
+     "**영역 설계** — 큰 망은 영역(area)으로 나눠 변화가 퍼지는 범위를 줄인다.[18]",
+     "**BGP** — 회사망과 통신사·클라우드 사이에서 '어느 회선으로 나가고 들어올지'를 속성(로컬 선호도·AS 경로 길이 등)으로 고른다.[19]",
+     "**운영** — 이웃(neighbor) 관계가 끊기면 경로가 빠진다. 이웃 상태와 받은 경로 수가 첫 확인 대상이다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "OSPF 기준 대역폭을 안 올리면 1G·10G 가 같은 비용",
+     "body": "기본 기준 100Mbps 에서는 100M 이상 링크가 모두 비용 1이라 10G 와 1G 를 구분하지 못합니다. 기준을 100Gbps 로 올리면 1000·100·10·2 로 갈립니다.[18]",
+     "lang": "python",
+     "code": "print(\"# 3 OSPF cost\")\nfor ref in (100, 100_000):\n    costs = {bw: max(1, ref // bw) for bw in (100, 1000, 10_000, 40_000)}\n    print(f\"기준 {ref}Mbps:\", \", \".join(f\"{bw}M={c}\" for bw, c in costs.items()))"
+    },
+    {
+     "title": "BGP 는 로컬 선호도부터 본다",
+     "body": "로컬 선호도(local-pref)가 큰 경로가 AS 경로 길이보다 먼저 이깁니다(실제 절차는 더 길다). 출력: 선택 전용선 → 전용선 선호도를 100 으로 내리면 AS 경로가 가장 짧은 ISP-B.[19]",
+     "lang": "python",
+     "code": "print(\"# 4 BGP best path (local-pref 큰 것 → AS 경로 짧은 것)\")\npaths = [\n    {\"via\": \"ISP-A\", \"local_pref\": 100, \"as_path\": [4766, 3356]},\n    {\"via\": \"ISP-B\", \"local_pref\": 100, \"as_path\": [3786]},\n    {\"via\": \"전용선\", \"local_pref\": 200, \"as_path\": [65010, 4766, 3356]},\n]\nbest = sorted(paths, key=lambda p: (-p[\"local_pref\"], len(p[\"as_path\"])))[0]\nprint(\"선택:\", best[\"via\"])\npaths[2][\"local_pref\"] = 100\nbest = sorted(paths, key=lambda p: (-p[\"local_pref\"], len(p[\"as_path\"])))[0]\nprint(\"전용선 local-pref 100 으로 내리면:\", best[\"via\"])"
+    }
+   ],
+   "level": {
+    "basic": "OSPF 이웃·영역, BGP 이웃·경로 표 읽기",
+    "work": "회선 이중화에서 주·보조 경로를 속성으로 정하고 장애 때 넘어가는지 시험한다",
+    "team": "여러 계열사·클라우드 연결을 한 망에서 겹치지 않게 설계 {추론}"
+   },
+   "how_far": "'설계' 경험을 묻습니다 — 왜 그 영역·속성을 골랐는지 말할 수 있어야 합니다.[1] {추론}",
+   "refs": [
+    1,
+    18,
+    19,
+    29
+   ],
+   "study": [
+    "ccna",
+    "ccnp-ent",
+    "rfc-ospf",
+    "rfc-bgp",
+    "containerlab"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "방화벽, L4/L7 스위치 등 네트워크 장비 운영 경험을 보유하신 분",
+   "short": "(서울) 통신을 허용·차단하는 방화벽과 서버 앞에서 요청을 나눠 주는 L4/L7 장비를 굴려 봤어야 한다는 뜻.",
+   "why": "회사는 운영 범위를 OSI 7계층 전 기종 장비라고 적었습니다.[2] 방화벽(3~4계층 차단)과 L4/L7 스위치(부하분산)는 스위치·라우터 다음으로 흔한 운영 대상입니다.[20][21]",
+   "actually": {
+    "items": [
+     "**방화벽 정책** — 출발지·목적지·포트로 규칙을 만들고 위에서부터 처음 맞는 규칙이 적용된다. 순서가 틀리면 허용하려던 통신이 막힌다.[20]",
+     "**정책 정리** — 안 쓰는 규칙·너무 넓은 규칙을 주기적으로 찾아 지운다.[20]",
+     "**L4 스위치** — IP·포트 단위로 여러 서버에 연결을 나눠 주고, 죽은 서버는 상태 검사로 뺀다.[21]",
+     "**L7 스위치** — 주소(URL)·헤더를 보고 나눠 주거나 TLS 를 대신 푼다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "방화벽은 위에서부터 처음 맞는 규칙",
+     "body": "3번 규칙이 22번 포트를 허용해도, 그 위 2번이 같은 대역을 통째로 막아 10.20.0.11 의 22번은 막힙니다. 출력: 443 → 규칙 1 permit, 22 → 규칙 2 deny, 다른 대역 22 → 규칙 3 permit.[20]",
+     "lang": "python",
+     "code": "import ipaddress\n\nprint(\"# 5 firewall first-match\")\nrules = [\n    (\"permit\", \"10.20.0.0/24\", \"10.20.1.0/24\", 443),\n    (\"deny\", \"10.20.0.0/24\", \"10.20.1.0/24\", None),\n    (\"permit\", \"0.0.0.0/0\", \"10.20.1.10/32\", 22),\n]\ndef check(src, dst, port):\n    for n, (act, s, d, p) in enumerate(rules, 1):\n        if ipaddress.ip_address(src) in ipaddress.ip_network(s) and \\\n           ipaddress.ip_address(dst) in ipaddress.ip_network(d) and p in (None, port):\n            return f\"규칙 {n} {act}\"\n    return \"암묵적 deny\"\nfor q in [(\"10.20.0.11\", \"10.20.1.10\", 443), (\"10.20.0.11\", \"10.20.1.10\", 22), (\"10.20.3.7\", \"10.20.1.10\", 22)]:\n    print(q, \"->\", check(*q))"
+    }
+   ],
+   "level": {
+    "basic": "정책 읽기·추가, 세션 표 확인",
+    "work": "'안 붙어요' 요청에 정책·NAT·세션 로그로 막힌 곳을 짚는다",
+    "team": "고객사마다 다른 제조사의 방화벽·L4 를 다룬다 {추론}"
+   },
+   "how_far": "제조사는 고객마다 다르므로 특정 제품 숙련보다 '정책 순서·세션·상태 검사' 개념을 어느 장비에서든 찾아 쓰는 것이 기준입니다. {추론}",
+   "refs": [
+    2,
+    20,
+    21
+   ],
+   "study": [
+    "nw-intro",
+    "nist-80041",
+    "cf-lb"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크 장애 분석 및 트러블슈팅 능력을 보유하신 분",
+   "short": "(서울) '안 된다'는 신고를 계층별로 좁혀 원인 장비·설정을 찾고 고친 뒤 보고까지 하는 힘.",
+   "why": "회사는 장애 때 기술지원·원인 분석·신속한 복구를 운영 서비스로 약속합니다.[2] 운영 위탁에서 장애 처리 품질이 곧 고객이 보는 서비스 품질입니다. {추론}",
+   "actually": {
+    "intro": "흔한 순서는 아래층부터입니다.",
+    "items": [
+     "**1계층** — 링크가 올라와 있나, 광 신호 세기·CRC 오류가 늘었나.",
+     "**2계층** — 맞는 VLAN 인가, MAC 주소를 배웠나, STP 가 막았나.[16]",
+     "**3계층** — 게이트웨이까지 ping 이 가나, 경로 표에 목적지가 있나(OSPF·BGP 이웃 상태).[18][19]",
+     "**4계층 이상** — 방화벽 정책·세션, L4 상태 검사, 필요하면 패킷 캡처로 실제 오간 것을 본다.[34]",
+     "**사후** — 원인·조치·재발 방지를 보고서로 남긴다.[23]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "장애 대응의 공통 틀[22]",
+     "steps": [
+      "접수 · 영향 범위와 시작 시각",
+      "격리 · 우회 경로로 먼저 살린다",
+      "원인 · 계층별로 좁힌다",
+      "복구 · 설정·장비 교체",
+      "회고 · 장애 보고서와 재발 방지"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "면접에서 직접 겪은 장애 하나를 '증상 → 확인한 순서 → 원인 → 조치 → 재발 방지'로 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    2,
+    16,
+    18,
+    19,
+    22,
+    23,
+    34
+   ],
+   "study": [
+    "packet-analysis",
+    "wireshark-guide",
+    "sre-incident",
+    "sre-postmortem",
+    "kurose"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력: 네트워크 관련 경력 1년 이상",
+   "short": "(오창) 서울보다 문턱이 낮은 자리 — 네트워크 관련 일 1년이면 된다.",
+   "why": "오창 자리는 계열사 사업장 장비와 클라우드 네트워크 관리로 범위가 정해져 있어 1년으로 낮췄다고 보입니다.[1] {추론} '관련 경력'이라 관제·헬프데스크 중 네트워크 업무도 해당될 수 있습니다. {추론}",
+   "how_far": "맡았던 장비·작업을 구체적으로 적으면 충분합니다. 자세한 인정 범위는 서류 단계에서 회사가 정합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크에 대한 기본 지식을 보유하신 분",
+   "short": "(오창) IP·서브넷·VLAN·라우팅이 무엇인지 설명하고 기본 확인 명령을 쓸 줄 아는 정도.",
+   "why": "공고가 서울 자리처럼 프로토콜을 나열하지 않고 '기본 지식'으로만 적었습니다.[1] 맡을 일이 장비·클라우드 네트워크의 관리·운영이라 기본 개념 위에서 절차를 따르는 일이 많습니다.[1] {추론}",
+   "actually": {
+    "items": [
+     "IP 주소와 서브넷 마스크로 같은 망인지 판단하기",
+     "VLAN·게이트웨이·DNS·DHCP 가 무엇을 하는지",
+     "ping·traceroute 로 어디까지 가는지 보기",
+     "스위치 포트 상태와 MAC 표 보기"
+    ]
+   },
+   "how_far": "네트워크관리사나 CCNA 범위를 한 번 공부한 정도면 이 줄은 채웁니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "huni-cisco",
+    "icqa",
+    "ccna-exam"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "거주지: 인근 거주자 우대(별도 주거 지원 없음)",
+   "short": "(오창) 오창 근처에 사는 사람을 우대하고, 이사·숙소는 회사가 지원하지 않는다는 뜻.",
+   "why": "공고가 주거 지원이 없다고 직접 밝혔습니다.[1] 사업장 장비를 현장에서 보는 자리라 출퇴근 거리가 장애 대응 시간과 이어집니다. {추론}",
+   "how_far": "서울에서 지원한다면 통근·이주 계획을 스스로 세워야 합니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SD-WAN, SDN 등 소프트웨어 기반 네트워크 경험이 있으신 분",
+   "short": "(서울) 장비를 한 대씩 설정하지 않고 중앙 컨트롤러가 정책을 내려보내는 망을 다뤄 봤으면 좋다는 뜻.",
+   "why": "SDN 은 경로를 정하는 제어 기능을 장비에서 떼어 소프트웨어(컨트롤러)로 모은 구조입니다.[24] SD-WAN 은 이를 지점 사이 회선에 적용해 인터넷·전용선 여러 회선을 정책으로 골라 쓰는 방식입니다.[25] 계열사·고객 사업장이 많을수록 회선 관리가 이쪽으로 옮겨 갑니다. {추론}",
+   "actually": {
+    "items": [
+     "**컨트롤러 화면** — 지점 장비를 중앙에서 등록하고 설정 틀(템플릿)로 한꺼번에 바꾼다.[25]",
+     "**회선 정책** — 화상회의는 품질 좋은 회선, 일반 인터넷은 싼 회선처럼 앱별로 길을 정한다.[25]",
+     "**자동화** — 설정을 API·스크립트로 다룬다.[24]"
+    ]
+   },
+   "how_far": "우대 사항이라 개념과 한 제품의 운영 경험이면 충분합니다. {추론}",
+   "refs": [
+    24,
+    25
+   ],
+   "study": [
+    "rfc-sdn",
+    "ccnp-ent",
+    "netauto-hanbit"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "보안 장비(IPS/IDS, NAC, VPN) 운영 경험이 있으신 분",
+   "short": "(서울) 침입 탐지·차단, 단말 접속 통제, 암호화 터널 장비를 굴려 봤으면 좋다는 뜻.",
+   "why": "회사는 보안 SI 와 보안 운영(관리형 보안 서비스·보안관제)을 LG CNS 와 함께 한다고 적었습니다.[4] 네트워크 운영자도 이 장비들이 통신 경로 위에 서 있어 장애 때 함께 봐야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**IDS/IPS** — 트래픽에서 공격 패턴을 찾아 알리거나(IDS) 바로 끊는다(IPS). 오탐으로 정상 통신이 끊기는지 확인하는 것도 운영 일이다.[26]",
+     "**NAC** — 인증된 단말만 포트·무선에 붙이고, 아니면 격리 VLAN 으로 보낸다. 바탕은 802.1X 다.[27]",
+     "**VPN** — 사업장 사이 또는 클라우드와 암호화 터널을 맺는다. 터널이 안 맺히면 양쪽 협상 값이 맞는지부터 본다.[28]"
+    ]
+   },
+   "how_far": "보안 정책을 정하는 것은 보안 담당이고, 네트워크 운영자는 장비가 경로에서 정상 동작하는지와 터널·인증 장애를 맡는 경우가 많습니다. {추론}",
+   "refs": [
+    4,
+    26,
+    27,
+    28
+   ],
+   "study": [
+    "nist-80094",
+    "dot1x",
+    "nist-80077"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 네트워크(AWS, Azure) 경험이 있으신 분",
+   "short": "(서울) 클라우드 안의 가상 네트워크와 회사망 ↔ 클라우드 연결을 다뤄 봤으면 좋다는 뜻.",
+   "why": "회사는 하이브리드(온프레미스 ↔ 클라우드)·멀티 클라우드(AWS·Azure·GCP) 운영을 사업으로 내세웁니다.[3] 오창 업무에도 Cloud 네트워크가 들어 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**가상 네트워크** — AWS VPC·Azure VNet 에 서브넷을 나누고 라우팅 표와 보안 규칙을 건다.[29][30]",
+     "**연결** — 사이트 간 VPN 이나 전용선으로 사업장과 잇고, 여러 VPC 는 중계 게이트웨이로 묶는다.[29]",
+     "**겹침 주의** — 회사망과 클라우드 주소 대역이 겹치면 연결 뒤 통신이 안 된다. 처음 대역 계획이 중요하다. {추론}"
+    ]
+   },
+   "how_far": "콘솔에서 VPC·서브넷·라우팅·VPN 을 직접 만들어 본 정도면 우대 사항을 말할 수 있습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    29,
+    30
+   ],
+   "study": [
+    "cloudneta-aws",
+    "aws-hybrid-wp",
+    "azure-vnet"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 엔터프라이즈 환경 운영 경험이 있으신 분",
+   "short": "(서울) 장비 수백 대·사업장 여러 곳이 엮인 큰 회사 망을 절차에 맞춰 운영해 봤으면 좋다는 뜻.",
+   "why": "회사는 LG 계열사 같은 대형 엔터프라이즈 환경의 데이터센터·스마트팩토리 인프라 운영 실적을 강점으로 적었습니다.[2][3] 규모가 크면 기술보다 변경 승인·작업 창·영향 분석 같은 절차가 일의 절반이 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "변경 요청서와 승인, 정해진 작업 시간대",
+     "작업 전 영향 범위 분석과 되돌리기 계획",
+     "구성 관리(장비·회선·IP 대장)와 정기 보고"
+    ]
+   },
+   "how_far": "규모(장비 대수·사업장 수)와 따랐던 절차를 이력서에 숫자로 적으면 됩니다. {추론}",
+   "refs": [
+    2,
+    3
+   ],
+   "study": [
+    "sre-incident"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CCNA, CCNP 또는 이에 준하는 네트워크 관련 자격증을 보유하신 분",
+   "short": "(서울) 시스코 자격증이나 비슷한 네트워크 자격증이 있으면 기본기를 증명하기 쉽다는 뜻.",
+   "why": "CCNA 는 스위칭·라우팅·보안 기본기를, CCNP Enterprise 는 라우팅 설계·SD-WAN 등 심화 범위를 시험합니다.[31][32] 자격요건의 기본 프로토콜·OSPF·BGP 줄과 범위가 겹칩니다.[1][31][32] 국내에서는 네트워크관리사가 '이에 준하는' 자격으로 흔히 쓰입니다.[33] {추론}",
+   "how_far": "서울 자리는 CCNA 가 출발점이고, 라우팅 설계를 증명하려면 CCNP 쪽이 더 맞습니다. {추론}",
+   "refs": [
+    1,
+    31,
+    32,
+    33
+   ],
+   "study": [
+    "ccna",
+    "ccna-exam",
+    "ccnp-ent",
+    "icqa"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "여러 고객사의 여러 제조사 장비를 두루 만져 보고 싶은 네트워크 엔지니어[2]",
+   "장애를 계층별로 좁혀 원인을 찾는 일이 재미있는 사람",
+   "온프레미스 망에서 클라우드 네트워크로 영역을 넓히고 싶은 사람[3]",
+   "(오창) 충북 청주 근처에 살거나 옮길 생각이 있는 1~2년차[1]"
+  ],
+  "hard": [
+   "24시간 장애조치가 업무 범위라 야간·주말 작업이나 당직이 있을 수 있다[2] {추론}",
+   "고객사 망을 운영하는 일이라 일정·작업 시간을 고객이 정한다 {추론}",
+   "오창 자리는 주거 지원이 없다[1]",
+   "공공데이터 집계 기준 평균 연봉이 모회사보다 낮다[9][10]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "스위치 두 대를 이중으로 연결했더니 망 전체가 느려졌습니다. 무엇부터 보겠어요?",
+   "a": "STP 루프·브로드캐스트 폭주를 의심하는 순서 — 기본 프로토콜 줄.[16]"
+  },
+  {
+   "q": "LACP 로 1G 두 개를 묶었는데 파일 복사 하나가 1G 를 못 넘습니다. 고장인가요?",
+   "a": "흐름 단위 해시 분산을 아는가.[17]"
+  },
+  {
+   "q": "회선 두 개 중 주 회선으로만 나가게 하려면 BGP 에서 무엇을 바꾸나요?",
+   "a": "로컬 선호도·AS 경로 같은 경로 선택 속성.[19]"
+  },
+  {
+   "q": "'방화벽 열어 달라고 했는데 아직 안 돼요'라는 연락이 왔습니다.",
+   "a": "규칙 순서·NAT·세션 로그를 차례로 보는가.[20]"
+  },
+  {
+   "q": "직접 겪은 장애 하나를 처음부터 끝까지 설명해 주세요.",
+   "a": "장애 대응과 보고의 틀 — 트러블슈팅 줄.[22][23]"
+  },
+  {
+   "q": "사업장과 AWS 를 VPN 으로 이었는데 터널은 붙었고 통신은 안 됩니다.",
+   "a": "라우팅 표·보안 규칙·대역 겹침을 가르는가 — 클라우드 네트워크 우대 줄.[29]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "LG Careers · [비즈테크아이] 네트워크 운영 담당자 모집 (경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001888",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "서울·오창 두 근무지로 나뉜 업무·요건·우대, 조직 소개(클라우드인프라사업팀 CI2파트), 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 인프라",
+   "url": "https://www.biztechi.com/business/cloud/03",
+   "kind": "company",
+   "note": "네트워크 SM(24시간 365일 장애조치·상태 감시, OSI 7계층 전 기종 장비, 기간망·WAN·유무선 LAN), 정기점검·현장 지원·TAC/RMA, 네트워크/시스템 TA(SI)"
+  },
+  {
+   "n": 3,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 클라우드",
+   "url": "https://www.biztechi.com/business/cloud/02",
+   "kind": "company",
+   "note": "LG전자·LG화학·LG에너지솔루션 등 클라우드 운영, 하이브리드·멀티 클라우드(AWS·Azure·GCP), 데이터센터 이전·DR 설계"
+  },
+  {
+   "n": 4,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 솔루션/IT 보안",
+   "url": "https://www.biztechi.com/business/cloud/04",
+   "kind": "company",
+   "note": "보안 SI·보안 운영(관리형 보안 서비스, 보안관제·침해 대응)을 LG CNS와 함께"
+  },
+  {
+   "n": 5,
+   "title": "비즈테크아이 · Biztechi 소개",
+   "url": "https://www.biztechi.com/about/01",
+   "kind": "company",
+   "note": "LG CNS 자회사, 고객: LG 그룹사·기업·공공"
+  },
+  {
+   "n": 6,
+   "title": "비즈테크아이 · 사업 소개 — 금융",
+   "url": "https://www.biztechi.com/business/finance/01",
+   "kind": "company",
+   "note": "SC제일은행 IT 아웃소싱 — 개발·운영·유지보수·네트워크 등 IT 전반"
+  },
+  {
+   "n": 7,
+   "title": "비즈테크아이 · 직무소개",
+   "url": "https://www.biztechi.com/recruit/03",
+   "kind": "company",
+   "note": "인프라 직무: 서버·스토리지·백업·네트워크·미들웨어·클라우드 요구사항 분석 → 성능·가용성·운영 편의 기준 설계·구축·운영"
+  },
+  {
+   "n": 8,
+   "title": "LG 보도자료 · LG에너지솔루션, 오창 사업장 공식 명칭 '오창 에너지플랜트'로 변경",
+   "url": "https://www.lg.co.kr/media/release/25972",
+   "kind": "news",
+   "note": "충북 청주시 오창 사업장"
+  },
+  {
+   "n": 9,
+   "title": "자소설닷컴 · 비즈테크아이 기업정보",
+   "url": "https://jasoseol.com/companies/14512",
+   "kind": "reference",
+   "note": "초봉 3,811만·평균 5,748만, 사원수 945명 — 공공데이터 집계, 초봉 갱신 메모 2026-10-26 (같은 회사 AI 엔지니어 풀이에서 확인한 값)"
+  },
+  {
+   "n": 10,
+   "title": "자소설닷컴 · LG CNS 기업정보",
+   "url": "https://jasoseol.com/companies/57",
+   "kind": "reference",
+   "note": "초봉 5,071만·평균 7,802만 — 같은 집계"
+  },
+  {
+   "n": 11,
+   "title": "비즈테크아이 · 복리후생",
+   "url": "https://www.biztechi.com/culture/03",
+   "kind": "company"
+  },
+  {
+   "n": 12,
+   "title": "비즈테크아이 · 오시는 길",
+   "url": "https://www.biztechi.com/about/05",
+   "kind": "company",
+   "note": "서울 마포구 매봉산로 75, 상암 DDMC 12층"
+  },
+  {
+   "n": 13,
+   "title": "비즈테크아이 · 채용 프로세스",
+   "url": "https://www.biztechi.com/recruit/02",
+   "kind": "company",
+   "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"
+  },
+  {
+   "n": 14,
+   "title": "비즈테크아이 · 인사제도",
+   "url": "https://www.biztechi.com/culture/02",
+   "kind": "company",
+   "note": "리더 Path·전문가 Path"
+  },
+  {
+   "n": 15,
+   "title": "IEEE 802.1Q (VLAN 표준 개요)",
+   "url": "https://en.wikipedia.org/wiki/IEEE_802.1Q",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Cisco · Understand Rapid Spanning Tree Protocol (802.1w)",
+   "url": "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24062-146.html",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Link aggregation (LACP 개요)",
+   "url": "https://en.wikipedia.org/wiki/Link_aggregation",
+   "kind": "reference",
+   "note": "IEEE 802.1AX·LACP, 흐름 단위 해시 분산"
+  },
+  {
+   "n": 18,
+   "title": "RFC 2328 · OSPF Version 2",
+   "url": "https://www.rfc-editor.org/rfc/rfc2328",
+   "kind": "reference",
+   "date": "1998"
+  },
+  {
+   "n": 19,
+   "title": "RFC 4271 · A Border Gateway Protocol 4 (BGP-4)",
+   "url": "https://www.rfc-editor.org/rfc/rfc4271",
+   "kind": "reference",
+   "date": "2006",
+   "note": "경로 선택 절차(9.1)"
+  },
+  {
+   "n": 20,
+   "title": "NIST SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy",
+   "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+   "kind": "reference",
+   "date": "2009"
+  },
+  {
+   "n": 21,
+   "title": "Cloudflare Learning · What is load balancing?",
+   "url": "https://www.cloudflare.com/learning/performance/what-is-load-balancing/",
+   "kind": "reference",
+   "note": "L4·L7 부하분산 차이"
+  },
+  {
+   "n": 22,
+   "title": "Google SRE Book · Managing Incidents",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "kind": "reference",
+   "date": "2016"
+  },
+  {
+   "n": 23,
+   "title": "Google SRE Book · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "date": "2016"
+  },
+  {
+   "n": 24,
+   "title": "RFC 7426 · Software-Defined Networking (SDN): Layers and Architecture Terminology",
+   "url": "https://www.rfc-editor.org/rfc/rfc7426",
+   "kind": "reference",
+   "date": "2015"
+  },
+  {
+   "n": 25,
+   "title": "SD-WAN (개요)",
+   "url": "https://en.wikipedia.org/wiki/SD-WAN",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "NIST SP 800-94 · Guide to Intrusion Detection and Prevention Systems (IDPS)",
+   "url": "https://csrc.nist.gov/pubs/sp/800/94/final",
+   "kind": "reference",
+   "date": "2007"
+  },
+  {
+   "n": 27,
+   "title": "IEEE 802.1X — Port-Based Network Access Control",
+   "url": "https://1.ieee802.org/security/802-1x/",
+   "kind": "reference",
+   "note": "NAC 의 바탕이 되는 포트 인증 표준"
+  },
+  {
+   "n": 28,
+   "title": "NIST SP 800-77 Rev. 1 · Guide to IPsec VPNs",
+   "url": "https://csrc.nist.gov/pubs/sp/800/77/r1/final",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 29,
+   "title": "AWS · Hybrid Connectivity (백서)",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/hybrid-connectivity/hybrid-connectivity.html",
+   "kind": "reference",
+   "date": "2023",
+   "note": "사이트 간 VPN·Direct Connect·Transit Gateway"
+  },
+  {
+   "n": 30,
+   "title": "Microsoft Learn · Azure Virtual Network 개요",
+   "url": "https://learn.microsoft.com/ko-kr/azure/virtual-network/virtual-networks-overview",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Cisco · CCNA 시험 안내",
+   "url": "https://www.cisco.com/site/us/en/learn/training-certifications/exams/ccna.html",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Cisco · CCNP Enterprise 자격 안내",
+   "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccnp-enterprise/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "한국정보통신자격협회 · 네트워크관리사",
+   "url": "https://www.icqa.or.kr",
+   "kind": "reference",
+   "note": "국내 네트워크 국가공인 민간자격"
+  },
+  {
+   "n": 34,
+   "title": "Wireshark User's Guide",
+   "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "비즈테크아이 네트워크 팀의 기술 블로그·발표는 찾지 못했습니다. 회사 근거는 공고와 회사 사이트의 사업 소개(인프라·클라우드·보안·금융 아웃소싱 실적)이고, 프로토콜·장비·장애 대응의 구체 내용은 표준 문서와 공개 자료로 '보통 이런 것'을 보였습니다. 오창 근무지가 어느 계열사 사업장인지는 공고에 없습니다. 연봉은 공시가 없어 공공데이터 집계값입니다.",
+ "resources": [
+  {
+   "id": "biztechi-infra",
+   "title": "비즈테크아이 사업 소개 — CLOUD · 인프라",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.biztechi.com/business/cloud/03",
+   "why": "이 팀이 고객에게 약속하는 네트워크 SM(24시간 감시·장애조치·정기점검·RMA)의 목록 — 면접 전 업무 범위를 맞춰 본다.",
+   "by": "비즈테크아이",
+   "free": true
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "스위치·VLAN·STP·라우팅·방화벽·로드밸런서를 실무 장비 기준으로 한 권에 — 자격요건 기본 프로토콜·장비 줄의 바탕.",
+   "by": "고재성 · 이상훈 · 길벗"
+  },
+  {
+   "id": "huni-cisco",
+   "title": "후니의 쉽게 쓴 시스코 네트워킹",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%9B%84%EB%8B%88%EC%9D%98%20%EC%89%BD%EA%B2%8C%20%EC%93%B4%20%EC%8B%9C%EC%8A%A4%EC%BD%94%20%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%82%B9",
+   "why": "오창 자리의 '네트워크 기본 지식'을 한국어로 쉽게 — 이더넷·스위칭·라우팅 개념부터."
+  },
+  {
+   "id": "ccna",
+   "title": "CCNA 200-301 Official Cert Guide, Volume 1·2",
+   "kind": "book",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/ccna-200-301-official/9780138229856/",
+   "why": "VLAN·STP·EtherChannel(LACP)·OSPF·ACL 을 시험 순서로 — 우대 자격증 CCNA 와 자격요건 기본 프로토콜을 같이 채운다.",
+   "by": "Wendell Odom 외 · Cisco Press · 2nd ed. 2024"
+  },
+  {
+   "id": "ccna-exam",
+   "title": "CCNA 시험 안내",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.cisco.com/site/us/en/learn/training-certifications/exams/ccna.html",
+   "why": "우대 자격증 CCNA 의 출제 범위 확인.",
+   "by": "Cisco",
+   "free": true
+  },
+  {
+   "id": "ccnp-ent",
+   "title": "CCNP Enterprise 자격 안내",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccnp-enterprise/index.html",
+   "why": "CCNP 는 BGP·OSPF 설계와 SD-WAN 이 시험 범위에 들어간다 — 라우팅 설계 줄과 SD-WAN 우대 줄을 함께 겨냥할 때.",
+   "by": "Cisco",
+   "free": true
+  },
+  {
+   "id": "icqa",
+   "title": "네트워크관리사 자격",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.icqa.or.kr",
+   "why": "'이에 준하는 자격증'으로 국내에서 흔히 내는 자격 — 시험 범위·일정 확인.",
+   "by": "한국정보통신자격협회",
+   "free": true
+  },
+  {
+   "id": "kurose",
+   "title": "Computer Networking: A Top-Down Approach 지원 사이트",
+   "kind": "course",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://gaia.cs.umass.edu/kurose_ross/",
+   "why": "계층별 원리(이더넷·IP·라우팅 알고리즘) — 장애를 층으로 가르는 트러블슈팅 줄의 이론 바탕.",
+   "by": "Kurose · Ross",
+   "free": true
+  },
+  {
+   "id": "cisco-rstp",
+   "title": "Understand Rapid Spanning Tree Protocol (802.1w)",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24062-146.html",
+   "why": "STP 포트 역할·상태와 수렴 — 루프 장애를 읽는 법.",
+   "by": "Cisco",
+   "free": true
+  },
+  {
+   "id": "rfc-ospf",
+   "title": "RFC 2328 · OSPF Version 2",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc2328",
+   "why": "OSPF 영역·LSA·비용 계산의 원문 — 설계 줄에서 '왜 이렇게 동작하나'가 막힐 때.",
+   "by": "J. Moy · IETF · 1998",
+   "free": true
+  },
+  {
+   "id": "rfc-bgp",
+   "title": "RFC 4271 · A Border Gateway Protocol 4 (BGP-4)",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc4271",
+   "why": "BGP 경로 선택 절차의 원문 — 회선 이중화에서 어느 쪽으로 나가게 할지 정하는 근거.",
+   "by": "Y. Rekhter 외 · IETF · 2006",
+   "free": true
+  },
+  {
+   "id": "nist-80041",
+   "title": "NIST SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+   "why": "방화벽 종류와 정책 관리(규칙 순서·검토·변경 절차) — 방화벽 운영 줄.",
+   "by": "NIST · 2009",
+   "free": true
+  },
+  {
+   "id": "cf-lb",
+   "title": "What is load balancing?",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.cloudflare.com/learning/performance/what-is-load-balancing/",
+   "why": "L4·L7 부하분산의 차이와 분산 방식 — L4/L7 스위치 줄의 개념.",
+   "by": "Cloudflare Learning",
+   "free": true
+  },
+  {
+   "id": "packet-analysis",
+   "title": "Practical Packet Analysis (3판)",
+   "kind": "book",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://nostarch.com/packetanalysis3",
+   "why": "와이어샤크로 실제 패킷을 읽어 장애 원인을 찾는 사례 — 트러블슈팅 줄.",
+   "by": "Chris Sanders · No Starch Press · 2017"
+  },
+  {
+   "id": "wireshark-guide",
+   "title": "Wireshark User's Guide",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+   "why": "캡처 필터·표시 필터·TCP 흐름 보기 — 트러블슈팅 실습 도구.",
+   "by": "Wireshark",
+   "free": true
+  },
+  {
+   "id": "sre-incident",
+   "title": "Site Reliability Engineering · Managing Incidents",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "why": "장애 때 역할 나누기·기록·소통 — 24시간 장애조치 운영 방식의 공통 틀.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Site Reliability Engineering · Postmortem Culture",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "장애 보고서를 비난 없이 쓰는 법 — 고객사에 내는 장애 보고의 뼈대.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "nist-80094",
+   "title": "NIST SP 800-94 · Guide to Intrusion Detection and Prevention Systems",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/94/final",
+   "why": "IPS/IDS 의 탐지 방식·배치·운영 — 보안 장비 우대 줄.",
+   "by": "NIST · 2007",
+   "free": true
+  },
+  {
+   "id": "nist-80077",
+   "title": "NIST SP 800-77 Rev. 1 · Guide to IPsec VPNs",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/77/r1/final",
+   "why": "사이트 간 VPN 의 구성과 협상 단계 — VPN 운영과 클라우드 연결 줄.",
+   "by": "NIST · 2020",
+   "free": true
+  },
+  {
+   "id": "dot1x",
+   "title": "IEEE 802.1X",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://1.ieee802.org/security/802-1x/",
+   "why": "NAC(인증된 단말만 망에 붙이기)의 표준 바탕.",
+   "by": "IEEE",
+   "free": true
+  },
+  {
+   "id": "cloudneta-aws",
+   "title": "CloudNet@ - AWS 네트워킹 입문",
+   "kind": "course",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.inflearn.com/course/cloudneta-aws-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%9E%85%EB%AC%B8",
+   "why": "VPC·서브넷·라우팅 테이블·보안그룹을 한국어로 실습 — 클라우드 네트워크 우대 줄과 오창의 Cloud 네트워크 업무.",
+   "by": "인프런"
+  },
+  {
+   "id": "aws-hybrid-wp",
+   "title": "Hybrid Connectivity (AWS 백서)",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/hybrid-connectivity/hybrid-connectivity.html",
+   "why": "온프레미스 ↔ 클라우드 연결(VPN·전용선·Transit Gateway) 선택 기준 — 회사가 내세우는 하이브리드 클라우드 운영과 맞닿는다.",
+   "by": "AWS · 2023",
+   "free": true
+  },
+  {
+   "id": "azure-vnet",
+   "title": "Azure Virtual Network 개요",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://learn.microsoft.com/ko-kr/azure/virtual-network/virtual-networks-overview",
+   "why": "Azure 쪽 가상 네트워크·피어링·VPN 게이트웨이 개념 — 우대 줄의 Azure.",
+   "by": "Microsoft Learn",
+   "free": true
+  },
+  {
+   "id": "rfc-sdn",
+   "title": "RFC 7426 · SDN: Layers and Architecture Terminology",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc7426",
+   "why": "SDN 의 제어부·데이터부 분리를 정리한 용어 문서 — SDN 우대 줄의 개념.",
+   "by": "IETF · 2015",
+   "free": true
+  },
+  {
+   "id": "netauto-hanbit",
+   "title": "네트워크 인프라 자동화",
+   "kind": "book",
+   "lang": "ko",
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC%20%EC%9D%B8%ED%94%84%EB%9D%BC%20%EC%9E%90%EB%8F%99%ED%99%94",
+   "why": "소프트웨어로 장비 설정을 다루는 법(API·파이썬·앤서블) — SD-WAN·SDN 같은 소프트웨어 기반 네트워크 우대 줄의 다음 단계.",
+   "by": "맷 오스왈트 외 · 이주호 옮김 · 한빛미디어 · 2024"
+  },
+  {
+   "id": "containerlab",
+   "title": "containerlab",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://containerlab.dev/",
+   "why": "노트북 한 대에 가상 라우터 여러 대를 띄워 OSPF·BGP 를 직접 붙여 보는 실습 환경.",
+   "by": "오픈소스",
+   "free": true
+  }
+ ],
+ "study_path": [
+  {
+   "title": "스위칭 기본기",
+   "time": "2~3주",
+   "goal": "VLAN·트렁크·STP·LACP 를 설정하고 장애 때 상태를 읽는다.",
+   "resources": [
+    "nw-intro",
+    "huni-cisco",
+    "ccna",
+    "cisco-rstp"
+   ],
+   "task": "가상 실습 환경에서 스위치 3대를 고리로 잇고 VLAN 3개를 나눈 뒤, STP 가 막은 포트를 찾아 적고 링크 하나를 끊었을 때 바뀌는 것을 기록한다."
+  },
+  {
+   "title": "라우팅",
+   "time": "2~3주",
+   "goal": "OSPF 영역과 BGP 이중 회선을 직접 구성하고 주·보조 경로를 정한다.",
+   "resources": [
+    "containerlab",
+    "rfc-ospf",
+    "rfc-bgp",
+    "ccnp-ent"
+   ],
+   "task": "containerlab 으로 라우터 4대를 띄워 OSPF 로 사내망을 잇고, 가상 통신사 두 곳과 BGP 를 맺어 로컬 선호도로 주 회선을 정한 뒤 주 회선을 끊어 넘어가는 시간을 잰다."
+  },
+  {
+   "title": "방화벽·부하분산·보안 장비",
+   "time": "2주",
+   "goal": "정책 순서와 세션을 이해하고 L4/L7 분산과 VPN 터널을 설명한다.",
+   "resources": [
+    "nist-80041",
+    "cf-lb",
+    "nist-80094",
+    "dot1x",
+    "nist-80077"
+   ],
+   "task": "가상 방화벽 규칙표 10줄을 만들어 일부러 순서를 틀리게 넣고, 막힌 요청 세 개를 규칙 번호로 찾아 고친 기록을 남긴다."
+  },
+  {
+   "title": "트러블슈팅과 보고",
+   "time": "1~2주",
+   "goal": "패킷 캡처로 원인을 찾고 장애 보고서를 쓴다.",
+   "resources": [
+    "packet-analysis",
+    "wireshark-guide",
+    "sre-incident",
+    "sre-postmortem",
+    "kurose"
+   ],
+   "task": "1·2단계 실습망에 VLAN 누락·게이트웨이 오타 같은 고장을 하나씩 넣고, 계층별 확인 순서와 캡처 화면으로 원인을 찾아 한 쪽짜리 장애 보고서를 쓴다."
+  },
+  {
+   "title": "클라우드 네트워크와 자격증",
+   "time": "계속",
+   "goal": "VPC·VNet 과 사업장 연결을 구성하고 CCNA·CCNP 범위를 정리한다.",
+   "resources": [
+    "cloudneta-aws",
+    "aws-hybrid-wp",
+    "azure-vnet",
+    "rfc-sdn",
+    "netauto-hanbit",
+    "ccna-exam",
+    "icqa",
+    "biztechi-infra"
+   ],
+   "task": "무료 계정으로 VPC 하나를 만들고 실습망과 사이트 간 VPN 을 맺어, 주소 대역을 일부러 겹치게 했을 때와 안 겹치게 했을 때의 통신 결과를 비교한다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원**(둘 다 집계값) — 공시 숫자는 없고, 경력 전형이라 처우 협의가 기준이다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,811만원",
+    "amount": 3811,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없고, 2026-10-26에 초봉을 고쳤다는 메모가 있다 [9]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,748만원",
+    "amount": 5748,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계, 사원수 945명 기준. 경력직이 섞인 회사 전체 값이다 [9]"
+   },
+   {
+    "label": "LG CNS 초봉",
+    "value": "약 5,071만원",
+    "amount": 5071,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [10]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "약 7,802만원",
+    "amount": 7802,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [10]"
+   }
+  ],
+  "how": "공고에는 연봉이 없다 [1]. 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자는 없다. 경력 전형은 평판조회 뒤 **처우협의** 단계에서 연봉을 정하고 [13], 회사는 '성과에 걸맞은 대우'를 인사 원칙으로 적었다 [14]. 평균은 경력직이 섞인 회사 전체 값이라 초봉도 이 자리의 제시액도 아니다. 집계 페이지의 대표자·홈페이지가 옛 사명 기준으로 남아 있어 숫자가 늦게 반영됐을 수 있다 [9] {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "가족",
+    "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진·단체보험, 전문 심리 상담"
+   },
+   {
+    "name": "금융",
+    "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+   },
+   {
+    "name": "배움",
+    "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+   },
+   {
+    "name": "조직 문화",
+    "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"
+   }
+  ],
+  "note": "비즈테크아이 공식 사이트의 복리후생 페이지(2026-11 확인)다 [11]. 항목 이름만 있고 금액·조건은 적혀 있지 않다. 오창 자리는 공고가 주거 지원이 없다고 따로 밝혔다 [1]."
+ },
+ "location": {
+  "name": "비즈테크아이 본사 (상암 DDMC)",
+  "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+  "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [12]",
+  "note": "회사 사이트 '오시는 길'의 본사 주소다 [12]. 공고의 근무지는 서울과 충북 청주 오창으로 나뉘고 오창 근무지의 주소는 공개되지 않았다 [1]. 운영 위탁 자리라 실제 근무지가 고객사가 될 수 있다 {추론}."
+ }
+}
