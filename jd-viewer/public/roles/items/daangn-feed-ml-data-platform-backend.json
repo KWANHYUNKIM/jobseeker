@@ -4,7 +4,8 @@
  "role": "피드 ML 데이터 플랫폼 백엔드 엔지니어",
  "team": "피드실 · ML 데이터 플랫폼팀",
  "jobs": [
-  "ats-greenhouse:daangn:6652141003"
+  "ats-greenhouse:daangn:6652141003",
+  "ats-greenhouse:daangn:7507320003"
  ],
  "researched_at": "2026-11-25",
  "tldr": {
@@ -212,6 +213,178 @@
    ]
   },
   {
+   "section": "task",
+   "quote": "전사 주요 데이터 마트(Fact/Dimension/Feature/Segment 등) 설계 및 운영을 주도해요",
+   "short": "분석가·PM이 매번 원본 로그를 뒤지지 않게, 바로 쓰는 표(마트)를 설계하고 매일 채운다.",
+   "why": "당근 데이터 가치화 팀은 서비스와 조직이 커지며 데이터가 많아지자 찾기 어렵고 형식과 쓰는 법이 갈라졌다고 정리했습니다.[27] 앱 이벤트는 자체 수집으로 바꾸고 서비스 DB·외부 광고 데이터와 함께 BigQuery 한곳에 모았는데,[27] 모은 것만으로는 바로 쓸 수 없어서 그 위에 쓰기 좋은 표가 필요합니다{추론}. 이 공고는 그 표를 Fact·Dimension·Feature·Segment로 나눠 적었습니다.[26]",
+   "actually": {
+    "intro": "공고가 든 네 종류를 보통의 차원 모델링 말로 옮기면 이렇습니다(당근의 실제 표 이름은 공개되지 않았습니다).",
+    "items": [
+     "**Fact(사실 표)** — 일어난 일 한 건이 한 줄. 예: 글 조회 1건, 채팅 시작 1건, 거래 완료 1건. 맨 먼저 '한 줄이 무엇인가(grain, 결)'를 정한다.[31]",
+     "**Dimension(기준 표)** — 사실을 자르는 기준. 사용자·동네·카테고리·글. 사용자가 이사하면 옛 동네 줄을 닫고 새 줄을 더해 '그날의 동네'로 셀 수 있게 한다(Type 2).[31]",
+     "**Feature(특성 표)** — 사용자·글마다 미리 계산해 둔 값. 예: 최근 30일 글 수, 첫 거래일. 분석과 모델이 같이 쓴다{추론}.",
+     "**Segment(묶음 표)** — '최근 7일 판매자', '신규 가입 30일 이내'처럼 정의된 사용자 묶음. 정의를 한 곳에 두어야 팀마다 다른 '신규'가 안 생긴다{추론}.",
+     "**운영** — 매일 몇 시까지 채워지나, 어제 값을 다시 계산하면(백필) 무엇이 바뀌나를 관리한다. 이 팀은 dbt와 Airflow로 모델 구조·백필·국가별 모델 문제를 정리한 글을 냈다.[29]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 줄 단위와 이력 — 직접 돌린 출력",
+     "body": "가상 값입니다. 같은 이벤트가 두 번 들어오면 조회수가 5로 부풀고(event_id로 세면 4), 이력 있는 사용자 표를 날짜 조건 없이 붙이면 줄이 7개로 늘어납니다. '그날의 동네'로 붙여야 서초동 3·역삼동 1이 됩니다.",
+     "lang": "sql",
+     "code": "-- fct_view: 한 줄 = 조회 1건 / dim_user: 이사하면 새 줄(valid_from~valid_to)\nselect count(*) from fct_view;                 -- 5 (중복 1건 포함)\nselect count(distinct event_id) from fct_view; -- 4\n\nselect u.region, count(*)\nfrom (select distinct * from fct_view) f\njoin dim_user u on f.user_id = u.user_id\n  and f.dt >= u.valid_from and f.dt < u.valid_to\ngroup by 1;   -- 서초동 3, 역삼동 1  (날짜 조건 빼면 7줄)"
+    }
+   ],
+   "how_far": "어떤 질문에 답할 표인지는 분석가·PM과 같이 정하고, **결·키·이력 방식·채우는 주기를 정해 SQL로 만들고 지키는 것**이 이 자리입니다{추론}. 공고가 '주도'라고 적었으니 표 하나를 받는 수준이 아니라 전사 표의 구조를 제안하는 쪽입니다.[26] 최소선은 사실 표와 기준 표를 나눠 grain을 말로 설명하고, Type 2 조인을 실수 없이 쓰는 것입니다{추론}.",
+   "level": {
+    "basic": "JOIN·GROUP BY·윈도 함수로 사실 표를 집계한다",
+    "work": "grain·대리 키·SCD Type 2·증분 적재를 설계한다",
+    "team": "전사 공통 마트를 여러 팀이 같은 뜻으로 쓰게 구조를 잡는다{추론}"
+   },
+   "refs": [
+    26,
+    27,
+    29,
+    31
+   ],
+   "study": [
+    "bskim-deck",
+    "kimball",
+    "kimball-type2",
+    "daangn-dbt-post"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전사 주요 지표를 정의하고 정리하며, 체계화된 구조를 만들어요",
+   "short": "'활성 사용자'·'거래 수' 같은 숫자의 계산법을 하나로 정해 누구나 같은 값을 보게 한다.",
+   "why": "이 팀 발표는 지표 문제를 셋으로 꼽았습니다 — 볼 때마다 값이 다르다, 계산 방식이 어렵고 믿기 어렵다, 지표가 여기저기 흩어져 있다.[28] 그래서 지표 정의를 중앙 저장소에 모아 GitHub PR로 고치고, 디멘전 정의·데이터 의존성·스케줄링을 맡는 지표 플랫폼(KarrotMetrics)을 만들었다고 소개했습니다.[27][28] 몇 줄의 SQL로 국가별·디멘전별 지표를 만들고 다른 팀이 정의한 지표도 쓸 수 있게 하는 것이 목표였습니다.[27]",
+   "actually": {
+    "intro": "지표 하나를 '정의'한다는 것은 보통 아래를 글과 코드로 못 박는 일입니다.",
+    "items": [
+     "**무엇을 센다** — 사람 수인가 건수인가. DAU면 '하루에 앱에서 무엇을 한 사람'인지(푸시를 받기만 한 사람도 넣나).",
+     "**언제 기준** — 하루의 경계(한국 시간 자정인가), 늦게 들어온 이벤트를 며칠까지 받나.",
+     "**어디까지** — 국가(당근은 국가별 지표를 만든다[27])·테스트 계정·탈퇴자 제외 규칙.",
+     "**자르는 기준** — 동네·서비스·가입 경로 같은 디멘전 목록.[27]",
+     "**바꾸는 절차** — 정의를 바꾸면 PR로 검토하고, 옛 값과 새 값을 나란히 보여 준다.[27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "정의 한 줄이 DAU를 바꾼다 — 직접 돌린 출력",
+     "body": "가상 이벤트 4건입니다. '모든 이벤트'로 세면 11월 1일 DAU가 3, 푸시 수신(사용자가 한 일이 아님)을 빼면 2입니다. 같은 이름의 지표가 대시보드마다 다르면 이런 정의 차이가 원인인 경우가 흔합니다{추론}.",
+     "lang": "sql",
+     "code": "select substr(ts,1,10) d, count(distinct user_id) from ev group by 1;\n-- 2026-11-01: 3, 2026-11-02: 1\nselect substr(ts,1,10) d, count(distinct user_id) from ev\nwhere name <> 'push_received' group by 1;\n-- 2026-11-01: 2, 2026-11-02: 1"
+    }
+   ],
+   "how_far": "어떤 지표가 회사의 목표인지는 경영진·PM이 정하고, 이 자리는 **그 뜻을 빈틈 없는 계산법으로 바꾸고 한곳에 모아 관리하는 쪽**입니다{추론}. 공개 도구로는 dbt의 MetricFlow가 같은 생각(지표를 한 번 정의해 여러 곳에서 쓴다)입니다.[37]",
+   "refs": [
+    26,
+    27,
+    28,
+    37
+   ],
+   "study": [
+    "bskim-deck",
+    "metricflow"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전사 주요 지표 및 실험 지표의 정의와 산출 로직을 데이터 파이프라인 전반에서 검증하고 디버깅해요",
+   "short": "숫자가 이상하면 원본 로그부터 마트·대시보드·실험 결과까지 거슬러 올라가 어디서 틀렸는지 찾는다.",
+   "why": "당근은 '1주 1개 실험'을 목표로 할 만큼 실험이 잦은 회사입니다.[30] 실험 플랫폼은 사용자를 나누는 장치(Randomizer)·기능 분기(remote config·feature flag)·결과 분석 파이프라인으로 이루어지고, 발표에는 표본 비율이 어긋났는지 보는 SRM 점검이 들어 있습니다.[27] 실험 지표가 틀리면 잘못된 기능이 출시되므로, 정의와 계산을 파이프라인 전체에서 확인하는 사람이 필요합니다{추론}.",
+   "actually": {
+    "intro": "디버깅은 보통 한 숫자를 위에서 아래로 쪼개 내려가는 일입니다.",
+    "items": [
+     "대시보드 값과 마트 값이 같은가 → 마트와 원천 표의 건수가 같은가 → 원천 표와 앱 이벤트 수가 같은가.",
+     "중복 적재(같은 이벤트 두 번)·늦게 온 이벤트·시간대 경계 때문에 생긴 차이를 가른다.",
+     "조인이 줄을 늘렸나(이력 표를 날짜 없이 붙인 경우) 확인한다 — 앞 줄 예시의 5 → 7.",
+     "실험이면 두 집단 크기가 설계대로 나뉘었나(SRM)부터 본다. 어긋나면 결과를 믿지 않는다.[35]",
+     "고친 뒤에는 같은 실수가 다시 생기지 않게 검사를 붙인다(다음 줄)."
+    ]
+   },
+   "examples": [
+    {
+     "title": "SRM 점검 — 직접 돌린 출력",
+     "body": "50:50으로 나눈 실험에서 50,000명 대 50,400명이면 카이제곱 1.59로 우연 범위(5% 기준 3.84 아래)이고, 50,000 대 51,000이면 9.9로 설계가 어딘가 깨졌다는 신호입니다. SRM이 나면 결과 해석보다 원인(배정·로그 누락)을 먼저 찾으라는 것이 코하비 책의 권고입니다.[35]",
+     "lang": "python",
+     "code": "exp = (nA + nB) / 2\nchi = ((nA - exp)**2 + (nB - exp)**2) / exp\n# 50000:50400 -> 1.59   (3.84 미만: 괜찮음)\n# 50000:51000 -> 9.9    (어긋남: 배정·로그부터 의심)"
+    }
+   ],
+   "how_far": "실험을 설계하고 결론을 내는 것은 PM·분석가 몫이고, 이 자리는 **그 숫자가 맞게 계산됐음을 보증하는 쪽**입니다{추론}. 최소선은 한 지표를 원천까지 건수로 맞춰 보는 SQL을 혼자 쓰고, SRM이 무엇인지 설명하는 것입니다{추론}.",
+   "refs": [
+    27,
+    30,
+    35
+   ],
+   "study": [
+    "kohavi-ko",
+    "bskim-deck"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 모델링과 품질 관리를 통해 신뢰도 높은 데이터 환경을 구축하고, 운영 중 관측성(Observability)과 자동화된 품질 체크를 통해 문제를 조기에 발견하고 해결해요",
+   "short": "표가 늦게 오거나 비거나 중복되면 사람보다 먼저 알림이 울리게 검사를 걸어 둔다.",
+   "why": "이 팀 발표는 '믿을 수 있는 정보'의 첫 조건으로 데이터 품질·관측성을 들었고, 데이터 신뢰성 엔지니어링(Data Reliability Engineering) 개념을 소개했습니다.[27] 다만 당근이 어떤 품질 검사를 어떤 도구로 돌리는지는 발표 글자에 나오지 않습니다.[27] 아래는 공개 도구(dbt)의 보통 방식입니다.",
+   "actually": {
+    "intro": "관측성(시스템 안을 밖에서 숫자로 들여다볼 수 있는 성질)은 데이터에서는 보통 다섯 가지를 봅니다{추론}.",
+    "items": [
+     "**신선도** — 원천 표가 정해진 시각까지 들어왔나. dbt는 원천 표마다 경고·오류 기준 시간을 적는다.[33]",
+     "**건수** — 오늘 줄 수가 지난 며칠과 비교해 갑자기 줄었나·늘었나.",
+     "**키** — 같아선 안 되는 값이 겹치나(unique), 비어선 안 되는 칸이 비었나(not_null).[32]",
+     "**관계** — 사실 표의 user_id가 사용자 표에 다 있나(relationships).[32]",
+     "**값 범위** — 상태 칸에 정해진 값만 있나(accepted_values).[32]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "검사 두 개 — 직접 돌린 출력",
+     "body": "가상 값입니다. id가 2인 줄이 두 번이라 unique 위반 1, 빈 칸이 1개라 not_null 위반 1. 최근 7일 평균 1,000건(표준편차 13.2)인 표에 오늘 610건이 오면 z = -29.5로, 고정 문턱 없이도 '이상'을 잡습니다.",
+     "lang": "python",
+     "code": "ids = [1, 2, 2, 3]\nprint(len(ids) - len(set(ids)))   # unique 위반 1\nhist = [1000,1020,980,1010,995,1005,990]; today = 610\n# 평균 1000, 표준편차 13.2 -> z = -29.5  (알림)"
+    }
+   ],
+   "how_far": "**검사를 정하고 코드로 걸고, 울리면 원인을 찾아 막는 것**까지가 이 자리입니다{추론}. 최소선은 dbt 테스트 네 가지와 신선도 검사를 직접 걸어 본 경험입니다{추론}.",
+   "refs": [
+    27,
+    32,
+    33
+   ],
+   "study": [
+    "dbt-tests",
+    "dbt-freshness",
+    "dbt-learn"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 거버넌스 체계 운영과 문서화를 통해 조직 전체의 데이터 신뢰성을 높여요",
+   "short": "어떤 표가 어디서 와서 누가 책임지는지 적어 두고, 이벤트 이름 규칙을 지키게 한다.",
+   "why": "이 팀 발표에는 '이 테이블은 어떤 서비스에서 왔나요, 어떻게 계산됐나요' 같은 질문이 나옵니다.[27] 이를 위해 DataHub를 데이터 찾기 도구로 쓰고, BigQuery 표의 계보(lineage — 어느 표에서 어느 표로 흘렀나)는 Dataplex로 자동 수집한다고 소개했습니다.[27] 이벤트는 중앙 스키마 레지스트리와 Git 저장소·PR로 명세를 관리하고, 팀마다 이름 규칙이 달라 생긴 혼란을 '화면·영역·동작·버전'을 잇는 전사 이름 규칙으로 줄였습니다.[27]",
+   "actually": {
+    "intro": "거버넌스(데이터를 다루는 규칙과 책임)를 '운영'한다는 것은 보통 이런 일입니다.",
+    "items": [
+     "표·칸마다 설명과 소유자를 적는다 — dbt 모델 파일의 description·owner 칸처럼.[32]",
+     "새 이벤트가 이름 규칙·스키마를 지키는지 PR 단계에서 확인한다.[27]",
+     "계보를 보고 '이 표를 바꾸면 어느 대시보드가 깨지나'를 미리 안다.[34]",
+     "용어 사전(glossary)에 '활성 사용자' 같은 말의 공식 뜻을 둔다.[34]",
+     "개인정보 칸에 표시를 달아 접근을 나눈다{추론}."
+    ]
+   },
+   "how_far": "규칙을 처음부터 만들기보다 **이미 있는 도구(DataHub·스키마 레지스트리)를 운영하며 빈칸을 채우고 지키게 하는 일**이 중심입니다{추론}. 최소선은 계보·소유자·용어 사전이 왜 필요한지를 사고 사례 하나로 설명하는 것입니다{추론}.",
+   "refs": [
+    27,
+    32,
+    34
+   ],
+   "study": [
+    "bskim-deck",
+    "datahub-docs"
+   ]
+  },
+  {
    "section": "qualification",
    "quote": "2년 이상의 경력이 있거나 혹은 그에 준하는 역량을 가지신 분",
    "short": "연차보다 \"초당 수만 건짜리 시스템을 만들고 운영해 봤나\"가 본론 — 2년은 그 경험이 쌓이는 최소 기간.",
@@ -324,6 +497,76 @@
    ]
   },
   {
+   "section": "qualification",
+   "quote": "데이터 모델링/ETL/데이터 마트 구축 경험이 있으신 분",
+   "short": "원본을 가져와(ETL) 사실·기준 표로 나눠 쌓아 본 적이 있어야 한다는 뜻이다.",
+   "why": "업무 첫 줄이 전사 마트 설계를 '주도'하는 일이라[26], 처음 배우는 사람이 아니라 마트를 직접 만들어 운영해 본 사람을 찾습니다{추론}. 이 팀은 원천을 BigQuery로 모으고 dbt·Airflow로 변환을 돌립니다.[27][29]",
+   "how_far": "경험으로 말할 것은 셋입니다{추론} — 어떤 표를 왜 그 결로 나눴나, 원본이 바뀌었을 때 어떻게 다시 채웠나(백필), 누가 그 표를 썼나. 작은 회사·개인 프로젝트라도 이 셋을 숫자와 함께 말하면 됩니다{추론}.",
+   "level": {
+    "basic": "원본 → 정제 → 집계 표 3단을 SQL로 만든다",
+    "work": "증분 적재·백필·SCD를 운영해 봤다",
+    "team": "dbt·Airflow·BigQuery 위의 전사 마트{추론}"
+   },
+   "refs": [
+    26,
+    27,
+    29
+   ],
+   "study": [
+    "kimball",
+    "airflow-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "단일 모델 수준이 아닌, 데이터 파이프라인 전반의 데이터 품질 관리, 정합성 검증 경험이 있으신 분",
+   "short": "표 하나만 맞추는 게 아니라 원본부터 대시보드까지 숫자가 이어서 맞는지 봐 온 사람을 찾는다.",
+   "why": "당근 발표가 꼽은 문제는 '지표가 볼 때마다 다르다'였습니다.[28] 이런 차이는 한 표 안이 아니라 표와 표 사이(중복 적재·조인·시간대)에서 자주 생기므로[32], 공고가 '단일 모델이 아닌 전반'을 굳이 적었습니다[26]{추론}.",
+   "how_far": "정합성(두 곳의 숫자가 서로 맞는 것)을 단계마다 건수·합계로 맞춰 본 경험, 그 검사를 자동으로 돌린 경험이면 됩니다{추론}. 위 '품질 체크' 줄의 다섯 가지를 실제로 걸어 봤다고 말할 수 있으면 최소선입니다{추론}.",
+   "refs": [
+    26,
+    28,
+    32
+   ],
+   "study": [
+    "dbt-tests",
+    "dbt-freshness"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL, Python을 활용해 데이터를 분석하고 처리할 수 있으신 분",
+   "short": "마트와 지표는 SQL로, 검사·자동화·간단한 통계는 Python으로 직접 한다.",
+   "why": "이 팀 지표 플랫폼은 몇 줄의 SQL로 지표를 만들게 하고[27], 변환은 dbt(SQL 모델)와 Airflow(Python으로 작업 순서를 적는다)로 돈다.[29][36] 그래서 두 언어가 다 일의 도구입니다{추론}.",
+   "how_far": "SQL은 윈도 함수·CTE·조인 결과 줄 수를 예상하는 수준, Python은 표를 읽어 검사·통계를 돌리고 Airflow 작업을 쓰는 수준이면 됩니다{추론}. 라이브 코딩이 예정돼 있으니 손으로 바로 쓰는 연습이 필요합니다.[26]",
+   "level": {
+    "basic": "GROUP BY·JOIN·서브쿼리",
+    "work": "윈도 함수·CTE·실행 계획을 보고 비용 줄이기",
+    "team": "BigQuery 대용량 표를 파티션·클러스터로 싸게 읽기{추론}"
+   },
+   "refs": [
+    26,
+    27,
+    29,
+    36
+   ],
+   "study": [
+    "airflow-bp",
+    "dbt-learn"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 직군(분석가, PM, 엔지니어)과 협업 및 커뮤니케이션으로 효율적인 데이터 구조를 설계해보신 분",
+   "short": "쓰는 사람이 묻는 질문에서 표 구조를 거꾸로 짜 본 경험을 묻는다.",
+   "why": "공고는 분석가·엔지니어·제품팀이 데이터를 안정적으로 쓰도록 수집부터 활용까지의 흐름을 설계한다고 적었습니다.[26] 이 팀은 도메인 지식은 있지만 데이터 엔지니어링을 모르는 구성원도 dbt·Airflow로 데이터 작업을 하게 만드는 것을 목표로 삼았습니다.[29]",
+   "how_far": "분석가가 '이번 주 신규 판매자의 첫 거래까지 걸린 날'을 묻는다면 어떤 표·칸이 있어야 하나를 같이 정하고, 이벤트를 남기는 앱 개발자에게 무엇을 더 찍어 달라고 요청해 본 경험이 예가 됩니다{추론}.",
+   "refs": [
+    26,
+    29
+   ]
+  },
+  {
    "section": "preference",
    "quote": "제품과 비즈니스 문제를 엔지니어링 관점에서 발견하고, 기술적 해결책을 주도하여 실질적인 임팩트로 연결하는 과정을 즐기시는 분",
    "short": "\"시켜서 만든 것\"보다 문제를 먼저 찾아 기술로 풀고 숫자로 효과를 낸 경험을 반긴다는 뜻.",
@@ -414,6 +657,103 @@
   },
   {
    "section": "preference",
+   "quote": "전사 주요 지표를 정의 및 관리 해보신 분",
+   "short": "회사 전체가 보는 숫자의 계산법을 정하고 바꿀 때 영향을 관리해 본 사람이면 더 좋다.",
+   "why": "업무 둘째 줄과 같은 일입니다 — 이 팀은 지표 정의를 중앙에 모으고 PR로 바꾼다.[27] 정의를 바꾸면 과거 대시보드 숫자가 달라지므로 관리 경험이 따로 중요합니다{추론}.",
+   "how_far": "지표 하나를 정의서(무엇을·언제·어디까지·자르는 기준)로 써 보고, 바꿨을 때 옛 값과 새 값을 나란히 공지해 본 경험이면 충분합니다{추론}.",
+   "refs": [
+    27
+   ],
+   "study": [
+    "metricflow",
+    "bskim-deck"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 데이터를 Airflow나 DBT와 같은 도구를 효율적으로 분석에 활용하실 수 있는 분",
+   "short": "이 팀이 실제로 쓰는 두 도구 — 작업 순서는 Airflow, SQL 변환은 dbt — 를 다뤄 봤으면 좋다.",
+   "why": "데이터 가치화팀이 dbt와 Airflow를 도입하며 겪은 문제 일곱 가지(프로젝트 구조·모델 저장·Airflow 연동·개발과 테스트·파이프라인 의존성·국가별 모델·백필)를 직접 글로 냈습니다.[29]",
+   "actually": {
+    "intro": "'효율적으로'가 가리키는 보통의 일입니다.",
+    "items": [
+     "dbt 모델을 증분(새 날짜분만)으로 돌려 매일 전체를 다시 읽지 않는다{추론}.",
+     "Airflow 작업을 다시 돌려도 결과가 같게(멱등) 짜서 백필을 안전하게 한다.[36]",
+     "모델 사이 의존성을 dbt가 계보로 알게 하고, 파이프라인끼리의 순서는 Airflow가 잡는다.[29]",
+     "국가마다 같은 모델을 반복하지 않게 변수로 나눈다(이 팀 글의 '국가별 모델 정의').[29]"
+    ]
+   },
+   "how_far": "dbt 프로젝트 하나(원천 → 정제 → 마트, 테스트 포함)를 Airflow로 매일 돌려 본 경험이 최소선입니다{추론}. 면접 전에는 이 팀 글을 꼭 읽고 가는 것이 좋습니다{추론}.",
+   "refs": [
+    29,
+    36
+   ],
+   "study": [
+    "daangn-dbt-post",
+    "dbt-learn",
+    "airflow-book",
+    "airflow-bp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "A/B 테스트에 대한 통계적 이해를 가지신 분",
+   "short": "실험 숫자 차이가 우연인지 아닌지 가르는 기본 통계를 알면 실험 지표를 검증할 때 쓴다.",
+   "why": "당근은 실험 플랫폼을 직접 운영하고[27], 프로덕트 팀이 매주 실험을 돌리는 것을 목표로 했습니다.[30] 발표가 참고서로 든 책이 코하비의 'Trustworthy Online Controlled Experiments'입니다.[27]",
+   "examples": [
+    {
+     "title": "두 비율 비교 — 직접 돌린 출력",
+     "body": "가상 값입니다. A 5.00%, B 5.26%(각 약 5만 명)면 z = 1.85, p = 0.064로 5% 기준에서는 '차이가 있다'고 못 말합니다. 4% 넘게 오른 것처럼 보여도 표본이 이 정도면 우연일 수 있다는 뜻입니다.",
+     "lang": "python",
+     "code": "pA, pB = 2500/50000, 2650/50400\np = (2500+2650) / (50000+50400)\nse = (p*(1-p)*(1/50000 + 1/50400)) ** .5\nz = (pB - pA) / se          # 1.85\n# 양쪽 p값 = erfc(|z|/sqrt(2)) = 0.064"
+    }
+   ],
+   "how_far": "결론을 내는 것은 분석가 몫이라, 이 자리는 **p값·신뢰구간·표본 크기·SRM·여러 번 엿보기의 함정**을 알아 지표 계산이 실험 설계와 맞는지 확인하는 수준이면 됩니다{추론}.[35]",
+   "refs": [
+    27,
+    30,
+    35
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, GCP 등 클라우드 환경에서 데이터 파이프라인 및 인프라를 운영해본 경험이 있으신 분",
+   "short": "당근 분석 데이터는 GCP(BigQuery)에 모이므로 클라우드에서 파이프라인을 돌려 본 경험이 도움이 된다.",
+   "why": "이 팀은 서비스 DB·외부 데이터·자체 수집 이벤트를 BigQuery로 모으고 계보를 Dataplex로 수집한다고 발표했습니다.[27] 같은 회사의 피드 팀은 AWS 위에서 서빙을 돌리므로[2], 데이터가 두 클라우드를 건너는 일도 있습니다{추론}.",
+   "how_far": "클라우드 데이터 웨어하우스에서 표 비용(읽은 바이트)을 줄여 본 경험, 예약 작업과 권한을 직접 관리해 본 경험이면 됩니다{추론}. 인프라 자체를 짓는 자리는 아닙니다{추론}.",
+   "refs": [
+    2,
+    27
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "데이터 거버넌스 및 메타데이터 관리 시스템(DataHub 등) 운영 경험이 있으신 분",
+   "short": "당근이 쓰는 데이터 카탈로그(DataHub)를 운영해 봤다면 업무 다섯째 줄을 바로 맡을 수 있다.",
+   "why": "이 팀은 데이터를 찾고·뜻을 알고·주인과 계보를 아는 세 요구를 정리하고 DataHub를 데이터 찾기 플랫폼으로 소개했습니다.[27]",
+   "actually": {
+    "intro": "DataHub 같은 메타데이터(데이터에 대한 데이터 — 설명·주인·계보) 시스템의 보통 운영 일입니다.[34]",
+    "items": [
+     "BigQuery·dbt·Airflow에서 메타데이터를 주기적으로 끌어온다(수집기 설정).",
+     "표·칸에 설명·소유자·태그·용어를 단다.",
+     "계보 화면으로 바꿀 표의 영향 범위를 본다.",
+     "검색이 안 되는 표·주인이 없는 표를 찾아 채운다{추론}."
+    ]
+   },
+   "how_far": "운영 경험이 없다면 로컬에 DataHub를 띄우고 dbt 프로젝트를 수집해 계보를 본 경험으로 대신할 수 있습니다{추론}.",
+   "refs": [
+    27,
+    34
+   ],
+   "study": [
+    "datahub-docs"
+   ]
+  },
+  {
+   "section": "preference",
    "quote": "팀 이름에 ML이 있는데요. ML 실무 경험이나 깊은 이해가 필요한가요? 아니요, 저희 팀은 ML기반 추천 서비스를 지탱하기 위한 고성능의 시스템을 만드는게 팀의 비전이기 때문에 Software Engineering 역량을 핵심으로 생각하고 있어요 팀에 조인하면 실무적인 ML 및 추천과 관련된 도메인 지식을 습득해서 적응하실 수 있으니 해당 부분은 걱정하지 않으셔도 돼요 다만 팀 업무에 흥미를 위해서는 ML이나 추천시스템에 많은 관심이 있기를 기대하고 있어요",
    "short": "ML 경력은 안 본다 — 핵심은 소프트웨어 엔지니어링이고, ML·추천 지식은 들어와서 배운다. 관심만은 있어야 한다.",
    "why": "팀이 직접 답한 FAQ입니다.[1] 실제로 공개된 이 팀의 문제(캐시·키 설계·Kafka 커밋·GPU 메모리)도 ML 이론보다 시스템 문제입니다.[2][3][4]",
@@ -459,6 +799,16 @@
     1,
     8,
     22
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "본 포지션은 화상 인터뷰에서 라이브 코딩 테스트가 예정되어 있어요",
+   "short": "두 번째 단계 화상 인터뷰에서 바로 코드를 쓴다 — 이 자리면 SQL·Python 문제가 나올 가능성이 크다.",
+   "why": "공고의 전형 순서는 서류 → 화상 인터뷰(라이브 코딩) → 직무 인터뷰 → 컬처핏·레퍼런스 체크입니다.[26] 출제 언어·형식은 이 공고에 적혀 있지 않습니다.[26]",
+   "how_far": "자격요건이 SQL·Python이라[26] 윈도 함수·조인 결과 예상·간단한 집계 코드를 말로 설명하면서 쓰는 연습이 맞습니다{추론}. 언어가 궁금하면 공고의 문의 채널에 물을 수 있습니다.[26]",
+   "refs": [
+    26
    ]
   },
   {
@@ -722,6 +1072,87 @@
    "title": "A Tour of Go",
    "url": "https://go.dev/tour/",
    "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "당근 채용 · Data Analytics Engineer - 데이터 가치화",
+   "url": "https://about.daangn.com?gh_jid=7507320003",
+   "kind": "posting",
+   "date": "2026-11-24"
+  },
+  {
+   "n": 27,
+   "title": "김범수(당근마켓 데이터 가치화 팀) · 당근마켓과 함께 성장하며 데이터 신뢰성 지켜내기 — 구글 데이터 웨비나",
+   "url": "https://speakerdeck.com/bskim/danggeunmakesgwa-hamgge-seongjanghamyeo-deiteo-sinroeseong-jikyeonaegi-gugeul-keulraudeu-webina-2023-dot-03",
+   "kind": "company",
+   "date": "2023-03-16",
+   "note": "슬라이드 60장 — 글자로 된 칸만 읽음(그림 속 숫자는 못 읽음)"
+  },
+  {
+   "n": 28,
+   "title": "김범수 · 당근마켓과 함께 성장하며 데이터 신뢰성 지켜내기 — 수군수군 데이터 엔지니어 밋업 1회",
+   "url": "https://speakerdeck.com/bskim/danggeunmakesgwa-hamgge-seongjanghamyeo-deiteo-sinroeseong-jikyeonaegi-sugunsugun-deiteo-enjinieo-miseob-1hoe",
+   "kind": "company",
+   "date": "2023-01"
+  },
+  {
+   "n": 29,
+   "title": "당근 테크 블로그 · DBT와 Airflow 도입하며 마주한 7가지 문제들 (데이터 가치화팀)",
+   "url": "https://medium.com/daangn/61250a9904ab",
+   "kind": "company",
+   "date": "2024-01-29",
+   "note": "Medium 본문은 403 — 제목·목차(프로젝트 구조·모델 저장·Airflow 연동·개발/테스트·파이프라인 의존성·국가별 모델·백필)만 검색 결과로 확인"
+  },
+  {
+   "n": 30,
+   "title": "1주 1개 실험하는 프로덕트 팀이 되는 여정",
+   "url": "https://eopla.net/magazines/9046",
+   "kind": "company",
+   "date": "2023-12-07",
+   "note": "당근 팀 블로그 글을 EO 가 다시 실은 것"
+  },
+  {
+   "n": 31,
+   "title": "Kimball Group · Dimensional Modeling Techniques (Type 2: 새 줄 더하기)",
+   "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-2/",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "dbt 문서 · Data tests",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "dbt 문서 · Source freshness",
+   "url": "https://docs.getdbt.com/docs/deploy/source-freshness",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "DataHub 문서 · Features",
+   "url": "https://docs.datahub.com/docs/features",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "A/B 테스트 — 신뢰할 수 있는 온라인 종합 대조 실험 (코하비·탕·쉬, 에이콘)",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296254070",
+   "kind": "reference",
+   "date": "2022"
+  },
+  {
+   "n": 36,
+   "title": "Apache Airflow 문서 · Best Practices",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "dbt 문서 · About MetricFlow (지표를 한 번 정의해 여러 곳에서 쓰기)",
+   "url": "https://docs.getdbt.com/docs/build/about-metricflow",
+   "kind": "reference"
   }
  ],
  "caveat": "회사 글의 숫자는 2025년 2월 기준이고 발표는 2025년 것이라 지금은 달라졌을 수 있습니다. 추천 엔진 내부 구조와 데이터 품질 모니터링의 구체 지표는 공개되지 않아, 공식 문서(TFDV·Feast·Google 추천 강의)로 \"보통 이런 것\"을 보였습니다.",
@@ -956,6 +1387,138 @@
    "level": "실무",
    "url": "https://cloud.google.com/vertex-ai/docs/pipelines/introduction",
    "why": "우대④ — 당근 학습 파이프라인이 도는 곳. Kubeflow·TFX 파이프라인을 서버리스로 실행하는 구조."
+  },
+  {
+   "id": "bskim-deck",
+   "title": "당근마켓과 함께 성장하며 데이터 신뢰성 지켜내기 (발표 자료)",
+   "by": "김범수 · 당근마켓 데이터 가치화 팀 · 2023",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://speakerdeck.com/bskim/danggeunmakesgwa-hamgge-seongjanghamyeo-deiteo-sinroeseong-jikyeonaegi-gugeul-keulraudeu-webina-2023-dot-03",
+   "why": "이 팀이 직접 정리한 문제 목록 — 데이터를 못 찾는다·지표 값이 볼 때마다 다르다 — 와 DataHub·이벤트 스키마·지표 플랫폼·실험 플랫폼. 업무 다섯 줄의 출발점."
+  },
+  {
+   "id": "daangn-dbt-post",
+   "title": "DBT와 Airflow 도입하며 마주한 7가지 문제들",
+   "by": "당근 데이터 가치화팀 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://medium.com/daangn/61250a9904ab",
+   "why": "우대 'Airflow·DBT' 줄 — 이 팀이 dbt 프로젝트 구조·백필·국가별 모델을 어떻게 정했는지. 면접 전에 꼭 읽는다."
+  },
+  {
+   "id": "kimball",
+   "title": "The Data Warehouse Toolkit (3판)",
+   "by": "Ralph Kimball · Margy Ross · Wiley · 2013",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/",
+   "why": "Fact·Dimension·한 줄 단위(grain)를 정하는 차원 모델링의 원전. 업무 첫 줄 '데이터 마트 설계'와 요건 '데이터 모델링'의 면접 답을 여기서 다진다."
+  },
+  {
+   "id": "kimball-type2",
+   "title": "Kimball 기법 — Type 2: 새 줄 더하기",
+   "by": "Kimball Group",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-2/",
+   "why": "사용자가 동네를 바꿨을 때 '그날의 동네'로 세는 이력 관리. 짧은 공식 글."
+  },
+  {
+   "id": "dbt-learn",
+   "title": "dbt Fundamentals (dbt Learn)",
+   "by": "dbt Labs",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.getdbt.com/dbt-learn",
+   "why": "모델·테스트·문서·계보를 무료 강의로 한 바퀴. 우대 'DBT' 줄의 가장 짧은 길."
+  },
+  {
+   "id": "dbt-tests",
+   "title": "dbt · Data tests",
+   "by": "dbt Labs 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "why": "unique·not_null·accepted_values·relationships 검사를 모델 옆에 적는 법. '자동화된 품질 체크' 줄."
+  },
+  {
+   "id": "dbt-freshness",
+   "title": "dbt · Source freshness",
+   "by": "dbt Labs 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.getdbt.com/docs/deploy/source-freshness",
+   "why": "원천 표가 제때 들어왔는지(신선도) 경고를 거는 법. 관측성 줄."
+  },
+  {
+   "id": "metricflow",
+   "title": "dbt · About MetricFlow",
+   "by": "dbt Labs 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.getdbt.com/docs/build/about-metricflow",
+   "why": "지표를 코드로 한 번 정의하고 여러 화면이 같은 계산을 쓰게 하는 방식. 당근 지표 플랫폼과 같은 생각을 공개 도구로 익힌다."
+  },
+  {
+   "id": "datahub-docs",
+   "title": "DataHub Documentation",
+   "by": "DataHub 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.datahub.com/docs/features",
+   "why": "검색·소유자·용어 사전·계보 — 데이터 카탈로그가 실제로 무슨 화면인지. 우대 'DataHub' 줄. 로컬에 띄워 보기 좋다."
+  },
+  {
+   "id": "airflow-book",
+   "title": "Apache Airflow 기반의 데이터 파이프라인",
+   "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+   "why": "DAG 의존·백필·재실행·멱등 작업을 한국어로. 우대 'Airflow' 줄."
+  },
+  {
+   "id": "airflow-bp",
+   "title": "Airflow Best Practices",
+   "by": "Apache Airflow 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html",
+   "why": "다시 돌려도 결과가 같은(멱등) 작업 — 백필이 잦은 마트 운영의 기본 규칙."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "A/B 테스트 — 신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 지음, 이기홍 · 김기영 옮김 · 에이콘",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296254070",
+   "why": "당근 발표가 참고서로 든 책의 한국어판. 실험 지표 정의·SRM·흔한 함정 — 업무 셋째 줄과 우대 'A/B 통계' 줄."
   }
  ],
  "study_path": [
@@ -1099,5 +1662,6 @@
   "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
   "near": "9호선 신논현역 앞 {추론}",
   "note": "공고 근무지 표기는 'SEOUL'이고, 주소는 당근 채용 사이트 하단의 회사 정보다 [7]. 팀 자리 층은 다를 수 있다 {추론}."
- }
+ },
+ "updated_at": "2026-11-25"
 }
