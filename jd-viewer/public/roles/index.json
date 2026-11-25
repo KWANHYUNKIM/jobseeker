@@ -636,6 +636,7 @@
   "wanted-316964": "ui2-ec-project-leader-japan",
   "wanted-390470": "visasq-data-platform-engineer-en",
   "wanted-390176": "visasq-data-platform-engineer",
+  "ats-greeting:xcena:235024": "xcena-compiler-engineer",
   "ats-greeting:xcena:237698": "xcena-cxl-product-engineer",
   "ats-greeting:xcena:237697": "xcena-hw-board",
   "ats-greeting:xcena:240539": "xcena-hw-sw-codesign-architect",
@@ -5989,6 +5990,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 31
+  },
+  {
+   "id": "xcena-compiler-engineer",
+   "company": "엑시나",
+   "role": "컴파일러 엔지니어",
+   "jobs": [
+    "ats-greeting:xcena:235024"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 22
   },
   {
    "id": "xcena-cxl-product-engineer",
