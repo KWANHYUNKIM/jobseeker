@@ -217,6 +217,7 @@
   "saramin-55436318": "megazone-product-build-engineering-lead",
   "jobkorea-50250360": "megazonecloud-ai-engineer",
   "jobkorea-50249295": "megazonecloud-security-solution-engineer",
+  "ats-greeting:musinsa:241118": "musinsa-product-engineer-partner-ads-growth",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
@@ -2334,6 +2335,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 35
+  },
+  {
+   "id": "musinsa-product-engineer-partner-ads-growth",
+   "company": "무신사",
+   "role": "Product Engineer (Partner Ads & Growth)",
+   "jobs": [
+    "ats-greeting:musinsa:241118"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 33
   },
   {
    "id": "nhn-japan-frontend",

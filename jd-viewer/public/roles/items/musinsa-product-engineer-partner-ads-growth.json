@@ -1,0 +1,1084 @@
+{
+ "id": "musinsa-product-engineer-partner-ads-growth",
+ "company": "무신사",
+ "role": "Product Engineer (Partner Ads & Growth)",
+ "team": "파트너그로스팀",
+ "jobs": [
+  "ats-greeting:musinsa:241118"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사의 **광고·Affiliate 플랫폼 서버** — 광고 이벤트 수집, 랭킹·옥션, 예산 pacing, 과금·정산, 제휴 수수료 — 를 만듭니다.[1]",
+  "env": "Java·Kotlin · Spring · JPA · MySQL · Kafka · Redis · AWS · Kubernetes 위에서, AI 코딩 에이전트를 적극 쓰는 Product Engineer 직군으로 일합니다.[1]",
+  "oneline": "광고 돈이 오가는 서버. 일반 백엔드보다 **이벤트 정합성·과금 계산·예산 제어**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "광고 및 Affiliate 플랫폼의 백엔드 시스템을 Java·Kotlin, Spring, JPA 기반으로 설계하고 개발합니다.",
+   "short": "광고·제휴 서비스의 서버를 Java/Kotlin·Spring·JPA 로 만들고 키우는 일 — 이 자리의 바탕 요건.",
+   "why": "파트너그로스팀은 광고·Affiliate·인플루언서 마케팅 서비스를 만든다고 소개합니다.[1] 무신사는 2025년 입점 브랜드가 플랫폼 안에서 상품 노출을 직접 설계하는 상품 광고를 내놓았고[3], 그 뒤에 서버가 있습니다.",
+   "actually": {
+    "items": [
+     "광고 요청 API · 캠페인·예산·과금 단위(CPC/CPM/CPA) 데이터 모델 · 정산 배치 같은 서버가 한 덩어리로 이어진다. {추론}",
+     "JPA 는 캠페인·광고주·정산 같은 **관계가 많은 관리 데이터**에 쓰이고, 초당 수천 건 이벤트는 다른 길(Kafka·Redis)로 처리하는 구성이 흔하다. {추론}"
+    ],
+    "intro": "회사가 공개한 광고 설계·기술 글은 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "스택은 공고가 이미 정했습니다(Java·Kotlin·Spring·JPA·MySQL).[1] 도메인 규칙(과금·정산 규칙)은 PM·사업이 정하고 개발자는 그 규칙을 **틀리지 않는 서버와 표**로 옮깁니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "spring-core-int",
+    "jpa-basic-int",
+    "jpa-orm-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "광고 요청, 노출, 클릭, 전환 등 대규모 이벤트를 안정적으로 수집·처리하고 데이터 정합성을 관리합니다.",
+   "short": "광고가 보인 것·눌린 것·산 것을 빠짐없이, 한 번씩만 받아 쌓는 일.",
+   "why": "광고 돈은 노출·클릭·전환 건수에서 나옵니다. 한 건이 빠지면 광고주는 덜 내고, 두 번 세면 더 냅니다. 공고도 '데이터 정합성'을 같은 줄에 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "이벤트마다 고유 번호(event_id)를 붙이고 같은 번호는 한 번만 기록한다(멱등 처리).[13]",
+     "Kafka 는 전달을 '최소 한 번'으로 두면 재전송이 생기므로 받는 쪽 중복 제거가 짝이다.[12]",
+     "요청·노출·클릭·전환은 서로 다른 시각에 들어오므로 광고 요청 번호로 이어 붙인다. {추론}"
+    ],
+    "intro": "작은 숫자 예입니다."
+   },
+   "examples": [
+    {
+     "title": "재전송이 섞인 클릭 5건 → 3건",
+     "body": "같은 event_id 가 다시 와도 한 번만 센다(직접 돌린 출력, 가상 값).[13]",
+     "lang": "python",
+     "code": "import sqlite3\ndb=sqlite3.connect(':memory:')\ndb.execute('create table click(event_id text primary key, ad text, cost int)')\nevs=[('e1','A',120),('e2','A',120),('e1','A',120),('e3','B',90),('e2','A',120)]\nfor e in evs: db.execute('insert or ignore into click values(?,?,?)',e)\nprint(db.execute('select ad,count(*),sum(cost) from click group by ad').fetchall(),'받은',len(evs),'건')\n# [('A', 2, 240), ('B', 1, 90)] 받은 5 건"
+    }
+   ],
+   "how_far": "건수 규칙(무엇을 1회 클릭으로 보나)은 사업·정산 쪽이 정하고, 개발자는 **같은 이벤트가 다시 와도 한 번만** 세는 장치를 맡습니다. {추론}",
+   "refs": [
+    1,
+    12,
+    13
+   ],
+   "study": [
+    "kafka-int",
+    "ddia",
+    "stripe-idem"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "eCPM, CTR, CVR 등 광고 성과 지표를 활용한 광고 랭킹 및 옥션 로직을 개발하고 개선합니다.",
+   "short": "어떤 광고를 먼저 보여줄지 순서를 정하는 계산 — 입찰가와 클릭될 확률을 곱해 비교한다.",
+   "why": "한 자리에 광고가 여럿 붙으면 누굴 보여줄지 정해야 합니다. 입찰만 높은 광고가 이기면 안 눌리는 자리가 되므로, 눌릴 확률(CTR)과 곱한 값(eCPM, 노출 천 번당 기대 수익)으로 줄 세우는 것이 널리 알려진 방식입니다.[10]",
+   "actually": {
+    "items": [
+     "후보 광고를 모은다 → 광고마다 입찰가 × 예상 CTR × 1000 으로 eCPM 을 낸다 → 큰 순으로 줄 세운다.",
+     "과금은 '다음 순위를 간신히 이기는 값'만 받는 두 번째 가격 방식이 흔하다.[10]",
+     "CVR(구매 전환율)을 곱하면 클릭 단가가 아니라 구매 기대값 기준으로 세울 수 있다. {추론}"
+    ],
+    "intro": "표준 GSP 계열 경매의 모양이며 무신사가 이대로 하는지는 공개되지 않았습니다.[10]"
+   },
+   "examples": [
+    {
+     "title": "eCPM 으로 줄 세우고 다음 순위 기준으로 과금",
+     "body": "입찰 800원인 A 보다 입찰 500원이어도 CTR 5% 인 B 가 이긴다. B 의 클릭당 과금은 A 의 eCPM 을 간신히 넘는 값 320원(직접 돌린 출력, 가상 값).[10]",
+     "lang": "python",
+     "code": "ads=[('A',800,0.020),('B',500,0.050),('C',1200,0.010)]\nr=sorted(ads,key=lambda a:-a[1]*a[2]*1000)\nfor a in r: print(a[0],'eCPM',a[1]*a[2]*1000)\nw,n=r[0],r[1]\nprint('1등',w[0],'클릭당 과금',round(n[1]*n[2]/w[2],1),'원')\n# B 25000 / A 16000 / C 12000 → 1등 B 320.0원"
+    }
+   ],
+   "how_far": "순위 식과 가중치는 광고 사업·데이터팀이 정하고, 개발자는 **같은 입력이면 같은 순서**를 내는 서버와 실험(A/B) 장치를 맡습니다. 모델을 직접 만드는 자리는 아닙니다. {추론}",
+   "refs": [
+    1,
+    10
+   ],
+   "study": [
+    "gsp-paper",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "광고주의 예산이 목표 기간과 조건에 맞게 집행되도록 budget pacing과 예산 제어 로직을 개발합니다.",
+   "short": "광고주가 정한 하루·기간 예산을 아침에 다 쓰지 않고 시간에 맞춰 나눠 쓰게 하는 일.",
+   "why": "예산이 오전에 바닥나면 트래픽이 많은 저녁에 광고가 사라집니다. 그래서 시간대 트래픽에 맞춰 쓸 수 있는 누적 한도를 잡는 pacing 이 광고 서버의 흔한 부품입니다.[11]",
+   "actually": {
+    "items": [
+     "시간대별 예상 트래픽 비율로 하루 예산을 나눠 누적 한도 곡선을 만든다.",
+     "지금까지 쓴 돈이 곡선보다 앞서면 노출 확률을 낮추고, 뒤처지면 높인다.[11]",
+     "집행 중 지출은 여러 서버가 동시에 올리므로 Redis 같은 곳의 원자적 증가 연산으로 모은다. {추론}"
+    ],
+    "intro": "기법은 공개 논문의 것이며 무신사 방식은 공개되지 않았습니다.[11]"
+   },
+   "examples": [
+    {
+     "title": "트래픽 비례 누적 한도",
+     "body": "하루 24만원을 시간대 트래픽 비율로 나누면 8시까지 한도는 31,875원. 이미 6만원을 썼으면 쉰다(직접 돌린 출력, 가상 값).[11]",
+     "lang": "python",
+     "code": "traffic=[1,1,1,1,1,2,4,6,8,8,7,6,6,6,6,6,6,7,8,9,10,9,6,3]\nbudget,tot,acc,limits=240000,sum(traffic),0,[]\nfor t in traffic:\n    acc+=t; limits.append(round(budget*acc/tot))\nprint(limits[8],limits[11])  # 46875 86250\nprint('쉬기' if 60000>=limits[7] else '집행')  # 쉬기"
+    }
+   ],
+   "how_far": "목표 속도(균등/트래픽 비례)는 광고 사업이 정하고, 개발자는 한도를 계산해 **지출이 한도를 넘으면 노출을 줄이는** 제어 루프를 맡습니다. {추론}",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "smart-pacing",
+    "redis-doc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CPC, CPM, CPA 등 과금 모델을 기반으로 광고 과금, 매출 집계 및 파트너 정산 시스템을 개발하고 고도화합니다.",
+   "short": "클릭·노출·전환 건수에 단가를 곱해 광고주에게 청구할 돈과 파트너에게 줄 돈을 계산하는 일.",
+   "why": "광고는 CPC(클릭당)·CPM(천 번 노출당)·CPA(행동당) 처럼 기준이 달라 같은 이벤트도 청구가 다릅니다.[21] 돈이 오가는 자리라 소수점·환불·월 마감 처리가 중요합니다.",
+   "actually": {
+    "items": [
+     "과금 모델별 단위(클릭·노출·전환)로 일별 집계를 만들고 단가를 곱한다.",
+     "돈은 float 대신 정수(원)·Decimal 로 계산한다.",
+     "정산은 월 마감 뒤 수정이 필요해 '그날 숫자'와 '확정 숫자'를 구분해 쌓는다. {추론}"
+    ],
+    "intro": "무신사 정산 구조는 공개되지 않았습니다.[1]"
+   },
+   "how_far": "단가표와 정산 주기는 사업·재무가 정하고, 개발자는 마감 시점의 숫자를 **다시 돌려도 같게** 만드는 배치와 대조 화면을 맡습니다. {추론}",
+   "refs": [
+    1,
+    21
+   ],
+   "study": [
+    "ddia",
+    "spring-db-int"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Affiliate 트래킹, 어트리뷰션, 수수료 계산 등 광고·마케팅 성과 측정 로직을 개선합니다.",
+   "short": "제휴 링크로 들어온 구매가 어느 인플루언서 덕인지 가려 수수료를 계산하는 일.",
+   "why": "팀 소개가 Affiliate·인플루언서 마케팅 서비스를 따로 적었습니다.[1] 한 사람이 여러 링크를 눌렀을 수 있어 '누구 몫인가'(어트리뷰션) 규칙이 필요합니다.",
+   "actually": {
+    "items": [
+     "클릭 때 링크 번호를 쿠키·파라미터에 남기고 주문 때 이어 붙인다.",
+     "여러 클릭이면 마지막 클릭 같은 규칙으로 하나를 고른다.",
+     "환불·취소는 수수료도 비례해 줄인다."
+    ],
+    "intro": "가상의 규칙 예시입니다."
+   },
+   "examples": [
+    {
+     "title": "마지막 클릭 7일 창 + 환불",
+     "body": "11/1 클릭은 7일을 넘어 빠지고 11/5 클릭이 귀속. 10만원 5% = 5천원, 3만원 환불 뒤 3,500원(직접 돌린 출력, 가상 값).",
+     "lang": "python",
+     "code": "from datetime import datetime as D, timedelta as T\nclicks=[('inflA',D(2026,11,1,10)),('inflB',D(2026,11,5,9))]\norder=D(2026,11,8,12)\nok=[c for c in clicks if order-c[1]<=T(days=7)]\nprint(max(ok,key=lambda c:c[1])[0], round(100000*0.05), round(70000*0.05))\n# inflB 5000 3500"
+    }
+   ],
+   "how_far": "귀속 기간(7일 같은 창)·수수료율은 사업이 정하고, 개발자는 규칙대로 **클릭 기록과 주문을 이어 붙이고 환불 때 되돌립니다.** {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddia",
+    "stripe-idem"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AWS 기반 환경에서 Kafka, Redis, Kubernetes 등을 활용해 낮은 레이턴시와 높은 확장성을 갖춘 분산 시스템을 구축합니다.",
+   "short": "트래픽이 몰려도 빠르게 응답하고 서버를 늘릴 수 있게 Kafka·Redis·쿠버네티스로 짜는 일.",
+   "why": "광고 요청은 사용자가 화면을 열 때마다 즉시 답해야 하고 이벤트는 쏟아집니다. 공고는 AWS 에서 Kafka·Redis·Kubernetes 를 쓴다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "광고 응답은 Redis 같은 메모리 저장소에서 후보를 읽어 짧게 끝낸다. {추론}",
+     "이벤트는 Kafka 로 받아 나중에 집계해 응답 경로를 가볍게 한다.[12]",
+     "서버는 쿠버네티스에서 부하에 따라 개수를 늘린다.[18]"
+    ],
+    "intro": "회사가 공개한 광고 설계·기술 글은 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "서버를 얼마나 늘리나·응답 목표는 팀의 운영 기준이 정하고, 개발자는 **병목이 어디인지 재서 구조로 푸는** 수준입니다. {추론}",
+   "refs": [
+    1,
+    12,
+    18,
+    19
+   ],
+   "study": [
+    "kafka-int",
+    "k8s-int",
+    "redis-doc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시스템의 성능과 운영 지표를 모니터링하고 장애, 중복 집계, 부정 트래픽 및 데이터 불일치 문제를 해결합니다.",
+   "short": "지표를 보다가 장애·중복 집계·가짜 클릭·숫자 불일치를 찾아 고치는 일.",
+   "why": "광고는 가짜 클릭(무효 트래픽)이 곧 돈 낭비라서 업계 기준이 걸러내는 방법을 따로 정리해 두었습니다.[14] 공고도 부정 트래픽·불일치를 직접 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "같은 사용자·기기가 짧은 시간에 반복 클릭하는 패턴을 센다.[14]",
+     "노출·클릭·집계 표의 합계가 서로 맞는지 매일 대조한다.",
+     "알림 기준을 정하고 원인을 로그로 추적한다. {추론}"
+    ],
+    "intro": "회사가 공개한 광고 설계·기술 글은 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다."
+   },
+   "how_far": "무엇을 부정으로 볼지 기준은 사업·정책이 정하고, 개발자는 **이상 징후를 지표로 보이게 하고 걸러내는 규칙을 코드로** 옮깁니다. {추론}",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "mrc-ivt",
+    "release-it"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "제품, 데이터 및 비즈니스 조직과 협업하여 광고 성과와 운영 효율을 개선합니다.",
+   "short": "제품·데이터·사업 사람들과 같이 광고 성과와 운영 효율을 올리는 일.",
+   "why": "광고는 서버만의 일이 아니라 지표를 보는 데이터팀·광고주를 만나는 사업팀과 맞물립니다. 팀 소개도 개발자 간 소통과 협업을 강조합니다.[1]",
+   "how_far": "누가 우선순위를 정하나 — PM·사업이 정하고, 개발자는 **기술로 가능한 것과 비용을 말해** 줍니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "PM·디자이너 및 유관 조직과 함께 해결할 고객 문제와 우선순위를 정의하고, 모호한 요구는 측정 가능한 가설로 바꾸며, 출시 이후 지표로 성과를 확인해 다음 개선으로 연결합니다.",
+   "short": "모호한 요구를 측정할 수 있는 가설로 바꾸고 출시 뒤 지표로 확인하는 일(Product Engineer 의 핵심).",
+   "why": "무신사는 서버·웹·모바일 엔지니어를 Product Engineer 하나로 묶고, 출시 후 지표로 결과를 확인해 다음 개선으로 잇는 데까지 PM 과 참여한다고 합니다.[1]",
+   "actually": {
+    "items": [
+     "문제 → 가설 → 바꿀 것 → 확인할 지표 순으로 짧은 문서를 쓴다.",
+     "출시 전에 어떤 숫자가 나오면 성공/실패로 볼지 정해 둔다."
+    ]
+   },
+   "how_far": "'광고 클릭률을 올린다' 같은 말을 **'이 변경으로 CTR 이 N% 오른다'** 처럼 확인할 숫자로 바꾸는 수준. 실험 설계 전문가가 될 필요는 없습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 코딩 에이전트를 설계·구현·테스트·코드 리뷰·운영 전반에 적극 활용하고, 그 경험을 팀과 나눠 개발 생산성과 품질을 높이는 AI 기반 개발 방식을 조직에 만들어 갑니다.",
+   "short": "AI 코딩 에이전트를 설계·구현·테스트·리뷰·운영에 쓰고 팀에 퍼뜨리는 일.",
+   "why": "공고가 Codex·Claude Code 를 이름으로 적었습니다.[1] 결과물의 품질은 쓰는 사람이 직접 검증하고 책임진다는 문장이 같이 있습니다.[1]",
+   "actually": {
+    "items": [
+     "작은 작업을 시키고 테스트로 확인한다.",
+     "자주 쓰는 지시를 문서로 남겨 팀이 같이 쓴다. {추론}"
+    ]
+   },
+   "how_far": "도구 사용 자체보다 **AI 가 낸 코드를 테스트·리뷰로 확인하는 습관**과 팀에 쓰는 법을 나누는 것입니다.[1]",
+   "refs": [
+    1,
+    17
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java 또는 Kotlin을 사용한 Spring 기반 소프트웨어 개발 경력 5년 이상이거나 이에 준하는 역량을 갖추신 분",
+   "short": "Java/Kotlin·Spring 서버 개발 5년 안팎의 경력이 있는지 본다.",
+   "why": "자리의 바탕이고 광고 코어를 맡기려면 서버를 혼자 운영해 본 연차가 필요하다는 뜻입니다. '이에 준하는 역량'이라 연차는 절대 기준이 아닙니다.[1]",
+   "how_far": "연차 숫자보다 **트랜잭션·JPA·동시성 문제를 직접 겪고 푼 경험**을 면접에서 말할 수 있는 수준.",
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "spring-core-int",
+    "jpa-orm-book",
+    "spring-data-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "광고 플랫폼 또는 광고와 유사한 실시간 랭킹, 동적 가격 결정, 예산 제어, 과금·정산 등 코어 시스템을 설계하고 운영한 경험이 있으신 분",
+   "short": "광고나 비슷한 실시간 랭킹·가격·예산·과금 시스템을 설계하고 운영해 본 경험.",
+   "why": "공고가 '코어 시스템'이라 부르는 부분이라 광고 경험이 없어도 비슷한 구조(쿠폰·포인트 정산·동적 가격)가 대신 됩니다.[1]",
+   "how_far": "광고 용어를 아는 것보다 **돈이 걸린 계산을 틀리지 않게 운영한 이야기**가 중요합니다. {추론}",
+   "refs": [
+    1,
+    10
+   ],
+   "study": [
+    "gsp-paper",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "광고 랭킹·옥션, eCPM 등 성과 지표 기반 로직, 광고 과금·정산, budget pacing, 광고 이벤트 트래킹·어트리뷰션 중 하나 이상의 영역을 직접 설계하거나 고도화한 경험이 있으신 분",
+   "short": "랭킹·eCPM, 과금·정산, pacing, 트래킹 중 하나 이상을 직접 설계하거나 고도화한 경험.",
+   "why": "'중 하나 이상'이라 전부를 요구하지 않습니다.[1] 위 업무 ②~⑥ 중 한 칸을 깊게 파본 사람을 찾습니다.",
+   "how_far": "한 영역을 골라 **왜 그렇게 설계했고 어떤 숫자가 바뀌었는지** 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "gsp-paper",
+    "smart-pacing"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 트래픽 또는 이벤트 데이터를 처리하는 분산 시스템과 이벤트 기반 아키텍처(EDA)에 대한 깊은 이해가 있으신 분",
+   "short": "대량 이벤트를 처리하는 분산 시스템과 이벤트 기반 아키텍처(EDA)를 깊이 이해하는지.",
+   "why": "광고 이벤트가 Kafka 로 흐르는 구조이기 때문입니다. 순서·중복·유실 문제를 알아야 합니다.[1][12]",
+   "how_far": "'깊은 이해'는 **파티션·컨슈머 그룹·재처리·멱등성**을 상황에 맞게 고르는 정도. Kafka 를 직접 운영했는지는 공고에 없습니다. {추론}",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "kafka-int",
+    "ddia",
+    "kafka-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터 정합성과 안정성이 중요한 운영 시스템에서 모니터링, 장애 대응 및 문제 해결을 수행한 경험이 있으신 분",
+   "short": "정합성·안정성이 중요한 운영 시스템에서 모니터링·장애 대응을 해 본 경험.",
+   "why": "돈이 걸린 시스템이라 장애·불일치가 곧 금액 오류입니다.[1]",
+   "how_far": "장애 한 건을 **원인 → 임시 조치 → 재발 방지**로 풀어 말할 수 있으면 충분합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "release-it",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "비즈니스 요구사항을 기술적 과제로 구체화하고 설계부터 개발, 배포, 운영까지 문제 해결을 주도할 수 있으신 분",
+   "short": "요구사항을 기술 과제로 구체화해 설계부터 운영까지 끌고 가는 힘.",
+   "why": "Product Engineer 가 설계·개발·배포·운영을 한 사람이 이어 보는 직군이기 때문입니다.[1]",
+   "how_far": "혼자 다 한다는 뜻보다 **끝까지 책임지고 필요한 사람을 불러 모으는** 것입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "효과적인 의사소통을 바탕으로 제품, 데이터, 비즈니스 등 여러 직군과 원활하게 협업할 수 있으신 분",
+   "short": "제품·데이터·사업과 원활히 소통할 수 있는지.",
+   "why": "광고는 직군이 맞물려야 하는 일이라 소통 항목이 따로 있습니다.[1]",
+   "how_far": "전문 용어를 비개발자에게 풀어 설명한 사례 하나면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "구현에 머무르지 않고 고객 문제를 함께 정의하고, 출시 이후의 지표로 결과를 확인하며 일해 오신 분",
+   "short": "고객 문제를 같이 정의하고 출시 뒤 지표로 결과를 확인해 본 사람.",
+   "why": "업무 ⑩의 가설·지표 방식이 이미 몸에 밴 사람을 원한다는 뜻입니다.[1]",
+   "how_far": "내가 만든 기능의 **전·후 지표**를 이야기할 수 있는 수준.",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "기술적 의사결정을 트레이드오프와 함께 문서로 정리하고, 이를 비즈니스 맥락에서 설명할 수 있는 분",
+   "short": "기술 결정을 트레이드오프와 함께 문서로 쓰고 사업 맥락에서 설명하는 능력.",
+   "why": "지원 서류 안내가 문제 정의·전략·성과를 쓰게 합니다.[1] 문서가 곧 면접 자료입니다.",
+   "how_far": "'A 대신 B 를 골랐다 — 이유, 포기한 것'을 한 쪽으로 쓴 글 한두 편이면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 코딩 에이전트(Codex, Claude Code 등)를 실무에 적극 활용하고, 그 결과물의 품질을 스스로 검증하고 책임질 수 있는 분",
+   "short": "AI 코딩 에이전트를 실무에 쓰고 결과를 직접 검증·책임지는 사람.",
+   "why": "지원서에도 AI 로 푼 사례와 '결과를 어떻게 검증했는지'를 쓰라고 합니다.[1]",
+   "how_far": "사용 사례 하나 + **내가 테스트·리뷰로 확인한 방법**이면 충분합니다.[1]",
+   "refs": [
+    1,
+    17
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "상품 광고 또는 커머스 광고 플랫폼을 개발하고 운영한 경험이 있으신 분",
+   "short": "상품·커머스 광고 플랫폼을 만들어 운영해 본 경험.",
+   "why": "무신사 상품 광고는 입점 브랜드가 노출을 직접 설계하는 구조입니다.[3]",
+   "how_far": "있으면 가산점. 없으면 비슷한 정산·노출 시스템 경험으로 대신합니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "CPC, CPM, CPA 등 광고 과금 모델과 광고 생태계에 대한 이해가 있으신 분",
+   "short": "CPC·CPM·CPA 과금 모델과 광고 생태계를 이해하는지.",
+   "why": "과금 단위가 서버 설계를 갈라서입니다.[21]",
+   "how_far": "세 용어의 차이와 어느 쪽이 광고주·매체에 유리한지를 설명할 수 있는 정도.",
+   "refs": [
+    21
+   ],
+   "study": [
+    "google-ads"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "실시간 광고 옥션, eCPM 기반 랭킹 또는 budget pacing 로직을 개발하거나 개선한 경험이 있으신 분",
+   "short": "실시간 경매·eCPM 랭킹·pacing 을 개발·개선한 경험.",
+   "why": "업무 ③④와 같은 영역입니다.[10][11]",
+   "how_far": "직접 만든 경험이 없다면 위 코드 예시를 따라 작게 구현해 보는 것으로 시작합니다. {추론}",
+   "refs": [
+    10,
+    11
+   ],
+   "study": [
+    "gsp-paper",
+    "smart-pacing"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Affiliate 트래킹, 어트리뷰션, 수수료 계산, 광고 과금 또는 파트너 정산 시스템을 개발한 경험이 있으신 분",
+   "short": "Affiliate 트래킹·어트리뷰션·수수료·정산 시스템 경험.",
+   "why": "업무 ⑤⑥과 같은 영역입니다.[1]",
+   "how_far": "귀속 규칙과 환불 되돌림을 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddia"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "부정 트래픽 탐지, 중복 집계 방지 또는 광고 데이터 정합성 문제를 해결한 경험이 있으신 분",
+   "short": "부정 트래픽·중복 집계·데이터 정합성 문제를 푼 경험.",
+   "why": "업무 ②⑧과 같은 영역입니다.[14]",
+   "how_far": "무엇을 어떻게 걸러 얼마나 줄였는지 숫자 하나.",
+   "refs": [
+    14
+   ],
+   "study": [
+    "mrc-ivt",
+    "stripe-idem"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kafka, Apache Spark 등을 활용해 대규모 로그나 스트리밍 데이터를 처리한 경험이 있으신 분",
+   "short": "Kafka·Spark 로 대규모 로그·스트림을 처리한 경험.",
+   "why": "이벤트 집계에 Kafka 로 받고 Spark 로 모으는 구성이 흔합니다.[12][20]",
+   "how_far": "스파크는 우대라 필수는 아닙니다. 작은 스트리밍 집계를 한 번 돌려 본 정도.",
+   "refs": [
+    12,
+    20
+   ],
+   "study": [
+    "kafka-int",
+    "spark-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS 환경에서 Docker, Kubernetes 등 컨테이너 및 오케스트레이션 도구를 활용한 경험이 있으신 분",
+   "short": "AWS 에서 Docker·Kubernetes 로 컨테이너를 다룬 경험.",
+   "why": "배포 환경이 AWS·k8s 라고 적혀 있습니다.[1]",
+   "how_far": "서비스를 컨테이너로 말아 배포하고 로그·재시작을 확인해 본 정도.",
+   "refs": [
+    1,
+    18
+   ],
+   "study": [
+    "k8s-int",
+    "docker-int"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 활용해 업무 생산성을 높이거나 제품 가치를 향상한 경험이 있으신 분",
+   "short": "AI 로 업무 생산성이나 제품 가치를 높인 경험.",
+   "why": "공고 전반에 AI 활용이 반복됩니다.[1]",
+   "how_far": "사례 하나와 효과 숫자.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "비즈니스 KPI를 기술로 개선하고 수치로 증명해 본 경험이 있으신 분",
+   "short": "비즈니스 KPI 를 기술로 개선하고 수치로 증명한 경험.",
+   "why": "Product Engineer 가 지표로 성과를 확인하는 직군이기 때문입니다.[1]",
+   "how_far": "전·후 숫자 한 쌍.",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "가설 수립 → 실험 → 데이터 검증을 거쳐 제품 의사결정에 참여해 본 경험이 있으신 분",
+   "short": "가설 → 실험 → 데이터 검증으로 제품 결정에 참여한 경험.",
+   "why": "업무 ⑩과 같은 방식입니다.[1]",
+   "how_far": "A/B 실험이나 비슷한 비교를 한 번이라도.",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 개발 프로세스에 도입해 팀 단위 생산성이나 품질을 개선한 경험이 있으신 분",
+   "short": "AI 를 개발 프로세스에 도입해 팀 단위 생산성·품질을 개선한 경험.",
+   "why": "업무 ⑪을 이미 해 본 사람입니다.[1]",
+   "how_far": "팀 규칙·템플릿·리뷰 방식으로 남긴 것.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 활용해 클라이언트 밖의 영역(서버 API, 데이터 파이프라인 등)까지 직접 문제를 풀어 본 경험이 있으신 분",
+   "short": "AI 로 클라이언트 밖(서버 API·데이터 파이프라인)까지 직접 풀어 본 경험.",
+   "why": "Product Engineer 가 전문 영역 밖으로 범위를 넓히는 직군이라서입니다.[1]",
+   "how_far": "프론트 출신이 서버 API 를 AI 와 만들어 본 것 같은 사례.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "spring-core-int",
+   "title": "스프링 핵심 원리 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/spring-core",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "Spring 기반 서버 요건의 바닥 — 빈·의존관계 주입."
+  },
+  {
+   "id": "jpa-basic-int",
+   "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/jpa-basic",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "JPA 가 만드는 SQL 을 직접 보며 캠페인·정산 모델을 짜는 감각."
+  },
+  {
+   "id": "jpa-orm-book",
+   "title": "자바 ORM 표준 JPA 프로그래밍",
+   "by": "김영한 · 에이콘출판사",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=자바+ORM+표준+JPA+프로그래밍",
+   "lang": "ko",
+   "level": "실무",
+   "why": "JPA 영속성·연관관계를 체계로 정리해 요건 1번의 JPA 부분을 채운다."
+  },
+  {
+   "id": "spring-data-doc",
+   "title": "Spring Data JPA Reference",
+   "by": "Spring 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "저장소 인터페이스·쿼리 메서드의 공식 설명."
+  },
+  {
+   "id": "spring-db-int",
+   "title": "스프링 DB 1편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/spring-db-1",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "트랜잭션 경계 — 정산 배치가 한 번에 맞게 돌게 하는 바탕."
+  },
+  {
+   "id": "kafka-int",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/kafka",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "보냈다는 것과 처리됐다는 것 사이 — 중복·재처리를 직접 보는 요건 ④ 대비."
+  },
+  {
+   "id": "kafka-guide",
+   "title": "카프카 핵심 가이드",
+   "by": "한빛미디어",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=카프카+핵심+가이드",
+   "lang": "ko",
+   "level": "심화",
+   "why": "프로듀서·컨슈머·전달 보장 의미를 깊게 — EDA 이해 요건."
+  },
+  {
+   "id": "ddia",
+   "title": "Designing Data-Intensive Applications",
+   "by": "Martin Kleppmann · O'Reilly, 2017",
+   "kind": "book",
+   "url": "https://dataintensive.net/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "복제·로그·스트림·정합성의 기본 틀 — 정합성·EDA 요건 전반."
+  },
+  {
+   "id": "stripe-idem",
+   "title": "Idempotent requests",
+   "by": "Stripe API 문서",
+   "kind": "doc",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "같은 요청이 두 번 와도 한 번만 처리하는 방식의 공개 설명 — 중복 집계 방지."
+  },
+  {
+   "id": "gsp-paper",
+   "title": "Internet Advertising and the Generalized Second-Price Auction",
+   "by": "Edelman·Ostrovsky·Schwarz · American Economic Review, 2007",
+   "kind": "doc",
+   "url": "https://doi.org/10.1257/aer.97.1.242",
+   "lang": "en",
+   "level": "심화",
+   "why": "검색·상품 광고 경매 방식의 원 논문 — 랭킹·옥션 요건."
+  },
+  {
+   "id": "smart-pacing",
+   "title": "Smart Pacing for Effective Online Ad Campaign Optimization",
+   "by": "Xu 외 · KDD 2015",
+   "kind": "doc",
+   "url": "https://doi.org/10.1145/2783258.2788615",
+   "lang": "en",
+   "level": "심화",
+   "why": "예산을 시간에 맞춰 쓰는 pacing 기법 — budget pacing 요건."
+  },
+  {
+   "id": "mrc-ivt",
+   "title": "Invalid Traffic Detection and Filtration Guidelines",
+   "by": "Media Rating Council",
+   "kind": "doc",
+   "url": "http://mediaratingcouncil.org/",
+   "lang": "en",
+   "level": "실무",
+   "why": "무효 트래픽 분류·걸러내는 업계 기준 — 부정 트래픽 요건."
+  },
+  {
+   "id": "redis-doc",
+   "title": "Redis Documentation",
+   "by": "Redis 공식",
+   "kind": "doc",
+   "url": "https://redis.io/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "원자적 증가 연산·만료 — 예산 지출·카운터에 쓰는 부분."
+  },
+  {
+   "id": "k8s-int",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/kubernetes",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "배포·재시작·확장을 kubectl 로 직접 본다."
+  },
+  {
+   "id": "docker-int",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/docker",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "컨테이너 이미지·실행의 기본."
+  },
+  {
+   "id": "spark-doc",
+   "title": "Structured Streaming Programming Guide",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "url": "https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "스트림 집계의 공식 설명 — 대규모 로그 처리 우대 요건."
+  },
+  {
+   "id": "release-it",
+   "title": "Release It! 2판",
+   "by": "Michael T. Nygard · Pragmatic Bookshelf, 2018",
+   "kind": "book",
+   "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "장애·타임아웃·회로 차단 같은 운영 안정성 패턴 — 장애 대응 요건."
+  },
+  {
+   "id": "google-ads",
+   "title": "Google Ads 도움말",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://support.google.com/google-ads",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "CPC·CPM·CPA 입찰·과금 용어를 공식 설명으로 확인."
+  },
+  {
+   "id": "claude-code-doc",
+   "title": "Claude Code 문서",
+   "by": "Anthropic",
+   "kind": "doc",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "코딩 에이전트가 실제로 무엇을 하는지·권한·검증 방법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "서버 바탕 다지기",
+   "time": "2주",
+   "goal": "Spring + JPA 로 캠페인·광고주 CRUD 를 만들고 SQL 로 확인한다",
+   "task": "캠페인(예산·기간·과금 방식) 표와 API 를 만들고 나가는 SQL 을 확인",
+   "resources": [
+    "spring-core-int",
+    "jpa-basic-int",
+    "spring-db-int"
+   ]
+  },
+  {
+   "title": "이벤트를 한 번만 세기",
+   "time": "2주",
+   "goal": "재전송이 섞여도 건수가 맞는 수집기를 만든다",
+   "task": "가상 클릭 이벤트 1만 건에 중복 20% 를 섞어 Kafka → DB 로 한 번씩만 쌓기",
+   "resources": [
+    "kafka-int",
+    "stripe-idem",
+    "ddia"
+   ]
+  },
+  {
+   "title": "랭킹과 pacing",
+   "time": "2주",
+   "goal": "eCPM 줄 세우기와 시간대 한도를 코드로 낸다",
+   "task": "광고 20개로 eCPM 순위·다음 순위 과금을 구현하고 일 예산 pacing 을 붙이기",
+   "resources": [
+    "gsp-paper",
+    "smart-pacing",
+    "redis-doc"
+   ]
+  },
+  {
+   "title": "정산·제휴 귀속",
+   "time": "1~2주",
+   "goal": "과금 집계·수수료·환불 되돌림을 틀림없이 계산한다",
+   "task": "클릭·주문·환불 가상 데이터로 월 정산표와 대조 쿼리 만들기",
+   "resources": [
+    "ddia",
+    "google-ads"
+   ]
+  },
+  {
+   "title": "운영과 AI 도구",
+   "time": "1~2주",
+   "goal": "컨테이너로 배포하고 지표·장애를 보며 AI 에이전트로 작업을 검증한다",
+   "task": "위 서비스를 Docker·k8s 로 띄우고 AI 에이전트로 테스트를 추가한 뒤 사람이 검증한 기록 남기기",
+   "resources": [
+    "k8s-int",
+    "docker-int",
+    "release-it",
+    "claude-code-doc"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "초봉 2,313만원 · 직원 평균 3,453만원(집계) — 원티드 표기 평균은 6,082만원으로 기준이 다르다. 공고에 연봉은 없고 '처우 협의'다.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아니라 회사 전체 값이며 연도 표기는 확인하지 못했다.[5]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계(사원 수 1,843명 표기).[5]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보의 표기. 위 값과 3천만원 가까이 달라 산출 방식·시점이 다른 것으로 보인다.[6]"
+   },
+   {
+    "label": "계열사 무신사리테일서비스 초임(MMC 경영자 후보)",
+    "value": "성과급 포함 4000만원 중반",
+    "basis": "보도 · 2026년",
+    "note": "특정 채용 프로그램의 숫자라 본사 개발직과 무관하다.[7]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시 평균 급여가 없습니다. 위 숫자는 모두 집계이고 **초봉이 아니라 경력직이 섞인 평균**이 많습니다. 공고는 '처우 협의' 단계를 두므로 5년 이상 경력은 협의로 정해집니다.[1]"
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "월 소정 근로시간 내 유연 근무, 코어타임 11~16시"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원, 복지카드 연동"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기 근속",
+    "detail": "근속 3년당 리프레시 휴가 7일, 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기마다 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 월 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "허먼 밀러 의자 등 프리미엄 업무 장비, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급"
+   }
+  ],
+  "note": "회사 채용 사이트 복지 페이지(2026-11 확인)와 이 공고의 기타사항.[1][2] '근무 장소·기간·시점에 따라 일부 변경될 수 있다'고 적혀 있다.[2]"
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 6분",
+  "note": "주소는 무신사 상품 페이지 하단 표기와 기업정보 사이트의 표기가 같은 것을 확인했다.[8] 성수 본사 이전과 도보 거리는 2022년 보도.[9] 이 공고에는 근무지 칸이 없고 채용 사이트의 근무지 목록은 성수 오피스·무신사스튜디오 동대문점·물류센터를 함께 적는다.[2]"
+ },
+ "fit": {
+  "good": [
+   "광고·정산·결제처럼 돈이 걸린 서버를 운영해 본 사람 {추론}",
+   "지표로 결과를 확인하는 방식이 몸에 밴 사람"
+  ],
+  "hard": [
+   "5년 이상의 Spring 서버 경력이 필요하다.[1]",
+   "회사가 광고 시스템을 직접 설명한 공개 자료를 찾지 못해 구조는 면접에서 직접 물어야 한다."
+  ]
+ },
+ "interview": [
+  {
+   "q": "같은 클릭 이벤트가 두 번 들어오면 어떻게 한 번만 세나요?",
+   "a": "중복 집계 방지가 공고에 직접 적혀 있다.[1][13]"
+  },
+  {
+   "q": "광고 예산이 오전에 다 소진되는 문제를 어떻게 막나요?",
+   "a": "budget pacing 업무 줄과 직결된다.[1][11]"
+  },
+  {
+   "q": "AI 가 낸 코드를 어떻게 검증했나요?",
+   "a": "공고가 검증 방법을 지원서에 쓰게 한다.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Product Engineer (Partner Ads & Growth)",
+   "url": "https://www.musinsacareers.com/ko/o/241118",
+   "kind": "posting",
+   "date": "2026-11"
+  },
+  {
+   "n": 2,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company"
+  },
+  {
+   "n": 3,
+   "title": "무신사, AI기반 상품 추천 서비스 도입… 입점 브랜드 광고비 무상 지원",
+   "url": "https://byline.network/2025/02/04_musinsa/",
+   "kind": "news",
+   "date": "2025-02-04",
+   "note": "검색 결과 요약으로 읽음"
+  },
+  {
+   "n": 4,
+   "title": "PB 제외 전체 입점 브랜드에 판매 수수료 1%씩 무상 포인트 (뉴데일리)",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2025/02/04/2025020400045.html",
+   "kind": "news",
+   "date": "2025-02-04"
+  },
+  {
+   "n": 5,
+   "title": "무신사 기업정보 — 자소설닷컴",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "페이지 직접 열람은 403 이라 검색 결과에 표기된 숫자를 옮겼다"
+  },
+  {
+   "n": 6,
+   "title": "무신사 — 원티드 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "검색 결과 표기를 옮김"
+  },
+  {
+   "n": 7,
+   "title": "\"초임 연봉 4000만원\" 무신사, 리테일 전문가 직접 키운다 (디지털데일리)",
+   "url": "https://www.ddaily.co.kr/page/view/2026032309325156962",
+   "kind": "news",
+   "date": "2026-03-23"
+  },
+  {
+   "n": 8,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company"
+  },
+  {
+   "n": 9,
+   "title": "무신사, 성수동 캠퍼스 N1 으로 본사 이전 (일간스포츠)",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09"
+  },
+  {
+   "n": 10,
+   "title": "Internet Advertising and the Generalized Second-Price Auction",
+   "url": "https://doi.org/10.1257/aer.97.1.242",
+   "kind": "reference",
+   "date": "2007"
+  },
+  {
+   "n": 11,
+   "title": "Smart Pacing for Effective Online Ad Campaign Optimization",
+   "url": "https://doi.org/10.1145/2783258.2788615",
+   "kind": "reference",
+   "date": "2015"
+  },
+  {
+   "n": 12,
+   "title": "Apache Kafka Documentation",
+   "url": "https://kafka.apache.org/documentation/",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Idempotent requests — Stripe",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Invalid Traffic Detection and Filtration Guidelines — MRC",
+   "url": "http://mediaratingcouncil.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Spring Data JPA Reference",
+   "url": "https://docs.spring.io/spring-data/jpa/reference/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Claude Code overview — Anthropic",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Kubernetes Documentation",
+   "url": "https://kubernetes.io/docs/home/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Redis Documentation",
+   "url": "https://redis.io/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Structured Streaming Programming Guide — Apache Spark",
+   "url": "https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Google Ads 도움말",
+   "url": "https://support.google.com/google-ads",
+   "kind": "reference",
+   "note": "CPC·CPM·CPA 용어의 공식 설명"
+  }
+ ],
+ "caveat": "2026-11-25 기준. 무신사가 광고 시스템 구조를 공개한 기술 글·발표는 찾지 못해(받은 영상 없음) 설계 설명은 같은 일을 하는 곳의 공개 문서에 기댔다. 연봉은 집계 사이트 표기를 옮긴 것이다."
+}
