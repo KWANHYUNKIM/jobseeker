@@ -320,6 +320,7 @@
   "ats-greeting:musinsa:245271": "musinsa-security-engineer-appsec-pentest",
   "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
+  "jobkorea-50361367": "nextsecurities-ai-governance-manager",
   "jobkorea-50361209": "nextsecurities-channel-backend",
   "saramin-55282490": "nextsecurities-channel-backend",
   "jobkorea-50357268": "nextsecurities-data-platform-engineer",
@@ -3273,6 +3274,16 @@
    "role": "보안기술팀장",
    "jobs": [
     "ats-greeting:musinsa:245270"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
+  },
+  {
+   "id": "nextsecurities-ai-governance-manager",
+   "company": "넥스트증권",
+   "role": "AI Governance Manager",
+   "jobs": [
+    "jobkorea-50361367"
    ],
    "researched_at": "2026-11-25",
    "lines": 20
