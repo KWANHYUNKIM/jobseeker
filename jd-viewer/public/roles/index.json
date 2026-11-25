@@ -363,6 +363,7 @@
   "saramin-55608279": "tossbank-oss-security-researcher",
   "ats-toss:group:8013755003": "tossbank-platform-po-data-ai",
   "ats-toss:group:4542935003": "tossbank-product-foundation-server",
+  "saramin-55669492": "tossbank-product-manager-llm",
   "ats-toss:group:4076109003": "tossbank-product-server",
   "saramin-55608347": "tossbank-security-analyst",
   "saramin-55608433": "tossbank-security-audit-manager",
@@ -3587,6 +3588,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 36
+  },
+  {
+   "id": "tossbank-product-manager-llm",
+   "company": "토스뱅크",
+   "role": "Product Manager (LLM)",
+   "jobs": [
+    "saramin-55669492"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 12
   },
   {
    "id": "tossbank-product-server",
