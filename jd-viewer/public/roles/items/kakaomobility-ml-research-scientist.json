@@ -1,0 +1,1273 @@
+{
+ "id": "kakaomobility-ml-research-scientist",
+ "company": "카카오모빌리티",
+ "role": "머신러닝 research scientist",
+ "team": "R&D (팀 이름은 공고에 없음)",
+ "jobs": [
+  "ats-greeting:kakaomobility:148119",
+  "ats-kakao:group:S-4306",
+  "wanted-364303"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "카메라·라이다·지도를 한꺼번에 읽어 **\"주변 공간이 어떻게 생겼고 무엇이 어디 있나\"를 알아내는 딥러닝 모델**을 연구합니다. 물체 찾기(검출)·픽셀 나누기(분할)·거리 추정(깊이)에 더해, 이미지와 말을 같이 다루는 멀티모달 LLM 을 오래 쌓인 주행 데이터로 계속 배우게 하는 구조까지 봅니다.[1]",
+  "env": "회사는 카메라와 라이다를 하늘에서 내려다본 평면(BEV) 하나로 합치는 인지 모델과, 데이터 수집 → 자동 라벨링 → 학습 → 검증 → 경량화 → 배포로 도는 데이터 순환을 직접 돌리고 있습니다.[4] 강남 심야 자율주행 택시가 그 데이터를 모으고, 연말까지 인지와 판단을 한 모델(E2E)로 합치는 중입니다.[6] 근무지는 판교입니다.[1]",
+  "oneline": "논문을 쓰던 사람이 **실제 서비스 차량의 데이터와 제약** 위에서 새 모델을 설계하고 끝까지 검증하는 5년 차 이상(또는 박사 졸업 예정) 연구 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "멀티모달 딥러닝 모델 연구 및 개발",
+   "short": "센서 여러 종류(카메라·라이다·지도)를 한 모델에 넣어 함께 배우게 하는 새 구조를 찾는 일.",
+   "why": "카메라는 신호등 색·도로 글자·차선 종류 같은 **뜻**을 잘 읽고, 라이다는 밤낮없이 **거리**를 정확히 잽니다. 카카오모빌리티는 둘의 장점만 합치려고 BEV(버드아이뷰 — 하늘에서 내려다본 평면 격자)라는 공통 공간을 쓴다고 발표했습니다.[4][5] 이 공고가 '멀티모달(여러 종류의 입력)'을 첫 줄에 둔 이유입니다 {추론}.",
+   "actually": {
+    "intro": "회사 발표에 나온 현재 인지 모델의 뼈대입니다.[4]",
+    "items": [
+     "**센서 동기화가 먼저** — 모든 센서·컴퓨터의 시계를 네트워크로 나노초 단위까지 맞추고, 시간 신호로 카메라와 라이다가 같은 순간에 찍게 한다(하드웨어 트리거).[4]",
+     "**변환 블록** — 카메라 이미지 특징을 3D 공간에 맞게 바꾼 뒤 하늘에서 본 시점으로 눌러 담아 라이다 특징과 같은 격자에 놓는다.[4]",
+     "**여러 머리(멀티 헤드)** — 합친 정보 위에서 차·보행자의 위치·방향, 차선 종류, 신호등 상태, 노면 표시, 주행 가능 영역을 한 번에 낸다.[4]",
+     "공개 논문으로 보면 같은 계열이 BEVFusion 이다 — 카메라·라이다 특징을 BEV 에서 합쳐, 3D 검출과 BEV 지도 분할을 한 모델로 한다.[19] 카메라 특징을 깊이 분포로 들어 올려 BEV 에 뿌리는 방법은 Lift-Splat-Shoot 가 처음 보였다.[20]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "회사가 발표한 인지 모델 한 바퀴",
+     "steps": [
+      "동기화 · 센서 시계를 나노초로 맞추고 동시에 찍기",
+      "특징 뽑기 · 카메라 이미지·라이다 점에서 각각",
+      "BEV 변환 · 카메라 특징을 3D → 위에서 본 평면으로",
+      "융합 · 같은 격자에서 합치기",
+      "멀티 헤드 · 객체·차선·신호등·노면·주행 가능 영역",
+      "플래너로 · AI 플래너와 규칙 플래너가 받아 경로를 정한다"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "센서 배치·동기화 같은 차량 쪽은 시스템·하드웨어 담당이 따로 있습니다.[4] 이 자리는 **어떤 입력을 어떤 구조로 합칠지 정하고, 그 구조가 기존보다 낫다는 것을 숫자로 보이는 것**까지입니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    19,
+    20
+   ],
+   "study": [
+    "km-ifkakao25",
+    "bevfusion",
+    "lss",
+    "cs231n"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Camera, LiDAR, Map 등 다양한 센서 데이터를 활용한 멀티모달 inference",
+   "short": "카메라 그림·라이다 점·지도 정보를 맞춰 넣고, 차 안에서 바로 답(추론)을 내게 하는 일.",
+   "why": "inference(추론)는 다 배운 모델이 새 입력에 답을 내는 단계입니다. 자율주행에서는 그 답이 차 안 컴퓨터에서 실시간으로 나와야 합니다 — 회사는 **아무리 좋은 모델도 차량의 제한된 컴퓨터에서 실시간으로 안 돌면 쓸모가 없다**며 성능 저하를 줄이면서 빠르게 만드는 경량화 단계를 따로 둔다고 밝혔습니다.[4]",
+   "actually": {
+    "intro": "센서 셋을 한 모델에 넣으려면 먼저 같은 좌표에 놓아야 합니다.",
+    "items": [
+     "**Camera** — 지붕의 센서 키트(AV-KIT)에 카메라가 여러 대 달려 있다. 회사가 공개한 학습 데이터셋도 센서 사이 시간·공간 맞춤(동기화·캘리브레이션)을 거친 것이다.[13]",
+     "**LiDAR** — 점(x, y, z) 묶음. 카메라 픽셀과 맞추려면 회전·이동(외부 파라미터)과 렌즈 값(내부 파라미터)으로 투영한다(아래 예시).[31]",
+     "**Map** — 차선 연결·제한 속도·횡단보도 같은 정적 정보. 회사의 AI 플래너는 이 정보를 '맵 인코더'로 받는다.[4] HD맵(정밀 지도)은 회사가 직접 만들고, AI연구개발팀이 공간정보 팀들과 함께 맡는다고 반기보고서를 인용한 보도가 있다.[10]",
+     "**실시간 제약** — 검증을 통과한 모델만 경량화해서 시험차 → 서비스차 순서로 올린다.[4] 경량화는 보통 TensorRT 같은 추론 엔진으로 정밀도를 낮추고 연산을 합치는 방식이다.[34]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "라이다 점을 카메라 픽셀에 떨어뜨리기",
+     "body": "가상의 보정 값으로 라이다 점 4개를 카메라 그림에 투영했습니다(직접 돌린 출력). 차 뒤쪽 점(x=-3)은 카메라 뒤라 버립니다. 멀티모달 입력을 맞추는 가장 밑바닥 계산입니다.[31]",
+     "lang": "python",
+     "code": "import numpy as np\nK = np.array([[1000,0,960],[0,1000,540],[0,0,1.0]])  # 내부 파라미터\n# 라이다(x앞,y왼,z위) -> 카메라(x오른,y아래,z앞)\nR = np.array([[0,-1,0],[0,0,-1],[1,0,0.0]])\nt = np.array([0.0,-0.3,-0.5])\npts = np.array([[10,0,0],[20,2,0.5],[5,-1,-1.2],[-3,0,0]])\ncam = (R @ pts.T).T + t\nfor p, c in zip(pts, cam):\n    if c[2] <= 0:\n        print(p, '-> 카메라 뒤(투영 안 함)'); continue\n    uv = K @ c; u, v = uv[:2] / uv[2]\n    print(p, f'-> 깊이 {c[2]:.1f}m, 픽셀 ({u:.0f}, {v:.0f})')\n# [10.  0.  0.] -> 깊이 9.5m, 픽셀 (960, 508)\n# [20.   2.   0.5] -> 깊이 19.5m, 픽셀 (857, 499)\n# [ 5.  -1.  -1.2] -> 깊이 4.5m, 픽셀 (1182, 740)\n# [-3.  0.  0.] -> 카메라 뒤(투영 안 함)"
+    }
+   ],
+   "how_far": "보정 값을 직접 재는 것은 캘리브레이션 담당 몫입니다 {추론}. 연구자는 **보정이 조금 틀려도 무너지지 않는 융합 구조**를 만들고, 차 안 컴퓨터에서 몇 ms 걸리는지까지 재 봐야 합니다 {추론}.",
+   "refs": [
+    4,
+    10,
+    13,
+    31,
+    34
+   ],
+   "study": [
+    "mvg",
+    "hanbit-cv",
+    "tensorrt"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Multimodal LLM 기반의 장기 학습(Long-term learning) 및 추론 구조 연구",
+   "short": "이미지·말을 같이 다루는 큰 모델(MLLM)이 오래 쌓이는 주행 경험을 잊지 않고 배우고 따져 보게 하는 연구.",
+   "why": "회사는 강남의 불법 유턴·무단횡단·공사 구간처럼 **드물지만 중요한 상황(엣지 케이스)**을 계속 모아 재학습에 쓴다고 밝혔습니다.[6][7] 자율주행에서 수동 운전으로 바뀌면 그 전후 상황도 자동으로 저장합니다.[9] 데이터가 달마다 늘고 바뀌니, 새 것을 배우면서 옛 것을 잊지 않는 학습이 필요합니다 {추론}. 또 회사는 시각언어모델(VLM)을 관제의 이상 상황 분석과 데이터 분류에 쓰려고 개발·시험 중입니다.[6][8]",
+   "actually": {
+    "intro": "'장기 학습'은 공고에 정의가 없습니다. 공개 연구로 보면 두 가지로 읽힙니다 {추론}.",
+    "items": [
+     "**계속 배우기(연속 학습)** — 새 도시·야간·새 공사 유형을 더 배울 때 앞서 배운 것을 잊는 현상(파국적 망각)을 막는다. 중요한 가중치를 덜 움직이게 묶는 EWC[28], 옛 데이터 일부를 다시 섞는 재생(replay)[41]이 대표적이다. 방법 갈래는 정리 논문에 모여 있다.[29]",
+     "**오래 기억하며 추론하기** — 몇 초 전·몇 분 전 장면을 기억해 지금 판단에 쓰는 구조. LLM 쪽에서는 짧은 문맥과 바깥 기억을 나눠 필요할 때 꺼내 오는 방식(MemGPT)이 있다.[40]",
+     "**MLLM 이 하는 일** — 이미지 인코더를 LLM 에 이어 그림을 보고 말로 답하게 한다(LLaVA).[25] 주행에서는 장면 설명 → 위험 분석 → 행동 계획을 단계 질문으로 풀게 하는 연구가 있다(DriveLM·DriveVLM).[26][38]",
+     "**회사의 쓰임** — VLM 으로 날씨·시간대·도로 구조·차량 움직임을 분류하는 데이터 마이닝[8], 관제의 이상 상황 분석·이상 징후 자동 알림(개발·시험 단계)[6][12]."
+    ]
+   },
+   "examples": [
+    {
+     "title": "얼마나 잊었나를 숫자로",
+     "body": "연속 학습 논문들이 쓰는 '잊음(forgetting)'은 과제마다 '가장 좋았던 정확도 − 마지막 정확도'입니다.[29] 가상의 세 단계(도시 A → 도시 B → 야간) 정확도로 계산했습니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "# acc[i][j] = i번째 학습 뒤 과제 j 정확도 (가상)\nacc = [[0.90, None, None],   # 도시A 학습 뒤\n       [0.70, 0.88, None],   # 도시B 추가 뒤\n       [0.62, 0.80, 0.91]]   # 야간 추가 뒤\nT = len(acc); last = acc[-1]\nfg = [max(acc[i][j] for i in range(j, T-1)) - last[j] for j in range(T-1)]\nprint('마지막 평균 정확도', round(sum(last)/T, 3))\nfor j, f in enumerate(fg): print(f'과제{j} 잊음 {f:.2f}')\nprint('평균 잊음', round(sum(fg)/len(fg), 3))\n# 마지막 평균 정확도 0.777\n# 과제0 잊음 0.28\n# 과제1 잊음 0.08\n# 평균 잊음 0.18"
+    }
+   ],
+   "how_far": "'연구'라고 적혀 있어 정답이 정해진 일이 아닙니다.[1] 최소선은 **새 데이터를 더한 뒤 옛 장면 성능이 얼마나 떨어졌는지 재는 평가 틀**을 먼저 세우는 것입니다 {추론}. VLM 관제 기능은 2026년 9월 기준 개발·시험 단계라, 서비스에 바로 들어가는 일은 아닐 수 있습니다.[6]",
+   "refs": [
+    1,
+    6,
+    7,
+    8,
+    12,
+    25,
+    26,
+    28,
+    29,
+    38,
+    40,
+    41
+   ],
+   "study": [
+    "llava",
+    "drivelm",
+    "drivevlm",
+    "ewc",
+    "cl-survey",
+    "memgpt",
+    "lec-multimodal",
+    "lec-memory"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Learning 기반 공간 정보 인식 모델 연구 및 개발",
+   "short": "사람이 규칙을 짜는 대신 데이터로 배워서, 도로·차선·건물 같은 공간 구조를 알아보는 모델을 만드는 일.",
+   "why": "회사 자율주행 연구는 자율주행 개발·HD맵 고도화·MMS(모바일 매핑 시스템 — 센서 단 차로 도로를 3D 로 스캔) 고도화 세 갈래이고, HD맵은 AI연구개발팀도 함께 맡는다고 보도됐습니다.[10] 회사는 MMS 장비 'ARGOS' 로 지상·상공 디지털 트윈을 만드는 기술도 전시했습니다.[36] '공간 정보'라는 말이 이 지도 일과 이어진다고 읽힙니다 {추론}.",
+   "actually": {
+    "items": [
+     "**지도 요소 찾기** — 차선·횡단보도·정지선·도로 경계를 점 묶음(벡터)으로 바로 내는 모델. 공개 연구로는 MapTR 가 지도 요소를 점 집합으로 예측하되, 시작점·방향만 다른 같은 선은 같은 답으로 친다.[27]",
+     "**지도와 현실의 차이** — 지도에 없는 공사 구간을 만나면 경로를 못 만드는 일이 생긴다고 회사가 직접 예로 들었다.[4] 달라진 곳을 찾아내는 것이 학습형 공간 인식이 쓰이는 자리다 {추론}.",
+     "**공간 + 큰 모델** — 회사는 SLAM(움직이면서 지도를 만들고 내 위치를 찾는 기술) 쪽 채용에서 '대형 AI 모델에 공간 정보를 결합하는 역할'을 적었다.[11]",
+     "**BEV 위의 공간 과제** — 회사 인지 모델은 주행 가능 영역·노면 표시를 BEV 에서 함께 낸다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "라이다 점을 BEV 격자에 쌓기",
+     "body": "BEV 공간 인식의 첫 단계는 점을 위에서 본 칸에 넣는 것입니다. 0.5m 칸 20×20 에 가상의 차 한 대(앞 6m·왼쪽 1m)와 잡음 점을 넣었습니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(0)\ncar = rng.normal([6.0, 1.0], [0.4, 0.3], size=(40, 2))\nnoise = rng.uniform([0, -5], [10, 5], size=(10, 2))\nxy = np.vstack([car, noise]); res = 0.5\nix = (xy[:,0] / res).astype(int); iy = ((xy[:,1] + 5) / res).astype(int)\nok = (ix >= 0) & (ix < 20) & (iy >= 0) & (iy < 20)\ngrid = np.zeros((20, 20), int); np.add.at(grid, (ix[ok], iy[ok]), 1)\nr, c = np.unravel_index(grid.argmax(), grid.shape)\nprint(f'앞 {r*res:.1f}~{(r+1)*res:.1f}m, 옆 {c*res-5:.1f}~{(c+1)*res-5:.1f}m, 점 {grid.max()}개')\nprint('점이 3개 이상인 칸 수:', int((grid >= 3).sum()))\n# 앞 5.5~6.0m, 옆 0.5~1.0m, 점 8개\n# 점이 3개 이상인 칸 수: 5"
+    }
+   ],
+   "how_far": "지도를 실제로 만드는 공정은 공간정보 팀들이 맡습니다.[10] 이 자리는 **센서 데이터에서 공간 구조를 배워 내는 모델**까지이고, 결과가 지도 공정에 어떻게 들어가는지는 그 팀과 맞춥니다 {추론}.",
+   "refs": [
+    4,
+    10,
+    11,
+    27,
+    36
+   ],
+   "study": [
+    "maptr",
+    "lec-3d",
+    "mvg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Detection / Segmentation / Depth Estimation 기반의 공간 인식 모델 개발",
+   "short": "물체 찾기(검출)·픽셀 나누기(분할)·거리 추정(깊이) 세 가지 기본기로 주변 공간을 알아보는 모델을 만드는 일.",
+   "why": "회사 인지 모델의 멀티 헤드가 바로 이 과제들(객체 위치·방향, 노면·주행 가능 영역)입니다.[4] 회사가 공개한 학습 데이터셋도 3D 동적 객체 검출·추적, 신호등 인식, 세그멘테이션 라벨을 담았고, 이 데이터로 학습하면 3D 객체 검출이 약 5~8%, 신호등 인식이 약 2% 나아졌다고 ETRI 가 검증했습니다.[14]",
+   "actually": {
+    "items": [
+     "**Detection(검출)** — 물체마다 상자와 종류를 낸다. 정답 상자와 겹친 비율(IoU)이 기준(예: 0.5)을 넘어야 맞힌 것으로 센다(아래 예시). 3D 에서는 중심점을 찾는 CenterPoint 같은 방식이 널리 쓰인다.[42]",
+     "**Segmentation(분할)** — 픽셀(또는 BEV 칸)마다 도로·차·사람을 붙인다. 의미·객체·전체(panoptic) 분할을 한 구조로 푸는 Mask2Former 가 대표다.[21] 평가는 클래스별 IoU 의 평균(mIoU).",
+     "**Depth Estimation(깊이 추정)** — 카메라 한 장에서 픽셀별 거리를 낸다. 라벨 없는 6,200만 장으로 키운 Depth Anything[22], 연속 영상만으로 스스로 배우는 Monodepth2[24]가 있다. 평가는 상대 오차(AbsRel)와 '비율 1.25 안에 든 비율(δ)'을 쓴다.[23]",
+     "**한 모델에 여럿** — 과제마다 손실 크기가 달라 무게를 맞춰야 한다. 과제별 불확실성으로 무게를 배우는 방법이 있다.[32]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "세 과제의 채점표 — IoU · mIoU · 깊이 지표",
+     "body": "가상 값으로 세 과제의 기본 지표를 계산했습니다(직접 돌린 출력). 깊이에서 40m 를 30m 로 본 점 하나가 δ<1.25 를 0.80 으로 떨어뜨립니다 — 먼 곳 오차가 숫자에 어떻게 드러나는지 보는 예입니다.[23]",
+     "lang": "python",
+     "code": "import numpy as np\ndef iou_box(a, b):\n    x1, y1 = max(a[0], b[0]), max(a[1], b[1]); x2, y2 = min(a[2], b[2]), min(a[3], b[3])\n    inter = max(0, x2-x1) * max(0, y2-y1)\n    area = lambda r: (r[2]-r[0]) * (r[3]-r[1])\n    return inter / (area(a) + area(b) - inter)\nfor pb in [(110,110,210,210), (150,150,250,250)]:\n    print(pb, f'IoU {iou_box((100,100,200,200), pb):.2f}')\n# (110, 110, 210, 210) IoU 0.68\n# (150, 150, 250, 250) IoU 0.14\n\ng  = np.array([0,0,0,0,1,1,1,2,2,0]); pr = np.array([0,0,0,1,1,1,0,2,0,0])  # 0도로 1차 2사람\ncm = np.zeros((3,3), int)\nfor a, b in zip(g, pr): cm[a, b] += 1\ninter = np.diag(cm); iou = inter / (cm.sum(0) + cm.sum(1) - inter)\nprint('IoU', iou.round(2), 'mIoU', round(iou.mean(), 2))\n# IoU [0.57 0.5  0.5 ] mIoU 0.52\n\ngt = np.array([5., 10, 20, 40, 80]); pred = np.array([5.5, 9, 21, 30, 85])\nratio = np.maximum(pred/gt, gt/pred)\nprint(f'AbsRel {np.mean(abs(pred-gt)/gt):.3f}  RMSE {np.sqrt(np.mean((pred-gt)**2)):.2f}m  δ<1.25 {np.mean(ratio<1.25):.2f}')\n# AbsRel 0.113  RMSE 5.04m  δ<1.25 0.80"
+    }
+   ],
+   "how_far": "세 과제를 각각 공개 모델로 돌려 보는 것은 출발선입니다. 이 자리는 **세 과제를 한 모델 안에서 같이 학습시키고, 회사 데이터의 약한 장면(야간·공사·오토바이)에서 어느 과제가 무너지는지 찾아 고치는 것**까지입니다 {추론}. 약한 장면을 골라 모으는 것은 회사가 데이터 마이닝으로 이미 하고 있습니다.[4]",
+   "refs": [
+    4,
+    14,
+    21,
+    22,
+    23,
+    24,
+    32,
+    42
+   ],
+   "study": [
+    "lec-detseg",
+    "mask2former",
+    "depth-anything",
+    "monodepth2",
+    "centerpoint",
+    "hanbit-cv"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 ​이상의 ​실무 경험이 ​있으신 ​분 ​(또는 이에 준하는 연구 역량을 갖춘 박사 졸업 예정자 ​지원 ​가능)",
+   "short": "새 모델을 혼자 설계·검증해 낼 수 있는 연구 경험이 있어야 해서. 박사 졸업 예정이면 연차 대신 연구로 본다.",
+   "why": "업무가 모두 '연구 및 개발'로 끝나고, 정답이 없는 문제(장기 학습 구조 등)가 섞여 있습니다.[1] 회사는 2026년 3월 자율주행 인재를 규모·기간 제한 없이 뽑겠다며 5년 이상 경력자 중심으로 직무를 열었습니다.[11]",
+   "how_far": "5년은 '딥러닝 모델을 처음부터 끝까지 여러 번 돌려 본 경험'을 보려는 숫자로 읽힙니다 {추론}. 1차 인터뷰가 이력서·포트폴리오 기반이고 그 전에 사전 과제가 있어[1], **무엇을 바꿔 숫자가 얼마나 좋아졌는지** 정리해 가는 것이 좋습니다 {추론}.",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "karpathy-recipe"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터공학, 전기공학, 수학, ​로보틱스 ​전공이나 ​이와 관련된 전공의 ​학위를 소지하신 ​분",
+   "short": "센서 기하(좌표·투영)와 학습 이론을 받칠 수학·공학 바탕이 필요해서.",
+   "why": "로보틱스·전기공학이 컴퓨터공학과 나란히 적힌 것은 센서·좌표계를 다루는 일이라서로 읽힙니다 {추론}. 카메라–라이다 투영은 선형대수(회전 행렬·사영)로 계산합니다(업무 2번 예시).[31]",
+   "how_far": "전공 이름보다 **선형대수·확률·최적화와 카메라 기하**를 실제로 쓸 수 있느냐가 핵심입니다 {추론}.",
+   "refs": [
+    31
+   ],
+   "study": [
+    "mvg",
+    "d2l"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C/C++, ​python 등의 ​숙련된 프로그래밍 ​기술을 ​보유하신 분",
+   "short": "연구 코드는 파이썬으로, 차 안에서 빨리 도는 코드는 C/C++ 로 짜기 때문에.",
+   "why": "회사는 학습한 모델을 경량화해 차량 컴퓨터에 올린다고 밝혔습니다.[4] 그런 추론 엔진(TensorRT)은 C++ API 를 제공하고, PyTorch 도 학습한 모델을 C++ 에서 돌리는 C++ API 를 따로 둡니다.[34][39] 전형에도 Coding Test 가 있습니다.[1]",
+   "level": {
+    "basic": "파이썬으로 데이터 로더·학습 루프를 짜고, 넘파이로 좌표 변환을 벡터 연산으로 쓴다.",
+    "work": "PyTorch 로 새 층·손실을 만들고 GPU 메모리·속도를 프로파일링한다. C++ 로 전처리·후처리(점 투영, 상자 정리)를 옮긴다.",
+    "team": "학습한 모델을 차량 컴퓨터에서 실시간으로 돌리는 경량화·배포 단계까지 이어 본다.[4]"
+   },
+   "how_far": "Coding Test 에서 떨어지면 6개월 동안 같은 포지션에 다시 응시할 수 없고, 1차 인터뷰에 사전 과제나 라이브 코딩이 붙을 수 있습니다.[1]",
+   "refs": [
+    1,
+    4,
+    34,
+    39
+   ],
+   "study": [
+    "icote-book",
+    "lec-icote",
+    "effective-cpp",
+    "pytorch-cpp",
+    "tensorrt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "딥러닝 모델의 설계-학습-평가-개선 전 과정을 주도적으로 수행할 수 있는 분",
+   "short": "모델 구조를 정하고, 학습을 돌리고, 평가해서 고치는 고리를 남의 지시 없이 돌릴 수 있어야 해서.",
+   "why": "회사 AI 프레임워크가 바로 이 고리입니다 — 수집 → 전처리 → 학습 → 검증 → 배포를 자동화해 차량이 달리는 동안에도 성능이 계속 나아지게 한다고 밝혔습니다.[4]",
+   "actually": {
+    "intro": "회사 발표의 검증 단계입니다.[4]",
+    "items": [
+     "**과거 실제 데이터로 기본 성능** 검증.",
+     "**시뮬레이션**에서 위험 시나리오로 강건함 확인.",
+     "**경량화** — 성능 저하를 줄이며 연산을 빠르게.",
+     "**시험차 실도로** 최종 검증 → 통과한 모델만 서비스 차량에 배포.",
+     "**학습 데이터** — 사전 학습 모델로 가짜 라벨(pseudo label)을 만들고, 시간축 떨림·정지/움직임 구분·보행자 궤적을 다듬어 쓴다(오토라벨링).[4]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "회사가 발표한 데이터 순환",
+     "steps": [
+      "수집 · 서비스·시험 차량",
+      "선별 · 주행 기록·이슈 상황에서 의미 있는 데이터",
+      "오토라벨링 · 가짜 라벨 → 정제",
+      "데이터 마이닝 · 드문 엣지 케이스",
+      "학습",
+      "검증 · 과거 데이터 → 시뮬레이션",
+      "경량화",
+      "배포 · 시험차 → 서비스차"
+     ],
+     "mine_from": 4
+    }
+   ],
+   "how_far": "'주도적으로'가 핵심입니다.[1] 실패한 학습에서 **원인(데이터·구조·하이퍼파라미터)을 가르는 순서**를 설명할 수 있으면 됩니다 — 작은 데이터로 먼저 과적합시켜 보는 식의 점검 순서가 공개돼 있습니다.[33]",
+   "refs": [
+    1,
+    4,
+    33
+   ],
+   "study": [
+    "km-ifkakao25",
+    "karpathy-recipe",
+    "lec-dlcycle"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "새로운 기술을 모빌리티 서비스에 적용하고 싶은 의지가 강하신 분",
+   "short": "논문 점수보다 '서비스 차에서 실제로 나아졌나'를 목표로 삼을 사람이 필요해서.",
+   "why": "회사는 자율주행을 차 하나가 아니라 **완결된 이동 서비스**로 만든다고 하고[4], 회사 소개도 이동으로 사람·물건을 잇는 일을 앞세웁니다[3], 강남 심야 서비스는 2026년 3~8월 1만 3천km·2,000건 넘게 운행했습니다.[6] 이슈는 실패가 아니라 다음 학습 데이터라는 순환을 강조합니다.[4]",
+   "how_far": "인터뷰 2차 1라운드가 회사 핵심가치 기반이라[1], 연구 결과를 서비스 지표(급감속·개입 횟수 같은 것)와 잇는 말하기를 준비하면 좋습니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    6
+   ],
+   "study": [
+    "km-news"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "머신러닝 / 컴퓨터 비전 / 로보틱스 관련 석박사 학위 또는 이에 준하는 연구 경험이 있으신 분",
+   "short": "연구 문제를 스스로 세우고 논문 수준으로 검증해 본 훈련이 있으면 업무 1·3번 같은 열린 문제에 강해서.",
+   "why": "자격 첫 줄도 박사 졸업 예정자를 따로 받습니다.[1] 업무 줄 다섯 개 중 넷이 '연구'를 포함합니다.[1]",
+   "how_far": "우대라 없어도 지원은 됩니다. 학위 대신 **'이에 준하는 연구 경험'**은 공개 코드·기술 보고서·사내 실험 기록으로 보일 수 있습니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "cs231n"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "관련 분야 저서/학술활동(CVPR, ICCV, NeurIPS, ICRA, IROS 등) 이력이 있으신 분",
+   "short": "그 분야 최상위 학회에 논문을 낸 적이 있으면 연구 수준을 바로 보여 줄 수 있어서.",
+   "why": "적힌 학회는 컴퓨터 비전(CVPR·ICCV), 머신러닝(NeurIPS), 로보틱스(ICRA·IROS) 세 갈래입니다 — 업무가 비전 모델·학습 구조·로봇(차) 인지를 걸치기 때문으로 읽힙니다 {추론}. CVPR·ICCV 논문은 CVF 오픈 액세스에서 무료로 읽을 수 있습니다.[35]",
+   "how_far": "이력서에는 저자 순서·학회 이름·연도와 내가 맡은 부분을 같이 적습니다 {추론}.",
+   "refs": [
+    35
+   ],
+   "study": [
+    "cvf-open"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "object detection, semantic segmentation, depth estimation 등의 다양한 딥러닝 모델 개발 경험자",
+   "short": "업무 5번 세 과제를 실제로 만들어 본 사람이면 회사 인지 모델의 멀티 헤드를 바로 맡을 수 있어서.",
+   "why": "회사 BEV 모델은 객체·차선·신호등·노면·주행 가능 영역을 한 번에 내는 멀티 헤드 구조입니다.[4] 공개 기준 데이터 nuScenes 는 카메라 6대·라이다 1대·레이더 5대로 찍은 1,000 장면이고, 3D 검출을 NDS 라는 종합 점수로 잽니다.[30]",
+   "how_far": "공개 데이터에서 공개 코드를 돌려 재현하고, **한 가지를 바꿔 점수가 왜 바뀌었는지** 설명할 수 있으면 실무 수준입니다 {추론}.",
+   "refs": [
+    4,
+    30
+   ],
+   "study": [
+    "nuscenes",
+    "lec-detseg",
+    "mask2former",
+    "depth-anything"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "멀티모달 모델 또는 Multimodal LLM 개발 경험 (Vision-Language, Vision-Map, Sensor-Language 등)이 있으신 분",
+   "short": "그림+말(VL), 그림+지도(VM), 센서+말(SL)처럼 둘 이상을 묶는 모델을 만들어 봤으면 업무 2·3번에 바로 쓰여서.",
+   "why": "회사는 VLM 을 데이터 분류[8]와 관제 이상 상황 분석·자동 알림[6][12]에 쓰려 하고, 자율주행 AI 엔지니어 채용에서는 보고·말하고·움직이는 모델(VLA)로 E2E 두뇌를 만든다고 적었습니다.[11]",
+   "actually": {
+    "items": [
+     "**Vision-Language** — 그림과 글을 같은 공간에 맞추는 CLIP(대조 학습)[37], 그 위에 LLM 을 얹어 대화하는 LLaVA.[25]",
+     "**Vision-Map** — 카메라 특징과 지도(차선 연결·제한 속도)를 같이 넣는 것. 회사 AI 플래너의 맵 인코더가 같은 생각이다.[4] 지도 요소 자체를 카메라로 그리는 MapTR 도 이 갈래다.[27]",
+     "**Sensor-Language** — 라이다·주행 기록을 말로 묻고 답하게 하는 것. 주행 장면을 단계별 질문 그래프로 푸는 DriveLM 이 예다.[26]"
+    ]
+   },
+   "how_far": "직접 학습해 본 경험이 우대입니다. 공개 MLLM 에 주행 영상을 넣어 질문해 보는 것만으로는 부족하고, **어떤 연결층을 어떤 데이터로 학습했는지** 설명할 수 있어야 합니다 {추론}.",
+   "refs": [
+    4,
+    6,
+    8,
+    11,
+    12,
+    25,
+    26,
+    27,
+    37
+   ],
+   "study": [
+    "clip",
+    "llava",
+    "drivelm",
+    "lec-vl",
+    "lec-multimodal"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "영입 여정은 이렇게 진행됩니다 서류 → Coding Test → 1차 인터뷰 → 2차 인터뷰 → 처우 협의 서류 전형 Coding Test 1차 인터뷰 1차 인터뷰 진행 전 사전과제가 진행됩니다. 1차 인터뷰는 이력서 및 포트폴리오 기반으로 함께 일하는 동료들이 참석하여 진행됩니다. 2차 인터뷰 1Round 는 핵심가치 기반의 HR 인터뷰로 HR담당자가 참석하여 진행됩니다. 2Round 는 조직 문화 인터뷰로 조직장이 참석하여 진행됩니다.",
+   "short": "요건이 아니라 전형 순서다 — 코딩 테스트를 먼저 보고, 사전 과제 뒤 동료가 포트폴리오로 본다.",
+   "why": "서류 → Coding Test → 1차(사전 과제 + 동료 인터뷰) → 2차(HR 핵심가치·조직장 조직 문화) → 처우 협의 순서입니다.[1]",
+   "how_far": "이력서는 PDF 로 내고, 연봉 정보를 적으면 검토되지 않을 수 있습니다. 인터뷰에서 떨어지면 1년 동안 같은 직군에 다시 지원할 수 없습니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "icote-book"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "논문 숫자보다 '실제 차에서 덜 헷갈리나'가 더 궁금한 연구자[4]",
+   "검출·분할·깊이를 따로가 아니라 한 모델로 묶어 보고 싶은 사람[4]",
+   "이미지·지도·말을 같이 다루는 모델을 주행 데이터로 학습해 보고 싶은 사람[1]",
+   "드문 장면을 찾아 데이터로 고치는 순환을 좋아하는 사람[4][7]"
+  ],
+  "hard": [
+   "경력 5년 이상 또는 박사 졸업 예정 — 신입 자리가 아니다[1]",
+   "회사가 연말까지 E2E 로 구조를 바꾸는 중이라 연구 주제가 움직일 수 있다[6] {추론}",
+   "'장기 학습' 같은 업무는 정답이 정해지지 않은 연구라 성과 기준을 스스로 세워야 한다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "카메라와 라이다를 BEV 에서 합칠 때 카메라 특징을 어떻게 BEV 로 옮기나요? 깊이를 모르는 문제는 어떻게 풀죠?",
+   "a": "회사 인지 모델의 변환 블록과 공개 방법(LSS·BEVFusion)의 차이.[4][19][20]"
+  },
+  {
+   "q": "검출·분할·깊이를 한 모델로 학습할 때 한 과제가 다른 과제를 망치면 어떻게 알아채고 고치나요?",
+   "a": "멀티 헤드 구조와 과제 무게 맞추기.[4][32]"
+  },
+  {
+   "q": "도시를 넓혀 새 데이터를 더 학습했더니 기존 강남 성능이 떨어졌어요. 무엇을 재고 무엇을 하겠어요?",
+   "a": "업무 3번 장기 학습 — 잊음 측정·재생·정규화.[28][29][41]"
+  },
+  {
+   "q": "사전 학습 모델로 만든 가짜 라벨의 잡음이 학습을 망치지 않게 하려면?",
+   "a": "회사 오토라벨링의 정제 단계(시간 일관성·정지/움직임·궤적).[4]"
+  },
+  {
+   "q": "깊이 추정의 AbsRel 은 좋아졌는데 δ<1.25 가 나빠졌다면 무슨 일이 생긴 건가요?",
+   "a": "지표가 오차의 어느 쪽을 보는지.[23]"
+  },
+  {
+   "q": "관제에 VLM 을 붙여 이상 상황을 알리게 한다면, 틀린 알림을 어떻게 줄이고 평가하겠어요?",
+   "a": "회사가 개발·시험 중인 VLM 관제와 데이터 분류.[6][8]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "km-ifkakao25",
+   "title": "자율주행 AI 실차 적용기: 서비스를 위해 우리가 만들고 있는 자율주행 (if(kakao)25)",
+   "by": "박창수 · 카카오모빌리티 · kakao tech · 2025",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=N7CVydbY2gE",
+   "why": "18분. 이 팀의 BEV 멀티모달 융합·멀티 헤드·AI 플래너·오토라벨링·검증 단계를 회사가 직접 설명한다 — 업무 1·2·5번과 자격 '설계-학습-평가-개선'의 실제 모습."
+  },
+  {
+   "id": "km-news",
+   "title": "카카오모빌리티 서울자율차 운영 현황·E2E 연내 도입 (미디어 스터디 기사)",
+   "by": "바이라인네트워크 · 2026-09",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://byline.network/2026/09/09_kakaomobility/",
+   "why": "E2E 전환 계획, AI 플래너, VLM 관제의 개발 단계 — 이 연구가 어디로 들어가는지."
+  },
+  {
+   "id": "km-dataset",
+   "title": "산학연 협력으로 구축한 데이터 전격 공개 (Tech Ethics 19호)",
+   "by": "카카오",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.kakaocorp.com/page/detail/11509",
+   "why": "회사가 공개한 다중 센서 학습 데이터가 어떻게 동기화·보정·라벨링됐는지 — 업무 2·5번의 데이터 쪽."
+  },
+  {
+   "id": "hanbit-cv",
+   "title": "IT CookBook, 컴퓨터 비전과 딥러닝",
+   "by": "오일석 · 한빛아카데미 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.hanbit.co.kr/books/B8870109394",
+   "why": "검출·분할·깊이·카메라 기하를 한국어로 한 권에 — 업무 5번 기본기."
+  },
+  {
+   "id": "d2l",
+   "title": "Dive into Deep Learning",
+   "by": "Zhang · Lipton · Li · Smola",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://d2l.ai/",
+   "why": "수학·코드가 같이 있는 무료 교재. 자격 '설계-학습-평가-개선'의 바탕(최적화·CNN·어텐션)을 손으로 따라 한다."
+  },
+  {
+   "id": "mvg",
+   "title": "Multiple View Geometry in Computer Vision (2nd ed.)",
+   "by": "Hartley · Zisserman · Cambridge University Press",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.robots.ox.ac.uk/~vgg/hzbook/",
+   "why": "카메라 모델·투영·좌표 변환의 표준 교재 — 업무 2번 센서 맞추기와 전공 요건의 수학."
+  },
+  {
+   "id": "cs231n",
+   "title": "CS231n: Deep Learning for Computer Vision",
+   "by": "Stanford University",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cs231n.stanford.edu/",
+   "why": "비전 딥러닝 전 과정. 우리 사이트에 2025 강의 노트가 있다(아래 internal)."
+  },
+  {
+   "id": "lec-detseg",
+   "title": "CS231N 2025 Lecture 9: Object Detection, Image Segmentation (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/PTypu6GqEd4",
+   "why": "업무 5번·우대 3번 — 검출과 분할이 어떻게 갈리고 어떻게 평가되는지 한 번에."
+  },
+  {
+   "id": "lec-3d",
+   "title": "CS231N 2025 Lecture 15: 3D Vision (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/7lxrKDKtykM",
+   "why": "업무 4번 공간 인식 — 점군·깊이·3D 표현의 갈래."
+  },
+  {
+   "id": "lec-vl",
+   "title": "CS231N 2025 Lecture 16: Vision and Language (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/mQOK0Mfyrkk",
+   "why": "우대 4번 Vision-Language — 그림과 글을 잇는 모델의 흐름."
+  },
+  {
+   "id": "lec-multimodal",
+   "title": "CS336 2026 Lecture 17: Alignment - Multimodality (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/26FtD08ZpOU",
+   "why": "업무 3번 MLLM — LLM 에 이미지 입력을 붙여 학습하는 방법."
+  },
+  {
+   "id": "lec-memory",
+   "title": "CS329Z 2026 Lecture 7: How AI Agent Memory Works (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/qh5tP6PBZ6U",
+   "why": "업무 3번 '장기' 추론 구조를 기억 쪽으로 읽을 때 — 짧은 문맥과 바깥 기억을 나누는 설계."
+  },
+  {
+   "id": "lec-dlcycle",
+   "title": "CS230 2025 Lecture 3: Full Cycle of a DL project (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/MGqQuQEUXhk",
+   "why": "자격 '설계-학습-평가-개선 전 과정' — 프로젝트 한 바퀴를 어떻게 돌리나."
+  },
+  {
+   "id": "lec-icote",
+   "title": "이코테 2021 1. 코딩 테스트 출제 경향 분석 및 파이썬 문법 부수기 (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/m-9pAwq1o3w",
+   "why": "전형의 Coding Test 대비 — 출제 경향과 파이썬 문법."
+  },
+  {
+   "id": "icote-book",
+   "title": "이것이 취업을 위한 코딩 테스트다 with 파이썬",
+   "by": "나동빈 · 한빛미디어 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%EA%B2%83%EC%9D%B4%20%EC%B7%A8%EC%97%85%EC%9D%84%20%EC%9C%84%ED%95%9C%20%EC%BD%94%EB%94%A9%20%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%8B%A4",
+   "why": "Coding Test 단계 — 자주 나오는 알고리즘 유형을 문제로 연습."
+  },
+  {
+   "id": "effective-cpp",
+   "title": "Effective Modern C++",
+   "by": "Scott Meyers · O'Reilly · 2014",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/effective-modern-c/9781491908419/",
+   "why": "자격 'C/C++ 숙련' — C++11/14 의 이동·스마트 포인터·람다를 제대로 쓰는 법."
+  },
+  {
+   "id": "pytorch-cpp",
+   "title": "PyTorch C++ API",
+   "by": "PyTorch 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.pytorch.org/cppdocs/",
+   "why": "학습한 모델을 C++ 에서 불러 돌리는 길 — 연구 코드와 차량 코드 사이."
+  },
+  {
+   "id": "tensorrt",
+   "title": "NVIDIA TensorRT 문서",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+   "why": "업무 2번 실시간 추론 — 회사 발표의 '경량화' 단계를 보통 어떻게 하는지."
+  },
+  {
+   "id": "bevfusion",
+   "title": "BEVFusion: Multi-Task Multi-Sensor Fusion with Unified Bird's-Eye View Representation",
+   "by": "Liu 외 · MIT · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2205.13542",
+   "why": "업무 1번 — 카메라·라이다를 BEV 에서 합쳐 여러 과제를 한 모델로. 회사 발표 구조와 가장 가까운 공개 논문."
+  },
+  {
+   "id": "lss",
+   "title": "Lift, Splat, Shoot",
+   "by": "Philion · Fidler · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2008.05711",
+   "why": "카메라 특징을 깊이 분포로 들어 BEV 에 뿌리는 원리 — 회사 '변환 블록'의 보통 꼴."
+  },
+  {
+   "id": "mask2former",
+   "title": "Masked-attention Mask Transformer for Universal Image Segmentation (Mask2Former)",
+   "by": "Cheng 외 · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2112.01527",
+   "why": "업무 5번 Segmentation — 의미·객체·전체 분할을 한 구조로."
+  },
+  {
+   "id": "depth-anything",
+   "title": "Depth Anything",
+   "by": "Yang 외 · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2401.10891",
+   "why": "업무 5번 Depth — 라벨 없는 대량 이미지로 키운 단안 깊이 모델. 공개 모델로 바로 돌려 볼 수 있다."
+  },
+  {
+   "id": "monodepth2",
+   "title": "Digging Into Self-Supervised Monocular Depth Estimation (Monodepth2)",
+   "by": "Godard 외 · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1806.01260",
+   "why": "라벨 없이 연속 영상만으로 깊이를 배우는 법 — 주행 영상이 많은 회사에 맞는 학습 방식."
+  },
+  {
+   "id": "centerpoint",
+   "title": "Center-based 3D Object Detection and Tracking (CenterPoint)",
+   "by": "Yin · Zhou · Krähenbühl · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2006.11275",
+   "why": "업무 5번 3D Detection — 물체 중심점을 찾아 상자·속도를 내는 대표 방식."
+  },
+  {
+   "id": "maptr",
+   "title": "MapTR: Structured Modeling and Learning for Online Vectorized HD Map Construction",
+   "by": "Liao 외 · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2208.14437",
+   "why": "업무 4번 — 카메라로 차선·횡단보도를 점 묶음 지도로 바로 그리는 학습형 공간 인식."
+  },
+  {
+   "id": "clip",
+   "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+   "by": "Radford 외 · OpenAI · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2103.00020",
+   "why": "우대 4번 Vision-Language 의 출발점 — 그림과 글을 같은 공간에 맞추는 대조 학습."
+  },
+  {
+   "id": "llava",
+   "title": "Visual Instruction Tuning (LLaVA)",
+   "by": "Liu 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2304.08485",
+   "why": "업무 3번 MLLM — 이미지 인코더를 LLM 에 잇고 지시문 데이터로 학습하는 기본 구조."
+  },
+  {
+   "id": "drivelm",
+   "title": "DriveLM: Driving with Graph Visual Question Answering",
+   "by": "Sima 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2312.14150",
+   "why": "인지 → 예측 → 계획을 질문 그래프로 푸는 주행 MLLM — 업무 3번 '추론 구조'의 예."
+  },
+  {
+   "id": "drivevlm",
+   "title": "DriveVLM: The Convergence of Autonomous Driving and Large Vision-Language Models",
+   "by": "Tian 외 · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2402.12289",
+   "why": "VLM 을 기존 자율주행 파이프라인과 함께 쓰는 설계 — 회사처럼 규칙·AI 를 섞는 구조와 비교해 볼 만하다."
+  },
+  {
+   "id": "ewc",
+   "title": "Overcoming catastrophic forgetting in neural networks (EWC)",
+   "by": "Kirkpatrick 외 · DeepMind · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1612.00796",
+   "why": "업무 3번 장기 학습 — 옛 과제에 중요한 가중치를 덜 움직이게 묶는 대표 방법."
+  },
+  {
+   "id": "cl-survey",
+   "title": "A Comprehensive Survey of Continual Learning: Theory, Method and Application",
+   "by": "Wang 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2302.00487",
+   "why": "연속 학습의 갈래(정규화·재생·구조)와 평가 지표(잊음)를 한 번에."
+  },
+  {
+   "id": "memgpt",
+   "title": "MemGPT: Towards LLMs as Operating Systems",
+   "by": "Packer 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2310.08560",
+   "why": "LLM 이 짧은 문맥 밖의 기억을 꺼내 쓰게 하는 설계 — '장기' 추론 구조의 한 읽기."
+  },
+  {
+   "id": "nuscenes",
+   "title": "nuScenes: A multimodal dataset for autonomous driving",
+   "by": "Caesar 외 · Motional · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1903.11027",
+   "why": "카메라·라이다·레이더 공개 데이터와 NDS 점수 — 우대 3번 경험을 공개 데이터로 쌓는 곳."
+  },
+  {
+   "id": "karpathy-recipe",
+   "title": "A Recipe for Training Neural Networks",
+   "by": "Andrej Karpathy · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://karpathy.github.io/2019/04/25/recipe/",
+   "why": "자격 '설계-학습-평가-개선' — 학습이 안 될 때 무엇부터 의심하나의 점검 순서."
+  },
+  {
+   "id": "cvf-open",
+   "title": "CVF Open Access",
+   "by": "Computer Vision Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://openaccess.thecvf.com/",
+   "why": "우대 2번 — CVPR·ICCV 논문을 무료로 읽는 곳. 최근 해 주행 인지 논문을 훑는다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사가 지금 하는 것 알기",
+   "time": "3일",
+   "goal": "이 팀의 BEV 융합 모델·데이터 순환·E2E 전환 계획을 그림 한 장으로 설명한다.",
+   "resources": [
+    "km-ifkakao25",
+    "km-news",
+    "km-dataset"
+   ],
+   "task": "발표 영상을 보고 '센서 동기화 → BEV 변환 → 멀티 헤드 → 플래너'와 '수집 → 오토라벨링 → 학습 → 검증 → 경량화 → 배포' 두 그림을 직접 그린다."
+  },
+  {
+   "title": "센서 기하와 BEV",
+   "time": "2~3주",
+   "goal": "라이다 점을 카메라 픽셀에, 카메라 특징을 BEV 격자에 옮기는 계산을 직접 짠다.",
+   "resources": [
+    "mvg",
+    "hanbit-cv",
+    "lss",
+    "lec-3d"
+   ],
+   "task": "가상 내부·외부 파라미터로 라이다 점 100개를 투영하는 넘파이 코드와, 같은 점을 0.5m BEV 격자로 쌓는 코드를 만들고 회전을 1° 틀렸을 때 50m 앞 점이 몇 픽셀 밀리는지 잰다."
+  },
+  {
+   "title": "검출·분할·깊이 기본기",
+   "time": "3~4주",
+   "goal": "세 과제를 공개 모델로 돌리고 IoU·mIoU·AbsRel·δ 로 채점한다.",
+   "resources": [
+    "lec-detseg",
+    "mask2former",
+    "depth-anything",
+    "centerpoint",
+    "nuscenes"
+   ],
+   "task": "주행 사진 20장(직접 찍거나 공개 샘플)에 공개 분할·깊이 모델을 돌리고, 손으로 라벨한 5장으로 mIoU·AbsRel 을 계산해 야간·역광에서 어디가 무너지는지 표로 만든다."
+  },
+  {
+   "title": "멀티모달 융합과 MLLM",
+   "time": "3~4주",
+   "goal": "카메라·라이다를 BEV 에서 합치는 구조와, 이미지를 LLM 에 잇는 구조를 설명하고 작게 만들어 본다.",
+   "resources": [
+    "bevfusion",
+    "clip",
+    "llava",
+    "drivelm",
+    "lec-vl",
+    "lec-multimodal"
+   ],
+   "task": "가상의 BEV 특징(카메라 칸·라이다 칸)을 이어 붙여 작은 CNN 으로 '차 있음/없음'을 맞히는 장난감 모델을 만들고, 한쪽 센서를 끄면 점수가 얼마나 떨어지는지 비교한다."
+  },
+  {
+   "title": "장기 학습 실험 틀",
+   "time": "2~3주",
+   "goal": "새 데이터를 더할 때 옛 성능이 얼마나 떨어지는지 재고, 재생·정규화로 줄여 본다.",
+   "resources": [
+    "ewc",
+    "cl-survey",
+    "memgpt",
+    "karpathy-recipe"
+   ],
+   "task": "숫자 분류 같은 작은 데이터를 '도시 A·B·야간' 세 과제로 나눠 차례로 학습하고, 정확도 행렬과 평균 잊음을 낸 뒤 옛 데이터 10% 재생을 넣었을 때와 비교한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 신입 초봉 **약 4,706만원**·평균 **약 6,853만원**(집계값) — 이 자리는 5년 이상 연구직이라 처우 협의로 따로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,706만원",
+    "amount": 4706,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [16]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,853만원",
+    "amount": 6853,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 — 경력직이 섞인 회사 전체 값이다 [16]"
+   },
+   {
+    "label": "1인 평균 급여(상반기 6개월)",
+    "value": "4,718만원",
+    "basis": "공시 · 2025년 상반기",
+    "note": "2025년 1~6월 6개월치다(연봉이 아니다). 6월 말 직원 931명, 평균 근속 3.8년 [15]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 전형 마지막에 **처우 협의** 단계가 있다 [1]. 이력서에 연봉 정보를 적으면 서류가 검토되지 않을 수 있다 [1]. 집계 평균은 경력직이 섞인 회사 전체 값이라 이 자리(5년 이상 또는 박사 연구직)의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "주택 대출 이자",
+    "detail": "주택 관련 대출 최대 3억원에 대한 이자 지원"
+   },
+   {
+    "name": "생활 안정 자금",
+    "detail": "최대 5천만원 지원"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "월 30만원"
+   },
+   {
+    "name": "휴가",
+    "detail": "매년 최대 25일"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "선택적 근로시간제, 금요일 2시간 조기 퇴근, 점심시간 1시간 30분"
+   },
+   {
+    "name": "육아",
+    "detail": "사내 어린이집, 육아휴직 최대 2년"
+   },
+   {
+    "name": "보험",
+    "detail": "본인·가족·배우자 부모 실비 보험 지원"
+   },
+   {
+    "name": "성장",
+    "detail": "교육·컨퍼런스·전자도서관 지원, 업무 장비·소프트웨어 지원"
+   },
+   {
+    "name": "휴양·시설",
+    "detail": "휴양 시설(파라스파라·아난티·롯데리조트 등), 사내 마사지샵, 수면실·안마의자, 통근버스"
+   }
+  ],
+  "note": "원티드에 올라온 이 공고의 '혜택 및 복지'[2]와 카카오모빌리티 채용 사이트 복리후생 페이지[17]. 페이지에 작성 연도가 없고, 채용 사이트에는 점심 식대·간식·건강검진 같은 항목이 더 있다 [17]."
+ },
+ "location": {
+  "name": "카카오모빌리티 판교 오피스(알파돔타워)",
+  "address": "경기도 성남시 분당구 판교역로 152, 알파돔타워 13층",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 {추론}",
+  "note": "공고 근무 조건의 근무지(판교 오피스, 판교역로 152 알파돔타워)[1]와 회사 사이트 하단 주소(13층)[18]."
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "카카오모빌리티 채용 · 머신러닝 research scientist (R&D)",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/148119",
+   "kind": "posting",
+   "note": "업무·자격·우대·전형(Coding Test·사전 과제)·재지원 제한·근무지"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 카카오모빌리티 머신러닝 research scientist (R&D)",
+   "url": "https://www.wanted.co.kr/wd/364303",
+   "kind": "posting",
+   "note": "같은 공고의 원티드 판 — 혜택 및 복지 목록"
+  },
+  {
+   "n": 3,
+   "title": "카카오 그룹 채용 · [공동체] 카카오모빌리티 머신러닝 research scientist (R&D)",
+   "url": "https://careers.kakao.com/jobs/S-4306",
+   "kind": "posting",
+   "note": "같은 공고의 카카오 그룹 채용 판 — 회사 소개"
+  },
+  {
+   "n": 4,
+   "title": "if(kakao)25 · 자율주행 AI 실차 적용기: 서비스를 위해 우리가 만들고 있는 자율주행 (박창수)",
+   "url": "https://www.youtube.com/watch?v=N7CVydbY2gE",
+   "kind": "company",
+   "date": "2025-09-24",
+   "note": "18분 발표 대본 전부 읽음 — 센서 동기화(나노초·하드웨어 트리거), BEV 멀티모달 융합·멀티 헤드, AI 플래너(맵·경로·에이전트·결정 인코더), 데이터 순환·오토라벨링·검증·경량화, 관제·원격 가이드"
+  },
+  {
+   "n": 5,
+   "title": "테크M · [이프 카카오] 카카오모빌리티, 자율주행 생태계 이끈다",
+   "url": "https://www.techm.kr/news/articleView.html?idxno=144848",
+   "kind": "news",
+   "date": "2025-09-24",
+   "note": "같은 발표 보도 — BEV 기반 멀티모달 센서, 오토 라벨링"
+  },
+  {
+   "n": 6,
+   "title": "바이라인네트워크 · 카카오모빌리티 서울자율차 운영 현황·E2E 연내 도입",
+   "url": "https://byline.network/2026/09/09_kakaomobility/",
+   "kind": "news",
+   "date": "2026-09-10",
+   "note": "3단 규칙 구조 → AI 플래너 추가 → 연말 E2E, 1만 3천km·2,000건 이상, VLM 이상 상황 분석·원격지원 개발·테스트 단계"
+  },
+  {
+   "n": 7,
+   "title": "머니투데이방송 · \"베테랑 드라이버 같은 판단\"…카카오모빌리티, 자율주행모델 현황 공개",
+   "url": "https://news.mtn.co.kr/news-detail/2026090916330214933",
+   "kind": "news",
+   "date": "2026-09-09",
+   "note": "엣지 케이스(불법 유턴·무단횡단·공사·낙하물), 세이프티 이밸류에이터, 희소 데이터를 골라 모으기"
+  },
+  {
+   "n": 8,
+   "title": "아주경제 · \"쉬운 곳 1년보다 강남에서 한 달\"…카카오모빌리티, '희소 데이터'로 자율주행 AI 키운다",
+   "url": "https://v.daum.net/v/8mhY1Ru5hJ",
+   "kind": "news",
+   "date": "2026-09-09",
+   "note": "VLM 등을 활용한 데이터 마이닝(날씨·시간대·도로 구조·차량 움직임), AI 자동 라벨링"
+  },
+  {
+   "n": 9,
+   "title": "ZDNet Korea · 카카오 서울자율차가 복잡한 강남 밤길 누비는 이유",
+   "url": "https://zdnet.co.kr/view?no=20260909160312",
+   "kind": "news",
+   "date": "2026-09-09",
+   "note": "수동 전환 전후 자동 저장, 정제·오토 라벨링·데이터 마이닝·재학습"
+  },
+  {
+   "n": 10,
+   "title": "바이라인네트워크 · AME 2026 카카오모빌리티 김진규 부사장 발표",
+   "url": "https://byline.network/2026/08/28_2918273/",
+   "kind": "news",
+   "date": "2026-08-31",
+   "note": "반기보고서 인용 — 자율주행 개발·HD맵 고도화·MMS 고도화, HD맵은 공간정보기획팀·공간정보개발팀·AI연구개발팀 담당"
+  },
+  {
+   "n": 11,
+   "title": "디지털데일리 · 카카오모빌리티, 자율주행 인재 '무제한 채용'…피지컬 AI 승부수",
+   "url": "https://www.ddaily.co.kr/page/view/2026032010105544809",
+   "kind": "news",
+   "date": "2026-03-20",
+   "note": "규모·기간 제한 없는 채용, 5년 이상 경력, VLA 로 E2E 두뇌, SLAM 엔지니어의 공간 정보 결합"
+  },
+  {
+   "n": 12,
+   "title": "디지털데일리 · 카카오모빌리티 \"자율주행 기술 내재화, 서비스 신뢰 확보할 것\"",
+   "url": "https://www.ddaily.co.kr/page/view/2026042311132043000",
+   "kind": "news",
+   "date": "2026-04-23",
+   "note": "VLM 기반 이상 징후 자동 알림 시스템 개발 목표, HD맵 외부 제공 계획"
+  },
+  {
+   "n": 13,
+   "title": "카카오 Tech Ethics 19호 · 산학연 협력으로 구축한 데이터 전격 공개",
+   "url": "https://www.kakaocorp.com/page/detail/11509",
+   "kind": "company",
+   "note": "다중 센서 융합 학습 데이터 — 동기화·캘리브레이션·정합"
+  },
+  {
+   "n": 14,
+   "title": "CIO Korea · 카카오모빌리티, 자율주행 AI 학습용 데이터셋 공개",
+   "url": "https://www.cio.com/article/3835316/",
+   "kind": "news",
+   "note": "3D 동적 객체 검출·추적·신호등·세그멘테이션 라벨, ETRI 검증(3D 5~8%·신호등 2%)"
+  },
+  {
+   "n": 15,
+   "title": "아이뉴스24 · 카카오모빌리티 2025년 상반기 공시(직원 수·1인 평균 급여)",
+   "url": "https://www.inews24.com/view/1876724",
+   "kind": "news",
+   "note": "같은 회사 다른 풀이(kakaomobility-ad-ai-perception)의 출처를 다시 씀"
+  },
+  {
+   "n": 16,
+   "title": "자소설닷컴 · 카카오모빌리티(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/10478",
+   "kind": "reference",
+   "note": "기준일 표기 없음 — 같은 회사 다른 풀이의 출처를 다시 씀"
+  },
+  {
+   "n": 17,
+   "title": "카카오모빌리티 채용 · 복리후생&성장지원",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/benefit",
+   "kind": "company"
+  },
+  {
+   "n": 18,
+   "title": "카카오모빌리티 · 회사 사이트 하단 회사 정보",
+   "url": "https://www.kakaomobility.com/",
+   "kind": "company"
+  },
+  {
+   "n": 19,
+   "title": "BEVFusion: Multi-Task Multi-Sensor Fusion with Unified Bird's-Eye View Representation",
+   "url": "https://arxiv.org/abs/2205.13542",
+   "kind": "reference",
+   "note": "다른 곳(MIT) — 카메라·라이다를 BEV 에서 합쳐 3D 검출·BEV 지도 분할"
+  },
+  {
+   "n": 20,
+   "title": "Lift, Splat, Shoot (Philion · Fidler)",
+   "url": "https://arxiv.org/abs/2008.05711",
+   "kind": "reference",
+   "note": "픽셀별 깊이 분포로 카메라 특징을 BEV 로"
+  },
+  {
+   "n": 21,
+   "title": "Masked-attention Mask Transformer for Universal Image Segmentation (Mask2Former)",
+   "url": "https://arxiv.org/abs/2112.01527",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Depth Anything (Yang 외)",
+   "url": "https://arxiv.org/abs/2401.10891",
+   "kind": "reference",
+   "note": "라벨 있는 약 150만 장 + 라벨 없는 약 6,200만 장"
+  },
+  {
+   "n": 23,
+   "title": "Depth Map Prediction from a Single Image using a Multi-Scale Deep Network (Eigen 외, 2014)",
+   "url": "https://arxiv.org/abs/1406.2283",
+   "kind": "reference",
+   "note": "단안 깊이 평가 지표(상대 오차·RMSE·δ 문턱)"
+  },
+  {
+   "n": 24,
+   "title": "Digging Into Self-Supervised Monocular Depth Estimation (Monodepth2)",
+   "url": "https://arxiv.org/abs/1806.01260",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Visual Instruction Tuning (LLaVA)",
+   "url": "https://arxiv.org/abs/2304.08485",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "DriveLM: Driving with Graph Visual Question Answering",
+   "url": "https://arxiv.org/abs/2312.14150",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "MapTR: Structured Modeling and Learning for Online Vectorized HD Map Construction",
+   "url": "https://arxiv.org/abs/2208.14437",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Overcoming catastrophic forgetting in neural networks (EWC)",
+   "url": "https://arxiv.org/abs/1612.00796",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "A Comprehensive Survey of Continual Learning: Theory, Method and Application",
+   "url": "https://arxiv.org/abs/2302.00487",
+   "kind": "reference",
+   "note": "방법 갈래와 평가 지표(평균 정확도·잊음)"
+  },
+  {
+   "n": 30,
+   "title": "nuScenes: A multimodal dataset for autonomous driving",
+   "url": "https://arxiv.org/abs/1903.11027",
+   "kind": "reference",
+   "note": "카메라 6·라이다 1·레이더 5, 1,000 장면, NDS"
+  },
+  {
+   "n": 31,
+   "title": "Hartley · Zisserman · Multiple View Geometry in Computer Vision",
+   "url": "https://www.robots.ox.ac.uk/~vgg/hzbook/",
+   "kind": "reference",
+   "note": "카메라 모델·투영"
+  },
+  {
+   "n": 32,
+   "title": "Multi-Task Learning Using Uncertainty to Weigh Losses (Kendall · Gal · Cipolla)",
+   "url": "https://arxiv.org/abs/1705.07115",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "Andrej Karpathy · A Recipe for Training Neural Networks",
+   "url": "https://karpathy.github.io/2019/04/25/recipe/",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "NVIDIA TensorRT 문서",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "CVF Open Access — CVPR·ICCV 논문 공개 저장소",
+   "url": "https://openaccess.thecvf.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "CIO Korea · 카카오모빌리티 NEMO 2023서 AI 플랫폼 비전 공개",
+   "url": "https://www.cio.com/article/3506372/",
+   "kind": "news",
+   "date": "2023-09-08",
+   "note": "MMS 'ARGOS' 시리즈로 지상·상공 디지털 트윈, HD맵 구축 기술"
+  },
+  {
+   "n": 37,
+   "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+   "url": "https://arxiv.org/abs/2103.00020",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "DriveVLM: The Convergence of Autonomous Driving and Large Vision-Language Models",
+   "url": "https://arxiv.org/abs/2402.12289",
+   "kind": "reference"
+  },
+  {
+   "n": 39,
+   "title": "PyTorch C++ API 문서",
+   "url": "https://docs.pytorch.org/cppdocs/",
+   "kind": "reference"
+  },
+  {
+   "n": 40,
+   "title": "MemGPT: Towards LLMs as Operating Systems",
+   "url": "https://arxiv.org/abs/2310.08560",
+   "kind": "reference"
+  },
+  {
+   "n": 41,
+   "title": "Experience Replay for Continual Learning (Rolnick 외)",
+   "url": "https://arxiv.org/abs/1811.11682",
+   "kind": "reference"
+  },
+  {
+   "n": 42,
+   "title": "Center-based 3D Object Detection and Tracking (CenterPoint)",
+   "url": "https://arxiv.org/abs/2006.11275",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "공고에 팀 이름이 없어 어느 조직(자율주행개발팀·AI연구개발팀 등)의 자리인지 확인하지 못했습니다. 회사가 직접 밝힌 것은 if(kakao)25 발표의 인지 모델·데이터 순환과 2026년 보도의 E2E·VLM 계획까지이고, '장기 학습'·멀티모달 LLM 의 구체 구조는 공개되지 않아 공개 논문으로 '보통 이런 것'을 보였습니다. E2E 연내 도입·VLM 관제는 2026년 9월 기준 계획·시험 단계입니다."
+}

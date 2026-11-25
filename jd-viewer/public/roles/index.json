@@ -290,8 +290,13 @@
   "ats-greeting:kakaomobility:225964": "kakaomobility-ad-ai-perception",
   "ats-kakao:group:S-4725": "kakaomobility-ad-ai-perception",
   "ats-greeting:kakaomobility:227958": "kakaomobility-av-hw-technician",
+  "ats-greeting:kakaomobility:230974": "kakaomobility-av-system-engineer",
+  "ats-kakao:group:S-4737": "kakaomobility-av-system-engineer",
   "ats-greeting:kakaomobility:242043": "kakaomobility-isms-compliance-manager",
   "ats-kakao:group:S-4771": "kakaomobility-isms-compliance-manager",
+  "ats-greeting:kakaomobility:148119": "kakaomobility-ml-research-scientist",
+  "ats-kakao:group:S-4306": "kakaomobility-ml-research-scientist",
+  "wanted-364303": "kakaomobility-ml-research-scientist",
   "ats-greeting:kakaomobility:187114": "kakaomobility-qa-engineer",
   "ats-kakao:group:S-4732": "kakaomobility-qa-engineer",
   "ats-greeting:kakaomobility:243388": "kakaomobility-security-operations-senior",
@@ -2973,6 +2978,17 @@
    "lines": 18
   },
   {
+   "id": "kakaomobility-av-system-engineer",
+   "company": "카카오모빌리티",
+   "role": "자율주행 시스템 엔지니어",
+   "jobs": [
+    "ats-greeting:kakaomobility:230974",
+    "ats-kakao:group:S-4737"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 15
+  },
+  {
    "id": "kakaomobility-isms-compliance-manager",
    "company": "카카오모빌리티",
    "role": "정보보호 관리체계 및 컴플라이언스 담당자",
@@ -2982,6 +2998,18 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 21
+  },
+  {
+   "id": "kakaomobility-ml-research-scientist",
+   "company": "카카오모빌리티",
+   "role": "머신러닝 research scientist",
+   "jobs": [
+    "ats-greeting:kakaomobility:148119",
+    "ats-kakao:group:S-4306",
+    "wanted-364303"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 15
   },
   {
    "id": "kakaomobility-qa-engineer",
