@@ -1,0 +1,1356 @@
+{
+ "id": "42dot-data-engineer-data-governance",
+ "company": "포티투닷(42dot)",
+ "role": "데이터 엔지니어 (데이터 거버넌스·분석)",
+ "team": "판교 · Data Governance & Analytics 조직",
+ "jobs": [
+  "ats-ashby:42dot:70c5a672-9bd9-4195-a305-245b578a35dc"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "차량과 서비스에서 들어오는 데이터를 받아 분석용 표로 바꾸는 **수집·처리 파이프라인**을 고치고 늘리며, 그 데이터의 **모양(스키마)·목록(카탈로그)·품질 검사·감시 지표**까지 맡습니다.[1]",
+  "env": "회사 전체의 데이터 공통 업무를 맡는 조직입니다. 분석 환경 운영, 직접 분석, 데이터 거버넌스(누가 어떤 데이터를 어떻게 쓰나에 대한 규칙) 정책을 한 조직이 하고, 같은 팀에 데이터 분석가가 있습니다.[1]",
+  "oneline": "남이 믿고 쓰는 데이터를 만드는 **경력 6년 이상** 데이터 엔지니어. 새 기술을 짓는 것보다 **스키마·품질·감시**로 데이터를 믿을 수 있게 지키는 쪽이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "데이터 수집·처리 파이프라인 기능 개발 및 유지 보수",
+   "short": "차량·서비스 데이터를 받아 분석할 수 있는 표로 바꾸는 작업 흐름에 기능을 더하고 계속 돌게 지키는 일.",
+   "why": "이 조직은 사내 데이터 분석 환경을 운영하고, 필요하면 분석도 직접 합니다.[1] 회사는 CES 2024 소개에서 차 안의 고성능 제어기(HPVC)가 차량 데이터를 모으고, 차량·운전자·도로 데이터를 디지털로 다루는 관제 시스템과 DataOps 환경을 갖춘다고 밝혔습니다.[4] 차 안 AI 비서(Gleo AI)를 발표하면서는 차 안 대화 데이터를 수집부터 저장·활용까지 관리한다고 적었습니다.[5] 공고의 팀원 글도 '새로운 차량 데이터 환경에서 여러 목적의 파이프라인'을 개발·운영한다고 합니다.[1]",
+   "actually": {
+    "intro": "어떤 데이터가 어느 도구로 흐르는지는 공개되지 않았습니다. 아래는 같은 일을 하는 곳에서 보통 하는 일입니다.",
+    "items": [
+     "**배치와 스트리밍** — 하루치를 모아 한 번에 처리하는 배치와, 들어오는 대로 처리하는 스트리밍을 목적에 맞게 고른다. 우대 줄의 Spark·Kafka가 각각의 대표 도구다.[24][28]",
+     "**층 나누기** — 받은 그대로의 원천 층 → 형식·중복을 정리한 층 → 분석용으로 묶은 층으로 나눠 쌓는 방식이 흔하다(메달리온 구조).[41]",
+     "**다시 돌려도 같은 결과** — 실패한 날을 다시 돌려도 행이 두 번 들어가지 않게(멱등) 짠다. 그래야 과거 치를 다시 채우는 백필이 안전하다.[39]",
+     "**기능 더하기** — 새 차종·새 서비스의 데이터가 생기면 받아들일 출처와 표를 더한다. 업무⑤의 ingestion 이 그 입구다.{추론}",
+     "**유지 보수** — 실패 알림에 대응하고, 느려진 작업을 찾아 고치고, 바뀐 원천 형식에 맞춰 코드를 고친다.{추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "차량·서비스 데이터가 분석 화면에 오기까지 — 일반적인 흐름 {추론}[4][41]",
+     "steps": [
+      "차량·서비스 · 신호·로그·이벤트",
+      "수집 · 메시지 큐(Kafka·Kinesis·SQS)·파일 업로드",
+      "원천 저장 · 받은 그대로",
+      "정리 · 형식 맞추기·중복 제거·품질 검사",
+      "분석용 표 · OLAP DB(ClickHouse 등)",
+      "대시보드·분석 · 분석가·서비스 팀"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "'기능 개발 및 유지 보수'라 처음부터 짓기보다 **이미 도는 파이프라인을 넓히고 지키는** 자리로 읽힙니다.{추론} 최소선은 내가 맡은 작업이 실패했을 때 원인을 찾고, 그날만 다시 돌려도 결과가 같게 만드는 것입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    24,
+    28,
+    39,
+    41
+   ],
+   "study": [
+    "fde-ko",
+    "airflow-book",
+    "medallion"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 스키마 관리 및 데이터 카탈로그 운영",
+   "short": "표·필드의 모양과 뜻을 정해 바뀌어도 안 깨지게 하고, 사내 누구나 '어떤 데이터가 어디 있나'를 찾게 하는 일.",
+   "why": "이 조직의 목표는 데이터 관리 효율을 높여 **더 많은 구성원이 편하게 데이터를 쓰게** 하는 것이고, 그 과정의 거버넌스 정책을 개발·운영합니다.[1] 찾지 못하는 데이터는 쓸 수 없고, 예고 없이 모양이 바뀐 데이터는 다음 단계를 조용히 깨뜨립니다.{추론} 차량 소프트웨어는 무선 업데이트(OTA)로 계속 바뀌므로[4] 같은 신호도 버전마다 필드가 달라질 수 있습니다.{추론}",
+   "actually": {
+    "items": [
+     "**스키마 바꾸는 규칙** — 새 필드는 기본값과 함께 더하고, 형식은 넓히는 쪽(int → long)으로만 바꾼다. Avro 는 읽는 쪽 스키마에 기본값이 없는 새 필드가 있으면 옛 데이터를 못 읽는다고 정해 두었다.[13]",
+     "**호환성 검사** — 스키마 저장소(Schema Registry)가 새 스키마를 등록받을 때 옛 데이터와 호환되는지(BACKWARD 등) 검사하게 할 수 있다.[14]",
+     "**카탈로그에 적는 것** — 표 설명, 주인(누구에게 묻나), 필드 뜻, 용어 사전, 어디서 와서 어디로 가나(계보, lineage)를 한 화면에서 찾게 한다. DataHub·OpenMetadata 가 대표 오픈소스다.[11][12]",
+     "**민감 정보 표시** — 위치·차대번호처럼 사람과 이어질 수 있는 필드에 꼬리표를 달아 접근을 좁힌다. 차 위치가 사람과 이어지면 위치정보법의 개인위치정보로 다뤄질 수 있다.[38]{추론}",
+     "**자동 등록** — 파이프라인이 표를 만들 때 스키마·설명을 카탈로그로 자동으로 보내, 사람이 손으로 적다 빠뜨리는 일을 줄인다.[11][12]{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "새 스키마로 옛 데이터를 읽을 수 있나 — Avro 식 규칙의 축소판",
+     "body": "배터리 잔량(soc) 필드를 더할 때 기본값이 있으면 통과, 없으면 옛 데이터를 못 읽습니다. 속도를 float 에서 int 로 좁히는 것도 막힙니다[13](직접 돌린 출력).",
+     "lang": "python",
+     "code": "def backward_ok(old, new):\n    problems = []\n    for name, f in new.items():\n        if name not in old and \"default\" not in f:\n            problems.append(f\"새 필드 {name} 에 기본값 없음\")\n        elif name in old and old[name][\"type\"] != f[\"type\"]:\n            problems.append(f\"{name} 형식 {old[name]['type']} -> {f['type']}\")\n    return problems or [\"OK\"]\n\nv1 = {\"vin\": {\"type\": \"string\"}, \"ts\": {\"type\": \"long\"}, \"speed\": {\"type\": \"float\"}}\nv2 = dict(v1, soc={\"type\": \"float\", \"default\": None})\nv3 = dict(v1, soc={\"type\": \"float\"})\nv4 = dict(v1, speed={\"type\": \"int\"})\nfor name, s in [(\"v2\", v2), (\"v3\", v3), (\"v4\", v4)]:\n    print(name, backward_ok(v1, s))\n# v2 ['OK']\n# v3 ['새 필드 soc 에 기본값 없음']\n# v4 ['speed 형식 float -> int']"
+    }
+   ],
+   "how_far": "무엇을 민감 정보로 볼지, 누가 볼 수 있는지 같은 정책은 조직이 정합니다.[1] 개발자 몫은 그 정책이 **도구와 파이프라인에서 기본으로 지켜지게** 하는 것 — 호환 안 되는 스키마는 등록이 막히고, 새 표는 설명·주인 없이 올라가지 않게 하는 데까지입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    11,
+    12,
+    13,
+    14,
+    38
+   ],
+   "study": [
+    "gov-book",
+    "avro-spec",
+    "confluent-evolution",
+    "datahub-docs",
+    "openmetadata-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "수집 데이터 품질 검증 로직 구현 및 이상치 탐지 자동화",
+   "short": "들어온 데이터가 빠졌거나 틀렸는지 규칙으로 자동 검사하고, 평소와 다른 날을 스스로 알리게 하는 일.",
+   "why": "같은 팀에 데이터 분석가가 있어 수집부터 분석까지 같이 일합니다.[1] 잘못 들어온 데이터는 곧 잘못된 분석이 되므로, 분석가 앞에서 먼저 걸러야 합니다.{추론} '자동화'가 붙은 것은 사람이 매일 눈으로 확인하지 않게 하라는 뜻입니다.{추론}",
+   "actually": {
+    "items": [
+     "**무엇을 재나** — 국제 표준 ISO/IEC 25012 는 데이터 품질을 정확성·완전성·일관성·현재성(얼마나 최신인가) 같은 특성으로 나눈다.[15]",
+     "**규칙 검사** — 비면 안 되는 칸(not null), 겹치면 안 되는 키(unique), 허용 범위(속도 0~300), 다른 표와의 연결(relationships)을 선언해 두고 매 회차 돌린다. Great Expectations·dbt 가 이런 검사를 선언형으로 적게 해 준다.[17][18]",
+     "**신선도** — 마지막으로 데이터가 들어온 시각이 기준보다 오래되면 경고한다(차량에서 업로드가 멈춘 것).{추론}",
+     "**통계 이상치** — 하루 건수·평균값 같은 지표를 과거와 비교한다. 튀는 값 하나에 평균·표준편차가 끌려가므로, 중앙값과 중앙값 절대편차(MAD)로 잰 '수정 Z 점수'가 3.5 를 넘으면 의심하는 방식이 있다.[16]",
+     "**걸리면 어떻게** — 다음 단계로 넘기지 않고 멈출지, 격리 표에 옮기고 계속 갈지, 알림만 보낼지를 검사마다 정한다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "규칙 검사 네 가지를 SQL 한 번으로",
+     "body": "가짜 신호 6행에서 전체 6행 · 속도 빈칸 16.7% · 범위 밖 1행(812km/h) · 중복 1행이 나옵니다. sqlite 로 직접 돌린 출력입니다.",
+     "lang": "sql",
+     "code": "-- signal(vin, ts, seq, speed)\nSELECT count(*) AS total,\n       round(avg(speed IS NULL) * 100, 1) AS null_pct,\n       sum(speed < 0 OR speed > 300) AS out_of_range,\n       count(*) - (SELECT count(*) FROM\n         (SELECT DISTINCT vin, ts, seq FROM signal)) AS dup_rows\nFROM signal;\n-- (6, 16.7, 1, 1)"
+    },
+    {
+     "title": "평균·표준편차로는 못 잡는 이상한 날 — 수정 Z 점수",
+     "body": "열흘 치 업로드 건수 중 7일째(640)와 9일째(2950)가 이상합니다. 평균·표준편차로 재면 두 날의 점수가 −0.82·2.8 이라 3 을 못 넘어 둘 다 놓칩니다. 중앙값·MAD 로 재면 −22.5·119.2 로 둘 다 잡힙니다[16](직접 돌린 출력).",
+     "lang": "python",
+     "code": "import statistics\n\ndef flag(counts, th=3.5):\n    med = statistics.median(counts)\n    mad = statistics.median(abs(x - med) for x in counts)\n    return [(d, x, round(0.6745 * (x - med) / mad, 1))\n            for d, x in enumerate(counts, 1)\n            if abs(0.6745 * (x - med) / mad) > th]\n\nrows = [1020, 990, 1005, 1012, 998, 1031, 640, 1008, 2950, 1001]\nprint(flag(rows))\n# [(7, 640, -22.5), (9, 2950, 119.2)]"
+    }
+   ],
+   "how_far": "어떤 값이 '틀린' 것인지(속도 상한, 허용 빈칸 비율)는 분석가·서비스 팀과 같이 정합니다.{추론} 개발자는 그 규칙을 **코드로 선언해 매 회차 자동으로 돌리고, 걸린 것을 누가 언제 봤는지 남기는** 데까지 맡습니다.{추론} 요일·명절처럼 원래 출렁이는 지표는 같은 요일끼리 비교하는 식으로 오탐을 줄이는 감각이 필요합니다.{추론}",
+   "refs": [
+    1,
+    15,
+    16,
+    17,
+    18
+   ],
+   "study": [
+    "dq-fundamentals",
+    "gx-docs",
+    "dbt-tests",
+    "nist-outlier",
+    "iso25012"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대시보드 구성 및 파이프라인 모니터링 지표 관리",
+   "short": "분석 결과를 보는 화면과, 파이프라인이 제때·제대로 도는지 보여 주는 감시 지표를 만들고 관리하는 일.",
+   "why": "이 조직은 분석 환경을 운영하고 분석도 직접 하므로[1] 결과를 보여 줄 화면이 필요합니다. 동시에 여러 목적의 파이프라인을 운영하므로[1] 어디가 늦고 어디가 실패했는지 한눈에 봐야 합니다.{추론} 우대 줄에 Grafana·Prometheus·Loki 가 적혀 있어 감시 쪽 도구를 짐작할 수 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**대시보드 두 종류** — 서비스·분석용(차종별 사용량, 기능별 이용률)과 운영용(작업 성공률·처리 시간·지연)을 나눠 만든다.{추론}",
+     "**무엇을 잴까** — 구글 SRE 책은 감시의 기본 신호로 지연·처리량·오류·포화 네 가지를 든다.[19] 데이터 파이프라인이면 여기에 신선도(마지막 적재 시각)와 건수(어제 대비)를 더한다.{추론}",
+     "**지표 이름** — Prometheus 는 단위를 이름 끝에 붙이고(_seconds, _bytes) 누적 숫자에는 _total 을 붙이라고 권한다. 예: pipeline_rows_ingested_total, pipeline_job_duration_seconds.[21]",
+     "**로그** — Loki 는 로그 본문이 아니라 꼬리표(label)만 색인하므로, 꼬리표 종류(차대번호처럼 값이 수없이 많은 것)를 늘리면 느려진다.[23]",
+     "**좋은 대시보드** — Grafana 는 대시보드마다 목적을 정하고, RED·USE 같은 틀로 지표를 고르고, 비슷한 화면을 남발하지 말라고 권한다.[22]"
+    ]
+   },
+   "how_far": "지표를 만드는 것보다 **알림이 왔을 때 무엇을 보면 되는지 화면 하나로 이어지게** 하는 것이 최소선입니다.{추론} 분석 대시보드는 숫자의 정의(무엇을 '활성 차량'으로 세나)를 분석가와 맞추는 일이 절반입니다.{추론}",
+   "refs": [
+    1,
+    19,
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "sre-book",
+    "prom-book",
+    "grafana-bp",
+    "loki-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 Ingestion 로직 구현 및 테스트",
+   "short": "새 출처의 데이터를 받아들이는 코드를 짜고, 중복·순서 뒤바뀜·형식 오류에도 맞게 들어가는지 테스트하는 일.",
+   "why": "파이프라인의 입구가 틀리면 뒤의 모든 표가 틀립니다.{추론} 이 공고는 우대 줄에 Kafka·Kinesis·SQS 같은 메시지 서비스를 들어[1] 데이터가 메시지로 들어오는 경우가 많다는 것을 보여 줍니다. 같은 회사의 AI 데이터 파이프라인 공고(마감)도 Kafka 와 이벤트 기반 구조 이해를 요구했습니다.[8]",
+   "actually": {
+    "items": [
+     "**전달 보장** — 메시지 시스템은 '최대 한 번·최소 한 번·정확히 한 번' 중 무엇을 보장하나가 다르다. Kafka 문서는 이 셋을 나눠 설명한다.[28]",
+     "**중복은 온다** — SQS 표준 대기열은 같은 메시지가 두 번 오거나 순서가 바뀔 수 있다고 적었다.[30] 그래서 (차대번호, 시각, 순번) 같은 키로 중복을 지우거나 덮어쓰게 짠다.{추론}",
+     "**나눠 받기** — Kinesis 는 스트림을 샤드로 나누고 파티션 키로 같은 차의 데이터를 같은 샤드에 모은다. 같은 샤드 안에서만 순서가 지켜진다.[29]",
+     "**차량 쪽 수집 조건** — 차량 데이터는 '이 조건일 때 이 신호를 모은다'는 수집 규칙(AWS IoT FleetWise 의 campaign 같은 것)으로 정해 올라오기도 한다.[31]",
+     "**테스트** — 정상 메시지, 같은 메시지 두 번, 늦게 온 메시지, 필드가 빠진 메시지를 테스트 데이터로 만들어 결과 표가 기대와 같은지 확인한다. pytest 의 매개변수화로 경우를 늘린다.[40]{추론}"
+    ]
+   },
+   "how_far": "'구현 및 테스트'가 한 줄에 있어 **테스트까지 짜는 것이 업무 범위**입니다.[1] 최소선은 같은 입력을 두 번 넣어도 결과가 같다는 것과, 형식이 틀린 메시지가 파이프라인을 멈추지 않고 따로 모인다는 것을 테스트로 보이는 것입니다.{추론}",
+   "refs": [
+    1,
+    8,
+    28,
+    29,
+    30,
+    31,
+    40
+   ],
+   "study": [
+    "kafka-guide",
+    "wiki-kafka",
+    "kinesis-docs",
+    "sqs-docs",
+    "pytest"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "소프트웨어 개발 경력 6년 이상, 이 중 데이터 엔지니어링 경력 5년 이상",
+   "short": "회사 전체가 기대는 데이터 공통 업무라 데이터 파이프라인을 오래 운영해 본 사람을 찾아서.",
+   "why": "이 조직은 사내 데이터 공통 업무와 거버넌스 정책을 맡고 여러 서비스 개발팀과 협업합니다.[1] 남의 팀이 기대는 데이터를 다루려면 장애·스키마 변경·품질 사고를 여러 번 겪어 본 경험이 필요합니다.{추론} 비교로, 같은 회사의 AI 데이터 파이프라인 공고(마감)는 경력 3~12년이었습니다.[8]",
+   "how_far": "'이 중 5년'이라 개발 경력 대부분이 데이터 쪽이어야 합니다.[1] 차량 경험은 우대 줄로 따로 있어[1] 다른 산업의 데이터 엔지니어링 5년도 지원 범위로 읽힙니다.{추론} 면접에서는 내가 운영한 파이프라인의 규모·장애·고친 결과를 숫자로 말할 수 있어야 합니다.{추론}",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python 또는 JVM 계열 언어(Java, Scala, Kotlin) 중 하나 이상의 데이터 처리 경험",
+   "short": "파이프라인·품질 검사·ingestion 코드를 짤 언어 하나를 데이터 처리에 깊게 써 봤어야 해서.",
+   "why": "우대 줄의 Spark 는 Scala·Java·Python 으로 쓸 수 있고[24], Kafka 는 JVM 위에서 돌며 Java 클라이언트가 기본입니다.[28] 그래서 두 언어 계열 중 하나를 고르게 한 것으로 읽힙니다.{추론} 전형에 코딩 테스트가 따로 있습니다.[1]",
+   "level": {
+    "basic": "파일·JSON 읽고 쓰기 · 컬렉션·제너레이터 · 예외 처리 · 단위 테스트",
+    "work": "DataFrame(PySpark·pandas 또는 Spark Scala) · 메시지 소비자 작성 · 날짜·시간대·타임스탬프 처리 · 메모리에 다 안 올리고 흘려 읽기",
+    "team": "같은 입력에 같은 결과(멱등)인 처리 함수 · 스키마 검사가 붙은 ingestion · 처리량을 재고 병목을 찾는 습관"
+   },
+   "actually": {
+    "items": [
+     "**데이터 처리 경험** — 웹 서버를 짜 본 것보다 '수백만 행을 읽어 바꾸고 써 본 것'을 묻는다.{추론}",
+     "**시간 다루기** — 차량 시각(UTC 밀리초)과 서울 시간, 늦게 도착한 데이터를 어느 날짜로 칠지 같은 문제가 매일 나온다.{추론}",
+     "**Spark 에서** — 같은 일을 DataFrame API 로 쓰면 언어와 상관없이 같은 실행 계획이 된다. Python 사용자 함수(UDF)는 느려질 수 있어 내장 함수를 먼저 쓴다.[24]"
+    ]
+   },
+   "how_far": "'하나 이상'이라 둘 다 필요 없습니다.[1] 코딩 테스트를 볼 언어 하나를 정하고, 그 언어로 Spark·Kafka 클라이언트를 써 본 경험을 보이면 됩니다.{추론}",
+   "refs": [
+    1,
+    24,
+    28
+   ],
+   "study": [
+    "spark-guide",
+    "spark-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL 쿼리 작성 및 데이터베이스 활용 경험",
+   "short": "품질 검사·대시보드·분석 표가 거의 SQL 이라서. 분석가와 같은 말로 일하려면 필요해서.",
+   "why": "같은 팀 분석가와 수집-분석 전 과정을 같이 합니다.[1] 품질 규칙(빈칸·중복·범위)도 SQL 로 적는 경우가 많고[18], 우대 줄의 ClickHouse 도 SQL 로 질의합니다.[26]",
+   "level": {
+    "basic": "JOIN · GROUP BY · 서브쿼리 · CASE · NULL 처리",
+    "work": "윈도우 함수(ROW_NUMBER·LAG) · 중복 찾기 · 날짜 자르기 · 실행 계획 읽기",
+    "team": "검사 쿼리를 규칙으로 일반화하기 · OLAP DB 의 정렬 키·파티션을 고려한 질의 · 분석가가 다시 쓸 수 있는 표 설계"
+   },
+   "actually": {
+    "items": [
+     "**검사 쿼리** — 업무③ 예시처럼 빈칸 비율·범위 밖·중복을 한 쿼리로 센다.",
+     "**중복 지우기** — ROW_NUMBER() OVER (PARTITION BY vin, ts ORDER BY 수신시각 DESC) = 1 로 같은 키 중 최신 한 줄만 남긴다.{추론}",
+     "**DB 고르기** — 행 단위로 자주 고치는 데이터는 일반 DB, 큰 집계는 열 단위 OLAP DB 에 두는 식으로 쓰임을 나눈다.[26]{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    18,
+    26
+   ],
+   "study": [
+    "sql-levelup",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Git 기반 협업 및 코드 리뷰 경험",
+   "short": "파이프라인·품질 규칙·대시보드 설정까지 코드로 관리하고 서로 검토하며 바꾸는 팀이라서.",
+   "why": "공고의 팀원 글은 경험 많은 데이터 엔지니어들과 '수준 높은 기술적 논의'가 가능하다고 소개합니다.[1] 회사 개발자 인터뷰도 기능별 동작·예외·검증 기준을 공통 문서로 정해 두고 그 기준에 맞춰 개발한다고 말합니다.[6]",
+   "actually": {
+    "items": [
+     "**브랜치와 병합 요청** — 작은 단위로 나눠 올리고, 리뷰를 받은 뒤 합친다. 충돌 풀기·되돌리기(revert)를 할 줄 안다.[32]",
+     "**리뷰의 기준** — 구글 리뷰 지침은 완벽하지 않아도 코드 전체 건강을 확실히 낫게 하면 승인하라고 한다.[33]",
+     "**데이터 코드의 리뷰 포인트** — 스키마를 바꾸는가, 다시 돌려도 같은가, 품질 검사가 붙었나, 비용이 늘어나는가.{추론}"
+    ]
+   },
+   "how_far": "Git 명령보다 **리뷰를 주고받은 경험**을 봅니다.{추론} 내가 남긴 리뷰가 장애를 막은 예 하나를 말할 수 있으면 좋습니다.{추론}",
+   "refs": [
+    1,
+    6,
+    32,
+    33
+   ],
+   "study": [
+    "pro-git-ko",
+    "google-review"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Apache Spark 또는 Databricks 사용 경험",
+   "short": "많은 데이터를 여러 대에 나눠 계산하는 도구라서. 회사의 다른 데이터 공고에도 같은 도구가 나온다.",
+   "why": "같은 회사의 AI 데이터 파이프라인 공고들은 Databricks·Spark 위의 대규모 처리를 요구합니다(판교 공고는 마감, 서니베일 공고는 열림).[7][8] 이 조직이 같은 도구를 쓰는지는 적혀 있지 않습니다.{추론} Databricks 는 Spark 를 관리형으로 돌리는 플랫폼이고 작업 예약 기능(Lakeflow Jobs)도 있습니다.[25]",
+   "actually": {
+    "items": [
+     "**하루치 집계** — 차량별·기능별 이용 지표를 매일 계산해 분석용 표에 쓴다.{추론}",
+     "**느릴 때** — 데이터가 한쪽 파티션에 쏠리거나 작은 파일이 많으면 느려진다. 적응형 실행(AQE)·파티션 수 조정이 기본 처방이다.[24]",
+     "**품질 검사와 같이** — 같은 Spark 작업 안에서 건수·빈칸 비율을 세어 지표로 내보낸다.{추론}"
+    ]
+   },
+   "how_far": "둘 중 하나('또는')입니다.[1] Spark 작업을 짜고 작업 화면(Spark UI)에서 느린 단계를 찾을 수 있으면 충분합니다.{추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    24,
+    25
+   ],
+   "study": [
+    "spark-guide",
+    "spark-docs",
+    "dbx-jobs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ClickHouse 등 OLAP 데이터베이스 사용 경험",
+   "short": "수억 행을 대시보드에서 몇 초 안에 집계하려면 열 단위로 저장하는 분석용 DB 가 필요해서.",
+   "why": "업무에 대시보드 구성이 있고 분석가가 같은 팀에 있습니다.[1] OLAP(온라인 분석 처리) DB 는 행이 아니라 열 단위로 저장해, 필요한 열만 읽고 압축이 잘 됩니다.[26] 국내에서도 토스증권이 랭킹 서비스 구조를 ClickHouse 로 바꾼 사례를 발표했습니다.[27]",
+   "actually": {
+    "items": [
+     "**정렬 키** — ClickHouse 의 MergeTree 표는 ORDER BY 로 정한 순서로 저장하고 성긴 색인을 둔다. 자주 거르는 열(날짜·차종)을 앞에 둔다.[26]",
+     "**파티션** — 월 단위로 나누면 오래된 달을 통째로 지우거나 다시 쓸 수 있다.[26]",
+     "**고치기 어렵다** — 행 하나를 고치는 일이 비싸다. 같은 키의 최신 행만 남기는 엔진(ReplacingMergeTree)으로 중복·수정을 다룬다.[26]{추론}"
+    ]
+   },
+   "how_far": "'등'이라 BigQuery·Druid·StarRocks 같은 다른 분석용 DB 경험도 같은 줄로 읽힙니다.{추론} 정렬 키를 왜 그렇게 골랐는지 설명할 수 있으면 됩니다.{추론}",
+   "refs": [
+    1,
+    26,
+    27
+   ],
+   "study": [
+    "ch-mergetree",
+    "slash24-ranking"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kafka 또는 AWS 메시징 서비스(Kinesis, SQS) 사용 경험",
+   "short": "차량·서비스 데이터가 메시지로 흘러 들어오는 입구를 다뤄 봤으면 ingestion 실수를 덜 해서.",
+   "why": "업무⑤ ingestion 의 입구가 이런 메시지 서비스입니다.[1] 회사의 다른 데이터 공고도 Kafka 와 이벤트 기반 구조를 요구했습니다.[8] AWS 서비스 이름이 적혀 있어 AWS 위에서 일하는 것으로 읽힙니다.{추론}",
+   "actually": {
+    "items": [
+     "**Kafka** — 토픽을 파티션으로 나누고, 소비자 그룹이 나눠 읽고, 어디까지 읽었는지(offset)를 기록한다. 멱등 생산자·트랜잭션으로 중복을 줄인다.[28]",
+     "**Kinesis Data Streams** — 샤드 단위로 처리량이 정해지고, 기본 보관 기간이 지나면 데이터가 사라진다.[29]",
+     "**SQS** — 대기열. 꺼낸 메시지는 정해진 시간(visibility timeout) 동안 남에게 안 보이고, 처리 후 지우지 않으면 다시 나온다.[30]"
+    ]
+   },
+   "how_far": "셋 중 하나를 써 보고, **'최소 한 번' 전달이라 중복이 온다는 전제**로 코드를 짜 본 경험이면 충분합니다.[28][30]{추론}",
+   "refs": [
+    1,
+    8,
+    28,
+    29,
+    30
+   ],
+   "study": [
+    "kafka-guide",
+    "wiki-kafka",
+    "kinesis-docs",
+    "sqs-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Grafana, Prometheus, Loki 등 모니터링 도구 사용 경험",
+   "short": "업무④의 파이프라인 감시 지표를 만들고 보는 도구라서.",
+   "why": "업무에 모니터링 지표 관리가 있습니다.[1] Prometheus 는 숫자 지표를 시간 순으로 모으고[20], Loki 는 로그를 모으고[23], Grafana 는 둘을 한 화면에 그립니다.[22]",
+   "actually": {
+    "items": [
+     "**지표 내보내기** — 파이프라인 작업이 처리 건수·걸린 시간을 Prometheus 형식으로 내보내거나 푸시한다.[20]",
+     "**알림 규칙** — '마지막 적재가 2시간 넘게 없음', '실패율 5% 초과' 같은 조건을 적는다.{추론}",
+     "**로그 꼬리표 아끼기** — Loki 는 꼬리표 조합마다 저장 단위가 생겨, 값이 많은 꼬리표를 쓰지 말라고 권한다.[23]"
+    ]
+   },
+   "how_far": "'등'이라 Datadog·CloudWatch 같은 다른 감시 도구 경험도 같은 줄입니다.{추론} 알림을 받고 그래프·로그로 원인을 좁혀 간 경험 하나를 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    1,
+    20,
+    22,
+    23
+   ],
+   "study": [
+    "prom-book",
+    "prom-docs",
+    "grafana-bp",
+    "loki-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Docker / Kubernetes 사용 경험",
+   "short": "파이프라인 작업과 도구를 컨테이너로 띄우고 쿠버네티스 위에서 돌리는 일이 많아서.",
+   "why": "같은 회사의 AI 데이터 파이프라인 공고는 쿠버네티스 기반 컨테이너 데이터 환경을 유지·발전시키는 일을 적었습니다.[8] 이 조직이 같은 환경인지는 적혀 있지 않습니다.{추론}",
+   "actually": {
+    "items": [
+     "**작업 이미지** — ingestion·검사 코드를 컨테이너 이미지로 만들어 어디서나 같은 버전으로 돌린다.{추론}",
+     "**쿠버네티스 Job** — 한 번 돌고 끝나는 배치 작업을 Job 으로 띄우고, 실패하면 정해진 횟수만큼 다시 돌린다.[34]",
+     "**도구 운영** — 카탈로그·Grafana 같은 도구를 클러스터에 띄워 운영하는 경우가 많다.{추론}"
+    ]
+   },
+   "how_far": "클러스터 자체는 인프라 팀 몫일 가능성이 큽니다.{추론} 내 작업을 이미지로 만들어 띄우고, 파드가 왜 죽었는지 로그·이벤트로 찾을 수 있으면 됩니다.{추론}",
+   "refs": [
+    8,
+    34
+   ],
+   "study": [
+    "wiki-docker",
+    "wiki-kubernetes",
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "차량·모빌리티·IoT 관련 프로젝트 경험",
+   "short": "차에서 오는 데이터는 끊기고, 늦게 오고, 시계가 어긋나는 일이 많아 겪어 본 사람이 덜 틀려서.",
+   "why": "팀원 글은 '새로운 차량 데이터 환경'을 이 자리의 경험으로 듭니다.[1] 회사는 차 안 제어기가 데이터를 모아 클라우드와 주고받는 구조를 소개했습니다.[4]",
+   "actually": {
+    "items": [
+     "**끊김과 몰아서 오기** — 터널·지하 주차장에서 통신이 끊기면 데이터가 나중에 한꺼번에 들어온다. 그래서 '언제 생긴 데이터인가'와 '언제 받았나'를 따로 적는다.{추론}",
+     "**수집 조건** — 모든 신호를 늘 보내지 않고 조건(시간 간격·특정 이벤트)에 맞을 때만 보내는 식이 흔하다.[31]",
+     "**차마다 다름** — 차종·소프트웨어 버전마다 신호 이름·단위가 달라 스키마·카탈로그 관리(업무②)가 중요하다.[4]{추론}"
+    ]
+   },
+   "how_far": "우대 사항이라 없어도 지원할 수 있습니다.[1] 회사 개발자 인터뷰도 차 도메인 경험보다 문제를 스스로 정의하고 끝까지 검증하는 힘을 본다고 말합니다.[6]",
+   "refs": [
+    1,
+    4,
+    6,
+    31
+   ],
+   "study": [
+    "aws-fleetwise"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 코딩 도구(Cursor, Claude Code, Codex 등)를 활용한 개발 경험",
+   "short": "회사가 AI 코딩 도구를 쓰고 있어, 빠르게 짜되 요구사항·테스트에 맞게 검증하는 습관을 봐서.",
+   "why": "회사 개발자 인터뷰는 AI 코딩 도구를 쓰되, 목표가 빨리 짜는 것이 아니라 제품 요구사항·도메인 맥락·테스트 기준에 맞추는 것이라고 말합니다.[6] 공고에 도구 이름 셋이 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**도구들** — Cursor 는 AI 기능을 넣은 코드 편집기[36], Claude Code 는 터미널에서 코드를 읽고 고치는 에이전트[35], Codex 는 OpenAI 의 코딩 에이전트다.[37]",
+     "**데이터 일에 쓰기** — 반복되는 품질 검사·스키마 정의·테스트 데이터 만들기를 맡기고, 나온 SQL·코드는 실제 데이터로 돌려 확인한다.{추론}",
+     "**조심할 것** — 실제 차량 데이터·개인정보를 도구에 그대로 붙여 넣지 않는다.{추론}"
+    ]
+   },
+   "how_far": "'경험'이라 써 봤고, **AI가 짠 코드를 어떻게 검증했는지** 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    1,
+    6,
+    35,
+    36,
+    37
+   ],
+   "study": [
+    "claude-code-docs",
+    "cursor-docs",
+    "codex-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자 하나가 어디서 왔는지 끝까지 따라가는 사람",
+   "남이 믿고 쓰는 데이터를 지키는 일이 즐거운 사람",
+   "분석가와 가까이서 수집부터 분석까지 같이 하고 싶은 사람[1]",
+   "규칙을 정하고 그 규칙이 자동으로 지켜지게 만드는 걸 좋아하는 사람{추론}"
+  ],
+  "hard": [
+   "경력 6년·데이터 5년 이상이 자격 요건이다[1]",
+   "공통 업무라 여러 서비스 팀의 요청과 우선순위 사이에서 조율이 많다[1]{추론}",
+   "새 기술을 짓기보다 스키마·품질·감시를 꾸준히 지키는 일이 많다{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "같은 메시지가 두 번 들어오거나 하루를 다시 돌려도 행이 늘지 않게 하려면?",
+   "a": "ingestion 의 멱등 처리 — '최소 한 번' 전달이 기본이라서.[28][30]"
+  },
+  {
+   "q": "필드 하나를 추가하려는데 옛 데이터·옛 소비자를 깨뜨리지 않으려면?",
+   "a": "스키마 호환 규칙 — 업무② 예시.[13][14]"
+  },
+  {
+   "q": "어제 들어온 건수가 평소의 60% 입니다. 장애인지 아닌지 어떻게 가르나요?",
+   "a": "품질 검사와 이상치 탐지 — 요일·명절 효과, 평균 대신 중앙값.[16]"
+  },
+  {
+   "q": "파이프라인 감시 대시보드에 무엇을 올리겠어요?",
+   "a": "네 가지 신호 + 신선도·건수.[19][22]"
+  },
+  {
+   "q": "ClickHouse 표의 정렬 키를 어떻게 고르나요?",
+   "a": "자주 거르는 열을 앞에 — 우대 OLAP 줄.[26]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "fde-ko",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/-/9791169211222/",
+   "why": "수집·저장·변환·서빙과 그 밑의 보안·데이터 관리까지 한 그림으로. 업무 다섯 줄이 데이터 엔지니어링 전체의 어디인지 잡는다."
+  },
+  {
+   "id": "gov-book",
+   "title": "데이터 거버넌스: 사람, 기술, 도구, 프로세스",
+   "by": "에브렌 에류렉 외 · 류광 외 옮김 · 책만 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://product.kyobobook.co.kr/detail/S000213373850",
+   "why": "카탈로그·품질·접근 관리·계보를 조직의 일로 설명한다. 이 조직 이름의 '거버넌스'가 무슨 일인지 한국어로."
+  },
+  {
+   "id": "dq-fundamentals",
+   "title": "Data Quality Fundamentals",
+   "by": "Barr Moses · Lior Gavish · Molly Vorwerck · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/data-quality-fundamentals/9781098112035/",
+   "why": "신선도·건수·스키마·분포를 감시하는 법. 업무③ 품질 검증과 이상치 탐지 자동화의 교과서."
+  },
+  {
+   "id": "iso25012",
+   "title": "ISO/IEC 25012 데이터 품질 모델 소개",
+   "by": "iso25000.com",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://iso25000.com/index.php/en/iso-25000-standards/iso-25012",
+   "why": "정확성·완전성·일관성·현재성 같은 품질 특성의 이름. 검사 규칙을 빠짐없이 나눌 때 쓰는 목록."
+  },
+  {
+   "id": "nist-outlier",
+   "title": "NIST/SEMATECH e-Handbook · Detection of Outliers",
+   "by": "미국 국립표준기술연구소(NIST)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm",
+   "why": "중앙값·MAD 로 잰 수정 Z 점수와 3.5 기준. 업무③ 이상치 탐지 예시의 출처."
+  },
+  {
+   "id": "gx-docs",
+   "title": "Great Expectations 문서",
+   "by": "Great Expectations",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.greatexpectations.io/docs/",
+   "why": "빈칸·범위·고유 같은 기대(Expectation)를 선언해 매 회차 돌리는 법. 품질 검증 로직을 코드로."
+  },
+  {
+   "id": "dbt-tests",
+   "title": "dbt · Data tests",
+   "by": "dbt Labs 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "why": "unique·not_null·accepted_values·relationships 검사를 SQL 모델 옆에 적는 방식."
+  },
+  {
+   "id": "avro-spec",
+   "title": "Apache Avro Specification",
+   "by": "Apache Avro 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://avro.apache.org/docs/",
+   "why": "스키마 해석(Schema Resolution) 규칙 — 기본값 없는 새 필드, 넓히기만 되는 형식 바꾸기. 업무② 예시의 바탕."
+  },
+  {
+   "id": "confluent-evolution",
+   "title": "Schema Evolution and Compatibility for Schema Registry",
+   "by": "Confluent 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html",
+   "why": "BACKWARD·FORWARD·FULL 호환성이 각각 무엇을 허락하나. 스키마 관리를 등록 단계에서 막는 법."
+  },
+  {
+   "id": "datahub-docs",
+   "title": "DataHub Documentation",
+   "by": "DataHub 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.datahub.com/docs/features",
+   "why": "검색·주인·용어 사전·계보 — 데이터 카탈로그가 실제로 무슨 화면인지. 로컬에 띄워 보기 좋다."
+  },
+  {
+   "id": "openmetadata-docs",
+   "title": "OpenMetadata Documentation",
+   "by": "OpenMetadata 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.open-metadata.org/",
+   "why": "다른 대표 오픈소스 카탈로그. 품질 검사 결과를 카탈로그에 같이 보여 주는 방식까지."
+  },
+  {
+   "id": "medallion",
+   "title": "What is the medallion lakehouse architecture?",
+   "by": "Databricks 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.databricks.com/aws/en/lakehouse/medallion",
+   "why": "원천 → 정리 → 분석용 층으로 나눠 쌓는 이유. 업무① 파이프라인 구조의 흔한 틀."
+  },
+  {
+   "id": "airflow-book",
+   "title": "Apache Airflow 기반의 데이터 파이프라인",
+   "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+   "why": "멱등 작업·백필·재실행·테스트. 업무① 유지 보수의 기본기를 한국어로."
+  },
+  {
+   "id": "spark-guide",
+   "title": "스파크 완벽 가이드",
+   "by": "빌 체임버스 · 마테이 자하리아 · 한빛미디어 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%8C%8C%ED%81%AC%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "DataFrame·Spark SQL·조인·집계 파트를 먼저. 우대 Spark 줄과 Python/JVM 데이터 처리 요건을 같이 채운다."
+  },
+  {
+   "id": "spark-docs",
+   "title": "Spark SQL, DataFrames and Datasets Guide",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+   "why": "최신 Spark SQL 과 성능 조정. 책이 다루지 않는 새 기능을 보충."
+  },
+  {
+   "id": "dbx-jobs",
+   "title": "Databricks 문서 · Lakeflow Jobs",
+   "by": "Databricks 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.databricks.com/aws/en/jobs/",
+   "why": "Databricks 에서 작업을 예약하고 재시도하는 법. 우대 Databricks 줄."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "by": "",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "CASE·윈도우 함수로 한 번에 처리하기 — 검사 쿼리·중복 지우기를 집합으로 쓰는 연습."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "why": "부호화와 스키마 진화(4장)·스트림 처리(11장) — 스키마 관리와 ingestion 을 원리로."
+  },
+  {
+   "id": "ch-mergetree",
+   "title": "ClickHouse 문서 · MergeTree",
+   "by": "ClickHouse 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://clickhouse.com/docs/engines/table-engines/mergetree-family/mergetree",
+   "why": "정렬 키·성긴 색인·파티션. 우대 OLAP 줄에서 가장 먼저 물을 부분."
+  },
+  {
+   "id": "slash24-ranking",
+   "title": "SLASH 24 · ClickHouse로 토스증권 랭킹 서비스 구조 개선하기",
+   "by": "토스증권 Data Engineer · 17분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=8P2OL7cwFEU",
+   "why": "다른 회사지만 국내 팀이 ClickHouse 를 실제로 도입한 이야기. OLAP DB 를 왜·어떻게 쓰나."
+  },
+  {
+   "id": "kafka-guide",
+   "title": "카프카 핵심 가이드 (개정증보판)",
+   "by": "그웬 샤피라 외 · 제이펍 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%B4%ED%94%84%EC%B9%B4%20%ED%95%B5%EC%8B%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "파티션·소비자 그룹·offset·전달 보장. 업무⑤ ingestion 과 우대 Kafka 줄."
+  },
+  {
+   "id": "wiki-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "명령을 직접 치고 오간 레코드를 본다. '보냈다'와 '처리됐다' 사이 — 중복과 누락이 생기는 자리."
+  },
+  {
+   "id": "kinesis-docs",
+   "title": "Amazon Kinesis Data Streams 개발자 안내서",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+   "why": "샤드·파티션 키·보관 기간. 우대 AWS 메시징 줄."
+  },
+  {
+   "id": "sqs-docs",
+   "title": "Amazon SQS 개발자 안내서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+   "why": "표준·FIFO 대기열 차이와 visibility timeout. 중복이 오는 이유."
+  },
+  {
+   "id": "pytest",
+   "title": "pytest 문서",
+   "by": "pytest",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.pytest.org/",
+   "why": "픽스처·매개변수화로 '정상·중복·늦음·필드 빠짐' 경우를 테스트. 업무⑤의 '테스트'."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (구글 SRE 책)",
+   "by": "Google · 웹 무료(한국어판: 사이트 신뢰성 엔지니어링 · 제이펍 · 2018)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "why": "6장 분산 시스템 감시 — 네 가지 기본 신호와 '사람을 깨울 만한 알림만 보내기'. 업무④ 지표 고르기."
+  },
+  {
+   "id": "prom-book",
+   "title": "프로메테우스, 오픈소스 모니터링 시스템",
+   "by": "브라이언 브라질 · 김영기·김현진 옮김 · 책만 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=212221193",
+   "why": "지표 종류·이름 짓기·PromQL·알림 규칙. 우대 모니터링 줄을 한국어로."
+  },
+  {
+   "id": "prom-docs",
+   "title": "Prometheus 공식 문서",
+   "by": "Prometheus",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "why": "구조와 이름 규칙(Practices › Naming). 파이프라인 지표 이름을 정할 때."
+  },
+  {
+   "id": "grafana-bp",
+   "title": "Grafana · Dashboard best practices",
+   "by": "Grafana Labs",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/best-practices/",
+   "why": "대시보드의 목적 정하기, RED·USE 틀, 화면 남발 막기. 업무④ 대시보드 구성."
+  },
+  {
+   "id": "loki-docs",
+   "title": "Grafana Loki documentation",
+   "by": "Grafana Labs",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://grafana.com/docs/loki/latest/get-started/overview/",
+   "why": "꼬리표만 색인하는 로그 저장 방식과 꼬리표를 아끼는 이유."
+  },
+  {
+   "id": "pro-git-ko",
+   "title": "Pro Git (한국어판)",
+   "by": "Scott Chacon · Ben Straub",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://git-scm.com/book/ko/v2",
+   "why": "브랜치·병합·되돌리기·분산 협업 흐름. Git 협업 요건의 기본."
+  },
+  {
+   "id": "google-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "리뷰의 기준·작은 변경·친절한 지적. 코드 리뷰 요건."
+  },
+  {
+   "id": "wiki-docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "파이프라인 작업을 컨테이너 이미지로 만들어 돌려 본다. 우대 Docker 줄."
+  },
+  {
+   "id": "wiki-kubernetes",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 출력 읽기 — Pending·CrashLoopBackOff 에서 원인 찾기. 우대 Kubernetes 줄."
+  },
+  {
+   "id": "k8s-docs",
+   "title": "쿠버네티스 문서(한국어)",
+   "by": "Kubernetes 공식",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/ko/docs/home/",
+   "why": "Job·CronJob 으로 배치 작업 띄우기의 정확한 정의."
+  },
+  {
+   "id": "aws-fleetwise",
+   "title": "AWS IoT FleetWise 개발자 안내서 · 캠페인",
+   "by": "Amazon Web Services",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/campaigns.html",
+   "why": "차량 데이터를 시간 간격·조건으로 골라 모으는 방식의 공개 예. 차량 데이터가 어떻게 올라오나 감 잡기."
+  },
+  {
+   "id": "claude-code-docs",
+   "title": "Claude Code 문서",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://code.claude.com/docs/en/overview",
+   "why": "공고가 이름을 댄 AI 코딩 도구. 저장소를 읽히고 테스트까지 돌리게 하는 법."
+  },
+  {
+   "id": "cursor-docs",
+   "title": "Cursor 문서",
+   "by": "Anysphere",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.cursor.com/",
+   "why": "공고가 이름을 댄 AI 코드 편집기."
+  },
+  {
+   "id": "codex-docs",
+   "title": "Codex 문서",
+   "by": "OpenAI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.openai.com/codex",
+   "why": "공고가 이름을 댄 OpenAI 코딩 에이전트."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "데이터 엔지니어링 전체 그림",
+   "time": "1주",
+   "goal": "업무 다섯 줄이 수집 → 저장 → 정리 → 서빙의 어디에 있고, 거버넌스가 그 위에서 무엇을 지키는지 말할 수 있다.",
+   "resources": [
+    "fde-ko",
+    "gov-book",
+    "medallion"
+   ],
+   "task": "가상의 '차량 기능 사용 로그'가 분석 대시보드에 오기까지를 한 장 그림으로 그리고, 단계마다 이 공고의 업무 줄 번호와 '여기서 틀리면 무엇이 깨지나'를 적는다."
+  },
+  {
+   "title": "Ingestion 과 멱등",
+   "time": "2~3주",
+   "goal": "중복·늦음·형식 오류가 섞인 메시지를 받아 같은 결과를 내는 수집 코드를 테스트와 함께 만든다.",
+   "resources": [
+    "kafka-guide",
+    "wiki-kafka",
+    "sqs-docs",
+    "kinesis-docs",
+    "pytest"
+   ],
+   "task": "로컬 Kafka(도커)에 가짜 차량 신호 10만 건을 넣되 1% 는 중복, 1% 는 필드 빠짐으로 만든다. 소비자가 (vin, ts, seq) 키로 중복을 지우고 틀린 메시지는 격리 토픽으로 보내게 짜고, 같은 데이터를 두 번 넣어도 결과 행 수가 같다는 pytest 를 붙인다."
+  },
+  {
+   "title": "스키마와 카탈로그",
+   "time": "1~2주",
+   "goal": "호환되지 않는 스키마 변경을 등록 단계에서 막고, 표마다 주인·설명·민감 표시가 있는 카탈로그를 운영해 본다.",
+   "resources": [
+    "avro-spec",
+    "confluent-evolution",
+    "ddia",
+    "datahub-docs",
+    "openmetadata-docs"
+   ],
+   "task": "2단계 신호 스키마를 v1 → v2(기본값 있는 필드 추가) → v3(형식 좁히기)로 바꿔 보며 호환성 검사가 무엇을 막는지 확인한다. DataHub 나 OpenMetadata 를 로컬에 띄워 표 3개를 등록하고 위치 필드에 민감 꼬리표를 단다."
+  },
+  {
+   "title": "품질 검사와 이상치",
+   "time": "2주",
+   "goal": "규칙 검사와 통계 이상치 탐지가 매 회차 자동으로 돌고, 걸리면 멈추거나 격리하는 파이프라인을 만든다.",
+   "resources": [
+    "dq-fundamentals",
+    "iso25012",
+    "gx-docs",
+    "dbt-tests",
+    "nist-outlier",
+    "sql-levelup"
+   ],
+   "task": "가상 하루 적재 건수 90일 치에 명절·장애 날을 섞는다. 빈칸·범위·중복·신선도 규칙 4개를 Great Expectations 나 dbt 로 선언하고, 건수에 수정 Z 점수를 같은 요일끼리 적용해 장애 날만 잡히는지 확인한다."
+  },
+  {
+   "title": "분석용 DB 와 감시",
+   "time": "2~3주",
+   "goal": "OLAP 표에 쌓고, 분석 대시보드와 파이프라인 감시 대시보드를 따로 만들고, 알림 하나로 원인까지 따라간다.",
+   "resources": [
+    "ch-mergetree",
+    "slash24-ranking",
+    "spark-guide",
+    "sre-book",
+    "prom-book",
+    "grafana-bp",
+    "loki-docs",
+    "wiki-docker",
+    "wiki-kubernetes"
+   ],
+   "task": "도커로 ClickHouse·Prometheus·Grafana·Loki 를 띄운다. 정리된 신호를 날짜·차종 정렬 키 표에 쌓아 차종별 일 사용량 화면을 만들고, 수집 작업이 pipeline_rows_ingested_total·마지막 적재 시각을 내보내게 해 '2시간 적재 없음' 알림이 로그 화면으로 이어지게 한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 원티드 기업 정보의 평균연봉 표기는 **6,032만원** — 공시가 아니라 집계값이고, 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 원티드 기업 정보(2026-11 확인)",
+    "note": "같은 화면의 국민연금 가입 사원 수 804명. 원티드가 이 값을 어떤 자료로 계산했는지는 화면에서 확인하지 못했다(같은 회사 다른 풀이에서 2026-11-25 확인) [9]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 공시가 없다{추론}. 공고에 연봉은 없고 전형 끝에 처우 협의 단계가 있다 [1]. 이 자리는 경력 6년 이상이라 회사 전체 평균보다 높게 제안될 수 있지만, 공개된 근거는 없다{추론}. 평균은 연차·직군이 섞인 값이라 제안 금액으로 읽으면 안 된다{추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "리커버리 휴가",
+    "detail": "법정 연차와 별도로 매월 1회 유급"
+   },
+   {
+    "name": "유연근무제",
+    "detail": "재량근무·선택적근무 운영"
+   },
+   {
+    "name": "식사",
+    "detail": "Kitchen 42 — 셰프가 만든 식사 하루 세 끼 무료, Cafe 42 음료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "여가·건강 등에 자유 사용, 연간 최대 300만원. 설·추석에 복지 포인트 추가"
+   },
+   {
+    "name": "건강",
+    "detail": "프리미엄 건강검진 전액 지원, 단체상해보험(본인·배우자·자녀·본인 부모), 상주 간호사·심리·재무·법률 상담(EAP)"
+   },
+   {
+    "name": "운동",
+    "detail": "Fitness 42 — 사내 피트니스, 1:1 PT·GX"
+   },
+   {
+    "name": "전기차",
+    "detail": "구매 시 차량 가격 최대 15%(한도 1,000만원) 지원, 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 사내 대출",
+    "detail": "근속 연수에 따라 1,000만~5,000만원, 이자 0%"
+   },
+   {
+    "name": "교육",
+    "detail": "국내외 교육·세미나·학회 참가비 지원"
+   },
+   {
+    "name": "직장 어린이집",
+    "detail": "임직원 자녀 대상, 특별활동 운영"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "최신 업무 기기, 장기근속 포상(휴가·포상금), 휴양시설 매월 추첨, 경조사 지원, 인재 추천 보상, 자발적 팀 워크숍 비용"
+   }
+  ],
+  "note": "포티투닷 채용 사이트 '업무 몰입 프로그램' 페이지 기준(게시일 표시 없음, 같은 회사 다른 풀이에서 2026-11-25 확인). 한국 본사 기준이고 해외 법인은 현지 정책을 따른다고 적혀 있다 [2]"
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥(소프트웨어드림센터)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "note": "주소는 포티투닷 홈페이지 하단 회사 정보 [3]와 같은 회사 판교 공고의 근무지 [8]. 같은 주소가 소프트웨어드림센터 소재지로 공고된 바 있다 [10]. 이 공고 근무지는 'Pangyo (Software Dream Center)'에 '(Remote)' 표기가 붙어 있지만 재택 범위는 공고에 설명이 없어 처우 협의 때 확인한다 [1]{추론}"
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · Data Engineer (Data Governance & Analytics)",
+   "url": "https://jobs.ashbyhq.com/42dot/70c5a672-9bd9-4195-a305-245b578a35dc",
+   "kind": "posting",
+   "note": "이 공고. 조직 소개(분석 환경 운영·직접 분석·거버넌스 정책)·업무 5·자격 4·우대 7·전형(서류 → 코딩 테스트 → 1차 화상 1시간 → 2차 3시간 → 처우 협의)·팀원 글. 연봉 칸 없음. 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 · 업무 몰입 프로그램(복리후생)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 홈페이지(하단 회사 정보)",
+   "url": "https://42dot.ai/ko",
+   "kind": "company"
+  },
+  {
+   "n": 4,
+   "title": "포티투닷 블로그 · 42dot at CES 2024: Software-Defined Vehicle Technology",
+   "url": "https://42dot.ai/ko/stories/blog-news/ces-2024-software-defined-vehicle",
+   "kind": "company",
+   "date": "2024-03-28",
+   "note": "HPVC 가 차량 데이터를 모으는 구조, 차량·운전자·도로 데이터를 다루는 관제 시스템, MLOps·DataOps, OTA"
+  },
+  {
+   "n": 5,
+   "title": "포티투닷 · Gleo AI 공개",
+   "url": "https://42dot.ai/ko/stories/blog-news/42dot-unveils-gleo-ai",
+   "kind": "company",
+   "date": "2026-05",
+   "note": "차 안 AI 비서. 차 안 대화 데이터를 수집부터 저장·활용까지 관리한다고 적음(목록 날짜 2026-07-15, 본문 발표일 5월 21일)"
+  },
+  {
+   "n": 6,
+   "title": "현대자동차그룹 저널 · 42dot 개발자가 말하는 '좋은 개발자'의 조건",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/42dot-what-makes-good-developer",
+   "kind": "company",
+   "date": "2026-07-24",
+   "note": "차 도메인 경험보다 문제 정의·끝까지 검증, 기능별 동작·검증 기준 공통 문서, AI 코딩 도구는 요구사항·테스트 기준에 맞추려고 쓴다. 데이터 조직 이야기는 없음"
+  },
+  {
+   "n": 7,
+   "title": "포티투닷 채용 · Senior AI Data Pipeline Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/75e6abe9-9195-43c3-abdf-60feff10bd47",
+   "kind": "posting",
+   "note": "다른 조직(서니베일 자율주행) — Airflow·Databricks·Spark·레이크하우스"
+  },
+  {
+   "n": 8,
+   "title": "원티드 · 포티투닷 Senior AI Data Pipeline Engineer",
+   "url": "https://www.wanted.co.kr/wd/376488",
+   "kind": "posting",
+   "note": "다른 조직의 판교 공고(마감 표시). Databricks·Spark·Airflow·Kafka·쿠버네티스 기반 컨테이너 데이터 환경, 경력 3~12년, 근무지 창업로40번길 20 A동"
+  },
+  {
+   "n": 9,
+   "title": "원티드 · 포티투닷(42dot) 기업 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "평균연봉 6,032만원 · 국민연금 가입 사원 804명 표기(같은 회사 다른 풀이에서 2026-11-25 확인)"
+  },
+  {
+   "n": 10,
+   "title": "벤처스퀘어 · 판교 제2테크노밸리 소프트웨어드림센터 스타트업 입주기업 모집 공고",
+   "url": "https://www.venturesquare.net/announcement/955032",
+   "kind": "reference",
+   "note": "소재지 창업로40번길 20 소프트웨어드림센터"
+  },
+  {
+   "n": 11,
+   "title": "DataHub Documentation",
+   "url": "https://docs.datahub.com/docs/features",
+   "kind": "reference",
+   "note": "검색·주인·용어 사전·계보"
+  },
+  {
+   "n": 12,
+   "title": "OpenMetadata Documentation",
+   "url": "https://docs.open-metadata.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Apache Avro Specification · Schema Resolution",
+   "url": "https://avro.apache.org/docs/",
+   "kind": "reference",
+   "note": "읽는 쪽에만 있는 필드는 기본값 필요, 형식은 넓히기(int → long·float·double 등)만"
+  },
+  {
+   "n": 14,
+   "title": "Confluent · Schema Evolution and Compatibility for Schema Registry",
+   "url": "https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html",
+   "kind": "reference",
+   "note": "BACKWARD(기본)·FORWARD·FULL 호환성"
+  },
+  {
+   "n": 15,
+   "title": "ISO/IEC 25012 데이터 품질 모델 소개",
+   "url": "https://iso25000.com/index.php/en/iso-25000-standards/iso-25012",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "NIST/SEMATECH e-Handbook · Detection of Outliers",
+   "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm",
+   "kind": "reference",
+   "note": "수정 Z 점수 = 0.6745 × (x − 중앙값) / MAD, 절댓값 3.5 초과를 이상치 후보로(Iglewicz·Hoaglin)"
+  },
+  {
+   "n": 17,
+   "title": "Great Expectations 문서",
+   "url": "https://docs.greatexpectations.io/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "dbt · Data tests",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "kind": "reference",
+   "note": "unique·not_null·accepted_values·relationships"
+  },
+  {
+   "n": 19,
+   "title": "Google SRE 책 · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "note": "네 가지 기본 신호: 지연·트래픽·오류·포화"
+  },
+  {
+   "n": 20,
+   "title": "Prometheus 문서 · Overview",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Prometheus 문서 · Metric and label naming",
+   "url": "https://prometheus.io/docs/practices/naming/",
+   "kind": "reference",
+   "note": "기본 단위 접미사(_seconds·_bytes), 카운터는 _total"
+  },
+  {
+   "n": 22,
+   "title": "Grafana · Dashboard best practices",
+   "url": "https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/best-practices/",
+   "kind": "reference",
+   "note": "RED·USE·네 가지 신호, 대시보드 남발 막기"
+  },
+  {
+   "n": 23,
+   "title": "Grafana Loki 문서 · Overview / Label best practices",
+   "url": "https://grafana.com/docs/loki/latest/get-started/overview/",
+   "kind": "reference",
+   "note": "꼬리표만 색인, 값이 많은 꼬리표는 피하라"
+  },
+  {
+   "n": 24,
+   "title": "Spark SQL, DataFrames and Datasets Guide",
+   "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+   "kind": "reference",
+   "note": "Scala·Java·Python API, 성능 조정(AQE·파티션)"
+  },
+  {
+   "n": 25,
+   "title": "Databricks 문서 · Lakeflow Jobs",
+   "url": "https://docs.databricks.com/aws/en/jobs/",
+   "kind": "reference",
+   "note": "예전 이름 Databricks Workflows"
+  },
+  {
+   "n": 26,
+   "title": "ClickHouse 문서 · MergeTree",
+   "url": "https://clickhouse.com/docs/engines/table-engines/mergetree-family/mergetree",
+   "kind": "reference",
+   "note": "열 단위 OLAP, ORDER BY 정렬 키·성긴 색인·파티션, ReplacingMergeTree 는 같은 문서 계열"
+  },
+  {
+   "n": 27,
+   "title": "SLASH 24 · ClickHouse로 토스증권 랭킹 서비스 구조 개선하기",
+   "url": "https://www.youtube.com/watch?v=8P2OL7cwFEU",
+   "kind": "reference",
+   "date": "2024",
+   "note": "다른 회사의 ClickHouse 도입 발표 — 이번 회차에 영상은 받지 않았다"
+  },
+  {
+   "n": 28,
+   "title": "Apache Kafka Documentation · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference",
+   "note": "최대 한 번·최소 한 번·정확히 한 번, 멱등 생산자·트랜잭션"
+  },
+  {
+   "n": 29,
+   "title": "Amazon Kinesis Data Streams 개발자 안내서",
+   "url": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+   "kind": "reference",
+   "note": "샤드·파티션 키·보관 기간"
+  },
+  {
+   "n": 30,
+   "title": "Amazon SQS 개발자 안내서",
+   "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+   "kind": "reference",
+   "note": "표준 대기열은 최소 한 번 전달·순서 보장 없음, FIFO, visibility timeout"
+  },
+  {
+   "n": 31,
+   "title": "AWS IoT FleetWise 개발자 안내서 · 캠페인",
+   "url": "https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/campaigns.html",
+   "kind": "reference",
+   "note": "다른 곳 — 차량 데이터를 시간 간격·조건으로 골라 모으는 규칙"
+  },
+  {
+   "n": 32,
+   "title": "Pro Git 2판 (한국어)",
+   "url": "https://git-scm.com/book/ko/v2",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "Google Engineering Practices · Code Review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "Kubernetes 문서(한국어) · Job",
+   "url": "https://kubernetes.io/ko/docs/concepts/workloads/controllers/job/",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "Claude Code 문서",
+   "url": "https://code.claude.com/docs/en/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "Cursor 문서",
+   "url": "https://docs.cursor.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "OpenAI · Codex 문서",
+   "url": "https://developers.openai.com/codex",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "국가법령정보센터 · 위치정보의 보호 및 이용 등에 관한 법률",
+   "url": "https://www.law.go.kr/법령/위치정보의보호및이용등에관한법률",
+   "kind": "reference",
+   "note": "개인위치정보의 수집·이용 규율. 차량 데이터에 어떻게 적용되는지는 법무 판단"
+  },
+  {
+   "n": 39,
+   "title": "Apache Airflow 문서 · Best Practices",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html",
+   "kind": "reference",
+   "note": "태스크는 다시 돌려도 같은 결과(멱등)로"
+  },
+  {
+   "n": 40,
+   "title": "pytest 문서 · How to parametrize fixtures and test functions",
+   "url": "https://docs.pytest.org/en/stable/how-to/parametrize.html",
+   "kind": "reference"
+  },
+  {
+   "n": 41,
+   "title": "Databricks 문서 · What is the medallion lakehouse architecture?",
+   "url": "https://docs.databricks.com/aws/en/lakehouse/medallion",
+   "kind": "reference",
+   "note": "원천(bronze) → 정리(silver) → 분석용(gold) 층"
+  }
+ ],
+ "caveat": "포티투닷 Data Governance & Analytics 조직의 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고(조직 소개·팀원 글), 2024 CES 블로그, 2026 Gleo AI 공개 글, 2026-07 현대차그룹 개발자 인터뷰, 같은 회사 다른 조직의 데이터 파이프라인 공고 둘입니다. 이 조직이 어떤 수집 도구·카탈로그·OLAP DB·감시 도구를 쓰는지, 어떤 데이터(차량 신호·서비스 로그·대화)를 주로 다루는지는 공개되지 않아 Avro·Confluent·DataHub·Great Expectations·NIST·Prometheus·ClickHouse·Kafka·AWS 공식 문서로 '보통 이런 일'을 보였습니다. 연봉·복지·위치는 같은 회사 판교 공고 풀이에서 확인한 값을 다시 썼습니다. 코드 예시 3개는 직접 돌린 출력입니다. 2026-11-25 기준."
+}
