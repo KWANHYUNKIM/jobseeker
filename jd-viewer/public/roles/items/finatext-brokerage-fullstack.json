@@ -4,7 +4,8 @@
   "role": "풀스택 엔지니어 (Brokerage)",
   "team": "Brokerage(증권) 사업 — 증권 바탕 시스템 BaaS · 근무지 일본 도쿄",
   "jobs": [
-    "wanted-368239"
+    "wanted-368239",
+    "wanted-354828"
   ],
   "researched_at": "2026-11-23",
   "tldr": {
@@ -150,6 +151,168 @@
       ]
     },
     {
+      "section": "task",
+      "quote": "・金融インフラ（証券ビジネスプラットフォーム「BaaS」/ 保険ビジネスプラットフォーム「Inspire」/ クレジットビジネスプラットフォーム「Crest」）もしくは生成AI×データ活用のSaaSプロダクト(投資・不動産・業務支援領域)でのサーバー/インフラサイドの開発",
+      "short": "증권(BaaS)·보험(Inspire)·신용(Crest) 바탕 시스템이나 데이터·AI 제품 중 한 곳의 서버·인프라를 만든다.",
+      "why": "이 공고는 한 제품이 아니라 그룹의 여러 사업 가운데 한 곳에 배치되는 백엔드 자리입니다 — 회사 채용 사이트의 같은 공고(210)도 대상을 BaaS·Inspire·Crest 또는 생성AI×데이터 SaaS 로 적었습니다.[33] 세 바탕은 모양이 같습니다: 증권은 스마트플러스의 BaaS, 보험은 BaaS 의 바탕을 보험으로 넓힌 Inspire, 신용은 대출·분할 결제·BNPL(나중 결제)을 위한 Crest 입니다.[10][35][37] 데이터 쪽은 POS·카드 결제 데이터로 지수를 만드는 ナウキャスト 의 제품들입니다.[36]",
+      "actually": {
+        "items": [
+          "**증권(BaaS)** — 계좌 개설·주문·체결 서버. 위의 풀스택 줄들이 이 사업의 이야기입니다.[3][7]",
+          "**보험(Inspire)** — 보험 상품을 다른 회사 앱에 끼워 팔게 하는 바탕. 회사는 '디지털 보험 판매의 Shopify'에 빗대고, 규칙·AI·사람 승인을 잇는 업무 흐름 바탕도 만든다고 적었습니다.[34][37]",
+          "**신용(Crest)** — 대출 심사 신청·분할 결제. Go·gRPC(Connect, 서비스끼리 정해진 형식으로 부르는 방법)·PostgreSQL(Aurora)을 쓰고 팀은 23명 규모입니다.[35]",
+          "**데이터·AI SaaS** — 매일 들어오는 데이터를 정제해 지수·분석 화면으로 내는 일. 데이터 팀은 Airflow·dbt·Snowflake 를 씁니다.[36]"
+        ]
+      },
+      "how_far": "어느 사업으로 가는지는 전형 중에 정해집니다{추론}. 사업마다 언어·DB 가 조금씩 다르므로(증권 MySQL, 신용 PostgreSQL) 지원 전에 **가고 싶은 사업 하나를 정하고 그 사업의 공고(212·211·214)를 같이 읽어** 면접에서 말합니다.[7][34][35]",
+      "refs": [
+        3,
+        7,
+        10,
+        33,
+        34,
+        35,
+        36,
+        37
+      ],
+      "study": [
+        "aws-int",
+        "learning-go",
+        "ddia"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "・上記プラットフォーム上に乗せるアプリのサーバー/インフラサイドの仕様設計、開発、運用・保守",
+      "short": "바탕 위에 얹는 파트너 앱의 서버를 사양부터 짜고, 만들고, 출시 뒤 운영까지 맡는다.",
+      "why": "Finatext 는 플랫폼만 빌려주지 않고 그 위에서 도는 파트너 서비스 개발도 맡습니다.[4] 그래서 한 바탕 위에 여러 회사의 앱이 같이 돌고, 회사는 서비스마다 AWS 계정을 나눠 사고가 번지지 않게 한다고 밝혔습니다.[4]",
+      "actually": {
+        "items": [
+          "**사양 설계** — 파트너의 요구를 '바탕에 이미 있는 기능 / 새로 만들 것'으로 나누고 API·데이터 모양을 정합니다.[7]",
+          "**파트너 나누기** — 같은 바탕 위의 데이터는 파트너 구분 값을 모든 조회에 걸어 섞이지 않게 합니다(예시){추론}.",
+          "**운영·보수** — 지표·로그를 보고(Datadog), 장애 알림을 받아 대응합니다.[9][33]",
+          "**버전 올리기** — 자원과 미들웨어가 늘어 버전 관리가 따로 일감이 될 만큼 커졌습니다.[9]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "파트너 구분 값을 모든 조회에 건다 (가상 보험 계약, SQLite로 확인)",
+          "body": "한 바탕 위의 파트너 A·B 계약이 같은 표에 있어도 조회 함수가 늘 파트너 값을 받으면 A 화면에 B 계약이 나오지 않습니다. 실제로는 계정·DB 를 나누는 방법도 같이 씁니다.[4]",
+          "lang": "python",
+          "code": "import sqlite3\ndb = sqlite3.connect(':memory:')\ndb.execute('create table policies(partner text, policy_no text, premium int)')\ndb.executemany('insert into policies values(?,?,?)', [('A', 'P-1', 1200), ('A', 'P-2', 800), ('B', 'P-9', 3000)])\ndef list_policies(partner):\n    return db.execute('select policy_no, premium from policies where partner = ? order by policy_no', (partner,)).fetchall()\nprint(list_policies('A'))  # [('P-1', 1200), ('P-2', 800)]\nprint(list_policies('B'))  # [('P-9', 3000)]"
+        }
+      ],
+      "how_far": "'운용・보수'까지 적혀 있어 만들고 넘기는 자리가 아닙니다. 최소선은 **자기가 만든 API 의 알림을 직접 받고, 장애 뒤 원인과 재발 방지를 글로 남기는 것**입니다{추론}.",
+      "refs": [
+        4,
+        7,
+        9,
+        33
+      ],
+      "study": [
+        "aws-case",
+        "sre-postmortem",
+        "arch101"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "■開発チームについて\n・https://finatext.notion.site/finatext/Finatext-cd4ff36fb8bd4aa78a7835565c655396",
+      "short": "개발팀 소개는 회사 Notion 페이지에 따로 있다 — 지원 전에 직접 열어 본다.",
+      "why": "공고는 개발팀 설명을 본문에 쓰지 않고 Notion 페이지 링크로 대신했고, 회사 채용 사이트의 같은 공고도 같습니다.[33] 그 페이지는 화면을 스크립트로 그려서 이번 조사에서는 내용을 읽지 못했습니다.",
+      "actually": {
+        "items": [
+          "**대신 읽을 것** — 사업별 공고(증권 212·보험 211·신용 214·데이터 201)에 팀 규모·기술·일하는 방식이 더 자세히 있습니다.[7][34][35][36]",
+          "**기술 블로그** — 그룹 기술 블로그(zenn.dev/finatext)에 사업부별 글이 올라옵니다.[12][14][42]"
+        ]
+      },
+      "how_far": "브라우저로 페이지를 열어 **배치될 수 있는 팀 목록과 팀별 기술**을 확인하고, 면접에서 가고 싶은 팀을 말합니다{추론}.",
+      "refs": [
+        7,
+        12,
+        14,
+        33,
+        34,
+        35,
+        36,
+        42
+      ],
+      "study": []
+    },
+    {
+      "section": "task",
+      "quote": "【使用技術】\nAmazon Web Services\nGoogle Cloud\nMicrosoft Azure\nTerraform\nDocker\nAlpine Linux, Amazon Linux\nGo / Python\nMySQL (Aurora)\nAirflow\nSnowflake\nOpenAI API",
+      "short": "주력은 AWS·Go·Aurora, 데이터·AI 쪽은 Python·Airflow·Snowflake·OpenAI — 클라우드는 셋 다 쓴다.",
+      "why": "이 목록은 한 팀이 아니라 배치될 수 있는 사업 전체의 합입니다.[33] 금융 바탕(증권)은 거의 모든 시스템이 AWS 이고 Go 가 주 언어입니다.[3][4] Google Cloud·Azure·Airflow·Snowflake 는 데이터 회사 ナウキャスト 의 공고에 같이 나오는 기술이라, 데이터·AI 제품 쪽에서 쓰는 것으로 보입니다.[36]{추론}",
+      "actually": {
+        "items": [
+          "**AWS + Terraform + Docker** — 서버는 컨테이너(ECS), 인프라는 Terraform 코드. 이미지는 작은 Alpine Linux 나 Amazon Linux 로.[3][9]",
+          "**Go / Python** — 서비스 입구는 Go, AI·데이터를 다루는 일꾼은 Python 으로 나눈 예가 그룹 글에 있습니다.[14]",
+          "**MySQL(Aurora)** — 증권 쪽 주 DB. 신용 사업은 PostgreSQL(Aurora)을 씁니다.[7][35]",
+          "**Airflow** — 매일 정해진 순서로 도는 데이터 작업을 DAG(순서가 있는 작업 그래프)로 적고 돌립니다(예시).[39]",
+          "**Snowflake** — 저장과 계산을 나눈 클라우드 데이터 웨어하우스. 그룹 데이터 팀이 주로 씁니다.[36][40]",
+          "**Google Cloud·Azure** — 같은 그룹 데이터 팀은 Google Cloud 의 데이터 목록 서비스에 dbt 정보를 싣는 글을 썼습니다.[42] Azure 는 데이터 공고에 이름만 있습니다.[36]",
+          "**OpenAI API** — 생성형 AI 기능을 서버에서 부릅니다.[43]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "작업 순서와 실패 번짐 (가상 하루 배치, Python 표준 라이브러리로 확인)",
+          "body": "받기 → 정제 → 지수 계산 → 보고를 의존 관계로 적으면 순서가 저절로 정해지고, 카드 데이터 정제가 실패하면 그 뒤의 지수·보고만 멈춥니다. Airflow 가 DAG 로 하는 일이 이것입니다.[39]",
+          "lang": "python",
+          "code": "from graphlib import TopologicalSorter\ndag = {\n    'clean_pos': {'fetch_pos'},\n    'clean_card': {'fetch_card'},\n    'daily_index': {'clean_pos', 'clean_card'},\n    'report': {'daily_index'},\n}\norder = list(TopologicalSorter(dag).static_order())\nprint(order.index('fetch_pos') < order.index('clean_pos') < order.index('daily_index') < order.index('report'))  # True\nfailed = {'clean_card'}\ndef blocked(task):\n    return any(d in failed or blocked(d) for d in dag.get(task, set()))\nprint({t: ('멈춤' if blocked(t) else '실행') for t in ['clean_pos', 'daily_index', 'report']})\n# {'clean_pos': '실행', 'daily_index': '멈춤', 'report': '멈춤'}"
+        }
+      ],
+      "how_far": "열한 가지를 다 알아야 하는 것이 아닙니다. 자격요건은 **Go 같은 정적 타입 언어 + AWS 의 간단한 인프라**이고, 나머지는 배치된 팀의 것만 익히면 됩니다.[33]{추론}",
+      "refs": [
+        3,
+        4,
+        7,
+        9,
+        14,
+        33,
+        35,
+        36,
+        39,
+        40,
+        42,
+        43
+      ],
+      "study": [
+        "learning-go",
+        "docker-book",
+        "airflow-docs",
+        "snowflake-docs",
+        "openai-docs"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "【使用サービス】\nGoogle Workspace\nSlack\nKibela\n1Password\nGitHub\nBitrise\nBacklog\nDatadog\nOpsgenie",
+      "short": "협업·문서·비밀번호·코드·모바일 빌드·일감·감시·장애 알림 도구 — 들어가서 쓰는 것들이다.",
+      "why": "개발 언어가 아니라 일하는 데 쓰는 서비스 목록입니다.[33] 신용 사업 공고에도 GitHub·Slack·Datadog·1Password·Kibela 가 같이 적혀 있어 그룹 공통 도구로 보입니다.[35]{추론}",
+      "actually": {
+        "items": [
+          "**Kibela** — 사내 문서·설계 글을 쓰는 위키. 설계 문서를 여기 남깁니다{추론}.",
+          "**1Password** — 팀 비밀번호·키 보관. 비밀 값을 코드에 넣지 않는 원칙과 이어집니다.[5]",
+          "**Bitrise** — 모바일 앱(iOS·Android) 빌드·테스트·배포용 CI 서비스. 파트너 앱이 모바일이면 서버 쪽 사람도 배포 흐름을 봅니다.[41]",
+          "**Backlog** — 일감·과제 관리 도구.{추론}",
+          "**Datadog + Opsgenie** — 지표 감시와 당번 호출. 다만 Atlassian 은 Opsgenie 신규 판매를 2025-06-04 에 끝냈고 지원은 2027-04-05 에 끝난다고 발표했습니다.[38] 같은 사업부 발표는 온콜 도구를 PagerDuty 로 옮겼다고 했으니, 목록이 옮기기 전 것일 수 있습니다.[12]{추론}"
+        ]
+      },
+      "how_far": "공고 요건이 아닙니다. **GitHub·Slack 은 당연히 쓰고, Datadog 같은 감시 도구로 지표를 읽어 본 경험**이 있으면 운영 이야기를 하기 쉽습니다{추론}.",
+      "refs": [
+        5,
+        12,
+        33,
+        35,
+        38,
+        41
+      ],
+      "study": [
+        "zenn-pagerduty"
+      ]
+    },
+    {
       "section": "qualification",
       "quote": "・Go等の静的型付け言語での開発経験",
       "short": "Go처럼 컴파일 때 타입을 검사하는 언어로 서비스를 만들어 봤어야 한다.",
@@ -215,6 +378,33 @@
     },
     {
       "section": "qualification",
+      "quote": "・Webアプリケーションのバックエンド開発経験",
+      "short": "웹 서비스의 서버(API·DB·비동기 작업)를 실제로 만들어 운영해 봤어야 한다.",
+      "why": "이 자리는 이름 그대로 백엔드라서 풀스택 공고와 달리 '백엔드 또는 프런트엔드'가 아니라 백엔드 경험만 요구합니다.[1][33] 맡는 일이 바탕 시스템과 그 위 앱의 서버·인프라이기 때문입니다.[33]",
+      "actually": {
+        "items": [
+          "**API 설계** — 파트너 앱이 부를 주소·요청·응답 모양, 오류 코드.[7]",
+          "**DB 트랜잭션** — 계약·주문처럼 반쯤 저장되면 안 되는 일을 한 번에 묶기.[3]",
+          "**비동기 작업** — 큐에 넣고 일꾼이 꺼내 처리, 실패를 '다시 하면 될 것'과 '다시 해도 안 될 것'으로 나누기.[14]",
+          "**인증·권한** — 다른 파트너·다른 사용자의 데이터를 못 보게 서버가 매번 확인.[17]"
+        ]
+      },
+      "how_far": "경력 2~10년 공고라 '만들어 봤다'보다 **출시한 API 를 운영하며 고친 경험**을 말할 수 있어야 합니다.[33]{추론}",
+      "refs": [
+        1,
+        3,
+        7,
+        14,
+        17,
+        33
+      ],
+      "study": [
+        "learning-go",
+        "ddia"
+      ]
+    },
+    {
+      "section": "qualification",
       "quote": "・AWS等のクラウド上でのインフラ構築経験",
       "short": "AWS 같은 클라우드에 네트워크·서버·DB를 직접 깔아 본 경험이 있어야 한다.",
       "why": "Finatext 그룹은 증권 바탕 시스템을 포함해 거의 모든 시스템을 AWS 위에 둡니다.[4] 관리형 서비스(ECS·Aurora 등)를 적극 써서 인프라 운영에 드는 사람 손을 줄이고 그만큼 기능 개발에 쓴다고 설명했습니다.[4]",
@@ -237,6 +427,33 @@
         "ecs-docs",
         "aws-wa",
         "aws-int"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・AWS等のクラウド上での簡単なインフラ構築経験",
+      "short": "AWS 같은 클라우드에 서버·DB·네트워크를 '간단히라도' 직접 올려 본 경험이면 된다.",
+      "why": "풀스택 공고는 '인프라 구축 경험'이고 이 백엔드 공고는 '간단한' 인프라 구축 경험이라, 문턱이 한 단계 낮습니다.[1][33] 그래도 업무에 서버/인프라 쪽 개발이 들어가므로 아예 모르면 안 됩니다.[33]",
+      "actually": {
+        "items": [
+          "**올려 본 것** — 컨테이너 서비스(ECS) 하나, 관리형 DB(Aurora/RDS) 하나, 로드밸런서와 보안 그룹.[4]",
+          "**코드로 남기기** — 우대에 Terraform 이 있으니 콘솔로 만든 것을 Terraform 으로 다시 적어 보면 좋습니다.[3]",
+          "**권한** — 접근 키 대신 역할(IAM Role)을 쓰는 습관.[5]"
+        ]
+      },
+      "how_far": "최소선은 **자기 API 를 컨테이너로 만들어 클라우드에 올리고, DB 에 붙이고, 로그를 보는 것**까지입니다{추론}. 네트워크 설계 같은 깊은 일은 인프라 담당과 같이 합니다.[9]",
+      "refs": [
+        1,
+        3,
+        4,
+        5,
+        9,
+        33
+      ],
+      "study": [
+        "ecs-docs",
+        "aws-int",
+        "ko-tf-iac"
       ]
     },
     {
@@ -930,9 +1147,93 @@
       "url": "https://dev.mysql.com/doc/refman/8.0/en/explain-output.html",
       "kind": "reference",
       "note": "실행 계획 읽기"
+    },
+    {
+      "n": 33,
+      "title": "HERP · 210.バックエンドエンジニア",
+      "url": "https://herp.careers/v1/finatexthd/iRI8okPMACP_",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "이 공고(원티드 354828)를 회사 채용 사이트에 올린 판 — BaaS/Inspire/Crest·생성AI×데이터 SaaS, 같은 기술·서비스 목록, 연봉 900만~1,350만 엔"
+    },
+    {
+      "n": 34,
+      "title": "HERP · 211.バックエンドエンジニア｜Insurtech / AI Workflow",
+      "url": "https://herp.careers/v1/finatexthd/kqBE6Npd2b39",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "보험 사업 백엔드 — Inspire 를 '디지털 보험 판매의 Shopify' 같은 바탕으로 설명, AWS·Terraform, 규칙·AI·사람 승인을 잇는 업무 흐름 바탕"
+    },
+    {
+      "n": 35,
+      "title": "HERP · 214.ソフトウェアエンジニア｜Credit",
+      "url": "https://herp.careers/v1/finatexthd/Aht13KCI3ZlV",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "신용 사업 — Crest 는 대출·분할 결제·BNPL 바탕, Go·gRPC(Connect)·TypeScript·PostgreSQL(Aurora)·Terraform, 팀 23명 규모"
+    },
+    {
+      "n": 36,
+      "title": "HERP · 201.データエンジニア (ナウキャスト)",
+      "url": "https://herp.careers/v1/finatexthd/Zed_DMxiz8cY",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "채용 법인 ナウキャスト — Python·dbt·Airflow·Snowflake·Redshift·Terraform, AWS·Google Cloud·Azure·OpenAI, AlternaData·JCB消費NOW 등 데이터 제품"
+    },
+    {
+      "n": 37,
+      "title": "THE BRIDGE · Finatext、「Insurance as a Service」事業に参入 — 保険クラウド「Inspire」",
+      "url": "https://thebridge.jp/2020/09/finatext-insurance-as-a-service",
+      "kind": "news",
+      "date": "2020-09-09",
+      "note": "증권 BaaS 의 바탕을 보험으로 넓힌 Inspire, 첫 서비스는 스마트플러스 소액단기보험의 母子保険はぐ"
+    },
+    {
+      "n": 38,
+      "title": "Atlassian · The evolution of IT operations (Opsgenie 판매·지원 종료 안내)",
+      "url": "https://www.atlassian.com/blog/announcements/evolution-of-it-operations",
+      "kind": "reference",
+      "date": "2025-03-04",
+      "note": "Opsgenie 신규 판매 종료 2025-06-04, 지원 종료 2027-04-05 — Jira Service Management·Compass 로 옮기라고 안내"
+    },
+    {
+      "n": 39,
+      "title": "Apache Airflow 문서",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+      "kind": "reference",
+      "note": "작업 흐름을 DAG(순서가 있는 작업 그래프)로 코드에 적고 일정대로 돌리는 도구"
+    },
+    {
+      "n": 40,
+      "title": "Snowflake 문서 · Key Concepts & Architecture",
+      "url": "https://docs.snowflake.com/en/user-guide/intro-key-concepts",
+      "kind": "reference",
+      "note": "저장과 계산을 나눈 클라우드 데이터 웨어하우스"
+    },
+    {
+      "n": 41,
+      "title": "Bitrise 문서",
+      "url": "https://devcenter.bitrise.io/",
+      "kind": "reference",
+      "note": "모바일 앱(iOS·Android) 빌드·테스트·배포용 CI/CD 서비스"
+    },
+    {
+      "n": 42,
+      "title": "Finatext Tech Blog · dbt のメタデータを Knowledge Catalog (Dataplex) に取り込む",
+      "url": "https://zenn.dev/finatext/articles/dbt-knowledge-catalog",
+      "kind": "company",
+      "date": "2026-11-13",
+      "note": "같은 그룹 데이터 팀이 Google Cloud 의 데이터 목록 서비스에 dbt 정보를 싣는 글(요약만 읽음)"
+    },
+    {
+      "n": 43,
+      "title": "OpenAI API 문서",
+      "url": "https://platform.openai.com/docs/overview",
+      "kind": "reference",
+      "note": "모델 호출·구조화 출력·사용량"
     }
   ],
-  "caveat": "BaaS의 구조는 2019~2021년 회사 인터뷰가 가장 자세하고, 그 뒤 바뀐 부분(서비스 수·도구)은 2025년 유가증권보고서·2026년 공고·기술 블로그로 보충했다. 2019년의 장 마감 시각(15시)은 2024-11 부터 15시 30분으로 바뀌었다. AWS Summit Tokyo 2019 발표는 영상을 찾지 못해 다른 회사의 청강 보고로 읽었다(받은 영상 재료 없음). 연봉 공시 평균은 지주회사 직원만의 값이다. 코드 예시는 개념을 보이려고 Python·SQLite로 돌린 가상 값이다.",
+  "caveat": "BaaS의 구조는 2019~2021년 회사 인터뷰가 가장 자세하고, 그 뒤 바뀐 부분(서비스 수·도구)은 2025년 유가증권보고서·2026년 공고·기술 블로그로 보충했다. 2019년의 장 마감 시각(15시)은 2024-11 부터 15시 30분으로 바뀌었다. AWS Summit Tokyo 2019 발표는 영상을 찾지 못해 다른 회사의 청강 보고로 읽었다(받은 영상 재료 없음). 연봉 공시 평균은 지주회사 직원만의 값이다. 코드 예시는 개념을 보이려고 Python·SQLite로 돌린 가상 값이다. 2026-11-25 원티드 백엔드 공고(354828)를 덧붙였다 — 보험(Inspire)·신용(Crest)·데이터 쪽은 사업별 공고와 기사로만 읽었고, 개발팀 Notion 페이지는 스크립트로 그려져 읽지 못했다.",
   "resources": [
     {
       "id": "aws-int",
@@ -1273,6 +1574,39 @@
       "level": "입문",
       "url": "https://www.jlpt.jp/about/levelsummary.html",
       "why": "자격요건 '일본어 비즈니스 수준'을 급수로 가늠하기. (일본어 자료)"
+    },
+    {
+      "id": "airflow-docs",
+      "title": "Apache Airflow 공식 문서",
+      "by": "Apache Software Foundation",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+      "why": "사용 기술의 Airflow — 데이터 제품의 정해진 시각 배치를 DAG 로 짜고 실패한 작업만 다시 돌리기."
+    },
+    {
+      "id": "snowflake-docs",
+      "title": "Snowflake 공식 문서 · Key Concepts",
+      "by": "Snowflake",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.snowflake.com/en/user-guide/intro-key-concepts",
+      "why": "사용 기술의 Snowflake — 서버가 데이터 웨어하우스에서 값을 읽고 쓸 때 알아야 할 구조."
+    },
+    {
+      "id": "openai-docs",
+      "title": "OpenAI API 문서",
+      "by": "OpenAI",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://platform.openai.com/docs/overview",
+      "why": "사용 기술의 OpenAI API·우대 '생성형 AI 기능' — 호출·구조화 출력·비용을 서버 쪽에서 다루기."
     }
   ],
   "study_path": [
@@ -1339,13 +1673,19 @@
     }
   ],
   "pay": {
-    "summary": "공고 표기 연봉 **900만~1,350만 엔**(고정 잔업 40시간분 포함) — 공시 평균은 지주회사 직원 23명만의 값(703.3만 엔)이라 개발자 연봉과 견주기 어렵다",
+    "summary": "공고 표기 연봉 **900만~1,350만 엔**(고정 잔업 40시간분 포함) — 공시 평균은 지주회사 직원 23명만의 값(703.3만 엔)이라 개발자 연봉과 견주기 어렵다 · 같은 회사 백엔드 공고(원티드)는 500만~1,350만 엔",
     "rows": [
       {
         "label": "공고 표기 연봉",
         "value": "900만~1,350만 엔",
         "basis": "공고 · 2026년",
         "note": "경험·기술로 최종 결정, 입사 때 예상 연봉이고 상한이 아니라고 적었다. 고정 잔업 40시간분 포함, 전문업무형 재량노동(간주 8시간) 등 적용 [1]"
+      },
+      {
+        "label": "백엔드 엔지니어 공고 (원티드)",
+        "value": "500만~1,350만 엔",
+        "basis": "공고 · 2026년",
+        "note": "원티드 354828. 같은 공고의 회사 채용 사이트 판(210)은 900만~1,350만 엔이라 아래쪽 값이 다르다 — 경력 2~10년 자리라 아래를 넓힌 것으로 보인다{추론}. 고정 잔업 40시간 포함은 같다 [33]"
       },
       {
         "label": "같은 사업부 백엔드 공고",
@@ -1429,5 +1769,6 @@
     "map_url": "https://www.google.com/maps/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8D%83%E4%BB%A3%E7%94%B0%E5%8C%BA%E4%B9%9D%E6%AE%B5%E5%8C%971-8-10",
     "near": "구단시타역(九段下) 걸어서 4분, 스이도바시역(水道橋)·이다바시역(飯田橋) 걸어서 8분",
     "note": "공고의 근무지와 유가증권보고서의 본점 소재지가 같다 [1][10]. 일본 주소라 네이버 지도 대신 구글 지도 검색 링크를 단다."
-  }
+  },
+  "updated_at": "2026-11-25"
 }
