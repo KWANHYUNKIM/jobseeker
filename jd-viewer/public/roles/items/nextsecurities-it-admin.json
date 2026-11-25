@@ -1,0 +1,985 @@
+{
+ "id": "nextsecurities-it-admin",
+ "company": "넥스트증권",
+ "role": "IT Admin (1년 계약직 · 신입)",
+ "team": "IT 운영(사내 IT 지원) · 공고 직무 분류 Security",
+ "jobs": [
+  "ats-greeting:nextsecurities:231238"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "직원 189명 남짓한 증권사에서 **임직원의 PC·계정·네트워크·협업 툴 문제를 풀고**, 같은 문제가 다시 안 생기게 절차를 고치는 자리입니다.[1][7]",
+  "env": "윈도우·맥이 섞인 사무실, Google Workspace·Slack·Notion 같은 SaaS, 그리고 MDM·EDR·DLP·ZTNA·NAC 같은 **보안 프로그램이 깔린 기기** 위에서 일합니다. 증권사라 금융 보안 규제를 받습니다.[1][10]",
+  "oneline": "전산 지원으로 시작해 보안·인프라로 넘어가는 첫 자리. 코딩보다 **문제를 끝까지 좁혀 가는 습관과 자동화·문서화**를 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "임직원이 겪는 다양한 IT 문의를 지원하고 장애에 대응합니다.",
+   "short": "‘PC가 안 켜져요’·‘메일이 안 와요’ 같은 요청을 받아 원인을 찾고, 업무가 멈추지 않게 먼저 살리는 일.",
+   "why": "공고는 이 자리를 문제를 처리하는 데서 그치지 않고 **근본 원인을 찾아 같은 문제가 반복되지 않게** 하는 역할로 소개합니다.[1] 회사는 2024년 6월 94명에서 2026년 6월 189명으로 두 배가 됐고[7], 사람이 늘면 같은 문의가 늘어납니다 {추론}.",
+   "actually": {
+    "intro": "IT 서비스 관리에서 흔히 쓰는 나눔입니다(넥스트증권의 실제 도구·절차는 공개되지 않았습니다).[20]",
+    "items": [
+     "**접수** — 슬랙·메일·티켓으로 들어온 요청을 한 곳에 모으고, 급한 정도(한 사람이냐, 팀 전체냐)로 순서를 정한다 {추론}.",
+     "**인시던트(장애) 처리** — 지금 멈춘 업무를 먼저 되살린다. 임시 우회(다른 노트북 지급, 웹 버전 쓰기)도 해결이다.[20]",
+     "**문제 관리** — 같은 장애가 여러 번 나면 근본 원인을 따로 찾는다. ITIL 은 장애 하나하나와 그 원인(problem)을 나눠 다룬다.[20]",
+     "**알려진 오류 기록** — 원인과 우회법을 적어 두면 다음 사람이 빨리 푼다. 지식 문서가 쌓일수록 장애가 줄어든다.[20]"
+    ]
+   },
+   "how_far": "신입이라 처음에는 정해진 절차대로 1차 응대를 맡고, 손에 넘치는 건 보안·인프라 담당에게 넘깁니다 {추론}. 최소선은 **받은 요청을 놓치지 않고, 무엇을 해 봤는지 남기는 것**입니다.",
+   "refs": [
+    1,
+    7,
+    20
+   ],
+   "study": [
+    "google-it-support",
+    "atlassian-problem"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Windows 및 macOS PC를 세팅하고, 표준 업무환경을 최신 상태로 유지·운영합니다.",
+   "short": "새 노트북을 회사 표준대로(계정·보안 프로그램·업무 앱) 맞춰 내주고, 업데이트가 빠진 기기를 찾아 고치는 일.",
+   "why": "모든 기기가 같은 설정이어야 보안 프로그램이 같은 기준으로 지키고, 문제가 나도 비교할 기준이 생깁니다 {추론}. 증권사는 금융 규제상 단말기 보호대책이 있어야 SaaS 같은 외부 서비스를 쓸 수 있습니다.[10][11]",
+   "actually": {
+    "items": [
+     "**맥 자동 등록** — 애플 비즈니스 매니저에 회사가 산 기기를 올려 두면, 상자를 뜯고 켜는 순간 회사 MDM(원격 기기 관리)에 등록된다. IT 가 손대지 않아도 된다.[16]",
+     "**윈도우 자동 등록** — Windows Autopilot 은 새 PC 를 처음 켤 때 회사 설정과 앱을 내려받게 한다.[17]",
+     "**표준 이미지 대신 프로필** — 디스크 암호화·화면 잠금·관리자 권한 제한 같은 설정을 MDM 프로필로 내린다.[26]",
+     "**최신 유지** — 운영체제·앱 업데이트를 단계별로 내리고 적용률을 본다. NIST 는 패치를 예방 정비로 보고 전사 계획을 세우라고 한다.[29]"
+    ]
+   },
+   "how_far": "표준(어떤 앱·어떤 설정)은 보안팀과 함께 정하고, 이 자리는 **그 표준대로 기기를 내주고 어긋난 기기를 찾아내는** 쪽입니다 {추론}. 윈도우와 맥 둘 다 설정 화면과 관리 도구에 익숙하면 충분합니다.",
+   "refs": [
+    10,
+    11,
+    16,
+    17,
+    26,
+    29
+   ],
+   "study": [
+    "apple-deploy",
+    "ms-md102",
+    "nist-800-40"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "노트북, 데스크톱, 모니터, OA 장비 등의 하드웨어와 소프트웨어 라이선스를 관리합니다.",
+   "short": "누가 어떤 장비·프로그램을 쓰는지 장부로 맞춰 두어, 사지 않은 프로그램을 쓰거나 남는 라이선스에 돈을 내지 않게 하는 일.",
+   "why": "소프트웨어 자산 관리(SAM)는 라이선스를 사고·배포하고·회수하는 전 과정을 관리해 비용과 위반 위험을 줄이는 일입니다.[22] 사람이 빠르게 늘면 장비 구매와 회수가 잦아집니다.[7]",
+   "actually": {
+    "items": [
+     "**자산 장부** — 장비마다 일련번호·사용자·지급일·보증 기간을 적는다. MDM 에 등록된 기기 목록과 장부를 맞춰 본다 {추론}.",
+     "**라이선스 수 맞추기** — 산 수량과 실제 쓰는 계정 수를 비교한다. 퇴사자 계정에 남은 유료 좌석이 흔한 낭비다 {추론}.",
+     "**회수·폐기** — 반납받은 기기는 데이터를 지우고 재지급하거나 폐기한다. 이 기록이 보안 감사 때 쓰인다 {추론}.",
+     "**표준 관리** — 소프트웨어 자산 관리에는 ISO/IEC 19770 같은 국제 표준이 있다.[22]"
+    ]
+   },
+   "how_far": "구매 결정은 예산을 가진 쪽이 하고, 이 자리는 **장부가 실제와 맞게 유지되게** 합니다. 스프레드시트로 시작해도 되지만, 숫자가 어디서 왔는지 설명할 수 있어야 합니다 {추론}.",
+   "refs": [
+    7,
+    22
+   ],
+   "study": [
+    "google-it-support"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사내 유·무선 네트워크 장애에 대한 1차 분석과 대응을 수행합니다.",
+   "short": "‘인터넷이 안 돼요’를 IP·게이트웨이·DNS 단계로 쪼개, 어느 칸에서 끊겼는지 가려 고치거나 넘기는 일.",
+   "why": "네트워크 장애는 원인이 기기·케이블·와이파이·서버·보안 장비 어디에나 있을 수 있어서, 처음 받는 사람이 칸을 좁혀 줘야 다음 담당이 빨리 고칩니다 {추론}. 자격요건이 TCP/IP·DHCP·DNS 를 콕 집은 이유입니다.[1]",
+   "actually": {
+    "items": [
+     "**IP 를 받았나** — 기기는 DHCP 로 주소를 받는다(찾기 → 제안 → 요청 → 확인, 네 번 오가는 대화).[13][14] 169.254 로 시작하면 서버에서 주소를 못 받아 스스로 붙인 주소다.[32]",
+     "**밖으로 나가나** — 게이트웨이까지 닿는지 본다. 안 되면 스위치·무선 AP·가상 네트워크(VLAN) 쪽이다 {추론}.",
+     "**이름이 풀리나** — 주소로는 되는데 이름으로 안 되면 DNS(이름을 IP 로 바꿔 주는 전화번호부)다.[15]",
+     "**보안 장비가 막았나** — NAC(네트워크 입장 검사)가 보안 상태가 나쁜 기기를 격리망으로 보낼 수 있다.[25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "1차 분석 순서를 코드로 (가상 상황 · 직접 돌린 출력)",
+     "body": "칸을 앞에서부터 하나씩 지우는 순서입니다. 마지막 줄처럼 네트워크가 멀쩡하면 앱·계정 쪽으로 넘어갑니다.",
+     "lang": "python",
+     "code": "import ipaddress\n\ndef first_look(ip, gateway_ok, dns_ok):\n    a = ipaddress.ip_address(ip)\n    if a in ipaddress.ip_network(\"169.254.0.0/16\"):\n        return \"IP를 못 받음 → DHCP 쪽(케이블·와이파이 인증·NAC 격리) 확인\"\n    if not gateway_ok:\n        return \"IP는 있으나 게이트웨이 불통 → 스위치·AP·VLAN 확인\"\n    if not dns_ok:\n        return \"주소로는 되는데 이름으로 안 됨 → DNS 설정 확인\"\n    return \"네트워크 정상 → 앱·계정·보안 프로그램 쪽을 본다\"\n\nprint(first_look(\"169.254.12.7\", False, False))\nprint(first_look(\"10.20.3.41\", False, False))\nprint(first_look(\"10.20.3.41\", True, False))\nprint(first_look(\"10.20.3.41\", True, True))\n# IP를 못 받음 → DHCP 쪽(케이블·와이파이 인증·NAC 격리) 확인\n# IP는 있으나 게이트웨이 불통 → 스위치·AP·VLAN 확인\n# 주소로는 되는데 이름으로 안 됨 → DNS 설정 확인\n# 네트워크 정상 → 앱·계정·보안 프로그램 쪽을 본다"
+    }
+   ],
+   "how_far": "‘1차’라 장비 설정을 바꾸는 것까지는 아닙니다. **ipconfig·ping·nslookup 으로 끊긴 칸을 짚고, 본 것을 적어 넘기는** 데까지가 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    13,
+    14,
+    15,
+    25,
+    32
+   ],
+   "study": [
+    "net-1pct",
+    "rfc2131",
+    "cloudflare-dns"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "MDM, EDR, DLP, ZTNA, NAC 등 엔드포인트 및 보안 솔루션 운영을 지원합니다.",
+   "short": "직원 기기에 깔린 다섯 가지 보안 프로그램이 모든 기기에서 켜져 있게 하고, 업무를 막으면 예외를 처리하는 일.",
+   "why": "넥스트증권은 2025년 9월 테크본부와 정보보호본부를 새로 만들었습니다.[6] 이 공고의 직무 분류도 Security 이고[1], 공고는 이 자리에서 증권사의 높은 보안 수준을 경험해 보안 엔지니어로 클 수 있다고 적었습니다.[1]",
+   "actually": {
+    "intro": "다섯 가지가 각각 무엇을 하는지입니다.",
+    "items": [
+     "**MDM** — 기기를 원격으로 등록·설정·잠금·초기화한다.[26]",
+     "**EDR** — 기기에서 일어나는 실행·접속을 기록해 수상한 행동을 찾아내고 대응한다(백신보다 넓다).[23][27]",
+     "**DLP** — 고객정보 같은 중요한 자료가 메일·USB·업로드로 새 나가는 것을 찾아 막는다.[24]",
+     "**ZTNA** — 사내망 안이라고 믿지 않고, 앱에 들어갈 때마다 사람과 기기를 확인한 뒤 그 앱만 열어 준다(제로 트러스트).[12]",
+     "**NAC** — 사무실 망에 붙는 기기가 누구 것이고 보안 상태가 괜찮은지 보고 들여보낸다.[25]",
+     "**운영 지원의 실제** — 에이전트가 빠진 기기 찾기, 오탐으로 막힌 업무 프로그램 신고 받아 보안 담당에게 넘기기, 새 기기에 빠짐없이 깔기 {추론}."
+    ]
+   },
+   "how_far": "정책을 정하는 건 정보보호 조직이고, 공고 문장도 ‘운영을 **지원**’입니다.[1] 최소선은 다섯 가지가 **각각 무엇을 보고 무엇을 막는지, 꺼지면 어떻게 아는지** 설명하는 것입니다 {추론}.",
+   "refs": [
+    1,
+    6,
+    12,
+    23,
+    24,
+    25,
+    26,
+    27
+   ],
+   "study": [
+    "nist-800-207",
+    "kisa-zt",
+    "nist-800-83"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "입사, 퇴사, 부서 이동 등에 따라 발생하는 계정, 장비 및 접근권한을 관리합니다.",
+   "short": "들어오는 사람에겐 첫날 쓸 계정·장비를 준비하고, 나가는 사람의 계정·권한은 빠짐없이 닫는 일.",
+   "why": "퇴사자 계정이 하나라도 살아 있으면 회사 밖에서 자료에 들어올 수 있는 문이 남습니다 {추론}. 부서를 옮긴 사람이 예전 권한을 그대로 들고 있는 것도 같은 위험입니다 {추론}. 회사는 2년 동안 직원이 두 배가 됐습니다.[7]",
+   "actually": {
+    "items": [
+     "**입사** — 인사 정보로 Google 계정을 만들고, 팀에 맞는 그룹·채널·공유 공간에 넣고, 기기를 지급한다 {추론}.",
+     "**퇴사** — 계정을 먼저 정지하고, 남길 자료(드라이브·캘린더)를 넘긴 뒤 지운다. Google 은 지울 때 넘기지 않은 자료는 사라진다고 경고한다.[18]",
+     "**연결된 SaaS** — Slack 같은 서비스는 SCIM(계정 자동 동기화 표준)으로 회사 계정 시스템과 이어 두면, 한 곳에서 끄면 같이 꺼진다.[19]",
+     "**부서 이동** — 새 권한을 주는 것만큼 예전 권한을 거두는 게 중요하다 {추론}.",
+     "**대조** — 인사 명단과 각 서비스 계정 목록을 정기적으로 맞춰 남은 계정을 찾는다(아래 예) {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "퇴사자 계정이 남은 곳 찾기 (가상 명단 · 직접 돌린 출력)",
+     "body": "재직자 명단에 없는데 서비스에 남은 계정이 지울 대상입니다. 실제로는 각 서비스의 관리자 API·내보내기로 목록을 받습니다.[28][19]",
+     "lang": "python",
+     "code": "hr_active = {\"kim\", \"lee\", \"park\", \"choi\"}          # 인사 시스템의 재직자\nsaas = {\n    \"google\": {\"kim\", \"lee\", \"park\", \"choi\", \"jung\"},\n    \"slack\":  {\"kim\", \"lee\", \"park\", \"jung\", \"han\"},\n    \"notion\": {\"kim\", \"lee\", \"choi\"},\n}\nfor app, users in saas.items():\n    left = sorted(users - hr_active)   # 퇴사했는데 아직 살아 있는 계정\n    print(f\"{app:7} 남은 퇴사자 계정: {left if left else '없음'}\")\n# google  남은 퇴사자 계정: ['jung']\n# slack   남은 퇴사자 계정: ['han', 'jung']\n# notion  남은 퇴사자 계정: 없음"
+    }
+   ],
+   "how_far": "누가 어떤 권한을 가져야 하는지는 팀장·보안팀이 정합니다. 이 자리는 **정해진 대로 빠짐없이, 날짜에 맞춰 열고 닫고, 기록을 남기는** 사람입니다 {추론}.",
+   "refs": [
+    7,
+    18,
+    19,
+    28
+   ],
+   "study": [
+    "gws-admin",
+    "slack-scim",
+    "admin-sdk"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Google Workspace, Slack, Notion 등 사내 SaaS와 협업 툴을 관리 및 운영합니다.",
+   "short": "회사 메일·드라이브·메신저·문서 도구의 관리자 화면에서 사용자·그룹·공유 설정을 맞추고 문의를 푸는 일.",
+   "why": "넥스트증권은 Google Workspace·Slack·Notion 을 사내 협업 툴로 씁니다.[1] 금융회사가 내부망에서 SaaS 를 쓰는 것은 2024년 망분리 개선 로드맵 뒤로 조건부로 허용됐고[10], 그 조건에 보안 통제가 붙습니다.[11]",
+   "actually": {
+    "items": [
+     "**사용자·그룹** — 조직 단위와 그룹으로 누가 어떤 공유 드라이브·채널에 들어가는지 정한다 {추론}.",
+     "**공유 설정** — 회사 밖으로 파일 공유를 허용할지, 외부 사람을 채널에 부를지 같은 설정을 정책대로 맞춘다 {추론}.",
+     "**계정 연동** — 한 번 로그인으로 여러 서비스에 들어가게(SSO) 하고, SCIM 으로 계정을 맞춘다.[19]",
+     "**문의** — ‘공유가 안 돼요’ ‘채널이 안 보여요’ 의 대부분은 권한·그룹 문제다 {추론}."
+    ]
+   },
+   "how_far": "관리자 화면에서 **설정이 어디 있고 바꾸면 누구에게 무엇이 달라지는지** 아는 수준이면 시작할 수 있습니다. 개인 Google 계정·무료 Slack 워크스페이스로도 관리자 화면 대부분을 연습할 수 있습니다 {추론}.",
+   "refs": [
+    1,
+    10,
+    11,
+    19
+   ],
+   "study": [
+    "gws-admin",
+    "slack-scim"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "반복적으로 발생하는 IT 업무를 분석하고, AI와 자동화 도구를 활용해 프로세스를 개선합니다.",
+   "short": "매주 손으로 하던 일(계정 만들기·목록 맞추기·같은 답변)을 찾아 스크립트·노코드·AI 로 줄이는 일.",
+   "why": "공고 요약이 직접 ‘AI 와 자동화 도구를 적극적으로 활용해 반복 업무를 줄인다’고 적었고[1], 회사 사명도 ‘AI 세대를 위한 금융투자 플랫폼’입니다.[1] 우대사항 여섯 줄 중 세 줄이 개선·문서화·자동화 경험입니다.[1]",
+   "actually": {
+    "items": [
+     "**무엇이 반복되나 세기** — 티켓을 종류별로 세어 가장 많은 것부터 고른다 {추론}.",
+     "**관리자 API** — Google 의 Directory API 는 사용자·그룹·기기를 코드로 만들고 바꾸게 해 준다.[28] Slack 은 SCIM API 를 준다.[19]",
+     "**자주 묻는 답 문서화** — 같은 질문에 같은 답이 가도록 지식 문서를 만들고, 생성형 AI 로 찾게 한다 {추론}.",
+     "**작업 자동 연결** — 입사 정보가 들어오면 계정·그룹·장비 요청이 같이 생기게 노코드 도구로 잇는다 {추론}."
+    ]
+   },
+   "how_far": "큰 시스템을 만드는 게 아니라 **하루 30분 손이 가던 일을 5분으로** 줄이는 작은 자동화를 여러 개 만드는 쪽입니다 {추론}. 서류 단계에서 GitHub·블로그·포트폴리오를 선택으로 받으니[1], 만든 것을 보여 주면 좋습니다.",
+   "refs": [
+    1,
+    19,
+    28
+   ],
+   "study": [
+    "admin-sdk",
+    "sysinternals"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "신입 또는 IT 운영, 전산지원, Helpdesk 관련 경력이 3년 이하인 분",
+   "short": "경력 없이도 지원할 수 있고, 헬프데스크 3년 차까지가 대상이라는 뜻.",
+   "why": "공고는 신입 · 12개월 계약직이고, 계약이 끝날 때 성과와 조직 상황에 따라 연장되거나 고용 형태가 바뀔 수 있다고 적었습니다.[1] 같은 공고가 다른 채용 사이트에는 경력 1~3년으로 올라 있어 표기가 갈립니다.[2]",
+   "how_far": "경력보다 아래 네 줄(OS·하드웨어, 네트워크 기초, 설명하기, 스스로 배우기)을 보는 자리입니다. 계약직이라는 점과 연장 조건은 처우 논의 때 직접 물어볼 만합니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "전공이나 학력과 관계없이 Windows, macOS 등 운영체제와 PC 하드웨어에 대한 기본적인 이해와 문제 해결 역량을 갖춘 분",
+   "short": "전공보다 ‘안 되는 PC를 놓고 원인을 좁혀 본 적이 있나’를 본다.",
+   "why": "사무실 PC 가 윈도우와 맥 두 가지라서[1] 한쪽만 알면 문의의 절반을 못 받습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**운영체제** — 계정·권한(관리자/표준), 업데이트, 드라이버, 시작 프로그램, 디스크 공간, 이벤트 로그(윈도우)·콘솔(맥) 보기.",
+     "**하드웨어** — 램·저장장치·배터리·모니터 연결 단자·도킹 문제를 가려낼 줄 안다.",
+     "**도구** — 윈도우는 Sysinternals 같은 진단 도구로 실행 중인 프로세스·시작 항목을 본다.[30]",
+     "**문제 해결 순서** — 재현 → 범위 좁히기(한 사람/여러 사람) → 최근 바뀐 것 찾기 → 고치기 → 확인 {추론}."
+    ]
+   },
+   "how_far": "‘기본적인 이해’입니다. PC 를 직접 조립·포맷·재설치해 본 경험, 맥과 윈도우에서 같은 문제를 각각 풀어 본 경험이면 충분히 말할 거리가 됩니다 {추론}.",
+   "refs": [
+    1,
+    30
+   ],
+   "study": [
+    "google-it-support",
+    "sysinternals",
+    "apple-deploy"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "TCP/IP, DHCP, DNS 등 네트워크 기초지식과 기본적인 보안 원칙을 이해하고 있는 분",
+   "short": "주소를 받고(DHCP)·이름을 찾고(DNS)·패킷이 오가는(TCP/IP) 흐름을 설명할 수 있고, 최소 권한 같은 원칙을 안다.",
+   "why": "업무 넷째 줄의 네트워크 1차 분석과 다섯째 줄의 보안 프로그램 운영이 이 두 지식 위에 있습니다.[1]",
+   "level": {
+    "basic": "IP 주소·서브넷·게이트웨이 · DHCP 네 단계 · DNS 조회 · TCP 와 UDP 차이 · ping·nslookup",
+    "work": "무선 인증(회사 와이파이) · VLAN · 프록시·VPN 이 끼었을 때 · 패킷 캡처 한 번 읽어 보기",
+    "team": "NAC·ZTNA 가 접속을 막는 지점 구분 · 최소 권한 · 다중 인증(MFA) · 패치 기한"
+   },
+   "actually": {
+    "items": [
+     "**DHCP** — 기기가 찾기(DISCOVER) → 서버가 제안(OFFER) → 기기가 요청(REQUEST) → 서버가 확인(ACK) 하며 주소를 빌린다.[14][13]",
+     "**DNS** — 사람이 쓰는 이름을 컴퓨터가 쓰는 IP 주소로 바꾼다.[15]",
+     "**보안 원칙** — 제로 트러스트는 사내망 안이라도 믿지 않고 요청마다 사람·기기를 확인하는 원칙이다.[12] 과기정통부·KISA 도 2024년 가이드라인 2.0 을 냈다.[31]"
+    ]
+   },
+   "how_far": "자격증 수준이 아니라 **‘인터넷이 안 돼요’를 받았을 때 어느 단계부터 볼지 말할 수 있는** 정도입니다 {추론}.",
+   "refs": [
+    1,
+    12,
+    13,
+    14,
+    15,
+    31
+   ],
+   "study": [
+    "net-1pct",
+    "rfc2131",
+    "cloudflare-dns",
+    "kisa-zt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "사용자의 관점에서 문제를 파악하고, 해결 과정과 결과를 명확하게 설명할 수 있는 분",
+   "short": "‘안 돼요’를 들으면 무엇을 하려다 막혔는지부터 묻고, 고친 뒤엔 무엇을 했는지 쉬운 말로 알려 준다.",
+   "why": "이 자리의 고객은 개발자·영업·운영 등 IT 가 본업이 아닌 임직원입니다.[1] 증상(‘메일이 안 와요’)과 원인(스팸 필터·용량·전달 규칙)은 다르고, 증상을 정확히 받아 적어야 원인을 좁힐 수 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**묻는 순서** — 언제부터, 누구만, 무엇을 하다가, 화면에 뭐가 떴는지 {추론}.",
+     "**알리는 방식** — 원인 한 줄, 한 일 한 줄, 다시 생기면 할 일 한 줄 {추론}.",
+     "**장애 뒤 기록** — 큰 장애는 탓하지 않는 사후 검토(포스트모템)로 원인과 재발 방지책을 남긴다.[21]"
+    ]
+   },
+   "how_far": "면접에서 해결한 문제 하나를 **상대가 IT 를 모른다고 생각하고** 2분 안에 설명해 보면 이 줄을 채웠는지 알 수 있습니다 {추론}.",
+   "refs": [
+    1,
+    21
+   ],
+   "study": [
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모르는 내용을 스스로 찾아 학습하고, 새로운 기술과 도구를 실제 문제 해결에 접목해 보는 것을 즐기는 분",
+   "short": "처음 보는 오류 메시지를 공식 문서·공개 자료로 찾아 풀고, 새 도구를 실제 일에 써 보는 사람.",
+   "why": "MDM·EDR·DLP·ZTNA·NAC 는 신입이 학교에서 배우기 어려운 제품들이라 입사 뒤에 배워야 합니다 {추론}. 공고는 이 자리를 보안·인프라·IT 기획으로 커 가는 출발점으로 소개합니다.[1]",
+   "how_far": "‘무엇을 어떻게 찾아봤나’를 말할 수 있으면 됩니다 — 예를 들어 공식 문서·RFC·제조사 지식 문서를 읽고 해결한 사례 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "google-it-support",
+    "ms-md102"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "반복되는 불편이나 문제를 스스로 발견하고, 원인을 찾아 해결하거나 더 나은 방식으로 개선해 본 경험이 있는 분",
+   "short": "누가 시키지 않았는데 반복되는 불편을 찾아 원인부터 고쳐 본 이야기가 있으면 좋다.",
+   "why": "공고 요약의 핵심 문장 — 문제를 처리하는 데서 그치지 않고 근본 원인을 분석해 반복되지 않게 한다 — 과 같은 말입니다.[1] ITIL 에서는 이것을 문제 관리라고 부릅니다.[20]",
+   "how_far": "동아리·아르바이트·개인 PC 에서라도 **발견 → 원인 → 고친 방법 → 줄어든 숫자** 순서로 말할 수 있는 사례 하나면 됩니다 {추론}.",
+   "refs": [
+    1,
+    20
+   ],
+   "study": [
+    "atlassian-problem"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "본인이 해결한 문제와 시행착오, 개선한 과정 및 결과를 다른 사람이 이해할 수 있도록 설명하거나 문서화해 본 분",
+   "short": "실패한 시도까지 적은 해결 기록을 남겨, 다음 사람이 같은 문제를 빨리 풀게 해 본 경험.",
+   "why": "알려진 오류와 우회법을 적어 둔 지식 문서가 쌓일수록 장애 해결이 빨라지고 장애 자체가 줄어든다고 ITSM 자료는 설명합니다.[20] 시행착오를 적는 문화는 사후 검토(포스트모템)의 기본이기도 합니다.[21]",
+   "how_far": "블로그 글·노션 페이지·README 로 **증상·원인·해 본 것(실패 포함)·해결·재발 방지** 다섯 칸을 채운 기록이면 됩니다. 지원 때 링크를 선택으로 낼 수 있습니다.[1]",
+   "refs": [
+    1,
+    20,
+    21
+   ],
+   "study": [
+    "sre-postmortem",
+    "atlassian-problem"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "PC, 운영체제, 네트워크 또는 소프트웨어와 관련된 문제를 직접 조사하고 해결한 경험이 있는 분",
+   "short": "남이 알려 준 대로가 아니라 로그·설정을 직접 뒤져 원인을 찾아낸 경험.",
+   "why": "업무 첫째·넷째 줄(문의·장애 대응, 네트워크 1차 분석)을 혼자 해 본 적이 있는지 보는 줄입니다.[1]",
+   "how_far": "집 공유기 DHCP·DNS 설정을 바꿔 본 일, 블루스크린을 이벤트 로그로 추적한 일처럼 **무엇을 보고 원인이라고 판단했는지**가 있으면 됩니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sysinternals",
+    "net-1pct"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "반복 작업을 줄이기 위해 스크립트, 노코드 도구, 생성형 AI 등을 활용해 본 분",
+   "short": "PowerShell·셸·Apps Script·노코드·AI 중 무엇으로든 손일을 줄여 본 결과물이 있으면 좋다.",
+   "why": "업무 여덟째 줄의 자동화를 바로 할 수 있는지 보는 줄입니다.[1] 계정·그룹·기기 관리는 관리자 API 로 코드화할 수 있습니다.[28][19]",
+   "how_far": "개발자 수준 코드가 아니라 **돌아가는 짧은 스크립트와 ‘얼마나 줄었나’**면 됩니다. 위 퇴사자 계정 대조 같은 것을 실제 API 로 바꿔 보면 좋은 과제입니다 {추론}.",
+   "refs": [
+    1,
+    19,
+    28
+   ],
+   "study": [
+    "admin-sdk",
+    "slack-scim"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Google Workspace, Slack, Notion 등 협업 툴의 설정이나 관리자 기능을 다뤄본 경험이 있는 분",
+   "short": "동아리·스터디라도 워크스페이스를 만들어 사용자·권한·공유 설정을 관리자로 다뤄 본 경험.",
+   "why": "업무 일곱째 줄의 툴 운영에 바로 들어가려면 관리자 화면이 낯설지 않아야 합니다.[1] 퇴사자 처리처럼 실수하면 자료가 사라지는 기능도 있습니다.[18]",
+   "how_far": "사용자 추가·정지·삭제의 차이, 그룹으로 권한 주기, 외부 공유 제한 정도를 해 봤으면 충분합니다 {추론}.",
+   "refs": [
+    1,
+    18
+   ],
+   "study": [
+    "gws-admin",
+    "slack-scim"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "MDM, EDR, DLP, NAC 등 엔드포인트 보안 솔루션을 학습하거나 운영해 본 분",
+   "short": "회사 제품을 못 써 봤어도, 무료·체험판으로 기기 관리·보안 프로그램을 직접 걸어 본 경험이면 된다.",
+   "why": "업무 다섯째 줄의 보안 솔루션 운영 지원을 위한 줄이고, ‘학습하거나’라고 적어 운영 경험이 없어도 된다는 뜻입니다.[1]",
+   "how_far": "Microsoft Intune 학습 경로(MD-102)나 애플 배포 가이드로 **기기 하나를 등록하고 정책 하나를 내려 본** 경험이면 말할 거리가 됩니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ms-md102",
+    "apple-deploy",
+    "nist-800-83"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "친구·가족 PC 를 고쳐 주는 게 즐거운 사람",
+   "같은 일을 세 번 하면 스크립트를 짜고 싶어지는 사람",
+   "보안·인프라 엔지니어로 가는 첫 자리를 찾는 사람[1]",
+   "해결 과정을 글로 남기는 데 익숙한 사람"
+  ],
+  "hard": [
+   "12개월 계약직 — 연장·전환은 성과와 조직 상황에 따른다[1]",
+   "급한 문의가 끼어들어 한 가지 일에 오래 집중하기 어렵다 {추론}",
+   "금융 규제 때문에 마음대로 깔고 바꿀 수 없는 것이 많다[10][11]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "‘인터넷이 안 돼요’라는 문의를 받았어요. 무엇부터 보나요?",
+   "a": "IP → 게이트웨이 → DNS → 보안 장비 순으로 칸 좁히기.[13][15][25]"
+  },
+  {
+   "q": "IP 주소가 169.254 로 시작하면 무슨 뜻인가요?",
+   "a": "DHCP 서버에서 주소를 못 받아 스스로 붙인 주소.[14][32]"
+  },
+  {
+   "q": "퇴사자가 생기면 무엇을 어떤 순서로 하나요?",
+   "a": "계정 정지 → 자료 넘기기 → 연결된 SaaS 끄기 → 기기 회수·초기화.[18][19]"
+  },
+  {
+   "q": "EDR 과 DLP 는 각각 무엇을 막나요?",
+   "a": "EDR 은 기기 위의 수상한 행동, DLP 는 중요한 자료의 유출.[23][24]"
+  },
+  {
+   "q": "반복되는 불편을 찾아 고친 경험을 말해 주세요.",
+   "a": "공고 요약과 우대사항 첫 줄이 그대로 묻는 것.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "넥스트증권 채용 · IT Admin*(1년 계약직/신입)",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/o/231238",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "이 공고 — 직무 요약·업무 8·필수 5·선호 6, 직무 분류 Security, 12개월 계약직, 근무지 여의도 본사, 제출 서류(포트폴리오 선택)"
+  },
+  {
+   "n": 2,
+   "title": "리멤버 · 넥스트증권 IT Admin*(1년 계약직/신입)",
+   "url": "https://career.rememberapp.co.kr/job/posting/338892",
+   "kind": "posting",
+   "note": "같은 공고 — 경력 1~3년·연봉 협의로 표기, 복지 태그(유연근무·재택·경조금·복지포인트·장기근속)"
+  },
+  {
+   "n": 3,
+   "title": "넥스트증권 채용 · Life at Next(복리후생)",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/lifeatnext",
+   "kind": "company",
+   "note": "복지 항목과 금액, 사이트 하단 회사 주소"
+  },
+  {
+   "n": 4,
+   "title": "넥스트증권 채용 · 채용 절차",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/howwehire",
+   "kind": "company",
+   "note": "서류 → 1차(직무) → 2차(핵심가치) → 처우 협의"
+  },
+  {
+   "n": 5,
+   "title": "원티드 · 넥스트증권 회사 정보",
+   "url": "https://www.wanted.co.kr/company/52490",
+   "kind": "reference",
+   "note": "평균 연봉 집계 — 기준월 표기 없음"
+  },
+  {
+   "n": 6,
+   "title": "인사이트 · 넥스트증권 테크본부·정보보호본부 신설",
+   "url": "https://www.insight.co.kr/news/520656",
+   "kind": "news",
+   "date": "2025-09-18"
+  },
+  {
+   "n": 7,
+   "title": "이코노미스트 · MTS 세 번 미룬 넥스트증권…미국주식 API 먼저 꺼낸 이유",
+   "url": "https://economist.co.kr/article/view/ecn202611090035",
+   "kind": "news",
+   "date": "2026-11-16",
+   "note": "임직원 94명(2024.6) → 189명(2026.6)"
+  },
+  {
+   "n": 8,
+   "title": "아시아경제 · 넥스트증권 신논현 거점 오피스·유연근무제",
+   "url": "https://core.asiae.co.kr/article/2026101509322299375",
+   "kind": "news",
+   "date": "2026-10",
+   "note": "코어타임 10~15시, 주 1회 원격"
+  },
+  {
+   "n": 9,
+   "title": "SBS Biz · 넥스트증권, 여의도 IFC 오피스 확장",
+   "url": "https://biz.sbs.co.kr/amp/article/20000250660",
+   "kind": "news",
+   "date": "2025-08-01"
+  },
+  {
+   "n": 10,
+   "title": "금융위원회 · 금융분야 망분리 개선 로드맵",
+   "url": "https://www.fsc.go.kr/po010101/82885",
+   "kind": "reference",
+   "date": "2024-08",
+   "note": "내부망 SaaS 이용 등 단계적 허용과 보안 조건"
+  },
+  {
+   "n": 11,
+   "title": "법률신문 · 금융회사 내부망 SaaS 이용 허용 – 전자금융감독규정 시행세칙 개정",
+   "url": "https://www.lawtimes.co.kr/news/articleView.html?idxno=220412",
+   "kind": "news",
+   "note": "SaaS 이용 조건으로 단말기 보호대책 등"
+  },
+  {
+   "n": 12,
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 13,
+   "title": "Microsoft Learn · DHCP(Dynamic Host Configuration Protocol) basics",
+   "url": "https://learn.microsoft.com/en-us/windows-server/troubleshoot/dynamic-host-configuration-protocol-basics",
+   "kind": "reference",
+   "note": "DHCP 메시지 흐름(DISCOVER·OFFER·REQUEST·ACK)"
+  },
+  {
+   "n": 14,
+   "title": "RFC 2131 · Dynamic Host Configuration Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc2131",
+   "kind": "reference",
+   "date": "1997"
+  },
+  {
+   "n": 15,
+   "title": "Cloudflare Learning · What is DNS?",
+   "url": "https://www.cloudflare.com/learning/dns/what-is-dns/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Apple Business Manager 사용 설명서 · 기기 작업 흐름",
+   "url": "https://support.apple.com/guide/apple-business-manager-m/device-workflow-axm6a88f692e/web",
+   "kind": "reference",
+   "note": "자동 기기 등록 — 기기를 만지지 않고 MDM 에 등록"
+  },
+  {
+   "n": 17,
+   "title": "Microsoft Learn · Windows Autopilot overview",
+   "url": "https://learn.microsoft.com/en-us/autopilot/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Google Workspace 관리자 고객센터 · 조직에서 사용자 삭제하기",
+   "url": "https://support.google.com/a/answer/33314",
+   "kind": "reference",
+   "note": "삭제 전 자료 이전, 이전하지 않은 자료는 삭제, 20일 안 복구, 정지로 대신하기"
+  },
+  {
+   "n": 19,
+   "title": "Slack Developer Docs · SCIM API",
+   "url": "https://docs.slack.dev/admins/scim-api",
+   "kind": "reference",
+   "note": "계정 생성·비활성화·그룹 동기화"
+  },
+  {
+   "n": 20,
+   "title": "Atlassian · Incident vs. problem management",
+   "url": "https://www.atlassian.com/incident-management/devops/incident-vs-problem-management",
+   "kind": "reference",
+   "note": "ITIL 의 인시던트·문제 구분, 알려진 오류와 지식 관리"
+  },
+  {
+   "n": 21,
+   "title": "Google SRE Book · Postmortem Culture: Learning from Failure",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Wikipedia · Software asset management",
+   "url": "https://en.wikipedia.org/wiki/Software_asset_management",
+   "kind": "reference",
+   "note": "라이선스 수명 관리, ISO/IEC 19770"
+  },
+  {
+   "n": 23,
+   "title": "Wikipedia · Endpoint detection and response",
+   "url": "https://en.wikipedia.org/wiki/Endpoint_detection_and_response",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Wikipedia · Data loss prevention software",
+   "url": "https://en.wikipedia.org/wiki/Data_loss_prevention_software",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Wikipedia · Network access control",
+   "url": "https://en.wikipedia.org/wiki/Network_access_control",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Wikipedia · Mobile device management",
+   "url": "https://en.wikipedia.org/wiki/Mobile_device_management",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "NIST SP 800-83 Rev. 1 · Guide to Malware Incident Prevention and Handling for Desktops and Laptops",
+   "url": "https://csrc.nist.gov/pubs/sp/800/83/r1/final",
+   "kind": "reference",
+   "date": "2013"
+  },
+  {
+   "n": 28,
+   "title": "Google for Developers · Admin SDK Directory API",
+   "url": "https://developers.google.com/admin-sdk/directory",
+   "kind": "reference",
+   "note": "사용자·그룹·기기를 코드로 관리"
+  },
+  {
+   "n": 29,
+   "title": "NIST SP 800-40 Rev. 4 · Guide to Enterprise Patch Management Planning",
+   "url": "https://csrc.nist.gov/pubs/sp/800/40/r4/final",
+   "kind": "reference",
+   "date": "2022"
+  },
+  {
+   "n": 30,
+   "title": "Microsoft Learn · Sysinternals",
+   "url": "https://learn.microsoft.com/en-us/sysinternals/",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "보안뉴스 · 과기정통부, '제로트러스트 가이드라인 2.0' 발표",
+   "url": "https://m.boannews.com/html/detail.html?idx=134858",
+   "kind": "news",
+   "date": "2024"
+  },
+  {
+   "n": 32,
+   "title": "Wikipedia · Link-local address",
+   "url": "https://en.wikipedia.org/wiki/Link-local_address",
+   "kind": "reference",
+   "note": "IPv4 169.254.0.0/16 — 주소를 못 받았을 때 스스로 붙이는 주소(RFC 3927)"
+  }
+ ],
+ "caveat": "넥스트증권은 사내 IT 운영 조직의 도구·절차·보안 제품 이름을 공개하지 않았습니다. 회사 자료는 이 공고와 채용 홈페이지, 보도뿐이라 실제 일은 ITIL·ITSM 공개 자료, 애플·마이크로소프트·Google·Slack 공식 문서, NIST·금융위 자료로 '보통 이런 것'을 보였습니다. 예시의 숫자와 이름은 모두 가상입니다.",
+ "resources": [
+  {
+   "id": "google-it-support",
+   "title": "Google IT Support Professional Certificate",
+   "by": "Google · Coursera",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.coursera.org/professional-certificates/google-it-support",
+   "why": "기술 지원 기초·네트워크·운영체제·시스템 관리·보안까지 이 공고 업무 1~5번을 한 바퀴 도는 입문 과정."
+  },
+  {
+   "id": "net-1pct",
+   "title": "성공과 실패를 결정하는 1%의 네트워크 원리 (2판)",
+   "by": "츠토무 토네 · 성안당 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%84%B1%EA%B3%B5%EA%B3%BC%20%EC%8B%A4%ED%8C%A8%EB%A5%BC%20%EA%B2%B0%EC%A0%95%ED%95%98%EB%8A%94%201%25%EC%9D%98%20%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC%20%EC%9B%90%EB%A6%AC",
+   "why": "브라우저 주소 입력부터 서버 응답까지 TCP/IP·DNS 흐름을 차례로 따라간다 — 자격요건 셋째 줄의 기초. 품절일 수 있어 도서관·전자책으로."
+  },
+  {
+   "id": "rfc2131",
+   "title": "RFC 2131 · Dynamic Host Configuration Protocol",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.rfc-editor.org/rfc/rfc2131",
+   "why": "DHCP 네 단계와 주소 임대의 원문. 3장 흐름 그림만 봐도 1차 분석의 첫 칸이 보인다."
+  },
+  {
+   "id": "cloudflare-dns",
+   "title": "What is DNS?",
+   "by": "Cloudflare Learning Center",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.cloudflare.com/learning/dns/what-is-dns/",
+   "why": "이름이 IP 로 바뀌는 과정(리졸버·루트·권한 서버)을 그림으로. ‘이름으로만 안 돼요’ 문의를 이해하는 바탕."
+  },
+  {
+   "id": "ms-md102",
+   "title": "Microsoft 365 Certified: Endpoint Administrator Associate (MD-102) 학습 경로",
+   "by": "Microsoft Learn",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/endpoint-administrator/",
+   "why": "Intune 으로 윈도우·맥 기기를 등록하고 정책을 내리는 법 — 업무 2·5번과 우대 마지막 줄을 연습한다."
+  },
+  {
+   "id": "apple-deploy",
+   "title": "Apple Platform Deployment",
+   "by": "Apple",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://support.apple.com/guide/deployment/welcome/web",
+   "why": "맥을 회사에서 배포·관리하는 공식 안내(자동 등록·MDM 프로필·업데이트 관리). 업무 2번의 맥 절반."
+  },
+  {
+   "id": "nist-800-40",
+   "title": "SP 800-40 Rev. 4 · Guide to Enterprise Patch Management Planning",
+   "by": "NIST · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://csrc.nist.gov/pubs/sp/800/40/r4/final",
+   "why": "‘표준 업무환경을 최신 상태로’를 회사 단위 계획으로 세우는 법. 앞의 요약부만 먼저 읽는다."
+  },
+  {
+   "id": "nist-800-83",
+   "title": "SP 800-83 Rev. 1 · Guide to Malware Incident Prevention and Handling for Desktops and Laptops",
+   "by": "NIST · 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/83/r1/final",
+   "why": "업무용 PC 에서 악성코드를 막고 감염됐을 때 대응하는 순서 — EDR 이 왜 필요한지 이해하는 바탕."
+  },
+  {
+   "id": "nist-800-207",
+   "title": "SP 800-207 · Zero Trust Architecture",
+   "by": "NIST · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "why": "ZTNA 의 바탕인 제로 트러스트 원칙의 원문. 2~3장만 읽어도 ‘사내망이라 믿지 않는다’가 무슨 뜻인지 잡힌다."
+  },
+  {
+   "id": "kisa-zt",
+   "title": "제로트러스트 가이드라인 2.0",
+   "by": "과학기술정보통신부 · KISA · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.kisa.or.kr/2060204",
+   "why": "제로 트러스트를 한국어로, 국내 기업 도입 단계와 함께 정리했다. 자격요건 ‘기본적인 보안 원칙’을 위한 한국어 자료."
+  },
+  {
+   "id": "gws-admin",
+   "title": "Google Workspace 관리자 고객센터",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://support.google.com/a",
+   "why": "사용자 추가·정지·삭제와 자료 이전, 그룹·공유 설정 — 업무 6·7번에서 매일 찾게 될 문서."
+  },
+  {
+   "id": "admin-sdk",
+   "title": "Admin SDK Directory API",
+   "by": "Google for Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developers.google.com/admin-sdk/directory",
+   "why": "계정·그룹·기기 관리를 코드로 — 업무 8번 자동화와 우대 ‘스크립트로 반복 줄이기’의 첫 재료."
+  },
+  {
+   "id": "slack-scim",
+   "title": "Slack SCIM API",
+   "by": "Slack Developer Docs",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.slack.dev/admins/scim-api",
+   "why": "입·퇴사 때 Slack 계정을 자동으로 만들고 끄는 표준. 계정 수명 관리를 이해하는 데 좋다."
+  },
+  {
+   "id": "atlassian-problem",
+   "title": "Problem management",
+   "by": "Atlassian ITSM 가이드",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.atlassian.com/itsm/problem-management",
+   "why": "장애 처리와 근본 원인 찾기를 나누는 법, 알려진 오류 기록 — 공고 요약의 ‘반복되지 않도록’을 일의 절차로 본다."
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Postmortem Culture: Learning from Failure",
+   "by": "Google SRE Book",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "탓하지 않는 사후 검토 쓰는 법. 우대 ‘시행착오를 문서화’의 본보기."
+  },
+  {
+   "id": "sysinternals",
+   "title": "Sysinternals",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/sysinternals/",
+   "why": "Process Explorer·Autoruns 같은 윈도우 진단 도구 모음. ‘직접 조사하고 해결한 경험’을 만들기 좋은 도구."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "PC·운영체제 기초",
+   "time": "2~3주",
+   "goal": "윈도우·맥에서 흔한 문제(느림·업데이트 실패·프로그램 충돌)의 원인을 좁혀 설명할 수 있다.",
+   "resources": [
+    "google-it-support",
+    "sysinternals"
+   ],
+   "task": "가상 머신에 윈도우를 깔고 시작 프로그램을 일부러 늘려 느리게 만든 뒤, Autoruns·이벤트 로그로 원인을 찾아 고치고 다섯 칸(증상·원인·시도·해결·재발 방지) 기록을 쓴다."
+  },
+  {
+   "title": "네트워크 1차 분석",
+   "time": "2~3주",
+   "goal": "‘인터넷이 안 돼요’를 IP → 게이트웨이 → DNS 순서로 좁힐 수 있다.",
+   "resources": [
+    "net-1pct",
+    "rfc2131",
+    "cloudflare-dns"
+   ],
+   "task": "집 공유기에서 DHCP 를 끄거나 DNS 를 엉뚱한 주소로 바꿔 장애를 일부러 만들고, ipconfig·ping·nslookup 결과로 어느 칸인지 가리는 점검표를 만든다."
+  },
+  {
+   "title": "계정과 협업 툴 관리자",
+   "time": "1~2주",
+   "goal": "입사·퇴사·부서 이동 때 계정과 권한을 빠짐없이 열고 닫는 절차를 쓸 수 있다.",
+   "resources": [
+    "gws-admin",
+    "slack-scim"
+   ],
+   "task": "무료 Slack 워크스페이스와 Notion 팀 공간을 만들어 가상 직원 5명을 넣고, 한 명 퇴사·한 명 부서 이동을 처리한 뒤 입·퇴사 점검표를 쓴다."
+  },
+  {
+   "title": "기기 관리와 보안 프로그램",
+   "time": "2~4주",
+   "goal": "MDM 으로 기기 하나를 등록하고 정책을 내리며, EDR·DLP·ZTNA·NAC 가 각각 무엇을 막는지 설명할 수 있다.",
+   "resources": [
+    "ms-md102",
+    "apple-deploy",
+    "nist-800-83",
+    "nist-800-207",
+    "kisa-zt"
+   ],
+   "task": "Intune 체험 환경에 가상 윈도우 PC 를 등록하고 디스크 암호화·화면 잠금 정책을 내려 준수 보고서를 확인한다. 다섯 가지 보안 프로그램을 한 장 표로 정리한다."
+  },
+  {
+   "title": "반복 업무 자동화와 기록",
+   "time": "계속",
+   "goal": "손일 하나를 스크립트로 바꾸고, 줄어든 시간을 숫자로 보여 줄 수 있다.",
+   "resources": [
+    "admin-sdk",
+    "atlassian-problem",
+    "sre-postmortem"
+   ],
+   "task": "위 풀이의 퇴사자 계정 대조 예를 가상 CSV 두 개(인사 명단·서비스 계정)로 돌리게 바꾸고, GitHub 에 README(무엇을·왜·얼마나 줄었나)와 함께 올린다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다(협의). 집계 사이트의 회사 평균은 **약 6,000만원**이지만 기준 시점이 없고 직군·연차 구분도 없어 신입 계약직 금액과는 다르다",
+  "rows": [
+   {
+    "label": "회사 평균 연봉(집계)",
+    "value": "약 6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 기준월 미표기",
+    "note": "원티드 회사 정보의 평균 연봉 — 국민연금 가입 정보로 계산한 값이고 기준 시점 표기가 없다 [5]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고 다른 채용 사이트에는 ‘연봉 협의’로 올라 있다 [2]. 합류 과정의 **처우 논의** 단계에서 정한다 [1][4]. 비상장 증권사라 사업보고서의 직원 평균 급여를 찾지 못했다(공시 숫자 없음). 평균은 경력직이 섞인 회사 전체 값이라 신입 계약직 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "복지카드",
+    "detail": "연 150만원, 사용처 제한 없음(유흥업·택시 제외). 중도 입사는 입사 3개월 뒤부터 연말까지 월할"
+   },
+   {
+    "name": "특별상여",
+    "detail": "연 110만원 — 설·추석 귀성비, 가정의 달 효도비, 연말 지원비"
+   },
+   {
+    "name": "상해보험",
+    "detail": "본인·배우자·자녀 실손 의료비 지원"
+   },
+   {
+    "name": "건강검진",
+    "detail": "매년 종합건강검진"
+   },
+   {
+    "name": "특별휴가",
+    "detail": "1년 이상 재직 시 매년 3일"
+   },
+   {
+    "name": "자기개발",
+    "detail": "업무 관련 교육 지원"
+   },
+   {
+    "name": "근무 형태",
+    "detail": "비포괄임금제(초과근로수당 별도) · 오전 7~10시 자율 출근 · 재택 주 1회"
+   }
+  ],
+  "note": "이 공고에는 복지 칸이 없고, 복지는 내부 규정과 개별 근로계약에 따라 달라지며 **근로 형태에 따라 적용 범위가 다를 수 있다**고 적었다 [1]. 위 항목은 회사 채용 홈페이지의 복리후생 안내(Life at Next)다 [3]. 2026년 10월 보도는 코어타임 오전 10시~오후 3시의 유연근무를 소개해 출퇴근 규칙은 바뀌었을 수 있다 [8]. 12개월 계약직에 어디까지 적용되는지는 처우 논의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "넥스트증권 여의도 본사",
+  "address": "서울특별시 영등포구 국제금융로 10, Three IFC 12층·15층",
+  "postal": "07326",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%98%81%EB%93%B1%ED%8F%AC%EA%B5%AC%20%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C%2010",
+  "near": "여의도 IFC 단지, 5·9호선 여의도역 가까이 {추론}",
+  "note": "공고의 근무지 표기는 '넥스트증권 여의도 본사'이고 [1], 주소는 채용 홈페이지 하단의 회사 정보다 [3]. 회사는 2025년 8월 이 건물에 사무실을 넓혔다 [9]. 사내 IT 지원 자리라 신논현 거점 오피스에도 오갈 수 있다 {추론}[8]."
+ }
+}

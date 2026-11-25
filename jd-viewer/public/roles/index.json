@@ -356,6 +356,7 @@
   "wanted-400000": "nextsecurities-frontend-internal-platform",
   "jobkorea-50360665": "nextsecurities-fx-transfer-backend",
   "wanted-400001": "nextsecurities-internal-platform-backend",
+  "ats-greeting:nextsecurities:231238": "nextsecurities-it-admin",
   "ats-greeting:nextsecurities:245523": "nextsecurities-it-planner",
   "ats-greeting:nextsecurities:245530": "nextsecurities-market-data-fep",
   "jobkorea-50360739": "nextsecurities-overseas-order-backend",
@@ -3598,6 +3599,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 27
+  },
+  {
+   "id": "nextsecurities-it-admin",
+   "company": "넥스트증권",
+   "role": "IT Admin (1년 계약직 · 신입)",
+   "jobs": [
+    "ats-greeting:nextsecurities:231238"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 19
   },
   {
    "id": "nextsecurities-it-planner",
