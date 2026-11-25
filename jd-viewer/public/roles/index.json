@@ -26,6 +26,7 @@
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
   "ats-greenhouse:coupang:8312121": "coupang-pay-it-ai-compliance",
   "ats-greenhouse:coupang:8078891": "coupang-pay-manager-backend-rocketpay",
+  "ats-greenhouse:coupang:8127212": "coupang-pay-sdet-backend-contract",
   "ats-greenhouse:coupang:8212656": "coupang-pay-senior-backend-test-ops",
   "ats-greenhouse:coupang:8222501": "coupang-pay-senior-platform-engineer",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
@@ -527,6 +528,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 23
+  },
+  {
+   "id": "coupang-pay-sdet-backend-contract",
+   "company": "쿠팡페이",
+   "role": "Senior Back-end Engineer — SDET (계약직)",
+   "jobs": [
+    "ats-greenhouse:coupang:8127212"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "coupang-pay-senior-backend-test-ops",
