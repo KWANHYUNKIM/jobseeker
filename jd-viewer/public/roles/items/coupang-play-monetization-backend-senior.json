@@ -1,0 +1,445 @@
+{
+ "id": "coupang-play-monetization-backend-senior",
+ "company": "쿠팡 (Coupang)",
+ "role": "Senior Backend Engineer (Monetization) — Coupang Play",
+ "team": "쿠팡플레이 프로덕트 조직 · Monetization 조직(결제·구독·프로모션·티켓팅·광고) · 광고 플랫폼 · 서울",
+ "jobs": [
+  "ats-greenhouse:coupang:8384805"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡플레이 영상 사이에 들어가는 **광고**를 고르고(광고 서빙), 끊김 없이 끼워 넣고(광고 삽입), 몇 번 보였는지 세는(트래킹) 서버의 설계 방향을 정하고 직접 만듭니다.[1] 같은 조직이 결제·구독·프로모션·티켓팅도 맡아서, 광고가 이 수익 영역들과 어긋나지 않게 맞추는 일도 포함됩니다.[1]",
+  "env": "쿠팡플레이는 2025년 6월 광고를 보면 무료로 보는 일반 회원제를 열었고[4], 2026년 7월에는 와우 회원의 광고를 없애 주는 유료 '프리미엄 패스'를 내놨습니다.[5] 언어는 Go·Java·JavaScript·Node.js 중 하나, 운영 기술은 AWS·GCP·Kafka·Redis·마이크로서비스입니다.[1]",
+  "oneline": "라이브 경기의 광고 시간에 수십만 명이 한꺼번에 광고를 요청하는 순간을 버티고, 광고 한 번 한 번을 돈으로 정확히 세는 백엔드 시니어 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Monetization 조직의 Senior, Back-end Engineer는 쿠팡플레이 프로덕트 조직의 핵심 기술 리더 직무입니다. 프로덕트 디자이너, 프로덕트 매니저(PM), 클라이언트 개발자, QA 엔지니어링 팀과 긴밀히 협력하여 비즈니스 성장을 견인하는 확장 가능한 수익 창출 엔진을 설계하고 구축합니다. 매일 수백만 명의 고객에게 서비스를 제공하는 미션 크리티컬(Mission-critical) 시스템을 설계하고 고도화하게 됩니다.",
+   "short": "쿠팡플레이가 돈을 버는 길(광고·결제·구독)을 받치는 서버를 디자이너·PM·앱 개발자와 함께 짓는 기술 리더 자리.",
+   "why": "쿠팡플레이는 출시 때 광고가 없었지만 2025년 일반 회원 광고형 무료 시청을 열고, 와우 회원 기본 콘텐츠와 일부 스포츠에도 광고를 붙여 광고 기반 구조로 바뀌어 왔습니다.[5] 월 사용자는 2025년 6월 약 695만 명에서 2026년 3월 900만 명을 넘었고[7], 2026년 8월에는 1,006만 명으로 국내 OTT 가운데 처음 1천만 명을 넘었다는 집계가 보도됐습니다.[8] 광고를 보는 사람이 그만큼 많다는 뜻이라 '미션 크리티컬'입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**함께 일하는 사람** — 화면을 그리는 디자이너, 무엇을 만들지 정하는 PM, 앱(iOS·Android·TV) 개발자, QA.[1]",
+     "**수익 창출 엔진** — 광고를 보여 주고 돈을 받는 흐름, 구독료를 받는 흐름, 할인(프로모션)과 티켓 판매까지가 같은 조직의 영역이다.[1]",
+     "**규모** — 공고는 하루 수백만 명이라고 적었다.[1]"
+    ]
+   },
+   "how_far": "'핵심 기술 리더'라 맡은 영역의 설계를 문서로 정하고 다른 팀을 설득하는 몫이 큽니다. 다만 경력 요건은 2년 이상이라[1], 리더 경험보다 '큰 트래픽 시스템을 직접 만들고 운영해 본 것'이 먼저 보일 가능성이 큽니다 {추론}.",
+   "refs": [1, 5, 7, 8]
+  },
+  {
+   "section": "task",
+   "quote": "Monetization 조직은 결제, 구독, 프로모션, 이벤트 티켓팅 등 폭넓은 도메인을 아우르고 있으며, 본 직무는 그중에서도 동영상 광고, 인터랙티브/쇼핑형 광고포맷, 광고 송출(Ad Delivery) 시스템을 포함한 광고 플랫폼의 기술적 비전과 핵심 이니셔티브를 주도합니다. High Availability 및 Ultra-low Latency 특성을 지닌 대규모 분산 서비스를 설계하고 구축한 역량이 핵심적으로 요구됩니다.",
+   "short": "넓은 수익 영역 중 이 자리는 광고 — 영상 광고·누르면 반응하는 광고·상품을 파는 광고를 내보내는 시스템을 맡는다.",
+   "why": "광고 판매는 나스미디어가 독점 대행하고, 스포츠 중계를 중심으로 2026 월드컵 아시아 예선부터 팔기 시작했으며 새 광고 형식도 계획했다고 보도됐습니다.[6] 영업이 광고를 팔면, 그 광고를 약속한 대로 내보내고 세는 시스템이 있어야 합니다 {추론}.",
+   "actually": {
+    "intro": "광고 플랫폼이 보통 나누는 칸입니다. 쿠팡플레이의 실제 나눔은 공개되지 않았습니다.",
+    "items": [
+     "**동영상 광고** — 본편 앞(프리롤)·중간(미드롤)에 붙는 영상. 쿠팡플레이 무료 회원제도 이 두 형태로 시작했다.[4]",
+     "**인터랙티브 광고** — 광고 위에서 누르고 고르는 형식. 업계 표준(VAST 4.2)은 이 상호작용을 SIMID 규격으로 정했고, 예전 VPAID는 폐기 대상이다.[13]",
+     "**쇼핑형 광고** — 광고에서 바로 상품으로 이어지는 형식. 쿠팡은 머신러닝으로 쿠팡플레이 영상과 상품 광고의 순위를 매긴다고 밝혔다.[9] 이 공고의 쇼핑형 광고가 쿠팡 상품과 이어지는지는 공개되지 않았다 {추론}.",
+     "**광고 송출** — 이번 시청자에게 어떤 광고를 줄지 고르고(결정), 영상에 끼워(삽입), 보였다는 신호를 받는(트래킹) 흐름."
+    ]
+   },
+   "how_far": "'고가용성(High Availability)'은 서버 일부가 죽어도 광고가 계속 나가는 것, '초저지연(Ultra-low Latency)'은 광고 고르기가 영상 재생을 늦추지 않는 것입니다. 지원자는 이 두 가지를 숫자(가용률·응답 시간)로 말할 수 있어야 합니다 {추론}.",
+   "refs": [4, 6, 9, 13]
+  },
+  {
+   "section": "task",
+   "quote": "동영상 광고, 인터랙티브/쇼핑형 광고, 광고 서빙(Ad Serving) 및 트래킹을 아우르는 광고 플랫폼의 중장기 기술 전략 및 아키텍처 로드맵 설계 및 총괄 (결제, 구독, 프로모션, 티켓팅 등 전반적인 수익화 영역 간의 기술적 정합성 리딩 포함)",
+   "short": "광고 플랫폼을 몇 년에 걸쳐 어떤 순서로 키울지 정하고, 구독·결제 쪽과 규칙이 어긋나지 않게 맞춘다.",
+   "why": "같은 쿠팡플레이의 싱가포르 공고 두 건은 광고 판매 시스템(SSP)과 광고 거래소(Ad Exchange)를 **처음부터** 짓는다고 적었습니다.[2][3] 광고 기술이 아직 짓는 중이라 로드맵이 필요한 단계입니다 {추론}. 또 2026년 7월 광고를 없애는 프리미엄 패스가 나와[5], '이 사람에게 광고를 보여도 되나'가 구독 상태에 따라 달라집니다.",
+   "actually": {
+    "items": [
+     "**정합성 예** — 프리미엄 패스 회원에게는 광고를 넣지 않는다. 구독 상태가 바뀐 순간 광고 서버가 바로 알아야 한다.[5] {추론}",
+     "**정합성 예** — 스포츠 패스·와우·일반 회원마다 광고가 붙는 콘텐츠가 다르다.[5][7]",
+     "**로드맵 예** — 직접 판 광고만 내보내기 → 여러 광고주가 실시간 입찰하는 거래소로 넓히기. 싱가포르 공고가 그 다음 단계(SSP·거래소)를 말한다.[2][3]",
+     "**결정 기록** — 무엇을 왜 골랐는지 설계 문서로 남겨 다른 팀이 따라올 수 있게 한다 {추론}."
+    ]
+   },
+   "how_far": "중장기 전략은 혼자가 아니라 PM·광고 운영과 함께 정합니다. 개발자 몫은 '이 순서로 지으면 무엇이 언제 가능해지고 무엇을 버리나'를 그림과 숫자로 설명하는 것입니다 {추론}.",
+   "refs": [2, 3, 5, 7]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 트래픽 환경에서의 광고 송출, 실시간 노출 트래킹 및 수익화 워크플로우를 위한 미션 크리티컬, Ultra-low-latency 백엔드 시스템 아키텍처 설계, 개발 및 최적화",
+   "short": "광고를 고르는 서버는 빨라야 하고, '광고가 보였다'는 신호는 하나도 빠짐없이 한 번씩만 세야 한다.",
+   "why": "광고는 보인 횟수(노출)로 돈을 받습니다. 업계 입찰 규격은 '이겼다'는 알림(win notice)과 '돈을 받을 수 있다'는 알림(billing notice)을 따로 두고, 이긴 것이 곧 보인 것은 아니라고 적었습니다.[16] 그래서 노출 신호를 정확히 세는 것이 매출 정확성입니다.",
+   "actually": {
+    "items": [
+     "**노출 신호** — 광고 표준 VAST는 노출(impression)·시작·25%·50%·75%·완료 같은 추적 신호를 정해 둔다. AWS MediaTailor는 광고 첫 조각을 요청할 때 노출, 25·50·75% 지점이 든 조각에서 사분위, 마지막 조각에서 완료를 보낸다.[19]",
+     "**누가 보내나** — 서버가 대신 보내는 방식과 앱(플레이어)이 직접 보내는 방식이 있다.[20]",
+     "**한 번만 세기** — 휴대폰 신호가 끊겼다 이어지면 같은 신호가 다시 온다. Kafka는 기본이 '적어도 한 번' 전달이라 받는 쪽에서 중복을 걸러야 한다.[24]",
+     "**저지연** — 광고 결정은 재생 버튼과 첫 화면 사이에 끼어 있다. 입찰 규격은 응답 마감 시간(tmax, 밀리초)을 요청마다 적게 했다.[16]",
+     "**수익화 워크플로우** — 노출 집계 → 광고주별 정산 → 재무 보고로 이어지는 흐름 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 노출이 두 번 와도 돈은 한 번 (직접 돌린 출력)",
+     "body": "(세션, 광고, 사건)을 열쇠로 이미 본 것은 버립니다. 실제로는 메모리 대신 Redis나 Kafka 처리기의 상태 저장소에 열쇠를 두고 정해진 시간 뒤 지웁니다 {추론}.",
+     "lang": "python",
+     "code": "events = [\n    (\"s1\", \"ad9\", \"impression\"), (\"s1\", \"ad9\", \"impression\"),  # 재전송\n    (\"s1\", \"ad9\", \"complete\"),\n    (\"s2\", \"ad9\", \"impression\"), (\"s2\", \"ad9\", \"impression\"),\n]\nseen, billable = set(), 0\nfor e in events:\n    if e in seen:\n        continue\n    seen.add(e)\n    if e[2] == \"impression\":\n        billable += 1\nprint(\"받은 이벤트\", len(events), \"| 중복 제거 후\", len(seen), \"| 과금 노출\", billable)\n# 받은 이벤트 5 | 중복 제거 후 3 | 과금 노출 2"
+    }
+   ],
+   "flows": [
+    {
+     "caption": "광고 한 번이 돈이 되기까지 (보통의 흐름) {추론}[16][19]",
+     "steps": [
+      "광고 요청 · 앱이 광고 시간에 도달",
+      "광고 결정 · 누구에게 무엇을, 마감 시간 안에",
+      "삽입 · 영상 목록에 광고 끼우기",
+      "노출 신호 · 시작·25%·50%·75%·완료",
+      "중복 제거·집계 · 한 번만 세기",
+      "정산 · 광고주 청구·재무 보고"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "광고 형식·가격은 광고 운영팀이 정합니다. 개발자는 결정 서버를 마감 시간 안에 답하게 하고, 노출 수가 광고주·재무 숫자와 맞게 만듭니다. 최소선은 '적어도 한 번 전달 + 받는 쪽 중복 제거'를 설명하고 직접 짜 보는 것입니다 {추론}.",
+   "refs": [16, 19, 20, 24],
+   "study": ["iab-vast", "mediatailor", "kafka-book", "ddia"]
+  },
+  {
+   "section": "task",
+   "quote": "라이브 스포츠 중계 피크 타임 등 대규모 동시 접속이 발생하는 핵심 비즈니스 시나리오에서 끊김 없는 실시간 광고 삽입(Ad Insertion)을 구현하기 위한 유관 팀 간 기술 솔루션 도출 및 주도",
+   "short": "경기 중 광고 시간에 수십만 명이 같은 초에 광고를 요청한다 — 그 순간에도 끊기지 않게 끼워 넣는다.",
+   "why": "VOD는 사람마다 광고 시간이 흩어지지만, 라이브는 모두가 같은 순간 광고 시간에 들어갑니다. AWS는 라이브 광고 시간 시작마다 광고 결정 서버에 요청이 몰리는 것을 줄이려고 **미리 받아 두기(prefetch)**를 만들었다고 설명합니다.[18] 쿠팡플레이는 2026년 8월 해외 축구 중계에서 40분가량 재생 장애를 겪었다고 보도됐습니다.[10]",
+   "actually": {
+    "items": [
+     "**서버 쪽 삽입(SSAI)** — 서버가 영상 목록(매니페스트 — HLS 라면 조각 주소를 적은 m3u8 재생 목록[33])에 광고 조각을 섞어 하나의 흐름으로 보낸다. MediaTailor·구글 DAI가 이 방식이다.[17][22]",
+     "**앱 쪽 삽입(CSAI)** — 앱이 광고를 따로 받아 본편 위에서 튼다. 구글 IMA SDK가 이 방식이다.[21]",
+     "**광고 시간 표시** — 라이브에서는 방송 신호에 'SCTE-35 표지'로 광고 시간을 알리고, 삽입 서버가 그 표지를 보고 광고를 넣는다.[18]",
+     "**미리 받기** — 광고 시간 전에 광고를 받아 두고(retrieval window), 표지가 오면 꺼내 쓴다(consumption window).[18]",
+     "**요청 나눠 보내기** — 50만 명의 요청을 60초에 나눠 보내면 초당 약 8,333건이 된다는 계산을 AWS 문서가 예로 든다.[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 50만 명, 몇 초에 나누느냐 (직접 돌린 출력)",
+     "body": "AWS 예시(50만 명 · 60초 → 초당 8,333건)를 창 크기만 바꿔 돌린 것입니다.[18] 창을 넓히면 결정 서버 부담이 30배 줄지만, 그만큼 광고를 일찍 정해 둬야 합니다.",
+     "lang": "python",
+     "code": "viewers = 500_000\nfor window in (2, 10, 60):\n    print(f\"{window:>3}초에 나눠 부르면 초당 {viewers // window:,}건\")\n#   2초에 나눠 부르면 초당 250,000건\n#  10초에 나눠 부르면 초당 50,000건\n#  60초에 나눠 부르면 초당 8,333건"
+    },
+    {
+     "title": "90초 광고 시간을 빈틈없이 (직접 돌린 출력)",
+     "body": "입찰 규격은 라이브 TV에서 길이가 어긋나면 빈 화면(dead air)이 생긴다며, 받을 수 있는 광고 길이를 정확히 적는 칸(rqddurs)과 광고 묶음 전체 길이(poddur)를 두었습니다.[16] 15·30초 광고로 90초를 채우는 조합과, 20초짜리가 끼었을 때 남는 시간입니다.",
+     "lang": "python",
+     "code": "from itertools import combinations_with_replacement\npoddur, durs = 90, (15, 30)\nbest = []\nfor k in range(1, 7):\n    for combo in combinations_with_replacement(durs, k):\n        if sum(combo) == poddur:\n            best.append(combo)\nprint(\"90초를 빈틈없이 채우는 조합\", len(best), \"개:\", best)\nprint(\"30+30+20 이면 남는 초:\", poddur - (30 + 30 + 20))\n# 90초를 빈틈없이 채우는 조합 4 개: [(30, 30, 30), (15, 15, 30, 30), (15, 15, 15, 15, 30), (15, 15, 15, 15, 15, 15)]\n# 30+30+20 이면 남는 초: 10"
+    }
+   ],
+   "how_far": "'유관 팀 간'이 핵심입니다. 영상 송출 팀(표지·매니페스트), 앱 팀(플레이어), 광고 운영(광고 시간 길이)이 같이 움직여야 해서, 이 자리는 그 사이의 약속(언제 표지를 보내고, 몇 초 전에 광고를 정하고, 실패하면 무엇을 트나)을 정합니다 {추론}. 최소선은 SSAI와 CSAI의 차이와 라이브에서 요청이 몰리는 이유를 설명하는 것입니다.",
+   "refs": [10, 16, 17, 18, 21, 22, 33],
+   "study": ["mediatailor", "google-dai", "rfc8216", "sre-overload"]
+  },
+  {
+   "section": "task",
+   "quote": "Product, Ad Operations, Finance, Legal 등 다양한 직군의 이해관계자와의 협업을 통해 복잡한 비즈니스 목표를 안정적이고 컴플라이언스 요건에 부합하는 기술 아키텍처로 구현",
+   "short": "광고 운영·재무·법무가 원하는 것(노출 약속·정산·규제)을 시스템 규칙으로 옮긴다.",
+   "why": "광고는 광고주에게 약속한 노출을 채워야 하고(광고 운영), 노출 수가 청구서와 맞아야 하며(재무), 무엇을 어떻게 보여 주고 어떤 개인정보를 쓰는지 법을 따라야 합니다(법무) {추론}. 입찰 규격이 '이겼다'와 '청구할 수 있다'를 따로 두는 것도 재무 쪽 요구 때문입니다.[16]",
+   "actually": {
+    "items": [
+     "**광고 운영** — 캠페인마다 목표 노출 수·기간·한 사람에게 보여 줄 최대 횟수(빈도 제한)를 넣으면 서버가 그대로 지킨다 {추론}.",
+     "**재무** — 입찰 규격처럼 '이겼다'와 '청구할 수 있다'를 나눠 기록한다.[16] 노출 집계가 광고주 청구 금액이 된다.",
+     "**법무** — 맞춤 광고에 쓰는 정보의 범위, 광고 표시 의무. 업계 표준 VAST의 CTV 부록(2024)은 광고 식별 등록과 광고 표시 아이콘(DSA) 같은 규정 대응을 담았다.[13]"
+    ]
+   },
+   "how_far": "규칙을 정하는 건 각 직군입니다. 개발자는 그 규칙이 시스템 어디에 걸리는지 짚고, '이 숫자는 어디서 왔나'를 거꾸로 따라갈 수 있게 기록을 남깁니다 {추론}.",
+   "refs": [13, 16],
+   "study": ["openrtb", "iab-vast"]
+  },
+  {
+   "section": "task",
+   "quote": "업무 자동화 및 팀 전반의 개발 생산성, 코드 품질, 딜리버리 속도 향상을 위한 AI 기술 활용 및 도입",
+   "short": "AI 코딩 도구를 팀 일에 들여와 코드 품질은 지키면서 더 빨리 내보내게 한다.",
+   "why": "공고가 업무 줄로 따로 적었습니다.[1] 도입 효과를 말하려면 '빨라졌다'가 아니라 배포 횟수·변경 실패율 같은 숫자로 재야 합니다.[31] {추론}",
+   "actually": {
+    "items": [
+     "**자동화** — 반복되는 광고 캠페인 설정 검사, 노출 집계 대조 같은 일을 스크립트·AI로 줄인다 {추론}.",
+     "**품질** — AI가 짠 코드도 같은 테스트·리뷰를 통과하게 한다 {추론}.",
+     "**재기** — DORA의 네 지표(배포 빈도·변경 리드 타임·변경 실패율·복구 시간)로 전후를 비교한다.[31]"
+    ]
+   },
+   "how_far": "AI 연구가 아니라 도구를 쓰는 쪽입니다. 지원서에 'AI 도구로 무엇을 얼마나 줄였는지' 한 가지 사례를 숫자로 적을 수 있으면 됩니다 {추론}.",
+   "refs": [1, 31],
+   "study": ["dora"]
+  },
+  {
+   "section": "qualification",
+   "quote": "학사 학위 이상 보유자 또는 이에 준하는 실무 경험과 함께, 대규모 백엔드 애플리케이션 및 분산 시스템 엔지니어링 경력 2년 이상이신 분",
+   "short": "학위나 그만한 실무, 그리고 큰 서비스의 백엔드·분산 시스템을 2년 이상 다뤄 본 경력.",
+   "why": "직함은 Senior인데 경력 하한은 2년입니다.[1] 같은 광고 조직의 싱가포르 Staff 공고는 8년 이상, Senior Staff는 10년 이상을 요구했습니다.[2][3] 연수보다 '대규모'와 '분산'을 겪어 봤는지가 기준입니다 {추론}.",
+   "how_far": "'대규모'는 여러 서버에 나뉘어 도는 서비스를 운영하며 장애·지연을 직접 다뤄 본 경험입니다. 2년이면 설계 리더보다 한 영역(예: 트래킹 수집기)을 끝까지 맡아 본 수준이 현실적입니다 {추론}. 직급은 전체 경력에 따라 바뀔 수 있다고 공고가 밝혔습니다.[1]",
+   "refs": [1, 2, 3],
+   "study": ["system-design-interview", "ddia"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Low-latency, High-throughput 분산 시스템의 아키텍처 설계, 확장 및 운영 경험을 바탕으로 성능 프로파일링, 병목 현상 해결 및 비용/성능 간의 트레이드오프 최적화에 깊은 전문성을 보유하신 분",
+   "short": "빠르게(저지연), 많이(고처리량) 처리하는 서버를 재고, 느린 곳을 찾아 고치고, 돈과 속도 사이에서 고른다.",
+   "why": "광고 결정은 여러 곳(광고 후보·사용자 정보·빈도 제한·외부 입찰자)에 동시에 묻고 모두 기다립니다. 구글의 'Tail at Scale' 논문은 여러 서버에 퍼진 요청은 가장 느린 하나가 전체 응답을 정한다고 설명합니다.[34] 싱가포르 광고 공고도 '저지연 경매 시스템'을 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**꼬리 지연** — 평균이 아니라 p99(100번 중 가장 느린 1번)로 잰다.[34]",
+     "**병목 찾기** — 프로파일러로 CPU·메모리·잠금 중 어디서 시간이 가는지 본다(Go는 pprof).",
+     "**비용 대 성능** — 광고 후보를 캐시에 다 올리면 빠르지만 메모리 값이 든다. 라이브 경기 때만 서버를 늘리는 것도 같은 고민이다 {추론}.",
+     "**재시도 조심** — 느리다고 다시 부르면 부하가 곱해진다. 한 층에서만 재시도하고 지터(무작위 대기)를 넣는다.[26] 감당 못 할 만큼 몰리면 일부를 빨리 거절해 나머지를 살린다.[25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "여러 곳을 동시에 기다리면 느린 요청이 늘어난다 (직접 돌린 출력)",
+     "body": "각 서버가 100번 중 1번 느리다(p99)고 할 때, n곳을 모두 기다리는 요청이 하나라도 느린 곳에 걸릴 확률은 1 − 0.99ⁿ입니다.[34] 10곳이면 약 10%가 됩니다.",
+     "lang": "python",
+     "code": "for n in (1, 3, 5, 10):\n    slow = 1 - 0.99 ** n\n    print(f\"서버 {n:>2}곳을 동시에 기다리면 {slow:.1%} 의 요청이 누군가의 p99 에 걸린다\")\n# 서버  1곳 ... 1.0%\n# 서버  3곳 ... 3.0%\n# 서버  5곳 ... 4.9%\n# 서버 10곳 ... 9.6%"
+    }
+   ],
+   "how_far": "'깊은 전문성'은 '느렸는데 이렇게 재서 여기를 고쳐 몇 ms에서 몇 ms가 됐다'를 실제 사례로 말하는 것입니다. 면접 2차가 기술 집중 인터뷰라[1] 그 사례 하나를 끝까지 파고들 가능성이 큽니다 {추론}.",
+   "refs": [1, 3, 25, 26, 34],
+   "study": ["tail-at-scale", "systems-perf", "aws-retries"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Go, Java, JavaScript, Node.js 중 하나 이상의 언어를 활용한 백엔드 엔지니어링 역량이 숙련되신 분",
+   "short": "넷 중 하나면 된다. 그 언어로 동시 처리·시간 제한·메모리를 다룰 줄 아는 수준.",
+   "why": "같은 쿠팡플레이 백엔드 공고들이 같은 네 언어를 적었습니다.[32] 싱가포르 광고 인프라 공고는 Go(또는 Java)를 앞에 두었습니다.[2][3]",
+   "level": {
+    "basic": "HTTP 서버·DB 접근·테스트를 그 언어로 짠다",
+    "work": "동시 처리(고루틴·스레드·이벤트 루프), 요청마다 시간 제한(context·timeout), 연결 풀",
+    "team": "광고 결정처럼 수 ms 안에 답해야 하는 경로에서 메모리 할당·GC·잠금을 줄이고 프로파일로 증명"
+   },
+   "how_far": "새 언어를 배울 필요는 없습니다. 쓰는 언어에서 '왜 이 코드가 느린가'를 도구로 보일 수 있으면 됩니다 {추론}.",
+   "refs": [2, 3, 32],
+   "study": ["learning-go", "tail-at-scale"]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS, GCP 등 모던 클라우드 인프라 및 Kafka, Redis, 마이크로서비스와 같은 분산 스토리지/스트리밍 기술의 상용화 운영 경험을 갖추신 분",
+   "short": "클라우드 위에서 Kafka(이벤트 흐름)·Redis(빠른 저장)·작게 나뉜 서비스를 실제 서비스로 운영해 본 경험.",
+   "why": "광고에서 Kafka는 노출·클릭 신호를 받아 집계로 흘리는 길이고, Redis는 '이 사람이 이 광고를 오늘 몇 번 봤나'(빈도 제한) 같은 빠른 조회를 맡는 자리입니다 {추론}. 공고가 '상용화 운영'이라 쓴 건 만들어 본 것보다 운영 중 문제를 겪어 본 것을 보겠다는 뜻입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**Kafka** — 같은 키(예: 세션) 안에서만 순서가 지켜지고, 기본은 적어도 한 번 전달이다.[24]",
+     "**Redis** — 빈도 제한 카운터, 광고 후보 캐시, 중복 제거 열쇠 {추론}.",
+     "**마이크로서비스** — 광고 결정·트래킹·캠페인 관리·정산을 나눠 한쪽이 느려도 다른 쪽이 살게 {추론}.",
+     "**클라우드** — 라이브 경기 전에 서버를 늘리고 끝나면 줄인다 {추론}."
+    ]
+   },
+   "how_far": "운영 경험이란 '컨슈머가 밀렸을 때(lag) 무엇을 봤고 어떻게 풀었나', 'Redis가 꽉 찼을 때 무엇을 버렸나' 같은 이야기입니다 {추론}.",
+   "refs": [24],
+   "study": ["kafka-book", "book-kafka", "ddia"]
+  },
+  {
+   "section": "qualification",
+   "quote": "뛰어난 구두 및 서면 커뮤니케이션 능력을 바탕으로, 기술 및 비즈니스 이해관계자들에게 영향력을 발휘할 수 있으신 분",
+   "short": "광고 운영·재무·법무와 개발팀 모두를 글과 말로 설득해 한 방향으로 움직이게 한다.",
+   "why": "업무 줄에 Product·Ad Operations·Finance·Legal 협업과 유관 팀 간 솔루션 주도가 들어 있습니다.[1] 전형 3차가 리더십 인터뷰입니다.[1]",
+   "how_far": "설계 문서 한 장으로 '왜 이 방식인가, 버린 방법은 무엇인가'를 쓸 수 있으면 됩니다. 비개발자에게는 'ms'보다 '광고 몇 건을 놓친다'로 말하는 연습이 필요합니다 {추론}.",
+   "refs": [1]
+  },
+  {
+   "section": "preference",
+   "quote": "컴퓨터 공학 또는 관련 기술 분야의 석사 학위를 보유하신 분",
+   "short": "우대일 뿐이다. 학위보다 광고·대규모 시스템 경험이 앞 줄에 있다.",
+   "why": "자격요건은 학사 또는 그에 준하는 실무 경험이라[1] 석사가 없어도 지원할 수 있습니다.",
+   "how_far": "광고 순위·입찰가 계산 같은 최적화·머신러닝 쪽을 했다면 석사 연구와 이어서 말할 수 있습니다 {추론}.",
+   "refs": [1]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 Ad-Tech 시스템(동영상 광고 서빙, SSAI/CSAI, VAST/VMAP, 실시간 입찰(RTB), 대용량 노출/클릭 트래킹, 프로그래매틱 광고 등)의 상용화 구축 및 운영 경험이 깊으신 분",
+   "short": "광고 기술 용어를 실제로 만들어 본 사람 — 서버/앱 삽입, 광고 표준 문서, 실시간 입찰, 대량 신호 수집.",
+   "why": "이 자리가 짓는 시스템의 부품 이름이 그대로 나열돼 있습니다. 같은 광고 조직 싱가포르 공고들도 SSP·거래소·OpenRTB 연동을 적었습니다.[2][3]",
+   "actually": {
+    "intro": "괄호 속 낱말을 풀면 이렇습니다.",
+    "items": [
+     "**SSAI / CSAI** — 서버가 영상에 광고를 섞어 보내기 / 앱이 광고를 따로 받아 틀기.[21][22]",
+     "**VAST** — 광고 영상 주소·추적 주소를 담는 XML 표준. 2022년 4.3판이 최신이다.[13]",
+     "**VMAP** — 광고 시간이 언제 몇 번, 어떤 광고를 받는지 적는 XML. 광고 자체는 VAST로 채운다.[14]",
+     "**RTB(실시간 입찰)** — 광고 자리 하나가 생길 때마다 광고주들이 그 자리에서 값을 부르는 경매. 금융 시장과 비슷하다고 표준 단체가 설명한다.[15]",
+     "**OpenRTB 2.6** — 입찰 요청 규격. 2.6판이 TV·OTT용 '광고 묶음(Ad Pod)'을 넣었다. 1은 1등 가격, 2는 2등 가격+ 경매다.[16]",
+     "**프로그래매틱 광고** — 사람이 계약하지 않고 이런 입찰을 자동으로 하는 광고 거래 전체.[15]"
+    ]
+   },
+   "how_far": "광고 기술을 해 본 적 없다면 VAST 한 장을 직접 읽고, 노출 신호를 받아 한 번씩 세는 작은 서버를 만들어 보는 것이 최소선입니다 {추론}.",
+   "refs": [2, 3, 13, 14, 15, 16, 21, 22],
+   "study": ["iab-vast", "iab-vmap", "openrtb", "ima-sdk", "google-dai", "programmatic-book"]
+  },
+  {
+   "section": "preference",
+   "quote": "결제 게이트웨이(PG), 빌링/구독, 프로모션 엔진, 대규모 동시 접속 티켓팅 플랫폼 등 이커머스 또는 핵심 수익화 시스템 아키텍처 설계 경험이 있으신 분",
+   "short": "같은 조직의 다른 수익 영역(결제·구독·할인·티켓) 경험 — 돈이 한 번만 움직이게 하는 설계.",
+   "why": "쿠팡플레이는 공연·경기 티켓을 앱에서 와우 회원에게만 팔아 매크로를 막았고, 2025년 2월 콘서트 일반 예매 직후 동시 접속이 24만 명, 6만 4천 석이 16분 만에 팔렸다고 보도됐습니다.[11] 2022년 토트넘 경기 예매 때는 앱이 느려지고 구매 버튼이 멈췄으며 새로고침하면 대기 순서가 처음으로 돌아갔다는 이용 후기가 있습니다.[12]",
+   "actually": {
+    "items": [
+     "**결제·빌링** — 같은 요청이 두 번 와도 한 번만 결제되게 멱등 키를 쓴다. Stripe는 키를 최소 24시간 뒤에 지울 수 있다고 적었다.[23]",
+     "**구독** — 와우·스포츠 패스·프리미엄 패스처럼 겹치는 상품의 상태가 광고 노출 여부까지 바꾼다.[5][7]",
+     "**프로모션** — 할인 조건 계산을 한곳에 모아 앱마다 다르게 계산되지 않게 {추론}.",
+     "**티켓팅** — 같은 좌석을 두 사람에게 팔지 않기(재고 잠금)와 몰린 사람을 줄 세우는 대기열 {추론}[12]."
+    ]
+   },
+   "how_far": "광고만 맡는 자리라도 '돈이 정확히 한 번'이라는 같은 원리가 노출 집계에 쓰입니다 {추론}. 결제 경험이 있으면 그 연결을 이야기하면 됩니다.",
+   "refs": [5, 7, 11, 12, 23],
+   "study": ["stripe-idem", "system-design-interview"]
+  },
+  {
+   "section": "preference",
+   "quote": "iOS, Android, Smart TV 엔지니어링 리드와의 긴밀한 협업을 통해 복잡한 클라이언트-서버 간 연동 및 Ad SDK 아키텍처를 설계하고 트러블슈팅한 경험이 있으신 분",
+   "short": "앱·TV 안의 광고 부품(Ad SDK)과 서버가 주고받는 약속을 같이 짜고, 기기마다 다른 문제를 함께 푼다.",
+   "why": "쿠팡플레이는 국내에서 공식 판매되는 모든 모바일·태블릿·스마트 TV·PC·애플 TV·안드로이드 TV에서 돕니다.[1] 앱 쪽 삽입은 기기 안의 SDK가 광고를 받아 본편 위에서 틀고[21], 서버 쪽 삽입도 추적 신호를 앱이 보낼지 서버가 보낼지 정해야 합니다.[20]",
+   "actually": {
+    "items": [
+     "**광고 시간 넘기기** — 앱 SDK는 본편을 멈추라는 신호와 다시 틀라는 신호를 주고받는다(구글 IMA의 CONTENT_PAUSE_REQUESTED·CONTENT_RESUME_REQUESTED).[21]",
+     "**신호 누가 보내나** — 서버 보고는 조각 요청을 근거로, 앱 보고는 실제 재생을 근거로 신호를 보낸다. 둘의 숫자가 다를 수 있다.[19][20]",
+     "**기기별 문제** — 오래된 TV에서 광고 영상이 안 열리면 빈 시간을 무엇으로 채울지 정한다 {추론}."
+    ]
+   },
+   "how_far": "앱을 직접 짤 필요는 없습니다. 서버 API를 설계할 때 '이 TV가 이 응답을 몇 초 안에 받고 실패하면 무엇을 하나'를 앱 리드와 같이 정할 수 있으면 됩니다 {추론}.",
+   "refs": [1, 19, 20, 21],
+   "study": ["ima-sdk", "mediatailor"]
+  },
+  {
+   "section": "preference",
+   "quote": "비즈니스 환경에서 원활한 영어 커뮤니케이션이 가능하신 분",
+   "short": "서울·싱가포르·미국에 나뉜 쿠팡플레이 팀과 영어로 문서를 쓰고 회의한다.",
+   "why": "쿠팡플레이 기술 조직은 서울·싱가포르·미국 캘리포니아에 나뉘어 있고[1], 같은 광고 인프라 공고가 싱가포르에서 올라왔습니다.[2][3]",
+   "how_far": "유창한 말보다 설계 문서·장애 보고를 영어로 쓰고 회의에서 질문할 수 있는 정도가 실제 기준일 가능성이 큽니다 {추론}.",
+   "refs": [1, 2, 3]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자 하나(노출 수)가 돈과 바로 이어지는 시스템이 재밌는 사람",
+   "라이브 경기의 '같은 초에 몰리는 요청'을 설계로 풀어 보고 싶은 사람[18]",
+   "광고 기술이 막 지어지는 단계에서 처음부터 그림을 그리고 싶은 사람[2][3]",
+   "광고 운영·재무·법무와 같은 표를 놓고 이야기하는 게 어색하지 않은 사람[1]"
+  ],
+  "hard": [
+   "광고 용어(VAST·SSAI·RTB)가 처음이면 배울 게 많다[1]",
+   "라이브 경기는 저녁·새벽에 열려 그 시간에 대기해야 할 수 있다 {추론}",
+   "결제·구독·광고 규칙이 서로 얽혀 한 변경이 여러 팀에 닿는다[1][5]",
+   "경력 2년 요건이지만 기술 리더 역할을 기대한다 — 기대치를 면접에서 확인해야 한다[1] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "경기 하프타임 광고 시간에 50만 명이 같은 2초 안에 광고를 요청합니다. 광고 결정 서버를 어떻게 지키겠어요?",
+   "a": "미리 받기와 요청 나눠 보내기 — AWS가 라이브 광고에 넣은 장치.[18]"
+  },
+  {
+   "q": "노출 신호가 재전송으로 두 번 들어왔습니다. 광고주 청구가 두 번 잡히지 않게 하려면?",
+   "a": "적어도 한 번 전달과 받는 쪽 중복 제거.[24]"
+  },
+  {
+   "q": "서버 쪽 삽입(SSAI)과 앱 쪽 삽입(CSAI)은 무엇이 다르고, 라이브 스포츠에는 무엇을 고르겠어요?",
+   "a": "우대 줄에 둘 다 있다 — 광고 차단·기기 다양성·추적 정확도의 차이.[20][21][22]"
+  },
+  {
+   "q": "광고 결정이 외부 입찰자 다섯 곳을 기다립니다. p99가 튀면 무엇부터 보겠어요?",
+   "a": "여러 곳을 기다리면 꼬리 지연이 커진다 — 마감 시간(tmax)과 늦은 응답 버리기.[16][34]"
+  },
+  {
+   "q": "프리미엄 패스를 산 사용자에게 다음 광고 시간부터 광고가 안 나가야 합니다. 어떻게 전파하겠어요?",
+   "a": "구독과 광고의 '기술적 정합성' 업무 줄.[1][5]"
+  },
+  {
+   "q": "광고 90초 묶음에 20초짜리 광고가 들어오면 남는 10초는 어떻게 하나요?",
+   "a": "라이브 TV의 빈 화면 — OpenRTB 2.6의 정확한 길이 칸.[16]"
+  }
+ ],
+ "sources": [
+  {"n": 1, "title": "Coupang Careers · Senior Backend Engineer (Monetization) - Coupang Play", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8384805", "kind": "posting", "date": "2026-11", "note": "쿠팡플레이 소개(서울·싱가포르·캘리포니아 조직, 지원 기기)·Monetization 조직·업무·요건·우대·전형(서류·직무적합성·기술·리더십). 2026-11-18 갱신, 연봉·복지 표기 없음"},
+  {"n": 2, "title": "Built In · Staff, Back-end Engineer (Ad Infrastructure) - Coupang Play", "url": "https://builtin.com/job/staff-back-end-engineer-ad-infrastructure-coupang-play/8009610", "kind": "posting", "date": "2026-03", "note": "싱가포르 · SSP·광고 타기팅·저지연·OpenRTB 연동, 경력 8년+, Go 또는 Java, 우대 영상/CTV·OTT 광고. 2026-03-26 내려감"},
+  {"n": 3, "title": "Built In · Senior Staff Software Engineer - Ad Infrastructure (Coupang)", "url": "https://builtin.com/job/senior-staff-software-engineer-ad-infrastructure/7487104", "kind": "posting", "date": "2026-03", "note": "싱가포르 · SSP·Ad Exchange 를 처음부터, 저지연 경매·주요 DSP 와 OpenRTB 연동, 경력 10년+, Go. 2026-03-26 내려감"},
+  {"n": 4, "title": "디지털데일리 · \"광고 보고 무료로\"…쿠팡플레이, 멤버십 비결제 회원까지 시청층 확대", "url": "https://www.ddaily.co.kr/page/view/2025050909281643884", "kind": "news", "date": "2025-05-09", "note": "다음 달(2025-06) 일반 회원 광고형 무료, 프리롤·미드롤, 기간 제한 없음"},
+  {"n": 5, "title": "블로터 · \"광고 없애려면 돈 내라\"…쿠팡플레이, '프리미엄 패스'로 본격 수익화", "url": "https://v.daum.net/v/pHG03H4qK2", "kind": "news", "date": "2026-07", "note": "2026-07-03 출시, 웹 월 3,900원·앱 4,500원, 와우 기본 콘텐츠·일부 스포츠 광고 적용"},
+  {"n": 6, "title": "디지털데일리 · 나스미디어, 쿠팡플레이 광고 독점 판매사로 선정", "url": "https://www.ddaily.co.kr/page/view/2025022009013893903", "kind": "news", "date": "2025-02-20", "note": "스포츠 중계 중심, 2026 월드컵 아시아 예선부터 판매, 새 OTT 광고 형식 계획"},
+  {"n": 7, "title": "머니투데이방송 · 쿠팡플레이 새 요금제 또...광고 수익보다 '구독자 입맛' 잡기", "url": "https://news.mtn.co.kr/news-detail/2026070811415975623", "kind": "news", "date": "2026-07-10", "note": "프리미엄 패스(웹 3,800원으로 보도 — 블로터와 다름), 와우 회원 콘텐츠 앞 광고, 월 사용자 2025-06 약 695만 → 2026-03 900만+"},
+  {"n": 8, "title": "머니투데이방송 · 공짜로 모으고 취향도 맞추고...쿠팡플레이가 경쟁하는 갖은 방법", "url": "https://news.mtn.co.kr/article/2026110911093944914", "kind": "news", "date": "2026-11-10", "note": "2026-08 월 사용자 1,006만 명(모바일인덱스), 광고형 무료 회원제(2025)"},
+  {"n": 9, "title": "Coupang Engineering · Meet Coupang's machine learning platform", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/", "kind": "company", "date": "2023-09-08", "note": "추천 모델이 쿠팡플레이 영상과 상품 광고 순위를 매긴다는 언급"},
+  {"n": 10, "title": "머니투데이 · 해외 축구 '독점'한 쿠플, 이강인 선발전 서버 터졌다", "url": "https://www.mt.co.kr/tech/2026/08/24/2026082411335580436", "kind": "news", "date": "2026-08-24", "note": "경기 중계 약 40분 재생 장애"},
+  {"n": 11, "title": "머니투데이방송 · 티빙 다시 제낀 쿠팡플레이, GD 콘서트로 꿈꾸는 뉴토피아", "url": "https://news.mtn.co.kr/news-detail/2025030515084915650", "kind": "news", "date": "2025-03-06", "note": "와우 회원만 앱으로 구매(매크로 차단), 일반 예매 직후 동시 접속 24만, 6만 4천 석 16분 매진"},
+  {"n": 12, "title": "요즘IT · 쿠팡플레이에서 토트넘 경기 티켓팅을 했습니다", "url": "https://yozm.wishket.com/magazine/detail/1627/", "kind": "community", "date": "2022-08-05", "note": "이용자 후기 — 앱 지연·구매 버튼 멈춤·새로고침하면 대기 순서 초기화"},
+  {"n": 13, "title": "IAB Tech Lab · VAST (Video Ad Serving Template)", "url": "https://iabtechlab.com/standards/vast/", "kind": "reference", "note": "4.0(2016)~4.3(2022), 4.2 SIMID(VPAID 대체), SSAI 지원, CTV 부록 2024"},
+  {"n": 14, "title": "IAB Tech Lab · VMAP (Video Multiple Ad Playlist)", "url": "https://iabtechlab.com/specifications-guidelines/video-multiple-ad-playlist-vmap/", "kind": "reference", "note": "광고 시간의 수·시점·받는 광고를 적는 XML, VAST 로 채움, 1.0.1"},
+  {"n": 15, "title": "IAB Tech Lab · OpenRTB", "url": "https://iabtechlab.com/standards/openrtb/", "kind": "reference", "note": "실시간 입찰의 뜻, 2.6 의 CTV Ad Pod, 판 이력"},
+  {"n": 16, "title": "OpenRTB 2.6 명세 (GitHub)", "url": "https://github.com/InteractiveAdvertisingBureau/openrtb2.x/blob/main/2.6.md", "kind": "reference", "note": "tmax(밀리초 마감)·at(1 1등가·2 2등가+)·nurl(이긴 알림 ≠ 노출)·burl(청구 알림)·poddur·rqddurs(라이브 TV dead air)"},
+  {"n": 17, "title": "AWS Elemental MediaTailor · What is MediaTailor", "url": "https://docs.aws.amazon.com/mediatailor/latest/ug/what-is.html", "kind": "reference", "note": "HLS·DASH 의 VOD·라이브 광고 삽입 서비스"},
+  {"n": 18, "title": "AWS Elemental MediaTailor · Prefetching ads", "url": "https://docs.aws.amazon.com/mediatailor/latest/ug/prefetching-ads.html", "kind": "reference", "note": "광고 시간 시작의 결정 서버 부하, retrieval·consumption window, SCTE-35 표지, 50만 명 60초 → 초당 약 8,333건"},
+  {"n": 19, "title": "AWS Elemental MediaTailor · Server-side ad reporting", "url": "https://docs.aws.amazon.com/mediatailor/latest/ug/ad-reporting-server-side.html", "kind": "reference", "note": "노출·시작·사분위·완료 신호가 나가는 시점(조각 요청 기준)"},
+  {"n": 20, "title": "AWS Elemental MediaTailor · Ad reporting (server-side vs client-side)", "url": "https://docs.aws.amazon.com/mediatailor/latest/ug/ad-reporting.html", "kind": "reference", "note": "서버가 보내는 신호와 플레이어가 보내는 신호"},
+  {"n": 21, "title": "Google IMA SDK · Client-side ad insertion (HTML5)", "url": "https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side", "kind": "reference", "note": "VAST 광고를 본편 위 별도 플레이어로, CONTENT_PAUSE/RESUME_REQUESTED"},
+  {"n": 22, "title": "Google Ad Manager · Full service DAI (SSAI)", "url": "https://developers.google.com/ad-manager/dynamic-ad-insertion/full-service", "kind": "reference", "note": "구글의 서버 쪽 광고 삽입, SDK 가 노출 신호를 보냄"},
+  {"n": 23, "title": "Stripe API · Idempotent requests", "url": "https://docs.stripe.com/api/idempotent_requests", "kind": "reference", "note": "Idempotency-Key, 최소 24시간 뒤 정리, 같은 키 재시도는 저장된 응답"},
+  {"n": 24, "title": "Apache Kafka Documentation · Design (Message Delivery Semantics)", "url": "https://kafka.apache.org/documentation/#semantics", "kind": "reference", "note": "적어도 한 번·정확히 한 번, 파티션 안 순서"},
+  {"n": 25, "title": "Google SRE Book · Handling Overload", "url": "https://sre.google/sre-book/handling-overload/", "kind": "reference", "note": "과부하 때 덜어 내기"},
+  {"n": 26, "title": "AWS Builders' Library · Timeouts, retries, and backoff with jitter", "url": "https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter", "kind": "reference", "date": "2019-12", "note": "층마다 재시도가 곱해지는 문제, 지터"},
+  {"n": 27, "title": "Coupang Careers · Seoul", "url": "https://www.coupang.jobs/en/locations/seoul/", "kind": "company", "note": "이스트폴 타워(아차산로 412)·로켓랩(역삼동 708-4), 구의역 근처"},
+  {"n": 28, "title": "Coupang Careers · Why Coupang (문화와 복지제도)", "url": "https://www.coupang.jobs/kr/why-coupang/", "kind": "company", "note": "복지 8가지 — 금액 없음"},
+  {"n": 29, "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)", "url": "https://jasoseol.com/companies/192", "kind": "reference", "note": "쿠팡(주) 집계 — 직군 구분 없음"},
+  {"n": 30, "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)", "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm", "kind": "company", "date": "2026", "note": "2025 회계연도 전 직원 중위 보수 — 달러 환산"},
+  {"n": 31, "title": "DORA · DORA's software delivery metrics: the four keys", "url": "https://dora.dev/guides/dora-metrics-four-keys/", "kind": "reference", "note": "배포 빈도·리드 타임·변경 실패율·복구 시간"},
+  {"n": 32, "title": "Coupang Careers · Senior, Back-end Engineer (CX) - Coupang Play (Singapore)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8210828", "kind": "posting", "date": "2026-10", "note": "같은 쿠팡플레이 프로덕트 조직 — Go·Java·JavaScript·Node.js, AWS·GCP"},
+  {"n": 33, "title": "RFC 8216 · HTTP Live Streaming", "url": "https://www.rfc-editor.org/rfc/rfc8216", "kind": "reference", "date": "2017-08", "note": "재생 목록·조각 — 서버 쪽 광고 삽입이 고치는 목록"},
+  {"n": 34, "title": "Jeffrey Dean · Luiz André Barroso · The Tail at Scale (CACM, 2013)", "url": "https://research.google/pubs/the-tail-at-scale/", "kind": "reference", "date": "2013-02", "note": "여러 서버에 퍼진 요청의 꼬리 지연, 늦은 응답 대처"}
+ ],
+ "caveat": "쿠팡플레이 광고 시스템의 내부 구조(광고 서버를 직접 짓는지, 어떤 삽입 방식을 쓰는지, 노출 집계·정산 흐름)를 다룬 회사 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고, 같은 광고 조직의 싱가포르 공고 두 건(2026-03 내려간 사본), 같은 프로덕트 조직의 CX 공고, 2023년 ML 플랫폼 글, 요금제·광고 판매·월 사용자·티켓 예매 보도입니다. 광고 삽입·신호·입찰은 IAB(VAST·VMAP·OpenRTB)·AWS MediaTailor·구글 IMA/DAI 문서로 '보통 이런 것'을 보였습니다. SCTE-35 원문 페이지와 MRC 가시성 기준은 접속이 막혀 숫자를 싣지 않았습니다. 프리미엄 패스 웹 가격은 매체마다 3,900원·3,800원으로 다릅니다.",
+ "resources": [
+  {"id": "iab-vast", "title": "VAST (Video Ad Serving Template) 4.x", "by": "IAB Tech Lab", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://iabtechlab.com/standards/vast/", "why": "영상 광고 응답이 어떻게 생겼고 어떤 추적 신호를 보내나. 업무 '광고 서빙·트래킹'과 우대 VAST 줄의 원문."},
+  {"id": "iab-vmap", "title": "VMAP (Video Multiple Ad Playlist)", "by": "IAB Tech Lab", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://iabtechlab.com/specifications-guidelines/video-multiple-ad-playlist-vmap/", "why": "광고 시간(프리롤·미드롤)을 언제 몇 번 둘지 적는 법. VAST 와 짝으로 읽는다."},
+  {"id": "openrtb", "title": "OpenRTB 2.6 명세", "by": "IAB Tech Lab · GitHub", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://github.com/InteractiveAdvertisingBureau/openrtb2.x/blob/main/2.6.md", "why": "실시간 입찰의 요청·응답 칸 — tmax·광고 묶음·이긴 알림과 청구 알림. 우대 RTB·프로그래매틱 줄의 바탕."},
+  {"id": "mediatailor", "title": "AWS Elemental MediaTailor User Guide (광고 삽입·미리 받기·광고 보고)", "by": "AWS 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.aws.amazon.com/mediatailor/latest/ug/what-is.html", "why": "서버 쪽 광고 삽입이 실제로 무엇을 하고, 라이브 광고 시간의 몰림을 어떻게 덜어 내나. 업무 '라이브 광고 삽입' 줄에 바로 쓴다."},
+  {"id": "google-dai", "title": "Google Ad Manager · Dynamic Ad Insertion (Full service)", "by": "Google 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://developers.google.com/ad-manager/dynamic-ad-insertion/full-service", "why": "다른 회사의 SSAI 구현 — MediaTailor 와 견주어 공통 구조를 잡는다."},
+  {"id": "ima-sdk", "title": "Google IMA SDK · Client-side (HTML5)", "by": "Google 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side", "why": "앱 쪽 광고 삽입과 Ad SDK 가 본편과 주고받는 신호. 우대 'Ad SDK 아키텍처' 줄."},
+  {"id": "programmatic-book", "title": "Programmatic Advertising: The Successful Transformation to Automated, Data-Driven Marketing in Real-Time", "by": "Oliver Busch 엮음 · Springer · 2016", "kind": "book", "lang": "en", "free": false, "level": "입문", "url": "https://link.springer.com/search?query=Programmatic+Advertising+Busch", "why": "광고주·DSP·SSP·거래소가 어떻게 맞물리나를 업계 쪽에서 본다. 광고 기술이 처음인 사람의 지도."},
+  {"id": "system-design-interview", "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초", "by": "알렉스 쉬 · 인사이트", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88", "why": "규모 추정·캐시·처리율 제한을 문제 풀이로. 업무 '아키텍처 로드맵'과 '대규모' 요건의 첫걸음."},
+  {"id": "ddia", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 위키북스 · 2018", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://wikibook.co.kr/data-intensive-applications/", "why": "복제·분할·스트림 처리·정확히 한 번. 노출 집계와 분산 시스템 요건의 바탕."},
+  {"id": "tail-at-scale", "title": "The Tail at Scale", "by": "Jeffrey Dean · Luiz André Barroso · CACM · 2013", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://research.google/pubs/the-tail-at-scale/", "why": "여러 곳을 기다리는 요청의 p99 가 왜 튀나. 광고 결정의 '초저지연' 요건을 숫자로 생각하게 한다."},
+  {"id": "systems-perf", "title": "시스템 성능 엔지니어링", "by": "브렌던 그레그 · 이호연 옮김 · 인사이트", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%84%B1%EB%8A%A5+%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81", "why": "CPU·메모리·네트워크에서 지연을 재는 법. 요건 '성능 프로파일링·병목 해결'의 바닥."},
+  {"id": "aws-retries", "title": "Timeouts, retries, and backoff with jitter", "by": "AWS Builders' Library · Marc Brooker · 2019", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter", "why": "재시도가 장애를 키우는 계산과 지터. 저지연 경로에서 시간 제한을 정하는 법."},
+  {"id": "sre-overload", "title": "Site Reliability Engineering · Handling Overload", "by": "Google · 온라인 무료", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://sre.google/sre-book/handling-overload/", "why": "몰릴 때 덜어 내고 빨리 거절하기. 라이브 피크 광고 시간에 '안 죽는 서버'의 원칙."},
+  {"id": "kafka-book", "title": "카프카 핵심 가이드 (2판)", "by": "그웬 샤피라 외 · 제이펍", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%B4%ED%94%84%EC%B9%B4%20%ED%95%B5%EC%8B%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C", "why": "전달 보장·컨슈머 그룹·운영. 노출 신호 수집과 'Kafka 상용 운영' 요건."},
+  {"id": "book-kafka", "title": "아파치 카프카 애플리케이션 프로그래밍", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/kafka", "why": "보냈다는 것과 처리됐다는 것 사이 — 노출 신호가 두 번 오는 이유를 실제 명령과 레코드로."},
+  {"id": "learning-go", "title": "러닝 Go", "by": "존 보드너 · 윤대석 옮김 · 한빛미디어 · 2022", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%9F%AC%EB%8B%9D%20Go", "why": "광고 인프라 공고가 앞에 둔 Go — 고루틴·context(시간 제한)·테스트까지."},
+  {"id": "rfc8216", "title": "RFC 8216 · HTTP Live Streaming", "by": "IETF · 2017", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.rfc-editor.org/rfc/rfc8216", "why": "서버 쪽 광고 삽입이 고치는 재생 목록(m3u8)이 어떻게 생겼나."},
+  {"id": "stripe-idem", "title": "Stripe API · Idempotent requests", "by": "Stripe 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://docs.stripe.com/api/idempotent_requests", "why": "같은 요청이 두 번 와도 한 번만 — 결제·빌링 우대 줄과 노출 중복 제거에 같은 원리."},
+  {"id": "dora", "title": "DORA's software delivery metrics: the four keys", "by": "DORA", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://dora.dev/guides/dora-metrics-four-keys/", "why": "AI 도입으로 '빨라졌다'를 네 가지 숫자로 재는 법. 업무 'AI 활용' 줄."}
+ ],
+ "study_path": [
+  {"title": "광고 한 번의 일생 읽기", "time": "1주", "goal": "VAST·VMAP 한 장을 읽고, 광고 요청부터 완료 신호까지를 그림으로 설명할 수 있다.", "resources": ["iab-vast", "iab-vmap", "programmatic-book"], "task": "가상 광고 두 개로 VAST XML 을 직접 쓰고, 프리롤 1 + 미드롤 2 의 VMAP 을 만든다. 어떤 주소가 언제 불리는지 표로 정리한다."},
+  {"title": "노출을 정확히 한 번 세기", "time": "2주", "goal": "적어도 한 번 전달되는 노출 신호를 받아 중복 없이 집계하고, 광고주별 합계가 맞는지 대조할 수 있다.", "resources": ["kafka-book", "book-kafka", "ddia", "stripe-idem"], "task": "Kafka 에 가상 노출 신호 10만 건(5%는 일부러 중복)을 넣고, 컨슈머가 (세션·광고·사건) 열쇠로 거른 뒤 광고별 노출 수를 낸다. 원본 고유 건수와 맞는지 검증 쿼리를 짠다."},
+  {"title": "마감 시간 안에 답하는 광고 결정 서버", "time": "2주", "goal": "외부 입찰자 여럿을 tmax 안에 기다리고 늦은 응답은 버리는 서버를 만들고 p99 를 잴 수 있다.", "resources": ["openrtb", "tail-at-scale", "aws-retries", "learning-go"], "task": "Go(또는 Node.js)로 가짜 입찰자 5개(1%는 300ms 지연)를 두고, 100ms 마감으로 2등 가격 경매를 하는 서버를 짠다. 마감 전후 p99 와 낙찰률을 비교한다."},
+  {"title": "라이브 광고 시간의 몰림 버티기", "time": "2주", "goal": "모두가 같은 초에 광고를 요청하는 상황을 재현하고, 미리 받기·요청 나눠 보내기로 결정 서버 부하를 줄일 수 있다.", "resources": ["mediatailor", "google-dai", "sre-overload", "rfc8216"], "task": "3단계 서버에 '하프타임' 순간 2초 동안 가상 시청자 5만 명의 요청을 쏟고, 60초 미리 받기 창을 넣은 전후의 초당 요청·실패율을 그래프로 남긴다. 실패하면 빈 시간을 채울 대체 영상도 정한다."},
+  {"title": "설계 문서 한 장", "time": "1주", "goal": "광고·구독(프리미엄 패스) 정합성 같은 결정을 비개발자도 읽는 문서로 쓸 수 있다.", "resources": ["system-design-interview", "dora"], "task": "'프리미엄 패스를 산 순간부터 다음 광고 시간에 광고가 안 나가게' 하는 설계를 두 가지 방식으로 비교하는 문서를 쓴다(버린 방식과 이유 포함)."}
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 쿠팡(주) 집계(초봉 약 3,531만 · 평균 약 5,175만)와 쿠팡 Inc. 전 직원 보수 중간값(2025년 3만 3,831달러)은 물류 현장 인력이 섞인 회사 전체 값이라 **시니어 백엔드 연봉과 거리가 멀다**",
+  "rows": [
+   {"label": "쿠팡(주) 신입 초봉", "value": "약 3,531만원", "amount": 3531, "basis": "공공데이터 집계", "peer": true, "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값. 직군 구분이 없다. 사이트가 자동 접속을 막아 같은 사이트의 다른 쿠팡 풀이에서 확인한 값을 옮겼다 [29]"},
+   {"label": "쿠팡(주) 직원 평균", "value": "약 5,175만원", "amount": 5175, "basis": "공공데이터 집계", "peer": true, "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 개발자 연봉으로 읽으면 안 된다 [29]"},
+   {"label": "쿠팡 Inc. 전 직원 보수 중간값", "value": "3만 3,831달러 / 년", "basis": "공시(미국 위임장) · 2025년", "note": "CEO 를 뺀 전 세계 직원의 가운데 값을 2025년 평균 환율로 달러로 바꾼 것 [30]"}
+  ],
+  "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **국내 공시 숫자 없음**. 위 값은 모두 경력·직군이 섞인 회사 전체 값이고 평균은 초봉이 아니다. 공고는 직급과 업무 범위를 전체 경력에 따라 바꿀 수 있고 최종 합격 통지 전에 알린다고 적었다 [1] — 금액도 그때 확인한다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {"name": "열린 문화", "detail": "칸막이와 위계 대신 열린 업무 공간"},
+   {"name": "보험", "detail": "임직원과 직계가족을 보장하는 단체 상해보험"},
+   {"name": "휴가", "detail": "가족 행사·모임을 위한 유급휴가"},
+   {"name": "교육", "detail": "외국어와 업무 스킬 교육 프로그램"},
+   {"name": "글로벌 협업", "detail": "여러 나라가 함께하는 프로젝트와 협업 기회"},
+   {"name": "사내 행사", "detail": "게임·음식이 있는 사내 이벤트"},
+   {"name": "휴게·식당", "detail": "휴게 공간과 사내 카페테리아 '쿠테리아'"},
+   {"name": "유연근무", "detail": "근무시간 조정, 재택근무 가능"}
+  ],
+  "note": "쿠팡 채용 사이트 'Why Coupang'(한국어)의 '문화와 복지제도'다 [28]. 이 공고에는 복리후생 칸이 없고 금액·조건도 적혀 있지 않다 [1]. 쿠팡플레이 팀에 어느 항목이 그대로 적용되는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 서울 사무소 (이스트폴 타워)",
+  "address": "서울특별시 광진구 아차산로 412",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 [27]",
+  "note": "공고 근무지는 'Seoul, South Korea' 뿐이다 [1]. 쿠팡 채용 사이트는 서울 사무소로 이스트폴 타워(아차산로 412)와 로켓랩(강남구 역삼동 708-4)을 든다 [27]. 쿠팡플레이 팀이 어느 건물인지는 공고에 없다 — 대표 사무소로 이스트폴 타워를 적었다 {추론}."
+ }
+}
