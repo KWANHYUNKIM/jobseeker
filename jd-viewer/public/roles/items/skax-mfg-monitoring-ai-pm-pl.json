@@ -1,0 +1,1079 @@
+{
+ "id": "skax-mfg-monitoring-ai-pm-pl",
+ "company": "SK주식회사(AX)",
+ "role": "제조 시스템 모니터링 AI 전환 과제 PM/PL",
+ "team": "제조AX서비스2팀",
+ "jobs": [
+  "ats-skcareers:sk:R262584"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "반도체 공장의 IT 시스템(MES·장비 연결·미들웨어)이 멈췄을 때 **처음 알아채고 처음 손대는 일(1선 대응)**을 AI로 옮기는 과제를 이끕니다 — 과거 장애 검색 AI·서비스데스크 도우미·원인 분석 도구·전화 접수 음성 인식(STT)까지.[1]",
+  "env": "운영 현장은 C#·Java·Oracle로 만든 제조 시스템이고[1][2], 그 위에 LLM 에이전트·RAG를 얹습니다.[1] 주 근무지는 이천/분당이며, 과제가 끝나면 미들웨어·모니터링·관제 영역의 **현장대리인**으로 남아 해외 FAB으로 넓힙니다.[1]",
+  "oneline": "공장 시스템 운영을 오래 해 본 개발자가 'AI가 먼저 보는 운영'으로 바꾸는 과제의 책임자 — 경력 6년 이상, LLM 경험은 우대입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "제조AX서비스2팀을 소개합니다 😊 SK하이닉스 등 주요 계열사 및 대외 제조 고객의 반도체 제조 현장에서 MES, 장비제어, 생산자동화, 시스템 운영(ITO) 등 제조 IT 시스템을 안정적으로 운영하고 고도화하는 조직입니다.",
+   "short": "SK하이닉스 등 반도체 공장의 생산 시스템을 맡아 운영하는 팀이고, 이 자리는 그 운영을 AI로 바꾸는 과제다.",
+   "why": "공고를 낸 곳은 2025년 SK C&C에서 이름을 바꾼 SK주식회사 AX입니다.[28] 같은 날 같은 팀 이름으로 운영 담당자 공고가 함께 올라왔는데, 거기에는 후공정 MES(smartMES)·장비 자동화(smartEAP)·품질 시스템(smartYES)·기준 정보(Standard BOM) 같은 실제 운영 대상이 적혀 있습니다.[2] 이 자리가 AI로 바꾸려는 '운영'이 바로 그 시스템들의 장애 대응입니다.",
+   "actually": {
+    "intro": "같은 팀의 다른 공고로 본 '운영하는 것'입니다.[2]",
+    "items": [
+     "**MES(생산 실행 시스템)** — 어느 웨이퍼가 어느 공정·장비에 있는지 기록하고 다음 일을 지시하는 공장의 장부.[29]",
+     "**장비 자동화(EAP)** — 장비와 MES 사이에서 명령과 결과를 주고받는 프로그램.[2]",
+     "**품질 시스템·기준 정보** — 측정값 판정, 제품 구성표(BOM) 같은 기준 데이터.[2]",
+     "**ITO(IT 아웃소싱)** — 고객사 대신 이 시스템들을 24시간 돌보는 계약 형태.[5]"
+    ]
+   },
+   "how_far": "MES를 처음부터 만들 줄 알 필요는 없습니다. 다만 '장애가 나면 무엇이 멈추고 누가 전화하나'를 공장 시스템 단위로 설명할 수 있어야 과제의 범위를 정할 수 있습니다. {추론}",
+   "refs": [
+    2,
+    5,
+    28,
+    29
+   ],
+   "study": [
+    "skax-mes-intro"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시스템 운영의 AI 전환(AX)을 선도하며, Agentic AI 기반 장애 대응·모니터링·품질관리 체계를 구축하고 글로벌 FAB으로 확산하고 있습니다.",
+   "short": "장애를 알아채고·원인을 짚고·조치하는 일을 여러 AI 에이전트가 나눠 맡는 체계를 공장마다 퍼뜨리는 중이다.",
+   "why": "SK AX는 2026년 4월 운영 서비스 'AXgenticWire NPO'를 내며, 에이전트가 문제를 먼저 **탐지 → 분석 → 영향도 판단 → 조치**까지 한다고 밝혔고 적용 분야 첫머리에 제조(설비·공정 이상 징후)를 들었습니다.[5][7] 이 공고는 그 방향을 반도체 공장 운영에 실제로 심는 과제입니다.[1]",
+   "flows": [
+    {
+     "caption": "SK AX가 발표한 에이전트 나눔[5]",
+     "steps": [
+      "탐지 에이전트 · 이상 징후 감지",
+      "분석 에이전트 · 원인 추론",
+      "영향도 에이전트 · 주변 시스템에 번지나",
+      "조치 에이전트 · 복구·설정 변경·자원 재할당"
+     ]
+    }
+   ],
+   "actually": {
+    "items": [
+     "운영자는 워크스페이스에서 **자연어로** 조회·분석·제어하고, 에이전트는 'AI 스튜디오'에서 설계, 도구 연결은 'MCP 빌더'로 만든다.[5]",
+     "도입 형태는 설치형·업무 일부 위탁(BPO)·통합 운영(ITO) 세 가지다.[5] 이 팀은 이미 ITO로 공장을 돌보고 있어 세 번째에 가깝다 {추론}.",
+     "SK AX는 에이전트가 많아질수록 장애 원인이 여러 에이전트에 흩어져 개별 로그로는 찾기 어렵고, 규칙 알람으로는 이상 행동을 잡기 어렵다고 썼다 — 그래서 실행 흐름 추적·판단 근거 기록이 같이 필요하다.[6]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    6,
+    7
+   ],
+   "study": [
+    "skax-npo",
+    "skax-aiops"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "최고 수준의 운영 노하우와 기술력을 바탕으로 고객의 제조 경쟁력과 생산 안정성 향상을 이끌어가고 있습니다. 수평적인 조직문화를 지향하며, 다양한 아이디어를 자유롭게 제안하고 실현할 수 있는 문화를 추구합니다. 구성원의 역량 성장이 팀 KPI이며, AI 등 신기술 교육과 자기계발을 지속적으로 지원합니다.",
+   "short": "팀이 내세우는 것은 '생산이 안 멈추게'와 'AI를 배우는 운영 조직' 두 가지다.",
+   "why": "반도체 공장은 시스템이 멈추면 생산이 멈추기 때문에 운영 조직의 첫 목표가 **생산 안정성**입니다.[1] 같은 계열 고객사 SK하이닉스도 사내 AI 플랫폼 GaiA에 로그 분석 에이전트를 붙여 SSD 불량 분석 시간을 20% 넘게 줄였다고 밝혀, 운영 현장에 AI를 쓰는 흐름이 고객 쪽에도 있습니다.[10]",
+   "how_far": "문화 문장은 평가 기준이라기보다 소개입니다. 면접에서는 '새 기술을 운영에 직접 써 본 경험'을 묻는 쪽으로 이어질 가능성이 큽니다(성향 칸에 같은 말이 다시 나옵니다).[1] {추론}",
+   "refs": [
+    1,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "주 근무지는 경기도 이천/분당입니다. 프로젝트에 따라 글로벌 제조 사업장과 협업하며 해외 프로젝트 경험을 쌓을 수 있습니다.",
+   "short": "이천(공장 쪽)과 분당(본사 쪽)을 오가며 일하고, 과제가 커지면 해외 공장과도 일한다.",
+   "why": "같은 날 같은 조직 이름으로 '해외 FAB 구축 System Operation PM/PL' 공고가 올라왔는데, 인디애나 FAB DT 구축 과제의 미들웨어·운영 영역 8개 과제를 맡는 자리입니다.[3] 이 공고의 '글로벌 FAB 확산'이 가리키는 곳 가운데 하나로 볼 수 있습니다. {추론}",
+   "how_far": "해외 출장 가능 여부는 성향 칸에도 다시 나옵니다.[1] 상주 위치(이천 공장 안인지)는 공고에 없어 면접 때 묻는 것이 좋습니다. {추론}",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "담당 업무 - 제조 시스템 운영 모니터링 AI 전환 과제 PM/PL",
+   "short": "직접 다 짜는 개발자가 아니라 과제의 범위·일정·품질을 책임지고 핵심 설계를 이끄는 자리다.",
+   "why": "PM(과제 관리자)은 일정·비용·고객 조율을, PL(개발 리더)은 설계와 개발 팀을 이끕니다. 공고가 둘을 붙여 쓴 것은 한 사람이 두 역할을 겸하는 규모의 과제라는 뜻으로 읽힙니다. {추론} 공통 요건도 **경력 6년 이상**으로, 같은 팀 운영 담당자 공고(3년 이상)보다 높습니다.[1][2]",
+   "how_far": "지원서에는 '몇 명·몇 개월·어떤 시스템의 과제를 맡아 무엇이 줄었나'를 숫자로 적는 것이 공고와 맞습니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SOPIA(System Operation Integrated AI) Agent의 Incident Search AI 및 ServiceDesk Assistant 기능을 고도화합니다.",
+   "short": "새 장애가 나면 비슷한 과거 장애와 그때 해법을 찾아 주고, 접수 창구 담당자를 돕는 AI를 더 똑똑하게 만든다.",
+   "why": "SOPIA는 공고에만 나오는 이름이고 구조는 공개되지 않았습니다.[1] 다만 'Incident Search'는 이름 그대로 과거 장애 기록 검색이고, 운영 조직은 같은 장애가 되풀이되기 때문에 지난 기록이 가장 큰 자산입니다. 마이크로소프트 연구진은 4만 건 넘는 실제 클라우드 장애 기록으로 LLM이 원인과 조치 방법을 제안하게 해 보고, 당직자 상당수가 그 제안을 쓸 만하다고 평가했다고 보고했습니다.[14]",
+   "actually": {
+    "intro": "회사가 공개하지 않아 공개 연구와 일반 구조로 '보통 이런 것'을 보입니다.[14][15]",
+    "items": [
+     "**장애 기록 다듬기** — 티켓마다 증상·원인·조치·영향 시스템을 칸으로 나눈다. 자유 서술 그대로면 검색 품질이 떨어진다.",
+     "**검색** — 새 장애 문장으로 비슷한 과거 티켓을 찾는다. 낱말 검색(BM25)과 의미 검색(임베딩)을 섞는 것이 흔하다.[15]",
+     "**답 만들기(RAG)** — 찾은 티켓을 LLM에 근거로 주고 '그때 이렇게 고쳤다'를 출처와 함께 요약하게 한다.[15]",
+     "**서비스데스크 도우미** — 접수 담당자에게 분류(어느 시스템·긴급도)·담당 팀·첫 확인 순서를 제안한다.",
+     "**평가** — '1등으로 찾은 과거 장애가 실제 원인과 같았나'를 쌓아 고도화의 기준으로 쓴다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "비슷한 과거 장애 찾기 — 가장 단순한 판(TF-IDF 코사인)",
+     "body": "가상 티켓 4건에 '장비 EAP 통신 끊김 알람'을 물었을 때의 직접 돌린 출력입니다. 네트워크 포트를 바꾼 INC-104가 재기동한 INC-101보다 위에 옵니다 — 해법이 다른 두 건이 함께 뜨므로, 사람이 고르거나 LLM이 차이를 설명해야 합니다.",
+     "lang": "python",
+     "code": "import math, re\nfrom collections import Counter\npast = {\n    \"INC-101\": \"EAP 프로세스 응답 없음 장비 통신 끊김 재기동으로 복구\",\n    \"INC-102\": \"MES 화면 느림 Oracle 세션 락 대기 세션 정리로 복구\",\n    \"INC-103\": \"TIBCO RV 메시지 지연 데몬 재시작으로 복구\",\n    \"INC-104\": \"EAP 장비 통신 끊김 네트워크 포트 교체\",\n}\ntoks = lambda s: re.findall(r\"[A-Za-z]+|[가-힣]+\", s.lower())\ndocs = {k: toks(v) for k, v in past.items()}\ndf = Counter(t for d in docs.values() for t in set(d))\nidf = {t: math.log((len(docs) + 1) / (df[t] + 1)) + 1 for t in df}\nvec = lambda ts: {t: c * idf.get(t, 1.0) for t, c in Counter(ts).items()}\ndef cos(a, b):\n    num = sum(a[t] * b.get(t, 0) for t in a)\n    den = math.sqrt(sum(v*v for v in a.values())) * math.sqrt(sum(v*v for v in b.values()))\n    return num / den if den else 0\nq = vec(toks(\"장비 EAP 통신 끊김 알람\"))\nfor k, s in sorted(((k, cos(q, vec(d))) for k, d in docs.items()), key=lambda x: -x[1]):\n    print(k, round(s, 3))\n# INC-104 0.639\n# INC-101 0.57\n# INC-102 0.0\n# INC-103 0.0"
+    }
+   ],
+   "how_far": "검색 엔진·LLM을 직접 만들 필요는 없습니다. PM/PL로서 **어떤 기록을 어떻게 정리해 넣을지, 무엇을 맞았다고 칠지**를 정하고 고객 운영 조직과 합의하는 것이 몫입니다. {추론}",
+   "refs": [
+    1,
+    14,
+    15
+   ],
+   "study": [
+    "ahmed-llm-rca",
+    "rag-paper",
+    "cs329z-rag",
+    "langchain-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "1선 분석 도구인 ARIA(Autonomous Root-cause Intelligence & Action)를 통합하여 운영 분석 체계를 강화합니다.",
+   "short": "알람이 오면 로그·지표를 먼저 훑어 원인 후보와 조치를 내놓는 도구를 위 검색 AI와 한 흐름으로 묶는다.",
+   "why": "ARIA 역시 공고에만 나오는 이름입니다.[1] 이름의 'Root-cause … & Action'은 SK AX가 발표한 분석·조치 에이전트 역할과 같은 자리입니다.[5] 따로 놀던 도구를 묶는 이유는, 원인이 여러 시스템에 흩어지면 하나만 봐서는 못 찾기 때문이라고 SK AX가 직접 썼습니다.[6]",
+   "actually": {
+    "items": [
+     "**1선·2선** — 1선은 알람을 받고 처음 확인·초기 조치를 하는 사람, 2선은 시스템 담당 개발자다. 1선 도구는 '누구에게 넘길까'까지 정한다 {추론}.",
+     "**원인 분석의 재료** — 지표(응답 시간·오류율·처리량·포화도)[12], 로그, 최근 변경(배포·설정) 기록, 과거 장애.[14]",
+     "**통합** — 알람 한 건에 ARIA 분석 결과와 SOPIA 과거 장애 검색 결과를 한 화면·한 티켓에 붙인다 {추론}.",
+     "**조치는 조심스럽게** — 재기동처럼 되돌릴 수 있는 조치부터 자동화하고 나머지는 사람 승인 뒤 실행하는 단계 구분이 흔하다.[16] {추론}"
+    ]
+   },
+   "how_far": "통합의 핵심은 기술보다 **데이터 연결과 책임 경계**(AI가 어디까지 혼자 하나)입니다. 그 경계를 문서로 정하고 고객 승인을 받는 것이 PL의 일입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    12,
+    14,
+    16
+   ],
+   "study": [
+    "skax-aiops",
+    "anthropic-agents",
+    "sre-monitoring"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI Contact Center 기반의 STT(Speech to Text) 시스템 인프라를 구축합니다.",
+   "short": "현장이 전화로 장애를 알리면 그 말을 글자로 바꿔 티켓과 검색 AI에 바로 넣는 음성 인식 바탕을 짓는다.",
+   "why": "공장 장애는 지금도 전화로 많이 들어옵니다 {추론}. 말이 글자가 돼야 위의 검색·분석 AI가 받아 쓸 수 있습니다. SK AX는 SK텔레콤 고객센터에서 검증한 STT·TTS·텍스트 분석·콜봇을 AICC(AI 컨택센터) 상품으로 팔고 있어[8], 이 과제는 그 부품을 공장 서비스데스크에 들이는 일로 보입니다. {추론} SK텔레콤도 AICC의 기본을 통화를 글자로 바꾸고 요약·답변 추천하는 것으로 설명했습니다.[9]",
+   "actually": {
+    "items": [
+     "**인프라** — 전화 교환기에서 통화 음성을 떼어 STT 서버로 흘리고, 결과 글자를 티켓에 붙이는 길을 만든다.[19]",
+     "**전문 낱말** — 'M16', 'EAP', 장비 이름처럼 일반 STT가 모르는 말이 많다. 낱말 사전·부스팅이나 추가 학습으로 맞춘다.[19]",
+     "**정확도 재기** — 사람이 받아 적은 정답과 비교해 글자 오류율(CER)·낱말 오류율(WER)을 잰다.[18]",
+     "**보안** — 공장 내부망 안에서 돌릴지(설치형) 정하고, 녹음·글자 보관 기간을 정한다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 말을 받아 적어도 오류율이 다르다(직접 돌린 출력)",
+     "body": "정답 '이천 M16 EAP 다운입니다'에 대해 영어 약어를 한글 소리로 적으면 **CER 0.538**, 한 글자 빠지면 0.077입니다. 의미는 같아도 검색 AI가 과거 'EAP' 장애를 못 찾게 되니, 전문 낱말 처리가 숫자보다 중요합니다.",
+     "lang": "python",
+     "code": "def lev(a, b):\n    prev = list(range(len(b) + 1))\n    for i, x in enumerate(a, 1):\n        cur = [i]\n        for j, y in enumerate(b, 1):\n            cur.append(min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (x != y)))\n        prev = cur\n    return prev[-1]\nref = \"이천 M16 EAP 다운입니다\"\nfor hyp in [\"이천 M16 EAP 다운입니다\", \"이천 엠십육 이에이피 다운입니다\", \"이천 M16 EP 다운입니다\"]:\n    r, h = ref.replace(\" \", \"\"), hyp.replace(\" \", \"\")\n    print(repr(hyp), \"CER\", round(lev(r, h) / len(r), 3))\n# '이천 M16 EAP 다운입니다' CER 0.0\n# '이천 엠십육 이에이피 다운입니다' CER 0.538\n# '이천 M16 EP 다운입니다' CER 0.077"
+    }
+   ],
+   "how_far": "STT 모델을 직접 학습시키는 자리는 아닙니다. 어떤 엔진을 어디(공장 안/밖)에 둘지, 정확도를 무엇으로 재고 몇까지면 받아들일지를 정하는 수준입니다. {추론}",
+   "refs": [
+    8,
+    9,
+    18,
+    19
+   ],
+   "study": [
+    "skax-aicc",
+    "whisper-paper",
+    "riva-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장애 초도 대응 시간을 단축하고, 1선 대응 업무의 AI 전환(AX)을 추진합니다.",
+   "short": "알람이 울린 뒤 누군가 첫 조치를 하기까지 걸리는 시간을 재고, 그 시간을 AI로 줄이는 것이 과제의 성적표다.",
+   "why": "장애 관리에서는 알아챈 순간부터 확인·조치까지의 시간을 MTTA(평균 확인 시간)·MTTR(평균 복구 시간) 같은 지표로 잽니다.[13] '초도 대응 시간'은 그중 첫 조치까지의 시간으로, 이 과제가 무엇으로 평가받을지를 공고가 직접 밝힌 줄입니다.[1]",
+   "actually": {
+    "items": [
+     "**재는 법 먼저** — 알람 시각·접수 시각·첫 조치 시각이 티켓에 남아야 줄었는지 말할 수 있다.[13]",
+     "**평균보다 중앙값·꼬리** — 새벽의 긴 한 건이 평균을 끌어올리므로 중앙값과 90번째 값을 같이 본다 {추론}.",
+     "**어디서 줄이나** — 누구에게 넘길지 정하는 시간(서비스데스크 도우미), 원인 후보를 찾는 시간(ARIA), 같은 장애의 해법을 찾는 시간(Incident Search).[1]",
+     "**사람 쪽 절차** — 역할(지휘·연락·작업)을 미리 나누고 기록을 남기는 장애 관리 절차가 같이 있어야 한다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "초도 대응 시간 — 도입 전후 비교(가정 숫자, 직접 돌린 출력)",
+     "body": "같은 다섯 장애의 '알람 → 첫 조치' 분을 도입 전후로 셌다고 가정하면 전 [21, 12, 45, 14, 30]분 → 중앙값 **21분**, 후 [6, 4, 18, 4, 9]분 → **6분**입니다. 숫자는 지어낸 예이고, 실제 과제에서는 티켓 시각으로 같은 계산을 합니다.",
+     "lang": "python",
+     "code": "from statistics import median\nfrom datetime import datetime as dt\nmins = lambda a, b: (dt.fromisoformat(\"2026-11-25T\"+b) - dt.fromisoformat(\"2026-11-25T\"+a)).seconds / 60\nbefore = [(\"02:10\",\"02:31\"),(\"03:00\",\"03:12\"),(\"09:40\",\"10:25\"),(\"14:05\",\"14:19\"),(\"22:50\",\"23:20\")]\nafter  = [(\"02:10\",\"02:16\"),(\"03:00\",\"03:04\"),(\"09:40\",\"09:58\"),(\"14:05\",\"14:09\"),(\"22:50\",\"22:59\")]\nf = lambda xs: [mins(a, b) for a, b in xs]\nprint(\"before\", f(before), \"median\", median(f(before)))\nprint(\"after \", f(after), \"median\", median(f(after)))\n# before [21.0, 12.0, 45.0, 14.0, 30.0] median 21.0\n# after  [6.0, 4.0, 18.0, 4.0, 9.0] median 6.0"
+    }
+   ],
+   "how_far": "목표 숫자는 고객과 정합니다. PM/PL은 **기준선(지금 몇 분인가)을 먼저 재 두고**, 줄어든 만큼이 AI 덕인지 절차 덕인지 가를 수 있게 기록을 설계해야 합니다. {추론} 운영 품질 지표(KPI) 체계 전체는 같은 날 공고가 난 ITSM/ITIL 품질관리 자리가 따로 맡으므로[4], 이 자리는 그 지표 가운데 1선 대응 구간에 집중하면 됩니다. {추론}",
+   "refs": [
+    1,
+    4,
+    11,
+    13
+   ],
+   "study": [
+    "sre-incidents",
+    "atlassian-metrics",
+    "sre-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "과제 완료 후 Middleware·모니터링·관제 영역의 현장대리인 역할을 수행하고, 글로벌 FAB으로의 확산을 주도합니다.",
+   "short": "만들고 떠나는 자리가 아니다 — 끝난 뒤에도 그 영역의 운영 책임자로 고객 현장에 남아 해외 공장으로 넓힌다.",
+   "why": "현장대리인은 계약상 수행사를 대표해 고객 현장에서 일을 책임지는 사람을 가리키는 말로 쓰입니다. {추론} 같은 팀 운영 공고에도 파트별 현장대리인이 여럿 나옵니다.[2] 맡을 영역은 **미들웨어**(시스템끼리 메시지를 나르는 중간 소프트웨어 — 반도체 MES에서는 TIBCO RV 같은 메시지 버스가 흔하다[20])·**모니터링**(지표·로그 수집)[21]·**관제**(사람이 화면을 보며 대응)입니다.",
+   "actually": {
+    "items": [
+     "**미들웨어** — 메시지 지연·적체·데몬 멈춤이 공장 전체를 세울 수 있어 감시 1순위다.[20]",
+     "**모니터링** — 지표를 모으고 문턱을 넘으면 알람을 보낸다. 지연·트래픽·오류·포화도 네 가지가 기본 신호다.[12][21]",
+     "**확산** — 해외 FAB 구축 과제에 미들웨어 등 8개 운영 과제가 있어[3], 이천에서 만든 체계를 옮겨 심는 일로 이어진다 {추론}."
+    ]
+   },
+   "how_far": "운영 책임을 지는 자리라 장애 보고·고객 대응·운영 인력 관리까지 포함됩니다. {추론} AI 과제 경험만 있고 운영 책임 경험이 없으면 이 줄에서 약합니다.",
+   "refs": [
+    2,
+    3,
+    12,
+    20,
+    21
+   ],
+   "study": [
+    "tibco-rv",
+    "prom-ko",
+    "prom-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨ 제조 분야 경험 및 솔루션 기반 모니터링/관제/미들웨어 기술제안 경험이 있으신 분",
+   "short": "공장 시스템을 알고, 모니터링·미들웨어 제품을 골라 고객에게 '이렇게 짓자'고 제안해 본 사람.",
+   "why": "'솔루션 기반'은 처음부터 짜기보다 상용·오픈소스 제품을 조합한다는 뜻이고, '기술제안'은 고객 앞에서 구성안·비용·일정을 내미는 일입니다. {추론} SK AX가 운영 서비스를 설치형·BPO·ITO 중 골라 들이게 하고 산업별 도입 전략 컨설팅을 붙인다고 한 것과 같은 일입니다.[5]",
+   "actually": {
+    "items": [
+     "**제안서의 뼈대** — 지금 구성(무엇을 어떻게 감시하나) → 문제(놓친 장애·늦은 대응) → 새 구성(수집·알람·화면) → 일정·인력·비용 {추론}.",
+     "**제조 분야** — 공장은 24시간 돌고 내부망이 막혀 있어, 클라우드 SaaS를 그대로 못 쓰는 경우가 많다 {추론}.",
+     "**모니터링 제품 이해** — 지표 수집기·로그 수집·알람 규칙의 역할 차이를 설명할 수 있어야 한다.[21]"
+    ]
+   },
+   "how_far": "직접 제안서를 써서 수주·착수까지 간 경험 하나를 자세히 말할 수 있으면 됩니다. 제조가 아닌 금융·공공 관제 경험만 있다면 '제조 현장에서 무엇이 다를지'를 준비합니다. {추론}",
+   "refs": [
+    5,
+    21
+   ],
+   "study": [
+    "sre-monitoring",
+    "prom-ko",
+    "skax-mes-intro"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C#/Java/Oracle 기반 개발 역량을 보유하신 분",
+   "short": "운영할 공장 시스템이 C#·Java 프로그램과 Oracle DB로 돼 있어서, 그 코드와 쿼리를 읽고 고칠 줄 알아야 한다.",
+   "why": "같은 팀 운영 담당자 공고도 똑같이 C#/Java/Oracle 개발이 '실제 가능'할 것을 요구합니다.[2] 장비 쪽 프로그램(EAP)은 윈도 PC에서 C#으로, 서버 쪽 MES는 Java로 짜인 경우가 많습니다. {추론} 장애를 AI로 분석하려 해도 결국 로그를 남기는 코드와 DB를 알아야 무엇을 모을지 정할 수 있습니다.",
+   "level": {
+    "basic": "C#·Java 문법과 예외 처리, Oracle SELECT·JOIN·GROUP BY",
+    "work": "운영 중인 코드에서 로그·예외 흐름 따라가기, 느린 쿼리·락 대기 찾기, 배포·롤백",
+    "team": "장애 때 코드·DB 어디를 보면 되는지 1선 AI가 따라 할 수 있게 절차로 적어 내는 수준 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**로그 읽기** — 예외 스택과 처리 시간 로그로 어느 단계에서 멈췄는지 찾는다 {추론}.",
+     "**Oracle 락·세션** — 'MES 화면이 느리다' 장애의 흔한 원인은 오래 잡힌 락이다(위 예시 INC-102처럼, 가상 사례) {추론}.",
+     "**인터페이스** — 장비 ↔ EAP ↔ 메시지 버스 ↔ MES 사이의 메시지 형식을 이해해야 어디서 끊겼는지 안다.[20]"
+    ]
+   },
+   "how_far": "PM/PL이라도 이 줄은 '필수'입니다. 큰 기능을 새로 짜기보다 **남이 짠 운영 코드를 빠르게 읽고 원인을 짚는** 능력이 핵심입니다. {추론}",
+   "refs": [
+    2,
+    20
+   ],
+   "study": [
+    "csharp-docs",
+    "spring-boot-book",
+    "sql-tuning"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍 프로젝트 구축 Architecture 설계 경험이 있으신 분",
+   "short": "검색 AI·원인 분석·STT·티켓 시스템을 어떻게 잇고 어디에 둘지 그림을 그려 본 사람.",
+   "why": "이 과제는 기존 운영 시스템(모니터링·티켓) 위에 새 부품(LLM·검색 저장소·STT)을 붙이는 일이라, 데이터가 어디서 어디로 흐르고 장애가 나면 어디까지 번지는지 그려야 합니다.[1][6] SK AX도 시스템·에이전트·데이터·지식을 한 흐름으로 잇는 것을 운영 플랫폼의 핵심으로 들었습니다.[6]",
+   "flows": [
+    {
+     "caption": "1선 대응 AI의 흐름(공개 자료로 그린 보통의 모양) {추론}",
+     "steps": [
+      "알람·전화 접수 · 모니터링 이벤트, STT 글자",
+      "티켓 만들기 · 시스템·긴급도 분류",
+      "근거 모으기 · 과거 장애 검색(SOPIA)·지표/로그 분석(ARIA)",
+      "제안 · 원인 후보·첫 조치·담당 팀",
+      "사람 확인 · 승인한 조치만 실행, 결과를 기록으로 되먹임"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "아키텍처 문서(구성도·데이터 흐름·장애 시 동작·보안 경계) 한 벌을 직접 써 본 경험이면 충분합니다. {추론}",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "sw-arch-101"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 환경 전환에 맞춘 솔루션 설계/구축/제안 등을 수행해보신 분",
+   "short": "기존 운영 방식에 AI를 끼워 넣는 과제를 설계·제안·구축까지 한 번이라도 해 본 사람.",
+   "why": "SK AX는 AI 운영을 '다운타임 없는 운영'과 '운영비 구조 혁신', 업무 재설계로 설명했습니다.[5] 즉 AI 도입은 도구 설치가 아니라 사람이 하던 절차를 다시 짜는 일이고, 그 경험을 묻는 줄입니다. {추론}",
+   "how_far": "AI 과제의 결과를 '시간·건수가 얼마나 줄었나'로 말할 수 있으면 강점입니다. 실패한 과제라도 왜 안 됐는지(데이터 부족·현장 거부) 설명할 수 있으면 좋습니다. {추론}",
+   "refs": [
+    5
+   ],
+   "study": [
+    "skax-npo",
+    "anthropic-agents"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM 기반 AI Agent, RAG 등 Generative AI 프로젝트 경험이 있으신 분",
+   "short": "SOPIA·ARIA가 LLM 에이전트와 검색 기반 답변(RAG)이라, 그 구조와 한계를 아는 사람이면 바로 일할 수 있다.",
+   "why": "업무의 Incident Search·ServiceDesk Assistant·ARIA가 모두 이 기술 위에 있습니다.[1] RAG는 LLM이 답하기 전에 관련 문서를 찾아 근거로 붙이는 방식이고[15], 에이전트는 LLM이 도구를 골라 부르며 여러 단계를 스스로 진행하는 방식입니다.[16] SK AX는 도구 연결 표준 MCP로 도구를 만드는 'MCP 빌더'를 내놨습니다.[5][17]",
+   "actually": {
+    "items": [
+     "**RAG의 약점** — 검색이 틀리면 답도 틀린다. 그래서 검색 결과를 먼저 평가한다.[15]",
+     "**에이전트의 약점** — 루프에 빠지거나 권한 밖 행동을 할 수 있어 호출·비용·권한을 감시해야 한다.[6]",
+     "**단순하게 시작** — 정해진 순서의 흐름(workflow)으로 될 일은 자율 에이전트로 만들지 말라는 권고가 있다.[16]",
+     "**도구 연결** — MCP는 LLM 앱이 외부 도구·데이터를 같은 형식으로 부르게 하는 규약이다.[17]"
+    ]
+   },
+   "how_far": "사내 문서 RAG나 간단한 도구 호출 에이전트를 끝까지 만들어 써 본 경험이면 됩니다. 모델 학습 경험은 요구하지 않습니다.[1] {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    15,
+    16,
+    17
+   ],
+   "study": [
+    "langchain-book",
+    "cs329z-rag",
+    "cs329z-mcp",
+    "mcp-spec",
+    "anthropic-agents"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "해외 FAB으로 넓히는 단계에서 현지 운영 인력과 회의·문서를 영어로 주고받아야 해서.",
+   "why": "업무 마지막 줄이 글로벌 FAB 확산이고[1], 같은 날 올라온 해외 FAB 구축 공고는 미국 인디애나 과제입니다.[3]",
+   "how_far": "장애 보고서·운영 절차서를 영어로 쓰고 화상 회의에서 원인과 조치를 설명할 수 있는 정도가 실제로 쓰일 수준입니다. {추론}",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "제조 현장의 업무와 요구를 이해하고 책임감 있게 시스템을 운영·개선할 수 있는 분 새로운 기술(AI 등)을 빠르게 습득하고 업무에 적극 적용해 보는 분",
+   "short": "현장이 실제로 불편한 것을 듣고 고치는 사람, 그리고 AI를 써 보는 데 거리낌 없는 사람.",
+   "why": "같은 팀 운영 공고에도 똑같은 성향 문장이 들어 있어 팀 공통 기준으로 보입니다.[2] AI 도구는 현장이 안 쓰면 효과가 0이라, 현장 요구 이해가 앞에 놓였습니다. {추론}",
+   "how_far": "면접에서는 '현장 요청으로 시스템을 고친 일'과 '새 기술을 운영에 써 본 일' 한 가지씩을 구체적으로 준비합니다. {추론}",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "고객 및 동료와 원활히 소통하며 협업을 이끌어 낼 수 있는 분 업무상 필요한 해외 출장이 가능하신 분",
+   "short": "고객 운영 조직·개발 팀·AI 팀 사이를 잇는 자리라 조율이 일의 절반이고, 해외 공장에 직접 가야 할 때가 있다.",
+   "why": "PM/PL은 고객(공장 운영 조직)과 합의해 범위·목표를 정하고[1], 장애 관리 절차에서도 연락 담당 역할이 따로 있을 만큼 소통이 중요합니다.[11] 해외 출장은 글로벌 FAB 확산과 이어집니다.[1][3]",
+   "how_far": "출장 빈도·기간은 공고에 없습니다. 처우협의 때 확인합니다. {추론}",
+   "refs": [
+    1,
+    3,
+    11
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "공장·관제 시스템 운영을 오래 해서 '같은 장애가 또 났다'가 지겨운 사람",
+   "장애 시간을 숫자로 재고 줄이는 데 보람을 느끼는 사람[1]",
+   "LLM 에이전트를 실제 운영 현장에 들여 보고 싶은 사람[1]",
+   "해외 공장으로 넓히는 일에 관심 있는 사람[1][3]"
+  ],
+  "hard": [
+   "경력 6년 이상이 공통 요건이다[1]",
+   "과제 뒤에도 현장대리인으로 남아 운영 책임을 진다 — 순수 AI 개발만 하고 싶다면 맞지 않는다[1]",
+   "SOPIA·ARIA의 구조가 공개되지 않아 지원 전에 알 수 있는 것이 적다",
+   "공장 내부망·고객사 보안 규정 아래서 일한다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "과거 장애 기록 수만 건으로 검색 AI를 만들려면 기록을 어떻게 정리하겠어요?",
+   "a": "증상·원인·조치를 칸으로 나누고, 무엇을 '맞게 찾았다'로 칠지 정하기.[14][15]"
+  },
+  {
+   "q": "초도 대응 시간이 줄었다는 걸 어떻게 증명하겠어요?",
+   "a": "기준선 먼저, 시각 기록, 중앙값과 꼬리.[13]"
+  },
+  {
+   "q": "AI가 재기동까지 스스로 해도 될까요? 어디까지 맡기겠어요?",
+   "a": "되돌릴 수 있는 조치부터, 사람 승인 단계.[5][16]"
+  },
+  {
+   "q": "전화로 들어온 'EAP 다운'을 STT가 '이에이피'로 적으면 무슨 일이 생기나요?",
+   "a": "전문 낱말 처리와 오류율 재기.[18][19]"
+  },
+  {
+   "q": "메시지 버스가 느려졌을 때 MES·장비 쪽에서 어떤 증상이 보이나요?",
+   "a": "미들웨어 감시와 지연·적체 신호.[12][20]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · 제조 시스템 모니터링 AI 전환 과제 PM/PL 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262584",
+   "kind": "posting",
+   "note": "제조AX서비스2팀 · 조직 소개·업무·요건·우대·성향·전형·공통 요건(경력 6년 이상). 마감 2027-01-28"
+  },
+  {
+   "n": 2,
+   "title": "SK Careers · 제조 시스템 운영(MES/장비/품질/자동화) 담당자 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262586",
+   "kind": "posting",
+   "note": "같은 팀 같은 날 공고 — smartMES·smartEAP·smartYES·Standard BOM 운영, 파트별 현장대리인, C#/Java/Oracle, 경력 3년 이상"
+  },
+  {
+   "n": 3,
+   "title": "SK Careers · 해외 FAB 구축 System Operation PM/PL 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262585",
+   "kind": "posting",
+   "note": "인디애나 FAB DT 구축 — 미들웨어 등 8개 과제, 근무지 이천"
+  },
+  {
+   "n": 4,
+   "title": "SK Careers · 제조 IT 운영 품질관리(ITSM/ITIL) 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262582",
+   "kind": "posting",
+   "note": "같은 날 제조 ITO 운영 품질 KPI·ITSM/ITIL 자리"
+  },
+  {
+   "n": 5,
+   "title": "SK AX 뉴스룸 · 에이전틱AI 기반 운영혁신으로 '시스템 장애' 방지한다 (AXgenticWire NPO)",
+   "url": "https://www.skax.co.kr/company/news-room/sk-ax-에이전틱ai-기반-운영혁신으로-시스템장애-방/",
+   "kind": "company",
+   "date": "2026-04-02",
+   "note": "탐지·분석·영향도·조치 에이전트, 자연어 워크스페이스, AI 스튜디오·MCP 빌더, 설치형·BPO·ITO, 제조·금융·공공"
+  },
+  {
+   "n": 6,
+   "title": "SK AX 인사이트 · Multi-Agent 시대, AIOps 없이 IT 운영이 멈추는 이유",
+   "url": "https://www.skax.co.kr/insight/trend/3722",
+   "kind": "company",
+   "date": "2026-05-07",
+   "note": "원인 분산·규칙 알람의 한계, 실행 흐름 추적·판단 근거 기록·권한 이탈 탐지"
+  },
+  {
+   "n": 7,
+   "title": "CEO스코어데일리 · SK AX, 에이전틱 AI 기반 운영 서비스 '엑스젠틱와이어 NPO' 선봬",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040212224246417",
+   "kind": "news",
+   "date": "2026-04-02"
+  },
+  {
+   "n": 8,
+   "title": "SK AX · AICC 서비스",
+   "url": "https://www.skax.co.kr/ax-services/aicc",
+   "kind": "company",
+   "note": "SK텔레콤 고객센터에서 검증한 STT·TTS·TA·콜봇·챗봇"
+  },
+  {
+   "n": 9,
+   "title": "SK텔레콤 뉴스룸 · AICC 소개",
+   "url": "https://news.sktelecom.com/210333",
+   "kind": "news",
+   "note": "STT·챗봇/보이스봇·답변 추천·요약"
+  },
+  {
+   "n": 10,
+   "title": "SK하이닉스 뉴스룸 · Introduce GaiA 1편 — Biz 특화 AI Agent",
+   "url": "https://news.skhynix.co.kr/gaia_ep1_biz_ai_agent/",
+   "kind": "news",
+   "note": "고객사 쪽 사례 — 로그 분석 에이전트로 SSD 불량 분석 20% 넘게 단축"
+  },
+  {
+   "n": 11,
+   "title": "Google SRE Book · Managing Incidents",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "kind": "reference",
+   "note": "지휘·연락·작업 역할 나누기, 장애 기록"
+  },
+  {
+   "n": 12,
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "note": "네 가지 기본 신호(지연·트래픽·오류·포화도)"
+  },
+  {
+   "n": 13,
+   "title": "Atlassian · Common incident management metrics",
+   "url": "https://www.atlassian.com/incident-management/kpis/common-metrics",
+   "kind": "reference",
+   "note": "MTTA·MTTR 등 장애 지표 정의"
+  },
+  {
+   "n": 14,
+   "title": "Recommending Root-Cause and Mitigation Steps for Cloud Incidents using Large Language Models",
+   "url": "https://arxiv.org/abs/2301.03797",
+   "kind": "reference",
+   "date": "2023",
+   "note": "Ahmed 외 · Microsoft · ICSE 2023 — 실제 장애 4만 건 넘는 기록으로 LLM 원인·조치 제안, 당직자 평가"
+  },
+  {
+   "n": 15,
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "kind": "reference",
+   "note": "Lewis 외 — RAG 원 논문"
+  },
+  {
+   "n": 16,
+   "title": "Anthropic · Building effective agents",
+   "url": "https://www.anthropic.com/research/building-effective-agents",
+   "kind": "reference",
+   "date": "2024-12",
+   "note": "workflow 와 agent 구분, 단순한 구조부터"
+  },
+  {
+   "n": 17,
+   "title": "Model Context Protocol 명세",
+   "url": "https://modelcontextprotocol.io/specification",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Robust Speech Recognition via Large-Scale Weak Supervision (Whisper)",
+   "url": "https://arxiv.org/abs/2212.04356",
+   "kind": "reference",
+   "note": "Radford 외 · OpenAI — 공개 STT 모델, WER 로 평가"
+  },
+  {
+   "n": 19,
+   "title": "NVIDIA Riva 사용자 가이드",
+   "url": "https://docs.nvidia.com/deeplearning/riva/user-guide/docs/index.html",
+   "kind": "reference",
+   "note": "설치형 STT — 낱말 부스팅·사용자 맞춤, 스트리밍 인식"
+  },
+  {
+   "n": 20,
+   "title": "Microsoft Learn · TIBCO Rendezvous Concepts",
+   "url": "https://learn.microsoft.com/en-us/biztalk/core/tibco-rendezvous-concepts",
+   "kind": "reference",
+   "note": "주제 기반 메시징·데몬"
+  },
+  {
+   "n": 21,
+   "title": "Prometheus · Overview",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "FETV · '월급이 연봉 수준' SK그룹, 급여 Top 계열사는 어디?(2024 사업보고서)",
+   "url": "http://www.fetv.co.kr/news/articleView.html?idxno=198852",
+   "kind": "news"
+  },
+  {
+   "n": 23,
+   "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+   "url": "https://zdnet.co.kr/view/?no=20250816174726",
+   "kind": "news",
+   "date": "2025-08-16",
+   "note": "4사 2025년 반기보고서 1인 평균 급여"
+  },
+  {
+   "n": 24,
+   "title": "원티드 · 에스케이 에이엑스(SK AX) 회사 정보",
+   "url": "https://www.wanted.co.kr/company/25949",
+   "kind": "reference",
+   "note": "평균 연봉 집계값(국민연금 기준)"
+  },
+  {
+   "n": 25,
+   "title": "SK AX Careers · 복리후생",
+   "url": "https://skax.skcareers.com/page/HR/Welfare",
+   "kind": "company",
+   "note": "연도 표기 없음"
+  },
+  {
+   "n": 26,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company",
+   "note": "SK u-타워 주소"
+  },
+  {
+   "n": 27,
+   "title": "SK하이닉스 홈페이지 (회사 주소)",
+   "url": "https://www.skhynix.com",
+   "kind": "company",
+   "note": "하단 회사 정보 — 경기도 이천시 부발읍 경충대로 2091"
+  },
+  {
+   "n": 28,
+   "title": "KPI뉴스 · SK C&C, 'SK㈜ AX'로 이름 바꿔",
+   "url": "https://kpinews.kr/newsView/1065576140213162",
+   "kind": "news"
+  },
+  {
+   "n": 29,
+   "title": "SK AX 인사이트 · 스마트 팩토리의 필수 조건, MES",
+   "url": "https://www.skax.co.kr/insight/trend/2800",
+   "kind": "company",
+   "note": "MES 정의, ERP 와의 차이"
+  }
+ ],
+ "caveat": "SOPIA·ARIA는 이 공고에만 나오는 내부 이름이라 구조·규모·성과가 공개되지 않았습니다. 회사 방향은 SK AX의 2026년 4월 운영 서비스 발표와 5월 AIOps 글, 같은 날 올라온 같은 팀·같은 조직 공고 셋으로 확인했고, 검색 AI·원인 분석·STT의 구조는 마이크로소프트 장애 연구·RAG 논문·Whisper·NVIDIA Riva·Google SRE 책으로 '보통 이런 것'을 보였습니다. 팀의 발표 영상은 찾지 못해 받은 영상이 없습니다. '현장대리인'의 법적 정의 조항은 확인하지 못해 뜻풀이를 {추론}으로 두었습니다.",
+ "resources": [
+  {
+   "id": "skax-npo",
+   "title": "SK AX 뉴스룸 · 에이전틱AI 기반 운영혁신으로 '시스템 장애' 방지한다",
+   "by": "SK AX · 2026-04",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/company/news-room/sk-ax-에이전틱ai-기반-운영혁신으로-시스템장애-방/",
+   "why": "이 회사가 '운영 AI'를 어떤 에이전트로 나눠 생각하는지(탐지·분석·영향도·조치). 지원 전에 꼭 읽을 한 장."
+  },
+  {
+   "id": "skax-aiops",
+   "title": "SK AX 인사이트 · Multi-Agent 시대, AIOps 없이 IT 운영이 멈추는 이유",
+   "by": "SK AX · 2026-05",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/insight/trend/3722",
+   "why": "ARIA 통합 줄의 배경 — 원인이 흩어질 때 왜 흐름 추적·근거 기록이 필요한지 회사 말로."
+  },
+  {
+   "id": "skax-aicc",
+   "title": "SK AX AICC 서비스 소개",
+   "by": "SK AX",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/ax-services/aicc",
+   "why": "STT 인프라 줄 — 회사가 이미 가진 음성 부품(STT·TTS·콜봇)이 무엇인지."
+  },
+  {
+   "id": "skax-mes-intro",
+   "title": "SK AX 인사이트 · 스마트 팩토리의 필수 조건, MES",
+   "by": "SK AX",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/insight/trend/2800",
+   "why": "운영 대상인 MES가 공장에서 무슨 일을 하는지 — 제조 분야 경험 요건의 첫걸음."
+  },
+  {
+   "id": "sre-incidents",
+   "title": "Google SRE Book · Managing Incidents",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "why": "초도 대응을 줄이려면 AI 전에 역할·기록 절차가 있어야 한다는 것 — 장애 관리의 기본 절차."
+  },
+  {
+   "id": "sre-monitoring",
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "why": "모니터링·관제 기술제안 요건 — 무엇을 감시하고 언제 사람을 깨울지(네 가지 기본 신호)."
+  },
+  {
+   "id": "sre-ko",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "베이어 외 · 장현희 옮김 · 제이펍 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=129407308",
+   "why": "위 두 장을 포함한 Google SRE 책의 한국어판. 장애 대응·모니터링·사후 분석을 한 권으로."
+  },
+  {
+   "id": "atlassian-metrics",
+   "title": "Atlassian · Common incident management metrics",
+   "by": "Atlassian",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.atlassian.com/incident-management/kpis/common-metrics",
+   "why": "초도 대응 시간 줄 — MTTA·MTTR 같은 지표를 어떻게 정의하고 세는지."
+  },
+  {
+   "id": "ahmed-llm-rca",
+   "title": "Recommending Root-Cause and Mitigation Steps for Cloud Incidents using Large Language Models",
+   "by": "Toufique Ahmed 외 · Microsoft · ICSE 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2301.03797",
+   "why": "Incident Search·원인 분석 AI를 실제 장애 기록으로 만들고 평가한 사례. 무엇을 넣고 어떻게 재는지."
+  },
+  {
+   "id": "rag-paper",
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "by": "Patrick Lewis 외 · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "why": "RAG 우대 줄의 원 논문 — 검색과 생성을 왜 붙이는지."
+  },
+  {
+   "id": "langchain-book",
+   "title": "랭체인으로 LLM 기반의 AI 서비스 개발하기",
+   "by": "서지영 · 길벗 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://product.kyobobook.co.kr/detail/S000212568407",
+   "why": "RAG·에이전트를 한국어로 직접 만들어 보는 책. 사내 문서 검색 도우미를 끝까지 만들어 볼 때."
+  },
+  {
+   "id": "cs329z-rag",
+   "title": "Stanford CS329Z Lecture 3: RAG Explained — From BM25 to Agentic RAG (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/psLc-46GqY0",
+   "why": "낱말 검색(BM25)과 의미 검색을 섞는 이유 — Incident Search 품질의 핵심."
+  },
+  {
+   "id": "cs329z-mcp",
+   "title": "Stanford CS329Z Lecture 4: How AI Agents Use Tools — Function Calling & MCP (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/s0S38lz6O7M",
+   "why": "에이전트가 도구(로그 조회·티켓 생성)를 부르는 방식과 MCP."
+  },
+  {
+   "id": "anthropic-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.anthropic.com/research/building-effective-agents",
+   "why": "AI가 어디까지 혼자 할지 정할 때 — 정해진 흐름과 자율 에이전트를 가르는 기준."
+  },
+  {
+   "id": "mcp-spec",
+   "title": "Model Context Protocol 명세",
+   "by": "MCP 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://modelcontextprotocol.io/specification",
+   "why": "SK AX가 'MCP 빌더'로 만드는 도구 연결 규약의 원문."
+  },
+  {
+   "id": "whisper-paper",
+   "title": "Robust Speech Recognition via Large-Scale Weak Supervision",
+   "by": "Alec Radford 외 · OpenAI · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2212.04356",
+   "why": "STT 인프라 줄 — 공개 STT 모델이 어떻게 평가되는지(WER)와 한계."
+  },
+  {
+   "id": "riva-docs",
+   "title": "NVIDIA Riva 사용자 가이드",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/riva/user-guide/docs/index.html",
+   "why": "공장 내부망 안에 두는 설치형 STT의 구성·전문 낱말 맞추기."
+  },
+  {
+   "id": "tibco-rv",
+   "title": "Microsoft Learn · TIBCO Rendezvous Concepts",
+   "by": "Microsoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/biztalk/core/tibco-rendezvous-concepts",
+   "why": "미들웨어 현장대리인 줄 — 반도체 MES에서 흔한 메시지 버스가 어떻게 메시지를 나르는지."
+  },
+  {
+   "id": "prom-ko",
+   "title": "프로메테우스, 오픈소스 모니터링 시스템",
+   "by": "브라이언 브라질 · 김영기·김현진 옮김 · 책만 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=212221193",
+   "why": "지표 수집·알람 규칙을 직접 다뤄 보는 책 — 모니터링 기술제안의 바탕."
+  },
+  {
+   "id": "prom-docs",
+   "title": "Prometheus 공식 문서",
+   "by": "Prometheus",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "why": "최신 구성·알람 문법. 책과 함께 본다."
+  },
+  {
+   "id": "csharp-docs",
+   "title": "C# 설명서",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/ko-kr/dotnet/csharp/",
+   "why": "C# 요건 — 장비 쪽 프로그램을 읽을 때 필요한 문법·예외·비동기."
+  },
+  {
+   "id": "spring-boot-book",
+   "title": "스프링 부트 — 핵심 원리와 활용 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "Java 서버 쪽 — 기동 로그·엔드포인트로 운영 중인 애플리케이션 상태를 읽는 법."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형 · 디비안 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=148233799",
+   "why": "Oracle 요건 — '화면이 느리다' 장애에서 실행계획·락을 읽는 눈(예시가 Oracle 기준)."
+  },
+  {
+   "id": "sw-arch-101",
+   "title": "소프트웨어 아키텍처 101",
+   "by": "마크 리처즈 · 닐 포드 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98%20101",
+   "why": "아키텍처 설계 우대 줄 — 구성 요소를 나누고 장단점을 문서로 남기는 법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사가 말하는 운영 AI 읽기",
+   "time": "1주",
+   "goal": "SK AX의 탐지·분석·영향도·조치 나눔과 이 공고의 SOPIA·ARIA·STT를 한 그림으로 설명할 수 있다.",
+   "resources": [
+    "skax-npo",
+    "skax-aiops",
+    "skax-aicc",
+    "skax-mes-intro"
+   ],
+   "task": "위 풀이의 '1선 대응 AI 흐름' 다섯 단계를 내가 운영해 본 시스템에 맞춰 다시 그리고, 단계마다 지금은 사람이 몇 분 쓰는지 적어 본다."
+  },
+  {
+   "title": "장애 관리와 지표",
+   "time": "1~2주",
+   "goal": "초도 대응 시간·MTTA·MTTR을 티켓 기록으로 계산하고 장애 관리 역할을 설명한다.",
+   "resources": [
+    "sre-incidents",
+    "atlassian-metrics",
+    "sre-ko"
+   ],
+   "task": "가상 장애 티켓 50건(알람·접수·첫 조치·복구 시각)을 만들어 중앙값·90번째 값을 계산하고, 어느 구간이 가장 긴지 표로 보인다."
+  },
+  {
+   "title": "모니터링과 미들웨어 감시",
+   "time": "2주",
+   "goal": "지표 수집·알람 규칙을 만들고, 메시지 지연·적체를 감시하는 구성을 제안서 한 장으로 쓴다.",
+   "resources": [
+    "sre-monitoring",
+    "prom-ko",
+    "prom-docs",
+    "tibco-rv"
+   ],
+   "task": "도커로 Prometheus를 띄워 가상 '메시지 큐 길이' 지표에 문턱 알람을 걸고, 구성도와 비용·일정이 들어간 기술제안 1쪽을 쓴다."
+  },
+  {
+   "title": "과거 장애 검색 AI 만들기",
+   "time": "2~3주",
+   "goal": "장애 기록으로 RAG 검색 도우미를 만들고 '맞게 찾은 비율'로 평가한다.",
+   "resources": [
+    "langchain-book",
+    "cs329z-rag",
+    "rag-paper",
+    "ahmed-llm-rca"
+   ],
+   "task": "2단계의 가상 티켓에 원인·조치를 적어 넣고, 새 증상 문장으로 비슷한 티켓 3건과 조치 요약을 내는 도우미를 만든다. 정답을 아는 질문 20개로 1등 적중률을 잰다."
+  },
+  {
+   "title": "에이전트와 음성 접수(선택)",
+   "time": "계속",
+   "goal": "도구를 부르는 에이전트에 사람 승인 단계를 넣고, STT 오류율을 잰다.",
+   "resources": [
+    "anthropic-agents",
+    "cs329z-mcp",
+    "mcp-spec",
+    "whisper-paper",
+    "riva-docs"
+   ],
+   "task": "'로그 조회'·'티켓 생성' 두 도구를 MCP로 만들어 에이전트에 붙이고, 재기동 같은 조치는 승인 뒤에만 실행하게 한다. 직접 녹음한 장애 신고 문장 10개를 공개 STT에 넣어 CER을 잰다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다(처우협의). 공시는 **SK㈜ 전체 평균 약 1억 1,600만원**(2024년), SK AX로 나온 반기 평균은 **7,300만원(6개월치)** — 기준이 달라 숫자가 다르다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여(SK㈜ 전체)",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "note": "SK AX는 SK㈜ 안의 사업이라[28] 공시는 지주 부문을 합친 SK㈜ 전체 값이다 [22]"
+   },
+   {
+    "label": "SK AX 평균 급여(상반기)",
+    "value": "7,300만원",
+    "amount": 7300,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "1~6월 6개월치다. 기사가 SK AX로 적은 값이다 [23]"
+   },
+   {
+    "label": "평균 연봉(집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 회사 정보의 집계값. 국민연금 가입자 기준이며 계산 기간이 적혀 있지 않다 [24]"
+   },
+   {
+    "label": "삼성SDS 평균(상반기)",
+    "value": "6,600만원",
+    "amount": 6600,
+    "peer": true,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "같은 기사의 같은 기준 [23]"
+   },
+   {
+    "label": "LG CNS 평균(상반기)",
+    "value": "6,500만원",
+    "amount": 6500,
+    "peer": true,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "같은 기사의 같은 기준 [23]"
+   }
+  ],
+  "how": "전형이 서류 → SKCT → 1차·2차 면접 → **채용검진/처우협의** 순이라 연봉은 경력에 따라 따로 정한다 [1]. 위 평균은 신입·고참·직무가 섞인 회사 전체 값이고 반기 값은 6개월치라, 경력 6년 이상 PM/PL 자리의 제시액으로 읽으면 안 된다 {추론}. 경력직 공고라 신입 초봉은 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "성장",
+    "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 직무 공모"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10·15·20·25·30년에 포상금과 포상 휴가"
+   },
+   {
+    "name": "주택 자금",
+    "detail": "구입·전세 최대 6,000만원, 생활안정자금 최대 1,500만원(100만원 단위)"
+   },
+   {
+    "name": "자녀 학자금",
+    "detail": "유치원부터 대학까지, 자녀 수 제한 없음"
+   },
+   {
+    "name": "식대·통신비",
+    "detail": "식대 월 4만원, 통신비 월 7만원(SKT 가입자)"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 OK캐쉬백 20만 포인트"
+   },
+   {
+    "name": "건강",
+    "detail": "나이에 따라 종합 25만원·정밀 40만원 검진, 난임 지원, 단체보험 3종, 사내 의원 With Care, 심리 상담 공감플러스+"
+   },
+   {
+    "name": "그 밖",
+    "detail": "외부 사이트 근무자 복지 포인트, 통근·셔틀 버스, 경조 휴가·경조금"
+   }
+  ],
+  "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음, 2026-11-23 다른 풀이에서 확인) [25]. 공고 자체에는 복리후생 칸이 없다 [1]. 이천 고객사 현장에서 일할 때는 '외부 사이트 근무자' 항목이 해당될 수 있으나 적용 조건은 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "근무지 · 이천(고객사 제조 현장) / 분당(SK AX 본사 SK u-타워)",
+  "address": "경기도 이천시 부발읍 경충대로 2091",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%9D%B4%EC%B2%9C%EC%8B%9C%20%EB%B6%80%EB%B0%9C%EC%9D%8D%20%EA%B2%BD%EC%B6%A9%EB%8C%80%EB%A1%9C%202091",
+  "note": "공고는 주 근무지를 '경기도 이천/분당'으로만 적었다 [1]. 위 주소는 SK하이닉스 홈페이지의 회사 주소이고 [27], 같은 팀이 SK하이닉스 등 계열사 공장을 맡는다고 적어 이천을 그 현장으로 보았다 [2] {추론}. 분당 쪽은 SK AX 본사(경기도 성남시 분당구 성남대로 343번길 9 에스케이유타워)다 [26]."
+ }
+}
