@@ -1,0 +1,1059 @@
+{
+ "id": "coupang-cloud-infra-senior-staff-seattle",
+ "company": "쿠팡 (Coupang)",
+ "role": "Senior Staff Backend Engineer - Cloud Infrastructure",
+ "team": "Cloud Platform (글로벌 팀 · 시애틀 근무)",
+ "jobs": [
+  "ats-greenhouse:coupang:7438944"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡의 모든 서비스가 올라가는 **클라우드 바닥(서버·네트워크·쿠버네티스·배포 자동화)**을 지금보다 10배 큰 규모에서도 버티게 설계하고, 개발팀이 스스로 인프라를 받아 쓰는 **셀프서비스 플랫폼**을 만드는 자리입니다.[1][5]",
+  "env": "쿠팡은 2017년에 IT 인프라 전부를 AWS 로 옮겼고[2], 지금은 AWS 와 자체 데이터센터(사내 GPU·저장 클러스터)를 함께 씁니다.[4] 팀은 여러 나라에 흩어져 있지만 한 팀으로 움직이고, 채용 사이트에서는 Technology 조직의 Cloud Platform 부서로 묶입니다.[1][6][20]",
+  "oneline": "15년 차 안팎의 클라우드 인프라 베테랑이 **'다섯 개의 9'(1년에 5분만 멈춤)** 목표와 비용·보안을 한꺼번에 책임지고 여러 팀을 끌어올리는 자리 — 기능 개발자가 아니라 플랫폼의 기술 책임자입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Strong experience on Cloud DevOps tools and coding (CI/CD, IaC, Terraform, Python, Cloud Formation, Ansible, GitHub, CircleCI, Jenkins and Infra Automation)",
+   "short": "인프라를 손으로 만지지 않고 코드(Terraform·CloudFormation)와 자동 배포(CI/CD)로 다루는 능력이 바탕이라서.",
+   "why": "쿠팡은 2017년 AWS 로 옮길 때 사람이 하나씩 옮기지 않고 **이전을 자동화하는 도구를 직접 만들어** 실수를 줄였다고 밝혔습니다. 당시 하루 약 100번 배포했습니다.[2] 같은 회사의 인프라 자동화 팀 공고도 목표를 '자동화된 클라우드·쿠버네티스 도구로 인프라 마찰을 없애는 것'으로 적었습니다.[5]",
+   "actually": {
+    "intro": "괄호 안 도구들은 세 묶음입니다.",
+    "items": [
+     "**IaC(Infrastructure as Code, 인프라를 코드로)** — Terraform·CloudFormation 으로 VPC·서버 묶음·로드밸런서를 파일로 적고, 바꿀 때는 코드 리뷰를 거쳐 `plan`(무엇이 바뀌나 미리 보기) → `apply`.[13]",
+     "**구성 관리** — Ansible 로 서버 수백 대의 OS 설정·패키지를 같은 상태로 맞춘다.",
+     "**CI/CD(지속 통합·배포)** — GitHub 에 올리면 Jenkins·CircleCI 가 빌드·테스트·배포를 자동으로 돌린다. 배포 빈도와 실패 복구 시간은 DORA 지표로 잰다.[22]",
+     "**Python 자동화** — 도구 사이를 잇는 스크립트(비용 보고·정리 작업·점검). 쿠팡 비용 팀은 비운영 환경 자원을 필요할 때만 켜는 자동화로 비운영 비용을 25% 줄였다.[3]"
+    ]
+   },
+   "how_far": "도구 이름을 다 써 봤느냐보다 **'콘솔에서 손으로 바꾸지 않는다'를 팀 규칙으로 만들고 지켜 본 경험**이 핵심입니다. 최소선은 Terraform 모듈을 설계해 여러 팀이 재사용하게 하고, 그 변경이 CI 에서 plan 결과로 리뷰되게 만든 경험입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    5,
+    13,
+    22
+   ],
+   "study": [
+    "tf-up",
+    "tf-drift"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Self-service code development and end-to-end back cloud deployment automation for application stack",
+   "short": "개발팀이 인프라팀에 티켓을 넣지 않고 설정 파일 하나로 서버·DB·배포까지 스스로 받게 하는 도구를 만든다.",
+   "why": "같은 회사 클라우드 인프라 자동화 팀은 **개발자가 YAML(설정 파일)만 적으면 데이터베이스·로드밸런서가 생기는 쿠버네티스 기반 셀프서비스 플랫폼**을 만든다고 적었습니다.[5] 2017년부터 하루 100번 넘게 배포하는 회사라 사람이 중간에서 받아 주면 그 사람이 병목이 됩니다.[2]",
+   "actually": {
+    "intro": "같은 회사 다른 공고에 적힌 도구들입니다.[5]",
+    "items": [
+     "**ACK(AWS Controllers for Kubernetes)** — 쿠버네티스에 '이런 RDS 를 원한다'고 적으면 컨트롤러가 AWS 에 실제로 만들어 준다.",
+     "**오퍼레이터·CRD** — 회사만의 자원 종류(예: '표준 웹 서비스')를 쿠버네티스에 새로 정의하고, 그걸 만들면 배포·모니터링·권한이 같이 붙게 한다.",
+     "**GitOps(ArgoCD·Flux)** — 원하는 상태를 Git 에 두고, 도구가 클러스터를 그 상태로 계속 맞춘다.",
+     "**드리프트 감지·복구** — 누가 콘솔에서 손으로 바꾼 것을 찾아 코드와 다시 맞춘다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "드리프트 찾기 — 코드에 적힌 모습과 실제를 비교",
+     "body": "Terraform 의 `plan -refresh-only` 가 하는 일을 아주 작게 흉내 낸 것입니다.[13] 누가 손으로 22번 포트를 열고, 서버 종류를 바꾸고, 코드에 없는 서버를 만든 경우입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "desired = {\"sg-web\": {\"ingress\": [\"443/0.0.0.0/0\"]},\n           \"asg-api\": {\"min\": 6, \"max\": 60, \"type\": \"m7a.xlarge\"}}\nactual = {\"sg-web\": {\"ingress\": [\"443/0.0.0.0/0\", \"22/0.0.0.0/0\"]},\n          \"asg-api\": {\"min\": 6, \"max\": 60, \"type\": \"m5.xlarge\"},\n          \"ec2-temp\": {}}\nfor name in sorted(desired.keys() | actual.keys()):\n    if name not in actual:\n        print(\"없음  \", name)\n    elif name not in desired:\n        print(\"코드밖\", name)\n    else:\n        for k in desired[name]:\n            if desired[name][k] != actual[name].get(k):\n                print(\"바뀜  \", name, k, desired[name][k], \"->\", actual[name].get(k))\n# 바뀜   asg-api type m7a.xlarge -> m5.xlarge\n# 코드밖 ec2-temp\n# 바뀜   sg-web ingress ['443/0.0.0.0/0'] -> ['443/0.0.0.0/0', '22/0.0.0.0/0']"
+    }
+   ],
+   "how_far": "\"End-to-end\"라 코드 저장소부터 운영 배포까지 한 줄로 이어야 합니다. 이 자리는 그 도구를 **직접 짜는 사람이자 표준을 정하는 사람**입니다 — 개발팀이 무엇을 고를 수 있고 무엇은 막을지(보안·비용 가드레일)를 정합니다. {추론}",
+   "refs": [
+    2,
+    5,
+    13
+   ],
+   "study": [
+    "k8s-up",
+    "book-k8s",
+    "tf-drift"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Provide a roadmap and vision for scalable and robust growth for your cloud infrastructure and platform services to enable achieving 99.999% availability",
+   "short": "1년에 약 5분만 멈추는 '다섯 개의 9'까지 가려면 무엇을 언제 바꿀지 몇 분기짜리 계획을 세운다.",
+   "why": "AWS 신뢰성 지침은 99.999% 를 **1년에 최대 5분** 멈춤으로 보고, ATM·통신 같은 일의 수준으로 분류합니다. 온라인 쇼핑의 보통 수준은 99.95%(1년 4시간 22분)로 적었습니다.[10] 쿠팡은 큰 할인 행사 때 사이트가 멈춘 경험을 클라우드 이전 이유로 들었습니다.[2]",
+   "actually": {
+    "items": [
+     "**목표를 잘게 쪼개기** — 요청이 서비스 5개를 차례로 거치면 각각 99.999% 여도 전체는 99.995% 가 된다. 그래서 전체 목표보다 각 부품 목표가 더 높아야 한다.[10]",
+     "**겹으로 두기** — 99.9% 짜리 두 곳 중 하나만 살면 되게 하면 계산상 99.9999% 가 된다(서로 독립일 때).[10]",
+     "**오류 예산** — 목표가 99.999% 면 30일에 26초가 '써도 되는 멈춤'이다. 이걸 다 쓰면 새 기능 배포보다 안정화가 먼저다.[12]",
+     "**로드맵 항목 예** — 가용 영역(데이터센터 묶음)·리전 이중화, 배포를 조금씩 내보내는 카나리, 의존성 줄이기, 장애 연습. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "9 하나에 멈춤 시간이 얼마나 줄어드나",
+     "body": "AWS 지침의 직렬·병렬 공식을 그대로 계산한 것입니다(직접 돌린 출력).[10]",
+     "lang": "python",
+     "code": "MIN_YEAR = 365 * 24 * 60\nMIN_MONTH = 30 * 24 * 60\nfor slo in (0.999, 0.9999, 0.99999):\n    print(f\"{slo:.3%}: 1년 {MIN_YEAR*(1-slo):.1f}분, 30일 {MIN_MONTH*(1-slo):.2f}분\")\nprint(f\"직렬 5개 x 99.999% = {0.99999 ** 5:.5%}\")\nprint(f\"병렬 2개 x 99.9% = {1 - (1 - 0.999) ** 2:.4%}\")\n# 99.900%: 1년 525.6분, 30일 43.20분\n# 99.990%: 1년 52.6분, 30일 4.32분\n# 99.999%: 1년 5.3분, 30일 0.43분\n# 직렬 5개 x 99.999% = 99.99500%\n# 병렬 2개 x 99.9% = 99.9999%"
+    }
+   ],
+   "how_far": "30일에 26초면 사람이 알림을 보고 노트북을 여는 동안 다 씁니다. 그래서 이 숫자는 **사람이 고치는 게 아니라 자동으로 비켜 가는 구조**(자동 장애 조치·자동 되돌리기)를 요구합니다. 로드맵은 그 구조로 가는 순서를 쓰는 일입니다. {추론}",
+   "refs": [
+    2,
+    10,
+    12
+   ],
+   "study": [
+    "aws-wa-rel",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Strong technical analytical & design capability to understand common & shared platforms, web, & services API with underlying data to provide appropriate network, infrastructure recommendations",
+   "short": "여러 팀이 같이 쓰는 플랫폼·API 가 어떤 데이터를 어떻게 주고받는지 보고, 맞는 네트워크·장비를 골라 준다.",
+   "why": "공고 개요는 이 자리가 **알맞은 장비 종류·네트워크 설계·배포 자동화를 안내**하고 설계 문서를 남긴다고 적었습니다.[1] 같은 Cloud Platform 팀의 서울 공고도 장비 종류와 네트워크 설계 선택을 맡긴다고 적었습니다.[6]",
+   "actually": {
+    "items": [
+     "**장비 종류 고르기** — 쿠팡은 사내 제품군을 AMD CPU 장비로 옮겨 이전 세대보다 가격 대비 성능을 약 20% 높였고 ARM(Graviton)도 시험했다.[3]",
+     "**저장 장치 고르기** — EBS 를 GP3 로 바꾸기 전 개발 계정에서 성능을 시험했고, 운영 중인 볼륨 500~1,000개를 한꺼번에 영향 없이 옮겼다.[3]",
+     "**데이터 크기 보기** — S3 50PB 넘게를 자동 등급(Intelligent-Tiering)으로 옮겼는데, 작은 파일 수십억 개는 오히려 비용을 올려 규칙(필터)이 필요했다.[3]",
+     "**API 의 흐름 보기** — 어느 서비스가 어느 서비스를 얼마나 부르는지, 응답이 크거나 잦으면 같은 영역에 두거나 캐시를 둔다. {추론}"
+    ]
+   },
+   "how_far": "추천은 '이게 좋다'가 아니라 **시험 결과와 숫자로 된 설계 문서**여야 합니다 — 위 GP3 이전처럼 개발 계정에서 먼저 재고, 그 결과로 결정합니다.[3]",
+   "refs": [
+    1,
+    3,
+    6
+   ],
+   "study": [
+    "coupang-finops",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Strong working experience on Kubernetes, Docker, Linux and cloud services integrations",
+   "short": "쿠팡의 서비스 대부분이 리눅스 위 컨테이너로, 쿠버네티스에서 돌고 AWS 서비스와 붙어 있어서.",
+   "why": "쿠팡 ML 플랫폼은 학습 작업을 컨테이너로 쿠버네티스에서 돌리고, 모델은 쿠버네티스 위에서 자동으로 늘었다 줄었다 하는 서비스로 배포합니다.[4] 인프라 자동화 팀은 여러 EKS(AWS 의 관리형 쿠버네티스) 클러스터와 리전을 잇는 서비스 메시(Istio·Envoy)를 설계합니다.[5]",
+   "actually": {
+    "items": [
+     "**클러스터 여러 개** — 리전·환경별로 EKS 를 나누고 그 사이 통신·권한·배포를 맞춘다.[5]",
+     "**AWS 와 잇기** — 파드(컨테이너 묶음)가 IAM 권한으로 S3·RDS 를 쓰고, 로드밸런서·DNS 를 쿠버네티스 설정에서 만든다.[5]",
+     "**자원 나누기** — 학습처럼 GPU 를 한꺼번에 여러 장 잡아야 하는 작업은 '다 잡거나 아예 안 잡는' 배치 스케줄러로 돌린다.[4]",
+     "**자동 늘리기** — 부하에 따라 파드 수를 늘린다(HPA).[16]",
+     "**리눅스** — 커널 설정·파일 핸들·네트워크 스택이 지연을 좌우할 때 그 층까지 내려가 본다. {추론}"
+    ]
+   },
+   "how_far": "kubectl 로 배포하는 수준이 아니라 **클러스터 자체의 표준(버전 올리기·노드 종류·네트워크·권한)을 정하고 여러 팀 앞에서 책임지는** 수준입니다. 우대 줄의 '10년 이상'이 그 높이를 말해 줍니다.[1]",
+   "refs": [
+    1,
+    4,
+    5,
+    16
+   ],
+   "study": [
+    "book-docker",
+    "book-k8s",
+    "k8s-up"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "100% accountable for the reliable, scalable and optimized cloud architecture, design and platform services",
+   "short": "클라우드 구조가 멈추거나 느리거나 돈이 새면 이 자리가 답해야 한다 — 남의 팀 탓으로 넘기지 않는다.",
+   "why": "공고 개요는 이 자리에 **'10배 규모에서도 효율적인 인프라 선택'에 대한 책임**을 지운다고 적었습니다.[1] 쿠팡의 비용 줄이기도 재무와 엔지니어링이 몇 분기 동안 같이 만든 중앙 팀(클라우드 인프라 엔지니어 + 기술 프로그램 매니저)이 맡았습니다.[3]",
+   "actually": {
+    "items": [
+     "**신뢰성** — 목표(SLO)를 정하고 오류 예산을 넘으면 배포를 멈출 권한까지.[11][12]",
+     "**확장성** — 행사 때 몰리는 트래픽을 미리 계산해 용량을 잡는다.[2]",
+     "**최적화(비용)** — 도메인 팀마다 월·분기 예산을 두고, CloudWatch·Athena·비용 보고서(CUR)로 만든 대시보드로 따라간다. 2021년 한 해에 온디맨드 비용 '수백만 달러'를 줄였다.[3]",
+     "**사고 뒤** — 같은 팀 서울 공고는 큰 장애의 근본 원인을 고쳐 운영 품질을 올리는 일을 맡긴다.[6]"
+    ]
+   },
+   "how_far": "'100%'는 혼자 다 한다는 뜻이 아니라 **결정의 주인이 분명하다**는 뜻입니다. 다른 팀이 만든 서비스가 멈춰도 '플랫폼이 그걸 막을 수 있었나'를 묻는 자리입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    11,
+    12
+   ],
+   "study": [
+    "sre-book",
+    "coupang-finops"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Serve as Cloud Engineering for Cloud infrastructure Architecture, Design and Deployment and maintenance for highly reliable and scalable applications",
+   "short": "설계만 하고 떠나지 않고 배포·유지보수까지 같은 사람이 맡는다 — 설계자이자 운영자.",
+   "why": "같은 Cloud Platform 팀 공고는 설계와 함께 **핵심 부품을 직접 손으로 만드는 일**을 적었습니다.[6] 쿠팡은 서비스를 작은 단위(마이크로서비스)로 나눠 두어 클라우드로 옮길 때도 멈추지 않고 하나씩 옮길 수 있었습니다.[2][7]",
+   "actually": {
+    "items": [
+     "**설계** — 어느 리전·가용 영역에, 어떤 장비와 네트워크로, 무엇을 겹으로 둘지 문서로.[1]",
+     "**배포** — 그 설계를 Terraform 모듈·쿠버네티스 설정으로 만들어 실제로 올린다.[5]",
+     "**유지보수** — 버전 올리기(쿠버네티스는 해마다 몇 번 새 버전), 인증서·장비 세대 교체, 용량 늘리기. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    7
+   ],
+   "study": [
+    "aws-adv-arch",
+    "tf-up"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Solves complex technical problems in Public Clouds (AWS, Azure, GCP) and Private Cloud environment and improves Operational Excellence",
+   "short": "AWS 만이 아니라 다른 클라우드와 회사 자체 데이터센터가 섞인 환경의 어려운 문제를 푼다.",
+   "why": "쿠팡 ML 플랫폼은 **사내 데이터센터의 GPU·저장 클러스터와, 필요할 때 늘리는 AWS 를 함께** 씁니다.[4] 인프라 자동화 팀 공고도 GCP·Azure·하이브리드 경험을 우대했습니다.[5]",
+   "actually": {
+    "items": [
+     "**사내 ↔ AWS 연결** — 전용선(Direct Connect)·VPN·Transit Gateway 로 두 곳을 한 네트워크처럼 잇는다. 대역폭·지연·장애 시 우회 경로가 문제다.[18]",
+     "**같은 도구로 두 곳 다루기** — 사내 쿠버네티스와 EKS 에 같은 배포·모니터링·권한 체계를 씌운다. {추론}",
+     "**Operational Excellence** — AWS 신뢰성·운영 지침의 한 축 이름이다. 운영을 코드로, 작게 자주 바꾸고, 실패에서 배운다.[10]"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    10,
+    18
+   ],
+   "study": [
+    "aws-hybrid",
+    "aws-adv-arch"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Strong ability to dive deep to understand current cloud infra and systems architecture to provide strategic partnership and improvements on network usage, role management, CDN, domains and cloud infra security",
+   "short": "지금 구조를 깊이 파서 네트워크 비용·권한(Role)·CDN·도메인·보안을 고치는 계획을 다른 팀과 함께 세운다.",
+   "why": "줄에 적힌 다섯 가지는 클라우드 비용과 사고가 가장 자주 새는 곳입니다. {추론} 쿠팡은 2025년 대규모 고객 정보 유출이 알려졌고, 인증 서명 키 관리가 미흡했다는 보도가 있었습니다(수사 결과 전 보도 기준).[19]",
+   "actually": {
+    "items": [
+     "**네트워크 사용** — 영역·리전을 넘는 데이터 전송료와 NAT 비용을 찾아 줄인다. {추론}",
+     "**Role 관리** — 사람과 서비스에 오래 가는 키 대신 임시 권한을 주고, 꼭 필요한 권한만 남긴다(최소 권한).[21]",
+     "**CDN·도메인** — 정적 파일·이미지를 사용자 가까운 곳에서 주고, 수많은 도메인·인증서의 주인과 만료를 관리한다. {추론}",
+     "**클라우드 보안** — 같은 회사 자동화 팀은 SPIFFE/SPIRE(서비스 신원)·OPA(정책 검사)·Falco(실행 중 이상 행위 탐지)를 적었다.[5]"
+    ]
+   },
+   "how_far": "\"Strategic partnership\"이라 직접 다 고치기보다 **보안·네트워크 팀과 고칠 순서를 합의하고, 플랫폼 기본값을 안전하게 바꿔** 모든 팀이 자동으로 따라오게 하는 쪽입니다. {추론}",
+   "refs": [
+    5,
+    19,
+    21
+   ],
+   "study": [
+    "iam-best",
+    "book-http"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Analyze complex distributed production deployments and recommend ways to optimize performance and/or automate processes by managing continuous integration servers, utilizing monitoring and testing tools",
+   "short": "운영 중인 분산 시스템을 모니터링·시험 도구로 재서 어디가 느린지 찾고, CI 서버까지 손봐 반복 작업을 자동화한다.",
+   "why": "쿠팡 ML 플랫폼은 모델을 내보낼 때 **검증 시험 → 카나리(일부에만 먼저) → 점진 배포** 순서를 거치고, 멈춘 작업·실패한 실행에 알림을 겁니다.[4] 이런 관문이 배포 파이프라인에 들어가 있어야 하루 수백 번 배포해도 안전합니다. {추론}",
+   "actually": {
+    "items": [
+     "**재기** — 지표(Prometheus)·대시보드(Grafana)·분산 추적으로 요청 하나가 어느 서비스에서 시간을 썼는지 본다.[5]",
+     "**CI 서버 관리** — 빌드 대기열이 길면 개발자 전원이 기다린다. 빌드 장비를 자동으로 늘리고 캐시를 둔다. {추론}",
+     "**시험 도구** — 부하 시험으로 한계를 미리 재고, 배포 전 자동 시험을 관문으로 둔다.[4]"
+    ]
+   },
+   "refs": [
+    4,
+    5
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Identify opportunities to make disruptive improvements in cloud infrastructure usage, operations and services with high degree of systematic automation",
+   "short": "조금 아끼는 수준이 아니라 판을 바꾸는 개선(예: 장비 세대 교체·스팟 활용)을 찾아 자동화로 한꺼번에 해낸다.",
+   "why": "쿠팡 비용 글의 큰 성과들이 이런 종류입니다.[3]",
+   "actually": {
+    "items": [
+     "**EMR 인스턴스 플릿** — 데이터 처리 클러스터가 싼 스팟 장비를 더 잘 쓰게 바꿔 EMR 비용을 25% 줄였다.[3]",
+     "**장비 세대 맞추기** — 사내 제품군을 AMD 장비로 옮겨 가격 대비 성능 약 20% 개선.[3]",
+     "**자동으로 한꺼번에** — 볼륨 500~1,000개를 병렬로 옮겼다. 손으로 하나씩이면 몇 달 걸릴 일이다.[3] {추론}",
+     "**비운영 환경 자동 켜고 끄기** — 비운영 비용 25% 감소.[3]"
+    ]
+   },
+   "refs": [
+    3
+   ],
+   "study": [
+    "coupang-finops"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Possess expert knowledge in performance (sub millisecond latencies), scalability, availability (99.999% uptime), enterprise architecture best practices",
+   "short": "1밀리초도 안 되는 응답, 10배 규모, 1년 5분 멈춤 — 세 가지를 동시에 맞추는 설계를 알아야 해서.",
+   "why": "공고 개요는 신뢰성·가용성·성능·효율을 **10배 규모**에서 맞추는 것을 이 자리의 목표로 적었습니다.[1] 요청이 서비스 여러 개를 거치면 가장 느린 한두 개가 전체를 느리게 만듭니다 — Google 은 이를 '꼬리 지연'이라 부르고 큰 시스템일수록 커진다고 설명했습니다.[17]",
+   "actually": {
+    "items": [
+     "**평균이 아니라 백분위로** — 요청 100개 중 가장 느린 1개(p99)를 본다. 평균은 꼬리를 숨긴다.[11]",
+     "**밀리초 밑** — 같은 가용 영역 안 통신, 메모리 캐시, 연결 재사용, 직렬화 비용 줄이기가 필요하다. {추론}",
+     "**꼬리 줄이기** — 느린 요청을 다른 서버에 한 번 더 보내 먼저 온 답을 쓰는 '헤지 요청' 같은 기법.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균은 괜찮은데 p99 는 30밀리초",
+     "body": "요청 10만 건 중 2% 만 캐시를 놓쳐 느린 경우입니다. 중앙값은 0.4ms 지만 p99 는 약 30ms 입니다(가상 데이터, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "import random\nrandom.seed(7)\nlat = [random.gauss(0.4, 0.05) if random.random() > 0.02 else random.gauss(30, 5) for _ in range(100_000)]\nlat.sort()\ndef p(q): return lat[int(len(lat) * q) - 1]\nprint(f\"평균 {sum(lat)/len(lat):.2f}ms  p50 {p(0.50):.2f}ms  p99 {p(0.99):.2f}ms  p99.9 {p(0.999):.2f}ms\")\n# 평균 0.98ms  p50 0.40ms  p99 29.72ms  p99.9 38.10ms"
+    }
+   ],
+   "how_far": "'expert'라서 면접에서 숫자로 말해야 합니다 — 내가 맡았던 시스템의 p99 가 얼마였고, 무엇을 바꿔 얼마로 줄였는지. {추론}",
+   "refs": [
+    1,
+    11,
+    17
+   ],
+   "study": [
+    "tail-at-scale",
+    "sre-book",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Exert technical influence over multiple teams, increasing their productivity and effectiveness by sharing your deep knowledge and experience",
+   "short": "지시할 권한 없이 설계 리뷰·문서·표준 도구로 여러 팀의 생산성을 끌어올린다 — Staff 이상의 본업.",
+   "why": "Senior Staff 는 관리자가 아니라 기술 트랙의 높은 자리입니다. 같은 Cloud Platform 팀 공고도 로드맵을 이끌고 엔지니어를 멘토링하는 일을 적었습니다.[6]",
+   "actually": {
+    "items": [
+     "여러 팀이 쓰는 표준(Terraform 모듈·배포 틀)을 만들어 '잘하는 법'을 기본값으로 만든다.[5]",
+     "설계 리뷰에서 위험을 먼저 짚고, 결정과 이유를 문서로 남긴다.[1]",
+     "사고 뒤 회고를 이끌어 같은 장애가 다른 팀에서 반복되지 않게 한다.[6]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    6
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Strong problem-solving skills, analytical capabilities, and attention to details",
+   "short": "인프라는 설정 한 글자(포트·권한·CIDR)가 전체 장애가 되어서 — 큰 그림과 꼼꼼함을 같이 요구한다.",
+   "why": "위 드리프트 예처럼 보안 그룹에 포트 하나가 열리거나 서버 종류 하나가 바뀌는 것이 사고·비용의 시작입니다. 그래서 바뀐 것을 기계가 찾게 하는 장치가 함께 필요합니다.[13] {추론}",
+   "refs": [
+    13
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Provide a roadmap and vision for scalable and robust growth for cloud infrastructure and platform services",
+   "short": "셋째 줄과 같은 내용이다 — 회사가 커지는 속도에 맞춰 플랫폼을 언제 무엇으로 바꿀지 계획한다.",
+   "why": "공고 원문에 같은 문장이 99.999% 부분만 빼고 한 번 더 있습니다.[1] 풀이는 셋째 줄을 봅니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Collaborate with customers, stakeholders and lead engineers on key mission-critical projects",
+   "short": "여기서 '고객'은 플랫폼을 쓰는 사내 개발팀이다 — 그들의 불편을 듣고 큰 프로젝트를 같이 이끈다.",
+   "why": "공고 개요는 이 자리가 **고객의 불편, 시스템 도메인, 지금 플랫폼의 한계**를 먼저 깊이 이해한 뒤 엔지니어링 팀·리더와 새 구조를 함께 설계한다고 적었습니다.[1] 팀도 여러 나라에서 일하는 글로벌 팀입니다.[1]",
+   "how_far": "시애틀·서울·벵갈루루 등 시간대가 다른 동료와 일하므로 **글로 설계를 설명하고 합의를 끌어내는** 능력이 회의보다 더 쓰입니다. 우대 줄에 소통이 두 번 나옵니다.[1] {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bachelor’s degree and 7+ years of total experience",
+   "short": "필수는 학사 + 경력 7년 이상. 다만 우대 줄들은 10~15년을 말해서 실제 기대는 더 높다.",
+   "why": "필수 요건은 문턱만 적은 것입니다. 우대 줄에는 클라우드 플랫폼 15년 이상, IaC·분산 시스템 10년 이상이 나옵니다.[1] 같은 Cloud Platform 팀의 Principal 서울 공고는 15년 이상(석사 이상이면 8년)을 필수로 적었습니다.[6]",
+   "how_far": "7년은 지원 가능한 최소선입니다. 직급이 Senior Staff 라 연봉 범위도 그 높이에 맞춰져 있으니, 7~10년이면 같은 회사의 Staff 자리와 비교해 보는 것이 맞습니다. {추론}",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Ability to solve problems through creative thinking and partnerships with other teams",
+   "short": "인프라 문제는 대개 다른 팀의 서비스·습관과 얽혀 있어 혼자 못 푼다 — 같이 푸는 방법을 찾는 능력.",
+   "why": "쿠팡의 비용 줄이기는 재무와 엔지니어링 여러 팀이 몇 분기에 걸쳐 같이 세운 계획에서 나왔습니다.[3]",
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Ability to attain challenging targets through goal-setting and personal drive",
+   "short": "'다섯 개의 9'·'10배 규모'처럼 높은 목표를 스스로 쪼개 기한 안에 해내는 능력.",
+   "why": "이 공고의 목표 숫자 자체가 높습니다(99.999%, 10배).[1] 쿠팡 비용 팀은 '예산 지키기·절감을 목표로·믿을 수 있고 계속 가능한 통제'라는 원칙을 세우고 그 아래 숫자 목표를 따라갔습니다.[3]",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Bachelor's degree and/or Master's degree in Computer Science or equivalent with 15+ Years of strong hands-on experience in cloud platform engineering",
+   "short": "클라우드 플랫폼을 15년 넘게 직접 만들어 온 사람이 가장 맞다 — 사실상 이 자리의 기대 연차.",
+   "why": "AWS 가 2006년 무렵 서비스를 시작했으니 15년이면 클라우드 초창기부터의 경력입니다. {추론} 같은 팀 Principal 공고의 필수 연차와 같습니다.[6]",
+   "refs": [
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "10+ years of hands-on experience on system engineering, Cloud DevOps and Cloud SRE",
+   "short": "서버·OS 를 다루는 시스템 엔지니어링부터 SRE(신뢰성 엔지니어링)까지 10년 넘게 직접 해 본 경험.",
+   "why": "SRE 는 Google 이 운영을 소프트웨어 문제로 다루며 만든 방식입니다 — 목표(SLO)와 오류 예산으로 안정성과 속도를 맞춥니다.[11][12] 99.999% 목표를 가진 이 자리의 일하는 틀입니다.[1]",
+   "refs": [
+    1,
+    11,
+    12
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "7+ years of hands-on experience leading system design, architecture leveraging AWS or Azure services",
+   "short": "AWS·Azure 위 시스템 설계를 7년 넘게 '이끈' 경험 — 참여가 아니라 결정한 사람.",
+   "why": "쿠팡의 주 클라우드는 AWS 입니다.[2][3] 설계를 이끈다는 것은 여러 안을 비교하고 하나를 골라 책임지는 일입니다.[1]",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "aws-wa-rel",
+    "aws-adv-arch"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "10+ years of demonstrable hands-on experience building and operating infrastructure as code (IaC). Comfortable with many flavors of Linux",
+   "short": "IaC 로 인프라를 만들고 운영한 10년을 '보여 줄 수 있게'(코드·사례로), 그리고 여러 리눅스 배포판에 익숙하게.",
+   "why": "'demonstrable'은 말이 아니라 결과물로 보이라는 뜻입니다. 이 자리의 셀프서비스·드리프트 복구가 모두 IaC 위에 있습니다.[5] 사내 데이터센터와 클라우드가 섞이면 배포판·커널도 여러 가지가 됩니다.[4] {추론}",
+   "how_far": "공개 저장소의 Terraform 모듈, 사내에서 도입을 이끈 IaC 표준, 상태 파일 분리·잠금 같은 운영 경험을 이야기로 준비합니다. {추론}",
+   "refs": [
+    4,
+    5
+   ],
+   "study": [
+    "tf-up",
+    "tf-drift"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "10+ year’s of hands-on experience in building high-performance, highly-available and scalable distributed systems in the cloud",
+   "short": "빠르고, 안 멈추고, 커지는 분산 시스템을 클라우드에서 10년 넘게 직접 만든 경험.",
+   "why": "같은 Cloud Platform 팀 공고는 Kafka·Cassandra·MongoDB 같은 분산 시스템 경험을 우대했습니다.[6] 쿠팡은 2013년 무렵부터 한 덩어리 서버를 작은 서비스들로 나눠 왔습니다.[7]",
+   "refs": [
+    6,
+    7
+   ],
+   "study": [
+    "ddia",
+    "tail-at-scale"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "7+ year’s of hands-on experience in building and managing high-performance, highly-available and scalable Hybrid Cloud cloud environments",
+   "short": "사내 데이터센터와 공용 클라우드를 한 환경처럼 묶어 운영한 경험이 7년 넘게.",
+   "why": "쿠팡 ML 플랫폼이 사내 GPU 클러스터와 AWS 를 함께 씁니다.[4] AWS 는 하이브리드 연결을 전용선·VPN·Transit Gateway 조합으로 설명합니다.[18]",
+   "refs": [
+    4,
+    18
+   ],
+   "study": [
+    "aws-hybrid"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Excellent cross-group collaboration, outstanding verbal and written communication",
+   "short": "여러 조직과 일하고, 말과 글 모두로 설계를 설득하는 능력.",
+   "why": "팀이 여러 나라에 흩어진 글로벌 팀이라 설계 문서·리뷰 글이 주된 소통 수단입니다.[1][6] {추론}",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS Certification Advance Architecting, Developing on AWS",
+   "short": "AWS 공식 교육 'Advanced Architecting on AWS'·'Developing on AWS' 수준 — 자격증이면 설계·개발 쪽.",
+   "why": "공고가 적은 두 이름은 AWS 공식 강의 과정 이름입니다. Advanced Architecting on AWS 는 3일짜리 고급 과정으로 하이브리드 연결·Transit Gateway·컨테이너·CI/CD·보안을 다룹니다.[14]",
+   "how_far": "자격증 자체보다 그 범위를 아는지가 중요합니다. 자격증으로 보이려면 Solutions Architect – Professional 이 가까운 짝입니다 — 강의 안내가 그 시험의 준비 과정으로 소개됩니다.[14] {추론}",
+   "refs": [
+    14
+   ],
+   "study": [
+    "aws-adv-arch"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Strong hands-on experience on automating App stack deployments through IaC using Terraform, Python or Go",
+   "short": "애플리케이션을 올리는 데 필요한 인프라 전부를 Terraform·Python·Go 코드로 자동 배포해 본 경험.",
+   "why": "쿠버네티스 컨트롤러·오퍼레이터는 주로 Go 로 짭니다. 같은 회사 자동화 팀이 ACK 컨트롤러와 오퍼레이터를 만든다고 적었습니다.[5] {추론}",
+   "refs": [
+    5
+   ],
+   "study": [
+    "tf-up",
+    "k8s-up"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "10+ years of hands-on experience as a Cloud Infra Engineering",
+   "short": "클라우드 인프라 엔지니어로 10년 넘게 — 위 줄들을 한 줄로 다시 말한 것.",
+   "why": "우대 줄 대부분이 같은 높이(10년 이상)를 말합니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Team leading experience",
+   "short": "팀을 이끌어 본 경험 — 관리자가 아니어도 프로젝트 리드로 여러 사람을 이끈 경험이면 된다.",
+   "why": "같은 Cloud Platform 팀 Principal 공고는 '기술 리드 8년 이상'을 필수로 적었습니다.[6] 이 자리는 우대로만 적었습니다.[1]",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Excellent cross-group collaboration and communication skills",
+   "short": "위의 소통 줄과 같은 내용 — 공고가 두 번 적을 만큼 무게를 둔다.",
+   "why": "공고 원문에 비슷한 문장이 두 번 있습니다.[1] 풀이는 위 'cross-group collaboration' 줄을 봅니다.",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자(가용성·p99·비용)로 말하는 게 편한 인프라 베테랑",
+   "도구를 고르는 사람이 아니라 표준을 만들어 여러 팀이 쓰게 하고 싶은 사람[5]",
+   "비용 절감을 엔지니어링 문제로 즐기는 사람 — 쿠팡이 실제로 크게 해 온 일[3]",
+   "글로벌 팀에서 글로 설계를 설득하는 데 익숙한 사람[1]"
+  ],
+  "hard": [
+   "우대 연차가 10~15년이라 7년 차는 서류에서 불리할 수 있다[1]",
+   "99.999% 목표라 장애 책임이 무겁다 {추론}",
+   "시애틀 근무 — 미국 취업 자격(비자)이 필요하다. 공고에 비자 지원 언급은 없다[1]",
+   "시간대가 다른 서울·벵갈루루 동료와 회의가 이른 아침·늦은 밤에 걸릴 수 있다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "서비스 다섯 개를 거치는 요청을 99.999% 로 만들려면 각 서비스는 얼마여야 하나요? 그게 안 되면요?",
+   "a": "직렬·병렬 가용성 계산과 겹으로 두기.[10]"
+  },
+  {
+   "q": "30일 오류 예산이 26초인데 사람이 대응할 수 있나요? 그럼 무엇을 자동화하나요?",
+   "a": "다섯 개의 9 목표가 요구하는 자동 장애 조치·자동 되돌리기.[10][12]"
+  },
+  {
+   "q": "개발팀이 YAML 하나로 DB 와 로드밸런서를 받게 하려면 무엇을 만들고, 무엇은 막겠어요?",
+   "a": "같은 회사 자동화 팀이 실제로 만드는 셀프서비스 플랫폼과 가드레일.[5]"
+  },
+  {
+   "q": "평균 응답은 1ms 인데 사용자가 느리다고 합니다. 어디부터 보나요?",
+   "a": "백분위와 꼬리 지연.[11][17]"
+  },
+  {
+   "q": "운영 중인 EBS 볼륨 1,000개의 종류를 영향 없이 바꾸려면 어떻게 계획하나요?",
+   "a": "쿠팡이 GP3 로 실제로 한 일 — 개발 계정 시험 후 병렬 이전.[3]"
+  },
+  {
+   "q": "누가 콘솔에서 보안 그룹을 손으로 열었습니다. 어떻게 알고, 어떻게 막나요?",
+   "a": "드리프트 감지·복구와 최소 권한.[5][13][21]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior Staff Backend Engineer - Cloud Infrastructure",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7438944",
+   "kind": "posting",
+   "note": "개요(10배 규모·장비·네트워크·배포 자동화·글로벌 팀)·업무·요건·우대·연봉 범위·복리후생, 근무지 Seattle"
+  },
+  {
+   "n": 2,
+   "title": "바이라인네트워크 · 쿠팡, IT인프라 전체를 AWS 클라우드로 이전했다",
+   "url": "https://byline.network/2017/08/10-6",
+   "kind": "news",
+   "date": "2017-08-10",
+   "note": "인프라 100% AWS 이전, 이전 약 3개월·준비 포함 약 1년, 2015년 초 완성한 MSA 덕에 무중단 이전, 행사 때 장애 경험, 하루 약 100번 배포, 이전 자동화 도구 자체 개발"
+  },
+  {
+   "n": 3,
+   "title": "Coupang Engineering · Cloud expenditure optimization for cost efficiency",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/cloud-expenditure-optimization-for-cost-efficiency/",
+   "kind": "company",
+   "date": "2024-03-21",
+   "note": "Luke Travers·Amit Arora — 중앙 팀(클라우드 인프라 엔지니어 + TPM), 비운영 25%, AMD 약 20%, EMR 25%, GP3 500~1,000개 병렬, S3 50PB 넘게 Intelligent-Tiering, 2021년 수백만 달러"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+   "kind": "company",
+   "date": "2023-09-08",
+   "note": "사내 GPU·저장 클러스터 + AWS 하이브리드, 쿠버네티스 배치 스케줄러(전부 아니면 무), Seldon 자동 확장 서비스, 검증 → 카나리 → 점진 배포, 알림"
+  },
+  {
+   "n": 5,
+   "title": "Built In · Coupang Staff Cloud Infrastructure Engineer (Cloud Infrastructure Automation)",
+   "url": "https://builtin.com/job/staff-cloud-infrastructure-engineer/7918736",
+   "kind": "posting",
+   "note": "같은 회사 다른 자리(벵갈루루) — ACK 컨트롤러, 멀티 EKS·리전 서비스 메시, YAML 셀프서비스 플랫폼, 드리프트 감지·복구, GitOps, SPIFFE/SPIRE·OPA·Falco. 2026-03-25 내려간 공고의 남은 본문"
+  },
+  {
+   "n": 6,
+   "title": "Built In · Coupang Principal Cloud Infra Engineer (Cloud Platform)",
+   "url": "https://builtin.com/job/principal-cloud-infra-engineer-cloud-platform/3854256",
+   "kind": "posting",
+   "note": "같은 Cloud Platform 팀 서울 자리 — 글로벌 한 팀, 10배 설계·장비·네트워크 선택, 핵심 부품 직접 개발, 근본 원인 해결, 15년 이상(석사 8년)·기술 리드 8년, Kafka·Cassandra·MongoDB 우대. 2026-03-25 내려간 공고의 남은 본문"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Engineering · 행복을 찾기 위한 우리의 여정 (How Coupang built a microservice architecture)",
+   "url": "https://medium.com/coupang-tech/행복을-찾기-위한-우리의-여정-94678fe9eb61",
+   "kind": "company",
+   "note": "Vitamin 프로젝트 — 2013-10 MSA 전환 결정. 본문은 자동 접속이 막혀 검색 요약으로 확인"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Careers · Seattle",
+   "url": "https://www.coupang.jobs/en/locations/seattle/",
+   "kind": "company",
+   "note": "720 Olive Way, Suite 600, Seattle, WA 98101 — 파이크 플레이스 마켓 근처, 한 블록 안 버스 정류장, 건물 아래 주차장"
+  },
+  {
+   "n": 9,
+   "title": "Coupang Careers · Coupang Global Office Tour: The U.S.",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/coupang-global-office-tour-the-us/",
+   "kind": "company",
+   "date": "2022-12-28",
+   "note": "마운틴뷰(2014~)·리버사이드·시애틀(2015 WeWork, 2018 자체 사무실, 글로벌 본사 역할) — 각 수백 명"
+  },
+  {
+   "n": 10,
+   "title": "AWS Well-Architected · Reliability Pillar — Availability",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/availability.html",
+   "kind": "reference",
+   "note": "가용성 표(99.95% 온라인 상거래 4시간 22분, 99.999% ATM·통신 5분), 직렬은 곱·병렬은 1−실패율의 곱, MTBF/(MTBF+MTTR). 문서는 옛 백서로 표시돼 있음"
+  },
+  {
+   "n": 11,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA, 평균 대신 백분위"
+  },
+  {
+   "n": 12,
+   "title": "Google SRE Book · Embracing Risk",
+   "url": "https://sre.google/sre-book/embracing-risk/",
+   "kind": "reference",
+   "note": "오류 예산 — 예산이 남으면 배포, 다 쓰면 안정화"
+  },
+  {
+   "n": 13,
+   "title": "HashiCorp · Manage resource drift (Terraform)",
+   "url": "https://developer.hashicorp.com/terraform/tutorials/state/resource-drift",
+   "kind": "reference",
+   "note": "plan -refresh-only 로 코드 밖 변경 찾기"
+  },
+  {
+   "n": 14,
+   "title": "AWS Training · Advanced Architecting on AWS",
+   "url": "https://aws.amazon.com/training/classroom/advanced-architecting-aws",
+   "kind": "reference",
+   "note": "3일 고급 강의(교실·온라인) — 하이브리드 연결·Transit Gateway·컨테이너·CI/CD·보안, 선수 조건 SA Associate 또는 AWS 운영 1년"
+  },
+  {
+   "n": 15,
+   "title": "Washington L&I · Equal Pay and Opportunities Act",
+   "url": "https://www.lni.wa.gov/workers-rights/wages/equal-pay-opportunities-act/",
+   "kind": "reference",
+   "note": "직원 15명 이상 고용주는 공고에 급여 범위와 복리후생 개요를 적어야 한다(2023-01-01 시행)"
+  },
+  {
+   "n": 16,
+   "title": "Kubernetes 문서 · Horizontal Pod Autoscaling",
+   "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Dean · Barroso · The Tail at Scale (CACM)",
+   "url": "https://cacm.acm.org/research/the-tail-at-scale/",
+   "kind": "reference",
+   "date": "2013-02",
+   "note": "Google — 규모가 크면 드문 느린 응답이 전체를 좌우, 헤지 요청 등"
+  },
+  {
+   "n": 18,
+   "title": "AWS 백서 · Hybrid Connectivity",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/hybrid-connectivity/hybrid-connectivity.html",
+   "kind": "reference",
+   "note": "Direct Connect·Site-to-Site VPN·Transit Gateway 조합"
+  },
+  {
+   "n": 19,
+   "title": "바이라인네트워크 · 3370만건 고객정보 털린 쿠팡, 뭐가 문제였을까?",
+   "url": "https://byline.network/2025/12/1-1389/",
+   "kind": "news",
+   "date": "2025-12",
+   "note": "인증 서명 키 관리 미흡 보도 — 수사 결과 전 보도 기준"
+  },
+  {
+   "n": 20,
+   "title": "Coupang Careers · Technology 팀",
+   "url": "https://www.coupang.jobs/en/teams/technology/",
+   "kind": "company",
+   "note": "Infra Engineering 분야, 부서 필터에 Cloud Platform"
+  },
+  {
+   "n": 21,
+   "title": "AWS IAM · Security best practices",
+   "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+   "kind": "reference",
+   "note": "임시 자격 증명, 최소 권한"
+  },
+  {
+   "n": 22,
+   "title": "DORA · DORA's software delivery metrics: the four keys",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference",
+   "note": "배포 빈도·변경 리드 타임·변경 실패율·복구 시간"
+  }
+ ],
+ "caveat": "쿠팡 Cloud Platform 팀이 직접 내부 구조를 설명한 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음 — AWS 서밋·re:Invent 에서 인프라 발표를 찾지 못했고, Medium 의 쿠팡 기술 블로그 목록은 자동 접속이 막혔습니다). 회사 근거는 2017년 AWS 이전 보도, 쿠팡 기술 블로그의 비용 최적화·ML 플랫폼 글, 같은 회사 다른 인프라 공고 두 건(2026-03 내려간 공고의 남은 본문)입니다. 99.999%·꼬리 지연·드리프트는 AWS·Google·HashiCorp 공개 문서로 '보통 이런 것'을 보였습니다. 이 팀이 지금 어떤 도구를 쓰는지는 공고에 적힌 이름 말고는 확인하지 못했습니다.",
+ "resources": [
+  {
+   "id": "coupang-finops",
+   "title": "Cloud expenditure optimization for cost efficiency",
+   "by": "Luke Travers · Amit Arora · Coupang Engineering · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/cloud-expenditure-optimization-for-cost-efficiency/",
+   "why": "쿠팡 클라우드 인프라 엔지니어들이 직접 쓴 글. '최적화된 구조'·'판을 바꾸는 개선' 줄이 실제로 무엇이었는지(장비 세대·스팟·GP3·S3 등급) 숫자로 본다."
+  },
+  {
+   "id": "book-docker",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "컨테이너 이미지·네트워크·볼륨을 실제 명령과 출력으로. 쿠버네티스·Docker 줄의 바닥."
+  },
+  {
+   "id": "book-k8s",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 출력과 Pending·CrashLoopBackOff 읽기 — 쿠버네티스 줄과 셀프서비스 플랫폼을 이해하는 첫걸음."
+  },
+  {
+   "id": "book-http",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "캐시·헤더·HTTPS 가 실제로 오가는 모습 — CDN·도메인 줄을 읽기 전에."
+  },
+  {
+   "id": "k8s-up",
+   "title": "Kubernetes: Up and Running (3판)",
+   "by": "Brendan Burns 외 · O'Reilly",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/",
+   "why": "쿠버네티스를 만든 사람들이 쓴 실무서. 배포·서비스·자동 확장·확장 API(CRD) — 셀프서비스·오퍼레이터 줄의 기초."
+  },
+  {
+   "id": "tf-up",
+   "title": "Terraform: Up and Running (3판)",
+   "by": "Yevgeniy Brikman · O'Reilly",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/terraform-up-and/9781098116736/",
+   "why": "상태 관리·모듈·여러 환경·팀 단위 워크플로. IaC 를 10년 운영한다는 게 무슨 뜻인지 — IaC 줄들."
+  },
+  {
+   "id": "tf-drift",
+   "title": "Manage resource drift",
+   "by": "HashiCorp 공식 튜토리얼",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.hashicorp.com/terraform/tutorials/state/resource-drift",
+   "why": "코드 밖에서 바뀐 자원을 찾고 다시 맞추는 법을 직접 따라 해 본다 — 셀프서비스·드리프트 줄."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly · 2016 (온라인 무료)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/books/",
+   "why": "SLO·오류 예산·모니터링·장애 대응의 원전. 99.999% 로드맵과 '100% 책임' 줄을 숫자로 다루는 틀."
+  },
+  {
+   "id": "aws-wa-rel",
+   "title": "AWS Well-Architected · Reliability Pillar",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "why": "가용성 계산, 가용 영역·리전 이중화, 장애 격리 — AWS 위 설계를 이끄는 줄들의 공통 언어."
+  },
+  {
+   "id": "aws-adv-arch",
+   "title": "Advanced Architecting on AWS",
+   "by": "AWS Training · 3일 강의",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://aws.amazon.com/training/classroom/advanced-architecting-aws",
+   "why": "공고가 이름으로 적은 과정. 하이브리드 연결·Transit Gateway·멀티 계정·CI/CD 를 한 번에."
+  },
+  {
+   "id": "aws-hybrid",
+   "title": "Hybrid Connectivity (AWS 백서)",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/hybrid-connectivity/hybrid-connectivity.html",
+   "why": "사내 데이터센터와 AWS 를 잇는 방법(전용선·VPN·Transit Gateway)과 고르는 기준 — 하이브리드 클라우드 줄."
+  },
+  {
+   "id": "iam-best",
+   "title": "Security best practices in IAM",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+   "why": "임시 자격 증명·최소 권한·권한 점검 — 'role management·cloud infra security' 줄."
+  },
+  {
+   "id": "tail-at-scale",
+   "title": "The Tail at Scale",
+   "by": "Jeffrey Dean · Luiz André Barroso · CACM · 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://cacm.acm.org/research/the-tail-at-scale/",
+   "why": "큰 분산 시스템에서 드문 느린 응답이 왜 전체를 좌우하는지, 어떻게 줄이는지 — 밀리초 밑 성능 줄."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "복제·분할·일관성·장애 — 분산 시스템 우대 줄과 '플랫폼·API 의 데이터를 보고 추천' 줄의 바탕."
+  },
+  {
+   "id": "staff-path",
+   "title": "The Staff Engineer's Path",
+   "by": "Tanya Reilly · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "why": "권한 없이 여러 팀에 영향을 주는 법, 기술 전략·큰 프로젝트 이끌기 — '여러 팀에 기술 영향력'·소통 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "컨테이너와 쿠버네티스 바닥 다지기",
+   "time": "2~3주",
+   "goal": "컨테이너를 만들어 쿠버네티스에 올리고, 고장 난 파드의 상태를 읽어 고칠 수 있다.",
+   "resources": [
+    "book-docker",
+    "book-k8s",
+    "k8s-up"
+   ],
+   "task": "작은 웹 API 를 이미지로 만들어 로컬 클러스터(kind 등)에 3개로 띄우고, 부하를 걸어 HPA 로 늘어나는 것과 일부러 잘못 넣은 설정으로 CrashLoopBackOff 가 나는 것을 둘 다 기록한다."
+  },
+  {
+   "title": "인프라를 코드로",
+   "time": "2~4주",
+   "goal": "Terraform 모듈로 네트워크·서버 묶음·로드밸런서를 만들고, 바뀐 것을 plan 으로 리뷰받게 한다.",
+   "resources": [
+    "tf-up",
+    "tf-drift"
+   ],
+   "task": "VPC + 오토스케일링 그룹 + 로드밸런서 모듈을 만들어 개발·운영 두 환경에 같은 모듈로 올린다. 콘솔에서 보안 그룹을 일부러 바꾼 뒤 refresh-only 로 찾아내고 되돌린다(끝나면 바로 지워 비용을 막는다)."
+  },
+  {
+   "title": "가용성과 지연을 숫자로",
+   "time": "1~2주",
+   "goal": "서비스 목표(SLO)를 정하고 오류 예산·p99 를 계산해 설계 결정을 숫자로 설명할 수 있다.",
+   "resources": [
+    "sre-book",
+    "aws-wa-rel",
+    "tail-at-scale"
+   ],
+   "task": "1단계 API 에 지연 지표를 붙여 p50·p99·p99.9 를 뽑고, 의존 서비스 3개를 가정해 직렬·병렬 가용성을 계산한 한 쪽짜리 설계 메모(목표·예산·겹으로 둘 곳)를 쓴다."
+  },
+  {
+   "title": "셀프서비스 플랫폼 맛보기",
+   "time": "3~4주",
+   "goal": "개발자가 설정 파일 하나로 인프라를 받는 흐름을 만들고, 막을 것(가드레일)을 정책으로 건다.",
+   "resources": [
+    "k8s-up",
+    "iam-best",
+    "coupang-finops"
+   ],
+   "task": "Git 저장소에 'service.yaml'(이름·크기·DB 필요 여부)을 올리면 CI 가 Terraform·쿠버네티스 설정을 만들어 배포하게 한다. 너무 큰 장비·공개 포트를 고르면 CI 가 막게 하고, 자원마다 팀 태그를 붙여 비용을 팀별로 뽑아 본다."
+  },
+  {
+   "title": "하이브리드·멀티 리전과 리더십 (경력자)",
+   "time": "계속",
+   "goal": "사내와 클라우드, 여러 리전을 잇는 설계를 비교하고 여러 팀을 설득하는 설계 문서를 쓴다.",
+   "resources": [
+    "aws-hybrid",
+    "aws-adv-arch",
+    "ddia",
+    "staff-path"
+   ],
+   "task": "가상의 '사내 GPU 클러스터 + AWS 두 리전' 구성을 놓고 전용선·VPN·Transit Gateway 안을 비교한 설계 문서(장애 시 우회, 비용, 지연)를 쓰고, 반대 의견을 예상해 답을 붙인다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 **기본급 연 17만 4천 ~ 29만 9천 달러**와 기본급의 0~20% 연간 보너스가 적혀 있다 — 미국 근무 기준이고, 기본급은 전체 보상의 한 부분이다",
+  "rows": [
+   {
+    "label": "공고 표기 기본급 (하한)",
+    "value": "연 $174,000",
+    "basis": "공고 · 2026년",
+    "note": "미국 근무지의 생활비를 반영한 범위이고 지역·지식·경력에 따라 달라진다고 적었다 [1]"
+   },
+   {
+    "label": "공고 표기 기본급 (상한)",
+    "value": "연 $299,000",
+    "basis": "공고 · 2026년",
+    "note": "같은 공고의 범위 상한 [1]"
+   },
+   {
+    "label": "연간 보너스",
+    "value": "기본급의 0~20%",
+    "basis": "공고 · 2026년",
+    "note": "공고의 Pay & Benefits 칸 [1]. 주식 보상은 공고에 적혀 있지 않다"
+   }
+  ],
+  "how": "워싱턴주는 직원 15명 이상 회사가 공고에 급여 범위와 복리후생 개요를 적게 한다(2023년부터) — 그래서 한국 공고와 달리 숫자가 있다 [15]. 범위가 넓은 것은 같은 직급 안에서도 경력·면접 결과로 자리를 정하기 때문으로 보인다 {추론}. 공고는 기본급이 '전체 보상의 한 부분'이라고 적었다 [1] — 보너스·그 밖의 보상은 제안 단계에서 확인한다. 한국 쿠팡(주)의 집계 평균과는 나라·기준이 달라 나란히 놓지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "보험",
+    "detail": "의료·치과·안과·생명보험, 상해 사망·장해(AD&D)"
+   },
+   {
+    "name": "의료비 계좌",
+    "detail": "FSA(유연 지출 계좌)·HSA(건강 저축 계좌)"
+   },
+   {
+    "name": "장단기 장애 보장",
+    "detail": "Long-term/Short-term Disability"
+   },
+   {
+    "name": "직원 지원 프로그램",
+    "detail": "EAP(상담 등)"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "401K, 회사 매칭"
+   },
+   {
+    "name": "유급 휴가",
+    "detail": "근속에 따라 연 18~21일 PTO + 유급 공휴일 12일"
+   },
+   {
+    "name": "육아 휴직",
+    "detail": "최대 6주 유급"
+   },
+   {
+    "name": "출퇴근",
+    "detail": "세전 통근비 혜택"
+   },
+   {
+    "name": "전기차 충전",
+    "detail": "마운틴뷰(MTV) 사무실 무료 충전소"
+   }
+  ],
+  "note": "이 공고의 'General Description of All Benefits' 칸이다(2026년 공고, 미국 근무자 기준) [1]. 전기차 충전은 공고에 'MTV'로 적혀 있어 마운틴뷰 사무실 것으로 읽었다 [9] {추론}. 한국 쿠팡 공고의 복지(쇼핑 캐시백·식사 등)와는 다르다."
+ },
+ "location": {
+  "name": "쿠팡 시애틀 오피스",
+  "address": "720 Olive Way, Suite 600, Seattle, WA 98101, USA",
+  "postal": "98101",
+  "map_url": "https://map.naver.com/p/search/720%20Olive%20Way%20Seattle",
+  "near": "시애틀 도심 파이크 플레이스 마켓 근처, 한 블록 안에 버스 정류장 여러 곳 [8]",
+  "note": "공고 근무지는 'Seattle, USA'이고, 주소는 쿠팡 채용 사이트의 시애틀 안내다 [1][8]. 시애틀 사무실은 2015년 WeWork 에서 시작해 2018년 자체 사무실을 열었고 회사 소개 글은 이곳을 글로벌 본사로 소개했다(2022년 글) [9]."
+ }
+}
