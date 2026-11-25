@@ -1,0 +1,1120 @@
+{
+ "id": "musinsa-security-engineering-lead",
+ "company": "무신사",
+ "role": "보안기술팀장",
+ "team": "IT Security · 정보보안-기술(보안기술팀)",
+ "jobs": [
+  "ats-greeting:musinsa:245270"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사·29CM 서비스를 지키는 **보안기술팀**(침해 대응·취약점 진단·공급망 보안·보안 솔루션)을 이끌며 로드맵·예산·채용·사고 지휘·AI 자동화를 맡습니다.[1]",
+  "env": "AWS·쿠버네티스 위 서비스, 제로트러스트·WAAP 도입, 2025년 정보보호 투자 약 42억원.[8][10] 2026-08 29CM 주문 API 유출 사고 뒤이고 상장을 준비 중입니다.[7][8]",
+  "oneline": "보안 실무 10년 + 팀을 맡아 본 리더 자리. 사람·돈·조율이 절반이고, 사고 때는 기술 판단을 직접 합니다 {추론}."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "무신사 보안기술팀을 이끄는 팀장은 다음 업무를 맡습니다.",
+   "short": "담당 업무의 머리줄 — 아래 여덟 줄이 이 팀장이 맡는 일이라는 뜻.",
+   "why": "무신사 IT Security 조직은 '정보보안-기술'과 '정보보안-정책' 두 갈래이고, 이 자리는 그중 기술 쪽 팀을 맡습니다.[1] 2026-08 보도로는 보안 조직이 최고경영자 직속 'IT Security'로 바뀌었습니다.[7]",
+   "actually": {
+    "items": [
+     "방향·목표(로드맵) → 기술 결정 → 예산 → 채용 → 사람 관리 → 다른 조직 조율·경영진 보고 → 사고 지휘 → AI 자동화 순서로 이어진다.[1]",
+     "같은 갈래 공고로 보면 팀 안에 접근 제어·암호 키 관리[10], 웹 방화벽·봇 차단 같은 네트워크 보안[11], 사내 SaaS·단말 접근 통제(SASE·CASB)[12] 자리가 있다."
+    ]
+   },
+   "how_far": "제목 줄이라 따로 할 일은 없습니다.",
+   "refs": [
+    1,
+    7,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "manager-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사업 방향과 위협 환경을 바탕으로 팀의 비전·미션과 중장기 로드맵을 세우고, 연간·분기 목표로 구체화해 관리합니다.",
+   "short": "\"올해·이번 분기에 무엇을 막을 수 있게 되나\"를 정하고, 그 목표가 지켜지는지 매달 본다.",
+   "why": "무신사는 글로벌 확장을 위해 여러 서비스를 한 바탕에서 돌리는 OCMP(One Core Multi Platform)를 짓는 중이고[1], 2026-09 코스피 상장 예비심사를 신청했습니다.[8] 같은 시기인 2026-08 29CM 주문 조회 API로 개인정보가 빠져나간 사고가 있었습니다.[7][8] 사업이 커지는 방향과 실제로 당한 공격이 로드맵의 두 입력입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**현재 수준 재기** — NIST 사이버보안 프레임워크(CSF 2.0)의 여섯 기능(관리 체계·식별·보호·탐지·대응·복구)마다 지금 어디까지 되는지 점수를 매긴다.[16]",
+     "**위협 목록** — 우리 서비스에 실제로 들어온 공격(API 무단 조회·인증 우회·계정 대입)을 MITRE ATT&CK(공격 기법 사전) 기법으로 적어 빈칸을 찾는다.[30]",
+     "**목표로 쪼개기** — '주문 API 전부 인가 검사 자동 점검' 같은 분기 목표와, '외부 노출 치명 취약점 7일 안 조치율' 같은 숫자 지표.",
+     "**점검** — 분기마다 정보보호위원회(CISO가 위원장, CEO·CTO·CFO·CRO 참여, 분기 1회)에 진척을 올린다.[7]"
+    ]
+   },
+   "how_far": "회사 전체 보안 방침은 CISO와 정보보호위원회가 정합니다.[7] 팀장은 그 아래 **기술 팀의 1~3년 계획과 분기 목표**를 세우고 지표로 관리하는 데까지입니다 {추론}.",
+   "refs": [
+    1,
+    7,
+    8,
+    16,
+    30
+   ],
+   "study": [
+    "nist-csf",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CERT, 취약점 진단, 공급망 보안, 보안 솔루션 운영 등 팀 전 영역의 기술 방향을 정하고 주요 아키텍처와 솔루션 도입을 결정합니다.",
+   "short": "침해 대응·취약점 진단·외부 코드 관리·보안 장비 운영의 기술을 고르고 최종 결정하는 일.",
+   "why": "무신사는 2025년 접속 때마다 권한을 다시 확인하는 제로트러스트와 클라우드 웹·API 방어(WAAP)를 도입했다고 보도됐습니다.[8] 같은 조직 공고에는 AWS WAF·Cloudflare WAAP·봇 관리[11], SASE·CASB·DLP[12], IAM·KMS·Vault[10]가 나옵니다.",
+   "actually": {
+    "items": [
+     "**CERT(침해 대응 팀)** — 보안 이벤트 감시, 사고 대응. 계열사 무신사페이먼츠 공고에도 같은 업무가 있다.[13]",
+     "**취약점 진단** — 서비스·인프라를 공격자처럼 점검(모의해킹 포함)하고 고칠 때까지 추적.[13]",
+     "**공급망 보안** — 우리가 가져다 쓰는 오픈소스·빌드 도구·외부 업체가 뚫리지 않게. 미국 표준 SSDF[20]와 빌드 이력 증명 단계(SLSA)[21]가 기준이다.",
+     "**보안 솔루션** — WAF·WAAP·EDR·DLP·SIEM 같은 제품을 살지, 직접 만들지, 클라우드 기본 기능으로 할지 정한다.[11][12][13]",
+     "**아키텍처** — 예: 임시 자격증명만 쓰게 하는 접근 구조(Zero-Credential Access)를 같은 팀 공고가 목표로 적었다.[10]"
+    ]
+   },
+   "how_far": "각 영역의 세부 설계는 영역 담당 엔지니어가 합니다. 팀장은 **여러 안을 비교해 고르고, 그 결정에 책임지는** 자리입니다 {추론}. 결정의 근거(비용·막는 위협·운영 부담)를 글로 남길 수 있어야 합니다.",
+   "refs": [
+    8,
+    10,
+    11,
+    12,
+    13,
+    20,
+    21
+   ],
+   "study": [
+    "bsrs",
+    "ssdf",
+    "slsa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "로드맵에 맞춰 솔루션, 인프라, 외주 예산을 수립하고 집행을 관리합니다.",
+   "short": "보안 제품·클라우드 비용·외부 진단 용역에 쓸 돈을 계획하고, 계획대로 쓰이는지 챙긴다.",
+   "why": "무신사의 정보보호 투자는 2023년 27억3천만원(IT 투자 704억의 3.9%)[9]에서 2025년 41억6천만원으로 늘었습니다.[7] 2025년 IT 투자 1,195억원 중 약 3.5%입니다.[8] 이 숫자는 KISA 정보보호 공시로 해마다 공개됩니다.[29]",
+   "actually": {
+    "items": [
+     "**솔루션** — 라이선스는 사용자·트래픽·서버 수로 값이 오른다. 서비스가 커지면 다음 해 비용이 얼마가 될지 미리 계산한다.",
+     "**인프라** — 로그 저장·탐지 분석용 클라우드 비용. 로그를 얼마 동안 둘지가 곧 돈이다 {추론}.",
+     "**외주** — 모의해킹·인증 심사 준비·관제 같은 용역. 2023년 공시엔 보안 외주 인력이 0명이었다.[9]",
+     "**집행 관리** — 분기마다 계획 대비 사용액, 남는 돈·모자란 돈을 보고."
+    ]
+   },
+   "how_far": "예산 총액은 회사가 정합니다. 팀장은 **항목별 근거와 우선순위를 만들고 집행을 추적**합니다 {추론}.",
+   "refs": [
+    7,
+    8,
+    9,
+    29
+   ],
+   "study": [
+    "measure-risk"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "팀에 필요한 역량을 정의해 채용 계획을 세우고, 채용을 직접 진행합니다.",
+   "short": "팀에 빈 기술을 찾아 \"어떤 사람을 몇 명\" 뽑을지 정하고, 면접까지 직접 본다.",
+   "why": "2023년 공시 기준 무신사의 정보보호 전담 인력은 8명이었고 전년보다 3.4명 늘었습니다.[9] 지금 같은 조직 이름으로 접근 제어(8년+)[10]·SASE/CASB(5년+)[12] 자리가 열려 있어, 팀장이 오면 이 채용을 이어받습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**역량 표** — 영역(CERT·진단·공급망·클라우드·네트워크·자동화) × 사람으로 표를 만들어 빈칸과 한 사람에게만 몰린 칸을 찾는다.",
+     "**공고 쓰기** — 업무·자격·우대를 영역별로. 같은 팀의 현재 공고들이 그 예다.[10][11][12]",
+     "**면접** — 서류 → 1차 → 2차 → 처우 협의 순서다.[1] 기술 면접 문제와 평가 기준을 팀장이 만든다 {추론}."
+    ]
+   },
+   "how_far": "채용 절차와 처우는 인사팀이 운영합니다.[1] 팀장은 **누구를 왜 뽑는지 정하고 합격·불합격을 판단**합니다 {추론}.",
+   "refs": [
+    1,
+    9,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "정규직·외주 인력의 업무 배분, 성과 관리, 1:1 면담, 성장 경로 설계를 맡습니다.",
+   "short": "직원과 외부 인력에게 일을 나누고, 결과를 평가하고, 정기 면담으로 성장을 돕는다.",
+   "why": "공고가 정규직과 외주를 같이 적었습니다.[1] 보안 관제·진단은 외부 인력을 섞어 쓰는 일이 흔하고, 그 결과물도 팀장이 책임집니다 {추론}.",
+   "actually": {
+    "items": [
+     "**업무 배분** — 온콜(사고 당번) 순번, 진단 일정, 솔루션 담당을 나눠 한 사람만 아는 일을 줄인다 {추론}.",
+     "**성과 관리** — 분기 목표(줄 2) 기준으로 평가. 외주는 계약 범위·산출물로 본다 {추론}.",
+     "**1:1 면담** — 정기 면담으로 막힌 일·하고 싶은 일·지친 정도를 본다. {추론}",
+     "**성장 경로** — 진단 → 대응 → 설계처럼 영역을 넓히는 길, 또는 한 분야 전문가 길을 같이 설계 {추론}."
+    ]
+   },
+   "how_far": "평가 제도는 회사 것을 따릅니다. 팀장은 **그 제도 안에서 기준을 팀에 맞게 풀고, 면담을 거르지 않는** 정도가 최소선입니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "grove-hom"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "개발, 인프라, 법무, 사업 조직과 보안 요구사항을 조율하고, 여러 조직에 걸친 과제를 직접 이끌며 경영진에게 보고합니다.",
+   "short": "보안 요구를 개발·인프라·법무·사업이 받아들일 수 있는 일정과 방법으로 맞추고, 결과를 경영진에게 올린다.",
+   "why": "공고의 조직 비전은 보안이 비즈니스를 늦추는 것이 아니라 돕는 것이라고 적었습니다.[1] 2026-08 사고의 원인은 주문 API와 파트너 시스템 OTP 인증 단계의 약점이었다고 회사가 설명했는데[8], 이런 고치기는 보안팀 혼자 못 하고 그 API를 가진 개발팀이 해야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**개발** — API마다 '이 주문이 정말 이 사람 것인가'를 검사하게 하는 일. OWASP API 보안 1위 위험(객체 단위 인가 누락)이 이 종류다.[31]",
+     "**인프라** — 임시 권한만 쓰기, 암호 키 관리 같은 정책을 Terraform 코드로 넣기.[10]",
+     "**법무** — 개인정보가 1천 명 이상 유출되면 알게 된 때부터 72시간 안에 신고해야 하는 규정 같은 법 요건.[26]",
+     "**보고** — 정보보호위원회(분기)와 수시 회의에 위험·진척·필요한 결정을 올린다.[7]"
+    ]
+   },
+   "how_far": "보안팀이 다른 팀의 코드를 직접 고치지는 않습니다 {추론}. 팀장은 **무엇을 언제까지 왜 고쳐야 하는지 합의를 만들고 끝까지 추적**합니다.",
+   "refs": [
+    1,
+    7,
+    8,
+    10,
+    26,
+    31
+   ],
+   "study": [
+    "owasp-api",
+    "nist-csf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "침해사고 발생 시 기술 대응을 지휘하고, 원인 분석부터 재발 방지 대책까지 책임집니다.",
+   "short": "뚫렸을 때 막기·증거 남기기·복구를 지휘하고, 왜 뚫렸는지와 다시 안 뚫릴 방법까지 맡는다.",
+   "why": "2026-08-27 29CM 주문 조회 API로 외부의 비정상 접근이 있었고, 회사는 접근 경로를 막고 KISA에 신고했습니다.[7] 개인정보위 신고는 08-28·09-03·09-16 세 번, 항목 합계 약 23만 건이었습니다(이름 13만8,841건, 파트너사 직원 정보 3만5,955건 등).[8] 처음 신고 뒤 피해 범위가 두 번 넓어진 것은 '어디까지 나갔나'를 재는 일이 어렵다는 뜻입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**막기 전에 증거** — 로그·서버 이미지를 먼저 보존해야 나중에 범위를 잴 수 있다.[15]",
+     "**범위 재기** — API 접근 로그에서 비정상 호출을 골라 응답에 담긴 항목을 센다. 신고 숫자가 여기서 나온다.[8]",
+     "**신고** — 1천 명 이상이면 72시간 안 개인정보위·KISA 신고.[26]",
+     "**재발 방지** — 누구 탓이 아니라 무엇이 빠졌나를 쓰는 사후 보고서(postmortem).[27]"
+    ],
+    "intro": "NIST의 사고 대응 권고(SP 800-61 3판)를 따르면 이런 순서입니다.[15]"
+   },
+   "flows": [
+    {
+     "caption": "사고 하나의 흐름[15]",
+     "steps": [
+      "탐지 · 경보·제보를 사고로 판단",
+      "막기 · 경로 차단, 계정·키 회수",
+      "범위 재기 · 로그로 무엇이 얼마나 나갔나",
+      "신고·통지 · 72시간 규정",
+      "복구 · 서비스 정상화",
+      "재발 방지 · 원인 분석과 개선 과제"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "법적 판단·대외 발표는 법무·홍보와 CISO 몫입니다 {추론}. 팀장은 **기술 대응을 지휘하고, 범위 숫자와 원인을 틀리지 않게 만드는 것**까지 책임집니다.",
+   "refs": [
+    7,
+    8,
+    15,
+    26,
+    27
+   ],
+   "study": [
+    "nist-ir",
+    "idir",
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LLM과 AI 에이전트를 활용한 탐지·분석·진단 자동화를 기획하고, 팀이 일하는 방식을 바꿔 나갑니다.",
+   "short": "경보 분류·로그 요약·코드 진단 같은 반복 일을 LLM에 맡기고, 사람은 판단과 승인에 집중하게 바꾼다.",
+   "why": "2023년 공시 기준 전담 인력이 8명뿐이라[9] 늘어나는 경보와 진단을 사람 수로 따라가기 어렵습니다 {추론}. 공고가 이 일을 업무 마지막 줄과 자격요건에 모두 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**탐지** — 경보를 LLM이 먼저 읽어 오탐(가짜 경보) 후보·관련 경보 묶음을 제안.",
+     "**분석** — 사고 때 수만 줄 로그를 요약하고 공격 순서표 초안을 만든다.",
+     "**진단** — 코드 변경마다 인가 검사 누락 같은 패턴을 LLM이 읽고 지적.",
+     "**지켜야 할 것** — 로그 속 글자로 모델을 속이는 프롬프트 인젝션, 모델 출력을 그대로 실행하는 위험이 OWASP LLM 10대 위험의 1·5번이다.[22] 정해진 단계로 먼저 짜고, 꼭 필요할 때만 스스로 판단하는 에이전트를 쓰라는 설계 권고도 있다.[23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "LLM 출력을 그대로 실행하지 않기",
+     "body": "모델이 낸 분류 결과를 형식·허용 행동·승인 규칙으로 걸러 보는 예입니다(가상 출력, 직접 돌린 결과는 주석).",
+     "lang": "python",
+     "code": "import json\nALLOWED = {\"close_false_positive\", \"open_ticket\", \"block_ip\", \"disable_account\"}\nNEEDS_HUMAN = {\"block_ip\", \"disable_account\"}\noutputs = [\n    '{\"alert\":\"A-101\",\"action\":\"close_false_positive\",\"confidence\":0.97}',\n    '{\"alert\":\"A-102\",\"action\":\"disable_account\",\"confidence\":0.88}',\n    '{\"alert\":\"A-103\",\"action\":\"drop_table\",\"confidence\":0.99}',\n    'IGNORE PREVIOUS INSTRUCTIONS',\n]\nfor raw in outputs:\n    try:\n        r = json.loads(raw)\n    except json.JSONDecodeError:\n        print(\"형식 오류 -> 사람에게\"); continue\n    a = r.get(\"action\")\n    if a not in ALLOWED: print(r[\"alert\"], a, \"-> 허용 목록 밖, 거부\")\n    elif a in NEEDS_HUMAN or r[\"confidence\"] < 0.9: print(r[\"alert\"], a, \"-> 사람 승인 대기\")\n    else: print(r[\"alert\"], a, \"-> 자동 처리\")\n# A-101 close_false_positive -> 자동 처리\n# A-102 disable_account -> 사람 승인 대기\n# A-103 drop_table -> 허용 목록 밖, 거부\n# 형식 오류 -> 사람에게"
+    }
+   ],
+   "how_far": "팀장이 모든 자동화를 짤 필요는 없습니다. **어떤 일을 맡기고 어떤 일은 사람이 승인할지, 결과를 어떻게 검증할지** 정하는 것이 기획입니다 {추론}.",
+   "refs": [
+    1,
+    9,
+    22,
+    23
+   ],
+   "study": [
+    "owasp-llm",
+    "agents"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "정보보안 기술 분야 10년 이상 경력을 갖추고, 보안기술 조직을 이끌어 본 리더를 찾고 있습니다.",
+   "short": "보안 실무 10년에 더해, 보안 기술 팀을 실제로 맡아 본 사람이어야 한다는 뜻.",
+   "why": "업무 여덟 줄 중 여섯이 사람·돈·조율 일입니다.[1] 같은 조직의 실무자 자리는 5~8년 이상을 요구합니다.[10][12] 그 위를 맡으려면 그보다 긴 경력이 필요하다는 계산입니다 {추론}.",
+   "how_far": "정보보안 '정책'(인증·규정) 경력보다 **기술(대응·진단·인프라 보안)** 경력이 10년이어야 합니다.[1] 조직을 이끈 경험은 다음 줄이 구체적으로 묻습니다.",
+   "refs": [
+    1,
+    10,
+    12
+   ],
+   "study": [
+    "manager-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "팀장 또는 파트 리드로서 팀 목표 설정, 성과 평가, 채용을 직접 해 보신 분",
+   "short": "목표를 세우고, 사람을 평가하고, 뽑아 본 경험 — 셋 다 '직접'이 조건.",
+   "why": "업무 줄 2·5·6(로드맵·채용·성과 관리)을 첫날부터 해야 하는 자리라서입니다.[1]",
+   "actually": {
+    "items": [
+     "면접에서 '세운 목표와 실제 결과의 차이', '낮은 평가를 준 사례와 그 뒤', '뽑았다가 잘못 뽑은 사례'처럼 구체를 물을 수 있다 {추론}."
+    ]
+   },
+   "how_far": "파트 리드(3~5명)도 인정합니다.[1] 형식상 직함보다 **세 가지를 본인이 결정했는지**가 기준입니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "grove-hom"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안 솔루션과 인력 예산을 기획하고 근거를 갖춰 확보해 본 경험이 있으신 분",
+   "short": "\"이 돈을 쓰면 무엇이 얼마나 줄어든다\"를 숫자로 보여 예산을 받아 본 경험.",
+   "why": "무신사 정보보호 투자는 2년 새 27억에서 42억으로 늘었고[8], 공시로 외부에 공개됩니다.[29] 사고 뒤 늘어난 예산을 어디에 쓸지 설명하는 일이 이 자리에 옵니다 {추론}.",
+   "actually": {
+    "items": [
+     "**위험을 돈으로** — 한 번 사고 손실(SLE) × 1년에 일어날 확률(ARO) = 연간 예상 손실(ALE). 도입 전후 ALE 차이와 비용을 견준다.",
+     "**범위로 말하기** — 한 숫자 대신 '10억~40억 사이일 확률 90%' 같은 범위로 추정하라는 것이 위험 측정 책의 주장이다. {추론}",
+     "**인력 근거** — 경보 수 × 건당 처리 시간 ÷ 한 사람 근무 시간으로 필요한 인원을 계산 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "솔루션 도입 근거 한 줄 계산",
+     "body": "가상 값(백만원 단위)입니다. 줄어든 예상 손실이 비용보다 크면 근거가 됩니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "sle = 3000          # 유출 1건 손실\naro_before = 0.30   # 도입 전 연간 발생 확률\naro_after = 0.10    # 도입 후(가정)\ncost = 400          # 솔루션+인력 연간 비용\nale_b, ale_a = sle * aro_before, sle * aro_after\nprint(\"도입 전 ALE\", ale_b, \"| 도입 후 ALE\", ale_a)\nprint(\"줄어든 손실\", ale_b - ale_a, \"- 비용\", cost, \"= 순효과\", ale_b - ale_a - cost)\n# 도입 전 ALE 900.0 | 도입 후 ALE 300.0\n# 줄어든 손실 600.0 - 비용 400 = 순효과 200.0"
+    }
+   ],
+   "how_far": "정확한 확률은 아무도 모릅니다. **가정을 적고, 가정이 바뀌면 결론이 어떻게 바뀌는지**까지 보여 주면 근거로 충분합니다 {추론}.",
+   "refs": [
+    8,
+    29
+   ],
+   "study": [
+    "measure-risk"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "침해사고 대응과 취약점 진단 실무를 깊이 경험했고, 팀원의 결과물을 기술적으로 검토할 수 있으신 분",
+   "short": "사고 대응·진단을 직접 오래 해서, 팀원의 분석 보고서와 진단 결과가 맞는지 판단할 수 있어야 한다.",
+   "why": "업무 줄 8(사고 지휘)과 줄 3(CERT·진단 방향)을 하려면 실무 판단이 있어야 합니다.[1] 계열사 보안 공고도 CERT 대응과 모의해킹을 핵심 요건으로 둡니다.[13]",
+   "actually": {
+    "items": [
+     "**대응 결과물 검토** — 타임라인에 빈 시간이 없나, 범위 숫자가 로그로 뒷받침되나, 막은 경로 말고 다른 경로는 없나.[15]",
+     "**진단 결과물 검토** — 점수(CVSS)만 높은 것과 실제로 악용되는 것을 가른다. 30일 안 악용 확률(EPSS)과 실제 악용 목록(CISA KEV)을 같이 본다.[17][18][19]",
+     "**재현** — 보고된 취약점을 직접 재현해 오탐인지 확인."
+    ]
+   },
+   "examples": [
+    {
+     "title": "취약점 처리 순서 정하기",
+     "body": "가상 취약점 4개를 실제 악용 여부 → 외부 노출 → 악용 확률 → 점수 순으로 정렬합니다(직접 돌린 출력). CVSS 9.8인 A가 내부 전용이라 3번째로 밀립니다.",
+     "lang": "python",
+     "code": "vulns = [\n    {\"id\": \"CVE-A\", \"cvss\": 9.8, \"epss\": 0.02, \"kev\": False, \"internet\": False},\n    {\"id\": \"CVE-B\", \"cvss\": 7.5, \"epss\": 0.91, \"kev\": True,  \"internet\": True},\n    {\"id\": \"CVE-C\", \"cvss\": 8.1, \"epss\": 0.40, \"kev\": False, \"internet\": True},\n    {\"id\": \"CVE-D\", \"cvss\": 5.3, \"epss\": 0.01, \"kev\": False, \"internet\": True},\n]\ndef due_days(v):\n    if v[\"kev\"] and v[\"internet\"]: return 1\n    if v[\"internet\"] and v[\"epss\"] >= 0.1: return 7\n    if v[\"cvss\"] >= 9.0: return 14\n    return 30\nfor v in sorted(vulns, key=lambda v: (due_days(v), -v[\"epss\"])):\n    print(v[\"id\"], \"CVSS\", v[\"cvss\"], \"EPSS\", v[\"epss\"], \"->\", due_days(v), \"일 안에\")\n# CVE-B CVSS 7.5 EPSS 0.91 -> 1 일 안에\n# CVE-C CVSS 8.1 EPSS 0.4 -> 7 일 안에\n# CVE-A CVSS 9.8 EPSS 0.02 -> 14 일 안에\n# CVE-D CVSS 5.3 EPSS 0.01 -> 30 일 안에"
+    }
+   ],
+   "how_far": "기한(1·7·14·30일)은 예시입니다 {추론}. 팀장은 **팀원 결과물의 빈틈을 질문으로 찾아낼 수 있는** 수준이어야 합니다.",
+   "refs": [
+    1,
+    13,
+    15,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "nist-ir",
+    "idir",
+    "kisa-guide",
+    "epss"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python, Go 등으로 보안 도구를 직접 만들거나 코드를 리뷰할 수 있으신 분",
+   "short": "로그 분석기·자동 점검 같은 도구를 직접 짜거나, 팀원 코드가 맞는지 읽을 수 있어야 한다.",
+   "why": "같은 팀 공고는 Python·Go 보안 자동화와 Terraform 정책 코드를 요구합니다.[10] 팀원의 도구를 리뷰하려면 팀장도 그 언어를 읽어야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**탐지 스크립트** — API 접근 로그에서 한 계정·IP가 남의 주문 번호를 연속 조회하는 패턴 찾기 {추론}.",
+     "**점검 도구** — 클라우드 설정(권한·공개 저장소)을 매일 훑어 정책 위반을 알리기(CSPM과 같은 일).[13]",
+     "**정책 코드** — IAM·KMS 정책을 Terraform으로 쓰고 리뷰.[10]"
+    ]
+   },
+   "level": {
+    "basic": "파일·JSON·정규식·HTTP 호출, 클라우드 SDK로 목록 뽑기",
+    "work": "동시 처리(Go 고루틴), 테스트, 대량 로그를 메모리 넘치지 않게 읽기",
+    "team": "팀원 도구의 보안 결함(비밀값 노출·권한 과다) 리뷰, Terraform 정책 리뷰"
+   },
+   "how_far": "팀장이 주력 개발자일 필요는 없습니다. **도구를 하나 끝까지 만들어 본 적이 있고, 남의 코드에서 위험을 찾을 수 있는** 정도입니다 {추론}.",
+   "refs": [
+    10,
+    13
+   ],
+   "study": [
+    "bsrs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM API, 프롬프트 설계, 에이전트 등을 실제 보안 업무에 적용해 성과를 내 보신 분",
+   "short": "LLM을 보안 업무에 실제로 넣어 시간·정확도가 얼마나 좋아졌는지 숫자로 말할 수 있어야 한다.",
+   "why": "업무 줄 9(AI 자동화 기획)를 하려면 해 본 사람이어야 합니다.[1] '성과를 내 보신'이라 시험 삼아 써 본 것보다 운영에 넣은 경험을 봅니다 {추론}.",
+   "actually": {
+    "items": [
+     "**성과 숫자** — 경보 하나 분류 시간, 오탐 걸러낸 비율, 놓친 진짜 경보 수(이게 0이어야 한다) {추론}.",
+     "**프롬프트 설계** — 판단 기준·출력 형식(JSON)·모르면 모른다고 답하기를 정해 두기.",
+     "**방어** — 로그·메일 속 글자가 지시로 읽히는 프롬프트 인젝션, 과한 권한을 받은 에이전트가 1·6번 위험이다.[22]"
+    ]
+   },
+   "how_far": "모델을 직접 학습시킬 필요는 없습니다 {추론}. **API로 붙여 운영에 넣고, 틀릴 때를 대비한 검사·승인 단계를 둔** 경험이면 됩니다.[23]",
+   "refs": [
+    1,
+    22,
+    23
+   ],
+   "study": [
+    "owasp-llm",
+    "agents"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안에 익숙하지 않은 조직을 설득하고, 경영진에게 리스크와 투자 필요성을 명확하게 설명할 수 있으신 분",
+   "short": "개발·사업 쪽과 경영진이 알아듣는 말(돈·일정·고객 영향)로 위험을 설명해 움직이게 하는 능력.",
+   "why": "조직 비전이 '보안이 규제가 아니라 습관이 되는 문화'입니다.[1] 회사는 상장을 준비하고 있고[8], 보도는 2022년 상장 신청 직후 유출 사고로 상장을 철회했던 다른 회사 사례를 같이 짚었습니다.[8]",
+   "actually": {
+    "items": [
+     "**경영진 보고 한 장** — 위험(무슨 일이 생길 수 있나) · 가능성 · 영향(돈·고객·규제) · 필요한 결정 · 하지 않으면.",
+     "**관리 체계 기능** — CSF 2.0이 새로 넣은 '관리 체계(Govern)' 기능은 위험을 경영 의사결정에 넣는 일을 다룬다.[16]",
+     "**개발팀 설득** — 금지 목록보다 안전한 기본값(라이브러리·템플릿)을 주면 반발이 적다. {추론}"
+    ]
+   },
+   "how_far": "말솜씨보다 **숫자와 사례로 말하고, 결정할 것을 분명히 하는** 것이 기준입니다 {추론}.",
+   "refs": [
+    1,
+    8,
+    16
+   ],
+   "study": [
+    "nist-csf",
+    "measure-risk"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 이커머스나 플랫폼 서비스에서 보안 조직을 운영해 보신 분",
+   "short": "회원·주문·입점사·결제가 엮인 큰 쇼핑 서비스의 공격을 겪어 본 사람이면 적응이 빠르다.",
+   "why": "무신사는 무신사·29CM 등 여러 쇼핑몰을 한 회사가 운영하고, 29CM 보안도 한 체계로 돌아갑니다.[8] 계열사 결제(무신사페이먼츠)는 무신사·29CM·솔드아웃의 결제를 맡습니다.[13]",
+   "actually": {
+    "items": [
+     "**주문·회원 API** — 남의 주문을 번호만 바꿔 보는 공격. 2026-08 사고가 주문 API였다.[7][31]",
+     "**입점사(파트너) 시스템** — 회원이 아닌 바깥 회사 직원이 쓰는 관리 화면. 이번에 OTP 인증 단계가 뚫렸다.[8]",
+     "**행사 트래픽** — 큰 할인 행사 때 봇·계정 대입 공격이 몰린다. 같은 팀이 봇 관리를 따로 둔다.[11]"
+    ]
+   },
+   "refs": [
+    7,
+    8,
+    11,
+    13,
+    31
+   ],
+   "study": [
+    "owasp-api"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, Kubernetes 등 클라우드 네이티브 환경의 보안을 설계해 보신 분",
+   "short": "무신사 서비스가 AWS·쿠버네티스 위에 있어서, 그 위의 권한·네트워크·컨테이너 보안을 설계할 줄 알면 좋다.",
+   "why": "같은 팀 공고는 EC2·ECS·EKS·Aurora 접근 제어와 IAM·SSM·Secrets Manager·KMS 정책을 다룹니다.[10]",
+   "actually": {
+    "items": [
+     "**권한** — 사람·서비스마다 필요한 만큼만, 영구 키 대신 임시 자격증명.[10]",
+     "**쿠버네티스** — 컨테이너가 루트·호스트 권한을 못 쓰게 하는 Pod 보안 표준(Privileged·Baseline·Restricted 세 단계).[24]",
+     "**EKS** — 클러스터 접근·파드별 IAM 권한·네트워크 정책·감사 로그 권고.[25]"
+    ]
+   },
+   "refs": [
+    10,
+    24,
+    25
+   ],
+   "study": [
+    "hacking-k8s",
+    "eks-bp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "보안 조직을 신설하거나 재편해 본 경험이 있으신 분",
+   "short": "조직을 처음 만들거나 다시 짜 본 경험 — 무신사 보안 조직이 막 재편된 상태라서.",
+   "why": "보안 조직이 최고경영자 직속 IT Security로 바뀌었고, 정보보호위원회도 격상해 운영 중입니다.[7] 조직은 기술·정책 두 갈래로 나뉘어 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**역할 나누기** — 기술 팀 안에서 대응·진단·플랫폼 보안을 파트로 나눌지 {추론}.",
+     "**정책 팀과 경계** — 인증(ISMS-P·ISO 27001/27701)·규정은 정책 쪽[14], 그 통제를 기술로 구현하는 건 기술 쪽.",
+     "**규정 문서** — 2026-01 기준 규정 2개·지침 16개가 있다.[7]"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    14
+   ],
+   "study": [
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "컨퍼런스 발표, CVE 제보, 보안 커뮤니티 활동 등 대외 활동 경험이 있으신 분",
+   "short": "발표·취약점 제보 같은 바깥 활동 — 실력을 남이 확인할 수 있게 남긴 기록이라서.",
+   "why": "무신사 테크는 기술 블로그·유튜브 채널을 운영합니다.[1] 이번 조사에서는 무신사 보안 조직의 공개 발표·글을 찾지 못했습니다 — 팀장이 그 첫 발표를 할 수도 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**CVE 제보** — 남의 제품에서 찾은 취약점을 제조사나 CVE 번호 발급 기관(CNA)에 알려 번호를 받는 것.[28]",
+     "**발표** — 국내 보안 컨퍼런스·회사 기술 행사에서 대응·자동화 경험 공유 {추론}."
+    ]
+   },
+   "refs": [
+    1,
+    28
+   ],
+   "study": []
+  }
+ ],
+ "resources": [
+  {
+   "id": "manager-path",
+   "title": "The Manager's Path",
+   "by": "Camille Fournier · O'Reilly · 2017",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/the-managers-path/9781491973882/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "팀 리드부터 관리자까지 단계별 역할 — 목표·평가·채용·1:1 줄의 기본 틀."
+  },
+  {
+   "id": "larson-puzzle",
+   "title": "An Elegant Puzzle: Systems of Engineering Management",
+   "by": "Will Larson · Stripe Press · 2019",
+   "kind": "book",
+   "url": "https://press.stripe.com/an-elegant-puzzle",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "팀 크기·채용 계획·로드맵 — 로드맵과 조직 재편 줄."
+  },
+  {
+   "id": "grove-hom",
+   "title": "High Output Management",
+   "by": "Andrew S. Grove · Random House",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=High%20Output%20Management",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "1:1 면담·위임·성과 점검 — 사람 관리 줄."
+  },
+  {
+   "id": "nist-csf",
+   "title": "NIST Cybersecurity Framework (CSF) 2.0",
+   "by": "NIST · 2024",
+   "kind": "doc",
+   "url": "https://www.nist.gov/cyberframework",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "여섯 기능으로 현재 수준을 재고 경영진에게 설명하는 공용어 — 로드맵·보고 줄."
+  },
+  {
+   "id": "nist-ir",
+   "title": "NIST SP 800-61 Rev. 3 — Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+   "by": "NIST · 2025",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "사고 대응을 CSF 기능에 맞춰 정리한 권고 — 사고 지휘 줄."
+  },
+  {
+   "id": "idir",
+   "title": "Intelligence-Driven Incident Response (2nd Edition)",
+   "by": "Rebekah Brown · Scott J. Roberts · O'Reilly · 2023",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/intelligence-driven-incident-response/9781098120672/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "공격자 관점으로 사고를 분석하고 결과물을 쓰는 법 — 팀원 보고서 검토 줄."
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Site Reliability Engineering — Postmortem Culture",
+   "by": "Google · O'Reilly",
+   "kind": "doc",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "누구 탓이 아닌 사후 보고서 — 재발 방지 대책 줄."
+  },
+  {
+   "id": "bsrs",
+   "title": "Building Secure and Reliable Systems",
+   "by": "Heather Adkins 외 · O'Reilly · 2020",
+   "kind": "book",
+   "url": "https://sre.google/books/building-secure-reliable-systems/",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "보안 아키텍처 결정과 안전한 기본값, 도구 설계 — 기술 방향·코드 리뷰 줄."
+  },
+  {
+   "id": "measure-risk",
+   "title": "How to Measure Anything in Cybersecurity Risk",
+   "by": "Douglas W. Hubbard · Richard Seiersen · Wiley",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=How%20to%20Measure%20Anything%20in%20Cybersecurity%20Risk",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "위험을 범위·확률로 재서 예산 근거를 만드는 법 — 예산·경영진 설명 줄."
+  },
+  {
+   "id": "epss",
+   "title": "FIRST EPSS — Exploit Prediction Scoring System",
+   "by": "FIRST",
+   "kind": "doc",
+   "url": "https://www.first.org/epss/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "CVSS 점수와 별개로 실제 악용 확률로 처리 순서를 정함 — 진단 결과 검토 줄."
+  },
+  {
+   "id": "kisa-guide",
+   "title": "주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드",
+   "by": "KISA",
+   "kind": "doc",
+   "url": "https://www.kisa.or.kr/2060204",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "국내 취약점 진단 항목의 기준 — 진단 실무의 한국어 출발점(KISA 자료실에서 제목으로 찾는다)."
+  },
+  {
+   "id": "ssdf",
+   "title": "NIST SP 800-218 — Secure Software Development Framework (SSDF)",
+   "by": "NIST",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "안전한 개발·공급망 관리 실천 목록 — 공급망 보안 방향 줄."
+  },
+  {
+   "id": "slsa",
+   "title": "SLSA — Supply-chain Levels for Software Artifacts",
+   "by": "OpenSSF",
+   "kind": "doc",
+   "url": "https://slsa.dev/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "빌드 결과물의 출처를 증명하는 단계 — 공급망 보안 목표를 단계로 세우는 데."
+  },
+  {
+   "id": "owasp-api",
+   "title": "OWASP API Security Top 10 (2023)",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "주문 조회 같은 API의 인가 누락(1위) — 이커머스 위협과 개발팀 조율 줄."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications 2025",
+   "by": "OWASP GenAI Security Project",
+   "kind": "doc",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "프롬프트 인젝션·과한 권한 같은 LLM 위험 — AI 자동화를 안전하게 넣는 줄."
+  },
+  {
+   "id": "agents",
+   "title": "Building effective agents",
+   "by": "Anthropic · 2024",
+   "kind": "doc",
+   "url": "https://www.anthropic.com/research/building-effective-agents",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "정해진 흐름과 자율 에이전트를 언제 쓰나 — 자동화 기획 줄."
+  },
+  {
+   "id": "hacking-k8s",
+   "title": "Hacking Kubernetes",
+   "by": "Andrew Martin · Michael Hausenblas · O'Reilly · 2021",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/hacking-kubernetes/9781492081722/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "공격자 관점의 쿠버네티스 위협과 방어 — 클라우드 네이티브 보안 설계 우대 줄."
+  },
+  {
+   "id": "eks-bp",
+   "title": "Amazon EKS Best Practices Guide — Security",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/security.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "EKS 권한·네트워크·감사 로그 권고 — AWS·쿠버네티스 우대 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "보안 리더의 역할 잡기",
+   "time": "1~2주",
+   "goal": "목표·평가·채용·1:1을 한 분기 계획으로 설명한다.",
+   "task": "가상 보안기술팀(정규직 6명·외주 2명)의 역량 표와 한 분기 목표 3개·지표를 만든다.",
+   "resources": [
+    "manager-path",
+    "larson-puzzle",
+    "grove-hom"
+   ]
+  },
+  {
+   "title": "현재 수준과 로드맵",
+   "time": "1~2주",
+   "goal": "CSF 2.0 여섯 기능으로 현재 수준을 매기고 1년 로드맵을 쓴다.",
+   "task": "가상 쇼핑몰의 기능별 점수표와 '주문 API 인가 점검 자동화' 같은 과제 5개 로드맵 한 장.",
+   "resources": [
+    "nist-csf",
+    "owasp-api"
+   ]
+  },
+  {
+   "title": "사고 지휘와 사후 보고서",
+   "time": "2주",
+   "goal": "사고 흐름(탐지→막기→범위→신고→복구→재발 방지)을 지휘 순서로 말한다.",
+   "task": "가상 주문 API 무단 조회 로그 1만 줄에서 비정상 호출을 골라 범위 숫자와 postmortem 한 장을 쓴다.",
+   "resources": [
+    "nist-ir",
+    "idir",
+    "sre-postmortem"
+   ]
+  },
+  {
+   "title": "취약점 우선순위와 공급망",
+   "time": "1~2주",
+   "goal": "CVSS·EPSS·KEV·노출 여부로 처리 기한을 정한다.",
+   "task": "가상 취약점 20개를 정렬하는 스크립트와, 의존성 목록에서 KEV에 있는 것을 찾는 점검을 만든다.",
+   "resources": [
+    "epss",
+    "kisa-guide",
+    "ssdf",
+    "slsa"
+   ]
+  },
+  {
+   "title": "AI 자동화와 예산 근거",
+   "time": "2주",
+   "goal": "LLM 경보 분류를 검사·승인 단계와 함께 설계하고, 그 비용 대비 효과를 숫자로 낸다.",
+   "task": "가상 경보 100건을 LLM으로 분류하고 사람 판정과 비교해 놓친 수·절약 시간을 재고, ALE 계산 한 장으로 예산 요청서를 쓴다.",
+   "resources": [
+    "owasp-llm",
+    "agents",
+    "measure-risk"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 없음('처우 협의'). 집계 기준 신입 초봉 2,313만원·평균 3,453만원, 원티드 표기 평균 6,082만원 — 10년+ 팀장 연봉과는 무관한 값.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아닌 회사 전체 값, 연도 미표기.[3]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 경력직이 섞인 전체 평균.[3]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위와 2천만원 넘게 달라 산출 방식이 다른 것으로 보인다.[4]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시로 확인한 직원 평균 급여가 없다(상장 예비심사 신청은 2026-09).[8] 위 숫자는 모두 집계이고 **평균은 초봉이 아니며**, 10년 이상 경력 팀장 연봉은 공고의 '처우 협의' 단계에서 정해진다.[1]"
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "코어타임 11~16시, 휴가 1일·0.5일·0.25일 단위"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기근속",
+    "detail": "3년마다 리프레시 휴가 7일 + 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기당 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 지원금 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "전사 AI 에이전트 지원, 허먼 밀러 의자, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급(이 공고 기타사항)"
+   }
+  ],
+  "note": "무신사 채용 사이트 복지 페이지(날짜 미표기, 첨부 이미지 2025-07)와 이 공고 기타사항.[2][1] 회사 전체 공통이며 '근무 장소·기간·시점에 따라 일부 변경될 수 있다'고 적혀 있다.[2]"
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 약 6분",
+  "note": "공고 근무지 표기는 '무신사 성수 오피스'.[1] 주소는 무신사 상품 페이지 하단 사업자 정보 표기.[5] 2022-09 성수 캠퍼스 N1 이전과 도보 거리는 보도.[6]"
+ },
+ "fit": {
+  "good": [
+   "사고를 직접 지휘하고 범위를 숫자로 재 본 사람[1]",
+   "보안 예산을 근거로 받아 본 사람[1]",
+   "LLM을 보안 운영에 넣어 성과를 재 본 사람[1]",
+   "막 재편된 조직의 틀을 잡는 일이 즐거운 사람[7]"
+  ],
+  "hard": [
+   "큰 유출 사고 직후라 재발 방지·보고 부담이 크다 {추론}",
+   "공고에 연봉 범위가 없고 처우 협의다[1]",
+   "10년+ 리더 요건이라 주니어는 해당하지 않는다[1]",
+   "회사 보안 조직의 공개 발표·글이 없어 팀 안 사정은 면접에서 확인해야 한다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "주문 조회 API로 남의 정보가 나갔다는 제보가 왔습니다. 첫 한 시간에 무엇을 지시하나요?",
+   "a": "2026-08 실제 사고가 주문 API였다.[7][8]"
+  },
+  {
+   "q": "처음 신고한 피해 범위가 나중에 두 번 늘었다면 무엇이 부족했던 걸까요?",
+   "a": "신고가 세 번에 걸쳐 늘었다.[8]"
+  },
+  {
+   "q": "CVSS 9.8 내부 취약점과 7.5지만 실제 악용 중인 외부 취약점, 무엇부터?",
+   "a": "EPSS·KEV로 순서 정하기.[17][18]"
+  },
+  {
+   "q": "보안 투자를 늘려야 한다고 CFO에게 한 장으로 설명해 보세요.",
+   "a": "예산 근거 요건과 공시된 투자액.[1][8]"
+  },
+  {
+   "q": "LLM 경보 분류를 운영에 넣었을 때 무엇으로 성과를 재고 무엇을 막나요?",
+   "a": "AI 자동화 업무·요건과 LLM 위험.[1][22]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Security Engineering Lead (보안기술팀장)",
+   "url": "https://www.musinsacareers.com/ko/o/245270",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "조직 소개(정보보안-기술·정책)·업무·자격·우대·전형·수습 100%"
+  },
+  {
+   "n": 2,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "'일부 변경될 수 있다' 문구 — 같은 회사 기존 풀이에서 확인한 것을 옮김"
+  },
+  {
+   "n": 3,
+   "title": "자소설닷컴 — 무신사",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "초봉 2,313만원·평균 3,453만원(검색 요약, 직접 열람 403 — 기존 풀이 값)"
+  },
+  {
+   "n": 4,
+   "title": "원티드 — 무신사 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "평균연봉 6,082만원 표기. 기준 설명 없음"
+  },
+  {
+   "n": 5,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company",
+   "note": "주소 아차산로13길 11 — 기존 풀이에서 확인한 것을 옮김"
+  },
+  {
+   "n": 6,
+   "title": "무신사, 성수동 캠퍼스 N1 본사 이전 — 일간스포츠",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09",
+   "note": "성수역 도보 6분"
+  },
+  {
+   "n": 7,
+   "title": "29CM, 지난 27일 약 16만건 개인정보 유출 사고 발생 — CEO스코어데일리",
+   "url": "https://m.ceoscoredaily.com/page/view/2026083116274608712",
+   "kind": "news",
+   "date": "2026-08-31",
+   "note": "주문 조회 API 비정상 접근·KISA 신고, 2025 정보보호 투자 41억6천만원(+52.2%), CEO 직속 IT Security, CISO 위원장 정보보호위원회(분기), 규정 2·지침 16"
+  },
+  {
+   "n": 8,
+   "title": "무신사 개인정보 유출 신고 — 허프포스트코리아",
+   "url": "https://www.huffingtonpost.kr/article/260875",
+   "kind": "news",
+   "date": "2026-09",
+   "note": "신고 3회·약 23만 건, 원인(주문 API·파트너 OTP), 2025 투자 42억·IT 투자 1,195억의 3.5%, 제로트러스트·WAAP, 상장 예비심사 09-07"
+  },
+  {
+   "n": 9,
+   "title": "[IT인베스트] 올리브영·무신사 IT 투자 — 디지털데일리",
+   "url": "https://www.ddaily.co.kr/page/view/2024070515123816998",
+   "kind": "news",
+   "date": "2024-07-05",
+   "note": "2023 기준 IT 투자 704억·정보보호 27억3천만원(3.9%)·전담 인력 8명(외주 0)·CISO·CPO 임원"
+  },
+  {
+   "n": 10,
+   "title": "무신사 채용 — Security Engineer (접근제어/암호키관리 운영)",
+   "url": "https://www.wanted.co.kr/wd/375793",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "정보보안-기술, IAM·KMS·Vault·Terraform, Zero-Credential Access, 8년+"
+  },
+  {
+   "n": 11,
+   "title": "무신사 채용 — Security Engineer (네트워크 보안)",
+   "url": "https://www.wanted.co.kr/wd/337052",
+   "kind": "posting",
+   "note": "마감 공고. AWS WAF·Cloudflare WAAP·봇 관리·Egress"
+  },
+  {
+   "n": 12,
+   "title": "무신사 채용 — Network Security Engineer (SASE&CASB)",
+   "url": "https://www.wanted.co.kr/wd/366283",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "SASE·CASB·DLP, 5년+"
+  },
+  {
+   "n": 13,
+   "title": "무신사페이먼츠 채용 — Security Engineer",
+   "url": "https://career.rememberapp.co.kr/job/posting/342121",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "계열사. CERT·모의해킹·CSPM·SIEM, 무신사·29CM·솔드아웃 결제"
+  },
+  {
+   "n": 14,
+   "title": "무신사 채용 — Security Compliance Manager",
+   "url": "https://www.wanted.co.kr/wd/337051",
+   "kind": "posting",
+   "note": "정보보안-정책. ISMS-P·ISO 27001/27701"
+  },
+  {
+   "n": 15,
+   "title": "NIST SP 800-61 Rev. 3 — Incident Response Recommendations",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "kind": "reference",
+   "date": "2025-04"
+  },
+  {
+   "n": 16,
+   "title": "NIST Cybersecurity Framework 2.0",
+   "url": "https://www.nist.gov/cyberframework",
+   "kind": "reference",
+   "date": "2024-02",
+   "note": "Govern·Identify·Protect·Detect·Respond·Recover"
+  },
+  {
+   "n": 17,
+   "title": "FIRST — EPSS",
+   "url": "https://www.first.org/epss/",
+   "kind": "reference",
+   "note": "30일 안 악용 확률"
+  },
+  {
+   "n": 18,
+   "title": "CISA — Known Exploited Vulnerabilities Catalog",
+   "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "FIRST — CVSS v4.0",
+   "url": "https://www.first.org/cvss/v4-0/",
+   "kind": "reference",
+   "date": "2023-11"
+  },
+  {
+   "n": 20,
+   "title": "NIST SP 800-218 — SSDF",
+   "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+   "kind": "reference",
+   "date": "2022-02"
+  },
+  {
+   "n": 21,
+   "title": "SLSA",
+   "url": "https://slsa.dev/",
+   "kind": "reference",
+   "note": "OpenSSF 공급망 단계"
+  },
+  {
+   "n": 22,
+   "title": "OWASP Top 10 for LLM Applications 2025",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference",
+   "date": "2024-11",
+   "note": "LLM01 프롬프트 인젝션·LLM05 출력 처리·LLM06 과한 권한"
+  },
+  {
+   "n": 23,
+   "title": "Anthropic — Building effective agents",
+   "url": "https://www.anthropic.com/research/building-effective-agents",
+   "kind": "reference",
+   "date": "2024-12",
+   "note": "단순한 흐름부터, 필요할 때만 에이전트"
+  },
+  {
+   "n": 24,
+   "title": "Kubernetes — Pod Security Standards",
+   "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+   "kind": "reference",
+   "note": "Privileged·Baseline·Restricted"
+  },
+  {
+   "n": 25,
+   "title": "Amazon EKS Best Practices — Security",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/security.html",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "개인정보 보호법 시행령 제39조(개인정보 유출 등의 신고)",
+   "url": "https://www.law.go.kr/법령/개인정보보호법시행령",
+   "kind": "reference",
+   "date": "2023-09",
+   "note": "1천 명 이상 등 72시간 안 신고"
+  },
+  {
+   "n": 27,
+   "title": "Site Reliability Engineering — Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "CVE Program — 취약점 보고·CNA",
+   "url": "https://www.cve.org/ResourcesSupport/ReportRequest",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "KISA 정보보호 공시 종합 포털",
+   "url": "https://isds.kisa.or.kr/",
+   "kind": "reference",
+   "note": "기업별 정보보호 투자·인력 공시"
+  },
+  {
+   "n": 30,
+   "title": "MITRE ATT&CK",
+   "url": "https://attack.mitre.org/",
+   "kind": "reference",
+   "note": "공격 기법 사전"
+  },
+  {
+   "n": 31,
+   "title": "OWASP API Security Top 10 2023 — API1 Broken Object Level Authorization",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/",
+   "kind": "reference",
+   "date": "2023"
+  }
+ ],
+ "caveat": "무신사 보안 조직의 기술 블로그·발표는 찾지 못했다 — 회사 근거는 이 공고·같은 조직 공고·2023/2025 정보보호 공시를 옮긴 보도·2026-08 사고 보도다. 사고 원인은 회사 설명이며 당국 조사 결과는 아직 나오지 않았다.[8] 사고 대응 흐름·취약점 우선순위·AI 위험은 NIST·FIRST·OWASP 같은 다른 곳의 공개 기준으로 '보통 이런 것'을 보였다."
+}

@@ -230,12 +230,13 @@
   "ats-greeting:musinsa:242044": "musinsa-network-engineer",
   "wanted-366283": "musinsa-network-security-engineer-sase-casb",
   "ats-greeting:musinsa:245811": "musinsa-product-engineer-commerce",
-  "ats-greeting:musinsa:245407": "musinsa-product-engineer-global-integration",
+  "ats-greeting:musinsa:245715": "musinsa-product-engineer-global-integration",
   "ats-greeting:musinsa:241118": "musinsa-product-engineer-partner-ads-growth",
   "ats-greeting:musinsa:246226": "musinsa-product-engineer-partner-platform",
   "ats-greeting:musinsa:236337": "musinsa-product-engineer-platform-innovation",
   "ats-greeting:musinsa:235686": "musinsa-product-engineer-scm-platform",
   "ats-greeting:musinsa:172721": "musinsa-product-engineering-manager-core-partner",
+  "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
@@ -2494,9 +2495,9 @@
   {
    "id": "musinsa-product-engineer-global-integration",
    "company": "무신사",
-   "role": "Product Engineer (Global Integration)",
+   "role": "[AI Agent 전형] Product Engineer (Global Integration)",
    "jobs": [
-    "ats-greeting:musinsa:245407"
+    "ats-greeting:musinsa:245715"
    ],
    "researched_at": "2026-11-25",
    "lines": 21
@@ -2550,6 +2551,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 32
+  },
+  {
+   "id": "musinsa-security-engineering-lead",
+   "company": "무신사",
+   "role": "보안기술팀장",
+   "jobs": [
+    "ats-greeting:musinsa:245270"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
   },
   {
    "id": "nhn-japan-frontend",
