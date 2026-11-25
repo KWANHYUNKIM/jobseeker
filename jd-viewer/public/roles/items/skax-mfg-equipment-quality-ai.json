@@ -1,0 +1,1276 @@
+{
+ "id": "skax-mfg-equipment-quality-ai",
+ "company": "SK주식회사(AX)",
+ "role": "제조AI 장비/품질 자동화 시스템 전문가",
+ "team": "제조AX서비스4팀",
+ "jobs": [
+  "ats-skcareers:sk:R262568",
+  "dev-583961"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "SK하이닉스 반도체 팹에서 **장비와 공장 시스템을 잇는 장비자동화**와 **품질·수율 시스템**을 구축하고, 그 위에 장비 로그·품질 데이터·기술 문서를 찾아 **근거와 함께 답하는 LLM 에이전트**를 얹습니다.[1]",
+  "env": "장비 통신은 반도체 업계 표준(SEMI SECS/GEM, TCP/IP 위의 HSMS)[10][9], 개발은 Java·C# 백엔드·Oracle·React/TypeScript 중 하나 이상[1]. 근무는 분당 사무실과 이천 고객사 현장입니다.[1][2]",
+  "oneline": "제조 장비자동화·품질 시스템 5년 차가 LLM 에이전트까지 이끄는 자리. 길은 PM/PL과 설계·개발 두 갈래입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "제조AX서비스4팀을 소개합니다 😊",
+   "short": "공고를 낸 곳은 SK AX 제조 부문 4팀 — SK하이닉스 팹의 장비자동화·품질 시스템 구축을 맡는다.",
+   "why": "같은 주에 같은 부문의 다른 팀도 공고를 냈습니다. 2팀은 이미 돌아가는 제조 시스템(장비 자동화·품질·후공정 MES)의 **운영**[3], 3팀은 후공정 MES와 MES용 AI 에이전트[4]를 뽑습니다. 4팀 공고는 전공정 팹(FAB, 웨이퍼를 가공하는 공장)의 장비·품질 시스템 **구축**과 AI 에이전트입니다.[1] SK AX는 별도 법인이 아니라 SK주식회사 안의 사업 조직이라 회사 이름이 'SK주식회사(AX)'로 적힙니다.[23]",
+   "refs": [
+    1,
+    3,
+    4,
+    23
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SK하이닉스 반도체 제조 현장의 장비자동화와 품질 시스템을 담당하며 제조 AI를 현장에 구현하는 전문가 조직입니다.",
+   "short": "고객은 SK하이닉스 팹. 장비를 공장 시스템에 잇는 자동화와 품질 시스템이 이 팀 몫이다.",
+   "why": "**장비자동화**는 사람이 장비 앞에서 버튼을 누르는 대신 공장 시스템(MES, 제조 실행 시스템)이 장비에 작업을 시키고 결과를 받는 것입니다. 반도체 업계는 이 대화 규칙을 SEMI 표준 GEM(E30)으로 맞춰 두었습니다.[10] SK AX는 반도체 제조사 H사의 장비 통신(HSMS) 단말이 끊기지 않게 하는 이중화 장치를 넣은 사례를 공개했습니다.[9]",
+   "actually": {
+    "intro": "같은 부문 2팀 공고가 운영하는 시스템 이름을 적었습니다.[3] 이름 뒤 풀이는 이름으로 짐작한 것입니다.",
+    "items": [
+     "**장비 자동화** — smartEAP·smartDCP·smartAPC.[3] EAP는 장비와 MES 사이의 장비 자동화 프로그램, APC는 공정 결과를 보고 다음 장비 설정을 고치는 공정 제어로 읽힌다. {추론}",
+     "**품질** — smartYES.[3] 수율(좋은 칩 비율)을 올리는 시스템 계열로 읽힌다. {추론}",
+     "**MES** — 생산 계획 실행·공정 추적·작업 지시를 실시간으로 관리하는 시스템.[7]"
+    ]
+   },
+   "how_far": "4팀은 이 시스템들을 **새로 짓거나 넓히는** 쪽이고, 다 지은 뒤 매일 돌보는 일은 2팀 같은 운영 조직으로 넘어갑니다.[1][3] {추론}",
+   "refs": [
+    1,
+    3,
+    7,
+    9,
+    10
+   ],
+   "study": [
+    "skax-glossary",
+    "skax-mes-intro"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "반도체 스마트팩토리 구축을 통해 쌓아온 기술력과 현장 경험을 바탕으로, 기존 자동화 시스템을 데이터와 AI가 연결되는 제조 AX 환경으로 발전시키고 있습니다.",
+   "short": "이미 깔린 자동화 시스템을 버리지 않고, 그 데이터를 AI가 쓰게 잇는 단계다.",
+   "why": "SK하이닉스는 AX(AI 전환)를 '도구 하나 더하기'가 아니라 표준화된 데이터·시스템 위에 AI를 얹는 일로 설명하고, 그 갈래 하나로 장비·물류 데이터를 실시간 분석해 이상 징후를 일찍 잡는 제조 시스템 고도화를 꼽았습니다.[6]",
+   "how_far": "새 AI 기능도 결국 기존 장비 연계·품질 시스템이 모은 데이터를 읽습니다. 그래서 요건 첫 줄이 AI가 아니라 **장비·품질 시스템 경력 5년**입니다.[1] {추론}",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "hynix-ax"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장비 이상 분석, 품질 이슈 대응 등 엔지니어의 실제 업무에 AI Agent를 적용해, 필요한 정보를 찾고 판단 근거를 확인하는 과정을 개선합니다.",
+   "short": "장비 엔지니어가 이력·문서를 뒤지던 시간을 AI가 줄이고, 판단 근거를 같이 보여 준다.",
+   "why": "고객사 SK하이닉스는 사내 생성형 AI 플랫폼 GaiA에 **장비 보전 가이드 에이전트**를 이미 올렸습니다. 장비 이상·문제점·처리 결과를 적은 기록(Inform Note)을 바탕으로 숙련자(명장·마스터)의 지식을 보태, 장비 이력 요약과 불량 조치 가이드를 줍니다.[5] 목표로 든 것은 불량 대응 시간 단축, 주니어도 기록을 근거로 판단하기, 팹 사이 품질 관리 표준화입니다.[5]",
+   "actually": {
+    "intro": "GaiA 글이 밝힌 것과 그로부터 짐작한 것을 나눕니다.",
+    "items": [
+     "**밝힌 것** — 지금은 Inform Note 중심이고, 앞으로 다른 데이터를 이어 정확도와 범위를 넓힐 계획이다.[5]",
+     "**밝힌 것** — 같은 플랫폼에 로그 분석 에이전트(테스트 오류 분석)도 있다.[5]",
+     "**이 공고가 더하는 것** — 장비 로그·품질 데이터·기술 문서를 함께 잇는다.[1] 위 계획의 '다른 데이터'와 겹친다. {추론}",
+     "GaiA는 SK하이닉스 자체 조직이 쓴 글이라, SK AX가 그 에이전트를 만들었는지는 글에 없다.[5]"
+    ]
+   },
+   "refs": [
+    1,
+    5
+   ],
+   "study": [
+    "gaia-ep1"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "최첨단 반도체/배터리 분야의 Smart Factory를 실현하며, 최고 수준의 기술력과 노하우를 바탕으로 고객의 제조 경쟁력 향상을 이끌어가고 있습니다.",
+   "short": "팀 소개 문장. 배터리도 적혀 있지만 이 공고의 업무 줄은 모두 반도체 팹이다.",
+   "why": "업무 줄은 '반도체 FAB 장비자동화', 우대 줄은 '반도체 제조 현장'과 'FAB 확산'을 적었습니다.[1] 배터리 공장 경험은 '제조 분야' 경력으로는 인정될 수 있습니다.[1] {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "수평적인 조직문화를 지향하며, 구성원의 행복을 중심 가치로 삼고 있습니다.",
+   "short": "회사 문화 소개 문장 — 업무 요건이 아니다.",
+   "why": "업무 범위와는 상관없는 소개입니다. 실제 일하는 방식은 면접에서 팀원에게 묻는 편이 정확합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구성원의 성장이 곧 회사의 성장이라는 믿음으로, 지속적인 교육과 자기계발을 지원합니다.",
+   "short": "교육 지원 소개 — 사내 교육 플랫폼(mySUNI)과 해마다 쓰는 학습 예산이 있다.",
+   "why": "SK AX 채용 사이트 복리후생에 9개 단과대 College·mySUNI, 해마다 주는 Learning Account 예산, MARU 도서관이 적혀 있습니다.[21] LLM 에이전트처럼 새로 배워야 할 것이 많은 자리라 쓸모가 있습니다. {추론}",
+   "refs": [
+    21
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 아이디어를 자유롭게 제안하고 실현할 수 있는 창의적인 문화를 추구합니다.",
+   "short": "문화 소개지만, 업무에 'AI를 적용할 업무 발굴'이 실제로 들어 있다.",
+   "why": "PM/PL 업무 셋째 줄이 장비 이상 분석·품질 이슈 대응에서 AI 에이전트를 붙일 일을 찾는 것입니다.[1] 제안이 일의 일부라는 뜻입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "열정 넘치는 팀원들과 함께 전문성을 키우며 성장해 나갈 수 있습니다.",
+   "short": "팀 소개 문장 — 업무 요건이 아니다.",
+   "why": "팀 규모·구성은 공고에 없습니다. 면접에서 장비 연계·품질·AI 담당이 각각 몇 명인지 물어보면 내가 맡을 폭을 알 수 있습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "✅ 프로젝트 PM/PL",
+   "short": "업무 첫 갈래 — 구축 프로젝트를 이끄는 PM/PL 자리.",
+   "why": "업무와 요건이 'PM/PL'과 '시스템 설계 및 개발' 두 갈래로 나뉘고, 공통 요건 3줄은 둘 다에 걸립니다.[1] 지원서에 어느 갈래로 지원하는지 분명히 쓰는 편이 낫습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "반도체 FAB 장비자동화 및 품질 시스템 구축 프로젝트의 일정, 품질, 리스크를 관리합니다.",
+   "short": "팹에 장비 연계·품질 시스템을 새로 깔 때 일정·품질·위험을 관리한다.",
+   "why": "팹 장비는 멈추면 바로 생산 손실이라, SK AX도 장비 통신 단말에 무중단 이중화를 넣은 사례를 냈습니다.[9] 그래서 이 일의 '리스크'는 대개 **돌고 있는 장비를 건드리는 순간**입니다. {추론} 새 팹도 계속 지어집니다 — SK하이닉스는 청주에 M15X를 짓겠다고 2022년에 밝혔습니다.[25]",
+   "actually": {
+    "items": [
+     "**일정** — 일을 쪼갠 목록(WBS)과 마일스톤, 진척 관리. PM 지식 체계의 기본 용어다.[17]",
+     "**품질** — 설계서·시험 결과 같은 산출물 검토, 장비 종류마다 연동 시험을 통과했는지. {추론}",
+     "**리스크** — 장비 업체 사양서가 늦게 오거나 다름, 팹이 정한 반입·작업 시간, 고객 요구 변경. 위험 목록에 적고 대응을 정한다.[17] {추론}",
+     "**전환 날** — 옛 프로그램에서 새 프로그램으로 장비를 넘기는 날의 순서와 되돌리기 계획. {추론}"
+    ]
+   },
+   "how_far": "PM은 일정·고객·위험을, PL은 기술 결정과 개발자 일 배분을 맡는 경우가 많습니다. {추론} 공고는 둘을 묶어 'PM/PL'로 적었습니다.[1]",
+   "refs": [
+    1,
+    9,
+    17,
+    25
+   ],
+   "study": [
+    "pmbok"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객과 요구사항 및 구축 범위를 조율하고, 시스템 오픈과 운영 전환을 이끕니다.",
+   "short": "팹 쪽과 무엇을 어디까지 만들지 정하고, 오픈한 뒤 운영 조직에 넘기는 데까지 맡는다.",
+   "why": "같은 부문에 제조 시스템 운영만 하는 팀(2팀, 현장대리인·장애 대응·기능 개선)이 따로 있습니다.[3] 그래서 구축 팀은 오픈 뒤 **운영 전환**(인수인계)을 끝내야 일이 끝납니다. {추론}",
+   "actually": {
+    "items": [
+     "**범위 정하기** — 몇 팹·몇 장비 종류·어느 공정까지인지, 이번에 안 하는 것은 무엇인지 문서로 합의한다. {추론}",
+     "**오픈** — 새 시스템과 옛 시스템을 한동안 같이 돌려 결과를 대조하고, 문제가 생기면 되돌린다. {추론}",
+     "**운영 전환** — 장애 대응 절차·설정 목록·자주 묻는 질문을 넘기고 운영 조직이 혼자 돌릴 수 있게 한다.[3] {추론}"
+    ]
+   },
+   "refs": [
+    3
+   ],
+   "study": [
+    "pmbok"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장비 이상 분석, 품질 이슈 대응 등 AI Agent를 적용할 업무를 발굴합니다.",
+   "short": "어떤 현장 일에 AI를 붙이면 효과가 나는지 고르고, 붙이지 말아야 할 곳도 가린다.",
+   "why": "LLM 시스템은 가장 단순한 해법부터 시작해 효과가 확인될 때만 복잡하게 만들라는 것이 공개된 설계 지침입니다.[15] 고객사도 장비 보전·로그 분석처럼 기록이 쌓인 일부터 에이전트를 붙였습니다.[5]",
+   "actually": {
+    "intro": "후보를 고를 때 보는 것 {추론}",
+    "items": [
+     "**자주 반복되나** — 같은 종류의 이상·문의가 매주 나오는가.",
+     "**근거가 쌓여 있나** — Inform Note 같은 처리 기록·매뉴얼이 있는가.[5]",
+     "**틀리면 얼마나 위험한가** — 정보 찾기·요약은 괜찮지만 장비를 직접 움직이는 일은 사람이 확인해야 한다.[15]",
+     "**결과를 잴 수 있나** — 대응 시간·정답률처럼 전후를 비교할 숫자가 있는가.[15]"
+    ]
+   },
+   "refs": [
+    5,
+    15
+   ],
+   "study": [
+    "anthropic-agents",
+    "gaia-ep1"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "✅ 시스템 설계 및 개발",
+   "short": "업무 둘째 갈래 — 장비·품질 시스템과 AI 에이전트를 직접 설계하고 만든다.",
+   "why": "이 갈래의 필수 요건은 Java·C# 백엔드, Oracle 연계, React·TypeScript 화면 중 하나 이상의 실무 경험입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장비 연계, 공정 제어, 장비 데이터 수집 및 분석, 제조 품질 및 수율 관리 시스템을 설계하고 개발합니다.",
+   "short": "장비와 MES를 잇는 프로그램, 공정 제어, 장비 데이터 수집, 품질·수율 시스템을 만든다.",
+   "why": "팹의 장비는 수백 대이고 회사마다 만든 곳이 달라, 공장 시스템이 모두와 같은 말로 이야기하려면 표준 통신과 이를 받아 주는 프로그램이 필요합니다.[10] 그렇게 모은 장비 데이터가 이상 감지(FDC)·통계 공정 관리(SPC)·수율 분석의 재료입니다.[7]",
+   "flows": [
+    {
+     "caption": "장비에서 수율까지 데이터가 가는 길 (보통 구성)[10][7][26] {추론}",
+     "steps": [
+      "장비 · SECS/GEM 으로 상태·이벤트·알람을 보냄",
+      "장비 연계 프로그램 · 메시지를 받아 MES 말로 바꾸고 명령을 내려보냄",
+      "MES · 로트(웨이퍼 묶음) 작업 지시·추적",
+      "FDC·SPC · 센서 값·계측 값으로 이상 감지",
+      "수율 관리 · 웨이퍼 시험 결과와 결함·계측을 엮어 원인 찾기"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**장비 연계** — 메시지 내용은 SECS-II(E5), 장비가 어떻게 행동하는지는 GEM(E30)이 정한다. 요즘 라인은 거의 TCP/IP 위의 HSMS로 잇는다.[10]",
+     "**이벤트 보고** — 장비는 '공정 시작' 같은 일이 생기면 S6F11 메시지를 보낸다. 안에는 DATAID·이벤트 번호(CEID)·미리 정해 둔 보고 묶음(RPTID와 값)이 들어 있다.[11]",
+     "**공통 이름** — SEMI는 최근 GEM의 이벤트·알람·변수에 업계 공통 이름을 정하는 중이다. 장비마다 번호가 달라 매핑하던 일을 줄이려는 것이다.[29]",
+     "**공정 제어** — 장비에 맞는 레시피(공정 조건)를 내려보내고, 앞 공정 결과로 다음 설정을 고친다. 2팀 공고의 smartAPC가 이 계열로 읽힌다.[3] {추론}",
+     "**FDC·SPC** — FDC는 장비 센서 값으로 이상을 잡아 분류하고, SPC는 공정 데이터를 통계로 보아 문제가 나기 전에 조치한다.[7]",
+     "**로트 추적** — 어느 웨이퍼가 어느 장비·레시피를 거쳤는지 이력을 남긴다. SK AX MES 제품도 Lot 추적을 내세운다.[8]",
+     "**수율 관리** — 다른 회사 제품(PDF Solutions) 예로는 웨이퍼 결함·계측·전기 시험을 서로 엮어 수율을 떨어뜨린 원인을 찾는다.[26]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "S6F11(이벤트 보고) 한 통을 표 한 줄로 펼치기",
+     "body": "장비는 번호만 보냅니다. 보고 묶음 10번이 무엇을 담는지는 미리 정해 둔 표(REPORT_DEF)로 풉니다.[11] 값은 모두 가상입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "REPORT_DEF = {10: [\"LotID\", \"RecipeID\"], 20: [\"ChamberPressure\", \"RFPower\"]}\nCEID_NAME = {301: \"ProcessStart\"}\nmsg = {\"DATAID\": 1, \"CEID\": 301,\n       \"RPT\": [{\"RPTID\": 10, \"V\": [\"LOT001\", \"ETCH_A\"]},\n               {\"RPTID\": 20, \"V\": [3.2, 750]}]}\nrow = {\"event\": CEID_NAME[msg[\"CEID\"]]}\nfor r in msg[\"RPT\"]:\n    row.update(zip(REPORT_DEF[r[\"RPTID\"]], r[\"V\"]))\nprint(row)\n# {'event': 'ProcessStart', 'LotID': 'LOT001', 'RecipeID': 'ETCH_A', 'ChamberPressure': 3.2, 'RFPower': 750}"
+    },
+    {
+     "title": "SPC 규칙 둘 — 3σ 밖 한 점, 한쪽에 8점 연속",
+     "body": "NIST 안내서의 관리도 규칙 중 둘입니다.[12] 가상 값에서 '8점 연속 한쪽' 규칙이 3σ를 넘는 점(#10)보다 **한 점 먼저**(#9) 천천히 오르는 흐름을 잡았습니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "mean, sd = 50.0, 1.0\nxs = [50.2, 49.7, 50.4, 50.6, 50.3, 50.9, 50.5, 50.8, 50.2, 50.7, 53.4]\nfor i, x in enumerate(xs):\n    if abs(x - mean) > 3 * sd:\n        print(f\"#{i} {x} 규칙1: 3σ 밖\")\n    w = xs[max(0, i - 7): i + 1]\n    if len(w) == 8 and (all(v > mean for v in w) or all(v < mean for v in w)):\n        print(f\"#{i} {x} 규칙4: 8점 연속 한쪽\")\n# #9 50.7 규칙4: 8점 연속 한쪽\n# #10 53.4 규칙1: 3σ 밖\n# #10 53.4 규칙4: 8점 연속 한쪽"
+    }
+   ],
+   "how_far": "한 사람이 다섯 칸을 다 만들지는 않습니다. 이 자리는 **장비 연계 칸부터** 데이터를 받아 품질·수율 시스템까지 이어지게 설계하는 쪽이고, 어떤 이상을 이상으로 볼지(규칙·기준값)는 팹의 공정·품질 엔지니어가 정합니다. {추론}",
+   "refs": [
+    3,
+    7,
+    8,
+    10,
+    11,
+    12,
+    26,
+    29
+   ],
+   "study": [
+    "semi-e30",
+    "secsgem-docs",
+    "nist-spc",
+    "montgomery-sqc",
+    "skax-glossary"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장비 로그, 품질 데이터, 기술 문서를 연계해 현업 질문에 답변하고 근거를 제시하는 LLM 기반 AI Agent를 설계하고 개발합니다.",
+   "short": "장비 로그·품질 데이터·문서를 찾아 답하고, 어느 기록에서 나온 답인지 붙여 주는 에이전트를 만든다.",
+   "why": "LLM은 학습하지 않은 공장 기록을 모릅니다. 질문할 때 관련 문서를 찾아 같이 넣는 방식(RAG, 검색 증강 생성)이 이 문제를 풀려고 나왔고, 답의 출처를 보여 줄 수 있다는 장점도 원 논문이 들었습니다.[16] 고객사의 장비 보전 에이전트도 처리 기록을 근거로 판단하게 하는 것이 목표입니다.[5]",
+   "flows": [
+    {
+     "caption": "질문 하나가 지나가는 길 (보통 구성)[15][16] {추론}",
+     "steps": [
+      "질문 · '3번 식각 장비 어제 알람 원인?'",
+      "나누기 · 문서 질문인지, 데이터 조회인지, 로그 요약인지",
+      "도구 호출 · 문서 검색 / 품질 DB 조회 / 로그 기간 자르기",
+      "근거 모으기 · 찾은 기록마다 번호",
+      "답 + 근거 번호",
+      "검사 · 근거 없는 문장이 있으면 담당자에게"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "intro": "세 종류 데이터는 성질이 달라 꺼내는 방법도 다릅니다. {추론}",
+    "items": [
+     "**기술 문서** — 매뉴얼·처리 기록은 잘게 나눠 검색 색인에 넣고 질문과 비슷한 조각을 찾는다.[16]",
+     "**품질 데이터** — 숫자 표는 검색보다 정해진 SQL 조회를 도구로 만들어 에이전트가 부르게 한다. LLM이 숫자를 지어내지 않게. {추론}",
+     "**장비 로그** — 양이 많아 장비·시간으로 먼저 자른 뒤 요약한다. {추론}",
+     "**정해진 흐름과 에이전트** — 순서가 늘 같은 일은 코드로 정한 흐름(워크플로)이, 무엇을 할지 매번 다른 일은 LLM이 도구를 고르는 에이전트가 맞다.[15]",
+     "**권한** — 팹 데이터는 볼 수 있는 사람이 정해져 있어, 질문한 사람 권한 안에서만 찾게 해야 한다. {추론}"
+    ]
+   },
+   "how_far": "모델을 처음부터 학습시키는 자리가 아닙니다. 이미 있는 LLM에 **어떤 데이터를 어떤 도구로 이어 줄지**와 근거 표시를 설계하는 것이 핵심입니다.[1] {추론}",
+   "refs": [
+    1,
+    5,
+    15,
+    16
+   ],
+   "study": [
+    "rag-paper",
+    "anthropic-agents",
+    "langchain-book",
+    "llm-app-book",
+    "cs329z-rag"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "현장 시나리오를 바탕으로 답변 정확도와 근거 일치 여부를 검증하고, 담당자 확인이 필요한 예외 상황의 처리 흐름을 설계합니다.",
+   "short": "실제 현장 질문으로 시험지를 만들어 채점하고, 자신 없는 답은 사람에게 넘기는 길을 만든다.",
+   "why": "RAG 평가 연구는 답이 찾은 근거에서만 나왔는지(**근거 충실도**, faithfulness)를 따로 잽니다 — 답 문장 중 근거로 뒷받침되는 문장의 비율입니다.[14] 에이전트 설계 지침도 중간 점검에서 사람 확인을 받고, 멈출 조건을 두라고 권합니다.[15]",
+   "actually": {
+    "items": [
+     "**시험지** — 엔지니어가 실제로 묻는 질문과, 그 답이 있어야 할 문서·기록을 짝지어 둔다. {추론}",
+     "**정확도** — 답이 맞는가. 정답이 있는 질문으로 잰다.",
+     "**근거 일치** — 답 문장마다 붙은 근거를 열어 보면 정말 그 말이 있는가.[14]",
+     "**예외로 넘길 때** — 근거가 모자랄 때, 장비를 멈추거나 설정을 바꾸는 조치처럼 틀리면 위험한 답일 때, 데이터 권한 밖일 때. {추론}",
+     "**멈출 조건** — 도구를 몇 번까지 부를지 상한을 둔다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "근거 있는 문장 비율을 세고 모자라면 담당자에게",
+     "body": "RAGAS 의 근거 충실도 생각(뒷받침되는 문장 / 전체 문장)[14]을 아주 작게 흉내 냈습니다. 실제로는 '근거가 있나'를 LLM이나 사람이 판정합니다. 값은 가상입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "answer = [\n    {\"claim\": \"3번 챔버 압력이 14:02부터 기준 위로 올랐다\", \"evidence\": [\"FDC-0412\"]},\n    {\"claim\": \"같은 증상이 지난달 Inform Note에 있었다\", \"evidence\": [\"IN-2291\"]},\n    {\"claim\": \"O-ring 교체로 해결된다\", \"evidence\": []},\n]\nsupported = sum(1 for a in answer if a[\"evidence\"])\nscore = supported / len(answer)\nprint(f\"근거 있는 문장 {supported}/{len(answer)} = {score:.2f}\")\nprint(\"담당자 확인으로 넘김\" if score < 1.0 else \"그대로 답변\")\n# 근거 있는 문장 2/3 = 0.67\n# 담당자 확인으로 넘김"
+    }
+   ],
+   "how_far": "몇 점이면 현장에 내놓을지, 어떤 조치를 반드시 사람이 확인할지는 고객(팹 엔지니어·품질 조직)과 정합니다. 개발자는 **그 기준을 잴 수 있는 시험지와 자동 채점, 넘기는 흐름**을 만듭니다. {추론}",
+   "refs": [
+    14,
+    15
+   ],
+   "study": [
+    "ragas-paper",
+    "anthropic-agents"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※ 근무지(공통) : 경기도 분당/이천",
+   "short": "사무실은 분당, 현장은 이천 — 이천은 고객사 SK하이닉스 본사가 있는 곳이다.",
+   "why": "캐치 사본은 근무지를 '경기 이천시, 성남시 분당구'로 적었습니다.[2] SK AX 본사는 분당 SK u-타워이고[22], SK하이닉스 본사 주소는 이천시 부발읍입니다.[24] 프로젝트마다 어느 쪽에 오래 있는지는 공고에 없습니다.",
+   "refs": [
+    2,
+    22,
+    24
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨",
+   "short": "여기부터 필수 요건 — 공통 3줄과 갈래별 요건으로 나뉜다.",
+   "why": "공통 3줄(경력 5년·시스템 구조·LLM 에이전트 이해)은 두 갈래 모두, 나머지는 지원하는 갈래만 봅니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "제조 분야의 장비자동화 또는 품질 시스템 분석, 설계, 개발 또는 구축 프로젝트 수행 경력을 5년 이상 보유하신 분",
+   "short": "제조 장비자동화나 품질 시스템 프로젝트 5년 이상 — 이 자리의 가장 높은 문턱.",
+   "why": "공고 끝의 공통 요건에도 '채용 분야 경력 5년 이상'이 한 번 더 적혀 있습니다.[1] 같은 부문의 운영·후공정 공고는 3년 이상입니다.[3][4]",
+   "how_far": "'반도체'가 아니라 '제조 분야'라서 디스플레이·배터리·일반 공장의 장비 연동이나 품질 시스템 경력도 들어갑니다. 반도체 경험은 우대에 따로 있습니다.[1] 제조와 상관없는 SI 경력만 있다면 이 줄을 채우기 어렵습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "장비 또는 품질 시스템의 아키텍처와 데이터 흐름을 이해하고, 관련 시스템을 구축하거나 운영한 경험이 있으신 분",
+   "short": "장비에서 MES·품질 시스템까지 데이터가 어디서 어디로 가는지 그림으로 그릴 수 있어야 한다.",
+   "why": "공장 시스템의 층을 정리한 국제 표준이 ISA-95입니다 — 아래는 장비 제어, 위는 경영 시스템(ERP), 그 사이가 MES입니다.[13] 장비·품질 시스템을 설명하려면 이 층 사이의 흐름을 알아야 합니다.",
+   "flows": [
+    {
+     "caption": "ISA-95 의 층 (위로 갈수록 느리고 넓다)[13]",
+     "steps": [
+      "장비·센서 · 실제 공정",
+      "장비 제어 · PLC·장비 컨트롤러",
+      "제조 실행 · MES·장비 연계·FDC·SPC",
+      "경영 · ERP·생산 계획"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "면접에서 '내가 만든 시스템에서 장비 이벤트 하나가 화면·DB에 닿기까지'를 칸마다 설명할 수 있으면 됩니다. 어디서 데이터가 쌓이고 어디서 끊길 수 있는지까지. {추론}",
+   "refs": [
+    13
+   ],
+   "study": [
+    "isa95",
+    "skax-glossary"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM 기반 AI Agent의 동작 원리와 한계를 이해하고, 제조 현장의 요구사항을 Agent 기능, 데이터 연계 요건, 검증 기준으로 구체화할 수 있는 분",
+   "short": "LLM이 못 하는 것을 알고, 현장 요구를 에이전트 기능·필요한 데이터·합격 기준 셋으로 쪼갠다.",
+   "why": "에이전트는 LLM이 도구를 골라 쓰며 스스로 진행하는 구조라 비용이 늘고 오류가 쌓일 수 있습니다.[15] LLM은 학습하지 않은 사실을 모르고 그럴듯하게 지어낼 수 있어 근거 문서를 붙이는 방식이 나왔습니다.[16]",
+   "actually": {
+    "intro": "'장비 이상 원인을 빨리 알고 싶다'는 요구를 셋으로 쪼갠 예 {추론}",
+    "items": [
+     "**기능** — 장비 번호와 시간을 받으면 그 시간대 알람·이벤트를 요약하고, 비슷한 과거 처리 기록 3건을 근거와 함께 보여 준다.",
+     "**데이터 연계** — 알람 이력(장비 연계 시스템), 센서 이상 기록(FDC), 처리 기록 문서. 각각 어디서 어떤 권한으로 읽는지.",
+     "**검증 기준** — 현장 질문 50개 시험지에서 근거 일치 몇 % 이상, 근거 없는 답은 반드시 담당자에게.[14]"
+    ]
+   },
+   "how_far": "에이전트를 직접 다 짜 본 경험보다 **'이 요구는 LLM에 맡기면 안 된다'를 가려내는 판단**을 보는 줄입니다. 우대 첫 줄이 실제 개발 경험입니다.[1] {추론}",
+   "refs": [
+    1,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "anthropic-agents",
+    "llm-app-book",
+    "cs329z-mcp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "✅ 프로젝트 PM/PL",
+   "short": "PM/PL 갈래의 요건 두 줄.",
+   "why": "이 두 줄은 PM/PL 갈래로 지원할 때 보는 요건입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "IT 시스템 구축 프로젝트를 PM 또는 PL로 수행한 경험이 있으신 분",
+   "short": "IT 구축 프로젝트를 PM이나 PL로 이끌어 본 경험 — 이 줄만은 제조가 아니어도 된다.",
+   "why": "이 줄은 'IT 시스템 구축'이라고만 적었습니다.[1] 제조 도메인은 공통 요건(5년)이 따로 봅니다.[1]",
+   "how_far": "역할 이름보다 **무엇을 결정했나**를 씁니다 — 범위를 줄인 일, 일정이 밀렸을 때 바꾼 것, 오픈 날 되돌린 일. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "pmbok"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "분석 및 설계 결과를 고객에게 명확히 설명하고, 개발팀과 구현 범위 및 우선순위를 조율하며 프로젝트를 이끌 수 있는 분",
+   "short": "팹 엔지니어에게 설계를 쉬운 말로 설명하고, 개발팀과 이번에 할 것·미룰 것을 정한다.",
+   "why": "고객은 IT 사람이 아니라 장비·공정 엔지니어인 경우가 많습니다. 같은 부문 공고들도 현장 요구를 이해해 기능으로 옮기는 능력을 따로 적었습니다.[4] {추론}",
+   "how_far": "설계서를 그림 한 장(데이터 흐름)과 '이번에 안 하는 것' 목록으로 줄여 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "✅ 시스템 설계 및 개발",
+   "short": "설계·개발 갈래의 요건 한 줄.",
+   "why": "이 갈래로 지원하면 아래 기술 중 하나 이상의 실무 경험을 봅니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java 또는 C# 기반 백엔드 및 API 개발, Oracle 기반 데이터 연계, React 및 TypeScript 기반 웹 프론트엔드 개발 중 하나 이상의 실무 경험이 있으신 분",
+   "short": "Java·C# 백엔드, Oracle 연계, React·TS 화면 중 하나 이상 실무 — 셋 다는 아니다.",
+   "why": "같은 부문 운영 공고도 C#/Java/Oracle을 필수로 적었습니다 — 지금 돌고 있는 제조 시스템이 이 기술로 되어 있다는 뜻입니다.[3] {추론} 이 공고의 기술 태그도 C#·Java·Oracle·React·TypeScript입니다.[1]",
+   "level": {
+    "basic": "REST API 하나를 만들고, Oracle 표를 조인·집계하는 SQL을 쓴다",
+    "work": "장비 이벤트처럼 계속 들어오는 데이터를 끊김 없이 받아 적재 · 큰 이력 표 조회를 실행계획으로 고친다 · 조회 화면을 컴포넌트로 나눈다",
+    "team": "장비 연계 프로그램(윈도우·C# 이 많다 {추론})과 MES·품질 DB 사이를 잇는 설계"
+   },
+   "how_far": "공고는 '중 하나 이상'입니다.[1] 자기 주력 하나를 깊게 보여 주고, 나머지는 읽고 고칠 수 있는 정도면 됩니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "spring-core",
+    "aspnet-docs",
+    "sql-tuning",
+    "react-docs",
+    "ts-handbook"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍",
+   "short": "여기부터 우대 — 앞 네 줄이 기술, 뒤 네 줄은 성향이다.",
+   "why": "앞 4줄은 AI 에이전트·반도체 현장·Python·외국어, 뒤 4줄은 '성향 및 캐릭터'입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM 기반 AI Agent를 설계 또는 개발했거나, RAG 기반 문서 검색 및 답변 평가 또는 Agent의 현장 적용과 개선 경험이 있으신 분",
+   "short": "에이전트나 RAG를 직접 만들고, 답을 채점해 고쳐 본 경험.",
+   "why": "업무 둘째 갈래의 둘째·셋째 줄(근거 달린 에이전트, 정확도·근거 일치 검증)을 이미 해 본 사람입니다.[1] 평가 쪽은 RAGAS 같은 공개 지표가 기준점입니다.[14]",
+   "how_far": "'만들어 봤다'보다 **'점수가 몇에서 몇으로 올랐고 무엇을 바꿨나'**를 보여 주면 이 줄에 딱 맞습니다. {추론}",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "ragas-paper",
+    "cs329z-rag",
+    "langchain-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "반도체 제조 현장의 장비 또는 품질 시스템을 구축했거나 FAB 확산 횡전개 경험이 있으신 분",
+   "short": "반도체 팹 장비·품질 시스템 경험, 특히 한 팹에서 만든 것을 다른 팹에 옮겨 깐 경험.",
+   "why": "**횡전개**는 한 곳에서 검증한 방식을 다른 곳에 똑같이 펼치는 일입니다. SK하이닉스는 이천(D램)·청주(낸드)에 팹이 있고 청주에 M15X를 더 짓습니다.[25] 고객사가 장비 보전 에이전트의 목표로 '팹 간 품질 관리 표준화'를 든 것도 같은 맥락입니다.[5]",
+   "actually": {
+    "intro": "옮겨 깔 때 달라지는 것 {추론}",
+    "items": [
+     "같은 공정이라도 장비 모델·소프트웨어 판이 달라 이벤트 번호·변수 이름이 다르다 — SEMI가 공통 이름을 정하려는 이유다.[29]",
+     "팹마다 기준 정보(장비 이름 규칙·공정 코드)가 달라 매핑 표를 새로 만든다.",
+     "반입·작업 가능한 시간이 팹마다 따로 정해진다."
+    ]
+   },
+   "refs": [
+    5,
+    25,
+    29
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Python을 활용한 제조 데이터 분석 또는 머신러닝 모델 적용 경험이 있으신 분",
+   "short": "장비·품질 데이터를 Python으로 직접 분석하거나 모델을 붙여 본 경험.",
+   "why": "에이전트·RAG 도구 대부분이 Python이고, 장비 센서 값·SPC 같은 데이터를 먼저 들여다보는 일도 Python이 빠릅니다. {추론} 필수 기술 줄에는 Python이 없어서 우대로 둔 것입니다.[1]",
+   "how_far": "pandas로 장비별·시간별로 자르고 관리도를 그려 이상 구간을 찾는 정도가 시작점입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "python-data-book",
+    "nist-spc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "장비 업체·해외 현장과 영어로 사양을 주고받을 일이 생길 수 있어서.",
+   "why": "공고 성향 줄에 '업무상 필요한 해외 출장'이 있습니다.[1] 장비 통신 규격(SEMI 표준)과 장비 업체 사양서도 대개 영어입니다.[10] {추론}",
+   "refs": [
+    1,
+    10
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "고객 및 동료와 원활히 소통하고 직무 간 협업을 이끌 수 있는 분",
+   "short": "팹 엔지니어·장비 업체·운영팀·AI 개발자 사이를 이어 주는 사람.",
+   "why": "이 일에는 장비(공정 엔지니어), 시스템(개발팀), 오픈 뒤(운영 조직)가 다 걸립니다.[1][3] {추론}",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "새로운 기술을 적극적으로 배우고 실제 업무에 적용해 보는 분",
+   "short": "LLM 에이전트처럼 빨리 바뀌는 기술을 배워 현장에 실제로 붙여 보는 사람.",
+   "why": "공개된 에이전트 설계 글도 처음 쓴 뒤 도구 환경이 많이 바뀌었다고 스스로 덧붙였습니다.[15] 배운 것을 시험지와 점수로 확인하는 습관이 이 줄에 맞습니다. {추론}",
+   "refs": [
+    15
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "현장의 문제를 주도적으로 파악하고 해결책을 제안하는 분",
+   "short": "시키기 전에 현장 문제를 찾아 'AI를 붙일 일'로 제안하는 사람.",
+   "why": "PM/PL 업무에 'AI Agent를 적용할 업무를 발굴'이 들어 있습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "업무상 필요한 해외 출장이 가능하신 분",
+   "short": "해외 출장이 있을 수 있다 — 공통 요건에도 '해외여행에 결격사유가 없는 분'이 있다.",
+   "why": "공고 끝 공통 요건에 해외여행 결격사유 없음(병역 대상자는 병역필 또는 면제)이 적혀 있습니다.[1] 출장 빈도·행선지는 공고에 없습니다.",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "장비 연동·MES·품질 시스템을 5년 넘게 해 왔고 LLM을 현장에 붙여 보고 싶은 사람[1]",
+   "'AI가 틀리면 어떻게 하나'를 먼저 묻는 사람 — 검증·예외 흐름이 업무 줄에 있다[1]",
+   "반도체 팹을 고객으로 직접 다뤄 보고 싶은 사람[1]"
+  ],
+  "hard": [
+   "제조 도메인 경력 5년이 필수 — 웹·앱 개발만 해 온 사람에게는 문이 좁다[1]",
+   "분당 사무실과 이천 현장을 오가고 해외 출장도 있을 수 있다[1][2]",
+   "돌고 있는 장비를 건드리는 일이라 전환 날의 절차·승인이 무겁다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "장비가 보낸 이벤트 하나가 MES 화면에 뜨기까지 어떤 길을 거치나요? 중간에 끊기면?",
+   "a": "SECS/GEM·장비 연계 칸을 설명할 수 있나 — 업무 '장비 연계'와 요건 '데이터 흐름'.[10][11]"
+  },
+  {
+   "q": "장비 이상 질문에 에이전트가 근거 없는 답을 하면 어떻게 막겠어요?",
+   "a": "근거 일치 검증과 담당자 확인 흐름이 업무 줄에 그대로 있다.[1][14]"
+  },
+  {
+   "q": "어떤 현장 일에는 AI 에이전트를 붙이지 않겠어요?",
+   "a": "단순한 것부터, 위험한 조치는 사람 확인 — 'AI를 적용할 업무 발굴' 줄.[15]"
+  },
+  {
+   "q": "한 팹에서 검증한 장비 연계를 다른 팹에 옮길 때 무엇이 달라지나요?",
+   "a": "우대 'FAB 확산 횡전개'.[5][29]"
+  },
+  {
+   "q": "3σ를 넘기 전에 천천히 오르는 이상은 어떻게 잡나요?",
+   "a": "SPC 규칙 — 품질 시스템 기본기.[12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · 제조AI 장비/품질 자동화 시스템 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262568",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "제조AX서비스4팀 소개·두 갈래 업무·요건·우대·전형(서류 > SKCT > 면접 2회 > 채용검진/처우협의)·공통 요건(경력 5년 이상). 직무 'Tech R&D - Software Engineering', 지원 2026-11-24 ~ 2027-01-28"
+  },
+  {
+   "n": 2,
+   "title": "캐치 · SK주식회사(AX) 제조AI 장비/품질 자동화 시스템 전문가 채용",
+   "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/583961",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 공고 사본 — 경력 5년 이상, 근무지 경기 이천시·성남시 분당구"
+  },
+  {
+   "n": 3,
+   "title": "SK Careers · 제조 시스템 운영(MES/장비/품질/자동화) 담당자 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262586",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 부문 제조AX서비스2팀 — smartDCP·smartAPC·smartEAP(장비 자동화), smartYES(품질), smartMES, Standard BOM 운영. C#/Java/Oracle 필수, 경력 3년 이상. 시스템별 설명은 없음"
+  },
+  {
+   "n": 4,
+   "title": "SK Careers · 제조 P&T AI, MES 전문가 영입 (계약직)",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262571",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 부문 제조AX서비스3팀 — 후공정 MES와 MES용 AI 에이전트, 경력 3년 이상"
+  },
+  {
+   "n": 5,
+   "title": "SK하이닉스 뉴스룸 · Introduce GaiA 1편 — Biz 특화 AI Agent",
+   "url": "https://news.skhynix.co.kr/gaia_ep1_biz_ai_agent/",
+   "kind": "company",
+   "date": "2025-10-31",
+   "note": "고객사 자료 — Inform Note 기반 장비 보전 가이드 에이전트(장비 이력 요약·불량 조치 가이드), 로그 분석 에이전트 등 4종. 장비 보전 에이전트의 사용자 수·정확도 수치는 없음"
+  },
+  {
+   "n": 6,
+   "title": "SK하이닉스 뉴스룸 · [하이피디아] 데이터부터 팹, 일하는 방식까지… 'AX'",
+   "url": "https://news.skhynix.co.kr/?p=68874",
+   "kind": "company",
+   "date": "2026-11-17",
+   "note": "고객사 자료 — AX의 세 방향(데이터 통합·제조 시스템 고도화·일하는 방식), 장비·물류 데이터 실시간 분석"
+  },
+  {
+   "n": 7,
+   "title": "SK AX 인사이트 · MES와 QMS는 무슨 뜻? 스마트 팩토리 용어 모음 : 기초편",
+   "url": "https://www.skax.co.kr/insight/trend/2928",
+   "kind": "company",
+   "date": "2024-09-30",
+   "note": "MES·QMS·SPC 정의, FDC 언급"
+  },
+  {
+   "n": 8,
+   "title": "SK AX · I-FACTs MES",
+   "url": "https://www.skax.co.kr/manufacturing-spec/i-facts-mes",
+   "kind": "company",
+   "note": "통계 기반 이상 감지(Spec·CPK/PPK·알람), Lot 추적, 품질 이력"
+  },
+  {
+   "n": 9,
+   "title": "SK AX 사례 · 반도체 제조 H사의 이중화 전자패치 도입 사례",
+   "url": "https://www.skax.co.kr/case-study/story/2776",
+   "kind": "company",
+   "date": "2024-08-20",
+   "note": "반도체 장비 HSMS 통신 단말의 무중단을 위한 이중화 스위치(IFS), 장애 시 자동 전환. 정량 수치 없음"
+  },
+  {
+   "n": 10,
+   "title": "SEMI E30 · Generic Model for Communications and Control of Manufacturing Equipment (GEM)",
+   "url": "https://store-us.semi.org/products/e03000-semi-e30-specification-for-the-generic-model-for-communications-and-control-of-manufacturing-equipment-gem",
+   "kind": "reference",
+   "note": "유료 표준 — GEM 은 행동 모델, 메시지는 SECS-II(E5), 전송은 HSMS(E37). 관계 설명은 SEMI 소개 글 검색 요약으로 확인"
+  },
+  {
+   "n": 11,
+   "title": "secsgem 문서 · S06F11 (Event Report Send) 소스",
+   "url": "https://secsgem.readthedocs.io/en/latest/_modules/secsgem/secs/functions/s06f11.html",
+   "kind": "reference",
+   "note": "오픈소스 Python 라이브러리(LGPL) — S6F11 = DATAID·CEID·RPT(RPTID, V) 목록"
+  },
+  {
+   "n": 12,
+   "title": "NIST/SEMATECH e-Handbook · What are Control Charts?",
+   "url": "https://itl.nist.gov/div898/handbook/pmc/section3/pmc32.htm",
+   "kind": "reference",
+   "note": "3σ 관리 한계, Western Electric 규칙(3σ 밖 한 점·한쪽 8점 연속 등)"
+  },
+  {
+   "n": 13,
+   "title": "ISA · ISA-95 Standard: Enterprise-Control System Integration",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+   "kind": "reference",
+   "note": "경영 시스템과 제조 제어 시스템을 잇는 국제 표준(IEC 62264), Purdue 모델 층"
+  },
+  {
+   "n": 14,
+   "title": "Ragas: Automated Evaluation of Retrieval Augmented Generation",
+   "url": "https://arxiv.org/abs/2309.15217",
+   "kind": "reference",
+   "date": "2023-09",
+   "note": "Es 외 — 정답 없이 재는 RAG 지표(근거 충실도·답 관련성·문맥 관련성)"
+  },
+  {
+   "n": 15,
+   "title": "Anthropic · Building effective agents",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "kind": "reference",
+   "date": "2024-12-19",
+   "note": "워크플로와 에이전트 구분, 단순한 것부터, 사람 확인 지점·멈출 조건. 이후 환경이 바뀌었다는 머리말"
+  },
+  {
+   "n": 16,
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "kind": "reference",
+   "date": "2020-05",
+   "note": "Lewis 외 — RAG 원 논문"
+  },
+  {
+   "n": 17,
+   "title": "PMI · PMBOK Guide",
+   "url": "https://www.pmi.org/standards/pmbok",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "FETV · SK 계열사 직원 평균 급여(2024 사업보고서)",
+   "url": "https://www.fetv.co.kr/news/articleView.html?idxno=198852",
+   "kind": "news",
+   "date": "2025-08-14"
+  },
+  {
+   "n": 19,
+   "title": "CEO스코어데일리 · 삼성SDS 직원 평균 급여",
+   "url": "https://www.ceoscoredaily.com/page/view/2025070116383437395",
+   "kind": "news",
+   "date": "2025-07-02"
+  },
+  {
+   "n": 20,
+   "title": "CEO스코어데일리 · LG CNS 직원 평균 급여",
+   "url": "https://www.ceoscoredaily.com/page/view/2025072516400745114",
+   "kind": "news",
+   "date": "2025-07-27"
+  },
+  {
+   "n": 21,
+   "title": "SK AX Careers · 복리후생",
+   "url": "https://skax.skcareers.com/page/HR/Welfare",
+   "kind": "company",
+   "note": "연도 표기 없음 — 2026-11-23 다른 풀이에서 확인한 항목"
+  },
+  {
+   "n": 22,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company",
+   "note": "본사 SK u-타워(13558)"
+  },
+  {
+   "n": 23,
+   "title": "KPI뉴스 · SK C&C, 'SK㈜ AX'로 이름 바꿔",
+   "url": "https://kpinews.kr/newsView/1065576140213162",
+   "kind": "news",
+   "date": "2025-05"
+  },
+  {
+   "n": 24,
+   "title": "SK하이닉스 홈페이지 (회사 주소)",
+   "url": "https://www.skhynix.com",
+   "kind": "company",
+   "note": "하단 회사 정보 — 경기도 이천시 부발읍 경충대로 2091"
+  },
+  {
+   "n": 25,
+   "title": "아시아경제 · SK하이닉스, 청주에 15조 들여 M15X 짓는다",
+   "url": "https://www.asiae.co.kr/en/article/2022090616203674264",
+   "kind": "news",
+   "date": "2022-09-06",
+   "note": "영문판 — 이천은 D램, 청주는 낸드 기지. 이후 투자액을 늘렸다는 보도도 있음"
+  },
+  {
+   "n": 26,
+   "title": "PDF Solutions · Exensio Manufacturing Analytics 데이터시트",
+   "url": "https://www.pdf.com/wp-content/uploads/2025/12/Datasheet_ManufacturingAnalytics_rev1.1-3-Spotfire.pdf",
+   "kind": "reference",
+   "note": "다른 회사 제품 — 결함·계측·전기 시험 상관 분석, bin·수율 통계 규칙. 업체 자료라 성능 주장은 검증 안 됨"
+  },
+  {
+   "n": 27,
+   "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+   "url": "https://zdnet.co.kr/view/?no=20250816174726",
+   "kind": "news",
+   "date": "2025-08-16",
+   "note": "4사 2025년 반기보고서 1인 평균 급여(6개월치)"
+  },
+  {
+   "n": 28,
+   "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보",
+   "url": "https://www.wanted.co.kr/company/25949",
+   "kind": "reference",
+   "note": "평균 연봉 집계값 — 계산 기간 표기 없음"
+  },
+  {
+   "n": 29,
+   "title": "Cimetrix 블로그 · North America Information & Control Committee Winter 2025 Update",
+   "url": "https://www.cimetrix.com/blog/north-america-information-control-committee-winter-2025-update",
+   "kind": "reference",
+   "date": "2025",
+   "note": "SEMI 표준 위원회 소식 — GEM·GEM 300 의 이벤트·알람·변수에 공통 이름(well-known names)을 정함"
+  }
+ ],
+ "caveat": "이 팀(제조AX서비스4팀)이 쓴 기술 글·발표 영상은 찾지 못해 받은 영상이 없습니다. 회사 쪽 근거는 이 공고와 같은 부문 2·3팀 공고, SK AX 용어 글·MES 제품·장비 통신 이중화 사례, 고객사 SK하이닉스 뉴스룸의 GaiA·AX 글입니다. smartEAP·smartAPC·smartYES 는 이름만 공개돼 있어 뜻은 이름으로 짐작했고({추론}), 장비 연계·FDC·SPC·수율 관리의 구조는 SEMI 표준·NIST·ISA-95·다른 회사(PDF Solutions) 자료로 '보통 이런 것'을 보였습니다. SEMI 소개 글은 이번에 본문이 열리지 않아 검색 요약으로 확인했습니다. 코드 예시의 숫자는 모두 가상 값입니다.",
+ "resources": [
+  {
+   "id": "gaia-ep1",
+   "title": "SK하이닉스 뉴스룸 · Introduce GaiA 1편 — Biz 특화 AI Agent",
+   "by": "SK하이닉스 DT · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://news.skhynix.co.kr/gaia_ep1_biz_ai_agent/",
+   "why": "고객사가 이미 쓰는 장비 보전 에이전트가 무엇을 읽고 무엇을 주는지. 업무 'AI Agent 적용' 줄의 출발점."
+  },
+  {
+   "id": "hynix-ax",
+   "title": "SK하이닉스 뉴스룸 · [하이피디아] 데이터부터 팹, 일하는 방식까지… 'AX'",
+   "by": "SK하이닉스 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://news.skhynix.co.kr/?p=68874",
+   "why": "고객사가 말하는 AX 방향 — 데이터 표준화 위에 AI. 팀 소개 줄을 고객 입장에서 읽기."
+  },
+  {
+   "id": "skax-glossary",
+   "title": "SK AX 인사이트 · MES와 QMS는 무슨 뜻? 스마트 팩토리 용어 모음 : 기초편",
+   "by": "SK AX · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/insight/trend/2928",
+   "why": "MES·QMS·SPC·FDC·레시피를 회사 말로. 제조 시스템 용어를 처음 맞추는 자료."
+  },
+  {
+   "id": "skax-mes-intro",
+   "title": "SK AX 인사이트 · 스마트 팩토리의 필수 조건, MES(제조 실행 시스템)",
+   "by": "SK AX · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/insight/trend/2800",
+   "why": "MES 의 역할과 ERP 와의 차이. 장비 연계가 MES 어디에 붙는지 보기 전에."
+  },
+  {
+   "id": "semi-e30",
+   "title": "SEMI E30 · Specification for the Generic Model for Communications and Control of Manufacturing Equipment (GEM)",
+   "by": "SEMI",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://store-us.semi.org/products/e03000-semi-e30-specification-for-the-generic-model-for-communications-and-control-of-manufacturing-equipment-gem",
+   "why": "장비 연계의 원문 표준(유료). 회사가 사 둔 사본이 있는지 먼저 묻는다. '장비 연계' 줄."
+  },
+  {
+   "id": "secsgem-docs",
+   "title": "secsgem 문서",
+   "by": "Benjamin Parzella · 오픈소스(LGPL)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://secsgem.readthedocs.io/en/latest/",
+   "why": "Python 으로 SECS/GEM 메시지를 주고받는 라이브러리. 가상 장비·가상 호스트를 띄워 S6F11 을 직접 받아 보기."
+  },
+  {
+   "id": "nist-spc",
+   "title": "NIST/SEMATECH e-Handbook of Statistical Methods · 6. Process or Product Monitoring and Control",
+   "by": "NIST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://itl.nist.gov/div898/handbook/pmc/pmc.htm",
+   "why": "관리도·3σ·Western Electric 규칙·EWMA 를 예시와 함께. '품질 및 수율 관리' 줄의 통계 기본기."
+  },
+  {
+   "id": "montgomery-sqc",
+   "title": "Introduction to Statistical Quality Control",
+   "by": "Douglas C. Montgomery · Wiley",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.wiley.com/en-us/search?pq=Introduction%20to%20Statistical%20Quality%20Control",
+   "why": "SPC·공정 능력(CPK)·다변량 관리도의 교과서. 품질 시스템 요건을 깊게 볼 때 필요한 장만."
+  },
+  {
+   "id": "isa95",
+   "title": "ISA-95 Standard (IEC 62264) 개요",
+   "by": "International Society of Automation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+   "why": "장비 제어·MES·ERP 층의 국제 기준. 요건 '아키텍처와 데이터 흐름'을 설명하는 지도."
+  },
+  {
+   "id": "pmbok",
+   "title": "PMBOK Guide",
+   "by": "PMI",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.pmi.org/standards/pmbok",
+   "why": "일정·품질·리스크 관리 용어. PM/PL 업무 첫 줄."
+  },
+  {
+   "id": "anthropic-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "why": "워크플로와 에이전트의 차이, 단순한 것부터, 사람 확인·멈출 조건. 'AI를 적용할 업무 발굴'과 '예외 흐름' 줄."
+  },
+  {
+   "id": "rag-paper",
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "by": "Lewis 외 · NeurIPS 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "why": "RAG 의 원래 정의. '근거를 제시하는 에이전트' 줄의 출발점."
+  },
+  {
+   "id": "ragas-paper",
+   "title": "Ragas: Automated Evaluation of Retrieval Augmented Generation",
+   "by": "Es 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2309.15217",
+   "why": "근거 충실도·답 관련성·문맥 관련성 지표. '답변 정확도와 근거 일치 검증' 줄과 우대 'RAG 답변 평가'."
+  },
+  {
+   "id": "langchain-book",
+   "title": "랭체인으로 LLM 기반의 AI 서비스 개발하기",
+   "by": "서지영 · 길벗 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://product.kyobobook.co.kr/detail/S000212568407",
+   "why": "한국어로 LangChain·RAG 를 처음 붙여 보는 책. 에이전트 개발 줄의 손 연습."
+  },
+  {
+   "id": "llm-app-book",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=LLM%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EC%8B%A4%EC%A0%84%20AI%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B0%9C%EB%B0%9C",
+   "why": "LLM 의 동작 원리부터 RAG·에이전트·운영까지 한국어로. 요건 'LLM 에이전트의 동작 원리와 한계'."
+  },
+  {
+   "id": "cs329z-rag",
+   "title": "Stanford CS329Z Lecture 3: RAG Explained — From BM25 to Agentic RAG (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/psLc-46GqY0",
+   "why": "키워드 검색부터 에이전트형 RAG 까지. 기술 문서 검색 칸."
+  },
+  {
+   "id": "cs329z-mcp",
+   "title": "Stanford CS329Z Lecture 4: How AI Agents Use Tools — Function Calling & MCP (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/s0S38lz6O7M",
+   "why": "에이전트가 도구(품질 DB 조회·로그 자르기)를 부르는 방식. '데이터 연계 요건'을 구체화하는 바탕."
+  },
+  {
+   "id": "spring-core",
+   "title": "스프링 핵심 원리 — 기본편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/spring-core",
+   "why": "Java 백엔드 쪽 기초 — 빈·의존성 주입. 'Java 기반 백엔드' 줄."
+  },
+  {
+   "id": "aspnet-docs",
+   "title": "ASP.NET Core 문서 (한국어)",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/ko-kr/aspnet/core/",
+   "why": "C# 으로 웹 API 를 만드는 공식 길. 'C# 기반 백엔드 및 API' 줄."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형 · 디비안 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=148233799",
+   "why": "Oracle 기준 인덱스·조인·실행계획. 장비 이력처럼 큰 표를 빨리 읽는 'Oracle 기반 데이터 연계' 줄."
+  },
+  {
+   "id": "react-docs",
+   "title": "React 공식 문서 · 학습하기 (한국어)",
+   "by": "React",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://ko.react.dev/learn",
+   "why": "컴포넌트·상태·목록 렌더링. 장비 상태·품질 조회 화면의 최소선."
+  },
+  {
+   "id": "ts-handbook",
+   "title": "TypeScript Handbook",
+   "by": "Microsoft · TypeScript 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+   "why": "타입으로 API 응답 모양을 고정하기. 'React 및 TypeScript' 줄."
+  },
+  {
+   "id": "python-data-book",
+   "title": "파이썬 라이브러리를 활용한 데이터 분석 (3판)",
+   "by": "웨스 맥키니 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EB%A5%BC%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%B6%84%EC%84%9D",
+   "why": "pandas 를 만든 사람이 쓴 책. 장비별·시간별 데이터를 자르고 묶는 우대 'Python 제조 데이터 분석'."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "제조 시스템 지도 그리기",
+   "time": "1주",
+   "goal": "MES·장비 연계·FDC·SPC·수율 관리가 각각 무엇이고 데이터가 어떻게 흐르는지 말로 설명한다.",
+   "resources": [
+    "skax-glossary",
+    "skax-mes-intro",
+    "isa95",
+    "hynix-ax"
+   ],
+   "task": "위 풀이의 '장비에서 수율까지' 다섯 칸을 내 말로 다시 그리고, 칸마다 들어가고 나오는 데이터 예를 하나씩 적는다."
+  },
+  {
+   "title": "장비와 직접 말해 보기",
+   "time": "2~3주",
+   "goal": "가상 장비가 보낸 S6F11 을 받아 표에 쌓고, 원격 명령을 보내 볼 수 있다.",
+   "resources": [
+    "secsgem-docs",
+    "semi-e30"
+   ],
+   "task": "secsgem 으로 가상 장비와 가상 호스트를 띄우고, 이벤트 보고를 받아 Oracle(또는 무료 DB) 표에 장비·이벤트·값 한 줄씩 적재한다. 연결이 끊겼다 붙을 때 빠진 이벤트가 없는지 확인한다."
+  },
+  {
+   "title": "품질 규칙 만들기",
+   "time": "1~2주",
+   "goal": "센서·계측 값에 관리도 규칙을 걸어 이상 구간을 찾고, 왜 그 규칙인지 설명한다.",
+   "resources": [
+    "nist-spc",
+    "python-data-book",
+    "montgomery-sqc"
+   ],
+   "task": "가상 장비 3대 × 1주일 센서 값을 만들고(한 대는 천천히 오르게), pandas 로 관리도와 규칙1·규칙4 를 붙여 어느 규칙이 먼저 잡는지 비교한다."
+  },
+  {
+   "title": "근거 달린 에이전트",
+   "time": "2~4주",
+   "goal": "처리 기록 문서 검색 + 품질 DB 조회 도구를 가진 에이전트가 답마다 근거 번호를 붙인다.",
+   "resources": [
+    "langchain-book",
+    "llm-app-book",
+    "cs329z-rag",
+    "cs329z-mcp",
+    "rag-paper",
+    "anthropic-agents"
+   ],
+   "task": "가상 Inform Note 30건과 2단계에서 쌓은 이벤트 표를 이어, '장비 A 어제 알람 원인?'에 과거 처리 기록과 이벤트 근거를 붙여 답하게 만든다."
+  },
+  {
+   "title": "채점과 넘기는 길",
+   "time": "1~2주",
+   "goal": "시험지로 정확도·근거 일치를 재고, 기준 밑이면 담당자에게 넘기는 흐름을 만든다.",
+   "resources": [
+    "ragas-paper",
+    "anthropic-agents",
+    "pmbok"
+   ],
+   "task": "현장 질문 형태의 시험지 20문항을 만들어 4단계 에이전트를 채점하고, 근거 없는 답·장비 조치 답은 '담당자 확인'으로 빠지게 한다. 고치기 전후 점수를 한 장 보고서로 남긴다(PM/PL 지원자라면 이 보고서가 곧 면접 자료)."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. SK주식회사 전체 직원 평균은 **1억 1,600만원**(2024 사업보고서), SK AX 상반기 평균은 **7,300만원**(6개월치) — 5년 차 이상 경력직 제시액은 처우협의에서 정한다",
+  "rows": [
+   {
+    "label": "직원 평균 급여(SK주식회사 전체)",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "note": "SK AX 는 SK주식회사 안의 사업 조직이라[23] 지주 부문을 합친 회사 전체 값이다 [18]"
+   },
+   {
+    "label": "SK AX 1인 평균 급여 (6개월)",
+    "value": "7,300만원",
+    "amount": 7300,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "1~6월 반년치다. 1년 연봉이 아니다 [27]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "채용 사이트가 공공 자료로 계산한 값, 계산 기간은 적혀 있지 않다 [28]"
+   },
+   {
+    "label": "삼성SDS 평균",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2024년",
+    "peer": true,
+    "note": "같은 해 사업보고서 기준 [19]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "peer": true,
+    "note": "같은 해 사업보고서 기준 [20]"
+   }
+  ],
+  "how": "전형 끝에 **채용검진/처우협의** 단계가 있어 연봉은 사람마다 정한다 [1]. 위 평균은 신입부터 고참까지 섞인 회사 전체 값이라 5년 차 이상 경력직의 제시액으로 읽으면 안 된다 {추론}. 이천 현장 근무에 붙는 수당·교통 지원은 공고에 없으니 처우협의 때 묻는다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "성장",
+    "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 직무 공모"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10·15·20·25·30년에 포상금과 포상 휴가"
+   },
+   {
+    "name": "주택 자금",
+    "detail": "구입·전세 최대 6,000만원, 생활안정자금 최대 1,500만원(100만원 단위)"
+   },
+   {
+    "name": "자녀 학자금",
+    "detail": "유치원부터 대학까지, 자녀 수 제한 없음"
+   },
+   {
+    "name": "식대·통신비",
+    "detail": "식대 월 4만원, 통신비 월 7만원(SKT 가입자)"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 OK캐쉬백 20만 포인트"
+   },
+   {
+    "name": "동호회",
+    "detail": "분기 최대 150만원"
+   },
+   {
+    "name": "건강",
+    "detail": "나이에 따라 종합 25만원·정밀 40만원 검진, 난임 지원, 단체보험 3종, 사내 의원, 심리 상담"
+   },
+   {
+    "name": "시설",
+    "detail": "피트니스, 휴양소, 제휴 리조트, 어린이집·수유실"
+   },
+   {
+    "name": "그 밖",
+    "detail": "외부 사이트 근무자 복지 포인트, 통근·셔틀 버스, 경조 휴가·경조금"
+   }
+  ],
+  "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음) [21]. 이 공고 자체에는 복리후생 칸이 없다 [1]. '외부 사이트 근무자 복지 포인트'가 이천 고객사 현장 근무에도 적용되는지는 페이지에 없으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "SK AX 본사 (SK u-타워)",
+  "address": "경기도 성남시 분당구 성남대로 343번길 9 (정자동, SK u-타워)",
+  "postal": "13558",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+  "near": "신분당선·수인분당선 정자역 근처 {추론}",
+  "note": "공고의 근무지는 '경기도 분당/이천'이다 [1]. 분당은 SK AX 사업장 안내의 본사 주소다 [22]. 이천 쪽 근무 장소는 공고에 없다 — 고객사 SK하이닉스 본사는 경기도 이천시 부발읍 경충대로 2091이다 [24]."
+ }
+}
