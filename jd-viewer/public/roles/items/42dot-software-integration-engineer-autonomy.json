@@ -1,0 +1,1172 @@
+{
+ "id": "42dot-software-integration-engineer-autonomy",
+ "company": "포티투닷(42dot)",
+ "role": "Software Integration Engineer — 자율주행(Autonomy)",
+ "team": "미국 서니베일 새 자율주행 조직(창립 팀) · ML 자율주행 팀의 모델을 차 컴퓨터에 올리는 통합·배포",
+ "jobs": [
+  "ats-ashby:42dot:26f79b07-2ffc-44a3-9d92-36111d18fb34"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "모델 팀이 만든 **엔드투엔드 주행·VLA·월드 모델을 실제 차 컴퓨터에서 제시간에 돌게** 만듭니다 — 변환·최적화, 변환 → 검증 → 롤아웃 파이프라인, 차에서 생기는 실행 문제 진단, 모델과 다른 차량 소프트웨어 사이의 인터페이스 계약까지.[1] 물려받은 배포 체계가 없는 **창립 팀** 자리입니다.[1]",
+  "env": "C++·Python. 차량용 칩에서 TensorRT·ONNX Runtime 같은 추론 도구, 실시간 OS·안전 관행이 우대 항목입니다.[1] 같은 조직의 모델 쪽은 양산 L4(트럭·버스·승용·로보택시)를 목표로 새로 꾸려지고 있습니다.[3] 차에 어느 칩이 들어가는지는 공개되지 않았습니다.",
+  "oneline": "모델을 만드는 사람이 아니라 **모델을 차에 넣고 붙이는 사람**. 시스템 개발 2~4년에 ML 추론·임베디드·실시간 중 하나를 만져 본 사람이 대상입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Integrate ML models (end-to-end driving, VLA, world models) onto the on-board compute and runtime stack",
+   "short": "엔드투엔드 주행·VLA·월드 모델을 차 안 컴퓨터와 실행 환경에 올려 실제로 돌게 하는 일.",
+   "why": "공고가 이 자리를 'ML 자율주행 팀의 모델과 차량 시스템 사이'라고 소개하고, 오프라인 평가에서 되는 모델을 **차에서 되는 모델**로 만드는 마지막 구간을 맡긴다고 적었습니다.[1] 같은 서니베일의 모델 쪽 공고는 새 자율주행 조직이 엔드투엔드·VLA·월드 모델 중심으로 양산 L4 를 만든다고 밝혔습니다.[3] 셋은 모양이 다릅니다 — 엔드투엔드 주행은 카메라에서 바로 궤적을 내고[19], VLA(시각-언어-행동 모델)는 언어 모델처럼 행동을 토큰으로 내며[20], 월드 모델은 다음 장면을 예측합니다.[21] 모양이 다르면 차에 올리는 방법도 달라서 이를 맡는 사람이 따로 필요합니다. {추론}",
+   "actually": {
+    "items": [
+     "**실행 방식 고르기** — 같은 모델이라도 TensorRT(NVIDIA 전용 엔진)로 구울지, ONNX Runtime 처럼 여러 칩을 갈아 끼우는 실행기로 돌릴지 정한다.[12][13]",
+     "**입출력 잇기** — 카메라·센서 메시지를 모델 입력 텐서로 바꾸고, 출력(궤적·행동 토큰)을 계획·제어 소프트웨어가 읽는 형식으로 바꾼다. {추론}",
+     "**모델마다 다른 고민** — 엔드투엔드 주행은 프레임마다 한 번 돌고, VLA 는 토큰을 여러 번 이어 내므로 한 번 돌 때마다 지연이 쌓인다. 월드 모델이 차에서 도는지 학습·시험에만 쓰이는지는 공고에 없다.[1][20][21] {추론}",
+     "**올리기 전 크기 어림** — 파라미터 수와 정밀도로 가중치 메모리를 먼저 센다. 현대차그룹이 밝힌 Atria AI 는 약 1억 파라미터다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "모델 크기별 가중치 메모리 어림 (직접 돌린 출력)",
+     "body": "Atria AI 는 약 1억 파라미터로 소개됐습니다.[4] 서니베일 조직이 다룰 VLA·월드 모델의 크기는 공개되지 않아 10억·30억을 가정했습니다. 활성값(중간 결과)과 작업 공간은 빠진 숫자라서 실제로는 더 듭니다. {추론}",
+     "lang": "python",
+     "code": "models = {\"주행 1억\": 100e6, \"월드 모델 10억(가정)\": 1e9, \"VLA 30억(가정)\": 3e9}\nfor name, p in models.items():\n    print(name, \" | \".join(f\"{b}bit {p*b/8/2**30:.2f}GiB\" for b in (16, 8, 4)))\n# 주행 1억 16bit 0.19GiB | 8bit 0.09GiB | 4bit 0.05GiB\n# 월드 모델 10억(가정) 16bit 1.86GiB | 8bit 0.93GiB | 4bit 0.47GiB\n# VLA 30억(가정) 16bit 5.59GiB | 8bit 2.79GiB | 4bit 1.40GiB"
+    }
+   ],
+   "how_far": "모델 구조는 모델 팀(ML autonomy team)이 정합니다.[1][3] 이 자리는 **받은 모델을 차 컴퓨터에 올려 다른 소프트웨어와 붙는 상태까지** 책임집니다. 최소선은 PyTorch 모델 하나를 내보내 C++ 프로그램 안에서 돌리고, 입력·출력을 다른 프로세스와 주고받게 만든 경험입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    12,
+    13,
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "trt-docs",
+    "onnxruntime",
+    "uniad-paper",
+    "rt2-paper",
+    "gaia1"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Optimize model inference for latency, throughput, memory, and power on embedded automotive hardware",
+   "short": "차량용 칩에서 모델이 더 빨리, 더 많이, 메모리·전력을 덜 쓰며 돌도록 줄이는 일.",
+   "why": "차 컴퓨터는 서버와 달리 연산·메모리·전력 한도가 정해져 있습니다. 한국 쪽 Atria AI 는 양자화(숫자 정밀도 낮추기)로 모델을 최적화한다고 밝혔고[4], 차에 400 TOPS 급 NPU 가 실린다고 보도됐습니다.[6] 서니베일 조직이 어떤 칩을 쓰는지는 공개되지 않았지만, 그룹은 NVIDIA DRIVE Thor 를 쓴다고 발표했고[7], 엔비디아 기반 시스템과 자체 Atria AI 를 함께 가져가는 '투트랙'으로 보도됐습니다.[5] 공고는 이 자리가 **팀 전체의 추론 최적화 전략과 도구**를 정한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**지연(latency)** — 한 프레임이 들어와 답이 나오기까지. 평균보다 가끔 길어지는 꼬리(p99)가 중요하다.[18]",
+     "**처리량(throughput)** — 카메라 여러 대·여러 모델을 같은 칩에서 돌릴 때 초당 몇 장을 처리하나. 묶어 돌리면(배치) 처리량은 늘지만 지연이 는다. {추론}",
+     "**메모리** — 가중치·활성값·작업 공간. FP16·INT8 로 낮추면 절반·4분의 1이 된다.[15][16]",
+     "**전력** — 같은 일을 낮은 클럭·전용 가속기로 하면 전력이 준다. 차는 발열·전력 한도가 있다. {추론}",
+     "**어디가 막혔나 먼저 가르기** — 계산이 막혔나, 메모리 대역폭이 막혔나, 커널을 부르는 비용이 막혔나에 따라 고치는 방법이 다르다.[33]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "FP16·INT8 로 바꾼 출력이 원래와 얼마나 다른가 (직접 돌린 출력)",
+     "body": "가상의 층 하나(256 → 64)를 FP32·FP16·INT8 로 계산해 원래 출력과 비교했습니다. INT8 은 값마다 눈금(scale)을 곱해 정수로 바꿔 곱한 뒤 되돌립니다.[15] 차이는 FP16 보다 크지만 방향(코사인)은 거의 같습니다. 문턱 0.05 는 예시로 정한 값입니다. {추론}",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(0)\nx = rng.standard_normal((1, 256)).astype(np.float32)\nw = rng.standard_normal((256, 64)).astype(np.float32) * 0.1\nref = x @ w                                   # 원래(FP32) 출력\nfp16 = (x.astype(np.float16) @ w.astype(np.float16)).astype(np.float32)\ns_x = np.abs(x).max() / 127; s_w = np.abs(w).max() / 127\nqx = np.round(x / s_x).astype(np.int32); qw = np.round(w / s_w).astype(np.int32)\nint8 = (qx @ qw).astype(np.float32) * s_x * s_w\nfor name, y in ((\"fp16\", fp16), (\"int8\", int8)):\n    d = np.abs(y - ref).max()\n    cos = float((y*ref).sum() / np.linalg.norm(y) / np.linalg.norm(ref))\n    print(f\"{name}: 최대 차이 {d:.4f}, 코사인 {cos:.5f}, 통과 {d < 0.05}\")\n# fp16: 최대 차이 0.0017, 코사인 1.00000, 통과 True\n# int8: 최대 차이 0.0443, 코사인 0.99994, 통과 True"
+    }
+   ],
+   "how_far": "목표 숫자(몇 ms·몇 W)는 시스템 아키텍트와 모델 팀이 같이 정합니다. {추론} 이 자리는 그 숫자를 맞추는 수단을 고르고 재는 쪽입니다.[1] 최소선은 한 모델을 FP32·FP16·INT8 로 돌려 정확도·지연·메모리를 표 하나로 비교하고, 병목을 프로파일러로 짚을 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    7,
+    15,
+    16,
+    18,
+    33
+   ],
+   "study": [
+    "brrr",
+    "sze-book",
+    "trt-docs",
+    "nsight-systems",
+    "cs336-inference"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Build and maintain the model deployment pipeline, including conversion, validation, and rollout",
+   "short": "학습이 끝난 모델을 변환 → 검증 → 차에 내보내기까지 자동으로 잇는 길을 만들고 지키는 일.",
+   "why": "공고는 이 파이프라인을 '학습 산출물에서 차에 올릴 바이너리까지'라고 적고, 지금 **물려받은 배포 체계가 없어 처음부터 만든다**고 했습니다.[1] 한국 쪽은 모델을 데이터 플라이휠(수집 → 학습 → 검증 → 배포를 계속 도는 고리)로 자주 바꾼다고 밝혔습니다.[4] 모델이 자주 바뀌면 손으로 옮기는 방식으로는 따라갈 수 없습니다. {추론} ML 시스템에서 모델 코드보다 그 주변 연결·설정이 더 큰 부채가 된다는 지적도 같은 맥락입니다.[29]",
+   "flows": [
+    {
+     "caption": "학습 산출물 → 차에 올릴 바이너리, 보통 밟는 순서 {추론}[1][12][31]",
+     "steps": [
+      "학습 · 모델 팀이 체크포인트를 낸다",
+      "변환 · ONNX → 칩 전용 엔진",
+      "수치 검증 · 원래 출력과 비교",
+      "성능 검증 · 지연·메모리 예산",
+      "재생 시험 · 녹화 주행 데이터",
+      "롤아웃 · 시험차 1대 → 여러 대, 실패 시 되돌림"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**변환** — PyTorch → ONNX(표준 모델 형식)로 내보내고 칩 전용 엔진으로 굽는다. 지원하지 않는 연산이 나오면 바꾸거나 플러그인을 쓴다.[12][14]",
+     "**검증** — 변환 전후 출력 차이, 지연·메모리 예산, 녹화 주행 데이터로 다시 돌리는 재생 시험. 시험 항목을 표로 관리하는 방법이 공개돼 있다.[30]",
+     "**판 관리** — 모델·변환 설정·엔진·칩 소프트웨어 버전을 한 묶음으로 남겨, 문제가 생기면 같은 것을 다시 굽는다.[31]",
+     "**롤아웃** — 시험대 → 시험차 한 대 → 여러 대 순서로 넓히고, 실패하면 앞 판으로 되돌린다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "앞 단계가 실패하면 롤아웃을 멈춘다 (직접 돌린 출력)",
+     "body": "파이프라인의 기본 규칙은 '앞 단계를 통과해야 다음 단계로 간다'입니다. 단계 이름과 결과는 가정값입니다. {추론}",
+     "lang": "python",
+     "code": "stages = [(\"변환\", True), (\"수치 비교\", True), (\"벤치 지연\", True), (\"재생 시험\", False), (\"차량 1대\", None)]\nfor i, (s, ok) in enumerate(stages):\n    if ok is None: print(f\"{i}. {s}: 건너뜀(앞 단계 실패)\"); continue\n    print(f\"{i}. {s}: {'통과' if ok else '실패 → 롤아웃 멈춤'}\")\n    if not ok:\n        stages = [(t, None if j > i else o) for j, (t, o) in enumerate(stages)]\n# 0. 변환: 통과\n# 1. 수치 비교: 통과\n# 2. 벤치 지연: 통과\n# 3. 재생 시험: 실패 → 롤아웃 멈춤\n# 4. 차량 1대: 건너뜀(앞 단계 실패)"
+    }
+   ],
+   "how_far": "무엇을 통과 기준으로 삼을지는 안전·검증 팀과 같이 정합니다. {추론} 이 자리는 그 기준을 **사람 손 없이 매번 돌리는 파이프라인**을 짓습니다.[1] 최소선은 모델 파일 하나를 넣으면 변환 → 수치 비교 → 지연 측정 → 결과 보고까지 한 명령으로 도는 CI 작업입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    12,
+    14,
+    29,
+    30,
+    31
+   ],
+   "study": [
+    "torch-onnx",
+    "trt-docs",
+    "cd4ml",
+    "ml-test-score",
+    "chip-mls"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Stabilize on-vehicle ML execution by diagnosing runtime failures, timing violations, and resource contention",
+   "short": "차에서 모델이 죽거나 늦거나 다른 작업과 자원을 다툴 때 원인을 찾아 안정시키는 일.",
+   "why": "공고가 이 자리의 일을 '오프라인 평가에서 되는 모델과 차에서 되는 모델 사이'라고 했습니다.[1] 차에서는 모델이 혼자 돌지 않습니다 — 인지·계획·로그 같은 다른 프로그램이 같은 CPU·GPU·메모리를 씁니다. 그래서 책상에서는 없던 문제가 차에서 생깁니다. {추론}",
+   "actually": {
+    "items": [
+     "**실행 실패** — 메모리 부족, 엔진과 칩 소프트웨어 버전이 안 맞음, 입력 모양이 예상과 다름.[12] {추론}",
+     "**시간 위반** — 정해진 주기(예: 15Hz 면 66.7ms) 안에 답을 못 내는 프레임. 평균은 괜찮은데 가끔 넘치는 꼬리가 문제다.[18]",
+     "**자원 다툼** — 다른 GPU 작업·메모리 복사·CPU 스레드가 겹칠 때 생긴다. CPU·GPU 시간표를 찍어 겹친 자리를 찾는다.[17][32]",
+     "**실시간 OS 쪽 원인** — 스케줄러 우선순위, 인터럽트, 리눅스 실시간 패치 여부가 꼬리 지연을 바꾼다.[26][27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "중앙값은 예산 안인데 p99 는 넘친다 (직접 돌린 출력)",
+     "body": "모델 혼자 38ms 쯤 걸리는데, 3% 프레임에서 다른 작업과 GPU 를 나눠 30~80ms 가 더 걸린다고 가정했습니다. 중앙값만 보면 문제가 없어 보이지만 1만 장 중 284장이 66.7ms 예산을 넘습니다. 숫자는 모두 가정값입니다. {추론}",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(1)\nn = 10000\nbase = rng.normal(38, 3, n)                 # 모델 혼자 도는 시간(ms, 가정)\nhit = rng.random(n) < 0.03                   # 3% 프레임에서 다른 작업과 GPU 를 나눔(가정)\nlat = base + np.where(hit, rng.uniform(30, 80, n), 0)\nbudget = 66.7                                # 15Hz 한 프레임(가정)\nfor name, v in ((\"중앙값\", np.median(lat)), (\"p99\", np.percentile(lat, 99)), (\"최대\", lat.max())):\n    print(f\"{name}: {v:.1f} ms\")\nprint(f\"예산 {budget} ms 넘은 프레임: {(lat > budget).sum()} / {n}\")\n# 중앙값: 38.1 ms\n# p99: 98.6 ms\n# 최대: 122.3 ms\n# 예산 66.7 ms 넘은 프레임: 284 / 10000"
+    }
+   ],
+   "how_far": "어느 프로그램에 우선순위를 줄지는 시스템 아키텍트가 정합니다. {추론} 이 자리는 **ML 쪽 원인을 재현하고 숫자로 보여 주는 쪽**입니다. 최소선은 꼬리 지연을 p50·p99·최대로 나눠 재고, 프로파일러 시간표로 겹친 작업을 짚을 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    12,
+    17,
+    18,
+    26,
+    27,
+    32
+   ],
+   "study": [
+    "nsight-systems",
+    "gregg-perf",
+    "mlperf-paper",
+    "preempt-rt"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Define interface contracts between ML models and the rest of the on-board software stack",
+   "short": "모델과 다른 차량 소프트웨어가 무엇을 어떤 모양·단위·시간으로 주고받을지 약속을 정하는 일.",
+   "why": "공고는 이 자리가 **'ML 모델과 차량 소프트웨어 사이 인터페이스 계약 표준'**을 처음 만드는 데 참여한다고 적었습니다.[1] 모델은 자주 바뀌는데 그때마다 계획·제어 코드까지 고치면 배포가 멈춥니다. 약속을 고정해 두면 모델만 갈아 끼울 수 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**모양·형식** — 입력 텐서 크기·자료형, 출력 궤적 점 개수·좌표계·단위(m, rad). {추론}",
+     "**시간** — 타임스탬프 기준, 얼마나 오래된 값까지 받아 줄지, 몇 Hz 로 나오나. {추론}",
+     "**판 번호** — 계약이 바뀌면 판을 올리고, 받는 쪽은 모르는 판을 거부한다. {추론}",
+     "**표준을 빌리는 법** — 로봇 쪽은 ROS 2 의 메시지 정의 파일로[22], 차 쪽은 AUTOSAR Adaptive 의 서비스 인터페이스로[23] 이런 약속을 적는다. 이 팀이 무엇을 쓰는지는 공개되지 않았다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "모양·자료형·판·나이를 검사하는 계약 (직접 돌린 출력)",
+     "body": "출력 궤적 20점 × (x, y, 방향), FP16, 50ms 보다 오래된 값은 거부하는 계약을 가정했습니다. 판이 다르거나 모양이 바뀌면 받는 쪽이 바로 알 수 있습니다. {추론}",
+     "lang": "python",
+     "code": "from dataclasses import dataclass\n@dataclass(frozen=True)\nclass Contract:\n    version: int\n    shape: tuple\n    dtype: str\n    max_age_ms: int\nOUT_V2 = Contract(2, (1, 20, 3), \"float16\", 50)   # 궤적 20점 × (x, y, 방향)\ndef check(c, msg, now_ms):\n    errs = []\n    if msg[\"version\"] != c.version: errs.append(f\"version {msg['version']}!={c.version}\")\n    if tuple(msg[\"shape\"]) != c.shape: errs.append(f\"shape {tuple(msg['shape'])}\")\n    if msg[\"dtype\"] != c.dtype: errs.append(f\"dtype {msg['dtype']}\")\n    if now_ms - msg[\"stamp_ms\"] > c.max_age_ms: errs.append(f\"age {now_ms - msg['stamp_ms']}ms\")\n    return errs or [\"OK\"]\nprint(check(OUT_V2, {\"version\": 2, \"shape\": [1, 20, 3], \"dtype\": \"float16\", \"stamp_ms\": 1000}, 1030))\nprint(check(OUT_V2, {\"version\": 3, \"shape\": [1, 30, 3], \"dtype\": \"float16\", \"stamp_ms\": 1000}, 1030))\nprint(check(OUT_V2, {\"version\": 2, \"shape\": [1, 20, 3], \"dtype\": \"float32\", \"stamp_ms\": 1000}, 1090))\n# ['OK']\n# ['version 3!=2', 'shape (1, 30, 3)']\n# ['dtype float32', 'age 90ms']"
+    }
+   ],
+   "how_far": "무엇을 넘길지(궤적인지, 행동인지)는 모델 팀과 계획·제어 팀이 정합니다. {추론} 이 자리는 그것을 **기계가 검사할 수 있는 형식으로 적고, 어기면 바로 잡히게** 만듭니다.[1] 최소선은 메시지 정의 하나와 그 검사기, 그리고 판이 바뀔 때의 규칙을 문서로 남기는 것입니다. {추론}",
+   "refs": [
+    1,
+    22,
+    23
+   ],
+   "study": [
+    "ros2-interfaces",
+    "autosar-ap"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Work closely with the ML autonomy team to close the loop between deployment constraints and model design",
+   "short": "차에서 생긴 제약(지연·메모리·지원 연산)을 모델 팀에 돌려줘 처음부터 차에 맞는 모델을 만들게 하는 일.",
+   "why": "모델 쪽 공고는 학습·평가·데이터 효율을 맡고[3], 이 자리는 차에서 도는 것을 맡습니다.[1] 둘이 따로 놀면 학습이 끝난 뒤에야 '차에서 안 돈다'를 알게 됩니다. 한국 쪽도 Atria AI 를 양자화 기반으로 최적화한다고 밝혀, 학습 단계부터 차를 고려한다는 점을 보였습니다.[4]",
+   "actually": {
+    "items": [
+     "**예산 알려 주기** — '이 칩에서 이 모델에 쓸 수 있는 시간은 몇 ms, 메모리는 몇 GB' 같은 숫자를 모델 팀에 준다. {추론}",
+     "**지원 연산 목록** — 칩 엔진이 빠르게 돌리는 연산과 못 돌리는 연산을 알려 준다.[12]",
+     "**양자화 인식 학습** — INT8 에서 정확도가 떨어지면 학습할 때부터 낮은 정밀도를 흉내 내게 한다.[16]",
+     "**새 모델의 차 지연 미리 재기** — 모델 팀이 구조를 바꿀 때마다 자동으로 차 기준 지연을 알려 준다. {추론}"
+    ]
+   },
+   "how_far": "모델을 어떻게 바꿀지는 모델 팀이 정합니다.[3] 이 자리는 **숫자로 근거를 주는 쪽**입니다. 최소선은 '이 층을 바꾸면 차에서 몇 ms 빨라진다'를 측정으로 보일 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    12,
+    16
+   ],
+   "study": [
+    "sze-book",
+    "roofline",
+    "cs336-gpu"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "A track record of grit and ownership, with a demonstrated ability to work through ambiguous technical problems to a working solution",
+   "short": "답이 정해지지 않은 기술 문제를 끝까지 붙들고 돌아가는 결과로 만든 경험을 보여 달라는 것.",
+   "why": "공고는 이 자리를 창립 팀으로 소개하며 **물려받은 배포 체계가 없다**고 적었습니다.[1] 모델 쪽 공고도 새 조직을 처음부터 만든다고 밝혔습니다.[3] 정해진 절차를 따르는 일보다 무엇을 만들지부터 정하는 일이 많다는 뜻입니다. {추론}",
+   "actually": {
+    "items": [
+     "이력서에 '무엇이 막혔고 → 무엇을 시도했고 → 결과가 무엇이었나'를 숫자로 적는다. {추론}",
+     "예: '원인 모를 간헐 지연을 1주 동안 추적해 메모리 복사 겹침을 찾고 p99 를 120ms → 70ms 로 줄임' 같은 이야기. {추론}",
+     "면접(1차·2차)에서 이런 경험을 깊게 묻는 경우가 많다 — 전형은 서류 → 코딩 테스트 → 1차 → 2차 → 처우 협의다.[1]"
+    ]
+   },
+   "how_far": "학위·연차처럼 칸을 채우는 요건이 아니라 면접에서 확인하는 요건입니다. 최소선은 혼자 원인을 찾아 끝까지 고친 문제 하나를 처음부터 끝까지 설명할 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "Bachelor's or Master's degree in CS, EE, Robotics, or related field",
+   "short": "컴퓨터·전자·로보틱스 같은 관련 전공 학사 또는 석사.",
+   "why": "공고 그대로입니다.[1] 모델 쪽 공고는 박사까지 적었지만[3], 이 자리는 학사·석사로 적었습니다 — 연구보다 시스템을 만드는 자리라서로 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "CS 는 운영체제·컴퓨터 구조·자료구조, EE 는 신호·회로·임베디드, 로보틱스는 제어·센서가 이 일과 닿는다. {추론}",
+     "관련 분야(related field)라고 적어 기계·물리 전공도 경험으로 메울 수 있다는 뜻으로 읽힌다. {추론}"
+    ]
+   },
+   "how_far": "학위는 서류 문턱입니다. 전공이 달라도 운영체제·컴퓨터 구조를 공부한 흔적(과목·프로젝트)을 보이면 좋습니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "csapp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "2-4 years of experience in systems or software engineering, with some exposure to ML inference, embedded systems, or real-time software",
+   "short": "시스템·소프트웨어 개발 2~4년, 그중 ML 추론·임베디드·실시간 소프트웨어 중 하나는 만져 봤어야 한다.",
+   "why": "이 자리는 모델과 차량 시스템 사이에 있어서[1], 시스템 개발이 바탕이고 ML·임베디드·실시간 중 하나와 닿아 있어야 합니다. 같은 조직의 Sr. 판은 따로 올라와 있어[2] 이 자리는 그보다 아래 등급으로 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "**ML 추론** — 학습이 아니라 이미 학습된 모델을 돌리고 빠르게 한 경험.[12][13]",
+     "**임베디드** — 자원이 정해진 보드(ARM·Jetson 등)에서 프로그램을 돌린 경험. {추론}",
+     "**실시간 소프트웨어** — 정해진 주기·마감 안에 끝나야 하는 프로그램. 주기 작업의 마감 보장 이론의 출발점이 Liu·Layland 다.[28]",
+     "'some exposure'는 전문가가 아니라 한 번이라도 손대 본 정도로 읽힌다. {추론}"
+    ]
+   },
+   "how_far": "2~4년은 공고 숫자입니다.[1] 최소선은 시스템 개발 실무 2년에, 세 가지 중 하나를 업무나 개인 프로젝트로 해 본 증거입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    12,
+    13,
+    28
+   ],
+   "study": [
+    "csapp",
+    "jetson",
+    "qnx-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience contributing to deploying or optimizing ML models in production.",
+   "short": "실제 서비스·제품에 ML 모델을 내보내거나 빠르게 만든 일에 참여해 본 경험.",
+   "why": "공고의 업무 절반이 배포와 최적화입니다.[1] 'production'은 실험이 아니라 실제 사용자·제품에서 도는 것을 말합니다. 꼭 차가 아니어도 서버·모바일 배포 경험이 이 요건에 닿습니다. {추론}",
+   "actually": {
+    "items": [
+     "서버에서 모델을 TensorRT·ONNX Runtime 으로 바꿔 지연을 줄인 일.[12][13]",
+     "모바일·엣지 기기에 양자화한 모델을 올린 일.[15][16]",
+     "모델 판을 바꾸는 배포 파이프라인·되돌리기를 만든 일.[31]",
+     "'contributing'이라 혼자 다 했을 필요는 없다 — 맡은 부분을 분명히 말하면 된다. {추론}"
+    ]
+   },
+   "how_far": "최소선은 내가 맡은 부분(변환·측정·서빙 코드 등)과 그 결과 숫자(지연·처리량·비용)를 말할 수 있는 배포 하나입니다. {추론}",
+   "refs": [
+    1,
+    12,
+    13,
+    15,
+    16,
+    31
+   ],
+   "study": [
+    "chip-mls",
+    "trt-docs",
+    "onnxruntime"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Solid C++ and Python skills, with interest in working across the ML and systems boundary",
+   "short": "C++ 와 Python 을 실무 수준으로, 그리고 ML 과 시스템 양쪽을 오가며 일하려는 관심.",
+   "why": "차 안 실행 코드는 보통 C++ 이고, 변환·검증·도구는 Python 입니다. 한국 쪽 비슷한 자리도 C/C++ 와 Python·Shell 을 같이 적었습니다.[8] 공고 기술 목록도 C++·Python 둘입니다.[1]",
+   "actually": {
+    "items": [
+     "**C++** — 모델 엔진을 불러 돌리는 실행 코드, 메모리 미리 잡기, 스레드·스트림으로 겹쳐 돌리기.[32] {추론}",
+     "**Python** — PyTorch 모델 내보내기, 변환 스크립트, 수치 비교·지연 측정 도구.[14]",
+     "**경계 넘기** — Python 기준 구현과 C++ 결과가 같은지 맞춰 보는 일이 많다. {추론}"
+    ]
+   },
+   "level": {
+    "basic": "C++: 클래스·스마트 포인터·STL. Python: numpy 로 배열 다루기",
+    "work": "C++: 이동 의미론·스레드·할당 줄이기, 프로파일러로 병목 찾기. Python: PyTorch 모델 내보내기·시험 스크립트",
+    "team": "C++ 실행 코드와 Python 기준 구현을 같은 숫자로 맞추고, 지연 예산 안에서 돌게 만드는 것 {추론}"
+   },
+   "how_far": "최소선은 C++ 로 메모리·스레드를 다루는 프로그램을 짜고, Python 으로 모델을 내보내 결과를 비교할 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    8,
+    14,
+    32
+   ],
+   "study": [
+    "effective-modern-cpp",
+    "optimized-cpp",
+    "torch-onnx"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Background in autonomous driving or robotics on-board software",
+   "short": "자율주행차나 로봇 안에서 도는 소프트웨어를 만들어 본 배경.",
+   "why": "이 자리가 결국 차 안 소프트웨어 스택에 모델을 붙이는 일이기 때문입니다.[1] 모델 쪽 공고는 트럭·버스·승용·로보택시용 L4 를 목표로 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "센서 메시지 → 인지 → 계획 → 제어로 이어지는 흐름을 알면 모델이 어디에 끼는지 바로 보인다. {추론}",
+     "로봇 쪽은 ROS 2 로 이런 흐름을 짜는 경우가 많다.[22]",
+     "차 쪽은 AUTOSAR Adaptive 같은 고성능 컴퓨터용 표준이 있다.[23]"
+    ]
+   },
+   "how_far": "우대입니다. 없으면 공개 자율주행 스택이나 ROS 2 로 카메라 → 모델 → 출력 흐름을 직접 짜 본 프로젝트로 메울 수 있습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    22,
+    23
+   ],
+   "study": [
+    "ros2-interfaces",
+    "autosar-ap",
+    "uniad-paper"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Exposure to inference optimization frameworks such as TensorRT, ONNX Runtime, and automotive SoCs",
+   "short": "TensorRT·ONNX Runtime 같은 추론 최적화 도구와 차량용 칩(SoC)을 써 본 경험.",
+   "why": "업무의 변환·최적화 줄에 바로 쓰이는 도구입니다.[1] 그룹은 NVIDIA DRIVE Thor 를 쓴다고 발표했고[7], 한국 쪽 Atria AI 는 400 TOPS 급 NPU 로 보도됐습니다.[6] 서니베일 조직의 칩은 공개되지 않았습니다.",
+   "actually": {
+    "items": [
+     "**TensorRT** — NVIDIA 칩 전용 엔진. 층 합치기·FP16·INT8·플러그인.[12]",
+     "**ONNX Runtime** — 같은 ONNX 모델을 CPU·CUDA·TensorRT·NPU 실행기로 갈아 끼운다.[13]",
+     "**차량용 SoC** — CPU·GPU·전용 가속기를 한 칩에 담은 것. NVIDIA DRIVE 계열은 DRIVE OS 위에 TensorRT·CUDA 를 얹는다.[35]",
+     "집에서 연습할 때는 같은 계열 보드(Jetson)를 많이 쓴다. {추론}"
+    ]
+   },
+   "how_far": "우대입니다. 최소선은 한 모델을 TensorRT 와 ONNX Runtime 두 길로 돌려 지연·정확도를 비교해 본 것입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    7,
+    12,
+    13,
+    35
+   ],
+   "study": [
+    "trt-docs",
+    "onnxruntime",
+    "jetson"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Exposure to real-time operating systems and safety-critical software practices",
+   "short": "실시간 운영체제와, 잘못되면 사람이 다치는 소프트웨어를 만드는 방식을 겪어 본 경험.",
+   "why": "차 안 소프트웨어는 마감을 지켜야 하고, 잘못되면 사고로 이어집니다. 한국 쪽 비슷한 자리도 Linux·QNX 를 적었습니다.[8] 차량 기능 안전은 ISO 26262 가[24], 고장이 아닌 성능 한계(예: 인지 모델이 못 보는 장면)에서 오는 위험은 ISO 21448(SOTIF)이 다룹니다.[25]",
+   "actually": {
+    "items": [
+     "**실시간 OS** — QNX 나 실시간 패치를 한 리눅스. 우선순위 스케줄링·지연 측정.[26][27]",
+     "**안전 관행** — 요구사항 → 설계 → 시험을 서로 추적하고, 코드 규칙·리뷰·시험 범위를 문서로 남긴다.[24]",
+     "**ML 에 닿는 부분** — 모델이 이상한 값을 내거나 늦을 때 시스템이 어떻게 안전하게 물러설지 정한다.[25] {추론}"
+    ]
+   },
+   "how_far": "우대입니다. 안전 인증은 안전 팀이 이끌고, 이 자리는 그 관행대로 코드·시험·기록을 남기는 쪽입니다. {추론} 최소선은 실시간 OS 에서 주기 작업을 돌려 지연을 재 본 경험과 ISO 26262 의 큰 틀을 아는 것입니다. {추론}",
+   "refs": [
+    8,
+    24,
+    25,
+    26,
+    27
+   ],
+   "study": [
+    "qnx-docs",
+    "preempt-rt",
+    "iso26262",
+    "liu-rt"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience contributing to CI/CD and automated validation pipelines",
+   "short": "코드·모델을 자동으로 빌드·시험·배포하는 파이프라인(CI/CD)을 만들어 본 경험.",
+   "why": "업무의 배포 파이프라인 줄이 곧 이것입니다 — 변환·검증·롤아웃을 자동으로 돌립니다.[1] 모델은 코드와 달리 데이터·설정까지 함께 판을 매겨야 같은 것을 다시 만들 수 있습니다.[31]",
+   "actually": {
+    "items": [
+     "모델이 바뀔 때마다 변환 → 수치 비교 → 지연 측정 → 보고를 CI 가 돌린다.[30][31]",
+     "시험 장비(보드·시험대)를 CI 러너로 붙여 실제 칩에서 잰다. {추론}",
+     "결과가 예산을 넘으면 병합을 막는다. {추론}"
+    ]
+   },
+   "how_far": "우대입니다. 최소선은 GitHub Actions·GitLab CI 같은 도구로 '모델 파일을 바꾸면 자동으로 시험이 돈다'를 만들어 본 것입니다. {추론}",
+   "refs": [
+    1,
+    30,
+    31
+   ],
+   "study": [
+    "cd4ml",
+    "ml-test-score"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "모델보다 '그 모델이 실제로 도는 곳'이 더 궁금한 사람 {추론}",
+   "정해진 틀 없이 처음부터 파이프라인·표준을 만들고 싶은 사람[1]",
+   "C++ 와 Python 을 오가며 숫자를 맞추는 일이 재미있는 사람[1]",
+   "서버·모바일 추론 경험을 차·로봇으로 넓히고 싶은 2~4년 차 개발자[1]"
+  ],
+  "hard": [
+   "근무지가 미국 서니베일(사본은 Onsite 표기)이라 한국 지원자는 현지 근무 자격이 먼저 문제다[2] {추론}",
+   "창립 팀이라 정해진 절차·선배 코드가 적다[1]",
+   "차에 들어가는 칩·실행 환경이 공개되지 않아 들어가기 전에는 실제 스택을 알기 어렵다",
+   "엔드투엔드·VLA·월드 모델은 모양이 서로 달라 한 가지 최적화 방법으로 끝나지 않는다[19][20][21] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "PyTorch 모델을 차량 칩 엔진으로 바꿨더니 출력이 원래와 다릅니다. 어디부터 보나요?",
+   "a": "배포 파이프라인 줄의 수치 검증 — 정밀도·지원 안 되는 연산·입력 전처리 순서.[12][15]"
+  },
+  {
+   "q": "지연 중앙값은 예산 안인데 가끔 넘칩니다. 어떻게 원인을 찾나요?",
+   "a": "실행 안정화 줄 — 꼬리 지연과 CPU·GPU 시간표.[17][18]"
+  },
+  {
+   "q": "모델 출력 형식이 바뀌어도 계획 코드가 깨지지 않게 하려면?",
+   "a": "인터페이스 계약 줄 — 판 번호·모양·타임스탬프 검사.[22][23]"
+  },
+  {
+   "q": "VLA 를 차에 올릴 때 엔드투엔드 주행 모델과 무엇이 다르게 어렵나요?",
+   "a": "통합 줄 — 토큰을 여러 번 이어 내는 구조와 메모리.[20]"
+  },
+  {
+   "q": "INT8 로 바꿨더니 정확도가 떨어졌습니다. 모델 팀에 무엇을 제안하나요?",
+   "a": "모델 팀과 고리 닫기 줄 — 양자화 인식 학습.[16]"
+  },
+  {
+   "q": "모델 배포 파이프라인을 처음부터 만든다면 첫 한 달에 무엇을 하나요?",
+   "a": "창립 팀 소개와 배포 파이프라인 줄.[1][31]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "cs336-gpu",
+   "title": "Stanford CS336 · Lecture 5: GPUs, TPUs (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/izZba4UA7iY",
+   "why": "GPU 구조·메모리 층 — 차 칩에서 무엇이 막히는지 읽는 출발점(모델 팀과 제약을 나누는 줄)."
+  },
+  {
+   "id": "cs336-inference",
+   "title": "Stanford CS336 · Lecture 10: Inference (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/EfM546A79aM",
+   "why": "추론이 어디서 느린지 — 최적화 업무 줄. LLM 중심이라 VLA 를 올릴 때 바로 닿는다."
+  },
+  {
+   "id": "brrr",
+   "title": "Making Deep Learning Go Brrrr From First Principles",
+   "by": "Horace He",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://horace.io/brrr_intro.html",
+   "why": "계산·메모리·부르는 비용 중 무엇이 막혔나를 가르는 틀 — 최적화 줄의 첫걸음."
+  },
+  {
+   "id": "sze-book",
+   "title": "Efficient Processing of Deep Neural Networks",
+   "by": "Vivienne Sze · Yu-Hsin Chen · Tien-Ju Yang · Joel Emer · Springer · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://link.springer.com/978-3-031-00638-8",
+   "why": "층별 연산량과 가속기의 데이터 흐름 — 지연·메모리·전력을 함께 줄이는 법의 교과서."
+  },
+  {
+   "id": "roofline",
+   "title": "Roofline: An Insightful Visual Performance Model for Multicore Architectures",
+   "by": "Williams · Waterman · Patterson · CACM 2009",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://dl.acm.org/doi/10.1145/1498765.1498785",
+   "why": "재기 전에 상한을 계산하는 법 — 모델 팀에 '이 구조면 몇 ms' 를 미리 알려 줄 때."
+  },
+  {
+   "id": "trt-docs",
+   "title": "NVIDIA TensorRT 문서",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+   "why": "ONNX → 엔진 굽기, FP16·INT8, 플러그인 — 변환·최적화 업무와 TensorRT 우대 줄."
+  },
+  {
+   "id": "onnxruntime",
+   "title": "ONNX Runtime · Execution Providers",
+   "by": "Microsoft 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://onnxruntime.ai/docs/execution-providers/",
+   "why": "한 모델을 여러 칩 실행기로 바꿔 돌리는 법 — ONNX Runtime 우대 줄."
+  },
+  {
+   "id": "torch-onnx",
+   "title": "PyTorch 문서 · torch.onnx",
+   "by": "PyTorch 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.pytorch.org/docs/stable/onnx.html",
+   "why": "모델 내보내기의 첫 단계 — 배포 파이프라인의 '변환'과 Python 요건."
+  },
+  {
+   "id": "nsight-systems",
+   "title": "NVIDIA Nsight Systems 사용자 안내서",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/nsight-systems/UserGuide/index.html",
+   "why": "CPU·GPU 시간표로 겹친 작업 찾기 — 시간 위반·자원 다툼 진단 줄."
+  },
+  {
+   "id": "gregg-perf",
+   "title": "Systems Performance (2판)",
+   "by": "Brendan Gregg · Addison-Wesley · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "why": "리눅스에서 CPU·메모리·스케줄러를 재는 방법론 — 차에서 생기는 실행 문제 진단."
+  },
+  {
+   "id": "mlperf-paper",
+   "title": "MLPerf Inference Benchmark",
+   "by": "Reddi 외 · ISCA 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1911.02549",
+   "why": "지연·꼬리 백분위를 공정하게 재는 규칙 — 성능 검증 단계의 기준 만들기."
+  },
+  {
+   "id": "preempt-rt",
+   "title": "Real-Time Linux (PREEMPT_RT) 위키",
+   "by": "Linux Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://wiki.linuxfoundation.org/realtime/start",
+   "why": "리눅스 실시간 패치와 지연 측정 — 실시간 OS 우대 줄과 꼬리 지연 원인 찾기."
+  },
+  {
+   "id": "qnx-docs",
+   "title": "QNX 개발자 문서",
+   "by": "BlackBerry QNX",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.qnx.com/developers/docs/",
+   "why": "차량에서 많이 쓰는 실시간 OS 의 프로세스·스케줄링 — 실시간 OS 우대 줄."
+  },
+  {
+   "id": "liu-rt",
+   "title": "Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment",
+   "by": "Liu · Layland · JACM 1973",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://dl.acm.org/doi/10.1145/321738.321743",
+   "why": "주기 작업이 마감을 지키는 조건 — 실시간 소프트웨어 요건의 이론 바탕."
+  },
+  {
+   "id": "iso26262",
+   "title": "ISO 26262-1:2018 Road vehicles — Functional safety",
+   "by": "ISO",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/68383.html",
+   "why": "차량 기능 안전의 큰 틀(위험 등급·추적성) — 안전 관행 우대 줄. 본문은 유료라 용어·구성부터."
+  },
+  {
+   "id": "ros2-interfaces",
+   "title": "ROS 2 문서 · Interfaces",
+   "by": "Open Robotics",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.ros.org/en/rolling/Concepts/Basic/About-Interfaces.html",
+   "why": "메시지 형식을 파일로 정의하는 법 — 인터페이스 계약 업무와 로봇 소프트웨어 우대 줄."
+  },
+  {
+   "id": "autosar-ap",
+   "title": "AUTOSAR Adaptive Platform",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.autosar.org/standards/adaptive-platform",
+   "why": "차량 고성능 컴퓨터의 서비스 인터페이스 표준 — 차 쪽에서 계약을 어떻게 적는지."
+  },
+  {
+   "id": "cd4ml",
+   "title": "Continuous Delivery for Machine Learning",
+   "by": "ThoughtWorks · martinfowler.com",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/articles/cd4ml.html",
+   "why": "모델·데이터·코드를 함께 판 매겨 자동으로 내보내는 법 — 배포 파이프라인·CI/CD 우대 줄."
+  },
+  {
+   "id": "ml-test-score",
+   "title": "The ML Test Score: A Rubric for ML Production Readiness and Technical Debt Reduction",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/",
+   "why": "배포 전에 무엇을 시험할지 항목 표 — 검증 단계 설계."
+  },
+  {
+   "id": "chip-mls",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "모델을 실제 서비스로 내보내고 지키는 전 과정을 한국어로 — 'production 배포 경험' 요건의 바탕."
+  },
+  {
+   "id": "csapp",
+   "title": "Computer Systems: A Programmer's Perspective (3판)",
+   "by": "Randal Bryant · David O'Hallaron · Pearson · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://csapp.cs.cmu.edu/",
+   "why": "캐시·메모리·프로세스·동시성 — 시스템 소프트웨어 경력 요건의 바탕. 한국어 번역판은 서점에서 확인."
+  },
+  {
+   "id": "effective-modern-cpp",
+   "title": "Effective Modern C++",
+   "by": "Scott Meyers · O'Reilly · 2014",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/effective-modern-c/9781491908419/",
+   "why": "스마트 포인터·이동 의미론·동시성 — 'Solid C++' 요건의 실무선."
+  },
+  {
+   "id": "optimized-cpp",
+   "title": "Optimized C++",
+   "by": "Kurt Guntheroth · O'Reilly · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/optimized-c/9781491922057/",
+   "why": "할당·복사·자료구조가 성능을 바꾸는 법 — 실행 코드의 지연 줄이기."
+  },
+  {
+   "id": "jetson",
+   "title": "NVIDIA Jetson Orin 제품 사양",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/",
+   "why": "차량 칩과 같은 계열 보드 — 임베디드 추론을 집에서 연습할 환경."
+  },
+  {
+   "id": "uniad-paper",
+   "title": "Planning-oriented Autonomous Driving (UniAD)",
+   "by": "Hu 외 · CVPR 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2212.10156",
+   "why": "엔드투엔드 주행 모델의 모양 — 무엇을 차에 올리는지 이해."
+  },
+  {
+   "id": "rt2-paper",
+   "title": "RT-2: Vision-Language-Action Models",
+   "by": "Brohan 외 · Google DeepMind · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2307.15818",
+   "why": "VLA 가 행동을 토큰으로 내는 방식 — 토큰을 이어 내는 모델의 지연 고민."
+  },
+  {
+   "id": "gaia1",
+   "title": "GAIA-1: A Generative World Model for Autonomous Driving",
+   "by": "Wayve · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2309.17080",
+   "why": "주행 월드 모델이 무엇을 입력받아 무엇을 내는지 — 월드 모델 통합 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "시스템 바닥과 추론 숫자 세기",
+   "time": "2~3주",
+   "goal": "모델 하나의 연산량·메모리를 세고, 계산·메모리·부르는 비용 중 무엇이 막혔는지 가를 수 있다.",
+   "task": "작은 CNN 하나의 층별 곱셈 수와 가중치 크기를 표로 만들고, 내 PC 에서 층별 시간을 재서 '메모리에 묶인 층'과 '연산에 묶인 층'을 가른다.",
+   "resources": [
+    "csapp",
+    "brrr",
+    "cs336-gpu",
+    "cs336-inference",
+    "sze-book"
+   ]
+  },
+  {
+   "title": "변환과 정밀도 낮추기",
+   "time": "2~3주",
+   "goal": "PyTorch → ONNX → TensorRT·ONNX Runtime 으로 옮기고 FP32·FP16·INT8 의 정확도·지연·메모리를 비교한다.",
+   "task": "공개 검출 모델을 세 정밀도로 굽고, 가상 이미지 200장에서 원래 출력과의 최대 차이·p50·p99 지연을 표 하나로 정리한다.",
+   "resources": [
+    "torch-onnx",
+    "trt-docs",
+    "onnxruntime",
+    "roofline"
+   ]
+  },
+  {
+   "title": "C++ 실행 코드와 인터페이스 계약",
+   "time": "2~4주",
+   "goal": "C++ 프로그램 안에서 엔진을 돌리고, 입력·출력 메시지를 판 번호·모양·타임스탬프가 있는 계약으로 주고받는다.",
+   "task": "ROS 2 (또는 소켓)로 '가짜 카메라 → 모델 노드 → 궤적 받는 노드'를 만들고, 계약 판을 올렸을 때 받는 쪽이 옛 판을 거부하는지 시험한다.",
+   "resources": [
+    "effective-modern-cpp",
+    "optimized-cpp",
+    "ros2-interfaces",
+    "autosar-ap"
+   ]
+  },
+  {
+   "title": "꼬리 지연과 자원 다툼 잡기",
+   "time": "2~3주",
+   "goal": "부하를 일부러 겹쳐 시간 위반을 재현하고, 프로파일러로 원인을 짚어 고친 전후 p99 를 보인다.",
+   "task": "Jetson(없으면 PC) 위에서 모델과 다른 GPU 작업을 같이 돌려 1만 프레임 지연 분포를 찍고, 우선순위·스트림·메모리 미리 잡기 중 하나로 p99 를 줄인다. 실시간 패치 리눅스면 cyclictest 결과도 같이 남긴다.",
+   "resources": [
+    "nsight-systems",
+    "gregg-perf",
+    "mlperf-paper",
+    "preempt-rt",
+    "qnx-docs",
+    "jetson"
+   ]
+  },
+  {
+   "title": "배포 파이프라인과 안전 관행 (심화)",
+   "time": "계속",
+   "goal": "모델 파일을 넣으면 변환 → 수치 비교 → 지연 → 재생 시험 → 보고가 자동으로 돌고, 실패하면 멈추는 CI 를 만든다.",
+   "task": "가상 저장소에 모델 판이 바뀔 때마다 2단계·4단계 측정을 돌려 예산을 넘으면 병합을 막는 CI 작업을 만들고, 시험 항목을 ML Test Score 표에 맞춰 적는다. ISO 26262·SOTIF 의 용어로 '모델이 늦을 때 시스템이 어떻게 물러서나'를 한 장으로 정리한다.",
+   "resources": [
+    "cd4ml",
+    "ml-test-score",
+    "chip-mls",
+    "iso26262",
+    "liu-rt",
+    "uniad-paper",
+    "rt2-paper",
+    "gaia1"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 **연 $150,000 ~ $205,000**(미국 서니베일)이 적혀 있다. 같은 조직의 Sr. 판은 $200,000 ~ $300,000 이다",
+  "rows": [
+   {
+    "label": "이 공고 연봉 범위",
+    "value": "$150,000 ~ $205,000",
+    "basis": "공고 · 2026-11 수집",
+    "note": "공고의 Compensation 칸. 기본급인지 총보상인지는 적혀 있지 않다 [1]"
+   },
+   {
+    "label": "Sr. Software Integration Engineer, Autonomy (서니베일)",
+    "value": "$200,000 ~ $300,000",
+    "basis": "공고 · 2026-11 수집",
+    "peer": true,
+    "note": "같은 일의 윗 등급 — 채용 모음 사이트의 목록 표기로만 확인, 본문은 읽지 않았다 [2]"
+   },
+   {
+    "label": "Sr. Machine Learning Engineer, Autonomy (서니베일)",
+    "value": "$210,000 ~ $300,000",
+    "basis": "공고 · 2026-11 수집",
+    "peer": true,
+    "note": "같은 조직의 모델 쪽 자리, 5년 이상 [3]"
+   }
+  ],
+  "how": "캘리포니아는 일정 규모 이상 회사가 공고에 급여 범위를 적도록 한다 [11]. 범위 안 어디에 놓이는지는 전형 끝의 처우 협의(Offer Negotiation)에서 정해진다 [1][34]. 한국 본사의 집계 평균과는 나라·통화·기준이 달라 나란히 놓지 않았다{추론}."
+ },
+ "benefits": null,
+ "location": {
+  "name": "42dot Inc. 서니베일 사무소",
+  "address": "380 N Pastoria Ave, Sunnyvale, CA 94085, USA",
+  "postal": "94085",
+  "map_url": "https://map.naver.com/p/search/380%20N%20Pastoria%20Ave%2C%20Sunnyvale%2C%20CA%2094085",
+  "note": "공고 근무지는 'Sunnyvale, United States' [1], 사본은 Onsite 로 적었다 [2]. 번지는 Dun & Bradstreet 의 42Dot Inc. 회사 정보 [10]이고, 회사 채용 사이트 거점 목록에도 서니베일이 있다 [9]. 팀 자리나 시험차 거점이 이 주소와 다를 수 있다{추론}."
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · Software Integration Engineer, Autonomy",
+   "url": "https://jobs.ashbyhq.com/42dot/26f79b07-2ffc-44a3-9d92-36111d18fb34",
+   "kind": "posting",
+   "note": "이 공고. 역할 소개(ML 자율주행 팀의 모델과 차량 시스템 사이)·창립 팀 기회(배포 파이프라인·추론 최적화 전략·인터페이스 계약 표준을 처음부터)·업무·요건·우대·전형(서류 → 코딩 테스트 → 1차 → 2차 → 처우 협의)·연봉 $150,000–$205,000. 근무지 Sunnyvale. 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "Chopping Block · Software Integration Engineer, Autonomy at 42dot (공고 사본)",
+   "url": "https://www.choppingblock.ai/jobs/software-integration-engineer-autonomy-at-42dot",
+   "kind": "posting",
+   "date": "2026-11-07",
+   "note": "같은 공고의 채용 모음 사이트 사본 — 게시 2026-11-07, Onsite·정규직 표기. 같은 쪽에 'Sr. Software Integration Engineer, Autonomy'($200,000–$300,000)가 목록으로 보인다(본문은 읽지 않음)"
+  },
+  {
+   "n": 3,
+   "title": "Chopping Block · Sr. Machine Learning Engineer, Autonomy at 42dot",
+   "url": "https://www.choppingblock.ai/jobs/sr-machine-learning-engineer-autonomy-at-42dot",
+   "kind": "posting",
+   "date": "2026-10-27",
+   "note": "모델을 만드는 쪽 공고 — 새 자율주행 조직의 창립 팀, 트럭·버스·승용·로보택시용 양산 L4, ML 우선(엔드투엔드·파운데이션 모델·VLA·월드 모델), Python·PyTorch/JAX, $210,000–$300,000"
+  },
+  {
+   "n": 4,
+   "title": "현대자동차그룹 · 자율주행 데이터 플라이휠(미디어데이 이야기)",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/hyundai-motor-group-autonomous-driving-data-flywheel",
+   "kind": "company",
+   "date": "2026-09-14",
+   "note": "Atria AI 약 1억 파라미터·양자화 기반 최적화, 시험차 카메라 8대·레이더 1대, 3DGS 가상 검증·닫힌 고리 시뮬레이션, VLA 실차 시험 2026년 말~2027년 초"
+  },
+  {
+   "n": 5,
+   "title": "아이뉴스24 · 현대차, 엔비디아 협업·아트리아AI 개발로 '투트랙'",
+   "url": "https://inews24.com/view/2004894",
+   "kind": "news",
+   "date": "2026-09-13",
+   "note": "엔비디아 기반 레벨 2+ 2028년 상반기, Atria AI 레벨 2++ 2029년 하반기 목표"
+  },
+  {
+   "n": 6,
+   "title": "아시아경제 · 초당 400조 번 연산 'Atria AI'(영문판)",
+   "url": "https://www.asiae.co.kr/en/article/automobile/2026051507295729148",
+   "kind": "news",
+   "date": "2026-05-15",
+   "note": "400 TOPS 급 NPU(제조사 미공개), 카메라 8대·전방 레이더 1대, 인지~제어를 한 모델로"
+  },
+  {
+   "n": 7,
+   "title": "NVIDIA 보도자료 · 현대자동차그룹 AI 팩토리",
+   "url": "https://nvidianews.nvidia.com/news/hyundai-motor-group-ai-factory",
+   "kind": "news",
+   "date": "2025-10-30",
+   "note": "DRIVE AGX Thor 를 ADAS·차량 지능에 — 그룹 단위 발표, 이 팀 이름은 없음"
+  },
+  {
+   "n": 8,
+   "title": "포티투닷 채용 · Edge AI SW Engineer (Autonomous Driving) — 판교",
+   "url": "https://jobs.ashbyhq.com/42dot/96c1501f-070c-4c0f-b883-af957746e84c",
+   "kind": "posting",
+   "note": "한국 AD Framework 팀의 비슷한 자리 — 모델을 차량 GPU·NPU 에서 돌리는 실행 환경, Linux·QNX, C/C++·CUDA"
+  },
+  {
+   "n": 9,
+   "title": "포티투닷 채용 · Locations",
+   "url": "https://42dot.ai/en/careers/locations",
+   "kind": "company",
+   "note": "회사 거점 목록 — 서니베일 포함"
+  },
+  {
+   "n": 10,
+   "title": "Dun & Bradstreet · 42Dot Inc. 회사 정보",
+   "url": "https://www.dnb.com/business-directory/company-profiles.42dot_inc.def7cddb34743142dccfcd05cd4b8a33.html",
+   "kind": "reference",
+   "note": "미국 법인 주소 380 N Pastoria Ave, Sunnyvale, CA 94085"
+  },
+  {
+   "n": 11,
+   "title": "California Labor Commissioner · Pay Transparency",
+   "url": "https://www.dir.ca.gov/dlse/Pay-Transparency.htm",
+   "kind": "reference",
+   "note": "캘리포니아 공고의 급여 범위 기재 의무(SB 1162)"
+  },
+  {
+   "n": 12,
+   "title": "NVIDIA TensorRT 문서",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+   "kind": "reference",
+   "note": "ONNX 가져오기·정밀도(FP16·INT8)·플러그인·엔진 호환성"
+  },
+  {
+   "n": 13,
+   "title": "ONNX Runtime 문서 · Execution Providers",
+   "url": "https://onnxruntime.ai/docs/execution-providers/",
+   "kind": "reference",
+   "note": "한 모델을 CPU·CUDA·TensorRT·NPU 실행기로"
+  },
+  {
+   "n": 14,
+   "title": "PyTorch 문서 · torch.onnx",
+   "url": "https://docs.pytorch.org/docs/stable/onnx.html",
+   "kind": "reference",
+   "note": "PyTorch 모델을 ONNX 로 내보내기"
+  },
+  {
+   "n": 15,
+   "title": "Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference (Jacob 외, CVPR 2018)",
+   "url": "https://arxiv.org/abs/1712.05877",
+   "kind": "reference",
+   "note": "INT8 곱·INT32 누적, 눈금(scale)·영점"
+  },
+  {
+   "n": 16,
+   "title": "Quantizing deep convolutional networks for efficient inference: A whitepaper (Krishnamoorthi, 2018)",
+   "url": "https://arxiv.org/abs/1806.08342",
+   "kind": "reference",
+   "note": "학습 후 양자화·양자화 인식 학습"
+  },
+  {
+   "n": 17,
+   "title": "NVIDIA Nsight Systems 사용자 안내서",
+   "url": "https://docs.nvidia.com/nsight-systems/UserGuide/index.html",
+   "kind": "reference",
+   "note": "CPU·GPU 시간표 프로파일링"
+  },
+  {
+   "n": 18,
+   "title": "MLPerf Inference Benchmark (Reddi 외, ISCA 2020)",
+   "url": "https://arxiv.org/abs/1911.02549",
+   "kind": "reference",
+   "note": "단일 스트림 지연을 90 백분위로 재는 등 측정 규칙"
+  },
+  {
+   "n": 19,
+   "title": "Planning-oriented Autonomous Driving (UniAD, CVPR 2023)",
+   "url": "https://arxiv.org/abs/2212.10156",
+   "kind": "reference",
+   "note": "인지·예측·계획을 한 망으로 — 엔드투엔드 주행"
+  },
+  {
+   "n": 20,
+   "title": "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control (2023)",
+   "url": "https://arxiv.org/abs/2307.15818",
+   "kind": "reference",
+   "note": "VLA — 행동을 토큰으로 내는 시각-언어 모델"
+  },
+  {
+   "n": 21,
+   "title": "GAIA-1: A Generative World Model for Autonomous Driving (Wayve, 2023)",
+   "url": "https://arxiv.org/abs/2309.17080",
+   "kind": "reference",
+   "note": "영상·행동으로 다음 장면을 만들어 내는 주행 월드 모델 — 다른 회사의 공개 논문"
+  },
+  {
+   "n": 22,
+   "title": "ROS 2 문서 · Interfaces",
+   "url": "https://docs.ros.org/en/rolling/Concepts/Basic/About-Interfaces.html",
+   "kind": "reference",
+   "note": "메시지·서비스 형식을 .msg 파일로 정의 — 로봇 소프트웨어의 인터페이스 계약 예"
+  },
+  {
+   "n": 23,
+   "title": "AUTOSAR · Adaptive Platform",
+   "url": "https://www.autosar.org/standards/adaptive-platform",
+   "kind": "reference",
+   "note": "고성능 차량 컴퓨터용 표준 — 서비스 인터페이스·실행 관리"
+  },
+  {
+   "n": 24,
+   "title": "ISO 26262-1:2018 Road vehicles — Functional safety",
+   "url": "https://www.iso.org/standard/68383.html",
+   "kind": "reference",
+   "note": "차량 기능 안전 표준"
+  },
+  {
+   "n": 25,
+   "title": "ISO 21448:2022 Road vehicles — Safety of the intended functionality (SOTIF)",
+   "url": "https://www.iso.org/standard/77490.html",
+   "kind": "reference",
+   "note": "고장이 아니라 성능 한계에서 오는 위험 — 인지·ML 기능에 맞닿은 표준"
+  },
+  {
+   "n": 26,
+   "title": "QNX 개발자 문서",
+   "url": "https://www.qnx.com/developers/docs/",
+   "kind": "reference",
+   "note": "QNX Neutrino 실시간 OS"
+  },
+  {
+   "n": 27,
+   "title": "Linux Foundation · Real-Time Linux (PREEMPT_RT) 위키",
+   "url": "https://wiki.linuxfoundation.org/realtime/start",
+   "kind": "reference",
+   "note": "리눅스 실시간 패치·지연 측정(cyclictest)"
+  },
+  {
+   "n": 28,
+   "title": "Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment (Liu·Layland, JACM 1973)",
+   "url": "https://dl.acm.org/doi/10.1145/321738.321743",
+   "kind": "reference",
+   "note": "주기 작업의 마감 보장 조건 — 실시간 스케줄링의 출발점"
+  },
+  {
+   "n": 29,
+   "title": "Hidden Technical Debt in Machine Learning Systems (Sculley 외, NeurIPS 2015)",
+   "url": "https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems",
+   "kind": "reference",
+   "note": "모델 코드보다 주변 시스템(설정·데이터 의존·연결 코드)이 더 크다"
+  },
+  {
+   "n": 30,
+   "title": "The ML Test Score: A Rubric for ML Production Readiness and Technical Debt Reduction (Google, 2017)",
+   "url": "https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/",
+   "kind": "reference",
+   "note": "배포 전 시험 항목 표 — 모델·데이터·인프라·모니터링"
+  },
+  {
+   "n": 31,
+   "title": "Continuous Delivery for Machine Learning (ThoughtWorks · martinfowler.com)",
+   "url": "https://martinfowler.com/articles/cd4ml.html",
+   "kind": "reference",
+   "note": "모델·데이터·코드를 함께 판 매기고 파이프라인으로 내보내기"
+  },
+  {
+   "n": 32,
+   "title": "CUDA C++ Programming Guide",
+   "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html",
+   "kind": "reference",
+   "note": "스트림·메모리 종류"
+  },
+  {
+   "n": 33,
+   "title": "Horace He · Making Deep Learning Go Brrrr From First Principles",
+   "url": "https://horace.io/brrr_intro.html",
+   "kind": "reference",
+   "note": "계산·메모리·부르는 비용 세 갈래"
+  },
+  {
+   "n": 34,
+   "title": "포티투닷 채용 · 채용 절차",
+   "url": "https://42dot.ai/ko/careers/hiring-process",
+   "kind": "company",
+   "note": "면접 통과 뒤 연봉·입사 조건을 정하는 처우 협의"
+  },
+  {
+   "n": 35,
+   "title": "NVIDIA DRIVE OS",
+   "url": "https://developer.nvidia.com/drive/os",
+   "kind": "reference",
+   "note": "DRIVE 플랫폼의 운영체제·TensorRT·CUDA 묶음 — 이 팀이 쓴다는 근거는 아님"
+  }
+ ],
+ "caveat": "포티투닷이 서니베일 자율주행 조직의 차량 컴퓨터·실행 환경·배포 방식을 설명한 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 그 사본, 같은 조직의 모델 쪽 공고, 한국 쪽 비슷한 공고, 현대차그룹 데이터 플라이휠 이야기·보도입니다. 월드 모델이 차에서 도는지 학습·시험에만 쓰이는지, 어느 칩을 쓰는지는 공개되지 않았습니다. 기법 풀이는 공식 문서·표준·논문(다른 회사의 공개 연구 포함)으로 '보통 이런 것'을 보였고, 코드 예시 다섯 개는 직접 돌려 출력을 확인했습니다(지연·모델 크기 등은 가정값). 미국 법인의 복리후생은 공식 자료를 찾지 못해 비웠습니다. 2026-11-25 기준."
+}

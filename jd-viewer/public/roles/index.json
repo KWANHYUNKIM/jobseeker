@@ -10,6 +10,7 @@
   "wanted-392726": "42dot-ai-infrastructure-engineer",
   "ats-ashby:42dot:a895dce5-3a9d-4472-8b05-04bbd99aea60": "42dot-android-build-system",
   "ats-ashby:42dot:905f1b60-158a-4aca-a3c3-376cbfdcefa9": "42dot-cloud-infrastructure-engineer",
+  "ats-ashby:42dot:70c5a672-9bd9-4195-a305-245b578a35dc": "42dot-data-engineer-data-governance",
   "ats-ashby:42dot:96c1501f-070c-4c0f-b883-af957746e84c": "42dot-edge-ai-sw-engineer-ad",
   "ats-ashby:42dot:63196d96-2810-4348-8aa5-077d8c0ee710": "42dot-firmware-secure-boot-ota",
   "wanted-310540": "42dot-ivi-os-camera-system",
@@ -458,6 +459,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "42dot-data-engineer-data-governance",
+   "company": "포티투닷(42dot)",
+   "role": "데이터 엔지니어 (데이터 거버넌스·분석)",
+   "jobs": [
+    "ats-ashby:42dot:70c5a672-9bd9-4195-a305-245b578a35dc"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 16
   },
   {
    "id": "42dot-edge-ai-sw-engineer-ad",
