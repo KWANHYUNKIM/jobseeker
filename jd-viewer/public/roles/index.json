@@ -20,8 +20,10 @@
   "ats-ashby:42dot:2b5a9e26-853d-4131-a11e-123aa2ba9139": "42dot-os-tools-software-engineer",
   "ats-ashby:42dot:442d28d0-1c6a-40a1-8729-9e8db1ab14f9": "42dot-sdv-vehicle-connect-software-engineer",
   "ats-ashby:42dot:75e6abe9-9195-43c3-abdf-60feff10bd47": "42dot-senior-ai-data-pipeline-engineer",
+  "wanted-384995": "42dot-senior-backend-gateway-iam",
   "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
   "ats-ashby:42dot:08d5a10e-10f6-4821-ba21-66cda54064ef": "42dot-senior-devops-cicd",
+  "ats-ashby:42dot:4e0a3e0c-ad0e-47e2-b937-cdc9633fd52b": "42dot-senior-ml-engineer-ai-data",
   "ats-ashby:42dot:44a90406-9eef-495b-b994-c28a64e2be83": "42dot-senior-ml-platform-engineer-ad",
   "ats-ashby:42dot:e505b80b-4b42-401c-a36e-eb11fb422931": "42dot-senior-platform-engineer-warsaw",
   "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c": "42dot-senior-release-engineer",
@@ -554,6 +556,16 @@
    "lines": 19
   },
   {
+   "id": "42dot-senior-backend-gateway-iam",
+   "company": "포티투닷",
+   "role": "Senior Backend Engineer",
+   "jobs": [
+    "wanted-384995"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
+  },
+  {
    "id": "42dot-senior-cv-engineer-ad",
    "company": "포티투닷(42dot)",
    "role": "Senior Computer Vision Engineer (Autonomous Driving)",
@@ -572,6 +584,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 23
+  },
+  {
+   "id": "42dot-senior-ml-engineer-ai-data",
+   "company": "포티투닷",
+   "role": "Senior ML Engineer (AI Data)",
+   "jobs": [
+    "ats-ashby:42dot:4e0a3e0c-ad0e-47e2-b937-cdc9633fd52b"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "42dot-senior-ml-platform-engineer-ad",
