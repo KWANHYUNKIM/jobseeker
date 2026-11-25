@@ -1,0 +1,1183 @@
+{
+ "id": "xcena-system-firmware",
+ "company": "엑시나",
+ "role": "System Firmware Engineer",
+ "team": "SW 개발 · System Firmware",
+ "jobs": [
+  "ats-greeting:xcena:110624"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "CXL 로 서버에 꽂는 메모리 칩 MX1(DDR5 + SSD 포트 + 수천 개 RISC-V 코어)이 **켜지고, 호스트에 메모리로 보이고, 오래 버티게** 하는 펌웨어를 칩 설계 단계부터 같이 만듭니다.[1][2][7]",
+  "env": "칩이 양산을 앞둔 시기라(2026년 말 목표[9]) 시뮬레이션·FPGA·첫 실리콘을 오가며, 리눅스 호스트 드라이버·진단 도구와 맞물려 일합니다.[3][4]",
+  "oneline": "칩과 리눅스 사이를 오가는 펌웨어 자리. **C · 레지스터 · 부팅 · PCIe/CXL**가 중심이고, 화면이나 웹은 없습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "엑시나는 자체 개발하는 XCENA SoC의 아키텍처 설계부터 기능 검증, 실리콘 Bring-up, 시스템 성능 최적화까지 함께할 System Firmware Engineer를 찾고 있습니다.\n이 포지션은 하드웨어·소프트웨어 공동 설계 관점에서 SoC의 동작 구조와 제어 방식을 정의하고, 이를 펌웨어와 시스템 소프트웨어로 구현합니다. 설계 단계에서 기능과 검증 가능성을 검토하고, 실제 실리콘에서 동작을 검증하며, 제품 수준의 성능과 신뢰성을 확보하는 역할입니다.\nSoC 내부 구조를 이해하고 하드웨어 설계팀과 함께 시스템의 동작을 만들어가는 엔지니어를 기다립니다.",
+   "short": "칩을 설계할 때부터 끼어들어, 칩이 처음 켜지는 날부터 제품이 될 때까지 칩을 움직이는 코드를 맡는 자리다.",
+   "why": "엑시나는 CXL(PCIe 위에서 메모리를 꽂는 규격)로 서버에 붙는 메모리 카드 MX1 을 직접 설계하는 팹리스(공장 없는 반도체 설계 회사)입니다.[1] 이 칩은 DDR5 메모리, SSD 를 붙이는 PCIe 포트, 수천 개의 작은 RISC-V 코어를 한 몸에 담아서[2][7] 칩 하나를 움직이는 코드가 여러 겹 필요합니다. 그래서 하드웨어가 굳기 전부터 펌웨어 사람이 같이 설계합니다.[1]",
+   "actually": {
+    "items": [
+     "**설계 단계** — 칩 사양서에 \"이 레지스터는 펌웨어가 이렇게 쓴다\"를 같이 적는다.[1]",
+     "**실리콘이 나온 뒤** — 처음 받은 칩에 전원을 넣고 부팅·메모리·링크가 되는지부터 확인한다(Bring-up).[1]",
+     "**제품이 될 때** — 지연·처리량을 재고 오래 돌려 보며 펌웨어를 고친다.[1]"
+    ]
+   },
+   "how_far": "경력 3년↑ 자리입니다.[1] 한 칩의 처음부터 끝까지를 다 해 봤을 필요는 없지만, 위 세 단계 중 적어도 하나는 '내가 맡아 끝냈다'고 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    7
+   ],
+   "study": [
+    "veloxcon"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "하드웨어 설계팀과 협업하여 XCENA SoC의 시스템 아키텍처와 하드웨어·소프트웨어 간 역할을 정의합니다.",
+   "short": "어떤 일을 회로로 만들고 어떤 일을 펌웨어로 남길지 하드웨어팀과 나눠 정한다.",
+   "why": "회로로 만든 기능은 빠르지만 칩이 나온 뒤엔 고칠 수 없고, 펌웨어로 남긴 기능은 느려도 고칠 수 있습니다. MX1 은 SSD 페이지가 DRAM 에 없을 때(미스) 채우는 일을 하드웨어가 아니라 **작은 코어 위의 펌웨어**가 하도록 나눴다고 발표했습니다.[7] 이런 나눔이 이 줄의 일입니다.",
+   "actually": {
+    "items": [
+     "**자주·빠르게 일어나는 일은 회로로** — 주소 변환 표 조회(1,024칸짜리 맵 캐시)는 하드웨어가 한다.[7]",
+     "**가끔·복잡한 일은 펌웨어로** — 맵 캐시 미스 채우기, 어느 페이지를 내보낼지 고르기.[7][10]",
+     "**경계 약속 정하기** — 같은 회사의 다른 공고는 이 경계를 '레지스터 맵·명령 규약·메모리 모델·동기화 방식' 같은 하드웨어와 펌웨어 사이의 계약이라고 부른다.[11]"
+    ]
+   },
+   "how_far": "최종 구조는 아키텍트·하드웨어팀과 같이 정합니다. 펌웨어 쪽 사람은 \"이걸 펌웨어로 하면 몇 사이클·몇 마이크로초가 드는지\"를 숫자로 가져가는 사람이면 됩니다. {추론}",
+   "refs": [
+    7,
+    11
+   ],
+   "study": [
+    "csapp",
+    "veloxcon"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "메모리 맵, 부팅 시퀀스, 인터럽트, 데이터 경로 및 제어 인터페이스를 설계·검토합니다.",
+   "short": "칩 안 주소를 어디에 무엇으로 둘지, 켜질 때 무엇부터 할지, 신호·데이터가 어디로 흐를지를 정한다.",
+   "why": "호스트가 보는 엑시나 장치는 PCI 장치 하나인데, 그 안에 메모리 영역·제어 레지스터·메일박스가 주소로 나뉘어 있습니다. 공개된 리눅스 드라이버는 **BAR 2**(PCI 장치가 호스트에 열어 주는 주소 창 중 2번)에 메일박스를 두고 최대 80개를 쓰도록 짜여 있습니다.[3] 이런 배치가 '메모리 맵'입니다.",
+   "actually": {
+    "items": [
+     "**메모리 맵** — 칩 안 주소표: DDR 영역, 레지스터 영역, 메일박스 영역, 코어별 작은 메모리. 호스트에서 보이는 창(BAR)과 CXL 메모리 영역(HDM)을 어떻게 겹치지 않게 둘지.[3][15]",
+     "**부팅 순서** — 어느 코어가 먼저 깨어나 DDR 을 초기화하고, 언제 호스트에 '준비됨'을 알리는지.",
+     "**인터럽트** — 장치가 일을 끝내면 MSI(메모리에 쓰는 방식의 인터럽트)로 호스트를 깨운다. 드라이버에 MSI 처리 함수가 있다.[3]",
+     "**데이터 경로** — 호스트 메모리 ↔ 장치를 DMA 로 옮기는 길, 호스트의 일반 load/store 로 CXL 메모리를 읽는 길이 따로 있다.[2][3]",
+     "**제어 인터페이스** — 큐에 명령을 넣고 '초인종(doorbell)' 레지스터를 두드리는 방식. 드라이버가 리눅스 NVMe 헤더를 쓰고 큐 생성·삭제 명령을 둔다.[3]"
+    ]
+   },
+   "how_far": "'검토'까지가 이 줄입니다. 새 블록이 생길 때 그 주소·인터럽트 번호·부팅 순서에서 펌웨어가 무엇을 해야 하는지 빠짐없이 적어 낼 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    7,
+    15
+   ],
+   "study": [
+    "ldd3",
+    "kernel-cxl",
+    "interrupt-boot"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "성능, 확장성, 오류 처리 및 디버깅 요구사항을 아키텍처와 하드웨어 사양에 반영합니다.",
+   "short": "칩이 굳기 전에 '나중에 이게 없으면 디버깅 못 한다'는 것을 사양에 넣게 만든다.",
+   "why": "칩은 한 번 찍으면 수개월·수십억이 들어 다시 만들기 어렵습니다 {추론}. 그래서 상태를 읽을 레지스터, 오류 카운터, 추적 버퍼 같은 것을 처음부터 넣어야 합니다. 엑시나가 고객에게 돌리게 하는 진단 스크립트는 장치 펌웨어 정보·텔레메트리·SMART(건강 지표)·PCIe 오류(AER) 카운터를 모읍니다[4] — 이런 값을 칩과 펌웨어가 내 줄 수 있어야 합니다.",
+   "actually": {
+    "items": [
+     "**성능** — 메일박스·큐 깊이, 동시에 몇 개 전송을 낼지(드라이버 기본 6개 병렬).[3]",
+     "**오류 처리** — 명령이 안 돌아오면? 드라이버는 기본 60초 시간 초과와 장치 생존 확인(PING)을 둔다.[3]",
+     "**디버깅** — 펌웨어 버전·텔레메트리를 읽는 명령(`xcena_cli fw-info`, `telemetry`)이 있다.[4]",
+     "**확장성** — 장치 여러 개·호스트 여러 대에서 같은 메모리를 쓸 때의 규칙.[5]"
+    ]
+   },
+   "how_far": "이 줄은 '빠진 것을 찾는 눈'입니다. 이전 제품에서 \"이 레지스터가 없어서 고생했다\" 같은 경험을 사양 요구로 바꿔 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    4,
+    3
+   ],
+   "study": [
+    "making-embedded"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SoC 기능 블록의 동작 사양, 레지스터 인터페이스 및 펌웨어 제어 구조를 공동 설계합니다.",
+   "short": "새 회로 블록 하나마다 '레지스터를 어떻게 써서 켜고 끄고 상태를 읽나'를 하드웨어팀과 같이 정한다.",
+   "why": "회로 블록은 레지스터(칩 안의 작은 설정·상태 칸)로 조종됩니다. 레지스터를 잘못 설계하면 펌웨어가 한 번에 못 바꾸거나 상태를 놓칩니다. 엑시나의 다른 공고는 이것을 하드웨어와 펌웨어 사이의 계약이라고 부릅니다.[11]",
+   "actually": {
+    "items": [
+     "**칸 나누기** — 한 32비트 레지스터의 몇 번 비트가 켜기, 몇 번이 모드인지.",
+     "**읽고-고치고-쓰기** — 다른 칸을 건드리지 않고 원하는 칸만 바꾸는 순서(예시 1).",
+     "**상태 지우는 법** — 1을 써서 지우는(W1C) 칸인지, 읽으면 지워지는 칸인지.",
+     "**비트 묶음 정의** — 엑시나 드라이버는 메일박스 상태 64비트를 '큐 크기 4비트·head 8비트·tail 8비트…'로 나눠 공용체(union)로 다룬다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "예시 1 · 레지스터 한 칸만 바꾸기 (직접 돌린 출력)",
+     "body": "가상 CTRL 레지스터의 4~5번 비트(MODE)만 01 → 10 으로 바꿉니다. 마스크로 지우지 않고 OR 만 하면 옛 값이 남아 11 이 됩니다.",
+     "lang": "python",
+     "code": "reg = 0b1001_0001          # bit0=EN, bits[5:4]=MODE(01)\nMODE_SHIFT, MODE_MASK = 4, 0b11 << 4\nnew = (reg & ~MODE_MASK) | (0b10 << MODE_SHIFT)\nprint(f\"before {reg:08b} after {new:08b}\")\n# before 10010001 after 10100001\nwrong = reg | (0b10 << MODE_SHIFT)\nprint(f\"OR only {wrong:08b}\")\n# OR only 10110001  <- MODE 가 11 이 됐다"
+    }
+   ],
+   "how_far": "사양 문서의 레지스터 표를 읽고 바로 드라이버 함수로 옮길 수 있고, 반대로 \"이 칸은 펌웨어가 쓰기 어렵다\"고 고쳐 달라 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    11,
+    3
+   ],
+   "study": [
+    "making-embedded",
+    "ldd3"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "기능 블록을 구동하는 펌웨어와 테스트 코드를 개발하고, 정상 동작·예외 상황·경계 조건을 검증합니다.",
+   "short": "블록을 실제로 돌리는 코드와, 큐가 꽉 찼을 때·값이 끝에 걸릴 때도 맞는지 보는 시험을 같이 만든다.",
+   "why": "칩의 기능은 보통 경우보다 끝에서 깨집니다. 엑시나 드라이버의 메일박스는 7비트 위치 + 1비트 '바퀴 수(phase)'로 꽉 참과 비어 있음을 구분합니다.[3] 이런 곳이 경계 조건 시험의 대상입니다.",
+   "actually": {
+    "items": [
+     "**정상 동작** — 명령 하나를 넣고 결과 하나가 돌아오는지.",
+     "**경계 조건** — 큐가 꼭 찼을 때, 위치가 끝에서 0으로 돌아갈 때, 크기 0·최대 크기 전송.",
+     "**예외 상황** — 잘못된 명령 코드, 시간 초과, 장치가 중간에 응답을 멈출 때.[3]",
+     "**자동 시험** — 엑시나 드라이버 저장소에도 상태 기계·구조체 배치를 확인하는 시험 코드가 따로 있다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "예시 2 · 메일박스의 '꽉 참'과 '비어 있음' (직접 돌린 출력)",
+     "body": "드라이버의 위치(7비트)+바퀴(1비트) 방식을 깊이 4로 줄여 파이썬으로 옮겼습니다.[3] head 와 tail 의 위치가 같아도 바퀴가 다르면 꽉 찬 것, 같으면 빈 것입니다.",
+     "lang": "python",
+     "code": "DEPTH = 4\ndef pack(i, p): return (p << 7) | i\ndef idx(v): return v & 0x7F\ndef ph(v): return v >> 7\ndef nxt(v, n=1):\n    i = (idx(v) + n) & (DEPTH - 1)\n    return pack(i, ph(v) ^ (1 if n and i <= idx(v) else 0))\ndef pending(h, t): return idx(t) - idx(h) + DEPTH * (ph(h) ^ ph(t))\n\nhead = tail = pack(0, 0)\nfor _ in range(4): tail = nxt(tail)\nprint(pending(head, tail), idx(head) == idx(tail) and ph(head) != ph(tail))\n# 4 True   <- 꽉 참\nhead = nxt(head, 4)\nprint(pending(head, tail), head == tail)\n# 0 True   <- 비어 있음"
+    }
+   ],
+   "how_far": "모든 경우를 다 시험할 수는 없습니다. **경계 셋(0·최대·되돌아감)과 실패 둘(시간 초과·잘못된 입력)**을 기본으로 챙기는 습관이면 충분합니다. {추론}",
+   "refs": [
+    3
+   ],
+   "study": [
+    "mxdriver",
+    "making-embedded",
+    "kr-embedded-os"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시뮬레이션 및 실리콘 환경에서 하드웨어·소프트웨어 연계 검증을 수행하고 설계 이슈를 분석합니다.",
+   "short": "칩이 나오기 전엔 모의 환경에서, 나온 뒤엔 진짜 칩에서 펌웨어를 돌려 회로 버그를 찾아낸다.",
+   "why": "회로 버그는 칩을 찍기 전에 찾아야 쌉니다 {추론}. 엑시나는 소프트웨어 개발 도구에 시뮬레이터를 같이 둔다고 발표했고[2], FPGA(회로를 다시 그릴 수 있는 칩) 시제품 보드 설계 공고도 따로 냅니다.[1]",
+   "actually": {
+    "items": [
+     "**시뮬레이션** — 회로 설계(RTL)를 컴퓨터로 흉내 내고 그 위에서 펌웨어를 돌린다. 몹시 느려서 짧은 시험만 돌린다.",
+     "**FPGA 시제품** — 수백 배 빠르지만 실제 칩보다 느리다. 부팅·드라이버를 미리 맞춘다.",
+     "**실리콘** — 진짜 칩. 모의 환경에서 안 보이던 타이밍 문제가 나온다.",
+     "**공개 연습판** — QEMU(가상 컴퓨터)는 CXL 메모리 장치를 흉내 내 준다. 리눅스 CXL 드라이버를 칩 없이 돌려 볼 수 있다.[19]"
+    ]
+   },
+   "how_far": "회로 쪽 검증 도구(UVM 등)를 직접 다룰 필요는 없습니다. 펌웨어가 이상하게 돌 때 \"내 코드 문제인지, 회로 문제인지\"를 파형·로그로 가려 하드웨어팀에 재현 방법과 함께 넘기면 됩니다. {추론}",
+   "refs": [
+    2,
+    1,
+    19
+   ],
+   "study": [
+    "qemu-cxl"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "초기 실리콘의 부팅과 주요 기능을 검증하고, SoC 및 보드 수준의 Bring-up을 수행합니다.",
+   "short": "처음 받은 칩에 전원을 넣고, 부팅·메모리·링크가 하나씩 살아나는지 확인하며 막힌 곳을 뚫는다.",
+   "why": "MX1 은 삼성 파운드리 4나노로 만든 칩이고[7], 엑시나는 2026년 말 양산을 목표로 한다고 보도됐습니다.[9] 칩이 처음 돌아오는 시기의 일이 이 줄입니다.",
+   "actually": {
+    "items": [
+     "**링크 속도 확인** — 엑시나 진단 스크립트의 예시 출력은 장치 최대 64GT/s x8 인데 위 포트 때문에 32GT/s 로 묶인 경우를 'NOTE' 로 짚어 준다.[4]",
+     "**메모리 크기 확인** — 같은 예시에서 CXL 메모리 장치 233GiB, 펌웨어 1.0.11 이 보인다.[4]",
+     "**디버거** — JTAG 로 코어를 멈춰 레지스터·메모리를 읽는다. OpenOCD 가 공개 도구다.[18]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "보통의 Bring-up 순서 {추론}",
+     "steps": [
+      "전원·클럭 · 칩이 깨어나나",
+      "JTAG 연결 · 디버거로 코어를 멈추고 읽나",
+      "첫 부트 코드 · 칩 안 ROM 에서 시작",
+      "DDR 초기화 · 메모리 읽고 쓰기",
+      "PCIe/CXL 링크 · 호스트가 장치를 보나",
+      "드라이버 붙이기 · 호스트 OS 가 쓰나"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "보드 회로도 설계는 보드팀 몫입니다. 펌웨어 쪽은 **디버거를 붙여 어디서 멈췄는지 찾고**, 측정 결과를 하드웨어팀과 맞춰 볼 수 있어야 합니다. {추론}",
+   "refs": [
+    7,
+    9,
+    4,
+    18
+   ],
+   "study": [
+    "openocd",
+    "making-embedded"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "부팅 시퀀스, 메모리 초기화, 시스템 제어 및 진단 기능을 포함하는 펌웨어를 개발합니다.",
+   "short": "칩이 켜질 때 도는 코드, DDR 을 쓸 수 있게 만드는 코드, 상태를 알려 주는 진단 코드를 짠다.",
+   "why": "고객 서버에서 이 카드가 메모리로 보이려면 장치 펌웨어가 먼저 DDR 과 링크를 준비해 둬야 합니다. 엑시나의 진단 도구는 펌웨어 정보·텔레메트리·SSD SMART 를 장치에 물어봅니다[4] — 그 답을 만드는 쪽이 이 펌웨어입니다.",
+   "actually": {
+    "items": [
+     "**부팅 시퀀스** — ROM → 첫 부트로더 → 본 펌웨어. 단계마다 다음 이미지를 메모리에 올리고 넘긴다.[22]",
+     "**메모리 초기화** — DDR5 채널 4개의 학습(training)과 시험 패턴 쓰기·읽기.[7]",
+     "**시스템 제어** — 전원·클럭·리셋, 코어 수천 개 깨우기.[7]",
+     "**진단** — 온도·오류 수·버전을 호스트가 읽을 수 있게 내놓는다.[4]"
+    ]
+   },
+   "how_far": "베어메탈(OS 없이 도는) C 로 부트 코드를 짜고, 링커 스크립트로 코드·데이터 주소를 정할 수 있는 수준이 최소선입니다. {추론}",
+   "refs": [
+    4,
+    2,
+    22
+   ],
+   "study": [
+    "interrupt-boot",
+    "kr-embedded-os",
+    "riscv-spec"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "부팅 초기 단계부터 호스트/운영체제 연동까지 발생하는 문제를 해결합니다.",
+   "short": "카드가 켜지는 순간부터 리눅스가 메모리로 쓰기까지 어디서 막혀도 원인을 찾는다.",
+   "why": "이 카드는 호스트에서 여러 겹을 지나야 쓰입니다. 엑시나 진단 스크립트는 그 사슬을 **PCI → memdev → region → DAX → 드라이버 → 데몬** 순으로 하나씩 확인합니다.[4] 어느 칸에서 끊겼는지 찾는 것이 이 일입니다.",
+   "actually": {
+    "items": [
+     "**BIOS 설정** — 슬롯별 CXL 지원 여부, ACPI 표(CEDT·SRAT·HMAT)를 확인한다.[4]",
+     "**커널 설정** — `CONFIG_CXL_*` 옵션, IOMMU, 커널 로그(dmesg)를 본다.[4]",
+     "**리눅스 쪽 개념** — memdev·region·decoder 는 리눅스 CXL 드라이버의 낱말이다.[15]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "호스트에서 카드가 쓰이기까지 — 엑시나 진단 순서[4]",
+     "steps": [
+      "PCI · 장치가 보이나",
+      "memdev · CXL 메모리 장치로 잡혔나",
+      "region · 메모리 영역이 만들어졌나",
+      "DAX · 응용이 쓸 장치 파일",
+      "mx_dma 드라이버 · 가속 명령 통로",
+      "pxl_resourced · 사용자 쪽 데몬"
+     ]
+    }
+   ],
+   "how_far": "리눅스 부팅 로그와 `lspci`·`cxl list` 출력을 읽고 \"펌웨어 쪽 문제인지, 호스트 설정 문제인지\"를 가를 수 있으면 됩니다. {추론}",
+   "refs": [
+    4,
+    15
+   ],
+   "study": [
+    "kernel-cxl",
+    "sdk-scripts"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CXL 및 NVMe 기반 메모리 확장 기능을 시스템 소프트웨어와 통합합니다.",
+   "short": "CXL 로 붙인 DRAM 과, 그 뒤의 NVMe SSD 를 리눅스가 '그냥 메모리'로 쓰게 이어 붙인다.",
+   "why": "MX1 은 CXL 메모리 장치이면서 SSD 를 꽂는 PCIe 포트도 가집니다. 발표 슬라이드는 칩이 **CXL 끝단·DDR5·PCIe 루트 포트** 세 가지를 한꺼번에 다룬다고 적었고, SSD 페이지를 DRAM 에 알아서 캐시해 응용은 메모리처럼 쓰기만 하면 된다고 했습니다.[2] 회사는 이것을 InfiniteMemory 라 부릅니다.[2][10]",
+   "actually": {
+    "items": [
+     "**CXL 의 세 통로** — CXL.io(설정·관리), CXL.cache(장치가 호스트 메모리를 캐시), CXL.mem(호스트가 장치 메모리를 읽고 씀). 메모리 확장 장치는 io 와 mem 만 쓴다(Type 3).[6]",
+     "**SSD 를 메모리로** — SSD 를 64KB 페이지로 나누고, 1,024칸 맵 캐시로 주소를 바꾸며, 미스는 펌웨어가 채운다.[7]",
+     "**신뢰성** — 여러 SSD 를 PCIe 스위치로 묶어 RAID 를 걸 수 있다고 발표했다.[2]",
+     "**SSD 쪽 규약** — 장치 펌웨어는 NVMe 호스트처럼 SSD 에 명령을 낸다.[20] {추론}"
+    ]
+   },
+   "how_far": "InfiniteMemory 의 매핑·교체 알고리즘은 따로 뽑는 전담 공고가 있습니다.[10] 이 자리는 그 기능이 **부팅·링크·드라이버와 맞물려 돌게 하는 통합** 쪽입니다. {추론}",
+   "refs": [
+    2,
+    6,
+    7,
+    10,
+    20
+   ],
+   "study": [
+    "cxl-spec",
+    "kernel-cxl",
+    "nvme-spec"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "메모리 접근, 데이터 전송, 자원 관리 및 오류 처리 경로를 구현하고 검증합니다.",
+   "short": "메모리를 읽고 옮기는 길, 코어·큐 같은 자원을 나눠 주는 길, 일이 틀어졌을 때 되돌리는 길을 만든다.",
+   "why": "엑시나의 리눅스 드라이버에 이 네 길이 다 보입니다 — DMA 전송, 큐 만들기·지우기, 장치 생존 확인, 시간 초과.[3]",
+   "actually": {
+    "items": [
+     "**메모리 접근** — 호스트와 칩의 코어가 같은 가상 주소를 쓰고, 응용마다 페이지 표를 따로 둬 서로의 메모리를 못 읽게 한다.[7]",
+     "**데이터 전송** — 사용자 메모리 페이지를 고정(pin)하고 흩어진 페이지 목록(scatter-gather)으로 DMA 를 건다.[3]",
+     "**자원 관리** — 작업은 서브시스템(코어 묶음) 단위로 나눠 준다.[7]",
+     "**오류 처리** — 장치 상태를 '살아 있음·의심·죽음'으로 나누고 기본 1초 멈춤이면 의심, 5초면 죽음으로 본다.[3]",
+     "**여러 호스트** — CXL 공유 메모리엔 호스트 사이 원자 연산이 없어, 회사가 소유권을 조율하는 라이브러리(CME)를 따로 만들었다.[5]"
+    ]
+   },
+   "how_far": "드라이버 쪽은 호스트팀과 나눌 수 있지만, **장치 쪽에서 무엇을 언제 돌려줘야 호스트가 안 멈추는지**는 이 자리가 정합니다. {추론}",
+   "refs": [
+    3,
+    7,
+    5
+   ],
+   "study": [
+    "mxdriver",
+    "ldd3",
+    "csapp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "하드웨어 기능과 소프트웨어 동작을 연계하여 시스템 수준의 호환성과 안정성을 확보합니다.",
+   "short": "여러 회사의 서버·BIOS·리눅스 판에서 이 카드가 똑같이 잘 붙게 만든다.",
+   "why": "고객은 엑시나 서버가 아니라 자기 서버에 이 카드를 꽂습니다. 엑시나 진단 스크립트가 BIOS·보드 모델·슬롯별 CXL 지원·커널 판을 모으는 이유입니다.[4] 드라이버도 레드햇 판별·커널 판별로 코드를 갈라 둡니다.[3]",
+   "actually": {
+    "items": [
+     "**호스트 조합** — CPU·BIOS·커널 판이 바뀌면 같은 카드도 다르게 잡힌다.[4]",
+     "**규격 준수** — PCIe 규격 시험(Compliance)을 통과한 경험을 다른 공고가 우대한다.[12]",
+     "**판 맞추기** — 장치 펌웨어 판과 SDK 판을 맞춰 쓰게 한다. {추론}"
+    ]
+   },
+   "how_far": "모든 서버를 다 시험할 수는 없습니다. **고객 보고서 한 장으로 원인을 좁히는 법**을 아는 게 핵심입니다 — 엑시나가 고객 정보는 가리고 진단에 필요한 값만 남기는 보고서를 만든 것도 그 때문입니다.[4]",
+   "refs": [
+    4,
+    3,
+    12
+   ],
+   "study": [
+    "sdk-scripts",
+    "pcie-tech"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시스템의 지연시간, 처리량, 대역폭 및 자원 사용률을 측정하고 성능 병목을 분석합니다.",
+   "short": "얼마나 늦게·많이·넓게 처리하는지 재고, 어디서 막히는지 찾는다.",
+   "why": "엑시나는 MX1 하나가 같은 일을 하는 호스트 CPU 보다 최대 4.7배 처리량을 낸다고 발표했습니다.[7] 이런 숫자를 재고 뒷받침하는 것이 이 줄입니다. 측정 기준(비교 CPU·유휴 전력 제외 등)도 같이 밝혔습니다.[7]",
+   "actually": {
+    "items": [
+     "**지연시간** — 명령 하나가 돌아오기까지. 평균보다 **느린 꼬리(p99)**가 중요하다(예시 3).",
+     "**처리량·대역폭** — 초당 명령 수, 초당 바이트. 링크 상한(예: PCIe Gen6 x8 64GB/s)과 비교한다.[7]",
+     "**호스트 쪽 정보** — NUMA 노드별 대역폭·지연(HMAT 표)을 읽는다.[4]",
+     "**경합** — 회사 블로그는 64개 참가자가 한 자원을 다툴 때 소유권 획득 약 144μs, 흩어 놓으면 약 7μs 로 측정했다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "예시 3 · 평균만 보면 놓치는 것 (직접 돌린 출력)",
+     "body": "가상 지연 100개 중 95개가 0.9μs, 5개가 느립니다. 평균은 1.39μs 로 괜찮아 보이지만 p99 는 8μs 입니다.",
+     "lang": "python",
+     "code": "import statistics\nlat = sorted([0.9] * 95 + [1.0, 1.2, 3.5, 8.0, 40.0])  # us\np = lambda q: lat[int(len(lat) * q) - 1]\nprint(\"mean %.2f p50 %.1f p99 %.1f max %.1f\" % (statistics.mean(lat), p(0.5), p(0.99), lat[-1]))\n# mean 1.39 p50 0.9 p99 8.0 max 40.0"
+    }
+   ],
+   "how_far": "측정 도구를 쓰는 것보다 **조건을 고정하고(같은 슬롯·같은 링크 속도·같은 데이터) 숫자를 다시 낼 수 있게** 하는 것이 먼저입니다. {추론}",
+   "refs": [
+    7,
+    4,
+    5
+   ],
+   "study": [
+    "sysperf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장시간 구동, 부하 변화 및 오류 상황에서 시스템의 안정성과 복구 동작을 평가합니다.",
+   "short": "며칠씩 돌리고, 부하를 흔들고, 일부러 오류를 넣어 봐도 카드가 살아남고 되돌아오는지 본다.",
+   "why": "데이터센터 메모리는 멈추면 서버 전체가 멈춥니다 {추론}. 엑시나 드라이버엔 전송이 늦게 끝남·복구됨·좀비(응답 없는 채 남은 전송) 같은 대기 상태가 따로 정의돼 있어[3] 이런 상황을 처음부터 다룬다는 것을 보여 줍니다.",
+   "actually": {
+    "items": [
+     "**오래 돌리기** — 같은 부하를 수십 시간 돌려 메모리 누수·카운터 넘침을 찾는다.",
+     "**부하 흔들기** — 쉬다가 갑자기 몰리는 패턴에서 시간 초과가 나는지.",
+     "**오류 넣기** — 리눅스는 메모리 할당 실패 등을 일부러 일으키는 장치를 제공한다.[16]",
+     "**결과 읽기** — PCIe AER 카운터, 메모리 EDAC 오류 수, 장치 SMART 를 전후로 비교한다.[4]"
+    ]
+   },
+   "how_far": "복구 설계는 팀이 같이 정합니다. 개인 최소선은 **\"무엇을 몇 시간, 어떤 오류를 몇 번 넣었고, 무엇이 남았나\"를 표로 남기는 평가 계획**을 세울 수 있는 정도입니다. {추론}",
+   "refs": [
+    3,
+    4,
+    16
+   ],
+   "study": [
+    "fault-inject",
+    "sysperf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "평가 결과를 바탕으로 펌웨어를 최적화하고, 하드웨어 개선사항을 도출하여 제품 완성도를 높입니다.",
+   "short": "잰 숫자로 펌웨어를 고치고, 펌웨어로 못 고치는 것은 다음 칩의 요구로 넘긴다.",
+   "why": "엑시나는 2025년 첫 시제품(MX1P)에서 2026년 제품 라인업으로 넘어가며 판을 이어 가고 있습니다.[7][8] 이번 칩에서 펌웨어로 메운 약점이 다음 칩 사양의 입력이 됩니다.",
+   "actually": {
+    "items": [
+     "**펌웨어 최적화** — 자주 도는 경로를 줄이고, 미스 처리·큐 처리 순서를 바꾼다.",
+     "**하드웨어 개선 요구** — \"이 조회는 회로로 해야 한다\", \"이 카운터가 필요하다\" 같은 근거 있는 요청.[11]"
+    ]
+   },
+   "how_far": "'느리다'가 아니라 '어느 단계가 몇 %를 먹는다'로 말할 수 있어야 하드웨어팀이 움직입니다. {추론}",
+   "refs": [
+    7,
+    8,
+    11
+   ],
+   "study": [
+    "sysperf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "전산·컴퓨터·전기전자공학 또는 관련 분야를 전공했거나 이에 준하는 실무 경험이 있는 분",
+   "short": "컴퓨터 구조·운영체제·회로 기초를 알아야 칩과 코드 사이를 오갈 수 있어서. 실무로 대신해도 된다.",
+   "why": "이 자리는 회로 사양서와 리눅스 커널을 둘 다 읽습니다.[1] 전공은 그 바탕을 보는 기준이고 '이에 준하는 실무 경험'도 받는다고 적었습니다.[1]",
+   "how_far": "전공이 달라도 컴퓨터 구조(캐시·가상 메모리·인터럽트)와 운영체제 기초를 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "csapp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SoC 또는 임베디드 시스템의 펌웨어, BSP, 부트로더, 커널·드라이버 개발 경험이 있는 분",
+   "short": "칩 위에서 처음 도는 코드부터 OS 드라이버까지 중 어느 층이든 직접 만들어 본 사람이어야 해서.",
+   "why": "이 자리의 일이 부트 코드(업무 3)부터 호스트 드라이버 연동(업무 3·4)까지 걸칩니다.[1] 엑시나가 공개한 리눅스 커널 모듈(mx_dma)도 이 층의 결과물입니다.[3]",
+   "actually": {
+    "items": [
+     "**펌웨어** — OS 없이 칩 위에서 도는 코드.",
+     "**BSP** — 특정 보드에서 OS 가 돌게 하는 묶음(부트로더·장치 트리·드라이버).",
+     "**부트로더** — 전원 직후 다음 단계 이미지를 올리고 넘기는 코드.[22]",
+     "**커널·드라이버** — 리눅스가 장치를 쓰게 하는 모듈. 엑시나 드라이버는 DKMS(커널 판이 바뀌면 다시 빌드)로 설치된다.[3]"
+    ]
+   },
+   "how_far": "넷 다가 아니라 '또는'입니다. 한 층에서 실제 제품을 낸 경험이 있고 다른 층의 코드를 읽을 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "ldd3",
+    "kr-embedded-os",
+    "interrupt-boot"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C 또는 C++를 활용하여 하드웨어를 직접 제어하는 소프트웨어를 설계·구현할 수 있는 분",
+   "short": "레지스터 주소에 직접 쓰고 읽는 코드는 C/C++ 로 짜기 때문이다.",
+   "why": "엑시나의 드라이버는 C 이고, 비트 칸 공용체·메모리 장벽·DMA 매핑을 직접 다룹니다.[3] 칩 코어용 사용자 코드도 C·C++·Rust 로 쓴다고 보도됐습니다.[9]",
+   "level": {
+    "basic": "포인터·구조체·비트 연산(마스크·시프트) · volatile · 고정 크기 정수(uint32_t)",
+    "work": "레지스터 읽고-고치고-쓰기 · 공용체로 비트 칸 다루기 · 인터럽트 처리 함수 · 링 버퍼",
+    "team": "메모리 장벽과 캐시 일관성 · DMA 주소와 CPU 주소 구분 · 커널 모듈 수명(참조 카운트·잠금)"
+   },
+   "how_far": "C++ 기능보다 **C 수준의 메모리 감각**이 중요합니다. 예시 1·2 를 C 로 바로 옮길 수 있으면 출발선입니다. {추론}",
+   "refs": [
+    3,
+    9
+   ],
+   "study": [
+    "making-embedded",
+    "ldd3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "프로세서, 메모리, 인터럽트, DMA 및 메모리 맵 기반 I/O 등 시스템 동작 원리를 이해하는 분",
+   "short": "펌웨어 버그 대부분이 캐시·인터럽트 순서·DMA 주소 같은 바닥 원리에서 나와서.",
+   "why": "MX1 은 수천 개 코어·캐시 세 층·DDR5 를 가지고[7], 호스트와 같은 가상 주소를 씁니다.[2][7] 이런 구조 위에서 펌웨어를 짜려면 원리를 알아야 합니다.",
+   "actually": {
+    "items": [
+     "**프로세서·캐시** — MX1 의 코어 4개가 8KB 명령 캐시를, 32개가 256KB 데이터 캐시를 나눠 쓰고, 128MB 공용 캐시가 그 위에 있다.[7]",
+     "**인터럽트** — 장치가 끝났음을 알리는 법(MSI) vs 계속 들여다보는 법(폴링). 엑시나 드라이버는 둘 다 쓴다.[3]",
+     "**DMA** — CPU 대신 장치가 메모리를 옮긴다. 사용자 페이지를 고정하고 장치용 주소로 바꿔 넘긴다.[3]",
+     "**메모리 맵 I/O** — 레지스터를 메모리 주소처럼 읽고 쓴다. 순서가 바뀌지 않게 장벽을 쓴다."
+    ]
+   },
+   "how_far": "면접에서 \"DMA 가 끝났는데 CPU 가 옛 값을 읽는다 — 왜?\" 같은 질문에 캐시와 순서로 답할 수 있으면 됩니다. {추론}",
+   "refs": [
+    7,
+    2,
+    3
+   ],
+   "study": [
+    "csapp",
+    "ldd3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "하드웨어 사양과 레지스터 문서를 바탕으로 기능을 구현하고, 하드웨어·소프트웨어에 걸친 문제의 원인을 분석할 수 있는 분",
+   "short": "새 칩은 참고할 코드가 없어 문서만 보고 짜야 하고, 문제가 생기면 칩 탓인지 코드 탓인지 가려야 해서.",
+   "why": "새 칩은 인터넷에 예제가 없습니다. 엑시나의 다른 공고도 '새 하드웨어·아키텍처 문서를 읽고 시스템 구조를 스스로 끌어낼 수 있는 역량'을 필수로 적었습니다.[11]",
+   "actually": {
+    "items": [
+     "**문서 → 코드** — 레지스터 표·타이밍 그림을 보고 초기화 순서를 짠다.",
+     "**원인 가르기** — 같은 입력을 시뮬레이션·FPGA·실리콘에서 돌려 어디서 갈리는지 본다.",
+     "**증거 모으기** — 로그·카운터·호스트 진단 보고서를 한데 모은다.[4]"
+    ]
+   },
+   "how_far": "\"하드웨어 버그 같다\"고 말할 때 **재현 조건과 근거(파형·레지스터 값)**를 같이 내놓을 수 있어야 합니다. {추론}",
+   "refs": [
+    11,
+    4
+   ],
+   "study": [
+    "making-embedded"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "신규 SoC의 아키텍처 검토, 초기 실리콘 Bring-up 또는 제품화에 참여한 경험이 있는 분",
+   "short": "칩이 처음 나올 때의 혼란을 겪어 본 사람이 이 회사의 지금 단계에 딱 맞아서.",
+   "why": "엑시나는 첫 제품 MX1 의 양산과 첫 매출(2027년 목표)을 앞두고 있습니다.[9] 새 칩을 처음부터 제품으로 만들어 본 경험이 바로 쓰이는 시기입니다 {추론}.",
+   "how_far": "전 과정이 아니어도 됩니다. 예컨대 'Bring-up 때 DDR 초기화를 맡았다' 한 칸이면 우대 사항이 됩니다. {추론}",
+   "refs": [
+    9
+   ],
+   "study": [
+    "making-embedded"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "하드웨어·소프트웨어 공동 설계 및 기능 블록의 사양·제어 인터페이스 정의 경험이 있는 분",
+   "short": "레지스터·명령 규약을 '쓰는 쪽'이 아니라 '정하는 쪽'에 서 본 사람이라서.",
+   "why": "엑시나는 이 경계를 전담하는 아키텍트 공고까지 따로 냅니다.[11] 펌웨어 엔지니어도 그 논의에 같이 앉습니다.[1]",
+   "actually": {
+    "items": [
+     "**명령 규약 예** — 엑시나 드라이버의 명령은 opcode·플래그·명령 번호·주소 칸으로 된 고정 크기 구조체다.[3]"
+    ]
+   },
+   "how_far": "내가 바꾸자고 해서 실제 사양이 바뀐 사례 하나를 이유와 함께 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    11,
+    1
+   ],
+   "study": [
+    "csapp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "시뮬레이션 또는 FPGA 환경에서 펌웨어를 활용한 SoC 검증 경험이 있는 분",
+   "short": "칩이 나오기 전 몇 달 동안 할 일이 바로 이것이라서.",
+   "why": "엑시나는 FPGA 시제품 보드 설계자를 따로 뽑고, SDK 에 시뮬레이터를 둡니다.[2] 칩이 나오기 전 펌웨어는 그 위에서 먼저 돕니다 {추론}.",
+   "how_far": "FPGA 보드를 직접 설계할 필요는 없습니다. **느린 환경에서 펌웨어를 돌려 회로 버그 하나를 찾아낸 경험**이면 충분합니다. 경험이 없다면 QEMU 의 CXL 장치 흉내로 연습할 수 있습니다.[19]",
+   "refs": [
+    2,
+    19
+   ],
+   "study": [
+    "qemu-cxl"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ARM 기반 시스템의 부트로더, Secure Boot, Embedded Linux 및 커널 드라이버 개발 경험이 있는 분",
+   "short": "남이 만든 펌웨어를 못 올리게 하는 보안 부팅과 리눅스 드라이버가 데이터센터 장치에 꼭 필요해서.",
+   "why": "클라우드 회사는 서버에 꽂는 장치가 진짜인지, 펌웨어가 바뀌지 않았는지 확인하려 합니다 {추론}. 엑시나는 장치 인증 규격 SPDM 의 예제 구현을 가져다 CXL 링크 암호화 키 관리(IDE)·보안 설정(TSP) 부분까지 담은 저장소를 공개해 두었습니다.[13]",
+   "actually": {
+    "items": [
+     "**Secure Boot** — 각 부팅 단계가 다음 이미지의 서명을 확인한 뒤 넘긴다(신뢰 사슬). Arm 의 공개 펌웨어 TF-A 문서가 이 구조를 설명한다.[17]",
+     "**장치 인증** — 호스트가 장치에 인증서·측정값을 물어 진짜인지 확인한다(SPDM).[13]",
+     "**Embedded Linux·커널 드라이버** — 엑시나 호스트 드라이버도 리눅스 커널 모듈이다.[3]"
+    ]
+   },
+   "how_far": "MX1 의 코어는 RISC-V 라서[7] ARM 경험은 '같은 개념을 해 봤다'는 뜻으로 읽힙니다 {추론}. 서명 확인 부트 체인을 한 번 직접 짜 본 수준이면 됩니다.",
+   "refs": [
+    13,
+    17,
+    3
+   ],
+   "study": [
+    "tfa-tbb",
+    "interrupt-boot",
+    "riscv-spec"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "PCIe, CXL, NVMe 또는 메모리 서브시스템 관련 개발 경험이 있는 분",
+   "short": "이 칩의 바깥 연결이 전부 이 셋이라서.",
+   "why": "MX1 은 PCIe 6.0 위의 CXL 로 호스트에 붙고, 뒤로는 NVMe SSD 를, 안으로는 DDR5 를 다룹니다.[2][8] 엑시나의 PCIe/CXL 펌웨어 공고는 NVMe 호스트 인터페이스 개발자가 CXL 로 넓혀 갈 수 있다고 적었습니다.[12]",
+   "actually": {
+    "items": [
+     "**PCIe** — 링크 학습·속도·폭, 설정 공간, AER 오류 보고.[4]",
+     "**CXL** — PCIe 위에 메모리·캐시 통로를 더한 규격. Type 1~3 장치.[6]",
+     "**NVMe** — SSD 에 명령 큐·완료 큐로 일을 시키는 규약. 엑시나 드라이버도 같은 큐 모양을 쓴다.[3][20]"
+    ]
+   },
+   "how_far": "셋 중 하나를 깊게 알면 나머지는 규격서로 따라갈 수 있습니다. {추론}",
+   "refs": [
+    2,
+    8,
+    12,
+    6
+   ],
+   "study": [
+    "pcie-tech",
+    "cxl-spec",
+    "nvme-spec"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "시스템 성능 분석, 스트레스 테스트, 오류 주입 또는 신뢰성 평가 경험이 있는 분",
+   "short": "업무 5번(성능·신뢰성 평가)을 바로 맡을 수 있어서.",
+   "why": "업무 5번이 지연·처리량 측정과 장시간·오류 상황 평가입니다.[1] 회사는 하드웨어 행사에서 측정 조건과 함께 성능 수치를 발표합니다.[7]",
+   "how_far": "도구 이름보다 **'무엇을 넣었더니 무엇이 깨졌고 어떻게 고쳤나'** 사례 하나가 낫습니다. {추론}",
+   "refs": [
+    1,
+    7,
+    16
+   ],
+   "study": [
+    "sysperf",
+    "fault-inject"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "JTAG, 트레이스 및 하드웨어 계측 도구를 활용한 시스템 디버깅 경험이 있는 분",
+   "short": "printf 도 안 나오는 부팅 초기엔 디버거와 계측기만이 칩 안을 보여 줘서.",
+   "why": "부팅 초기에는 로그를 찍을 통로조차 아직 없습니다 {추론}. JTAG(칩에 직접 붙는 디버그 단자)로 코어를 멈추고 메모리를 읽는 것이 Bring-up 의 기본 도구입니다.[18]",
+   "actually": {
+    "items": [
+     "**JTAG** — 코어 멈추기·한 줄씩 실행·메모리 읽기.[18]",
+     "**트레이스** — 코어가 실행한 주소를 기록해 멈추기 전 경로를 본다.",
+     "**계측기** — 오실로스코프·로직 분석기로 전원·클럭·신호를 본다. {추론}"
+    ]
+   },
+   "how_far": "OpenOCD 같은 공개 도구로 보드 하나에 붙어 중단점을 걸어 본 경험이면 출발선입니다. {추론}",
+   "refs": [
+    18
+   ],
+   "study": [
+    "openocd"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "칩이 처음 켜지는 순간을 직접 보고 싶은 사람",
+   "\"회로 탓인가 코드 탓인가\"를 끝까지 가려내는 게 즐거운 사람",
+   "한 사람이 한 모듈을 끝까지 맡는 문화를 원하는 사람[21]",
+   "임베디드 경험을 데이터센터 메모리로 넓히고 싶은 사람 {추론}"
+  ],
+  "hard": [
+   "참고할 예제가 거의 없는 새 칩이라 문서와 측정만으로 길을 찾아야 한다 {추론}",
+   "양산 일정에 맞춰야 하는 시기라 Bring-up 때 몰리는 일이 있을 수 있다 {추론}",
+   "회로·커널·규격서를 같이 읽어야 해서 배울 범위가 넓다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "링 버퍼에서 head 와 tail 이 같을 때 꽉 찬 건지 빈 건지 어떻게 구분하나요?",
+   "a": "위치 + 바퀴(phase) 비트 — 엑시나 드라이버의 메일박스 방식.[3]"
+  },
+  {
+   "q": "DMA 가 끝났는데 CPU 가 옛 값을 읽습니다. 무엇을 의심하나요?",
+   "a": "캐시 일관성·메모리 장벽·완료 신호 순서."
+  },
+  {
+   "q": "새 칩이 부팅 중 멈췄는데 UART 출력이 하나도 없습니다. 어디부터 보겠어요?",
+   "a": "전원·클럭 → JTAG 로 코어 PC 읽기 → 부트 ROM 단계 확인.[18]"
+  },
+  {
+   "q": "카드를 꽂았는데 리눅스에서 메모리가 안 보입니다. 어느 칸부터 확인하나요?",
+   "a": "PCI → memdev → region → DAX 사슬.[4]"
+  },
+  {
+   "q": "평균 지연은 좋은데 고객이 느리다고 합니다. 무엇을 다시 재겠어요?",
+   "a": "p99 꼬리 지연, 링크 속도가 낮게 잡혔는지.[4]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "엑시나 채용 · [SW] System Firmware Engineer",
+   "url": "https://xcena.career.greetinghr.com/ko/o/110624",
+   "kind": "posting",
+   "note": "회사 소개·업무·요건·근무지·복리후생"
+  },
+  {
+   "n": 2,
+   "title": "VeloxCon · Introducing HW Accelerated Velox with CXL Computational Memory (Harry Kim, XCENA)",
+   "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+   "kind": "company",
+   "date": "2025-05",
+   "note": "엑시나 CPO 발표 15분 · 자막·장면 전부 확인"
+  },
+  {
+   "n": 3,
+   "title": "GitHub xcena-dev/mxdriver — 호스트 리눅스 커널 모듈 mx_dma",
+   "url": "https://github.com/xcena-dev/mxdriver",
+   "kind": "company",
+   "note": "메일박스·큐·DMA·생존 확인 코드(mbox.c·mx_dma.h·transfer.c·core_v2.c 확인)"
+  },
+  {
+   "n": 4,
+   "title": "GitHub xcena-dev/public_sdk_release — 호스트 진단 스크립트",
+   "url": "https://github.com/xcena-dev/public_sdk_release",
+   "kind": "company",
+   "note": "validate_host.sh·troubleshooting.sh 설명(README)"
+  },
+  {
+   "n": 5,
+   "title": "XCENA BLOG · CXL Gave Us Shared Memory. It Did Not Give Us a Mutex.",
+   "url": "https://medium.com/xcena-blog/cxl-gave-us-shared-memory-it-did-not-give-us-a-mutex-514b9cb025b3",
+   "kind": "company",
+   "date": "2026-08-20"
+  },
+  {
+   "n": 6,
+   "title": "XCENA BLOG · CXL Unpacked",
+   "url": "https://medium.com/xcena-blog/cxl-unpacked-enabling-scalable-flexible-and-fast-memory-for-the-ai-era-e3e9df3c08ea",
+   "kind": "company",
+   "date": "2025-08-08"
+  },
+  {
+   "n": 7,
+   "title": "ServeTheHome · XCENA MX1 CXL Computational Memory Device at Hot Chips 2026",
+   "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026",
+   "kind": "news",
+   "date": "2026-08-25",
+   "note": "발표 현장 기록 — 기자가 오타 가능성을 밝혔다"
+  },
+  {
+   "n": 8,
+   "title": "ServeTheHome · XCENA MX1 RISC-V Computational Memory in CXL 3.0",
+   "url": "https://www.servethehome.com/xcena-mx1-risc-v-computational-memory-in-cxl-3-0/",
+   "kind": "news",
+   "date": "2025-08-24",
+   "note": "FMS 2025 첫 공개"
+  },
+  {
+   "n": 9,
+   "title": "EE Times Japan · 메모리 근처에 1,000개 넘는 RISC-V 코어를 둔 CXL 장치",
+   "url": "https://eetimes.itmedia.co.jp/ee/spv/2610/02/news025.html",
+   "kind": "news",
+   "date": "2026-10-02",
+   "note": "양산 2026년 말·첫 매출 2027년 목표, LLVM 기반 컴파일러"
+  },
+  {
+   "n": 10,
+   "title": "엑시나 채용 · [SW] Firmware Engineer – InfiniteMemory(CXL+SSD)",
+   "url": "https://xcena.career.greetinghr.com/ko/o/224152",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — 매핑·교체 전담"
+  },
+  {
+   "n": 11,
+   "title": "엑시나 채용 · [SW] HW SW Co-design Architect",
+   "url": "https://xcena.career.greetinghr.com/ko/o/240539",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — 하드웨어·펌웨어 경계 정의"
+  },
+  {
+   "n": 12,
+   "title": "엑시나 채용 · [SW] PCIe/CXL Firmware 개발",
+   "url": "https://xcena.career.greetinghr.com/ko/o/110623",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고"
+  },
+  {
+   "n": 13,
+   "title": "GitHub xcena-dev/xcena-spdm-emu",
+   "url": "https://github.com/xcena-dev/xcena-spdm-emu",
+   "kind": "company",
+   "note": "DMTF spdm-emu 를 가져온 저장소 — CXL IDE 키 관리·TSP 라이브러리 포함(파일 목록 확인)"
+  },
+  {
+   "n": 14,
+   "title": "엑시나 채용 · 복리후생",
+   "url": "https://xcena.career.greetinghr.com/ko/benefits",
+   "kind": "company",
+   "note": "복지 목록"
+  },
+  {
+   "n": 15,
+   "title": "Linux 커널 문서 · Compute Express Link 드라이버",
+   "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Linux 커널 문서 · Fault injection capabilities infrastructure",
+   "url": "https://docs.kernel.org/fault-injection/fault-injection.html",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Trusted Firmware-A · Trusted Board Boot",
+   "url": "https://trustedfirmware-a.readthedocs.io/en/latest/design/trusted-board-boot.html",
+   "kind": "reference",
+   "note": "Arm 쪽 공개 구현 — 엑시나 칩의 방식은 공개되지 않았다"
+  },
+  {
+   "n": 18,
+   "title": "OpenOCD User's Guide",
+   "url": "https://openocd.org/doc/html/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "QEMU 문서 · CXL",
+   "url": "https://www.qemu.org/docs/master/system/devices/cxl.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "NVM Express · Specifications",
+   "url": "https://nvmexpress.org/specifications/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "엑시나 채용 · 팀·문화",
+   "url": "https://xcena.career.greetinghr.com/ko/team-and-culture",
+   "kind": "company",
+   "note": "직군(SoC 개발·SW 개발)과 인재상"
+  },
+  {
+   "n": 23,
+   "title": "엑시나 채용 홈 · 회사 정보",
+   "url": "https://xcena.career.greetinghr.com/ko/home",
+   "kind": "company",
+   "note": "설립 2022년, 2024년 12월 MetisX → XCENA 사명 변경, 본사·미국 지사 주소"
+  },
+  {
+   "n": 22,
+   "title": "Interrupt(Memfault) · From Zero to main(): How to Write a Bootloader from Scratch",
+   "url": "https://interrupt.memfault.com/blog/how-to-write-a-bootloader-from-scratch",
+   "kind": "reference",
+   "date": "2019"
+  }
+ ],
+ "caveat": "엑시나 칩 안의 부팅 순서·메모리 맵·펌웨어 구조는 공개되지 않았습니다. 회사가 공개한 호스트 드라이버·진단 스크립트·발표와 행사 보도로 칩의 바깥 모습을 보이고, 칩 안쪽은 리눅스·QEMU·TF-A 같은 공개 문서로 '보통 이런 것'을 보였습니다. 칩 숫자(코어 수 등)는 보도마다 '1,000개 넘게'·'수천'·'3,072개'로 다르게 적혀 있어 행사 기록[7]을 따랐습니다.",
+ "resources": [
+  {
+   "id": "veloxcon",
+   "title": "Introducing HW Accelerated Velox with CXL Computational Memory",
+   "by": "Harry Kim(엑시나 CPO) · VeloxCon · 15분",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+   "why": "이 칩이 무엇이고(CXL 메모리 + SSD + 수천 코어) 소프트웨어가 몇 층으로 쌓이는지 회사가 직접 설명한다. 지원 전에 꼭 볼 것."
+  },
+  {
+   "id": "mxdriver",
+   "title": "xcena-dev/mxdriver",
+   "by": "엑시나 · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/xcena-dev/mxdriver",
+   "why": "이 회사 장치의 호스트 쪽 드라이버 원본. 메일박스(mbox.c)·명령 구조(mx_dma.h)·전송(transfer.c)을 읽으면 장치 펌웨어가 무엇에 답해야 하는지 보인다."
+  },
+  {
+   "id": "sdk-scripts",
+   "title": "xcena-dev/public_sdk_release",
+   "by": "엑시나 · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://github.com/xcena-dev/public_sdk_release",
+   "why": "고객 서버에서 카드가 쓰이기까지의 사슬과, 고장 때 모으는 값의 목록. 업무 3·4·5 의 '호스트 쪽 문제 풀기'를 위한 지도."
+  },
+  {
+   "id": "ldd3",
+   "title": "Linux Device Drivers, 3rd Edition",
+   "by": "Jonathan Corbet · Alessandro Rubini · Greg Kroah-Hartman · O'Reilly · 2005",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://lwn.net/Kernel/LDD3/",
+   "why": "PCI 드라이버·인터럽트·DMA·메모리 매핑 장. 커널 API 는 낡았지만 원리는 그대로라 '커널·드라이버' 요건의 바탕이 된다."
+  },
+  {
+   "id": "kernel-cxl",
+   "title": "Compute Express Link 드라이버 문서",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+   "why": "memdev·region·decoder 같은 리눅스 CXL 낱말과 메모리 영역이 만들어지는 순서. 호스트 연동 문제를 읽는 눈."
+  },
+  {
+   "id": "qemu-cxl",
+   "title": "QEMU · CXL",
+   "by": "QEMU 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.qemu.org/docs/master/system/devices/cxl.html",
+   "why": "CXL 메모리 장치를 가상 컴퓨터에 꽂아 칩 없이 리눅스 CXL 경로를 돌려 본다. 시뮬레이션 검증 우대사항 연습장."
+  },
+  {
+   "id": "cxl-spec",
+   "title": "CXL Specification",
+   "by": "CXL Consortium",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://computeexpresslink.org/cxl-specification/",
+   "why": "CXL.io·cache·mem, 장치 종류, 메일박스 명령의 원문. 필요한 장만 찾아 읽는다(등록 후 내려받기)."
+  },
+  {
+   "id": "nvme-spec",
+   "title": "NVM Express Base Specification",
+   "by": "NVM Express",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://nvmexpress.org/specifications/",
+   "why": "명령 큐·완료 큐·초인종 레지스터 구조. SSD 를 다루는 업무 4 와 엑시나 드라이버의 큐 모양을 이해하는 원문."
+  },
+  {
+   "id": "pcie-tech",
+   "title": "PCI Express Technology 3.0",
+   "by": "Mike Jackson · Ravi Budruk · MindShare",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=PCI%20Express%20Technology%203.0",
+   "why": "링크 학습·설정 공간·오류 보고를 그림으로 푼 책. Gen3 기준이지만 바탕 개념은 Gen6 까지 같다."
+  },
+  {
+   "id": "making-embedded",
+   "title": "Making Embedded Systems (2판)",
+   "by": "Elecia White · O'Reilly · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/making-embedded-systems/9781098151539/",
+   "why": "데이터시트 읽기·레지스터 다루기·디버깅·펌웨어 구조. '사양 문서로 기능 구현' 요건의 기초."
+  },
+  {
+   "id": "kr-embedded-os",
+   "title": "임베디드 OS 개발 프로젝트",
+   "by": "이만우 · 인사이트 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003160848",
+   "why": "ARM 위에서 부트 코드·인터럽트·태스크를 직접 만든다. 부팅 시퀀스·베어메탈 C 의 한국어 출발점."
+  },
+  {
+   "id": "interrupt-boot",
+   "title": "From Zero to main(): How to Write a Bootloader from Scratch",
+   "by": "François Baldassari · Interrupt(Memfault) · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://interrupt.memfault.com/blog/how-to-write-a-bootloader-from-scratch",
+   "why": "메모리 맵 나누기·부트로더 짜기·다음 이미지로 넘기기를 한 번에. 부팅 시퀀스 업무 줄의 감 잡기."
+  },
+  {
+   "id": "tfa-tbb",
+   "title": "Trusted Firmware-A · Trusted Board Boot",
+   "by": "Trusted Firmware 프로젝트 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://trustedfirmware-a.readthedocs.io/en/latest/design/trusted-board-boot.html",
+   "why": "부팅 단계마다 서명을 확인하는 신뢰 사슬의 공개 구현. Secure Boot 우대사항용."
+  },
+  {
+   "id": "riscv-spec",
+   "title": "RISC-V Ratified Specifications",
+   "by": "RISC-V International",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://riscv.org/specifications/ratified/",
+   "why": "이 칩의 코어가 RISC-V 다. 특권 명세(Privileged)의 트랩·인터럽트·페이지 표 장이 부트 코드와 펌웨어에 닿는다."
+  },
+  {
+   "id": "csapp",
+   "title": "Computer Systems: A Programmer's Perspective (3판)",
+   "by": "Randal E. Bryant · David R. O'Hallaron · Pearson · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://csapp.cs.cmu.edu/",
+   "why": "캐시·가상 메모리·예외(인터럽트)·링커를 프로그래머 쪽에서 설명. '시스템 동작 원리' 요건의 기본서."
+  },
+  {
+   "id": "sysperf",
+   "title": "Systems Performance (2판)",
+   "by": "Brendan Gregg · Addison-Wesley · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "why": "지연·처리량·사용률을 재는 방법론과 리눅스 도구. 업무 5 의 측정·병목 분석."
+  },
+  {
+   "id": "fault-inject",
+   "title": "Fault injection capabilities infrastructure",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.kernel.org/fault-injection/fault-injection.html",
+   "why": "커널에서 할당 실패·입출력 실패를 일부러 일으키는 법. 오류 주입·복구 평가 연습."
+  },
+  {
+   "id": "openocd",
+   "title": "OpenOCD User's Guide",
+   "by": "OpenOCD 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://openocd.org/doc/html/index.html",
+   "why": "JTAG 로 코어를 멈추고 메모리를 읽는 공개 도구. RISC-V·ARM 둘 다 지원해 JTAG 우대사항을 손으로 익힌다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 칩과 회사 감 잡기",
+   "time": "3~5일",
+   "goal": "MX1 이 무엇이고 펌웨어가 어느 층에 있는지 말로 설명할 수 있다.",
+   "resources": [
+    "veloxcon",
+    "sdk-scripts"
+   ],
+   "task": "발표를 보고 '호스트 → PCIe/CXL → 칩(코어·DDR·SSD 포트)' 그림을 직접 그린 뒤, 진단 스크립트의 PCI → memdev → region → DAX 사슬을 그 그림 위에 겹쳐 적는다."
+  },
+  {
+   "title": "시스템 원리 다지기",
+   "time": "2~4주",
+   "goal": "캐시·가상 메모리·인터럽트·DMA 가 펌웨어 버그로 어떻게 이어지는지 설명한다.",
+   "resources": [
+    "csapp",
+    "making-embedded"
+   ],
+   "task": "가상 레지스터 맵(CTRL·STATUS·IRQ 세 칸)을 정하고, 읽고-고치고-쓰기·W1C 상태 지우기·폴링 대기를 C 로 짜서 PC 에서 단위 시험을 돌린다."
+  },
+  {
+   "title": "베어메탈 부팅",
+   "time": "2~4주",
+   "goal": "링커 스크립트로 주소를 정하고 부트로더 → 본 펌웨어로 넘기는 코드를 짠다.",
+   "resources": [
+    "kr-embedded-os",
+    "interrupt-boot",
+    "riscv-spec",
+    "openocd"
+   ],
+   "task": "QEMU 의 RISC-V 가상 보드에서 두 단계 부팅(첫 단계가 둘째 이미지의 체크섬을 확인하고 넘김)을 만들고, GDB/OpenOCD 로 중단점을 걸어 넘김 순간을 확인한다."
+  },
+  {
+   "title": "리눅스 드라이버와 CXL",
+   "time": "3~5주",
+   "goal": "PCI 드라이버의 큐·인터럽트·DMA 흐름을 읽고, CXL 메모리가 리눅스에 잡히는 과정을 따라간다.",
+   "resources": [
+    "ldd3",
+    "mxdriver",
+    "kernel-cxl",
+    "qemu-cxl"
+   ],
+   "task": "QEMU 에 CXL Type 3 장치를 꽂아 `cxl list` 로 memdev·region 을 만들고, mxdriver 의 mbox.c·mx_dma.h 를 읽어 메일박스 위치·바퀴 비트 시험(예시 2)을 C 로 옮긴다."
+  },
+  {
+   "title": "규격·보안·성능 (선택)",
+   "time": "계속",
+   "goal": "PCIe/CXL/NVMe 규격서에서 필요한 장을 찾아 읽고, 신뢰성 평가 계획을 세운다.",
+   "resources": [
+    "pcie-tech",
+    "cxl-spec",
+    "nvme-spec",
+    "tfa-tbb",
+    "sysperf",
+    "fault-inject"
+   ],
+   "task": "가상 장치 하나에 대해 '지연·처리량 측정 조건표'와 '오류 주입 계획표(무엇을·몇 번·기대 동작)'를 한 쪽씩 쓰고, 4단계 환경에서 하나라도 돌려 결과를 채운다."
+  }
+ ],
+ "pay": {
+  "summary": "공개된 연봉 숫자가 없다 — 비상장 회사라 사업보고서 평균 급여가 없고, 공고에도 적혀 있지 않다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "적혀 있지 않음",
+    "basis": "공고",
+    "note": "경력 3년↑ 정규직 공고이고 급여 칸이 없다 [1]"
+   }
+  ],
+  "how": "공시 숫자 없음 — 비상장이라 사업보고서 '직원 1인 평균 급여액'이 없다. 공공데이터 집계 사이트(자소설닷컴)의 회사 페이지는 조사 때 접근이 막혀 숫자를 확인하지 못했다. 경력직이라 처우는 개인별 협의로 정해진다고 보는 것이 자연스럽다 {추론}. 시리즈 B 를 포함해 누적 약 2,800억 원을 투자받았다고 공고가 밝혔다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "MX Day",
+    "detail": "한 달에 한 번 전사가 함께 쉬는 유급 휴일, 연 12회"
+   },
+   {
+    "name": "유연근무",
+    "detail": "선택적 근로시간제 기반"
+   },
+   {
+    "name": "식대",
+    "detail": "점심 식대 지원(채용 홈페이지에는 점심·저녁 식대로 적혀 있다)"
+   },
+   {
+    "name": "복지포인트",
+    "detail": "지급(금액은 밝히지 않음)"
+   },
+   {
+    "name": "건강검진",
+    "detail": "임직원과 임직원 가족"
+   },
+   {
+    "name": "친목 활동",
+    "detail": "분기별(채용 홈페이지)"
+   }
+  ],
+  "note": "이 공고의 복리후생 칸 [1]과 엑시나 채용 홈페이지의 복지 목록 [14] — 2026년 11월 확인. 금액·조건은 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "엑시나 본사 · 미래에셋벤처타워",
+  "address": "경기도 성남시 분당구 판교역로241번길 20, 9층 (삼평동, 미래에셋벤처타워)",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C241%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선·경강선 판교역 근처 판교테크노밸리 {추론}",
+  "note": "주소는 공고 근무지 [1]. 채용 홈페이지 회사 정보에는 같은 건물 8층·9층으로 적혀 있다 [23]. 미국 지사는 실리콘밸리(서니베일)에 있다 [1][23]."
+ }
+}
