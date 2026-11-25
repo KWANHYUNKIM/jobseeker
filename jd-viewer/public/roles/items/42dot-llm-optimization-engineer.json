@@ -1,0 +1,1613 @@
+{
+ "id": "42dot-llm-optimization-engineer",
+ "company": "포티투닷(42dot)",
+ "role": "LLM 엔지니어 — 추론 최적화",
+ "team": "LLM Engineer (Optimization) · 서버(GPU 클러스터)부터 차량·엣지 기기까지의 추론 성능",
+ "jobs": [
+  "ats-ashby:42dot:a83b4909-4d4f-41c5-b212-a1db321965a5"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "이미 학습된 LLM을 **더 빠르게(지연), 더 많이(처리량), 더 적은 메모리·돈으로** 돌게 만듭니다. 대상은 서버 GPU부터 자동차·엣지 기기까지입니다.[1] 포티투닷은 현대차·기아 차량 음성 비서 **Gleo AI**를 만들고, 큰 모델을 7B·1~3B 차량용 모델로 줄여 칩에 맞게 양자화한다고 밝혔습니다.[5][6]",
+  "env": "PyTorch·CUDA 위에서 vLLM·TensorRT-LLM·SGLang·llama.cpp 같은 추론 엔진을 쓰거나 고치고, Nsight로 병목을 잽니다.[1] 차 안의 작은 모델과 클라우드의 큰 모델이 나눠 일하는 **하이브리드 구조**입니다.[6][9]",
+  "oneline": "모델을 만드는 사람이 아니라 **모델을 싸고 빠르게 돌리는 사람**. ML보다 GPU·메모리·커널·시스템 쪽 실력이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "LLM Inference Optimization",
+   "short": "학습이 끝난 모델이 답을 내는 과정(추론)을 빠르고 싸게 만드는 일 — 아래 세 줄의 묶음 제목.",
+   "why": "포티투닷은 Gleo AI를 2026년 5월 신형 그랜저부터 싣기 시작했고, 2030년까지 Pleos Connect를 단 차 약 2천만 대가 목표입니다.[7] 차가 많아질수록 한 번 답하는 데 드는 GPU 시간과 대기 시간이 곧 비용과 사용감입니다. {추론}",
+   "refs": [
+    7
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 언어 모델(LLM)의 추론 성능(Latency, Throughput, Memory Efficiency)을 최적화합니다.",
+   "short": "첫 글자가 나오기까지·글자가 나오는 속도(지연), 초당 처리량, 메모리 한 칸까지 줄인다.",
+   "why": "LLM 추론은 두 단계입니다. 질문 전체를 한 번에 읽는 **prefill**(계산이 무겁다)과, 한 토큰씩 이어 쓰는 **decode**(계산보다 메모리 읽기가 느리다)입니다.[13][19] 그래서 지연·처리량·메모리는 서로 당기는 관계이고, 셋을 같이 봐야 합니다.",
+   "actually": {
+    "intro": "보통 재는 숫자와 손대는 곳입니다.",
+    "items": [
+     "**TTFT**(첫 토큰까지 시간) — 주로 prefill이 정한다. 긴 질문일수록 길어진다.[13]",
+     "**TPOT·ITL**(토큰 사이 간격) — decode 한 걸음마다 모델 가중치 전체를 메모리에서 읽어야 해서 메모리 대역폭이 상한을 정한다.[19]",
+     "**처리량**(초당 토큰·초당 요청) — 여러 요청을 한 번에 묶어(배치) 가중치를 한 번 읽고 여럿이 나눠 쓰면 오른다. 대신 한 사람의 대기는 늘 수 있다.[11]",
+     "**메모리** — 가중치 + **KV 캐시**(앞서 읽은 토큰의 계산 결과를 저장한 것). vLLM은 KV 캐시를 페이지 단위로 나눠 빈 칸 낭비를 줄여 같은 지연에서 처리량을 2~4배 올렸다고 보고했다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "decode 속도의 상한 — 대역폭 ÷ 가중치 크기 (직접 돌린 출력)",
+     "body": "배치 1에서 토큰 하나를 쓰려면 가중치를 한 번 다 읽어야 합니다. 그래서 대략 '메모리 대역폭 ÷ 가중치 바이트'가 넘을 수 없는 상한입니다.[19] H100 SXM 3.35TB/s[24], Jetson AGX Orin 204.8GB/s[25]로 계산했습니다(KV 캐시 읽기·연산 시간은 뺀 이론값).",
+     "lang": "python",
+     "code": "def tok_per_s(params_b, bits, bw_gb_s):\n    weight_gb = params_b * bits / 8\n    return weight_gb, bw_gb_s / weight_gb\n\nfor name, bw in ((\"H100\", 3350), (\"Orin\", 204.8)):\n    for p, b in ((8, 16), (8, 4), (3, 4)):\n        w, t = tok_per_s(p, b, bw)\n        print(f\"{name}: {p}B @ {b}bit -> {w:.1f} GB, <= {t:.0f} tok/s\")\n\n# H100: 8B @ 16bit -> 16.0 GB, <= 209 tok/s\n# H100: 8B @ 4bit -> 4.0 GB, <= 838 tok/s\n# H100: 3B @ 4bit -> 1.5 GB, <= 2233 tok/s\n# Orin: 8B @ 16bit -> 16.0 GB, <= 13 tok/s\n# Orin: 8B @ 4bit -> 4.0 GB, <= 51 tok/s\n# Orin: 3B @ 4bit -> 1.5 GB, <= 137 tok/s"
+    }
+   ],
+   "how_far": "\"어느 숫자를 얼마까지\"는 서비스 요구(차 안 음성 비서라면 말이 끊기지 않을 속도)로 정해집니다. 이 자리는 **목표 숫자를 받아 어디가 막혔는지 재고, 그 병목에 맞는 기법을 골라 숫자로 증명**하는 사람입니다. 최소선은 위 상한 계산을 스스로 해 보고 실제 측정값과 비교할 줄 아는 것입니다. {추론}",
+   "refs": [
+    11,
+    13,
+    19,
+    24,
+    25
+   ],
+   "study": [
+    "cs336-inference",
+    "brrr",
+    "scaling-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 모델 구조 및 추론 환경에 맞는 최적화 기법을 연구하고 적용합니다.",
+   "short": "모델 모양(일반·MoE·작은 모델)과 돌릴 곳(서버·차·폰)마다 맞는 기법이 달라서 골라 적용한다.",
+   "why": "포티투닷은 큰 선생 모델을 7B와 1~3B 차량용 모델로 **증류**(큰 모델의 답을 작은 모델이 따라 배우게 하기)하고, 국산 NPU(리벨리온 ATOM)에 맞춰 최적화·양자화할 수 있다고 밝혔습니다.[5] 같은 회사 안에서도 모델 크기와 칩이 여러 가지라는 뜻입니다.",
+   "actually": {
+    "items": [
+     "**모델 구조** — 일반 트랜스포머는 attention·KV 캐시가, MoE(전문가 여러 개 중 일부만 쓰는 모델)는 전문가를 어느 GPU에 둘지가 병목이다.[29]",
+     "**환경** — 서버는 여러 요청을 묶어 처리량을, 차·폰은 한 사람의 지연과 메모리·전력을 먼저 본다.[19]",
+     "**공개 모델의 모양** — 포티투닷이 2023년 공개한 42dot LLM 1.3B는 LLaMA 2와 비슷한 디코더 구조(24층·32헤드·폭 2048)다.[3][4]"
+    ]
+   },
+   "how_far": "\"연구하고 적용\"이지만 새 이론보다 **논문·오픈소스 기법을 우리 모델·칩에 옮겨 붙이고 효과를 재는 것**이 중심일 것입니다. {추론}",
+   "refs": [
+    3,
+    4,
+    5,
+    19,
+    29
+   ],
+   "study": [
+    "cs336-inference",
+    "scaling-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Long Context, Multi-turn Conversation 등 실제 서비스 환경에서의 성능을 개선합니다.",
+   "short": "대화가 길어질수록 커지는 KV 캐시와 느려지는 첫 응답을 줄인다 — 앞 대화를 다시 계산하지 않게.",
+   "why": "차 안 비서는 \"아까 그 식당 말고\"처럼 여러 번 주고받습니다. 대화가 길면 질문마다 앞 대화를 다시 읽어야 해서 prefill이 길어지고, KV 캐시가 토큰 수에 비례해 커집니다.[11] Gleo AI는 이해·판단·응답 생성 단계마다 다른 LLM을 고를 수 있게 만들었다고 보도됐습니다 — 모델 호출이 한 대화에 여러 번 일어난다는 뜻입니다.[6]",
+   "actually": {
+    "items": [
+     "**접두어 캐시** — 시스템 프롬프트·앞 대화의 KV 캐시를 남겨 두고 다음 질문에서 재사용한다. SGLang은 이를 트리(RadixAttention)로 관리한다.[27]",
+     "**KV 캐시 줄이기** — 저장 정밀도를 FP8·2비트로 낮추거나(KIVI)[28], 페이지 단위로 나눠 낭비를 없앤다.[11]",
+     "**긴 문맥 attention** — FlashAttention처럼 큰 중간 행렬을 메모리에 쓰지 않고 칩 안에서 쪼개 계산한다.[18]",
+     "**나눠 받기(chunked prefill)** — 긴 질문의 prefill을 잘라 다른 사람의 decode와 섞어, 한 사람 때문에 모두 멈추지 않게 한다.[36]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "KV 캐시는 얼마나 커지나 (직접 돌린 출력)",
+     "body": "Llama 3 8B 설정(32층·KV 헤드 8·헤드 폭 128)[23]으로 계산했습니다. 토큰 하나에 128KiB, 3만 2천 토큰 대화 하나에 4GiB입니다. 16명이면 64GiB — 가중치(16GB)보다 큽니다. FP8로 저장하면 절반입니다.",
+     "lang": "python",
+     "code": "def kv_bytes_per_token(layers=32, kv_heads=8, head_dim=128, bytes_per=2):\n    return 2 * layers * kv_heads * head_dim * bytes_per  # K 와 V\n\nper_tok = kv_bytes_per_token()\nprint(per_tok / 1024, \"KiB\")                         # 128.0 KiB\nprint(per_tok * 32768 / 2**30, \"GiB\")                # 4.0 GiB\nprint(per_tok * 32768 * 16 / 2**30, \"GiB\")           # 64.0 GiB\nprint(kv_bytes_per_token(bytes_per=1) * 32768 / 2**30)  # 2.0 (FP8)"
+    }
+   ],
+   "how_far": "긴 대화에서 무엇이 느려지는지 **TTFT·메모리를 대화 길이별로 그래프로 재고**, 캐시 재사용·KV 압축을 켰을 때 품질이 떨어지지 않는지까지 확인하는 것이 한 사이클입니다. {추론}",
+   "refs": [
+    6,
+    11,
+    18,
+    23,
+    27,
+    28,
+    36
+   ],
+   "study": [
+    "paged-attention",
+    "sglang-paper",
+    "vllm-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Inference Engine 및 Runtime 개발",
+   "short": "모델을 실제로 돌리는 프로그램(추론 엔진·런타임)을 만들고 고치는 일 — 아래 세 줄의 묶음 제목.",
+   "why": "같은 모델이라도 어떤 엔진이 요청을 묶고, 메모리를 나누고, 커널을 고르느냐에 따라 속도가 몇 배 차이 납니다.[11] 포티투닷은 차량 안 모델과 클라우드 모델을 함께 쓰는 구조라 엔진도 한 가지가 아닙니다.[6][9]",
+   "refs": [
+    6,
+    9,
+    11
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "GPU 및 Accelerator 기반 LLM Inference Engine을 개발하고 최적화합니다.",
+   "short": "GPU와 NPU 같은 전용 칩 위에서 요청을 받아 토큰을 내는 엔진을 만들고 빠르게 한다.",
+   "why": "회사는 리벨리온 ATOM 같은 국산 NPU에 맞춘 최적화·양자화를 언급했습니다.[5] 현대차그룹은 차량 지능에 NVIDIA DRIVE AGX Thor를 쓰고, 학습·배포에 Blackwell GPU 5만 장을 들인다고 발표했습니다(포티투닷 이름은 없음).[10] 칩마다 지원하는 연산·정밀도가 달라 엔진을 맞춰야 합니다. {추론}",
+   "actually": {
+    "intro": "추론 엔진이 보통 하는 일입니다.[11][36]",
+    "items": [
+     "**스케줄러** — 들어온 요청을 매 걸음 다시 묶는다(continuous batching). 끝난 요청 자리에 새 요청을 바로 넣는다.",
+     "**메모리 관리자** — KV 캐시 블록을 나눠 주고 회수한다. 모자라면 일부 요청을 밀어낸다.",
+     "**모델 실행기** — attention·행렬곱 커널을 칩에 맞는 것으로 골라 부르고, 작은 커널을 CUDA Graph로 묶어 부르는 비용을 줄인다.",
+     "**샘플러·API** — 다음 토큰을 고르고 스트리밍으로 내보낸다."
+    ]
+   },
+   "how_far": "엔진을 처음부터 짜기보다 **오픈소스 엔진의 스케줄러·커널을 우리 모델·칩에 맞게 고치는** 일이 많을 것입니다. 최소선은 vLLM 같은 엔진의 요청 한 개가 어떤 단계를 지나는지 코드로 따라가 설명할 수 있는 것입니다. {추론}",
+   "refs": [
+    5,
+    10,
+    11,
+    36
+   ],
+   "study": [
+    "paged-attention",
+    "vllm-docs",
+    "cs25-serving"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "vLLM, TensorRT-LLM, SGLang, llama.cpp, ONNX Runtime, MLX 등 최신 Inference Framework를 활용하거나 개선합니다.",
+   "short": "서버용(vLLM·TensorRT-LLM·SGLang)과 기기용(llama.cpp·ONNX Runtime·MLX) 엔진을 골라 쓰고 고친다.",
+   "why": "목록이 두 갈래입니다. 서버 GPU에서 여러 사람을 받는 엔진과, 노트북·폰·차처럼 한 사람이 쓰는 기기용 엔진입니다.[11][33][34] 포티투닷이 서버와 차량을 모두 맡기 때문입니다.[1][6]",
+   "actually": {
+    "items": [
+     "**vLLM** — 페이지 단위 KV 캐시와 연속 배치로 유명한 서버 엔진.[11][36]",
+     "**TensorRT-LLM** — NVIDIA GPU용. 모델을 미리 최적화된 엔진으로 굽고 FP8·FP4 같은 낮은 정밀도를 쓴다.[35]",
+     "**SGLang** — 접두어 캐시를 트리로 공유해 여러 번 부르는 프로그램(에이전트)에 강하다.[27]",
+     "**llama.cpp** — C/C++로 된 기기용 엔진. GGUF 형식의 다양한 비트 양자화와 CPU·Apple·CUDA 백엔드를 지원한다.[33]",
+     "**ONNX Runtime** — 표준 형식(ONNX)으로 바꾼 모델을 여러 칩의 실행기(execution provider)로 돌린다.[37]",
+     "**MLX** — Apple Silicon의 통합 메모리를 쓰는 배열 라이브러리.[34]"
+    ]
+   },
+   "how_far": "\"활용하거나 개선\"입니다. 활용은 같은 모델을 두세 엔진에 올려 숫자를 비교할 줄 아는 것, 개선은 엔진 코드를 읽고 우리에게 필요한 기능·커널을 넣는 것입니다. 지원자는 적어도 한 엔진은 내부 구조까지 알면 좋습니다. {추론}",
+   "refs": [
+    1,
+    6,
+    11,
+    27,
+    33,
+    34,
+    35,
+    36,
+    37
+   ],
+   "study": [
+    "vllm-docs",
+    "trtllm-docs",
+    "llamacpp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Speculative Decoding, Prefill-Decode Disaggregation 등 최신 Serving 기술을 적용합니다.",
+   "short": "작은 모델이 먼저 몇 글자 짐작하고 큰 모델이 한 번에 확인하기, prefill과 decode를 다른 GPU로 나누기.",
+   "why": "decode는 한 걸음에 한 토큰이라 GPU 계산이 남습니다. 남는 계산으로 여러 토큰을 한 번에 검사하면 같은 결과를 더 빨리 냅니다(**추측 디코딩**).[12] prefill과 decode는 성격이 달라 한 GPU에서 섞으면 서로 방해합니다. 나눠 두면 각자 목표 지연을 맞추기 쉽습니다(**분리 서빙**).[13]",
+   "actually": {
+    "items": [
+     "**추측 디코딩** — 작은 '초안' 모델이 γ개 토큰을 쓰고, 큰 모델이 한 번에 검사해 맞는 데까지 받는다. 결과 분포는 큰 모델 혼자 쓴 것과 같다.[12]",
+     "초안 대신 모델 안에 여러 토큰을 같이 예측하는 머리를 다는 방법도 있다(DeepSeek-V3의 MTP).[29]",
+     "**분리 서빙** — prefill GPU가 KV 캐시를 만들어 decode GPU로 보낸다. 대신 KV 캐시를 옮기는 네트워크 비용이 생긴다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "추측 디코딩이 한 번에 몇 토큰을 버나 (직접 돌린 출력)",
+     "body": "초안이 맞을 확률 α, 초안 길이 γ일 때 큰 모델 한 번에 기대 토큰 수는 (1 − α^(γ+1)) / (1 − α)입니다.[12] 초안이 자주 틀리면(α 낮음) 이득이 빨리 줄어듭니다.",
+     "lang": "python",
+     "code": "def expected_tokens(alpha, gamma):\n    return (1 - alpha ** (gamma + 1)) / (1 - alpha)\n\nfor a, g in ((0.8, 4), (0.6, 4), (0.8, 8)):\n    print(a, g, round(expected_tokens(a, g), 2))\n# 0.8 4 3.36\n# 0.6 4 2.31\n# 0.8 8 4.33"
+    }
+   ],
+   "how_far": "기법 이름을 아는 것보다 **언제 이득이 없나**를 아는 것이 중요합니다 — 배치가 커서 GPU가 이미 바쁘면 추측 디코딩 이득이 줄고, 요청이 적으면 분리 서빙은 GPU만 늘립니다. {추론}",
+   "refs": [
+    12,
+    13,
+    29
+   ],
+   "study": [
+    "spec-decoding",
+    "distserve",
+    "cs336-inference"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Model Compression 및 Compiler Optimization",
+   "short": "모델을 작게 줄이는 일과, 같은 계산을 칩에 맞게 더 빨리 돌게 바꾸는 일 — 아래 세 줄의 묶음 제목.",
+   "why": "차 안 칩은 메모리가 작고 대역폭이 서버의 몇 분의 일입니다(Orin 204.8GB/s, Thor 273GB/s, H100 3.35TB/s).[24][25][26] 모델을 줄이지 않으면 차 안에서 돌릴 수 없습니다.",
+   "refs": [
+    24,
+    25,
+    26
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Quantization(MXFP8, NVFP4, AWQ, GPTQ 등) Pruning, Distillation 등 모델 경량화 기법을 연구하고 적용합니다.",
+   "short": "숫자를 적은 비트로 저장하고(양자화), 덜 중요한 가중치를 빼고(가지치기), 작은 모델에 가르친다(증류).",
+   "why": "포티투닷은 큰 모델을 7B·1~3B로 증류하고 NPU에 맞춰 양자화한다고 밝혔습니다.[5] 위 계산처럼 16비트 → 4비트면 가중치가 4분의 1이 되고 decode 상한이 4배 오릅니다.[19]",
+   "actually": {
+    "items": [
+     "**MXFP8** — 32개 값마다 공통 지수(크기 눈금) 하나를 두는 8비트 부동소수 형식. 여러 회사가 같이 정한 OCP 표준이다.[16]",
+     "**NVFP4** — Blackwell GPU용 4비트 부동소수. 16개 값마다 FP8 눈금 하나, 텐서마다 FP32 눈금 하나를 더해 값당 약 4.5비트다.[17]",
+     "**AWQ** — 활성값이 큰 소수의 중요한 채널을 찾아 미리 키워 둔 뒤 4비트로 줄인다. 재학습 없이 한다.[14]",
+     "**GPTQ** — 층마다 작은 보정 데이터로, 한 가중치를 줄인 오차를 남은 가중치가 메우도록 차례로 양자화한다.[15]",
+     "**가지치기** — SparseGPT는 재학습 없이 가중치 절반을 0으로 만들 수 있다고 보고했다.[31]",
+     "**증류** — 큰 모델의 출력 확률을 작은 모델의 정답으로 쓴다.[30]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "왜 '묶음(group)마다' 눈금을 따로 두나 (직접 돌린 출력)",
+     "body": "가중치 4,096개 중 하나만 유난히 큰 값(1.0)일 때 int4로 줄여 봤습니다. 텐서 전체에 눈금 하나면 큰 값에 맞춰져 나머지가 거의 다 0이 됩니다. 128개 묶음마다 눈금을 두면 오차가 약 7분의 1입니다. MX·NVFP4가 작은 묶음마다 눈금을 두는 이유입니다.[16][17]",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(0)\nw = rng.normal(0, 0.02, 4096).astype(np.float32)\nw[7] = 1.0  # 튀는 값 하나\n\ndef quant_int4(x):\n    s = np.abs(x).max() / 7\n    return np.clip(np.round(x / s), -8, 7) * s\n\nper_tensor = quant_int4(w)\nper_group = np.concatenate([quant_int4(g) for g in w.reshape(-1, 128)])\nfor name, wq in ((\"per-tensor\", per_tensor), (\"group-128\", per_group)):\n    print(name, round(float(np.abs(w - wq).mean()), 5), f\"{np.mean(wq == 0):.1%}\")\n# per-tensor 0.01603 99.9%\n# group-128 0.00241 17.4%"
+    }
+   ],
+   "how_far": "양자화 도구를 돌리는 것만으로는 부족합니다. **줄인 뒤 품질(우리 평가셋 점수)과 속도를 같이 재서 \"몇 비트까지 내려도 되나\"를 정하는 것**이 이 줄의 끝입니다. 형식이 칩마다 달라(NVFP4는 Blackwell, NPU는 정수) 칩이 지원하는 형식부터 확인합니다.[17] {추론}",
+   "refs": [
+    5,
+    14,
+    15,
+    16,
+    17,
+    19,
+    30,
+    31
+   ],
+   "study": [
+    "awq-paper",
+    "gptq-paper",
+    "nvfp4-blog",
+    "llm-app-kr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CUDA, Triton, TensorRT, TVM, MLIR 등 Compiler 및 Kernel Optimization을 활용하여 추론 성능을 향상합니다.",
+   "short": "GPU에서 도는 작은 계산 단위(커널)를 직접 짜거나, 컴파일러가 칩에 맞는 코드를 만들게 한다.",
+   "why": "PyTorch 기본 연산은 작은 연산마다 메모리를 읽고 쓰기를 반복합니다. 여러 연산을 한 커널로 합치면(fusion) 메모리 왕복이 줄어 빨라집니다.[19] 새 양자화 형식이나 NPU처럼 기성 커널이 없는 경우엔 직접 만들어야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**CUDA** — C++로 스레드·블록·공유 메모리를 직접 다룬다.[44]",
+     "**Triton** — 파이썬으로 블록 단위 커널을 쓰면 컴파일러가 메모리 배치를 맡는다.[32]",
+     "**TensorRT** — 모델 그래프를 받아 층 합치기·정밀도 고르기를 한 실행 엔진을 굽는다.[35]",
+     "**TVM·MLIR** — 여러 칩을 위한 컴파일러 기반. 새 NPU용 코드 생성에 쓰인다.[46][47]"
+    ]
+   },
+   "how_far": "최소선은 **Triton으로 행렬곱·softmax를 짜고 PyTorch보다 느린 이유를 Nsight Compute로 설명**하는 수준입니다. CUDA로 attention 커널을 고칠 수 있으면 우대 줄까지 닿습니다. {추론}",
+   "refs": [
+    19,
+    32,
+    35,
+    44,
+    46,
+    47
+   ],
+   "study": [
+    "cs336-kernels",
+    "triton-tutorials",
+    "pmpp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "GPU Memory 및 Kernel 효율을 분석하고 최적화합니다.",
+   "short": "GPU 메모리가 어디에 쓰이고, 커널이 칩 성능의 몇 %를 쓰는지 재서 낭비를 줄인다.",
+   "why": "GPU 시간은 계산, 메모리 읽기, 그 밖의 대기(파이썬·커널 부르기) 셋으로 나뉩니다. 어느 쪽이 막혔는지에 따라 할 일이 정반대입니다.[19]",
+   "actually": {
+    "items": [
+     "**루프라인** — 바이트당 연산 수가 낮으면 메모리가, 높으면 계산이 막힌다. decode 행렬곱은 대개 메모리 쪽이다.[19]",
+     "**메모리 지도** — 가중치·KV 캐시·활성값·조각난 빈 공간이 각각 얼마인지 잰다.[11]",
+     "**커널 효율** — 메모리 대역폭·연산 장치를 몇 % 쓰는지, 점유율(occupancy)이 왜 낮은지 Nsight Compute로 본다.[21]"
+    ]
+   },
+   "refs": [
+    11,
+    19,
+    21
+   ],
+   "study": [
+    "brrr",
+    "cs336-gpu",
+    "nsight-compute"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Edge AI 및 On-device Optimization",
+   "short": "서버가 아니라 차·폰 같은 기기 안에서 모델을 돌리는 최적화 — 아래 세 줄의 묶음 제목.",
+   "why": "Gleo AI는 지연과 안정성이 중요한 차량 제어·상태 확인은 차 안에서, 계산이 많은 일은 클라우드에서 처리하는 하이브리드 구조라고 소개됐습니다.[6][9] 터널처럼 통신이 끊기는 곳에서도 기본 명령은 돼야 하기 때문입니다. {추론}",
+   "refs": [
+    6,
+    9
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Mobile, Embedded, Edge Device 환경에서 LLM을 효율적으로 실행하기 위한 최적화 기술을 개발합니다.",
+   "short": "메모리 몇~수십 GB, 전력 수십 W인 기기에서 LLM이 쓸 만한 속도로 돌게 만든다.",
+   "why": "회사는 1~3B 차량용 모델을 언급했습니다.[5] 위 계산처럼 Orin급 대역폭에서 8B 16비트는 초당 13토큰이 상한이지만, 3B 4비트는 137토큰까지 올라갑니다.[25] 모델 크기·비트 수가 곧 쓸 수 있느냐를 가릅니다.",
+   "actually": {
+    "items": [
+     "**작게** — 증류한 작은 모델 + 4비트 양자화.[5][14]",
+     "**엔진** — llama.cpp·ONNX Runtime처럼 기기용 엔진으로 옮기고 칩 실행기를 고른다.[33][37]",
+     "**메모리 나눠 쓰기** — 기기는 CPU·GPU가 메모리를 같이 쓰는 경우가 많아, 다른 차량 소프트웨어와 메모리를 다툰다. {추론}",
+     "**2단계 처리** — Gleo AI는 호출어 감지를 가벼운 거름 모델과 정밀 모델 두 단계로 한다고 소개했다. 무거운 모델은 필요할 때만 깨운다.[9]"
+    ]
+   },
+   "refs": [
+    5,
+    9,
+    14,
+    25,
+    33,
+    37
+   ],
+   "study": [
+    "llamacpp",
+    "jetson"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CPU, GPU, NPU 등 다양한 하드웨어 아키텍처에 맞는 최적화 전략을 수립합니다.",
+   "short": "같은 모델이라도 CPU·GPU·NPU마다 잘하는 연산·정밀도가 달라 칩별로 다른 길을 정한다.",
+   "why": "GPU는 범용이라 새 기법을 빨리 붙이고, NPU는 정해진 연산·정수 정밀도에 강하지만 지원 안 되는 연산은 CPU로 떨어집니다.[5][45] 회사는 국산 NPU 최적화를, 그룹은 NVIDIA Thor를 말했습니다.[5][10]",
+   "actually": {
+    "items": [
+     "**어디서 돌릴까** — 한 모델을 칩 하나에 다 올릴지, 일부 연산을 다른 칩으로 넘길지 정한다. {추론}",
+     "**정밀도 고르기** — 칩이 빠르게 지원하는 형식(정수 8·4비트, FP8, FP4)에 맞춰 양자화 방식을 바꾼다.[16][17]",
+     "**지원 안 되는 연산 찾기** — 변환 도구가 알려 주는 미지원 연산을 다른 연산으로 바꾸거나 직접 만든다.[37][45]"
+    ]
+   },
+   "how_far": "칩 회사의 도구를 쓰는 일이 많습니다. 이 자리는 **칩마다 같은 모델의 품질·속도·전력을 같은 방법으로 재서 표로 비교하고 고르는** 사람입니다. {추론}",
+   "refs": [
+    5,
+    10,
+    16,
+    17,
+    37,
+    45
+   ],
+   "study": [
+    "onnxruntime",
+    "qualcomm-aihub",
+    "jetson"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "제한된 리소스 환경에서도 높은 성능과 낮은 전력 소비를 달성할 수 있도록 최적화합니다.",
+   "short": "차 안에서는 열·전력 한도가 있어 '빠르게'보다 '같은 전력으로 더 빠르게'가 목표다.",
+   "why": "Jetson Thor·Orin 같은 차량·로봇용 칩은 전력 상한을 몇 가지 모드로 정해 두고 그 안에서 성능이 달라집니다.[25][26] 메모리에서 데이터를 읽는 일이 전력을 많이 먹어서, 비트 수를 줄이면 속도와 전력이 같이 좋아집니다. {추론}",
+   "how_far": "속도와 함께 **와트당 토큰**을 재는 습관이 필요합니다. 기기의 전력 모드를 바꿔 가며 같은 측정을 반복하면 됩니다. {추론}",
+   "refs": [
+    25,
+    26
+   ],
+   "study": [
+    "jetson"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Performance Analysis 및 Benchmark",
+   "short": "재고 비교하는 일 — 최적화가 진짜 효과가 있었는지 숫자로 보이는 일. 아래 세 줄의 묶음 제목.",
+   "why": "최적화는 측정으로 시작해 측정으로 끝납니다. 재지 않고 고치면 병목이 아닌 곳을 고치게 됩니다.[19]",
+   "refs": [
+    19
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 하드웨어 및 Inference Backend의 성능을 분석하고 Benchmark를 수행합니다.",
+   "short": "같은 모델을 칩×엔진 조합마다 같은 조건으로 돌려 지연·처리량·메모리를 표로 만든다.",
+   "why": "엔진마다 기본 설정(배치 크기·KV 캐시 비율·정밀도)이 달라 대충 돌리면 공정한 비교가 안 됩니다. vLLM 등 엔진은 자체 벤치마크 도구를 제공합니다.[36]",
+   "actually": {
+    "items": [
+     "**고정할 것** — 모델·정밀도·입력 길이·출력 길이·동시 요청 수·온도.",
+     "**잴 것** — TTFT·토큰 간격·초당 요청의 중앙값과 p99, GPU 메모리.[13]",
+     "**함께 볼 것** — 같은 설정에서 품질 점수. 빨라졌는데 답이 틀리면 의미 없다. {추론}"
+    ]
+   },
+   "refs": [
+    13,
+    36
+   ],
+   "study": [
+    "vllm-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "NVIDIA Nsight Systems, Nsight Compute, py-spy 등의 Profiling Tool을 활용하여 GPU 및 Runtime 병목을 분석하고 지속적으로 추론 성능을 개선합니다.",
+   "short": "전체 시간표(Nsight Systems) → 커널 한 개 속(Nsight Compute) → 파이썬 쪽(py-spy) 순으로 좁혀 간다.",
+   "why": "도구마다 보는 높이가 다릅니다. GPU가 놀고 있는 원인이 파이썬 스케줄러일 수도, 커널 하나일 수도 있습니다.[20][21][22]",
+   "flows": [
+    {
+     "caption": "병목을 좁혀 가는 순서",
+     "steps": [
+      "Nsight Systems · CPU·GPU·메모리 복사의 시간표, GPU가 비는 구간 찾기[20]",
+      "py-spy · 그 구간에 파이썬이 무엇을 하고 있었나(멈추지 않고 엿보기)[22]",
+      "Nsight Compute · 오래 걸린 커널 하나의 대역폭·연산 사용률[21]",
+      "고치기 · 커널 합치기·CUDA Graph·스케줄러 수정 후 다시 재기"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "프로파일 화면을 열 줄 아는 것보다 **\"GPU가 30% 쉬고 있고, 그 시간에 파이썬이 다음 배치를 짜고 있었다\"처럼 원인을 한 문장으로 말하는 것**이 기준입니다. {추론}",
+   "refs": [
+    20,
+    21,
+    22
+   ],
+   "study": [
+    "nsight-systems",
+    "nsight-compute",
+    "py-spy"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "주어진 Prompt 및 서비스 요구사항에 맞춰 모델 품질, 추론 성능(Latency/Throughput), 비용 간의 Trade-off를 최적화하고, 이에 적합한 Serving Architecture를 설계합니다.",
+   "short": "품질·속도·비용 셋을 다 가질 수 없어서, 서비스마다 어디에 둘지 정하고 그에 맞는 서빙 구조를 짠다.",
+   "why": "Gleo AI는 단계마다 다른 LLM을 고를 수 있고, 차 안의 작은 모델과 클라우드의 큰 모델이 나눠 맡습니다.[6][9] Gleo Guard 글은 더 작은 모델로 더 빠르고 효율적인 추론을 하려고 안전 거름 모델을 따로 학습했다고 밝혔습니다.[8] 어떤 일을 어느 크기의 모델·어느 위치에 맡길지가 곧 설계입니다.",
+   "actually": {
+    "items": [
+     "**나눠 맡기기** — 간단한 차량 제어는 작은 차량 모델, 복잡한 대화·외부 서비스는 클라우드 모델.[9]",
+     "**용도별 작은 모델** — 안전 검사처럼 정해진 일은 큰 모델 대신 전용 작은 모델로.[8]",
+     "**비용 계산** — 요청 수 × 평균 토큰 ÷ GPU 한 장의 처리량 = 필요한 GPU 수. 양자화로 처리량이 두 배면 GPU가 절반. {추론}"
+    ]
+   },
+   "how_far": "어느 품질까지 받아들일지는 제품·모델 팀과 같이 정합니다. 이 자리는 **선택지마다 품질·지연·비용 숫자를 내서 고를 수 있게** 해 주는 사람입니다. {추론}",
+   "refs": [
+    6,
+    8,
+    9
+   ],
+   "study": [
+    "cs25-serving",
+    "distserve"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "ILLM, Machine Learning Infrastructure 또는 Inference Optimization 관련 경력 3년 이상",
+   "short": "LLM·ML 인프라·추론 최적화 셋 중 하나에서 3년. 앞의 'ILLM'은 'LLM'의 오타로 보인다.",
+   "why": "업무 범위(엔진·커널·양자화·기기·벤치마크)가 넓어서 한 분야라도 실제 서비스에서 숫자를 줄여 본 사람을 찾습니다.[1] 'ILLM'은 다른 줄 어디에도 없는 낱말이라 오타로 읽었습니다. {추론}",
+   "how_far": "세 분야 중 '하나'입니다. ML 인프라(학습·서빙 플랫폼) 3년이라도 추론 최적화 결과물(측정 전후 숫자)이 있으면 맞는 지원자입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM Inference Engine 또는 AI Runtime 개발 경험",
+   "short": "엔진을 '써 본' 것이 아니라 엔진·런타임 코드를 고치거나 만든 경험.",
+   "why": "업무 두 번째 묶음이 엔진·런타임 개발입니다.[1] 스케줄러·메모리 관리자·커널 호출 같은 엔진 안쪽을 알아야 병목을 고칠 수 있습니다.[11]",
+   "how_far": "회사 안 엔진이 아니어도 됩니다. 오픈소스 엔진에 기능을 넣었거나, 모델을 다른 칩 런타임으로 옮긴 경험도 같은 결입니다. {추론}",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "paged-attention",
+    "vllm-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "GPU Architecture, CUDA Programming 또는 병렬 컴퓨팅에 대한 이해",
+   "short": "GPU가 스레드를 어떻게 묶어 돌리고 메모리 층(HBM·공유 메모리·레지스터)이 왜 중요한지 아는 것.",
+   "why": "추론 최적화의 대부분은 '메모리를 덜 오가게' 하는 일이고, 그러려면 GPU 메모리 층을 알아야 합니다. FlashAttention도 느린 HBM 대신 빠른 칩 안 메모리에서 계산하도록 순서를 바꾼 것입니다.[18][19]",
+   "level": {
+    "basic": "스레드·블록·워프, 전역/공유 메모리, 메모리 대역폭 대 연산량",
+    "work": "CUDA·Triton으로 행렬곱·리덕션 커널 작성, 메모리 합쳐 읽기(coalescing), 점유율",
+    "team": "Tensor Core·낮은 정밀도 연산, attention 커널 구조, 프로파일러 숫자로 병목 설명"
+   },
+   "refs": [
+    18,
+    19
+   ],
+   "study": [
+    "pmpp",
+    "cuda-kr",
+    "cs336-gpu",
+    "cuda-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Quantization, Model Compression, Compiler Optimization 등 모델 최적화 기술에 대한 이해",
+   "short": "양자화·경량화·컴파일러가 각각 무엇을 줄이는지(메모리·계산·부르는 비용) 구분해 설명하는 것.",
+   "why": "업무 세 번째 묶음이 바로 이 기술들입니다.[1] 회사도 증류·양자화를 차량 모델의 방법으로 들었습니다.[5]",
+   "how_far": "\"이해\"라 자격요건에서는 원리와 손익을 설명하는 수준입니다. 예: AWQ와 GPTQ의 차이[14][15], 묶음별 눈금이 왜 필요한가[16], 커널 합치기가 왜 빠른가[19]. 직접 커널을 만든 경험은 우대 줄입니다.",
+   "refs": [
+    1,
+    5,
+    14,
+    15,
+    16,
+    19
+   ],
+   "study": [
+    "awq-paper",
+    "gptq-paper",
+    "llm-app-kr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "PyTorch, ONNX, TensorRT 등 딥러닝 프레임워크 활용 경험",
+   "short": "PyTorch 모델을 ONNX로 내보내고 TensorRT 같은 엔진으로 굽는 길을 실제로 밟아 본 경험.",
+   "why": "모델은 PyTorch로 오고, 기기·칩으로 가려면 표준 형식(ONNX)이나 칩 엔진(TensorRT)으로 바꿔야 합니다.[35][37] 이 변환에서 미지원 연산·정밀도 문제가 가장 자주 납니다. {추론}",
+   "level": {
+    "basic": "PyTorch로 모델 불러와 추론, 텐서 모양·dtype·장치 다루기",
+    "work": "ONNX 내보내기와 미지원 연산 처리, TensorRT 엔진 만들기, 결과 비교로 정확도 확인",
+    "team": "모델 구조를 고쳐 변환이 되게 하기, 사용자 정의 연산 붙이기"
+   },
+   "refs": [
+    35,
+    37
+   ],
+   "study": [
+    "onnxruntime",
+    "trtllm-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python 및 C/C++ 중 하나 이상의 언어에 능숙하며, 소프트웨어 엔지니어링 역량을 보유하신 분",
+   "short": "엔진의 바깥(스케줄러·API)은 Python, 안쪽(커널·기기 런타임)은 C/C++. 둘 중 하나는 깊게.",
+   "why": "vLLM·SGLang의 스케줄러는 Python이고 커널은 CUDA C++, llama.cpp는 C/C++입니다.[33][36] 최적화 코드는 서비스에 그대로 들어가므로 테스트·리뷰가 되는 코드를 쓰는 능력도 봅니다. {추론}",
+   "level": {
+    "basic": "Python 비동기·멀티프로세스, C++ 메모리·포인터·빌드(CMake)",
+    "work": "PyTorch 확장(C++/CUDA 연산 붙이기), 성능 회귀 테스트, 프로파일 기반 수정",
+    "team": "엔진 코드베이스를 읽고 고치기, 칩별 빌드·배포"
+   },
+   "refs": [
+    33,
+    36
+   ],
+   "study": [
+    "llamacpp",
+    "vllm-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "성능 분석 및 문제 해결 능력과 협업 역량을 갖추신 분",
+   "short": "병목을 재서 원인을 찾는 능력, 그리고 모델·제품·차량 팀과 숫자로 이야기하는 능력.",
+   "why": "최적화 결과는 모델 팀(품질), 제품 팀(지연 목표), 차량 소프트웨어 팀(메모리·전력)이 함께 받아들여야 쓰입니다. 포티투닷의 개발 고리는 데이터 → 학습 → 통합 → 경량화 → 서빙 → 평가로 이어진다고 소개됐습니다.[9]",
+   "flows": [
+    {
+     "caption": "Gleo AI 개발 고리[9] — 이 자리는 경량화·서빙 칸부터",
+     "steps": [
+      "데이터",
+      "학습",
+      "통합",
+      "경량화",
+      "서빙",
+      "평가"
+     ],
+     "mine_from": 3
+    }
+   ],
+   "refs": [
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "vLLM, TensorRT-LLM, SGLang, llama.cpp, MLX, ONNX Runtime 등 LLM Serving Framework 활용 또는 개발 경험",
+   "short": "업무 목록의 엔진을 실제 서비스에 올려 봤거나, 그 엔진에 코드를 넣어 본 경험.",
+   "why": "업무 줄과 같은 목록입니다.[1] 첫날부터 쓰는 도구라 익숙할수록 빨리 기여합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "vllm-docs",
+    "trtllm-docs",
+    "llamacpp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CUDA, Triton Kernel 또는 Custom Operator 개발 경험",
+   "short": "기성 라이브러리에 없는 연산을 직접 GPU 커널이나 프레임워크 연산으로 만들어 본 경험.",
+   "why": "새 양자화 형식, 새 attention 변형, NPU용 연산은 기성 커널이 없거나 늦게 나옵니다. 그때 직접 짤 수 있으면 남보다 먼저 적용합니다. {추론}",
+   "how_far": "Triton 튜토리얼의 행렬곱·fused softmax를 따라 짜고 PyTorch 연산으로 붙여 보면 출발선입니다.[32]",
+   "refs": [
+    32
+   ],
+   "study": [
+    "triton-tutorials",
+    "cs336-kernels",
+    "pmpp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Speculative Decoding, Prefill-Decode Disaggregation, KV Cache Compression, Expert Parallelism(MoE) 등 최신 LLM Inference Optimization 및 Serving 기술 경험",
+   "short": "업무에 나온 최신 기법에 KV 압축과 MoE 전문가 나눠 두기까지 — 실제로 켜고 효과를 재 본 경험.",
+   "why": "앞 두 개는 업무 줄 그대로입니다.[12][13] KV 캐시 압축은 긴 대화의 메모리를 줄이고[28], 전문가 병렬은 MoE 모델의 전문가를 여러 GPU에 나눠 두는 방법입니다 — DeepSeek-V3가 대표 사례입니다.[29]",
+   "refs": [
+    12,
+    13,
+    28,
+    29
+   ],
+   "study": [
+    "spec-decoding",
+    "distserve",
+    "scaling-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "NVIDIA GPU(H100, B200 등), AMD GPU 또는 다양한 AI Accelerator 최적화 경험",
+   "short": "최신 데이터센터 GPU나 AMD·NPU처럼 다른 칩에서 성능을 끌어올려 본 경험.",
+   "why": "현대차그룹은 Blackwell GPU 5만 장을 학습·배포에 들인다고 발표했습니다.[10] B200 같은 Blackwell 세대는 NVFP4를 지원해 4비트 추론이 하드웨어로 빨라집니다.[17] 회사는 국산 NPU 최적화도 언급했습니다.[5]",
+   "refs": [
+    5,
+    10,
+    17
+   ],
+   "study": [
+    "nvfp4-blog",
+    "cuda-guide"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Edge AI 및 On-device LLM 최적화 경험(Orin, Thor, Qualcomm, Apple Silicon 등)",
+   "short": "차량·로봇용 Jetson(Orin·Thor), 퀄컴 칩, 애플 맥에서 LLM을 돌리고 빠르게 해 본 경험.",
+   "why": "Orin·Thor는 차량·로봇용 NVIDIA 칩이고[25][26], 그룹은 차량 지능에 Thor를 쓴다고 했습니다.[10] Gleo AI가 어느 칩에서 도는지는 공개되지 않았습니다.",
+   "how_far": "Jetson 개발 키트가 없으면 Apple Silicon 맥에서 MLX·llama.cpp로 3B 모델을 4비트로 돌려 토큰 속도와 메모리를 재 보는 것부터 할 수 있습니다.[33][34] {추론}",
+   "refs": [
+    10,
+    25,
+    26,
+    33,
+    34
+   ],
+   "study": [
+    "jetson",
+    "llamacpp",
+    "qualcomm-aihub"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kubernetes 기반 AI Serving 또는 대규모 GPU Cluster 운영 경험",
+   "short": "서버 쪽 추론을 쿠버네티스 위에 GPU 단위로 배치하고 늘리고 줄여 본 경험.",
+   "why": "클라우드 쪽 모델은 여러 GPU 서버에 올려 요청량에 맞춰 늘리고 줄여야 합니다. 쿠버네티스는 GPU를 장치 플러그인으로 잡아 파드에 나눠 줍니다.[43]",
+   "how_far": "클러스터를 처음부터 짓는 것은 인프라 팀 몫일 것입니다. 이 자리는 **엔진을 컨테이너로 올리고 GPU 수·배치 설정을 바꿔 가며 비용을 맞추는** 수준이면 됩니다. {추론}",
+   "refs": [
+    43
+   ],
+   "study": [
+    "k8s-gpu"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM Fine-tuning 및 Distributed Training에 대한 이해",
+   "short": "증류·양자화 인식 학습처럼 최적화가 학습으로 이어질 때가 있어서, 학습 쪽 말을 알아듣는 정도.",
+   "why": "포티투닷의 차량 모델은 큰 모델에서 증류해 만듭니다.[5] 같은 회사의 LLM Training 공고는 사전·사후 학습 효율, 분산 학습 프레임워크 경험을 요구합니다 — 옆 팀이 하는 일입니다.[2] LoRA 같은 가벼운 미세조정은 추론 때 어댑터를 따로 다는 문제와도 이어집니다.[49]",
+   "how_far": "\"이해\"입니다. 직접 큰 학습을 돌리기보다 데이터·텐서 병렬(FSDP 등)이 무엇을 나누는지 설명할 수 있으면 됩니다.[48] {추론}",
+   "refs": [
+    2,
+    5,
+    48,
+    49
+   ],
+   "study": [
+    "cs336-parallel"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI Systems, ML Systems 또는 LLM Infrastructure 관련 오픈소스 기여 경험",
+   "short": "vLLM·llama.cpp 같은 프로젝트에 고친 코드가 들어간 기록 — 실력을 남이 검증한 증거.",
+   "why": "이 분야 도구 대부분이 오픈소스이고(업무 줄의 엔진 목록)[1][33][36], 병합된 기여는 코드 리뷰를 통과했다는 공개 증거입니다. {추론}",
+   "how_far": "큰 기능이 아니어도 됩니다. 버그 수정·새 모델 지원·벤치마크 개선도 기여입니다. {추론}",
+   "refs": [
+    1,
+    33,
+    36
+   ],
+   "study": [
+    "vllm-docs",
+    "llamacpp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI/ML Systems 분야의 우수 학회(NeurIPS, ICML, ICLR, MLSys, OSDI, NSDI, ASPLOS 등) 논문 발표 또는 이에 준하는 연구 경험",
+   "short": "ML 학회(NeurIPS·ICML·ICLR)와 시스템 학회(MLSys·OSDI·NSDI·ASPLOS)에 논문을 낸 연구 경험.",
+   "why": "이 공고가 쓰는 기법 상당수가 바로 이 학회들에서 나왔습니다 — vLLM은 SOSP, DistServe는 OSDI, 추측 디코딩은 ICML, AWQ는 MLSys 논문입니다.[11][12][13][14] 최신 논문을 읽고 옮기는 일이 업무라서 연구 경험을 우대합니다. {추론}",
+   "how_far": "우대 사항이고 \"이에 준하는\"이 붙어 있습니다. 논문이 없으면 논문 기법을 직접 재현해 숫자를 공개한 글·저장소가 그 자리를 대신할 수 있습니다. {추론}",
+   "refs": [
+    11,
+    12,
+    13,
+    14
+   ],
+   "study": [
+    "paged-attention",
+    "spec-decoding",
+    "distserve",
+    "awq-paper"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자가 2배 빨라지는 순간이 즐거운 사람",
+   "모델 정확도보다 GPU 메모리·커널·대역폭이 더 궁금한 사람",
+   "서버와 차량·기기를 둘 다 다뤄 보고 싶은 사람[1]",
+   "논문 기법을 직접 재현해 보는 사람"
+  ],
+  "hard": [
+   "자격요건이 경력 3년 이상이라 신입은 어렵다[1]",
+   "업무 범위가 서버 엔진부터 차량 칩까지 매우 넓다[1]",
+   "회사가 추론 최적화 방법을 공개한 글·발표가 거의 없어 들어가기 전에는 실제 스택을 알기 어렵다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "8B 모델을 배치 1로 돌릴 때 decode 속도의 상한을 어떻게 어림하나요? 4비트로 바꾸면요?",
+   "a": "decode가 메모리 대역폭에 묶여 있다는 것을 아는지.[19]"
+  },
+  {
+   "q": "3만 토큰 대화를 16명이 동시에 하면 KV 캐시가 얼마나 필요하죠? 어떻게 줄이나요?",
+   "a": "긴 대화·여러 턴 업무 줄 그대로.[11][28]"
+  },
+  {
+   "q": "추측 디코딩이 오히려 느려지는 경우는?",
+   "a": "초안 적중률과 배치 크기에 따른 손익.[12]"
+  },
+  {
+   "q": "AWQ와 GPTQ는 무엇이 다른가요? 튀는 값이 있으면 어떻게 하나요?",
+   "a": "양자화 업무 줄의 원리.[14][15][16]"
+  },
+  {
+   "q": "Nsight Systems에서 GPU가 쉬는 구간이 보이면 다음에 무엇을 보나요?",
+   "a": "프로파일링 업무 줄의 순서.[20][21][22]"
+  },
+  {
+   "q": "차 안 모델과 클라우드 모델에 일을 어떻게 나누겠어요?",
+   "a": "Gleo AI의 하이브리드 구조.[6][9]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "42dot 채용 · LLM Engineer (Optimization)",
+   "url": "https://jobs.ashbyhq.com/42dot/a83b4909-4d4f-41c5-b212-a1db321965a5",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대·전형(서류 → 코딩·과제 → 1차 화상 → 2차 3시간 → 처우 협의)"
+  },
+  {
+   "n": 2,
+   "title": "42dot 채용 · LLM Engineer (LLM Training)",
+   "url": "https://jobs.ashbyhq.com/42dot/4efa5e05-972f-4887-b3bd-f87862200f86",
+   "kind": "posting",
+   "note": "같은 회사 옆 자리 — 학습 효율·분산 학습"
+  },
+  {
+   "n": 3,
+   "title": "Hugging Face · 42dot/42dot_LLM-PLM-1.3B",
+   "url": "https://huggingface.co/42dot/42dot_LLM-PLM-1.3B",
+   "kind": "company",
+   "date": "2023-09",
+   "note": "한국어·영어 1.3B 기반 모델, LLaMA 2 비슷한 디코더, CC BY-NC 4.0(비상업)"
+  },
+  {
+   "n": 4,
+   "title": "Hugging Face · 42dot/42dot_LLM-SFT-1.3B",
+   "url": "https://huggingface.co/42dot/42dot_LLM-SFT-1.3B",
+   "kind": "company",
+   "date": "2023-09",
+   "note": "지시 학습판 — 24층·32헤드·폭 2048"
+  },
+  {
+   "n": 5,
+   "title": "SKT 뉴스룸 · 포티투닷 Gleo AI 그룹장 인터뷰",
+   "url": "https://news.sktelecom.com/216640",
+   "kind": "news",
+   "date": "2025-11-13",
+   "note": "자체 42dot LLM 기반 에이전트를 양산차에, 큰 모델 → 7B·1~3B 차량용 증류, 리벨리온 ATOM NPU 맞춤 최적화·양자화 — 포티투닷 쪽 발언"
+  },
+  {
+   "n": 6,
+   "title": "디지털타임스 · 포티투닷 Gleo AI 출시",
+   "url": "https://www.dt.co.kr/article/12063683",
+   "kind": "news",
+   "date": "2026-05-21",
+   "note": "하이브리드 구조(저지연 차량 기능은 차 안, 무거운 일은 클라우드), 단계별 LLM 선택, 자체 LLM 비중 확대 계획 — 기사의 설명"
+  },
+  {
+   "n": 7,
+   "title": "현대자동차그룹 · Pleos Connect 차세대 인포테인먼트 발표",
+   "url": "https://www.hyundaimotorgroup.com/news/hyundai-motor-group-redefines-in-vehicle-experience-with-pleos-connect-next-generation-infotainment-system",
+   "kind": "company",
+   "date": "2026-04-30",
+   "note": "Gleo AI는 LLM 기반 음성 비서, 2026-05 신형 그랜저부터, 2030년 약 2천만 대 목표"
+  },
+  {
+   "n": 8,
+   "title": "42dot 기술 블로그 · Gleo Guard",
+   "url": "https://42dot.ai/ko/stories/blog-news/gleoguard",
+   "kind": "company",
+   "date": "2026-09-11",
+   "note": "안전 거름 모듈(SFT → GRPO), 더 작은 모델로 빠르고 효율적인 추론이 목표 — 모델 크기·지연 숫자는 없음"
+  },
+  {
+   "n": 9,
+   "title": "요즘IT · 포티투닷 Gleo AI 기술 소개(포티투닷 협찬 글)",
+   "url": "https://yozm.wishket.com/magazine/detail/3954/",
+   "kind": "company",
+   "date": "2026-09-18",
+   "note": "차 안 작은 모델·클라우드 모델 역할 나누기, 호출어 2단계 감지, 데이터 → 학습 → 통합 → 경량화 → 서빙 → 평가 — 숫자·칩 이름 없음"
+  },
+  {
+   "n": 10,
+   "title": "NVIDIA 보도자료 · 현대자동차그룹 AI 팩토리",
+   "url": "https://nvidianews.nvidia.com/news/hyundai-motor-group-ai-factory",
+   "kind": "news",
+   "date": "2025-10-30",
+   "note": "DRIVE AGX Thor를 ADAS·차량 지능에, Blackwell GPU 5만 장 — 그룹 단위, 포티투닷 이름은 없음"
+  },
+  {
+   "n": 11,
+   "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention (vLLM, SOSP 2023)",
+   "url": "https://arxiv.org/abs/2309.06180",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Fast Inference from Transformers via Speculative Decoding (ICML 2023)",
+   "url": "https://arxiv.org/abs/2211.17192",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized LLM Serving (OSDI 2024)",
+   "url": "https://arxiv.org/abs/2401.09670",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration (MLSys 2024)",
+   "url": "https://arxiv.org/abs/2306.00978",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers",
+   "url": "https://arxiv.org/abs/2210.17323",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Microscaling Data Formats for Deep Learning (OCP MX)",
+   "url": "https://arxiv.org/abs/2310.10537",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "NVIDIA 기술 블로그 · Introducing NVFP4 for Efficient and Accurate Low-Precision Inference",
+   "url": "https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/",
+   "kind": "reference",
+   "date": "2025-06"
+  },
+  {
+   "n": 18,
+   "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness",
+   "url": "https://arxiv.org/abs/2205.14135",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Horace He · Making Deep Learning Go Brrrr From First Principles",
+   "url": "https://horace.io/brrr_intro.html",
+   "kind": "reference",
+   "note": "계산·메모리·부르는 비용 세 갈래, 연산 합치기, 루프라인"
+  },
+  {
+   "n": 20,
+   "title": "NVIDIA Nsight Systems 사용자 안내서",
+   "url": "https://docs.nvidia.com/nsight-systems/UserGuide/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "NVIDIA Nsight Compute 프로파일링 안내서",
+   "url": "https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "py-spy — 파이썬 프로그램 표본 추출 프로파일러",
+   "url": "https://github.com/benfred/py-spy",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Hugging Face · Meta-Llama-3-8B config.json",
+   "url": "https://huggingface.co/meta-llama/Meta-Llama-3-8B/blob/main/config.json",
+   "kind": "reference",
+   "note": "32층·KV 헤드 8·폭 4096(헤드 32개 → 헤드 폭 128)"
+  },
+  {
+   "n": 24,
+   "title": "NVIDIA H100 제품 페이지",
+   "url": "https://www.nvidia.com/en-us/data-center/h100/",
+   "kind": "reference",
+   "note": "H100 SXM 메모리 대역폭 3.35TB/s"
+  },
+  {
+   "n": 25,
+   "title": "NVIDIA Jetson AGX Orin 제품 페이지",
+   "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/",
+   "kind": "reference",
+   "note": "64GB 모듈 204.8GB/s, 전력 모드 표"
+  },
+  {
+   "n": 26,
+   "title": "NVIDIA Jetson Thor 제품 페이지",
+   "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/",
+   "kind": "reference",
+   "note": "LPDDR5X 273GB/s, 전력 모드 표"
+  },
+  {
+   "n": 27,
+   "title": "SGLang: Efficient Execution of Structured Language Model Programs (RadixAttention)",
+   "url": "https://arxiv.org/abs/2312.07104",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache",
+   "url": "https://arxiv.org/abs/2402.02750",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "DeepSeek-V3 Technical Report",
+   "url": "https://arxiv.org/abs/2412.19437",
+   "kind": "reference",
+   "note": "MoE 전문가 병렬 배치, 여러 토큰 예측(MTP)"
+  },
+  {
+   "n": 30,
+   "title": "Distilling the Knowledge in a Neural Network (Hinton 외)",
+   "url": "https://arxiv.org/abs/1503.02531",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "SparseGPT: Massive Language Models Can Be Accurately Pruned in One-Shot",
+   "url": "https://arxiv.org/abs/2301.00774",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Triton 공식 튜토리얼",
+   "url": "https://triton-lang.org/main/getting-started/tutorials/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "llama.cpp (GitHub)",
+   "url": "https://github.com/ggml-org/llama.cpp",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "MLX (GitHub · Apple)",
+   "url": "https://github.com/ml-explore/mlx",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "TensorRT-LLM 문서",
+   "url": "https://nvidia.github.io/TensorRT-LLM/",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "vLLM 문서",
+   "url": "https://docs.vllm.ai/",
+   "kind": "reference",
+   "note": "연속 배치·나눠 받기(chunked prefill)·벤치마크 도구"
+  },
+  {
+   "n": 37,
+   "title": "ONNX Runtime 문서 · Execution Providers",
+   "url": "https://onnxruntime.ai/docs/execution-providers/",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "원티드 · 포티투닷 회사 정보(국민연금 기반 평균 연봉·인원)",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "2026-11-25 확인 — 기준 월 표기 없음"
+  },
+  {
+   "n": 39,
+   "title": "원티드 · 현대오토에버 회사 정보(같은 집계)",
+   "url": "https://www.wanted.co.kr/company/4730",
+   "kind": "reference",
+   "note": "검색 요약으로 확인 — 페이지는 열지 않음"
+  },
+  {
+   "n": 40,
+   "title": "42dot 회사 사이트 하단 회사 정보",
+   "url": "https://42dot.ai",
+   "kind": "company"
+  },
+  {
+   "n": 41,
+   "title": "42dot 채용 · 복리후생(Employee Engagement Program)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준, 날짜 표기 없음(© 2026)"
+  },
+  {
+   "n": 42,
+   "title": "42dot 채용 · 채용 절차",
+   "url": "https://42dot.ai/ko/careers/hiring-process",
+   "kind": "company",
+   "note": "면접 통과 뒤 연봉·입사 조건을 정하는 처우 협의"
+  },
+  {
+   "n": 43,
+   "title": "Kubernetes 문서 · GPU 스케줄링",
+   "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+   "kind": "reference"
+  },
+  {
+   "n": 44,
+   "title": "CUDA C++ Programming Guide",
+   "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 45,
+   "title": "Qualcomm AI Hub",
+   "url": "https://aihub.qualcomm.com/",
+   "kind": "reference",
+   "note": "퀄컴 칩용 모델 변환·기기 측정"
+  },
+  {
+   "n": 46,
+   "title": "Apache TVM 문서",
+   "url": "https://tvm.apache.org/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 47,
+   "title": "MLIR 프로젝트",
+   "url": "https://mlir.llvm.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 48,
+   "title": "PyTorch 문서 · FullyShardedDataParallel",
+   "url": "https://pytorch.org/docs/stable/fsdp.html",
+   "kind": "reference"
+  },
+  {
+   "n": 49,
+   "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+   "url": "https://arxiv.org/abs/2106.09685",
+   "kind": "reference"
+  },
+  {
+   "n": 50,
+   "title": "뉴스스페이스 · 포티투닷 2025년 연결 감사보고서",
+   "url": "https://newsspace.kr/news/article.html?no=15231",
+   "kind": "news",
+   "date": "2026-09-14",
+   "note": "급여 891억원(+46%), 영업손실 3,498억원 — 직원 수가 없어 평균은 계산하지 않음"
+  }
+ ],
+ "caveat": "포티투닷이 추론 엔진·양자화 방식·차량 칩을 기술적으로 설명한 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 2023년 공개 모델 카드, 2025년 인터뷰, 2026년 Gleo AI 소개 글·보도뿐이고, Gleo AI가 어느 칩에서 도는지는 공개되지 않았습니다. 기법 풀이는 논문·공식 문서로 '보통 이런 것'을 보였고, 예시 숫자는 공개 사양으로 직접 계산한 이론값입니다.",
+ "resources": [
+  {
+   "id": "cs336-inference",
+   "title": "Stanford CS336 · Lecture 10: Inference (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/EfM546A79aM",
+   "why": "prefill·decode, KV 캐시, 추측 디코딩까지 업무 첫 묶음 전체를 한 강의로. 가장 먼저 볼 것."
+  },
+  {
+   "id": "cs336-gpu",
+   "title": "Stanford CS336 · Lecture 5: GPUs, TPUs (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/izZba4UA7iY",
+   "why": "GPU 구조·메모리 층·루프라인 — 'GPU Architecture 이해' 요건의 출발점."
+  },
+  {
+   "id": "cs336-kernels",
+   "title": "Stanford CS336 · Lecture 6: Kernels, Triton, XLA (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/xnDHaNUvHBg",
+   "why": "커널 합치기와 Triton으로 커널 짜기 — 컴파일러·커널 업무 줄과 우대 줄."
+  },
+  {
+   "id": "cs336-parallel",
+   "title": "Stanford CS336 · Lecture 7: Parallelism (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/SzpOcwdIL0Y",
+   "why": "데이터·텐서·파이프라인 병렬 — 분산 학습 이해 우대 줄과 MoE 전문가 병렬의 바탕."
+  },
+  {
+   "id": "cs25-serving",
+   "title": "Stanford CS25 · Serving Transformers: Lessons from the Trenches (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/ZUdIsRZhWXI",
+   "why": "실제 서빙 현장의 품질·지연·비용 손익 — 서빙 구조 설계 업무 줄."
+  },
+  {
+   "id": "brrr",
+   "title": "Making Deep Learning Go Brrrr From First Principles",
+   "by": "Horace He",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://horace.io/brrr_intro.html",
+   "why": "계산·메모리·부르는 비용 중 무엇이 막혔나를 가르는 법. 성능 분석 줄 전체의 생각 틀."
+  },
+  {
+   "id": "scaling-book",
+   "title": "How to Scale Your Model",
+   "by": "Google DeepMind · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://jax-ml.github.io/scaling-book/",
+   "why": "루프라인으로 학습·추론 비용을 계산하는 무료 책. 추론 장이 배치 크기와 지연의 관계를 숫자로 보여 준다(TPU 중심이지만 GPU에도 통한다)."
+  },
+  {
+   "id": "pmpp",
+   "title": "Programming Massively Parallel Processors (4판)",
+   "by": "Wen-mei Hwu · David Kirk · Izzat El Hajj · Morgan Kaufmann · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://shop.elsevier.com/books/programming-massively-parallel-processors/hwu/978-0-323-91231-0",
+   "why": "CUDA 교과서. 메모리 층·타일링·리덕션 장이 커널 최적화 요건의 바탕. 4판에 Ampere 기준 GPU 구조 장이 있다."
+  },
+  {
+   "id": "cuda-kr",
+   "title": "CUDA 기반 병렬 처리 프로그래밍",
+   "by": "김덕수",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005221060",
+   "why": "SM·워프 같은 실행 모델과 스트림·다중 GPU를 한국어로. CUDA를 처음 잡을 때."
+  },
+  {
+   "id": "cuda-guide",
+   "title": "CUDA C++ Programming Guide",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html",
+   "why": "스레드 계층·메모리 종류·세대별 기능의 정확한 정의. 책과 함께 찾아 보는 사전."
+  },
+  {
+   "id": "llm-app-kr",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=LLM%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EC%8B%A4%EC%A0%84%20AI%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B0%9C%EB%B0%9C",
+   "why": "LLM 전반을 한국어로 정리한 책. 서빙·경량화 부분을 먼저 보고 영어 논문으로 넘어간다(목차는 서점에서 확인)."
+  },
+  {
+   "id": "paged-attention",
+   "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+   "by": "Kwon 외 · SOSP 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2309.06180",
+   "why": "vLLM의 원 논문. KV 캐시 낭비와 연속 배치를 이해하면 엔진 개발 요건의 절반이 잡힌다."
+  },
+  {
+   "id": "sglang-paper",
+   "title": "SGLang: Efficient Execution of Structured Language Model Programs",
+   "by": "Zheng 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2312.07104",
+   "why": "접두어 캐시를 트리로 공유하는 법 — 여러 턴 대화·단계별 호출 성능 개선 줄."
+  },
+  {
+   "id": "spec-decoding",
+   "title": "Fast Inference from Transformers via Speculative Decoding",
+   "by": "Leviathan 외 · ICML 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2211.17192",
+   "why": "추측 디코딩의 원리와 기대 토큰 수 공식. 위 예시 계산의 출처."
+  },
+  {
+   "id": "distserve",
+   "title": "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized LLM Serving",
+   "by": "Zhong 외 · OSDI 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2401.09670",
+   "why": "prefill·decode 분리 서빙과 목표 지연(TTFT·TPOT)을 맞추는 법 — 서빙 기술 업무·우대 줄."
+  },
+  {
+   "id": "awq-paper",
+   "title": "AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration",
+   "by": "Lin 외 · MLSys 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2306.00978",
+   "why": "4비트 가중치 양자화의 대표 방법. 기기용 배포까지 다뤄 온디바이스 줄에도 맞다."
+  },
+  {
+   "id": "gptq-paper",
+   "title": "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers",
+   "by": "Frantar 외 · ICLR 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2210.17323",
+   "why": "오차를 남은 가중치가 메우는 양자화 — AWQ와 비교해 설명할 수 있어야 하는 짝."
+  },
+  {
+   "id": "nvfp4-blog",
+   "title": "Introducing NVFP4 for Efficient and Accurate Low-Precision Inference",
+   "by": "NVIDIA 기술 블로그 · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/",
+   "why": "공고에 이름이 나온 NVFP4의 구조(16개 묶음 눈금)와 MXFP4와의 차이."
+  },
+  {
+   "id": "triton-tutorials",
+   "title": "Triton 공식 튜토리얼",
+   "by": "OpenAI Triton",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://triton-lang.org/main/getting-started/tutorials/index.html",
+   "why": "벡터 덧셈 → fused softmax → 행렬곱 → attention 순서로 직접 커널을 짜 본다. 커널 우대 줄의 출발선."
+  },
+  {
+   "id": "vllm-docs",
+   "title": "vLLM 문서",
+   "by": "vLLM 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.vllm.ai/",
+   "why": "양자화·추측 디코딩·분리 prefill·벤치마크 도구 설정이 다 있다. 업무 줄의 기능을 직접 켜 본다."
+  },
+  {
+   "id": "trtllm-docs",
+   "title": "TensorRT-LLM 문서",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nvidia.github.io/TensorRT-LLM/",
+   "why": "NVIDIA GPU용 엔진 굽기와 FP8·FP4 양자화. 서버 쪽 엔진 비교에."
+  },
+  {
+   "id": "llamacpp",
+   "title": "llama.cpp",
+   "by": "ggml-org · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/ggml-org/llama.cpp",
+   "why": "기기용 엔진의 C/C++ 코드와 GGUF 양자화. 노트북에서 바로 돌려 볼 수 있어 온디바이스 줄의 연습장."
+  },
+  {
+   "id": "onnxruntime",
+   "title": "ONNX Runtime · Execution Providers",
+   "by": "Microsoft 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://onnxruntime.ai/docs/execution-providers/",
+   "why": "한 모델을 CPU·GPU·NPU 실행기로 바꿔 돌리는 법 — 칩별 최적화 전략 줄."
+  },
+  {
+   "id": "jetson",
+   "title": "NVIDIA Jetson Thor · Orin 제품 사양",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/",
+   "why": "차량·로봇용 칩의 메모리·대역폭·전력 모드. 온디바이스 속도 상한을 계산할 숫자."
+  },
+  {
+   "id": "qualcomm-aihub",
+   "title": "Qualcomm AI Hub",
+   "by": "Qualcomm",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aihub.qualcomm.com/",
+   "why": "퀄컴 칩용 변환·실기기 측정 — 우대 줄의 Qualcomm 경험을 기기 없이 맛볼 수 있다."
+  },
+  {
+   "id": "nsight-systems",
+   "title": "NVIDIA Nsight Systems 사용자 안내서",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/nsight-systems/UserGuide/index.html",
+   "why": "CPU·GPU 시간표를 찍는 법. 공고에 이름이 나온 첫 도구."
+  },
+  {
+   "id": "nsight-compute",
+   "title": "NVIDIA Nsight Compute 프로파일링 안내서",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html",
+   "why": "커널 하나의 대역폭·연산 사용률·점유율 읽는 법 — GPU 메모리·커널 효율 분석 줄."
+  },
+  {
+   "id": "py-spy",
+   "title": "py-spy",
+   "by": "benfred · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://github.com/benfred/py-spy",
+   "why": "돌고 있는 파이썬 서버를 멈추지 않고 엿보는 프로파일러 — 엔진 스케줄러 쪽 병목 찾기."
+  },
+  {
+   "id": "k8s-gpu",
+   "title": "Kubernetes 문서 · GPU 스케줄링",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+   "why": "파드에 GPU를 나눠 주는 기본 — 쿠버네티스 서빙 우대 줄의 첫걸음."
+  },
+  {
+   "id": "42dot-llm-card",
+   "title": "42dot LLM-SFT-1.3B 모델 카드",
+   "by": "포티투닷 · Hugging Face · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://huggingface.co/42dot/42dot_LLM-SFT-1.3B",
+   "why": "회사가 공개한 유일한 LLM. 내려받아 직접 양자화·속도 측정 과제의 대상으로 쓰기 좋다(비상업 라이선스)."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "추론이 왜 느린지 숫자로 잡기",
+   "time": "1~2주",
+   "goal": "prefill·decode·KV 캐시를 설명하고, 칩 사양만으로 토큰 속도·메모리 상한을 어림할 수 있다.",
+   "resources": [
+    "cs336-inference",
+    "brrr",
+    "cs336-gpu"
+   ],
+   "task": "위 예시 두 개(대역폭 상한·KV 캐시 크기)를 1.3B·8B·70B와 내 GPU(또는 맥)에 대해 다시 계산하고, 실제로 llama.cpp로 잰 값과 표로 비교한다."
+  },
+  {
+   "title": "엔진 하나를 깊게",
+   "time": "2~3주",
+   "goal": "vLLM으로 모델을 띄우고 배치·동시 요청 수를 바꿔 지연·처리량 곡선을 그리며, 요청 하나가 엔진 안에서 지나는 길을 설명한다.",
+   "resources": [
+    "paged-attention",
+    "vllm-docs",
+    "cs25-serving",
+    "42dot-llm-card"
+   ],
+   "task": "42dot LLM 1.3B를 vLLM에 올려 동시 요청 1·4·16·64개에서 TTFT·토큰 간격 중앙값/p99를 재고, 접두어 캐시를 켜고 끈 여러 턴 대화 결과를 비교한다."
+  },
+  {
+   "title": "줄이기 — 양자화와 기기",
+   "time": "2~4주",
+   "goal": "같은 모델을 16·8·4비트로 줄여 품질·속도·메모리 손익을 표로 정리할 수 있다.",
+   "resources": [
+    "awq-paper",
+    "gptq-paper",
+    "nvfp4-blog",
+    "llamacpp",
+    "llm-app-kr"
+   ],
+   "task": "3B 안팎 공개 모델을 AWQ·GPTQ·GGUF 4비트로 줄이고, 작은 한국어 문제 100개 정답률과 토큰 속도를 서버 GPU·노트북에서 각각 잰다."
+  },
+  {
+   "title": "커널과 프로파일러",
+   "time": "3~4주",
+   "goal": "Nsight로 병목을 찾고 Triton으로 합친 커널을 만들어 PyTorch보다 빨라졌음을 보인다.",
+   "resources": [
+    "cs336-kernels",
+    "triton-tutorials",
+    "pmpp",
+    "cuda-kr",
+    "nsight-systems",
+    "nsight-compute",
+    "py-spy"
+   ],
+   "task": "RMSNorm + 활성 함수를 한 Triton 커널로 합쳐 PyTorch 두 연산과 속도를 비교하고, Nsight Compute로 메모리 대역폭 사용률이 몇 %인지 적는다."
+  },
+  {
+   "title": "서빙 기법과 설계 (심화)",
+   "time": "계속",
+   "goal": "추측 디코딩·분리 서빙·KV 압축을 언제 쓰고 언제 안 쓰는지 숫자로 판단하고, 차량·클라우드 나눠 맡기를 설계할 수 있다.",
+   "resources": [
+    "spec-decoding",
+    "distserve",
+    "sglang-paper",
+    "scaling-book",
+    "onnxruntime",
+    "qualcomm-aihub",
+    "jetson",
+    "k8s-gpu",
+    "cs336-parallel"
+   ],
+   "task": "vLLM에서 작은 초안 모델로 추측 디코딩을 켜고 동시 요청 수별 이득을 재서, 이득이 사라지는 지점을 찾는다. 가상의 '차 안 3B + 클라우드 큰 모델' 구조에서 요청 유형별로 어디에 맡길지 표로 설계한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 국민연금 기반 집계로 직원 평균 **약 6,032만원** — 신입 초봉 숫자는 찾지 못했고, 평균은 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 국민연금 납부액으로 추정한 회사 전체 평균(국민연금 가입 804명), 기준 월 표기 없음. 2026-11-25 확인 [38]"
+   },
+   {
+    "label": "현대오토에버 평균",
+    "value": "9,423만원",
+    "amount": 9423,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "같은 그룹 소프트웨어 회사, 같은 원티드 국민연금 집계(5,598명) — 검색 요약으로 확인 [39]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여'가 없다(공시 숫자 없음). 2025년 감사보고서의 급여 총액은 891억원이지만 직원 수가 함께 나오지 않아 평균을 계산하지 않았다 [50]. 국민연금 기반 집계는 납부 상한이 있어 실제보다 낮게 나오는 경향이 있다 {추론}. 연봉은 면접을 통과한 뒤 **처우 협의** 단계에서 사람마다 정한다 [42]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "재량근무·선택근무, 최고 사양 업무 장비"
+   },
+   {
+    "name": "회복의 날",
+    "detail": "법정 연차와 별도로 매월 유급 하루"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당 하루 세 끼 무료, 사내 카페 음료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 최대 300만원, 설·추석 명절 포인트"
+   },
+   {
+    "name": "전기차 구매 지원",
+    "detail": "차량 가격의 최대 15%, 1,000만원 한도 · 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 대출",
+    "detail": "근속에 따라 1,000만~5,000만원, 이자 0%"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진 전액, 사내 간호사·심리·재무·법률 상담(EAP), 사내 피트니스(1:1 PT·그룹 수업)"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·자녀·부모 — 실손·입원·통원·치과·도수치료"
+   },
+   {
+    "name": "성장",
+    "detail": "국내외 교육·세미나·컨퍼런스 지원, 팀 워크숍비"
+   },
+   {
+    "name": "가족",
+    "detail": "직장 어린이집, 수유실, 경조금·경조휴가"
+   },
+   {
+    "name": "그 밖의",
+    "detail": "장기근속 휴가·포상, 휴양 시설 추첨, 추천 보상"
+   }
+  ],
+  "note": "포티투닷 채용 사이트의 복리후생 페이지(한국 본사 기준, 날짜 표기 없음 · © 2026)다 [41]. 금액이 적히지 않은 항목은 비웠다. 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "포티투닷 본사 · 소프트웨어드림센터 A동 (판교 제2테크노밸리)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선·경강선 판교역에서 버스로 가는 거리 {추론}",
+  "note": "주소는 42dot 사이트 하단 회사 정보다 [40]. 공고의 근무지 표기는 'Pangyo (Software Dream Center), South Korea (Remote)'인데, 원격 근무 범위는 공고에 적혀 있지 않다 [1]."
+ }
+}
