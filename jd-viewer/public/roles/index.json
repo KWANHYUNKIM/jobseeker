@@ -4,6 +4,7 @@
   "ats-ashby:42dot:7bc7935d-2925-4a60-bd6e-f2ccfcfc7873": "42dot-ad-test-engineer",
   "ats-ashby:42dot:fa24b02d-a231-4e0c-affa-319d47c19b58": "42dot-ai-infrastructure-engineer",
   "wanted-392726": "42dot-ai-infrastructure-engineer",
+  "ats-ashby:42dot:a895dce5-3a9d-4472-8b05-04bbd99aea60": "42dot-android-build-system",
   "ats-ashby:42dot:63196d96-2810-4348-8aa5-077d8c0ee710": "42dot-firmware-secure-boot-ota",
   "ats-ashby:42dot:a83b4909-4d4f-41c5-b212-a1db321965a5": "42dot-llm-optimization-engineer",
   "ats-ashby:42dot:810a8fe2-0790-42cf-b973-df16b553fa08": "42dot-mts-foundation-models",
@@ -368,6 +369,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "42dot-android-build-system",
+   "company": "포티투닷(42dot)",
+   "role": "Senior Android Build System Engineer",
+   "jobs": [
+    "ats-ashby:42dot:a895dce5-3a9d-4472-8b05-04bbd99aea60"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "42dot-firmware-secure-boot-ota",
