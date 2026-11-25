@@ -293,7 +293,6 @@
   "ats-greeting:kakaomobility:242043": "kakaomobility-isms-compliance-manager",
   "ats-kakao:group:S-4771": "kakaomobility-isms-compliance-manager",
   "ats-greeting:kakaomobility:187114": "kakaomobility-qa-engineer",
-  "ats-kakao:group:S-4732": "kakaomobility-qa-engineer",
   "ats-greeting:kakaomobility:243388": "kakaomobility-security-operations-senior",
   "ats-kakao:group:S-4775": "kakaomobility-security-operations-senior",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
@@ -2988,11 +2987,10 @@
    "company": "카카오모빌리티",
    "role": "QA 엔지니어",
    "jobs": [
-    "ats-greeting:kakaomobility:187114",
-    "ats-kakao:group:S-4732"
+    "ats-greeting:kakaomobility:187114"
    ],
    "researched_at": "2026-11-26",
-   "lines": 16
+   "lines": 17
   },
   {
    "id": "kakaomobility-security-operations-senior",
