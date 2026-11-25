@@ -330,6 +330,7 @@
   "wanted-388957": "nextsecurities-data-platform-engineer",
   "ats-greeting:nextsecurities:245534": "nextsecurities-erp-developer",
   "wanted-400000": "nextsecurities-frontend-internal-platform",
+  "jobkorea-50360665": "nextsecurities-fx-transfer-backend",
   "wanted-400001": "nextsecurities-internal-platform-backend",
   "jobkorea-50356663": "nextsecurities-senior-ai-governance",
   "wanted-394722": "nhn-japan-frontend",
@@ -3363,6 +3364,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 43
+  },
+  {
+   "id": "nextsecurities-fx-transfer-backend",
+   "company": "넥스트증권",
+   "role": "Backend Engineer — 환전/자금이체",
+   "jobs": [
+    "jobkorea-50360665"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 33
   },
   {
    "id": "nextsecurities-internal-platform-backend",
