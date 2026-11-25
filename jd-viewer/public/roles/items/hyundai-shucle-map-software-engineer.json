@@ -1,0 +1,1182 @@
+{
+ "id": "hyundai-shucle-map-software-engineer",
+ "company": "현대자동차",
+ "role": "모빌리티 서비스 Software Engineer for Map (셔클)",
+ "team": "AVP 본부 · 셔클(통합 모빌리티 플랫폼) 조직",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2224",
+  "wanted-387543"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "부르면 오는 버스 **셔클**이 쓰는 지도 쪽 서버 — 차가 다닐 길을 계산하는 **길찾기 서버와 그 맵**, 장소 검색·좌표→주소 바꾸기(**리버스 지오코딩**), 지도 운영툴의 백엔드 API — 를 만듭니다.[1]",
+  "env": "원본 지도 데이터와 공공 데이터를 우리 엔진이 읽는 형식으로 바꾸는 **컨버터**부터 서버까지 직접 만듭니다.[1] 셔클 백엔드는 서비스끼리 API·이벤트로 통신하는 마이크로서비스이고[3], 지역 서비스 API 는 gRPC 입니다.[1]",
+  "oneline": "C/C++ 로 길찾기 엔진과 지도 데이터를 다루는 경력 3년+ 백엔드 개발자. 웹 API 보다 **그래프·공간 데이터·성능**이 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "셔클 서비스에 필요한 지도 관련 길찾기, 검색, 툴, 컨버터, 백엔드 API 개발 업무를 수행합니다.",
+   "short": "셔클 안에서 '지도'가 들어가는 서버 일 — 길찾기·장소 검색·지도 도구·데이터 변환·API — 을 다 맡는다.",
+   "why": "셔클은 호출이 들어올 때마다 출발지·도착지 근처 정류장 조합을 비용으로 비교해 경로를 만듭니다.[3] 그 비용(이동 시간·도보 거리·우회 시간)을 재려면 도로망 위 길찾기가 있어야 합니다.[3] 셔클은 정류장을 추천하고 관리자가 맵데이터를 고치는 편집 도구도 기능으로 내세웁니다.[4]",
+   "actually": {
+    "intro": "아래 세 묶음(■)이 이 한 줄을 풀어 쓴 것입니다.[1] 한 화면에서 보면 이렇게 이어집니다.{추론}",
+    "items": [
+     "**호출** — 승객 앱이 출발·도착 좌표를 보낸다 → 리버스 지오코딩으로 '○○동 ○○아파트 앞' 같은 이름을 붙인다.",
+     "**검색** — 승객이 '양재역'을 치면 POI(관심 지점 — 역·건물·가게) 검색이 좌표를 돌려준다.",
+     "**배차** — 배차 서버가 후보 차량·정류장 조합마다 길찾기 서버에 이동 시간을 묻는다.[3]",
+     "**운영** — 운영자가 맵툴에서 정류장·통행 금지 구간을 고치면, 컨버터가 새 길찾기 맵을 굽는다.{추론}"
+    ]
+   },
+   "how_far": "배차 알고리즘 자체(누구를 어느 차에 태우나)는 이 공고의 업무 목록에 없습니다.[1] 이 자리는 **배차가 묻는 '여기서 저기까지 얼마나 걸리나'에 빠르고 맞게 답하는 쪽**입니다.{추론}",
+   "refs": [
+    1,
+    3,
+    4
+   ],
+   "study": [
+    "shucle-dev",
+    "shucle-tech"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 길찾기 맵 및 엔진 개발",
+   "short": "아래 세 줄의 묶음 제목 — 길찾기용 지도(그래프)를 만들고, 그 위에서 경로를 계산하는 엔진을 만든다.",
+   "why": "주요업무가 길찾기·검색/지오코딩·백엔드 API 세 묶음으로 나뉘고, 이 묶음이 첫 번째입니다.[1]",
+   "flows": [
+    {
+     "caption": "원본 지도가 '경로 응답'이 되기까지(보통의 흐름){추론}",
+     "steps": [
+      "원도 데이터 · 도로·교차로·규제 원본",
+      "컨버터 · 노드·링크 그래프로 변환·검사",
+      "길찾기 맵 · 엔진이 바로 읽는 이진 파일",
+      "엔진 · 최단 경로 계산(+ 전처리)",
+      "길찾기 서버 · 배차·앱이 부르는 API",
+      "경로 품질 확인 · 이상한 경로 찾아 고치기"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 셔클 서비스 호출 시 사용하는 길찾기 서버 개발",
+   "short": "승객이 차를 부를 때마다 배차가 묻는 '여기서 저기까지 몇 분' 질문에 답하는 서버를 만든다.",
+   "why": "셔클은 새 호출마다 정류장 조합을 비용으로 비교하고, 그 비용에 대기·이동·도보·우회 시간과 차량 이동 거리·운행 시간이 들어갑니다.[3] 호출 하나에 후보 조합이 여럿이라 길찾기 질문이 호출 수보다 훨씬 많이 생깁니다.{추론} 2025년 11월 기준 누적 호출은 1,193만 건, 서비스 지역은 71곳입니다.[5]",
+   "actually": {
+    "items": [
+     "**한 점 → 한 점** — 정류장 A 에서 B 까지 시간·거리·경로 선(지도에 그릴 좌표 목록).",
+     "**여러 점 ↔ 여러 점(행렬)** — 차량 10대 × 정류장 20곳의 이동 시간 표. 배차 계산은 보통 이 표를 한 번에 받는다. OSRM 같은 공개 엔진도 경로 API 와 별도로 행렬(table) API 를 둔다.[11]",
+     "**제약 반영** — 일방통행·회전 금지·차종별 통행 제한. 셔클은 지역마다 도로 폭·교통량에 맞춰 경로 파라미터를 따로 둔다고 밝혔다.[3]",
+     "**빠르게** — 큰 도로망에서 다익스트라를 그대로 돌리면 느려서, 미리 계산해 두는 전처리(Contraction Hierarchies 등)를 쓴다.[13]",
+     "**자율주행 확장** — 셔클은 광주 자율주행 실증의 운영 플랫폼이 되고, 차량 호출·관제·AI 배차까지 묶는 로보택시 운영 OS 로 키운다고 보도됐다.[6]"
+    ]
+   },
+   "how_far": "공고에 쓰는 엔진 이름은 없고, 주요업무가 컨버터·엔진을 직접 개발한다고 적었습니다.[1] 최소선은 **도로 그래프 위 최단 경로·행렬 계산을 직접 짜고, 응답 시간을 숫자로 재서 줄여 본 것**입니다.{추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    6,
+    11,
+    13
+   ],
+   "study": [
+    "shucle-dev",
+    "osrm",
+    "ch-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 원도 데이터로 길찾기 맵 컨버터, 엔진 개발",
+   "short": "원본 지도(도로·교차로·규제)를 읽어 길찾기 엔진이 쓰는 그래프 파일로 바꾸는 변환기를 만든다.",
+   "why": "'원도(原圖)'는 가공 전 원본 지도 데이터를 말합니다.{추론} 길찾기 엔진은 원본을 그대로 못 쓰고, 노드(교차로)와 링크(도로 구간)로 된 그래프가 필요합니다. 국내에는 국가교통정보센터가 전국 도로를 노드·링크로 표준화한 표준노드링크를 배포합니다.[9] 셔클이 어느 원도를 쓰는지는 공개되지 않았습니다.{추론}",
+   "actually": {
+    "items": [
+     "**읽기** — 원본 형식(SHP 같은 GIS 파일, 업체 형식, OSM)에서 링크·노드·속성(길이·차로 수·제한 속도·일방통행)을 읽는다.[9][25]",
+     "**방향 만들기** — 양방향 도로는 링크 하나를 화살표 둘로, 일방통행은 하나로. 이걸 틀리면 역주행 경로가 나온다(아래 예).[25]",
+     "**규제 붙이기** — 회전 금지·유턴 가능 같은 교차로 규칙은 '링크 → 링크' 단위라 노드만으로는 못 담는다.{추론}",
+     "**검사** — 끊긴 섬(어디서도 못 들어가는 도로), 길이 0 링크, 좌표 튐을 빌드 때 잡아낸다.{추론}",
+     "**굽기** — 엔진이 서버 시작 때 바로 메모리에 올리는 이진 파일로 쓴다. OSRM·Valhalla 같은 공개 엔진도 원본 OSM 을 미리 가공하는 단계를 따로 둔다.[11][12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "노드링크 표 → 길찾기 그래프, 일방통행 하나 차이",
+     "body": "가상 링크 4개(B→D 는 일방통행)로 그래프를 만들고 다익스트라로 길을 찾습니다. 일방통행 표시를 잃고 양방향으로 읽으면 D→A 가 실제로 못 가는 D→B 로 빠집니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import heapq\n# (링크, 시작 노드, 끝 노드, 길이 m, 일방통행?)\nlinks = [(\"L1\",\"A\",\"B\",400,False),(\"L2\",\"B\",\"D\",300,True),\n         (\"L3\",\"A\",\"C\",350,False),(\"L4\",\"C\",\"D\",500,False)]\ndef build(rows):\n    g = {}\n    for _, f, t, m, oneway in rows:\n        g.setdefault(f, []).append((t, m))\n        if not oneway:\n            g.setdefault(t, []).append((f, m))\n    return g\ndef route(g, s, e):\n    pq, best, prev = [(0, s)], {s: 0}, {}\n    while pq:\n        d, u = heapq.heappop(pq)\n        if u == e: break\n        if d > best[u]: continue\n        for v, m in g.get(u, []):\n            if d + m < best.get(v, 1e18):\n                best[v] = d + m; prev[v] = u; heapq.heappush(pq, (d + m, v))\n    path, n = [e], e\n    while n != s: n = prev[n]; path.append(n)\n    return best[e], path[::-1]\nprint(\"일방통행 반영 A→D:\", route(build(links), \"A\", \"D\"))\nprint(\"일방통행 반영 D→A:\", route(build(links), \"D\", \"A\"))\nflat = [(i, f, t, m, False) for i, f, t, m, _ in links]\nprint(\"양방향으로 잘못 읽음 D→A:\", route(build(flat), \"D\", \"A\"))\n# 일방통행 반영 A→D: (700, ['A', 'B', 'D'])\n# 일방통행 반영 D→A: (850, ['D', 'C', 'A'])\n# 양방향으로 잘못 읽음 D→A: (700, ['D', 'B', 'A'])"
+    }
+   ],
+   "how_far": "원도를 어디서 사 오고 어떤 속성을 쓸지는 조직이 정합니다.{추론} 개발자는 **변환이 틀리지 않았음을 검사로 보이고, 새 원도가 와도 다시 굽기만 하면 되게** 만드는 쪽입니다. 원본 갱신 주기가 짧을수록 컨버터 속도도 일이 됩니다.{추론}",
+   "refs": [
+    9,
+    11,
+    12,
+    25
+   ],
+   "study": [
+    "nodelink",
+    "osrm",
+    "valhalla"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 적절한 길찾기 경로 확인 및 개선",
+   "short": "계산은 됐는데 이상한 경로(골목 돌기·불법 유턴·버스가 못 가는 길)를 찾아 원인을 고친다.",
+   "why": "셔클 차량은 승합차·버스라 승용차 내비게이션의 '가장 빠른 길'이 늘 맞지 않습니다.{추론} 셔클은 지역마다 도로 폭·교통량·주 이용층에 맞춰 경로 파라미터를 다르게 둔다고 밝혔습니다.[3] 정류장 위치가 배차와 탑승 경험을 크게 좌우한다는 것도 해외 실증에서 강조했습니다.[5]",
+   "actually": {
+    "items": [
+     "**사례 모으기** — 기사·관제·승객이 '이 길 이상하다'고 한 구간을 재현 가능한 출발·도착 쌍으로 모은다.{추론}",
+     "**원인 가르기** — 데이터 문제(일방통행 누락·끊긴 링크)인지, 비용 문제(좁은 길 가중치)인지, 알고리즘 문제인지 나눈다.{추론}",
+     "**비용 조정** — 좁은 도로·좌회전에 벌점을 주면 거리는 조금 늘어도 운전하기 쉬운 길이 나온다. Valhalla 는 차종(버스·트럭)별 비용 모델을 따로 둔다.[12]",
+     "**회귀 시험** — 고친 뒤 대표 경로 수백 쌍을 다시 돌려 다른 곳이 나빠지지 않았는지 시간·거리 차이로 본다.{추론}"
+    ]
+   },
+   "how_far": "'적절함'의 기준(유턴 허용, 좁은 골목 회피)은 운영·기획과 같이 정합니다.{추론} 개발자는 **경로를 지도에 그려 보고, 원인을 데이터·비용·코드 중 하나로 짚어 고치는** 쪽입니다.",
+   "refs": [
+    3,
+    5,
+    12
+   ],
+   "study": [
+    "valhalla",
+    "osrm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 검색 및 지오코딩 개발",
+   "short": "아래 세 줄의 묶음 제목 — 이름으로 장소를 찾고(검색), 좌표에 주소 이름을 붙이는(리버스 지오코딩) 서버.",
+   "why": "주요업무의 두 번째 묶음입니다.[1] 지오코딩은 주소 → 좌표, 리버스 지오코딩은 좌표 → 주소입니다.[18]",
+   "refs": [
+    1,
+    18
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 셔클 서비스 POI 검색, 리버스 지오코딩 서버 개발",
+   "short": "'양재역' 입력에 좌표를 돌려주는 검색과, 찍은 좌표에 '○○로 12 앞' 이름을 붙이는 서버를 만든다.",
+   "why": "셔클 앱은 승객이 출발지·목적지를 고르면 가까운 정류장을 골라 줍니다.[3] 지도에 핀을 꽂은 승객에게 그곳 이름을 보여 주는 것이 리버스 지오코딩이고, 장소 이름을 치는 승객에게는 POI 검색이 필요합니다.{추론}",
+   "actually": {
+    "items": [
+     "**POI 검색** — 이름·초성·오타를 받아 주고, **가까운 곳을 먼저** 보여 준다(같은 '스타벅스'라도 지금 위치 근처). 검색 엔진의 거리 조건 질의가 이 꼴이다.[26]",
+     "**리버스 지오코딩** — 좌표에서 가장 가까운 건물·주소점을 찾아 이름을 붙인다. 전부 비교하면 느려서 칸(격자)으로 나눈 공간 색인을 쓴다(아래 예).[30]",
+     "**서비스 지역 판정** — 그 좌표가 셔클 운행 구역 안인지 다각형 안팎으로 가른다. PostGIS 같은 공간 DB 가 이런 질의를 준다.[20]",
+     "**정류장 고르기** — 셔클은 가상 정류장을 쓰고[5], 정류장 추천·승차 지점 생성 특허를 냈다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "리버스 지오코딩 — 2만 개를 다 비교하지 않기",
+     "body": "가상 주소점 2만 개 중 찍은 좌표에서 가장 가까운 점을 찾습니다. 약 200m 칸으로 나눠 두고 주변 9칸만 보면 166번 비교로 같은 답이 나옵니다(직접 돌린 출력). 칸 경계 바로 밖이 더 가까울 수 있어 실제로는 찾은 거리만큼 칸을 넓혀 한 번 더 확인합니다.{추론}",
+     "lang": "python",
+     "code": "import random, math\nrandom.seed(7)\npts = [(37.45 + random.random()*0.06, 127.00 + random.random()*0.08, f\"주소{i}\") for i in range(20000)]\ndef m(a, b):  # 짧은 거리는 평면 근사\n    dy = (a[0]-b[0]) * 111_000\n    dx = (a[1]-b[1]) * 111_000 * math.cos(math.radians(a[0]))\n    return math.hypot(dx, dy)\nCELL = 0.002  # 약 200m 칸\ngrid = {}\nfor p in pts:\n    grid.setdefault((int(p[0]/CELL), int(p[1]/CELL)), []).append(p)\ndef nearest_grid(q):\n    cx, cy = int(q[0]/CELL), int(q[1]/CELL); cand = []\n    for dx in (-1, 0, 1):\n        for dy in (-1, 0, 1):\n            cand += grid.get((cx+dx, cy+dy), [])\n    return min(cand, key=lambda p: m(q, p)), len(cand)\nq = (37.4795, 127.0412)\nbrute = min(pts, key=lambda p: m(q, p))\ng, n = nearest_grid(q)\nprint(\"전부 비교:\", brute[2], f\"{m(q, brute):.1f} m\", \"비교\", len(pts), \"번\")\nprint(\"칸 9개만 :\", g[2], f\"{m(q, g):.1f} m\", \"비교\", n, \"번\")\n# 전부 비교: 주소8936 39.6 m 비교 20000 번\n# 칸 9개만 : 주소8936 39.6 m 비교 166 번"
+    }
+   ],
+   "how_far": "검색 순위를 어떻게 매길지는 기획과 같이 정합니다.{추론} 최소선은 **공간 색인(격자·트리)으로 가까운 점 찾기와 거리 조건 검색을 직접 만들어 응답 시간을 재 본 것**입니다.{추론}",
+   "refs": [
+    3,
+    4,
+    5,
+    20,
+    26,
+    30
+   ],
+   "study": [
+    "postgis-docs",
+    "h3-docs",
+    "kakao-local"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 외부 API 연동 개발",
+   "short": "우리 데이터에 없는 장소·주소는 지도 회사의 검색·지오코딩 API 를 불러 채우고, 그 비용·장애를 관리한다.",
+   "why": "국내 장소 이름은 매일 바뀌어 직접 다 모으기 어렵습니다.{추론} 카카오·구글·AWS 같은 곳이 키워드 장소 검색과 좌표→주소 변환을 API 로 팝니다.[17][18][24] 셔클은 헝가리에서도 실증을 했으니[5] 국외 지도 API 도 쓸 일이 생깁니다.{추론}",
+   "actually": {
+    "items": [
+     "**감싸기** — 외부 응답을 우리 형식 하나로 바꿔, 업체를 갈아 끼워도 앱이 모르게 한다.{추론}",
+     "**아끼기** — 같은 질의는 캐시하고, 호출 한도·요금을 센다.{추론}",
+     "**버티기** — 시간 제한·재시도·대체 경로(외부가 죽으면 우리 데이터만으로 답).{추론}",
+     "**약관** — 외부 API 결과를 얼마나 저장해 둘 수 있는지는 업체 약관마다 다르다. 붙이기 전에 확인한다.{추론}"
+    ]
+   },
+   "refs": [
+    5,
+    17,
+    18,
+    24
+   ],
+   "study": [
+    "kakao-local",
+    "google-geocoding"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 공공 데이터로 리버스 지오코딩 데이터 컨버젼, 엔진 개발",
+   "short": "정부가 공개한 주소·건물 좌표 파일을 받아 우리 리버스 지오코딩 엔진이 읽는 색인으로 바꾼다.",
+   "why": "외부 API 만 쓰면 호출마다 비용이 들고 응답이 느려집니다.{추론} 행정안전부 주소정보누리집은 도로명주소 전자지도와, 건물 중심점·출입구 좌표를 담은 내비게이션용 DB 를 제공합니다(내비게이션용 DB 는 이용 목적 심사를 거친다).[10]",
+   "actually": {
+    "items": [
+     "**받기·갱신** — 전체 파일 한 번, 그 뒤로는 변동분만 받아 합친다.[10]",
+     "**좌표계 맞추기** — 공공 GIS 파일은 국내 평면 좌표계로 오는 경우가 많아 위경도(WGS84)로 바꾼다.{추론} PostGIS 의 좌표 변환 기능이 이 일을 한다.[20]",
+     "**출입구 vs 중심점** — 승객을 태울 자리는 건물 한가운데가 아니라 출입구 쪽이다. 출입구 좌표가 있으면 그쪽을 쓴다.[10]",
+     "**색인 굽기** — 주소점을 격자·트리 색인으로 묶어 서버가 바로 올리는 파일로 쓴다(위 예의 칸 나누기).{추론}"
+    ]
+   },
+   "how_far": "어떤 공공 데이터를 받을지는 조직이 정했을 것이고, 개발자는 **변환·갱신을 자동으로 돌리고 결과가 맞는지 표본으로 확인**하는 쪽입니다.{추론}",
+   "refs": [
+    10,
+    20
+   ],
+   "study": [
+    "juso",
+    "postgis-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 백엔드 API 개발",
+   "short": "아래 세 줄의 묶음 제목 — 지도 운영툴·서비스 운영툴의 서버 API 와 지역 서비스의 gRPC API.",
+   "why": "주요업무의 세 번째 묶음입니다.[1] 자격요건이 C/C++ 와 함께 백엔드 API 경험 3년을 따로 적은 이유가 이 묶음입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 맵툴(맵 운영툴) 백엔드 API 개발",
+   "short": "운영자가 지도 위에서 정류장·통행 금지 구간을 고치는 화면의 서버 — 저장·검사·반영 API 를 만든다.",
+   "why": "셔클은 도보 접근성과 수요로 최적 정류장을 추천하고, 관리자가 직관적으로 맵데이터를 만드는 편집 도구를 기능으로 소개합니다.[4] 지역마다 정류장이 달라(헝가리 실증도 가상 정류장 배치부터 했다[5]) 새 지역을 열 때마다 이 도구를 씁니다.{추론}",
+   "actually": {
+    "items": [
+     "**편집 저장** — 정류장 점·운행 구역 다각형·막을 도로를 지도 좌표(GeoJSON 같은 형식)로 받고 저장한다.{추론}",
+     "**검사** — 정류장이 차가 설 수 없는 곳(고속도로·건물 안)에 찍히지 않았는지, 구역이 겹치지 않는지 공간 질의로 본다.[20]",
+     "**이력·승인** — 누가 언제 무엇을 바꿨는지 남기고, 운영 반영 전에 검토 단계를 둔다.{추론}",
+     "**반영** — 승인된 편집을 컨버터에 넘겨 새 길찾기 맵을 굽고 서버에 무중단으로 바꿔 올린다.{추론}"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    20
+   ],
+   "study": [
+    "shucle-tech",
+    "postgis-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 셔클 서비스 운영툴 백엔드 API 개발",
+   "short": "지역·차량·운행 정책 같은 서비스 설정을 운영자가 고치는 내부 화면의 서버 API 를 만든다.",
+   "why": "셔클은 지역 교통 정책에 맞춰 배차·운영 정책을 세밀하게 조정한다고 밝혔고[4], 경기 똑버스·세종 이응버스처럼 지역마다 이름과 운영이 다른 서비스를 한 플랫폼으로 돌립니다.[5][6]",
+   "actually": {
+    "items": [
+     "**지역 설정** — 운행 시간·구역·요금·차량 대수 같은 값을 지역별로 저장·조회.{추론}",
+     "**권한** — 지자체·운수사·본사 운영자가 볼 수 있는 범위를 나눈다.{추론}",
+     "**지도와 엮임** — 운영 구역·정류장은 맵툴 데이터와 같은 것이라 두 도구가 한 원본을 보게 한다.{추론}"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 셔클 지역 서비스 grpc API 개발",
+   "short": "다른 셔클 서비스들이 부르는 지역 정보 API 를 gRPC(규격 파일로 약속하는 원격 호출)로 만든다.",
+   "why": "셔클 백엔드는 마이크로서비스로 나뉘어 API·이벤트로 통신하고, 서비스 간 규격을 모은 **통합 IDL(인터페이스 정의) 저장소**를 둡니다.[3] gRPC 는 그 IDL 을 Protocol Buffers 파일로 쓰고 여러 언어 코드를 자동으로 만들어 줍니다.[15][16]",
+   "actually": {
+    "items": [
+     "**규격 먼저** — `.proto` 파일에 'GetRegion(지역 id) → 구역·정류장·운행 시간' 같은 메서드와 메시지를 정의한다.[16]",
+     "**코드 생성** — 같은 규격에서 C++·Go 서버와 다른 서비스의 클라이언트 코드가 나온다.[15]",
+     "**호환 지키기** — 필드 번호를 바꾸거나 재사용하지 않는다. 그래야 옛 클라이언트가 깨지지 않는다.[16]",
+     "**시간 제한** — 호출하는 쪽이 마감 시간(deadline)을 걸고, 서버는 넘기면 멈춘다.[15]"
+    ]
+   },
+   "how_far": "최소선은 **proto 규격을 쓰고, 필드를 추가해도 옛 클라이언트가 안 깨지는 이유를 설명**할 수 있는 것.{추론} 언어는 우대사항의 Go 나 자격요건의 C++ 어느 쪽이든 됩니다.[1]",
+   "refs": [
+    1,
+    3,
+    15,
+    16
+   ],
+   "study": [
+    "grpc-docs",
+    "tucker-go"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 학사 학위를 보유하신 분",
+   "short": "4년제 학사면 된다. 전공 조건은 적혀 있지 않다.",
+   "why": "공고는 학사 학위만 적었습니다.[1]",
+   "how_far": "학위 여부만 봅니다. 그래프·자료구조 같은 전공 기초는 우대사항이 따로 묻습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 3년 이상의 C/C++ 프로그래밍 경력을 보유하신 분",
+   "short": "길찾기 엔진·컨버터를 C/C++ 로 짜는 자리라, 업무에서 C/C++ 를 3년 이상 써 본 사람.",
+   "why": "길찾기 엔진은 큰 그래프를 메모리에 올리고 질의마다 수많은 노드를 훑어 속도·메모리가 곧 품질입니다.{추론} 공개 길찾기 엔진 OSRM·Valhalla 도 C++ 로 쓰였습니다.[11][12]",
+   "level": {
+    "basic": "포인터·참조 · 클래스·RAII(자원은 객체 수명에 묶기) · STL 컨테이너(vector·unordered_map·priority_queue) · 빌드(CMake)",
+    "work": "이동 의미론·스마트 포인터 · 메모리 배치(구조체 배열) · 프로파일러로 느린 곳 찾기 · 멀티스레드 서버",
+    "team": "수천만 링크 그래프를 이진 파일로 굽고 서버 시작 때 바로 올리기 · 질의 지연 줄이기 · C++ 서버를 gRPC 로 노출"
+   },
+   "how_far": "'경력'이라 업무 코드로 본 기간입니다. 면접에서 **자기가 짠 C++ 코드의 메모리·속도 문제를 숫자로 설명**할 수 있으면 됩니다.{추론}",
+   "refs": [
+    11,
+    12
+   ],
+   "study": [
+    "emc",
+    "cmake"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 3년 이상의 백엔드 API 개발 및 프론트엔드 개발 경험을 보유하신 분",
+   "short": "서버 API 와 화면을 둘 다 만들어 본 3년. 맵툴처럼 지도 화면과 그 서버를 같이 다루기 때문이다.",
+   "why": "업무에 맵툴·운영툴 백엔드 API 가 있고[1], 맵툴은 지도 위에서 정류장·구역을 고치는 화면이라[4] 서버와 화면이 붙어 다닙니다.{추론} 원티드 사본도 같은 문장입니다.[2]",
+   "how_far": "공고 업무 목록은 백엔드 API 까지만 적었습니다.[1] 프론트엔드는 **지도 라이브러리로 점·선·다각형을 그리고 서버와 주고받아 본 정도**면 대화가 됩니다.{추론}",
+   "refs": [
+    1,
+    2,
+    4
+   ],
+   "study": [
+    "mapbox-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· C++ 최신 표준(C++11, C++14, C++17, C++20)에 대한 이해 및 실무 적용 경험을 보유하신 분",
+   "short": "옛 C 스타일이 아니라 스마트 포인터·이동·람다·optional 같은 모던 C++ 로 짜 본 경험.",
+   "why": "엔진·컨버터는 오래 고쳐 쓰는 코드라 메모리 누수·복사 비용을 언어 기능으로 막는 편이 낫습니다.{추론} 표준 버전마다 컴파일러가 지원하는 기능이 달라 어디까지 쓸지 정해야 합니다.[21]",
+   "actually": {
+    "items": [
+     "**C++11** — unique_ptr·shared_ptr, 이동(move), 람다, auto, std::thread.",
+     "**C++14/17** — make_unique, std::optional(값이 없을 수도 있는 결과 — '경로 없음'), string_view, 구조적 바인딩.",
+     "**C++20** — concepts, ranges, span. 컴파일러 지원 범위를 먼저 확인한다.[21]"
+    ]
+   },
+   "refs": [
+    21
+   ],
+   "study": [
+    "emc",
+    "cppreference"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· Windows, Linux, macOS 등 다양한 플랫폼에서 개발 경험을 보유하신 분",
+   "short": "같은 C++ 코드를 윈도우·리눅스·맥에서 빌드하고 돌려 본 경험 — 맵툴 PC 도구와 리눅스 서버를 같이 다룬다.",
+   "why": "서버는 보통 리눅스이고(공고 기술 목록에 Linux 가 있다[1]), 같은 조직은 퍼블릭·공공 클라우드를 함께 운영합니다.[8] 지도 변환 도구는 개발자 PC(윈도우·맥)에서도 돌릴 일이 생깁니다.{추론} C/C++ 는 플랫폼마다 컴파일러·경로·줄바꿈이 달라 빌드 설정이 따로 듭니다.[32]",
+   "actually": {
+    "items": [
+     "**빌드 하나로** — CMake 로 세 플랫폼 빌드 파일을 만든다.[32]",
+     "**차이 흡수** — 파일 경로 구분자, 메모리 매핑 API, 문자 인코딩(한글 경로).{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    8,
+    32
+   ],
+   "study": [
+    "cmake"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 협업을 위한 Git 기반 소스 코드 관리 및 브랜치 전략 경험을 보유하신 분",
+   "short": "여럿이 같은 엔진·서버 코드를 고칠 때 브랜치·리뷰·병합 규칙을 정하고 지켜 본 경험.",
+   "why": "공고 기술 목록에 Git 이 있습니다.[1] 셔클 백엔드는 통합 IDL 저장소와 서비스별 인터페이스 코드 저장소를 따로 둔다고 밝혔습니다.[3] 저장소가 여럿이면 규격 변경을 어떤 순서로 병합할지가 일입니다.{추론}",
+   "actually": {
+    "items": [
+     "**브랜치 전략** — 짧게 살고 자주 합치는 방식, 기능·릴리스 브랜치를 두는 방식이 있다.[22]",
+     "**규격 저장소** — proto 를 고치면 그 규격을 쓰는 서비스 저장소들이 따라간다. 하위 호환 변경부터 합친다.{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    22
+   ],
+   "study": [
+    "progit"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 지도 API (Google Maps, Mapbox 등) 개발 경험을 보유하신 분",
+   "short": "지도 SDK 로 화면에 지도를 띄우고 점·선을 그리거나, 지도 회사의 검색·경로 API 를 불러 본 경험.",
+   "why": "업무에 외부 API 연동과 맵툴이 있습니다.[1] Google Maps Platform 은 지오코딩·경로 API 를[18], Mapbox 는 지도 그리기와 검색·경로 API 를 제공합니다.[19]",
+   "actually": {
+    "items": [
+     "**지도 그리기** — 정류장 점, 경로 선, 운행 구역 다각형을 지도 위에 올린다.[19]",
+     "**검색·지오코딩 부르기** — 응답 형식·요금·한도를 알고 감싸 쓴다.[18]",
+     "**우리 엔진과 비교** — 같은 출발·도착을 외부 경로 API 와 우리 엔진에 같이 물어 차이를 본다.{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    18,
+    19
+   ],
+   "study": [
+    "mapbox-docs",
+    "google-geocoding"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· GIS 또는 공간 데이터 처리 관련 프로젝트 경험을 보유하신 분",
+   "short": "좌표계·점/선/다각형·공간 색인을 다뤄 본 사람은 원도·공공 데이터 변환에서 덜 헤맨다.",
+   "why": "업무의 원도 → 길찾기 맵, 공공 데이터 → 리버스 지오코딩 변환이 다 공간 데이터 처리입니다.[1] 셔클은 대중교통·POI·도로망·인구 데이터를 모은 파이프라인을 만들었다고 밝혔습니다.[4]",
+   "actually": {
+    "items": [
+     "**좌표계** — 위경도(WGS84)와 국내 평면 좌표계를 오가며 변환한다.[20]",
+     "**도형 연산** — 점이 다각형 안인가, 선과 선이 만나나, 이 점에서 가장 가까운 도로는.[20]",
+     "**공간 색인** — 격자·육각형 칸(H3)·R-tree 로 가까운 것만 먼저 본다.[30]"
+    ]
+   },
+   "refs": [
+    1,
+    4,
+    20,
+    30
+   ],
+   "study": [
+    "postgis-docs",
+    "h3-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· AWS를 사용한 개발 경험 및 Golang 언어 개발 경험을 보유하신 분",
+   "short": "서버를 AWS 에 올려 본 경험과, C++ 밖의 API 서버를 Go 로 짜 본 경험.",
+   "why": "공고 기술 목록에 Golang·gRPC 가 함께 있습니다.[1] 엔진은 C++, 그 앞의 API·운영툴 서버는 Go 로 나누는 구성이 흔합니다.{추론} 같은 조직의 데이터 공고도 Go 를 쓸 수 있는 언어로 적었습니다.[7]",
+   "actually": {
+    "items": [
+     "**Go** — goroutine 으로 동시 요청을 다루고, gRPC 서버·클라이언트를 공식 라이브러리로 만든다.[15][23]",
+     "**AWS** — 서버·저장소·로드밸런서 같은 기본 서비스. AWS 에는 지도·장소 검색·경로를 API 로 주는 Amazon Location Service 도 있다.[24]"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    15,
+    23,
+    24
+   ],
+   "study": [
+    "tucker-go",
+    "grpc-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 데이터 구조, 알고리즘, 메모리 관리, 포인터, 멀티스레딩 등 언어의 핵심 개념에 대한 깊은 이해를 보유하신 분",
+   "short": "우선순위 큐·그래프 탐색·메모리 배치·스레드 안전을 원리로 아는 것 — 길찾기 엔진의 재료 그대로다.",
+   "why": "최단 경로는 우선순위 큐 위의 그래프 탐색(다익스트라)이고, 목적지 쪽으로 먼저 보는 A* 는 확인하는 칸 수를 줄입니다.[14] 서버는 여러 질의를 동시에 받으니 공유 그래프를 읽기 전용으로 두고 스레드마다 작업 메모리를 따로 둡니다.{추론}",
+   "actually": {
+    "items": [
+     "**자료구조** — 인접 배열(CSR: 노드별 간선을 한 배열에 이어 붙임)이 포인터로 엮은 리스트보다 캐시에 잘 맞는다.{추론}",
+     "**알고리즘** — 다익스트라, A*, 양방향 탐색, 전처리(CH).[13][14]",
+     "**메모리** — 그래프를 파일에서 메모리 매핑으로 올리면 시작이 빠르다.{추론}",
+     "**멀티스레딩** — 읽기 전용 그래프 공유 + 스레드별 거리 배열 · 갱신 때는 새 맵을 다 굽고 포인터 하나만 바꾼다.{추론}",
+     "**스레드 기초** — 잠금·원자 연산·메모리 모델을 알아야 '읽기만 하니 안전하다'를 증명할 수 있다.[31]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "다익스트라 vs A* — 확정한 칸 수",
+     "body": "40×40 격자 도시에서 같은 길을 찾습니다. 목적지까지 거리를 미리 짐작하는 A* 는 강이 없으면 37칸만 보고 끝나지만, 강 때문에 멀리 돌아야 하면 이득이 1,509 → 1,204칸으로 줄어듭니다(직접 돌린 출력). 실제 도로망에서 CH 같은 전처리를 쓰는 이유입니다.{추론}",
+     "lang": "python",
+     "code": "import heapq\nN = 40\nblocked = {(20, y) for y in range(5, 40)}  # 가운데 강, 아래 5칸만 다리\ndef nb(p):\n    x, y = p\n    for dx, dy in ((1,0),(-1,0),(0,1),(0,-1)):\n        q = (x+dx, y+dy)\n        if 0 <= q[0] < N and 0 <= q[1] < N and q not in blocked:\n            yield q\ndef search(s, e, h):\n    pq, best, settled = [(h(s), 0, s)], {s: 0}, 0\n    while pq:\n        _, d, u = heapq.heappop(pq)\n        if d > best[u]: continue\n        settled += 1\n        if u == e: return d, settled\n        for v in nb(u):\n            if d + 1 < best.get(v, 1e9):\n                best[v] = d + 1; heapq.heappush(pq, (d+1+h(v), d+1, v))\ns, e = (2, 30), (38, 30)\nman = lambda p: abs(p[0]-e[0]) + abs(p[1]-e[1])\nfor name in (\"강 있음\", \"강 없음\"):\n    print(f\"[{name}] 다익스트라\", search(s, e, lambda p: 0), \"A*\", search(s, e, man))\n    blocked.clear()\n# [강 있음] 다익스트라 (88, 1509) A* (88, 1204)\n# [강 없음] 다익스트라 (36, 1050) A* (36, 37)"
+    }
+   ],
+   "refs": [
+    13,
+    14,
+    31
+   ],
+   "study": [
+    "ch-paper",
+    "cpp-concurrency"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 성능 최적화 및 메모리 효율적인 코드 작성 능력을 보유하신 분",
+   "short": "같은 서버로 더 많은 길찾기 질의를 받고, 큰 지도를 적은 메모리에 올리는 코드를 짜는 능력.",
+   "why": "배차는 호출 하나에 여러 경로를 묻고[3], 서비스 지역이 71곳으로 늘었습니다.[5] 지역이 늘수록 올릴 지도와 질의가 같이 늘어 느린 엔진은 서버 비용으로 돌아옵니다.{추론}",
+   "actually": {
+    "items": [
+     "**재기 먼저** — 질의 지연의 중앙값·99% 값을 재고, 프로파일러로 시간이 가는 곳을 찾는다.{추론}",
+     "**전처리** — CH 는 미리 지름길을 깔아 질의 때 훑는 노드 수를 크게 줄인다.[13]",
+     "**작게 담기** — 좌표를 정수(1e-7도 단위)로, id 를 32비트로, 속성을 비트로 묶는다.{추론}",
+     "**다시 안 만들기** — 질의마다 큰 배열을 새로 잡지 않고 스레드별로 재사용한다.{추론}"
+    ]
+   },
+   "refs": [
+    3,
+    5,
+    13
+   ],
+   "study": [
+    "ch-paper",
+    "osrm"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "알고리즘 문제 풀이를 실제 서비스 속도 문제로 옮겨 보고 싶은 사람",
+   "지도·좌표·공간 데이터를 만지는 게 즐거운 사람[1]",
+   "C++ 엔진과 Go·API 서버를 둘 다 다루고 싶은 사람[1]",
+   "자율주행 운영 플랫폼으로 커지는 서비스의 바닥을 맡고 싶은 사람[6]"
+  ],
+  "hard": [
+   "엔진·데이터 변환·검색·운영툴 API 까지 범위가 넓다[1]",
+   "C/C++ 경력 3년과 백엔드·프론트엔드 경험 3년을 같이 요구한다[1]",
+   "이상한 경로 하나를 데이터·비용·코드 중 어디 문제인지 끝까지 파고들어야 한다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "노드 수천만 개 도로망에서 다익스트라가 느립니다. 무엇부터 하나요?",
+   "a": "측정 → A*·양방향 탐색 → CH 같은 전처리.[13][14]"
+  },
+  {
+   "q": "원도를 그래프로 바꿨더니 일부 경로가 역주행입니다. 어디를 보나요?",
+   "a": "일방통행·링크 방향 변환과 빌드 검사.[9][25]"
+  },
+  {
+   "q": "좌표 하나에 가장 가까운 주소를 1ms 안에 찾으려면?",
+   "a": "격자·트리 공간 색인과 경계 칸 처리.[20][30]"
+  },
+  {
+   "q": "gRPC 메시지에 필드를 추가할 때 옛 클라이언트가 깨지지 않게 하려면?",
+   "a": "새 번호로 추가, 번호 재사용 금지.[16]"
+  },
+  {
+   "q": "길찾기 맵을 새로 구웠습니다. 서버를 멈추지 않고 바꾸려면?",
+   "a": "새 맵을 다 올린 뒤 포인터 교체, 옛 맵은 질의가 끝나면 해제.{추론}"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · [AVP] 모빌리티 서비스 Software Engineer for Map",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=224",
+   "kind": "posting",
+   "note": "팀 소개(셔클)·업무 3묶음·요건·우대, 기술 C++·Git·Golang·Linux·gRPC, 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차그룹 [AVP] 모빌리티 서비스 Software Engineer for Map",
+   "url": "https://www.wanted.co.kr/wd/387543",
+   "kind": "posting",
+   "note": "같은 공고 사본 — 경력 3년 이상, 근무지 헌릉로 12(현대기아자동차빌딩), 우대사항·복지 칸 없음"
+  },
+  {
+   "n": 3,
+   "title": "HMG 저널 · 현대차의 모빌리티 서비스 플랫폼, 셔클 개발기",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000021172",
+   "kind": "company",
+   "date": "2022-04-11",
+   "note": "셔클 기술리더 글 — 모놀리식→MSA, API·이벤트 통신, 통합 IDL 저장소, 정류장 조합 비용 비교(대기·이동·도보·우회·차량 거리), 지역별 경로 파라미터, 배차 서비스 확장"
+  },
+  {
+   "n": 4,
+   "title": "셔클 · 기술",
+   "url": "https://www.shucle.com/ko/tech",
+   "kind": "company",
+   "note": "AI 동적 경로, 모빌리티 데이터 파이프라인(대중교통·POI·도로망·승하차·인구), 지역별 운영 정책, 맵데이터 편집 도구(도보 접근성·수요로 정류장 추천), 승차 지점 생성·경로 탐색 특허"
+  },
+  {
+   "n": 5,
+   "title": "HMG 저널 · 셔클로 증명한 현대차·기아 모빌리티 플랫폼의 글로벌 경쟁력",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000192680",
+   "kind": "company",
+   "date": "2025-11-12",
+   "note": "71개 지역, 가입 130만·누적 호출 1,193만 건, 지역 브랜드, 헝가리 괴될뢰 실증(가상 정류장, 정류장 위치 중시)"
+  },
+  {
+   "n": 6,
+   "title": "아이뉴스24 · 현대차그룹, 교통 플랫폼 '셔클'을 로보택시 OS로",
+   "url": "https://v.daum.net/v/20260621080143341",
+   "kind": "news",
+   "date": "2026-06-21",
+   "note": "셔클플랫폼팀 대거 채용, 광주 자율주행 실증 운영 플랫폼, 호출·관제·AI 배차를 묶는 운영 OS, 지역 서비스 이름"
+  },
+  {
+   "n": 7,
+   "title": "현대자동차 채용 · [AVP] 모빌리티 서비스 Data Engineer",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=98",
+   "kind": "posting",
+   "note": "같은 조직 — Go·Python·Scala·Kotlin·Java, 경로 탐색·위치 데이터 우대"
+  },
+  {
+   "n": 8,
+   "title": "원티드 · 현대자동차그룹 [AVP] 모빌리티 플랫폼 Infra Engineer",
+   "url": "https://www.wanted.co.kr/wd/387540",
+   "kind": "posting",
+   "note": "같은 조직 — 퍼블릭·공공 클라우드"
+  },
+  {
+   "n": 9,
+   "title": "국가교통정보센터 · 표준노드링크",
+   "url": "https://www.its.go.kr/nodelink/nodelinkRef",
+   "kind": "reference",
+   "note": "전국 도로를 노드(교차로)·링크(구간)로 표준화한 데이터 배포(관리 시스템 nodelink.its.go.kr)"
+  },
+  {
+   "n": 10,
+   "title": "행정안전부 주소정보누리집 · 도로명주소 전자지도·내비게이션용 DB",
+   "url": "https://www.juso.go.kr/",
+   "kind": "reference",
+   "note": "내비게이션용 DB 는 건물 중심점·출입구 좌표, 이용 목적 심사 후 제공, 변동분 갱신(공공데이터포털 안내)"
+  },
+  {
+   "n": 11,
+   "title": "OSRM · Open Source Routing Machine",
+   "url": "https://project-osrm.org/",
+   "kind": "reference",
+   "note": "C++ 로 쓴 도로망 최단 경로 엔진 — route·table(행렬)·match 서비스, OSM 전처리"
+  },
+  {
+   "n": 12,
+   "title": "Valhalla Documentation",
+   "url": "https://valhalla.github.io/valhalla/",
+   "kind": "reference",
+   "note": "OSM 데이터용 오픈소스 길찾기 엔진(C++), 차종별 비용 모델"
+  },
+  {
+   "n": 13,
+   "title": "Geisberger 외 · Contraction Hierarchies: Faster and Simpler Hierarchical Routing in Road Networks (WEA 2008)",
+   "url": "https://link.springer.com/chapter/10.1007/978-3-540-68552-4_24",
+   "kind": "reference",
+   "date": "2008",
+   "note": "노드를 중요도 순으로 줄이며 지름길을 깔아 질의를 빠르게 하는 전처리"
+  },
+  {
+   "n": 14,
+   "title": "Hart · Nilsson · Raphael · A Formal Basis for the Heuristic Determination of Minimum Cost Paths (1968)",
+   "url": "https://ieeexplore.ieee.org/document/4082128",
+   "kind": "reference",
+   "date": "1968",
+   "note": "A* 알고리즘 원 논문"
+  },
+  {
+   "n": 15,
+   "title": "gRPC · Introduction to gRPC",
+   "url": "https://grpc.io/docs/what-is-grpc/introduction/",
+   "kind": "reference",
+   "note": "proto 로 서비스 정의, 여러 언어 코드 생성, deadline"
+  },
+  {
+   "n": 16,
+   "title": "Protocol Buffers Documentation",
+   "url": "https://protobuf.dev/",
+   "kind": "reference",
+   "note": "메시지 정의·필드 번호·하위 호환 규칙"
+  },
+  {
+   "n": 17,
+   "title": "Kakao Developers · 로컬 API",
+   "url": "https://developers.kakao.com/docs/latest/ko/local/dev-guide",
+   "kind": "reference",
+   "note": "키워드 장소 검색, 좌표 → 주소 변환"
+  },
+  {
+   "n": 18,
+   "title": "Google Maps Platform · Reverse geocoding",
+   "url": "https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding",
+   "kind": "reference",
+   "note": "지오코딩(주소→좌표)·리버스 지오코딩(좌표→주소)"
+  },
+  {
+   "n": 19,
+   "title": "Mapbox Documentation",
+   "url": "https://docs.mapbox.com/",
+   "kind": "reference",
+   "note": "지도 SDK·검색·경로 API"
+  },
+  {
+   "n": 20,
+   "title": "PostGIS Documentation",
+   "url": "https://postgis.net/documentation/",
+   "kind": "reference",
+   "note": "공간 DB — 좌표계 변환, 점·다각형 포함·최근접 질의, 공간 색인"
+  },
+  {
+   "n": 21,
+   "title": "cppreference · C++ compiler support",
+   "url": "https://en.cppreference.com/w/cpp/compiler_support",
+   "kind": "reference",
+   "note": "표준 버전별 기능과 컴파일러 지원"
+  },
+  {
+   "n": 22,
+   "title": "Pro Git (한국어) · Git 브랜치 — 브랜치 워크플로",
+   "url": "https://git-scm.com/book/ko/v2/Git-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EC%9B%8C%ED%81%AC%ED%94%8C%EB%A1%9C",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "The Go Programming Language · Documentation",
+   "url": "https://go.dev/doc/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "AWS · Amazon Location Service Developer Guide",
+   "url": "https://docs.aws.amazon.com/location/",
+   "kind": "reference",
+   "note": "지도·장소 검색(지오코딩)·경로 API"
+  },
+  {
+   "n": 25,
+   "title": "OpenStreetMap Wiki · Key:oneway",
+   "url": "https://wiki.openstreetmap.org/wiki/Key:oneway",
+   "kind": "reference",
+   "note": "일방통행 표기와 방향 규칙"
+  },
+  {
+   "n": 26,
+   "title": "Elasticsearch Reference · Geo queries",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-queries.html",
+   "kind": "reference",
+   "note": "거리·영역 조건 검색"
+  },
+  {
+   "n": 27,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 28,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 29,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원, 4·124쪽 본사 주소"
+  },
+  {
+   "n": 30,
+   "title": "H3 · Introduction",
+   "url": "https://h3geo.org/docs/",
+   "kind": "reference",
+   "note": "우버가 공개한 육각형 격자 위치 색인"
+  },
+  {
+   "n": 31,
+   "title": "C++ Concurrency in Action, Second Edition",
+   "url": "https://www.manning.com/books/c-plus-plus-concurrency-in-action-second-edition",
+   "kind": "reference",
+   "note": "Anthony Williams · Manning · 2019"
+  },
+  {
+   "n": 32,
+   "title": "CMake Documentation",
+   "url": "https://cmake.org/cmake/help/latest/",
+   "kind": "reference",
+   "note": "여러 플랫폼 빌드 설정 생성"
+  }
+ ],
+ "caveat": "셔클 지도 팀의 발표 영상·기술 글은 찾지 못했다(받은 영상 없음). 회사 근거는 이 공고와 원티드 사본·같은 조직 공고·셔클 개발기(2022)·셔클 기술 페이지·HMG 저널(2025-11)·보도(2026-06)이고, 셔클이 어느 원도·엔진·검색 엔진을 쓰는지는 공개되지 않았다 — 길찾기·지오코딩의 '실제로는'은 OSRM·Valhalla·CH 논문·공공 데이터 안내 같은 다른 곳의 공개 문서로 본 보통 방식이다.",
+ "resources": [
+  {
+   "id": "shucle-dev",
+   "title": "현대차의 모빌리티 서비스 플랫폼, 셔클 개발기",
+   "by": "현대자동차 HMG 저널 · 2022",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000021172",
+   "why": "배차가 정류장 조합을 어떤 비용으로 비교하는지, 백엔드가 IDL 로 어떻게 나뉘는지 회사가 직접 쓴 글. 길찾기 서버가 누구에게 무엇을 답하는지 먼저 안다."
+  },
+  {
+   "id": "shucle-tech",
+   "title": "셔클 · 기술",
+   "by": "현대자동차",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.shucle.com/ko/tech",
+   "why": "맵데이터 편집 도구·정류장 추천·경로 특허 목록. 맵툴 백엔드가 받치는 기능이 무엇인지 본다."
+  },
+  {
+   "id": "emc",
+   "title": "이펙티브 모던 C++",
+   "by": "스콧 마이어스 · 류광 옮김 · 인사이트 · 2015",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%EB%AA%A8%EB%8D%98%20C%2B%2B",
+   "why": "C++11/14 의 이동·스마트 포인터·람다를 '언제 쓰고 언제 피하나'로. 우대 'C++ 최신 표준 실무 적용'과 자격 'C/C++ 3년'을 말로 설명하는 바탕."
+  },
+  {
+   "id": "cppreference",
+   "title": "cppreference.com",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://en.cppreference.com/w/cpp/compiler_support",
+   "why": "C++17·20 기능과 컴파일러 지원표. optional·span·ranges 를 쓰기 전에 확인한다."
+  },
+  {
+   "id": "cpp-concurrency",
+   "title": "C++ Concurrency in Action (2nd ed.)",
+   "by": "Anthony Williams · Manning · 2019",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.manning.com/books/c-plus-plus-concurrency-in-action-second-edition",
+   "why": "스레드·잠금·원자 연산·메모리 모델. 우대 '멀티스레딩 깊은 이해'와 동시 질의를 받는 길찾기 서버 설계."
+  },
+  {
+   "id": "cmake",
+   "title": "CMake Documentation",
+   "by": "Kitware",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://cmake.org/cmake/help/latest/",
+   "why": "한 C++ 코드를 윈도우·리눅스·맥에서 빌드하는 설정. 우대 '다양한 플랫폼 개발'."
+  },
+  {
+   "id": "osrm",
+   "title": "OSRM · Open Source Routing Machine",
+   "by": "Project OSRM",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://project-osrm.org/",
+   "why": "C++ 길찾기 엔진의 전처리 → 서버 구조를 실제 코드로 본다. 경로·행렬 API 를 띄워 '길찾기 서버'가 무엇을 답하는지 직접 확인."
+  },
+  {
+   "id": "valhalla",
+   "title": "Valhalla Documentation",
+   "by": "Valhalla",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://valhalla.github.io/valhalla/",
+   "why": "차종별 비용 모델로 경로가 어떻게 달라지는지. 업무 '적절한 길찾기 경로 확인 및 개선'의 재료."
+  },
+  {
+   "id": "ch-paper",
+   "title": "Contraction Hierarchies: Faster and Simpler Hierarchical Routing in Road Networks",
+   "by": "Geisberger · Sanders · Schultes · Delling · 2008",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://link.springer.com/chapter/10.1007/978-3-540-68552-4_24",
+   "why": "큰 도로망에서 질의를 빠르게 하는 대표 전처리. 엔진 성능 최적화 면접의 단골 주제."
+  },
+  {
+   "id": "nodelink",
+   "title": "국가교통정보센터 · 표준노드링크",
+   "by": "국토교통부 국가교통정보센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.its.go.kr/nodelink/nodelinkRef",
+   "why": "국내 도로 노드·링크 공개 데이터. 받아서 직접 그래프로 바꿔 보면 '원도 → 길찾기 맵 컨버터'를 작게 해 볼 수 있다."
+  },
+  {
+   "id": "juso",
+   "title": "주소정보누리집",
+   "by": "행정안전부",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.juso.go.kr/",
+   "why": "도로명주소 전자지도·주소 좌표 자료의 제공처. '공공 데이터로 리버스 지오코딩 데이터 컨버젼'의 원천."
+  },
+  {
+   "id": "postgis-docs",
+   "title": "PostGIS Documentation",
+   "by": "PostGIS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://postgis.net/documentation/",
+   "why": "좌표계 변환·점이 구역 안인가·가장 가까운 것 찾기를 SQL 로. 우대 'GIS·공간 데이터'와 맵툴 검사."
+  },
+  {
+   "id": "h3-docs",
+   "title": "H3 Documentation",
+   "by": "H3 (Uber 공개)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://h3geo.org/docs/",
+   "why": "좌표를 칸으로 묶는 공간 색인. 리버스 지오코딩·근처 검색을 빠르게 하는 생각의 틀."
+  },
+  {
+   "id": "kakao-local",
+   "title": "Kakao Developers · 로컬 API",
+   "by": "카카오",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.kakao.com/docs/latest/ko/local/dev-guide",
+   "why": "국내 장소 검색·좌표→주소 API 의 응답 모양. 업무 '외부 API 연동'과 우리 검색 서버를 비교하는 기준."
+  },
+  {
+   "id": "google-geocoding",
+   "title": "Google Maps Platform · Geocoding API",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding",
+   "why": "우대 '지도 API(Google Maps)'와 국외 서비스의 리버스 지오코딩."
+  },
+  {
+   "id": "mapbox-docs",
+   "title": "Mapbox Documentation",
+   "by": "Mapbox",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.mapbox.com/",
+   "why": "지도 위에 점·선·다각형을 그리는 화면 쪽. 맵툴 같은 지도 편집 화면과 자격 '프론트엔드 경험'."
+  },
+  {
+   "id": "grpc-docs",
+   "title": "gRPC Documentation",
+   "by": "gRPC (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://grpc.io/docs/",
+   "why": "proto 규격 → 코드 생성 → deadline. 업무 '셔클 지역 서비스 grpc API'."
+  },
+  {
+   "id": "tucker-go",
+   "title": "Tucker의 Go 언어 프로그래밍 (2판)",
+   "by": "공봉식 · 골든래빗 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Tucker%EC%9D%98%20Go%20%EC%96%B8%EC%96%B4%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+   "why": "Go 입문부터 gRPC 서버까지 한국어로. 우대 'Golang 개발 경험'을 처음 채우는 길."
+  },
+  {
+   "id": "progit",
+   "title": "Pro Git (한국어판)",
+   "by": "Scott Chacon · Ben Straub",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://git-scm.com/book/ko/v2",
+   "why": "브랜치 워크플로 장. 우대 'Git 기반 소스 관리 및 브랜치 전략'."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "셔클과 길찾기 질문 감 잡기",
+   "time": "1주",
+   "goal": "셔클 배차가 길찾기 서버에 무엇을 묻고, 그 답이 어디에 쓰이는지 설명할 수 있다.",
+   "resources": [
+    "shucle-dev",
+    "shucle-tech",
+    "osrm"
+   ],
+   "task": "가상 도시(정류장 20곳·차량 5대)를 정하고, 호출 하나에 필요한 길찾기 질문(차량→출발 정류장, 출발→도착)을 모두 적는다. OSRM 을 로컬에 띄워 작은 OSM 지역으로 route·table 응답을 받아 본다."
+  },
+  {
+   "title": "컨버터와 엔진 직접 짜기",
+   "time": "3~4주",
+   "goal": "노드·링크 데이터를 그래프 파일로 굽고, C++ 로 다익스트라·A* 를 짜서 응답 시간을 잰다.",
+   "resources": [
+    "nodelink",
+    "emc",
+    "cmake",
+    "ch-paper"
+   ],
+   "task": "표준노드링크 한 도시 분량(또는 가상 노드링크 표)을 읽어 일방통행을 반영한 인접 배열(CSR)을 이진 파일로 쓰는 C++ 컨버터를 만든다. 끊긴 섬·길이 0 링크 검사를 넣고, 무작위 1,000쌍의 다익스트라/A* 질의 시간(중앙값·99%)을 표로 낸다."
+  },
+  {
+   "title": "리버스 지오코딩과 검색",
+   "time": "2주",
+   "goal": "좌표 → 가장 가까운 주소, 이름 → 가까운 장소를 빠르게 답한다.",
+   "resources": [
+    "juso",
+    "postgis-docs",
+    "h3-docs",
+    "kakao-local"
+   ],
+   "task": "가상 주소점 10만 개를 격자 색인으로 묶고, 무작위 좌표 1만 개의 최근접 결과를 전부 비교한 결과와 대조한다(경계 칸 처리 포함). 같은 데이터를 PostGIS 에 넣어 최근접 질의와 속도를 비교한다."
+  },
+  {
+   "title": "API 로 묶기",
+   "time": "2주",
+   "goal": "길찾기·지오코딩을 gRPC 서비스로 내고, 지도 화면에서 결과를 그린다.",
+   "resources": [
+    "grpc-docs",
+    "tucker-go",
+    "mapbox-docs",
+    "progit"
+   ],
+   "task": "route·reverse_geocode 두 메서드를 가진 proto 를 쓰고, C++ 엔진 앞에 Go gRPC 서버를 세운다. 필드를 하나 추가해 옛 클라이언트가 그대로 도는지 확인하고, 지도 화면에 경로 선과 주소 이름을 띄운다."
+  },
+  {
+   "title": "성능과 동시성 (선택)",
+   "time": "계속",
+   "goal": "여러 스레드가 같은 그래프를 안전하게 읽고, 새 맵을 무중단으로 바꿔 올린다.",
+   "resources": [
+    "cpp-concurrency",
+    "ch-paper",
+    "valhalla"
+   ],
+   "task": "2단계 엔진에 스레드 8개 질의를 걸어 처리량을 재고, 스레드별 작업 배열 재사용 전후를 비교한다. 새 맵을 백그라운드로 올린 뒤 포인터 교체로 바꾸고 그동안 질의 실패가 0건인지 확인한다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분이 없다. 이 자리는 경력 3년 이상이라 해당하지 않는다 [28]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [28]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [27]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값, 전년보다 1.5% 줄었다 [27]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 경력 3년 이상 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "주중 출산휴가 지원",
+    "detail": "본인·배우자 임신 6개월~출산 12개월 안에 회사 지정 호텔 숙식(최대 2박)"
+   },
+   {
+    "name": "임신기 근로시간 단축",
+    "detail": "임신 12주 이내·36주 이상 하루 2시간 단축"
+   },
+   {
+    "name": "수유 시간",
+    "detail": "생후 1년 미만 영아가 있는 여직원 하루 120분 유급"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [29]. 공고의 복지 칸은 비어 있고 원티드 사본에도 복지 칸이 없다 [2]. 금액 항목(주택·학자금·차량 구입 지원)은 공식 자료에서 확인하지 못해 뺐다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 본사(현대기아자동차빌딩)",
+  "address": "서울특별시 서초구 헌릉로 12 (양재동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%ED%97%8C%EB%A6%89%EB%A1%9C%2012",
+  "near": "신분당선 양재시민의숲역 근처 {추론}",
+  "note": "원티드 사본의 근무지가 헌릉로 12(현대기아자동차빌딩)이고 [2], 지속가능성 보고서의 본사 소재지와 같다 [29]. 현대차 채용 사이트 공고는 '서울'로만 적었다 [1]. 셔클 조직의 실제 자리가 본사 건물과 다를 수 있다 {추론}."
+ }
+}
