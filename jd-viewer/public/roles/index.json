@@ -158,6 +158,7 @@
   "wanted-398569": "hyundai-aviation-motor-control-sw",
   "saramin-55604373": "hyundai-energy-tech-market-research",
   "saramin-55605890": "hyundai-group-cyber-threat-detection",
+  "ats-hkmc:hyundai:2026N2419": "hyundai-hydrogen-refueling-infra",
   "saramin-55605963": "hyundai-ict-ax-project-manager",
   "ats-hkmc:hyundai:2026N2415": "hyundai-ict-backend-architecture-owners-app",
   "saramin-55605652": "hyundai-ict-mlops-backend",
@@ -1817,6 +1818,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "hyundai-hydrogen-refueling-infra",
+   "company": "현대자동차",
+   "role": "수소 충전 인프라 기술 개발",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2419"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
   },
   {
    "id": "hyundai-ict-ax-project-manager",
