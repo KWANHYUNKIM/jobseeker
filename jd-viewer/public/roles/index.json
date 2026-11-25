@@ -640,6 +640,7 @@
   "wanted-390176": "visasq-data-platform-engineer",
   "ats-greeting:xcena:235024": "xcena-compiler-engineer",
   "ats-greeting:xcena:237698": "xcena-cxl-product-engineer",
+  "ats-greeting:xcena:147043": "xcena-cxl-security",
   "ats-greeting:xcena:110622": "xcena-device-runtime-sdk",
   "ats-greeting:xcena:245888": "xcena-dqa-validation-hw-fa",
   "ats-greeting:xcena:237697": "xcena-hw-board",
@@ -6029,6 +6030,16 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 51
+  },
+  {
+   "id": "xcena-cxl-security",
+   "company": "엑시나",
+   "role": "CXL 보안 솔루션 엔지니어",
+   "jobs": [
+    "ats-greeting:xcena:147043"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 18
   },
   {
    "id": "xcena-device-runtime-sdk",
