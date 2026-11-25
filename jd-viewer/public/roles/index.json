@@ -161,6 +161,7 @@
   "ats-hkmc:hyundai:2026N2419": "hyundai-hydrogen-refueling-infra",
   "saramin-55605963": "hyundai-ict-ax-project-manager",
   "ats-hkmc:hyundai:2026N2415": "hyundai-ict-backend-architecture-owners-app",
+  "ats-hkmc:hyundai:2026N2375": "hyundai-ict-backend-developer",
   "saramin-55605652": "hyundai-ict-mlops-backend",
   "ats-hkmc:hyundai:2026N2420": "hyundai-ict-sw-architect",
   "ats-hkmc:hyundai:2026N2425": "hyundai-infra-security-public-cloud",
@@ -1849,6 +1850,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 20
+  },
+  {
+   "id": "hyundai-ict-backend-developer",
+   "company": "현대자동차",
+   "role": "Backend Developer",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2375"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "hyundai-ict-mlops-backend",

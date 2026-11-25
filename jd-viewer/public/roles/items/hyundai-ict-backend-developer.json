@@ -1,0 +1,1151 @@
+{
+ "id": "hyundai-ict-backend-developer",
+ "company": "현대자동차",
+ "role": "Backend Developer",
+ "team": "ICT 담당 · 백엔드 서버 개발 조직(공고에 팀 이름 없음)",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2375"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "앱·웹 서비스 뒤에서 도는 **Java·Spring 백엔드 서버와 API** 를 만들고, 성능·장애·배포까지 운영하는 자리입니다.[1]",
+  "env": "같은 ICT 조직은 커넥티드카 서비스를 **MSA·비동기**로 다시 짜고, 직접 만든 쿠버네티스(HKS)를 4개 리전에 올려 GitLab·Argo CD 로 배포합니다.[3][4]",
+  "oneline": "경력 3년 이상 Java 백엔드. 기능 개발만이 아니라 **몰릴 때 버티는 구조와 운영**까지 보는 일반 백엔드 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "웹 서비스 및 플랫폼 Backend 서버를 개발하는 업무를 수행합니다.",
+   "short": "앱·웹 화면 뒤에서 요청을 받아 처리하고 데이터를 지키는 서버를 만든다는 요약.",
+   "why": "팀 소개가 이 조직의 일을 **서비스 요구사항을 백엔드 서버로 구현하고, 서버 쪽 웹 애플리케이션과 프론트엔드 개발자의 작업을 하나로 잇는 것**이라고 적었습니다.[1] 같은 공고가 10월에 한 번 마감된 뒤 다시 올라왔습니다.[2] 어느 서비스를 맡는 팀인지는 공고에 없습니다.[1]",
+   "actually": {
+    "intro": "현대차 ICT 가 공개한 서비스 중 백엔드가 받치는 것들입니다. 이 팀이 이 중 무엇을 맡는지는 공개되지 않았습니다.",
+    "items": [
+     "**커넥티드카 앱** — 원격 시동·공조, 문 잠금·해제, 원격 진단. 50개국 넘게, 가입 1,000만 명을 넘겼다.[3]",
+     "**제네시스 원 앱** — 흩어져 있던 제네시스 앱들을 하나로 합치며 게이트웨이(요청이 처음 들어오는 문)를 세웠다.[5]",
+     "**글로벌 Owners App** — 같은 시기 아키텍처 백엔드 공고가 피드·검색·프로필 같은 컴포넌트를 설계한다고 적었다.[7]",
+     "**AI 서비스 백엔드** — 같은 시기 다른 공고는 AI 모델 서빙과 잇는 Spring 백엔드를 뽑는다.[8]"
+    ]
+   },
+   "how_far": "'웹 서비스 및 플랫폼'이라 화면 하나의 API 만이 아니라 **여러 서비스가 같이 쓰는 기능**도 맡을 수 있습니다 {추론}. 면접에서 어느 서비스 팀인지 먼저 물어보는 게 좋습니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "hmg-hcloud-talk"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 웹 서비스 백엔드 개발/개선",
+   "short": "새로 만드는 일과 이미 돌고 있는 서버를 고치는 일이 한 묶음이라는 머리말.",
+   "why": "업무 일곱 줄이 모두 이 머리말 아래에 있습니다.[1] '개선'이 같이 붙어 있어, 운영 중인 서비스의 성능·장애·배포를 다루는 줄(5~7번째)이 이 자리의 몫이라는 뜻입니다 {추론}. 같은 회사는 옛 한 덩어리 앱을 서비스 단위로 다시 짠 경험을 공개했습니다.[3]",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 웹 서비스 및 플랫폼 Backend 서버 개발",
+   "short": "Java·Spring 으로 API 서버를 만들고, 쿠버네티스 위 컨테이너로 올린다.",
+   "why": "현대차의 커넥티드카 앱은 처음에 **동기식 모놀리식**(한 덩어리, 요청마다 끝날 때까지 기다림)이라 한 기능이 죽으면 전체가 멈췄습니다. 그래서 서비스마다 따로 뜨는 **MSA**로 다시 짰고, 이제는 한 서비스만 내려갑니다.[3] 그 서비스들은 회사가 직접 만든 쿠버네티스 플랫폼 HKS 위에서 컨테이너로 돕니다.[3][4]",
+   "actually": {
+    "items": [
+     "**서비스 하나** — 기능 하나(예: 원격 명령, 차량 상태)를 맡는 Spring Boot 앱과 그 서비스만 쓰는 DB.[3]",
+     "**컨테이너로 올리기** — 이미지를 만들어 사내 저장소에 올리고 HKS 클러스터에 배포한다.[3]",
+     "**설정은 밖에서** — 리전(한국·미국·유럽·싱가포르)마다 다른 값은 코드가 아니라 환경으로 넣는다.[3][22]",
+     "**같은 회사 다른 팀의 도구** — JPA/Hibernate, MySQL/PostgreSQL, Git, Jira, Confluence 를 적었다.[7]"
+    ]
+   },
+   "how_far": "Spring Boot 앱 하나를 **처음부터 만들어 컨테이너로 배포하고 운영까지** 해 본 경험이 최소선입니다. 클러스터 자체는 클라우드 조직이 만들어 줍니다.[3]",
+   "refs": [
+    3,
+    4,
+    7
+   ],
+   "study": [
+    "jpa-app-1",
+    "spring-boot-int",
+    "msa-patterns"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 클라이언트의 요구를 처리하기 위한 Backend 서버 코드 작성 및 검증",
+   "short": "앱이 보낸 요청을 정확히 처리하는 코드를 짜고, 테스트로 맞는지 확인한다.",
+   "why": "'검증'이 같이 적혀 있습니다.[1] 같은 회사 클라우드 조직은 품질 확인을 사람들이 흔히 빠뜨린다며 하나씩 검증한 뒤 넓힌다고 했고, 배포 파이프라인에 코드 품질·보안 검사(SonarQube·Black Duck)를 붙였습니다.[3]",
+   "actually": {
+    "items": [
+     "**입력 검사** — 빠진 값·형식 오류는 400, 권한 없음은 403처럼 정해진 상태 코드로 돌려준다.[11]",
+     "**같은 요청 두 번** — 네트워크가 끊겨 앱이 다시 보내도 차에 명령이 두 번 가지 않게 한다(멱등성).[11][12]",
+     "**테스트** — 단위 테스트로 규칙을, 통합 테스트로 DB·외부 호출까지 확인한다 {추론}.",
+     "**정적 검사** — 배포 전에 코드 품질·오픈소스 취약점 검사를 통과해야 한다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 요청이 두 번 와도 한 번만 처리 — 멱등 키",
+     "body": "앱이 요청마다 고유 키를 붙이고 서버는 처리한 키를 기억합니다. 결제 API 들이 공개한 방식입니다.[12] 가상 값으로 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "done = {}\ndef remote_start(vin, key):\n    if key in done:\n        return done[key] + \" (이미 처리 — 다시 시동하지 않음)\"\n    done[key] = f\"{vin} 시동 명령 1회 전송\"\n    return done[key]\nprint(remote_start(\"VIN00042\", \"a1b2\"))\nprint(remote_start(\"VIN00042\", \"a1b2\"))\n# VIN00042 시동 명령 1회 전송\n# VIN00042 시동 명령 1회 전송 (이미 처리 — 다시 시동하지 않음)"
+    }
+   ],
+   "how_far": "기능을 만들 때 **테스트를 같이 내는 습관**이 최소선입니다 {추론}. 실제로는 메모리 대신 DB·Redis 에 키를 두고 만료 시간을 줍니다.[12][19]",
+   "refs": [
+    1,
+    3,
+    11,
+    12
+   ],
+   "study": [
+    "practical-testing-int",
+    "http-basic-int"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 비즈니스 로직과 데이터 처리(저장/가공)의 효율화를 위한 적정 기술 선택 및 연계",
+   "short": "데이터 성격에 맞는 저장소(RDB·NoSQL·캐시·큐)를 고르고 서로 잇는 일.",
+   "why": "자격요건에 NoSQL 과 RDB 가 같이 있습니다.[1] 같은 회사는 몰리는 기능을 **메시지 큐**에 받아 두고 따로 처리하는 비동기 구조로 바꿨다고 슬라이드에 그렸습니다.[3] '적정'이라는 말대로 새 기술보다 **맞는 기술**을 고르는 일입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**RDB** — 회원·차량·계약처럼 서로 얽히고 틀리면 안 되는 데이터. 트랜잭션으로 지킨다 {추론}.",
+     "**NoSQL 문서 DB** — 함께 읽는 데이터를 한 문서에 담아 한 번에 읽는다.[20]",
+     "**캐시(Redis)** — 자주 읽고 조금 늦어도 되는 값, 만료 시간이 있는 값.[19]",
+     "**메시지 큐** — 몰리는 요청을 받아 두고 처리 속도에 맞춰 꺼낸다(부하 평준화).[3][10]"
+    ]
+   },
+   "how_far": "고른 이유를 **읽기·쓰기 비율, 일관성, 데이터 양, 운영 부담**으로 설명할 수 있으면 됩니다 {추론}. 새 저장소 도입은 보통 팀·클라우드 조직과 같이 정합니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    10,
+    19,
+    20
+   ],
+   "study": [
+    "ddia",
+    "realmysql"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Frontend 개발자/모바일 앱 개발자용 API 개발 및 서비스 연계를 위한 서버 API 개발",
+   "short": "앱·웹이 부를 API 와, 다른 서비스끼리 부를 API 두 가지를 만든다.",
+   "why": "팀 소개가 프론트엔드 개발자의 작업을 통합하는 일을 이 팀의 몫으로 적었습니다.[1] 현대차 ICT 는 여러 제네시스 앱을 하나로 합치며 게이트웨이를 세웠고[5], 같은 시기 다른 공고는 서비스 사이를 REST 와 gRPC(구글이 만든 빠른 원격 호출 방식)로 잇는다고 적었습니다.[6][8]",
+   "actually": {
+    "items": [
+     "**앱용 API** — 화면이 한 번에 쓸 모양으로 돌려준다. 앱 버전이 섞여 있어 옛 앱이 깨지지 않게 버전을 관리한다 {추론}.",
+     "**명세 먼저** — OpenAPI 로 요청·응답 모양을 적어 앱 개발자와 먼저 맞춘다.[13]",
+     "**서비스끼리** — 다른 팀 서비스·외부 시스템을 부를 때 시간 제한과 실패 처리를 둔다.[10]",
+     "**게이트웨이 뒤에서** — 인증·라우팅은 게이트웨이가 맡고 서비스는 업무에 집중하는 구성이 보통이다.[5][10]"
+    ]
+   },
+   "how_far": "REST 규칙(메서드·상태 코드·멱등성)을 지키고 **명세를 문서로 남길 수 있으면** 됩니다.[11][13] gRPC 는 같은 회사 다른 자리의 요건이라 여기서는 덤입니다.[8]",
+   "refs": [
+    1,
+    5,
+    6,
+    8,
+    13
+   ],
+   "study": [
+    "http-basic-int",
+    "openapi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 성능, 안정성, 가용성, 확장성을 고려한 시스템 아키텍처 설계",
+   "short": "사용자가 몰려도 느려지거나 멈추지 않게, 늘려 갈 수 있게 구조를 짠다.",
+   "why": "현대차 커넥티드카는 **겨울 아침 히터, 여름 에어컨**을 차에 타기 전 켜려는 사용자가 한꺼번에 몰리고, 가입자는 2026년 2,000만 명을 내다봅니다.[3] 각 리전은 데이터센터 두 곳 이상에 나눠 올려 한 곳이 꺼져도 서비스가 이어지게 했고, 국내 서비스 가용성을 99.95%로 밝혔습니다.[3][4]",
+   "actually": {
+    "items": [
+     "**성능** — 몰리는 기능은 큐에 넣고 바로 '접수됨'을 돌려준 뒤 처리가 끝나면 알린다.[3][10]",
+     "**안정성** — 느린 의존 서비스는 시간 제한과 차단기(실패가 이어지면 잠시 부르지 않음)로 끊는다.[10]",
+     "**가용성** — 서비스를 데이터센터 두 곳에 동시에 띄운다(Active-Active).[3]",
+     "**확장성** — 상태를 서버 안에 두지 않아 컨테이너를 늘리기만 하면 되게 한다.[3][22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 폭주를 동기와 큐로 받으면",
+     "body": "가상 값입니다. 10초 동안 초당 300건이 오고 서버는 초당 100건을 처리하며, 앱은 2초 넘게 기다리면 실패로 봅니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "ARRIVE, CAP, BURST, TIMEOUT = 300, 100, 10, 2\nbacklog, fail_sync = 0, 0\nfor t in range(BURST):\n    backlog += ARRIVE\n    backlog -= min(CAP, backlog)\n    over = max(0, backlog - CAP * TIMEOUT)\n    fail_sync += over\n    backlog -= over\ntotal = ARRIVE * BURST\nprint(f\"동기: {total}건 중 {fail_sync}건 시간 초과\")\nprint(f\"큐: 실패 0건, 마지막 요청은 {total // CAP}초 뒤 처리, 큐 최대 {total - CAP * BURST}건\")\n# 동기: 3000건 중 1800건 시간 초과\n# 큐: 실패 0건, 마지막 요청은 30초 뒤 처리, 큐 최대 2000건"
+    },
+    {
+     "title": "99.95% 는 얼마나 멈춰도 되나",
+     "body": "회사가 밝힌 국내 가용성[3]을 시간으로 바꾸면 한 달 약 21.6분, 한 해 약 4.4시간입니다(직접 계산). 99.9% 면 한 달 43.2분, 99.99% 면 4.3분입니다."
+    }
+   ],
+   "how_far": "3년 차 자리라 회사 전체 구조보다 **내 서비스의 구조**(어디를 비동기로, 무엇을 캐시로, 실패하면 어떻게)를 근거와 함께 정하는 수준입니다 {추론}. 큰 구조는 같은 회사의 아키텍처 백엔드(8년 이상)·SW 아키텍트 자리가 맡습니다.[7]",
+   "refs": [
+    3,
+    4,
+    10
+   ],
+   "study": [
+    "sys-design",
+    "release-it",
+    "cloud-patterns"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 시스템 모니터링/장애 탐지 및 이상 상황 발생 시 문제 진단, 해결 방안 도출 등의 Trouble Shooting",
+   "short": "지표·로그로 이상을 먼저 알아채고, 터지면 원인을 좁혀 고치고 다시 안 나게 한다.",
+   "why": "현대차 클라우드 조직은 사내 모니터링 서비스(Hubble)와 구간별 상태 확인 서비스(Sonar)를 직접 만들었고, 컨테이너를 띄우기만 하면 지표가 모이게 했습니다.[3] 발표자는 예전 모놀리식 시절 장애 때문에 밤늦게 집에 못 갔다고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**네 가지 신호** — 지연·트래픽·오류·포화를 본다.[9]",
+     "**평균 말고 분위수** — 평균은 멀쩡한데 일부 사용자만 몇 초씩 기다리는 일이 흔하다.[9]",
+     "**앱이 스스로 알리기** — Spring Boot Actuator 로 health·metrics 를 열고[14], 쿠버네티스가 그 값으로 죽은 컨테이너를 다시 띄운다.[15]",
+     "**서버 자원** — CPU·메모리·디스크·네트워크마다 사용률·포화·오류를 차례로 본다.[21]",
+     "**사후 정리** — 원인·영향·재발 방지를 적어 같은 장애를 막는다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균은 69ms 인데 100명 중 1명은 1.5초",
+     "body": "가상 값입니다. 요청 1,000건 중 2%만 DB 잠금에 걸린 경우 — 직접 돌린 출력입니다.[9]",
+     "lang": "python",
+     "code": "import random, statistics\nrandom.seed(7)\nlat = [random.gauss(40, 8) for _ in range(980)] + [random.gauss(1500, 200) for _ in range(20)]\nlat.sort()\np = lambda q: lat[int(len(lat) * q) - 1]\nprint(f\"평균 {statistics.mean(lat):.0f}ms  p50 {p(0.50):.0f}ms  p95 {p(0.95):.0f}ms  p99 {p(0.99):.0f}ms\")\n# 평균 69ms  p50 41ms  p95 55ms  p99 1464ms"
+    }
+   ],
+   "how_far": "모니터링 도구는 클라우드 조직이 줍니다.[3] 개발자는 **내 서비스에 맞는 지표·경보를 정하고, 로그·지표로 원인을 좁혀 설명**할 수 있어야 합니다 {추론}.",
+   "refs": [
+    3,
+    9,
+    14,
+    15,
+    21
+   ],
+   "study": [
+    "sre-book",
+    "use-method",
+    "jvm-tuning-int"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Agile 하고 효율적인 서비스 환경 조성을 위한 CI/CD 환경 구축 및 운영",
+   "short": "코드를 올리면 빌드·검사·배포가 자동으로 도는 길을 만들고 관리한다.",
+   "why": "현대차 클라우드 조직은 사내 쿠버네티스(HKS)용 배포 파이프라인을 **GitLab·Harbor(이미지 저장소)·Argo CD** 로 만들고 SonarQube·Black Duck 검사를 붙였습니다.[3] 개발팀은 이 길 위에 자기 서비스의 파이프라인을 얹습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**GitOps** — 배포 설정을 Git 에 두면 Argo CD 가 클러스터를 그 상태로 맞춘다. 되돌리기는 커밋 되돌리기.[16]",
+     "**리전별 배포** — 한국·미국·유럽·싱가포르 리전에 같은 표준으로 배포한다.[3]",
+     "**잘 돌아가는지 숫자로** — 배포 빈도·변경 리드타임·변경 실패율·복구 시간.[17]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "HKS 배포 길 — 슬라이드의 도구로 그린 흐름 {추론}[3]",
+     "steps": [
+      "코드 올리기 · GitLab",
+      "빌드·테스트 · 단위/통합",
+      "검사 · SonarQube·Black Duck",
+      "이미지 · Harbor",
+      "배포 · Argo CD 가 클러스터에 맞춤"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "'구축 및 운영'이라 파이프라인 파일을 **직접 고치고 실패 원인을 찾을 줄** 알아야 합니다 {추론}. 플랫폼(HKS·GitLab·Argo CD) 자체 운영은 클라우드 조직 몫입니다.[3]",
+   "refs": [
+    3,
+    16,
+    17
+   ],
+   "study": [
+    "argocd",
+    "dora",
+    "docker-int"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 학사 이상의 학위를 보유하신 분",
+   "short": "전공 제한 없이 학사 이상. 무게는 다음 줄의 Java 경력 3년에 있다.",
+   "why": "이 공고는 전공을 적지 않았습니다.[1] 같은 시기 아키텍처 백엔드 공고는 컴퓨터공학·소프트웨어공학·전자공학·정보통신공학을 나열해[7] 이 자리가 더 넓게 열려 있습니다.",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 3년 이상의 Java Backend 개발 업무 경험을 보유하신 분",
+   "short": "Java 로 실제 서비스 서버를 3년 넘게 만들고 운영해 본 경험.",
+   "why": "같은 시기 ICT 백엔드 공고들은 Java 를 공통으로 요구하고, MLOps 자리는 Kotlin 도 같이 봅니다.[7][8] 이 자리는 Java 만 적었습니다.[1]",
+   "level": {
+    "basic": "컬렉션·예외·제네릭·스트림, 객체를 나눠 짜기",
+    "work": "동시성(스레드 풀·락)·트랜잭션 경계·커넥션 풀, GC 로그 읽기",
+    "team": "느린 요청을 코드·DB·JVM 중 어디가 원인인지 좁히고 고친 경험을 숫자로 설명"
+   },
+   "how_far": "'업무 경험'이라 공부 기간이 아니라 **실제 서비스에 배포한 기간**입니다 {추론}. 경력서에 맡은 API·트래픽 규모·고친 장애를 숫자로 적는 것이 좋습니다 {추론}.",
+   "refs": [
+    1,
+    7,
+    8
+   ],
+   "study": [
+    "effective-java",
+    "java-thread-int",
+    "jvm-tuning-int"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· IT 시스템 및 데이터에 대한 개발 체계 및 프로세스, 시스템 구성 등 전반적인 지식을 보유하신 분",
+   "short": "코드만이 아니라 요청이 지나가는 전체 길(네트워크·서버·DB·배포·운영)을 아는 것.",
+   "why": "현대차의 서비스는 게이트웨이·컨테이너 플랫폼·자체 네트워크·로드밸런서·DNS·오브젝트 스토리지 같은 사내 클라우드 제품 위에서 돕니다.[3][5] 장애를 진단하려면 그 길을 알아야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**요청의 길** — 앱 → DNS → 로드밸런서 → 게이트웨이 → 서비스 → DB·캐시·큐.[3][5]",
+     "**개발 과정** — 요구사항 → 설계 → 코드 리뷰 → 테스트 → 배포 → 운영으로 이어지는 흐름 {추론}.",
+     "**데이터의 길** — 어디서 생기고 어디에 쌓여 누가 읽나 {추론}."
+    ]
+   },
+   "how_far": "한 장짜리 그림으로 **내 서비스가 무엇에 기대는지** 그리고 설명할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    3,
+    5
+   ],
+   "study": [
+    "sys-design",
+    "twelve-factor"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Spring Framework 또는 Spring Boot을 이용한 앱 개발 경험을 보유하신 분",
+   "short": "회사의 백엔드 표준이 Spring 이라서. 설정·트랜잭션·테스트를 다룰 줄 알아야 한다.",
+   "why": "같은 시기 ICT 백엔드 공고 셋이 모두 Spring 또는 Spring Boot 를 적었습니다.[1][7][8]",
+   "level": {
+    "basic": "컨트롤러·서비스·리포지토리로 API 만들기, 설정 파일·프로필",
+    "work": "트랜잭션 전파·JPA 지연 로딩과 N+1, 예외 처리, 테스트 슬라이스",
+    "team": "Actuator 지표로 운영하고[14], 리전마다 다른 설정을 코드 밖에서 주입"
+   },
+   "how_far": "스프링이 대신해 주는 일(빈 만들기·트랜잭션·프록시)을 **로그와 동작으로 설명**할 수 있는 정도면 3년 차 기대에 맞습니다 {추론}.",
+   "refs": [
+    1,
+    7,
+    8,
+    14
+   ],
+   "study": [
+    "spring-core-int",
+    "spring-boot-int",
+    "toby"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Linux 플랫폼에서 서비스 개발/운영 경력을 보유하신 분",
+   "short": "서버가 리눅스 컨테이너로 돌아서, 터미널에서 로그·프로세스·네트워크를 볼 줄 알아야 한다.",
+   "why": "현대차 서비스는 사내 쿠버네티스 위의 컨테이너로 돕니다.[3] 장애가 나면 결국 리눅스 위의 프로세스·파일·소켓을 들여다봐야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**로그 보기** — 컨테이너 로그를 거르고 시간대로 좁힌다.",
+     "**자원 보기** — CPU·메모리·디스크·네트워크의 사용률·포화·오류.[21]",
+     "**연결 보기** — 어느 포트가 열려 있고 DB 연결이 몇 개 붙어 있나 {추론}."
+    ]
+   },
+   "how_far": "셸 명령으로 **로그·프로세스·자원·연결을 혼자 확인**할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    3,
+    21
+   ],
+   "study": [
+    "tlcl",
+    "use-method"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· NoSQL, RDB 등의 DB 개발 경력을 보유하신 분",
+   "short": "관계형 DB 를 주로, 필요한 곳엔 NoSQL 을 골라 쓴 경험.",
+   "why": "같은 회사 아키텍처 백엔드 공고는 MySQL/PostgreSQL 과 JPA 를 적었습니다.[7] 이 공고는 NoSQL 까지 같이 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**RDB** — 테이블 설계, 인덱스, 트랜잭션·락.[18]",
+     "**문서 DB** — 같이 읽는 것은 한 문서에, 따로 자라는 것은 참조로.[20]",
+     "**키-값(Redis)** — 문자열·해시·정렬 집합 같은 자료형과 만료 시간.[19]"
+    ]
+   },
+   "how_far": "'DB 개발 경력'이라 운영 DBA 가 아니라 **서비스 코드에서 DB 를 바르게 쓰는 개발자** 수준입니다 {추론}.",
+   "refs": [
+    1,
+    7,
+    19,
+    20
+   ],
+   "study": [
+    "realmysql",
+    "ddia",
+    "jpa-basic-int"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· RDBMS 스키마 모델링 및 Query 작성·튜닝 역량을 보유하신 분",
+   "short": "느린 쿼리를 실행계획으로 읽고 인덱스·쿼리를 고쳐 빠르게 만드는 힘.",
+   "why": "트래픽이 몰릴 때 가장 먼저 느려지는 곳이 DB 인 경우가 많습니다 {추론}. 실행계획(EXPLAIN)은 DB 가 표를 어떻게 읽을지 보여 줍니다.[18]",
+   "level": {
+    "basic": "정규화, 기본키·외래키, JOIN, 인덱스가 왜 빠른지",
+    "work": "실행계획 읽기, 복합 인덱스 순서, 페이징, 락과 격리 수준",
+    "team": "트래픽이 몰리는 표의 설계를 바꾸고 전후 응답 시간을 숫자로 보이기"
+   },
+   "examples": [
+    {
+     "title": "복합 인덱스 하나로 '전체 훑기'가 '찾기'로",
+     "body": "가상 표 10만 행(차량 5,000대의 원격 명령 기록)에서 한 차량의 최근 20건을 찾는 쿼리를 SQLite 로 직접 돌린 실행계획입니다. MySQL 의 EXPLAIN 도 같은 것을 보여 줍니다.[18]",
+     "lang": "sql",
+     "code": "EXPLAIN QUERY PLAN\nSELECT * FROM remote_cmd WHERE vin='VIN00042' ORDER BY created_at DESC LIMIT 20;\n-- 인덱스 없음: SCAN remote_cmd / USE TEMP B-TREE FOR ORDER BY\nCREATE INDEX ix_vin_created ON remote_cmd(vin, created_at);\n-- (vin, created_at): SEARCH remote_cmd USING INDEX ix_vin_created (vin=?)"
+    }
+   ],
+   "refs": [
+    18
+   ],
+   "study": [
+    "realmysql",
+    "sql-tuning",
+    "mysql-explain"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· Cloud 기반 환경(Kubernetes, Docker, AWS/Azure 등)에서의 서버 운영 및 배포 경험을 보유하신 분",
+   "short": "컨테이너를 만들고 쿠버네티스에 배포·운영해 본 경험. 퍼블릭 클라우드도 쓴다.",
+   "why": "현대차는 커넥티드카 서비스를 위해 자체 프라이빗 클라우드를 4개 리전에 세웠고, 그 위 컨테이너 플랫폼(HKS)은 Rancher 기반 쿠버네티스입니다.[3][4] 공고가 AWS/Azure 를 같이 적어 퍼블릭 클라우드도 쓰는 환경임을 알 수 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**이미지 만들기** — Dockerfile 로 앱을 가볍게 담는다.",
+     "**배포 설정** — 복제 수·자원 한도·probe(살아 있나/받을 준비 됐나 검사)를 적는다.[15]",
+     "**데이터센터 나눠 두기** — 같은 리전의 두 데이터센터에 나눠 띄운다.[3]"
+    ]
+   },
+   "how_far": "클러스터를 짓는 게 아니라 **그 위에 내 서비스를 올리고 문제를 읽는** 수준입니다. 클러스터는 클라우드 조직이 운영합니다.[3]",
+   "refs": [
+    1,
+    3,
+    4,
+    15
+   ],
+   "study": [
+    "docker-int",
+    "kubernetes-int",
+    "hmg-hcloud-talk"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 오픈소스 기반 서버 프레임워크·라이브러리 활용 및 시스템 모니터링/트러블슈팅 경험을 보유하신 분",
+   "short": "회사 플랫폼이 오픈소스로 지어져 있어서. 라이브러리를 골라 쓰고 문제를 파고들 줄 아는 것.",
+   "why": "현대차 클라우드 조직은 사내 클라우드 제품 대부분을 오픈소스 위에 직접 만들었고, 일부는 오픈소스에 코드를 돌려줬다고 답했습니다.[3] Rancher 는 쓰는 데 제한이 없는 오픈소스라는 점을 고른 이유로 들었습니다.[3]",
+   "actually": {
+    "items": [
+     "**고르기** — 라이선스·유지보수 활발함·보안 취약점 이력을 본다. 배포 길에 오픈소스 검사(Black Duck)가 있다.[3]",
+     "**파고들기** — 문서에 없는 동작은 소스를 읽어 원인을 찾는다 {추론}.",
+     "**지표 붙이기** — Actuator·Micrometer 로 앱 지표를 모니터링 도구에 넘긴다.[14]"
+    ]
+   },
+   "how_far": "문제가 생겼을 때 **라이브러리 이슈·소스까지 찾아 본 경험**을 하나 이상 이야기할 수 있으면 좋습니다 {추론}.",
+   "refs": [
+    3,
+    9,
+    14
+   ],
+   "study": [
+    "sre-book",
+    "spring-boot-int"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "수백만 명이 실제로 쓰는 서비스(차량 앱)의 서버를 만져 보고 싶은 사람[3]",
+   "기능 개발만큼 장애 원인 찾기·성능 개선이 즐거운 사람",
+   "정해진 플랫폼(사내 클라우드·배포 길) 위에서 서비스에 집중하고 싶은 사람[3]"
+  ],
+  "hard": [
+   "어느 서비스 팀인지 공고에 없어 맡을 일이 입사 뒤 정해질 수 있다[1]",
+   "사내 클라우드·보안 검사 같은 전사 표준을 따라야 한다[3]",
+   "Java 실무 3년이 출발선 — 다른 언어 경력만으로는 어렵다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "겨울 아침에 원격 시동 요청이 평소의 10배로 몰립니다. 서버를 어떻게 설계하겠어요?",
+   "a": "회사가 실제로 겪고 큐 기반 비동기로 바꾼 일.[3]"
+  },
+  {
+   "q": "앱이 같은 요청을 두 번 보내면 차에 명령이 두 번 가나요? 어떻게 막겠어요?",
+   "a": "멱등성과 멱등 키.[11][12]"
+  },
+  {
+   "q": "평균 응답 시간은 괜찮은데 사용자 불만이 늘었습니다. 무엇을 보겠어요?",
+   "a": "분위수와 네 가지 신호.[9]"
+  },
+  {
+   "q": "느린 쿼리를 찾았습니다. 무엇부터 확인하나요?",
+   "a": "실행계획과 복합 인덱스 순서.[18]"
+  },
+  {
+   "q": "RDB 와 NoSQL 중 하나를 골라야 한다면 무엇을 기준으로 하겠어요?",
+   "a": "'적정 기술 선택' 줄 — 일관성·읽기 모양·양.[19][20]"
+  },
+  {
+   "q": "쿠버네티스에서 컨테이너가 계속 재시작됩니다. 어디부터 보겠어요?",
+   "a": "probe 설정과 로그.[15]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · [ICT] Backend Developer",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=375",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대, 근무지 양재본사, 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차그룹 [ICT] Backend Developer (이전 판)",
+   "url": "https://www.wanted.co.kr/wd/392636",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "같은 팀 소개·업무·요건, 2026-10-29 마감 — 근무지 헌릉로 12, 경력 3년 이상"
+  },
+  {
+   "n": 3,
+   "title": "SUSECON 2024 · The journey of Hyundai Motor Group to develop a private cloud for connected car service",
+   "url": "https://youtu.be/BLVywVGIikA",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "현대차 클라우드개발 조직 책임자 발표 · 자막 전부와 슬라이드 확인(27분)"
+  },
+  {
+   "n": 4,
+   "title": "바이라인네트워크 · 현대자동차가 구축한 'H클라우드', 전세계 1000만 커넥티드 카 서비스 뒷받침",
+   "url": "https://byline.network/2024/06/24-313/",
+   "kind": "news",
+   "date": "2024-06-25",
+   "note": "같은 발표의 국내 보도"
+  },
+  {
+   "n": 5,
+   "title": "현대자동차그룹 · 소프티어 테크밋업(제1회)",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000094086",
+   "kind": "company",
+   "date": "2023-05-30",
+   "note": "ICT본부 비즈플랫폼개발팀 '제네시스 원 앱 글로벌로 쏘아 올리기' — 흩어진 앱 통합, 게이트웨이 구성, 글로벌 확장"
+  },
+  {
+   "n": 6,
+   "title": "현대자동차그룹 · 제2회 소프티어 테크밋업",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000113994",
+   "kind": "company",
+   "date": "2023-09-20",
+   "note": "셔클 앱의 gRPC·클린 아키텍처, MY GENESIS 앱(앞 회차에 백엔드 소개)"
+  },
+  {
+   "n": 7,
+   "title": "현대자동차 채용 · [ICT] Backend Developer - 아키텍처",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=415",
+   "kind": "posting",
+   "note": "같은 시기 ICT 백엔드 공고 — 글로벌 Owners App, MSA, JPA·MySQL/PostgreSQL, 8년 이상"
+  },
+  {
+   "n": 8,
+   "title": "사람인 · 현대자동차 [ICT] Backend Developer - MLOps 개발",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55605652",
+   "kind": "posting",
+   "note": "같은 시기 ICT 백엔드 공고 — Java·Kotlin·Spring, REST/gRPC, 3년 이상"
+  },
+  {
+   "n": 9,
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "note": "네 가지 신호(지연·트래픽·오류·포화), 평균 대신 분포"
+  },
+  {
+   "n": 10,
+   "title": "Microsoft Azure Architecture Center · Cloud Design Patterns",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/",
+   "kind": "reference",
+   "note": "Queue-Based Load Leveling·Circuit Breaker·Retry 등"
+  },
+  {
+   "n": 11,
+   "title": "RFC 9110 · HTTP Semantics",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110",
+   "kind": "reference",
+   "note": "메서드의 안전·멱등 정의, 상태 코드"
+  },
+  {
+   "n": 12,
+   "title": "Stripe API 문서 · Idempotent requests",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "kind": "reference",
+   "note": "멱등 키로 같은 요청을 두 번 처리하지 않는 공개 사례"
+  },
+  {
+   "n": 13,
+   "title": "OpenAPI Specification",
+   "url": "https://spec.openapis.org/oas/latest.html",
+   "kind": "reference",
+   "note": "REST API 명세 표준"
+  },
+  {
+   "n": 14,
+   "title": "Spring Boot 문서 · Production-ready Features(Actuator)",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "kind": "reference",
+   "note": "health·metrics 엔드포인트, Micrometer"
+  },
+  {
+   "n": 15,
+   "title": "Kubernetes 문서 · Liveness, Readiness, and Startup Probes",
+   "url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Argo CD 문서",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "kind": "reference",
+   "note": "Git 저장소의 선언을 쿠버네티스에 맞춰 주는 GitOps 배포 도구"
+  },
+  {
+   "n": 17,
+   "title": "DORA · Software delivery performance metrics",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference",
+   "note": "배포 빈도·변경 리드타임·변경 실패율·복구 시간"
+  },
+  {
+   "n": 18,
+   "title": "MySQL 8.0 Reference Manual · EXPLAIN Output Format",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/explain-output.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Redis 문서 · Data types",
+   "url": "https://redis.io/docs/latest/develop/data-types/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "MongoDB Manual · Data Modeling",
+   "url": "https://www.mongodb.com/docs/manual/data-modeling/",
+   "kind": "reference",
+   "note": "함께 읽는 데이터는 한 문서에 — 내장 vs 참조"
+  },
+  {
+   "n": 21,
+   "title": "Brendan Gregg · The USE Method",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "kind": "reference",
+   "note": "자원마다 사용률·포화·오류"
+  },
+  {
+   "n": 22,
+   "title": "The Twelve-Factor App (한국어)",
+   "url": "https://12factor.net/ko/",
+   "kind": "reference",
+   "note": "설정은 환경에, 로그는 흐름으로 — 컨테이너에 올리기 좋은 앱"
+  },
+  {
+   "n": 23,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 24,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 25,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원, 4·124쪽 본사 주소"
+  }
+ ],
+ "caveat": "이 팀이 직접 낸 발표·글은 찾지 못했고, 공고에도 어느 서비스 팀인지 없습니다. 같은 회사 클라우드 조직의 2024년 발표(커넥티드카 서비스·HKS)와 같은 시기 다른 ICT 백엔드 공고로 회사의 실제 환경을 보였고, 설계·운영 방법은 공개 문서로 '보통 이런 것'을 보였습니다. 발표는 2024년 것이라 지금은 달라졌을 수 있습니다.",
+ "resources": [
+  {
+   "id": "hmg-hcloud-talk",
+   "title": "SUSECON 2024 · The journey of Hyundai Motor Group to develop a private cloud for connected car service",
+   "by": "현대차 클라우드개발 조직 · 27분",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://youtu.be/BLVywVGIikA",
+   "why": "이 회사 서비스가 왜 MSA·비동기·자체 쿠버네티스(HKS)로 바뀌었고 배포 길이 무엇으로 돼 있는지 직접 설명한다. 면접 전에 꼭 볼 영상."
+  },
+  {
+   "id": "spring-core-int",
+   "title": "스프링 핵심 원리 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/spring-core",
+   "why": "빈·의존관계 주입·컨테이너 — Spring 요건의 바닥."
+  },
+  {
+   "id": "spring-boot-int",
+   "title": "스프링 부트 — 핵심 원리와 활용 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "자동 설정·외부 설정·Actuator — 리전별 설정과 모니터링 줄."
+  },
+  {
+   "id": "jpa-app-1",
+   "title": "스프링 부트와 JPA 활용 1편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/jpa-app-1",
+   "why": "API 서버 하나를 처음부터 끝까지 만들어 보는 흐름."
+  },
+  {
+   "id": "jpa-basic-int",
+   "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/jpa-basic",
+   "why": "같은 회사 공고가 적은 JPA — 실제로 나가는 SQL 을 보며 RDB 개발 요건을 채운다."
+  },
+  {
+   "id": "practical-testing-int",
+   "title": "Practical Testing (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/practical-testing",
+   "why": "'코드 작성 및 검증' 줄 — 단위·통합 테스트를 Spring 으로."
+  },
+  {
+   "id": "http-basic-int",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "메서드·상태 코드·멱등성 — 앱용 API 줄의 기본."
+  },
+  {
+   "id": "docker-int",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "이미지 만들기·실행 — 컨테이너 배포 우대 줄."
+  },
+  {
+   "id": "kubernetes-int",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kubernetes",
+   "why": "Pending·CrashLoopBackOff 읽기 — HKS 위에서 서비스를 운영하는 수준."
+  },
+  {
+   "id": "java-thread-int",
+   "title": "실전 자바 — 멀티스레드와 동시성 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/java-thread",
+   "why": "Java 3년 요건의 실무 수준 — 스레드 풀·락."
+  },
+  {
+   "id": "jvm-tuning-int",
+   "title": "자바 성능 튜닝 — JVM 과 GC (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/wiki/jvm-tuning",
+   "why": "느린 요청이 GC 탓인지 가르는 법 — 트러블슈팅 줄."
+  },
+  {
+   "id": "toby",
+   "title": "토비의 스프링 3.1",
+   "by": "이일민 · 에이콘출판",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%86%A0%EB%B9%84%EC%9D%98%20%EC%8A%A4%ED%94%84%EB%A7%81",
+   "why": "스프링이 왜 그렇게 생겼나 — 트랜잭션·AOP 를 원리부터."
+  },
+  {
+   "id": "effective-java",
+   "title": "이펙티브 자바 3판",
+   "by": "조슈아 블로크 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%EC%9E%90%EB%B0%94",
+   "why": "Java 3년 차가 코드 리뷰에서 받는 지적의 대부분을 미리."
+  },
+  {
+   "id": "realmysql",
+   "title": "Real MySQL 8.0 (1·2권)",
+   "by": "백은빈 · 이성욱 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0",
+   "why": "인덱스·실행계획·잠금 — 스키마 모델링·쿼리 튜닝 우대 줄."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D",
+   "why": "인덱스·조인·소트 튜닝을 그림으로(예시는 오라클). 실행계획 읽는 눈."
+  },
+  {
+   "id": "mysql-explain",
+   "title": "MySQL 8.0 Reference Manual · EXPLAIN Output Format",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/explain-output.html",
+   "why": "실행계획의 칸(type·key·rows·Extra)이 무엇을 뜻하나."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "why": "RDB·NoSQL·큐를 언제 고르나 — '적정 기술 선택' 줄의 근거를 세운다."
+  },
+  {
+   "id": "sys-design",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "why": "캐시·큐·샤딩·로드밸런서를 한 권에 — 아키텍처 설계 줄의 지도."
+  },
+  {
+   "id": "msa-patterns",
+   "title": "마이크로서비스 패턴",
+   "by": "크리스 리처드슨 · 길벗",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4%20%EB%A6%AC%EC%B2%98%EB%93%9C%EC%8A%A8",
+   "why": "서비스 나누기·비동기 메시지·사가를 Java 예제로 — 이 회사가 옮겨 간 구조."
+  },
+  {
+   "id": "release-it",
+   "title": "Release의 모든 것 2판 — 대규모 웹 분산 시스템을 위한 운영 고려 설계",
+   "by": "마이클 나이가드 · 박성철 옮김 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ridibooks.com/books/443001250",
+   "why": "시간 제한·차단기·격벽 — 안정성·가용성 줄의 실전 패턴."
+  },
+  {
+   "id": "cloud-patterns",
+   "title": "Cloud Design Patterns",
+   "by": "Microsoft Azure Architecture Center",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/",
+   "why": "큐 기반 부하 평준화·재시도·차단기를 그림과 함께. 클라우드 종류와 상관없이 쓴다."
+  },
+  {
+   "id": "openapi",
+   "title": "OpenAPI Specification",
+   "by": "OpenAPI Initiative",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://spec.openapis.org/oas/latest.html",
+   "why": "앱 개발자와 API 모양을 먼저 맞추는 명세 표준."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (Google SRE Book, 온라인 무료판)",
+   "by": "Google",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "모니터링·경보·장애 대응·사후 정리 — 트러블슈팅 줄 전체."
+  },
+  {
+   "id": "use-method",
+   "title": "The USE Method",
+   "by": "Brendan Gregg",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "why": "리눅스 서버 자원을 차례로 점검하는 표 — 리눅스 운영 요건."
+  },
+  {
+   "id": "tlcl",
+   "title": "The Linux Command Line",
+   "by": "William Shotts",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "why": "셸·프로세스·권한·로그 기본기를 무료로."
+  },
+  {
+   "id": "twelve-factor",
+   "title": "The Twelve-Factor App",
+   "by": "Adam Wiggins(한국어 번역)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://12factor.net/ko/",
+   "why": "설정은 환경에, 상태는 밖에 — 컨테이너로 늘려 가기 좋은 앱의 조건."
+  },
+  {
+   "id": "argocd",
+   "title": "Argo CD 문서",
+   "by": "Argo Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "why": "이 회사 배포 길에 있는 GitOps 도구 — CI/CD 줄."
+  },
+  {
+   "id": "dora",
+   "title": "DORA · Software delivery performance metrics",
+   "by": "DORA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "why": "'효율적인 서비스 환경'을 숫자 네 개로 재는 법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 구조 읽기",
+   "time": "1주",
+   "goal": "현대차 서비스가 왜 MSA·비동기·자체 쿠버네티스로 바뀌었는지, 배포 길이 무엇으로 돼 있는지 설명할 수 있다.",
+   "resources": [
+    "hmg-hcloud-talk",
+    "twelve-factor"
+   ],
+   "task": "발표를 보고 '모놀리식 → MSA', '동기 → 큐', 'HKS 배포 길' 세 장의 그림을 직접 그리고, 각 그림 밑에 바뀐 이유를 한 문장씩 적는다."
+  },
+  {
+   "title": "Spring 으로 API 하나",
+   "time": "3~4주",
+   "goal": "Spring Boot·JPA 로 API 서버를 만들고 테스트·명세까지 낸다.",
+   "resources": [
+    "spring-core-int",
+    "jpa-app-1",
+    "http-basic-int",
+    "practical-testing-int",
+    "openapi"
+   ],
+   "task": "가상의 '원격 명령' API(명령 접수·상태 조회·이력)를 만들고 OpenAPI 명세, 단위·통합 테스트, 멱등 키 처리를 붙인다."
+  },
+  {
+   "title": "DB 를 빠르게",
+   "time": "2~3주",
+   "goal": "실행계획을 읽고 인덱스·쿼리를 고쳐 응답 시간을 줄인다.",
+   "resources": [
+    "realmysql",
+    "mysql-explain",
+    "sql-tuning",
+    "jpa-basic-int",
+    "ddia"
+   ],
+   "task": "2단계 표에 가상 명령 100만 행을 넣고 느린 조회 3개를 EXPLAIN 으로 찾아 고친 뒤, 고치기 전후 응답 시간을 표로 남긴다. 자주 읽는 차량 상태는 Redis 캐시로 옮겨 본다."
+  },
+  {
+   "title": "컨테이너로 올리고 지켜보기",
+   "time": "2~3주",
+   "goal": "쿠버네티스에 배포하고 지표·probe·자동 배포를 붙인다.",
+   "resources": [
+    "docker-int",
+    "kubernetes-int",
+    "argocd",
+    "spring-boot-int",
+    "sre-book",
+    "use-method"
+   ],
+   "task": "로컬 쿠버네티스(kind 등)에 서비스를 올리고 Actuator health 로 probe 를 걸고, Git 에 둔 배포 설정을 Argo CD 로 맞춘다. 부하를 주며 p50·p95·p99 를 기록한다."
+  },
+  {
+   "title": "몰려도 버티게",
+   "time": "계속",
+   "goal": "폭주를 큐로 받고, 느린 의존을 끊고, 장애를 사후 정리한다.",
+   "resources": [
+    "msa-patterns",
+    "release-it",
+    "cloud-patterns",
+    "sys-design",
+    "dora"
+   ],
+   "task": "'겨울 아침 10배' 시나리오로 접수를 큐로 바꾸고, 외부 호출에 시간 제한·차단기를 단 뒤, 일부러 낸 장애 하나를 원인·영향·재발 방지 한 장으로 정리한다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 1인 평균 급여 **1억 3,100만원**(2025), 공공데이터 집계 평균 **약 7,708만원** — 기준이 달라 차이가 크고, 이 자리는 경력 3년 이상이라 경력에 따라 협의한다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다. 생산직을 포함한 전 직원 값 [23]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일이 적혀 있지 않다 [24]"
+   },
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 초봉. 이 자리는 경력 3년 이상 채용이라 출발점 참고용이다 [24]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값 [23]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 달라 섞어 비교하지 않는다. 경력직 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "임신기 근로시간 단축",
+    "detail": "임신 12주 이내·36주 이상 하루 2시간 단축"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [25]. 공고에는 복지 칸이 없고 [1], 주택·학자금·차량 구입 지원 같은 금액 항목은 공식 자료에서 확인하지 못해 뺐다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 양재 본사(현대기아자동차빌딩)",
+  "address": "서울특별시 서초구 헌릉로 12 (양재동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%ED%97%8C%EB%A6%89%EB%A1%9C%2012",
+  "near": "신분당선 양재시민의숲역 근처 {추론}",
+  "note": "공고의 근무지는 '양재본사'이고 [1], 같은 공고의 이전 판은 근무지를 헌릉로 12 현대기아자동차빌딩으로 적었다 [2]. 지속가능성 보고서의 본사 소재지도 같다 [25]."
+ }
+}
