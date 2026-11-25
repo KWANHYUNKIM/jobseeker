@@ -1,0 +1,1174 @@
+{
+ "id": "coupang-pay-senior-backend-test-ops",
+ "company": "쿠팡페이",
+ "role": "Senior Back-end Engineer (Pay Test Operations)",
+ "team": "Coupang Pay Tech · Pay Test Operations",
+ "jobs": [
+  "ats-greenhouse:coupang:8212656"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "제목은 'Pay Test Operations'지만 본문의 업무는 **결제 서비스들이 올라타는 공용 바닥** — 기반 플랫폼, 무중단 인프라, 이중화·재해복구(HA/DR), CI/CD — 입니다.[1] 본문 문장은 같은 계열의 앞선 Staff Fintech Platform 공고와 거의 같습니다.[3]",
+  "env": "쿠팡 그룹 인프라는 AWS 위에 있고[6], 이 공고는 CI/CD 를 **클라우드와 자체 서버(온프레미스)를 함께** 보라고 적었습니다.[1] 쿠팡페이는 전자금융업자라 재해복구 복구목표 3시간·변경 통제 같은 **전자금융감독규정** 아래서 일합니다.[11][12]",
+  "oneline": "경력 5년 이상(백엔드 설계 3년 이상)의 개발자가 **'결제가 멈추지 않게, 테스트·배포가 같은 길로 돌게'** 바닥을 만드는 자리. 팀 이름에 '테스트'가 들어간 이유는 본문에 없어서, 면접에서 물어볼 첫 질문입니다. {추론}"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "비즈니스 도메인팀의 서비스를 위한 기반 플랫폼 서비스 설계, 구축 및 운영",
+   "short": "결제·정산 같은 업무 팀이 같이 쓰는 부품(서비스 틀·배포 길·설정·관찰 도구)을 만들고 굴리는 일.",
+   "why": "쿠팡은 2013년 한 덩어리 서버를 작은 서비스로 나누면서 모든 서비스가 같이 쓰는 공통 프레임워크(Vitamin Framework)와 메시지 큐를 직접 만들었습니다.[7] 서비스가 많아지면 팀마다 배포·모니터링을 따로 만들게 되는데, CNCF(클라우드 네이티브 재단) 백서는 이를 막는 것을 플랫폼의 목적으로 봅니다 — '여러 앱에 일관된 경험을 주는 공통 능력의 묶음'.[15] 같은 쿠팡페이의 최근 Platform Engineer 공고도 첫 업무로 비즈니스 서비스를 위한 플랫폼 서비스를 적었습니다.[2]",
+   "actually": {
+    "intro": "CNCF 백서가 꼽은 플랫폼의 공통 능력 가운데 이 공고 업무에 닿는 것입니다. 쿠팡페이가 무엇을 이미 갖췄는지는 공개되지 않았습니다.[15]",
+    "items": [
+     "**정해진 길(golden path)** — 새 서비스를 템플릿 하나로 만들면 빌드·배포·로그·지표가 처음부터 붙어 나온다.[15]",
+     "**공통 프레임워크** — 모든 서비스가 같은 방식으로 로그를 찍고 지표를 내고 다른 서비스를 부르게 하는 라이브러리.[7]",
+     "**셀프서비스** — DB·메시지 큐·클러스터 자리를 요청서 대신 설정 파일 한 장으로 받게.[15]",
+     "**비밀값 관리** — DB 비밀번호·서명 키를 코드 밖 금고에서 꺼내 쓰게. 2025년 쿠팡 개인정보 유출 보도에서는 인증 서명 키 관리가 쟁점으로 꼽혔다(수사 결과 전 보도 기준).[14]",
+     "**성과 재기** — 활성 사용자·만족도·첫 배포까지 걸린 시간, DORA 배포 지표.[15][24]"
+    ]
+   },
+   "how_far": "무엇을 공통으로 뺄지는 팀이 정하고, 이 자리는 **부품 하나를 끝까지 만들어 다른 팀이 실제로 쓰게** 하는 것이 최소선입니다. {추론} '운영'까지 적혀 있어 만든 뒤의 장애도 이 자리가 받습니다.[1]",
+   "refs": [
+    1,
+    2,
+    7,
+    14,
+    15,
+    24
+   ],
+   "study": [
+    "cncf-platforms",
+    "platform-eng-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Zero downtime 을 달성하기 위한 쿠팡 Fintech 차세대 infrastructure & platform 의 설계 및 구현",
+   "short": "배포·서버 교체·DB 작업 중에도 결제가 한 번도 끊기지 않게 인프라를 새로 짜는 일.",
+   "why": "쿠팡은 2017년 인프라를 AWS 로 옮길 때 서비스를 나눠 둔 덕에 서비스 중단 없이 옮겼고, 하루 약 100번 배포했다고 소개했습니다.[6] 결제는 멈추면 바로 돈 문제라 '무중단'이 목표로 적혀 있습니다.[1] 쿠팡페이 대만 법인은 2024년 광군제(11월 11일 할인 행사)에 평소의 약 **20배** 트래픽을 받았다고 했습니다.[5]",
+   "actually": {
+    "items": [
+     "**굴려 바꾸기(rolling update)** — 새 버전 Pod 를 조금씩 띄우고 옛 것을 조금씩 내린다. 쿠버네티스 기본값은 더 띄울 수 있는 수(maxSurge)·내려가도 되는 수(maxUnavailable) 각 25% 이고, 앞은 올림·뒤는 내림으로 센다.[33]",
+     "**바꾸는 중 보호** — 노드 교체 때 결제 서버가 한꺼번에 내려가지 않게 PodDisruptionBudget 을 건다. 단, 서버가 갑자기 죽는 일은 막지 못한다.[22]",
+     "**블루-그린** — 새 버전을 옆에 통째로 띄우고 트래픽을 한 번에 넘긴다. 쿠팡은 MSA 전환 무렵부터 이 방식의 배포 시스템을 썼다.[7]",
+     "**자동 확장** — 지표를 보고 서버 수를 늘리고 줄이는 HPA. 행사처럼 예고된 날은 미리 늘려 둔다.[31] {추론}",
+     "**진행 중인 결제** — 서버를 내릴 때 처리 중인 요청을 끝내고 내려가게(정상 종료) 하지 않으면 '승인됐는지 모르는' 결제가 남는다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "굴려 바꾸기 중 늘 살아 있는 Pod 수 (직접 돌린 출력)",
+     "body": "기본값 25%/25% 일 때입니다. Pod 가 3개면 내려가도 되는 수가 0 으로 내림돼, 하나씩 더 띄운 뒤에야 옛 것을 내립니다.[33]",
+     "lang": "python",
+     "code": "import math\n\ndef rollout(replicas, surge=25, unavail=25):\n    s = math.ceil(replicas * surge / 100)    # maxSurge 는 올림\n    u = math.floor(replicas * unavail / 100)  # maxUnavailable 은 내림\n    print(f\"replicas {replicas}: 최대 {replicas + s}개까지 띄우고, 최소 {replicas - u}개는 늘 받는다\")\n\nfor n in (3, 4, 10):\n    rollout(n)\n# replicas 3: 최대 4개까지 띄우고, 최소 3개는 늘 받는다\n# replicas 4: 최대 5개까지 띄우고, 최소 3개는 늘 받는다\n# replicas 10: 최대 13개까지 띄우고, 최소 8개는 늘 받는다"
+    }
+   ],
+   "how_far": "'차세대'라 지금 것을 고치는 것보다 새 구조를 그리는 쪽입니다.[1] 최소선은 **배포·노드 교체·DB 전환 셋 중 하나를 결제 요청을 안 끊고 해 보고, 그동안 실패한 요청 수를 숫자로 보인 경험**입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    7,
+    22,
+    31,
+    33
+   ],
+   "study": [
+    "book-k8s",
+    "k8s-up",
+    "k8s-deploy"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "HA/DR Architecture 설계 (clustering, replication 등)를 주도 및 구현",
+   "short": "서버 몇 대·데이터센터 하나가 멈춰도 결제를 이어 가게(HA), 통째로 멈추면 3시간 안에 되살리게(DR) 설계하는 일.",
+   "why": "2025년 2월 개정된 전자금융감독규정은 재해복구센터를 갖춰야 하는 곳에 **연간 전자금융거래 총액 2조 원 이상인 전자금융업자**를 더했고, 이 의무는 2026년 2월 5일부터 적용됩니다.[11][12] 계기는 2022년 카카오 데이터센터 화재였습니다.[11] 쿠팡페이가 밝힌 결제 규모(연 수십조 원)[8]로 보면 이 기준에 해당할 것으로 보입니다. {추론} 공고는 이 설계를 '주도'하라고 적었습니다.[1]",
+   "actually": {
+    "intro": "괄호 속 두 낱말과 규정의 숫자입니다.",
+    "items": [
+     "**클러스터링** — 여러 노드가 한 몸처럼 돌며 하나가 죽으면 나머지가 받는다. 누가 주인(리더)인지 정하는 방식은 보통 **과반 투표**라 노드는 홀수로 둔다 — 3대면 1대, 5대면 2대까지 죽어도 된다.[34]",
+     "**복제(replication)** — 데이터를 다른 곳에 계속 베낀다. 동기 복제는 잃는 데이터가 없지만 느리고, 비동기 복제는 빠르지만 마지막 몇 초를 잃을 수 있다(RPO).[18]",
+     "**규정의 숫자** — 핵심업무 복구목표시간(RTO) 3시간 이내, 재해복구센터 전환 훈련 매년 1회 이상, 주요 장비 이중화, 전산실·재해복구센터는 국내에.[12]",
+     "**네 가지 DR 방식** — 백업 후 복원 → 파일럿 라이트(데이터만 늘 복제) → 웜 스탠바이(작게 줄인 복사본이 늘 돎) → 멀티 사이트 액티브/액티브(복구 시간 거의 0). 뒤로 갈수록 비싸다.[18]",
+     "**가용성 계산** — 직렬로 거치는 단계는 가용성이 곱해져 내려가고, 이중화하면 '둘 다 죽을 확률'만 남는다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "과반 투표 클러스터는 몇 대까지 죽어도 되나 (직접 돌린 출력)",
+     "body": "4대는 3대와 버티는 수가 같아서 짝수로 늘리는 것은 이득이 없습니다 — etcd 문서의 표와 같은 결과입니다.[34]",
+     "lang": "python",
+     "code": "for n in range(1, 8):\n    majority = n // 2 + 1\n    print(f\"노드 {n}대: 과반 {majority}대 필요, {n - majority}대까지 죽어도 된다\")\n# 노드 1대: 과반 1대 필요, 0대까지 죽어도 된다\n# 노드 2대: 과반 2대 필요, 0대까지 죽어도 된다\n# 노드 3대: 과반 2대 필요, 1대까지 죽어도 된다\n# 노드 4대: 과반 3대 필요, 1대까지 죽어도 된다\n# 노드 5대: 과반 3대 필요, 2대까지 죽어도 된다\n# 노드 6대: 과반 4대 필요, 2대까지 죽어도 된다\n# 노드 7대: 과반 4대 필요, 3대까지 죽어도 된다"
+    }
+   ],
+   "how_far": "어느 DR 방식을 쓸지는 비용과 규정을 놓고 회사가 정합니다. 이 자리는 **설계안을 내고, 고른 방식이 실제로 3시간 안에 돌아오는지 훈련으로 증명하는 일**을 이끕니다.[1][12] 훈련 결과는 연 1회 비상대응훈련으로 금융위원회에 보고됩니다.[12]",
+   "refs": [
+    1,
+    8,
+    11,
+    12,
+    18,
+    19,
+    34
+   ],
+   "study": [
+    "aws-dr",
+    "aws-wa-rel",
+    "etcd-faq",
+    "efsr",
+    "fsc-dr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CI/CD DevOps 도구 고도화 및 최적화(considering both cloud and on-premise environments)",
+   "short": "빌드·테스트·배포 길을 더 빠르고 덜 깨지게 다듬되, AWS 위 서비스와 자체 서버 위 서비스를 둘 다 태우는 일.",
+   "why": "쿠팡 그룹은 2017년 인프라를 100% AWS 로 옮겼지만[6], 이 공고는 온프레미스(자체 서버)도 함께 고려하라고 적었습니다.[1] 금융 규정은 전산실·재해복구센터의 국내 설치와 클라우드 이용 전 절차(중요도 평가·정보보호위원회 의결)를 요구해, 모든 것을 같은 클라우드에 두기 어렵습니다.[12] 규정은 또 프로그램의 등록·변경·폐기 절차와 중요 작업의 책임자 이중확인을 요구합니다.[12] 개발 도구를 어디에 둘지도 망분리 규제에 걸리는데, 금융위원회는 이를 연구·개발 환경부터 풀어 가는 로드맵을 냈습니다.[13]",
+   "actually": {
+    "items": [
+     "**테스트를 파이프라인에** — 같은 쿠팡페이의 테스트 자동화(SDET) 공고는 자동 테스트를 CI/CD 에 붙이고 결제 실패·취소·환불 흐름까지 검증한다고 적었다.[10] 이 공고 팀 이름의 'Test'와 닿는 칸으로 보인다. {추론}",
+     "**두 곳에 같은 길** — 클라우드와 자체 서버에 같은 파이프라인 정의로 배포되게. 서버마다 손으로 다른 스크립트를 두지 않는다. {추론}",
+     "**승인 기록을 파이프라인이** — 누가 무엇을 언제 승인해 운영에 반영했는지 자동으로 남아야 규정의 프로그램 통제·이중확인을 사람 손 없이 지킨다.[12] {추론}",
+     "**조금씩 내보내기** — 새 버전에 트래픽 일부만 보내 보고(카나리) 나쁘면 되돌린다. 서비스 메시는 비율로 트래픽을 나눌 수 있다.[23]",
+     "**최적화를 재는 것** — DORA 다섯 지표(변경 리드타임·배포 빈도·실패 배포 복구 시간·변경 실패율·배포 재작업률).[24]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "결제 서비스 파이프라인의 보통 모양 {추론}[10][12][23]",
+     "steps": [
+      "커밋 · 코드 리뷰",
+      "빌드·단위 테스트 · 이미지 만들기",
+      "검사 · 의존성 취약점·비밀값 유출",
+      "통합 테스트 · 결제 실패·취소·환불 흐름",
+      "승인 기록 · 누가 운영 반영을 승인했나",
+      "카나리 · 일부 트래픽, 오류율 비교",
+      "전체 반영 · 클라우드·자체 서버 둘 다"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "'고도화'라 이미 있는 길을 더 낫게 만드는 일입니다.[1] 최소선은 **파이프라인을 설계해 여러 팀이 옮겨 오게 하고, 빌드 시간·실패율 같은 숫자로 효과를 보인 경험**입니다.[24] {추론}",
+   "refs": [
+    1,
+    6,
+    10,
+    12,
+    13,
+    23,
+    24
+   ],
+   "study": [
+    "dora",
+    "istio-docs",
+    "efsr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "best practice 를 발굴하고 팀에 전파",
+   "short": "잘 된 방식(장애 회고·배포 규칙·설계 틀)을 찾아 글과 도구로 남겨, 다른 사람도 같은 수준으로 하게 하는 일.",
+   "why": "플랫폼은 도구만 깔아서는 쓰이지 않습니다 — CNCF 백서는 문서·템플릿·사용자 피드백까지 플랫폼의 일로 봅니다.[15] 구글 SRE 책은 장애 뒤 사후 분석을 남을 탓하지 않는 글로 남겨 조직이 같이 배우게 하라고 권합니다.[16]",
+   "actually": {
+    "items": [
+     "**사후 분석 글** — 장애마다 무슨 일이·왜·무엇을 바꿨나를 정해진 틀로 남긴다.[16]",
+     "**규칙을 도구로** — '배포 전 이것을 확인' 같은 규칙은 글로만 두지 않고 파이프라인 검사로 바꾼다. {추론}",
+     "**정해진 길 문서** — 새 서비스는 이 템플릿으로, 이 지표·알림을 기본으로.[15]"
+    ]
+   },
+   "how_far": "Senior 의 최소선은 **자기가 만든 방식을 다른 팀이 따라 하게 만든 사례 하나**를 말할 수 있는 것입니다. {추론}",
+   "refs": [
+    15,
+    16
+   ],
+   "study": [
+    "sre-ko",
+    "platform-eng-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "팀 플레이어",
+   "short": "플랫폼은 남의 팀이 써야 성공이라, 요구를 듣고 같이 맞춰 가는 사람이어야 해서.",
+   "why": "이 자리의 고객은 비즈니스 도메인 팀입니다.[1] 쿠팡페이는 2023년부터 쿠팡파이낸셜과 한 층에서 'Fintech One Team'으로 일한다고 소개했습니다.[4]",
+   "how_far": "면접 두 단계 가운데 '핵심 역량 인터뷰'가 따로 있습니다.[1] 다른 팀과 의견이 갈렸을 때 어떻게 합의했는지를 구체적인 일로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Unix/Linux 기반의 5년 이상의 소프트웨어 엔지니어링 경력",
+   "short": "서비스도 컨테이너도 리눅스 위에서 돌고 장애도 리눅스 안에서 뒤져서 — 그 위에서 5년 넘게 만들어 본 사람.",
+   "why": "쿠팡페이 서비스는 쿠팡 그룹의 AWS 인프라 위에서 돕니다.[6] 같은 팀의 최근 Senior Platform 공고는 '3년 이상의 백엔드 시스템 설계·개발', Staff 공고는 7년 이상을 적었습니다.[2] 이 공고는 경력 전체 5년에 설계 3년(다음 줄)을 따로 적었습니다.[1]",
+   "level": {
+    "basic": "셸·프로세스·파일 권한·로그 보기·패키지·cron",
+    "work": "네트워크(포트·DNS·TLS)·파일 디스크립터·메모리·CPU 사용 읽기, 서비스 하나를 운영",
+    "team": "컨테이너 격리(namespace·cgroup), 장애 때 노드에 들어가 원인 좁히기"
+   },
+   "how_far": "최소선은 **리눅스 서버 위에서 돈 서비스를 직접 만들고 그 장애를 받아 본 5년**입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    6
+   ],
+   "study": [
+    "book-docker",
+    "book-http"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "3년 이상의 backend architecture 설계 및 구현 경험",
+   "short": "서비스를 어떻게 나누고 무엇에 저장하고 어떻게 이중화할지를 직접 정해 본 3년 — 업무의 '주도'를 맡으려면 필요해서.",
+   "why": "업무 셋째 줄은 HA/DR 설계를 '주도'하라고 적었습니다.[1] 쿠팡 주문 시스템의 엔지니어들은 후배에게 고가용성·데이터 유실 방지·비동기 통신을 공부하라고 조언했습니다.[29]",
+   "actually": {
+    "items": [
+     "**나누기** — 한 서비스가 맡을 범위와 다른 서비스와 이야기하는 방식(동기 호출·메시지)을 정한다.[7]",
+     "**저장과 이벤트** — DB 저장과 메시지 발행이 따로 실패하지 않게 하는 아웃박스 패턴 같은 결정.[25]",
+     "**실패 설계** — 하나가 느려질 때 다른 서비스가 같이 무너지지 않게 시간 제한·재시도·차단을 정한다.[23]"
+    ]
+   },
+   "how_far": "'설계 및 구현'이라 그림만 그린 것으로는 모자랍니다. 최소선은 **스스로 설계한 구조를 직접 만들어 운영하고, 그 결정이 왜 맞았는지(또는 틀렸는지) 설명할 수 있는 것**입니다. {추론}",
+   "refs": [
+    1,
+    7,
+    23,
+    25,
+    29
+   ],
+   "study": [
+    "msa-patterns",
+    "outbox-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong coding skill - OOP and scripting language",
+   "short": "서비스·라이브러리는 객체지향 언어(Java 등)로, 운영 자동화는 스크립트(Python·셸)로 둘 다 짤 줄 알아야 해서.",
+   "why": "쿠팡페이 결제 서버 공고들은 Java/Kotlin·Spring 을 요구합니다.[28] 이 공고 우대에도 'Strong Java'가 있습니다.[1] 한편 플랫폼 일은 배포·점검·로그 분석 같은 반복 작업이 많아 스크립트로 자동화하는 일이 따라옵니다. {추론}",
+   "level": {
+    "basic": "한 언어로 파일·HTTP·JSON 을 다루는 작은 도구",
+    "work": "클래스로 책임을 나눈 테스트 있는 도구, 오류 처리와 재시도",
+    "team": "다른 팀이 가져다 쓰는 공통 라이브러리를 버전을 붙여 관리"
+   },
+   "examples": [
+    {
+     "title": "로그에서 서비스별 오류율을 세는 작은 스크립트 (가상 로그, 직접 돌린 출력)",
+     "body": "읽기(feed)와 판정(report)을 한 클래스에 나눠 두면 같은 규칙을 다른 로그에도 붙일 수 있습니다. 문턱 30% 는 가상 값입니다. {추론}",
+     "lang": "python",
+     "code": "import re\nfrom collections import Counter\n\nLOG = \"\"\"2026-11-25T10:00:01 svc=pay-approve status=200 ms=41\n2026-11-25T10:00:01 svc=pay-approve status=500 ms=3002\n2026-11-25T10:00:02 svc=pay-cancel status=200 ms=55\n2026-11-25T10:00:02 svc=pay-approve status=200 ms=38\n2026-11-25T10:00:03 svc=pay-cancel status=503 ms=1201\n2026-11-25T10:00:03 svc=pay-approve status=200 ms=47\"\"\"\n\nclass ErrorRate:\n    pat = re.compile(r\"svc=(\\S+) status=(\\d+)\")\n\n    def __init__(self):\n        self.total, self.bad = Counter(), Counter()\n\n    def feed(self, line):\n        m = self.pat.search(line)\n        if not m:\n            return\n        svc, code = m.group(1), int(m.group(2))\n        self.total[svc] += 1\n        self.bad[svc] += code >= 500\n\n    def report(self, limit=0.3):\n        for svc in sorted(self.total):\n            r = self.bad[svc] / self.total[svc]\n            print(f\"{svc:<12} {self.bad[svc]}/{self.total[svc]} = {r:.0%} {'알림' if r > limit else '정상'}\")\n\ner = ErrorRate()\nfor line in LOG.splitlines():\n    er.feed(line)\ner.report()\n# pay-approve  1/4 = 25% 정상\n# pay-cancel   1/2 = 50% 알림"
+    }
+   ],
+   "how_far": "최소선은 **한 언어로 남이 쓰는 도구를 만들어 유지해 본 것 + 반복 작업 하나를 스크립트로 없앤 것**입니다. {추론}",
+   "refs": [
+    1,
+    28
+   ],
+   "study": [
+    "book-thread"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "장애 관리 및 모니터링 기능이 있는 대규모 운영 시스템 경험",
+   "short": "결제가 '지금 정상인가'를 지표·로그로 보고, 이상하면 사람을 깨우고, 끝까지 처리하는 체계 안에서 일해 본 경험.",
+   "why": "쿠팡페이는 결제를 24시간 감시한다고 밝혔습니다.[8] 같은 팀 최근 공고는 Grafana·Loki·Prometheus 를 이름으로 적었습니다.[2] 쿠팡페이 채용 안내는 팀에 따라 교대·휴일·야간 근무가 있을 수 있다고 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**응답 시간** — 평균이 아니라 p95·p99 를 본다. 여러 서버를 합쳐 보려면 histogram 으로 모으고 histogram_quantile() 로 계산한다. 백분위끼리 평균 내는 것은 틀린 방법이다.[20]",
+     "**로그** — Loki 는 본문은 색인하지 않고 라벨만 색인해, 라벨을 어떻게 붙이느냐가 검색 속도와 비용을 가른다.[21]",
+     "**알림** — SLO 99.9% 면 30일 오류 예산은 43.2분. 1시간 동안 14.4배 속도로 쓰면(예산의 2%) 사람을 깨운다.[17]",
+     "**장애 관리** — 대시보드 → 로그 → 원인 → 되돌리기, 그리고 다시 안 나게 하는 사후 분석.[16]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "오류 예산과 소진 속도 (직접 돌린 출력)",
+     "body": "구글 SRE 워크북의 권장 알림 세 줄을 계산으로 확인한 것입니다.[17]",
+     "lang": "python",
+     "code": "slo = 0.999\nminutes_30d = 30 * 24 * 60\nbudget_min = minutes_30d * (1 - slo)\nprint(f\"30일 오류 예산: {budget_min:.1f}분\")\nfor rate, window_h in [(14.4, 1), (6, 6), (1, 72)]:\n    used = rate * window_h * 60 * (1 - slo) / budget_min\n    print(f\"burn {rate:>4} x {window_h:>2}h -> 예산 {used:.0%} 소진\")\n# 30일 오류 예산: 43.2분\n# burn 14.4 x  1h -> 예산 2% 소진\n# burn    6 x  6h -> 예산 5% 소진\n# burn    1 x 72h -> 예산 10% 소진"
+    }
+   ],
+   "how_far": "대시보드를 본 적 있는 것과 다릅니다. 최소선은 **알림을 받아 장애를 끝까지 처리하고 사후 분석을 써 본 경험**입니다. 우대 마지막 줄에 같은 문장이 한 번 더 있어, 이 팀이 특히 보는 경험으로 읽힙니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    17,
+    20,
+    21
+   ],
+   "study": [
+    "prom-docs",
+    "loki-docs",
+    "sre-alert",
+    "o11y-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "조직이 확장되고 시스템이 복잡해지면서 발생하는 문제들을 겪고 구조적으로 해결해 본 경험",
+   "short": "서비스·팀이 늘며 제각각이 된 것(배포 방식·설정·모니터링)을 사람 손이 아니라 구조로 정리해 본 경험.",
+   "why": "쿠팡 자체가 이 경험의 사례입니다 — 2013년 한 덩어리 서버가 커지자 서비스를 나누는 구조로 바꿨습니다.[7] 플랫폼 팀은 그 다음 단계, 나뉜 서비스들이 다시 제각각이 되는 것을 정리하는 자리입니다.[15] {추론} 같은 팀 최근 공고는 이 문장을 우대로 두었는데, 이 공고는 자격요건에 두었습니다.[1][2]",
+   "actually": {
+    "items": [
+     "팀마다 다른 배포 스크립트를 표준 파이프라인 하나로 옮긴 경험. {추론}",
+     "'이 서비스 주인이 누구인가'를 서비스 목록으로 정리해 장애 연락을 빠르게 한 경험. {추론}",
+     "플랫폼을 강요하지 않고 쓰고 싶게 만들어 옮겨 오게 한 경험 — 백서가 말하는 제품으로서의 플랫폼.[15]"
+    ]
+   },
+   "how_far": "면접에서는 '무엇이 복잡했고, 무엇을 구조로 바꿨고, 숫자가 어떻게 달라졌나'를 순서대로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    15
+   ],
+   "study": [
+    "platform-eng-ko",
+    "cncf-platforms"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터 공학 또는 관련 기술 분야의 학사 학위를 소지한 자",
+   "short": "쿠팡페이 개발 공고에 공통으로 붙는 학력 조건이라서.",
+   "why": "같은 팀의 최근 Platform 공고에도 같은 뜻의 줄이 있습니다.[2] 공고에는 '관련 기술 분야'의 범위가 적혀 있지 않습니다.[1]",
+   "how_far": "전공이 다르면 지원 전에 확인하는 것이 안전합니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "빠르게 변화하는 환경에서 여러 경쟁 우선 순위를처리 할 수 있는 능력",
+   "short": "할 일이 넘칠 때 '무엇을 먼저, 무엇을 안 할지'를 근거(장애 기록·오류 예산·규정 시행일)로 고르는 능력.",
+   "why": "쿠팡페이는 2026년 결제를 로켓페이로 바꿔 쿠팡 밖 가맹점으로 넓히고 있고[8], 재해복구센터 의무도 2026년 2월부터 적용됐습니다.[11] 새 사업과 규정 일정이 겹치는 시기입니다. {추론}",
+   "actually": {
+    "items": [
+     "**오류 예산을 우선순위 도구로** — 예산이 남으면 새 기능, 다 쓰면 안정화가 먼저라는 규칙을 미리 합의해 두면 매번 다툴 필요가 없다.[16]",
+     "**문제를 숫자로 쪼개기** — '배포가 느리다'를 '빌드 대기 12분 중 9분이 의존성 받기'처럼. {추론}"
+    ]
+   },
+   "refs": [
+    8,
+    11,
+    16
+   ],
+   "study": [
+    "sre-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Cloud background (docker, K8S and AWS/ Google/ Azure)",
+   "short": "쿠팡페이 서비스가 컨테이너로 클라우드 위에서 돌아서 — 플랫폼은 그 바닥을 다룬다.",
+   "why": "쿠팡 그룹은 2017년 인프라를 100% AWS 로 옮겼습니다.[6] 같은 팀 최근 공고에서는 Docker·Kubernetes·AWS 가 자격요건으로 올라왔습니다.[2] 이 공고는 세 클라우드를 나란히 적어, 특정 클라우드 경험보다 개념을 보는 것으로 읽힙니다. {추론}",
+   "level": {
+    "basic": "Dockerfile 로 이미지 만들기, Deployment·Service·ConfigMap",
+    "work": "자원 요청·제한, 상태 검사(probe), HPA, PDB, 클라우드 네트워크(VPC·보안 그룹)·권한(IAM)",
+    "team": "결제를 안 끊고 클러스터 업그레이드, 여러 팀이 쓰는 클러스터의 권한·자원 나누기"
+   },
+   "how_far": "자격증보다 **서비스 하나를 컨테이너로 만들어 쿠버네티스에 올리고, 확장·롤백·장애를 겪어 본 경험**이 최소선입니다. {추론}",
+   "refs": [
+    2,
+    6
+   ],
+   "study": [
+    "book-docker",
+    "book-k8s",
+    "k8s-up"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "API Gateway, Service Mesh 를 company-wide 적용 경험",
+   "short": "서비스 사이를 오가는 요청의 길(라우팅·시간 제한·재시도·트래픽 나누기)을 회사 전체에 한 번에 깔아 본 경험.",
+   "why": "같은 문장이 앞선 Staff Fintech Platform 공고에도 있었습니다.[3] 게이트웨이·메시는 업무 넷째 줄의 '조금씩 내보내기'와 무중단 배포를 실어 나르는 수단입니다.[23] {추론} 'company-wide'라 한 팀에 깔아 본 것보다 여러 팀을 옮겨 오게 한 경험을 봅니다. {추론}",
+   "actually": {
+    "intro": "Istio 를 예로 든 개념입니다. 쿠팡페이가 어떤 제품을 쓰는지는 공개되지 않았습니다.[23]",
+    "items": [
+     "**API Gateway** — 바깥(앱·가맹점)에서 들어오는 요청의 입구. 인증·요청 수 제한·라우팅. {추론}",
+     "**VirtualService** — 요청을 어느 버전으로 보낼지의 규칙. 비율로 나눌 수 있다.[23]",
+     "**DestinationRule** — 보낸 뒤의 정책 — 버전 묶음·부하 분산·동시 연결 한도(서킷 브레이커).[23]",
+     "**기본값 주의** — HTTP 재시도는 기본 2번이라 결제 승인 경로에서는 중복 결제를 부를 수 있다. 결제 경로는 명시적으로 정한다.[23]"
+    ]
+   },
+   "how_far": "설치해 본 것보다 **회사 전체로 넓히며 겪은 문제(시간 제한 연쇄, 재시도 폭주, 인증서 갱신, 팀 설득)를 설명할 수 있는 것**이 핵심으로 보입니다. {추론}",
+   "refs": [
+    3,
+    23
+   ],
+   "study": [
+    "istio-docs",
+    "msa-patterns"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Strong Java, distributed systems, micro services, messaging services",
+   "short": "플랫폼이 떠받치는 결제 서비스들이 Java 로, 나뉘어, 메시지로 이야기해서 — 그 구조를 알아야 바닥을 맞게 깐다.",
+   "why": "쿠팡페이 결제 서버 공고는 Java/Kotlin·Spring·MSA 를 요구합니다.[28] 쿠팡은 2013년부터 서비스를 나눴고 사내 메시지 큐(Vitamin MQ)까지 만들었습니다.[7] 쿠팡페이 Fintech Data Platform 팀은 Spark·Flink 로 주문·결제 데이터를 실시간 분석해 이상거래탐지를 돌립니다.[9]",
+   "actually": {
+    "items": [
+     "**전달 보장** — 메시지는 '최대 한 번·최소 한 번·정확히 한 번' 중 무엇을 보장하나에 따라 중복이나 유실이 생긴다.[30]",
+     "**저장과 발행을 함께** — 아웃박스 패턴: DB 에 이벤트를 같이 저장하고 따로 보낸다. 대신 중복 발행이 생길 수 있다.[25]",
+     "**플랫폼의 몫** — 메시지 큐를 각 팀이 셀프서비스로 받고, 밀린 메시지 수를 지표로 보게 한다.[15] {추론}"
+    ]
+   },
+   "refs": [
+    7,
+    9,
+    15,
+    25,
+    28,
+    30
+   ],
+   "study": [
+    "msa-patterns",
+    "book-kafka",
+    "kafka-docs",
+    "book-thread"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "애자일소프트웨어 방법론이 익숙하신 분",
+   "short": "짧게 만들고 써 보게 하고 고치는 방식으로 일해서 — 플랫폼의 고객은 사내 개발팀이다.",
+   "why": "쿠팡페이 결제 지갑 팀 소개 글은 목표를 OKR(목표와 핵심 결과)로 세우고 엔지니어링과 안정성을 함께 맞춘다고 적었습니다.[32] 플랫폼도 사내 개발자의 피드백으로 고쳐 가는 제품입니다.[15]",
+   "how_far": "용어보다 **짧은 주기로 내놓고 사용자(사내 개발자) 반응으로 고쳐 본 경험**을 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    15,
+    32
+   ],
+   "study": [
+    "platform-eng-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "장애 관리 및 모니터링 기능이 있는 대규모 운영 시스템 경험이 있는 분",
+   "short": "자격요건 다섯째 줄과 같은 문장 — 그만큼 이 팀이 장애를 받아 본 경험을 무겁게 본다는 신호.",
+   "why": "자격요건에 같은 뜻의 줄이 이미 있습니다.[1] 두 번 적힌 이유는 공고에 없습니다. 자격요건은 '경험이 있다', 우대는 '더 큰 규모·더 깊은 역할(장애 책임자·당번 체계 설계)'로 읽는 것이 자연스럽습니다. {추론}",
+   "actually": {
+    "items": [
+     "**한 단계 위** — 알림 규칙과 당번 순서를 직접 설계하고, 장애 등급·연락 체계를 정한 경험. {추론}",
+     "**사후 분석을 이끈 경험** — 원인을 사람이 아니라 구조에서 찾아 재발을 막은 사례.[16]"
+    ]
+   },
+   "how_far": "자격요건 줄의 최소선을 넘어 **장애 대응을 이끌어 본(지휘·회고 주관) 경험**이 있으면 이 우대를 채웁니다. {추론}",
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "sre-ko",
+    "sre-alert"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "남이 쓰는 도구를 만들고, 그 사람들이 편해지는 걸 보는 게 재밌는 백엔드 개발자",
+   "'결제가 안 끊기게'를 숫자(가용성·RTO·실패 요청 수)로 증명하는 게 즐거운 사람[12][19]",
+   "장애가 났을 때 대시보드와 로그를 먼저 여는 사람[17][20]",
+   "테스트·배포를 같은 길로 묶는 일에 관심 있는 사람 — 팀 이름이 'Test Operations'다[1]"
+  ],
+  "hard": [
+   "팀 이름과 본문 업무가 어긋나 있다 — 실제로 테스트 환경 일이 얼마나 되는지는 면접에서 확인해야 한다 {추론}",
+   "결제 장애의 무게가 커 당번 부담이 있을 수 있다 — 팀에 따라 교대·휴일·야간 근무가 있을 수 있다고 적혀 있다[4]",
+   "금융 규정 때문에 클라우드·도구 선택에 절차가 붙는다(클라우드 이용 전 평가·정보보호위원회 의결)[12]",
+   "눈에 보이는 서비스 기능을 만드는 일은 적다 — 성과가 '아무 일도 안 일어남'으로 나타난다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "팀 이름이 Pay Test Operations 인데, 이 팀이 맡은 테스트 환경·테스트 파이프라인은 지금 어떤 모습인가요? (지원자가 할 질문)",
+   "a": "본문에 테스트 이야기가 없어, 일의 비중을 확인하는 질문.[1][10]"
+  },
+  {
+   "q": "Pod 3개짜리 결제 서비스를 굴려 바꾸는 동안 늘 몇 개가 받고 있나요? 1개로 줄면요?",
+   "a": "maxSurge 올림·maxUnavailable 내림과 PDB.[22][33]"
+  },
+  {
+   "q": "DB 클러스터를 4대로 늘리자는 제안이 나왔습니다. 무엇이 좋아지나요?",
+   "a": "과반 투표 — 4대는 3대와 버티는 수가 같다.[34]"
+  },
+  {
+   "q": "리전 하나가 통째로 멈췄다고 하고 3시간 안에 결제를 되살리는 구성을 그려 보세요. 데이터는 얼마나 잃나요?",
+   "a": "재해복구센터 의무·RTO 3시간과 DR 네 방식, 비동기 복제의 RPO.[12][18]"
+  },
+  {
+   "q": "같은 파이프라인으로 AWS 와 자체 서버에 함께 배포하려면 무엇을 같게, 무엇을 다르게 두겠어요?",
+   "a": "업무 넷째 줄의 클라우드·온프레미스 조건과 국내 설치·클라우드 절차 규정.[1][12]"
+  },
+  {
+   "q": "서비스 메시에서 결제 승인 요청에 재시도를 켜면 무슨 일이 생길 수 있나요?",
+   "a": "기본 재시도 2번과 중복 결제.[23]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · [Coupang Pay] Senior Back-end Engineer (Pay Test Operations)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8212656",
+   "kind": "posting",
+   "date": "2026-09-18",
+   "note": "이 공고 — 처음 게시 2026-09-18, 갱신 2026-11-23. 부서 Coupang Pay Tech. 업무 5·자격요건 7·우대 6, 전형(서류 → 직무 적합성 인터뷰 → 핵심 역량 인터뷰 → 최종), 정규직·수습 12주, 근무지 Seoul. 연봉·복리후생 칸 없음, 본문에 테스트 이야기 없음"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · [Coupang Pay] Senior Platform Engineer (Fintech Developer Platform)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8222501",
+   "kind": "posting",
+   "note": "같은 회사 최근 플랫폼 공고 — 3년 이상, Docker·K8s·AWS 와 Grafana·Loki·Prometheus 를 자격요건으로. Staff 판(8212664)은 7년 이상"
+  },
+  {
+   "n": 3,
+   "title": "리멤버 · [쿠팡페이] Staff Back-end Engineer (Fintech Platform)",
+   "url": "https://career.rememberapp.co.kr/job/posting/308250",
+   "kind": "posting",
+   "note": "앞선 같은 계열 공고 — 이 공고와 업무 문장이 거의 같다(개발자 생산성 플랫폼, zero downtime, HA/DR, CI/CD 클라우드·온프레미스). 우대 K8S·API Gateway·Service Mesh. 10년 이상, 연봉 1억 5,000만~2억 6,000만원 표기. 게시일 확인 못 함"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Careers · Coupang Pay 팀 소개",
+   "url": "https://www.coupang.jobs/en/teams/coupang-pay/",
+   "kind": "company",
+   "note": "한국·대만, 쿠페이·와우카드·판매자 BaaS, 2023-06 잠실 오피스로 쿠팡파이낸셜과 한 층(Fintech One Team), FAQ(교대·휴일·야간 근무 가능성)"
+  },
+  {
+   "n": 5,
+   "title": "AWS 대만 · Coupang Pay 인터뷰(2025 AWS 금융 포럼)",
+   "url": "https://aws.amazon.com/tw/events/taiwan/interviews/coupangpay",
+   "kind": "company",
+   "note": "쿠팡페이 제품 책임자 — 2024 광군제 평소의 약 20배 트래픽, 재해 복구·데이터 보호"
+  },
+  {
+   "n": 6,
+   "title": "바이라인네트워크 · 쿠팡, IT인프라 전체를 AWS 클라우드로 이전했다",
+   "url": "https://byline.network/2017/08/10-6",
+   "kind": "news",
+   "date": "2017-08",
+   "note": "인프라 100% AWS 이전, MSA 덕에 무중단 이전, 하루 약 100번 배포"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Engineering · Integrating Coupang platform services to a microservice architecture",
+   "url": "https://medium.com/coupang-tech/행복을-찾기-위한-우리의-여정-a31fc2d5a572",
+   "kind": "company",
+   "date": "2018-05-25",
+   "note": "Vitamin 프로젝트 — 2013 MSA 전환 결정, Vitamin Framework·Vitamin MQ, 블루-그린 방식의 클라우드 배포 시스템. 본문은 자동 접속이 막혀 검색 요약으로 확인(앞선 쿠팡페이 플랫폼 풀이와 같은 근거)"
+  },
+  {
+   "n": 8,
+   "title": "뉴데일리 · 쿠팡, 로켓페이로 간편 결제 출사표",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2026/07/10/2026071000246.html",
+   "kind": "news",
+   "date": "2026-07-10",
+   "note": "쿠팡페이 → 로켓페이 개편, 외부 온라인 → 오프라인, 연 수십조 원 결제·24시간 감시"
+  },
+  {
+   "n": 9,
+   "title": "원티드 · [쿠팡페이] 백엔드 개발자 (Fintech Data Platform)",
+   "url": "https://www.wanted.co.kr/wd/392187",
+   "kind": "posting",
+   "note": "같은 회사 다른 팀 — Spark·Flink 실시간 주문·결제 분석, 이상거래탐지. 근무지 서울 광진구 아차산로 412 이스트폴 타워 A"
+  },
+  {
+   "n": 10,
+   "title": "원티드 · [Coupang Pay] Senior Backend Engineer (계약직)",
+   "url": "https://www.wanted.co.kr/wd/382456",
+   "kind": "posting",
+   "date": "2026-11-25",
+   "note": "제목과 달리 테스트 자동화(SDET) — 테스트 전략, Selenium·Appium·Playwright 자동화, 자동 테스트의 CI/CD 통합, API·E2E 테스트, 테스트 데이터 관리, 결제 실패·취소·환불 흐름. 근무지 아차산로 412 이스트폴 타워 A. 2026-11-25 모집중 확인"
+  },
+  {
+   "n": 11,
+   "title": "금융위원회 · 「전자금융감독규정」 일부개정고시안 금융위원회 의결",
+   "url": "https://www.fsc.go.kr/no010101/83954",
+   "kind": "reference",
+   "date": "2025-02-05",
+   "note": "수범사항 293 → 166개(원칙 중심), 재해복구센터 대상에 전자금융업자(총거래액 2조원 이상) 추가 — 2026-02-05 적용, 카카오 데이터센터 화재 계기"
+  },
+  {
+   "n": 12,
+   "title": "위키문헌 · 전자금융감독규정 (제2025-4호)",
+   "url": "https://ko.wikisource.org/wiki/전자금융감독규정_(제2025-4호)",
+   "kind": "reference",
+   "date": "2025-02-05",
+   "note": "제11·13·14조의2·15·23·27~30조 — 국내 설치, 최소 권한, 클라우드 절차, 망분리, RTO 3시간·연 1회 전환 훈련, 이중확인, 프로그램 통제"
+  },
+  {
+   "n": 13,
+   "title": "금융위원회 · 금융분야 망분리 개선 로드맵",
+   "url": "https://www.fsc.go.kr/po010101/82885",
+   "kind": "reference",
+   "date": "2024-08",
+   "note": "연구·개발 환경 개선, SaaS 범위 확대"
+  },
+  {
+   "n": 14,
+   "title": "바이라인네트워크 · 3370만건 고객정보 털린 쿠팡, 뭐가 문제였을까?",
+   "url": "https://byline.network/2025/12/1-1389/",
+   "kind": "news",
+   "date": "2025-12",
+   "note": "인증 서명 키 관리 미흡 보도 — 수사 결과 전 보도 기준"
+  },
+  {
+   "n": 15,
+   "title": "CNCF · Platforms White Paper",
+   "url": "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+   "kind": "reference",
+   "note": "플랫폼 정의, 공통 능력, 제품으로서의 플랫폼, 성과 재기"
+  },
+  {
+   "n": 16,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA, 백분위, 오류 예산. 사후 분석은 같은 책 Postmortem Culture 장"
+  },
+  {
+   "n": 17,
+   "title": "Google SRE Workbook · Alerting on SLOs",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "kind": "reference",
+   "note": "99.9% 기준 다중 창 알림 — 14.4배(2%), 6배(5%), 1배(10%)"
+  },
+  {
+   "n": 18,
+   "title": "AWS 백서 · Disaster recovery options in the cloud",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+   "kind": "reference",
+   "note": "백업 후 복원·파일럿 라이트·웜 스탠바이·멀티 사이트 액티브/액티브, RTO·RPO"
+  },
+  {
+   "n": 19,
+   "title": "AWS Well-Architected · Reliability Pillar — Availability",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/availability.html",
+   "kind": "reference",
+   "note": "직렬은 곱, 병렬은 1 − 실패율의 곱"
+  },
+  {
+   "n": 20,
+   "title": "Prometheus · Histograms and summaries",
+   "url": "https://prometheus.io/docs/practices/histograms/",
+   "kind": "reference",
+   "note": "summary 는 합칠 수 없음, histogram_quantile"
+  },
+  {
+   "n": 21,
+   "title": "Grafana Loki · Loki overview",
+   "url": "https://grafana.com/docs/loki/latest/get-started/overview/",
+   "kind": "reference",
+   "note": "본문은 색인하지 않고 라벨만 색인"
+  },
+  {
+   "n": 22,
+   "title": "Kubernetes 문서 · Disruptions",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/",
+   "kind": "reference",
+   "note": "PodDisruptionBudget — 자발적 중단만 제한"
+  },
+  {
+   "n": 23,
+   "title": "Istio · Traffic Management",
+   "url": "https://istio.io/latest/docs/concepts/traffic-management/",
+   "kind": "reference",
+   "note": "VirtualService·DestinationRule, 비율 나누기, HTTP 재시도 기본 2번, 서킷 브레이커"
+  },
+  {
+   "n": 24,
+   "title": "DORA · Software delivery performance metrics",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference",
+   "note": "다섯 지표"
+  },
+  {
+   "n": 25,
+   "title": "microservices.io · Pattern: Transactional outbox",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "kind": "reference",
+   "note": "Chris Richardson"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "모회사 쿠팡(주) 값 — 쿠팡페이 법인 아님. 앞선 쿠팡페이 풀이들과 같은 값"
+  },
+  {
+   "n": 27,
+   "title": "캐치 · 쿠팡페이 기업 정보",
+   "url": "https://www.catch.co.kr/Comp/CompSummary/E94228",
+   "kind": "reference",
+   "note": "사원 수 278명(2025-12 기준). 초봉·평균 칸은 가려져 있음"
+  },
+  {
+   "n": 28,
+   "title": "원티드 · 쿠팡 Staff Back-end Engineer (Rocket Pay)",
+   "url": "https://www.wanted.co.kr/wd/381767",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — Java/Kotlin·Spring·JPA·MSA, 복리후생 칸, 전형 마지막 처우협의"
+  },
+  {
+   "n": 29,
+   "title": "Coupang Careers · Meet back-end engineers in E-commerce Engineering",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-back-end-engineers-in-e-commerce-engineering-daniel-toyo-toby/",
+   "kind": "company",
+   "date": "2023-10-25",
+   "note": "쿠팡 주문 시스템 엔지니어 — 고가용성·데이터 유실 방지·비동기 통신 공부 조언"
+  },
+  {
+   "n": 30,
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Kubernetes 문서 · Horizontal Pod Autoscaling",
+   "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Coupang Careers · How do we make a better payment experience?",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/how-do-we-make-a-better-payment-experience/",
+   "kind": "company",
+   "date": "2023-03-05",
+   "note": "Payment Wallet Product 팀 — OKR·엔지니어링과 안정성 협업"
+  },
+  {
+   "n": 33,
+   "title": "Kubernetes 문서 · Deployments (Rolling Update Deployment)",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment",
+   "kind": "reference",
+   "note": "maxUnavailable·maxSurge 기본 25%, 비율은 maxUnavailable 내림·maxSurge 올림"
+  },
+  {
+   "n": 34,
+   "title": "etcd 문서 · FAQ (Why an odd number of cluster members?)",
+   "url": "https://etcd.io/docs/v3.5/faq/",
+   "kind": "reference",
+   "note": "과반(quorum)과 버틸 수 있는 장애 수 표 — 3대 1, 4대 1, 5대 2"
+  }
+ ],
+ "caveat": "제목은 'Pay Test Operations'지만 본문은 앞선 Staff Fintech Platform 공고의 플랫폼·인프라 문장과 거의 같고 테스트 이야기가 없습니다. 팀 이름과 실제 일의 관계는 회사가 밝히지 않아, 같은 회사 테스트 자동화(SDET) 공고와 닿는 칸만 {추론} 으로 이었습니다. 쿠팡페이 플랫폼·테스트 팀의 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음) — 회사 근거는 공고·팀 소개·보도이고, 구조는 CNCF·구글 SRE·AWS·쿠버네티스·etcd·Istio 공식 문서로 '보통 이런 것'을 보였습니다. 쿠팡 MSA 글(2018)은 본문이 자동 접속에 막혀 검색 요약으로만 확인했고, 전자금융감독규정은 위키문헌의 제2025-4호 사본 기준입니다. 쿠팡페이가 재해복구센터 의무 대상인지는 보도된 결제 규모로 짐작했습니다.",
+ "resources": [
+  {
+   "id": "cncf-platforms",
+   "title": "CNCF Platforms White Paper",
+   "by": "CNCF TAG App Delivery",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+   "why": "'플랫폼이 무엇을 갖춰야 하나'의 공통 목록과 성과 재는 법. 업무 첫째 줄과 자격요건의 '구조적으로 해결' 줄의 지도."
+  },
+  {
+   "id": "platform-eng-ko",
+   "title": "플랫폼 엔지니어링",
+   "by": "카미유 푸르니에 외 · 류광 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000011262003",
+   "why": "플랫폼 팀이 무엇을 만들고 사내 개발자가 쓰게 하나. 업무 첫째·다섯째 줄(전파)과 팀 플레이어 줄."
+  },
+  {
+   "id": "sre-ko",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "베이어 외 · 장현희 옮김 · 제이펍 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=129407308",
+   "why": "SLO·오류 예산·장애 대응·사후 분석. 장애 관리 두 줄과 우선순위 우대 줄의 바탕."
+  },
+  {
+   "id": "sre-alert",
+   "title": "Alerting on SLOs (Google SRE Workbook 5장)",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "why": "SLO 로 알림을 만드는 방법을 차례로 고쳐 가며 보여 준다. 장애 관리 줄을 숫자로."
+  },
+  {
+   "id": "aws-dr",
+   "title": "Disaster Recovery of Workloads on AWS",
+   "by": "AWS 백서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+   "why": "재해복구 네 방식의 비용·복구 시간 차이. 업무 셋째 줄(HA/DR)을 설계 문서로 쓸 때의 기준."
+  },
+  {
+   "id": "aws-wa-rel",
+   "title": "AWS Well-Architected · Reliability Pillar",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "why": "가용성 계산, 가용 영역·리전 이중화, 장애 격리. 무중단·HA 줄의 공통 언어."
+  },
+  {
+   "id": "etcd-faq",
+   "title": "etcd FAQ · Why an odd number of cluster members?",
+   "by": "etcd 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://etcd.io/docs/v3.5/faq/",
+   "why": "과반 투표 클러스터가 몇 대까지 버티나를 표 하나로. 업무 셋째 줄 괄호 속 'clustering'의 출발점."
+  },
+  {
+   "id": "k8s-deploy",
+   "title": "Kubernetes · Deployments",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+   "why": "굴려 바꾸기·되돌리기·maxSurge/maxUnavailable 의 정확한 규칙. 업무 둘째 줄(zero downtime)의 첫 장."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정 (제2025-4호)",
+   "by": "금융위원회 고시 · 위키문헌 사본",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://ko.wikisource.org/wiki/전자금융감독규정_(제2025-4호)",
+   "why": "제11·14조의2·23·29조만 먼저 — 국내 설치·클라우드 절차·재해복구·프로그램 통제. HA/DR·CI/CD 줄의 규정 원문. 최신본은 국가법령정보센터에서 확인."
+  },
+  {
+   "id": "fsc-dr",
+   "title": "「전자금융감독규정」 일부개정고시안 금융위원회 의결",
+   "by": "금융위원회 보도자료 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.fsc.go.kr/no010101/83954",
+   "why": "재해복구센터 대상 확대가 왜·언제부터인지 한 장으로."
+  },
+  {
+   "id": "book-docker",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "이미지·네트워크·볼륨을 실제 명령과 출력으로. Linux 경력 줄과 Cloud 우대 줄의 바닥."
+  },
+  {
+   "id": "book-k8s",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 출력과 Pending·CrashLoopBackOff 읽기. 무중단 업무 줄과 K8S 우대 줄의 첫걸음."
+  },
+  {
+   "id": "book-http",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "게이트웨이·메시가 다루는 요청·응답·시간 초과를 와이어 수준에서."
+  },
+  {
+   "id": "book-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "'보냈다'와 '처리됐다' 사이 — messaging services 우대 줄."
+  },
+  {
+   "id": "book-thread",
+   "title": "실전 자바 — 멀티스레드와 동시성 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/java-thread",
+   "why": "쿠팡페이 서비스 언어(Java)로 동시 처리를 실행 순서까지 찍어 본다. Strong coding·Strong Java 줄."
+  },
+  {
+   "id": "k8s-up",
+   "title": "Kubernetes: Up and Running (3판)",
+   "by": "Brendan Burns 외 · O'Reilly",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/",
+   "why": "배포·서비스·자동 확장 — 여러 팀이 쓰는 클러스터를 운영하려면 알아야 할 것."
+  },
+  {
+   "id": "prom-docs",
+   "title": "Prometheus · Histograms and summaries",
+   "by": "Prometheus 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://prometheus.io/docs/practices/histograms/",
+   "why": "응답 시간 백분위를 맞게 재는 법. 모니터링 줄에서 가장 자주 틀리는 부분."
+  },
+  {
+   "id": "loki-docs",
+   "title": "Grafana Loki documentation",
+   "by": "Grafana Labs",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://grafana.com/docs/loki/latest/get-started/overview/",
+   "why": "라벨만 색인하는 구조와 라벨 설계 규칙."
+  },
+  {
+   "id": "o11y-ko",
+   "title": "데브옵스 엔지니어를 위한 실전 관찰 가능성 엔지니어링",
+   "by": "채리티 메이저스 외 · 노승헌 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/debeuobseu-enjinieoreul-wihan/9791169212519/",
+   "why": "서비스가 나뉜 뒤 '어디서 느려졌나'를 찾는 법(구조화 로그·분산 추적). 장애 관리 경험을 한 단계 올린다."
+  },
+  {
+   "id": "istio-docs",
+   "title": "Istio · Traffic Management",
+   "by": "Istio 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/concepts/traffic-management/",
+   "why": "라우팅·재시도·시간 제한·서킷 브레이커·비율 배포. Service Mesh 우대 줄과 카나리 배포."
+  },
+  {
+   "id": "dora",
+   "title": "DORA's software delivery performance metrics",
+   "by": "DORA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "why": "CI/CD 를 '고도화·최적화'했다는 것을 무엇으로 보이나 — 다섯 지표의 정의."
+  },
+  {
+   "id": "msa-patterns",
+   "title": "마이크로서비스 패턴",
+   "by": "크리스 리처드슨 · 길벗",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4%20%EB%A6%AC%EC%B2%98%EB%93%9C%EC%8A%A8",
+   "why": "서비스 나누기·API 게이트웨이·사가·아웃박스를 예제 하나로. 백엔드 설계 3년 줄과 MSA·게이트웨이 우대 줄의 교과서."
+  },
+  {
+   "id": "outbox-doc",
+   "title": "Pattern: Transactional outbox",
+   "by": "microservices.io · Chris Richardson",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "why": "DB 저장과 메시지 발행을 함께 성공시키는 법과 그 단점."
+  },
+  {
+   "id": "kafka-docs",
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "by": "Apache Kafka",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "why": "최소 한 번·최대 한 번·정확히 한 번이 실제로 무엇을 보장하나."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "컨테이너와 무중단 배포",
+   "time": "2~3주",
+   "goal": "서비스 하나를 쿠버네티스에 올리고, 굴려 바꾸기·노드 교체를 결제 요청을 안 끊고 해 볼 수 있다.",
+   "resources": [
+    "book-docker",
+    "book-k8s",
+    "k8s-deploy",
+    "k8s-up"
+   ],
+   "task": "가상의 결제 API(승인·취소)를 컨테이너로 만들어 로컬 쿠버네티스(kind·minikube)에 3개로 올린다. 정상 종료·상태 검사·PDB 를 붙이고, 부하를 주며 새 버전 배포와 노드 비우기를 해 실패 요청 수를 센다."
+  },
+  {
+   "title": "지표·로그·알림과 장애 대응",
+   "time": "2주",
+   "goal": "p95·p99 를 맞게 재고, SLO 소진 속도 알림을 만들고, 장애 한 번을 사후 분석 글로 남길 수 있다.",
+   "resources": [
+    "prom-docs",
+    "loki-docs",
+    "sre-alert",
+    "sre-ko",
+    "o11y-ko"
+   ],
+   "task": "1단계 서비스에 응답 시간 histogram·구조화 로그·Grafana 대시보드를 붙이고, 99.9% SLO 기준 14.4배 알림을 쓴다. 일부러 오류를 내서 알림 → 원인 → 되돌리기를 하고 사후 분석 한 장을 쓴다."
+  },
+  {
+   "title": "HA/DR 설계",
+   "time": "2주",
+   "goal": "과반 투표 클러스터와 비동기 복제를 이해하고, 리전 하나가 멈췄을 때 3시간 안에 되살리는 구성을 그리고 훈련 기록으로 증명할 수 있다.",
+   "resources": [
+    "etcd-faq",
+    "aws-dr",
+    "aws-wa-rel",
+    "efsr",
+    "fsc-dr"
+   ],
+   "task": "DB 를 주 1대 + 복제 1대로 띄우고 복제를 끊어 승격하는 전환 훈련을 한다. 시각 기록표로 RTO·RPO 를 계산하고, 웜 스탠바이 설계 문서 두 장 끝에 규정 제11·23조와의 대응표를 붙인다."
+  },
+  {
+   "title": "클라우드·자체 서버 공용 파이프라인",
+   "time": "2~3주",
+   "goal": "빌드·테스트·승인 기록·카나리·자동 되돌림까지 한 파이프라인 정의로 두 환경에 배포하고 DORA 지표로 효과를 보일 수 있다.",
+   "resources": [
+    "dora",
+    "istio-docs",
+    "efsr"
+   ],
+   "task": "같은 파이프라인 정의로 로컬 쿠버네티스(클라우드 역할)와 VM 한 대(자체 서버 역할)에 배포한다. 결제 실패·취소·환불 통합 테스트와 승인자·커밋·시각을 남기는 단계를 넣고, 한 달 치 가상 배포 기록으로 DORA 지표를 계산한다."
+  },
+  {
+   "title": "MSA·메시징과 플랫폼 전파",
+   "time": "계속",
+   "goal": "서비스 사이 메시지의 중복·유실을 설계로 막고, 만든 방식을 템플릿과 문서로 다른 팀에 전할 수 있다.",
+   "resources": [
+    "msa-patterns",
+    "outbox-doc",
+    "book-kafka",
+    "kafka-docs",
+    "cncf-platforms",
+    "platform-eng-ko"
+   ],
+   "task": "승인 서비스에 아웃박스 + 카프카 발행을 붙이고 소비 쪽을 중복에 안전하게(같은 결제 id 는 한 번만) 만든다. 1~4단계를 '새 서비스 템플릿' 하나로 묶고 사용 설명서 한 장을 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "이 공고는 연봉을 적지 않았다. 같은 계열의 앞선 Staff 공고(10년 이상)는 1억 5,000만~2억 6,000만원을 적었고, 모회사 쿠팡(주) 집계는 초봉 약 3,531만·평균 약 5,175만원이다 — 둘 다 이 Senior(5년 이상) 자리의 숫자는 아니다",
+  "rows": [
+   {
+    "label": "같은 계열 Staff 공고 표기 연봉 (10년 이상)",
+    "value": "1억 5,000만 ~ 2억 6,000만원",
+    "amount": 15000,
+    "basis": "공고 · 리멤버 표기",
+    "note": "업무 문장이 이 공고와 거의 같은 쿠팡페이 Staff Back-end Engineer (Fintech Platform) 공고의 범위다. 경력 10년 이상 자리라 5년 이상 Senior 자리보다 높을 것으로 읽어야 한다 [3] {추론}"
+   },
+   {
+    "label": "쿠팡(주) 신입 초봉 (모회사)",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값이다. 쿠팡페이 법인이 아니고 직군 구분도 없다 [26]"
+   },
+   {
+    "label": "쿠팡(주) 직원 평균 (모회사)",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 개발자 연봉으로 읽으면 안 된다 [26]"
+   }
+  ],
+  "how": "쿠팡페이는 비상장 자회사라 사업보고서 평균 급여가 없고, 집계 사이트에서도 초봉·평균이 가려져 있다(사원 278명, 2025-12) [27]. 이 공고의 전형에는 처우협의 단계가 적혀 있지 않지만 같은 회사 다른 공고는 마지막 단계를 처우협의로 적었다 [1][28]. 모회사 평균은 경력직과 현장 인력이 섞인 회사 전체 값이라 초봉도 이 자리 금액도 아니다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "교육",
+    "detail": "외국어·업무 스킬 교육 무제한 지원, 사내 기술 공유 스터디"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"
+   },
+   {
+    "name": "식사",
+    "detail": "무료 조식·석식"
+   },
+   {
+    "name": "휴가",
+    "detail": "사유 없는 연차 사용"
+   },
+   {
+    "name": "쇼핑 캐시백",
+    "detail": "쿠팡 구매 금액의 5% (연 최대 400만원)"
+   },
+   {
+    "name": "동호회",
+    "detail": "사내 동호회와 동호회비 지원"
+   },
+   {
+    "name": "휴양 시설",
+    "detail": "임직원가 휴양 콘도"
+   },
+   {
+    "name": "장비",
+    "detail": "최신 장비 지원"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조 휴가"
+   }
+  ],
+  "note": "이 공고에는 복리후생 칸이 없다 [1]. 위 목록은 같은 쿠팡페이의 다른 공고(Staff Back-end, Rocket Pay)의 복리후생 칸이다 [28]. 쿠팡페이 테스트 자동화 공고도 쇼핑 캐시백 5%(연 최대 400만원)·상해보험을 적었다 [10]. 같은 회사 정규직이면 같을 것으로 보이지만 {추론}, 조건은 처우 안내 때 확인한다."
+ },
+ "location": {
+  "name": "쿠팡 구의오피스 (이스트폴 타워 A동)",
+  "address": "서울특별시 광진구 아차산로 412 (이스트폴 타워 A)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 근처 {추론}",
+  "note": "이 공고의 근무지는 'Seoul, South Korea'뿐이다 [1]. 도로명 주소는 같은 쿠팡페이의 다른 공고 두 건에 적힌 것이다 [9][10]. 2023년 팀 소개는 잠실 오피스를 적어, 그 뒤 옮긴 것으로 보인다 [4] {추론}."
+ }
+}

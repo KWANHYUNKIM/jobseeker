@@ -26,6 +26,7 @@
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
   "ats-greenhouse:coupang:8312121": "coupang-pay-it-ai-compliance",
   "ats-greenhouse:coupang:8078891": "coupang-pay-manager-backend-rocketpay",
+  "ats-greenhouse:coupang:8212656": "coupang-pay-senior-backend-test-ops",
   "ats-greenhouse:coupang:8222501": "coupang-pay-senior-platform-engineer",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8054705": "coupang-pay-staff-frontend-fintech",
@@ -33,6 +34,7 @@
   "ats-greenhouse:coupang:8212664": "coupang-pay-staff-platform-engineer",
   "ats-greenhouse:coupang:8210828": "coupang-play-cx-backend-senior-sg",
   "ats-greenhouse:coupang:8345323": "coupang-ppe-data-engineer-bengaluru",
+  "ats-greenhouse:coupang:8248619": "coupang-retail-ops-planning-ai-manager",
   "ats-greenhouse:coupang:8258122": "coupang-rocket-content-editor",
   "ats-greenhouse:coupang:8207116": "coupang-security-automation-engineer-seattle",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
@@ -527,6 +529,16 @@
    "lines": 23
   },
   {
+   "id": "coupang-pay-senior-backend-test-ops",
+   "company": "쿠팡페이",
+   "role": "Senior Back-end Engineer (Pay Test Operations)",
+   "jobs": [
+    "ats-greenhouse:coupang:8212656"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
+  },
+  {
    "id": "coupang-pay-senior-platform-engineer",
    "company": "쿠팡페이",
    "role": "Senior Platform Engineer",
@@ -586,6 +598,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 19
+  },
+  {
+   "id": "coupang-retail-ops-planning-ai-manager",
+   "company": "쿠팡",
+   "role": "리테일 운영기획 매니저 (프로세스 개선 및 AI 활용)",
+   "jobs": [
+    "ats-greenhouse:coupang:8248619"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "coupang-rocket-content-editor",
