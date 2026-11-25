@@ -171,10 +171,12 @@
   "ats-greenhouse:daangn:6610455003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:5296522003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:5046759003": "daangn-ai-platform-software-engineer",
+  "ats-greenhouse:daangn:5811688003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8201153003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:6652141003": "daangn-feed-ml-data-platform-backend",
   "ats-greenhouse:daangn:7507320003": "daangn-feed-ml-data-platform-backend",
+  "ats-greenhouse:daangn:5282170003": "daangn-ios-engineer",
   "ats-greenhouse:daangn:7774455003": "daangn-lessons-tutoring-frontend",
   "jobkorea-50227006": "daangn-lessons-tutoring-frontend",
   "ats-greenhouse:daangn:8201152003": "daangn-mydaangn-backend-intern",
@@ -2026,10 +2028,11 @@
     "ats-greenhouse:daangn:4300801003",
     "ats-greenhouse:daangn:6610455003",
     "ats-greenhouse:daangn:5296522003",
-    "ats-greenhouse:daangn:5046759003"
+    "ats-greenhouse:daangn:5046759003",
+    "ats-greenhouse:daangn:5811688003"
    ],
    "researched_at": "2026-11-25",
-   "lines": 82
+   "lines": 94
   },
   {
    "id": "daangn-community-backend-intern",
@@ -2052,6 +2055,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 37
+  },
+  {
+   "id": "daangn-ios-engineer",
+   "company": "당근",
+   "role": "iOS 소프트웨어 엔지니어 — 중고거래실 · 모바일실",
+   "jobs": [
+    "ats-greenhouse:daangn:5282170003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
   },
   {
    "id": "daangn-lessons-tutoring-frontend",

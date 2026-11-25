@@ -1,0 +1,1229 @@
+{
+  "id": "daangn-ios-engineer",
+  "company": "당근",
+  "role": "iOS 소프트웨어 엔지니어 — 중고거래실 · 모바일실",
+  "team": "중고거래실 또는 모바일실 + iOS 챕터",
+  "jobs": [
+    "ats-greenhouse:daangn:5282170003"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "당근 앱의 iOS 쪽을 만듭니다 — **중고거래실**이면 한국·해외 중고거래 화면과 실험, **모바일실**이면 여러 서비스가 같이 쓰는 앱의 뼈대와 개발 환경입니다.[1] 어느 팀이든 직군끼리 묶인 **iOS 챕터**에 같이 속합니다.[1]",
+    "env": "모듈로 쪼갠 한 앱(Modular Architecture)을 **Tuist**로 만들고, 화면은 UIKit 위의 자체 목록 도구(KarrotListKit)·FlexLayout 과 SwiftUI, 흐름은 RxSwift 로 짭니다.[1][2][3]",
+    "oneline": "큰 앱을 오래 고칠 수 있게 짜는 iOS 3년차 이상 자리. 화면 실력만큼 **테스트할 수 있는 구조·DI·사용자 체감 품질**을 봅니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "중고거래실은 한국과 글로벌의 유저를 타겟으로 지역 기반 중고거래 서비스를 만들고 있어요.",
+      "short": "한국 앱과 해외 앱(Karrot)의 중고거래 화면을 한 코드로 만든다. 나라마다 말·돈·습관이 다르다.",
+      "why": "중고거래실은 한국과 해외 사용자를 같이 맡습니다.[1] 이 실의 iOS 엔지니어는 지금 해외 사용자용 기능을 만들고 있고, 북미 PM이 보고한 문제를 고친 일이 회사 글에 나옵니다.[5]",
+      "actually": {
+        "intro": "'한 앱으로 여러 나라'가 iOS 코드에서 뜻하는 것입니다.",
+        "items": [
+          "**문구 현지화** — 화면 글자를 코드에 박지 않고 언어별 문자열 파일로 뺀다. 복수형·어순이 언어마다 다르다.[21]",
+          "**숫자·돈·날짜 표기** — 같은 가격도 원·달러·엔으로, 같은 날짜도 나라 형식으로 보여 준다(Formatter 에 지역 정보를 넘긴다).[21]",
+          "**나라별 기능 차이** — 어떤 기능은 한 나라에만 켠다. 보통 원격 설정·기능 플래그로 끈다 켠다.[5] {추론}",
+          "**기기 환경 차이** — 북미 한 사용자 기기에 사진이 수십만 장이어서 사진 선택 화면이 10초 넘게 걸렸다. 앨범 정보만 먼저 읽고 사진은 필요할 때 읽게 바꿨다.[5]",
+          "**사용자 인터뷰** — 지표만으로 부족한 초기 시장(일본)은 엔지니어도 현지 인터뷰에 간다.[5]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "사진 선택 화면이 왜 느려지나",
+          "body": "사진 30만 장을 한꺼번에 읽으면 화면이 뜨기 전에 30만 번 일을 한다. 앨범 목록(몇십 개)과 지금 보이는 칸(한 화면 30장 안팎)만 먼저 읽으면 처음 할 일은 수십 번으로 준다. PhotoKit 의 가져오기 결과는 처음부터 필요할 때 읽도록 만들어져 있다.[20] {추론}"
+        }
+      ],
+      "how_far": "어느 나라에 무엇을 내놓을지는 PM과 팀이 정합니다. iOS 엔지니어는 **문구·형식·기능 차이를 코드에 흩뿌리지 않고 한곳에서 바꿀 수 있게** 만드는 쪽을 맡습니다.{추론}",
+      "refs": [
+        1,
+        5,
+        20,
+        21
+      ],
+      "study": [
+        "apple-localization",
+        "daangn-intern-post"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "전 세계에서 천 만 명이 넘는 제품을 관리하며 유저의 문제를 해결하거나 회사의 목표를 달성할 수 있는 프로덕트를 만들어요.",
+      "short": "사용자 천만 명 넘는 앱이라, 작은 실수도 크게 퍼진다. 기능과 안정성을 같이 책임진다.",
+      "why": "iOS 챕터는 앱이 사용자가 가장 먼저 만나는 곳이라 **안정성과 완성도**를 가장 중요하게 여긴다고 적었습니다.[1] 사용자가 많으면 '거의 안 일어나는 일'도 실제로 일어납니다 — 이미지 ID 가 겹칠 확률이 아주 작았는데도 팀 리더가 운석 확률에 빗대며 다시 설계하게 한 일이 있습니다.[5]",
+      "actually": {
+        "items": [
+          "**크래시 줄이기** — 앱이 죽은 기록(크래시 리포트)을 모아 많이 죽는 곳부터 고친다. 공고의 Firebase 가 보통 이 일을 한다.[1][25] {추론}",
+          "**드문 경우까지 막기** — 겹치지 않는다고 생각한 ID 도 수가 많으면 겹친다. 겹치면 다른 사람 사진이 섞인다.[5]",
+          "**체감 속도** — 0.5초 멈칫거림도 흐름을 끊는 '마찰'로 보고 없앤다.[5]",
+          "**모두가 쓰는 앱** — 큰 글자·화면 낭독기를 쓰는 사람도 쓸 수 있게 만든다.[5][22]",
+          "**단계적 배포** — 새 버전을 일부 사용자에게 먼저 내보내고 문제가 없으면 넓힌다(App Store 단계적 출시).[36] {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "'거의 안 겹치는' ID 가 겹칠 확률",
+          "body": "무작위 ID 1,000만 개를 만들 때 32비트면 거의 반드시 겹치고(확률 1), 64비트면 약 0.0003%, UUID(무작위 122비트)면 약 10의 -23승이다.[35] 사용자가 많을수록 ID 공간을 넉넉히 잡아야 하는 이유다.",
+          "lang": "python",
+          "code": "import math\nn = 10_000_000\nfor b in (32, 64, 122):\n    print(b, f'{-math.expm1(-n*(n-1)/(2*2**b)):.3g}')\n# 32 1\n# 64 2.71e-06\n# 122 9.4e-24"
+        }
+      ],
+      "how_far": "무엇을 만들지는 팀이 같이 정합니다. 개발자는 **내가 만든 기능이 많은 기기·나라에서 죽지 않고 빠르게 도는지**까지 확인하고 내보내는 것이 기본선입니다.[1][5] {추론}",
+      "refs": [
+        1,
+        5,
+        22,
+        25,
+        35,
+        36
+      ],
+      "study": [
+        "daangn-intern-post",
+        "firebase-crashlytics"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "최고의 중고거래 사용자 경험을 위해 데이터를 바탕으로 다양한 아이디어를 실험하며 서비스를 발전시키는 일을 해요.",
+      "short": "화면 A안·B안을 나눠 보여 주고 숫자로 고른다. 앱은 배포가 느려서 실험 스위치를 미리 심어 둔다.",
+      "why": "당근은 한 주에 실험 하나를 돌리는 팀을 목표로 실험 문화를 키워 왔습니다.[31] 중고거래실 iOS 엔지니어가 맡은 일에도 기능 플래그 시스템이 있습니다.[5] 앱은 스토어 심사를 거쳐야 바뀌어서, 실험할 화면을 **미리 앱에 넣고 서버 설정으로 켜고 끄는** 방식이 흔합니다.{추론}",
+      "actually": {
+        "items": [
+          "**기능 플래그** — `if 실험군이면 새 화면` 같은 갈림을 넣고, 누가 어느 쪽인지는 서버·원격 설정이 정한다.[5][25] {추론}",
+          "**기록 남기기** — 버튼을 누름·화면을 봄 같은 행동을 로그로 보낸다. 로그가 틀리면 실험 결과도 틀린다.{추론}",
+          "**플랫폼별로 보기** — 당근 실험 글에는 iOS·안드로이드 하단 버튼 차이 때문에 지표가 한쪽에서만 떨어진 사례가 나온다.[31]",
+          "**정리하기** — 끝난 실험의 갈림과 옛 화면을 지운다. 안 지우면 플래그가 쌓여 코드가 얽힌다.{추론}"
+        ]
+      },
+      "how_far": "가설과 성공 지표는 PM·데이터 쪽과 같이 정합니다.[6][7] iOS 엔지니어는 **실험군을 정확히 나누고, 로그를 빠짐없이 남기고, 끝나면 정리**하는 코드를 맡습니다.{추론}",
+      "refs": [
+        5,
+        6,
+        7,
+        25,
+        31
+      ],
+      "study": [
+        "experiment-guide",
+        "daangn-pe-1"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "당근마켓이 최고의 로컬 앱이 될 수 있도록, 신규 서비스나 사내 공통 서비스들을 운영하고 있어요.",
+      "short": "모바일실은 새 서비스와 여러 팀이 같이 쓰는 기능(로그인·채팅·디자인 시스템 등)을 맡는다.",
+      "why": "당근 앱 하나 안에 중고거래·동네생활·알바·부동산 같은 서비스가 같이 삽니다. 팀원 코멘트는 공통 플랫폼·디자인 시스템 같은 앱 구조와 피드·채팅 기능을 같이 만든다고 적었습니다.[1] 모바일실 안드로이드 엔지니어는 앱 안에서 실험 결과와 로그를 보는 사내 도구도 만들었습니다.[5]",
+      "actually": {
+        "items": [
+          "**공통 기능** — 여러 서비스가 쓰는 로그인·채팅·이미지 올리기·알림을 한 모듈로 만들고 다른 팀에 내준다.[1][5]",
+          "**디자인 시스템** — 버튼·색·글자 크기를 공통 부품으로 만들어 모든 화면이 같은 모양을 쓰게 한다.[1]",
+          "**사내 도구** — 실험·로그를 앱 안에서 바로 보는 개발자용 화면 같은 것.[5]",
+          "**새 서비스** — 처음 여는 서비스의 첫 화면과 구조를 잡는다.[1]"
+        ]
+      },
+      "how_far": "공통 모듈은 다른 팀이 '쓰는 사람'입니다. 그래서 기능이 돌아가는 것에서 멈추지 않고 **다른 팀이 쓰기 쉬운 인터페이스와 문서**까지가 일입니다.{추론}",
+      "refs": [
+        1,
+        5
+      ],
+      "study": [
+        "karrotlistkit",
+        "modular-cermak"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "다양한 서비스를 쉽게 개발할 수 있도록 지원하며, 개발 환경 개선을 통해 생산성을 높이기 위해 노력해요.",
+      "short": "빌드 시간·프로젝트 설정·자동 배포를 고쳐 다른 iOS 개발자가 빨리 일하게 한다.",
+      "why": "공고가 적은 도구 — Tuist(프로젝트 생성), GitHub Actions(자동 빌드·테스트), fastlane(서명·업로드 자동화) — 가 모두 개발 환경 쪽입니다.[1] 팀원 코멘트는 AI 로 개발 생산성을 높이는 실험도 하고 있다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**프로젝트를 코드로** — Xcode 프로젝트 파일을 손으로 고치지 않고 Swift 로 쓴 설정(Tuist)에서 만든다. 여러 사람이 고쳐도 충돌이 적다.[14]",
+          "**빌드 줄이기** — 바뀐 모듈만 다시 빌드하고 나머지는 캐시를 쓰게 모듈 경계를 나눈다.[14]",
+          "**자동 검사** — 풀 리퀘스트마다 빌드·테스트를 돌린다(GitHub Actions 의 macOS 실행기).[24]",
+          "**자동 배포** — 인증서·서명·TestFlight 업로드를 명령 하나로(fastlane).[23]",
+          "**AI 도구** — 코딩 에이전트가 프로젝트를 잘 읽도록 안내 문서와 규칙을 둔다.[1] {추론}"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "코드 한 줄이 사용자에게 가기까지 (보통 이런 흐름 {추론})",
+          "steps": [
+            "Tuist · 설정에서 Xcode 프로젝트 생성",
+            "풀 리퀘스트 · 코드 리뷰",
+            "GitHub Actions · 빌드와 테스트 자동 실행",
+            "fastlane · 서명하고 TestFlight 에 올림",
+            "App Store · 심사 뒤 단계적 출시",
+            "Firebase · 크래시·지표 확인"
+          ],
+          "mine_from": 0
+        }
+      ],
+      "how_far": "빌드 서버를 처음부터 짓는 일은 드뭅니다. **Tuist 설정에 모듈을 더하고, 느린 빌드의 원인을 찾고, CI 가 깨지면 고칠 수 있는** 정도가 이 자리의 기대선입니다.{추론}",
+      "refs": [
+        1,
+        14,
+        23,
+        24
+      ],
+      "study": [
+        "tuist-docs",
+        "fastlane-docs",
+        "gha-docs"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "슈퍼앱을 만들기 위해 지속·확장 가능한 구조를 설계하고, 다양한 기술적 과제에 도전해 나가요.",
+      "short": "서비스 여럿이 한 앱에 사는 '슈퍼앱'이라, 팀끼리 서로 안 부딪히게 앱을 모듈로 나눈다.",
+      "why": "당근 iOS 엔지니어의 Let'Swift 2023 발표는 앱을 **기능(Feature) · 도메인(Domain) · 핵심(Core) · 공용(Shared)** 네 층의 모듈로 나눈 구조를 보였습니다.[2] 공고도 기술 목록 첫 줄에 Modular Architecture 를 적었습니다.[1]",
+      "actually": {
+        "intro": "발표에 나온 네 층과 각 층의 예입니다.[2]",
+        "items": [
+          "**Feature** — 화면 단위(예: 거래 상세 화면). 위층은 아래층만 쓴다.",
+          "**Domain** — 업무 개념(예: 거래·계정). 화면 없이 규칙만.",
+          "**Core** — 네트워크·실험·분석처럼 앱 전체가 기대는 것.",
+          "**Shared** — 공통 UI·로그·작은 도구.",
+          "**인터페이스 분리** — 다른 모듈이 구현이 아니라 약속(프로토콜)만 알게 하고, 실제 구현은 앱이 조립할 때 넣는다(같은 발표의 빌더·IoC 컨테이너).[2] 이렇게 하면 한 기능만 따로 빌드·테스트하는 작은 앱도 만들 수 있다.[14]",
+          "**다른 회사도 비슷하다** — 29CM 의 같은 해 발표도 기능 모듈·인터페이스 모듈·테스트 모듈·데모 앱으로 쪼개고 '완벽한 구조보다 알맞은 구조'를 목표로 삼았다.[15] 책 한 권으로 정리된 방법도 있다.[34]"
+        ]
+      },
+      "how_far": "구조의 큰 틀은 챕터가 같이 정합니다.[1] 새로 온 사람은 **정해진 층 규칙을 지켜 모듈을 만들고, 왜 이 의존이 거꾸로 가면 안 되는지 설명할 수 있으면** 됩니다.{추론}",
+      "refs": [
+        1,
+        2,
+        14,
+        15,
+        34
+      ],
+      "study": [
+        "letswift-2023",
+        "modular-cermak",
+        "tuist-docs"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "iOS 챕터에 소속되어 ‘엔지니어링 데이’, ‘테크톡’ 등 활동에 참여해요",
+      "short": "팀은 서비스별로 나뉘지만, iOS 개발자끼리 모여 코드 리뷰·발표·스터디를 같이 한다.",
+      "why": "당근은 소속 팀과 같은 직군끼리 묶은 **챕터**로 이뤄집니다.[1] iOS 챕터는 엔지니어링 데이·코드 리뷰·테크톡·스터디·세미나로 기술과 도메인 지식을 나눈다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**코드 리뷰** — 다른 팀 iOS 개발자도 리뷰를 본다. 안드로이드 챕터 인턴은 리뷰가 아주 꼼꼼하다고 했다.[5]",
+          "**테크톡** — 내가 푼 문제를 동료 앞에서 발표한다. 인턴도 전사 모임에서 비용 절감 발견을 발표했다.[5]",
+          "**공통 결정** — 라이브러리 도입·구조 규칙 같은 건 챕터에서 같이 정한다.[1] {추론}"
+        ]
+      },
+      "how_far": "자기 팀 일과 별도로 **리뷰를 주고받고, 가끔 발표하는** 정도의 참여가 기대됩니다.[1] {추론}",
+      "refs": [
+        1,
+        5
+      ],
+      "study": [
+        "daangn-intern-post"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "그 외에 당근 서비스에 기여하는 다양한 기능들을 개발해요",
+      "short": "팀 경계 밖의 기능도 필요하면 만든다. 인턴도 사진 올리기·'나의 당근' 탭·기능 플래그를 맡았다.",
+      "why": "중고거래실 iOS 인턴은 이미지 업로드 개선 → '나의 당근' 탭 → 기능 플래그 시스템 → 해외 사용자 기능 순으로 일을 맡았습니다.[5] 당근 엔지니어는 필요하면 직무 밖의 역할도 맡는다고 적었습니다.[7]",
+      "how_far": "맡는 범위가 넓어서 **처음 보는 코드도 빨리 읽고 고치는 힘**이 필요합니다.{추론}",
+      "refs": [
+        5,
+        7
+      ],
+      "study": [
+        "daangn-intern-post"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "iOS 개발 경력 3년 이상에 준하는 실력을 보유하신 분",
+      "short": "연차 숫자보다 '3년 해 본 사람이 혼자 할 수 있는 것'을 본다. 실제 앱을 끝까지 내 본 경험.",
+      "why": "'준하는 실력'이라 적었으니 기간이 아니라 실력을 봅니다.[1] 신입 인턴 면접도 구현보다 **설계와 확장** — 사용자가 늘면 어떻게 되나, 몇 년 뒤에도 고칠 수 있나 — 을 물었다고 합니다.[5] 전형에는 과제와 직무 인터뷰가 있습니다.[1]",
+      "level": {
+        "basic": "Swift 문법·옵셔널·값/참조 타입, UIKit 화면 수명주기, Auto Layout 또는 코드 레이아웃, 네트워크 요청과 JSON 디코딩.",
+        "work": "목록 화면 성능(셀 재사용·이미지 캐시), 메모리 누수(순환 참조) 찾기, 스레드(메인 스레드에서만 화면 갱신), 앱을 스토어에 내고 크래시를 고친 경험.",
+        "team": "모듈로 나뉜 큰 프로젝트에서 일하기, RxSwift 흐름 읽기, UIKit 과 SwiftUI 를 섞어 쓰기, 설계 이유를 대안과 같이 설명하기.[1][2][5]"
+      },
+      "how_far": "과제와 면접이 이 줄을 확인합니다.[1] **내 앱이나 회사 앱을 직접 설계해 출시·운영해 본 이야기**를 '왜 그렇게 했고 다른 방법은 무엇이었나'까지 할 수 있으면 됩니다.[5] {추론}",
+      "refs": [
+        1,
+        2,
+        5
+      ],
+      "study": [
+        "swift-book",
+        "apple-uikit"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "새로운 기능을 설계하고 구현하는 것을 즐기시는 분",
+      "short": "기획서를 받아 화면만 그리는 게 아니라, 기능을 어떤 모듈·데이터·상태로 만들지 먼저 정한다.",
+      "why": "당근은 엔지니어가 기획 단계부터 함께하길 권합니다.[5] 제품을 키우는 데 맞는 만큼만 만드는 '적정 엔지니어링'도 강조합니다.[7]",
+      "actually": {
+        "items": [
+          "**상태 정하기** — 화면이 가질 수 있는 상태(불러오는 중·빈 목록·오류·정상)를 먼저 적는다.{추론}",
+          "**서버와 약속** — 받을 JSON 모양을 정한다. 당근은 서버가 보내는 여러 종류 항목을 'type' 칸으로 골라 읽는 도구를 공개했다.[4]",
+          "**어디에 둘지** — 새 기능을 어느 층 모듈에 넣을지 정한다.[2]",
+          "**얼마나 만들지** — 실험할 기능이면 처음엔 작게.[6][7]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "여러 종류가 섞인 피드 읽기",
+          "body": "피드에 상품·광고·동네 글이 섞여 오면 항목마다 \"type\": \"article\" 같은 칸이 붙는다. KarrotCodableKit 의 PolymorphicCodable 은 이 칸을 보고 알맞은 타입으로 읽고, 모르는 type 은 대체 타입으로 받아 앱이 죽지 않게 한다.[4]"
+        }
+      ],
+      "how_far": "설계 문서를 길게 쓰는 것보다 **구현 전에 상태·데이터·모듈 위치를 정하고 동료와 맞추는** 습관이면 충분합니다.{추론}",
+      "refs": [
+        2,
+        4,
+        5,
+        6,
+        7
+      ],
+      "study": [
+        "karrotcodablekit",
+        "daangn-pe-1"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "기술 중심 보다는 사용자 중심의 사고를 가지고 제품을 만들어 갈 수 있으신 분",
+      "short": "'멋진 기술'보다 '사용자가 덜 기다리고 덜 헷갈리는가'로 판단한다.",
+      "why": "당근 프로덕트 엔지니어 글은 기술적 완벽함을 가장 큰 기여로 보는 것을 함정으로 꼽았습니다.[6] 우선순위도 사용자 영향으로 다시 매깁니다 — 하루 500명 넘게 겪는 버그는 등급을 올렸습니다.[6]",
+      "actually": {
+        "items": [
+          "**마찰 찾기** — 0.5초 지연·두 번 눌러야 하는 버튼처럼 사용자가 말로 못 하는 불편을 찾는다.[5]",
+          "**영향으로 고르기** — 고칠 버그를 겪는 사람 수로 고른다.[6]",
+          "**모두를 위해** — 큰 글자·화면 낭독기 사용자를 처음부터 생각한다.[5][22]"
+        ]
+      },
+      "how_far": "면접에서 **'그 기술을 왜 썼나'에 사용자 쪽 이유로 답할 수 있으면** 됩니다.[5] {추론}",
+      "refs": [
+        5,
+        6,
+        22
+      ],
+      "study": [
+        "daangn-pe-1",
+        "apple-accessibility"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "자기 주도적으로 일하는 걸 즐기고, 커뮤니케이션이 원활하신 분",
+      "short": "일을 나눠 주길 기다리지 않고 문제를 먼저 꺼낸다. 다른 의견도 숨기지 않고 말한다.",
+      "why": "팀원 코멘트는 의견이 달라도 솔직하게 꺼내고 신뢰를 바탕으로 끝까지 이야기한다고 적었습니다.[1] 당근 엔지니어는 제품이 자라면서 필요하면 직무 밖 역할도 맡고 협업 방식을 바꾼다고 합니다.[7]",
+      "how_far": "PM·디자이너·서버 개발자와 **문제와 대안을 글로 정리해 먼저 공유하는** 습관이 기본입니다.{추론}",
+      "refs": [
+        1,
+        7
+      ],
+      "study": [
+        "daangn-pe-1"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Testable 한 코드 작업에 익숙하신 분",
+      "short": "화면·네트워크·시간 같은 바깥 것을 갈아 끼울 수 있게 짜서, 가짜를 넣고 자동 테스트를 돌린다.",
+      "why": "모듈 구조 발표는 네트워크 모듈을 실제 구현·가짜(Mock)·테스트로 나누는 예와 테스트 대역(Test Double)을 보였습니다.[2] 사용자가 많은 앱에서 손으로 다 눌러 볼 수는 없습니다.{추론}",
+      "actually": {
+        "items": [
+          "**바깥 것 끊기** — 네트워크·저장소·현재 시각을 프로토콜 뒤에 두고, 테스트에서는 가짜를 넣는다.[2][28]",
+          "**로직을 화면 밖으로** — 화면이 할 판단(버튼을 켤까)을 뷰모델·리액터 같은 순수 객체로 옮겨 화면 없이 테스트한다.{추론}",
+          "**Rx 흐름 테스트** — RxSwift 는 시간을 가짜로 돌리는 테스트 도구(RxTest)를 함께 준다.[18][29]",
+          "**테스트 도구** — XCTest, 새로 나온 Swift Testing.[16][17]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "시계를 밖에서 넣으면 '만료' 테스트가 쉬워진다",
+          "body": "쿠폰 만료를 확인하는 코드가 안에서 현재 시각을 직접 읽으면, 테스트하려면 진짜로 시간을 기다려야 한다. 시각을 넘겨받게 바꾸면 100이든 50이든 마음대로 넣어 볼 수 있다. Swift 에서도 같은 생각으로 `() -> Date` 나 프로토콜을 넘긴다.{추론}",
+          "lang": "python",
+          "code": "class Coupon:\n    def __init__(self, now):\n        self.now = now\n    def expired(self, deadline):\n        return self.now() > deadline\n\nprint(Coupon(lambda: 100).expired(99), Coupon(lambda: 50).expired(99))\n# True False"
+        }
+      ],
+      "how_far": "테스트 커버리지 숫자보다 **새 로직을 쓸 때 테스트 먼저 붙일 수 있게 짜는 것**을 봅니다. 과제 전형에 테스트를 넣는 것이 가장 직접적인 증명입니다.[1] {추론}",
+      "refs": [
+        1,
+        2,
+        16,
+        17,
+        18,
+        28,
+        29
+      ],
+      "study": [
+        "unit-testing-khorikov",
+        "swift-testing",
+        "rxswift-kodeco"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "대규모 서비스를 개발해 보신 분",
+      "short": "사용자·코드·사람이 모두 많은 곳에서 일해 봤나. 큰 프로젝트의 빌드·배포·충돌을 겪어 봤나.",
+      "why": "당근은 사용자 천만 명이 넘는 앱이고 여러 팀이 한 앱을 같이 고칩니다.[1] 안드로이드 쪽은 많은 엔지니어가 한 코드베이스를 같이 써서 작은 변경이 다른 일에 번질 수 있다고 적었습니다.[5]",
+      "actually": {
+        "items": [
+          "**드문 기기·데이터** — 사진 수십만 장 기기처럼, 사용자가 많아야 보이는 경우.[5]",
+          "**여러 팀 동시 작업** — 같은 파일을 여럿이 고치지 않게 모듈과 소유를 나눈다.[2]",
+          "**배포 위험** — 한번 나간 앱 버전은 되돌리기 어렵다. 그래서 플래그·단계적 출시를 쓴다.[36] {추론}"
+        ]
+      },
+      "how_far": "큰 회사 경력이 없어도 **사용자 많은 앱에서 생기는 문제(성능·크래시·호환성)를 어떻게 막았는지** 이야기할 수 있으면 대신할 수 있습니다.{추론}",
+      "refs": [
+        1,
+        2,
+        5,
+        36
+      ],
+      "study": [
+        "modular-cermak",
+        "firebase-crashlytics"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "iOS 와 관련된 오픈 소스에 기여해 보셨거나, 개인 오픈소스 프로젝트를 보유하신 분",
+      "short": "당근도 iOS 도구를 공개한다. 남이 읽을 코드를 써 봤는지, 공개 코드로 실력을 보일 수 있는지.",
+      "why": "당근은 KarrotListKit(Apache-2.0)·KarrotCodableKit(MIT)을 공개했고, FlexLayout 은 갈래(fork)를 만들어 씁니다.[3][4][13] 공고의 기술 목록에도 둘이 들어 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**문서와 예제** — 남이 처음 써도 되게 README·예제를 쓴다.[3]",
+          "**작은 기여부터** — 오타·문서·재현 가능한 버그 보고도 기여다.[37]",
+          "**라이선스 이해** — Apache-2.0·MIT 가 무엇을 허락하는지.[3][4]"
+        ]
+      },
+      "how_far": "큰 라이브러리를 만들 필요는 없습니다. **쓰던 라이브러리의 버그를 재현해 고친 풀 리퀘스트 한 건**이나 작게라도 공개한 도구가 있으면 서류에서 보일 거리가 됩니다.{추론}",
+      "refs": [
+        1,
+        3,
+        4,
+        13,
+        37
+      ],
+      "study": [
+        "karrotlistkit",
+        "karrotcodablekit",
+        "opensource-guide"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "글로벌 서비스 경험 있으신 분",
+      "short": "여러 나라에 내는 앱을 해 봤나 — 번역·통화·시간대·지역별 기능 차이를 다뤄 봤나.",
+      "why": "중고거래실은 한국과 해외 사용자를 함께 맡고, iOS 엔지니어가 해외 사용자 기능과 북미에서 온 문제를 다룹니다.[1][5]",
+      "actually": {
+        "items": [
+          "**문자열 카탈로그** — Xcode 의 현지화 기능으로 언어별 문구와 복수형을 관리한다.[21]",
+          "**시간대** — 서버 시각을 사용자 시간대로 바꿔 '3시간 전'을 정확히 보인다.{추론}",
+          "**오른쪽에서 왼쪽, 긴 단어** — 언어에 따라 글자가 길어져 화면이 깨지지 않게 한다.[21]",
+          "**현지 조사** — 지표만으로 모자라면 현지 사용자를 만난다.[5]",
+          "**지원 버전** — 당근 앱은 iOS 16.0 이상에서 돈다. 새 API 를 쓸 때 이 아래 버전을 신경 쓰지 않아도 되는지 확인한다.[33]"
+        ]
+      },
+      "how_far": "해외 서비스 경력이 없으면 **내 앱 하나를 두 언어·두 통화로 현지화해 본 것**으로 대신 보일 수 있습니다.{추론}",
+      "refs": [
+        1,
+        5,
+        21,
+        33
+      ],
+      "study": [
+        "apple-localization"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "DI(Dependency Injection)을 활용한 코드 설계 경험이 있는 분",
+      "short": "객체가 필요한 것을 직접 만들지 않고 밖에서 받게 짠다. 모듈 분리와 테스트의 바탕이다.",
+      "why": "당근 iOS 모듈 구조 발표에는 빌더 패턴·동적 의존(Dynamic Dependency)·IoC 컨테이너가 나옵니다.[2] 기능 모듈이 다른 기능의 '약속'만 알고, 실제 구현은 앱이 조립할 때 넣으려면 DI 가 필요합니다.[2][27]",
+      "actually": {
+        "items": [
+          "**생성자 주입** — `init(repository: Repository)` 처럼 필요한 것을 넘겨받는다. 가장 기본.[27]",
+          "**조립 지점** — 앱 시작 지점(또는 빌더) 한곳에서 진짜 구현을 만들어 넣는다(Composition Root).[2][27]",
+          "**컨테이너** — 등록한 구현을 이름·타입으로 꺼내 주는 도구. 편하지만 '어디서 왔는지'가 안 보일 수 있다.[27]",
+          "**테스트** — 같은 자리에 가짜를 넣어 테스트한다(앞 '테스트' 줄과 같은 이유).[28]"
+        ]
+      },
+      "how_far": "특정 DI 라이브러리 사용법보다 **왜 생성자 주입을 하고, 조립을 어디서 하며, 컨테이너의 단점이 무엇인지** 말할 수 있으면 됩니다.[27] {추론}",
+      "refs": [
+        2,
+        27,
+        28
+      ],
+      "study": [
+        "di-seemann",
+        "letswift-2023"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "현재 당근이 사용 중인 기술들이에요 Modular Architecture SwiftUI, KarrotListKit, KarrotCodableKit, RxSwift, FlexLayout",
+      "short": "새 화면 기술(SwiftUI)과 옛 기술(UIKit·RxSwift)이 한 앱에 같이 산다. 둘 다 읽어야 한다.",
+      "why": "공고가 '현재 쓰는 기술'로 적은 화면 쪽 목록입니다.[1] 당근 발표는 UIKit 화면을 FlexLayout·PinLayout 으로 그리고 SwiftUI 와 견줬으며, 목록은 자체 프레임워크로 만들었습니다.[2] KarrotListKit 은 UIKit 으로 만들었지만 SwiftUI 처럼 선언해 쓰게 해서 나중에 SwiftUI 로 옮기기 쉽게 하려는 도구라고 README 가 밝힙니다.[3]",
+      "actually": {
+        "items": [
+          "**KarrotListKit** — 목록을 `List { Section { Cell(...) } }` 처럼 선언하면, 바뀐 칸만 계산해(DifferenceKit) 애니메이션과 함께 고친다.[3][26]",
+          "**FlexLayout** — 웹의 flexbox 방식으로 UIKit 화면을 코드로 배치한다. 당근은 갈래를 만들어 쓴다.[13]",
+          "**RxSwift** — 버튼 누름·네트워크 응답을 흐름으로 엮는다. 옛 화면 상당수가 이 방식일 것이다.[18] {추론}",
+          "**SwiftUI** — 새 화면. UIKit 화면 안에 넣을 때는 UIHostingController 로 감싼다.[19]",
+          "**KarrotCodableKit** — 서버 JSON 을 읽는 Codable 확장.[4]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "목록이 바뀌면 무엇을 다시 그리나",
+          "body": "옛 목록 a·b·c·d 가 새 목록 a·c·e·d 로 바뀌면, 다시 그릴 것은 'b 지우기'와 'e 넣기' 둘뿐이다. 차이 계산 라이브러리가 이걸 찾아 주기 때문에 목록 전체를 다시 읽지(reloadData) 않아도 된다.[26] 같은 생각을 파이썬 표준 라이브러리로 돌려 본 것이다.",
+          "lang": "python",
+          "code": "import difflib\nold = ['a', 'b', 'c', 'd']\nnew = ['a', 'c', 'e', 'd']\nfor op in difflib.SequenceMatcher(a=old, b=new).get_opcodes():\n    if op[0] != 'equal':\n        print(op)\n# ('delete', 1, 2, 1, 1)\n# ('insert', 3, 3, 2, 3)"
+        }
+      ],
+      "how_far": "다섯 개를 다 써 봤을 필요는 없습니다. **UIKit 컬렉션 뷰와 SwiftUI 를 둘 다 다뤄 봤고, Rx 흐름을 읽을 수 있으면** 당근 도구는 들어와서 README 로 익힐 수 있습니다.[3][4] {추론}",
+      "refs": [
+        1,
+        2,
+        3,
+        4,
+        13,
+        18,
+        19,
+        26
+      ],
+      "study": [
+        "karrotlistkit",
+        "rxswift-kodeco",
+        "apple-uikit"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "참고해 주세요 정규직 채용의 경우 3개월의 수습기간이 있어요 ‘장애인고용촉진 및 직업재활법’, ‘국가유공자 등 예우 및 지원에 관한 법률’에 따라 장애인 및 보훈대상자는 채용 전형 시 우대하고 있어요",
+      "short": "정규직은 입사 뒤 수습 3개월. 장애인·보훈대상자는 법에 따라 전형에서 우대한다.",
+      "why": "공고 안내입니다.[1] 경력 기간에 따라 최대 3개월 계약직으로 먼저 일하며 역량을 더 확인할 수 있고, 수습 평가 결과로 수습이 늘거나 채용이 취소될 수 있다고 공고가 밝힙니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Tuist, GitHub Actions, Firebase, fastlane GitHub, Slack, Linear, Figma 새로운 기술을 찾거나 시도하는 것을 적극 격려하고 응원해요",
+      "short": "빌드·배포 도구(Tuist·Actions·fastlane)와 협업 도구(Linear·Figma). 새 기술 시도를 권한다.",
+      "why": "공고의 나머지 기술 목록입니다.[1] 앞 네 개는 프로젝트 생성·자동 빌드·크래시와 원격 설정·서명과 업로드 쪽이고(업무 '개발 환경 개선' 줄 참고),[14][23][24][25] 뒤 네 개는 코드·대화·일감·디자인 도구입니다.[1] 팀원 코멘트는 AI 로 개발 생산성을 높이는 실험을 하고 있다고 적었습니다.[1]",
+      "how_far": "Linear·Figma 는 들어와서 익히면 됩니다. **디자이너가 Figma 에 둔 치수·색을 디자인 시스템 부품으로 옮겨 읽을 줄 아는** 정도면 충분합니다.{추론}",
+      "refs": [
+        1,
+        14,
+        23,
+        24,
+        25
+      ],
+      "study": [
+        "tuist-docs",
+        "fastlane-docs"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "이 포지션은 산업기능요원으로 채용이 가능한 포지션이에요. (현역 전직, 보충역 신규 편입, 보충역 전직) 전문연구요원 편입 및 전직은 불가해요",
+      "short": "산업기능요원으로 일하며 병역을 마칠 수 있다(현역 전직·보충역 편입·전직). 전문연구요원은 안 된다.",
+      "why": "공고 안내입니다.[1] 산업기능요원은 지정된 업체에서 일하는 것으로 병역을 대신하는 제도이고, 편입 조건은 병무청 안내를 따릅니다.[32] 병역특례 문의는 당근 채용 FAQ 에도 있습니다.[30]",
+      "how_far": "현역·보충역 여부와 남은 복무 기간에 따라 가능한 경로가 다르니, 지원 전에 병무청 기준을 먼저 확인합니다.[32] {추론}",
+      "refs": [
+        1,
+        30,
+        32
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "이렇게 합류해요 1. 서류 전형 → 2. 과제 전형 → 3. 직무 인터뷰 → 4. 컬처핏 인터뷰 및 레퍼런스 체크 → 5. 처우협의 → 6. 최종 합격 및 입사",
+      "short": "서류 → 과제 → 직무 → 컬처핏·레퍼런스 → 처우 협의 → 입사. 이 자리는 과제가 둘째 단계다.",
+      "why": "공고의 전형 순서입니다.[1] 연봉은 공고에 없고 다섯째 단계에서 정해집니다.[1] 과제가 서류 바로 다음이라, 과제 코드가 직무 면접 이야기의 바탕이 됩니다.[1]",
+      "how_far": "과제에서는 요건의 'Testable 한 코드'와 우대의 'DI' 를 보일 수 있게 — 상태 정리·테스트·모듈 경계를 README 에 이유와 함께 적는 편이 좋습니다.{추론}",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "당근 전형 소개 서류 전형 당근은 자유형식의 지원서를 받고 있어요. 본인의 강점이 잘 드러나는 다양한 정보를 자유롭게 활용해 이력서를 작성해 주세요. 문서 형식은 hwp(한글) 파일을 제외하고 word, pdf, 웹 링크 등 자유롭게 선택해주시면 돼요. 웹 링크(노션, 구글드라이브 등)로 서류를 제출해주실 때는 접근 권한을 꼭 열어주세요. 평가와 상관 없는 사진, 주소 등의 개인정보는 제외해주세요.",
+      "short": "자유 형식 — hwp만 빼고 아무 형식. 링크면 접근 권한을 열고 사진·주소는 빼라.",
+      "why": "공고 안내입니다.[1] iOS 라면 출시한 앱의 App Store 링크, 공개 저장소, 직접 고친 성능·크래시 문제의 전후 숫자가 강점을 보이기 좋은 재료입니다.{추론}",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "화상 면접 지원해주신 직무와 업무 연관성이 높은 당근 팀원과 화상으로 직무와 관련된 기본적인 지식에 대해 이야기를 나누는 단계예요. 과제 전형 직무에 따라 과제 전형이 있어요. 과제는 직무 능력과 연관된 내용으로 출제돼요. 과제 전형을 별도로 운영하는 직무도 있고, 화상 면접 또는 직무 면접에서 과제가 함께 출제되는 경우도 있어요. 직무 면접 지원하신 직무와 업무 연관성이 높은 당근 팀원들과 직무 역량, 경험에 대해 화상 면접보다 심층적인 이야기를 나누는 단계예요. 과제가 출제되었을 경우 과제에 대한 질문을 드려요. 컬쳐핏 면접(정규직 공통) 당근은 면접을 단순히 회사에 사람을 뽑는 자리로 생각하지 않아요. 당근과 지원자가 서로 추구하는 가치관과 생각을 교환하는 시간이라고 생각하고 있어요. 컬쳐핏 단계는 당근이 추구하는 문화와 일하는 방식과 잘 어울릴 수 있는 분인지 확인하는 단계예요. 또한 포지션에 대한 전문성을 다시금 확인하는 이야기를 나눠요.",
+      "short": "과제(직무 능력) → 직무 면접(과제와 경험 심층) → 컬처핏(일하는 방식). 과제는 직무 면접에서 다시 묻는다.",
+      "why": "당근 공통 전형 안내입니다.[1] 모바일 엔지니어 인터뷰에 따르면 면접은 구현보다 설계와 확장 — 사용자가 늘면 어떻게 되나, 오래 고칠 수 있게 하려면 — 을 물었고, 왜 그렇게 골랐고 다른 방법은 생각했는지를 짚었다고 합니다.[5]",
+      "refs": [
+        1,
+        5
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "큰 앱의 구조·빌드·테스트를 다듬는 게 즐거운 사람[1][2]",
+      "기술 이야기를 오래 해도 질리지 않고, 더 나은 방법을 묻는 사람 — 팀원 코멘트[1]",
+      "사진 선택 10초 같은 '체감 문제'를 끝까지 파는 사람[5]",
+      "해외 시장·현지화에 관심 있는 사람[1][5]"
+    ],
+    "hard": [
+      "SwiftUI 만으로 새로 짜고 싶다면 맞지 않을 수 있다 — UIKit·RxSwift·FlexLayout 이 같이 산다[1]",
+      "3년 이상 수준을 요구하고 과제 전형이 있다 — 공개 코드나 출시 경험이 없으면 불리하다[1]",
+      "여러 팀이 한 앱을 같이 쓰는 만큼 리뷰·규칙이 꼼꼼하다[5]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "사진이 수십만 장인 기기에서 사진 선택 화면이 10초 걸립니다. 어떻게 찾고 고치겠어요?",
+      "a": "중고거래실 iOS 엔지니어가 실제로 고친 문제.[5]"
+    },
+    {
+      "q": "기능 모듈 A가 기능 모듈 B의 화면을 띄워야 합니다. 서로 직접 의존하지 않게 하려면?",
+      "a": "모듈 층 구조와 인터페이스 분리·DI.[2]"
+    },
+    {
+      "q": "현재 시각·네트워크에 기대는 로직을 어떻게 테스트하겠어요?",
+      "a": "자격요건 'Testable 한 코드'와 발표의 Mock·Test Double.[1][2]"
+    },
+    {
+      "q": "ID 생성기가 '거의 안 겹친다'면 충분한가요? 사용자 천만 명이면요?",
+      "a": "인턴 글에 나온 재설계 이야기.[5][35]"
+    },
+    {
+      "q": "서버가 모르는 새 type 의 피드 항목을 보내면 구 버전 앱은 어떻게 돼야 하나요?",
+      "a": "KarrotCodableKit 의 대체 타입(fallback) 설계.[4]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "당근 채용 · Software Engineer, iOS",
+      "url": "https://careers.daangn.com/jobs/role/5282170003/",
+      "kind": "posting",
+      "note": "챕터 소개·업무·요건·우대·기술 목록·전형·팀원 코멘트(Ben.park, iOS)"
+    },
+    {
+      "n": 2,
+      "title": "Let'Swift 2023 · 당근 iOS 프로젝트 성장기",
+      "url": "https://speakerdeck.com/kanghoon/danggeun-ios-peurojegteu-seongjanggi",
+      "kind": "company",
+      "date": "2023-10",
+      "note": "당근 iOS 엔지니어 발표 자료 — 읽히는 슬라이드 글자(모듈 네 층·빌더·IoC 컨테이너·FlexLayout·목록 프레임워크)만 확인, 한글 일부가 깨져 세부 수치는 못 읽음"
+    },
+    {
+      "n": 3,
+      "title": "GitHub · daangn/KarrotListKit",
+      "url": "https://github.com/daangn/KarrotListKit",
+      "kind": "company",
+      "note": "UIKit 위의 선언형 목록 도구, DifferenceKit 으로 차이 계산 — README 확인"
+    },
+    {
+      "n": 4,
+      "title": "GitHub · daangn/KarrotCodableKit",
+      "url": "https://github.com/daangn/KarrotCodableKit",
+      "kind": "company",
+      "note": "Codable 확장(CustomCodable·PolymorphicCodable·AnyCodable·BetterCodable) — README 확인"
+    },
+    {
+      "n": 5,
+      "title": "당근 채용 블로그 · 신입 모바일 엔지니어로 '당연한' 사용자 경험을 만들어간다는 건",
+      "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EB%AA%A8%EB%B0%94%EC%9D%BC-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4-%EC%B1%84%EC%9A%A9/",
+      "kind": "company",
+      "date": "2025-12-03",
+      "note": "중고거래실 iOS·모바일실 Android 엔지니어 인터뷰"
+    },
+    {
+      "n": 6,
+      "title": "당근 채용 블로그 · 프로덕트에 진심인 엔지니어는 어떻게 일할까? ①",
+      "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EB%AA%A9%EC%A0%81%EC%A1%B0%EC%A7%81-%ED%94%84%EB%A1%9C%EB%8D%95%ED%8A%B8-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4/",
+      "kind": "company",
+      "date": "2025-01-17",
+      "note": "당근알바팀 프론트엔드 엔지니어 글 — 다른 팀"
+    },
+    {
+      "n": 7,
+      "title": "당근 채용 블로그 · 프로덕트에 진심인 엔지니어는 어떻게 일할까? ②",
+      "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B0%9C%EB%B0%9C%EC%9E%90-%ED%94%84%EB%A1%9C%EB%8D%95%ED%8A%B8-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4-%ED%8C%80%EB%B9%8C%EB%94%A9-%ED%9A%8C%EA%B3%A0/",
+      "kind": "company",
+      "date": "2025-01-20",
+      "note": "같은 연재 2편"
+    },
+    {
+      "n": 8,
+      "title": "당근 채용 · 팀 문화(일하는 방식·일하는 환경)",
+      "url": "https://careers.daangn.com/culture/",
+      "kind": "company"
+    },
+    {
+      "n": 9,
+      "title": "당근 채용 · 첫 화면(사이트 하단 회사 정보)",
+      "url": "https://careers.daangn.com/",
+      "kind": "company"
+    },
+    {
+      "n": 10,
+      "title": "원티드 · 당근마켓 기업 정보(평균연봉·입사자 평균연봉)",
+      "url": "https://www.wanted.co.kr/company/2826",
+      "kind": "reference",
+      "note": "금감원·국민연금 자료로 계산한 집계 — 기준일 표기 없음"
+    },
+    {
+      "n": 11,
+      "title": "헤럴드경제 · \"신입 초봉 6000만원, 휴가 한달 마음껏\"…",
+      "url": "https://www.heraldk.com/article/2026040404400043838",
+      "kind": "news",
+      "date": "2026-04-04",
+      "note": "개발자 신입 초봉 6000만원 — 기사에 근거 자료 표기 없음"
+    },
+    {
+      "n": 12,
+      "title": "바이라인네트워크 · 당근, 2025년 매출 2707억원···전년 대비 43%↑",
+      "url": "https://byline.network/2026/03/27_192874-2/",
+      "kind": "news",
+      "date": "2026-03-27"
+    },
+    {
+      "n": 13,
+      "title": "GitHub · daangn/FlexLayout (layoutBox/FlexLayout 의 갈래)",
+      "url": "https://github.com/daangn/FlexLayout",
+      "kind": "company"
+    },
+    {
+      "n": 14,
+      "title": "Tuist 공식 문서",
+      "url": "https://docs.tuist.dev/",
+      "kind": "reference",
+      "note": "프로젝트 생성·모듈·캐시·기능별 작은 앱(µFeatures)"
+    },
+    {
+      "n": 15,
+      "title": "Let'Swift 2023 · Tuist, 도입은 했는데 그래서 Modular Architecture 는 어떻게 만들어 가나요?",
+      "url": "https://speakerdeck.com/innocarpe/tuist-doibeun-haessneunde-geuraeseo-modular-architecture-neun-eoddeohge-mandeuleo-ganayo",
+      "kind": "reference",
+      "date": "2023-10",
+      "note": "29CM(무신사) 발표 — 다른 회사의 Tuist 모듈화 사례"
+    },
+    {
+      "n": 16,
+      "title": "Apple Developer · Swift Testing",
+      "url": "https://developer.apple.com/documentation/testing",
+      "kind": "reference"
+    },
+    {
+      "n": 17,
+      "title": "Apple Developer · XCTest",
+      "url": "https://developer.apple.com/documentation/xctest",
+      "kind": "reference"
+    },
+    {
+      "n": 18,
+      "title": "GitHub · ReactiveX/RxSwift",
+      "url": "https://github.com/ReactiveX/RxSwift",
+      "kind": "reference",
+      "note": "RxTest·RxBlocking 포함"
+    },
+    {
+      "n": 19,
+      "title": "Apple Developer · UIHostingController",
+      "url": "https://developer.apple.com/documentation/swiftui/uihostingcontroller",
+      "kind": "reference",
+      "note": "UIKit 화면 안에 SwiftUI 화면을 넣는 방법"
+    },
+    {
+      "n": 20,
+      "title": "Apple Developer · PHAsset (PhotoKit)",
+      "url": "https://developer.apple.com/documentation/photokit/phasset",
+      "kind": "reference"
+    },
+    {
+      "n": 21,
+      "title": "Apple Developer · Localization",
+      "url": "https://developer.apple.com/documentation/xcode/localization",
+      "kind": "reference"
+    },
+    {
+      "n": 22,
+      "title": "Apple Developer · Accessibility",
+      "url": "https://developer.apple.com/accessibility/",
+      "kind": "reference",
+      "note": "Dynamic Type·VoiceOver"
+    },
+    {
+      "n": 23,
+      "title": "fastlane 공식 문서",
+      "url": "https://docs.fastlane.tools/",
+      "kind": "reference"
+    },
+    {
+      "n": 24,
+      "title": "GitHub Docs · GitHub-hosted runners",
+      "url": "https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners",
+      "kind": "reference",
+      "note": "macOS 실행기"
+    },
+    {
+      "n": 25,
+      "title": "Firebase 문서 · Crashlytics",
+      "url": "https://firebase.google.com/docs/crashlytics",
+      "kind": "reference",
+      "note": "공고는 Firebase 라고만 적었다 — 어느 기능을 쓰는지는 공개되지 않음"
+    },
+    {
+      "n": 26,
+      "title": "GitHub · ra1028/DifferenceKit",
+      "url": "https://github.com/ra1028/DifferenceKit",
+      "kind": "reference",
+      "note": "KarrotListKit 이 기대는 차이 계산 라이브러리"
+    },
+    {
+      "n": 27,
+      "title": "Dependency Injection Principles, Practices, and Patterns (Seemann · van Deursen, Manning)",
+      "url": "https://www.manning.com/books/dependency-injection-principles-practices-patterns",
+      "kind": "reference"
+    },
+    {
+      "n": 28,
+      "title": "Unit Testing Principles, Practices, and Patterns (Vladimir Khorikov, Manning, 2020)",
+      "url": "https://www.manning.com/books/unit-testing",
+      "kind": "reference"
+    },
+    {
+      "n": 29,
+      "title": "Kodeco · RxSwift: Reactive Programming with Swift",
+      "url": "https://www.kodeco.com/books/rxswift-reactive-programming-with-swift",
+      "kind": "reference"
+    },
+    {
+      "n": 30,
+      "title": "당근 채용 · 자주 묻는 질문",
+      "url": "https://careers.daangn.com/faq/",
+      "kind": "company",
+      "note": "서류 형식·병역특례"
+    },
+    {
+      "n": 31,
+      "title": "EO · 1주 1개 실험하는 프로덕트 팀이 되는 여정(당근 팀 블로그 글 소개)",
+      "url": "https://eopla.net/magazines/9046",
+      "kind": "company",
+      "date": "2023-12-07",
+      "note": "원문 소개 — 본문은 로그인 뒤라 제목·요지만 확인. 플랫폼별 버튼 차이 사례는 같은 연재 소개 글"
+    },
+    {
+      "n": 32,
+      "title": "병무청 · 산업기능요원·전문연구요원 안내",
+      "url": "https://www.mma.go.kr/contents.do?mc=mma0000760",
+      "kind": "reference"
+    },
+    {
+      "n": 33,
+      "title": "App Store · 당근 앱 정보",
+      "url": "https://apps.apple.com/kr/app/id1018769995",
+      "kind": "reference",
+      "note": "iOS 16.0 이상 필요"
+    },
+    {
+      "n": 34,
+      "title": "Modular Architecture on iOS and macOS (Cyril Cermak, Leanpub) 표본",
+      "url": "https://s3.amazonaws.com/samples.leanpub.com/modular-architecture-on-ios-and-macos-sample.pdf",
+      "kind": "reference"
+    },
+    {
+      "n": 35,
+      "title": "Wikipedia · Birthday problem",
+      "url": "https://en.wikipedia.org/wiki/Birthday_problem",
+      "kind": "reference"
+    },
+    {
+      "n": 36,
+      "title": "App Store Connect 도움말 · 단계적 출시로 버전 업데이트",
+      "url": "https://developer.apple.com/help/app-store-connect/update-your-app/release-a-version-update-in-phases",
+      "kind": "reference"
+    },
+    {
+      "n": 37,
+      "title": "오픈소스 가이드 · 오픈소스에 기여하는 방법",
+      "url": "https://opensource.guide/ko/how-to-contribute/",
+      "kind": "reference"
+    }
+  ],
+  "caveat": "당근 기술 블로그(Medium)는 자동 읽기가 막혀 iOS 글 본문을 확인하지 못했습니다. 회사 근거는 공고·Let'Swift 2023 발표 자료(일부 슬라이드 글자가 깨짐)·공개 저장소·채용 블로그 인터뷰이고, 빌드 시간·모듈 수·SwiftUI 비중·DI 도구 같은 세부는 공개되지 않아 다른 공식 문서로 '보통 이렇다'를 보였습니다. 발표는 2023년 것이라 지금 구조와 다를 수 있습니다.",
+  "resources": [
+    {
+      "id": "letswift-2023",
+      "title": "당근 iOS 프로젝트 성장기 (Let'Swift 2023 발표 자료)",
+      "by": "당근 iOS 엔지니어 · 2023",
+      "kind": "doc",
+      "url": "https://speakerdeck.com/kanghoon/danggeun-ios-peurojegteu-seongjanggi",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "업무 '확장 가능한 구조'와 우대 'DI'의 회사 쪽 근거. 모듈 네 층·빌더·목록 프레임워크가 어떻게 나왔는지 본다."
+    },
+    {
+      "id": "daangn-intern-post",
+      "title": "신입 모바일 엔지니어로 '당연한' 사용자 경험을 만들어간다는 건",
+      "by": "당근 채용 블로그 · 2025",
+      "kind": "doc",
+      "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EB%AA%A8%EB%B0%94%EC%9D%BC-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4-%EC%B1%84%EC%9A%A9/",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "중고거래실 iOS 엔지니어가 맡은 일·면접 질문·사진 선택 개선 이야기. 이 자리에서 '완성도'가 무슨 뜻인지 가장 직접적으로 보인다."
+    },
+    {
+      "id": "daangn-pe-1",
+      "title": "프로덕트에 진심인 엔지니어는 어떻게 일할까? ①",
+      "by": "당근 채용 블로그 · 2025",
+      "kind": "doc",
+      "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EB%AA%A9%EC%A0%81%EC%A1%B0%EC%A7%81-%ED%94%84%EB%A1%9C%EB%8D%95%ED%8A%B8-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4/",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "자격요건 '사용자 중심 사고'를 당근이 어떻게 보는지 — 기술적 완벽함의 함정, 영향으로 우선순위 매기기."
+    },
+    {
+      "id": "karrotlistkit",
+      "title": "KarrotListKit",
+      "by": "당근 · GitHub",
+      "kind": "doc",
+      "url": "https://github.com/daangn/KarrotListKit",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "공고 기술 목록의 자체 목록 도구. UIKit 위에서 SwiftUI 처럼 목록을 선언하는 방식과 차이 계산을 README·예제로 익힌다."
+    },
+    {
+      "id": "karrotcodablekit",
+      "title": "KarrotCodableKit",
+      "by": "당근 · GitHub",
+      "kind": "doc",
+      "url": "https://github.com/daangn/KarrotCodableKit",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "여러 종류가 섞인 서버 응답을 안전하게 읽는 법(PolymorphicCodable·대체 타입). '새 기능 설계' 줄의 서버 약속 부분."
+    },
+    {
+      "id": "tuist-docs",
+      "title": "Tuist 공식 문서",
+      "by": "Tuist",
+      "kind": "doc",
+      "url": "https://docs.tuist.dev/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "공고의 Tuist — 프로젝트를 Swift 설정으로 만들고, 모듈·캐시·기능별 작은 앱을 꾸리는 법."
+    },
+    {
+      "id": "modular-cermak",
+      "title": "Modular Architecture on iOS and macOS",
+      "by": "Cyril Cermak · Leanpub",
+      "kind": "book",
+      "url": "https://s3.amazonaws.com/samples.leanpub.com/modular-architecture-on-ios-and-macos-sample.pdf",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "큰 iOS 앱을 층과 모듈로 나누는 이유와 방법을 책 한 권으로. 링크는 공개 표본."
+    },
+    {
+      "id": "unit-testing-khorikov",
+      "title": "Unit Testing Principles, Practices, and Patterns",
+      "by": "Vladimir Khorikov · Manning · 2020",
+      "kind": "book",
+      "url": "https://www.manning.com/books/unit-testing",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "자격요건 'Testable 한 코드'. 무엇을 가짜로 바꾸고 무엇은 진짜로 둘지, 좋은 테스트의 기준. 예제는 C# 이지만 생각은 그대로 옮겨진다."
+    },
+    {
+      "id": "di-seemann",
+      "title": "Dependency Injection Principles, Practices, and Patterns",
+      "by": "Mark Seemann · Steven van Deursen · Manning",
+      "kind": "book",
+      "url": "https://www.manning.com/books/dependency-injection-principles-practices-patterns",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "우대 'DI'. 생성자 주입·조립 지점·컨테이너의 장단점을 원리부터. 예제는 C#."
+    },
+    {
+      "id": "rxswift-kodeco",
+      "title": "RxSwift: Reactive Programming with Swift",
+      "by": "Florent Pillet · Scott Gardner · Marin Todorov · Kodeco",
+      "kind": "book",
+      "url": "https://www.kodeco.com/books/rxswift-reactive-programming-with-swift",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "공고의 RxSwift. 흐름 읽기부터 RxTest 로 시간을 가짜로 돌리는 테스트까지."
+    },
+    {
+      "id": "swift-testing",
+      "title": "Swift Testing",
+      "by": "Apple Developer",
+      "kind": "doc",
+      "url": "https://developer.apple.com/documentation/testing",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "XCTest 와 함께 쓰는 새 테스트 도구. 매개변수별 테스트로 경우를 빠짐없이 돌린다."
+    },
+    {
+      "id": "swift-book",
+      "title": "The Swift Programming Language",
+      "by": "Apple · Swift.org",
+      "kind": "doc",
+      "url": "https://docs.swift.org/swift-book/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "자격요건 '3년 수준'의 바탕 — 프로토콜·제네릭·값 타입·메모리(ARC) 장을 다시 읽는다."
+    },
+    {
+      "id": "apple-uikit",
+      "title": "UIKit",
+      "by": "Apple Developer",
+      "kind": "doc",
+      "url": "https://developer.apple.com/documentation/uikit",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "당근 화면은 UIKit 바탕 위에 목록 도구·FlexLayout·SwiftUI 를 얹는다. 컬렉션 뷰와 화면 수명주기."
+    },
+    {
+      "id": "apple-localization",
+      "title": "Localization",
+      "by": "Apple Developer",
+      "kind": "doc",
+      "url": "https://developer.apple.com/documentation/xcode/localization",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "업무 '한국과 글로벌'·우대 '글로벌 서비스'. 문자열 카탈로그·복수형·지역 형식."
+    },
+    {
+      "id": "apple-accessibility",
+      "title": "Accessibility",
+      "by": "Apple Developer",
+      "kind": "doc",
+      "url": "https://developer.apple.com/accessibility/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "사용자 중심 줄 — 큰 글자(Dynamic Type)와 VoiceOver 사용자도 쓰게 만들기."
+    },
+    {
+      "id": "firebase-crashlytics",
+      "title": "Firebase Crashlytics",
+      "by": "Google",
+      "kind": "doc",
+      "url": "https://firebase.google.com/docs/crashlytics",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "크래시 기록을 모아 많이 죽는 곳부터 고치는 기본 도구. 공고의 Firebase."
+    },
+    {
+      "id": "fastlane-docs",
+      "title": "fastlane 공식 문서",
+      "by": "fastlane",
+      "kind": "doc",
+      "url": "https://docs.fastlane.tools/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "업무 '개발 환경 개선' — 서명·TestFlight 업로드를 명령으로."
+    },
+    {
+      "id": "gha-docs",
+      "title": "GitHub Actions 문서",
+      "by": "GitHub",
+      "kind": "doc",
+      "url": "https://docs.github.com/en/actions",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "풀 리퀘스트마다 iOS 빌드·테스트를 자동으로 돌리는 법(macOS 실행기)."
+    },
+    {
+      "id": "experiment-guide",
+      "title": "Trustworthy Online Controlled Experiments",
+      "by": "Kohavi · Tang · Xu",
+      "kind": "book",
+      "url": "https://experimentguide.com/",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "업무 '데이터를 바탕으로 실험'. 실험군 나누기와 지표 오류를 피하는 법."
+    },
+    {
+      "id": "opensource-guide",
+      "title": "오픈소스에 기여하는 방법",
+      "by": "GitHub · Open Source Guides",
+      "kind": "doc",
+      "url": "https://opensource.guide/ko/how-to-contribute/",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "우대 '오픈 소스 기여'의 첫걸음 — 이슈 고르기·풀 리퀘스트 예절."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "당근이 말하는 이 자리 읽기",
+      "time": "1~2일",
+      "goal": "이 자리에서 '완성도'와 '사용자 중심'이 무엇을 뜻하는지 예를 들어 말할 수 있다.",
+      "resources": [
+        "daangn-intern-post",
+        "daangn-pe-1",
+        "letswift-2023"
+      ],
+      "task": "세 글에서 나온 문제(사진 선택 10초·ID 충돌·0.5초 지연)를 각각 '원인 → 고친 법 → 내가 했다면'으로 한 문단씩 적는다."
+    },
+    {
+      "title": "테스트할 수 있는 코드와 DI",
+      "time": "2~3주",
+      "goal": "네트워크·시각을 프로토콜 뒤로 빼고, 생성자 주입으로 가짜를 넣어 자동 테스트를 돌린다.",
+      "resources": [
+        "unit-testing-khorikov",
+        "di-seemann",
+        "swift-testing"
+      ],
+      "task": "가상 중고거래 목록(상품 50개 JSON)을 불러오는 뷰모델을 만들고, 가짜 API·가짜 시계로 '불러오는 중·빈 목록·오류·마감 표시' 네 상태를 테스트로 확인한다."
+    },
+    {
+      "title": "모듈로 나눈 작은 앱",
+      "time": "2~3주",
+      "goal": "Tuist 로 Feature·Domain·Core·Shared 층을 만들고 기능 하나만 따로 빌드한다.",
+      "resources": [
+        "tuist-docs",
+        "modular-cermak",
+        "letswift-2023"
+      ],
+      "task": "2단계 앱을 '목록 Feature · 상품 Domain · 네트워크 Core · 공통 UI Shared' 네 모듈로 나누고, 목록 화면만 띄우는 작은 데모 앱을 따로 만든다. 상세 화면은 인터페이스 모듈로만 연결한다."
+    },
+    {
+      "title": "당근 도구와 RxSwift",
+      "time": "1~2주",
+      "goal": "KarrotListKit 으로 목록을 선언하고, 섞인 피드를 KarrotCodableKit 으로 읽고, Rx 흐름을 테스트한다.",
+      "resources": [
+        "karrotlistkit",
+        "karrotcodablekit",
+        "rxswift-kodeco"
+      ],
+      "task": "상품·광고·동네 글이 섞인 가상 피드 JSON 을 PolymorphicCodable 로 읽고(모르는 type 하나를 일부러 넣는다), KarrotListKit 으로 보여 준 뒤 당겨서 새로고침을 Rx 로 연결하고 RxTest 로 확인한다."
+    },
+    {
+      "title": "출시와 현지화 (선택)",
+      "time": "계속",
+      "goal": "두 언어·두 통화로 현지화하고, CI 에서 테스트·업로드까지 자동으로 돈다.",
+      "resources": [
+        "apple-localization",
+        "fastlane-docs",
+        "gha-docs",
+        "firebase-crashlytics"
+      ],
+      "task": "4단계 앱에 한국어·영어 문자열 카탈로그와 원·달러 가격 표기를 넣고, GitHub Actions 에서 테스트 → fastlane 빌드까지 돌린다. 결과를 공개 저장소로 남긴다(우대 '개인 오픈소스')."
+    }
+  ],
+  "pay": {
+    "summary": "공시 숫자는 없다(비상장). 집계 평균은 **약 6,032만원**, 올해 입사자 평균은 **약 3,888만원** — 보도는 개발자 신입 초봉을 **6,000만원**으로 적었지만 근거가 없다",
+    "rows": [
+      {
+        "label": "직원 평균 연봉",
+        "value": "6,032만원",
+        "amount": 6032,
+        "basis": "공공데이터 집계",
+        "note": "원티드가 금감원·국민연금 자료로 계산한 값이다. 기준일 표기가 없고 직군 구분이 없어 개발자·비개발자가 섞여 있다 [10]"
+      },
+      {
+        "label": "올해 입사자 평균 연봉",
+        "value": "3,888만원",
+        "amount": 3888,
+        "basis": "공공데이터 집계",
+        "note": "원티드가 국민연금 자료로 계산한 값이다. 신입·경력·인턴, 모든 직군이 섞인 값이라 3년 이상 수준을 뽑는 이 자리의 연봉으로 읽으면 안 된다 [10]"
+      },
+      {
+        "label": "업계 평균 연봉",
+        "value": "4,400만원",
+        "amount": 4400,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "같은 원티드 화면의 '업계 평균' — 같은 방식으로 계산한 비교값 [10]"
+      },
+      {
+        "label": "개발자 신입 초봉(보도)",
+        "value": "6,000만원",
+        "amount": 6000,
+        "basis": "보도 · 2026년",
+        "note": "헤럴드경제 기사가 '개발자 신입 초봉 6000만원에 달한다'고 적었으나 근거 자료를 밝히지 않았다 [11]"
+      }
+    ],
+    "how": "당근마켓은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다(2025년 연결 매출 2,707억원 [12]). 위 집계는 국민연금 납부액으로 거꾸로 계산하는 방식이라 소득 상한 때문에 높은 연봉이 낮게 잡히는 경향이 있다 {추론}. 이 공고는 연봉을 적지 않았고, 컬처핏 뒤 **처우협의** 단계가 따로 있어 사람마다 정한다 [1]. 산업기능요원(현역 전직·보충역 신규 편입·전직)으로 채용할 수 있고 전문연구요원은 안 된다 [1][32]. 병역특례 문의는 채용 FAQ 에도 있다 [30]."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "업무 환경",
+        "detail": "인체공학 오피스 가구, 최신 사양 업무 기기"
+      },
+      {
+        "name": "식사",
+        "detail": "식사 및 음료비 지원"
+      },
+      {
+        "name": "야근 교통",
+        "detail": "야근 시 택시비 지원"
+      },
+      {
+        "name": "교육",
+        "detail": "업무 관련 교육·어학 교육비, 국내외 컨퍼런스 참가비와 관련 휴가"
+      },
+      {
+        "name": "학습 도구",
+        "detail": "업무 관련 도서·논문·AI Tool 포함"
+      },
+      {
+        "name": "휴가",
+        "detail": "승인 없이 자유롭게 쓰는 휴가, 연간 최대 25일"
+      },
+      {
+        "name": "문화의 날",
+        "detail": "매월 운영"
+      },
+      {
+        "name": "건강",
+        "detail": "연 1회 종합건강검진, 연 8회 심리 상담"
+      },
+      {
+        "name": "단체 상해보험",
+        "detail": "본인·배우자·자녀·부모님"
+      },
+      {
+        "name": "가족",
+        "detail": "어린이집 자녀 보육 지원, 경조사 및 명절 지원"
+      }
+    ],
+    "note": "당근 채용 사이트의 '팀 문화' 페이지에 적힌 것이다(2026-11 확인) [8]. 금액은 적혀 있지 않고 고용 형태별 적용 범위도 밝히지 않았으니 처우 협의 때 확인한다 {추론}. 정규직은 입사 후 3개월 수습이 있다 [1]."
+  },
+  "location": {
+    "name": "당근 본사 (교보강남타워)",
+    "address": "서울특별시 서초구 강남대로 465, 교보강남타워 11층",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
+    "near": "9호선 신논현역 앞 {추론}",
+    "note": "공고 근무지 표기는 'SEOUL'이고, 주소는 당근 채용 사이트 하단의 회사 정보다 [9]. 팀 자리 층은 다를 수 있다 {추론}."
+  }
+}
