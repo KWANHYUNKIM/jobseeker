@@ -240,6 +240,7 @@
   "ats-hkmc:hyundai:2026N2415": "hyundai-ict-backend-architecture-owners-app",
   "ats-hkmc:hyundai:2026N2375": "hyundai-ict-backend-developer",
   "saramin-55605652": "hyundai-ict-mlops-backend",
+  "saramin-55605742": "hyundai-ict-platform-engineer",
   "ats-hkmc:hyundai:2026N2420": "hyundai-ict-sw-architect",
   "ats-hkmc:hyundai:2026N2425": "hyundai-infra-security-public-cloud",
   "wanted-398820": "hyundai-infra-security-public-cloud",
@@ -324,6 +325,7 @@
   "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
   "jobkorea-50360975": "nextsecurities-account-instrument-backend",
+  "jobkorea-50360883": "nextsecurities-account-instrument-backend",
   "jobkorea-50361414": "nextsecurities-ai-engineer-video",
   "jobkorea-50361367": "nextsecurities-ai-governance-manager",
   "jobkorea-50361209": "nextsecurities-channel-backend",
@@ -2567,6 +2569,16 @@
    "lines": 19
   },
   {
+   "id": "hyundai-ict-platform-engineer",
+   "company": "현대자동차",
+   "role": "Platform Engineer",
+   "jobs": [
+    "saramin-55605742"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 16
+  },
+  {
    "id": "hyundai-ict-sw-architect",
    "company": "현대자동차",
    "role": "SW Architect",
@@ -3311,10 +3323,11 @@
    "company": "넥스트증권",
    "role": "Backend Engineer(계좌 및 종목/상품)",
    "jobs": [
-    "jobkorea-50360975"
+    "jobkorea-50360975",
+    "jobkorea-50360883"
    ],
    "researched_at": "2026-11-25",
-   "lines": 33
+   "lines": 39
   },
   {
    "id": "nextsecurities-ai-engineer-video",
