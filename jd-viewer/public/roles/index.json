@@ -177,6 +177,7 @@
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8201153003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:7644271003": "daangn-content-serving-backend",
+  "ats-greenhouse:daangn:7668837003": "daangn-engagement-frontend",
   "ats-greenhouse:daangn:5046757003": "daangn-feed-infra-backend",
   "ats-greenhouse:daangn:6652141003": "daangn-feed-ml-data-platform-backend",
   "ats-greenhouse:daangn:7507320003": "daangn-feed-ml-data-platform-backend",
@@ -2081,6 +2082,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 24
+  },
+  {
+   "id": "daangn-engagement-frontend",
+   "company": "당근",
+   "role": "프론트엔드 엔지니어 — Cross Product Growth · Engagement 파트",
+   "jobs": [
+    "ats-greenhouse:daangn:7668837003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 22
   },
   {
    "id": "daangn-feed-infra-backend",
