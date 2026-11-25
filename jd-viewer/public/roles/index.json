@@ -171,7 +171,6 @@
   "ats-greenhouse:daangn:6610455003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:5296522003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:5046759003": "daangn-ai-platform-software-engineer",
-  "ats-greenhouse:daangn:5811688003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8201153003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:6652141003": "daangn-feed-ml-data-platform-backend",
@@ -184,6 +183,7 @@
   "ats-greenhouse:daangn:6043519003": "daangn-security-detection-response",
   "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
   "boards-superookie:it:6afd0847a0717c1c4126d602": "daangn-shortform-backend-intern",
+  "ats-greenhouse:daangn:5811688003": "daangn-sre-cluster",
   "wanted-389061": "datachain-senior-sre-stablecoin",
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
@@ -2028,11 +2028,10 @@
     "ats-greenhouse:daangn:4300801003",
     "ats-greenhouse:daangn:6610455003",
     "ats-greenhouse:daangn:5296522003",
-    "ats-greenhouse:daangn:5046759003",
-    "ats-greenhouse:daangn:5811688003"
+    "ats-greenhouse:daangn:5046759003"
    ],
    "researched_at": "2026-11-25",
-   "lines": 94
+   "lines": 82
   },
   {
    "id": "daangn-community-backend-intern",
@@ -2108,6 +2107,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 45
+  },
+  {
+   "id": "daangn-sre-cluster",
+   "company": "당근",
+   "role": "Site Reliability Engineer — 인프라 (클러스터)",
+   "jobs": [
+    "ats-greenhouse:daangn:5811688003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 16
   },
   {
    "id": "datachain-senior-sre-stablecoin",
