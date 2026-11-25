@@ -1,0 +1,1095 @@
+{
+ "id": "coupang-pay-senior-backend-giftcard-cash",
+ "company": "쿠팡페이",
+ "role": "Senior Back-end Engineer (Gift Card, Cash & Assets)",
+ "team": "Coupang Pay · Gift Card, Cash & Assets 팀",
+ "jobs": [
+  "ats-greenhouse:coupang:8316795"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡 고객의 **돈과 돈 비슷한 것** — 등록한 결제수단, 쿠팡캐시, 기프트카드, 송금 — 을 기록하고 지키는 서버를 만듭니다. 이 팀의 시스템이 '고객이 지금 얼마를 가졌나'의 **정본(System of Record)** 이라, 쿠팡의 거의 모든 결제가 여기에 기댑니다.[1]",
+  "env": "Java 와 JPA·MSA(마이크로서비스) 위에서[1], 전자금융거래법의 **선불전자지급수단** 규칙 아래서 일합니다. 쿠팡 기프트카드와 쿠팡캐시는 쿠팡페이가 발행하는 선불전자지급수단이고, 충전금은 전액 따로 보호해야 합니다.[7][11]",
+  "oneline": "경력 3년 이상 백엔드가 **'잔액이 한 원도 틀리지 않고, 두 번 쓰이지 않게'** 지갑의 원장을 만드는 자리 — 화면보다 원장·동시성·대사가 중심입니다. {추론}"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Gift Card, Cash & Assets 팀은 쿠팡페이의 핵심 고객 자산 플랫폼을 담당하는 조직으로, 고객 프로필, 결제수단, 캐시, 기프트카드 및 송금 서비스를 포함한 다양한 금융 자산 시스템을 구축·운영합니다.",
+   "short": "고객이 가진 결제수단·쿠팡캐시·기프트카드·송금을 한 지갑처럼 기록하고 움직이는 서버를 만드는 일.",
+   "why": "쿠팡 기프트카드는 판매 길이 빠르게 늘었습니다. 2025년 8월 카카오톡 선물하기에 들어가 받는 사람이 수락하면 쿠팡캐시로 바로 충전되게 했고 기업용 대량 판매도 열었습니다.[7] 2026년 8월에는 앱에서 실물 카드를 팔기 시작했고[8], 9월에는 편의점 GS25 에서 신용카드로도 살 수 있게 했습니다.[9] 판매처가 늘 때마다 충전·전환·환불 길이 하나씩 더 생깁니다. {추론}",
+   "actually": {
+    "intro": "팀 범위에 적힌 다섯 가지가 실제로 다루는 것입니다. 쿠팡페이가 내부 구조를 공개하지 않아 보도와 공개 문서로 짐작한 부분이 있습니다.",
+    "items": [
+     "**고객 프로필** — 결제에 쓰는 고객 정보(본인 확인 상태 등). 결제수단·캐시가 모두 이 사람에게 묶인다. {추론}",
+     "**결제수단** — 등록한 카드·계좌. 2023년 쿠팡페이의 Payment Wallet Product 팀은 결제 성공률을 지표로 삼아 지갑 경험을 고쳤다고 소개했다.[3]",
+     "**캐시** — 충전·적립·기프트카드 전환으로 늘고 결제로 줄어드는 잔액. 유효기간이 5년이라 오래된 잔액의 만료·환급도 계산해야 한다.[7][10]",
+     "**기프트카드** — 카카오톡 선물(1만~20만원)[7], 실물 카드(1만~30만원 5종)[8], GS25 에서 1천원 단위로 정하는 카드(1만~30만원)[9]. 모두 등록하면 쿠팡캐시가 된다.",
+     "**송금** — 공고가 팀 범위에 적었지만 어떤 송금 서비스인지는 공개 자료에서 찾지 못했다. 면접에서 물어볼 것. {추론}"
+    ]
+   },
+   "how_far": "상품 기획(판매 채널·환급 정책)은 사업 쪽이 정합니다. 개발자는 새 판매처가 붙어도 **충전·사용·환불이 같은 원장 규칙으로 기록되게** 하는 쪽을 맡습니다. {추론}",
+   "refs": [
+    3,
+    7,
+    8,
+    9,
+    10
+   ],
+   "study": [
+    "mt-acct",
+    "pe-payment",
+    "korea-prepaid"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "우리 팀은 고객의 금융 자산과 결제 관계를 관리하는 핵심 시스템(System of Record)으로서, 쿠팡 전반의 거의 모든 결제 경험을 뒷받침하는 중요한 역할을 수행합니다. 팀의 엔지니어들은 확장성(Scalability), 안정성(Reliability), 플랫폼 아키텍처 등 복잡한 기술 과제를 해결하며, 고객과 비즈니스에 폭넓은 영향을 미치는 핵심 이니셔티브를 주도합니다. 대규모 핀테크 시스템을 높은 수준의 오너십과 가시성을 바탕으로 설계하고 발전시키는 데 열정을 가진 분이라면 최고의 성장 기회를 경험할 수 있는 팀입니다.",
+   "short": "'이 사람 잔액이 얼마냐'는 질문의 최종 답이 이 팀 DB라서, 틀리지 않고 멈추지 않게 만드는 일.",
+   "why": "System of Record(정본 시스템)는 다른 서비스가 같은 값을 들고 있어도 **최종으로 믿는 원본**이라는 뜻입니다. 쿠팡페이 결제 조직 책임자 공고는 결제 거래·결제수단·**캐시 잔액**의 확장성·안정성·**정확성**을 맡는다고 적었고[5], 같은 직급의 다른 공고는 이 조직이 기프트카드와 캐시 계정 관리를 한다고 적었습니다.[6] 잔액이 틀리면 고객 돈이 사라지거나 회사 돈이 새고, 법으로 보호해야 하는 충전금 액수도 틀어집니다.[11]",
+   "actually": {
+    "items": [
+     "**원장(ledger)은 고치지 않고 쌓는다** — 잔액 칸을 덮어쓰지 않고 '충전 +5만', '결제 −3.2만' 같은 줄을 쌓아 잔액을 계산한다. 토스페이먼츠는 결제 원장을 INSERT 만 하는 구조로 바꿨다.[13]",
+     "**복식부기** — 돈이 움직일 때마다 나간 쪽과 들어온 쪽을 함께 적어 합이 늘 0이 되게 한다. Square 의 Books 는 이 방식으로 만든 사내 원장 서비스다.[14]",
+     "**검증을 상시로** — Stripe 는 돈의 흐름을 원장에 적고, 끝나야 할 잔액이 0으로 끝나는지 계속 확인한다.[15]",
+     "**확장성** — 결제 때마다 잔액을 읽고 쓰므로, 행사 날 몰림을 견뎌야 한다. 쿠팡페이 대만은 2024년 광군제에 평소의 약 20배 트래픽을 받았다고 밝혔다.[4]",
+     "**가시성** — 정본을 맡는 팀이라 다른 팀이 '왜 이 고객 잔액이 이렇지'를 물으면 원장 줄로 답할 수 있어야 한다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "충전 · 결제 · 부분 환불을 복식으로 적기 (직접 돌린 출력)",
+     "body": "돈이 움직일 때마다 두 계정을 같이 적고 합이 0인지 검사합니다. 잔액은 쌓인 줄에서 계산합니다.[14][16]",
+     "lang": "python",
+     "code": "from collections import Counter\nentries = []\ndef post(tx, lines):\n    assert sum(a for _, a in lines) == 0, \"차변 합 != 대변 합\"\n    for acct, amt in lines:\n        entries.append((tx, acct, amt))\npost(\"charge-1\", [(\"cash\", 50000), (\"customer_cash:u1\", -50000)])\npost(\"pay-1\",    [(\"customer_cash:u1\", 32000), (\"merchant_payable\", -32000)])\npost(\"refund-1\", [(\"merchant_payable\", 12000), (\"customer_cash:u1\", -12000)])\nbal = Counter()\nfor _, a, amt in entries:\n    bal[a] += amt\nprint(\"고객 캐시 잔액:\", -bal[\"customer_cash:u1\"])  # 30000\nprint(\"전체 합:\", sum(bal.values()))               # 0"
+    }
+   ],
+   "how_far": "Senior 자리라 원장 구조 전체를 혼자 정하지는 않지만, **맡은 기능(예: 기프트카드 등록)이 원장 규칙을 깨지 않게** 설계하고 그 근거를 글로 남기는 데까지 합니다. {추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    11,
+    13,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "toss-ledger",
+    "square-books",
+    "stripe-ledger",
+    "mt-acct"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터 사이언스, 컴퓨터 엔지니어링, 전기/전자공학, 수학 또는 이에 준하는 전공 분야 학사 학위 이상이신 분",
+   "short": "자료구조·운영체제·DB 같은 전공 기초를 전제로 면접을 보겠다는 뜻.",
+   "why": "쿠팡의 해외 공고들과 같은 틀의 문장입니다. '이에 준하는'이 붙어 있어 전공 이름보다 그 기초를 갖췄는지가 중요합니다. {추론}",
+   "how_far": "비전공이면 동시성(잠금·트랜잭션 격리)과 DB 색인을 설명할 수 있을 만큼 채워 두는 것이 최소선입니다 — 이 팀 일의 바탕이 그것이라서입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddia",
+    "spring-db-1"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기초 알고리즘, 시스템 디자인, 대규모 분산 시스템 관련 경력 3년 이상이신 분",
+   "short": "서버 여러 대·서비스 여러 개에 걸친 돈 이동을 설계해 본 3년이 필요해서.",
+   "why": "쿠팡은 2013년부터 큰 서버 하나를 작은 서비스들로 나눠 왔습니다.[30] 그래서 기프트카드 등록 하나도 '카드 상태 바꾸기 → 캐시 충전 → 알림'처럼 여러 서비스에 걸칩니다. 중간에 실패하면 어디까지 되돌리나를 설계하는 일이 일상입니다. {추론} 쿠팡 주문 시스템 엔지니어들도 지원자에게 고가용성·데이터 유실 방지·비동기 통신을 공부하라고 권했습니다.[32]",
+   "actually": {
+    "items": [
+     "**한 번만 처리하기** — 재시도로 같은 충전 요청이 두 번 와도 한 번만 충전. 요청마다 멱등 키(같은 요청임을 알아보는 번호)를 받는다.[17]",
+     "**저장과 알림을 같이** — DB 저장과 메시지 발행 사이에 서버가 죽으면 한쪽만 남는다. 아웃박스 표에 같이 적고 나중에 보낸다.[18]",
+     "**여러 서비스에 걸친 되돌리기** — 카드는 '사용됨'이 됐는데 캐시 충전이 실패하면 카드를 되살리는 단계를 미리 정한다(사가).[19]",
+     "**메시지는 한 번 이상 온다** — Kafka 기본 보장은 '적어도 한 번'이라 받는 쪽도 중복을 걸러야 한다.[33]"
+    ]
+   },
+   "how_far": "시스템 디자인 면접에서 '기프트카드 시스템을 설계하라'를 받았을 때 **중복 충전·동시 사용·부분 실패** 세 가지를 스스로 꺼내 답할 수 있으면 이 줄을 채운 것입니다. {추론}",
+   "refs": [
+    17,
+    18,
+    19,
+    30,
+    32,
+    33
+   ],
+   "study": [
+    "sysdesign",
+    "msa-patterns",
+    "stripe-idem",
+    "outbox-doc",
+    "saga-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java 또는 그와 비슷한 언어로 코딩한 경력 3년 이상이신 분",
+   "short": "팀 코드가 Java(+JPA)라서, 첫날부터 그 코드를 읽고 고칠 수 있어야 해서.",
+   "why": "공고 기술 태그가 Java 이고 우대에 JPA 가 있습니다.[1] 같은 쿠팡페이의 결제 백엔드 공고도 Java/Kotlin · Spring · JPA 를 적었습니다.[27]",
+   "level": {
+    "basic": "컬렉션·예외·불변 객체 · 돈은 long(원 단위)이나 BigDecimal 로",
+    "work": "Spring 트랜잭션 경계 · JPA 영속성 컨텍스트 · 동시성(스레드·잠금) · 테스트",
+    "team": "잔액 차감의 경쟁 조건을 잠금·조건부 UPDATE·버전 칸으로 막기 · 대량 처리에서 N+1 피하기 {추론}"
+   },
+   "how_far": "'비슷한 언어'라 Kotlin·C# 도 됩니다. 다만 들어가면 Java 생태계(Spring·JPA)로 일하니 그쪽 트랜잭션 동작은 미리 익혀 두는 편이 좋습니다. {추론}",
+   "refs": [
+    1,
+    27
+   ],
+   "study": [
+    "jpa-basic",
+    "spring-db-1",
+    "book-thread"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 실시간 시스템을 설계 및 구축한 경험이 있으신 분",
+   "short": "결제 순간에 잔액을 읽고 깎는 일이라, 기다려 주는 배치가 아니라 바로 답하는 서버여서.",
+   "why": "고객이 결제 버튼을 누르는 순간 캐시 잔액을 확인하고 차감해야 합니다. 2023년 쿠팡페이 지갑 팀은 결제 성공률을 핵심 지표로 삼았다고 했고[3], 잔액 서버가 느리거나 멈추면 그 결제가 실패합니다. {추론}",
+   "actually": {
+    "items": [
+     "**동시에 두 번 쓰기 막기** — 잔액 3만원인데 2만원 결제 두 개가 동시에 오면 하나만 성공해야 한다. 아래 예처럼 조건부 UPDATE 나, DB 행 잠금(비관적 잠금)·버전 칸(낙관적 잠금)을 쓴다.[20]",
+     "**몰리는 한 사람** — 기업이 한 계정으로 대량 구매하면 행 하나에 요청이 몰린다. 잠금 시간을 짧게 하고 줄을 세운다. {추론}",
+     "**응답 시간을 숫자로** — 평균이 아니라 99번째 백분위 응답 시간으로 본다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "잔액 3만원에 2만원 결제 두 개가 동시에 (직접 돌린 출력)",
+     "body": "잔액 확인과 차감을 한 문장에 넣으면 둘 중 하나만 성공합니다. '읽고 → 비교하고 → 쓰기'를 따로 하면 둘 다 통과할 수 있습니다.[20]",
+     "lang": "python",
+     "code": "# 각 스레드가 같은 문장을 실행\ncur = c.execute(\n  \"update wallet set balance = balance - ? \"\n  \"where uid='u1' and balance >= ?\", (20000, 20000))\n# rowcount 1 = 성공, 0 = 잔액 부족으로 거절\n\n# 출력\n# 성공한 차감: 1 거절: 1\n# 남은 잔액: 10000"
+    }
+   ],
+   "refs": [
+    3,
+    20,
+    21
+   ],
+   "study": [
+    "hibernate-guide",
+    "book-thread",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "요구사항이 빠르게 변하는 환경에서 적절한 트레이드오프와 함께 소프트웨어 프로덕트를 달성하는 탁월한 능력이 있으신 분",
+   "short": "판매처·정책이 몇 달마다 바뀌어서, 다 갖춘 설계보다 '지금 무엇을 포기할지'를 고르는 능력.",
+   "why": "1년 남짓 사이에 카카오톡 선물하기·기업 대량 판매(2025-08)[7], 실물 카드(2026-08)[8], GS25 판매(2026-09)[9]가 붙었고, 환급 비율 약관도 바뀌었습니다(2026-09-20 시행).[10] 같은 해 쿠팡페이는 로켓페이로 개편해 외부 가맹점으로 나간다고 발표했습니다.[12]",
+   "actually": {
+    "items": [
+     "**규칙을 코드에서 떼기** — 환급 비율(5만원 이하 90%, 초과 95%)처럼 바뀌는 숫자는 설정·표로 둔다.[10]",
+     "**먼저 내고 나중에 다듬기 vs 원장은 처음부터** — 화면·판매처 연동은 빨리 내되, 원장 형식은 처음부터 맞게 하는 식의 구분. {추론}",
+     "**결정 기록** — 무엇을 포기했고 언제 다시 볼지를 짧은 문서로 남긴다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "유효기간 지난 상품권 환급 (직접 돌린 출력)",
+     "body": "2026-09-20 부터 현금 환급은 5만원 이하 90%, 5만원 초과 95%, 쿠팡캐시로 받으면 전액입니다.[10] 권면은 처음 금액, 잔액은 남은 금액입니다.",
+     "lang": "python",
+     "code": "def refund(face, remain, to_cash=False):\n    if to_cash:\n        return remain\n    rate = 95 if face > 50000 else 90\n    return remain * rate // 100\nfor face, remain in [(50000, 20000), (100000, 20000)]:\n    print(face, remain, refund(face, remain), refund(face, remain, True))\n# 50000 20000 18000 20000\n# 100000 20000 19000 20000"
+    }
+   ],
+   "refs": [
+    7,
+    8,
+    9,
+    10,
+    12
+   ],
+   "study": [
+    "newman-msa",
+    "pe-payment"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "강력한 오너십, 빠르고 능동적인 업무 방식, 추진력이 있으신 분",
+   "short": "정본 시스템이라 '남의 팀 일'이 없어서 — 잔액 문제는 결국 이 팀이 끝까지 쫓는다.",
+   "why": "팀 소개 문장이 '높은 수준의 오너십'을 직접 적었습니다.[1] 다른 팀 결제에서 잔액이 이상해도 원본이 이 팀에 있으니 원인 추적이 이 팀으로 옵니다. {추론}",
+   "how_far": "이력서에 '맡은 기능을 출시 뒤 지표·장애까지 책임진 사례' 하나를 숫자로 쓸 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "새로운 도메인 및 기술을 빠르게 학습하려는 높은 학습 의지와 성장 욕구가 있으신 분",
+   "short": "결제 경험이 없어도 지원할 수 있지만, 선불·회계·규제 말을 빨리 익혀야 해서.",
+   "why": "결제 도메인 경험은 자격요건이 아니라 우대입니다.[1] 대신 선불충전금 별도관리(2024-09-15 시행, 충전금 전액)[11], 상품권 환급 약관[10] 같은 규칙을 들어가서 익혀야 합니다.",
+   "how_far": "들어가기 전엔 복식부기와 선불전자지급수단이 무엇인지 설명할 수 있는 정도면 충분합니다. {추론}",
+   "refs": [
+    1,
+    10,
+    11
+   ],
+   "study": [
+    "mt-acct",
+    "korea-prepaid",
+    "law-efta"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "뛰어난 구두 및 서면 커뮤니케이션 능력이 있으신 분",
+   "short": "설계를 문서로 설득하고, 장애·잔액 차이를 다른 팀과 숫자로 정리해야 해서.",
+   "why": "정본을 맡은 팀은 다른 팀의 질문(이 고객 잔액이 왜 이렇지)을 많이 받고, 원장 형식을 바꾸려면 쓰는 팀들의 동의가 필요합니다. {추론} 전형에 직무 적합성·핵심 역량 인터뷰 두 번이 있습니다.[1]",
+   "how_far": "A4 한두 장 설계 문서(문제 · 선택지 · 고른 것과 이유 · 위험)를 쓸 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "글로벌 분산 팀과 긴밀히 협력한 경험이 있으신 분",
+   "short": "쿠팡페이는 한국과 대만에서 서비스하고, 같이 일하는 팀이 다른 나라·시간대에 있어서.",
+   "why": "쿠팡페이 팀 소개는 한국과 대만 두 시장을 적었고[2], 대만 법인도 결제 서비스를 운영합니다.[4] 공고 본문도 한국어지만 글로벌 팀 협력을 요건에 넣었습니다.[1]",
+   "actually": {
+    "items": [
+     "회의보다 **글로 남기는** 협업 — 설계 문서·티켓·장애 기록이 영어로 오가는 경우. {추론}",
+     "시간대가 겹치는 짧은 시간에 결정할 것만 모으기. {추론}"
+    ]
+   },
+   "how_far": "영어로 기술 문서를 읽고, 짧은 설계 의견을 영어로 쓸 수 있는 정도가 최소선으로 보입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "JPA, MSA에 대한 이해도가 높으신 분",
+   "short": "잔액 차감이 JPA 트랜잭션 안에서 일어나고, 그 결과를 다른 서비스로 나눠 보내서.",
+   "why": "같은 쿠팡페이 결제 백엔드 공고들도 JPA·MSA 를 함께 적었습니다.[27] 쿠팡은 MSA 로 오래 일한 회사입니다.[30]",
+   "actually": {
+    "items": [
+     "**JPA 잠금** — 잔액 행을 읽을 때 비관적 잠금(다른 쪽이 못 고치게 잡기)이나 @Version 칸(낙관적 잠금 — 고칠 때 버전이 바뀌었으면 실패)을 고른다.[20]",
+     "**변경 감지의 함정** — 엔티티 값만 바꿔도 트랜잭션 끝에 UPDATE 가 나간다. 잔액을 '읽은 값 − 금액'으로 덮어쓰면 동시 요청에서 한쪽이 사라진다. {추론}",
+     "**서비스 사이** — 캐시 충전 결과를 아웃박스로 내보내고, 받는 쪽은 중복을 거른다.[18][33]"
+    ]
+   },
+   "refs": [
+    18,
+    20,
+    27,
+    30,
+    33
+   ],
+   "study": [
+    "jpa-basic",
+    "jpa-app-2",
+    "hibernate-guide",
+    "msa-patterns",
+    "kafka-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Payment 도메인에서 근무 경험이 있는 분",
+   "short": "승인·취소·환불·정산 순서와 '돈이 어디에 묶여 있나'를 이미 아는 사람이 빨라서.",
+   "why": "기프트카드는 신용카드로 살 수 있고[9], 사면 쿠팡캐시가 되고, 캐시는 다시 결제에 쓰입니다.[7] 카드 결제 취소가 오면 이미 쓴 캐시를 어떻게 하나 같은 문제가 결제 도메인 지식입니다. {추론}",
+   "actually": {
+    "items": [
+     "**선불충전금 보호** — 2024-09-15 부터 선불업자는 충전금 전액(100% 이상)을 따로 관리해야 한다. 잔액 합계를 매일 정확히 낼 수 있어야 한다는 뜻이다.[11] 쿠팡페이도 지급보증보험 등으로 보호한다고 안내한다.[7] {추론}",
+     "**할인 발행** — 할인 발행·적립금 지급은 부채비율 200% 이하 업자만 할 수 있고 그 금액도 보호 대상이다.[11]",
+     "**결제 흐름 지도** — 승인·취소·매입·정산·대사를 한 장으로 보는 글이 있다.[24]"
+    ]
+   },
+   "refs": [
+    7,
+    9,
+    11,
+    24
+   ],
+   "study": [
+    "pe-payment",
+    "korea-prepaid",
+    "law-efta",
+    "toss-ledger"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "장애 관리 및 모니터링 기능이 있는 대규모 운영 시스템 경험이 있는 분",
+   "short": "잔액 서버가 멈추면 쿠팡 결제 대부분이 같이 멈춰서, 먼저 알고 빨리 되돌려야 해서.",
+   "why": "이 팀은 거의 모든 결제를 받친다고 스스로 적었습니다.[1] 쿠팡페이 채용 안내는 팀에 따라 교대·휴일·야간 근무가 있을 수 있다고 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**SLO** — '캐시 결제 차감 성공률 99.9%' 같은 목표를 정하고 그 아래로 떨어지는 속도로 알림을 건다.[21][22]",
+     "**돈 지표** — 오류율뿐 아니라 '원장 합계 ≠ 잔액 합계' 같은 정합성 지표를 대시보드에 둔다. {추론}",
+     "**사후 분석** — 장애 뒤 원인·영향 금액·재발 방지를 글로 남긴다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "99.9% 의 뜻",
+     "body": "30일 × 24시간 × 60분 × 0.1% = **43.2분** — 한 달에 이만큼 실패해도 목표 안입니다. 이걸 2시간 만에 다 쓰는 속도면 바로 알림을 거는 식입니다.[22]"
+    }
+   ],
+   "refs": [
+    1,
+    2,
+    21,
+    22
+   ],
+   "study": [
+    "sre-slo",
+    "sre-alert",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "애자일 소프트웨어 방법론이 익숙하신 분",
+   "short": "짧은 주기로 기획·개발·회고를 돌려서, 그 리듬에 익숙한 사람을 원해서.",
+   "why": "판매처·약관이 몇 달마다 바뀌는 팀이라 짧은 주기로 계획을 다시 잡습니다.[7][8][9] 쿠팡페이 지갑 팀은 OKR(분기 목표와 지표)로 일한다고 소개했습니다.[3]",
+   "how_far": "스크럼의 기본(스프린트·백로그·회고)을 알고, 큰 일을 1~2주 단위로 쪼개 본 경험이면 충분합니다.[23] {추론}",
+   "refs": [
+    3,
+    7,
+    8,
+    9,
+    23
+   ],
+   "study": [
+    "scrum-guide"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대용량 데이터의 대사 작업이 익숙하신 분",
+   "short": "우리 원장과 판매처·은행·카드사 기록을 매일 맞춰, 한 원이라도 어긋난 건을 찾는 일.",
+   "why": "기프트카드는 카카오톡·11번가·GS엠비즈 같은 제휴처[7]와 GS25[9]에서 팔리므로, 판매처가 보낸 판매 기록과 우리 등록 기록을 맞춰야 정산이 됩니다. {추론} 충전금 전액 보호 규칙 때문에 잔액 합계와 보호 금액도 맞아야 합니다.[11]",
+   "actually": {
+    "items": [
+     "**하루치 파일 맞추기** — 상대 파일과 우리 원장을 거래 번호로 이어, 일치·금액 다름·한쪽에만 있음·중복으로 나눈다(아래 예).",
+     "**시간 차이** — 밤 12시 근처 거래는 날짜가 갈린다. 다음 날 다시 맞춰 보고 남는 것만 사람에게. {추론}",
+     "**대용량** — 수백만 줄이면 정렬 후 합치기나 분산 처리(Spark 등)를 쓴다. {추론}",
+     "**원장 자체 검증** — 계정별 합이 0으로 끝나는지 계속 본다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "우리 원장 vs 판매처 정산 파일 (직접 돌린 출력)",
+     "body": "가상 데이터입니다. 상대 파일에 같은 번호가 두 번, 금액 다름, 한쪽에만 있는 건을 섞었습니다.",
+     "lang": "python",
+     "code": "from collections import Counter\nours = {\"G001\": 10000, \"G002\": 50000, \"G003\": 30000, \"G004\": 20000}\ntheirs = [(\"G001\", 10000), (\"G002\", 55000), (\"G004\", 20000), (\"G004\", 20000), (\"G005\", 10000)]\ncnt = Counter(k for k, _ in theirs)\ntheir_amt = dict(theirs)\nfor k in sorted(set(ours) | set(their_amt)):\n    if k not in their_amt:   print(k, \"판매처 파일에 없음\")\n    elif k not in ours:      print(k, \"우리 원장에 없음\")\n    elif cnt[k] > 1:         print(k, f\"판매처 파일에 {cnt[k]}번\")\n    elif ours[k] != their_amt[k]: print(k, f\"금액 다름 {ours[k]} / {their_amt[k]}\")\n    else:                    print(k, \"일치\")\n# G001 일치\n# G002 금액 다름 50000 / 55000\n# G003 판매처 파일에 없음\n# G004 판매처 파일에 2번\n# G005 우리 원장에 없음"
+    }
+   ],
+   "refs": [
+    7,
+    9,
+    11,
+    15
+   ],
+   "study": [
+    "stripe-ledger",
+    "pe-payment",
+    "mt-acct"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "잔액이 1원 틀린 이유를 원장 줄을 따라 끝까지 찾는 게 재밌는 사람",
+   "화면보다 데이터 정합성·동시성을 다루고 싶은 3년 차 이상 백엔드",
+   "판매 채널이 빠르게 늘어나는 시기(카카오·실물·편의점)에 구조를 같이 키워 보고 싶은 사람[7][8][9]",
+   "결제 경험은 없지만 금융 도메인으로 옮기고 싶은 사람 — 결제 경력은 우대일 뿐이다[1]"
+  ],
+  "hard": [
+   "정본 시스템이라 장애·잔액 문의 대응 부담이 있다 — 팀에 따라 교대·휴일·야간 근무가 있을 수 있다[2]",
+   "선불·상품권 규제와 약관을 같이 지켜야 해서 바꿀 때 확인할 것이 많다[10][11]",
+   "2025년 쿠팡 개인정보 유출 뒤라 보안 절차가 더 무거워졌을 수 있다 {추론}[31]",
+   "공고에 연봉이 없고, '송금'이 무엇인지 공개 자료로는 알 수 없다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "잔액 3만원인 고객이 2만원 결제를 동시에 두 번 했습니다. JPA 로 어떻게 하나만 성공시키나요? 비관적·낙관적 잠금 중 무엇을 고르겠어요?",
+   "a": "실시간 잔액 차감의 핵심 — 잠금 종류와 몰리는 계정.[20]"
+  },
+  {
+   "q": "기프트카드 등록 요청이 시간 초과 후 재시도로 다시 왔습니다. 첫 요청은 사실 성공했었다면요?",
+   "a": "멱등 키와 첫 응답 저장.[17]"
+  },
+  {
+   "q": "카드 상태는 '사용됨'이 됐는데 캐시 충전 서비스가 실패했습니다. 고객 돈은 어디에 있나요?",
+   "a": "여러 서비스에 걸친 되돌리기(사가)와 아웃박스.[18][19]"
+  },
+  {
+   "q": "잔액 칸 하나를 고치는 방식과 원장 줄을 쌓는 방식의 차이는? 잔액을 빨리 읽어야 하면요?",
+   "a": "정본 시스템의 설계 — 쌓는 원장과 잔액 요약.[13][14]"
+  },
+  {
+   "q": "GS25 판매 파일과 우리 등록 기록이 300건 안 맞습니다. 어떤 순서로 원인을 찾나요?",
+   "a": "대사 우대 줄 — 날짜 경계·중복·금액 다름 가르기.[9][15]"
+  },
+  {
+   "q": "선불충전금을 전액 따로 관리해야 한다면, 시스템은 매일 무엇을 정확히 내야 하나요?",
+   "a": "규제가 원장에 주는 요구.[11]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · [Coupang Pay] Senior Back-end Engineer (Gift Card, Cash & Assets)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8316795",
+   "kind": "posting",
+   "note": "이 공고 — 팀 소개 두 문단·자격요건 9·우대 5, 기술 태그 Java, 전형(서류 → 직무 적합성 인터뷰 → 핵심 역량 인터뷰 → 최종), 정규직·수습 12주, 근무지 Seoul. 연봉·복리후생 칸 없음. 우리 수집 2026-11-24"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · Coupang Pay 팀 소개",
+   "url": "https://www.coupang.jobs/en/teams/coupang-pay/",
+   "kind": "company",
+   "note": "한국·대만, 쿠페이·와우카드·판매자 BaaS, FAQ(교대·휴일·야간 근무 가능성) — 앞선 쿠팡페이 풀이들과 같은 근거"
+  },
+  {
+   "n": 3,
+   "title": "Coupang Careers · How do we make a better payment experience?",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/how-do-we-make-a-better-payment-experience/",
+   "kind": "company",
+   "date": "2023-03-05",
+   "note": "Payment Wallet Product 팀 — 결제 성공률·OKR·엔지니어링과 안정성 협업"
+  },
+  {
+   "n": 4,
+   "title": "AWS 대만 · Coupang Pay 인터뷰(2025 AWS 금융 포럼)",
+   "url": "https://aws.amazon.com/tw/events/taiwan/interviews/coupangpay",
+   "kind": "company",
+   "note": "쿠팡페이 제품 책임자 — 2024 광군제 평소의 약 20배 트래픽"
+  },
+  {
+   "n": 5,
+   "title": "Coupang Careers · [Coupang Pay] Director, Back-End Engineering",
+   "url": "https://www.coupang.jobs/kr/jobs/6655456/coupang-pay-director-back-end-engineering/",
+   "kind": "posting",
+   "note": "같은 조직 책임자 공고 — 결제 거래·결제수단·캐시 잔액의 확장성·안정성·정확성. 검색 요약으로 확인"
+  },
+  {
+   "n": 6,
+   "title": "Built In · Director, Back-End Engineering (Coupang Pay)",
+   "url": "https://builtin.com/job/director-back-end-engineering/7129926",
+   "kind": "posting",
+   "note": "결제 제품 엔지니어링이 지갑 관리·기프트카드·캐시 계정 관리를 맡는다는 설명. 검색 요약으로 확인"
+  },
+  {
+   "n": 7,
+   "title": "스마트투데이 · 쿠팡 기프트카드, 카카오톡 선물하기 공식 입점",
+   "url": "https://www.smarttoday.co.kr/ko-kr/articles/89862",
+   "kind": "news",
+   "date": "2025-08-31",
+   "note": "1만~20만원, 수락하면 쿠팡캐시로 충전, 유효기간 5년, GS엠비즈·11번가·쿠프마케팅과 기업용 대량 공급. 판매 페이지에 '쿠팡페이 발행 선불전자지급수단 · 지급보증보험 등으로 보호' 안내"
+  },
+  {
+   "n": 8,
+   "title": "인사이트 · 쿠팡 앱 실물 기프트카드 출시",
+   "url": "https://www.insight.co.kr/news/571023",
+   "kind": "news",
+   "date": "2026-08-31",
+   "note": "1만~30만원 5종, 로켓배송, 앱에 등록하면 쿠팡캐시"
+  },
+  {
+   "n": 9,
+   "title": "SBS Biz · 쿠팡, GS25서 기프트카드 판매…신용카드로 충전 가능",
+   "url": "https://biz.sbs.co.kr/amp/article/20000336509",
+   "kind": "news",
+   "date": "2026-09-23",
+   "note": "수도권부터 전국으로, 1만~30만원 1천원 단위, 카드사 5곳 신용카드 결제, 쿠팡캐시로 전환"
+  },
+  {
+   "n": 10,
+   "title": "SBS Biz · 내달부터 쿠팡도 5만원 초과 상품권 95% 돌려준다",
+   "url": "https://biz.sbs.co.kr/amp/article/20000327015",
+   "kind": "news",
+   "date": "2026-08",
+   "note": "쿠팡페이 상품권 약관 개정 — 2026-09-20 시행, 5만원 이하 90%·초과 95% 현금 환급, 쿠팡캐시로 받으면 전액. 공정위 표준약관 개정에 맞춤"
+  },
+  {
+   "n": 11,
+   "title": "대한민국 정책브리핑 · 선불충전금 전액 별도관리 (개정 전자금융거래법 시행)",
+   "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148933416",
+   "kind": "reference",
+   "date": "2024-09",
+   "note": "2024-09-15 시행, 선불충전금 100% 이상 별도관리, 할인 발행·적립금은 부채비율 200% 이하만, 대부분의 모바일 상품권이 선불전자지급수단"
+  },
+  {
+   "n": 12,
+   "title": "뉴데일리 · 쿠팡, 로켓페이로 간편 결제 출사표",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2026/07/10/2026071000246.html",
+   "kind": "news",
+   "date": "2026-07-10",
+   "note": "쿠팡페이 → 로켓페이 개편, 외부 온라인 → 오프라인 가맹점"
+  },
+  {
+   "n": 13,
+   "title": "토스 테크 · 레거시 결제 원장을 확장 가능한 시스템으로",
+   "url": "https://toss.tech/article/payments-legacy-5",
+   "kind": "reference",
+   "date": "2025-12-01",
+   "note": "다른 회사(토스페이먼츠) — INSERT 전용 원장, 이벤트·아웃박스, 무중단 이관"
+  },
+  {
+   "n": 14,
+   "title": "Square Engineering · Books, an immutable double-entry accounting database service",
+   "url": "https://developer.squareup.com/blog/books-an-immutable-double-entry-accounting-database-service/",
+   "kind": "reference",
+   "date": "2019-10-16",
+   "note": "다른 회사 — 고치지 않는 복식부기 원장 서비스, 잔액은 거래에 참여해서만 바뀜"
+  },
+  {
+   "n": 15,
+   "title": "Stripe · Ledger: Stripe's system for tracking and validating money movement",
+   "url": "https://stripe.com/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+   "kind": "reference",
+   "note": "다른 회사 — 돈의 흐름을 원장에 적고 잔액이 맞는지 상시 검증"
+  },
+  {
+   "n": 16,
+   "title": "Modern Treasury · Accounting for Developers (Part II — 지갑 앱 원장)",
+   "url": "https://www.moderntreasury.com/journal/accounting-for-developers-part-ii",
+   "kind": "reference",
+   "date": "2022",
+   "note": "디지털 지갑의 충전·송금·출금을 복식부기 원장으로 설계하는 예. 원장 제품 회사의 글"
+  },
+  {
+   "n": 17,
+   "title": "Stripe API · Idempotent requests",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "kind": "reference",
+   "note": "멱등 키, 첫 응답 저장"
+  },
+  {
+   "n": 18,
+   "title": "microservices.io · Pattern: Transactional outbox",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "kind": "reference",
+   "note": "Chris Richardson"
+  },
+  {
+   "n": 19,
+   "title": "microservices.io · Pattern: Saga",
+   "url": "https://microservices.io/patterns/data/saga.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Hibernate ORM User Guide · Locking",
+   "url": "https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#locking",
+   "kind": "reference",
+   "note": "낙관적 잠금(@Version)·비관적 잠금(LockModeType)"
+  },
+  {
+   "n": 21,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA, 백분위. 사후 분석은 같은 책 Postmortem Culture 장"
+  },
+  {
+   "n": 22,
+   "title": "Google SRE Workbook · Alerting on SLOs",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "kind": "reference",
+   "note": "오류 예산 소모 속도로 알림"
+  },
+  {
+   "n": 23,
+   "title": "The Scrum Guide",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "kind": "reference",
+   "date": "2020",
+   "note": "Ken Schwaber · Jeff Sutherland"
+  },
+  {
+   "n": 24,
+   "title": "The Pragmatic Engineer · Designing a Payment System",
+   "url": "https://newsletter.pragmaticengineer.com/p/designing-a-payment-system",
+   "kind": "reference",
+   "note": "Alex Xu — 결제 흐름·대사·실패 처리"
+  },
+  {
+   "n": 25,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "모회사 쿠팡(주) 값 — 쿠팡페이 법인 아님. 앞선 쿠팡페이 풀이들과 같은 값"
+  },
+  {
+   "n": 26,
+   "title": "캐치 · 쿠팡페이 기업 정보",
+   "url": "https://www.catch.co.kr/Comp/CompSummary/E94228",
+   "kind": "reference",
+   "note": "사원 수 278명(2025-12 기준). 초봉·평균 칸은 가려져 있음"
+  },
+  {
+   "n": 27,
+   "title": "원티드 · 쿠팡 Staff Back-end Engineer (Rocket Pay)",
+   "url": "https://www.wanted.co.kr/wd/381767",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — Java/Kotlin·Spring·JPA·MSA, 복리후생 칸, 전형 마지막 처우협의"
+  },
+  {
+   "n": 28,
+   "title": "원티드 · [쿠팡페이] 백엔드 개발자 (Fintech Data Platform)",
+   "url": "https://www.wanted.co.kr/wd/392187",
+   "kind": "posting",
+   "note": "같은 회사 다른 팀 — 근무지 서울 광진구 아차산로 412 이스트폴 타워 A"
+  },
+  {
+   "n": 29,
+   "title": "리멤버 · [쿠팡페이] Staff Back-end Engineer (Fintech Platform)",
+   "url": "https://career.rememberapp.co.kr/job/posting/308250",
+   "kind": "posting",
+   "note": "같은 회사 Staff 공고 — 10년 이상, 연봉 1억 5,000만~2억 6,000만원 표기"
+  },
+  {
+   "n": 30,
+   "title": "Coupang Engineering · Integrating Coupang platform services to a microservice architecture",
+   "url": "https://medium.com/coupang-engineering/행복을-찾기-위한-우리의-여정-a31fc2d5a572",
+   "kind": "company",
+   "date": "2018-05-25",
+   "note": "Vitamin 프로젝트 — 2013 MSA 전환 결정. 본문은 자동 접속이 막혀 검색 요약으로 확인(앞선 풀이들과 같은 근거)"
+  },
+  {
+   "n": 31,
+   "title": "바이라인네트워크 · 3370만건 고객정보 털린 쿠팡, 뭐가 문제였을까?",
+   "url": "https://byline.network/2025/12/1-1389/",
+   "kind": "news",
+   "date": "2025-12",
+   "note": "수사 결과 전 보도 기준"
+  },
+  {
+   "n": 32,
+   "title": "Coupang Careers · Meet back-end engineers in E-commerce Engineering",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-back-end-engineers-in-e-commerce-engineering-daniel-toyo-toby/",
+   "kind": "company",
+   "date": "2023-10-25",
+   "note": "쿠팡 주문 시스템 엔지니어 — 고가용성·데이터 유실 방지·비동기 통신 공부 조언"
+  },
+  {
+   "n": 33,
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "쿠팡페이 Gift Card, Cash & Assets 팀의 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고·같은 조직 다른 공고·팀 소개·보도이고, 원장·동시성·대사 구조는 토스페이먼츠·Square·Stripe·Modern Treasury 의 공개 글로 '보통 이런 것'을 보였습니다. 공고의 '송금'이 어떤 서비스인지, 고객 프로필이 무엇을 담는지는 공개 자료로 확인하지 못했습니다. 책임자 공고(5·6번)와 쿠팡 MSA 글은 검색 요약으로만 확인했고, 공고 게시일은 우리가 처음 본 날(2026-11-24)입니다.",
+ "resources": [
+  {
+   "id": "toss-ledger",
+   "title": "레거시 결제 원장을 확장 가능한 시스템으로",
+   "by": "토스페이먼츠 · 토스 테크 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/payments-legacy-5",
+   "why": "고치지 않고 쌓는 원장, 이벤트·아웃박스, 무중단 이관을 한국어로. 업무 둘째 줄 '정본 시스템'을 가장 가깝게 보여 준다."
+  },
+  {
+   "id": "mt-acct",
+   "title": "Accounting for Developers",
+   "by": "Modern Treasury · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.moderntreasury.com/journal/accounting-for-developers-part-i",
+   "why": "차변·대변·계정을 개발자 말로. 2편이 디지털 지갑 원장 설계라 캐시·기프트카드 잔액을 어떻게 적을지 감이 온다."
+  },
+  {
+   "id": "square-books",
+   "title": "Books, an immutable double-entry accounting database service",
+   "by": "Square Engineering · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.squareup.com/blog/books-an-immutable-double-entry-accounting-database-service/",
+   "why": "결제 회사가 사내 원장 서비스를 왜·어떻게 고치지 않는 복식부기로 만들었나. 정본 시스템 설계의 실제 예."
+  },
+  {
+   "id": "stripe-ledger",
+   "title": "Ledger: Stripe's system for tracking and validating money movement",
+   "by": "Stripe 블로그",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://stripe.com/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+   "why": "원장을 돈 흐름의 검증 도구로 쓰는 법 — 대사 우대 줄과 '정확성'을 지표로 지키는 방법."
+  },
+  {
+   "id": "pe-payment",
+   "title": "Designing a Payment System",
+   "by": "Alex Xu · The Pragmatic Engineer",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://newsletter.pragmaticengineer.com/p/designing-a-payment-system",
+   "why": "결제 흐름·대사·실패 처리를 한 장으로. 결제 도메인 우대 줄이 처음이면 지도부터."
+  },
+  {
+   "id": "korea-prepaid",
+   "title": "선불충전금 전액 별도관리 — 개정 전자금융거래법 시행",
+   "by": "대한민국 정책브리핑 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148933416",
+   "why": "쿠팡캐시·기프트카드가 지켜야 하는 규칙(전액 보호·할인 발행 조건)을 한 쪽으로. 잔액 합계가 왜 매일 정확해야 하는지의 출발점."
+  },
+  {
+   "id": "law-efta",
+   "title": "전자금융거래법(현행)",
+   "by": "국가법령정보센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.law.go.kr/법령/전자금융거래법",
+   "why": "선불전자지급수단의 정의·환급·충전금 보호 조문 원문. 정책이 바뀔 때 확인하는 곳."
+  },
+  {
+   "id": "stripe-idem",
+   "title": "Idempotent requests",
+   "by": "Stripe API 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "why": "재시도로 같은 충전이 두 번 되지 않게 하는 규칙. 분산 시스템 요건의 첫 문제."
+  },
+  {
+   "id": "outbox-doc",
+   "title": "Pattern: Transactional outbox",
+   "by": "microservices.io · Chris Richardson",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "why": "잔액 저장과 이벤트 발행을 같이 성공시키는 법. MSA 우대 줄."
+  },
+  {
+   "id": "saga-doc",
+   "title": "Pattern: Saga",
+   "by": "microservices.io · Chris Richardson",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://microservices.io/patterns/data/saga.html",
+   "why": "카드 상태 변경과 캐시 충전처럼 여러 서비스에 걸친 일을 되돌리는 단계로 맞추는 법."
+  },
+  {
+   "id": "msa-patterns",
+   "title": "마이크로서비스 패턴",
+   "by": "크리스 리처드슨 · 길벗",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4%20%EB%A6%AC%EC%B2%98%EB%93%9C%EC%8A%A8",
+   "why": "사가·아웃박스·서비스 나누기를 예제 하나로 끝까지. '대규모 분산 시스템' 요건의 교과서."
+  },
+  {
+   "id": "newman-msa",
+   "title": "마이크로서비스 아키텍처 구축 (전면 개정판)",
+   "by": "샘 뉴먼 · 정성권 옮김 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/maikeuroseobiseu-akitegceo-gucug-jeonmyeon/9791169211192/",
+   "why": "서비스 경계와 결정의 트레이드오프. 요구사항이 빨리 바뀌는 환경에서 무엇을 먼저 굳힐지."
+  },
+  {
+   "id": "sysdesign",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84",
+   "why": "시스템 디자인 면접의 답하는 순서(요건 → 규모 → 설계 → 병목). 자격요건 둘째 줄 대비."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "why": "트랜잭션 격리(7장)와 '갱신 손실'·'쓰기 왜곡' — 잔액이 동시 요청에서 왜 틀어지는지의 바탕."
+  },
+  {
+   "id": "jpa-basic",
+   "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편",
+   "by": "우리 서가",
+   "kind": "internal",
+   "url": "/wiki/jpa-basic",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "영속성 컨텍스트·변경 감지가 실제로 어떤 SQL 을 내는지. 잔액 덮어쓰기 함정을 이해하는 바닥."
+  },
+  {
+   "id": "jpa-app-2",
+   "title": "스프링 부트와 JPA 활용 2편",
+   "by": "우리 서가",
+   "kind": "internal",
+   "url": "/wiki/jpa-app-2",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "조회 쿼리 개수를 줄이는 법 — 대량 원장 조회·대사에서 N+1 을 피하기."
+  },
+  {
+   "id": "spring-db-1",
+   "title": "스프링 DB 1편",
+   "by": "우리 서가",
+   "kind": "internal",
+   "url": "/wiki/spring-db-1",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "커넥션·트랜잭션이 실제로 어떻게 열리고 닫히나. 잔액 차감 트랜잭션 경계를 잡는 바탕."
+  },
+  {
+   "id": "book-thread",
+   "title": "실전 자바 — 멀티스레드와 동시성",
+   "by": "우리 서가",
+   "kind": "internal",
+   "url": "/wiki/java-thread",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "같은 코드를 여러 스레드가 돌릴 때 생기는 경쟁 조건을 직접 보는 책. 동시 차감 문제의 감각."
+  },
+  {
+   "id": "kafka-book",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 서가",
+   "kind": "internal",
+   "url": "/wiki/kafka",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "보냈다는 것과 처리됐다는 것 사이 — 캐시 충전 이벤트를 다른 서비스에 넘길 때의 중복·유실."
+  },
+  {
+   "id": "hibernate-guide",
+   "title": "Hibernate ORM User Guide (Locking 장)",
+   "by": "Hibernate 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#locking",
+   "why": "@Version 과 비관적 잠금 모드의 정확한 동작. 실시간 잔액 차감 요건의 기준 문서."
+  },
+  {
+   "id": "sre-slo",
+   "title": "Service Level Objectives (Google SRE Book 4장)",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "why": "SLI·SLO·SLA 와 백분위. 장애 관리·모니터링 우대 줄을 숫자로 말하기."
+  },
+  {
+   "id": "sre-alert",
+   "title": "Alerting on SLOs (Google SRE Workbook 5장)",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "why": "오류 예산 소모 속도로 알림 거는 법. 잔액 서버 알림 설계."
+  },
+  {
+   "id": "sre-book",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "벳시 베이어 외 · 제이펍 · 2018 (원서는 sre.google 에서 무료)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%82%AC%EC%9D%B4%ED%8A%B8%20%EC%8B%A0%EB%A2%B0%EC%84%B1%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "장애 대응·사후 분석까지. 정본 시스템 운영의 기본기."
+  },
+  {
+   "id": "scrum-guide",
+   "title": "The Scrum Guide",
+   "by": "Ken Schwaber · Jeff Sutherland · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "why": "스프린트·백로그·회고의 원문. 애자일 우대 줄은 이 짧은 문서로 충분하다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "돈을 적는 법",
+   "time": "1~2주",
+   "goal": "충전·결제·환불·만료를 복식부기 줄로 적고, 잔액과 '보호해야 할 충전금 합계'를 계산할 수 있다.",
+   "resources": [
+    "mt-acct",
+    "korea-prepaid",
+    "square-books"
+   ],
+   "task": "가상 고객 5명의 기프트카드 등록·결제·부분 환불·만료 20건을 원장 표로 적고, 고객별 잔액과 전체 충전금 합계가 맞는지 스크립트로 검사한다."
+  },
+  {
+   "title": "동시에 와도 한 번만",
+   "time": "2주",
+   "goal": "잔액 차감을 JPA 로 만들고 동시 요청·재시도에서도 잔액이 음수가 되거나 두 번 빠지지 않게 할 수 있다.",
+   "resources": [
+    "jpa-basic",
+    "spring-db-1",
+    "hibernate-guide",
+    "book-thread",
+    "stripe-idem"
+   ],
+   "task": "Spring Boot 로 캐시 결제 API 를 만들고, 같은 계정에 100개 스레드가 동시에 차감하는 테스트를 낙관적 잠금·비관적 잠금·조건부 UPDATE 세 방식으로 돌려 성공 수와 걸린 시간을 표로 비교한다. 멱등 키 표도 붙인다."
+  },
+  {
+   "title": "서비스가 나뉜 뒤",
+   "time": "2~3주",
+   "goal": "기프트카드 서비스와 캐시 서비스를 나누고, 중간 실패에도 고객 돈이 사라지지 않게 할 수 있다.",
+   "resources": [
+    "outbox-doc",
+    "saga-doc",
+    "msa-patterns",
+    "kafka-book"
+   ],
+   "task": "카드 '사용됨' → 캐시 충전을 Kafka 로 잇고 아웃박스를 붙인다. 충전 서비스를 일부러 실패시켜 카드가 되살아나는지(사가), 같은 메시지를 두 번 보내도 한 번만 충전되는지 확인한다."
+  },
+  {
+   "title": "매일 맞추기",
+   "time": "1~2주",
+   "goal": "외부 판매 파일과 우리 원장을 대사해 어긋난 건을 종류별로 보고할 수 있다.",
+   "resources": [
+    "stripe-ledger",
+    "pe-payment",
+    "jpa-app-2"
+   ],
+   "task": "가상 편의점 판매 파일 10만 줄(금액 다름·누락·중복·자정 걸친 거래 포함)을 만들어 대사 배치를 짜고, 다음 날 다시 맞추면 사라지는 건과 남는 건을 나눈 보고서를 낸다."
+  },
+  {
+   "title": "멈추지 않게",
+   "time": "계속",
+   "goal": "잔액 서버의 SLO 와 정합성 지표를 정해 대시보드와 알림으로 지킬 수 있다.",
+   "resources": [
+    "sre-slo",
+    "sre-alert",
+    "sre-book",
+    "ddia"
+   ],
+   "task": "2~3단계 서비스에 차감 성공률·99번째 백분위 응답 시간·'원장 합계 − 잔액 합계' 대시보드를 붙이고, 장애 하나를 일부러 내 사후 분석 문서(A4 한 장)를 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "이 공고는 연봉을 적지 않았다. 같은 쿠팡페이의 Staff 공고(10년 이상)는 1억 5,000만~2억 6,000만원을 적었고, 모회사 쿠팡(주) 집계는 초봉 약 3,531만·평균 약 5,175만원이다 — 둘 다 이 Senior(3년 이상) 자리의 숫자는 아니다",
+  "rows": [
+   {
+    "label": "같은 회사 Staff 공고 표기 연봉 (10년 이상)",
+    "value": "1억 5,000만 ~ 2억 6,000만원",
+    "amount": 15000,
+    "basis": "공고 · 리멤버 표기",
+    "note": "쿠팡페이 Staff Back-end Engineer (Fintech Platform) 공고의 범위다. 경력 10년 이상 자리라 3년 이상 Senior 자리보다 높을 것으로 읽어야 한다 [29] {추론}"
+   },
+   {
+    "label": "쿠팡(주) 신입 초봉 (모회사)",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값이다. 쿠팡페이 법인이 아니고 직군 구분도 없다 [25]"
+   },
+   {
+    "label": "쿠팡(주) 직원 평균 (모회사)",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 개발자 연봉으로 읽으면 안 된다 [25]"
+   }
+  ],
+  "how": "쿠팡페이는 비상장 자회사라 사업보고서 평균 급여가 없고, 집계 사이트에서도 초봉·평균이 가려져 있다(사원 278명, 2025-12) [26]. 이 공고의 전형에는 처우협의 단계가 적혀 있지 않지만 같은 회사 다른 공고는 마지막 단계를 처우협의로 적었다 [1][27]. 모회사 평균은 경력직과 현장 인력이 섞인 회사 전체 값이라 초봉도 이 자리 금액도 아니다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "교육",
+    "detail": "외국어·업무 스킬 교육 무제한 지원, 사내 기술 공유 스터디"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"
+   },
+   {
+    "name": "식사",
+    "detail": "무료 조식·석식"
+   },
+   {
+    "name": "휴가",
+    "detail": "사유 없는 연차 사용"
+   },
+   {
+    "name": "쇼핑 캐시백",
+    "detail": "쿠팡 구매 금액의 5% (연 최대 400만원)"
+   },
+   {
+    "name": "동호회",
+    "detail": "사내 동호회와 동호회비 지원"
+   },
+   {
+    "name": "휴양 시설",
+    "detail": "임직원가 휴양 콘도"
+   },
+   {
+    "name": "장비",
+    "detail": "최신 장비 지원"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조 휴가"
+   }
+  ],
+  "note": "이 공고에는 복리후생 칸이 없다 [1]. 위 목록은 같은 쿠팡페이의 다른 공고(Staff Back-end, Rocket Pay)의 복리후생 칸이다 [27]. 같은 회사 정규직이면 같을 것으로 보이지만 {추론}, 조건은 처우 안내 때 확인한다."
+ },
+ "location": {
+  "name": "쿠팡 구의오피스 (이스트폴 타워 A동)",
+  "address": "서울특별시 광진구 아차산로 412 (이스트폴 타워 A)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 근처 {추론}",
+  "note": "이 공고의 근무지는 'Seoul, South Korea'뿐이다 [1]. 도로명 주소는 같은 쿠팡페이의 다른 공고에 적힌 것이다 [28]. 2023년 팀 소개는 잠실 오피스를 적어, 그 뒤 옮긴 것으로 보인다 [2] {추론}."
+ }
+}
