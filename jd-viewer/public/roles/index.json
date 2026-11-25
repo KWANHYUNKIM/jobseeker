@@ -47,6 +47,7 @@
   "ats-ashby:42dot:17ff2b4f-2d65-47a3-aa6f-39835d39a21a": "42dot-stt-wake-word-engineer",
   "ats-ashby:42dot:1cfd36d5-26ce-4928-be2a-712c125d6d71": "42dot-sw-test-engineer-body",
   "ats-ashby:42dot:efbd4971-b841-410f-aa6b-e333c64cfe23": "42dot-sw-test-engineer-diagnostics",
+  "ats-ashby:42dot:0c03a694-6180-4be3-80ff-74c96f5b7dad": "42dot-system-framework-engineer",
   "ats-ashby:42dot:403e89b4-fdf4-4168-a115-163706830174": "42dot-system-test-engineer-sw-update",
   "ats-ashby:42dot:2276c44d-d0d6-48d5-ad44-014e8da6fa55": "42dot-system-test-engineer-verification",
   "wanted-395192": "42dot-test-automation-ivi-system",
@@ -821,6 +822,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 29
+  },
+  {
+   "id": "42dot-system-framework-engineer",
+   "company": "포티투닷",
+   "role": "System Framework Engineer",
+   "jobs": [
+    "ats-ashby:42dot:0c03a694-6180-4be3-80ff-74c96f5b7dad"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 10
   },
   {
    "id": "42dot-system-test-engineer-sw-update",
