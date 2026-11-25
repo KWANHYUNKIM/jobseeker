@@ -1,0 +1,997 @@
+{
+  "id": "coupang-eats-ios-engineering-manager",
+  "company": "쿠팡",
+  "role": "iOS 엔지니어링 매니저 (쿠팡이츠)",
+  "team": "쿠팡이츠 · iOS 엔지니어링 (서울, 다른 나라 팀원과 함께)",
+  "jobs": [
+    "ats-greenhouse:coupang:8333651",
+    "ats-greenhouse:coupang:8318669",
+    "wanted-394250"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쿠팡이츠 고객 앱(iOS)을 만드는 엔지니어 팀의 **사람 관리자**입니다. 채용·평가·코칭으로 팀을 꾸리고, 분기마다 무엇을 먼저 만들지 정하고, 앱 구조와 품질 기준을 세워 팀이 지키게 합니다.[1][2] 같은 조직의 iOS 테크 리드는 자기 일을 '고객 앱이 문제없이 돌게 품질을 관리하고 새 기능을 만드는 것'이라고 소개했습니다.[8]",
+    "env": "쿠팡이츠는 고객·가게·배달 세 영역으로 나뉘고, 기능 조직(Product·UX·Engineering·BA) 위에 목표별 스크럼 팀을 꾸려 일합니다.[8] 같은 앱을 인도 벵갈루루의 iOS 엔지니어도 만들고 있어(공고 기준) 팀원의 지역·언어가 다릅니다.[6][7] 사용하는 기술 목록은 공고에 없고 'Native iOS'만 적혀 있습니다.[1]",
+    "oneline": "업무 6줄 중 5줄이 사람·로드맵·협업 이야기인 **피플 매니저 자리**. 그래도 마지막 요건이 Native iOS 5년이라, 코드를 직접 판단할 수 있는 사람이 팀을 맡습니다. 같은 공고의 원티드 사본은 경력 13년 이상으로 올라와 있습니다.[3]"
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "쿠팡이츠 iOS 앱을 개발하는 엔지니어링 팀을 이끌고, 팀의 생산성과 기술 역량을 지속적으로 발전",
+      "short": "iOS 팀의 관리자가 되어, 팀이 더 빨리·더 잘 만들도록 사람과 일하는 방식을 키우는 일.",
+      "why": "쿠팡이츠 앱은 월 1,230만 명(2025년 10월, 와이즈앱·리테일 집계)이 쓰는 국내 2위 배달 앱이라 한 번의 실수가 큰 손해로 돌아옵니다.[10] 조직은 음식 배달에서 장보기·쇼핑으로 넓어지는 중이라고 공고 사본이 소개했고,[3] 같은 조직 프런트엔드 팀 리더는 팀의 미션을 '안정적이고 지속 가능한 모바일 기술 환경'으로 꼽았습니다.[8]",
+      "actually": {
+        "items": [
+          "**팀 상태 재기** — 배포 주기·리뷰 대기 시간·장애 복구 시간 같은 숫자로 '팀이 느린지'를 먼저 확인한다.[23]",
+          "**기술 역량 키우기** — 팀원별로 맡길 영역(결제·주문 추적·장보기 화면 등)과 배울 것을 정하고, 큰 설계는 시니어에게 리드를 맡긴다. {추론}",
+          "**막힌 곳 치우기** — 빌드가 느리다, 테스트 기기가 모자라다, 백엔드 API가 늦다 같은 팀 밖의 장애물을 매니저가 풀러 간다.[31]",
+          "**같은 조직의 기대** — iOS 테크 리드는 역할이 '개인 역량'에서 '팀의 역량과 방향'으로 바뀌었다고 말했다. 매니저는 그 위에서 팀 전체를 맡는다.[8]"
+        ]
+      },
+      "how_far": "생산성은 숫자 하나로 재지 않습니다 — 만족도·성과·활동량·협업·몰입 다섯 쪽을 같이 봐야 한다는 연구가 있습니다.[24] 최소선은 '지난 분기보다 무엇이 나아졌나'를 팀원과 상사에게 숫자와 사례로 보여 줄 수 있는 것입니다. {추론}",
+      "refs": [3, 8, 10, 23, 24, 31],
+      "study": ["manager-path", "space", "coupang-eats-story"]
+    },
+    {
+      "section": "task",
+      "quote": "비즈니스 목표에 맞춰 팀의 기술 로드맵과 실행 전략을 수립하고, 우선순위 및 리소스를 효과적으로 관리하여 성과를 창출",
+      "short": "사업이 원하는 일과 팀이 고쳐야 할 기술 부채를 한 표에 놓고, 사람 수에 맞게 순서를 정하는 일.",
+      "why": "요청은 늘 팀이 감당할 수 있는 양보다 많습니다. 쿠팡이츠는 2024년 무제한 무료배달을 시작했고[5] 장보기·쇼핑으로 넓어지고 있어[3] 새 화면 요청이 끊이지 않는 한편, 구조 개선에도 계속 투자한다고 했습니다.[8]",
+      "actually": {
+        "items": [
+          "**용량 세기** — 팀원 수 × 주 수에서 운영(버그·OS 업데이트 대응)과 채용 면접에 쓰는 몫을 먼저 뺀다.",
+          "**한 줄로 세우기** — PM이 낸 기능과 팀이 낸 기술 과제(모듈 분리·빌드 시간·충돌 줄이기)를 같은 줄에 세우고 '왜 지금'을 적는다.[32]",
+          "**잘라 내기** — 넘치는 일은 '다음 분기'로 미루고, 그 결정을 요청한 쪽에 먼저 알린다. {추론}",
+          "**성과로 닫기** — 끝난 일은 출시 여부가 아니라 사업 숫자(주문 전환·충돌률)로 돌아본다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "분기 용량표 (가상 숫자)",
+          "body": "6명 × 12주 = 72 사람-주에서 운영 20%·면접 5%를 빼면 54. 요청 82 중 위에서부터 54까지만 넣고 나머지는 다음 분기로 넘긴다.",
+          "lang": "python",
+          "code": "engineers, weeks = 6, 12\navail = engineers * weeks * (1 - 0.20 - 0.05)\nasks = {\"장보기 탭 개편\": 30, \"주문 추적 화면 재작성\": 24, \"결제 모듈 분리\": 18, \"앱 시작 시간 개선\": 10}\nprint(f\"가용 {avail:.0f} / 요청 합계 {sum(asks.values())} 사람-주\")\nleft = avail\nfor k, v in asks.items():\n    if v <= left:\n        left -= v; print(f\"  넣음 {k} {v} (남은 {left:.0f})\")\n    else:\n        print(f\"  다음 분기 {k} {v} (남은 {left:.0f})\")\n# 가용 54 / 요청 합계 82 사람-주\n#   넣음 장보기 탭 개편 30 (남은 24)\n#   넣음 주문 추적 화면 재작성 24 (남은 0)\n#   다음 분기 결제 모듈 분리 18 (남은 0)\n#   다음 분기 앱 시작 시간 개선 10 (남은 0)"
+        }
+      ],
+      "how_far": "무엇을 만들지(사업 목표)는 PM과 사업 쪽이 정합니다.[8] 매니저는 '이만큼이 이 팀의 한 분기'라는 숫자를 내고, 기술 과제의 몫을 지켜 내는 사람입니다. 위 예시에서 '앱 시작 시간 개선'이 계속 밀린다면 그것을 어떻게 끼워 넣을지가 이 줄의 진짜 일입니다. {추론}",
+      "refs": [3, 5, 8, 32],
+      "study": ["elegant-puzzle", "manager-path"]
+    },
+    {
+      "section": "task",
+      "quote": "엔지니어 채용, 성과 관리, 코칭 및 인재 육성을 통해 높은 성과를 내는 엔지니어링 조직을 구축",
+      "short": "누구를 뽑고, 어떻게 평가하고, 어떻게 키울지를 직접 맡는 일 — 피플 매니저의 본업.",
+      "why": "쿠팡은 같은 쿠팡이츠 iOS 자리를 서울(시니어·매니저)과 벵갈루루(주니어~스태프)에서 동시에 뽑아 왔습니다.[4][5][6][7] 팀을 키우는 속도가 곧 앱을 키우는 속도라, 채용 면접과 새 사람 적응이 매니저 시간의 큰 몫이 됩니다. {추론}",
+      "actually": {
+        "items": [
+          "**채용** — 면접관마다 다른 질문을 하지 않게, 같은 질문과 같은 채점 기준을 미리 정한다(구조화 면접).[25]",
+          "**적응** — 새 팀원이 첫 몇 주 안에 작은 변경을 운영에 내보내게 짝과 과제를 준비한다. {추론}",
+          "**1:1과 피드백** — 주기적인 1:1로 막힌 곳·성장 목표를 듣고, 칭찬과 고칠 점을 그때그때 구체적으로 말한다.[31]",
+          "**성과 평가** — 평가 때 처음 듣는 이야기가 없게, 분기 중에 기대와 현재 위치를 맞춰 둔다.[31]",
+          "**승진·성장** — 시니어로 갈 사람에게는 설계 리드를, 매니저로 갈 사람에게는 작은 팀 리드를 맡겨 본다.[32]"
+        ]
+      },
+      "how_far": "회사의 평가 제도·등급 틀은 인사팀이 정합니다. 매니저는 그 틀 안에서 **근거를 모으고, 결과를 본인에게 설명하는 사람**입니다. 경력 면접에서는 '내가 뽑은 사람 중 잘된 사례와 잘못 뽑은 사례'를 묻는 경우가 많습니다. {추론}",
+      "refs": [4, 5, 6, 7, 25, 31, 32],
+      "study": ["rework-interview", "manager-path", "growing-together"]
+    },
+    {
+      "section": "task",
+      "quote": "서로 다른 지역, 언어 및 문화적 배경을 가진 엔지니어들로 구성된 팀을 효과적으로 운영하고, 원활한 커뮤니케이션과 협업 문화를 구축",
+      "short": "서울과 다른 나라에 흩어진 팀원이 같은 그림을 보게, 회의·문서·시간대를 설계하는 일.",
+      "why": "쿠팡이츠 앱의 iOS 자리는 인도 벵갈루루에서도 올라왔습니다 — 쿠팡이츠 앱의 새 기능·확장 가능한 구조·공통 모듈을 맡는 자리입니다.[6][7] 같은 조직 Sr Manager 공고에도 이 줄이 그대로 있어, 이 팀은 한국 밖의 엔지니어와 함께 일한다고 읽힙니다.[4] {추론}",
+      "actually": {
+        "items": [
+          "**시간대 맞추기** — 서울(UTC+9)과 벵갈루루(UTC+5:30)는 3시간 30분 차이다. 양쪽이 9시~18시에 일하면 서울 12시 30분~18시만 겹친다. 회의는 이 5시간 반 안에 넣는다.",
+          "**글로 일하기** — 결정·설계·회의 결과를 글로 남겨, 못 들어온 사람도 같은 정보를 받게 한다(비동기 소통).[30]",
+          "**말의 차이** — 문화마다 '아니오'를 말하는 방식과 피드백을 주는 직접성이 다르다. 회의에서 조용한 것이 동의가 아닐 수 있다.[33]",
+          "**공용어** — 문서와 회의는 영어가 기본이 되기 쉽다. 우대사항의 영어 회의·문서 줄이 이것과 짝이다.[1]"
+        ]
+      },
+      "how_far": "최소선은 **어느 쪽 팀원도 '결정에서 빠졌다'고 느끼지 않게** 하는 것입니다. 회의 시간을 한쪽에만 불리하게 두지 않고, 결정은 문서로 남깁니다. {추론}",
+      "refs": [1, 4, 6, 7, 30, 33],
+      "study": ["culture-map", "gitlab-async"]
+    },
+    {
+      "section": "task",
+      "quote": "복잡한 비즈니스 및 기술적 문제를 해결하기 위해 다양한 엔지니어링 팀과 이해관계자 간의 협업 주도",
+      "short": "앱 혼자 못 푸는 문제를 백엔드·안드로이드·PM·UX와 함께 풀도록 판을 짜는 일.",
+      "why": "쿠팡이츠는 고객·가게·배달원 앱이 맞물려 돌아갑니다 — iOS 테크 리드는 세 앱을 이해해야 주문부터 음식 수령까지 전체 흐름이 보인다고 했습니다.[8] 배달 예상 시간·경로 같은 값은 앱이 아니라 백엔드·데이터 팀이 계산합니다.[11] 같은 조직의 iOS 엔지니어 공고도 Product·UX·Backend 팀과 긴밀히 일하는 것을 업무로 적었습니다.[5][7]",
+      "actually": {
+        "items": [
+          "**API 모양 합의** — 새 화면이 필요한 데이터를 백엔드와 먼저 정한다. 앱은 출시 뒤 바로 못 고치므로 구버전 앱이 깨지지 않게 응답을 설계한다. {추론}",
+          "**안드로이드와 맞추기** — 같은 기능을 두 플랫폼이 다르게 만들지 않게 일정과 동작을 맞춘다. {추론}",
+          "**실시간 화면** — 주문 추적처럼 배달 상태가 계속 바뀌는 화면은 서버의 상태 변화와 앱의 갱신 방식을 함께 설계해야 한다. 같은 조직은 실시간성이 중요한 배달 서비스에서 안정적인 앱을 만드는 게 도전이라고 했다.[8]",
+          "**목표별 스크럼 팀** — 쿠팡이츠는 기능 조직 위에 목표별 스크럼 팀을 꾸린다. iOS 매니저는 팀원들을 여러 스크럼 팀에 보내 놓고 그 사이를 맞춘다.[8]"
+        ]
+      },
+      "how_far": "협업을 '주도'한다는 것은 회의를 여는 것이 아니라 **누가 무엇을 언제까지 하는지 정해지고 기록되게** 하는 것입니다. 팀 사이 의견이 갈리면 근거와 선택지를 정리해 결정권자에게 올립니다. {추론}",
+      "refs": [5, 7, 8, 11],
+      "study": ["coupang-eats-story", "elegant-puzzle"]
+    },
+    {
+      "section": "task",
+      "quote": "확장 가능하고 안정적인 iOS 앱 아키텍처와 높은 Engineering Excellence 기준을 수립하고, 팀이 이를 지속적으로 달성하도록 리딩",
+      "short": "기능이 늘어도 무너지지 않는 앱 구조와 '이 정도는 지킨다'는 품질 기준을 정하고 지키게 하는 일.",
+      "why": "같은 앱의 iOS 공고들은 '재사용 가능한 공통 모듈'과 '확장 가능한 앱 구조', '빠르고 안정적인 사용성'을 업무로 적었습니다.[5][6] 조직이 커져도 안정성과 생산성을 놓치지 않는 것이 같은 조직 테크 리드가 밝힌 목표입니다.[8]",
+      "actually": {
+        "items": [
+          "**모듈 나누기** — 결제·주문·장보기 같은 기능을 따로 빌드되는 모듈로 나눠, 한 팀의 변경이 다른 팀 화면을 깨지 않게 한다. 쿠팡페이 iOS 공고에는 SPM·Tuist 같은 모듈 관리 도구가 적혀 있다.[9][22]",
+          "**동시성 안전** — Swift 6 은 데이터 경합(여러 스레드가 같은 값을 동시에 고치는 것)을 컴파일 단계에서 잡는다. 큰 앱은 모듈마다 단계적으로 켠다.[21]",
+          "**품질 숫자 정하기** — 충돌률·멈춤(hang)·앱 시작 시간을 목표치로 정하고 출시마다 확인한다.[17][19][20]",
+          "**출시 안전장치** — 기능 스위치(feature flag)로 새 기능을 서버에서 끄고 켜고, App Store 단계적 출시로 7일에 걸쳐 1%부터 내보낸다.[18][29]",
+          "**리뷰 기준** — 코드 리뷰·테스트·설계 문서에서 '반드시 지킬 것'을 글로 정해 둔다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "단계적 출시에서 멈추면 몇 명이 받나 (가상 숫자)",
+          "body": "자동 업데이트를 켠 사용자 100만 명 가정. App Store 단계적 출시 비율(1·2·5·10·20·50·100%)[18]대로 계산했다. 3일차에 충돌을 보고 멈추면 5만 명에서 막힌다 — 사용자가 직접 업데이트하는 경우는 빠진 값이다.",
+          "lang": "python",
+          "code": "pct = [1, 2, 5, 10, 20, 50, 100]\nauto_users = 1_000_000\nfor stop_day in (2, 3, 7):\n    exposed = auto_users * pct[stop_day - 1] // 100\n    print(f\"{stop_day}일차에 멈춤 -> 자동 업데이트로 새 버전 받은 사람 {exposed:,}명\")\n# 2일차에 멈춤 -> 자동 업데이트로 새 버전 받은 사람 20,000명\n# 3일차에 멈춤 -> 자동 업데이트로 새 버전 받은 사람 50,000명\n# 7일차에 멈춤 -> 자동 업데이트로 새 버전 받은 사람 1,000,000명"
+        }
+      ],
+      "how_far": "쿠팡이츠 iOS 앱의 실제 구조(아키텍처 패턴·모듈 수)는 공개되지 않았습니다. 매니저가 구조를 직접 다 그리지는 않아도, **시니어가 낸 설계의 장단점을 판단하고 기준을 문서로 남기는 것**까지는 해야 합니다. 요건 마지막 줄(Native iOS 5년)이 그 근거입니다.[1] {추론}",
+      "refs": [1, 5, 6, 8, 9, 17, 18, 19, 20, 21, 22, 29],
+      "study": ["swiftpm", "swift-migration", "phased-release", "feature-toggles"]
+    },
+    {
+      "section": "qualification",
+      "quote": "iOS 엔지니어링 팀을 직접 관리하며 팀의 목표 수립, 성과 관리 및 조직 운영을 주도한 풍부한 경험이 있으신 분",
+      "short": "테크 리드가 아니라 '팀원의 평가를 직접 쓴' 관리자 경험을 본다.",
+      "why": "업무 줄 대부분이 채용·평가·로드맵이라, 첫 날부터 그 일을 해 본 사람이 필요합니다.[1] 같은 조직 Sr Manager 공고도 같은 요건으로 시작합니다.[4]",
+      "actually": {
+        "items": [
+          "**직속 팀원** — 몇 명을 직접 관리했나, 그중 몇 명을 직접 뽑았나.",
+          "**목표** — 분기·반기 목표를 팀과 함께 세우고 결과로 닫아 본 경험(OKR 등). {추론}",
+          "**운영** — 인원 계획·예산·온콜 순번처럼 팀이 굴러가게 하는 일. {추론}"
+        ]
+      },
+      "how_far": "같은 공고의 원티드 사본은 경력 13년 이상으로 올라와 있습니다.[3] '풍부한'의 기준은 공고에 없지만, 경력 면접에서는 관리 인원·기간·결과를 숫자로 묻는다고 보는 게 안전합니다. {추론}",
+      "refs": [1, 3, 4],
+      "study": ["manager-path"]
+    },
+    {
+      "section": "qualification",
+      "quote": "채용, 성과 평가, 피드백, 코칭 및 인재 육성 등 People Management 전반에 걸쳐 충분한 실무 경험과 역량을 보유하신 분",
+      "short": "뽑고, 평가하고, 어려운 피드백을 주고, 키우는 일을 실제로 해 봤나.",
+      "why": "업무 셋째 줄(채용·성과 관리·코칭)을 바로 맡을 사람이 필요합니다.[1]",
+      "actually": {
+        "items": [
+          "**채용** — 면접 질문지와 채점 기준을 만들어 본 적이 있나.[25]",
+          "**어려운 대화** — 기대에 못 미치는 팀원에게 근거를 들어 말하고, 개선 계획을 같이 세워 본 적이 있나.[31]",
+          "**코칭** — 답을 주기보다 질문으로 스스로 찾게 한 경험.[31]",
+          "**육성** — 내 팀에서 시니어나 리드로 자란 사람이 있나. {추론}"
+        ]
+      },
+      "how_far": "제도(평가 등급·보상)를 만드는 것까지는 요구하지 않습니다. 정해진 제도 안에서 **사람마다 다른 처방을 내린 사례**를 말할 수 있으면 됩니다. {추론}",
+      "refs": [1, 25, 31],
+      "study": ["manager-path", "rework-interview", "growing-together"]
+    },
+    {
+      "section": "qualification",
+      "quote": "팀의 기술 로드맵, 프로젝트 우선순위 및 리소스를 체계적으로 관리하고, 복잡한 프로젝트를 성공적으로 이끈 경험이 있으신 분",
+      "short": "할 일이 넘칠 때 무엇을 먼저 하고 무엇을 미뤘는지, 그 결과가 어땠는지 말할 수 있나.",
+      "why": "업무 둘째 줄(로드맵·우선순위·리소스)과 짝입니다.[1] 쿠팡이츠는 배달에서 장보기·쇼핑으로 넓어지는 중이라 동시에 굴러가는 과제가 많습니다.[3]",
+      "actually": {
+        "items": [
+          "**로드맵** — 분기 계획표를 만들고, 중간에 바뀐 사정을 반영해 다시 짠 경험.",
+          "**복잡한 프로젝트** — 여러 팀·여러 플랫폼(iOS·안드로이드·백엔드)이 같이 끝내야 했던 출시. {추론}",
+          "**리소스** — 사람이 모자랄 때 범위를 줄였나, 일정을 늦췄나, 사람을 빌렸나 — 그 판단의 근거.[32]"
+        ]
+      },
+      "how_far": "'성공적으로'는 출시 날짜만이 아니라 출시 뒤 숫자(충돌률·전환)까지를 말합니다. 잘 안 된 프로젝트에서 배운 점도 같이 준비합니다. {추론}",
+      "refs": [1, 3, 32],
+      "study": ["elegant-puzzle"]
+    },
+    {
+      "section": "qualification",
+      "quote": "서로 다른 지역, 언어 및 문화적 배경을 가진 구성원들과 효과적으로 소통하고, 분산된 조직의 협업과 성과를 관리할 수 있는 역량을 보유하신 분",
+      "short": "다른 나라 팀원과 시간대·말·일하는 문화가 달라도 같은 성과를 내게 해 봤나.",
+      "why": "업무 넷째 줄과 짝입니다.[1] 같은 앱의 iOS 엔지니어 자리가 벵갈루루에서 올라왔습니다.[6][7]",
+      "actually": {
+        "items": [
+          "**겹치는 시간 아끼기** — 회의는 결정만, 정보 공유는 글로.[30]",
+          "**문화 차이 읽기** — 직접적인 반대가 드문 문화의 팀원에게는 1:1이나 글로 의견을 따로 묻는다.[33]",
+          "**성과 관리** — 멀리 있는 팀원을 '안 보여서' 낮게 평가하지 않게, 결과물 기준으로 본다. {추론}"
+        ]
+      },
+      "how_far": "해외 팀을 직접 관리한 경험은 우대사항(마지막 줄)에 따로 있습니다.[1] 자격요건으로는 **다른 지역 팀과 같이 일해 본 경험**이면 시작점이 됩니다. {추론}",
+      "refs": [1, 6, 7, 30, 33],
+      "study": ["culture-map", "gitlab-async"]
+    },
+    {
+      "section": "qualification",
+      "quote": "팀의 생산성, 개발 프로세스 및 소프트웨어 품질을 지속적으로 개선하고, 측정 가능한 성과를 만들어낸 경험이 있으신 분",
+      "short": "'좋아졌다'를 숫자로 보여 준 적이 있나 — 빌드 시간, 배포 주기, 충돌률 같은 것.",
+      "why": "공고가 '측정 가능한'을 붙였습니다.[1] 앱 팀이 흔히 재는 숫자는 배포 리드 타임·배포 빈도·변경 실패율·복구 시간(DORA 지표)과 앱 품질 지표(충돌·멈춤·시작 시간)입니다.[17][23]",
+      "actually": {
+        "items": [
+          "**개발 속도** — PR이 올라와 머지되기까지의 시간, 빌드·테스트 시간. 모듈을 나누면 바뀐 모듈만 다시 빌드할 수 있다.[22]",
+          "**품질** — Xcode Organizer 는 운영 앱의 멈춤을 '한 시간 쓰는 동안 몇 초 멈췄나'(hang rate)로 보여 주고, 250ms 넘는 멈춤만 센다.[17]",
+          "**현장 숫자** — MetricKit 으로 사용자 기기의 시작 시간·멈춤·충돌 보고를 앱이 직접 받는다.[19]",
+          "**한 숫자만 보지 않기** — 속도만 올리면 품질이 떨어질 수 있다. 여러 쪽을 같이 본다.[24]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "hang rate 계산 (가상 세션 4개)",
+          "body": "Organizer 처럼 250ms 넘는 멈춤만 더해 사용 시간(시간)으로 나눴다.[17] 240ms 멈춤 다섯 번은 숫자에 안 잡힌다 — 사용자는 100ms만 넘어도 느리다고 느낄 수 있다.[16]",
+          "lang": "python",
+          "code": "sessions = [(600, [120, 300, 80, 900]), (1200, [260, 260, 50]), (300, [2100]), (900, [180, 240, 400])]\ntotal_hours = sum(s for s, _ in sessions) / 3600\nhung_sec = sum(ms for _, hs in sessions for ms in hs if ms > 250) / 1000\nprint(f\"사용 시간 {total_hours:.2f}시간, 250ms 넘은 멈춤 합계 {hung_sec:.2f}초\")\nprint(f\"hang rate = {hung_sec/total_hours:.2f} 초/시간\")\nprint(\"250ms 이하라 안 잡힌 멈춤:\", [ms for _, hs in sessions for ms in hs if ms <= 250])\n# 사용 시간 0.83시간, 250ms 넘은 멈춤 합계 4.22초\n# hang rate = 5.06 초/시간\n# 250ms 이하라 안 잡힌 멈춤: [120, 80, 50, 180, 240]"
+        }
+      ],
+      "how_far": "면접에서는 '무엇을 쟀고, 무엇을 바꿨고, 숫자가 얼마나 움직였나'를 한 문장으로 말할 수 있어야 합니다. 숫자를 바꾸려다 다른 숫자가 나빠진 경험도 좋은 이야깃거리입니다. {추론}",
+      "refs": [1, 16, 17, 19, 22, 23, 24],
+      "study": ["dora", "space", "apple-hangs", "metrickit"]
+    },
+    {
+      "section": "qualification",
+      "quote": "복잡한 기술적 문제의 근본 원인을 분석하고, 아키텍처 및 기술적 의사결정을 주도할 수 있는 역량을 보유하신 분",
+      "short": "장애가 나면 '왜'를 끝까지 파고, 다시 안 나게 구조를 바꾸는 결정을 이끌 수 있나.",
+      "why": "업무 여섯째 줄(안정적인 iOS 구조)을 지키려면 문제가 생겼을 때 겉 증상이 아니라 원인을 고쳐야 합니다.[1] 같은 앱의 스태프 iOS 공고도 엔지니어들에게 아키텍처와 설계를 안내하는 일을 적었습니다.[6]",
+      "actually": {
+        "items": [
+          "**사후 검토** — 장애 뒤에 사람을 탓하지 않고 타임라인·원인·재발 방지 조치를 글로 남긴다.[26]",
+          "**멈춤의 원인** — 앱 멈춤은 거의 늘 메인 스레드에서 오래 걸리는 작업 때문이다. Instruments 와 기기 내 멈춤 감지로 어느 코드인지 찾는다.[16][17]",
+          "**시작 시간** — 앱 시작 전에 하는 일을 줄이고 미룰 수 있는 초기화를 뒤로 보낸다.[20]",
+          "**결정 남기기** — 큰 구조 결정은 선택지·장단점·고른 이유를 문서로 남겨 나중에 온 사람도 이해하게 한다. {추론}"
+        ]
+      },
+      "how_far": "매니저가 직접 디버거를 잡는 일은 줄지만, **팀원이 낸 원인 분석이 맞는지 판단하고 '이 정도면 됐다/더 파라'를 말할 수 있어야** 합니다. {추론}",
+      "refs": [1, 6, 16, 17, 20, 26],
+      "study": ["sre-postmortem", "apple-hangs", "apple-launch"]
+    },
+    {
+      "section": "qualification",
+      "quote": "다양한 이해관계자와 효과적으로 소통하고, 조직 간 협업 및 갈등을 해결한 경험이 있으신 분",
+      "short": "PM·디자인·백엔드·다른 매니저와 부딪혔을 때 어떻게 풀었는지 말할 수 있나.",
+      "why": "업무 다섯째 줄(여러 팀과의 협업 주도)과 짝입니다.[1] 쿠팡이츠는 기능 조직 사람들이 목표별 스크럼 팀으로 모여 일해, 한 기능에 여러 직군이 함께 결정합니다.[8]",
+      "actually": {
+        "items": [
+          "**흔한 갈등** — PM은 이번 주 출시를, 팀은 구조 개선을 원한다. 디자인은 새 애니메이션을, 팀은 오래된 기기 성능을 걱정한다. {추론}",
+          "**푸는 방법** — 감정이 아니라 숫자(사용자 영향·비용·일정)로 선택지를 만들고 결정권자를 정한다. {추론}",
+          "**쿠팡의 원칙** — 쿠팡 리더십 원칙에는 반대하더라도 결정되면 따르는 원칙이 있다.[12]"
+        ]
+      },
+      "how_far": "갈등을 없앤 이야기보다 **갈등 뒤에 관계와 결과가 둘 다 지켜진 이야기**를 준비합니다. {추론}",
+      "refs": [1, 8, 12],
+      "study": ["elegant-puzzle"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Native iOS 개발 경력 5년 이상으로, iOS 플랫폼 및 주요 Framework에 대한 깊은 이해를 보유하신 분",
+      "short": "관리자라도 Swift·UIKit·SwiftUI로 앱을 오래 직접 만든 사람이어야 한다.",
+      "why": "기술 결정을 이끌고 시니어의 설계를 판단하려면 플랫폼을 깊이 알아야 합니다.[1] 'Native'는 React Native·Flutter 같은 다른 플랫폼 도구가 아니라 애플의 언어·도구로 만든 경험을 뜻합니다. {추론}",
+      "actually": {
+        "intro": "같은 회사 iOS 공고들이 적은 기술입니다 — 이 공고에는 목록이 없어 다른 공고로 보입니다.",
+        "items": [
+          "**쿠팡이츠 iOS(벵갈루루)** — Swift, UIKit(Storyboard/XIB), 우대로 SwiftUI.[7]",
+          "**쿠팡페이 Staff iOS(서울)** — Swift, UIKit, SwiftUI, Combine, Swift Concurrency(async/await), SPM, Tuist, XCTest, Instruments, Bitrise, MVVM·VIPER·Clean Architecture.[9]",
+          "**깊은 이해의 예** — 메인 스레드와 동시성, 앱 생명 주기와 시작 과정, 메모리, 화면 그리기 성능.[16][20][21]"
+        ]
+      },
+      "level": {
+        "basic": "Swift 문법, UIKit 화면 구성, 네트워크 호출과 JSON 처리, App Store 배포 과정.",
+        "work": "async/await·Combine 으로 비동기 처리, Instruments 로 멈춤·메모리 문제 찾기, 모듈(SPM) 나누기, 단위 테스트.",
+        "team": "Swift 6 동시성 이관 계획, 여러 팀이 쓰는 공통 모듈·디자인 시스템, 운영 지표(충돌·멈춤·시작 시간)를 보고 구조를 고치는 판단.[17][21] {추론}"
+      },
+      "how_far": "5년은 최소선입니다. 사본 공고의 총경력 13년 이상과 합치면, 개발자로 오래 일한 뒤 관리자로 넘어간 사람을 찾는 자리로 읽힙니다.[3] {추론}",
+      "refs": [1, 3, 7, 9, 16, 17, 20, 21],
+      "study": ["advanced-swift", "swift-migration", "swiftpm"]
+    },
+    {
+      "section": "preference",
+      "quote": "여러 엔지니어링 팀 또는 복수의 프로젝트를 관리한 경험이 있으신 분",
+      "short": "한 팀보다 큰 범위 — 여러 팀이나 여러 과제를 동시에 맡아 본 경험이면 더 좋다.",
+      "why": "같은 조직에 Sr Manager iOS 자리가 따로 있어,[4] 팀이 커지면 이 자리가 여러 팀을 맡게 될 수 있습니다. {추론}",
+      "actually": {
+        "items": [
+          "**팀 나누기** — 한 매니저가 직접 관리하기 좋은 인원은 보통 6~8명 안팎이라고 본다. 넘으면 팀을 나누고 리드를 세운다.[32]",
+          "**매니저의 매니저** — 팀장을 코칭하고, 팀 사이 인력을 옮기는 결정을 한다.[31]"
+        ]
+      },
+      "how_far": "우대사항입니다. 없으면 '한 팀이지만 여러 과제를 동시에 굴린 경험'으로 대신 설명합니다. {추론}",
+      "refs": [4, 31, 32],
+      "study": ["elegant-puzzle", "manager-path"]
+    },
+    {
+      "section": "preference",
+      "quote": "빠르게 변화하는 환경에서 비즈니스 우선순위 변화에 유연하게 대응하고 성과를 만들어낸 경험이 있으신 분",
+      "short": "계획이 갑자기 바뀌어도 팀이 흔들리지 않게 다시 짜고 결과를 낸 경험.",
+      "why": "쿠팡이츠는 2024년 무제한 무료배달을 시작했고[5] 장보기·쇼핑으로 영역을 넓히는 중입니다.[3] 같은 조직은 첫 시제품을 한 달, 정식 앱을 여섯 달 만에 냈다고 회상했습니다.[8]",
+      "actually": {
+        "items": [
+          "**바뀐 것만 다시 짜기** — 전체 로드맵을 버리지 않고, 새 일 때문에 밀릴 것을 골라 요청자와 합의한다. {추론}",
+          "**팀에 설명하기** — '왜 바뀌었나'를 팀이 먼저 듣게 한다. 하던 일을 버리는 이유를 모르면 사기가 떨어진다. {추론}",
+          "**스위치로 대비** — 기능 스위치가 있으면 계획이 바뀌어도 만든 코드를 꺼 둔 채 내보낼 수 있다.[29]"
+        ]
+      },
+      "how_far": "우대사항입니다. 실제로 계획이 뒤집혔던 분기 하나를 골라 '무엇을 버리고 무엇을 지켰나'로 말할 수 있으면 됩니다. {추론}",
+      "refs": [3, 5, 8, 29],
+      "study": ["feature-toggles"]
+    },
+    {
+      "section": "preference",
+      "quote": "E-commerce, O2O 또는 대규모 모바일 서비스 개발 및 운영 경험이 있으신 분",
+      "short": "주문·결제·배달 추적이 있는 앱, 사용자가 많은 앱을 운영해 본 경험.",
+      "why": "쿠팡이츠는 고객·가게·배달원이 실시간으로 엮이는 O2O(온라인 주문 → 오프라인 배달) 서비스이고,[8] 월 사용자가 1,200만 명을 넘습니다.[10] 같은 앱의 다른 iOS 공고도 O2O·이커머스 경험을 우대로 적었습니다.[6][7]",
+      "actually": {
+        "items": [
+          "**점심·저녁 몰림** — 배달 주문은 식사 시간에 몰린다. 그 시간의 장애는 곧 매출 손실이다. {추론}",
+          "**실시간 상태** — 주문 접수 → 조리 → 배차 → 배달 중 → 도착 상태가 계속 바뀌고, 예상 시간은 서버의 계산을 받아 보여 준다.[11]",
+          "**구버전 앱** — 대규모 앱은 여러 버전이 동시에 깔려 있다. 서버 응답이 바뀌어도 옛 앱이 깨지지 않아야 한다. {추론}",
+          "**결제** — 결제 실패·중복 결제를 막는 흐름은 쿠팡페이 같은 결제 조직과 맞물린다.[9] {추론}"
+        ]
+      },
+      "how_far": "우대사항입니다. 커머스가 아니어도 사용자 수가 많은 앱을 운영하며 장애·출시를 겪어 본 경험이면 같은 이야기를 할 수 있습니다. {추론}",
+      "refs": [6, 7, 8, 9, 10, 11],
+      "study": ["coupang-eats-story", "phased-release"]
+    },
+    {
+      "section": "preference",
+      "quote": "모바일 앱의 성능, 안정성 및 아키텍처 개선에 대한 전문성을 보유하신 분",
+      "short": "앱 시작 시간·멈춤·충돌을 줄이고 구조를 고쳐 본 깊은 경험이 있으면 더 좋다.",
+      "why": "같은 앱의 iOS 공고마다 '더 빠르고 믿을 만한 사용 경험을 위한 성능 개선'이 업무로 들어 있습니다.[5][6][7]",
+      "actually": {
+        "items": [
+          "**시작 시간** — 앱을 누르고 첫 화면이 뜰 때까지. 시작 전에 하는 초기화를 줄인다.[20]",
+          "**멈춤** — 메인 스레드에서 무거운 일을 빼고 Swift 동시성으로 다른 곳에서 돌린다.[16]",
+          "**충돌·메모리** — 현장 보고(MetricKit)로 어떤 기기·버전에서 나는지 본다.[19]",
+          "**구조** — 화면 하나 고치는 데 앱 전체를 다시 빌드해야 한다면 모듈 경계를 다시 긋는다.[22]"
+        ]
+      },
+      "how_far": "우대사항입니다. '어떤 숫자를 몇에서 몇으로'가 있으면 강한 근거가 됩니다. {추론}",
+      "refs": [5, 6, 7, 16, 19, 20, 22],
+      "study": ["apple-launch", "apple-hangs", "metrickit"]
+    },
+    {
+      "section": "preference",
+      "quote": "AI 기반 개발 도구 및 자동화를 활용하여 엔지니어링 조직의 생산성과 품질을 개선한 경험이 있으신 분",
+      "short": "AI 코딩 도구와 자동화를 팀에 들여, 정말 빨라졌는지 재어 본 경험.",
+      "why": "같은 앱의 벵갈루루 공고에도 생산성을 위한 스크립트·자동화 관심이 우대로 있었고,[7] 스태프 공고는 CI(자동 빌드·테스트) 이해를 우대했습니다.[6] AI 도구 효과는 연구마다 크게 다르게 나와 '들였다'보다 '재 봤다'가 중요합니다.[27][28]",
+      "actually": {
+        "items": [
+          "**빨라졌다는 연구** — 간단한 웹 서버를 만드는 통제 실험에서 코파일럿을 쓴 쪽이 55.8% 빨랐다(신뢰구간 21~89%).[27]",
+          "**느려졌다는 연구** — 자기가 잘 아는 큰 오픈소스 저장소에서 숙련 개발자 16명이 AI 도구를 쓰면 19% 더 오래 걸렸다. 본인들은 20% 빨라졌다고 느꼈다.[28]",
+          "**그래서 재기** — 도입 전후로 PR 리드 타임·리뷰 시간·변경 실패율을 같이 본다. 속도만 오르고 실패율이 오르면 개선이 아니다.[23][24]",
+          "**자동화** — 빌드·테스트·스크린샷·출시 노트를 CI 로 돌리는 것도 이 줄에 들어간다.[6]"
+        ]
+      },
+      "how_far": "우대사항입니다. 쿠팡이츠 iOS 팀이 어떤 AI 도구를 쓰는지는 공개되지 않았습니다. 면접에서는 도구 이름보다 **'어디에 썼고, 무엇으로 효과를 쟀고, 어디서는 안 썼나'**를 말할 수 있으면 됩니다. {추론}",
+      "refs": [6, 7, 23, 24, 27, 28],
+      "study": ["metr-study", "copilot-study", "space"]
+    },
+    {
+      "section": "preference",
+      "quote": "영어로 비즈니스 커뮤니케이션이 가능하며, 회의 진행 및 문서 작성에 능숙하신 분",
+      "short": "영어로 회의를 이끌고 설계·결정 문서를 쓸 수 있으면 더 좋다.",
+      "why": "같은 앱을 인도 팀원도 만들고 있어[6][7] 회의·문서의 공용어가 영어가 되기 쉽습니다. {추론} 쿠팡 채용 사이트도 여러 나라가 함께하는 프로젝트를 복지·문화의 하나로 꼽습니다.[12]",
+      "actually": {
+        "items": [
+          "**회의 진행** — 안건·결정·할 일을 영어로 정리해 회의 뒤 바로 보낸다.[30]",
+          "**문서** — 설계 문서·사후 검토·분기 계획을 영어로 쓴다.[26]",
+          "**천천히·쉽게** — 모국어가 다른 사람끼리는 쉬운 문장과 확인 질문이 오해를 줄인다.[33]"
+        ]
+      },
+      "how_far": "우대사항입니다. 원어민 수준이 아니라 **회의를 끝까지 이끌고 결정을 글로 남길 수 있는 정도**가 기준입니다. {추론}",
+      "refs": [6, 7, 12, 26, 30, 33],
+      "study": ["gitlab-async", "culture-map"]
+    },
+    {
+      "section": "preference",
+      "quote": "여러 국가 또는 지역에 분산된 글로벌 엔지니어링 팀을 직접 관리하고, 언어 및 문화적 차이를 극복하여 조직 성과를 창출한 경험이 있으신 분",
+      "short": "다른 나라 팀원을 직접 평가·코칭해 본 경험 — 같이 일한 것보다 한 단계 위.",
+      "why": "업무 넷째 줄과 자격요건 넷째 줄의 한 단계 위입니다.[1] 서울과 벵갈루루 iOS 자리가 같은 앱을 만들고 있습니다.[6][7]",
+      "actually": {
+        "items": [
+          "**평가의 공정함** — 시간대가 달라 덜 보이는 팀원이 불리하지 않게, 결과물과 기록으로 평가한다. {추론}",
+          "**현지 리드** — 다른 나라 쪽에 현지 리드를 세우고 그 리드와 자주 맞춘다. {추론}",
+          "**피드백 방식** — 문화마다 부정적 피드백을 받아들이는 방식이 다르다. 같은 말도 전하는 방법을 바꾼다.[33]"
+        ]
+      },
+      "how_far": "우대사항입니다. 해외 팀원을 직접 관리한 적이 없다면 다른 나라 팀과 공동 프로젝트를 이끈 경험으로 설명합니다. {추론}",
+      "refs": [1, 6, 7, 33],
+      "study": ["culture-map", "gitlab-async"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "코드보다 **사람과 팀이 자라는 것**에서 보람을 느끼는 iOS 시니어",
+      "배달·장보기처럼 현실의 주문이 실시간으로 움직이는 앱을 다루고 싶은 사람[8]",
+      "숫자로 팀 상태를 보고 설명하는 걸 좋아하는 사람[1]",
+      "다른 나라 동료와 영어로 일하는 게 편한 사람[1]"
+    ],
+    "hard": [
+      "같은 공고 사본은 경력 13년 이상이다 — 관리자 경험이 없으면 맞지 않는다[3]",
+      "직접 코드를 많이 짜고 싶은 사람에게는 업무 대부분이 회의·채용·평가다[1] {추론}",
+      "시간대가 다른 팀과 일해 회의 시간이 한쪽으로 몰릴 수 있다[6] {추론}",
+      "쿠팡이츠 iOS 앱의 구조·도구는 공개된 자료가 거의 없어 입사 전에 알기 어렵다"
+    ]
+  },
+  "interview": [
+    {
+      "q": "분기 요청이 팀 용량의 1.5배입니다. 무엇을 빼고, 누구에게 어떻게 알리겠어요?",
+      "a": "업무 둘째 줄 — 용량을 먼저 세고 기술 과제 몫을 지키는 일.[32]"
+    },
+    {
+      "q": "지난 분기 우리 팀이 나아졌다는 것을 숫자 세 개로 보여 준다면?",
+      "a": "'측정 가능한 성과' 요건 — DORA 와 SPACE.[23][24]"
+    },
+    {
+      "q": "새 버전을 내보낸 지 이틀째 특정 iOS 버전에서 충돌이 늘었습니다. 무엇부터 하겠어요?",
+      "a": "단계적 출시 멈춤·기능 스위치·사후 검토.[18][26][29]"
+    },
+    {
+      "q": "벵갈루루 팀원이 회의에서 늘 조용합니다. 어떻게 의견을 받겠어요?",
+      "a": "분산 팀 운영 줄 — 문화 차이와 글로 일하기.[30][33]"
+    },
+    {
+      "q": "AI 코딩 도구를 팀 전체에 들이자는 제안이 왔습니다. 효과를 어떻게 확인하겠어요?",
+      "a": "엇갈린 연구 결과 — 체감과 실제가 다를 수 있다.[27][28]"
+    },
+    {
+      "q": "운영 앱의 hang rate 가 올랐습니다. 어디서 보고, 원인을 어떻게 찾겠어요?",
+      "a": "Organizer·기기 내 감지·Instruments, 메인 스레드 작업.[16][17]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "Coupang Careers · Manager, iOS Engineer (CoupangEats)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8333651",
+      "kind": "posting",
+      "date": "2026-11-24",
+      "note": "업데이트일 기준. 한국어 업무 6·요건 8·우대 7, 전형(서류 → 직무 적합성 인터뷰 → 핵심 역량 인터뷰 → 최종 합격), 근무지 Seoul, 복리후생·연봉 칸 없음"
+    },
+    {
+      "n": 2,
+      "title": "Coupang Careers · Manager iOS Engineer (CoupangEats)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8318669",
+      "kind": "posting",
+      "note": "같은 자리의 다른 공고 번호 — 업무·요건·우대가 [1] 과 글자까지 같다"
+    },
+    {
+      "n": 3,
+      "title": "원티드 · [쿠팡] iOS Engineering Manager (CoupangEats)",
+      "url": "https://www.wanted.co.kr/wd/394250",
+      "kind": "posting",
+      "note": "같은 자리의 사본 — 경력 13년 이상, 근무지 서울 광진구 아차산로 412 이스트폴 타워 A, 조직 소개(음식 배달에서 장보기·쇼핑으로 확장), 상시채용"
+    },
+    {
+      "n": 4,
+      "title": "원티드 · [쿠팡][쿠팡이츠] Sr Manager, iOS Engineering",
+      "url": "https://www.wanted.co.kr/wd/394078",
+      "kind": "posting",
+      "note": "같은 조직의 윗선 자리 — 경력 10~23년, 업무·요건이 거의 같다, 근무지 서울 강남구 테헤란로 332 HJ타워"
+    },
+    {
+      "n": 5,
+      "title": "원티드 · [쿠팡] Sr Mobile Engineer (Eats iOS)",
+      "url": "https://www.wanted.co.kr/wd/312623",
+      "kind": "posting",
+      "note": "마감. 같은 앱의 시니어 엔지니어 — 새 기능·빠르고 안정적인 사용성·재사용 공통 모듈·Product/UX/Backend 협업, iOS 4년 이상·Swift, 2024년 무제한 무료배달 소개, 근무지 HJ타워"
+    },
+    {
+      "n": 6,
+      "title": "Built In · Staff iOS Engineer (Coupang, Bengaluru)",
+      "url": "https://builtin.com/job/staff-ios-engineer/8523339",
+      "kind": "posting",
+      "note": "2026-04-16 내려감. 쿠팡이츠 앱 — 확장 가능한 구조·공통 모듈/프레임워크·성능 개선·엔지니어 설계 안내, iOS 8년 이상, O2O·이커머스와 CI 이해 우대. 이 페이지의 보상·복지 요약은 Built In 이 만든 것이라 쓰지 않음"
+    },
+    {
+      "n": 7,
+      "title": "Built In · iOS Engineer (Coupang, Bengaluru)",
+      "url": "https://builtin.com/job/ios-engineer/8055372",
+      "kind": "posting",
+      "note": "2026-03-23 내려감. 쿠팡이츠 앱 새 기능·성능·공통 모듈, Swift·UIKit(Storyboard/XIB), SwiftUI·O2O/이커머스·스크립트 자동화 관심 우대"
+    },
+    {
+      "n": 8,
+      "title": "쿠팡 채용 · 고객이 음식을 주문하는 순간부터 식탁에 도착하기까지, 모든 여정을 기술로 연결합니다",
+      "url": "https://www.coupang.jobs/kr/life-at-coupang/employee-stories/고객이-음식을-주문하는-순간부터-식탁에-도착하기까지-모든-여정을-기술로-연결합니다/",
+      "kind": "company",
+      "date": "2025-06-04",
+      "note": "쿠팡이츠 프런트엔드 팀 리더 PD·iOS 테크 리드 Braum 인터뷰 — 고객·가게·배달 세 영역, 기능 조직 위 목표별 스크럼 팀, 시제품 1달·정식 앱 6달, 안정적·지속 가능한 모바일 환경. 영어판도 같은 날"
+    },
+    {
+      "n": 9,
+      "title": "원티드 · [쿠팡][쿠팡페이] Staff iOS Engineer (Core Payment)",
+      "url": "https://www.wanted.co.kr/wd/396175",
+      "kind": "posting",
+      "note": "같은 회사 다른 조직(쿠팡페이) — 기술 목록 Swift·UIKit·SwiftUI·VIPER·Clean Architecture·MVVM·Combine·Swift Concurrency·SPM·Tuist·Alamofire·XCTest·Instruments·Bitrise, 6년 이상"
+    },
+    {
+      "n": 10,
+      "title": "바이라인네트워크 · '역대 최대' 기록한 쿠팡이츠·땡겨요·먹깨비",
+      "url": "https://byline.network/2025/11/25_12837731/",
+      "kind": "news",
+      "date": "2025-11-25",
+      "note": "와이즈앱·리테일 2025년 10월 MAU — 쿠팡이츠 1,230만(전년 대비 32% 증가, 배달 앱 2위), 배민 2,170만"
+    },
+    {
+      "n": 11,
+      "title": "Coupang Engineering (Medium) · Building in-house map service at Eats",
+      "url": "https://medium.com/coupang-engineering/building-in-house-map-service-at-eats-268d5c8913f6",
+      "kind": "company",
+      "date": "2022-10",
+      "note": "배달 예상 시간·경로 계획 3단계. Medium 이 자동 접속을 막아(403) 검색 결과 요약으로만 확인"
+    },
+    {
+      "n": 12,
+      "title": "Coupang Careers · Why Coupang (리더십 원칙·문화와 복지제도)",
+      "url": "https://www.coupang.jobs/kr/why-coupang/",
+      "kind": "company",
+      "note": "리더십 원칙, 복지 8가지(금액·조건 없음) — 같은 회사 다른 풀이에서 읽은 것과 같은 페이지"
+    },
+    {
+      "n": 13,
+      "title": "Coupang Careers · Seoul",
+      "url": "https://www.coupang.jobs/en/locations/seoul/",
+      "kind": "company",
+      "note": "서울 사무소 — 이스트폴 타워(광진구 아차산로 412)·로켓랩(강남구), 가까운 역 구의"
+    },
+    {
+      "n": 14,
+      "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+      "url": "https://jasoseol.com/companies/192",
+      "kind": "reference",
+      "note": "쿠팡(주) 값, 기준일 표기 없음. 사이트가 자동 접속을 막아 검색 결과에 실린 값으로 확인(같은 회사 다른 풀이와 같은 값)"
+    },
+    {
+      "n": 15,
+      "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+      "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+      "kind": "company",
+      "date": "2026",
+      "note": "2025 회계연도 전 직원 보수 중간값 — 달러 환산"
+    },
+    {
+      "n": 16,
+      "title": "Apple Developer · Improving app responsiveness",
+      "url": "https://developer.apple.com/documentation/xcode/improving-app-responsiveness",
+      "kind": "reference",
+      "note": "사용자 동작에 100ms 넘게 늦으면 멈춤으로 느낀다, 멈춤은 거의 늘 메인 스레드의 오래 걸리는 작업, Swift 동시성으로 옮기기"
+    },
+    {
+      "n": 17,
+      "title": "Apple WWDC22 · Track down hangs with Xcode and on-device detection",
+      "url": "https://developer.apple.com/videos/play/wwdc2022/10082/",
+      "kind": "reference",
+      "date": "2022-06",
+      "note": "250ms 넘는 멈춤을 보고, Xcode Organizer hang rate = 한 시간 쓰는 동안 멈춘 초, 기기 내 감지는 개발·TestFlight 빌드. 세션 페이지 설명으로 확인(영상은 받지 않음)"
+    },
+    {
+      "n": 18,
+      "title": "App Store Connect 도움말 · 단계적 출시로 버전 업데이트 배포",
+      "url": "https://developer.apple.com/kr/help/app-store-connect/update-your-app/release-a-version-update-in-phases/",
+      "kind": "reference",
+      "note": "7일 동안 1·2·5·10·20·50·100% — 자동 업데이트 사용자에게만, 최대 30일 일시 정지"
+    },
+    {
+      "n": 19,
+      "title": "Apple Developer · MetricKit",
+      "url": "https://developer.apple.com/documentation/metrickit",
+      "kind": "reference",
+      "note": "사용자 기기의 성능·진단(시작 시간·멈춤·충돌) 보고를 앱이 받는 프레임워크"
+    },
+    {
+      "n": 20,
+      "title": "Apple Developer · Reducing your app's launch time",
+      "url": "https://developer.apple.com/documentation/xcode/reducing-your-app-s-launch-time",
+      "kind": "reference",
+      "note": "시작 과정과 줄이는 법"
+    },
+    {
+      "n": 21,
+      "title": "Swift.org · Migrating to Swift 6",
+      "url": "https://www.swift.org/migration/documentation/migrationguide/",
+      "kind": "reference",
+      "note": "데이터 경합 안전성, 모듈별 단계적 이관"
+    },
+    {
+      "n": 22,
+      "title": "Swift.org · Swift Package Manager",
+      "url": "https://www.swift.org/documentation/package-manager/",
+      "kind": "reference",
+      "note": "모듈(패키지) 나누기와 의존성 관리"
+    },
+    {
+      "n": 23,
+      "title": "DORA · DORA's software delivery metrics: the four keys",
+      "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+      "kind": "reference",
+      "note": "리드 타임·배포 빈도·변경 실패율·복구 시간"
+    },
+    {
+      "n": 24,
+      "title": "ACM Queue · The SPACE of Developer Productivity (Forsgren 외, 2021)",
+      "url": "https://queue.acm.org/detail.cfm?id=3454124",
+      "kind": "reference",
+      "date": "2021",
+      "note": "생산성은 숫자 하나로 못 잰다 — 만족·성과·활동·협업·몰입 다섯 쪽"
+    },
+    {
+      "n": 25,
+      "title": "Google re:Work · Use structured interviewing",
+      "url": "https://rework.withgoogle.com/en/guides/hiring-use-structured-interviewing",
+      "kind": "reference",
+      "note": "같은 질문·같은 채점 기준·미리 정한 요건으로 판단, 면접관 교육"
+    },
+    {
+      "n": 26,
+      "title": "Google SRE Book · Postmortem Culture: Learning from Failure",
+      "url": "https://sre.google/sre-book/postmortem-culture/",
+      "kind": "reference",
+      "note": "비난 없는 사후 검토"
+    },
+    {
+      "n": 27,
+      "title": "Peng 외 · The Impact of AI on Developer Productivity: Evidence from GitHub Copilot (arXiv 2302.06590)",
+      "url": "https://arxiv.org/abs/2302.06590",
+      "kind": "reference",
+      "date": "2023-02",
+      "note": "자바스크립트 HTTP 서버 과제 통제 실험 — 55.8% 빨라짐, 95% 신뢰구간 21~89%"
+    },
+    {
+      "n": 28,
+      "title": "METR · Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+      "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+      "kind": "reference",
+      "date": "2025-07",
+      "note": "숙련 개발자 16명·과제 246개 무작위 배정 — AI 허용 시 19% 더 걸림, 본인들은 20% 빨라졌다고 느낌. 저자들도 일반화하지 말라고 밝힘(arXiv 2507.09089)"
+    },
+    {
+      "n": 29,
+      "title": "Martin Fowler · Feature Toggles (aka Feature Flags)",
+      "url": "https://martinfowler.com/articles/feature-toggles.html",
+      "kind": "reference",
+      "note": "출시와 기능 공개를 떼어 놓는 스위치의 종류와 관리"
+    },
+    {
+      "n": 30,
+      "title": "GitLab Handbook · Embracing asynchronous communication",
+      "url": "https://handbook.gitlab.com/handbook/company/culture/all-remote/asynchronous/",
+      "kind": "reference",
+      "note": "다른 회사 — 흩어진 팀이 글로 일하는 방법"
+    },
+    {
+      "n": 31,
+      "title": "카미유 푸르니에 · 개발 7년차, 매니저 1일차 (한빛미디어, 2020)",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423",
+      "kind": "reference",
+      "note": "1:1·피드백·평가·매니저의 매니저 — 일반 교재"
+    },
+    {
+      "n": 32,
+      "title": "Will Larson · An Elegant Puzzle: Systems of Engineering Management (Stripe Press, 2019)",
+      "url": "https://lethain.com/elegant-puzzle/",
+      "kind": "reference",
+      "note": "팀 크기(매니저 한 명당 6~8명)·팀 나누기·기술 과제 몫·우선순위 — 일반 교재"
+    },
+    {
+      "n": 33,
+      "title": "Erin Meyer · The Culture Map (PublicAffairs, 2014)",
+      "url": "https://mitpressbookstore.mit.edu/book/9781610392501",
+      "kind": "reference",
+      "note": "나라마다 다른 소통·피드백·반대 표현 방식 — 일반 교재"
+    }
+  ],
+  "caveat": "쿠팡이츠 iOS 앱의 실제 구조(아키텍처 패턴·모듈 수·도구), 팀 규모, 인도 팀과의 나눔 방식, 사용하는 AI 도구는 공개되지 않았습니다. 회사 근거는 이 공고 둘과 원티드 사본, 같은 조직의 다른 공고 4개(둘은 마감·내려감), 쿠팡이츠 테크 조직 인터뷰(2025-06), 쿠팡페이 iOS 공고, 이츠 엔지니어링 블로그(검색 요약만)입니다. 쿠팡이츠 iOS 발표 영상은 찾지 못했습니다(받은 영상 없음). 품질 지표·출시 방식·관리 방법은 애플 공식 문서와 DORA·구글·관리 교재로 '보통 이런 것'을 보였습니다. 근무 건물은 이 공고 사본은 이스트폴 타워, 같은 조직 다른 공고 둘은 HJ타워로 적혀 있어 면접 때 확인이 필요합니다.",
+  "resources": [
+    {
+      "id": "coupang-eats-story",
+      "title": "고객이 음식을 주문하는 순간부터 식탁에 도착하기까지, 모든 여정을 기술로 연결합니다",
+      "by": "쿠팡 채용 · 2025-06-04",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.coupang.jobs/kr/life-at-coupang/employee-stories/고객이-음식을-주문하는-순간부터-식탁에-도착하기까지-모든-여정을-기술로-연결합니다/",
+      "why": "이 조직이 스스로 말한 팀 구조(세 영역·목표별 스크럼 팀)와 iOS 리드의 역할. 지원 전에 가장 먼저 읽을 회사 자료."
+    },
+    {
+      "id": "manager-path",
+      "title": "개발 7년차, 매니저 1일차",
+      "by": "카미유 푸르니에 · 권원상·한민주 옮김 · 한빛미디어 · 2020",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423",
+      "why": "1:1·피드백·평가·채용·매니저의 매니저까지 — 피플 매니지먼트 요건 두 줄을 채우는 한국어 기본서."
+    },
+    {
+      "id": "elegant-puzzle",
+      "title": "An Elegant Puzzle: Systems of Engineering Management",
+      "by": "Will Larson · Stripe Press · 2019",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://lethain.com/elegant-puzzle/",
+      "why": "팀 크기·팀 나누기·기술 부채 몫·우선순위를 '체계'로 다룬다. 로드맵·리소스 줄과 여러 팀 관리 우대 줄용."
+    },
+    {
+      "id": "growing-together",
+      "title": "함께 자라기 — 애자일로 가는 길",
+      "by": "김창준 · 2018",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "입문",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%ED%95%A8%EA%BB%98%20%EC%9E%90%EB%9D%BC%EA%B8%B0%20%EA%B9%80%EC%B0%BD%EC%A4%80",
+      "why": "피드백 주기·학습·협력 — 코칭과 인재 육성 줄을 한국 개발 조직의 말로 풀어 준다."
+    },
+    {
+      "id": "rework-interview",
+      "title": "Use structured interviewing",
+      "by": "Google re:Work",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://rework.withgoogle.com/en/guides/hiring-use-structured-interviewing",
+      "why": "같은 질문·같은 채점 기준으로 뽑는 법. 채용 줄을 준비하며 내 면접 질문지를 만들어 볼 때."
+    },
+    {
+      "id": "culture-map",
+      "title": "The Culture Map",
+      "by": "Erin Meyer · PublicAffairs · 2014",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://mitpressbookstore.mit.edu/book/9781610392501",
+      "why": "나라마다 다른 피드백·반대·결정 방식을 축으로 정리했다. 분산 팀 줄 셋(업무·요건·우대)의 바탕."
+    },
+    {
+      "id": "gitlab-async",
+      "title": "Embracing asynchronous communication",
+      "by": "GitLab Handbook",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://handbook.gitlab.com/handbook/company/culture/all-remote/asynchronous/",
+      "why": "시간대가 다른 팀이 글로 결정하는 법. 영어 문서·회의 진행 우대 줄과 함께."
+    },
+    {
+      "id": "dora",
+      "title": "DORA's software delivery metrics: the four keys",
+      "by": "DORA",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+      "why": "'측정 가능한 성과'를 말할 때 가장 널리 쓰는 네 숫자."
+    },
+    {
+      "id": "space",
+      "title": "The SPACE of Developer Productivity",
+      "by": "Nicole Forsgren 외 · ACM Queue · 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://queue.acm.org/detail.cfm?id=3454124",
+      "why": "생산성을 숫자 하나로 재면 생기는 함정. 팀 생산성 줄과 AI 도구 우대 줄의 효과 측정에."
+    },
+    {
+      "id": "accelerate",
+      "title": "Accelerate: The Science of Lean Software and DevOps",
+      "by": "Nicole Forsgren · Jez Humble · Gene Kim · IT Revolution · 2018",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://bookshop.org/p/books/accelerate-the-science-of-lean-software-and-devops-building-and-scaling-high-performing-technology-organizations-gene-kim/11376473",
+      "why": "DORA 네 지표가 나온 연구의 책. 개발 프로세스 개선이 조직 성과와 이어진다는 근거를 깊이 볼 때."
+    },
+    {
+      "id": "apple-hangs",
+      "title": "Improving app responsiveness",
+      "by": "Apple Developer",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.apple.com/documentation/xcode/improving-app-responsiveness",
+      "why": "멈춤의 정의와 찾는 도구(Instruments·기기 내 감지·Organizer). 성능·안정성 우대 줄과 원인 분석 줄."
+    },
+    {
+      "id": "apple-launch",
+      "title": "Reducing your app's launch time",
+      "by": "Apple Developer",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.apple.com/documentation/xcode/reducing-your-app-s-launch-time",
+      "why": "앱 시작 과정과 줄이는 법 — 성능 개선 줄의 가장 흔한 과제."
+    },
+    {
+      "id": "metrickit",
+      "title": "MetricKit",
+      "by": "Apple Developer",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.apple.com/documentation/metrickit",
+      "why": "사용자 기기의 성능·충돌 보고를 받는 법. 품질을 숫자로 재는 줄."
+    },
+    {
+      "id": "swift-migration",
+      "title": "Migrating to Swift 6",
+      "by": "Swift.org",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://www.swift.org/migration/documentation/migrationguide/",
+      "why": "데이터 경합 안전성을 큰 앱에 단계적으로 켜는 법. 안정적인 아키텍처 줄과 Native iOS 깊이 요건."
+    },
+    {
+      "id": "swiftpm",
+      "title": "Swift Package Manager",
+      "by": "Swift.org",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.swift.org/documentation/package-manager/",
+      "why": "앱을 모듈로 나누는 기본 도구. 공통 모듈·확장 가능한 구조 줄."
+    },
+    {
+      "id": "advanced-swift",
+      "title": "Advanced Swift (5판)",
+      "by": "Chris Eidhof · Ole Begemann · Florian Kugler · Ben Cohen · objc.io · 2022",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://www.objc.io/books/advanced-swift/",
+      "why": "값·참조 타입, 제네릭, 프로토콜, 메모리 — 'iOS 플랫폼과 주요 프레임워크에 대한 깊은 이해'의 언어 쪽 바탕."
+    },
+    {
+      "id": "phased-release",
+      "title": "단계적 출시로 버전 업데이트 배포",
+      "by": "App Store Connect 도움말",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.apple.com/kr/help/app-store-connect/update-your-app/release-a-version-update-in-phases/",
+      "why": "7일 단계 출시와 일시 정지. 대규모 앱 운영 우대 줄과 출시 안전장치."
+    },
+    {
+      "id": "feature-toggles",
+      "title": "Feature Toggles (aka Feature Flags)",
+      "by": "Pete Hodgson · martinfowler.com",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://martinfowler.com/articles/feature-toggles.html",
+      "why": "앱 출시와 기능 공개를 떼어 놓는 법. 우선순위가 바뀌는 환경 우대 줄과 안정성 기준."
+    },
+    {
+      "id": "sre-postmortem",
+      "title": "Postmortem Culture: Learning from Failure",
+      "by": "Google SRE Book",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://sre.google/sre-book/postmortem-culture/",
+      "why": "비난 없는 사후 검토 쓰는 법. 근본 원인 분석 요건."
+    },
+    {
+      "id": "copilot-study",
+      "title": "The Impact of AI on Developer Productivity: Evidence from GitHub Copilot",
+      "by": "Sida Peng 외 · arXiv · 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://arxiv.org/abs/2302.06590",
+      "why": "AI 도구가 빨라지게 한다는 대표 실험. 과제가 좁다는 한계와 함께 읽는다."
+    },
+    {
+      "id": "metr-study",
+      "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+      "by": "METR · 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+      "why": "숙련자가 잘 아는 큰 코드에서는 오히려 느려졌다는 실험. AI 도구 우대 줄에서 '재어 보기'가 왜 필요한지."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "이 조직과 앱 알기",
+      "time": "1주",
+      "goal": "쿠팡이츠의 세 영역(고객·가게·배달)과 iOS 팀이 맡는 범위를 말로 설명할 수 있다.",
+      "resources": ["coupang-eats-story", "phased-release"],
+      "task": "쿠팡이츠 앱으로 주문 한 건이 '주문 → 가게 접수 → 배차 → 배달 중 → 도착'으로 갈 때 고객 앱 화면이 언제 바뀌는지 그림 한 장으로 그리고, 각 단계에서 서버가 줘야 하는 값을 적는다."
+    },
+    {
+      "title": "iOS 깊이 다시 다지기",
+      "time": "2~4주",
+      "goal": "큰 앱을 모듈로 나누고 Swift 6 동시성 경고를 없애는 판단을 직접 할 수 있다.",
+      "resources": ["advanced-swift", "swiftpm", "swift-migration"],
+      "task": "가상 주문 추적 앱을 SPM 모듈 3개(주문·결제·공통 UI)로 나누고, 한 모듈씩 Swift 6 엄격 동시성을 켜서 경고 0으로 만든 과정을 짧은 설계 문서로 남긴다."
+    },
+    {
+      "title": "품질을 숫자로",
+      "time": "2~3주",
+      "goal": "멈춤·시작 시간·충돌을 재고, 출시를 안전하게 내보내는 장치를 설명할 수 있다.",
+      "resources": ["apple-hangs", "apple-launch", "metrickit", "feature-toggles", "sre-postmortem"],
+      "task": "2단계 앱에 일부러 메인 스레드에서 1초 걸리는 작업을 넣고 Instruments 로 찾아 고친다. 위 풀이의 hang rate 계산을 가상 기록으로 돌려 보고, 이 '장애'의 사후 검토 한 장을 쓴다."
+    },
+    {
+      "title": "사람 관리의 기본기",
+      "time": "계속",
+      "goal": "채용·1:1·피드백·평가·분기 계획을 내 말과 사례로 설명할 수 있다.",
+      "resources": ["manager-path", "elegant-puzzle", "rework-interview", "growing-together"],
+      "task": "가상 6명 iOS 팀으로 분기 용량표(위 예시처럼)를 만들고, 시니어 iOS 엔지니어 구조화 면접 질문 5개와 채점 기준, 1:1 기록 양식을 한 장씩 만든다."
+    },
+    {
+      "title": "분산 팀과 측정",
+      "time": "2주",
+      "goal": "시간대가 다른 팀의 일하는 리듬을 짜고, 생산성·AI 도구 효과를 여러 숫자로 재는 계획을 세울 수 있다.",
+      "resources": ["culture-map", "gitlab-async", "dora", "space", "accelerate", "copilot-study", "metr-study"],
+      "task": "서울·벵갈루루 가상 팀의 주간 리듬표(겹치는 5시간 반 안의 회의, 나머지는 글)를 만들고, AI 코딩 도구 도입 전후로 볼 숫자 4개(PR 리드 타임·리뷰 시간·변경 실패율·팀 만족도)와 재는 방법을 적는다."
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉이 없다. 쿠팡(주) 집계(초봉 약 3,531만 · 평균 약 5,175만)와 쿠팡 Inc. 전 직원 보수 중간값(2025년 3만 3,831달러)은 물류 현장 인력이 섞인 회사 전체 값이라 **경력 13년 이상 매니저 연봉과 거리가 멀다**",
+    "rows": [
+      {
+        "label": "쿠팡(주) 신입 초봉",
+        "value": "약 3,531만원",
+        "amount": 3531,
+        "basis": "공공데이터 집계",
+        "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값. 직군 구분이 없다. 사이트가 자동 접속을 막아 검색 결과에 실린 값으로 확인했다 [14]"
+      },
+      {
+        "label": "쿠팡(주) 직원 평균",
+        "value": "약 5,175만원",
+        "amount": 5175,
+        "basis": "공공데이터 집계",
+        "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 개발자, 특히 관리자 연봉으로 읽으면 안 된다 [14]"
+      },
+      {
+        "label": "쿠팡 Inc. 전 직원 보수 중간값",
+        "value": "3만 3,831달러 / 년",
+        "basis": "공시(미국 위임장) · 2025년",
+        "note": "CEO 를 뺀 전 세계 직원의 가운데 값을 2025년 평균 환율로 달러로 바꾼 것 [15]"
+      }
+    ],
+    "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **국내 공시 숫자 없음**. 위 값은 모두 경력·직군이 섞인 회사 전체 값이고 평균은 초봉이 아니다. 공고 전형에 처우 단계가 따로 없고 직급은 경력에 따라 바뀔 수 있다고 적혀 있어, 금액은 최종 합격 무렵 협의에서 확인한다 [1] {추론}."
+  },
+  "benefits": {
+    "items": [
+      { "name": "열린 문화", "detail": "칸막이와 위계 대신 열린 업무 공간" },
+      { "name": "보험", "detail": "임직원과 직계가족을 보장하는 단체 상해보험" },
+      { "name": "휴가", "detail": "가족 행사·모임을 위한 유급휴가" },
+      { "name": "교육", "detail": "외국어와 업무 스킬 교육 프로그램" },
+      { "name": "글로벌 협업", "detail": "여러 나라가 함께하는 프로젝트와 협업 기회" },
+      { "name": "사내 행사", "detail": "게임·음식이 있는 사내 이벤트" },
+      { "name": "휴게·식당", "detail": "휴게 공간과 사내 카페테리아 '쿠테리아'(식단·포장)" },
+      { "name": "유연근무", "detail": "근무시간 조정, 재택근무 가능" }
+    ],
+    "note": "쿠팡 채용 사이트 'Why Coupang'(한국어)의 '문화와 복지제도'다 [12]. 이 공고와 원티드 사본에는 복리후생 칸이 없고, 금액·조건이 적혀 있지 않다 [1][3]. 이 자리에 어디까지 적용되는지는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "쿠팡 서울 사무소 (이스트폴 타워)",
+    "address": "서울특별시 광진구 아차산로 412",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+    "near": "2호선 구의역 [13]",
+    "note": "공고 근무지는 'Seoul, South Korea' 뿐이고 [1], 같은 공고의 원티드 사본이 아차산로 412 이스트폴 타워 A 로 적었다 [3]. 다만 같은 쿠팡이츠 iOS 조직의 다른 공고 둘은 강남구 테헤란로 332 HJ타워로 적혀 있어 [4][5] 실제 자리는 면접 때 확인한다 {추론}."
+  }
+}

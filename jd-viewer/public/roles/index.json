@@ -10,6 +10,9 @@
   "wanted-396324": "coupang-catalog-taxonomy-pm",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
+  "ats-greenhouse:coupang:8333651": "coupang-eats-ios-engineering-manager",
+  "ats-greenhouse:coupang:8318669": "coupang-eats-ios-engineering-manager",
+  "wanted-394250": "coupang-eats-ios-engineering-manager",
   "ats-greenhouse:coupang:8382219": "coupang-fashion-program-manager",
   "ats-greenhouse:coupang:8413572": "coupang-fc-logistics-network-engineer",
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
@@ -19,6 +22,8 @@
   "ats-greenhouse:coupang:8312121": "coupang-pay-it-ai-compliance",
   "ats-greenhouse:coupang:8078891": "coupang-pay-manager-backend-rocketpay",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
+  "ats-greenhouse:coupang:8054705": "coupang-pay-staff-frontend-fintech",
+  "wanted-389697": "coupang-pay-staff-frontend-fintech",
   "ats-greenhouse:coupang:8210828": "coupang-play-cx-backend-senior-sg",
   "ats-greenhouse:coupang:8345323": "coupang-ppe-data-engineer-bengaluru",
   "ats-greenhouse:coupang:8258122": "coupang-rocket-content-editor",
@@ -372,6 +377,18 @@
    "lines": 41
   },
   {
+   "id": "coupang-eats-ios-engineering-manager",
+   "company": "쿠팡",
+   "role": "iOS 엔지니어링 매니저 (쿠팡이츠)",
+   "jobs": [
+    "ats-greenhouse:coupang:8333651",
+    "ats-greenhouse:coupang:8318669",
+    "wanted-394250"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
+  },
+  {
    "id": "coupang-fashion-program-manager",
    "company": "쿠팡",
    "role": "패션 이커머스 Senior, Program Manager (사업운영·데이터분석)",
@@ -460,6 +477,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 17
+  },
+  {
+   "id": "coupang-pay-staff-frontend-fintech",
+   "company": "쿠팡페이",
+   "role": "Staff Front-end Engineer (New Fintech Product · Rocket Pay)",
+   "jobs": [
+    "ats-greenhouse:coupang:8054705",
+    "wanted-389697"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 25
   },
   {
    "id": "coupang-play-cx-backend-senior-sg",
