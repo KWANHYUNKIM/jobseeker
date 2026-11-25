@@ -1,0 +1,481 @@
+{
+ "id": "coupang-search-ranking-personalization-senior-staff-mtv",
+ "company": "쿠팡",
+ "role": "Senior Staff Ranking Engineer, Personalization",
+ "team": "Search & Discovery 조직 · 개인화 랭킹 (마운틴뷰)",
+ "jobs": [
+  "ats-greenhouse:coupang:7977000"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡 앱에서 검색어를 넣었을 때 **어떤 상품을 몇 번째에 보여 줄지**를, 그 사람이 전에 무엇을 보고 샀는지까지 넣어 정하는 머신러닝 모델과 그 모델이 실시간으로 도는 시스템을 만듭니다.[1] 공고는 쿠팡 매출의 절반 넘게가 검색과 추천에서 바로 나온다고 적었습니다.[1]",
+  "env": "쿠팡 검색 조직이 2026년 5월 낸 논문을 보면, 이 랭킹 모델은 검색 결과 목록 하나를 통째로 보고 '이 사람이 이 상품을 살 확률'을 맞히고, 1년 넘는 구매 기록과 손님의 과거 행동 줄(sequence)을 먹으며, GPU 에서 P99 32ms 로 돕니다.[5] 파이프라인은 Spark·Airflow·Kubeflow·MLflow, 사내 ML 플랫폼은 Feast 특징 저장소·쿠버네티스·Triton 입니다.[1][6][7]",
+  "oneline": "검색 순위를 **매출로 증명하는** 응용 ML 7년차 이상의 기술 리더 자리. 모델을 크게 키우는 일과 그것을 50ms 안에 서빙하는 일, A/B 실험으로 판정하는 일이 한 사람 몫입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Design features and build large-scale machine learning models and systems to improve ad targeting, relevance, ranking, and engagement",
+   "short": "광고를 누구에게 띄울지, 검색 결과가 맞는지, 몇 번째에 둘지를 정하는 특징과 큰 모델을 만드는 일.",
+   "why": "쿠팡 ML 플랫폼 글은 추천 모델이 상품 검색 결과·쿠팡플레이 영상·**상품 광고**의 순서를 매긴다고 적었습니다.[6] 2024년 LLM 글도 개인화 모델이 홈 피드·검색·광고에 함께 쓰이고 클릭·조회·구매·장바구니 기록과 사람의 관련도 판정으로 학습한다고 했습니다.[7] 그래서 검색 개인화 자리의 첫 줄에 광고 타기팅이 같이 들어 있습니다.",
+   "actually": {
+    "intro": "쿠팡 검색 랭킹 논문에 적힌 특징의 종류입니다.[5]",
+    "items": [
+     "**숫자 특징** — 가격·리뷰 수 같은 값을 표준화한 것과 log(1+x) 한 것을 둘 다 넣는다.[5]",
+     "**범주 특징** — 상품 번호·카테고리를 임베딩 표로. 상품 번호는 해시로 줄인다.[5]",
+     "**글자 특징** — 검색어·상품명을 글자 n-gram 임베딩의 평균으로.[5]",
+     "**참여 특징** — 검색어×상품, 검색어, 상품 각각의 과거 클릭·구매 비율(예: 3개월 전환율).[5]",
+     "**개인화** — 손님이 최근 본·산 상품의 줄을 손님 임베딩으로 바꾼다. 개인정보(PII)는 넣지 않는다고 논문이 밝혔다.[5]",
+     "**광고** — 같은 모델 계열로 광고 클릭 확률을 내고, 입찰가와 곱해 순서를 정하는 게 보통이다.[24] {추론}"
+    ]
+   },
+   "how_far": "특징 하나를 더하는 일보다 **어떤 특징이 매출을 움직이는지 실험으로 가려내고 쓸모없는 특징을 지우는**(논문의 '연속 특징 가지치기') 수준까지입니다.[5] 광고 랭킹은 별도 조직(Coupang Media Group)이 있는 것으로 보이며, 이 자리는 같은 개인화 신호를 함께 쓰는 쪽입니다 {추론}.",
+   "refs": [5, 6, 7, 24],
+   "study": ["coupang-cvr", "huyen-mlsd", "fb-ads"]
+  },
+  {
+   "section": "task",
+   "quote": "Design and implement large-scale ML systems for search ranking, semantic retrieval, query understanding, and personalized product discovery",
+   "short": "검색 순위·뜻으로 찾기·검색어 이해·나에게 맞는 상품 발견, 검색의 네 칸을 큰 시스템으로 만드는 일.",
+   "why": "쿠팡 검색 조직의 랭킹 엔지니어는 학생 대상 발표에서 검색을 '수천만 상품에서 수천 개를 고르는 검색 단계'와 '관련성·리뷰·별점·가격 등 100개 넘는 기준으로 매기는 랭킹 단계'로 나눠 설명했습니다.[8] 2020년 검색 색인 글도 검색어 이해 → 후보 찾기 → 순위의 흐름을 적었습니다.[10] 이 줄의 네 낱말이 그 단계들입니다.",
+   "actually": {
+    "items": [
+     "**검색어 이해** — '애플 충전기'가 브랜드+종류인지 알아내고, 오타·띄어쓰기를 고치고, 카테고리를 맞힌다. 같은 조직 옛 공고에 BERT 로 검색어 분류·이름 뽑기를 한 예가 있다.[3]",
+     "**뜻으로 찾기(semantic retrieval)** — 글자가 안 겹쳐도 뜻이 가까운 상품을 벡터로 찾는다. 쿠팡은 글자 맞춤 옆에 임베딩 검색을 더했다고 썼다.[6]",
+     "**랭킹** — 찾은 수천 개를 구매 확률로 다시 줄 세운다.[5][8]",
+     "**개인화 발견** — 같은 '운동화'라도 이 사람이 보던 브랜드·사이즈·가격대를 앞으로 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "검색 한 번이 지나가는 칸 — 쿠팡 발표·글의 단계[8][10]",
+     "steps": [
+      "검색어 이해 · 오타·카테고리·의도",
+      "후보 찾기 · 글자 맞춤 + 벡터 검색으로 수천 개",
+      "랭킹 · 100개 넘는 신호 + 손님 행동으로 구매 확률",
+      "다시 섞기 · 광고·다양성·규칙",
+      "보여 주기 · 기록이 다음 학습 데이터가 된다"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "Senior Staff 는 한 칸의 모델이 아니라 **칸 사이의 약속**(후보 몇 개를 넘기나, 랭킹이 몇 ms 안에 끝나야 하나)을 정하는 사람입니다 {추론}. 각 칸의 모델 학습은 팀원과 나눠 맡습니다.",
+   "refs": [3, 5, 6, 8, 10],
+   "study": ["iir-book", "ai-powered-search", "coupang-cvr"]
+  },
+  {
+   "section": "task",
+   "quote": "using state-of-the-art techniques such as transformer-based models, contrastive learning, and vector search",
+   "short": "그 일에 트랜스포머·대조 학습·벡터 검색 같은 최신 기법을 쓴다.",
+   "why": "쿠팡 논문은 랭킹 몸통으로 DCNv2·MaskNet·트랜스포머·RankMixer 를 같은 연산량에서 견줬습니다 — 트랜스포머는 행동 줄 길이를 늘릴 때 가장 잘 올랐지만 메모리가 먼저 모자랐고, 잘 다듬은 MaskNet 이 이겼습니다.[5][22][23] 대조 학습과 벡터 검색은 후보 찾기 칸의 표준 도구입니다.[19][20][21]",
+   "actually": {
+    "items": [
+     "**트랜스포머** — 손님의 최근 행동 줄을 읽어 '지금 무엇을 찾는 중인가'를 벡터로.[5][31]",
+     "**대조 학습** — 검색어와 그 사람이 산 상품을 가깝게, 같은 묶음의 다른 상품은 멀게 배운다(묶음 안 음성 예시).[20]",
+     "**두 탑(two-tower)** — 검색어 탑과 상품 탑을 따로 두어 상품 벡터를 미리 다 계산해 둔다.[18][19]",
+     "**벡터 검색** — 수천만 상품 벡터에서 가까운 것을 근사로 빨리 찾는다(HNSW 같은 그래프 색인).[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "묶음 안 대조 손실 — 검색어 3개와 각자 산 상품",
+     "body": "같은 묶음의 남의 상품을 '틀린 답'으로 써서, 내 상품의 확률을 높이도록 배웁니다(온도 τ=0.1, 2차원 가상 벡터, 직접 돌린 출력). q2 처럼 정답과 오답이 비슷한 방향이면 손실이 큽니다.[20]",
+     "lang": "python",
+     "code": "# sims = cos(q_i, d_j) / tau ; loss_i = -log softmax(sims)[i]\nq0 p=0.959 loss=0.042\nq1 p=0.875 loss=0.133\nq2 p=0.742 loss=0.298\nmean 0.158"
+    }
+   ],
+   "how_far": "기법 이름을 아는 것보다 **'이 자리엔 왜 이 몸통인가'를 연산량·지연·메모리로 설명**하는 수준 — 쿠팡 논문이 정확히 그 비교를 했습니다.[5]",
+   "refs": [5, 18, 19, 20, 21, 31],
+   "study": ["coupang-cvr", "dpr", "youtube-dnn", "hnsw", "sasrec"]
+  },
+  {
+   "section": "task",
+   "quote": "Drive innovation in search relevance and user intent modeling using large language models (LLMs), embedding-based retrieval, and multi-modal learning",
+   "short": "LLM·임베딩 검색·사진+글 학습으로 '검색어가 진짜 원하는 것'을 더 잘 맞히도록 이끄는 일.",
+   "why": "쿠팡 LLM 글은 검색 조직이 LLM 을 가장 먼저 쓴 곳이라고 적었습니다.[7] LLM 으로 관련도 판정 라벨을 대량으로 만들어(약한 라벨) 사람 라벨이 적은 새 영역의 관련도 모델을 키우고, 사진과 글을 같이 배우는 모델(CLIP 계열)의 임베딩이 따로 배운 것보다 낫다고 했습니다.[7][25]",
+   "actually": {
+    "items": [
+     "**LLM 약한 라벨** — '검색어 X 에 상품 Y 가 맞나'를 LLM 이 판정하고, 품질 검사를 통과한 것만 학습에 쓴다.[7]",
+     "**작게 줄여 서빙** — 3B~20B 크기 LLM 을 실시간에 못 쓰니 작은 모델로 증류하거나 LLM 임베딩만 랭킹 모델 특징으로 넣는다.[7]",
+     "**멀티모달** — 상품 사진과 상품명을 한 벡터 공간에 넣어 광고 후보 찾기·비슷한 상품 찾기에 쓴다.[7][25]",
+     "**한국어** — LLaMA·T5·Phi·Polyglot 중 한중일 글자에 강한 것을 고르고 토크나이저 차이를 본다고 했다.[7]"
+    ]
+   },
+   "how_far": "LLM 을 직접 학습하는 연구자 자리라기보다 **LLM 이 만든 라벨·임베딩을 랭킹 시스템에 넣어 숫자를 올리는** 자리입니다.[7] {추론}",
+   "refs": [7, 25],
+   "study": ["coupang-llm", "clip", "ai-powered-search"]
+  },
+  {
+   "section": "task",
+   "quote": "Build and optimize ML pipelines using tools such as Apache Spark, Airflow, Kubeflow, and MLflow, ensuring reproducibility, scalability, and operational excellence",
+   "short": "로그를 학습 데이터로 바꾸고 모델을 다시 학습·배포하는 흐름을 Spark·Airflow·Kubeflow·MLflow 로 짓는 일.",
+   "why": "공고는 이 자리가 수십억 건의 행동 기록과 페타바이트 로그를 엔지니어·과학자가 쓰기 쉬운 데이터로 바꾼다고 적었습니다.[1] 쿠팡 논문의 기본 학습 데이터는 70일, 기반 모델은 1년 치이고 주기적으로 다시 학습합니다.[5] 사내 ML 플랫폼은 한 해에 10만 번 넘는 작업 실행·600개 넘는 ML 프로젝트를 돌렸다고 했습니다.[6]",
+   "actually": {
+    "items": [
+     "**Spark** — 노출·클릭·구매 로그를 '검색 목록 하나 = 학습 예시 하나'로 묶는다. 구매는 노출 뒤 일정 기간 안이면 그 노출의 공으로 친다.[5][29]",
+     "**Airflow** — 매일 데이터 만들기 → 학습 → 평가 → 배포 순서를 일정대로.[28]",
+     "**Kubeflow** — 쿠버네티스 위에서 GPU 학습 작업을 띄운다. 쿠팡은 LLM 학습에 Kubeflow PyTorchJob 을 쓴다고 했다.[7][27]",
+     "**MLflow** — 실험마다 데이터 기간·설정·지표·모델 파일을 남겨 같은 결과를 다시 낼 수 있게.[26]",
+     "**재현성의 함정** — 학습 때와 서빙 때 특징 값이 달라지는 것(training-serving skew). 쿠팡 플랫폼은 배포 전에 이것을 검사한다.[6][32]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "데이터 기간을 늘리면 얼마나 오르나 — 쿠팡 논문 표 4 로 맞춰 보기",
+     "body": "논문은 학습 기간 300·400·500일에서 mAP 이득 1.00·1.02·1.05% 를 보고했습니다.[5] 로그 눈금에 직선을 맞추면 기간이 두 배가 될 때마다 약 +0.07%p 입니다(직접 돌린 출력). 파이프라인이 1년 넘는 데이터를 감당해야 하는 이유이고, 그래서 논문은 처음부터 다시 학습(+264% 시간) 대신 기반 모델 이어 학습(+36%)을 택했습니다.[5]",
+     "lang": "python",
+     "code": "pts = [(300, 1.00), (400, 1.02), (500, 1.05)]\n# y = a + b * log2(days) 최소제곱\nprint(\"per doubling +%.3f pp\" % b)\n# per doubling +0.067 pp"
+    }
+   ],
+   "how_far": "도구를 고르는 것보다 **'1년 치를 매주 다시 학습해도 시간·비용이 버티나'를 설계**하는 수준입니다.[5] 플랫폼 자체는 ML 플랫폼 팀이 만들고, 이 자리는 그 위에 랭킹 파이프라인을 얹습니다.[6] {추론}",
+   "refs": [1, 5, 6, 7, 26, 27, 28, 29, 32],
+   "study": ["huyen-mlsd", "spark-docs", "airflow-docs", "kubeflow-docs", "mlflow-docs"]
+  },
+  {
+   "section": "task",
+   "quote": "Define and track key performance metrics to evaluate model impact and identify high[1]leverage opportunities for improvement",
+   "short": "모델이 실제로 무엇을 바꿨는지 잴 지표를 정해 보고, 가장 크게 남는 개선 자리를 찾는 일.",
+   "why": "쿠팡 논문은 오프라인 지표로 **'7일 안에 실제로 산 상품'을 정답으로 한 mAP** 를 쓰고, 이 값이 온라인 참여와 잘 맞는다고 했습니다.[5] 출시 결과는 오프라인 mAP +2.1% 가 온라인 검색 전환율 +2.6% 로 이어졌습니다.[5] 쿠팡 실험 플랫폼은 2022년에 동시에 약 800개 실험을 돌렸습니다(다른 풀이에서 발표 영상을 읽은 값).[11]",
+   "actually": {
+    "items": [
+     "**오프라인 지표** — mAP·NDCG 처럼 '산 상품이 위에 있나'를 잰다.[5][17]",
+     "**온라인 지표** — A/B 실험에서 검색 전환율·매출, 그리고 나빠지면 안 되는 가드레일(지연·반품·광고 수익).[15]",
+     "**위치 치우침** — 위에 있어서 눌린 클릭을 그대로 정답으로 쓰면 지금 순위만 굳는다. 노출될 확률로 나눠 보정한다.[16]",
+     "**지렛대 찾기** — 검색어 종류(브랜드·긴 검색어·처음 보는 검색어)별로 쪼개 지표가 낮은 칸부터 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "mAP — 산 상품이 몇 번째에 있었나",
+     "body": "검색 세 번의 결과에서 산 상품 자리(1 = 샀음)로 평균 정밀도를 냅니다(가상 값, 직접 돌린 출력). 모델 B 가 산 상품을 더 위에 두어 0.567 → 0.833 입니다.",
+     "lang": "python",
+     "code": "A = [[0,1,0,0,1],[1,0,0,0,0],[0,0,0,1,0]]\nB = [[1,1,0,0,0],[1,0,0,0,0],[0,1,0,0,0]]\n# A [0.45, 1.0, 0.25] mAP = 0.567\n# B [1.0, 1.0, 0.5] mAP = 0.833"
+    },
+    {
+     "title": "위치 치우침 보정 — 노출 확률로 나누기",
+     "body": "4번째 자리는 사람들이 20%만 본다고 할 때, 거기서 한 번 눌린 Z 는 1번째에서 두 번 눌린 X 보다 강한 신호입니다(가상 값, 직접 돌린 출력).[16]",
+     "lang": "python",
+     "code": "prop = {1: 1.0, 2: 0.6, 3: 0.35, 4: 0.2}\nclicks = [(1,\"X\"), (1,\"X\"), (2,\"Y\"), (4,\"Z\")]\n# raw {'X': 2, 'Y': 1, 'Z': 1}\n# ips {'X': 2.0, 'Y': 1.67, 'Z': 5.0}"
+    }
+   ],
+   "how_far": "실험 플랫폼과 통계는 데이터 과학 쪽이 같이 보지만, **랭킹 모델의 오프라인 지표가 온라인 결과를 예측하는지 확인하고 지표를 고르는 건** 이 자리의 몫입니다.[5] {추론}",
+   "refs": [5, 11, 15, 16, 17],
+   "study": ["kohavi", "joachims-ltr", "iir-book"]
+  },
+  {
+   "section": "task",
+   "quote": "Collaborate cross-functionally with product, engineering, and data science teams to align technical solutions with business goals and customer experience",
+   "short": "기획·엔지니어링·데이터 과학 팀과 함께, 모델이 사업 목표와 손님 경험 둘 다에 맞게 가도록 맞추는 일.",
+   "why": "랭킹은 매출만 보면 손님 신뢰를 잃을 수 있습니다. 공정거래위원회는 2024년 쿠팡이 '쿠팡 랭킹순'의 마지막 단계에서 자기 상품(직매입·PB) 최소 6만 4천여 개를 기준과 상관없이 위에 고정했다고 보고 제재했습니다 — 지정 상품을 손으로 고정하기, PB 점수에 1.5배 가중 등.[12] 과징금은 1,628억 원으로 확정 통보됐고 쿠팡이 낸 취소 소송이 서울고법에서 진행 중입니다(2026년 4월 변론 기준).[13]",
+   "actually": {
+    "items": [
+     "**기획** — '이번 분기 목표는 전환율인가, 새 판매자 노출인가'를 정하고 모델 목표에 옮긴다 {추론}.",
+     "**엔지니어링** — 검색 서버·특징 저장소·서빙 팀과 지연·용량을 맞춘다.[6]",
+     "**데이터 과학** — 실험 설계와 판정을 같이 본다.[11]",
+     "**규칙과 모델의 경계** — 순위에 사람이 넣는 가중·고정은 공개한 랭킹 기준과 어긋나면 법적 문제가 될 수 있다는 것이 위 제재의 쟁점이다.[12]"
+    ]
+   },
+   "how_far": "회의를 많이 하는 것이 아니라 **사업 요구를 모델 목표·가드레일 지표로 바꿔 쓰는** 수준입니다 {추론}.",
+   "refs": [6, 11, 12, 13],
+   "study": ["staff-path", "rules-ml"]
+  },
+  {
+   "section": "task",
+   "quote": "Mentor and grow engineering talent, fostering a culture of technical excellence, experimentation and continuous learning",
+   "short": "엔지니어를 가르치고 키우며, 실험으로 판정하고 계속 배우는 팀 문화를 만드는 일.",
+   "why": "Senior Staff 는 혼자 모델을 올리는 사람보다 팀 전체의 방향과 기준을 잡는 직급입니다.[33] 쿠팡 논문은 16명이 함께 쓴 것으로, 한 팀이 몸통·임베딩·데이터·서빙을 나눠 맡아 합친 결과였습니다.[5]",
+   "actually": {
+    "items": [
+     "**설계 검토** — 팀원의 실험 계획을 보고 '이건 위치 치우침이 섞였다' 같은 구멍을 짚는다 {추론}.",
+     "**실험 기록 문화** — 진 실험도 남겨 같은 시도를 반복하지 않게.[15]",
+     "**글로 남기기** — 논문·사내 글로 배운 것을 공유한다(쿠팡 검색 팀이 그렇게 했다).[5]"
+    ]
+   },
+   "refs": [5, 15, 33],
+   "study": ["staff-path"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bachelor's degree in computer science, electrical engineering, mathematics, statistics or closely related fields",
+   "short": "컴퓨터공학·전기공학·수학·통계 또는 가까운 분야 학사.",
+   "why": "랭킹 모델은 확률·선형대수·최적화 위에 서 있어 이 전공들을 적었습니다 {추론}. 석사·박사는 우대 칸에 따로 있습니다.[1]",
+   "refs": [1]
+  },
+  {
+   "section": "qualification",
+   "quote": "7+ years of professional experience in applied machine learning",
+   "short": "실제 서비스에 ML 을 붙여 온 경력 7년 이상.",
+   "why": "'applied'라 연구 경력보다 **서비스에 내보내고 결과를 책임진** 경력입니다 {추론}. 같은 조직의 다른 공고는 Staff 4년 이상, Senior Staff 8년 이상을 적었습니다.[3][4]",
+   "how_far": "연수보다 '출시해서 A/B 로 이긴 모델'을 몇 번 말할 수 있느냐가 실제 기준입니다 {추론}.",
+   "refs": [3, 4]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience in machine learning, deep learning, and statistical modeling",
+   "short": "머신러닝·딥러닝·통계 모델링을 다 해 봤어야 한다.",
+   "why": "랭킹은 세 가지가 다 필요합니다 — 딥러닝 몸통(MaskNet 등), 목록 단위 손실, 실험 판정의 통계.[5][15]",
+   "level": {
+    "basic": "로지스틱 회귀·트리 모델·교차 엔트로피 · 과적합과 검증 나누기",
+    "work": "목록 단위 순위 학습(LambdaMART·softmax 손실) · 멀티태스크(클릭·장바구니·구매) · 보정(calibration)",
+    "team": "몸통·임베딩·데이터 크기를 같은 연산량에서 견주기 · 위치 치우침 보정 · 실험 분산 줄이기"
+   },
+   "actually": {
+    "items": [
+     "**목록 단위 손실** — 쿠팡 논문은 구매가 하나 이상 있는 검색 목록을 한 예시로 softmax 교차 엔트로피를 쓴다.[5]",
+     "**멀티태스크** — 클릭·장바구니를 보조 과제로 같이 배운다.[5]",
+     "**고전 순위 학습** — RankNet → LambdaRank → LambdaMART 는 지금도 기준선이다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "목록 단위 softmax 손실 — 산 상품을 위로 올리면 손실이 준다",
+     "body": "점수 네 개 중 두 번째 상품을 샀습니다. 그 상품 점수를 맨 위로 바꾸면 손실이 1.495 → 0.495 로 줍니다(가상 값, 직접 돌린 출력).[5]",
+     "lang": "python",
+     "code": "scores = [2.0, 1.0, 0.5, -1.0]   # 2번째를 샀다\n# P = [0.609, 0.224, 0.136, 0.03]\n# loss = -log P[1] = 1.495\nscores2 = [1.0, 2.0, 0.5, -1.0]\n# swap loss = 0.495"
+    }
+   ],
+   "refs": [5, 15, 17],
+   "study": ["coupang-cvr", "burges", "kohavi"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Proficiency in Python and/or Java, with experience in building production grade ML systems",
+   "short": "파이썬이나 자바를 능숙하게, 실제 서비스에서 도는 ML 시스템을 만들어 본 경험.",
+   "why": "학습은 파이썬(PyTorch·TensorFlow), 검색 서버·특징 조회는 자바 쪽인 경우가 많습니다 {추론}. 공고의 기술 목록에도 Java·Python 이 함께 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**서빙 최적화** — 쿠팡 논문은 CPU 만 쓰는 게 최적화 안 한 GPU 보다 빨랐고, 전처리는 CPU·몸통은 GPU 로 나눠 P99 82ms → 32ms 로 줄였다.[5]",
+     "**묶어 보내기** — 서버 쪽 묶음(10ms 대기)으로 P99 50ms 안에서 초당 4.2천 → 13.6천 건(3.24배).[5]",
+     "**배포 안전장치** — 모델 크기·학습/서빙 어긋남 검사 뒤 카나리 배포.[6]"
+    ]
+   },
+   "how_far": "'production grade'는 **지연 예산 안에서 돌고, 롤백할 수 있고, 특징이 학습 때와 같음을 확인하는** 수준입니다.[6][32] {추론}",
+   "refs": [1, 5, 6, 32],
+   "study": ["huyen-mlsd", "coupang-mlp"]
+  },
+  {
+   "section": "preference",
+   "quote": "Master’s or PhD in relevant technical fields",
+   "short": "관련 분야 석사·박사면 좋다.",
+   "why": "같은 조직의 다른 공고도 박사를 우대로 적었습니다.[3][4] 이 팀은 논문을 내는 팀이라 연구 경험이 쓸모 있습니다.[5] {추론}",
+   "refs": [3, 4, 5]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience with search systems, information retrieval or recommendation engines",
+   "short": "검색 시스템·정보 검색(IR)·추천 엔진을 해 봤으면 좋다.",
+   "why": "이 자리의 일 자체입니다. 같은 조직 옛 공고는 검색어×상품 구매 예측(개인화가 중요한 요소)·두 탑 + ANN 후보 찾기·사람 라벨 수백만 건의 관련도 모델을 예로 들었습니다.[3]",
+   "actually": {
+    "items": [
+     "**IR 기초** — 역색인·BM25·평가(정밀도·NDCG).[17][34]",
+     "**추천** — 두 탑 후보 찾기 → 랭킹의 두 단계 구조(유튜브 논문이 대표).[18]",
+     "**검색 vs 추천** — 검색은 검색어라는 강한 단서가 있고, 추천은 행동만 있다. 개인화 검색은 그 둘을 섞는다 {추론}."
+    ]
+   },
+   "refs": [3, 17, 18, 34],
+   "study": ["iir-book", "youtube-dnn", "ai-powered-search"]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience with LLMs, embeddings, and vector search technologies",
+   "short": "LLM·임베딩·벡터 검색 기술을 다뤄 봤으면 좋다.",
+   "why": "업무 넷째 줄(LLM·임베딩 검색)을 하려면 필요한 경험입니다. 쿠팡 ML 플랫폼은 LLM·멀티모달 모델의 GPU 서빙에 투자 중이라고 했고, 배치 추론은 Ray + vLLM 으로 돌린다고 했습니다.[6][7]",
+   "actually": {
+    "items": [
+     "**임베딩 학습** — 대조 학습으로 검색어·상품 벡터.[20]",
+     "**벡터 색인** — HNSW 등 근사 최근접 검색, 정확도와 속도 맞바꾸기.[21]",
+     "**샘플링 치우침** — 인기 상품이 음성 예시로 너무 자주 뽑히는 것을 고친다.[19]"
+    ]
+   },
+   "refs": [6, 7, 19, 20, 21],
+   "study": ["dpr", "hnsw", "sampling-bias", "coupang-llm"]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience with cloud platforms such as AWS, Google Cloud Platform including services like Vertex AI, BigQuery or SageMaker",
+   "short": "AWS·구글 클라우드(Vertex AI·BigQuery·SageMaker 등)를 써 봤으면 좋다.",
+   "why": "쿠팡의 학습 자원은 자체 GPU 클러스터와 AWS 를 섞은 형태이고, 실시간 서빙은 AWS EKS 위 Triton 이라고 했습니다.[6][7] GCP 는 공고에 적혔지만 쿠팡 글에서 쓰임을 확인하지 못했습니다.",
+   "how_far": "특정 클라우드 제품보다 **학습·서빙 자원을 비용과 지연으로 고르는 감각**이 핵심입니다 {추론}.",
+   "refs": [6, 7],
+   "study": ["coupang-mlp"]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience working in startup or high-growth environments",
+   "short": "스타트업이나 빠르게 크는 회사에서 일해 봤으면 좋다.",
+   "why": "공고 첫머리는 쿠팡을 '큰 상장사의 자원을 가진 스타트업 문화'로 소개합니다.[1] 정해진 길이 없는 곳에서 스스로 일을 만드는 경험을 보는 것으로 읽힙니다 {추론}.",
+   "refs": [1]
+  },
+  {
+   "section": "preference",
+   "quote": "Proven ability to lead-cross-functional teams and deliver results in a multicultural, global organization",
+   "short": "여러 나라 사람이 섞인 조직에서 여러 팀을 이끌어 결과를 낸 경험.",
+   "why": "쿠팡 검색 조직은 미국(마운틴뷰·시애틀)·서울 등에 나뉘어 있고, 시애틀 ML 디렉터 소개 글도 나라를 넘나드는 팀을 말했습니다.[9] 쿠팡 논문 저자도 여러 나라 출신입니다.[5] {추론}",
+   "refs": [5, 9],
+   "study": ["staff-path"]
+  },
+  {
+   "section": "preference",
+   "quote": "Hands-on experience with modern ML frameworks such as TensorFlow, PyTorch, Scikit[1]learn, Keras, XGBoost, LightGMB, and H2o.ai",
+   "short": "TensorFlow·PyTorch·scikit-learn·Keras·XGBoost·LightGBM·H2O 를 직접 써 봤으면 좋다.",
+   "why": "쿠팡 ML 플랫폼은 TensorFlow·PyTorch·scikit-learn·Hugging Face 등이 든 표준 컨테이너를 팀에 준다고 했습니다.[6] 공고의 'LightGMB'는 LightGBM 의 오타로 보입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**딥러닝 랭킹** — PyTorch·TensorFlow 로 MaskNet·트랜스포머 몸통.[5][23]",
+     "**트리 랭킹** — XGBoost·LightGBM 의 lambdarank 목표로 기준선을 빨리 만든다.[30][35]"
+    ]
+   },
+   "refs": [5, 6, 23, 30, 35],
+   "study": ["lightgbm-docs", "masknet", "dcnv2"]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience with ML lifecycle tools such as MLflow, Kubeflow, Weights & Biases, or Amazon SageMaker",
+   "short": "MLflow·Kubeflow·W&B·SageMaker 같은 모델 수명 주기 도구를 써 봤으면 좋다.",
+   "why": "실험이 수백 개 쌓이면 어떤 데이터·설정으로 어떤 숫자가 나왔는지 기록 없이는 못 찾습니다 {추론}. 쿠팡 플랫폼은 학습 작업을 Polyaxon·Kubeflow 로 쿠버네티스에 띄웁니다.[7]",
+   "refs": [7, 26, 27],
+   "study": ["mlflow-docs", "kubeflow-docs"]
+  },
+  {
+   "section": "preference",
+   "quote": "Excellent communication skills with the ability to explain complex technical concepts to both technical and non-technical stakeholders",
+   "short": "어려운 기술을 엔지니어에게도, 기술 모르는 사람에게도 풀어 설명할 수 있어야 좋다.",
+   "why": "'mAP +1.5%'를 '검색 전환율 +1.9%, 대신 서빙 연산 8배'로 바꿔 말해야 비용 결정을 받을 수 있습니다 — 쿠팡 논문의 출시 표가 그런 꼴입니다.[5]",
+   "refs": [5]
+  },
+  {
+   "section": "preference",
+   "quote": "Demonstrated ability to work independently and manage ambiguity in fast-paced environments",
+   "short": "빠르게 도는 곳에서 정답 없는 문제를 혼자 정의하고 끌고 갈 수 있으면 좋다.",
+   "why": "같은 조직 옛 공고는 첫 업무를 '지금 검색·추천 시스템의 병목 원인을 찾고 결함을 수치로 보이는 것'으로 적었습니다 — 문제부터 스스로 찾는 일입니다.[3]",
+   "refs": [3]
+  }
+ ],
+ "fit": {
+  "good": [
+   "검색·추천 랭킹을 출시해 A/B 로 이겨 본 응용 ML 엔지니어[1][5]",
+   "모델을 키우는 일과 지연·비용 안에서 서빙하는 일을 둘 다 좋아하는 사람[5]",
+   "LLM 을 '쓰는 쪽' — 라벨·임베딩·증류로 작은 실시간 모델을 올리는 일에 관심 있는 사람[7]",
+   "팀의 기준을 세우고 사람을 키우는 데 시간을 쓰고 싶은 사람[1]"
+  ],
+  "hard": [
+   "근무지가 마운틴뷰(미국) 사무실이다 — 취업 자격 요건은 공고에 적혀 있지 않아 지원 전에 확인한다[1][2]",
+   "응용 ML 7년 이상이 필수라 신입·주니어 자리가 아니다[1]",
+   "공고 연봉 칸은 'Staff' 범위라고 적혀 있어 Senior Staff 처우는 오퍼 때 따로 확인해야 한다[1]",
+   "검색 순위는 규제 당국이 보는 영역이다 — 2024년 공정위 제재와 소송이 진행 중이다[12][13]"
+  ]
+ },
+ "interview": [
+  {"q": "검색 랭킹 모델을 키울 때 몸통·임베딩·데이터 중 무엇부터 늘리겠어요? 근거는요?", "a": "쿠팡 논문의 질문 그대로 — 셋 다 로그-선형이고 대체로 더해지며, 데이터는 연산량 1배로 +0.6%.[5]"},
+  {"q": "오프라인 mAP 는 올랐는데 온라인 전환율이 그대로입니다. 어디부터 보나요?", "a": "지표 줄 — 위치 치우침·학습/서빙 어긋남·정답 기간.[5][16][32]"},
+  {"q": "GPU 로 옮겼더니 오히려 느려졌습니다. 왜일 수 있나요?", "a": "논문의 CPU-GPU 나누기·묶어 보내기.[5]"},
+  {"q": "LLM 을 실시간 랭킹에 어떻게 쓰겠어요? 3B 모델을 50ms 안에 못 돌린다면요?", "a": "약한 라벨·증류·임베딩 특징.[7]"},
+  {"q": "PB 상품을 더 노출하자는 사업 요구가 오면 랭킹에서 어떻게 다루겠어요?", "a": "협업 줄 — 공개한 랭킹 기준과 규칙 가중의 경계, 광고·기획전 같은 정상 경로.[12]"}
+ ],
+ "sources": [
+  {"n": 1, "title": "Coupang Careers · Senior Staff Ranking Engineer, Personalization", "url": "https://www.coupang.jobs/en/jobs/7977000/senior-staff-ranking-engineer-personalization/", "kind": "posting", "date": "2026-11-02", "note": "갱신일. 요청 번호 R0074076 · 조직 소개(매주 수백만 명 검색·3분의 1 넘게 구매·매출 절반 넘게 검색+추천, 행동 기록 수십억 건·PB 로그·실시간 서빙), 업무 7·요건 4·우대 10, 기본급 '$152K~277K(Staff position)'·연 보너스 0~20%·복리후생, 기술 목록 AWS·Apache·Java·Keras·PyTorch·Python·TensorFlow"},
+  {"n": 2, "title": "Built In SF · Senior Staff Ranking Engineer, Personalization (Coupang)", "url": "https://www.builtinsf.com/job/senior-staff-ranking-engineer-personalization/9601986", "kind": "posting", "note": "같은 공고(R0074076)의 사본 — 사무실 근무(In-Office), 605 Fairchild Dr, 전형(서류 → 직무 적합 → 집중 인터뷰 → 오퍼)"},
+  {"n": 3, "title": "Built In · Senior Staff Machine Learning Engineer, Search Personalization (Coupang)", "url": "https://builtin.com/job/senior-staff-ranking-engineer-personalization/2780512", "kind": "posting", "date": "2026-03-12", "note": "내려간 날. 같은 조직 이전 자리(R0044532) — 병목 원인 찾기·A/B, 예시 과제(검색어×상품 구매 예측에 개인화, 두 탑 + ANN, BERT 검색어 분류·이름 뽑기, 사람 라벨 수백만 건 관련도 모델, 그래프), 8년 이상, 기본급 $159K~324K"},
+  {"n": 4, "title": "Built In · Staff ML Ranking Engineer, S&D Personalization (Coupang)", "url": "https://builtin.com/job/staff-ml-ranking-engineer-s-d-personalization/6770385", "kind": "posting", "date": "2026-01-23", "note": "내려간 날. 같은 조직 Staff 자리(R0060735) — 4년 이상, 박사 우대, 기본급 $142K~309K"},
+  {"n": 5, "title": "Pak 외 16명(Coupang) · On the Practice of Scaling Search Conversion Rate Prediction (arXiv 2605.29232)", "url": "https://arxiv.org/abs/2605.29232", "kind": "company", "date": "2026-05-28", "note": "쿠팡 검색 랭킹 논문 전문(HTML) — P(구매|손님·검색어·상품), 목록 단위 softmax 손실·클릭/장바구니 보조, 7일 구매 mAP, 70일·1년 데이터, DCNv2·MaskNet·트랜스포머·RankMixer 비교(MaskNet 승), 임베딩 차원 > 어휘 10배, 표 4 데이터 300/400/500일 → 1.00/1.02/1.05%, 출시 mAP +2.1% → 검색 CVR +2.6%(연산 8배), 이어 학습 +36% vs +264%, CPU-GPU 나누기 P99 82→32ms, 서버 묶음 4.2k→13.6k QPS(50ms)"},
+  {"n": 6, "title": "Coupang Engineering Blog · Meet Coupang's Machine Learning Platform", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/", "kind": "company", "date": "2023-09-08", "note": "주피터·Python SDK, Feast 특징 저장소(오프라인·온라인), 쿠버네티스 학습(DDP·FSDP), Seldon·TFServing·Triton 서빙, 배포 전 크기·학습/서빙 어긋남 검사 후 카나리, 자체 GPU + AWS, 작업 10만 회+/년·프로젝트 600+, 검색에 임베딩 검색 추가, 추천 모델이 검색·플레이·광고 순서를 매김, Ko-BERT A100 10배"},
+  {"n": 7, "title": "Coupang Engineering Blog · Accelerating Coupang's AI Journey with LLMs", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/", "kind": "company", "date": "2024-10-15", "note": "ML 플랫폼 팀 — 개인화 모델(홈·검색·광고), 검색 조직이 LLM 첫 사용처, LLM 약한 라벨로 관련도 모델, CLIP·TrOCR 멀티모달 임베딩, LLaMA·T5·Phi·Polyglot 3B~20B, 증류·임베딩 특징, Zeppelin+Spark·Polyaxon·Kubeflow PyTorchJob·DeepSpeed·EKS 위 Triton·Ray+vLLM(약 20배), A100/H100"},
+  {"n": 8, "title": "About Coupang · The Coupang AI & Data Science students learned about", "url": "https://www.aboutcoupang.com/?p=1364", "kind": "company", "date": "2024-06-03", "note": "검색 조직 랭킹 엔지니어 발표 — 수천만 상품에서 수천 개를 고르는 검색 단계, 관련성·리뷰·별점·가격 등 100개 넘는 기준의 랭킹 단계(같은 회사 다른 풀이에서 읽은 값)"},
+  {"n": 9, "title": "About Coupang · Meet Behdad Dehghani: Scaling AI at Coupang", "url": "https://www.aboutcoupang.com/?p=3687", "kind": "company", "date": "2026-03-11", "note": "시애틀 ML 디렉터 — 검색·추천, LLM 으로 상품 이해, 모델이 검색·광고·추천에 들어간다(같은 회사 다른 풀이에서 읽은 값)"},
+  {"n": 10, "title": "Coupang Engineering (Medium) · Fueling the Coupang search engine", "url": "https://medium.com/coupang-tech/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9", "kind": "company", "date": "2020", "note": "검색어 이해 → 후보 찾기 → 순위, 랭킹 신호를 색인 플랫폼으로. Medium 이 자동 접속을 막아(403) 검색 결과 요약으로만 확인"},
+  {"n": 11, "title": "AWS re:Invent 2022 · STG222 쿠팡 데이터 분석·실험 플랫폼 발표", "url": "https://www.youtube.com/watch?v=DDOPrE8-vAs", "kind": "company", "date": "2022-12", "note": "동시 실험 약 800개·실험 5단계 — 같은 회사 Search and Discovery 데이터 과학자 풀이에서 공식 자막을 다 읽고 적은 값(이번 회차는 영상을 다시 받지 않음)"},
+  {"n": 12, "title": "정책브리핑 · 공정위, 쿠팡(주)·씨피엘비(주)의 위계에 의한 고객유인행위 제재 (브리핑·질의응답)", "url": "https://m.korea.kr/briefing/policyBriefingView.do?newsId=156635544", "kind": "news", "date": "2024-06-13", "note": "2019-02부터 자기 상품 최소 64,250개를 검색 상위에 고정 — 프로모션 고정·SGP(PB 점수 1.5배)·콜드스타트(검색어당 최대 15개), 1·2단계 기준이 아니라 마지막 3단계 고정이 쟁점, 잠정 과징금 1,400억 원"},
+  {"n": 13, "title": "법률신문 · 쿠팡-공정위 소송, 네이버쇼핑 사건 쟁점화", "url": "https://www.lawtimes.co.kr/news/articleViewAmp.html?idxno=218796", "kind": "news", "date": "2026-04", "note": "2024-08 과징금 1,628억 원 확정 통보, 서울고법 2024누57899 변론(2026-04-02) — 본안 선고 전. 검색 결과 요약으로 확인"},
+  {"n": 14, "title": "Coupang Careers · Mountain View", "url": "https://www.coupang.jobs/en/locations/mountain-view/", "kind": "company", "note": "605 Fairchild Dr, Mountain View, CA 94043 · 스탠퍼드·팰로앨토 도심 근처(같은 회사 마운틴뷰 풀이에서 읽은 값)"},
+  {"n": 15, "title": "Kohavi · Tang · Xu · Trustworthy Online Controlled Experiments (Cambridge University Press, 2020)", "url": "https://experimentguide.com/", "kind": "reference", "note": "다른 회사 경험 — 목표·가드레일 지표, 실험 기록"},
+  {"n": 16, "title": "Joachims 외 · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)", "url": "https://arxiv.org/abs/1608.04468", "kind": "reference", "note": "클릭의 위치 치우침과 역확률(IPS) 보정"},
+  {"n": 17, "title": "Burges · From RankNet to LambdaRank to LambdaMART: An Overview (Microsoft Research, 2010)", "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/", "kind": "reference", "note": "순위 학습과 NDCG 목표"},
+  {"n": 18, "title": "Covington · Adams · Sargin · Deep Neural Networks for YouTube Recommendations (RecSys 2016)", "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/", "kind": "reference", "note": "다른 회사 — 후보 생성 → 랭킹 두 단계 구조"},
+  {"n": 19, "title": "Yi 외 · Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations (RecSys 2019)", "url": "https://research.google/pubs/sampling-bias-corrected-neural-modeling-for-large-corpus-item-recommendations/", "kind": "reference", "note": "두 탑 + 묶음 안 음성 예시의 인기 치우침 보정"},
+  {"n": 20, "title": "Karpukhin 외 · Dense Passage Retrieval for Open-Domain Question Answering (EMNLP 2020)", "url": "https://arxiv.org/abs/2004.04906", "kind": "reference", "note": "두 인코더 + 묶음 안 음성 예시 대조 학습"},
+  {"n": 21, "title": "Malkov · Yashunin · Efficient and robust approximate nearest neighbor search using HNSW graphs", "url": "https://arxiv.org/abs/1603.09320", "kind": "reference", "note": "그래프 기반 근사 최근접 검색"},
+  {"n": 22, "title": "Wang 외 · DCN V2: Improved Deep & Cross Network (WWW 2021)", "url": "https://arxiv.org/abs/2008.13535", "kind": "reference", "note": "쿠팡 논문의 기준 몸통"},
+  {"n": 23, "title": "Wang 외 · MaskNet: Introducing Feature-Wise Multiplication to CTR Ranking Models", "url": "https://arxiv.org/abs/2102.07619", "kind": "reference", "note": "쿠팡 논문이 가장 좋다고 본 몸통"},
+  {"n": 24, "title": "He 외 · Practical Lessons from Predicting Clicks on Ads at Facebook (ADKDD 2014)", "url": "https://research.facebook.com/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/", "kind": "reference", "note": "다른 회사 — 광고 클릭 예측·보정·정규화 엔트로피"},
+  {"n": 25, "title": "Radford 외 · Learning Transferable Visual Models From Natural Language Supervision (CLIP, 2021)", "url": "https://arxiv.org/abs/2103.00020", "kind": "reference", "note": "사진·글 대조 학습"},
+  {"n": 26, "title": "MLflow 공식 문서", "url": "https://mlflow.org/docs/latest/", "kind": "reference", "note": "실험 추적·모델 등록"},
+  {"n": 27, "title": "Kubeflow Pipelines 공식 문서", "url": "https://www.kubeflow.org/docs/components/pipelines/", "kind": "reference"},
+  {"n": 28, "title": "Apache Airflow 공식 문서", "url": "https://airflow.apache.org/docs/", "kind": "reference"},
+  {"n": 29, "title": "Apache Spark · Spark SQL Performance Tuning", "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html", "kind": "reference"},
+  {"n": 30, "title": "LightGBM · Parameters (objective lambdarank)", "url": "https://lightgbm.readthedocs.io/en/latest/Parameters.html", "kind": "reference", "note": "트리 모델의 순위 학습 목표"},
+  {"n": 31, "title": "Kang · McAuley · Self-Attentive Sequential Recommendation (SASRec, ICDM 2018)", "url": "https://arxiv.org/abs/1808.09781", "kind": "reference", "note": "행동 줄을 셀프 어텐션으로"},
+  {"n": 32, "title": "Sculley 외 · Hidden Technical Debt in Machine Learning Systems (NeurIPS 2015)", "url": "https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems", "kind": "reference", "note": "학습/서빙 어긋남·데이터 의존"},
+  {"n": 33, "title": "Tanya Reilly · The Staff Engineer's Path (O'Reilly, 2022)", "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/", "kind": "reference", "note": "Staff 이상 직급의 일 — 큰 그림·실행·팀 키우기"},
+  {"n": 34, "title": "Manning · Raghavan · Schütze · Introduction to Information Retrieval (Cambridge, 2008, 온라인 무료)", "url": "https://nlp.stanford.edu/IR-book/", "kind": "reference"},
+  {"n": 35, "title": "XGBoost · Learning to Rank", "url": "https://xgboost.readthedocs.io/en/stable/tutorials/learning_to_rank.html", "kind": "reference", "note": "rank:ndcg·rank:pairwise 목표"},
+  {"n": 36, "title": "California Labor Code § 432.3 (Justia)", "url": "https://law.justia.com/codes/california/code-lab/division-2/part-1/chapter-3/article-3/section-432-3", "kind": "reference", "note": "직원 15명 이상 고용주는 공고에 급여 범위를 적는다(2023-01-01 시행)"}
+ ],
+ "caveat": "쿠팡 검색 랭킹의 내부 구조는 2026년 5월 쿠팡 저자 16명의 arXiv 논문(검색 전환율 모델 키우기)이 가장 자세한 회사 근거이고, 사내 ML 플랫폼 글(2023)·LLM 글(2024)·회사 소개 글·같은 조직의 내려간 공고 둘을 더했습니다. 개인화 랭킹 팀이 직접 한 발표 영상은 찾지 못해 이번 회차에 받은 영상은 없고, 실험 플랫폼 숫자는 다른 풀이가 자막을 읽은 값을 옮겼습니다. Medium 글·법률신문 기사는 자동 접속이 막혀 검색 요약으로만 확인했습니다. 대조 학습·벡터 검색·위치 보정·광고 순위는 다른 회사 논문과 공식 문서로 '보통 이런 것'을 보였고, 예시 숫자(논문 표 4 를 뺀 것)는 모두 가상 값입니다.",
+ "resources": [
+  {"id": "coupang-cvr", "title": "On the Practice of Scaling Search Conversion Rate Prediction", "by": "쿠팡 검색 팀 16명 · arXiv · 2026", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/2605.29232", "why": "이 팀이 직접 쓴 랭킹 모델의 특징·손실·몸통 비교·서빙 최적화. 지원 전에 가장 먼저 읽을 것 — 면접 질문의 절반이 여기서 나온다."},
+  {"id": "coupang-mlp", "title": "Meet Coupang's Machine Learning Platform", "by": "쿠팡 엔지니어링 블로그 · 2023", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/", "why": "랭킹 파이프라인이 올라갈 사내 플랫폼(Feast·쿠버네티스·Triton·카나리) — 파이프라인·서빙 요건의 바탕."},
+  {"id": "coupang-llm", "title": "Accelerating Coupang's AI Journey with LLMs", "by": "쿠팡 엔지니어링 블로그 · 2024", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/", "why": "LLM 약한 라벨·증류·멀티모달 임베딩을 검색에 쓰는 법 — 업무 넷째 줄과 LLM 우대의 회사 판."},
+  {"id": "huyen-mlsd", "title": "머신러닝 시스템 설계", "by": "칩 후옌 지음 · 김대근·김영민 옮김 · 한빛미디어 · 2023", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://www.oreilly.com/library/view/meosinreoning-siseutem-seolgye/9791169210850/", "why": "특징·학습 데이터·배포·모니터링·A/B 를 한 권으로. 파이프라인과 'production grade' 요건을 한국어로 잡는다."},
+  {"id": "iir-book", "title": "Introduction to Information Retrieval", "by": "Manning · Raghavan · Schütze · Cambridge · 2008", "kind": "book", "lang": "en", "free": true, "level": "입문", "url": "https://nlp.stanford.edu/IR-book/", "why": "역색인·BM25·평가 지표 — 검색·IR 우대 요건의 기초. 온라인 무료."},
+  {"id": "ai-powered-search", "title": "AI-Powered Search", "by": "Trey Grainger · Doug Turnbull · Max Irwin · Manning · 2025", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.manning.com/books/ai-powered-search", "why": "검색어 이해·개인화·순위 학습·벡터·하이브리드 검색을 코드로. 검색 네 칸을 한 번에 훑는다."},
+  {"id": "kohavi", "title": "Trustworthy Online Controlled Experiments", "by": "Kohavi · Tang · Xu · Cambridge University Press · 2020", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://experimentguide.com/", "why": "지표·가드레일·실험 함정 — '모델 효과를 잰다'는 업무 줄의 교과서."},
+  {"id": "burges", "title": "From RankNet to LambdaRank to LambdaMART: An Overview", "by": "Chris Burges · Microsoft Research · 2010", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/", "why": "순위 학습 손실이 왜 그렇게 생겼나 — 목록 단위 손실을 이해하는 출발점."},
+  {"id": "joachims-ltr", "title": "Unbiased Learning-to-Rank with Biased Feedback", "by": "Joachims 외 · WSDM 2017", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/1608.04468", "why": "클릭 기록의 위치 치우침을 고치는 법 — 지표가 거짓말하지 않게."},
+  {"id": "youtube-dnn", "title": "Deep Neural Networks for YouTube Recommendations", "by": "Covington 외 · RecSys 2016", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/", "why": "후보 찾기 → 랭킹 두 단계 구조의 대표 논문. 추천 엔진 우대 요건."},
+  {"id": "sampling-bias", "title": "Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations", "by": "Yi 외 · RecSys 2019", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://research.google/pubs/sampling-bias-corrected-neural-modeling-for-large-corpus-item-recommendations/", "why": "두 탑 학습에서 인기 상품 치우침 고치기 — 임베딩 검색 우대 요건."},
+  {"id": "dpr", "title": "Dense Passage Retrieval for Open-Domain Question Answering", "by": "Karpukhin 외 · EMNLP 2020", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://arxiv.org/abs/2004.04906", "why": "묶음 안 음성 예시 대조 학습의 기본형. 업무 셋째 줄의 '대조 학습'."},
+  {"id": "hnsw", "title": "Efficient and robust approximate nearest neighbor search using HNSW graphs", "by": "Malkov · Yashunin · 2016", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/1603.09320", "why": "벡터 검색 색인이 어떻게 빠른가 — 정확도와 속도를 맞바꾸는 손잡이를 안다."},
+  {"id": "sasrec", "title": "Self-Attentive Sequential Recommendation (SASRec)", "by": "Kang · McAuley · ICDM 2018", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://arxiv.org/abs/1808.09781", "why": "손님 행동 줄을 트랜스포머로 읽는 개인화의 기본형."},
+  {"id": "dcnv2", "title": "DCN V2: Improved Deep & Cross Network", "by": "Wang 외 · WWW 2021", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/2008.13535", "why": "쿠팡 논문의 기준 몸통. 특징 교차를 모델이 배우게 하는 법."},
+  {"id": "masknet", "title": "MaskNet: Introducing Feature-Wise Multiplication to CTR Ranking Models", "by": "Wang 외 · 2021", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/2102.07619", "why": "쿠팡 논문이 같은 연산량에서 가장 낫다고 본 몸통."},
+  {"id": "clip", "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)", "by": "Radford 외 · OpenAI · 2021", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://arxiv.org/abs/2103.00020", "why": "쿠팡이 쓴다고 밝힌 사진·글 임베딩의 원형 — 멀티모달 학습 줄."},
+  {"id": "fb-ads", "title": "Practical Lessons from Predicting Clicks on Ads at Facebook", "by": "He 외 · ADKDD 2014", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://research.facebook.com/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/", "why": "광고 클릭 예측·보정·데이터 신선도 — 첫 업무 줄의 광고 타기팅."},
+  {"id": "lightgbm-docs", "title": "LightGBM Parameters (lambdarank)", "by": "Microsoft · LightGBM 문서", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://lightgbm.readthedocs.io/en/latest/Parameters.html", "why": "트리 순위 학습 기준선을 한 시간 안에 만드는 법 — 프레임워크 우대 요건."},
+  {"id": "spark-docs", "title": "Spark SQL Performance Tuning", "by": "Apache Spark 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html", "why": "PB 로그를 학습 예시로 묶을 때 조인·치우침 처리."},
+  {"id": "airflow-docs", "title": "Apache Airflow 문서", "by": "Apache", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://airflow.apache.org/docs/", "why": "매일 데이터→학습→평가→배포 일정 짜기."},
+  {"id": "kubeflow-docs", "title": "Kubeflow Pipelines 문서", "by": "Kubeflow", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.kubeflow.org/docs/components/pipelines/", "why": "쿠버네티스 위 학습 파이프라인 — 공고와 쿠팡 블로그에 함께 나온 도구."},
+  {"id": "mlflow-docs", "title": "MLflow 문서", "by": "MLflow", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://mlflow.org/docs/latest/", "why": "실험 추적·모델 등록 — 재현성 요건."},
+  {"id": "rules-ml", "title": "Rules of Machine Learning", "by": "Martin Zinkevich · Google", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://developers.google.com/machine-learning/guides/rules-of-ml", "why": "제품 ML 의 목표 고르기·지표와 실제 목표의 차이 — 협업 줄에서 사업 목표를 모델 목표로 옮길 때."},
+  {"id": "staff-path", "title": "The Staff Engineer's Path", "by": "Tanya Reilly · O'Reilly · 2022", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/", "why": "Staff 이상이 하는 일 — 방향 잡기·여러 팀 이끌기·사람 키우기. 멘토링·리더십 줄."}
+ ],
+ "study_path": [
+  {"title": "검색·순위의 기초", "time": "2~3주", "goal": "역색인·BM25 로 후보를 찾고 NDCG·mAP 로 순위를 평가할 수 있다.", "resources": ["iir-book", "burges", "lightgbm-docs"], "task": "가상 상품 1,000개와 검색어 50개로 BM25 후보를 뽑고, 가격·리뷰 특징으로 LightGBM lambdarank 를 학습해 BM25 만 쓸 때와 mAP 를 견준다."},
+  {"title": "두 탑과 벡터 검색", "time": "3주", "goal": "검색어·상품 임베딩을 대조 학습하고 HNSW 색인으로 후보를 찾을 수 있다.", "resources": ["dpr", "youtube-dnn", "sampling-bias", "hnsw"], "task": "1단계 데이터에 '검색어 → 산 상품' 쌍을 만들어 PyTorch 두 탑을 묶음 안 음성 예시로 학습하고, faiss 나 hnswlib 로 후보 100개를 찾아 BM25 후보와 합쳐 재현율을 잰다."},
+  {"title": "개인화 랭킹 모델", "time": "3~4주", "goal": "손님 행동 줄을 넣은 목록 단위 랭킹 모델을 만들고 몸통을 같은 연산량에서 견줄 수 있다.", "resources": ["coupang-cvr", "sasrec", "dcnv2", "masknet"], "task": "가상 손님 200명의 최근 본 상품 줄을 만들고, DCNv2·작은 트랜스포머 두 몸통을 softmax 목록 손실로 학습해 연산량(FLOPs)·mAP 표를 쿠팡 논문 표 1 꼴로 만든다."},
+  {"title": "파이프라인·서빙·실험", "time": "3주", "goal": "매일 다시 학습·배포하는 파이프라인과 지연 예산 안의 서빙, 위치 치우침을 보정한 평가를 할 수 있다.", "resources": ["huyen-mlsd", "airflow-docs", "mlflow-docs", "joachims-ltr", "kohavi", "coupang-mlp"], "task": "Airflow 로 데이터 만들기→학습→평가를 묶고 MLflow 에 기록, 모델을 FastAPI 로 띄워 묶음 크기별 P99 지연을 재고, 가상 클릭 기록으로 IPS 보정 전후 지표를 비교한다."},
+  {"title": "LLM 과 리더십 (계속)", "time": "계속", "goal": "LLM 라벨·임베딩으로 작은 실시간 모델을 올리고, 사업 요구를 모델 목표·가드레일로 바꿔 쓸 수 있다.", "resources": ["coupang-llm", "clip", "ai-powered-search", "fb-ads", "rules-ml", "staff-path"], "task": "공개 LLM 으로 검색어×상품 관련도 약한 라벨 500건을 만들어 사람 라벨 50건과 일치율을 재고, 그 라벨로 3단계 모델을 다시 학습한 결과와 '전환율·지연·비용' 세 줄 출시 보고서를 쓴다."}
+ ],
+ "pay": {
+  "summary": "공고에 **기본급 연 15만 2천 ~ 27만 7천 달러**가 적혀 있다 — 다만 문구가 'Staff 자리 범위'라 Senior Staff 처우는 오퍼 때 확인해야 하고, 여기에 **연 보너스 0~20%**가 붙는다",
+  "rows": [
+   {"label": "공고 표기 기본급 (하한)", "value": "연 $152,000", "basis": "공고 · 2026년", "note": "'Staff position' 범위라고 적었고, 근무지 시장·직무 지식·경력에 따라 다르다고 했다 [1]"},
+   {"label": "공고 표기 기본급 (상한)", "value": "연 $277,000", "basis": "공고 · 2026년", "note": "같은 공고의 범위 상단 [1]"},
+   {"label": "연 보너스", "value": "기본급의 0~20%", "basis": "공고 · 2026년", "note": "공고 복리후생 칸 [1]"},
+   {"label": "같은 조직 Senior Staff 이전 공고", "value": "연 $159,000 ~ $324,000", "basis": "공고 · 2026년", "note": "Senior Staff ML Engineer, Search Personalization — 2026-03 내려감, 지역 시장 하단~상단 [3]"},
+   {"label": "같은 조직 Staff 이전 공고", "value": "연 $142,000 ~ $309,000", "basis": "공고 · 2026년", "note": "Staff ML Ranking Engineer, S&D Personalization — 2026-01 내려감 [4]"}
+  ],
+  "how": "캘리포니아는 직원 15명 이상 회사가 공고에 급여 범위를 적게 한다(2023년부터) — 그래서 숫자가 있다 [36]. 이 공고의 범위는 같은 조직 Senior Staff 이전 공고보다 낮고 Staff 공고와 비슷해, 문구대로 Staff 범위를 옮겨 적은 것으로 보인다 [1][3][4] {추론}. 공고는 기본급이 전체 보상의 한 부분이라고 적었다(주식 등은 금액 표기 없음) [1]. 한국 쿠팡(주) 집계 평균과는 나라·기준이 달라 나란히 놓지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {"name": "보험", "detail": "의료·치과·안과·생명보험, 상해 사망·장해(AD&D)"},
+   {"name": "의료비 계좌", "detail": "FSA(유연 지출 계좌)·HSA(건강 저축 계좌)"},
+   {"name": "장단기 장애 보장", "detail": "Long-term/Short-term Disability"},
+   {"name": "직원 지원 프로그램", "detail": "EAP"},
+   {"name": "퇴직연금", "detail": "401K, 회사 매칭"},
+   {"name": "유급 휴가", "detail": "근속에 따라 연 18~21일 PTO + 유급 공휴일 12일"},
+   {"name": "육아휴직", "detail": "유급 6주"},
+   {"name": "통근", "detail": "세전 통근비 혜택"},
+   {"name": "전기차 충전", "detail": "마운틴뷰(MTV) 사무실 무료 충전소"}
+  ],
+  "note": "이 공고의 'General Description of All Benefits' 칸이다(2026년 공고, 미국 근무자 기준) [1]. 한국 쿠팡 공고의 복지와는 다르다."
+ },
+ "location": {
+  "name": "쿠팡 마운틴뷰 오피스",
+  "address": "605 Fairchild Dr, Mountain View, CA 94043, USA",
+  "postal": "94043",
+  "map_url": "https://map.naver.com/p/search/605%20Fairchild%20Dr%20Mountain%20View",
+  "near": "스탠퍼드 대학교·팰로앨토 도심 근처 [14]",
+  "note": "공고 근무지는 'Mountain View, USA'이고 사무실 근무(In-Office)다 [1][2]. 주소는 공고 사본과 쿠팡 채용 사이트의 마운틴뷰 안내다 [2][14]."
+ }
+}
