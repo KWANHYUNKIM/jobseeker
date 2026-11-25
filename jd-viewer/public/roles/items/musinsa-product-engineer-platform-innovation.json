@@ -1,0 +1,1072 @@
+{
+  "id": "musinsa-product-engineer-platform-innovation",
+  "company": "무신사",
+  "role": "Product Engineer (Staff, Platform Innovation)",
+  "team": "Biz-E Platform Innovation · 디스커버리",
+  "jobs": [
+    "ats-greeting:musinsa:236337"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "홈·검색·추천·랭킹·콘텐츠·커뮤니티로 이어지는 고객 탐색 경험 전체의 기술 방향을 정하는 Staff 급 자리다. 웹·앱 클라이언트 구조에서 출발해 서버 데이터 계약까지 걸친다 [1].",
+    "env": "서버·웹·모바일 엔지니어가 Product Engineer 라는 한 직군으로 일하고 AI 에이전트를 개발 전 과정에 쓰는 환경이다 [1][2]. 엔지니어 비중이 본사의 48% 라는 보도가 있다 [11].",
+    "oneline": "코드를 대신 짜는 사람이 아니라, 여러 팀 사이의 가장 어려운 문제를 찾아 구조와 기준으로 푸는 사람."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "디스커버리 고객 여정과 비즈니스 전략을 바탕으로 웹, 모바일, 서버를 아우르는 기술 비전과 중장기 로드맵을 수립합니다.",
+      "short": "고객이 상품을 발견하는 길 전체의 기술 방향과 2~3년 계획을 글로 정하는 일.",
+      "why": "디스커버리(홈·검색·추천·랭킹·콘텐츠·커뮤니티)가 여러 팀에 나뉘어 있어, 팀마다 따로 최적화하면 고객 눈에는 하나의 여정이 끊긴다고 공고가 설명한다 [1].",
+      "actually": {
+        "items": [
+          "고객 여정(홈 → 검색 → 상세)에서 어디가 느리고 어디서 이탈하는지 지도로 그린다",
+          "웹·앱·서버가 각각 무엇을 바꿔야 하는지 한 장짜리 비전과 분기 단위 로드맵으로 정리한다",
+          "'지금 하지 않을 것'도 적는다 — 로드맵의 절반은 우선순위에서 밀린 목록이다 {추론}",
+          "비즈니스 전략(글로벌 확장 OCMP 등)과 맞는지 PM·리더와 맞춰 본다 [1]"
+        ]
+      },
+      "how_far": "비전 문서의 최종 결정은 조직 리더와 함께 한다. 이 자리는 기술적 선택지와 비용을 근거와 함께 내놓고 합의를 만드는 쪽이다 [1].",
+      "refs": [
+        1
+      ],
+      "study": [
+        "staff-path",
+        "staff-larson"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "홈, 검색, 추천, 랭킹, 콘텐츠의 클라이언트 아키텍처를 주도하고, 중복 구조를 줄여 새로운 지면과 채널로 확장하기 쉬운 구조를 만듭니다.",
+      "short": "홈·검색·추천 같은 지면의 클라이언트 구조를 하나로 모아 새 지면을 싸게 붙이게 하는 일.",
+      "why": "지면마다 비슷한 목록·카드·상태 관리 코드를 따로 만들면 새 채널(앱 지면, 외부 탐색)을 열 때마다 처음부터 다시 만든다 [1].",
+      "actually": {
+        "items": [
+          "여러 지면에 중복된 카드·목록·로딩 처리 코드를 찾아 공통 블록으로 묶는다",
+          "서버가 화면 구성을 내려주는 방식(BFF, 서버 주도 UI)으로 어디까지 옮길지 정한다 — 무신사 공고 일부가 BFF·Server Driven UI 를 우대로 적는다 [1][4]",
+          "새 지면을 붙일 때 '설정 몇 줄 + 새 컴포넌트 하나'로 끝나게 만드는 것이 목표다 {추론}",
+          "모든 걸 공통화하지 않는다 — 한 지면에서만 쓰는 건 그 팀에 둔다"
+        ]
+      },
+      "how_far": "공통 FE 플랫폼 결정은 그 영역의 Staff 와 함께 내린다고 공고가 밝힌다. 구현은 각 팀이 하고 이 자리는 구조 원칙과 설계 리뷰를 맡는다 [1].",
+      "refs": [
+        1,
+        4
+      ],
+      "study": [
+        "newman-micro",
+        "react-doc",
+        "nextjs-doc"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "성능, 접근성, 안정성부터 테스트와 릴리스까지 E2E 품질 기준을 수립하고, 여러 팀의 개발과 운영 수준을 높입니다.",
+      "short": "로딩 속도·접근성·안정성부터 테스트·배포까지 '이 정도면 출시 가능'의 기준을 정하는 일.",
+      "why": "품질 기준이 팀마다 다르면 한 지면의 느림이 고객에게는 무신사 전체의 느림이다. 기준을 같은 눈금으로 맞추는 일이 필요하다 [1].",
+      "actually": {
+        "items": [
+          "성능: LCP·INP·CLS 같은 Web Vitals 를 지면별로 재고 '상위 25% 느린 사용자'(p75) 값으로 기준을 세운다 [5]",
+          "접근성: 스크린리더·대비·키보드 이동 점검을 배포 전 자동 검사에 넣는다",
+          "안정성: SLI(측정값)·SLO(목표)를 정하고, 넘으면 새 기능 대신 고치는 규칙을 둔다 [6]",
+          "테스트·릴리스: 앱은 심사·단계적 배포가 필요하므로 웹과 다른 배포 기준을 같이 적는다"
+        ]
+      },
+      "how_far": "기준을 만드는 것까지가 이 자리다. 각 팀이 지키게 하려면 자동화된 품질 관문(CI 에서 막는 장치)이 있어야 하고, 사람의 잔소리로는 오래 못 간다 {추론}.",
+      "refs": [
+        1,
+        5,
+        6
+      ],
+      "study": [
+        "web-vitals",
+        "sre-book"
+      ],
+      "examples": [
+        {
+          "title": "p75 와 평균 — 직접 돌린 결과",
+          "body": "가상 로딩 시간 20개. 느린 몇 명이 평균을 가리는 대신 p75 가 '대부분의 경험'을 보인다.",
+          "lang": "python",
+          "code": "import math\nlcp=[1.1,1.3,1.2,1.8,2.1,2.4,1.5,3.9,1.4,1.6,2.0,1.3,5.2,1.2,1.7,1.9,2.2,1.4,1.5,1.3]\ns=sorted(lcp); p75=s[math.ceil(0.75*len(s))-1]\nprint(p75, round(sum(lcp)/len(lcp),2))\n# 출력: 2.0 1.9"
+        }
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "서버 Display, 콘텐츠, 커뮤니티 조직과 데이터 모델 및 API, 이벤트 계약을 설계하고 시스템 간 책임 경계를 정립합니다. AI 에이전트와 외부 탐색 채널 등 새로운 고객 접점도 검증합니다.",
+      "short": "서버와 화면이 주고받는 데이터 모양·이벤트 약속을 같이 설계하고 누가 무엇을 책임지는지 선을 긋는 일.",
+      "why": "클라이언트와 서버가 다른 팀이라 데이터 모양을 한쪽이 바꾸면 반대쪽이 깨진다. 공고는 이런 경계를 바꾸는 결정은 양쪽이 합의해 정한다고 명시한다 [1].",
+      "actually": {
+        "items": [
+          "API 응답과 이벤트(예: 상품 노출·클릭) 필드의 의미·타입·필수 여부를 계약으로 적는다",
+          "필드 추가는 호환, 삭제·타입 변경은 깨짐 — 이 규칙으로 변경을 검사한다(아래 예시)",
+          "디스플레이 서버가 맡을 것(상품 묶음 구성)과 클라이언트가 맡을 것(그리는 방식)을 가른다",
+          "AI 에이전트·외부 검색 채널이 읽을 상품·콘텐츠 데이터 모양이 지금 구조로 충분한지 시험해 본다 [1]"
+        ]
+      },
+      "how_far": "서버 데이터 모델·트랜잭션은 서버 리더가 정한다. 이 자리는 계약을 클라이언트와 외부 채널 입장에서 검증하고 합의 자리에 들어간다 [1].",
+      "refs": [
+        1
+      ],
+      "study": [
+        "ddia-ko",
+        "newman-micro",
+        "kafka-doc"
+      ],
+      "examples": [
+        {
+          "title": "이벤트 계약 호환 검사 — 직접 돌린 결과",
+          "body": "필드 추가는 호환, 타입 변경·삭제는 깨짐으로 판정(가상 필드).",
+          "lang": "python",
+          "code": "old = dict(productId=\"str\", price=\"int\")\ndef compat(old, new):\n    bad = [k for k in old if k not in new or new[k] != old[k]]\n    return \"호환\" if not bad else \"깨짐: \" + \",\".join(bad)\nprint(compat(old, dict(productId=\"str\", price=\"int\", badge=\"str\")))\nprint(compat(old, dict(productId=\"str\", price=\"str\")))\nprint(compat(old, dict(productId=\"str\")))\n# 출력: 호환 / 깨짐: price / 깨짐: price"
+        }
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "PM, 디자이너 및 유관 조직과 고객 문제와 우선순위를 정의하고, 모호한 요구사항을 측정 가능한 가설로 구체화하며, 출시 이후 지표를 검증해 다음 개선으로 연결합니다.",
+      "short": "PM·디자이너와 고객 문제를 정하고, 모호한 요구를 숫자로 확인할 수 있는 가설로 바꾸는 일.",
+      "why": "무신사는 PE 가 기능이 왜 필요한지 이해하고 출시 뒤 지표로 확인하는 데까지 PM 과 함께 참여하는 직군이라고 설명한다 [1].",
+      "actually": {
+        "items": [
+          "'검색이 불편하다' → '검색 결과 첫 화면에서 클릭 없이 나가는 비율이 높다' 처럼 측정 가능한 문장으로 바꾼다",
+          "가설마다 성공 지표와 보지 말아야 할 지표(예: 속도만 올리고 전환이 떨어지는 경우)를 정한다",
+          "짧은 프로토타입으로 논의를 먼저 시작한다 — 공고가 긴 문서보다 짧은 정리·프로토타입을 권한다 [1]",
+          "출시 뒤 지표를 보고 다음 개선으로 이어 가는 것까지가 한 사이클이다"
+        ]
+      },
+      "how_far": "우선순위의 최종 결정은 PM·리더 몫이다. 이 자리는 기술 비용·가능성을 숫자로 내놓고, 지표를 읽는 데까지 참여한다 [1].",
+      "refs": [
+        1
+      ],
+      "study": [
+        "inspired",
+        "kohavi"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "설계, 구현, 테스트, 코드 리뷰, 운영 전반에 AI 코딩 에이전트를 적극 활용하고, 경험을 팀과 공유해 생산성과 품질을 높이는 개발 방식을 정착시킵니다.",
+      "short": "설계·구현·테스트·리뷰·운영 전 과정에 AI 코딩 에이전트를 쓰고, 쓰는 법을 팀에 퍼뜨리는 일.",
+      "why": "무신사는 전사적으로 AI 도구 사용을 밀고 있고, 코어 AI 디렉터 인터뷰는 외주 대비 비용·기간 절감을 성과로 든다 [2][3].",
+      "actually": {
+        "items": [
+          "코드 작성뿐 아니라 리뷰·테스트 작성·장애 원인 추적에도 에이전트를 쓴다",
+          "에이전트가 쓴 변경을 사람이 검증하는 체크리스트를 만든다(테스트 통과 여부, 변경 범위, 보안)",
+          "프로젝트 규칙 파일을 만들어 팀원이 같은 지침으로 쓰게 한다",
+          "잘 된 사례와 실패 사례를 짧게 공유해 팀 방식으로 굳힌다"
+        ]
+      },
+      "how_far": "도구 사용 자체보다 '결과의 품질을 직접 검증하고 책임진다'가 핵심이다 — 공고가 같은 말을 자격요건에도 적는다 [1].",
+      "refs": [
+        1,
+        2,
+        3
+      ],
+      "study": [
+        "claude-code-doc",
+        "swe-google"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "대규모 웹 또는 모바일 서비스를 설계하고 운영하며, 성능과 품질 문제의 근본 원인을 해결해 보신 분",
+      "short": "큰 서비스를 운영하며 성능·품질 문제를 증상이 아니라 원인까지 파고들어 고친 경험.",
+      "why": "Staff 는 장애·느림이 반복될 때 땜질이 아니라 구조를 고치는 사람이어야 하기 때문이다 [1].",
+      "actually": {
+        "items": [
+          "'느리다' → 측정(Lighthouse·RUM) → 병목(이미지·번들·네트워크·서버) 순서로 좁힌 이야기",
+          "고친 뒤 같은 숫자로 다시 재서 개선을 증명한 경험",
+          "재발 방지 장치(성능 예산, 알림)까지 만든 경험"
+        ]
+      },
+      "how_far": "수치(전후 p75)와 원인 분석 과정을 말할 수 있으면 된다. 트래픽 규모의 절대값보다 근거 있는 진단이 중요하다 {추론}.",
+      "refs": [
+        1,
+        5
+      ],
+      "study": [
+        "web-vitals",
+        "sre-book"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "여러 제품 지면과 서버 시스템을 연결하는 E2E 아키텍처를 설계하고 개선해 보신 분",
+      "short": "여러 지면과 서버 시스템을 가로질러 E2E 구조를 설계·개선해 본 경험.",
+      "why": "디스커버리의 한 번 클릭이 화면·BFF·서버·검색·추천을 모두 지나므로, 한 계층만 아는 사람은 병목을 못 찾는다 [1].",
+      "actually": {
+        "items": [
+          "요청 하나가 클라이언트 → BFF → 서버 → 검색·추천 엔진으로 가는 길을 그려 병목을 짚는다",
+          "계층 사이 책임을 바꾼 사례(예: 화면 조립을 서버로 옮김)와 그 대가를 말한다"
+        ]
+      },
+      "how_far": "모든 계층을 직접 짤 필요는 없다. 경계에서 무엇이 오가는지 정확히 그릴 수 있어야 한다 {추론}.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "newman-micro",
+        "ddia-ko"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "TypeScript, React, Next.js 등 웹 기술 또는 iOS, Android 네이티브 환경에 대한 깊은 이해가 있으신 분",
+      "short": "TypeScript·React·Next.js 중 하나, 또는 iOS·Android 네이티브에 깊은 이해.",
+      "why": "'또는'이라는 점이 중요하다. 웹이든 앱이든 한 영역의 깊이를 먼저 보고, 다른 영역은 읽고 판단할 수 있으면 된다 [1].",
+      "actually": {
+        "items": [
+          "웹: 렌더링 방식(서버/클라이언트), 상태 관리, 번들·캐시 전략",
+          "앱: 화면 생명주기, 메모리, 릴리스 심사·단계 배포",
+          "공통: 상태가 어디에 사는지, 목록이 길 때 어떻게 그리는지"
+        ]
+      },
+      "how_far": "깊이의 증거는 '왜 그렇게 동작하는지 설명할 수 있나'다. 프레임워크 이름 나열은 증거가 아니다 {추론}.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "react-doc",
+        "nextjs-doc"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "데이터 모델, API, 이벤트 계약, 캐시, 분산 시스템을 이해하고 서버 엔지니어와 시스템 경계를 설계하실 수 있는 분",
+      "short": "데이터 모델·API·이벤트 계약·캐시·분산 시스템을 이해하고 서버 엔지니어와 경계를 설계.",
+      "why": "클라이언트 Staff 가 서버 리더와 같은 언어로 이야기해야 계약 합의가 빨라진다 [1].",
+      "actually": {
+        "items": [
+          "캐시: 어디에 두고 언제 비우는지(무효화) — 오래된 값이 보일 때 허용 범위를 정한다",
+          "이벤트: 같은 이벤트가 두 번 와도 결과가 같게(멱등) 만드는 이유",
+          "분산 시스템: 일부가 느릴 때 전체를 막지 않는 격리(타임아웃·대체 화면)"
+        ]
+      },
+      "how_far": "서버를 직접 구현하는 수준은 아니다. 서버 설계 문서를 읽고 클라이언트 입장의 요구를 정확히 말할 수 있으면 된다 {추론}.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "ddia-ko",
+        "kafka-doc"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "고객 문제를 기술 전략과 실행 계획으로 구체화하고, 설계 리뷰와 코칭으로 여러 팀을 이끌며 출시 이후 지표로 성과를 검증해 보신 분",
+      "short": "고객 문제를 기술 전략으로 바꾸고, 설계 리뷰와 코칭으로 여러 팀을 이끌며 지표로 성과를 검증한 경험.",
+      "why": "Staff 는 직접 만드는 양이 아니라 다른 팀의 결정을 좋게 만드는 영향력으로 평가된다 {추론}.",
+      "actually": {
+        "items": [
+          "설계 리뷰에서 '대안은 무엇이었나, 왜 버렸나'를 묻는 사람",
+          "후배에게 해답 대신 질문을 줘서 스스로 결정하게 돕는다",
+          "출시 후 지표를 봐서 맞았는지 되짚고 문서에 남긴다"
+        ]
+      },
+      "how_far": "팀 규모를 숫자로 말할 필요는 없지만, 내가 없었다면 달랐을 결정 하나를 구체적으로 말할 수 있어야 한다 {추론}.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "staff-path",
+        "staff-larson"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "기술적 의사결정의 근거와 트레이드오프를 문서화하고, 고객 경험, 비즈니스 성과, 운영 안정성, 조직의 실행 가능성을 고려해 설명하실 수 있는 분",
+      "short": "기술 결정의 근거와 트레이드오프를 문서로 남기고, 고객·비즈니스·운영·조직 현실을 같이 고려해 설명.",
+      "why": "여러 팀이 따르는 결정은 말로만 전하면 사라진다. 공고도 HLD/LLD·ADR 을 협업 도구로 꼽는다 [1].",
+      "actually": {
+        "items": [
+          "ADR(결정 기록): 상황·선택지·결정·대가를 한 쪽으로 남긴다",
+          "같은 결정을 고객·비즈니스·운영·조직 네 관점으로 각각 설명해 본다",
+          "'하지 않기로 한 것'을 같이 적는다"
+        ]
+      },
+      "how_far": "문서가 길 필요는 없다. 반년 뒤 신입이 읽고 이유를 이해하면 충분하다 {추론}.",
+      "refs": [
+        1,
+        7
+      ],
+      "study": [
+        "adr",
+        "swe-google"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "AI 코딩 에이전트(Codex, Claude Code 등)를 실무에 적극 활용하며, 결과물의 품질을 직접 검증하고 책임지실 수 있는 분",
+      "short": "AI 코딩 에이전트(Codex, Claude Code 등)를 실무에 적극 활용하고 결과 품질을 직접 검증·책임.",
+      "why": "무신사 PE 직군의 공통 요건이다. 속도는 에이전트가 내고 품질 책임은 사람이 진다는 구조다 [1][2].",
+      "actually": {
+        "items": [
+          "에이전트에게 범위·완료 조건을 구체적으로 주고, 결과를 테스트·리뷰로 확인",
+          "에이전트가 만든 코드를 이해하지 못한 채 병합하지 않는다",
+          "실패한 사례(잘못된 가정으로 넓게 고친 경우)를 기록해 규칙에 반영"
+        ]
+      },
+      "how_far": "어떤 도구냐는 중요하지 않다고 공고가 말한다. '직접 검증하고 책임지는 방식'을 보여 주는 것이 중요하다 [1].",
+      "refs": [
+        1,
+        2
+      ],
+      "study": [
+        "claude-code-doc"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "[주요 기술 스택 및 도구]",
+      "short": "이 공고가 주로 쓰는 도구 목록의 머리말이다 — 뒤에 이어지는 일곱 줄이 실제 목록.",
+      "why": "스택을 분류해 보여 주고, 맨 아래에서 '도구 이름이 아니라 문제에 맞는 기술 선택'을 본다고 밝힌다 [1].",
+      "actually": {
+        "items": [
+          "웹·모바일·서버 연계·인프라·운영·협업·AI 도구의 일곱 갈래로 나뉜다"
+        ]
+      },
+      "how_far": "전부 다 알 필요는 없다. 자기 갈래의 깊이와 인접 갈래의 읽는 힘을 본다 [1].",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "웹 클라이언트: TypeScript, React, Next.js",
+      "short": "웹 클라이언트는 TypeScript·React·Next.js.",
+      "why": "공고의 본문이 웹 지면(홈·검색·콘텐츠) 중심이다 [1].",
+      "actually": {
+        "items": [
+          "TypeScript: 서버 응답 타입을 공유해 계약이 깨지면 빌드가 먼저 알려 준다",
+          "Next.js: 서버에서 먼저 그려 첫 화면을 빠르게 하는 방식(SSR/SSG) 선택"
+        ]
+      },
+      "how_far": "웹 이력이 있다면 이 칸이 깊이의 중심이다.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "react-doc",
+        "nextjs-doc"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "모바일 클라이언트: iOS, Android 및 모바일 앱 아키텍처",
+      "short": "모바일은 iOS·Android 앱 구조.",
+      "why": "앱 노출 지면과 전시 구조가 담당 범위에 들어 있다 [1].",
+      "actually": {
+        "items": [
+          "화면 구성 방식, 앱 버전별로 다른 서버 응답 처리",
+          "앱은 배포가 느려 서버가 먼저 바뀐 뒤 구버전 앱이 계속 살아 있다 — 계약 호환이 중요한 이유"
+        ]
+      },
+      "how_far": "웹 중심이면 읽고 판단할 수준으로 충분하다.",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "서버 연계: Java, Kotlin, Spring Boot, REST API, Event-driven Architecture, API Gateway/BFF",
+      "short": "서버와 이어지는 쪽은 Java·Kotlin·Spring Boot·REST·이벤트 기반·BFF.",
+      "why": "서버 팀과 계약을 맞출 때 쓰는 말이다 [1].",
+      "actually": {
+        "items": [
+          "BFF: 화면별로 서버 응답을 모아 주는 중간 서버",
+          "이벤트 기반: 서버가 사건(상품 변경)을 흘려 다른 서버가 반응"
+        ]
+      },
+      "how_far": "읽고 서버 엔지니어와 토론할 수 있으면 된다.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "newman-micro",
+        "kafka-doc"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "인프라 및 데이터: AWS, Kubernetes, Kafka, Redis, Elasticsearch/OpenSearch",
+      "short": "인프라·데이터는 AWS·Kubernetes·Kafka·Redis·Elasticsearch/OpenSearch.",
+      "why": "검색·추천 지면의 응답 속도와 안정성이 이 계층에서 정해진다 [1].",
+      "actually": {
+        "items": [
+          "Redis: 자주 읽는 목록을 메모리에 둠",
+          "OpenSearch: 상품 검색 색인",
+          "Kafka: 변경 이벤트 전달"
+        ]
+      },
+      "how_far": "운영 담당이 아니라 '클라이언트에 어떤 영향을 주나'를 알면 된다 {추론}.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "kafka-doc",
+        "ddia-ko"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "운영 및 품질: Web Vitals, SLI/SLO, Observability, Incident Review, CI/CD, 자동화된 테스트와 품질 게이트",
+      "short": "운영·품질은 Web Vitals·SLI/SLO·관측·장애 리뷰·CI/CD·자동 품질 관문.",
+      "why": "앞의 품질 기준 수립 업무를 받치는 도구들이다 [1].",
+      "actually": {
+        "items": [
+          "Web Vitals 로 속도 측정",
+          "SLO 로 목표 정의",
+          "장애 리뷰로 재발 방지",
+          "CI 에서 기준 미달 시 배포를 막는 관문"
+        ]
+      },
+      "how_far": "도구 이름보다 기준을 세우는 원리를 안다.",
+      "refs": [
+        1,
+        5,
+        6
+      ],
+      "study": [
+        "web-vitals",
+        "sre-book"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "협업 및 의사결정: HLD/LLD, ADR, 설계 리뷰, GitHub 기반 개발 프로세스",
+      "short": "협업·의사결정은 HLD/LLD·ADR·설계 리뷰·GitHub 기반 프로세스.",
+      "why": "여러 팀이 같은 방식으로 결정하게 하는 틀이다 [1].",
+      "actually": {
+        "items": [
+          "HLD: 큰 구조 문서, LLD: 세부 설계 문서",
+          "ADR: 결정 기록",
+          "PR 리뷰 규칙"
+        ]
+      },
+      "how_far": "문서 양식을 외우기보다 쓰는 습관이 중요하다.",
+      "refs": [
+        1,
+        7
+      ],
+      "study": [
+        "adr",
+        "swe-google"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "AI 개발 도구: Codex, Claude Code 등 코딩 에이전트",
+      "short": "AI 개발 도구는 Codex·Claude Code 등 코딩 에이전트.",
+      "why": "공고가 도구로 명시한 마지막 갈래다 [1].",
+      "actually": {
+        "items": [
+          "에이전트 사용법과 검증 규칙"
+        ]
+      },
+      "how_far": "도구 변경에도 통하는 검증 습관이 핵심.",
+      "refs": [
+        1,
+        2
+      ],
+      "study": [
+        "claude-code-doc"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "실제 기술 스택과 도구는 담당하는 제품과 팀의 환경에 따라 달라질 수 있습니다.",
+      "short": "실제 도구는 팀마다 다를 수 있다는 안내.",
+      "why": "스택 목록은 예시이며 지원 조건이 아니라는 뜻이다 [1].",
+      "actually": {
+        "items": [
+          "목록에 없는 도구를 쓰는 사람도 지원할 수 있다"
+        ]
+      },
+      "how_far": "목록을 외우지 말고 자기 경험을 갈래에 대응시킨다.",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "특정 도구의 사용 경험보다 문제에 맞는 기술을 선택하고 조직에 정착시키는 역량을 중요하게 봅니다.",
+      "short": "특정 도구 경험보다 문제에 맞게 기술을 고르고 조직에 정착시키는 힘을 본다.",
+      "why": "Staff 평가가 도구 숙련이 아니라 선택과 정착이라는 선언이다 [1].",
+      "actually": {
+        "items": [
+          "선택 이유·대안·정착 방법(교육·템플릿·규칙)을 설명하는 이야기"
+        ]
+      },
+      "how_far": "'왜 그것을 골랐나'와 '다른 팀이 쓰게 만든 방법'을 준비한다.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "staff-larson"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "커머스의 탐색, 검색, 추천, 전시, 콘텐츠, 커뮤니티 영역에서 복잡한 클라이언트 시스템을 설계하고 운영해 보신 분",
+      "short": "커머스의 탐색·검색·추천·전시·콘텐츠·커뮤니티에서 복잡한 클라이언트를 설계·운영한 경험.",
+      "why": "이 팀의 도메인이 바로 이것이다 [1].",
+      "actually": {
+        "items": [
+          "전시(지면 구성) 시스템, 검색 결과 화면, 추천 캐러셀 설계"
+        ]
+      },
+      "how_far": "도메인 경험이 있으면 첫 한 달이 빨라진다. 없으면 비슷한 목록형 지면 경험으로 대체 {추론}.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "react-doc"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "여러 팀의 기술 방향을 이끌거나, 웹과 모바일, 멀티 브랜드 환경에서 일관된 고객 경험을 위한 공통 아키텍처를 설계해 보신 분",
+      "short": "여러 팀의 기술 방향을 이끌거나 웹·모바일·멀티 브랜드에서 일관된 경험을 위한 공통 구조를 설계한 경험.",
+      "why": "무신사·29CM 같은 여러 브랜드와 웹·앱이 같은 부품을 공유할 필요가 있다 [1][2].",
+      "actually": {
+        "items": [
+          "브랜드별 테마만 바꾸는 공통 컴포넌트·토큰 설계",
+          "공통 구조 도입 때 팀이 따르게 만든 방법"
+        ]
+      },
+      "how_far": "'공통화한 것'과 '일부러 공통화 안 한 것'을 같이 말하면 좋다.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "newman-micro",
+        "staff-path"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "대규모 트래픽 환경에서 로딩, 렌더링, 이미지, 네트워크, 캐시 등을 최적화하고 장애 격리 구조를 개선해 보신 분",
+      "short": "대규모 트래픽에서 로딩·렌더링·이미지·네트워크·캐시를 최적화하고 장애 격리를 개선한 경험.",
+      "why": "패션 이커머스는 이미지가 많아 속도와 안정성이 직접 매출로 이어진다 {추론}.",
+      "actually": {
+        "items": [
+          "이미지 크기·포맷·지연 로딩",
+          "캐시 계층과 무효화",
+          "한 부분 장애가 전체 화면을 막지 않게 하는 격리"
+        ]
+      },
+      "how_far": "전후 수치를 같이 가져간다.",
+      "refs": [
+        1,
+        5
+      ],
+      "study": [
+        "web-vitals",
+        "sre-book"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "디자인 시스템, 공통 BFF, 라이브러리 등 여러 제품 팀이 활용하는 기반을 구축해 생산성과 품질을 높여 보신 분",
+      "short": "디자인 시스템·공통 BFF·라이브러리처럼 여러 제품 팀이 쓰는 기반을 만들어 생산성·품질을 높인 경험.",
+      "why": "공통 기반의 성패는 만든 것이 아니라 쓰게 만든 것으로 갈린다 {추론}.",
+      "actually": {
+        "items": [
+          "사용 팀 수·도입률·문서·마이그레이션 방법"
+        ]
+      },
+      "how_far": "채택 방법을 이야기한다.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "swe-google",
+        "newman-micro"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "AI 에이전트나 외부 검색, 추천 채널에서 활용할 상품 및 콘텐츠 데이터 구조를 설계하거나 검증해 보신 분",
+      "short": "AI 에이전트·외부 검색·추천 채널이 활용할 상품·콘텐츠 데이터 구조를 설계·검증한 경험.",
+      "why": "공고는 AI 에이전트와 외부 탐색 채널을 새 고객 접점으로 검증한다고 적었고, 무신사는 MCP 도입 교훈을 공개했다 [1][3].",
+      "actually": {
+        "items": [
+          "에이전트가 읽기 쉬운 필드 구조",
+          "입력 필드를 세분화하고 로그인 없는 탐색만 열어 둔다는 MCP 교훈 [3]"
+        ]
+      },
+      "how_far": "경험이 없으면 작은 MCP 서버를 만들어 본 정도가 근거가 된다 {추론}.",
+      "refs": [
+        1,
+        3
+      ],
+      "study": [
+        "mcp-doc",
+        "ddia-ko"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "가설 수립, 실험, 데이터 검증을 통해 제품 의사결정에 참여하고, 기술로 비즈니스 KPI를 개선해 수치로 입증해 보신 분",
+      "short": "가설·실험·데이터 검증으로 제품 결정에 참여하고 기술로 KPI 를 개선해 수치로 입증한 경험.",
+      "why": "개발자도 지표에 책임진다는 PE 직군의 방식이다 [1].",
+      "actually": {
+        "items": [
+          "A/B 테스트에서 성능 개선이 전환에 준 효과",
+          "지표가 안 올랐을 때 원인 분석"
+        ]
+      },
+      "how_far": "'수치로 입증'이라는 표현에 맞춰 전후 숫자를 외워 간다.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "kohavi",
+        "inspired"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "AI를 개발 프로세스에 도입해 팀 단위 생산성이나 품질을 개선해 보신 분",
+      "short": "AI 를 개발 프로세스에 도입해 팀 단위 생산성·품질을 개선한 경험.",
+      "why": "공고 업무 마지막 줄과 같은 맥락이다 [1][2].",
+      "actually": {
+        "items": [
+          "팀 규칙 파일·리뷰 체크리스트",
+          "도입 전후 리드타임·결함 수"
+        ]
+      },
+      "how_far": "개인 사용이 아니라 팀 차원의 변화를 말한다.",
+      "refs": [
+        1,
+        2
+      ],
+      "study": [
+        "claude-code-doc",
+        "swe-google"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "AI를 활용해 서버 API, 데이터 파이프라인 등 클라이언트 외 영역까지 직접 문제를 해결해 보신 분",
+      "short": "AI 로 서버 API·데이터 파이프라인 등 클라이언트 밖의 문제도 직접 푼 경험.",
+      "why": "PE 는 서버·웹·모바일을 가르지 않고 문제 중심으로 일하는 직군이다 [1].",
+      "actually": {
+        "items": [
+          "에이전트와 낯선 서버 코드를 읽고 작은 API 를 고친 경험"
+        ]
+      },
+      "how_far": "'직접 만든 PR 하나'가 가장 강한 증거다 {추론}.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "claude-code-doc"
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "웹 또는 앱 한 영역의 깊이와 서버 계약을 읽는 힘을 함께 가진 사람",
+      "성능·품질 개선을 전후 숫자로 입증해 본 사람",
+      "설계 문서와 리뷰로 다른 팀의 결정에 영향을 줘 본 사람"
+    ],
+    "hard": [
+      "경력 10년 이상 요건이 있어 입문자에게는 맞지 않는다 [1]",
+      "여러 팀을 설득하는 일이 많아 혼자 깊게 만드는 일을 선호하면 맞지 않을 수 있다 {추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "성능 문제를 원인까지 파고들어 고친 경험은?",
+      "a": "자격요건 첫 줄과 직결된다. 전후 수치와 원인 분석 과정을 말한다 [1]."
+    },
+    {
+      "q": "서버와 클라이언트 사이 계약을 바꿔야 했을 때 어떻게 합의했나?",
+      "a": "업무·포지션 소개가 경계 결정은 양쪽 합의라고 밝힌다 [1]."
+    },
+    {
+      "q": "AI 에이전트가 쓴 코드를 어떻게 검증하나?",
+      "a": "공고가 '결과 품질을 직접 검증·책임'을 요구한다 [1][2]."
+    },
+    {
+      "q": "공통화하지 않기로 한 결정은?",
+      "a": "공통 구조 우대와 '문제에 맞는 기술 선택' 문구를 확인하는 질문이다 [1]."
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "무신사 채용 · Product Engineer (Platform Innovation)",
+      "url": "https://www.musinsacareers.com/ko/o/236337",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "업무·자격·우대·조직 소개"
+    },
+    {
+      "n": 2,
+      "title": "CIO 코리아 · AI 리더십 인사이드 무신사 — AX 방식",
+      "url": "https://www.cio.com/article/4219031/",
+      "kind": "news",
+      "date": "2026-09-08",
+      "note": "코어 AI 디렉터 인터뷰, 외주 대비 비용·기간"
+    },
+    {
+      "n": 3,
+      "title": "디지털투데이 · MCP 도입 — 무신사 사례(영문판)",
+      "url": "https://www.digitaltoday.co.kr/en/view/84976/mcp-adoption-simplifies-ai-legacy-integration-but-quality-and-governance-remain-challenges",
+      "kind": "news",
+      "date": "2026-07-27",
+      "note": "입력 필드 세분화·로그인 없는 탐색만"
+    },
+    {
+      "n": 4,
+      "title": "무신사 채용 공고 — BFF·Server Driven UI 우대(검색 결과 요약)",
+      "url": "https://career.rememberapp.co.kr/job/posting/266574",
+      "kind": "posting",
+      "note": "검색으로 확인한 공고 요약. 본문은 직접 열지 못함"
+    },
+    {
+      "n": 5,
+      "title": "web.dev · Web Vitals",
+      "url": "https://web.dev/articles/vitals",
+      "kind": "reference",
+      "note": "LCP 2.5초 이하·75번째 백분위 기준"
+    },
+    {
+      "n": 6,
+      "title": "Google SRE Book · Service Level Objectives",
+      "url": "https://sre.google/sre-book/service-level-objectives/",
+      "kind": "reference",
+      "note": "SLI·SLO 정의"
+    },
+    {
+      "n": 7,
+      "title": "무신사 채용 · 복지",
+      "url": "https://www.musinsacareers.com/ko/benefit",
+      "kind": "company",
+      "date": "2025-07",
+      "note": "근무환경·생활지원·스토어 혜택·건강"
+    },
+    {
+      "n": 8,
+      "title": "원티드 · 무신사 기업 정보",
+      "url": "https://www.wanted.co.kr/company/4248",
+      "kind": "reference",
+      "note": "평균연봉 6,082만원 표기. 기준 설명 없음"
+    },
+    {
+      "n": 9,
+      "title": "자소설닷컴 · 무신사",
+      "url": "https://jasoseol.com/companies/7882",
+      "kind": "reference",
+      "note": "공공데이터 기준 초봉 2,313만원·평균 3,453만원(검색 요약, 직접 열람 403)"
+    },
+    {
+      "n": 10,
+      "title": "무신사 뉴스룸 · 성수 본사 이전(캠퍼스 N1)",
+      "url": "https://newsroom.musinsa.com/newsroom-menu/2022-0930",
+      "kind": "company",
+      "date": "2022-09-30",
+      "note": "성수동 캠퍼스 N1·성수역 도보 6분"
+    },
+    {
+      "n": 11,
+      "title": "뉴데일리 · 엔지니어 비중 48% … 전준희 CTO 체제",
+      "url": "https://biz.newdaily.co.kr/site/data/html/2026/06/04/2026060400117.html",
+      "kind": "news",
+      "date": "2026-06-04",
+      "note": "엔지니어 비중·AI 신입 배치"
+    }
+  ],
+  "resources": [
+    {
+      "id": "staff-path",
+      "title": "The Staff Engineer's Path",
+      "by": "Tanya Reilly · O'Reilly · 2022",
+      "kind": "book",
+      "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "기술 비전·여러 팀에 걸친 영향력·설계 리뷰 업무를 위해 Staff 가 하는 일의 틀을 얻는다."
+    },
+    {
+      "id": "staff-larson",
+      "title": "Staff Engineer: Leadership beyond the management track",
+      "by": "Will Larson · 2021",
+      "kind": "book",
+      "url": "https://staffeng.com/book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "기술 결정을 정착시키는 역량과 Staff 의 유형을 사례로 본다."
+    },
+    {
+      "id": "web-vitals",
+      "title": "Web Vitals",
+      "by": "web.dev (Google)",
+      "kind": "doc",
+      "url": "https://web.dev/articles/vitals",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "LCP·INP·CLS 지표의 뜻과 좋음 기준을 확인해 성능 기준 수립 업무에 쓴다."
+    },
+    {
+      "id": "sre-book",
+      "title": "Site Reliability Engineering — Service Level Objectives",
+      "by": "Google SRE · O'Reilly 2016 (온라인 무료)",
+      "kind": "book",
+      "url": "https://sre.google/sre-book/service-level-objectives/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "SLI·SLO 로 안정성 목표를 세우는 법을 얻는다."
+    },
+    {
+      "id": "newman-micro",
+      "title": "Building Microservices (2판)",
+      "by": "Sam Newman · O'Reilly · 2021",
+      "kind": "book",
+      "url": "https://www.oreilly.com/library/view/building-microservices-2nd/9781492034018/",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "BFF 패턴과 서비스 사이 계약 설계의 근거를 얻는다."
+    },
+    {
+      "id": "ddia-ko",
+      "title": "데이터 중심 애플리케이션 설계",
+      "by": "마틴 클레프만 · 한빛미디어 · 2018 (원서 O'Reilly 2017)",
+      "kind": "book",
+      "url": "https://search.kyobobook.co.kr/search?keyword=데이터+중심+애플리케이션+설계",
+      "lang": "ko",
+      "free": false,
+      "level": "심화",
+      "why": "데이터 모델·캐시·분산 시스템·이벤트 요건을 한 번에 익힌다."
+    },
+    {
+      "id": "kafka-doc",
+      "title": "Apache Kafka Documentation",
+      "by": "Apache Kafka 공식 문서",
+      "kind": "doc",
+      "url": "https://kafka.apache.org/documentation/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "이벤트 기반 구조에서 이벤트가 어떻게 전달·보관되는지 확인한다."
+    },
+    {
+      "id": "react-doc",
+      "title": "React 공식 문서",
+      "by": "react.dev",
+      "kind": "doc",
+      "url": "https://react.dev/learn",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "상태가 어디에 사는지, 렌더링이 언제 일어나는지 기본기를 다진다."
+    },
+    {
+      "id": "nextjs-doc",
+      "title": "Next.js 공식 문서",
+      "by": "nextjs.org",
+      "kind": "doc",
+      "url": "https://nextjs.org/docs",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "서버 렌더링·캐시 전략 선택의 근거를 얻는다."
+    },
+    {
+      "id": "adr",
+      "title": "Architectural Decision Records",
+      "by": "adr.github.io",
+      "kind": "doc",
+      "url": "https://adr.github.io/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "기술 결정 기록(ADR) 양식과 쓰는 법을 익힌다."
+    },
+    {
+      "id": "swe-google",
+      "title": "Software Engineering at Google",
+      "by": "Titus Winters 외 · O'Reilly · 2020 (온라인 무료)",
+      "kind": "book",
+      "url": "https://abseil.io/resources/swe-book",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "why": "코드 리뷰·공통 기반·팀 단위 개발 방식의 실제 관행을 본다."
+    },
+    {
+      "id": "inspired",
+      "title": "Inspired: How to Create Tech Products Customers Love",
+      "by": "Marty Cagan · Wiley · 2017",
+      "kind": "book",
+      "url": "https://www.svpg.com/books/inspired-how-to-create-tech-products-customers-love-2nd-edition/",
+      "lang": "en",
+      "free": false,
+      "level": "입문",
+      "why": "고객 문제 정의·우선순위에 개발자가 참여하는 법을 이해한다."
+    },
+    {
+      "id": "kohavi",
+      "title": "Trustworthy Online Controlled Experiments",
+      "by": "Ron Kohavi, Diane Tang, Ya Xu · Cambridge University Press · 2020",
+      "kind": "book",
+      "url": "https://experimentguide.com/",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "가설·A/B 실험·지표 검증을 올바르게 설계하는 법을 얻는다."
+    },
+    {
+      "id": "claude-code-doc",
+      "title": "Claude Code overview",
+      "by": "Anthropic 공식 문서",
+      "kind": "doc",
+      "url": "https://docs.claude.com/en/docs/claude-code/overview",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "코딩 에이전트를 개발 전 과정에 쓰고 규칙 파일로 팀에 퍼뜨리는 법을 익힌다."
+    },
+    {
+      "id": "mcp-doc",
+      "title": "Model Context Protocol",
+      "by": "modelcontextprotocol.io",
+      "kind": "doc",
+      "url": "https://modelcontextprotocol.io/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "AI 에이전트가 서비스 데이터를 읽는 입구의 규약을 이해한다."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "화면·서버 기본기와 측정",
+      "time": "2~3주",
+      "goal": "한 화면의 로딩 병목을 측정으로 짚을 수 있다.",
+      "task": "가상 상품 목록 페이지를 Next.js 로 만들고 이미지·번들을 일부러 키운 뒤 Web Vitals 를 전후로 재서 표로 정리한다.",
+      "resources": [
+        "react-doc",
+        "nextjs-doc",
+        "web-vitals"
+      ]
+    },
+    {
+      "title": "계약과 BFF",
+      "time": "1~2주",
+      "goal": "서버·클라이언트 사이 데이터 약속을 호환 규칙으로 설명한다.",
+      "task": "상품 카드 응답 스키마를 정하고 필드 추가·삭제·타입 변경 세 경우의 영향을 정리한 표와 호환 검사 스크립트를 만든다.",
+      "resources": [
+        "newman-micro",
+        "ddia-ko",
+        "kafka-doc"
+      ]
+    },
+    {
+      "title": "안정성 목표 세우기",
+      "time": "1주",
+      "goal": "SLI·SLO 로 품질 기준을 문장으로 만든다.",
+      "task": "가상 검색 화면에 대해 SLI 3개·SLO·넘었을 때 규칙을 한 장으로 쓴다.",
+      "resources": [
+        "sre-book",
+        "web-vitals"
+      ]
+    },
+    {
+      "title": "결정 기록과 영향력",
+      "time": "1~2주",
+      "goal": "트레이드오프를 문서로 설명한다.",
+      "task": "'지면 공통 컴포넌트를 만들까, 각 팀에 둘까' 에 대한 ADR 한 편을 대안 포함해 쓴다.",
+      "resources": [
+        "adr",
+        "staff-path",
+        "staff-larson",
+        "swe-google"
+      ]
+    },
+    {
+      "title": "지표 가설과 AI 도구",
+      "time": "1~2주",
+      "goal": "가설·지표를 세우고 에이전트 결과를 검증하는 체크리스트를 쓴다.",
+      "task": "'검색 필터 자동 채우기' 가설·A/B 계획과 에이전트 변경 검증 체크리스트를 쓴다.",
+      "resources": [
+        "inspired",
+        "kohavi",
+        "claude-code-doc",
+        "mcp-doc"
+      ]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉 표기 없음. 집계 사이트 평균은 6,082만원(원티드)·3,453만원(자소설닷컴)으로 서로 크게 다르다",
+    "rows": [
+      {
+        "label": "평균 연봉(원티드 표기)",
+        "value": "6,082만원",
+        "amount": 6082,
+        "basis": "공공데이터 집계 · 연도 미표기",
+        "note": "기준 설명이 없어 경력직이 섞인 회사 전체 값인지 확인할 수 없다 [8]"
+      },
+      {
+        "label": "평균 연봉(자소설닷컴)",
+        "value": "3,453만원",
+        "amount": 3453,
+        "basis": "공공데이터 집계 · 연도 미표기",
+        "note": "공공데이터 기준 값으로 표시된다. 기준 연도가 오래됐을 가능성이 있다 [9]"
+      },
+      {
+        "label": "신입 초봉(자소설닷컴)",
+        "value": "2,313만원",
+        "amount": 2313,
+        "basis": "공공데이터 집계 · 연도 미표기",
+        "note": "직군 구분이 없고, 10년 이상 경력의 Staff 자리와는 무관하다 [9]"
+      }
+    ],
+    "how": "공시 숫자(사업보고서 직원 평균 급여)는 확인하지 못했다. 위 값은 모두 집계 사이트 표기이고 평균은 초봉이 아니며 경력 10년 이상의 연봉과도 다르다. 이 자리의 연봉은 면접 협의로 정해질 것으로 보인다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "선택적 근로 시간제",
+        "detail": "코어타임 11~16시, 휴가 1일·0.5일·0.25일 단위 사용"
+      },
+      {
+        "name": "복지 포인트",
+        "detail": "연 350만원"
+      },
+      {
+        "name": "사내 식당·카페",
+        "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 '아즈니섬' 임직원 55% 할인"
+      },
+      {
+        "name": "장기근속",
+        "detail": "3년마다 리프레시 휴가 7일 + 휴가비 50만원(복지포인트)"
+      },
+      {
+        "name": "스토어 혜택",
+        "detail": "매달 쇼핑 지원금 10만원(무신사·29CM·솔드아웃), 생일 지원금 20만원"
+      },
+      {
+        "name": "건강",
+        "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진, 연 10회 심리상담"
+      }
+    ],
+    "note": "무신사 채용 사이트 복지 페이지다. 날짜가 없고(첨부 이미지는 2025-07 등록) 일부 변경될 수 있다는 문구가 있다. 직무별 차이는 적혀 있지 않다 [7]."
+  },
+  "location": {
+    "name": "무신사 성수 오피스(캠퍼스 N1)",
+    "address": "서울특별시 성동구 성수동 (무신사 캠퍼스 N1) — 도로명 번지는 공개 자료에서 확인하지 못함",
+    "map_url": "https://map.naver.com/p/search/%EB%AC%B4%EC%8B%A0%EC%82%AC%20%EC%BA%A0%ED%8D%BC%EC%8A%A4%20N1",
+    "near": "2호선 성수역 도보 약 6분",
+    "note": "공고의 근무지 표기는 '무신사 성수 오피스' [1]. 2022-09 본사를 성수동 캠퍼스 N1 로 옮겼고 성수역 도보 6분이라고 밝혔다 [10]. 도로명 번지는 읽은 자료에 없어 싣지 않았다 — 지도 링크는 검색 링크다."
+  },
+  "caveat": "무신사 테크 블로그·발표 본문은 열람하지 못해(접근 차단) 이 팀의 구조에 대한 회사 발표는 쓰지 못했다. 공고 원문과 보도, 공개 문서의 '보통 이런 것'으로 풀었고 판단은 {추론}으로 표시했다."
+}
