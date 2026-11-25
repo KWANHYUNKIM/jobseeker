@@ -16,9 +16,11 @@
   "ats-greenhouse:coupang:6137112": "coupang-got-backend-manager-seoul",
   "ats-greenhouse:coupang:8203405": "coupang-network-security-engineer-detection-ops",
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
+  "ats-greenhouse:coupang:8312121": "coupang-pay-it-ai-compliance",
   "ats-greenhouse:coupang:8078891": "coupang-pay-manager-backend-rocketpay",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8210828": "coupang-play-cx-backend-senior-sg",
+  "ats-greenhouse:coupang:8345323": "coupang-ppe-data-engineer-bengaluru",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
   "ats-greenhouse:coupang:8094014": "coupang-taiwan-catalog-ai-tpm-director",
@@ -428,6 +430,16 @@
    "lines": 21
   },
   {
+   "id": "coupang-pay-it-ai-compliance",
+   "company": "쿠팡페이",
+   "role": "IT & AI Compliance 담당자",
+   "jobs": [
+    "ats-greenhouse:coupang:8312121"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
+  },
+  {
    "id": "coupang-pay-manager-backend-rocketpay",
    "company": "쿠팡 (Coupang)",
    "role": "Manager, Back-end Engineering",
@@ -456,6 +468,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "coupang-ppe-data-engineer-bengaluru",
+   "company": "쿠팡 (Coupang)",
+   "role": "데이터 엔지니어 Lv.4 (PPE)",
+   "jobs": [
+    "ats-greenhouse:coupang:8345323"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
   },
   {
    "id": "coupang-sg-security-infra-director",
