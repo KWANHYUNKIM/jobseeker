@@ -321,6 +321,7 @@
   "ats-greeting:musinsa:245271": "musinsa-security-engineer-appsec-pentest",
   "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
+  "jobkorea-50360975": "nextsecurities-account-instrument-backend",
   "jobkorea-50361414": "nextsecurities-ai-engineer-video",
   "jobkorea-50361367": "nextsecurities-ai-governance-manager",
   "jobkorea-50361209": "nextsecurities-channel-backend",
@@ -3290,6 +3291,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 20
+  },
+  {
+   "id": "nextsecurities-account-instrument-backend",
+   "company": "넥스트증권",
+   "role": "Backend Engineer(계좌 및 종목/상품)",
+   "jobs": [
+    "jobkorea-50360975"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 33
   },
   {
    "id": "nextsecurities-ai-engineer-video",
