@@ -1,0 +1,935 @@
+{
+ "id": "musinsa-product-engineer-commerce",
+ "company": "무신사",
+ "role": "Product Engineer (Commerce)",
+ "team": "Commerce Frontend",
+ "jobs": [
+  "ats-greeting:musinsa:245811"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사의 **구매 흐름 화면** — 장바구니·주문서·결제·배송·교환·반품·환불, 좋아요·마이페이지 — 을 웹·모바일웹·앱 웹뷰에서 만듭니다.[1]",
+  "env": "React · TypeScript · Next.js · TanStack Query 에 AWS(EKS)·ArgoCD 로 배포하고, AI 코딩 에이전트를 적극 쓰는 Product Engineer 직군으로 일합니다.[1]",
+  "oneline": "돈이 오가는 화면을 만드는 프론트엔드. 일반 프론트보다 **금액 정확성·중복 요청·웹뷰 연동**이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "장바구니부터 주문서, 결제, 주문 완료까지 이어지는 구매 흐름을 설계하고 개발합니다. 다양한 결제 수단과 할인·쿠폰·포인트가 적용되는 주문서를 구현하고, 결제 실패나 네트워크 오류, 중복 요청 등 예외 상황에서도 고객이 원활하게 구매를 완료할 수 있도록 합니다.",
+   "short": "담기 → 주문서 → 결제 → 완료 화면을 만들고, 결제가 실패하거나 두 번 눌려도 고객이 구매를 끝낼 수 있게 한다.",
+   "why": "팀 소개가 장바구니에 담는 순간부터 주문·결제까지를 팀의 책임으로 적고, 복잡한 할인·결제 조건 속에서도 고객이 망설임 없이 구매하게 하는 것이 목표라고 밝혔습니다.[1] 돈이 오가는 화면이라 한 번 잘못 그리면 이중 결제나 금액 오표시로 바로 이어집니다.",
+   "actually": {
+    "intro": "결제 화면에서 보통 하는 일입니다. 회사가 공개한 커머스 프론트 설계 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다.",
+    "items": [
+     "**주문서 상태를 한곳에 모은다** — 상품·배송지·결제 수단·쿠폰·포인트 선택을 한 상태로 두고, 바뀔 때마다 서버에 금액 재계산을 물어 화면에 보인다. {추론}",
+     "**결제 버튼을 두 번 눌러도 한 번만** — 눌린 동안 버튼을 잠그고, 같은 주문 키로 요청을 보내 서버가 중복을 걸러 내게 한다.[7]",
+     "**실패를 종류로 나눠 안내** — 네트워크가 끊긴 것(다시 시도해도 됨)과 카드 한도 초과(다른 수단 안내)는 말이 달라야 한다. {추론}",
+     "**서버에서 상태 가져오기** — 장바구니·주문서 같은 서버 데이터는 TanStack Query 의 캐시·재요청·mutation 으로 다룬다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "재전송이 섞여도 청구는 한 번 (같은 주문 키)",
+     "body": "같은 주문 키로 세 번 요청이 와도 청구는 한 번입니다. 공개된 멱등 요청 방식[7]을 가상 값으로 줄여 본 것입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import asyncio\nseen={}; charged=0\nasync def _do(a):\n    global charged\n    await asyncio.sleep(0.01); charged+=a; return a\ndef pay(key,a):\n    if key not in seen: seen[key]=asyncio.ensure_future(_do(a))\n    return seen[key]\nasync def main():\n    rs=await asyncio.gather(*[pay('order-1',67000) for _ in range(3)])\n    print(len(rs),'번 눌렀고 청구',charged)\nasyncio.run(main())\n# 3 번 눌렀고 청구 67000"
+    }
+   ],
+   "how_far": "화면에 보이는 금액의 **최종 계산은 서버(백엔드)**가 맡는 것이 보통이고, 프론트는 그 결과를 정확히 보여 주고 사용자 입력을 안전하게 전달합니다. {추론} 요청이 두 번 가도 한 번만 처리되게 하는 방식은 결제 업계의 공개 문서에 정리돼 있습니다.[7]",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "react-dev",
+    "tanstack-doc",
+    "stripe-idem"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "주문 이후 배송 현황을 고객이 쉽게 확인할 수 있도록 구현하고, 교환·반품·환불 신청 과정에서 복잡한 정책과 금액 계산 결과를 이해하기 쉽게 제공합니다.",
+   "short": "배송 단계와 교환·반품·환불 금액이 왜 그렇게 나왔는지를 고객이 헷갈리지 않게 보여 주는 화면을 만든다.",
+   "why": "팀 소개가 배송 상태 확인과, 문제가 생겼을 때 어려움 없이 해결하는 경험을 팀의 일로 적었습니다.[1] 쿠폰·포인트가 섞인 주문은 일부만 반품해도 돌려받을 금액이 단순한 상품 가격이 아니라서 설명이 필요합니다.",
+   "actually": {
+    "intro": "작은 숫자 예입니다. 정책은 가상이며 무신사의 실제 규칙이 아닙니다.",
+    "items": [
+     "배송 단계(결제 완료 → 상품 준비 → 출고 → 배송 중 → 완료)를 타임라인으로 그리고 지금 단계를 강조한다. {추론}",
+     "일부 반품 시 쿠폰 할인은 상품 가격 비율로 나눠 계산하는 방식이 흔하다. {추론}",
+     "\"왜 이 금액인가\"를 상품 금액 − 쿠폰 몫 − 포인트 몫 순서로 한 줄씩 보여 준다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "쿠폰 10% 주문에서 A 만 반품할 때",
+     "body": "8만원 주문(A 5만·B 3만)에 쿠폰 10% = 8,000원, 포인트 3,000원을 썼습니다. 쿠폰 몫은 가격 비율로 A 5,000원·B 3,000원이라 A 반품 환불 대상 상품 금액은 45,000원입니다(직접 돌린 출력, 가상 값).",
+     "lang": "python",
+     "code": "items=[('A',50000),('B',30000)]\ns=sum(p for _,p in items); coupon=s*10//100; point=3000\nprint(s,coupon,s-coupon-point)\nrem=coupon; alloc=[]\nfor k,(n,p) in enumerate(items):\n    d=rem if k==len(items)-1 else coupon*p//s\n    rem-=d; alloc.append(d)\nprint(alloc,'반품 A 환불액',items[0][1]-alloc[0])\n# 80000 8000 69000\n# [5000, 3000] 반품 A 환불액 45000"
+    }
+   ],
+   "how_far": "환불 금액의 규칙(할인 안분·배송비 부담)은 정책 담당과 백엔드가 정하고, 프론트는 서버가 준 계산 결과와 근거를 **항목별로 풀어 보여 주는 것**을 맡습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "react-dev",
+    "mdn"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객이 관심 상품과 주문 내역, 쇼핑 활동을 한곳에서 편리하게 관리할 수 있는 화면을 개발하고, 재방문과 구매로 이어질 수 있도록 개인화된 경험을 개선합니다.",
+   "short": "좋아요·주문 내역·쿠폰·적립금을 모아 보는 마이페이지를 만들고, 다시 사러 오게 하는 화면을 다듬는다.",
+   "why": "팀 소개가 좋아요와 마이페이지에서 관심 상품과 쇼핑 이력을 한곳에서 관리하고 다음 쇼핑으로 잇게 한다고 적었고, 쿠폰·적립금·제휴카드·무신사머니 같은 혜택을 쉽게 찾아 쓰게 하는 일도 포함합니다.[1]",
+   "actually": {
+    "intro": "회사가 공개한 커머스 프론트 설계 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다.",
+    "items": [
+     "목록이 긴 화면(좋아요·주문 내역)은 한 번에 다 받지 않고 쪽·무한 스크롤로 나눠 받는다. TanStack Query 의 무한 쿼리가 이 용도다.[5]",
+     "좋아요를 누르면 서버 응답 전에 화면부터 바꾸고 실패하면 되돌리는 낙관적 업데이트를 쓴다.[5]",
+     "쿠폰함·적립금 같은 칸이 몇 번 눌렸는지 이벤트로 남겨 개선 효과를 본다."
+    ]
+   },
+   "how_far": "무엇을 추천·강조할지(개인화 로직)는 데이터·추천 쪽이 만들고, 프론트는 그 결과를 **빠르게 그리고 어떤 칸이 눌렸는지 측정**하는 일을 맡습니다. {추론}",
+   "refs": [
+    1,
+    5
+   ],
+   "study": [
+    "tanstack-doc",
+    "react-dev",
+    "nextjs-doc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "PM, 디자이너, 백엔드 엔지니어와 함께 고객 문제와 우선순위를 정의하고, 모호한 요구사항을 측정 가능한 가설로 구체화합니다. 고객의 실제 사용 흐름과 잠재적인 문제를 고려해 개발하며, 출시 후 지표를 바탕으로 개선을 이어갑니다.",
+   "short": "\"결제가 불편하다\" 같은 말을 \"이 화면을 바꾸면 결제 완료율이 오른다\"처럼 숫자로 확인할 가설로 바꾸고 출시 뒤 확인한다.",
+   "why": "무신사는 서버·웹·모바일 엔지니어를 Product Engineer 한 직군으로 묶고, 기능이 왜 필요한지 이해하고 출시 이후 지표로 결과를 확인해 다음 개선으로 잇는 데까지 PM 과 참여한다고 밝혔습니다.[1] 이 자리의 데이터 분석 도구로 Firebase·Amplitude·Google Analytics 가 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "문제 → 가설 → 바꿀 것 → 확인할 지표(예: 주문서 진입 대비 결제 완료 비율) 순으로 짧게 적는다.",
+     "출시 전에 어떤 숫자가 나오면 성공으로 볼지 정해 두고, 출시 뒤 같은 기간·같은 조건으로 비교한다. {추론}",
+     "화면에 이벤트를 심는 일(클릭·노출)도 프론트 몫이다.[1]"
+    ]
+   },
+   "how_far": "우선순위는 PM 과 함께 정하고, 개발자는 **무엇을 어떤 이벤트로 재서 판단할지**와 구현 비용을 말합니다. 실험 설계 전문가가 될 필요는 없습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "mdn"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "웹, 모바일웹, 앱 웹뷰 환경에서 일관된 화면을 구현하고, 앱과 웹뷰가 연동되는 영역까지 함께 다룹니다. 모니터링과 알림으로 장애를 빠르게 감지하고 재발을 방지하며, 렌더링 성능과 Core Web Vitals를 지속적으로 개선합니다.",
+   "short": "같은 화면이 PC 웹·모바일 웹·앱 안 웹뷰에서 똑같이 동작하게 하고, 느려지거나 깨지면 바로 알아채 고친다.",
+   "why": "공고가 웹뷰 안에서 도는 웹 개발 경험을 자격요건에 따로 적었고, 모니터링 도구로 Sentry·Loki·Grafana·Tempo·Mimir·Pyroscope 를 나열했습니다.[1] Core Web Vitals 는 구글이 정한 로딩(LCP)·반응(INP)·화면 흔들림(CLS) 세 지표입니다.[4]",
+   "actually": {
+    "intro": "회사가 공개한 커머스 프론트 설계 글·발표는 찾지 못했습니다. 아래는 같은 일을 하는 곳의 공개 문서로 본 '보통 이런 것'입니다.",
+    "items": [
+     "**웹뷰 연동** — 앱이 웹뷰에 주소를 열어 주고, 웹은 앱에 \"결제 끝났다\"를 메시지로 알린다. 안드로이드는 JavaScript 인터페이스,[8] iOS 는 WKWebView 의 스크립트 메시지로 주고받는다.[9]",
+     "**기기마다 다른 점** — 웹뷰는 앱 버전·OS 에 따라 지원하는 기능이 달라, 같은 화면도 앱 안에서만 깨질 수 있다. {추론}",
+     "**지표 수집** — 실제 사용자의 LCP·INP·CLS 를 브라우저에서 모아 보내고 75번째 백분위수로 본다.[4][11]",
+     "**장애 감지** — 오류가 늘면 알림이 오고 어느 배포부터인지 로그와 함께 본다. 공고의 Sentry·Grafana 계열이 이 역할이다.[1][20]"
+    ]
+   },
+   "how_far": "목표 수치는 구글 기준(예: LCP 2.5초 이하)을 쓰는 것이 흔하고,[4] 개발자는 **재서 병목을 찾아 고치고 다시 재는** 일을 맡습니다. 앱과 웹이 주고받는 약속(브리지)은 앱 팀과 함께 정합니다. {추론}",
+   "refs": [
+    1,
+    4,
+    8,
+    9,
+    11,
+    20
+   ],
+   "study": [
+    "web-vitals",
+    "android-webview",
+    "wkwebview",
+    "sentry-vitals",
+    "grafana-faro"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "코드 리뷰와 테스트 코드 작성, 기술 세션을 통해 코드 품질과 팀의 기술 역량을 높입니다. AI 코딩 에이전트를 설계부터 구현, 테스트, 코드 리뷰, 운영까지 활용하고 결과물을 직접 검증하며, 반복 업무의 자동화 경험을 공유해 AI 기반 개발 방식을 조직에 정착시킵니다.",
+   "short": "코드 리뷰·테스트로 품질을 지키고, AI 코딩 에이전트를 쓰되 결과를 직접 검증해 팀의 일하는 방식으로 퍼뜨린다.",
+   "why": "공고가 AI 개발 도구로 Codex·Claude Code 를 이름으로 적었고, 결과물의 품질은 쓰는 사람이 직접 검증하고 책임진다고 밝혔습니다. 지원서에도 AI 로 푼 사례와 검증 방법을 쓰게 합니다.[1] 테스트 도구는 Jest·Storybook 입니다.[1]",
+   "actually": {
+    "items": [
+     "작은 단위로 시키고 테스트가 통과하는지로 확인한다. 테스트가 없으면 먼저 쓰게 한다.[15]",
+     "자주 쓰는 지시·규칙을 저장소 문서로 남겨 팀이 같이 쓴다(공고의 \"코드베이스 맥락·규칙 자산화\").[1][15]",
+     "컴포넌트는 Storybook 에서 상태별(로딩·오류·빈 목록)로 눈으로 확인하고 Jest 로 로직을 검증한다.[13][14]"
+    ]
+   },
+   "how_far": "도구를 쓰는 것 자체보다 **AI 가 낸 코드를 테스트·리뷰로 확인하는 습관**과 그 경험을 나누는 것이 요구입니다.[1] 얼마나 많이 쓰라는 기준은 공고에 없습니다.",
+   "refs": [
+    1,
+    14,
+    15
+   ],
+   "study": [
+    "jest-doc",
+    "storybook-doc",
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "최소 5년 이상 서비스를 구축하고 운영한 경험이 있으신 분",
+   "short": "만들고 끝이 아니라 운영하며 장애·개선을 겪어 본 연차가 있는지 본다.",
+   "why": "핵심 거래 흐름을 다루는 자리라 혼자 운영 경험이 있어야 한다는 뜻입니다.[1] 5년은 경력 구분이며 공고 상단의 경력 표기도 5년 이상입니다.",
+   "how_far": "연차 숫자보다 **운영 중 문제 한 건을 원인 → 조치 → 재발 방지로 풀어 말할 수 있는지**가 면접의 중심입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sentry-vitals"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "React, TypeScript, Next.js, TanStack Query 등을 활용한 Web Application 개발 경험이 있으신 분",
+   "short": "이 팀의 주 스택(React·TS·Next.js·서버 상태 라이브러리)으로 실제 서비스를 만들어 봤는지.",
+   "why": "주요 프레임워크 목록에 같은 이름이 그대로 나옵니다.[1] Next.js 는 서버에서 먼저 그려 주는 기능이 있어 첫 화면 속도와 직결됩니다.[6]",
+   "actually": {
+    "items": [
+     "TanStack Query — 서버에서 받은 데이터를 캐시하고 오래되면 다시 받고 변경 요청(mutation) 뒤 목록을 새로 고침한다.[5]",
+     "Next.js — 페이지를 서버에서 그릴지(SSR)·미리 만들지(SSG)·브라우저에서 그릴지를 화면마다 고른다.[6]",
+     "TypeScript — 서버 응답 모양을 타입으로 적어 금액·상태 필드 오타를 빌드 때 잡는다."
+    ]
+   },
+   "how_far": "네 가지를 **각각 왜 골랐는지** 설명할 수 있는 수준이면 됩니다. 이 팀은 특정 도구 경험보다 문제에 맞는 기술을 고르는 역량을 중시한다고 밝혔습니다.[1]",
+   "refs": [
+    1,
+    5,
+    6
+   ],
+   "study": [
+    "react-dev",
+    "ts-handbook",
+    "nextjs-doc",
+    "tanstack-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "HTML, CSS, JavaScript에 대한 깊은 이해를 갖추신 분",
+   "short": "프레임워크 밑의 브라우저 기본기(레이아웃·이벤트·비동기)를 아는지.",
+   "why": "웹뷰·접근성·성능 문제는 프레임워크가 아니라 브라우저 동작에서 원인이 나오는 일이 많기 때문입니다.[1][4]",
+   "how_far": "\"깊은 이해\"는 **이벤트 루프·렌더링 순서·CSS 배치(flex·grid)** 를 상황에 맞게 설명하는 정도입니다. {추론}",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "mdn",
+    "deepdive",
+    "web-vitals"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "WebView(In-App) 환경에서 동작하는 Web Application을 개발한 경험이 있으신 분",
+   "short": "앱 안에 들어가는 웹 화면을 만들며 앱과 통신하고 기기별 차이를 겪어 봤는지.",
+   "why": "이 팀의 화면 상당수가 앱 웹뷰로 열리기 때문에 자격요건에 따로 적었습니다.[1]",
+   "how_far": "앱 연동 경험이 없다면 안드로이드·iOS 공식 문서의 웹뷰 샘플을 따라 해 보고 메시지 주고받기를 구현해 본 것이 최소선입니다.[8][9] {추론}",
+   "refs": [
+    1,
+    8,
+    9
+   ],
+   "study": [
+    "android-webview",
+    "wkwebview"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 코딩 에이전트를 활용하고, 그 결과물의 품질을 스스로 검증하고 책임질 수 있으신 분",
+   "short": "AI 가 써 준 코드를 그대로 쓰지 않고 테스트·리뷰로 확인해 책임지는 사람인지.",
+   "why": "지원서 안내가 AI 로 푼 사례와 검증 방법을 같이 쓰게 합니다.[1]",
+   "how_far": "사례 하나와 **내가 확인한 방법(테스트·리뷰·실행 결과)** 이면 충분합니다.[1]",
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI가 활용할 코드베이스의 맥락과 규칙을 자산화해 팀의 개발 방식으로 정착시킬 수 있으신 분",
+   "short": "에이전트가 읽을 규칙 문서(코딩 규칙·구조 설명)를 만들어 팀이 같이 쓰게 하는 능력.",
+   "why": "무신사는 AI 를 직무 경계보다 문제 해결에 쓰려 한다고 밝혔고 그 전제가 팀이 같은 규칙을 공유하는 것입니다.[1] Claude Code 는 저장소의 설명 파일을 읽는 방식을 지원합니다.[15]",
+   "how_far": "\"자산화\"는 거창한 시스템보다 **저장소 안의 짧고 최신인 규칙 문서와 그것을 지키는 리뷰**입니다. {추론}",
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기술에 국한되지 않고 고객 중심으로 합리적인 의사결정을 내릴 수 있으신 분",
+   "short": "기술 선택이 아니라 고객이 겪는 문제에서 출발해 결정하는지.",
+   "why": "팀이 구매 전환과 고객 경험 지표로 성과를 책임진다고 밝혔기 때문입니다.[1]",
+   "how_far": "결정 하나를 **고객 영향 → 대안 → 고른 이유**로 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 직군의 동료들과 의사소통하며 협업하기를 즐기시는 분",
+   "short": "PM·디자이너·백엔드와 같이 일하는 것이 불편하지 않은지.",
+   "why": "주요 업무가 PM·디자이너·백엔드와 함께 문제를 정의하는 일로 시작합니다.[1]",
+   "how_far": "전문 용어를 비개발자에게 풀어 설명한 사례 하나면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "특정 도구의 사용 경험보다 문제에 맞는 기술을 선택하고 조직에 정착시키는 역량을 중요하게 봅니다.",
+   "short": "이름 외우기보다 왜 이 도구인지 고르고 팀에 자리 잡게 한 경험을 본다.",
+   "why": "스택 목록 바로 아래에 있는 문장으로 목록이 필수 요건이 아니라는 뜻입니다.[1]",
+   "how_far": "\"A 대신 B 를 골랐다 — 이유, 포기한 것, 팀이 쓰게 된 과정\"을 한 쪽으로 쓴 사례면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS, Docker, Kubernetes, ArgoCD 등 클라우드 배포 환경에 대한 이해가 있으신 분",
+   "short": "내 코드가 컨테이너로 말려 쿠버네티스에 배포되는 흐름을 이해하는지.",
+   "why": "배포 항목에 EKS(AWS)·ArgoCD·GitHub Actions 가 적혀 있습니다.[1] ArgoCD 는 깃 저장소의 설정과 클러스터 상태를 맞춰 주는 도구입니다.[12]",
+   "actually": {
+    "items": [
+     "GitHub Actions 로 빌드·테스트 → 이미지 → 배포 설정 저장소 변경 → ArgoCD 가 클러스터에 반영하는 흐름이 흔하다.[12] {추론}",
+     "화면 코드를 고칠 때 환경변수·빌드 설정이 배포에서 어떻게 들어가는지 안다."
+    ]
+   },
+   "how_far": "\"이해\"라 운영 전담이 아니라 **이미지를 만들고 배포 설정을 읽고 롤백 방법을 아는** 정도입니다. {추론}",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "docker-int",
+    "k8s-int",
+    "argocd-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "장바구니·주문·결제·클레임 등 커머스 도메인의 서비스를 개발한 경험이 있으신 분",
+   "short": "장바구니~클레임 흐름을 이미 만져 봤으면 규칙(할인·환불)을 빨리 이해한다.",
+   "why": "업무 ①②가 바로 이 영역입니다.[1]",
+   "how_far": "없다면 위 예제 두 개처럼 가상 쇼핑몰의 주문서·환불 계산을 직접 만들어 본 것으로 대신합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "stripe-idem"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "고객에게 필요한 요구사항을 먼저 제안하고, 출시 이후 지표로 고객 경험의 개선을 확인하신 분",
+   "short": "시키는 것만 만들지 않고 먼저 제안하고 숫자로 확인한 경험.",
+   "why": "업무 ④의 가설·지표 방식을 이미 해 본 사람입니다.[1]",
+   "how_far": "제안 → 출시 → 전·후 지표 한 쌍을 말할 수 있으면 충분합니다.",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "프론트엔드 성능 최적화 또는 라이브러리화를 통해 서비스 품질과 개발 생산성을 높이신 분",
+   "short": "성능을 개선했거나 공통 컴포넌트·라이브러리로 만들어 팀 속도를 높인 경험.",
+   "why": "업무 ⑤의 Core Web Vitals 개선과, 여러 화면이 같은 결제·쿠폰 UI 를 쓰는 구조에 닿습니다.[1][4]",
+   "actually": {
+    "items": [
+     "이미지 크기·지연 로딩·번들 쪼개기처럼 LCP 에 영향 주는 것부터 잰다.[4]",
+     "결제수단 선택 같은 반복 UI 를 Storybook 에 상태별로 등록해 재사용한다.[13]"
+    ]
+   },
+   "how_far": "전·후 수치(예: LCP 3.8초 → 2.4초) 하나와 공통화한 컴포넌트 하나면 됩니다. {추론}",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "web-vitals",
+    "storybook-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "웹 접근성과 웹 표준을 고려한 UI 개발 경험이 있으신 분",
+   "short": "키보드·스크린리더로도 쓸 수 있는 화면을 만들어 봤는지.",
+   "why": "결제·주문처럼 모든 고객이 써야 하는 화면에서 접근성이 구매 완료율과 닿습니다. {추론} 기준은 W3C 의 WCAG 입니다.[10]",
+   "how_far": "버튼·입력의 라벨, 키보드 이동 순서, 색 대비 같은 **기본 항목을 점검해 본 경험**이면 충분합니다.[10]",
+   "refs": [
+    10
+   ],
+   "study": [
+    "wcag",
+    "mdn"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "테스트, 배포 등 개발 프로세스를 자동화한 경험이 있으신 분",
+   "short": "테스트·배포를 사람 손 없이 돌게 만든 경험.",
+   "why": "배포 자동화 도구로 GitHub Actions·ArgoCD 가 적혀 있습니다.[1][12]",
+   "how_far": "풀 리퀘스트마다 테스트가 자동으로 돌게 한 경험 하나면 됩니다. {추론}",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "jest-doc",
+    "argocd-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 에이전트가 활용할 코드베이스 맥락·규칙을 자산화하고, 팀 단위 AI 워크플로를 정착시킨 경험이 있으신 분",
+   "short": "팀이 같이 쓰는 AI 작업 규칙을 만들고 자리 잡게 한 경험.",
+   "why": "자격요건의 같은 항목을 실제로 해 본 사람이 우대됩니다.[1]",
+   "how_far": "규칙 문서와 그 뒤 달라진 점(리뷰 시간·재작업) 한 쌍.",
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "react-dev",
+   "title": "React 공식 문서 — Learn React",
+   "by": "React 팀",
+   "kind": "doc",
+   "url": "https://react.dev/learn",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "상태·이펙트·컴포넌트 설계의 공식 설명 — 주문서 상태를 한곳에 모으는 요건의 바탕."
+  },
+  {
+   "id": "ts-handbook",
+   "title": "TypeScript Handbook",
+   "by": "Microsoft",
+   "kind": "doc",
+   "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "서버 응답 타입·유니언으로 금액·상태 오류를 빌드 때 잡는 법."
+  },
+  {
+   "id": "nextjs-doc",
+   "title": "Next.js Documentation",
+   "by": "Vercel",
+   "kind": "doc",
+   "url": "https://nextjs.org/docs",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SSR·SSG·캐시 — 화면마다 어디서 그릴지 고르는 요건."
+  },
+  {
+   "id": "tanstack-doc",
+   "title": "TanStack Query 문서 (React)",
+   "by": "TanStack",
+   "kind": "doc",
+   "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "서버 상태 캐시·mutation·낙관적 업데이트 — 장바구니·좋아요 요건."
+  },
+  {
+   "id": "mdn",
+   "title": "MDN Web Docs (한국어)",
+   "by": "Mozilla",
+   "kind": "doc",
+   "url": "https://developer.mozilla.org/ko/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "HTML·CSS·JavaScript 기본기 요건을 채우는 공식 레퍼런스."
+  },
+  {
+   "id": "deepdive",
+   "title": "모던 자바스크립트 Deep Dive",
+   "by": "이웅모 · 위키북스",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=모던+자바스크립트+Deep+Dive",
+   "lang": "ko",
+   "level": "실무",
+   "why": "실행 컨텍스트·비동기·클로저를 체계로 — \"깊은 이해\" 요건."
+  },
+  {
+   "id": "web-vitals",
+   "title": "Web Vitals",
+   "by": "web.dev (Google)",
+   "kind": "doc",
+   "url": "https://web.dev/articles/vitals",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "LCP·INP·CLS 정의와 목표 수치 — 성능 개선 요건."
+  },
+  {
+   "id": "android-webview",
+   "title": "Android WebView 문서",
+   "by": "Android Developers",
+   "kind": "doc",
+   "url": "https://developer.android.com/develop/ui/views/layout/webapps/webview",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "웹뷰에서 JS 와 앱이 메시지를 주고받는 방식."
+  },
+  {
+   "id": "wkwebview",
+   "title": "WKWebView",
+   "by": "Apple Developer Documentation",
+   "kind": "doc",
+   "url": "https://developer.apple.com/documentation/webkit/wkwebview",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "iOS 웹뷰와 스크립트 메시지 — 앱·웹 연동 요건."
+  },
+  {
+   "id": "sentry-vitals",
+   "title": "Web Vitals — Sentry 문서",
+   "by": "Sentry",
+   "kind": "doc",
+   "url": "https://docs.sentry.io/product/insights/web-vitals/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "오류·성능 지표를 모아 보는 법 — 모니터링·알림 요건."
+  },
+  {
+   "id": "grafana-faro",
+   "title": "Grafana Frontend Observability",
+   "by": "Grafana Labs",
+   "kind": "doc",
+   "url": "https://grafana.com/docs/grafana-cloud/monitor-applications/frontend-observability/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "브라우저 지표·오류를 Grafana 로 모으는 구성 — 공고 모니터링 스택."
+  },
+  {
+   "id": "stripe-idem",
+   "title": "Idempotent requests",
+   "by": "Stripe API 문서",
+   "kind": "doc",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "같은 요청이 두 번 와도 한 번만 처리하는 방식 — 결제 중복 요청 요건."
+  },
+  {
+   "id": "http-int",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/http-basic",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "요청·응답·캐시·쿠키 — 결제 요청 재시도와 캐시 이해의 바탕."
+  },
+  {
+   "id": "jest-doc",
+   "title": "Jest Documentation",
+   "by": "Jest",
+   "kind": "doc",
+   "url": "https://jestjs.io/docs/getting-started",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "단위 테스트 작성·모킹 — 테스트 코드 요건."
+  },
+  {
+   "id": "storybook-doc",
+   "title": "Storybook for React",
+   "by": "Storybook",
+   "kind": "doc",
+   "url": "https://storybook.js.org/docs",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "컴포넌트 상태별 확인·공통화 — 라이브러리화 우대 요건."
+  },
+  {
+   "id": "wcag",
+   "title": "Web Content Accessibility Guidelines (WCAG) 2.2",
+   "by": "W3C",
+   "kind": "doc",
+   "url": "https://www.w3.org/TR/WCAG22/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "접근성 점검 항목의 원문 기준."
+  },
+  {
+   "id": "docker-int",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/docker",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "이미지·컨테이너 기본 — 배포 환경 이해 요건."
+  },
+  {
+   "id": "k8s-int",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/kubernetes",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "배포·재시작·롤백을 kubectl 로 직접 본다."
+  },
+  {
+   "id": "argocd-doc",
+   "title": "Argo CD Documentation",
+   "by": "Argo Project",
+   "kind": "doc",
+   "url": "https://argo-cd.readthedocs.io/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "깃 저장소 기준으로 배포를 맞추는 방식 — ArgoCD 요건."
+  },
+  {
+   "id": "claude-code-doc",
+   "title": "Claude Code 문서",
+   "by": "Anthropic",
+   "kind": "doc",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "코딩 에이전트가 하는 일·규칙 문서·검증 방법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "화면 기본기",
+   "time": "2주",
+   "goal": "React·TS 로 상태가 있는 화면을 만든다",
+   "task": "가상 상품 5개로 장바구니(수량·삭제·합계)를 TypeScript 로 만든다",
+   "resources": [
+    "react-dev",
+    "ts-handbook",
+    "mdn"
+   ]
+  },
+  {
+   "title": "서버 데이터와 Next.js",
+   "time": "2주",
+   "goal": "서버 상태를 캐시하고 화면마다 그리는 곳을 고른다",
+   "task": "가짜 API 로 좋아요 목록(무한 스크롤 + 낙관적 업데이트)을 Next.js 로 만든다",
+   "resources": [
+    "nextjs-doc",
+    "tanstack-doc",
+    "http-int"
+   ]
+  },
+  {
+   "title": "주문서와 결제 예외",
+   "time": "2주",
+   "goal": "중복 요청·실패에도 한 번만 결제되게 한다",
+   "task": "쿠폰·포인트가 적용되는 주문서를 만들고 버튼 연타·네트워크 오류 시나리오를 테스트로 만든다",
+   "resources": [
+    "stripe-idem",
+    "jest-doc",
+    "storybook-doc"
+   ]
+  },
+  {
+   "title": "웹뷰와 성능",
+   "time": "2주",
+   "goal": "앱 안 웹 화면에서 앱과 메시지를 주고받고 LCP 를 잰다",
+   "task": "위 주문서를 웹뷰 샘플 앱에 넣고 \"결제 완료\" 메시지를 앱으로 보낸 뒤 LCP 전·후를 비교",
+   "resources": [
+    "android-webview",
+    "wkwebview",
+    "web-vitals",
+    "wcag"
+   ]
+  },
+  {
+   "title": "운영·배포·AI 도구",
+   "time": "1~2주",
+   "goal": "컨테이너로 배포하고 모니터링하며 AI 결과를 검증한다",
+   "task": "앱을 Docker 로 말아 클러스터에 올리고 오류 알림을 확인, AI 에이전트가 추가한 테스트를 직접 검증한 기록 남기기",
+   "resources": [
+    "docker-int",
+    "k8s-int",
+    "argocd-doc",
+    "sentry-vitals",
+    "grafana-faro",
+    "claude-code-doc"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "초봉 2,313만원 · 직원 평균 3,453만원(자소설 집계) — 원티드 표기 평균은 6,082만원으로 기준이 다르다. 공고에 연봉은 없고 '처우 협의'다.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아니라 회사 전체 값이며 연도 표기는 확인하지 못했다.[16]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계(사원 수 1,843명 표기).[16]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보의 표기. 위 값과 3천만원 가까이 달라 산출 방식·시점이 다른 것으로 보인다.[17]"
+   },
+   {
+    "label": "계열사 무신사리테일서비스 초임(MMC 경영자 후보)",
+    "value": "성과급 포함 4000만원 중반",
+    "basis": "보도 · 2026년",
+    "note": "특정 채용 프로그램의 숫자라 본사 개발직과 무관하다.[18]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시 평균 급여가 없습니다. 공시 숫자 없이 위 집계만 있고 **초봉이 아니라 경력직이 섞인 평균**이 많습니다. 이 공고는 5년 이상 경력이라 '처우 협의' 단계에서 정해집니다.[1]"
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "월 소정 근로시간 내 유연 근무, 코어타임 11~16시"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원, 복지카드 연동"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기 근속",
+    "detail": "근속 3년당 리프레시 휴가 7일, 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기마다 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 월 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "허먼 밀러 의자 등 프리미엄 업무 장비, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급"
+   }
+  ],
+  "note": "회사 채용 사이트 복지 페이지(같은 회사의 다른 풀이에서 2026-11 확인한 내용)와 이 공고의 기타사항.[1][2] 근무 장소·기간·시점에 따라 일부 변경될 수 있다고 적혀 있다.[2]"
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 6분",
+  "note": "공고의 근무지 표기는 '무신사 성수 오피스'.[1] 주소는 무신사 상품 페이지 하단 사업자 정보 표기.[19] 성수 본사 이전과 도보 거리는 2022년 보도.[3]"
+ },
+ "fit": {
+  "good": [
+   "결제·주문처럼 틀리면 돈이 어긋나는 화면을 만들고 운영해 본 사람 {추론}",
+   "출시 뒤 지표로 결과를 확인하는 방식이 몸에 밴 사람[1]"
+  ],
+  "hard": [
+   "5년 이상 서비스 운영 경험과 웹뷰 개발 경험이 모두 필요하다.[1]",
+   "회사가 커머스 프론트 구조를 직접 설명한 공개 글·발표를 찾지 못해 내부 구조는 면접에서 직접 물어야 한다."
+  ]
+ },
+ "interview": [
+  {
+   "q": "결제 버튼을 연타하거나 네트워크가 끊겼을 때 어떻게 처리하나요?",
+   "a": "공고가 결제 실패·네트워크 오류·중복 요청을 직접 적었다.[1][7]"
+  },
+  {
+   "q": "앱 웹뷰에서만 깨지는 화면을 어떻게 찾나요?",
+   "a": "웹뷰 개발 경험이 자격요건에 있다.[1][8][9]"
+  },
+  {
+   "q": "AI 가 낸 코드를 어떻게 검증했나요?",
+   "a": "지원서에 검증 방법을 쓰게 한다.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Product Engineer (Commerce)",
+   "url": "https://www.musinsacareers.com/ko/o/245811",
+   "kind": "posting",
+   "date": "2026-11"
+  },
+  {
+   "n": 2,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company"
+  },
+  {
+   "n": 3,
+   "title": "무신사, 성수동 캠퍼스 N1 으로 본사 이전 (일간스포츠)",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09"
+  },
+  {
+   "n": 4,
+   "title": "Web Vitals — web.dev",
+   "url": "https://web.dev/articles/vitals",
+   "kind": "reference"
+  },
+  {
+   "n": 5,
+   "title": "TanStack Query Docs (React)",
+   "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 6,
+   "title": "Next.js Documentation",
+   "url": "https://nextjs.org/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 7,
+   "title": "Idempotent requests — Stripe",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "kind": "reference"
+  },
+  {
+   "n": 8,
+   "title": "Android WebView — Android Developers",
+   "url": "https://developer.android.com/develop/ui/views/layout/webapps/webview",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "WKWebView — Apple Developer Documentation",
+   "url": "https://developer.apple.com/documentation/webkit/wkwebview",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "WCAG 2.2 — W3C",
+   "url": "https://www.w3.org/TR/WCAG22/",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Web Vitals — Sentry",
+   "url": "https://docs.sentry.io/product/insights/web-vitals/",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Argo CD Documentation",
+   "url": "https://argo-cd.readthedocs.io/",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Storybook Documentation",
+   "url": "https://storybook.js.org/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Jest Documentation",
+   "url": "https://jestjs.io/docs/getting-started",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Claude Code overview — Anthropic",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "무신사 기업정보 — 자소설닷컴",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "다른 풀이에서 옮긴 값(페이지 직접 열람은 403)"
+  },
+  {
+   "n": 17,
+   "title": "무신사 — 원티드 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "검색 결과 표기를 옮김"
+  },
+  {
+   "n": 18,
+   "title": "\"초임 연봉 4000만원\" 무신사, 리테일 전문가 직접 키운다 (디지털데일리)",
+   "url": "https://www.ddaily.co.kr/page/view/2026032309325156962",
+   "kind": "news",
+   "date": "2026-03-23"
+  },
+  {
+   "n": 19,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company"
+  },
+  {
+   "n": 20,
+   "title": "Grafana Frontend Observability",
+   "url": "https://grafana.com/docs/grafana-cloud/monitor-applications/frontend-observability/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "2026-11-25 기준. 무신사 커머스 프론트 구조를 설명한 기술 블로그·발표는 찾지 못해(받은 영상 없음) 설계 설명은 같은 일을 하는 곳의 공개 문서에 기댔고 회사 근거는 이 공고(팀 소개·스택)와 복지 페이지입니다. 연봉은 집계 표기를 옮긴 것이고 같은 회사의 다른 풀이에서 가져왔습니다. 코드 예시는 파이썬으로 계산 논리만 돌려 확인한 것이며 가상 값입니다."
+}
