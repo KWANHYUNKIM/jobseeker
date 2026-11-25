@@ -193,6 +193,8 @@
   "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
   "boards-superookie:it:6afd0847a0717c1c4126d602": "daangn-shortform-backend-intern",
   "ats-greenhouse:daangn:5811688003": "daangn-sre-cluster",
+  "ats-greenhouse:daangn:6285317003": "daangn-test-automation-engineer",
+  "jobkorea-50226617": "daangn-test-automation-engineer",
   "wanted-389061": "datachain-senior-sre-stablecoin",
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
@@ -2207,6 +2209,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 16
+  },
+  {
+   "id": "daangn-test-automation-engineer",
+   "company": "당근",
+   "role": "Test Automation Engineer — 테스트 자동화 시스템·사내 QA 플랫폼 QAHub",
+   "jobs": [
+    "ats-greenhouse:daangn:6285317003",
+    "jobkorea-50226617"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
   },
   {
    "id": "datachain-senior-sre-stablecoin",
