@@ -1,0 +1,1056 @@
+{
+ "id": "hyundai-lunar-rover-thermal-control",
+ "company": "현대자동차",
+ "role": "달 탐사 모빌리티 열제어 시스템 엔지니어",
+ "team": "달 탐사 모빌리티 개발 조직 · 남양연구소",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2363"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "낮밤 기온 차가 300도를 넘는 달에서 70kg급 로버가 **얼거나 타지 않게** 열제어계(단열·방열·히터)를 설계하고, 열 계산 모형으로 예측하고, 진공 시험으로 확인합니다.[1][3][4]",
+  "env": "발사부터 달 표면 운용까지 단계별 열해석을 하고, 단품과 완성 로버 두 단계로 **열진공 시험**을 합니다. 목표는 2027년까지 발사 가능한 기술 확보입니다.[2]",
+  "oneline": "위성 열제어 경력 3년 이상인 사람이 **지면 열과 2주짜리 밤**이 있는 달 로버의 열을 총괄하는 자리. Thermal Desktop이 기본 도구입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "달 탐사 모빌리티의 열제어계 엔지니어링 업무를 총괄하며, 고신뢰 열모델 구축 및 생애주기에 따른 열해석 등의 업무를 수행합니다.",
+   "short": "달에 가는 로버가 너무 뜨겁거나 차갑지 않게 설계·계산·시험하는 일을 맨 앞에서 책임진다.",
+   "why": "달 표면은 낮과 밤의 기온 차가 300도를 넘습니다.[3] 적도 한낮에는 표면이 거의 400K(약 127°C)까지 오르고 밤에는 100K(약 −173°C) 아래로 떨어집니다.[11] 전자 부품·배터리는 보통 이보다 훨씬 좁은 범위에서만 일하므로, 그 사이를 지켜 주는 **열제어계**(단열재·방열판·히터·열 통로를 묶은 것)가 없으면 로버가 살아남지 못합니다.[8] 현대차그룹은 2023년에 열관리를 연구기관들과 같이 개발할 핵심 기술로 꼽았고[3], 2026년 10월에는 이 자리를 열어 극한 환경 시험을 시작한다고 보도됐습니다.[2]",
+   "actually": {
+    "items": [
+     "**요구 조건** — 부품마다 견딜 온도와 달의 환경을 모아 '이 범위를 지켜야 한다'를 정한다(아래 첫째 묶음).[1]",
+     "**설계** — 어디에 단열재를 덮고 어디로 열을 버릴지, 히터는 몇 W를 어디에 둘지 정하고 3D CAD로 그린다.[1]",
+     "**열모델** — 로버를 수십~수천 개의 점(노드)으로 나눈 계산 모형으로 발사부터 달 표면 운용까지 온도를 예측한다.[1][7]",
+     "**시험** — 진공 통 안에서 달을 흉내 내 실제 온도를 재고, 그 값으로 모델을 맞춘다.[1][2]"
+    ]
+   },
+   "how_far": "'총괄'이라는 말처럼 열 분야의 판단을 이 사람이 내리는 자리로 읽힙니다. {추론} 같은 팀 공고가 자율주행 소프트웨어를 따로 뽑는 것처럼[6], 이 자리는 **열 하나를 처음부터 끝까지** 맡습니다.",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    7,
+    8,
+    11
+   ],
+   "study": [
+    "kaist-thermal-ko",
+    "nasa-ptceg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 달 탐사 모빌리티의 열제어계 엔지니어링 총괄",
+   "short": "열 분야의 요구·계획·문서·일정·외부 협력을 한 사람이 묶어 끌고 간다 — 아래 두 줄이 그 내용.",
+   "why": "우주 개발에서 열제어계는 구조·전력·전자·탑재체와 계속 맞물리는 하위 시스템입니다. 유럽 우주 표준(ECSS)은 열제어계가 시스템 쪽과 주고받을 문서와 납품물을 단계별로 정해 둡니다.[7] 현대차는 이 로버를 국내 연구기관 6곳과 같이 개발해 왔으므로[3][5], 열 담당은 회사 안팎을 잇는 창구가 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "요구 조건과 개발 모델(어떤 시험용 기체를 몇 대 만들지)을 정한다.[1][7]",
+     "일정과 열 부품 수급, 외부 기관·업체와의 협업을 챙긴다.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    5,
+    7
+   ],
+   "study": [
+    "ecss-31c"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 달 탐사 모빌리티 열제어계 개발 관련 요구 조건 도출, 개발 모델 정립, 기술 문건 작성",
+   "short": "부품별 허용 온도와 달 환경으로 열 요구를 정하고, 어떤 시험기를 만들지 정해 문서로 남긴다.",
+   "why": "열 설계는 '무엇을 몇 도 안에 지켜야 하나'가 정해져야 시작됩니다. NASA 지침서는 열 한계와 여유(margin)를 적은 문서를 PDR(예비 설계 검토) 전에 만들어 형상 관리 아래 두고, 검토 때마다 고치라고 권합니다.[8] ECSS는 개발 단계마다 구조·열 시험 모델(STM), 엔지니어링 모델(EM), 인증 모델(QM), 비행 모델(FM)처럼 서로 다른 기체를 만든다고 적습니다.[7]",
+   "actually": {
+    "items": [
+     "**부품 한계 모으기** — 배터리·카메라·모터·전자 상자마다 일할 때와 꺼져 있을 때 견디는 온도를 제조사 자료로 모은다.[8]",
+     "**환경 정하기** — 해 높이·경사·지면 온도·밤 길이처럼 설계에 쓸 가장 뜨거운 경우와 가장 차가운 경우를 고른다. VIPER 팀은 남극에서 이 값들이 미리 다 정해지지 않는다는 점을 가장 큰 어려움으로 꼽았다.[9]",
+     "**여유 쌓기** — 해석 불확도와 시험 여유를 어떻게 더할지 규칙을 정한다(아래 예).[8]",
+     "**개발 모델 정립** — 열 시험용 기체를 언제 몇 대 만들지 정한다.[7]",
+     "**기술 문건** — ECSS 기준으로는 열 모델 명세, 열·기하 모델 설명서, 해석 보고서, 인터페이스 관리 문서(ICD), 열평형 시험 명세, 상세 설계 설명서가 있다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "여유 쌓기 — 예측 범위가 시험 온도가 되기까지(가상 값)",
+     "body": "NASA 지침서의 한 예처럼 예측 범위에 해석 불확도 ±5°C를 더해 '허용 비행 온도'를 만들고, 다시 ±10°C를 더해 인증 시험 온도를 정했습니다.[8] 부품 한계가 −40~60°C라면 뜨거운 쪽 여유가 7°C밖에 안 남습니다. 지침서는 부품 한계가 인증 범위보다 적어도 5°C 밖에 있기를 바랍니다.[8]",
+     "lang": "python",
+     "code": "pred = (-12.0, 38.0)          # 해석이 낸 예측 범위(가상)\nunc = 5.0; qual = 10.0\naft = (pred[0]-unc, pred[1]+unc)\nq = (aft[0]-qual, aft[1]+qual)\nprint(\"predicted\", pred, \"-> AFT\", aft, \"-> qual test\", q)\npart = (-40.0, 60.0)          # 부품 사양 한계(가상)\nprint(\"hardware margin cold\", q[0]-part[0], \"hot\", part[1]-q[1])\n# predicted (-12.0, 38.0) -> AFT (-17.0, 43.0) -> qual test (-27.0, 53.0)\n# hardware margin cold 13.0 hot 7.0"
+    }
+   ],
+   "how_far": "여유 규칙은 회사·임무가 정하는 것이고 정답이 하나가 아닙니다.[8] 이 자리는 그 규칙을 **제안하고 근거를 문서로 남기는** 쪽입니다. {추론}",
+   "refs": [
+    7,
+    8,
+    9
+   ],
+   "study": [
+    "ecss-31c",
+    "nasa-ptceg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 달 탐사 모빌리티 열제어계 관련 종합 엔지니어링, 일정 관리, 열 하드웨어 수급 및 외부 협업 수행",
+   "short": "열 담당으로서 다른 분야와 맞추고, 일정·열 부품 구매·외부 기관과의 일을 챙긴다.",
+   "why": "열제어 부품(다층 단열재 MLI, 히터, 온도 센서, 히트파이프, 열 전도 패드)은 대부분 사서 쓰거나 맞춤 제작하고, 부품마다 진공에서 쓸 수 있는지 확인이 필요합니다.[8] 현대차그룹은 로버를 국내 연구기관과 함께 만들었고[3], 2025년에는 도레이와 로버용 탄소섬유 복합재를 같이 개발하기로 했다고 보도됐습니다.[2] 소재가 바뀌면 열이 흐르는 길도 바뀌므로 열 담당이 그 협의에 들어갑니다. {추론}",
+   "actually": {
+    "items": [
+     "**종합 엔지니어링** — 전력팀이 정한 히터 전력 예산, 구조팀의 소재·볼트 체결, 전자팀의 발열량을 열 모델에 넣고 서로 맞춘다.[7][8]",
+     "**일정** — 열 해석 → 설계 확정 → 부품 수급 → 시험 순서의 의존을 관리한다. {추론}",
+     "**수급** — MLI·히터·센서처럼 납기가 긴 열 부품을 미리 사 둔다. {추론}",
+     "**외부 협업** — 연구기관의 시험 설비(국내에는 지름 8m 열진공 챔버[14], 달 흙을 넣은 지반열진공챔버[15])를 빌려 쓰는 일정과 조건을 맞춘다. {추론}"
+    ]
+   },
+   "how_far": "연구 개발 조직의 엔지니어가 프로젝트 관리 일부를 겸하는 꼴입니다. 계약·구매 결재는 다른 부서가 하겠지만 **무엇을 언제 사야 하는지**는 이 사람이 정합니다. {추론}",
+   "refs": [
+    2,
+    3,
+    7,
+    8,
+    14,
+    15
+   ],
+   "study": [
+    "nasa-ptceg",
+    "kari-tvac"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 달 탐사 모빌리티 열제어계 설계",
+   "short": "부품 하나(단품)와 로버 전체(체계) 두 수준에서 열을 어떻게 다룰지 설계한다 — 아래 두 줄.",
+   "why": "단품 수준에서는 상자 하나가 제 온도를 지키는지, 체계 수준에서는 상자들이 모여 로버 전체가 열을 버리고 지키는지 봅니다. ECSS도 열제어계 전체와 단품(unit)의 온도 정의를 나눠 둡니다.[7] 2026년 보도에 따르면 시험도 단품과 완성 로버 두 단계로 할 계획입니다.[2]",
+   "refs": [
+    2,
+    7
+   ],
+   "study": [
+    "gilmore-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 달 탐사 모빌리티 단품/체계 수준 열제어계 설계, 열 하드웨어 인터페이스 관리 문서 작성",
+   "short": "단열·방열·히터를 배치해 설계하고, 열 부품이 다른 분야와 만나는 지점을 문서(ICD)로 고정한다.",
+   "why": "열 설계는 다른 팀의 도면 위에서 이뤄지므로, 열 쪽이 요구하는 조건을 문서로 묶어 두지 않으면 나중에 바뀝니다. ECSS는 열 인터페이스 관리 문서(ICD)에 넣을 것을 정해 두었습니다.[7]",
+   "actually": {
+    "items": [
+     "**수동 열제어** — 단열재(MLI)로 감싸고, 열을 버릴 방열판(radiator) 표면의 색·코팅(흡수율·방사율)을 고른다. MLI의 유효 방사율(e*)은 보통 0.005~0.1이고 모델에서는 최선 0.01·최악 0.05를 흔히 쓴다.[8]",
+     "**능동 열제어** — 밤과 추운 그늘을 버틸 히터와 온도 조절 방식(서모스탯·소프트웨어 제어)을 정한다.[8]",
+     "**달 특유의 열** — 남극은 해가 낮게 떠서 옆면이 데워지고, 뜨거운 지면이 내는 적외선이 큰 열 부하가 된다. 멈춰 서면 로버 앞 지면에 반사열로 열점이 생긴다.[9]",
+     "**ICD에 넣는 것** — 열 부품 위치, 열에 중요한 표면 성질, 단열 구역, 히터·센서 위치, 장착 볼트 수·체결력·열 패드, 온도 기준점(TRP), 임무 단계별 온도 범위와 경계 열유속, 접촉 열전도.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "히터 크기 — 필요 전력보다 크게 잡는 이유",
+     "body": "10W가 있어야 온도를 지킨다면, GSFC 기준(궤도 평균 듀티 70% 이하)으로는 10/0.7 ≈ 14.3W, MIL-STD-1540 기준(80% 이하)으로는 12.5W 히터를 고릅니다.[8] 아래는 직접 돌린 출력입니다(지침서는 42.8%로 적었고 반올림 차이).",
+     "lang": "python",
+     "code": "need = 10.0\nfor duty in (0.7, 0.8):\n    q = need / duty\n    print(f\"duty {duty:.0%}: heater {q:.1f} W, margin {(q-need)/need:.1%}\")\n# duty 70%: heater 14.3 W, margin 42.9%\n# duty 80%: heater 12.5 W, margin 25.0%"
+    }
+   ],
+   "how_far": "단품 쪽은 이 팀이 직접 설계하고, 체계 쪽은 다른 분야와 합의해 ICD로 묶는 데까지가 범위로 보입니다. {추론}",
+   "refs": [
+    7,
+    8,
+    9
+   ],
+   "study": [
+    "ecss-31c",
+    "nasa-ptceg",
+    "gilmore-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 3D CAD를 통한 열제어계 관련 단품/체계 수준 설계 및 제작",
+   "short": "CATIA 같은 3D CAD로 열 부품과 장착 구조를 그리고, 실제로 만들게 도면을 넘긴다.",
+   "why": "열 해석 모형은 보통 CAD 형상에서 출발합니다. Thermal Desktop은 CAD 위에서 모델을 만들거나 다른 설계 도구의 형상을 들여오는 열해석 도구입니다.[19][24] 공고의 자격요건에도 CATIA가 들어 있습니다.[1]",
+   "actually": {
+    "items": [
+     "MLI 담요의 재단 모양·고정점, 방열판 판재, 히터 붙일 자리, 열 패드 두께를 그린다. {추론}",
+     "열 스트랩(열을 옮기는 유연한 띠)·열 차단 와셔처럼 열 때문에 생기는 장착 부품을 모델링한다. {추론}",
+     "구조팀의 CATIA 조립체에 열 부품을 넣어 간섭을 확인한다. {추론}"
+    ]
+   },
+   "how_far": "기계 설계 전담처럼 전체 차체를 그리는 것이 아니라 **열 부품과 그 장착**이 범위입니다. {추론}",
+   "refs": [
+    1,
+    19,
+    24
+   ],
+   "study": [
+    "catia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 고신뢰 열모델 구축 및 생애주기(발사/달궤도/착륙/운용)에 대한 열해석",
+   "short": "믿을 수 있는 열 계산 모형을 만들고, 발사부터 달 표면 운용까지 시점마다 온도를 예측한다.",
+   "why": "로버 전체를 달 조건에서 시험하는 일은 비싸고 횟수가 적으므로, 대부분의 판단은 계산 모형으로 합니다. '고신뢰'는 시험과 비교해 모형을 맞춘 상태를 말한다고 보면 됩니다 — ECSS는 시험 전에는 불확도를 보통 10K보다 작게 잡지 않는다고 적었습니다.[7]",
+   "refs": [
+    7
+   ],
+   "study": [
+    "ecss-31c"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 고신뢰도 단품/체계 수준 Thermal Mathematical Model(TMM) 구축 및 생애주기(발사/항해/달궤도/착륙/운용)에 대한 열해석",
+   "short": "로버를 열 노드 그물로 바꾼 계산 모형(TMM)을 만들고 발사·항해·궤도·착륙·운용 단계마다 돌린다.",
+   "why": "ECSS 정의로 TMM(열 수학 모델)은 물체를 열용량을 가진 점(노드)과 그 사이 전도·복사·대류 연결로 나타낸 수치 모형이고, 모든 노드의 온도 이력과 에너지 수지를 냅니다.[7] 짝이 되는 GMM(기하 수학 모델)은 표면의 광학 성질로 해·행성에서 받는 열과 면 사이 복사를 계산합니다.[7]",
+   "actually": {
+    "items": [
+     "**발사** — 덮개(페어링) 안에서 전원이 꺼진 채 버티는 짧은 구간. {추론}",
+     "**항해·달 궤도** — 해를 받는 쪽과 그늘 쪽이 갈리고, 달 궤도에서는 달 그림자(식)와 달 표면 적외선이 더해진다. NASA는 달 궤도·표면 최악 경우 해석 지침을 공개해 두었다.[10]",
+     "**착륙** — 착륙선에 붙어 있는 동안 착륙선과 열을 주고받는다. {추론}",
+     "**운용(낮)** — 해 높이·경사·로버 방향에 따라 온도가 크게 바뀐다. VIPER 팀은 해 방위 22.5° 간격 × 경사 0~15°를 3° 간격으로 나눠 정상상태 96개 경우를 돌려 '어디서든 안전한 운용 범위' 표를 만들었다.[9]",
+     "**운용(밤)** — 한 번에 약 14일 이어지는 밤.[9] 150시간 밤을 버티는 데 히터 에너지가 약 9.7kWh 들고 그 90% 이상이 바퀴 모듈이라는 NASA 검토가 있다.[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "노드 하나로 보는 달 밤 — 히터가 없으면 하루 남짓",
+     "body": "열용량 8,000J/K인 전자 상자를 MLI로 덮고(e*×면적 = 0.03×0.6m²) 20°C에서 밤을 맞게 한 가상 계산입니다. 주위를 95K로 두었습니다(근거 있는 주위 온도가 아니라 가정). 히터가 없으면 29시간 만에 −40°C에 닿고, 6W를 넣으면 약 4.7°C에서 버팁니다. 실제 TMM은 이런 노드가 수백~수천 개입니다.[7]",
+     "lang": "python",
+     "code": "SIG = 5.670e-8\nm_c = 8000.0     # J/K (가상 전자 상자 열용량)\neA = 0.03 * 0.6  # 유효 방사율 e* x 면적 m2 (가상)\nTsink = 95.0     # 가정한 주위 온도 K\ndt = 60.0\nfor heater in (0.0, 6.0):\n    T = 293.15; t = 0.0\n    while T > 233.15 and t < 14*24*3600:\n        q = heater - eA*SIG*(T**4 - Tsink**4)\n        T += q*dt/m_c; t += dt\n    if T > 233.15:\n        print(f\"heater {heater} W: 14 days end T={T-273.15:.1f} C\")\n    else:\n        print(f\"heater {heater} W: reaches -40 C after {t/3600:.1f} h\")\n# heater 0.0 W: reaches -40 C after 29.0 h\n# heater 6.0 W: 14 days end T=4.7 C"
+    }
+   ],
+   "how_far": "모형의 노드 수·세밀도는 질문에 맞춰 고릅니다(전체 로버는 굵게, 배터리·카메라는 자세히). {추론} 이 자리는 경우 조합을 고르고, 결과를 **'어디까지 운용해도 되나'** 같은 운용 규칙으로 바꾸는 데까지 갑니다.[9]",
+   "refs": [
+    7,
+    9,
+    10,
+    12
+   ],
+   "study": [
+    "td-training",
+    "lunar-guidebook",
+    "viper-tfaws"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 우주 열환경 시험을 통한 고신뢰 열모델 보정",
+   "short": "진공 시험에서 잰 온도와 모형의 예측을 비교해, 차이가 기준 안에 들 때까지 모형을 고친다.",
+   "why": "모형의 접촉 열전도·표면 성질 같은 값은 처음엔 추정이라, 시험값으로 맞추기 전에는 믿기 어렵습니다.[7][8] ECSS는 보정 성공 기준의 대표 값을 내부 장비 편차 5K 미만·외부 10K 미만, 평균 편차 ±2K 안, 표준편차 3K 미만(1σ)으로 들고, 통계가 의미 있으려면 비교 온도점이 보통 25개를 넘어야 한다고 적었습니다.[7]",
+   "actually": {
+    "items": [
+     "**전원 끈 열평형부터** — 발열 없이 맞추면 접촉 열전도·표면 성질 같은 수동 요소를 먼저 맞출 수 있다.[8]",
+     "**열평형 조건 둘 이상** — 하나로만 맞추면 그 경우에만 맞는 엉뚱한 값을 고를 수 있다.[8]",
+     "**식는 구간도 쓴다** — 전원 끈 냉각 구간은 시간에 따른 변화(과도 응답)를 맞출 재료다.[8]",
+     "**전력도 비교** — 온도뿐 아니라 히터·냉각 전력 차이도 기준 안에 들어야 한다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "보정 판정 — 평균·표준편차 계산(가상 센서 6개)",
+     "body": "ECSS가 정의한 평균 편차는 (측정 − 예측)의 평균입니다.[7] 아래 예는 평균 +1.48K·표준편차 2.16K로 대표 기준(±2K·3K)은 지나지만, 점이 6개뿐이라 통계로는 부족합니다(보통 25개 넘게).[7]",
+     "lang": "python",
+     "code": "import statistics as st\nmeas = [21.4, 18.9, -3.2, 35.6, 12.0, 27.5]\npred = [19.8, 20.1, -6.9, 33.0, 13.1, 24.2]\nd = [m - p for m, p in zip(meas, pred)]\nprint(\"dev\", [round(x, 1) for x in d])\nprint(f\"mean {st.mean(d):+.2f} K, std {st.stdev(d):.2f} K, max |d| {max(abs(x) for x in d):.1f} K\")\n# dev [1.6, -1.2, 3.7, 2.6, -1.1, 3.3]\n# mean +1.48 K, std 2.16 K, max |d| 3.7 K"
+    }
+   ],
+   "how_far": "모형을 맞추는 일은 숫자를 억지로 끼워 맞추는 게 아니라, 바꾼 값마다 **물리적 근거**를 남기는 일입니다. {추론} 기준 값 자체는 열제어 사양서에서 정합니다.[7]",
+   "refs": [
+    7,
+    8
+   ],
+   "study": [
+    "ecss-31c",
+    "nasa-ptceg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 운용 환경을 모사한 열환경 시험 평가(열진공, 열평형) 및 관련 치구 개발",
+   "short": "진공 통 안에 달의 뜨거움·차가움을 만들어 열제어가 실제로 되는지 확인하고, 그 시험 도구를 만든다.",
+   "why": "ECSS는 두 시험을 나눕니다 — **열평형 시험**은 열 모형과 설계가 맞는지 확인하는 시험이고, **열진공 시험**은 진공에서 정해진 온도 조건으로 요구대로 작동하는지 보이는 시험입니다.[7] 보도에 따르면 이 팀은 달 낮밤 300도 넘는 기온 차 때문에 열진공 시험을 필수로 보고 있습니다.[2]",
+   "refs": [
+    2,
+    7
+   ],
+   "study": [
+    "gevs",
+    "kari-tvac"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 달 탐사 모빌리티의 미션 시나리오에 기반한 열진공 시험 프로파일 설계",
+   "short": "달에서 겪을 순서(낮·밤·주행·대기)를 바탕으로 시험 온도·시간·횟수 계획표를 짠다.",
+   "why": "NASA 고다드의 GEVS 같은 시험 기준(표준)이[17] 사이클 수·머무는 시간·온도 변화 속도·허용 오차·여유를 정하지만, 행성 탐사선은 지구 궤도 장비와 조건이 달라 맞춤 조정(tailoring)이 흔합니다.[8] 보도에 따르면 이 팀은 시험 프로파일을 미션 시나리오에 맞춰 설계합니다.[2]",
+   "actually": {
+    "items": [
+     "**고온·저온 작동 구간** — 켠 채로 뜨거운 끝·차가운 끝에 머문다.[8]",
+     "**생존 구간** — 히터 없이 버티는 구간(여유 확인)과 히터를 켠 구간(히터 성능 확인)을 둘 다 넣는다.[8]",
+     "**열평형 구간** — 고온·저온, 전원 켬·끔 조건으로 모형 보정 자료를 얻는다. 모든 센서의 변화가 기준 아래로 줄면 평형으로 본다.[8]",
+     "**여유** — 인증 시험은 보통 인수(acceptance) 한계보다 5°C 더, 머무는 시간은 최소 1시간.[8]",
+     "**달 밤 흉내** — 약 14일 밤을 그대로 재현할지, 줄여서 볼지가 설계 판단이다.[9] {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "열진공 시험 한 회의 흐름(NASA 지침서의 권장 순서를 줄인 것)[8]",
+     "steps": [
+      "사전 해석 · 시험 조건에서 온도 예측",
+      "진공 · 챔버를 진공으로",
+      "전원 끈 열평형 · 수동 요소 보정 자료",
+      "냉각 구간 · 과도 응답 자료",
+      "고온·저온 작동 · 기능 시험",
+      "생존 구간 · 히터 끔/켬",
+      "보정 · 측정과 예측 비교"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "어떤 표준을 따를지는 회사·고객과 정하고, 이 자리는 그 안에서 **실제 프로파일(온도-시간 그래프)과 절차서**를 씁니다. 한계와 여유를 시험 소프트웨어·기록에 들어간 값과 맞추는 것까지 챙깁니다.[8]",
+   "refs": [
+    2,
+    8,
+    9,
+    17
+   ],
+   "study": [
+    "nasa-ptceg",
+    "gevs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 열진공 시험 사전 열해석을 통한 열진공 시험용 치구, 히터, 센서류 개발",
+   "short": "시험 전 열해석으로 무엇이 필요한지 계산해, 시험용 받침대·히터·온도 센서를 만든다.",
+   "why": "시험 조건이 실제 달과 다르면(받침대로 열이 새거나 램프 열이 고르지 않으면) 결과를 믿을 수 없습니다. NASA 지침서는 석영 램프는 반사판·간격 때문에 모델링이 어려워서, 가능하면 온도를 정할 수 있는 히터 판(가열판)을 쓰는 편을 권합니다.[8]",
+   "actually": {
+    "items": [
+     "**치구(받침대)** — 시험체를 받치면서 열이 덜 새게 하는 단열 지지대, 또는 달 지면처럼 열을 주고받는 판. {추론}",
+     "**히터** — 해·지면 열을 흉내 내는 가열판·적외선 램프, 시험체에 붙이는 시험 전용 히터. 항우연은 적외선 램프로 100~400W를 5% 오차 안에서 넣은 연구를 냈다.[14]",
+     "**센서** — 열전대(TC)를 온도 기준점마다 붙인다. 보정 기준이 센서 위치에 기대므로 ECSS는 기준점마다 센서를 두라고 적었다.[7]"
+    ]
+   },
+   "how_far": "사전 해석으로 '센서를 어디에, 몇 개, 히터를 몇 W'를 정하는 것까지가 이 자리입니다. 제작은 업체·시험 기관과 같이 합니다. {추론}",
+   "refs": [
+    7,
+    8,
+    14
+   ],
+   "study": [
+    "nasa-ptceg",
+    "kari-tvac"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 열진공 시험을 통한 단품/체계 수준 열제어계 시험 평가",
+   "short": "열진공 시험을 돌려 부품 하나와 로버 전체가 온도 범위를 지키는지 판정한다.",
+   "why": "보도에 따르면 시험은 단품과 완성 로버 두 단계로 합니다.[2] NASA VIPER는 2025년 5월에 열진공(TVAC)을 포함한 환경 시험을 모두 마쳤다고 발표했습니다.[9]",
+   "actually": {
+    "items": [
+     "시험 중 경계값(빨간 한계)에 닿으면 장비를 안전 상태로 두는 규칙을 미리 정한다.[8]",
+     "시험 결과로 설계 요구를 만족했는지 판정하고, 고칠 곳을 설계에 되돌린다.[7]",
+     "국내 시험 설비 예 — 항우연 대형 열진공 챔버(지름 8m·깊이 10m, 쉬라우드 −190°C 이하·램프 123°C)[14], 건설연 지반열진공챔버(인공월면토 지반 냉각)[15]."
+    ]
+   },
+   "how_far": "시험 운영 자체는 설비 기관과 함께 하지만, **합격·불합격 판단과 그 근거 보고서**는 열 담당의 몫입니다. {추론}",
+   "refs": [
+    2,
+    7,
+    8,
+    9,
+    14,
+    15
+   ],
+   "study": [
+    "kari-tvac",
+    "kict-dtvc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ㅤ· 3D CAD를 통한 달 환경 모사용 열진공 시험 치구 설계 및 제작",
+   "short": "진공 통 안에 달 지면·하늘을 흉내 낼 시험 장치를 3D CAD로 그려 만든다.",
+   "why": "달 표면 로버는 위성과 달리 아래의 뜨겁거나 차가운 지면과 열을 주고받습니다.[9] 그래서 위성 시험처럼 차가운 벽만 두는 것으로는 부족하고, 지면을 흉내 낼 판이나 흙이 필요합니다. {추론} 국내에는 인공월면토를 넣은 지반열진공챔버를 운영한 연구가 있습니다.[15]",
+   "actually": {
+    "items": [
+     "바퀴·차체 아래에 놓을 온도 조절 판(지면 역할). {추론}",
+     "해가 낮게 드는 남극을 흉내 내는 옆쪽 가열(램프·가열판) 배치. {추론}",
+     "챔버 크기·입구·배선 관통부에 맞춘 설계. {추론}"
+    ]
+   },
+   "refs": [
+    9,
+    15
+   ],
+   "study": [
+    "catia",
+    "kict-dtvc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 기계공학, 항공우주공학 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "기계·항공우주공학 학사 이상 — 열전달·열역학을 전공 수준으로 안다는 전제.",
+   "why": "열제어는 전도·복사·열용량 계산이 바탕입니다.[18] 같은 팀 자율주행 공고는 석사 이상인데 이 자리는 학사 이상입니다.[6]",
+   "how_far": "학위보다 다음 줄의 3년 경력이 실질적인 문입니다. {추론}",
+   "refs": [
+    6,
+    18
+   ],
+   "study": [
+    "gilmore-handbook",
+    "kaist-thermal-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 3년 이상의 우주항공 분야 열제어계 개발 업무 경력을 보유하신 분",
+   "short": "위성·발사체 같은 우주 장비의 열제어를 3년 넘게 직접 해 본 사람.",
+   "why": "우주 열제어는 진공·복사·여유 규칙·열진공 시험처럼 지상 기계 열관리와 다른 관행이 많습니다.[7][8] 자동차 회사지만 이 자리는 우주 경력을 요구합니다.[1]",
+   "how_far": "자동차 배터리·전장 열관리 경력만으로는 이 줄을 채우기 어렵습니다. 위성·발사체·탑재체 열 해석이나 열진공 시험을 맡은 경력이 맞습니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8
+   ],
+   "study": [
+    "ecss-31c"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 비즈니스 영어 커뮤니케이션 및 영어 문서 작성 역량을 보유하신 분",
+   "short": "영어 표준·해외 업체와 일하고 영어로 기술 문서를 쓸 수 있어야 한다.",
+   "why": "열제어의 기준 문서(ECSS·NASA 지침서)와 도구(Thermal Desktop) 자료가 영어입니다.[7][8][19] 해외 열 부품 업체·협력사와의 협업도 이 팀의 일입니다.[1]",
+   "how_far": "요건·ICD·시험 보고서를 영어로 쓸 수 있는 수준입니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    19
+   ],
+   "study": [
+    "nasa-ptceg"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 우주 개발 체계를 이해하고 열제어 부분 개발을 리딩할 수 있으신 분",
+   "short": "우주 개발 단계(검토·모델·시험)를 알고, 열 분야를 스스로 이끌 수 있어야 한다.",
+   "why": "우주 개발은 PDR 같은 검토 단계마다 열 문서와 해석을 내놓는 흐름입니다.[7][8] 위의 '총괄' 업무와 짝을 이루는 요건입니다.[1]",
+   "actually": {
+    "items": [
+     "개발 모델(STM·EM·QM·FM)마다 열 시험이 무엇을 확인하는지 안다.[7]",
+     "검토 단계에 맞춰 여유 문서·해석 보고서를 낸다.[8]"
+    ]
+   },
+   "how_far": "혼자 열 분야를 맡아 일정과 결정을 끌어 본 경험을 묻는 줄로 보입니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8
+   ],
+   "study": [
+    "ecss-31c",
+    "nasa-ptceg"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Thermal Desktop(SINDA), AutoCAD, 3D CAD(CATIA) 활용이 가능하신 분",
+   "short": "우주 열해석의 표준 도구(Thermal Desktop)와 도면 도구(AutoCAD·CATIA)를 쓸 줄 알아야 한다.",
+   "why": "Thermal Desktop은 우주 장비 열해석에 가장 흔히 쓰이는 CAD 기반 도구이고, 계산은 NASA 표준 열유체 소프트웨어 SINDA/FLUINT가, 면 사이 복사는 RadCAD가 맡습니다.[24] 이 도구가 AutoCAD 위에서 돌기 때문에 AutoCAD가 같이 적힌 것으로 보입니다.[19] {추론}",
+   "actually": {
+    "items": [
+     "**Thermal Desktop** — 형상 만들기·노드 나누기·표면 성질·궤도/태양 위치·히터 제어를 넣어 돌린다.[24]",
+     "**AutoCAD** — Thermal Desktop의 작업 바탕.[19]",
+     "**CATIA** — 구조팀 형상을 받아 열 모형으로 옮기고, 열 부품을 그린다.[1]"
+    ]
+   },
+   "level": {
+    "basic": "교재 예제 모델(상자 하나에 MLI·방열판·히터)을 만들어 돌린다.",
+    "work": "궤도·표면 환경을 넣고 수백 노드 모델로 단계별 최악 경우를 낸다.",
+    "team": "달 남극 경사·해 방위 조합과 시험 보정까지 한 모델로 관리한다.[9]"
+   },
+   "how_far": "다른 열해석 도구(예: 유럽에서 쓰는 THERMICA·ESATAN)를 썼다면 개념은 그대로 옮겨 가지만 이 팀이 적은 도구는 위 셋입니다. {추론}",
+   "refs": [
+    1,
+    19,
+    24
+   ],
+   "study": [
+    "td-training",
+    "catia",
+    "autocad"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 성공한 우주 사업에서의 열제어계 개발 경험을 보유하신 분",
+   "short": "실제로 발사·운용에 성공한 우주 사업에서 열제어를 맡았던 사람이면 더 좋다.",
+   "why": "시험장에서 맞춘 모형이 실제 우주에서도 맞았는지 겪어 본 경험은 다른 방법으로 얻기 어렵습니다. {추론} 현대차그룹의 목표는 2027년까지 발사 가능한 수준의 기술을 확보하는 것입니다.[2]",
+   "how_far": "국내라면 항우연 위성·다누리 같은 사업 경험이 예입니다. {추론}",
+   "refs": [
+    2
+   ],
+   "study": [
+    "lunar-guidebook"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 위성시스템 체계 수준 열 제어계 개발(설계/분석/시험평가/궤도운용) 경험을 보유하신 분",
+   "short": "위성 전체 수준의 열제어를 설계부터 궤도 운용까지 해 본 경험이면 더 좋다.",
+   "why": "로버도 결국 위성과 같은 흐름(설계 → 해석 → 시험 → 운용)을 밟습니다.[7] 다만 달 표면에서는 지면 열과 긴 밤이 더해지므로 위성 경험을 그대로 쓸 수는 없습니다.[9][12]",
+   "actually": {
+    "items": [
+     "**설계** — 위성 전체의 방열면·단열·히터 배치.[16]",
+     "**분석·시험평가** — 열평형·열진공 시험과 보정.[7] 4kg 미만 달 로버 HAKUTO도 방열면을 6개로 나눠 설계하고 진공 열평형 시험으로 확인했다.[13]",
+     "**궤도 운용** — 실제 온도 자료로 모형을 다시 맞추고 히터 운용을 바꾼다. {추론}"
+    ]
+   },
+   "refs": [
+    7,
+    9,
+    12,
+    13,
+    16
+   ],
+   "study": [
+    "kaist-thermal-ko",
+    "hakuto"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "위성·발사체 열해석과 열진공 시험을 직접 해 본 사람[1]",
+   "모형과 시험값을 맞추는 일을 숫자로 설명할 수 있는 사람[7]",
+   "요구·문서·일정·외부 협업까지 한 분야를 혼자 끌고 가 본 사람[1]"
+  ],
+  "hard": [
+   "우주항공 열제어 경력 3년 이상이 필수다 — 지상 열관리 경력만으로는 어렵다[1]",
+   "달 표면 열환경은 지면·경사·해 방위에 따라 크게 바뀌어 미리 다 정할 수 없다[9]",
+   "2027 목표가 '달 탐사 제품'에서 '발사 가능한 기술 확보'로 조정됐다 — 일정·범위가 바뀔 수 있다[2]",
+   "근무지가 화성 남양연구소다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "예측 온도 범위에서 인증 시험 온도까지 여유를 어떻게 쌓았고, 그 값을 누가 정했나요?",
+   "a": "요구 조건 도출과 여유 규칙.[7][8]"
+  },
+  {
+   "q": "열평형 시험 결과로 모형을 보정할 때 어떤 값부터 바꾸고, 성공은 무엇으로 판정했나요?",
+   "a": "열모델 보정 줄 — ECSS 기준·전원 끈 평형 먼저.[7][8]"
+  },
+  {
+   "q": "달 남극에서 로버가 멈춰 섰을 때 생기는 열 문제와 그걸 운용 규칙으로 바꾸는 방법은?",
+   "a": "VIPER의 정지 열점·안전 운용 범위.[9]"
+  },
+  {
+   "q": "14일 밤을 버틸 히터 전력을 어떻게 정하고, 듀티 여유는 얼마로 잡나요?",
+   "a": "히터 크기 기준(70%·80%)과 달 밤 히터 에너지.[8][12]"
+  },
+  {
+   "q": "지면을 흉내 내는 열진공 시험 치구를 설계할 때 무엇을 사전 해석으로 확인하나요?",
+   "a": "사전 해석·치구·센서 줄.[1][8][15]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · 달 탐사 모빌리티 열제어 시스템 엔지니어",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=363",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대 — 남양연구소, 경력, 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "헤럴드경제 · 현대차그룹, 달 탐사 로버 극한 환경·자율주행 시험 착수",
+   "url": "https://biz.heraldcorp.com/article/10904495",
+   "kind": "news",
+   "date": "2026-10-16",
+   "note": "영문판(번역) — 열진공 시험 프로파일·치구·히터·센서, 단품·완성 로버 두 단계 시험, 2027 '발사 가능한 기술', 도레이 탄소섬유 복합재 협약"
+  },
+  {
+   "n": 3,
+   "title": "현대자동차그룹 · '달 탐사 전용 로버' 개발모델 제작 착수",
+   "url": "https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000088293",
+   "kind": "company",
+   "date": "2023-04-20",
+   "note": "낮밤 기온 차 300도 이상, 열관리·방사선 차폐를 6개 연구기관과 공동 개발, 최대 70kg"
+  },
+  {
+   "n": 4,
+   "title": "Hyundai Motor Group · Starts Building Lunar Exploration Rover Development Model",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/hyundai-motor-group-starts-building-lunar-exploration-rover-development-model-0000000234",
+   "kind": "company",
+   "date": "2023-04-20",
+   "note": "70kg·남극 착륙·태양광 충전"
+  },
+  {
+   "n": 5,
+   "title": "이코노미스트 · 현대차·기아, 6개 정부 출연 연구기관과 달 탐사 모빌리티 공동 연구 협약",
+   "url": "https://economist.co.kr/article/view/ecn202207270073",
+   "kind": "news",
+   "date": "2022-07-27"
+  },
+  {
+   "n": 6,
+   "title": "현대자동차 채용 · 달 탐사 모빌리티 자율주행 소프트웨어 엔지니어(같은 팀)",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=366",
+   "kind": "posting",
+   "note": "같은 팀 소개 문단 · 석사 이상"
+  },
+  {
+   "n": 7,
+   "title": "ECSS-E-ST-31C · Space engineering — Thermal control general requirements",
+   "url": "https://ecss.nl/wp-content/uploads/standards/ecss-e/ECSS-E-ST-31C15November2008.pdf",
+   "kind": "reference",
+   "date": "2008-11-15",
+   "note": "3장 용어(TMM·GMM·열평형/열진공 시험·여유), 4.5.2 불확도 10K, 4.5.3.3 보정 성공 기준, 부록 A~F 문서 목록(ICD 등)"
+  },
+  {
+   "n": 8,
+   "title": "NASA Passive Thermal Control Engineering Guidebook (Rev 5.1)",
+   "url": "https://ntrs.nasa.gov/api/citations/20220006584/downloads/NASAPassiveThermalGuidebookv5%201Public.pdf",
+   "kind": "reference",
+   "date": "2024-12-19",
+   "note": "NESC 수동 열제어 팀 — 40쪽 여유 예, 48쪽 MLI e*, 119쪽 히터 듀티, 147~167쪽 열진공 시험 계획·여유"
+  },
+  {
+   "n": 9,
+   "title": "Slusser 외 · Generalizing Lunar Vehicle Thermal Analysis — Lessons Learned from VIPER (TFAWS 2025)",
+   "url": "https://tfaws.nasa.gov/wp-content/uploads/TFAWS2025-TCP-I-02_Generalizing-Lunar-Vehicle-Thermal-Analysis_Slusser.pdf",
+   "kind": "reference",
+   "date": "2025",
+   "note": "NASA JSC·MSFC — 남극 환경, 정지 시 열점, 96개 정상상태 경우, 5°C 여유(ARC-STD-8070), 2025-05 TVAC 완료"
+  },
+  {
+   "n": 10,
+   "title": "Hamill·Schunk · Human Landing System Lunar Thermal Analysis Guidebook (HLS-UG-001)",
+   "url": "https://ntrs.nasa.gov/citations/20210010030",
+   "kind": "reference",
+   "date": "2021",
+   "note": "달 궤도·표면 최악 고온/저온 해석 지침(NASA MSFC, 공개)"
+  },
+  {
+   "n": 11,
+   "title": "Diviner Lunar Radiometer Experiment · Science",
+   "url": "https://www.diviner.ucla.edu/science",
+   "kind": "reference",
+   "note": "적도 한낮 평균 거의 400K, 밤 100K 아래"
+  },
+  {
+   "n": 12,
+   "title": "NASA · Wheel Module Motor Trade Study for LTV Thermal Control System",
+   "url": "https://ntrs.nasa.gov/api/citations/20240004621/downloads/Wheel%20Module%20Motor%20Trade%20Study%20for%20LTV%20TCS.pdf",
+   "kind": "reference",
+   "date": "2024",
+   "note": "150시간 달 밤 생존 히터 에너지 약 9.7kWh, 그 90% 이상이 바퀴 모듈(앞선 'Surviving the Lunar Night' 연구 인용)"
+  },
+  {
+   "n": 13,
+   "title": "Tanaka 외 · Design and implementation of thermal control strategy for micro-size lunar exploration rover HAKUTO",
+   "url": "https://arxiv.org/abs/2610.28127",
+   "kind": "reference",
+   "note": "4kg 미만 로버, 방열면 6개로 나눔, 진공 열평형 시험으로 확인(IAC 2018 발표)"
+  },
+  {
+   "n": 14,
+   "title": "조혁진 외 · 우주환경모사를 위한 대형열진공챔버 국산화 구축 (항공우주기술 6권 1호)",
+   "url": "https://koreascience.kr/article/JAKO200711062622020.page",
+   "kind": "reference",
+   "date": "2007-07",
+   "note": "한국항공우주연구원 — 유효 지름 8m·깊이 10m, 3.7×10⁻⁵Pa, 쉬라우드 −190°C 이하, 할로겐 123°C"
+  },
+  {
+   "n": 15,
+   "title": "진현우 외 · 고진공 및 극저온 달의 지상 환경 재현을 위한 지반열진공챔버 운영 효율성 평가 (한국지반공학회논문집 38권 12호)",
+   "url": "https://koreascience.kr/article/JAKO202208851119704.page",
+   "kind": "reference",
+   "date": "2022-12",
+   "note": "한국건설기술연구원 — 인공월면토 KLS-1 지반 냉각 시험"
+  },
+  {
+   "n": 16,
+   "title": "서정기·장태성 · 소형 인공위성의 열설계 개요 및 열해석 기법 소개 (전산구조공학 22권 6호)",
+   "url": "https://koreascience.kr/article/JAKO200920036085317.page",
+   "kind": "reference",
+   "date": "2009-11",
+   "note": "KAIST 인공위성연구센터"
+  },
+  {
+   "n": 17,
+   "title": "NASA GSFC-STD-7000B · General Environmental Verification Standard (GEVS)",
+   "url": "https://standards.nasa.gov/standard/GSFC/GSFC-STD-7000",
+   "kind": "reference",
+   "date": "2021-04-28",
+   "note": "시험·해석으로 임무 환경 성능을 보이는 기준"
+  },
+  {
+   "n": 18,
+   "title": "Gilmore (편) · Spacecraft Thermal Control Handbook, Volume I: Fundamental Technologies (2판)",
+   "url": "https://www.pen-and-sword.co.uk/Spacecraft-Thermal-Control-Handbook-Volume-I-Hardback/p/54828",
+   "kind": "reference",
+   "date": "2002",
+   "note": "The Aerospace Press · AIAA, ISBN 9781884989117"
+  },
+  {
+   "n": 19,
+   "title": "C&R Technologies · Getting started (Thermal Desktop)",
+   "url": "https://www.crtech.com/getting-started",
+   "kind": "reference",
+   "note": "AutoCAD 위에서 도는 CAD 기반 열해석 도구, 풀이기는 SINDA/FLUINT, 복사는 RadCAD"
+  },
+  {
+   "n": 20,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 21,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원, 4·124쪽 본사 주소"
+  },
+  {
+   "n": 23,
+   "title": "bizno · 현대자동차 남양기술연구소 사업장 정보",
+   "url": "https://bizno.net/article/5888501578",
+   "kind": "reference",
+   "note": "도로명 주소·우편번호"
+  },
+  {
+   "n": 24,
+   "title": "NASA Spinoff · SINDA/FLUINT 와 Thermal Desktop",
+   "url": "https://spinoff.nasa.gov/node/10264",
+   "kind": "reference",
+   "note": "SINDA/FLUINT 는 NASA 표준 열유체 해석 소프트웨어, RadCAD 가 복사 교환 계수를 계산"
+  }
+ ],
+ "caveat": "현대차가 이 팀의 열 설계(소재·방열판·히터 전력·사용 챔버)를 공개한 발표나 기술 글은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고·같은 팀 공고·2022~2026 보도뿐이고, 계산·시험 방식은 ECSS 표준·NASA 지침서·VIPER 발표·국내 논문으로 '보통 이런 것'을 보였습니다. 코드 예시의 숫자는 모두 가상 값입니다.",
+ "resources": [
+  {
+   "id": "kaist-thermal-ko",
+   "title": "소형 인공위성의 열설계 개요 및 열해석 기법 소개",
+   "by": "서정기 · 장태성 (KAIST 인공위성연구센터) · 전산구조공학 · 2009",
+   "kind": "doc",
+   "url": "https://koreascience.kr/article/JAKO200920036085317.page",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "위성 열설계와 열해석 흐름을 한국어로 처음 훑는다. 단품/체계 설계·TMM 줄의 출발점."
+  },
+  {
+   "id": "kari-tvac",
+   "title": "우주환경모사를 위한 대형열진공챔버 국산화 구축",
+   "by": "조혁진 외 · 한국항공우주연구원 · 항공우주기술 · 2007",
+   "kind": "doc",
+   "url": "https://koreascience.kr/article/JAKO200711062622020.page",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "국내 열진공 챔버가 어떤 진공·온도를 만드는지. 시험 프로파일·치구 줄을 읽을 때 설비 감각."
+  },
+  {
+   "id": "kict-dtvc",
+   "title": "고진공 및 극저온 달의 지상 환경 재현을 위한 지반열진공챔버 운영 효율성 평가",
+   "by": "진현우 외 · 한국건설기술연구원 · 한국지반공학회논문집 · 2022",
+   "kind": "doc",
+   "url": "https://koreascience.kr/article/JAKO202208851119704.page",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "달 흙을 넣은 진공 챔버를 국내에서 어떻게 돌렸나. 달 환경 모사 치구 줄."
+  },
+  {
+   "id": "nasa-ptceg",
+   "title": "NASA Passive Thermal Control Engineering Guidebook (Rev 5.1)",
+   "by": "NASA NESC Passive Thermal TDT · Liles · Amundsen 편 · 2024",
+   "kind": "doc",
+   "url": "https://ntrs.nasa.gov/citations/20220006584",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "여유 정하기·MLI·히터 크기·열진공 시험 계획·보정 요령을 실무 체크리스트로. 이 공고 업무 대부분을 한 권으로."
+  },
+  {
+   "id": "ecss-31c",
+   "title": "ECSS-E-ST-31C Thermal control general requirements",
+   "by": "ECSS · ESA-ESTEC · 2008",
+   "kind": "doc",
+   "url": "https://ecss.nl/wp-content/uploads/standards/ecss-e/ECSS-E-ST-31C15November2008.pdf",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "TMM·GMM·여유·시험 용어 정의와 보정 성공 기준, 열 문서(ICD 등) 목차. 요구 조건·기술 문건 줄."
+  },
+  {
+   "id": "gevs",
+   "title": "GSFC-STD-7000B General Environmental Verification Standard (GEVS)",
+   "by": "NASA Goddard · 2021",
+   "kind": "doc",
+   "url": "https://standards.nasa.gov/standard/GSFC/GSFC-STD-7000",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "열진공 시험 사이클·여유를 정하는 대표 기준. 시험 프로파일 설계 줄."
+  },
+  {
+   "id": "lunar-guidebook",
+   "title": "Human Landing System Lunar Thermal Analysis Guidebook",
+   "by": "Brian D. Hamill · Richard G. Schunk · NASA MSFC · 2021",
+   "kind": "doc",
+   "url": "https://ntrs.nasa.gov/citations/20210010030",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "달 궤도·표면의 최악 고온/저온 해석을 어떻게 잡나. 생애주기 열해석 중 달 단계."
+  },
+  {
+   "id": "viper-tfaws",
+   "title": "Generalizing Lunar Vehicle Thermal Analysis — Lessons Learned from VIPER",
+   "by": "Slusser 외 · NASA JSC/MSFC · TFAWS 2025",
+   "kind": "doc",
+   "url": "https://tfaws.nasa.gov/wp-content/uploads/TFAWS2025-TCP-I-02_Generalizing-Lunar-Vehicle-Thermal-Analysis_Slusser.pdf",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "달 남극 로버 열해석을 운용 규칙(안전 운용 범위·갇혔을 때 버틸 시간)으로 바꾼 사례. 운용 단계 열해석 줄."
+  },
+  {
+   "id": "hakuto",
+   "title": "Design and implementation of thermal control strategy for micro-size lunar exploration rover HAKUTO",
+   "by": "Tanaka 외 · 도호쿠대·ispace",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2610.28127",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "작은 달 로버의 방열면 나누기와 진공 열평형 시험을 한 편으로. 단품/체계 설계와 시험을 잇는 감각."
+  },
+  {
+   "id": "gilmore-handbook",
+   "title": "Spacecraft Thermal Control Handbook, Volume I: Fundamental Technologies (2판)",
+   "by": "David G. Gilmore 편 · The Aerospace Press/AIAA · 2002",
+   "kind": "book",
+   "url": "https://www.pen-and-sword.co.uk/Spacecraft-Thermal-Control-Handbook-Volume-I-Hardback/p/54828",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "우주 열환경·방열판·히트파이프·MLI·열해석·시험을 장마다. 열제어계 설계 전반의 표준 교재."
+  },
+  {
+   "id": "meseguer",
+   "title": "Spacecraft Thermal Control",
+   "by": "José Meseguer · Isabel Pérez-Grande · Angel Sanz-Andrés · Woodhead Publishing · 2012",
+   "kind": "book",
+   "url": "https://shop.elsevier.com/books/spacecraft-thermal-control/meseguer/978-1-84569-996-3",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "열 환경·노드 해석·시험을 교과서 순서로. TMM을 손으로 세워 보는 연습에 맞다."
+  },
+  {
+   "id": "td-training",
+   "title": "Thermal Desktop 입문 교육 과정",
+   "by": "C&R Technologies",
+   "kind": "course",
+   "url": "https://crtech.com/course-catalog",
+   "lang": "en",
+   "level": "실무",
+   "why": "Thermal Desktop·RadCAD 입문 과정과 무료 짧은 강의. 자격요건의 도구 줄."
+  },
+  {
+   "id": "catia",
+   "title": "CATIA",
+   "by": "Dassault Systèmes",
+   "kind": "doc",
+   "url": "https://www.3ds.com/products/catia",
+   "lang": "en",
+   "level": "입문",
+   "why": "구조팀과 같은 3D CAD로 열 부품·치구를 그린다. 3D CAD 설계 줄."
+  },
+  {
+   "id": "autocad",
+   "title": "Autodesk Education (AutoCAD 교육용)",
+   "by": "Autodesk",
+   "kind": "doc",
+   "url": "https://www.autodesk.com/education/home",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "Thermal Desktop을 띄울 AutoCAD 바탕을 학생·교육용으로 받는다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "열전달 다시 잡기",
+   "time": "2~3주",
+   "goal": "전도·복사·열용량으로 상자 하나의 온도를 손으로 계산한다.",
+   "task": "MLI를 덮은 상자의 노드 1개 모델을 파이썬으로 짜서, 달 밤에 히터 0·3·6W일 때 온도 곡선을 그린 그림 한 장(가상 값).",
+   "resources": [
+    "kaist-thermal-ko",
+    "meseguer"
+   ]
+  },
+  {
+   "title": "우주 열제어의 규칙",
+   "time": "2주",
+   "goal": "TMM·GMM·여유·열평형/열진공 시험 용어와 보정 기준을 설명한다.",
+   "task": "가상의 부품 5개(배터리·카메라·모터·전자 상자·방열판)로 예측 범위 → 허용 비행 온도 → 인증 시험 온도 여유 표를 만든다.",
+   "resources": [
+    "ecss-31c",
+    "nasa-ptceg"
+   ]
+  },
+  {
+   "title": "Thermal Desktop 모델",
+   "time": "3~4주",
+   "goal": "CAD 형상에서 노드 모델을 만들고 궤도·표면 환경으로 돌린다.",
+   "task": "방열판 하나·MLI·히터가 있는 상자를 Thermal Desktop 체험판으로 만들어 달 궤도 식 구간과 표면 정오 두 경우를 돌린 결과표.",
+   "resources": [
+    "td-training",
+    "autocad",
+    "gilmore-handbook"
+   ]
+  },
+  {
+   "title": "달 표면 열해석",
+   "time": "3주",
+   "goal": "경사·해 방위·지면 온도 조합으로 '안전 운용 범위'를 낸다.",
+   "task": "노드 몇 개짜리 로버 모델로 경사 0~15°×해 방위 8방향을 돌려 부품 한계 초과를 색칠한 표(VIPER 발표 방식, 가상 값).",
+   "resources": [
+    "lunar-guidebook",
+    "viper-tfaws",
+    "hakuto"
+   ]
+  },
+  {
+   "title": "시험 계획과 보정",
+   "time": "2~3주",
+   "goal": "열진공 시험 프로파일을 짜고 시험값으로 모형을 보정한다.",
+   "task": "가상의 측정값 30점으로 평균·표준편차 편차를 계산해 ECSS 대표 기준으로 판정하고, 고온/저온 작동·생존·열평형 구간을 넣은 온도-시간 프로파일 그림.",
+   "resources": [
+    "nasa-ptceg",
+    "gevs",
+    "kari-tvac"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분이 없다. 이 자리는 경력(3년 이상) 채용이라 해당하지 않는다 [21]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [21]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [20]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값, 전년보다 1.5% 줄었다 [20]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 경력 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "주중 출산휴가 지원",
+    "detail": "본인·배우자 임신 6개월~출산 12개월 안에 회사 지정 호텔 숙식(최대 2박)"
+   },
+   {
+    "name": "임신기 근로시간 단축",
+    "detail": "임신 12주 이내·36주 이상 하루 2시간 단축"
+   },
+   {
+    "name": "수유 시간",
+    "detail": "생후 1년 미만 영아가 있는 여직원 하루 120분 유급"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [22]. 공고에는 복지 칸이 없고 [1], 주택·학자금·차량 구입 지원 같은 금액 항목은 공식 자료에서 확인하지 못해 뺐다. 남양연구소에는 어린이집·피트니스 센터가 있다고 적혀 있다 [22]. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 남양기술연구소",
+  "address": "경기도 화성시 남양읍 현대연구소로 150",
+  "postal": "18280",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%ED%99%94%EC%84%B1%EC%8B%9C%20%EB%82%A8%EC%96%91%EC%9D%8D%20%ED%98%84%EB%8C%80%EC%97%B0%EA%B5%AC%EC%86%8C%EB%A1%9C%20150",
+  "note": "공고의 근무지가 남양연구소이고 [1], 도로명 주소·우편번호는 사업장 정보 사이트에서 확인했다 [23]. 화성시가 2026년에 구를 나눠 주소 표기에 구 이름이 붙을 수 있다 {추론}. 서울에서 멀어 통근 버스·이사 여부를 처우 협의 때 확인한다 {추론}."
+ }
+}

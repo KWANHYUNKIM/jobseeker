@@ -160,6 +160,7 @@
   "saramin-55605963": "hyundai-ict-ax-project-manager",
   "ats-hkmc:hyundai:2026N2420": "hyundai-ict-sw-architect",
   "ats-hkmc:hyundai:2026N2366": "hyundai-lunar-rover-autonomy-sw",
+  "ats-hkmc:hyundai:2026N2363": "hyundai-lunar-rover-thermal-control",
   "saramin-55604144": "hyundai-manufacturing-vision-ai-ops",
   "wanted-398824": "hyundai-manufacturing-vision-ai-ops",
   "ats-hkmc:hyundai:2026N2209": "hyundai-npu-dl-compiler",
@@ -1827,6 +1828,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 33
+  },
+  {
+   "id": "hyundai-lunar-rover-thermal-control",
+   "company": "현대자동차",
+   "role": "달 탐사 모빌리티 열제어 시스템 엔지니어",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2363"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 22
   },
   {
    "id": "hyundai-manufacturing-vision-ai-ops",
