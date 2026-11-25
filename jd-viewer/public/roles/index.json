@@ -76,6 +76,8 @@
   "ats-lg:group:1001568": "biztechi-m365-si-sm-senior",
   "ats-lg:group:1002187": "biztechi-mes-pl",
   "ats-lg:group:1001888": "biztechi-network-operations",
+  "ats-lg:group:1001854": "biztechi-procurement-btp-fiori",
+  "ats-lg:group:1002339": "biztechi-sap-bw-datasphere",
   "ats-lg:group:1001514": "biztechi-sap-ewm-tm-consultant",
   "ats-lg:group:1001414": "biztechi-sap-fico-sd-consultant",
   "ats-lg:group:1001499": "biztechi-sap-sm-operations",
@@ -1167,6 +1169,26 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "biztechi-procurement-btp-fiori",
+   "company": "비즈테크아이",
+   "role": "구매 시스템 운영·온보딩 (SAP BTP / Fiori)",
+   "jobs": [
+    "ats-lg:group:1001854"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 8
+  },
+  {
+   "id": "biztechi-sap-bw-datasphere",
+   "company": "비즈테크아이",
+   "role": "SAP BW 담당자",
+   "jobs": [
+    "ats-lg:group:1002339"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 10
   },
   {
    "id": "biztechi-sap-ewm-tm-consultant",

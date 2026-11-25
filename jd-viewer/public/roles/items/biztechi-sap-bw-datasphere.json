@@ -1,0 +1,500 @@
+{
+  "id": "biztechi-sap-bw-datasphere",
+  "company": "비즈테크아이",
+  "role": "SAP BW 담당자",
+  "team": "DE3파트",
+  "jobs": ["ats-lg:group:1002339"],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "고객사의 **SAP BW/4HANA(SAP ERP 데이터를 모아 보고용으로 정리하는 데이터 창고)** 위에 보고 모델을 짓고 운영하다가, 그 창고를 **SAP Datasphere(SAP의 클라우드 데이터 창고)** 로 옮기는 전환 프로젝트에 들어가는 자리입니다.[1]",
+    "env": "LG CNS 자회사인 IT 서비스 회사의 DE3파트로, SAP BW/4HANA·Datasphere 기반 전사 데이터 플랫폼을 구축·운영합니다.[1] 회사는 ERP 사업 안에 'SAP BW/SAC' 를 따로 상품으로 내걸고 있습니다.[2]",
+    "oneline": "SAP 화면 안의 모델링 도구로 **데이터 흐름(가져오기 → 변환 → 저장 → 보고)** 을 짜는 1년 차 이상 BW 실무자 자리. 지금 일(BW)과 다음 일(Datasphere)을 같이 배운다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "SAP BW/4HANA 모델링",
+      "short": "ERP에서 온 데이터를 어떤 표(aDSO)에 어떤 단위로 쌓고, 어떻게 묶어 보고서로 내보낼지 설계해 만드는 일이다.",
+      "why": "입사하면 먼저 **SAP BW/4HANA 기반 BI 시스템 구축·운영**을 맡는다고 공고가 밝혔습니다.[1] 회사는 SAP BW를 '기업 데이터를 통합·변환·관리해 분석과 보고에 쓰게 하는 데이터 창고'로 소개하고, 중앙 집중 저장소로 데이터 거버넌스를 개선한다고 적습니다.[2] 고객사 ERP는 거래 처리용이라, 월별·지점별 같은 보고는 이런 창고를 한 번 거쳐 만드는 것이 보통입니다.{추론}",
+      "actually": {
+        "intro": "BW/4HANA의 '모델링'은 화면에서 객체를 만들고 잇는 일입니다. SAP 공식 교육이 말하는 주요 객체로 풀면 이렇습니다.",
+        "items": [
+          "**InfoObject(정보 객체)** — '고객', '자재', '금액' 같은 칸 하나를 회사 전체가 같은 뜻으로 쓰게 정의한다. 고객의 이름·지역 같은 속성(마스터 데이터)도 여기에 붙는다.{추론}",
+          "**aDSO(DataStore 객체, advanced)** — 거래 데이터를 쌓는 중심 표. 옛 InfoCube와 DSO의 기능을 합쳤고 쓰임에 따라 종류가 넷이다.[10]",
+          "**Transformation(변환)** — 원천 칸을 목적 칸으로 옮기는 규칙. 단순 대응, 상수, 공식, 그리고 모자라면 루틴(코드)을 쓴다.[13]",
+          "**DTP(데이터 전송 프로세스)·프로세스 체인** — 변환을 실제로 돌려 데이터를 옮기고, 밤마다 순서대로 돌게 엮는다.{추론}",
+          "**CompositeProvider** — 여러 aDSO를 합쳐(UNION·JOIN) 보고서가 읽을 한 덩어리를 만든다. aDSO 위에 CompositeProvider를, 그 위에 BW Query를 두는 것이 권장 구조다.[11]",
+          "**Open ODS View** — 데이터를 복사해 오지 않고 바깥 표를 그대로 읽어 모델에 붙인다. 옛 VirtualProvider를 대신한다.[12]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "BW/4HANA에서 데이터가 보고서까지 가는 길 {추론}",
+          "steps": [
+            "원천 · S/4HANA·ECC의 거래 표(주문·전표)",
+            "DataSource · 원천에서 무엇을 어떻게(전체·변경분) 가져올지 정의",
+            "Transformation · 칸 대응과 계산 규칙(필요하면 루틴)",
+            "DTP · 변환을 실행해 데이터를 옮긴다",
+            "aDSO · 쌓아 두는 표(들어온 줄 → 활성화 → 활성 표)",
+            "CompositeProvider · 여러 aDSO를 하나로",
+            "BW Query · 행·열·필터·계산을 정한 보고 질의",
+            "보고 화면 · SAC·Analysis for Office 등"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "examples": [
+        {
+          "title": "aDSO 활성화가 하는 일 — 고쳐진 주문이 다시 들어올 때",
+          "body": "표준형 aDSO는 들어온 줄을 '활성화'할 때 같은 키의 옛 값을 지우는 줄과 새 값 줄을 변경 기록에 남겨, 아래 단계가 변경분만 받아도 합계가 맞게 한다. 아래는 그 생각을 파이썬으로 흉내 낸 것이다(실제 BW 동작을 줄인 모형). 출력: 활성 표 O1=120, 변경 기록 합계 170 = 활성 표 합계 170.",
+          "lang": "python",
+          "code": "active, changelog = {}, []\ninbound = [(\"O1\", \"강남점\", 100), (\"O2\", \"판교점\", 50), (\"O1\", \"강남점\", 120)]\nfor key, store, amt in inbound:\n    if key in active:\n        changelog.append((key, store, -active[key][1], \"X\"))  # 옛 값 지우는 줄\n    changelog.append((key, store, amt, \"N\" if key not in active else \" \"))\n    active[key] = (store, amt)\nprint(active)\nprint(sum(c[2] for c in changelog), sum(v[1] for v in active.values()))\n# {'O1': ('강남점', 120), 'O2': ('판교점', 50)}\n# 170 170"
+        }
+      ],
+      "how_far": "무엇을 보고서에 담을지는 고객 현업·PM이 정하고, 이 자리는 **그 요구를 객체 설계(어느 aDSO에 어떤 키로, 어떤 변경분 방식으로)와 데이터 흐름으로 옮기고 직접 만드는 것**까지입니다.{추론} 경력 1년 이상 요건이라, 혼자 새 영역 전체를 설계하기보다 선임이 정한 구조 안에서 흐름 하나를 끝까지 만들고 고치는 수준이 출발점으로 보입니다.[1]{추론}",
+      "refs": [1, 2, 10, 11, 12, 13],
+      "study": ["bw4-dw", "bw4-press", "kimball"]
+    },
+    {
+      "section": "task",
+      "quote": "SAP Datasphere 구현",
+      "short": "BW에서 하던 모델을 SAP의 클라우드 데이터 창고 Datasphere에 다시 짓거나 옮겨 붙이는 일이다.",
+      "why": "공고는 이 파트가 **SAP Datasphere 전환 프로젝트**를 수행하며 차세대 데이터 플랫폼을 짓는다고 밝혔습니다.[1] SAP는 2020년에 BW/4HANA 유지보수를 최소 2040년까지로 맞추고 옛 BW 7.5는 2027년까지로 잡았고[21], 2024년에는 BW 고객이 Datasphere로 현대화하는 길(기존 BW 내용 재사용)을 따로 내놓았습니다.[22] 고객사마다 BW를 언제·어떻게 옮길지가 SI 회사의 일감이 되는 이유입니다.{추론}",
+      "actually": {
+        "intro": "Datasphere에서는 BW 객체 대신 다른 이름의 도구로 같은 일을 합니다. SAP 교육 자료 기준입니다.",
+        "items": [
+          "**Space(공간)** — 부서·프로젝트별로 데이터와 권한, 저장 용량을 나눈 작업 칸.{추론}",
+          "**Replication Flow(복제 흐름)** — 원천(S/4HANA 등)의 표를 처음 한 번 + 변경분으로 가져온다. 복잡한 변환은 못 해서 변환 흐름과 짝을 짓는다.[16]",
+          "**Transformation Flow(변환 흐름)** — 먼저 들여온 데이터를 같은 공간 안의 표로 바꿔 쓰는 ELT 단계.[17]",
+          "**SQL 뷰·그래픽 뷰** — 사실(거래)과 차원(고객·지점)을 결합하는 모델. 예전 Transformation·CompositeProvider가 하던 일을 많이 맡는다.{추론}",
+          "**Analytic Model(분석 모델)** — 사실 하나에 측정값·차원·변수를 붙여 SAC 보고서가 읽게 내놓는 마지막 층. SAP는 새 기능을 여기에 넣겠다고 했다.[15]",
+          "**Task Chain(작업 사슬)** — 흐름들을 순서대로 돌리는 일정표. BW 프로세스 체인 자리다. 변경분까지 받는 복제 흐름은 사슬에 못 넣는 제약이 있다.[16][18]",
+          "**BW bridge** — BW 객체를 Datasphere 안에서 그대로 쓰게 하는 다리. 기존 BW를 껍데기(메타데이터)째 옮기는 Shell 전환과 원격 전환 길이 있다.[19][20]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "Datasphere SQL 뷰가 하는 일 — 사실 + 차원 결합 후 집계",
+          "body": "판매 사실 표에 지점 차원을 붙여 지역·월별 매출을 내는 꼴이다. Datasphere의 SQL 뷰도 이런 SELECT를 쓴다. 아래는 SQLite로 직접 돌린 결과다(가상 값).",
+          "lang": "sql",
+          "code": "select st.region, s.month, sum(s.amount)\nfrom sales s join store st on st.store_id = s.store_id\ngroup by 1, 2 order by 1, 2;\n-- ('경기', '2026-10', 50)\n-- ('서울', '2026-10', 120)\n-- ('서울', '2026-11', 80)"
+        }
+      ],
+      "how_far": "전환 방식(BW bridge로 옮길지, Datasphere 기본 객체로 새로 지을지)은 고객과 아키텍트·PM이 정하고, 이 자리는 **정해진 방식대로 뷰·흐름·분석 모델을 만들고 옛 BW 보고서와 숫자가 같은지 맞춰 보는 일**이 중심이 될 것입니다.{추론} 회사 사이트에는 Datasphere 사례가 아직 따로 없어, 회사가 직접 말한 범위는 공고 문장까지입니다.[1][2]",
+      "refs": [1, 2, 15, 16, 17, 18, 19, 20, 21, 22],
+      "study": ["dsp-explore", "dsp-trial", "bw-bridge-ko", "modernizing-bw"]
+    },
+    {
+      "section": "qualification",
+      "quote": "학력 : 4년제 정규대학 학사학위 이상 보유자",
+      "short": "서류 단계의 기본 조건이다. 전공은 '업무 유관 전공 우대'일 뿐 제한이 없다.",
+      "why": "공고의 필수 사항이 학사 이상이고, 전공 칸에는 '업무 유관 전공 우대'라고만 적혀 있습니다.[1] 경력 전형은 LG WAY Fit Test → 면접 → 처우 제안 → 채용검진 순서입니다.[1][7]",
+      "how_far": "학위는 지원 자격일 뿐이고, 실제로는 아래 BW·Datasphere 능력 줄에서 평가가 갈립니다.{추론}",
+      "refs": [1, 7]
+    },
+    {
+      "section": "qualification",
+      "quote": "경력 : 관련 업무 1년 이상",
+      "short": "BW·SAP 데이터 일을 실제 프로젝트에서 1년 이상 해 봤어야 한다. 교육만으로는 부족하다.",
+      "why": "공고가 '관련 업무 1년 이상'을 필수로 걸었고, 경력직은 면접·처우 협의 결과에 따라 정규직 또는 기간제로 제안될 수 있다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "'관련 업무'를 공고가 따로 풀지는 않았다. 업무 두 줄로 보아 BW 모델링·운영이 가장 가깝고, 다른 DW·ETL 경력이 인정되는지는 지원 전에 문의로 확인할 일이다.{추론}",
+          "회사 직무소개의 Data Architecture(데이터 모델링·처리·DB 요구를 명세화하고 설계·구축·최적화) 설명이 이 자리와 가장 가까운 직무 정의다.[4]",
+          "고용 형태가 정규직 또는 기간제로 제안될 수 있으니 처우 협의 단계에서 확인한다.[1]"
+        ]
+      },
+      "how_far": "1년이면 '흐름 하나를 혼자 만들어 운영해 본 정도'가 기대선으로 보입니다 — 객체 이름만 아는 수준과 갈리는 지점입니다.{추론}",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "필수 역량",
+      "short": "아래 두 줄(BW/4HANA, Datasphere)이 경력과 별도로 꼭 갖춰야 할 기술이라는 머리말이다.",
+      "why": "공고는 학력·경력 다음에 '필수 역량'을 따로 두고 BW/4HANA 모델링·구현과 Datasphere 구현 두 가지를 적었습니다.[1] 업무 두 줄과 똑같은 짝이라, 하는 일 그대로를 할 줄 알아야 한다는 뜻입니다.{추론}",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "SAP BW/4HANA 모델링 및 구현 능력",
+      "short": "aDSO·변환·DTP·CompositeProvider·Query로 데이터 흐름 하나를 처음부터 끝까지 직접 만들 수 있어야 한다.",
+      "why": "입사 후 첫 일이 BW/4HANA 기반 BI 시스템 구축·운영이라서입니다.[1] SAP 공식 자격(C_BW4H, 데이터 엔지니어 — SAP BW/4HANA)도 모델링·데이터 가져오기·질의 설계를 핵심 능력으로 확인합니다.[26]",
+      "level": {
+        "basic": "aDSO 종류의 차이, CompositeProvider 위에 Query를 두는 이유를 설명할 수 있다.[10][11]",
+        "work": "원천 DataSource부터 Query까지 흐름 하나를 만들고, 변경분 적재·활성화·실패 재실행을 다룬다.",
+        "team": "고객사 BW를 운영하며 고장 난 적재를 고치고, 같은 모델을 Datasphere로 옮길 때 무엇이 바뀌는지 안다.[1]{추론}"
+      },
+      "actually": {
+        "items": [
+          "**BW Modeling Tools(이클립스 기반 개발 도구)** 에서 객체를 만든다. BW bridge 쪽도 같은 도구와 ABAP 개발 도구를 쓴다.[20]",
+          "**변경분 적재** — 매일 전체를 다시 싣지 않고 바뀐 줄만 받는다. 활성화가 남기는 변경 기록이 그 열쇠다(위 업무 줄 예시).{추론}",
+          "**HANA 밀어내기** — 변환을 애플리케이션 서버가 아니라 HANA DB 안에서 돌리게 짜야 빠르다. 루틴을 ABAP 대신 AMDP(SQLScript)로 쓰는 것이 그 방법이다.[14]",
+          "**Query 설계** — 행·열·필터·계산된 측정값(예: 전년 대비)을 Query에 두고 화면은 그것을 읽는다.{추론}"
+        ]
+      },
+      "how_far": "모든 객체를 외울 필요는 없고, **원천에서 Query까지 한 줄을 직접 만들어 보고 그 사이 어디서 숫자가 바뀌는지 설명할 수 있으면** 면접의 기본선은 넘는다고 보입니다.{추론}",
+      "refs": [1, 10, 11, 14, 20, 26],
+      "study": ["bw4-dw", "bw4-press", "cert-bw4h"]
+    },
+    {
+      "section": "qualification",
+      "quote": "SAP Datasphere 구현 능력",
+      "short": "Datasphere에서 복제 흐름으로 들여오고, 뷰로 묶고, 분석 모델로 내놓는 과정을 직접 해 봤어야 한다.",
+      "why": "이 파트가 Datasphere 전환 프로젝트를 수행하기 때문입니다.[1] 자격 C_BW4H의 준비 과정에도 Datasphere 탐색·데이터 창고 만들기 학습 여정이 함께 들어 있습니다.[26]",
+      "level": {
+        "basic": "Space·복제 흐름·변환 흐름·뷰·분석 모델이 각각 무엇인지 안다.[15][16][17]",
+        "work": "S/4HANA 표를 복제 흐름으로 받아 사실·차원 뷰와 분석 모델을 만들고, 작업 사슬로 일정을 건다.[18]",
+        "team": "BW에 있던 모델을 BW bridge로 옮기거나 Datasphere 기본 객체로 다시 지어, 옛 보고서와 숫자를 맞춘다.[19]{추론}"
+      },
+      "actually": {
+        "items": [
+          "**들여오기** — 복제 흐름은 '처음만' 또는 '처음 + 변경분'으로 싣는다. 변경분이 섞인 흐름은 작업 사슬에 못 넣어 일정을 따로 관리해야 한다.[16]",
+          "**바꾸기** — 복잡한 계산은 변환 흐름에서 한다. 실패한 회차는 손으로 다시 돌려야 한다.[17]",
+          "**내놓기** — 분석 모델은 배포(deploy)한 뒤에야 미리보기가 된다.{추론}",
+          "**전환 대조** — 같은 조건으로 BW Query와 Datasphere 분석 모델의 합계·건수를 견준다.{추론}"
+        ]
+      },
+      "how_far": "Datasphere는 BW보다 나온 지 오래되지 않아 실무 경력이 짧은 사람이 많을 것으로 보입니다 — **시험판으로라도 흐름 하나를 끝까지 만들어 본 흔적**이 차이를 만듭니다.[27]{추론}",
+      "refs": [1, 15, 16, 17, 18, 19, 26, 27],
+      "study": ["dsp-explore", "dsp-trial", "bw-bridge-ko"]
+    },
+    {
+      "section": "preference",
+      "quote": "SAP ABAP 스킬 보유하신 분",
+      "short": "변환 규칙으로 안 되는 계산을 ABAP·AMDP 루틴으로 직접 짜고, 남이 짠 루틴을 고칠 수 있으면 좋다는 뜻이다.",
+      "why": "BW 변환은 단순 대응으로 안 될 때 시작·끝·전문가 루틴(코드)을 씁니다.[13] 그 루틴은 ABAP 또는 HANA에서 도는 AMDP로 쓰고, 첫 루틴의 방식이 그 변환 전체의 실행 방식을 정합니다.[14] BW bridge도 ABAP 개발 도구로 객체를 만듭니다.[20]",
+      "actually": {
+        "items": [
+          "**시작 루틴** — 데이터 묶음마다 맨 앞에서 돌며 필요 없는 줄을 거르거나 참조 표를 미리 읽는다.[13]",
+          "**끝 루틴** — 변환이 끝난 묶음을 한 번 더 손본다(예: 다른 aDSO에서 값 찾아 채우기).[13]",
+          "**AMDP로 옮기기** — 옛 ABAP 루틴을 SQLScript로 다시 써 HANA 안에서 돌게 한다. 전환 프로젝트에서 자주 만나는 일이다.[14]{추론}",
+          "**고객 확장 추출** — 표준 DataSource에 없는 칸을 원천 쪽 ABAP으로 붙이는 일도 BW 담당에게 온다.{추론}"
+        ]
+      },
+      "how_far": "우대사항이라 필수는 아니지만, 운영 중 고장의 상당수가 남이 짠 루틴에서 나므로 **읽고 고칠 수 있는 수준**이면 크게 유리합니다.{추론}",
+      "refs": [13, 14, 20],
+      "study": ["easy-abap", "abap-core"]
+    },
+    {
+      "section": "preference",
+      "quote": "SAC 경험하신 분",
+      "short": "BW·Datasphere에 만든 모델을 SAP Analytics Cloud 화면(스토리·대시보드)으로 보여 줘 본 경험을 말한다.",
+      "why": "회사는 BW와 SAC를 한 상품('SAP BW/SAC')으로 묶어 팔고, SAC를 BI·계획·예측 분석을 합친 클라우드 플랫폼으로 소개합니다.[2] 모델을 만든 사람이 화면까지 보여 줄 수 있으면 고객 확인이 빨라집니다.{추론}",
+      "actually": {
+        "items": [
+          "**연결** — SAC에서 BW Query나 Datasphere 분석 모델에 실시간 연결을 걸어 데이터를 복사하지 않고 읽는다.{추론}",
+          "**스토리** — 표·차트·필터를 한 화면에 놓아 현업이 직접 돌려 보게 한다. 회사는 시각화·스토리텔링을 SAC 기능으로 적었다.[2]",
+          "**숫자 맞추기** — 화면 숫자가 Query와 다르면 필터·단위·통화 설정부터 본다.{추론}"
+        ]
+      },
+      "how_far": "디자인보다 **모델과 화면 사이의 연결·필터·권한**을 이해하는 것이 BW 담당에게 기대되는 몫입니다.{추론}",
+      "refs": [2],
+      "study": ["sac-trial", "sac-plan-ko"]
+    },
+    {
+      "section": "preference",
+      "quote": "SAC Planning 경험하신 분",
+      "short": "SAC에서 예산·목표 같은 계획 숫자를 입력·분배·복사하는 계획 모델을 만들어 본 경험이다.",
+      "why": "회사는 SAC를 '분석, 계획 및 예측을 위한 단일 플랫폼'으로 내걸고 있습니다.[2] SAC 계획 모델의 데이터는 Datasphere에 두는 방식(seamless planning)도 SAP가 교육 과정으로 열어 두어[25], Datasphere 전환과 계획 업무가 한 프로젝트로 이어질 수 있습니다.{추론}",
+      "actually": {
+        "items": [
+          "**버전** — 실적(Actual)과 계획(Plan), 개인만 보는 비공개 버전과 모두 보는 공개 버전을 나누고, 비공개에서 고친 것을 '게시'한다.[23]",
+          "**데이터 액션** — 지난해 실적을 계획 버전으로 복사하고, 비율을 곱하고, 상위 합계를 아래로 나누는 계산을 단계로 짜 둔다.[24]",
+          "**분배(disaggregation)** — 지역 합계 1,200을 지난해 비중(서울 600 : 경기 400)대로 나누면 서울 720·경기 480이 된다(아래 예).{추론}",
+          "**저장 위치** — seamless planning이면 계획 데이터가 Datasphere 공간의 표에 쌓인다.[25]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "상위 계획을 지난해 비중대로 나누기",
+          "body": "SAC가 합계 칸에 입력한 값을 아래 칸에 나눠 담는 생각을 파이썬으로 옮긴 것이다(가상 값, 직접 실행).",
+          "lang": "python",
+          "code": "last_year = {\"서울\": 600, \"경기\": 400}\nplan_total = 1200\ntot = sum(last_year.values())\nprint({k: round(plan_total * v / tot) for k, v in last_year.items()})\n# {'서울': 720, '경기': 480}"
+        }
+      ],
+      "how_far": "계획 절차(누가 언제 무엇을 입력·승인하나)는 고객 재무팀이 정하고, 이 자리는 **계획 모델·버전·데이터 액션을 만들어 그 절차가 화면에서 돌게 하는 일**까지로 보입니다.{추론}",
+      "refs": [2, 23, 24, 25],
+      "study": ["sac-plan-ko", "sac-fpa"]
+    }
+  ],
+  "resources": [
+    {
+      "id": "bw4-dw",
+      "title": "Implementing a Data Warehouse Using SAP BW/4HANA",
+      "by": "SAP Learning",
+      "kind": "course",
+      "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "aDSO·변환·루틴·CompositeProvider·Open ODS View를 SAP가 직접 가르치는 무료 과정. 'BW/4HANA 모델링 및 구현' 요건의 뼈대."
+    },
+    {
+      "id": "bw4-press",
+      "title": "SAP BW/4HANA 2.0: The Comprehensive Guide",
+      "by": "SAP PRESS",
+      "kind": "book",
+      "url": "https://www.sap-press.com/sap-bw4hana-20_4544/",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "설치·관리·모델링·분석과 ABAP 변환 바꾸기, SAC 연결까지 한 권. 운영 중 만나는 설정을 찾아보는 참고서로 쓴다."
+    },
+    {
+      "id": "kimball",
+      "title": "The Data Warehouse Toolkit (3판)",
+      "by": "Ralph Kimball · Margy Ross · Wiley · 2013",
+      "kind": "book",
+      "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "사실·차원·한 줄 단위를 정하는 차원 모델링의 원전. BW 객체 이름이 바뀌어도(Datasphere) 변하지 않는 설계 기준을 준다."
+    },
+    {
+      "id": "dsp-explore",
+      "title": "Exploring SAP Datasphere",
+      "by": "SAP Learning",
+      "kind": "course",
+      "url": "https://learning.sap.com/courses/exploring-sap-datasphere-1",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "복제 흐름·변환 흐름·작업 사슬·분석 모델을 차례로 다루는 무료 과정. 'Datasphere 구현' 요건을 처음 채울 곳."
+    },
+    {
+      "id": "bw-bridge-ko",
+      "title": "Modeling in SAP Datasphere, SAP BW bridge (한국어판)",
+      "by": "SAP Learning",
+      "kind": "course",
+      "url": "https://learning.sap.com/courses/modeling-in-sap-datasphere-sap-bw-bridge-ko",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "BW 객체를 Datasphere 안에서 만들고 적재·일정을 거는 과정. BW 경험을 Datasphere 전환 프로젝트로 잇는 데 가장 가깝다."
+    },
+    {
+      "id": "dsp-trial",
+      "title": "SAP Datasphere 무료 체험",
+      "by": "SAP",
+      "kind": "doc",
+      "url": "https://www.sap.com/korea/products/data-cloud/datasphere/trial.html",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "30일 기본 체험(공유 테넌트, 예제 데이터, 관리·연동 기능 제외). 실무 경력이 없을 때 뷰·분석 모델을 직접 만들어 볼 곳."
+    },
+    {
+      "id": "modernizing-bw",
+      "title": "Modernizing SAP Business Warehouse",
+      "by": "Banerjee",
+      "kind": "book",
+      "url": "https://www.oreilly.com/library/view/-/9798868821929/",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "BW·BW/4HANA에서 Datasphere·SAC로 옮기는 길을 다룬 책(Datasphere·SAC·SAC Planning 장). 전환 프로젝트의 큰 그림용."
+    },
+    {
+      "id": "cert-bw4h",
+      "title": "SAP Certified – Data Engineer – SAP BW/4HANA (C_BW4H)",
+      "by": "SAP · Credly 배지",
+      "kind": "doc",
+      "url": "https://www.credly.com/org/sap/badge/sap-certified-data-engineer-sap-bw-4hana",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "why": "BW/4HANA·Datasphere의 모델링·데이터 가져오기·질의 설계를 확인하는 공식 자격. 공부 범위를 점검하는 목록으로 쓴다."
+    },
+    {
+      "id": "easy-abap",
+      "title": "기본 이론에서 실무 예제까지, HANA 기반 Easy ABAP 3.0",
+      "by": "임재원 외 · 프리렉 · 2025",
+      "kind": "book",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012174400",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "why": "ABAP 기초부터 HANA 시대 문법까지 한국어 한 권. 변환 루틴을 읽고 고치는 'ABAP 스킬' 우대사항용."
+    },
+    {
+      "id": "abap-core",
+      "title": "Acquire Core ABAP Skills (학습 여정)",
+      "by": "SAP Learning",
+      "kind": "course",
+      "url": "https://learning.sap.com/learning-journeys/acquire-core-abap-skills",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "SAP가 무료로 여는 ABAP 기초 과정. 루틴 코드를 처음 볼 때 문법 빈칸을 채운다."
+    },
+    {
+      "id": "sac-trial",
+      "title": "SAP Analytics Cloud 무료 체험",
+      "by": "SAP",
+      "kind": "doc",
+      "url": "https://www.sap.com/products/data-cloud/cloud-analytics/trial-basic.html",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "예제 데이터로 스토리·차트를 바로 만들어 보는 30일 체험. 'SAC 경험' 우대사항의 첫걸음."
+    },
+    {
+      "id": "sac-plan-ko",
+      "title": "Performing Manual Planning with SAP Analytics Cloud (한국어판)",
+      "by": "SAP Learning",
+      "kind": "course",
+      "url": "https://learning.sap.com/courses/performing-manual-planning-with-sap-analytics-cloud-ko",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "계획 모델·버전 관리와 Datasphere seamless planning까지 다루는 과정. 'SAC Planning' 우대사항에 바로 맞는다."
+    },
+    {
+      "id": "sac-fpa",
+      "title": "SAP Analytics Cloud: Financial Planning and Analysis",
+      "by": "SAP PRESS",
+      "kind": "book",
+      "url": "https://sap-press.com/sap-analytics-cloud-financial-planning-and-analysis_5486",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "why": "예산·예측·자동 계획 로직(데이터 액션)·시뮬레이션을 단계별로. 고객 재무 계획을 SAC로 짓는 프로젝트 대비."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "차원 모델과 BW 객체 이름 잇기",
+      "time": "1~2주",
+      "goal": "사실·차원·한 줄 단위를 정하고, 그것이 BW의 InfoObject·aDSO·CompositeProvider 중 어디에 해당하는지 말할 수 있다.",
+      "task": "가상 판매 데이터(주문 1천 건, 지점 10곳, 상품 50개)로 사실 표 하나와 차원 표 둘을 설계하고, 같은 설계를 BW 객체 목록(무엇을 InfoObject로, 무엇을 aDSO로)으로 다시 적는다.",
+      "resources": ["kimball", "bw4-dw"]
+    },
+    {
+      "title": "BW/4HANA 흐름 하나 끝까지",
+      "time": "2~3주",
+      "goal": "DataSource → 변환 → DTP → aDSO → CompositeProvider → Query 흐름과 변경분 적재·활성화를 설명할 수 있다.",
+      "task": "SAP Learning 과정의 실습 흐름을 따라 그리고, 같은 주문을 고쳐 다시 싣을 때 활성 표·변경 기록이 어떻게 바뀌는지 위 파이썬 예시를 늘려 표로 남긴다.",
+      "resources": ["bw4-dw", "bw4-press", "cert-bw4h"]
+    },
+    {
+      "title": "Datasphere에 같은 모델 다시 짓기",
+      "time": "2~3주",
+      "goal": "Space에서 표를 올리고, 사실·차원 뷰와 분석 모델을 만들어 배포하고, 작업 사슬로 일정을 건다.",
+      "task": "Datasphere 체험판에 1단계 CSV를 올려 SQL 뷰로 사실·차원을 잇고 분석 모델을 만든 뒤, 2단계에서 낸 지역·월별 합계와 같은지 대조표를 쓴다.",
+      "resources": ["dsp-explore", "dsp-trial", "bw-bridge-ko"]
+    },
+    {
+      "title": "루틴 읽기와 SAC 화면",
+      "time": "1~2주",
+      "goal": "시작·끝 루틴이 무엇을 하는지 읽고, 모델을 SAC 스토리와 간단한 계획 버전으로 보여 줄 수 있다.",
+      "task": "'지점 코드로 지역을 찾아 채우는' 끝 루틴을 ABAP 의사코드와 SQL 두 가지로 적고, SAC 체험판에서 지역별 매출 차트와 '내년 계획 = 올해 × 1.2' 버전을 만든다.",
+      "resources": ["easy-abap", "abap-core", "sac-trial", "sac-plan-ko"]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원** — 경력직은 처우 제안 단계에서 정한다",
+    "rows": [
+      {
+        "label": "신입 초봉",
+        "value": "약 3,811만원",
+        "amount": 3811,
+        "basis": "공공데이터 집계",
+        "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일 표기와 직군 구분이 없다 [8]"
+      },
+      {
+        "label": "직원 평균 연봉",
+        "value": "약 5,748만원",
+        "amount": 5748,
+        "basis": "공공데이터 집계",
+        "note": "같은 집계, 사원수 945명 기준. 경력직이 섞인 회사 전체 값이다 [8]"
+      },
+      {
+        "label": "LG CNS 초봉",
+        "value": "약 5,071만원",
+        "amount": 5071,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "모회사, 같은 집계 사이트 값 [9]"
+      },
+      {
+        "label": "LG CNS 평균",
+        "value": "약 7,802만원",
+        "amount": 7802,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "모회사, 같은 집계 사이트 값 [9]"
+      }
+    ],
+    "how": "공고에 연봉은 없고, 전형에 **처우 제안** 단계가 따로 있다 [1]. 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 평균은 경력직이 섞인 회사 전체 값이라 이 자리 연봉으로 읽으면 안 된다 {추론}. 경력직은 정규직 또는 기간제로 제안될 수 있어 고용 형태도 같이 확인한다 [1]."
+  },
+  "benefits": {
+    "items": [
+      {"name": "가족", "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"},
+      {"name": "건강", "detail": "종합건강검진·단체보험, 전문 심리 상담"},
+      {"name": "금융", "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"},
+      {"name": "배움", "detail": "자격증 지원, 사내·외 교육 지원, 다양한 교육 플랫폼, 스포츠 시설 제휴, 사내 동호회"},
+      {"name": "조직 문화", "detail": "공유오피스, 캐리커처 선물, 책임 승진·선임 호칭 변경 선물, 장기근속 포상, 간식 행사, LG TWINS 야구 관람 지원"}
+    ],
+    "note": "비즈테크아이 공식 사이트의 복리후생 페이지(2026-11-25 확인)다 [5]. 항목 이름만 있고 금액·조건은 적혀 있지 않다. SAP 자격증 응시료가 '자격증 지원'에 드는지, 기간제로 제안될 때도 같은지는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "비즈테크아이 본사 (상암 DDMC)",
+    "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+    "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [6]",
+    "note": "회사 사이트 하단 회사 정보와 '오시는 길'의 주소다 [2][6]. 공고 근무지는 '서울'로만 적혀 있고 [1], 구축·운영은 고객사 현장일 수 있다 {추론}."
+  },
+  "fit": {
+    "good": [
+      "BW에서 흐름 하나를 만들고 운영해 본 1~3년 차 — 문턱이 '관련 업무 1년 이상'이다[1]",
+      "온프레미스 BW 경험을 클라우드(Datasphere)로 넓히고 싶은 사람 — 이 파트가 전환 프로젝트를 한다[1]",
+      "SQL 모델링과 SAP 업무 데이터(전표·주문)를 같이 보는 일이 맞는 사람[2]",
+      "SAP 밖의 데이터 엔지니어링(수집·레이크·웨어하우스)으로도 넓혀 보고 싶은 사람 — 회사가 Data Engineering 사업을 따로 한다[3]"
+    ],
+    "hard": [
+      "필수 역량에 Datasphere 구현이 들어 있어 BW만 해 본 사람은 따로 준비해야 한다[1]",
+      "고용 형태가 정규직 또는 기간제로 제안될 수 있다[1]",
+      "SAP 전용 도구·용어라 다른 데이터 엔지니어링 일로 옮길 때 경력이 덜 쳐질 수 있다{추론}",
+      "결산·마감 시기에 적재 장애와 숫자 문의가 몰린다{추론}"
+    ]
+  },
+  "interview": [
+    {"q": "표준형 aDSO에서 '활성화'는 무엇을 하고, 변경 기록은 왜 필요한가요?", "a": "BW/4HANA 모델링 요건의 기본 — 고쳐진 줄이 다시 와도 아래 단계 합계가 맞는 이유.[10]"},
+    {"q": "aDSO 위에 바로 Query를 두지 않고 CompositeProvider를 끼우는 이유는?", "a": "SAP 권장 구조와 모델 변경에 대한 유연성.[11]"},
+    {"q": "변환에 ABAP 루틴과 AMDP 루틴이 섞이면 어떻게 되나요? 언제 AMDP로 쓰나요?", "a": "ABAP 우대사항과 HANA 밀어내기 — 첫 루틴 방식이 변환 전체 실행 방식을 정한다.[14]"},
+    {"q": "BW 프로세스 체인 하나를 Datasphere로 옮기면 무엇으로 바뀌나요?", "a": "Datasphere 구현 요건 — 복제·변환 흐름과 작업 사슬, 변경분 흐름의 사슬 제약.[16][17][18]"},
+    {"q": "BW bridge로 옮기는 것과 Datasphere 기본 객체로 새로 짓는 것, 각각 언제 고르겠어요?", "a": "이 파트의 Datasphere 전환 프로젝트 — 전환 경로의 선택.[1][19]"},
+    {"q": "SAC 계획에서 비공개 버전과 공개 버전은 어떻게 다르고, 게시하면 무슨 일이 일어나나요?", "a": "SAC Planning 우대사항.[23]"}
+  ],
+  "sources": [
+    {"n": 1, "title": "LG Careers · [비즈테크아이] SAP BW 담당자 모집(경력)", "url": "https://careers.lg.com/apply/detail?id=1002339", "kind": "posting", "date": "2026-10-23", "note": "DE3파트 소개·업무·요건·우대, 전형(LG WAY Fit Test → 면접 → 처우 제안 → 채용검진), 경력 고용 형태(정규직 또는 기간제), 마감 2026-12-31"},
+    {"n": 2, "title": "비즈테크아이 · ERP — SAP BW/SAC", "url": "https://www.biztechi.com/business/erp/08", "kind": "company", "note": "SAP BW(데이터 통합·변환·관리, HANA 통합, 하이브리드 배포)와 SAC(BI·계획·예측 단일 플랫폼) 소개, 하단 회사 주소"},
+    {"n": 3, "title": "비즈테크아이 · DX/AX — Data Engineering", "url": "https://www.biztechi.com/business/dx-ax/02", "kind": "company", "note": "수집·통합, 레이크/웨어하우스, 메타데이터, AI/ML 통합, 모니터링"},
+    {"n": 4, "title": "비즈테크아이 · 직무소개", "url": "https://www.biztechi.com/recruit/03", "kind": "company", "note": "Data Architecture·Enterprise Solution 직무 설명"},
+    {"n": 5, "title": "비즈테크아이 · 복리후생", "url": "https://www.biztechi.com/culture/03", "kind": "company", "date": "2026-11-25 확인"},
+    {"n": 6, "title": "비즈테크아이 · 오시는 길", "url": "https://www.biztechi.com/about/05", "kind": "company"},
+    {"n": 7, "title": "비즈테크아이 · 채용 프로세스", "url": "https://www.biztechi.com/recruit/02", "kind": "company"},
+    {"n": 8, "title": "자소설닷컴 · 비즈테크아이 기업정보", "url": "https://jasoseol.com/companies/14512", "kind": "reference", "note": "초봉 3,811만·평균 5,748만, 사원수 945명 — 공공데이터 집계"},
+    {"n": 9, "title": "자소설닷컴 · LG CNS 기업정보", "url": "https://jasoseol.com/companies/57", "kind": "reference", "note": "초봉 5,071만·평균 7,802만 — 같은 집계"},
+    {"n": 10, "title": "SAP Learning · Working with the DataStore Object (advanced)", "url": "https://learning.sap.com/courses/upgrading-your-sap-bw-skills-to-sap-bw-4hana/working-with-the-datastore-object-advanced-_b1fbbc9a-e6ad-44bf-bfce-d5b2defa3ccb", "kind": "reference", "note": "거래 데이터의 중심 객체, InfoCube·DSO 기능 통합, 네 종류"},
+    {"n": 11, "title": "SAP Learning · Working with CompositeProviders", "url": "https://learning.sap.com/courses/upgrading-your-sap-bw-skills-to-sap-bw-4hana/working-with-compositeproviders_ce27d3fa-a3bb-4c25-9f1f-743088d7627c", "kind": "reference", "note": "MultiProvider·InfoSet 대체, aDSO 위에 CompositeProvider, 그 위에 Query"},
+    {"n": 12, "title": "SAP Learning · Working with the Open ODS View", "url": "https://learning.sap.com/courses/upgrading-your-sap-bw-skills-to-sap-bw-4hana/working-with-the-open-ods-view_a46b5d49-d3cc-4c67-9daf-5ac8d57aedc0", "kind": "reference", "note": "필드 기반 모델링, VirtualProvider 대체"},
+    {"n": 13, "title": "SAP Learning · Using Start Routine, End Routine and Expert Routine", "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana/using-start-routine-end-routine-and-expert-routine_b1998c3c-296e-4ac6-9276-0ea1046bad7e", "kind": "reference"},
+    {"n": 14, "title": "SAP Blog · SAP BW/4HANA Transformation — HANA pushdown", "url": "https://blogs.sap.com/2017/05/04/sap-bw4hana-transformation-hana-pushdown/", "kind": "reference", "date": "2017-05-04", "note": "ABAP 루틴은 앱 서버, AMDP 루틴은 HANA에서 실행"},
+    {"n": 15, "title": "SAP Learning · Working with Analytic Models (Exploring SAP Datasphere)", "url": "https://learning.sap.com/courses/exploring-sap-datasphere-1/working-with-analytic-models_c7cf24f2-5b59-4fe4-b992-08dc0376f294", "kind": "reference", "note": "분석 데이터셋을 대체, 새 기능은 분석 모델에"},
+    {"n": 16, "title": "SAP Learning · Working with Replication Flows", "url": "https://learning.sap.com/courses/exploring-sap-datasphere-1/working-with-replication-flows_f38ca7cf-56b7-43a0-a8ae-62da2e0613b2", "kind": "reference", "note": "복잡한 변환 불가 → 변환 흐름과 짝, 변경분 흐름은 작업 사슬 불가"},
+    {"n": 17, "title": "SAP Learning · Working with Transformation Flows", "url": "https://learning.sap.com/courses/exploring-sap-datasphere-1/working-with-transformation-flows_fa35d108-2f2f-4fcb-b29f-30109e22bd30", "kind": "reference", "note": "ELT, 목적은 같은 공간의 로컬 표, 실패 시 수동 재실행"},
+    {"n": 18, "title": "SAP Learning · Working with Task Chains", "url": "https://learning.sap.com/courses/exploring-sap-datasphere-1/working-with-task-chains_b85a1733-0c86-4e9c-a678-abd105da27d4", "kind": "reference"},
+    {"n": 19, "title": "SAP Learning · Paths to SAP Datasphere, BW Bridge", "url": "https://learning.sap.com/courses/sap-bw-4hana/migrating-sap-netweaver-bw-or-sap-bw-4hana-models-to-sap-bw-bridge_a0cc3870-8915-4f09-865d-c173840c7963", "kind": "reference", "note": "Shell·원격 전환 경로"},
+    {"n": 20, "title": "SAP Community · Introduction to SAP BW Bridge", "url": "https://pages.community.sap.com/topics/datasphere/bw-bridge", "kind": "reference", "note": "BW Modeling Tools·ABAP 개발 도구로 객체 구현, BW bridge Cockpit으로 관리"},
+    {"n": 21, "title": "SAP Blog · SAP BW/4HANA to extend maintenance in alignment with SAP Business Suite and SAP S/4HANA", "url": "https://blogs.sap.com/2020/04/08/sap-bw-4hana-to-extend-maintenance-in-alignment-with-sap-business-suite-and-sap-s-4hana/", "kind": "reference", "date": "2020-04-08", "note": "BW/4HANA 최소 2040년, BW 7.5 2027년(연장 2030년)"},
+    {"n": 22, "title": "SAP News · Modernize SAP Business Warehouse with SAP Datasphere and Its Open Data Ecosystem", "url": "https://news.sap.com/2024/01/modernize-sap-bw-with-sap-datasphere-open-data-ecosystem/", "kind": "reference", "date": "2024-01"},
+    {"n": 23, "title": "SAP Help · Create, Publish, and Manage Versions of Planning Data (SAC)", "url": "https://help.sap.com/doc/00f68c2e08b941f081002fd3691d86a7/2023.9/en-us/9d9056a13b764ad3aca8fef2630fcc00.html", "kind": "reference", "note": "공개·비공개 버전, 게시"},
+    {"n": 24, "title": "SAP Help · Get Started with Data Actions for Planning (SAC)", "url": "https://help.sap.com/doc/00f68c2e08b941f081002fd3691d86a7/2023.9/en-US/2850221adef14958a4554ad2860ff412.html", "kind": "reference"},
+    {"n": 25, "title": "SAP Learning · Using Seamless Planning With SAP Datasphere (한국어판 과정)", "url": "https://learning.sap.com/courses/performing-manual-planning-with-sap-analytics-cloud-ko/using-seamless-planning-with-sap-datasphere", "kind": "reference", "note": "계획 모델의 사실·마스터 데이터를 Datasphere 공간에 저장"},
+    {"n": 26, "title": "Credly · SAP Certified – Data Engineer – SAP BW/4HANA", "url": "https://www.credly.com/org/sap/badge/sap-certified-data-engineer-sap-bw-4hana", "kind": "reference", "note": "C_BW4H — BW/4HANA·Datasphere 모델링·데이터 가져오기·질의 설계"},
+    {"n": 27, "title": "SAP · SAP Datasphere 무료 체험", "url": "https://www.sap.com/korea/products/data-cloud/datasphere/trial.html", "kind": "reference", "note": "30일 기본 체험, 기능 일부"}
+  ],
+  "caveat": "DE3파트가 맡은 고객사·전환 범위(BW bridge인지 새로 짓는지)는 공개 자료가 없어, 공고 문장과 회사 BW/SAC 사업 페이지, SAP 공식 교육 자료로 '보통 이런 일'을 보였습니다. 회사의 BW·Datasphere 발표 영상은 찾지 못했습니다. 연봉은 공시 숫자가 없는 비상장사라 집계 값뿐입니다."
+}
