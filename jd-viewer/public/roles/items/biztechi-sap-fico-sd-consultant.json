@@ -1,0 +1,1022 @@
+{
+ "id": "biztechi-sap-fico-sd-consultant",
+ "company": "비즈테크아이",
+ "role": "SAP 모듈(CO·FI·SD) 컨설턴트",
+ "team": "차세대 ERP팀",
+ "jobs": [
+  "ats-lg:group:1001414"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "고객사(LG 계열·국내외 기업)의 **SAP ERP 회계(FI)·원가(CO)·영업(SD)** 을 맡아, 본사에서 만든 표준 설정을 해외·자회사에 들여오는 **Roll-in** 과 차세대 ERP 구축, 그 뒤 운영·고도화까지 합니다.[1][9]",
+  "env": "LG CNS 자회사로 **SAP S/4HANA**(클라우드 Public·Private Edition 포함)를 구축·전환·운영하는 고객 프로젝트(SI·SM)입니다.[5][6][7][10] 해외 출장이 자격요건에 있습니다.[1]",
+  "oneline": "코드를 짜는 개발자라기보다 **업무를 SAP 설정으로 옮기는 사람**입니다. 그래도 ABAP 을 읽을 줄 알아야 하고, 개발자에게 줄 사양서를 직접 씁니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "SAP Roll-in 프로젝트 수행",
+   "short": "본사가 만든 SAP 표준 설정(글로벌 템플릿)을 다른 법인·자회사 시스템에 들여와 맞추는 프로젝트다.",
+   "why": "공고의 팀은 '차세대ERP 구축 프로젝트'를 하고, 구축 뒤에는 운영·고도화로 그룹의 사업을 돕는다고 소개합니다.[1] 회사가 공개한 고객 후기에도 S/4HANA 신규 프로젝트에서 **글로벌 프로젝트팀과 맞춰 가며** 일한 사례와, 글로벌 통합 시스템을 구축하며 코스트센터(비용을 모으는 단위) 설정 시나리오를 여러 개 제시한 사례가 있습니다.[9] 회사의 클라우드 ERP 상품도 '해외 지사를 운영 중인 기업'을 대상으로 꼽습니다.[5]",
+   "actually": {
+    "intro": "SAP 의 글로벌 배포는 본사에서 업무 시나리오·설계 문서·설정을 템플릿으로 정의하고, 이를 법인마다 들여오는 방식입니다.[11] 'Roll-out'은 템플릿을 밖으로 펼치는 것, 'Roll-in'은 법인 쪽 요구를 템플릿 안으로 받아들이는 것을 가리키는 경우가 많지만, 회사마다 쓰는 뜻이 조금씩 다릅니다.[12] {추론}",
+    "items": [
+     "**차이 찾기(Fit-Gap)** — 템플릿의 업무 흐름을 법인 담당자와 하나씩 짚어 보며, 그대로 쓸 것과 법인만 다른 것(세법·통화·서식)을 가른다. SAP Activate 방법론의 'fit-to-standard' 워크숍이 이 단계다.[15]",
+     "**법인 설정** — 회사코드·통화·회계연도·세금 코드·코스트센터 계층·영업 조직처럼 법인마다 다른 칸을 IMG 에서 채운다.[13]",
+     "**받아들일 차이 고르기** — 법인 요구를 템플릿에 넣을지는 법·규제 근거나 고객 업무 영향이 클 때만 받는 식으로 엄격히 정한다.[12]",
+     "**데이터 옮기기** — 거래처·자재·계정 잔액 같은 기준 정보를 옛 시스템에서 옮기고 맞춰 본다.[7]",
+     "**테스트와 오픈** — 통합 테스트·사용자 인수 테스트 뒤 전환(cutover), 오픈 직후 집중 지원(hypercare).[15]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "SAP Activate 단계로 본 Roll-in 프로젝트[15]",
+     "steps": [
+      "Prepare · 계획·환경 준비",
+      "Explore · fit-to-standard 워크숍, 차이 목록",
+      "Realize · IMG 설정·개발·테스트",
+      "Deploy · 전환·오픈·집중 지원",
+      "Run · 운영(SM)"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "무엇을 템플릿에 넣을지는 본사(글로벌 프로세스 담당)와 PM 이 정합니다. 모듈 컨설턴트는 **자기 모듈(CO·FI·SD)의 차이를 찾아 설정·사양서로 옮기고 테스트로 증명**하는 몫입니다.[11][12] {추론}",
+   "refs": [
+    1,
+    5,
+    7,
+    9,
+    11,
+    12,
+    13,
+    15
+   ],
+   "study": [
+    "sap-activate",
+    "leverx-template",
+    "sap-intro-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객사 비즈니스 분석 및 설계",
+   "short": "고객 회사가 어떻게 팔고, 원가를 계산하고, 결산하는지 듣고 SAP 표준 흐름 위에 설계하는 일.",
+   "why": "회사는 ERP 를 고객의 업무를 바꾸는 PI(프로세스 혁신) 컨설팅과 함께 팔고, 분석부터 설계·실행·사후 관리까지 전 과정을 한다고 적었습니다.[8] 공고 소개도 '단순한 시스템 교체를 넘어 비즈니스 프로세스를 최적화'한다고 씁니다.[1]",
+   "actually": {
+    "items": [
+     "**현행(As-Is) 듣기** — 주문 → 출고 → 청구 → 수금(SD), 전표 → 마감 → 재무제표(FI), 원가 집계 → 배부 → 수익성 분석(CO)이 지금 어떻게 돌고 어디서 손이 가는지 정리한다.[8]",
+     "**목표(To-Be) 그리기** — SAP 표준 흐름(Best Practice)을 기본으로 놓고, 맞지 않는 곳만 추가 개발로 남긴다. 회사는 업무 흐름도·절차서·Configuration Guide 를 Best Practice 로 갖고 있다고 밝혔다.[6]",
+     "**조직 구조 정하기** — 회사코드(FI)·관리회계 영역과 코스트센터 계층(CO)·영업 조직·유통 경로(SD)를 어떻게 나눌지. 한 번 정하면 바꾸기 어려운 뼈대다.[18][19]",
+     "**FI·CO 가 만나는 자리** — S/4HANA 는 FI 전표와 CO 전표를 하나의 '유니버설 저널'로 합쳐 둘을 맞춰 보는 일이 사라졌다. 설계 때 이 한 장부를 전제로 계정·원가요소를 짠다.[16]"
+    ]
+   },
+   "how_far": "업무 규칙(원가 배부 기준·가격 정책·결산 일정)은 고객 현업이 정합니다. 컨설턴트는 **SAP 로 되는 것과 안 되는 것을 짚고, 되는 방식 쪽으로 설득**하는 데까지입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    8,
+    16,
+    18,
+    19
+   ],
+   "study": [
+    "sap-fi-journey",
+    "sap-co-journey",
+    "sap-bible-fi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SAP 모듈 운영, 유지보수 및 기능 개발",
+   "short": "오픈 뒤 매일 들어오는 문의·오류를 풀고, 결산 때 막히는 곳을 고치고, 필요한 기능을 더한다.",
+   "why": "회사가 공개한 고객 후기에는 월 결산 기간에 **외화 평가 오류**가 나서 급히 데이터 이관과 테스트를 했고, BC(기술)·FI 담당자가 함께 풀어 결산을 마쳤다는 사례가 있습니다.[9] 같은 회사의 SAP 운영 공고도 FI·CO·SD 등 모듈 운영과 유지보수·개발을 첫 업무로 둡니다.[2]",
+   "actually": {
+    "items": [
+     "**문의·오류 처리** — '전표가 안 올라가요', '가격이 다르게 나와요' 같은 요청을 받아 설정·데이터·프로그램 중 어디가 원인인지 가른다.[9] {추론}",
+     "**결산 지원** — 월말 외화 평가·감가상각·원가 배부·수익성 분석 실행이 순서대로 끝나게 돕는다.[9][18]",
+     "**서비스 수준 지키기** — 운영은 정해진 응답·처리 시간(SLA)으로 계약된다. 같은 회사 물류 모듈 공고는 SM 운영 절차와 SLA 경험을 요구한다.[3] 회사는 자체 운영 관리 도구(BIZcare)를 쓴다고 밝혔다.[6]",
+     "**기능 개발** — 표준으로 안 되는 보고서·인터페이스·화면은 사양서를 써서 ABAP 개발자에게 넘기고, 결과를 테스트한다.[20]"
+    ]
+   },
+   "how_far": "모듈 담당자가 바뀌어도 품질이 유지되도록 책임급이 백업하는 구조를 고객이 장점으로 꼽았습니다.[9] 이 자리는 경력 5~8년 이상이라 **자기 모듈의 장애를 혼자 끝까지 추적**할 수 있어야 합니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    9,
+    18,
+    20
+   ],
+   "study": [
+    "sap-co-journey",
+    "sap-bible-fi",
+    "wikidocs-sap"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SAP IMG 설정 및 시스템 고도화 작업 수행",
+   "short": "코드 대신 SAP 설정 화면(IMG)에서 회사 규칙을 넣고, 더 나은 방식으로 바꿔 가는 일.",
+   "why": "IMG(Implementation Guide, 구현 가이드)는 SAP 이 나라·모듈별로 가능한 모든 설정을 계층으로 모아 둔 곳이고, 트랜잭션 SPRO 로 엽니다.[13] 같은 회사 운영 공고는 이를 'SAP Standard configuration(IMG) 설정'이라고 적었습니다.[2]",
+   "actually": {
+    "intro": "모듈별로 IMG 에서 채우는 대표 설정입니다.",
+    "items": [
+     "**FI** — 회사코드·계정과목표·회계연도 변형·전기 기간·세금 코드·자동 지급.[19]",
+     "**CO** — 관리회계 영역·코스트센터 표준 계층·내부 오더 유형·원가 배부(assessment) 주기·제품 원가 계산 변형·수익성 분석.[18]",
+     "**SD** — 판매 문서 유형·가격 결정(가격 절차 → 조건 유형 → 접근 순서 → 조건 표)·출고·청구 유형, 청구가 회계 계정으로 이어지는 계정 결정.[17]",
+     "**옮기기** — 설정은 개발 시스템에서 바꾸고 이송 요청(transport request)에 담아 테스트·운영 시스템으로 보낸다.[14]",
+     "**고도화** — ECC → S/4HANA 전환, 클라우드 Edition 으로의 이동처럼 버전이 바뀔 때 설정을 다시 맞춘다. 회사는 S/4HANA 1809 전환 경험을 내세운다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "SD 가격 결정의 '접근 순서' — 앞 표에서 찾으면 멈춘다 (가상 값, 직접 돌린 출력)",
+     "body": "접근 순서는 조건 표를 어떤 순서로 찾을지 정한 규칙입니다. 고객별 특가 → 가격 목록 → 자재 기본가 순서로 두면, 앞에서 찾은 값이 이깁니다.[17] IMG 에서 이 순서를 바꾸면 같은 주문의 가격이 달라집니다.",
+     "lang": "python",
+     "code": "from decimal import Decimal as D\nrecords = {\n    (\"cust+mat\", (\"C100\", \"M-01\")): D(\"9000\"),\n    (\"pricelist+mat\", (\"P2\", \"M-01\")): D(\"9500\"),\n    (\"mat\", (\"M-01\",)): D(\"10000\"),\n}\naccess_seq = [\n    (\"cust+mat\", lambda o: (o[\"cust\"], o[\"mat\"])),\n    (\"pricelist+mat\", lambda o: (o[\"plist\"], o[\"mat\"])),\n    (\"mat\", lambda o: (o[\"mat\"],)),\n]\ndef price(order):\n    for table, key in access_seq:\n        hit = records.get((table, key(order)))\n        if hit is not None:\n            return table, hit\n    return None, None\n\nprint(price({\"cust\": \"C100\", \"plist\": \"P2\", \"mat\": \"M-01\"}))  # ('cust+mat', Decimal('9000'))\nprint(price({\"cust\": \"C200\", \"plist\": \"P2\", \"mat\": \"M-01\"}))  # ('pricelist+mat', Decimal('9500'))\nprint(price({\"cust\": \"C300\", \"plist\": \"P9\", \"mat\": \"M-01\"}))  # ('mat', Decimal('10000'))"
+    },
+    {
+     "title": "CO 원가 배부 — 공통비를 인원 비율로 나눈다 (가상 값, 직접 돌린 출력)",
+     "body": "IT 공통비 1,200만원을 영업 30명·생산 50명·관리 20명 비율로 나누면 360만·600만·240만원입니다. 배부 주기(assessment cycle)는 이 '보내는 곳·받는 곳·기준'을 IMG 와 마스터 데이터로 정해 두고 월말마다 돌립니다.[18] 끝에서 합계가 원래 금액과 같은지 꼭 본다.",
+     "lang": "python",
+     "code": "from decimal import Decimal as D\nit_cost = D(\"12000000\")\nheads = {\"CC-SALES\": 30, \"CC-PROD\": 50, \"CC-ADMIN\": 20}\ntotal = sum(heads.values())\nalloc = {cc: (it_cost * n / total).quantize(D(\"1\")) for cc, n in heads.items()}\nprint(alloc, sum(alloc.values()) == it_cost)\n# {'CC-SALES': Decimal('3600000'), 'CC-PROD': Decimal('6000000'), 'CC-ADMIN': Decimal('2400000')} True"
+    }
+   ],
+   "how_far": "설정값의 뜻을 알고 **바꾸면 어디에 영향이 가는지**(다른 모듈·지난 데이터)까지 말할 수 있어야 합니다. 설정을 이송으로 옮기는 절차를 지키는 것도 최소선입니다.[14] {추론}",
+   "refs": [
+    2,
+    7,
+    13,
+    14,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "sap-pricing",
+    "sap-co-journey",
+    "sap-fi-journey",
+    "sap-customizing"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "학력: 4년제 정규대학 학사학위 이상 보유자",
+   "short": "회사 공고에 공통으로 붙는 서류 조건이다.",
+   "why": "같은 회사의 SAP 운영·물류·ABAP 공고에도 같은 학력 줄이 붙어 있습니다.[2][3][4] 경력 전형은 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의 순서입니다.[32]",
+   "how_far": "서류 단계에서 거르는 조건이고, 실제 평가는 아래 경력·ABAP·사양서 줄입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    4,
+    32
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력 : SAP 운영 경험 CO(5년 이상), FI/SD(8년 이상)",
+   "short": "CO 는 5년, FI·SD 는 8년 넘게 실제 SAP 를 운영해 본 사람 — 모듈마다 문턱이 다르다.",
+   "why": "같은 회사의 일반 운영 담당자 공고는 '모듈 운영 3년 이상'입니다.[2] 이 자리는 그보다 높아, 구축(Roll-in·차세대)에서 **혼자 모듈을 맡는 컨설턴트급**을 찾는다는 뜻으로 읽힙니다.[1][2] {추론}",
+   "actually": {
+    "items": [
+     "**FI(재무회계)** — 총계정원장·채권(AR)·채무(AP)·고정자산·결산. 외부에 보고하는 숫자.[19]",
+     "**CO(관리회계)** — 코스트센터·내부 오더·제품 원가·수익성 분석. 회사 안에서 '어디서 돈을 쓰고 버나'를 보는 숫자.[18]",
+     "**SD(영업·유통)** — 견적 → 주문 → 출고 → 청구. 청구가 끝나면 FI 의 외상매출 전표로 이어진다.[17]",
+     "**'운영 경험'** — 오픈 뒤 결산을 여러 번 돌려 본 경험. 구축만 해 본 것과 달리 월말에 무엇이 터지는지 안다.[9] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "SD 청구 → FI 전표: 차변 = 대변이어야 저장된다 (가상 값, 직접 돌린 출력)",
+     "body": "공급가 10,000원 + 부가세 1,000원 청구는 외상매출금(차변) 11,000 / 제품매출(대변) 10,000 · 부가세예수금(대변) 1,000 전표가 됩니다. 어느 계정으로 가는지는 SD 의 계정 결정 설정이 정합니다.[17][19]",
+     "lang": "python",
+     "code": "from decimal import Decimal as D\ndoc = [(\"110000 외상매출금\", \"D\", D(\"11000\")),\n       (\"400000 제품매출\", \"C\", D(\"10000\")),\n       (\"255000 부가세예수금\", \"C\", D(\"1000\"))]\ndr = sum(a for _, s, a in doc if s == \"D\")\ncr = sum(a for _, s, a in doc if s == \"C\")\nprint(dr, cr, \"balanced\" if dr == cr else \"error\")  # 11000 11000 balanced"
+    }
+   ],
+   "how_far": "세 모듈을 다 하라는 게 아니라 **한 모듈을 깊게**, 붙어 있는 모듈과 주고받는 자리(SD→FI 청구, FI↔CO 원가요소)를 아는 수준입니다.[16][17] {추론}",
+   "refs": [
+    1,
+    2,
+    9,
+    16,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "sap-fi-journey",
+    "sap-co-journey",
+    "sap-pricing",
+    "sap-bible-fi"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "ABAP 분석 가능하신 분",
+   "short": "SAP 의 개발 언어(ABAP)로 된 추가 프로그램을 읽고, 오류가 어디서 나는지 짚을 수 있어야 한다.",
+   "why": "고객사 SAP 에는 표준 위에 덧붙인 프로그램이 많고, 장애 원인이 설정이 아니라 그 코드에 있는 일이 잦습니다.{추론} S/4HANA 로 전환할 때도 고객 코드를 SAP 의 바뀐 목록(Simplification Database)과 대조해 고쳐야 하고[24], 회사도 전환 단계에서 ABAP 개발 중지·코드 점검을 따로 챙깁니다.[7]",
+   "actually": {
+    "items": [
+     "**디버깅 따라가기** — 오류 메시지가 뜬 프로그램을 디버거로 한 줄씩 따라가 어떤 값이 틀렸는지 본다. {추론}",
+     "**확장 위치 찾기** — 표준 흐름 중간에 고객 로직을 끼운 자리(user exit·BAdI·Enhancement)를 찾아 읽는다.[20]",
+     "**SQL 읽기** — ABAP 안의 SELECT 가 어떤 표를 읽는지 알면 데이터 문제인지 로직 문제인지 가를 수 있다. CDS 뷰도 같은 SQL 문법이다.[21][22]",
+     "**전환 점검 결과 읽기** — ABAP Test Cockpit 이 내놓는 'S/4HANA 에서 바뀐 것' 목록을 보고 고칠 범위를 잡는다.[24]",
+     "**화면 따라 해 보기** — 국내 무료 실습 자료에도 FI 전표·CO 원가요소와 ABAP 실습이 함께 묶여 있다 — 컨설턴트가 둘을 같이 본다는 뜻이다.[27]"
+    ]
+   },
+   "level": {
+    "basic": "프로그램 구조(이벤트·서브루틴·함수 모듈)를 읽고 디버거로 값 확인",
+    "work": "SELECT·내부 테이블 처리 읽기, 확장 위치(BAdI·user exit) 찾기, 오류 원인 특정",
+    "team": "S/4HANA 전환 때 고객 코드 점검 결과를 읽고 고칠 범위를 개발자와 나누기[7][24]"
+   },
+   "how_far": "'분석'이라 직접 고쳐 쓰는 건 우대사항(중급 이상 개발)입니다.[1] 최소선은 **개발자에게 '이 줄에서 이 값 때문에'라고 짚어 줄 수 있는 수준**입니다. {추론}",
+   "refs": [
+    1,
+    7,
+    20,
+    21,
+    22,
+    24,
+    27
+   ],
+   "study": [
+    "abap-cheat",
+    "abap-keyword",
+    "wikidocs-sap"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "프로세스 설계 및 개발 사양서 작성 능력 보유하신 분",
+   "short": "업무 흐름도를 그리고, 표준으로 안 되는 부분은 개발자가 그대로 만들 수 있게 기능 사양서로 쓴다.",
+   "why": "SAP 프로젝트에서 표준으로 안 되는 요구는 보고서·인터페이스·데이터 이관·확장·출력 양식·워크플로(묶어서 RICEFW)로 만들고, 그 요구를 적는 기능 사양서는 모듈 컨설턴트가 씁니다. 개발자는 이를 받아 기술 사양서를 씁니다.[20] 같은 회사 공고 셋이 모두 이 줄을 요구합니다.[2][3]",
+   "actually": {
+    "items": [
+     "**흐름도** — 회사가 Best Practice 로 갖고 있다는 '업무 프로세스 흐름도·절차서'처럼 누가 어느 화면에서 무엇을 하는지 순서로 그린다.[6]",
+     "**기능 사양서 한 장** — 목적, 입력(화면·파일), 처리 규칙(계산·조건), 출력, 오류 처리, 권한, 테스트 시나리오.[20] {추론}",
+     "**RICEFW 로 분류** — 이 요구가 보고서인지, 외부 연동인지, 확장인지 먼저 갈라 놓으면 개발 공수·담당이 정해진다.[20]",
+     "**테스트 시나리오** — 사양서의 규칙마다 '이 입력이면 이 결과' 사례를 적어 두면 개발 결과를 바로 검수할 수 있다. {추론}"
+    ]
+   },
+   "how_far": "개발자가 **되묻지 않고 만들 수 있을 만큼** 구체적이면 됩니다(필드·조건·예외까지). 코드는 쓰지 않아도 되지만 어떤 표·필드인지는 적어야 합니다. {추론}",
+   "refs": [
+    2,
+    3,
+    6,
+    20
+   ],
+   "study": [
+    "sap-ricefw",
+    "sap-activate"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "해외 출장 가능하신 분",
+   "short": "Roll-in·글로벌 구축은 해외 법인 현장에서 워크숍·테스트·오픈 지원을 하기 때문이다.",
+   "why": "업무 첫 줄이 Roll-in 이고, 고객 후기에도 글로벌 프로젝트팀과 일한 사례가 있습니다.[1][9] 같은 회사의 운영 공고는 '국내 지방 및 해외 출장'으로 적었습니다.[2]",
+   "how_far": "기간·나라는 프로젝트마다 다릅니다. 영어 워크숍이 있을 수 있으니 면접에서 대상 법인과 기간을 묻는 게 좋습니다. {추론}",
+   "refs": [
+    1,
+    2,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ABAP 중급 이상 개발 역량을 보유하신 분",
+   "short": "읽기를 넘어 작은 보고서·확장은 직접 고칠 수 있으면, 개발자를 기다리지 않고 운영 문제를 끝낸다.",
+   "why": "같은 회사의 운영 담당자 공고는 이 줄을 아예 자격요건(ABAP 개발 중급 이상)으로 둡니다.[2] 컨설턴트가 직접 고칠 수 있으면 운영의 처리 시간이 짧아집니다. {추론}",
+   "level": {
+    "basic": "ALV 보고서·SELECT·내부 테이블",
+    "work": "BAdI 구현, 함수 모듈·BAPI 호출, 성능을 생각한 SELECT",
+    "team": "S/4HANA 에서는 CDS 뷰·OData 로 데이터를 내보내는 방식까지 — 같은 회사 ABAP 개발자 공고의 요건[4][21]"
+   },
+   "refs": [
+    2,
+    4,
+    21
+   ],
+   "study": [
+    "abap-cheat",
+    "abap-keyword"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SI Project 경험이 있으신 분",
+   "short": "새로 짓는 구축(SI) 일정 — 설계·개발·테스트·오픈 — 을 한 바퀴 돌아 본 사람이면 바로 투입된다.",
+   "why": "팀이 지금 하는 일이 '차세대ERP 구축 프로젝트'이고[1], 회사는 기존 시스템을 올리는 Brown Field 와 새로 설치하는 Green Field 전환 방식을 모두 한다고 밝혔습니다.[7]",
+   "actually": {
+    "items": [
+     "**Brown Field** — 기존 ECC 를 S/4HANA 로 올린다. 코드·데이터를 살리고 바뀐 부분만 고친다.[7]",
+     "**Green Field** — S/4HANA 를 새로 깔고 데이터를 옮긴다(Migration Cockpit). 업무를 새로 설계할 수 있다.[7]",
+     "**운영(SM)과 다른 점** — 일정이 계약으로 정해지고, 단계마다 산출물(설계서·테스트 결과)을 고객이 검수한다.[15] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    15
+   ],
+   "study": [
+    "sap-activate",
+    "sap-conversion"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "S/4HANA 운영 및 Project 경험이 있으신 분",
+   "short": "옛 SAP(ECC)와 장부 구조·화면이 달라서, S/4HANA 를 직접 써 본 사람이 빠르다.",
+   "why": "회사의 ERP 상품은 모두 S/4HANA 기반입니다 — 중견·해외 지사용 Public Edition 상품(EXprism4GROW)과 Private Edition 상품(EXprism).[5][6] 고객 후기도 S/4HANA 신규 프로젝트를 말합니다.[9]",
+   "actually": {
+    "items": [
+     "**한 장부(유니버설 저널)** — FI·CO 전표가 하나로 합쳐져 둘을 맞춰 보는 대사 작업이 사라졌다. 2차 원가요소도 계정과목으로 들어간다.[16]",
+     "**Fiori 화면** — 업무 화면이 웹 앱(Fiori)으로 바뀌어, 어떤 표준 앱이 있는지 찾는 일이 생겼다.[25]",
+     "**클라우드 Edition** — Public Edition 은 1년 2회 자동 업그레이드라 고칠 수 있는 범위가 좁고, Private Edition 은 넓다.[5][6]",
+     "**전환 점검** — ECC 에서 올 때 Readiness Check·Simplification Item 목록으로 바뀐 기능을 미리 본다.[7][24]"
+    ]
+   },
+   "refs": [
+    5,
+    6,
+    7,
+    9,
+    16,
+    24,
+    25
+   ],
+   "study": [
+    "sap-conversion",
+    "sap-fi-journey",
+    "fiori-library"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외부 시스템 I/F 연동 경험이 있으신 분",
+   "short": "SAP 이 은행·MES·그룹 시스템과 데이터를 주고받는 연결(인터페이스)을 설계·점검해 본 경험.",
+   "why": "회사는 레거시 시스템 고도화와 **통합자금관리 시스템 구축**을 같이 한 고객 사례를 공개했고[9], 같은 회사 물류 공고는 LG 물류 플랫폼(Singlex)과 붙는 일을 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**옛 방식** — IDoc(문서 단위 메시지)·RFC/BAPI(원격 함수 호출)는 S/4HANA 에서도 쓴다.[23]",
+     "**새 방식** — S/4HANA 의 새 API 는 대부분 OData(웹 API)이고 동기 호출에 맞는다. IDoc 시나리오를 OData 로 바꾸려면 다시 설계해야 한다.[23]",
+     "**컨설턴트 몫** — 무엇을 언제 어느 방향으로 보내는지(필드 대응표·주기·오류 시 재처리)를 사양서로 정하고, 받은 데이터가 전표·주문으로 맞게 들어갔는지 검증한다.[20] {추론}"
+    ]
+   },
+   "refs": [
+    3,
+    9,
+    20,
+    23
+   ],
+   "study": [
+    "sap-integration",
+    "sap-ricefw"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "PM/PL 경험이 있으신 분",
+   "short": "여러 모듈 담당을 묶어 일정·범위·고객 보고를 맡아 본 경험 — 경력 8년급이면 다음 자리다.",
+   "why": "같은 회사의 SAP 공고 넷 모두 PM/PL 경험을 우대합니다.[2][3][4] 회사 인사제도에는 리더 Path 와 전문가 Path 가 따로 있습니다.[33]",
+   "how_far": "이 공고의 본업은 모듈 컨설턴트라, 리더 경험은 있으면 좋은 정도입니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    33
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "TR, FM, PS, QM, PM, WM, Fiori, CDS View 경험이 있으신 분",
+   "short": "FI·CO·SD 옆에 붙는 모듈과 S/4HANA 의 새 화면·데이터 기술 — 하나라도 해 봤으면 맡을 범위가 넓어진다.",
+   "why": "고객마다 쓰는 모듈 조합이 달라, 옆 모듈을 아는 사람이 Roll-in·운영에서 빈칸을 메웁니다.{추론} 같은 회사 운영 공고에도 같은 목록이 우대로 붙어 있습니다.[2]",
+   "actually": {
+    "intro": "모듈 이름 풀이입니다.",
+    "items": [
+     "**TR**(Treasury, 자금) — 현금·유동성·외환. 회사 고객 사례의 '통합자금관리'가 이쪽이다.[9]",
+     "**FM**(Funds Management, 예산) — 예산을 정하고 집행을 막거나 알린다. 공공·비영리에서 많이 쓴다. {추론}",
+     "**PS**(Project System, 프로젝트) — 프로젝트별 비용·일정. CO 와 원가가 이어진다. {추론}",
+     "**QM·PM**(품질·설비 보전) — 검사·설비 정비 비용이 CO 오더로 모인다. {추론}",
+     "**WM**(창고) — S/4HANA 에서는 EWM 으로 옮겨 가는 중이고, 같은 회사가 EWM 컨설턴트를 따로 뽑는다.[3]",
+     "**Fiori·CDS View** — S/4HANA 의 웹 화면과, 표를 SQL 처럼 묶어 화면·보고서·API 가 읽게 하는 데이터 모델. 같은 회사 ABAP 개발자 공고의 요건이다.[4][21][25]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    4,
+    9,
+    21,
+    25
+   ],
+   "study": [
+    "fiori-library",
+    "abap-cheat"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SAP 모듈 자격증을 보유하신 분",
+   "short": "SAP 공식 인증(모듈별 Associate)이 있으면 지식을 증명하기 쉽고, 고객 제안서에 인력으로 올리기 좋다.",
+   "why": "같은 회사의 SAP 공고 셋 모두 'SAP 모듈 Certification'을 우대합니다.[2][3] 회사는 자격증 취득을 지원한다고 복리후생에 적었습니다.[30] 고객 제안 때 인증 인력을 내세우는 일은 흔하다. {추론}",
+   "actually": {
+    "items": [
+     "**FI** — 'SAP Certified Associate - SAP S/4HANA Cloud Private Edition, Financial Accounting'(C_TS4FI). 무료 학습 과정 'Implementing Financial Accounting in SAP S/4HANA'가 붙어 있다.[19][26]",
+     "**CO** — 'Implementing Management Accounting in SAP S/4HANA' 학습 과정이 인증 시험으로 이어진다.[18]",
+     "**버전** — 시험 코드 끝의 연도·버전이 자주 바뀌니 SAP Learning 의 현재 페이지에서 확인한다.[26]"
+    ]
+   },
+   "how_far": "8년 경력이면 자격증보다 프로젝트 이력이 먼저 읽힙니다. S/4HANA 경험이 적다면 S/4HANA 판 인증이 그 빈칸을 메우는 증거가 됩니다. {추론}",
+   "refs": [
+    2,
+    3,
+    18,
+    19,
+    26,
+    30
+   ],
+   "study": [
+    "sap-fi-journey",
+    "sap-co-journey",
+    "sap-cert-fi"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자가 회계 장부까지 맞게 흘러가는지 끝까지 따라가는 게 재미있는 사람",
+   "고객 현업과 회의하며 업무를 SAP 표준 쪽으로 설득하는 일을 꺼리지 않는 사람[8]",
+   "해외 법인 현장에서 일해 보고 싶은 사람[1]",
+   "LG 계열 안에서 리더 또는 전문가 경로로 크고 싶은 사람[33]"
+  ],
+  "hard": [
+   "월말 결산 기간에는 운영 문의가 몰린다[9]",
+   "고객사 프로젝트라 일정·범위를 계약이 정하고, 상주·출장이 있을 수 있다 {추론}",
+   "코드를 주로 쓰고 싶은 개발자에게는 설정·사양서·회의 비중이 크다 {추론}",
+   "공개된 집계 기준으로 평균 연봉은 모회사보다 낮다[28][29]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "해외 법인이 '우리는 세법상 이 서식이 꼭 필요하다'고 할 때 템플릿에 넣을지 어떻게 정하나요?",
+   "a": "Roll-in 에서 차이를 받아들이는 기준.[12]"
+  },
+  {
+   "q": "월말에 외화 평가 결과가 틀렸습니다. 무엇부터 확인하겠어요?",
+   "a": "회사가 공개한 고객 결산 장애 사례.[9]"
+  },
+  {
+   "q": "같은 고객·같은 자재인데 주문마다 가격이 다르게 나옵니다. 어디를 보죠?",
+   "a": "가격 절차·접근 순서·조건 레코드 순서.[17]"
+  },
+  {
+   "q": "S/4HANA 에서 FI 와 CO 를 맞춰 보는 대사 작업이 왜 줄었나요?",
+   "a": "유니버설 저널.[16]"
+  },
+  {
+   "q": "표준으로 안 되는 보고서 요구를 받았습니다. 개발자에게 넘기는 사양서에 무엇을 적나요?",
+   "a": "기능 사양서와 RICEFW.[20]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "LG Careers · [비즈테크아이] SAP 모듈(CO·FI·SD) 컨설턴트 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001414",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "업무·요건·우대·차세대 ERP팀 소개, 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "LG Careers · [비즈테크아이] SAP SM 모듈 운영 담당자 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001499",
+   "kind": "posting",
+   "note": "같은 회사 — FI·CO·SD·PP·MM 운영, IMG 설정, ABAP 중급 요건, S/4HANA Public Edition 신규 구축"
+  },
+  {
+   "n": 3,
+   "title": "LG Careers · [비즈테크아이] SAP 물류 모듈(eWM, TM) 컨설턴트 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001514",
+   "kind": "posting",
+   "note": "같은 회사 ERP 혁신팀 — EWM 구축, LG 물류 Singlex 운영, SM 운영 절차·SLA"
+  },
+  {
+   "n": 4,
+   "title": "LG Careers · [비즈테크아이] SAP ABAP 개발자 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001508",
+   "kind": "posting",
+   "note": "같은 회사 SAP 개발 파트 — BTP·OData·CDS View 개발"
+  },
+  {
+   "n": 5,
+   "title": "비즈테크아이 · 사업 소개 — ERP · GROW (EXprism4GROW)",
+   "url": "https://www.biztechi.com/business/erp/01",
+   "kind": "company",
+   "note": "S/4HANA Cloud Public Edition 기반, 중견·강소기업·해외 지사 대상, 1년 2회 자동 업그레이드"
+  },
+  {
+   "n": 6,
+   "title": "비즈테크아이 · 사업 소개 — ERP · EXprism ERP",
+   "url": "https://www.biztechi.com/business/erp/06",
+   "kind": "company",
+   "note": "S/4HANA Cloud Private Edition 기반, Best Practice(흐름도·절차서·Configuration Guide), AMS 도구 BIZcare"
+  },
+  {
+   "n": 7,
+   "title": "비즈테크아이 · 사업 소개 — ERP · S/4HANA Conversion",
+   "url": "https://www.biztechi.com/business/erp/03",
+   "kind": "company",
+   "note": "1809 전환 경험, Brown Field(SUM)·Green Field(Migration Cockpit), Readiness Check, 전환 중 ABAP 개발 중지"
+  },
+  {
+   "n": 8,
+   "title": "비즈테크아이 · 사업 소개 — ERP · PI/ISP 컨설팅",
+   "url": "https://www.biztechi.com/business/erp/07",
+   "kind": "company",
+   "note": "분석·설계·실행·사후 관리, PI 방법론"
+  },
+  {
+   "n": 9,
+   "title": "비즈테크아이 · 홈페이지 고객 후기",
+   "url": "https://www.biztechi.com/",
+   "kind": "company",
+   "note": "사조시스템즈(S/4HANA 신규·글로벌 팀)·범진전자(통합자금관리)·아이디스홀딩스(결산 외화 평가 오류, BC·FI)·이스타항공·파이브스페이스(글로벌 통합, 코스트센터 시나리오) — 사이트 JS 번들에서 읽음"
+  },
+  {
+   "n": 10,
+   "title": "비즈테크아이 · Biztechi 소개",
+   "url": "https://www.biztechi.com/about/01",
+   "kind": "company",
+   "note": "업력 20년 이상, SAP ERP 도입·RPA·클라우드, LG CNS 자회사"
+  },
+  {
+   "n": 11,
+   "title": "SAP Help · Global rollout with templates (SAP Solution Manager)",
+   "url": "https://help.sap.com/saphelp_sm71_sp13/helpdata/en/28/ef1c54f807f47de10000000a174cb4/content.htm",
+   "kind": "reference",
+   "note": "본사에서 시나리오·설계 문서·설정을 템플릿으로 정의해 법인에 들여온다"
+  },
+  {
+   "n": 12,
+   "title": "LeverX · SAP Global Template and Rollout Strategy: Core Template vs. Local Fit",
+   "url": "https://leverx.com/blog/sap-global-template-rollout-strategy",
+   "kind": "reference",
+   "note": "다른 회사(SAP 파트너) 글 — 글로벌 템플릿과 법인 차이 관리"
+  },
+  {
+   "n": 13,
+   "title": "SAP Help · Configuring the System Using the Implementation Guide",
+   "url": "https://help.sap.com/saphelp_46c/helpdata/en/e5/077f714acd11d182b90000e829fbfe/content.htm",
+   "kind": "reference",
+   "note": "Reference IMG·Project IMG, SPRO"
+  },
+  {
+   "n": 14,
+   "title": "SAP Learning · Customizing and Customizing Projects",
+   "url": "https://learning.sap.com/courses/technical-implementation-and-operation-ii-of-sap-s-4hana-and-sap-business-suite/customizing-and-customizing-projects",
+   "kind": "reference",
+   "note": "설정과 이송 요청(transport request)"
+  },
+  {
+   "n": 15,
+   "title": "SAP · SAP Activate 방법론",
+   "url": "https://www.sap.com/products/erp/activate-methodology.html",
+   "kind": "reference",
+   "note": "Discover·Prepare·Explore(fit-to-standard)·Realize·Deploy(hypercare)·Run"
+  },
+  {
+   "n": 16,
+   "title": "SAP Help · Universal Journal (S/4HANA 1511)",
+   "url": "https://help.sap.com/doc/3a51d7531a4d424de10000000a174cb4/1511%20000/en-US/523b8a55559ad007e10000000a44538d.html",
+   "kind": "reference",
+   "note": "FI·CO 전표를 하나로, 대사 불필요"
+  },
+  {
+   "n": 17,
+   "title": "SAP Learning · Introducing the Condition Technique (Configuring Pricing in SAP S/4HANA Sales)",
+   "url": "https://learning.sap.com/courses/configuring-pricing-in-sap-s-4hana-sales/introducing-the-condition-technique",
+   "kind": "reference",
+   "note": "가격 절차 → 조건 유형 → 접근 순서 → 조건 표 → 조건 레코드"
+  },
+  {
+   "n": 18,
+   "title": "SAP Learning · Implementing Management Accounting in SAP S/4HANA",
+   "url": "https://learning.sap.com/learning-journeys/implementing-management-accounting-in-sap-s-4hana",
+   "kind": "reference",
+   "note": "조직 단위·간접비(코스트센터·내부 오더)·제품 원가·수익성 분석, 무료, 인증으로 이어짐"
+  },
+  {
+   "n": 19,
+   "title": "SAP Learning · Implementing Financial Accounting in SAP S/4HANA",
+   "url": "https://learning.sap.com/learning-journeys/implementing-financial-accounting-in-sap-s-4hana",
+   "kind": "reference",
+   "note": "무료 학습 과정 — C_TS4FI 인증 대비"
+  },
+  {
+   "n": 20,
+   "title": "SAP Community · RICEFW Concept",
+   "url": "https://community.sap.com/t5/enterprise-architecture-blog-posts/ricefw-concept/ba-p/13663088",
+   "kind": "community",
+   "note": "보고서·인터페이스·이관·확장·양식·워크플로, 기능 사양서 → 기술 사양서"
+  },
+  {
+   "n": 21,
+   "title": "ABAP Keyword Documentation · DEFINE VIEW ENTITY (ABAP CDS)",
+   "url": "https://help.sap.com/doc/abapdocu_cp_index_htm/CLOUD/en-US/abencds_define_view_entity.htm",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "SAP-samples · ABAP cheat sheets",
+   "url": "https://github.com/SAP-samples/abap-cheat-sheets",
+   "kind": "reference",
+   "note": "SAP 공식 예제 저장소 — ABAP SQL·내부 테이블·CDS View Entity"
+  },
+  {
+   "n": 23,
+   "title": "SAP Blog · Modern integration for SAP S/4HANA and RISE",
+   "url": "https://blogs.sap.com/2022/06/14/modern-integration-for-sap-s-4hana-and-rise-for-the-challenges-of-today-in-the-future/",
+   "kind": "reference",
+   "note": "IDoc·RFC/BAPI 와 OData, 동기·비동기"
+  },
+  {
+   "n": 24,
+   "title": "SAP · Custom Code Migration Guide (End to End, 2022)",
+   "url": "https://help.sap.com/doc/9dcbc5e47ba54a5cbb509afaa49dd5a1/2022.000/en-US/CustomCodeMigration_EndtoEnd.pdf",
+   "kind": "reference",
+   "note": "Simplification Database 대조, ABAP Test Cockpit"
+  },
+  {
+   "n": 25,
+   "title": "SAP Fiori Apps Reference Library",
+   "url": "https://fioriappslibrary.hana.ondemand.com",
+   "kind": "reference",
+   "note": "새 주소 fal.cloud.sap 로 옮기는 중"
+  },
+  {
+   "n": 26,
+   "title": "SAP Learning · SAP Certified Associate - SAP S/4HANA for Financial Accounting",
+   "url": "https://learning.sap.com/certifications/sap-certified-associate-sap-s-4hana-for-financial-accounting",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "위키독스 · SAP ERP 따라하기 (ABAP FI CO MM SD PP)",
+   "url": "https://wikidocs.net/book/13921",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "자소설닷컴 · 비즈테크아이 기업정보",
+   "url": "https://jasoseol.com/companies/14512",
+   "kind": "reference",
+   "note": "초봉 3,811만·평균 5,748만, 사원수 945명 — 공공데이터 집계, 초봉 갱신 메모 2026-10-26 (같은 회사 기존 풀이의 출처)"
+  },
+  {
+   "n": 29,
+   "title": "자소설닷컴 · LG CNS 기업정보",
+   "url": "https://jasoseol.com/companies/57",
+   "kind": "reference",
+   "note": "초봉 5,071만·평균 7,802만 — 같은 집계"
+  },
+  {
+   "n": 30,
+   "title": "비즈테크아이 · 복리후생",
+   "url": "https://www.biztechi.com/culture/03",
+   "kind": "company"
+  },
+  {
+   "n": 31,
+   "title": "비즈테크아이 · 오시는 길",
+   "url": "https://www.biztechi.com/about/05",
+   "kind": "company"
+  },
+  {
+   "n": 32,
+   "title": "비즈테크아이 · 채용 프로세스",
+   "url": "https://www.biztechi.com/recruit/02",
+   "kind": "company",
+   "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"
+  },
+  {
+   "n": 33,
+   "title": "비즈테크아이 · 인사제도",
+   "url": "https://www.biztechi.com/culture/02",
+   "kind": "company",
+   "note": "리더 Path·전문가 Path"
+  }
+ ],
+ "caveat": "비즈테크아이 ERP 팀의 기술 글·발표 영상은 찾지 못했습니다. 회사 근거는 이 공고와 같은 회사의 SAP 공고 셋, 회사 사이트의 ERP 사업 소개(GROW·EXprism·Conversion·PI/ISP)와 고객 후기입니다. Roll-in 절차·IMG 설정·가격 결정·원가 배부·RICEFW 사양서는 SAP 공식 문서와 SAP 파트너·커뮤니티 글로 '보통 이런 것'을 보였습니다. 'Roll-in'은 회사마다 뜻이 조금 달라 면접에서 이 팀의 뜻을 확인하는 게 좋습니다.",
+ "resources": [
+  {
+   "id": "sap-intro-ko",
+   "title": "삼성에서 ERP로 먹고사는 컨설턴트가 알려주는 SAP",
+   "by": "주호재 · 서기준 · 생능북스 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000009614001",
+   "why": "SAP 이 어떤 패키지이고 모듈·프로젝트가 어떻게 돌아가는지를 국내 컨설턴트 눈으로 — SI·SM 과 Roll-in 이야기를 처음 잡기 좋다."
+  },
+  {
+   "id": "sap-bible-fi",
+   "title": "SAP Bible FI (상·하, S/4 HANA Version)",
+   "by": "유승철 · 북랩 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SAP%20Bible%20FI%20%EC%9C%A0%EC%8A%B9%EC%B2%A0",
+   "why": "FI 조직 단위·마스터·전표·결산을 한국어로 — FI 8년 요건의 바탕 지식과 S/4HANA 판 차이를 짚는다."
+  },
+  {
+   "id": "wikidocs-sap",
+   "title": "SAP ERP 따라하기 (ABAP FI CO MM SD PP)",
+   "by": "위키독스",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://wikidocs.net/book/13921",
+   "why": "FI 전표·CO 원가요소·표준원가·ABAP 실습 목차가 무료로 — 화면 흐름을 따라 해 보며 운영 문의를 상상해 보기."
+  },
+  {
+   "id": "sap-fi-journey",
+   "title": "Implementing Financial Accounting in SAP S/4HANA",
+   "by": "SAP Learning",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learning.sap.com/learning-journeys/implementing-financial-accounting-in-sap-s-4hana",
+   "why": "FI IMG 설정(회사코드·계정과목표·전기 기간)을 S/4HANA 기준으로 — 자격증(C_TS4FI) 준비까지 이어진다."
+  },
+  {
+   "id": "sap-co-journey",
+   "title": "Implementing Management Accounting in SAP S/4HANA",
+   "by": "SAP Learning",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learning.sap.com/learning-journeys/implementing-management-accounting-in-sap-s-4hana",
+   "why": "코스트센터·내부 오더·제품 원가·수익성 분석과 배부 — CO 5년 요건의 설정 쪽을 정리한다."
+  },
+  {
+   "id": "sap-pricing",
+   "title": "Configuring Pricing in SAP S/4HANA Sales",
+   "by": "SAP Learning",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learning.sap.com/courses/configuring-pricing-in-sap-s-4hana-sales",
+   "why": "SD 가격 결정(조건 기법)을 설정 순서대로 — 업무 'IMG 설정' 줄과 면접의 가격 질문 대비."
+  },
+  {
+   "id": "sap-customizing",
+   "title": "Customizing and Customizing Projects",
+   "by": "SAP Learning",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learning.sap.com/courses/technical-implementation-and-operation-ii-of-sap-s-4hana-and-sap-business-suite/customizing-and-customizing-projects",
+   "why": "IMG 설정을 이송 요청으로 옮기는 기본 절차 — 운영에서 설정을 바꿀 때 지킬 선."
+  },
+  {
+   "id": "sap-activate",
+   "title": "SAP Activate 방법론",
+   "by": "SAP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.sap.com/products/erp/activate-methodology.html",
+   "why": "Roll-in·차세대 구축이 밟는 단계(fit-to-standard → 설정·테스트 → 전환·hypercare)의 공식 틀."
+  },
+  {
+   "id": "leverx-template",
+   "title": "SAP Global Template and Rollout Strategy: Core Template vs. Local Fit",
+   "by": "LeverX",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://leverx.com/blog/sap-global-template-rollout-strategy",
+   "why": "글로벌 템플릿과 법인 차이를 어디까지 받을지 — Roll-in 업무의 판단 기준."
+  },
+  {
+   "id": "sap-conversion",
+   "title": "Custom Code Migration Guide (End to End)",
+   "by": "SAP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://help.sap.com/doc/9dcbc5e47ba54a5cbb509afaa49dd5a1/2022.000/en-US/CustomCodeMigration_EndtoEnd.pdf",
+   "why": "ECC → S/4HANA 전환 때 고객 ABAP 코드를 어떻게 점검하나 — S/4HANA Project 우대와 ABAP 분석 요건을 잇는다."
+  },
+  {
+   "id": "sap-ricefw",
+   "title": "RICEFW Concept",
+   "by": "SAP Community",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://community.sap.com/t5/enterprise-architecture-blog-posts/ricefw-concept/ba-p/13663088",
+   "why": "기능 사양서로 넘기는 개발 요구의 분류 — '개발 사양서 작성' 요건의 공통 언어."
+  },
+  {
+   "id": "abap-cheat",
+   "title": "ABAP cheat sheets",
+   "by": "SAP-samples · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/SAP-samples/abap-cheat-sheets",
+   "why": "SAP 이 직접 낸 예제로 ABAP SQL·내부 테이블·CDS 뷰를 읽는 연습 — 'ABAP 분석'부터 '중급 개발'까지."
+  },
+  {
+   "id": "abap-keyword",
+   "title": "ABAP Keyword Documentation",
+   "by": "SAP Help Portal",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://help.sap.com/doc/abapdocu_cp_index_htm/CLOUD/en-US/abencds_define_view_entity.htm",
+   "why": "모르는 문장을 만났을 때 찾는 공식 문법서 — CDS View 우대 줄의 원문."
+  },
+  {
+   "id": "sap-integration",
+   "title": "Modern integration for SAP S/4HANA and RISE",
+   "by": "SAP Blog · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://blogs.sap.com/2022/06/14/modern-integration-for-sap-s-4hana-and-rise-for-the-challenges-of-today-in-the-future/",
+   "why": "IDoc·RFC/BAPI·OData 를 언제 쓰나 — 외부 I/F 우대 줄."
+  },
+  {
+   "id": "fiori-library",
+   "title": "SAP Fiori Apps Reference Library",
+   "by": "SAP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://fioriappslibrary.hana.ondemand.com",
+   "why": "FI·CO·SD 업무에 어떤 표준 Fiori 앱이 있는지 찾아보기 — 'Fiori 경험' 우대와 S/4HANA 운영 대비."
+  },
+  {
+   "id": "sap-cert-fi",
+   "title": "SAP Certified Associate - SAP S/4HANA for Financial Accounting",
+   "by": "SAP Learning",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://learning.sap.com/certifications/sap-certified-associate-sap-s-4hana-for-financial-accounting",
+   "why": "'SAP 모듈 자격증' 우대 줄 — FI 인증의 현재 범위와 시험 코드를 확인하는 곳."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "SAP 이 어떻게 돌아가나",
+   "time": "1~2주",
+   "goal": "모듈·조직 구조·SI/SM·Activate 단계를 말로 설명할 수 있다.",
+   "resources": [
+    "sap-intro-ko",
+    "sap-activate",
+    "wikidocs-sap"
+   ],
+   "task": "가상의 제조사(회사코드 2개, 영업 조직 1개, 코스트센터 6개)를 정하고 조직 구조도와 '주문 → 출고 → 청구 → 수금 → 결산' 흐름도를 한 장씩 그린다."
+  },
+  {
+   "title": "자기 모듈 깊게 (FI 또는 CO)",
+   "time": "3~4주",
+   "goal": "IMG 의 핵심 설정을 순서대로 말하고, 바꾸면 어디가 영향을 받는지 안다.",
+   "resources": [
+    "sap-fi-journey",
+    "sap-co-journey",
+    "sap-bible-fi",
+    "sap-customizing"
+   ],
+   "task": "1단계 회사의 월말 결산 체크리스트(외화 평가 → 감가상각 → 배부 → 수익성 분석)를 만들고, 공통비 배부를 엑셀이나 작은 코드로 계산해 합계가 맞는지 확인한다."
+  },
+  {
+   "title": "모듈 사이 — SD 와 FI·CO",
+   "time": "2주",
+   "goal": "가격 결정과 청구가 회계 전표로 이어지는 길을 따라갈 수 있다.",
+   "resources": [
+    "sap-pricing",
+    "sap-fi-journey"
+   ],
+   "task": "고객 특가·가격 목록·기본가 세 가지 조건으로 접근 순서를 짜고, 주문 5건의 가격과 청구 전표(차변·대변)를 표로 만든다."
+  },
+  {
+   "title": "ABAP 읽기와 사양서",
+   "time": "2~3주",
+   "goal": "ABAP 보고서를 읽어 오류 위치를 짚고, 개발자가 되묻지 않을 기능 사양서를 쓴다.",
+   "resources": [
+    "abap-cheat",
+    "abap-keyword",
+    "sap-ricefw"
+   ],
+   "task": "'코스트센터별 월 실적 보고서'의 기능 사양서(목적·입력·규칙·출력·오류·테스트 사례 5개)를 쓰고, ABAP cheat sheet 예제 하나를 읽어 SELECT 가 읽는 표를 적어 본다."
+  },
+  {
+   "title": "S/4HANA·연동·자격증 (선택)",
+   "time": "계속",
+   "goal": "S/4HANA 에서 달라진 점과 외부 연동 방식을 설명하고 인증으로 증명한다.",
+   "resources": [
+    "sap-conversion",
+    "sap-integration",
+    "fiori-library",
+    "sap-cert-fi",
+    "leverx-template"
+   ],
+   "task": "가상의 은행 입금 파일 → SAP 수금 반영 인터페이스의 필드 대응표와 오류 재처리 규칙을 쓰고, 해외 법인 Roll-in 차이 목록(세금·통화·서식) 10줄을 만들어 받을지·말지 근거를 단다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원**(둘 다 집계값) — 공시 숫자는 없고, 이 자리는 경력 5~8년 이상이라 처우 협의가 기준이다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,811만원",
+    "amount": 3811,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없고, 2026-10-26에 초봉을 고쳤다는 메모가 있다 [28]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,748만원",
+    "amount": 5748,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계, 사원수 945명 기준. 경력직이 섞인 회사 전체 값이다 [28]"
+   },
+   {
+    "label": "LG CNS 초봉",
+    "value": "약 5,071만원",
+    "amount": 5071,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [29]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "약 7,802만원",
+    "amount": 7802,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [29]"
+   }
+  ],
+  "how": "공고에는 연봉이 없다 [1]. 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자는 없다. 경력 전형은 평판조회 뒤 **처우협의** 단계에서 연봉을 정한다 [32]. 평균은 경력직이 섞인 회사 전체 값이라, 경력 8년급 컨설턴트의 처우와는 다르다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "가족",
+    "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진·단체보험, 전문 심리 상담"
+   },
+   {
+    "name": "금융",
+    "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+   },
+   {
+    "name": "배움",
+    "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+   },
+   {
+    "name": "조직 문화",
+    "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"
+   }
+  ],
+  "note": "비즈테크아이 공식 사이트의 복리후생 페이지(2026-11 확인, 같은 회사 기존 풀이와 같은 출처)다 [30]. 항목 이름만 있고 금액·조건은 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "비즈테크아이 본사 (상암 DDMC)",
+  "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+  "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [31]",
+  "note": "회사 사이트 '오시는 길'의 주소다 [31]. 공고의 근무지 표기는 '서울특별시'이고 [1], Roll-in·구축은 고객사·해외 법인에서 할 수 있다 {추론}."
+ }
+}
