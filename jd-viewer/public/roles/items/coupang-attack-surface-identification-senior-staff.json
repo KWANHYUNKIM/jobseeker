@@ -1,0 +1,1115 @@
+{
+ "id": "coupang-attack-surface-identification-senior-staff",
+ "company": "쿠팡",
+ "role": "Senior ~ Staff Security Engineer",
+ "team": "보안 조직 · Attack Surface Identification(외부 공격 표면 관리)",
+ "jobs": [
+  "ats-greenhouse:coupang:8160905"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "인터넷에서 보이는 쿠팡의 모든 입구 — 도메인·IP·열린 포트·클라우드 자원·잊힌 테스트 서버 — 를 **공격자보다 먼저 찾아 지도로 만들고**, 위험한 것부터 인프라·개발 팀이 닫게 합니다.[1]",
+  "env": "상용 ASM 제품과 **직접 만든 찾기 도구(AWS·Python)**를 같이 굴리고, 레드팀·위협 정보·탐지 팀이 있는 200명 넘는 보안 조직 안에서 일합니다.[1][5][7]",
+  "oneline": "공격자의 '정찰'을 회사 편에서 매일 대신 해 주는 사람. 찾기보다 **주인 붙이기와 닫게 만들기**가 더 어렵습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "이 직무는 공격자에게 노출된 IT 인터페이스와 디지털 발자국(Digital Footprint)을 지속적으로 식별하여 보안 위협을 완화합니다. AI 기술의 발달로 공격자들의 침투 방식이 빠르게 진화함에 따라, 선제적인 공격 표면 관리는 이제 선택이 아닌 필수입니다. 공격자보다 한 발 앞서 공격 표면 노출을 최소화하는 능동적(Proactive) 사이버 보안 미션을 함께 달성할 전문가를 찾습니다.",
+   "short": "밖에서 보이는 우리 회사의 모든 입구를 공격자보다 먼저 찾아, 줄이거나 막는 자리다.",
+   "why": "공격 표면(attack surface)은 공격이 들어올 수 있는 입구 전체를 말합니다. 공격자는 공격 전에 먼저 대상의 도메인·서버·열린 포트를 훑고(정찰), ATT&CK 은 이를 공격의 첫 단계로 따로 분류합니다.[19] 쿠팡 보안 조직은 레드팀이 아직 탐지되지 않은 약점을 찾고 위협 정보로 그것을 미리 없애는 '선제적 보안'을 발표했고,[6] 이 공고는 그 '미리 찾기'를 외부 입구 전체로 넓힌 자리입니다.[1]",
+   "actually": {
+    "items": [
+     "**밖에서 보기** — 사내 자산 목록이 아니라 인터넷에서 실제로 보이는 것(도메인·IP·포트·웹 화면)이 기준이다.[11]",
+     "**계속** — 한 번 점검이 아니라 주기적으로 다시 훑는다. 미국 연방기관 지침은 자산 탐색을 7일마다, 취약점 확인을 14일마다 하라고 정했다.[12]",
+     "**줄이기** — 찾은 입구 중 필요 없는 것은 닫고, 필요한 것은 보호 장치를 붙인다(업무 넷째 줄).[1]"
+    ]
+   },
+   "how_far": "이 문단은 업무 전체의 요약입니다. 아래 여섯 줄(지도 만들기 → 빈틈 찾기 → 우선순위 → 고치게 하기 → 도구 → 자동화)이 그대로 일의 순서입니다 {추론}.",
+   "refs": [
+    1,
+    6,
+    11,
+    12,
+    19
+   ],
+   "study": [
+    "wstg-asi",
+    "bod-2301"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "다음과 같은 기회가 될수 있습니다!",
+   "short": "아래 세 줄은 회사가 내세우는 이 자리의 장점이다(요건이 아니다).",
+   "why": "업무·자격 줄이 아니라 팀 소개 문구입니다. 쿠팡 보안 조직은 200명이 넘고 ISO 27001·ISMS-P 같은 인증을 유지한다고 미국 연차보고서에 적었습니다.[7]",
+   "refs": [
+    7
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "가장 빠르게 성장하는 이커머스 회사의 세계적 수준의 보안팀에 합류할 기회",
+   "short": "200명 넘는 보안 조직 안의 한 팀이라, 옆 팀(레드팀·위협 정보·탐지)과 붙어 일한다.",
+   "why": "쿠팡은 위협 정보·위협 헌팅·공격 모의·탐지 엔지니어링 팀을 2024년 중반 CISO 밑에 새로 꾸렸다고 인터뷰에서 밝혔습니다.[5] 같은 조직의 CTEM(지속적 위협 노출 관리) 공고는 장비 로그로 탐지 빈칸을 찾는 일을 맡습니다.[3] 이 자리는 그 앞단, '밖에서 보이는 것'을 맡는 쪽입니다 {추론}.",
+   "refs": [
+    3,
+    5,
+    7
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고도화된 사이버 위협에 대한 선제적 방어를 주도하는 팀의 일원이 될 수 있음",
+   "short": "사고가 난 뒤 대응이 아니라, 공격자가 쓰기 전에 입구를 없애는 쪽 일이다.",
+   "why": "2025년 11월 쿠팡에서 약 3,370만 계정 정보 유출이 확인됐고, 민관합동조사단은 비정상 접속을 탐지·차단하지 못한 점과 키 관리 부실을 지적했습니다.[8][9] 이 사고는 외부 노출 자산 문제가 아니라 내부자·인증 키 문제였지만, 그 뒤로 '먼저 찾기'에 대한 압박이 커진 환경입니다 {추론}.",
+   "refs": [
+    8,
+    9
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "공격 표면 관리 및 사이버 보안 분야에서의 지속적인 학습과 성장 기회 제공",
+   "short": "ASM 은 새 분야라 도구·방법이 빨리 바뀐다 — 계속 배워야 하는 자리라는 뜻이기도 하다.",
+   "why": "'공격 표면 관리'를 묶어 부르는 틀(CTEM 5단계 — 범위 정하기·찾기·우선순위·검증·실행)은 2022년 무렵 가트너가 만든 말입니다.[22] OWASP 웹 점검 가이드도 최신판에서 정보 수집 항목 이름을 '공격 표면 식별'로 바꿨습니다.[11]",
+   "refs": [
+    11,
+    22
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Digital Footprint 지속 모니터링: 공식/비공식적으로 외부에 노출된 자사 IT 자산(도메인, IP, 오픈 포트, 클라우드 환경 등)을 상시 식별하고 매핑합니다.",
+   "short": "인터넷에서 보이는 우리 도메인·IP·열린 포트·클라우드 자원을 늘 새로 찾아 지도로 만든다.",
+   "why": "모르는 자산은 지킬 수 없습니다. 미국 연방기관 지침(BOD 23-01)도 '자산 탐색'과 '취약점 확인' 두 가지를 기본으로 정하고, 주소 공간 전체를 7일마다 자동으로 훑으라고 했습니다.[12] 쿠팡처럼 서비스가 많고 클라우드를 크게 쓰는 회사는 이 지도가 매일 바뀝니다 {추론}.",
+   "actually": {
+    "intro": "보통 이런 재료로 지도를 만듭니다. 쿠팡이 어떤 순서로 하는지는 공개되지 않았습니다.[11][13]",
+    "items": [
+     "**인증서 투명성(CT) 로그** — 공개 인증서는 모두 공개 장부에 기록된다. 장부에서 우리 도메인 이름이 든 인증서를 모으면 숨은 하위 도메인이 나온다.[21][13]",
+     "**DNS** — 하위 도메인 후보를 대입해 보고, 이름 → IP, IP → 이름을 양쪽으로 푼다.[13]",
+     "**IP 대역과 포트** — 회사가 가진 IP 대역과 클라우드의 공인 IP 를 모아 열린 포트·응답 화면을 확인한다.[11]",
+     "**클라우드 계정** — AWS·Azure·GCP API 로 공인 IP·로드밸런서·공개 버킷 목록을 직접 뽑는다(밖에서 찾은 것과 대조).[32]",
+     "**매핑** — '이 이름은 어느 팀 서비스인가'를 붙여야 다음 단계(우선순위·조치)가 된다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "인증서 장부에서 대장에 없는 이름 찾기 (가상 값)",
+     "body": "crt.sh 같은 CT 검색이 돌려주는 모양을 흉내 낸 값입니다. 와일드카드 인증서(`*.dev…`)는 그 밑에 서버가 있다는 신호라 `dev.example.com` 으로 남깁니다. 직접 돌린 출력:\n\n대장에 없음: dev.example.com\n대장에 없음: old-admin.example.com",
+     "lang": "python",
+     "code": "# crt.sh 가 돌려주는 모양(name_value 에 줄바꿈으로 여러 이름)을 흉내 낸 가상 값\ncerts = [\n    {\"name_value\": \"shop.example.com\\nwww.shop.example.com\"},\n    {\"name_value\": \"*.dev.example.com\"},\n    {\"name_value\": \"old-admin.example.com\"},\n    {\"name_value\": \"shop.example.com\"},\n]\nknown = {\"shop.example.com\", \"www.shop.example.com\"}  # 자산 대장에 있는 이름\n\nnames = set()\nfor c in certs:\n    for n in c[\"name_value\"].splitlines():\n        names.add(n.strip().lower().removeprefix(\"*.\"))\n\nfor n in sorted(names - known):\n    print(\"대장에 없음:\", n)"
+    }
+   ],
+   "how_far": "도구 하나 돌리는 것이 아니라 **여러 출처를 합쳐 중복을 없애고, 담당 팀까지 붙인 한 장의 목록**을 늘 최신으로 유지하는 것이 이 줄의 끝입니다 {추론}. 밖에서 훑는 것은 회사 자산에만 — 남의 IP 를 훑지 않도록 범위를 정확히 잡는 것도 일입니다.[20]",
+   "refs": [
+    11,
+    12,
+    13,
+    20,
+    21,
+    32
+   ],
+   "study": [
+    "wstg-asi",
+    "amass",
+    "pd-docs",
+    "bod-2301"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "섀도우 IT(Shadow IT) 및 사각지대 발굴: 관리 조직의 가시성에서 벗어난 방치된 서버, 테스트 페이지, 불필요한 노출 인터페이스를 선제적으로 찾아냅니다.",
+   "short": "누가 만들고 잊은 테스트 서버·옛 관리 화면·주인 없는 도메인을 찾아내는 일.",
+   "why": "섀도우 IT 는 보안·IT 조직 모르게 만들어진 자원입니다. 이런 것은 패치·감시 대상에서 빠져 있어 공격자에게 쉬운 입구가 됩니다. OWASP 점검 가이드도 표준 포트가 아닌 곳, 다른 경로, 검색엔진에 색인된 페이지에 숨은 앱을 따로 찾으라고 합니다.[11]",
+   "actually": {
+    "items": [
+     "**대장과 대조** — 밖에서 찾은 목록 − 사내 자산 대장 = 아무도 모르는 것. 위 예제의 '대장에 없음'이 바로 이것이다 {추론}.",
+     "**주인 없는 DNS** — 서비스는 지웠는데 도메인 이름(CNAME)이 남아 있으면, 남이 같은 이름으로 서비스를 만들어 우리 하위 도메인을 가로챌 수 있다(서브도메인 탈취).[14] AWS 는 위임(NS) 레코드에서 같은 문제가 생긴다고 따로 안내한다.[15]",
+     "**테스트·스테이징** — `dev`·`test`·`stg` 같은 이름, 기본 설치 화면, 디렉터리 목록이 열린 서버.[11]",
+     "**관리 화면** — 관리 콘솔·원격 접속(RDP 등)이 인터넷에 직접 열려 있는 경우. ATT&CK 은 외부 원격 서비스를 공격자의 첫 침투 경로로 분류한다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CNAME 이 가리키는 곳이 아직 우리 것인가 (가상 값)",
+     "body": "실제 도구는 응답 내용으로 판별하지만,[14] 원리는 '가리키는 자원이 우리 계정에 있나'입니다. 직접 돌린 출력:\n\npromo.example.com -> example-promo.s3-website.ap-northeast-2.amazonaws.com | 주인 없음: 탈취 위험\nblog.example.com -> example.github.io | 정상",
+     "lang": "python",
+     "code": "# 가상 DNS 레코드: CNAME 이 가리키는 곳이 아직 우리 것인가\nrecords = [\n    (\"promo.example.com\", \"CNAME\", \"example-promo.s3-website.ap-northeast-2.amazonaws.com\"),\n    (\"blog.example.com\", \"CNAME\", \"example.github.io\"),\n    (\"api.example.com\", \"A\", \"203.0.113.10\"),\n]\nour_buckets = {\"example-static\"}      # 계정에 실제로 있는 버킷\nour_pages = {\"example.github.io\"}     # 조직이 가진 Pages\n\nfor name, rtype, target in records:\n    if rtype != \"CNAME\":\n        continue\n    if \".s3-website.\" in target:\n        ok = target.split(\".s3-website.\")[0] in our_buckets\n    elif target.endswith(\".github.io\"):\n        ok = target in our_pages\n    else:\n        ok = True\n    print(name, \"->\", target, \"|\", \"정상\" if ok else \"주인 없음: 탈취 위험\")"
+    }
+   ],
+   "how_far": "찾는 것까지가 아니라 **'이건 누구 것이냐'를 알아내 주인을 붙이는 것**이 어렵고 중요합니다. 주인이 끝내 안 나오면 닫는 절차까지 정해 두는 것이 시니어 몫입니다 {추론}.",
+   "refs": [
+    11,
+    14,
+    15,
+    19
+   ],
+   "study": [
+    "can-takeover",
+    "aws-dangling",
+    "wstg-asi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "외부에 노출된 취약점 정보 식별 및 완화(Mitigation) 전략 수립: 취약한 애플리케이션 버전 정보, 내부 정보 열람이 가능한 취약 경로 등을 식별하여 비즈니스 중요도에 따라 평가하고, 조치 우선순위를 도출합니다.",
+   "short": "찾은 입구마다 위험도를 매기고, 무엇부터 고칠지 순서를 정하는 일.",
+   "why": "찾은 것을 전부 한꺼번에 고칠 수는 없습니다. 심각도 점수(CVSS)만으로 줄 세우면 실제로 악용되는 것을 놓치기 쉬워, 실제 악용이 확인된 목록(KEV)과 30일 안 악용 확률(EPSS)을 같이 보는 것이 보통입니다.[16][17][18]",
+   "actually": {
+    "items": [
+     "**버전 노출** — 응답 헤더·오류 화면에 찍힌 서버·프레임워크 버전으로 알려진 취약점(CVE)을 맞춰 본다.[11]",
+     "**내부 정보 경로** — `.git` 폴더, 백업 파일, 디버그·상태 화면, 인증 없이 열리는 API 문서처럼 내부 정보가 보이는 경로.[11][24]",
+     "**위험도 = 취약점 × 자산 중요도** — 같은 취약점이라도 결제 관리 화면과 이미지 서버는 순위가 다르다. '비즈니스 중요도에 따라'가 이 뜻이다.[1]",
+     "**완화 방법 고르기** — 패치, 노출 끊기(접근 제한·폐기), 앞단 보호(WAF 규칙) 중 가장 빨리 위험을 줄이는 것 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "노출 자산 줄 세우기 — 가중치는 예시",
+     "body": "가중치는 회사마다 다르고 쿠팡 방식은 공개되지 않았습니다. 요점은 악용 확인(KEV)·악용 확률(EPSS)을 심각도와 같이 보고, 업무 중요도를 곱한다는 것입니다.[16][17] 직접 돌린 출력:\n\ntest-wiki.example.com 97.4\npay-admin.example.com 61.2\nimg.example.com 21.5",
+     "lang": "python",
+     "code": "# 노출 자산 우선순위: 악용 확인(KEV)·악용 확률(EPSS)·심각도(CVSS)·업무 중요도(1~3) — 가중치는 예시\nassets = [\n    (\"pay-admin.example.com\", 7.5, 0.02, False, 3),\n    (\"test-wiki.example.com\", 9.8, 0.94, True, 1),\n    (\"img.example.com\", 5.3, 0.01, False, 1),\n]\n\ndef score(cvss, epss, kev, crit):\n    s = cvss / 10 * 40 + epss * 30 + (30 if kev else 0)\n    return round(s * (1 + 0.5 * (crit - 1)), 1)\n\nfor host, *v in sorted(assets, key=lambda a: score(*a[1:]), reverse=True):\n    print(host, score(*v))"
+    }
+   ],
+   "how_far": "점수 공식을 만드는 것보다 **그 순서를 개발·인프라 팀이 납득하게 설명하는 근거**(왜 이것이 먼저인가)를 내는 것까지가 이 줄입니다 {추론}.",
+   "refs": [
+    1,
+    11,
+    16,
+    17,
+    18,
+    24
+   ],
+   "study": [
+    "kev",
+    "epss",
+    "cvss4",
+    "bbb"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "유관 부서 협업 및 능동적 방어 수행: 인프라 및 개발 부서와 긴밀히 협력하여, 취약한 공격 표면이 실제 공격으로 이어지기 전에 경로를 신속하게 제거하거나 보호 대책을 적용합니다.",
+   "short": "고치는 손은 인프라·개발 팀이다 — 그 팀들이 빨리 닫게 만드는 것이 이 자리의 일이다.",
+   "why": "CTEM 을 설명하는 글들은 마지막 단계(실제로 고치게 하기)가 팀 경계를 넘어 자동화만으로 안 되고, 많은 프로그램이 여기서 멈춘다고 지적합니다.[22]",
+   "actually": {
+    "items": [
+     "**담당 팀에 티켓** — 무엇이·왜 위험한지·어떻게 고치는지·언제까지를 적어 넘긴다 {추론}.",
+     "**급하면 먼저 막기** — 고치기 전까지 접근 제한·WAF 규칙 같은 임시 보호를 건다 {추론}.",
+     "**외부 제보와 이어짐** — 쿠팡은 외부 연구자가 취약점을 제보하는 창구(bugbounty@coupang.com)를 운영한다. 밖에서 들어온 제보도 같은 흐름으로 처리된다 {추론}.[10]",
+     "**닫혔는지 다시 확인** — 조치 뒤 밖에서 다시 훑어 실제로 사라졌는지 본다(CTEM 의 검증 단계).[22]"
+    ]
+   },
+   "how_far": "직접 서버를 끄는 권한은 보통 없습니다. **설득과 기한 관리, 다시 확인**까지가 몫입니다 {추론}.",
+   "refs": [
+    10,
+    22
+   ],
+   "study": [
+    "coupang-vdp",
+    "nist-800-115"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ASM 솔루션 구축 및 운영: 상용 ASM 솔루션을 도입 및 운영하는 동시에 자체적인 Attack Surface Discovery 도구를 구축하여 활용합니다.",
+   "short": "사서 쓰는 ASM 제품을 굴리면서, 제품이 못 찾는 부분은 직접 만든 도구로 메운다.",
+   "why": "상용 ASM 은 회사 이름·대표 도메인을 넣으면 인터넷 전체에서 관련 자산을 찾아 줍니다. 하지만 사내 맥락(어느 팀 것인지, 클라우드 계정 안쪽 정보)은 모릅니다. 그래서 오픈소스(Amass·ProjectDiscovery 도구들)나 자체 스크립트로 보완하는 경우가 많습니다.[13][31] {추론}",
+   "actually": {
+    "items": [
+     "**제품 운영** — 시작 도메인·IP 대역(씨앗) 관리, 오탐(우리 것이 아닌데 우리 것으로 잡힌 자산) 걸러내기, 경보 기준 정하기 {추론}.",
+     "**자체 도구** — 하위 도메인 찾기(subfinder·Amass) → 살아 있는 웹 확인(httpx) → 알려진 취약 패턴 확인(nuclei 템플릿)처럼 단계를 잇는다.[13][31]",
+     "**두 결과 대조** — 제품만 찾은 것, 우리 도구만 찾은 것을 비교해 서로의 빈칸을 메운다 {추론}."
+    ]
+   },
+   "how_far": "상용 제품 이름을 아는 것보다 **'이 제품이 무엇을 못 보나'를 설명하고 그 칸을 메우는 도구를 만들 수 있나**가 핵심입니다 {추론}.",
+   "refs": [
+    13,
+    31
+   ],
+   "study": [
+    "amass",
+    "pd-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ASM 자동화 체계 구축: 공격 표면 식별을 효율화하기 위해 프로세스를 자동화하고, 보안 솔루션과의 연동 체계를 마련합니다.",
+   "short": "찾기 → 대조 → 점수 → 티켓까지를 사람 손 없이 돌게 엮고, 다른 보안 시스템에 결과를 넘긴다.",
+   "why": "자산 지도는 매일 바뀌므로 손으로는 못 따라갑니다. BOD 23-01 도 탐색과 결과 보고를 자동으로 하라고 정했습니다.[12]",
+   "flows": [
+    {
+     "caption": "보통의 ASM 자동화 흐름 {추론}[12][22]",
+     "steps": [
+      "범위 · 시작 도메인·IP 대역·클라우드 계정",
+      "찾기 · CT·DNS·포트·클라우드 API",
+      "대조 · 자산 대장과 비교, 주인 붙이기",
+      "점수 · 취약점 × 중요도",
+      "넘기기 · 티켓·SIEM·취약점 관리 도구",
+      "확인 · 다시 훑어 닫혔나"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**정해진 시간에 돌기** — 클라우드 함수·예약 작업으로 매일 또는 매주 실행한다 {추론}.",
+     "**연동** — 결과를 SIEM(보안 로그 모음)·취약점 관리·티켓 시스템에 API 로 보낸다. 같은 조직의 탐지 팀이 '새로 열린 관리 화면'을 경보 조건으로 쓸 수 있다 {추론}.[3]",
+     "**달라진 것만** — 어제 목록과 비교해 새로 생긴 것·바뀐 것만 알린다 {추론}."
+    ]
+   },
+   "refs": [
+    3,
+    12,
+    22
+   ],
+   "study": [
+    "bod-2301",
+    "boto3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "사이버 보안 위협 식별/대응/점검/관리 분야 실무 경력 5년 이상이신 분 (이 중 공격 표면 관리 관련 업무 경력 2년 이상 선호)",
+   "short": "보안 실무 5년이 문턱이고, 그중 ASM 2년은 있으면 좋은 정도다.",
+   "why": "제목이 Senior ~ Staff 라 스스로 범위를 정하고 다른 팀을 움직이는 수준을 기대합니다. 같은 자리의 리멤버 공고도 경력 5년 이상·학사 이상으로 적었습니다.[2]",
+   "how_far": "'ASM 2년'은 선호라 필수가 아닙니다. 모의해킹·취약점 점검·관제처럼 '밖에서 보는 눈'을 쓴 경력이면 이어서 설명할 수 있습니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "ASM 솔루션 활용 기술: 상용 ASM 솔루션 도입 및 운영 경험이 있으신 분",
+   "short": "ASM 제품을 골라 들여오고 매일 굴려 본 경험 — 업무 다섯째 줄 그대로다.",
+   "why": "업무에 상용 ASM 도입·운영이 명시돼 있습니다.[1] 제품 운영은 결국 '씨앗(시작 도메인·IP) 관리'와 '오탐 걸러내기'의 반복입니다 {추론}.",
+   "how_far": "제품 경험이 없으면 오픈소스로 같은 흐름(찾기 → 확인 → 목록 관리)을 만들어 보고 '제품을 고를 때 무엇을 보겠나'를 말할 수 있는 정도가 최소선입니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "amass",
+    "pd-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "스캐너 및 스크립트 개발: 공격자 관점에서 스캐너 또는 스크립트 개발 경험이 있으신 분 (AI IDE 활용 가능)",
+   "short": "'공격자라면 무엇부터 볼까'를 코드로 옮긴 경험 — 도구가 없으면 직접 짠다.",
+   "why": "제품이 못 보는 칸을 자체 도구로 메워야 하기 때문입니다.[1] 'AI IDE 활용 가능'은 코딩 도우미를 써도 된다는 뜻이라, 손으로 다 짜는 속도보다 **무엇을 찾을지 설계하는 능력**을 본다는 신호입니다 {추론}.",
+   "actually": {
+    "items": [
+     "하위 도메인 목록을 받아 살아 있는 웹을 찾고 제목·서버 헤더를 모으는 스크립트 {추론}.",
+     "알려진 노출 경로(`/.git/HEAD`, 백업 파일, 관리 화면)를 확인하는 점검 템플릿.[11][31]",
+     "같은 요청을 수천 곳에 보내므로 동시 처리·속도 제한·재시도를 다룬다 {추론}."
+    ]
+   },
+   "how_far": "회사 자산·허가된 범위 안에서만 돌리는 것이 전제입니다.[20] 공격 코드를 새로 만드는 수준이 아니라 **'찾기'를 빠르고 정확하게** 하는 수준입니다 {추론}.",
+   "refs": [
+    1,
+    11,
+    20,
+    31
+   ],
+   "study": [
+    "bhp2",
+    "pd-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "자동화 역량: AWS 리소스와 Python을 활용하여 API 연동 및 공격 표면 식별 도구 제작 등 업무 자동화 스크립트를 효율적으로 작성할 수 있는 분",
+   "short": "AWS 위에서 Python 으로 '찾기·대조·알림' 스크립트를 짜고 돌릴 수 있어야 한다.",
+   "why": "업무 여섯째 줄(자동화)의 실제 도구가 AWS 와 Python 이라는 뜻입니다.[1] 클라우드 자원은 API 로 목록을 뽑을 수 있어, 밖에서 찾은 것과 계정 안 목록을 맞춰 보는 데 씁니다.[32]",
+   "level": {
+    "basic": "Python 으로 HTTP 요청·JSON 처리·파일 입출력, AWS CLI 로 자원 조회",
+    "work": "boto3 로 여러 계정·리전의 공인 IP·로드밸런서·DNS 레코드 수집, 예약 실행, 결과를 API 로 보내기",
+    "team": "수천 개 자산을 빠르게 도는 동시 처리, 실패 재시도, 최소 권한의 읽기 전용 역할로 돌리기 {추론}"
+   },
+   "refs": [
+    1,
+    32
+   ],
+   "study": [
+    "boto3",
+    "aws-wa-sec",
+    "flaws"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 IT 자산 및 보안 아키텍처에 대한 이해: 클라우드(AWS, Azure, GCP 등), 온프레미스(On-premises), IoT, User Endpoint, DNS, Admin Console 등에 대한 구조적 이해",
+   "short": "찾은 것이 무엇인지 알아봐야 해서 — 클라우드·자체 서버·기기·PC·DNS·관리 화면의 생김새를 안다.",
+   "why": "입구의 종류마다 노출되는 모습이 다릅니다. 클라우드는 공개 버킷·공인 IP, 자체 서버는 IP 대역, IoT 는 기본 관리 화면, DNS 는 남은 레코드처럼요.[11][14][15] 쿠팡은 물류센터·사무실·해외 거점이 있어 종류가 많습니다 {추론}.",
+   "how_far": "각각을 운영할 줄 알 필요는 없고, **응답 한 줄을 보고 '이건 무엇이고 누가 관리할 것'을 짐작할 수 있는** 수준입니다 {추론}.",
+   "refs": [
+    11,
+    14,
+    15
+   ],
+   "study": [
+    "aws-wa-sec",
+    "aws-dangling"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크 프로토콜(TCP/IP, DNS, HTTP/S, RDP 등) 및 웹/클라우드 아키텍처 보안에 대한 이해",
+   "short": "포트가 열렸다·DNS 가 이렇게 풀린다·인증서에 이 이름이 있다를 읽어 내는 기초다.",
+   "why": "ASM 이 다루는 증거가 전부 프로토콜 응답입니다 — TCP 연결 여부, DNS 레코드, HTTP 응답·인증서.[11][21] RDP 처럼 원격 접속 포트가 인터넷에 열려 있으면 공격자의 첫 침투 경로가 됩니다.[19]",
+   "level": {
+    "basic": "TCP 3단계 연결·포트, DNS 레코드 종류(A·CNAME·NS), HTTP 상태 코드·헤더, TLS 인증서",
+    "work": "CDN·로드밸런서 뒤의 진짜 서버 구분, 가상 호스트, 인증서 투명성 로그 읽기",
+    "team": "클라우드 네트워크 구조(공인/사설 구간, 보안 그룹)와 외부 노출의 관계 {추론}"
+   },
+   "refs": [
+    11,
+    19,
+    21
+   ],
+   "study": [
+    "net-intro-ko",
+    "netsec-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "사이버 공격 방법에 대한 이해: 공격 경로 탐색, 취약점 악용, 악성코드 배포 및 실행, 측면 이동, DDoS, 공급망 공격 등 실전 공격 메커니즘에 대한 이해",
+   "short": "입구 하나가 열렸을 때 공격자가 어디까지 갈 수 있나를 알아야 순위를 매길 수 있다.",
+   "why": "우선순위는 '이 입구로 무엇까지 닿나'로 정해집니다.[1] ATT&CK 은 이 단계들을 정찰·첫 침투·실행·측면 이동(안에서 옆 서버로 옮겨 가기)·영향 같은 칸으로 정리합니다.[19]",
+   "actually": {
+    "items": [
+     "**공격 경로** — 노출된 관리 화면 → 기본 비밀번호 → 내부망 접근처럼 입구에서 중요한 자산까지의 연결 {추론}.",
+     "**취약점 악용** — 공개 웹 서비스의 취약점 악용은 ATT&CK 에서 대표적인 첫 침투 기법이다.[19]",
+     "**DDoS** — 외부에 열린 서비스가 많을수록 넘칠 수 있는 입구도 많다(SYN 폭주 같은 기본 원리).[23]",
+     "**공급망** — 우리가 쓰는 외부 스크립트·SaaS·협력사 시스템도 넓은 의미의 공격 표면이다.[19]"
+    ]
+   },
+   "refs": [
+    1,
+    19,
+    23
+   ],
+   "study": [
+    "attack",
+    "bbb"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 보안 전문성: 대규모 퍼블릭 클라우드 환경(AWS, Azure, GCP 등)에서의 인프라 운영 이해도 및 보안 진단 경험이 있으신 분",
+   "short": "외부 노출의 상당수가 클라우드 설정 실수에서 나와서 — 공개 버킷·열린 보안 그룹 같은 것.",
+   "why": "클라우드에서는 누구나 몇 분 만에 공인 주소를 가진 자원을 만들 수 있어 섀도우 IT 가 쉽게 생깁니다 {추론}. AWS 도 보안 원칙에서 자원의 노출 범위를 좁히고 탐지를 자동화하라고 권합니다.[32]",
+   "refs": [
+    32
+   ],
+   "study": [
+    "aws-wa-sec",
+    "flaws"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "관련 보안 실무 역량: 버그바운티 프로그램 참여, 주요 취약점(CVE) 발굴 및 제보, 또는 모의해킹 프로젝트 경험, 침해 사고 대응, 위협 헌팅 및 탐지, 보안 솔루션 운영, 보안 아키텍처 리뷰, 사이버 위협 인텔리전스 실무 경험이 있으신 분",
+   "short": "이 중 하나라도 '밖에서 찾고, 제보하고, 고치게 한' 경험이면 이야깃거리가 된다.",
+   "why": "버그바운티·모의해킹의 첫 단계가 정찰(recon), 즉 공격 표면 찾기입니다.[25] 쿠팡도 외부 제보 창구를 운영해 제보 절차·금지 행위(남의 계정 시험 금지 등)를 정해 두었습니다.[10]",
+   "how_far": "여러 개가 나열됐지만 '또는'입니다. 자기 경험 하나를 골라 **찾은 방법 → 영향 판단 → 제보·조치**로 설명할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    10,
+    25
+   ],
+   "study": [
+    "bbb",
+    "coupang-vdp",
+    "portswigger"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 인프라 경험: 복잡하고 방대한 IT 인프라 환경에서 보안 실무를 수행해 보신 분",
+   "short": "자산이 수만 개면 '하나씩 확인'이 안 된다 — 규모에서 오는 문제를 겪어 봤나를 본다.",
+   "why": "쿠팡 보안 조직이 200명이 넘는 것 자체가 지킬 범위가 넓다는 뜻입니다.[7] 규모가 커지면 오탐 걸러내기·주인 찾기·자동화가 기술보다 큰 문제가 됩니다 {추론}.",
+   "refs": [
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "영어 능력을 보유하여 글로벌 환경에서 소통 가능하신 분",
+   "short": "본사·대만·미국 팀과 일하고 도구 문서가 영어라서 — 리멤버 공고는 중급 이상을 '자격'에 넣었다.",
+   "why": "쿠팡 보안 조직에는 대만·미국 거점이 있습니다.[5] 같은 자리의 리멤버 공고는 중급 이상 영어를 자격요건에, 한국어·영어 유창을 우대사항에 적었습니다.[2]",
+   "refs": [
+    2,
+    5
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "모의해킹·버그바운티에서 정찰이 제일 재밌었던 사람",
+   "흩어진 목록을 합치고 중복을 없애는 일이 즐거운 사람",
+   "다른 팀에 '이거 닫아 주세요'를 근거로 설득할 수 있는 사람",
+   "Python 으로 반복 작업을 없애는 걸 좋아하는 사람[1]"
+  ],
+  "hard": [
+   "찾은 것의 대부분은 오탐이거나 위험이 낮다 — 걸러내는 일이 길다 {추론}",
+   "고치는 권한은 다른 팀에 있어 기다림과 재촉이 많다[22]",
+   "경력 5년 이상·시니어 자리라 주니어에게는 문이 좁다[1][2]",
+   "2025년 사고 뒤라 보안 조직 전체에 압박이 큰 시기다[8]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "회사 이름과 대표 도메인 하나만 주면, 우리 외부 자산을 어떻게 찾겠어요?",
+   "a": "CT 로그·DNS·IP 대역·클라우드 API 를 합치는 순서와 범위 확인.[11][13][21]"
+  },
+  {
+   "q": "하위 도메인이 S3 웹사이트를 가리키는데 버킷이 없습니다. 무엇이 위험하고 어떻게 막나요?",
+   "a": "서브도메인 탈취와 레코드 정리 절차.[14][15]"
+  },
+  {
+   "q": "CVSS 9.8 인 테스트 위키와 7.5 인 결제 관리 화면, 무엇부터 고치게 하겠어요?",
+   "a": "KEV·EPSS·업무 중요도를 같이 보는 순위.[16][17]"
+  },
+  {
+   "q": "상용 ASM 이 못 찾는 자산은 어떤 것이고, 그걸 어떻게 메우겠어요?",
+   "a": "제품의 빈칸과 자체 도구 — 업무 다섯째 줄.[1][31]"
+  },
+  {
+   "q": "개발팀이 테스트 서버를 '다음 분기에' 닫겠다고 합니다. 어떻게 하겠어요?",
+   "a": "임시 보호와 기한 관리 — 실행 단계가 멈추는 이유.[22]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior ~ Staff Security Engineer (Attack Surface Identification)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8160905",
+   "kind": "posting",
+   "date": "2026-11-25",
+   "note": "직무 소개·업무 6줄·자격 7줄·우대 4줄·전형(서류 → 직무 적합성 → 핵심 역량 → 합격). 근무지 'Seoul', 연봉·복지 표기 없음"
+  },
+  {
+   "n": 2,
+   "title": "리멤버 · [쿠팡] Senior Security Engineer (Attack Surface Identification)",
+   "url": "https://career.rememberapp.co.kr/job/posting/337469",
+   "kind": "posting",
+   "note": "같은 자리 — 경력 5년 이상·학사 이상·연봉협의·서울/경기, 영어 중급 이상을 자격요건에, 복지 태그(금액 없음)"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · [쿠팡] CTEM Platform Engineer (GHOST)",
+   "url": "https://www.wanted.co.kr/wd/390009",
+   "kind": "posting",
+   "note": "같은 보안 조직 — 장비 로그 → ATT&CK 탐지 범위, 탐지 빈칸 분석"
+  },
+  {
+   "n": 4,
+   "title": "원티드 · [쿠팡] Senior~Staff, Security Engineer (Web Security)",
+   "url": "https://www.wanted.co.kr/wd/394615",
+   "kind": "posting",
+   "note": "같은 회사 보안 자리 — 근무지 아차산로 412 이스트폴 타워 A"
+  },
+  {
+   "n": 5,
+   "title": "Forrester · Inside An E-Commerce Giant’s Threat Intelligence Strategy",
+   "url": "https://www.forrester.com/blogs/inside-an-e-commerce-giants-threat-intelligence-strategy/",
+   "kind": "company",
+   "date": "2025-10-05",
+   "note": "쿠팡 위협 관리 팀장 인터뷰 — 2024년 중반 CISO 밑에 위협 정보·헌팅·공격 모의·탐지 엔지니어링, 대만 확장"
+  },
+  {
+   "n": 6,
+   "title": "보안뉴스 · [ISEC 2025] 쿠팡 ‘레드팀-위협정보팀 협업 기반 선제적 보안’",
+   "url": "https://www.boannews.com/news/articleView.html?idxno=138898",
+   "kind": "company",
+   "date": "2025-08-26",
+   "note": "쿠팡 디렉터 키노트 기사 — 레드팀이 탐지 안 된 약점 찾기, 위협 정보로 탐지·제거"
+  },
+  {
+   "n": 7,
+   "title": "Board Cybersecurity · Coupang 10-K(2025 회계연도) 사이버보안 항목 정리",
+   "url": "https://www.board-cybersecurity.com/annual-reports/tracker/20260226-coupang-inc-cybersecurity-10k",
+   "kind": "reference",
+   "date": "2026-02-26",
+   "note": "10-K 원문 대신 정리 페이지 — 보안 조직 200명 이상, ISO 27001·27017·27701·ISMS-P"
+  },
+  {
+   "n": 8,
+   "title": "바이라인네트워크 · 쿠팡 3367만건 고객정보 유출 공식 확인",
+   "url": "https://byline.network/2026/02/10-611/",
+   "kind": "news",
+   "date": "2026-02-10",
+   "note": "민관합동조사단 결과 — 위·변조 토큰, 비정상 접속 미탐지·미차단"
+  },
+  {
+   "n": 9,
+   "title": "머니투데이 · 조사단이 밝힌 쿠팡의 잘못",
+   "url": "https://www.mt.co.kr/tech/2026/02/10/2026021013535454383",
+   "kind": "news",
+   "date": "2026-02-10",
+   "note": "정상 발급 검증 체계 부재, 서명키 관리"
+  },
+  {
+   "n": 10,
+   "title": "쿠팡 · 취약점 공개 정책(VDP)",
+   "url": "https://www.coupang.com/np/policies/vdp",
+   "kind": "company",
+   "note": "제보 창구 bugbounty@coupang.com, 재현 정보, 본인 계정만·데이터 내려받기·변경 금지"
+  },
+  {
+   "n": 11,
+   "title": "OWASP WSTG · WSTG-INFO-04 Attack Surface Identification",
+   "url": "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/01-Information_Gathering/04-Attack_Surface_Identification",
+   "kind": "reference",
+   "note": "최신판에서 '웹 서버의 앱 나열'을 '공격 표면 식별'로 바꿈 — DNS·하위 도메인·가상 호스트·비표준 포트·CT 로그"
+  },
+  {
+   "n": 12,
+   "title": "CISA · BOD 23-01 Improving Asset Visibility and Vulnerability Detection on Federal Networks",
+   "url": "https://www.cisa.gov/binding-operational-directive-23-01",
+   "kind": "reference",
+   "date": "2022-10-03",
+   "note": "미국 연방 민간기관 대상 — 자산 탐색 7일마다, 취약점 확인 14일마다, 요청 72시간 안 착수, 결과 자동 보고"
+  },
+  {
+   "n": 13,
+   "title": "OWASP Amass",
+   "url": "https://github.com/owasp-amass/amass",
+   "kind": "reference",
+   "note": "오픈소스 공격 표면 지도·외부 자산 찾기 — CT 로그·DNS·대입"
+  },
+  {
+   "n": 14,
+   "title": "EdOverflow · can-i-take-over-xyz",
+   "url": "https://github.com/EdOverflow/can-i-take-over-xyz",
+   "kind": "reference",
+   "note": "지운 서비스를 가리키는 하위 도메인이 가로채지는 서브도메인 탈취, 서비스별 가능 여부(커뮤니티 관리)"
+  },
+  {
+   "n": 15,
+   "title": "AWS Route 53 · Protection from dangling delegation records",
+   "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/protection-from-dangling-dns.html",
+   "kind": "reference",
+   "note": "남은 NS 위임 레코드 위험과 예방(영역 삭제 때 위임도 지우기, DNSSEC)"
+  },
+  {
+   "n": 16,
+   "title": "CISA · Known Exploited Vulnerabilities Catalog",
+   "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "kind": "reference",
+   "note": "실제 악용이 확인된 취약점 목록"
+  },
+  {
+   "n": 17,
+   "title": "FIRST · Exploit Prediction Scoring System (EPSS)",
+   "url": "https://www.first.org/epss/",
+   "kind": "reference",
+   "note": "30일 안에 악용될 확률 추정"
+  },
+  {
+   "n": 18,
+   "title": "FIRST · CVSS v4.0",
+   "url": "https://www.first.org/cvss/v4-0/",
+   "kind": "reference",
+   "note": "취약점 심각도 점수 체계"
+  },
+  {
+   "n": 19,
+   "title": "MITRE ATT&CK",
+   "url": "https://attack.mitre.org/",
+   "kind": "reference",
+   "note": "정찰(TA0043)·첫 침투(공개 앱 악용 T1190, 외부 원격 서비스 T1133)·측면 이동(TA0008)·공급망(T1195)"
+  },
+  {
+   "n": 20,
+   "title": "NIST SP 800-115 · Technical Guide to Information Security Testing and Assessment",
+   "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
+   "kind": "reference",
+   "date": "2008-09",
+   "note": "점검 계획·범위·허가, 대상 식별·취약점 확인 기법"
+  },
+  {
+   "n": 21,
+   "title": "RFC 9162 · Certificate Transparency Version 2.0",
+   "url": "https://www.rfc-editor.org/rfc/rfc9162",
+   "kind": "reference",
+   "date": "2021-12",
+   "note": "발급된 인증서를 공개 장부에 남기는 구조"
+  },
+  {
+   "n": 22,
+   "title": "IBM · What is continuous threat exposure management (CTEM)?",
+   "url": "https://www.ibm.com/think/topics/ctem",
+   "kind": "reference",
+   "note": "가트너 CTEM 5단계(범위·찾기·우선순위·검증·실행) 해설 — 가트너 원문 대신 해설 글"
+  },
+  {
+   "n": 23,
+   "title": "RFC 4987 · TCP SYN Flooding Attacks and Common Mitigations",
+   "url": "https://www.rfc-editor.org/rfc/rfc4987",
+   "kind": "reference",
+   "date": "2007"
+  },
+  {
+   "n": 24,
+   "title": "OWASP Top 10",
+   "url": "https://owasp.org/www-project-top-ten/",
+   "kind": "reference",
+   "note": "보안 설정 오류·취약한 구성 요소 등"
+  },
+  {
+   "n": 25,
+   "title": "Bug Bounty Bootcamp (Vickie Li · No Starch Press · 2021)",
+   "url": "https://nostarch.com/bug-bounty-bootcamp",
+   "kind": "reference",
+   "date": "2021",
+   "note": "웹 취약점 찾기·제보 — 앞부분이 정찰"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 · 쿠팡",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "공공데이터 기반 초봉·평균, 기준 연도 없음"
+  },
+  {
+   "n": 27,
+   "title": "자소설닷컴 · 네이버",
+   "url": "https://jasoseol.com/companies/511",
+   "kind": "reference",
+   "note": "같은 방식의 비교 값"
+  },
+  {
+   "n": 28,
+   "title": "원티드 · 쿠팡 회사 정보",
+   "url": "https://www.wanted.co.kr/company/53",
+   "kind": "reference",
+   "note": "평균연봉"
+  },
+  {
+   "n": 29,
+   "title": "원티드 · 지마켓 회사 정보",
+   "url": "https://www.wanted.co.kr/company/373",
+   "kind": "reference",
+   "note": "같은 방식의 비교 값"
+  },
+  {
+   "n": 30,
+   "title": "원티드 · [쿠팡] 카탈로그 Taxonomy 및 데이터 분석 PM (혜택 및 복지 칸)",
+   "url": "https://www.wanted.co.kr/wd/396324",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 다른 공고의 복리후생 — 금액이 적힌 항목"
+  },
+  {
+   "n": 31,
+   "title": "ProjectDiscovery 문서 (subfinder · httpx · nuclei)",
+   "url": "https://docs.projectdiscovery.io/",
+   "kind": "reference",
+   "note": "하위 도메인 찾기·웹 확인·템플릿 점검 오픈소스"
+  },
+  {
+   "n": 32,
+   "title": "AWS Well-Architected · Security Pillar",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+   "kind": "reference",
+   "note": "노출 범위 줄이기·탐지 자동화"
+  },
+  {
+   "n": 33,
+   "title": "아시아경제 · 이스트폴(구의역 KT 부지 개발)과 쿠팡 입주",
+   "url": "https://www.asiae.co.kr/en/article/2025081219080020350",
+   "kind": "news",
+   "date": "2025-08",
+   "note": "구의역 인근, 쿠팡 직원 약 7,000명 입주"
+  }
+ ],
+ "caveat": "이 팀(공격 표면 식별)이 어떤 상용 ASM 제품·도구를 쓰는지, 몇 명인지는 공개된 발표·글이 없습니다(회사 발표 영상도 찾지 못했다). 같은 보안 조직의 인터뷰·키노트 기사·연차보고서와 취약점 공개 정책으로 회사 쪽 맥락을 보였고, 일의 방법은 OWASP·CISA·NIST·오픈소스 도구 문서로 '보통 이런 것'을 보였습니다. 예제 코드는 모두 가상 값이며, 외부 훑기는 회사 자산·허가 범위 안에서만 합니다.",
+ "resources": [
+  {
+   "id": "coupang-isec",
+   "title": "[ISEC 2025] 쿠팡 ‘레드팀-위협정보팀 협업 기반 선제적 보안’",
+   "by": "보안뉴스 · 2025-08",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.boannews.com/news/articleView.html?idxno=138898",
+   "why": "이 자리가 속한 보안 조직이 '먼저 찾아 없애기'를 어떻게 말하는지 — 면접 전에 읽는다."
+  },
+  {
+   "id": "coupang-vdp",
+   "title": "쿠팡 취약점 공개 정책",
+   "by": "쿠팡",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.com/np/policies/vdp",
+   "why": "외부 제보가 어떤 조건으로 들어오는지 — 협업·조치 줄과 버그바운티 우대의 회사 쪽 모습."
+  },
+  {
+   "id": "wstg-asi",
+   "title": "OWASP WSTG · Attack Surface Identification (WSTG-INFO-04)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/01-Information_Gathering/04-Attack_Surface_Identification",
+   "why": "공고 제목과 같은 이름의 점검 항목 — 하위 도메인·가상 호스트·비표준 포트·CT 로그로 숨은 앱 찾기."
+  },
+  {
+   "id": "bod-2301",
+   "title": "BOD 23-01 · Improving Asset Visibility and Vulnerability Detection",
+   "by": "CISA · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.cisa.gov/binding-operational-directive-23-01",
+   "why": "'지속 모니터링'을 주기·범위·보고로 정한 공공 기준 — 자동화 체계를 설계할 때 잣대."
+  },
+  {
+   "id": "amass",
+   "title": "OWASP Amass",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/owasp-amass/amass",
+   "why": "외부 자산 찾기 오픈소스의 표준 — 상용 ASM 이 하는 일을 손으로 재현해 본다."
+  },
+  {
+   "id": "pd-docs",
+   "title": "ProjectDiscovery 문서 (subfinder · httpx · nuclei)",
+   "by": "ProjectDiscovery",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.projectdiscovery.io/",
+   "why": "찾기 → 살아 있는 웹 확인 → 템플릿 점검을 잇는 자체 Discovery 도구의 재료."
+  },
+  {
+   "id": "can-takeover",
+   "title": "can-i-take-over-xyz",
+   "by": "EdOverflow",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/EdOverflow/can-i-take-over-xyz",
+   "why": "주인 없는 DNS(서브도메인 탈취)가 서비스마다 가능한지 — 섀도우 IT 줄의 대표 사례."
+  },
+  {
+   "id": "aws-dangling",
+   "title": "Protection from dangling delegation records in Route 53",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/protection-from-dangling-dns.html",
+   "why": "DNS 위임이 남을 때 생기는 위험과 막는 절차 — DNS 자산 이해 요건."
+  },
+  {
+   "id": "kev",
+   "title": "Known Exploited Vulnerabilities Catalog",
+   "by": "CISA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "why": "'실제로 악용 중'인 취약점 목록 — 조치 우선순위의 첫 기준."
+  },
+  {
+   "id": "epss",
+   "title": "Exploit Prediction Scoring System (EPSS)",
+   "by": "FIRST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.first.org/epss/",
+   "why": "악용 확률로 줄 세우기 — 심각도만 보는 순위의 빈칸을 메운다."
+  },
+  {
+   "id": "cvss4",
+   "title": "CVSS v4.0",
+   "by": "FIRST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.first.org/cvss/v4-0/",
+   "why": "취약점 심각도 점수를 읽는 법 — 평가·우선순위 줄."
+  },
+  {
+   "id": "attack",
+   "title": "MITRE ATT&CK",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://attack.mitre.org/",
+   "why": "정찰·첫 침투·측면 이동·공급망을 한 표로 — 공격 방법 이해 요건의 뼈대."
+  },
+  {
+   "id": "nist-800-115",
+   "title": "NIST SP 800-115 · Technical Guide to Information Security Testing and Assessment",
+   "by": "NIST · 2008",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
+   "why": "점검 범위·허가·대상 식별 절차 — 밖에서 훑을 때 지켜야 할 선."
+  },
+  {
+   "id": "bbb",
+   "title": "Bug Bounty Bootcamp",
+   "by": "Vickie Li · No Starch Press · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://nostarch.com/bug-bounty-bootcamp",
+   "why": "정찰(공격 표면 찾기)부터 제보까지 — 스캐너 개발과 버그바운티 우대를 같이 채운다."
+  },
+  {
+   "id": "bhp2",
+   "title": "Black Hat Python, 2nd Edition",
+   "by": "Justin Seitz · Tim Arnold · No Starch Press · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://nostarch.com/black-hat-python2E",
+   "why": "Python 3 로 네트워크 도구를 직접 짜기 — '공격자 관점의 스크립트' 요건."
+  },
+  {
+   "id": "boto3",
+   "title": "Boto3 문서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://boto3.amazonaws.com/v1/documentation/api/latest/index.html",
+   "why": "AWS 자원 목록을 Python 으로 뽑는 공식 SDK — 자동화 요건 그대로."
+  },
+  {
+   "id": "aws-wa-sec",
+   "title": "AWS Well-Architected · Security Pillar",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+   "why": "클라우드에서 노출을 줄이는 원칙 — 클라우드 보안 우대."
+  },
+  {
+   "id": "flaws",
+   "title": "flAWS (AWS 보안 실습)",
+   "by": "Scott Piper",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "http://flaws.cloud/",
+   "why": "공개 버킷·잘못된 권한을 직접 찾아 보는 무료 실습 — 클라우드 진단 감각."
+  },
+  {
+   "id": "portswigger",
+   "title": "Web Security Academy",
+   "by": "PortSwigger",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://portswigger.net/web-security",
+   "why": "웹 취약점을 실습실에서 찾아 보기 — 버전·경로 노출이 실제로 무엇으로 이어지는지."
+  },
+  {
+   "id": "net-intro-ko",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "by": "고재성",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "TCP/IP·DNS·로드밸런서를 한국어로 처음부터 — 프로토콜 요건의 바탕."
+  },
+  {
+   "id": "netsec-ko",
+   "title": "처음 배우는 네트워크 보안",
+   "by": "장상근 · 한빛미디어 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942552",
+   "why": "방화벽·IDS·관제의 흐름 — 찾은 입구를 '보호 대책'으로 막을 때 무엇이 있는지."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "입구의 종류 알기",
+   "time": "1~2주",
+   "goal": "TCP·DNS·HTTP·인증서로 '밖에서 무엇이 보이나'를 설명하고, 공격 표면 식별 점검 항목을 읽는다.",
+   "resources": [
+    "net-intro-ko",
+    "wstg-asi",
+    "attack"
+   ],
+   "task": "가상 회사 도메인 하나를 정해 A·CNAME·NS 레코드, 열린 포트, 인증서 이름이 각각 무엇을 드러내는지 한 장 표로 만든다."
+  },
+  {
+   "title": "자산 지도 만들기",
+   "time": "2~3주",
+   "goal": "CT 로그·DNS·포트 확인을 합쳐 중복 없는 자산 목록을 만든다.",
+   "resources": [
+    "amass",
+    "pd-docs",
+    "nist-800-115"
+   ],
+   "task": "본인이 가진 도메인(또는 실습용 도메인)에만 Amass·subfinder·httpx 를 돌리고, 결과를 합쳐 이름·IP·제목·서버 헤더 표를 만든다. 위 CT 예제처럼 '대장에 없음'을 뽑는다."
+  },
+  {
+   "title": "빈틈 찾기와 클라우드",
+   "time": "2~3주",
+   "goal": "주인 없는 DNS·공개 버킷·열린 관리 화면을 찾아 원리를 설명한다.",
+   "resources": [
+    "can-takeover",
+    "aws-dangling",
+    "flaws",
+    "boto3"
+   ],
+   "task": "flAWS 실습을 끝내고, 개인 AWS 계정에서 boto3 로 공인 IP·S3 공개 설정·Route 53 레코드를 뽑아 '레코드는 있는데 자원이 없는' 줄을 찾는 스크립트를 만든다."
+  },
+  {
+   "title": "순위 매기고 고치게 하기",
+   "time": "1~2주",
+   "goal": "KEV·EPSS·CVSS 와 업무 중요도로 순위를 정하고, 담당 팀에 넘길 티켓을 쓴다.",
+   "resources": [
+    "kev",
+    "epss",
+    "cvss4",
+    "bbb"
+   ],
+   "task": "2단계 목록에 가상 취약점·중요도를 붙여 위 우선순위 예제로 줄 세우고, 상위 3건의 티켓(위험·근거·조치·기한·다시 확인 방법)을 쓴다."
+  },
+  {
+   "title": "자동화 (계속)",
+   "time": "계속",
+   "goal": "찾기 → 대조 → 점수 → 알림을 예약 실행하고, 어제와 달라진 것만 알린다.",
+   "resources": [
+    "bod-2301",
+    "aws-wa-sec",
+    "bhp2"
+   ],
+   "task": "2~4단계 스크립트를 하나로 묶어 매일 돌게 하고, 전날 결과와 비교해 새로 생긴 자산만 메시지로 보내는 작은 파이프라인을 만든다(읽기 전용 권한으로)."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 표기는 없다(연봉협의). 집계 사이트 기준 쿠팡(주) 초봉 **약 3,531만원**·평균 **약 5,175만원** — 물류·운영 인력이 섞인 회사 전체 값이라 경력 5년 이상 시니어 보안 엔지니어와는 거리가 크다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 쿠팡 회사 페이지. 기준 연도·직군 구분이 없다 [26]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "note": "같은 페이지의 평균. 경력직·전 직군이 섞인 값 [26]"
+   },
+   {
+    "label": "직원 평균 연봉 (원티드)",
+    "value": "5,856만원",
+    "amount": 5856,
+    "basis": "공공데이터 집계",
+    "note": "원티드 회사 페이지 표기, 기준일 표기 없음 [28]"
+   },
+   {
+    "label": "네이버 평균",
+    "value": "약 7,602만원",
+    "amount": 7602,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 같은 방식의 값 [27]"
+   },
+   {
+    "label": "지마켓 평균",
+    "value": "6,032만원",
+    "amount": 6032,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "원티드 같은 방식의 값 [29]"
+   }
+  ],
+  "how": "쿠팡(주)은 미국 상장사 쿠팡 Inc.의 국내 자회사라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **공시 숫자 없음**. 같은 자리의 리멤버 공고는 '연봉협의'다 [2]. 직급과 업무 범위는 후보자 경력으로 정하고 최종 합격 전에 알려 준다고 공고에 적혀 있다 [1]. 위 평균은 운영·물류 직군이 섞여 시니어 보안 경력직 연봉보다 낮게 나올 가능성이 크다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무",
+    "detail": "주 5일 유연근무제"
+   },
+   {
+    "name": "휴가",
+    "detail": "사유 없이 연차 사용, 반반차 제도"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"
+   },
+   {
+    "name": "쇼핑",
+    "detail": "쿠팡 구매금액 5% 캐시백(연 최대 400만원)"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "사내 기술 공유 스터디, 외국어·직무 교육 프로그램"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "휴게 공간, 커피·차·간식, 사내 식당"
+   },
+   {
+    "name": "그 밖의 표시",
+    "detail": "재택근무제·식대 지원·저녁 제공·성과급·스톡옵션·도서 구입비 지원·휴양시설(금액 표기 없음)"
+   }
+  ],
+  "note": "이 공고(그린하우스)에는 복지 칸이 없다 [1]. 위 금액·조건은 같은 회사 다른 공고의 '혜택 및 복지' 칸(2026-11) [30]이고, 반반차와 마지막 줄은 같은 자리 리멤버 공고의 복지 태그다 [2]. 회사 공통 항목으로 보이지만 이 팀에 그대로 적용되는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 본사 (이스트폴 타워)",
+  "address": "서울특별시 광진구 아차산로 412, 이스트폴 타워 A",
+  "postal": "05050",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 [33]",
+  "note": "이 공고의 근무지 표기는 'Seoul, South Korea' 뿐이고 [1], 리멤버 공고는 '서울·경기'다 [2]. 같은 회사 보안 공고가 근무지를 아차산로 412 이스트폴 타워 A 로 적었다 [4]."
+ }
+}

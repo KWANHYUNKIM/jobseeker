@@ -61,6 +61,7 @@
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7793770": "coupang-ai-foundations-senior-staff-mle-mtv",
   "ats-greenhouse:coupang:8386063": "coupang-app-infra-director-us",
+  "ats-greenhouse:coupang:8160905": "coupang-attack-surface-identification-senior-staff",
   "ats-greenhouse:coupang:8398431": "coupang-audit-ai-ops-analyst-bengaluru",
   "ats-greenhouse:coupang:8385253": "coupang-audit-ai-ops-pm-bengaluru",
   "ats-greenhouse:coupang:8275940": "coupang-catalog-quality-senior-pm",
@@ -126,6 +127,7 @@
   "ats-greenhouse:coupang:8094014": "coupang-taiwan-catalog-ai-tpm-director",
   "ats-greenhouse:coupang:8300309": "coupang-taiwan-security-engineering-director",
   "ats-greenhouse:coupang:8076295": "coupang-transportation-backend-senior-manager-bengaluru",
+  "ats-greenhouse:coupang:8206706": "coupang-web-security-engineer-detection-ops",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
   "wanted-389061": "datachain-senior-sre-stablecoin",
   "wanted-395987": "datax-software-engineer-japan",
@@ -1028,6 +1030,16 @@
    "lines": 19
   },
   {
+   "id": "coupang-attack-surface-identification-senior-staff",
+   "company": "쿠팡",
+   "role": "Senior ~ Staff Security Engineer",
+   "jobs": [
+    "ats-greenhouse:coupang:8160905"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 22
+  },
+  {
    "id": "coupang-audit-ai-ops-analyst-bengaluru",
    "company": "쿠팡 (Coupang)",
    "role": "Analyst, Audit AI OPS (벵갈루루)",
@@ -1622,6 +1634,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 29
+  },
+  {
+   "id": "coupang-web-security-engineer-detection-ops",
+   "company": "쿠팡",
+   "role": "시니어~스태프 웹 보안 엔지니어",
+   "jobs": [
+    "ats-greenhouse:coupang:8206706"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 25
   },
   {
    "id": "creationline-fullstack-sherpa-japan",
