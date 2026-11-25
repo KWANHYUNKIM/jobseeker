@@ -1,0 +1,1271 @@
+{
+ "id": "kakaomobility-security-operations-senior",
+ "company": "카카오모빌리티",
+ "role": "보안운영 시니어 엔지니어",
+ "team": "정보보안팀",
+ "jobs": [
+  "ats-greeting:kakaomobility:243388",
+  "ats-kakao:group:S-4775"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "카카오 T·카카오내비를 돌리는 서버·PC·네트워크·클라우드의 **보안 장비와 로그 체계를 새로 짜고 직접 운영**하는 10년 차 이상 자리입니다. 로드맵부터 장애 원인 분석까지 한 사람이 끌고 갑니다.[1]",
+  "env": "회사 자체 데이터센터(온프레미스)와 **구글 클라우드 GKE**를 같이 쓰는 멀티 클라우드이고[4][5], 공고는 AWS·Kubernetes도 함께 적었습니다.[1] 회사는 ISMS-P·ISO 27001 인증을 3년째 유지하고 있습니다.[6]",
+  "oneline": "보안 솔루션 담당자가 아니라 **보안 설계자 겸 운영 리더**. 클라우드·쿠버네티스 구조를 알고, 로그를 모아 원인을 끝까지 파는 사람이 맞습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "보안 아키텍처 및 단계별 도입 로드맵 수립 / 실행",
+   "short": "무엇을 어떤 순서로 막을지 전체 그림을 그리고, 1년·2년 단위로 나눠 실제로 깔아 가는 일.",
+   "why": "공고 맨 첫 줄이 '수립 / 실행'입니다. 문서만 쓰는 자리가 아니라 그린 그림을 직접 도입까지 끌고 가는 자리라는 뜻입니다.[1] 카카오 그룹 채용에 올라온 같은 공고도 이 줄을 업무 맨 앞에 둡니다.[2] 정보보호 공시를 보면 정보보호 전담 인력은 2024년 15.6명에서 2026년 13.1명으로 줄었고, IT 투자 대비 정보보호 투자 비율은 5% 안팎입니다.[6] 사람과 예산이 넉넉하지 않으니 **무엇부터 할지 순서를 정하는 일**이 중요해집니다 {추론}.",
+   "actually": {
+    "intro": "보안 로드맵은 보통 '지금 수준 → 목표 수준 → 사이 단계'로 짭니다. 카카오모빌리티의 실제 로드맵은 공개되지 않았고, 아래는 공개 기준이 권하는 방식입니다.",
+    "items": [
+     "**지금 수준 재기** — 미국 CISA 제로트러스트 성숙도 모델은 신원·기기·네트워크·애플리케이션·데이터 5개 기둥을 '전통 → 초기 → 고급 → 최적' 4단계로 잰다.[10] 국내 제로트러스트 가이드라인 2.0도 4단계 성숙도 모델과 도입 절차를 담았다.[11]",
+     "**빈칸 우선순위** — 이미 있는 장비(백신·방화벽 등)와 없는 칸을 표로 그리고, 인증 심사에서 지적될 칸·사고 나면 피해가 큰 칸부터 채운다 {추론}.",
+     "**단계 나누기** — 예: 1단계 계정·접속기록 정리 → 2단계 로그를 한곳에 모으기(SIEM) → 3단계 원격 접속을 제로트러스트 방식으로 바꾸기 {추론}.",
+     "**예산·인력과 맞추기** — 전담 인력 13명대 조직이라[6], 새 장비를 늘리기보다 자동화로 운영 부담을 줄이는 계획이 같이 들어간다 {추론}.",
+     "**실행** — 도입 대상을 고르고(PoC, 시범 적용), 일부 조직에 먼저 깐 뒤 넓힌다 {추론}."
+    ]
+   },
+   "how_far": "방향(무엇을 지킬지, 위험을 어디까지 받아들일지)은 CISO와 정보보안팀장이 정합니다.[7] 이 자리는 **그 방향을 기술 구성도와 단계별 계획으로 바꾸고, 단계마다 실제로 깔아 운영까지 넘기는 사람**입니다. 경력 10년 이상 요건이라 '어떤 순서로 했고 왜 그 순서였는지'를 직접 겪은 사례로 말할 수 있어야 합니다 {추론}.",
+   "refs": [
+    1,
+    6,
+    7,
+    10,
+    11
+   ],
+   "study": [
+    "cisa-ztmm",
+    "kisa-zt",
+    "cis-controls"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "엔드포인트 / 네트워크 보안 시스템 구축 및 운영",
+   "short": "직원 PC·노트북과 사내망·서버망을 지키는 장비(백신·EDR·방화벽·NAC 등)를 깔고 돌리는 일.",
+   "why": "엔드포인트(endpoint, 사람이 쓰는 PC·노트북·폰)는 침입이 가장 자주 시작되는 곳이고, 네트워크는 들어온 공격이 옆으로 퍼지는 길입니다. CIS 보안 통제 목록도 '자산 목록 → 소프트웨어 목록 → 안전한 설정 → 악성코드 방어 → 네트워크 감시' 순으로 기본을 세웁니다.[23]",
+   "actually": {
+    "intro": "보통 이런 장비와 운영 일이 있습니다. 카카오모빌리티가 어떤 제품을 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**EDR**(Endpoint Detection and Response, PC에서 수상한 행동을 기록·차단) — 설치율 관리, 오탐 줄이기, 차단 정책 조정.",
+     "**자산·패치 관리** — 회사 기기가 몇 대이고 패치가 됐는지 목록으로 유지. ISMS-P에도 패치관리·악성코드 통제 항목이 따로 있다.[20]",
+     "**NAC**(Network Access Control, 등록 안 된 기기의 사내망 접속 막기)와 망 구분 — 개발망·업무망·서버망을 나누고 사이에 방화벽 규칙을 둔다.[12]",
+     "**방화벽·IPS 규칙 관리** — 규칙이 수천 줄로 불어나지 않게 주기적으로 쓰지 않는 규칙을 지운다 {추론}.",
+     "**로그 보내기** — 이 장비들의 로그를 4번째 업무의 SIEM으로 모은다.[1]"
+    ]
+   },
+   "how_far": "제품 하나의 전문가보다 **'이 칸을 이 제품으로 막고 로그는 이렇게 모은다'를 설계하는 쪽**입니다. 공고가 '구축 및 운영'이라 제품 고르기·설치·정책·장애 대응을 다 해 본 경험이 필요합니다 {추론}.",
+   "refs": [
+    1,
+    12,
+    20,
+    23
+   ],
+   "study": [
+    "cis-controls",
+    "nist-215",
+    "isms-p"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드(GCP, AWS 등) 및 Kubernetes 환경에 맞는 보안환경 설계·운영",
+   "short": "회사 서비스가 도는 GKE·AWS·쿠버네티스에서 권한·통신·설정을 안전하게 짜고 지키는 일.",
+   "why": "카카오모빌리티는 2022년 대표 앱을 구글 클라우드의 **GKE**(구글이 관리하는 쿠버네티스) 클러스터로 옮겼고, 온프레미스와 구글 클라우드를 같이 쓰는 멀티 클라우드 전략을 밝혔습니다.[4] 여러 GKE 클러스터 사이의 들어오고 나가는 통신은 **서비스 메시**(Anthos Service Mesh, 서비스 사이 통신을 가운데서 통제하는 층)의 게이트웨이로 통제하고, 허용 목록으로 API 접근을 조였다고 CTO가 직접 썼습니다.[4] 공고에는 AWS도 적혀 있습니다.[1]",
+   "actually": {
+    "intro": "회사 글에 나온 것(서비스 메시·통신 허용 목록)과, 공식 문서가 권하는 보통의 설계를 나눠 적습니다.",
+    "items": [
+     "**서비스 사이 통신** — 서비스 메시에서 서비스끼리 상호 인증(mTLS)을 켜고, 어떤 서비스가 어떤 서비스를 부를 수 있는지 정책으로 적는다.[34] 회사는 게이트웨이로 들어오고 나가는 통신을 통제한다고 밝혔다.[4]",
+     "**쿠버네티스 권한(RBAC)** — 누가 어떤 네임스페이스에서 무엇을 할 수 있나. cluster-admin을 줄이는 일이 기본.[24]",
+     "**파드 보안 기준** — 루트 권한·호스트 경로 마운트 같은 위험한 설정을 막는 Pod Security Standards(Privileged·Baseline·Restricted 3단계).[25]",
+     "**클라우드 계정 권한** — 사람에게 오래 가는 키를 주지 않고 임시 자격 증명을 쓰고, 최소 권한으로 줄인다.[26]",
+     "**클러스터 설정** — GKE는 노드 보안·네트워크 정책·워크로드 신원 같은 설정을 보안 개요 문서에 모아 두었다.[27]"
+    ]
+   },
+   "how_far": "클러스터를 만들고 운영하는 일은 데브옵스·인프라 팀 몫입니다(요건 4번이 협업을 따로 적었습니다).[1] 이 자리는 **보안 기준을 정하고, 그 기준이 지켜지는지 확인하고, 안 지켜질 때 고치게 만드는** 쪽입니다. 쿠버네티스 매니페스트와 IAM 정책을 읽고 어디가 위험한지 바로 짚을 수 있는 수준이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    24,
+    25,
+    26,
+    27,
+    34
+   ],
+   "study": [
+    "gke-sec",
+    "k8s-rbac",
+    "pss",
+    "istio-sec",
+    "aws-iam-bp",
+    "container-sec-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SIEM 등 통합 로그 분석 환경 구축 및 보안 시스템·클라우드·인프라 로그 연동 운영",
+   "short": "흩어진 보안 장비·클라우드·서버 로그를 한곳에 모아 같은 모양으로 맞추고, 이상한 흐름을 찾게 만드는 일.",
+   "why": "공격 하나가 PC·VPN·클라우드 콘솔·쿠버네티스 여러 곳에 흔적을 남깁니다. 따로 보면 안 보이고 모아야 보입니다. 카카오 그룹 기술 소개도 24시간 보안 관제로 이상 행위를 실시간으로 찾는다고 밝혔습니다.[8] 개인정보를 다루는 시스템의 접속기록을 보관·점검해야 하는 법적 의무도 있습니다.[19]",
+   "actually": {
+    "intro": "SIEM(Security Information and Event Management, 보안 로그 통합·분석 시스템)을 세울 때 하는 일입니다.",
+    "items": [
+     "**로그 소스 정하기** — 클라우드 감사 로그(AWS CloudTrail[14], 구글 클라우드 감사 로그[15]), 쿠버네티스 감사 로그[13], EDR·방화벽·VPN, 서버 로그인, DB 접근 제어 로그.",
+     "**모으기** — 에이전트·API·클라우드 로그 내보내기로 SIEM에 넣는다. 구글 클라우드의 데이터 접근 로그처럼 **기본으로 꺼져 있는 로그**가 있어 켜는 것부터 일이다.[15]",
+     "**정규화** — 제품마다 다른 이름을 같은 칸(누가·어디서·무엇을·성공/실패)으로 맞춘다. 공개 형식으로 OCSF[16]·Elastic Common Schema[17]가 있다.",
+     "**탐지 규칙** — 'X분 안에 로그인 실패 N번 뒤 성공' 같은 규칙을 적는다. 제품에 묶이지 않는 공개 규칙 형식이 Sigma다.[18]",
+     "**보관·비용** — 로그 양이 곧 비용이다. 법이 요구하는 보관 기간(접속기록 1년, 대상에 따라 2년)[19]과 분석에 필요한 기간을 나눠 저장 계층을 정한다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "두 출처의 로그를 같은 칸으로 맞추고 규칙 하나 걸기",
+     "body": "리눅스 SSH 실패 로그(글자 한 줄)와 AWS 콘솔 로그인(JSON)을 같은 칸으로 바꾼 뒤, 같은 IP에서 60초 안에 5번 실패하고 성공하면 경보를 냅니다. 가상 데이터로 직접 돌린 출력입니다. 정규화를 해야 서로 다른 시스템의 기록을 한 규칙으로 엮을 수 있습니다.[16][17]",
+     "lang": "python",
+     "code": "import re\nfrom datetime import datetime, timedelta\nfrom collections import defaultdict\n\nSSHD = re.compile(r\"^(?P<ts>\\S+) (?P<host>\\S+) sshd\\[\\d+\\]: Failed password for (invalid user )?(?P<user>\\S+) from (?P<ip>\\S+)\")\n\ndef from_sshd(line):\n    m = SSHD.match(line)\n    return m and {\"ts\": m[\"ts\"], \"source\": \"linux-sshd\", \"outcome\": \"failure\",\n                  \"user\": m[\"user\"], \"src_ip\": m[\"ip\"]}\n\ndef from_cloudtrail(rec):\n    ok = rec[\"responseElements\"].get(\"ConsoleLogin\") == \"Success\"\n    return {\"ts\": rec[\"eventTime\"], \"source\": \"aws-cloudtrail\",\n            \"outcome\": \"success\" if ok else \"failure\",\n            \"user\": rec[\"userIdentity\"].get(\"userName\"), \"src_ip\": rec[\"sourceIPAddress\"]}\n\nssh = [f\"2026-11-26T09:00:{s:02d}Z bastion-01 sshd[811]: Failed password for root from 203.0.113.7 port 5{s} ssh2\" for s in (1, 9, 17, 30, 44)]\nct = [{\"eventTime\": \"2026-11-26T09:00:50Z\", \"userIdentity\": {\"userName\": \"ops-kim\"},\n       \"sourceIPAddress\": \"203.0.113.7\", \"responseElements\": {\"ConsoleLogin\": \"Success\"}}]\n\nevents = sorted([from_sshd(l) for l in ssh] + [from_cloudtrail(r) for r in ct], key=lambda e: e[\"ts\"])\nfails = defaultdict(list)\nfor e in events:\n    t = datetime.fromisoformat(e[\"ts\"].replace(\"Z\", \"+00:00\"))\n    if e[\"outcome\"] == \"failure\":\n        fails[e[\"src_ip\"]].append(t)\n    elif len([f for f in fails[e[\"src_ip\"]] if t - f <= timedelta(seconds=60)]) >= 5:\n        print(f\"ALERT {e['src_ip']}: 실패 5회 뒤 {e['source']} 로그인 성공 (user={e['user']})\")\n\n# 출력: ALERT 203.0.113.7: 실패 5회 뒤 aws-cloudtrail 로그인 성공 (user=ops-kim)"
+    }
+   ],
+   "how_far": "제품 화면에서 대시보드를 만드는 수준을 넘어 **'어떤 로그를, 어떤 모양으로, 얼마나 오래' 모을지 정하고 연동을 직접 붙이는** 수준입니다. 우대사항에 '로그소스 연동, 파싱·정규화'가 따로 적혀 있어 파서를 직접 고쳐 본 경험을 봅니다.[1]",
+   "refs": [
+    1,
+    8,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "soc-auto-ko",
+    "ocsf",
+    "ecs",
+    "sigma",
+    "wazuh-docs",
+    "gcp-audit",
+    "aws-cloudtrail",
+    "k8s-audit"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "서버·DB·네트워크 접근통제 및 계정·권한 관리 체계 운영",
+   "short": "누가 어느 서버·DB에 들어갈 수 있는지 정하고, 계정을 만들고 지우는 흐름과 접속 기록을 관리하는 일.",
+   "why": "카카오모빌리티는 위치정보와 결제를 다루는 회사입니다 — 같은 팀의 다른 공고가 위치정보법을 적었고, 전자금융업을 겸하는 회사 경험을 우대합니다.[3] 정보보호 공시에도 전자금융거래 배상책임보험이 들어 있습니다.[6] 개인정보 안전성 확보조치 기준은 권한 부여·변경·말소 기록을 3년 이상 남기라고 정합니다.[19]",
+   "actually": {
+    "intro": "법·인증 기준이 요구하는 것과 그걸 운영하는 일입니다.",
+    "items": [
+     "**계정 생애 관리** — 입사·이동·퇴사 때 계정과 권한이 자동으로 따라 바뀌게 인사 시스템과 잇는다. 퇴사자 권한은 지체 없이 없앤다.[19]",
+     "**서버·DB 접근 제어** — 사람이 서버·DB에 바로 들어가지 않고 접근 제어 시스템(게이트웨이)을 거치게 해, 누가 언제 무슨 명령·쿼리를 쳤는지 남긴다 {추론}.",
+     "**접속기록 점검** — 개인정보 처리 시스템의 접속기록은 1년 이상(정보주체 5만 명 이상 등은 2년 이상) 보관하고 월 1회 이상 점검한다.[19]",
+     "**정기 권한 검토** — 쓰지 않는 계정·과한 권한을 주기적으로 찾아 줄인다. ISMS-P의 '인증 및 권한관리'·'접근통제' 항목이 이 내용이다.[20]",
+     "**클라우드·쿠버네티스 계정까지** — 서버 계정만이 아니라 클라우드 콘솔·kubectl 권한도 같은 체계로 묶는다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "접속기록 보관 기간을 정할 때",
+     "body": "카카오 T처럼 이용자가 수천만 명인 서비스[5]의 개인정보 처리 시스템은 정보주체 5만 명 이상 조건에 걸려 접속기록을 **2년 이상** 두고 월 1회 이상 점검합니다.[19] 하루 로그가 수십 GB면 2년이면 수십 TB라, 무엇을 원문으로 두고 무엇을 요약할지 설계가 필요합니다 {추론}."
+    }
+   ],
+   "how_far": "정책(누가 무엇을 볼 수 있나)은 컴플라이언스 담당과 같이 정하고[3], 이 자리는 **그 정책이 실제 시스템에서 돌게 만들고 매달 점검이 끝나게 운영**합니다. 공고 동사가 '체계 운영'이라 한 번 설치가 아니라 계속 돌아가는 흐름을 맡습니다.[1]",
+   "refs": [
+    1,
+    3,
+    5,
+    6,
+    19,
+    20
+   ],
+   "study": [
+    "privacy-rule",
+    "isms-p",
+    "aws-iam-bp",
+    "k8s-rbac"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안운영 중 발생하는 기술적 이슈·장애의 원인 분석, 해결방안 제시 및 해결 과정 리딩",
+   "short": "보안 장비가 서비스를 막거나 로그가 끊기는 등 문제가 생기면 끝까지 원인을 찾아 여러 팀과 고치는 일.",
+   "why": "보안 장비는 통신 한가운데나 모든 PC 위에 앉아 있어서, 잘못되면 서비스 장애가 됩니다. 카카오모빌리티는 100% 가용성을 목표로 한다고 밝혔고[4], 명절처럼 트래픽이 몇 배로 뛰는 때가 있습니다.[5] 보안 때문에 서비스가 멈추면 안 되는 회사입니다 {추론}.",
+   "actually": {
+    "intro": "보안운영에서 흔히 생기는 기술 이슈입니다 {추론}.",
+    "items": [
+     "**정책이 정상 통신을 막음** — 새 방화벽·서비스 메시 정책을 넣었더니 어떤 API 호출이 실패. 어느 규칙이 막았는지 로그로 좇는다.",
+     "**에이전트가 성능을 먹음** — EDR·로그 수집기가 CPU를 잡아먹어 서버가 느려짐. 예외 경로·수집량을 조정한다.",
+     "**로그가 조용히 끊김** — 파서가 새 형식을 못 읽어 몇 주째 로그가 빈 칸. 수집량 감시를 따로 둔다.",
+     "**인증서·키 만료** — mTLS 인증서나 접근 제어 연동 키가 만료돼 한꺼번에 접속 실패.",
+     "**정리와 재발 방지** — 일이 끝나면 비난 없는 사후 분석(포스트모템)으로 원인·타임라인·재발 방지책을 남긴다.[22] 침해사고라면 NIST 대응 지침의 탐지·대응·복구 흐름을 따른다.[21]"
+    ]
+   },
+   "how_far": "'리딩'이 핵심입니다. 직접 고치는 것뿐 아니라 **데브옵스·인프라·개발 팀을 모아 원인을 함께 좁히고, 해결 순서를 정하고, 끝나면 기록을 남기는** 역할입니다.[1] 면접에서는 실제 장애 하나를 시간 순서로 설명할 수 있어야 합니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    5,
+    21,
+    22
+   ],
+   "study": [
+    "sre-postmortem",
+    "nist-ir"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안 시스템을 신규로 설계/구축하고, 운영 안정화까지 리딩해 본 경험이 있으신 분",
+   "short": "운영만 이어받은 경험이 아니라 처음부터 깔고, 자리 잡을 때까지 책임져 본 경험을 묻는다.",
+   "why": "업무 1번이 '로드맵 수립 / 실행'이고 4번이 SIEM '구축'입니다.[1] 새로 까는 일이 이 자리의 중심이라는 뜻입니다.",
+   "actually": {
+    "intro": "'운영 안정화'까지 가면 보통 이런 단계를 지납니다 {추론}.",
+    "items": [
+     "**요건 정하기** — 무엇을 막을지, 어디까지 기록할지, 서비스에 주는 지연은 어디까지 괜찮은지.",
+     "**제품 고르기와 시범 적용(PoC)** — 후보 2~3개를 실제 트래픽 일부에 걸어 본다.",
+     "**단계적 확대** — 탐지만 하는 모드로 먼저 깔고, 오탐을 줄인 뒤 차단 모드로 바꾼다.",
+     "**안정화** — 오탐률·장애 건수·설치율 같은 숫자가 몇 주 동안 목표 안에 들어오면 운영으로 넘긴다.",
+     "**문서·인수인계** — 운영 절차서와 장애 대응 절차를 남긴다."
+    ]
+   },
+   "how_far": "규모는 상관없지만 **처음부터 끝까지 자기 손으로 끌고 간 한 건**이 있어야 합니다. 이력서·포트폴리오로 1차 인터뷰를 보니[1], '무엇을·왜·어떤 순서로·어떤 숫자로 안정화를 판단했는지'를 적어 두면 좋습니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "cis-controls",
+    "soc-auto-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "클라우드(GCP, AWS 등) 및 Kubernetes 환경의 구조와 동작 방식을 이해하고, 이를 고려하여 보안 시스템 및 정책을 설계/운영 할 수 있으신 분",
+   "short": "클라우드는 서버가 수시로 생겼다 사라져서, 예전 방식(IP 고정 방화벽)으론 안 된다는 걸 알아야 해서.",
+   "why": "카카오모빌리티는 트래픽이 늘면 노드를 10~30초 안에 새로 띄우는 구조입니다.[5] 서버 IP가 계속 바뀌니 'IP로 막는' 옛 방식 대신 신원·라벨·서비스 이름으로 정책을 걸어야 합니다 {추론}. 서비스 메시로 서비스 사이 통신을 통제한다는 회사 글도 같은 방향입니다.[4]",
+   "level": {
+    "basic": "VPC·서브넷·보안그룹/방화벽 규칙 · IAM 사용자·역할·정책 · 쿠버네티스 파드·서비스·네임스페이스",
+    "work": "IAM 정책 평가(허용·거부 우선순위) · 쿠버네티스 RBAC·NetworkPolicy · 감사 로그 읽기 · 워크로드 신원",
+    "team": "온프레미스 + GKE + AWS를 한 정책으로 묶기 · 서비스 메시 mTLS·통신 허용 정책 · 노드가 계속 바뀌는 환경에서 탐지·차단"
+   },
+   "actually": {
+    "items": [
+     "**쿠버네티스 요청 흐름 알기** — kubectl 요청은 인증 → 인가(RBAC) → 승인 제어(Admission)를 거친다. 어디서 막을지 고를 수 있어야 한다.[24][25]",
+     "**감사 로그 수준 고르기** — 쿠버네티스 감사 로그는 None·Metadata·Request·RequestResponse 네 단계다. 다 켜면 양이 폭발한다.[13]",
+     "**클라우드 감사 로그 차이** — AWS CloudTrail은 관리 이벤트는 기본 기록, 데이터 이벤트는 따로 켠다.[14] 구글 클라우드는 관리 활동 로그는 늘 켜져 있고 데이터 접근 로그는 대부분 기본으로 꺼져 있다.[15]",
+     "**임시 자격 증명** — 사람·워크로드 모두 오래 가는 키 대신 역할과 임시 자격 증명을 쓴다.[26]"
+    ]
+   },
+   "how_far": "클라우드 아키텍트만큼 다 알 필요는 없지만, **구성도를 보고 '여기 로그가 빠진다, 여기 권한이 너무 넓다'를 짚을** 수준이 최소선입니다 {추론}.",
+   "refs": [
+    4,
+    5,
+    13,
+    14,
+    15,
+    24,
+    25,
+    26
+   ],
+   "study": [
+    "gke-sec",
+    "k8s-audit",
+    "hacking-k8s",
+    "container-sec-ko",
+    "aws-iam-bp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안 시스템 연동·운영 과정의 복합적인 기술 이슈를 근본 원인까지 분석하여 해결해 본 경험이 있으신 분",
+   "short": "증상만 끄는 게 아니라 '왜 그랬나'를 여러 시스템을 넘나들며 끝까지 파 본 경험.",
+   "why": "업무 6번(장애 원인 분석·해결 리딩)을 할 수 있는지 보는 요건입니다.[1] 보안 장비는 네트워크·OS·클라우드·애플리케이션 사이에 끼어 있어서 원인이 한 곳에 있지 않은 경우가 많습니다 {추론}.",
+   "actually": {
+    "intro": "'복합적'인 이슈란 보통 이런 것입니다 {추론}.",
+    "items": [
+     "**층을 넘는 원인** — 'SIEM에 로그가 안 들어온다' → 수집기 문제가 아니라 클라우드 쪽 로그 내보내기 권한이 바뀐 것.",
+     "**시간에 숨은 원인** — 서버 시각이 몇 분 어긋나 상관분석 규칙이 안 맞음.",
+     "**증거로 좁히기** — 패킷 캡처·감사 로그·에이전트 로그를 시간순으로 맞춰 가설을 하나씩 지운다.",
+     "**재발 방지** — 같은 일이 다시 생기면 경보가 먼저 울리게 감시를 추가한다.[22]"
+    ]
+   },
+   "how_far": "면접에서 **'증상 → 세운 가설 → 확인한 방법 → 진짜 원인 → 재발 방지'**로 한 건을 말할 수 있으면 됩니다 {추론}. 사후 분석 문서 형식은 구글 SRE 책이 참고가 됩니다.[22]",
+   "refs": [
+    1,
+    22
+   ],
+   "study": [
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데브옵스, IT인프라운영, 개발자와 원활하게 협업할 수 있으신 분",
+   "short": "보안 정책을 실제로 적용하는 손은 다른 팀에 있어서. 막기만 하면 우회한다.",
+   "why": "클러스터는 데브옵스 팀이, 사내망·PC는 IT인프라 팀이, 서비스 코드는 개발자가 갖고 있습니다. 카카오모빌리티는 사내 개발자 대상 해킹 대회(CTF)와 '시큐리티 & 프라이버시 베스트 프랙티스 상'을 운영하는데[7], 보안을 개발 조직 안으로 끌어들이려는 활동으로 보입니다 {추론}. 팀 소개도 '가장 합리적이고 현명한 보안 구현'과 상호 존중을 말합니다.[1]",
+   "actually": {
+    "items": [
+     "**말로 설득하기 전에 숫자로** — '이 설정 때문에 이런 공격이 된다'를 재현해서 보여 준다 {추론}.",
+     "**코드로 같이 쓰기** — 정책을 문서가 아니라 테라폼·매니페스트 리뷰로 넣는다 {추론}.",
+     "**예외 절차** — 막을 수 없는 경우 기한을 정한 예외를 열어 주고 기록한다 {추론}.",
+     "**서비스 영향 먼저 묻기** — 새 장비를 넣기 전 지연·장애 위험을 상대 팀과 같이 잰다 {추론}."
+    ]
+   },
+   "how_far": "2차 인터뷰가 핵심가치·조직 문화 인터뷰 두 번이라[1], 기술만큼 **다른 팀과 부딪혔을 때 어떻게 풀었는지** 사례를 준비합니다 {추론}.",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Zero Trust, SASE/ZTNA 전환을 설계해 본 경험이 있으신 분",
+   "short": "'사내망 안은 믿는다'를 버리고 접속할 때마다 사람·기기를 확인하는 방식으로 바꿔 본 경험.",
+   "why": "제로트러스트(Zero Trust)는 위치(사내망 안이냐)로 믿지 않고 요청마다 신원·기기 상태를 확인하는 설계입니다.[9] 회사 GCP 글도 서비스 메시가 제로트러스트 쪽으로 API 보안을 높였다는 맥락에서 나왔습니다.[4] 국내에서도 2024년 말 가이드라인 2.0이 나와 도입 절차가 구체화됐습니다.[11]",
+   "actually": {
+    "items": [
+     "**구성 요소** — NIST 문서는 판단하는 쪽(PDP — 정책 엔진·관리자)과 실제로 막는 쪽(PEP)을 나눈다.[9]",
+     "**ZTNA**(Zero Trust Network Access) — VPN처럼 망 전체를 열어 주지 않고 앱 하나씩만 연결해 준다.[12]",
+     "**SASE**(Secure Access Service Edge) — 원격 접속·웹 필터·방화벽 같은 기능을 클라우드 서비스로 한데 묶은 것.[12]",
+     "**전환 순서** — 보통 신원(SSO·다요소 인증) → 기기 상태 확인 → 앱별 접속 → VPN 축소 순으로 간다.[10]"
+    ]
+   },
+   "how_far": "제품 하나를 깔아 본 것보다 **어떤 순서로 VPN을 줄였고, 그동안 직원 불편과 예외를 어떻게 다뤘는지**가 '전환 설계' 경험입니다 {추론}.",
+   "refs": [
+    4,
+    9,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "nist-207",
+    "cisa-ztmm",
+    "kisa-zt",
+    "ztn-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드(GCP, AWS 등) 및 Kubernetes 환경의 로그·보안 체계를 구축해 본 경험이 있으신 분",
+   "short": "클라우드 감사 로그·쿠버네티스 감사 로그를 켜고 모아 탐지까지 이어 본 경험.",
+   "why": "업무 3·4번이 겹치는 자리입니다.[1] 클라우드 로그는 기본값으로 다 켜져 있지 않고[14][15], 쿠버네티스 감사 로그는 정책 파일로 무엇을 남길지 직접 정해야 합니다.[13]",
+   "actually": {
+    "items": [
+     "**조직 단위로 켜기** — 계정·프로젝트가 늘어도 감사 로그가 자동으로 켜지게 조직 수준에서 설정한다 {추론}.",
+     "**쿠버네티스 감사 정책** — 시크릿 읽기·exec·권한 변경처럼 위험한 요청은 자세히, 잦은 조회는 가볍게.[13]",
+     "**탐지 규칙 예** — 'kubectl exec로 운영 파드에 들어감', '새 cluster-admin 바인딩 생성' 같은 행위를 경보로.[24][32]",
+     "**SIEM으로 보내기** — 클라우드 로그를 내보내 4번 업무의 SIEM에 같은 형식으로 넣는다.[16]"
+    ]
+   },
+   "how_far": "최소선은 **GKE·AWS 감사 로그를 켜고, 쿠버네티스 감사 정책을 써 보고, 거기서 경보 몇 개를 만든** 경험입니다 {추론}.",
+   "refs": [
+    1,
+    13,
+    14,
+    15,
+    16,
+    24,
+    32
+   ],
+   "study": [
+    "k8s-audit",
+    "gcp-audit",
+    "aws-cloudtrail",
+    "mitre"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SIEM 구축 또는 운영 경험이 있으신 분 (로그소스 연동, 파싱·정규화 등)",
+   "short": "SIEM을 쓰기만 한 게 아니라 로그를 붙이고 파서를 고쳐 본 경험.",
+   "why": "괄호 안이 이 팀이 보고 싶은 부분입니다 — 대시보드 보기가 아니라 **로그를 넣는 쪽**입니다.[1] 정규화가 안 되면 출처가 다른 로그를 한 규칙으로 엮을 수 없습니다.[16][17]",
+   "actually": {
+    "items": [
+     "**파싱** — 글자 한 줄 로그에서 시각·사용자·IP를 뽑는 정규식이나 파서를 쓴다(위 업무 4번 예시).",
+     "**정규화** — OCSF는 '인증' 같은 사건 종류마다 칸을 정해 두고, ECS는 user.name·source.ip 같은 공통 이름을 쓴다.[16][17]",
+     "**규칙** — Sigma처럼 제품에 묶이지 않는 형식으로 규칙을 적어 두면 SIEM을 바꿔도 옮길 수 있다.[18]",
+     "**연습 환경** — 오픈소스 Wazuh로 수집·디코더·규칙을 직접 만들어 볼 수 있다.[33]"
+    ]
+   },
+   "how_far": "한 제품 이름보다 **'새 로그 소스를 하나 붙일 때 무엇부터 확인하나'**를 순서대로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    16,
+    17,
+    18,
+    33
+   ],
+   "study": [
+    "wazuh-docs",
+    "sigma",
+    "ocsf",
+    "ecs",
+    "detect-eng-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ISMS-P 등 인증의 기술적 보호조치에 대응해 본 경험이 있으신 분",
+   "short": "인증 심사 때 '기술적으로 이렇게 지키고 있다'를 증거로 보여 줘 본 경험.",
+   "why": "카카오모빌리티는 ISMS-P와 ISO 27001 인증을 3년 연속 유지하고 있습니다.[6][7] 같은 팀이 관리체계·컴플라이언스 담당자도 뽑고 있어[3], 이 자리는 그 사람과 짝을 이뤄 기술 쪽 증적을 맡는 구조로 보입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**기술 항목** — ISMS-P 보호대책 요구사항 중 인증 및 권한관리, 접근통제, 암호화, 로그 및 접속기록 관리, 시스템 및 서비스 보안관리 등이 엔지니어 몫이다.[20]",
+     "**증적** — 설정 화면·정책 파일·점검 결과·접속기록 점검 기록을 심사 기간 동안 보여 준다.[20]",
+     "**법 기준과 맞추기** — 개인정보 안전성 확보조치 기준의 접속기록 보관·점검 주기와 맞는지 본다.[19]",
+     "**결함 조치** — 심사에서 나온 결함을 기한 안에 기술적으로 고친다 {추론}."
+    ]
+   },
+   "how_far": "인증 문서를 쓰는 사람은 컴플라이언스 담당이고[3], 이 자리는 **'그 문장이 실제 시스템에서 사실임'을 보여 주는** 쪽입니다 {추론}.",
+   "refs": [
+    3,
+    6,
+    7,
+    19,
+    20
+   ],
+   "study": [
+    "isms-p",
+    "privacy-rule"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "어려운 문제에 대해 접근방법을 고민하고 긍정적인 사고로 업무를 이끌어 갈 수 있으신 분",
+   "short": "정답이 없는 보안 문제를 쪼개서 풀어 가고, 팀 분위기를 끌어올리는 태도.",
+   "why": "보안운영은 막히는 일이 많고 예산·인력은 정해져 있습니다.[6] 시니어에게는 문제를 쪼개 순서를 정하는 태도가 요구됩니다 {추론}.",
+   "actually": {
+    "items": [
+     "**문제 쪼개기** — 큰 과제(예: VPN 없애기)를 몇 주짜리 단계로 나눈다 {추론}.",
+     "**작게 먼저 해 보기** — 한 팀·한 서비스에 먼저 해 보고 넓힌다 {추론}.",
+     "**공유** — 막힌 지점과 배운 점을 팀에 남긴다 {추론}."
+    ]
+   },
+   "how_far": "면접에서 어려웠던 과제를 어떻게 쪼개 풀었는지 한 건을 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "보안 업무 자동화 및 AI 활용 경험이 있으신 분",
+   "short": "반복되는 점검·경보 분류를 코드와 AI로 줄여 본 경험. 사람이 적은 팀이라 특히 중요하다.",
+   "why": "정보보호 전담 인력이 2년 사이 15.9명에서 13.1명으로 줄었습니다.[6] 같은 인원으로 더 많이 보려면 자동화가 필요합니다 {추론}. 같은 팀의 컴플라이언스 공고도 같은 문장을 우대사항에 넣었습니다.[3]",
+   "actually": {
+    "items": [
+     "**점검 자동화** — 매달 하는 접속기록 점검·권한 검토를 스크립트로 뽑아 보고서로 만든다.[19]",
+     "**경보 1차 분류** — 경보에 자산 정보·담당자·과거 이력을 자동으로 붙인다 {추론}.",
+     "**AI 활용** — 로그 요약·탐지 규칙 초안 작성에 LLM을 쓰되, 프롬프트 주입·민감정보 노출 위험을 같이 관리한다.[35]",
+     "**대응 자동화** — 확실한 경우(예: 유출된 키 발견)는 키 비활성화까지 자동으로 {추론}."
+    ]
+   },
+   "how_far": "Python으로 API를 불러 반복 업무 하나를 없앤 경험이면 충분히 말할 거리가 됩니다 {추론}.",
+   "refs": [
+    3,
+    6,
+    19,
+    35
+   ],
+   "study": [
+    "soc-auto-ko",
+    "owasp-llm"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "카카오모빌리티에 꼭 Join 하고 싶으신 분",
+   "short": "회사가 무엇을 하고 무엇을 지켜야 하는지 알고 지원했는지를 본다.",
+   "why": "카카오모빌리티는 카카오 T·카카오내비로 이동과 위치 데이터를 다루고[5], KISA와 버그바운티를 함께 운영합니다.[7] 지키는 대상을 알고 오는 사람을 원합니다 {추론}.",
+   "actually": {
+    "items": [
+     "회사가 공개한 클라우드 구조(GKE·서비스 메시·멀티 클라우드)를 읽고 간다.[4]",
+     "정보보호 공시(투자·인력·인증)를 읽고 간다.[6]",
+     "위치정보·결제를 다루는 회사의 보안 무게를 한 문장으로 말할 수 있게 한다.[3]"
+    ]
+   },
+   "how_far": "지원 동기에 회사 공개 자료 한두 개를 근거로 쓰면 됩니다 {추론}.",
+   "refs": [
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "동료들에게 긍정적이고 선한 영향력을 전파할 수 있으신 분",
+   "short": "시니어로서 보안 지식과 일하는 방식을 팀과 다른 팀에 퍼뜨리는 사람.",
+   "why": "팀 소개가 '전사적인 보안문화'를 기본으로 삼는다고 적었습니다.[1] 회사도 사내 CTF·보안 우수 사례 상으로 개발자에게 보안을 퍼뜨립니다.[7]",
+   "actually": {
+    "items": [
+     "사내 보안 교육·CTF 문제 내기 {추론}.",
+     "장애·사고 사후 분석을 비난 없이 공유하기.[22]",
+     "후배 엔지니어에게 운영 절차와 판단 기준을 전하기 {추론}."
+    ]
+   },
+   "how_far": "가르치거나 문화를 만든 사례 하나(교육·문서·사내 발표)를 준비하면 됩니다 {추론}.",
+   "refs": [
+    1,
+    7,
+    22
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "영입 여정은 이렇게 진행됩니다 서류 → 1차 인터뷰 → 2차 인터뷰 → 처우 협의 서류 전형 1차 인터뷰 1차 인터뷰는 이력서 및 포트폴리오 기반으로 함께 일하는 동료들이 참석하여 진행됩니다. 2차 인터뷰 1Round 는 핵심가치 기반의 HR 인터뷰로 HR담당자가 참석하여 진행됩니다. 2Round 는 조직 문화 인터뷰로 조직장이 참석하여 진행됩니다.",
+   "short": "요건이 아니라 전형 순서다 — 같이 일할 보안 엔지니어가 이력서·포트폴리오로 기술을 먼저 본다.",
+   "why": "1차는 함께 일할 동료가 이력서·포트폴리오로, 2차는 HR(핵심가치)과 조직장(조직 문화)이 두 번에 나눠 봅니다. 연봉은 마지막 처우 협의에서 정합니다.[1]",
+   "actually": {
+    "items": [
+     "**1차 준비** — 직접 설계·구축한 보안 시스템의 구성도와 안정화 숫자(오탐률·설치율·장애 건수)를 포트폴리오에 담는다 {추론}.",
+     "**2차 준비** — 다른 팀과 부딪혀 풀었던 사례, 동료에게 영향을 준 사례(요건 4번, 우대 마지막 줄)를 준비한다.[1]",
+     "**추가 전형** — 포지션에 따라 별도 전형·사전 과제가 붙을 수 있다고 적혀 있다.[1]"
+    ]
+   },
+   "how_far": "이력서는 PDF로 내고, 이력서에 연봉을 적으면 검토되지 않을 수 있습니다. 인터뷰에서 떨어지면 1년 동안 같은 직군에 다시 지원할 수 없습니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "장비를 '쓰는' 것보다 '처음부터 깔고 안정화'하는 게 즐거운 사람[1]",
+   "클라우드·쿠버네티스 구조를 파고드는 걸 좋아하는 인프라 출신 보안 엔지니어",
+   "로그 한 줄에서 원인을 끝까지 좇는 사람",
+   "작은 팀에서 자동화로 일을 줄이는 걸 좋아하는 사람[6]"
+  ],
+  "hard": [
+   "경력 10년 이상이 지원 조건이다[1]",
+   "전담 인력 13명대라 한 사람이 맡는 범위가 넓다[6]",
+   "온프레미스 + GKE + AWS를 같이 봐야 해서 한 클라우드만 알면 부족하다[1][4]",
+   "보안 장비가 서비스 장애를 내면 안 되는 회사라 변경마다 신중해야 한다[4]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "IP가 계속 바뀌는 GKE 환경에서 서비스 사이 통신을 어떻게 통제하겠어요?",
+   "a": "회사가 서비스 메시와 통신 허용 목록으로 실제로 한 일.[4][34]"
+  },
+  {
+   "q": "새 로그 소스(예: 쿠버네티스 감사 로그)를 SIEM에 붙일 때 무엇부터 확인하나요?",
+   "a": "우대사항이 '로그소스 연동, 파싱·정규화'를 콕 집었다.[1][13][16]"
+  },
+  {
+   "q": "개인정보 처리 시스템 접속기록은 얼마나 보관하고 얼마마다 점검해야 하나요?",
+   "a": "법 기준과 ISMS-P 기술적 보호조치.[19][20]"
+  },
+  {
+   "q": "VPN을 ZTNA로 바꾼다면 어떤 순서로, 무엇을 먼저 하겠어요?",
+   "a": "우대사항의 Zero Trust 전환 설계.[9][10]"
+  },
+  {
+   "q": "보안 장비 때문에 서비스 장애가 났던 경험을 시간 순서로 말해 주세요.",
+   "a": "업무 6번과 요건 3번 — 원인 분석과 해결 리딩.[1][22]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "카카오모빌리티 채용 · 보안운영 시니어 엔지니어",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/243388",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대·전형·근무지"
+  },
+  {
+   "n": 2,
+   "title": "카카오 공동체 채용 · [공동체] 카카오모빌리티 보안운영 시니어 엔지니어",
+   "url": "https://careers.kakao.com/jobs/S-4775",
+   "kind": "posting",
+   "note": "같은 공고의 카카오 그룹 채용 사본"
+  },
+  {
+   "n": 3,
+   "title": "카카오모빌리티 채용 · 정보보호 관리체계 및 컴플라이언스 담당자",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/242043",
+   "kind": "posting",
+   "note": "같은 정보보안팀의 다른 공고 — 위치정보법·전자금융업 겸업·ISMS-P"
+  },
+  {
+   "n": 4,
+   "title": "Google Cloud 블로그 · DevOps Awards 2022 수상 — 카카오모빌리티",
+   "url": "https://cloud.google.com/blog/ko/products/devops-sre/devops-awards-2022-winner-kakao-mobility?hl=ko",
+   "kind": "company",
+   "date": "2023-08-02",
+   "note": "카카오모빌리티 CTO가 쓴 글 — GKE 이전·Anthos Service Mesh·온프레미스와의 멀티 클라우드·통신 허용 목록·100% 가용성 목표"
+  },
+  {
+   "n": 5,
+   "title": "Google Cloud 고객 사례 · 카카오모빌리티",
+   "url": "https://cloud.google.com/customers/kakaomobility?hl=ko",
+   "kind": "company",
+   "note": "온프레미스 + GKE 이중화, 트래픽 급증·노드 10~30초 생성, 이용자 수 — 날짜 표기 없음"
+  },
+  {
+   "n": 6,
+   "title": "디지털데일리 · 카카오모빌리티 \"보안 인력·활동 줄었지만\"…투자 비중 5% 유지",
+   "url": "https://www.ddaily.co.kr/page/view/2026062617515588509",
+   "kind": "news",
+   "date": "2026-06-26",
+   "note": "3년치 정보보호 공시 — 투자액·비율·전담 인력·인증·CISO/CPO 겸직"
+  },
+  {
+   "n": 7,
+   "title": "보안뉴스 · 카카오모빌리티, KISA '신규 보안 취약점 신고포상제' 공동 운영사 참여",
+   "url": "https://www.boannews.com/news/articleView.html?idxno=138579",
+   "kind": "news",
+   "date": "2025-08-06",
+   "note": "CISO·사내 CTF·보안 우수 사례 상·ISMS-P·ISO 27001"
+  },
+  {
+   "n": 8,
+   "title": "Kakao Tech · 카카오 기술 소개",
+   "url": "https://www.kakaocorp.com/page/service/tech",
+   "kind": "company",
+   "note": "카카오 그룹 전체 — 24시간 보안 관제. 카카오모빌리티만의 내용은 아니다"
+  },
+  {
+   "n": 9,
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 10,
+   "title": "CISA · Zero Trust Maturity Model v2.0",
+   "url": "https://www.cisa.gov/zero-trust-maturity-model",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 11,
+   "title": "바이라인네트워크 · '제로트러스트 가이드라인 2.0' 공개…단계별 성숙도 모델·도입절차 구체화",
+   "url": "https://byline.network/2024/12/3-220/",
+   "kind": "news",
+   "date": "2024-12"
+  },
+  {
+   "n": 12,
+   "title": "NIST SP 800-215 · Guide to a Secure Enterprise Network Landscape",
+   "url": "https://csrc.nist.gov/pubs/sp/800/215/final",
+   "kind": "reference",
+   "date": "2022",
+   "note": "망 구분·ZTNA·SASE 설명"
+  },
+  {
+   "n": 13,
+   "title": "Kubernetes 문서 · Auditing(감사 로그)",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "AWS CloudTrail 사용 설명서",
+   "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Google Cloud · Cloud 감사 로그 개요",
+   "url": "https://cloud.google.com/logging/docs/audit",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "OCSF · Open Cybersecurity Schema Framework",
+   "url": "https://schema.ocsf.io/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Elastic Common Schema (ECS) Reference",
+   "url": "https://www.elastic.co/guide/en/ecs/current/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "SigmaHQ · Sigma 규칙 형식",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "국가법령정보센터 · 개인정보의 안전성 확보조치 기준",
+   "url": "https://www.law.go.kr/행정규칙/개인정보의안전성확보조치기준",
+   "kind": "reference",
+   "note": "권한 기록 3년 보관, 접속기록 1년(대상에 따라 2년) 보관·월 1회 점검"
+  },
+  {
+   "n": 20,
+   "title": "KISA · ISMS-P 인증제도 안내(인증기준)",
+   "url": "https://isms.kisa.or.kr/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "kind": "reference",
+   "date": "2025"
+  },
+  {
+   "n": 22,
+   "title": "Google SRE Book · Postmortem Culture: Learning from Failure",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "CIS Critical Security Controls v8",
+   "url": "https://www.cisecurity.org/controls",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Kubernetes 문서 · Using RBAC Authorization",
+   "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Kubernetes 문서 · Pod Security Standards",
+   "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "AWS IAM · Security best practices",
+   "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Google Cloud · GKE 보안 개요",
+   "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/security-overview",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "아이뉴스24 · 카카오모빌리티, 2024년 매출 6750억원⋯류긍선 대표 보수 9.7억원",
+   "url": "https://v.daum.net/v/uTwZAfwMlq",
+   "kind": "news",
+   "date": "2025-03-31",
+   "note": "2024년 말 임직원 914명, 1인 평균 급여 약 9,014만원"
+  },
+  {
+   "n": 29,
+   "title": "아이뉴스24 · 카카오모빌리티 2025년 상반기 매출 3375억원⋯류긍선 대표 보수 6.5억원",
+   "url": "https://www.inews24.com/view/1876724",
+   "kind": "news",
+   "date": "2025-08-14",
+   "note": "2025년 6월 말 직원 931명, 상반기 1인 평균 급여 4,718만원, 평균 근속 3.8년"
+  },
+  {
+   "n": 30,
+   "title": "자소설닷컴 · 카카오모빌리티 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/10478",
+   "kind": "reference",
+   "note": "공공데이터로 계산한 집계 — 기준일 표기 없음. 페이지가 자동 접속을 막아 검색 결과 요약으로 확인"
+  },
+  {
+   "n": 31,
+   "title": "카카오모빌리티 채용 · 복리후생",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/benefit",
+   "kind": "company"
+  },
+  {
+   "n": 32,
+   "title": "MITRE ATT&CK · Containers 매트릭스",
+   "url": "https://attack.mitre.org/matrices/enterprise/containers/",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "Wazuh 문서",
+   "url": "https://documentation.wazuh.com/current/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "Istio 문서 · Security(mTLS·인가 정책)",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "kind": "reference",
+   "note": "Anthos(Cloud) Service Mesh 는 Istio 기반"
+  },
+  {
+   "n": 35,
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "카카오모빌리티 정보보안팀이 직접 발표한 기술 글·영상은 찾지 못했습니다. 회사 근거는 공고 두 건, CTO가 쓴 구글 클라우드 글(2023), 정보보호 공시 기사(2026)뿐이고, 어떤 보안 제품·SIEM을 쓰는지는 공개되지 않아 공식 문서·국제 기준으로 '보통 이런 일'을 보였습니다. 구글 클라우드 글은 2022~2023년 구성이라 지금은 달라졌을 수 있습니다.",
+ "resources": [
+  {
+   "id": "cisa-ztmm",
+   "title": "Zero Trust Maturity Model v2.0",
+   "by": "CISA · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.cisa.gov/zero-trust-maturity-model",
+   "why": "5개 기둥 × 4단계 표로 '지금 우리가 어디 있나'를 재는 틀. 업무 1번 로드맵의 뼈대로 쓰기 좋다."
+  },
+  {
+   "id": "kisa-zt",
+   "title": "제로트러스트 가이드라인 2.0",
+   "by": "과학기술정보통신부 · 한국인터넷진흥원 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.kisa.or.kr/2060204",
+   "why": "국내 기준의 성숙도 단계와 도입 절차. 국내 회사에서 Zero Trust 전환을 설명할 때 쓰는 말이 여기 있다."
+  },
+  {
+   "id": "nist-207",
+   "title": "NIST SP 800-207 Zero Trust Architecture",
+   "by": "NIST · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "why": "PDP·PEP 같은 구성 요소와 배치 방식의 원전. 우대사항의 Zero Trust 설계를 말로 풀 수 있게 된다."
+  },
+  {
+   "id": "nist-215",
+   "title": "NIST SP 800-215 Guide to a Secure Enterprise Network Landscape",
+   "by": "NIST · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/215/final",
+   "why": "망 구분·ZTNA·SASE가 어디서 왜 나왔는지 한 문서로. 업무 2번 네트워크 보안과 우대사항 SASE에."
+  },
+  {
+   "id": "ztn-ko",
+   "title": "제로 트러스트 네트워크 — 안전한 네트워크를 만드는 보안 모델",
+   "by": "에반 길먼 · 더그 바르트 · 에이콘출판 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=298090378",
+   "why": "기기·사용자·애플리케이션 신뢰를 어떻게 쌓나. 제로트러스트를 제품이 아니라 설계로 이해하는 한국어 책."
+  },
+  {
+   "id": "cis-controls",
+   "title": "CIS Critical Security Controls v8",
+   "by": "Center for Internet Security",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.cisecurity.org/controls",
+   "why": "자산 목록부터 사고 대응까지 18개 통제를 우선순위로. 엔드포인트·네트워크 보안의 '무엇부터'를 정할 때."
+  },
+  {
+   "id": "gke-sec",
+   "title": "GKE 보안 개요",
+   "by": "Google Cloud 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/security-overview",
+   "why": "회사가 쓰는 GKE의 보안 설정(노드·네트워크·워크로드 신원)을 한 장에서. 업무 3번 바로 그 환경."
+  },
+  {
+   "id": "istio-sec",
+   "title": "Istio Security 개념",
+   "by": "Istio 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "why": "회사가 쓰는 서비스 메시(Istio 기반)의 mTLS·인가 정책. 서비스 사이 통신 통제를 직접 짜 볼 수 있다."
+  },
+  {
+   "id": "k8s-rbac",
+   "title": "Using RBAC Authorization",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+   "why": "Role·ClusterRole·바인딩. 쿠버네티스 계정·권한 관리(업무 5번)의 기본."
+  },
+  {
+   "id": "pss",
+   "title": "Pod Security Standards",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+   "why": "위험한 파드 설정을 막는 3단계 기준. 클러스터 보안 기준을 정할 때 출발점."
+  },
+  {
+   "id": "k8s-audit",
+   "title": "Kubernetes Auditing",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+   "why": "감사 정책 파일로 무엇을 얼마나 남길지. 쿠버네티스 로그를 SIEM에 넣는 첫 단계."
+  },
+  {
+   "id": "container-sec-ko",
+   "title": "컨테이너 보안",
+   "by": "리즈 라이스 · 류광 옮김 · 한빛미디어 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/keonteineo-boan-keonteineohwadoen/9791162243923/",
+   "why": "컨테이너가 리눅스 위에서 어떻게 격리되는지부터 런타임 감시까지. '구조와 동작 방식을 이해' 요건을 채우는 한국어 책."
+  },
+  {
+   "id": "hacking-k8s",
+   "title": "Hacking Kubernetes",
+   "by": "Andrew Martin · Michael Hausenblas · O'Reilly · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/hacking-kubernetes/9781492081722/",
+   "why": "공격자 눈으로 클러스터를 본다. 어떤 설정이 실제로 뚫리는지 알아야 정책의 우선순위를 정할 수 있다."
+  },
+  {
+   "id": "aws-iam-bp",
+   "title": "Security best practices in IAM",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+   "why": "임시 자격 증명·최소 권한·미사용 권한 정리. 클라우드 계정 권한 관리의 기본 규칙."
+  },
+  {
+   "id": "aws-cloudtrail",
+   "title": "AWS CloudTrail 사용 설명서",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+   "why": "관리 이벤트·데이터 이벤트의 차이와 로그 내보내기. AWS 로그를 SIEM에 붙일 때."
+  },
+  {
+   "id": "gcp-audit",
+   "title": "Cloud 감사 로그 개요",
+   "by": "Google Cloud 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cloud.google.com/logging/docs/audit",
+   "why": "관리 활동·데이터 접근·시스템 이벤트·정책 거부 로그의 차이와 기본값. 회사 주력 클라우드의 로그."
+  },
+  {
+   "id": "ocsf",
+   "title": "Open Cybersecurity Schema Framework",
+   "by": "OCSF 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://schema.ocsf.io/",
+   "why": "보안 이벤트를 종류별로 같은 칸에 담는 공개 형식. 우대사항의 '파싱·정규화'를 말로 설명할 기준."
+  },
+  {
+   "id": "ecs",
+   "title": "Elastic Common Schema (ECS)",
+   "by": "Elastic 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.elastic.co/guide/en/ecs/current/index.html",
+   "why": "user.name·source.ip 같은 공통 필드 이름. 정규화 칸을 직접 정할 때 그대로 빌려 쓸 수 있다."
+  },
+  {
+   "id": "sigma",
+   "title": "Sigma 규칙 형식",
+   "by": "SigmaHQ · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "why": "제품에 묶이지 않는 탐지 규칙과 공개 규칙 수천 개. SIEM 규칙을 읽고 써 보는 연습장."
+  },
+  {
+   "id": "wazuh-docs",
+   "title": "Wazuh 문서",
+   "by": "Wazuh(오픈소스 SIEM·XDR)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://documentation.wazuh.com/current/index.html",
+   "why": "무료로 SIEM을 직접 세워 에이전트·디코더(파서)·규칙을 만들어 볼 수 있다. 'SIEM 구축 경험'을 집에서 쌓는 길."
+  },
+  {
+   "id": "soc-auto-ko",
+   "title": "정보보안 관제 및 운영 자동화 실무 가이드",
+   "by": "최대수 · 에이콘출판 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88%20%EA%B4%80%EC%A0%9C%20%EB%B0%8F%20%EC%9A%B4%EC%98%81%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%8B%A4%EB%AC%B4%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "국내 관제·보안운영 현장의 로그 수집과 자동화. SIEM 운영과 '보안 업무 자동화' 우대사항에."
+  },
+  {
+   "id": "detect-eng-ko",
+   "title": "실전 위협 탐지 엔지니어링",
+   "by": "메건 로디 · 제이슨 데이알싱 · 게리 J. 캐츠 · 서도현 옮김 · 에이콘출판 · 2026",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012746248",
+   "why": "탐지 규칙을 만들고 시험하고 고치는 흐름. SIEM 운영을 '규칙 관리'까지 넓힐 때."
+  },
+  {
+   "id": "mitre",
+   "title": "MITRE ATT&CK",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://attack.mitre.org/",
+   "why": "공격 기법 사전. 클라우드·컨테이너 매트릭스로 '무엇을 탐지해야 하나' 목록을 만든다."
+  },
+  {
+   "id": "privacy-rule",
+   "title": "개인정보의 안전성 확보조치 기준",
+   "by": "개인정보보호위원회 고시 · 국가법령정보센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.law.go.kr/행정규칙/개인정보의안전성확보조치기준",
+   "why": "접근 권한 기록·접속기록 보관 기간과 점검 주기의 원문. 업무 5번이 지켜야 할 숫자."
+  },
+  {
+   "id": "isms-p",
+   "title": "ISMS-P 인증제도 안내 (인증기준·세부 점검항목)",
+   "by": "KISA",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://isms.kisa.or.kr/",
+   "why": "보호대책 요구사항 중 엔지니어가 증적을 대야 하는 항목(권한·접근통제·로그·시스템 보안)을 본다."
+  },
+  {
+   "id": "nist-ir",
+   "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations",
+   "by": "NIST · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "why": "사고 대응을 탐지·대응·복구 흐름으로. 업무 6번의 '해결 과정 리딩'에 쓸 틀."
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Postmortem Culture: Learning from Failure",
+   "by": "Google SRE Book",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "비난 없는 사후 분석 쓰는 법. 장애 원인 분석 경험을 면접에서 정리해 말하는 틀로도 쓴다."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "why": "보안 업무에 AI를 쓸 때 생기는 위험(프롬프트 주입·민감정보 노출). AI 활용 우대사항을 안전하게."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "로드맵의 틀 잡기",
+   "time": "1~2주",
+   "goal": "회사 하나의 보안 수준을 표로 재고, 1·2단계 계획을 말로 설명할 수 있다.",
+   "resources": [
+    "cisa-ztmm",
+    "kisa-zt",
+    "cis-controls"
+   ],
+   "task": "가상의 300명 회사(온프레미스 + GKE)에 CISA 5개 기둥 × 4단계 표를 채우고, 빈칸 중 먼저 할 세 가지와 이유를 한 장으로 쓴다."
+  },
+  {
+   "title": "클라우드·쿠버네티스 구조와 권한",
+   "time": "2~4주",
+   "goal": "GKE·AWS 구성도를 보고 위험한 권한·설정을 짚고 고칠 수 있다.",
+   "resources": [
+    "gke-sec",
+    "k8s-rbac",
+    "pss",
+    "istio-sec",
+    "aws-iam-bp",
+    "container-sec-ko"
+   ],
+   "task": "로컬 kind 클러스터에 서비스 둘을 띄우고, RBAC로 개발자 권한을 네임스페이스 하나로 줄이고, Pod Security를 Restricted로 걸고, Istio mTLS STRICT와 인가 정책으로 한쪽 호출만 허용해 본다."
+  },
+  {
+   "title": "로그를 모으고 맞추기",
+   "time": "2~4주",
+   "goal": "서로 다른 세 출처의 로그를 같은 칸으로 맞추고 규칙 하나로 엮는다.",
+   "resources": [
+    "k8s-audit",
+    "gcp-audit",
+    "aws-cloudtrail",
+    "ocsf",
+    "ecs",
+    "wazuh-docs"
+   ],
+   "task": "Wazuh를 띄우고 리눅스 SSH 로그·쿠버네티스 감사 로그·CloudTrail 샘플을 넣는다. 디코더를 하나 직접 쓰고, 위 업무 4번 예시처럼 '실패 5번 뒤 성공' 규칙을 만든다."
+  },
+  {
+   "title": "탐지와 법 기준",
+   "time": "1~2주",
+   "goal": "무엇을 탐지할지 목록을 만들고, 접속기록 점검을 법 기준대로 자동화한다.",
+   "resources": [
+    "mitre",
+    "sigma",
+    "privacy-rule",
+    "isms-p",
+    "detect-eng-ko"
+   ],
+   "task": "ATT&CK 컨테이너 매트릭스에서 기법 5개를 골라 Sigma 규칙으로 적고, 가상 접속기록으로 월간 점검 보고서(권한 변경·야간 대량 조회)를 뽑는 스크립트를 만든다."
+  },
+  {
+   "title": "운영과 리딩 (계속)",
+   "time": "계속",
+   "goal": "장애·사고를 원인부터 재발 방지까지 정리해 말할 수 있다.",
+   "resources": [
+    "nist-ir",
+    "sre-postmortem",
+    "nist-207",
+    "ztn-ko",
+    "soc-auto-ko"
+   ],
+   "task": "3단계 환경에서 일부러 로그 수집을 끊거나 정책으로 정상 호출을 막아 보고, 증상 → 가설 → 원인 → 재발 방지 순서로 사후 분석 한 장을 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 회사 전체 1인 평균 급여는 **약 9,014만원**(2024년, 보도), 신입 초봉 집계는 약 4,706만원 — 10년 차 이상 자리라 둘 다 이 자리의 금액은 아니다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,706만원",
+    "amount": 4706,
+    "basis": "공공데이터 집계",
+    "note": "공공데이터로 계산한 집계 사이트 값. 기준일·직군 구분이 없고, 페이지가 자동 접속을 막아 검색 결과 요약으로 확인했다 [30]"
+   },
+   {
+    "label": "평균 연봉(집계)",
+    "value": "약 6,853만원",
+    "amount": 6853,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균값 [30]"
+   },
+   {
+    "label": "임직원 1인 평균 급여",
+    "value": "약 9,014만원",
+    "amount": 9014,
+    "basis": "보도 · 2024년",
+    "note": "2024년 말 임직원 914명(기간제 포함), 스톡옵션 행사 차익을 뺀 급여 총액 약 831억원 기준. 실적 공시를 다룬 2025년 3월 기사 [28]"
+   },
+   {
+    "label": "2025년 상반기 평균 급여",
+    "value": "4,718만원",
+    "amount": 4718,
+    "basis": "보도 · 2025년 상반기",
+    "note": "6개월치 금액이다. 2025년 6월 말 직원 931명, 평균 근속 3.8년 [29]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 인터뷰 두 번 뒤 **처우 협의** 단계에서 정한다. 이력서에 연봉을 적으면 검토되지 않을 수 있다고 적혀 있다 [1]. 평균은 경력이 고르게 섞인 회사 전체 값이고 초봉은 신입 값이라, 경력 10년 이상인 이 자리의 금액으로 읽으면 안 된다 {추론}. 공시 값(보도)과 집계 값은 기준이 달라 서로 견주지 않는다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "주택 자금",
+    "detail": "주택 관련 대출 최대 3억원 이자 지원"
+   },
+   {
+    "name": "생활 안정 자금",
+    "detail": "최대 5천만원 한도 이자 지원"
+   },
+   {
+    "name": "가족사랑 지원",
+    "detail": "사고·질병으로 사망 시 가족에게 보험금 일시 지급"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "카카오 T 앱·제휴 가맹점에서 사용"
+   },
+   {
+    "name": "차량 대여",
+    "detail": "추첨으로 3박 4일"
+   },
+   {
+    "name": "휴가·근무",
+    "detail": "연차 최대 25일, 금요일 2시간 조기 퇴근, 선택적 근로시간제"
+   },
+   {
+    "name": "식사",
+    "detail": "점심 식대 월 20만원, 간식·음료 무제한"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 건강검진(당일 유급휴가), 상담 지원, 본인·배우자 부모까지 실손 의료비"
+   },
+   {
+    "name": "육아",
+    "detail": "사내 어린이집, 육아휴직 최대 2년"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "통근버스, 휴양 시설, 사내 마사지·휴게실, 동호회, 경조 휴가·경조사비"
+   }
+  ],
+  "note": "카카오모빌리티 채용 사이트의 복리후생 페이지(연도 표기 없음) [31]. 세부 조건(근속 요건 등)은 페이지에 다 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "카카오모빌리티 판교 오피스",
+  "address": "경기도 성남시 분당구 판교역로 152, 알파돔타워",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 {추론}",
+  "note": "공고의 근무 조건에 적힌 근무지 [1]."
+ }
+}
