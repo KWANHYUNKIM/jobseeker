@@ -1,0 +1,913 @@
+{
+ "id": "hyundai-autoever-capital-groupware",
+ "company": "현대오토에버",
+ "role": "그룹웨어 시스템 운영 및 개발",
+ "team": "EnIT · 캐피탈경영시스템팀 (금융)",
+ "jobs": [
+  "jobkorea-50301832",
+  "wanted-395121"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "현대오토에버가 IT 를 맡아 운영하는 **캐피탈사 임직원**이 매일 쓰는 사내 시스템 — 포털·전자결재(그룹웨어)와 계정(AD)·메일·메신저·Microsoft 365 — 를 고치고 새로 만들고 멈추지 않게 지킵니다.[1][2]",
+  "env": "그룹웨어는 **C#·ASP.NET·.NET Framework** 웹 애플리케이션이고, 그 뒤에 윈도우 서버·SQL·Exchange·Teams 같은 **마이크로소프트 제품군**이 붙어 있습니다.[1] 금융사 시스템이라 바꾸는 일마다 안정성이 먼저입니다. {추론}",
+  "oneline": "고객용 서비스가 아니라 **회사 안 사람들의 업무 도구**를 맡는 .NET 개발자 겸 MS 협업 솔루션 운영자. 경력 5년 이상(잡코리아 판)입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "포탈/결재 기반의 그룹웨어 시스템 운영 및 개발",
+   "short": "임직원이 로그인해 공지·게시판을 보고 기안을 올려 결재받는 사내 웹 시스템을 고치고 새 기능을 붙이는 일.",
+   "why": "이 팀은 캐피탈사의 고객 채널·정보계와 함께 **임직원 업무 효율을 높이는 업무지원 시스템**까지 운영한다고 소개합니다.[1] 팀 리더는 이 팀이 다루는 일로 Java·C# 개발, 홈페이지, **그룹웨어**, ERP 운영, Big Data 솔루션 관리를 꼽았습니다.[1] 같은 이름의 공고가 2026년 2월과 10월에도 올라와 꾸준히 사람을 찾는 자리입니다.[2][3]",
+   "actually": {
+    "intro": "회사가 그룹웨어 안쪽 구조를 공개하지 않아, 결재 개념은 국내 공공기관 문서 규정으로 '보통 이런 것'을 보입니다.[8] 아래 항목은 그 규정과 일반적인 그룹웨어 구성에 기댄 것입니다. {추론}",
+    "items": [
+     "**결재선** — 기안자 → 검토자·협조자 → 결재권자 순서로 문서가 흐른다. 공공 규정도 서명하는 사람을 이 넷으로 나눈다.[8]",
+     "**전결·대결** — 결재권을 아래로 넘긴 '위임전결'이면 그 사람에서 문서가 끝나고, 결재권자가 휴가·출장이면 대신하는 사람이 '대결'하고 중요한 건은 나중에 보고한다.[8] 그룹웨어는 이 규칙을 **조직도·직급·위임 규정 표**로 들고 있어야 한다. {추론}",
+     "**조직 변경 반영** — 인사 발령이 나면 조직도·결재선·권한이 같이 바뀌어야 한다. 이 정보의 원본이 AD(계정 디렉터리)·인사 시스템이라 둘을 맞추는 연동 배치가 흔하다. {추론}",
+     "**포털** — 공지·게시판·일정·메일 알림을 한 화면에 모으는 첫 화면. 메일·메신저(업무②)와 붙는 자리가 여기다. {추론}",
+     "**운영** — 결재가 안 넘어간다·첨부가 안 열린다 같은 문의, 월말·발령일 같은 몰리는 날의 장애 대응, 보안 점검 조치. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "결재선 · 전결 · 대결을 코드로 (직접 돌린 출력)",
+     "body": "규정의 뜻[8]을 아주 작게 옮긴 것입니다. 실제 그룹웨어는 위임 규정을 문서 종류·금액마다 표로 두고, 결재 이력을 지우지 않고 남깁니다. {추론}",
+     "lang": "python",
+     "code": "def run(line, absent=(), delegate_to=None, deputy=None):\n    log = []\n    for who, role in line:\n        if who in absent:\n            log.append(f\"{deputy}: 대결({who} 대신)\")\n            continue\n        if who == delegate_to:\n            log.append(f\"{who}: 전결\")\n            break  # 전결권자에서 문서가 끝난다\n        log.append(f\"{who}: {role}\")\n    return log\n\nline = [(\"김사원\", \"기안\"), (\"이팀장\", \"검토\"), (\"박실장\", \"결재\")]\nprint(run(line))\nprint(run(line, delegate_to=\"이팀장\"))\nprint(run(line, absent={\"박실장\"}, deputy=\"최부실장\"))\n# ['김사원: 기안', '이팀장: 검토', '박실장: 결재']\n# ['김사원: 기안', '이팀장: 전결']\n# ['김사원: 기안', '이팀장: 검토', '최부실장: 대결(박실장 대신)']"
+    }
+   ],
+   "flows": [
+    {
+     "caption": "결재 한 건이 지나가는 길 {추론}",
+     "steps": [
+      "로그인 · AD 계정으로",
+      "기안 · 양식·첨부",
+      "결재선 계산 · 조직도·위임 규정",
+      "검토·협조 · 알림(메일·메신저)",
+      "결재/전결/대결",
+      "보관·연계 · 문서함·ERP"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "어떤 문서를 누가 결재하나(위임 규정)는 고객사 경영지원 부서가 정합니다. 개발자는 그 규칙을 **틀림없이 화면과 데이터로 옮기고, 발령·규정이 바뀌어도 결재가 끊기지 않게** 운영합니다. {추론} 경력 5년 이상을 찾는 자리라[1] 혼자서 장애 원인을 찾아 고칠 수 있는 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    8
+   ],
+   "study": [
+    "law-approval",
+    "this-is-csharp",
+    "aspnet-fx-to-core"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AD/메일/메신저 솔루션 및 M365 기반 서비스 운영",
+   "short": "임직원 계정(AD)과 메일·메신저, Microsoft 365(Teams·Exchange Online 등)가 끊기지 않게 관리하는 일.",
+   "why": "현대자동차그룹은 2019년부터 Microsoft 365 도입을 넓혀 Teams 를 사내 소통·화상회의의 바탕으로 쓰고, 문서 권한도 Azure AD(지금의 Entra ID)로 관리한다고 2021년 마이크로소프트 발표에서 밝혔습니다.[4] 이 발표에는 어느 계열사인지 적혀 있지 않아 캐피탈사에 그대로 적용되는지는 공고의 'M365 기반 서비스 운영' 문구로만 알 수 있습니다.[1][4]",
+   "actually": {
+    "intro": "AD 와 M365 를 같이 쓰는 회사의 보통 구성입니다(마이크로소프트 공식 문서).",
+    "items": [
+     "**AD(Active Directory)** — 사용자·컴퓨터 계정을 담는 사내 디렉터리. 한 번 로그인으로 여러 시스템에 들어가게 하고 권한을 건다.[9]",
+     "**계정 상태 읽기** — 계정의 사용 중지·잠김·암호 만료는 `userAccountControl` 값 안의 비트로 들어 있다(예: 514 = 일반 계정 + 사용 중지).[10]",
+     "**클라우드와 동기화** — 사내 AD 의 사용자·그룹을 Entra ID 로 옮겨 맞추는 것이 Entra Connect(또는 Cloud Sync)다. 입사·퇴사가 M365 에 반영되는 길이 여기다.[11]",
+     "**메일 하이브리드** — 사내 Exchange 와 Exchange Online 을 한 조직처럼 묶어 주소록·일정 공유·사서함 이동을 한다. 디렉터리 동기화가 전제다.[12]",
+     "**운영 도구** — 사서함·권한 같은 Exchange Online 관리는 PowerShell(`Connect-ExchangeOnline`)로 한다.[13]",
+     "**메신저** — 사내 메신저가 Lync/Skype for Business 였다면 Teams 로 옮기는 일이 남아 있을 수 있다. 온라인판은 2021년 7월에 끝났다.[18] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "AD 계정 상태 비트 읽기 (직접 돌린 출력)",
+     "body": "값은 마이크로소프트 문서의 플래그 표 그대로입니다.[10] 퇴사자 계정이 아직 켜져 있나 점검할 때 이 값을 봅니다. {추론}",
+     "lang": "python",
+     "code": "FLAGS = {0x0002: \"ACCOUNTDISABLE\", 0x0010: \"LOCKOUT\", 0x0200: \"NORMAL_ACCOUNT\",\n         0x10000: \"DONT_EXPIRE_PASSWORD\", 0x800000: \"PASSWORD_EXPIRED\"}\n\ndef decode(uac):\n    return [name for bit, name in FLAGS.items() if uac & bit]\n\nfor v in (512, 514, 66048):\n    print(v, hex(v), decode(v))\n# 512 0x200 ['NORMAL_ACCOUNT']\n# 514 0x202 ['ACCOUNTDISABLE', 'NORMAL_ACCOUNT']\n# 66048 0x10200 ['NORMAL_ACCOUNT', 'DONT_EXPIRE_PASSWORD']"
+    }
+   ],
+   "how_far": "AD 서버 보안 설계·그룹 정책 전체는 보안·인프라 조직 몫일 가능성이 큽니다. {추론} 이 자리는 **계정·사서함·팀즈 정책이 사람의 입사·이동·퇴사를 제때 따라가게 하고, 그룹웨어와 이 솔루션들이 붙는 지점(로그인·메일 발송·알림)이 깨지지 않게** 지키는 정도입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    9,
+    10,
+    11,
+    12,
+    13,
+    18
+   ],
+   "study": [
+    "ad-ds",
+    "entra-connect",
+    "exchange-hybrid",
+    "exo-powershell"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C#, ASP.NET, .NET Framework 개발 경험자",
+   "short": "그룹웨어가 이 기술로 지어져 있어서. 새 .NET 보다 오래된 .NET Framework 코드를 읽고 고치는 힘이 먼저다.",
+   "why": "공고가 '.NET' 이 아니라 **.NET Framework** 를 적었습니다.[1] .NET Framework 4.8·4.8.1 은 지금도 지원되지만(종료일 없음) 새 기능이 붙는 쪽은 .NET(옛 .NET Core)입니다.[22] 그래서 이 자리는 이미 돌아가는 Framework 코드를 유지보수하는 일이 많을 것으로 보입니다. {추론}",
+   "level": {
+    "basic": "C# 문법(클래스·제네릭·LINQ·async/await) · 예외 처리 · 컬렉션",
+    "work": "ASP.NET(Web Forms 또는 MVC) 요청 흐름 · 세션·인증 · ADO.NET 으로 SQL 부르기 · IIS 배포·설정(web.config)",
+    "team": "오래된 Framework 코드 읽고 고치기 · AD/메일/Graph 연동 · 필요하면 ASP.NET Core 로 조금씩 옮기기"
+   },
+   "actually": {
+    "items": [
+     "**Framework 와 새 .NET 은 다르다** — 같은 C# 이어도 Framework 앱은 IIS·System.Web 에 묶여 있고, 새 .NET 으로 그대로 옮겨지지 않는다.[23]",
+     "**옮길 때는 조금씩** — 마이크로소프트는 큰 운영 앱은 한 번에 갈아엎지 말고 기능 단위로 새 앱에 옮기는 **점진 이관**(Strangler Fig 방식)을 권한다.[23]",
+     "**메일 연동 코드 점검** — 그룹웨어가 Exchange Online 에 EWS 로 메일·일정을 읽고 있다면, EWS 는 2026년 10월부터 테넌트별로 막히기 시작해 2027년 4월 1일 완전히 끝난다.[16][17] 대신 Microsoft Graph 의 REST API(예: `POST /users/{id}/sendMail`)를 쓴다.[14][15]"
+    ]
+   },
+   "how_far": "경력 5년 이상이라[1] '써 봤다'보다 **남이 짠 Framework 앱의 장애를 혼자 추적하고 고친 경험**을 말할 수 있어야 합니다. {추론} 새 .NET 경험은 이관을 맡을 때 도움이 됩니다. {추론}",
+   "refs": [
+    1,
+    14,
+    15,
+    16,
+    17,
+    22,
+    23
+   ],
+   "study": [
+    "csharp-guide-ko",
+    "this-is-csharp",
+    "aspnet-fx-to-core",
+    "netfx-lifecycle",
+    "ews-retire"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Web Application 개발/운영 경험자",
+   "short": "그룹웨어·포털이 브라우저로 쓰는 웹 앱이라 요청·응답·세션·배포를 다뤄 봐야 해서.",
+   "why": "업무① 이 포털·결재 '웹' 시스템이고, 공고 해시태그에도 DB·미들웨어(DBMS, WAS) 관리가 붙어 있습니다.[1] 개발만이 아니라 '운영'을 같이 적은 것은 배포 뒤 장애·문의 대응까지 맡는다는 뜻으로 읽힙니다. {추론}",
+   "actually": {
+    "items": [
+     "**HTTP 기본** — 로그인 쿠키·세션, 파일 첨부(업로드·다운로드), 캐시 때문에 '고쳤는데 안 바뀌는' 문의. {추론}",
+     "**배포** — 웹 서버에 새 판을 올리고 문제가 생기면 되돌리기. 업무 시간에 멈추면 안 되는 사내 시스템이라 작업 시간이 정해져 있는 경우가 많다. {추론}",
+     "**로그 보기** — 사용자가 말한 시각·계정으로 서버 로그와 DB 기록을 찾아 원인을 좁히기. {추론}"
+    ]
+   },
+   "how_far": "웹 프레임워크 종류보다 **브라우저와 서버 사이에 무엇이 오가는지 설명하고, 운영 중인 웹 앱의 문제를 로그로 좁혀 가는** 경험이 핵심입니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "http-basic"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "긍정적이고 적극적인 업무 태도, 원활한 커뮤니케이션 역량",
+   "short": "사용자가 고객사 임직원 전체라 문의·요청을 받아 풀고, 고객사 담당자와 일정을 맞추는 일이 많아서.",
+   "why": "이 팀은 IT 서비스 회사가 고객사(캐피탈사) 시스템을 맡아 운영하는 구조입니다.[1] 현대오토에버의 ITO(그룹사 IT 운영) 매출은 2026년 1~3분기 1조 4,287억원으로 회사 매출에서 큰 몫이라[5] 이런 '고객사 안의 운영 팀' 자리가 많습니다. {추론} 팀 리더도 열린 소통으로 서로 자극이 될 사람을 찾는다고 적었습니다.[1]",
+   "how_far": "면접에서는 **사용자 요청을 받아 무엇을 확인하고, 어떻게 답하고, 언제 고객사 담당자에게 올렸는지** 실제 사례로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "#DB #IT인프라 #미들웨어(DBMS, WAS 등) 관리 기술",
+   "short": "그룹웨어가 DB·웹 서버·윈도우 서버 위에 있어, 앱만이 아니라 그 밑단까지 손봐야 할 때가 있어서.",
+   "why": "공고가 자격요건 끝에 DB·IT 인프라·미들웨어 관리 기술을 해시태그로 붙였습니다.[1] 우대사항의 'Windows, SQL' 과 이어 보면 윈도우 서버·SQL Server·IIS 조합으로 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "**DB** — 결재 문서·이력이 쌓이는 표의 인덱스, 느려진 조회 고치기, 백업 확인. {추론}",
+     "**WAS·웹 서버** — 앱 풀·인증서 갱신·로그 용량 같은 서버 설정. {추론}",
+     "**인프라** — 서버 패치 일정, 지원이 끝난 제품 확인. 예: Exchange Server 2016·2019 와 Skype for Business Server 2015·2019 는 2025년 10월 14일 지원이 끝났다.[19][20]"
+    ]
+   },
+   "how_far": "DBA·서버 엔지니어 수준이 아니라 **내 앱이 느리거나 멈췄을 때 DB·서버 쪽 원인인지 가려내고 기본 조치를 할 수 있는** 정도입니다. {추론}",
+   "refs": [
+    1,
+    19,
+    20
+   ],
+   "study": [
+    "sql-tuning",
+    "office-eos"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "▶ 이렇게 합류해요 서류 접수 → 서류 검토 → 직무역량테스트(과) 및 인성검사 → 1차면접 → 2차면접 → 처우협의 및 채용검진 → 최종 합격 ※ 상기 직무역량테스트 外 추가 역량평가가 진행될 수 있으며, 해당 결과는 종합적인 역량 검토를 위한 참고자료로 활용됩니다.",
+   "short": "서류 뒤에 '과제' 형태의 직무역량테스트가 있고, 면접 두 번 뒤에 연봉을 정하는 처우협의가 따로 있다.",
+   "why": "공고에 적힌 전형 순서입니다.[1] 테스트 이름이 '직무역량테스트(과)' 라 코딩 시험보다 과제형으로 보입니다. {추론}",
+   "how_far": "과제가 나온다면 C#·ASP.NET 으로 작은 웹 기능(예: 결재 요청·승인 화면과 DB)을 정해진 시간 안에 만들어 설명하는 연습을 해 둡니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Windows, SQL, Exchange, Lync, SharePoint 등 MS제품군 경험자",
+   "short": "그룹웨어 주변이 모두 마이크로소프트 제품이라, 각 제품이 어디까지 되고 언제 지원이 끝나는지 알아야 해서.",
+   "why": "업무② 가 AD·메일·메신저·M365 운영이고 공고가 제품 이름을 직접 적었습니다.[1] 이 가운데 몇몇은 지원이 끝났거나 바뀌었습니다 — 그래서 '경험'에는 옛 제품을 새 것으로 옮겨 본 경험도 들어갈 것으로 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "**Exchange** — 사내 Exchange Server 2016·2019 는 2025년 10월 14일 지원 종료, 사내에 두려면 Subscription Edition, 아니면 Exchange Online.[20]",
+     "**Lync** — Skype for Business 의 옛 이름. 온라인판은 2021년 7월 31일 종료[18], 서버판 2015·2019 도 2025년 10월 14일 종료됐고 Teams 가 권장 길이다.[19]",
+     "**SharePoint** — SharePoint Online 의 예전 확장 방식(Add-in)은 2026년 4월 2일 끝났고 SPFx 와 Entra ID 앱으로 바꿔야 한다. REST·CSOM 은 계속 된다.[21]",
+     "**SQL** — 그룹웨어 데이터가 쌓이는 DB. 자격요건의 DB 관리와 같은 줄기다.[1]"
+    ]
+   },
+   "how_far": "제품마다 관리자 화면·PowerShell 로 기본 작업을 해 봤고, **지금 쓰는 판이 지원되는지 확인하고 옮길 길을 설명할 수** 있으면 충분합니다. {추론}",
+   "refs": [
+    1,
+    18,
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "office-eos",
+    "sfb-retire",
+    "spo-addin-retire",
+    "exchange-hybrid"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "M365 (Teams, EXO, Office 등) 운영 경험자",
+   "short": "EXO 는 Exchange Online. Teams·메일·오피스 앱의 테넌트 설정과 사용자 지원을 해 봤는지 묻는 것.",
+   "why": "업무② 의 'M365 기반 서비스 운영'을 그대로 우대로 옮긴 줄입니다.[1] 그룹 차원에서 Teams 를 소통·회의의 바탕으로 쓰고 있습니다.[4]",
+   "actually": {
+    "items": [
+     "**Teams** — 팀·채널·외부 사용자 정책, 회의·통화 설정, 장애 때 상태 확인. Teams 관리자 시험(MS-700)이 다루는 범위와 같다.[24]",
+     "**EXO** — 사서함·공유 사서함·전달 규칙·권한. PowerShell 로 한 번에 처리한다.[13]",
+     "**연동** — 그룹웨어에서 메일·일정·알림을 보내는 코드는 Graph API 로 붙인다. EWS 를 쓰던 연동은 2027년 4월 1일 전에 바꿔야 한다.[14][17]"
+    ]
+   },
+   "how_far": "관리 센터·PowerShell 로 **사용자 문의를 직접 처리하고, 정책 변경 전후를 확인할 수** 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    4,
+    13,
+    14,
+    17,
+    24
+   ],
+   "study": [
+    "ms-700",
+    "exo-powershell",
+    "graph-overview",
+    "ews-retire"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "사내 협업 솔루션 운영 및 사용자 지원 경험자",
+   "short": "그룹웨어·메일·메신저를 쓰는 임직원의 '안 돼요'를 받아 푸는 일이 업무의 큰 몫이라서.",
+   "why": "이 자리의 사용자는 고객사 임직원 전체이고, 공고는 원활한 커뮤니케이션도 자격요건에 넣었습니다.[1] 협업 솔루션은 쓰는 사람이 많아 작은 설정 변경도 문의가 몰립니다. {추론}",
+   "actually": {
+    "items": [
+     "**문의 분류** — 계정·암호, 메일 수발신, 결재 흐름, 메신저 접속처럼 원인 별로 나눠 자주 나오는 것은 안내문·자동화로 줄인다. {추론}",
+     "**공지·교육** — 정책을 바꾸기 전에 언제·무엇이 바뀌는지 알리고, 바꾼 뒤 문의를 모아 본다. {추론}"
+    ]
+   },
+   "how_far": "사용자 지원을 '받아서 처리'한 경험에 더해, **반복 문의를 줄인 사례**(안내 문서·자동화·설정 개선)를 숫자로 말할 수 있으면 좋습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "M365 관련 Microsoft 자격증 보유자",
+   "short": "M365 관리 지식을 보증하는 MS 시험. 2026년 지금 남아 있는 것은 Teams 관리자(MS-700) 쪽이다.",
+   "why": "공고가 M365 관련 마이크로소프트 자격증을 우대합니다.[1] 다만 자격증 목록이 2026년에 많이 바뀌었습니다.[26]",
+   "actually": {
+    "items": [
+     "**MS-900(Microsoft 365 기초)** — 2026년 3월 31일에 없어졌다.[26]",
+     "**MS-102(Microsoft 365 Administrator Expert 시험)** — 2026년 11월 30일에 없어진다. 범위는 테넌트 관리·Entra 계정·Defender·Purview 였다.[25][26]",
+     "**MS-700(Teams Administrator Associate)** — 2026년 11월 현재 그대로 있고 은퇴 공지가 없다. 12개월마다 갱신한다.[24][26]"
+    ]
+   },
+   "how_far": "자격증은 '우대'일 뿐이라 없어도 지원할 수 있습니다.[1] 따려면 지금 시험 목록을 먼저 확인하고, 이미 딴 MS-102·MS-900 은 그대로 이력서에 적습니다. {추론}",
+   "refs": [
+    1,
+    24,
+    25,
+    26
+   ],
+   "study": [
+    "ms-700",
+    "ms-102",
+    "retired-exams"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "새 서비스보다 많은 사람이 매일 쓰는 시스템을 안정적으로 지키는 일이 맞는 사람 {추론}",
+   "C#·ASP.NET 과 윈도우·MS 제품군을 같이 다뤄 본 사람[1]",
+   "금융사 업무 시스템을 경험하며 도메인 지식을 쌓고 싶은 사람 — 팀이 꼽은 장점[1]",
+   "Java·C#·ERP·빅데이터까지 여러 솔루션을 넓게 경험하고 싶은 사람[1]"
+  ],
+  "hard": [
+   "최신 기술 스택을 새로 짜는 일보다 오래된 .NET Framework 유지보수가 많을 수 있다 {추론}[22]",
+   "사용자 문의·운영 대응이 일의 큰 몫이다[1]",
+   "공고마다 경력 표기가 다르다(잡코리아 5년↑, 원티드 3년↑) — 지원 전에 확인한다[1][2]",
+   "근무지 표기가 '서울 남대문'(잡코리아)과 테헤란로 본사(원티드)로 갈린다[1][2]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "결재권자가 휴가일 때와, 팀장 전결 문서일 때 결재선은 어떻게 달라지나요? 데이터로는 어떻게 남기겠어요?",
+   "a": "업무① 그룹웨어의 핵심 규칙 — 위임전결·대결.[8]"
+  },
+  {
+   "q": "운영 중인 ASP.NET(.NET Framework) 앱을 ASP.NET Core 로 옮기라면 어떻게 하겠어요?",
+   "a": "Framework 요건과 마이크로소프트가 권하는 점진 이관.[22][23]"
+  },
+  {
+   "q": "그룹웨어가 EWS 로 메일을 보내고 있다면 지금 무엇을 해야 하나요?",
+   "a": "Exchange Online EWS 차단 일정과 Graph 대체.[16][17][15]"
+  },
+  {
+   "q": "퇴사자 계정이 M365 에서 바로 막히지 않는다는 문의가 왔어요. 어디부터 보나요?",
+   "a": "AD 계정 상태와 Entra 동기화 경로.[10][11]"
+  },
+  {
+   "q": "결재 목록 화면이 월말에만 느려집니다. 앱·DB·서버 중 어디 문제인지 어떻게 가리겠어요?",
+   "a": "자격요건의 DB·미들웨어 관리 기술.[1]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "csharp-guide-ko",
+   "title": "C# 가이드 — .NET 관리 언어",
+   "by": "Microsoft Learn(한국어, 기계 번역)",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/ko-kr/dotnet/csharp/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "자격요건 첫 줄의 C# 문법을 공식 문서로 훑는다. 번역이 어색하면 영어판과 같이 본다."
+  },
+  {
+   "id": "this-is-csharp",
+   "title": "이것이 C#이다",
+   "by": "박상현 · 한빛미디어",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%EA%B2%83%EC%9D%B4%20C%23%EC%9D%B4%EB%8B%A4",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "C# 을 처음부터 한국어로 차근히 — 클래스·제네릭·LINQ·비동기까지. Framework 코드를 읽을 기본기."
+  },
+  {
+   "id": "aspnet-fx-to-core",
+   "title": "Migrate from ASP.NET Framework to ASP.NET Core",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/aspnet/core/migration/fx-to-core/",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "Framework 앱과 Core 앱이 어떻게 다르고, 운영 중인 앱을 기능 단위로 옮기는 방법. 그룹웨어 고도화를 맡을 때 쓴다."
+  },
+  {
+   "id": "netfx-lifecycle",
+   "title": "Microsoft .NET Framework — Lifecycle",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/lifecycle/products/microsoft-net-framework",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "4.8·4.8.1 이 언제 나왔고 어떤 정책으로 지원되는지. '.NET Framework 경험'이 왜 아직 필요한지 확인."
+  },
+  {
+   "id": "http-basic",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "kind": "internal",
+   "url": "/wiki/http-basic",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "Web Application 요건 — 쿠키·세션·캐시·상태 코드를 실제로 오간 요청·응답으로 본다."
+  },
+  {
+   "id": "law-approval",
+   "title": "행정 효율과 협업 촉진에 관한 규정",
+   "by": "대통령령 · 위키문헌 사본(2016-12-27 시행본)",
+   "kind": "doc",
+   "url": "https://ko.wikisource.org/wiki/%ED%96%89%EC%A0%95_%ED%9A%A8%EC%9C%A8%EA%B3%BC_%ED%98%91%EC%97%85_%EC%B4%89%EC%A7%84%EC%97%90_%EA%B4%80%ED%95%9C_%EA%B7%9C%EC%A0%95",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "제10조(문서의 결재)에 결재·위임전결·대결의 뜻이 있다. 공공기관 규정이지만 국내 전자결재가 쓰는 낱말의 뿌리라 결재선 로직을 이해하기 좋다. 현행본은 국가법령정보센터에서 확인."
+  },
+  {
+   "id": "ad-ds",
+   "title": "Active Directory Domain Services overview",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "업무②의 AD — 디렉터리·스키마·글로벌 카탈로그·복제가 무엇인지."
+  },
+  {
+   "id": "entra-connect",
+   "title": "What is Microsoft Entra Connect",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-azure-ad-connect",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "사내 AD 계정이 M365 로 넘어가는 동기화 경로. 입사·퇴사 반영 문제를 풀 때 본다."
+  },
+  {
+   "id": "exchange-hybrid",
+   "title": "Exchange Server hybrid deployments",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/exchange/exchange-hybrid",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "사내 Exchange 와 Exchange Online 을 한 조직처럼 쓰는 구성 — 메일 운영과 Exchange 우대 요건."
+  },
+  {
+   "id": "exo-powershell",
+   "title": "Connect to Exchange Online PowerShell",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "EXO 운영의 기본 도구. 사서함·권한 작업을 스크립트로 한 번에 처리하는 출발점."
+  },
+  {
+   "id": "graph-overview",
+   "title": "Microsoft Graph overview",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/graph/overview",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "그룹웨어에서 M365 메일·일정·사용자를 부르는 하나의 REST 창구. 연동 개발의 기본."
+  },
+  {
+   "id": "ews-retire",
+   "title": "Retirement of Exchange Web Services in Exchange Online",
+   "by": "Microsoft Exchange Team Blog",
+   "kind": "doc",
+   "url": "https://techcommunity.microsoft.com/blog/exchange/retirement-of-exchange-web-services-in-exchange-online/3924440",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "EWS 연동이 언제 막히고 Graph 로 무엇을 옮겨야 하는지. 2026년 지금 그룹웨어 운영자가 꼭 봐야 할 일정."
+  },
+  {
+   "id": "office-eos",
+   "title": "Office 2016/2019 have reached end of support — here's what to do now",
+   "by": "Microsoft 365 Blog · 2025-10-14",
+   "kind": "doc",
+   "url": "https://techcommunity.microsoft.com/t5/microsoft-365-blog/office-2016-2019-have-reached-end-of-support-here-s-what-to-do/ba-p/4461268",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "Exchange Server 2016·2019 지원 종료와 그 뒤의 선택지. MS 제품군 우대 요건의 '지금 상태'."
+  },
+  {
+   "id": "sfb-retire",
+   "title": "Skype for Business Online retirement",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/microsoftteams/skype-for-business-online-retirement",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "공고의 Lync 가 어떻게 Teams 로 넘어갔는지. 메신저 이관을 맡을 때 본다."
+  },
+  {
+   "id": "spo-addin-retire",
+   "title": "SharePoint Add-In retirement in Microsoft 365",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/retirement-announcement-for-add-ins",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SharePoint 확장이 SPFx·Entra 앱으로 바뀐 내용. SharePoint 우대 요건을 지금 기준으로 채우기."
+  },
+  {
+   "id": "ms-700",
+   "title": "Microsoft 365 Certified: Teams Administrator Associate (MS-700)",
+   "by": "Microsoft Learn",
+   "kind": "course",
+   "url": "https://learn.microsoft.com/en-us/credentials/exams/ms-700",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "Teams 환경·채널·회의·통화·문제 해결 범위. 자격증 우대와 M365 운영 우대를 같이 채운다(학습 경로 무료, 시험 유료)."
+  },
+  {
+   "id": "ms-102",
+   "title": "Exam MS-102: Microsoft 365 Administrator",
+   "by": "Microsoft Learn",
+   "kind": "course",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/ms-102/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "시험은 2026-11-30 에 없어지지만 범위표(테넌트·Entra·Defender·Purview)가 M365 관리자가 알아야 할 목록으로 쓸 만하다."
+  },
+  {
+   "id": "retired-exams",
+   "title": "Exam and assessment lab retirement",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/credentials/retired-certification-exams",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "어떤 M365 시험이 없어졌고 없어질 예정인지 — 자격증을 준비하기 전에 먼저 본다."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "인덱스·실행계획 기본. 결재 이력 표가 커져 화면이 느려질 때 DB 쪽 원인을 가려내는 힘."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "C# 과 .NET Framework 다시 잡기",
+   "time": "2~3주",
+   "goal": "C# 문법과 ASP.NET 요청 흐름을 설명하고, Framework 와 새 .NET 의 차이를 말할 수 있다.",
+   "resources": [
+    "csharp-guide-ko",
+    "this-is-csharp",
+    "netfx-lifecycle"
+   ],
+   "task": "가상 사원 50명 표(이름·부서·직급)를 읽어 부서별 인원과 결재 가능 직급을 LINQ 로 뽑는 콘솔 프로그램을 만든다."
+  },
+  {
+   "title": "작은 전자결재 웹 앱",
+   "time": "3~4주",
+   "goal": "기안 → 검토 → 결재, 전결·대결을 지원하는 웹 화면과 DB 를 만들 수 있다.",
+   "resources": [
+    "law-approval",
+    "http-basic",
+    "sql-tuning"
+   ],
+   "task": "ASP.NET(MVC 또는 Core)으로 기안 작성·결재함·승인/반려 화면을 만들고, 결재 이력을 지우지 않는 표로 남긴다. 위임 규정 표를 바꿔 전결자가 바뀌는지 확인한다."
+  },
+  {
+   "title": "AD·Entra·M365 손으로 익히기",
+   "time": "2~3주",
+   "goal": "계정이 사내 AD 에서 M365 로 넘어가는 길과 메일·Teams 관리 작업을 설명할 수 있다.",
+   "resources": [
+    "ad-ds",
+    "entra-connect",
+    "exchange-hybrid",
+    "exo-powershell",
+    "sfb-retire"
+   ],
+   "task": "가상 계정 목록의 userAccountControl 값을 읽어 사용 중지·암호 만료 계정을 골라내는 스크립트를 만들고, 입사·퇴사 시 M365 에 무엇이 바뀌어야 하는지 점검표로 적는다."
+  },
+  {
+   "title": "그룹웨어 ↔ M365 연동",
+   "time": "2주",
+   "goal": "Graph API 로 메일·알림을 보내고, EWS 연동을 바꿀 계획을 세울 수 있다.",
+   "resources": [
+    "graph-overview",
+    "ews-retire",
+    "aspnet-fx-to-core"
+   ],
+   "task": "2단계 결재 앱에 '결재 요청이 오면 메일 보내기'를 Graph sendMail 형태로 붙인다(테스트 테넌트가 없으면 요청 본문만 만들어 로그로 확인). 옛 EWS 호출 목록을 가정하고 Graph 대응표를 만든다."
+  },
+  {
+   "title": "자격증 (선택)",
+   "time": "4~6주",
+   "goal": "Teams 관리 범위를 시험 수준으로 정리한다.",
+   "resources": [
+    "ms-700",
+    "retired-exams",
+    "ms-102",
+    "spo-addin-retire",
+    "office-eos"
+   ],
+   "task": "MS-700 범위표의 항목마다 '내가 해 본 것 / 문서로만 아는 것'을 표시하고, 모르는 칸을 학습 경로로 채운다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 표기는 없고, 공시로 본 직원 평균은 **2026년 상반기 4,500만원(연으로 약 9,000만원)** — 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여(상반기)",
+    "value": "4,500만원",
+    "amount": 4500,
+    "basis": "반기보고서 · 2026년 상반기",
+    "note": "6월 말 본사 직원 5,749명 기준, 상반기 6개월 치다. 기사는 연으로 약 9,000만원 수준이라고 풀었다 [27]"
+   },
+   {
+    "label": "직원 1인 평균 급여(연 환산)",
+    "value": "약 9,000만원",
+    "amount": 9000,
+    "basis": "반기보고서 · 2026년 상반기 × 2",
+    "note": "상반기 값을 두 배 한 기사 환산이라 하반기 성과급은 반영되지 않았을 수 있다 [27]"
+   },
+   {
+    "label": "평균 연봉(집계)",
+    "value": "6,855만원",
+    "amount": 6855,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않아 공시 평균과 바로 비교하지 않는다 [30]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고 전형 끝에 **처우협의** 단계가 따로 있다 [1]. 이 자리는 경력 5년 이상(원티드 판은 3년 이상)이라 신입 초봉은 해당하지 않는다 [1][2]. 평균은 경력·직군이 다 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "통신비",
+    "detail": "휴대전화 통신비 월 최대 6만원"
+   },
+   {
+    "name": "차량 구입",
+    "detail": "현대자동차그룹 차량 구입 시 최대 30%, 입사 후 첫 차는 20% 지원"
+   },
+   {
+    "name": "하계 휴가",
+    "detail": "연차 외 5일 추가, 하계 휴가비"
+   },
+   {
+    "name": "건강",
+    "detail": "직원 본인·가족 종합검진(전국 의료기관), 의료비, 독감 예방접종, 단체 상해보험"
+   },
+   {
+    "name": "주거",
+    "detail": "주택 구입·임차 때 사내 대출제도"
+   },
+   {
+    "name": "학자금",
+    "detail": "본인 학자금 대출(한국장학재단) 이자 지원, 자녀 학자금(유치원~대학교)"
+   },
+   {
+    "name": "육아",
+    "detail": "강남구 안 사내 어린이집 2곳, 산전후·배우자 출산·난임치료 휴가, 자녀 초등학교 입학 선물"
+   },
+   {
+    "name": "휴양·여가",
+    "detail": "전국 40여 곳 리조트, 복지포인트, 사내 동호회"
+   },
+   {
+    "name": "경조·명절",
+    "detail": "경조휴가·경조비, 설·추석 귀향비"
+   },
+   {
+    "name": "상담",
+    "detail": "외부 전문가 심리 상담(EAP)"
+   }
+  ],
+  "note": "공고에는 복리후생 칸이 없다 [1][2]. 위 항목은 현대오토에버 채용 사이트 Life 메뉴 기준이다 [28]. 페이지에 기준 연도는 적혀 있지 않다."
+ },
+ "location": {
+  "name": "공고 근무지 '서울 남대문' — 현대캐피탈 본사(그랜드센트럴) 근처로 보임",
+  "address": "서울특별시 중구 세종대로 14 (남대문로5가, 그랜드센트럴)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%84%B8%EC%A2%85%EB%8C%80%EB%A1%9C%2014",
+  "near": "1·4호선 서울역 근처",
+  "note": "잡코리아 판의 근무지는 '서울 남대문'이다 [1]. 현대오토에버 국내 사업장 목록에는 남대문 사무소가 없고 [29], 팀이 맡는 캐피탈사로 보이는 현대캐피탈은 2022년 여의도에서 서울역 앞 그랜드센트럴로 본사를 옮겼다 [6]. 주소는 집계 사이트의 현대캐피탈 기업 정보다 [7]. 팀이 이 건물에서 일한다는 것은 공고에 적혀 있지 않다 {추론}. 원티드 판은 근무지를 현대오토에버 본사(서울 강남구 테헤란로 510)로 적었다 [2]."
+ },
+ "caveat": "공고는 '캐피탈사'라고만 적었고 고객사 이름·그룹웨어 제품·내부 구조는 공개되지 않았습니다. 현대캐피탈로 읽은 것은 팀 이름·근무지 표기·본사 이전 보도에 기댄 추론입니다. 결재 로직은 공공기관 규정으로, AD·M365 는 마이크로소프트 공식 문서로 '보통 이런 것'을 보였습니다. 마이크로소프트 제품·자격증 일정은 2026년 11월 기준이라 곧 바뀔 수 있습니다.",
+ "sources": [
+  {
+   "n": 1,
+   "title": "잡코리아 · 현대오토에버 그룹웨어 시스템 운영 및 개발",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301832",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "캐피탈경영시스템팀 소개·팀 리더 코멘트·업무·요건·우대(자격증 줄 포함)·전형(직무역량테스트(과)·처우협의)·근무지 서울 남대문·경력 5년↑·11-26 마감"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대오토에버 [EnIT] 그룹웨어 시스템 운영 및 개발 (금융)",
+   "url": "https://www.wanted.co.kr/wd/395121",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 자리의 원티드 판 — 경력 3년 이상, 근무지 테헤란로 510, 우대·복지 칸 없음"
+  },
+  {
+   "n": 3,
+   "title": "리멤버 · 현대오토에버 그룹웨어 시스템 개발/운영(금융)",
+   "url": "https://career.rememberapp.co.kr/job/posting/293909",
+   "kind": "posting",
+   "date": "2026-02",
+   "note": "앞선 같은 직무 공고(검색 요약으로 확인 — 2026-02-26 마감, 경력 3년 이상)"
+  },
+  {
+   "n": 4,
+   "title": "Microsoft 뉴스센터 · 현대자동차그룹, 마이크로소프트 365 타고 스마트 업무 문화 혁신 '가속화'",
+   "url": "https://news.microsoft.com/ko-kr/?p=33957",
+   "kind": "news",
+   "date": "2021-01-28",
+   "note": "2019년부터 M365 확대, Teams 소통·회의, Azure AD 문서 권한. 계열사 구분·사용자 수 없음"
+  },
+  {
+   "n": 5,
+   "title": "ZDNet Korea · 현대오토에버, SI·ITO 성장 속 AI 기술 개발",
+   "url": "https://zdnet.co.kr/view?no=20261116181624",
+   "kind": "news",
+   "date": "2026-11-16",
+   "note": "2026년 1~3분기 ITO 매출 1조 4,287억원(+19.1%), SI 1조 3,723억원"
+  },
+  {
+   "n": 6,
+   "title": "뉴스핌 · 현대캐피탈 본사 서울역 그랜드센트럴 이전",
+   "url": "https://newspim.com/news/view/20220926000638",
+   "kind": "news",
+   "date": "2022-09-26",
+   "note": "여의도에서 그랜드센트럴(7~17층)로 이전 완료"
+  },
+  {
+   "n": 7,
+   "title": "자소설닷컴 · 현대캐피탈 기업 정보",
+   "url": "https://jasoseol.com/companies/1509",
+   "kind": "reference",
+   "note": "주소 서울특별시 중구 세종대로 14(남대문로5가, 그랜드센트럴)"
+  },
+  {
+   "n": 8,
+   "title": "행정 효율과 협업 촉진에 관한 규정 (위키문헌 사본)",
+   "url": "https://ko.wikisource.org/wiki/%ED%96%89%EC%A0%95_%ED%9A%A8%EC%9C%A8%EA%B3%BC_%ED%98%91%EC%97%85_%EC%B4%89%EC%A7%84%EC%97%90_%EA%B4%80%ED%95%9C_%EA%B7%9C%EC%A0%95",
+   "kind": "reference",
+   "date": "2016-12-27",
+   "note": "다른 곳(공공기관)의 규정 — 제3조 서명하는 사람, 제10조 결재·위임전결·대결. 현행본과 다를 수 있음"
+  },
+  {
+   "n": 9,
+   "title": "Microsoft Learn · Active Directory Domain Services overview",
+   "url": "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "Microsoft Learn · UserAccountControl property flags",
+   "url": "https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties",
+   "kind": "reference",
+   "note": "ACCOUNTDISABLE 2·LOCKOUT 16·NORMAL_ACCOUNT 512·DONT_EXPIRE_PASSWORD 65536·PASSWORD_EXPIRED 8388608 — 예시 코드로 직접 확인"
+  },
+  {
+   "n": 11,
+   "title": "Microsoft Learn · What is Microsoft Entra Connect",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-azure-ad-connect",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Microsoft Learn · Exchange Server hybrid deployments",
+   "url": "https://learn.microsoft.com/en-us/exchange/exchange-hybrid",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Microsoft Learn · Connect to Exchange Online PowerShell",
+   "url": "https://learn.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Microsoft Learn · Microsoft Graph overview",
+   "url": "https://learn.microsoft.com/en-us/graph/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Microsoft Learn · user: sendMail (Graph v1.0)",
+   "url": "https://learn.microsoft.com/en-us/graph/api/user-sendmail",
+   "kind": "reference",
+   "note": "POST /users/{id}/sendMail, 권한 Mail.Send, 성공 시 202"
+  },
+  {
+   "n": 16,
+   "title": "Exchange Team Blog · Retirement of Exchange Web Services in Exchange Online",
+   "url": "https://techcommunity.microsoft.com/blog/exchange/retirement-of-exchange-web-services-in-exchange-online/3924440",
+   "kind": "reference",
+   "note": "2026-10-01 부터 EWS 요청 차단 시작, 사내 Exchange 는 해당 없음, Graph 권장"
+  },
+  {
+   "n": 17,
+   "title": "Exchange Team Blog · Exchange Online EWS, Your Time is Almost Up",
+   "url": "https://techcommunity.microsoft.com/blog/exchange/exchange-online-ews-your-time-is-almost-up/4492361",
+   "kind": "reference",
+   "date": "2026-10",
+   "note": "테넌트별 단계 차단(EWSEnabled), 최종 종료 2027-04-01"
+  },
+  {
+   "n": 18,
+   "title": "Microsoft Learn · Skype for Business Online retirement",
+   "url": "https://learn.microsoft.com/en-us/microsoftteams/skype-for-business-online-retirement",
+   "kind": "reference",
+   "note": "2021-07-31 종료, 사내 서버판은 영향 없음"
+  },
+  {
+   "n": 19,
+   "title": "Skype for Business Blog · Support for Skype for Business Server 2015 and 2019 ends today",
+   "url": "https://techcommunity.microsoft.com/t5/skype-for-business-blog/support-for-skype-for-business-server-2015-and-skype-for/ba-p/4460729",
+   "kind": "reference",
+   "date": "2025-10-14"
+  },
+  {
+   "n": 20,
+   "title": "Microsoft 365 Blog · Office 2016/2019 have reached end of support",
+   "url": "https://techcommunity.microsoft.com/t5/microsoft-365-blog/office-2016-2019-have-reached-end-of-support-here-s-what-to-do/ba-p/4461268",
+   "kind": "reference",
+   "date": "2025-10-14",
+   "note": "Exchange Server 2016·2019 포함, 사내용은 Exchange Server Subscription Edition 권장"
+  },
+  {
+   "n": 21,
+   "title": "Microsoft Learn · SharePoint Add-In retirement in Microsoft 365",
+   "url": "https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/retirement-announcement-for-add-ins",
+   "kind": "reference",
+   "note": "SharePoint Online 에서 2026-04-02 종료, SPFx·Entra ID 앱으로, REST·CSOM 은 유지"
+  },
+  {
+   "n": 22,
+   "title": "Microsoft Learn · Microsoft .NET Framework lifecycle",
+   "url": "https://learn.microsoft.com/en-us/lifecycle/products/microsoft-net-framework",
+   "kind": "reference",
+   "note": "4.8(2019-04-18)·4.8.1(2022-08-09) 종료일 없음, Component Lifecycle Policy"
+  },
+  {
+   "n": 23,
+   "title": "Microsoft Learn · Migrate from ASP.NET Framework to ASP.NET Core",
+   "url": "https://learn.microsoft.com/en-us/aspnet/core/migration/fx-to-core/",
+   "kind": "reference",
+   "note": "운영 앱은 점진 이관(Strangler Fig)이 권장"
+  },
+  {
+   "n": 24,
+   "title": "Microsoft Learn · Teams Administrator Associate (MS-700)",
+   "url": "https://learn.microsoft.com/en-us/credentials/exams/ms-700",
+   "kind": "reference",
+   "date": "2026-11",
+   "note": "은퇴 공지 없음, 12개월 갱신"
+  },
+  {
+   "n": 25,
+   "title": "Microsoft Learn · Exam MS-102: Microsoft 365 Administrator",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/ms-102/",
+   "kind": "reference",
+   "date": "2026-11",
+   "note": "2026-11-30 은퇴 안내, 범위: 테넌트·Entra·Defender XDR·Purview"
+  },
+  {
+   "n": 26,
+   "title": "Microsoft Learn · Exam and assessment lab retirement",
+   "url": "https://learn.microsoft.com/en-us/credentials/retired-certification-exams",
+   "kind": "reference",
+   "date": "2026-11-16",
+   "note": "MS-900 2026-03-31 은퇴, MS-102 2026-11-30 은퇴 예정"
+  },
+  {
+   "n": 27,
+   "title": "ZDNet Korea · 현대오토에버, 상반기 매출 2.2조 돌파…SI 부문 26% 급성장",
+   "url": "https://zdnet.co.kr/view/?no=20260814185634",
+   "kind": "news",
+   "date": "2026-08-14",
+   "note": "반기보고서 직원 평균 급여 — 같은 회사 풀이의 출처 재사용"
+  },
+  {
+   "n": 28,
+   "title": "현대오토에버 채용 · Life(복리후생)",
+   "url": "https://career.hyundai-autoever.com/ko/life",
+   "kind": "company",
+   "note": "같은 회사 풀이의 출처 재사용"
+  },
+  {
+   "n": 29,
+   "title": "현대오토에버 · 국내 사업장",
+   "url": "https://www.hyundai-autoever.com/kor/about/workplace/domestic/contents.do?cntnSeq=239",
+   "kind": "company",
+   "note": "본사·삼성 사옥·R&D 센터(강남구)와 데이터센터 3곳 — 남대문 사무소 없음"
+  },
+  {
+   "n": 30,
+   "title": "자소설닷컴 · 현대오토에버 기업 정보(공공데이터 집계)",
+   "url": "https://jasoseol.com/companies/269",
+   "kind": "reference",
+   "note": "평균 연봉 6,855만원 — 기준일 표기 없음"
+  }
+ ]
+}

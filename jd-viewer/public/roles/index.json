@@ -221,6 +221,8 @@
   "wanted-385554": "hyundai-autoever-ai-researcher",
   "jobkorea-50301716": "hyundai-autoever-ai-researcher",
   "wanted-385488": "hyundai-autoever-auth-account-backend",
+  "jobkorea-50301832": "hyundai-autoever-capital-groupware",
+  "wanted-395121": "hyundai-autoever-capital-groupware",
   "jobkorea-50301694": "hyundai-autoever-classic-autosar-com",
   "wanted-395348": "hyundai-autoever-classic-autosar-com",
   "saramin-55552392": "hyundai-autoever-classic-autosar-com",
@@ -2509,6 +2511,17 @@
    "lines": 13
   },
   {
+   "id": "hyundai-autoever-capital-groupware",
+   "company": "현대오토에버",
+   "role": "그룹웨어 시스템 운영 및 개발",
+   "jobs": [
+    "jobkorea-50301832",
+    "wanted-395121"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 11
+  },
+  {
    "id": "hyundai-autoever-classic-autosar-com",
    "company": "현대오토에버",
    "role": "Classic AUTOSAR 통신 스택 개발",
@@ -2997,12 +3010,10 @@
    "role": "자율주행 AI 엔지니어 (E2E·AI 플래닝)",
    "jobs": [
     "ats-greeting:kakaomobility:205613",
-    "ats-kakao:group:S-4680",
-    "ats-greeting:kakaomobility:205618",
-    "ats-kakao:group:S-4681"
+    "ats-kakao:group:S-4680"
    ],
    "researched_at": "2026-11-26",
-   "lines": 18
+   "lines": 13
   },
   {
    "id": "kakaomobility-ad-slam",
