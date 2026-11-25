@@ -238,6 +238,7 @@
   "ats-greeting:musinsa:236337": "musinsa-product-engineer-platform-innovation",
   "ats-greeting:musinsa:235686": "musinsa-product-engineer-scm-platform",
   "ats-greeting:musinsa:172721": "musinsa-product-engineering-manager-core-partner",
+  "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
@@ -2573,6 +2574,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 32
+  },
+  {
+   "id": "musinsa-security-engineer-mail-cds",
+   "company": "무신사",
+   "role": "Security Engineer (스팸 메일·망연계 운영)",
+   "jobs": [
+    "ats-greeting:musinsa:245345"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
   },
   {
    "id": "musinsa-security-engineering-lead",
