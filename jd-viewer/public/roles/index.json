@@ -17,6 +17,7 @@
   "ats-greenhouse:coupang:8385253": "coupang-audit-ai-ops-pm-bengaluru",
   "ats-greenhouse:coupang:8275940": "coupang-catalog-quality-senior-pm",
   "wanted-396324": "coupang-catalog-taxonomy-pm",
+  "ats-greenhouse:coupang:7912287": "coupang-cic-k8s-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
   "ats-greenhouse:coupang:8316768": "coupang-cls-waterflex-logistics-data-analyst",
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
@@ -487,6 +488,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 23
+  },
+  {
+   "id": "coupang-cic-k8s-senior-staff-bengaluru",
+   "company": "쿠팡",
+   "role": "Senior Staff Backend Engineer (K8)",
+   "jobs": [
+    "ats-greenhouse:coupang:7912287"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
   },
   {
    "id": "coupang-cloud-infra-senior-staff-seattle",

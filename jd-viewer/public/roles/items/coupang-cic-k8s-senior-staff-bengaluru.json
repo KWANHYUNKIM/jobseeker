@@ -1,0 +1,1221 @@
+{
+ "id": "coupang-cic-k8s-senior-staff-bengaluru",
+ "company": "쿠팡",
+ "role": "Senior Staff Backend Engineer (K8)",
+ "team": "쿠팡 인텔리전트 클라우드(CIC) · 워크로드·서비스 관리 인프라 (벵갈루루)",
+ "jobs": [
+  "ats-greenhouse:coupang:7912287"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡의 AI 클라우드(CIC)에서 **작업(학습·배치·서비스)을 쿠버네티스 위에 올리고, 자리를 나눠 주고, 배포하고, 살아 있게 지키는 관리 층**을 설계하고 직접 만드는 최상위급 개발자 자리입니다.[1] 공고는 이 자리가 Java·AWS·Kafka·Kubernetes·Kubeflow·Argo CD·gRPC 를 쓰는 여러 팀을 기술로 이끈다고 적었습니다.[1]",
+  "env": "공고의 소속 부서는 **Coupang Intelligent Cloud(CIC)** 입니다.[1] CIC 는 쿠팡이 2025년 7월 AI 인프라에 붙인 이름이고 사내 서비스와 외부 기관에 GPU 를 빌려줍니다.[5] 2026년 3월에는 개발자가 CLI·API·화면으로 모델을 만들고 배포하는 셀프서비스 'AI 팩토리'로 소개됐습니다.[3][4] 근무지는 벵갈루루, 주 3일 이상 출근하는 하이브리드입니다.[1]",
+  "oneline": "쿠버네티스를 **쓰는** 사람이 아니라, 수많은 팀의 학습·배포 작업이 그 위에서 **어떻게 줄 서고 자리 잡고 배포되는지를 정하는** 사람. 경력 12년 이상에 사람 키우기까지 요구합니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Architect workload and service management infrastructure.",
+   "short": "학습·배치·서비스 작업이 클러스터에 줄 서고, 자리 잡고, 배포되는 관리 층 전체를 설계한다.",
+   "why": "쿠팡 ML 플랫폼은 사용자의 학습 파이프라인을 컨테이너로 묶어 쿠버네티스에 올리고, 배치 스케줄러가 원하는 CPU·GPU 에 자리를 잡아 줍니다.[2] 모델은 하나하나가 자동 확장되는 별도 서비스로 배포됩니다.[2] 이 공고의 '워크로드(작업)'와 '서비스' 관리는 바로 이 두 갈래를 가리키는 것으로 보입니다 {추론}.",
+   "actually": {
+    "intro": "보통 '워크로드·서비스 관리 인프라'에 들어가는 칸입니다. 쿠팡 내부 구조는 공개되지 않아 쿠버네티스·Kueue 문서로 일반적인 모양을 보입니다.",
+    "items": [
+     "**대기열과 할당량(quota)** — 팀마다 GPU 를 몇 장까지 쓰나, 남는 자리는 누가 빌려 쓰나. Kueue 는 이것을 '대기열'과 '자원 묶음'으로 나눠 관리한다.[15]",
+     "**자리 잡기(스케줄링)** — 노드를 걸러 내고(filter) 점수를 매겨(score) 고른다. 분산 학습은 워커가 다 들어갈 때만 한꺼번에 띄운다(전부 아니면 무 — 쿠팡 배치 스케줄러의 방식).[14][2]",
+     "**장치 붙이기** — GPU 는 기본 자원이 아니라 장치 플러그인이 노드에 '이 노드엔 GPU 8장'을 알려야 보인다.[34]",
+     "**서비스 수명 관리** — 모델 서버를 띄우고, 부하에 따라 늘리고 줄이고, 새 판을 카나리(일부 요청에만 먼저)로 내보낸다.[2]",
+     "**배포 경로** — 깃에 적힌 원하는 상태를 클러스터에 맞추는 GitOps(Argo CD).[17]",
+     "**자체 컨트롤러** — 위 규칙을 쿠버네티스 위에 '새 자원 종류 + 그걸 계속 맞추는 프로그램(오퍼레이터)'으로 짓는다.[16]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "학습 작업 하나가 GPU 에 닿기까지 — 일반적인 모양 {추론}[14][15][17]",
+     "steps": [
+      "제출 · 개발자가 CLI·API·화면으로 작업을 낸다",
+      "대기열 · 팀 할당량 안인지, 빌릴 자리가 있는지",
+      "입장 허가 · 다 들어갈 자리가 생기면 한꺼번에 통과",
+      "자리 잡기 · 노드 거르기 → 점수 → 배치",
+      "실행·감시 · 멈춘 작업·노는 GPU 알림",
+      "결과 배포 · 모델을 서비스로, 카나리 → 점진 확대"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "어떤 팀에 GPU 를 얼마 줄지는 사업·조직이 정합니다. 이 자리는 그 결정을 **규칙으로 걸 수 있는 장치**(대기열·할당량·우선순위·선점)와, 수백 팀이 써도 무너지지 않는 구조를 맡습니다 {추론}. 최소선은 쿠버네티스 스케줄러가 파드를 어떻게 고르는지, 할당량과 대기열이 왜 따로 필요한지를 설명하는 것입니다.",
+   "refs": [
+    1,
+    2,
+    14,
+    15,
+    16,
+    17,
+    34
+   ],
+   "study": [
+    "coupang-mlp",
+    "k8s-scheduler",
+    "kueue",
+    "prod-k8s"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Hands-on develop critical infrastructure components.",
+   "short": "설계만 하지 않고 스케줄러 플러그인·컨트롤러 같은 핵심 부품을 직접 짠다.",
+   "why": "공고는 설계 업무 바로 다음 줄에 '직접 개발'을 따로 적었습니다.[1] 같은 회사 클라우드 인프라 자동화 공고도 AWS 자원을 쿠버네티스로 다루는 컨트롤러와 멀티 EKS 클러스터를 직접 만드는 일을 적었습니다.[6]",
+   "actually": {
+    "items": [
+     "**오퍼레이터** — '학습 작업'·'모델 서비스' 같은 새 자원 종류(CRD)를 정의하고, 원하는 상태와 지금 상태를 계속 맞추는 프로그램을 쓴다.[16]",
+     "**스케줄러 확장** — 기본 스케줄러의 filter·score 단계에 플러그인을 끼운다(GPU 종류·같은 랙 묶기).[14]",
+     "**입장 허가 웹훅** — 파드가 만들어지기 전에 규칙(GPU 요청에 팀 표시가 있나)을 검사한다 {추론}.",
+     "**언어** — 쿠버네티스 생태계 부품은 Go 가 많고, 서비스 쪽은 Java 가 많다. 공고는 Java·Go·Python 중 하나를 요구한다.[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "모든 컨트롤러의 뼈대 — 원하는 상태와 지금 상태 맞추기",
+     "body": "Argo CD 와 쿠버네티스 컨트롤러가 하는 일을 사전 두 개로 줄였습니다. 실제 컨트롤러는 이 비교를 이벤트가 올 때마다 반복합니다(직접 돌린 출력).[16][17]",
+     "lang": "python",
+     "code": "desired = {\"ranker\": {\"image\": \"ranker:1.4\", \"replicas\": 6}, \"embed\": {\"image\": \"embed:2.0\", \"replicas\": 3}}\nactual = {\"ranker\": {\"image\": \"ranker:1.3\", \"replicas\": 6}, \"embed\": {\"image\": \"embed:2.0\", \"replicas\": 1},\n          \"debug-pod\": {\"image\": \"busybox\", \"replicas\": 1}}\ndef diff(desired, actual):\n    plan = []\n    for k, want in desired.items():\n        have = actual.get(k)\n        if have is None:\n            plan.append((\"만들기\", k, want))\n        elif have != want:\n            plan.append((\"고치기\", k, {f: (have.get(f), v) for f, v in want.items() if have.get(f) != v}))\n    for k in actual:\n        if k not in desired:\n            plan.append((\"지우기\", k, None))\n    return plan\nfor step in diff(desired, actual):\n    print(step)\n# ('고치기', 'ranker', {'image': ('ranker:1.3', 'ranker:1.4')})\n# ('고치기', 'embed', {'replicas': (1, 3)})\n# ('지우기', 'debug-pod', None)"
+    }
+   ],
+   "how_far": "Senior Staff 라도 코드를 손에서 놓지 않는 자리입니다.[1] 최소선은 작은 오퍼레이터 하나(CRD + 맞추기 루프)를 직접 만들어 본 경험, 실무선은 그것을 수천 개 자원에서 느려지지 않게(캐시·재시도·속도 제한) 운영해 본 경험입니다 {추론}.",
+   "refs": [
+    1,
+    6,
+    14,
+    16,
+    17
+   ],
+   "study": [
+    "prog-k8s",
+    "k8s-operator",
+    "book-k8s"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Decompose complex problems into simple, straightforward solutions, providing mechanisms for the teams to prioritize ruthlessly and \"move with urgency\".",
+   "short": "얽힌 인프라 문제를 잘게 나눠 팀이 무엇부터 할지 고르게 하는 틀을 만든다.",
+   "why": "'move with urgency' 는 공고의 따옴표 그대로입니다.[1] 쿠팡 엔지니어 소개 글은 설계 리뷰에 펠로급이 들어오고, 문제를 '왜'를 다섯 번 물어 파고든다고 적었습니다.[7]",
+   "actually": {
+    "items": [
+     "**문제 쪼개기** — 'GPU 가 부족하다'를 '정말 모자라나 / 놀고 있나 / 잘못 나눠 줬나'로 나눈다. 쿠팡은 활용률 65% → 95% 를 내세웠다 — 같은 장비로 더 하는 쪽이다.[3]",
+     "**구조(mechanism)** — 선의에 기대지 않고 규칙으로 돌게 한다: 할당량, 우선순위 등급, 비용 표시 {추론}.",
+     "**설계 문서** — 목표·하지 않을 것·대안을 적어 팀이 같은 그림으로 고르게 한다.[31]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "활용률 65% 와 95% 의 차이 (가상 GPU 1,000장)",
+     "body": "같은 일을 하는 데 GPU 가 약 3분의 1 덜 듭니다. 장비를 사는 것보다 나눠 주는 방식을 고치는 쪽이 싸다는 이야기입니다(직접 돌린 출력, 장비 수는 가상).[3]",
+     "lang": "python",
+     "code": "gpus = 1000\nfor u in (0.65, 0.95):\n    print(f\"활용률 {u:.0%}: 일하는 GPU {gpus*u:.0f}장, 노는 GPU {gpus*(1-u):.0f}장\")\nprint(f\"같은 일에 필요한 GPU: {gpus*0.65/0.95:.0f}장 (약 {1-0.65/0.95:.0%} 덜 필요)\")\n# 활용률 65%: 일하는 GPU 650장, 노는 GPU 350장\n# 활용률 95%: 일하는 GPU 950장, 노는 GPU 50장\n# 같은 일에 필요한 GPU: 684장 (약 32% 덜 필요)"
+    }
+   ],
+   "how_far": "우선순위 자체는 사업과 리더들이 정합니다. 이 자리는 **고를 수 있게 문제를 펼쳐 놓고, 고른 것을 지키는 장치**를 맡습니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    7,
+    31
+   ],
+   "study": [
+    "staffeng",
+    "design-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Envision roadmaps for the scalable and robust growth of Coupang's growing application infrastructure.",
+   "short": "인프라가 2~3년 뒤 몇 배로 커져도 버티도록 무엇을 언제 바꿀지 길을 그린다.",
+   "why": "CIC 는 사내 서비스에 더해 외부 연구기관·스타트업에도 GPU 를 빌려주는 쪽으로 넓혔고[5], 2026년 3월에는 DGX SuperPOD 를 얹은 셀프서비스 AI 팩토리를 발표했습니다.[3][4] 쓰는 사람이 사내 팀에서 바깥 고객으로 넓어지면 격리·과금·할당 규칙이 달라집니다 {추론}.",
+   "actually": {
+    "items": [
+     "**규모 단계** — 클러스터 하나 → 여러 클러스터·여러 지역. 같은 회사 자동화 공고는 이미 멀티 EKS 클러스터·리전 서비스 메시를 적었다.[6]",
+     "**사내 장비 + AWS** — 쿠팡 ML 플랫폼은 사내 GPU 가 모자라면 AWS 로 넘친다.[2] 어느 작업을 어디로 보낼지가 로드맵 거리다 {추론}.",
+     "**새 작업 종류** — 대형 언어 모델의 배치·실시간 GPU 서빙에 투자한다고 2023년에 적었다.[2]"
+    ]
+   },
+   "how_far": "로드맵은 혼자 정하지 않습니다. 근거(활용률·대기 시간·장애 통계)를 숫자로 내놓고, 이번 분기·내년·그다음으로 나눠 **하지 않을 것**까지 적는 수준이 기대치입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "staffeng",
+    "eks-bp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Align with stakeholders, develop strong developers, and provide technical guidance to engineers on critical projects to resolve complex business problems.",
+   "short": "관계 팀과 방향을 맞추고, 개발자를 키우고, 중요한 프로젝트에 기술 조언을 준다.",
+   "why": "공고 소개는 이 자리가 여러 플랫폼 팀의 리더와 함께 일하고, 기술 리더와 인재를 뽑고 키우는 책임을 진다고 적었습니다.[1] 쿠팡 인프라는 한국·미국·인도 팀이 같이 만듭니다.[3][13]",
+   "actually": {
+    "items": [
+     "**이해관계자** — 플랫폼을 쓰는 ML 팀, 장비를 사는 쪽, 보안, 비용 담당 {추론}.",
+     "**권한 없이 이끌기** — Staff 이상은 직접 지시할 사람이 없어도 설계 리뷰·문서·멘토링으로 방향을 맞춘다.[30]",
+     "**사람 키우기** — 채용 면접관, 승진 근거 작성, 다음 리드 후보에게 큰 일을 맡기기.[1][30]"
+    ]
+   },
+   "how_far": "팀장(관리자)이 아니라 개인 기여자 트랙의 최상위입니다 — 사람을 평가하지는 않아도 **뽑고 키우는 일은 맡습니다**.[1]",
+   "refs": [
+    1,
+    3,
+    13,
+    30
+   ],
+   "study": [
+    "staffeng"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Demonstrate excellence resulting in scalable systems and services with the highest quality architecture and design.",
+   "short": "설계의 품질이 곧 성과로 보이게 — 커져도 안 무너지는 구조를 실제로 내놓는다.",
+   "why": "쿠팡 ML 플랫폼은 모델마다 따로 자동 확장되는 서비스로 띄워 서로 영향을 주지 않게 했고, 여러 가용 영역에 나눠 올렸습니다.[2] '확장 가능한 구조'의 회사 안 예입니다.",
+   "actually": {
+    "items": [
+     "**격리** — 한 팀 작업이 다른 팀을 굶기지 않게 할당량·우선순위·노드 묶음을 나눈다.[15]",
+     "**확장 단위** — 쿠버네티스 클러스터에는 공식 권장 상한(노드 5,000대 등)이 있어 그 전에 여러 클러스터로 나눈다.[35]",
+     "**컨트롤 플레인 보호** — 컨트롤러가 API 서버를 과하게 부르지 않게 감시(watch)·캐시를 쓴다.[16]"
+    ]
+   },
+   "how_far": "최소선은 내 설계가 10배 커질 때 어디가 먼저 터지는지(API 서버·etcd·스케줄러 처리량·네트워크) 말할 수 있는 것입니다 {추론}.",
+   "refs": [
+    2,
+    15,
+    16,
+    35
+   ],
+   "study": [
+    "prod-k8s",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Dive deep into critical system issues, proactively address similar root causes, and raise the bar on Operational Excellence.",
+   "short": "큰 장애를 끝까지 파고들고, 같은 원인이 다른 데서 또 터지지 않게 미리 막는다.",
+   "why": "쿠팡 ML 플랫폼은 멈췄거나 노는 학습 작업, 학습·서빙 인스턴스가 안 뜨는 경우, 메모리 급증에 알림을 겁니다.[2] 쿠팡 엔지니어 글은 장애 리뷰에도 시니어가 들어온다고 적었습니다.[7]",
+   "actually": {
+    "items": [
+     "**인프라 장애의 흔한 모양** — 파드가 Pending 에 멈춤(자리 없음), GPU 노드가 고장 났는데 작업이 계속 배정됨, 재시도가 몰려 API 서버가 느려짐 {추론}.",
+     "**근본 원인** — 한 건을 고치고 끝내지 않고 '같은 원인을 가진 다른 곳'을 찾는다 — 공고 문장 그대로의 요구.[1]",
+     "**사후 검토** — 누구 탓이 아니라 무엇이 그렇게 만들었나를 적고, 할 일을 추적한다.[29]"
+    ]
+   },
+   "how_far": "당번(on-call)의 맨 마지막 단계입니다. 최소선은 커널·네트워크·쿠버네티스 이벤트·애플리케이션 로그를 오가며 원인을 좁혀 본 실제 경험 몇 건을 말할 수 있는 것 {추론}.",
+   "refs": [
+    1,
+    2,
+    7,
+    29
+   ],
+   "study": [
+    "sre-book",
+    "book-k8s"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Collaborate with other Coupang tech leaders to make the service extensible and unlock opportunities for innovation.",
+   "short": "다른 기술 리더와 함께 플랫폼을 '끼워 넣을 수 있게' 만들어 새 쓰임을 연다.",
+   "why": "CIC 의 맨 위층은 개발자가 CLI·API·화면으로 직접 쓰는 셀프서비스 층입니다.[3][4] 플랫폼이 확장 가능해야 각 팀이 자기 작업 종류를 얹을 수 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**확장점** — 새 작업 종류를 CRD 로 더하고, 정책을 플러그인으로 끼우게 한다.[16]",
+     "**공통 API** — 내부 서비스끼리는 gRPC 처럼 형식이 정해진 호출로 묶는다.[1][21]",
+     "**쿠팡 ML 플랫폼의 예** — 개발자는 검증·카나리 결과 확인용 훅만 더하면 되게 했다.[2]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    16,
+    21
+   ],
+   "study": [
+    "prog-k8s",
+    "coupang-mlp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "12+ years of professional software development experience.",
+   "short": "직급(Lv.7)에 맞는 연차 — 큰 시스템의 흥망을 여러 번 겪어 본 사람.",
+   "why": "공고의 직급 표시는 Lv. 7-I 입니다.[1] 같은 회사 같은 직급 이름 공고들도 12년 이상을 적었습니다.[9]",
+   "how_far": "숫자는 거르기 기준입니다. 면접은 연차보다 '내가 설계 방향을 정했고 그 결과가 이랬다'는 사례를 봅니다 {추론}.",
+   "refs": [
+    1,
+    9
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Hands-on experience designing and developing large-scale distributed systems within the last 3 years.",
+   "short": "최근 3년 안에 큰 분산 시스템을 직접 설계하고 짠 경험 — 오래전 경력만으로는 안 된다.",
+   "why": "'지난 3년 안'이 붙은 이유는 공고에 없습니다. 클라우드 인프라 도구가 빨리 바뀌어서일 가능성이 큽니다 {추론}.",
+   "actually": {
+    "items": [
+     "**분산 시스템의 기본 질문** — 복제·분할·합의, 네트워크가 끊기면 무엇을 포기하나.[36]",
+     "**쿠버네티스 자체가 분산 시스템** — etcd(합의) 위의 원하는 상태, 여러 컨트롤러가 따로 맞춘다.[16]"
+    ]
+   },
+   "how_far": "최근 3년의 프로젝트 하나를 숫자(규모·지연·가용성)와 함께, 내가 고른 것과 버린 대안까지 설명하는 수준 {추론}.",
+   "refs": [
+    16,
+    36
+   ],
+   "study": [
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Fluent in one or more of Java, Go or Python.",
+   "short": "셋 중 하나를 깊게 — 서비스는 Java, 쿠버네티스 부품은 Go, ML 도구는 Python 이 많아서.",
+   "why": "공고 소개는 이 자리가 이끄는 팀들이 Java 를 쓴다고 적었고[1], ML 플랫폼의 파이프라인 SDK 는 Python 입니다.[2] 쿠버네티스와 Argo 는 Go 로 쓰였습니다.[17][18]",
+   "level": {
+    "basic": "언어 하나로 HTTP·gRPC 서비스를 만들고 테스트한다",
+    "work": "동시성(스레드·고루틴), 메모리·GC, 프로파일링",
+    "team": "Go 로 쿠버네티스 컨트롤러를 짜거나, Java 서비스의 지연을 분석해 고친다 {추론}"
+   },
+   "refs": [
+    1,
+    2,
+    17,
+    18
+   ],
+   "study": [
+    "java-thread",
+    "prog-k8s"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience with Amazon EKS",
+   "short": "AWS 의 관리형 쿠버네티스(EKS) 를 실제로 운영해 본 경험.",
+   "why": "쿠팡은 AWS 와 사내 장비를 함께 쓰고[2], 같은 회사 자동화 공고는 멀티 EKS 클러스터를 적었습니다.[6]",
+   "actually": {
+    "items": [
+     "**EKS 가 대신해 주는 것** — 컨트롤 플레인(API 서버·etcd)은 AWS 가 운영하고, 노드·애드온·네트워크는 내 몫.[20]",
+     "**IAM 과 파드 연결** — 파드에 AWS 권한을 주는 방법(서비스 계정에 역할 묶기).[20]",
+     "**노드 늘리기** — 노드 그룹·자동 확장기 선택, GPU 노드의 비용.[20]",
+     "**업그레이드** — 쿠버네티스 판이 자주 바뀌어 클러스터 올리기가 정기 업무가 된다.[20]"
+    ]
+   },
+   "how_far": "EKS 클러스터를 코드로 만들고, 판을 올려 보고, 파드에 IAM 권한을 붙여 본 정도가 최소선 {추론}.",
+   "refs": [
+    2,
+    6,
+    20
+   ],
+   "study": [
+    "eks-bp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Proven track record of delivering mission-critical systems.",
+   "short": "멈추면 돈·고객이 바로 다치는 시스템을 끝까지 내보낸 실적.",
+   "why": "CIC 는 쿠팡의 물류·배송 모델이 도는 바닥이고, 외부 고객에게도 GPU 를 빌려줍니다.[3][5] 이 층이 멈추면 그 위의 모든 것이 멈춥니다 {추론}.",
+   "how_far": "'출시했다'가 아니라 '출시 후 가용성·장애 대응까지 맡았다'를 말할 수 있어야 합니다 {추론}. SLO(서비스 목표) 개념은 기본입니다.[29]",
+   "refs": [
+    3,
+    5,
+    29
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience developing and growing senior individual contributors globally.",
+   "short": "여러 나라의 시니어 개발자를 키워 본 경험 — 인도·한국·미국이 한 플랫폼을 같이 만들어서.",
+   "why": "공고는 기술 리더와 인재를 뽑고 키우는 책임을 적었고[1], 쿠팡 AI 팩토리 보도는 시애틀·마운틴뷰 팀이 그 환경을 쓴다고 했습니다.[4] 인도 개발 센터는 2023년 말에 문을 열었습니다.[13]",
+   "how_far": "시간대가 다른 팀과 문서로 일하는 방식(설계 문서·비동기 리뷰)을 몸에 익힌 정도 {추론}.",
+   "refs": [
+    1,
+    4,
+    13
+   ],
+   "study": [
+    "staffeng",
+    "design-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience with cloud computing using AWS, Azure, or GCP.",
+   "short": "클라우드 하나는 깊게 — 쿠팡은 AWS 를 쓴다.",
+   "why": "쿠팡은 2017년 IT 인프라를 AWS 로 옮겼고, 지금은 AWS 와 사내 장비를 섞어 씁니다.[2][8]",
+   "how_far": "네트워크(VPC)·권한(IAM)·컴퓨트·저장소의 기본과 비용 구조. 쿠팡은 비운영 환경을 필요할 때만 띄워 비용을 25% 줄였다고 적었습니다 — 비용 감각도 요구되는 쪽입니다.[8]",
+   "refs": [
+    2,
+    8
+   ],
+   "study": [
+    "eks-bp",
+    "coupang-finops"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience with machine learning job deployment infrastructure such as Argo CD workflows.",
+   "short": "ML 작업을 올리고 배포하는 도구(Argo 계열) 경험 — 학습 파이프라인과 모델 배포를 자동으로 돌려서.",
+   "why": "공고 소개에 Kubeflow 와 Argo CD 가 이 자리가 이끄는 팀의 도구로 적혀 있습니다.[1] 쿠팡 ML 플랫폼은 1년에 10만 번 넘는 워크플로 실행, 600개 넘는 ML 프로젝트를 돌렸다고 했습니다.[2]",
+   "actually": {
+    "intro": "'Argo CD workflows' 는 두 도구가 붙은 표현입니다. 둘은 하는 일이 다릅니다.",
+    "items": [
+     "**Argo CD** — 깃에 적힌 배포 상태를 클러스터에 계속 맞추는 GitOps 도구. 모델 서버·플랫폼 부품의 배포를 맡는다.[17]",
+     "**Argo Workflows** — 단계마다 컨테이너를 띄우는 작업 흐름(DAG) 엔진. 데이터 준비 → 학습 → 평가 같은 순서를 맡는다.[18]",
+     "**Kubeflow** — 쿠버네티스 위 ML 도구 묶음. 파이프라인 기능은 Argo Workflows 를 실행 엔진으로 쓸 수 있다.[19]",
+     "**쿠팡의 흐름** — 배포 작업이 먼저 검증(모델 크기·학습과 예측의 어긋남)을 돌리고, 카나리가 통과하면 점진 배포한다.[2]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "쿠팡 ML 플랫폼의 모델 배포 순서[2]",
+     "steps": [
+      "학습 파이프라인 · 컨테이너로 쿠버네티스에서",
+      "검증 · 모델 크기·학습/예측 어긋남",
+      "카나리 · 일부 요청에 먼저",
+      "점진 배포 · 자동 확장되는 별도 서비스"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "ML 연구자가 아니라 **ML 작업을 나르는 길**을 아는 수준이면 됩니다 — 학습 작업이 왜 일반 웹 서비스와 다르게 배치되는지(GPU·전부 아니면 무·긴 실행 시간) 설명할 수 있어야 합니다.[2] {추론}",
+   "refs": [
+    1,
+    2,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "argo-cd",
+    "argo-wf",
+    "kubeflow",
+    "mlsys"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Hands on experience with Kubernetes and gRPC.",
+   "short": "쿠버네티스를 깊게, 서비스 사이 호출은 gRPC 로 — 플랫폼 API 의 바탕이라서.",
+   "why": "공고 소개의 도구 목록에 둘 다 있습니다.[1] 쿠버네티스 안에서도 노드의 런타임·장치 플러그인이 gRPC 로 이야기합니다.[34]",
+   "actually": {
+    "items": [
+     "**데드라인** — gRPC 는 호출마다 '언제까지 답해야 하나'를 실어 보내고, 넘으면 아래로 더 내려보내지 않는다.[21]",
+     "**재시도 정책** — 재시도를 층마다 걸면 아래층에 요청이 몇십 배로 몰린다. gRPC 는 재시도 한도·조건을 설정으로 건다.[22][32]",
+     "**쿠버네티스 깊이** — 스케줄러·컨트롤러·자원 요청/한도, 파드가 왜 Pending 인지 읽기.[14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "층마다 3번 재시도하면 + 데드라인이 하는 일",
+     "body": "세 층이 각자 3번씩 시도하면 맨 아래는 최대 27배를 받습니다. 데드라인을 넘겨 주면 시간이 다 된 요청은 아래로 내려가지 않습니다(직접 돌린 출력, 시간은 가상).[21][32]",
+     "lang": "python",
+     "code": "layers, tries = 3, 3\nprint(\"맨 아래가 받는 최대 요청 배수:\", tries ** layers)\nleft = 1000\nfor name, s in zip([\"관문\", \"서비스\", \"저장소\"], [120, 300, 650]):\n    left -= s\n    print(f\"{name} 뒤 남은 시간 {left}ms\" + (\" -> 더 내려보내지 않고 실패\" if left <= 0 else \"\"))\n# 맨 아래가 받는 최대 요청 배수: 27\n# 관문 뒤 남은 시간 880ms\n# 서비스 뒤 남은 시간 580ms\n# 저장소 뒤 남은 시간 -70ms -> 더 내려보내지 않고 실패"
+    }
+   ],
+   "refs": [
+    1,
+    14,
+    21,
+    22,
+    32,
+    34
+   ],
+   "study": [
+    "book-k8s",
+    "grpc-docs",
+    "builders-retry"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Deep understanding of operating system kernels and distributed systems such as Kafka, Cassandra, and MongoDB.",
+   "short": "컨테이너의 정체(커널 기능)와, 플랫폼이 기대는 분산 저장소·메시지 큐의 속을 안다.",
+   "why": "컨테이너는 커널의 cgroup(자원 한도)·네임스페이스(격리)로 만든 것이라, 메모리 초과로 죽는 파드나 CPU 가 묶이는 현상은 커널을 알아야 풀립니다.[25] Kafka 는 공고 소개의 도구 목록에 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**커널** — cgroup v2 의 메모리 한도를 넘으면 OOM 으로 프로세스가 죽는다. CPU 한도는 시간 조각(쿼터)으로 묶인다.[25]",
+     "**Kafka** — 작업 이벤트(제출·시작·끝)를 순서대로 남기는 기록. 파티션 안에서만 순서가 지켜진다.[26]",
+     "**Cassandra** — 쓰기가 많은 큰 표를 여러 노드에 나눠 담고, 읽을 때 몇 대가 답해야 하는지(일관성 수준) 고른다.[27]",
+     "**MongoDB** — 복제 묶음(replica set)의 주 노드가 죽으면 선거로 새 주 노드를 뽑는다.[28]"
+    ]
+   },
+   "how_far": "우대 항목입니다. 셋을 다 운영할 필요는 없고, 플랫폼이 그것들에 기대는 지점(순서·일관성·장애 조치)을 설계에서 따질 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    25,
+    26,
+    27,
+    28
+   ],
+   "study": [
+    "cgroup-v2",
+    "book-kafka",
+    "ddia",
+    "book-docker"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Proficiency with ML infrastructure and deployment frameworks such as TensorFlow, PyTorch, TensorRT, and Triton Backend.",
+   "short": "모델이 어떻게 학습·최적화·서빙되는지 알아야 그 작업을 잘 담는 바닥을 만들 수 있다.",
+   "why": "쿠팡 ML 플랫폼은 PyTorch·TensorFlow 표준 이미지를 주고, 서빙은 Seldon 위에서 TFServing·Triton 과 연결됩니다.[2]",
+   "actually": {
+    "items": [
+     "**학습** — PyTorch 의 분산 학습(DDP·FSDP). 쿠팡은 A100 다중 GPU 로 BERT 학습을 10배 빠르게 했다고 적었다.[2]",
+     "**최적화** — TensorRT 는 학습된 모델을 특정 GPU 에 맞게 다시 짜(정밀도 낮추기·연산 합치기) 추론을 빠르게 한다.[24]",
+     "**서빙** — Triton 은 여러 프레임워크의 모델을 한 서버에서 돌리고, 요청을 모아 한 번에 처리(동적 배치)한다. 'Backend' 는 프레임워크별 실행 모듈이다.[23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "GPU 를 나눠 주는 방식이 왜 중요한가 — 전부 아니면 무",
+     "body": "노드 2대에 GPU 16장, 워커 3개 × 4장짜리 학습 작업 두 개가 동시에 오면: 파드마다 따로 자리 잡으면 둘 다 2개만 뜨고 16장을 붙잡은 채 아무것도 못 합니다. 다 들어갈 때만 띄우면 하나는 돌고 하나는 기다립니다(직접 돌린 출력, 줄인 모형).[2][15]",
+     "lang": "python",
+     "code": "def run(gang):\n    free = [8, 8]\n    jobs = {\"A\": [4, 4, 4], \"B\": [4, 4, 4]}\n    placed = {\"A\": [], \"B\": []}\n    order = [(\"A\", 0), (\"B\", 0), (\"A\", 1), (\"B\", 1), (\"A\", 2), (\"B\", 2)]\n    if gang:\n        for name, pods in jobs.items():\n            if sum(pods) <= sum(free):\n                for p in pods:\n                    i = max(range(2), key=lambda k: free[k]); free[i] -= p; placed[name].append(i)\n        order = []\n    for name, w in order:\n        i = max(range(2), key=lambda k: free[k])\n        if free[i] >= jobs[name][w]:\n            free[i] -= jobs[name][w]; placed[name].append(i)\n    for name in jobs:\n        ok = len(placed[name]) == len(jobs[name])\n        print(f\"  {name}: 워커 {len(placed[name])}/3 -> {'학습 시작' if ok else ('대기열에서 기다림' if not placed[name] else '나머지를 기다리며 GPU 만 붙잡음')}\")\n    stuck = sum(4 * len(placed[n]) for n in jobs if len(placed[n]) < 3)\n    print(f\"  빈 GPU {sum(free)}장, 붙잡혔지만 안 도는 GPU {stuck}장\")\nprint(\"파드마다 따로:\"); run(False)\nprint(\"전부 아니면 무:\"); run(True)\n# 파드마다 따로:\n#   A: 워커 2/3 -> 나머지를 기다리며 GPU 만 붙잡음\n#   B: 워커 2/3 -> 나머지를 기다리며 GPU 만 붙잡음\n#   빈 GPU 0장, 붙잡혔지만 안 도는 GPU 16장\n# 전부 아니면 무:\n#   A: 워커 3/3 -> 학습 시작\n#   B: 워커 0/3 -> 대기열에서 기다림\n#   빈 GPU 4장, 붙잡혔지만 안 도는 GPU 0장"
+    }
+   ],
+   "how_far": "모델을 만드는 사람이 아니라 **모델이 도는 그릇**을 만드는 사람이라, 각 도구가 GPU·메모리·네트워크를 어떻게 쓰는지가 핵심입니다 {추론}.",
+   "refs": [
+    2,
+    15,
+    23,
+    24
+   ],
+   "study": [
+    "mlsys",
+    "triton-docs",
+    "coupang-mlp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Type of work model",
+   "short": "아래 두 줄이 근무 방식 안내다 — 요건이 아니다.",
+   "why": "공고의 묶음 제목입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Hybrid / Onsite / Remote working",
+   "short": "회사 공통 문구다 — 이 자리는 바로 아래 하이브리드 설명을 따른다.",
+   "why": "세 방식을 나열한 공통 문구이고, 다음 줄이 하이브리드의 조건을 설명합니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Our Hybrid work model: Coupang hybrid work model is designed to enable a culture of collaboration that acts a catalyst to enrich the experience of employees. Employees are required to work at least 3 days in the office per week, with the flexibility to work from home 2 days a week, depending on the role requirement. Some businesses may require more time in office due to nature of work.",
+   "short": "주 3일 이상 벵갈루루 사무실 출근, 직무에 따라 주 2일 재택.",
+   "why": "공고가 밝힌 조건입니다. 사업에 따라 더 출근할 수 있다고 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to consider",
+   "short": "아래 줄은 법정 안내다 — 요건이 아니다.",
+   "why": "공고의 묶음 제목입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Those eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.",
+   "short": "보훈 대상자·장애인 등은 법에 따라 우대받을 수 있다는 공통 안내.",
+   "why": "쿠팡 공고에 공통으로 붙는 문구입니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "쿠버네티스의 '속'(스케줄러·컨트롤러)을 고쳐 본 사람[14][16]",
+   "GPU 가 놀고 있는 걸 못 참는 사람 — 회사가 활용률을 성과로 내세운다[3]",
+   "코드와 설계 문서를 둘 다 쓰는 개인 기여자 트랙을 원하는 사람[1]",
+   "여러 나라 팀과 문서로 일하는 데 익숙한 사람[1][4]"
+  ],
+  "hard": [
+   "12년 이상·최근 3년 안 대규모 분산 시스템이라 문턱이 높다[1]",
+   "주 3일 이상 벵갈루루 출근[1]",
+   "공고는 팀이 맡는 범위(학습 스케줄링인지, 서비스 배포인지, 둘 다인지)를 자세히 밝히지 않았다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "분산 학습 작업 두 개가 GPU 를 반씩 잡고 서로를 기다리면 어떻게 막겠어요?",
+   "a": "쿠팡 배치 스케줄러의 '전부 아니면 무' 방식.[2][15]"
+  },
+  {
+   "q": "팀마다 GPU 할당량을 주면서도 남는 자리를 놀리지 않으려면?",
+   "a": "할당량·빌려 쓰기·선점 — 활용률 65%→95% 이야기.[3][15]"
+  },
+  {
+   "q": "Argo CD 와 Argo Workflows 는 무엇이 다르고, 모델 배포에는 어느 걸 쓰겠어요?",
+   "a": "공고의 'Argo CD workflows' 표현을 풀 수 있나.[17][18]"
+  },
+  {
+   "q": "컨트롤러가 수만 개 자원을 다룰 때 API 서버를 과하게 부르지 않으려면?",
+   "a": "watch·캐시·재큐 — 오퍼레이터 직접 개발 요구.[16]"
+  },
+  {
+   "q": "gRPC 호출 사슬에서 재시도 폭주를 어떻게 막나요?",
+   "a": "데드라인 넘기기·재시도 한도.[21][22][32]"
+  },
+  {
+   "q": "파드가 OOMKilled 로 죽는데 애플리케이션 로그에는 아무것도 없어요. 어디를 보겠어요?",
+   "a": "커널 cgroup 메모리 한도 — 우대 요건.[25]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior Staff Backend Engineer - (K8)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7912287",
+   "kind": "posting",
+   "date": "2026-07-27 게시 · 2026-10-30 갱신",
+   "note": "부서 Coupang Intelligent Cloud(CIC), 직급 Lv. 7-I, 근무지 Bengaluru — 역할 소개(Java·AWS·Kafka·Kubernetes·Kubeflow·Argo CD·gRPC 를 쓰는 팀을 이끎, 기술 리더 채용·육성)·업무·요건·우대·하이브리드. 연봉·복지 표기 없음"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+   "kind": "company",
+   "date": "2023-09-08",
+   "note": "컨테이너 파이프라인을 쿠버네티스 배치 스케줄러가 배치(전부 아니면 무), 사내 GPU + AWS, DDP·FSDP, Seldon(TFServing·Triton), 모델마다 자동 확장 서비스, 검증 → 카나리 → 점진 배포, 알림, Feast, 1년 10만+ 워크플로 실행·600+ 프로젝트, A100 BERT 10배. Kubeflow·Argo 는 언급 없음"
+  },
+  {
+   "n": 3,
+   "title": "바이라인네트워크 · 엔비디아 풀 스택 장착한 쿠팡, AI 팩토리 구축한다",
+   "url": "https://byline.network/2026/03/18_291774/",
+   "kind": "news",
+   "date": "2026-03-18",
+   "note": "GTC 2026 발표 — CIC 위 셀프서비스 AI 팩토리, DGX SuperPOD, CLI·API·UI, GPU 활용률 65% → 95%"
+  },
+  {
+   "n": 4,
+   "title": "About Coupang · Coupang NVIDIA collaboration on AI Factory",
+   "url": "https://www.aboutcoupang.com/coupang-nvidia-ai-logistics-collaboration/",
+   "kind": "company",
+   "date": "2026-03",
+   "note": "회사 보도자료 — 세 층 셀프서비스 구조, 시애틀·마운틴뷰 엔지니어링 팀이 쓰는 환경"
+  },
+  {
+   "n": 5,
+   "title": "디지털데일리 · 클라우드 사업 공식 진출 나선 쿠팡, '쿠팡 인텔리전트 클라우드' 리브랜딩",
+   "url": "https://www.ddaily.co.kr/page/view/2025070214145140229",
+   "kind": "news",
+   "date": "2025-07-02",
+   "note": "GPU 클라우드를 CIC 로, 사내 서비스·외부 연구기관·스타트업에 제공"
+  },
+  {
+   "n": 6,
+   "title": "Built In · Coupang Staff Cloud Infrastructure Engineer (Cloud Infrastructure Automation)",
+   "url": "https://builtin.com/job/staff-cloud-infrastructure-engineer/7918736",
+   "kind": "posting",
+   "note": "같은 회사 다른 자리(벵갈루루) — AWS 자원 컨트롤러, 멀티 EKS·리전 서비스 메시, GitOps. 2026-03 내려간 공고의 남은 본문(다른 풀이에서 확인)"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Careers · The way engineers work at Coupang",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/the-way-engineers-work-at-coupang/",
+   "kind": "company",
+   "date": "2021",
+   "note": "펠로급의 설계·장애 리뷰 참여, '왜'를 다섯 번"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Engineering · Cloud expenditure optimization for cost efficiency",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/cloud-expenditure-optimization-for-cost-efficiency/",
+   "kind": "company",
+   "date": "2024-03-21",
+   "note": "비운영 환경을 필요할 때만 띄워 25% 절감 등"
+  },
+  {
+   "n": 9,
+   "title": "Coupang Careers · Senior Staff Backend Engineer - Cloud Infrastructure (Seattle)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7438944",
+   "kind": "posting",
+   "note": "다른 조직·같은 직급 이름 — 기본급 $174,000~$299,000, 연 보너스 0~20%"
+  },
+  {
+   "n": 10,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "note": "2025 회계연도 전 직원 보수 중간값(CEO 보수 배율 항목)"
+  },
+  {
+   "n": 11,
+   "title": "Coupang Careers · Bengaluru",
+   "url": "https://www.coupang.jobs/en/locations/bengaluru/",
+   "kind": "company",
+   "note": "Coupang Dev Center 벵갈루루 주소"
+  },
+  {
+   "n": 12,
+   "title": "Coupang Careers · Why Coupang",
+   "url": "https://www.coupang.jobs/en/why-coupang/",
+   "kind": "company",
+   "note": "전 세계 공통 복지 소개 — 직무·지역·자격에 따라 다르다고 적힘, 금액 없음"
+  },
+  {
+   "n": 13,
+   "title": "CXOToday · Coupang Expands India Tech Footprint with Hyderabad Office Launch",
+   "url": "https://cxotoday.com/press-release/coupang-expands-india-tech-footprint-with-hyderabad-office-launch-strengthens-global-innovation-leadership/",
+   "kind": "news",
+   "note": "회사 보도자료 — 인도 개발 센터 2023년 말 개소"
+  },
+  {
+   "n": 14,
+   "title": "Kubernetes 문서 · Kubernetes Scheduler",
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/",
+   "kind": "reference",
+   "note": "거르기(filtering)·점수(scoring) 두 단계"
+  },
+  {
+   "n": 15,
+   "title": "Kueue 문서 · Overview",
+   "url": "https://kueue.sigs.k8s.io/docs/overview/",
+   "kind": "reference",
+   "note": "쿠버네티스 작업 대기열·할당량·입장 허가(전부 들어갈 때 통과), 빌려 쓰기·선점 — 쿠팡이 쓴다는 근거는 없음"
+  },
+  {
+   "n": 16,
+   "title": "Kubernetes 문서 · Operator pattern",
+   "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/",
+   "kind": "reference",
+   "note": "사용자 정의 자원 + 맞추기 루프"
+  },
+  {
+   "n": 17,
+   "title": "Argo CD 문서",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "kind": "reference",
+   "note": "깃의 원하는 상태를 클러스터에 맞추는 GitOps 배포 도구"
+  },
+  {
+   "n": 18,
+   "title": "Argo Workflows 문서",
+   "url": "https://argo-workflows.readthedocs.io/en/latest/",
+   "kind": "reference",
+   "note": "단계마다 컨테이너를 띄우는 DAG 작업 흐름 엔진"
+  },
+  {
+   "n": 19,
+   "title": "Kubeflow 문서",
+   "url": "https://www.kubeflow.org/docs/",
+   "kind": "reference",
+   "note": "쿠버네티스 위 ML 도구 묶음(파이프라인·학습 연산자 등)"
+  },
+  {
+   "n": 20,
+   "title": "Amazon EKS Best Practices Guide",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/introduction.html",
+   "kind": "reference",
+   "note": "보안(IAM)·확장·업그레이드·비용"
+  },
+  {
+   "n": 21,
+   "title": "gRPC 문서 · Deadlines",
+   "url": "https://grpc.io/docs/guides/deadlines/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "gRPC 문서 · Retry",
+   "url": "https://grpc.io/docs/guides/retry/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "NVIDIA Triton Inference Server 사용자 안내",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+   "kind": "reference",
+   "note": "여러 프레임워크 백엔드·동적 배치"
+  },
+  {
+   "n": 24,
+   "title": "NVIDIA TensorRT 문서",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Linux 커널 문서 · Control Group v2",
+   "url": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+   "kind": "reference",
+   "note": "메모리·CPU 한도"
+  },
+  {
+   "n": 26,
+   "title": "Apache Kafka 문서",
+   "url": "https://kafka.apache.org/documentation/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Apache Cassandra 문서",
+   "url": "https://cassandra.apache.org/doc/latest/",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "MongoDB 문서 · Replication",
+   "url": "https://www.mongodb.com/docs/manual/replication/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Google SRE Book · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "note": "다른 회사의 장애 사후 검토 관례"
+  },
+  {
+   "n": 30,
+   "title": "Will Larson · Staff Engineer: Leadership beyond the management track",
+   "url": "https://staffeng.com/book",
+   "kind": "reference",
+   "note": "Staff 이상 엔지니어의 역할 — 일반론"
+  },
+  {
+   "n": 31,
+   "title": "Malte Ubl · Design Docs at Google",
+   "url": "https://www.industrialempathy.com/posts/design-docs-at-google/",
+   "kind": "reference",
+   "note": "다른 회사의 설계 문서 관례"
+  },
+  {
+   "n": 32,
+   "title": "Amazon Builders' Library · Timeouts, retries, and backoff with jitter",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "kind": "reference",
+   "note": "층마다 재시도하면 부하가 곱해진다"
+  },
+  {
+   "n": 33,
+   "title": "Coupang Careers · Engineering blog 목록",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/",
+   "kind": "company",
+   "note": "쿠버네티스·Argo·EKS 를 다룬 글은 목록에 없음(2026-11 확인)"
+  },
+  {
+   "n": 34,
+   "title": "Kubernetes 문서 · Device Plugins",
+   "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/",
+   "kind": "reference",
+   "note": "GPU 같은 장치를 kubelet 에 gRPC 로 알린다"
+  },
+  {
+   "n": 35,
+   "title": "Kubernetes 문서 · Considerations for large clusters",
+   "url": "https://kubernetes.io/docs/setup/best-practices/cluster-large/",
+   "kind": "reference",
+   "note": "노드 5,000대·파드 15만 개 등 권장 상한"
+  },
+  {
+   "n": 36,
+   "title": "데이터 중심 애플리케이션 설계 (마틴 클레프만 · 위키북스)",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "kind": "reference",
+   "note": "복제·분할·합의 — 일반 교재"
+  }
+ ],
+ "caveat": "공고는 팀이 맡는 범위(학습 작업 스케줄링·모델 서비스 배포 중 어디까지인지)와 쓰는 스케줄러를 밝히지 않았습니다. 쿠팡이 직접 쿠버네티스·Argo·EKS 를 설명한 기술 글이나 발표 영상은 찾지 못했습니다(엔지니어링 블로그 목록[33]에도 없음, 받은 영상 없음, GTC 2026 발표는 보도만 확인). 회사 근거는 이 공고, 2023년 ML 플랫폼 글, CIC·AI 팩토리 보도와 보도자료, 같은 회사 다른 공고입니다. 대기열·할당량·컨트롤러·데드라인의 모양은 쿠버네티스·Kueue·Argo·gRPC·AWS 문서로 '보통 이런 것'을 보였고, 쿠팡이 그 도구를 쓴다는 뜻은 아닙니다. 예제의 숫자는 가상입니다. 연봉은 인도 숫자가 없어 미국 공시 중간값과 미국 같은 직급 공고만 실었습니다.",
+ "resources": [
+  {
+   "id": "coupang-mlp",
+   "title": "Meet Coupang's Machine Learning Platform",
+   "by": "Coupang Engineering · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+   "why": "이 자리가 관리할 작업들이 지금 쿠팡에서 어떻게 도는지(쿠버네티스 배치 스케줄러·Seldon·카나리)를 회사가 직접 쓴 글. 지원 전에 먼저 읽는다."
+  },
+  {
+   "id": "coupang-finops",
+   "title": "Cloud expenditure optimization for cost efficiency",
+   "by": "Coupang Engineering · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/cloud-expenditure-optimization-for-cost-efficiency/",
+   "why": "클라우드 요건 줄 — 쿠팡이 AWS 비용을 어떻게 줄였는지, 인프라 설계에 비용 감각이 왜 붙는지."
+  },
+  {
+   "id": "book-k8s",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "Pending·CrashLoopBackOff 를 읽는 법부터. 우대 요건 '쿠버네티스 실무'의 바닥."
+  },
+  {
+   "id": "book-docker",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "컨테이너가 커널 위에서 어떻게 격리되는지 — 커널 우대 요건으로 가는 입구."
+  },
+  {
+   "id": "book-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "공고 도구 목록의 Kafka — 파티션·순서·컨슈머 그룹."
+  },
+  {
+   "id": "java-thread",
+   "title": "실전 자바 — 멀티스레드와 동시성 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/java-thread",
+   "why": "언어 요건을 Java 로 채운다면 — 서비스의 동시성 기본기."
+  },
+  {
+   "id": "k8s-scheduler",
+   "title": "Kubernetes Scheduler",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/",
+   "why": "업무 첫 줄 '워크로드 관리'의 핵심 — 파드가 노드를 고르는 두 단계와 확장점."
+  },
+  {
+   "id": "kueue",
+   "title": "Kueue — Kubernetes-native job queueing",
+   "by": "Kubernetes SIG Scheduling 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://kueue.sigs.k8s.io/docs/overview/",
+   "why": "대기열·할당량·빌려 쓰기·전부 들어갈 때 입장 — 공유 GPU 클러스터를 설계할 때 쓰는 개념을 한 곳에서."
+  },
+  {
+   "id": "k8s-operator",
+   "title": "Operator pattern",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/",
+   "why": "'핵심 인프라 부품을 직접 개발'의 가장 흔한 형태 — CRD 와 맞추기 루프."
+  },
+  {
+   "id": "prog-k8s",
+   "title": "Programming Kubernetes",
+   "by": "Michael Hausenblas · Stefan Schimanski · O'Reilly · 2019",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/programming-kubernetes/9781492047094/",
+   "why": "Go 로 컨트롤러·오퍼레이터를 짜는 법(client-go·informer·work queue). 직접 개발 줄을 위한 책."
+  },
+  {
+   "id": "prod-k8s",
+   "title": "Production Kubernetes",
+   "by": "Josh Rosso · Rich Lander · Alex Brand · John Harris · O'Reilly · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/production-kubernetes/9781492092292/",
+   "why": "여러 팀이 쓰는 플랫폼으로서의 쿠버네티스 — 멀티테넌시·할당·확장·업그레이드를 설계자 눈으로."
+  },
+  {
+   "id": "eks-bp",
+   "title": "Amazon EKS Best Practices Guide",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/introduction.html",
+   "why": "EKS 요건 — 파드 IAM·노드 확장·업그레이드·비용을 AWS 가 정리한 것."
+  },
+  {
+   "id": "argo-cd",
+   "title": "Argo CD 문서",
+   "by": "Argo Project(CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "why": "ML 배포 인프라 요건의 'Argo CD' — 깃 기준 배포·동기화·되돌리기."
+  },
+  {
+   "id": "argo-wf",
+   "title": "Argo Workflows 문서",
+   "by": "Argo Project(CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://argo-workflows.readthedocs.io/en/latest/",
+   "why": "같은 요건의 'workflows' — 학습 파이프라인을 단계별 컨테이너로 엮는 엔진."
+  },
+  {
+   "id": "kubeflow",
+   "title": "Kubeflow 문서",
+   "by": "Kubeflow(CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.kubeflow.org/docs/",
+   "why": "공고 소개의 Kubeflow — 파이프라인·분산 학습 연산자가 쿠버네티스에 어떻게 얹히나."
+  },
+  {
+   "id": "grpc-docs",
+   "title": "gRPC Guides (Deadlines · Retry)",
+   "by": "gRPC 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://grpc.io/docs/guides/deadlines/",
+   "why": "gRPC 우대 요건 — 데드라인 전파와 재시도 정책을 정확히."
+  },
+  {
+   "id": "builders-retry",
+   "title": "Timeouts, retries, and backoff with jitter",
+   "by": "Amazon Builders' Library",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "why": "재시도가 장애를 키우는 구조와 막는 법 — 운영 수준 업무 줄."
+  },
+  {
+   "id": "triton-docs",
+   "title": "NVIDIA Triton Inference Server 사용자 안내",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+   "why": "ML 서빙 우대 요건 — 백엔드·동적 배치·모델 저장소 구조."
+  },
+  {
+   "id": "cgroup-v2",
+   "title": "Control Group v2",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+   "why": "커널 우대 요건 — 파드의 메모리·CPU 한도가 실제로 무엇인지."
+  },
+  {
+   "id": "mlsys",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "why": "ML 작업이 학습·배포·감시를 어떻게 도는지 — ML 인프라 요건을 '그릇을 만드는 사람' 눈으로 이해하기."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "why": "대규모 분산 시스템 요건과 Kafka·Cassandra·MongoDB 우대 요건 — 복제·분할·일관성의 공통 언어."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly · 2016 (온라인 무료)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/books/",
+   "why": "미션 크리티컬·운영 수준 줄 — SLO·장애 대응·사후 검토."
+  },
+  {
+   "id": "staffeng",
+   "title": "Staff Engineer: Leadership beyond the management track",
+   "by": "Will Larson · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://staffeng.com/book",
+   "why": "로드맵·합의·사람 키우기 줄 — 관리자 없이 방향을 정하는 법."
+  },
+  {
+   "id": "design-docs",
+   "title": "Design Docs at Google",
+   "by": "Malte Ubl · industrialempathy.com",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.industrialempathy.com/posts/design-docs-at-google/",
+   "why": "문제 쪼개기·여러 나라 팀과 일하기 — 목표·하지 않을 것·대안을 적는 문서 틀."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 바닥 읽기",
+   "time": "1주",
+   "goal": "쿠팡의 ML 작업이 쿠버네티스 위에서 어떻게 학습·배포되는지 그림으로 설명할 수 있다.",
+   "resources": [
+    "coupang-mlp",
+    "coupang-finops",
+    "book-k8s"
+   ],
+   "task": "ML 플랫폼 글을 읽고 '제출 → 스케줄 → 학습 → 검증 → 카나리 → 서비스' 그림을 한 장 그린 뒤, 각 칸에 위 풀이의 공고 줄을 붙인다."
+  },
+  {
+   "title": "스케줄러와 대기열",
+   "time": "2~3주",
+   "goal": "공유 GPU 클러스터의 할당량·대기열·전부 아니면 무를 직접 걸어 본다.",
+   "resources": [
+    "k8s-scheduler",
+    "kueue",
+    "prod-k8s"
+   ],
+   "task": "kind 로 로컬 클러스터를 만들고 노드에 가짜 GPU 자원을 붙인 뒤, Kueue 로 팀 둘의 할당량을 걸어 작업 여러 개를 동시에 넣고 누가 기다리는지 기록한다."
+  },
+  {
+   "title": "오퍼레이터 직접 짜기",
+   "time": "3~4주",
+   "goal": "새 자원 종류(학습 작업)와 그걸 맞추는 컨트롤러를 Go 로 만든다.",
+   "resources": [
+    "k8s-operator",
+    "prog-k8s"
+   ],
+   "task": "TrainJob CRD(이미지·워커 수·GPU 수)를 정의하고, 워커 파드를 만들고 상태를 갱신하는 컨트롤러를 짠다. 파드를 손으로 지워도 다시 맞춰지는지 확인한다."
+  },
+  {
+   "title": "배포 길 잇기",
+   "time": "2주",
+   "goal": "학습 파이프라인(Argo Workflows)과 모델 배포(Argo CD)를 구분해 엮는다.",
+   "resources": [
+    "argo-wf",
+    "argo-cd",
+    "kubeflow",
+    "eks-bp"
+   ],
+   "task": "가상 데이터로 '데이터 준비 → 학습 → 평가' 워크플로를 만들고, 평가가 통과하면 깃의 모델 서비스 판 번호를 올려 Argo CD 가 배포하게 한다. 실패 시 되돌리기도 해 본다."
+  },
+  {
+   "title": "운영과 리더십 (계속)",
+   "time": "계속",
+   "goal": "장애를 원인까지 파고들고, 설계 문서로 여러 팀과 합의한다.",
+   "resources": [
+    "sre-book",
+    "builders-retry",
+    "grpc-docs",
+    "cgroup-v2",
+    "staffeng",
+    "design-docs"
+   ],
+   "task": "3단계 컨트롤러에 메모리 한도를 낮게 걸어 OOMKilled 를 일부러 내고 원인을 사후 검토 문서로 쓴다. 이어서 '팀별 GPU 할당 정책' 설계 문서(목표·하지 않을 것·대안 둘)를 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없고 인도 법인 숫자도 공개되지 않았다. 공시로 확인되는 것은 **전 세계 직원 보수 중간값(2025년 3만 3,831달러)** 뿐이고, 비교로 같은 회사 **같은 직급 이름의 미국 시애틀 공고 기본급($174,000~$299,000)** 을 싣는다 — 둘 다 이 자리 연봉이 아니다",
+  "rows": [
+   {
+    "label": "쿠팡 Inc. 전 직원 보수 중간값",
+    "value": "3만 3,831달러 / 년",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "CEO 를 뺀 전 세계 직원의 가운데 값. 한국 물류·현장 직원이 많이 섞인 값이다 [10]"
+   },
+   {
+    "label": "다른 자리 비교 — 미국 Senior Staff Backend 기본급",
+    "value": "$174,000 ~ $299,000 / 년",
+    "peer": true,
+    "basis": "공고 · 2026년 (미국 시애틀)",
+    "note": "Cloud Infrastructure 조직의 같은 직급 이름 공고. 기본급만이고 연 보너스 0~20% 는 따로다 [9]"
+   }
+  ],
+  "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없고, 인도 법인의 보수 공시도 없다 — **인도 숫자 없음**. 중간값은 회사 전체 가운데 값이라 경력 12년 이상 개발자 연봉으로 읽으면 안 된다 {추론}. 미국 공고 금액은 미국 시장의 범위라 인도 금액과 같지 않다 [9]. 처우는 마지막 협의 단계에서 확인한다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "하이브리드 — 주 3일 이상 사무실, 직무에 따라 주 2일 재택(일부 사업은 더 출근)"
+   },
+   {
+    "name": "의료",
+    "detail": "본인과 직계가족을 보장하는 의료보험"
+   },
+   {
+    "name": "경조 휴가",
+    "detail": "축하·애도 때 유급 휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "외국어·소프트 스킬 강좌, 여러 나라가 함께하는 프로젝트"
+   },
+   {
+    "name": "행사·시설",
+    "detail": "팀·회사 행사, 라운지, 카페테리아"
+   }
+  ],
+  "note": "근무 방식은 이 공고 [1], 나머지는 쿠팡 채용 사이트 'Why Coupang' 의 전 세계 공통 소개다 [12]. 사이트는 복지가 직무·지역·자격에 따라 다를 수 있다고 적었고 금액·조건은 없다 — 인도 사무소 적용 범위는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 인도 개발 센터 (Coupang Dev Center) — 벵갈루루",
+  "address": "6th Floor, RMZ Ecoworld, Campus 20, Units 601 & 602, Bhoganahalli Village, Varthur Hobli, Bengaluru Urban, Karnataka, India",
+  "map_url": "https://map.naver.com/p/search/RMZ%20Ecoworld%20Campus%2020%20Bengaluru",
+  "note": "공고 근무지는 'Bengaluru'이고 [1], 주소는 쿠팡 채용 사이트의 벵갈루루 안내다 [11]. 인도 개발 센터는 2023년 말 문을 열었다 [13]."
+ }
+}
