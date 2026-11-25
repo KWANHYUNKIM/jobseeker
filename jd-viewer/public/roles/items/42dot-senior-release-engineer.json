@@ -1,0 +1,1192 @@
+{
+ "id": "42dot-senior-release-engineer",
+ "company": "포티투닷(42dot)",
+ "role": "Senior Release Engineer",
+ "team": "판교 · Pleos 소프트웨어 릴리스(자율주행·SDV·클라우드·OTA 전 구간)",
+ "jobs": [
+  "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "현대차그룹 소프트웨어 브랜드 **Pleos** 의 모든 소프트웨어 — 자율주행 부품, 차량 기능(SDV), 클라우드 서비스, 차에 무선으로 내려보내는 **OTA 업데이트** — 가 '언제, 무엇을, 어떤 품질로' 나가는지를 처음부터 끝까지 맡습니다.[1]",
+  "env": "Git(GitLab)·JIRA·Jenkins·GitLab CI·ArgoCD·아티팩트 저장소 위에서 일하고[1], 같은 회사에 빌드·CI/CD 파이프라인을 짓는 DevOps·Android 빌드 자리가 따로 있습니다.[6][7] 차량 소프트웨어라 **ISO 26262·A-SPICE** 같은 업계 표준이 릴리스 절차에 걸립니다.[1][13]",
+  "oneline": "도구를 짓는 사람이라기보다 **릴리스라는 과정 자체를 설계하고 끌고 가는** 5년 차 이상 자리. 일정·위험·버전·문서·배포 방식의 규칙을 정합니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "End-to-End Software Release Process Lead/운영",
+   "short": "코드가 합쳐진 순간부터 차·서버에 깔리기까지, 릴리스 전 과정을 이끄는 사람이라는 뜻이다.",
+   "why": "공고는 이 자리가 Pleos 의 소프트웨어 릴리스 수명 주기 전체를 총괄한다고 적었고, 범위에 자율주행 부품·SDV 기능·클라우드 연결 서비스·OTA 파이프라인까지 넣었습니다.[1] Pleos Connect 는 2026년 4월 신형 그랜저에 처음 실렸고, 10월 말 첫 무선 업데이트가 고객 차에 순차로 나갔습니다.[10] 현대차그룹은 2030년까지 2,000만 대 이상에 싣겠다고 밝혔습니다.[11]",
+   "flows": [
+    {
+     "caption": "보통의 릴리스 흐름 — 이 자리가 맡는 칸부터 {추론}[14][27]",
+     "steps": [
+      "개발 · 코드 합치기",
+      "빌드 · 아티팩트 저장",
+      "릴리스 후보(RC) 자르기",
+      "QA 검증 · 품질 게이트",
+      "승인 · 릴리스 노트",
+      "단계 배포(OTA·서버)",
+      "배포 뒤 관찰 · 되돌리기"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "Lead/운영 두 단어가 같이 있습니다 — 절차를 **만드는 것**과 매 회차를 **돌리는 것** 둘 다입니다.[1] 빌드 시스템과 CI 파이프라인 자체는 DevOps·빌드 엔지니어 공고가 따로 있어, 이 자리는 그 위의 흐름과 결정을 맡는 쪽으로 읽힙니다.[6][7] {추론}",
+   "refs": [
+    1,
+    6,
+    7,
+    10,
+    11,
+    14,
+    27
+   ],
+   "study": [
+    "sre-release",
+    "swe-google"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "릴리스 계획, 일정, 변경 사항, 품질에 대해 여러 부서(개발, QA, PM 등)와 긴밀한 협업",
+   "short": "이번 판에 무엇이 들어가고 언제 나가며 품질이 됐는지를 개발·QA·PM 과 맞추는 일이다.",
+   "why": "차량 소프트웨어 한 판에는 인포테인먼트 앱, 차량 신호를 다루는 서비스, 클라우드 쪽 변경이 같이 묶입니다. 같은 회사의 IVI 시험 자동화 공고는 Nightly·Release 빌드를 막아 세우는 시험(스모크·새니티·회귀)의 범위를 정한다고 적었습니다 — QA 가 판단할 재료를 릴리스 쪽이 같이 봐야 한다는 뜻입니다.[8] A-SPICE 의 제품 릴리스(SPL.2)는 릴리스에 무엇이 들어가는지 정하고, 정해진 기준으로 승인을 확인하는 것을 결과로 요구합니다.[15]",
+   "actually": {
+    "items": [
+     "**릴리스 계획** — 기능 동결일(feature freeze), RC 자르는 날, 시험 기간, 출시일을 달력으로 정하고 모두가 보게 둔다. {추론}",
+     "**변경 범위 관리** — 이번 판에 들어갈 JIRA 이슈 목록을 확정하고, 늦게 들어오려는 변경은 위험과 가치를 따져 받거나 다음 판으로 미룬다. {추론}",
+     "**품질 판단 회의** — QA 의 시험 결과(통과율·남은 결함 등급)를 보고 '이 판을 내보내도 되나'를 정하는 자리를 연다.[8][15] {추론}",
+     "**차종·일정 맞추기** — 같은 기능이 이미 출고되는 차(아반떼·투싼)에는 처음부터 실리고, 먼저 나간 차(그랜저)에는 OTA 로 나갔다 — 한 기능에 길이 둘이다.[10]"
+    ]
+   },
+   "how_far": "무엇을 만들지는 PM·개발이, 통과 여부는 QA 가 정합니다. 이 자리는 **세 쪽이 같은 표를 보고 같은 날짜에 결정하게** 만드는 사람입니다. {추론}",
+   "refs": [
+    8,
+    10,
+    15
+   ],
+   "study": [
+    "sre-release",
+    "aspice-pam"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "릴리스 진행 상황 추적 관리, 필요 시 릴리즈 시스템 구축",
+   "short": "판마다 어디까지 왔는지 한눈에 보이게 하고, 손으로 하던 단계는 도구로 만든다.",
+   "why": "구글 SRE 책은 릴리스 엔지니어링의 원칙으로 **스스로 돌아가는(self-service) 릴리스**, 같은 입력이면 같은 결과가 나오는 빌드, 정해진 절차의 강제를 꼽습니다.[27] '필요 시 구축'이라 처음부터 도구 개발자는 아니지만, 빈 곳은 직접 메웁니다.[1]",
+   "actually": {
+    "items": [
+     "**상태판** — 판마다 남은 이슈·빌드 번호·시험 통과율·승인 여부를 한 화면에. JIRA 의 릴리스(Fix Version) 기능이 흔한 출발점이다. {추론}",
+     "**RC 자르기 자동화** — 릴리스 브랜치를 만들고 태그를 달고 빌드를 돌리는 단계를 스크립트 한 번으로. {추론}",
+     "**승격(promotion)** — 같은 아티팩트를 개발 → 검증 → 출시 저장소로 옮겨, 시험한 것과 내보내는 것이 같은 파일이 되게 한다. 같은 회사 DevOps 공고의 우대사항에 'artifact promotion 체계'가 있다.[6]"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    27
+   ],
+   "study": [
+    "sre-release",
+    "jenkins-pipeline",
+    "gitlab-ci"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "릴리스 일정이나 품질에 영향을 미칠 수 있는 위험 사전 식별 및 완화(Risk Mitigation)",
+   "short": "출시를 늦추거나 품질을 깎을 일을 먼저 찾아 미리 손쓴다 — 차에 나간 뒤엔 되돌리기 비싸서.",
+   "why": "서버는 문제가 생기면 몇 분 안에 옛 판으로 돌립니다. 차는 OTA 를 다시 내보내야 하고, 그 업데이트도 규정 아래에서 관리됩니다 — UNECE R156 은 회사의 소프트웨어 업데이트 관리 체계(SUMS)와 차량 쪽 업데이트 처리기를 심사합니다.[17] 그래서 차에 나가기 전의 위험 판단이 더 무겁습니다. {추론}",
+   "actually": {
+    "items": [
+     "**의존 위험** — 다른 팀의 변경(차량 신호 API, 클라우드 서버 판)이 늦거나 바뀌면 이 판이 깨진다. 의존 목록과 마감일을 따로 관리한다. {추론}",
+     "**품질 위험** — 남은 결함의 심각도, 시험을 못 한 조합(차종·옵션), 자주 실패하는 시험(flaky)을 표로 본다.[8] {추론}",
+     "**배포 위험 줄이기** — 한 번에 전부가 아니라 일부 차에 먼저 내보내고 지표를 본 뒤 넓힌다(아래 예). 현대차도 그랜저 OTA 를 '순차적으로' 냈다.[10][18]",
+     "**되돌리기 준비** — 서버는 이전 판 배포, 차는 A/B 두 칸 중 옛 칸으로 돌아가는 구조가 마지막 안전망이다.[9][28]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "단계 배포 — 실패율이 넘으면 멈춘다 (직접 돌린 출력)",
+     "body": "가상의 20만 대에 1% → 5% → 25% → 100% 로 넓히고, 단계마다 설치 실패율이 0.5% 를 넘으면 멈추는 규칙입니다. 대수·문턱은 가정한 값입니다.",
+     "lang": "python",
+     "code": "fleet = 200_000\nwaves = [0.01, 0.05, 0.25, 1.0]\nfail = {0.01: 3, 0.05: 41}   # 단계마다 설치 실패 대수(가상)\nlimit = 0.005                 # 실패율 0.5% 넘으면 멈춘다\ndone = 0\nfor w in waves:\n    n = int(fleet * w) - done\n    f = fail.get(w, 0)\n    rate = f / n\n    print(f\"wave {w:>5.0%} +{n:>6} cars fail {f:>3} rate {rate:.2%}\", \"-> HALT\" if rate > limit else \"-> next\")\n    if rate > limit:\n        break\n    done += n\n\n# wave    1% +  2000 cars fail   3 rate 0.15% -> next\n# wave    5% +  8000 cars fail  41 rate 0.51% -> HALT"
+    }
+   ],
+   "how_far": "위험을 **찾고, 숫자로 말하고, 멈출지 갈지 정할 근거를 내는 것**까지가 이 자리입니다. 멈춘 뒤 고치는 것은 개발팀 몫입니다. {추론}",
+   "refs": [
+    8,
+    9,
+    10,
+    17,
+    18,
+    28
+   ],
+   "study": [
+    "r156-ul",
+    "argo-rollouts"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "표준 릴리스 프로세스 정의 및 지속적인 개선",
+   "short": "팀마다 제각각인 릴리스 방법을 하나의 표준으로 정하고, 돌려 보며 계속 고친다.",
+   "why": "같은 회사 DevOps 공고는 코드 변경부터 릴리스까지의 흐름을 표준화하고, 여러 제품이 다시 쓸 파이프라인 틀을 정의하겠다고 적었습니다.[6] 도구가 표준을 따르려면 먼저 절차가 정해져 있어야 하고, 그것이 이 줄입니다. {추론}",
+   "refs": [
+    6
+   ],
+   "study": [
+    "cd-book",
+    "aspice-pam"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "제품 특성을 고려한 릴리즈 프로세스 정의",
+   "short": "클라우드·인포테인먼트 앱·안전 관련 차량 기능은 내보내는 속도와 절차가 달라야 한다.",
+   "why": "Pleos 안에는 성격이 다른 제품이 섞여 있습니다. 인포테인먼트(Pleos Connect)는 안드로이드 오토모티브 OS 위에 있고[12], 차량 쪽 펌웨어는 ASIL-D 안전 등급 플랫폼이며[9], 클라우드 서비스는 서버입니다.[1] 42dot 은 차량 컴퓨터·소프트웨어 개발 프로세스로 ISO 26262 ASIL D 인증을 받았습니다.[13]",
+   "actually": {
+    "intro": "같은 회사 안에서도 갈래마다 다르게 둘 수 있는 것들입니다. {추론}",
+    "items": [
+     "**클라우드 서비스** — 하루 여러 번도 가능. GitOps 로 선언하고 카나리·블루그린으로 바꾼다.[1][24]",
+     "**인포테인먼트 앱** — 몇 주 단위 판, RC 검증 후 OTA. 앱 생태계가 있어 앱만 따로 나갈 수도 있다.[10][11]",
+     "**안전 관련 제어기 펌웨어** — 변경마다 영향 분석·요구사항 추적·승인 기록이 붙고, 업데이트는 서명된 메타데이터(Uptane)로 간다.[9][16][18]",
+     "**공통** — 무엇이 어느 차에 깔렸는지 추적할 수 있어야 한다. R156 은 차량 시스템의 소프트웨어 구성을 식별하는 번호(RXSWIN)를 쓴다.[17]"
+    ]
+   },
+   "refs": [
+    1,
+    9,
+    10,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    24
+   ],
+   "study": [
+    "aspice-pam",
+    "android-ab",
+    "uptane-std"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "릴리스 성숙도 및 효율성 향상을 위한 핵심 지표(KPI) 정의 및 운영",
+   "short": "얼마나 자주·빨리 내보내고, 얼마나 자주 깨지고, 얼마나 빨리 고치나를 숫자로 잰다.",
+   "why": "'잘하고 있나'를 말하려면 숫자가 필요합니다. 업계에서 가장 많이 쓰는 틀은 DORA 의 네 지표 — 배포 빈도, 변경 리드 타임(커밋에서 운영 배포까지), 변경 실패율(되돌리기·긴급 수정이 필요했던 배포 비율), 실패 뒤 복구 시간 — 입니다.[21]",
+   "actually": {
+    "items": [
+     "**DORA 네 지표** — 위의 넷. 빠르기(빈도·리드 타임)와 안정성(실패율·복구 시간)을 같이 본다.[21]",
+     "**차량 쪽 지표** — OTA 설치 성공률, 단계별 도달 대수, 되돌림 건수, 출시일 지킴 비율. {추론}",
+     "**과정 지표** — RC 에서 출시까지 걸린 날, RC 를 다시 자른 횟수, 마지막 주에 들어온 변경 수. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "4주 배포 기록으로 세 지표 내기 (직접 돌린 출력)",
+     "body": "가상 기록 4건입니다. 리드 타임은 커밋에서 배포까지 걸린 시간의 중앙값, 실패율은 배포 뒤 되돌리기·긴급 수정이 필요했던 비율입니다.[21]",
+     "lang": "python",
+     "code": "from datetime import datetime as T\n# (커밋 시각, 배포 시각, 배포 뒤 되돌리기·긴급 수정이 필요했나)\nlog = [(\"11-03 10:00\", \"11-05 09:00\", False), (\"11-06 14:00\", \"11-10 11:00\", True),\n       (\"11-11 09:00\", \"11-12 18:00\", False), (\"11-17 13:00\", \"11-24 10:00\", False)]\np = lambda s: T.strptime(\"2026-\" + s, \"%Y-%m-%d %H:%M\")\nlead = sorted((p(d) - p(c)).total_seconds() / 3600 for c, d, _ in log)\nprint(\"deploys/4weeks\", len(log))\nprint(\"lead time median h\", (lead[1] + lead[2]) / 2)\nprint(\"change fail rate\", sum(f for *_, f in log) / len(log))\n\n# deploys/4weeks 4\n# lead time median h 70.0\n# change fail rate 0.25"
+    }
+   ],
+   "how_far": "지표를 **정의하고, 자동으로 모이게 하고, 회고에서 쓰는 것**까지입니다. 지표가 목표가 되면 사람들이 숫자만 맞추므로, 무엇을 고치려고 재는지를 같이 적어 둡니다. {추론}",
+   "refs": [
+    21
+   ],
+   "study": [
+    "dora-guide",
+    "accelerate"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Release 관리에 필요한 다양한 정책 수립",
+   "short": "버전 번호·문서·배포 방식에 대한 규칙을 정한다 — 아래 세 줄이 그 규칙들이다.",
+   "why": "업무 표에서 이 줄 밑에 버전 체계·릴리스 문서·GitOps 와 배포 기법 세 가지가 이어집니다.[1] 규칙이 없으면 팀마다 번호를 다르게 달고, 어느 차에 무엇이 깔렸는지 추적이 끊깁니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "효율적인 버전 관리(Versioning) 체계 수립",
+   "short": "번호만 보고 '무엇이 바뀌었고 무엇과 맞물리나'를 알 수 있게 버전 규칙을 정한다.",
+   "why": "차량 한 대에는 인포테인먼트·클러스터·제어기 펌웨어·클라우드 API 가 따로 판이 올라갑니다. 서로 맞는 조합이 정해져 있어야 OTA 가 안전합니다 — Uptane 에서도 서버는 차가 보고한 제어기별 버전을 보고 다음에 무엇을 깔지 정합니다.[18] 규정상으로도 차량 시스템의 소프트웨어 구성을 번호(RXSWIN)로 추적합니다.[17]",
+   "actually": {
+    "items": [
+     "**유의적 버전(SemVer)** — 주.부.수(MAJOR.MINOR.PATCH). 호환이 깨지면 주, 기능 추가는 부, 버그 수정은 수를 올린다.[19]",
+     "**번호는 문자열로 비교하지 않는다** — 문자열로 정렬하면 1.10.0 이 1.9.0 보다 앞에 온다(아래 예).",
+     "**묶음 판** — 차 전체 소프트웨어를 하나의 판(예: 연·월 기반)으로 부르고, 그 안에 부품별 SemVer 를 적는 두 겹 체계가 흔하다. {추론}",
+     "**빌드 번호·커밋** — 같은 버전을 다시 빌드해도 구분되게 빌드 번호와 커밋 해시를 같이 남긴다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "버전 정렬과 다음 번호 정하기 (직접 돌린 출력)",
+     "body": "첫 줄은 문자열 정렬이 틀리는 예, 둘째 줄은 숫자로 바꿔 바르게 정렬한 것, 셋째 줄은 변경 종류로 다음 번호를 정한 것입니다.[19]",
+     "lang": "python",
+     "code": "vers = [\"1.9.0\", \"1.10.0\", \"1.2.3\"]\nprint(sorted(vers))\nkey = lambda v: tuple(int(x) for x in v.split(\".\"))\nprint(sorted(vers, key=key))\n\ndef bump(v, changes):\n    major, minor, patch = key(v)\n    if \"breaking\" in changes: return f\"{major+1}.0.0\"\n    if \"feat\" in changes: return f\"{major}.{minor+1}.0\"\n    return f\"{major}.{minor}.{patch+1}\"\nprint(bump(\"2.4.1\", [\"fix\"]), bump(\"2.4.1\", [\"fix\", \"feat\"]), bump(\"2.4.1\", [\"feat\", \"breaking\"]))\n\n# ['1.10.0', '1.2.3', '1.9.0']\n# ['1.2.3', '1.9.0', '1.10.0']\n# 2.4.2 2.5.0 3.0.0"
+    }
+   ],
+   "how_far": "규칙을 **문서로 정하고 도구가 지키게** 하는 것까지입니다(태그 형식 검사, 번호 자동 올리기). {추론}",
+   "refs": [
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "semver-ko",
+    "progit"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "릴리즈 노트 및 버전 제어 정보를 포함한 릴리즈 문서 관리",
+   "short": "판마다 무엇이 바뀌었는지(릴리스 노트)와 어떤 소스·빌드로 만들었는지를 문서로 남긴다.",
+   "why": "A-SPICE 의 제품 릴리스 과정은 기본 실천으로 **릴리스 노트 제공**을 두고, 릴리스 노트를 결과물로 지정합니다.[14][15] 고객에게 보이는 노트도 있습니다 — 그랜저 OTA 때 현대차가 바뀐 기능(문 잠금 버튼·기어 표시·글레오 AI 기능)을 정리해 알렸습니다.[10]",
+   "actually": {
+    "items": [
+     "**내부 노트** — 들어간 이슈·고친 결함·알려진 문제·호환되는 다른 부품 판·시험 결과 요약. {추론}",
+     "**버전 제어 정보** — 어느 저장소의 어느 태그·커밋으로 빌드했나. 안드로이드처럼 저장소가 수백 개면 manifest 파일이 그 목록이다(같은 회사 빌드 공고의 git-repo/manifest).[7]",
+     "**자동으로 모으기** — 커밋 메시지를 정해진 꼴(Conventional Commits)로 쓰면 노트 초안을 기계가 뽑는다(아래 예).[20]",
+     "**사람이 읽는 노트** — 기계가 뽑은 목록을 그대로 내지 말고, 변경을 종류별로 묶어 사람이 읽게 다듬는다.[29]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "커밋 메시지에서 릴리스 노트 초안 뽑기 (직접 돌린 출력)",
+     "body": "가상의 커밋 5개입니다. 느낌표(!)는 호환이 깨지는 변경, chore 는 노트에서 뺍니다.[20]",
+     "lang": "python",
+     "code": "import re\ncommits = [\"feat(nav): 경로 주변 장소 음성 검색\", \"fix(cluster): 기어 표시 깜빡임\", \"chore: CI 캐시 키 변경\",\n           \"feat(hvac)!: 공조 설정 API 바꿈\", \"fix(ota): 이어 받기 실패 시 재시도\"]\ngroups = {\"BREAKING\": [], \"feat\": [], \"fix\": []}\nfor c in commits:\n    m = re.match(r\"(\\w+)(\\((\\w+)\\))?(!)?: (.+)\", c)\n    typ, scope, bang, msg = m.group(1), m.group(3), m.group(4), m.group(5)\n    if bang:\n        groups[\"BREAKING\"].append(f\"{scope}: {msg}\")\n    if typ in groups:\n        groups[typ].append(f\"{scope}: {msg}\")\nfor k, v in groups.items():\n    print(\"## \" + k)\n    for x in v:\n        print(\" -\", x)\n\n# ## BREAKING\n#  - hvac: 공조 설정 API 바꿈\n# ## feat\n#  - nav: 경로 주변 장소 음성 검색\n#  - hvac: 공조 설정 API 바꿈\n# ## fix\n#  - cluster: 기어 표시 깜빡임\n#  - ota: 이어 받기 실패 시 재시도"
+    }
+   ],
+   "refs": [
+    7,
+    10,
+    14,
+    15,
+    20,
+    29
+   ],
+   "study": [
+    "cc-ko",
+    "keepachangelog",
+    "aspice-pam"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "GitOps 및 다양한 Deployment 기법 적용",
+   "short": "배포할 상태를 Git 에 적어 두면 도구가 그대로 맞추게 하고, 카나리·블루그린으로 위험을 줄인다.",
+   "why": "OpenGitOps 는 GitOps 의 원칙을 네 가지로 둡니다 — 원하는 상태를 **선언**하고, 그 기록을 **바꿀 수 없게 판으로 남기고**, 도구가 **스스로 당겨 와서**, **계속 맞춘다**.[22] 자격요건에 ArgoCD 가 있는데[1], Argo CD 는 Git 에 적힌 상태와 쿠버네티스 클러스터를 비교해 맞추는 도구입니다.[23]",
+   "actually": {
+    "items": [
+     "**GitOps 배포** — 서버에 직접 명령하지 않고 Git 의 설정 파일(이미지 태그 등)을 바꾸는 병합 요청이 곧 배포다. 되돌리기는 그 커밋을 되돌리는 것.[22][23]",
+     "**카나리** — 새 판을 일부 요청(예: 5%)에만 보내고 지표가 괜찮으면 넓힌다.[24]",
+     "**블루그린** — 옛 판(블루)과 새 판(그린)을 나란히 띄우고, 시험이 끝나면 트래픽을 한 번에 옮긴다. 문제가 나면 다시 블루로.[24]",
+     "**차에서는** — 같은 생각을 차량 집단에 쓴다: 일부 차에 먼저 OTA, 지표 확인 뒤 확대(위 '위험' 줄의 예). 차 안에서는 A/B 두 칸이 블루그린 역할을 한다.[9][28] {추론}"
+    ]
+   },
+   "how_far": "클러스터 운영은 인프라 팀 몫이고, 이 자리는 **어떤 제품에 어떤 배포 방식과 멈춤 기준을 쓸지** 정책으로 정합니다. Argo CD 설정을 읽고 고칠 수 있으면 충분합니다. {추론}",
+   "refs": [
+    1,
+    9,
+    22,
+    23,
+    24,
+    28
+   ],
+   "study": [
+    "opengitops",
+    "argocd-docs",
+    "argo-rollouts",
+    "wiki-kubernetes"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터 과학 또는 관련 분야 학사 학위 이상",
+   "short": "컴퓨터 과학이나 가까운 전공의 학사 이상.",
+   "why": "공고의 첫 요건입니다.[1] 같은 회사의 DevOps·빌드 공고도 같은 문장을 둡니다.[6][7]",
+   "refs": [
+    1,
+    6,
+    7
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 이상의 릴리즈 관리 또는 그에 준하는 역할 경험",
+   "short": "릴리스 관리 5년 이상. 빌드·배포·QA 리드처럼 릴리스를 끌어 본 일이면 '준하는 역할'이다.",
+   "why": "여러 부서를 조율하고 표준을 정하는 자리라, 판을 여러 번 내보내며 실패도 겪어 본 경력을 봅니다.[1]",
+   "how_far": "'그에 준하는 역할'은 공고가 정의하지 않았습니다. 빌드·릴리스 엔지니어, 배포를 맡은 DevOps, 출시 판정을 한 QA 리드가 가까워 보입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "소프트웨어 개발 수명 주기(SDLC)와 릴리스 관리 프로세스에 대한 깊은 이해",
+   "short": "요구사항 → 설계 → 개발 → 시험 → 출시 → 유지보수 흐름과, 그 안에서 릴리스가 서는 자리를 안다.",
+   "why": "차량 소프트웨어에서는 이 흐름이 표준으로 정해져 있습니다. ISO 26262 는 형상 관리·변경 관리 같은 지원 과정을 따로 두고[16], A-SPICE 는 시스템·소프트웨어 개발 과정과 제품 릴리스(SPL.2) 과정을 평가합니다.[14][15]",
+   "actually": {
+    "items": [
+     "**브랜치 전략** — 메인에서 개발하고 릴리스 브랜치를 잘라 고정할지, 판마다 브랜치를 오래 둘지. 고친 것을 어느 브랜치에 옮길지(cherry-pick)도 정책이다.[30] {추론}",
+     "**형상 관리** — 어떤 소스·설정·도구 판으로 만들었는지를 다시 만들 수 있게 남긴다.[16]",
+     "**변경 관리** — 출시 뒤 변경은 요청 → 영향 분석 → 승인 → 반영 → 확인 순서를 밟는다.[16] {추론}"
+    ]
+   },
+   "refs": [
+    14,
+    15,
+    16,
+    30
+   ],
+   "study": [
+    "cd-book",
+    "swe-google",
+    "aspice-pam"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "뛰어난 의사소통 및 대인관계 기술, 여러 기능팀과 효과적으로 협업할 수 있는 능력",
+   "short": "출시를 미루자·넣자를 두고 여러 팀을 설득해야 하는 자리라서.",
+   "why": "공고는 단순한 릴리스 관리를 넘어 여러 팀의 협업을 성공적으로 조율하는 엔지니어를 원한다고 적었습니다.[1]",
+   "how_far": "면접에서는 '늦게 들어온 변경을 거절한 경험'이나 '일정과 품질이 부딪쳤을 때 무엇을 근거로 정했나' 같은 구체 사례를 준비하는 것이 좋습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "빠르게 변화하는 환경에서 고객 대상 소프트웨어를 대규모로 릴리스한 경험",
+   "short": "내부 도구가 아니라 많은 사용자에게 실제로 나가는 소프트웨어를 여러 번 내보내 본 경험.",
+   "why": "Pleos Connect 는 2030년 2,000만 대 이상이 목표이고[11], 이미 고객 차에 OTA 가 나가고 있습니다.[10] 42dot 블로그는 2주 단위로 개발하고 CI/CD 로 내보내는 방식을 소개했습니다.[5]",
+   "how_far": "앱 스토어 출시·대규모 웹 서비스·기기 펌웨어 배포 등 **고객이 받는 판**을 내본 경험이면 됩니다. 차량 경험은 우대사항에 따로 있습니다.[1] {추론}",
+   "refs": [
+    1,
+    5,
+    10,
+    11
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Git(GitHub/GitLab) 활용 능력 및 JIRA와 같은 프로젝트 관리 소프트웨어 사용 경험",
+   "short": "브랜치·태그·병합을 능숙하게 다루고, JIRA 로 판마다 들어갈 이슈를 관리할 수 있다.",
+   "why": "릴리스 범위는 JIRA 이슈로, 릴리스 내용은 Git 태그·브랜치로 정해집니다. 수집된 공고의 기술 태그도 Git·GitLab·Jenkins 입니다.[1]",
+   "level": {
+    "basic": "브랜치 · 병합 · 태그 · 되돌리기(revert) · 병합 요청",
+    "work": "릴리스 브랜치 운영 · cherry-pick · 충돌 해결 · 태그 규칙 · JIRA 버전(Fix Version)·필터",
+    "team": "저장소 수백 개(manifest)의 판 고정 · 브랜치 보호 규칙 · 커밋 규칙 자동 검사"
+   },
+   "refs": [
+    1
+   ],
+   "study": [
+    "progit",
+    "cc-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Artifact Repository, CI/CD toolchains (Jenkins, GitLab CI, ArgoCD) 도구에 대한 기술적 이해",
+   "short": "빌드 결과를 쌓는 저장소와 Jenkins·GitLab CI·ArgoCD 가 어떻게 이어지는지 이해한다.",
+   "why": "릴리스 결정은 이 도구들 위에서 실행됩니다 — CI 가 빌드·시험하고, 아티팩트 저장소에 판이 쌓이고, ArgoCD 가 서버에 배포합니다.[1][23] 같은 회사 DevOps 공고가 이 파이프라인을 짓고, 서명·SBOM·릴리스 게이트를 그 안에 넣습니다.[6]",
+   "actually": {
+    "items": [
+     "**CI(Jenkins·GitLab CI)** — 코드가 들어오면 빌드·시험을 돌리는 파이프라인. 단계(stage)와 승인 대기 단계를 둘 수 있다.[31][32]",
+     "**아티팩트 저장소** — 빌드한 이미지·패키지를 버전별로 보관. 시험한 바로 그 파일을 내보내는 근거다.[6] {추론}",
+     "**CD(ArgoCD)** — Git 에 적힌 배포 상태를 클러스터에 맞춘다.[23]"
+    ]
+   },
+   "how_far": "'기술적 이해'라서 파이프라인을 처음부터 짓는 수준이 아니라, **읽고, 어디서 막혔는지 알고, 릴리스 규칙(게이트)을 넣어 달라고 정확히 요청**할 수 있는 수준입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    23,
+    31,
+    32
+   ],
+   "study": [
+    "jenkins-pipeline",
+    "gitlab-ci",
+    "argocd-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "빌드 및 컨테이너 기반 빌드 시스템(Containerized build system)에 대한 이해",
+   "short": "빌드를 컨테이너 안에서 돌려, 누구 컴퓨터에서 빌드해도 같은 결과가 나오게 하는 방식을 안다.",
+   "why": "같은 회사의 빌드·DevOps 공고는 **빌드 재현성**을 거듭 적습니다 — 재현 가능한 빌드, 이미지 서명, 같은 입력이면 같은 결과.[6][7] 릴리스 쪽에서는 '출시한 판을 다시 만들 수 있나'가 문제 분석과 인증의 기본입니다. {추론}",
+   "actually": {
+    "items": [
+     "**빌드 이미지** — 컴파일러·SDK 판을 고정한 컨테이너 이미지로 빌드한다. 도구 판도 형상 관리 대상이다.[16] {추론}",
+     "**큰 빌드** — 안드로이드 오토모티브 이미지 같은 큰 빌드는 캐시·분산 빌드·Bazel 로 시간을 줄인다.[7]",
+     "**출처 증명** — 어떤 소스로 어디서 빌드했는지를 서명한 기록(provenance)을 남기는 것이 SLSA 빌드 단계의 출발점이다.[25]"
+    ]
+   },
+   "refs": [
+    6,
+    7,
+    16,
+    25
+   ],
+   "study": [
+    "wiki-docker",
+    "swe-google"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 차량 Fleet 또는 그와 유사한 분산 임베디드 플랫폼의 OTA 시스템 배포 경험",
+   "short": "많은 차(또는 기기 집단)에 무선 업데이트를 단계적으로 내보내 본 경험이 있으면 좋다.",
+   "why": "업무 범위에 OTA 파이프라인이 들어 있습니다.[1] 차량 OTA 는 서버 배포와 달리 받는 쪽이 꺼졌다 켜지고, 망이 끊기고, 제어기마다 판이 다릅니다. Uptane 은 서버가 차의 버전 보고를 보고 차마다 깔 것을 정하는 구조이고[18], 기기 안에서는 A/B 두 칸으로 실패에 대비합니다.[9][28]",
+   "actually": {
+    "items": [
+     "**캠페인** — 어느 차종·판·지역에 언제 보낼지 묶음을 정한다. {추론}",
+     "**단계 확대와 멈춤** — 위 '위험' 줄의 예처럼 일부에 먼저 보내고 지표로 넓힌다.[10] {추론}",
+     "**안드로이드 쪽** — 인포테인먼트는 안드로이드 A/B 업데이트(돌고 있는 칸 옆 칸에 쓰고 재부팅 때 바꿈)를 쓸 수 있다.[12][28]"
+    ]
+   },
+   "refs": [
+    1,
+    9,
+    10,
+    12,
+    18,
+    28
+   ],
+   "study": [
+    "uptane-std",
+    "android-ab"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ISO 26262, A-SPICE 등 업계 표준 대응 경험",
+   "short": "차량 기능안전(ISO 26262)·개발 과정 평가(A-SPICE) 심사에 맞춰 릴리스 기록을 내 본 경험.",
+   "why": "42dot 은 차량 컴퓨터·소프트웨어 개발 프로세스로 ISO 26262 ASIL D 인증을 받았습니다.[13] A-SPICE 4.0 의 제품 릴리스 과정(SPL.2)은 릴리스 내용 정하기·구성 항목으로 묶음 만들기·문서 정하기·기준에 따른 승인 확인·고객에게 전달을 결과로 둡니다.[15]",
+   "actually": {
+    "items": [
+     "**릴리스 기준** — 무엇이 되면 내보내나(시험 통과율, 남은 결함 등급, 문서 완비)를 미리 적고, 승인 때 그것을 확인한 기록을 남긴다.[15]",
+     "**구성 항목** — 릴리스 묶음은 형상 관리된 항목으로만 만든다.[15][16]",
+     "**증거** — 심사에서는 '그렇게 했다'는 말이 아니라 기록(승인 이력·노트·추적표)을 본다. {추론}"
+    ]
+   },
+   "refs": [
+    13,
+    15,
+    16
+   ],
+   "study": [
+    "aspice-pam"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "빌드, CI/CD 파이프라인에 해당하는 스크립트 작성 및 디버깅 능력",
+   "short": "파이프라인이 깨졌을 때 남에게 넘기지 않고 스크립트를 읽고 고칠 수 있으면 좋다.",
+   "why": "업무에 '필요 시 릴리즈 시스템 구축'이 있습니다.[1] 같은 회사 DevOps 공고는 Python·Bash 자동화를 요건으로 둡니다.[6]",
+   "actually": {
+    "items": [
+     "Jenkinsfile·.gitlab-ci.yml 을 읽고 단계·조건·승인 단계를 고친다.[31][32]",
+     "RC 자르기·태그·노트 뽑기를 Python·Bash 로 묶는다(위 '릴리스 문서' 줄의 예).[20]",
+     "실패한 빌드 로그에서 원인이 코드인지, 환경인지, 자주 실패하는 시험인지 가른다.[6][8] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    8,
+    20,
+    31,
+    32
+   ],
+   "study": [
+    "jenkins-pipeline",
+    "gitlab-ci"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "GitOps, 다양한 배포 기법(Canary, Blue-Green) 및 소프트웨어 공급망 보안(SBOM, SLSA)에 대한 이해",
+   "short": "GitOps·카나리·블루그린에 더해, 소프트웨어에 무엇이 들었고 어디서 빌드됐는지 증명하는 법을 안다.",
+   "why": "GitOps·배포 기법은 업무 줄과 같습니다.[1][22][24] SBOM(소프트웨어 자재 명세서)은 소프트웨어에 들어간 부품 목록이고, 미국 NTIA 는 최소 항목(공급자·부품 이름·판·고유 식별자·의존 관계·작성자·작성 시각)을 정했습니다.[26] SLSA 는 빌드의 출처 증명을 단계로 나눕니다 — L1 출처 기록, L2 호스팅 빌드가 서명한 기록, L3 빌드 중 변조를 막는 단단한 빌드 환경.[25]",
+   "actually": {
+    "items": [
+     "**SBOM** — 판마다 오픈소스 부품·판을 기계가 읽는 꼴(SPDX·CycloneDX)로 뽑아 둔다. 새 취약점이 나오면 어느 판·어느 차가 영향받는지 바로 찾는다.[26] {추론}",
+     "**SLSA** — 릴리스 게이트에서 '서명된 출처 기록이 있는 아티팩트만 내보낸다'를 규칙으로 건다.[25] {추론}",
+     "**같은 회사 맥락** — DevOps 공고가 서명·SBOM·릴리스 게이트를 파이프라인에 넣는다고 적었다.[6]"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    22,
+    24,
+    25,
+    26
+   ],
+   "study": [
+    "slsa-spec",
+    "ntia-sbom",
+    "argo-rollouts"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "자율주행, ADAS 및 그 외 유사 분야에서의 근무 경험",
+   "short": "자율주행·운전자 보조(ADAS) 쪽에서 일해 봤으면 안전 관련 판을 다루는 감이 있다.",
+   "why": "릴리스 범위에 자율주행 부품이 들어 있습니다.[1] 안전에 닿는 기능은 변경마다 영향 분석과 승인 기록이 붙어 일반 앱보다 판을 내는 절차가 무겁습니다.[16] {추론}",
+   "refs": [
+    1,
+    16
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "흩어진 팀들 사이에서 '언제 무엇을'을 정리하는 일이 즐거운 사람[1]",
+   "비효율을 스스로 찾아 절차와 도구로 고치는 사람 — 공고가 기대한다고 적은 모습[1]",
+   "숫자(지표)로 '내보내도 된다/멈춘다'를 말하고 싶은 사람",
+   "고객 차에 실제로 나가는 소프트웨어를 만들고 싶은 사람[10]"
+  ],
+  "hard": [
+   "출시를 미루자는 말을 해야 할 때가 많다 — 조율과 설득이 일의 큰 몫이다[1]",
+   "차량 표준(ISO 26262·A-SPICE)의 문서·기록 일이 붙는다[1][15]",
+   "코드를 짜는 시간보다 절차·회의·문서 시간이 길 수 있다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "출시 이틀 전에 중요한 기능의 마지막 수정이 들어오겠다고 하면 어떻게 정하나요?",
+   "a": "변경 범위 관리와 위험·가치 판단, 다음 판으로 미루는 기준.[15]"
+  },
+  {
+   "q": "OTA 를 20만 대에 내보낼 때 몇 단계로, 무엇을 보고 넓히거나 멈추나요?",
+   "a": "단계 배포와 멈춤 기준(위 예).[24]"
+  },
+  {
+   "q": "릴리스 팀의 성과를 무엇으로 재겠어요? 그 지표의 부작용은요?",
+   "a": "DORA 네 지표와 차량 쪽 지표.[21]"
+  },
+  {
+   "q": "버전 번호를 어떻게 정하겠어요? 인포테인먼트·제어기·클라우드 판이 서로 맞는지는 어떻게 보장하나요?",
+   "a": "SemVer 와 묶음 판, 호환 조합 관리.[18][19]"
+  },
+  {
+   "q": "1년 전에 나간 판을 똑같이 다시 빌드해야 한다면 무엇이 남아 있어야 하나요?",
+   "a": "형상 관리·빌드 환경 고정·출처 기록.[16][25]"
+  },
+  {
+   "q": "GitOps 에서 배포를 되돌리는 방법은요? 차에서는요?",
+   "a": "Git 커밋 되돌리기와 A/B 칸 되돌리기.[22][28]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · Senior Release Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/95951bc5-2ccd-4b5a-8134-02ec957aae9c",
+   "kind": "posting",
+   "note": "이 공고. 팀 소개·업무·요건·우대·전형. 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 · 42dot만의 업무 몰입 프로그램(복리후생)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준(해외 법인은 다를 수 있음), 게시일 표기 없음"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 홈페이지 · 하단 회사 정보",
+   "url": "https://42dot.ai/ko",
+   "kind": "company",
+   "note": "경기도 성남시 수정구 창업로40번길 20, A동"
+  },
+  {
+   "n": 4,
+   "title": "원티드 · 포티투닷(42dot) 기업 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "평균연봉 6,032만원 · 국민연금 가입 사원 804명 표기(같은 회사 다른 풀이에서 2026-11-25 확인) — 공공데이터 집계, 기준월 표기 없음"
+  },
+  {
+   "n": 5,
+   "title": "포티투닷 블로그 · 42dot at CES 2024: Software-Defined Vehicle Technology",
+   "url": "https://42dot.ai/ko/stories/blog-news/ces-2024-software-defined-vehicle",
+   "kind": "company",
+   "date": "2024-03-28",
+   "note": "HPVC·영역 제어기·SDV OS, 2주 스프린트, CI/CD"
+  },
+  {
+   "n": 6,
+   "title": "포티투닷 채용 · Senior DevOps Engineer (CI/CD Pipeline)",
+   "url": "https://jobs.ashbyhq.com/42dot/08d5a10e-10f6-4821-ba21-66cda54064ef",
+   "kind": "posting",
+   "note": "같은 회사 판교 공고 — 전달 흐름 표준화·재현 빌드·서명·SBOM·릴리스 게이트·artifact promotion"
+  },
+  {
+   "n": 7,
+   "title": "포티투닷 채용 · Senior Android Build System Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/a895dce5-3a9d-4472-8b05-04bbd99aea60",
+   "kind": "posting",
+   "note": "같은 회사 판교 공고 — Android Automotive 빌드·Bazel·재현 빌드·git-repo/manifest·OTA 패키징"
+  },
+  {
+   "n": 8,
+   "title": "원티드 · 포티투닷 Test Automation Engineer (IVI System)",
+   "url": "https://www.wanted.co.kr/wd/395192",
+   "kind": "posting",
+   "note": "같은 회사 공고 — Nightly/Release 빌드 게이팅, 스모크·새니티·회귀, flaky test"
+  },
+  {
+   "n": 9,
+   "title": "포티투닷 채용 · Sr. Staff Firmware Engineer (Secure Boot & OTA implementation)",
+   "url": "https://jobs.ashbyhq.com/42dot/63196d96-2810-4348-8aa5-077d8c0ee710",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고 — ASIL-D 펌웨어 플랫폼, A/B 칸·Uptane 클라이언트"
+  },
+  {
+   "n": 10,
+   "title": "CEO스코어데일리 · 현대차, '플레오스 커넥트' 무선 소프트웨어 업데이트 실시",
+   "url": "https://m.ceoscoredaily.com/page/view/2026103008512611084",
+   "kind": "news",
+   "date": "2026-10-30",
+   "note": "더 뉴 그랜저 대상 순차 OTA, 문 잠금 버튼·기어 표시·글레오 AI 기능, 아반떼·투싼은 반영된 채 출고"
+  },
+  {
+   "n": 11,
+   "title": "현대차 뉴스룸 · Hyundai Motor Group Launches 'Pleos' Software Brand",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000000921",
+   "kind": "company",
+   "date": "2025-03-28",
+   "note": "Pleos Connect 2026년 2분기 첫 탑재, 2030년 2,000만 대 이상, OTA"
+  },
+  {
+   "n": 12,
+   "title": "InsideEVs · Hyundai Pleos Connect preview",
+   "url": "https://insideevs.com/news/772759/hyundai-pleos-connect-preview/",
+   "kind": "news",
+   "note": "Pleos Vehicle OS 와 Pleos Connect 구분, 인포테인먼트는 Android Automotive OS 기반"
+  },
+  {
+   "n": 13,
+   "title": "바이라인네트워크 · 포티투닷 차량 기능안전 개발 프로세스, 국제 표준 인증 획득",
+   "url": "https://byline.network/2023/09/25-289/",
+   "kind": "news",
+   "date": "2023-09-25",
+   "note": "DNV ISO 26262 인증(ASIL D)"
+  },
+  {
+   "n": 14,
+   "title": "VDA QMC · Automotive SPICE PAM 4.0",
+   "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+   "kind": "reference",
+   "date": "2023-11-29",
+   "note": "결과물 11-03 릴리스 노트"
+  },
+  {
+   "n": 15,
+   "title": "Eclipse S-CORE · ASPICE 4.0 SPL.2 Product Release",
+   "url": "https://eclipse-score.github.io/score/main/process/standards/aspice_40/spl/spl.2.html",
+   "kind": "reference",
+   "note": "SPL.2 목적·결과·BP6 릴리스 노트 — 모델 원문을 옮겨 둔 페이지"
+  },
+  {
+   "n": 16,
+   "title": "ISO · ISO 26262-8:2018 Road vehicles — Functional safety — Part 8: Supporting processes",
+   "url": "https://www.iso.org/standard/68390.html",
+   "kind": "reference",
+   "note": "형상 관리·변경 관리 등 지원 과정"
+  },
+  {
+   "n": 17,
+   "title": "UL Solutions · Software Update Management Systems According to UNECE R156",
+   "url": "https://www.ul.com/sis/insights/software-update-management-systems-according-unece-r156",
+   "kind": "reference",
+   "note": "SUMS 심사·차량 쪽 업데이트 처리기·RXSWIN"
+  },
+  {
+   "n": 18,
+   "title": "Uptane Standard for Design and Implementation 2.1.0",
+   "url": "https://uptane.org/docs/2.1.0/standard/uptane-standard",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "유의적 버전 2.0.0 (Semantic Versioning, 한국어)",
+   "url": "https://semver.org/lang/ko/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "컨벤셔널 커밋 1.0.0 (한국어)",
+   "url": "https://www.conventionalcommits.org/ko/v1.0.0/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "DORA · DORA's software delivery performance metrics",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys",
+   "kind": "reference",
+   "note": "배포 빈도·변경 리드 타임·변경 실패율·복구 시간"
+  },
+  {
+   "n": 22,
+   "title": "OpenGitOps · GitOps Principles",
+   "url": "https://opengitops.dev/",
+   "kind": "reference",
+   "note": "선언·판으로 남기고 바꾸지 않음·당겨 오기·계속 맞추기"
+  },
+  {
+   "n": 23,
+   "title": "Argo CD 공식 문서",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Argo Rollouts 공식 문서 · Canary · BlueGreen",
+   "url": "https://argoproj.github.io/argo-rollouts/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "SLSA v1.0 · Security levels",
+   "url": "https://slsa.dev/spec/v1.0/levels",
+   "kind": "reference",
+   "note": "빌드 트랙 L1~L3"
+  },
+  {
+   "n": 26,
+   "title": "NTIA · The Minimum Elements For a Software Bill of Materials (SBOM)",
+   "url": "https://www.ntia.gov/report/2021/minimum-elements-software-bill-materials-sbom",
+   "kind": "reference",
+   "date": "2021-07"
+  },
+  {
+   "n": 27,
+   "title": "Google SRE Book · Chapter 8 Release Engineering",
+   "url": "https://sre.google/sre-book/release-engineering/",
+   "kind": "reference",
+   "note": "다른 회사 — self-service·재현 빌드·절차 강제"
+  },
+  {
+   "n": 28,
+   "title": "Android 소스 · A/B (Seamless) System Updates",
+   "url": "https://source.android.com/docs/core/ota/ab",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Keep a Changelog 1.1.0 (한국어)",
+   "url": "https://keepachangelog.com/ko/1.1.0/",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Pro Git (한국어) · Git 브랜치 — 브랜치 워크플로",
+   "url": "https://git-scm.com/book/ko/v2/Git-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EC%9B%8C%ED%81%AC%ED%94%8C%EB%A1%9C",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Jenkins 문서 · Pipeline",
+   "url": "https://www.jenkins.io/doc/book/pipeline/",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "GitLab 문서 · CI/CD",
+   "url": "https://docs.gitlab.com/ci/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "42dot 이 릴리스를 어떻게 운영하는지(브랜치 전략·버전 규칙·OTA 캠페인 단계·지표)는 공개된 발표나 글을 찾지 못했습니다. 같은 회사 다른 공고·현대차 발표·보도로 범위를 보이고, 나머지는 업계 표준(A-SPICE·ISO 26262·R156·Uptane)과 공개 문서로 '보통 이런 것'을 보였습니다. 단계 배포·지표 예의 숫자는 모두 가정한 값입니다.",
+ "resources": [
+  {
+   "id": "sre-release",
+   "title": "Site Reliability Engineering · 8장 Release Engineering",
+   "by": "Google · O'Reilly · 무료 공개",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/release-engineering/",
+   "why": "릴리스 엔지니어가 무엇을 지키는 사람인지(스스로 돌아가는 릴리스·재현 빌드·절차 강제) 한 장으로 잡는다. 업무 첫 줄의 큰 그림."
+  },
+  {
+   "id": "swe-google",
+   "title": "구글 엔지니어는 이렇게 일한다",
+   "by": "타이터스 윈터스 외 · 한빛미디어 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942639",
+   "why": "지속적 통합(23장)·지속적 배포(24장) 장이 큰 조직에서 판을 자주 안전하게 내는 법을 다룬다. 표준 프로세스 정의 줄의 근거 쌓기."
+  },
+  {
+   "id": "cd-book",
+   "title": "Continuous Delivery",
+   "by": "Jez Humble · David Farley · Addison-Wesley · 2010",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.martinfowler.com/books/continuousDelivery.html",
+   "why": "배포 파이프라인·아티팩트 한 번 빌드해 승격하기·릴리스 전략의 원전. SDLC·릴리스 프로세스 '깊은 이해' 요건용."
+  },
+  {
+   "id": "accelerate",
+   "title": "디지털 트랜스포메이션 엔진 (원서 Accelerate)",
+   "by": "니콜 포스그렌 · 제즈 험블 · 진 킴",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%94%94%EC%A7%80%ED%84%B8%20%ED%8A%B8%EB%9E%9C%EC%8A%A4%ED%8F%AC%EB%A9%94%EC%9D%B4%EC%85%98%20%EC%97%94%EC%A7%84",
+   "why": "DORA 네 지표가 나온 연구를 정리한 책. KPI 줄에서 '왜 이 네 개인가'를 설명할 근거."
+  },
+  {
+   "id": "dora-guide",
+   "title": "DORA's software delivery performance metrics",
+   "by": "DORA 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys",
+   "why": "네 지표의 정확한 정의. 지표를 정의할 때 이 문장들로 맞춘다."
+  },
+  {
+   "id": "semver-ko",
+   "title": "유의적 버전 2.0.0",
+   "by": "semver.org 한국어",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://semver.org/lang/ko/",
+   "why": "버전 체계 수립 줄의 기본 규칙. 우선순위(1.10 > 1.9)·사전 배포 표기(-rc.1)까지."
+  },
+  {
+   "id": "cc-ko",
+   "title": "컨벤셔널 커밋 1.0.0",
+   "by": "conventionalcommits.org 한국어",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.conventionalcommits.org/ko/v1.0.0/",
+   "why": "커밋 메시지 규칙 하나로 버전 올리기와 릴리스 노트 초안을 자동으로 만든다."
+  },
+  {
+   "id": "keepachangelog",
+   "title": "Keep a Changelog 1.1.0",
+   "by": "keepachangelog.com 한국어",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://keepachangelog.com/ko/1.1.0/",
+   "why": "사람이 읽는 변경 기록을 어떻게 묶나(추가·변경·수정·제거). 릴리스 문서 줄."
+  },
+  {
+   "id": "progit",
+   "title": "Pro Git 2판 (한국어)",
+   "by": "Scott Chacon · Ben Straub · 무료 공개",
+   "kind": "book",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://git-scm.com/book/ko/v2",
+   "why": "브랜치·태그·cherry-pick·브랜치 워크플로. Git 활용 요건의 바탕."
+  },
+  {
+   "id": "jenkins-pipeline",
+   "title": "Jenkins Pipeline",
+   "by": "Jenkins 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.jenkins.io/doc/book/pipeline/",
+   "why": "Jenkinsfile 의 단계·조건·승인 대기(input) — 파이프라인을 읽고 릴리스 게이트를 넣을 때."
+  },
+  {
+   "id": "gitlab-ci",
+   "title": "GitLab CI/CD",
+   "by": "GitLab 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.gitlab.com/ci/",
+   "why": ".gitlab-ci.yml 의 단계·환경·수동 배포 단계·보호 브랜치. 자격요건의 GitLab CI."
+  },
+  {
+   "id": "argocd-docs",
+   "title": "Argo CD",
+   "by": "Argo 프로젝트 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "why": "Git 상태와 클러스터를 맞추는 동기화·되돌리기. 자격요건의 ArgoCD, 업무의 GitOps."
+  },
+  {
+   "id": "argo-rollouts",
+   "title": "Argo Rollouts",
+   "by": "Argo 프로젝트 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://argoproj.github.io/argo-rollouts/",
+   "why": "카나리·블루그린을 단계·지표 분석·자동 중단으로 설정하는 법. 배포 기법 줄."
+  },
+  {
+   "id": "opengitops",
+   "title": "OpenGitOps Principles",
+   "by": "CNCF OpenGitOps",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://opengitops.dev/",
+   "why": "GitOps 가 무엇인지 네 원칙으로. 정책 문서에 정의를 적을 때 쓴다."
+  },
+  {
+   "id": "slsa-spec",
+   "title": "SLSA v1.0 Security levels",
+   "by": "OpenSSF SLSA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://slsa.dev/spec/v1.0/levels",
+   "why": "빌드 출처 증명의 단계(L1~L3). 공급망 보안 우대사항."
+  },
+  {
+   "id": "ntia-sbom",
+   "title": "The Minimum Elements For a Software Bill of Materials",
+   "by": "미국 NTIA · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.ntia.gov/report/2021/minimum-elements-software-bill-materials-sbom",
+   "why": "SBOM 에 꼭 들어갈 항목. 릴리스 묶음에 SBOM 을 붙이는 규칙을 정할 때."
+  },
+  {
+   "id": "aspice-pam",
+   "title": "Automotive SPICE PAM 4.0",
+   "by": "VDA QMC · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+   "why": "제품 릴리스(SPL.2)·형상 관리 과정의 원문. 업계 표준 대응 우대사항과 릴리스 문서 줄."
+  },
+  {
+   "id": "uptane-std",
+   "title": "Uptane Standard 2.1.0",
+   "by": "Uptane · Linux Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://uptane.org/docs/2.1.0/standard/uptane-standard",
+   "why": "차량 OTA 가 서버·차 사이에서 무엇을 서명하고 버전을 어떻게 보고하나. OTA 우대사항."
+  },
+  {
+   "id": "r156-ul",
+   "title": "Software Update Management Systems According to UNECE R156",
+   "by": "UL Solutions",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.ul.com/sis/insights/software-update-management-systems-according-unece-r156",
+   "why": "차량 소프트웨어 업데이트 규정이 회사에 무엇을 요구하나(SUMS·RXSWIN). 위험 관리 줄의 배경."
+  },
+  {
+   "id": "android-ab",
+   "title": "A/B (Seamless) System Updates",
+   "by": "Android 소스 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/core/ota/ab",
+   "why": "Android Automotive 인포테인먼트의 업데이트가 두 칸으로 실패에 대비하는 방식. OTA·제품 특성 줄."
+  },
+  {
+   "id": "wiki-docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "실제로 친 명령과 출력으로 이미지·컨테이너를 익힌다. 컨테이너 기반 빌드 요건."
+  },
+  {
+   "id": "wiki-kubernetes",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "ArgoCD 가 맞추는 대상(디플로이먼트·롤아웃)을 직접 다뤄 본다. GitOps 줄의 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "릴리스가 무엇을 지키나",
+   "time": "1주",
+   "goal": "릴리스 엔지니어의 일과 표준 흐름(RC·게이트·승인·노트·단계 배포)을 말로 설명할 수 있다.",
+   "resources": [
+    "sre-release",
+    "swe-google"
+   ],
+   "task": "위 첫 줄의 릴리스 흐름 7칸을 내 경험(또는 가상 서비스)에 맞춰 다시 그리고, 칸마다 '누가 결정하나'와 '무슨 기록이 남나'를 적는다."
+  },
+  {
+   "title": "버전·브랜치·노트 규칙",
+   "time": "1~2주",
+   "goal": "버전 규칙과 커밋 규칙을 정하고, 노트와 다음 번호를 자동으로 뽑을 수 있다.",
+   "resources": [
+    "progit",
+    "semver-ko",
+    "cc-ko",
+    "keepachangelog"
+   ],
+   "task": "가상 저장소에 커밋 30개를 규칙대로 쌓고 릴리스 브랜치를 잘라 버그 하나를 cherry-pick 한 뒤, 태그와 릴리스 노트(위 예를 넓혀서)를 스크립트로 만든다."
+  },
+  {
+   "title": "파이프라인에 게이트 넣기",
+   "time": "2~3주",
+   "goal": "CI 파이프라인을 읽고, 시험·승인·SBOM 을 릴리스 게이트로 건다.",
+   "resources": [
+    "gitlab-ci",
+    "jenkins-pipeline",
+    "wiki-docker",
+    "slsa-spec",
+    "ntia-sbom"
+   ],
+   "task": "작은 앱을 컨테이너로 빌드하는 GitLab CI(또는 Jenkins) 파이프라인을 만들고, 시험 실패·SBOM 없음이면 멈추고 사람 승인 뒤에만 '출시' 저장소로 승격되게 한다."
+  },
+  {
+   "title": "GitOps 와 단계 배포",
+   "time": "2주",
+   "goal": "Git 커밋으로 배포·되돌리기를 하고, 카나리를 지표로 넓히거나 멈춘다.",
+   "resources": [
+    "wiki-kubernetes",
+    "opengitops",
+    "argocd-docs",
+    "argo-rollouts"
+   ],
+   "task": "로컬 쿠버네티스에 Argo CD 를 깔고 앱 이미지 태그를 Git 으로 바꿔 배포한다. Argo Rollouts 로 20% → 50% → 100% 카나리를 만들고, 일부러 오류를 내는 판으로 자동 중단을 확인한다."
+  },
+  {
+   "title": "지표와 차량 표준 (계속)",
+   "time": "계속",
+   "goal": "DORA 지표를 자동으로 내고, 차량 릴리스에 걸리는 표준(SPL.2·R156·Uptane)의 요구를 릴리스 절차 문서로 옮길 수 있다.",
+   "resources": [
+    "dora-guide",
+    "accelerate",
+    "aspice-pam",
+    "r156-ul",
+    "uptane-std",
+    "android-ab"
+   ],
+   "task": "앞 단계의 배포 기록으로 네 지표를 내는 스크립트를 붙이고, SPL.2 결과 다섯 가지에 맞춘 한 쪽짜리 '릴리스 기준·승인 체크리스트'를 써 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고·공시에 연봉이 없다 — 공공데이터 집계 평균 **약 6,032만원**(회사 전체, 경력직 포함). 이 자리는 경력 5년 이상이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 원티드 기업 정보(2026-11 확인)",
+    "note": "원티드 기업 정보의 평균연봉 표기다. 같은 화면의 국민연금 가입 사원 수는 804명이고, 기준월은 적혀 있지 않다 [4]"
+   }
+  ],
+  "how": "포티투닷은 비상장 회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다 {추론}. 공고에는 연봉이 없고 전형 끝에 **처우 협의** 단계가 있다 [1]. 위 평균은 신입·경력·직군이 섞인 회사 전체 값이라, 경력 5년 이상인 이 자리가 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "유연근무제",
+    "detail": "재량·선택 근무"
+   },
+   {
+    "name": "리커버리 휴가",
+    "detail": "법정 연차와 별도로 매월 1회 유급"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당 하루 세 끼 무료, 사내 카페"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연간 최대 300만원, 명절 복지 포인트 추가"
+   },
+   {
+    "name": "건강",
+    "detail": "프리미엄 종합검진 전액, 단체상해보험(본인·배우자·자녀·본인 부모), 상주 간호사, 심리·재무·법률 상담(EAP)"
+   },
+   {
+    "name": "운동",
+    "detail": "사내 피트니스, 1:1 PT·GX"
+   },
+   {
+    "name": "전기차 구매 지원",
+    "detail": "차량 가격의 최대 15%(한도 1,000만원), 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 사내 대출",
+    "detail": "근속에 따라 1,000만원~5,000만원, 금리 0%"
+   },
+   {
+    "name": "교육비",
+    "detail": "국내외 교육·세미나·컨퍼런스 참가비 지원(금액 표기 없음)"
+   },
+   {
+    "name": "직장 어린이집",
+    "detail": "임직원 자녀 대상"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "장기근속 포상, 휴양시설(매월 추첨), 경조사 지원, 인재 추천 보상"
+   }
+  ],
+  "note": "포티투닷 채용 사이트의 '업무 몰입 프로그램' 페이지다 [2]. 한국 본사 기준이며 게시일은 적혀 있지 않다. 이 공고 자체에는 복리후생 칸이 없다 [1]."
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥 (소프트웨어 드림센터 A동)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "판교 제2테크노밸리 {추론}",
+  "note": "주소는 포티투닷 홈페이지 하단 회사 정보다 [3]. 공고의 근무지 표기는 'Pangyo (Software Dream Center), South Korea (Remote)'다 [1]."
+ }
+}

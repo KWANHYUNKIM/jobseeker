@@ -1,12 +1,14 @@
 {
  "updated_at": "2026-11-25",
  "jobs": {
+  "ats-ashby:42dot:7bc7935d-2925-4a60-bd6e-f2ccfcfc7873": "42dot-ad-test-engineer",
   "ats-ashby:42dot:fa24b02d-a231-4e0c-affa-319d47c19b58": "42dot-ai-infrastructure-engineer",
   "wanted-392726": "42dot-ai-infrastructure-engineer",
   "ats-ashby:42dot:63196d96-2810-4348-8aa5-077d8c0ee710": "42dot-firmware-secure-boot-ota",
   "ats-ashby:42dot:a83b4909-4d4f-41c5-b212-a1db321965a5": "42dot-llm-optimization-engineer",
   "ats-ashby:42dot:810a8fe2-0790-42cf-b973-df16b553fa08": "42dot-mts-foundation-models",
   "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
+  "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c": "42dot-senior-release-engineer",
   "ats-ashby:42dot:efbd4971-b841-410f-aa6b-e333c64cfe23": "42dot-sw-test-engineer-diagnostics",
   "ats-ashby:42dot:c184cf35-51e2-4e80-87bc-579089f07472": "42dot-tts-deep-learning-engineer",
   "ats-ashby:42dot:beb84dde-9182-4441-a25b-c03644640854": "42dot-vehicle-system-integration",
@@ -347,6 +349,16 @@
  },
  "roles": [
   {
+   "id": "42dot-ad-test-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "자율주행 테스트 엔지니어",
+   "jobs": [
+    "ats-ashby:42dot:7bc7935d-2925-4a60-bd6e-f2ccfcfc7873"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 27
+  },
+  {
    "id": "42dot-ai-infrastructure-engineer",
    "company": "포티투닷(42dot)",
    "role": "AI 인프라 엔지니어",
@@ -396,6 +408,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 19
+  },
+  {
+   "id": "42dot-senior-release-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "Senior Release Engineer",
+   "jobs": [
+    "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
   },
   {
    "id": "42dot-sw-test-engineer-diagnostics",
