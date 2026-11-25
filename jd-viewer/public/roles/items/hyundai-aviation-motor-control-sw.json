@@ -1,0 +1,851 @@
+{
+ "id": "hyundai-aviation-motor-control-sw",
+ "company": "현대자동차",
+ "role": "항공추진시스템용 모터 제어 SW 개발",
+ "team": "항공용 전기추진시스템 개발 조직 (항공파워트레인사업부 계열로 보인다 {추론})",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2392",
+  "wanted-398569"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "전기로 나는 항공기(AAM)의 프로펠러를 돌리는 **모터와 인버터의 제어 소프트웨어**를 만듭니다 — 센서 없이 회전 위치를 알아내고, 떨림을 줄이고, 고장을 먼저 알아채는 코드입니다.[1]",
+  "env": "현대차는 2026년 3월 AAM본부를 **항공파워트레인사업부**로 바꾸고[4] 5월에 KAI와 '항공용 전동화 파워트레인' 기반 기체 공동 개발 협약을 맺었습니다.[3] 결과물은 항공 SW 인증(DO-178C)을 받을 수 있게 만들어야 합니다.[1]",
+  "oneline": "전기차 인버터 SW 경력자가 **항공 인증**이라는 더 높은 문턱으로 옮겨 가는 자리. MATLAB/Simulink 모델과 C/C++ 코드, 그리고 산출물 문서가 일의 절반씩이다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "항공용 모터 컨셉에 대응 가능한 모터 제어 SW를 개발하고, 전기추진시스템(모터, 인버터)의 다양한 고장 모드 분석 및 시뮬레이션 및 전기추진시스템 고장을 판단하기 위한 알고리즘 개발/ 인버터 SW 검증 업무를 수행합니다.",
+   "short": "아직 정해지는 중인 항공 모터에 맞춰 제어 SW를 짜고, 고장을 찾아내는 로직과 검증까지 한 팀이 맡는다.",
+   "why": "이 조직은 항공용 전기추진시스템의 핵심 부품(모터·인버터)을 전기·기계·재료·시험 평가까지 직접 개발합니다.[1] 현대차·기아의 항공파워트레인사업부가 전기차 전동화 기술을 항공 파워트레인으로 넓히고, 기체 설계는 Supernal·KAI가 맡는 분업입니다.[3][28] 6월에는 KAI와 합작법인을 세워 현대차가 파워트레인을 맡는다는 보도도 있었습니다.[5]",
+   "actually": {
+    "intro": "업무가 세 덩어리로 나뉩니다(아래 ■ 세 줄).[1]",
+    "items": [
+     "**제어** — 인버터(배터리 직류를 모터용 3상 교류로 바꾸는 장치)가 모터에 얼마의 전류를 흘릴지 매 순간 계산하는 코드.",
+     "**고장** — 모터·인버터가 어떻게 망가질 수 있는지 목록을 만들고, 시뮬레이션으로 재현하고, 실제로 감지하는 코드.",
+     "**검증·인증** — HILS/SILS 시험, 코드 리뷰, DO-178C 산출물."
+    ]
+   },
+   "how_far": "'항공용 모터 컨셉에 대응 가능한'은 모터 사양이 아직 하나로 굳지 않았다는 뜻으로 읽힙니다 {추론}. 그래서 모터 파라미터(저항·인덕턴스·자속)가 바뀌어도 다시 튜닝해 쓸 수 있는 **구조의 제어 SW**를 만드는 것이 요점입니다 {추론}.",
+   "refs": [1, 3, 5, 28],
+   "study": ["hyundai-2stage", "kim-motor"]
+  },
+  {
+   "section": "task",
+   "quote": "■ 모터 제어 SW 개발",
+   "short": "인버터가 모터에 흘릴 전류를 정하는 제어 코드 — 아래 다섯 줄이 그 구체적인 내용이다.",
+   "why": "현대차는 전기차에서 이미 인버터·모터 제어를 자체 개발했습니다. 스위치 12개짜리 듀얼 인버터와 두 모드를 오가는 자체 제어 알고리즘으로 모터 전압을 최대 70% 올린 '2-스테이지 모터시스템'이 그 예입니다.[7] 항공에서도 같은 역량을 쓰겠다는 것이 회사 설명입니다.[3]",
+   "refs": [3, 7],
+   "study": ["hyundai-2stage"]
+  },
+  {
+   "section": "task",
+   "quote": "센서리스 위치/속도 추정 알고리즘 개발 및 고속·저속 영역 안정화",
+   "short": "회전 위치 센서 없이 전류·전압만 보고 회전자 각도를 알아내고, 아주 느릴 때와 빠를 때 모두 안 놓치게 한다.",
+   "why": "위치 센서와 배선은 무게이자 고장 지점입니다 {추론}. NASA의 전기 비행기 X-57도 순항 모터 인버터(39kW)와 이착륙 보조 모터 인버터를 모두 **센서리스 벡터 제어(FOC)**로 돌렸습니다.[9]",
+   "actually": {
+    "intro": "보통 속도 구간마다 다른 방법을 씁니다 — 회사의 방식은 공개되지 않았습니다.",
+    "items": [
+     "**중·고속: 관측기(observer)** — 모터가 돌면 생기는 역기전력(back-EMF)으로 각도를 계산한다. 슬라이딩 모드·자속·확장 EMF 관측기가 대표적이다.[10]",
+     "**정지·저속: 고주파 주입(HFI)** — 역기전력이 속도에 비례해 0 근처에서 사라지므로, 작은 고주파 전압을 넣고 돌아오는 전류로 각도를 읽는다. 회전자의 돌극성(방향에 따라 인덕턴스가 다른 성질)이 있어야 된다.[12]",
+     "**넘겨주기** — HFI는 최고 속도 한계가 있어 그 전에 고속 관측기로 넘긴다. TI InstaSPIN은 이 전환을 모듈로 따로 둔다.[11]",
+     "**처음 위치·극성** — 정지 상태에서 N극·S극을 구분하지 못하면 반대로 돌 수 있어 시작할 때 극성을 판별한다.[11][12]",
+     "**보통의 시동** — 관측기만 쓸 때는 개루프로 먼저 돌려 속도를 올린 뒤 관측기로 넘긴다. 저항값이 틀리면 추정이 어긋나 인버터 쪽 저항까지 더해 넣는다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "저속에서 관측기가 힘든 이유(가상 숫자)",
+     "body": "역기전력은 속도에 비례합니다. 6,000rpm에서 300V가 나오는 모터라면 30rpm에서는 1.5V뿐이라, 인버터 데드타임(위아래 스위치를 동시에 켜지 않으려고 둔 빈 시간)이 만드는 몇 V의 전압 오차에 묻힙니다 {추론}. 그래서 저속은 HFI로 따로 푼다.[12]"
+    }
+   ],
+   "how_far": "관측기 하나를 Simulink로 돌려 보는 수준을 넘어, **전 속도 구간에서 끊김 없이 넘겨주고 실측 데이터로 튜닝한 경험**을 기대하는 줄로 보입니다 {추론}. 최소선은 FOC 구조(Clarke·Park 변환, d/q 전류 제어)를 설명하고 관측기 하나를 직접 구현해 본 것입니다 {추론}.",
+   "refs": [9, 10, 11, 12],
+   "study": ["kim-motor", "mcb-sensorless", "ti-hfi", "infineon-hfi"]
+  },
+  {
+   "section": "task",
+   "quote": "소음 진동 저감을 위한 토크 리플 저감 기법 개발",
+   "short": "모터 힘(토크)이 미세하게 출렁이는 것을 전류를 다듬어 줄여 소음·진동을 낮춘다.",
+   "why": "토크 리플(평균 토크 위의 출렁임)은 프로펠러와 기체 구조로 진동을 전합니다 {추론}. X-57에서는 모터가 갑자기 서거나 불균형 하중이 생기는 것만으로도 날개·트러스 연결부 구조 한계를 넘을 수 있다고 분석했습니다.[9]",
+   "actually": {
+    "items": [
+     "**원인 나누기** — 슬롯 때문에 생기는 코깅 토크(전류와 무관), 자속·역기전력 파형의 고조파, 인버터 데드타임 같은 비선형.[13]",
+     "**고조파 전류 주입** — 리플과 반대 모양의 토크가 나오게 전류 지령에 특정 차수(예: 6차)의 고조파를 얹는다.[13]",
+     "**고조파 좌표계 제어기** — 고조파 주파수로 도는 좌표계에 PI 제어기를 두어 그 차수만 따로 지운다.[13]",
+     "**대가** — 고조파 전류는 철손을 늘릴 수 있어 리플과 손실 사이에서 고른다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "토크 리플을 퍼센트로 재기(직접 돌린 출력)",
+     "body": "평균 100Nm에 6차 4Nm, 12차 1Nm 고조파가 얹힌 가상 토크. 6차를 지우면 리플이 8.8% → 2.0%로 줄어듭니다.",
+     "lang": "python",
+     "code": "import numpy as np\nth = np.linspace(0, 2*np.pi, 3600, endpoint=False)\nT = 100 + 4*np.sin(6*th) + 1*np.sin(12*th)\nprint(\"ripple %.1f%%\" % ((T.max()-T.min())/T.mean()*100))   # ripple 8.8%\nT2 = 100 + 1*np.sin(12*th)   # 6차를 전류 주입으로 지웠다고 가정\nprint(\"after  %.1f%%\" % ((T2.max()-T2.min())/T2.mean()*100)) # after  2.0%"
+    }
+   ],
+   "how_far": "토크는 직접 못 재는 경우가 많아 다이나모의 토크 센서나 전류로 추정합니다 {추론}. 개발자는 어느 차수가 문제인지 데이터로 찾고, 그 차수를 지우는 보상을 넣어 효과를 숫자로 보여 주는 데까지입니다 {추론}.",
+   "refs": [9, 13],
+   "study": ["krishnan", "kim-motor"]
+  },
+  {
+   "section": "task",
+   "quote": "모터 특성 기반 시뮬레이션 모델링 및 실측 데이터 분석을 통한 제어 성능 개선",
+   "short": "모터를 수식 모델로 만들어 먼저 돌려 보고, 실제로 잰 값과 비교해 모델과 제어를 같이 고친다.",
+   "why": "현대차 공고가 MATLAB·Simulink를 자격요건에 적었습니다.[1] 데스크톱에서 쓴 플랜트(제어 대상) 모델을 HIL 시험에도 그대로 다시 쓰는 것이 보통의 흐름입니다.[16]",
+   "actually": {
+    "items": [
+     "**파라미터 찾기** — 저항·d/q 인덕턴스·자속을 측정해 모델에 넣는다. 인덕턴스는 전류가 커지면 포화로 줄어 표(look-up table)로 둔다 {추론}.",
+     "**모델 단계** — 평균값 인버터 모델은 빠르고, 스위칭까지 넣은 모델은 전류 리플을 보여 주지만 무겁다.[16]",
+     "**실측 대조** — 다이나모에서 같은 지령을 넣고 전류·토크·효율을 겹쳐 그려 차이를 찾는다 {추론}.",
+     "**센서 이득 보정** — X-57은 다이나모 인수 시험에서 전류·전압 센서 이득부터 특성화했다.[9]"
+    ]
+   },
+   "refs": [1, 9, 16],
+   "study": ["mcb-sensorless", "mw-hil"]
+  },
+  {
+   "section": "task",
+   "quote": "다이나모 환경에서의 모터/인버터 성능 평가 및 제어 SW 성능 개선",
+   "short": "다른 모터(다이나모)로 부하를 걸어 실제 힘·효율·열을 재고, 그 결과로 제어 SW를 고친다.",
+   "why": "다이나모(dynamometer, 모터에 부하를 거는 시험대)는 비행 전에 전 출력 범위를 안전하게 돌려 볼 수 있는 곳입니다. X-57도 인버터 인수 시험에서 모든 인터페이스와 전 출력 범위를 다이나모에서 확인했습니다.[9]",
+   "actually": {
+    "items": [
+     "**전 범위 확인** — 속도 × 토크 지도 위에서 효율·온도를 잰다. X-57은 과속·부분 운전 범위·인버터 1개/2개 고출력·고온 정상 상태 시험을 나눴다.[9]",
+     "**내구** — 30분 비행 임무 프로파일을 100회(50시간) 다이나모에서 반복하고 25회마다 절연 시험을 하는 안이 제안됐다.[9]",
+     "**튜닝의 위험** — X-57은 제어 법칙을 잘못 튜닝해 세 상의 스위치가 모두 탄 사례를 보고했다.[9]",
+     "**건강 확인** — 회전자 자석 상태를 역기전력 파형의 크기·모양으로 점검한다.[9]"
+    ]
+   },
+   "how_far": "시험 설비는 시험 담당과 같이 쓰겠지만 **시험 조건을 정하고, 로그를 읽고, 이상을 제어 SW 문제와 하드웨어 문제로 가르는 것**은 이 자리 몫으로 보입니다 {추론}.",
+   "refs": [9],
+   "study": ["x57-failure"]
+  },
+  {
+   "section": "task",
+   "quote": "시동/운전/정지/비상 정지 등 운전 모드 및 시퀀스 제어 로직 개발",
+   "short": "켜기 → 준비 → 운전 → 정지, 그리고 언제든 비상 정지로 가는 순서를 상태 기계로 짠다.",
+   "why": "인버터는 켜는 순서가 틀리면 바로 부품이 탑니다. 직류 링크 커패시터를 천천히 충전하고, 끌 때는 방전 저항으로 안전 전압까지 빼야 합니다.[9] 고장 판단이 나면 어느 상태에서든 안전한 쪽으로 가야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**상태와 전이** — 허용된 전이만 받고, 나머지 요청은 무시한다.",
+     "**비상 정지** — 고장 신호는 다른 요청보다 우선한다. 풀려면 명시적인 리셋.",
+     "**이중화** — X-57 순항 모터는 권선이 두 벌이고 인버터도 모터당 2대라, 한쪽이 서도 다른 쪽으로 돌린다.[9] Supernal S-A2도 파워트레인을 이중으로 갖춘다고 밝혔다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "운전 모드 상태 기계(직접 돌린 출력)",
+     "body": "OFF에서 바로 RUN은 무시되고, 고장이 나면 어디서든 ESTOP, ESTOP은 RESET으로만 풀립니다.",
+     "lang": "python",
+     "code": "ALLOWED = {(\"OFF\",\"PRECHARGE\"),(\"PRECHARGE\",\"READY\"),(\"READY\",\"RUN\"),\n           (\"RUN\",\"STOP\"),(\"STOP\",\"READY\"),(\"READY\",\"OFF\")}\ndef step(state, req, fault=False):\n    if fault: return \"ESTOP\"\n    if state == \"ESTOP\": return \"OFF\" if req == \"RESET\" else \"ESTOP\"\n    return req if (state, req) in ALLOWED else state\n# OFF       --RUN              -> OFF\n# OFF       --PRECHARGE        -> PRECHARGE\n# PRECHARGE --READY            -> READY\n# READY     --RUN              -> RUN\n# RUN       --OFF              -> RUN\n# RUN       --RUN      (fault) -> ESTOP\n# ESTOP     --READY            -> ESTOP\n# ESTOP     --RESET            -> OFF"
+    }
+   ],
+   "how_far": "어떤 상태와 전이가 필요한지는 시스템 안전 분석에서 정해지고, 개발자는 그것을 **요구사항 번호와 1:1로 이어지는 코드와 시험**으로 옮깁니다 — DO-178C가 요구사항 추적을 요구하기 때문입니다.[17] {추론}",
+   "refs": [8, 9, 17]
+  },
+  {
+   "section": "task",
+   "quote": "■ 고장진단 모드 분석 및 판단 알고리즘 개발",
+   "short": "무엇이 어떻게 고장 날 수 있는지 정리하고, 그것을 실시간으로 알아채는 코드를 만드는 덩어리.",
+   "why": "전기 추진은 엔진 기준(CS-E)이 다루지 못해 EASA가 별도 특별 조건(SC E-19)을 만들었고, 전기 추진 VTOL은 VTOL 조건과 함께 이것도 받아야 합니다.[19] 고장 분석은 인증의 바탕입니다 {추론}.",
+   "refs": [19],
+   "study": ["easa-sce19"]
+  },
+  {
+   "section": "task",
+   "quote": "모터, 인버터에서 발생가능한 고장모드 분석",
+   "short": "스위치 단락·개방, 커패시터 파손, 센서 오류, 절연 파괴 같은 고장 목록과 그 결과를 정리한다.",
+   "why": "같은 일을 한 NASA X-57의 실제 고장 목록이 좋은 본보기입니다.[9]",
+   "actually": {
+    "intro": "X-57에서 실제로 난 고장입니다.[9]",
+    "items": [
+     "**SiC MOSFET 단락** — 과열·과전류·과전압, 게이트 구동 품질, 진동이 원인. 직류 버스가 단락돼 터지며 회로 기판까지 망가진다.",
+     "**SW가 만든 고장** — 초기 SW가 위아래 스위치를 동시에 켜는 명령(shoot-through)을 내 스위치와 기판이 탔다.",
+     "**직류 링크 커패시터** — 조립 때 절연을 잘못해 커패시터 여러 개가 연쇄로 터졌다.",
+     "**모터 쪽** — 권선 절연(포팅) 불량, 빠른 스위칭이 베어링에 흘린 전류로 생긴 패임(EDM), 회전자가 고정자에서 이탈하는 경우까지."
+    ]
+   },
+   "how_far": "FMEA(고장 모드와 영향 분석) 표를 쓰는 것은 시스템·하드웨어 담당과 같이 하고, 이 자리는 **SW가 볼 수 있는 신호로 각 고장을 어떻게 알아챌지**를 채웁니다 {추론}.",
+   "refs": [9],
+   "study": ["x57-failure"]
+  },
+  {
+   "section": "task",
+   "quote": "고장상황 시뮬레이션을 위한 모터 인버터 시뮬레이션 모델 개발",
+   "short": "실물로 일부러 망가뜨릴 수 없는 고장을 모델 안에서 재현해, 진단 로직이 잡는지 먼저 본다.",
+   "why": "스위치 단락은 실물에서 재현하면 장비가 터집니다.[9] 그래서 고장을 넣을 수 있는 모델(스위치를 강제로 열기·닫기, 센서 값 고정·끊기)이 필요합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**스위치 개방** — 한 스위치를 꺼 두면 그 상 전류의 반쪽이 사라진다. 다이오드로 남는 전류까지 모델링한 연구가 있다.[14]",
+     "**센서 고장** — 전류 센서 이득·오프셋 틀어짐, 위치 추정 오차.",
+     "**같은 모델 두 번 쓰기** — 고장 모델을 HIL 장비에 올려 실제 제어기 보드에 물린다.[16]"
+    ]
+   },
+   "refs": [9, 14, 16],
+   "study": ["york-thesis", "mw-hil"]
+  },
+  {
+   "section": "task",
+   "quote": "시스템 상태 모니터링 SW 개발",
+   "short": "온도·전압·전류·절연 상태를 계속 재서 기록하고, 정해진 한계를 넘으면 알리는 코드.",
+   "why": "X-57은 인버터 고장 예방책으로 스위치 온도를 접합부에 최대한 가깝게 재고, 시간에 따른 온도 기록으로 열화 징후를 찾으라고 권했습니다. 모터 온도는 기체 CAN 버스에 올렸습니다.[9]",
+   "actually": {
+    "items": [
+     "**한계 감시** — 과전류·과전압·과온 문턱과 지속 시간.",
+     "**추세 감시** — 같은 운전 조건의 온도가 점점 오르면 열화로 본다.[9]",
+     "**기록과 통신** — 상태를 상위 제어기에 보내고 고장 코드를 남긴다.[9]"
+    ]
+   },
+   "refs": [9],
+   "study": ["x57-failure"]
+  },
+  {
+   "section": "task",
+   "quote": "고장진단 알고리즘 개발",
+   "short": "상 전류 모양을 보고 어느 스위치가 고장 났는지 짚어 내는 판정 로직을 만든다.",
+   "why": "전류 기반 진단은 이미 제어용으로 달린 전류 센서만 써서 센서를 더 달 필요가 없습니다. 다만 판단에 전류 한 주기의 4분의 1 이상이 걸린다는 한계가 정리돼 있습니다.[15]",
+   "actually": {
+    "items": [
+     "**정규화 평균 전류** — 상 전류를 전류 크기로 나눠 한 주기 평균을 내면 정상은 0, 개방된 상은 한쪽으로 치우친다(아래 예).[14]",
+     "**잔차(residual)** — 모델이 예상한 전압·전류와 실제의 차이가 커지면 고장으로 본다.[15]",
+     "**데이터 기반** — 3상 전류를 패턴으로 바꿔 분류기로 가르는 방법도 연구된다.[14]",
+     "**오검출과의 싸움** — 급가속 같은 정상 과도 상태를 고장으로 오판하지 않게 문턱과 지속 시간을 고른다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "a상 위 스위치가 열렸을 때(직접 돌린 출력, 단순화 모델)",
+     "body": "정상은 세 상 모두 0, a상 위 스위치 개방이면 a상이 -0.32로 치우칩니다. 나머지 상의 전류 분배는 단순화한 가정입니다 {추론}.",
+     "lang": "python",
+     "code": "import numpy as np\nt = np.linspace(0, 0.02, 2000, endpoint=False); w = 2*np.pi*50\nia = np.sin(w*t); ib = np.sin(w*t-2*np.pi/3); ic = np.sin(w*t+2*np.pi/3)\ndef diag(ia, ib, ic):\n    al = 2/3*(ia-0.5*ib-0.5*ic); be = 1/np.sqrt(3)*(ib-ic)\n    mag = np.sqrt(al**2+be**2)\n    return [round(float(np.mean(x/mag)), 2) for x in (ia, ib, ic)]\nprint(diag(ia, ib, ic))                # [0.0, -0.0, 0.0]\nia_f = np.minimum(ia, 0)               # 양(+)반파가 사라짐\nib_f = ib-(ia_f-ia)/2; ic_f = ic-(ia_f-ia)/2\nprint(diag(ia_f, ib_f, ic_f))          # [-0.32, 0.16, 0.16]"
+    }
+   ],
+   "how_far": "알고리즘을 고르는 것보다 **얼마나 빨리, 얼마나 틀리지 않게 잡는지를 시험으로 증명**하는 것이 항공에서 더 무겁습니다 {추론}.",
+   "refs": [14, 15],
+   "study": ["york-thesis"]
+  },
+  {
+   "section": "task",
+   "quote": "■ SW 검증, 통합 시험 및 품질 관리",
+   "short": "만든 코드가 요구사항대로 도는지 시험으로 증명하고, 그 증거를 인증용 문서로 남기는 덩어리.",
+   "why": "항공 SW는 '돌아간다'가 아니라 '요구사항마다 시험했고 그 기록이 있다'로 인증받습니다. FAA는 DO-178C를 항공 SW 인증의 인정 수단으로 정했습니다.[18]",
+   "refs": [18],
+   "study": ["faa-ac20115d"]
+  },
+  {
+   "section": "task",
+   "quote": "HILS(Hardware-in-the-Loop) 및 SILS 환경 구축 및 시험 시나리오 작성",
+   "short": "실제 제어기 보드를 가짜 모터·인버터 모델에 물려 시험하는 장비(HILS)와 코드만 돌리는 SILS를 꾸린다.",
+   "why": "HIL은 실제 하드웨어 없이 임베디드 코드를 실시간 시뮬레이션으로 시험하는 방법입니다. 위험한 고장 상황도 안전하게 반복할 수 있습니다.[16]",
+   "actually": {
+    "items": [
+     "**SILS** — 제어 코드를 PC에서 플랜트 모델과 함께 돌린다(실시간 아님).",
+     "**HILS** — 플랜트 모델을 실시간 장비에, 제어 코드는 실제 제어기 보드에. 실시간이라 고정 스텝 해석기를 쓴다.[16]",
+     "**속도 문제** — 스위칭 10kHz 인버터의 비선형까지 보려면 HIL이 1MHz로 돌아야 해 FPGA를 쓴다.[16]",
+     "**시나리오** — 시동·정지·비상 정지, 고장 주입, 경계값(최고 속도·최저 전압)을 요구사항별로 적는다 {추론}."
+    ]
+   },
+   "refs": [16],
+   "study": ["mw-hil"]
+  },
+  {
+   "section": "task",
+   "quote": "단위/통합 시험 및 코드 리뷰 수행",
+   "short": "함수 단위부터 전체 결합까지 시험하고, 다른 사람이 코드를 읽어 확인한다 — 항공 등급이 높을수록 엄격하다.",
+   "why": "DO-178C는 고장 영향에 따라 등급(DAL A~E)을 매기고, 지켜야 할 목표가 A 71개·B 69개·C 62개·D 26개로 늘어납니다. 가장 높은 A는 MC/DC(조건 하나하나가 결과를 바꾸는지 보는) 커버리지까지 요구합니다.[17]",
+   "actually": {
+    "items": [
+     "**구조 커버리지** — 문장·분기·MC/DC를 등급에 맞게 채운다.[17]",
+     "**독립성** — 높은 등급의 일부 검증은 만든 사람이 아닌 사람이 해야 한다.[17]",
+     "**리뷰 기록** — 체크리스트·지적·조치까지 남긴다 {추론}."
+    ]
+   },
+   "how_far": "추진 모터 제어 SW가 몇 등급일지는 공개되지 않았습니다. 추진력을 잃는 것이 큰 사고로 이어질 수 있어 높은 등급이 붙을 가능성이 큽니다 {추론}.",
+   "refs": [17],
+   "study": ["do178c-wiki"]
+  },
+  {
+   "section": "task",
+   "quote": "항공 SW 인증 기준(DO-178C 등)에 따른 산출물 관리 및 인증 대응 지원",
+   "short": "계획서·요구사항·설계·시험 기록 같은 인증 서류를 만들고 고치며, 인증 기관 질문에 답하는 일을 돕는다.",
+   "why": "현대차와 KAI 협약의 범위에 '인증 절차'가 들어가 있고[3], KAI는 시험 평가·인증 대응 역량을 쌓아 왔다고 소개됩니다.[28] 두 회사는 실무 협의체와 운영위원회를 두고 글로벌 항공 인증에 함께 대응하기로 했습니다.[27]",
+   "actually": {
+    "intro": "DO-178C의 대표 산출물입니다.[17]",
+    "items": [
+     "**PSAC** — 인증 기관과 맺는 최상위 계획(등급·방법·도구).",
+     "**SDP·SVP** — 개발 계획과 검증 계획.",
+     "**SCMP·SQAP** — 형상 관리(버전)와 품질 보증 계획.",
+     "**SAS** — 다 마친 뒤 내는 완료 요약."
+    ]
+   },
+   "how_far": "'지원'이라 인증 담당이 따로 있고, 개발자는 **자기 코드의 요구사항·추적표·시험 결과를 서류 기준에 맞게 내는** 쪽입니다 {추론}. 자동 코드 생성(Simulink → C)을 쓰면 그 도구의 자격 문제도 따라옵니다 {추론}.",
+   "refs": [3, 17, 27, 28],
+   "study": ["do178c-wiki", "faa-ac20115d"]
+  },
+  {
+   "section": "qualification",
+   "quote": "전자/전기공학 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "회로·전력전자·제어공학을 배운 사람이어야 인버터와 모터를 같은 말로 이야기할 수 있어서.",
+   "why": "업무가 SW라도 내용은 인버터·모터의 전기적 동작입니다.[1] 게이트 구동, 데드타임, 전류 센서 정밀도 같은 하드웨어 사정을 모르면 SW가 장비를 태울 수 있습니다.[9]",
+   "refs": [1, 9]
+  },
+  {
+   "section": "qualification",
+   "quote": "3년 이상의 인버터 SW 개발 경력을 보유하신 분",
+   "short": "인버터를 실제로 켜고 돌려 본 사람 — 시뮬레이션만 해 본 경험과는 다르다.",
+   "why": "인버터 SW는 잘못 튜닝하면 스위치가 터지는 분야입니다. X-57도 제어 법칙 튜닝 잘못과 초기 SW의 동시 켜짐 명령으로 하드웨어를 잃었습니다.[9]",
+   "how_far": "전기차·산업용 드라이브·가전 인버터 어디든 경력으로 볼 수 있다고 공고가 분야를 좁히지 않았습니다.[1] 면접에서는 실제로 태워 먹은 경험과 그 뒤에 넣은 보호 로직을 물을 가능성이 큽니다 {추론}.",
+   "refs": [1, 9]
+  },
+  {
+   "section": "qualification",
+   "quote": "비즈니스 영어 커뮤니케이션 및 영어 문서 작성 역량을 보유하신 분",
+   "short": "인증 서류와 해외 협력이 영어라서 — 기술 문서를 영어로 쓰고 회의할 수 있어야 한다.",
+   "why": "기체 설계를 맡은 Supernal은 미국 법인이고[3], DO-178C·EASA·FAA 기준과 인증 대응 문서는 영어입니다.[17][19]",
+   "how_far": "유창한 회화보다 **요구사항·시험 절차·보고서를 모호하지 않은 영어로 쓰는 능력**이 더 쓰일 것으로 보입니다 {추론}.",
+   "refs": [3, 17, 19]
+  },
+  {
+   "section": "qualification",
+   "quote": "인버터 제어 알고리즘/로직 개발 업무 경력을 보유하신 분",
+   "short": "전류 제어기·PWM·보호 로직처럼 인버터 안에서 도는 알고리즘을 직접 설계해 본 경력.",
+   "why": "바로 위 줄이 'SW 개발 경력'이라면 이 줄은 제어 알고리즘 자체입니다.[1] 현대차는 전기차 인버터에서 두 스위치 묶음을 오가는 모드 전환 알고리즘을 자체 개발했습니다.[7]",
+   "level": {
+    "basic": "FOC 구조 · Clarke/Park 변환 · d/q 전류 PI 제어 · 공간벡터 PWM",
+    "work": "데드타임 보상 · 약계자(고속에서 전압 한계 넘기) · 과전류·단락 보호 · 센서리스 관측기",
+    "team": "항공 모터 컨셉에 맞춘 전 속도 센서리스 · 토크 리플 보상 · 고장 진단과 이중화 운전"
+   },
+   "refs": [1, 7],
+   "study": ["kim-motor", "krishnan"]
+  },
+  {
+   "section": "qualification",
+   "quote": "MATLAB, Simulink, C, C++ 활용 가능하신 분",
+   "short": "Simulink로 제어기를 설계·시뮬레이션하고, 마이크로컨트롤러에서 도는 C/C++ 코드로 옮긴다.",
+   "why": "공고 기술 태그도 C++·MATLAB입니다.[1] 모터 제어 개발은 Simulink 모델 → 코드 생성 또는 손 코딩 → HIL 시험으로 이어지는 흐름이 흔합니다.[16]",
+   "level": {
+    "basic": "Simulink 블록으로 PI 제어기·모터 모델 짜기 · C 고정소수점/부동소수점 차이",
+    "work": "인터럽트 주기 안에 끝나는 제어 루프 · 코드 생성 설정 · 단위 시험",
+    "team": "인증을 염두에 둔 코딩 규칙과 추적 가능한 코드 {추론}"
+   },
+   "refs": [1, 16],
+   "study": ["mcb-sensorless", "mw-hil"]
+  },
+  {
+   "section": "preference",
+   "quote": "전력전자 분야에서 석사 이상의 학위를 보유하신 분",
+   "short": "인버터·모터 제어를 연구실에서 깊게 다뤄 본 사람 — 관측기·리플 보상이 보통 석사 주제다.",
+   "why": "센서리스·토크 리플·고장 진단은 지금도 논문이 계속 나오는 연구 주제입니다.[13][14]",
+   "refs": [13, 14]
+  },
+  {
+   "section": "preference",
+   "quote": "자동차 또는 항공 분야 SW 인증 경험(ISO 26262, ASPICE, DO-178C 등)을 보유하신 분",
+   "short": "안전 기준에 맞춰 개발·문서화해 본 경험 — 자동차 기준 경험도 항공으로 이어진다.",
+   "why": "ISO 26262는 자동차 기능 안전 기준으로 위험도에 따라 ASIL A~D를 매깁니다.[21] ASPICE는 개발 과정을 평가하는 모델로 지금 판은 4.0(2023)입니다.[20] 둘 다 요구사항 추적·검증 기록을 요구한다는 점에서 DO-178C와 닮았습니다 {추론}.",
+   "how_far": "전기차 인버터를 ISO 26262·ASPICE로 개발해 봤다면 그 경험을 'DO-178C의 어느 산출물에 해당하나'로 바꿔 설명할 수 있으면 됩니다 {추론}.",
+   "refs": [20, 21],
+   "study": ["aspice-pam", "do178c-wiki"]
+  },
+  {
+   "section": "preference",
+   "quote": "추진시스템 고장진단 SW 개발 경험을 보유하신 분",
+   "short": "모터·인버터 고장을 실제로 잡아내는 코드를 만들어 본 경험 — 업무 ■ 두 번째 덩어리 그대로다.",
+   "why": "고장 모드 분석·시뮬레이션·진단 알고리즘이 업무의 한 덩어리입니다.[1] 항공은 추진을 이중으로 두는 경우가 많아, 고장을 빨리 짚어야 남은 쪽으로 넘길 수 있습니다.[8][9]",
+   "refs": [1, 8, 9],
+   "study": ["york-thesis", "x57-failure"]
+  }
+ ],
+ "fit": {
+  "good": [
+   "전기차·산업용 인버터를 직접 튜닝해 본 사람",
+   "'왜 터졌나'를 끝까지 파는 사람 — X-57의 교훈이 그것이다[9]",
+   "요구사항·시험 기록을 꼼꼼히 남기는 것이 괴롭지 않은 사람",
+   "새 사업(항공 전동화)을 처음부터 만들고 싶은 사람[3]"
+  ],
+  "hard": [
+   "사업 일정이 바뀌어 왔다 — 사업보고서에서 '2028년 이후 상용화 목표' 문구가 빠졌다[4]",
+   "인증 문서 작업의 비중이 크다[1][17]",
+   "웹·앱 SW 경력은 바로 통하지 않는다 — 전력전자 바탕이 필요하다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "정지 상태에서 센서 없이 회전자 위치를 어떻게 알아내나요? 극성은요?",
+   "a": "역기전력이 0인 구간의 HFI와 극성 판별.[11][12]"
+  },
+  {
+   "q": "관측기에서 HFI로, 또는 그 반대로 넘어갈 때 무엇을 조심하나요?",
+   "a": "전 속도 구간 안정화가 업무 줄에 있다.[10][11]"
+  },
+  {
+   "q": "인버터 SW가 하드웨어를 태울 수 있는 경우를 꼽아 보세요.",
+   "a": "X-57의 튜닝 실수·동시 켜짐 명령 사례.[9]"
+  },
+  {
+   "q": "스위치 하나가 열렸다는 것을 전류만 보고 어떻게 알아내나요? 얼마나 걸리나요?",
+   "a": "전류 기반 진단과 그 시간 한계.[14][15]"
+  },
+  {
+   "q": "DO-178C에서 DAL A와 C는 무엇이 다른가요? MC/DC는 무엇인가요?",
+   "a": "목표 개수와 커버리지 요구.[17]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · 항공추진시스템용 모터 제어 SW 개발",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=392",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대 — 서울(원효로), 경력, 마감 2026-11-30"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차그룹 항공추진시스템용 모터 제어 SW 개발",
+   "url": "https://www.wanted.co.kr/wd/398569",
+   "kind": "posting",
+   "note": "같은 공고 — 경력 3년 이상, 서울 용산구"
+  },
+  {
+   "n": 3,
+   "title": "Hyundai Motor Group Signs MoU with Korea Aerospace Industries to Develop Future Air Mobility",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001170",
+   "kind": "company",
+   "date": "2026-05-10",
+   "note": "항공 파워트레인 세부사업부, 전동화 항공 파워트레인 상용화, 공급망·인증 협력"
+  },
+  {
+   "n": 4,
+   "title": "더팩트 · 로보틱스 다음은 하늘차…현대차, KAI와 손잡고 'AAM 사업' 속도",
+   "url": "https://news.tf.co.kr/read/economy/2321361.htm",
+   "kind": "news",
+   "date": "2026-05-11",
+   "note": "2026년 3월 AAM본부 → 항공파워트레인사업부, 사업보고서 문구 변화"
+  },
+  {
+   "n": 5,
+   "title": "MTN · 현대차그룹·KAI, AAM 합작법인 설립…10월 중 확정(단독)",
+   "url": "https://news.mtn.co.kr/news-detail/2026062413562479325",
+   "kind": "news",
+   "date": "2026-06-24",
+   "note": "현대차 파워트레인·KAI 기체 분담"
+  },
+  {
+   "n": 6,
+   "title": "머니투데이 · 현대차 항공 PT 제조 TFT 신설",
+   "url": "https://www.mt.co.kr/en/industry/2026/10/29/2026102908554191335",
+   "kind": "news",
+   "date": "2026-10-29",
+   "note": "제조솔루션본부 전동화생산기술센터 안 약 30명 TFT, 업계 전언"
+  },
+  {
+   "n": 7,
+   "title": "Hyundai Newsroom · Innovation in Motion: The Story Behind Hyundai Motor Group's 2-Stage Motor System",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001060",
+   "kind": "company",
+   "date": "2025-11",
+   "note": "전기차용 듀얼 인버터(SiC 6 + Si 6), 모드 전환 제어"
+  },
+  {
+   "n": 8,
+   "title": "Supernal Debuts eVTOL Product Concept at CES 2024",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000000395",
+   "kind": "company",
+   "date": "2024-01",
+   "note": "S-A2 — 분산 전기 추진, 로터 8개, 파워트레인 이중화(검색 요약으로 확인)"
+  },
+  {
+   "n": 9,
+   "title": "NASA · X-57 Cruise Motor and Inverter Failure Modes (ASTM F44 워크숍)",
+   "url": "https://ntrs.nasa.gov/api/citations/20240003366/downloads/3-X-57_traction_system_failures.pdf",
+   "kind": "reference",
+   "date": "2024",
+   "note": "다른 곳(NASA 전기 비행기) — 인버터·모터 실제 고장, 시험 프로그램. 34쪽 전부 읽음"
+  },
+  {
+   "n": 10,
+   "title": "MathWorks · Sensorless Approach for Position Sensing / Sensorless FOC of PMSM",
+   "url": "https://www.mathworks.com/help/mcb/sensorless-approach.html",
+   "kind": "reference",
+   "note": "슬라이딩 모드·자속·확장 EMF 관측기, 개루프 시동"
+  },
+  {
+   "n": 11,
+   "title": "TI · InstaSPIN-FOC 저속 고주파 주입(IPD_HFI) 문서",
+   "url": "https://ti.com/lit/pdf/SSZTCJ7",
+   "kind": "reference",
+   "date": "2015-06",
+   "note": "검색 요약으로 확인"
+  },
+  {
+   "n": 12,
+   "title": "Infineon AN204470 · Position Estimation of PMSM with Signal Injection",
+   "url": "https://www.infineon.com/assets/row/public/documents/30/42/infineon-an204470-fm3-family-position-estimation-of-pmsm-with-signal-injection-applicationnotes-en.pdf",
+   "kind": "reference",
+   "note": "돌극성 모터의 정지·저속 추정, 극성 판별(검색 요약)"
+  },
+  {
+   "n": 13,
+   "title": "Dai·Niu·Yuan · Current-injected Torque Ripple Reduction (IEEE TIE 2025, PolyU 저장소)",
+   "url": "https://ira.lib.polyu.edu.hk/handle/10397/117155",
+   "kind": "reference",
+   "date": "2025",
+   "note": "고조파 전류 주입·철손, 같은 저자의 코깅 토크 논문 포함(검색 요약)"
+  },
+  {
+   "n": 14,
+   "title": "Zeliang Zhang · PMSM 드라이브의 개방 스위치 고장 진단 박사 논문 (University of York)",
+   "url": "https://etheses.whiterose.ac.uk/id/eprint/34509/",
+   "kind": "reference",
+   "date": "2023",
+   "note": "고장 진단·내고장 제어 문헌 정리(검색 요약)"
+  },
+  {
+   "n": 15,
+   "title": "MDPI Electronics · Hybrid System Model 기반 인버터 개방 고장 진단",
+   "url": "https://www.mdpi.com/2079-9292/9/8/1251",
+   "kind": "reference",
+   "date": "2020",
+   "note": "전류 기반 진단의 장점과 시간 한계(검색 요약)"
+  },
+  {
+   "n": 16,
+   "title": "MathWorks · Hardware-in-the-Loop (HIL) Testing of an Electric Motor Controller",
+   "url": "https://www.mathworks.com/videos/hardware-in-the-loop-hil-testing-of-an-electric-motor-controller-1606757339599.html",
+   "kind": "reference",
+   "date": "2020",
+   "note": "플랜트 모델 재사용, 고정 스텝, 10kHz 스위칭 → 1MHz(검색 요약)"
+  },
+  {
+   "n": 17,
+   "title": "Wikipedia · DO-178C",
+   "url": "https://en.wikipedia.org/wiki/DO-178C",
+   "kind": "reference",
+   "note": "DAL 등급별 목표 개수·MC/DC·산출물"
+  },
+  {
+   "n": 18,
+   "title": "FAA Advisory Circular 20-115D",
+   "url": "https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_20-115D.pdf",
+   "kind": "reference",
+   "note": "DO-178C를 항공 SW 인증의 인정 수단으로"
+  },
+  {
+   "n": 19,
+   "title": "EASA · Special Condition SC E-19 Electric/Hybrid Propulsion System",
+   "url": "https://www.easa.europa.eu/en/document-library/product-certification-consultations/final-special-condition-sc-e-19-electric",
+   "kind": "reference",
+   "date": "2021-04",
+   "note": "검색 요약으로 확인"
+  },
+  {
+   "n": 20,
+   "title": "Wikipedia · Automotive SPICE",
+   "url": "https://en.wikipedia.org/wiki/Automotive_SPICE",
+   "kind": "reference",
+   "note": "4.0판(2023, VDA QMC)"
+  },
+  {
+   "n": 21,
+   "title": "Wikipedia · ISO 26262",
+   "url": "https://en.wikipedia.org/wiki/ISO_26262",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 24,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원"
+  },
+  {
+   "n": 25,
+   "title": "현대자동차 · 사업장 안내 — 원효로 사옥",
+   "url": "https://www.hyundai.com/kr/ko/brand/business-network/korea/head-office/wonhyo-office",
+   "kind": "company",
+   "note": "도로명 주소·전화"
+  },
+  {
+   "n": 26,
+   "title": "일간스포츠 · 현대차, 원효로 사옥에 '미래 연구소' 건립 왜?",
+   "url": "https://isplus.com/article/view/isp202302050027",
+   "kind": "news",
+   "date": "2023-02-06",
+   "note": "원효로를 AAM 핵심 거점으로, 국내 AAM 부문 통합 이전(기자 서술)"
+  },
+  {
+   "n": 27,
+   "title": "디지털데일리 · '하늘 나는 자동차' 속도 낸다…현대차그룹·KAI, AAM 공동개발 협력",
+   "url": "https://www.ddaily.co.kr/page/view/2026051010055832540",
+   "kind": "news",
+   "date": "2026-05-10",
+   "note": "실무 협의체·운영위원회, KAI의 2022년부터의 분산 전기 추진 연구"
+  },
+  {
+   "n": 28,
+   "title": "데일리안 · 현대차 '에어택시', KAI가 만든다…독자노선서 '협력'모델로",
+   "url": "https://www.dailian.co.kr/news/view/1642497",
+   "kind": "news",
+   "date": "2026-05-10",
+   "note": "Supernal 기체 설계·항공파워트레인사업부·KAI 체계종합 분담"
+  }
+ ],
+ "caveat": "현대차는 항공 모터·인버터의 사양, 제어 방식, 인증 등급을 공개하지 않았습니다. 팀의 기술 블로그·발표 영상도 찾지 못했습니다(전기차용 2-스테이지 모터시스템 소개 영상은 영상 번호를 확인하지 못해 받지 않았습니다). 그래서 실제 일의 모습은 같은 일을 한 NASA X-57의 공개 자료와 제조사·학계 문서로 '보통 이런 것'을 보였습니다. 사업 조직과 일정은 2026년에 여러 번 바뀌었습니다.[4][5][6]",
+ "resources": [
+  {
+   "id": "hyundai-2stage",
+   "title": "Innovation in Motion: The Story Behind Hyundai Motor Group's 2-Stage Motor System",
+   "by": "현대자동차 뉴스룸 · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001060",
+   "why": "이 회사가 인버터·모터 제어를 어떻게 이야기하는지. 듀얼 인버터와 모드 전환 제어가 면접 대화의 출발점이 된다."
+  },
+  {
+   "id": "kim-motor",
+   "title": "모터제어",
+   "by": "김상훈 · 복두출판사 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000007112474",
+   "why": "직류·BLDC·유도·동기 전동기 제어와 센서리스까지 한국어로. 요건 '인버터 제어 알고리즘'의 기본기(FOC·PWM·전류 제어)를 채운다. 원서는 Elsevier의 Electric Motor Control."
+  },
+  {
+   "id": "krishnan",
+   "title": "Electric Motor Drives: Modeling, Analysis, and Control",
+   "by": "R. Krishnan · Pearson · 2001",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://pearson.com/en-us/subject-catalog/p/electric-motor-drives-modeling-analysis-and-control/P200000003366/9780130910141",
+   "why": "모터 모델링과 벡터 제어, 영구자석 동기 전동기 드라이브 장을 깊게. 시뮬레이션 모델링 업무의 수식 바탕."
+  },
+  {
+   "id": "mcb-sensorless",
+   "title": "Sensorless Approach for Position Sensing · Sensorless FOC of PMSM 예제",
+   "by": "MathWorks Motor Control Blockset 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.mathworks.com/help/mcb/gs/sensorless-foc-pmsm-smo-fo.html",
+   "why": "관측기 세 가지를 Simulink 예제로 바꿔 가며 돌려 볼 수 있다. MATLAB/Simulink 요건과 센서리스 업무를 한 번에."
+  },
+  {
+   "id": "ti-hfi",
+   "title": "InstaSPIN-FOC 저속 고주파 주입(IPD_HFI)",
+   "by": "Texas Instruments · 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://ti.com/lit/pdf/SSZTCJ7",
+   "why": "정지·저속 HFI와 고속 관측기 사이 넘겨주기를 실제 제품 구조로 보여 준다. '고속·저속 영역 안정화' 줄."
+  },
+  {
+   "id": "infineon-hfi",
+   "title": "AN204470 Position Estimation of PMSM with Signal Injection",
+   "by": "Infineon(Cypress) 응용 노트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.infineon.com/assets/row/public/documents/30/42/infineon-an204470-fm3-family-position-estimation-of-pmsm-with-signal-injection-applicationnotes-en.pdf",
+   "why": "신호 주입으로 정지 위치와 극성을 찾는 과정을 단계별로. TI 문서와 같이 보면 방법의 공통점이 보인다."
+  },
+  {
+   "id": "mw-hil",
+   "title": "Hardware-in-the-Loop (HIL) Testing of an Electric Motor Controller",
+   "by": "MathWorks 웨비나 · 2020",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.mathworks.com/videos/hardware-in-the-loop-hil-testing-of-an-electric-motor-controller-1606757339599.html",
+   "why": "PMSM·3상 인버터 플랜트를 실시간 장비에 올리고 제어기 보드를 물리는 HILS 구성 그대로. HILS/SILS 업무 줄."
+  },
+  {
+   "id": "x57-failure",
+   "title": "X-57 Cruise Motor and Inverter Failure Modes",
+   "by": "NASA X-57 · ASTM F44 워크숍 · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://ntrs.nasa.gov/api/citations/20240003366/downloads/3-X-57_traction_system_failures.pdf",
+   "why": "항공 전기 추진 인버터·모터가 실제로 어떻게 망가졌고 어떤 시험으로 걸렀는지 34쪽. 고장 모드 분석·다이나모 평가 줄을 위한 가장 직접적인 공개 자료."
+  },
+  {
+   "id": "york-thesis",
+   "title": "PMSM 드라이브 개방 스위치 고장 진단·내고장 제어 박사 논문",
+   "by": "Zeliang Zhang · University of York · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://etheses.whiterose.ac.uk/id/eprint/34509/",
+   "why": "앞부분 문헌 정리만 읽어도 고장 진단 방법의 지도가 그려진다. '고장진단 알고리즘' 줄."
+  },
+  {
+   "id": "do178c-wiki",
+   "title": "DO-178C",
+   "by": "Wikipedia",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://en.wikipedia.org/wiki/DO-178C",
+   "why": "DAL 등급·목표 개수·산출물 이름을 한 장에. 원문(RTCA)은 유료라 먼저 전체 그림을 잡는다."
+  },
+  {
+   "id": "faa-ac20115d",
+   "title": "AC 20-115D Airborne Software Development Assurance Using EUROCAE ED-12 and RTCA DO-178",
+   "by": "FAA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_20-115D.pdf",
+   "why": "인증 기관이 DO-178C를 어떻게 받아들이는지. '인증 대응 지원' 줄에서 상대편의 기준."
+  },
+  {
+   "id": "easa-sce19",
+   "title": "Special Condition SC E-19 Electric/Hybrid Propulsion System",
+   "by": "EASA · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.easa.europa.eu/en/document-library/product-certification-consultations/final-special-condition-sc-e-19-electric",
+   "why": "전기 추진 시스템 자체에 붙는 인증 요구. 고장 분석이 왜 필요한지 위에서 내려다보는 문서."
+  },
+  {
+   "id": "aspice-pam",
+   "title": "Automotive SPICE PAM v4.0",
+   "by": "VDA QMC · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+   "why": "자동차 SW 개발 과정 평가 모델 원문. 우대 '인증 경험'을 자동차 쪽에서 채울 때."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 항공 전기 추진 감 잡기",
+   "time": "1주",
+   "goal": "이 자리가 왜 생겼고, 항공 인버터가 어떻게 망가지는지 설명할 수 있다.",
+   "resources": ["hyundai-2stage", "x57-failure"],
+   "task": "X-57 자료의 고장 사례를 '원인 · 결과 · SW가 볼 수 있는 신호 · 막는 방법' 4칸 표로 10줄 정리한다."
+  },
+  {
+   "title": "FOC와 인버터 제어 기본기",
+   "time": "3~4주",
+   "goal": "Clarke·Park 변환, d/q 전류 제어, 공간벡터 PWM을 직접 구현한다.",
+   "resources": ["kim-motor", "krishnan"],
+   "task": "가상 PMSM 파라미터로 Python이나 Simulink에 FOC를 짜고, 속도 지령 계단 응답과 전류 파형을 그린다."
+  },
+  {
+   "title": "센서리스와 토크 리플",
+   "time": "3~4주",
+   "goal": "관측기 하나와 HFI 하나를 구현해 전 속도에서 넘겨준다.",
+   "resources": ["mcb-sensorless", "ti-hfi", "infineon-hfi"],
+   "task": "2단계 모델에 슬라이딩 모드 관측기와 HFI를 붙이고, 0 → 정격 속도로 올리며 추정 각도 오차를 그린다. 6차 고조파를 일부러 넣고 보상 전후 리플 %를 비교한다."
+  },
+  {
+   "title": "고장 주입과 진단",
+   "time": "2~3주",
+   "goal": "스위치 개방·센서 오류를 모델에 넣고 진단 로직이 몇 ms 안에 잡는지 잰다.",
+   "resources": ["york-thesis", "x57-failure"],
+   "task": "정규화 평균 전류 진단을 붙이고 고장 6가지(스위치 6개 개방) × 속도 3가지로 검출 시간과 오검출 횟수 표를 만든다. 고장 시 비상 정지 상태 기계와 묶는다."
+  },
+  {
+   "title": "HILS와 인증 산출물 맛보기",
+   "time": "2주",
+   "goal": "요구사항 → 코드 → 시험을 추적표로 잇고, DO-178C 산출물 이름과 역할을 말할 수 있다.",
+   "resources": ["mw-hil", "do178c-wiki", "faa-ac20115d", "aspice-pam"],
+   "task": "4단계의 진단 기능에 요구사항 5개를 쓰고, 요구사항마다 시험 시나리오와 결과를 잇는 추적표를 만든다. 분기 커버리지를 재 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분이 없다. 이 자리는 경력(3년 이상) 채용이라 해당하지 않는다 [23]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [23]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [22]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값, 전년보다 1.5% 줄었다 [22]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 경력 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {"name": "선택적 근로시간제", "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"},
+   {"name": "사내 어린이집", "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"},
+   {"name": "육아휴직", "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"},
+   {"name": "육아기 근로시간 단축", "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"},
+   {"name": "배우자 출산 휴가", "detail": "출산일로부터 90일 안에 최대 10일"},
+   {"name": "주중 출산휴가 지원", "detail": "본인·배우자 임신 6개월~출산 12개월 안에 회사 지정 호텔 숙식(최대 2박)"},
+   {"name": "임신기 근로시간 단축", "detail": "임신 12주 이내·36주 이상 하루 2시간 단축"},
+   {"name": "가족돌봄 휴직", "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"},
+   {"name": "심리 상담", "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"},
+   {"name": "피트니스 센터", "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"},
+   {"name": "퇴직연금", "detail": "전 직원 대상, 준비금 사외 적립"}
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [24]. 공고에는 복지 칸이 없고(원티드 사본은 '홈페이지 참조') [1][2], 원효로 사옥에 어린이집·피트니스 센터가 있는지는 보고서에 따로 적혀 있지 않다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 원효로 사옥",
+  "address": "서울특별시 용산구 원효로 86",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%9A%A9%EC%82%B0%EA%B5%AC%20%EC%9B%90%ED%9A%A8%EB%A1%9C%2086",
+  "note": "공고 근무지는 '서울(원효로)'이고 [1], 도로명 주소는 현대자동차 사업장 안내의 원효로 사옥이다 [25]. 2023년 보도는 이곳을 AAM 핵심 거점으로 바꾸고 국내 AAM 부문을 옮겼다고 썼다 [26]. 팀 자리나 시험 설비(다이나모)는 남양연구소 등 다른 곳일 수 있다 {추론}."
+ }
+}
