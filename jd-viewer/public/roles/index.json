@@ -61,6 +61,7 @@
   "wanted-395344": "autoever-india-security-expat",
   "ats-lg:group:1002199": "biztechi-ai-engineer",
   "saramin-55458469": "biztechi-ai-engineer",
+  "ats-lg:group:1001506": "biztechi-ai-pm-pl",
   "ats-lg:group:1002372": "biztechi-data-engineering-pl",
   "jobkorea-50373063": "biztechi-data-engineering-pl",
   "jobkorea-50317228": "biztechi-data-engineering-pl",
@@ -1058,6 +1059,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "biztechi-ai-pm-pl",
+   "company": "비즈테크아이",
+   "role": "AI 엔지니어 PM/PL",
+   "jobs": [
+    "ats-lg:group:1001506"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
   },
   {
    "id": "biztechi-data-engineering-pl",
