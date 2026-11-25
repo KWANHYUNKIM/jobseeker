@@ -16,6 +16,7 @@
   "ats-greenhouse:coupang:6137112": "coupang-got-backend-manager-seoul",
   "ats-greenhouse:coupang:8203405": "coupang-network-security-engineer-detection-ops",
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
+  "ats-greenhouse:coupang:8078891": "coupang-pay-manager-backend-rocketpay",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8210828": "coupang-play-cx-backend-senior-sg",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
@@ -425,6 +426,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "coupang-pay-manager-backend-rocketpay",
+   "company": "쿠팡 (Coupang)",
+   "role": "Manager, Back-end Engineering",
+   "jobs": [
+    "ats-greenhouse:coupang:8078891"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "coupang-pay-staff-backend-rocketpay",
