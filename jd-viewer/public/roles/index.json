@@ -66,6 +66,7 @@
   "ats-greenhouse:coupang:7834206": "coupang-search-ai-engineer-senior-staff-mtv",
   "ats-greenhouse:coupang:8239021": "coupang-search-discovery-senior-staff-ds",
   "ats-greenhouse:coupang:8207116": "coupang-security-automation-engineer-seattle",
+  "ats-greenhouse:coupang:7342961": "coupang-security-infra-senior-staff-backend-mtv",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
   "ats-greenhouse:coupang:8078331": "coupang-spir-security-devops-senior",
@@ -924,6 +925,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 22
+  },
+  {
+   "id": "coupang-security-infra-senior-staff-backend-mtv",
+   "company": "쿠팡",
+   "role": "Senior Staff Backend Engineer, Security",
+   "jobs": [
+    "ats-greenhouse:coupang:7342961"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "coupang-sg-security-infra-director",
