@@ -352,6 +352,7 @@
   "ats-toss:group:7742346003": "toss-global-growth-data-analyst",
   "ats-toss:group:7795677003": "toss-gpu-systems-engineer",
   "wanted-347560": "toss-gpu-systems-engineer",
+  "ats-toss:group:8038772003": "toss-growth-ml-engineer",
   "ats-toss:group:8035179003": "toss-ml-engineer-ocr",
   "ats-toss:group:4770769003": "toss-ml-engineer-research",
   "ats-toss:group:7821080003": "toss-network-engineer-edge",
@@ -3473,6 +3474,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 17
+  },
+  {
+   "id": "toss-growth-ml-engineer",
+   "company": "토스",
+   "role": "ML 엔지니어 (Growth)",
+   "jobs": [
+    "ats-toss:group:8038772003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
   },
   {
    "id": "toss-ml-engineer-ocr",

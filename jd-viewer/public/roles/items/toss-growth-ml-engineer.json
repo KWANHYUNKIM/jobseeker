@@ -1,0 +1,1027 @@
+{
+ "id": "toss-growth-ml-engineer",
+ "company": "토스",
+ "role": "ML 엔지니어 (Growth)",
+ "team": "Intelligence Growth",
+ "jobs": [
+  "ats-toss:group:8038772003"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "토스 앱의 홈·송금 완료 배너·푸시 같은 접점에서 **누구에게 무엇을 언제 보여 줄지**를 정하는 추천·타겟팅 모델을 만듭니다 — 반응(CTR·CVR) 예측, LLM 로 읽은 콘텐츠 표현, 푸시 발송 정책, 모델의 서비스 적용과 A/B 검증까지.[1]",
+  "env": "Intelligence Growth 팀은 토스 앱 안 서비스·프로모션·메시지의 추천과 타겟팅을 ML 로 최적화합니다.[1] 토스 쇼핑 추천이 공개한 후보 생성 → 랭킹 → 재정렬 구조와 같은 계열의 문제를 다루는 것으로 보입니다.[3] {추론}",
+  "oneline": "'누르는 사람'이 아니라 '보내서 달라지는 사람'을 찾는 추천·타겟팅 ML 엔지니어 — 모델링을 넘어 서비스 성과까지 책임지는 자리."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "대규모 사용자 행동 데이터와 맥락 정보를 활용해 추천·타겟팅 모델과 CTR·CVR 등 반응 예측 모델을 개발해요.",
+   "short": "사용자가 앱에서 한 행동으로 '이 사람이 이 배너·푸시를 누를까, 살까'를 확률로 맞히는 모델을 만드는 일.",
+   "why": "Intelligence Growth 팀은 토스 앱 안 서비스·프로모션·메시지의 추천과 타겟팅을 머신러닝으로 최적화하는 팀이고, 홈·송금 완료 후 배너·푸시 같은 여러 접점에서 사용자의 관심과 맥락을 읽는다고 스스로 소개합니다.[1] 어떤 것을 누가 볼지 정하려면 먼저 '반응할 확률'이 있어야 합니다. 토스 커머스 추천 글도 랭킹 단계에서 pCTR(예상 클릭률)·pCVR(예상 구매 전환율)을 예측한다고 밝힙니다.[3]",
+   "actually": {
+    "items": [
+     "**CTR·CVR 예측** — 노출된 것 중 눌린 비율(CTR), 누른 것 중 목적을 이룬 비율(CVR). 두 확률을 곱해 '노출 한 번의 기대 성과'로 쓰는 것이 흔한 틀입니다.[3] {추론}",
+     "**입력** — 사용자의 최근 행동(본 것·누른 것·송금·결제), 맥락(시간대·접점), 콘텐츠 쪽 정보. 토스 커머스 발표도 사용자·상품·둘 사이의 피처를 나눠 설명합니다.[4]",
+     "**라벨 정의가 절반** — 노출만 되고 안 본 것까지 '안 눌림'으로 세면 노이즈가 섞인다는 점을 토스 커머스 발표가 짚었습니다.[4]",
+     "**모델 후보** — 토스 글이 랭킹 후보로 든 DeepFM·DLRM·DCN 계열과, 클릭·구매를 함께 배우는 ESMM.[3] DCN V2 논문이 피처 교차를 다루는 대표 자료입니다.[17]",
+     "**평가는 둘로** — 순서를 맞히는 힘(AUC)과 확률 크기가 맞는지(보정)는 다른 문제입니다(아래 예시).[13]"
+    ]
+   },
+   "how_far": "이 줄은 '예측 모델 만들기'까지입니다. 어느 접점의 어느 목적(클릭·구매·송금)을 맞힐지는 PO·분석가와 정하고, 개발자는 라벨 정의·학습·평가를 맡는 것이 최소선입니다.[1] {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    13,
+    17
+   ],
+   "study": [
+    "toss-reco",
+    "slash24-reco",
+    "dcnv2",
+    "calibration",
+    "rules-of-ml"
+   ],
+   "examples": [
+    {
+     "title": "순서는 맞는데 확률이 부풀면 (직접 돌린 출력, 가상 12건)",
+     "body": "확률을 모두 두 배로 부풀리면 순서는 같아 AUC 는 그대로지만 logloss 는 나빠지고 평균 예측이 실제 클릭률의 두 배가 됩니다. 이 확률로 '기대 가치'를 계산하면 전부 두 배로 부풀어 서로 다른 접점·목적끼리 견줄 수 없습니다.[13]",
+     "lang": "python",
+     "code": "import numpy as np\ny = np.array([1,0,0,1,0,0,0,1,0,0,0,0])\np = np.array([.62,.40,.15,.55,.30,.10,.22,.35,.18,.12,.08,.05])\ndef auc(y, p):\n    pos, neg = p[y == 1], p[y == 0]\n    return np.mean([(a > b) + 0.5 * (a == b) for a in pos for b in neg])\ndef logloss(y, p):\n    return -np.mean(y * np.log(p) + (1 - y) * np.log(1 - p))\nprint(f\"AUC {auc(y,p):.3f}  logloss {logloss(y,p):.3f}  평균 예측 {p.mean():.3f}  실제 클릭률 {y.mean():.3f}\")\np2 = np.minimum(p * 2, 0.99)  # 순서는 같고 확률만 두 배로 부풀린 모델\nprint(f\"부풀림 AUC {auc(y,p2):.3f}  logloss {logloss(y,p2):.3f}  평균 예측 {p2.mean():.3f}\")\n# 출력\n# AUC 0.963  logloss 0.331  평균 예측 0.260  실제 클릭률 0.250\n# 부풀림 AUC 0.963  logloss 0.422  평균 예측 0.490"
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LLM으로 콘텐츠의 의미와 사용자 관심사를 표현하고, 신규 콘텐츠를 포함한 다양한 추천 영역의 품질을 개선해요.",
+   "short": "글·이미지를 LLM 이 벡터로 바꿔, 신규 콘텐츠도 '누가 좋아할지' 처음부터 짐작하게 하는 일.",
+   "why": "새로 올라온 콘텐츠는 누른 기록이 없어 행동 기반 모델이 점수를 못 줍니다(콜드스타트). 토스 커머스 발표는 기반 데이터가 부족한 상황에서 추천 시스템을 만든 과정을 다루고,[4] 투타워(사용자 탑·상품 탑)가 후보 생성기 역할을 한다고 설명합니다.[4] LLM 임베딩은 그 상품·콘텐츠 쪽 입력을 내용에서 뽑아 주는 방법입니다. {추론}",
+   "actually": {
+    "items": [
+     "**콘텐츠 임베딩** — 제목·본문·이미지를 모델에 넣어 벡터 하나로 만듭니다. 비슷한 내용은 가까운 벡터가 됩니다. {추론}",
+     "**사용자 관심사 벡터** — 사용자가 최근 누른 콘텐츠 벡터를 모아(평균·어텐션) 사용자 벡터로 씁니다. 유튜브 추천 논문이 이 구조의 고전입니다.[10]",
+     "**신규 콘텐츠** — 클릭 기록이 0이어도 내용 벡터로 후보에 들어가고, 쌓이면 행동 신호가 대신합니다. {추론}",
+     "**품질 점검** — 가까운 이웃 몇 개를 눈으로 보고, 오프라인 지표와 A/B 로 확인합니다.[9]"
+    ]
+   },
+   "how_far": "임베딩 모델을 직접 학습하기보다 공개·사내 LLM 을 골라 쓰고, 추천 모델에 어떻게 넣어 지표가 오르는지 보이는 것이 최소선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    9,
+    10
+   ],
+   "study": [
+    "slash24-reco",
+    "toss-reco",
+    "youtube-dnn",
+    "sbert-doc",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "후보 생성부터 랭킹까지 추천 과정 전반을 개선하고, 통합 학습과 생성형 추천 등 End-to-End 접근을 검증해요.",
+   "short": "후보를 뽑는 단계부터 순위를 매기는 단계까지 한 덩어리로 고치고, 한 모델이 전부 배우는 방식도 시험하는 일.",
+   "why": "토스 쇼핑 추천은 후보 생성(Retrieval) → 랭킹 → 재정렬(Re-ranking)의 여러 단계로 되어 있다고 공개했습니다.[3] 단계마다 따로 최적화하면 앞 단계가 놓친 것은 뒤에서 못 살립니다. 이 공고는 통합 학습·생성형 추천 같은 End-to-End 접근을 '검증'하는 것도 업무로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**단계 구조** — 수백만 개를 수천 개로 줄이는 후보 생성, 점수 매기는 랭킹, 다양성·광고 섞기 같은 재정렬.[3]",
+     "**통합 학습** — 후보 단계와 랭킹 단계를 같은 손실로 같이 학습해 서로의 오류를 줄이려는 시도. {추론}",
+     "**생성형 추천** — 아이템을 이산 코드(semantic ID)로 바꾸고, 다음에 볼 것의 코드를 언어 모델처럼 생성합니다. TIGER 논문이 대표 사례입니다.[12]",
+     "**'검증한다'는 말** — 바로 배포가 아니라 작은 트래픽 A/B 로 기존 구조와 견주는 일입니다.[1][9] {추론}"
+    ]
+   },
+   "how_far": "새 구조를 서비스에 올리는 것보다, 가설을 세워 기존 파이프라인과 같은 지표로 견주고 이길 때와 질 때를 설명하는 것이 최소선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    9,
+    11,
+    12
+   ],
+   "study": [
+    "toss-reco",
+    "tiger",
+    "sasrec",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "푸시 메시지와 프로모션의 대상·시점·빈도를 최적화하고, 사용자 피로도와 추가 전환 효과를 고려해 타겟팅 전략을 고도화해요.",
+   "short": "누구에게·언제·몇 번 푸시를 보낼지 정하되, 알림을 끄게 만들지 않으면서 '보내서 더 생긴' 전환을 늘리는 일.",
+   "why": "푸시는 보낼수록 단기 반응은 늘지만 사용자가 알림을 끄면 이후 모든 접점을 잃습니다. 공고가 '사용자 피로도와 추가 전환 효과를 고려'하라고 적은 이유입니다.[1] 토스는 SLASH 24 에서도 ML 기반 자동 타겟팅으로 사용자 만족과 마케팅 효율을 함께 잡은 과정을 발표했습니다.[2]",
+   "actually": {
+    "items": [
+     "**대상** — 반응할 사람이 아니라 '보내서 달라지는 사람'을 고릅니다(아래 우대사항의 업리프트).[7]",
+     "**시점** — 사용자별로 앱을 여는 시간대·직전 행동(송금 완료 직후 등)을 보고 정합니다. {추론}",
+     "**빈도** — 횟수에 따라 추가 전환은 줄어드는 폭으로 늘고 이탈은 빠르게 늘어, 순가치가 가장 큰 횟수가 따로 있습니다(아래 예시).",
+     "**피로도** — 최근 N일 받은 횟수·무시한 횟수를 피처나 제약으로 넣습니다. {추론}",
+     "**전략 고도화** — 규칙(하루 최대 몇 건)과 모델 점수를 섞는 현실적 구조가 많습니다. {추론}"
+    ]
+   },
+   "how_far": "'발송 정책' 전체를 혼자 정하는 자리가 아니라, 모델이 내는 점수·제약을 정책에 넣어 실험으로 증명하는 쪽입니다. 얼마나 보낼지의 상한은 사업·운영과 정하는 것이 보통입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    7
+   ],
+   "study": [
+    "tmc25-ab",
+    "uplift-review",
+    "causal-brave"
+   ],
+   "examples": [
+    {
+     "title": "주 몇 번 보낼 때 순가치가 가장 큰가 (직접 돌린 출력, 가상 숫자)",
+     "body": "추가 전환은 1·2·3회로 갈수록 덜 늘고, 알림을 끄는 사람은 4회부터 급히 늡니다. 알림을 끈 사람의 손실을 전환의 6배로 가정하면 2회에서 가장 크고 3회부터 마이너스입니다. 6배는 설명용 가정이며 실제 값은 이후 기간의 전환을 얼마나 잃는지로 따로 재야 합니다.",
+     "lang": "python",
+     "code": "extra_conv = [0.0, 0.020, 0.034, 0.038, 0.040, 0.041]  # 가상: 주 k회 보낼 때 추가 전환율\noptout = [0.0, 0.001, 0.003, 0.008, 0.020, 0.045]      # 가상: 알림을 끄는 비율\nconv_value, optout_cost = 1.0, 6.0  # 전환 1명=1, 알림 끈 사람은 이후 전환을 잃으니 6 으로 가정\nfor k in range(6):\n    net = extra_conv[k] * conv_value - optout[k] * optout_cost\n    print(f\"주 {k}회  추가 전환 {extra_conv[k]:.1%}  이탈 {optout[k]:.1%}  순가치 {net:+.3f}\")\nbest = max(range(6), key=lambda k: extra_conv[k] * conv_value - optout[k] * optout_cost)\nprint(\"순가치가 가장 큰 빈도:\", best, \"회\")\n# 출력\n# 주 0회  추가 전환 0.0%  이탈 0.0%  순가치 +0.000\n# 주 1회  추가 전환 2.0%  이탈 0.1%  순가치 +0.014\n# 주 2회  추가 전환 3.4%  이탈 0.3%  순가치 +0.016\n# 주 3회  추가 전환 3.8%  이탈 0.8%  순가치 -0.010\n# 주 4회  추가 전환 4.0%  이탈 2.0%  순가치 -0.080\n# 주 5회  추가 전환 4.1%  이탈 4.5%  순가치 -0.229\n# 순가치가 가장 큰 빈도: 2 회"
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "관련 엔지니어와 협업해 모델을 서비스에 적용하고, 오프라인 평가와 온라인 A/B 테스트로 성과를 검증해요. 운영 과정에서 추천 품질·응답 속도·비용을 함께 개선해요.",
+   "short": "모델을 서비스에 붙인 뒤, 오프라인 지표와 온라인 A/B 로 성과를 확인하고 품질·속도·비용을 같이 줄여 가는 일.",
+   "why": "오프라인에서 오른 지표가 실제 서비스에서는 안 오르는 일이 흔합니다. 로그는 이전 모델이 보여 준 것만 담고 있어 치우쳐 있기 때문입니다.[15] 토스 발표들도 A/B 테스트를 성과 검증의 기본 도구로 설명합니다.[4][5] 이 공고는 응답 속도와 비용까지 개선 대상으로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**서비스 적용** — 서빙 엔지니어와 협업해 모델을 배포합니다. 토스 커머스 발표는 배치·실시간 추론, 피처 스토어, ONNX Runtime 서빙을 구성 요소로 들었습니다.[4][6]",
+     "**오프라인 평가** — AUC·logloss·NDCG 와 구간별 예측/실제(보정).[13]",
+     "**온라인 A/B** — 무작위 분할·표본 수·지표 묶음·SRM(분할 비율 어긋남) 점검.[9]",
+     "**속도·비용** — 모델 크기·피처 조회 지연·GPU/CPU 비용. 큰 모델을 작게 증류하는 방법이 흔합니다.[23]",
+     "**운영 감시** — 학습/서빙 피처 불일치와 데이터 변화를 지켜봅니다.[14][16]"
+    ]
+   },
+   "how_far": "모델 개발자가 서빙 인프라를 전부 만드는 것이 아니라, 서빙 가능한 형태(지연·크기 제약)로 모델을 설계하고 실험을 설계·해석하는 것이 최소선입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    9,
+    13,
+    14,
+    15,
+    16,
+    23
+   ],
+   "study": [
+    "kohavi-ko",
+    "dmls-ko",
+    "tmc25-ab",
+    "featurestore",
+    "rules-of-ml"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "추천, 검색, 광고, 타겟팅 등 사용자와 콘텐츠·서비스를 연결하는 문제를 실무에서 다뤄본 분을 찾고 있어요.",
+   "short": "추천·검색·광고·타겟팅 중 하나라도 '사용자와 콘텐츠를 이어 주는' 서비스를 실무로 해 본 경험을 보는 줄.",
+   "why": "이 팀의 일이 전부 '누구에게 무엇을'이라는 같은 뼈대 위에 있기 때문에, 검색·광고 경험도 인정한다고 넓게 적었습니다.[1] 토스 안에서도 쇼핑 추천·광고·검색이 같은 단계 구조를 씁니다.[3] {추론}",
+   "actually": {
+    "items": [
+     "**추천** — 후보 생성 → 랭킹 → 재정렬.[3]",
+     "**검색** — 질의와 문서의 관련도를 맞혀 순서 정하기.",
+     "**광고** — 확률에 입찰을 곱해 줄 세우기.",
+     "**타겟팅** — 발송 대상 고르기. 넷 다 '사용자 × 항목 → 점수' 문제입니다. {추론}"
+    ]
+   },
+   "how_far": "넷 중 하나를 '내가 정한 지표를 이만큼 올렸다'로 설명할 수 있으면 충분합니다. 넷을 다 해야 하는 것은 아닙니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "toss-reco",
+    "aggarwal"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "사용자 행동 데이터를 활용해 추천·랭킹 또는 CTR·CVR 예측 모델을 설계하고 학습·평가해 본 분을 찾고 있어요.",
+   "short": "로그를 학습 데이터로 만들고, CTR·CVR 을 맞히는 모델을 만들어 AUC·보정으로 평가해 본 경험을 보는 줄.",
+   "why": "이 팀 업무의 첫 줄이 CTR·CVR 반응 예측 모델 개발이라서 그대로 요건이 됐습니다.[1]",
+   "actually": {
+    "items": [
+     "**학습 데이터** — 노출 로그와 클릭·전환 로그를 시간 순으로 이어 붙입니다. 미래 정보가 섞이면(누수) 오프라인만 좋아집니다.[14]",
+     "**설계** — 로지스틱·GBDT 같은 단순한 기준선부터, 그다음 딥러닝 계열.[17]",
+     "**평가** — AUC·logloss·구간별 보정. 보정은 temperature scaling 같은 사후 보정이 흔하고 토스 커머스 발표도 다룹니다.[4][13]",
+     "**기준선** — 새 모델이 규칙 기반이나 이전 모델보다 나은지부터 봅니다.[16]"
+    ]
+   },
+   "how_far": "논문 구조를 구현하는 것보다 '왜 이 라벨·피처·지표로 갔고 무엇이 안 됐나'를 말하는 것이 이 줄의 최소선입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    13,
+    14,
+    16,
+    17
+   ],
+   "study": [
+    "rules-of-ml",
+    "dcnv2",
+    "calibration",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터·피처·모델의 문제를 분석하고, 반복적인 실험으로 실제 서비스 성과를 개선해 본 분을 찾고 있어요.",
+   "short": "모델이 이상할 때 데이터·피처·모델 중 어디가 문제인지 찾고, 실험을 반복해 실제 성과를 올려 본 경험을 보는 줄.",
+   "why": "오프라인과 A/B 결과가 어긋날 때 원인을 끝까지 파는 힘이 이 일의 대부분이라서입니다.[1][15] 공고도 '기대와 다른 결과의 원인을 찾고 개선한 과정'을 이력서에 쓰라고 안내합니다.[1]",
+   "actually": {
+    "items": [
+     "**데이터 문제** — 라벨 노이즈·노출 편향·누수.[15]",
+     "**피처 문제** — 학습 땐 있고 서빙 땐 없는 값, 지연된 값.[14]",
+     "**모델 문제** — 과적합·보정 어긋남.[13]",
+     "**실험 문제** — 표본 부족·분할 오류(SRM).[9]"
+    ]
+   },
+   "how_far": "원인을 하나씩 가설로 세우고 한 번에 하나만 바꿔 확인하는 방식을 보이면 충분합니다. {추론}",
+   "refs": [
+    1,
+    9,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "rules-of-ml",
+    "ultr",
+    "kohavi-ko",
+    "ml-test-score"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "문제와 성공 지표를 명확히 정의하고, 다양한 직군의 동료에게 기술적 선택의 근거와 결과를 설명할 수 있는 분을 찾고 있어요.",
+   "short": "'무엇을 좋아졌다고 볼지'를 먼저 정하고, 다른 직군에게 선택의 이유를 설명할 수 있는지를 보는 줄.",
+   "why": "토스의 팀은 PO·분석가·개발자가 한 팀으로 일하고 직무 인터뷰도 심층 기술 면접과 ML 시스템 설계로 진행한다고 공고가 밝혔습니다.[1] 모델 지표(AUC)와 사업 지표(전환·매출)가 다르다는 것을 설명해야 합니다.",
+   "actually": {
+    "items": [
+     "**성공 지표 하나와 가드레일** — 전환율을 올리되 알림 끄기·이탈은 막는다처럼 짝으로 정합니다.[9]",
+     "**설명의 순서** — 문제 → 지표 → 후보 → 실험 결과 → 다음.",
+     "**숫자 근거** — '좋아졌다'가 아니라 '구간 신뢰구간이 이만큼'으로 말합니다.[9]"
+    ]
+   },
+   "how_far": "문서 한 장에 문제·지표·결과를 쓰는 연습이 곧 이 줄의 준비입니다. {추론}",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "kohavi-ko",
+    "tmc25-ab"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "**대규모 사용자 행동 데이터를 활용해 추천·타겟팅 시스템의 데이터 설계부터 모델 학습, 서비스 적용, 온라인 실험까지 End-to-End로 수행하고, 실제 서비스 성과를 개선한 경험이 있으면 좋아요.**",
+   "short": "데이터 설계 → 학습 → 서비스 적용 → 온라인 실험을 혼자 이어 맡아 성과를 낸 경험이 있으면 가산점.",
+   "why": "공고가 굵게 강조한 줄입니다.[1] 이 팀은 모델링만 하는 자리가 아니라고 팀원 한마디에서도 밝힙니다.[1]",
+   "actually": {
+    "items": [
+     "**데이터 설계** — 무엇을 로그로 남길지·라벨·피처 기준.",
+     "**학습** — 재현 가능한 파이프라인.[14]",
+     "**적용** — 서빙·모니터링.[4]",
+     "**온라인 실험** — A/B 설계와 해석.[9]"
+    ]
+   },
+   "how_far": "네 칸 전체를 혼자 해야 한다는 뜻이 아니라, 칸 사이가 어떻게 이어지는지 알고 있다는 증거를 보이라는 뜻으로 읽힙니다. {추론}",
+   "refs": [
+    1,
+    4,
+    9,
+    14
+   ],
+   "study": [
+    "dmls-ko",
+    "featurestore",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM·멀티모달 임베딩, 사용자 행동 시퀀스 모델, 생성형 추천 등을 추천·검색에 활용한 경험이 있으면 좋아요.",
+   "short": "LLM·멀티모달 임베딩, 행동 순서 모델, 생성형 추천을 추천·검색에 써 본 경험이 있으면 가산점.",
+   "why": "이 팀이 LLM 활용과 End-to-End 추천 같은 새 접근을 검증한다고 팀 소개에 적었기 때문입니다.[1]",
+   "actually": {
+    "items": [
+     "**멀티모달 임베딩** — 글·이미지를 같은 공간의 벡터로.",
+     "**행동 시퀀스 모델** — 사용자가 누른 순서를 Transformer 로 읽는 SASRec 이 대표.[11]",
+     "**생성형 추천** — 아이템 코드를 생성.[12]",
+     "**LLM 활용** — 콘텐츠 설명·사용자 관심사 요약을 벡터나 피처로.[10] {추론}"
+    ]
+   },
+   "how_far": "하나를 골라 작은 데이터로 직접 돌려 지표를 베이스라인과 견준 경험이면 됩니다. {추론}",
+   "refs": [
+    1,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "sasrec",
+    "tiger",
+    "sbert-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Uplift Modeling, 인과 추론 등을 활용해 타겟팅이나 노출 전략을 개선한 경험이 있으면 좋아요.",
+   "short": "'보내면 달라지는 사람'을 골라내는 업리프트 모델링·인과 추론으로 타겟팅을 개선해 본 경험이 있으면 가산점.",
+   "why": "반응률이 높은 사람에게 보내면 어차피 살 사람에게 보내는 것일 수 있어서, 추가 전환 효과를 보려면 인과 효과를 추정해야 합니다.[7] 공고의 '추가 전환 효과'가 정확히 이 말입니다.[1]",
+   "actually": {
+    "items": [
+     "**업리프트** — 푸시를 받았을 때 전환율 − 안 받았을 때 전환율(개인별 처치 효과).[7]",
+     "**메타러너** — 두 모델(받은 군·안 받은 군) 방식, 한 모델에 처치 변수를 넣는 방식 등.[8]",
+     "**데이터** — 무작위로 푸시를 보낸 실험군이 있어야 깨끗합니다. 없으면 교란을 보정해야 합니다.[22]",
+     "**평가** — 업리프트 곡선·Qini 계수처럼 '상위 k% 에게 보냈을 때 추가 전환' 으로 봅니다.[7]"
+    ]
+   },
+   "how_far": "개념과 한 번의 실습(무작위 실험 데이터에서 메타러너)을 설명할 수 있으면 우대 요건은 충분합니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    22
+   ],
+   "study": [
+    "uplift-review",
+    "metalearners",
+    "causal-brave"
+   ],
+   "examples": [
+    {
+     "title": "반응률 순과 업리프트 순은 왜 다른 사람을 고르나 (직접 돌린 출력, 가상 10만 명)",
+     "body": "네 종류 사용자를 만들었습니다 — 안 보내도 사는 사람, 보내야 사는 사람, 안 살 사람, 보내면 오히려 떠나는 사람. 전체의 20% 에게만 보낼 수 있을 때 반응률 순은 안 보내도 사는 사람을 고르고 추가 전환이 0 인 반면 업리프트 순은 '보내야 사는 사람'을 골라 약 4,000명을 더 얻습니다. 비율과 효과는 모두 설명용 가정입니다.[7]",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(0)\nn = 100_000\nnames = [\"sure\", \"persuadable\", \"lost\", \"sleeping_dog\"]\nshare = dict(zip(names, [0.2, 0.2, 0.5, 0.1]))\nbase = dict(zip(names, [0.30, 0.05, 0.01, 0.10]))\nlift = dict(zip(names, [0.00, 0.20, 0.00, -0.08]))\nseg = rng.choice(names, size=n, p=[share[s] for s in names])\ntreat = rng.random(n) < 0.5  # 무작위로 절반에게만 푸시\np = np.array([base[s] + lift[s] * t for s, t in zip(seg, treat)])\ny = rng.random(n) < p\nfor s in names:\n    m = seg == s\n    r1, r0 = y[m & treat].mean(), y[m & ~treat].mean()\n    print(f\"{s:13} 푸시 O {r1:.3f}  푸시 X {r0:.3f}  uplift {r1 - r0:+.3f}\")\n\ndef pick(score, budget=0.2):\n    chosen, used = [], 0.0\n    for s in sorted(names, key=lambda s: -score[s]):\n        if used + share[s] <= budget + 1e-9:\n            chosen.append(s); used += share[s]\n    return chosen, sum(share[s] * lift[s] for s in chosen) * n\n\nresp = {s: base[s] + lift[s] for s in names}  # 푸시를 받았을 때 전환율\nfor label, sc in ((\"반응률 순\", resp), (\"uplift 순\", lift)):\n    c, g = pick(sc)\n    print(f\"{label}: 대상 {c} -> 추가 전환 약 {g:,.0f}명\")\n# 출력\n# sure          푸시 O 0.297  푸시 X 0.296  uplift +0.001\n# persuadable   푸시 O 0.258  푸시 X 0.048  uplift +0.210\n# lost          푸시 O 0.010  푸시 X 0.009  uplift +0.001\n# sleeping_dog  푸시 O 0.021  푸시 X 0.094  uplift -0.073\n# 반응률 순: 대상 ['sure'] -> 추가 전환 약 0명\n# uplift 순: 대상 ['persuadable'] -> 추가 전환 약 4,000명"
+    }
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 모델의 서빙·경량화 또는 광고 입찰·예산 배분처럼 운영 제약을 고려한 최적화 경험이 있으면 좋아요.",
+   "short": "큰 모델을 작게·빠르게 서빙하거나, 광고 입찰·예산 배분처럼 제약이 있는 최적화를 해 본 경험이 있으면 가산점.",
+   "why": "공고가 운영 제약(응답 속도·비용)을 업무에서 반복해 적었고,[1] 토스는 광고 사업도 하기 때문에 예산 배분 문제가 같은 팀 근처에 있습니다.[1] {추론}",
+   "actually": {
+    "items": [
+     "**경량화** — 증류(큰 모델의 출력을 작은 모델이 따라 배움).[23] 양자화·가지치기도 같은 계열. {추론}",
+     "**서빙** — 배치 vs 실시간, ONNX Runtime 변환.[4]",
+     "**예산 배분** — 광고주의 하루 예산을 시간대별로 나눠 쓰는 페이싱 문제.[24]",
+     "**경매 구조** — 입찰·순위 결정 방식(GSP) 이해.[25]"
+    ]
+   },
+   "how_far": "둘 중 하나만 있어도 됩니다. 속도 경량화 쪽은 '지연 시간 몇 ms → 몇 ms, 지표 손실 몇 %' 같은 숫자로 말할 수 있는지가 핵심입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    23,
+    24,
+    25
+   ],
+   "study": [
+    "distill",
+    "smart-pacing",
+    "gsp",
+    "dmls-ko"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "toss-reco",
+   "title": "토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "by": "토스 커머스 개인화팀 · Toss Tech · 2025",
+   "kind": "doc",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "lang": "ko",
+   "level": "입문",
+   "why": "이 팀의 후보 생성 → 랭킹 → 재정렬 구조와 pCTR·pCVR 개념을 회사 쪽 설명으로 먼저 잡는다. 업무①③의 바탕.",
+   "free": true
+  },
+  {
+   "id": "slash24-reco",
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "by": "토스 데이터 사이언티스트 · ML 엔지니어",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "lang": "ko",
+   "level": "입문",
+   "why": "라벨 정의의 노이즈·인기 편향·temperature scaling·실시간 추론 구성. 업무①②⑤ 의 토스 쪽 실제 모습.",
+   "free": true
+  },
+  {
+   "id": "featurestore",
+   "title": "SLASH 24 · Feature Store로 유연하게 ML 고도화하기",
+   "by": "토스 ML 엔지니어",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=-u3rhd7k2JQ",
+   "lang": "ko",
+   "level": "실무",
+   "why": "학습·서빙 피처를 같은 곳에서 읽는 구조. 업무⑤와 우대①의 '서비스 적용'.",
+   "free": true
+  },
+  {
+   "id": "tmc25-ab",
+   "title": "TMC25 · 토스 데이터 분석가가 하는 진짜 A/B테스트",
+   "by": "토스 데이터 분석가",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=BljJ1jZ7e3U",
+   "lang": "ko",
+   "level": "실무",
+   "why": "토스에서 A/B 를 실제로 어떻게 하는지. 업무④⑤·요건④의 '성과 검증'.",
+   "free": true
+  },
+  {
+   "id": "dcnv2",
+   "title": "DCN V2: Improved Deep & Cross Network and Practical Lessons for Web-scale Learning to Rank Systems",
+   "by": "Wang 외 · 2020",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2008.13535",
+   "lang": "en",
+   "level": "심화",
+   "why": "CTR 모델이 피처 교차를 배우는 방식. 업무①·요건②.",
+   "free": true
+  },
+  {
+   "id": "calibration",
+   "title": "On Calibration of Modern Neural Networks",
+   "by": "Guo 외 · ICML 2017",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "lang": "en",
+   "level": "실무",
+   "why": "확률이 얼마나 맞는지(보정)와 temperature scaling. 업무①⑤·요건②.",
+   "free": true
+  },
+  {
+   "id": "rules-of-ml",
+   "title": "Rules of Machine Learning: Best Practices for ML Engineering",
+   "by": "Google · Martin Zinkevich",
+   "kind": "doc",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "lang": "en",
+   "level": "실무",
+   "why": "기준선부터 만들고 지표·로그를 먼저 챙기는 습관. 요건②③.",
+   "free": true
+  },
+  {
+   "id": "dmls-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "lang": "ko",
+   "level": "실무",
+   "why": "데이터 누수·학습/서빙 어긋남·배포 뒤 감시. 업무⑤·요건③.",
+   "free": false
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 외 · 이기홍·김기영 옮김",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "lang": "ko",
+   "level": "실무",
+   "why": "A/B 의 표본 수·SRM·지표 묶음. 업무⑤·요건③④.",
+   "free": false
+  },
+  {
+   "id": "youtube-dnn",
+   "title": "Deep Neural Networks for YouTube Recommendations",
+   "by": "Covington 외 · RecSys 2016",
+   "kind": "doc",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "lang": "en",
+   "level": "입문",
+   "why": "후보 생성 + 랭킹의 두 단계와 사용자 벡터. 업무②③.",
+   "free": true
+  },
+  {
+   "id": "aggarwal",
+   "title": "Recommender Systems: The Textbook",
+   "by": "Charu C. Aggarwal · Springer · 2016",
+   "kind": "book",
+   "url": "https://link.springer.com/book/10.1007/978-3-319-29659-3",
+   "lang": "en",
+   "level": "실무",
+   "why": "협업 필터링부터 평가까지 추천 시스템의 전체 지도. 요건①.",
+   "free": false
+  },
+  {
+   "id": "sbert-doc",
+   "title": "Sentence-Transformers 문서",
+   "by": "UKPLab",
+   "kind": "doc",
+   "url": "https://www.sbert.net/",
+   "lang": "en",
+   "level": "입문",
+   "why": "문장·글을 벡터로 바꾸고 가까운 것을 찾는 실습. 업무②·우대②.",
+   "free": true
+  },
+  {
+   "id": "sasrec",
+   "title": "Self-Attentive Sequential Recommendation (SASRec)",
+   "by": "Kang · McAuley · ICDM 2018",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1808.09781",
+   "lang": "en",
+   "level": "심화",
+   "why": "사용자 행동 순서를 Transformer 로 읽는 방법. 우대②.",
+   "free": true
+  },
+  {
+   "id": "tiger",
+   "title": "Recommender Systems with Generative Retrieval (TIGER)",
+   "by": "Rajput 외 · NeurIPS 2023",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2305.05065",
+   "lang": "en",
+   "level": "심화",
+   "why": "아이템 코드를 생성하는 추천. 업무③·우대②.",
+   "free": true
+  },
+  {
+   "id": "ultr",
+   "title": "Unbiased Learning-to-Rank with Biased Feedback",
+   "by": "Joachims 외 · WSDM 2017",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "lang": "en",
+   "level": "심화",
+   "why": "로그가 이전 모델의 노출에 치우친 이유와 보정. 업무⑤·요건③.",
+   "free": true
+  },
+  {
+   "id": "ml-test-score",
+   "title": "The ML Test Score: A Rubric for ML Production Readiness and Technical Debt Reduction",
+   "by": "Breck 외 · Google · 2017",
+   "kind": "doc",
+   "url": "https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/",
+   "lang": "en",
+   "level": "실무",
+   "why": "서비스에 올리기 전 점검 항목. 요건③·우대①.",
+   "free": true
+  },
+  {
+   "id": "uplift-review",
+   "title": "Causal Inference and Uplift Modelling: A Review of the Literature",
+   "by": "Gutierrez · Gérardin · PMLR 67 · 2017",
+   "kind": "doc",
+   "url": "https://proceedings.mlr.press/v67/gutierrez17a.html",
+   "lang": "en",
+   "level": "실무",
+   "why": "업리프트가 무엇이고 어떻게 재는지. 업무④·우대③.",
+   "free": true
+  },
+  {
+   "id": "metalearners",
+   "title": "Metalearners for Estimating Heterogeneous Treatment Effects using Machine Learning",
+   "by": "Künzel 외 · PNAS 2019",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1706.03461",
+   "lang": "en",
+   "level": "심화",
+   "why": "T·S·X-learner 로 개인별 효과를 추정하는 방법. 우대③.",
+   "free": true
+  },
+  {
+   "id": "causal-brave",
+   "title": "Causal Inference for the Brave and True",
+   "by": "Matheus Facure",
+   "kind": "doc",
+   "url": "https://matheusfacure.github.io/python-causality-handbook/landing-page.html",
+   "lang": "en",
+   "level": "입문",
+   "why": "파이썬 코드로 따라가는 인과 추론 입문. 업무④·우대③.",
+   "free": true
+  },
+  {
+   "id": "distill",
+   "title": "Distilling the Knowledge in a Neural Network",
+   "by": "Hinton 외 · 2015",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1503.02531",
+   "lang": "en",
+   "level": "실무",
+   "why": "큰 모델을 작은 모델로 옮기는 증류. 업무⑤·우대④.",
+   "free": true
+  },
+  {
+   "id": "smart-pacing",
+   "title": "Smart Pacing for Effective Online Ad Campaign Optimization",
+   "by": "Xu 외 · KDD 2015",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1506.05851",
+   "lang": "en",
+   "level": "심화",
+   "why": "광고 예산을 시간에 걸쳐 나눠 쓰는 방법. 우대④.",
+   "free": true
+  },
+  {
+   "id": "gsp",
+   "title": "Internet Advertising and the Generalized Second-Price Auction",
+   "by": "Edelman · Ostrovsky · Schwarz · AER 2007",
+   "kind": "doc",
+   "url": "https://www.aeaweb.org/articles?id=10.1257/aer.97.1.242",
+   "lang": "en",
+   "level": "심화",
+   "why": "광고 경매의 순위·가격 규칙. 우대④.",
+   "free": false
+  }
+ ],
+ "study_path": [
+  {
+   "title": "토스 추천 구조 읽기",
+   "time": "1주",
+   "goal": "후보 생성 → 랭킹 → 재정렬의 칸과 이 자리가 맡는 칸을 말로 설명한다.",
+   "task": "가상 앱 홈 배너 한 번의 노출을 따라가는 표(단계·후보 수·입력·출력·실패하면 무엇이 깨지나)를 만든다.",
+   "resources": [
+    "toss-reco",
+    "slash24-reco",
+    "youtube-dnn"
+   ]
+  },
+  {
+   "title": "CTR 모델과 평가",
+   "time": "2~3주",
+   "goal": "CTR 데이터를 만들고 기준선·딥러닝 모델의 AUC·logloss·구간별 보정을 견준다.",
+   "task": "가상 클릭 로그 10만 건으로 로지스틱 기준선과 작은 DCN 을 학습하고 보정 곡선을 그린다.",
+   "resources": [
+    "rules-of-ml",
+    "dcnv2",
+    "calibration"
+   ]
+  },
+  {
+   "title": "인과와 업리프트",
+   "time": "2주",
+   "goal": "무작위 실험 데이터에서 업리프트를 추정하고 반응률 순과 업리프트 순을 견준다.",
+   "task": "가상의 네 종류 사용자 데이터로 T-learner 를 만들고 상위 20% 에게 보냈을 때 추가 전환을 구한다.",
+   "resources": [
+    "uplift-review",
+    "metalearners",
+    "causal-brave"
+   ]
+  },
+  {
+   "title": "임베딩과 시퀀스",
+   "time": "2주",
+   "goal": "콘텐츠 임베딩과 행동 순서 모델을 붙여 신규 콘텐츠 점수를 확인한다.",
+   "task": "공개 영화 평점 데이터에서 SASRec 풍의 작은 모델과 임베딩 이웃 검색을 비교한다.",
+   "resources": [
+    "sbert-doc",
+    "sasrec",
+    "tiger"
+   ]
+  },
+  {
+   "title": "서비스와 실험",
+   "time": "2주",
+   "goal": "모델을 서빙 가능한 크기로 줄이고 A/B 설계서를 쓴다.",
+   "task": "만든 모델을 증류해 크기·지연·지표 손실을 표로 만들고, A/B 표본 수·가드레일 지표를 적은 한 장 설계서를 쓴다.",
+   "resources": [
+    "distill",
+    "kohavi-ko",
+    "tmc25-ab",
+    "dmls-ko"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 회사 전체 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장). 이 자리는 추천·CTR 예측 실무 경력직이라 초봉과는 거리가 멀다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없다 [18]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값 [18]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [19]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [19]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다(공시 숫자 없음). 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, 이 자리처럼 추천·타겟팅 ML 경력직의 제안은 이전 처우와 협의로 정해져 집계값과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [21]. 지금도 같은지, Growth 팀에도 그대로 적용되는지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [20]. 공고의 근무지는 'Seoul'로만 적혀 있어 Growth 팀 자리가 본사와 다를 수 있다 {추론}."
+ },
+ "fit": {
+  "good": [
+   "AUC 가 올랐는지보다 '실제로 서비스가 달라졌는지'가 더 신경 쓰이는 사람[1]",
+   "추천·광고·검색 중 하나에서 지표를 올려 본 이야기를 숫자로 말할 수 있는 사람[1]",
+   "모델·데이터·실험 중 어디가 문제인지 찾는 일이 즐거운 사람[1]",
+   "푸시처럼 사용자에게 직접 닿는 결정을 모델로 다루고 싶은 사람[1]"
+  ],
+  "hard": [
+   "추천·CTR 예측을 처음 하는 사람에게는 요건이 '실무로 다뤄 본 분'이라 문이 좁다[1]",
+   "업리프트·인과 추론은 우대지만 이 팀이 그 방향으로 일한다는 신호다 {추론}",
+   "발송 정책은 사업·운영과 얽혀 있어 모델 지표만으로 결정되지 않는다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "푸시 CTR 이 높은 사용자에게 보내면 안 되는 이유가 무엇인가요?",
+   "a": "어차피 전환할 사람에게 보내는 것일 수 있어 '추가 전환'이 0 일 수 있다 — 업리프트의 출발점.[1][7]"
+  },
+  {
+   "q": "오프라인 AUC 는 올랐는데 A/B 에서 전환이 그대로입니다. 무엇부터 보시겠어요?",
+   "a": "로그의 노출 편향·학습/서빙 피처 차이·보정 순으로 점검하는 흐름. 공고가 직무 인터뷰를 ML 시스템 설계로 본다고 밝혔다.[1][14][15]"
+  },
+  {
+   "q": "푸시 빈도를 늘릴지 줄일지 어떻게 정하나요?",
+   "a": "추가 전환과 알림 이탈을 같은 단위로 바꿔 순가치로 견주는 방식(예시)과 가드레일 지표.[1][9]"
+  },
+  {
+   "q": "신규 콘텐츠에는 클릭 기록이 없는데 어떻게 추천하나요?",
+   "a": "내용 임베딩으로 후보에 넣고 기록이 쌓이면 행동 신호로 넘기는 설계.[3][4]"
+  },
+  {
+   "q": "큰 모델을 서비스에 올리려는데 지연이 목표를 넘습니다. 어떻게 하나요?",
+   "a": "증류·피처 조회 줄이기·배치/실시간 분리. 우대 요건의 경량화 줄과 연결된다.[1][23]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · ML 엔지니어 (Growth)",
+   "url": "https://toss.im/career/job-detail?gh_jid=8038772003",
+   "kind": "posting",
+   "note": "Intelligence Growth 팀 소개·업무·요건·우대·합류 여정(심층 기술 면접·ML 시스템 설계)·팀원 한마디"
+  },
+  {
+   "n": 2,
+   "title": "토스 SLASH 24 · ML 기반 자동 타겟팅으로 고객 만족과 마케팅 효율 모두 잡기!",
+   "url": "https://toss.im/slash-24/sessions/20",
+   "kind": "company",
+   "date": "2024",
+   "note": "발표자 토스 Data Scientist. 세션 소개 페이지만 읽음 — 영상·자막은 찾지 못해 발표 내용은 반영하지 못했다"
+  },
+  {
+   "n": 3,
+   "title": "Toss Tech · 토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "kind": "company",
+   "date": "2025-04-17",
+   "note": "Retrieval(투타워·그래프·시퀀스)·Ranking(pCTR·pCVR, DeepFM·DLRM·DCN·ESMM)·Re-ranking"
+  },
+  {
+   "n": 4,
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "kind": "company",
+   "date": "2024",
+   "note": "라벨 정의의 노출 잡음·인기 편향·temperature scaling·투타워 후보 생성·배치/실시간 추론·피처 스토어·ONNX Runtime·A/B (이전 풀이에서 자막을 전부 읽은 내용)"
+  },
+  {
+   "n": 5,
+   "title": "TMC25 · 토스 데이터 분석가가 하는 진짜 A/B테스트",
+   "url": "https://www.youtube.com/watch?v=BljJ1jZ7e3U",
+   "kind": "company",
+   "note": "토스의 A/B 테스트 실무 (이전 풀이에서 읽은 내용)"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · Feature Store로 유연하게 ML 고도화하기",
+   "url": "https://www.youtube.com/watch?v=-u3rhd7k2JQ",
+   "kind": "company",
+   "date": "2024",
+   "note": "학습·서빙 피처 저장소 (이전 풀이에서 읽은 내용)"
+  },
+  {
+   "n": 7,
+   "title": "Gutierrez · Gérardin · Causal Inference and Uplift Modelling: A Review of the Literature (2017)",
+   "url": "https://proceedings.mlr.press/v67/gutierrez17a.html",
+   "kind": "reference",
+   "date": "2017",
+   "note": "다른 곳의 공개 문서 — 업리프트의 정의·평가"
+  },
+  {
+   "n": 8,
+   "title": "Künzel 외 · Metalearners for Estimating Heterogeneous Treatment Effects (PNAS 2019)",
+   "url": "https://arxiv.org/abs/1706.03461",
+   "kind": "reference",
+   "date": "2019",
+   "note": "T·S·X-learner"
+  },
+  {
+   "n": 9,
+   "title": "론 코하비 외 · 신뢰할 수 있는 온라인 종합 대조 실험 (한국어판)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "kind": "reference",
+   "note": "A/B 의 SRM·가드레일 지표"
+  },
+  {
+   "n": 10,
+   "title": "Covington 외 · Deep Neural Networks for YouTube Recommendations (RecSys 2016)",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "kind": "reference",
+   "date": "2016",
+   "note": "후보 생성 + 랭킹, 사용자 벡터"
+  },
+  {
+   "n": 11,
+   "title": "Kang · McAuley · Self-Attentive Sequential Recommendation (ICDM 2018)",
+   "url": "https://arxiv.org/abs/1808.09781",
+   "kind": "reference",
+   "date": "2018",
+   "note": "행동 순서 모델"
+  },
+  {
+   "n": 12,
+   "title": "Rajput 외 · Recommender Systems with Generative Retrieval (NeurIPS 2023)",
+   "url": "https://arxiv.org/abs/2305.05065",
+   "kind": "reference",
+   "date": "2023",
+   "note": "semantic ID 를 생성하는 추천"
+  },
+  {
+   "n": 13,
+   "title": "Guo 외 · On Calibration of Modern Neural Networks (2017)",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "kind": "reference",
+   "date": "2017",
+   "note": "보정·temperature scaling"
+  },
+  {
+   "n": 14,
+   "title": "칩 후옌 · 머신러닝 시스템 설계 (한빛미디어, 2023)",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "kind": "reference",
+   "date": "2023",
+   "note": "데이터 누수·학습/서빙 어긋남·감시"
+  },
+  {
+   "n": 15,
+   "title": "Joachims 외 · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "kind": "reference",
+   "date": "2017",
+   "note": "로그의 노출 편향"
+  },
+  {
+   "n": 16,
+   "title": "Google · Rules of Machine Learning",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "kind": "reference",
+   "note": "기준선·지표·로그"
+  },
+  {
+   "n": 17,
+   "title": "Wang 외 · DCN V2: Improved Deep & Cross Network (2020)",
+   "url": "https://arxiv.org/abs/2008.13535",
+   "kind": "reference",
+   "date": "2020",
+   "note": "CTR 모델의 피처 교차"
+  },
+  {
+   "n": 18,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 19,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 21,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 22,
+   "title": "Matheus Facure · Causal Inference for the Brave and True",
+   "url": "https://matheusfacure.github.io/python-causality-handbook/landing-page.html",
+   "kind": "reference",
+   "note": "교란과 무작위 실험, 메타러너 실습"
+  },
+  {
+   "n": 23,
+   "title": "Hinton 외 · Distilling the Knowledge in a Neural Network (2015)",
+   "url": "https://arxiv.org/abs/1503.02531",
+   "kind": "reference",
+   "date": "2015",
+   "note": "모델 증류"
+  },
+  {
+   "n": 24,
+   "title": "Xu 외 · Smart Pacing for Effective Online Ad Campaign Optimization (KDD 2015)",
+   "url": "https://arxiv.org/abs/1506.05851",
+   "kind": "reference",
+   "date": "2015",
+   "note": "광고 예산 페이싱"
+  },
+  {
+   "n": 25,
+   "title": "Edelman · Ostrovsky · Schwarz · Internet Advertising and the Generalized Second-Price Auction (AER 2007)",
+   "url": "https://www.aeaweb.org/articles?id=10.1257/aer.97.1.242",
+   "kind": "reference",
+   "date": "2007",
+   "note": "GSP 경매"
+  }
+ ],
+ "caveat": "이 자리(Intelligence Growth)가 직접 한 공개 발표·기술 글은 찾지 못했습니다. 업무 구조는 이 공고[1]와 같은 회사 쇼핑 추천 글[3]·2024년 커머스 추천 발표[4]로 보였는데 둘 다 홈·푸시가 아니라 쇼핑 추천 이야기라 지금 Growth 팀의 구조와 다를 수 있습니다. 푸시 타겟팅을 다룬 SLASH 24 세션[2]은 소개 페이지만 읽었고 영상은 찾지 못했습니다. 업리프트·보정·페이싱의 '보통 이런 것'은 다른 곳의 공개 논문과 책[7][8][13][24]으로 보였고, 코드 예시의 숫자는 모두 설명용 가정입니다."
+}
