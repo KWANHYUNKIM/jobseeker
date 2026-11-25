@@ -20,6 +20,7 @@
   "ats-greenhouse:coupang:8316768": "coupang-cls-waterflex-logistics-data-analyst",
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
   "ats-greenhouse:coupang:8364554": "coupang-data-ingestion-analytics-director-us",
+  "ats-greenhouse:coupang:8205728": "coupang-dc-observability-senior-staff-seattle",
   "ats-greenhouse:coupang:8275812": "coupang-eats-android-senior-bengaluru",
   "ats-greenhouse:coupang:8333651": "coupang-eats-ios-engineering-manager",
   "ats-greenhouse:coupang:8318669": "coupang-eats-ios-engineering-manager",
@@ -510,6 +511,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 18
+  },
+  {
+   "id": "coupang-dc-observability-senior-staff-seattle",
+   "company": "쿠팡",
+   "role": "Senior Staff Cloud Backend Engineer (데이터센터 관측성·SRE)",
+   "jobs": [
+    "ats-greenhouse:coupang:8205728"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 29
   },
   {
    "id": "coupang-eats-android-senior-bengaluru",
