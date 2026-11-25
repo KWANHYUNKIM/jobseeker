@@ -12,7 +12,9 @@
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
+  "ats-greenhouse:coupang:8094014": "coupang-taiwan-catalog-ai-tpm-director",
   "ats-greenhouse:coupang:8300309": "coupang-taiwan-security-engineering-director",
+  "ats-greenhouse:coupang:8076295": "coupang-transportation-backend-senior-manager-bengaluru",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
   "wanted-389061": "datachain-senior-sre-stablecoin",
   "wanted-395987": "datax-software-engineer-japan",
@@ -377,6 +379,16 @@
    "lines": 24
   },
   {
+   "id": "coupang-taiwan-catalog-ai-tpm-director",
+   "company": "쿠팡",
+   "role": "Technical Program Management 디렉터 — 카탈로그·AI",
+   "jobs": [
+    "ats-greenhouse:coupang:8094014"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
+  },
+  {
    "id": "coupang-taiwan-security-engineering-director",
    "company": "쿠팡 (Coupang)",
    "role": "보안 엔지니어링 디렉터 (대만)",
@@ -385,6 +397,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 19
+  },
+  {
+   "id": "coupang-transportation-backend-senior-manager-bengaluru",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior Manager - Backend Engineering",
+   "jobs": [
+    "ats-greenhouse:coupang:8076295"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 29
   },
   {
    "id": "creationline-fullstack-sherpa-japan",

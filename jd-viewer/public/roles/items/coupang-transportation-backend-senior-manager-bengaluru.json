@@ -1,0 +1,599 @@
+{
+  "id": "coupang-transportation-backend-senior-manager-bengaluru",
+  "company": "쿠팡 (Coupang)",
+  "role": "Senior Manager - Backend Engineering",
+  "team": "Global Operations Technology · 운송(Transportation) 플랫폼, 인도 개발 센터",
+  "jobs": ["ats-greenhouse:coupang:8076295"],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쿠팡의 모든 배송이 지나가는 **운송 플랫폼**(하루 3천만~4천만 건의 거래를 처리하는 이벤트 기반 시스템)을 **여러 나라에서 같이 쓸 수 있게 다시 설계**하는 과제를 맡아, 인도에 **새 팀 8~10명을 꾸려** 끝까지 해냅니다.[1] 이 조직은 출고 계획·실행·배송 추적·예외 처리를 맡고, 배송·네트워크·실행 층을 확장 가능한 구조로 다시 짜는 중이라고 회사가 밝혔습니다.[2]",
+    "env": "인도 벵갈루루 개발 센터, 주 3일 이상 출근하는 하이브리드입니다.[1][4] 한국·인도 팀이 같이 일하는 Global Transportation Systems 조직이고,[2] 기술은 Java 백엔드 · MySQL/Aurora/TiDB · DynamoDB · Kafka/Flink/Spark 입니다.[1]",
+    "oneline": "코드를 매일 짜는 자리가 아니라 **큰 재설계를 쪼개서 일정 안에 내고, 그 일을 할 팀을 처음부터 만드는** 엔지니어링 매니저. 다만 분산 시스템을 설계 리뷰에서 따져 물을 만큼 알아야 합니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "Lead a critical initiative in re-architecting transportation systems for global scalability",
+      "short": "한국용으로 자란 운송 시스템을 여러 나라가 같이 쓰는 구조로 다시 짜는 과제를 이끄는 일.",
+      "why": "공고는 이 자리가 지역마다 따로 만들지 않고 **표준화된 하나의 해법**을 여러 지역에 쓰게 하는 재설계에 집중한다고 적었습니다.[1] 같은 조직을 이끄는 인도 개발 센터 엔지니어링 시니어 디렉터 소개 글도 배송·네트워크·실행 층을 **확장 가능한 구조로 다시 그리는 일**을 이 조직의 과제로 꼽습니다.[2] 쿠팡은 한국 밖으로 대만 등에 사업을 넓히고 있고, 운송 팀 공고는 새 시장 진출을 팀 목표로 적었습니다.[6]",
+      "actually": {
+        "intro": "'글로벌 확장성'은 트래픽만의 문제가 아닙니다. 나라가 바뀌면 바뀌는 것들을 코드 밖으로 빼는 일이 큽니다 {추론}.",
+        "items": [
+          "주소 체계 — 쿠팡은 이미 우편번호 대신 지도 위 육각형 칸(H3, 14단계 ≈ 6.3㎡)으로 배송 구역을 관리하는 방식으로 바꿨습니다.[3] 나라마다 다른 주소 문자열에 기대지 않게 하는 방향입니다 {추론}",
+          "나라·지역별 규칙(배송 약속 시간, 영업일, 운송사, 통화·시간대)을 코드 분기 대신 설정·데이터로 빼기 {추론}",
+          "한 시스템에 여러 나라를 싣는 **멀티테넌트**(입주자마다 데이터·설정을 갈라 두는 구조) 설계 — 시니어 디렉터는 엔지니어에게 고가용·확장·글로벌·멀티테넌트 서비스를 공부하라고 권합니다.[2]",
+          "옛 시스템을 멈추지 않고 새 구조로 조금씩 옮기기 — 새 기능부터 새 쪽에서 받고 옛 쪽을 줄여 가는 '교살자 무화과' 방식이 대표적입니다.[13]",
+          "운송사(대형 화물·운송 회사)와 주고받는 연동을 나라마다 갈아 끼울 수 있게 경계를 나누기 — 운송 팀은 대형 운송 회사와 긴밀히 일한다고 밝혔습니다.[6]"
+        ]
+      },
+      "how_far": "무엇을 어느 나라에 먼저 넣을지는 상위 조직과 사업이 정합니다 {추론}. 매니저는 그 목표를 기술 설계·단계·위험 목록으로 바꾸고, 시니어 엔지니어가 낸 설계의 빈틈(데이터 이관, 되돌리기, 나라별 예외)을 짚을 수 있으면 됩니다 {추론}.",
+      "refs": [1, 2, 3, 6, 13],
+      "study": ["coupang-h3", "strangler", "ddia"]
+    },
+    {
+      "section": "task",
+      "quote": "Build and grow a new engineering team in India, owning end-to-end delivery",
+      "short": "인도에 없던 팀을 새로 만들고, 그 팀이 설계부터 운영까지 통째로 책임지게 하는 일.",
+      "why": "쿠팡 인도 개발 센터는 2023년 말 벵갈루루에서 문을 열었고 2025년 7월 하이데라바드 사무소를 더 열었습니다.[5] 회사는 인도 팀이 맡는 분야로 물류 미들마일·라스트마일 기술을 꼽았습니다.[5] 이 팀도 '새' 팀이라 사람·일하는 방식·담당 범위를 처음부터 세워야 합니다.[1]",
+      "actually": {
+        "items": [
+          "채용 계획 — 어떤 역할(시니어·주니어·SRE 등)을 몇 명, 어떤 순서로 뽑을지 {추론}",
+          "한국 쪽 기존 담당자로부터 시스템을 넘겨받는 인수 계획(문서·코드 리뷰·당번 같이 서기) {추론}",
+          "팀이 맡는 서비스와 그 서비스의 목표 수준(SLO, 서비스 수준 목표 — 예: 요청의 99.9% 를 300ms 안에)을 정하기 — '끝에서 끝까지 책임'의 실제 모양입니다.[18]",
+          "온보딩 — 새 사람이 몇 주 안에 첫 배포를 하게 하는 길 {추론}",
+          "시간대가 다른 한국 팀과 겹치는 시간·문서 중심 협업 규칙 {추론}"
+        ]
+      },
+      "how_far": "인도 개발 센터에는 이미 시니어 디렉터가 있고 한국·인도 팀을 함께 이끕니다.[2] 이 자리는 그 아래에서 팀 하나를 맡는 매니저로 보입니다 {추론}. 조직 전체 설계보다 '내 팀이 무엇을 소유하나'를 분명히 하는 것이 최소선입니다 {추론}.",
+      "refs": [1, 2, 5, 18],
+      "study": ["manager-path", "lethain-sizing"]
+    },
+    {
+      "section": "task",
+      "quote": "Work on high-scale, event-driven systems processing 30–40 million transactions daily",
+      "short": "하루 3천만~4천만 건, 평균 초당 350~460건이 흐르는 이벤트 기반 시스템을 다루는 일.",
+      "why": "공고가 직접 밝힌 규모입니다.[1] 운송 시스템은 출고·적재·허브 도착·배송 완료 같은 **상태 변화가 이벤트로 흘러가는** 구조가 흔합니다 — 배달의민족 배달 팀도 하루 100만 건 넘는 주문을 상태 이벤트로 Kafka 에 실어 나릅니다.[10]",
+      "actually": {
+        "items": [
+          "하루 건수를 초당으로 바꿔 보기 — 평균은 작아 보여도 출고 마감 시간대에 몰립니다(아래 예시) {추론}",
+          "'거래(transaction)'가 무엇을 세는지 먼저 확인 — 배송 한 건이 이벤트 여러 개를 만듭니다 {추론}",
+          "이벤트 하나가 여러 소비자(추적 화면·정산·알림·분석)로 퍼지는 구조 — 같은 토픽을 소비자 그룹이 각자 읽습니다.[11]",
+          "늦게 도착하거나 두 번 도착하는 이벤트를 견디는 처리(순서·중복) [11]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "하루 건수를 초당 건수로",
+          "body": "평균은 초당 수백 건이지만, 하루가 고르게 흐르지 않으니 몰리는 시간을 몇 배로 잡고 용량을 봅니다. 3배는 예시로 둔 값입니다 {추론}.",
+          "lang": "python",
+          "code": "for daily in (30_000_000, 40_000_000):\n    avg = daily / 86_400\n    print(f\"하루 {daily:,}건 -> 평균 초당 {avg:,.0f}건, 3배 몰리면 {avg*3:,.0f}건\")\n# 하루 30,000,000건 -> 평균 초당 347건, 3배 몰리면 1,042건\n# 하루 40,000,000건 -> 평균 초당 463건, 3배 몰리면 1,389건"
+        }
+      ],
+      "how_far": "매니저가 처리량 계산을 직접 할 일은 적지만, 팀이 낸 용량 계획의 숫자가 맞는지 대략 따져 볼 수는 있어야 합니다 {추론}.",
+      "refs": [1, 10, 11],
+      "study": ["kafka-book", "woowa-kafka"]
+    },
+    {
+      "section": "task",
+      "quote": "Solve complex distributed systems challenges that impact every shipment across the platform",
+      "short": "모든 배송이 거치는 시스템이라, 서버 여러 대가 어긋날 때 생기는 문제를 풀어야 하는 일.",
+      "why": "공고는 이 플랫폼이 쿠팡 생태계에서 처리되는 **모든 배송**에 영향을 준다고 적었습니다.[1] 한 곳이 멈추면 배송 약속 시간이 깨지니 가용성과 정확성이 함께 요구됩니다 {추론}.",
+      "actually": {
+        "items": [
+          "같은 배송의 이벤트가 순서가 뒤바뀌어 '배송 완료' 뒤에 '허브 도착'이 덮어쓰는 문제 — 같은 키는 같은 파티션으로 보내 순서를 지킵니다.[11][10]",
+          "DB 저장은 됐는데 이벤트 발행이 실패하는 '이중 쓰기' 문제 — 아웃박스 패턴(같은 트랜잭션에 발행할 이벤트를 표에 적고 따로 내보내기)으로 풉니다.[12][10]",
+          "재시도로 같은 이벤트가 두 번 반영되는 문제 — 이벤트 id 로 한 번만 반영하는 멱등 처리 {추론}",
+          "한 파티션·한 키에 요청이 몰리는 핫스팟 [14]",
+          "여러 서비스에 걸친 상태를 맞추는 일(보상 처리, 대사) {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "키로 파티션을 고르면 같은 배송의 순서가 지켜진다",
+          "body": "배송 id 를 키로 해시해 파티션을 고르면 SHP-1 의 이벤트는 한 파티션에 들어온 순서대로 쌓입니다. 파티션 안에서만 순서가 보장된다는 Kafka 의 성질을 흉내 낸 것입니다.[11]",
+          "lang": "python",
+          "code": "import hashlib\nfrom collections import defaultdict\ndef part(key, n=6):\n    return int(hashlib.md5(key.encode()).hexdigest(), 16) % n\nevents = [(\"SHP-1\",\"PICKED\"),(\"SHP-2\",\"PICKED\"),(\"SHP-1\",\"LOADED\"),\n          (\"SHP-1\",\"ARRIVED_HUB\"),(\"SHP-2\",\"LOADED\"),(\"SHP-1\",\"DELIVERED\")]\nparts = defaultdict(list)\nfor k, ev in events:\n    parts[part(k)].append((k, ev))\nfor p in sorted(parts):\n    print(\"partition\", p, parts[p])\n# partition 2 [('SHP-1','PICKED'), ('SHP-1','LOADED'), ('SHP-1','ARRIVED_HUB'), ('SHP-1','DELIVERED')]\n# partition 5 [('SHP-2','PICKED'), ('SHP-2','LOADED')]"
+        },
+        {
+          "title": "같은 이벤트가 두 번 와도 한 번만 반영",
+          "body": "재시도 때문에 e2 가 두 번 왔지만 이벤트 id 로 걸러 세 건만 반영합니다 {추론}.",
+          "lang": "python",
+          "code": "seen, state = set(), {}\ninbox = [(\"e1\",\"SHP-1\",\"LOADED\"),(\"e2\",\"SHP-1\",\"ARRIVED_HUB\"),\n         (\"e2\",\"SHP-1\",\"ARRIVED_HUB\"),(\"e3\",\"SHP-1\",\"DELIVERED\")]\napplied = 0\nfor eid, shp, st in inbox:\n    if eid in seen:\n        continue\n    seen.add(eid); state[shp] = st; applied += 1\nprint(\"받은\", len(inbox), \"건, 반영\", applied, \"건, 최종\", state)\n# 받은 4 건, 반영 3 건, 최종 {'SHP-1': 'DELIVERED'}"
+        }
+      ],
+      "how_far": "해법을 직접 구현하기보다, 설계 리뷰에서 '순서는 어떻게 지키나, 중복은, 이벤트 유실은, 되돌릴 땐'을 빠짐없이 묻고 답을 판단할 수 있어야 합니다 {추론}.",
+      "refs": [1, 10, 11, 12, 14],
+      "study": ["ddia", "outbox", "kafka-book"]
+    },
+    {
+      "section": "task",
+      "quote": "Lead, hire, and grow a team of 8–10 engineers, setting a high bar for performance and career development",
+      "short": "엔지니어 8~10명을 뽑고 이끌고 키우며, 성과와 성장의 기준을 높게 잡는 일.",
+      "why": "공고가 팀 규모를 8~10명으로 적었습니다.[1] 관리자 한 명이 6~8명을 맡는 것이 알맞고 그보다 많으면 코칭할 시간이 모자란다는 것이 흔히 인용되는 기준이라,[19] 10명에 가까워지면 테크 리드를 세우거나 팀을 둘로 나눌지 정해야 할 수 있습니다 {추론}.",
+      "actually": {
+        "items": [
+          "채용 — 직무 기술서, 면접 질문·평가 기준, 면접관 맞추기 {추론}",
+          "1:1 면담과 성장 계획(다음 직급에 필요한 것을 구체적 일로) [20]",
+          "성과 평가와 낮은 성과 다루기 — 기대를 글로 남기고 기간을 정해 확인 [20]",
+          "쿠팡 리더십 원칙에 맞춘 평가 기준 — 채용 사이트는 리더십 원칙 15가지를 공개합니다.[7]"
+        ]
+      },
+      "level": {
+        "basic": "1:1 을 정기적으로 하고 팀원마다 성장 목표가 글로 있다",
+        "work": "채용 기준을 만들어 면접관끼리 맞추고, 낮은 성과를 기간을 정해 다뤄 본 적이 있다",
+        "team": "새 나라에서 처음부터 8~10명을 뽑아 한 팀으로 돌게 만든다 [1]"
+      },
+      "how_far": "직급·보상 체계는 회사가 정합니다. 매니저는 그 틀 안에서 누구를 뽑고, 누구를 어떤 근거로 올리거나 다잡을지 판단합니다 {추론}.",
+      "refs": [1, 7, 19, 20],
+      "study": ["manager-path", "lethain-sizing"]
+    },
+    {
+      "section": "task",
+      "quote": "Drive the execution of a key platform initiative focused on re-architecting systems for global use cases",
+      "short": "여러 나라용 재설계라는 큰 과제를 실제 일정과 결과로 밀고 가는 일.",
+      "why": "첫 줄의 재설계를 '실행' 쪽에서 다시 적은 줄입니다.[1] 시니어 디렉터 글이 말하는 배송·네트워크·실행 층 재설계가 그 과제로 보입니다 {추론}[2].",
+      "actually": {
+        "items": [
+          "단계 나누기 — 한 번에 갈아엎지 않고 기능 단위로 새 구조에 옮기는 순서 [13]",
+          "단계마다 '되돌릴 수 있나'를 정하기(옛 길 남겨 두기, 이중 쓰기 후 비교) {추론}",
+          "조직 목표(OKR)와 묶기 — 이 조직은 OKR 로 움직인다고 밝혔습니다.[2]",
+          "정기 진척 보고와 막힌 곳 올리기 {추론}"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "옛 시스템에서 새 구조로 옮기는 흔한 순서",
+          "steps": ["목표 정하기 · 어느 나라·어느 기능을 먼저", "설계 · 새 구조와 옛 구조의 경계", "길 나누기 · 새 요청 일부만 새 쪽으로", "비교 · 두 쪽 결과를 맞춰 보기", "넘기기 · 비율을 늘리고 옛 쪽 끄기"],
+          "mine_from": 0
+        }
+      ],
+      "how_far": "기술 결정의 세부는 시니어 엔지니어와 나누고, 매니저는 순서·일정·위험을 책임집니다.[1] {추론}",
+      "refs": [1, 2, 13],
+      "study": ["strangler", "manager-path"]
+    },
+    {
+      "section": "task",
+      "quote": "Break down complex problem statements into clear technical designs and execution plans, partnering with senior engineers",
+      "short": "막연한 문제를 시니어 엔지니어와 함께 설계 문서와 실행 계획으로 쪼개는 일.",
+      "why": "공고는 이 쪼개기를 시니어 엔지니어와 '함께' 한다고 적었습니다.[1] 설계를 혼자 하는 자리가 아니라 설계가 나오게 하는 자리라는 뜻입니다 {추론}.",
+      "actually": {
+        "items": [
+          "문제 정의 — 무엇이 안 되고 있고, 다 되면 무엇이 달라지나(지표 하나) {추론}",
+          "설계 문서 — 대안 2~3개와 버린 이유, 데이터 흐름, 실패할 때 동작 {추론}",
+          "일감 나누기 — 몇 주 단위로 끝나는 덩어리, 덩어리 사이 의존 관계 {추론}",
+          "추정 — 덩어리마다 크기와 불확실성 {추론}"
+        ]
+      },
+      "how_far": "설계 문서를 매니저가 쓰지 않아도 됩니다. 다만 대안 비교가 빠졌거나 실패 동작이 비어 있으면 돌려보낼 수 있어야 합니다 {추론}.",
+      "refs": [1],
+      "study": ["ddia", "sysdesign"]
+    },
+    {
+      "section": "task",
+      "quote": "Own end-to-end delivery, ensuring projects are executed efficiently with strong planning, tracking, and outcomes",
+      "short": "계획부터 출시·결과 확인까지 끝을 책임지고, 진척을 계속 추적하는 일.",
+      "why": "공고가 계획·추적·결과를 나란히 적었습니다.[1] 운송 시스템은 모든 배송에 영향을 주니 '냈다'에서 끝나지 않고 '돌아가서 숫자가 좋아졌다'까지가 끝입니다 {추론}[1].",
+      "actually": {
+        "items": [
+          "일정표와 마일스톤, 주간 진척 확인 {추론}",
+          "출시 기준 — 무엇이 통과돼야 내보내나(테스트·부하 시험·되돌리기 연습) {추론}",
+          "출시 뒤 지표 — 오류율·지연·처리량이 목표(SLO) 안인가 [18]",
+          "늦어질 때 범위를 줄일지 날짜를 미룰지 일찍 알리기 {추론}"
+        ]
+      },
+      "how_far": "자기 팀의 일을 끝까지 책임지는 것이 최소선이고, 다른 팀에 걸린 일은 그 팀과 날짜를 맞춰 두는 것까지 맡습니다 {추론}.",
+      "refs": [1, 18],
+      "study": ["sre-book", "manager-path"]
+    },
+    {
+      "section": "task",
+      "quote": "Apply strong program management practices including risk identification, mitigation, and stakeholder communication",
+      "short": "위험을 미리 찾아 줄이고, 관계자에게 상황을 꾸준히 알리는 프로젝트 관리를 하는 일.",
+      "why": "여러 나라·여러 팀에 걸친 재설계는 일정이 다른 팀에 묶이기 쉬워서 위험 관리를 따로 적은 것으로 보입니다 {추론}[1].",
+      "actually": {
+        "items": [
+          "위험 목록 — 위험, 일어날 가능성, 영향, 줄이는 방법, 담당, 다시 볼 날 {추론}",
+          "운송 쪽 흔한 위험: 성수기(대형 할인 행사) 코드 동결 기간, 운송사 연동 일정, 데이터 이관 중 불일치 {추론}",
+          "관계자 표 — 누구에게 무엇을 얼마나 자주(운영팀은 주간, 경영진은 월간 같은) {추론}",
+          "나쁜 소식을 일찍 알리는 규칙 {추론}"
+        ]
+      },
+      "how_far": "전담 프로그램 매니저(TPM)가 붙는 조직도 있지만, 공고는 이 일을 매니저에게 직접 요구합니다.[1] 위험 목록 하나를 꾸준히 갱신하고 주간 보고를 빠짐없이 하는 것이 최소선입니다 {추론}.",
+      "refs": [1],
+      "study": ["manager-path"]
+    },
+    {
+      "section": "task",
+      "quote": "Collaborate cross-functionally with global teams to align on priorities and drive large-scale initiatives forward",
+      "short": "한국 등 다른 나라 팀과 우선순위를 맞추며 큰 과제를 같이 밀고 가는 일.",
+      "why": "이 조직은 한국과 인도 팀이 함께 운송 시스템을 만듭니다.[2] 운송 팀은 운영팀과 외부 운송 회사와도 긴밀히 일한다고 밝혔습니다.[6]",
+      "actually": {
+        "items": [
+          "한국 본사 쪽 제품·운영 담당과 분기 우선순위 맞추기 [2]",
+          "다른 팀의 API·이벤트 형식을 바꿀 때 합의와 이관 일정 {추론}",
+          "시간대 차이(한국과 인도는 3시간 30분) 안에서 겹치는 회의 시간과 문서 중심 소통 {추론}"
+        ]
+      },
+      "how_far": "다른 팀의 우선순위를 정할 권한은 없으니, 내 과제가 왜 먼저인지 근거(지표·영향 범위)로 설득하는 것까지가 몫입니다 {추론}.",
+      "refs": [2, 6],
+      "study": ["manager-path"]
+    },
+    {
+      "section": "task",
+      "quote": "Build and evolve an event-driven, highly scalable system processing tens of millions of daily transactions",
+      "short": "하루 수천만 건을 처리하는 이벤트 기반 시스템을 만들고 계속 고쳐 가는 일.",
+      "why": "앞의 '하루 3천만~4천만 건' 줄을 업무 쪽에서 다시 적은 줄입니다.[1] 시니어 디렉터 글은 이 조직이 출고 계획·실행·추적·예외 처리를 맡는다고 밝혔습니다.[2]",
+      "actually": {
+        "intro": "운송 시스템에서 이벤트 기반이 보통 어떻게 생기는지는 배달의민족 배달 팀 글이 공개 예로 좋습니다.[10]",
+        "items": [
+          "상태가 바뀌면 DB(MySQL)에 저장하고 같은 트랜잭션으로 아웃박스 표에 이벤트를 적는다 → 변경 로그(CDC)를 읽는 커넥터가 Kafka 로 낸다 [10][12]",
+          "배송·주문 id 를 키로 써서 같은 건의 순서를 지킨다 [10]",
+          "추적 화면·알림·분석이 같은 토픽을 각자 읽는다 [10][11]",
+          "흐르는 이벤트를 그대로 집계(상태별 건수, 늦어지는 배송 감지)할 때 Flink·Kafka Streams 같은 스트림 처리를 쓴다 [17][10]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "배송 상태 이벤트가 흐르는 보통의 길(다른 회사 공개 예)[10]",
+          "steps": ["상태 변경 · 서비스가 DB 에 저장", "아웃박스 · 같은 트랜잭션에 이벤트 기록", "발행 · 변경 로그를 읽어 Kafka 로", "소비 · 추적·알림·정산이 각자 읽기", "집계 · 스트림 처리로 실시간 지표"],
+          "mine_from": 0
+        }
+      ],
+      "how_far": "쿠팡 운송 시스템의 실제 구성은 공개되지 않았습니다. 위 흐름은 '보통 이런 것'이고, 입사 뒤 실제 구조를 먼저 익혀야 합니다 {추론}.",
+      "refs": [1, 2, 10, 11, 12, 17],
+      "study": ["woowa-kafka", "outbox", "kafka-book", "flink-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "Establish a high-performance engineering culture with focus on accountability, ownership, and continuous improvement",
+      "short": "맡은 일은 끝까지 책임지고, 계속 고쳐 가는 팀 문화를 세우는 일.",
+      "why": "쿠팡은 리더십 원칙을 채용 사이트에 공개하고 이를 일하는 기준으로 씁니다.[7] 이 조직은 엔지니어가 기술 결정을 스스로 내리게 한다고 소개합니다.[2]",
+      "actually": {
+        "items": [
+          "장애 뒤 사람 탓 없이 원인과 재발 방지를 적는 사후 검토 [18]",
+          "서비스마다 담당 팀과 당번을 분명히 하기 {추론}",
+          "정기 회고와 고친 것 추적 {추론}",
+          "'누가 결정하나'를 글로 정하기(설계 승인, 출시 승인) {추론}"
+        ]
+      },
+      "how_far": "새 팀이라 문화를 처음 정하는 사람이 매니저입니다.[1] 사후 검토·회고·당번 규칙 셋을 첫 분기 안에 돌게 하는 것이 현실적인 최소선입니다 {추론}.",
+      "refs": [1, 2, 7, 18],
+      "study": ["sre-book", "manager-path"]
+    },
+    {
+      "section": "qualification",
+      "quote": "8+ years of software engineering experience with 3+ years in engineering management",
+      "short": "개발 경력 8년 이상, 그중 엔지니어링 관리자 경력 3년 이상.",
+      "why": "새 팀을 처음부터 세우는 자리라 관리 경험을 따로 요구합니다.[1]",
+      "actually": {
+        "items": [
+          "'관리 3년'은 보통 사람을 직접 평가·채용해 본 기간을 뜻합니다 — 기술 리드만 한 기간과 구분해 말할 준비 {추론}",
+          "이력서에 팀 규모·채용 인원·낸 과제를 숫자로 {추론}"
+        ]
+      },
+      "how_far": "숫자는 필수 요건입니다.[1] 관리 경력이 짧다면 테크 리드 매니저(코드와 사람을 같이 맡음) 경험을 구체적으로 보여야 합니다 {추론}.",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "Strong technical background in Java backend development and distributed systems",
+      "short": "Java 백엔드와 분산 시스템을 깊게 아는 기술 배경.",
+      "why": "공고가 이 자리의 기술 스택으로 Java 를 들었고,[1] 쿠팡의 다른 운송·물류 백엔드 공고도 Java 기반입니다 {추론}[6].",
+      "actually": {
+        "items": [
+          "Java 서버의 동시성(스레드 풀, 락, 가시성) — 처리량 문제를 읽는 바탕 {추론}",
+          "JVM 메모리·GC 로그를 읽어 지연이 튀는 원인 찾기 {추론}",
+          "분산 시스템의 기본 — 복제, 분할, 합의, 부분 실패 [21]"
+        ]
+      },
+      "level": {
+        "basic": "Spring 기반 Java 서비스를 만들어 운영해 봤다",
+        "work": "동시성·GC 문제를 직접 진단해 고쳐 봤고, 복제·분할의 대가를 설명할 수 있다",
+        "team": "여러 서비스에 걸친 장애를 설계 수준에서 원인과 대책으로 말할 수 있다 [1][2]"
+      },
+      "how_far": "매니저가 매일 코드를 짜지는 않아도, 면접에서 시스템 설계를 직접 그리게 될 가능성이 큽니다 {추론}.",
+      "refs": [1, 6, 21],
+      "study": ["java-thread", "jvm-tuning", "ddia"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience managing teams of 10+ engineers through full development lifecycle",
+      "short": "엔지니어 10명 넘는 팀을 기획부터 운영까지 이끈 경험.",
+      "why": "맡을 팀은 8~10명이지만 요건은 10명 이상입니다.[1] 그 규모를 이미 다뤄 본 사람을 원한다는 뜻으로 읽힙니다 {추론}.",
+      "actually": {
+        "items": [
+          "10명이 넘으면 관리자 한 명의 코칭 시간이 모자라 테크 리드를 두거나 팀을 나누는 결정을 하게 됩니다 — 이 결정을 해 본 이야기 [19]",
+          "'전체 주기' — 요구사항·설계·개발·테스트·출시·운영까지 한 팀이 맡아 본 경험 {추론}"
+        ]
+      },
+      "how_far": "팀을 나눴거나 리드를 세운 경험이 있으면 가장 좋은 근거입니다 {추론}.",
+      "refs": [1, 19],
+      "study": ["lethain-sizing", "manager-path"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Hands-on experience with relational databases (MySQL, Aurora, TiDB) and NoSQL (DynamoDB)",
+      "short": "MySQL·Aurora·TiDB 같은 관계형 DB와 DynamoDB를 직접 써 본 경험.",
+      "why": "공고가 DB 이름을 넷이나 적었습니다.[1] 셋은 MySQL 계열(Aurora 는 AWS 의 MySQL 호환 관리형 DB,[16] TiDB 는 MySQL 호환이면서 여러 서버로 수평 확장되는 분산 DB[15])이고, DynamoDB 는 키로 읽고 쓰는 관리형 NoSQL 입니다.[14]",
+      "actually": {
+        "items": [
+          "어떤 데이터를 어디에 두나 — 여러 표를 묶어 바꿔야 하는 배송 상태는 관계형, 키 하나로 대량 조회하는 추적 기록은 DynamoDB 같은 갈림 {추론}",
+          "MySQL 한 대가 모자랄 때의 선택 — 읽기 복제본(Aurora), 샤딩, 처음부터 분산 SQL(TiDB) [15][16]",
+          "DynamoDB 파티션 키 설계 — 요청이 키마다 고르게 퍼지게 해야 한다는 것이 공식 권고입니다.[14]",
+          "인덱스·실행 계획을 읽어 느린 쿼리 고치기 {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "파티션 키를 날짜로 잡으면 한 칸에 몰린다",
+          "body": "오늘 배송 1만 건을 날짜로 키를 잡으면 8칸 중 한 칸에 다 들어가고, 배송 id 로 잡으면 칸마다 1,200~1,295건으로 퍼집니다. DynamoDB 가 키를 고르게 퍼지게 하라는 이유입니다.[14]",
+          "lang": "python",
+          "code": "import hashlib\nfrom collections import Counter\ndef part(key, n=8):\n    return int(hashlib.md5(key.encode()).hexdigest(), 16) % n\nrows = [(\"2026-11-25\", f\"SHP-{i}\") for i in range(10_000)]\nby_date = Counter(part(d) for d, _ in rows)\nby_ship = Counter(part(s) for _, s in rows)\nprint(\"날짜 키:\", dict(by_date))\nprint(\"배송ID 키: 최대\", max(by_ship.values()), \"최소\", min(by_ship.values()))\n# 날짜 키: {6: 10000}\n# 배송ID 키: 최대 1295 최소 1200"
+        }
+      ],
+      "level": {
+        "basic": "MySQL 스키마·인덱스를 설계하고 느린 쿼리를 고쳐 봤다",
+        "work": "관계형과 NoSQL 을 용도에 따라 나눠 써 봤고 DynamoDB 키 설계의 함정을 안다",
+        "team": "하루 수천만 건 규모에서 저장소를 바꾸거나 나누는 결정을 이끈다 [1]"
+      },
+      "how_far": "네 가지를 다 깊게 쓸 필요는 없어 보입니다 {추론}. MySQL 하나를 깊게, 나머지는 '왜 그걸 고르나'를 말할 수 있으면 됩니다 {추론}.",
+      "refs": [1, 14, 15, 16],
+      "study": ["dynamodb-docs", "tidb-docs", "ddia"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Experience with event-driven architectures and streaming platforms (Kafka, Flink, or Spark)",
+      "short": "이벤트 기반 구조와 Kafka·Flink·Spark 같은 스트리밍 도구를 써 본 경험.",
+      "why": "이 플랫폼이 이벤트 기반이라고 공고가 두 번 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "Kafka — 토픽·파티션·소비자 그룹, 파티션 안에서만 순서 보장, 재전송과 중복 [11]",
+          "Flink — 흐르는 이벤트를 상태를 들고 처리(창 집계, 늦게 온 이벤트) [17]",
+          "Spark — 주로 모아서 한꺼번에 처리(배치)나 작은 묶음 스트리밍 {추론}",
+          "'또는(or)'이라 셋 중 하나를 깊게 써 봤으면 됩니다.[1]"
+        ]
+      },
+      "how_far": "Kafka 를 운영 환경에서 써 보고 순서·중복·유실 문제를 겪어 본 경험이 가장 직접적인 근거입니다 {추론}.",
+      "refs": [1, 11, 17],
+      "study": ["kafka-book", "flink-docs", "woowa-kafka"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Track record of delivering large-scale, high-reliability platforms on time",
+      "short": "크고 안정성이 중요한 플랫폼을 약속한 날짜에 낸 실적.",
+      "why": "모든 배송이 거치는 플랫폼이라 큰 규모·높은 안정성·일정을 함께 요구합니다.[1]",
+      "actually": {
+        "items": [
+          "'높은 안정성'은 숫자로 — 가용성 목표(예: 99.9%·99.99%)와 그것을 지켰는지 [18]",
+          "'제때'는 처음 약속한 날짜와 실제 날짜, 바뀌었다면 언제 알렸는지 {추론}",
+          "실패한 과제에서 무엇을 바꿨는지도 실적이 됩니다 {추론}"
+        ]
+      },
+      "how_far": "면접에서 과제 하나를 규모·안정성 숫자·일정으로 끝까지 설명할 수 있으면 됩니다 {추론}.",
+      "refs": [1, 18],
+      "study": ["sre-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Strong communication skills — ability to translate between business stakeholders and engineering teams",
+      "short": "사업 쪽 말과 개발 쪽 말을 서로 옮겨 줄 수 있는 소통 능력.",
+      "why": "운송 조직은 운영팀에 출고 계획·추적·예외 처리 도구를 만들어 주는 곳이라,[2] 운영 쪽 요구를 기술 과제로, 기술 제약을 운영 쪽 언어로 바꿔야 합니다 {추론}.",
+      "actually": {
+        "items": [
+          "'배송이 늦다'를 '허브 도착 이벤트가 몇 분 늦게 처리된다'로 바꾸기 {추론}",
+          "'파티션을 늘려야 한다'를 '성수기에 추적 화면이 몇 분 늦어질 위험'으로 바꾸기 {추론}",
+          "선택지를 비용·일정·위험으로 나란히 보여 주고 결정을 받기 {추론}"
+        ]
+      },
+      "how_far": "영어로 일하는 다국적 조직이라 영어 소통이 전제입니다 {추론}[1].",
+      "refs": [1, 2]
+    },
+    {
+      "section": "qualification",
+      "quote": "BS/MS in Computer Science or equivalent practical experience",
+      "short": "컴퓨터공학 학사·석사 또는 그에 맞먹는 실무 경험.",
+      "why": "학위가 없어도 같은 수준의 실무 경험이면 된다고 공고가 열어 두었습니다.[1]",
+      "actually": {
+        "items": [
+          "학위보다 앞의 경력 요건(8년·관리 3년)이 실제 문턱입니다 {추론}"
+        ]
+      },
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience working on large-scale distributed or event-driven systems",
+      "short": "큰 분산·이벤트 기반 시스템에서 일해 본 경험이면 더 좋다.",
+      "why": "자격요건의 분산 시스템·이벤트 줄을 '큰 규모'로 한 번 더 강조한 것입니다.[1]",
+      "actually": {
+        "items": [
+          "하루 수백만 건 이상을 처리한 시스템에서 장애를 겪고 고친 이야기 {추론}",
+          "규모가 커지며 구조를 바꾼 경험(동기 호출 → 이벤트, DB 하나 → 나누기) {추론}"
+        ]
+      },
+      "refs": [1],
+      "study": ["ddia", "sysdesign"]
+    },
+    {
+      "section": "preference",
+      "quote": "Prior experience in e-commerce, transportation, logistics, or platform engineering domains",
+      "short": "커머스·운송·물류·플랫폼 분야에서 일해 본 경험이면 더 좋다.",
+      "why": "이 자리는 쿠팡 운송 생태계의 플랫폼입니다.[1] 물류 쪽 말(미들마일 — 물류센터와 배송 거점 사이 간선 운송, 라스트마일 — 거점에서 고객까지)은 인도 개발 센터가 맡는 분야 이름에도 나옵니다.[5]",
+      "actually": {
+        "items": [
+          "운송 도메인의 기본 낱말 — 출고, 간선(라인홀), 허브, 분류, 배송 기사 배정, 배송 약속 시간 {추론}",
+          "쿠팡이 공개한 배송 구역 관리 글 — 우편번호로 나누던 구역이 하루 수백 건으로 커져 육각형 칸 지도로 바꾼 사례 [3]",
+          "주소 관리·경로·고객 배송 선호를 ML·LLM 으로 고도화하는 것이 이 조직의 과제로 소개됐습니다.[2]"
+        ]
+      },
+      "how_far": "물류 경험이 없다면 쿠팡 배송 구역 글과 시니어 디렉터 글만 읽고 가도 면접에서 도메인 질문에 답할 거리가 생깁니다 {추론}[2][3].",
+      "refs": [1, 2, 3, 5],
+      "study": ["coupang-h3"]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience building or re-architecting systems for global scalability",
+      "short": "여러 나라로 넓히려고 시스템을 만들거나 다시 짜 본 경험이면 더 좋다.",
+      "why": "이 자리의 핵심 과제가 여러 나라용 재설계라서입니다.[1][2]",
+      "actually": {
+        "items": [
+          "나라별 설정 분리, 다국어·시간대·통화 처리 {추론}",
+          "지역마다 데이터를 어디에 두나(법·지연 시간) {추론}",
+          "멀티테넌트 구조 — 시니어 디렉터가 이 조직 엔지니어에게 권한 주제입니다.[2]"
+        ]
+      },
+      "refs": [1, 2],
+      "study": ["ddia", "strangler"]
+    },
+    {
+      "section": "preference",
+      "quote": "Strong track record of driving cross-team initiatives in fast-paced environments",
+      "short": "빠르게 바뀌는 환경에서 여러 팀에 걸친 과제를 이끈 실적이면 더 좋다.",
+      "why": "운송 팀은 빠르게 바뀌는 사업 요구에 대응하면서 큰 그림을 놓치지 않는 것을 엔지니어의 역할로 적었습니다.[6]",
+      "actually": {
+        "items": [
+          "내 팀이 아닌 팀의 일정이 걸린 과제를 끝낸 이야기 — 어떻게 합의했고 무엇을 포기했나 {추론}"
+        ]
+      },
+      "refs": [6],
+      "study": ["manager-path"]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience hiring and scaling engineering teams in a high-growth setup",
+      "short": "빠르게 크는 조직에서 엔지니어를 뽑고 팀을 키워 본 경험이면 더 좋다.",
+      "why": "인도 개발 센터는 2023년 말 문을 연 뒤 회사가 가장 빨리 크는 해외 기술 거점이라고 소개했고, 벵갈루루·하이데라바드에서 넓게 채용 중입니다.[5]",
+      "actually": {
+        "items": [
+          "몇 달 안에 여러 명을 뽑을 때 면접관 늘리기·기준 맞추기 {추론}",
+          "팀이 커지며 나누는 시점과 방법 [19]"
+        ]
+      },
+      "refs": [5, 19],
+      "study": ["lethain-sizing"]
+    },
+    {
+      "section": "preference",
+      "quote": "Type of work model",
+      "short": "근무 방식 안내 — 아래 줄이 그 내용이다.",
+      "why": "쿠팡 공고에 공통으로 붙는 안내 머리말입니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "Our Hybrid work model: Coupang hybrid work model is designed to enable a culture of collaboration",
+      "short": "주 3일 이상 사무실 출근, 주 2일 재택 가능한 하이브리드다(직무에 따라 더 출근).",
+      "why": "쿠팡 공통 근무 규칙입니다. 주 3일 이상 출근, 직무에 따라 주 2일 재택이 가능하고 일부 사업은 더 출근할 수 있다고 적었습니다.[1]",
+      "how_far": "새 팀을 처음 꾸리는 시기에는 출근이 더 잦을 수 있습니다 {추론}.",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "Details to consider",
+      "short": "채용 관련 법정 안내 머리말이다.",
+      "why": "쿠팡 공고에 공통으로 붙는 안내 머리말입니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "Those eligible for employment protection (recipients of veteran",
+      "short": "보훈 대상자·장애인 등 고용 보호 대상은 관련 법에 따라 우대될 수 있다는 안내다.",
+      "why": "쿠팡 공고에 공통으로 붙는 법정 안내입니다.[1]",
+      "refs": [1]
+    }
+  ],
+  "resources": [
+    {"id": "coupang-h3", "title": "Coupang Rocket Delivery's spatial index-based delivery management system", "by": "Coupang Engineering · 2023-04-17", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/coupang-rocket-delivery-s-spatial-index-based-delivery-management-system/", "why": "쿠팡이 직접 쓴 배송 구역 시스템 글. 우편번호 → 육각형 칸으로 바꾼 이유와 저장 방식 — 운송 도메인 우대사항과 '주소에 기대지 않는 글로벌 구조'의 실마리."},
+    {"id": "woowa-kafka", "title": "우리 팀은 카프카를 어떻게 사용하고 있을까 (How Our Team Uses Kafka)", "by": "우아한형제들 기술블로그 · 2024", "kind": "doc", "lang": "ko", "free": true, "level": "실무", "url": "https://techblog.woowahan.com/20078/", "why": "하루 100만 건 넘는 배달 상태 이벤트를 아웃박스·CDC·키·Kafka Streams 로 나르는 실제 구성. 업무 '이벤트 기반 시스템' 줄의 '보통 이런 것'."},
+    {"id": "kafka-book", "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/kafka", "why": "토픽·파티션·키·소비자 그룹을 실제 명령과 레코드로. 자격요건 'Kafka' 줄과 순서·중복 문제를 손으로 확인한다."},
+    {"id": "ddia", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 정재부·김영준·이도경 옮김 · 위키북스 · 2018", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://wikibook.co.kr/data-intensive-applications/", "why": "복제·분할·트랜잭션·스트림 처리를 한 그림으로. 분산 시스템·RDB/NoSQL·이벤트 요건 전체의 바탕이고 설계 리뷰에서 물을 질문을 준다."},
+    {"id": "sysdesign", "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초", "by": "알렉스 쉬 · 인사이트", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88", "why": "규모 추정·메시지 큐·분할을 면접 형식으로. 매니저 면접에서도 나오는 시스템 설계 질문 연습."},
+    {"id": "outbox", "title": "Pattern: Transactional outbox", "by": "Chris Richardson · microservices.io", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://microservices.io/patterns/data/transactional-outbox.html", "why": "DB 저장과 이벤트 발행이 어긋나는 문제의 표준 해법. '분산 시스템 문제를 푼다' 줄에서 가장 먼저 나올 이야기."},
+    {"id": "strangler", "title": "Strangler Fig Application", "by": "Martin Fowler", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://martinfowler.com/bliki/StranglerFigApplication.html", "why": "옛 시스템을 멈추지 않고 새 구조로 옮기는 방식. 업무 '재설계' 줄을 단계 계획으로 바꿀 때."},
+    {"id": "dynamodb-docs", "title": "Best practices for designing and using partition keys effectively", "by": "AWS DynamoDB 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html", "why": "파티션 키를 고르게 퍼지게 하는 법. 자격요건 'DynamoDB' 줄의 핵심 함정."},
+    {"id": "tidb-docs", "title": "TiDB Introduction", "by": "PingCAP 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.pingcap.com/tidb/stable/overview", "why": "MySQL 호환 분산 SQL 의 구조. MySQL 한 대가 모자랄 때 TiDB 를 왜 고르나를 말하려면."},
+    {"id": "flink-docs", "title": "Apache Flink · Stateful Stream Processing", "by": "Apache Flink 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/", "why": "상태를 들고 흐르는 이벤트를 처리하는 개념. 자격요건 'Flink' 줄과 실시간 지연 감지 같은 일에."},
+    {"id": "java-thread", "title": "실전 자바 — 멀티스레드와 동시성 (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/java-thread", "why": "스레드 이름과 실행 순서를 찍어 보며 동시성을 익힌다. 'Java 백엔드' 요건의 바탕."},
+    {"id": "jvm-tuning", "title": "자바 성능 튜닝 — JVM 과 GC (우리 사이트 책)", "by": "우리 서가", "kind": "internal", "lang": "ko", "free": true, "level": "심화", "url": "/wiki/jvm-tuning", "why": "GC 로그를 읽어 지연이 튀는 원인을 찾는다. 대량 처리 Java 서버를 리뷰할 때."},
+    {"id": "sre-book", "title": "사이트 신뢰성 엔지니어링", "by": "벳시 베이어 외 · 제이펍 · 2018 (원서는 sre.google 에서 무료)", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%82%AC%EC%9D%B4%ED%8A%B8%20%EC%8B%A0%EB%A2%B0%EC%84%B1%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81", "why": "SLO·오류 예산·사후 검토. '높은 안정성 플랫폼'과 '끝까지 책임'을 팀 규칙으로 바꾸는 방법."},
+    {"id": "manager-path", "title": "개발 7년차, 매니저 1일차", "by": "카미유 푸르니에 · 권원상·한민주 옮김 · 한빛미디어 · 2020", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423", "why": "1:1·팀 리드·여러 팀 관리 단계별로 할 일. 채용·성장·성과 관리 업무 줄 전체의 바탕."},
+    {"id": "lethain-sizing", "title": "Sizing engineering teams", "by": "Will Larson · lethain.com", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://lethain.com/sizing-engineering-teams/", "why": "관리자 한 명이 몇 명을 맡을 때 팀이 잘 도나 — 8~10명 팀을 언제 나누고 리드를 세울지 판단하는 기준."}
+  ],
+  "study_path": [
+    {"title": "운송 도메인과 이 조직 읽기", "time": "1주", "goal": "쿠팡 운송 조직이 무엇을 맡고 무엇을 다시 짜는지, 배송 한 건이 어떤 상태를 지나는지 설명할 수 있다.", "task": "가상 배송 한 건의 상태(출고 → 간선 적재 → 허브 도착 → 배송 출발 → 완료)를 그림 한 장으로 그리고, 상태마다 '누가 이벤트를 내고 누가 읽나'를 적는다.", "resources": ["coupang-h3"]},
+    {"title": "이벤트 기반 시스템 손으로 확인", "time": "2주", "goal": "키로 순서를 지키고, 아웃박스로 유실을 막고, 이벤트 id 로 중복을 거르는 구조를 직접 돌려 본다.", "task": "로컬 Kafka 에 가상 배송 1만 건의 상태 이벤트를 배송 id 키로 넣고, 소비자를 둘로 늘려도 건마다 순서가 지켜지는지와 일부러 재전송한 이벤트가 한 번만 반영되는지 확인한다.", "resources": ["kafka-book", "woowa-kafka", "outbox"]},
+    {"title": "저장소 고르기와 규모 계산", "time": "2주", "goal": "하루 수천만 건에서 관계형과 DynamoDB 를 어디에 쓰고, 키를 어떻게 잡을지 근거로 말할 수 있다.", "task": "같은 추적 기록을 날짜 키 · 배송 id 키 · 배송 id+날짜 키로 나눠 넣는 모의 실험을 하고, 칸마다 몰림과 '오늘 늦은 배송' 조회 비용을 표로 비교한다.", "resources": ["dynamodb-docs", "tidb-docs", "ddia"]},
+    {"title": "재설계를 계획으로", "time": "1~2주", "goal": "'한국용 시스템을 여러 나라용으로'를 단계·되돌리기·위험 목록이 있는 한 쪽짜리 계획으로 쓸 수 있다.", "task": "가상의 '배송 약속 시간 계산' 서비스를 나라별 설정으로 빼는 이관 계획을 쓴다 — 단계 4개, 단계마다 비교 방법과 되돌리기, 위험 5개와 대책, 관계자 보고 주기.", "resources": ["strangler", "sre-book"]},
+    {"title": "새 팀 세우기", "time": "1주", "goal": "8~10명 팀의 채용 순서·온보딩·당번·회고 규칙을 처음 분기 계획으로 만든다.", "task": "가상의 '인도 신규 팀 첫 90일' 문서를 쓴다 — 뽑을 역할과 순서, 면접 평가표, 4주 온보딩 일정, 사후 검토 양식, 10명을 넘을 때 나누는 기준.", "resources": ["manager-path", "lethain-sizing"]}
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없고 인도 법인 숫자도 공개되지 않았다. 공시로 확인되는 것은 **전 세계 직원 보수 중간값(2025년 3만 3,831달러)** 뿐이고, 비교로 같은 회사 **미국 백엔드 디렉터 공고 기본급($159,000~$324,000)** 을 싣는다 — 둘 다 이 자리 연봉이 아니다",
+    "rows": [
+      {"label": "쿠팡 Inc. 전 직원 보수 중간값", "value": "3만 3,831달러 / 년","basis": "공시(미국 위임장) · 2025년", "note": "CEO 를 뺀 전 세계 직원의 가운데 값. 한국 물류·현장 직원이 많이 섞인 값을 2025년 평균 환율로 달러로 바꿨다 [8]"},
+      {"label": "다른 자리 비교 — 미국 백엔드 디렉터 기본급", "value": "$159,000 ~ $324,000 / 년", "peer": true, "basis": "공고 · 2026년 (미국 마운틴뷰·시애틀)", "note": "같은 회사 Application Infrastructure 조직의 Director of Backend Engineering 공고. 한 단계 위 직급이고, 기본급만이며 연 보너스는 기본급의 0~20% 로 따로 적혀 있다 [9]"}
+    ],
+    "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없고, 인도 법인의 보수 공시도 없다 — **인도 숫자 없음**. 중간값은 회사 전체 가운데 값이라 경력 8년 이상 매니저 연봉으로 읽으면 안 된다 {추론}. 미국 공고 금액은 미국 지역 시장을 반영한 범위라 인도 금액과 같지 않다 [9]. 처우는 마지막 협의 단계에서 확인한다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {"name": "근무 방식", "detail": "하이브리드 — 주 3일 이상 사무실, 직무에 따라 주 2일 재택 가능(일부 사업은 더 출근)"},
+      {"name": "의료", "detail": "본인과 직계가족을 보장하는 의료보험"},
+      {"name": "가족 휴가", "detail": "가족 관련 휴가"},
+      {"name": "배움", "detail": "학습 프로그램, 여러 나라가 함께하는 프로젝트"},
+      {"name": "행사·시설", "detail": "팀·회사 행사, 라운지·카페테리아"}
+    ],
+    "note": "근무 방식은 이 공고 [1], 나머지는 쿠팡 채용 사이트 'Why Coupang' 의 전 세계 공통 소개다 [7]. 사이트는 복지가 직무·지역·자격에 따라 다를 수 있다고 적었고 금액·조건은 없다 — 인도 사무소 적용 범위는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "쿠팡 벵갈루루 사무소 (Coupang Dev Center, 인도 개발 센터)",
+    "address": "6th Floor, RMZ Ecoworld, Campus 20, Units 601 & 602, Bhoganahalli Village, Varthur Hobli, Bengaluru Urban, Karnataka, India",
+    "map_url": "https://map.naver.com/p/search/RMZ%20Ecoworld%20Campus%2020%20Bengaluru",
+    "note": "공고 근무지는 'Bengaluru' [1], 주소는 쿠팡 채용 사이트의 벵갈루루 안내다(우편번호는 적혀 있지 않다) [4]. 인도 개발 센터는 2023년 말 문을 열었다 [5]. 이 팀 자리가 이 건물인지는 공고에 없다 {추론}."
+  },
+  "fit": {
+    "good": [
+      "개발 경력 위에 관리 경력이 쌓여 있고, 팀을 처음부터 만들어 보고 싶은 사람[1]",
+      "물류·운송처럼 현실 세계와 바로 이어지는 시스템을 좋아하는 사람[2][3]",
+      "큰 재설계를 쪼개서 일정 안에 내는 일이 재미있는 사람[1]",
+      "Kafka·MySQL·DynamoDB 로 대량 이벤트를 다뤄 본 사람[1]"
+    ],
+    "hard": [
+      "관리 3년·10명 이상 팀 경험이 필수다[1]",
+      "인도 벵갈루루 근무, 주 3일 이상 출근[1][4]",
+      "한국 본사·다른 나라 팀과 시간대·언어를 넘어 합의해야 한다[2]",
+      "직접 코드를 짜는 시간은 적고 채용·계획·보고가 일의 큰 부분이다[1]"
+    ]
+  },
+  "interview": [
+    {"q": "배송 상태 이벤트가 순서가 뒤바뀌어 '완료' 뒤에 '허브 도착'이 들어왔습니다. 어디서부터 보시겠어요?", "a": "파티션 키와 순서 보장 범위, 멱등·버전 처리 — 이 플랫폼의 핵심 분산 문제.[10][11]"},
+    {"q": "한국에서만 쓰던 운송 시스템을 두 번째 나라에 쓰려면 무엇부터 코드 밖으로 빼나요?", "a": "공고의 핵심 과제인 글로벌 재설계, 주소·규칙·멀티테넌트.[1][2][3]"},
+    {"q": "하루 4천만 건이면 초당 몇 건이고, 성수기 용량은 어떻게 잡겠어요?", "a": "공고가 밝힌 규모를 숫자로 따지는 감각.[1]"},
+    {"q": "DB 저장은 됐는데 이벤트 발행이 실패하면 어떻게 되나요? 어떻게 막겠어요?", "a": "이중 쓰기와 아웃박스 패턴.[12][10]"},
+    {"q": "새 나라에서 8~10명 팀을 처음 만든다면 첫 90일에 무엇을 하겠어요?", "a": "새 팀 구축·채용·문화 업무 줄 전체.[1][19]"},
+    {"q": "약속한 날짜를 못 지킬 것 같다는 걸 언제, 누구에게, 어떻게 알렸던 경험이 있나요?", "a": "위험 관리·관계자 소통·'제때 낸 실적' 요건.[1]"}
+  ],
+  "sources": [
+    {"n": 1, "title": "Coupang Careers · Senior Manager - Backend Engineering (Bengaluru)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8076295", "kind": "posting", "date": "2026-11", "note": "역할 소개(운송 생태계, 8~10명, 글로벌 재설계, 하루 3천만~4천만 건)·업무·요건·우대·하이브리드 근무"},
+    {"n": 2, "title": "Coupang Careers · Engineering at scale, innovation at heart: welcoming Sunil, India Dev Center's new Senior Director of Engineering", "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/engineering-at-scale-innovation-at-heart-welcoming-sunil-coupang-india-dev-center-s-new-senior-director-of-engineering/", "kind": "company", "date": "2025-06-10", "note": "Global Operations Technology 안 Global Transportation Systems(한국·인도) — 출고 계획·실행·추적·예외 처리, 배송·네트워크·실행 층 재설계, 주소·경로·배송 선호에 ML·LLM, OKR, 멀티테넌트"},
+    {"n": 3, "title": "Coupang Engineering · Coupang Rocket Delivery's spatial index-based delivery management system", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/coupang-rocket-delivery-s-spatial-index-based-delivery-management-system/", "kind": "company", "date": "2023-04-17", "note": "우편번호 구역 → H3 육각형 14단계(≈6.3㎡), 2021년 시작, 수십억 칸이라 칸 id 로 RDB 저장 부적합, 압축·비동기 변환"},
+    {"n": 4, "title": "Coupang Careers · Bengaluru", "url": "https://www.coupang.jobs/en/locations/bengaluru/", "kind": "company", "note": "Coupang Dev Center 주소"},
+    {"n": 5, "title": "CXOToday · Coupang Expands India Tech Footprint with Hyderabad Office Launch", "url": "https://cxotoday.com/press-release/coupang-expands-india-tech-footprint-with-hyderabad-office-launch-strengthens-global-innovation-leadership/", "kind": "news", "date": "2025-08-20", "note": "회사 보도자료 — 인도 개발 센터 2023년 말 개소, 하이데라바드 2025-07, 인도 팀 분야(물류 미들마일·라스트마일 기술 등)"},
+    {"n": 6, "title": "Coupang Careers · Manager, Back-end Engineering (Global Operations Technology)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=6137112", "kind": "posting", "note": "같은 상위 조직 서울 공고 — Transportation Technology 팀 소개(대형 운송 회사와 협업, 새 시장 진출)"},
+    {"n": 7, "title": "Coupang Careers · Why Coupang (리더십 원칙·복지)", "url": "https://www.coupang.jobs/en/why-coupang/", "kind": "company", "note": "리더십 원칙 15가지, 복지 소개 — 직무·지역에 따라 다를 수 있다고 적혀 있음"},
+    {"n": 8, "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)", "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm", "kind": "company", "date": "2026", "note": "2025 회계연도 전 직원 보수 중간값 — 달러 환산"},
+    {"n": 9, "title": "Coupang Careers · Director of Backend Engineering (Mountain View · Seattle)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8386063", "kind": "posting", "date": "2026-11", "note": "다른 조직·한 단계 위 직급 — 기본급 범위와 보너스 비율"},
+    {"n": 10, "title": "우아한형제들 기술블로그 · 우리 팀은 카프카를 어떻게 사용하고 있을까 (영문판 How Our Team Uses Kafka)", "url": "https://techblog.woowahan.com/20078/", "kind": "reference", "date": "2024-11-20", "note": "다른 회사(배달의민족 배달 서비스 팀) — 하루 100만 건 넘는 주문, MySQL 아웃박스 + Debezium CDC, 주문·배달 id 키, Kafka Streams 집계. 한국어 원문 2024-05"},
+    {"n": 11, "title": "Apache Kafka Documentation · Design", "url": "https://kafka.apache.org/documentation/#design", "kind": "reference", "note": "파티션 단위 순서 보장, 소비자 그룹, 전달 보장(최소 한 번·멱등 생산자)"},
+    {"n": 12, "title": "microservices.io · Pattern: Transactional outbox", "url": "https://microservices.io/patterns/data/transactional-outbox.html", "kind": "reference", "note": "Chris Richardson"},
+    {"n": 13, "title": "Martin Fowler · Strangler Fig Application", "url": "https://martinfowler.com/bliki/StranglerFigApplication.html", "kind": "reference"},
+    {"n": 14, "title": "AWS Docs · DynamoDB partition key design", "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html", "kind": "reference", "note": "요청을 키마다 고르게 퍼지게 하라는 권고"},
+    {"n": 15, "title": "TiDB Docs · TiDB Introduction", "url": "https://docs.pingcap.com/tidb/stable/overview", "kind": "reference", "note": "MySQL 호환·수평 확장 분산 SQL"},
+    {"n": 16, "title": "AWS Docs · What is Amazon Aurora?", "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html", "kind": "reference", "note": "MySQL·PostgreSQL 호환 관리형 관계형 DB"},
+    {"n": 17, "title": "Apache Flink Docs · Stateful Stream Processing", "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/", "kind": "reference"},
+    {"n": 18, "title": "Google SRE Book · Service Level Objectives", "url": "https://sre.google/sre-book/service-level-objectives/", "kind": "reference", "note": "SLI·SLO·SLA 정의"},
+    {"n": 19, "title": "Will Larson · Sizing engineering teams", "url": "https://lethain.com/sizing-engineering-teams/", "kind": "reference", "note": "관리자 한 명이 맡기 알맞은 인원(6~8명)과 팀을 나누는 때 — 일반론"},
+    {"n": 20, "title": "개발 7년차, 매니저 1일차 (카미유 푸르니에 · 한빛미디어)", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423", "kind": "reference", "note": "1:1·성장·성과 관리 — 일반 교재"},
+    {"n": 21, "title": "데이터 중심 애플리케이션 설계 (마틴 클레프만 · 위키북스)", "url": "https://wikibook.co.kr/data-intensive-applications/", "kind": "reference", "note": "복제·분할·합의·분산 시스템의 문제 — 일반 교재"}
+  ],
+  "caveat": "쿠팡은 운송 플랫폼의 실제 구성(어떤 서비스가 어떤 DB·토픽을 쓰는지)과 '거래' 한 건이 무엇을 세는지 공개하지 않았습니다. 회사 근거는 이 공고, 인도 개발 센터 시니어 디렉터 소개 글(2025-06), 배송 구역 엔지니어링 블로그(2023-04), 같은 상위 조직의 서울 공고, 인도 확장 보도자료입니다. 회사 발표 영상은 찾지 못했습니다(받은 영상 없음). 이벤트 흐름은 배달의민족 공개 글과 Kafka·AWS·PingCAP·Flink 공식 문서로 '보통 이런 것'을 보였습니다. 연봉은 인도 숫자가 없어 미국 공시 중간값과 미국 다른 직급 공고만 실었습니다."
+}
