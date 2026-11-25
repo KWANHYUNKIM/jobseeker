@@ -1,0 +1,1155 @@
+{
+ "id": "nextsecurities-data-analytics-engineer",
+ "company": "넥스트증권",
+ "role": "Data Analytics Engineer",
+ "team": "AI데이터플랫폼팀",
+ "jobs": [
+  "wanted-388908"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "증권 앱의 투자정보·계좌·거래·고객 행동 데이터를 **\"이 숫자는 이런 뜻\"으로 정의**하고, 누구나 같은 답을 얻는 표준 마트(분석·서비스용으로 미리 정리한 표)를 설계·운영하는 자리입니다.[1]",
+  "env": "Databricks 레이크하우스 위에서 일하고, 원천 수집은 Financial Data DE, 실행 환경·품질 게이트는 Data Platform 이 맡습니다 — 이 자리는 **표준화 계층 뒤의 변환과 의미**를 책임집니다.[1][2]",
+  "oneline": "파이프라인을 짓는 사람보다 **데이터 모델러 + 데이터의 주인** 쪽에 가까운 5년 차 이상 자리. SQL 과 DW 설계 원리가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "• 도메인 Semantic Layer 구축: 담당 제품·도메인(예: 금융 투자정보, 계정계·거래, 행동·그로스 등)의 주요 개념을 명확히 정의하고, 누구나 신뢰하고 쓸 수 있는 의미 계층과 표준 데이터 모델을 설계합니다. 금융 투자정보는 금융 데이터 분석가가 정의한 의미·산출 기준과 Financial Data DE가 제공하는 마스터·분류체계·식별자를 참조해 모델링합니다.",
+   "short": "\"활성 고객\"·\"체결 금액\" 같은 말의 정의를 한곳에 박아, 누가 뽑아도 같은 숫자가 나오게 하는 일.",
+   "why": "공고 요약은 이 자리를 비개발 직군과 AI/LLM 이 바로 이해하고 쓰는 **Single Source of Truth**(하나뿐인 기준 데이터)를 만드는 역할이라고 적었습니다.[1] 같은 말을 팀마다 다르게 계산하면 회의에서 숫자부터 맞춰야 합니다. 다른 증권사(토스증권) DW 팀도 \"월간 체결 주문 건수\" 하나를 뽑으려면 주문·체결 표를 찾고 복잡하게 걸러야 해서, 자주 오는 질문을 유형화해 미리 정리한 표를 만들었습니다.[6]",
+   "actually": {
+    "intro": "의미 계층(Semantic Layer — 지표의 정의를 표와 분리해 한 번만 적어 두는 층)에서 보통 하는 일입니다.[13][14]",
+    "items": [
+     "**지표를 한 번만 정의** — \"매출 합계 ÷ 고유 고객 수\" 같은 계산을 한 번 적어 두면, 쓰는 사람은 원하는 축(날짜·상품·지역)으로만 묶어 본다.[13]",
+     "**정의는 코드로** — Databricks 는 지표 뷰(metric view)를 YAML 로 적어 Unity Catalog 에 등록하고, dbt 는 MetricFlow 로 같은 일을 한다.[13][14]",
+     "**AI 가 읽을 이름표** — 동의어·표시 이름·서식을 붙여 AI 에이전트와 대시보드가 같은 뜻으로 읽게 한다.[13]",
+     "**코드 체계 먼저** — 토스증권은 활동 유형을 코드(예: 주식 매매, 해외 주식 매매)로 정의하고 100개 넘는 유형을 기준 표로 관리한다. 코드 하나만 바꾸면 일·주·월 집계를 같은 모양으로 뽑는다.[6]",
+     "**남의 정의를 참조** — 투자정보(종목 마스터·업종 분류·식별자)는 직접 만들지 않고 금융 데이터 분석가의 산출 기준과 DE 의 마스터를 가져다 잇는다.[1]"
+    ]
+   },
+   "how_far": "투자정보 지표의 뜻은 금융 데이터 분석가가 정하고, 마스터·식별자는 Financial Data DE 가 줍니다.[1] 이 자리는 **그 정의를 표 구조와 지표 정의 코드로 옮기고, 담당 도메인(계좌·거래·행동)은 직접 개념을 정의**합니다. 최소선은 \"이 지표가 어느 표의 어느 칸을 어떻게 셌는지\"를 문서 하나로 설명할 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    13,
+    14
+   ],
+   "study": [
+    "uc-metric-views",
+    "dbt-sl",
+    "slash24dw"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 표준 영역 / 소비 영역 마트 구분: 표준(Subject-Oriented) 마트와 소비(서비스·분석) 마트를 구분해 모델링하고, 일·시간·준실시간 단위의 마트를 설계·운영합니다.",
+   "short": "주제별로 깨끗이 정리한 '원본 같은 표'와, 화면·분석에 바로 꽂는 '쓰기 좋은 표'를 나눠 만드는 일.",
+   "why": "같은 회사 데이터 공고는 원천 → 정제 → 사용(Bronze·Silver·Gold) 층을 쌓는다고 적었습니다.[3] 표준 마트를 한 벌 잘 두면 여러 소비 마트가 그 위에서 갈라져 나와, 같은 계산을 표마다 다시 짜지 않습니다. 토스증권은 실버 층의 '종목 상세 방문' 표 하나에 국가 코드를 넣어 두어 통합·국내·해외 세 집계를 따로 만들지 않고 뽑았습니다.[6]",
+   "flows": [
+    {
+     "caption": "넥스트증권 데이터 층과 이 자리 {추론}[1][3]",
+     "steps": [
+      "원천 수집 · Financial Data DE",
+      "표준화 계층 · Financial Data DE",
+      "표준(주제별) 마트 · DAE",
+      "소비(서비스·분석) 마트 · DAE"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "actually": {
+    "items": [
+     "**표준 마트** — 계좌·주문·체결·종목처럼 주제(subject)마다 하나. 키·이력 규칙을 엄격히, 화면 요구에 휘둘리지 않게.[11]",
+     "**소비 마트** — 특정 화면·리포트·모델이 바로 읽는 모양. 미리 합치고 넓게 펼쳐 빠르게.[12]",
+     "**주기 나누기** — 일 단위는 배치로, 시간 단위는 작은 배치로, 준실시간(몇 분 늦는 정도)은 스트리밍 표에서 증분으로.[17]",
+     "**이름에 층과 주기를 적는다** — 토스증권은 표 이름을 모델 종류(F 사실·D 기준·M_ 묶음) + 주제 + 집계 기준 + 기간(daily·weekly·monthly·trailing 7/30)으로 맞춰, 이름만 보고 어떤 표인지 알게 했다.[6]"
+    ]
+   },
+   "how_far": "층을 어디서 자를지는 이 자리가 제안하고 팀 표준으로 정합니다. 최소선은 **새 요청이 왔을 때 표준 마트를 고칠지, 소비 마트를 하나 더 만들지 이유를 대고 고르는 것**입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    6,
+    11,
+    12,
+    17
+   ],
+   "study": [
+    "kimball",
+    "slash24dw",
+    "delta-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 제품 개발 단계 데이터 모델 리뷰: 서버·프로덕트 엔지니어와 제품 개발 시점부터 데이터 모델을 리뷰하고, 분석·서빙 관점에서 필요한 스키마·이벤트·식별자를 제안합니다.",
+   "short": "기능이 나온 뒤가 아니라 만들 때부터 끼어들어, 나중에 분석할 수 있는 칸과 로그를 미리 심어 두는 일.",
+   "why": "토스증권 DW 팀은 집계의 절반가량을 앱 행동 로그로 하는데, 프런트엔드 코드가 바뀐 걸 늦게 알면 짧게는 이틀, 길게는 두세 달 치를 다시 채워야(백필) 했다고 말했습니다.[6] 개발 단계에서 리뷰하면 이 비용을 앞에서 막을 수 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**식별자** — 고객·계좌·주문·종목을 어느 키로 잇는지. 서비스마다 다른 고객 번호를 쓰면 나중에 합칠 수 없다.[11]",
+     "**이벤트 설계** — \"종목 상세를 봤다\"에 종목 코드·국가 코드를 같이 실으면 국내·해외 집계를 따로 안 만들어도 된다.[6]",
+     "**상태 변화 기록** — 주문이 접수 → 체결 → 정정 → 취소로 바뀔 때 마지막 상태만 덮어쓰면 과거를 다시 볼 수 없다. 변경 시각을 같이 남기게 한다.[30]",
+     "**스키마 변경 약속** — 칸 이름·타입을 바꿀 때 데이터 쪽에 먼저 알리는 데이터 계약.[3]"
+    ]
+   },
+   "how_far": "테이블 설계의 최종 결정은 서비스 개발팀 몫입니다. 이 자리는 **분석·서빙에 필요한 것을 근거와 함께 제안**하고 리뷰 체크리스트를 만듭니다. 서버 코드·ERD 를 읽을 줄 알아야 합니다. {추론}",
+   "refs": [
+    3,
+    6,
+    11,
+    30
+   ],
+   "study": [
+    "ddia",
+    "slash24dw"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 고품질 데이터 제공 체계: 빠른 제품 속도에서도 담당 도메인 데이터가 일관되게 제공되도록 처리 로직·품질 규칙·갱신 주기(SLA)·정확도 기준을 정의하고 Platform이 제공하는 공통 품질 게이트에 적용해 시스템화합니다.",
+   "short": "\"몇 시까지, 몇 % 정확하게\"를 숫자로 정하고, 어기면 다음 단계로 못 넘어가는 검문소에 그 규칙을 건다.",
+   "why": "같은 팀의 Data Platform 공고가 **데이터 담당자가 정의한 품질 규칙**을 파이프라인에 적용하는 공통 품질 게이트를 만든다고 적었습니다.[2] 검문소는 Platform 이, 그 검문소에 걸 규칙은 이 자리가 정하는 구조입니다.[1][2] 같은 팀 Backend(Data) 공고도 로그 파이프라인을 SLA 로 관리한다고 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**규칙의 종류** — 비면 안 되는 칸(not_null), 중복이 없어야 하는 키(unique), 정해진 값만(accepted_values), 다른 표에 짝이 있어야(relationships).[18]",
+     "**정확도 기준** — \"오늘 체결 금액 합 = 원장 합\", \"어제보다 행 수가 절반 밑이면 경고\" 같은 대조 규칙.[19]",
+     "**갱신 주기(SLA)** — \"일 마트는 매일 07시까지\" 같은 약속. 지키는지 재는 값(SLI)과 목표(SLO)를 따로 둔다.[21]",
+     "**시스템화** — 규칙을 사람이 눈으로 보지 않고 코드로 적어 배포마다 돌린다.[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "완전성·유일성·적시성을 재는 가장 작은 검사 (직접 돌린 출력)",
+     "body": "가상 체결 3건에 규칙 셋을 걸어 봅니다. 종목 코드가 빈 행 1건, 같은 키 2건, 적재 1시간 20분 지남 — 셋 다 걸립니다.",
+     "lang": "python",
+     "code": "from datetime import datetime, timedelta\nrows = [{\"account_id\": \"A1\", \"symbol\": \"005930\", \"qty\": 10},\n        {\"account_id\": \"A2\", \"symbol\": None,     \"qty\": 5},\n        {\"account_id\": \"A1\", \"symbol\": \"005930\", \"qty\": 10}]\nloaded_at = datetime(2026, 11, 25, 7, 40)\nnow = datetime(2026, 11, 25, 9, 0)\nnull_rate = sum(r[\"symbol\"] is None for r in rows) / len(rows)\nkeys = [(r[\"account_id\"], r[\"symbol\"]) for r in rows]\ndup = len(keys) - len(set(keys))\nlate = now - loaded_at > timedelta(hours=1)\nprint(f\"completeness: null {null_rate:.0%} ->\", \"FAIL\" if null_rate > 0.01 else \"OK\")\nprint(f\"uniqueness: dup {dup} ->\", \"FAIL\" if dup else \"OK\")\nprint(f\"timeliness: {now - loaded_at} old ->\", \"FAIL\" if late else \"OK\")\n# completeness: null 33% -> FAIL\n# uniqueness: dup 1 -> FAIL\n# timeliness: 1:20:00 old -> FAIL"
+    }
+   ],
+   "how_far": "검문소 장치는 Platform 이 만듭니다.[2] 이 자리는 **담당 마트마다 어떤 규칙을 걸지, 어기면 멈출지 경고만 할지**를 정하고 쓰는 팀과 합의합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    18,
+    19,
+    21
+   ],
+   "study": [
+    "dbt-tests",
+    "gx-docs",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 데이터 거버넌스 운영: 원천 리뷰·변경 모니터링부터 생성·활용 End-to-End 추적, 메타·문서화(사람이 읽고 LLM이 이해할 수준)까지 담당 도메인의 거버넌스를 구축·운영합니다.",
+   "short": "이 표가 어디서 와서 누가 쓰는지 족보(리니지)를 잇고, 사람과 AI 가 읽을 설명서를 붙인다.",
+   "why": "공고는 비개발 직군과 **AI/LLM 이 바로 이해하고 쓸 수 있는** 데이터를 목표로 적었습니다.[1] LLM 이 SQL 을 대신 짜려면 표·칸의 뜻이 글로 남아 있어야 합니다. 토스증권 DW 팀도 표가 규격화·정리돼 있으면 SQL 생성 LLM 이 잘 될 거라는 가정으로 내부 프로젝트를 진행 중이라고 했습니다.[6]",
+   "actually": {
+    "items": [
+     "**원천 리뷰·변경 감시** — 원천 표의 칸이 바뀌거나 사라지면 먼저 알게 한다. 바뀐 걸 늦게 알면 몇 달 치 백필이 된다.[6]",
+     "**End-to-End 추적(리니지)** — Unity Catalog 는 어떤 쿼리·작업이 표를 만들고 어떤 대시보드가 읽는지 칸 단위까지 자동으로 남긴다.[15]",
+     "**메타데이터** — 표·칸 설명, 담당자, 갱신 주기, 민감도 태그.[16]",
+     "**LLM 이 이해할 수준의 문서** — 칸 이름만이 아니라 \"이 칸은 체결 기준 원화 환산 금액, 정정 주문 제외\"처럼 계산 조건까지 문장으로.[13] {추론}"
+    ]
+   },
+   "how_far": "리니지 수집 장치는 Platform 이 깝니다.[2] 이 자리는 **담당 도메인 표의 설명·담당자·태그를 빠짐없이 채우고 최신으로 유지**합니다. 문서가 낡으면 AI 가 틀린 SQL 을 짠다는 점이 이 자리의 무게입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    6,
+    13,
+    15,
+    16
+   ],
+   "study": [
+    "uc-lineage",
+    "uc-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 정합성·보안·컴플라이언스: DQ / SLA / Compliance 기준을 마트 단위로 관리하고, 금융 데이터 특성에 맞는 보안성·라이선스·접근 통제를 반영합니다.",
+   "short": "마트마다 품질·약속 시간·규제 기준표를 두고, 개인정보·시세처럼 함부로 못 보는 칸에 열쇠를 건다.",
+   "why": "증권사는 전자금융감독규정에 따라 접근 통제·기록 보관 같은 보안 기준을 지켜야 합니다.[22] **라이선스**는 시세 같은 외부 데이터의 사용 조건입니다 — 한국거래소는 자기 정보를 사전 허가 없이 복제·제3자 배포·게시하는 것을 금지한다고 적었습니다.[23] 그래서 같은 시세라도 내부 분석용인지 고객 화면용인지에 따라 쓸 수 있는 범위가 다를 수 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**마트 단위 기준표** — 마트마다 품질 규칙·갱신 약속·민감도·라이선스 출처를 한 줄로 적는다. {추론}",
+     "**접근 통제** — Unity Catalog 는 사람·그룹별 권한과 행·열 필터·마스킹으로 민감한 칸을 가린다.[16]",
+     "**기록** — 누가 언제 어떤 표를 읽었는지 감사 기록이 남게 한다.[22]",
+     "**라이선스 꼬리표** — 외부 시세·지수 데이터가 섞인 표에 출처 태그를 달아, 서비스로 나갈 때 걸러지게 한다. {추론}"
+    ]
+   },
+   "how_far": "규정 해석은 컴플라이언스·보안 조직이 합니다. 이 자리는 **그 결정을 마트의 권한·태그·검사로 옮기는 것**까지입니다. 규정 조문을 외울 필요는 없지만 \"이 칸은 왜 아무나 못 보나\"를 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    16,
+    22,
+    23
+   ],
+   "study": [
+    "efsr",
+    "uc-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 마트 파이프라인 운영: 표준화된 모델링을 바탕으로 분석뿐 아니라 서비스에서도 쓸 수 있는 Databricks 기반 마트 변환 파이프라인을 운영합니다. 원천 수집·표준화 파이프라인은 Financial Data DE가 맡고 DAE는 표준화 계층 이후의 변환을 책임집니다. (배치 중심, 필요 시 준실시간)",
+   "short": "표준화된 표를 받아 마트로 바꾸는 변환 작업을 Databricks 에서 매일 돌리고 지킨다.",
+   "why": "공고가 일의 경계를 직접 그었습니다 — 수집·표준화는 DE, 그 뒤 변환은 DAE.[1] 실행 환경과 재처리 도구는 Data Platform 이 제공합니다.[2] '서비스에서도 쓸 수 있는'은 앱 화면이 이 마트를 직접 읽을 수 있다는 뜻이라 늦거나 틀리면 고객에게 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "**작업 엮기** — Databricks Jobs 는 노트북·SQL·파이프라인 작업을 순서(DAG)로 엮고 시간·이벤트로 돌린다.[20]",
+     "**SQL 작업** — 저장한 쿼리나 .sql 파일을 SQL 웨어하우스에서 돌리는 작업 종류가 따로 있다.[27]",
+     "**증분과 덮어쓰기** — Delta 의 MERGE(있으면 고치고 없으면 넣기)·조건부 덮어쓰기로 다시 돌려도 결과가 같게.[17]",
+     "**병렬과 순서** — 토스증권은 오래 걸리는 작업부터 먼저 돌리고, 무거운 작업에만 메모리를 더 줘 전체 시간을 줄였다.[6]",
+     "**백필** — 몇 달 치를 30일씩 잘라 돌리고, 망가진 표만 골라 다시 돌릴 수 있게 변수를 열어 두었다.[6]"
+    ]
+   },
+   "how_far": "클러스터·스케줄러 운영은 Platform 몫입니다.[2] 이 자리는 **자기 마트의 변환 로직·순서·재처리 방법**을 책임집니다. 준실시간은 '필요 시'라 배치를 잘 돌리는 것이 먼저입니다.[1]",
+   "refs": [
+    1,
+    2,
+    6,
+    17,
+    20,
+    27
+   ],
+   "study": [
+    "dbx-jobs",
+    "delta-docs",
+    "fde"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "• 이해관계자와의 기준 제시: 전략·프로덕트·AI/ML·서비스 조직의 요구를 받아 단순 이행하지 않고, 효율적인 데이터 구조와 활용 기준을 제안·조율합니다. 투자정보 요구사항은 금융 데이터 분석가가 데이터 명세로 구체화하고 DAE는 그 명세를 마트 구조로 설계합니다.",
+   "short": "\"이 표 하나 만들어 주세요\"에 그대로 만들지 않고, 기존 구조로 풀 수 있는지·어떻게 만들지 먼저 제안한다.",
+   "why": "공고 요약이 이 자리를 '단순 요청 대응이 아니라 구조와 활용 기준을 제시하는 역할'이라고 못 박았습니다.[1] 요청마다 표를 새로 만들면 비슷한 표가 쌓여 관리가 무너집니다. 토스증권은 공통 구조를 만든 뒤 그때그때 만들던 표 자체가 많이 줄었다고 했습니다.[6]",
+   "actually": {
+    "items": [
+     "**요청을 유형으로** — 신규·이탈·복귀·퍼널처럼 반복되는 질문을 묶어 한 구조로 답한다.[6]",
+     "**기존 표로 답하기** — 토스증권은 \"1월 주식 매매 기록\"을 다섯 줄 쿼리로, 다른 도메인(커뮤니티 글쓰기)은 활동 코드만 바꿔 답했다.[6]",
+     "**명세를 받는 순서** — 투자정보는 분석가가 명세를 쓰고 → DAE 가 마트 구조로 옮긴다.[1]",
+     "**거절이 아니라 대안** — \"새 표 대신 이 표에 칸 하나\", \"실시간 대신 1시간 배치\"처럼 비용과 효과를 같이 보인다. {추론}"
+    ]
+   },
+   "how_far": "무엇이 필요한지는 요청 조직이, 어떻게 담을지는 이 자리가 정합니다. 면접에서는 **요청을 다르게 풀어 준 사례**를 들고 가면 좋습니다. {추론}",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "slash24dw",
+    "ae-dbt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 5년 이상의 데이터 엔지니어, Data Analytics Engineer 또는 DW 모델러 경력",
+   "short": "도메인 개념을 직접 정의하고 남에게 기준을 제시해야 해서, 마트를 여러 번 갈아엎어 본 연차가 필요하다.",
+   "why": "업무 여덟 줄 중 여럿이 '제안·조율·기준 제시'입니다.[1] 같은 조직의 데이터 공고들도 5년 이상을 걸었습니다.[2][3]",
+   "how_far": "세 경력 중 하나면 됩니다. 데이터 엔지니어였다면 **모델링·마트 설계를 맡은 비중**을, DW 모델러였다면 **운영·파이프라인 경험**을 앞에 쓰는 것이 이 자리에 맞습니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• DW 데이터 모델러로서 담당 제품·도메인의 개념을 정의하고 명확한 데이터 구조를 설계할 수 있으신 분",
+   "short": "\"고객\"·\"계좌\"·\"체결\"이 각각 무엇이고 어떻게 이어지는지 정해 표로 그릴 수 있어야 해서.",
+   "why": "업무 첫 줄 Semantic Layer 의 요건입니다.[1] 개념 정의가 흔들리면 그 위의 지표·대시보드·AI 답이 모두 흔들립니다. {추론}",
+   "actually": {
+    "items": [
+     "**사실과 기준을 나누기** — 체결처럼 사건이 쌓이는 표(사실)와 종목·고객처럼 설명하는 표(기준)를 가른다.[12]",
+     "**한 줄의 단위(grain) 정하기** — \"한 줄 = 고객 × 날짜\"인지 \"한 줄 = 체결 1건\"인지 먼저 정한다.[12]",
+     "**모호한 말 정리** — \"활성 고객\"이 앱 방문인지 주문인지 체결인지 정의하고 코드로 붙인다.[6]"
+    ]
+   },
+   "how_far": "개념 정의서(용어 → 정의 → 계산식 → 출처 표) 한 장과 ERD 를 직접 만들어 본 경험이면 충분합니다. {추론}",
+   "refs": [
+    1,
+    6,
+    12
+   ],
+   "study": [
+    "kimball",
+    "ae-dbt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• Database 정규화 및 Data Warehouse 특성(Subject-Oriented, Integrated, Non-Volatile, Time-Variant)에 대한 이해가 있으신 분",
+   "short": "중복 없이 쪼개는 원리(정규화)와 DW 의 네 성질을 알아야 표준 마트를 제대로 짓는다.",
+   "why": "괄호 속 네 낱말은 빌 인먼(Bill Inmon)이 정의한 데이터 웨어하우스의 네 특성입니다.[11] 이 공고의 '표준(Subject-Oriented) 마트'가 첫 번째 특성에서 이름을 따 왔습니다.[1]",
+   "actually": {
+    "intro": "네 특성을 증권 데이터로 바꿔 보면 이렇습니다.[11]",
+    "items": [
+     "**Subject-Oriented(주제 중심)** — 시스템별(주문 서버·앱 로그)이 아니라 주제별(주문·고객·종목)로 모은다.",
+     "**Integrated(통합)** — 서로 다른 원천의 이름·형식·단위를 맞춘다(예: 원·달러, 종목 코드 체계).",
+     "**Non-Volatile(비휘발)** — 한 번 들어간 기록은 고치거나 지우지 않는다. 정정은 새 줄로.",
+     "**Time-Variant(시간 변화)** — 줄마다 시점이 붙어 '그때의 상태'와 추이를 볼 수 있다.",
+     "**정규화** — 같은 사실을 한 곳에만 두도록 표를 쪼개는 규칙(1·2·3정규형). 표준 마트는 정규화 쪽, 소비 마트는 일부러 펼치는(비정규화) 쪽에 가깝다.[29] {추론}"
+    ]
+   },
+   "how_far": "정의를 외우는 것보다 **내가 만든 표가 네 특성 중 무엇을 지키고 무엇을 일부러 깼는지** 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    11,
+    29
+   ],
+   "study": [
+    "kimball",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 표준 영역 마트와 소비 영역 마트를 구분해 설계·운영해보신 분",
+   "short": "업무 둘째 줄을 이미 해 본 사람. 두 층을 나눠 놓고 실제로 굴려 본 경험.",
+   "why": "업무 '표준 영역 / 소비 영역 마트 구분'의 경험 요건입니다.[1]",
+   "how_far": "이름이 달라도(정제 층·서빙 층, Silver·Gold 등) **공통 표와 용도별 표를 나눴고, 그 경계를 왜 거기에 뒀는지** 말할 수 있으면 됩니다.[3] {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "kimball",
+    "slash24dw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• SQL 활용 능력이 뛰어나고, 효율·가독성을 갖춘 쿼리를 작성하실 수 있는 분",
+   "short": "변환·검증·의미 정의가 거의 다 SQL 이라서. 남이 읽고 고칠 수 있는 쿼리가 요점.",
+   "why": "이 자리의 산출물은 마트이고, 마트 변환은 대부분 SQL 로 짭니다.[20][27] 다른 사람·AI 가 그 쿼리를 읽고 지표 정의를 이해해야 하므로 가독성이 효율만큼 중요합니다.[1] {추론}",
+   "level": {
+    "basic": "JOIN · GROUP BY · 서브쿼리 · CASE · NULL 처리",
+    "work": "윈도우 함수(ROW_NUMBER · LAG · LEAD) · CTE 로 단계 나누기 · MERGE · 날짜 함수",
+    "team": "이력 표로 신규·이탈·복귀 한 줄에 뽑기 · 실행계획 보고 파티션·조인 고치기 · 읽는 사람을 위한 쿼리"
+   },
+   "actually": {
+    "items": [
+     "**이력 표 하나로 여러 질문** — 토스증권은 고객별 활동 날짜에 순번·이전 날짜·다음 날짜·마지막 여부를 붙여 두고, 순번 1 이면 신규, 이전과 30일 넘게 떨어지면 복귀처럼 조건 하나로 답했다.[6]",
+     "**CTE 로 단계 나누기** — 긴 쿼리를 이름 붙인 단계로 쪼개 읽는 사람이 따라오게.[26]",
+     "**효율** — 큰 표는 날짜 파티션으로 거르고, 필요한 칸만 읽는다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "순번·이전 날짜로 신규·복귀 뽑기 (직접 돌린 출력, SQLite)",
+     "body": "가상 매매 기록 5건입니다. 1번 고객은 1월 3일 뒤 38일 만에 돌아왔고(복귀), 3번 고객은 2월 신규입니다. 발표에서 보인 방식[6]을 작게 옮겼습니다.",
+     "lang": "sql",
+     "code": "SELECT user_id, act_date,\n       ROW_NUMBER() OVER w AS seq,\n       LAG(act_date) OVER w AS prev_date,\n       CAST(julianday(act_date) - julianday(LAG(act_date) OVER w) AS INT) AS gap_days\nFROM f_trade_user_day\nWINDOW w AS (PARTITION BY user_id ORDER BY act_date)\nORDER BY user_id, act_date;\n-- (1, 2026-01-01, 1, NULL, NULL)\n-- (1, 2026-01-03, 2, 2026-01-01, 2)\n-- (1, 2026-02-10, 3, 2026-01-03, 38)   <- gap_days >= 30 : 복귀\n-- (2, 2026-01-02, 1, NULL, NULL)\n-- (3, 2026-02-11, 1, NULL, NULL)       <- seq = 1, 2월 : 신규"
+    }
+   ],
+   "refs": [
+    1,
+    6,
+    17,
+    20,
+    26,
+    27
+   ],
+   "study": [
+    "sql-tuning",
+    "ae-dbt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 대용량 처리 환경에서 파이프라인·마트를 다뤄보신 분",
+   "short": "앱 행동 로그·체결 기록은 하루에도 수억 줄이 될 수 있어, 한 대 DB 처럼 짜면 안 돌아가서.",
+   "why": "이 회사의 마트는 Databricks(Spark 기반) 레이크하우스 위에 있습니다.[1] 같은 조직 공고는 Kafka 기반 대규모 실시간 스트리밍도 걸었습니다.[3]",
+   "actually": {
+    "items": [
+     "**파티션** — 날짜로 나눠 저장하면 하루 치만 읽는다.[17]",
+     "**작은 파일 정리** — 자주 조금씩 쓰면 파일이 잘게 쌓여 느려진다. Delta 의 OPTIMIZE 로 합친다.[17]",
+     "**무거운 작업 먼저** — 토스증권은 오래 걸리는 작업에 우선순위를 줘 전체 시간을 줄이고, 무거운 유형에만 메모리·셔플 파티션을 크게 줬다.[6]",
+     "**백필 쪼개기** — 두세 달 치를 한 번에 돌리면 메모리가 터져서 30일씩 잘라 돌렸다.[6]"
+    ]
+   },
+   "how_far": "Spark 내부를 깊게 아는 것보다 **느린 변환을 보고 파티션·조인·파일 크기 중 무엇이 문제인지 가려 고쳐 본** 경험이면 됩니다. {추론}",
+   "refs": [
+    1,
+    3,
+    6,
+    17
+   ],
+   "study": [
+    "delta-docs",
+    "fde"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 데이터 표준·품질(정합성·완전성·적시성) 문제를 발견하고 근본 원인을 분석·개선해보신 분",
+   "short": "숫자가 틀렸을 때 고치고 끝이 아니라, 왜 틀렸는지 원천까지 따라가 다시 안 나게 해 본 사람.",
+   "why": "업무 '고품질 데이터 제공 체계'와 '정합성·보안·컴플라이언스'의 경험 요건입니다.[1] 괄호의 세 낱말은 품질을 재는 대표 축입니다.[19]",
+   "actually": {
+    "items": [
+     "**정합성** — 두 곳의 숫자가 맞나(마트 체결 합 = 원장 체결 합). 안 맞으면 조인 키·시간대·정정 주문 처리를 의심한다. {추론}",
+     "**완전성** — 빠진 줄·빈 칸이 없나. 원천의 칸이 바뀌어 비게 된 경우가 흔하다.[6]",
+     "**적시성** — 약속한 시각까지 왔나. 앞 작업이 늦은 것인지 원천이 늦은 것인지 리니지로 거슬러 간다.[15]",
+     "**근본 원인** — 같은 일이 다시 안 나게 검사 규칙을 하나 더하거나 원천 팀과 계약을 바꾼다.[18]"
+    ]
+   },
+   "how_far": "이력서에 **문제 → 원인 → 고친 것 → 다시 안 나게 한 장치** 네 칸으로 한 사례를 쓸 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    6,
+    15,
+    18,
+    19
+   ],
+   "study": [
+    "dbt-tests",
+    "gx-docs",
+    "uc-lineage"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "• 데이터 엔지니어·서버 개발자·분석/서비스 조직과 효율적으로 커뮤니케이션하며 기준을 제시할 수 있으신 분",
+   "short": "위로는 원천을 만드는 개발자, 아래로는 쓰는 조직 사이에서 \"이렇게 하자\"를 먼저 말해야 하는 자리라서.",
+   "why": "업무의 '모델 리뷰'와 '기준 제시' 두 줄이 이 능력입니다.[1] 공고는 같은 줄에서 DE·분석가·DAE 의 역할을 하나하나 나눠 적었는데, 경계에 선 사람이 말을 맞춰야 이 나눔이 굴러갑니다. {추론}",
+   "how_far": "회의를 잘하는 것보다 **기준을 문서로 남기는 것**(용어 정의서·리뷰 체크리스트·마트 기준표)을 봅니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 증권·은행·핀테크 등 금융 도메인에서 DW/레이크하우스를 구축·운영해보신 분",
+   "short": "계좌·주문·체결·정정·취소 같은 금융 개념을 이미 알면 개념 정의가 훨씬 빨라서.",
+   "why": "공고가 예로 든 도메인이 금융 투자정보·계정계(계좌·잔고 원장)·거래입니다.[1] 금융 데이터는 규제(접근 통제·기록 보관)까지 같이 따라옵니다.[22]",
+   "how_far": "우대입니다. 금융 경험이 없으면 **주문이 접수 → 체결 → 결제로 가는 흐름과 각 단계에 남는 기록**을 설명할 수 있게 준비하면 좋습니다. {추론}",
+   "refs": [
+    1,
+    22
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• Databricks(Delta Lake, Unity Catalog, Jobs, Databricks SQL) 운영 경험이 있으신 분",
+   "short": "일하는 바닥이 Databricks 라서. 괄호 속 넷이 이 자리가 매일 만지는 부품이다.",
+   "why": "업무의 마트 파이프라인이 'Databricks 기반'입니다.[1]",
+   "actually": {
+    "intro": "괄호 속 넷이 하는 일입니다.",
+    "items": [
+     "**Delta Lake** — 표를 파일로 저장하되 트랜잭션·지난 버전 보기(time travel)·MERGE 를 지원하는 형식.[17]",
+     "**Unity Catalog** — 표 목록·권한·리니지를 한곳에서 관리. `카탈로그.스키마.테이블` 3단 이름.[16]",
+     "**Jobs** — 작업들을 순서대로 엮어 돌리는 Databricks 의 스케줄러.[20]",
+     "**Databricks SQL** — SQL 웨어하우스에서 쿼리·대시보드·알림을 돌리는 부분.[27]"
+    ]
+   },
+   "how_far": "Snowflake·BigQuery 같은 다른 웨어하우스 경험도 옮겨 쓸 수 있습니다. 차이(파일 기반 테이블, 카탈로그 권한)를 공식 문서로 미리 잡아 가면 됩니다. {추론}",
+   "refs": [
+    1,
+    16,
+    17,
+    20,
+    27
+   ],
+   "study": [
+    "delta-docs",
+    "uc-docs",
+    "dbx-jobs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 원천 스키마 리뷰부터 마트·서빙까지 End-to-End 오너십을 가져보신 분",
+   "short": "원천 표가 생길 때부터 고객 화면에 숫자가 뜰 때까지 한 도메인을 끝까지 책임져 본 사람.",
+   "why": "업무가 '제품 개발 단계 모델 리뷰'에서 시작해 '서비스에서도 쓸 수 있는 마트'로 끝납니다.[1] 중간에 주인이 바뀌면 문제가 생겼을 때 서로 미룹니다. {추론}",
+   "how_far": "\"이 도메인 숫자가 틀리면 내가 제일 먼저 안다\"고 말할 수 있었던 경험이면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• 메타데이터·리니지·문서화로 Semantic Layer / 데이터 카탈로그를 운영해보신 분",
+   "short": "업무 첫째·다섯째 줄을 도구로 해 본 사람. 지표 정의와 표 설명서를 실제로 굴려 본 경험.",
+   "why": "업무의 'Semantic Layer'와 '메타·문서화'를 이미 해 본 사람을 찾는 줄입니다.[1]",
+   "actually": {
+    "items": [
+     "**지표 정의 도구** — Databricks 지표 뷰, dbt Semantic Layer(MetricFlow).[13][14]",
+     "**카탈로그** — Unity Catalog 의 표·칸 설명과 태그.[16]",
+     "**리니지** — 작업 실행 때 자동으로 남는 표·칸 단위 연결도.[15]"
+    ]
+   },
+   "how_far": "도구 이름보다 **사람들이 실제로 그 카탈로그를 찾아 쓰게 만든** 경험(문서를 채우는 규칙, 빈칸을 줄인 방법)이 이 줄의 뜻입니다. {추론}",
+   "refs": [
+    1,
+    13,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "uc-metric-views",
+    "dbt-sl",
+    "uc-lineage"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• DQ·SLA·컴플라이언스 기준을 정의하고 자동화한 경험이 있으신 분",
+   "short": "품질·약속 시간·규제 기준을 정하는 것에서 그치지 않고, 코드로 매번 자동 검사하게 만들어 본 사람.",
+   "why": "업무의 '고품질 데이터 제공 체계'와 '정합성·보안·컴플라이언스'를 자동화까지 해 본 경험입니다.[1]",
+   "actually": {
+    "items": [
+     "품질 규칙을 YAML 로 적고 변환 때마다 돌리기(dbt test).[18]",
+     "SLI·SLO 를 정하고 어기면 알림.[21]",
+     "민감도 태그가 붙은 칸에 권한·마스킹이 자동으로 걸리게.[16]"
+    ]
+   },
+   "refs": [
+    1,
+    16,
+    18,
+    21
+   ],
+   "study": [
+    "dbt-tests",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• dbt 등 변환 프레임워크 또는 Great Expectations 등 품질 도구 활용 경험이 있으신 분",
+   "short": "SQL 변환을 모델·테스트 단위로 관리하는 도구(dbt)나 데이터 검사 도구를 써 본 사람.",
+   "why": "같은 팀 Data Platform 공고도 dbt·Great Expectations 를 품질 플랫폼 연동 도구로 적었습니다.[2] dbt 는 분석 코드에 버전 관리·자동 테스트·문서화 같은 소프트웨어 방식을 들여오는 도구로 소개됩니다.[25]",
+   "actually": {
+    "items": [
+     "**dbt 모델** — SELECT 문 하나가 표 하나. 모델끼리 참조해 순서가 자동으로 정해진다.[26]",
+     "**dbt 테스트** — unique · not_null · accepted_values · relationships 네 가지가 기본으로 있다.[18]",
+     "**Great Expectations** — 값의 범위·빈칸·유일성 같은 기대값을 적고 데이터가 지키는지 검사한다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "dbt 테스트를 YAML 로 거는 모양",
+     "body": "체결 마트의 키와 상태 칸에 기본 테스트 넷을 겁니다. 모델·칸 이름은 가상의 예입니다.[18]",
+     "lang": "yaml",
+     "code": "models:\n  - name: f_trade_fill\n    columns:\n      - name: fill_id\n        data_tests: [unique, not_null]\n      - name: status\n        data_tests:\n          - accepted_values:\n              arguments:\n                values: ['FILLED', 'CANCELED', 'AMENDED']\n      - name: account_id\n        data_tests:\n          - relationships:\n              arguments:\n                to: ref('d_account')\n                field: account_id"
+    }
+   ],
+   "refs": [
+    2,
+    18,
+    19,
+    25,
+    26
+   ],
+   "study": [
+    "dbt-tests",
+    "gx-docs",
+    "ae-dbt"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• AARRR 등 제품·그로스 지표 프레임워크에 대한 기본 이해가 있으신 분",
+   "short": "공고가 예로 든 '행동·그로스' 도메인의 지표 틀이라서. 유입 → 활성 → 유지 → 추천 → 수익.",
+   "why": "업무 첫 줄이 담당 도메인의 예로 '행동·그로스'를 들었습니다.[1] AARRR 은 데이브 매클루어가 제안한 다섯 단계 — 유입(Acquisition)·활성(Activation)·유지(Retention)·추천(Referral)·수익(Revenue) — 지표 틀입니다.[24]",
+   "actually": {
+    "items": [
+     "**증권 앱으로 바꾸면** — 유입(설치·가입) → 활성(계좌 개설·첫 주문) → 유지(다시 매매) → 추천(초대) → 수익(수수료). {추론}",
+     "**마트로 받치기** — 토스증권은 활동 유형 표 하나에 '증권 방문 → 종목 상세 방문 → 거래' 세 유형을 넣어 메인 퍼널을 열 줄 안팎의 쿼리로 뽑았다.[6]",
+     "**유지·이탈** — 이전 활동과의 간격으로 복귀·이탈을 정의하고, 기준 일수는 분석 주제마다 바꿀 수 있게 숫자만 바꾸면 되게 했다.[6]"
+    ]
+   },
+   "how_far": "그로스 분석가가 될 필요는 없고 **각 단계 지표를 어떤 표의 어떤 조건으로 셀지** 정의할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    6,
+    24
+   ],
+   "study": [
+    "aarrr",
+    "slash24dw"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "• AI 코딩 에이전트(Claude Code, Codex, Cursor 등)를 활용한 Agentic Engineering 경험 또는 관심이 있으신 분",
+   "short": "AI 에게 SQL·변환 코드를 시키고 결과를 직접 검증하는 방식에 익숙한 사람. '관심'만 있어도 된다.",
+   "why": "넥스트증권은 'AI 세대를 위한 금융투자 플랫폼'을 미션으로 내걸었습니다.[9] 같은 회사 AI Content Platform 데이터 공고는 AI 가 만든 결과물의 정확성·보안·테스트를 직접 검증한 경험을 요구했습니다.[5]",
+   "how_far": "마트 숫자는 틀리면 티가 늦게 나므로, **AI 가 짠 쿼리를 대조 쿼리·테스트로 확인하는 습관**을 보여 주는 것이 이 자리에 맞습니다. 업무의 'LLM 이 이해할 수준의 문서'도 같은 맥락입니다.[1] {추론}",
+   "refs": [
+    1,
+    5,
+    9
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "같은 말을 팀마다 다르게 쓰는 게 거슬리는 사람[1]",
+   "표 하나를 더 만들기보다 구조를 정리해 표를 줄이는 게 즐거운 사람[6]",
+   "개발자와 분석가 사이에서 기준을 먼저 제안하는 사람[1]",
+   "문서 쓰기를 일의 일부로 여기는 사람 — 사람과 LLM 이 읽을 문서가 업무다[1]"
+  ],
+  "hard": [
+   "원천 수집·인프라는 다른 자리 몫이라, 파이프라인을 처음부터 짓고 싶은 사람에게는 범위가 좁게 느껴질 수 있다[1][2]",
+   "요청을 '그대로' 들어주는 자리가 아니라 조율이 많다[1]",
+   "5년 이상 경력직 자리다[1]",
+   "근무지가 강남(공고)과 여의도(본사)에 나뉘어 있어 팀 자리를 확인해야 한다[1][7][9]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "'활성 고객'을 팀마다 다르게 셉니다. 어떻게 하나로 맞추겠어요?",
+   "a": "활동 유형 코드 정의 + 지표를 한 번만 정의하는 의미 계층.[6][13]"
+  },
+  {
+   "q": "표준 마트와 소비 마트의 경계를 어디에 두나요? 새 요청이 오면 어느 쪽을 고치나요?",
+   "a": "주제 중심 표는 엄격히, 화면 요구는 소비 마트로.[11][12]"
+  },
+  {
+   "q": "Subject-Oriented·Integrated·Non-Volatile·Time-Variant 를 증권 데이터 예로 설명해 보세요.",
+   "a": "인먼의 네 특성.[11]"
+  },
+  {
+   "q": "한 테이블로 신규·이탈·복귀 고객을 다 뽑으려면 어떤 칸을 두겠어요?",
+   "a": "순번·이전 날짜·다음 날짜·마지막 여부.[6]"
+  },
+  {
+   "q": "앱 로그 칸이 바뀐 걸 두 달 뒤에 알았습니다. 어떻게 복구하고, 다음엔 어떻게 막나요?",
+   "a": "기간을 잘라 백필 + 원천 변경 감시·데이터 계약.[3][6]"
+  },
+  {
+   "q": "시세 데이터가 섞인 마트를 고객 화면에 쓰려 합니다. 무엇을 먼저 확인하나요?",
+   "a": "라이선스(재배포 조건)와 접근 통제.[16][23]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · 넥스트증권 Data Analytics Engineer",
+   "url": "https://www.wanted.co.kr/wd/388908",
+   "kind": "posting",
+   "date": "2026-09-29",
+   "note": "이 공고 — 직무 요약·업무 8·자격 8·우대 8, 복리후생, 전형(처우논의), 근무지 서울 강남구"
+  },
+  {
+   "n": 2,
+   "title": "잡코리아 · 넥스트증권 Data Engineer (Data Platform)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50357268",
+   "kind": "posting",
+   "date": "2026-11-12",
+   "note": "같은 팀 — 공통 품질 게이트·카탈로그·리니지·권한 자동화, 실행 환경·재처리 도구, dbt·Great Expectations"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · 넥스트증권 Data Engineer (금융 데이터)",
+   "url": "https://www.wanted.co.kr/wd/378013",
+   "kind": "posting",
+   "note": "같은 팀(마감) — Bronze/Silver/Gold, CDC, Kafka 스트리밍, 데이터 계약"
+  },
+  {
+   "n": 4,
+   "title": "원티드 · 넥스트증권 Backend Engineer(Data)",
+   "url": "https://www.wanted.co.kr/wd/380891",
+   "kind": "posting",
+   "note": "같은 팀 — 로그 파이프라인, SLA"
+  },
+  {
+   "n": 5,
+   "title": "원티드 · 넥스트증권 Data Engineer (AI Content Platform)",
+   "url": "https://www.wanted.co.kr/wd/388893",
+   "kind": "posting",
+   "note": "다른 팀 — AI 결과물 검증 요건, 복리후생·전형"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기",
+   "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+   "kind": "reference",
+   "date": "2024-10",
+   "note": "다른 증권사(토스증권) DW 팀 — 자막 전부 읽음. 활동 유형 코드·이름 규칙·이력 표(순번·이전·다음)·우선순위·백필 DAG·SQL LLM 가정"
+  },
+  {
+   "n": 7,
+   "title": "SBS Biz · 넥스트증권, 신논현 오피스 새 거점…유연근무제 도입",
+   "url": "https://biz.sbs.co.kr/amp/article/20000340240",
+   "kind": "news",
+   "date": "2026-10-15",
+   "note": "일부 프로덕트·기술 조직 입주, 선택적 근로시간제·주 1회 원격"
+  },
+  {
+   "n": 8,
+   "title": "원티드 · 넥스트증권 AI Governance Manager",
+   "url": "https://www.wanted.co.kr/wd/395829",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 공고 — 강남 근무지 주소(강남대로 464 비제바노빌딩 3~6층)"
+  },
+  {
+   "n": 9,
+   "title": "넥스트증권 채용 사이트",
+   "url": "https://nextsecurities.career.greetinghr.com/",
+   "kind": "company",
+   "note": "미션·비전, 하단 회사 정보(본사 주소)"
+  },
+  {
+   "n": 10,
+   "title": "원티드 · 넥스트증권 회사 정보",
+   "url": "https://www.wanted.co.kr/company/52490",
+   "kind": "reference",
+   "note": "평균 연봉 집계(금감원 공시정보·국민연금 가입 사업장 자료) — 기준 연월 표기 없음"
+  },
+  {
+   "n": 11,
+   "title": "Oracle · What Is a Data Warehouse?",
+   "url": "https://www.oracle.com/database/what-is-a-data-warehouse/",
+   "kind": "reference",
+   "note": "인먼의 네 특성(주제 중심·통합·비휘발·시간 변화)"
+  },
+  {
+   "n": 12,
+   "title": "Kimball Group · The Data Warehouse Toolkit",
+   "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/",
+   "kind": "reference",
+   "note": "차원 모델링 — 사실 표·기준 표, 한 줄의 단위(grain)"
+  },
+  {
+   "n": 13,
+   "title": "Databricks 문서 · Unity Catalog metric views",
+   "url": "https://docs.databricks.com/aws/en/metric-views/",
+   "kind": "reference",
+   "note": "지표를 한 번 정의, YAML 등록, AI 용 메타데이터(동의어·표시 이름)"
+  },
+  {
+   "n": 14,
+   "title": "dbt 문서 · dbt Semantic Layer",
+   "url": "https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl",
+   "kind": "reference",
+   "note": "MetricFlow 로 지표를 YAML 로 정의, Databricks 지원"
+  },
+  {
+   "n": 15,
+   "title": "Databricks 문서 · Lineage in Unity Catalog",
+   "url": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/data-lineage",
+   "kind": "reference",
+   "note": "칸 단위 리니지, 노트북·작업·대시보드까지"
+  },
+  {
+   "n": 16,
+   "title": "Databricks 문서 · Unity Catalog",
+   "url": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/",
+   "kind": "reference",
+   "note": "3단 이름·권한·행/열 필터"
+  },
+  {
+   "n": 17,
+   "title": "Delta Lake 문서",
+   "url": "https://docs.delta.io/latest/index.html",
+   "kind": "reference",
+   "note": "MERGE·조건부 덮어쓰기·time travel·OPTIMIZE·스트리밍"
+  },
+  {
+   "n": 18,
+   "title": "dbt 문서 · Add data tests to your DAG",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "kind": "reference",
+   "note": "unique·not_null·accepted_values·relationships"
+  },
+  {
+   "n": 19,
+   "title": "Great Expectations 문서",
+   "url": "https://docs.greatexpectations.io/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Databricks 문서 · Lakeflow Jobs",
+   "url": "https://docs.databricks.com/aws/en/jobs/",
+   "kind": "reference",
+   "note": "작업·태스크·트리거, DAG"
+  },
+  {
+   "n": 21,
+   "title": "Google · Site Reliability Engineering",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA"
+  },
+  {
+   "n": 22,
+   "title": "국가법령정보센터 · 전자금융감독규정",
+   "url": "https://www.law.go.kr/행정규칙/전자금융감독규정",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "한국거래소 정보데이터시스템 · 이용 고지",
+   "url": "https://data.krx.co.kr/templets/mdc/disclaimer_p1.jsp",
+   "kind": "reference",
+   "note": "KRX 정보의 사전 허가 없는 복제·제3자 배포·게시 금지"
+  },
+  {
+   "n": 24,
+   "title": "Amplitude · AARRR: Pirate Metrics Framework",
+   "url": "https://amplitude.com/blog/pirate-metrics-framework",
+   "kind": "reference",
+   "note": "데이브 매클루어의 다섯 단계"
+  },
+  {
+   "n": 25,
+   "title": "dbt Labs · What is analytics engineering?",
+   "url": "https://www.getdbt.com/what-is-analytics-engineering",
+   "kind": "reference",
+   "note": "분석 코드에 버전 관리·테스트·문서화"
+  },
+  {
+   "n": 26,
+   "title": "Analytics Engineering with SQL and dbt",
+   "url": "https://www.oreilly.com/library/view/analytics-engineering-with/9781098142377/",
+   "kind": "reference",
+   "note": "O'Reilly 2023 — 데이터 모델링·분석 SQL·dbt"
+  },
+  {
+   "n": 27,
+   "title": "Databricks 문서 · SQL task for jobs",
+   "url": "https://docs.databricks.com/aws/en/jobs/tasks/sql",
+   "kind": "reference",
+   "note": "SQL 웨어하우스에서 쿼리·.sql 파일 실행"
+  },
+  {
+   "n": 28,
+   "title": "넥스트증권 채용 · Life at Next(복리후생)",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/lifeatnext",
+   "kind": "company"
+  },
+  {
+   "n": 29,
+   "title": "Wikipedia · Database normalization",
+   "url": "https://en.wikipedia.org/wiki/Database_normalization",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Wikipedia · Slowly changing dimension",
+   "url": "https://en.wikipedia.org/wiki/Slowly_changing_dimension",
+   "kind": "reference",
+   "note": "바뀌는 기준 정보의 이력을 남기는 방식"
+  }
+ ],
+ "caveat": "넥스트증권은 데이터 모델링에 관한 기술 블로그·발표를 공개하지 않았습니다. 회사 근거는 이 공고와 같은 팀의 다른 공고뿐이고, '실제로 어떻게 하나'는 다른 증권사(토스증권) DW 팀의 공개 발표와 Databricks·dbt 공식 문서로 보통의 방식을 보였습니다. 넥스트증권의 표 이름·지표 정의·품질 기준은 공개되지 않았습니다.",
+ "resources": [
+  {
+   "id": "slash24dw",
+   "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기",
+   "by": "토스증권 DW 팀 · 25분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+   "why": "다른 증권사가 활동 유형 코드·이름 규칙·이력 표로 '의미 계층'과 '표준 → 소비 마트'를 실제로 만든 과정. 이 공고 업무 ①②⑧을 25분에 본다."
+  },
+  {
+   "id": "kimball",
+   "title": "The Data Warehouse Toolkit (3판)",
+   "by": "Ralph Kimball · Margy Ross · Wiley · 2013",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/",
+   "why": "사실 표·기준 표·한 줄의 단위·바뀌는 기준 정보 — '명확한 데이터 구조 설계' 요건의 원전. 앞 몇 장과 금융 사례 장을 먼저."
+  },
+  {
+   "id": "ae-dbt",
+   "title": "Analytics Engineering with SQL and dbt",
+   "by": "Rui Machado · Hélder Russa · O'Reilly · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/analytics-engineering-with/9781098142377/",
+   "why": "이 직무 이름(Analytics Engineer) 그대로의 책. 데이터 모델링·분석 SQL·dbt 로 마트를 테스트와 함께 만드는 흐름."
+  },
+  {
+   "id": "fde",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://product.kyobobook.co.kr/detail/S000202731288",
+   "why": "수집 → 저장 → 변환 → 서빙 전체 지도. 이 자리가 DE·Platform 과 어디서 일을 나누는지 잡기 좋다."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://product.kyobobook.co.kr/detail/S000001766328",
+   "why": "데이터 모델·인코딩과 스키마 변화 장 — 제품 개발 단계 모델 리뷰에서 무엇을 제안할지의 바탕."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D",
+   "why": "'효율을 갖춘 쿼리' 요건 — 인덱스·조인·소트가 어떻게 처리되는지 그림으로. 예시는 오라클 기준이라 Spark 와 다른 점은 공식 문서로."
+  },
+  {
+   "id": "uc-metric-views",
+   "title": "Unity Catalog metric views",
+   "by": "Databricks 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.databricks.com/aws/en/metric-views/",
+   "why": "이 회사 바닥(Databricks)에서 Semantic Layer 를 만드는 실제 수단. 지표를 YAML 로 한 번 정의하고 AI 용 이름표를 붙인다."
+  },
+  {
+   "id": "dbt-sl",
+   "title": "dbt Semantic Layer",
+   "by": "dbt Labs 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl",
+   "why": "같은 일을 dbt(MetricFlow)로 하는 방식. 의미 계층이 무엇을 정의하는지 다른 도구로 비교해 본다."
+  },
+  {
+   "id": "uc-docs",
+   "title": "Unity Catalog",
+   "by": "Databricks 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/",
+   "why": "권한·행/열 필터·태그 — 업무 '보안·접근 통제'와 '메타·문서화'의 실제 수단."
+  },
+  {
+   "id": "uc-lineage",
+   "title": "Lineage in Unity Catalog",
+   "by": "Databricks 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/data-lineage",
+   "why": "End-to-End 추적 — 표·칸 단위 리니지를 보고 시스템 표로 조회하는 법. 적시성 문제의 원인을 거슬러 갈 때 쓴다."
+  },
+  {
+   "id": "delta-docs",
+   "title": "Delta Lake Documentation",
+   "by": "Delta Lake 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.delta.io/latest/index.html",
+   "why": "MERGE·조건부 덮어쓰기·OPTIMIZE — 마트 변환을 다시 돌려도 안전하고 빠르게."
+  },
+  {
+   "id": "dbx-jobs",
+   "title": "Lakeflow Jobs",
+   "by": "Databricks 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.databricks.com/aws/en/jobs/",
+   "why": "마트 변환을 순서대로 엮어 돌리는 법. 우대사항의 Jobs."
+  },
+  {
+   "id": "dbt-tests",
+   "title": "dbt data tests",
+   "by": "dbt Labs 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "why": "품질 규칙을 YAML 로 거는 가장 쉬운 출발점. 기본 테스트 넷과 직접 만드는 테스트."
+  },
+  {
+   "id": "gx-docs",
+   "title": "Great Expectations 문서",
+   "by": "Great Expectations 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.greatexpectations.io/docs/",
+   "why": "우대사항의 품질 도구. 기대값을 적고 검사 결과를 문서로 남긴다."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · 온라인 무료판",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "SLI·SLO 장 — '갱신 주기(SLA)·정확도 기준'을 숫자로 정하는 법."
+  },
+  {
+   "id": "aarrr",
+   "title": "AARRR: Pirate Metrics Framework",
+   "by": "Amplitude",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://amplitude.com/blog/pirate-metrics-framework",
+   "why": "우대사항 AARRR 의 다섯 단계와 단계별 지표 예. 짧게 읽고 증권 앱으로 바꿔 본다."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정",
+   "by": "금융위원회 · 국가법령정보센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.law.go.kr/행정규칙/전자금융감독규정",
+   "why": "금융 데이터 접근 통제·기록 보관의 원문. 업무 '보안·컴플라이언스' 줄의 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "DW 원리와 모델링",
+   "time": "2~3주",
+   "goal": "인먼의 네 특성과 사실·기준 표, 한 줄의 단위를 내 말로 설명하고 작은 스타 스키마를 그릴 수 있다.",
+   "resources": [
+    "kimball",
+    "fde",
+    "slash24dw"
+   ],
+   "task": "가상 증권 앱의 계좌·종목·주문·체결로 표준 마트 4개(사실 2·기준 2)를 설계하고, 표마다 한 줄의 단위·키·이력 방식을 적는다."
+  },
+  {
+   "title": "SQL 로 이력과 지표 뽑기",
+   "time": "2~3주",
+   "goal": "윈도우 함수로 신규·이탈·복귀·퍼널을 한 표에서 뽑고, 읽기 좋은 쿼리로 다듬을 수 있다.",
+   "resources": [
+    "sql-tuning",
+    "ae-dbt",
+    "aarrr"
+   ],
+   "task": "가상 고객 1,000명 × 90일 활동 기록을 만들어 순번·이전일·다음일 이력 표를 만들고, 월별 신규·30일 복귀·방문 → 종목 상세 → 매매 퍼널을 뽑는다."
+  },
+  {
+   "title": "dbt 로 마트와 테스트",
+   "time": "2~3주",
+   "goal": "표준 → 소비 마트를 모델로 나누고 품질 테스트·문서를 붙여 돌릴 수 있다.",
+   "resources": [
+    "ae-dbt",
+    "dbt-tests",
+    "gx-docs",
+    "sre-book"
+   ],
+   "task": "1·2단계 표를 dbt 프로젝트로 옮기고 키 unique·not_null, 상태 accepted_values, 계좌 relationships 테스트와 '매일 07시까지' 신선도 검사를 건다. 일부러 틀린 데이터를 넣어 테스트가 잡는지 본다."
+  },
+  {
+   "title": "Databricks 에서 의미 계층·거버넌스",
+   "time": "2~4주",
+   "goal": "Delta 표·Jobs·Unity Catalog 권한·리니지·지표 뷰를 써서 같은 마트를 레이크하우스에 올릴 수 있다.",
+   "resources": [
+    "delta-docs",
+    "dbx-jobs",
+    "uc-docs",
+    "uc-lineage",
+    "uc-metric-views",
+    "dbt-sl"
+   ],
+   "task": "Databricks 무료 체험 환경에 3단계 마트를 Delta 표로 올리고 Jobs 로 엮는다. '활성 고객'·'체결 금액' 지표 뷰를 정의하고 표·칸 설명과 민감도 태그를 채운 뒤, 리니지 화면에서 원천까지 이어지는지 확인한다."
+  },
+  {
+   "title": "금융 데이터 규칙 (선택)",
+   "time": "계속",
+   "goal": "접근 통제·라이선스·기록 보관 요구를 마트 기준표로 옮길 수 있다.",
+   "resources": [
+    "efsr",
+    "ddia"
+   ],
+   "task": "4단계 마트마다 품질 규칙·갱신 약속·민감도·데이터 출처(라이선스)를 한 줄씩 적은 기준표를 만들고, 개인정보 칸에 열 마스킹을 걸어 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없고 공시 숫자도 찾지 못했다 — 공공데이터 집계 평균 **약 6,032만원**(경력직이 섞인 회사 전체 값)뿐이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 기준일 표기 없음",
+    "note": "원티드 회사 정보 — 금감원 공시정보와 국민연금 가입 사업장 자료로 계산한 집계. 기준 연월이 적혀 있지 않다 [10]"
+   }
+  ],
+  "how": "공고는 연봉을 적지 않았고 전형에 **처우논의** 단계를 따로 둔다 [1]. 넥스트증권은 비상장사라 사업보고서의 '직원 1인 평균 급여액'을 찾지 못했다(공시 숫자 없음). 위 평균은 신입·지원 부서까지 섞인 회사 전체 값이라 5년 차 이상 DAE 의 제시액으로 읽으면 안 된다 {추론}. 근무 형태는 **비포괄임금제**로 초과근로수당이 따로 나온다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "복지카드",
+    "detail": "연 150만원, 사용처 제한 없음(유흥업·택시 제외). 중도 입사는 입사 3개월 뒤부터 연말까지 월할"
+   },
+   {
+    "name": "특별상여",
+    "detail": "연 110만원 — 설·추석 귀성비, 가정의 달 효도비, 연말 지원비(중도 입사도 입사 시점부터)"
+   },
+   {
+    "name": "상해보험",
+    "detail": "본인·가족(배우자·자녀) 실손 의료비"
+   },
+   {
+    "name": "건강검진",
+    "detail": "매년 종합건강검진"
+   },
+   {
+    "name": "특별휴가",
+    "detail": "1년 이상 재직 시 매년 3일"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10년·20년 근속 시 장려금 400만원"
+   },
+   {
+    "name": "자기개발",
+    "detail": "업무 관련 교육 지원"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "유연 출퇴근(오전 7~10시 자율 출근), 비포괄임금제"
+   },
+   {
+    "name": "재택근무",
+    "detail": "주 1회"
+   }
+  ],
+  "note": "이 공고의 '혜택 및 복지' 칸이다 [1]. 회사 채용 사이트에도 복리후생 안내가 있다 [28]. 2026년 10월 보도로는 선택적 근로시간제(코어타임 오전 10시~오후 3시)로 넓혔다고 해 출퇴근 규칙은 바뀌었을 수 있다 [7] {추론}."
+ },
+ "location": {
+  "name": "넥스트증권 강남 오피스(신논현)",
+  "address": "서울특별시 강남구 강남대로 464, 비제바노빌딩 3~6층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20464",
+  "near": "9호선 신논현역 근처 강남대로 {추론}",
+  "note": "이 공고의 근무지는 '서울 강남구'다 [1]. 같은 회사의 다른 원티드 공고가 강남 근무지를 이 주소로 적었고 [8], 2026년 10월 문을 연 신논현 거점에 프로덕트·기술 조직 일부가 입주했다 [7]. 본사는 서울 영등포구 국제금융로 10 Three IFC 다 [9] — 팀 자리는 면접 때 확인한다 {추론}."
+ }
+}

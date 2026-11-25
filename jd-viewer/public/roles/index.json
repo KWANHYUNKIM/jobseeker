@@ -336,6 +336,7 @@
   "jobkorea-50361367": "nextsecurities-ai-governance-manager",
   "jobkorea-50361209": "nextsecurities-channel-backend",
   "saramin-55282490": "nextsecurities-channel-backend",
+  "wanted-388908": "nextsecurities-data-analytics-engineer",
   "jobkorea-50357268": "nextsecurities-data-platform-engineer",
   "wanted-388957": "nextsecurities-data-platform-engineer",
   "ats-greeting:nextsecurities:245534": "nextsecurities-erp-developer",
@@ -3399,6 +3400,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 47
+  },
+  {
+   "id": "nextsecurities-data-analytics-engineer",
+   "company": "넥스트증권",
+   "role": "Data Analytics Engineer",
+   "jobs": [
+    "wanted-388908"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
   },
   {
    "id": "nextsecurities-data-platform-engineer",
