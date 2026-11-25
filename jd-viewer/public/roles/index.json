@@ -214,6 +214,7 @@
   "wanted-385077": "go-android-in-vehicle",
   "wanted-353016": "hennge-senior-software-engineer-python",
   "wanted-342854": "henry-senior-sre-japan",
+  "saramin-55666564": "hmg-ai-factory-finance-accounting-junior",
   "jobkorea-50301726": "hyundai-autoever-ai-agent-engineer",
   "wanted-385555": "hyundai-autoever-ai-agent-engineer",
   "wanted-385554": "hyundai-autoever-ai-researcher",
@@ -286,6 +287,7 @@
   "ats-hkmc:hyundai:2026N2294": "hyundai-shucle-service-ux-planning",
   "saramin-55022364": "hyundai-vehicle-cybersecurity-tech",
   "wanted-387512": "hyundai-vehicle-cybersecurity-tech",
+  "ats-greeting:kakaomobility:227958": "kakaomobility-av-hw-technician",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
   "wanted-391370": "litalico-data-engineer",
@@ -2428,6 +2430,16 @@
    "lines": 29
   },
   {
+   "id": "hmg-ai-factory-finance-accounting-junior",
+   "company": "현대오토에버",
+   "role": "재무회계 주니어",
+   "jobs": [
+    "saramin-55666564"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 44
+  },
+  {
    "id": "hyundai-autoever-ai-agent-engineer",
    "company": "현대오토에버",
    "role": "AI Agent 엔지니어",
@@ -2930,6 +2942,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "kakaomobility-av-hw-technician",
+   "company": "카카오모빌리티",
+   "role": "자율주행 HW 테크니션",
+   "jobs": [
+    "ats-greeting:kakaomobility:227958"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 18
   },
   {
    "id": "ldf-ebookjapan-web-frontend",
