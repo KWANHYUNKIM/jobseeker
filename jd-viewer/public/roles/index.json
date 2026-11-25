@@ -21,6 +21,7 @@
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8210828": "coupang-play-cx-backend-senior-sg",
   "ats-greenhouse:coupang:8345323": "coupang-ppe-data-engineer-bengaluru",
+  "ats-greenhouse:coupang:8258122": "coupang-rocket-content-editor",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
   "ats-greenhouse:coupang:8094014": "coupang-taiwan-catalog-ai-tpm-director",
@@ -478,6 +479,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 19
+  },
+  {
+   "id": "coupang-rocket-content-editor",
+   "company": "쿠팡",
+   "role": "로켓배송 상품 판매 콘텐츠 에디터",
+   "jobs": [
+    "ats-greenhouse:coupang:8258122"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 22
   },
   {
    "id": "coupang-sg-security-infra-director",
