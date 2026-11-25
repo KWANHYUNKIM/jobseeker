@@ -1,0 +1,1032 @@
+{
+ "id": "biztechi-vdi-ta-infra",
+ "company": "비즈테크아이",
+ "role": "VDI TA·인프라 운영 담당자",
+ "team": "클라우드인프라사업팀 CI1파트 (Cloud PC·VDI SM/SI, 가상화 솔루션 운영)",
+ "jobs": [
+  "ats-lg:group:1002219"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "LG에너지솔루션의 **가상 PC 환경(EnCloud)** 을 운영하고, 그 뒤의 서버·가상화·백업을 챙기는 자리입니다.[1] 회사는 LG CNS 자회사이고[6], 팀은 Cloud PC·VDI(가상 데스크톱 — 데이터센터 서버에서 돌아가는 PC를 화면만 받아 쓰는 방식)의 운영·구축을 맡고, 앞으로 LG그룹사 전반으로 넓힌다고 적었습니다.[1]",
+  "env": "회사는 **Citrix 기반 VDI** 운영을 내세우고, 사내 구축형·DaaS(구독형 클라우드 PC)·혼합형 모두를 운영 대상으로 적었습니다.[2] 가상화 쪽은 VMware·OpenStack·Nutanix 경험을 요구합니다.[1]",
+  "oneline": "**서버·가상화 4년 차 이상 운영자**가 수천 명이 쓰는 가상 PC를 끊기지 않게 굴리는 자리 — 개발보다 **장애 대응·용량 관리·백업·스크립트 자동화**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "LG에너지솔루션 EnCloud 운영",
+   "short": "LG에너지솔루션 직원들이 매일 접속해 쓰는 가상 PC 서비스를 살아 있게 유지하는 일.",
+   "why": "공고가 이 줄을 맨 앞에 두고, 조직을 Cloud PC VDI SM(운영 위탁)·SI 조직으로 소개했습니다.[1] 회사는 LG에너지솔루션을 클라우드 운영 고객으로 적었습니다.[5] 'EnCloud' 라는 이름의 공개 설명은 찾지 못했습니다 — 공고 맥락상 LG에너지솔루션의 사내 VDI·클라우드 PC 서비스 이름으로 읽힙니다. {추론}",
+   "actually": {
+    "intro": "VDI 운영 위탁에서 보통 맡는 일입니다. 회사가 적은 VDI 통합 운영 서비스[2]와 VDI 제품 문서[17][18]를 일로 풀었습니다.",
+    "items": [
+     "**접속 장애 처리** — '로그인이 안 돼요·화면이 멈춰요' 신고를 받아 계정·인증·접속 중계 서버·가상 PC 중 어디가 문제인지 가른다.[18]",
+     "**가상 PC 수명 관리** — 입사·전보·퇴사에 맞춰 가상 PC를 만들고, 자원(CPU·메모리)을 바꾸고, 회수한다. 모회사 LG CNS 의 VDI 관리 도구도 신청서 기반 생성·자원 반납을 기능으로 적었다.[14]",
+     "**골든 이미지(공통 원본) 관리** — 모든 가상 PC가 복제해 쓰는 원본에 OS 보안 패치·업무 프로그램을 넣고 시험한 뒤 배포한다.[18]",
+     "**용량 감시** — 호스트 CPU·메모리·스토리지 사용률과 동시 접속자 수를 보고 모자라기 전에 늘린다.[24]",
+     "**정기점검·보고** — 월간 가용률·장애 건수·처리 시간을 고객사에 보고한다. {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "VDI 접속 한 번이 거치는 길 — 막히는 칸이 곧 장애 지점[17][18]",
+     "steps": [
+      "사용자 PC·씬클라이언트 · 접속 프로그램 실행",
+      "인증 · 사내 계정(AD)·2단계 인증",
+      "접속 중계(브로커) · 이 사람에게 맞는 가상 PC 배정",
+      "하이퍼바이저 호스트 · 가상 PC 켜기",
+      "스토리지 · 디스크·프로필 읽기",
+      "화면 전송 프로토콜 · 화면만 사용자에게"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "3,000명을 받으려면 호스트가 몇 대 필요한가",
+     "body": "가상 PC 하나에 vCPU 2·메모리 8GB, 호스트는 물리 코어 64·메모리 1TB, vCPU 를 코어의 6배까지 나눠 준다고 가정한 계산입니다(가정 값 {추론}). 출력: 호스트당 CPU 기준 192대, 메모리 기준 115대 → 115대 / 3000명 → 호스트 27대, 한 대 고장 대비(N+1) 28대. VDI 는 보통 메모리가 먼저 모자랍니다.",
+     "lang": "python",
+     "code": "import math\nprint(\"# 1 VDI host sizing\")\nusers, vcpu, mem = 3000, 2, 8\nhost_cores, host_mem, ratio = 64, 1024, 6\nper_host_cpu = host_cores * ratio // vcpu\nper_host_mem = int(host_mem * 0.9) // mem\nper_host = min(per_host_cpu, per_host_mem)\nneed = math.ceil(users / per_host)\nprint(f\"호스트당 CPU 기준 {per_host_cpu}대, 메모리 기준 {per_host_mem}대 -> {per_host}대\")\nprint(f\"{users}명 -> 호스트 {need}대, 한 대 고장 대비(N+1) {need+1}대\")"
+    }
+   ],
+   "how_far": "운영 규칙(서비스 수준·보고 양식)은 고객사와 계약이 정하고, 이 자리는 그 규칙대로 장애를 끝까지 처리하고 용량·패치를 먼저 챙기는 일을 맡습니다. {추론} 경력 4년 이상을 요구하니 혼자 1차 원인 분석까지 할 수 있어야 합니다.[1]",
+   "refs": [
+    1,
+    2,
+    5,
+    14,
+    17,
+    18,
+    24
+   ],
+   "study": [
+    "biztechi-vdi",
+    "lgcns-vmcube",
+    "citrix-docs",
+    "azure-vdi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "백업 운영체계 구성 및 운영 지원",
+   "short": "무엇을·얼마나 자주·얼마나 오래 백업할지 정해 두고, 매일 성공했는지 보고, 실제로 되살려 보는 일.",
+   "why": "회사는 시스템 SM 업무로 '시스템 백업 서비스와 이력 관리', 사업 연속성을 위한 재해복구(DR) 기술 업무를 적었습니다.[4] VDI 는 사용자 수천 명의 업무 PC가 데이터센터 한곳에 모인 구조라, 원본 이미지·사용자 프로필·관리 서버가 사라지면 전원이 일을 못 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**대상 정하기** — 골든 이미지·접속 중계/관리 서버 설정·사용자 프로필·파일 서버를 백업 대상으로 나눈다. 가상 PC 자체는 원본에서 다시 찍으면 되는 경우가 많다. {추론}",
+     "**목표 정하기** — 얼마나 최근 시점까지 되살릴지(RPO)·얼마 만에 되살릴지(RTO)를 업무별로 정한다.[22]",
+     "**보관 규칙** — 매일 증분·매주·매월 전체처럼 보관 주기를 짠다. 사본 3개·매체 2종·1개는 다른 곳에 두는 3-2-1 규칙이 흔한 출발점이다.[23]",
+     "**매일 확인** — 백업 작업 성공·실패 보고서를 보고 실패 건을 다시 돌린다.",
+     "**복구 시험** — 정기적으로 실제 복원을 해 봐야 백업이 쓸모 있는지 안다.[22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "보관 규칙이 저장 공간을 정한다",
+     "body": "원본 2TB, 하루 변경 5%, 일 7개·주 4개·월 12개를 보관한다고 하면(가정 값 {추론}, 중복 제거·압축 없음) 출력: 복원 시점 23개, 전체 백업 17벌 + 증분 7개 = 약 34,700GB. 월 보관을 6개로 줄이면 공간이 크게 준다 — 보관 규칙은 비용 결정입니다.",
+     "lang": "python",
+     "code": "print(\"# 2 backup retention\")\nfull_gb, change = 2000, 0.05\ndaily, weekly, monthly = 7, 4, 12\npoints = daily + weekly + monthly\ninc = full_gb * change\ntotal = full_gb * (1 + weekly + monthly) + inc * daily\nprint(f\"복원 시점 {points}개, 전체 백업 {1+weekly+monthly}벌 + 증분 {daily}개 = 약 {total:,.0f}GB\")"
+    }
+   ],
+   "how_far": "'구성 및 운영 지원'이라 백업 제품 선정이나 DR 전략은 선임·고객사가 정하고, 이 자리는 정책을 백업 작업으로 옮기고 매일 결과를 챙기며 복구 시험을 돌리는 쪽일 가능성이 큽니다. {추론}",
+   "refs": [
+    4,
+    22,
+    23
+   ],
+   "study": [
+    "nist-80034",
+    "veeam-321"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "VDI 및 가상화 솔루션 관련 운영/기술 지원 업무",
+   "short": "VDI 제품과 그 밑의 가상화(하이퍼바이저) 제품을 설치·업그레이드하고, 문제가 생기면 제조사와 같이 푸는 일.",
+   "why": "회사는 VDI 서비스로 고객 맞춤 컨설팅·구축(SI)과 VDI 인프라·솔루션 통합 운영, 솔루션 전환·데이터센터 이전 같은 마이그레이션 방법론을 적었습니다.[2] 사업 소개에는 VDI·오픈스택을 운영·아키텍처 대상 솔루션으로 꼽았습니다.[3] 공고 제목의 'TA'(기술 아키텍트)도 구성을 설계·검토하는 역할을 뜻합니다. {추론}",
+   "actually": {
+    "items": [
+     "**버전 관리** — VDI·하이퍼바이저 제품의 지원 종료 일정을 보고 업그레이드 계획을 세운다.[18][28]",
+     "**구성 검토** — 호스트 묶음(클러스터)·스토리지·네트워크 구성이 사용자 수를 견디는지 계산한다(위 호스트 계산).",
+     "**제조사 협업** — 원인을 못 찾는 장애는 제조사 기술지원에 로그를 모아 접수한다. 회사는 TAC/RMA 처리 체계를 운영 서비스로 적었다.[4]",
+     "**전환·이전** — 솔루션을 바꾸거나 데이터센터를 옮길 때 가상 PC·프로필을 옮기는 절차를 짠다.[2]"
+    ]
+   },
+   "how_far": "제품 하나를 깊이 아는 것보다, 증상을 보고 'VDI 계층 문제인지 가상화·스토리지·네트워크 문제인지' 가를 수 있는 것이 기준입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    4,
+    18,
+    28
+   ],
+   "study": [
+    "citrix-docs",
+    "vsphere-docs",
+    "biztechi-vdi"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "학력: 4년제 정규대학 학사학위 이상 보유하신 분",
+   "short": "4년제 학사 이상만 지원할 수 있다는 서류 조건(전공 제한은 없다).",
+   "why": "공고가 자격요건 첫 줄에 적었고 전공은 정하지 않았습니다.[1]",
+   "how_far": "전공보다 아래 줄의 경력 연수와 제품 경험이 서류를 가릅니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력: 관련 업무 4년 이상",
+   "short": "서버·가상화·VDI 운영이나 구축 실무가 4년 이상 있어야 한다는 뜻.",
+   "why": "고객사 VDI 를 바로 맡는 운영 위탁 자리라 혼자 판단할 수 있는 연차를 문턱으로 둔 것으로 보입니다. {추론} 경력 전형은 서류 → 인성검사(LG Way Fit Test) → 면접 → 평판조회 → 처우협의 순서입니다.[12]",
+   "actually": {
+    "items": [
+     "VDI 운영사·SI 의 VDI 운영/구축 경력",
+     "서버 가상화(VMware·OpenStack·Nutanix) 운영 경력",
+     "사내 IT 인프라팀의 서버·스토리지 운영 경력"
+    ]
+   },
+   "how_far": "'관련 업무'의 범위는 회사가 서류에서 정합니다. 이력서에 맡았던 사용자 수·호스트 수·처리한 장애를 숫자로 적어야 4년이 무게를 가집니다. {추론}",
+   "refs": [
+    1,
+    12
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "VMware / OpenStack / Nutanix 구축/운영 경험 하신 분",
+   "short": "가상 서버를 만들어 주는 세 가지 대표 기반 중 하나 이상을 직접 깔고 운영해 봤어야 한다는 뜻.",
+   "why": "VDI 의 가상 PC 는 결국 하이퍼바이저 위의 가상 머신입니다.[17] 회사는 오픈스택을 운영 솔루션으로 적었고[3], 세 제품은 고객사마다 다른 가상화 기반을 맡기 위해 나열한 것으로 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "**VMware vSphere** — ESXi 호스트를 vCenter 로 묶어 클러스터를 만들고, 가상 머신을 다른 호스트로 살아 있는 채 옮기며(vMotion), 호스트가 죽으면 다른 곳에서 다시 켠다(HA).[28]",
+     "**OpenStack** — 오픈소스 사설 클라우드. 계산(Nova)·네트워크(Neutron)·블록 저장소(Cinder)·이미지(Glance) 같은 서비스를 묶어 가상 머신을 API 로 만든다.[20]",
+     "**Nutanix** — 서버 안 디스크를 묶어 스토리지까지 한 덩어리로 쓰는 HCI(하이퍼 컨버지드 인프라). 노드를 더하면 계산과 저장 공간이 같이 는다.[21]",
+     "**공통 운영** — 자원 과다 할당 감시, 호스트 패치 때 가상 머신 비우기(유지보수 모드), 스냅숏 정리. {추론}"
+    ]
+   },
+   "level": {
+    "basic": "클러스터에 가상 머신을 만들고 옮기고 스냅숏을 찍는다",
+    "work": "호스트 장애·스토리지 지연을 지표로 찾아내고 패치·업그레이드를 무중단으로 돌린다",
+    "team": "VDI 용 클러스터를 사용자 수에 맞춰 설계하고 제품을 바꾸는 이관을 한다[2] {추론}"
+   },
+   "how_far": "셋 다가 아니라 '하나 이상'의 구축·운영 경험이면 됩니다(공고가 / 로 묶었다).[1] 하나를 깊게 알면 나머지는 개념이 겹쳐 빨리 익힙니다. {추론}",
+   "refs": [
+    1,
+    3,
+    17,
+    20,
+    21,
+    28
+   ],
+   "study": [
+    "vsphere-docs",
+    "openstack-docs",
+    "nutanix-bible",
+    "proxmox-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Windows 또는 Linux서버 3년이상 구축/운영/트러블슈팅 경험 하신 분",
+   "short": "VDI 관리 서버와 가상 PC가 올라가는 윈도우·리눅스를 3년 넘게 직접 고쳐 왔어야 한다는 뜻.",
+   "why": "VDI 의 접속 중계·관리 서버와 사내 계정(AD)은 보통 윈도우 서버 위에 있고, 가상 PC 도 대부분 윈도우입니다.[18] 오픈스택 같은 가상화 기반은 리눅스 위에서 돕니다.[20] 그래서 둘 중 하나를 깊게 요구합니다. {추론}",
+   "actually": {
+    "items": [
+     "**윈도우** — AD 계정·그룹 정책(GPO)·이벤트 로그 읽기, 사용자 프로필 깨짐, 윈도우 업데이트 실패 처리.[32]",
+     "**리눅스** — 서비스(systemd) 상태·로그(journalctl)·디스크/메모리 확인, 패키지 업데이트.[31]",
+     "**트러블슈팅** — 증상 → 로그 → 재현 → 원인 → 조치 순으로 좁히고 결과를 기록한다.[24]"
+    ]
+   },
+   "level": {
+    "basic": "서버 설치·계정·서비스 관리, 로그 위치를 안다",
+    "work": "느려짐·접속 실패를 이벤트 로그·성능 지표로 원인까지 찾는다",
+    "team": "수천 대 가상 PC에 같은 설정을 정책·스크립트로 한 번에 건다 {추론}"
+   },
+   "how_far": "'트러블슈팅'이 명시돼 있으니 면접에서 직접 겪은 서버 장애 하나를 원인·조치까지 말할 수 있어야 합니다.[1] {추론}",
+   "refs": [
+    1,
+    18,
+    20,
+    24,
+    31,
+    32
+   ],
+   "study": [
+    "this-is-winserver",
+    "this-is-linux",
+    "tlcl"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서버/스토리지/Network에 대한 이해가 높으신 분",
+   "short": "VDI 가 느리면 원인이 서버·디스크·망 중 어디인지 짚을 수 있을 만큼 세 가지를 알아야 한다는 뜻.",
+   "why": "회사는 인프라 사업을 네트워크·서버·스토리지 같은 클라우드 기반 요소 기술의 운영·구축·설계로 소개하고[4], 직무소개도 인프라 직무를 서버·스토리지·백업·네트워크로 묶었습니다.[7] VDI 는 세 가지가 동시에 맞아야 화면이 부드럽습니다 — 특히 아침 출근 때 수천 명이 한꺼번에 로그온하면 스토리지 입출력이 몰립니다. {추론} LG CNS 의 1만 명 VDI 사례도 스토리지 성능을 핵심 과제로 다뤘습니다.[15]",
+   "actually": {
+    "items": [
+     "**서버** — CPU 대기(준비 시간)·메모리 부족이 가상 PC 체감 속도를 떨어뜨린다.[28]",
+     "**스토리지** — 초당 입출력 횟수(IOPS)와 지연 시간. 로그온 폭주(boot storm) 때가 최대 부하다.[15][33]",
+     "**네트워크** — 화면 전송은 지연에 민감하다. 사용자 망·데이터센터 망·스토리지 망을 나눠 본다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "아침 로그온 폭주는 평시의 몇 배인가",
+     "body": "사용자당 평시 10 IOPS, 로그온 순간 40 IOPS 로 가정한 흉내입니다(가정 값 {추론} — 실제 값은 이미지·프로필 방식마다 크게 다르다). 출력: 500명 동시 로그온: 평시 5,000 IOPS, 로그온 폭주 20,000 IOPS / 3000명: 평시 30,000, 폭주 120,000. 스토리지는 평시가 아니라 폭주에 맞춰 잡습니다.",
+     "lang": "python",
+     "code": "print(\"# 3 boot storm\")\nfor n in (500, 3000):\n    print(f\"{n}명 동시 로그온: 평시 {n*10:,} IOPS, 로그온 폭주 {n*40:,} IOPS\")"
+    }
+   ],
+   "how_far": "전문가 수준까지는 아니어도, 지표 화면을 보고 '이건 스토리지 지연이다'를 말하고 해당 담당에게 근거를 넘길 수 있어야 합니다. {추론}",
+   "refs": [
+    4,
+    7,
+    15,
+    28,
+    33
+   ],
+   "study": [
+    "nw-intro",
+    "snia-dict",
+    "vsphere-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Citrix, VMWare, 소만사 등 VDI 솔루션 운영 경험이 있으신 분",
+   "short": "가상 PC를 나눠 주는 VDI 제품 — 시트릭스·VMware(Horizon)·소만사 — 중 하나를 굴려 봤으면 좋다는 뜻.",
+   "why": "회사는 Citrix 기반 VDI 기술로 서비스를 운영한다고 적었습니다.[2] VMware 의 VDI 제품은 Horizon(2024년 Omnissa 로 분사)입니다.[19] 소만사는 VD-i 라는 국산 VDI·클라우드 PC 제품을 내고 외산 제품을 대체한 사례를 발표했습니다.[16] 고객사마다 쓰는 제품이 달라 세 이름을 나열한 것으로 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "**전달 그룹·카탈로그 관리** — 어떤 사용자 묶음에 어떤 가상 PC 묶음을 줄지 정한다(Citrix 용어).[18]",
+     "**이미지 배포 방식** — 원본 하나에서 복제해 매번 새로 주는 방식(비지속형)과 개인 PC처럼 유지하는 방식(지속형)을 고른다.[17][18]",
+     "**구축형 vs 구독형** — 데이터센터에 직접 깐 VDI 와, Azure Virtual Desktop 같은 DaaS(구독형) 를 회사는 둘 다 운영 대상으로 적었다.[2][29]",
+     "**프로필 관리** — 비지속형에서도 사용자 설정이 남도록 프로필을 따로 저장한다.[18]",
+     "**정책** — 클립보드·USB·프린터 허용 여부. 망분리(업무망과 인터넷망을 나누는 보안 조치) 목적의 VDI 에서는 이 정책이 핵심이다.[16] {추론}"
+    ]
+   },
+   "how_far": "우대 사항이라 셋 중 하나를 운영해 본 경험이면 충분하고, 고객사 주력이 Citrix 라 Citrix 경험이 가장 바로 쓰입니다.[2] {추론}",
+   "refs": [
+    2,
+    16,
+    17,
+    18,
+    19,
+    29
+   ],
+   "study": [
+    "citrix-docs",
+    "horizon-wiki",
+    "azure-vdi"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "VDI 운영 경험(3,000 User 이상)이 있으신 분",
+   "short": "사용자 3,000명 넘는 큰 VDI 를 운영해 봤으면 좋다는 뜻 — 규모가 커야 생기는 문제를 겪어 봤는지.",
+   "why": "공고는 앞으로 LG그룹사 전반의 VDI 운영·구축을 맡는다고 적었습니다.[1] 모회사 LG CNS 도 약 5,000명 규모 VDI 구축과[14] 1만 명 규모 VDI 사례를 공개했습니다.[15] 그 규모의 문제(로그온 폭주·이미지 일괄 패치·용량 계획)는 작은 환경에서는 잘 드러나지 않습니다. {추론}",
+   "actually": {
+    "items": [
+     "**일괄 작업** — 원본 이미지 하나를 고치면 수천 대에 퍼지므로 시험군 → 일부 → 전체 순서로 배포한다. {추론}",
+     "**용량 계획** — 입사 시즌·조직 개편 전에 호스트·라이선스를 미리 늘린다(위 호스트 계산). {추론}",
+     "**자동화** — 수천 명의 가상 PC 상태를 손으로 볼 수 없어 스크립트·관리 도구로 본다.[14]"
+    ]
+   },
+   "how_far": "이력서에 '몇 명 규모·호스트 몇 대·이미지 몇 개'를 숫자로 적는 것이 이 줄을 증명하는 방법입니다. {추론}",
+   "refs": [
+    1,
+    14,
+    15
+   ],
+   "study": [
+    "lgcns-vmcube",
+    "citrix-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "모니터링 시스템 구축 또는 운영 경험이 있으신 분",
+   "short": "사용자가 신고하기 전에 이상을 먼저 알아채도록 지표를 모으고 경보를 거는 체계를 다뤄 봤으면 좋다는 뜻.",
+   "why": "회사는 장애 때 신속한 복구와 정기점검을 운영 서비스로 약속합니다.[4] 감시는 '무엇이 고장 났나'와 '왜 그런가'에 답하기 위한 것이고, 사람을 깨우는 경보는 사용자 피해가 생기는 증상에 걸어야 한다는 것이 공개된 운영 원칙입니다.[24]",
+   "actually": {
+    "items": [
+     "**지표 수집** — 호스트 CPU·메모리, 스토리지 지연, 접속 세션 수, 로그온 소요 시간.[24]",
+     "**도구** — 오픈소스 Zabbix(장비·서버 감시)·Prometheus(지표 수집·경보)나 VDI 제품 자체의 감시 화면.[25][26][18]",
+     "**경보 설계** — 너무 많이 울리면 무시된다. 사용자에게 영향이 있는 것만 즉시 알리고 나머지는 보고서로.[24]",
+     "**대시보드** — 고객사 보고용 가용률·장애 추이 화면. {추론}"
+    ]
+   },
+   "how_far": "모니터링 도구 하나를 설치해 서버 지표를 모으고 경보 규칙을 직접 써 본 정도면 이 우대 줄을 말할 수 있습니다. {추론}",
+   "refs": [
+    4,
+    18,
+    24,
+    25,
+    26
+   ],
+   "study": [
+    "sre-monitoring",
+    "prometheus-docs",
+    "zabbix-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Open-source 운영 경험이 있으신 분",
+   "short": "상용 제품 대신 오픈소스(OpenStack·KVM·리눅스 도구 등)를 직접 깔고 문제를 풀어 봤으면 좋다는 뜻.",
+   "why": "회사는 오픈스택을 운영·아키텍처 대상으로 적었고[3], 미들웨어·엔터프라이즈 오픈소스 솔루션 기술지원도 사업으로 둡니다.[2] 오픈소스는 제조사 기술지원이 없거나 약해서 운영자가 문서·소스·커뮤니티로 직접 원인을 찾아야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**사설 클라우드** — OpenStack 으로 가상 머신을 만들고 관리한다.[20]",
+     "**하이퍼바이저** — KVM 기반 Proxmox VE 같은 오픈소스 가상화.[30]",
+     "**감시·자동화** — Zabbix·Prometheus 같은 오픈소스 운영 도구.[25][26]"
+    ]
+   },
+   "how_far": "집이나 시험 환경에서 오픈소스 가상화·감시 도구를 직접 굴려 본 경험도 말할 거리가 됩니다. {추론}",
+   "refs": [
+    2,
+    3,
+    20,
+    25,
+    26,
+    30
+   ],
+   "study": [
+    "openstack-docs",
+    "proxmox-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "스크립트 언어 활용 경험이 있으신 분",
+   "short": "반복 작업(가상 PC 정리·상태 점검·보고서)을 PowerShell·파이썬 같은 짧은 프로그램으로 자동화해 봤으면 좋다는 뜻.",
+   "why": "수천 대 가상 PC를 손으로 관리할 수 없어서입니다. {추론} Citrix·VMware 제품은 PowerShell 로 관리 기능을 열어 두고[18][27], 회사는 테라폼을 적용한 클라우드 아키텍처 자동화를 강점으로 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**정리** — 오래 연결이 끊긴 세션을 찾아 로그오프(아래 예시).",
+     "**점검** — 아침마다 호스트·백업 결과를 모아 한 장 보고서로.",
+     "**일괄 변경** — 사용자 목록 파일을 읽어 가상 PC 배정·회수를 한꺼번에.[27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "연결이 끊긴 채 하루 넘게 남은 세션 고르기",
+     "body": "VDI 관리 명령이 돌려준 세션 목록을 흉내 낸 것입니다(가상 값). 출력: lee: 연결 끊김 30시간 → 로그오프 대상 / choi: 연결 끊김 49시간 → 로그오프 대상. 실제로는 PowerShell 로 세션 목록을 받아 같은 조건으로 거릅니다.[27]",
+     "lang": "python",
+     "code": "print(\"# 4 disconnected sessions\")\nsessions = [(\"kim\", \"Active\", 0), (\"lee\", \"Disconnected\", 30), (\"park\", \"Disconnected\", 3), (\"choi\", \"Disconnected\", 49)]\nfor u, st, h in sessions:\n    if st == \"Disconnected\" and h >= 24:\n        print(f\"{u}: 연결 끊김 {h}시간 -> 로그오프 대상\")"
+    }
+   ],
+   "level": {
+    "basic": "목록을 읽어 조건으로 거르고 결과를 파일로 남긴다",
+    "work": "제품의 PowerShell 모듈·API 로 점검·정리를 예약 작업으로 돌린다",
+    "team": "자동화 결과를 보고서·경보와 잇는다 {추론}"
+   },
+   "how_far": "개발자 수준의 프로그램이 아니라, 매일 하던 손작업 하나를 스크립트로 바꿔 본 사례면 충분합니다. {추론}",
+   "refs": [
+    3,
+    18,
+    27
+   ],
+   "study": [
+    "powershell-docs",
+    "tlcl"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "적극적이고 긍정적인 마인드를 보유하신 분",
+   "short": "고객사 사용자의 불편 신고를 매일 받는 자리라 먼저 나서서 풀려는 태도를 본다는 뜻.",
+   "why": "VDI 운영은 사용자 PC 를 대신 책임지는 일이라 신고·요청 응대가 일상입니다. {추론} 회사는 LG Way 를 행동 방식으로 두고 경력 전형에 인성검사(LG Way Fit Test)를 거칩니다.[12]",
+   "how_far": "면접에서 어려운 요청을 끝까지 처리한 경험을 구체적으로 말하면 됩니다. {추론}",
+   "refs": [
+    12
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "서버 가상화를 해 왔고 사용자와 가까운 VDI 로 영역을 넓히고 싶은 운영자[1]",
+   "Citrix 기반 VDI 를 운영해 본 사람 — 회사 주력 기술과 바로 맞는다[2]",
+   "앞으로 LG그룹사 VDI 구축까지 경험을 넓히고 싶은 사람[1]",
+   "반복 운영을 스크립트로 줄이는 데 재미를 느끼는 사람[3]"
+  ],
+  "hard": [
+   "고객사 업무 PC 를 맡는 운영 위탁이라 장애 때 야간·주말 대응이 있을 수 있다 {추론}",
+   "새 기능을 만드는 개발보다 안정 운영·점검·보고가 일의 대부분이다 {추론}",
+   "공고에 근무지가 '서울특별시'로만 있어 실제 근무지(본사·고객사)는 면접에서 확인해야 한다[1] {추론}",
+   "공공데이터 집계 기준 평균 연봉이 모회사보다 낮다[8][9]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "월요일 아침 9시에 '가상 PC 로그인이 3분 넘게 걸린다'는 신고가 몰립니다. 무엇부터 보겠어요?",
+   "a": "로그온 폭주·스토리지 지연·프로필 크기를 계층별로 가르는가 — 서버/스토리지/Network 줄.[15][18]"
+  },
+  {
+   "q": "사용자 3,000명 VDI 에 필요한 호스트 수를 어떻게 계산하나요?",
+   "a": "CPU 과다 할당 비율·메모리·N+1 여유를 같이 따지는가 — 첫 업무 줄.[28]"
+  },
+  {
+   "q": "골든 이미지에 보안 패치를 넣어야 합니다. 어떤 순서로 배포하겠어요?",
+   "a": "시험 → 일부 → 전체, 되돌리기 계획 — 3,000 User 우대 줄.[18]"
+  },
+  {
+   "q": "백업은 매일 성공으로 뜨는데 정말 복구가 될까요?",
+   "a": "복구 시험과 RPO/RTO — 백업 업무 줄.[22]"
+  },
+  {
+   "q": "vMotion 과 HA 의 차이를 설명해 주세요.",
+   "a": "살아 있는 채 옮기기 vs 호스트가 죽은 뒤 다시 켜기 — 가상화 요건 줄.[28]"
+  },
+  {
+   "q": "손으로 하던 일을 스크립트로 바꿔 본 경험이 있나요?",
+   "a": "실제 사례와 효과 — 스크립트 우대 줄.[27]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "LG Careers · [비즈테크아이] VDI TA·인프라 운영 담당자 모집 (경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1002219",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "주요업무·자격요건·우대사항, 조직 소개(클라우드인프라사업팀 CI1파트 — Cloud PC VDI SM/SI·가상화 솔루션 운영, LG그룹사 VDI 로 확대), 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 솔루션/IT 보안",
+   "url": "https://www.biztechi.com/business/cloud/04",
+   "kind": "company",
+   "note": "Citrix 기반 VDI 서비스 운영, VDI 컨설팅·구축(SI)·통합 운영, Private·Public(DaaS)·Hybrid 운영, 솔루션 전환·데이터센터 이전 마이그레이션, 엔터프라이즈 오픈소스 기술지원 (2026-11 확인)"
+  },
+  {
+   "n": 3,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD",
+   "url": "https://www.biztechi.com/business/cloud/01",
+   "kind": "company",
+   "note": "서버·스토리지·네트워크·가상화·VDI 등 전 분야 기술자, 테라폼 클라우드 아키텍처 자동화, VDI·오픈스택 등 솔루션 운영·아키텍처링"
+  },
+  {
+   "n": 4,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 인프라",
+   "url": "https://www.biztechi.com/business/cloud/03",
+   "kind": "company",
+   "note": "네트워크·서버·스토리지 운영·구축·설계, 시스템 SM(백업 서비스·이력 관리, DR), 정기점검·장애 원인 분석·신속 복구, TAC/RMA"
+  },
+  {
+   "n": 5,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 클라우드",
+   "url": "https://www.biztechi.com/business/cloud/02",
+   "kind": "company",
+   "note": "LG전자·LG화학·LG에너지솔루션 등 LG 계열사 클라우드 운영, 하이브리드·멀티 클라우드"
+  },
+  {
+   "n": 6,
+   "title": "비즈테크아이 · Biztechi 소개",
+   "url": "https://www.biztechi.com/about/01",
+   "kind": "company",
+   "note": "LG CNS 자회사, 고객: LG 그룹사·기업·공공"
+  },
+  {
+   "n": 7,
+   "title": "비즈테크아이 · 직무소개",
+   "url": "https://www.biztechi.com/recruit/03",
+   "kind": "company",
+   "note": "인프라 직무: 서버·스토리지·백업·네트워크·미들웨어·클라우드"
+  },
+  {
+   "n": 8,
+   "title": "자소설닷컴 · 비즈테크아이 기업정보",
+   "url": "https://jasoseol.com/companies/14512",
+   "kind": "reference",
+   "note": "초봉 3,811만·평균 5,748만, 사원수 945명 — 공공데이터 집계 (같은 회사 기존 풀이에서 확인한 값)"
+  },
+  {
+   "n": 9,
+   "title": "자소설닷컴 · LG CNS 기업정보",
+   "url": "https://jasoseol.com/companies/57",
+   "kind": "reference",
+   "note": "초봉 5,071만·평균 7,802만 — 같은 집계"
+  },
+  {
+   "n": 10,
+   "title": "비즈테크아이 · 복리후생",
+   "url": "https://www.biztechi.com/culture/03",
+   "kind": "company"
+  },
+  {
+   "n": 11,
+   "title": "비즈테크아이 · 오시는 길",
+   "url": "https://www.biztechi.com/about/05",
+   "kind": "company",
+   "note": "서울 마포구 매봉산로 75, 상암 DDMC 12층"
+  },
+  {
+   "n": 12,
+   "title": "비즈테크아이 · 채용 프로세스",
+   "url": "https://www.biztechi.com/recruit/02",
+   "kind": "company",
+   "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"
+  },
+  {
+   "n": 13,
+   "title": "비즈테크아이 · 인사제도",
+   "url": "https://www.biztechi.com/culture/02",
+   "kind": "company",
+   "note": "리더 Path·전문가 Path, 성과에 걸맞은 대우"
+  },
+  {
+   "n": 14,
+   "title": "LG CNS · 클라우드 기반 VDI 와 vmCube 소개 자료 (Microsoft 게시)",
+   "url": "https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RW10pfj",
+   "kind": "reference",
+   "date": "2022",
+   "note": "모회사의 자체 VDI 통합 자동화 관리 도구 vmCube — 사용자 포털·2단계 인증·신청서 기반 생성/회수·미사용 자원 반납, 약 5,000명 규모 구축 사례"
+  },
+  {
+   "n": 15,
+   "title": "Case Study · LG CNS 10,000-seat VDI with Pure Storage FlashArray",
+   "url": "https://www.casestudies.com/company/pure-storage/case-study/lg-cns-adopts-flasharray-for-a-large-scale-vdi-deployment",
+   "kind": "reference",
+   "note": "모회사의 1만 명 규모 VDI 와 스토리지 성능 — 제조사 사례 글"
+  },
+  {
+   "n": 16,
+   "title": "바이라인네트워크 · 소만사, 클라우드PC 외산 대체 15건…“로그인 30% 단축”",
+   "url": "https://byline.network/2026/03/12-569/",
+   "kind": "news",
+   "date": "2026-03",
+   "note": "소만사 VD-i(논리적 망분리·클라우드 PC) — 회사 발표 기준"
+  },
+  {
+   "n": 17,
+   "title": "Microsoft Azure · VDI(가상 데스크톱 인프라)란?",
+   "url": "https://azure.microsoft.com/ko-kr/resources/cloud-computing-dictionary/what-is-virtual-desktop-infrastructure-vdi",
+   "kind": "reference",
+   "note": "VDI 구조(하이퍼바이저·연결 브로커), 지속형·비지속형"
+  },
+  {
+   "n": 18,
+   "title": "Citrix Virtual Apps and Desktops 문서",
+   "url": "https://docs.citrix.com/en-us/citrix-virtual-apps-desktops",
+   "kind": "reference",
+   "note": "Delivery Controller·카탈로그·전달 그룹·이미지·프로필 관리·정책·PowerShell SDK"
+  },
+  {
+   "n": 19,
+   "title": "VMware Horizon (개요)",
+   "url": "https://en.wikipedia.org/wiki/VMware_Horizon",
+   "kind": "reference",
+   "note": "VMware 의 VDI 제품, 2024년 Omnissa 로 분사"
+  },
+  {
+   "n": 20,
+   "title": "OpenStack Documentation",
+   "url": "https://docs.openstack.org/",
+   "kind": "reference",
+   "note": "Nova·Neutron·Cinder·Glance"
+  },
+  {
+   "n": 21,
+   "title": "The Nutanix Bible",
+   "url": "https://www.nutanixbible.com/",
+   "kind": "reference",
+   "note": "HCI 구조 — 노드 안 디스크를 묶은 분산 저장소"
+  },
+  {
+   "n": 22,
+   "title": "NIST SP 800-34 Rev. 1 · Contingency Planning Guide for Federal Information Systems",
+   "url": "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final",
+   "kind": "reference",
+   "date": "2010",
+   "note": "RPO·RTO, 백업·복구 시험"
+  },
+  {
+   "n": 23,
+   "title": "Veeam · The 3-2-1 Backup Rule",
+   "url": "https://www.veeam.com/blog/321-backup-rule.html",
+   "kind": "reference",
+   "note": "사본 3개·매체 2종·외부 1개 — 백업 제조사 글"
+  },
+  {
+   "n": 24,
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "date": "2016",
+   "note": "무엇이·왜 고장 났나, 증상 기반 경보, 네 가지 핵심 신호"
+  },
+  {
+   "n": 25,
+   "title": "Prometheus · Overview",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Zabbix Documentation · Manual",
+   "url": "https://www.zabbix.com/documentation/current/en/manual",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Microsoft Learn · PowerShell 문서",
+   "url": "https://learn.microsoft.com/ko-kr/powershell/scripting/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Broadcom TechDocs · VMware vSphere",
+   "url": "https://techdocs.broadcom.com/us/en/vmware-cis/vsphere.html",
+   "kind": "reference",
+   "note": "vCenter·클러스터·vMotion·HA·자원 관리"
+  },
+  {
+   "n": 29,
+   "title": "Microsoft Learn · Azure Virtual Desktop 이란?",
+   "url": "https://learn.microsoft.com/ko-kr/azure/virtual-desktop/overview",
+   "kind": "reference",
+   "note": "DaaS(구독형 클라우드 PC) 예"
+  },
+  {
+   "n": 30,
+   "title": "Proxmox VE Documentation",
+   "url": "https://pve.proxmox.com/pve-docs/",
+   "kind": "reference",
+   "note": "KVM 기반 오픈소스 가상화"
+  },
+  {
+   "n": 31,
+   "title": "The Linux Command Line (William Shotts)",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Microsoft Learn · Windows Server 문서",
+   "url": "https://learn.microsoft.com/ko-kr/windows-server/",
+   "kind": "reference",
+   "note": "AD·그룹 정책·이벤트 로그"
+  },
+  {
+   "n": 33,
+   "title": "SNIA · Online Dictionary",
+   "url": "https://www.snia.org/education/online-dictionary",
+   "kind": "reference",
+   "note": "IOPS·지연 등 스토리지 용어"
+  }
+ ],
+ "caveat": "'EnCloud' 의 공개 설명은 찾지 못했습니다 — LG에너지솔루션 사내 VDI·클라우드 PC 서비스 이름으로 읽었지만 추론입니다. 회사 근거는 공고와 회사 사이트의 클라우드 사업 소개(Citrix 기반 VDI 운영·백업·오픈스택)와 모회사 LG CNS 의 VDI 공개 자료이고, 이 팀의 기술 블로그·발표는 없었습니다. 제품·백업·모니터링의 구체 내용은 공식 문서와 공개 자료로 '보통 이런 것'을 보였고, 예시 숫자는 계산 방법을 보이려는 가정 값입니다. 연봉은 공시가 없어 공공데이터 집계값입니다.",
+ "resources": [
+  {
+   "id": "biztechi-vdi",
+   "title": "비즈테크아이 사업 소개 — CLOUD · 솔루션/IT 보안 (VDI 서비스)",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.biztechi.com/business/cloud/04",
+   "why": "이 팀이 고객에게 약속하는 VDI 서비스 범위(Citrix 기반, 사내 구축·DaaS·혼합형, 전환·이전) — 면접 전 업무 범위를 맞춰 본다.",
+   "by": "비즈테크아이",
+   "free": true
+  },
+  {
+   "id": "lgcns-vmcube",
+   "title": "LG CNS 클라우드 기반 VDI · vmCube 소개 자료",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RW10pfj",
+   "why": "모회사가 VDI 를 수천 명 규모로 어떻게 운영·자동화하는지 — EnCloud 운영·3,000 User 우대 줄의 감을 잡는다.",
+   "by": "LG CNS",
+   "free": true
+  },
+  {
+   "id": "azure-vdi",
+   "title": "VDI(가상 데스크톱 인프라)란?",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://azure.microsoft.com/ko-kr/resources/cloud-computing-dictionary/what-is-virtual-desktop-infrastructure-vdi",
+   "why": "VDI 구조(하이퍼바이저·연결 브로커·지속형/비지속형)를 한국어로 짧게 — 첫 출발점.",
+   "by": "Microsoft",
+   "free": true
+  },
+  {
+   "id": "citrix-docs",
+   "title": "Citrix Virtual Apps and Desktops 문서",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.citrix.com/en-us/citrix-virtual-apps-desktops",
+   "why": "회사 주력 VDI 제품의 구성 요소·이미지·프로필·정책·PowerShell SDK — VDI 운영 업무와 Citrix 우대 줄.",
+   "by": "Citrix",
+   "free": true
+  },
+  {
+   "id": "horizon-wiki",
+   "title": "VMware Horizon (개요)",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://en.wikipedia.org/wiki/VMware_Horizon",
+   "why": "VMware 쪽 VDI 제품의 구성과 이름 변화(Omnissa) — 우대 줄의 VMWare.",
+   "free": true
+  },
+  {
+   "id": "vsphere-docs",
+   "title": "VMware vSphere 문서",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://techdocs.broadcom.com/us/en/vmware-cis/vsphere.html",
+   "why": "클러스터·vMotion·HA·자원 관리 — 가상화 구축/운영 요건 줄과 호스트 용량 계산.",
+   "by": "Broadcom",
+   "free": true
+  },
+  {
+   "id": "openstack-docs",
+   "title": "OpenStack Documentation",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.openstack.org/",
+   "why": "회사가 운영 대상으로 꼽은 오픈스택의 서비스 구성 — 가상화 요건 줄과 Open-source 우대 줄.",
+   "by": "OpenInfra Foundation",
+   "free": true
+  },
+  {
+   "id": "nutanix-bible",
+   "title": "The Nutanix Bible",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.nutanixbible.com/",
+   "why": "HCI 가 서버 디스크를 묶어 저장소를 만드는 원리 — 가상화 요건 줄의 Nutanix.",
+   "by": "Nutanix",
+   "free": true
+  },
+  {
+   "id": "proxmox-docs",
+   "title": "Proxmox VE Documentation",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://pve.proxmox.com/pve-docs/",
+   "why": "PC 한 대에 무료로 깔아 클러스터·스냅숏·백업을 실습할 수 있는 오픈소스 하이퍼바이저.",
+   "by": "Proxmox",
+   "free": true
+  },
+  {
+   "id": "this-is-winserver",
+   "title": "이것이 윈도우 서버다",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%EA%B2%83%EC%9D%B4%20%EC%9C%88%EB%8F%84%EC%9A%B0%20%EC%84%9C%EB%B2%84%EB%8B%A4",
+   "why": "AD·그룹 정책·원격 데스크톱 등 윈도우 서버 운영을 실습 위주로 — Windows 서버 요건 줄.",
+   "by": "우재남 · 한빛미디어"
+  },
+  {
+   "id": "this-is-linux",
+   "title": "이것이 리눅스다",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%EA%B2%83%EC%9D%B4%20%EB%A6%AC%EB%88%85%EC%8A%A4%EB%8B%A4",
+   "why": "리눅스 서버 설치·서비스·네트워크 설정을 가상 머신 실습으로 — Linux 서버 요건 줄.",
+   "by": "우재남 · 한빛미디어"
+  },
+  {
+   "id": "tlcl",
+   "title": "The Linux Command Line",
+   "kind": "book",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "why": "명령줄과 셸 스크립트 — 리눅스 트러블슈팅과 스크립트 우대 줄.",
+   "by": "William Shotts · No Starch Press",
+   "free": true
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "서버 엔지니어가 알아야 할 네트워크(VLAN·라우팅·로드밸런서) — 서버/스토리지/Network 줄의 네트워크 쪽.",
+   "by": "고재성 · 이상훈 · 길벗"
+  },
+  {
+   "id": "snia-dict",
+   "title": "SNIA Online Dictionary",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.snia.org/education/online-dictionary",
+   "why": "IOPS·지연·RAID·스냅숏 같은 스토리지 낱말 — 서버/스토리지/Network 줄의 스토리지 쪽.",
+   "by": "SNIA",
+   "free": true
+  },
+  {
+   "id": "nist-80034",
+   "title": "NIST SP 800-34 Rev. 1 · Contingency Planning Guide",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final",
+   "why": "RPO·RTO·백업 전략·복구 시험의 틀 — 백업 운영체계 업무 줄.",
+   "by": "NIST · 2010",
+   "free": true
+  },
+  {
+   "id": "veeam-321",
+   "title": "The 3-2-1 Backup Rule",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.veeam.com/blog/321-backup-rule.html",
+   "why": "보관 규칙의 흔한 출발점 — 백업 정책을 짤 때.",
+   "by": "Veeam",
+   "free": true
+  },
+  {
+   "id": "sre-monitoring",
+   "title": "Site Reliability Engineering · Monitoring Distributed Systems",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "why": "무엇을 감시하고 언제 사람을 깨울지 — 모니터링 우대 줄의 원칙.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "prometheus-docs",
+   "title": "Prometheus Overview",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "why": "지표 수집·경보 규칙을 직접 써 보는 오픈소스 도구 — 모니터링·Open-source 우대 줄.",
+   "by": "Prometheus",
+   "free": true
+  },
+  {
+   "id": "zabbix-docs",
+   "title": "Zabbix Manual",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.zabbix.com/documentation/current/en/manual",
+   "why": "서버·장비 감시에 국내 운영 현장에서도 흔한 오픈소스 도구 — 모니터링 우대 줄.",
+   "by": "Zabbix",
+   "free": true
+  },
+  {
+   "id": "powershell-docs",
+   "title": "PowerShell 문서",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://learn.microsoft.com/ko-kr/powershell/scripting/overview",
+   "why": "Citrix·VMware 관리 명령이 PowerShell 로 열려 있다 — 스크립트 우대 줄.",
+   "by": "Microsoft Learn",
+   "free": true
+  }
+ ],
+ "study_path": [
+  {
+   "title": "VDI 구조 잡기",
+   "time": "1주",
+   "goal": "사용자 접속이 인증 → 브로커 → 가상 PC → 스토리지로 가는 길을 그리고, 지속형·비지속형을 설명한다.",
+   "resources": [
+    "azure-vdi",
+    "biztechi-vdi",
+    "lgcns-vmcube"
+   ],
+   "task": "가상의 3,000명 회사를 두고 접속 흐름 그림 한 장과 '어디가 막히면 어떤 신고가 오나' 표 한 장을 만든다."
+  },
+  {
+   "title": "가상화 실습",
+   "time": "2~3주",
+   "goal": "하이퍼바이저 클러스터에 가상 머신을 만들고 옮기고, 호스트 하나를 끊어도 서비스가 이어지게 한다.",
+   "resources": [
+    "proxmox-docs",
+    "vsphere-docs",
+    "openstack-docs",
+    "nutanix-bible"
+   ],
+   "task": "PC 나 중고 미니PC 두세 대에 Proxmox 클러스터를 만들고, 윈도우 가상 머신 하나를 원본으로 복제 10대를 찍은 뒤 호스트 하나의 전원을 꺼서 무엇이 어떻게 되는지 기록한다."
+  },
+  {
+   "title": "윈도우·리눅스 서버와 스토리지",
+   "time": "2~3주",
+   "goal": "AD·그룹 정책으로 여러 PC에 같은 설정을 걸고, 서버 느려짐을 지표로 원인까지 찾는다.",
+   "resources": [
+    "this-is-winserver",
+    "this-is-linux",
+    "tlcl",
+    "snia-dict",
+    "nw-intro"
+   ],
+   "task": "2단계 실습망에 AD 를 세우고 가상 PC 10대를 가입시켜 정책 하나를 배포한 뒤, 디스크 부하를 일부러 걸어 로그온 시간이 얼마나 느려지는지 재 본다."
+  },
+  {
+   "title": "백업·감시·자동화",
+   "time": "2주",
+   "goal": "백업 정책을 짜서 복구 시험까지 하고, 경보 규칙과 점검 스크립트를 만든다.",
+   "resources": [
+    "nist-80034",
+    "veeam-321",
+    "sre-monitoring",
+    "prometheus-docs",
+    "zabbix-docs",
+    "powershell-docs"
+   ],
+   "task": "실습 가상 머신에 일·주 단위 백업을 걸고 하나를 지운 뒤 되살리는 시간을 재고, Zabbix 나 Prometheus 로 호스트 메모리 경보를 걸고, 끊긴 세션·실패한 백업을 모아 주는 스크립트를 하나 쓴다."
+  },
+  {
+   "title": "VDI 제품 하나 깊게",
+   "time": "계속",
+   "goal": "Citrix(또는 Horizon) 의 카탈로그·전달 그룹·이미지 배포·프로필 관리를 설명한다.",
+   "resources": [
+    "citrix-docs",
+    "horizon-wiki"
+   ],
+   "task": "제품 평가판이나 문서로 '골든 이미지에 패치 넣기 → 시험군 → 전체 배포 → 되돌리기' 절차서를 한 장으로 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원**(둘 다 집계값) — 공시 숫자는 없고, 경력 전형이라 처우 협의가 기준이다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,811만원",
+    "amount": 3811,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없다 [8]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,748만원",
+    "amount": 5748,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계, 사원수 945명 기준. 경력직이 섞인 회사 전체 값이다 [8]"
+   },
+   {
+    "label": "LG CNS 초봉",
+    "value": "약 5,071만원",
+    "amount": 5071,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [9]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "약 7,802만원",
+    "amount": 7802,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [9]"
+   }
+  ],
+  "how": "공고에는 연봉이 없다 [1]. 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자는 없다. 경력 전형은 평판조회 뒤 **처우협의** 단계에서 연봉을 정하고 [12], 회사는 성과에 걸맞은 대우를 인사 원칙으로 적었다 [13]. 평균은 경력직이 섞인 회사 전체 값이라 초봉도 이 자리(경력 4년 이상)의 제시액도 아니다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "가족",
+    "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진·단체보험, 전문 심리 상담"
+   },
+   {
+    "name": "금융",
+    "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+   },
+   {
+    "name": "배움",
+    "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+   },
+   {
+    "name": "조직 문화",
+    "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"
+   }
+  ],
+  "note": "비즈테크아이 공식 사이트의 복리후생 페이지(2026-11 확인, 같은 회사 기존 풀이와 같은 출처)다 [10]. 항목 이름만 있고 금액·조건은 적혀 있지 않다."
+ },
+ "location": {
+  "name": "비즈테크아이 본사 (상암 DDMC)",
+  "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+  "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [11]",
+  "note": "회사 사이트 '오시는 길'의 본사 주소다 [11]. 공고의 근무지는 '서울특별시'로만 적혀 있다 [1]. 운영 위탁 자리라 실제 근무지가 고객사가 될 수 있다 {추론}."
+ }
+}
