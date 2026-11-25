@@ -1,0 +1,396 @@
+{
+ "id": "smilegate-lostark-data-platform-engineer",
+ "company": "스마일게이트",
+ "role": "[LOST ARK] 게임 데이터엔지니어 (플랫폼개발)",
+ "team": "로스트아크 · 로아개발본부",
+ "jobs": [
+  "boards-gamejob:dev:285794",
+  "ats-smilegate:group:5329"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "로스트아크 게임 서버가 쏟아내는 **인게임 로그**(누가 언제 무엇을 했나의 기록)를 실시간으로 받아 정리하고, 분석가·모델 담당·운영자가 꺼내 쓰게 **데이터 길(파이프라인)과 저장소**를 깔고 운영합니다.[1]",
+  "env": "**Hadoop 계열**(HDFS·YARN)·Spark·Kafka·Airflow·Docker를 AWS·Azure·GCP와 자체 서버(On-Premise) 여러 곳에 걸쳐 굴리고, 조회는 T-SQL·NoSQL로 합니다.[1]",
+  "oneline": "모델을 만드는 자리가 아니라 **모델과 분석이 먹을 데이터를 끊기지 않게 대는** 플랫폼 담당입니다. 같은 이름의 MLOps 공고와 짝을 이룹니다 {추론}.[3]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "인게임 로그 실시간 데이터 가공 및 처리",
+   "short": "게임 서버가 보낸 행동 기록을 쌓아 두지 않고 들어오는 즉시 걸러·정리해 넘기는 일.",
+   "why": "같은 본부의 짝 공고는 불건전 언어·봇·계정 도용·결제 사기 탐지를 업무로 적었습니다.[3] 이런 탐지는 늦게 알수록 피해가 커서 하루 한 번 모으는 배치로는 부족할 수 있습니다 {추론}. 다른 게임사(카카오게임즈)도 게임 로그를 Kafka로 실시간 모아 어뷰징을 찾고 운영팀에 알리는 길을 만들었다고 공개했습니다.[6]",
+   "actually": {
+    "intro": "Kafka·Spark 문서와 다른 게임사 사례로 본 '보통 이런 일'입니다. 로스트아크의 실제 구성은 공개되지 않았습니다.[6][8][9]",
+    "items": [
+     "**받기** — 게임 서버가 이벤트(접속·전투·거래·결제)를 Kafka 토픽(주제별 우편함)에 넣고, 처리기가 꺼내 읽는다.[9]",
+     "**표준화** — 서버·버전마다 다른 로그 모양을 한 형식으로 맞춘다. 카카오게임즈가 가장 먼저 꼽은 어려움이 이것이었다.[6]",
+     "**중복 걸러내기** — 네트워크 재전송으로 같은 이벤트가 두 번 올 수 있어 이벤트 번호로 한 번만 센다 {추론}.",
+     "**늦게 온 이벤트** — Spark의 워터마크(이 시각보다 많이 늦은 것은 버린다는 선)로 시간 창 집계를 닫는다.[8]",
+     "**내보내기** — 정리된 결과를 다시 Kafka(탐지 모델용)와 저장소(분석용)로 나눠 쓴다.[8]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "인게임 로그가 쓰이는 데까지 (보통 이런 모양 {추론})",
+     "steps": [
+      "게임 서버 · 이벤트를 남긴다",
+      "Kafka · 토픽에 쌓아 둔다",
+      "스트림 처리 · 표준화·중복 제거·시간 창 집계",
+      "저장소 · HDFS·클라우드 저장소에 날짜별로",
+      "쓰는 곳 · 탐지 모델·지표 화면·분석"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "중복·늦은 이벤트를 거르는 1분 창 집계 (가상 이벤트)",
+     "body": "e1이 두 번 와도 한 번만 세고, 가장 최근 시각(125초)보다 60초 넘게 늦은 e6은 버립니다(직접 돌린 출력). 스트림 엔진의 워터마크가 하는 일의 축소판입니다.[8]",
+     "lang": "python",
+     "code": "ev=[('e1','u1',10),('e2','u1',15),('e1','u1',10),('e3','u2',70),('e4','u1',40),('e5','u2',125),('e6','u1',50)]\nseen=set(); wm=0; win={}; late=[]\nfor eid,u,t in ev:\n    if eid in seen: print('dup skip',eid); continue\n    seen.add(eid); wm=max(wm,t)\n    if t < wm-60: late.append(eid); continue\n    k=(u,t//60); win[k]=win.get(k,0)+1\nprint(sorted(win.items()), 'late', late)\n# dup skip e1\n# [(('u1', 0), 3), (('u2', 1), 1), (('u2', 2), 1)] late ['e6']"
+    }
+   ],
+   "how_far": "\"실시간\"이 몇 초인지는 공고에 없습니다.[1] 최소선은 Kafka에서 읽어 형식을 맞추고, 중복·늦은 이벤트 규칙을 정해 1분 단위 집계를 끊김 없이 내보내는 것입니다 {추론}. 무엇을 '어뷰징 신호'로 볼지는 모델 담당·운영팀이 정합니다 {추론}.",
+   "refs": [1, 3, 6, 8, 9],
+   "study": ["spark-streaming", "kafka-guide", "kafka-book", "kleppmann-ddia"]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 제공을 위한 분석 및 파이프라인 개발 업무",
+   "short": "분석가·기획·모델 담당이 쓸 표(마트)를 매일 같은 시각에 같은 결과로 만들어 주는 일.",
+   "why": "업무 문장이 '데이터 제공을 위한'이라고 적은 대로, 이 자리의 손님은 데이터를 쓰는 다른 팀입니다.[1] 스마일게이트 그룹의 다른 데이터 엔지니어링 공고도 Hadoop 기반 ETL(뽑기·바꾸기·싣기)과 데이터 마트(목적별로 미리 만든 표) 구성을 업무로 적었습니다.[4] 그룹의 플랫폼 AI 팀도 게임 로그로 지표를 예측하고 밸런스 모델을 만든다고 밝혀, 로그를 쓰는 쪽이 여럿입니다.[5]",
+   "actually": {
+    "items": [
+     "**요청 받기** — \"신규 서버 첫 주 유저 잔존율\"처럼 질문을 받아 필요한 로그·기간·단위를 되묻는다 {추론}.",
+     "**마트 만들기** — 원본 로그 → 일별·계정별 요약표 → 지표표 순으로 쌓는다.[4]",
+     "**스케줄** — Airflow로 \"어제 로그가 다 왔나 확인 → 집계 → 검증 → 알림\"을 매일 돌린다.[7][12]",
+     "**다시 돌려도 같은 결과(멱등성)** — 실패해 다시 돌리면 그날 칸을 지우고 새로 쓴다. 덧붙이기만 하면 숫자가 두 배가 된다.",
+     "**실패 감시** — 다른 게임사는 Airflow 재시도·실패 수를 데이터 엔지니어의 지표로 삼아 줄여 갔다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "덮어쓰기 vs 덧붙이기 — 같은 날을 두 번 돌리면 (가상 값)",
+     "body": "같은 날짜를 두 번 돌렸을 때 날짜 칸을 덮어쓰면 7, 덧붙이면 14가 됩니다(직접 돌린 출력). 재실행이 잦은 배치에서 첫째로 지킬 규칙입니다.",
+     "lang": "python",
+     "code": "store={}\ndef run(day, rows):\n    store[day]=[r for r in rows if r['day']==day]   # 그날 칸을 덮어쓴다\nrows=[{'day':'2026-11-25','n':3},{'day':'2026-11-25','n':4},{'day':'2026-11-26','n':1}]\nrun('2026-11-25',rows); run('2026-11-25',rows)\nprint({d:sum(r['n'] for r in v) for d,v in store.items()})\napp={'2026-11-25':[]}\nfor _ in range(2):\n    app['2026-11-25'] += [r for r in rows if r['day']=='2026-11-25']\nprint('append twice', sum(r['n'] for r in app['2026-11-25']))\n# {'2026-11-25': 7}\n# append twice 14"
+    }
+   ],
+   "how_far": "지표의 정의(무엇을 '잔존'으로 볼지)는 분석·기획 쪽이 정하고, 엔지니어는 그 정의를 **틀리지 않는 표로 옮기고 매일 같은 시각에 대는** 쪽을 맡습니다 {추론}. 최소선은 날짜 단위로 다시 돌릴 수 있는 DAG와, 결과 건수·합계를 확인하는 검증 단계입니다.",
+   "refs": [1, 4, 5, 7, 12],
+   "study": ["reis-fode", "airflow-docs", "harenslak"]
+  },
+  {
+   "section": "task",
+   "quote": "AWS, Azure, GCP, On-Premise 등 다양한 환경 위에서 Hadoop eco-system 구축 및 운영 업무",
+   "short": "세 클라우드와 자체 서버 어디에 있든 Hadoop·Spark 묶음을 깔고, 멈추지 않게 돌보는 일.",
+   "why": "공고는 클라우드 셋과 자체 서버를 나란히 적었습니다.[1] 세 클라우드는 각각 관리형 Hadoop·Spark 서비스(AWS EMR·Azure HDInsight·Google Dataproc)를 따로 두고 있어, 같은 일을 환경마다 다른 설정으로 해야 합니다.[13][14][15] 왜 여러 환경을 쓰는지(지역 서비스·비용 등)는 공개되지 않았습니다 {추론}.",
+   "actually": {
+    "intro": "Hadoop 묶음(eco-system)의 뼈대입니다.[10][11]",
+    "items": [
+     "**HDFS** — 큰 파일을 블록(기본 128MB)으로 잘라 여러 대에 나눠 담고, 블록마다 복사본(기본 3개)을 둔다.[10]",
+     "**YARN** — 클러스터의 CPU·메모리를 나눠 주는 관리자. Spark 작업도 여기서 자리를 받는다.[11]",
+     "**클라우드판** — EMR·HDInsight·Dataproc은 같은 구성을 빌려 쓰는 서비스다. 노드 수·저장소(S3·Blob·GCS) 연결이 환경마다 다르다.[13][14][15]",
+     "**운영** — 디스크가 차는지, 노드가 죽었는지, 작업이 자리를 못 받아 줄 서 있는지 본다 {추론}.",
+     "**버전 맞추기** — 환경마다 Spark·Hadoop 버전이 다르면 같은 코드가 다르게 돈다. 그래서 Docker 이미지로 맞추는 일이 붙는다 {추론}.[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "1TB 로그는 HDFS에서 몇 조각이 되나 (계산)",
+     "body": "기본값(블록 128MB, 복사본 3개)으로 계산한 것입니다(직접 돌린 출력). 1TB를 담으려면 실제 디스크는 3TB가 듭니다.[10]",
+     "lang": "python",
+     "code": "size_gb=1024; block_mb=128; rep=3\nblocks=size_gb*1024//block_mb\nprint('blocks',blocks,'replicas',blocks*rep,'raw TB',size_gb*rep/1024)\n# blocks 8192 replicas 24576 raw TB 3.0"
+    }
+   ],
+   "how_far": "세 클라우드를 다 깊게 알 필요는 없습니다 {추론}. 최소선은 한 곳에서 Spark 클러스터를 띄워 작업을 돌리고, HDFS·YARN이 무엇을 나눠 맡는지 그림으로 설명하는 것입니다. 경력 3년 자리라 장애를 겪고 고친 이야기 하나가 있으면 좋습니다 {추론}.",
+   "refs": [1, 10, 11, 13, 14, 15, 18],
+   "study": ["hadoop-guide", "hadoop-docs", "reis-fode"]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 시각화/서비스 프로젝트 운영/관리를 위한 내부 웹 서비스 개발 업무",
+   "short": "지표 화면과, 파이프라인·데이터 요청을 관리하는 사내용 웹 도구를 만드는 일.",
+   "why": "파이프라인이 늘면 \"이 표는 누가 언제 만들었나, 어제 돌았나\"를 한곳에서 봐야 합니다 {추론}. 짝 공고는 운영자를 위한 데이터 웹 서비스를 Flask·Django로 만든다고 적어, 같은 본부의 사내 도구가 파이썬 웹으로 만들어지는 것으로 읽힙니다.[3] {추론}",
+   "actually": {
+    "items": [
+     "**지표 화면** — 직접 그리거나 Superset 같은 오픈소스 대시보드를 붙인다.[21]",
+     "**프로젝트·요청 관리** — 데이터 요청 접수, 담당자, 진행 상태를 적는 작은 관리 화면 {추론}.",
+     "**파이프라인 상태판** — Airflow 메타데이터 DB에서 성공·실패 기록을 읽어 보여 준다. 다른 게임사는 이 기록으로 일일 실패 알림을 만들었다.[7]",
+     "**권한** — 개인정보가 섞인 로그는 볼 수 있는 사람을 나눈다 {추론}."
+    ]
+   },
+   "how_far": "외부 서비스가 아니라 **사내 도구**라 화려함보다 정확한 숫자와 권한이 중요합니다 {추론}. 최소선은 로그인·목록·상세·상태 표시 네 가지를 한 프레임워크로 만들어 본 것입니다.",
+   "refs": [3, 7, 21],
+   "study": ["django-docs", "superset-docs"]
+  },
+  {
+   "section": "qualification",
+   "quote": "관련 업무 경력 3년 이상",
+   "short": "데이터 파이프라인·플랫폼을 실제로 운영해 본 3년 이상을 보는 경력직 자리.",
+   "why": "게임잡 판에만 이 줄이 있고, 회사 채용 페이지 판은 '경력'으로만 표시했습니다.[1][2] 서류 합격자에게 사전 과제와 면접 당일 테스트를 본다고 적혀 있어 연차보다 실제 손이 확인됩니다.[2]",
+   "how_far": "경력기술서와 포트폴리오가 필수이고, Notion 링크는 PDF로도 같이 내라고 적혀 있습니다.[1] 운영한 파이프라인의 규모(하루 건수·용량)와 고친 장애를 숫자로 적는 것이 최소선입니다 {추론}.",
+   "refs": [1, 2],
+   "study": ["reis-fode"]
+  },
+  {
+   "section": "qualification",
+   "quote": "대화의 핵심을 쉽게 파악하고 팀원/타 부서와 원활한 커뮤니케이션을 통해 주도적으로 문제 해결이 가능하신 분",
+   "short": "\"이 숫자가 왜 어제와 달라요?\"를 받아 원인을 찾아 끝까지 답하는 능력.",
+   "why": "이 자리의 손님은 분석가·모델 담당·운영자입니다.[1][3] 데이터 요청은 흔히 막연하게 오고, 숫자가 틀리면 원인이 로그·파이프라인·정의 중 어디인지 엔지니어가 먼저 가려야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "막연한 요청을 기간·단위·제외 조건이 있는 문장으로 바꿔 되묻는다 {추론}.",
+     "숫자가 다르면 원본 건수 → 중간표 → 최종표 순으로 짚어 어디서 갈렸는지 보인다 {추론}.",
+     "파이프라인이 늦어질 때 쓰는 쪽에 먼저 알린다. 다른 게임사는 DAG마다 담당자를 정해 알림을 나눴다.[7]"
+    ]
+   },
+   "how_far": "면접에서는 \"숫자가 안 맞던 일을 어떻게 찾아 고쳤나\" 한 가지를 단계별로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [1, 3, 7],
+   "study": ["reis-fode"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java, .NET, Scala, Python 등의 프로그래밍 언어 중 최소 1개의 언어를 능숙하게 사용 가능 하신 분",
+   "short": "넷 중 하나만 능숙하면 된다. 파이프라인은 파이썬·Scala, 게임 서버 쪽 연동은 Java·.NET이 흔하다.",
+   "why": "공고가 '최소 1개'라고 적었습니다.[1] Airflow DAG는 파이썬으로 적고, Spark는 Scala·Java·파이썬 API를 둡니다.[8][12] .NET이 들어간 것은 게임 서버나 사내 도구 쪽 코드와 닿기 때문으로 읽힙니다 {추론}.",
+   "actually": {
+    "items": [
+     "**Python** — Airflow DAG, pyspark 변환, 사내 웹 도구.[12]",
+     "**Scala·Java** — Spark·Kafka 클라이언트를 직접 짜거나 성능이 중요한 변환 {추론}.",
+     "**.NET(C#)** — 로그를 보내는 쪽 라이브러리, 윈도우 서버 도구 {추론}."
+    ]
+   },
+   "how_far": "한 언어로 \"Kafka에서 읽어 → 변환 → 저장\"하는 작은 프로그램과 테스트를 직접 짠 것이 최소선입니다 {추론}.",
+   "refs": [1, 8, 12],
+   "study": ["learning-spark", "airflow-docs"]
+  },
+  {
+   "section": "qualification",
+   "quote": "T-SQL, NoSQL 등 쿼리 문법에 분석 및 튜닝에 자신이 있으신 분",
+   "short": "SQL Server용 SQL(T-SQL)과 NoSQL로 원하는 값을 뽑고, 느린 쿼리를 실행 계획으로 고칠 수 있어야 한다.",
+   "why": "T-SQL은 마이크로소프트 SQL Server의 SQL입니다.[16] 공고가 일반 SQL이 아니라 T-SQL을 콕 집은 것은 게임 쪽 운영 DB가 SQL Server이기 때문으로 읽힙니다 {추론}. '튜닝'은 같은 결과를 더 적게 읽고 내는 일이고, 그 출발점이 실행 계획(DB가 쿼리를 어떻게 풀지 적은 계획서)입니다.[16]",
+   "actually": {
+    "items": [
+     "**뽑기** — 계정별·일별 집계, 윈도우 함수로 \"직전 접속과의 간격\" 구하기.",
+     "**실행 계획 읽기** — 표 전체를 훑는지(scan), 인덱스로 바로 찾는지(seek/search) 본다.[16][24]",
+     "**인덱스** — 자주 거르는 열에 인덱스를 두되, 쓰기가 느려지는 값을 같이 잰다.[16]",
+     "**NoSQL** — 문서형 DB(MongoDB 등)도 거르는 필드에 인덱스를 둬야 전체를 안 훑는다.[17]",
+     "**운영 DB 보호** — 분석 쿼리를 운영 DB에 바로 날리지 않고 복제본·적재본에서 돈다 {추론}."
+    ]
+   },
+   "level": {
+    "basic": "JOIN · GROUP BY · 서브쿼리 · NULL 처리",
+    "work": "윈도우 함수 · 실행 계획 읽기 · 인덱스 설계 · 날짜 범위 거르기",
+    "team": "큰 로그 테이블의 파티션·인덱스 설계, 운영 DB를 건드리지 않는 추출 {추론}"
+   },
+   "examples": [
+    {
+     "title": "인덱스 하나로 '훑기'가 '찾기'로 (가상 로그 20만 줄)",
+     "body": "SQL Server 대신 파이썬 내장 SQLite로 같은 원리를 본 것입니다(직접 돌린 출력). 인덱스 전에는 SCAN(전부 훑기), 뒤에는 SEARCH … USING INDEX(바로 찾기)로 계획이 바뀝니다.[24] SQL Server에서는 실행 계획의 Table Scan·Index Seek가 같은 구분입니다.[16]",
+     "lang": "python",
+     "code": "import sqlite3, random\nc=sqlite3.connect(':memory:')\nc.execute('create table log(uid int, ts int, action text)')\nrandom.seed(1)\nc.executemany('insert into log values(?,?,?)',[(random.randint(1,5000),i,'kill') for i in range(200000)])\nq='select count(*) from log where uid=42'\nprint(c.execute('explain query plan '+q).fetchall())\nc.execute('create index ix_uid on log(uid)')\nprint(c.execute('explain query plan '+q).fetchall())\n# [(3, 0, 216, 'SCAN log')]\n# [(3, 0, 53, 'SEARCH log USING COVERING INDEX ix_uid (uid=?)')]"
+    }
+   ],
+   "how_far": "면접 당일 테스트가 있다고 적혀 있어 손으로 쿼리를 짜는 시험을 각오하는 편이 안전합니다.[2] {추론} 최소선은 윈도우 함수가 든 집계 하나와, 느린 쿼리의 실행 계획을 보고 인덱스로 고친 예 하나입니다.",
+   "refs": [2, 16, 17, 24],
+   "study": ["mssql-plans", "mongo-indexes", "kleppmann-ddia"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Hadoop eco-system 및 오픈 소스 프로젝트(Spark, Kafka, Yarn, Airflow, Docker 등)의 활용 능력을 보유하신 분",
+   "short": "저장(HDFS)·자원(YARN)·처리(Spark)·전달(Kafka)·순서(Airflow)·포장(Docker)을 각각 써 본 경험.",
+   "why": "업무 네 줄이 모두 이 도구들 위에서 돌아갑니다.[1] 그룹의 다른 데이터 공고도 Hadoop 이해와 Kafka·Hive·HBase 처리 경험을 같은 자리에 적었습니다.[4]",
+   "actually": {
+    "intro": "도구마다 맡는 칸이 다릅니다.",
+    "items": [
+     "**Spark** — 큰 표를 여러 대로 나눠 변환·집계한다. 배치와 스트림을 같은 엔진으로.[8]",
+     "**Kafka** — 이벤트를 토픽·파티션에 담고, 컨슈머 그룹이 나눠 읽으며 어디까지 읽었는지(오프셋)를 기억한다.[9]",
+     "**YARN** — Spark 작업에 CPU·메모리를 나눠 준다. 자리가 없으면 작업이 줄을 선다.[11]",
+     "**Airflow** — 작업 순서를 파이썬 DAG로 적고 스케줄·재시도·실패 알림을 맡긴다.[12]",
+     "**Docker** — 실행 환경을 이미지로 묶어 어느 서버에서나 같게 돈다.[18]"
+    ]
+   },
+   "how_far": "'활용 능력'이라 내부 소스를 고칠 정도는 아닙니다 {추론}. 최소선은 로컬에서 Docker로 Kafka·Spark·Airflow를 띄워 \"Kafka → Spark → 파일 → Airflow 일일 집계\"를 한 줄로 이어 본 것입니다.",
+   "refs": [1, 4, 8, 9, 11, 12, 18],
+   "study": ["learning-spark", "kafka-book", "harenslak", "docker-docs"]
+  },
+  {
+   "section": "qualification",
+   "quote": "빅데이터 프레임워크와 분산 처리 기술로 대용량 데이터 처리 및 파이프라인 구축 또는 활용해 보신 분",
+   "short": "한 대에 안 들어가는 데이터를 여러 대로 나눠 처리해 본 경험 — '구축 또는 활용'이라 써 본 것도 된다.",
+   "why": "게임 로그는 하루치만 해도 한 대의 메모리에 안 들어가는 경우가 많아 분산 처리가 기본입니다 {추론}. 공고가 '구축 또는 활용'이라고 적어, 남이 깐 클러스터를 써 본 경험도 인정하는 문장입니다.[1]",
+   "actually": {
+    "items": [
+     "**나누기(파티션)** — 날짜·서버로 나눠 저장하면 필요한 날만 읽는다.",
+     "**섞기(셔플)** — 계정별로 모으는 집계는 데이터가 기계 사이를 오가 가장 비싸다 {추론}.",
+     "**치우침(스큐)** — 일부 계정·서버에 로그가 몰리면 한 작업만 늦게 끝난다 {추론}.",
+     "**파일 크기** — 작은 파일이 수만 개면 HDFS의 이름 관리자(NameNode)가 무거워진다.[10]"
+    ]
+   },
+   "how_far": "\"처리한 양(GB·건수), 걸린 시간, 줄인 방법\" 세 숫자를 말할 수 있는 경험 하나가 최소선입니다 {추론}.",
+   "refs": [1, 10],
+   "study": ["learning-spark", "hadoop-guide", "kleppmann-ddia"]
+  },
+  {
+   "section": "preference",
+   "quote": "ML 모델/ML 파이프라인 개발/MLOps 구축 등 ML 관련 경험 있으신 분",
+   "short": "탐지 모델이 먹을 데이터를 대 본 경험, 혹은 모델을 다시 학습·배포하는 길을 만든 경험(우대).",
+   "why": "같은 본부가 어뷰징 탐지 MLOps 공고를 따로 냈습니다.[3] 이 자리가 대는 데이터의 큰 손님이 그 모델이라, 모델 쪽 사정을 아는 사람이 유리합니다 {추론}. MLOps는 데이터가 바뀌면 다시 학습·검증·배포하는 운영 방식입니다.[19]",
+   "actually": {
+    "items": [
+     "**피처 표** — 모델이 쓰는 계정별 숫자(하루 플레이 시간 등)를 학습 때와 서비스 때 같은 계산으로 만든다.[19]",
+     "**학습 자동화** — 새 데이터가 오면 파이프라인이 다시 학습·평가한다(구글의 MLOps 수준 1).[19]",
+     "**데이터 검증** — 로그 형식이 바뀌어 피처가 비면 학습을 멈추게 한다.[19]"
+    ]
+   },
+   "how_far": "우대라 없어도 지원할 수 있습니다.[1] 있다면 \"학습용 데이터를 어떻게 매일 같은 값으로 대었나\"를 말하는 것이 이 자리와 가장 가깝습니다 {추론}.",
+   "refs": [1, 3, 19],
+   "study": ["gcp-mlops"]
+  },
+  {
+   "section": "preference",
+   "quote": "CI/CD 구축 관련 경험 있으신 분",
+   "short": "코드를 올리면 자동으로 검사·빌드·배포되게 만든 경험(우대) — 파이프라인 코드에도 똑같이 쓴다.",
+   "why": "DAG·Spark 작업도 코드라, 고친 것을 손으로 서버에 올리면 실수가 납니다 {추론}. CI(올릴 때마다 자동 검사)·CD(통과하면 자동 배포)는 그 손일을 없애는 장치입니다.[20] 구글의 MLOps 문서도 파이프라인 코드의 테스트·배포 자동화를 다음 단계로 꼽습니다.[19]",
+   "actually": {
+    "items": [
+     "**DAG 검사** — 올릴 때 모든 DAG가 불러와지는지(문법·순환 없음) 자동 확인 {추론}.",
+     "**변환 테스트** — 작은 가짜 데이터로 Spark 변환 결과를 맞춰 본다 {추론}.",
+     "**이미지 빌드** — Docker 이미지를 만들어 저장소에 올린다.[18][20]",
+     "**배포** — 검사 통과 시 운영 Airflow에 DAG를 반영한다 {추론}."
+    ]
+   },
+   "how_far": "GitHub Actions 같은 도구로 \"테스트 → 이미지 빌드\" 두 단계를 직접 만든 정도면 말할 거리가 됩니다 {추론}.[20]",
+   "refs": [18, 19, 20],
+   "study": ["gh-actions", "docker-docs"]
+  },
+  {
+   "section": "preference",
+   "quote": "관련 학과 전공자",
+   "short": "컴퓨터·통계·수학 계열 전공을 우대한다는 뜻 — 필수 조건은 아니다.",
+   "why": "자격요건이 아니라 우대사항에 있어 전공이 당락을 정하지는 않습니다.[1] 어떤 학과를 '관련'으로 보는지는 적혀 있지 않습니다 {추론}.",
+   "how_far": "비전공이라면 분산 처리·DB 과목에 해당하는 내용을 프로젝트로 보이는 것이 현실적인 대안입니다 {추론}.",
+   "refs": [1],
+   "study": ["kleppmann-ddia"]
+  }
+ ],
+ "fit": {
+  "good": [
+   "로그가 어디서 와서 어디로 가는지 끝까지 따라가는 걸 즐기는 사람",
+   "새 기능보다 '어제도 오늘도 똑같이 도는 것'에 보람을 느끼는 사람 {추론}",
+   "클라우드 하나에 묶이지 않고 여러 환경을 다뤄 보고 싶은 사람[1]"
+  ],
+  "hard": [
+   "AWS·Azure·GCP·자체 서버를 같이 돌봐야 해 알아야 할 설정이 많다[1]",
+   "데이터를 쓰는 팀이 여럿이라 요청과 장애 알림이 몰릴 수 있다 {추론}",
+   "운영 업무라 밤·주말 배치 실패에 대응할 일이 생길 수 있다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "같은 이벤트가 두 번 오거나 10분 늦게 오면 실시간 집계를 어떻게 맞추나요?",
+   "a": "업무 첫 줄(실시간 가공)과 워터마크·중복 제거를 묻는 질문.[8]"
+  },
+  {
+   "q": "어제 배치가 실패해 다시 돌렸더니 숫자가 두 배가 됐습니다. 왜고, 어떻게 막나요?",
+   "a": "파이프라인 멱등성 질문.[12] {추론}"
+  },
+  {
+   "q": "T-SQL 쿼리가 느릴 때 실행 계획에서 무엇을 먼저 보나요?",
+   "a": "자격요건의 '분석 및 튜닝'.[16]"
+  },
+  {
+   "q": "HDFS에 작은 파일이 많으면 무엇이 문제인가요?",
+   "a": "Hadoop 구축·운영 업무와 NameNode 부담.[10]"
+  },
+  {
+   "q": "Spark 작업 하나만 유난히 늦게 끝납니다. 어디부터 보나요?",
+   "a": "분산 처리 경험 요건 — 데이터 치우침·자원 부족(YARN). {추론}[11]"
+  }
+ ],
+ "sources": [
+  {"n": 1, "title": "게임잡 · [LOST ARK] 게임 데이터엔지니어 담당 (플랫폼개발) 모집", "url": "https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=285794", "kind": "posting", "note": "업무·자격(경력 3년)·필요역량·우대·제출서류 원문"},
+  {"n": 2, "title": "Smilegate Careers · [LOST ARK] 게임 데이터엔지니어 담당 (플랫폼개발)", "url": "https://careers.smilegate.com/apply/announce/view?seq=5329", "kind": "posting", "note": "회사 채용 페이지 판 — 사전 과제·면접 당일 테스트, 3개월 수습, 마감 2026-11-30"},
+  {"n": 3, "title": "게임잡 · [LOST ARK] 게임 데이터엔지니어 담당 모집 (어뷰징 탐지 MLOps)", "url": "https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=285795", "kind": "posting", "note": "같은 본부의 짝 공고 — 불건전 언어·봇·도용·결제 사기 탐지, Flask·Django 운영 웹"},
+  {"n": 4, "title": "사람인 · [스마일게이트 홀딩스] [데이터] 데이터 엔지니어링 담당", "url": "https://www.saramin.co.kr/zf_user/jobs/view?rec_idx=41969697", "kind": "posting", "date": "2022-01", "note": "같은 그룹의 지난 공고 — 계열사 통합 데이터 플랫폼, Hadoop ETL·데이터 마트, Kafka·Hive·HBase"},
+  {"n": 5, "title": "인벤 · 스마일게이트의 AI 기술, 인디게임사에 QA 자유를 줄까 (인터뷰)", "url": "https://www.inven.co.kr/webzine/news/?news=297176&iskin=df", "kind": "news", "date": "2024-07", "note": "스마일게이트메가포트 DIC·플랫폼 AI 팀 — 게임 로그로 지표 예측·밸런스 강화학습"},
+  {"n": 6, "title": "Confluent 고객 사례 · Kakao Games — 인게임 어뷰징 실시간 추적", "url": "https://www.confluent.io/customers/kakao-games/", "kind": "reference", "note": "다른 게임사 사례 — 게임마다 다른 로그 표준화, Kafka 수집·ksqlDB 이상 탐지, 2021-06 운영 시작"},
+  {"n": 7, "title": "베이글코드 · Airflow DAG 좀 살려주세요!", "url": "https://www.bagelcode.com/article/airflow-dag-%EC%A2%80-%EC%82%B4%EB%A0%A4%EC%A3%BC%EC%84%B8%EC%9A%94/", "kind": "reference", "note": "다른 게임사 데이터팀 — Airflow로 수집·Spark ETL·모델 학습 자동화, 실패 알림·DAG 담당자·재시도/실패 수 지표"},
+  {"n": 8, "title": "Apache Spark · Structured Streaming 프로그래밍 가이드", "url": "https://spark.apache.org/docs/latest/streaming/index.html", "kind": "reference", "note": "마이크로배치·워터마크·Kafka 소스/싱크"},
+  {"n": 9, "title": "Apache Kafka 문서", "url": "https://kafka.apache.org/documentation/", "kind": "reference", "note": "토픽·파티션·컨슈머 그룹·오프셋"},
+  {"n": 10, "title": "Apache Hadoop · HDFS Architecture", "url": "https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html", "kind": "reference", "note": "블록 128MB·복제 3·NameNode"},
+  {"n": 11, "title": "Apache Hadoop · Apache Hadoop YARN", "url": "https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/YARN.html", "kind": "reference", "note": "ResourceManager·NodeManager 자원 관리"},
+  {"n": 12, "title": "Apache Airflow 문서", "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html", "kind": "reference", "note": "파이썬 DAG·스케줄·재시도"},
+  {"n": 13, "title": "Amazon EMR 문서", "url": "https://docs.aws.amazon.com/emr/", "kind": "reference", "note": "AWS의 관리형 Hadoop·Spark"},
+  {"n": 14, "title": "Azure HDInsight 문서", "url": "https://learn.microsoft.com/en-us/azure/hdinsight/", "kind": "reference", "note": "Azure의 관리형 Hadoop·Spark·Kafka"},
+  {"n": 15, "title": "Google Cloud Dataproc 문서", "url": "https://cloud.google.com/dataproc/docs", "kind": "reference", "note": "GCP의 관리형 Spark·Hadoop"},
+  {"n": 16, "title": "Microsoft Learn · Execution Plan Overview (SQL Server)", "url": "https://learn.microsoft.com/en-us/sql/relational-databases/performance/execution-plans", "kind": "reference", "note": "T-SQL 실행 계획 — 튜닝의 출발점. T-SQL 참조는 learn.microsoft.com/sql/t-sql"},
+  {"n": 17, "title": "MongoDB 문서 · Indexes", "url": "https://www.mongodb.com/docs/manual/indexes/", "kind": "reference", "note": "인덱스가 없으면 컬렉션 전체를 훑는다"},
+  {"n": 18, "title": "Docker 문서 · Get started", "url": "https://docs.docker.com/get-started/", "kind": "reference"},
+  {"n": 19, "title": "Google Cloud · MLOps — 지속 전달과 자동화 파이프라인", "url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning", "kind": "reference", "note": "MLOps 수준 0·1·2, 데이터 검증, 파이프라인 CI/CD"},
+  {"n": 20, "title": "GitHub Actions 문서", "url": "https://docs.github.com/ko/actions", "kind": "reference"},
+  {"n": 21, "title": "Apache Superset 문서", "url": "https://superset.apache.org/docs/intro", "kind": "reference", "note": "오픈소스 대시보드 — 사내 지표 화면의 흔한 선택지 하나"},
+  {"n": 22, "title": "자소설닷컴 · 스마일게이트", "url": "https://jasoseol.com/companies/11383", "kind": "reference", "note": "공공데이터 집계 초봉·평균 — 같은 회사 다른 풀이에서 확인한 값(페이지 직접 열기는 403)"},
+  {"n": 23, "title": "게임잡 · 스마일게이트 기업정보", "url": "https://www.gamejob.co.kr/Company/Detail?M=18216698&tabcode=1", "kind": "company", "date": "2026", "note": "복리후생 항목명·회사 주소 — 같은 회사 다른 풀이에서 확인"},
+  {"n": 24, "title": "SQLite · EXPLAIN QUERY PLAN", "url": "https://www.sqlite.org/eqp.html", "kind": "reference", "note": "SCAN·SEARCH 표기 — 예시 코드의 출력 읽는 법"}
+ ],
+ "caveat": "스마일게이트가 로스트아크의 데이터 플랫폼 구조(어느 클라우드에 무엇을 두는지, 하루 로그 양, 도구 버전)를 공개한 발표·글은 이 회차에서 찾지 못했습니다(NDC·기술 블로그·보도 검색 — 받은 영상 없음). 회사 자신의 근거는 이 공고 두 판, 같은 본부의 MLOps 공고, 그룹의 지난 데이터 공고(2022), 그룹 AI 팀 인터뷰(2024)뿐이고, 나머지는 다른 게임사(카카오게임즈·베이글코드)와 공식 문서의 '보통 이런 것'입니다. 연봉은 집계 사이트 값이고 공시 숫자는 없습니다.",
+ "resources": [
+  {"id": "reis-fode", "title": "Fundamentals of Data Engineering", "by": "Joe Reis · Matt Housley · O'Reilly · 2022", "kind": "book", "url": "https://www.oreilly.com/search/?q=Fundamentals%20of%20Data%20Engineering%20Reis%20Housley", "lang": "en", "free": false, "level": "실무", "why": "업무②·경력 요건 — 수집·저장·변환·제공의 전체 그림과, '데이터를 대는 사람'의 일이 무엇인지."},
+  {"id": "kleppmann-ddia", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 위키북스 · 2018", "kind": "book", "url": "https://wikibook.co.kr/data-intensive-applications/", "lang": "ko", "free": false, "level": "심화", "why": "분산 처리·스트림·인덱스 요건 — 복제·파티션·이벤트 로그·정확히 한 번 처리의 원리를 한국어로."},
+  {"id": "learning-spark", "title": "Learning Spark (2판)", "by": "Jules Damji 외 · O'Reilly · 2020", "kind": "book", "url": "https://www.oreilly.com/search/?q=Learning%20Spark%202nd%20Edition", "lang": "en", "free": false, "level": "실무", "why": "Spark·대용량 처리 요건 — DataFrame·파티션·셔플·Structured Streaming을 예제로."},
+  {"id": "kafka-book", "title": "Kafka: The Definitive Guide (2판)", "by": "Gwen Shapira 외 · O'Reilly · 2021", "kind": "book", "url": "https://www.oreilly.com/search/?q=Kafka%20The%20Definitive%20Guide%202nd%20Edition", "lang": "en", "free": false, "level": "실무", "why": "업무①·Kafka 요건 — 파티션·컨슈머 그룹·오프셋·중복과 재처리."},
+  {"id": "hadoop-guide", "title": "Hadoop: The Definitive Guide (4판)", "by": "Tom White · O'Reilly · 2015", "kind": "book", "url": "https://www.oreilly.com/search/?q=Hadoop%20The%20Definitive%20Guide%20Tom%20White", "lang": "en", "free": false, "level": "실무", "why": "업무③ — HDFS·YARN이 어떻게 데이터와 자원을 나누는지. 오래된 판이라 Spark 부분은 다른 자료로."},
+  {"id": "hadoop-docs", "title": "Apache Hadoop 문서 · HDFS Architecture · YARN", "by": "Apache Software Foundation", "kind": "doc", "url": "https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html", "lang": "en", "free": true, "level": "입문", "why": "업무③ — 블록·복제·NameNode와 YARN 자원 관리의 공식 설명."},
+  {"id": "spark-streaming", "title": "Structured Streaming 프로그래밍 가이드", "by": "Apache Spark 문서", "kind": "doc", "url": "https://spark.apache.org/docs/latest/streaming/index.html", "lang": "en", "free": true, "level": "실무", "why": "업무① — 마이크로배치·워터마크·Kafka 연동."},
+  {"id": "kafka-guide", "title": "Apache Kafka 공식 문서", "by": "Apache Software Foundation", "kind": "doc", "url": "https://kafka.apache.org/documentation/", "lang": "en", "free": true, "level": "입문", "why": "업무① — 토픽·파티션·컨슈머 그룹 개념과 빠른 시작."},
+  {"id": "airflow-docs", "title": "Apache Airflow 공식 문서", "by": "Apache Software Foundation", "kind": "doc", "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html", "lang": "en", "free": true, "level": "입문", "why": "업무② — 첫 DAG, 스케줄·재시도·백필."},
+  {"id": "harenslak", "title": "Data Pipelines with Apache Airflow", "by": "Bas Harenslak · Julian de Ruiter · Manning · 2021", "kind": "book", "url": "https://www.manning.com/books/data-pipelines-with-apache-airflow", "lang": "en", "free": false, "level": "실무", "why": "업무②·Airflow 요건 — 멱등한 태스크, 백필, 테스트를 예제로."},
+  {"id": "mssql-plans", "title": "Execution Plan Overview (SQL Server)", "by": "Microsoft Learn", "kind": "doc", "url": "https://learn.microsoft.com/en-us/sql/relational-databases/performance/execution-plans", "lang": "en", "free": true, "level": "실무", "why": "T-SQL 튜닝 요건 — 실행 계획을 보는 법과 Scan·Seek의 차이."},
+  {"id": "mongo-indexes", "title": "MongoDB Manual · Indexes", "by": "MongoDB", "kind": "doc", "url": "https://www.mongodb.com/docs/manual/indexes/", "lang": "en", "free": true, "level": "입문", "why": "NoSQL 튜닝 요건 — 문서형 DB에서 인덱스가 없을 때 생기는 전체 훑기."},
+  {"id": "docker-docs", "title": "Docker 문서 · Get started", "by": "Docker", "kind": "doc", "url": "https://docs.docker.com/get-started/", "lang": "en", "free": true, "level": "입문", "why": "Docker 요건·CI/CD 우대 — 실행 환경을 이미지로 묶는 법."},
+  {"id": "gh-actions", "title": "GitHub Actions 문서", "by": "GitHub", "kind": "doc", "url": "https://docs.github.com/ko/actions", "lang": "ko", "free": true, "level": "입문", "why": "CI/CD 우대 — 올릴 때마다 테스트·이미지 빌드를 자동으로."},
+  {"id": "gcp-mlops", "title": "MLOps: Continuous delivery and automation pipelines in machine learning", "by": "Google Cloud 문서", "kind": "doc", "url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning", "lang": "en", "free": true, "level": "입문", "why": "ML 우대 — 모델이 먹을 데이터의 검증과 학습 자동화가 무엇을 요구하는지."},
+  {"id": "django-docs", "title": "Django 공식 문서 · 튜토리얼", "by": "Django Software Foundation", "kind": "doc", "url": "https://docs.djangoproject.com/", "lang": "en", "free": true, "level": "입문", "why": "업무④ — 로그인·권한·관리 화면이 있는 사내 도구를 빠르게."},
+  {"id": "superset-docs", "title": "Apache Superset 문서", "by": "Apache Software Foundation", "kind": "doc", "url": "https://superset.apache.org/docs/intro", "lang": "en", "free": true, "level": "입문", "why": "업무④ — 지표 화면을 직접 그리지 않고 붙이는 선택지."}
+ ],
+ "study_path": [
+  {"title": "분산 저장·처리의 그림 잡기", "time": "1~2주", "goal": "HDFS·YARN·Spark가 각각 무엇을 맡는지 그림으로 설명한다.", "task": "Docker로 단일 노드 Hadoop·Spark를 띄우고, 가상 로그 1GB를 HDFS에 올려 블록 수를 확인한 뒤 Spark로 일별 계정 수를 센다.", "resources": ["hadoop-docs", "hadoop-guide", "docker-docs"]},
+  {"title": "SQL 튜닝 손에 익히기", "time": "1~2주", "goal": "윈도우 함수가 든 집계를 짜고, 실행 계획을 보고 인덱스로 고친다.", "task": "가상 접속 로그 100만 줄에서 '직전 접속과의 간격'을 윈도우 함수로 구하고, 인덱스 전·후 실행 계획과 걸린 시간을 표로 남긴다.", "resources": ["mssql-plans", "mongo-indexes", "kleppmann-ddia"]},
+  {"title": "Kafka → Spark 실시간 집계", "time": "2주", "goal": "중복·늦은 이벤트 규칙이 있는 1분 창 집계를 끊김 없이 돌린다.", "task": "로컬 Kafka에 가상 게임 이벤트(일부러 중복·지연 포함)를 넣고 Structured Streaming 워터마크로 집계해, 재시작해도 결과가 같은지 확인한다.", "resources": ["kafka-guide", "kafka-book", "spark-streaming", "learning-spark"]},
+  {"title": "Airflow로 매일 도는 마트", "time": "2주", "goal": "다시 돌려도 같은 결과가 나오는 일일 파이프라인을 만든다.", "task": "'원본 확인 → 일별 요약표 → 건수 검증 → 알림' 4단계 DAG를 만들고, 같은 날짜를 두 번 돌려 결과가 같은지와 7일 백필을 확인한다.", "resources": ["airflow-docs", "harenslak", "reis-fode"]},
+  {"title": "사내 상태판과 자동 배포", "time": "1~2주", "goal": "파이프라인 상태를 보여 주는 사내 화면과, 올리면 자동 검사되는 저장소를 갖춘다.", "task": "Django로 DAG 성공·실패 목록 화면을 만들고, GitHub Actions에 'DAG 불러오기 검사 → Docker 이미지 빌드'를 건다.", "resources": ["django-docs", "superset-docs", "gh-actions"]}
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없습니다. 집계 사이트 기준 스마일게이트 초봉 **약 4,619만원**, 평균 **약 7,107만원** — 경력 3년 이상 자리라 실제 제안은 처우 협의로 정해집니다.",
+  "rows": [
+   {"label": "신입 초봉(집계)", "value": "약 4,619만원", "amount": 4619, "basis": "공공데이터 집계", "note": "자소설닷컴 스마일게이트 페이지의 표시값. 법인 단위라 로스트아크 개발 직군과 다를 수 있다 [22]"},
+   {"label": "전체 평균 연봉(집계)", "value": "약 7,107만원", "amount": 7107, "basis": "공공데이터 집계", "note": "같은 페이지의 평균. 경력직이 섞인 회사 전체 값이라 초봉이 아니다 [22]"}
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 비상장이라 사업보고서의 직원 평균 급여 같은 공시 숫자가 없어 집계 값만 실었다(공시 숫자 없음) [22]. 이 자리는 경력 3년 이상이라 초봉과 다르고, 평균도 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {"name": "개발 환경", "detail": "책상 및 고사양 PC 제공, 모니터·키보드 등 맞춤 개발환경"},
+   {"name": "식사", "detail": "조식·중식·석식 지원"},
+   {"name": "복지포인트", "detail": "항목명만 공개"},
+   {"name": "자사 게임비 지원", "detail": "항목명만 공개"},
+   {"name": "사내 무이자대출", "detail": "항목명만 공개"},
+   {"name": "단체상해보험", "detail": "항목명만 공개"},
+   {"name": "경조사비·이사비 지원", "detail": "항목명만 공개"},
+   {"name": "헬스장 이용권", "detail": "항목명만 공개"},
+   {"name": "오아시스 휴가", "detail": "항목명만 공개"},
+   {"name": "장기근속자 포상", "detail": "항목명만 공개"},
+   {"name": "52시간제 준수", "detail": "항목명만 공개"}
+  ],
+  "note": "게임잡 스마일게이트 기업정보의 복리후생 항목명이다(2026년 페이지, 금액·조건은 적혀 있지 않다) [23]. 이 페이지의 법인이 이 공고의 조직(로아개발본부)과 같다고는 적혀 있지 않다 {추론}. 수습 3개월 동안에도 급여·복리후생은 같다고 공고에 적혀 있다 [2]."
+ },
+ "location": {
+  "name": "스마일게이트 (판교미래에셋센터)",
+  "address": "경기도 성남시 분당구 판교역로192번길 12 (삼평동, 판교미래에셋센터)",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C192%EB%B2%88%EA%B8%B8%2012",
+  "near": "신분당선·경강선 판교역 근처 {추론}",
+  "note": "게임잡 기업정보의 회사 주소 [23]. 공고 근무지는 '경기 > 성남시'까지만 적혀 있어 팀 자리가 이 건물인지는 확인하지 못했다 [1]."
+ }
+}
