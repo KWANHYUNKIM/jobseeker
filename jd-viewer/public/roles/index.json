@@ -468,6 +468,7 @@
   "ats-smilegate:group:5329": "smilegate-lostark-data-platform-engineer",
   "boards-gamejob:dev:285795": "smilegate-lostark-game-data-engineer",
   "ats-smilegate:group:4590": "smilegate-lostark-game-data-engineer",
+  "boards-gamejob:dev:285317": "smilegate-nextgen-material-ta",
   "boards-gamejob:dev:286389": "smilegate-nextgen-ue5-client",
   "ats-smilegate:group:6198": "smilegate-nextgen-ue5-client",
   "jobkorea-50244585": "smilegate-security-analysis-lead",
@@ -634,6 +635,7 @@
   "ats-greeting:xcena:237698": "xcena-cxl-product-engineer",
   "ats-greeting:xcena:245212": "xcena-it-ops-security",
   "ats-greeting:xcena:233340": "xcena-junior-technical-project-coordinator",
+  "ats-greeting:xcena:161178": "xcena-product-engineer",
   "ats-greeting:xcena:241584": "xcena-senior-sw-tpm",
   "ats-greeting:xcena:110624": "xcena-system-firmware"
  },
@@ -4420,6 +4422,16 @@
    "lines": 18
   },
   {
+   "id": "smilegate-nextgen-material-ta",
+   "company": "스마일게이트",
+   "role": "머트리얼 TA (차세대 게임)",
+   "jobs": [
+    "boards-gamejob:dev:285317"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 13
+  },
+  {
    "id": "smilegate-nextgen-ue5-client",
    "company": "스마일게이트",
    "role": "차세대 게임 클라이언트 담당 (언리얼 5)",
@@ -5979,6 +5991,16 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 34
+  },
+  {
+   "id": "xcena-product-engineer",
+   "company": "엑시나",
+   "role": "Product Engineer",
+   "jobs": [
+    "ats-greeting:xcena:161178"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 26
   },
   {
    "id": "xcena-senior-sw-tpm",
