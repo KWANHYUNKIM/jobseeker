@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-25",
+ "updated_at": "2026-11-26",
  "jobs": {
   "ats-ashby:42dot:49f9a5ec-7140-4235-bfec-c471ca884d6e": "42dot-3d-application-engineer",
   "ats-ashby:42dot:9b9faf37-dcc9-4c54-8b67-1abacdf36478": "42dot-3d-application-engineer",
@@ -320,6 +320,7 @@
   "ats-greeting:musinsa:242055": "musinsa-payments-cert-vulnerability",
   "ats-greeting:musinsa:237453": "musinsa-payments-security-engineer",
   "ats-greeting:musinsa:235784": "musinsa-product-data-analyst",
+  "ats-greeting:musinsa:222714": "musinsa-product-engineer-catalog",
   "ats-greeting:musinsa:245811": "musinsa-product-engineer-commerce",
   "ats-greeting:musinsa:245407": "musinsa-product-engineer-global-integration-open",
   "ats-greeting:musinsa:245715": "musinsa-product-engineer-global-integration",
@@ -3259,6 +3260,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 13
+  },
+  {
+   "id": "musinsa-product-engineer-catalog",
+   "company": "무신사",
+   "role": "Product Engineer (Catalog)",
+   "jobs": [
+    "ats-greeting:musinsa:222714"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 27
   },
   {
    "id": "musinsa-product-engineer-commerce",
