@@ -192,6 +192,8 @@
   "ats-greenhouse:daangn:7498021003": "daangn-ml-infra-software-engineer",
   "ats-greenhouse:daangn:8201152003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:7659289003": "daangn-mydaangn-backend-intern",
+  "ats-greenhouse:daangn:5004587003": "daangn-network-engineer",
+  "jobkorea-50331592": "daangn-network-engineer",
   "ats-greenhouse:daangn:6043519003": "daangn-security-detection-response",
   "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
   "boards-superookie:it:6afd0847a0717c1c4126d602": "daangn-shortform-backend-intern",
@@ -2202,6 +2204,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 71
+  },
+  {
+   "id": "daangn-network-engineer",
+   "company": "당근",
+   "role": "Network Engineer - 인프라 (네트워크, Cloud)",
+   "jobs": [
+    "ats-greenhouse:daangn:5004587003",
+    "jobkorea-50331592"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "daangn-security-detection-response",

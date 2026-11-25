@@ -1,0 +1,1436 @@
+{
+ "id": "daangn-network-engineer",
+ "company": "당근",
+ "role": "Network Engineer - 인프라 (네트워크, Cloud)",
+ "team": "네트워크팀",
+ "jobs": [
+  "ats-greenhouse:daangn:5004587003",
+  "jobkorea-50331592"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "당근의 **서비스 망(AWS·GCP 클라우드)과 사무실 망(유선·무선)**을 설계·운영하고, 망 보안 구조와 관측·자동화 도구를 직접 만듭니다.[1]",
+  "env": "여러 가용 영역에 걸친 EKS 와 Istio 사이드카, API 앞단의 CloudFront·NLB·HAProxy, WAF·Shield Advanced, 다섯 나라 서비스. 이미지 서비스는 GCP 에 있습니다.[3][4]",
+  "oneline": "경력 3~8년 네트워크 엔지니어. **라우팅·클라우드 연결 부품·패킷 분석**이 바닥이고, 그 위에 **비용과 장애를 숫자로 줄이는 코드**를 얹는 자리입니다.[1][3][5]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "당근의 Service/Office Network Architecture를 설계하고 운영해요.(Cloud, Wired, Wireless)",
+   "short": "고객이 쓰는 서비스 망(클라우드)과 직원이 쓰는 사무실 망(유선·무선)을 둘 다 그리고 굴리는 일.",
+   "why": "팀 소개는 목표를 '안전하고 빠른 네트워크', 일을 하이퍼로컬(동네 단위) 서비스 망과 **글로벌 서비스 망**의 설계·운영으로 적었습니다.[1] 당근은 한국·일본·캐나다·미국·영국 다섯 나라에서 서비스하고, 캐나다는 동부 토론토 리전에만 서버가 있어 서부 사용자의 연결이 느린 것이 실제 과제였습니다.[4] 같은 회사 SRE 는 이미지 서비스를 GCP 로 옮겼다고 밝혀, 망이 AWS 하나로 끝나지 않습니다.[4]",
+   "actually": {
+    "intro": "회사가 공개한 서비스 망의 모습과, 사무실 망에서 보통 하는 일입니다.",
+    "items": [
+     "**서비스 앞단** — API 는 원래 NLB(4계층 부하 분산기, 여기서 TLS 를 풀었다) → HAProxy 노드였고, 그 앞에 CloudFront(AWS CDN)를 세워 사용자 가까운 거점에서 TLS 를 맺게 바꿨다. 캐나다 TLS 시간이 평균 60ms → 37ms.[4]",
+     "**전환은 가중치로** — Route 53 가중치 라우팅으로 CloudFront 와 옛 NLB 사이 비율을 조금씩 올리며 오류율을 봤다.[4]",
+     "**클러스터 안** — EKS 를 여러 가용 영역(AZ, 한 리전 안의 물리 데이터센터)에 걸쳐 돌리고, Istio 사이드카가 서비스 사이를 잇는다.[3]",
+     "**VPC 사이·AWS 서비스로** — 프라이빗 서브넷에서 KMS·ECR 같은 AWS 서비스로 갈 때 NAT 대신 VPC 엔드포인트(PrivateLink), 사내 API 를 다른 VPC 에 PrivateLink 로 노출하는 방식을 2021년에 발표했다.[6]",
+     "**사무실 쪽(Wired·Wireless)** — 스위치·무선 컨트롤러·AP 로 층별 망을 나누고(VLAN), 직원 인증 뒤에만 사내 자원에 닿게 하는 일. 당근 사무실 망 구성은 공개되지 않았다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "VPC·사무실 대역이 겹치는지 먼저 본다 (가상 값)",
+     "body": "클라우드 계정·리전·사무실이 늘면 먼저 터지는 것이 **주소 겹침**입니다. 겹친 두 망은 Transit Gateway 로 이어도 경로가 꼬입니다.[17] 파이썬 표준 라이브러리로 계획표를 검사하는 예입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import ipaddress\nnets = {\"aws-kr-prod\": \"10.10.0.0/16\", \"aws-kr-alpha\": \"10.20.0.0/16\",\n        \"aws-ca-prod\": \"10.30.0.0/16\", \"gcp-image\": \"10.20.128.0/20\",\n        \"office-seoul\": \"172.16.0.0/20\"}\nitems = [(k, ipaddress.ip_network(v)) for k, v in nets.items()]\nfor i, (a, na) in enumerate(items):\n    for b, nb in items[i + 1:]:\n        if na.overlaps(nb):\n            print(f\"overlap: {a} {na} <-> {b} {nb}\")\n# overlap: aws-kr-alpha 10.20.0.0/16 <-> gcp-image 10.20.128.0/20"
+    }
+   ],
+   "how_far": "'설계'는 그림을 그리는 데서 끝나지 않고 **주소 계획·경로·출구(인터넷으로 나가는 길)·비용**을 정하고 바꾸는 일입니다. CloudFront 도입처럼 큰 변경은 테크스펙 문서로 쓰고 리더·동료와 맞춘 뒤 진행한다고 같은 회사 SRE 가 밝혔습니다.[4] 최소선은 지금 당근 같은 구조(여러 리전·여러 클라우드·사무실)의 연결도를 그리고 '어디서 끊기면 무엇이 멈추나'를 말하는 것입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    3,
+    6,
+    17
+   ],
+   "study": [
+    "talk-cloudfront",
+    "talk-az-cost",
+    "aws-multivpc",
+    "nw-intro"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Network Security Architecture를 설계하고 운영해요.",
+   "short": "어디서 어디로 가는 통신을 허락하고 막을지 정하고, 방화벽·WAF·접속 통제로 그 규칙을 지키게 하는 일.",
+   "why": "팀 소개는 '네트워크 보안 위협으로부터 플랫폼을 보호하는 것'을 핵심 역할로 꼽았습니다.[1] 당근 SRE 는 API 에 AWS WAF(웹 방화벽, 7계층 요청을 검사해 막는 서비스)를 붙이고 L7 디도스 대응으로 Shield Advanced 를 들였으며, 보안팀과 WAF 룰셋을 전사 표준으로 맞췄습니다.[4] Shield 는 기본(Standard)이 L3·L4 대규모 공격을 막고, L7 디도스 대응은 유료 Advanced 에 있습니다.[4][35] 사무실 쪽은 외부에서 내부망에 들어올 때 ZTNA(사람·기기 단위로 접속을 여는 방식)를 쓴다고 보안팀이 밝혔습니다.[7]",
+   "actually": {
+    "items": [
+     "**당근의 WAF 기본 다섯 단계** — IP 차단 목록 → IP 별 요청 수 제한 → 공통 취약점 규칙(코어 룰셋) → AWS 디도스 관리형 규칙(1차 방어선) → Shield Advanced 가 배운 평소 패턴에서 벗어나면 막는 자동 규칙(주 방어선). 서비스마다 경로별 제한·헤더 규칙을 더한다.[4]",
+     "**비용까지가 설계** — WAF 는 요청당 과금이라 작은 요청이 많은 API 에서는 비용이 두 배 가까이 뛰었고, Shield Advanced(월 3,000달러·1년 약정)를 붙이자 처리량 과금으로 바뀌어 NLB 만 쓰던 때보다 낮아졌다.[4]",
+     "**VPC 사이·출구 검사** — AWS Network Firewall 은 VPC 경계에서 상태 기반 규칙·도메인 목록으로 트래픽을 거른다. 여러 VPC 의 출구를 한 검사 VPC 로 모으는 구조가 AWS 백서의 대표안이다.[18][17] 당근이 어느 구조를 쓰는지는 공개되지 않았다.",
+     "**규칙 원칙** — 기본은 막고 필요한 것만 연다, 규칙마다 주인과 이유를 남긴다, 주기적으로 안 쓰는 규칙을 지운다.[19]"
+    ]
+   },
+   "how_far": "무엇이 위협이고 사고 때 무엇을 할지는 보안팀과 함께 정하고, 네트워크 엔지니어는 **그 정책이 망 위에서 실제로 지켜지게** 만듭니다(경로·방화벽·WAF·접속 통제).[4][7] {추론} 최소선은 '이 VPC 에서 인터넷으로 나가는 길은 어디어디이고, 각 길에서 무엇을 검사하나'를 표로 그리는 것입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    7,
+    18,
+    19,
+    35
+   ],
+   "study": [
+    "talk-cloudfront",
+    "nist-80041",
+    "aws-nfw",
+    "nist-207"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Network Observability 플랫폼과 Automation 플랫폼을 개발하고 운영해요.",
+   "short": "망 상태를 숫자·로그로 늘 보이게 하는 도구와, 반복 설정 작업을 코드로 돌리는 도구를 직접 만드는 일.",
+   "why": "팀 소개는 반복 운영을 자동화하고, 트래픽 흐름과 상태를 **실시간으로 가시화**해 장애를 빨리 잡고 먼저 대응한다고 적었습니다.[1] 우대사항에도 모니터링 플랫폼 개발·자동화(Go, Python)와 IaC 가 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**흐름 로그에 이름 붙이기** — 흐름 로그는 IP·포트·바이트만 남긴다. 파드·노드·영역 정보와 조인해야 '누가 비싼 트래픽을 만드나'가 보인다. 당근은 이렇게 Istio 인그레스 게이트웨이·메시 내부 통신·istiod·모니터링 수집이 영역 간 트래픽 주범임을 찾았다.[3][22]",
+     "**지나간 장애를 남기기** — 당근 SRE 는 eBPF(리눅스 커널 안에서 안전하게 도는 작은 프로그램)로 TCP 상태·RST·재전송·DNS 질의를 늘 기록하다가, 알림이 오면 그 순간의 데이터를 꺼내 화면에 보이는 도구를 만들었다. 48 vCPU 기준 부하 3% 미만을 직접 재고 운영에 올렸다.[5][31]",
+     "**장비 지표** — 스위치·AP 같은 장비는 보통 SNMP 로 지표를 내고, Prometheus 의 공식 snmp_exporter 로 긁어 그래프·알림을 만든다.[32]",
+     "**자동화** — 네트워크 장비는 장비 위에서 스크립트를 못 돌리는 경우가 많아, Ansible 은 제어 서버에서 장비로 접속해 명령을 보내는 방식으로 다룬다.[34] 클라우드 쪽은 Transit Gateway 같은 자원을 Terraform 코드로 만든다.[33]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "가용 영역 셋에 고르게 흩으면 호출의 2/3 가 영역을 넘는다 (가상 시뮬레이션)",
+     "body": "백엔드가 영역 a·b·c 에 같은 수로 있을 때, 아무 데나 보내면 호출의 약 2/3 가 다른 영역으로 갑니다. 같은 영역 우선(로컬리티)으로 바꾸면 0 에 가깝습니다. 당근이 Istio 로컬리티 LB 와 토폴로지 힌트로 줄인 것이 이 몫입니다.[3] (직접 돌린 출력)",
+     "lang": "python",
+     "code": "import random\nfrom collections import Counter\nrandom.seed(1)\nzones = [\"a\", \"b\", \"c\"]\nbackends = [z for z in zones for _ in range(3)]\ndef run(locality):\n    c = Counter()\n    for _ in range(30000):\n        src = random.choice(zones)\n        pool = [b for b in backends if b == src] if locality else backends\n        c[\"cross\" if random.choice(pool) != src else \"same\"] += 1\n    return c[\"cross\"] / 30000\nprint(f\"random LB  cross-zone {run(False):.1%}\")\nprint(f\"locality   cross-zone {run(True):.1%}\")\n# random LB  cross-zone 66.5%\n# locality   cross-zone 0.0%"
+    }
+   ],
+   "flows": [
+    {
+     "caption": "당근 SRE 가 영역 간 트래픽을 본 길[3]",
+     "steps": [
+      "VPC 흐름 로그 → S3",
+      "파드 메타데이터(노드·영역) → S3",
+      "Athena 로 두 표 조인",
+      "'어느 파드가 다른 영역 어느 파드로 몇 바이트' 표"
+     ]
+    },
+    {
+     "caption": "망 관측 플랫폼을 짓는다면 {추론}",
+     "steps": [
+      "수집 · 흐름 로그·SNMP/스트리밍 지표·장비 로그",
+      "저장 · 시계열 DB·로그 저장소",
+      "가공 · IP→서비스·영역·사무실 이름 붙이기",
+      "보기·알림 · 대시보드·임계값",
+      "자동 조치 · 설정 변경 PR"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "'개발하고 운영'이라 남이 만든 대시보드를 보는 사람이 아니라 **수집기·조인·화면·자동 변경을 직접 짜는** 자리입니다.[1] 최소선은 흐름 로그나 장비 지표를 받아 '서비스·영역별로 묶은 표'를 만드는 작은 도구를 스스로 짜 본 경험입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    22,
+    32,
+    34,
+    33
+   ],
+   "study": [
+    "talk-az-cost",
+    "talk-ebpf",
+    "aws-flowlogs",
+    "snmp-exporter",
+    "netauto-hanbit"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Network Engineering 실무 경험이 3~8년이신 분",
+   "short": "혼자 장애 하나를 끝까지 쫓고 설계 변경을 맡길 수 있는 연차라서.",
+   "why": "폭이 3~8년으로 넓습니다.[1] 공고 안내에는 경력 기간에 따라 역량 검증을 위해 최대 3개월 계약직으로 일할 수 있다는 문장도 있습니다.[1]",
+   "how_far": "연차보다 **무엇을 맡아 봤나**가 중요합니다 — 3년 쪽이라면 한 망(사무실이든 클라우드든)의 운영과 장애 대응, 8년 쪽이라면 여러 망을 잇는 설계와 이관을 이끈 경험을 보여 주는 편이 맞습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "nw-intro"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "OSPF, BGP 등 Dynamic Routing Protocol에 대한 이해와 운영 경험이 있으신 분",
+   "short": "클라우드·데이터센터 전용선·사무실을 잇는 경로를 손으로 안 적고 라우터끼리 주고받게 하니까.",
+   "why": "OSPF 는 한 조직 안에서 링크 상태를 나눠 최단 경로를 계산하고,[9] BGP 는 조직(AS) 사이에서 경로와 그 속성을 주고받습니다.[8] 이 공고가 적은 Direct Connect·Cloud Router·Interconnect 는 모두 BGP 세션으로 경로를 교환합니다.[13][15][16]",
+   "actually": {
+    "items": [
+     "**주 회선/백업 회선** — LOCAL_PREF 로 나가는 길을, AS_PATH 늘리기(prepend)·MED 로 들어오는 길을 기울인다.",
+     "**받은 경로 거르기** — 상대가 실수로 전체 경로표를 보내도 망가지지 않게 프리픽스 필터와 최대 프리픽스 수를 건다.[10]",
+     "**빨리 알아채기** — BGP 는 보류 타이머(RFC 권장값 90초)가 다 돼야 이웃이 죽었다고 본다.[8] 그래서 BFD(빠른 고장 감지)를 붙이고, Google Cloud Router 도 BFD 를 지원한다.[15]",
+     "**사무실 안** — 층·건물 스위치 사이는 OSPF 영역으로 나누고, 바깥(인터넷·클라우드)과는 BGP 로 잇는 식이 흔하다.[9] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "BGP 가 여러 경로 중 하나를 고르는 순서 (줄인 판, 가상 값)",
+     "body": "실제 선택 과정은 더 길지만 앞쪽 세 단계 — LOCAL_PREF 큰 것 → AS_PATH 짧은 것 → MED 작은 것 — 만으로도 '주 회선이 살아 있으면 주 회선, 아니면 백업'을 설계할 수 있습니다.[8] (직접 돌린 출력)",
+     "lang": "python",
+     "code": "routes = [\n    {\"via\": \"DX-seoul\",  \"local_pref\": 200, \"as_path\": [64512], \"med\": 50},\n    {\"via\": \"DX-backup\", \"local_pref\": 200, \"as_path\": [64512, 64512, 64512], \"med\": 10},  # AS_PATH 를 일부러 늘림(prepend)\n    {\"via\": \"VPN\",       \"local_pref\": 100, \"as_path\": [64513], \"med\": 0},\n]\nkey = lambda r: (-r[\"local_pref\"], len(r[\"as_path\"]), r[\"med\"])\nprint(\"best:\", min(routes, key=key)[\"via\"])\n# best: DX-seoul   <- MED 는 더 작아도 AS_PATH 비교에서 이미 갈렸다"
+    }
+   ],
+   "how_far": "'이해와 운영 경험'이라, 이웃 맺기 실패(상태가 Active/Idle 에서 안 넘어감)·경로가 안 들어옴·비대칭 경로를 **show 명령과 로그로 진단해 고친** 경험이면 됩니다. 장비가 없으면 FRRouting 과 containerlab 으로 노트북에서 망을 꾸려 같은 장애를 일부러 만들어 볼 수 있습니다. {추론}",
+   "level": {
+    "basic": "OSPF 영역·비용, BGP 이웃 상태·eBGP/iBGP 차이",
+    "work": "LOCAL_PREF·AS_PATH·MED 로 주/백업 설계, 프리픽스 필터, BFD",
+    "team": "클라우드 전용선·Cloud Router·Cloud WAN 에서 BGP 로 여러 리전·클라우드 경로를 맞추기"
+   },
+   "refs": [
+    9,
+    8,
+    10,
+    13,
+    15
+   ],
+   "study": [
+    "rfc-bgp",
+    "rfc-ospf",
+    "rfc-7454",
+    "frr",
+    "containerlab"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 또는 GCP 클라우드 네트워크 환경에 대한 이해와 운영 경험이 있으신 분",
+   "short": "서비스가 AWS(EKS)에 있고 일부는 GCP 로 갔으니, 두 클라우드의 연결 방식을 알아야 해서.",
+   "why": "당근의 서비스는 여러 영역에 걸친 EKS 위에 있고,[3] 이미지 서비스는 GCP 로 옮겼습니다.[4]",
+   "how_far": "두 클라우드를 다 깊게 할 필요는 없고 '또는'입니다. 한쪽에서 VPC·서브넷·라우트 테이블·NAT·허브·전용선을 **직접 만들고 장애를 고쳐 봤고**, 다른 쪽의 같은 부품 이름을 짝지어 설명할 수 있으면 됩니다(TGW ↔ NCC/VPC 피어링, Direct Connect ↔ Interconnect). {추론}",
+   "refs": [
+    3,
+    4
+   ],
+   "study": [
+    "aws-multivpc",
+    "cloudneta-aws",
+    "gcp-interconnect"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "(VPC, TGW, NAT Gateway, Cloud-WAN, Direct Connect, Cloud Router, Interconnect)",
+   "short": "일곱 부품은 VPC 안 · VPC 사이 · 인터넷 출구 · 전용선, 네 칸으로 나뉜다.",
+   "why": "괄호 안 일곱 개는 클라우드 안(VPC)·VPC 사이(TGW·Cloud WAN)·인터넷 출구(NAT Gateway)·사내망/다른 클라우드와의 전용선(Direct Connect·Interconnect, 그리고 거기서 BGP 를 맡는 Cloud Router)으로 나뉩니다.[11][14][12][13][15][16]",
+   "actually": {
+    "intro": "부품마다 실제로 부딪히는 일입니다.",
+    "items": [
+     "**TGW(Transit Gateway)** — VPC 와 사내망을 잇는 중앙 허브. 라우트 테이블을 나눠 '운영 VPC 끼리만, 개발은 따로' 같은 분리를 한다.[11][17]",
+     "**Cloud WAN** — 여러 리전의 허브를 정책 문서 하나로 묶는 관리형 WAN. 다섯 나라 서비스처럼 리전이 늘 때 후보가 된다.[14][4] 당근이 쓰는지는 공개되지 않았다.",
+     "**NAT Gateway** — 프라이빗 서브넷의 파드가 밖으로 나가는 문. IP 하나당 동시 연결 55,000개, 350초 놀면 끊고 RST 를 돌려준다.[12] 당근은 외부 API 타임아웃 때 이 포트 할당 오류 지표가 같이 올랐다.[5]",
+     "**VPC 엔드포인트** — AWS 서비스로 가는 트래픽을 NAT 대신 엔드포인트로 돌리면 NAT 의존과 비용이 준다.[6]",
+     "**Direct Connect / Interconnect + Cloud Router** — 사무실·데이터센터·다른 클라우드와 인터넷이 아닌 전용 회선으로 잇고, 경로는 BGP 로 주고받는다.[13][16][15]",
+     "**영역 간 트래픽 비용** — 같은 리전이어도 가용 영역을 넘으면 돈이 든다. 당근은 로컬리티 설정 뒤 다음 날 비용이 절반, 한 달 7만 달러 넘게 줄었다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 목적지로 새 SYN 이 쏟아지면 NAT 포트가 몇 초 만에 차나 (가상 값)",
+     "body": "AWS NAT 게이트웨이의 IPv4 주소 하나는 동시 연결을 최대 55,000개 받습니다.[12] 응답 없는 SYN 을 계속 새 포트로 다시 보내면 그 칸이 금방 찹니다 — 당근이 eBPF 로 찾은 사례의 뼈대입니다.[5] 연결이 바로 풀리지 않는다고 단순화한 계산입니다. (직접 돌린 출력)",
+     "lang": "python",
+     "code": "PORTS = 55000\nfor syn_per_sec in (50, 200, 1000):\n    print(f\"{syn_per_sec:>5} new SYN/s -> {PORTS / syn_per_sec:>6.0f}s to exhaust one IP\")\n#    50 new SYN/s ->   1100s to exhaust one IP\n#   200 new SYN/s ->    275s to exhaust one IP\n#  1000 new SYN/s ->     55s to exhaust one IP"
+    }
+   ],
+   "how_far": "일곱 개를 다 운영해 봤을 필요는 없고, 각각이 '무엇과 무엇을 잇나·어디서 돈이 드나·어디서 막히나'를 말할 수 있으면 됩니다. 운영 경험은 VPC·NAT·허브 하나와 전용선 하나면 충분히 이야기가 됩니다. {추론}",
+   "refs": [
+    11,
+    14,
+    12,
+    13,
+    15,
+    16,
+    17,
+    6,
+    5,
+    3
+   ],
+   "study": [
+    "aws-multivpc",
+    "aws-ans",
+    "terraform-aws",
+    "gcp-interconnect"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Firewall 또는 SASE 운영 경험이 있으신 분(AWS Network Firewall, PaloAlto, Fortinet 등)",
+   "short": "방화벽 정책을 넣고 빼고, 막혀서 안 되는 통신을 찾아 여는 일이 매일 있어서.",
+   "why": "괄호에 클라우드 방화벽(AWS Network Firewall)과 장비 방화벽(Palo Alto·Fortinet)이 같이 있습니다 — 서비스 망과 사무실 망을 모두 맡기 때문입니다.[1] SASE 는 사무실·재택 사용자의 인터넷·사내 접속을 클라우드에서 검사하는 묶음이고, 당근 보안팀이 쓰는 ZTNA 가 그 한 조각입니다.[7] {추론}",
+   "actually": {
+    "items": [
+     "**규칙 요청 처리** — '서비스 A 가 외부 결제사 B 의 443 으로 나가야 한다' → 출발지·목적지·포트·기간을 확인해 최소 범위로 연다.[19]",
+     "**규칙 정리** — 위에서부터 첫 일치로 판정되니, 넓은 허용이 위에 있으면 아래 차단이 소용없다. 쓰이지 않는 규칙(적중 0)을 주기적으로 지운다.[19]",
+     "**클라우드 방화벽** — AWS Network Firewall 은 Suricata 호환 상태 규칙과 도메인 허용 목록을 쓴다. 출구를 도메인 기준으로 막는 데 흔히 쓴다.[18]",
+     "**막힌 통신 찾기** — 방화벽 로그의 차단 기록 → 세션 테이블 → 양쪽 패킷 캡처 순으로 좁힌다. {추론}"
+    ]
+   },
+   "how_far": "제품 하나를 깊게 운영해 봤으면 됩니다 — 정책 설계·변경 절차·로그 읽기·HA(이중화) 구성·펌웨어 올리기. 제품마다 화면은 달라도 '첫 일치·기본 차단·상태 추적'은 같습니다.{추론}[19]",
+   "refs": [
+    1,
+    7,
+    18,
+    19
+   ],
+   "study": [
+    "aws-nfw",
+    "nist-80041",
+    "panos-docs",
+    "fortigate-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크 모니터링 시스템 구축 경험이 있으신 분",
+   "short": "업무 셋째 줄(관측 플랫폼)을 직접 짓는 자리라, 남이 지은 걸 써 본 것보다 지어 본 경험을 봐서.",
+   "why": "'구축'입니다 — 팀은 트래픽 흐름과 상태를 실시간으로 가시화해 장애를 먼저 잡는다고 했습니다.[1] 같은 회사 SRE 가 흐름 로그 조인·eBPF 수집으로 '보이지 않던 것'을 보이게 만든 사례가 이 일의 모습입니다.[3][5]",
+   "actually": {
+    "items": [
+     "**무엇을 재나** — 회선·포트 사용률과 오류, BGP 세션 상태와 받은 경로 수, NAT 포트 할당 오류, 무선 AP 별 접속 수, 흐름 로그로 본 상위 대화 상대.[12][22] {추론}",
+     "**어떻게 모으나** — 장비는 SNMP(→ snmp_exporter),[32] 클라우드는 흐름 로그·CloudWatch 지표,[22] 호스트·파드는 eBPF.[5]",
+     "**무엇을 붙이나** — IP 만으로는 쓸모가 적어 서비스·영역·사무실 이름을 붙이는 조인이 핵심 작업이다.[3]"
+    ]
+   },
+   "how_far": "수집기 하나·저장소 하나·대시보드와 알림 몇 개를 처음부터 엮어 운영해 본 경험이면 됩니다. '이 그래프가 빨개지면 누가 무엇을 하나'까지 정해 둔 경험이면 더 좋습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    22,
+    32
+   ],
+   "study": [
+    "aws-flowlogs",
+    "snmp-exporter",
+    "prom-up-running",
+    "talk-ebpf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크 패킷 분석을 통한 Troubleshooting이 가능하신 분",
+   "short": "지표·로그가 다 멀쩡한데 연결이 실패할 때, 마지막에 보는 것이 패킷이라서.",
+   "why": "당근 SRE 사례에서 외부 API 타임아웃은 앱 지표·로그·트레이스·메시 지표·노드 지표·흐름 로그로도 원인이 안 나왔고, 소켓 단위로 SYN·RST·재전송을 보고서야 풀렸습니다.[5]",
+   "actually": {
+    "intro": "당근이 실제로 푼 장애의 순서입니다.[5]",
+    "items": [
+     "앱 컨테이너는 SYN 을 보내고 SYN-ACK 이 안 오면 바로 RST 를 보내고 새 소켓으로 다시 SYN.",
+     "Istio 사이드카는 RST 없이 SYN 재전송만 계속했다.",
+     "NAT 게이트웨이에는 끝나지 않은 반쯤 열린 연결만 쌓여 포트 할당이 찼다.",
+     "상대 API 는 SYN 만 계속 받으니 SYN flood 공격으로 보고 막았다 — 원인은 우리 쪽 재시도였다.",
+     "조치: 서비스 팀이 상대가 느릴 때 새 소켓을 안 만들게 서킷 브레이커(실패가 이어지면 잠시 호출을 끊는 장치)를 넣고, 상대에게 디도스 판정 기준 조정을 요청했다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "캡처에서 '반만 열린' 연결 골라내기 (가상 패킷)",
+     "body": "tcpdump·Wireshark 로 본 것을 줄로 옮겼다고 치고, SYN 만 있고 SYN-ACK 이 없는 흐름과 정상 핸드셰이크의 왕복 시간을 가릅니다.[26][28] (직접 돌린 출력)",
+     "lang": "python",
+     "code": "from collections import Counter\n# (ms, src, dst, flags)\npkts = [(0, \"10.0.1.5:40001\", \"203.0.113.9:443\", \"S\"), (1000, \"10.0.1.5:40001\", \"203.0.113.9:443\", \"S\"),\n        (3000, \"10.0.1.5:40001\", \"203.0.113.9:443\", \"S\"),\n        (10, \"10.0.1.7:40100\", \"198.51.100.2:443\", \"S\"), (22, \"198.51.100.2:443\", \"10.0.1.7:40100\", \"SA\"),\n        (50, \"10.0.1.8:40200\", \"203.0.113.9:443\", \"S\"), (60, \"10.0.1.8:40200\", \"203.0.113.9:443\", \"R\")]\nsyn, rst, synack = Counter(), Counter(), {}\nfor t, s, d, f in pkts:\n    if f == \"S\": syn[(s, d)] += 1; synack.setdefault((s, d), None)\n    if f == \"SA\": synack[(d, s)] = t\n    if f == \"R\": rst[(s, d)] += 1\nfirst = {}\nfor t, s, d, f in pkts:\n    if f == \"S\": first.setdefault((s, d), t)\nfor flow, n in syn.items():\n    if synack[flow] is None:\n        print(\"half-open\", flow, f\"SYN x{n}\", \"RST by client\" if rst[flow] else \"no SYN-ACK\")\n    else:\n        print(\"ok\", flow, \"RTT\", synack[flow] - first[flow], \"ms\")\n# half-open ('10.0.1.5:40001', '203.0.113.9:443') SYN x3 no SYN-ACK\n# ok ('10.0.1.7:40100', '198.51.100.2:443') RTT 12 ms\n# half-open ('10.0.1.8:40200', '203.0.113.9:443') SYN x1 RST by client"
+    }
+   ],
+   "how_far": "tcpdump 로 필요한 것만 잡고(호스트·포트 필터),[27] Wireshark 로 핸드셰이크·재전송·윈도·RST 를 읽어 '누가 먼저 끊었나'를 말할 수 있으면 됩니다.[28] TCP 상태 변화(RFC 9293)를 그림 없이 설명할 수 있으면 면접에서 강합니다.[26] {추론}",
+   "level": {
+    "basic": "3-way 핸드셰이크·FIN/RST·재전송 읽기, tcpdump 필터",
+    "work": "Wireshark 흐름 그래프·TCP 분석 표시로 지연·손실 위치 가리기, TLS 핸드셰이크 단계",
+    "team": "사이드카·NAT·CDN 이 끼어 같은 연결이 여러 토막으로 보일 때 토막마다 잡아 맞추기"
+   },
+   "refs": [
+    5,
+    26,
+    27,
+    28
+   ],
+   "study": [
+    "talk-ebpf",
+    "packet-analysis",
+    "wireshark-guide",
+    "tcpdump-man"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "해외 출장의 결격 사유가 없으신 분",
+   "short": "글로벌 서비스 망을 맡아 해외 리전·거점 일로 나갈 수 있어서.",
+   "why": "팀은 글로벌 서비스 네트워크를 설계·운영하고,[1] 당근은 한국 밖 네 나라에서 서비스합니다.[4] 출장 목적지와 빈도는 공고에 없습니다.[1]",
+   "how_far": "여권 발급·출국에 문제가 없으면 됩니다. 빈도는 처우 협의 때 묻습니다. {추론}",
+   "refs": [
+    1,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "IT기업 또는 대규모 클라우드 서비스 환경에서의 네트워크 운영 경험이 있으신 분",
+   "short": "장비 몇 대가 아니라 수천 개 파드와 여러 리전이 오가는 규모의 감을 봐서.",
+   "why": "당근의 문제는 규모에서 나옵니다 — 알파 환경에서도 영역 간 트래픽이 컸고, 설정 하나로 한 달 7만 달러 넘게 줄었습니다.[3] 네트워크 비용이 매달 수천 달러 단위로 따로 관리됩니다.[4]",
+   "how_far": "비용·지연·가용성을 숫자로 말해 본 경험(예: '이 변경으로 TLS 시간 35% 감소')이 핵심입니다.{추론}[4]",
+   "refs": [
+    3,
+    4
+   ],
+   "study": [
+    "talk-az-cost",
+    "talk-cloudfront"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kubernetes 환경에 대한 이해가 깊으신 분",
+   "short": "서비스 트래픽의 대부분이 EKS 안 파드 사이를 오가니, 망 엔지니어도 그 안을 봐야 해서.",
+   "why": "당근 서비스는 EKS 위에서 Istio 사이드카로 엮여 있고,[3] 외부 API 장애의 원인도 사이드카의 재전송 동작이었습니다.[5]",
+   "actually": {
+    "items": [
+     "**파드 IP 가 VPC IP** — EKS 기본 CNI 는 파드에 VPC 주소를 준다. 서브넷 크기를 작게 잡으면 파드가 못 뜬다.[25]",
+     "**같은 영역 우선** — Istio 로컬리티 LB 는 켜는 것만으로는 부족했고 이상치 감지(outlier detection)를 같이 걸어야 했다. Istio 를 안 쓰는 서비스는 쿠버네티스 토폴로지 힌트(`service.kubernetes.io/topology-mode: Auto`)로 같은 효과를 낸다. istiod 에는 꼭 걸라고 권했다.[3][23][24]",
+     "**치우침 주의** — 파드가 한 영역에 몰리면 같은 영역 우선 때문에 트래픽이 더 몰린다. 영역별 고른 배포가 전제다.[3]"
+    ]
+   },
+   "how_far": "클러스터 운영자 수준까지는 아니고, **Service → EndpointSlice → kube-proxy/사이드카 → 파드**로 패킷이 어디서 바뀌는지 따라갈 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    5,
+    25,
+    23,
+    24
+   ],
+   "study": [
+    "eks-net",
+    "k8s-topo",
+    "istio-locality",
+    "talk-az-cost"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "유/무선 네트워크 장비 운영 경험이 있으신 분(Router, Switch, Wireless Controller, Access Point)",
+   "short": "업무 첫 줄의 Office·Wired·Wireless — 직원들이 매일 쓰는 사무실 망을 직접 맡아서.",
+   "why": "업무가 서비스 망과 함께 사무실 망(유선·무선)을 적었습니다.[1] 공고 근무지는 서울 서초구입니다.[2]",
+   "actually": {
+    "items": [
+     "층·부서·손님용을 VLAN 으로 나누고, 손님 무선은 사내 자원에 못 닿게 한다. {추론}",
+     "AP 배치와 채널을 겹치지 않게 잡고, 회의실처럼 사람이 몰리는 곳에 AP 를 더한다. {추론}",
+     "스위치·AP 펌웨어 올리기, 고장 장비 교체(RMA), 사무실 이전·확장 때 배선·장비 설계. {추론}"
+    ]
+   },
+   "how_far": "장비 한 종류라도 설정·업그레이드·장애 교체를 직접 해 봤으면 됩니다. 당근 사무실의 장비 제조사는 공개되지 않았습니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "nw-intro",
+    "huni-cisco",
+    "ccna"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "제로트러스트 프레임워크에 대한 이해가 깊으신 분",
+   "short": "'사내망 안이면 믿는다'를 버리고 사람·기기·요청마다 확인하는 쪽으로 망을 바꾸는 흐름이라서.",
+   "why": "당근 보안팀은 외부에서 내부망에 들어올 때 ZTNA 를 쓰고 MDM 으로 배포합니다.[7] 제로트러스트는 망 위치로 신뢰를 주지 않고 자원 접근마다 신원·기기 상태로 판단하는 설계 원칙입니다.[20]",
+   "actually": {
+    "items": [
+     "**판단하는 자리(PDP)와 지키는 자리(PEP)** — 접속 요청은 정책 엔진이 판단하고 게이트웨이가 집행한다.[20]",
+     "**다섯 기둥** — 신원·기기·네트워크·앱·데이터 각각의 성숙도를 따로 올린다.[21]",
+     "**네트워크 엔지니어의 몫** — 사내 대역을 잘게 나누고(마이크로 세그먼트), VPN 처럼 '들어오면 다 보이는' 길을 ZTNA 같은 앱 단위 접속으로 바꾼다.[21] {추론}"
+    ]
+   },
+   "how_far": "문서 이름보다 '우리 사무실에서 VPN 을 걷어내면 무엇이 바뀌나'를 그림으로 설명할 수 있는 수준이면 됩니다. 보안팀은 통제만 키우는 방식을 경계한다고 했으니, 사용자 불편까지 함께 말하는 편이 맞습니다.[7] {추론}",
+   "refs": [
+    7,
+    20,
+    21
+   ],
+   "study": [
+    "nist-207",
+    "cisa-ztmm",
+    "kisa-zt",
+    "ztn-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "네트워크 패킷을 분석하여 패턴 및 시그니처 기반 보안 위협을 차단한 경험이 있으신 분",
+   "short": "알려진 공격 모양(시그니처)과 이상한 흐름(패턴)을 망에서 보고 막아 본 경험을 봐서.",
+   "why": "IDS/IPS(침입 탐지·차단) 방식은 알려진 문자열·모양을 찾는 시그니처 기반과 평소와 다른 흐름을 찾는 이상 기반으로 나뉩니다.[30] 당근 SRE 는 WAF 에 IP 별 요청 수 제한·관리형 규칙을 쓰고 JA4 지문(TLS 접속 모양으로 클라이언트를 가리는 값) 규칙을 시험 중이라고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "**시그니처 규칙** — Suricata 규칙은 '동작 · 헤더(프로토콜·주소·포트·방향) · 옵션(내용·조건)' 세 부분이다. AWS Network Firewall 도 이 형식을 받는다.[29][18]",
+     "**패턴** — 짧은 시간에 한 IP 의 요청 폭증, SYN 만 오고 끝나지 않는 연결, 같은 지문에서 여러 계정 시도.[4][5] {추론}",
+     "**오탐 다루기** — 당근 사례처럼 우리 쪽 재시도가 상대에겐 SYN flood 로 보일 수 있다. 막기 전에 '정상 트래픽이 이 모양을 만드나'를 확인한다.[5]"
+    ]
+   },
+   "how_far": "규칙 하나를 써서 캡처로 재현·검증하고, 오탐 때문에 고친 경험까지 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    30,
+    29,
+    18,
+    4
+   ],
+   "study": [
+    "nist-80094",
+    "suricata-rules",
+    "aws-nfw"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "네트워크 모니터링 플랫폼 개발이나 자동화에 관심이 많으신 분(Go, Python 등)",
+   "short": "업무 셋째 줄의 도구를 직접 코드로 짜는 자리라서.",
+   "why": "팀 업무에 관측·자동화 플랫폼 '개발'이 들어 있습니다.[1] 같은 회사 SRE 는 사내 도구를 직접 만들어 운영하고(eBPF 수집·조정기, 원시 데이터에 자연어로 묻는 MCP 서버까지), 서비스마다 이름에 K 를 붙인다고 소개했습니다.[5]",
+   "how_far": "장비·클라우드 API 를 불러 상태를 모으고 표로 내는 스크립트를 넘어, **테스트·배포되는 작은 서비스**로 만들어 본 경험이면 좋습니다. 언어는 Go·Python 중 하나면 됩니다.[1] {추론}",
+   "refs": [
+    1,
+    5,
+    34
+   ],
+   "study": [
+    "netauto-hanbit",
+    "ansible-net",
+    "talk-ebpf"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Ansible 또는 Terraform 같은 IaC에 능숙하신 분",
+   "short": "VPC·TGW·방화벽 규칙과 장비 설정을 코드로 남겨 검토하고 되돌릴 수 있게 하려고.",
+   "why": "클라우드 망 자원은 Terraform 으로,[33] 장비 설정은 Ansible 로 다루는 것이 흔한 조합입니다.[34] 같은 회사 SRE 의 큰 변경은 문서로 맞추고 가중치로 조금씩 넓혀 되돌릴 길을 남겼습니다.[4]",
+   "actually": {
+    "items": [
+     "Terraform: VPC·서브넷·TGW 부착·라우트를 모듈로, `plan` 결과를 PR 에 붙여 검토. {추론}",
+     "Ansible: 스위치·AP 설정을 템플릿으로 만들고 '지금 설정과 코드가 다른가'를 정기 점검. {추론}",
+     "둘 다 '손으로 바꾼 것'이 생기면 코드와 실제가 어긋난다 — 수동 변경 금지와 정기 대조가 같이 간다. {추론}"
+    ]
+   },
+   "how_far": "'능숙'은 모듈을 나누고 상태 파일·변수를 관리해 여러 계정·리전에 같은 망을 찍어 내 본 수준입니다. {추론}",
+   "refs": [
+    33,
+    34,
+    4
+   ],
+   "study": [
+    "terraform-aws",
+    "ansible-net",
+    "netauto-hanbit"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "정규직 채용의 경우 3개월의 수습기간이 있어요",
+   "short": "정규직은 입사 후 수습 3개월.",
+   "why": "공고 안내입니다. 경력 기간에 따라 최대 3개월 계약직으로 역량을 검증할 수 있고, 평가에 따라 수습이 연장되거나 채용이 취소될 수 있다고도 적었습니다.[1]",
+   "how_far": "계약직 검증 여부는 처우 협의 단계에서 확인합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "장애인고용촉진 및 직업재활법’, ‘국가유공자 등 예우 및 지원에 관한 법률’에 따라 장애인 및 보훈대상자는 채용 전형 시 우대하고 있어요",
+   "short": "장애인·보훈대상자는 법에 따라 전형에서 우대.",
+   "why": "공고 안내입니다. 보훈대상자·장애인 여부로 채용 과정에서 불이익은 없다고도 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "1. 서류 전형 → 2. 화상 인터뷰 → 3. 직무 인터뷰 → 4. 컬처핏 인터뷰 및 레퍼런스 체크 → 5. 처우 협의 → 6. 최종 합격",
+   "short": "서류 → 화상 → 직무 → 컬처핏·평판 조회 → 처우 협의 → 합격, 여섯 단계.",
+   "why": "공고 안내입니다. 연봉은 공고에 없고 다섯째 단계에서 정합니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "당근은 자유형식의 지원서를 받고 있어요. 본인의 강점이 잘 드러나는 다양한 정보를 자유롭게 활용해 이력서를 작성해 주세요. 문서 형식은 hwp(한글) 파일을 제외하고 word, pdf, 웹 링크 등 자유롭게 선택해주시면 돼요. 웹 링크(노션, 구글드라이브 등)로 서류를 제출해주실 때는 접근 권한을 꼭 열어주세요. 평가와 상관 없는 사진, 주소 등의 개인정보는 제외해주세요.",
+   "short": "형식 자유(hwp 만 안 됨). 링크로 내면 권한을 열고, 사진·주소는 빼기.",
+   "why": "공고 안내입니다.[1] 네트워크 직무라면 망 구성도(민감 정보는 지우고)·장애 회고·자동화 코드 링크가 강점을 보이기 좋습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "지원해주신 직무와 업무 연관성이 높은 당근 팀원과 화상으로 직무와 관련된 기본적인 지식에 대해 이야기를 나누는 단계예요. 직무에 따라 과제 전형이 있어요. 과제는 직무 능력과 연관된 내용으로 출제돼요. 과제 전형을 별도로 운영하는 직무도 있고, 화상 면접 또는 직무 면접에서 과제가 함께 출제되는 경우도 있어요. 지원하신 직무와 업무 연관성이 높은 당근 팀원들과 직무 역량, 경험에 대해 화상 면접보다 심층적인 이야기를 나누는 단계예요. 과제가 출제되었을 경우 과제에 대한 질문을 드려요. 컬쳐핏 면접(정규직 공통) 당근은 면접을 단순히 회사에 사람을 뽑는 자리로 생각하지 않아요. 당근과 지원자가 서로 추구하는 가치관과 생각을 교환하는 시간이라고 생각하고 있어요. 컬쳐핏 단계는 당근이 추구하는 문화와 일하는 방식과 잘 어울릴 수 있는 분인지 확인하는 단계예요. 또한 포지션에 대한 전문성을 다시금 확인하는 이야기를 나눠요.",
+   "short": "화상(기본 지식) → 과제(직무에 따라) → 직무(경험 심층) → 컬처핏(일하는 방식).",
+   "why": "공고 안내입니다. 이 공고는 과제 여부를 밝히지 않았습니다.[1] 화상 면접의 '기본 지식'은 라우팅·TCP·클라우드 네트워크 부품을 묻는 자리라고 보는 편이 자연스럽습니다. {추론}",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "장비 설정만큼 Go·Python 으로 도구 짜는 것이 즐거운 사람[1]",
+   "'앱 문제'라던 장애를 패킷으로 끝까지 쫓는 사람[5]",
+   "트래픽 비용·지연을 숫자로 재고 줄이는 데서 보람을 느끼는 사람[3][4]",
+   "클라우드와 사무실, 서비스와 보안을 한 그림으로 보고 싶은 사람[1]"
+  ],
+  "hard": [
+   "범위가 넓다 — 클라우드 둘, 사무실 유·무선, 보안, 개발까지 한 팀이 맡는다[1]",
+   "사무실 장비 작업처럼 현장 일이 섞이고, 해외 출장 요건이 있다[1]",
+   "설정 하나가 전사 서비스와 매달 수만 달러 비용을 움직여 변경 부담이 크다[3]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "외부 API 호출이 가끔 타임아웃 나고 저절로 풀립니다. NAT 포트 할당 오류도 같이 오릅니다. 어디부터 보겠어요?",
+   "a": "당근 eBPF 사례 — 앱의 SYN·RST 반복과 사이드카 재전송이 NAT 포트를 채우고 상대의 SYN flood 차단까지 불렀다.[5][12]"
+  },
+  {
+   "q": "같은 리전인데 데이터 전송비가 큽니다. 무엇으로 원인을 찾고 무엇으로 줄이나요?",
+   "a": "흐름 로그 + 파드 메타데이터 조인, Istio 로컬리티 LB(+이상치 감지)와 토폴로지 힌트.[3]"
+  },
+  {
+   "q": "주 전용선과 백업 VPN 이 있습니다. 들어오는 길과 나가는 길을 각각 어떻게 주 회선으로 기울이나요?",
+   "a": "나가는 길은 LOCAL_PREF, 들어오는 길은 AS_PATH prepend·MED.[8]"
+  },
+  {
+   "q": "API 앞에 CDN 을 붙였더니 TLS 는 빨라졌는데 첫 바이트 시간이 늘었습니다. 무엇을 의심하나요?",
+   "a": "CDN↔오리진 keep-alive 기본 5초 — 당근은 뒷단 60초보다 짧은 50초로 올려 풀었다.[4]"
+  },
+  {
+   "q": "사무실에서 VPN 을 걷어내고 제로트러스트로 바꾼다면 망에서 무엇이 바뀌나요?",
+   "a": "정책 판단·집행 지점, 앱 단위 접속(ZTNA), 대역 세분화.[20][7]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "당근 채용 · Network Engineer - 인프라 (네트워크, Cloud)",
+   "url": "https://about.daangn.com?gh_jid=5004587003",
+   "kind": "posting",
+   "note": "네트워크팀 소개·업무·요건·우대·전형"
+  },
+  {
+   "n": 2,
+   "title": "잡코리아 · (주)당근마켓 Network Engineer - 인프라 (네트워크, Cloud)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50331592",
+   "kind": "posting",
+   "note": "같은 공고 사본 · 근무지 서울 서초구 · 상시채용"
+  },
+  {
+   "n": 3,
+   "title": "Amazon EKS 데이터 전송 비용 절감 사례 | 당근 SRE 밋업 3회",
+   "url": "https://www.youtube.com/watch?v=HPYuFpKJI-E",
+   "kind": "company",
+   "note": "VPC 흐름 로그 + 파드 메타데이터를 Athena 로 조인해 가용 영역 간(cross-AZ) 트래픽 주범을 찾고, Istio 로컬리티 LB·이상치 감지·토폴로지 힌트로 다음 날 비용 절반, 한 달 7만 달러 넘게 줄인 사례. 자막 전부 확인"
+  },
+  {
+   "n": 4,
+   "title": "API 앞단에 CloudFront를 세우다: 더 빠르고 더 단단하게 | 당근 SRE 밋업 4회",
+   "url": "https://www.youtube.com/watch?v=02UhM4wiSZg",
+   "kind": "company",
+   "note": "NLB(TLS 종료)+HAProxy 앞에 CloudFront 를 세운 테크스펙 — 캐나다 TLS 60→37ms, keep-alive 5초→50초, 약정 단가로 네트워크 비용 20% 절감, AWS WAF 다섯 단계 표준 룰·Shield Advanced. 자막 전부 확인"
+  },
+  {
+   "n": 5,
+   "title": "당근 SRE의 eBPF 활용기: 지나간 Alert의 원인을 찾다 | 2026 당근 빌더 밋업",
+   "url": "https://www.youtube.com/watch?v=Wb6l9XTAKN8",
+   "kind": "company",
+   "note": "알림이 울린 순간의 커널 데이터(TCP 상태·RST·재전송·DNS)를 남기는 사내 도구 — 외부 API 타임아웃이 앱의 SYN→RST 반복, 사이드카 재전송, NAT 포트 할당 오류, 상대의 SYN flood 차단으로 이어진 사례. 자막 전부 확인"
+  },
+  {
+   "n": 6,
+   "title": "AWS VPC PrivateLink를 이용한 네트워크 구성 전략 | 당근 SRE 밋업 1회 (발표 자료)",
+   "url": "https://speakerdeck.com/posquit0/aws-vpc-privatelinkreul-iyonghan-neteuweokeu-guseong-jeonryag-network-architecture-using-aws-privatelink-danggeun-sre-miseob-1hoe",
+   "kind": "company",
+   "date": "2021-08",
+   "note": "프라이빗 서브넷에서 AWS 서비스로 갈 때 NAT 대신 VPC 엔드포인트, 사내 API 를 여러 VPC 에 PrivateLink 로 노출, NLB 교차 영역 분산 사례. 한글 본문 상당 부분이 깨져 영문·읽히는 부분만 썼다"
+  },
+  {
+   "n": 7,
+   "title": "당근 팀 블로그 · 누구나 안심하고 사용하도록, 당근의 안전을 지키는 보안팀",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EB%B3%B4%EC%95%88%ED%8C%80-%ED%98%91%EC%97%85-%EC%B1%84%EC%9A%A9-%ED%8C%80%EB%AC%B8%ED%99%94/",
+   "kind": "company",
+   "note": "PC 백신·외부에서 내부망 접근용 ZTNA 를 MDM 으로 배포·관리, '통제를 키우는 방식'을 경계하는 원칙"
+  },
+  {
+   "n": 8,
+   "title": "RFC 4271 · A Border Gateway Protocol 4 (BGP-4)",
+   "url": "https://www.rfc-editor.org/rfc/rfc4271",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "RFC 2328 · OSPF Version 2",
+   "url": "https://www.rfc-editor.org/rfc/rfc2328",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "RFC 7454 · BGP Operations and Security",
+   "url": "https://www.rfc-editor.org/rfc/rfc7454",
+   "kind": "reference",
+   "note": "프리픽스 필터·최대 프리픽스 수·세션 보호 같은 운영 권고"
+  },
+  {
+   "n": 11,
+   "title": "AWS 문서 · What is AWS Transit Gateway for Amazon VPC?",
+   "url": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
+   "kind": "reference",
+   "note": "VPC 와 사내망을 잇는 중앙 허브, 리전 간 피어링"
+  },
+  {
+   "n": 12,
+   "title": "AWS 문서 · Troubleshoot NAT gateways",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-troubleshooting.html",
+   "kind": "reference",
+   "note": "IPv4 주소 하나당 동시 연결 최대 55,000 · 350초 유휴면 끊고 RST"
+  },
+  {
+   "n": 13,
+   "title": "AWS 문서 · What is AWS Direct Connect?",
+   "url": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "AWS 문서 · What is AWS Cloud WAN?",
+   "url": "https://docs.aws.amazon.com/network-manager/latest/cloudwan/what-is-cloudwan.html",
+   "kind": "reference",
+   "note": "정책으로 여러 리전·사내망을 한 코어 네트워크로 묶는 관리형 WAN"
+  },
+  {
+   "n": 15,
+   "title": "Google Cloud 문서 · Cloud Router overview",
+   "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/overview",
+   "kind": "reference",
+   "note": "BGP 로 VPC 경로를 주고받는 관리형 라우터"
+  },
+  {
+   "n": 16,
+   "title": "Google Cloud 문서 · Cloud Interconnect overview",
+   "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "AWS 백서 · Building a Scalable and Secure Multi-VPC AWS Network Infrastructure",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/welcome.html",
+   "kind": "reference",
+   "note": "피어링·Transit Gateway·PrivateLink·중앙 출구(egress)·중앙 검사 구조 비교"
+  },
+  {
+   "n": 18,
+   "title": "AWS 문서 · What is AWS Network Firewall?",
+   "url": "https://docs.aws.amazon.com/network-firewall/latest/developerguide/what-is-aws-network-firewall.html",
+   "kind": "reference",
+   "note": "상태 기반 규칙(Suricata 호환)·도메인 목록 필터"
+  },
+  {
+   "n": 19,
+   "title": "NIST SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy",
+   "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "CISA · Zero Trust Maturity Model v2.0",
+   "url": "https://www.cisa.gov/zero-trust-maturity-model",
+   "kind": "reference",
+   "note": "신원·기기·네트워크·앱·데이터 다섯 기둥과 성숙도 4단계"
+  },
+  {
+   "n": 22,
+   "title": "AWS 문서 · Logging IP traffic using VPC Flow Logs",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Kubernetes 문서 · Topology Aware Routing",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/topology-aware-routing/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Istio 문서 · Locality Load Balancing",
+   "url": "https://istio.io/latest/docs/tasks/traffic-management/locality-load-balancing/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Amazon EKS Best Practices · Networking",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/networking.html",
+   "kind": "reference",
+   "note": "VPC CNI 가 파드에 VPC IP 를 주는 방식, IP 고갈·서브넷 설계"
+  },
+  {
+   "n": 26,
+   "title": "RFC 9293 · Transmission Control Protocol (TCP)",
+   "url": "https://www.rfc-editor.org/rfc/rfc9293",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "tcpdump 매뉴얼",
+   "url": "https://www.tcpdump.org/manpages/tcpdump.1.html",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Wireshark User's Guide",
+   "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Suricata 문서 · Rules — Introduction",
+   "url": "https://docs.suricata.io/en/latest/rules/intro.html",
+   "kind": "reference",
+   "note": "동작·헤더·옵션으로 된 시그니처 규칙 형식"
+  },
+  {
+   "n": 30,
+   "title": "NIST SP 800-94 · Guide to Intrusion Detection and Prevention Systems (IDPS)",
+   "url": "https://csrc.nist.gov/pubs/sp/800/94/final",
+   "kind": "reference",
+   "note": "시그니처 기반·이상 기반·상태 프로토콜 분석의 차이"
+  },
+  {
+   "n": 31,
+   "title": "ebpf.io · What is eBPF?",
+   "url": "https://ebpf.io/what-is-ebpf/",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Prometheus · snmp_exporter",
+   "url": "https://github.com/prometheus/snmp_exporter",
+   "kind": "reference",
+   "note": "SNMP 장비 지표를 Prometheus 로 긁는 공식 수집기"
+  },
+  {
+   "n": 33,
+   "title": "Terraform AWS Provider · aws_ec2_transit_gateway",
+   "url": "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "Ansible 문서 · Network Getting Started",
+   "url": "https://docs.ansible.com/ansible/latest/network/getting_started/index.html",
+   "kind": "reference",
+   "note": "네트워크 자동화가 서버 자동화와 다른 점(장비에서 실행 안 함·연결 방식)"
+  },
+  {
+   "n": 35,
+   "title": "AWS 문서 · AWS Shield",
+   "url": "https://docs.aws.amazon.com/waf/latest/developerguide/shield-chapter.html",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "당근 채용 · 팀 문화(복지)",
+   "url": "https://careers.daangn.com/culture/",
+   "kind": "company"
+  },
+  {
+   "n": 37,
+   "title": "당근 채용 · 채용공고(사이트 하단 회사 정보)",
+   "url": "https://careers.daangn.com/jobs/",
+   "kind": "company"
+  },
+  {
+   "n": 38,
+   "title": "원티드 · 당근마켓 기업 정보(평균연봉·입사자 평균연봉)",
+   "url": "https://www.wanted.co.kr/company/2826",
+   "kind": "reference",
+   "note": "금감원·국민연금 자료로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 39,
+   "title": "헤럴드경제 · \"신입 초봉 6000만원, 휴가 한달 마음껏\"…",
+   "url": "https://www.heraldk.com/article/2026040404400043838",
+   "kind": "news",
+   "date": "2026-04-04",
+   "note": "개발자 신입 초봉 6000만원 — 기사에 근거 자료 표기 없음"
+  },
+  {
+   "n": 40,
+   "title": "바이라인네트워크 · 당근, 2025년 매출 2707억원···전년 대비 43%↑",
+   "url": "https://byline.network/2026/03/27_192874-2/",
+   "kind": "news",
+   "date": "2026-03-27"
+  }
+ ],
+ "caveat": "당근 네트워크팀이 직접 한 발표·글은 찾지 못했습니다. 회사 근거는 이 공고와 같은 회사 SRE 의 발표 세 편(영역 간 트래픽 비용·CloudFront 앞단·eBPF 장애 분석, 자막 전부 확인)과 2021년 PrivateLink 발표 자료(한글 본문 일부 깨짐), 보안팀 인터뷰이고, 사무실 유·무선 구성·쓰는 방화벽 제품·Cloud WAN 사용 여부는 공개되지 않아 RFC·AWS·Google Cloud·NIST·CISA 문서로 '보통 이런 것'을 보였습니다. 연봉·복지·위치는 같은 회사 SRE 풀이의 출처를 그대로 썼습니다 — 네트워크팀 자리 층은 다를 수 있습니다.",
+ "resources": [
+  {
+   "id": "talk-az-cost",
+   "title": "Amazon EKS 데이터 전송 비용 절감 사례 (당근 SRE 밋업 3회)",
+   "by": "당근 SRE · YouTube",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=HPYuFpKJI-E",
+   "why": "흐름 로그로 영역 간 트래픽 주범을 찾고 로컬리티 설정으로 줄인 과정 — 업무 '관측'과 요건 '클라우드 네트워크'를 회사 사례로 본다."
+  },
+  {
+   "id": "talk-cloudfront",
+   "title": "API 앞단에 CloudFront를 세우다 (당근 SRE 밋업 4회)",
+   "by": "당근 SRE · YouTube",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=02UhM4wiSZg",
+   "why": "서비스 망 앞단 설계·TLS 지연 측정·WAF 다섯 단계·비용 계산까지 — 업무 첫째·둘째 줄의 당근식 답."
+  },
+  {
+   "id": "talk-ebpf",
+   "title": "당근 SRE의 eBPF 활용기: 지나간 Alert의 원인을 찾다 (2026 당근 빌더 밋업)",
+   "by": "당근 SRE · YouTube",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.youtube.com/watch?v=Wb6l9XTAKN8",
+   "why": "SYN·RST·재전송·NAT 포트로 외부 API 장애를 푼 사례 — 요건 '패킷 분석 트러블슈팅'의 실제 모습."
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "by": "고재성 · 이상훈 · 길벗",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "스위치·라우터·방화벽·부하 분산기·무선을 한 권으로 — 사무실 망과 데이터센터 망의 기본 그림."
+  },
+  {
+   "id": "huni-cisco",
+   "title": "후니의 쉽게 쓴 시스코 네트워킹",
+   "by": "진강훈",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%9B%84%EB%8B%88%EC%9D%98%20%EC%89%BD%EA%B2%8C%20%EC%93%B4%20%EC%8B%9C%EC%8A%A4%EC%BD%94%20%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%82%B9",
+   "why": "우대 '유/무선 장비 운영' — 스위치·라우터 설정을 장비 명령 수준으로 익힌다."
+  },
+  {
+   "id": "ccna",
+   "title": "CCNA 200-301 Official Cert Guide, Volume 1·2",
+   "by": "Wendell Odom 외 · Cisco Press · 2nd ed. 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/ccna-200-301-official/9780138229856/",
+   "why": "VLAN·STP·OSPF·무선·보안 기초를 시험 범위로 빠짐없이 — 요건 '라우팅 이해'의 바닥."
+  },
+  {
+   "id": "rfc-ospf",
+   "title": "RFC 2328 · OSPF Version 2",
+   "by": "J. Moy · IETF · 1998",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc2328",
+   "why": "요건 'OSPF' 의 원문 — 영역·LSA·최단 경로 계산을 막혔을 때 찾아본다."
+  },
+  {
+   "id": "rfc-bgp",
+   "title": "RFC 4271 · A Border Gateway Protocol 4 (BGP-4)",
+   "by": "Y. Rekhter 외 · IETF · 2006",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc4271",
+   "why": "요건 'BGP' 의 원문 — 이웃 상태 기계와 경로 선택 과정."
+  },
+  {
+   "id": "rfc-7454",
+   "title": "RFC 7454 · BGP Operations and Security",
+   "by": "IETF · 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.rfc-editor.org/rfc/rfc7454",
+   "why": "BGP 를 '운영'할 때 거는 필터·최대 프리픽스·세션 보호 — 요건의 '운영 경험' 쪽."
+  },
+  {
+   "id": "frr",
+   "title": "FRRouting",
+   "by": "오픈소스",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://frrouting.org/",
+   "why": "리눅스에서 OSPF·BGP 를 돌리는 라우팅 데몬 — 장비 없이 라우팅을 연습한다."
+  },
+  {
+   "id": "containerlab",
+   "title": "containerlab",
+   "by": "오픈소스",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://containerlab.dev/",
+   "why": "컨테이너로 라우터 여러 대 망을 노트북에 꾸린다 — BGP 장애 재현 과제용."
+  },
+  {
+   "id": "aws-multivpc",
+   "title": "Building a Scalable and Secure Multi-VPC AWS Network Infrastructure (백서)",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/welcome.html",
+   "why": "요건 괄호의 VPC·TGW·NAT·Direct Connect 를 한 그림으로 — 중앙 출구·중앙 검사 구조까지."
+  },
+  {
+   "id": "aws-ans",
+   "title": "AWS Certified Advanced Networking – Specialty",
+   "by": "AWS",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://aws.amazon.com/certification/certified-advanced-networking-specialty/",
+   "why": "AWS 하이브리드·다중 VPC 설계를 시험 범위로 정리 — 요건 '클라우드 네트워크 운영'의 점검표."
+  },
+  {
+   "id": "cloudneta-aws",
+   "title": "CloudNet@ - AWS 네트워킹 입문",
+   "by": "인프런",
+   "kind": "course",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.inflearn.com/course/cloudneta-aws-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%9E%85%EB%AC%B8",
+   "why": "VPC·서브넷·라우팅·NAT·피어링·TGW 를 한국어로 손으로 따라 만든다."
+  },
+  {
+   "id": "gcp-interconnect",
+   "title": "Cloud Interconnect overview · Cloud Router overview",
+   "by": "Google Cloud",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/overview",
+   "why": "요건 괄호의 GCP 쪽 — 전용선과 BGP 라우터가 AWS 의 무엇과 짝인지 맞춘다."
+  },
+  {
+   "id": "aws-nfw",
+   "title": "What is AWS Network Firewall?",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/network-firewall/latest/developerguide/what-is-aws-network-firewall.html",
+   "why": "요건 'Firewall' 괄호 첫 항목 — 상태 규칙·도메인 필터·배치 구조."
+  },
+  {
+   "id": "nist-80041",
+   "title": "NIST SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy",
+   "by": "NIST · 2009",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+   "why": "제품과 무관한 방화벽 정책 원칙 — 기본 차단·규칙 관리·검토 주기."
+  },
+  {
+   "id": "panos-docs",
+   "title": "PAN-OS 문서",
+   "by": "Palo Alto Networks",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.paloaltonetworks.com/pan-os",
+   "why": "요건 괄호의 PaloAlto — 정책·NAT·HA 설정을 제품 문서로."
+  },
+  {
+   "id": "fortigate-docs",
+   "title": "FortiGate 문서",
+   "by": "Fortinet",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.fortinet.com/product/fortigate",
+   "why": "요건 괄호의 Fortinet — 같은 개념이 다른 제품에서 어떻게 보이나."
+  },
+  {
+   "id": "nist-207",
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "by": "NIST · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "why": "우대 '제로트러스트 프레임워크'의 기준 문서 — 정책 엔진·집행 지점·배치 모델."
+  },
+  {
+   "id": "cisa-ztmm",
+   "title": "Zero Trust Maturity Model v2.0",
+   "by": "CISA · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cisa.gov/zero-trust-maturity-model",
+   "why": "다섯 기둥별로 '지금 어디이고 다음은 무엇'을 말하는 틀."
+  },
+  {
+   "id": "kisa-zt",
+   "title": "제로트러스트 가이드라인 2.0",
+   "by": "과학기술정보통신부 · 한국인터넷진흥원 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.kisa.or.kr/2060204",
+   "why": "같은 개념을 한국어로, 국내 도입 단계와 함께."
+  },
+  {
+   "id": "ztn-book",
+   "title": "Zero Trust Networks, 2nd Edition",
+   "by": "Razi Rais · Christina Morillo · Evan Gilman · Doug Barth · O'Reilly · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/-/9781492096580/",
+   "why": "기기·사용자·트래픽 신뢰를 망 설계로 옮기는 법 — 우대 '깊은 이해' 쪽."
+  },
+  {
+   "id": "packet-analysis",
+   "title": "Practical Packet Analysis (3판)",
+   "by": "Chris Sanders · No Starch Press · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://nostarch.com/packetanalysis3",
+   "why": "요건 '패킷 분석 트러블슈팅' — Wireshark 로 느린 연결·끊김·재전송을 읽는 연습."
+  },
+  {
+   "id": "wireshark-guide",
+   "title": "Wireshark User's Guide",
+   "by": "Wireshark",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+   "why": "필터·흐름 그래프·TCP 분석 표시 — 캡처를 빠르게 좁히는 도구 사용법."
+  },
+  {
+   "id": "tcpdump-man",
+   "title": "tcpdump 매뉴얼",
+   "by": "tcpdump.org",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.tcpdump.org/manpages/tcpdump.1.html",
+   "why": "서버·노드에서 필요한 패킷만 잡는 필터 문법."
+  },
+  {
+   "id": "nist-80094",
+   "title": "NIST SP 800-94 · Guide to Intrusion Detection and Prevention Systems",
+   "by": "NIST · 2007",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://csrc.nist.gov/pubs/sp/800/94/final",
+   "why": "우대 '패턴·시그니처 기반 차단' — 두 방식의 차이와 한계."
+  },
+  {
+   "id": "suricata-rules",
+   "title": "Suricata 문서 · Rules",
+   "by": "OISF",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.suricata.io/en/latest/rules/intro.html",
+   "why": "시그니처 규칙을 직접 써 보는 형식 — AWS Network Firewall 도 같은 형식을 받는다."
+  },
+  {
+   "id": "aws-flowlogs",
+   "title": "Logging IP traffic using VPC Flow Logs",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+   "why": "당근이 영역 간 트래픽을 찾은 원재료 — 필드와 저장 위치."
+  },
+  {
+   "id": "snmp-exporter",
+   "title": "Prometheus snmp_exporter",
+   "by": "Prometheus",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/prometheus/snmp_exporter",
+   "why": "요건 '모니터링 시스템 구축' — 장비 지표를 시계열 DB 로 가져오는 표준 길."
+  },
+  {
+   "id": "prom-up-running",
+   "title": "프로메테우스 업 앤 러닝 (Prometheus: Up & Running 2판 한국어판)",
+   "by": "브라이언 브라질 · 줄리앙 피보토 · O'Reilly · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/prometheus-up/9798341654181/",
+   "why": "수집·PromQL·알림을 한 권으로 — 관측 플랫폼의 저장·알림 칸. (O'Reilly 가 AI 번역판이라고 밝힌 판)"
+  },
+  {
+   "id": "eks-net",
+   "title": "Amazon EKS Best Practices · Networking",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/networking.html",
+   "why": "우대 'Kubernetes' — 파드 IP·서브넷 설계·IP 고갈을 망 엔지니어 눈으로."
+  },
+  {
+   "id": "k8s-topo",
+   "title": "Kubernetes · Topology Aware Routing",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/topology-aware-routing/",
+   "why": "당근이 Istio 밖 서비스에 쓴 같은 영역 우선 설정."
+  },
+  {
+   "id": "istio-locality",
+   "title": "Istio · Locality Load Balancing",
+   "by": "Istio",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/tasks/traffic-management/locality-load-balancing/",
+   "why": "로컬리티 LB 와 장애 시 다른 영역으로 넘기기 — 이상치 감지가 왜 같이 필요한가."
+  },
+  {
+   "id": "ebpf-io",
+   "title": "What is eBPF?",
+   "by": "ebpf.io",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://ebpf.io/what-is-ebpf/",
+   "why": "당근 eBPF 발표를 읽기 전 개념 — 훅 포인트·맵."
+  },
+  {
+   "id": "terraform-aws",
+   "title": "Terraform AWS Provider · aws_ec2_transit_gateway",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway",
+   "why": "우대 'IaC' — 클라우드 망 자원을 코드로 만드는 시작점."
+  },
+  {
+   "id": "ansible-net",
+   "title": "Ansible · Network Getting Started",
+   "by": "Ansible",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.ansible.com/ansible/latest/network/getting_started/index.html",
+   "why": "장비 자동화가 서버 자동화와 다른 점부터 첫 플레이북까지."
+  },
+  {
+   "id": "netauto-hanbit",
+   "title": "네트워크 인프라 자동화",
+   "by": "맷 오스왈트 외 · 이주호 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC%20%EC%9D%B8%ED%94%84%EB%9D%BC%20%EC%9E%90%EB%8F%99%ED%99%94",
+   "why": "우대 '자동화(Go·Python)·IaC' — 파이썬·Go·템플릿·API·Ansible·Terraform 으로 망을 다루는 한 권."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "당근이 말한 네트워크 읽기",
+   "time": "2~3일",
+   "goal": "당근 서비스 망의 모습(여러 영역 EKS·Istio·CloudFront 앞단·NAT 출구·GCP)과 실제로 푼 문제 셋을 내 말로 설명할 수 있다.",
+   "task": "발표 세 편을 보고 '사용자 → CloudFront → NLB → HAProxy → EKS 파드 → NAT → 외부 API' 연결도를 그린 뒤, 각 칸 옆에 당근이 겪은 문제와 쓴 해법을 적는다.",
+   "resources": [
+    "talk-cloudfront",
+    "talk-az-cost",
+    "talk-ebpf"
+   ]
+  },
+  {
+   "title": "라우팅을 손으로",
+   "time": "2~3주",
+   "goal": "OSPF 영역과 BGP 주/백업 경로를 직접 구성하고, 이웃이 안 맺어질 때 원인을 찾는다.",
+   "task": "containerlab + FRRouting 으로 라우터 4대(사무실 2 · '클라우드' 2)를 엮고, LOCAL_PREF·AS_PATH 로 주/백업을 만든 뒤 주 회선을 끊어 넘어가는 시간을 잰다. 프리픽스 필터를 빼고 경로가 새는 것도 재현한다.",
+   "resources": [
+    "ccna",
+    "rfc-bgp",
+    "rfc-7454",
+    "frr",
+    "containerlab"
+   ]
+  },
+  {
+   "title": "클라우드 망을 코드로",
+   "time": "2~3주",
+   "goal": "VPC 셋·TGW·NAT·VPC 엔드포인트를 Terraform 으로 만들고 지우며, 주소 겹침과 출구 설계를 설명할 수 있다.",
+   "task": "무료 한도 안에서 VPC 세 개(운영·개발·공용)를 TGW 로 잇고 라우트 테이블로 운영↔개발을 막는다. 주소 계획표를 파이썬으로 겹침 검사하고, plan 결과를 PR 처럼 남긴다. 끝나면 destroy.",
+   "resources": [
+    "aws-multivpc",
+    "cloudneta-aws",
+    "terraform-aws",
+    "gcp-interconnect"
+   ]
+  },
+  {
+   "title": "패킷과 방화벽",
+   "time": "2주",
+   "goal": "캡처로 '누가 먼저 끊었나'를 말하고, 시그니처 규칙 하나를 써서 막는다.",
+   "task": "로컬에서 응답 없는 서버로 연결을 반복해 SYN 재전송·RST 를 tcpdump 로 잡고 Wireshark 로 읽는다. 같은 트래픽을 Suricata 규칙으로 잡아 알림을 내고, 정상 재시도가 오탐되는지 확인한다.",
+   "resources": [
+    "packet-analysis",
+    "wireshark-guide",
+    "tcpdump-man",
+    "suricata-rules",
+    "nist-80041"
+   ]
+  },
+  {
+   "title": "작은 관측 플랫폼",
+   "time": "2~3주",
+   "goal": "흐름 로그(가상)와 장비 지표를 모아 서비스·영역별로 묶은 화면과 알림을 만든다.",
+   "task": "가상 흐름 로그 CSV 와 '파드→영역' 표를 조인해 영역 간 바이트 상위 10을 내는 Go 또는 Python 도구를 짜고, snmp_exporter(시뮬레이터)·Prometheus 로 포트 사용률 알림을 단다. 로컬리티를 켰다고 가정한 데이터로 전후 비교 표를 만든다.",
+   "resources": [
+    "aws-flowlogs",
+    "snmp-exporter",
+    "prom-up-running",
+    "k8s-topo",
+    "netauto-hanbit"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 평균은 **약 6,032만원**, 올해 입사자 평균은 **약 3,888만원** — 보도는 개발자 신입 초봉을 **6,000만원**으로 적었지만 근거가 없다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 금감원·국민연금 자료로 계산한 값이다. 기준일 표기가 없고 직군 구분이 없어 개발자·비개발자가 섞여 있다 [38]"
+   },
+   {
+    "label": "올해 입사자 평균 연봉",
+    "value": "3,888만원",
+    "amount": 3888,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 국민연금 자료로 계산한 값이다. 신입·경력·인턴, 모든 직군이 섞인 값이라 개발자 초봉으로 읽으면 안 된다 [38]"
+   },
+   {
+    "label": "개발자 신입 초봉(보도)",
+    "value": "6,000만원",
+    "amount": 6000,
+    "basis": "보도 · 2026년",
+    "note": "헤럴드경제 기사가 '개발자 신입 초봉 6000만원에 달한다'고 적었으나 근거 자료를 밝히지 않았다 [39]"
+   }
+  ],
+  "how": "당근마켓은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다(2025년 연결 매출 2,707억원·영업이익 146억원으로 흑자다 [40]). 위 집계는 국민연금 납부액으로 거꾸로 계산하는 방식이라 소득 상한이 있어 높은 연봉이 낮게 잡히는 경향이 있다 {추론}. 공고에 연봉이 없고, 전형 다섯째 단계 **처우 협의**에서 사람마다 정한다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "업무 환경",
+    "detail": "인체공학 오피스 가구, 최신 사양 업무 기기"
+   },
+   {
+    "name": "식사",
+    "detail": "식사 및 음료비 지원"
+   },
+   {
+    "name": "야근 교통",
+    "detail": "야근 시 택시비 지원"
+   },
+   {
+    "name": "교육",
+    "detail": "업무 관련 교육·어학 교육비, 국내외 컨퍼런스 참가비와 관련 휴가"
+   },
+   {
+    "name": "학습 도구",
+    "detail": "업무 관련 도서·논문·AI Tool 포함"
+   },
+   {
+    "name": "휴가",
+    "detail": "승인 없이 자유롭게 쓰는 휴가, 연간 최대 25일"
+   },
+   {
+    "name": "문화의 날",
+    "detail": "매월 운영"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 종합건강검진, 연 8회 심리 상담"
+   },
+   {
+    "name": "단체 상해보험",
+    "detail": "본인·배우자·자녀·부모님"
+   },
+   {
+    "name": "가족",
+    "detail": "어린이집 자녀 보육 지원, 경조사 및 명절 지원"
+   }
+  ],
+  "note": "당근 채용 사이트의 '팀 문화' 페이지에 적힌 것이다(2026-11 확인) [36]. 금액은 적혀 있지 않고, 계열사·고용 형태별 적용 범위도 밝히지 않았으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "당근 본사 (교보강남타워)",
+  "address": "서울특별시 서초구 강남대로 465, 교보강남타워 11층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
+  "near": "9호선 신논현역 앞 {추론}",
+  "note": "공고 근무지 표기는 'SEOUL', 잡코리아 사본은 '서울 서초구'이고,[2] 주소는 당근 채용 사이트 하단의 회사 정보다.[37] 네트워크팀 자리 층은 다를 수 있다 {추론}."
+ }
+}
