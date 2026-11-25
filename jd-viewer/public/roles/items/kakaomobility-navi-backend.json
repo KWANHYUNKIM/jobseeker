@@ -1,0 +1,1004 @@
+{
+ "id": "kakaomobility-navi-backend",
+ "company": "카카오모빌리티",
+ "role": "백엔드 개발자(내비 서비스)",
+ "team": "카카오내비 백엔드 서비스 개발·운영 팀",
+ "jobs": [
+  "ats-greeting:kakaomobility:236686",
+  "ats-kakao:group:S-4752",
+  "jobkorea-50087398"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "카카오내비 앱이 길안내를 요청하면 **경로·교통 엔진에 묻고, 결과를 묶어 답하는 서버**를 만들고 운영합니다. 새 기능(정체 미리 알림 등)의 서버 쪽도 맡습니다.[1][10]",
+  "env": "Java/Kotlin·Spring, RDBMS·NoSQL, Docker·Kubernetes·클라우드 위에서[1], 같은 엔진을 카카오맵·SDK·차량 화면도 씁니다.[10] 경로 응답은 밀리초 안에 나가야 합니다.[4] 근무지는 판교, 정규직, 경력 3년 이상입니다.[1]",
+  "oneline": "알고리즘을 만드는 자리가 아니라 **그 알고리즘을 수백만 명에게 빠르고 안 죽게 내보내는** Spring 백엔드 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "카카오내비 서비스의 백엔드 서버 개발, 운영 및 유지보수",
+   "short": "길안내 요청을 받아 경로·교통 엔진에 묻고 앱에 답하는 서버를 만들고, 멈추지 않게 지키는 일.",
+   "why": "팀 소개에 따르면 이 팀은 최적 경로와 실시간 교통정보를 반영한 길안내를 위한 **서버**를 맡고, 대규모 트래픽을 견디는 시스템을 짓고 운영합니다.[1] 같은 길안내 엔진이 카카오내비 앱뿐 아니라 카카오맵 차량 길찾기, 내비 SDK를 쓰는 외부 플랫폼, 차량 인포테인먼트에도 들어가므로[10] 서버가 멈추면 여러 서비스가 한꺼번에 멈춥니다 {추론}.",
+   "actually": {
+    "intro": "회사 발표와 공개 API 로 본 '길안내 한 번'에 서버가 하는 일입니다. 어느 칸을 이 팀이 맡는지는 공개되지 않았습니다.",
+    "items": [
+     "**요청 받기** — 출발·도착·경유지 좌표, 우선순위(추천·최단 시간·최단 거리), 피할 것(유료도로·페리·스쿨존 등), 차종·유종·하이패스 같은 조건을 받는다. 회사가 외부에 여는 길찾기 API 가 바로 이 모양이다.[6]",
+     "**경로 엔진에 묻기** — 엔진은 도로를 수백만 개 링크(도로 조각)로 보고, 링크마다 통행 비용을 매겨 비용이 가장 작은 길을 다익스트라·A* 같은 알고리즘으로 찾는다. 응답은 **밀리초 안에** 나가야 한다.[4]",
+     "**교통 반영** — 1초 단위 GPS 로 교통 정보를 모으고[4], 도로 20만여 구간의 미래 속력을 5분 배치로 예측해 소요 시간·도착 예정 시간(ETA)을 계산한다.[5]",
+     "**응답 만들기** — 거리(m)·시간(초)·택시비·통행료 요약, 구간별 도로 이름·속도·혼잡 상태, 선 모양 좌표, 갈림길 안내 문구를 담는다.[6]",
+     "**실패도 답** — 경로를 못 찾음, 출발지 주변에 도로 없음, 출발·도착이 5m 안, 주변 도로 통제 같은 경우를 숫자 코드로 돌려준다.[7]",
+     "**운영** — 배포·장애 대응·모니터링. 명절처럼 몰리는 날이 있다 — 2017년 추석 연휴 9일 동안 길안내가 3,038만 건, 하루 400만 건을 넘었다.[11]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "길안내 한 번의 흐름(공개 API·발표로 본 일반형) {추론}[4][6]",
+     "steps": [
+      "앱·카카오맵·SDK · 요청",
+      "API 서버 · 검증·인증·조건 정리",
+      "경로 엔진 · 링크 비용으로 최소 비용 경로",
+      "교통 예측 · 링크별 미래 속력",
+      "API 서버 · 요약·구간·안내 조립",
+      "앱 · 화면·음성 안내"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "경로 알고리즘과 교통 예측 모델은 AI 연구개발팀 같은 다른 조직의 발표에서 나왔습니다.[4][5] 백엔드 개발자는 그 엔진을 **부르고, 묶고, 빠르고 안 죽게 운영하는** 쪽일 가능성이 큽니다 {추론}. '유지보수'는 오래된 코드를 읽고 고치는 일도 포함하니 남이 짠 Spring 코드를 빨리 읽는 힘이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    7,
+    10,
+    11
+   ],
+   "study": [
+    "km-directions",
+    "talk-mab",
+    "wiki-spring-boot"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "카카오내비 서비스를 위한 API 설계 및 개발",
+   "short": "앱·카카오맵·외부 SDK 가 같은 길안내를 부를 수 있게 요청·응답 모양과 오류 규칙을 정하는 일.",
+   "why": "같은 엔진을 쓰는 곳이 앱·카카오맵·SDK·차량 화면으로 여럿이라[10] API 모양이 한 번 정해지면 바꾸기 어렵습니다 {추론}. 카플레이·안드로이드 오토처럼 화면이 다른 클라이언트도 따로 개발합니다.[15]",
+   "actually": {
+    "intro": "회사가 외부에 공개한 길찾기 API 에서 설계 결정이 보입니다.[6][7][8]",
+    "items": [
+     "**선택 매개변수로 크기 조절** — 요약만 받기(`summary`), 대안 경로(`alternatives`), 상세 도로 정보(`road_details`)를 기본 꺼짐으로 두어 필요한 쪽만 무거운 응답을 받는다.[6]",
+     "**구간 나누기** — 경유지가 n 개면 응답의 구간(section)은 n+1 개. 도로(road)마다 이름·거리·시간·속도·혼잡 상태를 준다.[6]",
+     "**결과 코드** — HTTP 가 성공이어도 경로마다 결과 코드를 따로 둔다(0 성공, 1 경로 없음, 104 출발·도착 5m 이내, 105·106 주변 통제 등).[7]",
+     "**용도별 API** — 한 출발지에서 목적지 30곳까지 반경 10km 안에서 한 번에 거리·시간만 받는 다중 목적지 API 는 POST 로, 요약만 준다.[8]",
+     "**혼잡 상태 코드** — 정보 없음·정체·지체·서행·원활·사고처럼 화면 색으로 바로 바뀌는 값을 숫자로 정의했다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "요약만 받으면 응답이 얼마나 작아지나",
+     "body": "선 모양 좌표 1,000점이 든 응답과 요약만 든 응답을 JSON 크기로 비교한 것입니다(가상 값, 직접 돌린 출력). 그래서 목록 화면·ETA 표시처럼 지도를 안 그리는 곳에는 요약 옵션이 있습니다.[6]",
+     "lang": "python",
+     "code": "import json, random\n\nrandom.seed(1)\n# 경로 선 모양: x, y 가 번갈아 든 1차원 배열(점 1,000개)\nvertexes = [round(127.1 + random.random() / 100, 6) if i % 2 == 0 else round(37.4 + random.random() / 100, 6)\n            for i in range(2000)]\nsummary = {\"distance\": 12850, \"duration\": 1320}\nfull = {\"trans_id\": \"t1\", \"routes\": [{\"result_code\": 0, \"summary\": summary,\n        \"sections\": [{\"roads\": [{\"name\": \"판교역로\", \"vertexes\": vertexes}]}]}]}\nonly = {\"trans_id\": \"t1\", \"routes\": [{\"result_code\": 0, \"summary\": summary}]}\na, b = len(json.dumps(full)), len(json.dumps(only))\nprint(f\"전체 {a:,} B · 요약 {b:,} B · {a // b}배\")\n\n# 출력\n# 전체 22,969 B · 요약 100 B · 229배"
+    }
+   ],
+   "how_far": "REST 규칙(메서드·상태 코드·캐시)[23]과 하위 호환을 지키며 필드를 더하는 법, 오류를 코드로 정의하는 법까지가 이 줄입니다 {추론}. 외부 공개 API 는 키 발급·쿼터가 붙고, 상업적 사용은 제휴가 필요하다고 안내합니다.[6]",
+   "refs": [
+    6,
+    7,
+    8,
+    10,
+    15,
+    23
+   ],
+   "study": [
+    "km-directions",
+    "wiki-http",
+    "mdn-caching"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "카카오내비 서비스의 성능/기능 개선 및 최적화",
+   "short": "같은 서버로 더 빨리·더 싸게 답하게 고치는 일 — 평균보다 가장 느린 1%를 줄이는 것이 핵심.",
+   "why": "경로 탐색은 밀리초 안에 답해야 합니다.[4] 회사의 교통 예측 팀은 시점별 모델 6개를 하나로 합쳐 배치당 호출을 23번에서 1번으로, 서빙 비용을 약 96% 줄였습니다.[5] 같은 회사가 '호출 수·비용'을 성과로 셉니다.",
+   "actually": {
+    "items": [
+     "**호출 줄이기** — 여러 번 부르던 것을 한 번에. 예측 팀은 미래 시점 전체를 한 번에 내는 모델로 하루 호출을 6,624회에서 144회로 줄였다.[5]",
+     "**꼬리 지연 보기** — 평균이 아니라 p99(가장 느린 1%)를 본다. 느린 외부 호출 하나가 전체를 끌어내린다.[21]",
+     "**캐시** — 바뀌지 않는 것(장소 정보·설정)과 몇 분 단위로 바뀌는 것(교통)을 나눠 담는 시간을 다르게 한다 {추론}.",
+     "**과부하 막기** — 몰리는 날 모든 요청을 받다 다 같이 죽지 않게 대기열 제한·요청 거절·우선순위를 둔다.[21]",
+     "**응답 크기** — 필요 없는 선 모양 좌표를 빼는 옵션처럼 보내는 양을 줄인다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균은 괜찮은데 p99 가 나쁜 경우",
+     "body": "1.5% 만 느려도 p99 는 그 느린 쪽으로 떨어집니다. 평균 49ms 만 보면 놓칩니다(가상 값, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "import random\n\nrandom.seed(7)\n# 가상: 요청 1만 건 중 98.5% 는 40ms 안팎, 1.5% 는 300~900ms(느린 외부 호출·GC 등)\nlat = sorted([random.gauss(40, 8) for _ in range(9850)] + [random.uniform(300, 900) for _ in range(150)])\np = lambda q: lat[int(len(lat) * q) - 1]\nprint(f\"평균 {sum(lat) / len(lat):.0f}ms · p50 {p(0.50):.0f}ms · p99 {p(0.99):.0f}ms · p99.9 {p(0.999):.0f}ms\")\n\n# 출력\n# 평균 49ms · p50 40ms · p99 534ms · p99.9 861ms"
+    }
+   ],
+   "how_far": "병목을 측정으로 찾는 것(APM·프로파일러·쿼리 실행계획)과, 고친 뒤 숫자로 전·후를 보이는 것이 최소선입니다 {추론}. 예측 팀 발표가 강조한 것도 '결과를 보기 전에 성공 기준을 정하고, 숫자는 다시 계산해 확인'입니다.[5]",
+   "refs": [
+    4,
+    5,
+    6,
+    21
+   ],
+   "study": [
+    "sre-overload",
+    "talk-tft",
+    "real-mysql"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "카카오내비 서비스 관련 신규 서비스 개발",
+   "short": "정체 미리 알림·차로 추천처럼 내비에 새로 붙는 기능의 서버 쪽을 만드는 일.",
+   "why": "카카오내비는 2026년 11월 홈·주행 화면을 개편해, 평일 출퇴근 길 정체를 홈에서 먼저 알리고 예상 시간이 5분 넘게 늘면 요약해 알리며, 진출 분기점 2km 전부터 차로 변경을 추천하고 500m 안의 연속 분기점을 보여 주게 했습니다.[10] 서비스 소개에는 주유소·주차장·충전소 탐색, AI 추천 목적지, 긴급 알림도 있습니다.[16]",
+   "actually": {
+    "intro": "이런 기능은 서버에 이런 일을 만듭니다 {추론}.",
+    "items": [
+     "**정체 미리 알림** — 사용자의 집·회사를 알고, 정해진 시각에 그 길의 ETA 를 미리 계산해 두고, 평소보다 5분 넘게 늘면 알림.[10]",
+     "**차로 추천** — 경로의 갈림길 정보에 차로 데이터를 붙여 응답에 싣기.",
+     "**주변 탐색** — 경로 주변·현재 위치 근처의 주유소·충전소를 거리순으로(공간 색인).[28]",
+     "**추천 목적지** — 시간대·최근 목적지로 후보를 만드는 저장 구조."
+    ]
+   },
+   "how_far": "기획·클라이언트 팀과 API 를 먼저 합의하고, 데이터 저장·배치·알림 발송까지 서버 쪽을 끝까지 맡는 것이 보통입니다 {추론}.",
+   "refs": [
+    10,
+    16,
+    28
+   ],
+   "study": [
+    "system-design-ko-2",
+    "postgis-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "백엔드 서버 개발 경력 만 3년 이상이신 분",
+   "short": "혼자서 기능 하나를 설계부터 배포·장애 대응까지 끝내 본 경험을 보려는 선이라서.",
+   "why": "이 자리는 개발뿐 아니라 운영·유지보수와 성능 개선을 같이 맡습니다.[1] 3년은 '만든 서비스를 실제 트래픽 아래서 고쳐 본' 시간을 보려는 기준으로 읽힙니다 {추론}. 전형에 코딩 테스트(안내 후 7일 안)가 있고 1차 인터뷰에서 사전 과제나 라이브 코딩이 붙을 수 있습니다.[1]",
+   "how_far": "연수보다 이력서에 '무엇을 만들었고 어떤 숫자가 바뀌었나'가 있어야 합니다 — 1차 인터뷰가 이력서·포트폴리오로 진행됩니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "system-design-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java/Kotlin Spring 기반 웹/애플리케이션/REST API 개발 경험이 있으신 분",
+   "short": "팀 서버가 Spring 위에 있고, Java 와 Kotlin 을 섞어 쓰는 회사라 둘 다 읽어야 해서.",
+   "why": "카카오모빌리티의 다른 백엔드 공고들도 Java/Kotlin·Spring·REST API 를 요구합니다.[14] 공간정보 팀 공고도 Java/Spring 을 우대합니다.[13] Spring Boot 는 Kotlin 을 정식 지원합니다.[26]",
+   "level": {
+    "basic": "Spring MVC 컨트롤러·서비스·레포지토리 · 요청 검증 · 예외 처리 · JSON 직렬화",
+    "work": "트랜잭션 경계 · 외부 호출 타임아웃·재시도 · 설정 분리 · 테스트(단위·통합) · Kotlin null 안전성",
+    "team": "엔진 여러 곳을 부르는 집계 API · 빠른 실패(회로 차단기) · 하위 호환 지키며 필드 추가 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**외부 호출 지키기** — 엔진·다른 팀 API 가 느려질 때를 대비한 타임아웃·재시도·회로 차단기(연달아 실패하면 잠시 부르지 않기).[27]",
+     "**Kotlin 과 Java 같이 쓰기** — 한 프로젝트에 두 언어가 섞여 있어도 Spring 이 같이 다룬다.[26]",
+     "**오류 모양** — HTTP 상태 코드와 결과 코드를 나눠 정의(길찾기 API 처럼).[7]"
+    ]
+   },
+   "how_far": "Spring 의 동작(빈·트랜잭션·예외 처리)을 설명할 수 있고, REST API 하나를 테스트까지 붙여 만들 수 있으면 최소선입니다 {추론}.",
+   "refs": [
+    7,
+    13,
+    14,
+    26,
+    27
+   ],
+   "study": [
+    "wiki-spring-boot",
+    "spring-kotlin",
+    "kotlin-in-action",
+    "resilience4j"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "RDBMS, NoSQL 스키마 설계 및 활용 경험이 있으신 분",
+   "short": "즐겨찾기·최근 목적지는 표로, 빨리 읽어야 하는 값은 NoSQL·캐시로 — 골라 쓰는 눈이 필요해서.",
+   "why": "같은 회사 공간정보 팀은 PostgreSQL·MongoDB 로 데이터를 설계합니다.[13] 내비 서버에는 사람별 데이터(집·회사·즐겨찾기·최근 목적지)와 매우 자주 읽히는 데이터가 같이 있습니다 {추론}.",
+   "level": {
+    "basic": "정규화 · 기본키·인덱스 · JOIN · 트랜잭션",
+    "work": "복합 인덱스 순서 · 실행계획 · 업서트 · 윈도우 함수 · 문서형 DB 의 '읽는 모양대로 저장'",
+    "team": "사용자 수가 큰 표의 쪼개기(샤딩)·보관 기간 · 캐시와 DB 의 정합성 {추론}"
+   },
+   "examples": [
+    {
+     "title": "최근 목적지를 사람마다 20개만 남기기",
+     "body": "같은 장소를 다시 가면 시각만 고치고(업서트), 오래된 것은 윈도우 함수로 지웁니다(가상 데이터, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"\"\"CREATE TABLE recent_dest(user_id INT, place_id TEXT, used_at TEXT,\n              PRIMARY KEY(user_id, place_id))\"\"\")\nfor i in range(60):   # 가상: 한 사람이 장소 23곳을 60번 검색\n    db.execute(\"\"\"INSERT INTO recent_dest VALUES(?,?,?)\n                  ON CONFLICT(user_id, place_id) DO UPDATE SET used_at = excluded.used_at\"\"\",\n               (1, f\"p{i % 23}\", f\"2026-11-{1 + i // 10:02d} {i % 24:02d}:00\"))\ndb.execute(\"\"\"DELETE FROM recent_dest WHERE (user_id, place_id) IN (\n                SELECT user_id, place_id FROM (\n                  SELECT user_id, place_id,\n                         ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY used_at DESC) AS rn\n                  FROM recent_dest) WHERE rn > 20)\"\"\")\nprint(db.execute(\"SELECT COUNT(*) FROM recent_dest\").fetchone()[0], \"개 남음\")\nprint(db.execute(\"SELECT place_id, used_at FROM recent_dest ORDER BY used_at DESC LIMIT 3\").fetchall())\n\n# 출력\n# 20 개 남음\n# [('p13', '2026-11-06 11:00'), ('p12', '2026-11-06 10:00'), ('p11', '2026-11-06 09:00')]"
+    }
+   ],
+   "how_far": "왜 이 데이터는 RDBMS, 저 데이터는 NoSQL 인지 읽기·쓰기 모양으로 설명할 수 있으면 됩니다.[29] {추론}",
+   "refs": [
+    13,
+    29
+   ],
+   "study": [
+    "real-mysql",
+    "ddia-ko",
+    "mongo-model"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Docker와 Kubernetes에 대한 개념과 클라우드 인프라에 대한 경험이 있으신 분",
+   "short": "서버가 컨테이너로 배포되고 쿠버네티스가 띄우고 늘린다 — 내 서버가 거기서 어떻게 살아나는지 알아야 해서.",
+   "why": "공고는 '개념'과 '경험'을 요구합니다 — 클러스터를 짓는 자리는 아닙니다.[1] 개발자가 직접 알아야 하는 것은 내 앱이 준비됐는지 알리는 방법(프로브), 몰릴 때 늘어나는 방식, 배포 중 요청이 끊기지 않는 방법입니다.[22]",
+   "actually": {
+    "items": [
+     "**준비 확인(readiness)** — 엔진 연결·캐시 데우기가 끝나기 전엔 요청을 받지 않게.[22]",
+     "**살아 있음(liveness)** — 멈춘 컨테이너를 다시 띄우게. 잘못 걸면 바쁠 때 멀쩡한 서버를 죽인다.[22]",
+     "**이미지** — 작은 이미지·JVM 메모리 설정을 컨테이너 한도에 맞추기 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "쿠버네티스 프로브 설정의 생김새",
+     "body": "Spring Boot 액추에이터가 주는 상태 주소를 쿠버네티스 프로브에 거는 일반형입니다(설정 예, 값은 가상).[22]",
+     "lang": "yaml",
+     "code": "readinessProbe:\n  httpGet:\n    path: /actuator/health/readiness\n    port: 8080\n  periodSeconds: 5\nlivenessProbe:\n  httpGet:\n    path: /actuator/health/liveness\n    port: 8080\n  initialDelaySeconds: 30\n  periodSeconds: 10"
+    }
+   ],
+   "how_far": "Dockerfile 을 쓰고, 배포 설정(Deployment·Service·프로브)을 읽고 고칠 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    22
+   ],
+   "study": [
+    "wiki-docker",
+    "wiki-k8s",
+    "k8s-in-action"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터과학 및 공학 관련 학사 이상 전공자 (유사 전공 포함) 혹은 충분한 유관 경력을 보유하신 분",
+   "short": "전공이 없어도 경력으로 대신된다 — 그래프·자료구조 같은 CS 기본기를 보려는 줄이라서.",
+   "why": "'혹은 충분한 유관 경력'으로 전공을 대체할 수 있다고 적었습니다.[1] 내비는 도로를 그래프로 보고 최소 비용 경로를 찾는 일이 바탕이라[4] 자료구조·알고리즘을 쓰는 코딩 테스트가 전형에 있습니다.[1] 같은 회사 공간정보 팀 공고도 CS 기본기를 요구합니다.[13]",
+   "examples": [
+    {
+     "title": "발표의 예: 두 IC 중 어느 길이 싼가",
+     "body": "발표는 집→판교IC→회사(5+1=6)와 집→성남IC→회사(5+2=7)를 예로 듭니다.[4] 아래는 같은 그래프에 '그 링크에서 안내를 안 따른 비율'로 가중치를 곱해 길이 바뀌는 모습입니다. 가중치 모양은 발표 그림(로지스틱 함수, 상한 U=3 이면 최대 4배)을 흉내 낸 것이고 논문의 식·값 그대로가 아닙니다 {추론}(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import heapq, math\n\ndef weight(noncomp, U=3.0, C=10.0):\n    # 비준수율(안내를 안 따른 비율) 0 → 약 1배, 1 → 약 (1+U)배\n    return 1 + U / (1 + math.exp(-C * (noncomp - 0.5)))\n\ndef dijkstra(graph, src, dst):\n    dist, prev, pq = {src: 0.0}, {}, [(0.0, src)]\n    while pq:\n        d, u = heapq.heappop(pq)\n        if u == dst:\n            break\n        if d > dist.get(u, 1e18):\n            continue\n        for v, cost in graph.get(u, []):\n            if d + cost < dist.get(v, 1e18):\n                dist[v], prev[v] = d + cost, u\n                heapq.heappush(pq, (d + cost, v))\n    path = [dst]\n    while path[-1] != src:\n        path.append(prev[path[-1]])\n    return path[::-1], round(dist[dst], 2)\n\nminutes = {(\"집\", \"판교IC\"): 5, (\"집\", \"성남IC\"): 5, (\"판교IC\", \"회사\"): 1, (\"성남IC\", \"회사\"): 2}\nfor label, nc in [(\"이탈 거의 없음\", {}), (\"판교IC→회사 이탈 80%\", {(\"판교IC\", \"회사\"): 0.8})]:\n    g = {}\n    for (a, b), t in minutes.items():\n        g.setdefault(a, []).append((b, t * weight(nc.get((a, b), 0.0))))\n    print(label, dijkstra(g, \"집\", \"회사\"))\n\n# 출력\n# 이탈 거의 없음 (['집', '판교IC', '회사'], 6.12)\n# 판교IC→회사 이탈 80% (['집', '성남IC', '회사'], 7.14)"
+    }
+   ],
+   "how_far": "다익스트라·A*·우선순위 큐를 직접 짤 수 있고, 왜 전국 도로에서는 그대로 못 쓰고 미리 계산(지름길 추가)하는지 말할 수 있으면 충분합니다.[24][25]",
+   "refs": [
+    1,
+    4,
+    13,
+    24,
+    25
+   ],
+   "study": [
+    "redblob-astar",
+    "talk-mab"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 트래픽을 처리하는 시스템 설계, 개발 및 운영 경험이 있으신 분",
+   "short": "출퇴근·명절에 몰리는 길안내를 받아 본 사람은 늘리기·막기·버티기를 이미 알아서.",
+   "why": "팀 소개 자체가 '대규모 트래픽을 처리할 수 있는 안정적인 시스템'입니다.[1] 카카오내비 월 사용자는 2024년 2분기 437만 명으로 보도됐고[12], 같은 엔진이 카카오맵 차량 길찾기·SDK·차량에도 쓰입니다.[10] 명절엔 하루 길안내 400만 건을 넘은 적이 있습니다(2017년).[11]",
+   "actually": {
+    "items": [
+     "**몰리는 시간** — 출퇴근·연휴 앞날처럼 시간대가 뚜렷하다. 미리 늘리기와 자동 늘리기를 같이 쓴다 {추론}.",
+     "**연쇄 장애 막기** — 한 곳이 느려지면 재시도가 몰려 전체가 무너진다. 재시도 횟수 제한·지터·회로 차단기.[21][27]",
+     "**덜어 내기** — 넘칠 때 중요한 요청(주행 중 재탐색)을 먼저, 덜 중요한 것(추천)은 나중·거절 {추론}[21]."
+    ]
+   },
+   "how_far": "초당 몇 건을 받았고 무엇이 먼저 막혔는지, 어떻게 풀었는지 숫자로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    10,
+    11,
+    12,
+    21,
+    27
+   ],
+   "study": [
+    "system-design-ko",
+    "sre-overload",
+    "ddia-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "내비/GIS 관련 서비스 개발 경험이 있으신 분",
+   "short": "좌표·거리·도로에 점 붙이기(맵 매칭)·공간 색인을 이미 다뤄 봤으면 바로 일할 수 있어서.",
+   "why": "회사의 공간정보 팀이 차량·도보·자전거 경로 네트워크, 배경 지도, 주소, 대중교통 데이터를 만들어 서비스에 줍니다.[13] 내비 백엔드는 그것을 받아 쓰는 쪽이라 좌표계·도로 데이터의 생김새를 알면 빠릅니다 {추론}.",
+   "actually": {
+    "items": [
+     "**좌표 다루기** — 길찾기 API 는 x(경도), y(위도) 순서로 받는다.[6] 순서를 바꿔 넣는 실수가 흔하다 {추론}.",
+     "**거리 계산** — 위경도 사이 거리는 구면 공식(하버사인)으로. 출발·도착이 5m 안이면 탐색하지 않고 코드로 답한다.[7]",
+     "**도로에 붙이기** — 누른 점에서 가장 가까운 도로를 찾는다. 주변에 도로가 없으면 그것도 결과 코드가 있다.[7]",
+     "**공간 색인** — 반경 검색은 PostGIS 같은 공간 DB 나 H3 같은 격자로.[28]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "거리 재기와 가장 가까운 도로",
+     "body": "가상 좌표로 직접 돌린 출력입니다. 선분 위 가장 가까운 점은 짧은 거리에서만 맞는 평면 근사로 구했습니다.",
+     "lang": "python",
+     "code": "import math\n\ndef hav(lon1, lat1, lon2, lat2):   # 두 점의 지구 표면 거리(m)\n    p1, p2 = math.radians(lat1), math.radians(lat2)\n    dp, dl = p2 - p1, math.radians(lon2 - lon1)\n    return 2 * 6371000 * math.asin(math.sqrt(math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2))\n\ndef snap(px, py, ax, ay, bx, by):  # 선분 위 가장 가까운 점(짧은 거리에서만 쓰는 평면 근사)\n    k = math.cos(math.radians(py))\n    dx, dy = (bx - ax) * k, by - ay\n    t = max(0, min(1, ((px - ax) * k * dx + (py - ay) * dy) / (dx * dx + dy * dy)))\n    return ax + (bx - ax) * t, ay + (by - ay) * t\n\no, d = (127.111200, 37.394800), (127.111230, 37.394830)\nprint(f\"출발-도착 {hav(*o, *d):.1f}m →\", \"5m 이내: 탐색하지 않고 코드로 답\" if hav(*o, *d) < 5 else \"탐색\")\npt = (127.1105, 37.3952)   # 가상: 사용자가 누른 출발점\nroads = {\"남북 도로\": (127.1100, 37.3940, 127.1100, 37.3970), \"동서 도로\": (127.1080, 37.3955, 127.1130, 37.3955)}\nfor name, seg in roads.items():\n    print(name, f\"{hav(*pt, *snap(*pt, *seg)):.1f}m\")\n\n# 출력\n# 출발-도착 4.3m → 5m 이내: 탐색하지 않고 코드로 답\n# 남북 도로 44.2m\n# 동서 도로 33.4m"
+    }
+   ],
+   "how_far": "우대 사항입니다. 없으면 길찾기 API 를 직접 불러 응답을 지도에 그려 보는 정도로 감을 잡으면 됩니다 {추론}.",
+   "refs": [
+    6,
+    7,
+    13,
+    28
+   ],
+   "study": [
+    "km-directions",
+    "postgis-docs",
+    "system-design-ko-2"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "새로운 업무/기술에 대한 호기심과 열정을 가지신 분",
+   "short": "경로·교통 쪽이 강화학습·새 예측 모델처럼 계속 바뀌어, 서버도 따라 바뀌어야 해서.",
+   "why": "회사는 2024년 11월부터 운전자가 안내를 따랐는지로 도로 가치를 매기는 강화학습(멀티암드 밴딧)을 내비에 적용했고[9][20], 2026년엔 교통 예측 모델을 9MB 하나로 바꿨습니다.[5] 엔진이 바뀌면 그걸 부르는 서버의 호출 모양·주기도 바뀝니다 {추론}.",
+   "how_far": "인터뷰에서 최근에 새로 배워 실제로 쓴 것 하나를 이유·결과와 함께 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    5,
+    9,
+    20
+   ],
+   "study": [
+    "talk-mab",
+    "talk-tft"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "팀워크를 중시하고, 원활한 커뮤니케이션이 가능하신 분",
+   "short": "경로 엔진·교통 예측·공간정보·앱 팀 사이에서 API 로 약속을 맞추는 자리라서.",
+   "why": "경로 알고리즘(AI 연구개발팀)[4], 교통 예측[5], 공간정보 데이터[13], 카플레이·안드로이드 오토 같은 클라이언트[15]가 각각 다른 조직 발표·공고에 나옵니다. 백엔드 서버는 그 사이에서 요청·응답을 이어 붙입니다 {추론}.",
+   "how_far": "API 변경을 문서로 먼저 알리고, 다른 팀 장애를 내 쪽에서 어떻게 막았는지 설명할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    4,
+    5,
+    13,
+    15
+   ],
+   "study": [
+    "system-design-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "긍정적인 마인드와 문제 해결 능력을 가지신 분",
+   "short": "장애·이상한 숫자를 만났을 때 원인을 숫자로 끝까지 파는 태도를 보려는 줄이라서.",
+   "why": "같은 회사 교통 예측 발표는 '전체 평균이 좋아 보여도 짧은 주행·긴 주행으로 나누면 나빠지는' 경우를 실제로 겪었고, 비교 기준이 틀려 실험 다섯 개를 다시 했다고 말합니다.[5] 문제 해결은 이런 확인 습관입니다 {추론}.",
+   "how_far": "장애 하나를 '무엇을 보고 → 어떤 가설 → 어떻게 확인 → 무엇을 바꿨나' 순서로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    5
+   ],
+   "study": [
+    "talk-tft"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "영입 여정은 이렇게 진행됩니다 서류 → Coding Test → 1차 인터뷰 → 2차 인터뷰 → 처우 협의 서류 전형 Coding Test 1차 인터뷰 1차 인터뷰는 이력서 및 포트폴리오 기반으로 함께 일하는 동료들이 참석하여 진행됩니다. 2차 인터뷰 1Round 는 핵심가치 기반의 HR 인터뷰로 HR담당자가 참석하여 진행됩니다. 2Round 는 조직 문화 인터뷰로 조직장이 참석하여 진행됩니다.",
+   "short": "서류 → 코딩 테스트 → 동료 인터뷰 → HR·조직장 인터뷰 → 처우 협의 순서라서.",
+   "why": "코딩 테스트는 안내받은 날부터 7일 안에 끝내야 하고, 1차 인터뷰에 사전 과제나 라이브 코딩이 붙을 수 있습니다. 코딩 테스트에서 떨어지면 6개월 동안 같은 포지션 테스트를 못 보고, 인터뷰에서 떨어지면 1년 동안 같은 직군에 다시 지원할 수 없습니다. 이력서는 PDF 로, 연봉 정보를 적으면 검토되지 않을 수 있습니다.[1] 같은 공고가 카카오 공동체 채용 사이트[2]와 잡코리아[3]에도 올라와 있습니다.",
+   "how_far": "1차는 함께 일할 동료가 이력서·포트폴리오로 묻습니다.[1] 포트폴리오에 트래픽·지연 숫자가 있는 프로젝트를 앞에 둡니다 {추론}.",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "talk-mab",
+   "title": "실시간 경로탐색에 Multi-armed Bandit 기반 강화학습 도입하기 (feat. SCI급 논문게재)",
+   "by": "카카오모빌리티 AI연구개발팀 · if(kakao)25 · 18분",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=d9c32iTNqS8",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "링크·링크 비용·최소 비용 경로·밀리초 응답 — 내비 서버가 부르는 엔진이 무엇을 계산하는지 18분에 잡는다."
+  },
+  {
+   "id": "talk-tft",
+   "title": "LLM 실험 시스템으로 완성한 교통 예측 모델 전면 교체기",
+   "by": "카카오모빌리티 · if(kakao)26 · 26분",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=0vls3Wa-ZNs",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "미래 속력 → ETA 계산, 5분 배치·호출 수·서빙 비용 96% 절감. 성능 개선 줄을 회사 숫자로 이해한다."
+  },
+  {
+   "id": "km-directions",
+   "title": "카카오모빌리티 Developers · 길찾기 API 가이드",
+   "by": "카카오모빌리티",
+   "kind": "doc",
+   "url": "https://developers.kakaomobility.com/guide/navi-api/directions.html",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "요청 매개변수·응답 구조·결과 코드가 다 있다. 직접 불러 보며 API 설계 줄을 연습한다."
+  },
+  {
+   "id": "system-design-ko",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "규모 추정·캐시·처리율 제한·안정 해시 — 대규모 트래픽 우대 줄의 기본 어휘."
+  },
+  {
+   "id": "system-design-ko-2",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초 2",
+   "by": "알렉스 쉬 외",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88%202",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "지도·위치 서비스 장(지오해시·격자별 도로 그래프·경로 안내)이 내비 백엔드와 가장 가깝다."
+  },
+  {
+   "id": "ddia-ko",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스",
+   "kind": "book",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "why": "RDBMS·NoSQL 고르기, 복제·파티셔닝 — 스키마 설계와 대규모 트래픽 줄의 바탕."
+  },
+  {
+   "id": "real-mysql",
+   "title": "Real MySQL 8.0",
+   "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "인덱스·실행계획·잠금. 느린 쿼리를 숫자로 찾고 고치는 성능 개선 줄의 DB 편."
+  },
+  {
+   "id": "mongo-model",
+   "title": "MongoDB Data Modeling",
+   "by": "MongoDB 공식 문서",
+   "kind": "doc",
+   "url": "https://www.mongodb.com/docs/manual/data-modeling/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "문서형 DB 는 읽는 모양대로 저장한다 — 같은 회사 공간정보 팀이 쓰는 NoSQL 의 설계법."
+  },
+  {
+   "id": "kotlin-in-action",
+   "title": "Kotlin in Action 2/e",
+   "by": "세바스티안 아이그너 외 · 오현석 옮김 · 에이콘출판 · 2025",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/common/wseriesitem.aspx?SRID=95903",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "Java 개발자가 Kotlin 코드를 읽고 쓰기 — null 안전성·확장 함수·코루틴."
+  },
+  {
+   "id": "spring-kotlin",
+   "title": "Spring Boot 문서 · Kotlin Support",
+   "by": "Spring",
+   "kind": "doc",
+   "url": "https://docs.spring.io/spring-boot/reference/features/kotlin.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "Spring Boot 에서 Kotlin 을 쓸 때 달라지는 점(설정 클래스·null 처리·테스트)."
+  },
+  {
+   "id": "wiki-spring-boot",
+   "title": "스프링 부트 — 핵심 원리와 활용",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "url": "/wiki/spring-boot",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "자동 구성·액추에이터·외부 설정 — 운영하는 Spring 서버의 바닥."
+  },
+  {
+   "id": "wiki-http",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "url": "/wiki/http-basic",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "메서드·상태 코드·캐시 헤더. REST API 설계 줄의 기본."
+  },
+  {
+   "id": "wiki-docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "url": "/wiki/docker",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "이미지 만들기·실행·로그 읽기. Docker 개념 줄."
+  },
+  {
+   "id": "wiki-k8s",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "url": "/wiki/kubernetes",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "Pending·CrashLoopBackOff 읽기, 프로브·배포. Kubernetes 개념 줄."
+  },
+  {
+   "id": "k8s-in-action",
+   "title": "쿠버네티스 인 액션",
+   "by": "마르코 룩샤 · 강인호 외 옮김 · 에이콘출판 · 2020",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=235962702",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "파드·서비스·디플로이먼트·오토스케일링을 깊게. 운영까지 맡을 때."
+  },
+  {
+   "id": "sre-overload",
+   "title": "Site Reliability Engineering · Handling Overload",
+   "by": "Google · 온라인 무료",
+   "kind": "doc",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "넘칠 때 거절·우선순위·재시도 제한. 대규모 트래픽·성능 줄."
+  },
+  {
+   "id": "resilience4j",
+   "title": "Resilience4j · CircuitBreaker",
+   "by": "Resilience4j 공식 문서",
+   "kind": "doc",
+   "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "엔진·외부 API 가 느려질 때 Spring 서버를 지키는 회로 차단기."
+  },
+  {
+   "id": "mdn-caching",
+   "title": "HTTP caching",
+   "by": "MDN",
+   "kind": "doc",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "캐시 헤더로 바뀌지 않는 응답을 덜 만들기."
+  },
+  {
+   "id": "redblob-astar",
+   "title": "Introduction to the A* Algorithm",
+   "by": "Red Blob Games",
+   "kind": "doc",
+   "url": "https://www.redblobgames.com/pathfinding/a-star/introduction.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "BFS → 다익스트라 → A* 를 그림으로 직접 움직여 본다. 코딩 테스트와 경로 탐색의 기초."
+  },
+  {
+   "id": "postgis-docs",
+   "title": "PostGIS 문서 · ST_DWithin",
+   "by": "PostGIS Project",
+   "kind": "doc",
+   "url": "https://postgis.net/docs/ST_DWithin.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "반경 안 찾기를 공간 색인으로. 주변 탐색 기능·GIS 우대 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "내비가 하는 계산 보기",
+   "time": "1주",
+   "goal": "링크·링크 비용·최소 비용 경로·ETA 를 말로 설명하고 길찾기 API 응답을 읽는다.",
+   "task": "길찾기 API 를 같은 출발·도착으로 추천·최단 시간·최단 거리 세 번 불러, 거리·시간·통행료를 표로 비교하고 결과 코드 104(5m 이내)를 일부러 내 본다.",
+   "resources": [
+    "talk-mab",
+    "km-directions",
+    "redblob-astar"
+   ]
+  },
+  {
+   "title": "Spring 으로 길안내 API 하나",
+   "time": "2~3주",
+   "goal": "Kotlin 또는 Java 로 요청 검증·결과 코드·요약 옵션이 있는 REST API 를 테스트와 함께 만든다.",
+   "task": "가상 도로 그래프(노드 50개) 위에서 다익스트라로 답하는 /route API 를 만들고, summary 옵션·결과 코드(경로 없음·5m 이내)를 붙인다. 통합 테스트로 응답 모양을 고정한다.",
+   "resources": [
+    "wiki-spring-boot",
+    "spring-kotlin",
+    "kotlin-in-action",
+    "wiki-http"
+   ]
+  },
+  {
+   "title": "저장소 고르기",
+   "time": "1~2주",
+   "goal": "사람별 데이터(즐겨찾기·최근 목적지)는 RDBMS, 자주 읽는 값은 캐시·NoSQL 로 나누는 이유를 설명한다.",
+   "task": "최근 목적지 20개 유지(업서트 + 윈도우 함수)를 MySQL 로 만들고 실행계획을 본다. 같은 데이터를 MongoDB 문서 하나에 담는 설계와 장단점을 적는다.",
+   "resources": [
+    "real-mysql",
+    "mongo-model",
+    "ddia-ko"
+   ]
+  },
+  {
+   "title": "컨테이너로 띄우고 몰려 보기",
+   "time": "2주",
+   "goal": "Docker 이미지·쿠버네티스 프로브를 쓰고, 부하를 걸어 p99 와 병목을 숫자로 찾는다.",
+   "task": "2단계 API 를 이미지로 만들어 로컬 쿠버네티스에 올리고 readiness·liveness 를 건다. 부하 도구로 초당 요청을 올리며 p50·p99 를 기록하고, 느린 가짜 엔진을 붙여 회로 차단기 전·후를 비교한다.",
+   "resources": [
+    "wiki-docker",
+    "wiki-k8s",
+    "resilience4j",
+    "sre-overload"
+   ]
+  },
+  {
+   "title": "대규모로 생각하기 (선택)",
+   "time": "계속",
+   "goal": "출퇴근·명절에 몰리는 길안내를 받는 구조를 그림과 숫자로 설명한다.",
+   "task": "월 사용자 437만 명을 가정해 피크 초당 요청을 추정하고, 캐시·늘리기·거절 정책을 넣은 구조도를 한 장 그린다. 주변 충전소 찾기를 PostGIS 반경 검색으로 만들어 본다.",
+   "resources": [
+    "system-design-ko",
+    "system-design-ko-2",
+    "postgis-docs",
+    "talk-tft"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 회사 전체 1인 평균 급여는 **약 9,014만원**(2024년, 보도) — 경력직이 섞인 회사 전체 값이라 이 자리의 제안 금액과 다르다",
+  "rows": [
+   {
+    "label": "임직원 1인 평균 급여",
+    "value": "약 9,014만원",
+    "amount": 9014,
+    "basis": "보도 · 2024년",
+    "note": "2024년 말 임직원 914명(기간제 포함), 스톡옵션 행사 차익을 뺀 급여 기준. 회사 실적 공시를 다룬 2025년 3월 기사 [17]"
+   },
+   {
+    "label": "직원 1인 평균 급여(상반기 6개월 치)",
+    "value": "4,718만원",
+    "basis": "보도 · 2025년 상반기",
+    "note": "2025년 6월 말 직원 931명(정규 883·계약 48), 평균 근속 3.8년. 반년 동안 받은 금액이라 연봉과 바로 견주면 안 된다 [18]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고 인터뷰 뒤 **처우 협의** 단계에서 정합니다. 이력서에 연봉 정보를 적으면 검토되지 않을 수 있다고 적혀 있습니다 [1]. 평균은 개발·사업직 경력자가 섞인 회사 전체 값이라 경력 3년 백엔드 개발자의 금액으로 읽으면 안 됩니다 {추론}. 신입 초봉 집계 사이트는 접속이 막혀 확인하지 못해 싣지 않았습니다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "주택 자금",
+    "detail": "주택 관련 대출 최대 3억원 이자 지원"
+   },
+   {
+    "name": "생활 안정 자금",
+    "detail": "최대 5천만원 한도 이자 지원"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "카카오 T 앱·제휴 가맹점에서 사용"
+   },
+   {
+    "name": "차량 대여",
+    "detail": "추첨으로 3박 4일(기아·현대 등)"
+   },
+   {
+    "name": "휴가",
+    "detail": "연차 최대 25일, 금요일 2시간 조기 퇴근, 선택적 근로시간제"
+   },
+   {
+    "name": "식사",
+    "detail": "점심시간 1시간 30분, 점심 식대 월 20만원, 간식·음료 무제한"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 건강검진(당일 유급휴가, 가족 양도 가능), 상담 지원, 본인·가족·배우자 부모 실손 의료비"
+   },
+   {
+    "name": "육아",
+    "detail": "사내 어린이집, 육아휴직 최대 2년"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "통근버스, 휴양 시설, 사내 마사지·수면실, 동호회, 경조사 지원"
+   }
+  ],
+  "note": "카카오모빌리티 채용 사이트의 복지 페이지(연도 표기 없음) [19]. 같은 회사 다른 공고 풀이에서 옮긴 목록이며, 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "카카오모빌리티 판교 오피스",
+  "address": "경기도 성남시 분당구 판교역로 152, 알파돔타워 13층",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 {추론}",
+  "note": "공고의 근무 조건(판교역로 152, 알파돔타워)[1]과 회사 사이트 하단 주소(13층)[16]."
+ },
+ "fit": {
+  "good": [
+   "응답 시간·p99 같은 숫자를 줄이는 게 즐거운 사람[4][5]",
+   "지도·좌표·도로 데이터가 궁금한 사람[13]",
+   "남이 만든 엔진을 잘 묶어 안정적으로 내보내는 일이 재미있는 사람 {추론}",
+   "출퇴근·명절처럼 실제로 몰리는 트래픽을 겪어 보고 싶은 사람[11]"
+  ],
+  "hard": [
+   "경로 알고리즘·예측 모델 자체를 연구하고 싶다면 AI 연구개발 쪽 자리가 더 맞다[4][5]",
+   "같은 엔진을 여러 서비스가 써서 API 를 마음대로 바꾸기 어렵다[10]",
+   "운영·유지보수가 업무 첫 줄이라 장애 대응이 일의 일부다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "길안내 API 가 평소 50ms 인데 퇴근 시간에 p99 만 1초로 튀어요. 무엇부터 보나요?",
+   "a": "성능 개선 업무 줄과 꼬리 지연·과부하.[1][21]"
+  },
+  {
+   "q": "경로 엔진이 응답을 못 줄 때 앱에는 무엇을 돌려주나요? 재시도는요?",
+   "a": "결과 코드 설계와 연쇄 장애 막기.[7][27]"
+  },
+  {
+   "q": "출발지와 도착지가 거의 같은 요청은 어떻게 다루나요?",
+   "a": "회사 API 의 5m 이내 결과 코드.[7]"
+  },
+  {
+   "q": "즐겨찾기와 최근 목적지는 어디에 어떻게 저장하겠어요?",
+   "a": "RDBMS·NoSQL 스키마 설계 요건.[1][13]"
+  },
+  {
+   "q": "다익스트라로 전국 도로를 밀리초 안에 탐색할 수 있나요? 안 되면 어떻게 하나요?",
+   "a": "수백만 링크·밀리초 응답과 미리 계산 기법.[4][25]"
+  },
+  {
+   "q": "새 교통 예측 모델이 5분마다 결과를 내면, API 서버의 캐시는 어떻게 맞추나요?",
+   "a": "5분 배치 예측과 캐시 갱신.[5]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "카카오모빌리티 채용 · 백엔드 개발자(내비 서비스)",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/236686",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대·전형·근무 조건(정규직, 판교)"
+  },
+  {
+   "n": 2,
+   "title": "카카오 공동체 채용 · [공동체] 카카오모빌리티 백엔드 개발자(내비 서비스)",
+   "url": "https://careers.kakao.com/jobs/S-4752",
+   "kind": "posting",
+   "note": "같은 공고의 카카오 채용 사이트 판"
+  },
+  {
+   "n": 3,
+   "title": "잡코리아 · [카카오모빌리티] 백엔드 개발자(내비 서비스)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50087398",
+   "kind": "posting",
+   "note": "같은 공고의 잡코리아 판"
+  },
+  {
+   "n": 4,
+   "title": "if(kakao)25 · 실시간 경로탐색에 Multi-armed Bandit 기반 강화학습 도입하기",
+   "url": "https://www.youtube.com/watch?v=d9c32iTNqS8",
+   "kind": "company",
+   "date": "2025-09",
+   "note": "카카오모빌리티 AI연구개발팀 · 자막 전부 확인 — 1초 GPS, 밀리초 응답, 다익스트라·A*, 수백만 링크, 링크 가중치, 일주일 수백만 요청 온라인 실험"
+  },
+  {
+   "n": 5,
+   "title": "if(kakao)26 · LLM 실험 시스템으로 완성한 교통 예측 모델 전면 교체기",
+   "url": "https://www.youtube.com/watch?v=0vls3Wa-ZNs",
+   "kind": "company",
+   "date": "2026",
+   "note": "카카오모빌리티 · 자막 전부 확인 — 모델 6개 → 1개(9MB), 20만여 구간, 배치당 호출 23 → 1, 하루 6,624 → 144회, 서빙 비용 약 96% 절감, ETA 오차 평균 약 2.6% 개선"
+  },
+  {
+   "n": 6,
+   "title": "카카오모빌리티 Developers · 길찾기 API(자동차 길찾기)",
+   "url": "https://developers.kakaomobility.com/guide/navi-api/directions.html",
+   "kind": "company",
+   "note": "GET /v1/directions — 매개변수·응답 구조·혼잡 상태 코드, 시작하기 안내(키·쿼터·제휴)"
+  },
+  {
+   "n": 7,
+   "title": "카카오모빌리티 Developers · 길찾기 API 참고(결과 코드)",
+   "url": "https://developers.kakaomobility.com/guide/navi-api/reference.html",
+   "kind": "company"
+  },
+  {
+   "n": 8,
+   "title": "카카오모빌리티 Developers · 다중 목적지 길찾기",
+   "url": "https://developers.kakaomobility.com/guide/navi-api/destinations.html",
+   "kind": "company",
+   "note": "POST, 목적지 최대 30개, 반경 최대 10,000m"
+  },
+  {
+   "n": 9,
+   "title": "카카오 · 카카오모빌리티 '운전자 반응 기반 AI 경로 안내 기술', SCI 저널 등재",
+   "url": "https://www.kakaocorp.com/page/detail/11762",
+   "kind": "company",
+   "date": "2025-07-14",
+   "note": "2024년 11월부터 카카오내비 적용, 빠른 경로 준수율 64.22% → 70.87%"
+  },
+  {
+   "n": 10,
+   "title": "테크M · \"출퇴근길 정체 미리 알려준다\"...카카오내비, 홈·주행 화면 전면 개편",
+   "url": "https://www.techm.kr/news/articleView.html?idxno=157216",
+   "kind": "news",
+   "date": "2026-11-11",
+   "note": "같은 길안내 엔진이 카카오내비·카카오맵 차량 길찾기·SDK 외부 플랫폼·차량 인포테인먼트에 적용"
+  },
+  {
+   "n": 11,
+   "title": "카카오 · 카카오내비, 추석 연휴 길안내 3000만건 돌파",
+   "url": "https://www.kakaocorp.com/page/detail/8406",
+   "kind": "company",
+   "date": "2017-10-09",
+   "note": "9일간 3,038만 건(검색·재탐색 제외), 10월 5일 하루 400만 건 초과"
+  },
+  {
+   "n": 12,
+   "title": "메트로신문 · 티맵, 내비를 넘어 '초개인화 플랫폼'으로 도약",
+   "url": "https://www.metroseoul.co.kr/article/20240924500499",
+   "kind": "news",
+   "date": "2024-09-24",
+   "note": "카카오내비 MAU 437만 명(2024년 2분기 문맥, 집계 출처 표기 없음)"
+  },
+  {
+   "n": 13,
+   "title": "카카오모빌리티 채용 · 백엔드 개발자(공간정보 시스템 개발)",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/236791",
+   "kind": "posting",
+   "note": "같은 회사 다른 팀 — 경로탐색 네트워크·배경 지도·주소·대중교통, Java/Spring·PostgreSQL·MongoDB"
+  },
+  {
+   "n": 14,
+   "title": "원티드 · 카카오모빌리티 자율주행 관제 플랫폼 백엔드 엔지니어",
+   "url": "https://www.wanted.co.kr/wd/366385",
+   "kind": "posting",
+   "note": "같은 회사 다른 팀(마감) — Java/Kotlin·Spring·RESTful API·RDBMS·NoSQL"
+  },
+  {
+   "n": 15,
+   "title": "if(kakaoAI)2024 · 카카오내비 카플레이 / AndroidAuto 개발기",
+   "url": "https://if.kakao.com/2024/session/37",
+   "kind": "company",
+   "note": "세션 소개 글만 확인(영상은 클라이언트 주제라 받지 않음)"
+  },
+  {
+   "n": 16,
+   "title": "카카오모빌리티 · 카카오내비 서비스 소개",
+   "url": "https://www.kakaomobility.com/service-navi",
+   "kind": "company",
+   "note": "기능 소개, 사이트 하단 회사 주소"
+  },
+  {
+   "n": 17,
+   "title": "아이뉴스24 · 카카오모빌리티, 2024년 매출 6750억원⋯류긍선 대표 보수 9.7억원",
+   "url": "https://v.daum.net/v/uTwZAfwMlq",
+   "kind": "news",
+   "date": "2025-03-31",
+   "note": "임직원 914명, 1인 평균 급여 약 9,014만원(스톡옵션 차익 제외)"
+  },
+  {
+   "n": 18,
+   "title": "아이뉴스24 · 카카오모빌리티 2025년 상반기 매출 3375억원⋯류긍선 대표 보수 6.5억원",
+   "url": "https://www.inews24.com/view/1876724",
+   "kind": "news",
+   "date": "2025-08-14",
+   "note": "6월 말 직원 931명(정규 883·계약 48), 평균 근속 3.8년, 1인 평균 급여 4,718만원"
+  },
+  {
+   "n": 19,
+   "title": "카카오모빌리티 채용 · 복지",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/benefit",
+   "kind": "company"
+  },
+  {
+   "n": 20,
+   "title": "Scalable link cost learning for real-time route guidance systems (Transportation Research Part C, 178권)",
+   "url": "https://doi.org/10.1016/j.trc.2025.105244",
+   "kind": "company",
+   "date": "2025",
+   "note": "카카오모빌리티 연구진·서울대 공저 논문 — 본문은 읽지 않고 초록·보도로 확인"
+  },
+  {
+   "n": 21,
+   "title": "Google SRE Book · Handling Overload",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "kind": "reference",
+   "note": "다른 곳의 공개 문서 — 과부하·거절·재시도"
+  },
+  {
+   "n": 22,
+   "title": "Kubernetes 문서 · Configure Liveness, Readiness and Startup Probes",
+   "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "MDN · HTTP caching",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Red Blob Games · Introduction to the A* Algorithm",
+   "url": "https://www.redblobgames.com/pathfinding/a-star/introduction.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Wikipedia · Contraction hierarchies",
+   "url": "https://en.wikipedia.org/wiki/Contraction_hierarchies",
+   "kind": "reference",
+   "note": "도로망 경로 탐색을 빠르게 하는 미리 계산(지름길) 기법의 일반 설명"
+  },
+  {
+   "n": 26,
+   "title": "Spring Boot 문서 · Kotlin Support",
+   "url": "https://docs.spring.io/spring-boot/reference/features/kotlin.html",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Resilience4j · CircuitBreaker",
+   "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "PostGIS 문서 · ST_DWithin",
+   "url": "https://postgis.net/docs/ST_DWithin.html",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "MongoDB 문서 · Data Modeling",
+   "url": "https://www.mongodb.com/docs/manual/data-modeling/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "카카오내비 백엔드 팀이 직접 서버 구조를 발표한 자료는 찾지 못했습니다. 회사의 경로탐색·교통 예측 발표(AI 쪽 조직), 공개 길찾기 API 문서, 같은 회사 다른 백엔드 공고로 이 서버가 다루는 일을 보였고, 어느 칸을 이 팀이 맡는지는 {추론}으로 표시했습니다. 사용자 수(2024년)·명절 건수(2017년)는 오래된 숫자입니다."
+}

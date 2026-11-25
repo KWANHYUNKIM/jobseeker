@@ -299,6 +299,9 @@
   "ats-greeting:kakaomobility:148119": "kakaomobility-ml-research-scientist",
   "ats-kakao:group:S-4306": "kakaomobility-ml-research-scientist",
   "wanted-364303": "kakaomobility-ml-research-scientist",
+  "ats-greeting:kakaomobility:236686": "kakaomobility-navi-backend",
+  "ats-kakao:group:S-4752": "kakaomobility-navi-backend",
+  "jobkorea-50087398": "kakaomobility-navi-backend",
   "ats-greeting:kakaomobility:187114": "kakaomobility-qa-engineer",
   "ats-kakao:group:S-4732": "kakaomobility-qa-engineer",
   "ats-greeting:kakaomobility:243388": "kakaomobility-security-operations-senior",
@@ -3020,6 +3023,18 @@
     "ats-greeting:kakaomobility:148119",
     "ats-kakao:group:S-4306",
     "wanted-364303"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 15
+  },
+  {
+   "id": "kakaomobility-navi-backend",
+   "company": "카카오모빌리티",
+   "role": "백엔드 개발자(내비 서비스)",
+   "jobs": [
+    "ats-greeting:kakaomobility:236686",
+    "ats-kakao:group:S-4752",
+    "jobkorea-50087398"
    ],
    "researched_at": "2026-11-26",
    "lines": 15
