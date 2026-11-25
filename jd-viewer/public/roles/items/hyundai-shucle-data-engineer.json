@@ -1,0 +1,1251 @@
+{
+ "id": "hyundai-shucle-data-engineer",
+ "company": "현대자동차",
+ "role": "모빌리티 서비스 Data Engineer (셔클)",
+ "team": "AVP 본부 · 셔클(통합 모빌리티 플랫폼) 조직",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N298",
+  "wanted-387545"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "부르면 오는 버스 **셔클**에서 나오는 호출·배차·탑승·차량 위치 기록을 모아, 수요 예측·배차 모델과 지자체 보고에 쓸 수 있게 만드는 **데이터 플랫폼과 파이프라인**을 짓습니다.[1][4]",
+  "env": "서비스끼리 이벤트로 주고받는 마이크로서비스 위에서[3], 실시간·배치 파이프라인과 레이크하우스·Feature Store·카탈로그·리니지까지 한 조직이 맡습니다. 같은 조직의 인프라 공고는 퍼블릭·공공 클라우드와 ISMS-P 를 말합니다.[1][8]",
+  "oneline": "모빌리티 서비스의 데이터 바닥을 까는 경력 3년+ 데이터 엔지니어. 분석보다 **안정적인 수집·정합성·거버넌스**가 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "서비스에서 발생하는 다양한 이벤트를 데이터로 표현하는 과정에서 발생하는 문제를 소프트웨어 엔지니어링을 통해 해결합니다.",
+   "short": "'호출했다·탔다·내렸다' 같은 서비스 사건을 빠짐없이, 같은 뜻으로 기록되게 만드는 일.",
+   "why": "셔클은 처음 모놀리식으로 만들었다가 마이크로서비스로 바꿨고, 서비스끼리 API 와 **이벤트**로 통신합니다.[3] 호출·배차·탑승 확인이 사람이 아니라 시스템으로 자동화돼 있어[3] 그 사건 기록 자체가 운영 기록입니다.",
+   "actually": {
+    "intro": "이벤트를 데이터로 옮길 때 흔히 생기는 문제입니다. 셔클이 어떤 것을 겪었는지는 공개되지 않았습니다.{추론}",
+    "items": [
+     "**이벤트 규격(스키마)** — 같은 '탑승'이 서비스마다 다른 이름·단위로 오지 않게 규격을 정하고 버전을 관리한다. 셔클 백엔드는 통합 IDL(인터페이스 정의) 저장소를 둔다.[3]",
+     "**DB 와 이벤트가 어긋나지 않게** — 셔클은 DB 저장과 이벤트 발행을 한 트랜잭션처럼 묶는 Transactional Outbox 패턴을 쓴다.[3] 데이터 쪽은 그 이벤트를 받아 쌓는다.",
+     "**중복·순서** — 재시도로 같은 이벤트가 두 번 오거나 늦게 온다. 메시지 큐는 보통 '적어도 한 번' 전달이라 받는 쪽에서 이벤트 id 로 중복을 지운다.[16]",
+     "**사건 시각 vs 받은 시각** — 차량 단말이 통신이 끊겼다 붙으면 몇 분 전 사건이 지금 들어온다. 집계는 사건 시각 기준으로 하고 늦은 데이터를 얼마나 기다릴지 정한다.[17]",
+     "**위치 데이터** — 차량 GPS 는 터널·건물 사이에서 튄다. 속도로 걸러 내는 규칙이 필요하다(아래 예)."
+    ]
+   },
+   "examples": [
+    {
+     "title": "GPS 튐 찾기 — 2초 간격 위치의 속도",
+     "body": "세종시 근처 가상 좌표 5개입니다. 점 하나가 7km 옆으로 튀면 앞뒤 두 구간이 함께 시속 1만 km 가 됩니다 — 튄 점은 '두 번 연속 이상한 구간 사이의 점'으로 찾습니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "from math import radians, sin, cos, asin, sqrt\ndef km(a, b):\n    (la1, lo1), (la2, lo2) = a, b\n    dla, dlo = radians(la2 - la1), radians(lo2 - lo1)\n    h = sin(dla/2)**2 + cos(radians(la1))*cos(radians(la2))*sin(dlo/2)**2\n    return 2 * 6371.0088 * asin(sqrt(h))\npts = [(36.4800,127.2890),(36.4801,127.2891),(36.4802,127.2892),(36.5300,127.3400),(36.4803,127.2893)]\nfor i in range(1, len(pts)):\n    d = km(pts[i-1], pts[i]); v = d / (2/3600)\n    print(i, f\"{d*1000:7.1f} m\", f\"{v:7.1f} km/h\", \"<- 튐\" if v > 150 else \"\")\n# 1    14.3 m    25.7 km/h\n# 2    14.3 m    25.7 km/h\n# 3  7161.0 m 12889.8 km/h <- 튐\n# 4  7146.7 m 12864.1 km/h <- 튐"
+    }
+   ],
+   "how_far": "이벤트를 만드는 쪽(백엔드)과 규격을 같이 정하고, 데이터 쪽에서 **중복·지연·빈칸을 견디는 수집**을 맡습니다. 최소선은 '이벤트가 두 번 오거나 늦게 와도 숫자가 같게 나오는' 파이프라인을 설명하고 만들 수 있는 것.{추론}",
+   "refs": [
+    3,
+    16,
+    17
+   ],
+   "study": [
+    "shucle-dev",
+    "ddia",
+    "kafka-guide"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터를 통해 사용자를 이해하는 과정에서 생기는 기술적인 문제를 해결하고 데이터 플랫폼을 통해 데이터 기반의 의사결정을 지원하는 제품 개발 업무를 수행합니다.",
+   "short": "재이용률·대기 시간·지역별 수요 같은 숫자를 누구나 믿고 꺼내 쓰게 하는 데이터 제품을 만든다.",
+   "why": "셔클은 지역마다 지자체와 계약해 운영합니다 — 2023년 말 17개 지역, 회원 41만 명·호출 235만 건이었고[5], 2026년 기사는 45개 지역이라고 적었습니다.[7] 도입 효과(자차 이용 43.2% 감소)[5], 2주 안 재이용률 최대 38%·평균 대기 7.7분[7] 같은 숫자가 사업과 정책 판단에 그대로 쓰입니다.",
+   "actually": {
+    "items": [
+     "**지역별 운영 지표** — 호출 수·배차 성공률·대기 시간·합승률·재이용률을 지역·시간대별로 매일 계산한다.{추론}",
+     "**도입 전 시뮬레이션 재료** — 셔클은 대중교통 승하차·POI·인구 데이터로 수요를 예측하고 운행을 시뮬레이션해 도입 효과를 미리 본다고 밝혔다.[4]",
+     "**운영 대시보드** — 실시간 운영 현황 대시보드와 비정상 운행 탐지 알림이 셔클 기능에 있다.[4]",
+     "**외부 공유** — 한국교통연구원과 수요응답 교통 데이터를 공유하기로 협약했다.[6] 내보낼 데이터의 범위와 형식을 정하는 일이 생긴다.{추론}"
+    ]
+   },
+   "how_far": "지표의 정의(재이용을 2주로 볼지)는 사업·분석 쪽과 정합니다. 개발자는 **그 정의를 한 곳에 두고 모든 화면이 같은 숫자를 내게** 만드는 쪽입니다.{추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    7
+   ],
+   "study": [
+    "shucle-tech",
+    "fde-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 데이터 플랫폼 구축 및 운영",
+   "short": "아래 네 줄의 묶음 제목 — 데이터를 담고 계산하는 바닥(저장소·처리 엔진·Feature Store)을 짓고 돌린다.",
+   "why": "공고가 주요업무를 플랫폼·파이프라인·거버넌스 세 묶음으로 나눴고, 이 묶음이 첫 번째입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 고가용성 및 확장에 용이한 데이터 처리 시스템 설계",
+   "short": "한 대가 죽어도 멈추지 않고, 지역이 늘어도 고쳐 짓지 않아도 되는 처리 구조를 짠다.",
+   "why": "운영 지역이 2023년 9월 16곳·124대[6]에서 2026년 45곳[7]으로 늘었습니다. 광주 자율주행 실증에서는 셔클이 호출·실시간 관제·배차의 운영 플랫폼으로 들어갑니다.[7] 지역이 늘 때마다 데이터 처리를 손으로 늘리면 버티지 못합니다.{추론}",
+   "actually": {
+    "items": [
+     "**나눠서 늘리기** — 셔클 백엔드는 계산이 많은 배차 서비스만 고성능 서버 여러 대로 늘린다.[3] 데이터 처리도 지역·날짜로 나눠(파티션) 일꾼 수만 늘리면 되게 한다.",
+     "**죽어도 이어서** — 스트림 처리는 처리한 위치(오프셋)와 상태를 체크포인트로 남겨 다시 뜨면 그 자리부터 한다.[18]",
+     "**저장과 계산 떼기** — 레이크하우스는 값싼 객체 저장소 위에 표 형식을 얹어 계산 엔진을 따로 늘린다.[12]"
+    ]
+   },
+   "how_far": "고가용성의 바닥(클러스터·네트워크)은 같은 조직의 인프라 엔지니어 몫입니다.[8] 이 자리는 **처리 작업이 재시작·재처리를 견디게 설계**하는 쪽입니다.{추론}",
+   "refs": [
+    3,
+    6,
+    7,
+    8,
+    12,
+    18
+   ],
+   "study": [
+    "ddia",
+    "spark-ss"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 다양한 형태의 정형/비정형 데이터를 안정적으로 수집할 수 있는 데이터 레이크하우스 아키텍처 고도화",
+   "short": "표 데이터와 로그·위치·지도 파일을 한 저장소에 담고, 표처럼 안전하게 읽고 고치게 다듬는다.",
+   "why": "셔클은 대중교통 노선·승하차, POI, 도로망, 인구통계까지 모으는 모빌리티 데이터 파이프라인을 만들었다고 밝혔습니다.[4] 지도 원천 데이터로 길찾기 맵을 만드는 일도 같은 조직에 있습니다.[9] 형식이 제각각이라 DB 하나로는 담기 어렵습니다.",
+   "actually": {
+    "intro": "레이크하우스 = 파일 저장소(데이터 레이크) + 표의 약속(데이터 웨어하우스)입니다.[12] '고도화'라 이미 있는 것을 키우는 일입니다.[1]",
+    "items": [
+     "**정형** — 호출·배차·결제 DB 를 변경분(CDC)으로 옮겨 온다.{추론}",
+     "**반정형** — 앱·서버 이벤트 로그(JSON), 차량 위치 스트림.",
+     "**비정형** — 지도 원천 파일, 공공 교통 데이터(노선·정류장 표준 형식 GTFS 같은 것[20]).",
+     "**표의 약속** — Iceberg 같은 테이블 형식은 쓰기를 한 번에 성공/실패로 묶고(스냅샷), 컬럼 추가·이름 바꾸기를 데이터 재작성 없이 하고, 지난 시점을 다시 읽게 한다.[11]",
+     "**층 나누기** — 받은 그대로 → 정리·중복 제거 → 지표·특징값 층으로 쌓는 것이 흔한 방식이다.{추론}"
+    ]
+   },
+   "how_far": "새로 고르기보다 **지금 구조의 약한 곳(작은 파일 폭증·스키마 변경·늦은 데이터)을 고치는 경험**이 중요합니다. 우대사항의 Iceberg·Hudi·Delta 가 이 줄과 짝입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    9,
+    11,
+    12,
+    20
+   ],
+   "study": [
+    "lakehouse-paper",
+    "iceberg-docs",
+    "fde-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 데이터 사이언티스트의 모델 개발 생산성 향상을 위한 Feature Store 설계 및 구축",
+   "short": "수요 예측·배차 모델이 쓰는 입력값을 한 곳에 계산해 두고, 학습과 서비스가 같은 값을 쓰게 한다.",
+   "why": "셔클의 핵심은 AI 가 실시간 수요를 보고 경로·배차를 조정하는 것이고[7], 수요 패턴으로 빈 차를 미리 옮기고 수요로 운행 스케줄을 만듭니다.[3][4] 모델마다 같은 '최근 30분 호출 수'를 따로 계산하면 값이 갈립니다.{추론}",
+   "actually": {
+    "items": [
+     "**특징값 등록** — '구역별 최근 30분 호출 수', '정류장별 요일·시간대 평균 탑승' 같은 값을 이름·정의·주인과 함께 등록한다.[10]",
+     "**두 개의 창고** — 학습용(과거 전체, 오프라인)과 배차 서버가 밀리초에 읽는 최신값(온라인)을 같은 정의로 채운다.[10]",
+     "**시점 맞춰 붙이기** — 학습 데이터에는 그 호출 '당시' 알 수 있던 값만 붙여야 한다. 미래 값이 섞이면 학습 땐 잘 맞고 실전에선 틀린다(아래 예).[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "시점 맞춰 붙이기(point-in-time join)",
+     "body": "구역 A 의 '최근 30분 호출 수'가 07:00 에 12, 07:30 에 31, 08:00 에 8 이었습니다. 07:05·07:40 호출에 최신값(8)을 붙이면 미래를 본 셈입니다. 호출 시각 직전 값을 붙여야 12·31 이 됩니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "from bisect import bisect_right\nfeat = {\"A\": [(\"07:00\", 12), (\"07:30\", 31), (\"08:00\", 8)], \"B\": [(\"07:00\", 5)]}\ncalls = [(\"A\", \"07:05\", 6), (\"B\", \"07:20\", 9), (\"A\", \"07:40\", 14)]  # 구역, 호출 시각, 대기 분\ndef as_of(zone, ts):\n    rows = feat[zone]\n    i = bisect_right([t for t, _ in rows], ts)\n    return rows[i-1][1] if i else None\nprint(\"최신값을 붙이면  :\", [feat[z][-1][1] for z, _, _ in calls])\nprint(\"그 시각 값을 붙이면:\", [as_of(z, t) for z, t, _ in calls])\n# 최신값을 붙이면  : [8, 5, 8]\n# 그 시각 값을 붙이면: [12, 5, 31]"
+    }
+   ],
+   "how_far": "어떤 특징값이 좋은지는 데이터 사이언티스트가 정합니다. 개발자는 **정의를 한 번 쓰면 오프라인·온라인이 같은 값을 내고, 시점이 맞게** 만드는 쪽입니다. 오픈소스(Feast 등)를 쓸지 직접 지을지는 공고에 없습니다.{추론}",
+   "refs": [
+    3,
+    4,
+    7,
+    10
+   ],
+   "study": [
+    "feast-pit",
+    "dmls"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 데이터 기반의 의사결정을 지원하는 데이터 제품 개발 및 지속 개선",
+   "short": "지표 표·대시보드·데이터 API 를 '한 번 만들고 끝'이 아니라 쓰는 사람이 있는 제품처럼 키운다.",
+   "why": "셔클은 실시간 운영 대시보드, 비정상 운행 알림, 도보 접근성으로 정류장을 추천하는 맵데이터 편집 도구를 기능으로 내세웁니다.[4] 모두 데이터를 먹고 사는 화면입니다.",
+   "actually": {
+    "items": [
+     "**데이터 제품의 조건** — 찾을 수 있고, 주소가 있고, 믿을 수 있고, 스스로 설명되고, 표준을 따르고, 권한이 걸린 것.[23]",
+     "**예** — 지역별 일일 운영 지표 표, 지자체 월간 보고 데이터, 정류장 후보 점수 표.{추론}",
+     "**지속 개선** — 누가 쓰는지·얼마나 늦게 갱신되는지를 보고 고친다.{추론}"
+    ]
+   },
+   "refs": [
+    4,
+    23
+   ],
+   "study": [
+    "fde-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 데이터 파이프라인 구축 및 운영",
+   "short": "아래 세 줄의 묶음 제목 — 데이터가 들어와 표가 되기까지의 흐름을 만들고 매일 지킨다.",
+   "why": "주요업무의 두 번째 묶음입니다.[1]",
+   "flows": [
+    {
+     "caption": "모빌리티 이벤트가 지표가 되기까지(보통의 흐름){추론}",
+     "steps": [
+      "서비스 이벤트 · DB 변경분",
+      "메시지 큐(실시간)",
+      "원본 층 · 받은 그대로",
+      "정리 층 · 중복 제거·시각 보정",
+      "지표·특징값 층",
+      "대시보드 · 모델 · 지자체 보고"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 실시간 및 배치 데이터 처리를 위한 안정적인 파이프라인 개발",
+   "short": "몇 초 안에 필요한 것(관제·이상 알림)은 흘려서, 하루치 정산·지표는 모아서 계산하는 길을 둘 다 만든다.",
+   "why": "셔클은 실시간 운영 현황과 비정상 운행 탐지 알림을 제공하고[4], 동시에 지역별 성과·시뮬레이션처럼 기간을 모아 보는 분석도 합니다.[4][5]",
+   "actually": {
+    "items": [
+     "**실시간** — 차량 위치·호출 이벤트를 메시지 큐에서 읽어 구역별 대기 차량·대기 시간을 몇 초 단위로 갱신한다. 사건 시각과 '얼마나 늦은 것까지 기다릴지(워터마크)'를 정한다.[17][18]",
+     "**배치** — 매일 밤 전날 운행을 지역별로 묶어 지표 표를 다시 만든다. 실패하면 그날만 다시 돈다.{추론}",
+     "**두 결과 맞추기** — 실시간으로 센 오늘 호출 수와 다음 날 배치가 센 수가 다르면 어느 쪽이 맞는지 정해 둔다.{추론}"
+    ]
+   },
+   "how_far": "공고 기술 목록에 특정 큐·엔진 이름은 없고 우대에 Spark·BigQuery·Flink 가 나옵니다.[1] 최소선은 **한 가지 스트림 엔진과 한 가지 배치 엔진으로 같은 지표를 내 보고 차이를 설명**하는 것.{추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    17,
+    18
+   ],
+   "study": [
+    "kafka-guide",
+    "spark-ss",
+    "flink-time",
+    "kafka-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 데이터 정합성 검증 및 장애 대응이 용이한 테스트 가능한 파이프라인 환경 구축",
+   "short": "숫자가 틀어졌을 때 바로 알고, 고친 뒤 다시 돌려도 같은 결과가 나오게 검사와 테스트를 붙인다.",
+   "why": "탑승·하차 기록이 빠지면 운행 거리·합승률·지자체 보고 숫자가 같이 틀립니다.{추론} 셔클은 누적 탑승·운행 거리 같은 숫자를 공식 성과로 발표합니다.[5]",
+   "actually": {
+    "items": [
+     "**검사 규칙** — 키 중복 없음, 빈칸 없음, 허용 값, 표 사이 참조가 맞나를 파이프라인 단계마다 건다(dbt 의 기본 검사 네 가지가 이 꼴).[22]",
+     "**업무 규칙 검사** — '탔으면 내린 기록이 있다', '하차가 탑승보다 늦다' 같은 도메인 규칙(아래 예).{추론}",
+     "**테스트 가능하게** — 변환 로직을 작은 함수로 떼어 가상 입력으로 단위 테스트하고, 운영 전에 어제 데이터로 미리 돌려 본다.{추론}",
+     "**다시 돌려도 같게(멱등)** — 같은 날짜를 두 번 돌려도 두 배가 되지 않게 덮어쓰기 단위를 날짜 파티션으로 둔다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "이벤트 품질 검사 세 가지",
+     "body": "가상 이벤트 7건입니다. 재전송으로 같은 id 가 한 번 더 왔고, ride_id 빈칸이 있고, r3 는 탔는데 내린 기록이 없습니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "ev = [(\"e1\",\"call\",\"r1\"),(\"e2\",\"board\",\"r1\"),(\"e2\",\"board\",\"r1\"),(\"e3\",\"alight\",\"r1\"),\n      (\"e4\",\"call\",\"r2\"),(\"e5\",\"board\",None),(\"e6\",\"board\",\"r3\")]\nseen, uniq = set(), []\nfor e in ev:\n    if e[0] not in seen:\n        seen.add(e[0]); uniq.append(e)\nrides = {}\nfor _, typ, ride in uniq:\n    if ride: rides.setdefault(ride, set()).add(typ)\nprint(\"중복\", len(ev) - len(uniq), \"건\")\nprint(\"ride_id 빈칸\", f\"{sum(e[2] is None for e in uniq) / len(uniq):.1%}\")\nprint(\"탔는데 내린 기록 없음\", sorted(r for r, s in rides.items() if \"board\" in s and \"alight\" not in s))\n# 중복 1 건\n# ride_id 빈칸 16.7%\n# 탔는데 내린 기록 없음 ['r3']"
+    }
+   ],
+   "refs": [
+    5,
+    22
+   ],
+   "study": [
+    "dbt-tests",
+    "fde-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 서비스 요구사항에 따른 신속하고 정확한 데이터 제공 프로세스 최적화",
+   "short": "'이 지역 지난달 숫자 좀' 같은 요청을 매번 손으로 뽑지 않게 빠르고 틀리지 않는 길을 만든다.",
+   "why": "지역마다 지자체 브랜드(경기 똑버스, 세종 이응버스 등)와 운영 정책이 다릅니다.[7] 셔클은 지역 교통 정책에 맞춰 배차·운영 정책을 세밀하게 조정한다고 밝혔습니다.[4] 지역이 늘수록 같은 요청이 지역 수만큼 반복됩니다.{추론}",
+   "actually": {
+    "items": [
+     "**자주 오는 요청을 표로** — 반복되는 추출을 지역을 인자로 받는 정기 표·보고로 바꾼다.{추론}",
+     "**빠르게** — 지역·날짜로 나눠 저장해 필요한 칸만 읽는다.{추론}",
+     "**정확하게** — 요청마다 같은 지표 정의를 쓰게 한 곳(지표 사전)에서 꺼낸다.{추론}"
+    ]
+   },
+   "refs": [
+    4,
+    7
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 데이터 거버넌스 체계 수립",
+   "short": "아래 세 줄의 묶음 제목 — 데이터의 이름·뜻·출처·수명·품질을 정하고 지키는 규칙을 세운다.",
+   "why": "주요업무의 세 번째 묶음입니다.[1] 데이터 관리 지식 체계(DMBOK)는 거버넌스를 다른 데이터 관리 영역 전부의 가운데에 둡니다.[24]",
+   "refs": [
+    1,
+    24
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 데이터 표준화 정책 수립 및 데이터 사전 고도화",
+   "short": "'정류장'·'탑승'·'대기 시간'이 표마다 다른 이름·단위로 적히지 않게 낱말과 정의를 정한다.",
+   "why": "셔클은 가상 정류장·고정 노선·수요응답 운행을 섞어 쓰고[4][5] 지역마다 정책이 다릅니다.[4] '대기 시간'을 호출~배차로 볼지 호출~탑승으로 볼지가 표마다 다르면 지역 비교가 틀립니다.{추론}",
+   "actually": {
+    "items": [
+     "**낱말 → 용어 → 컬럼** — 표준 낱말(대기·시간·분)을 정하고 그것을 엮어 용어(대기시간분)와 컬럼 이름 규칙을 만든다.{추론}",
+     "**기준 표 하나** — 지역·정류장·차량 같은 기준 표를 한 번 정의해 모든 사실 표가 같이 쓴다(Kimball 의 공유 차원).[25]",
+     "**데이터 사전** — 표마다 뜻·주인·갱신 주기·민감 정보 여부를 카탈로그에 적는다.[14][15]"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    14,
+    15,
+    25
+   ],
+   "study": [
+    "dmbok",
+    "datahub-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 데이터 라이프사이클 관리 및 데이터 리니지 시스템 고도화",
+   "short": "데이터를 언제까지 두고 언제 지우는지, 이 숫자가 어느 원천에서 어떤 계산을 거쳐 왔는지 추적한다.",
+   "why": "셔클은 차내 카메라로 착석을 인식하면서 개인정보 때문에 영상을 차 안에서만 처리합니다.[3] 위치·탑승 기록도 개인정보라 보관 기간과 지우는 시점을 정해야 합니다.{추론} 같은 조직 인프라 공고가 ISMS-P 같은 개인정보 보호 체계를 우대합니다.[8]",
+   "actually": {
+    "items": [
+     "**수명** — 원본 위치 기록은 짧게, 집계·가명 처리한 표는 길게 같은 식으로 층마다 보관 기간을 다르게 둔다.{추론}",
+     "**리니지(계보)** — 작업이 돌 때마다 '무엇을 읽어 무엇을 썼나'를 표준 이벤트로 남긴다(OpenLineage).[13] 카탈로그가 그것으로 표·컬럼 단위 계보 그림을 그린다.[14]",
+     "**쓰임** — 원천 표가 깨졌을 때 영향받는 대시보드를 바로 찾는다. 지울 데이터가 어디로 복사됐는지 찾는다.{추론}"
+    ]
+   },
+   "refs": [
+    3,
+    8,
+    13,
+    14
+   ],
+   "study": [
+    "openlineage",
+    "datahub-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 데이터 품질 모니터링 지표 설정 및 지속적인 품질 개선 활동 수행",
+   "short": "'얼마나 늦나·빠진 게 있나·이상한 값이 있나'를 숫자로 재고, 나빠지면 알림이 오게 한다.",
+   "why": "운영 지표와 모델 입력이 같은 표에서 나옵니다.{추론} 셔클은 비정상 운행을 탐지해 관리자에게 알리는 기능을 가졌는데[4], 데이터 자체가 비정상이면 그 알림이 거짓이 됩니다.{추론}",
+   "actually": {
+    "items": [
+     "**신선도** — 마지막 이벤트가 몇 분 전인가. 지역 하나만 조용하면 단말·수집 장애다.{추론}",
+     "**완전성** — 어제 대비 행 수, 필수 칸 빈칸 비율(위 예의 16.7%).",
+     "**유일성·참조** — 중복 키, 없는 정류장을 가리키는 탑승 기록.[22]",
+     "**값 범위** — 시속 150km 넘는 구간, 음수 대기 시간.{추론}",
+     "**OpenMetadata 같은 도구**는 표마다 품질 검사를 걸고 결과를 카탈로그에 함께 보여 준다.[15]"
+    ]
+   },
+   "refs": [
+    4,
+    15,
+    22
+   ],
+   "study": [
+    "openmetadata-docs",
+    "dbt-tests"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 학사 이상의 학위를 보유하신 분",
+   "short": "4년제 학사 이상이면 전공은 묻지 않는 기본 조건(컴퓨터 공학은 우대 쪽에 따로 있다).",
+   "why": "자격요건은 '학사 이상'만 적고, 컴퓨터 공학 학사는 우대사항에 따로 적었습니다.[1]",
+   "how_far": "학위 여부만 봅니다. 비전공이면 경력과 결과물로 우대 한 줄을 메우는 셈입니다.{추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 3년 이상의 데이터 엔지니어 경력을 보유하신 분",
+   "short": "파이프라인을 직접 만들고 운영하며 장애를 겪어 본 3년. 분석가·백엔드 경력만으로는 애매하다.",
+   "why": "업무가 설계·고도화·체계 수립이라 처음부터 가르치는 자리가 아닙니다.[1] 원티드 사본도 경력 3년 이상으로 적었습니다.[2]",
+   "how_far": "'데이터 엔지니어' 직함보다 **수집·변환·적재 작업을 맡아 돌리고 고쳐 본 기간**으로 봅니다. 백엔드 경력이면 그중 데이터 파이프라인을 맡은 부분을 따로 설명할 수 있어야 합니다.{추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 대규모 트래픽 처리를 위한 확장 가능한 데이터 아키텍처 개발/운영 경험이 있거나 그에 준하는 지식을 보유하신 분",
+   "short": "데이터가 열 배로 늘어도 구조를 갈아엎지 않는 설계(파티션·스트림·저장/계산 분리)를 해 봤거나 아는 것.",
+   "why": "운영 지역과 차량이 계속 늘고[6][7] 자율주행 실증까지 운영 플랫폼으로 들어갑니다.[7] '그에 준하는 지식'도 받으므로 운영 경험이 없어도 원리를 설명할 수 있으면 됩니다.[1]",
+   "actually": {
+    "items": [
+     "**파티션 키 고르기** — 지역·날짜로 나누면 한 지역이 몰려도 다른 지역이 안 느려진다. 키를 잘못 잡으면 한 칸에 몰린다(쏠림).[19]",
+     "**큐로 완충** — 쓰는 쪽과 읽는 쪽 속도가 달라도 메시지 큐가 사이를 받아 준다.[16]",
+     "**저장과 계산 분리** — 저장은 객체 저장소, 계산은 필요할 때만 늘린다.[12]",
+     "**재처리 가능** — 원본을 남겨 두면 로직을 고친 뒤 과거를 다시 계산할 수 있다.[19]"
+    ]
+   },
+   "how_far": "면접에서 '하루 이벤트가 1억 건이 되면 어디부터 막히나'를 숫자로 따라갈 수 있는 정도가 최소선입니다.{추론}",
+   "refs": [
+    1,
+    6,
+    7,
+    12,
+    16,
+    19
+   ],
+   "study": [
+    "ddia",
+    "kafka-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Go, Python, Scala, Kotlin, Java 중 하나 이상의 개발 언어를 능숙하게 사용할 수 있는 능력을 보유하신 분",
+   "short": "SQL 만이 아니라 수집기·변환 작업·검사 도구를 코드로 짤 수 있는 범용 언어 하나.",
+   "why": "다섯 언어가 같은 조직 인프라 공고에도 똑같이 적혀 있고[8], 지도 공고는 Go 를 우대합니다.[9] 백엔드와 데이터가 같은 언어 묶음을 쓰는 조직으로 보입니다.{추론}",
+   "level": {
+    "basic": "자료구조 · 예외 처리 · 날짜/시간대 · JSON 다루기 · 단위 테스트",
+    "work": "Spark/Flink 작업 작성(Scala·Java·Python) · 메시지 큐 클라이언트 · 동시성 · 패키징",
+    "team": "Go·Kotlin 백엔드와 이벤트 규격 맞추기 · 수집기 성능 · 운영 도구까지 직접"
+   },
+   "how_far": "다섯 중 하나면 됩니다. 데이터 엔진과 붙이기 쉬운 것은 Python·Scala·Java 쪽입니다.[18] '능숙'은 남이 고치기 쉬운 코드와 테스트까지 쓰는 수준.{추론}",
+   "refs": [
+    8,
+    9,
+    18
+   ],
+   "study": [
+    "spark-guide"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 컴퓨터 공학 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "자료구조·운영체제·네트워크·DB 를 정규 과정으로 배운 사람을 조금 더 본다.",
+   "why": "자격요건의 '학사 이상'에 전공을 붙인 우대 줄입니다.[1] 분산 처리·저장 구조를 다루는 일이라 기초 과목이 바로 쓰입니다.{추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· Spark, BigQuery, Flink 등 빅데이터 프레임워크 사용 경험을 보유하신 분",
+   "short": "배치(Spark)·클라우드 웨어하우스(BigQuery)·스트림(Flink) 중 하나라도 실제로 돌려 본 경험.",
+   "why": "업무가 실시간과 배치를 둘 다 말합니다.[1] 세 이름이 각각 배치 엔진, 서버 없는 웨어하우스[26], 스트림 엔진[17]이라 어느 쪽이든 받는다는 뜻으로 읽힙니다.{추론}",
+   "actually": {
+    "items": [
+     "**Spark** — 하루치 운행을 지역별로 묶는 배치, Structured Streaming 으로 실시간도.[18]",
+     "**BigQuery** — 구글 클라우드의 서버 없는 웨어하우스. SQL 만으로 큰 표를 훑는다.[26]",
+     "**Flink** — 사건 시각·워터마크·상태를 다루는 스트림 처리.[17]"
+    ]
+   },
+   "refs": [
+    1,
+    17,
+    18,
+    26
+   ],
+   "study": [
+    "spark-guide",
+    "spark-ss",
+    "flink-time"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· DataHub, Amundsen, Openmetadata 등 데이터 카탈로그 및 거버넌스 도구 활용 경험을 보유하신 분",
+   "short": "표를 검색하고 주인·뜻·계보를 보는 '데이터 도서관' 도구를 깔고 채워 본 경험.",
+   "why": "업무의 데이터 사전 고도화·리니지 시스템 고도화와 짝입니다.[1] 세 도구 모두 표 검색·설명·계보를 한 화면에 모읍니다.[14][15][27]",
+   "actually": {
+    "items": [
+     "**DataHub** — 검색·계보·주인·개인정보 표시.[14]",
+     "**Amundsen** — 리프트가 만든 데이터 검색 도구.[27]",
+     "**OpenMetadata** — 카탈로그 + 품질 검사 + 계보.[15]",
+     "**채우기가 일의 대부분** — 도구 설치보다 수집기를 붙이고 설명·주인을 채우게 만드는 쪽이 오래 걸린다.{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    14,
+    15,
+    27
+   ],
+   "study": [
+    "datahub-docs",
+    "openmetadata-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· Iceberg, Hudi, Delta Lake 등 Open Table Format 활용 경험을 보유하신 분",
+   "short": "파일 더미를 '고치고 되돌릴 수 있는 표'로 만드는 테이블 형식을 실제로 써 본 경험.",
+   "why": "업무의 '데이터 레이크하우스 아키텍처 고도화'를 받치는 기술입니다.[1][12]",
+   "actually": {
+    "items": [
+     "**한 번에 성공/실패** — 쓰기가 중간에 죽어도 반쯤 쓴 표가 보이지 않는다(스냅샷).[11]",
+     "**스키마 바꾸기** — 컬럼 추가·이름 바꾸기를 기존 파일을 다시 쓰지 않고.[11]",
+     "**과거 시점 읽기** — 어제 상태로 다시 읽어 숫자가 왜 바뀌었는지 찾는다.[11]",
+     "**운영 일** — 작은 파일 합치기, 오래된 스냅샷 지우기.{추론}",
+     "Hudi 는 레코드 단위 갱신·증분 읽기를[28], Delta Lake 는 트랜잭션 로그를[28] 같은 목적으로 쓴다."
+    ]
+   },
+   "refs": [
+    1,
+    11,
+    12,
+    28
+   ],
+   "study": [
+    "iceberg-docs",
+    "iceberg-tdg"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· Kubernetes 기반 데이터 플랫폼 구축 및 운영 경험을 보유하신 분",
+   "short": "Spark·Flink·수집기를 쿠버네티스 위 컨테이너로 띄우고 자원을 나눠 돌려 본 경험.",
+   "why": "공고 기술 목록에 Kubernetes 가 들어 있고[1], 같은 조직 인프라 공고는 코드로 인프라를 관리하는 체계(Terraform)를 말합니다.[8]",
+   "actually": {
+    "items": [
+     "**Spark on Kubernetes** — 작업마다 드라이버·실행기가 파드로 떴다 사라진다.[21]",
+     "**자원 나누기** — 실시간 작업과 밤 배치가 같은 클러스터에서 서로 밀어내지 않게 네임스페이스·할당량을 둔다.{추론}"
+    ]
+   },
+   "how_far": "클러스터 자체는 인프라 엔지니어와 나눠 맡습니다.[8] 이 자리는 **데이터 작업을 컨테이너로 배포·감시**하는 정도가 우대 범위로 보입니다.{추론}",
+   "refs": [
+    1,
+    8,
+    21
+   ],
+   "study": [
+    "spark-k8s"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 경로 탐색, 위치 데이터 분석 등 모빌리티 분야에 대한 지식 및 경험을 보유하신 분",
+   "short": "좌표·도로망·정류장·이동 거리를 다뤄 본 사람은 셔클 데이터의 함정을 먼저 안다.",
+   "why": "셔클은 비용·제약 조건을 정의해 경로를 최적화하고, 출발·도착 정류장 조합을 비교합니다.[3] 같은 조직에 길찾기 서버·지오코딩 개발 자리가 따로 있습니다.[9] 일상 이동의 약 80%가 5km 안이라는 통신 데이터 분석도 공개했습니다.[3]",
+   "actually": {
+    "items": [
+     "**좌표 → 칸** — 위경도를 육각형 칸(H3)으로 묶어 구역별 수요를 센다.[19]",
+     "**좌표 → 도로** — 튀는 GPS 를 도로 위로 맞추고(맵 매칭) 실제 이동 거리를 잰다. OSRM 같은 오픈소스 길찾기 엔진이 이 기능을 준다.[29]",
+     "**대중교통 표준** — 노선·정류장·시간표는 GTFS 형식으로 공개된다.[20]",
+     "**정류장 추천** — 셔클은 도보 접근성 분석으로 정류장을 추천하는 편집 도구를 갖고 있다.[4]"
+    ]
+   },
+   "refs": [
+    3,
+    4,
+    9,
+    19,
+    20,
+    29
+   ],
+   "study": [
+    "h3-docs",
+    "gtfs-ref",
+    "osrm"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "운영 중인 서비스의 실제 이벤트를 다루고 싶은 사람",
+   "지역·지자체마다 다른 숫자를 하나의 정의로 맞추는 일이 즐거운 사람",
+   "위치·지도 데이터에 관심 있는 사람[3][9]",
+   "기획·개발·운영·사업을 한 조직이 같이 하는 곳을 원하는 사람[1]"
+  ],
+  "hard": [
+   "플랫폼·파이프라인·거버넌스를 한 공고가 다 말해 범위가 넓다[1]",
+   "지자체·공공 데이터와 개인정보 규칙을 함께 다뤄야 한다[6][8]",
+   "모델을 만드는 자리가 아니라 모델이 먹을 데이터를 만드는 자리다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "같은 탑승 이벤트가 두 번 오거나 10분 늦게 오면 오늘 탑승 수는 어떻게 맞추나요?",
+   "a": "이벤트 id 중복 제거와 사건 시각·워터마크.[16][17]"
+  },
+  {
+   "q": "수요 예측 학습 데이터에 '최근 30분 호출 수'를 붙일 때 무엇을 조심하나요?",
+   "a": "시점 맞춰 붙이기 — 미래 값이 섞이면 안 된다.[10]"
+  },
+  {
+   "q": "어제 지표 작업을 두 번 돌렸더니 숫자가 두 배가 됐습니다. 어떻게 막나요?",
+   "a": "날짜 파티션 덮어쓰기로 멱등하게.{추론}"
+  },
+  {
+   "q": "원천 표의 컬럼 하나가 바뀌었을 때 영향받는 대시보드를 어떻게 찾나요?",
+   "a": "리니지와 카탈로그.[13][14]"
+  },
+  {
+   "q": "Iceberg 표에서 작은 파일이 계속 늘면 무엇이 느려지고 어떻게 하나요?",
+   "a": "메타데이터·읽기 비용, 합치기와 스냅샷 정리.[11]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · [AVP] 모빌리티 서비스 Data Engineer",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=98",
+   "kind": "posting",
+   "note": "팀 소개(셔클)·업무 3묶음·요건·우대, 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차그룹 [AVP] 모빌리티 서비스 Data Engineer",
+   "url": "https://www.wanted.co.kr/wd/387545",
+   "kind": "posting",
+   "note": "같은 공고 사본 — 경력 3년 이상, 근무지 헌릉로 12(현대기아자동차빌딩)"
+  },
+  {
+   "n": 3,
+   "title": "HMG 저널 · 현대차의 모빌리티 서비스 플랫폼, 셔클 개발기",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000021172",
+   "kind": "company",
+   "date": "2022-04-11",
+   "note": "셔클 기술리더 글 — 모놀리식→MSA, API·이벤트 통신, 통합 IDL·Transactional Outbox, 배차 서비스 확장, 경로 최적화, 차내 착석 인식(차 안 처리), 수요 기반 스케줄·사전 배치, 5km 이내 이동 약 80%"
+  },
+  {
+   "n": 4,
+   "title": "셔클 · 기술",
+   "url": "https://www.shucle.com/ko/tech",
+   "kind": "company",
+   "note": "AI 동적 경로, 수요 예측·운행 시뮬레이션, 모빌리티 데이터 파이프라인(대중교통·POI·도로망·승하차·인구), 운영 대시보드·비정상 운행 탐지·맵데이터 편집 도구, 특허 목록"
+  },
+  {
+   "n": 5,
+   "title": "HMG 저널 · 현대자동차 셔클이 협력을 통해 그리는 미래교통의 청사진",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000127799",
+   "kind": "company",
+   "date": "2023-12-22",
+   "note": "17개 지역, 회원 41만·탑승 278만·호출 235만·972만 km(2023-12-13 기준), 자차 이용 43.2% 감소"
+  },
+  {
+   "n": 6,
+   "title": "현대자동차그룹 뉴스룸 · 한국교통연구원과 수요응답 교통 업무협약",
+   "url": "https://www.hyundaimotorgroup.com/ko/news/CONT0000000000113927",
+   "kind": "company",
+   "date": "2023-09-19",
+   "note": "16개 지역 124대, 탑승 정보 220만 건, 데이터 공유 협약"
+  },
+  {
+   "n": 7,
+   "title": "헤럴드경제 · 현대차 '셔클', 10명 중 4명 재이용…로보택시 OS 실험 통했다",
+   "url": "https://www.heraldk.com/article/2026051400000062362",
+   "kind": "news",
+   "date": "2026-05-14",
+   "note": "45개 지역(사진 설명), 광주 자율주행 실증 운영 플랫폼, 2주 재이용률 최대 38%, 의왕 바우처택시 평균 대기 7.7분, 지자체 브랜드"
+  },
+  {
+   "n": 8,
+   "title": "원티드 · 현대자동차그룹 [AVP] 모빌리티 플랫폼 Infra Engineer",
+   "url": "https://www.wanted.co.kr/wd/387540",
+   "kind": "posting",
+   "note": "같은 조직 — 퍼블릭·공공 클라우드, CSAP/ISMS-P, Terraform, 같은 다섯 언어"
+  },
+  {
+   "n": 9,
+   "title": "현대자동차 채용 · [AVP] 모빌리티 서비스 Software Engineer for Map",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=224",
+   "kind": "posting",
+   "note": "같은 조직 — 길찾기 서버·맵 컨버터, POI 검색·리버스 지오코딩, gRPC API, AWS·Go 우대"
+  },
+  {
+   "n": 10,
+   "title": "Feast · Point-in-time joins",
+   "url": "https://docs.feast.dev/getting-started/concepts/point-in-time-joins",
+   "kind": "reference",
+   "note": "오픈소스 Feature Store — 오프라인·온라인 저장소, 시점 맞춰 붙이기"
+  },
+  {
+   "n": 11,
+   "title": "Apache Iceberg · Table Spec",
+   "url": "https://iceberg.apache.org/spec/",
+   "kind": "reference",
+   "note": "스냅샷·스키마 변경·과거 시점 읽기"
+  },
+  {
+   "n": 12,
+   "title": "Armbrust 외 · Lakehouse (CIDR 2021)",
+   "url": "https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf",
+   "kind": "reference",
+   "date": "2021",
+   "note": "객체 저장소 위에 트랜잭션 표 형식을 얹는 구조"
+  },
+  {
+   "n": 13,
+   "title": "OpenLineage Documentation",
+   "url": "https://openlineage.io/docs/",
+   "kind": "reference",
+   "note": "작업 실행마다 입력·출력 데이터셋을 표준 이벤트로"
+  },
+  {
+   "n": 14,
+   "title": "DataHub · What is DataHub?",
+   "url": "https://docs.datahub.com/docs/features",
+   "kind": "reference",
+   "note": "데이터 카탈로그 — 검색·계보·주인·개인정보 표시"
+  },
+  {
+   "n": 15,
+   "title": "OpenMetadata Documentation",
+   "url": "https://docs.open-metadata.org/",
+   "kind": "reference",
+   "note": "데이터 발견·계보·거버넌스, 데이터 품질 검사"
+  },
+  {
+   "n": 16,
+   "title": "Apache Kafka Documentation · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference",
+   "note": "최대 한 번·적어도 한 번·정확히 한 번"
+  },
+  {
+   "n": 17,
+   "title": "Apache Flink · Timely Stream Processing",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/time/",
+   "kind": "reference",
+   "note": "사건 시각·처리 시각·워터마크"
+  },
+  {
+   "n": 18,
+   "title": "Apache Spark · Structured Streaming Programming Guide",
+   "url": "https://spark.apache.org/docs/latest/streaming/apis-on-dataframes-and-datasets.html",
+   "kind": "reference",
+   "note": "체크포인트·워터마크·장애 복구"
+  },
+  {
+   "n": 19,
+   "title": "H3 · Introduction",
+   "url": "https://h3geo.org/docs/",
+   "kind": "reference",
+   "note": "우버가 공개한 육각형 격자 위치 색인"
+  },
+  {
+   "n": 20,
+   "title": "GTFS Schedule Reference",
+   "url": "https://gtfs.org/documentation/schedule/reference/",
+   "kind": "reference",
+   "note": "대중교통 노선·정류장·시간표 공개 형식"
+  },
+  {
+   "n": 21,
+   "title": "Apache Spark · Running Spark on Kubernetes",
+   "url": "https://spark.apache.org/docs/latest/running-on-kubernetes.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "dbt Docs · Add data tests to your DAG",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "kind": "reference",
+   "note": "기본 검사 unique·not_null·accepted_values·relationships"
+  },
+  {
+   "n": 23,
+   "title": "Zhamak Dehghani · How to Move Beyond a Monolithic Data Lake to a Distributed Data Mesh",
+   "url": "https://martinfowler.com/articles/data-monolith-to-mesh.html",
+   "kind": "reference",
+   "date": "2019-05-20",
+   "note": "데이터 제품의 속성"
+  },
+  {
+   "n": 24,
+   "title": "DAMA International · DAMA-DMBOK",
+   "url": "https://www.dama.org/cpages/body-of-knowledge",
+   "kind": "reference",
+   "note": "데이터 관리 지식 체계 — 거버넌스가 가운데"
+  },
+  {
+   "n": 25,
+   "title": "Kimball Group · Conformed Dimensions",
+   "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/conformed-dimension/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Google Cloud · BigQuery overview",
+   "url": "https://cloud.google.com/bigquery/docs/introduction",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Amundsen",
+   "url": "https://www.amundsen.io/",
+   "kind": "reference",
+   "note": "데이터 검색·메타데이터 도구(리프트에서 시작)"
+  },
+  {
+   "n": 28,
+   "title": "Apache Hudi · Overview / Delta Lake Documentation",
+   "url": "https://hudi.apache.org/docs/overview",
+   "kind": "reference",
+   "note": "Delta Lake 는 https://docs.delta.io/"
+  },
+  {
+   "n": 29,
+   "title": "OSRM · Open Source Routing Machine",
+   "url": "https://project-osrm.org/",
+   "kind": "reference",
+   "note": "길찾기·맵 매칭(match) 서비스"
+  },
+  {
+   "n": 30,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 31,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 32,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원, 4·124쪽 본사 주소"
+  }
+ ],
+ "caveat": "셔클 데이터 팀의 발표 영상·기술 글은 찾지 못했다(받은 영상 없음). 회사 근거는 이 공고·같은 조직 공고 2건·셔클 개발기(2022)·셔클 기술 페이지·뉴스룸이고, Feature Store·레이크하우스·리니지·품질 검사의 '실제로는'은 공식 문서의 보통 방식이다 — 셔클이 어떤 도구를 쓰는지는 공개되지 않았다.",
+ "resources": [
+  {
+   "id": "shucle-dev",
+   "title": "현대차의 모빌리티 서비스 플랫폼, 셔클 개발기",
+   "by": "현대자동차 HMG 저널 · 2022",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000021172",
+   "why": "셔클 백엔드가 이벤트를 어떻게 주고받는지(MSA·Outbox)와 배차·수요 문제를 회사가 직접 설명한 글. 업무 첫 줄의 '이벤트'가 어디서 오는지 먼저 본다."
+  },
+  {
+   "id": "shucle-tech",
+   "title": "셔클 · 기술",
+   "by": "현대자동차",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.shucle.com/ko/tech",
+   "why": "셔클이 모으는 데이터(대중교통·POI·도로망·승하차·인구)와 그 데이터를 먹는 기능(수요 예측·시뮬레이션·대시보드) 목록. 데이터 제품의 손님이 누군지 안다."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "파티션·복제·스트림·일괄 처리를 원리부터. '확장 가능한 데이터 아키텍처' 요건을 말로 설명하는 바탕."
+  },
+  {
+   "id": "fde-book",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B2%AC%EA%B3%A0%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "수집 → 저장 → 변환 → 제공의 수명 주기와 거버넌스·품질을 한 권에. 이 공고의 세 묶음 전체 지도."
+  },
+  {
+   "id": "kafka-guide",
+   "title": "카프카 핵심 가이드 (2판)",
+   "by": "그웬 샤피라 외 · 제이펍",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%B4%ED%94%84%EC%B9%B4%20%ED%95%B5%EC%8B%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "이벤트 수집의 기본 — 파티션·오프셋·전달 보장·정확히 한 번. 업무 '실시간 파이프라인'의 바닥."
+  },
+  {
+   "id": "kafka-book",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "보냈다는 것과 처리됐다는 것 사이 — 중복·순서 문제를 실제 명령과 레코드로 본다."
+  },
+  {
+   "id": "spark-guide",
+   "title": "스파크 완벽 가이드",
+   "by": "빌 체임버스 · 마테이 자하리아 · 한빛미디어 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%8C%8C%ED%81%AC%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "배치와 스트리밍을 같은 API 로. 우대 첫 이름 Spark 를 실무 수준으로."
+  },
+  {
+   "id": "spark-ss",
+   "title": "Structured Streaming Programming Guide",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spark.apache.org/docs/latest/streaming/apis-on-dataframes-and-datasets.html",
+   "why": "체크포인트·워터마크·장애 복구 — '안정적인 실시간 파이프라인'이 무엇으로 지켜지는지."
+  },
+  {
+   "id": "flink-time",
+   "title": "Timely Stream Processing",
+   "by": "Apache Flink 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/time/",
+   "why": "사건 시각·처리 시각·워터마크를 짧게. 늦게 오는 차량 이벤트를 어떻게 셀지 정할 때."
+  },
+  {
+   "id": "lakehouse-paper",
+   "title": "Lakehouse: A New Generation of Open Platforms (CIDR 2021)",
+   "by": "Armbrust · Ghodsi · Xin · Zaharia",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf",
+   "why": "레이크하우스가 왜 나왔고 무엇을 약속하는지 원 논문으로. '레이크하우스 고도화'의 기준점."
+  },
+  {
+   "id": "iceberg-docs",
+   "title": "Apache Iceberg Documentation",
+   "by": "Apache Iceberg",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://iceberg.apache.org/docs/latest/",
+   "why": "스냅샷·스키마 변경·파티션 변경·유지 보수(파일 합치기·스냅샷 정리). 우대 Open Table Format 을 직접 써 보는 출발점."
+  },
+  {
+   "id": "iceberg-tdg",
+   "title": "Apache Iceberg: The Definitive Guide",
+   "by": "O'Reilly",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/search/?q=Apache%20Iceberg%20The%20Definitive%20Guide",
+   "why": "테이블 형식의 내부 구조와 운영을 한 권으로. 이미 쓰고 있는 레이크하우스를 고도화할 때."
+  },
+  {
+   "id": "feast-pit",
+   "title": "Feast · Point-in-time joins",
+   "by": "Feast 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.feast.dev/getting-started/concepts/point-in-time-joins",
+   "why": "Feature Store 의 핵심 개념(오프라인·온라인·시점 맞춰 붙이기)을 예제로. 업무 'Feature Store 설계'의 첫 장."
+  },
+  {
+   "id": "dmls",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "특징값 만들기·데이터 누수·학습/서빙 차이 — 데이터 사이언티스트가 Feature Store 에 무엇을 바라는지."
+  },
+  {
+   "id": "dbt-tests",
+   "title": "Add data tests to your DAG",
+   "by": "dbt 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "why": "유일·빈칸 없음·허용 값·참조 검사를 표마다 거는 방법. '테스트 가능한 파이프라인'의 가장 작은 꼴."
+  },
+  {
+   "id": "openlineage",
+   "title": "OpenLineage Documentation",
+   "by": "OpenLineage (LF AI & Data)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://openlineage.io/docs/",
+   "why": "작업이 돌 때 계보를 남기는 표준. '리니지 시스템 고도화'가 무엇을 모으는지."
+  },
+  {
+   "id": "datahub-docs",
+   "title": "DataHub Documentation",
+   "by": "DataHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.datahub.com/docs/features",
+   "why": "카탈로그·용어집·계보·주인 지정. 데이터 사전 고도화를 도구로 해 보기."
+  },
+  {
+   "id": "openmetadata-docs",
+   "title": "OpenMetadata Documentation",
+   "by": "OpenMetadata",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.open-metadata.org/",
+   "why": "카탈로그에 품질 검사를 같이 붙이는 도구. 품질 모니터링 지표를 표마다 거는 연습."
+  },
+  {
+   "id": "dmbok",
+   "title": "DAMA-DMBOK (Data Management Body of Knowledge)",
+   "by": "DAMA International",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.dama.org/cpages/body-of-knowledge",
+   "why": "거버넌스·메타데이터·품질·수명 주기를 나눈 지식 체계. 표준화 정책을 세울 때 빠뜨린 칸 찾기."
+  },
+  {
+   "id": "spark-k8s",
+   "title": "Running Spark on Kubernetes",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spark.apache.org/docs/latest/running-on-kubernetes.html",
+   "why": "데이터 작업을 파드로 띄우는 법. 우대 'Kubernetes 기반 데이터 플랫폼'의 첫 실습."
+  },
+  {
+   "id": "h3-docs",
+   "title": "H3 Documentation",
+   "by": "H3 (Uber 공개)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://h3geo.org/docs/",
+   "why": "좌표를 육각형 칸으로 묶는 색인. 구역별 수요·공급 집계의 기본 도구."
+  },
+  {
+   "id": "gtfs-ref",
+   "title": "GTFS Schedule Reference",
+   "by": "MobilityData",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://gtfs.org/documentation/schedule/reference/",
+   "why": "노선·정류장·시간표 표준 형식. 대중교통 데이터를 수집해 셔클 데이터와 붙일 때의 공통어."
+  },
+  {
+   "id": "osrm",
+   "title": "OSRM · Open Source Routing Machine",
+   "by": "Project OSRM",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://project-osrm.org/",
+   "why": "길찾기·맵 매칭을 직접 띄워 볼 수 있는 오픈소스. 우대 '경로 탐색' 경험을 작게 만들어 보기."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "셔클과 이벤트 감 잡기",
+   "time": "1주",
+   "goal": "셔클에서 어떤 사건이 생기고, 그 데이터를 누가 무엇에 쓰는지 설명할 수 있다.",
+   "resources": [
+    "shucle-dev",
+    "shucle-tech",
+    "fde-book"
+   ],
+   "task": "호출·배차·탑승·하차·차량 위치 다섯 가지 이벤트의 스키마(키·사건 시각·필수 칸)를 직접 정의하고, 그 이벤트로 계산할 지표 5개(대기 시간·합승률·재이용률 등)의 정의를 한 장에 적는다."
+  },
+  {
+   "title": "실시간 수집",
+   "time": "2~3주",
+   "goal": "중복·지연 이벤트가 와도 같은 숫자를 내는 스트림 집계를 만든다.",
+   "resources": [
+    "kafka-guide",
+    "kafka-book",
+    "spark-ss",
+    "flink-time"
+   ],
+   "task": "가상 차량 20대의 위치·탑승 이벤트를 만드는 생성기를 짜서 카프카에 흘리고(일부러 중복 5%·10분 지연 2%), 구역별 5분 대기 차량 수를 스트림으로 센다. 배치로 다시 센 값과 맞춰 본다."
+  },
+  {
+   "title": "레이크하우스와 배치",
+   "time": "2~3주",
+   "goal": "원본 → 정리 → 지표 층을 테이블 형식 위에 쌓고, 다시 돌려도 같은 결과가 나오게 한다.",
+   "resources": [
+    "lakehouse-paper",
+    "iceberg-docs",
+    "spark-guide",
+    "ddia"
+   ],
+   "task": "2단계 이벤트를 Iceberg 표에 날짜·지역 파티션으로 쌓고, 일일 지표 작업을 두 번 돌려도 숫자가 같은지 확인한다. 컬럼을 하나 추가하고 어제 스냅샷으로 되돌려 읽어 본다."
+  },
+  {
+   "title": "Feature Store 와 품질",
+   "time": "2주",
+   "goal": "시점이 맞는 학습 데이터를 만들고, 품질 검사가 실패하면 파이프라인이 멈추게 한다.",
+   "resources": [
+    "feast-pit",
+    "dmls",
+    "dbt-tests"
+   ],
+   "task": "'구역별 최근 30분 호출 수'를 특징값으로 등록하고 과거 호출에 시점 맞춰 붙인 학습 표를 만든다(위 예처럼 최신값과 비교). 중복·빈칸·탔는데 안 내림 검사를 걸고 일부러 깨진 데이터를 넣어 멈추는지 본다."
+  },
+  {
+   "title": "거버넌스와 위치 데이터 (선택)",
+   "time": "계속",
+   "goal": "카탈로그에 표·뜻·계보가 보이고, 위치 데이터의 함정을 다룰 수 있다.",
+   "resources": [
+    "openlineage",
+    "datahub-docs",
+    "openmetadata-docs",
+    "dmbok",
+    "h3-docs",
+    "gtfs-ref",
+    "osrm"
+   ],
+   "task": "DataHub 나 OpenMetadata 를 로컬에 띄워 3단계 표를 등록하고 계보 그림을 확인한다. 공개 GTFS 정류장 데이터를 H3 칸으로 묶어 가상 호출 수와 붙이고, 튀는 GPS 점을 속도 규칙으로 걸러 낸다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분이 없다. 이 자리는 경력 3년 이상이라 해당하지 않는다 [31]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [31]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [30]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값, 전년보다 1.5% 줄었다 [30]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 경력 3년 이상 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "주중 출산휴가 지원",
+    "detail": "본인·배우자 임신 6개월~출산 12개월 안에 회사 지정 호텔 숙식(최대 2박)"
+   },
+   {
+    "name": "임신기 근로시간 단축",
+    "detail": "임신 12주 이내·36주 이상 하루 2시간 단축"
+   },
+   {
+    "name": "수유 시간",
+    "detail": "생후 1년 미만 영아가 있는 여직원 하루 120분 유급"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [32]. 공고의 복지 칸은 비어 있고 원티드 사본은 '홈페이지 참조'뿐이다 [2]. 금액 항목(주택·학자금·차량 구입 지원)은 공식 자료에서 확인하지 못해 뺐다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 본사(현대기아자동차빌딩)",
+  "address": "서울특별시 서초구 헌릉로 12 (양재동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%ED%97%8C%EB%A6%89%EB%A1%9C%2012",
+  "near": "신분당선 양재시민의숲역 근처 {추론}",
+  "note": "원티드 사본의 근무지가 헌릉로 12(현대기아자동차빌딩)이고 [2], 지속가능성 보고서의 본사 소재지와 같다 [32]. 현대차 채용 사이트 공고는 '서울'로만 적었다 [1]. 셔클 조직의 실제 자리가 본사 건물과 다를 수 있다 {추론}."
+ }
+}
