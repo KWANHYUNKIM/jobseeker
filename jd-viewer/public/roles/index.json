@@ -12,6 +12,7 @@
   "ats-ashby:42dot:a83b4909-4d4f-41c5-b212-a1db321965a5": "42dot-llm-optimization-engineer",
   "ats-ashby:42dot:c4af7536-c24f-4754-9fe9-d92d237403f3": "42dot-msphd-intern-ai-engineer",
   "ats-ashby:42dot:810a8fe2-0790-42cf-b973-df16b553fa08": "42dot-mts-foundation-models",
+  "ats-ashby:42dot:75e6abe9-9195-43c3-abdf-60feff10bd47": "42dot-senior-ai-data-pipeline-engineer",
   "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
   "ats-ashby:42dot:08d5a10e-10f6-4821-ba21-66cda54064ef": "42dot-senior-devops-cicd",
   "ats-ashby:42dot:e505b80b-4b42-401c-a36e-eb11fb422931": "42dot-senior-platform-engineer-warsaw",
@@ -461,6 +462,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 26
+  },
+  {
+   "id": "42dot-senior-ai-data-pipeline-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "시니어 AI 데이터 파이프라인 엔지니어",
+   "jobs": [
+    "ats-ashby:42dot:75e6abe9-9195-43c3-abdf-60feff10bd47"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
   },
   {
    "id": "42dot-senior-cv-engineer-ad",
