@@ -1,0 +1,1157 @@
+{
+ "id": "xcena-perf-devtools",
+ "company": "엑시나",
+ "role": "시스템 소프트웨어 엔지니어 – 성능 분석 및 개발자 도구",
+ "team": "SW 개발",
+ "jobs": [
+  "ats-greeting:xcena:224149"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "CXL 로 서버에 꽂는 연산 메모리 칩 MX1(RISC-V 코어 3,072개)에서 코드가 **어디서 시간을 쓰는지 보여 주는 도구** — 프로파일러·디버거·벤치마크와 성능 회귀 감시 — 를 만드는 자리입니다.[1][11]",
+  "env": "회사 SDK 에는 이미 첫 판 도구(xtop 프로파일러·MU 디버거·대역폭 측정 예제)가 공개돼 있고, 빠진 칸(메모리 대역폭 지표·하드웨어 중단점·CI 회귀 감시)이 문서에 그대로 적혀 있습니다.[3][4][6][8]",
+  "oneline": "경력무관 공고. **C/C++ · Linux perf/ftrace · 하드웨어 카운터 해석 · 반복 측정 통계 · 개발자가 쓰기 편한 도구 설계**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "엑시나는 CXL 컴퓨테이셔널 메모리 디바이스의 성능 분석 도구와 개발자 도구를 처음부터 만들어 갈 시스템 소프트웨어 엔지니어를 찾고 있습니다. 이 포지션은 Profiler, Debugger, Benchmark Framework 등 개발자가 디바이스의 동작을 수치로 이해하고 최적화할 수 있는 도구 생태계를 설계하고 구현합니다.",
+   "short": "엑시나 칩으로 프로그램을 짜는 개발자가 '내 코드가 칩에서 어떻게 도나'를 숫자로 보게 해 주는 도구 묶음을 맡는다.",
+   "why": "CXL(Compute Express Link)은 PCIe 슬롯에 꽂은 장치의 메모리를 CPU 가 자기 메모리처럼 쓰게 하는 규격이고, Linux 커널에 이를 다루는 드라이버 층이 따로 있습니다.[40] 엑시나 칩은 여기에 계산 코어까지 얹었습니다.[12] 새 칩은 쓰는 사람이 '빨라졌나, 왜 안 빨라졌나'를 알 수 있어야 팔립니다 — 그래서 SDK 에 컴파일러·런타임과 나란히 프로파일러·디버거·시뮬레이터가 들어 있습니다.[2]",
+   "how_far": "공고는 '처음부터'라고 적었지만 공개 SDK 에는 이미 첫 판 도구(xtop·MU Debugger·MXPerfSim·memory_test)가 있습니다.[3][6][8][9] 백지에서 시작한다기보다 **첫 판을 제품 수준의 도구 묶음으로 키우는 자리**로 읽힙니다. {추론}",
+   "refs": [
+    2,
+    3,
+    6,
+    8,
+    9,
+    12,
+    40
+   ],
+   "study": [
+    "xcena-sdk",
+    "veloxcon"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "하드웨어 카운터와 저수준 성능 데이터를 개발자가 활용할 수 있는 분석 정보로 바꾸는 일, 그리고 재현하기 어려운 성능 문제를 데이터로 좁혀가는 과정에 관심이 있는 분에게 적합한 역할입니다.",
+   "short": "'L2 적중 1,204,331번' 같은 날것을 '이 Cluster 에서 캐시를 빼앗기고 있다'로 바꿔 주는 일이 중심이라서.",
+   "why": "현재 프로파일러가 내는 것도 날것이 아니라 해석입니다 — 쏠림 점수, 늦게 끝나는 스레드 비율, 유휴 비율, 오버헤드 경고.[4] 이 문장은 아래 업무 2번(지표 층)과 업무 방식 1번(재현 어려운 문제)을 미리 요약한 것입니다.[1]",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "xcena-sdk",
+    "systems-perf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CXL 컴퓨테이셔널 메모리 디바이스용 Profiling·Tracing 도구를 개발합니다",
+   "short": "칩 안 수천 개 코어가 언제 무엇을 했는지 기록하고(트레이싱), 어디서 시간이 샜는지 요약하는(프로파일링) 도구를 만든다.",
+   "why": "MX1 은 호스트 CPU 가 일을 나눠 보내면 장치 안 코어 3,072개(24 Sub × 4 Cluster × 32 MU)가 받아서 돕니다.[11] CPU 프로파일러(perf)는 호스트 쪽만 보고 장치 안은 못 봅니다. 그래서 회사가 자체 수집 규약 **XPTI**(XCENA Profiling and Tracing Interface)와 그 위의 도구 **xtop** 을 만들었습니다.[3]",
+   "actually": {
+    "intro": "공개 SDK 문서에 적힌 현재 판의 모양입니다.[3][4]",
+    "items": [
+     "**기록** — `xtop run -- ./앱` 이 장치마다 `.xpti` 파일을 남긴다. 속은 SQLite 이고 호스트 사건(TaskDispatch·TaskComplete), 장치 사건(Launch·Terminate), L1·L2·L3 캐시 통계, 장치 구조(코어 수·주파수)가 들어간다.[3]",
+     "**두 시계 맞추기** — 호스트가 보낸 시각과 장치가 시작·끝낸 시각을 한 줄에 놓는다. 장치는 틱(tick) 단위로 재서 시간으로 바꿔야 하고, MU 시계가 한 바퀴 넘어가는 긴 기록은 따로 다룬다.[4]",
+     "**실시간 보기** — `xtop view` 는 top 처럼 터미널에서 장치·Sub 별 캐시·CXL 상태를 보여 준다.[3]",
+     "**타임라인** — `xtop convert` 가 Perfetto(구글의 공개 트레이스 뷰어) 형식으로 바꿔, 호스트 → 장치로 이어지는 화살표와 코어별 막대를 본다.[4][28]",
+     "**호스트 쪽도 같이** — 기록 중 Linux perf 로 호스트 CPU 스택을 10ms 마다 함께 찍는다(DWARF 스택, 1GiB 넘으면 멈춤).[3]",
+     "**실행 중인 앱에 붙기** — `XPTI_ATTACHABLE=1` 로 띄운 프로세스에 `xtop attach --pid` 로 나중에 붙는다.[3]"
+    ]
+   },
+   "how_far": "규약(XPTI)과 도구 첫 판이 이미 있으니, 이 자리는 **기록 비용을 낮추고(코어가 수천 개라 사건 수가 많다) 빠진 데이터를 채우고 새 칩 세대에 맞추는 일**을 이어받는다고 읽힙니다. {추론} 장치 쪽에서 무엇을 셀 수 있는지는 펌웨어·하드웨어가 정하므로, 그 팀과 '어떤 카운터를 어떤 단위로 내줄지' 약속을 맞추는 것도 이 줄에 들어갑니다 — 문서에 'fw_contract_pending'(펌웨어와 약속 대기) 표시가 실제로 있습니다.[5]",
+   "refs": [
+    3,
+    4,
+    5,
+    11,
+    28
+   ],
+   "study": [
+    "xcena-sdk",
+    "perfetto",
+    "systems-perf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Metric Abstraction Layer를 설계해 사용자 친화적인 성능 분석 인터페이스를 제공합니다",
+   "short": "칩마다 다른 날것의 카운터를 '캐시 적중률' 같은 뜻 있는 이름의 지표로 묶어, 칩이 바뀌어도 같은 이름으로 보게 한다.",
+   "why": "하드웨어 카운터는 칩 세대마다 이름·폭·의미가 바뀝니다. 사용자는 'L2 적중률'을 원하지 레지스터 번호를 원하지 않습니다. 엑시나 문서의 **Profiling Catalog** 가 바로 이 층의 현재 모습입니다 — 지표·데이터셋 ID 61개(Profiler 문서는 62개라고 적어 숫자가 어긋난다)를 `cache.l1.hit_ratio.total` 같은 이름으로 내줍니다.[5][4]",
+   "actually": {
+    "intro": "같은 일을 하는 공개 구현과 엑시나 카탈로그에 이미 있는 장치입니다.",
+    "items": [
+     "**이름 붙이기** — PAPI 는 CPU 마다 다른 카운터 위에 `PAPI_TOT_CYC` 같은 공통 이름(preset)을 두고 칩별 실제 카운터(native)에 잇는다.[19] NVIDIA CUPTI 도 카운터를 모아 계산한 '지표'를 API 로 준다.[20]",
+     "**계산식 감추기** — 적중률 = 적중 ÷ (적중 + 실패). 카운터가 몇 비트에서 한 바퀴 도는지(wrap) 보정한 합계를 따로 둔다(`cache.counter_totals`).[5]",
+     "**상태 표시** — 값마다 observed(관측) · directly_computed(계산) · partial(일부) · unavailable(없음)을 붙인다. 없는 값을 0 으로 보여 주지 않는다.[5]",
+     "**이름이 바뀌어도 안 깨지게** — 옛 ID 30개를 새 이름에 잇고 옛 이름도 계속 받는다(예: `profile.total_us` → `profile.duration_us`).[5]",
+     "**뜻을 정확히** — '바쁜 스레드 환산 수'는 퍼센트가 아니고, L2→L3 바이트는 DRAM 대역폭이 아니라고 문서가 못 박는다. 이름이 사용자를 속이지 않게 하는 것이 설계의 절반이다.[5]",
+     "**여러 입구** — 같은 카탈로그를 CLI(`xtop export --catalog`), CSV, Python `pyxpti`, C++ `xpti::Profile` 로 읽는다.[4]"
+    ]
+   },
+   "how_far": "'사용자 친화적'은 **이름 하나만 보고 뜻·단위·한계를 알 수 있는 것**입니다. {추론} 최소선은 카운터 몇 개로 적중률·처리량 지표를 정의하고, 칩이 바뀌어도 같은 ID 로 나오게 하는 작은 층을 만들어 본 경험입니다. 어떤 카운터를 칩에 넣을지는 하드웨어 설계(Co-design 자리)가 정합니다.[15]",
+   "refs": [
+    4,
+    5,
+    15,
+    19,
+    20
+   ],
+   "study": [
+    "xcena-sdk",
+    "papi",
+    "cupti"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "디바이스 런타임 Debugger를 개발합니다",
+   "short": "장치 코어에서 돌던 코드가 죽거나 엉뚱한 값을 낼 때, 멈춰 세우고 변수·호출 경로를 들여다보는 디버거를 만든다.",
+   "why": "장치 코드는 호스트 printf 로 보기 어렵습니다. 엑시나는 **MU Debugger** 를 SDK 에 넣었는데, 클라이언트는 GDB 이고 세 가지 길이 있습니다 — 죽은 뒤 남긴 덤프(.xcoredump) 읽기, QEMU 흉내 실행으로 한 줄씩 돌리기, 실제 장치에 붙기.[6]",
+   "actually": {
+    "intro": "현재 판이 할 수 있는 것과 문서가 밝힌 한계입니다. 한계가 곧 이 자리의 일감 후보입니다. {추론}",
+    "items": [
+     "**사후 분석** — 덤프에 레지스터·PC·메모리·스레드 문맥이 들어 있고, 파이썬 파서가 디스어셈블(capstone)과 이름 복원(cxxfilt)으로 보고서를 만든다.[6]",
+     "**실제 장치에 붙기** — 호스트 앱에 `PXL_DEBUG_ALLOW=1`·`PXL_MU_DEBUG=1` 을 주면 일을 하나씩 돌려서 처리량이 크게 떨어진다.[6]",
+     "**되는 명령** — break · tbreak · continue · stepi · finish · bt · info locals · print · x. 멈춘 문맥은 읽기만 된다.[6]",
+     "**안 되는 것** — 하드웨어 watchpoint(값이 바뀌면 멈춤)·하드웨어 중단점 없음, 오류로 멈추면 다시 이어 갈 수 없음, 붙은 Sub 하나만 중단점이 걸림.[6]",
+     "**바탕 기술** — GDB 는 '원격 규약(Remote Serial Protocol)'으로 다른 기계·흉내 실행기에 붙는다. 장치 쪽에 이 규약을 말하는 서버(stub)를 두는 것이 보통 방식이다.[29]"
+    ]
+   },
+   "how_far": "칩 안의 디버그 회로를 설계하는 일은 아닙니다. **GDB 쪽 규약·ELF/DWARF(실행 파일과 디버그 정보 형식)·코어 덤프를 다루는 시스템 프로그래밍**이 중심이고, 장치 쪽 멈춤·재개 기능은 펌웨어팀과 같이 만듭니다. {추론}",
+   "refs": [
+    6,
+    29
+   ],
+   "study": [
+    "xcena-sdk",
+    "gdb-remote",
+    "csapp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Benchmark Framework를 설계·구현하고 CI 파이프라인과 연동합니다",
+   "short": "같은 조건으로 성능을 여러 번 재고 기록하는 틀을 만들고, 코드가 바뀔 때마다 자동으로 돌게 CI 에 건다.",
+   "why": "지금 공개된 벤치마크는 **Memory Bandwidth Test** 예제 하나로, 옵션(메모리 크기·태스크 수·읽기/쓰기·반복)을 손으로 바꿔 가며 비교하게 돼 있습니다.[8] 공개 문서 어디에도 CI·회귀 탐지 이야기는 없습니다 — 이 줄이 그 빈칸입니다.[1][8]",
+   "actually": {
+    "items": [
+     "**같은 조건 고정** — 장치 펌웨어 판, SDK 판, Sub 수, 태스크 수, 메모리 크기를 결과와 함께 적는다. memory_test 도 이 값들을 출력 머리에 찍는다.[8]",
+     "**무엇을 재는지 밝히기** — memory_test 의 경과 시간에는 실행 요청·동기화 비용이 들어 있고, 흉내 실행기(에뮬레이터) 숫자는 장치 대역폭이 아니라고 문서가 적었다. 틀은 이런 주의를 결과에 같이 남겨야 한다.[8]",
+     "**여러 번 돌리기** — Google Benchmark 는 `--benchmark_repetitions` 로 반복하고, 비교 도구 compare.py 가 Mann-Whitney U 검정(두 묶음 중 한쪽이 대체로 큰지 보는 검정)으로 '진짜 바뀌었나'를 판단한다. 코드에 반복 9번 이상을 권하는 경고가 있다.[24]",
+     "**CI 에 걸기** — 장치가 꽂힌 전용 러너에서 밤마다·병합 전마다 돌리고, 결과를 시계열 저장소에 쌓는다. MongoDB 는 이렇게 쌓은 결과에서 변화점을 자동으로 찾는다.[25]",
+     "**장치 자원 나눠 쓰기** — 여러 작업이 장치를 같이 쓰면 숫자가 흔들린다. SDK 에는 Sub 예약과 `pxltop` 모니터가 있어, 벤치마크가 장치를 혼자 쓰는지 확인할 수 있다.[2]"
+    ]
+   },
+   "how_far": "최소선은 **벤치마크 하나를 n번 돌려 조건과 함께 JSON 으로 남기고, 기준과 비교해 통과/실패를 내는 CI 단계**를 만들어 본 것입니다. {추론} 어떤 워크로드를 표준 벤치로 삼을지는 제품·성능 담당과 같이 정합니다.",
+   "refs": [
+    1,
+    2,
+    8,
+    24,
+    25
+   ],
+   "study": [
+    "gbench",
+    "daly-cpd",
+    "xcena-sdk"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Launch Overhead, 메모리 대역폭 등 런타임 성능을 프로파일링하고 최적화합니다",
+   "short": "일을 장치에 보내는 데 드는 고정 비용과 메모리를 읽는 속도를 재고, 그 둘이 성능을 갉아먹지 않게 런타임을 고친다.",
+   "why": "MX1 의 장점은 메모리 옆에서 계산하는 것입니다 — 칩 안 DDR5 대역폭이 호스트 링크보다 넓습니다.[13][12] 그런데 일 하나가 짧으면 보내고 받는 비용(launch overhead)이 계산보다 커지고, 장점이 사라집니다. GPU 쪽도 같은 문제로 NVIDIA 가 여러 실행 요청을 하나로 묶는 CUDA Graphs 를 만들었습니다.[30]",
+   "actually": {
+    "intro": "엑시나 런타임이 이 둘을 다루는 손잡이와 재는 법입니다.",
+    "items": [
+     "**오버헤드 정의** — xtop 은 '호스트가 잰 시간 − 장치가 실제로 돈 시간'을 오버헤드로 보고, 20% 를 넘으면 경고한다.[4]",
+     "**묶어 보내기** — 일(task)은 batchSize(기본 16)개씩 묶여 MU 코어에 나뉜다. 태스크 1,024개를 16개씩 묶으면 코어 64개만 일한다 — 묶음 크기가 오버헤드와 병렬성을 맞바꾼다.[7]",
+     "**배치 방식** — CompactMode(가까운 코어에 모아 L2 재사용)와 SpreadMode(넓게 퍼뜨려 대역폭 합을 키움).[7]",
+     "**한 번만 준비** — Context 를 앱 동안 하나만 쓰라고 권한다. 실행마다 장치 주소를 다시 매핑하지 않게.[2]",
+     "**대역폭 재기** — memory_test 가 읽기/쓰기 처리량을 GiB/s 로 낸다.[8] 반면 프로파일러의 '메모리 대역폭' 칸은 검증된 DRAM 지표가 없어 늘 'Unavailable' 이다 — 지금 가장 눈에 띄는 빈칸이다.[4]",
+     "**복사 비용** — 호스트 ↔ 장치 복사는 `copy.*.paired_call_throughput`(GB/s)으로 따로 센다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "오버헤드와 늦게 끝나는 태스크 가르기 (직접 돌린 출력)",
+     "body": "xtop task 의 Overhead 칸과 같은 계산입니다(값은 가상). 장치 시간은 다 비슷한데 2번만 호스트 시간이 깁니다 — 코어가 느린 게 아니라 **보내고 받는 쪽**(큐 대기·콜백)을 볼 차례라는 뜻입니다. 장치 시간끼리의 쏠림(straggler_ratio, 1.0 이 고름)은 문제없음.[4]",
+     "lang": "python",
+     "code": "# 호스트가 잰 시간 - 장치가 잰 시간 = 오버헤드 (xtop task 의 Overhead 칸과 같은 뜻)\ntasks = [  # (id, host_us, device_active_us)  가상 값\n    (0, 120, 100), (1, 118, 99), (2, 260, 101), (3, 121, 100), (4, 119, 98),\n]\nfor tid, host, dev in tasks:\n    ov = host - dev\n    flag = \"  << 20% 초과\" if ov > 0.2 * host else \"\"\n    print(f\"task {tid}: host {host}us device {dev}us overhead {ov}us ({ov/host:.0%}){flag}\")\ndevs = [d for _, _, d in tasks]\nprint(\"straggler_ratio(max/avg) =\", round(max(devs) / (sum(devs) / len(devs)), 2))\n\n# task 0: host 120us device 100us overhead 20us (17%)\n# task 1: host 118us device 99us overhead 19us (16%)\n# task 2: host 260us device 101us overhead 159us (61%)  << 20% 초과\n# task 3: host 121us device 100us overhead 21us (17%)\n# task 4: host 119us device 98us overhead 21us (18%)\n# straggler_ratio(max/avg) = 1.01"
+    }
+   ],
+   "how_far": "런타임 자체를 짜는 것은 Device Runtime & SDK 자리 몫입니다.[14] 이 자리는 **어디서 시간이 새는지 숫자로 보여 주고, 고친 뒤 정말 빨라졌는지 증명하는 쪽**이며, 작은 최적화는 직접 고칩니다. {추론}",
+   "refs": [
+    2,
+    4,
+    5,
+    7,
+    8,
+    12,
+    13,
+    14,
+    30
+   ],
+   "study": [
+    "xcena-sdk",
+    "roofline",
+    "systems-perf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "성능 회귀 탐지를 자동화하고 지속적 성능 모니터링 체계를 구축합니다",
+   "short": "어느 커밋부터 느려졌는지 사람이 그래프를 뒤지지 않아도 자동으로 짚어 주는 감시 체계를 만든다.",
+   "why": "SDK 는 한 달에 한 번꼴로 새 판이 나오고(v1.5.0 은 2026-10-22), 컴파일러 교체 같은 큰 변화도 들어갑니다 — v1.5.0 에서 pxcc 가 정식 컴파일러가 됐습니다.[10] 이런 변화가 성능을 조용히 깎아도 기능 시험은 통과합니다. 성능도 시험처럼 매번 재야 하는 이유입니다. {추론}",
+   "actually": {
+    "items": [
+     "**문턱 비교의 한계** — '지난번보다 5% 느리면 실패'는 노이즈 때문에 거짓 경보가 잦다. MongoDB 는 그래서 커밋별 결과 전체에서 **변화점(change point)** — 평균이 계단처럼 바뀐 자리 — 을 통계로 찾는 방식(E-Divisive)으로 바꿨다.[25]",
+     "**한 번 튄 것 vs 계단** — 한 커밋만 튀고 돌아오면 노이즈, 그 뒤로 계속 높으면 회귀다. 튐을 먼저 거르고 계단을 찾는다(아래 예).",
+     "**범위 좁히기** — 변화점 커밋 앞뒤를 다시 여러 번 돌려 확인하고, 그래도 모호하면 git bisect 로 사이 커밋을 돌린다. {추론}",
+     "**무엇을 지켜보나** — 실행 시간만이 아니라 오버헤드·캐시 적중률·쏠림 같은 카탈로그 지표도 같이 쌓으면 '왜 느려졌나'까지 바로 보인다.[5] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 번 튄 커밋을 거르고 계단을 찾기 (직접 돌린 출력)",
+     "body": "커밋별 벤치 중앙값(가상 값)입니다. 그대로 나누면 커밋 #4 의 튐에 속습니다. 앞뒤 이웃과 따로 노는 한 점을 먼저 거르면 진짜로 느려지기 시작한 #8 이 나옵니다. 실제 도구는 E-Divisive 같은 검정을 쓰지만 생각은 같습니다.[25]",
+     "lang": "python",
+     "code": "# CI 의 커밋별 벤치마크 중앙값(가상 값, us)에서 '한 번 튄 것'과 '계속 느려진 것'을 가른다\nfrom statistics import median\nseries = [100, 101, 99, 100, 112, 100, 101, 100, 106, 106, 105, 106, 106]\n\ndef mean(xs):\n    return sum(xs) / len(xs)\n\ndef best_split(xs, min_seg=3):  # 앞뒤 평균 차가 가장 큰 자리 = 변화점 후보\n    best = None\n    for i in range(min_seg, len(xs) - min_seg + 1):\n        d = mean(xs[i:]) - mean(xs[:i])\n        if best is None or abs(d) > abs(best[1]):\n            best = (i, d)\n    return best\n\ni, d = best_split(series)\nprint(f\"그대로 나누면: 커밋 #{i} ({d / mean(series[:i]):+.1%})\")\n\n# 1) 앞뒤 이웃과 따로 노는 한 점(튐)을 먼저 골라 이웃 중앙값으로 바꾼다\nspikes = [k for k in range(1, len(series) - 1)\n          if abs(series[k] - median([series[k - 1], series[k + 1]])) > 5\n          and abs(series[k + 1] - series[k - 1]) < 3]\nclean = [median([series[k - 1], series[k + 1]]) if k in spikes else v for k, v in enumerate(series)]\nprint(\"한 번만 튄 커밋:\", spikes)\n# 2) 그다음 변화점을 찾는다\ni, d = best_split(clean)\nprint(f\"튐을 걸러 나누면: 커밋 #{i} (앞 {mean(clean[:i]):.1f} -> 뒤 {mean(clean[i:]):.1f}, {d / mean(clean[:i]):+.1%})\")\n\n# 그대로 나누면: 커밋 #4 (+4.7%)\n# 한 번만 튄 커밋: [4]\n# 튐을 걸러 나누면: 커밋 #8 (앞 100.1 -> 뒤 105.8, +5.7%)"
+    }
+   ],
+   "how_far": "최소선은 **결과를 쌓는 저장소 + 커밋별 그래프 + 변화점 알림**의 작은 판입니다. {추론} 알림을 받고 원인을 고치는 것은 그 코드 주인이지만, '이 커밋, 이 지표, 이만큼'을 근거와 함께 넘겨주는 데까지가 이 자리입니다. {추론}",
+   "refs": [
+    5,
+    10,
+    25
+   ],
+   "study": [
+    "daly-cpd",
+    "gbench"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "전산·컴퓨터·전기전자공학 또는 SW 관련 분야의 학사 이상 학위를 보유한 분",
+   "short": "캐시·메모리·운영체제를 배운 바탕이 있어야 카운터 숫자를 읽을 수 있어서.",
+   "why": "이 자리의 숫자(캐시 적중률·대역폭·지연)는 컴퓨터 구조와 운영체제 수업에서 배우는 개념 그대로입니다 — 교과서 CS:APP 의 캐시·가상 메모리 장이 바로 그 내용입니다.[4][34][39] 전기전자가 같이 적힌 것은 하드웨어 쪽 사람과 같은 말을 써야 하기 때문으로 보입니다. {추론}",
+   "how_far": "공고는 경력무관입니다.[1] 학위 칸은 문을 여는 조건이고, 실제로는 아래 줄들의 경험(perf·카운터 해석·C/C++)으로 가려진다고 보는 것이 자연스럽습니다. {추론}",
+   "refs": [
+    1,
+    4,
+    34,
+    39
+   ],
+   "study": [
+    "csapp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C 또는 C++로 시스템 소프트웨어를 설계하고 구현한 경험이 있는 분",
+   "short": "기록 라이브러리·런타임 훅·디버거가 모두 C/C++ 이고, 재는 도구가 느리면 잰 숫자가 틀어져서.",
+   "why": "엑시나의 프로파일 API 는 C++(`xpti::Profile`)와 Python(`pyxpti`) 두 가지로 나오고, 런타임(PXL)·장치 커널도 C++ 입니다.[4][7] 기록 코드는 사용자 앱 안에서 돌기 때문에 가볍고 안전해야 합니다 — 무거우면 재려던 성능 자체가 바뀝니다. {추론}",
+   "level": {
+    "basic": "포인터·메모리 관리 · 구조체 배치 · 빌드(CMake)·링크",
+    "work": "멀티스레드 · 잠금 없는 링 버퍼 · mmap · 시그널 · SQLite 같은 C 라이브러리 묶기",
+    "team": "남의 프로세스 안에서 도는 기록 코드(훅) · 오버헤드 1% 대 목표 · ELF/DWARF 읽기 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**기록 라이브러리** — 실행 요청·완료 때 불리는 콜백에서 타임스탬프를 버퍼에 쌓고, 따로 파일(.xpti, SQLite)로 내린다. 기록용 메모리 한도를 64~8192MB 로 준다.[3]",
+     "**나중에 붙기** — 이미 돌고 있는 프로세스에 붙어 기록을 시작·종료한다(attach). 자식 프로세스는 따라가지 않는다.[3]",
+     "**실패해도 남기기** — 기록이 일부 깨져도 결과는 남기고 빠진 항목을 `capture_issues` 표에 적는다. 종료 코드도 경우마다 다르게 낸다.[3]"
+    ]
+   },
+   "how_far": "'설계하고 구현한 경험'이라 남이 짠 틀에 기능을 더한 수준보다 한 단계 위 — **작은 시스템 프로그램 하나를 처음부터 구조를 잡아 끝낸 경험**을 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    4,
+    7
+   ],
+   "study": [
+    "csapp",
+    "xcena-sdk"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Linux 환경에서 perf, ftrace 등 성능 분석 도구를 실제 문제 해결에 활용해 시스템 병목을 진단한 경험이 있는 분",
+   "short": "호스트 쪽 병목(드라이버·스케줄링·복사)은 Linux 표준 도구로 먼저 가려내야 장치 탓인지 알 수 있어서.",
+   "why": "장치로 가는 길은 호스트 앱 → 런타임 → 커널 드라이버 → CXL 링크입니다. xtop 도 호스트 쪽은 perf 로 스택을 찍습니다.[3] 병목이 장치 밖에 있으면 장치 도구로는 안 보입니다. {추론}",
+   "actually": {
+    "intro": "perf 와 ftrace 가 각각 하는 일입니다.",
+    "items": [
+     "**perf** — 커널의 perf_event 기능으로 CPU 하드웨어 카운터(사이클·명령 수·캐시 실패)를 세거나, 일정 간격으로 스택을 찍어 '어느 함수가 시간을 쓰나'를 본다(`perf stat`, `perf record`/`report`).[16][18]",
+     "**ftrace** — 커널 안 함수 호출·사건(스케줄링·인터럽트)을 시간 순으로 기록한다. '왜 이 스레드가 3ms 동안 안 돌았나' 같은 질문에 답한다.[17]",
+     "**순서 잡기** — USE 방법: 자원마다 사용률(Utilization)·포화(Saturation)·오류(Errors)를 차례로 본다.[38]",
+     "**병목 예** — 복사 크기가 작아 시스템 호출 비용이 지배, 콜백 스레드가 다른 CPU 로 옮겨 다니며 캐시를 잃음, 인터럽트가 한 코어에 몰림. {추론}"
+    ]
+   },
+   "how_far": "'실제 문제 해결에 활용'이 요점입니다 — 명령을 아는 것보다 **가설 → 도구 → 숫자 → 결론**으로 병목 하나를 잡은 이야기를 면접에서 할 수 있어야 합니다. {추론}",
+   "refs": [
+    3,
+    16,
+    17,
+    18,
+    38
+   ],
+   "study": [
+    "systems-perf",
+    "perf-wiki",
+    "ftrace-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "성능 측정 결과를 해석하고, 하드웨어 카운터·메모리 대역폭·레이턴시 등 저수준 성능 지표를 소프트웨어 또는 하드웨어 동작과 연결 지어 분석한 경험이 있는 분",
+   "short": "'L2 적중률 40%' 같은 숫자를 보고 '자료를 띄엄띄엄 읽어서'처럼 코드·칩의 원인으로 이어 말할 수 있어야 해서.",
+   "why": "엑시나 프로파일러는 캐시 적중률·쏠림·유휴 시간까지 보여 주지만 '그래서 왜'는 사람이 답해야 합니다.[4] 이 자리는 그 해석을 도구 안에 넣는 사람이라, 본인이 먼저 해석할 줄 알아야 합니다. {추론}",
+   "actually": {
+    "intro": "MX1 구조에 대 보면 이런 연결입니다.",
+    "items": [
+     "**L2 적중률이 낮다** — Cluster 하나(MU 코어 32개)가 L2 를 같이 쓴다.[41][11] 서로 다른 데이터를 읽는 태스크를 한 Cluster 에 몰면 L2 를 빼앗는다 → 배치 방식(Compact/Spread)을 바꿔 본다.[7]",
+     "**쏠림(balance_score 가 1 보다 한참 낮음)** — 태스크 크기가 고르지 않거나 묶음 수가 코어 수보다 적다(태스크 1,024 ÷ 묶음 16 = 코어 64개만 일함).[4][7]",
+     "**대역폭 천장** — 연산 강도(바이트당 계산 수)가 낮은 일은 계산기가 놀고 대역폭이 성능을 정한다. 루프라인으로 '이 이상은 못 빨라진다'를 보인다.[34]",
+     "**지연 vs 대역폭** — 한 스레드가 한 번에 읽기 요청 하나만 내면, 대역폭이 넓어도 지연이 성능을 정한다. MXPerfSim 이 바로 이 가정(스레드당 미해결 읽기 1개)으로 흉내 낸다.[9]"
+    ]
+   },
+   "how_far": "카운터를 '읽을' 줄 아는 것에서 끝나지 않고 **'그래서 코드의 어디를 어떻게 바꾸면 된다'까지** 말하는 경험입니다. 칩 구조를 바꾸자는 결론이면 Co-design 자리에 근거를 넘깁니다.[15] {추론}",
+   "refs": [
+    4,
+    7,
+    9,
+    11,
+    15,
+    34,
+    41
+   ],
+   "study": [
+    "roofline",
+    "csapp",
+    "systems-perf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기능 구현만큼 사용성을 중요하게 생각하며, 도구를 사용자인 개발자 관점에서 설계할 수 있는 분",
+   "short": "도구의 사용자는 바쁜 개발자라서, 명령 하나·화면 하나로 '다음에 뭘 볼지'까지 알려 줘야 쓰인다.",
+   "why": "엑시나 도구 문서에 그 흔적이 보입니다 — 오버헤드가 20% 넘으면 경고, 쏠림 비율 2.0 넘으면 불균형 표시, '이 캐시 값은 이 태스크 것이 아니라 전체 것'이라는 주의를 결과에 같이 찍습니다.[4] IDE 클라이언트(XCENA Compass)가 붙도록 `query-server`(표준 입출력으로 JSON 주고받기)도 있습니다.[3]",
+   "actually": {
+    "items": [
+     "**기본값이 정답** — `xtop run -- ./앱` 하나로 기록·HTML 보고서·Perfetto 파일이 다 나온다. 옵션은 끌 때만 준다.[3]",
+     "**sudo 없이** — 상주 서비스가 있으면 권한 없이 기록된다.[3]",
+     "**기계가 읽을 출력** — 사람용 표와 함께 `--json`, CSV, 종료 코드를 정해 CI·스크립트가 쓰게 한다.[4]",
+     "**거짓 숫자 금지** — 모르는 값은 0 이 아니라 'Unavailable' 로 보인다.[4][5]"
+    ]
+   },
+   "how_far": "면접에서는 **본인이 쓰던 도구의 불편을 어떻게 고쳤나**(옵션 기본값·오류 문구·출력 형식)를 구체로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "xcena-sdk",
+    "perfetto"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "재현하기 어려운 성능 문제를 데이터와 가설을 기반으로 좁혀가며 분석합니다",
+   "short": "가끔만 느린 문제를 '감'이 아니라 가설 하나씩 세우고 데이터로 지워 나가며 잡는다.",
+   "why": "코어 수천 개가 같이 도는 장치에서는 '가끔 한 태스크만 늦게 끝남' 같은 문제가 흔합니다. 프로파일러가 늦게 끝나는 스레드(straggler)·긴 꼬리(long tail)·유휴 구간을 따로 보여 주는 이유입니다.[4]",
+   "actually": {
+    "items": [
+     "**전체에서 부분으로** — 요약(xtop map) → 의심 태스크 목록(`xtop task --sort active`) → 한 태스크 상세(배치된 Sub/Cluster/MU/스레드).[4]",
+     "**가설을 숫자로** — '특정 Sub 에서만 느리다'면 `--filter sub=0` 으로 나눠 비교한다.[4]",
+     "**재현 조건 남기기** — 실행 때의 펌웨어·SDK 판·장치 구조를 기록에 같이 남겨, 다른 사람이 같은 조건으로 다시 볼 수 있게.[3][5]",
+     "**한 번에 하나만 바꾸기** — 바꾼 것이 둘이면 무엇 때문에 빨라졌는지 모른다. {추론}"
+    ]
+   },
+   "how_far": "가설 → 측정 → 기각/채택을 **기록으로 남긴 분석 하나**를 보여 줄 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "systems-perf",
+    "xcena-sdk"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "노이즈 제거와 통계적 유의성 등 반복 측정의 신뢰도를 고려해 성능 데이터를 해석합니다",
+   "short": "한 번 잰 숫자는 믿지 않고, 여러 번 재서 '정말 달라졌나'를 통계로 판단한다.",
+   "why": "성능 숫자는 실행할 때마다 흔들립니다. 환경 변수 크기나 링크 순서만 바꿔도 결과가 달라져 잘못된 결론에 이를 수 있다는 연구가 유명합니다.[26] 회귀 감시(업무 6번)와 벤치마크(업무 4번)가 거짓 경보를 내지 않으려면 이 줄이 바탕입니다.",
+   "actually": {
+    "items": [
+     "**노이즈 줄이기** — CPU 주파수 고정·터보 끄기·코어 격리 같은 설정. pyperf 는 이를 `pyperf system tune` 으로 묶었다.[27] 장치 쪽은 다른 작업이 같은 Sub 를 쓰지 않게 예약을 확인한다.[2]",
+     "**평균보다 중앙값** — 가끔 크게 튀는 값이 평균을 끌고 간다(아래 예).",
+     "**유의성** — 두 묶음을 Mann-Whitney U 검정으로 비교한다. Google Benchmark 비교 도구가 쓰는 방법이다.[24]",
+     "**표본 수** — 차이가 작을수록 더 많이 재야 한다. 같은 3% 차이라도 15번으로는 못 가리고 60번이면 가린다(아래 예)."
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 번·평균·중앙값·검정이 각각 무엇을 말하나 (직접 돌린 출력)",
+     "body": "진짜 차이는 3% 느려짐(가상 측정, 2% 흔들림 + 10% 확률로 30% 튐)입니다. 한 번씩 재면 +35.6% 로 착각하고, 15번 평균은 오히려 빨라진 것처럼 보입니다. 중앙값은 +2% 근처지만 검정은 아직 확신하지 못하고(p=0.12), 60번 재야 분명해집니다.[24]",
+     "lang": "python",
+     "code": "import math, random, statistics as st\nrandom.seed(7)\n\ndef run(mean, n):  # 노이즈가 섞인 측정(가상 값): 2% 흔들림 + 10% 확률로 30% 튐\n    return [mean * random.gauss(1, 0.02) + (random.random() < 0.1) * mean * 0.3 for _ in range(n)]\n\ndef mann_whitney_p(a, b):  # 양측, 정규 근사\n    allv = sorted([(v, 0) for v in a] + [(v, 1) for v in b])\n    r = sum(i + 1 for i, (v, g) in enumerate(allv) if g == 0)\n    n1, n2 = len(a), len(b)\n    u = r - n1 * (n1 + 1) / 2\n    z = (u - n1 * n2 / 2) / math.sqrt(n1 * n2 * (n1 + n2 + 1) / 12)\n    return 2 * (1 - 0.5 * (1 + math.erf(abs(z) / math.sqrt(2))))\n\nb1, n1 = run(100.0, 1), run(103.0, 1)\nprint(f\"한 번씩: base {b1[0]:.1f} new {n1[0]:.1f} -> {n1[0]/b1[0]-1:+.1%}\")\nbase, new = run(100.0, 15), run(103.0, 15)\nprint(f\"15번 중앙값: base {st.median(base):.1f} new {st.median(new):.1f} -> {st.median(new)/st.median(base)-1:+.1%}\")\nprint(f\"15번 평균:   base {st.mean(base):.1f} new {st.mean(new):.1f}\")\nprint(f\"Mann-Whitney p = {mann_whitney_p(base, new):.4f}\")\nbase, new = run(100.0, 60), run(103.0, 60)\nprint(f\"60번 중앙값: {st.median(new)/st.median(base)-1:+.1%}  p = {mann_whitney_p(base, new):.6f}\")\n\n# 한 번씩: base 99.5 new 135.0 -> +35.6%\n# 15번 중앙값: base 100.8 new 102.8 -> +2.0%\n# 15번 평균:   base 107.8 new 102.9\n# Mann-Whitney p = 0.1198\n# 60번 중앙값: +2.2%  p = 0.000068"
+    }
+   ],
+   "how_far": "통계학 깊이까지는 아닙니다. **중앙값·분포·검정 하나·표본 수 감각**으로 '이 차이는 노이즈다/아니다'를 근거와 함께 말하면 됩니다. {추론}",
+   "refs": [
+    2,
+    24,
+    26,
+    27
+   ],
+   "study": [
+    "mytkowicz",
+    "gbench",
+    "pyperf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "자신이 만든 도구가 팀 전체의 생산성에 미치는 영향을 함께 고려합니다",
+   "short": "도구 팀의 성과는 남이 얼마나 빨리 문제를 찾느냐라서, 쓰는 사람의 시간을 줄이는 쪽으로 판단한다.",
+   "why": "엑시나 SW 조직에는 런타임·SDK, 컴파일러, 펌웨어, 응용 쪽 자리가 따로 있습니다.[14][15] 이 도구들은 그 모든 팀이 매일 씁니다. 도구가 느리거나 설치가 어렵거나 숫자가 헷갈리면 모두의 시간이 샙니다. {추론}",
+   "actually": {
+    "items": [
+     "**기록 오버헤드를 밝히기** — 예: 디버그 모드는 처리량이 크게 떨어진다고 문서에 적는다. 쓰는 사람이 미리 알게.[6]",
+     "**설치와 권한** — 상주 서비스·그룹 권한으로 sudo 없이 쓰게 하고, 컨테이너에서 되는 것·안 되는 것을 밝힌다.[3][6]",
+     "**바뀐 것 알리기** — 지표 이름을 바꿀 때 옛 이름을 계속 받게 한다.[5]"
+    ]
+   },
+   "how_far": "'내 도구 덕에 누가 무엇을 몇 시간 아꼈나'를 숫자로 말해 본 경험이면 충분합니다. {추론}",
+   "refs": [
+    3,
+    5,
+    6,
+    14,
+    15
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Profiler, Tracer, Debugger 등 개발자 도구를 직접 개발한 경험이 있는 분",
+   "short": "업무 1~3번을 곧바로 맡을 수 있어서. 크기보다 '남이 쓴 도구'였는지가 중요하다.",
+   "why": "업무 줄 여섯 개 중 세 개가 이 도구들을 만드는 일입니다.[1] 회사 도구도 이미 사용자가 있는 단계라 하위 호환·문서·오류 문구까지 챙겨야 합니다.[5] {추론}",
+   "how_far": "작게는 **트레이스 이벤트를 남기고 Perfetto 에서 여는 작은 기록기**, GDB 원격 규약으로 붙는 작은 stub 같은 개인 프로젝트도 이 줄의 증거가 됩니다. {추론}",
+   "refs": [
+    1,
+    5,
+    28,
+    29
+   ],
+   "study": [
+    "perfetto",
+    "gdb-remote"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CUDA Profiler(Nsight), Intel VTune, eBPF 등 고급 성능 분석 도구를 활용한 경험이 있는 분",
+   "short": "같은 문제를 먼저 푼 도구들을 써 봤으면 '좋은 프로파일러가 무엇을 보여 줘야 하나'의 기준이 있어서.",
+   "why": "엑시나 칩은 GPU 처럼 호스트가 일을 장치로 보내는 구조라, NVIDIA 도구가 가장 가까운 본보기입니다.[2] Nsight Systems 는 CPU·GPU 를 한 타임라인에 놓고,[21] VTune 은 하드웨어 카운터로 CPU·메모리 병목을 나눠 보여 주며,[22] eBPF 는 커널을 고치지 않고 안에 작은 측정 프로그램을 넣는 기술입니다.[23]",
+   "actually": {
+    "items": [
+     "**Nsight 에서 배울 것** — 호스트 API 호출과 장치 실행을 화살표로 잇는 타임라인. xtop 의 Perfetto 출력이 같은 모양이다.[21][4]",
+     "**VTune 에서 배울 것** — 카운터를 '메모리에 묶임/계산에 묶임' 같은 사람 말로 묶어 주는 분석 방식 — Metric Abstraction Layer 의 본보기.[22]",
+     "**eBPF 에서 배울 것** — 드라이버·시스템 호출 쪽 지연을 낮은 비용으로 재는 법(bpftrace 한 줄 도구). 그레그의 책이 한국어로도 나와 있다.[23][32][33]"
+    ]
+   },
+   "refs": [
+    2,
+    4,
+    21,
+    22,
+    23,
+    32,
+    33
+   ],
+   "study": [
+    "bpf-tools-ko",
+    "nsight",
+    "vtune"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CI/CD 파이프라인에서 성능 벤치마크를 자동화하고 회귀를 탐지한 경험이 있는 분",
+   "short": "업무 4·6번을 해 본 사람이라서. 공개 문서에 아직 없는 칸이라 첫 판을 세울 사람이 필요하다.",
+   "why": "공개 SDK 에는 벤치마크 예제는 있지만 CI·회귀 탐지는 보이지 않습니다.[8]",
+   "how_far": "GitHub Actions 같은 CI 에서 벤치를 돌려 결과를 쌓고, 기준보다 느리면 실패시키는 정도를 해 봤다면 이 줄을 말할 수 있습니다. 장치가 필요한 벤치는 전용 러너가 따로 필요하다는 점까지 알면 좋습니다. {추론}",
+   "refs": [
+    8,
+    24,
+    25
+   ],
+   "study": [
+    "gbench",
+    "daly-cpd"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "캐시, 메모리 대역폭, 레이턴시 등 저수준 성능 지표를 기반으로 최적화한 경험이 있는 분",
+   "short": "지표를 '읽는' 데서 나아가 그 숫자를 보고 코드를 바꿔 실제로 빨라지게 해 본 사람이라서.",
+   "why": "자격요건 4번이 해석이라면 이 줄은 그 뒤의 최적화입니다. 업무 5번(런타임 최적화)과 바로 닿습니다.[1]",
+   "actually": {
+    "items": [
+     "**자료 배치** — 띄엄띄엄 읽던 것을 연속으로 읽게 바꿔 캐시 줄(한 번에 가져오는 덩어리)을 다 쓰게 한다.[31]",
+     "**나눠 맡기** — 태스크 크기·묶음 수를 코어 수에 맞춘다.[7]",
+     "**천장 확인** — 루프라인으로 이미 대역폭 천장에 닿았는지 보고, 닿았으면 더 깎지 않는다.[34]"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    31,
+    34
+   ],
+   "study": [
+    "roofline",
+    "csapp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "오픈소스 프로젝트에 기여한 경험이 있는 분",
+   "short": "회사 SDK 가 공개 저장소(Apache-2.0)로 나가고, 쓰는 도구(perf·GDB·Perfetto·LLVM)도 오픈소스라서.",
+   "why": "엑시나 SDK 문서는 GitHub Pages 에, SDK 는 Apache-2.0 라이선스로 공개돼 있습니다.[2] 프로파일러도 Linux perf·Perfetto 위에 서 있습니다.[3][4]",
+   "how_far": "큰 기여가 아니어도 **이슈를 재현해 올리고 패치가 받아들여진 경험** 하나면 공개 코드에서 일하는 방식을 안다는 증거가 됩니다. {추론}",
+   "refs": [
+    2,
+    3,
+    4
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자를 보면 '왜 그 값인지' 끝까지 캐고 싶은 사람",
+   "남이 쓰는 도구를 만드는 데서 보람을 느끼는 사람",
+   "하드웨어와 소프트웨어 경계에서 일하고 싶은 사람 — 카운터 하나를 놓고 펌웨어팀과 약속을 맞춘다[5]",
+   "경력무관 공고라 성능 분석 경험이 있는 주니어도 지원할 수 있다[1]"
+  ],
+  "hard": [
+   "양산 전 칩이라 도구·펌웨어·문서가 같이 바뀐다 — 문서에도 '약속 대기' 칸이 있다[5][13]",
+   "장치가 꽂힌 서버가 있어야 실제 숫자를 잴 수 있다 — 흉내 실행기 숫자는 장치 숫자가 아니다[8]",
+   "회사 성능 도구 팀의 발표·블로그는 공개된 것을 찾지 못했다 — 안쪽 일하는 방식은 입사 전에 알기 어렵다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "호스트에서 잰 태스크 시간이 장치에서 잰 시간보다 크게 길어요. 어디부터 보겠어요?",
+   "a": "회사 프로파일러가 실제로 계산하는 오버헤드 정의.[4]"
+  },
+  {
+   "q": "어떤 변경 뒤 벤치가 3% 느려졌어요. 진짜인지 어떻게 판단하나요?",
+   "a": "반복 측정·중앙값·검정·노이즈 줄이기.[24][27]"
+  },
+  {
+   "q": "L2 적중률이 낮게 나왔어요. 칩 구조를 생각하면 무엇을 바꿔 보겠어요?",
+   "a": "Cluster 가 L2 를 같이 쓰는 구조와 배치 방식.[7][41]"
+  },
+  {
+   "q": "카운터 이름이 칩 세대마다 바뀌어도 사용자 스크립트가 안 깨지게 하려면?",
+   "a": "카탈로그의 ID·옛 이름 잇기·상태 표시.[5]"
+  },
+  {
+   "q": "커밋마다 벤치를 돌리는데 거짓 경보가 많아요. 어떻게 줄이겠어요?",
+   "a": "문턱 비교 대신 변화점 찾기.[25]"
+  },
+  {
+   "q": "장치 코드에서 하드웨어 watchpoint 없이 '이 값을 누가 바꿨나'를 찾으려면?",
+   "a": "현재 디버거의 한계에서 나온 질문.[6]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "엑시나 채용 · [SW] 시스템 소프트웨어 엔지니어 – 성능 분석 및 개발자 도구",
+   "url": "https://xcena.career.greetinghr.com/ko/o/224149",
+   "kind": "posting",
+   "note": "회사 소개·직무 소개·업무·자격·우대·업무 방식·근무지·복리후생"
+  },
+  {
+   "n": 2,
+   "title": "XCENA SDK 문서 · Introduction / Programming Objects",
+   "url": "https://xcena-dev.github.io/sdk_release/",
+   "kind": "company",
+   "note": "SDK 구성·Apache-2.0·pxltop·Context 재사용 권고(2026-11 확인)"
+  },
+  {
+   "n": 3,
+   "title": "XCENA SDK 문서 · xtop User Guide",
+   "url": "https://xcena-dev.github.io/sdk_release/tools/xtop.html",
+   "kind": "company",
+   "note": "XPTI 기반 기록·실시간 보기·attach·설정·호스트 perf 샘플링"
+  },
+  {
+   "n": 4,
+   "title": "XCENA SDK 문서 · Profiler",
+   "url": "https://xcena-dev.github.io/sdk_release/tools/profiler.html",
+   "kind": "company",
+   "note": "xtop map/task/convert/export — 오버헤드·쏠림·유휴·캐시, 메모리 대역폭 Unavailable"
+  },
+  {
+   "n": 5,
+   "title": "XCENA SDK 문서 · Profiling Catalog",
+   "url": "https://xcena-dev.github.io/sdk_release/tools/profiling-catalog.html",
+   "kind": "company",
+   "note": "지표·데이터셋 ID 61개, 상태 값, 옛 ID 30개, fw_contract_pending"
+  },
+  {
+   "n": 6,
+   "title": "XCENA SDK 문서 · MU Debugger User Guide",
+   "url": "https://xcena-dev.github.io/sdk_release/tools/mu_debugger.html",
+   "kind": "company",
+   "note": "사후 덤프·QEMU·실장치 붙기, GDB 클라이언트, 제한 사항"
+  },
+  {
+   "n": 7,
+   "title": "XCENA SDK 문서 · Kernel Execution",
+   "url": "https://xcena-dev.github.io/sdk_release/pxl_key_concepts/03_kernel_execution.html",
+   "kind": "company",
+   "note": "Launcher/Map, taskCount·batchSize(기본 16)·Compact/Spread"
+  },
+  {
+   "n": 8,
+   "title": "XCENA SDK 문서 · Memory Bandwidth Test",
+   "url": "https://xcena-dev.github.io/sdk_release/get_started/memory-test/",
+   "kind": "company",
+   "note": "읽기/쓰기 처리량 예제, 옵션·출력·측정 주의"
+  },
+  {
+   "n": 9,
+   "title": "XCENA SDK 문서 · MXPerfSim",
+   "url": "https://xcena-dev.github.io/sdk_release/tools/mxperfsim/",
+   "kind": "company",
+   "note": "트레이스 기반 성능 추정기 — 메모리 명령만, 스레드당 미해결 읽기 1개"
+  },
+  {
+   "n": 10,
+   "title": "XCENA SDK 릴리스 노트 · v1.5.0",
+   "url": "https://xcena-dev.github.io/sdk_release/release_notes/v1.5.0.html",
+   "kind": "company",
+   "date": "2026-10-22",
+   "note": "pxcc 정식 컴파일러, Xprofiler 보고서 크기 수정"
+  },
+  {
+   "n": 11,
+   "title": "XCENA SDK 문서 · CLI(xcena_cli)",
+   "url": "https://xcena-dev.github.io/sdk_release/tools/cli.html",
+   "kind": "company",
+   "note": "device-info 예시 출력: MU Cores 3,072 (24 × 4 × 32)"
+  },
+  {
+   "n": 12,
+   "title": "VeloxCon · Introducing HW Accelerated Velox with CXL Computational Memory (Harry Kim, XCENA)",
+   "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+   "kind": "company",
+   "date": "2025",
+   "note": "엑시나 CPO 발표 — 연산자를 메모리 쪽으로 내려보내기(같은 회사 다른 풀이에서 자막 전부 확인)"
+  },
+  {
+   "n": 13,
+   "title": "ServeTheHome · XCENA MX1 CXL Computational Memory Device at Hot Chips 2026",
+   "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026",
+   "kind": "news",
+   "date": "2026-08-25",
+   "note": "칩 안 DDR5 4채널·호스트 링크·양산 일정 — 기자가 오타 가능성을 밝혔다"
+  },
+  {
+   "n": 14,
+   "title": "엑시나 채용 · [SW] System Software Engineer, Device Runtime & SDK",
+   "url": "https://xcena.career.greetinghr.com/ko/o/110622",
+   "kind": "posting",
+   "note": "같은 회사 — 런타임·SDK"
+  },
+  {
+   "n": 15,
+   "title": "엑시나 채용 · [SW] HW SW Co-design Architect",
+   "url": "https://xcena.career.greetinghr.com/ko/o/240539",
+   "kind": "posting",
+   "note": "같은 회사 — 칩 구조·HW/SW 계약"
+  },
+  {
+   "n": 16,
+   "title": "perf Wiki · Linux profiling with performance counters",
+   "url": "https://perf.wiki.kernel.org/index.php/Main_Page",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Linux 커널 문서 · ftrace - Function Tracer",
+   "url": "https://docs.kernel.org/trace/ftrace.html",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Linux man page · perf_event_open(2)",
+   "url": "https://man7.org/linux/man-pages/man2/perf_event_open.2.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "PAPI · Performance Application Programming Interface",
+   "url": "https://icl.utk.edu/papi/",
+   "kind": "reference",
+   "note": "테네시대 ICL — 칩마다 다른 카운터 위의 공통 이름"
+  },
+  {
+   "n": 20,
+   "title": "NVIDIA · CUPTI 문서",
+   "url": "https://docs.nvidia.com/cupti/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "NVIDIA · Nsight Systems",
+   "url": "https://developer.nvidia.com/nsight-systems",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Intel · VTune Profiler",
+   "url": "https://www.intel.com/content/www/us/en/developer/tools/oneapi/vtune-profiler.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "ebpf.io · What is eBPF?",
+   "url": "https://ebpf.io/what-is-ebpf/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Google Benchmark · Benchmark Tools (compare.py, U test)",
+   "url": "https://github.com/google/benchmark/blob/main/docs/tools.md",
+   "kind": "reference",
+   "note": "반복 9번 이상 권고는 tools/gbench/report.py 의 상수"
+  },
+  {
+   "n": 25,
+   "title": "Daly 외 · The Use of Change Point Detection to Identify Software Performance Regressions in a Continuous Integration System (ICPE 2020)",
+   "url": "https://arxiv.org/abs/2003.00584",
+   "kind": "reference",
+   "note": "MongoDB — E-Divisive 변화점 탐지"
+  },
+  {
+   "n": 26,
+   "title": "Mytkowicz 외 · Producing Wrong Data Without Doing Anything Obviously Wrong! (ASPLOS 2009)",
+   "url": "https://doi.org/10.1145/1508244.1508275",
+   "kind": "reference",
+   "note": "측정 편향 — 환경 변수 크기·링크 순서"
+  },
+  {
+   "n": 27,
+   "title": "pyperf · Tune the system for benchmarks",
+   "url": "https://pyperf.readthedocs.io/en/latest/system.html",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Perfetto 문서",
+   "url": "https://perfetto.dev/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "GDB 문서 · Remote Serial Protocol",
+   "url": "https://sourceware.org/gdb/current/onlinedocs/gdb.html/Remote-Protocol.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "NVIDIA Technical Blog · Getting Started with CUDA Graphs",
+   "url": "https://developer.nvidia.com/blog/cuda-graphs/",
+   "kind": "reference",
+   "note": "작은 커널을 여러 번 부를 때의 실행 요청 비용 줄이기"
+  },
+  {
+   "n": 31,
+   "title": "Brendan Gregg · Systems Performance (2판)",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Brendan Gregg · BPF Performance Tools",
+   "url": "https://www.brendangregg.com/bpf-performance-tools-book.html",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "교보문고 · BPF 성능 분석 도구(번역서 전자책)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003160869",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "Williams · Waterman · Patterson · Roofline (CACM 52(4), 2009)",
+   "url": "https://doi.org/10.1145/1498765.1498785",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "자소설닷컴 · 엑시나 기업정보",
+   "url": "https://jasoseol.com/companies/15972",
+   "kind": "reference",
+   "note": "공공데이터 기반 — 신입·평균 연봉 '아직 수집 중'(같은 회사 다른 풀이 조사 때 확인)"
+  },
+  {
+   "n": 36,
+   "title": "엑시나 채용 · 복리후생",
+   "url": "https://xcena.career.greetinghr.com/ko/benefits",
+   "kind": "company"
+  },
+  {
+   "n": 37,
+   "title": "엑시나 채용 홈 · 회사 정보",
+   "url": "https://xcena.career.greetinghr.com/ko/home",
+   "kind": "company",
+   "note": "본사·미국 지사 주소"
+  },
+  {
+   "n": 38,
+   "title": "Brendan Gregg · The USE Method",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "kind": "reference"
+  },
+  {
+   "n": 39,
+   "title": "Bryant · O'Hallaron · Computer Systems: A Programmer's Perspective (3판)",
+   "url": "https://csapp.cs.cmu.edu/",
+   "kind": "reference"
+  },
+  {
+   "n": 40,
+   "title": "Linux 커널 문서 · Compute Express Link",
+   "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 41,
+   "title": "XCENA SDK 문서 · Device Topology",
+   "url": "https://xcena-dev.github.io/sdk_release/pxl_key_concepts/01_device_topology.html",
+   "kind": "company",
+   "note": "장치 → Sub → Cluster(L2 공유) → MU 코어. 개수는 세대마다 다르니 조회하라고 적었다"
+  }
+ ],
+ "caveat": "근거는 2026년 11월에 본 공개 SDK 문서(v1.5.0 무렵)입니다 — xtop 문서는 XPTI 1.6 을 요구한다고 적었는데 릴리스 노트에는 아직 1.6 이 없어, 문서와 배포 판이 어긋날 수 있습니다. 성능 도구 팀의 내부 구조·CI 체계·사용하는 벤치 워크로드는 공개 자료가 없어, 같은 일을 하는 공개 도구(Google Benchmark·MongoDB 변화점 탐지·PAPI·Nsight)로 '보통 이런 것'을 보였습니다.",
+ "resources": [
+  {
+   "id": "xcena-sdk",
+   "title": "XCENA SDK 문서 — Tools(xtop · Profiler · Profiling Catalog · MU Debugger · MXPerfSim)",
+   "by": "엑시나 · GitHub Pages",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://xcena-dev.github.io/sdk_release/",
+   "why": "이 자리가 이어받을 도구의 현재 판. 업무 1~5번 줄마다 무엇이 있고 무엇이 비었는지 여기서 본다. 지원 전에 꼭 읽을 것."
+  },
+  {
+   "id": "veloxcon",
+   "title": "Introducing HW Accelerated Velox with CXL Computational Memory",
+   "by": "Harry Kim(엑시나 CPO) · VeloxCon · 15분",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+   "why": "왜 연산을 메모리 쪽으로 내리나 — 이 칩에서 오버헤드·대역폭이 왜 중요한지의 출발점."
+  },
+  {
+   "id": "systems-perf",
+   "title": "Systems Performance (2판)",
+   "by": "Brendan Gregg · Addison-Wesley · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "why": "성능 분석 방법론(USE)·CPU·메모리·perf·ftrace 를 한 권에. 자격요건 3·4번과 업무 방식 줄의 바탕."
+  },
+  {
+   "id": "bpf-tools-ko",
+   "title": "BPF 성능 분석 도구",
+   "by": "브렌던 그레그 · 이호연 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003160869",
+   "why": "eBPF·bpftrace 로 커널·드라이버 쪽 지연을 재는 법. 우대사항 2번(eBPF)의 한국어 교재."
+  },
+  {
+   "id": "perf-wiki",
+   "title": "perf Wiki",
+   "by": "Linux 커널 커뮤니티",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://perf.wiki.kernel.org/index.php/Main_Page",
+   "why": "perf stat·record·report 튜토리얼. 하드웨어 카운터를 직접 세 보는 첫 걸음."
+  },
+  {
+   "id": "ftrace-doc",
+   "title": "ftrace - Function Tracer",
+   "by": "Linux 커널 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.kernel.org/trace/ftrace.html",
+   "why": "커널 함수·사건 추적의 원문. 자격요건 3번의 ftrace."
+  },
+  {
+   "id": "csapp",
+   "title": "Computer Systems: A Programmer's Perspective (3판)",
+   "by": "Randal E. Bryant · David R. O'Hallaron · Pearson · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://csapp.cs.cmu.edu/",
+   "why": "캐시·가상 메모리·링킹·ELF·예외 — 카운터를 해석하고 디버거를 만드는 데 필요한 컴퓨터 시스템 기초."
+  },
+  {
+   "id": "roofline",
+   "title": "Roofline: An Insightful Visual Performance Model for Multicore Architectures",
+   "by": "Samuel Williams · Andrew Waterman · David Patterson · CACM · 2009",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://doi.org/10.1145/1498765.1498785",
+   "why": "'이 일은 대역폭 천장에 닿았나'를 그림 하나로. 대역폭 최적화 줄의 첫 도구."
+  },
+  {
+   "id": "papi",
+   "title": "PAPI",
+   "by": "University of Tennessee ICL",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://icl.utk.edu/papi/",
+   "why": "칩마다 다른 카운터 위에 공통 이름을 두는 오래된 공개 구현 — Metric Abstraction Layer 설계의 본보기."
+  },
+  {
+   "id": "cupti",
+   "title": "CUPTI 문서",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.nvidia.com/cupti/",
+   "why": "가속기 쪽 추적·지표 API 를 어떻게 나눴나(활동 기록·콜백·지표). XPTI 와 견주어 읽는다."
+  },
+  {
+   "id": "perfetto",
+   "title": "Perfetto 문서",
+   "by": "Google · Perfetto 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://perfetto.dev/docs/",
+   "why": "xtop 이 내보내는 타임라인 형식. 트레이스 파일을 직접 만들어 여는 연습에 쓴다."
+  },
+  {
+   "id": "gdb-remote",
+   "title": "GDB Remote Serial Protocol",
+   "by": "GDB 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://sourceware.org/gdb/current/onlinedocs/gdb.html/Remote-Protocol.html",
+   "why": "MU Debugger 의 클라이언트가 GDB 다. 장치 쪽 stub 이 무엇을 답해야 하는지의 규약."
+  },
+  {
+   "id": "gbench",
+   "title": "Google Benchmark — User Guide · Tools",
+   "by": "Google · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/google/benchmark/blob/main/docs/tools.md",
+   "why": "반복·집계·U 검정 비교 — Benchmark Framework 와 반복 측정 신뢰도 줄의 기본 도구."
+  },
+  {
+   "id": "daly-cpd",
+   "title": "The Use of Change Point Detection to Identify Software Performance Regressions in a CI System",
+   "by": "David Daly 외 · ICPE 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2003.00584",
+   "why": "MongoDB 가 CI 성능 회귀 감시를 문턱 비교에서 변화점 탐지로 바꾼 경험. 업무 6번의 설계도."
+  },
+  {
+   "id": "mytkowicz",
+   "title": "Producing Wrong Data Without Doing Anything Obviously Wrong!",
+   "by": "Todd Mytkowicz 외 · ASPLOS 2009",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://doi.org/10.1145/1508244.1508275",
+   "why": "측정 환경만 바꿔도 결론이 뒤집히는 사례. '노이즈와 유의성' 줄을 왜 요구하는지 이해한다."
+  },
+  {
+   "id": "pyperf",
+   "title": "pyperf — Tune the system for benchmarks",
+   "by": "pyperf 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://pyperf.readthedocs.io/en/latest/system.html",
+   "why": "CPU 격리·주파수 고정 등 노이즈를 줄이는 시스템 설정 목록."
+  },
+  {
+   "id": "nsight",
+   "title": "Nsight Systems",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.nvidia.com/nsight-systems",
+   "why": "호스트·가속기를 한 타임라인에 놓는 도구. 무료라 GPU 가 있으면 직접 써 보고 xtop 과 견줄 수 있다."
+  },
+  {
+   "id": "vtune",
+   "title": "Intel VTune Profiler",
+   "by": "Intel",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.intel.com/content/www/us/en/developer/tools/oneapi/vtune-profiler.html",
+   "why": "하드웨어 카운터를 '메모리에 묶임' 같은 분석으로 묶어 보여 주는 방식 — 사용자 친화적 지표 설계의 본보기."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 도구 읽기",
+   "time": "1주",
+   "goal": "xtop·Profiler·Catalog·MU Debugger 가 무엇을 보여 주고 무엇이 비었는지 설명할 수 있다.",
+   "resources": [
+    "xcena-sdk",
+    "veloxcon"
+   ],
+   "task": "SDK 문서를 읽고 '있는 지표 / Unavailable 지표 / 디버거 제한'을 표 한 장으로 정리한다. 내가 첫 달에 고칠 세 가지를 골라 이유를 적는다."
+  },
+  {
+   "title": "Linux 표준 도구로 병목 잡기",
+   "time": "2~3주",
+   "goal": "perf·ftrace 로 CPU·캐시·스케줄링 병목을 숫자로 짚는다.",
+   "resources": [
+    "systems-perf",
+    "perf-wiki",
+    "ftrace-doc",
+    "csapp"
+   ],
+   "task": "행 우선/열 우선으로 큰 배열을 도는 C 프로그램 두 판을 만들어 perf stat 으로 캐시 실패 수·실행 시간을 비교하고, 스레드를 늘렸을 때 ftrace 로 스케줄링 대기를 확인한다."
+  },
+  {
+   "title": "작은 트레이서와 지표 층 만들기",
+   "time": "2~3주",
+   "goal": "타임스탬프를 남기는 C/C++ 기록 라이브러리와, 날것의 값에서 이름 있는 지표를 계산하는 층을 만든다.",
+   "resources": [
+    "perfetto",
+    "papi",
+    "cupti"
+   ],
+   "task": "가상 '장치'(스레드 풀)에 태스크를 보내는 C++ 프로그램에 dispatch·start·end 사건을 기록해 Perfetto 로 열고, 사건에서 오버헤드·쏠림·적중률 같은 지표 5개를 ID·단위·상태(관측/없음)와 함께 CSV 로 낸다."
+  },
+  {
+   "title": "벤치마크와 회귀 감시",
+   "time": "2주",
+   "goal": "반복 측정 → 통계 비교 → CI 실패/통과 → 변화점 알림까지 이어지는 작은 체계를 만든다.",
+   "resources": [
+    "gbench",
+    "pyperf",
+    "mytkowicz",
+    "daly-cpd"
+   ],
+   "task": "Google Benchmark 로 3단계 프로그램의 벤치를 만들고 GitHub Actions 에서 9번 이상 반복해 JSON 을 쌓는다. 일부러 느리게 만든 커밋을 넣어 U 검정과 변화점 탐지가 그 커밋을 짚는지 확인한다."
+  },
+  {
+   "title": "심화 — 디버거와 고급 도구 (선택)",
+   "time": "계속",
+   "goal": "GDB 원격 규약과 eBPF·Nsight 의 설계를 엑시나 도구와 견줄 수 있다.",
+   "resources": [
+    "gdb-remote",
+    "bpf-tools-ko",
+    "nsight",
+    "vtune",
+    "roofline"
+   ],
+   "task": "레지스터 읽기·메모리 읽기·중단점만 되는 작은 GDB stub 을 가상 CPU(간단한 바이트코드 해석기)에 붙여 본다. bpftrace 로 시스템 호출 지연 분포를 찍어 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공개된 연봉 숫자가 없다 — 비상장이라 사업보고서 평균 급여가 없고, 공고에도 적혀 있지 않다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "적혀 있지 않음",
+    "basis": "공고",
+    "note": "경력무관 공고이고 급여 칸이 없다 [1]"
+   }
+  ],
+  "how": "공시 숫자 없음 — 비상장이라 사업보고서 '직원 1인 평균 급여액'이 없다. 공공데이터 집계 사이트(자소설닷컴)는 신입·평균 연봉을 '아직 수집 중'으로 두고 있다 [35]. 경력무관이라 처우는 경력에 따라 개인별 협의로 정해진다고 보는 것이 자연스럽다 {추론}. 시리즈 B 2,018억 원을 포함해 누적 약 2,800억 원을 투자받았다고 공고가 밝혔다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "MX Day",
+    "detail": "한 달에 한 번 전사가 함께 쉬는 유급 휴일, 연 12회"
+   },
+   {
+    "name": "유연근무",
+    "detail": "선택적 근로시간제 기반"
+   },
+   {
+    "name": "식대",
+    "detail": "점심 식대 지원"
+   },
+   {
+    "name": "복지포인트",
+    "detail": "지급(금액은 밝히지 않음)"
+   },
+   {
+    "name": "건강검진",
+    "detail": "임직원과 임직원 가족"
+   }
+  ],
+  "note": "이 공고의 복리후생 칸 [1]. 채용 홈페이지의 복지 목록 [36]에도 같은 항목이 있다(같은 회사 다른 풀이 조사 때 확인, 2026년 11월). 금액·조건은 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "엑시나 본사 · 미래에셋벤처타워",
+  "address": "경기도 성남시 분당구 판교역로241번길 20, 9층 (삼평동, 미래에셋벤처타워)",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C241%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선·경강선 판교역 근처 판교테크노밸리 {추론}",
+  "note": "주소는 공고 근무지 [1]. 채용 홈페이지 회사 정보에도 같은 건물로 적혀 있다 [37]. 미국 지사는 실리콘밸리에 있다 [1]."
+ }
+}
