@@ -460,6 +460,8 @@
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
   "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
+  "boards-gamejob:dev:285753": "smilegate-ai-product-quality",
+  "ats-smilegate:group:5938": "smilegate-ai-product-quality",
   "boards-gamejob:dev:285958": "smilegate-ai-qa-automation-rnd-intern",
   "ats-smilegate:group:6262": "smilegate-ai-qa-automation-rnd-intern",
   "boards-gamejob:dev:286445": "smilegate-ai-web-service-dev",
@@ -4379,6 +4381,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 25
+  },
+  {
+   "id": "smilegate-ai-product-quality",
+   "company": "스마일게이트",
+   "role": "AI 프로덕트 운영·품질 관리 담당",
+   "jobs": [
+    "boards-gamejob:dev:285753",
+    "ats-smilegate:group:5938"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 11
   },
   {
    "id": "smilegate-ai-qa-automation-rnd-intern",

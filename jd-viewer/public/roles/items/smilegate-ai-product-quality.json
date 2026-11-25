@@ -1,0 +1,783 @@
+{
+ "id": "smilegate-ai-product-quality",
+ "company": "스마일게이트",
+ "role": "AI 프로덕트 운영·품질 관리 담당",
+ "team": "AI센터 · 로아개발본부 인사팀 문의",
+ "jobs": [
+  "boards-gamejob:dev:285753",
+  "ats-smilegate:group:5938"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "AI센터가 연구로 만든 결과물(대화 캐릭터·게임 QA 에이전트·사내 AI 포털 같은 것)을 게임·서비스 부서가 **실제로 쓰게 넘기는 사이**를 맡습니다 — 무엇을 어디까지 만들지(스펙), 어느 수준이면 내보낼지(품질 기준), 무엇이 잘못될 수 있나(리스크)를 정하고 라이브에서 지킵니다.[1][3][4]",
+  "env": "AI센터는 기술 확보뿐 아니라 **그 기술을 쓸 서비스 기획까지** 함께 하는 조직이고, 연구원 옆에 심리학·인문학 전공자가 같이 일합니다.[7] 문의처가 로스트아크 쪽 인사팀이라 그 게임과 이어진 자리일 수 있습니다 {추론}[1].",
+  "oneline": "모델을 만드는 사람이 아니라, **AI가 게임 안에서 틀리지 않고 쓸모 있게 돌게 하는** 경력 3년 이상 AI 프로덕트 매니저·품질 담당."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "AI 게임/서비스 도메인 프로덕트 운영 및 관리",
+   "short": "AI가 들어간 게임 기능·서비스를 출시 뒤에도 맡아, 이용 현황·문제·개선 순서를 관리하는 일.",
+   "why": "스마일게이트 AI센터의 기술은 그룹의 캐릭터·챗봇에 부분적으로 들어갔고[7], 2026년 출시를 목표로 한 '로스트아크 모바일'은 캐릭터가 쓰러진 순간의 전투 패턴을 AI가 읽어 공략을 알려 주는 식으로 AI를 이용자 경험에 붙인다고 소개됐습니다.[9] 연구로 끝나지 않고 **이용자가 매일 쓰는 기능**이 되면, 누군가 그 기능을 계속 돌보고 고쳐야 합니다.",
+   "actually": {
+    "intro": "회사가 이 자리의 일과를 공개하지 않아, AI 기능을 운영하는 공개 지침으로 '보통 이런 것'을 보입니다.",
+    "items": [
+     "**성공의 뜻 정하기** — 공략 안내 기능이면 '안내를 본 뒤 같은 보스를 깬 비율'처럼 이용자에게 좋은 숫자를 먼저 정한다. 머신러닝을 붙이기 전에 지표부터 설계하라는 것이 구글의 첫 규칙들이다.[24]",
+     "**지켜볼 숫자 걸기** — 응답 시간·실패율 같은 서비스 지표(SLI)에 목표(SLO)를 정하고 대시보드로 본다.[14]",
+     "**틀렸을 때의 길** — AI가 틀린 답을 내면 이용자가 바로 고치거나 신고할 수 있는 길을 만든다(HAX 지침의 '틀렸을 때' 묶음).[20]",
+     "**모델·데이터가 바뀌면 다시 확인** — 패치로 아이템·보스가 바뀌면 같은 질문에 대한 답도 바뀌어야 한다. 하나를 바꾸면 전체가 바뀌는 것이 머신러닝 시스템의 성질이다.[17]",
+     "**개선 순서** — 이용자 신고·평가 결과를 모아 '무엇부터 고칠까'를 연구 조직과 합의한다.[3][4]"
+    ]
+   },
+   "how_far": "모델 자체를 고치는 일은 연구 조직 몫입니다. 이 자리는 **무엇이 잘 되고 있고 무엇이 깨졌는지 숫자로 알고, 그다음 할 일을 정하는** 수준이 최소선입니다 {추론}.",
+   "refs": [
+    7,
+    9,
+    14,
+    17,
+    20,
+    24
+   ],
+   "study": [
+    "rules-of-ml",
+    "sre-slo",
+    "hax",
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 개발 결과물 현업 적용을 위한 스펙 산정, 품질 기준, 리스크 관리",
+   "short": "연구 결과를 서비스에 넣기 전에 '무엇을·어느 수준까지·어떤 위험을 안고' 넣을지 정해 문서로 못 박는 일.",
+   "why": "AI센터 결과물은 대화 모델부터 게임 플레이를 흉내 내는 QA 에이전트[4], 강화학습 게임 AI[5], 사내 AI 포털[3]까지 성격이 다 다릅니다. 같은 입력에 늘 같은 답을 내지 않는 AI는 보통 소프트웨어 품질 모델만으로 재기 어려워, 국제 표준도 AI 시스템용 품질 모델(ISO/IEC 25059)을 따로 냈습니다.[11]",
+   "actually": {
+    "items": [
+     "**스펙 산정** — 기능 범위(지원 질문 유형·언어), 응답 시간, 동시 사용자 수, 비용(호출 1건당), 사람 검수가 필요한 부분을 정한다 {추론}.",
+     "**품질 기준** — 정답률뿐 아니라 견고성(조금 다른 질문에도 버티나)·투명성(AI라는 것과 한계를 알리나)·사람이 개입할 수 있나 같은 AI 전용 항목을 본다.[11] 스마일게이트 AI센터는 대화 AI를 '사람에 얼마나 가까운가'와 '윤리 기준에 얼마나 맞나' 두 기준으로 평가하는 HuLiC 계획을 밝힌 적이 있다.[6]",
+     "**평가셋 만들기** — 실제 쓰임을 닮은 질문 목록과 정답·채점 기준을 만들어 모델이 바뀔 때마다 같은 시험을 본다.[21]",
+     "**리스크 관리** — NIST AI RMF는 위험 관리를 다스리기(Govern)·지도 그리기(Map)·재기(Measure)·다루기(Manage) 네 가지로 나눈다.[12] 생성형 AI라면 프롬프트 주입·민감 정보 노출 같은 목록부터 본다.[18]",
+     "**국내 기준** — 과기정통부·TTA의 신뢰할 수 있는 AI 개발 안내서는 15개 요구사항·67개 검증 항목을 두고, NIST AI RMF와 대부분 맞물린다는 교차 분석이 나왔다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "출시 관문 — 정답률만 보면 놓친다 (가상 값, 직접 돌린 출력)",
+     "body": "평가셋 10문항의 결과를 합의한 기준과 대어 봅니다. 정답률은 기준을 넘었지만 금칙 위반 1건·느린 응답 때문에 '보류'가 나옵니다 — 품질 기준이 숫자 하나가 아니라 여러 칸인 이유입니다.",
+     "lang": "python",
+     "code": "results = [  # (질문 유형, 정답, 금칙 위반, 응답 ms)\n    (\"공략\", True, False, 820), (\"공략\", True, False, 940), (\"공략\", False, False, 1210),\n    (\"아이템\", True, False, 650), (\"아이템\", True, False, 700), (\"아이템\", True, True, 680),\n    (\"퀘스트\", True, False, 1500), (\"퀘스트\", False, False, 2900), (\"퀘스트\", True, False, 1100),\n    (\"잡담\", True, False, 400),\n]\nspec = {\"정답률\": 0.80, \"금칙 위반\": 0, \"p95 응답 ms\": 2000}\nn = len(results)\nacc = sum(r[1] for r in results) / n\nbad = sum(r[2] for r in results)\nlat = sorted(r[3] for r in results)\np95 = lat[min(n - 1, int(0.95 * n))]\nchecks = {\"정답률\": (acc, acc >= spec[\"정답률\"]),\n          \"금칙 위반\": (bad, bad <= spec[\"금칙 위반\"]),\n          \"p95 응답 ms\": (p95, p95 <= spec[\"p95 응답 ms\"])}\nfor k, (v, ok) in checks.items():\n    print(f\"{k}: {v} (기준 {spec[k]}) {'통과' if ok else '미달'}\")\nprint(\"출시:\", \"가능\" if all(ok for _, ok in checks.values()) else \"보류\")\n# 정답률: 0.8 (기준 0.8) 통과\n# 금칙 위반: 1 (기준 0) 미달\n# p95 응답 ms: 2900 (기준 2000) 미달\n# 출시: 보류"
+    },
+    {
+     "title": "리스크 대장 — 곱셈 점수의 함정 (가상 값, 직접 돌린 출력)",
+     "body": "가능성 × 영향(각 1~5)으로 줄 세우면, 드물지만 치명적인 '욕설·혐오 표현'(2 × 5 = 10)이 자주 생기는 '낡은 아이템 정보'(4 × 3 = 12)보다 아래로 갑니다. 그래서 영향이 가장 큰 항목은 점수와 상관없이 따로 올리는 규칙을 함께 두는 편이 안전합니다 {추론}.",
+     "lang": "python",
+     "code": "risks = [\n    (\"공략 AI가 틀린 보스 패턴을 안내\", 3, 4),\n    (\"AI 답변에 욕설·혐오 표현\", 2, 5),\n    (\"패치 뒤 아이템 정보가 낡음\", 4, 3),\n    (\"이벤트 날 호출 폭주로 응답 지연\", 3, 3),\n    (\"이용자 채팅에 개인정보 포함\", 2, 4),\n]\nfor name, p, i in sorted(risks, key=lambda r: -r[1] * r[2]):\n    score = p * i\n    grade = \"높음\" if score >= 12 else \"중간\" if score >= 8 else \"낮음\"\n    print(f\"{score:>2} {grade} {name}\")\n# 12 높음 공략 AI가 틀린 보스 패턴을 안내\n# 12 높음 패치 뒤 아이템 정보가 낡음\n# 10 중간 AI 답변에 욕설·혐오 표현\n#  9 중간 이벤트 날 호출 폭주로 응답 지연\n#  8 중간 이용자 채팅에 개인정보 포함"
+    }
+   ],
+   "how_far": "기준의 숫자(정답률 몇 %면 낸다)는 현업 부서와 연구 조직이 같이 정합니다. 이 자리는 **그 합의를 끌어내고, 시험 방법과 통과선을 문서로 남기고, 매번 같은 방식으로 재는** 사람입니다 {추론}.",
+   "refs": [
+    3,
+    4,
+    5,
+    6,
+    11,
+    12,
+    13,
+    18,
+    21
+   ],
+   "study": [
+    "ai-engineering",
+    "nist-ai-rmf",
+    "owasp-llm",
+    "openai-evals",
+    "iso-25059"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 연구 개발 조직과 현업 부서 간 협업 커뮤니케이션",
+   "short": "연구원의 말(지표·모델 한계)과 게임 개발팀의 말(일정·재미·이용자 반응)을 서로 알아듣게 옮기는 일.",
+   "why": "AI센터는 기술을 실제 서비스와 잇는 복합적인 일을 하기 때문에 일반 연구 조직보다 사람이 다양하고, 심리학·인문학 전공자가 함께 일한다고 소개됐습니다.[7] 센터의 목표도 '정확한 답'보다 감정에 공감하는 '친구 같은 AI'라서[6][7], 연구 지표와 현업이 원하는 재미가 어긋나기 쉽습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**번역** — '정확도 92%'를 '열 번 중 한 번은 틀린 공략을 준다'로, '재미가 없다'를 평가셋의 어떤 항목으로 옮긴다 {추론}.",
+     "**기대 맞추기** — 이 AI가 무엇을 할 수 있고 얼마나 잘하는지를 처음부터 분명히 알리라는 것이 HAX 지침의 첫 두 줄이다.[20]",
+     "**일정 맞추기** — 게임 업데이트 일정에 맞춰 모델 교체·평가·출시 순서를 잡는다 {추론}.",
+     "**되먹임 돌리기** — 현업이 모은 이용자 반응·오류 사례를 연구 조직이 다음 학습·평가에 쓸 수 있는 꼴로 넘긴다.[19]"
+    ]
+   },
+   "how_far": "양쪽의 전문가가 될 필요는 없지만, **연구 쪽 지표가 무슨 뜻인지와 게임 개발 일정이 어떻게 굴러가는지를 둘 다 설명할 수 있어야** 합니다 {추론}.",
+   "refs": [
+    6,
+    7,
+    19,
+    20
+   ],
+   "study": [
+    "pair",
+    "hax"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 게임/서비스 도메인 프로덕트 운영 및 관리 업무 3년 이상",
+   "short": "AI가 들어간 게임·서비스를 실제로 맡아 운영해 본 기간이 3년은 넘어야 해서.",
+   "why": "게임잡 판 공고는 이 줄과 다음 줄을 '자격요건', 그 아래 네 줄을 '필요역량'으로 나눠 적었습니다.[1] 회사 채용 페이지 판에는 필요역량 네 줄만 자격요건으로 실렸습니다.[2]",
+   "how_far": "경력기술서와 포트폴리오를 함께 내야 합니다.[1] 어떤 AI 기능을, 어떤 지표로, 출시 뒤 얼마나 운영했는지 숫자로 보여 주는 것이 핵심입니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서비스 라이브 운영 단계에서의 실무적 이해",
+   "short": "출시 뒤(라이브)에 생기는 일 — 장애·패치·이용자 반응·되돌리기 — 을 직접 겪어 알아야 해서.",
+   "why": "AI 기능은 출시가 끝이 아닙니다. 데이터가 바뀌고 모델이 바뀌고 이용자가 예상 밖의 입력을 넣으면서 품질이 흔들리고, 그 비용이 ML 코드보다 둘레의 시스템에서 커진다는 것이 구글 연구진의 지적입니다.[17]",
+   "actually": {
+    "items": [
+     "**조금씩 내보내기(카나리)** — 새 모델을 일부 이용자에게만 먼저 켜고 기존판과 지표를 비교한 뒤 넓힌다.[15]",
+     "**오류 예산** — 목표(SLO)를 넘어선 실패가 쌓이면 새 기능보다 안정화를 먼저 한다.[14]",
+     "**되돌리기** — 문제가 생기면 바로 이전 모델·프롬프트로 돌릴 수 있게 판을 남긴다 {추론}.",
+     "**패치 날** — 게임 업데이트로 아이템·퀘스트 정보가 바뀐 날, AI가 낡은 정보를 말하지 않는지 먼저 확인한다 {추론}."
+    ]
+   },
+   "refs": [
+    14,
+    15,
+    17
+   ],
+   "study": [
+    "sre-slo",
+    "sre-canary",
+    "ml-system-design"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 기반 서비스 개발 및 운영 경험",
+   "short": "AI 기능을 서비스로 만들고 돌려 본 사람이어야 스펙·비용·한계를 현실적으로 잡을 수 있어서.",
+   "why": "스펙 산정과 품질 기준은 AI가 실제로 어떻게 실패하는지 알아야 쓸 수 있습니다. 같은 센터의 다른 공고는 AI 기능을 웹 서비스로 감싸는 개발자[3], 게임 QA용 AI 에이전트 연구[4]를 뽑고 있어, 이 자리는 그 결과물을 받는 쪽입니다.",
+   "actually": {
+    "items": [
+     "기초 모델 위에 프롬프트·검색(RAG)·미세조정을 얹어 앱을 만드는 과정과, 그 앱을 평가하는 법이 요즘 'AI 엔지니어링'의 중심이다.[25]",
+     "응답 시간과 호출 비용이 품질만큼 중요한 제약이다 — 같은 품질이면 싸고 빠른 쪽을 고른다 {추론}.",
+     "운영 경험이란 '출시했다'가 아니라 출시 뒤의 오류 사례를 모으고 고쳐 본 경험이다.[21]"
+    ]
+   },
+   "how_far": "직접 모델을 학습시킨 경험까지는 요구하지 않는 문장입니다. 다만 **AI 기능 하나를 API 호출부터 평가·모니터링까지 한 바퀴 돌려 본** 경험은 있어야 대화가 됩니다 {추론}.",
+   "refs": [
+    3,
+    4,
+    21,
+    25
+   ],
+   "study": [
+    "ai-engineering",
+    "openai-evals"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI R&D 결과물을 현업에 적용하기 위한 품질 기준 수립 및 관리 역량",
+   "short": "'연구에서 잘 됐다'를 '서비스에 내도 된다'로 바꾸는 시험 방법과 통과선을 만들고 지키는 힘.",
+   "why": "연구 결과는 보통 연구용 데이터셋 점수로 말합니다. 현업에 들어가면 실제 이용자 입력·응답 시간·윤리 기준까지 봐야 합니다. AI센터가 대화 AI를 '사람다움'과 '윤리' 두 축으로 재려 했던 것도 연구 점수만으로는 부족하다는 뜻으로 읽힙니다 {추론}[6].",
+   "actually": {
+    "items": [
+     "**평가 기준을 글로** — 목표를 정하고, 실제를 닮은 평가 데이터를 모으고, 지표를 정하고, 바뀔 때마다 다시 돌리는 순서를 문서화한다.[21]",
+     "**사람 평가와 AI 평가** — 재미·말투처럼 정답이 없는 것은 사람 평가나 다른 모델로 채점(LLM-as-judge)하고, 그 채점기도 사람 판정과 맞는지 본다.[21][25]",
+     "**AI 전용 품질 항목** — 견고성·투명성·사람 개입 가능성 같은 AI 시스템 품질 항목을 기준표에 넣는다.[11]",
+     "**관리** — 기준을 한 번 정하고 끝내지 않고, 모델·데이터가 바뀔 때마다 같은 관문을 통과하게 한다(위 '출시 관문' 예).[21]"
+    ]
+   },
+   "how_far": "정답률 같은 숫자를 직접 계산하고 해석할 수 있어야 합니다(혼동 행렬·정밀도·재현율 수준) {추론}. 기준 문서를 남들이 같은 방식으로 다시 돌릴 수 있게 쓰는 것이 '관리'입니다.",
+   "refs": [
+    6,
+    11,
+    21,
+    25
+   ],
+   "study": [
+    "openai-evals",
+    "ai-engineering",
+    "iso-25059",
+    "confusion-matrix",
+    "terminal-bench"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 프로덕트 기획 및 협업을 위한 문서화 역량",
+   "short": "무엇을 왜 만들고 어떻게 재는지를 글로 남겨, 연구·개발·현업이 같은 문서를 보고 일하게 하는 힘.",
+   "why": "업무 둘째 줄의 스펙·품질 기준·리스크는 결국 문서로 남아야 지켜집니다. 제출 서류에 경력기술서와 포트폴리오가 있는 것도 이런 문서를 보여 달라는 뜻으로 읽을 수 있습니다 {추론}[1].",
+   "actually": {
+    "items": [
+     "**기획서** — 해결할 이용자 문제, 성공 지표, 하지 않을 것, 출시 조건.[24]",
+     "**모델 카드** — 모델의 용도·쓰면 안 되는 곳·평가 데이터·평가 결과·윤리적 고려·한계를 한 장에 적는 형식.[16]",
+     "**리스크 대장** — 위험·가능성·영향·대응·담당자(위 예시).[12]",
+     "**출시 점검표·운영 문서** — 지표 대시보드 위치, 장애 때 연락처, 되돌리는 법.[14]"
+    ]
+   },
+   "how_far": "문장이 화려할 필요는 없습니다. **다른 사람이 읽고 같은 결정을 내릴 수 있는지**가 기준입니다 {추론}.",
+   "refs": [
+    1,
+    12,
+    14,
+    16,
+    24
+   ],
+   "study": [
+    "model-cards",
+    "pair",
+    "rules-of-ml"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "존중과 열린 자세에 기반한 커뮤니케이션 및 협업 능력",
+   "short": "연구원·개발자·기획자·심리학 전공자 사이에서 서로의 판단을 존중하며 합의를 끌어내야 해서.",
+   "why": "AI센터는 연구원 외에 심리학·인문학 전공 인력이 같이 일하는 조직입니다.[7] 이 자리는 업무 셋째 줄처럼 조직 사이를 잇는 일이라, 기술보다 이 능력이 일의 성패를 가르는 경우가 많습니다 {추론}.",
+   "how_far": "서류 합격자는 온라인 Culture Fit Test(약 30분)를 보고, 그 결과가 면접 참고 자료로 쓰입니다.[1] 면접에서는 의견이 갈린 사례를 어떻게 풀었는지 구체적으로 물을 가능성이 큽니다 {추론}.",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "게임 및 콘텐츠 서비스 제작 생태계에 대한 이해도",
+   "short": "게임이 기획·아트·클라이언트·서버·QA·라이브 운영으로 어떻게 만들어지는지 알면 AI를 어디에 넣을지 보여서.",
+   "why": "스마일게이트 AI센터는 게임 콘텐츠·게임 제작 효율화·게이머 의견 분석에 AI를 쓰고, 영화·스트리밍·드라마로 넓히는 것을 검토한다고 밝혔습니다.[6] 이미지·영상 제작 자동화[7], 게임 QA 에이전트[4] 처럼 이용자 기능만이 아니라 **제작 과정**에도 AI가 들어갑니다.",
+   "actually": {
+    "items": [
+     "**이용자 쪽** — 대화 캐릭터, 공략 안내 같은 게임 안 기능.[7][9]",
+     "**제작 쪽** — 캐릭터·아이템·배경 같은 리소스 제작 효율화, 자동 QA.[4][8]",
+     "**운영 쪽** — 게이머 의견 분석.[6]",
+     "제작 쪽 AI의 '현업'은 이용자가 아니라 **사내 아티스트·QA 담당자**라서 품질 기준도 달라진다 {추론}."
+    ]
+   },
+   "refs": [
+    4,
+    6,
+    7,
+    8,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 기술(모델, 데이터, 인프라 등)에 대한 이해를 바탕으로의 온보딩 및 라이브 확산 경험",
+   "short": "새 AI 기능을 한 팀에 처음 붙이고(온보딩), 잘 되면 다른 게임·부서로 넓혀(확산) 본 경험.",
+   "why": "AI센터는 그룹 전체의 업무 효율과 서비스 확장을 맡는 조직이라[8], 한 게임에서 쓴 AI를 다른 팀이 받아 쓰게 만드는 일이 반복됩니다 {추론}. 사내 AI 포털 기능을 넓히는 개발자를 따로 뽑는 것도 같은 흐름입니다.[3]",
+   "actually": {
+    "items": [
+     "**온보딩** — 새 팀이 쓰려면 무엇을 넣어야 하나(데이터 형식·연결 방법·권한)를 안내서로 만든다 {추론}.",
+     "**모델·데이터·인프라를 알아야 하는 이유** — 다른 게임으로 넓히면 데이터 분포가 바뀌어 성능이 떨어질 수 있고, 호출량이 늘면 비용·지연이 바뀐다.[17][25]",
+     "**확산 순서** — 한 팀에서 지표로 효과를 보인 뒤, 일부 범위부터 켜고 넓힌다.[15]"
+    ]
+   },
+   "how_far": "인프라를 직접 짓는 경험까지는 아니고, **모델·데이터·인프라가 바뀔 때 품질과 비용이 어떻게 흔들리는지 설명할 수 있는** 수준이면 됩니다 {추론}.",
+   "refs": [
+    3,
+    8,
+    15,
+    17,
+    25
+   ],
+   "study": [
+    "ml-system-design",
+    "sre-canary"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "AI 기능이 '데모에서 됐다'와 '라이브에서 된다'의 차이를 겪어 본 사람",
+   "숫자로 기준을 정하고 그 기준대로 '보류'를 말할 수 있는 사람",
+   "게임을 좋아하고, 연구원·개발자·기획자 사이의 통역이 즐거운 사람[7]",
+   "문서로 합의를 남기는 일을 귀찮아하지 않는 사람"
+  ],
+  "hard": [
+   "모델을 직접 만들고 싶은 사람에게는 맞지 않는다 — 결과물을 받아 넣는 자리다 {추론}",
+   "경력 3년 이상의 AI 프로덕트 운영 경험이 첫 자격이라 신입은 어렵다[1]",
+   "연구 조직과 현업 사이에서 양쪽의 일정·기대가 부딪히는 자리다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "연구 쪽은 정확도 92%로 충분하다고 하고, 게임 팀은 틀리면 안 된다고 합니다. 출시 기준을 어떻게 정하겠어요?",
+   "a": "품질 기준 수립 — 여러 칸의 관문과 사람 개입 경로.[11][21]"
+  },
+  {
+   "q": "AI가 이용자에게 틀린 공략을 알려 준 사고가 났습니다. 첫 30분에 무엇을 하나요?",
+   "a": "라이브 운영 — 되돌리기·오류 예산·되먹임.[14][15]"
+  },
+  {
+   "q": "대화 캐릭터의 '재미'나 '사람다움'은 어떻게 재겠어요?",
+   "a": "AI센터가 HuLiC로 세우려던 두 기준과 사람·AI 채점.[6][21]"
+  },
+  {
+   "q": "게임 업데이트가 끝난 다음 날, AI 기능에서 무엇을 먼저 확인하나요?",
+   "a": "데이터가 바뀌면 전체가 바뀐다는 성질.[17]"
+  },
+  {
+   "q": "이 AI 기능의 모델 카드를 쓴다면 어떤 칸을 채우겠어요?",
+   "a": "문서화 역량 — 용도·한계·평가 결과.[16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "게임잡 · [AI센터] AI 프로덕트 운영·품질 관리 담당 모집",
+   "url": "https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=285753",
+   "kind": "posting",
+   "note": "업무·자격요건·필요역량·우대사항·제출서류(경력기술서·포트폴리오)·Culture Fit Test. 문의처 로아개발본부 인사팀"
+  },
+  {
+   "n": 2,
+   "title": "Smilegate Careers · [AI센터] AI 프로덕트 운영·품질 관리 담당",
+   "url": "https://careers.smilegate.com/apply/announce/view?seq=5938",
+   "kind": "posting",
+   "note": "회사 채용 페이지 판 — 자격요건으로 필요역량 네 줄만 실림. 마감 2026-11-30, 수습 3개월"
+  },
+  {
+   "n": 3,
+   "title": "게임잡 · [AI센터] AI 웹서비스 개발 담당 모집",
+   "url": "https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=286445",
+   "kind": "posting",
+   "note": "같은 센터 — 사내 AX 포털 기능 확장·운영"
+  },
+  {
+   "n": 4,
+   "title": "게임잡 · [AI센터] AI QA 자동화 기술 R&D 담당 (인턴/6개월)",
+   "url": "https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=285958",
+   "kind": "posting",
+   "note": "같은 센터 — 모방학습 기반 게임 QA 에이전트 연구"
+  },
+  {
+   "n": 5,
+   "title": "게임잡 · [AI센터] 강화학습 기반 게임 AI R&D (Smilegate RPG)",
+   "url": "https://www.gamejob.co.kr/Recruit/GI_Read_Comt_Ifrm?gno=284921",
+   "kind": "posting",
+   "note": "같은 센터 — 강화학습·모방학습 게임 AI"
+  },
+  {
+   "n": 6,
+   "title": "이코노미스트 · [한우진 AI 세상] 슈퍼 휴먼이 아닌 '친구 같은' 인공지능",
+   "url": "https://economist.co.kr/article/view/ecn202109010023",
+   "kind": "company",
+   "date": "2021-09",
+   "note": "AI센터 센터장 기고 — Fun AI·Human Like AI, HuLiC 평가 기준 두 가지(사람에 가까운가·윤리 기준에 맞나), 적용 분야"
+  },
+  {
+   "n": 7,
+   "title": "아시아경제 · [AI혁명](34) AI에 인간 감정 담는다…스마일게이트",
+   "url": "https://view.asiae.co.kr/article/2023051607472772039",
+   "kind": "news",
+   "date": "2023-05",
+   "note": "기술 확보와 서비스 기획을 함께, 캐릭터·챗봇에 부분 적용, 심리학·인문학 전공 인력"
+  },
+  {
+   "n": 8,
+   "title": "아시아경제 · 스마일게이트 제2회 AI 테크 데이",
+   "url": "https://www.asiae.co.kr/en/article/2023121909420609269",
+   "kind": "news",
+   "date": "2023-12",
+   "note": "AI센터가 그룹 업무 효율 개선과 서비스·IP 생태계 확장을 맡는다는 소개"
+  },
+  {
+   "n": 9,
+   "title": "동아일보 · 개발자 혼자서 3주 만에 제작…게임산업 바꾸는 AI",
+   "url": "https://v.daum.net/v/20260408172944350",
+   "kind": "news",
+   "date": "2026-04",
+   "note": "로스트아크 모바일 — 캐릭터 제작·전투 보조에 AI, 사망 순간의 패턴을 읽어 공략 안내"
+  },
+  {
+   "n": 10,
+   "title": "스마일게이트 뉴스룸 · [AI Revolution] 스마일게이트 — 휴먼라이크 AI",
+   "url": "https://newsroom.smilegate.com/eng/1684893399",
+   "kind": "company",
+   "date": "2023-05",
+   "note": "페이지 하단에 회사 주소"
+  },
+  {
+   "n": 11,
+   "title": "ISO/IEC 25059:2023 · Quality model for AI systems",
+   "url": "https://www.iso.org/standard/80655.html",
+   "kind": "reference",
+   "note": "ISO/IEC 25010 소프트웨어 품질 모델을 AI 시스템용으로 넓힌 표준. 본문 유료 — 항목 이름만 인용"
+  },
+  {
+   "n": 12,
+   "title": "NIST · AI Risk Management Framework",
+   "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+   "kind": "reference",
+   "note": "Govern·Map·Measure·Manage 네 기능, 생성형 AI 프로필"
+  },
+  {
+   "n": 13,
+   "title": "보안뉴스 · 과기정통부-TTA '신뢰할 수 있는 AI 개발안내서'와 NIST AI RMF 교차 분석",
+   "url": "https://m.boannews.com/html/detail.html?idx=135311",
+   "kind": "news",
+   "date": "2024-12",
+   "note": "15개 요구사항·67개 세부 검증 항목"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA, 오류 예산"
+  },
+  {
+   "n": 15,
+   "title": "Google SRE Workbook · Canarying Releases",
+   "url": "https://sre.google/workbook/canarying-releases/",
+   "kind": "reference",
+   "note": "일부에만 먼저 내보내고 기존판과 비교"
+  },
+  {
+   "n": 16,
+   "title": "Mitchell 외 · Model Cards for Model Reporting",
+   "url": "https://arxiv.org/abs/1810.03993",
+   "kind": "reference",
+   "date": "2018"
+  },
+  {
+   "n": 17,
+   "title": "Sculley 외 · Hidden Technical Debt in Machine Learning Systems",
+   "url": "https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems",
+   "kind": "reference",
+   "date": "2015",
+   "note": "구글 — ML 코드는 시스템의 작은 부분, 하나를 바꾸면 전체가 바뀐다"
+  },
+  {
+   "n": 18,
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference",
+   "note": "프롬프트 주입·민감 정보 노출 등"
+  },
+  {
+   "n": 19,
+   "title": "Google PAIR · People + AI Guidebook",
+   "url": "https://pair.withgoogle.com/guidebook/",
+   "kind": "reference",
+   "note": "이용자 요구·성공 정의·피드백과 통제·오류 처리"
+  },
+  {
+   "n": 20,
+   "title": "Microsoft · Guidelines for Human-AI Interaction (HAX)",
+   "url": "https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/",
+   "kind": "reference",
+   "note": "18개 지침 — 처음·사용 중·틀렸을 때·시간이 지나며"
+  },
+  {
+   "n": 21,
+   "title": "OpenAI · Evaluation best practices",
+   "url": "https://platform.openai.com/docs/guides/evaluation-best-practices",
+   "kind": "reference",
+   "note": "다른 회사의 공개 문서 — 목표·데이터·지표·반복 평가, 모델 채점"
+  },
+  {
+   "n": 22,
+   "title": "스마일게이트 채용 · LIFE AT SMILEGATE",
+   "url": "https://careers.smilegate.com/life",
+   "kind": "company",
+   "note": "복지 목록 — 연도 표기 없음. 같은 회사 다른 풀이에서 확인한 값"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 · 스마일게이트 기업 정보",
+   "url": "https://jasoseol.com/companies/11383",
+   "kind": "reference",
+   "note": "초봉·평균 연봉(공공데이터 집계). 같은 회사 다른 풀이에서 검색 결과 요약으로 확인한 값"
+  },
+  {
+   "n": 24,
+   "title": "Google for Developers · Rules of Machine Learning",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "kind": "reference",
+   "note": "ML 없이도 출시를 두려워 말라, 지표를 먼저 설계하라"
+  },
+  {
+   "n": 25,
+   "title": "칩 후옌 · AI 엔지니어링 (변성윤 옮김, 한빛미디어)",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=AI+%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81+%EC%B9%A9+%ED%9B%84%EC%98%8C",
+   "kind": "reference",
+   "date": "2025-09",
+   "note": "기초 모델로 앱 만들기 — 평가(AI 채점 포함)·프롬프트·RAG·미세조정. 출판사 소개 기준"
+  }
+ ],
+ "caveat": "스마일게이트 AI센터가 이 자리의 품질 기준·리스크 관리 방식을 직접 발표한 영상·글은 찾지 못했습니다(받은 영상 없음). 회사 근거는 공고 두 판·같은 센터 공고 셋·센터장 기고(2021)·기사(2023·2026)이고, 품질·리스크·운영의 '보통 이런 것'은 ISO·NIST·구글·마이크로소프트·OpenAI 등 다른 곳의 공개 문서에서 가져왔습니다. 문의처가 로아개발본부 인사팀이라 로스트아크와 이어진 자리일 수 있지만 공고에 적혀 있지 않습니다.",
+ "resources": [
+  {
+   "id": "ai-engineering",
+   "title": "AI 엔지니어링",
+   "by": "칩 후옌 · 변성윤 옮김 · 한빛미디어 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=AI+%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81+%EC%B9%A9+%ED%9B%84%EC%98%8C",
+   "why": "기초 모델 위에 앱을 만들고 평가하는 법 — 특히 평가 장들이 '품질 기준 수립' 요건에 바로 쓰인다. 이 자리에 가장 먼저 볼 책."
+  },
+  {
+   "id": "ml-system-design",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "배포 뒤 데이터 분포가 바뀌는 문제·모니터링·지속 학습 — '라이브 운영 단계'와 '라이브 확산' 요건의 배경."
+  },
+  {
+   "id": "openai-evals",
+   "title": "Evaluation best practices",
+   "by": "OpenAI 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://platform.openai.com/docs/guides/evaluation-best-practices",
+   "why": "평가 목표 → 데이터 → 지표 → 반복의 순서와 모델 채점의 주의점. 평가셋과 출시 관문을 만드는 실무 절차."
+  },
+  {
+   "id": "nist-ai-rmf",
+   "title": "AI Risk Management Framework",
+   "by": "NIST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+   "why": "AI 리스크 관리를 네 기능으로 나눈 기준. 리스크 대장의 칸과 담당을 정할 때 뼈대가 된다."
+  },
+  {
+   "id": "iso-25059",
+   "title": "ISO/IEC 25059:2023 Quality model for AI systems",
+   "by": "ISO/IEC",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/80655.html",
+   "why": "AI 시스템에 더해지는 품질 항목의 표준 이름. 본문은 유료라 소개 페이지로 항목 이름과 범위만 잡는다."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications",
+   "by": "OWASP · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "why": "생성형 AI 기능의 대표 위험 열 가지. 리스크 대장 첫 줄들을 채울 때."
+  },
+  {
+   "id": "sre-slo",
+   "title": "Site Reliability Engineering · Service Level Objectives",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "why": "지켜볼 숫자(SLI)와 목표(SLO)·오류 예산 — 라이브 운영 기준을 숫자로 정하는 법."
+  },
+  {
+   "id": "sre-canary",
+   "title": "The Site Reliability Workbook · Canarying Releases",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/workbook/canarying-releases/",
+   "why": "새 모델을 일부에만 먼저 켜고 비교하는 출시 방식 — 온보딩·확산 요건."
+  },
+  {
+   "id": "rules-of-ml",
+   "title": "Rules of Machine Learning",
+   "by": "Google for Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "why": "ML 제품을 처음 낼 때 지표부터 설계하라는 규칙들 — 스펙 산정과 기획서 쓰기의 출발점."
+  },
+  {
+   "id": "pair",
+   "title": "People + AI Guidebook",
+   "by": "Google PAIR",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://pair.withgoogle.com/guidebook/",
+   "why": "이용자 요구·성공 정의·피드백·오류 처리를 기획 관점에서 — AI 프로덕트 기획 문서의 목차로 쓰기 좋다."
+  },
+  {
+   "id": "hax",
+   "title": "Guidelines for Human-AI Interaction",
+   "by": "Microsoft HAX Toolkit",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/",
+   "why": "AI 기능이 무엇을 얼마나 잘하는지 알리기, 틀렸을 때 고치게 하기 — 이용자 쪽 품질 기준 점검표."
+  },
+  {
+   "id": "model-cards",
+   "title": "Model Cards for Model Reporting",
+   "by": "Margaret Mitchell 외 · 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1810.03993",
+   "why": "모델의 용도·한계·평가 결과를 한 장에 적는 형식의 원전 — 문서화 역량 요건."
+  },
+  {
+   "id": "confusion-matrix",
+   "title": "Machine Learning Fundamentals: The Confusion Matrix (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/Kdsp6soqA7o",
+   "why": "맞힘·틀림을 네 칸으로 나누는 법. 정답률 하나로 품질을 말하지 않기 위한 기초."
+  },
+  {
+   "id": "terminal-bench",
+   "title": "Stanford CS329Z · Terminal-Bench: Evaluating AI Agents (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/7GW-9ug2nvw",
+   "why": "AI 에이전트를 어떻게 시험하나 — 게임 QA 에이전트 같은 결과물의 품질 기준을 세울 때 참고."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "AI 기능이 어떻게 실패하나 감 잡기",
+   "time": "1~2주",
+   "goal": "AI 기능의 실패 유형(틀린 답·낡은 정보·위험 표현·느린 응답)을 예로 설명할 수 있다.",
+   "resources": [
+    "rules-of-ml",
+    "hax",
+    "owasp-llm"
+   ],
+   "task": "가상의 '게임 공략 안내 AI'를 정하고, 실패 사례 10개와 이용자가 그걸 알아채고 고칠 수 있는 길을 표로 적는다."
+  },
+  {
+   "title": "평가셋과 출시 관문",
+   "time": "2~3주",
+   "goal": "평가셋을 만들고 여러 칸의 통과선으로 '낸다/보류'를 판정할 수 있다.",
+   "resources": [
+    "ai-engineering",
+    "openai-evals",
+    "confusion-matrix"
+   ],
+   "task": "가상 질문 50개(공략·아이템·퀘스트·잡담)와 정답을 만들고, 위 '출시 관문' 코드를 넓혀 유형별 정답률·금칙 위반·p95 응답 시간을 보고서로 뽑는다."
+  },
+  {
+   "title": "리스크 대장과 기준 문서",
+   "time": "1~2주",
+   "goal": "AI 기능 하나의 리스크 대장·모델 카드·출시 점검표를 쓸 수 있다.",
+   "resources": [
+    "nist-ai-rmf",
+    "model-cards",
+    "iso-25059",
+    "pair"
+   ],
+   "task": "2단계 기능의 모델 카드 한 장, 리스크 대장(가능성·영향·대응·담당) 10줄, 출시 점검표를 쓴다. 곱셈 점수에서 밀려난 치명적 위험을 어떻게 올릴지 규칙도 적는다."
+  },
+  {
+   "title": "라이브 운영과 확산",
+   "time": "2주",
+   "goal": "SLO·카나리·되돌리기로 AI 기능을 안전하게 바꾸고 넓히는 계획을 세울 수 있다.",
+   "resources": [
+    "sre-slo",
+    "sre-canary",
+    "ml-system-design"
+   ],
+   "task": "새 모델로 바꾸는 시나리오를 정해, 10% 이용자에게 먼저 켜고 비교할 지표·중단 조건·되돌리는 법을 한 쪽 계획서로 쓴다. 다른 게임으로 넓힐 때 다시 볼 항목도 덧붙인다."
+  },
+  {
+   "title": "포트폴리오로 묶기",
+   "time": "1주",
+   "goal": "경력기술서·포트폴리오에 'AI 기능을 숫자로 운영했다'를 보여 줄 수 있다.",
+   "resources": [
+    "terminal-bench",
+    "ai-engineering"
+   ],
+   "task": "1~4단계 결과물을 한 문서로 묶고, 실제 경력의 AI 기능 하나를 같은 틀(지표·기준·리스크·운영)로 다시 써 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없습니다. 집계 사이트 기준 스마일게이트의 초봉은 **약 4,619만원**, 평균은 **약 7,107만원**이고, 경력 3년 이상 자리라 실제 제안은 처우 협의로 정해집니다.",
+  "rows": [
+   {
+    "label": "신입 초봉(집계)",
+    "value": "약 4,619만원",
+    "amount": 4619,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 기업 페이지의 초봉. 공공데이터 기반이라고 적혀 있으나 기준일·직군 구분이 없다. 같은 회사 다른 풀이에서 확인한 값 [23]"
+   },
+   {
+    "label": "전체 평균 연봉(집계)",
+    "value": "약 7,107만원",
+    "amount": 7107,
+    "basis": "공공데이터 집계",
+    "note": "같은 페이지의 평균 연봉(사원 수 958명 표기). 경력직이 섞인 회사 전체 값이다 [23]"
+   }
+  ],
+  "how": "비상장이라 사업보고서의 '직원 1인 평균 급여' 같은 공시 숫자가 없어 집계 값만 실었다. 이 자리는 **경력 3년 이상**이라 초봉과는 다르고, 평균도 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "복지포인트",
+    "detail": "건강관리·자기계발·여행/문화에 사용"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진, EAP(심리 상담)"
+   },
+   {
+    "name": "가족",
+    "detail": "직장어린이집 '스마일토리', 콘도·하계휴양소 지원, 단체 상해보험, 경조사 지원"
+   },
+   {
+    "name": "일과 삶",
+    "detail": "선택적 근무제도, 직무도서 구입비 지원, 출근 셔틀버스(12개 노선), 힐링룸"
+   },
+   {
+    "name": "장기근속",
+    "detail": "장기근속 포상(휴가·여행비)"
+   },
+   {
+    "name": "동료·성장",
+    "detail": "스마일카페, 동호회, 사내 게임장, 학습 프로그램(트렌드·노하우·직무 센터 등)"
+   }
+  ],
+  "note": "스마일게이트 채용 사이트의 복지 소개 [22]. 글에 연도·적용 범위가 적혀 있지 않아, AI센터에 그대로 적용되는지·지금도 같은지는 처우 협의 때 확인한다 {추론}. 회사 채용 페이지 판 공고는 수습 3개월 동안에도 복리후생이 같다고 적었다 [2]."
+ },
+ "location": {
+  "name": "스마일게이트 판교 사옥 (쏠리드 스페이스 빌딩)",
+  "address": "경기도 성남시 분당구 판교역로 220 (삼평동) 쏠리드 스페이스 빌딩 5층",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20220",
+  "near": "신분당선 판교역 근처 {추론}",
+  "note": "주소는 스마일게이트 뉴스룸 페이지 하단의 회사 주소 [10]. 공고 근무지 표기는 '경기 > 성남시'이다 [1]. 문의처가 로아개발본부 인사팀이라 자리가 이 사옥인지 다른 사옥인지는 공고에 적혀 있지 않다 {추론}."
+ }
+}
