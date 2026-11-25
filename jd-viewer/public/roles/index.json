@@ -166,6 +166,7 @@
   "ats-greenhouse:coupang:8076295": "coupang-transportation-backend-senior-manager-bengaluru",
   "ats-greenhouse:coupang:8206706": "coupang-web-security-engineer-detection-ops",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
+  "ats-greenhouse:daangn:6640363003": "daangn-ads-backend",
   "ats-greenhouse:daangn:7990084003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:4300801003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:6610455003": "daangn-ai-platform-software-engineer",
@@ -176,6 +177,7 @@
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8201153003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:7644271003": "daangn-content-serving-backend",
+  "ats-greenhouse:daangn:5046757003": "daangn-feed-infra-backend",
   "ats-greenhouse:daangn:6652141003": "daangn-feed-ml-data-platform-backend",
   "ats-greenhouse:daangn:7507320003": "daangn-feed-ml-data-platform-backend",
   "ats-greenhouse:daangn:5282170003": "daangn-ios-engineer",
@@ -2025,6 +2027,16 @@
    "lines": 23
   },
   {
+   "id": "daangn-ads-backend",
+   "company": "당근",
+   "role": "Software Engineer, Backend - 광고",
+   "jobs": [
+    "ats-greenhouse:daangn:6640363003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
+  },
+  {
    "id": "daangn-ai-platform-software-engineer",
    "company": "당근",
    "role": "Software Engineer — 테크코어 AI Platform",
@@ -2069,6 +2081,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 24
+  },
+  {
+   "id": "daangn-feed-infra-backend",
+   "company": "당근",
+   "role": "피드 인프라 백엔드 엔지니어",
+   "jobs": [
+    "ats-greenhouse:daangn:5046757003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 25
   },
   {
    "id": "daangn-feed-ml-data-platform-backend",
