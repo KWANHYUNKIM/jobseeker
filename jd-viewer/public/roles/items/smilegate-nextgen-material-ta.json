@@ -1,0 +1,811 @@
+{
+ "id": "smilegate-nextgen-material-ta",
+ "company": "스마일게이트",
+ "role": "머트리얼 TA (차세대 게임)",
+ "team": "차세대 게임 프로젝트",
+ "jobs": [
+  "boards-gamejob:dev:285317"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "언리얼 엔진 5로 만드는 차세대 게임에서 **표면이 어떻게 보일지(머트리얼)와 그것을 그리는 GPU 코드(셰이더)**를 만들고, 그 비용을 줄이는 테크니컬 아티스트(TA, 아트와 프로그래밍 사이를 잇는 사람) 자리입니다.[1]",
+  "env": "공고는 프로젝트 이름을 밝히지 않았고, 대표 게임은 크로스파이어·분류는 멀티플랫폼입니다.[1] 같은 '차세대 게임' 묶음의 클라이언트 공고는 전용 서버를 쓰는 멀티플레이 게임이고[4], 크로스파이어 개발사는 2024년부터 UE5 연구개발을 해 왔다고 보도됐습니다.[25] 같은 IP의 싱글플레이 AAA(UE5 나나이트·루멘, PS5·Xbox·PC)는 LA의 That's No Moon이 만드는 **다른 게임**입니다.[2][3]",
+  "oneline": "셰이더 이론보다 **아티스트가 쓰는 머트리얼 체계를 설계하고 프레임 예산 안에 넣는** 경력 5년 이상 TA."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "언리얼5 엔진을 활용한 쉐이더 및 머트리얼 제작 및 최적화",
+   "short": "캐릭터·배경의 표면을 머트리얼로 만들고, 그것이 GPU에서 느리지 않게 다듬는 일.",
+   "why": "공고가 적은 업무는 이 한 줄뿐입니다.[1] 언리얼에서 머트리얼은 표면의 색·반사·거칠기·투명도와 빛에 반응하는 방식을 정하는 노드 그래프이고, 에디터가 이 그래프를 HLSL 셰이더 코드로 바꿉니다.[6] 나나이트(아주 많은 폴리곤을 자동으로 다루는 기술)·루멘(실시간 간접광)을 쓰는 UE5 게임에서는 머트리얼이 이 두 기능의 제약을 같이 받습니다.[9][10] 같은 IP의 다른 UE5 신작도 이 둘을 쓴다고 밝혔습니다.[2]",
+   "actually": {
+    "intro": "회사가 팀의 머트리얼 구조를 공개하지 않아, 언리얼 공식 문서에 있는 일로 '보통 이런 것'을 보입니다.",
+    "items": [
+     "**마스터 머트리얼 설계** — 부모 머트리얼 하나에 매개변수를 열어 두고, 아티스트는 인스턴스(복제본)에서 값만 바꾼다. 인스턴스를 고쳐도 부모를 다시 컴파일하지 않는다.[7]",
+     "**셰이더 조합 수 관리** — Static Switch 같은 정적 매개변수는 조합마다 셰이더가 따로 컴파일되므로 개수와 조합을 줄이라고 문서가 권한다.[7] Material Analyzer는 같은 정적 설정을 쓰는 인스턴스를 묶어 새 부모로 옮기도록 제안한다.[8]",
+     "**나나이트 제약 맞추기** — 나나이트는 불투명(Opaque)·마스크(Masked) 혼합 모드만 지원하고, 정점을 움직이는 WPO는 지원하되 이동 폭을 제한해야 한다.[9]",
+     "**루멘에 맞추기** — 루멘은 메시마다 미리 만든 카드에 머트리얼 속성을 찍어(Surface Cache) 간접광을 계산하므로, 작은 발광 메시는 빛이 일정하지 않을 수 있다.[10]",
+     "**비용 보기** — Shader Complexity 보기(Alt+8)는 픽셀마다 셰이더 명령 수를 초록→빨강→흰색으로 칠한다. 다만 명령 수만 세므로 텍스처를 많이 읽는 셰이더는 색보다 느릴 수 있다.[12]",
+     "**텍스처 아끼기** — 흑백 맵(거칠기·금속성·AO)을 한 장의 R·G·B 채널에 묶어 읽기 횟수와 메모리를 줄인다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "Static Switch 가 늘리는 셰이더 수 (가상 예)",
+     "body": "스위치 3개면 조합은 2³=8개이고, 켜 둔 사용처(스태틱 메시·스켈레탈 메시·나나이트)마다 따로 만들어지면 최대 24묶음입니다. 실제로는 인스턴스가 쓰는 조합만 컴파일됩니다.[7] 사용처 계산은 단순화한 것이고, 엔진이 실제로 만드는 셰이더 수는 플랫폼·기능마다 더 많습니다 {추론}. 직접 돌린 출력을 주석으로 달았습니다.",
+     "lang": "python",
+     "code": "from itertools import product\nswitches = [\"UseDetailNormal\", \"UseWetness\", \"UseVertexPaint\"]\nusages = [\"Static Mesh\", \"Skeletal Mesh\", \"Nanite\"]\ncombos = list(product([False, True], repeat=len(switches)))\nprint(\"스위치 조합:\", len(combos))\nprint(\"최대 셰이더 묶음(조합 x 사용처):\", len(combos) * len(usages))\nused = {(True, False, False), (True, True, False), (False, False, False)}\nprint(\"인스턴스가 실제로 쓰는 조합:\", len(used), \"->\", len(used) * len(usages))\n# 스위치 조합: 8\n# 최대 셰이더 묶음(조합 x 사용처): 24\n# 인스턴스가 실제로 쓰는 조합: 3 -> 9"
+    },
+    {
+     "title": "4K 텍스처 한 장의 메모리 (밉맵 포함)",
+     "body": "밉맵(멀리서 볼 때 쓰는 작은 사본)까지 넣으면 원본의 4/3배입니다. BC7은 픽셀당 1바이트, BC1·BC4는 0.5바이트로 계산했습니다. 흑백 맵 세 장을 BC1 한 장의 채널로 묶으면 3분의 1이 되지만, 채널끼리 압축 블록을 나눠 써서 화질이 떨어질 수 있습니다 {추론}. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "def mb(w, h, bpp, mips=True):\n    return w * h * bpp * (4 / 3 if mips else 1) / 2**20\nprint(f\"4K RGBA8 무압축: {mb(4096, 4096, 4):.1f} MB\")\nprint(f\"4K BC7: {mb(4096, 4096, 1):.1f} MB\")\nprint(f\"흑백 세 장(BC4 x3): {3 * mb(4096, 4096, 0.5):.1f} MB / 한 장에 묶기(BC1): {mb(4096, 4096, 0.5):.1f} MB\")\n# 4K RGBA8 무압축: 85.3 MB\n# 4K BC7: 21.3 MB\n# 흑백 세 장(BC4 x3): 32.0 MB / 한 장에 묶기(BC1): 10.7 MB"
+    }
+   ],
+   "how_far": "어떤 느낌의 그림을 낼지는 아트 디렉션이 정합니다 {추론}. 이 자리는 **그 그림을 내는 머트리얼 체계를 만들고, 아티스트가 그 체계 안에서 작업하게 하고, 프레임 예산을 넘으면 줄이는 것**까지입니다. 엔진 렌더러 소스를 고치는 일은 그래픽스 엔지니어 쪽이고, 우대사항에 그 경험이 따로 있습니다.[1]",
+   "refs": [
+    1,
+    2,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12
+   ],
+   "study": [
+    "ue-materials",
+    "ue-instances",
+    "ue-nanite"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "TA 경력 5년차 이상",
+   "short": "머트리얼 체계를 혼자 맡겨도 되는 수준 — 출시까지 한 번 이상 돌려 본 연차를 본다.",
+   "why": "공고의 경력 조건은 5년 이상이고 직급은 대리~차장입니다.[1] 같은 '차세대 게임' 묶음의 애니메이션 TA·UE5 클라이언트 공고도 경력 5년 이상을 걸어[4][5], 이 프로젝트가 주니어를 키우기보다 바로 맡길 사람을 찾는 것으로 보입니다 {추론}.",
+   "how_far": "연차 숫자보다 **경력기술서와 포트폴리오**가 판단 재료입니다 — 공고가 둘 다 내라고 합니다.[1] 포트폴리오에는 완성 화면만이 아니라 머트리얼 그래프·매개변수 설계·최적화 전후 비교를 같이 싣는 것이 TA 포트폴리오다운 구성입니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "쉐이더 및 머트리얼에 대한 높은 이해도",
+   "short": "노드를 잇는 것을 넘어, 그 노드가 어떤 HLSL·몇 개의 명령이 되는지 알아야 해서.",
+   "why": "머트리얼 그래프는 결국 HLSL 셰이더로 바뀌어 GPU에서 돕니다.[6] 그래서 '높은 이해도'는 보기 좋은 머트리얼을 만드는 것과 **왜 비싼지 설명하는 것**을 둘 다 뜻한다고 읽힙니다 {추론}.",
+   "level": {
+    "basic": "PBR(물리 기반 렌더링) 입력 — 베이스 컬러·금속성·거칠기·노멀의 뜻, 셰이딩 모델(Lit·Skin·Hair·Cloth)과 혼합 모드 고르기[6]",
+    "work": "마스터 머트리얼·머트리얼 함수·인스턴스 설계, 정적·동적 매개변수의 비용 차이[7], Custom 노드로 HLSL 직접 쓰기와 그 대가(상수 접기가 막혀 명령이 늘 수 있다)[11]",
+    "team": "나나이트·루멘 제약 안에서 레이어드 머트리얼과 Substrate(UE5의 모듈식 머트리얼 틀, 지금 베타)를 쓸지 판단하기[9][10][14]"
+   },
+   "actually": {
+    "items": [
+     "**셰이딩 모델** — 피부·머리카락·천처럼 빛이 다르게 반응하는 재질은 전용 셰이딩 모델을 고른다.[6]",
+     "**노드 밑의 계산** — 노이즈·패턴·UV 변형이 픽셀마다 어떤 수식인지는 무료 책 The Book of Shaders가 코드로 하나씩 보여 준다.[23]",
+     "**Custom 노드** — 그래프로 안 되는 계산은 HLSL을 직접 넣지만, 기본 노드보다 명령이 훨씬 많아질 수 있어 공식 문서가 필요할 때만 쓰라고 한다.[11]",
+     "**Substrate** — 고정 셰이딩 모델 대신 재질 층을 쌓는 새 틀이다. 문서가 베타로 표시하고 출시작에 쓸 때 주의하라고 한다.[14]"
+    ]
+   },
+   "refs": [
+    6,
+    7,
+    9,
+    10,
+    11,
+    14,
+    23
+   ],
+   "study": [
+    "ue-materials",
+    "rtr4",
+    "book-of-shaders"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "렌더링 파이프라인에 대한 보통 이상의 이해도",
+   "short": "내 머트리얼이 한 프레임의 어느 단계에서 얼마나 시간을 쓰는지 짚을 수 있어야 해서.",
+   "why": "'보통 이상'이라 엔진을 고칠 수준까지는 아닙니다.[1] 다만 최적화가 업무에 들어 있어, 정점 처리 → 래스터화 → 픽셀 셰이딩 → 조명·후처리 중 어디가 무거운지 알아야 고칠 곳을 찾습니다 {추론}.",
+   "flows": [
+    {
+     "caption": "한 프레임의 보통 흐름(지연 렌더링 기준) — 머트리얼이 직접 영향을 주는 칸부터 {추론}[17]",
+     "steps": [
+      "정점 처리 · 메시 정점 위치 계산(WPO 가 여기)",
+      "래스터화 · 삼각형을 픽셀로(나나이트는 자체 방식)",
+      "베이스 패스 · 머트리얼이 색·거칠기·노멀을 G버퍼에 기록",
+      "조명 · 직접광 + 루멘 간접광",
+      "반투명 · 이펙트 · 후처리"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**정점 단계** — WPO로 풀·천을 흔들면 정점 단계 비용이 늘고, 나나이트에서는 이동 폭 제한도 걸린다.[9]",
+     "**픽셀 단계** — 화면을 많이 덮는 머트리얼의 명령 수가 곧 비용이다. Shader Complexity가 이걸 보여 준다.[12]",
+     "**반투명** — 겹쳐 그릴수록(오버드로) 비싸고, 나나이트는 반투명을 지원하지 않는다.[9]",
+     "**레퍼런스** — 이 흐름 전체를 다루는 교과서가 Real-Time Rendering이다.[17] 거칠기·금속성 같은 반사 모델의 이론은 무료로 공개된 PBR 책이 깊게 다룬다.[24]"
+    ]
+   },
+   "how_far": "프로파일러 숫자를 보고 '이 머트리얼의 픽셀 비용 때문이다', '반투명 겹침 때문이다'까지 짚는 것이 최소선입니다 {추론}. 렌더 패스를 새로 만드는 일은 그래픽스 엔지니어 몫입니다.",
+   "refs": [
+    1,
+    9,
+    12,
+    17,
+    24
+   ],
+   "study": [
+    "rtr4",
+    "pbr-book",
+    "ue-shader-dev"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "언리얼 엔진을 활용한 프로젝트 제작 경험이 있으신 분",
+   "short": "엔진 사용법을 배우는 시간 없이 바로 이 팀의 UE5 프로젝트에 들어와야 해서.",
+   "why": "공고는 '언리얼5'를 업무에 못 박았고, 같은 묶음의 클라이언트 공고 키워드도 UE5입니다.[1][4] 언리얼의 머트리얼 에디터·인스턴스·뷰 모드 같은 도구를 이미 쓸 줄 알아야 첫 달부터 일을 맡습니다 {추론}.",
+   "how_far": "'제작 경험'이라 출시작이 꼭 필요하진 않습니다 — 출시 경험은 우대사항에 따로 있습니다.[1] 다만 **혼자 만든 데모가 아니라 여러 사람과 같은 프로젝트를 나눠 쓴 경험**(소스 관리·에셋 규칙)이 있으면 말할 거리가 됩니다 {추론}.",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "ue-materials",
+    "ue-instances"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "신규 그래픽스 피처에 대한 논리적인 분석과 표현 능력",
+   "short": "새 엔진 기능을 써 볼지 말지, 비용과 화면 차이를 숫자·비교 화면으로 정리해 보여 줘야 해서.",
+   "why": "UE5는 판마다 렌더링 기능이 바뀝니다 — 예를 들어 Substrate는 지금 베타이고[14], 나나이트와 루멘은 머트리얼에 서로 다른 제약을 겁니다.[9][10] 새 기능을 들일지 정하려면 누군가 **무엇이 좋아지고 얼마가 드는지**를 보여 줘야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "같은 장면을 기능 켜기/끄기로 찍은 비교 화면 {추론}",
+     "GPU 시간·셰이더 수·메모리 변화 표 {추론}",
+     "제약 목록 — 예: 나나이트에서 안 되는 혼합 모드, 루멘에서 빛이 일정하지 않은 발광 메시[9][10]"
+    ]
+   },
+   "how_far": "결정은 아트 디렉터·리드와 같이 내립니다 {추론}. TA는 **판단 재료를 공정하게 만드는 것**까지가 몫입니다.",
+   "refs": [
+    9,
+    10,
+    14
+   ],
+   "study": [
+    "ue-substrate",
+    "ue-nanite",
+    "ue-lumen"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기술 문서 제작 및 가이드에 능숙하신 분",
+   "short": "아티스트 여럿이 같은 머트리얼 체계를 쓰므로, 어떻게 써야 하는지 적어 둬야 모두가 같은 방식으로 만들어서.",
+   "why": "마스터 머트리얼과 인스턴스 방식은 아티스트가 부모를 건드리지 않고 매개변수만 바꾸게 하는 구조입니다.[7] 그 매개변수가 무엇을 뜻하는지, 어떤 조합을 쓰면 안 되는지를 문서로 남기지 않으면 인스턴스가 제멋대로 늘어 셰이더 조합도 늘어납니다.[7][8]",
+   "actually": {
+    "items": [
+     "매개변수 이름·범위·기본값 표와 예시 화면 {추론}",
+     "머트리얼 예산 — 화면 비중별 허용 명령 수·텍스처 수 {추론}",
+     "새 에셋을 들일 때 점검 목록(Shader Complexity 확인, Material Analyzer로 중복 정적 설정 정리)[8][12]"
+    ]
+   },
+   "refs": [
+    7,
+    8,
+    12
+   ],
+   "study": [
+    "ue-instances"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "원활한 커뮤니케이션 능력 및 긍정적인 마인드를 바탕으로 협업에 능숙하신 분",
+   "short": "TA는 아티스트·프로그래머·기획 사이에서 '이 그림을 이 비용에' 맞추는 중재 자리라서.",
+   "why": "머트리얼은 아티스트가 쓰고, 엔진은 프로그래머가 맡고, 예산은 프로젝트가 정합니다 {추론}. 같은 프로젝트에는 애니메이션 TA·클라이언트 개발자 자리도 따로 있어[4][5], 경계에서 맞출 일이 많습니다 {추론}.",
+   "how_far": "면접에서는 아티스트의 요청을 성능 때문에 바꾸거나 거절하고, 대신 무엇을 제안했는지 한 사례로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    4,
+    5
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이펙트 업무 경험",
+   "short": "이펙트는 반투명·겹침이 많아 머트리얼 비용이 가장 크게 터지는 곳이라서.",
+   "why": "공고 분야가 '이펙트·FX, 엔진'으로 분류돼 있습니다.[1] 언리얼에서 이펙트는 나이아가라가 주 시스템이고[15], 파티클 하나하나가 머트리얼로 그려집니다. 반투명은 나나이트가 지원하지 않는 영역이기도 합니다.[9]",
+   "actually": {
+    "items": [
+     "파티클용 머트리얼 — 플립북(여러 장을 한 텍스처에 넣고 넘기기)·디졸브·왜곡 {추론}",
+     "오버드로 줄이기 — 반투명 면적을 줄이고 가능한 곳은 마스크로 바꾸기 {추론}",
+     "나이아가라 쪽 매개변수로 머트리얼 값을 움직이기[15]"
+    ]
+   },
+   "refs": [
+    1,
+    9,
+    15
+   ],
+   "study": [
+    "ue-niagara"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "그래픽스 엔지니어 업무 경험",
+   "short": "머트리얼 그래프로 안 되는 일을 엔진 셰이더(.usf) 쪽에서 풀 수 있으면 막히는 곳이 줄어서.",
+   "why": "머트리얼 에디터가 만드는 HLSL은 읽기만 되고[6], 그 밖의 렌더링은 엔진의 셰이더 파일(.usf)과 C++ 코드에 있습니다.[13] 그쪽을 다뤄 본 TA는 엔지니어에게 요청하지 않고도 원인을 좁힐 수 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "엔진 셰이더를 고치며 r.ShaderDevelopmentMode=1 로 오류 재시도·로그를 켜고, Ctrl+Shift+. 로 바뀐 셰이더만 다시 컴파일한다.[13]",
+     "렌더 패스 하나의 GPU 시간을 프로파일러로 재고 원인을 찾는다 {추론}."
+    ]
+   },
+   "how_far": "우대사항이라 필수는 아닙니다. 엔진 셰이더 파일을 **읽고 어디서 무엇이 계산되는지 따라갈 수 있는** 정도면 강점이 됩니다 {추론}.",
+   "refs": [
+    6,
+    13
+   ],
+   "study": [
+    "ue-shader-dev",
+    "hlsl-docs",
+    "rtr4"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "서비스 런칭 경험",
+   "short": "출시 직전의 최적화·플랫폼 심사·막판 화질 조정을 겪어 본 사람이 일정 감각이 있어서.",
+   "why": "공고가 '서비스 런칭'을 따로 우대합니다.[1] 셰이더 조합 수는 빌드 시간·패키지 크기와 바로 이어져[7][8], 출시가 가까울수록 정리할 압박이 커집니다 {추론}.",
+   "how_far": "출시작의 이름보다 **출시 전 몇 달 동안 무엇을 줄이고 무엇을 지켰는지**를 경력기술서에 숫자로 쓰는 것이 핵심입니다 {추론}.",
+   "refs": [
+    1,
+    7,
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "콘솔 플랫폼 경험",
+   "short": "콘솔은 정해진 하드웨어에서 정해진 프레임을 지켜야 해서, 머트리얼 예산을 더 빡빡하게 잡는다.",
+   "why": "공고의 게임 분류는 멀티플랫폼입니다.[1] 다른 스튜디오가 만드는 같은 IP 신작이 PS5·Xbox Series X|S·PC로 나온다고 발표돼[3] IP가 콘솔로 넓어지는 방향은 보이지만, 이 프로젝트의 플랫폼은 공고에 적혀 있지 않습니다 {추론}.",
+   "actually": {
+    "items": [
+     "머트리얼 에디터의 Platform Stats로 플랫폼별 셰이더 비용을 비교한다 {추론}",
+     "같은 머트리얼의 품질 단계(Quality Switch)를 플랫폼마다 다르게 둔다 {추론}",
+     "콘솔 개발 키트와 플랫폼 문서는 계약한 개발사만 볼 수 있어, 경험 자체가 희소하다 {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "HLSL, Python, C++, Substance, Houdini, Maya, Blender",
+   "short": "셰이더 언어·자동화 스크립트·엔진 코드·텍스처와 절차적 제작 도구 — TA가 손에 쥐는 도구 묶음이라서.",
+   "why": "공고의 키워드 목록과 같습니다.[1] 도구마다 맡는 칸이 다릅니다 — 아래 목록.",
+   "actually": {
+    "items": [
+     "**HLSL** — 언리얼 셰이더 언어. Custom 노드와 엔진 .usf 파일 모두 HLSL이다.[11][13][16]",
+     "**Python** — 에디터에서 에셋을 한꺼번에 고치거나 점검하는 스크립트 {추론}.",
+     "**C++** — 엔진 쪽 셰이더 매개변수를 넘기거나 에디터 도구를 만들 때 {추론}.",
+     "**Substance** — 텍스처를 노드로 절차적으로 만드는 도구(Designer)와 칠하는 도구(Painter).[18]",
+     "**Houdini** — 절차적 모델링·시뮬레이션. 이펙트용 플립북·벡터 필드를 만들 때 쓴다.[19]",
+     "**Maya·Blender** — 메시·UV·정점 색을 다루는 DCC(디지털 콘텐츠 제작 도구).[20]"
+    ]
+   },
+   "how_far": "전부 잘할 필요는 없습니다. **HLSL과 Python 하나씩, Substance나 Houdini 중 하나**를 실제로 써 본 결과물이 있으면 우대사항을 채우는 쪽으로 볼 만합니다 {추론}.",
+   "refs": [
+    1,
+    11,
+    13,
+    16,
+    18,
+    19,
+    20
+   ],
+   "study": [
+    "hlsl-docs",
+    "substance-docs",
+    "houdini-docs",
+    "blender-manual"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "그림을 보는 눈과 GPU 비용을 같이 따지는 걸 즐기는 TA[1]",
+   "아티스트가 쓰는 체계(마스터 머트리얼·가이드)를 만드는 데서 보람을 찾는 사람 {추론}",
+   "UE5 신기능(나나이트·루멘·Substrate)을 먼저 써 보고 비교 자료를 만드는 사람[9][10][14]",
+   "콘솔·멀티플랫폼 출시를 겪어 봤거나 겪고 싶은 사람[1]"
+  ],
+  "hard": [
+   "경력 5년 이상 자리라 신입·주니어에게는 문이 닫혀 있다[1]",
+   "프로젝트 이름·장르·팀 규모가 공고에 없어 입사 전에 무엇을 만드는지 알기 어렵다",
+   "엔진 렌더러를 직접 짜고 싶다면 그래픽스 엔지니어 자리가 더 맞다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "Static Switch 를 많이 쓴 마스터 머트리얼이 빌드를 느리게 한다면 어떻게 정리하겠어요?",
+   "a": "정적 조합마다 셰이더가 따로 생긴다는 점과 Material Analyzer 로 묶어 다시 부모 잡기.[7][8]"
+  },
+  {
+   "q": "나나이트 메시에 바람에 흔들리는 풀 머트리얼을 붙이면 무엇을 조심하나요?",
+   "a": "WPO 지원과 이동 폭 제한, 마스크 비용.[9]"
+  },
+  {
+   "q": "Shader Complexity 가 초록인데 GPU 시간이 길다면요?",
+   "a": "명령 수만 세는 보기라 텍스처 읽기는 안 보인다.[12]"
+  },
+  {
+   "q": "Custom 노드로 HLSL 을 쓰자는 요청이 오면 언제 받아들이나요?",
+   "a": "기본 노드로 안 될 때만 — 상수 접기가 막혀 명령이 늘 수 있다.[11]"
+  },
+  {
+   "q": "Substrate 를 지금 프로젝트에 들일지 어떻게 판단하겠어요?",
+   "a": "베타 상태, 비교 화면·비용 표 — 필요역량 첫 줄.[14]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "게임잡 · [차세대 게임] 머트리얼 TA 담당 모집",
+   "url": "https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=285317",
+   "kind": "posting",
+   "note": "업무·자격요건·필요역량·우대사항·제출서류. 정규직, 경력 5년↑, 대리~차장, 분야 이펙트·FX·엔진, 대표 게임 크로스파이어(멀티플랫폼), 마감 2026-11-30, 복리후생 목록"
+  },
+  {
+   "n": 2,
+   "title": "스마일게이트 뉴스룸 · Smilegate's 'Crossfire' Reimagined as a AAA Action-Adventure",
+   "url": "https://newsroom.smilegate.com/eng/1787296478",
+   "kind": "company",
+   "date": "2026-08",
+   "note": "That's No Moon 개발, UE5 나나이트·루멘·모션 매칭, Adaptive Cover. 페이지 하단에 회사 주소"
+  },
+  {
+   "n": 3,
+   "title": "스마일게이트 뉴스룸 · That's No Moon Entertainment Reveals Crossfire",
+   "url": "https://newsroom.smilegate.com/eng/1780877955",
+   "kind": "company",
+   "date": "2026-06",
+   "note": "PS5·Xbox Series X|S·PC(Steam·Epic Games Store) 출시 예정"
+  },
+  {
+   "n": 4,
+   "title": "게임잡 · [차세대 게임] UE5 엔진 클라이언트 담당 모집",
+   "url": "https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=285310",
+   "kind": "posting",
+   "note": "같은 '차세대 게임' 묶음 — UE5·데디케이티드 서버, 경력 5년↑, 멀티플랫폼 슈팅. 지금은 마감"
+  },
+  {
+   "n": 5,
+   "title": "Outscal · Next-Generation Game Animation TA (Smilegate)",
+   "url": "https://outscal.com/job/next-generation-game-animation-ta-at-smilegate-in-seongnam-si-gyeonggi-do-south-korea-1",
+   "kind": "posting",
+   "note": "같은 묶음의 애니메이션 TA 공고 사본 — UE5 차세대 프로젝트, TA 경력 5년 이상"
+  },
+  {
+   "n": 6,
+   "title": "Unreal Engine 문서 · Essential Unreal Engine Material Concepts",
+   "url": "https://dev.epicgames.com/documentation/unreal-engine/essential-unreal-engine-material-concepts?lang=ko",
+   "kind": "reference",
+   "note": "머트리얼의 뜻, 노드 그래프 → HLSL, 셰이딩 모델·혼합 모드, 인스턴스·함수"
+  },
+  {
+   "n": 7,
+   "title": "Unreal Engine 문서 · Instanced Materials",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/instanced-materials-in-unreal-engine",
+   "kind": "reference",
+   "note": "MIC·MID, 인스턴스 수정은 부모 재컴파일 없음, 정적 매개변수 조합마다 셰이더 컴파일"
+  },
+  {
+   "n": 8,
+   "title": "Unreal Engine 문서 · Material Analyzer",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-material-analyzer-tool",
+   "kind": "reference",
+   "note": "같은 정적 설정을 쓰는 인스턴스 묶기·다시 부모 잡기로 셰이더 조합과 저장량 절약"
+  },
+  {
+   "n": 9,
+   "title": "Unreal Engine 문서 · Nanite Virtualized Geometry",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+   "kind": "reference",
+   "note": "Opaque·Masked 만 지원, WPO 이동 폭 제한, 반투명 미지원"
+  },
+  {
+   "n": 10,
+   "title": "Unreal Engine 문서 · Lumen Technical Details",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/lumen-technical-details-in-unreal-engine",
+   "kind": "reference",
+   "note": "Surface Cache 카드, 작은 발광 메시 문제"
+  },
+  {
+   "n": 11,
+   "title": "Unreal Engine 문서 · Custom Material Expressions",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/custom-material-expressions-in-unreal-engine",
+   "kind": "reference",
+   "note": "머트리얼 안의 HLSL, 상수 접기 막힘·명령 증가"
+  },
+  {
+   "n": 12,
+   "title": "Unreal Engine 문서 · Viewport Modes",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/viewport-modes-in-unreal-engine",
+   "kind": "reference",
+   "note": "Shader Complexity(Alt+8) — 명령 수만 측정"
+  },
+  {
+   "n": 13,
+   "title": "Unreal Engine 문서 · Shader Development",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/shader-development-in-unreal-engine",
+   "kind": "reference",
+   "note": ".usf 셰이더, r.ShaderDevelopmentMode, 바뀐 셰이더 다시 컴파일"
+  },
+  {
+   "n": 14,
+   "title": "Unreal Engine 문서 · Substrate Materials",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/substrate-materials-in-unreal-engine",
+   "kind": "reference",
+   "note": "모듈식 머트리얼 틀, 베타 표시(5.9 문서 기준)"
+  },
+  {
+   "n": 15,
+   "title": "Unreal Engine 문서 · Creating Visual Effects in Niagara",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-visual-effects-in-niagara-for-unreal-engine",
+   "kind": "reference",
+   "note": "UE5 의 주 이펙트 시스템"
+  },
+  {
+   "n": 16,
+   "title": "Microsoft Learn · High-level shader language (HLSL)",
+   "url": "https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Real-Time Rendering, Fourth Edition",
+   "url": "https://www.routledge.com/Real-Time-Rendering-Fourth-Edition/Akenine-Moller-Haines-Hoffman/p/book/9781138627000",
+   "kind": "reference",
+   "note": "Akenine-Möller · Haines · Hoffman, A K Peters/CRC Press, 2018"
+  },
+  {
+   "n": 18,
+   "title": "Adobe Substance 3D Designer 사용 안내서",
+   "url": "https://helpx.adobe.com/substance-3d-designer/home.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "SideFX · Houdini Documentation",
+   "url": "https://www.sidefx.com/docs/houdini/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Blender 매뉴얼",
+   "url": "https://docs.blender.org/manual/ko/latest/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "스마일게이트 채용 · LIFE AT SMILEGATE",
+   "url": "https://careers.smilegate.com/life",
+   "kind": "company",
+   "note": "복지 목록 — 연도 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 · 스마일게이트 기업 정보",
+   "url": "https://jasoseol.com/companies/11383",
+   "kind": "reference",
+   "note": "초봉·평균 연봉(공공데이터 집계). 같은 회사 다른 풀이에서 확인한 값"
+  },
+  {
+   "n": 23,
+   "title": "The Book of Shaders (한국어)",
+   "url": "https://thebookofshaders.com/?lan=kr",
+   "kind": "reference",
+   "note": "Patricio Gonzalez Vivo · Jen Lowe, 한국어 번역 있음"
+  },
+  {
+   "n": 24,
+   "title": "Physically Based Rendering: From Theory to Implementation",
+   "url": "https://www.pbr-book.org/",
+   "kind": "reference",
+   "note": "Pharr · Jakob · Humphreys, 4판(2023) 무료 공개"
+  },
+  {
+   "n": 25,
+   "title": "MTN · 스마일게이트, 배틀로얄 신작 '프로젝트G' 개발 본격화",
+   "url": "https://news.mtn.co.kr/news-detail/2024032614220711158",
+   "kind": "news",
+   "date": "2024-03",
+   "note": "스마일게이트엔터테인먼트의 언리얼 5 기반 연구개발 보도. 이 공고와 같은 게임인지는 확인되지 않음"
+  },
+  {
+   "n": 26,
+   "title": "Smilegate Careers · [차세대 게임] 클라이언트 담당",
+   "url": "https://careers.smilegate.com/apply/announce/view?seq=6198",
+   "kind": "posting",
+   "note": "같은 묶음 공고의 회사 채용 페이지 판 — 근무지 스마일게이트캠퍼스(판교로 344). 같은 회사 다른 풀이에서 확인한 값"
+  }
+ ],
+ "caveat": "스마일게이트는 이 팀의 프로젝트 이름·머트리얼 구조·발표 자료를 공개하지 않았고, 회사 TA의 컨퍼런스 발표도 찾지 못했습니다(받은 영상 없음). 공고의 대표 게임(크로스파이어)과 같은 묶음 공고·보도로 방향만 확인했고, 하는 일은 언리얼 공식 문서로 '보통 이런 것'을 보였습니다 — {추론} 표시가 많은 이유입니다.",
+ "resources": [
+  {
+   "id": "ue-materials",
+   "title": "Essential Unreal Engine Material Concepts",
+   "by": "Epic Games 공식 문서",
+   "kind": "doc",
+   "url": "https://dev.epicgames.com/documentation/unreal-engine/essential-unreal-engine-material-concepts?lang=ko",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "머트리얼·셰이딩 모델·혼합 모드·함수 — '쉐이더 및 머트리얼 이해도'의 바닥."
+  },
+  {
+   "id": "ue-instances",
+   "title": "Instanced Materials · Material Analyzer",
+   "by": "Epic Games 공식 문서",
+   "kind": "doc",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/instanced-materials-in-unreal-engine",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "마스터 머트리얼·인스턴스와 정적 매개변수의 셰이더 조합 비용 — 업무의 '최적화'와 가이드 문서 줄."
+  },
+  {
+   "id": "ue-nanite",
+   "title": "Nanite Virtualized Geometry",
+   "by": "Epic Games 공식 문서",
+   "kind": "doc",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "나나이트가 머트리얼에 거는 제약(혼합 모드·WPO) — UE5 차세대 프로젝트의 머트리얼 설계 조건."
+  },
+  {
+   "id": "ue-lumen",
+   "title": "Lumen Technical Details",
+   "by": "Epic Games 공식 문서",
+   "kind": "doc",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/lumen-technical-details-in-unreal-engine",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "머트리얼이 간접광에 어떻게 반영되나(Surface Cache·발광) — 신규 피처 분석 줄."
+  },
+  {
+   "id": "ue-substrate",
+   "title": "Substrate Materials",
+   "by": "Epic Games 공식 문서",
+   "kind": "doc",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/substrate-materials-in-unreal-engine",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "UE5 의 새 머트리얼 틀 — 들일지 판단하는 '신규 그래픽스 피처 분석'의 연습 거리."
+  },
+  {
+   "id": "ue-shader-dev",
+   "title": "Shader Development in Unreal Engine",
+   "by": "Epic Games 공식 문서",
+   "kind": "doc",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/shader-development-in-unreal-engine",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "엔진 셰이더(.usf) 고치고 다시 컴파일하는 법 — 그래픽스 엔지니어 우대사항 쪽."
+  },
+  {
+   "id": "ue-niagara",
+   "title": "Creating Visual Effects in Niagara",
+   "by": "Epic Games 공식 문서",
+   "kind": "doc",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-visual-effects-in-niagara-for-unreal-engine",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "이펙트 업무 우대사항 — 파티클과 머트리얼을 잇는 법."
+  },
+  {
+   "id": "hlsl-docs",
+   "title": "High-level shader language (HLSL)",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "Custom 노드와 엔진 셰이더에 쓰는 언어의 문법·내장 함수 사전."
+  },
+  {
+   "id": "book-of-shaders",
+   "title": "The Book of Shaders",
+   "by": "Patricio Gonzalez Vivo · Jen Lowe",
+   "kind": "doc",
+   "url": "https://thebookofshaders.com/?lan=kr",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "픽셀 셰이더로 노이즈·패턴·모양을 직접 짜 보는 무료 책(한국어판) — 노드가 실제로 무슨 계산인지 감을 잡는다. 언어는 GLSL 이지만 HLSL 로 옮기기 쉽다."
+  },
+  {
+   "id": "rtr4",
+   "title": "Real-Time Rendering (4판)",
+   "by": "Tomas Akenine-Möller · Eric Haines · Naty Hoffman · A K Peters/CRC Press · 2018",
+   "kind": "book",
+   "url": "https://www.routledge.com/Real-Time-Rendering-Fourth-Edition/Akenine-Moller-Haines-Hoffman/p/book/9781138627000",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "렌더링 파이프라인·셰이딩·텍스처링의 교과서 — '파이프라인 보통 이상 이해'를 채울 때 파이프라인·PBR 장만 골라 읽는다."
+  },
+  {
+   "id": "pbr-book",
+   "title": "Physically Based Rendering: From Theory to Implementation (4판)",
+   "by": "Matt Pharr · Wenzel Jakob · Greg Humphreys · 2023",
+   "kind": "book",
+   "url": "https://www.pbr-book.org/",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "반사 모델(BRDF)이 왜 그 모양인지 — 거칠기·금속성 매개변수의 뜻을 깊이 알고 싶을 때. 온라인 무료."
+  },
+  {
+   "id": "substance-docs",
+   "title": "Substance 3D Designer 사용 안내서",
+   "by": "Adobe",
+   "kind": "doc",
+   "url": "https://helpx.adobe.com/substance-3d-designer/home.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "절차적 텍스처 그래프 — 우대사항의 Substance."
+  },
+  {
+   "id": "houdini-docs",
+   "title": "Houdini Documentation",
+   "by": "SideFX",
+   "kind": "doc",
+   "url": "https://www.sidefx.com/docs/houdini/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "절차적 모델링·시뮬레이션 — 이펙트용 텍스처·메시를 만들 때."
+  },
+  {
+   "id": "blender-manual",
+   "title": "Blender 매뉴얼",
+   "by": "Blender Foundation",
+   "kind": "doc",
+   "url": "https://docs.blender.org/manual/ko/latest/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "무료 DCC 로 메시·UV·정점 색을 다뤄 보기 — Maya 가 없을 때의 연습 도구."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "셰이더가 하는 계산 손으로 익히기",
+   "time": "2~3주",
+   "goal": "노이즈·마스크·UV 변형이 픽셀마다 어떤 계산인지 설명하고 HLSL 로 옮길 수 있다.",
+   "resources": [
+    "book-of-shaders",
+    "hlsl-docs",
+    "ue-materials"
+   ],
+   "task": "The Book of Shaders 의 패턴·노이즈 장을 따라 만든 뒤, 같은 효과 둘을 언리얼 머트리얼 노드와 Custom 노드(HLSL) 두 방식으로 만들어 명령 수를 비교한다."
+  },
+  {
+   "title": "마스터 머트리얼 체계 만들기",
+   "time": "3~4주",
+   "goal": "매개변수와 정적 스위치를 설계한 마스터 머트리얼 하나로 여러 재질을 내고, 셰이더 조합 수를 설명할 수 있다.",
+   "resources": [
+    "ue-instances",
+    "ue-materials",
+    "substance-docs"
+   ],
+   "task": "가상의 '폐허 도시' 소품 10종(금속·콘크리트·나무·젖은 표면)을 마스터 머트리얼 하나와 인스턴스로 만들고, Material Analyzer 로 중복 정적 설정을 정리한 전후 셰이더 수와 사용 가이드 한 장을 남긴다."
+  },
+  {
+   "title": "UE5 기능 제약 안에서 최적화",
+   "time": "2~3주",
+   "goal": "나나이트·루멘 장면에서 머트리얼 비용을 재고, 무엇을 줄였는지 숫자로 보일 수 있다.",
+   "resources": [
+    "ue-nanite",
+    "ue-lumen",
+    "rtr4"
+   ],
+   "task": "2단계 소품을 나나이트로 깐 장면에 바람 WPO 풀과 발광 간판을 넣고, Shader Complexity·GPU 프로파일 전후 캡처와 함께 '무엇을 바꿔 몇 ms 줄였나' 보고서를 쓴다."
+  },
+  {
+   "title": "신규 피처 분석 문서 쓰기",
+   "time": "1~2주",
+   "goal": "새 렌더링 기능을 들일지 비교 화면·비용 표·제약 목록으로 판단 재료를 만들 수 있다.",
+   "resources": [
+    "ue-substrate",
+    "pbr-book"
+   ],
+   "task": "같은 재질(코팅된 차량 도장)을 기존 셰이딩 모델과 Substrate 로 각각 만들어 화면·셰이더 비용·작업 시간을 비교한 2쪽짜리 문서를 쓴다."
+  },
+  {
+   "title": "이펙트·도구로 넓히기 (선택)",
+   "time": "2~3주",
+   "goal": "이펙트용 머트리얼을 만들고 Houdini·Python 으로 반복 작업을 줄일 수 있다.",
+   "resources": [
+    "ue-niagara",
+    "houdini-docs",
+    "ue-shader-dev"
+   ],
+   "task": "Houdini 로 만든 연기 플립북을 나이아가라 파티클 머트리얼에 붙이고, 오버드로 전후 비용을 비교한다. 에디터 Python 으로 '텍스처 4K 넘는 머트리얼 찾기' 점검 스크립트를 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없습니다. 집계 사이트 기준 스마일게이트의 초봉은 **약 4,619만원**, 평균은 **약 7,107만원**이고, 경력 5년 이상(대리~차장) 자리라 실제 제안은 처우 협의로 정해집니다.[1][22]",
+  "rows": [
+   {
+    "label": "신입 초봉(집계)",
+    "value": "약 4,619만원",
+    "amount": 4619,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 기업 페이지의 초봉. 기준일·직군 구분이 없다 [22]"
+   },
+   {
+    "label": "전체 평균 연봉(집계)",
+    "value": "약 7,107만원",
+    "amount": 7107,
+    "basis": "공공데이터 집계",
+    "note": "같은 페이지의 평균 연봉. 경력직이 섞인 회사 전체 값이다 [22]"
+   }
+  ],
+  "how": "비상장이라 사업보고서의 '직원 1인 평균 급여' 같은 공시 숫자가 없어 집계 값만 실었다. 이 자리는 **경력 5년 이상**이라 초봉과는 다르고, 평균도 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "보험·연금·퇴직",
+    "detail": "4대 보험, 퇴직금"
+   },
+   {
+    "name": "휴가",
+    "detail": "연차, 경조휴가, 장기근속 포상"
+   },
+   {
+    "name": "건강",
+    "detail": "건강검진, 본인·가족 의료비 지원, EAP(심리 상담)"
+   },
+   {
+    "name": "생활",
+    "detail": "직원대출제도, 사원식당·중식 제공, 통근버스, 경조금"
+   },
+   {
+    "name": "복지포인트·가족",
+    "detail": "복지포인트, 직장어린이집 '스마일토리', 콘도·하계휴양소 지원"
+   },
+   {
+    "name": "일과 성장",
+    "detail": "선택적 근무제도, 직무도서 구입비, 동호회, 사내 게임장, 학습 프로그램"
+   }
+  ],
+  "note": "앞 네 칸은 이 공고의 복리후생 목록 [1], 뒤 칸들과 EAP 는 스마일게이트 채용 사이트의 복지 소개 [21]. 채용 사이트 글에는 연도·적용 범위가 적혀 있지 않아, 이 프로젝트에 그대로 적용되는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "스마일게이트캠퍼스",
+  "address": "경기도 성남시 분당구 판교로 344",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EB%A1%9C%20344",
+  "near": "공고 표기: 신분당선 판교역 1번 출구 800m 안 [1]",
+  "note": "같은 '차세대 게임' 묶음 클라이언트 공고의 회사 채용 페이지 판 근무지 [26]. 이 공고 자체는 '경기 성남시 분당구'로만 적혀 있어 같은 건물인지는 확인되지 않았다 {추론}. 본사 주소는 판교역로 220 쏠리드 스페이스 빌딩(뉴스룸 하단) [2]."
+ }
+}
