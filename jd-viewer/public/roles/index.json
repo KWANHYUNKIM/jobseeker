@@ -1,6 +1,7 @@
 {
  "updated_at": "2026-11-25",
  "jobs": {
+  "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
   "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-395344": "autoever-india-security-expat",
   "wanted-359170": "cj-oliveyoung-data-analyst",
@@ -86,6 +87,8 @@
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
   "wanted-385521": "hyundai-autoever-smart-tag-service-engineer",
   "wanted-387536": "hyundai-sdf-data-architect",
+  "ats-hkmc:hyundai:2026N2387": "hyundai-sdv-controller-sw-integration",
+  "wanted-393817": "hyundai-sdv-controller-sw-integration",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
   "wanted-391370": "litalico-data-engineer",
@@ -309,6 +312,16 @@
   "wanted-390176": "visasq-data-platform-engineer"
  },
  "roles": [
+  {
+   "id": "42dot-senior-cv-engineer-ad",
+   "company": "포티투닷(42dot)",
+   "role": "Senior Computer Vision Engineer (Autonomous Driving)",
+   "jobs": [
+    "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
+  },
   {
    "id": "aldagram-kanna-web-engineer",
    "company": "아르다그람 (株式会社アルダグラム)",
@@ -1014,6 +1027,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 14
+  },
+  {
+   "id": "hyundai-sdv-controller-sw-integration",
+   "company": "현대자동차",
+   "role": "SDV 통합제어기 SW 통합·배포·검증",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2387",
+    "wanted-393817"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 45
   },
   {
    "id": "ldf-ebookjapan-web-frontend",
