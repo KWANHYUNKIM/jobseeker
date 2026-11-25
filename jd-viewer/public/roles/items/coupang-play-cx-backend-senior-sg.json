@@ -1,0 +1,856 @@
+{
+ "id": "coupang-play-cx-backend-senior-sg",
+ "company": "쿠팡 (Coupang)",
+ "role": "Senior, Back-end Engineer (CX) — Coupang Play",
+ "team": "쿠팡플레이 프로덕트 조직 · Customer Experience(CX) 팀 · 라이브 스포츠·Discover API · 싱가포르",
+ "jobs": [
+  "ats-greenhouse:coupang:8210828"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡플레이 앱이 화면을 그릴 때 부르는 API — **라이브 스포츠**(지금 중계 중인 경기·일정·시청 권한)와 **Discover**(홈·탐색 화면에 무엇을 보여 줄지) — 의 설계 방향을 정하고 직접 만들고 운영합니다.[1] 영상을 쪼개 보내는 송출 쪽이 아니라, 고객이 앱을 열고 \"볼 것을 찾아 재생 버튼을 누르기까지\"를 받치는 서버입니다.[1] {추론}",
+  "env": "공고가 든 언어는 Go·Java·JavaScript·Node.js 중 하나, 클라우드는 AWS 또는 GCP, 우대는 GraphQL입니다.[1] 같은 쿠팡플레이의 서울 백엔드 공고는 Kafka·Redis·마이크로서비스를 운영 요건으로 적었습니다.[2] 2026-08 해외 축구 중계에서 접속 장애가 40분가량 이어진 일이 보도됐습니다 — 이 자리가 막아야 하는 장면입니다.[4]",
+  "oneline": "경기 시작 휘슬에 맞춰 수십만 명이 한꺼번에 앱을 여는 순간을 버티는 API를 설계하는 시니어. 캐시·요청 묶기·과부하 대처를 숫자로 설명할 수 있는 백엔드 개발자의 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Design and own the architecture roadmap of our Live Sports and Discover APIs",
+   "short": "라이브 스포츠·탐색 화면 API가 앞으로 어떤 구조로 갈지 정하고, 그 계획을 끝까지 책임진다.",
+   "why": "공고는 이 자리가 라이브 스포츠 시청 경험처럼 **전략적으로 키우는 영역의 새 API 개발**을 이끈다고 적었습니다.[1] 쿠팡플레이는 K리그·라리가·분데스리가·F1·NFL을 중계한다고 소개합니다 — 리그마다 일정·경기 상태·중계권 범위가 다르고, 그 모두를 앱 한 벌이 보여 줘야 합니다.[1] 2026-08-24 이강인 선발 경기 중계에서 약 40분 동안 재생이 멈췄고, 회사는 \"일시적 트래픽 증가\"를 원인으로 밝혔습니다.[4]",
+   "actually": {
+    "intro": "쿠팡플레이는 이 API들의 내부 구조를 공개하지 않았습니다. 공고 문구와 OTT 앱이 보통 부르는 화면을 기준으로 하면 '로드맵'에는 이런 것이 들어갑니다.[1] {추론}",
+    "items": [
+     "**라이브 경기 API** — 경기 목록·상태(예정·진행·종료)·점수·하이라이트 묶음을 리그마다 다른 원천에서 받아 한 모양으로 내준다.[1] {추론}",
+     "**시청 권한 확인** — 와우 회원·스포츠 패스 같은 이용권으로 이 경기를 볼 수 있는지 재생 직전에 답한다. 스포츠 패스는 2026-06 표준 19,300원으로 값이 오른 상품이다.[4] {추론}",
+     "**Discover(탐색) API** — 홈 화면의 줄(레일)마다 어떤 작품·경기를 어떤 순서로 보일지. 공고는 머신러닝으로 CX를 다듬는다고도 적었다.[1]",
+     "**한 번에 몰리는 순간의 설계** — 킥오프 직전 같은 화면을 수십만 명이 동시에 연다. 캐시·요청 묶기·우아한 저하(덜 중요한 칸을 빼고 핵심만 답하기)를 언제 쓸지 미리 정한다.[5][13]",
+     "**API 모양의 진화** — 모바일·TV·웹 앱이 같은 API를 쓰되 화면에 필요한 만큼만 받게 할지(GraphQL 우대가 이 방향)를 정한다.[1][11]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "고객이 경기를 재생하기까지 이 팀 API가 받치는 길 {추론}",
+     "steps": [
+      "앱 실행 · 홈 화면 요청",
+      "Discover API · 레일·추천·라이브 배지",
+      "라이브 스포츠 API · 경기 상태·일정",
+      "시청 권한 확인 · 이용권·지역",
+      "재생 주소 발급 → 영상 송출 플랫폼(HLS 조각·CDN)"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "\"own\"이라는 말대로 설계 문서와 결정 기록을 이 자리가 씁니다.[1] 제품의 우선순위는 PO가, 영상 인코딩·CDN은 영상 플랫폼 쪽이 정한다고 보는 게 자연스럽습니다 {추론}. 최소선은 위 흐름의 각 칸이 **트래픽이 10배 몰리면 무엇이 먼저 터지는지**를 한 장으로 그리고, 다음 시즌(새 리그 추가 등)까지 무엇을 바꿀지 순서를 매기는 것입니다 {추론}.",
+   "study": [
+    "system-design-interview",
+    "aws-caching",
+    "sre-overload"
+   ],
+   "refs": [
+    1,
+    4,
+    5,
+    11,
+    13
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Develop, support, and improve key backend systems of the Coupang Play with high availability and scalability",
+   "short": "쿠팡플레이 핵심 백엔드를 직접 만들고, 장애에 대응하고, 몰려도 안 죽게 계속 고친다.",
+   "why": "역할 소개는 이 팀이 매일 수백만 고객이 쓰는 서비스를 만든다고 적었고, **고가용·저지연 분산 서비스를 지어 본 경험이 필수**라고 따로 강조했습니다.[1] 같은 쿠팡플레이 서울 공고도 \"미션 크리티컬\" 시스템이라 부릅니다.[2]",
+   "actually": {
+    "intro": "여기서 '가용성'은 \"서버가 살아 있나\"보다 **요청이 성공했나**로 잽니다. 구글 SRE 책은 요청 성공률로 가용성을 세는 방법과 그 계산을 보입니다.[13] 공개 자료로 보면 보통 이런 일입니다.",
+    "items": [
+     "**타임아웃·재시도 다듬기** — 아래 서비스가 느려졌을 때 무한정 기다리거나 재시도를 겹겹이 쌓으면 장애가 커진다. 재시도는 한 층에서만, 지터(무작위 간격)를 넣어서.[6][14]",
+     "**미리 늘리기** — 경기 시각은 미리 안다. 자동 확장은 부하를 보고 늦게 따라오므로 중계 일정에 맞춰 서버를 앞서 늘려 둔다.[4] {추론}",
+     "**과부하 때 덜어 내기** — 다 받다가 다 죽느니 일부 요청을 빨리 거절한다. 구글은 클라이언트가 스스로 요청을 줄이는 방법(받아 준 수의 2배를 넘으면 자체 거절)을 적었다.[13]",
+     "**당직과 사후 분석** — 'support'는 장애 대응이다. 터진 뒤 원인·재발 방지를 문서로 남긴다.[1] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "킥오프 1분을 초당 요청으로 바꿔 보기 (가상의 숫자)",
+     "body": "50만 명이 1분 안에 앱을 열고 한 번에 API를 6번 부르면 평균 5만 rps, 휘슬 직전 쏠림을 3배로 잡으면 15만 rps입니다. 캐시가 95%를 받아 줘도 원본까지 7,500 rps가 내려갑니다. 3단 호출이 단마다 재시도 3번을 하면 맨 아래는 최대 64배를 맞습니다 — 구글 SRE 책이 같은 계산을 보입니다.[14]",
+     "lang": "python",
+     "code": "viewers = 500_000\ncalls_per_open = 6\navg = viewers * calls_per_open / 60\npeak = avg * 3\nprint(f\"평균 {avg:,.0f} rps, 쏠림 {peak:,.0f} rps\")\nprint(f\"캐시 적중 95% 이면 원본까지 {peak * 0.05:,.0f} rps\")\nprint(f\"3단 재시도 -> 최대 {(1 + 3) ** 3}배\")\n# 평균 50,000 rps, 쏠림 150,000 rps\n# 캐시 적중 95% 이면 원본까지 7,500 rps\n# 3단 재시도 -> 최대 64배"
+    }
+   ],
+   "how_far": "운영 플랫폼(쿠버네티스·로드밸런서)은 인프라 조직이 줄 가능성이 큽니다 {추론}. 이 자리의 최소선은 **자기 서비스의 지표**(요청 수·오류율·p99 지연)를 보고, 위 세 가지(타임아웃·재시도·덜어 내기)를 코드와 설정으로 넣고, 장애 뒤 사후 분석을 쓰는 것입니다.[6][13] {추론}",
+   "study": [
+    "aws-retries",
+    "sre-overload"
+   ],
+   "refs": [
+    1,
+    2,
+    4,
+    6,
+    13,
+    14
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Formulate scalable and low-latency technical solutions to satisfy product requirements from Product Owner",
+   "short": "PO가 원하는 기능을, 사람이 몰려도 느려지지 않는 기술 방안으로 바꿔 낸다.",
+   "why": "이 팀은 제품 디자이너·PM·모바일·QA와 붙어서 일합니다.[1] 기획은 \"경기 중 실시간 점수를 홈 화면에 띄우자\" 같은 모양으로 오고, 그게 몇 초마다 몇십만 명에게 갱신돼야 하는지는 백엔드가 계산해야 합니다 {추론}.",
+   "actually": {
+    "intro": "요구 하나를 받아 이렇게 쪼갭니다(가상의 예).",
+    "items": [
+     "**얼마나 신선해야 하나** — 점수는 몇 초 늦어도 되나? 몇 초까지 허용되면 캐시 수명(TTL)을 그만큼 줄 수 있다.[5]",
+     "**같은 답을 여러 명에게** — 경기 정보는 사람마다 다르지 않다. 공용 캐시·CDN에 맡기고, 사람마다 다른 것(시청 권한·이어보기)만 따로 계산한다.[5] {추론}",
+     "**낡은 값이라도 먼저** — 원본이 느릴 때 조금 오래된 값을 주고 뒤에서 새로 고치는 방식(stale-while-revalidate).[10]",
+     "**요청 묶기** — 캐시가 비는 순간 같은 키 요청이 몰리면 하나만 원본에 보내고 나머지는 그 답을 나눠 받는다.[5][7]",
+     "**기획에 되돌려 주기** — \"1초 갱신이면 비용이 이만큼, 5초면 이만큼\"을 숫자로 보여 주고 같이 고른다.[1] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "요청 묶기 — 같은 경기 정보 1,000건이 동시에 캐시를 놓치면",
+     "body": "묶지 않으면 원본(DB·다른 서비스)에 1,000번, 키마다 진행 중인 요청 하나만 두면 1번 갑니다. Go 표준 확장 패키지의 singleflight가 같은 일을 합니다.[7] 아래는 같은 생각을 파이썬 asyncio로 옮겨 직접 돌린 것입니다.",
+     "lang": "python",
+     "code": "import asyncio\ncalls = 0\nasync def fetch_match(mid):\n    global calls\n    await asyncio.sleep(0.05); calls += 1\n    return {\"id\": mid, \"status\": \"LIVE\"}\ninflight = {}\nasync def coalesced(mid):\n    if mid not in inflight:\n        inflight[mid] = asyncio.ensure_future(fetch_match(mid))\n        inflight[mid].add_done_callback(lambda _: inflight.pop(mid, None))\n    return await inflight[mid]\nasync def main():\n    global calls\n    await asyncio.gather(*(fetch_match(\"k1\") for _ in range(1000)))\n    print(\"묶지 않음: 원본 호출\", calls); calls = 0\n    await asyncio.gather(*(coalesced(\"k1\") for _ in range(1000)))\n    print(\"요청 묶기: 원본 호출\", calls)\nasyncio.run(main())\n# 묶지 않음: 원본 호출 1000\n# 요청 묶기: 원본 호출 1"
+    }
+   ],
+   "how_far": "무엇을 만들지는 PO가, 어떻게 만들지와 그 비용은 이 자리가 정합니다.[1] 최소선은 기능 하나마다 **신선도·동시 사용자·지연 목표** 세 숫자를 먼저 묻고, 캐시를 어디(앱·CDN·서버·DB)에 둘지 고른 이유를 적는 것입니다.[5] {추론}",
+   "study": [
+    "aws-caching",
+    "singleflight",
+    "rfc5861"
+   ],
+   "refs": [
+    1,
+    5,
+    7,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Mentor and grow a high-performing engineering team; establish best practices in code quality, system performance, and operational excellence",
+   "short": "팀원을 키우고, 코드 품질·성능·운영의 팀 기준을 세운다 — 매니저가 아닌 시니어의 몫이다.",
+   "why": "공고 제목은 매니저가 아니라 Senior 엔지니어입니다.[1] 그런데도 팀의 기준을 세우라고 적은 건, 라이브 경기처럼 한 번 터지면 되돌릴 수 없는 서비스에서는 **한 사람의 실력보다 팀이 같은 규칙으로 일하는 것**이 중요하기 때문으로 읽힙니다 {추론}.",
+   "actually": {
+    "intro": "회사가 이 팀의 규칙을 공개하지는 않았습니다. 보통 시니어가 맡는 '기준 세우기'는 이런 것입니다 {추론}.",
+    "items": [
+     "**코드 리뷰 기준** — 타임아웃 없는 외부 호출, 무제한 재시도, 캐시 없는 핫 경로를 리뷰에서 걸러 낸다.[6]",
+     "**성능 기준** — 새 API는 p99 지연 목표와 부하 테스트 결과를 같이 올린다.[13] {추론}",
+     "**운영 기준** — 대시보드·경보·런북(장애 때 따라 할 절차)을 서비스와 같이 만든다.[13] {추론}",
+     "**사후 분석 문화** — 장애 뒤 사람 탓이 아니라 구조를 고치는 문서를 쓴다.[13]"
+    ]
+   },
+   "how_far": "인사 평가·채용 결정은 매니저 몫일 가능성이 큽니다 {추론}. 시니어의 최소선은 **리뷰와 설계 문서로 기준을 보여 주는 것**, 그리고 주니어가 장애 당직을 혼자 설 수 있게 런북과 함께 같이 서 주는 것입니다 {추론}.",
+   "refs": [
+    1,
+    6,
+    13
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Collaborate with cross-functional stakeholders to align technical solutions with business goals and compliance requirements",
+   "short": "사업 목표와 규정(중계권·개인정보 등)에 맞는 기술안인지 다른 부서와 맞춘다.",
+   "why": "같은 쿠팡플레이의 서울 공고는 협업 상대를 Product·Ad Operations·Finance·Legal로 적었습니다.[2] 스포츠 중계는 리그마다 **중계권 범위**(어느 나라에서, 생중계만인지 다시보기도 되는지)가 다르다는 게 일반적이라, API가 그 규칙을 지켜야 합니다 {추론}.",
+   "actually": {
+    "intro": "회사가 구체 사례를 공개하지 않아, 이 자리에서 흔히 만나는 '규정'의 예를 듭니다 {추론}.",
+    "items": [
+     "**지역 제한** — 접속 위치에 따라 경기 노출·재생을 막는다.",
+     "**권리 기간** — 생중계 뒤 다시보기·하이라이트를 언제까지 보여 줄 수 있나.",
+     "**이용권 정책** — 가격·혜택이 바뀌면(2026-06 스포츠 패스 인상) 권한 판정 규칙과 화면 문구가 같이 바뀐다.[4]",
+     "**개인정보** — 시청 기록을 추천에 쓸 때 동의·보관 기간."
+    ]
+   },
+   "how_far": "규정의 해석은 법무·사업 쪽이 하고, 개발자는 그 규칙을 **코드 밖 설정**(리그·지역·기간 표)으로 빼서 바꾸기 쉽게 만드는 것까지가 보통의 몫입니다 {추론}.",
+   "refs": [
+    2,
+    4
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Leverage AI for task automation and improve development quality and velocity",
+   "short": "AI 도구로 반복 업무를 자동화해 개발 품질과 속도를 올린다.",
+   "why": "같은 쿠팡플레이 서울 공고도 같은 줄을 넣었습니다 — 개별 팀 요구라기보다 조직 공통 기대로 보입니다.[2] {추론}",
+   "actually": {
+    "intro": "공고는 어떤 도구인지 적지 않았습니다. 백엔드에서 보통 해 보는 것은 이렇습니다 {추론}.",
+    "items": [
+     "코드 리뷰 보조·테스트 초안 만들기",
+     "장애 로그·경보 요약으로 원인 후보 좁히기",
+     "API 문서·스키마 변경 설명 자동 작성",
+     "부하 테스트 시나리오 생성"
+    ]
+   },
+   "how_far": "면접에서는 \"써 봤다\"보다 **무엇을 맡기고 무엇은 사람이 검증했나**를 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bachelor's degree and 2+ years of experience in server application and system engineering using modern language",
+   "short": "학사 + 서버 개발 2년 이상. 다만 제목이 Senior라 실제 눈높이는 더 높다고 봐야 한다.",
+   "why": "최소 요건은 2년이지만 제목은 Senior이고, 업무에 설계 로드맵·멘토링이 있습니다.[1] 공고는 직급·업무가 경력에 따라 제안 전에 바뀔 수 있다고도 적었습니다 — 2년 차가 붙으면 다른 직급으로 제안될 수 있다는 뜻으로 읽힙니다.[1] {추론}",
+   "how_far": "경력 연수보다 **트래픽이 몰리는 서버를 직접 운영해 본 이야기**(숫자·장애·고친 것)를 갖고 있느냐가 갈림길입니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Deep expertise in low-latency, high-throughput systems, performance profiling, and cost/performance trade-offs",
+   "short": "빠르고 많이 처리하는 서버, 병목 찾기(프로파일링), 돈과 성능 사이 저울질을 깊게 안다.",
+   "why": "역할 소개가 고가용·저지연 분산 서비스 경험을 **필수**라고 적은 것과 같은 줄입니다.[1] 서울 공고는 병목 해결과 비용/성능 최적화를 같은 문장에 묶었습니다.[2]",
+   "actually": {
+    "intro": "세 낱말을 풀면 이렇습니다.",
+    "items": [
+     "**저지연** — 평균이 아니라 p99(가장 느린 1%) 지연을 본다. 홈 화면 하나가 API 여러 개를 부르면 그중 가장 느린 것이 화면 속도가 된다.[14] {추론}",
+     "**고처리량** — 같은 서버로 초당 더 많이. 커넥션 재사용·직렬화 비용·잠금 경합을 줄인다.",
+     "**프로파일링** — 어디서 CPU·메모리·대기를 쓰는지 재는 것. Go는 CPU 스택을 초당 약 100번 찍어 pprof로 보여 준다.[9] 운영 중에도 프로파일링할 수 있지만 CPU 프로파일은 비용이 있다.[8]",
+     "**비용/성능** — 캐시 서버를 더 둘지, 신선도를 조금 양보할지. 몇 초 늦은 점수를 허용하면 원본 부하와 비용이 크게 준다.[5] {추론}"
+    ]
+   },
+   "level": {
+    "basic": "p50·p99의 차이, 캐시 적중률, 커넥션 풀이 무엇인지 설명할 수 있다",
+    "work": "pprof(또는 Java 계열 프로파일러)로 실제 병목을 찾아 고친 경험, 부하 테스트로 한계 rps를 잰 경험",
+    "team": "이벤트(킥오프) 단위로 용량을 계획하고, 신선도·비용·지연을 숫자로 맞바꾸는 설계"
+   },
+   "how_far": "\"Deep\"이라는 말대로 이 팀 최소선은 **프로파일 그래프를 보고 병목을 짚어 고친 실제 사례 하나**를 숫자와 함께 말하는 것입니다 {추론}.",
+   "study": [
+    "go-diagnostics",
+    "systems-perf"
+   ],
+   "refs": [
+    1,
+    2,
+    5,
+    8,
+    9,
+    14
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Expert with one or more of the following programming languages for backend engineering: Go, Java, JavaScript, Node.js",
+   "short": "Go·Java·JavaScript(Node.js) 중 하나를 백엔드에서 깊게 쓴다 — 하나면 된다.",
+   "why": "공고가 \"하나 이상\"이라고 적었습니다.[1] 같은 쿠팡플레이 백엔드 매니저 공고(2023)도 Go·Java·JavaScript·Node.js를 같이 적어, 이 조직이 여러 언어를 섞어 쓰는 것으로 보입니다.[3]",
+   "actually": {
+    "intro": "언어마다 '깊게 안다'의 핵심이 다릅니다 {추론}.",
+    "items": [
+     "**Go** — 고루틴·채널·context(취소·타임아웃 전파), pprof.[8]",
+     "**Java** — 스레드 풀·비동기, GC가 지연에 주는 영향.",
+     "**Node.js** — 이벤트 루프를 막는 코드(무거운 JSON 처리 등) 피하기, 비동기 오류 처리."
+    ]
+   },
+   "level": {
+    "basic": "한 언어로 HTTP API·DB 접근·테스트를 혼자 쓴다",
+    "work": "동시성 모델(고루틴/스레드/이벤트 루프)을 이해하고 타임아웃·취소를 끝까지 전파한다",
+    "team": "그 언어 런타임이 p99 지연에 주는 영향(GC·스케줄러)을 프로파일로 설명한다"
+   },
+   "how_far": "넷 다 할 필요는 없습니다.[1] 다른 언어로 된 서비스를 읽고 고칠 수 있으면 충분하다고 보는 게 자연스럽습니다 {추론}.",
+   "study": [
+    "learning-go",
+    "go-diagnostics"
+   ],
+   "refs": [
+    1,
+    3,
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Proficient with modern cloud computing such as AWS or GCP",
+   "short": "AWS나 GCP에서 서비스를 띄우고 늘리고 운영할 줄 안다.",
+   "why": "공고는 AWS 또는 GCP라고 적었고[1], 서울 공고는 여기에 Kafka·Redis·마이크로서비스의 상용 운영 경험을 붙였습니다.[2]",
+   "actually": {
+    "intro": "이 자리에서 클라우드를 쓰는 장면은 보통 이렇습니다 {추론}.",
+    "items": [
+     "관리형 캐시(Redis)·DB·메시지 큐(Kafka)를 고르고 크기를 정한다.[2]",
+     "경기 일정에 맞춘 사전 확장, 자동 확장 규칙.",
+     "CDN 앞단 캐시 설정(Cache-Control 헤더).[10]",
+     "여러 가용 영역에 나눠 두기, 비용 확인."
+    ]
+   },
+   "how_far": "인프라 플랫폼을 만드는 자리는 아닙니다 {추론}. 자기 서비스가 쓰는 관리형 서비스의 **한계(연결 수·처리량)와 비용**을 알고 설정을 고칠 수 있으면 됩니다.",
+   "refs": [
+    1,
+    2,
+    10
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Excellent verbal and written communication skills",
+   "short": "말과 글로 설계를 설명하고 설득한다 — 설계 문서와 장애 보고가 이 자리의 일이다.",
+   "why": "업무에 로드맵 소유·PO 요구 해석·다른 부서와 조율이 다 들어 있습니다.[1] 조직이 서울·싱가포르·미국 캘리포니아에 나뉘어 있어 글로 남기는 소통이 많습니다.[2]",
+   "how_far": "설계 문서 한 편(문제·선택지·고른 이유·숫자)과 장애 사후 분석 한 편을 남에게 보여 줄 수 있게 써 두면 좋습니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Production experience with video streaming and its data systems",
+   "short": "영상 스트리밍과 그 데이터(시청 기록·품질 지표)를 실제 서비스에서 다뤄 봤다.",
+   "why": "쿠팡플레이는 VOD와 라이브를 모두 내보내고, 고객이 찾고 보는 방법을 계속 다듬는다고 적었습니다.[1] 라이브 API가 \"지금 재생 가능한가\"를 답하려면 영상 쪽이 어떻게 생겼는지 알아야 합니다 {추론}.",
+   "actually": {
+    "intro": "영상 송출은 보통 HLS(영상을 몇 초짜리 조각으로 잘라 HTTP로 보내는 방식) 같은 표준을 씁니다.[15][16] 백엔드가 알아야 할 정도는 이렇습니다.",
+    "items": [
+     "**재생 목록(m3u8)과 조각** — 플레이어가 목록을 받아 조각을 차례로 받는다. 조각 길이의 상한은 목록에 적힌다.[15]",
+     "**라이브와 VOD 목록의 차이** — 라이브는 목록이 계속 늘어나고 플레이어가 다시 받아 간다.[15]",
+     "**시청 데이터** — 재생 시작·버퍼링·이어보기 위치 이벤트. 서울 공고가 Kafka를 든 것도 이런 흐름 때문으로 보인다.[2] {추론}"
+    ]
+   },
+   "how_far": "인코딩·DRM·CDN을 직접 만드는 자리는 아닙니다 — 그건 영상 플랫폼 팀 몫으로 보입니다 {추론}. 재생 목록이 어떻게 생겼고 라이브 지연이 어디서 생기는지 설명할 수 있으면 우대 요건은 충분합니다.",
+   "study": [
+    "rfc8216"
+   ],
+   "refs": [
+    1,
+    2,
+    15,
+    16
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Ability to work with iOS and Android developers to properly integrate and troubleshoot issues with mobile app to API integration",
+   "short": "iOS·Android 개발자와 붙어 앱-API 연동 문제를 같이 찾고 고친다.",
+   "why": "쿠팡플레이는 휴대폰·태블릿·PC·스마트 TV·애플 TV·안드로이드 TV에서 돌아갑니다.[1] 이 팀은 모바일 팀과 가까이 일한다고 적었습니다.[1]",
+   "actually": {
+    "intro": "앱-API 사이에서 자주 생기는 일입니다 {추론}.",
+    "items": [
+     "**옛 버전 앱** — 앱은 사용자가 업데이트해야 바뀐다. API 응답 모양을 바꿀 때 옛 앱이 깨지지 않게 한다.",
+     "**재시도 폭풍** — 앱이 실패하면 바로 다시 부르게 짜 두면, 장애 때 그게 부하를 더 키운다. 지터 있는 백오프를 앱과 같이 정한다.[6]",
+     "**재현** — \"특정 TV에서만 안 된다\" 같은 제보를 요청 ID·로그로 따라간다."
+    ]
+   },
+   "how_far": "앱 코드를 고치는 자리는 아닙니다 {추론}. 요청 ID로 앱 로그와 서버 로그를 이어 보고, 하위 호환 규칙을 문서로 합의하는 정도면 됩니다.",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience in GraphQL",
+   "short": "GraphQL — 앱이 필요한 필드만 골라 받게 하는 API 방식 — 을 써 봤다.",
+   "why": "기기마다 화면이 달라 같은 API에서 받고 싶은 필드가 다릅니다.[1] GraphQL은 클라이언트가 질의로 필요한 모양을 정하는 방식입니다.[11] 쿠팡플레이가 GraphQL을 쓰는지는 공고가 우대로 적은 것 말고는 공개된 것이 없습니다.[1]",
+   "actually": {
+    "intro": "GraphQL 서버를 운영할 때 빠지는 함정과 해결이 graphql.org에 정리돼 있습니다.[12]",
+    "items": [
+     "**N+1 문제** — 목록 하나를 받은 뒤 항목마다 다시 조회한다. 같은 틱의 조회를 모아 한 번에 묻는 DataLoader 방식으로 푼다.[12]",
+     "**캐시** — POST 한 주소로 다 들어오면 HTTP 캐시가 어렵다. 미리 등록한 질의를 GET으로 보내면 CDN 캐시를 쓸 수 있다.[12]",
+     "**비싼 질의 막기** — 깊이·폭 제한, 페이지 나누기, 복잡도 계산.[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "홈 화면 레일 20개 × '지금 라이브인가' — 하나씩 vs 모아서",
+     "body": "필드 resolver가 항목마다 조회하면 20번, DataLoader처럼 모아서 물으면 1번입니다.[12] 직접 돌린 결과입니다.",
+     "lang": "python",
+     "code": "queries = 0\ndef get_status(i):\n    global queries; queries += 1\n    return {\"id\": i, \"live\": i % 2 == 0}\ndef get_statuses(ids):\n    global queries; queries += 1\n    return [{\"id\": i, \"live\": i % 2 == 0} for i in ids]\nids = list(range(1, 21))\n[get_status(i) for i in ids]; print(\"하나씩:\", queries, \"번\")\nqueries = 0\nget_statuses(ids); print(\"모아서:\", queries, \"번\")\n# 하나씩: 20 번\n# 모아서: 1 번"
+    }
+   ],
+   "how_far": "스키마 설계와 N+1·캐시 대처를 직접 해 봤으면 우대에 충분합니다 {추론}. 여러 팀 스키마를 합치는 페더레이션까지는 공고가 요구하지 않았습니다.[1] 처음이라면 JavaScript로 서버·클라이언트를 직접 짜 보는 입문서 한 권이면 출발선에 섭니다.[20]",
+   "study": [
+    "graphql-learn",
+    "graphql-perf",
+    "learning-graphql"
+   ],
+   "refs": [
+    1,
+    11,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Ability to speak and write in English in a professional environment",
+   "short": "업무 영어로 말하고 쓴다 — 근무지가 싱가포르다.",
+   "why": "근무지가 싱가포르이고, 조직이 서울·싱가포르·캘리포니아에 걸쳐 있습니다.[1][2] 같은 공고의 서울판(모니타이제이션)도 영어 소통을 우대로 적었습니다.[2]",
+   "how_far": "설계 문서·코드 리뷰·회의를 영어로 할 수 있으면 됩니다. 면접 일부도 영어일 수 있습니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Recruitment Process and Others\nRecruitment Process\nApplication Review - 1st Interview - 2nd Tech Interview - Leadership interview – Offer\nThe exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.\nInterview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "서류 → 1차 면접 → 2차 기술 면접 → 리더십 면접 → 처우 제안. 결과는 이메일로 온다.",
+   "why": "공고 끝의 전형 안내입니다.[1] 기술 면접이 따로 한 번 있고, 마지막 단계가 처우 제안(Offer)이라 연봉은 그때 정해집니다.[1] 서울판 공고는 2차를 '핵심 역량 인터뷰(Tech Focus)'라고 적었습니다.[2]",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to Consider\nThis job posting may be closed prior to the stated end date for application if all openings are filled.\nCoupang will be prioritizing applicants who have a current right to work in Singapore and do not require company sponsorship for an employment visa.\nCoupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.\nThose eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.\nJob titles and responsibilities may be subject to change depending on the candidate’s overall experience, etc. This will be communicated to the candidate at the appropriate time before the offer.\nHiring may be restricted in case the legal qualifications required for hiring and work performance is not met.\nThis is a full-time regular position and includes 12 weeks of probation period; provided, however, the probationary period may be either skipped, shortened or extended if necessary for business purposes.",
+   "short": "싱가포르 취업 자격이 이미 있는 사람을 먼저 본다. 정규직, 수습 12주.",
+   "why": "지원자에게 가장 큰 줄은 **싱가포르에서 일할 권리가 이미 있고 비자 후원이 필요 없는 지원자를 우선**한다는 것입니다.[1] 한국에서 지원한다면 이 점이 서류 단계에서 불리할 수 있습니다 {추론}. 그 밖에 자리가 차면 일찍 닫히고, 직급·업무는 경력에 따라 제안 전에 바뀔 수 있으며, 정규직에 수습 12주가 붙습니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "\"사람이 한꺼번에 몰리는 순간\"을 숫자로 계산하고 대비하는 게 즐거운 사람",
+   "스포츠 중계처럼 날짜가 정해진 큰 이벤트를 준비하는 긴장감을 좋아하는 사람 {추론}",
+   "앱 개발자·PM과 붙어서 화면 단위로 API를 다듬는 일을 좋아하는 사람[1]",
+   "Go·Node.js·Java 중 하나를 깊게, 다른 것도 읽을 수 있는 사람[1]"
+  ],
+  "hard": [
+   "큰 경기 날의 장애는 바로 보도된다 — 2026-08 중계 장애가 기사가 됐다[4]",
+   "싱가포르 취업 자격이 있는 지원자를 우선한다고 적었다[1]",
+   "경기 시각이 한국 밤·새벽이면 당직도 그 시간이 된다 — 싱가포르는 한국보다 1시간 늦다 {추론}",
+   "연봉이 공고에 없고, 처우는 마지막 단계에서 정해진다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "킥오프 1분 전 같은 경기 정보 요청이 몰리며 캐시가 만료되면 무슨 일이 생기나요? 어떻게 막겠어요?",
+   "a": "캐시 쇄도(thundering herd)와 요청 묶기·소프트/하드 TTL.[5][7]"
+  },
+  {
+   "q": "아래 서비스가 느려졌을 때 우리 API가 재시도를 하면 왜 더 나빠질 수 있나요?",
+   "a": "층마다 재시도가 곱해지는 계산(4^3=64), 한 층에서만·지터.[6][14]"
+  },
+  {
+   "q": "홈 화면이 API 10개를 부르는데 그중 하나만 p99가 2초예요. 화면은 어떻게 되고, 무엇부터 하겠어요?",
+   "a": "꼬리 지연과 우아한 저하(그 칸을 빼고 답하기).[13] {추론}"
+  },
+  {
+   "q": "실시간 점수는 몇 초 늦어도 될까요? 그 답이 설계를 어떻게 바꾸나요?",
+   "a": "신선도와 캐시 수명·stale-while-revalidate.[10]"
+  },
+  {
+   "q": "GraphQL로 홈 화면을 만들 때 N+1을 어떻게 찾고 없애나요?",
+   "a": "DataLoader식 묶기, 질의 복잡도 제한.[12]"
+  },
+  {
+   "q": "운영 중인 서버에서 CPU가 튀었어요. 어떻게 원인을 찾나요?",
+   "a": "pprof 같은 프로파일러와 그 비용.[8][9]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior, Back-end Engineer(CX) - Coupang Play (Singapore)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8210828",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "쿠팡플레이 소개(리그·기기)·CX 팀 역할·업무·요건·우대·전형. 2026-10-20 갱신, 연봉·복지 표기 없음"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · Senior Backend Engineer (Monetization) - Coupang Play (Seoul)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8384805",
+   "kind": "posting",
+   "note": "같은 쿠팡플레이 프로덕트 조직의 서울 공고 — 서울·싱가포르·캘리포니아 조직, 라이브 스포츠 피크 광고 삽입, Kafka·Redis·마이크로서비스, Legal·Finance 협업, 전형"
+  },
+  {
+   "n": 3,
+   "title": "점핏 · Sr. Manager, Back-end engineering (Coupang Play)",
+   "url": "https://jumpit.saramin.co.kr/position/46025264",
+   "kind": "posting",
+   "date": "2023-06",
+   "note": "마감된 2023년 공고 — Go·Java·JavaScript·Node.js·AWS·GCP, 서울·싱가포르·마운틴뷰 엔지니어링"
+  },
+  {
+   "n": 4,
+   "title": "머니투데이 · 해외 축구 '독점'한 쿠플, 이강인 선발전 서버 터졌다",
+   "url": "https://www.mt.co.kr/tech/2026/08/24/2026082411335580436",
+   "kind": "news",
+   "date": "2026-08-24",
+   "note": "8-24 0시 경기 중계 약 40분 재생 장애, 회사 설명(일시적 트래픽 증가), 2026-06 스포츠 패스 16,600→19,300원"
+  },
+  {
+   "n": 5,
+   "title": "AWS Builders' Library · Caching challenges and strategies",
+   "url": "https://builder.aws.com/content/3K9TeXp6strMiJ4vhakpRD7BQWO/caching-challenges-and-strategies",
+   "kind": "reference",
+   "date": "2019-12",
+   "note": "소프트/하드 TTL, 원본 장애 때 캐시로 버티기, 요청 묶기로 쇄도 막기"
+  },
+  {
+   "n": 6,
+   "title": "AWS Builders' Library · Timeouts, retries, and backoff with jitter",
+   "url": "https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter",
+   "kind": "reference",
+   "date": "2019-12",
+   "note": "층마다 재시도가 곱해지는 문제(5층 × 3회 = 243배), 지터, 재시도 토큰 버킷"
+  },
+  {
+   "n": 7,
+   "title": "Go · golang.org/x/sync/singleflight",
+   "url": "https://pkg.go.dev/golang.org/x/sync/singleflight",
+   "kind": "reference",
+   "note": "키마다 진행 중인 호출 하나, 중복 호출자는 같은 결과를 받는다"
+  },
+  {
+   "n": 8,
+   "title": "Go · Diagnostics",
+   "url": "https://go.dev/doc/diagnostics",
+   "kind": "reference",
+   "note": "cpu·heap·goroutine·block·mutex 프로파일, 운영 중 프로파일링과 그 비용"
+  },
+  {
+   "n": 9,
+   "title": "The Go Blog · Profiling Go Programs",
+   "url": "https://go.dev/blog/pprof",
+   "kind": "reference",
+   "date": "2011-06",
+   "note": "CPU 스택 초당 약 100회 표본, net/http/pprof"
+  },
+  {
+   "n": 10,
+   "title": "RFC 5861 · HTTP Cache-Control Extensions for Stale Content",
+   "url": "https://www.rfc-editor.org/rfc/rfc5861",
+   "kind": "reference",
+   "date": "2010-05",
+   "note": "stale-while-revalidate·stale-if-error"
+  },
+  {
+   "n": 11,
+   "title": "GraphQL · Learn",
+   "url": "https://graphql.org/learn/",
+   "kind": "reference",
+   "note": "질의·스키마·resolver 기본"
+  },
+  {
+   "n": 12,
+   "title": "GraphQL · Performance",
+   "url": "https://graphql.org/learn/performance/",
+   "kind": "reference",
+   "note": "N+1과 DataLoader, GET·등록 질의로 HTTP 캐시, 깊이·복잡도 제한"
+  },
+  {
+   "n": 13,
+   "title": "Google SRE Book · Handling Overload",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "kind": "reference",
+   "note": "클라이언트 자체 조절(K=2), 요청당 재시도 3회·클라이언트 재시도 예산 10%"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Book · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference",
+   "note": "연쇄 장애, 층마다 재시도가 곱해지는 계산, 한 층에서만 재시도"
+  },
+  {
+   "n": 15,
+   "title": "RFC 8216 · HTTP Live Streaming",
+   "url": "https://www.rfc-editor.org/rfc/rfc8216",
+   "kind": "reference",
+   "date": "2017-08",
+   "note": "재생 목록·조각, EXT-X-TARGETDURATION, 라이브 목록 갱신"
+  },
+  {
+   "n": 16,
+   "title": "Apple Developer · HTTP Live Streaming",
+   "url": "https://developer.apple.com/streaming/",
+   "kind": "reference",
+   "note": "HLS 공식 안내·문서 모음"
+  },
+  {
+   "n": 17,
+   "title": "Coupang Careers · Singapore 근무지",
+   "url": "https://www.coupang.jobs/en/locations/singapore/",
+   "kind": "company",
+   "note": "Suntec Tower 5 사무실 주소·가까운 역"
+  },
+  {
+   "n": 18,
+   "title": "Coupang Careers · Why Coupang (Culture and benefits)",
+   "url": "https://www.coupang.jobs/en/why-coupang/",
+   "kind": "company",
+   "note": "전 세계 공통 복리후생 소개 — 금액 없음"
+  },
+  {
+   "n": 19,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 중위 보수 — 달러 환산"
+  },
+  {
+   "n": 20,
+   "title": "Learning GraphQL (Eve Porcello · Alex Banks · O'Reilly · 2018)",
+   "url": "https://www.oreilly.com/library/view/learning-graphql/9781492030706/",
+   "kind": "reference",
+   "note": "GraphQL 입문서 — 한국어판은 확인하지 못했다"
+  }
+ ],
+ "caveat": "쿠팡플레이는 라이브 스포츠·Discover API의 내부 구조를 공개하지 않았고, 회사 기술 블로그·발표 영상도 찾지 못했습니다. 업무 풀이의 구조·계산은 AWS·구글 SRE·graphql.org·HLS 표준 같은 공개 자료로 \"보통 이런 것\"을 보인 것이고, 숫자 예시는 가상의 값입니다. 연봉은 공고에 없어 회사 전체 공시 값만 실었습니다.",
+ "resources": [
+  {
+   "id": "system-design-interview",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "why": "규모 추정·캐시·처리율 제한을 문제 풀이로 익힌다. 업무 '아키텍처 로드맵'과 킥오프 트래픽 계산의 첫걸음."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "why": "복제·분할·스트림 처리. 고가용·확장 요건과 시청 데이터 흐름(우대)의 바탕."
+  },
+  {
+   "id": "aws-caching",
+   "title": "Caching challenges and strategies",
+   "by": "AWS Builders' Library · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://builder.aws.com/content/3K9TeXp6strMiJ4vhakpRD7BQWO/caching-challenges-and-strategies",
+   "why": "캐시가 장애를 숨기기도 키우기도 하는 이유, 소프트/하드 TTL·요청 묶기. 업무 '저지연 방안'의 핵심 글."
+  },
+  {
+   "id": "aws-retries",
+   "title": "Timeouts, retries, and backoff with jitter",
+   "by": "AWS Builders' Library · Marc Brooker · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter",
+   "why": "재시도가 장애를 키우는 계산과 지터. 업무 '고가용성'과 앱 연동(우대)에 바로 쓴다."
+  },
+  {
+   "id": "sre-overload",
+   "title": "Site Reliability Engineering · Handling Overload · Addressing Cascading Failures",
+   "by": "Google · 온라인 무료",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "why": "과부하 때 덜어 내기·연쇄 장애 막기 두 장. 큰 경기 날 '안 죽는 API'의 설계 원칙."
+  },
+  {
+   "id": "singleflight",
+   "title": "golang.org/x/sync/singleflight",
+   "by": "Go 공식 패키지 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://pkg.go.dev/golang.org/x/sync/singleflight",
+   "why": "같은 키 요청을 하나로 묶는 가장 짧은 구현. 캐시 쇄도 대처를 코드로 익힌다."
+  },
+  {
+   "id": "rfc5861",
+   "title": "RFC 5861 · stale-while-revalidate · stale-if-error",
+   "by": "IETF · 2010",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.rfc-editor.org/rfc/rfc5861",
+   "why": "낡은 값을 먼저 주고 뒤에서 새로 고치는 헤더. CDN 앞단 캐시 설계에 쓴다."
+  },
+  {
+   "id": "go-diagnostics",
+   "title": "Go Diagnostics · Profiling Go Programs",
+   "by": "Go 공식 문서 · Go Blog",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://go.dev/doc/diagnostics",
+   "why": "pprof로 CPU·메모리·잠금 병목 찾기. 요건 '성능 프로파일링'을 Go로 손에 익힌다(블로그 글은 go.dev/blog/pprof)."
+  },
+  {
+   "id": "systems-perf",
+   "title": "시스템 성능 엔지니어링",
+   "by": "브렌던 그레그 · 이호연 옮김 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%84%B1%EB%8A%A5+%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "언어 밖(CPU·메모리·네트워크·OS)에서 지연을 재는 법. 요건 '저지연·고처리량 깊은 전문성'의 바닥."
+  },
+  {
+   "id": "learning-go",
+   "title": "러닝 Go",
+   "by": "존 보드너 · 윤대석 옮김 · 한빛미디어 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%9F%AC%EB%8B%9D%20Go",
+   "why": "Go를 처음 백엔드 언어로 고를 때 — 고루틴·context·테스트까지 한 권으로."
+  },
+  {
+   "id": "graphql-learn",
+   "title": "GraphQL · Learn",
+   "by": "graphql.org 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://graphql.org/learn/",
+   "why": "질의·스키마·resolver. 우대 'GraphQL 경험'의 출발점."
+  },
+  {
+   "id": "graphql-perf",
+   "title": "GraphQL · Performance · Security",
+   "by": "graphql.org 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://graphql.org/learn/performance/",
+   "why": "N+1·DataLoader·캐시·비싼 질의 막기 — 많은 사용자 앞에서 GraphQL을 운영할 때 부딪히는 것들."
+  },
+  {
+   "id": "learning-graphql",
+   "title": "Learning GraphQL",
+   "by": "Eve Porcello · Alex Banks · O'Reilly · 2018",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/learning-graphql/9781492030706/",
+   "why": "JavaScript로 GraphQL 서버·클라이언트를 처음부터 만들어 본다. Node.js로 지원할 사람에게 맞다."
+  },
+  {
+   "id": "rfc8216",
+   "title": "RFC 8216 · HTTP Live Streaming (+ Apple HLS 안내)",
+   "by": "IETF · 2017 / Apple Developer",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.rfc-editor.org/rfc/rfc8216",
+   "why": "재생 목록·조각·라이브 목록 갱신. 우대 '영상 스트리밍 경험'을 백엔드 눈높이로 채운다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "규모를 숫자로 말하기",
+   "time": "1~2주",
+   "goal": "\"킥오프 1분에 몇 rps, 캐시 적중률이 몇이면 원본은 몇\"을 계산하고 설계 그림 한 장으로 그릴 수 있다.",
+   "resources": [
+    "system-design-interview",
+    "ddia"
+   ],
+   "task": "가상의 경기 일정 API(경기 목록·상태·점수)를 정하고, 동시 시청 10만·50만·200만 세 경우의 rps·캐시 크기·서버 수를 표로 만든다."
+  },
+  {
+   "title": "몰려도 안 죽는 API",
+   "time": "2주",
+   "goal": "캐시·요청 묶기·stale-while-revalidate·타임아웃·지터 재시도를 한 서비스에 넣고 효과를 잴 수 있다.",
+   "resources": [
+    "aws-caching",
+    "aws-retries",
+    "singleflight",
+    "rfc5861"
+   ],
+   "task": "Go(또는 Node.js)로 경기 정보 API를 만들고, 캐시가 동시에 만료되는 순간 1,000건을 넣어 원본 호출 수를 센다. 요청 묶기를 넣기 전과 뒤를 비교한다."
+  },
+  {
+   "title": "과부하와 병목 찾기",
+   "time": "2주",
+   "goal": "부하 테스트로 한계를 찾고, 프로파일로 병목을 짚고, 넘치는 요청을 빨리 거절할 수 있다.",
+   "resources": [
+    "go-diagnostics",
+    "sre-overload",
+    "systems-perf"
+   ],
+   "task": "2단계 서비스에 부하 도구로 rps를 올려 p99가 무너지는 지점을 찾고, pprof로 원인 한 곳을 고친 전후 그래프를 남긴다. 동시 처리 한도를 넘으면 503을 바로 주는 장치도 넣는다."
+  },
+  {
+   "title": "화면 단위 API와 GraphQL",
+   "time": "1~2주",
+   "goal": "홈 화면 같은 여러 칸짜리 화면을 GraphQL로 내주고 N+1·캐시 문제를 풀 수 있다.",
+   "resources": [
+    "graphql-learn",
+    "graphql-perf",
+    "learning-graphql"
+   ],
+   "task": "레일 20개짜리 가상 홈 화면 스키마를 만들고, 항목마다 '라이브 여부'를 붙인다. DataLoader로 조회 수를 20 → 1로 줄인 것을 로그로 보인다."
+  },
+  {
+   "title": "영상 쪽 맞물림 (선택)",
+   "time": "1주",
+   "goal": "HLS 재생 목록이 어떻게 생겼고, 백엔드가 재생 직전에 무엇을 답해야 하는지 설명할 수 있다.",
+   "resources": [
+    "rfc8216"
+   ],
+   "task": "ffmpeg로 짧은 영상을 HLS로 잘라 m3u8을 열어 보고, 재생 전에 '시청 권한' API를 거쳐야만 목록 주소를 주는 작은 서버를 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "싱가포르 공고에는 연봉이 없고 같은 쿠팡플레이 서울 공고에도 없다. 공시로 확인되는 것은 **쿠팡 Inc. 전 직원 보수 중간값(2025년 $33,831)** 뿐이라 이 자리 연봉과 거리가 멀다",
+  "rows": [
+   {
+    "label": "쿠팡 Inc. 전 직원 중위 보수",
+    "value": "$33,831 / 년",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "미국 SEC 위임장 설명서(DEF 14A)의 CEO 보수 배율 공시. 한국 물류·현장 직원이 대부분인 회사 전체의 가운데 값을 2025년 평균 환율로 달러 환산한 것이다 [19]"
+   }
+  ],
+  "how": "공고에 연봉이 없고 전형 마지막이 처우 제안(Offer)이다 [1]. 쿠팡은 미국 상장사라 국내 사업보고서의 '직원 1인 평균 급여'가 없고, 싱가포르 법인 보수 공시도 찾지 못했다 — **싱가포르 숫자 없음**. 중위 보수는 회사 전체 가운데 값이라 시니어 백엔드 연봉으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "의료 보험",
+    "detail": "본인과 직계 가족"
+   },
+   {
+    "name": "가족 휴가",
+    "detail": "경조사 유급 휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "외국어·소프트 스킬 강좌"
+   },
+   {
+    "name": "글로벌 프로젝트",
+    "detail": "직무에 따라 여러 나라 팀과 협업"
+   },
+   {
+    "name": "행사",
+    "detail": "팀·회사 행사"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·차·간식 라운지, 카페테리아"
+   },
+   {
+    "name": "유연 근무",
+    "detail": "유연 근무 시간 또는 재택"
+   }
+  ],
+  "note": "쿠팡 채용 사이트 'Why Coupang'의 전 세계 공통 소개다 [18]. 이 공고에는 복리후생 칸이 없다 [1]. 금액은 적혀 있지 않고 직무·근무지에 따라 달라질 수 있어, 싱가포르 사무실에 어느 항목이 그대로 적용되는지는 처우 제안 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 싱가포르 사무실 (Suntec Tower 5)",
+  "address": "5 Temasek Boulevard, Suntec Tower 5, 17층, Singapore",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=Suntec%20Tower%205%2C%205%20Temasek%20Boulevard%2C%20Singapore",
+  "near": "Promenade 역 걸어서 약 3분 [17]",
+  "note": "공고 근무지는 'Singapore' [1]. 주소와 가까운 역은 쿠팡 채용 사이트의 싱가포르 근무지 안내 [17] — 안내에 사무실이 하나만 있어 쿠팡플레이 팀도 이곳으로 보았다 {추론}. 우편번호는 안내에 없어 비웠다."
+ }
+}

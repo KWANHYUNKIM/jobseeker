@@ -15,6 +15,7 @@
   "ats-greenhouse:coupang:8203405": "coupang-network-security-engineer-detection-ops",
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
+  "ats-greenhouse:coupang:8210828": "coupang-play-cx-backend-senior-sg",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
   "ats-greenhouse:coupang:8094014": "coupang-taiwan-catalog-ai-tpm-director",
@@ -411,6 +412,16 @@
     "wanted-381767"
    ],
    "researched_at": "2026-11-23",
+   "lines": 17
+  },
+  {
+   "id": "coupang-play-cx-backend-senior-sg",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior, Back-end Engineer (CX) — Coupang Play",
+   "jobs": [
+    "ats-greenhouse:coupang:8210828"
+   ],
+   "researched_at": "2026-11-25",
    "lines": 17
   },
   {
