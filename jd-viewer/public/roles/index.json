@@ -87,6 +87,7 @@
   "wanted-385505": "hyundai-autoever-robot-data-engineer",
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
   "wanted-385521": "hyundai-autoever-smart-tag-service-engineer",
+  "ats-hkmc:hyundai:2026N2366": "hyundai-lunar-rover-autonomy-sw",
   "wanted-387536": "hyundai-sdf-data-architect",
   "ats-hkmc:hyundai:2026N2387": "hyundai-sdv-controller-sw-integration",
   "wanted-393817": "hyundai-sdv-controller-sw-integration",
@@ -1028,6 +1029,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 11
+  },
+  {
+   "id": "hyundai-lunar-rover-autonomy-sw",
+   "company": "현대자동차",
+   "role": "달 탐사 모빌리티 자율주행 소프트웨어 엔지니어",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2366"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 33
   },
   {
    "id": "hyundai-sdf-data-architect",
