@@ -166,6 +166,9 @@
   "ats-greenhouse:coupang:8076295": "coupang-transportation-backend-senior-manager-bengaluru",
   "ats-greenhouse:coupang:8206706": "coupang-web-security-engineer-detection-ops",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
+  "ats-greenhouse:daangn:7990084003": "daangn-ai-platform-software-engineer",
+  "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
+  "boards-superookie:it:6afd0847a0717c1c4126d602": "daangn-shortform-backend-intern",
   "wanted-389061": "datachain-senior-sre-stablecoin",
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
@@ -2000,6 +2003,27 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 23
+  },
+  {
+   "id": "daangn-ai-platform-software-engineer",
+   "company": "당근",
+   "role": "Software Engineer — 테크코어 AI Platform",
+   "jobs": [
+    "ats-greenhouse:daangn:7990084003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 28
+  },
+  {
+   "id": "daangn-shortform-backend-intern",
+   "company": "당근",
+   "role": "백엔드 엔지니어 인턴 — 숏폼",
+   "jobs": [
+    "ats-greenhouse:daangn:8206277003",
+    "boards-superookie:it:6afd0847a0717c1c4126d602"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 45
   },
   {
    "id": "datachain-senior-sre-stablecoin",
