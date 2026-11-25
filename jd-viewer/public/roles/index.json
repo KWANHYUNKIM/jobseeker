@@ -185,6 +185,8 @@
   "ats-greenhouse:daangn:7774455003": "daangn-lessons-tutoring-frontend",
   "jobkorea-50227006": "daangn-lessons-tutoring-frontend",
   "ats-greenhouse:daangn:5781885003": "daangn-local-jobs-backend",
+  "ats-greenhouse:daangn:6081125003": "daangn-local-jobs-frontend",
+  "jobkorea-50227135": "daangn-local-jobs-frontend",
   "ats-greenhouse:daangn:5248527003": "daangn-ml-engineer-feed-ads",
   "ats-greenhouse:daangn:7498021003": "daangn-ml-infra-software-engineer",
   "ats-greenhouse:daangn:8201152003": "daangn-mydaangn-backend-intern",
@@ -2147,6 +2149,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "daangn-local-jobs-frontend",
+   "company": "당근",
+   "role": "프론트엔드 엔지니어 — 로컬 잡스(당근알바)",
+   "jobs": [
+    "ats-greenhouse:daangn:6081125003",
+    "jobkorea-50227135"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 22
   },
   {
    "id": "daangn-ml-engineer-feed-ads",
