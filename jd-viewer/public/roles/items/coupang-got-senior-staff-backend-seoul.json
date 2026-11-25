@@ -1,0 +1,1337 @@
+{
+ "id": "coupang-got-senior-staff-backend-seoul",
+ "company": "쿠팡",
+ "role": "시니어 스태프 백엔드 엔지니어 (Global Operations Technology)",
+ "team": "Global Operations Technology · 풀필먼트(Fulfillment Technologies), 서울",
+ "jobs": [
+  "ats-greenhouse:coupang:5848138"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "주문 몇 시간 안에 배송되게 하는 물류 시스템 — 특히 **물류센터 안 시스템(풀필먼트)** — 의 큰 설계를 이끄는 자리입니다. 여러 팀의 기술 방향을 정하고, 막힌 곳을 풀고, 필요하면 직접 코드를 쓰고, 자동화·로봇 사업까지 끌고 갑니다.[1]",
+  "env": "Java · Spring · AWS 위에서 일합니다.[1] 같은 조직은 창고 관리 시스템(WMS)을 다시 짜며 셀 구조·Temporal 워크플로·이벤트 소싱을 쓰고,[4] 수십 개 회사의 자동화 장비를 한 바탕으로 묶었습니다.[8] 근무지는 서울입니다.[1]",
+  "oneline": "경력 15년 이상이 **사람을 관리하지 않고 기술로** 여러 팀을 이끄는 자리. 공고 줄의 절반이 설계·방향·채용이고, 코드는 '필요할 때' 씁니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Lead and drive architecture design of Fulfillment Technologies for scale, future extensibility, and reliability",
+   "short": "물류센터 시스템 전체의 큰 그림을 그리고, 물량이 늘어도·새 기능이 붙어도·장애가 나도 버티게 하는 일.",
+   "why": "Fulfillment Technologies 는 물류센터의 입고·진열·재고·집품·출고를 다루는 팀입니다.[2] 같은 조직의 시니어 스태프 엔지니어는 여러 팀을 맡아 물류센터용 확장 가능한 인프라를 만들고, 창고 관리 시스템(WMS, 물류센터 재고·작업 관리 프로그램)을 다시 짜고 있다고 했습니다.[4] 공고의 세 낱말(규모·확장성·신뢰성)이 그 재설계의 목표입니다.[1]",
+   "actually": {
+    "intro": "같은 조직이 밝힌 설계 재료입니다. 어떻게 쓰는지 세부는 공개되지 않았습니다.[4]",
+    "items": [
+     "**셀 구조** — 시스템을 칸(셀)으로 나눠 한 칸이 죽어도 다른 칸은 돌게 한다. 장애가 번지는 범위를 줄이는 방식이다.[4][26]",
+     "**Temporal 워크플로** — 입고 → 진열 → 출고처럼 오래 걸리는 작업을 단계마다 기록해, 서버가 죽어도 그 단계부터 이어 간다.[4][35]",
+     "**이벤트 소싱** — 재고를 덮어쓰지 않고 '들어옴·나감' 같은 사실을 차례로 쌓아 상태를 만든다. 같은 조직은 이 방식으로 재고 원장(장부)을 만들었다.[9][36]",
+     "**층 나누기** — 시뮬레이션 플랫폼은 저장·지휘·계산을 나누고 계산 서버는 상태 없이 두어 물량에 따라 대수를 늘린다.[7]",
+     "**바쁜 날 기준** — 공고 소개는 연중 가장 바쁜 때에도 초고속 배송이 제시간에 되게 하는 것을 목표로 적었다.[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "가장 바쁜 날을 기준으로 셀 수 정하기 (가상의 숫자)",
+     "body": "평소의 3.5배가 몰리는 날을 기준으로, 셀 하나를 70% 까지만 채우면 셀이 10개 필요합니다. 그때 셀 하나가 죽어도 남은 셀은 한계의 78% 로 버팁니다(직접 돌린 출력). 이렇게 '바쁜 날 + 한 칸 고장'을 같이 세는 것이 신뢰성 설계의 출발점입니다. {추론}",
+     "lang": "python",
+     "code": "import math\nbase_per_hour = 120_000          # 평소 시간당 주문(가상)\npeak_ratio = 3.5                 # 가장 바쁜 날 배수(가상)\ncell_capacity = 60_000           # 셀 하나의 시간당 한계(가상)\nheadroom = 0.7                   # 셀을 70% 까지만 채운다\npeak = base_per_hour * peak_ratio\ncells = math.ceil(peak / (cell_capacity * headroom))\nprint(f\"평소 {base_per_hour:,}/h → 피크 {peak:,.0f}/h\")\nprint(f\"셀 {cells}개 필요 (셀당 {cell_capacity*headroom:,.0f}/h 까지)\")\nprint(f\"셀 하나가 죽으면 남은 셀이 {peak/(cells-1):,.0f}/h 씩 → 한계 {cell_capacity:,} 대비 {peak/(cells-1)/cell_capacity:.0%}\")\n# 평소 120,000/h → 피크 420,000/h\n# 셀 10개 필요 (셀당 42,000/h 까지)\n# 셀 하나가 죽으면 남은 셀이 46,667/h 씩 → 한계 60,000 대비 78%"
+    }
+   ],
+   "how_far": "한 서비스가 아니라 **풀필먼트 전체의 구조**를 정하는 수준입니다. 같은 글은 리더십이 팀에 핵심 아키텍처 결정을 맡기고 절차상 제약을 적게 둔다고 했습니다[4] — 그래서 결정의 근거(처리량·비용·장애 범위 숫자)를 글로 남기는 일까지 이 자리 몫입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    7,
+    9,
+    26,
+    35,
+    36
+   ],
+   "study": [
+    "cell-arch",
+    "temporal",
+    "event-sourcing",
+    "coupang-twin",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Envision and drive alignment with stakeholders of the appropriate roadmap and future direction of technology for Global Operations Technology org.",
+   "short": "조직의 기술이 2~3년 뒤 어디로 가야 하나를 그리고, 관련 부서가 같은 그림에 동의하게 만드는 일.",
+   "why": "같은 조직의 시니어 디렉터가 꼽은 목표는 여러 부서에 걸칩니다 — 자동화·로보틱스 확대, 나라 사이 물류 운영·기술 수준 맞추기, 물류센터 비용 절감, 보안과 안정성.[5] 풀필먼트 최적화도 물류센터 운영·운송 운영·재무·프로덕트 등 다섯 부서와 함께 설계했습니다.[6]",
+   "actually": {
+    "items": [
+     "**기술 방향 문서** — 지금 구조의 문제, 가고 싶은 모습, 그 사이의 단계를 한 문서로 적어 돌린다.[20]",
+     "**이해관계자 지도** — 물류센터 운영·운송·재무·프로덕트가 각자 무엇을 잃고 얻는지 적고, 반대를 먼저 듣는다.[6][19] {추론}",
+     "**분기별로 펼치기** — 로드맵을 새 물류센터 개장·설비 도입 같은 다른 부서 일정과 맞춘다. {추론}",
+     "**나라를 넘는 그림** — 한국에서 만든 시스템을 다른 나라 물류에도 쓰게 하는 것이 조직 목표에 있다.[5]"
+    ]
+   },
+   "how_far": "로드맵을 혼자 쓰는 것이 아니라 **다른 부서가 자기 일정에 반영할 만큼 합의된** 로드맵이 성과입니다. 시니어 스태프는 매니저가 아니라서 지시가 아니라 글과 설득으로 합의를 만듭니다.[19][20] {추론}",
+   "refs": [
+    5,
+    6,
+    19,
+    20
+   ],
+   "study": [
+    "staffeng",
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Navigate and alleviate technical obstacles and blockers at the organizational level",
+   "short": "한 팀이 혼자 못 푸는 막힘(다른 팀 의존·공통 장애·옛 시스템)을 찾아 길을 뚫어 주는 일.",
+   "why": "같은 조직은 서울·마운틴뷰·시애틀·상하이·인도에 팀이 흩어져 있습니다.[3][18] 한 시스템을 여러 팀이 나눠 만들면 막힘은 팀 사이에서 생깁니다. 자동화 장비 연결 사업은 수십 개 회사 장비가 서로 다른 소프트웨어 말을 써서 묶는 데 약 2년이 걸렸습니다.[8]",
+   "actually": {
+    "items": [
+     "**의존 풀기** — A팀이 B팀 API 를 기다리면, 인터페이스(API·이벤트 모양)를 먼저 합의해 둘 다 가짜 구현으로 시작하게 한다. {추론}",
+     "**공통 원인 찾기** — 여러 팀이 같은 장애를 겪으면 공통 부품(캐시·DB 호출)을 의심한다. 시뮬레이션 플랫폼은 포장 서비스가 요청마다 DB 를 수백 번 불러 병목이 났고, '없음'까지 기억하는 메모리 캐시로 풀었다.[7]",
+     "**옛 시스템** — 멈출 수 없는 시스템은 새 것을 옆에 두고 조금씩 넘긴다(스트랭글러 방식).[32] 재고 ID 를 옛 SQL 시스템에서 NoSQL 로 운영을 멈추지 않고 옮기는 방법은 같은 회사 엔지니어가 특허로 출원했다.[9]",
+     "**결정 올리기** — 기술로 안 풀리는 막힘(우선순위 충돌)은 누가 정해야 하는지 찾아 올린다.[19]"
+    ]
+   },
+   "how_far": "막힘을 **대신 다 해 주는 것이 아니라** 팀이 다시 혼자 갈 수 있게 길을 여는 것이 기준입니다. 같은 막힘이 다시 안 생기게 공통 도구나 규칙으로 남기면 조직 수준의 일이 됩니다.[19] {추론}",
+   "refs": [
+    3,
+    7,
+    8,
+    9,
+    18,
+    19,
+    32
+   ],
+   "study": [
+    "staff-path",
+    "strangler",
+    "coupang-twin"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Decompose complex problems into simple, straightforward solutions, providing mechanisms for the teams to prioritize ruthlessly and “move with urgency.”",
+   "short": "복잡한 문제를 팀이 바로 손댈 수 있는 작은 조각으로 나누고, 무엇부터 할지 정하는 틀을 주는 일.",
+   "why": "쿠팡 리더십 원칙에는 '단순하게'와 '빠르게 움직인다'가 들어 있습니다.[14] 공고는 해법만이 아니라 팀이 스스로 우선순위를 정하는 **장치(mechanism)** 를 만들라고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**목표를 숫자 하나로** — 풀필먼트 최적화는 주문마다 수천 경로를 따지는 문제를 '전체 풀필먼트 비용 최소화' 하나로 묶었다.[6]",
+     "**규모를 먼저 세기** — 배송 구역을 육각형 칸으로 바꾸니 한국 땅이 약 217억 칸이 됐고, 그 숫자를 보고 칸마다 한 줄로 저장하는 설계를 버렸다.[11]",
+     "**하지 않을 것 적기** — 설계 문서에 목표와 함께 '하지 않을 것'을 적어 범위를 줄인다.[21]",
+     "**우선순위 장치** — 영향 × 긴급도 표, 오류 예산(허용된 실패량을 넘으면 새 기능보다 안정화 먼저) 같은 규칙을 팀에 준다.[30] {추론}"
+    ]
+   },
+   "how_far": "내가 다 푸는 것보다 **팀이 같은 기준으로 '안 할 일'을 고를 수 있게** 하는 것이 이 줄입니다. 면접에서는 큰 문제 하나를 몇 조각으로 어떻게 나눴고 무엇을 버렸는지 묻는다고 보는 게 맞습니다. {추론}",
+   "refs": [
+    1,
+    6,
+    11,
+    14,
+    21,
+    30
+   ],
+   "study": [
+    "design-docs",
+    "coupang-h3",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Write code when necessary to lead by example and help with high-priority projects",
+   "short": "평소엔 설계·리뷰가 일이지만, 중요한 과제나 본보기가 필요할 땐 직접 코드를 짠다는 뜻.",
+   "why": "'필요할 때(when necessary)'라는 말에서 이 자리의 무게가 코드보다 설계·방향에 있다는 것이 드러납니다.[1] 그래도 설계를 코드로 보여 줄 수 있어야 팀이 따라옵니다 — 스태프 엔지니어 교재도 직접 만든 본보기를 기준을 올리는 방법으로 듭니다.[19]",
+   "actually": {
+    "items": [
+     "**뼈대 코드** — 새 구조(셀 나누기·워크플로)를 처음 들일 때 작동하는 첫 판을 직접 만들어 다른 팀이 베끼게 한다. {추론}",
+     "**급한 과제** — 마감이 걸린 과제에서 가장 어려운 조각(동시성·성능)을 맡는다. {추론}",
+     "**성능을 재 보는 코드** — 시뮬레이션 플랫폼은 재고 상태를 객체 대신 바이트 버퍼에 담아 가비지 컬렉션(GC, 안 쓰는 메모리 청소) 멈춤을 피했다.[7] 이런 판단은 직접 재 본 사람이 내린다."
+    ]
+   },
+   "how_far": "매일 기능을 내보내는 수준이 아니라 **필요하면 가장 어려운 부분을 직접 짤 수 있는** 감을 유지하는 정도입니다. 리뷰에서 '이 코드는 이 부하에서 어디가 막히나'를 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    7,
+    19
+   ],
+   "study": [
+    "jvm-tuning",
+    "spring-boot",
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Proactively identify opportunities in both business and technology",
+   "short": "시키지 않아도 '여기를 바꾸면 돈·시간이 줄겠다'는 자리를 기술과 사업 양쪽에서 먼저 찾는 일.",
+   "why": "같은 조직이 낸 큰 성과는 대부분 기회를 먼저 찾은 데서 나왔습니다. 시뮬레이션 플랫폼은 실제 A/B 시험이 어려운 결정을 미리 돌려 보게 해 연 수천만 달러를 아꼈고,[7] 입고 예약은 납품사 예측을 모델 예측으로 바꿔 과대 예측을 44.45% 에서 5.04% 로 줄였습니다.[10]",
+   "actually": {
+    "items": [
+     "**비용을 숫자로 보기** — 풀필먼트 최적화의 목표는 전체 풀필먼트 비용 최소화였다.[6] 비용이 어디서 새는지 먼저 본다.",
+     "**현장에서 찾기** — 입고 날짜를 자꾸 바꾸는 일이 칸 부족 때문이라는 걸 보고 예측 모델을 붙였고, 날짜 변경이 67.9% 줄었다.[10]",
+     "**데이터를 묶어 새 기회** — 흩어진 자동화 장비 데이터를 한 바탕에 모으자 장비를 넘나드는 운영이 가능해졌다.[8]"
+    ]
+   },
+   "how_far": "'좋아 보이는 기술'이 아니라 **사업 숫자(비용·배송 시간·처리량)와 이어진 기회**를 찾아 크기를 대략 세어 오는 것까지가 이 줄입니다. {추론}",
+   "refs": [
+    6,
+    7,
+    8,
+    10
+   ],
+   "study": [
+    "coupang-twin",
+    "coupang-inbound"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Review, advise, and carry out the adoption of new technology (both open-source and commercial) that are useful in achieving business objectives",
+   "short": "새 기술(오픈소스·상용)을 들일지 따져 보고, 들이기로 하면 실제로 조직에 자리 잡게 하는 일.",
+   "why": "같은 조직은 Temporal·셀 구조·이벤트 소싱 같은 비교적 새 방식을 들였고,[4] 수십 개 회사의 상용 자동화 장비를 한 바탕에 묶었습니다.[8] 쿠팡 CTO 는 개발자 대회에서 회사가 기술 스택을 여러 번 다시 지었다고 말했습니다.[38] 고르고 들이는 판단이 계속 필요한 조직입니다.",
+   "actually": {
+    "items": [
+     "**혁신 토큰** — 새 기술마다 배우고 운영하는 비용이 든다. 회사가 쓸 수 있는 '새것' 개수는 적으니, 남과 다르게 해야 하는 곳에만 쓰고 나머지는 검증된 기술을 쓰라는 생각이다.[23]",
+     "**레이더처럼 단계 두기** — 외부 기술 보고서는 기술을 '채택·시험·평가·주의' 네 칸으로 나눈다. 조직 안에서도 같은 단계로 시험 범위를 넓혀 간다.[24]",
+     "**따져 볼 것** — 운영 인력, 라이선스 비용, 벤더가 사라지면 어떻게 하나, 옛 시스템에서 어떻게 옮기나.[23] {추론}",
+     "**결정 기록** — 들인 이유와 안 고른 대안을 결정 기록(ADR)으로 남긴다.[22]"
+    ]
+   },
+   "how_far": "'평가'에서 끝나지 않고 **'carry out(실제로 들이기)'** 까지가 공고 문장입니다.[1] 시범 팀 → 확대 → 표준 순서로 넓히고, 실패하면 되돌릴 길을 남기는 것까지 맡습니다. {추론}",
+   "refs": [
+    1,
+    4,
+    8,
+    22,
+    23,
+    24,
+    38
+   ],
+   "study": [
+    "boring-tech",
+    "tech-radar",
+    "adr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Recruit and develop world-class engineering talent",
+   "short": "좋은 엔지니어를 뽑는 면접에 들어가고, 뽑은 사람이 더 큰 일을 하게 키우는 일.",
+   "why": "쿠팡 리더십 원칙에 '최고의 인재를 뽑고 키운다'가 있습니다.[14] 같은 조직은 지금 서울에서 개발자 집중 채용 공고를 따로 냈고,[17] 여러 나라 사무소에서 경력 엔지니어를 찾는다고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**면접관** — 설계 면접 문제를 만들고 채점 기준을 맞춘다. 같은 질문·같은 기준이어야 지원자끼리 비교된다. {추론}",
+     "**키우기** — 설계 문서 리뷰·장애 사후 검토를 같이 하며 다음 스태프 엔지니어를 키운다.[19]",
+     "**사람 관리는 아님** — 시니어 스태프는 사람을 평가·관리하는 매니저 길이 아니라 기술 길이다. 같은 조직 매니저 공고는 업무를 따로 적었다.[2][20]"
+    ]
+   },
+   "how_far": "직접 팀원을 두지 않아도 **채용 판단과 성장에 책임을 지는** 수준입니다. 면접에서 '누구를 키워 무엇을 맡기게 됐나' 같은 사례를 묻는다고 보는 게 맞습니다. {추론}",
+   "refs": [
+    2,
+    3,
+    14,
+    17,
+    19,
+    20
+   ],
+   "study": [
+    "staff-path",
+    "manager-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Drive development of automation and robotics initiatives",
+   "short": "물류센터의 로봇·자동 설비(운반 로봇·분류기·자동 포장)를 소프트웨어로 묶고 늘리는 사업을 끌고 가는 일.",
+   "why": "같은 조직의 시니어 디렉터는 자동화·로보틱스 확대를 첫 목표로 꼽았습니다.[5] 대구 물류센터에는 무인 운반 로봇(AGV) 1,000대 넘게와 분류 로봇 수백 대가 있고,[16] 쿠팡은 수십 개 회사의 장비 수천 대를 한 디지털 바탕으로 묶는 데 약 2년을 들였습니다.[8] 같은 조직 수석 엔지니어는 로봇 컨테이너 항만을 연 이동 로봇 전문가입니다.[3]",
+   "actually": {
+    "intro": "쿠팡 글은 높은 수준의 소개라 프로토콜·데이터 모양을 밝히지 않았습니다.[8] 아래 업계 표준은 '보통 이런 것'입니다.",
+    "items": [
+     "**장비 말 맞추기** — 회사마다 다른 장비 소프트웨어의 데이터 수백만 개를 한 형식으로 맞췄다.[8]",
+     "**표준 인터페이스** — 독일 자동차·기계 협회가 만든 VDA 5050 은 이동 로봇 무리와 중앙 관제 사이의 통신을 맞추는 공개 표준이다. 어느 회사 로봇이든 같은 명령·상태 메시지로 부르게 한다.[25]",
+     "**작업 배정** — WMS 가 '이 선반을 집품대로'를 정하면 로봇 관제가 어느 로봇이 갈지 정한다. 대구 센터는 평균 2분 안에 선반을 작업자에게 가져다준다고 소개됐다.[16]",
+     "**흉내 내 보기** — 새 설비 배치는 디지털 트윈(실제 센터를 본뜬 시뮬레이션)에서 먼저 돌려 본다.[7] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "회사마다 다른 장비를 한 틀로 부르기 (가상의 두 회사)",
+     "body": "업무 시스템은 '어디로 가라'만 말하고, 회사별 차이는 장비마다 붙인 어댑터가 맡습니다. 새 회사 장비가 와도 어댑터 하나만 더합니다(직접 돌린 출력). 객체지향 설계 요건과 이 줄이 만나는 곳입니다. {추론}",
+     "lang": "python",
+     "code": "from abc import ABC, abstractmethod\n\nclass Robot(ABC):\n    @abstractmethod\n    def move(self, dst: str) -> str: ...\n\nclass VendorAAgv(Robot):\n    def move(self, dst):\n        return f\"A사 AGV: POST /orders {{target:{dst}}}\"\n\nclass VendorBSorter(Robot):\n    def move(self, dst):\n        return f\"B사 분류기: chute={dst.split('-')[-1]}\"\n\ndef dispatch(robots, plan):\n    for rid, dst in plan:\n        print(rid, \"→\", robots[rid].move(dst))\n\ndispatch({\"r1\": VendorAAgv(), \"s1\": VendorBSorter()},\n         [(\"r1\", \"PICK-07\"), (\"s1\", \"CHUTE-12\")])\n# r1 → A사 AGV: POST /orders {target:PICK-07}\n# s1 → B사 분류기: chute=12"
+    }
+   ],
+   "how_far": "로봇 자체(기구·제어)를 만드는 자리가 아니라 **로봇과 업무 시스템 사이의 소프트웨어 바탕**을 이끄는 자리입니다. 로봇 경험이 요건에는 없으니, 장비 연동·실시간 이벤트·장애 때 사람 작업으로 되돌리는 설계를 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    5,
+    7,
+    8,
+    16,
+    25
+   ],
+   "study": [
+    "coupang-nervous",
+    "vda5050",
+    "coupang-twin",
+    "object-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "15+ years of experience in developing and operating backend services and web applications",
+   "short": "백엔드·웹 서비스를 만들고 운영까지 직접 해 본 15년 이상 — 개발만이 아니라 운영이 같이 들어 있다.",
+   "why": "같은 조직의 매니저 공고는 10년 이상을 적었는데,[2] 이 자리는 15년 이상입니다.[1] 직급이 더 높고, 운영까지 해 본 사람만 바쁜 날의 장애를 미리 짚을 수 있기 때문입니다. {추론}",
+   "how_far": "연차는 서류 문턱입니다. 면접은 서류 → 1차 → 2차 면접 → 처우 제안 순서이고,[1] 그 15년 동안 **무엇이 깨졌을 때 무엇을 다시 설계했나**를 묻는다고 보는 게 맞습니다. 유의사항대로 경력 전체를 보고 직급이 달리 제안될 수 있습니다.[1] {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "sre-book",
+    "staff-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Solid track record of delivering large and complex systems with significant business impact",
+   "short": "크고 복잡한 시스템을 끝까지 내보냈고, 그게 사업 숫자(비용·매출·시간)를 바꿨다는 기록.",
+   "why": "업무 줄이 '사업과 기술의 기회 찾기'와 '사업 목표에 쓸 기술 들이기'를 같이 적었습니다.[1] 같은 조직이 회사 글로 내세운 성과도 연 수천만 달러 절감처럼 사업 숫자로 적혀 있습니다.[7]",
+   "actually": {
+    "items": [
+     "**끝까지** — 설계만이 아니라 운영에 올리고 옛 것을 끈 것까지. 쿠팡 최적화 팀은 새 모델을 그림자 환경(실제 결과에 영향 없이 똑같이 돌려 보는 환경)에서 비교한 뒤 올렸다.[6]",
+     "**숫자로** — 비용·처리량·장애 수가 전후로 얼마나 바뀌었나.[7][10]",
+     "**내 몫** — 여러 팀이 한 일에서 내가 정한 것과 내가 만든 것을 가른다. {추론}"
+    ]
+   },
+   "how_far": "이력서에 시스템 두세 개를 **문제 → 내 결정 → 사업 결과 숫자** 순서로 쓸 수 있으면 이 줄에 닿습니다. {추론}",
+   "refs": [
+    1,
+    6,
+    7,
+    10
+   ],
+   "study": [
+    "coupang-twin",
+    "staff-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience of designing and developing large-scale distributed systems and architectures",
+   "short": "여러 서버·여러 저장소에 나눠 도는 큰 시스템을 직접 설계하고 만들어 본 경험.",
+   "why": "쿠팡은 하나의 큰 프로그램을 수백 개 마이크로서비스로 나눠 왔고,[12] 같은 운송 조직은 하루 3천만~4천만 건을 이벤트로 처리합니다.[18] 시뮬레이션 플랫폼은 하루 수백만 건 주문을 수백 곳·수천만 개 재고 위에 다시 돌립니다.[7]",
+   "actually": {
+    "items": [
+     "**중복과 순서** — Kafka 같은 메시지 도구는 보통 '최소 한 번' 전달이라 같은 메시지가 다시 올 수 있고, 같은 키 안에서만 순서가 지켜진다.[27]",
+     "**과부하 조절** — 시뮬레이션 계산 서버 묶음에 우선순위 대기열과 AIMD(잘 되면 조금씩 늘리고 막히면 크게 줄이는 조절)를 붙여 교착을 막았다.[7]",
+     "**잠금 없이** — 상태 변경을 한 스레드에 모아 잠금 없이 일관성을 지켰다.[7]",
+     "**장애 범위** — 셀로 나눠 한 칸 고장이 전체로 번지지 않게 한다.[26]"
+    ]
+   },
+   "how_far": "분산 시스템의 고전 문제(중복·순서·부분 장애·일관성)를 **내 시스템에서 실제로 어떻게 풀었나**로 말할 수 있어야 합니다. 이론을 아는 것과 운영에서 겪은 것을 구분해 묻습니다. {추론}",
+   "refs": [
+    7,
+    12,
+    18,
+    26,
+    27
+   ],
+   "study": [
+    "ddia",
+    "sysdesign",
+    "kafka-docs",
+    "cell-arch"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Broad and deep understanding of key technologies in storage, data processing, and serving",
+   "short": "데이터를 어디에 두고(저장), 어떻게 계산하고(처리), 어떻게 빨리 내주나(서빙)를 두루·깊이 아는 것.",
+   "why": "물류 데이터는 셋을 다 거칩니다. 재고 ID 를 SQL 에서 NoSQL 로 옮기고(저장),[9] 매일 배치로 날짜별 데이터를 저장소에 쓰고(처리),[7] 최적화 모델을 마이크로서비스로 내줍니다(서빙).[9] 쿠팡의 서빙 층은 통합 NoSQL 저장소와 캐시를 두고 분당 최대 1억 요청을 받는다고 소개됐습니다.[12][13]",
+   "level": {
+    "basic": "관계형 DB 인덱스·트랜잭션 · NoSQL(Cassandra 등) 파티션 키 · 캐시 앞에 두기 · 배치와 스트리밍 차이",
+    "work": "질의에 맞춰 표 만들기 · 캐시 적중률과 만료 · 날짜로 나눠 쌓기 · 재처리·백필 · 읽기/쓰기 비율로 저장소 고르기",
+    "team": "옛 저장소에서 운영을 멈추지 않고 옮기기 · 어느 저장소가 정답 원장인지 정하기 · 비용·지연·정합성 사이 선택을 설계 리뷰에서 판단"
+   },
+   "actually": {
+    "items": [
+     "**저장** — Cassandra 는 질의를 먼저 정하고 그에 맞춰 표를 만들며, 한 파티션이 너무 커지지 않게 키를 고른다.[37]",
+     "**처리** — 시뮬레이션은 매일 배치가 날짜별로 나눈 데이터를 클라우드 저장소에 쓰고, 계산 서버가 읽어 돌린다.[7]",
+     "**서빙** — 쿠팡 캐시 층은 층마다 60~100 노드, 요청의 약 95% 를 캐시에서 답한다고 소개됐다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "캐시 적중률 몇 %p 가 DB 부하를 몇 배 바꾸나",
+     "body": "분당 1억 요청(쿠팡 서빙 층이 밝힌 최대치[13])에서 적중률이 95% 면 DB 로 초당 약 8만 3천 건, 80% 면 33만 건입니다(직접 돌린 출력). 적중률 15%p 차이가 DB 부하 4배입니다 — 서빙 설계는 이 숫자부터 셉니다.",
+     "lang": "python",
+     "code": "req_per_min = 100_000_000\nfor hit in (0.80, 0.95, 0.99):\n    db = req_per_min * (1 - hit)\n    print(f\"캐시 적중 {hit:.0%}: DB 로 가는 요청 분당 {db:,.0f} (초당 {db/60:,.0f})\")\n# 캐시 적중 80%: DB 로 가는 요청 분당 20,000,000 (초당 333,333)\n# 캐시 적중 95%: DB 로 가는 요청 분당 5,000,000 (초당 83,333)\n# 캐시 적중 99%: DB 로 가는 요청 분당 1,000,000 (초당 16,667)"
+    }
+   ],
+   "how_far": "'Broad and deep' 이라 셋 다 깊을 필요는 없지만, **하나는 운영에서 깊게**(예: NoSQL 이나 스트리밍) 알고 나머지는 '언제 무엇을 쓰나'와 그 비용을 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    7,
+    9,
+    12,
+    13,
+    37
+   ],
+   "study": [
+    "ddia",
+    "cassandra-model",
+    "coupang-cache",
+    "kafka-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Capable of object-oriented design and development",
+   "short": "바뀌는 부분(장비 회사·운송사·나라별 규칙)을 갈아 끼울 수 있게 클래스·인터페이스를 나눌 줄 아는 것.",
+   "why": "물류 시스템에는 바뀌는 것이 많습니다 — 수십 개 회사의 장비,[8] 나라마다 다른 운영.[5] 바뀌는 부분을 인터페이스 뒤로 숨겨야 새 장비·새 나라가 와도 업무 코드를 덜 고칩니다. {추론}",
+   "actually": {
+    "items": [
+     "**역할과 책임** — 객체를 데이터가 아니라 '무슨 일을 맡나'로 나눈다.[39]",
+     "**바뀌는 것 숨기기** — 장비 회사·요금 규칙처럼 자주 바뀌는 부분을 인터페이스 뒤로. 업무 ⑨의 예시가 그 모습이다. {추론}",
+     "**도메인 말 그대로** — 입고·진열·집품 같은 현장 낱말을 클래스 이름에 그대로 쓴다. {추론}"
+    ]
+   },
+   "how_far": "디자인 패턴 이름을 외우는 것보다 **'이 요구가 바뀌면 몇 파일을 고치나'** 를 기준으로 설계를 설명할 수 있으면 됩니다. 시니어 스태프라 남의 설계에서 결합이 너무 센 곳을 리뷰로 짚는 일이 더 많습니다. {추론}",
+   "refs": [
+    5,
+    8,
+    39
+   ],
+   "study": [
+    "object-book",
+    "effective-java"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong familiarity developing with Java and the Spring Framework",
+   "short": "쿠팡 백엔드의 기본 언어·틀이 Java·Spring 이라서. 이 급에선 JVM 동작까지 아는 수준.",
+   "why": "공고의 기술 칸이 Java·Spring·AWS 이고,[1] 같은 조직 공고들도 Java·Spring 을 요건으로 적습니다.[2][17] 시뮬레이션 플랫폼은 GC 멈춤을 피하려고 객체 대신 바이트 버퍼와 기본형 해시맵을 썼습니다 — JVM 을 깊이 알아야 나오는 설계입니다.[7]",
+   "level": {
+    "basic": "Spring Boot 로 REST API·트랜잭션·테스트 · 의존성 주입",
+    "work": "스레드 풀·커넥션 풀 · Spring 에서 메시지 받기·재시도 · 기동·지표 엔드포인트",
+    "team": "JVM 메모리·GC 로 지연 줄이기 · 높은 부하에서 Spring 기본 설정이 막히는 곳 찾기"
+   },
+   "how_far": "'Strong familiarity' 라 최신 기능을 다 알 필요보다 **운영에서 Java 서비스가 느려질 때 원인을 JVM·Spring 수준에서 좁힐 수 있는** 것이 기준입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    17
+   ],
+   "study": [
+    "spring-core",
+    "spring-boot",
+    "jvm-tuning",
+    "effective-java"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Service development and operational experience in an AWS environment",
+   "short": "쿠팡 시스템이 AWS 위에 있어서 — 만들기만이 아니라 AWS 에서 운영(확장·장애·비용)해 본 경험.",
+   "why": "쿠팡은 2017년 IT 인프라 전체를 AWS 로 옮겼다고 보도됐습니다.[31] 시뮬레이션 플랫폼의 계산 서버는 물량에 따라 자동으로 늘고 줄며, 매일 배치는 클라우드 저장소에 데이터를 씁니다.[7]",
+   "actually": {
+    "items": [
+     "**여러 가용 영역** — 한 데이터센터(가용 영역)가 멈춰도 서비스가 돌게 나눠 둔다.[26][40]",
+     "**자동 확장** — 상태 없는 서버는 물량에 따라 대수를 늘린다.[7]",
+     "**셀 단위 배치** — AWS 백서의 셀 구조는 셀마다 같은 스택을 따로 두고 요청을 셀로 보낸다.[26]",
+     "**비용** — 바쁜 날 기준으로 잡은 용량이 평소엔 놀지 않게 한다. {추론}"
+    ]
+   },
+   "how_far": "AWS 자격증보다 **장애·확장·비용을 실제로 다뤄 본 이야기**가 중요합니다. 시니어 스태프는 'AWS 의 어느 실패를 견디게 설계했나'를 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    7,
+    26,
+    31,
+    40
+   ],
+   "study": [
+    "aws-reliability",
+    "cell-arch"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience driving improvements in code quality",
+   "short": "내 코드만이 아니라 여러 팀의 코드 품질 기준(리뷰·테스트·배포)을 끌어올려 본 경험.",
+   "why": "'driving'(끌고 가기)이라 혼자 깨끗하게 짜는 것이 아니라 팀의 기준을 바꾼 경험을 봅니다.[1] 같은 조직 공고들도 코드 품질·리뷰를 업무로 적습니다.[2]",
+   "actually": {
+    "items": [
+     "**리뷰 기준** — 구글은 리뷰 기준을 '이 변경이 전체 코드 건강을 낫게 하나'로 잡는다. 완벽하지 않아도 낫게 하면 승인한다.[28]",
+     "**테스트** — 중요한 흐름(입고·출고·재고 변경)에 자동 테스트를 먼저 붙인다. {추론}",
+     "**재는 것** — 배포 빈도·변경 리드 타임·변경 실패율·복구 시간으로 품질이 실제로 나아졌나 본다.[29]"
+    ]
+   },
+   "how_far": "규칙을 문서로 만드는 데서 끝나지 않고 **여러 팀이 실제로 따르게 바꾼** 사례가 필요합니다. 숫자가 전후로 어떻게 바뀌었는지까지 말할 수 있으면 좋습니다. {추론}",
+   "refs": [
+    1,
+    2,
+    28,
+    29
+   ],
+   "study": [
+    "eng-review",
+    "practical-testing",
+    "dora"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Recruitment Process and Others\nRecruitment Process\nApplication Review - 1st Interview - 2nd Interview - Offer\nThe exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.\nInterview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "서류 → 1차 면접 → 2차 면접 → 처우 제안. 일정·결과는 지원서의 이메일로 온다.",
+   "why": "공고 끝의 전형 안내입니다.[1] 같은 조직의 매니저 공고는 서류 → 전화면접 → 대면면접 → 최종 합격으로 적었습니다.[2]",
+   "how_far": "마지막 단계에서 처우가 정해집니다 — 공고에 연봉이 없는 이유입니다.[1] 큰 설계 하나를 깊게 설명할 이야기(재설계·이관·장애) 두세 개와, 여러 팀을 움직인 이야기 하나를 준비해 둡니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Details to Consider\nThis job posting may be closed prior to the stated end date for application if all openings are filled.\nCoupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.\nThose eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.\nJob titles and responsibilities may be subject to change depending on the candidate’s overall experience, etc. This will be communicated to the candidate at the appropriate time before the offer.\nHiring may be restricted in case the legal qualifications required for hiring and work performance is not met.\nThis is a full-time regular position and includes 12 weeks of probation period; provided, however, the probationary period may be either skipped, shortened or extended if necessary for business purposes",
+   "short": "다 뽑으면 일찍 마감, 거짓 기재는 합격 취소, 직급은 경력에 따라 바뀔 수 있음, 정규직·수습 12주.",
+   "why": "공고 끝의 유의사항입니다.[1] 눈여겨볼 줄은 **직급과 업무 범위가 경력 전체를 보고 바뀔 수 있다**는 것입니다 — Senior Staff 로 지원해도 다른 직급으로 제안될 수 있고, 처우 제안 전에 알려 준다고 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "코드 한 줄보다 **여러 팀이 같은 방향으로 가게 하는 것**에서 보람을 느끼는 사람[1]",
+   "물류센터·로봇처럼 현실과 맞닿은 소프트웨어를 만들고 싶은 사람[8][16]",
+   "규모를 먼저 세고 설계를 고르는 습관이 있는 사람[11]",
+   "설계 문서·결정 기록처럼 글로 일하는 게 편한 사람[21][22]"
+  ],
+  "hard": [
+   "경력 15년 이상이 첫 요건이다[1]",
+   "코드는 '필요할 때' 쓴다 — 매일 짜고 싶은 사람에겐 맞지 않을 수 있다[1]",
+   "공고 소개는 통계·머신러닝을 쓰는 'Scientist'를 찾는다고 적었는데 요건 줄에는 그런 줄이 없다 — 이 자리에서 ML 비중이 얼마인지 면접에서 확인해야 한다[1] {추론}",
+   "여러 나라 팀과 일해 영어 소통이 많을 수 있다[3][18] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "연중 가장 바쁜 날 주문이 평소의 3배 넘게 몰립니다. 물류센터 시스템을 어떻게 나눠 두겠어요? 한 칸이 죽으면요?",
+   "a": "셀 구조와 여유 용량 계산.[4][26]"
+  },
+  {
+   "q": "재고 ID 를 옛 SQL 시스템에서 NoSQL 로 옮겨야 합니다. 물류센터는 하루도 멈출 수 없습니다. 어떻게 하겠어요?",
+   "a": "나란히 두고 조금씩 넘기기 — 같은 회사 엔지니어가 특허로 출원한 주제.[9][32]"
+  },
+  {
+   "q": "회사마다 다른 로봇·분류기 수십 종을 WMS 에 붙여야 합니다. 어떤 경계를 두겠어요?",
+   "a": "장비 말 맞추기와 표준 인터페이스.[8][25]"
+  },
+  {
+   "q": "한 팀이 새 워크플로 엔진을 들이자고 합니다. 무엇을 보고 결정하겠어요?",
+   "a": "혁신 토큰·운영 비용·결정 기록.[22][23]"
+  },
+  {
+   "q": "여러 팀이 같은 장애를 반복합니다. 조직 수준에서 무엇부터 하겠어요?",
+   "a": "공통 원인 찾기와 사후 검토·오류 예산.[7][30]"
+  },
+  {
+   "q": "같은 이벤트가 두 번 와서 재고가 두 번 빠졌습니다. 어디서 막겠어요?",
+   "a": "최소 한 번 전달과 멱등 처리, 이벤트 소싱 원장.[27][36]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior Staff, Back-end Engineer (Global Operations Technology)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=5848138",
+   "kind": "posting",
+   "date": "2026-11-25",
+   "note": "우리 수집본(2026-11-25 처음 봄) — 조직 소개(가장 바쁜 때에도 정시 배송, 통계·ML 을 쓰는 'Scientist' 문구), 업무 9·요건 8, 전형(서류 → 1차 → 2차 → 처우 제안), 근무지 Seoul, 기술 칸 Java·Spring·AWS, 우대·복리후생 칸 없음. 같은 날 그린하우스 API 는 404 로 열리지 않았다"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · Manager, Back-end Engineering (Global Operations Technology)",
+   "url": "https://www.coupang.jobs/kr/jobs/6137112/manager-back-end-engineering-global-operations-technology/",
+   "kind": "posting",
+   "note": "같은 조직의 매니저 공고 — Transportation·Fulfillment Technologies 소개, 경력 10년 이상, 전형(서류 → 전화면접 → 대면면접 → 최종 합격)"
+  },
+  {
+   "n": 3,
+   "title": "Coupang Careers · Meet Andrew, GOT Engineering",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-andrew-got-engineering/",
+   "kind": "company",
+   "date": "2023-06-13",
+   "note": "수석 엔지니어 — 물류센터 쪽 기술 전략(WMS·데이터 사이언스·자동화/로보틱스 팀), 이동 로봇·2015년 로봇 컨테이너 항만, 서울·마운틴뷰·시애틀·상하이 채용"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Careers · Meet Amit, Senior Staff Back-end Engineer with Global Operations Technology",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-amit-senior-staff-back-end-engineer-with-global-operations-technology/",
+   "kind": "company",
+   "date": "2025-02-10",
+   "note": "같은 직급 — 여러 팀을 맡아 물류센터용 확장 가능한 인프라, WMS 재설계, 셀 구조·Temporal·이벤트 소싱(세부 없음), 절차상 제약 적은 핵심 아키텍처 결정"
+  },
+  {
+   "n": 5,
+   "title": "Coupang Careers · Meet Rajiv, Senior Director of Engineering with Global Operations Technology",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-rajiv-senior-director-of-engineering-with-global-operations-technology/",
+   "kind": "company",
+   "date": "2025-06-10",
+   "note": "자동화·로보틱스 확대, 나라 사이 수준 맞추기, 물류센터 비용 절감, 보안·안정성"
+  },
+  {
+   "n": 6,
+   "title": "Coupang Careers · Fulfillment optimization: the engine behind Coupang's recognition as one of Fast Company's most innovative companies",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/fulfillment-optimization-the-engine-behind-coupang-s-recognition-as-one-of-fast-company-s-most-innovative-companies/",
+   "kind": "company",
+   "date": "2025-06-19",
+   "note": "주문마다 수천 경로, 전체 풀필먼트 비용 최소화, 다섯 부서와 설계, 그림자 환경 비교 후 반영"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Engineering · Building a digital twin discrete event simulation platform for fulfillment optimization",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/building-a-digital-twin-discrete-event-simulation-platform-for-fulfillment-optimization/",
+   "kind": "company",
+   "date": "2026-11-20",
+   "note": "세 층(매일 배치·액터 지휘·상태 없는 계산 서버), 한 스레드 상태 변경, 바이트 버퍼로 GC 피하기, AIMD, DB 호출 수백 번 병목, 연 수천만 달러 절감"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Engineering · The Digital Nervous System: How Coupang Powers Next-Gen Automation",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/the-digital-nervous-system-how-coupang-powers-next-gen-automation/",
+   "kind": "company",
+   "date": "2026-11-08",
+   "note": "AGV·로봇 포장기·분류 설비, 수십 개 회사·수천 대 장비를 한 디지털 바탕으로, 데이터 수백만 개 형식 맞춤, 약 2년. 프로토콜·데이터 모양은 밝히지 않음"
+  },
+  {
+   "n": 9,
+   "title": "Coupang Careers · From high-scale inventory to building digital twins: Lakshmanan's journey at Coupang",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/from-high-scale-inventory-to-building-digital-twins-lakshmanan-s-journey-at-coupang/",
+   "kind": "company",
+   "date": "2026-07-03",
+   "note": "차세대 재고 시스템, 재고 ID 를 SQL → NoSQL 로 운영 중단 없이 옮기는 방법 특허 출원, 이벤트 소싱 재고 원장, 최적화 모델을 서빙하는 마이크로서비스"
+  },
+  {
+   "n": 10,
+   "title": "Coupang Engineering · Optimizing the inbound process with a machine learning model",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/optimizing-the-inbound-process-with-a-machine-learning-model/",
+   "kind": "company",
+   "date": "2023-03-09",
+   "note": "입고 트럭 수 예측 — 과대 예측 44.45% → 5.04%, 날짜 변경 67.9% 감소"
+  },
+  {
+   "n": 11,
+   "title": "Coupang Engineering · Coupang Rocket Delivery's spatial index-based delivery management system",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/coupang-rocket-delivery-s-spatial-index-based-delivery-management-system/",
+   "kind": "company",
+   "date": "2023-04-17",
+   "note": "H3 육각형 칸, 한국 약 217억 칸, 칸마다 RDB 저장 버림"
+  },
+  {
+   "n": 12,
+   "title": "Coupang Engineering · Our backend strategy to handle massive traffic",
+   "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+   "kind": "company",
+   "date": "2022-08",
+   "note": "Medium 이 자동 접속을 막아(403) 검색 결과 요약으로만 확인 — 코어 서빙 층, 통합 NoSQL 저장소와 실시간 캐시, 수백 개 마이크로서비스"
+  },
+  {
+   "n": 13,
+   "title": "Coupang Engineering · Lessons learned from handling massive traffic with cache",
+   "url": "https://medium.com/coupang-engineering/lessons-learned-from-operating-our-data-serving-layer-4e9e4f68fe85",
+   "kind": "company",
+   "date": "2022-08",
+   "note": "403 — 검색 결과 요약으로만 확인: 캐시 층마다 60~100 노드, 분당 최대 1억 요청, 약 95% 캐시 응답"
+  },
+  {
+   "n": 14,
+   "title": "Coupang Careers · Why Coupang (리더십 원칙·문화와 복지제도)",
+   "url": "https://www.coupang.jobs/kr/why-coupang/",
+   "kind": "company",
+   "note": "리더십 원칙(단순하게·빠르게·최고의 인재를 뽑고 키운다 등), 복지 8가지(금액·조건 없음)"
+  },
+  {
+   "n": 15,
+   "title": "Coupang Careers · Seoul",
+   "url": "https://www.coupang.jobs/en/locations/seoul/",
+   "kind": "company",
+   "note": "서울 사무소 — 이스트폴 타워(광진구 아차산로 412)·로켓랩(강남구 역삼동), 가까운 역 구의"
+  },
+  {
+   "n": 16,
+   "title": "지디넷코리아 · 쿠팡, 아시아 최대 규모 '대구 풀필먼트센터' 공개",
+   "url": "https://zdnet.co.kr/view/?no=20230207082554",
+   "kind": "news",
+   "date": "2023-02-07",
+   "note": "AGV 1,000대 이상·평균 2분 내 선반 전달, 분류 로봇 수백 대, 24시간 가동"
+  },
+  {
+   "n": 17,
+   "title": "Coupang Careers · Global Operations Technology(GOT) 개발자 집중 채용",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=6810667",
+   "kind": "posting",
+   "note": "같은 조직의 서울 집중 채용 공고(우리 수집본) — 기술 칸 Java·Spring·MSA·Redis"
+  },
+  {
+   "n": 18,
+   "title": "Coupang Careers · Senior Manager - Backend Engineering (Bengaluru)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8076295",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 조직 운송 쪽 인도 공고 — 하루 3천만~4천만 건 이벤트 기반 시스템"
+  },
+  {
+   "n": 19,
+   "title": "Tanya Reilly · The Staff Engineer's Path (O'Reilly, 2022)",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "kind": "reference",
+   "note": "큰 그림·프로젝트 끌고 가기·기준 올리기 — 일반 교재"
+  },
+  {
+   "n": 20,
+   "title": "Will Larson · Staff Engineer: Leadership beyond the management track",
+   "url": "https://staffeng.com/book",
+   "kind": "reference",
+   "note": "기술 방향 문서, 매니저 길과 다른 기술 리더 길"
+  },
+  {
+   "n": 21,
+   "title": "Malte Ubl · Design Docs at Google",
+   "url": "https://www.industrialempathy.com/posts/design-docs-at-google/",
+   "kind": "reference",
+   "note": "다른 회사 — 목표·하지 않을 것·대안이 들어간 설계 문서"
+  },
+  {
+   "n": 22,
+   "title": "ADR GitHub organization · Architectural Decision Records",
+   "url": "https://adr.github.io/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Dan McKinley · Choose Boring Technology",
+   "url": "https://mcfunley.com/choose-boring-technology",
+   "kind": "reference",
+   "date": "2015-03-30",
+   "note": "혁신 토큰 — 새 기술은 남과 달라야 하는 곳에만"
+  },
+  {
+   "n": 24,
+   "title": "Thoughtworks · Technology Radar",
+   "url": "https://www.thoughtworks.com/radar",
+   "kind": "reference",
+   "note": "1년에 두 번, 채택·시험·평가·주의 네 칸(2026-11 기준 35호)"
+  },
+  {
+   "n": 25,
+   "title": "VDA 5050 · Official specification (GitHub)",
+   "url": "https://github.com/VDA5050/VDA5050",
+   "kind": "reference",
+   "note": "VDA·VDMA 가 낸 이동 로봇 무리와 중앙 관제 사이 통신 공개 표준, 3.0.0"
+  },
+  {
+   "n": 26,
+   "title": "AWS Whitepaper · Reducing the Scope of Impact with Cell-Based Architecture",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/reducing-scope-of-impact-with-cell-based-architecture.html",
+   "kind": "reference",
+   "note": "셀 구조 — 장애 범위 줄이기, 가용 영역"
+  },
+  {
+   "n": 27,
+   "title": "Apache Kafka Documentation · Design (Message Delivery Semantics)",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference",
+   "note": "파티션 안 순서, 최소 한 번·최대 한 번·정확히 한 번"
+  },
+  {
+   "n": 28,
+   "title": "Google Engineering Practices · Code Review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference",
+   "note": "다른 회사 — 리뷰 기준(코드 건강을 낫게 하나)"
+  },
+  {
+   "n": 29,
+   "title": "DORA · DORA's software delivery metrics: the four keys",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLO·오류 예산"
+  },
+  {
+   "n": 31,
+   "title": "바이라인네트워크 · 쿠팡, IT인프라 전체를 AWS 클라우드로 이전했다",
+   "url": "https://byline.network/2017/08/10-6",
+   "kind": "news",
+   "date": "2017-08",
+   "note": "본문은 자동 접속이 막혀 검색 결과의 제목으로 확인"
+  },
+  {
+   "n": 32,
+   "title": "Martin Fowler · Strangler Fig Application",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "쿠팡(주) 값, 기준일 표기 없음. 사이트가 자동 접속을 막아 검색 결과에 실린 값으로 확인(같은 회사 다른 풀이와 같은 값)"
+  },
+  {
+   "n": 34,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 보수 중간값 — 달러 환산"
+  },
+  {
+   "n": 35,
+   "title": "Temporal Docs · Workflows",
+   "url": "https://docs.temporal.io/workflows",
+   "kind": "reference",
+   "note": "오래 걸리는 작업을 단계별 기록으로 재개"
+  },
+  {
+   "n": 36,
+   "title": "Martin Fowler · Event Sourcing",
+   "url": "https://martinfowler.com/eaaDev/EventSourcing.html",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "Apache Cassandra Docs · Data Modeling",
+   "url": "https://cassandra.apache.org/doc/latest/cassandra/developing/data-modeling/index.html",
+   "kind": "reference",
+   "note": "질의 먼저 모델링, 파티션 키, 파티션 크기"
+  },
+  {
+   "n": 38,
+   "title": "바이라인네트워크 · 이커머스 기업 '쿠팡'은 왜 개발자대회를 열었을까?",
+   "url": "https://byline.network/2020/12/13-105/",
+   "kind": "news",
+   "date": "2020-12",
+   "note": "Reveal 2020 — CTO 발언(리더십 원칙, 모든 기능 A/B 실험, 기술 스택 여러 번 재구축·레거시 종료)"
+  },
+  {
+   "n": 39,
+   "title": "조영호 · 오브젝트 — 코드로 이해하는 객체지향 설계 (위키북스, 2019)",
+   "url": "https://wikibook.co.kr/object/",
+   "kind": "reference",
+   "note": "역할·책임·협력으로 객체 나누기"
+  },
+  {
+   "n": 40,
+   "title": "AWS Well-Architected · Reliability Pillar",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "kind": "reference",
+   "note": "여러 가용 영역·장애 복구 설계"
+  }
+ ],
+ "caveat": "쿠팡 풀필먼트 시스템의 실제 구성(셀을 무엇으로 나눴는지, Temporal·이벤트 소싱을 어디에 쓰는지), 자동화 장비 연동의 프로토콜·데이터 모양, 이 자리의 ML 비중은 공개되지 않았습니다. 회사 근거는 이 공고(우리 수집본 — 원본 API 는 같은 날 404), 같은 조직 사람 소개 글 4편(2023~2026), 쿠팡 엔지니어링 글 4편(2023·2026), 같은 조직의 다른 공고 3건, 403 으로 막힌 Medium 글 2편의 검색 요약입니다. 회사 발표 영상은 찾지 못했습니다(받은 영상 없음). 로봇 연동·기술 도입·리뷰는 VDA 5050·Thoughtworks·구글·AWS 등 공개 자료로 '보통 이런 것'을 보였습니다.",
+ "resources": [
+  {
+   "id": "coupang-twin",
+   "title": "Building a digital twin discrete event simulation platform for fulfillment optimization",
+   "by": "Coupang Engineering · 2026-11-20",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/building-a-digital-twin-discrete-event-simulation-platform-for-fulfillment-optimization/",
+   "why": "이 조직 가까이에서 쓴 가장 최근 설계 글. 층 나누기·잠금 없는 상태 변경·GC 피하기·과부하 조절 — 아키텍처·막힘 풀기·코드 줄의 실례."
+  },
+  {
+   "id": "coupang-nervous",
+   "title": "The Digital Nervous System: How Coupang Powers Next-Gen Automation",
+   "by": "Coupang Engineering · 2026-11-08",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/the-digital-nervous-system-how-coupang-powers-next-gen-automation/",
+   "why": "자동화·로보틱스 업무 줄이 가리키는 사업 — 수십 개 회사 장비를 한 바탕으로 묶은 이야기. 짧은 소개 글이다."
+  },
+  {
+   "id": "coupang-h3",
+   "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+   "by": "Coupang Engineering · 2023-04-17",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/coupang-rocket-delivery-s-spatial-index-based-delivery-management-system/",
+   "why": "규모를 먼저 세고(217억 칸) 저장 설계를 바꾼 사례. '복잡한 문제를 단순하게 나누기' 줄의 연습."
+  },
+  {
+   "id": "coupang-inbound",
+   "title": "Optimizing the inbound process with a machine learning model",
+   "by": "Coupang Engineering · 2023-03-09",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/optimizing-the-inbound-process-with-a-machine-learning-model/",
+   "why": "현장의 문제를 숫자로 찾아 기술로 바꾼 사례. '사업과 기술의 기회 찾기' 줄."
+  },
+  {
+   "id": "coupang-cache",
+   "title": "Lessons learned from handling massive traffic with cache",
+   "by": "Coupang Engineering · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://medium.com/coupang-engineering/lessons-learned-from-operating-our-data-serving-layer-4e9e4f68fe85",
+   "why": "쿠팡 서빙 층의 캐시 운영 — 저장·처리·서빙 요건 줄의 '서빙' 쪽 회사 자료."
+  },
+  {
+   "id": "staff-path",
+   "title": "The Staff Engineer's Path",
+   "by": "Tanya Reilly · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "why": "매니저가 아닌 기술 리더의 세 기둥(큰 그림·프로젝트 끌고 가기·기준 올리기). 업무 줄 절반이 이 책의 장과 겹친다."
+  },
+  {
+   "id": "staffeng",
+   "title": "Staff Engineer: Leadership beyond the management track",
+   "by": "Will Larson",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://staffeng.com/book",
+   "why": "기술 방향 문서와 여러 팀 합의 만들기. 로드맵 업무 줄용."
+  },
+  {
+   "id": "manager-path",
+   "title": "개발 7년차, 매니저 1일차",
+   "by": "카미유 푸르니에 · 권원상·한민주 옮김 · 한빛미디어 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423",
+   "why": "멘토링·테크 리드·여러 팀 이끌기를 단계별로. '인재를 뽑고 키우기' 줄."
+  },
+  {
+   "id": "design-docs",
+   "title": "Design Docs at Google",
+   "by": "Malte Ubl",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.industrialempathy.com/posts/design-docs-at-google/",
+   "why": "목표·하지 않을 것·대안을 적는 설계 문서. 문제 나누기와 아키텍처 리뷰를 글로 하는 법."
+  },
+  {
+   "id": "adr",
+   "title": "Architectural Decision Records",
+   "by": "ADR GitHub organization",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://adr.github.io/",
+   "why": "고른 것과 버린 대안을 한 장으로. 새 기술 도입 줄의 결정 기록."
+  },
+  {
+   "id": "boring-tech",
+   "title": "Choose Boring Technology",
+   "by": "Dan McKinley · 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://mcfunley.com/choose-boring-technology",
+   "why": "새 기술을 어디에 쓰고 어디에 안 쓰나 — '혁신 토큰'. 새 기술 도입 줄의 판단 기준."
+  },
+  {
+   "id": "tech-radar",
+   "title": "Technology Radar",
+   "by": "Thoughtworks · 1년에 두 번",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.thoughtworks.com/radar",
+   "why": "기술을 단계(채택·시험·평가·주의)로 나눠 보는 틀. 조직 안 기술 레이더를 만들 때 본보기."
+  },
+  {
+   "id": "vda5050",
+   "title": "VDA 5050 — 이동 로봇 무리와 중앙 관제 사이 통신 표준",
+   "by": "VDA · VDMA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/VDA5050/VDA5050",
+   "why": "회사마다 다른 운반 로봇을 같은 메시지로 부르는 공개 표준. 자동화·로보틱스 줄에서 '장비 말 맞추기'가 무엇인지."
+  },
+  {
+   "id": "cell-arch",
+   "title": "Reducing the Scope of Impact with Cell-Based Architecture",
+   "by": "AWS Well-Architected 백서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/reducing-scope-of-impact-with-cell-based-architecture.html",
+   "why": "같은 직급 엔지니어가 쓴다고 한 셀 구조 — 셀을 어떻게 나누고 요청을 어디로 보내나."
+  },
+  {
+   "id": "aws-reliability",
+   "title": "AWS Well-Architected · Reliability Pillar",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "why": "여러 가용 영역·자동 확장·장애 복구 설계. AWS 운영 경험 요건 줄."
+  },
+  {
+   "id": "temporal",
+   "title": "Temporal Docs · Workflows",
+   "by": "Temporal",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.temporal.io/workflows",
+   "why": "같은 조직이 쓴다고 한 워크플로 도구. 오래 걸리는 물류 작업을 중간에 죽어도 이어 가게 하는 법."
+  },
+  {
+   "id": "event-sourcing",
+   "title": "Event Sourcing",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/eaaDev/EventSourcing.html",
+   "why": "바뀐 사실을 쌓아 상태를 만드는 방식의 원전. 같은 회사의 재고 원장이 이 방식이다."
+  },
+  {
+   "id": "strangler",
+   "title": "Strangler Fig Application",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "why": "도는 시스템을 멈추지 않고 새것으로 조금씩 넘기는 법. 막힘 풀기·재설계 줄의 기본 전략."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 정재부·김영준·이도경 옮김 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "why": "저장·복제·분할·트랜잭션·스트림을 한 그림으로. 분산 시스템과 '저장·처리·서빙' 두 요건 줄의 바탕."
+  },
+  {
+   "id": "sysdesign",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "why": "규모 추정·메시지 큐·분할을 면접 형식으로. 분산 시스템 요건과 설계 면접 준비."
+  },
+  {
+   "id": "object-book",
+   "title": "오브젝트 — 코드로 이해하는 객체지향 설계",
+   "by": "조영호 · 위키북스 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://wikibook.co.kr/object/",
+   "why": "역할·책임·협력으로 객체를 나누고 바뀌는 부분을 감추는 법. 객체지향 설계 요건 줄."
+  },
+  {
+   "id": "effective-java",
+   "title": "이펙티브 자바 (3판)",
+   "by": "조슈아 블로크",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%EC%9E%90%EB%B0%94",
+   "why": "Java 로 객체를 잘 만드는 규칙 90가지. Java 요건과 코드 리뷰에서 근거로 쓰기 좋다."
+  },
+  {
+   "id": "spring-core",
+   "title": "스프링 핵심 원리 — 기본편 (우리 사이트 책)",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/spring-core",
+   "why": "컨테이너·빈·의존성 주입을 실행 결과로. Java·Spring 요건의 바닥."
+  },
+  {
+   "id": "spring-boot",
+   "title": "스프링 부트 — 핵심 원리와 활용 (우리 사이트 책)",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "기동 로그·설정·지표 엔드포인트. 운영까지 하는 Spring 서비스."
+  },
+  {
+   "id": "jvm-tuning",
+   "title": "자바 성능 튜닝 — JVM 과 GC (우리 사이트 책)",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/wiki/jvm-tuning",
+   "why": "GC 로그와 힙 스냅숏 읽기. 객체 대신 바이트 버퍼로 GC 멈춤을 피한 쿠팡 사례를 직접 재 볼 수 있다."
+  },
+  {
+   "id": "kafka-book",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "토픽·파티션·키·소비자 그룹을 실제 명령과 레코드로. 데이터 처리 요건의 스트리밍 쪽."
+  },
+  {
+   "id": "kafka-docs",
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "by": "Apache Kafka",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "why": "최소 한 번·정확히 한 번이 실제로 무엇을 보장하나. 분산 시스템 요건의 중복·순서 문제."
+  },
+  {
+   "id": "cassandra-model",
+   "title": "Apache Cassandra · Data Modeling",
+   "by": "Apache Cassandra 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cassandra.apache.org/doc/latest/cassandra/developing/data-modeling/index.html",
+   "why": "질의 먼저 표 만들기와 파티션 키 고르기. 저장 요건의 NoSQL 쪽."
+  },
+  {
+   "id": "practical-testing",
+   "title": "Practical Testing — 실용적인 테스트 가이드 (우리 사이트 책)",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/practical-testing",
+   "why": "단위·통합 테스트를 실제 결과로. 코드 품질 요건 줄."
+  },
+  {
+   "id": "eng-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "리뷰에서 무엇을 보고 어떻게 말하나. 여러 팀의 리뷰 기준을 맞출 때의 본보기."
+  },
+  {
+   "id": "dora",
+   "title": "DORA's software delivery metrics: the four keys",
+   "by": "DORA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "why": "코드 품질 개선이 실제로 됐나를 재는 네 지표."
+  },
+  {
+   "id": "sre-book",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "벳시 베이어 외 · 제이펍 · 2018 (원서는 sre.google 에서 무료)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%82%AC%EC%9D%B4%ED%8A%B8%20%EC%8B%A0%EB%A2%B0%EC%84%B1%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "SLO·오류 예산·비난 없는 사후 검토. 운영 15년 요건과 우선순위 장치의 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "쿠팡 물류와 이 직급 읽기",
+   "time": "1주",
+   "goal": "풀필먼트 흐름(입고 → 진열 → 재고 → 집품 → 출고)과, 시니어 스태프가 매니저와 무엇이 다른지 설명할 수 있다.",
+   "resources": [
+    "coupang-twin",
+    "coupang-nervous",
+    "coupang-h3",
+    "staff-path"
+   ],
+   "task": "가상 물류센터의 하루(주문 1만 건)를 단계별 이벤트 목록으로 적고, 단계마다 '바쁜 날 3.5배가 오면 어디가 먼저 막히나'를 한 줄씩 단다."
+  },
+  {
+   "title": "재고 원장을 분산으로",
+   "time": "2~4주",
+   "goal": "중복·순서 뒤바뀜에도 재고가 맞는 이벤트 소싱 원장을 Java·Spring 으로 만들 수 있다.",
+   "resources": [
+    "event-sourcing",
+    "kafka-book",
+    "kafka-docs",
+    "spring-boot",
+    "ddia"
+   ],
+   "task": "Spring Boot + Kafka 로 '입고·집품·출고' 이벤트를 받아 재고를 이벤트로 쌓는다. 같은 이벤트를 두 번 보내는 테스트, 순서를 섞는 테스트를 통과시키고, 이벤트를 처음부터 다시 돌려 같은 재고가 나오는지 확인한다."
+  },
+  {
+   "title": "멈추지 않게 나누고 옮기기",
+   "time": "2~3주",
+   "goal": "셀 구조와 워크플로로 장애 범위를 줄이고, 옛 저장소에서 새 저장소로 운영 중에 옮길 수 있다.",
+   "resources": [
+    "cell-arch",
+    "temporal",
+    "strangler",
+    "cassandra-model",
+    "aws-reliability"
+   ],
+   "task": "2단계 시스템을 '센터 묶음 = 셀' 3개로 나누고 한 셀을 꺼도 나머지가 도는지 본다. 재고 표를 RDB 에서 Cassandra 로 이중 쓰기 → 대조 → 읽기 전환 순서로 옮기는 스크립트를 짠다."
+  },
+  {
+   "title": "글로 이끌기",
+   "time": "2주",
+   "goal": "설계 문서·결정 기록·기술 방향 문서로 여러 팀의 합의를 만들 수 있다.",
+   "resources": [
+    "design-docs",
+    "adr",
+    "boring-tech",
+    "tech-radar",
+    "staffeng"
+   ],
+   "task": "3단계 설계를 목표·하지 않을 것·대안 2개가 들어간 설계 문서(A4 세 장)로 쓰고, '워크플로 엔진을 들일까'에 대한 결정 기록 한 장과 1년짜리 기술 방향 문서 한 장을 쓴다."
+  },
+  {
+   "title": "로봇과 품질까지 (계속)",
+   "time": "계속",
+   "goal": "회사가 다른 장비를 한 틀로 묶는 경계를 설계하고, 여러 팀의 코드 품질을 숫자로 끌어올릴 수 있다.",
+   "resources": [
+    "vda5050",
+    "object-book",
+    "effective-java",
+    "eng-review",
+    "practical-testing",
+    "dora",
+    "sre-book"
+   ],
+   "task": "가상 운반 로봇 두 종(서로 다른 메시지 형식)을 한 인터페이스로 부르는 어댑터를 만들고, VDA 5050 의 명령·상태 메시지와 비교해 본다. 저장소에 DORA 네 지표를 재는 스크립트를 붙인다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 쿠팡(주) 집계(초봉 약 3,531만 · 평균 약 5,175만)와 쿠팡 Inc. 전 직원 보수 중간값(2025년 3만 3,831달러)은 물류 현장 인력이 섞인 회사 전체 값이라 **15년 이상 시니어 스태프 연봉과 거리가 멀다**",
+  "rows": [
+   {
+    "label": "쿠팡(주) 신입 초봉",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값. 직군 구분이 없다. 사이트가 자동 접속을 막아 검색 결과에 실린 값으로 확인했다 [33]"
+   },
+   {
+    "label": "쿠팡(주) 직원 평균",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 개발자, 특히 경력 15년 이상 연봉으로 읽으면 안 된다 [33]"
+   },
+   {
+    "label": "쿠팡 Inc. 전 직원 보수 중간값",
+    "value": "3만 3,831달러 / 년",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "CEO 를 뺀 전 세계 직원의 가운데 값을 2025년 평균 환율로 달러로 바꾼 것 [34]"
+   }
+  ],
+  "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **국내 공시 숫자 없음**. 위 값은 모두 경력·직군이 섞인 회사 전체 값이고 평균은 초봉이 아니다. 전형 마지막이 처우 제안(Offer)이라 금액은 그때 정해지고, 직급도 경력 전체를 보고 바뀔 수 있다 [1] {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "열린 문화",
+    "detail": "칸막이와 위계 대신 열린 업무 공간"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원과 직계가족을 보장하는 단체 상해보험"
+   },
+   {
+    "name": "휴가",
+    "detail": "가족 행사·모임을 위한 유급휴가"
+   },
+   {
+    "name": "교육",
+    "detail": "외국어와 업무 스킬 교육 프로그램"
+   },
+   {
+    "name": "글로벌 협업",
+    "detail": "여러 나라가 함께하는 프로젝트와 협업 기회"
+   },
+   {
+    "name": "사내 행사",
+    "detail": "게임·음식이 있는 사내 이벤트"
+   },
+   {
+    "name": "휴게·식당",
+    "detail": "휴게 공간과 사내 카페테리아 '쿠테리아'"
+   },
+   {
+    "name": "유연근무",
+    "detail": "근무시간 조정, 재택근무 가능"
+   }
+  ],
+  "note": "쿠팡 채용 사이트 'Why Coupang'(한국어)의 '문화와 복지제도'다 [14]. 이 공고에는 복리후생 칸이 없고, 금액·조건이 적혀 있지 않다 [1]. 이 자리 적용 범위는 처우 제안 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 서울 사무소 (이스트폴 타워)",
+  "address": "서울특별시 광진구 아차산로 412",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 [15]",
+  "note": "공고 근무지는 'Seoul, South Korea' 뿐이다 [1]. 쿠팡 채용 사이트는 서울 사무소로 이스트폴 타워(아차산로 412)와 로켓랩(강남구 역삼동)을 든다 [15]. 이 팀이 어느 건물인지는 공고에 없다 — 대표 사무소로 이스트폴 타워를 적었다 {추론}."
+ }
+}

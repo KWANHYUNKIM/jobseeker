@@ -35,6 +35,7 @@
   "wanted-394186": "coupang-financial-lending-staff-backend",
   "ats-greenhouse:coupang:6810667": "coupang-got-backend-developer-seoul",
   "ats-greenhouse:coupang:6137112": "coupang-got-backend-manager-seoul",
+  "ats-greenhouse:coupang:5848138": "coupang-got-senior-staff-backend-seoul",
   "ats-greenhouse:coupang:8393917": "coupang-iam-access-management-senior-mtv",
   "ats-greenhouse:coupang:8059287": "coupang-india-senior-staff-backend-serving",
   "ats-greenhouse:coupang:8078707": "coupang-interstellar-senior-staff-backend-serving",
@@ -626,6 +627,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 14
+  },
+  {
+   "id": "coupang-got-senior-staff-backend-seoul",
+   "company": "쿠팡",
+   "role": "시니어 스태프 백엔드 엔지니어 (Global Operations Technology)",
+   "jobs": [
+    "ats-greenhouse:coupang:5848138"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
   },
   {
    "id": "coupang-iam-access-management-senior-mtv",
