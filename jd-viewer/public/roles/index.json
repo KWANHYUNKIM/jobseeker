@@ -138,6 +138,7 @@
   "ats-greenhouse:coupang:8212656": "coupang-pay-senior-backend-test-ops",
   "ats-greenhouse:coupang:8222501": "coupang-pay-senior-platform-engineer",
   "ats-greenhouse:coupang:8155846": "coupang-pay-senior-staff-backend-rocketpay",
+  "ats-greenhouse:coupang:8344977": "coupang-pay-senior-system-engineer-cloud-infra",
   "ats-greenhouse:coupang:8194393": "coupang-pay-staff-android",
   "wanted-391099": "coupang-pay-staff-android",
   "ats-greenhouse:coupang:8287908": "coupang-pay-staff-backend-global-payments",
@@ -1802,6 +1803,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 16
+  },
+  {
+   "id": "coupang-pay-senior-system-engineer-cloud-infra",
+   "company": "쿠팡페이",
+   "role": "Senior System Engineer",
+   "jobs": [
+    "ats-greenhouse:coupang:8344977"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
   },
   {
    "id": "coupang-pay-staff-android",

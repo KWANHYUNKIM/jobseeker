@@ -1,0 +1,1348 @@
+{
+  "id": "coupang-pay-senior-system-engineer-cloud-infra",
+  "company": "쿠팡페이",
+  "role": "Senior System Engineer",
+  "team": "쿠팡페이 Cloud & Infrastructure 팀",
+  "jobs": [
+    "ats-greenhouse:coupang:8344977"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쿠팡페이 결제·금융 서비스가 올라가는 **서버·가상화(프라이빗 클라우드)·AWS·백업·모니터링·DNS**를 설계하고 굴립니다. 손으로 하던 서버 작업은 **Terraform·Ansible 코드**로 바꾸고, 금융 감사가 요구하는 보안 기준을 서버에 적용합니다.[1]",
+    "env": "같은 팀의 앞선 관리자 공고는 이 팀을 **AWS와 자체 서버(온프레미스)를 같이 쓰는 하이브리드 클라우드** 팀으로 소개했고, 법무·준법·보안·내부감사와 함께 규제를 맞춘다고 적었습니다.[2] 쿠팡페이는 전자금융업자라 전자금융감독규정(재해복구·취약점 점검·기록 보존)을 받습니다.[10]",
+    "oneline": "개발보다 **운영·설계 쪽 인프라 엔지니어** 자리입니다. 시스템 엔지니어 5년 + 클라우드 3년이 출발선이고, 리눅스·윈도우 서버와 VMware 같은 가상화를 직접 다뤄 본 사람을 찾습니다.[1]"
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "쿠팡페이 Cloud & Infrastructure 팀의 System Engineer 는 쿠팡페이 비지니스의 성공을 위해 Public/Private Cloud, On-premise 환경 Infra Engineering 업무를 수행 합니다.",
+      "short": "AWS(퍼블릭)·사내 가상화(프라이빗)·자체 서버(온프레미스) 세 바닥을 한 팀이 같이 굴리는 자리라서.",
+      "why": "같은 팀의 관리자(SDM) 공고는 일의 초점을 **하이브리드 클라우드(AWS와 온프레미스)·시스템·네트워크·계정 관리**로 적었고, 목표를 가용성·확장성·효율·**규제 준수**로 꼽았습니다.[2] 쿠팡 그룹도 2017년에 서비스 인프라를 AWS로 옮겼지만[6], ML 플랫폼 팀은 2023년 글에서 사내 데이터센터와 AWS 두 곳에 계산·저장 클러스터를 둔다고 밝혔습니다 — 사내 쪽은 싸고 고칠 여지가 많고, 모자라면 클라우드로 늘린다는 이유였습니다.[5]",
+      "actually": {
+        "intro": "세 바닥이 각각 맡는 것입니다. 쿠팡페이가 어떤 업무를 어느 바닥에 두는지는 공개되지 않았습니다.",
+        "items": [
+          "**퍼블릭 클라우드(AWS)** — 필요할 때 서버를 빌려 쓰고 늘리는 곳. 행사처럼 트래픽이 몰리는 일에 맞다. 쿠팡페이 대만은 2024년 광군제에 평소의 약 20배 트래픽을 받았다.[7]",
+          "**프라이빗 클라우드(VMware·Nutanix)** — 회사가 산 서버 위에 가상 서버(VM)를 만들어 쓰는 사내 클라우드. 장비는 내 것이고 운영도 내 몫이다.[23][24]",
+          "**온프레미스** — 가상화 없이 직접 놓인 서버·저장장치·백업 장비. {추론}",
+          "**왜 섞나** — 전자금융감독규정은 전산실과 재해복구센터를 국내에 두게 하고, 클라우드를 쓰려면 중요도 평가·정보보호위원회 의결 같은 절차를 따로 밟게 한다.[10] 그래서 금융사는 업무마다 놓을 곳을 고른다. {추론}"
+        ]
+      },
+      "how_far": "세 바닥을 모두 깊게 알 필요는 없지만, **한 서비스가 AWS와 사내 서버에 걸쳐 있을 때 그 사이(네트워크·DNS·계정·백업)가 어떻게 이어지는지** 그림으로 설명할 수 있어야 합니다. {추론}",
+      "refs": [
+        2,
+        5,
+        6,
+        7,
+        10,
+        23,
+        24
+      ],
+      "study": [
+        "aws-wa-rel",
+        "vsphere-ha"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Cloud 및 On-Premise 표준 Architecture 설계, 구축, 운영",
+      "short": "새 서비스가 오면 '서버는 이렇게, 네트워크는 이렇게' 고르기만 하면 되도록 정해진 구성표를 만들고 지키는 일.",
+      "why": "같은 팀 관리자 공고는 제품 개발 조직과 함께 **온프레미스와 클라우드를 모두 써서 여러 나라를 받는** 시스템을 설계한다고 적었습니다.[2] 쿠팡페이는 한국과 대만에서 결제를 합니다.[4] 나라·서비스마다 구성이 제각각이면 감사·장애 대응·자동화가 모두 어려워집니다. {추론}",
+      "actually": {
+        "items": [
+          "**구성표(표준 아키텍처)** — '결제 API 서버 = 가용 영역 2곳 이상 · 앞에 부하분산기 · DB는 이중화 · 로그는 중앙 수집' 같은 틀. AWS 신뢰성 문서는 여러 가용 영역에 나눠 두는 것을 기본으로 든다.[25] {추론}",
+          "**온프레미스 판** — 같은 틀을 사내 쪽에서는 가상화 클러스터 + 이중화 스위치 + 백업 장비로 맞춘다. {추론}",
+          "**코드로 남기기** — 구성표를 문서가 아니라 Terraform 모듈로 만들어 두면 새 서비스가 그 모듈을 불러 쓴다(업무 여섯째 줄).[14]",
+          "**운영** — 구성표에서 벗어난 서버를 찾아 되돌리고, 구성표 자체를 해마다 고친다. {추론}"
+        ]
+      },
+      "how_far": "구성표의 방향은 팀과 상위 설계자가 정합니다. Senior 의 최소선은 **표준 구성 하나를 직접 만들고, 그걸로 실제 서비스를 몇 개 올려 본 경험**입니다. {추론}",
+      "refs": [
+        2,
+        4,
+        14,
+        25
+      ],
+      "study": [
+        "aws-wa-rel",
+        "tf-up"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "서버 시스템(Windows, Linux) 운영 관리 및 고도화",
+      "short": "리눅스·윈도우 서버의 설치·패치·계정·디스크·서비스를 매일 관리하고, 손이 덜 가게 바꿔 가는 일.",
+      "why": "같은 팀 관리자 공고도 윈도우와 여러 리눅스 배포판에 익숙할 것을 요구했습니다.[2] 결제 서비스는 주로 리눅스 위에서 돌지만, 사내 업무 시스템·계정(액티브 디렉터리 같은 것)은 윈도우 서버에 많습니다 — 같은 날 올라온 쿠팡페이 IT Innovation 공고는 Windows·macOS 단말과 Active Directory 를 다룹니다.[3]",
+      "actually": {
+        "items": [
+          "**패치** — 보안 패치를 정해진 주기로, 긴급한 것은 바로. 규정은 긴급 보안 패치를 즉시 적용하게 한다.[10]",
+          "**계정** — 퇴사자 계정 지우기, 관리자 권한은 필요한 사람에게만. 규정은 최소 권한과 가동 기록 1년 보존을 요구한다.[10]",
+          "**용량** — 디스크·메모리가 차기 전에 늘리기, 오래된 로그 정리.",
+          "**고도화** — 위 일들을 사람 손에서 Ansible 같은 도구로 옮기는 것(자격요건 넷째 줄).[15] {추론}"
+        ]
+      },
+      "how_far": "최소선은 **리눅스·윈도우 서버 수십 대 이상을 패치·계정·용량까지 책임지고 돌려 본 경험**입니다. 한쪽만 깊다면 다른 쪽은 기본 관리(서비스·이벤트 로그·업데이트)를 할 줄 알면 됩니다. {추론}",
+      "refs": [
+        2,
+        3,
+        10,
+        15
+      ],
+      "study": [
+        "sysperf",
+        "ansible-ko"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Private Cloud 시스템 및 백업 시스템 운영 관리",
+      "short": "사내 가상화 클러스터가 호스트 한 대가 죽어도 버티게 관리하고, 백업이 '실제로 되살아나는지'까지 확인하는 일.",
+      "why": "같은 팀 관리자 공고는 하이브리드 환경의 OS·네트워크·**스토리지**·보안·모니터링·로그를 대규모로 관리한다고 적었습니다.[2] 금융 규정은 중요 자료를 **원격지에 백업**하게 하고, 재해복구센터 대상에 연간 전자금융거래 2조 원 이상 전자금융업자를 더했습니다(2026-02-05 적용).[9][10]",
+      "actually": {
+        "items": [
+          "**장애 대비 여유** — vSphere HA(호스트가 죽으면 그 위 VM을 다른 호스트에서 다시 켜는 기능)는 '몇 대가 죽어도 되나'를 정하고 그만큼 자원을 비워 둔다. 이 보호 장치(admission control)를 꺼 두면 장애 뒤 VM이 다 켜진다는 보장이 없다.[23]",
+          "**Nutanix** — 서버마다 저장 관리를 맡는 가상 머신(CVM)이 돌고, 저장 공간을 모든 노드에 나눠 한 대가 죽어도 사본을 다시 만든다.[24]",
+          "**백업** — 무엇을(VM 전체·DB·설정) 얼마나 자주, 얼마나 오래, 어디(원격지)에 둘지 정하고 돌린다.[10]",
+          "**복원 시험** — 백업 성공 표시만 보지 않고 실제로 되살려 본다. AWS 재해복구 백서는 데이터가 망가진 경우는 복제가 아니라 백업에 기댄다고 적는다.[25]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "호스트 1대 장애를 견디려면 얼마나 비워 두나 (직접 돌린 출력)",
+          "body": "모든 호스트가 같은 크기라고 할 때의 단순 계산입니다. 실제 vSphere 는 예약값 기반 슬롯·비율·전용 예비 호스트 중 하나로 계산합니다.[23]",
+          "lang": "python",
+          "code": "for hosts in (4, 8):\n    print(f\"호스트 {hosts}대, 1대 장애 허용 -> 예약 {1/hosts:.1%}, 쓸 수 있는 몫 {1-1/hosts:.1%}\")\n# 호스트 4대, 1대 장애 허용 -> 예약 25.0%, 쓸 수 있는 몫 75.0%\n# 호스트 8대, 1대 장애 허용 -> 예약 12.5%, 쓸 수 있는 몫 87.5%"
+        }
+      ],
+      "how_far": "가상화 제품 설치보다 **클러스터의 여유 자원·백업 주기·복원 시험을 숫자로 관리해 본 경험**이 핵심입니다. 복원 시험 기록이 있으면 감사 때 바로 증거가 됩니다. {추론}",
+      "refs": [
+        2,
+        9,
+        10,
+        23,
+        24,
+        25
+      ],
+      "study": [
+        "vsphere-ha",
+        "nutanix-aos",
+        "aws-dr"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "서버 주요 성능지표 모니터링, 분석, 트러블슈팅 및 장애 대응",
+      "short": "CPU·메모리·디스크·네트워크 숫자를 늘 보고, 결제가 느려지면 어느 자원이 막혔는지 좁혀 고치는 일.",
+      "why": "쿠팡페이는 결제를 24시간 감시한다고 밝혔고[8], 쿠팡페이 채용 안내는 팀에 따라 교대·휴일·야간 근무가 있을 수 있다고 적었습니다.[4] 서버 쪽 원인을 찾는 건 이 자리의 몫입니다.",
+      "actually": {
+        "intro": "브렌던 그레그의 USE 방법 — 자원마다 세 가지를 차례로 묻습니다.[20]",
+        "items": [
+          "**사용률(Utilization)** — 그 자원이 얼마나 바빴나(CPU 90%).",
+          "**포화(Saturation)** — 처리 못 하고 줄 선 일이 있나(실행 대기열·디스크 대기·스왑).",
+          "**오류(Errors)** — 오류가 났나(디스크 I/O 오류·네트워크 재전송·패킷 버림).",
+          "**자원 목록** — CPU·메모리·디스크·네트워크 카드부터, 소프트웨어 자원(잠금·연결 수)까지.[20]",
+          "**장애 뒤** — 원인과 다시 안 나게 하는 조치를 사후 분석으로 남긴다.[26]"
+        ]
+      },
+      "how_far": "최소선은 **'느리다'는 신고를 받고 리눅스 명령(top·vmstat·iostat·ss 같은 것)으로 자원 하나를 원인으로 좁혀 본 경험**입니다. {추론}",
+      "refs": [
+        4,
+        8,
+        20,
+        26
+      ],
+      "study": [
+        "use-method",
+        "sysperf",
+        "sre-ko"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "서비스 신뢰성과 연속성 향상을 위한 개선",
+      "short": "장애가 덜 나게(신뢰성), 나더라도 업무가 이어지게(연속성) 구조와 절차를 고치는 일.",
+      "why": "'연속성'은 금융 규정의 낱말입니다 — 업무지속성 계획, 장비 이중화, 재해복구센터, 핵심업무 복구목표시간(RTO) 3시간, 연 1회 이상 전환 훈련.[10] 재해복구센터 대상 확대는 2022년 카카오 데이터센터 화재가 계기였습니다.[9]",
+      "actually": {
+        "items": [
+          "**한 곳이 죽어도** — 서버·스위치·전원·저장장치를 이중화하고, 실제로 하나를 꺼 보는 시험을 한다.[10] {추론}",
+          "**DR 방식 고르기** — 백업 후 복원 → 파일럿 라이트 → 웜 스탠바이 → 액티브/액티브 순으로 비싸지고 빨라진다.[25]",
+          "**DNS 전환** — 주 사이트가 죽으면 Route 53 상태 검사가 실패를 알아채고 예비 사이트로 이름을 돌린다(자격요건 마지막 줄).[22]",
+          "**훈련 기록** — 전환에 몇 분 걸렸는지 시각으로 남기고 3시간 기준과 견준다.[10]"
+        ]
+      },
+      "how_far": "개선 과제는 장애 기록과 훈련 결과에서 나옵니다. 최소선은 **한 번의 장애·훈련 뒤 '무엇을 바꿔 몇 분이 줄었나'를 숫자로 말할 수 있는 개선 하나**입니다. {추론}",
+      "refs": [
+        9,
+        10,
+        22,
+        25
+      ],
+      "study": [
+        "aws-dr",
+        "efsr",
+        "fsc-dr"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Terraform 등 인프라 및 서비스 환경 자동화를 위한 아키텍처 설계 및 표준화 (IaC)",
+      "short": "서버·네트워크를 콘솔에서 손으로 만들지 않고 코드(Terraform)로 적어, 리뷰·기록·재현이 되게 만드는 일.",
+      "why": "같은 팀 관리자 공고는 인프라 관리 자동화를 업무로, **Terraform·Ansible·CloudFormation**을 도구로 적었고, 인프라 코드를 3년 이상 만들고 운영한 경험을 요구했습니다.[2] 금융 규정은 프로그램 등록·변경 절차와 중요 작업의 이중확인을 요구하는데[10], 인프라를 코드로 바꾸면 변경이 코드 리뷰와 기록으로 남습니다. {추론}",
+      "actually": {
+        "items": [
+          "**상태 파일(state)** — Terraform 은 '지금 무엇을 만들었나'를 상태 파일에 적는다. 여럿이 같이 쓰려면 원격 저장소에 두고 잠근다 — S3 백엔드는 `use_lockfile` 로 잠금을 켜며(기본은 꺼짐), 예전 DynamoDB 잠금은 폐기 예정이다.[14]",
+          "**버전 관리** — 상태 파일을 둔 S3 버킷에 버전 관리를 켜 실수로 지웠을 때 되살린다(공식 권장).[14]",
+          "**모듈 = 표준** — 업무 둘째 줄의 구성표를 모듈로 만들고, 서비스 팀은 변수만 바꿔 쓴다. {추론}",
+          "**plan → 리뷰 → apply** — 바뀔 내용을 먼저 뽑아 리뷰받고 승인 뒤 반영. 이 기록이 변경 통제 증거가 된다. {추론}[10]",
+          "**어긋남(drift)** — 누가 콘솔에서 손으로 바꾼 것을 plan 이 잡아낸다. {추론}"
+        ]
+      },
+      "how_far": "'설계 및 표준화'라 쓰는 데서 그치지 않고 **팀이 같이 쓰는 모듈·상태 저장 구조·리뷰 규칙을 정해 본 경험**을 찾습니다. 최소선은 실제 운영 인프라를 Terraform 으로 옮겨 본 것입니다. {추론}",
+      "refs": [
+        2,
+        10,
+        14
+      ],
+      "study": [
+        "tf-docs",
+        "tf-up"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "금융 컴플라이언스 대응",
+      "short": "금감원 검사·ISMS-P·PCI-DSS 같은 심사에서 서버·클라우드 쪽 질문에 증거(설정·기록)로 답하는 일.",
+      "why": "같은 팀 관리자 공고는 법무·준법·보안·개인정보·내부감사와 함께 규제 준수를 맞추고, 우대로 **FSS(금감원)·ISMS-P·PCI-DSS** 심사 대응을 적었습니다.[2] 같은 날 올라온 쿠팡페이 IT Innovation 공고도 ISMS-P·PCI-DSS 보안 감사 대응과 증적(증거 자료) 관리를 업무로 적었습니다.[3]",
+      "actually": {
+        "items": [
+          "**금감원 검사** — 2025년 전자금융거래법 개정으로 금감원에 전자금융감독국·전자금융검사국이 생겼고 IT 기업의 전자금융 정기검사가 본격화됐다.[38]",
+          "**취약점 분석·평가** — 지금은 연 1회. 2026년 11월 예고된 개정안은 대형사(총자산 2조·종업원 300명 이상)를 연 2회로 늘리고, 전자금융기반시설에 직·간접으로 이어진 모든 시스템과 IT 자산 목록을 최신으로 관리하게 한다(2027년 1분기 시행 목표, 아직 안).[11]",
+          "**인증** — 쿠팡은 ISMS-P(2021 최초·2024 갱신, 범위는 '쿠팡 서비스')와 PCI DSS 등 7개 인증을 공개했다.[12][13] 쿠팡페이 법인의 인증 범위는 확인하지 못했다.",
+          "**증거 만들기** — 계정 목록·권한 변경 기록·패치 이력·백업 복원 시험·DR 훈련 기록을 요청이 오면 바로 뽑게 둔다. {추론}"
+        ]
+      },
+      "how_far": "규정 해석은 보안·준법 조직 몫입니다. 이 자리는 **'이 통제가 우리 서버에서 지켜지고 있다'는 증거를 내고, 지적받은 것을 고치는** 쪽입니다. {추론}",
+      "refs": [
+        2,
+        3,
+        11,
+        12,
+        13,
+        38
+      ],
+      "study": [
+        "efsr",
+        "kisa-guide"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "System Engineer 경력 5년 이상",
+      "short": "서버를 들이고 굴리고 장애를 받아 본 운영 경력 5년이 출발선이라서.",
+      "why": "같은 팀 관리자 공고는 퍼블릭 클라우드와 온프레미스 인프라 설계·구축·운영 10년 이상을 요구했습니다.[2] 이 Senior 자리는 그 아래 실무 리더급입니다. {추론}",
+      "how_far": "'개발자 5년'이 아니라 **'시스템 엔지니어 5년'**입니다. 서버·스토리지·가상화·백업을 직접 운영한 경력이 이력서에서 바로 보여야 합니다. {추론}",
+      "refs": [
+        2
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "AWS등 Cloud 인프라 구축 및 운영 경력 3년 이상",
+      "short": "AWS 쪽 절반을 맡으려면 VPC·EC2·IAM·Route 53 을 직접 짓고 굴려 본 3년이 필요해서.",
+      "why": "쿠팡 그룹 인프라는 2017년부터 AWS 위에 있고[6], 같은 팀 관리자 공고는 AWS 경험을 우대로 적었습니다.[2]",
+      "level": {
+        "basic": "EC2·EBS·S3·보안 그룹·IAM 사용자/역할, 콘솔에서 서버 만들기",
+        "work": "VPC 설계(서브넷·라우팅·NAT)·사내망 연결(VPN·전용선)·Route 53·백업·비용 보기, 이것을 Terraform 으로",
+        "team": "여러 계정·여러 가용 영역에 걸친 표준 구성, 금융 규정(국내 리전·기록 보존)에 맞춘 설정"
+      },
+      "how_far": "최소선은 **운영 서비스가 실제로 올라간 AWS 계정을 3년 동안 책임져 본 것**입니다. 자격증은 보조 자료일 뿐입니다. {추론}",
+      "refs": [
+        2,
+        6
+      ],
+      "study": [
+        "aws-wa-rel",
+        "r53-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Python, Shell 프로그래밍 및 REST API 활용 능력",
+      "short": "반복 작업을 스크립트로 없애고, 클라우드·가상화·모니터링 도구를 API 로 부를 줄 알아야 해서.",
+      "why": "AWS·vSphere·Nutanix·Zabbix 는 모두 REST 같은 API 를 내줍니다. 사람이 화면에서 누르던 일을 스크립트가 API 로 하면 수백 대에 같은 일을 할 수 있습니다. {추론} 같은 쿠팡페이 IT Innovation 공고도 PowerShell·Bash·Python·API 기반 업무 자동화를 우대로 적었습니다.[3]",
+      "level": {
+        "basic": "Shell — 파일·텍스트 처리(grep·awk), 반복문, 종료 코드 확인",
+        "work": "Python — HTTP 요청·JSON 파싱·재시도, 결과를 표로 정리하는 점검 스크립트",
+        "team": "여러 시스템 API 를 엮어 '점검 → 보고 → 조치'까지 도는 자동화"
+      },
+      "examples": [
+        {
+          "title": "서버 보안 설정 점검 스크립트의 핵심 (가상 서버, 직접 돌린 출력)",
+          "body": "API 나 Ansible 로 모은 각 서버의 설정을 기준과 비교해 양호·취약을 냅니다. 'root 원격 접속 제한'은 국내 서버 점검 기준의 첫 항목(U-01)입니다.[17]",
+          "lang": "python",
+          "code": "baseline = {\"PermitRootLogin\": \"no\", \"PasswordAuthentication\": \"no\", \"MaxAuthTries\": \"5\"}\nfleet = {\n    \"web-01\": {\"PermitRootLogin\": \"no\", \"PasswordAuthentication\": \"no\", \"MaxAuthTries\": \"5\"},\n    \"web-02\": {\"PermitRootLogin\": \"yes\", \"PasswordAuthentication\": \"no\", \"MaxAuthTries\": \"5\"},\n    \"batch-01\": {\"PermitRootLogin\": \"no\", \"PasswordAuthentication\": \"yes\"},\n}\nfor host, conf in fleet.items():\n    bad = [k for k, v in baseline.items() if conf.get(k) != v]\n    print(f\"{host:<9} {'양호' if not bad else '취약 ' + ', '.join(bad)}\")\n# web-01    양호\n# web-02    취약 PermitRootLogin\n# batch-01  취약 PasswordAuthentication, MaxAuthTries"
+        }
+      ],
+      "how_far": "개발자 수준의 큰 프로그램이 아니라 **운영 도구를 직접 써서 매일 쓰는 수준**입니다. 남이 다시 돌려도 같은 결과가 나오게(오류 처리·로그) 쓰는 것이 최소선입니다. {추론}",
+      "refs": [
+        3,
+        17
+      ],
+      "study": [
+        "ansible-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Ansible, Terraform 을 활용한 Infrastructure as Code 구현 가능 및 경험",
+      "short": "Terraform 은 '무엇이 있어야 하나'(서버·네트워크)를, Ansible 은 '그 안이 어때야 하나'(설정·패키지)를 코드로 적는다.",
+      "why": "같은 팀 관리자 공고가 Terraform·Ansible 을 이름으로 적었습니다.[2] 업무 여섯째 줄(IaC 표준화)을 하려면 두 도구를 써 본 적이 있어야 합니다.[1]",
+      "actually": {
+        "items": [
+          "**멱등성** — Ansible 모듈은 원하는 상태가 이미 되어 있으면 아무것도 안 하고 끝난다. 그래서 같은 플레이북을 몇 번 돌려도 결과가 같다.[15]",
+          "**미리 보기** — `--check` 는 실제로 바꾸지 않고 무엇이 바뀔지 보고한다. `--diff` 와 같이 쓰면 바뀌는 줄까지 보인다. 단, shell·command 처럼 무엇을 할지 모르는 작업은 미리 보기가 안 된다.[15]",
+          "**Terraform 상태·잠금** — 업무 여섯째 줄 참고.[14]",
+          "**나눠 쓰기** — 서버를 만드는 건 Terraform, 만든 서버 안의 OS 설정·보안 기준 적용은 Ansible. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "멱등성 — 두 번째 실행은 아무것도 안 바꾼다 (직접 돌린 출력)",
+          "body": "Ansible 이 하는 일을 아주 작게 흉내 낸 것입니다. '원하는 상태와 다른 것만 바꾸고, 바꾼 목록을 보고'합니다.[15]",
+          "lang": "python",
+          "code": "def apply(state, desired):\n    changed = [k for k, v in desired.items() if state.get(k) != v]\n    for k in changed:\n        state[k] = desired[k]\n    return changed\n\nserver = {\"PermitRootLogin\": \"yes\", \"PasswordAuthentication\": \"yes\", \"ntp\": \"off\"}\nwant = {\"PermitRootLogin\": \"no\", \"PasswordAuthentication\": \"no\", \"ntp\": \"on\"}\nprint(\"1st run changed:\", apply(server, want))\nprint(\"2nd run changed:\", apply(server, want))\n# 1st run changed: ['PermitRootLogin', 'PasswordAuthentication', 'ntp']\n# 2nd run changed: []"
+        }
+      ],
+      "how_far": "'구현 가능 및 경험'이라 튜토리얼 수준은 모자랍니다. 최소선은 **운영 서버 묶음을 플레이북으로 관리하고, 운영 인프라 일부를 Terraform 으로 만들어 리뷰를 거쳐 반영해 본 것**입니다. {추론}",
+      "refs": [
+        1,
+        2,
+        14,
+        15
+      ],
+      "study": [
+        "ansible-docs",
+        "ansible-ko",
+        "tf-docs",
+        "tf-up"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Private Cloud(VMWare, Nutanix 등) 아키텍처 설계/구축/운영 경험",
+      "short": "사내 가상화 클러스터를 처음부터 설계해 세우고 굴려 본 경험 — 업무 셋째 줄을 맡기 위해서.",
+      "why": "이 팀은 온프레미스를 같이 운영합니다.[2] VMware 와 Nutanix 는 사내 가상화의 대표 제품이라 이름으로 적은 것으로 보입니다. {추론}",
+      "actually": {
+        "items": [
+          "**용량 설계** — 호스트 수·CPU·메모리, 장애 대비 예약(업무 셋째 줄 예시). vSphere 는 예약값 기반 슬롯 방식이 VM 크기가 제각각이면 지나치게 보수적이라, 비율 방식이나 전용 예비 호스트를 고를 수 있다.[23]",
+          "**저장** — Nutanix 는 저장장치를 클러스터 전체의 한 풀로 묶고, 어느 노드든 서비스의 주인을 넘겨받을 수 있게 해 단일 실패 지점을 없앤다.[24]",
+          "**네트워크** — 관리망·VM 망·저장망·이동(vMotion)망을 나누고 이중화. {추론}",
+          "**운영** — 펌웨어·하이퍼바이저 업그레이드를 VM 을 옮겨 가며 무중단으로. {추론}"
+        ]
+      },
+      "how_far": "최소선은 **클러스터 하나를 설계 문서부터 써서 세우고, 호스트 장애·업그레이드를 겪어 본 경험**입니다. 둘 중 하나만 깊어도 됩니다('등'). {추론}",
+      "refs": [
+        2,
+        23,
+        24
+      ],
+      "study": [
+        "vsphere-ha",
+        "nutanix-aos"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "서버OS 표준화 및 보안 정책 적용 경험",
+      "short": "모든 서버를 같은 OS 판·같은 보안 설정으로 맞추는 '기준 이미지'를 만들고 지키는 경험.",
+      "why": "취약점 분석·평가에서 지적받는 것은 대개 서버마다 설정이 달라서 생깁니다. {추론} 국내에서는 KISA 의 주요정보통신기반시설 기술적 취약점 분석·평가 상세가이드가 서버 점검 항목(계정·파일·서비스·패치·로그)을 정하고[16][17], 국제적으로는 CIS Benchmarks 가 OS 마다 Level 1·Level 2 기준을 냅니다.[18] 예고된 개정안은 대형 금융사의 이 점검을 연 2회로 늘립니다.[11]",
+      "actually": {
+        "items": [
+          "**기준 이미지(골든 이미지)** — OS 판·패키지·커널 설정·보안 설정을 정해 이미지로 굳히고 새 서버는 그것으로만 만든다. {추론}",
+          "**점검 항목의 예** — root 원격 접속 제한(U-01), 비밀번호 복잡도, 불필요한 서비스 끄기, 로그 설정.[17]",
+          "**자동 적용** — Ansible 로 기준을 밀어 넣고, 정기적으로 다시 돌려 어긋난 서버를 되돌린다.[15] {추론}",
+          "**예외 관리** — 서비스 때문에 지킬 수 없는 항목은 이유·기간·승인자를 남긴다. {추론}"
+        ]
+      },
+      "how_far": "최소선은 **기준 문서를 직접 만들거나 고쳐 수십 대에 적용하고, 점검 결과의 '취약'을 0 으로 만들어 본 경험**입니다. {추론}",
+      "refs": [
+        11,
+        15,
+        16,
+        17,
+        18
+      ],
+      "study": [
+        "kisa-guide",
+        "cis-bench",
+        "ansible-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "H/W 벤치마크 및 POC, 성능 관리 경험",
+      "short": "새 서버·스토리지를 사기 전에 직접 돌려 재 보고(벤치마크), 작게 시험 도입(POC)해 고르는 경험.",
+      "why": "온프레미스를 같이 굴리는 팀은 장비를 직접 사서 씁니다.[2] 같은 팀 관리자 공고는 연간 인프라 예산과 외주 업체 관리도 업무로 적었습니다.[2] 잘못 고른 장비는 몇 년을 갑니다. {추론}",
+      "actually": {
+        "items": [
+          "**능동 벤치마크** — 벤치마크를 돌려 놓고 떠나지 말고, 도는 동안 vmstat·iostat·perf 같은 도구로 '정말 재려던 것을 재고 있나'를 확인한다. 이웃 부하나 자원 제한 때문에 숫자가 틀어지는 경우를 잡는다.[19]",
+          "**여러 번 재기** — 평균만이 아니라 흔들림(표준편차)을 같이 본다. 흔들림이 크면 그 평균은 믿기 어렵다. {추론}",
+          "**실제 업무 모양으로** — 결제 DB 라면 작은 무작위 쓰기, 백업이라면 큰 순차 쓰기처럼 실제 부하를 닮게 잰다. {추론}",
+          "**POC 기록** — 기준·조건·결과·결론을 문서로 남겨 구매 결정의 근거로. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "평균이 높다고 더 좋은 장비가 아니다 (가상 측정값, 직접 돌린 출력)",
+          "body": "같은 시험을 다섯 번 돌린 두 스토리지입니다. B 가 평균은 높지만 흔들림이 커서, 결제처럼 일정한 응답이 중요한 곳에는 A 가 나을 수 있습니다. {추론}",
+          "lang": "python",
+          "code": "import statistics as st\nruns = {\"A\": [41200, 40800, 41500, 40950, 41100], \"B\": [45300, 39800, 47100, 38900, 46200]}\nfor name, r in runs.items():\n    m = st.mean(r); cv = st.stdev(r) / m\n    print(f\"{name}: 평균 {m:,.0f} IOPS, 흔들림(CV) {cv:.1%}\")\n# A: 평균 41,110 IOPS, 흔들림(CV) 0.6%\n# B: 평균 43,460 IOPS, 흔들림(CV) 8.8%"
+        }
+      ],
+      "how_far": "최소선은 **장비 후보 둘 이상을 같은 조건으로 재고, 그 결과로 구매·구성을 정한 문서**를 보여 줄 수 있는 것입니다. {추론}",
+      "refs": [
+        2,
+        19
+      ],
+      "study": [
+        "active-bench",
+        "sysperf"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "인프라 모니터링 구축/운영 경험(Zabbix, ELK, Grafana)",
+      "short": "서버 지표는 Zabbix, 로그는 ELK, 화면은 Grafana — 이 셋으로 '이상하면 알려 주는' 체계를 세우고 굴린 경험.",
+      "why": "공고가 도구 이름을 직접 적었습니다.[1] 같은 쿠팡페이의 플랫폼 팀 공고는 Prometheus·Loki·Grafana 를 적어[27], 서비스 쪽과 서버 쪽 도구가 다를 수 있습니다. {추론}",
+      "actually": {
+        "items": [
+          "**Zabbix 트리거** — 수집한 값에 조건을 건다. 마지막 값(last), 기간 평균(avg), 값이 안 들어옴(nodata)이 자주 쓰는 함수다.[21]",
+          "**순간값 대신 평균** — CPU 가 한 번 튀었다고 깨우지 않으려면 5분 평균 같은 조건을 쓴다. 대신 알아채는 시간이 늦다. {추론}",
+          "**nodata** — 에이전트가 죽어 값이 안 오면 '정상'으로 보이는 함정을 막는다.[21]",
+          "**ELK** — Logstash 가 로그를 모아 다듬고 Elasticsearch 에 넣고, Kibana 나 Grafana 로 찾는다.[29]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "순간값 조건과 5분 평균 조건 (가상 CPU 값 30초 간격, 직접 돌린 출력)",
+          "body": "'last > 90' 은 네 번째 값에서 바로 울리고, 'avg(5m) > 85' 는 열 개 평균이 87.9 가 된 뒤에 울립니다. 문턱·기간은 팀이 정합니다. {추론}",
+          "lang": "python",
+          "code": "import statistics as st\ncpu = [62, 71, 88, 93, 95, 97, 96, 94, 91, 92]\navg5m = st.mean(cpu)\nprint(f\"avg(5m)={avg5m:.1f} last={cpu[-1]} -> {'PROBLEM' if avg5m > 85 else 'OK'}\")\nprint(f\"단순 last>90 이었다면 처음 넘은 지점: {next(i + 1 for i, v in enumerate(cpu) if v > 90)}번째 값\")\n# avg(5m)=87.9 last=92 -> PROBLEM\n# 단순 last>90 이었다면 처음 넘은 지점: 4번째 값"
+        }
+      ],
+      "how_far": "최소선은 **수집 대상·알림 조건·대시보드를 직접 설계하고, 그 알림으로 장애를 받아 처리해 본 경험**입니다. 세 도구 모두가 아니어도 같은 역할의 도구 경험이면 설명할 수 있습니다. {추론}",
+      "refs": [
+        1,
+        21,
+        27,
+        29
+      ],
+      "study": [
+        "zabbix-docs",
+        "logstash-docs",
+        "use-method"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Linux, Windows Server OS 운영 경력",
+      "short": "업무 셋째 줄(서버 운영)을 바로 맡을 수 있게 두 OS 를 실제로 운영해 본 경력.",
+      "why": "같은 팀 관리자 공고도 윈도우와 여러 리눅스 배포판을 요구했습니다.[2]",
+      "level": {
+        "basic": "리눅스 — 패키지·서비스(systemd)·권한·로그 / 윈도우 — 서비스·이벤트 뷰어·업데이트",
+        "work": "리눅스 — 커널 변수·파일시스템·LVM·네트워크 설정 / 윈도우 — 그룹 정책·액티브 디렉터리 연동·PowerShell",
+        "team": "두 OS 의 보안 기준을 같은 도구(Ansible)로 맞추고 점검 결과를 한 표로"
+      },
+      "how_far": "둘 다 '운영 경력'이라 적혀 있어, 한쪽만 있으면 다른 쪽을 기본 관리는 할 수 있다고 보여 줄 거리가 있어야 합니다. {추론}",
+      "refs": [
+        2
+      ],
+      "study": [
+        "sysperf",
+        "kisa-guide"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "DNS, Route53 운영 경력",
+      "short": "모든 서비스 주소가 DNS 에 걸려 있고, 재해 때 사이트를 바꾸는 손잡이도 DNS 라서.",
+      "why": "같은 팀 관리자 공고는 CDN·도메인 검토를 업무로 적었습니다.[2] AWS 는 Route 53 의 상태 검사와 장애 조치 레코드로 주 사이트가 죽으면 예비 사이트로 이름을 돌리는 방법(액티브-패시브)을 공식 문서로 설명합니다.[22]",
+      "actually": {
+        "items": [
+          "**레코드 운영** — A·CNAME·별칭 레코드, 사내 이름과 바깥 이름 나누기, 바꿀 때의 TTL(캐시 시간). {추론}",
+          "**장애 조치** — 상태 검사가 주 자원을 '비정상'으로 보면 예비 레코드로 답한다. 장애 조치 정책은 액티브-패시브, 그 밖의 정책은 액티브-액티브에 쓴다.[22]",
+          "**걸리는 시간** — 검사 간격 × 실패 횟수만큼 알아채는 데 걸리고, 그 뒤 사용자 쪽 캐시(TTL)가 끝나야 넘어간다. TTL 을 미리 짧게 두어야 하는 이유다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "DNS 장애 조치에 걸리는 최악 시간 (단순 계산, 직접 돌린 출력)",
+          "body": "알아채는 시간 + TTL 로 어림한 값입니다. 검사 간격·실패 횟수는 설정값이고, 실제로는 리졸버가 TTL 을 안 지키는 경우도 있습니다. {추론}",
+          "lang": "python",
+          "code": "for interval, threshold, ttl in [(30, 3, 300), (30, 3, 60), (10, 3, 60)]:\n    detect = interval * threshold\n    print(f\"간격 {interval}s x 실패 {threshold}회 + TTL {ttl}s -> 최악 약 {detect + ttl}s\")\n# 간격 30s x 실패 3회 + TTL 300s -> 최악 약 390s\n# 간격 30s x 실패 3회 + TTL 60s -> 최악 약 150s\n# 간격 10s x 실패 3회 + TTL 60s -> 최악 약 90s"
+        }
+      ],
+      "how_far": "최소선은 **운영 도메인을 맡아 레코드를 바꾸고, 장애 조치 구성을 만들어 실제로 넘겨 본 경험**입니다. {추론}",
+      "refs": [
+        2,
+        22
+      ],
+      "study": [
+        "r53-docs",
+        "book-http"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "금융권 인프라 운영 및 IT감사 대응 경험",
+      "short": "금감원 검사·인증 심사에서 무엇을 묻고 어떤 증거를 내는지 이미 아는 사람은 바로 일할 수 있어서.",
+      "why": "같은 팀 관리자 공고는 우대로 국내외 금융 규제 준수와 감사 지원(FSS·ISMS-P·PCI-DSS)을 적었습니다.[2] 금감원의 금융권 IT 검사 인력은 2026년 10월 보도 기준 50명(현장 21명)이고 검사 간격이 2~3년, 길면 5년 넘게 벌어진다는 지적이 있었습니다[37] — 검사가 드물수록 평소 증거를 쌓아 두는 회사 쪽 체계가 중요합니다. {추론}",
+      "actually": {
+        "items": [
+          "**자주 받는 요청** — 서버·계정 목록, 관리자 권한 부여·회수 기록, 패치 이력, 백업·복원 시험, DR 훈련 결과, 변경 승인 기록. {추론}[10]",
+          "**취약점 점검 결과 조치** — 점검에서 나온 '취약'을 기한 안에 고치고 고친 증거를 남긴다.[11][16]",
+          "**지적 사항 관리** — 지적 하나마다 원인·조치·완료일을 남겨 다음 감사 때 보인다. {추론}"
+        ]
+      },
+      "how_far": "금융권 경력이 없다면 **ISMS 같은 다른 인증 심사의 기술 항목을 맡아 본 경험**으로 대신 설명할 수 있습니다. {추론}",
+      "refs": [
+        2,
+        10,
+        11,
+        16,
+        37
+      ],
+      "study": [
+        "efsr",
+        "kisa-guide",
+        "fsc-dr"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "다양한 오픈소스 기반 서비스(Apache, MySQL, Tomcat, Logstash 등) 구축 및 운영 경험",
+      "short": "웹서버(Apache)·자바 앱 서버(Tomcat)·DB(MySQL)·로그 수집(Logstash)을 직접 깔고 튜닝·장애 처리해 본 경험.",
+      "why": "상용 제품 대신 오픈소스를 쓰면 문제를 업체가 아니라 운영자가 풉니다. 서버 엔지니어가 그 위의 미들웨어까지 알면 장애 때 경계에서 헤매지 않습니다. {추론}",
+      "actually": {
+        "items": [
+          "**Apache · Tomcat** — 앞단 웹서버가 요청을 받아 뒤의 자바 앱 서버로 넘기는 구성. 연결 수·스레드 수·시간 제한을 맞춘다. {추론}",
+          "**MySQL** — 복제 구성, 백업과 복원, 느린 쿼리 기록 보기. {추론}",
+          "**Logstash** — 입력 → 필터 → 출력 단계로 로그를 받아 다듬어 보낸다(자격요건의 ELK).[29]"
+        ]
+      },
+      "how_far": "깊이보다 **설치 → 설정 → 장애 한 번 → 고친 기록**이 있는 서비스가 몇 개인지가 우대 포인트로 보입니다. {추론}",
+      "refs": [
+        29
+      ],
+      "study": [
+        "logstash-docs",
+        "book-docker"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "VM, 컨테이너, 오케스트레이션(K8S, EKS) 운영 경험",
+      "short": "가상 서버(VM)에서 컨테이너·쿠버네티스(EKS)로 옮겨 가는 서비스들의 바닥도 맡을 수 있어서.",
+      "why": "쿠팡 ML 플랫폼은 학습 작업을 컨테이너로 쿠버네티스에 올리고 추론도 쿠버네티스 위에서 돌립니다.[5] 쿠팡페이 플랫폼 팀 공고는 Docker·Kubernetes·AWS 개발 경험을 자격요건으로 적었습니다.[27] EKS 는 AWS 가 쿠버네티스 관리 부분(컨트롤 플레인)을 맡아 주는 서비스입니다.[28]",
+      "actually": {
+        "items": [
+          "**VM 과 컨테이너 차이** — VM 은 OS 를 통째로 가상화하고, 컨테이너는 같은 커널 위에서 프로세스를 격리한다. {추론}",
+          "**노드 관리** — EKS 에서도 노드(워커 서버)의 OS·패치·용량은 운영자 몫이 남는다. 서버 엔지니어가 맡기 좋은 칸이다. {추론}[28]",
+          "**경계 나누기** — 서비스 배포는 플랫폼 팀, 노드·네트워크·저장소는 인프라 팀처럼 나눌 수 있다. 쿠팡페이가 어떻게 나눴는지는 공개되지 않았다. {추론}"
+        ]
+      },
+      "how_far": "우대라 설치 경험까지는 아니어도 됩니다. **쿠버네티스 노드를 패치·교체하거나, VM 위 서비스를 컨테이너로 옮겨 본 경험**이면 이야기가 됩니다. {추론}",
+      "refs": [
+        5,
+        27,
+        28
+      ],
+      "study": [
+        "book-docker",
+        "book-k8s",
+        "eks-docs"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "새로운 기술에 대한 거부감이 없고 도전적이신 분",
+      "short": "VM 중심 운영에서 코드(IaC)·클라우드·컨테이너 쪽으로 일하는 방식이 바뀌는 중이라서.",
+      "why": "이 공고 하나에 VMware·Nutanix 같은 사내 가상화와 Terraform·EKS 같은 클라우드 도구가 같이 적혀 있습니다.[1] 손으로 하던 운영을 코드로 옮기는 것이 업무 여섯째 줄입니다.[1]",
+      "how_far": "면접에서는 '익숙한 방식을 버리고 새 도구로 바꿔 본 일 — 왜 바꿨고 무엇이 나아졌나'를 하나 말할 수 있으면 됩니다. {추론}",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "서버OS 레벨의 다양한 트러블슈팅 경험자",
+      "short": "애플리케이션 탓인지 서버 탓인지 모를 때, 커널·디스크·네트워크 수준까지 내려가 원인을 찾아 본 경험.",
+      "why": "결제 서비스의 '가끔 느림'은 서버 수준(디스크 대기·메모리 부족·연결 고갈)에서 나오는 경우가 있습니다. {추론} 브렌던 그레그의 리눅스 USE 점검표는 자원마다 볼 지표와 명령을 정리해 둡니다.[20]",
+      "actually": {
+        "items": [
+          "**메모리** — 메모리가 모자라 커널이 프로세스를 강제로 끝낸 기록(OOM)을 찾는다. {추론}",
+          "**디스크** — 사용률은 낮은데 대기가 길면 포화, 오류 로그가 있으면 장치 문제.[20]",
+          "**네트워크** — 재전송·연결 대기열 넘침·파일 디스크립터 고갈. {추론}",
+          "**벤치마크와 같은 원칙** — 도구 출력이 정말 그 원인을 가리키는지 다른 도구로 다시 확인.[19]"
+        ]
+      },
+      "how_far": "면접용으로 **'증상 → 의심 → 확인한 명령과 숫자 → 원인 → 조치'가 분명한 사례 둘**이면 충분해 보입니다. {추론}",
+      "refs": [
+        19,
+        20
+      ],
+      "study": [
+        "use-method",
+        "sysperf"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "네트워크 지식 보유자 (OSI 네트워크 계층, TCP/IP)",
+      "short": "하이브리드 환경에서는 AWS·사내망 사이 연결 문제가 잦아, 어느 계층에서 막혔는지 가를 줄 알아야 해서.",
+      "why": "같은 팀 관리자 공고는 시스템과 함께 **네트워크** 관리를 업무로 적었습니다.[2] 서버·DNS·부하분산기 문제처럼 보이는 것이 TCP 연결 단계에서 막힌 경우가 많습니다. {추론}",
+      "actually": {
+        "items": [
+          "**계층으로 가르기** — 선·링크(2) → IP·라우팅(3) → TCP·포트(4) → TLS·HTTP(7) 순으로 어디까지 되는지 본다. {추론}",
+          "**TCP 연결** — 세 번 주고받아 연결을 맺고, 잃은 패킷은 다시 보낸다(RFC 9293).[30]",
+          "**하이브리드 연결** — VPN·전용선, 겹치는 IP 대역, 방화벽·보안 그룹 규칙이 흔한 원인. {추론}"
+        ]
+      },
+      "how_far": "네트워크 엔지니어 수준이 아니라 **패킷 캡처(tcpdump)나 연결 상태(ss)를 보고 '네트워크 팀에 무엇을 물을지' 정할 수 있는 수준**이면 우대로 충분해 보입니다. {추론}",
+      "refs": [
+        2,
+        30
+      ],
+      "study": [
+        "net-intro",
+        "book-http"
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "서버·가상화·백업을 직접 만지는 운영이 체질인 사람",
+      "손으로 하던 일을 Terraform·Ansible 코드로 바꾸는 데서 재미를 느끼는 사람[2]",
+      "감사 지적을 '숫자 0'으로 만드는 꼼꼼한 사람[11][16]",
+      "AWS 와 사내 데이터센터를 둘 다 다뤄 보고 싶은 사람[2][5]"
+    ],
+    "hard": [
+      "결제 서비스라 장애 당번 부담이 있을 수 있다 — 쿠팡페이는 팀에 따라 교대·휴일·야간 근무가 있을 수 있다고 적었다[4]",
+      "금융 규정 때문에 변경마다 승인·기록 절차가 붙는다[10]",
+      "취약점 점검 주기가 연 2회로 늘어나는 개정이 예고돼 있다(대형사 기준, 아직 안)[11]",
+      "2025년 쿠팡 개인정보 유출 뒤라 보안·감사 요구가 더 무거울 수 있다 {추론}[12]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "vSphere 클러스터에서 호스트 한 대가 죽었는데 VM 일부가 안 켜졌습니다. 무엇을 확인하겠어요?",
+      "a": "HA 예약(admission control)과 여유 자원.[23]"
+    },
+    {
+      "q": "Terraform 상태 파일을 여러 명이 같이 쓰다 꼬였습니다. 어떻게 막겠어요?",
+      "a": "원격 상태·잠금(use_lockfile)·버킷 버전 관리.[14]"
+    },
+    {
+      "q": "같은 플레이북을 두 번 돌렸더니 두 번째도 'changed' 가 나옵니다. 무엇이 문제인가요?",
+      "a": "멱등성과 shell·command 작업의 한계.[15]"
+    },
+    {
+      "q": "주 사이트가 죽었을 때 DNS 로 예비 사이트로 넘기려면? 몇 분 걸리나요?",
+      "a": "Route 53 장애 조치 레코드 + 검사 간격·TTL.[22]"
+    },
+    {
+      "q": "스토리지 두 제품을 POC 합니다. 무엇을 어떻게 재서 고르겠어요?",
+      "a": "능동 벤치마크와 흔들림까지 보는 비교.[19]"
+    },
+    {
+      "q": "결제 API 가 가끔 느립니다. 서버 쪽에서 무엇부터 보겠어요?",
+      "a": "USE 방법 — 자원마다 사용률·포화·오류.[20]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "Coupang Careers · Senior System Engineer - Fintech Cloud & Infrastructure",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8344977",
+      "kind": "posting",
+      "date": "2026-11-25",
+      "note": "이 공고 — 쿠팡페이 Cloud & Infrastructure 팀, 업무 7·자격 10·우대 6, 전형(서류 → 직무 적합성 → 핵심 역량 인터뷰 → 최종), 근무지 Seoul. 연봉·복리후생 칸 없음"
+    },
+    {
+      "n": 2,
+      "title": "Built In · [Coupang Pay] SDM, Cloud & Infrastructure Team",
+      "url": "https://builtin.com/job/coupang-pay-sdm-cloud-infrastructure-team/6308434",
+      "kind": "posting",
+      "note": "같은 팀 관리자 공고(2025-06-02 내려감, 보관된 본문) — 하이브리드 클라우드(AWS·온프레미스)·시스템·네트워크·IAM, Terraform·Ansible·CloudFormation, 법무·준법·보안·내부감사 협업, 엔지니어 10명 이상, 외주 관리·연간 예산, 10년 이상·IaC 3년, Windows·Linux, 우대 FSS·ISMS-P·PCI-DSS·AWS. 페이지의 자동 생성 처우 요약은 쓰지 않음"
+    },
+    {
+      "n": 3,
+      "title": "Coupang Careers · Senior System Engineer - Fintech IT Innovation",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8344981",
+      "kind": "posting",
+      "note": "같은 날 올라온 쿠팡페이 단말 보안 자리 — Windows·macOS, ISMS-P·PCI-DSS 감사 대응과 증적 관리, 망분리, Active Directory, PowerShell·Bash·Python·API 자동화"
+    },
+    {
+      "n": 4,
+      "title": "Coupang Careers · Coupang Pay 팀 소개",
+      "url": "https://www.coupang.jobs/en/teams/coupang-pay/",
+      "kind": "company",
+      "note": "한국·대만, 쿠페이·와우카드·판매자 BaaS, FAQ(팀에 따라 교대·휴일·야간 근무 가능)"
+    },
+    {
+      "n": 5,
+      "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+      "kind": "company",
+      "date": "2023-09-08",
+      "note": "사내 데이터센터와 AWS 의 하이브리드 계산·저장 클러스터, 쿠버네티스 위 학습·추론 — 쿠팡 ML 플랫폼 팀(쿠팡페이 아님)"
+    },
+    {
+      "n": 6,
+      "title": "바이라인네트워크 · 쿠팡, IT인프라 전체를 AWS 클라우드로 이전했다",
+      "url": "https://byline.network/2017/08/10-6",
+      "kind": "news",
+      "date": "2017-08"
+    },
+    {
+      "n": 7,
+      "title": "AWS 대만 · Coupang Pay 인터뷰(2025 AWS 금융 포럼)",
+      "url": "https://aws.amazon.com/tw/events/taiwan/interviews/coupangpay",
+      "kind": "company",
+      "note": "2024 광군제 평소의 약 20배 트래픽, 재해 복구·데이터 보호"
+    },
+    {
+      "n": 8,
+      "title": "뉴데일리 · 쿠팡, 로켓페이로 간편 결제 출사표",
+      "url": "https://biz.newdaily.co.kr/site/data/html/2026/07/10/2026071000246.html",
+      "kind": "news",
+      "date": "2026-07-10",
+      "note": "연 수십조 원 결제·24시간 감시"
+    },
+    {
+      "n": 9,
+      "title": "금융위원회 · 「전자금융감독규정」 일부개정고시안 금융위원회 의결",
+      "url": "https://www.fsc.go.kr/no010101/83954",
+      "kind": "reference",
+      "date": "2025-02-05",
+      "note": "재해복구센터 대상에 전자금융업자(총거래액 2조원 이상) 추가 — 2026-02-05 적용, 카카오 데이터센터 화재 계기"
+    },
+    {
+      "n": 10,
+      "title": "위키문헌 · 전자금융감독규정 (제2025-4호)",
+      "url": "https://ko.wikisource.org/wiki/전자금융감독규정_(제2025-4호)",
+      "kind": "reference",
+      "date": "2025-02-05",
+      "note": "제11조 국내 설치 · 제13조 최소 권한·원격지 백업·가동 기록 1년 · 제14조의2 클라우드 절차 · 제15조 긴급 패치 · 제23조 업무지속성·이중화·RTO 3시간·연 1회 전환 훈련 · 제27~30조 이중확인·프로그램 통제"
+    },
+    {
+      "n": 11,
+      "title": "대한민국 정책브리핑 · 전자금융감독규정 일부개정안 규정변경예고",
+      "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148975994",
+      "kind": "reference",
+      "date": "2026-11-18",
+      "note": "예고 2026-11-18~30 — 대형사(총자산 2조·종업원 300명 이상) 취약점 분석·평가 연 1회 → 2회, 전자금융기반시설에 이어진 모든 시스템·IT 자산 목록, 당국 수시점검 요청. 2027년 1분기 시행 목표, 일부는 11월부터 행정지도"
+    },
+    {
+      "n": 12,
+      "title": "뉴시스 · 쿠팡, 2021년 이어 2024년에도 ISMS-P 인증…4차례 개인정보 유출사고",
+      "url": "https://www.newsis.com/view/NISX20251201_0003422883",
+      "kind": "news",
+      "date": "2025-12-01",
+      "note": "ISMS-P 2021-03 최초·2024-03 갱신, 범위 '쿠팡 서비스'(로켓배송·쿠팡이츠 등)"
+    },
+    {
+      "n": 13,
+      "title": "헤럴드경제 · 쿠팡, 보안인증 7개나 있었는데…“인증제 실효성 의문”",
+      "url": "https://www.heraldk.com/article/2025120215235650067",
+      "kind": "news",
+      "date": "2025-12-02",
+      "note": "쿠팡 프라이버시센터 공개 인증 — ISMS-P·ISO 27001/27701/27017·CBPR·PCI DSS 등"
+    },
+    {
+      "n": 14,
+      "title": "HashiCorp · Terraform Backend Type: s3",
+      "url": "https://developer.hashicorp.com/terraform/language/backend/s3",
+      "kind": "reference",
+      "note": "use_lockfile(기본 false)로 S3 잠금, DynamoDB 잠금 폐기 예정, 버킷 버전 관리 권장"
+    },
+    {
+      "n": 15,
+      "title": "Ansible 문서 · Validating tasks: check mode and diff mode",
+      "url": "https://docs.ansible.com/projects/ansible/13/playbook_guide/playbooks_checkmode.html",
+      "kind": "reference",
+      "note": "멱등성(원하는 상태면 아무것도 안 함, playbook 안내서)·--check·--diff, 지원 안 하는 모듈은 보고도 변경도 안 함"
+    },
+    {
+      "n": 16,
+      "title": "KISA · 가이드라인(주요정보통신기반시설 기술적 취약점 분석·평가 상세가이드)",
+      "url": "https://www.kisa.or.kr/2060204",
+      "kind": "reference",
+      "note": "KISA 가이드 목록 페이지. 본문 PDF 는 자동 접속으로 열지 못해 항목 구조는 [17] 로 확인"
+    },
+    {
+      "n": 17,
+      "title": "네이버클라우드 가이드 · System Security Checker(OS 점검 항목)",
+      "url": "https://guide.ncloud-docs.com/docs/ssc-ossecuritychecker",
+      "kind": "reference",
+      "note": "국내 기준에 따른 서버 점검 항목 — U-01 root 계정 원격 접속 제한 등. 다른 회사 문서"
+    },
+    {
+      "n": 18,
+      "title": "Ubuntu 문서 · CIS Benchmarks and profiles",
+      "url": "https://documentation.ubuntu.com/security/compliance/usg/cis-benchmarks/",
+      "kind": "reference",
+      "note": "Level 1·Level 2 × 서버·워크스테이션 프로필"
+    },
+    {
+      "n": 19,
+      "title": "Brendan Gregg · Active Benchmarking",
+      "url": "https://www.brendangregg.com/activebenchmarking.html",
+      "kind": "reference",
+      "note": "벤치마크 중 관찰 도구로 측정 대상을 확인, 이웃 부하·자원 제한으로 인한 왜곡"
+    },
+    {
+      "n": 20,
+      "title": "Brendan Gregg · The USE Method",
+      "url": "https://www.brendangregg.com/usemethod.html",
+      "kind": "reference",
+      "note": "자원마다 사용률·포화·오류, 리눅스 점검표"
+    },
+    {
+      "n": 21,
+      "title": "Zabbix 6.4 문서 · Trigger expression",
+      "url": "https://www.zabbix.com/documentation/6.4/en/manual/config/triggers/expression",
+      "kind": "reference",
+      "note": "last·avg·nodata 함수"
+    },
+    {
+      "n": 22,
+      "title": "Amazon Route 53 · Active-active and active-passive failover",
+      "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-types.html",
+      "kind": "reference",
+      "note": "장애 조치 정책 = 액티브-패시브, 상태 검사로 예비 레코드 응답"
+    },
+    {
+      "n": 23,
+      "title": "VMware vSphere 8.0 · vSphere HA admission control",
+      "url": "https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-availability/GUID-53F6938C-96E5-4F67-9A6E-479F5A894571.html",
+      "kind": "reference",
+      "note": "허용 장애 호스트 수, 슬롯·비율·전용 예비 호스트 방식, 끄면 재시작 보장 없음. 세부는 6.5 문서 요약으로 확인"
+    },
+    {
+      "n": 24,
+      "title": "Nutanix · AOS Storage",
+      "url": "https://www.nutanix.com/products/nutanix-cloud-infrastructure/distributed-storage",
+      "kind": "reference",
+      "note": "분산 저장(DSF), 노드마다 CVM, 단일 실패 지점 없음, 장애 때 사본 재생성"
+    },
+    {
+      "n": 25,
+      "title": "AWS 백서 · Disaster recovery options in the cloud",
+      "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+      "kind": "reference",
+      "note": "백업 후 복원·파일럿 라이트·웜 스탠바이·멀티 사이트, 데이터 손상은 백업에 기댐"
+    },
+    {
+      "n": 26,
+      "title": "Google SRE Book · Postmortem Culture",
+      "url": "https://sre.google/sre-book/postmortem-culture/",
+      "kind": "reference"
+    },
+    {
+      "n": 27,
+      "title": "Coupang Careers · [Coupang Pay] Senior Platform Engineer (Fintech Developer Platform)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8222501",
+      "kind": "posting",
+      "note": "같은 회사 플랫폼 팀 — Docker·Kubernetes·AWS, Grafana·Loki·Prometheus"
+    },
+    {
+      "n": 28,
+      "title": "Amazon EKS 사용 설명서 · What is Amazon EKS?",
+      "url": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html",
+      "kind": "reference"
+    },
+    {
+      "n": 29,
+      "title": "Elastic · How Logstash Works",
+      "url": "https://www.elastic.co/guide/en/logstash/current/pipeline.html",
+      "kind": "reference",
+      "note": "입력 → 필터 → 출력 파이프라인"
+    },
+    {
+      "n": 30,
+      "title": "IETF · RFC 9293 Transmission Control Protocol (TCP)",
+      "url": "https://www.rfc-editor.org/rfc/rfc9293",
+      "kind": "reference",
+      "date": "2022-08"
+    },
+    {
+      "n": 31,
+      "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+      "url": "https://jasoseol.com/companies/192",
+      "kind": "reference",
+      "note": "모회사 쿠팡(주) 값 — 쿠팡페이 법인 아님. 앞선 쿠팡페이 풀이들과 같은 값"
+    },
+    {
+      "n": 32,
+      "title": "캐치 · 쿠팡페이 기업 정보",
+      "url": "https://www.catch.co.kr/Comp/CompSummary/E94228",
+      "kind": "reference",
+      "note": "사원 수 278명(2025-12 기준), 초봉·평균 칸 가려짐"
+    },
+    {
+      "n": 33,
+      "title": "원티드 · 쿠팡 Staff Back-end Engineer (Rocket Pay)",
+      "url": "https://www.wanted.co.kr/wd/381767",
+      "kind": "posting",
+      "note": "같은 회사 다른 공고 — 복리후생 칸, 전형 마지막 처우협의"
+    },
+    {
+      "n": 34,
+      "title": "원티드 · [쿠팡페이] 백엔드 개발자 (Fintech Data Platform)",
+      "url": "https://www.wanted.co.kr/wd/392187",
+      "kind": "posting",
+      "note": "근무지 서울 광진구 아차산로 412 이스트폴 타워 A"
+    },
+    {
+      "n": 35,
+      "title": "원티드 · [Coupang Pay] Senior Backend Engineer (계약직)",
+      "url": "https://www.wanted.co.kr/wd/382456",
+      "kind": "posting",
+      "note": "근무지 아차산로 412 이스트폴 타워 A"
+    },
+    {
+      "n": 36,
+      "title": "리멤버 · [쿠팡페이] Staff Back-end Engineer (Fintech Platform)",
+      "url": "https://career.rememberapp.co.kr/job/posting/308250",
+      "kind": "posting",
+      "note": "같은 회사 다른 팀 — 10년 이상, 연봉 1억 5,000만~2억 6,000만원 표기"
+    },
+    {
+      "n": 37,
+      "title": "비즈워치 · 금융권 IT 검사 인력과 검사 주기",
+      "url": "https://news.bizwatch.co.kr/article/finance/2026/10/14/0030",
+      "kind": "news",
+      "date": "2026-10-14",
+      "note": "금감원 금융권 IT 관리·감독·검사 인력 50명(현장 21명), 검사 간격 2~3년·길면 5년 이상"
+    },
+    {
+      "n": 38,
+      "title": "한국경제 · 금감원 전자금융감독국·전자금융검사국 신설",
+      "url": "https://www.hankyung.com/article/202504239258i",
+      "kind": "news",
+      "date": "2025-04",
+      "note": "IT 기업 전자금융 정기검사 본격화. 검색 요약으로 확인"
+    }
+  ],
+  "caveat": "쿠팡페이 Cloud & Infrastructure 팀이 직접 쓴 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 팀 근거는 이 공고와 2025년에 내려간 같은 팀 관리자 공고(Built In 보관본), 같은 날 올라온 쿠팡페이 다른 System Engineer 공고에서 왔고, 하이브리드 구성은 쿠팡 ML 플랫폼 팀 글(쿠팡페이가 아님)로 보였습니다. 쿠팡페이가 VMware·Nutanix 중 무엇을, 어떤 백업 제품을 쓰는지는 공개되지 않아 공식 문서로 '보통 이런 것'을 적었습니다. 취약점 점검 연 2회는 2026년 11월 예고된 개정안이라 확정 전입니다. KISA 상세가이드 원문은 자동 접속으로 열지 못해 항목은 다른 회사(네이버클라우드) 문서로 확인했습니다.",
+  "resources": [
+    {
+      "id": "tf-docs",
+      "title": "Terraform Backend Type: s3",
+      "by": "HashiCorp 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.hashicorp.com/terraform/language/backend/s3",
+      "why": "여럿이 같은 인프라 코드를 쓸 때의 상태 저장·잠금·버전 관리. IaC 업무·자격요건 줄의 첫 함정."
+    },
+    {
+      "id": "tf-up",
+      "title": "Terraform: Up & Running (3판)",
+      "by": "Yevgeniy Brikman · O'Reilly · 2022",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.oreilly.com/library/view/terraform-up-and/9781098116736/",
+      "why": "상태 관리·모듈·팀 단위 운영까지. 업무 둘째 줄(표준 구성)을 모듈로 만드는 법."
+    },
+    {
+      "id": "ansible-docs",
+      "title": "Ansible · check mode and diff mode",
+      "by": "Ansible 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.ansible.com/projects/ansible/13/playbook_guide/playbooks_checkmode.html",
+      "why": "운영 서버에 돌리기 전에 무엇이 바뀔지 보는 법. 보안 기준 적용·OS 표준화 줄."
+    },
+    {
+      "id": "ansible-ko",
+      "title": "우아하게 앤서블",
+      "by": "조훈 · 김정민 · 비제이퍼블릭 · 2019",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "입문",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9A%B0%EC%95%84%ED%95%98%EA%B2%8C%20%EC%95%A4%EC%84%9C%EB%B8%94",
+      "why": "현직 강사가 쓴 한국어 앤서블 입문. 리눅스·윈도우 서버 관리를 플레이북으로 옮기는 첫걸음."
+    },
+    {
+      "id": "vsphere-ha",
+      "title": "vSphere HA admission control",
+      "by": "VMware(Broadcom) 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-availability/GUID-53F6938C-96E5-4F67-9A6E-479F5A894571.html",
+      "why": "호스트 장애에 대비해 자원을 얼마나, 어떤 방식으로 비워 두나. 프라이빗 클라우드 설계 줄."
+    },
+    {
+      "id": "nutanix-aos",
+      "title": "Nutanix AOS Storage",
+      "by": "Nutanix",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.nutanix.com/products/nutanix-cloud-infrastructure/distributed-storage",
+      "why": "서버마다 저장 관리 VM 이 도는 하이퍼컨버지드 구조의 개요. VMware 와 무엇이 다른지 잡기."
+    },
+    {
+      "id": "aws-wa-rel",
+      "title": "AWS Well-Architected · Reliability Pillar",
+      "by": "AWS 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+      "why": "가용 영역 이중화·장애 격리 — 클라우드 표준 구성(업무 둘째 줄)의 공통 언어."
+    },
+    {
+      "id": "aws-dr",
+      "title": "Disaster Recovery of Workloads on AWS",
+      "by": "AWS 백서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+      "why": "DR 네 방식과 백업의 자리. 신뢰성·연속성 줄과 백업 줄."
+    },
+    {
+      "id": "r53-docs",
+      "title": "Route 53 · Active-active and active-passive failover",
+      "by": "AWS 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-types.html",
+      "why": "상태 검사로 DNS 를 예비 사이트로 돌리는 구성. DNS·Route53 자격요건."
+    },
+    {
+      "id": "use-method",
+      "title": "The USE Method (리눅스 점검표 포함)",
+      "by": "Brendan Gregg",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.brendangregg.com/usemethod.html",
+      "why": "'서버가 느리다'를 자원 × 세 질문으로 쪼개는 순서. 성능 모니터링·트러블슈팅 줄."
+    },
+    {
+      "id": "active-bench",
+      "title": "Active Benchmarking",
+      "by": "Brendan Gregg",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.brendangregg.com/activebenchmarking.html",
+      "why": "벤치마크 숫자를 믿어도 되는지 확인하는 법. H/W 벤치마크·POC 줄."
+    },
+    {
+      "id": "sysperf",
+      "title": "Systems Performance (2판)",
+      "by": "Brendan Gregg · Pearson(Addison-Wesley) · 2020",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://www.pearson.com/en-us/subject-catalog/p/systems-performance/P200000000297/9780136821656",
+      "why": "리눅스 CPU·메모리·디스크·네트워크 성능 분석의 교과서. 필요한 장(방법론·디스크·네트워크)만 골라 읽는다."
+    },
+    {
+      "id": "zabbix-docs",
+      "title": "Zabbix · Trigger expression",
+      "by": "Zabbix 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.zabbix.com/documentation/6.4/en/manual/config/triggers/expression",
+      "why": "last·avg·nodata 로 알림 조건을 쓰는 법. 모니터링 자격요건."
+    },
+    {
+      "id": "logstash-docs",
+      "title": "How Logstash Works",
+      "by": "Elastic 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.elastic.co/guide/en/logstash/current/pipeline.html",
+      "why": "입력·필터·출력으로 로그를 다듬는 구조. ELK 자격요건과 오픈소스 우대 줄."
+    },
+    {
+      "id": "kisa-guide",
+      "title": "주요정보통신기반시설 기술적 취약점 분석·평가 상세가이드",
+      "by": "한국인터넷진흥원(KISA)",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.kisa.or.kr/2060204",
+      "why": "국내 서버 점검 항목(U-01~)의 원문. OS 표준화·보안 정책 줄과 IT 감사 우대 줄. 목록에서 최신판을 받는다."
+    },
+    {
+      "id": "cis-bench",
+      "title": "CIS Benchmarks and profiles",
+      "by": "Ubuntu 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://documentation.ubuntu.com/security/compliance/usg/cis-benchmarks/",
+      "why": "국제 OS 보안 기준의 Level 1·2 구분과 자동 점검 도구. 국내 가이드와 견줘 보기."
+    },
+    {
+      "id": "efsr",
+      "title": "전자금융감독규정 (제2025-4호)",
+      "by": "금융위원회 고시 · 위키문헌 사본",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://ko.wikisource.org/wiki/전자금융감독규정_(제2025-4호)",
+      "why": "제11·13·15·23조부터 — 백업·패치·권한·재해복구의 원문. 최신본은 국가법령정보센터에서 확인."
+    },
+    {
+      "id": "fsc-dr",
+      "title": "「전자금융감독규정」 일부개정고시안 금융위원회 의결",
+      "by": "금융위원회 보도자료 · 2025",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.fsc.go.kr/no010101/83954",
+      "why": "재해복구센터 대상 확대가 왜·언제부터인지 한 장으로."
+    },
+    {
+      "id": "eks-docs",
+      "title": "What is Amazon EKS?",
+      "by": "AWS 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html",
+      "why": "AWS 가 맡는 칸과 운영자가 맡는 칸(노드). 컨테이너 우대 줄."
+    },
+    {
+      "id": "sre-ko",
+      "title": "사이트 신뢰성 엔지니어링",
+      "by": "베이어 외 · 장현희 옮김 · 제이펍 · 2018",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=129407308",
+      "why": "장애 대응·사후 분석·당번 운영. 장애 대응과 신뢰성 개선 줄."
+    },
+    {
+      "id": "net-intro",
+      "title": "IT 엔지니어를 위한 네트워크 입문",
+      "by": "고재성 외",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "입문",
+      "url": "https://ridibooks.com/books/754029945",
+      "why": "서버 엔지니어 눈높이의 OSI 계층·TCP/IP·스위치·부하분산기. 네트워크 우대 줄."
+    },
+    {
+      "id": "book-docker",
+      "title": "개발자를 위한 도커 (우리 사이트 책)",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/wiki/docker",
+      "why": "VM 과 컨테이너의 차이를 실제 명령과 출력으로. 컨테이너 우대 줄."
+    },
+    {
+      "id": "book-k8s",
+      "title": "쿠버네티스 입문 (우리 사이트 책)",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/wiki/kubernetes",
+      "why": "kubectl 출력 읽기와 노드 문제. K8S·EKS 우대 줄."
+    },
+    {
+      "id": "book-http",
+      "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/wiki/http-basic",
+      "why": "DNS·TCP·HTTP 가 실제로 어떻게 오가는지. DNS 자격요건과 네트워크 우대 줄."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "서버와 성능의 바닥",
+      "time": "2~3주",
+      "goal": "리눅스 서버에서 느려진 원인을 자원 하나로 좁히고, 윈도우 서버의 기본 관리를 할 수 있다.",
+      "resources": [
+        "use-method",
+        "sysperf",
+        "net-intro",
+        "book-http"
+      ],
+      "task": "가상 머신 두 대(리눅스·윈도우)를 띄우고, 리눅스에 일부러 CPU·디스크·메모리 부하를 차례로 걸어 USE 점검표대로 원인을 찾은 기록표를 만든다. 두 서버 사이 연결을 tcpdump 로 떠서 TCP 연결 맺기를 확인한다."
+    },
+    {
+      "title": "Ansible 로 서버 표준화",
+      "time": "2주",
+      "goal": "보안 기준(국내 가이드·CIS)을 플레이북으로 적용하고, 두 번째 실행에서 바뀌는 것이 없게 만들 수 있다.",
+      "resources": [
+        "ansible-ko",
+        "ansible-docs",
+        "kisa-guide",
+        "cis-bench"
+      ],
+      "task": "리눅스 서버 세 대에 root 원격 접속 제한·비밀번호 정책·불필요 서비스 끄기 등 다섯 항목을 적용하는 플레이북을 쓴다. --check --diff 로 먼저 보고, 적용 뒤 점검 스크립트로 '취약 0'을 표로 만든다."
+    },
+    {
+      "title": "Terraform 으로 AWS 표준 구성",
+      "time": "2~3주",
+      "goal": "두 가용 영역에 걸친 표준 구성을 모듈로 만들고, 상태를 잠금이 걸린 원격 저장소에 둘 수 있다.",
+      "resources": [
+        "tf-docs",
+        "tf-up",
+        "aws-wa-rel"
+      ],
+      "task": "VPC·서브넷 두 개·서버 묶음·부하분산기를 모듈 하나로 만들고 변수만 바꿔 두 서비스를 올린다. 상태는 S3(use_lockfile·버전 관리)에 두고, 콘솔에서 손으로 바꾼 뒤 plan 이 어긋남을 잡는지 확인한다."
+    },
+    {
+      "title": "모니터링·DNS 장애 조치·백업",
+      "time": "2주",
+      "goal": "지표 알림과 로그 수집을 세우고, 주 사이트가 죽었을 때 DNS 로 넘기고 백업에서 되살리는 시험을 할 수 있다.",
+      "resources": [
+        "zabbix-docs",
+        "logstash-docs",
+        "r53-docs",
+        "aws-dr"
+      ],
+      "task": "3단계 서버에 Zabbix(또는 같은 역할의 도구) avg·nodata 트리거와 Logstash 로그 수집을 붙인다. 두 번째 리전에 작은 예비 구성을 두고 Route 53 장애 조치 레코드로 넘기며 걸린 시간을 재고, DB 백업을 새 서버에 복원한 시각 기록을 남긴다."
+    },
+    {
+      "title": "가상화 클러스터와 금융 규정 (계속)",
+      "time": "계속",
+      "goal": "사내 가상화 클러스터의 장애 대비 여유를 설계하고, 인프라 결정이 어느 규정 조문에 걸리는지 짚을 수 있다.",
+      "resources": [
+        "vsphere-ha",
+        "nutanix-aos",
+        "efsr",
+        "fsc-dr",
+        "active-bench"
+      ],
+      "task": "호스트 4대 클러스터의 HA 예약 방식 셋을 비교하는 설계 문서 한 장을 쓰고, 스토리지 후보 둘을 fio 로 다섯 번씩 재 평균·흔들림 표를 만든다. 문서 끝에 제13·15·23조와의 대응표를 붙인다."
+    }
+  ],
+  "pay": {
+    "summary": "이 공고는 연봉을 적지 않았다. 쿠팡페이 자체 공개 숫자는 없고, 모회사 쿠팡(주) 집계(초봉 약 3,531만·평균 약 5,175만원)는 물류 인력이 섞여 이 자리와 거리가 멀다",
+    "rows": [
+      {
+        "label": "같은 회사 Staff 공고 표기 연봉 (10년 이상, 다른 팀)",
+        "value": "1억 5,000만 ~ 2억 6,000만원",
+        "amount": 15000,
+        "basis": "공고 · 리멤버 표기",
+        "note": "쿠팡페이 Staff Back-end Engineer (Fintech Platform) 공고에 적힌 범위다. 다른 팀·10년 이상 자리라 이 자리(경력 5년 이상) 금액으로 읽으면 안 된다 [36] {추론}"
+      },
+      {
+        "label": "쿠팡(주) 신입 초봉 (모회사)",
+        "value": "약 3,531만원",
+        "amount": 3531,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값이다. 쿠팡페이 법인이 아니고 직군 구분도 없다 [31]"
+      },
+      {
+        "label": "쿠팡(주) 직원 평균 (모회사)",
+        "value": "약 5,175만원",
+        "amount": 5175,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 엔지니어 연봉으로 읽으면 안 된다 [31]"
+      }
+    ],
+    "how": "쿠팡페이는 비상장 자회사라 사업보고서 평균 급여가 없고, 집계 사이트에서도 초봉·평균이 가려져 있다(사원 278명, 2025-12) [32]. 이 공고 전형에는 처우협의 단계가 적혀 있지 않지만 같은 회사 다른 공고는 마지막 단계를 처우협의로 적었다 [1][33]. 모회사 평균은 경력직과 현장 인력이 섞인 회사 전체 값이라 초봉도 이 자리 금액도 아니다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "교육",
+        "detail": "외국어·업무 스킬 교육 무제한 지원, 사내 기술 공유 스터디"
+      },
+      {
+        "name": "보험",
+        "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"
+      },
+      {
+        "name": "식사",
+        "detail": "무료 조식·석식"
+      },
+      {
+        "name": "휴게 공간",
+        "detail": "한강 전망 카페테리아, 음료 300원 자판기"
+      },
+      {
+        "name": "휴가",
+        "detail": "사유 없는 연차 사용"
+      },
+      {
+        "name": "쇼핑 캐시백",
+        "detail": "쿠팡 구매 금액의 5% (연 최대 400만원)"
+      },
+      {
+        "name": "동호회",
+        "detail": "사내 동호회와 동호회비 지원"
+      },
+      {
+        "name": "휴양 시설",
+        "detail": "임직원가 휴양 콘도"
+      },
+      {
+        "name": "장비",
+        "detail": "최신 장비 지원"
+      },
+      {
+        "name": "건강",
+        "detail": "연 1회 건강검진"
+      },
+      {
+        "name": "상여·경조",
+        "detail": "명절 상여금, 경조금·경조 휴가"
+      }
+    ],
+    "note": "이 공고에는 복리후생 칸이 없다 [1]. 위 목록은 같은 쿠팡페이의 다른 공고(Staff Back-end, Rocket Pay)의 복리후생 칸이다 [33]. 같은 회사 정규직이면 같을 것으로 보이지만 {추론}, 조건은 처우 안내 때 확인한다."
+  },
+  "location": {
+    "name": "쿠팡 구의오피스 (이스트폴 타워 A동)",
+    "address": "서울특별시 광진구 아차산로 412 (이스트폴 타워 A)",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+    "near": "2호선 구의역 근처 {추론}",
+    "note": "이 공고의 근무지는 'Seoul, South Korea'뿐이다 [1]. 도로명 주소는 같은 쿠팡페이의 다른 공고 두 건에 적힌 것이다 [34][35]. 인프라 팀이라 데이터센터 출장·야간 작업이 있을 수 있지만 공고에는 적혀 있지 않다 {추론}."
+  }
+}
