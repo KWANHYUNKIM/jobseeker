@@ -1,0 +1,1397 @@
+{
+ "id": "xcena-sw-qa-engineer",
+ "company": "엑시나",
+ "role": "소프트웨어 품질보증 엔지니어",
+ "team": "SW 개발",
+ "jobs": [
+  "ats-greeting:xcena:161103"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "서버에 꽂는 CXL 메모리 카드 MX1 위에서 도는 **드라이버·펌웨어·SDK·데이터 처리 라이브러리**가 맞게 돌고, 말한 만큼 빨라지는지를 시험 전략부터 자동화·성능 측정·결함 분석까지 맡아 확인합니다.[1][2]",
+  "env": "칩이 양산을 앞둔 시기라(2026년 말 시작 목표[10]) 실물 카드·시뮬레이터·가짜(mock) 장치를 섞어 시험합니다. 회사가 공개한 저장소들도 장비 없이 도는 시험과 장비가 있어야 도는 시험을 나눠 둡니다.[5][7] 판교, 경력 3년↑.[1]",
+  "oneline": "웹 QA 가 아니라 **리눅스 시스템 소프트웨어 QA** — C/Python 으로 시험을 짜고, 메모리·PCIe 장치가 어디서 깨지는지 층을 좁혀 가는 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "엑시나는 CXL 메모리 익스팬더와 니어메모리 프로세싱 솔루션의 소프트웨어 품질을 책임질 소프트웨어 품질보증 엔지니어를 찾고 있습니다. 이 포지션은 하드웨어·소프트웨어 통합 환경에서 SDK, 드라이버, 펌웨어, 응용 소프트웨어의 품질 보증 업무를 수행합니다.",
+   "short": "메모리 카드 위에서 도는 소프트웨어 전 층(펌웨어 → 드라이버 → SDK → 응용)을 '내보내도 되나' 판정하는 자리다.",
+   "why": "엑시나의 첫 제품 MX1 은 CXL(PCIe 위에서 메모리를 꽂는 규격)로 서버에 붙는 메모리 카드이고, 안에 DDR5 메모리·SSD 연결 포트·수천 개의 작은 RISC-V 코어가 같이 들어 있습니다.[2][9] 그래서 '메모리를 늘리는 장치'(익스팬더)이면서 '메모리 옆에서 계산하는 장치'(니어메모리 프로세싱)입니다.[2] 이 둘을 움직이는 소프트웨어가 여러 겹이라 겹마다 시험이 필요합니다.",
+   "actually": {
+    "intro": "회사 CPO 의 발표 슬라이드에 나온 소프트웨어 층입니다.[2] 층마다 시험할 것이 다릅니다 {추론}.",
+    "items": [
+     "**펌웨어** — 카드 안에서 SSD 페이지를 DRAM 으로 채우고 주소를 바꿔 주는 일 같은 것.[2][9] 오래 돌려도 데이터가 안 깨지나.",
+     "**커널 드라이버** — 리눅스가 카드를 알아보고 DMA(메모리끼리 직접 옮기기)·메일박스로 명령을 주고받는 모듈 `mx_dma`.[3] 설치·적재·해제가 되나.",
+     "**저수준 장치 API · PXL 런타임** — 카드 안 코어에 일을 나눠 맡기는 프로그래밍 층(맵리듀스 방식).[2] 결과가 CPU 로 계산한 것과 같나.",
+     "**데이터 전용 API** — 쿼리 엔진 Velox 에 붙는 XFLARE, 벡터 검색용 XVector.[2] 실제 쿼리·검색이 맞고 빨라지나.",
+     "**응용** — LLM 추론의 KV 캐시를 CXL 공유 메모리에 두는 Maru 같은 것.[5] 진짜 워크로드에서 이득이 나나."
+    ]
+   },
+   "how_far": "같은 회사에 카드 실물을 시험하는 CXL Product Engineer 자리가 따로 있습니다.[14] 이 자리는 **소프트웨어 쪽 품질**이 몫이고, 하드웨어 결함은 찾아서 넘기는 데까지라고 보는 게 자연스럽습니다 {추론}. 시니어 TPM 공고도 SW 쪽 팀을 SQA·런타임/SDK·펌웨어·컴파일러로 나눠 부릅니다.[16]",
+   "refs": [
+    2,
+    3,
+    5,
+    9,
+    14,
+    16
+   ],
+   "study": [
+    "veloxcon",
+    "kernel-cxl"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "차세대 메모리 기술의 안정성과 성능을 검증하는 핵심 역할로, 프로토콜 검증부터 실제 워크로드 기반 성능 검증까지 폭넓은 테스트 영역을 담당합니다.",
+   "short": "'맞게 도나'만이 아니라 '정말 빨라졌나'까지 잰다 — 시험 범위가 장치 인식부터 실제 DB·AI 작업까지다.",
+   "why": "CXL 메모리는 일반 메모리처럼 보이지만 지연이 더 깁니다. 엑시나는 그래서 데이터를 CPU 로 가져오지 않고 메모리 쪽에서 걸러 내 **데이터 이동을 줄이는 것**을 제품의 이유로 듭니다.[2] 결과가 맞아도 느려지면 제품의 이유가 사라지므로, 성능 검증이 기능 검증만큼 중요합니다 {추론}.",
+   "flows": [
+    {
+     "caption": "시험 범위를 아래에서 위로 {추론}[2][4][5]",
+     "steps": [
+      "장치 인식 · PCI 장치가 보이고 링크가 맞게 잡혔나",
+      "메모리로 보이기 · 리눅스에 CXL 메모리 영역·DAX 장치가 생기나",
+      "드라이버·런타임 · 명령·DMA·작업 맡기기가 되나",
+      "라이브러리 · 쿼리·벡터 검색 결과가 CPU 결과와 같나",
+      "워크로드 · Spark·LLM 추론에서 시간·전력이 줄었나"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "refs": [
+    2,
+    4,
+    5
+   ],
+   "study": [
+    "veloxcon",
+    "sdk-scripts"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CXL 메모리 익스팬더 소프트웨어 스택에 대한 포괄적인 테스트 전략을 수립합니다",
+   "short": "무엇을·어느 층에서·어떤 장비로·언제 돌리고 어디서 멈출지 정한 큰 그림을 만든다.",
+   "why": "카드는 2026년 말 양산을 목표로 하는 단계라[10] 실물이 귀합니다. 엑시나가 공개한 저장소들은 이 사정을 이미 반영합니다 — Maru 는 단위 시험에서 CXL 공유 메모리를 **가짜(mock)로 바꿔** 장비 없이 돌리고 통합 시험만 서버를 띄워 돌립니다.[5] CME 는 같은 시험을 일반 공유 메모리·DAX 장치·파일 세 가지 위에서 돌리고, 장비가 필요한 경우는 '건너뜀'으로 표시합니다.[7] 전략은 이런 선택을 스택 전체에 대해 정하는 일입니다.",
+   "actually": {
+    "items": [
+     "**층 나누기** — 단위(함수 하나) → 통합(드라이버 + 런타임) → 시스템(서버 한 대) → 워크로드. 층마다 맡을 위험을 적는다.[39]",
+     "**장비 없는 시험 vs 실물** — 가짜 장치·QEMU 의 CXL 흉내 장치로 먼저 돌리고, 실물 카드는 그걸 통과한 판에만 쓴다.[5][33]",
+     "**언제 돌리나** — 커밋마다 짧은 시험, 매일 밤 실물 카드 시험, 릴리즈 전 장시간·전체 호환성 시험 {추론}.",
+     "**멈출 기준(종료 조건)** — 치명 결함 0건, 필수 시험 통과율, 성능이 기준 판보다 나빠지지 않음 같은 '내보내도 되는' 선을 미리 적는다.[39]",
+     "**위험 순서** — 데이터가 조용히 깨지는 것(틀린 값을 맞다고 돌려줌)을 가장 먼저 막는다. 메모리 제품에서 가장 비싼 결함이라서 {추론}."
+    ]
+   },
+   "how_far": "경력 3년↑ 자리입니다.[1] 혼자 회사 전체 품질 정책을 만드는 게 아니라, 이 스택에 대해 **범위·층·환경·주기·통과 기준을 한 문서로 쓰고 팀과 합의**하는 수준이면 됩니다 {추론}. 용어는 ISTQB 기초 과정의 것(시험 계획·종료 조건·위험 기반 시험)이 표준처럼 쓰입니다.[39]",
+   "refs": [
+    1,
+    5,
+    7,
+    10,
+    33,
+    39
+   ],
+   "study": [
+    "istqb",
+    "effective-testing",
+    "qemu-cxl"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SDK, 드라이버, 펌웨어, 응용 소프트웨어를 아우르는 통합 테스트 계획을 개발합니다",
+   "short": "따로따로는 되는데 같이 끼우면 깨지는 곳 — 버전 조합·설치·업그레이드 — 을 찾는 계획을 짠다.",
+   "why": "엑시나의 드라이버 저장소는 변경이 합쳐질 때마다 상위 SDK 배포 저장소에 알림을 보냅니다.[3] 부품은 따로 만들고 **배포할 때 한데 묶인다**는 뜻입니다. 회사의 호스트 진단 스크립트도 'PCI 장치 → 메모리 장치 → 영역 → DAX → 드라이버 → 데몬' 사슬을 차례로 확인합니다.[4] 사슬의 이음매 하나하나가 통합 시험의 대상입니다.",
+   "actually": {
+    "items": [
+     "**버전 조합표** — 펌웨어 판 × 드라이버 판 × 런타임 판 × 커널 판. 다 돌릴 수 없으니 고객이 쓸 조합부터 고른다 {추론}.",
+     "**설치 시험** — 드라이버 설치 스크립트는 ACPI CEDT 표(CXL 이 있다고 BIOS 가 알려 주는 표)가 있는지 보고 CXL 판/아닌 판을 골라 빌드하고, DKMS(커널이 바뀌면 모듈을 다시 빌드하는 장치)로 깔고, 부팅 이미지를 다시 만든다.[3] 이 갈림길마다 시험이 하나씩 필요하다.",
+     "**사슬 점검** — 진단 스크립트처럼 층마다 OK/WARN/FAIL 을 내고 하나라도 FAIL 이면 실패로 끝나는 점검을 시험 첫 단계로 둔다.[4]",
+     "**올리고 내리기** — 새 판으로 올렸다가 옛 판으로 되돌려도 데이터·설정이 남는지 {추론}.",
+     "**드라이버 자체 시험** — 공개 드라이버에는 소유권(lease) 상태 기계·사용자 공간과 맞닿는 구조체 배치·DKMS 소스 배치를 확인하는 시험 파일이 들어 있다.[3] 통합 계획은 이런 부품 시험이 끝난 뒤를 맡는다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "조합이 금방 불어난다 (가상 값, 직접 돌린 출력)",
+     "body": "CPU 2종 × 커널 2판 × 펌웨어 2판 × 사용 방식 2가지만 해도 16조합입니다. 판이 하나씩 늘 때마다 두 배가 되니, 계획서에는 '매일 도는 조합'과 '릴리즈 전에만 도는 조합'을 나눠 적습니다 {추론}.",
+     "lang": "python",
+     "code": "import itertools\ncpus = [\"Xeon 6\", \"EPYC 9005\"]\nkernels = [\"6.8\", \"6.12\"]\nfirmwares = [\"fw-A\", \"fw-B\"]\nmodes = [\"메모리 확장\", \"연산 오프로드\"]\nprint(\"전부 돌리면:\", len(list(itertools.product(cpus, kernels, firmwares, modes))), \"조합\")\n# 전부 돌리면: 16 조합"
+    }
+   ],
+   "how_far": "계획은 '무엇을 어떤 순서로 끼워 맞춰 보나'와 '실패하면 어느 팀에 넘기나'가 들어 있으면 됩니다. 부품 안쪽의 단위 시험은 각 개발팀 몫이라고 보는 것이 일반적입니다 {추론}.",
+   "refs": [
+    3,
+    4
+   ],
+   "study": [
+    "sdk-scripts",
+    "mxdriver",
+    "kernel-cxl"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "니어메모리 프로세싱 기능의 성능 및 기능 테스트 시나리오를 설계하고, 하드웨어·소프트웨어 공동 설계 환경에 맞는 테스트 프레임워크를 구축합니다",
+   "short": "메모리 안 코어에 맡긴 계산의 답이 맞고 실제로 빨라지는지 재는 시나리오와, 칩이 없을 때도 도는 시험 틀을 만든다.",
+   "why": "엑시나는 걸러 내기(scan·filter)·간단한 계산 같은 연산을 메모리 쪽에 맡겨 CPU 가 데이터를 만지지 않게 합니다.[2] XFLARE 는 연산마다 병렬성이 크면 카드로, 단일 스레드 성능이 중요하면 CPU 로 보내고, 경우에 따라 원래 Velox 로 되돌립니다(fallback).[2] 같은 쿼리가 **어느 길로 가든 같은 답**이 나와야 하고, 카드로 간 길이 실제로 빨라야 합니다.",
+   "actually": {
+    "items": [
+     "**답 대조** — 같은 입력을 CPU 길과 카드 길로 돌려 결과를 비교한다. 순서가 바뀌어도 되는 결과는 정렬해서 비교 {추론}.",
+     "**경계 입력** — 빈 표, 아주 큰 표, NULL·중복이 많은 열, 카드 메모리를 넘는 입력.",
+     "**길 선택 확인** — 어떤 연산이 카드로 갔고 어떤 것이 CPU 로 돌아왔는지 기록해, 의도와 다르면 결함으로 본다.[2]",
+     "**성능** — 같은 하드웨어에서 끄고 켠 두 경우의 시간·처리량·CPU 사용률·전력을 잰다.[6]",
+     "**공동 설계 환경** — SDK 에는 시뮬레이터가 들어 있다.[2] 같은 시험 사례가 시뮬레이터·FPGA·실물 칩에서 그대로 돌게 '어디에 붙을지'만 갈아 끼우는 틀을 만든다 {추론}."
+    ]
+   },
+   "how_far": "시나리오는 기능·성능 둘 다입니다. 성능 숫자의 기준(무엇과 비교하나)을 시나리오에 적어 두는 데까지가 이 줄입니다. 회사의 공개 측정 문서도 비교 대상을 'TCP 루프백 위의 LMCache P2P, RDMA 아님'이라고 밝혀 둡니다.[6]",
+   "refs": [
+    2,
+    6
+   ],
+   "study": [
+    "veloxcon",
+    "maru",
+    "pytest-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CXL 3.0 프로토콜과 니어데이터 프로세싱 프레임워크의 기능 및 성능을 검증하고, 메모리 풀링 및 동적 할당 기능을 테스트합니다",
+   "short": "여러 서버가 메모리를 나눠 쓰고 늘렸다 줄이는 기능이, 한 서버가 죽거나 겹쳐 써도 엉키지 않는지 시험한다.",
+   "why": "CXL 은 판이 오를수록 메모리를 여러 호스트가 함께 쓰는 쪽으로 넓어졌습니다 — 스위치를 통한 풀링, 3.0 에서는 패브릭과 여러 호스트의 메모리 공유.[21][41] 엑시나는 이 영역의 공개 코드를 직접 냈습니다. CME 는 호스트 사이에 원자적 연산이 없는 공유 메모리에서 '누가 이 영역의 주인인가'를 기록으로 정하고, 노드가 죽으면 멈춘 것으로 보고 회수합니다.[7] ROOF 는 여러 노드가 쓰는 메모리 영역에 주인·수명·프로세스별 권한을 붙이는 파일 시스템입니다.[8] 시연에서는 최대 20TB 메모리 풀을 보였습니다.[11]",
+   "actually": {
+    "items": [
+     "**나눠 주고 돌려받기** — 풀에서 영역을 잡고 놓기를 수천 번 반복해 새는 곳·조각나는 곳이 없는지 {추론}.",
+     "**둘이 같은 영역** — 두 호스트가 같은 영역의 주인이 되려 할 때 하나만 이기는지.[7] ROOF 시험은 장치 하나를 두 번 마운트해 여러 노드 상황을 만든다.[8]",
+     "**한쪽이 죽으면** — 주인이던 노드가 갑자기 멈췄을 때 남은 쪽이 영역을 정리하고 다시 쓰는지.[7][8]",
+     "**권한** — 허락받지 않은 프로세스가 남의 영역을 못 여는지.[8]",
+     "**리눅스에서 보이는 모습** — CXL 메모리는 리눅스에 메모리 장치·디코더·영역·DAX 로 나타난다. 늘리고 줄일 때 이 칸들이 맞게 바뀌는지.[18]"
+    ]
+   },
+   "how_far": "CXL 3.0 규격서 전체를 외울 필요는 없습니다. **풀링·공유가 어떤 실패를 새로 만드는지**(겹쳐 쓰기·주인 없는 영역·죽은 노드)를 시나리오로 바꿀 수 있으면 됩니다 {추론}. 규격서는 컨소시엄 회원이 아니면 받기 어려워 공개 요약과 커널 문서로 시작합니다.[18][41]",
+   "refs": [
+    7,
+    8,
+    11,
+    18,
+    21,
+    41
+   ],
+   "study": [
+    "kernel-cxl",
+    "cme",
+    "qemu-cxl"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Intel Xeon, AMD EPYC 등 다양한 CPU 플랫폼과의 호환성을 테스트하고, 멀티 노드 환경의 메모리 확장 및 풀링 기능을 검증합니다",
+   "short": "같은 카드가 인텔·AMD 서버에서, BIOS 와 커널이 달라도 똑같이 메모리로 잡히고 같은 성능을 내는지 표로 확인한다.",
+   "why": "CXL 메모리를 어디에 둘지는 서버 BIOS 가 ACPI 표로 리눅스에 알려 줍니다.[18] 엑시나 드라이버 설치도 그 표(CEDT)가 있느냐로 갈립니다.[3] 그래서 **CPU·메인보드·BIOS 판에 따라** 같은 카드가 다르게 보일 수 있습니다. 회사 자료도 두 플랫폼을 다 씁니다 — KV 캐시 측정은 AMD EPYC 9555 두 개 서버[6], Hot Chips 발표의 비교는 Xeon 6 기준[9].",
+   "actually": {
+    "items": [
+     "**잡히나** — `lspci`·`cxl list` 로 장치·메모리 장치·영역이 보이는지, 링크 폭·속도가 기대대로인지.[4][18]",
+     "**어떻게 보이나** — CXL 메모리가 CPU 없는 NUMA 노드(멀리 있는 메모리 묶음)로 잡히는지, 지연·대역폭 정보가 sysfs 에 맞게 나오는지.[47]",
+     "**얼마나 빠르나** — 플랫폼마다 지연·대역폭을 같은 도구(Intel MLC 등)로 재서 표로 남긴다.[32]",
+     "**BIOS 설정** — 같은 서버라도 BIOS 판·메모리 설정에 따라 결과가 바뀌는지 {추론}.",
+     "**여러 대** — 두 대 이상이 같은 풀을 붙였을 때 각자 보는 크기·주소가 맞는지.[7][8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "호환성 표의 한 칸 읽기 (가상 값, 직접 돌린 출력)",
+     "body": "같은 시험을 10번 돌려 다 통과면 '통과', 다 실패면 '실패', 섞이면 '불안정'입니다. 플랫폼 호환성 표에서 **불안정 칸**이 가장 손이 많이 갑니다 — 타이밍·초기화 순서 문제인 경우가 많아서입니다 {추론}.",
+     "lang": "python",
+     "code": "runs = {\n    \"alloc_64g\":   \"PPPPPPPPPP\",\n    \"pool_attach\": \"PPFPPPPFPP\",\n    \"dma_4k\":      \"FFFFFFFFFF\",\n}\nfor name, r in runs.items():\n    fails = r.count(\"F\")\n    kind = \"통과\" if fails == 0 else (\"실패\" if fails == len(r) else \"불안정\")\n    print(f\"{name:12s} 실패 {fails}/{len(r)} → {kind}\")\n# alloc_64g    실패 0/10 → 통과\n# pool_attach  실패 2/10 → 불안정\n# dma_4k       실패 10/10 → 실패"
+    }
+   ],
+   "how_far": "서버를 직접 고르고 BIOS 를 만지는 건 랩·인프라와 같이 합니다 {추론}. 이 자리는 **플랫폼별 결과를 같은 기준으로 재서 한 표에 모으고, 차이가 나면 원인 층을 좁히는** 데까지입니다.",
+   "refs": [
+    3,
+    4,
+    6,
+    7,
+    8,
+    9,
+    18,
+    32,
+    47
+   ],
+   "study": [
+    "kernel-cxl",
+    "sdk-scripts",
+    "sysperf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI, 데이터베이스, 빅데이터 분석 등 실제 워크로드 환경에서 성능을 검증하고, 벡터 데이터베이스·LLM·Graph DB 가속 기능을 테스트합니다",
+   "short": "Spark 쿼리·벡터 검색·LLM 추론을 실제로 돌려, 카드를 쓰면 시간·전력이 얼마나 주는지 공정하게 비교한다.",
+   "why": "회사가 꼽은 목표 워크로드가 벡터 DB, Spark·Presto, 그래프, DNA 분석입니다.[2] SDK 는 Velox(쿼리 실행 엔진)의 뒷단 XFLARE 로 Spark·Presto 를 받고(Gluten 경유), 벡터 검색은 XVector 로 받습니다.[2][40] LLM 쪽은 KV 캐시 저장 엔진 Maru 를 vLLM·LMCache·SGLang 에 붙였고[5], OCP 2026 에서 추론 서버 여럿이 KV 캐시를 나눠 쓰는 시연을 했습니다.[17]",
+   "actually": {
+    "items": [
+     "**LLM 추론** — 회사 측정은 Llama-3.1-8B 를 vLLM 으로 돌려, 캐시가 맞았을 때 첫 토큰까지 시간(TTFT) 중앙값이 비교 대상보다 2.7~4.2배 짧았고 128K 문맥에서 에너지가 20.1Wh 대 36.1Wh 였다고 적었다.[6]",
+     "**벡터 검색** — 찾은 답이 진짜 가까운 이웃과 얼마나 겹치나(recall)와 초당 질의 수(QPS)를 같이 그린다. 하나만 보면 속일 수 있다.[31]",
+     "**분석 쿼리** — TPC-H 같은 표준 질의 묶음을 Spark + Gluten 으로 돌려 카드를 쓴 판과 안 쓴 판을 비교 {추론}[28][40].",
+     "**그래프** — 발표에서는 그래프 작업용 기능을 '확장 계획'으로 말했다.[2] 시험 대상이 늘어나는 영역이다.",
+     "**공정한 비교** — 같은 서버, 같은 데이터, 비교 대상을 문서에 적기. 회사 측정 문서도 비교 대상의 설정과 측정하지 않은 경로를 밝혀 둔다.[6]"
+    ]
+   },
+   "how_far": "모든 엔진을 깊이 알 필요는 없습니다. 각 워크로드에서 **무엇이 대표 숫자인지**(TTFT·recall/QPS·쿼리 시간)와 그 숫자를 흔드는 조건(캐시 예열·데이터 크기·반복 횟수)을 알고 재현 가능한 측정을 만들면 됩니다 {추론}.",
+   "refs": [
+    2,
+    5,
+    6,
+    17,
+    28,
+    31,
+    40
+   ],
+   "study": [
+    "maru",
+    "veloxcon",
+    "ann-bench",
+    "tpch"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "소프트웨어 결함을 분석해 근본 원인을 파악하고, 개발팀과 협업해 품질 이슈 해결 방안을 도출합니다",
+   "short": "고장 난 층(펌웨어·드라이버·런타임·BIOS·커널)을 좁혀, '누가 무엇을 고치면 되나'까지 가져간다.",
+   "why": "이 스택은 한 증상(예: 메모리가 안 보인다)의 원인이 BIOS·커널·드라이버·펌웨어 어디에나 있을 수 있습니다. 엑시나의 문제 수집 스크립트는 호스트·BIOS·판 정보·커널·런타임·NUMA·CXL·DAX·펌웨어·PCIe 를 한 보고서로 모으고, 호스트 이름·일련번호·IP 같은 값은 가린 뒤에만 내보냅니다.[4] 결함 분석에 필요한 증거가 어떤 것인지 보여 주는 회사 자료입니다.",
+   "actually": {
+    "items": [
+     "**재현 줄이기** — 몇 시간 돌려야 나던 실패를 몇 분 안에 나게 만드는 최소 절차를 찾는다 {추론}.",
+     "**층 좁히기** — 진단 사슬(PCI → 메모리 장치 → 영역 → DAX → 드라이버 → 데몬)에서 처음 끊긴 칸을 찾는다.[4]",
+     "**언제부터** — 통과하던 판과 실패한 판 사이를 `git bisect`(커밋을 반씩 잘라 범인을 찾는 도구)로 좁힌다.[27]",
+     "**로그 읽기** — PCIe 오류는 고칠 수 있는 오류와 치명 오류로 나뉘어 커널 로그에 남는다.[38] 드라이버 메모리 오류는 KASAN(잘못된 메모리 접근을 잡는 커널 도구)으로 드러낸다.[22]",
+     "**보고서** — 판·환경·재현 절차·로그·'예전엔 됐나'를 적는다. 리눅스 커널의 문제 보고 안내가 좋은 틀이다.[42]"
+    ]
+   },
+   "how_far": "고치는 것은 개발팀 몫입니다. QA 는 **개발자가 바로 손댈 수 있을 만큼 좁혀 주는 것** — 어느 층·어느 판부터·어떤 조건에서 — 이 최소선입니다 {추론}.",
+   "refs": [
+    4,
+    22,
+    27,
+    38,
+    42
+   ],
+   "study": [
+    "sdk-scripts",
+    "kernel-report",
+    "tlpi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "테스트 커버리지를 분석·개선하고, 품질 메트릭을 정의해 지속적으로 모니터링합니다",
+   "short": "무엇을 시험 안 했는지 숫자로 찾고, 통과율·불안정률·성능 회귀 같은 지표를 매일 본다.",
+   "why": "같은 회사의 다른 공고들이 이 일을 나눠 말합니다 — 테스트 자동화 공고는 '시험 결과 분석과 품질 지표 감시'를[12], 성능 도구 공고는 '성능 회귀 탐지 자동화'와 '잡음 제거·통계적 유의성을 고려한 반복 측정'을 적었습니다.[13] 공개 저장소 Maru 의 CI 는 파이썬 판마다 커버리지를 따로 내고 커버리지 댓글 작업을 둡니다.[5]",
+   "actually": {
+    "items": [
+     "**코드 커버리지** — 파이썬은 pytest 에 커버리지를 붙이고, 커널 드라이버는 gcov 를 켠 커널(CONFIG_GCOV_KERNEL)에서 잰다.[48][5]",
+     "**요건 커버리지** — 스펙·기능 목록의 항목마다 시험이 있는지 표로 잇는다.[39]",
+     "**불안정률** — 같은 코드에서 통과·실패가 섞이는 시험의 비율. 많으면 결과를 아무도 안 믿게 된다.[26]",
+     "**성능 회귀** — 반복 측정의 중앙값이 잡음보다 크게 나빠졌는지 판정한다.[13]",
+     "**결함 지표** — 층별 결함 수, 출시 뒤에 발견된 결함 수 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "성능 회귀를 잡음과 가르기 (가상 지연 값, 직접 돌린 출력)",
+     "body": "평균 하나로 비교하면 튀는 값 하나에 흔들립니다. 중앙값의 차이를 '측정이 원래 흔들리는 폭'(MAD, 중앙값에서 떨어진 거리의 중앙값)과 견줍니다. 3배라는 문턱은 예시입니다 {추론}.",
+     "lang": "python",
+     "code": "import statistics as st\nbase = [412, 409, 415, 411, 430, 410, 413]\nnew  = [431, 428, 433, 429, 452, 430, 427]\ndef mad(xs):\n    m = st.median(xs)\n    return st.median([abs(x - m) for x in xs])\ndiff = st.median(new) - st.median(base)\nnoise = max(mad(base), mad(new))\nprint(f\"중앙값 {st.median(base)} → {st.median(new)} ns, 차이 {diff}, 잡음 {noise}\",\n      \"→ 회귀\" if diff > 3 * noise else \"→ 잡음 안\")\n# 중앙값 412 → 430 ns, 차이 18, 잡음 2 → 회귀"
+    }
+   ],
+   "how_far": "커버리지 100% 가 목표가 아닙니다. **어떤 지표를 왜 보는지 정하고, 나빠지면 누가 무엇을 하는지**까지 정해 두는 것이 이 줄입니다 {추론}.",
+   "refs": [
+    5,
+    12,
+    13,
+    26,
+    39,
+    48
+   ],
+   "study": [
+    "kernel-gcov",
+    "effective-testing",
+    "sysperf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "소프트웨어 품질보증(QA) 분야에서 3년 이상의 경험이 있는 분",
+   "short": "시험 설계 → 자동화 → 결과 분석 → 결함 보고를 한 바퀴 이상 돌려 본 3년. 메모리 장치 경험은 우대 쪽이다.",
+   "why": "업무가 전략 수립부터 지표 감시까지 QA 의 전 과정을 덮습니다.[1] 메모리·저장장치·PCIe 경험은 자격요건이 아니라 우대사항에 있어서[1], 도메인보다 **QA 를 일로 해 본 경험**을 먼저 봅니다.",
+   "how_far": "웹·앱 QA 출신이라도 자동화 코드를 직접 짜 왔다면 출발선에는 섭니다. 다만 아래 줄들(C/C++·리눅스 시스템 프로그래밍·하드웨어 통합 시험)이 자격요건이라, 수동 시험 위주의 3년은 부족해 보일 수 있습니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "istqb",
+    "effective-testing"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C/C++와 Python을 능숙하게 활용할 수 있는 분",
+   "short": "드라이버·런타임은 C/C++, 시험 틀과 자동화는 Python 이라 둘 다 읽고 써야 한다.",
+   "why": "엑시나의 공개 코드가 그대로 보여 줍니다 — 커널 드라이버는 C[3], 공유 메모리 소유권(CME)·파일 시스템(ROOF)은 C++[7][8], KV 캐시 엔진 Maru 는 파이썬이고 pytest 로 시험합니다.[5] 드라이버 저장소의 시험도 C 파일과 셸 스크립트입니다.[3]",
+   "level": {
+    "basic": "C 포인터·구조체·메모리 할당 해제 · Python 함수·클래스·예외 · 남의 C 코드 읽기",
+    "work": "C 로 시스템 호출(open·mmap·ioctl)을 부르는 시험 프로그램 · Python 으로 시험 틀·결과 파싱·리포트 · ctypes 등으로 C 라이브러리 부르기",
+    "team": "드라이버·런타임 코드를 읽고 결함 위치를 짚기 · 메모리 순서·정렬·구조체 배치 같은 저수준 버그를 시험으로 드러내기"
+   },
+   "actually": {
+    "items": [
+     "**C/C++** — 장치를 직접 여는 시험 프로그램, 결함이 난 드라이버·런타임 코드 읽기.[3][7]",
+     "**Python** — 시험 사례 관리·장비 제어·결과 집계. Maru 는 시험을 단위(가짜 장치)와 통합(서버 필요)으로 나누고 표시(marker)로 골라 돌린다.[5][24]"
+    ]
+   },
+   "how_far": "'능숙'은 C 로 제품 기능을 새로 짜는 수준이 아니라 **C 코드를 읽고 시험용 프로그램을 짜는** 수준이라고 보는 게 자연스럽습니다 {추론}.",
+   "refs": [
+    3,
+    5,
+    7,
+    8,
+    24
+   ],
+   "study": [
+    "tlpi",
+    "pytest-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Linux 환경에서 시스템 프로그래밍을 수행한 경험이 있는 분",
+   "short": "장치 파일을 열고 메모리를 매핑하고 커널과 ioctl 로 대화하는 코드를 짜 봤어야 시험을 만들 수 있다.",
+   "why": "CXL 메모리를 쓰는 길이 곧 시스템 프로그래밍입니다. 드라이버는 장치 파일 연산·ioctl 코드를 갖고[3], ROOF 의 데이터 길은 `mmap()` 입니다.[8] 런타임 공고도 DAX 장치(devdax)·DKMS 를 다룹니다.[15]",
+   "actually": {
+    "items": [
+     "**장치 파일** — `/dev/dax*` 같은 장치를 열고 mmap 으로 주소 공간에 붙여 읽고 쓰기.[8][18]",
+     "**ioctl** — 드라이버에 명령을 보내는 통로. 잘못된 인자·크기에 드라이버가 안전하게 거절하는지가 시험 대상이다.[3]",
+     "**sysfs·procfs** — 장치 상태·NUMA 정보 읽기.[47]",
+     "**프로세스·스레드** — 여러 프로세스가 같은 영역을 동시에 만질 때의 시험.[7]"
+    ]
+   },
+   "how_far": "커널 모듈을 짜 본 경험까지는 요구하지 않는 문장입니다. 사용자 공간에서 시스템 호출로 장치를 다뤄 본 경험이 최소선입니다 {추론}.",
+   "refs": [
+    3,
+    7,
+    8,
+    15,
+    18,
+    47
+   ],
+   "study": [
+    "tlpi",
+    "kernel-cxl"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "하드웨어·소프트웨어 통합 테스트를 수행한 경험이 있는 분",
+   "short": "소프트웨어 결함인지 장치·보드 문제인지 가르는 시험을, 실물 장비를 붙여 돌려 봤어야 한다.",
+   "why": "이 자리의 시험 대상은 카드에 실린 펌웨어와 호스트 소프트웨어가 맞물리는 곳입니다.[1][2] 실물이 귀한 시기라 같은 시험을 가짜 장치·시뮬레이터·실물에서 돌리게 되는데[5][7], 실물에서만 나는 실패를 다뤄 봤는지가 차이입니다 {추론}.",
+   "actually": {
+    "items": [
+     "장비가 꽂힌 서버를 시험 대상으로 예약·초기화·복구하기 {추론}.",
+     "같은 시험이 가짜 장치에선 통과하고 실물에선 실패할 때 원인을 가르기 {추론}.",
+     "장치가 멈췄을 때 전원 재시작·드라이버 재적재로 다음 시험을 이어 가기 {추론}."
+    ]
+   },
+   "how_far": "임베디드 보드·SSD·네트워크 장비·GPU 서버처럼 **소프트웨어가 하드웨어를 직접 다루는 제품**을 시험해 봤다면 이 줄은 채운 셈입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    5,
+    7
+   ],
+   "study": [
+    "qemu-cxl",
+    "sdk-scripts"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Jenkins, pytest 등 테스트 자동화 도구를 활용한 경험이 있는 분",
+   "short": "시험을 pytest 로 짜고, Jenkins 가 장비 달린 서버에서 밤마다 돌려 결과를 모으게 만든다.",
+   "why": "엑시나의 공개 저장소 Maru 는 pytest 로 단위·통합 시험을 나누고 표시(marker)로 골라 돌립니다.[5] 같은 회사의 테스트 자동화 공고는 Jenkins·GitLab CI·GitHub Actions 경험을 우대로 적었습니다.[12]",
+   "actually": {
+    "items": [
+     "**pytest 표시** — `@pytest.mark.integration` 처럼 시험에 이름표를 달고 `-m` 으로 골라 돌린다. 장비가 필요한 시험만 따로 모으는 데 쓴다.[24][5]",
+     "**같은 시험, 여러 조건** — 매개변수화로 플랫폼·크기 조합을 한 함수로 돌린다.[23]",
+     "**Jenkins 장비 배정** — 파이프라인의 `agent { label '...' }` 로 CXL 카드가 꽂힌 서버를 골라 돌리고, `post { always { ... } }` 로 실패해도 로그를 모은다. `matrix` 로 조합을 펼친다.[25]"
+    ]
+   },
+   "how_far": "Jenkins 서버를 운영하는 건 CI/CD 담당 몫일 수 있습니다(같은 회사에 그 공고가 따로 있다).[12] 이 자리는 **자기 시험을 파이프라인에 올리고 결과를 읽는** 수준이 최소선입니다 {추론}.",
+   "refs": [
+    5,
+    12,
+    23,
+    24,
+    25
+   ],
+   "study": [
+    "pytest-book",
+    "pytest-docs",
+    "jenkins-pipeline"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Git, Jira 등 개발 도구를 활용한 경험이 있는 분",
+   "short": "판을 오가며 실패를 재현하고(Git), 결함을 재현 절차·로그와 함께 기록·추적한다(Jira).",
+   "why": "드라이버·SDK 가 저장소로 나뉘어 있고 합칠 때 배포 저장소로 모입니다.[3] 어느 판의 어느 조합에서 깨졌는지 가리려면 Git 으로 판을 정확히 집을 수 있어야 합니다.",
+   "actually": {
+    "items": [
+     "**판 집기** — 결함 보고에 커밋 해시를 적고, 통과하던 판과 실패한 판 사이를 `git bisect` 로 좁힌다.[27]",
+     "**결함 기록** — 제목·환경(판·플랫폼)·재현 절차·기대/실제·로그 첨부.[42]",
+     "**우선순위** — 심각도(얼마나 나쁜가)와 우선순위(언제 고치나)를 따로 매긴다 {추론}."
+    ]
+   },
+   "how_far": "Git 은 브랜치·태그·bisect 까지, Jira 는 결함을 개발자가 다시 묻지 않게 쓰는 수준이면 됩니다 {추론}.",
+   "refs": [
+    3,
+    27,
+    42
+   ],
+   "study": [
+    "git-bisect",
+    "kernel-report"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "DRAM, NVMe SSD 등 메모리·저장장치를 테스트한 경험이 있는 분",
+   "short": "MX1 이 DRAM 과 SSD 를 한 카드에 묶어 '아주 큰 메모리'를 만드는 제품이라서.",
+   "why": "MX1 은 카드에 PCIe 루트 포트를 둬 SSD 를 직접 붙이고, 칩 안의 페이징이 SSD 페이지를 DRAM 에 캐시해 카드당 수십 TB 의 메모리처럼 보이게 합니다(InfiniteMemory).[2] SSD 페이지를 채우는 일은 펌웨어가 합니다.[9]",
+   "actually": {
+    "items": [
+     "**메모리 시험** — 무작위 복사·패턴 쓰기로 값이 깨지는지 오래 돌려 본다(stressapptest 같은 도구).[34]",
+     "**SSD 시험** — fio 로 읽기·쓰기 패턴별 성능, nvme-cli 로 장치 상태·로그.[36][35]",
+     "**둘이 합쳐진 곳** — 작업 데이터가 DRAM 을 넘쳐 SSD 로 밀려날 때 지연이 얼마나 튀는지 {추론}."
+    ]
+   },
+   "refs": [
+    2,
+    9,
+    34,
+    35,
+    36
+   ],
+   "study": [
+    "nvme-spec",
+    "sysperf"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "DDR4 또는 DDR5 메모리 컨트롤러를 검증한 경험이 있는 분",
+   "short": "카드 안에 DDR5 4채널(최대 2TB)을 다루는 메모리 컨트롤러가 들어 있어서.",
+   "why": "Hot Chips 2026 발표 기록에 따르면 MX1 은 DDR5 4채널로 최대 2TB 를 답니다.[9] DDR5 는 칩 안에 오류 정정(on-die ECC)이 들어가고 모듈 하나가 독립된 두 서브채널로 나뉘는 등 DDR4 와 구조가 다릅니다.[37]",
+   "actually": {
+    "items": [
+     "**용량·구성별** — 모듈 크기·개수 조합마다 전체 용량이 맞게 잡히는지 {추론}.",
+     "**속도·대역폭** — 채널을 다 채웠을 때와 일부만 채웠을 때 대역폭 차이 {추론}[32].",
+     "**오류** — 고칠 수 있는 오류가 늘어나는지 지켜보고 보고되는지 {추론}."
+    ]
+   },
+   "how_far": "컨트롤러 회로 자체의 검증은 SoC 검증 팀 몫입니다(같은 회사에 디자인 검증 공고가 따로 있다).[14] 소프트웨어 QA 에서는 **메모리 구성에 따라 소프트웨어 동작·성능이 맞는지** 보는 쪽이 이 경험의 쓰임새입니다 {추론}.",
+   "refs": [
+    9,
+    14,
+    32,
+    37
+   ],
+   "study": [
+    "sysperf"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "PCIe 또는 CXL 프로토콜에 대한 이해도가 있고 테스트한 경험이 있는 분",
+   "short": "카드가 PCIe 6.0 슬롯에 CXL 로 붙는 장치라 링크·오류·메모리 모드를 알아야 결함을 읽는다.",
+   "why": "MX1 은 PCIe Gen6 x8 로 붙는 CXL Type 3(메모리 장치)입니다.[9] CXL 은 PCIe 위에 장치 설정용(CXL.io)·캐시용(.cache)·메모리용(.mem) 세 갈래를 얹은 규격입니다.[21]",
+   "actually": {
+    "items": [
+     "**링크** — 기대한 세대·폭으로 잡혔는지 `lspci` 로 확인.[4]",
+     "**오류** — PCIe 오류 보고(AER)의 고칠 수 있는 오류·치명 오류를 커널 로그에서 읽는다.[38]",
+     "**CXL 메모리 사슬** — 메모리 장치 → 디코더 → 영역 → DAX 가 리눅스에서 어떻게 만들어지는지.[18]",
+     "**장비 없이 연습** — QEMU 는 CXL 호스트 브리지·루트 포트·스위치·Type 3 메모리 장치를 흉내 낸다.[33]"
+    ]
+   },
+   "refs": [
+    4,
+    9,
+    18,
+    21,
+    33,
+    38
+   ],
+   "study": [
+    "kernel-cxl",
+    "qemu-cxl",
+    "pcie-tech"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "펌웨어 테스트 및 검증, Embedded Linux·Bootloader 테스트, 드라이버 개발 및 테스트 경험이 있는 분",
+   "short": "시험 대상에 카드 펌웨어와 리눅스 드라이버가 들어 있어서 — 아래 층을 시험해 본 사람이 유리하다.",
+   "why": "공고가 시험 대상으로 펌웨어·드라이버를 직접 적었고[1], 공개된 드라이버 저장소에는 상태 기계·구조체 배치·소스 배치를 확인하는 시험이 C·셸로 들어 있습니다.[3]",
+   "actually": {
+    "items": [
+     "**커널 시험 도구** — KUnit(커널 안에서 도는 단위 시험)과 kselftest(사용자 공간에서 커널 기능을 두드리는 작은 시험 묶음).[20][19]",
+     "**드라이버 시험** — 적재·해제 반복, 잘못된 ioctl, 장치가 사라졌다 돌아올 때 {추론}[3].",
+     "**펌웨어 판 바꾸기** — 펌웨어를 올리고 내릴 때 호스트 소프트웨어가 계속 동작하는지 {추론}."
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    19,
+    20
+   ],
+   "study": [
+    "kunit",
+    "mxdriver"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SPEC, TPC-H 등 벤치마킹 도구를 활용했거나 대규모 데이터 처리 시스템을 테스트한 경험이 있는 분",
+   "short": "회사가 '빨라진다'고 말하는 숫자를 표준 벤치마크로 다시 재 보여야 해서.",
+   "why": "엑시나는 분석 쿼리 엔진(Velox·Spark·Presto) 가속을 내세웁니다.[2] 고객이 믿는 숫자는 표준 벤치마크로 잰 숫자라서, 사내 측정도 같은 잣대로 할 수 있어야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**TPC-H** — 의사결정 지원용 질의 묶음. 데이터 크기를 키워 가며 쿼리 시간을 잰다.[28]",
+     "**SPEC CPU 2017** — CPU·메모리 성능 묶음. 다만 SPEC 이 2026년 11월 17일 자로 은퇴시켜 새 공식 결과가 나오지 않는다.[29]",
+     "**STREAM** — 메모리 대역폭을 재는 작은 벤치마크.[30]",
+     "**규칙 지키기** — 표준 벤치마크는 공개 규칙(데이터 크기·실행 방법)을 지켜야 남과 비교된다 {추론}."
+    ]
+   },
+   "refs": [
+    2,
+    28,
+    29,
+    30
+   ],
+   "study": [
+    "tpch",
+    "sysperf"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI/ML 워크로드의 성능을 분석한 경험이 있는 분",
+   "short": "LLM 추론의 KV 캐시를 CXL 메모리에 두는 것이 회사의 주력 사용처라서.",
+   "why": "Maru 는 LLM 추론의 KV 캐시(앞서 계산한 문맥을 다시 쓰려고 저장해 둔 값)를 CXL 공유 메모리에 두는 엔진이고 vLLM·LMCache·SGLang 에 붙습니다.[5] 회사 측정은 TTFT 중앙값과 토큰당 에너지를 비교했습니다.[6]",
+   "actually": {
+    "items": [
+     "**지표 고르기** — 첫 토큰까지 시간(TTFT), 초당 토큰, 토큰당 에너지.[6]",
+     "**조건 적기** — 모델·문맥 길이·동시 요청 수·캐시 적중 여부를 같이 적는다.[6]",
+     "**병목 찾기** — GPU 복사·메타데이터 왕복처럼 CXL 이 줄이지 못한 구간을 따로 본다(회사 문서가 그 구간을 밝혔다).[6]"
+    ]
+   },
+   "refs": [
+    5,
+    6
+   ],
+   "study": [
+    "maru"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Spark, Presto, PostgreSQL 등 데이터베이스 시스템, Container·Kubernetes 환경, AWS·Azure·GCP 등 클라우드 환경에서 테스트한 경험이 있는 분",
+   "short": "고객이 카드를 쓰는 자리가 데이터 엔진·컨테이너·클라우드 위라서, 그 환경째 시험해야 한다.",
+   "why": "SDK 는 Spark·Presto 를 Gluten(Spark SQL 실행을 Velox 같은 네이티브 엔진에 넘기는 중간층)으로 받아 Velox 뒷단에서 가속합니다.[2][40] 고객은 하이퍼스케일러·클라우드 사업자·기업이라고 공고가 밝혔습니다.[1]",
+   "actually": {
+    "items": [
+     "**데이터 엔진** — Spark + Gluten + Velox 를 띄워 카드를 쓴 판과 안 쓴 판을 같은 질의로 비교.[40][2]",
+     "**컨테이너** — 컨테이너 안에서 장치 파일·DAX 메모리가 보이게 넘기는 설정이 맞는지 {추론}.",
+     "**클라우드** — 장비 없이 도는 시험(가짜 장치·QEMU)은 클라우드 머신에서 돌릴 수 있다 {추론}[33]."
+    ]
+   },
+   "how_far": "세 묶음을 다 해 봤을 필요는 없습니다. 우대 문장이 '데이터 엔진 / 컨테이너 / 클라우드' 셋을 나열한 것이라, 하나라도 깊이 시험해 봤으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    33,
+    40
+   ],
+   "study": [
+    "gluten",
+    "docker",
+    "kubernetes"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "\"왜 여기서만 깨지지?\"를 층을 내려가며 끝까지 파는 게 즐거운 사람",
+   "시험 코드를 제품 코드처럼 짜는 사람",
+   "숫자로 '빨라졌다'를 증명하는 일이 좋은 사람",
+   "웹·앱 QA 에서 시스템·반도체 쪽으로 넓히고 싶은 사람 {추론}"
+  ],
+  "hard": [
+   "자격요건이 C/C++·리눅스 시스템 프로그래밍·하드웨어 통합 시험까지라 수동 시험 위주 경력은 불리하다[1]",
+   "칩이 양산 전이라 장비가 귀하고 시험 환경 자체가 바뀌는 중이다 {추론}[10]",
+   "펌웨어·커널·DB·LLM 까지 시험 범위가 넓다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "CXL 카드가 꽂혀 있는데 리눅스에서 메모리가 안 보입니다. 어디부터 확인하나요?",
+   "a": "PCI → 메모리 장치 → 영역 → DAX → 드라이버 사슬 — 회사 진단 스크립트의 순서.[4]"
+  },
+  {
+   "q": "같은 쿼리를 CPU 와 카드로 돌렸더니 행 순서가 다릅니다. 결함인가요?",
+   "a": "답 대조 방법과 순서가 의미 있는 결과의 구분.[2]"
+  },
+  {
+   "q": "어제보다 지연이 4% 늘었습니다. 회귀라고 말하려면 무엇이 더 필요하나요?",
+   "a": "반복 측정·잡음 폭·통계적 유의성 — 같은 회사 성능 도구 공고의 요구.[13]"
+  },
+  {
+   "q": "장비가 두 대뿐인데 시험 조합은 수십 개입니다. 무엇을 매일 돌리겠어요?",
+   "a": "가짜 장치 시험과 실물 시험 나누기, 위험 순서.[5][7]"
+  },
+  {
+   "q": "두 호스트가 같은 메모리 영역을 쓰다가 한쪽이 죽었습니다. 무엇을 시험하겠어요?",
+   "a": "주인 기록·회수 — 회사의 CME·ROOF 가 다루는 실패.[7][8]"
+  },
+  {
+   "q": "KV 캐시를 CXL 에 두니 TTFT 가 3배 줄었다는 숫자를, 무엇을 확인한 뒤에 믿겠어요?",
+   "a": "비교 대상·모델·문맥 길이·캐시 적중 조건.[6]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "엑시나 채용 · [SW] 소프트웨어 품질보증 엔지니어",
+   "url": "https://xcena.career.greetinghr.com/ko/o/161103",
+   "kind": "posting",
+   "note": "회사 소개·직무 소개·업무·자격·우대·근무지·복리후생"
+  },
+  {
+   "n": 2,
+   "title": "VeloxCon · Introducing HW Accelerated Velox with CXL Computational Memory (Harry Kim, XCENA)",
+   "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+   "kind": "company",
+   "date": "2025",
+   "note": "엑시나 CPO 발표 15분 · 자막·장면 전부 확인 — SDK 층(드라이버·저수준 API·PXL·XFLARE·XVector·시뮬레이터), 오프로드·대체 경로, 목표 워크로드"
+  },
+  {
+   "n": 3,
+   "title": "GitHub xcena-dev/mxdriver — 리눅스 커널 모듈 mx_dma",
+   "url": "https://github.com/xcena-dev/mxdriver",
+   "kind": "company",
+   "note": "tests/ 의 C·셸 시험 6개, install.sh(CEDT 확인·DKMS·initramfs), 합칠 때 sdk_release 로 알리는 워크플로"
+  },
+  {
+   "n": 4,
+   "title": "GitHub xcena-dev/public_sdk_release — 호스트 진단 스크립트",
+   "url": "https://github.com/xcena-dev/public_sdk_release",
+   "kind": "company",
+   "note": "validate_host.sh(OK/WARN/FAIL)·troubleshooting.sh(층별 수집·개인 값 가림) README"
+  },
+  {
+   "n": 5,
+   "title": "GitHub xcena-dev/maru — CXL 공유 메모리 위 KV 캐시 저장 엔진",
+   "url": "https://github.com/xcena-dev/maru",
+   "kind": "company",
+   "note": "vLLM·LMCache·SGLang 연동, tests/ 의 unit·integration(가짜 CXL 공유 메모리), pytest 표시, CI 의 test·lint·coverage 워크플로"
+  },
+  {
+   "n": 6,
+   "title": "Maru 문서 · TTFT and Power Efficiency Comparison with LMCache P2P Backend",
+   "url": "https://xcena-dev.github.io/maru/source/performance/lmcache.html",
+   "kind": "company",
+   "note": "EPYC 9555 ×2·CXL Type 3 익스팬더 6개, Llama-3.1-8B·vLLM, TTFT P50·에너지, 비교 대상 설정"
+  },
+  {
+   "n": 7,
+   "title": "GitHub xcena-dev/cme — 원자 연산 없는 공유 메모리의 소유권 조정",
+   "url": "https://github.com/xcena-dev/cme",
+   "kind": "company",
+   "note": "shm·dax·file 세 위에서 같은 시험, 장비 필요 시험은 건너뜀, 멈춤 고장 모델·회수"
+  },
+  {
+   "n": 8,
+   "title": "GitHub xcena-dev/roof — 여러 노드가 쓰는 CXL 메모리 위 파일 시스템",
+   "url": "https://github.com/xcena-dev/roof",
+   "kind": "company",
+   "note": "영역의 주인·수명·프로세스별 권한, mmap 데이터 길, 장치를 두 번 마운트하는 시험"
+  },
+  {
+   "n": 9,
+   "title": "ServeTheHome · XCENA MX1 CXL Computational Memory Device at Hot Chips 2026",
+   "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026",
+   "kind": "news",
+   "date": "2026-08-25",
+   "note": "회사 발표 정리 — Type 3, PCIe Gen6 x8, DDR5 4채널 최대 2TB, RISC-V 코어, SSD 페이지를 펌웨어가 채움, Xeon 6 기준 비교"
+  },
+  {
+   "n": 10,
+   "title": "Business Wire(회사 보도자료) · XCENA Details MX1 Architecture at Hot Chips 2026",
+   "url": "https://www.businesswire.com/news/home/20260825275952/en",
+   "kind": "news",
+   "date": "2026-08-25",
+   "note": "2026년 말 양산 시작, 2027년 첫 고객 매출 목표(같은 회사 다른 풀이의 조사)"
+  },
+  {
+   "n": 11,
+   "title": "StorageNewsletter · FMS 2026: XCENA Unveils MX1 Production Lineup",
+   "url": "https://www.storagenewsletter.com/2026/08/06/fms-2026-xcena-unveils-mx1-production-lineup-to-accelerate-push-into-hyperscale-ai-infrastructure/",
+   "kind": "news",
+   "date": "2026-08-06",
+   "note": "회사 보도자료 기반 — MX1 Compute·Expand, 최대 20TB 메모리 풀 시연(같은 회사 다른 풀이의 조사)"
+  },
+  {
+   "n": 12,
+   "title": "엑시나 채용 · [SW] 테스트 자동화 및 CI/CD 엔지니어",
+   "url": "https://xcena.career.greetinghr.com/ko/o/147042",
+   "kind": "posting",
+   "note": "같은 회사 — 자동화 틀·CI/CD 파이프라인·시험 결과 분석과 품질 지표, Jenkins·GitLab CI·GitHub Actions 우대"
+  },
+  {
+   "n": 13,
+   "title": "엑시나 채용 · [SW] 시스템 소프트웨어 엔지니어 – 성능 분석 및 개발자 도구",
+   "url": "https://xcena.career.greetinghr.com/ko/o/224149",
+   "kind": "posting",
+   "note": "같은 회사 — 벤치마크 틀과 CI 연동, 성능 회귀 탐지 자동화, 잡음·통계적 유의성"
+  },
+  {
+   "n": 14,
+   "title": "엑시나 채용 · CXL Product Engineer",
+   "url": "https://xcena.career.greetinghr.com/ko/o/237698",
+   "kind": "posting",
+   "note": "같은 회사 — 카드 실물 검증 자리(원문 아래에 SoC 디자인 검증 공고 본문이 붙어 있다)"
+  },
+  {
+   "n": 15,
+   "title": "엑시나 채용 · [SW] System Software Engineer, Device Runtime & SDK",
+   "url": "https://xcena.career.greetinghr.com/ko/o/110622",
+   "kind": "posting",
+   "note": "같은 회사 — 런타임·DKMS/devdax·Python 바인딩"
+  },
+  {
+   "n": 16,
+   "title": "엑시나 채용 · [SW] Senior SW Technical Program Manager",
+   "url": "https://xcena.career.greetinghr.com/ko/o/241584",
+   "kind": "posting",
+   "note": "같은 회사 — SW 영역별 팀(SQA·런타임/SDK·펌웨어·컴파일러)을 엮는 자리"
+  },
+  {
+   "n": 17,
+   "title": "StorageReview · XCENA MX1 shares a KV cache across inference servers at OCP 2026",
+   "url": "https://www.storagereview.com/news/xcena-mx1-cxl-computational-memory-kv-cache-sk-hynix-ocp-2026",
+   "kind": "news",
+   "date": "2026-10-16",
+   "note": "추론 서버 여럿의 KV 캐시 공유 시연(같은 회사 다른 풀이의 조사)"
+  },
+  {
+   "n": 18,
+   "title": "Linux 커널 문서 · Compute Express Link",
+   "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+   "kind": "reference",
+   "note": "동작 원리·BIOS/ACPI 플랫폼 설정·커널 설정·메모리 할당"
+  },
+  {
+   "n": 19,
+   "title": "Linux 커널 문서 · Kernel Selftests",
+   "url": "https://docs.kernel.org/dev-tools/kselftest.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Linux 커널 문서 · KUnit",
+   "url": "https://docs.kernel.org/dev-tools/kunit/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Wikipedia · Compute Express Link",
+   "url": "https://en.wikipedia.org/wiki/Compute_Express_Link",
+   "kind": "reference",
+   "note": "CXL.io·.cache·.mem, Type 1/2/3, 판별 기능"
+  },
+  {
+   "n": 22,
+   "title": "Linux 커널 문서 · Kernel Address Sanitizer (KASAN)",
+   "url": "https://docs.kernel.org/dev-tools/kasan.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "pytest 문서",
+   "url": "https://docs.pytest.org/en/stable/",
+   "kind": "reference",
+   "note": "매개변수화(parametrize) 안내 포함"
+  },
+  {
+   "n": 24,
+   "title": "pytest 문서 · Working with custom markers",
+   "url": "https://docs.pytest.org/en/stable/example/markers.html",
+   "kind": "reference",
+   "note": "표시 등록과 -m 으로 골라 돌리기"
+  },
+  {
+   "n": 25,
+   "title": "Jenkins 문서 · Pipeline Syntax",
+   "url": "https://www.jenkins.io/doc/book/pipeline/syntax/",
+   "kind": "reference",
+   "note": "agent label·post always·matrix"
+  },
+  {
+   "n": 26,
+   "title": "Google Testing Blog · Flaky Tests at Google and How We Mitigate Them",
+   "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
+   "kind": "reference",
+   "date": "2016-05"
+  },
+  {
+   "n": 27,
+   "title": "Git 문서 · git-bisect",
+   "url": "https://git-scm.com/docs/git-bisect",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "TPC · TPC-H",
+   "url": "https://www.tpc.org/tpch/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "SPEC · SPEC CPU 2017",
+   "url": "https://www.spec.org/cpu2017/",
+   "kind": "reference",
+   "note": "4개 묶음 43개 벤치마크, 2026-11-17 자로 은퇴"
+  },
+  {
+   "n": 30,
+   "title": "STREAM: Sustainable Memory Bandwidth in High Performance Computers",
+   "url": "https://www.cs.virginia.edu/stream/",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "ANN-Benchmarks",
+   "url": "https://ann-benchmarks.com/",
+   "kind": "reference",
+   "note": "recall 대 초당 질의 수"
+  },
+  {
+   "n": 32,
+   "title": "Intel · Memory Latency Checker",
+   "url": "https://www.intel.com/content/www/us/en/developer/articles/tool/intelr-memory-latency-checker.html",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "QEMU 문서 · Compute Express Link (CXL)",
+   "url": "https://www.qemu.org/docs/master/system/devices/cxl.html",
+   "kind": "reference",
+   "note": "호스트 브리지·루트 포트·스위치·Type 3 메모리 장치 흉내"
+  },
+  {
+   "n": 34,
+   "title": "GitHub stressapptest",
+   "url": "https://github.com/stressapptest/stressapptest",
+   "kind": "reference",
+   "note": "무작위 메모리 복사·디스크 I/O 로 결과를 확인하는 스트레스 시험"
+  },
+  {
+   "n": 35,
+   "title": "GitHub linux-nvme/nvme-cli",
+   "url": "https://github.com/linux-nvme/nvme-cli",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "fio documentation",
+   "url": "https://fio.readthedocs.io/en/latest/fio_doc.html",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "Wikipedia · DDR5 SDRAM",
+   "url": "https://en.wikipedia.org/wiki/DDR5_SDRAM",
+   "kind": "reference",
+   "note": "칩 안 ECC, 모듈당 독립 서브채널 2개"
+  },
+  {
+   "n": 38,
+   "title": "Linux 커널 문서 · PCI Express AER Driver Guide",
+   "url": "https://docs.kernel.org/PCI/pcieaer-howto.html",
+   "kind": "reference"
+  },
+  {
+   "n": 39,
+   "title": "ISTQB · Certified Tester Foundation Level",
+   "url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+   "kind": "reference",
+   "note": "시험 계획·종료 조건·위험 기반 시험·추적성"
+  },
+  {
+   "n": 40,
+   "title": "GitHub apache/gluten",
+   "url": "https://github.com/apache/gluten",
+   "kind": "reference",
+   "note": "Spark SQL 실행을 Velox 같은 네이티브 엔진에 넘기는 중간층"
+  },
+  {
+   "n": 41,
+   "title": "CXL Consortium · CXL Specification",
+   "url": "https://computeexpresslink.org/cxl-specification/",
+   "kind": "reference"
+  },
+  {
+   "n": 42,
+   "title": "Linux 커널 문서 · Reporting issues",
+   "url": "https://docs.kernel.org/admin-guide/reporting-issues.html",
+   "kind": "reference",
+   "note": "판·환경·재현 절차·로그·회귀 여부"
+  },
+  {
+   "n": 43,
+   "title": "엑시나 채용 · 복리후생",
+   "url": "https://xcena.career.greetinghr.com/ko/benefits",
+   "kind": "company",
+   "note": "복지 목록(같은 회사 펌웨어 풀이의 조사, 2026-11)"
+  },
+  {
+   "n": 44,
+   "title": "엑시나 채용 홈 · 회사 정보",
+   "url": "https://xcena.career.greetinghr.com/ko/home",
+   "kind": "company",
+   "note": "본사 같은 건물 8·9층, 미국 지사(같은 회사 펌웨어 풀이의 조사)"
+  },
+  {
+   "n": 45,
+   "title": "자소설닷컴 · 엑시나 기업정보",
+   "url": "https://jasoseol.com/companies/15972",
+   "kind": "reference",
+   "note": "공공데이터 기반 — 신입·평균 연봉 '아직 수집 중'(같은 회사 다른 풀이 조사, 2026-11-26)"
+  },
+  {
+   "n": 46,
+   "title": "뉴스1 · '차세대 메모리' 엑시나, 시리즈B 2018억 유치",
+   "url": "https://www.news1.kr/industry/sb-founded/6185394",
+   "kind": "news",
+   "date": "2026-06-02",
+   "note": "기업가치 8,000억 원, 투자금은 MX1 고객 검증·양산 준비"
+  },
+  {
+   "n": 47,
+   "title": "Linux 커널 문서 · NUMA Memory Performance",
+   "url": "https://docs.kernel.org/admin-guide/mm/numaperf.html",
+   "kind": "reference",
+   "note": "NUMA 노드별 접근 등급·대역폭·지연 sysfs"
+  },
+  {
+   "n": 48,
+   "title": "Linux 커널 문서 · Using gcov with the Linux kernel",
+   "url": "https://docs.kernel.org/dev-tools/gcov.html",
+   "kind": "reference",
+   "note": "CONFIG_DEBUG_FS·CONFIG_GCOV_KERNEL"
+  }
+ ],
+ "caveat": "엑시나의 사내 시험 체계(장비 수·CI 구성·품질 지표)는 공개되지 않았습니다. 회사가 공개한 저장소(드라이버·진단 스크립트·Maru·CME·ROOF)의 시험 방식과 CPO 발표, 같은 회사의 다른 공고로 '이 회사가 무엇을 시험해야 하는가'를 보였고, 나머지는 커널·pytest·Jenkins 같은 공개 문서로 '보통 이런 것'을 보였습니다. 코드 예시의 숫자는 모두 가상 값입니다.",
+ "resources": [
+  {
+   "id": "veloxcon",
+   "title": "Introducing HW Accelerated Velox with CXL Computational Memory",
+   "by": "Harry Kim(엑시나 CPO) · VeloxCon · 15분",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+   "why": "시험할 SDK 층(드라이버 → PXL → XFLARE·XVector)과 오프로드·대체 경로를 회사가 직접 설명한다. 업무 첫 줄들을 읽기 전에 볼 것."
+  },
+  {
+   "id": "sdk-scripts",
+   "title": "xcena-dev/public_sdk_release",
+   "by": "엑시나 · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://github.com/xcena-dev/public_sdk_release",
+   "why": "호스트 점검 항목과 문제 수집 항목이 곧 통합 시험·결함 분석의 체크리스트다."
+  },
+  {
+   "id": "mxdriver",
+   "title": "xcena-dev/mxdriver",
+   "by": "엑시나 · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/xcena-dev/mxdriver",
+   "why": "설치 스크립트의 갈림길(CEDT·DKMS)과 tests/ 의 시험 파일 — 드라이버 통합 시험을 설계할 때 실제 대상."
+  },
+  {
+   "id": "maru",
+   "title": "xcena-dev/maru",
+   "by": "엑시나 · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/xcena-dev/maru",
+   "why": "pytest 로 가짜 장치 단위 시험과 통합 시험을 나누는 방식, LLM 워크로드 측정 문서까지 — 이 회사 시험 코드의 실물 예."
+  },
+  {
+   "id": "cme",
+   "title": "xcena-dev/cme",
+   "by": "엑시나 · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/xcena-dev/cme",
+   "why": "메모리 풀링·공유에서 생기는 실패(주인 다툼·노드 죽음)와 그 시험을 세 백엔드에서 돌리는 방법."
+  },
+  {
+   "id": "kernel-cxl",
+   "title": "Compute Express Link 드라이버 문서",
+   "by": "Linux 커널 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+   "why": "CXL 메모리가 BIOS 표 → 메모리 장치 → 영역 → DAX 로 보이기까지. 호환성·풀링 시험의 기준."
+  },
+  {
+   "id": "qemu-cxl",
+   "title": "QEMU · Compute Express Link (CXL)",
+   "by": "QEMU 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.qemu.org/docs/master/system/devices/cxl.html",
+   "why": "카드 없이 CXL 메모리 장치·스위치를 흉내 내 시험을 연습할 수 있다."
+  },
+  {
+   "id": "istqb",
+   "title": "ISTQB Certified Tester Foundation Level",
+   "by": "ISTQB",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+   "why": "시험 전략·계획·종료 조건·위험 기반 시험의 표준 용어. 실러버스는 무료로 받는다."
+  },
+  {
+   "id": "effective-testing",
+   "title": "Effective Software Testing",
+   "by": "Maurício Aniche · Manning · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/effective-software-testing",
+   "why": "명세 기반 시험·경계값·구조 커버리지를 개발자 관점에서. 시나리오 설계와 커버리지 줄에 쓴다."
+  },
+  {
+   "id": "pytest-book",
+   "title": "Python Testing with pytest (2판)",
+   "by": "Brian Okken · Pragmatic Bookshelf · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://pragprog.com/titles/bopytest2/python-testing-with-pytest-second-edition/",
+   "why": "픽스처·매개변수화·표시·플러그인 — 장비 붙은 시험 틀을 pytest 로 짜는 데 필요한 것. 한국어판은 찾지 못했다."
+  },
+  {
+   "id": "pytest-docs",
+   "title": "pytest 문서 · Working with custom markers",
+   "by": "pytest 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.pytest.org/en/stable/example/markers.html",
+   "why": "장비가 필요한 시험에 이름표를 달고 골라 돌리는 법."
+  },
+  {
+   "id": "jenkins-pipeline",
+   "title": "Jenkins Pipeline Syntax",
+   "by": "Jenkins 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.jenkins.io/doc/book/pipeline/syntax/",
+   "why": "장비 서버 고르기(agent label)·실패해도 로그 모으기(post)·조합 펼치기(matrix)."
+  },
+  {
+   "id": "tlpi",
+   "title": "The Linux Programming Interface (한국어판 『리눅스 API의 모든 것』 1·2권)",
+   "by": "Michael Kerrisk · No Starch Press · 2010 / 에이콘출판 · 2012",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=All&SearchWord=%EB%A6%AC%EB%88%85%EC%8A%A4+API%EC%9D%98+%EB%AA%A8%EB%93%A0+%EA%B2%83",
+   "why": "파일·mmap·ioctl·프로세스·공유 메모리 — '리눅스 시스템 프로그래밍' 요건을 채우는 교과서. 필요한 장만."
+  },
+  {
+   "id": "sysperf",
+   "title": "Systems Performance (2판)",
+   "by": "Brendan Gregg · Addison-Wesley · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "why": "메모리·CPU·디스크 성능을 재고 해석하는 방법론. 성능 검증·벤치마크 줄의 바탕."
+  },
+  {
+   "id": "kernel-report",
+   "title": "Reporting issues",
+   "by": "Linux 커널 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.kernel.org/admin-guide/reporting-issues.html",
+   "why": "개발자가 다시 묻지 않는 결함 보고에 무엇을 넣나."
+  },
+  {
+   "id": "git-bisect",
+   "title": "git-bisect",
+   "by": "Git 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://git-scm.com/docs/git-bisect",
+   "why": "'언제부터 깨졌나'를 반씩 잘라 찾는 법 — 회귀 결함 분석의 기본."
+  },
+  {
+   "id": "kernel-gcov",
+   "title": "Using gcov with the Linux kernel",
+   "by": "Linux 커널 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/dev-tools/gcov.html",
+   "why": "드라이버 코드 커버리지를 재는 법."
+  },
+  {
+   "id": "kunit",
+   "title": "KUnit — Linux Kernel Unit Testing",
+   "by": "Linux 커널 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/dev-tools/kunit/index.html",
+   "why": "커널 안에서 도는 단위 시험. 드라이버 시험 우대 줄을 채우는 출발점."
+  },
+  {
+   "id": "nvme-spec",
+   "title": "NVM Express Specifications",
+   "by": "NVM Express",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://nvmexpress.org/specifications/",
+   "why": "SSD 쪽 명령·상태·로그의 원문. InfiniteMemory 의 SSD 층을 시험할 때 참조."
+  },
+  {
+   "id": "pcie-tech",
+   "title": "PCI Express Technology 3.0",
+   "by": "Mike Jackson · Ravi Budruk · MindShare Press",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=PCI%20Express%20Technology%203.0",
+   "why": "링크 초기화·오류 처리 장만 먼저. PCIe/CXL 우대 줄의 바탕."
+  },
+  {
+   "id": "tpch",
+   "title": "TPC-H",
+   "by": "TPC",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.tpc.org/tpch/",
+   "why": "분석 쿼리 가속을 남과 비교할 수 있는 숫자로 재는 표준."
+  },
+  {
+   "id": "ann-bench",
+   "title": "ANN-Benchmarks",
+   "by": "ann-benchmarks.com",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://ann-benchmarks.com/",
+   "why": "벡터 검색 성능을 recall 과 QPS 를 같이 그려 비교하는 법."
+  },
+  {
+   "id": "gluten",
+   "title": "Apache Gluten",
+   "by": "Apache · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/apache/gluten",
+   "why": "Spark 가 Velox 로 내려가는 길 — XFLARE 가 붙는 자리를 이해한다."
+  },
+  {
+   "id": "docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "컨테이너 환경 시험 우대 줄 — 컨테이너에 장치·볼륨을 넘기는 기본."
+  },
+  {
+   "id": "kubernetes",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "Kubernetes 환경 시험 우대 줄 — 파드가 왜 안 뜨는지 읽는 법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "제품과 스택 감 잡기",
+   "time": "1주",
+   "goal": "MX1 의 소프트웨어 층과 각 층에서 무엇이 깨질 수 있는지 말로 설명할 수 있다.",
+   "resources": [
+    "veloxcon",
+    "sdk-scripts",
+    "kernel-cxl"
+   ],
+   "task": "발표의 SDK 층과 진단 스크립트의 점검 사슬을 한 장 그림으로 그리고, 칸마다 '여기가 깨지면 보이는 증상'을 한 줄씩 적는다."
+  },
+  {
+   "title": "리눅스 시스템 프로그래밍",
+   "time": "2~3주",
+   "goal": "장치 파일을 열고 mmap 으로 메모리를 붙여 읽고 쓰는 C 시험 프로그램을 짠다.",
+   "resources": [
+    "tlpi"
+   ],
+   "task": "/dev/shm 의 파일을 두 프로세스가 mmap 으로 같이 쓰게 하고, 한쪽이 패턴을 쓰면 다른 쪽이 검사하는 C 프로그램을 만든다. 잘못된 크기·권한으로 열 때 오류가 맞게 나는지도 시험한다."
+  },
+  {
+   "title": "장비 없이 CXL 시험 틀",
+   "time": "2~3주",
+   "goal": "QEMU 의 가짜 CXL 메모리 장치 위에서 pytest 시험을 돌리고, 같은 시험을 '장비 없음'일 때 건너뛰게 한다.",
+   "resources": [
+    "qemu-cxl",
+    "pytest-book",
+    "pytest-docs",
+    "maru"
+   ],
+   "task": "QEMU 로 Type 3 장치 하나를 띄워 영역·DAX 가 생기는지 확인하는 pytest 시험을 쓰고, 표시(integration·hw)로 골라 돌린다. 1단계의 mmap 프로그램을 DAX 장치에 붙여 다시 돌린다."
+  },
+  {
+   "title": "자동화와 지표",
+   "time": "1~2주",
+   "goal": "Jenkins 파이프라인이 조합별로 시험을 돌리고 불안정률·성능 회귀를 표시한다.",
+   "resources": [
+    "jenkins-pipeline",
+    "effective-testing",
+    "git-bisect"
+   ],
+   "task": "3단계 시험을 matrix(커널 판 × 크기)로 펼치고, 같은 시험을 10번 돌려 불안정 시험을 표시하고, 가상 지연 측정의 중앙값 비교로 회귀를 판정하는 단계를 붙인다. 일부러 넣은 버그를 git bisect 로 찾아 본다."
+  },
+  {
+   "title": "워크로드 성능 (선택)",
+   "time": "계속",
+   "goal": "LLM·벡터 검색·분석 쿼리 중 하나를 골라 공정한 성능 비교 보고서를 쓴다.",
+   "resources": [
+    "maru",
+    "ann-bench",
+    "tpch",
+    "gluten",
+    "sysperf"
+   ],
+   "task": "작은 데이터로 TPC-H 를 Spark 로 돌리거나 ANN 벤치마크 하나를 돌려, 조건(데이터 크기·반복 횟수·비교 대상)을 적은 1쪽 보고서를 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없고, 비상장 스타트업이라 공시 평균 급여도 없다. 공공데이터 집계도 초봉·평균 모두 '아직 수집 중'이다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "적혀 있지 않음",
+    "basis": "공고 · 2026년",
+    "note": "경력 3년↑ 공고이고 연봉·처우 문장이 없다 [1]"
+   },
+   {
+    "label": "신입 초봉 · 평균 연봉",
+    "value": "집계 숫자 없음(수집 중)",
+    "basis": "공공데이터 집계 · 2026년",
+    "note": "자소설닷컴 기업 페이지가 신입·평균 연봉을 '아직 수집 중'으로 표시(같은 회사 다른 풀이 조사, 2026-11-26) [45]"
+   }
+  ],
+  "how": "공시 숫자 없음 — 비상장이라 사업보고서의 1인 평균 급여가 없습니다 [45]. 시리즈 B 로 기업가치 8,000억 원을 인정받았다는 보도[46]는 보수 수준의 근거가 되지 못해 숫자를 넣지 않았습니다. 경력직이라 처우는 면접 뒤 협의로 정해진다고 보는 것이 자연스럽습니다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "MX Day",
+    "detail": "한 달에 한 번 전사가 함께 쉬는 유급 휴일, 연 12회"
+   },
+   {
+    "name": "유연근무",
+    "detail": "선택적 근로시간제 기반"
+   },
+   {
+    "name": "식대",
+    "detail": "점심 식대 지원(채용 홈페이지에는 점심·저녁 식대로 적혀 있다)"
+   },
+   {
+    "name": "복지포인트",
+    "detail": "지급(금액은 밝히지 않음)"
+   },
+   {
+    "name": "건강검진",
+    "detail": "임직원과 임직원 가족"
+   },
+   {
+    "name": "친목 활동",
+    "detail": "분기별(채용 홈페이지)"
+   }
+  ],
+  "note": "이 공고의 복리후생 칸 [1]과 엑시나 채용 홈페이지의 복지 목록 [43] — 2026년 11월 확인. 금액·조건은 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "엑시나 본사 · 미래에셋벤처타워",
+  "address": "경기도 성남시 분당구 판교역로241번길 20, 9층 (삼평동, 미래에셋벤처타워)",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C241%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선·경강선 판교역 근처 판교테크노밸리 {추론}",
+  "note": "주소는 공고 근무지 [1]. 채용 홈페이지 회사 정보에는 같은 건물 8층·9층으로 적혀 있다 [44]. 미국 지사는 실리콘밸리에 있다 [1]."
+ }
+}

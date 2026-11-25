@@ -645,6 +645,7 @@
   "ats-greeting:xcena:233340": "xcena-junior-technical-project-coordinator",
   "ats-greeting:xcena:161178": "xcena-product-engineer",
   "ats-greeting:xcena:241584": "xcena-senior-sw-tpm",
+  "ats-greeting:xcena:161103": "xcena-sw-qa-engineer",
   "ats-greeting:xcena:110624": "xcena-system-firmware"
  },
  "roles": [
@@ -6081,6 +6082,16 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 33
+  },
+  {
+   "id": "xcena-sw-qa-engineer",
+   "company": "엑시나",
+   "role": "소프트웨어 품질보증 엔지니어",
+   "jobs": [
+    "ats-greeting:xcena:161103"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 23
   },
   {
    "id": "xcena-system-firmware",
