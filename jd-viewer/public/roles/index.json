@@ -91,6 +91,8 @@
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
   "wanted-385521": "hyundai-autoever-smart-tag-service-engineer",
   "ats-hkmc:hyundai:2026N2366": "hyundai-lunar-rover-autonomy-sw",
+  "ats-hkmc:hyundai:2026N2209": "hyundai-npu-dl-compiler",
+  "ats-hkmc:hyundai:2026N2331": "hyundai-robotics-joint-robot-production",
   "wanted-387536": "hyundai-sdf-data-architect",
   "ats-hkmc:hyundai:2026N2387": "hyundai-sdv-controller-sw-integration",
   "wanted-393817": "hyundai-sdv-controller-sw-integration",
@@ -1063,6 +1065,26 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 33
+  },
+  {
+   "id": "hyundai-npu-dl-compiler",
+   "company": "현대자동차",
+   "role": "NPU 딥러닝 컴파일러 개발",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2209"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 27
+  },
+  {
+   "id": "hyundai-robotics-joint-robot-production",
+   "company": "현대자동차",
+   "role": "관절로봇 양산개발",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2331"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 29
   },
   {
    "id": "hyundai-sdf-data-architect",
