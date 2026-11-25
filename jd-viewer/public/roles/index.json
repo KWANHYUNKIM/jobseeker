@@ -320,6 +320,8 @@
   "ats-greeting:musinsa:245271": "musinsa-security-engineer-appsec-pentest",
   "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
+  "jobkorea-50357268": "nextsecurities-data-platform-engineer",
+  "wanted-388957": "nextsecurities-data-platform-engineer",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
@@ -3269,6 +3271,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 20
+  },
+  {
+   "id": "nextsecurities-data-platform-engineer",
+   "company": "넥스트증권",
+   "role": "Data Engineer (Data Platform)",
+   "jobs": [
+    "jobkorea-50357268",
+    "wanted-388957"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 28
   },
   {
    "id": "nhn-japan-frontend",
