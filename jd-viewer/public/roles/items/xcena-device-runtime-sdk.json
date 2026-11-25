@@ -1,0 +1,1211 @@
+{
+  "id": "xcena-device-runtime-sdk",
+  "company": "엑시나",
+  "role": "System Software Engineer, Device Runtime & SDK",
+  "team": "SW 개발 · Device Runtime & SDK",
+  "jobs": [
+    "ats-greeting:xcena:110622"
+  ],
+  "researched_at": "2026-11-26",
+  "tldr": {
+    "what": "CXL 로 서버에 꽂는 '계산하는 메모리' 카드(수천 개 RISC-V 코어 + DDR5)를 개발자가 **CUDA 쓰듯이 쓰게 해 주는 런타임 라이브러리와 SDK** — 메모리 할당·커널 실행·드라이버 연결·파이썬 연동 — 를 처음부터 만듭니다.[1][2]",
+    "env": "회사가 공개한 SDK 는 커널 드라이버(mx_dma) → 저수준 Device API → PXL 런타임(C++ `pxl::`) → 데이터용 API(XFLARE·XVector) 층으로 되어 있고[2][3][30], 이 자리는 PXL 런타임과 그 위아래 이음매를 맡습니다 {추론}. Ubuntu 24.04 리눅스·C/C++ 가 중심이고 위로는 파이썬·PyTorch·Arrow 를 만납니다.[1][34]",
+    "oneline": "칩 바로 위, 사용자 프로그램 바로 아래. **C/C++ · 리눅스 드라이버 경계 · 메모리 할당 · 동시성 · 파이썬 바인딩**이 일의 대부분입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "CXL Computational Memory Device용 Runtime Library 핵심 모듈 설계 및 구현",
+      "short": "장치의 코어·메모리를 프로그램이 함수 몇 개로 쓰게 해 주는 'CUDA 런타임 같은 것'을 만드는 일.",
+      "why": "엑시나 카드는 CXL(PCIe 위에서 메모리를 꽂는 규격)로 서버에 붙고, 메모리 옆에 수천 개의 RISC-V 코어가 있어 데이터를 CPU 로 가져오지 않고 그 자리에서 처리합니다.[2] 코어를 직접 부리는 저수준 Device API 는 '너무 복잡해 권하지 않는다'고 회사가 발표에서 밝혔고, 그래서 그 위에 PXL(Parallel Xceleration Library)이라는 런타임 층을 따로 만들었습니다.[2] 이 PXL 이 공개 SDK 문서에 C++ `pxl::` 라이브러리로 나와 있습니다.[30][37]",
+      "actually": {
+        "intro": "공개 SDK 문서에 나온 PXL 의 객체가 곧 런타임의 핵심 모듈입니다.[31]",
+        "items": [
+          "**Context** — 장치 하나를 여는 묶음. `pxl::createContext(deviceId)` 로 만들고 장치 메모리를 `memAlloc`·`memFree` 로 잡고 푼다.[31]",
+          "**Job** — 장치 코어 일부(Sub)를 예약하고 장치 프로그램(.mubin)을 올린다.[31][38]",
+          "**Map** — 커널 하나를 task 여러 개로 펼쳐 실행한다. task 는 16개씩 묶여(batch) 코어 하나에 간다.[32]",
+          "**Launcher** — 위를 한 줄로 감싼 쉬운 길: `pxl::Launcher().execute<커널>(데이터).tasks(n).run()`.[31]",
+          "**동기화·콜백** — `synchronize`·`cancel`, 완료·오류 콜백, 실행 상태(대기→실행→완료·실패) 조회.[32]",
+          "**호스트 캐시** — `flushHostCache`·`invalidateHostCache` 처럼 CPU 캐시와 장치가 본 메모리를 맞추는 함수도 런타임 몫이다.[37]"
+        ]
+      },
+      "how_far": "경력 3년↑ 자리입니다.[1] 처음부터 설계한다는 말은 API 모양(함수 이름·소유권·오류 처리)을 직접 정한다는 뜻이라 {추론}, 남이 만든 런타임을 쓰기만 한 경험보다 '라이브러리의 공개 API 를 정하고 버전을 올려 본' 경험이 더 직접적입니다 {추론}.",
+      "refs": [
+        1,
+        2,
+        30,
+        31,
+        32,
+        37,
+        38
+      ],
+      "study": [
+        "sdk-docs",
+        "veloxcon",
+        "cuda-runtime"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "멀티 디바이스 환경에서의 커널 실행·스케줄링 및 자원 관리 파이프라인 개발",
+      "short": "카드가 여러 장일 때 어떤 일을 어느 카드의 어느 코어에 언제 보낼지 정하는 줄 세우기를 만드는 일.",
+      "why": "회사는 이 카드를 여러 장 모아 '가속 기능이 있는 메모리 풀'을 만들 수 있다고 소개했고[2], 공개 진단 스크립트 예시도 한 서버에 장치 두 장을 보여 줍니다.[4] SDK 문서상 장치마다 Context 를 따로 만들고, Job 하나가 여러 장치에 걸치는 방법은 적혀 있지 않습니다.[31] 그래서 여러 장에 일을 나누는 층은 런타임이 더 만들어야 할 칸입니다 {추론}. 여러 컨테이너가 한 장치를 나눠 쓰는 자원 데몬(`pxl_resourced`)도 이미 있습니다.[35]",
+      "actually": {
+        "items": [
+          "**스트림** — 실행 요청을 넣는 비동기 대기열. 넣은 순서는 지키지만 끝나는 순서는 보장하지 않고, 대기열이 차면 넣는 쪽이 기다린다.[33]",
+          "**코어 배분** — 장치 처리량은 Job 이 예약한 Sub 수로 정해진다. 더 빨리 하려면 Sub 나 Job 을 늘린다.[33] 배치를 몰아 둘지(Compact) 흩을지(Spread) 고른다.[32]",
+          "**배치 결정** — 데이터가 있는 장치로 일을 보낸다(옮기면 비싸다) {추론}.",
+          "**자원 나눠 쓰기·회수** — 컨테이너들이 한 장치의 자원 풀을 나눠 쓰고[35], 드라이버에는 장치 임대(lease) ioctl 이 있다.[3]",
+          "**완료 알림** — 드라이버의 event 장치는 poll 로 완료를 기다리게 되어 있다.[3]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "같은 일 6개, 두 장에 나누기",
+          "body": "돌아가며 주면 13ms 에 끝나고, 늘 덜 바쁜 장치에 주면 10ms 에 끝납니다(직접 돌린 결과).",
+          "lang": "python",
+          "code": "import heapq\njobs = [8, 3, 3, 2, 2, 2]  # 커널별 예상 시간(ms)\nrr = [0, 0]\nfor i, t in enumerate(jobs): rr[i % 2] += t\nheap = [(0, d) for d in range(2)]\nfor t in sorted(jobs, reverse=True):\n    load, d = heapq.heappop(heap); heapq.heappush(heap, (load + t, d))\nprint(rr, max(rr), sorted(l for l, _ in heap))\n# [13, 7] 13 [10, 10]"
+        }
+      ],
+      "how_far": "스케줄러를 논문 수준으로 만들 필요는 없고, 스레드 풀·작업 큐·완료 통지를 C++ 로 짜서 경쟁 조건 없이 돌려 본 경험이면 출발선입니다 {추론}.",
+      "refs": [
+        2,
+        3,
+        4,
+        31,
+        32,
+        33,
+        35
+      ],
+      "study": [
+        "sdk-docs",
+        "cpp-concurrency",
+        "cuda-runtime"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Device Memory Allocator 설계 및 최적화 (NUMA topology, CXL 메모리 계층 고려)",
+      "short": "빠른 서버 DDR·느리지만 큰 CXL 메모리·그 뒤의 SSD 중 어디에 데이터를 둘지 정하는 할당기를 만드는 일.",
+      "why": "CXL 메모리는 기본 설정에서 리눅스에 CPU 없는 NUMA 노드(멀리 있는 메모리 묶음)로 붙고, devdax 로 두면 호스트가 아닌 장치 전용 메모리가 됩니다 — SDK 설치 문서가 둘 중 하나를 고르게 합니다.[34] 서버 DDR 보다 조금 느리고[2], 엑시나 카드는 그 뒤에 SSD 를 붙인 '무한 메모리'(InfiniteMemory)까지 있어 층이 셋입니다.[2][32] 그래서 '어디에 잡느냐'가 곧 성능입니다 {추론}.",
+      "actually": {
+        "items": [
+          "**연속 메모리 떼어 두기** — system-ram 모드에서는 `ccma`(CXL 연속 메모리 할당기) 모듈이 노드의 일정 비율(예: 60%)을 장치용으로 미리 잡아 둔다.[34]",
+          "**메모리 종류** — 호스트에 비친 CXL 메모리(CxlMem), SSD 뒤의 InfiniteMemory(미리 올려 둬야 함, 1.5.0 에 `discardMemory` 추가) 등 종류별 규칙이 다르다.[32][36]",
+          "**API** — `allocateMemory`·`reallocateMemory`·`releaseMemory`·`pinMemory`·`prefetchMemory` 가 PXL 의 메모리 칸에 있다.[37]",
+          "**정렬·조각** — 64바이트·페이지 단위로 맞추면 빈 틈이 생긴다. 남은 양은 충분한데 연속된 칸이 없어 실패하는 일을 줄인다 {추론}.",
+          "**층 고르기** — 자주 만지는 것은 가까운 DDR, 크고 덜 만지는 것은 CXL 에 둔다 — 리눅스 NUMA 정책이 그 도구다.[17]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "DDR 먼저, 모자라면 CXL",
+          "body": "300바이트를 64바이트 정렬로 잡으면 칸 사이에 20바이트씩 틈이 남습니다. DDR 1000 중 100바이트가 비어 있는데도 네 번째 300은 CXL 로 갑니다 — 조각이 실제로 생기는 모습입니다(직접 돌린 결과).",
+          "lang": "python",
+          "code": "# Pool.alloc(n, align=64): first-fit + 정렬\nfor n in [300, 300, 300, 300, 500]:\n    print(n, '->', alloc(n))\n# 300 -> ('DDR(node0)', 0)\n# 300 -> ('DDR(node0)', 320)\n# 300 -> ('DDR(node0)', 640)\n# 300 -> ('CXL(node2)', 0)\n# 500 -> ('CXL(node2)', 320)"
+        }
+      ],
+      "how_far": "malloc 을 한 번 직접 짜 보고(free list·병합), 리눅스의 NUMA 정책(mbind·numactl)으로 '이 메모리는 노드 2 에'를 해 본 수준이면 대화가 됩니다.[17][19] {추론}",
+      "refs": [
+        2,
+        17,
+        32,
+        34,
+        36,
+        37
+      ],
+      "study": [
+        "sdk-docs",
+        "numa-policy",
+        "daxctl",
+        "mimalloc",
+        "mio"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Linux Device Driver 인터페이스 개발 (DKMS, devdax 등)",
+      "short": "커널 드라이버와 사용자 프로그램 사이의 문(ioctl·mmap·장치 파일)과 설치 방식을 만드는 일.",
+      "why": "엑시나는 호스트 커널 모듈 `mx_dma` 를 공개했습니다. DKMS(커널이 바뀌면 모듈을 다시 빌드해 주는 장치)로 설치하고, 장치 파일은 ioctl·mmap·poll·읽기 세 갈래로 나뉩니다.[3] CXL 메모리 자체는 리눅스 CXL 드라이버와 devdax(메모리를 파일처럼 통째로 매핑하는 장치)로 보이고[14][15], SDK 는 연속 메모리 예약용 `ccma` 모듈도 따로 둡니다.[34] 1.5.0 릴리스에서는 리눅스 6.12·6.13 에서 드라이버 빌드가 깨지던 것을 고쳤습니다 — 커널이 바뀔 때마다 생기는 일입니다.[36]",
+      "actually": {
+        "items": [
+          "**DKMS** — `dkms.conf` 에 모듈 이름 `mx_dma`, 설치 스크립트는 dkms add → build → install 을 돌리고, CXL 이 없는 서버면 빌드 옵션을 바꾼다.[3][16]",
+          "**ioctl** — 사용자 헤더(uapi)에 `MX_IOCTL_ACQUIRE_LEASE` 같은 명령과 구조체, ABI 매직·버전 번호가 있다.[3]",
+          "**mmap** — 장치 레지스터 영역(BAR)을 사용자 공간에 바로 비춘다(`mxdma_bar_mmap`).[3]",
+          "**권한** — 설치 때 `xcena` 그룹을 만들고 장치 파일을 0660 으로 연다.[3]",
+          "**devdax** — `daxctl` 로 CXL 메모리를 devdax 로 둘지 일반 메모리(system-ram)로 붙일지 정한다.[15]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "구조체가 바뀌면 ioctl 번호도 바뀐다",
+          "body": "리눅스 ioctl 번호에는 구조체 크기가 들어갑니다. 32바이트를 40바이트로 늘리면 번호가 달라져 옛 라이브러리가 새 드라이버를 못 부릅니다 — 그래서 uapi 헤더에 ABI 버전을 둡니다[3](직접 돌린 결과).",
+          "lang": "python",
+          "code": "def _IOC(d, t, nr, size): return (d << 30) | (size << 16) | (ord(t) << 8) | nr\nfor size in (32, 40):\n    print(hex(_IOC(3, 'X', 14, size)))\n# 0xc020580e\n# 0xc028580e"
+        }
+      ],
+      "how_far": "커널 모듈 자체는 펌웨어·드라이버 쪽과 나눠 맡을 수 있지만 {추론}, 이 자리는 그 경계(uapi 헤더·장치 파일 규칙·설치)를 정하는 쪽이라 문자 장치 드라이버를 한 번 직접 써 본 경험이 있으면 좋습니다.[26] {추론}",
+      "refs": [
+        3,
+        14,
+        15,
+        16,
+        26,
+        34,
+        36
+      ],
+      "study": [
+        "mxdriver",
+        "ldd3",
+        "daxctl",
+        "kernel-cxl"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Python Binding 개발을 통한 ML/Data 프레임워크 연동 (PyTorch, PyArrow, Pandas 등)",
+      "short": "C++ 런타임을 파이썬에서 import 해 PyTorch 텐서·Arrow 표 그대로 장치에 넘기게 만드는 일.",
+      "why": "회사 발표는 '대부분의 개발자는 PyTorch 같은 높은 층을 원한다'며, Apache Arrow·Substrait 같은 공개 형식으로 질의를 받는 XFLARE 층을 소개했습니다.[2] PXL 저장소에는 파이썬 바인딩 폴더(bindings/python)가 있고 1.5.0 에 파이썬 함수가 더해졌지만, SDK 문서에 파이썬 API 쪽은 아직 없습니다.[36][37] 이 자리가 그 칸을 채우는 일입니다 {추론}. 회사의 다른 공개 저장소(cme)도 C++ 라이브러리를 pybind11 로 파이썬에 내놓습니다.[6]",
+      "actually": {
+        "items": [
+          "**바인딩** — C++ 클래스·함수를 pybind11 로 파이썬 모듈로 만든다. 오래 기다리는 호출에서는 GIL(파이썬의 전역 잠금)을 풀어 준다 — cme 의 바인딩이 그렇게 한다.[6][22]",
+          "**복사 없이 넘기기** — 장치 메모리를 파이썬 버퍼(memoryview)로 보이게 한다. 회사의 maru 는 mmap 영역을 가리키는 memoryview 를 돌려준다.[5]",
+          "**Arrow** — Arrow C 데이터 인터페이스(구조체 두 개)로 표를 복사 없이 주고받는다.[23]",
+          "**PyTorch** — 텐서 메모리를 우리 할당기에서 잡게 하는 길(맞춤 할당기)이 있다 — CUDA 쪽 공식 예가 `CUDAPluggableAllocator` 다.[24]",
+          "**프로세스 주의** — SDK 를 초기화한 뒤 파이썬 multiprocessing 은 fork 가 아니라 spawn 으로 써야 한다고 문서가 적는다 — 바인딩이 장치 상태를 들고 있기 때문이다.[30] {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "보는 것과 복사한 것",
+          "body": "같은 메모리를 numpy 로 '보기만' 하면 원본을 바꿀 때 같이 바뀌고, bytes() 로 복사한 쪽은 그대로입니다 — 바인딩이 지켜야 할 '복사 없음'이 이것입니다(직접 돌린 결과).",
+          "lang": "python",
+          "code": "import mmap, numpy as np\nbuf = mmap.mmap(-1, 16)\nview = np.frombuffer(buf, dtype=np.int32)\ncopy = np.frombuffer(bytes(buf), dtype=np.int32)\nbuf[0:4] = (7).to_bytes(4, 'little')\nprint(view[0], copy[0])\n# 7 0"
+        }
+      ],
+      "how_far": "pybind11 로 C++ 함수 하나를 파이썬에서 부르고, numpy 배열을 복사 없이 받아 본 수준이 출발선입니다.[22] 메모리가 언제까지 살아 있어야 하는지(파이썬 객체가 장치 메모리를 붙잡는 수명)를 설명할 수 있으면 실무 수준입니다 {추론}.",
+      "refs": [
+        2,
+        5,
+        6,
+        22,
+        23,
+        24,
+        30,
+        36,
+        37
+      ],
+      "study": [
+        "pybind11",
+        "pxl-api",
+        "cme",
+        "arrow-cdata",
+        "maru"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "SDK 패키징·배포 자동화 및 사용자 문서 관리",
+      "short": "고객 서버에 드라이버·라이브러리·파이썬 패키지가 한 번에 깔리고, 읽고 따라 할 문서가 있게 만드는 일.",
+      "why": "SDK 는 고객이 직접 까는 물건입니다. 지금 SDK 는 Ubuntu 24.04 용 묶음 파일 하나를 받아 `install.sh` 로 깔고, 같은 내용의 Docker 이미지도 냅니다.[36] 공식 지원은 Ubuntu 24.04 이고 RHEL 계열·openSUSE 는 실험 지원입니다.[34] 진단 스크립트는 드라이버(`mx_dma`)·`libpxl`·`pxl_resourced` 서비스·컴파일러·`xcena_cli` 가 모두 제자리에 있는지 확인합니다.[4]",
+      "actually": {
+        "items": [
+          "**패키지** — 런타임은 DEB 패키지(`libpxl`)로도 나오고, 커널 모듈은 DKMS 로 빌드된다.[3][37]",
+          "**두 판 함께** — PXL 3(`libpxl.so`)과 PXL 4(`libpxl4.so`)가 한 CMake 프로젝트에서 나오고 설치 옵션으로 고른다.[37]",
+          "**배포판·컨테이너** — 배포판별 빌드와 Docker 이미지, 여러 컨테이너가 한 장치를 나눠 쓰는 설정.[34][35][36]",
+          "**릴리스 노트** — 바뀐 API·고친 버그·호환성 깨짐(재빌드 필요)을 판마다 적는다.[36]",
+          "**문서** — 설치 → 확인(validate_host) → 문제 보고(troubleshooting) 순서. 회사는 SDK·maru 문서를 GitHub Pages 로 낸다.[4][5][30]"
+        ]
+      },
+      "how_far": "CMake 로 라이브러리를 빌드·설치하고 CI 에서 패키지를 만들어 본 경험이면 충분합니다 {추론}. 문서는 '처음 받은 사람이 명령 몇 줄로 동작을 확인한다'가 기준입니다 {추론}.",
+      "refs": [
+        3,
+        4,
+        5,
+        30,
+        34,
+        35,
+        36,
+        37
+      ],
+      "study": [
+        "sdk-docs",
+        "sdk-scripts"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "C/C++ 시스템 프로그래밍에 능숙하고, 메모리 모델·동시성 이슈를 실무에서 다뤄본 경험이 있는 분",
+      "short": "여러 스레드가 같은 메모리를 만질 때 순서가 어떻게 보이는지 알아야 런타임이 안 깨져서.",
+      "why": "런타임은 여러 스레드가 동시에 커널을 넣고 메모리를 잡는 곳입니다 {추론}. CXL 은 여러 호스트가 메모리를 함께 볼 수 있지만, 그 위의 잠금은 소프트웨어가 따로 만들어야 한다는 것이 회사 블로그 글의 주제입니다.[8] 회사의 cme 저장소도 원자 연산 없이 비일관(non-coherent) 공유 메모리에서 소유권을 맞추는 틀입니다.[6]",
+      "actually": {
+        "items": [
+          "**메모리 모델** — C++ 의 `memory_order`(acquire/release)가 무엇을 보장하는지.[27]",
+          "**캐시 비우기** — 일관성이 없는 메모리에서는 쓴 뒤 캐시를 비워야 남이 본다 — cme 는 `cme::flush` 를 따로 둔다.[6]",
+          "**흔한 버그** — 데이터 경쟁, 잠금 순서 뒤집힘(교착), 해제 후 사용."
+        ]
+      },
+      "level": {
+        "basic": "mutex·condition_variable 로 생산자-소비자 큐를 짠다.",
+        "work": "atomic 과 memory_order 로 잠금 없는 카운터·플래그를 짜고 왜 그 순서인지 설명한다.",
+        "team": "장치와 호스트가 같은 메모리를 볼 때 언제 캐시를 비우고 장벽을 쳐야 하는지 정한다.[6]"
+      },
+      "how_far": "'실무에서 다뤄본' 수준이니 동시성 버그를 실제로 재현·수정한 이야기 하나는 준비하는 것이 좋습니다 {추론}.",
+      "refs": [
+        6,
+        8,
+        27
+      ],
+      "study": [
+        "cpp-concurrency",
+        "cme"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Linux 커널·드라이버 레이어와 유저스페이스 사이의 인터페이스를 설계하거나 디버깅해본 경험이 있는 분",
+      "short": "런타임이 하는 일의 절반이 드라이버에 ioctl·mmap 으로 말을 거는 것이라서.",
+      "why": "엑시나 드라이버가 사용자 공간에 내놓는 문은 ioctl(명령)·mmap(레지스터 비추기)·poll(완료 기다리기)·read(장치 주소 읽기)입니다.[3] 런타임은 그 문을 감싸는 첫 층입니다 {추론}.",
+      "actually": {
+        "items": [
+          "**설계** — 구조체 크기·정렬·버전을 정해 32/64비트, 옛/새 버전이 같이 살게 한다(`compat_ioctl`).[3]",
+          "**디버깅** — strace 로 어떤 ioctl 이 무슨 오류(EINVAL·EPERM)로 돌아왔는지 본다.[25]",
+          "**권한** — 어떤 명령은 `CAP_SYS_RAWIO` 권한이 있어야 한다고 헤더에 적혀 있다.[3]"
+        ]
+      },
+      "how_far": "문자 장치 + ioctl 하나짜리 연습 모듈을 만들어 사용자 프로그램에서 불러 봤으면 출발선입니다.[26] {추론}",
+      "refs": [
+        3,
+        25,
+        26
+      ],
+      "study": [
+        "ldd3",
+        "tlpi",
+        "mxdriver"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "새로운 하드웨어나 아키텍처 문서를 읽고 소프트웨어 추상화 구조를 스스로 도출할 수 있는 분",
+      "short": "따라 할 선례가 없는 새 칩이라, 규격서를 읽고 API 모양을 직접 정해야 해서.",
+      "why": "이 칩은 CXL 메모리·SSD 포트·수천 코어를 한 몸에 담은 새 구조이고[2][9], 양산을 2026년 말로 잡은 시기입니다.[10] 회사가 세 겹의 API 층을 따로 만든 것 자체가 '하드웨어 문서 → 추상화' 작업의 결과입니다.[2]",
+      "actually": {
+        "items": [
+          "**재료** — 칩 사양서, CXL 규격, 리눅스 CXL 드라이버 문서.[14]",
+          "**결과물** — '사용자는 무엇을 알아야 하고 무엇을 몰라도 되나'를 가른 API 초안. 발표의 Device API → PXL → XFLARE 가 그 예다.[2]",
+          "**비교 대상** — CUDA 의 Runtime API(쉬운 층)와 Driver API(세밀한 층)를 나눈 방식.[20][21]"
+        ]
+      },
+      "how_far": "인터뷰에서 '새 장치를 받았다면 API 를 어떻게 나누겠나'를 그림으로 설명할 수 있으면 됩니다 {추론}.",
+      "refs": [
+        2,
+        9,
+        10,
+        14,
+        20,
+        21
+      ],
+      "study": [
+        "veloxcon",
+        "cuda-runtime",
+        "kernel-cxl"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "모호한 요구사항을 작은 단위로 쪼개어 빠르게 프로토타입을 만들고 검증하는 방식을 선호하는 분",
+      "short": "SDK 를 처음 만드는 단계라, 정답 없이 작게 만들어 보고 고치는 일이 많아서.",
+      "why": "포지션 소개가 런타임과 SDK 를 '처음부터' 만든다고 적고 있습니다.[1] 회사가 공개한 저장소들(cme·roof)도 '실험적 사전 공개'라고 스스로 밝힐 만큼 초기 단계입니다.[6] {추론}",
+      "actually": {
+        "items": [
+          "**예** — 할당기를 먼저 단순한 first-fit 으로 붙여 전체 흐름을 돌리고, 측정 뒤 바꾼다 {추론}.",
+          "**검증** — 회사의 mio 같은 메모리 대역폭 측정 도구로 숫자를 보고 판단한다.[7]"
+        ]
+      },
+      "how_far": "프로토타입 → 측정 → 다시 설계를 한 번 돌려 본 이야기를 구체적 숫자와 함께 말할 수 있으면 됩니다 {추론}.",
+      "refs": [
+        1,
+        6,
+        7
+      ],
+      "study": [
+        "mio"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "코드 품질과 개발 속도 사이의 균형을 실용적으로 판단할 수 있는 분",
+      "short": "SDK 는 고객이 쓰는 공개 API 라 한 번 내면 바꾸기 어렵고, 안쪽은 빨리 고쳐야 해서.",
+      "why": "드라이버 헤더에 ABI 매직·버전 번호를 따로 둔 것처럼[3], 밖으로 나간 인터페이스는 고객 코드가 기대므로 신중해야 합니다 {추론}. 반면 칩이 양산을 앞둔 시기라 안쪽 구현은 빠르게 바뀝니다.[10] {추론}",
+      "actually": {
+        "items": [
+          "**공개 API·ABI** — 이름·구조체·오류 코드는 천천히, 버전을 붙여서.[3]",
+          "**내부 구현** — 할당 전략·스케줄 정책은 측정하며 자주 바꾼다 {추론}.",
+          "**시험** — 드라이버 저장소처럼 tests 폴더와 CI 로 바꿀 때마다 확인한다.[3]"
+        ]
+      },
+      "how_far": "'이건 일부러 대충 두었다'와 '이건 처음부터 단단히 했다'를 이유와 함께 구분해 말할 수 있으면 됩니다 {추론}.",
+      "refs": [
+        3,
+        10
+      ],
+      "study": []
+    },
+    {
+      "section": "qualification",
+      "quote": "혼자 깊게 파고드는 것도, 팀과 설계를 함께 논의하는 것도 모두 편한 분",
+      "short": "런타임은 펌웨어·드라이버·컴파일러·데이터 엔진 팀이 모두 맞닿는 자리라서.",
+      "why": "회사 발표에 나온 소프트웨어 층(드라이버·Device API·PXL·XFLARE·컴파일러·시뮬레이터)은 서로 다른 사람이 만들고[2], 하드웨어와 소프트웨어의 경계를 정하는 별도 공고도 있습니다.[13] 런타임은 그 가운데라 논의가 많습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**혼자** — 한 버그를 커널부터 파이썬까지 끝까지 따라간다 {추론}.",
+          "**같이** — API 초안을 펌웨어·데이터 엔진 쪽과 맞춘다.[13] {추론}"
+        ]
+      },
+      "how_far": "설계 문서를 쓰고 리뷰를 받아 고친 경험이 있으면 충분합니다 {추론}.",
+      "refs": [
+        2,
+        13
+      ],
+      "study": []
+    },
+    {
+      "section": "qualification",
+      "quote": "전산·컴퓨터·전기전자공학 또는 SW 관련 분야 학사 이상",
+      "short": "운영체제·컴퓨터 구조를 배운 전공을 기대해서 — SW 관련이면 된다.",
+      "why": "업무가 메모리 계층·캐시·인터럽트·드라이버 같은 운영체제·컴퓨터 구조 과목 내용 위에 있습니다.[1] {추론}",
+      "actually": {
+        "items": [
+          "**관련 과목** — 운영체제, 컴퓨터 구조, 시스템 프로그래밍 {추론}."
+        ]
+      },
+      "how_far": "학사 이상이 최소선입니다.[1] 전공이 달라도 'SW 관련 분야'에 들면 지원할 수 있게 적혀 있습니다.[1]",
+      "refs": [
+        1
+      ],
+      "study": [
+        "tlpi"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "C/C++로 시스템 소프트웨어를 설계·구현한 경험 (메모리 관리, 동시성, ABI 등을 실무에서 다뤄본 수준)",
+      "short": "런타임·바인딩이 모두 C/C++ 이고, 고객 프로그램과 이진(ABI)으로 맞물려야 해서.",
+      "why": "회사가 공개한 시스템 코드(드라이버는 C, cme·roof 는 C++17)가 모두 C/C++ 입니다.[3][6] 런타임은 공유 라이브러리로 배포되므로 ABI(이미 컴파일된 프로그램끼리의 약속)가 깨지면 고객이 다시 빌드해야 합니다 {추론}.",
+      "actually": {
+        "items": [
+          "**메모리 관리** — 소유권(누가 해제하나)·RAII·장치 메모리 핸들의 수명.",
+          "**동시성** — 스레드 안전한 API, 콜백이 어느 스레드에서 불리나.",
+          "**ABI** — 구조체에 필드를 더할 때 크기·버전 필드로 옛 프로그램을 지킨다 — 드라이버 uapi 의 방식.[3]"
+        ]
+      },
+      "level": {
+        "basic": "C++ 로 클래스·템플릿·스마트 포인터를 쓴다.",
+        "work": "공유 라이브러리를 만들어 버전을 올리고, 밖에 내놓는 헤더를 C 인터페이스로 감싼다.",
+        "team": "드라이버 ioctl 구조체부터 파이썬 바인딩까지 한 줄로 이어지는 소유권·버전 규칙을 정한다.[3][6]"
+      },
+      "how_far": "'실무에서 다뤄본 수준'이라 위 세 가지 중 하나는 실제 사고(누수·경쟁·ABI 깨짐)를 고친 경험으로 말할 수 있어야 합니다 {추론}.",
+      "refs": [
+        3,
+        6
+      ],
+      "study": [
+        "cpp-concurrency",
+        "tlpi"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Linux 환경에서 개발하고 디버깅한 경험 (strace, gdb, valgrind 등 활용 가능한 수준)",
+      "short": "장치 문제는 대개 '어느 시스템 호출이 무엇을 돌려받았나'부터 봐야 풀려서.",
+      "why": "고객 서버에서 문제가 나면 회사 진단 스크립트가 드라이버·서비스·CXL 장치 상태를 모읍니다.[4] 그 다음은 개발자가 strace·gdb 로 런타임 안을 들여다보는 일입니다 {추론}.",
+      "actually": {
+        "items": [
+          "**strace** — ioctl·mmap 호출과 돌아온 오류 번호를 본다.[25]",
+          "**gdb** — 멈춘 스레드들의 스택으로 교착을 찾는다.",
+          "**valgrind** — 해제 후 사용·누수를 찾는다. 장치 메모리를 mmap 으로 쓰는 부분은 따로 알려 줘야 한다 {추론}."
+        ]
+      },
+      "how_far": "세 도구를 각각 실제 버그 하나에 써 본 경험이면 '활용 가능한 수준'입니다 {추론}.",
+      "refs": [
+        4,
+        25
+      ],
+      "study": [
+        "tlpi",
+        "sdk-scripts"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "하드웨어·드라이버 레이어와 상호작용하는 소프트웨어를 작성하거나 분석해본 경험",
+      "short": "느리거나 틀린 원인이 코드가 아니라 장치·드라이버 쪽일 때 가려낼 수 있어야 해서.",
+      "why": "이 런타임 아래에는 커널 드라이버(mx_dma)와 CXL 메모리 장치가 바로 있습니다.[3][4] 장치를 다뤄 본 사람은 레지스터·DMA·인터럽트의 지연을 감안해 API 를 설계합니다 {추론}.",
+      "actually": {
+        "items": [
+          "**예** — GPU·NIC·스토리지·FPGA 를 다루는 사용자 공간 라이브러리 작성.",
+          "**예** — 드라이버 소스를 읽고 성능 문제의 원인을 찾은 경험."
+        ]
+      },
+      "how_far": "'작성하거나 분석해본' 이라 직접 드라이버를 짜지 않았어도, 장치 라이브러리를 읽고 문제를 찾은 경험이면 됩니다.[1] {추론}",
+      "refs": [
+        1,
+        3,
+        4
+      ],
+      "study": [
+        "mxdriver",
+        "ldd3"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "CUDA Runtime/Driver API 등 가속기 런타임을 직접 사용하거나 개발한 경험",
+      "short": "회사 스스로 'GPU 의 CUDA 같은 SDK'를 만든다고 하니 CUDA 를 아는 사람이 가장 빨리 적응해서.",
+      "why": "발표에서 '하드웨어를 쓰려면 GPU 의 CUDA 같은 강한 소프트웨어 스택이 필요하다'고 했고, 가속기는 보통 명시적 메모리 복사가 필요하지만 CXL 은 그렇지 않다는 점을 CUDA 와 견줘 설명했습니다.[2]",
+      "actually": {
+        "items": [
+          "**겹치는 것** — 장치 열기(Context)·메모리 잡기(memAlloc)·커널 올리기(Module/Function)·실행(Map)·스트림·동기화의 모양이 CUDA Runtime API 와 거의 같다.[20][31][33]",
+          "**다른 것** — CXL 메모리는 CPU 가 보통 load/store 로 바로 읽어 복사가 필요 없다.[2]",
+          "**두 층** — CUDA 가 Runtime(쉬움)·Driver(세밀함)를 나눈 것처럼 엑시나도 PXL·Device API 를 나눴다.[2][21]"
+        ]
+      },
+      "how_far": "CUDA 로 커널을 짜서 stream·event 로 비동기 실행을 해 본 경험이면 충분히 우대 대상입니다 {추론}.",
+      "refs": [
+        2,
+        20,
+        21,
+        31,
+        33
+      ],
+      "study": [
+        "cuda-runtime"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Linux Kernel Module 또는 Device Driver 개발 경험",
+      "short": "드라이버 인터페이스를 같이 정해야 하니 커널 쪽 사정을 알면 대화가 빨라서.",
+      "why": "업무에 드라이버 인터페이스 개발(DKMS·devdax)이 들어 있고[1], 회사 드라이버는 GPL-2.0 으로 공개된 커널 모듈입니다.[3]",
+      "actually": {
+        "items": [
+          "**연습** — 문자 장치 + ioctl + mmap 을 가진 작은 모듈을 DKMS 로 설치해 본다.[16][26]",
+          "**커널 쪽 사정** — 모듈 적재, 커널 메모리 할당, 커널 안의 동기화가 사용자 공간과 어떻게 다른지 안다.[28]",
+          "**읽기** — 회사 드라이버의 fops.c(장치 파일 규칙)·uapi 헤더를 읽는다.[3]"
+        ]
+      },
+      "how_far": "모듈을 하나 만들어 올리고 내리며 dmesg 로 확인해 봤으면 됩니다 {추론}.",
+      "refs": [
+        1,
+        3,
+        16,
+        26
+      ],
+      "study": [
+        "ldd3",
+        "rlk",
+        "mxdriver"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Memory Allocator·Memory Pool 등 메모리 관리 시스템 설계 경험",
+      "short": "업무 셋째 줄인 장치 메모리 할당기를 바로 맡을 수 있어서.",
+      "why": "장치 메모리 할당기 설계가 업무에 따로 적혀 있고[1], 회사의 maru 는 CXL 메모리 풀 위에서 alloc/free 와 '영역이 차면 새 영역을 잡는' 자동 확장을 제공합니다.[5]",
+      "actually": {
+        "items": [
+          "**메모리 풀** — 큰 덩어리를 한 번 잡고 그 안에서 잘라 쓴다 — maru 의 region·page 구조.[5]",
+          "**크기 등급** — 작은 할당을 등급별로 모아 조각을 줄인다(mimalloc·jemalloc 방식).[29]"
+        ]
+      },
+      "how_far": "게임·DB·네트워크 서버 등에서 객체 풀이나 아레나 할당기를 만들어 측정해 본 경험이면 충분합니다 {추론}.",
+      "refs": [
+        1,
+        5,
+        29
+      ],
+      "study": [
+        "mimalloc",
+        "maru"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "CXL·NUMA 등 메모리 아키텍처에 대한 이해",
+      "short": "CXL 메모리는 리눅스에서 '멀리 있는 NUMA 노드'로 보이니 둘을 알아야 배치를 정해서.",
+      "why": "회사 진단 스크립트가 NUMA 배치·HMAT·devdax 모드를 확인하고[4], 리눅스는 HMAT 로 메모리 노드별 대역폭·지연을 알려 줍니다.[18]",
+      "actually": {
+        "items": [
+          "**CXL 세 종류** — 장치가 메모리를 내놓는 Type 3 가 메모리 확장 카드다(리눅스 CXL 문서).[14]",
+          "**NUMA 정책** — bind·preferred·interleave 로 어느 노드에 잡을지 정한다.[17][19]",
+          "**측정** — `numactl --membind` 나 devdax 로 대역폭을 잰다 — 회사의 mio 가 그 도구다.[7]"
+        ]
+      },
+      "how_far": "numactl 로 두 노드의 대역폭 차이를 직접 재 본 정도면 이해가 있다고 말할 수 있습니다 {추론}.",
+      "refs": [
+        4,
+        7,
+        14,
+        17,
+        18,
+        19
+      ],
+      "study": [
+        "kernel-cxl",
+        "numa-policy",
+        "mio"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "pybind11 등을 활용한 Python Binding 개발 경험",
+      "short": "파이썬 연동이 업무에 있고 회사 코드도 이미 pybind11 을 쓰고 있어서.",
+      "why": "회사 cme 저장소의 바인딩은 `PYBIND11_MODULE` 로 세션·잠금 클래스를 파이썬에 내놓고, 오래 기다리는 호출은 GIL 을 풀도록 짜여 있습니다.[6]",
+      "actually": {
+        "items": [
+          "**클래스·예외 연결** — C++ 예외를 파이썬 예외로, C++ 객체를 with 문(컨텍스트 매니저)으로.[6]",
+          "**버퍼** — numpy·memoryview 와 복사 없이 메모리를 나눈다.[22]"
+        ]
+      },
+      "how_far": "작은 C++ 라이브러리를 pybind11 로 감싸 pip 로 설치되게 해 봤으면 됩니다 {추론}.",
+      "refs": [
+        6,
+        22
+      ],
+      "study": [
+        "pybind11",
+        "cme"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "오픈소스 프로젝트 기여 경험",
+      "short": "회사가 코드를 공개하고 Velox 같은 오픈소스 커뮤니티와 함께 가려 해서.",
+      "why": "회사는 VeloxCon 발표에서 Velox 커뮤니티와 협력하고 기여하고 싶다고 했고, SDK·API 공개와 표준 그룹 기여 계획도 밝혔습니다.[2] GitHub 에 드라이버·라이브러리를 공개하고 있고 LMCache 를 가져와 쓰기도 합니다.[3][5]",
+      "actually": {
+        "items": [
+          "**예** — Velox·LMCache·리눅스 CXL 쪽에 고친 코드를 올리는 일 {추론}.",
+          "**공개 저장소 관리** — 이슈·PR·라이선스(GPL·Apache·MIT)를 다룬다.[3][5][7]"
+        ]
+      },
+      "how_far": "어느 프로젝트든 PR 하나가 받아들여진 경험이면 이야기가 됩니다 {추론}.",
+      "refs": [
+        2,
+        3,
+        5,
+        7
+      ],
+      "study": [
+        "maru"
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "CUDA 같은 가속기 SDK 를 '쓰는 쪽'에서 '만드는 쪽'으로 가고 싶은 사람[2]",
+      "커널부터 파이썬까지 한 줄로 이어지는 문제를 끝까지 따라가는 게 즐거운 사람 {추론}",
+      "API 모양을 처음부터 정하는 일을 해 보고 싶은 사람[1]",
+      "CXL·메모리 계층처럼 새로 열리는 분야를 일찍 익히고 싶은 사람 {추론}"
+    ],
+    "hard": [
+      "칩과 SDK 가 같이 만들어지는 시기라 아래층이 자주 바뀐다 {추론}",
+      "C/C++·커널·파이썬·데이터 엔진을 넘나들어야 해서 배울 범위가 넓다[1]",
+      "참고할 선례가 적은 새 구조라 문서를 읽고 스스로 정해야 하는 일이 많다[1]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "장치 메모리 할당기에서 남은 양은 충분한데 할당이 실패합니다. 왜일까요?",
+      "a": "조각(정렬 틈·연속 칸 부족) — 업무 셋째 줄의 핵심.[1]"
+    },
+    {
+      "q": "ioctl 구조체에 필드 하나를 더하면 무엇이 깨질 수 있나요?",
+      "a": "ioctl 번호에 크기가 들어가 옛 라이브러리와 어긋난다 — 그래서 ABI 버전을 둔다.[3]"
+    },
+    {
+      "q": "파이썬에서 장치 메모리를 memoryview 로 돌려줬는데 가끔 프로그램이 죽습니다.",
+      "a": "메모리를 푼 뒤에도 뷰가 남아 있는 수명 문제 — maru 문서도 같은 경고를 단다.[5]"
+    },
+    {
+      "q": "CUDA 에서는 cudaMemcpy 가 필요한데 CXL 장치에서는 왜 필요 없을 수 있나요?",
+      "a": "CXL 메모리는 호스트 메모리 공간의 일부라 load/store 로 바로 닿는다.[2]"
+    },
+    {
+      "q": "스트림에 넣은 순서대로 일이 끝난다고 가정한 코드가 가끔 틀립니다. 왜일까요?",
+      "a": "PXL 스트림은 넣는 순서만 지키고 끝나는 순서는 보장하지 않는다.[33]"
+    }
+  ],
+  "resources": [
+    {
+      "id": "sdk-docs",
+      "title": "XCENA SDK Documentation",
+      "by": "엑시나 · GitHub Pages",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://xcena-dev.github.io/sdk_release/",
+      "why": "지금 이 팀이 만든 런타임의 공개 설명서. PXL Key Concepts 네 쪽(장치 구조·객체·커널 실행·스트림)과 설치 문서(system-ram·devdax·ccma)를 읽으면 업무 1~3·6줄이 무엇을 다듬는 일인지 보인다."
+    },
+    {
+      "id": "pxl-api",
+      "title": "PXL C++ API 문서",
+      "by": "엑시나 · GitHub Pages",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://xcena-dev.github.io/pxl/",
+      "why": "pxl:: 네임스페이스의 실행·메모리·호스트 캐시 함수 목록과 PXL 3/4 빌드·파이썬 바인딩 위치. 런타임 API 설계를 직접 견줘 볼 실물."
+    },
+    {
+      "id": "veloxcon",
+      "title": "Introducing HW Accelerated Velox with CXL Computational Memory",
+      "by": "Harry Kim(엑시나 CPO) · VeloxCon · 15분",
+      "kind": "video",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+      "why": "Device API → PXL → XFLARE 세 층과 SDK 구성(컴파일러·라이브러리·시뮬레이터)을 회사가 직접 설명한다. 업무 첫 줄 '런타임'이 어느 층인지 여기서 잡힌다."
+    },
+    {
+      "id": "mxdriver",
+      "title": "xcena-dev/mxdriver",
+      "by": "엑시나 · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://github.com/xcena-dev/mxdriver",
+      "why": "업무 넷째 줄의 실물. dkms.conf·install.sh(설치), fops.c(장치 파일 규칙), include/uapi(ioctl·ABI 버전)를 읽으면 런타임이 무엇 위에 서는지 보인다."
+    },
+    {
+      "id": "sdk-scripts",
+      "title": "xcena-dev/public_sdk_release",
+      "by": "엑시나 · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://github.com/xcena-dev/public_sdk_release",
+      "why": "진단 스크립트가 확인하는 목록(mx_dma·libpxl·pxl_resourced·devdax·NUMA)이 곧 SDK 가 깔아야 할 목록이다 — 패키징 줄의 지도."
+    },
+    {
+      "id": "maru",
+      "title": "Maru 문서 · KV Cache Storage Engine on CXL Shared Memory",
+      "by": "엑시나 · GitHub Pages",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://xcena-dev.github.io/maru/",
+      "why": "회사가 CXL 메모리 위에 만든 파이썬 API(alloc·store·retrieve, memoryview 반환)와 설치 방식의 실례. 메모리 풀·파이썬 연동·문서화 줄을 한 번에 본다."
+    },
+    {
+      "id": "cme",
+      "title": "xcena-dev/cme",
+      "by": "엑시나 · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://github.com/xcena-dev/cme",
+      "why": "비일관 공유 메모리 위의 잠금(동시성·메모리 모델 요건)과 pybind11 바인딩(pybind11/cme.cpp)을 같은 저장소에서 본다."
+    },
+    {
+      "id": "mio",
+      "title": "xcena-dev/mio — Memory I/O Microbenchmark",
+      "by": "엑시나 · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://github.com/xcena-dev/mio",
+      "why": "NUMA 노드·devdax 의 대역폭을 재는 회사 도구. 할당기·NUMA 요건을 '숫자로' 이해하는 출발점."
+    },
+    {
+      "id": "cuda-runtime",
+      "title": "CUDA Runtime API",
+      "by": "NVIDIA",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.nvidia.com/cuda/cuda-runtime-api/index.html",
+      "why": "가속기 런타임의 표준 모양(장치·메모리·stream·event). 우대 첫 줄과 업무 첫·둘째 줄의 비교 대상. Driver API 문서와 함께 읽으면 두 층 설계가 보인다."
+    },
+    {
+      "id": "tlpi",
+      "title": "The Linux Programming Interface",
+      "by": "Michael Kerrisk · No Starch Press · 2010",
+      "kind": "book",
+      "lang": "en",
+      "level": "실무",
+      "url": "https://man7.org/tlpi/",
+      "why": "mmap·ioctl·스레드·시그널 등 리눅스 시스템 프로그래밍 전반. 필수 요건의 'Linux 에서 개발·디버깅'과 유저스페이스 쪽 경계의 바탕."
+    },
+    {
+      "id": "ldd3",
+      "title": "Linux Device Drivers, 3rd Edition",
+      "by": "Jonathan Corbet · Alessandro Rubini · Greg Kroah-Hartman",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://lwn.net/Kernel/LDD3/",
+      "why": "문자 장치·ioctl·mmap·DMA 를 처음부터. 오래된 커널 기준이라 세부 API 는 다르지만 드라이버 인터페이스 요건의 뼈대를 잡기에 좋다(무료 PDF)."
+    },
+    {
+      "id": "rlk",
+      "title": "리눅스 커널 심층 분석 (개정판)",
+      "by": "로버트 러브 · 황정동 옮김 · 에이콘출판사 · 2012",
+      "kind": "book",
+      "lang": "ko",
+      "level": "실무",
+      "url": "https://www.yes24.com/product/goods/7351874",
+      "why": "커널 모듈·메모리 관리·동기화를 한국어로. 커널 모듈 우대 요건과 커널 쪽 사정을 이해하는 데 쓴다."
+    },
+    {
+      "id": "cpp-concurrency",
+      "title": "C++ Concurrency in Action, Second Edition",
+      "by": "Anthony Williams · Manning · 2019",
+      "kind": "book",
+      "lang": "en",
+      "level": "심화",
+      "url": "https://www.manning.com/books/c-plus-plus-concurrency-in-action-second-edition",
+      "why": "C++ 메모리 모델·atomic·잠금 없는 자료구조. '메모리 모델·동시성 이슈를 실무에서' 요건을 위한 책."
+    },
+    {
+      "id": "pybind11",
+      "title": "pybind11 documentation",
+      "by": "pybind11 프로젝트",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://pybind11.readthedocs.io/en/stable/",
+      "why": "C++ 를 파이썬 모듈로 내놓는 방법, 버퍼 프로토콜·GIL 해제. 파이썬 바인딩 업무·우대 줄 그대로."
+    },
+    {
+      "id": "arrow-cdata",
+      "title": "The Arrow C data interface",
+      "by": "Apache Arrow",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arrow.apache.org/docs/format/CDataInterface.html",
+      "why": "PyArrow·pandas 와 C/C++ 사이에서 표를 복사 없이 넘기는 표준. 업무 다섯째 줄의 데이터 쪽 연동."
+    },
+    {
+      "id": "kernel-cxl",
+      "title": "Compute Express Link — Linux 커널 문서",
+      "by": "Linux 커널",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+      "why": "CXL 장치가 리눅스에서 어떻게 메모리·DAX 로 보이는지. CXL 이해 우대와 아키텍처 문서 읽기 요건."
+    },
+    {
+      "id": "daxctl",
+      "title": "daxctl",
+      "by": "pmem.io (ndctl 프로젝트)",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://pmem.io/daxctl/",
+      "why": "devdax 장치를 다시 설정하고 일반 메모리로 붙이는 명령. 업무 넷째 줄의 devdax 를 손으로 만져 본다."
+    },
+    {
+      "id": "numa-policy",
+      "title": "NUMA Memory Policy — Linux 커널 문서",
+      "by": "Linux 커널",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.kernel.org/admin-guide/mm/numa_memory_policy.html",
+      "why": "bind·preferred·interleave 정책이 무엇인지. NUMA 를 고려한 할당기 줄의 바탕. mbind(2)·numa(3) 매뉴얼과 같이 본다."
+    },
+    {
+      "id": "mimalloc",
+      "title": "microsoft/mimalloc",
+      "by": "Microsoft · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://github.com/microsoft/mimalloc",
+      "why": "작고 빠른 범용 할당기의 실물 코드. 크기 등급·스레드별 힙을 읽으며 메모리 할당기 우대 요건을 채운다."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "회사의 소프트웨어 층 그리기",
+      "time": "3~5일",
+      "goal": "드라이버 → Device API → PXL → XFLARE 각 층이 무엇을 맡는지 설명할 수 있다.",
+      "resources": [
+        "veloxcon",
+        "sdk-docs",
+        "sdk-scripts",
+        "mxdriver"
+      ],
+      "task": "발표와 SDK 문서를 보며 층 그림을 그리고, PXL 객체(Context·Job·Map·Stream)와 진단 스크립트가 확인하는 이름(mx_dma·libpxl·pxl_resourced·/dev/dax)을 각 층에 붙인다. 드라이버 fops.c 의 세 장치 파일을 그림 맨 아래에 적는다."
+    },
+    {
+      "title": "리눅스 시스템 프로그래밍과 동시성",
+      "time": "3~4주",
+      "goal": "mmap·ioctl·스레드를 쓰는 C/C++ 프로그램을 짜고 strace·gdb·valgrind 로 문제를 찾는다.",
+      "resources": [
+        "tlpi",
+        "cpp-concurrency"
+      ],
+      "task": "가짜 장치를 흉내 내는 공유 메모리 링 버퍼를 만들고, 생산자 4·소비자 2 스레드로 돌린다. 일부러 memory_order 를 틀리게 해서 깨지는 것을 본 뒤 고친다."
+    },
+    {
+      "title": "작은 드라이버와 그 위의 런타임",
+      "time": "3~4주",
+      "goal": "ioctl·mmap 을 가진 문자 장치 모듈을 DKMS 로 깔고, 그것을 감싸는 C++ 라이브러리를 만든다.",
+      "resources": [
+        "ldd3",
+        "rlk",
+        "mxdriver"
+      ],
+      "task": "가상 장치 모듈(버퍼 할당 ioctl + mmap)을 만들고, C++ 쪽에 Device·Buffer·Queue 세 클래스를 둔다. uapi 구조체에 버전 필드를 넣고 필드를 더해도 옛 프로그램이 도는지 확인한다."
+    },
+    {
+      "title": "NUMA 를 아는 할당기",
+      "time": "2~3주",
+      "goal": "노드를 골라 메모리를 잡고, 크기 등급 할당기로 조각을 재며 비교한다.",
+      "resources": [
+        "numa-policy",
+        "daxctl",
+        "mimalloc",
+        "mio"
+      ],
+      "task": "mmap 으로 받은 큰 덩어리 위에 크기 등급 + free list 할당기를 짜고, 무작위 크기 10만 번 할당·해제 후 조각률을 잰다. NUMA 가 있는 리눅스(또는 QEMU 의 가상 NUMA)에서 mbind 로 노드를 바꿔 대역폭을 비교한다."
+    },
+    {
+      "title": "파이썬으로 내놓기",
+      "time": "2주",
+      "goal": "C++ 런타임을 pybind11 로 감싸 numpy·Arrow 와 복사 없이 데이터를 나눈다.",
+      "resources": [
+        "pybind11",
+        "pxl-api",
+        "arrow-cdata",
+        "cme",
+        "maru"
+      ],
+      "task": "앞 단계의 Buffer 를 파이썬 버퍼 프로토콜로 내놓고 numpy 로 열어 값이 같이 바뀌는지 확인한다. Arrow C 데이터 인터페이스로 정수 열 하나를 넘기고, 오래 걸리는 함수에서 GIL 을 풀어 두 스레드가 동시에 도는지 본다."
+    }
+  ],
+  "pay": {
+    "summary": "공개된 연봉 숫자가 없다 — 비상장 회사라 사업보고서 평균 급여가 없고, 공고에도 적혀 있지 않다",
+    "rows": [
+      {
+        "label": "공고 표기 연봉",
+        "value": "적혀 있지 않음",
+        "basis": "공고",
+        "note": "경력 3년↑ 공고이고 급여 칸이 없다 [1]"
+      }
+    ],
+    "how": "공시 숫자 없음 — 비상장이라 사업보고서 '직원 1인 평균 급여액'이 없다. 같은 회사의 다른 공고 풀이 때 공공데이터 집계 사이트(자소설닷컴)의 회사 페이지는 접근이 막혀 숫자를 확인하지 못했다. 경력직이라 처우는 개인별 협의로 정해진다고 보는 것이 자연스럽다 {추론}. 시리즈 B 2,018억 원을 포함해 누적 약 2,800억 원을 투자받았다고 공고가 밝혔다 [1]."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "MX Day",
+        "detail": "한 달에 한 번 전사가 함께 쉬는 유급 휴일, 연 12회"
+      },
+      {
+        "name": "유연근무",
+        "detail": "선택적 근로시간제 기반"
+      },
+      {
+        "name": "식대",
+        "detail": "점심 식대 지원(채용 홈페이지에는 점심·저녁 식대로 적혀 있다)"
+      },
+      {
+        "name": "복지포인트",
+        "detail": "지급(금액은 밝히지 않음)"
+      },
+      {
+        "name": "건강검진",
+        "detail": "임직원과 임직원 가족"
+      },
+      {
+        "name": "친목 활동",
+        "detail": "분기별(채용 홈페이지)"
+      }
+    ],
+    "note": "이 공고의 복리후생 칸 [1]과 엑시나 채용 홈페이지의 복지 목록 [11] — 2026년 11월 확인. 금액·조건은 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "엑시나 본사 · 미래에셋벤처타워",
+    "address": "경기도 성남시 분당구 판교역로241번길 20, 9층 (삼평동, 미래에셋벤처타워)",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C241%EB%B2%88%EA%B8%B8%2020",
+    "near": "신분당선·경강선 판교역 근처 판교테크노밸리 {추론}",
+    "note": "주소는 공고 근무지 [1]. 채용 홈페이지 회사 정보에는 같은 건물 8층·9층으로 적혀 있다 [12]. 미국 지사는 실리콘밸리에 있다 [1]."
+  },
+  "sources": [
+    {
+      "n": 1,
+      "title": "엑시나 채용 · [SW] System Software Engineer, Device Runtime & SDK",
+      "url": "https://xcena.career.greetinghr.com/ko/o/110622",
+      "kind": "posting",
+      "note": "회사 소개·포지션 소개·업무·요건·근무지·복리후생"
+    },
+    {
+      "n": 2,
+      "title": "VeloxCon · Introducing HW Accelerated Velox with CXL Computational Memory (Harry Kim, XCENA)",
+      "url": "https://www.youtube.com/watch?v=hMn3vs0c6q8",
+      "kind": "company",
+      "date": "2025-05",
+      "note": "엑시나 CPO 발표 15분 · 자막 전부와 장면(Device API·PXL·소프트웨어 층 그림) 확인"
+    },
+    {
+      "n": 3,
+      "title": "GitHub xcena-dev/mxdriver — 호스트 리눅스 커널 모듈 mx_dma",
+      "url": "https://github.com/xcena-dev/mxdriver",
+      "kind": "company",
+      "note": "dkms.conf·install.sh·fops.c·include/uapi/mx_dma_lease.h 확인(GPL-2.0)"
+    },
+    {
+      "n": 4,
+      "title": "GitHub xcena-dev/public_sdk_release — 호스트 진단 스크립트",
+      "url": "https://github.com/xcena-dev/public_sdk_release",
+      "kind": "company",
+      "note": "validate_host.sh·troubleshooting.sh 가 확인하는 항목(README)"
+    },
+    {
+      "n": 5,
+      "title": "Maru 문서 · KV Cache Storage Engine on CXL Shared Memory",
+      "url": "https://xcena-dev.github.io/maru/",
+      "kind": "company",
+      "note": "파이썬 API 참고 페이지 포함 — alloc·retrieve(memoryview)·devdax 전제·자동 확장"
+    },
+    {
+      "n": 6,
+      "title": "GitHub xcena-dev/cme — 비일관 공유 메모리 소유권 조정 틀",
+      "url": "https://github.com/xcena-dev/cme",
+      "kind": "company",
+      "note": "README·pybind11/cme.cpp 확인(Apache-2.0, 실험적 사전 공개)"
+    },
+    {
+      "n": 7,
+      "title": "GitHub xcena-dev/mio — Memory I/O Microbenchmark",
+      "url": "https://github.com/xcena-dev/mio",
+      "kind": "company",
+      "note": "NUMA(--membind)·devdax 대역폭 측정"
+    },
+    {
+      "n": 8,
+      "title": "XCENA BLOG · CXL Gave Us Shared Memory. It Did Not Give Us a Mutex.",
+      "url": "https://medium.com/xcena-blog/cxl-gave-us-shared-memory-it-did-not-give-us-a-mutex-514b9cb025b3",
+      "kind": "company",
+      "date": "2026-08-20",
+      "note": "이번 조사 때 본문 접근이 막혀 제목만 인용"
+    },
+    {
+      "n": 9,
+      "title": "ServeTheHome · XCENA MX1 CXL Computational Memory Device at Hot Chips 2026",
+      "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026",
+      "kind": "news",
+      "date": "2026-08-25"
+    },
+    {
+      "n": 10,
+      "title": "EE Times Japan · 메모리 근처에 1,000개 넘는 RISC-V 코어를 둔 CXL 장치",
+      "url": "https://eetimes.itmedia.co.jp/ee/spv/2610/02/news025.html",
+      "kind": "news",
+      "date": "2026-10-02",
+      "note": "양산 2026년 말·첫 매출 2027년 목표"
+    },
+    {
+      "n": 11,
+      "title": "엑시나 채용 · 복리후생",
+      "url": "https://xcena.career.greetinghr.com/ko/benefits",
+      "kind": "company"
+    },
+    {
+      "n": 12,
+      "title": "엑시나 채용 홈 · 회사 정보",
+      "url": "https://xcena.career.greetinghr.com/ko/home",
+      "kind": "company"
+    },
+    {
+      "n": 13,
+      "title": "엑시나 채용 · [SW] HW SW Co-design Architect",
+      "url": "https://xcena.career.greetinghr.com/ko/o/240539",
+      "kind": "posting",
+      "note": "같은 회사 다른 공고 — 하드웨어·소프트웨어 경계 정의"
+    },
+    {
+      "n": 14,
+      "title": "Linux 커널 문서 · Compute Express Link",
+      "url": "https://docs.kernel.org/driver-api/cxl/index.html",
+      "kind": "reference"
+    },
+    {
+      "n": 15,
+      "title": "pmem.io · daxctl",
+      "url": "https://pmem.io/daxctl/",
+      "kind": "reference"
+    },
+    {
+      "n": 16,
+      "title": "Dynamic Kernel Module System (DKMS)",
+      "url": "https://github.com/dkms-project/dkms",
+      "kind": "reference"
+    },
+    {
+      "n": 17,
+      "title": "Linux 커널 문서 · NUMA Memory Policy",
+      "url": "https://docs.kernel.org/admin-guide/mm/numa_memory_policy.html",
+      "kind": "reference"
+    },
+    {
+      "n": 18,
+      "title": "Linux 커널 문서 · NUMA Memory Performance (HMAT)",
+      "url": "https://docs.kernel.org/admin-guide/mm/numaperf.html",
+      "kind": "reference"
+    },
+    {
+      "n": 19,
+      "title": "man7 · mbind(2) · numa(3)",
+      "url": "https://man7.org/linux/man-pages/man2/mbind.2.html",
+      "kind": "reference"
+    },
+    {
+      "n": 20,
+      "title": "NVIDIA · CUDA Runtime API",
+      "url": "https://docs.nvidia.com/cuda/cuda-runtime-api/index.html",
+      "kind": "reference"
+    },
+    {
+      "n": 21,
+      "title": "NVIDIA · CUDA Driver API",
+      "url": "https://docs.nvidia.com/cuda/cuda-driver-api/index.html",
+      "kind": "reference"
+    },
+    {
+      "n": 22,
+      "title": "pybind11 documentation",
+      "url": "https://pybind11.readthedocs.io/en/stable/",
+      "kind": "reference"
+    },
+    {
+      "n": 23,
+      "title": "Apache Arrow · The Arrow C data interface",
+      "url": "https://arrow.apache.org/docs/format/CDataInterface.html",
+      "kind": "reference"
+    },
+    {
+      "n": 24,
+      "title": "PyTorch · CUDA semantics — Using custom memory allocators for CUDA",
+      "url": "https://docs.pytorch.org/docs/stable/notes/cuda.html",
+      "kind": "reference"
+    },
+    {
+      "n": 25,
+      "title": "The Linux Programming Interface (Michael Kerrisk)",
+      "url": "https://man7.org/tlpi/",
+      "kind": "reference"
+    },
+    {
+      "n": 26,
+      "title": "Linux Device Drivers, 3rd Edition (LWN)",
+      "url": "https://lwn.net/Kernel/LDD3/",
+      "kind": "reference"
+    },
+    {
+      "n": 27,
+      "title": "C++ Concurrency in Action, Second Edition (Manning)",
+      "url": "https://www.manning.com/books/c-plus-plus-concurrency-in-action-second-edition",
+      "kind": "reference"
+    },
+    {
+      "n": 28,
+      "title": "리눅스 커널 심층 분석 개정판 (에이콘출판사)",
+      "url": "https://www.yes24.com/product/goods/7351874",
+      "kind": "reference"
+    },
+    {
+      "n": 29,
+      "title": "microsoft/mimalloc · jemalloc",
+      "url": "https://github.com/microsoft/mimalloc",
+      "kind": "reference",
+      "note": "jemalloc 은 https://jemalloc.net/"
+    },
+    {
+      "n": 30,
+      "title": "XCENA SDK 문서 · 첫 화면",
+      "url": "https://xcena-dev.github.io/sdk_release/",
+      "kind": "company",
+      "note": "SDK 구성(pxcc 컴파일러·PXL 런타임·에뮬레이터·도구)과 차례, 2026-11 확인"
+    },
+    {
+      "n": 31,
+      "title": "XCENA SDK 문서 · PXL Key Concepts — Programming Objects",
+      "url": "https://xcena-dev.github.io/sdk_release/pxl_key_concepts/02_programming_objects.html",
+      "kind": "company",
+      "note": "Launcher·Context(memAlloc/memFree/createJob)·Job·Module/Function·Map, 객체 수명"
+    },
+    {
+      "n": 32,
+      "title": "XCENA SDK 문서 · PXL Key Concepts — Kernel Execution",
+      "url": "https://xcena-dev.github.io/sdk_release/pxl_key_concepts/03_kernel_execution.html",
+      "kind": "company",
+      "note": "run/runAsync·taskCount·batchSize(기본 16)·Locality·Map 상태·콜백·메모리 종류(CxlMem·InfiniteMemory)"
+    },
+    {
+      "n": 33,
+      "title": "XCENA SDK 문서 · PXL Key Concepts — Streams",
+      "url": "https://xcena-dev.github.io/sdk_release/pxl_key_concepts/04_streams.html",
+      "kind": "company",
+      "note": "넣은 순서 보장·끝나는 순서는 보장 안 함, 대기열이 차면 execute 가 막힌다"
+    },
+    {
+      "n": 34,
+      "title": "XCENA SDK 문서 · System Requirements",
+      "url": "https://xcena-dev.github.io/sdk_release/install/system_requirements.html",
+      "kind": "company",
+      "note": "system-ram(CPU 없는 NUMA 노드) vs devdax, ccma 예약 비율, Ubuntu 24.04 공식 지원"
+    },
+    {
+      "n": 35,
+      "title": "XCENA SDK 문서 · Coordinator(장치 나눠 쓰기)",
+      "url": "https://xcena-dev.github.io/sdk_release/install/coordinator.html",
+      "kind": "company",
+      "note": "여러 컨테이너가 pxl_resourced 로 한 장치의 자원 풀을 나눠 쓴다"
+    },
+    {
+      "n": 36,
+      "title": "XCENA SDK 문서 · Release Notes v1.5.0",
+      "url": "https://xcena-dev.github.io/sdk_release/release_notes/v1.5.0.html",
+      "kind": "company",
+      "date": "2026-10-22",
+      "note": "tar.xz 배포·Docker 이미지·콜백 안 해제 교착 수정·리눅스 6.12/6.13 드라이버 빌드 수정"
+    },
+    {
+      "n": 37,
+      "title": "PXL C++ API 문서",
+      "url": "https://xcena-dev.github.io/pxl/",
+      "kind": "company",
+      "note": "pxl:: 네임스페이스 목록(실행·커널·메모리·실행 빌더·호스트 캐시), PXL 3/4 한 CMake 프로젝트, bindings/python, DEB 패키지 libpxl"
+    },
+    {
+      "n": 38,
+      "title": "XCENA SDK 문서 · PXL Key Concepts — Device Topology",
+      "url": "https://xcena-dev.github.io/sdk_release/pxl_key_concepts/01_device_topology.html",
+      "kind": "company",
+      "note": "장치 → Sub → Cluster(L2 공유) → MU 코어, 개수는 세대마다 달라 물어서 쓴다"
+    }
+  ],
+  "caveat": "PXL 런타임은 공개 SDK 문서(1.5.0, 2026-10)로 객체·함수 이름까지 확인했지만, 내부 구현(스케줄러·할당기 알고리즘)과 PXL 4 의 차이는 공개 문서에 자세하지 않아 CUDA·리눅스 커널 문서로 '보통 이런 것'을 보였습니다. 회사 블로그(Medium)는 이번 조사 때 본문 접근이 막혀 제목만 썼습니다. 드라이버의 lease ioctl 과 SDK API 는 판이 오르면 바뀔 수 있습니다."
+}

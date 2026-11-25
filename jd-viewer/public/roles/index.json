@@ -638,6 +638,7 @@
   "wanted-390176": "visasq-data-platform-engineer",
   "ats-greeting:xcena:235024": "xcena-compiler-engineer",
   "ats-greeting:xcena:237698": "xcena-cxl-product-engineer",
+  "ats-greeting:xcena:110622": "xcena-device-runtime-sdk",
   "ats-greeting:xcena:245888": "xcena-dqa-validation-hw-fa",
   "ats-greeting:xcena:237697": "xcena-hw-board",
   "ats-greeting:xcena:240539": "xcena-hw-sw-codesign-architect",
@@ -6012,6 +6013,16 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 51
+  },
+  {
+   "id": "xcena-device-runtime-sdk",
+   "company": "엑시나",
+   "role": "System Software Engineer, Device Runtime & SDK",
+   "jobs": [
+    "ats-greeting:xcena:110622"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 22
   },
   {
    "id": "xcena-dqa-validation-hw-fa",
