@@ -62,6 +62,7 @@
   "ats-greenhouse:coupang:8210828": "coupang-play-cx-backend-senior-sg",
   "ats-greenhouse:coupang:8384805": "coupang-play-monetization-backend-senior",
   "ats-greenhouse:coupang:8345323": "coupang-ppe-data-engineer-bengaluru",
+  "ats-greenhouse:coupang:8123934": "coupang-pricing-senior-staff-backend",
   "ats-greenhouse:coupang:8248619": "coupang-retail-ops-planning-ai-manager",
   "ats-greenhouse:coupang:8258122": "coupang-rocket-content-editor",
   "ats-greenhouse:coupang:7834206": "coupang-search-ai-engineer-senior-staff-mtv",
@@ -887,6 +888,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 19
+  },
+  {
+   "id": "coupang-pricing-senior-staff-backend",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior Staff 백엔드 엔지니어 (가격)",
+   "jobs": [
+    "ats-greenhouse:coupang:8123934"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
   },
   {
    "id": "coupang-retail-ops-planning-ai-manager",
