@@ -1,0 +1,1080 @@
+{
+ "id": "biztechi-database-operations",
+ "company": "비즈테크아이",
+ "role": "데이터베이스 담당자",
+ "team": "클라우드서비스사업팀",
+ "jobs": [
+  "ats-lg:group:1001890",
+  "dev-579980"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "LG CNS 자회사인 비즈테크아이의 클라우드서비스사업팀에서 **LG유플러스 핵심 시스템의 데이터베이스**를 운영합니다. 설치·패치·백업·튜닝·장애 대응이 일의 대부분입니다.[1]",
+  "env": "Oracle·MySQL·MS-SQL 같은 여러 DB가 사내 서버와 클라우드에 섞여 있는 환경입니다(공고는 '하이브리드 클라우드'라고 적었습니다).[1] LG유플러스는 와탭으로 인프라부터 화면까지 한 대시보드에서 모니터링합니다.[5]",
+  "oneline": "통신사 시스템의 DB가 **안 멈추고, 안 잃고, 안 느리게** 지키는 7년 차 이상 운영 DBA 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "DB 운영 및 관리",
+   "short": "아래 세 줄(운영·설치·백업)을 묶은 제목. 매일 DB가 살아 있고 정상인지 지키는 일이다.",
+   "why": "팀은 LG유플러스 핵심 시스템의 DB 운영을 맡는다고 공고에 적었습니다.[1] 고객사 시스템을 대신 운영하는 일이라, 정해진 점검과 보고가 일상 업무의 큰 몫입니다. {추론}",
+   "how_far": "제목 줄이라 따로 요구하는 수준은 없습니다. 바로 밑 세 줄이 실제 일입니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Oracle, MySQL, MSSQL 등 RDBMS 운영 및 장애 대응",
+   "short": "여러 회사가 만든 DB를 함께 돌보고, 멈추거나 느려지면 가장 먼저 붙어서 되살린다.",
+   "why": "공고는 Oracle·MySQL·MSSQL을 나란히 적었고, 자격요건에는 Goldilocks·Altibase 같은 국산 DB까지 넣었습니다.[1] 통신사 시스템은 오래 쌓인 여러 세대의 시스템이 함께 돌아 DB 종류가 하나로 모이기 어렵습니다. {추론}",
+   "actually": {
+    "intro": "RDBMS(표로 데이터를 담고 SQL로 다루는 DB) 운영의 일상은 보통 이렇습니다.",
+    "items": [
+     "**아침 점검** — 접속·세션 수, 오류 로그, 지난밤 백업 성공 여부, 저장 공간 남은 양을 본다. {추론}",
+     "**Oracle** — 성능 통계 저장소 AWR이 기본 1시간마다 스냅숏을 찍고 8일 보관해, 느려진 시간대를 나중에 되짚어 볼 수 있다.[9]",
+     "**MySQL·MariaDB** — 주 DB의 변경 기록(binary log)을 복제 DB가 받아 따라 적용하는 구조라, 복제가 밀리지 않는지가 매일 볼 숫자다.[11][12]",
+     "**MS-SQL** — 고가용성은 Always On 가용성 그룹(여러 서버에 같은 DB를 두고 하나가 죽으면 넘기는 기능)으로 만든다.[13]",
+     "**장애 대응** — 알람이 오면 무엇이 막혔는지(잠금·디스크·연결 수)를 찾고, 서비스를 먼저 살린 뒤 원인을 찾는다.[16]"
+    ]
+   },
+   "how_far": "DB 하나를 깊게 아는 것이 먼저입니다(자격요건이 '1개 이상 전문 역량'입니다).[1] 나머지 DB는 **같은 개념(복제·백업·잠금·실행계획)이 그 DB에서는 어떤 이름인지** 알면 일을 시작할 수 있습니다. {추론}",
+   "refs": [
+    1,
+    9,
+    11,
+    12,
+    13,
+    16
+   ],
+   "study": [
+    "oracle-awr",
+    "mysql-repl",
+    "dbre"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "DB 설치, 구성, 패치 및 업그레이드 수행",
+   "short": "새 DB 서버를 세우고, 보안·버그 패치를 넣고, 지원이 끝나기 전에 버전을 올린다.",
+   "why": "DB 제품은 지원 기간이 정해져 있어 그 안에 버전을 올려야 보안 패치를 계속 받습니다. Oracle은 업그레이드 절차를 별도 안내서 한 권으로 낼 만큼 단계가 많습니다.[22]",
+   "actually": {
+    "items": [
+     "**설치·구성** — OS 설정(메모리·파일 수 한도), 저장 공간 배치, 계정·권한, 기본 파라미터를 정해 둔 표준대로 맞춘다. {추론}",
+     "**패치** — 시험 DB에 먼저 넣고, 운영은 정해진 작업 시간에 넣는다. 복제·이중화 구성이면 대기 쪽부터 넣고 넘긴 뒤 나머지를 넣어 멈춤 시간을 줄인다. {추론}",
+     "**업그레이드** — 사전 점검 → 백업 → 업그레이드 → 통계 다시 모으기 → 같은 SQL의 실행계획·속도 비교 순서다.[22] 버전이 바뀌면 실행계획이 달라질 수 있어 비교가 핵심이다. {추론}",
+     "**되돌리기 계획** — 실패하면 어느 시점으로 어떻게 돌아갈지를 작업 전에 적어 둔다. {추론}"
+    ]
+   },
+   "how_far": "작업 날짜와 허용 멈춤 시간은 고객사(LG유플러스)와 정합니다. DBA는 **절차서를 쓰고, 시험하고, 정해진 시간 안에 끝내거나 되돌리는** 몫입니다. {추론}",
+   "refs": [
+    22
+   ],
+   "study": [
+    "oracle-upgrade",
+    "dbre"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "백업/복구 정책 수립 및 정기 점검",
+   "short": "언제·무엇을·얼마나 오래 백업할지 정하고, 실제로 되살아나는지 주기적으로 복원해 본다.",
+   "why": "백업 정책은 '얼마나 잃어도 되나(RPO)'와 '얼마나 빨리 되살려야 하나(RTO)'로 정합니다. {추론} 공고는 수립과 **정기 점검**을 한 줄에 묶었습니다 — 백업 파일이 있다는 것과 되살릴 수 있다는 것은 다르기 때문입니다.[1] {추론}",
+   "actually": {
+    "items": [
+     "**Oracle** — RMAN(Oracle의 백업·복구 도구)으로 전체 백업 위에 바뀐 블록만 받는 증분 백업을 쌓는다.[8]",
+     "**MySQL** — 전체 백업에 binary log(변경 기록)를 이어 붙이면 원하는 시각까지 되살릴 수 있다(시점 복구).[21]",
+     "**보관 정책** — 며칠 치를 어디에(같은 서버·다른 서버·다른 센터) 둘지 정한다. 금융권은 법으로 백업을 떨어진 곳에 두고 검증해야 한다.[26]",
+     "**정기 점검** — 다른 서버에 실제로 복원해 걸린 시간을 재고, 그 시간이 목표 안인지 확인한다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "로그를 따로 옮겨 두면 잃는 양이 줄어든다",
+     "body": "매일 새벽 2시 전체 백업, 로그는 10분마다 다른 곳으로 옮기는 가상 정책입니다. 오후 2시 58분에 디스크가 망가졌을 때 잃는 시간입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "from datetime import datetime as dt\nfull_backup   = dt(2026, 11, 24, 2, 0)    # 매일 02:00 전체 백업\nlast_log_ship = dt(2026, 11, 24, 14, 50)  # 로그를 마지막으로 다른 곳에 옮긴 시각\ncrash         = dt(2026, 11, 24, 14, 58)  # 디스크가 망가진 시각\nprint(\"백업만 있으면 잃는 시간:\", crash - full_backup)\nprint(\"로그까지 있으면 잃는 시간:\", crash - last_log_ship)\n# 백업만 있으면 잃는 시간: 12:58:00\n# 로그까지 있으면 잃는 시간: 0:08:00"
+    }
+   ],
+   "how_far": "목표 숫자(RPO·RTO)는 고객사가 업무 중요도로 정합니다. DBA는 **그 숫자를 지키는 백업 방식을 고르고, 복원 훈련 기록을 남깁니다**. 최소선은 백업 하나를 다른 서버에 처음부터 끝까지 복원해 본 경험입니다. {추론}",
+   "refs": [
+    1,
+    8,
+    21,
+    26
+   ],
+   "study": [
+    "oracle-rman",
+    "mysql-pitr",
+    "realmysql"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "성능 관리 및 튜닝장애",
+   "short": "아래 세 줄(SQL 튜닝·병목 분석·자원 모니터링)을 묶은 제목. 느려지기 전에 찾아 고치는 일이다.",
+   "why": "제목 끝의 '튜닝장애'는 원문 그대로입니다 — '튜닝'과 다음 제목 '장애'가 붙은 것으로 보입니다. {추론} 하는 일은 바로 밑 세 줄입니다.[1]",
+   "how_far": "제목 줄이라 따로 요구하는 수준은 없습니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SQL 튜닝 및 인덱스 설계",
+   "short": "느린 SQL의 실행계획을 읽고, 인덱스를 만들거나 SQL을 고쳐 읽는 양을 줄인다.",
+   "why": "DB가 느린 원인의 대부분은 SQL 몇 개가 필요 이상으로 많은 데이터를 읽는 데 있습니다. Oracle 튜닝 안내서도 비싼 SQL을 찾아 실행계획을 보고 고치는 흐름을 기본으로 둡니다.[10]",
+   "actually": {
+    "items": [
+     "**비싼 SQL 찾기** — AWR 같은 성능 기록에서 오래 걸리거나 많이 읽은 SQL 상위 몇 개를 뽑는다.[9][10]",
+     "**실행계획 읽기** — DB가 표를 처음부터 끝까지 읽는지(전체 스캔), 인덱스로 필요한 곳만 찾는지 본다.[10]",
+     "**인덱스 설계** — WHERE 절에서 같다(=)로 거르는 칸을 앞에, 범위(>=)로 거르는 칸을 뒤에 두는 결합 인덱스가 기본이다. {추론}",
+     "**부작용 확인** — 인덱스가 늘면 입력·수정이 느려지고 공간을 먹는다. 같은 표에 쓰는 작업이 많은지 함께 본다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "인덱스 하나로 전체 스캔이 사라진다",
+     "body": "가상 사용량 20만 건에서 고객 한 명의 이번 달 합계를 구합니다. 인덱스 전에는 표 전체를 읽고(SCAN), 뒤에는 인덱스로 찾습니다(SEARCH). SQLite로 직접 돌린 출력이고, Oracle·MySQL은 같은 것을 EXPLAIN 계열 명령으로 봅니다.",
+     "lang": "python",
+     "code": "import sqlite3, random\ncon = sqlite3.connect(\":memory:\")\ncon.execute(\"CREATE TABLE usage_log(cust_id INT, used_on TEXT, mb INT)\")\nrandom.seed(1)\ncon.executemany(\"INSERT INTO usage_log VALUES (?,?,?)\",\n    [(random.randint(1, 50000), f\"2026-11-{random.randint(1,30):02d}\", random.randint(1, 900)) for _ in range(200000)])\nq = \"SELECT SUM(mb) FROM usage_log WHERE cust_id = 1234 AND used_on >= '2026-11-01'\"\nprint(con.execute(\"EXPLAIN QUERY PLAN \" + q).fetchall()[0][3])\ncon.execute(\"CREATE INDEX ix_cust_day ON usage_log(cust_id, used_on)\")\nprint(con.execute(\"EXPLAIN QUERY PLAN \" + q).fetchall()[0][3])\n# SCAN usage_log\n# SEARCH usage_log USING INDEX ix_cust_day (cust_id=? AND used_on>?)"
+    }
+   ],
+   "how_far": "SQL을 쓴 사람은 고객사 개발자입니다. DBA는 **원인 SQL을 찾아 고칠 안을 내고, 인덱스는 직접 만듭니다**. SQL을 고칠지는 개발 쪽과 정합니다. {추론}",
+   "refs": [
+    9,
+    10
+   ],
+   "study": [
+    "kind-sql",
+    "oracle-tgsql",
+    "realmysql"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "성능 병목 분석 및 개선",
+   "short": "느린 원인이 SQL인지, 잠금 대기인지, 디스크·네트워크인지 가려서 막힌 곳을 뚫는다.",
+   "why": "LG유플러스는 통합 모니터링을 들인 뒤 백엔드만 고쳐 오던 것과 달리 병목의 상당 부분이 화면(프런트엔드) 쪽에 있다는 것을 알았다고 와탭 사례에 소개됐습니다.[5] 병목은 짐작한 곳에 있지 않을 때가 많아 **재 보고 고치는** 순서가 중요합니다. {추론}",
+   "actually": {
+    "items": [
+     "**DB가 범인인가부터** — 응답이 느릴 때 DB 안에서 쓴 시간과 밖(앱·네트워크)에서 쓴 시간을 나눈다.[5] {추론}",
+     "**기다린 이유 보기** — Oracle은 대기 이벤트(잠금·디스크 읽기·로그 쓰기 등)별로 기다린 시간을 기록한다. 가장 오래 기다린 것부터 본다.[9]",
+     "**잠금** — 오래 걸리는 수정 하나가 다른 세션을 줄 세우는 경우. 누가 누구를 막는지 찾아 끊거나 작업 시간을 옮긴다. {추론}",
+     "**구조 바꾸기** — 큰 표를 날짜로 나누기(파티션), 조회를 복제 DB로 돌리기 같은 큰 개선은 고객사와 계획을 세워 넣는다. {추론}"
+    ]
+   },
+   "how_far": "7년 차 자리라 **원인을 숫자로 보여 주고 개선 전후를 비교한 보고서**까지 기대한다고 보는 것이 맞습니다. {추론}",
+   "refs": [
+    5,
+    9
+   ],
+   "study": [
+    "oracle-awr",
+    "kind-sql",
+    "dbre"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "DB 리소스(CPU, 메모리, I/O) 모니터링 및 최적화",
+   "short": "서버의 CPU·메모리·디스크가 얼마나 바쁜지, 줄이 밀리는지 늘 보고 넘치기 전에 손쓴다.",
+   "why": "DB는 결국 서버 자원 위에서 돕니다. 자원마다 **사용률·포화(대기열)·오류** 셋을 보라는 USE 방법이 널리 쓰이는 기준입니다.[15]",
+   "actually": {
+    "items": [
+     "**CPU** — 사용률이 높으면 비싼 SQL을 먼저 의심한다. 대기열(load)이 코어 수보다 길면 포화다.[15]",
+     "**메모리** — DB 캐시가 충분한지, OS가 디스크로 내려 쓰기(swap)를 하는지 본다. {추론}",
+     "**I/O** — 디스크가 100% 가깝게 바쁘고 대기열이 쌓이면 읽는 양 자체를 줄이는 튜닝이 우선이다.[15] {추론}",
+     "**도구** — Prometheus는 mysqld_exporter로 MySQL·MariaDB 상태 값을 모아 그래프와 알람을 만든다.[17] 상용 도구로는 와탭 같은 통합 모니터링을 쓴다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "USE 방법으로 자원 세 개 훑기",
+     "body": "가상 수치입니다. 디스크는 사용률이 높고 대기열까지 쌓여 포화이고, 메모리는 사용률만 높습니다(직접 돌린 출력). 문턱 값(90%·대기 4)은 예시로 정한 것입니다. {추론}",
+     "lang": "python",
+     "code": "metrics = {\n    \"CPU\":    {\"util\": 0.62, \"queue\": 1,  \"errors\": 0},\n    \"메모리\": {\"util\": 0.91, \"queue\": 0,  \"errors\": 0},\n    \"디스크\": {\"util\": 0.97, \"queue\": 14, \"errors\": 0},\n}\nfor name, m in metrics.items():\n    flags = []\n    if m[\"util\"] >= 0.9: flags.append(\"사용률 높음\")\n    if m[\"queue\"] > 4:   flags.append(\"대기열 쌓임\")\n    if m[\"errors\"]:      flags.append(\"오류\")\n    print(f\"{name}: {m['util']:.0%} 대기 {m['queue']} -> {', '.join(flags) or '정상'}\")\n# CPU: 62% 대기 1 -> 정상\n# 메모리: 91% 대기 0 -> 사용률 높음\n# 디스크: 97% 대기 14 -> 사용률 높음, 대기열 쌓임"
+    }
+   ],
+   "how_far": "서버 증설 결정은 고객사·인프라 팀 몫입니다. DBA는 **언제 모자랄지 추세로 미리 알리고, DB 안에서 줄일 수 있는 것부터 줄입니다**. {추론}",
+   "refs": [
+    5,
+    15,
+    17
+   ],
+   "study": [
+    "use-method",
+    "linux-kernel-book",
+    "mysqld-exporter"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장애 대응 및 예방",
+   "short": "아래 두 줄(원인 분석·사전 감지)을 묶은 제목. 터진 장애를 되풀이하지 않게 만드는 일이다.",
+   "why": "팀 소개는 고객의 **비즈니스 연속성**을 높인다고 적었습니다.[1] 통신사 시스템의 DB가 멈추면 가입·요금·상담 같은 업무가 함께 멈출 수 있습니다. {추론}",
+   "how_far": "제목 줄이라 따로 요구하는 수준은 없습니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장애 원인 분석 및 재발 방지 대책 수립",
+   "short": "장애가 끝나면 무엇이 언제 왜 터졌는지 적고, 같은 일이 다시 안 나게 할 일을 정해 끝까지 챙긴다.",
+   "why": "구글 SRE 책은 장애 기록(포스트모템)을 사람을 탓하지 않고 원인과 후속 조치에 집중해 쓰라고 합니다. 데이터 손실·사람이 개입한 복구·기준을 넘긴 멈춤이 생기면 쓰는 것이 원칙입니다.[16]",
+   "actually": {
+    "items": [
+     "**시간 순서 기록** — 알람 시각, 누가 무엇을 봤고 무엇을 했는지, 언제 복구됐는지.[16]",
+     "**근본 원인** — '디스크가 찼다'에서 멈추지 않고 '왜 아무도 몰랐나'까지 내려간다.[16]",
+     "**후속 조치** — 알람 추가, 절차서 수정, 구조 변경처럼 담당자와 기한이 있는 할 일로 적는다.[16]",
+     "**고객사 보고** — 운영을 맡은 회사라 장애 보고서를 고객사에 내는 일이 함께 따른다. {추론}"
+    ]
+   },
+   "how_far": "보고서 양식은 회사·고객사가 정합니다. DBA에게 기대되는 것은 **DB 쪽 원인을 증거(로그·대기 기록)로 보여 주는 것**입니다. {추론}",
+   "refs": [
+    16
+   ],
+   "study": [
+    "sre-postmortem",
+    "dbre"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모니터링 시스템 기반 사전 장애 감지 체계 구축",
+   "short": "평소 값과 다르게 움직이는 지표(복제 지연·공간·연결 수)에 알람을 걸어 터지기 전에 알게 만든다.",
+   "why": "LG유플러스는 부서마다 흩어진 모니터링 데이터 때문에 원인을 찾기 어려웠고, 와탭으로 인프라부터 화면까지 한 체계로 묶었다고 소개됐습니다.[5] 우대사항에도 WhaTap·Prometheus가 이름으로 나옵니다.[1]",
+   "actually": {
+    "items": [
+     "**무엇에 알람을 걸까** — 복제 지연, 남은 저장 공간, 연결 수, 잠금 대기, 백업 실패, 오류 로그의 새 오류. {추론}",
+     "**추세 알람** — '90% 넘으면'보다 '이 속도면 사흘 뒤 찬다'가 먼저 알려 준다. {추론}",
+     "**수집** — Prometheus는 exporter(상태 값을 꺼내 주는 작은 프로그램)가 낸 값을 주기적으로 긁어 간다. MySQL용은 mysqld_exporter다.[17]",
+     "**알람 피로 줄이기** — 사람이 할 일이 없는 알람은 지운다. 울릴 때마다 할 일이 정해진 알람만 남긴다. {추론}"
+    ]
+   },
+   "how_far": "모니터링 제품 선택은 고객사가 합니다. DBA는 **DB 쪽 지표와 문턱을 정하고 알람이 왔을 때의 절차를 씁니다**. {추론}",
+   "refs": [
+    1,
+    5,
+    17
+   ],
+   "study": [
+    "mysqld-exporter",
+    "dbre"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "학력: 4년제 정규대학 학사학위 이상 보유자",
+   "short": "회사 공통 지원 조건. 이 회사의 다른 경력 공고에도 같은 줄이 있다.",
+   "why": "같은 회사의 데이터엔지니어링 PL·금융IT 공고에도 같은 줄이 있어 직무와 상관없는 공통 조건입니다.[3][4]",
+   "how_far": "충족 여부만 봅니다. 전공 제한은 적혀 있지 않습니다.[1]",
+   "refs": [
+    1,
+    3,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력: DB 운영 경력 7년 이상 (대규모 서비스 환경 경험)",
+   "short": "혼자 고객사 DB를 맡아 장애 때 판단할 수 있는 연차를 본다. 큰 시스템에서 일해 본 경험이 핵심.",
+   "why": "팀이 맡는 것이 LG유플러스의 **핵심 시스템** DB라서입니다.[1] 캐치 공고도 같은 자리를 경력 7년 이상으로 올렸습니다.[2]",
+   "actually": {
+    "items": [
+     "**대규모의 뜻** — 데이터가 크거나(수 TB), 동시 사용자가 많거나, 멈추면 안 되는 시스템. 면접에서 표 크기·초당 처리량·DB 수를 숫자로 묻기 쉽다. {추론}",
+     "**운영 경력의 뜻** — 개발 중 SQL을 쓴 경력보다 설치·백업·장애 대응을 맡은 기간으로 읽힌다. {추론}"
+    ]
+   },
+   "how_far": "이력서에 **맡았던 DB의 종류·대수·크기·이중화 구성·겪은 장애**를 숫자로 적는 것이 가장 직접적인 증명입니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Oracle / MariaDB / MS-SQL / Goldilocks / AWS Aurora / Altibase 중 1개 이상 전문 역량을 보유하신 분",
+   "short": "여섯 DB 중 하나는 깊게 알아야 한다. 국산 DB(Goldilocks·Altibase)가 들어간 것이 통신 쪽 특징.",
+   "why": "여러 DB가 섞인 고객사 환경이라 한 사람이 다 알 수는 없고, 하나를 깊게 아는 사람을 찾는다는 뜻입니다.[1] {추론}",
+   "actually": {
+    "intro": "목록에 있는 DB가 각각 어떤 것인지입니다.",
+    "items": [
+     "**Oracle** — 대형 기업 시스템의 대표 상용 DB. 이중화는 Data Guard·RAC.[6][7]",
+     "**MariaDB** — MySQL에서 갈라져 나온 오픈소스 DB. 복제 방식이 MySQL과 거의 같다.[12]",
+     "**MS-SQL** — 마이크로소프트 DB. 이중화는 Always On 가용성 그룹.[13]",
+     "**Goldilocks** — 선재소프트가 만든 국산 분산 SQL DB.[18]",
+     "**Altibase** — 메모리 테이블과 디스크 테이블을 한 엔진에 둔 국산 DB. SK텔레콤이 Oracle 앞단에 메모리 쪽을 둔 사례를 공개했다.[19]",
+     "**AWS Aurora** — 아마존 클라우드의 관리형 DB. 저장 공간이 한 지역의 가용 영역 세 곳에 사본으로 나뉘어 담긴다.[14]"
+    ]
+   },
+   "how_far": "'전문 역량'은 그 DB로 **설치부터 복구·튜닝까지 혼자 할 수 있는** 수준으로 읽힙니다. {추론} Goldilocks·Altibase는 공개 자료가 적어, 다른 DB 경험자는 매뉴얼로 개념 대응표를 만들어 두면 면접에서 말할 거리가 됩니다. {추론}",
+   "refs": [
+    1,
+    6,
+    7,
+    12,
+    13,
+    14,
+    18,
+    19
+   ],
+   "study": [
+    "oracle-dg",
+    "realmysql",
+    "goldilocks-manual",
+    "altibase-docs",
+    "aurora-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL 튜닝 및 성능 분석 경험을 보유하신 분",
+   "short": "느린 SQL을 실행계획으로 읽고 고쳐 본 경험. 주요업무 '성능 관리'와 같은 능력이다.",
+   "why": "주요업무에 SQL 튜닝·병목 분석이 따로 두 줄로 있습니다.[1] 고객사 개발자가 쓴 SQL 문제를 DBA가 찾아 알려 주는 일이 많습니다. {추론}",
+   "level": {
+    "basic": "실행계획에서 전체 스캔·인덱스 스캔·조인 방식 구분 · 결합 인덱스 순서",
+    "work": "성능 기록(AWR 등)에서 비싼 SQL 뽑기 · 통계 정보 · 바인드 변수 · 조인 순서 바꾸기",
+    "team": "대기 이벤트로 원인 가르기 · 개선 전후를 숫자로 보고 · 여러 DB에서 같은 개념 쓰기"
+   },
+   "how_far": "자격증이 필수는 아니지만, SQLP(한국데이터산업진흥원의 SQL 전문가 자격)는 튜닝 지식을 한 번에 증명하는 흔한 방법입니다.[20] {추론}",
+   "refs": [
+    1,
+    20
+   ],
+   "study": [
+    "kind-sql",
+    "oracle-tgsql",
+    "dataq"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "백업/복구 및 장애 대응 경험을 보유하신 분",
+   "short": "실제로 DB를 되살려 본 경험. 백업을 건 것이 아니라 복원해 본 것을 본다.",
+   "why": "주요업무의 백업 정책·장애 원인 분석과 바로 이어지는 요건입니다.[1]",
+   "how_far": "면접에서 '마지막으로 복원해 본 게 언제, 몇 분 걸렸나', '시점 복구를 해 봤나' 같은 질문으로 확인하기 쉽습니다. {추론} 최소선은 Oracle RMAN 또는 MySQL 전체 백업 + 로그로 원하는 시각까지 되살려 본 경험입니다.[8][21]",
+   "refs": [
+    1,
+    8,
+    21
+   ],
+   "study": [
+    "oracle-rman",
+    "mysql-pitr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Linux/Unix 환경 이해를 보유하신 분",
+   "short": "DB가 올라가는 서버를 직접 다룬다. 설치·자원 확인·스크립트·로그 읽기가 다 리눅스 명령이다.",
+   "why": "공고의 기술 목록에 Linux·Unix가 함께 있습니다.[1] 통신·금융의 오래된 핵심 시스템은 Unix 서버에 있는 경우가 많습니다. {추론}",
+   "actually": {
+    "items": [
+     "**자원 확인** — 넷플릭스는 성능 문제가 생기면 처음 60초 동안 uptime·vmstat·iostat·free 같은 명령 열 개로 훑는 방법을 공개했다.[23]",
+     "**설치 준비** — 커널 파라미터·사용자 한도·파일 시스템 설정을 맞춘다. {추론}",
+     "**자동화** — 점검·백업 확인을 셸 스크립트와 cron(정해진 시각에 명령을 돌리는 기능)으로 돌린다. {추론}"
+    ]
+   },
+   "how_far": "서버 관리자 수준까지는 아니고, **DB 문제를 OS 쪽에서 확인할 수 있는** 수준입니다. {추론}",
+   "refs": [
+    1,
+    23
+   ],
+   "study": [
+    "netflix-60s",
+    "linux-kernel-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "DataGuard, RAC, Replication 구성 경험이 있으신 분",
+   "short": "DB 한 대가 죽어도 서비스가 이어지게 만드는 이중화 세 가지를 직접 짜 본 경험.",
+   "why": "핵심 시스템은 DB 한 대에 모든 것을 걸 수 없어 이중화가 기본입니다. {추론} 세 가지는 방식이 다릅니다.",
+   "actually": {
+    "items": [
+     "**Data Guard** — Oracle 주 DB의 변경 기록을 대기 DB로 보내 계속 따라 적용한다. 계획된 작업엔 역할을 맞바꾸고(switchover), 주 DB가 죽으면 대기 DB를 올린다(failover).[6]",
+     "**RAC** — 서버 여러 대가 공유 저장소의 **한 DB**를 동시에 연다. 서버 한 대가 죽어도 나머지가 계속 받는다.[7]",
+     "**Replication** — MySQL·MariaDB의 복제. 주 DB의 binary log를 복제 DB가 받아 적용하고, 반동기 방식은 복제 DB 하나 이상이 받았다고 답해야 커밋을 끝낸다.[11][12]",
+     "**차이 한 줄** — RAC는 서버를 여럿 두고 저장소는 하나, Data Guard·복제는 저장소까지 따로 둔다. 그래서 재해 대비(다른 센터)는 Data Guard·복제 몫이다. {추론}"
+    ]
+   },
+   "how_far": "우대사항이라 없어도 지원할 수 있습니다. 있다면 **넘기기(전환)를 실제로 해 본 횟수와 걸린 시간**을 말할 수 있어야 경험으로 인정받습니다. {추론}",
+   "refs": [
+    6,
+    7,
+    11,
+    12
+   ],
+   "study": [
+    "oracle-dg",
+    "oracle-rac",
+    "mysql-repl",
+    "hpmysql"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 환경(DBaaS 포함) 운영 경험 (AWS, Azure, GCP)이 있으신 분",
+   "short": "클라우드 회사가 관리해 주는 DB(DBaaS)를 운영해 본 경험. 팀이 사내 서버와 클라우드를 함께 다룬다.",
+   "why": "팀 소개가 클라우드와 사내 서버(온프레미스)를 아우르는 하이브리드 인프라를 짓고 운영한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**무엇이 달라지나** — DBaaS(Aurora 같은 관리형 DB)는 설치·OS 패치·저장 공간 복제를 클라우드가 맡는다. Aurora는 저장 공간을 가용 영역 세 곳에 사본으로 둔다.[14]",
+     "**그래도 DBA 몫** — SQL 튜닝, 파라미터, 백업 보관 기간, 접근 권한, 비용은 그대로 사람이 정한다. {추론}",
+     "**옮기기** — 사내 DB를 클라우드로 옮길 때 버전·기능 차이와 멈춤 시간을 계획한다. {추론}"
+    ]
+   },
+   "how_far": "세 클라우드 중 하나의 관리형 DB를 만들고, 복제본·백업·모니터링을 붙여 본 정도면 이야기가 됩니다. {추론}",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "aurora-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "모니터링 솔루션 (WhaTap, Prometheus 등) 사용 경험이 있으신 분",
+   "short": "고객사가 쓰는 모니터링 도구를 바로 쓸 수 있으면 좋아서. LG유플러스는 와탭 통합 모니터링을 쓴다.",
+   "why": "LG유플러스는 와탭으로 인프라부터 화면까지 한 대시보드에서 보는 체계를 운영한다고 소개됐습니다.[5] Prometheus는 오픈소스 쪽 대표 도구입니다.[17]",
+   "actually": {
+    "items": [
+     "**와탭** — 상용 통합 모니터링. LG유플러스 사례는 흩어진 부서별 데이터를 하나로 묶은 것이 요점이었다.[5]",
+     "**Prometheus** — exporter가 낸 값을 긁어 모아 그래프·알람을 만든다. MySQL·MariaDB용 mysqld_exporter는 복제 상태·전역 상태 값을 기본으로 모은다.[17]"
+    ]
+   },
+   "how_far": "도구 이름보다 **어떤 지표에 어떤 문턱으로 알람을 걸었고 무엇을 잡아냈는지**를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    5,
+    17
+   ],
+   "study": [
+    "mysqld-exporter"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 트래픽 서비스 운영 경험이 있으신 분",
+   "short": "요청이 많이 몰리는 서비스의 DB를 지켜 본 경험. 통신사 시스템은 가입자 수만큼 요청이 많다.",
+   "why": "팀이 맡는 LG유플러스 핵심 시스템에 대한 요건입니다.[1] 요청이 몰리면 평소엔 문제없던 SQL 하나·잠금 하나가 장애로 커집니다. {추론}",
+   "actually": {
+    "items": [
+     "**연결 수 관리** — 앱 서버가 늘면 DB 연결이 한도를 넘는다. 연결 풀 크기를 앱 쪽과 함께 정한다. {추론}",
+     "**읽기 나누기** — 조회를 복제 DB로 돌려 주 DB의 부담을 줄인다.[11] {추론}",
+     "**몰리는 날 대비** — 신제품 출시·요금 정산일처럼 몰리는 날을 미리 알고 자원과 작업 일정을 맞춘다. {추론}"
+    ]
+   },
+   "how_far": "초당 처리량·최대 동시 연결 같은 숫자로 '얼마나 컸는지'를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "hpmysql",
+    "dbre"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "금융/통신 등 미션 크리티컬 시스템 경험이 있으신 분",
+   "short": "멈추면 큰 손실·민원이 나는 시스템을 운영해 본 경험. 절차·승인·훈련 문화에 익숙한지 본다.",
+   "why": "고객사가 통신사이고, 팀 소개가 비즈니스 연속성과 보안 강화를 강조합니다.[1] 금융권은 법으로 백업 원격 보관·검증과 재해복구 전환 훈련까지 정해 두었습니다.[26]",
+   "actually": {
+    "items": [
+     "**변경 절차** — 운영 DB에 손대는 모든 작업에 계획서·승인·작업 기록이 붙는다. {추론}",
+     "**재해복구 훈련** — 다른 센터로 실제로 넘겨 보는 훈련을 정기적으로 한다(금융권은 규정).[26]",
+     "**접근 통제** — 운영 DB 접속은 정해진 경로와 기록으로만. {추론}"
+    ]
+   },
+   "how_far": "그런 환경에서 **절차를 지키며 작업해 본 경험**이 핵심입니다. 금융권 경험도 같은 뜻으로 읽힌다는 것이 공고 문장('금융/통신 등')에 드러납니다.[1]",
+   "refs": [
+    1,
+    26
+   ],
+   "study": [
+    "dbre",
+    "sre-postmortem"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "DB 하나는 바닥까지 판 사람(복구·튜닝·이중화를 직접 해 본)",
+   "여러 DB를 가리지 않고 같은 개념으로 이어 볼 수 있는 사람",
+   "절차서·점검표·보고서를 꼼꼼히 쓰는 것이 힘들지 않은 사람",
+   "통신사 규모의 시스템을 맡아 보고 싶은 사람[1]"
+  ],
+  "hard": [
+   "고객사 시스템을 운영하는 일이라 작업 시간·방식을 고객사 일정에 맞춘다 {추론}",
+   "장애는 밤·주말을 가리지 않아 비상 대응이 따를 수 있다 {추론}",
+   "새 서비스를 만드는 것보다 이미 도는 것을 지키는 일이 중심이다",
+   "고용 형태가 정규직·계약직 둘 다 적혀 있어 지원 때 확인이 필요하다[2]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "백업을 다른 서버에 복원해 본 마지막 경험을 말해 주세요. 몇 분 걸렸나요?",
+   "a": "주요업무가 백업 정책 '정기 점검'까지 적었고, 자격요건에 백업/복구 경험이 있습니다.[1]"
+  },
+  {
+   "q": "Data Guard의 switchover와 failover는 언제 무엇을 쓰나요?",
+   "a": "우대사항 첫 줄의 이중화 구성 경험을 확인하는 질문.[6]"
+  },
+  {
+   "q": "어제까지 빠르던 SQL이 오늘 느려졌어요. 무엇부터 보나요?",
+   "a": "실행계획·통계·대기 이벤트 순서로 원인을 가르는지.[9][10]"
+  },
+  {
+   "q": "MySQL 복제 지연이 계속 늘어요. 원인 후보와 확인 방법은?",
+   "a": "Replication 경험과 모니터링 경험을 함께 본다.[11][17]"
+  },
+  {
+   "q": "가장 기억에 남는 장애와, 그 뒤 재발 방지로 무엇을 바꿨나요?",
+   "a": "주요업무 '장애 원인 분석 및 재발 방지'.[1][16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "LG Careers · [비즈테크아이] 데이터베이스 담당자 모집 (경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001890",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "팀 소개(클라우드서비스사업팀 · LG유플러스 핵심 시스템 DB 운영)·업무·요건 — 우리 수집본으로 읽음"
+  },
+  {
+   "n": 2,
+   "title": "캐치 · [비즈테크아이] 데이터베이스 담당자 (경력) 채용",
+   "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/579980",
+   "kind": "posting",
+   "date": "2026-11-06",
+   "note": "같은 자리 — 경력 7년↑, 정규직·계약직, 근무지 서울, 마감 2026-12-31"
+  },
+  {
+   "n": 3,
+   "title": "잡코리아 · [비즈테크아이] 데이터엔지니어링 PL 모집 (경력)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50373063",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — 복리후생 목록·근무지 주소·전형 절차(처우제안 포함)"
+  },
+  {
+   "n": 4,
+   "title": "사람인 · [LG CNS 자회사] 금융IT PM/PL, 분석/설계/개발, 사업관리 모집",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55458459",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — 학력 조건·전형 절차·회사 주소"
+  },
+  {
+   "n": 5,
+   "title": "WhaTap 고객 사례 · LG U+ end-to-end monitoring",
+   "url": "https://insight.whatap.io/en/cases/lg-uplus-end-to-end-monitoring/",
+   "kind": "reference",
+   "date": "2026-09-02",
+   "note": "모니터링 회사가 쓴 고객 사례 — 부서별로 흩어진 모니터링을 하나로 묶었고, 병목 상당 부분이 프런트엔드에 있었다는 내용"
+  },
+  {
+   "n": 6,
+   "title": "Oracle 19c 문서 · Introduction to Oracle Data Guard",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sbydb/introduction-to-oracle-data-guard-concepts.html",
+   "kind": "reference"
+  },
+  {
+   "n": 7,
+   "title": "Oracle 19c 문서 · Introduction to Oracle RAC",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/racad/introduction-to-oracle-rac.html",
+   "kind": "reference",
+   "note": "여러 서버의 인스턴스가 한 DB를 동시에 열고, Cache Fusion 으로 캐시를 맞춘다"
+  },
+  {
+   "n": 8,
+   "title": "Oracle 19c 문서 · Getting Started with RMAN",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/bradv/getting-started-rman.html",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "Oracle 19c 문서 · Gathering Database Statistics (AWR)",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgdba/gathering-database-statistics.html",
+   "kind": "reference",
+   "note": "기본 1시간 간격·8일 보관, Diagnostic Pack 라이선스"
+  },
+  {
+   "n": 10,
+   "title": "Oracle 19c 문서 · SQL Tuning Guide",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "MySQL 8.0 Reference Manual · Replication",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/replication.html",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "MariaDB 문서 · Standard Replication",
+   "url": "https://mariadb.com/kb/en/standard-replication/",
+   "kind": "reference",
+   "note": "binary log 형식·GTID·반동기 복제(복제 DB 하나 이상의 수신 확인 뒤 커밋)"
+  },
+  {
+   "n": 13,
+   "title": "Microsoft Learn · Always On 가용성 그룹 개요",
+   "url": "https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/overview-of-always-on-availability-groups-sql-server",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Amazon Aurora 사용 설명서 · Aurora 스토리지의 안정성",
+   "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html",
+   "kind": "reference",
+   "note": "클러스터 볼륨이 한 리전의 가용 영역 세 곳에 사본으로 담긴다"
+  },
+  {
+   "n": 15,
+   "title": "Brendan Gregg · The USE Method",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "kind": "reference",
+   "note": "자원마다 사용률·포화·오류를 본다"
+  },
+  {
+   "n": 16,
+   "title": "Site Reliability Engineering · Postmortem Culture: Learning from Failure",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "GitHub · prometheus/mysqld_exporter",
+   "url": "https://github.com/prometheus/mysqld_exporter",
+   "kind": "reference",
+   "note": "MySQL 5.6+·MariaDB 10.3+ 지원, global_status·slave_status 등 기본 수집"
+  },
+  {
+   "n": 18,
+   "title": "GitHub · SUNJESOFT (GOLDILOCKS 제작사)",
+   "url": "https://github.com/sunjesoft",
+   "kind": "reference",
+   "note": "자기 소개: 고성능 분산 SQL 데이터베이스 GOLDILOCKS 를 만든다. 매뉴얼 저장소 링크"
+  },
+  {
+   "n": 19,
+   "title": "Altibase 공식 사이트",
+   "url": "https://www.altibase.com/",
+   "kind": "reference",
+   "note": "메모리·디스크 하이브리드 DBMS, 통신(SK텔레콤)·금융 사례"
+  },
+  {
+   "n": 20,
+   "title": "데이터자격검정 (SQLP · DAP)",
+   "url": "https://www.dataq.or.kr/www/main.do",
+   "kind": "reference",
+   "note": "한국데이터산업진흥원"
+  },
+  {
+   "n": 21,
+   "title": "MySQL 8.0 Reference Manual · Point-in-Time Recovery Using Binary Log",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/point-in-time-recovery-binlog.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Oracle 19c 문서 · Database Upgrade Guide",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/upgrd/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Netflix Technology Blog · Linux Performance Analysis in 60,000 Milliseconds",
+   "url": "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "자소설닷컴 · 비즈테크아이 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/14512",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음. 페이지가 자동 접근을 막아 검색 결과 요약으로 확인"
+  },
+  {
+   "n": 25,
+   "title": "캐치 · 비즈테크아이 기업 정보",
+   "url": "https://www.catch.co.kr/Comp/CompSummary/222130",
+   "kind": "reference",
+   "note": "주소 서울 마포구 매봉산로 75, 12층 · 사원 891명(2026.02) · 매출 3,278억(2025.12) · 외감"
+  },
+  {
+   "n": 26,
+   "title": "전자금융감독규정 (금융위원회 고시 제2025-4호)",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "note": "13조(백업 원격 보관·검증)·23조(재해복구·전환 훈련). 금융권 규정 — 통신사에 그대로 적용되는 것은 아니다. 위키문헌 사본"
+  }
+ ],
+ "caveat": "LG유플러스 핵심 시스템의 DB 종류·대수·이중화 구성은 공개 자료가 없습니다. 모니터링은 와탭이 쓴 고객 사례(인프라~화면 통합)만 확인했고, 그 안에서 DB를 어떻게 보는지는 적혀 있지 않습니다. 그래서 각 DB의 공식 문서로 '보통 이런 일'을 보였습니다. 회사 공식 복리후생 페이지(biztechi.com/culture/03)는 자동으로 읽히지 않아, 같은 회사가 다른 공고에 직접 쓴 목록을 실었습니다.",
+ "resources": [
+  {
+   "id": "kind-sql",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D",
+   "why": "SQL 튜닝·인덱스 설계 요건을 위해. 인덱스 스캔·조인·소트를 그림으로 설명해 실행계획 읽는 눈을 기른다(예시는 Oracle 기준)."
+  },
+  {
+   "id": "realmysql",
+   "title": "Real MySQL 8.0 (1·2권)",
+   "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://wikibook.co.kr/realmysql801/",
+   "why": "MySQL·MariaDB 쪽 전문 역량을 위해. 잠금·인덱스·실행계획·복제·백업을 MySQL 내부 동작으로 설명한다."
+  },
+  {
+   "id": "hpmysql",
+   "title": "High Performance MySQL (4판)",
+   "by": "Silvia Botros · Jeremy Tinley · O'Reilly · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/high-performance-mysql/9781492080503/",
+   "why": "복제 구성·대규모 트래픽 운영 우대사항을 위해. 복제 토폴로지·용량 계획·클라우드 운영을 운영자 시선으로 다룬다."
+  },
+  {
+   "id": "dbre",
+   "title": "Database Reliability Engineering",
+   "by": "Laine Campbell · Charity Majors · O'Reilly · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/database-reliability-engineering/9781491925935/",
+   "why": "운영·장애 예방 업무 전체를 위해. 백업·모니터링·변경 관리·장애 대응을 DB 운영자의 일로 묶어 설명한다."
+  },
+  {
+   "id": "oracle-dg",
+   "title": "Oracle Data Guard Concepts and Administration (19c) · Introduction to Oracle Data Guard",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sbydb/introduction-to-oracle-data-guard-concepts.html",
+   "why": "DataGuard 우대사항을 위해. 대기 DB 종류·switchover·failover·보호 수준의 정확한 정의."
+  },
+  {
+   "id": "oracle-rac",
+   "title": "Oracle RAC Administration and Deployment Guide (19c) · Introduction to Oracle RAC",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/racad/introduction-to-oracle-rac.html",
+   "why": "RAC 우대사항을 위해. 여러 인스턴스가 한 DB를 여는 구조와 Cache Fusion 을 원문으로."
+  },
+  {
+   "id": "oracle-rman",
+   "title": "Oracle Database Backup and Recovery User's Guide (19c) · Getting Started with RMAN",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/bradv/getting-started-rman.html",
+   "why": "백업/복구 정책·경험 요건을 위해. 전체·증분 백업과 복원 명령을 직접 따라 해 볼 수 있다."
+  },
+  {
+   "id": "oracle-awr",
+   "title": "Oracle Database Performance Tuning Guide (19c) · Gathering Database Statistics",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgdba/gathering-database-statistics.html",
+   "why": "성능 병목 분석을 위해. AWR 스냅숏·보고서로 느려진 시간대의 대기와 비싼 SQL을 찾는 법."
+  },
+  {
+   "id": "oracle-tgsql",
+   "title": "Oracle Database SQL Tuning Guide (19c)",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/",
+   "why": "SQL 튜닝 요건을 위해. 옵티마이저·실행계획·통계를 공식 정의로 확인한다."
+  },
+  {
+   "id": "oracle-upgrade",
+   "title": "Oracle Database Upgrade Guide (19c)",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/upgrd/",
+   "why": "패치·업그레이드 업무를 위해. 사전 점검부터 되돌리기까지 업그레이드 절차 전체."
+  },
+  {
+   "id": "mysql-repl",
+   "title": "MySQL 8.0 Reference Manual · Replication",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/replication.html",
+   "why": "Replication 우대사항을 위해. binary log 형식·GTID·반동기 복제 설정을 원문으로."
+  },
+  {
+   "id": "mysql-pitr",
+   "title": "MySQL 8.0 Reference Manual · Point-in-Time Recovery Using Binary Log",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/point-in-time-recovery-binlog.html",
+   "why": "백업/복구 경험 요건을 위해. 전체 백업 + 변경 기록으로 원하는 시각까지 되살리는 절차."
+  },
+  {
+   "id": "aurora-docs",
+   "title": "Amazon Aurora 사용 설명서 · Aurora 스토리지의 안정성",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html",
+   "why": "AWS Aurora·DBaaS 우대사항을 위해. 관리형 DB에서 클라우드가 맡는 것과 사람이 맡는 것을 가른다."
+  },
+  {
+   "id": "goldilocks-manual",
+   "title": "GOLDILOCKS 26c.1 매뉴얼",
+   "by": "선재소프트",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://manual.sunjesoft.co.kr/goldilocks/26c_1/manual/ko",
+   "why": "자격요건의 Goldilocks 를 위해. 공개 자료가 적은 국산 DB라 제작사 매뉴얼이 가장 확실한 자료다."
+  },
+  {
+   "id": "altibase-docs",
+   "title": "Altibase 문서",
+   "by": "알티베이스",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.altibase.com/",
+   "why": "자격요건의 Altibase 를 위해. 메모리·디스크 테이블과 이중화 기능을 제작사 문서로."
+  },
+  {
+   "id": "use-method",
+   "title": "The USE Method",
+   "by": "Brendan Gregg",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "why": "DB 리소스 모니터링 업무를 위해. CPU·메모리·I/O 를 사용률·포화·오류로 빠짐없이 훑는 순서."
+  },
+  {
+   "id": "netflix-60s",
+   "title": "Linux Performance Analysis in 60,000 Milliseconds",
+   "by": "Netflix Technology Blog",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55",
+   "why": "Linux/Unix 환경 이해 요건을 위해. 서버가 느릴 때 처음 1분에 칠 명령 열 개와 읽는 법."
+  },
+  {
+   "id": "linux-kernel-book",
+   "title": "DevOps와 SE를 위한 리눅스 커널 이야기",
+   "by": "강진우 · 인사이트 · 2017",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=115452679",
+   "why": "Linux 요건과 자원 모니터링을 위해. load average·메모리·swap·I/O 를 운영자 시선으로 풀어 준다."
+  },
+  {
+   "id": "mysqld-exporter",
+   "title": "prometheus/mysqld_exporter",
+   "by": "Prometheus (오픈소스)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/prometheus/mysqld_exporter",
+   "why": "모니터링 솔루션 우대사항을 위해. MySQL·MariaDB 지표를 Prometheus 로 모으는 가장 흔한 방법을 직접 띄워 본다."
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Site Reliability Engineering · Postmortem Culture: Learning from Failure",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "장애 원인 분석·재발 방지 업무를 위해. 사람을 탓하지 않는 장애 기록과 언제 쓰는지의 기준."
+  },
+  {
+   "id": "dataq",
+   "title": "데이터자격검정 (SQLP · DAP)",
+   "by": "한국데이터산업진흥원",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.dataq.or.kr/www/main.do",
+   "why": "SQL 튜닝 역량을 증명하고 싶다면. SQLP 시험 일정·범위 확인."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "주력 DB 하나를 바닥까지",
+   "time": "4~6주",
+   "goal": "Oracle 이나 MySQL 하나로 설치·백업·복원·실행계획 읽기를 혼자 할 수 있다.",
+   "task": "가상 사용량 표(고객 5만 명·200만 건)를 만들고, 전체 백업 → 데이터 추가 → 디스크 고장을 가정해 원하는 시각까지 시점 복구를 해 본다. 걸린 시간을 적는다.",
+   "resources": [
+    "realmysql",
+    "oracle-rman",
+    "mysql-pitr"
+   ]
+  },
+  {
+   "title": "SQL 튜닝과 인덱스",
+   "time": "3~4주",
+   "goal": "느린 SQL을 실행계획으로 읽고 인덱스·SQL 수정으로 고친 전후를 숫자로 보인다.",
+   "task": "1단계 표에 느린 조회 다섯 개를 일부러 만들고, 실행계획을 읽어 인덱스를 설계한다. 전후 실행 시간과 읽은 행 수를 표로 정리한다.",
+   "resources": [
+    "kind-sql",
+    "oracle-tgsql",
+    "oracle-awr"
+   ]
+  },
+  {
+   "title": "이중화 직접 짜기",
+   "time": "2~3주",
+   "goal": "복제(또는 Data Guard)를 구성하고, 넘기기를 해 보고, 복제 지연을 잴 수 있다.",
+   "task": "도커로 MySQL 주 DB 1대·복제 DB 2대를 띄워 복제를 걸고, 주 DB를 끈 뒤 복제 DB를 주로 올려 본다. 넘기기까지 걸린 시간과 잃은 데이터가 있는지 기록한다.",
+   "resources": [
+    "mysql-repl",
+    "hpmysql",
+    "oracle-dg",
+    "oracle-rac"
+   ]
+  },
+  {
+   "title": "모니터링과 장애 기록",
+   "time": "2주",
+   "goal": "DB·서버 지표에 알람을 걸고, 장애 하나를 기록과 재발 방지 계획으로 정리할 수 있다.",
+   "task": "3단계 환경에 Prometheus + mysqld_exporter 를 붙여 복제 지연·연결 수·디스크 알람을 만든다. 디스크를 일부러 채워 알람을 울리고, 그 과정을 포스트모템 한 장으로 쓴다.",
+   "resources": [
+    "mysqld-exporter",
+    "use-method",
+    "netflix-60s",
+    "sre-postmortem",
+    "dbre"
+   ]
+  },
+  {
+   "title": "국산 DB·클라우드로 넓히기 (선택)",
+   "time": "계속",
+   "goal": "Goldilocks·Altibase·Aurora 에서 같은 개념(복제·백업·실행계획)이 무엇으로 불리는지 말할 수 있다.",
+   "task": "주력 DB와 Goldilocks·Altibase·Aurora 를 놓고 '이중화·백업·실행계획 보기·모니터링 지표' 네 칸짜리 대응표를 매뉴얼을 보며 채운다.",
+   "resources": [
+    "goldilocks-manual",
+    "altibase-docs",
+    "aurora-docs"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 3,811만원**, 직원 평균 **약 5,748만원**(둘 다 공공데이터 집계) — 비상장사라 공시 숫자가 없고, 평균은 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,811만원",
+    "amount": 3811,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없어 7년 차 경력 DBA 연봉과는 거리가 멀다 [24]"
+   },
+   {
+    "label": "직원 평균",
+    "value": "약 5,748만원",
+    "amount": 5748,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균. 사원 891명(2026년 2월) 규모 회사 전체 값이다 [24][25]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다. 이 회사 전형은 서류 → 필기(LG Way Fit Test) → 면접 → 평판조회 → **처우제안** 순서라 연봉은 경력에 따라 따로 정한다 [3][4]. 비즈테크아이는 외감 비상장사라 사업보고서 평균 급여가 없다 [25]. 평균은 신입과 경력이 섞인 값이라 경력 7년 이상 자리의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "성과급",
+    "detail": "사원 성과급 — 최근 7년간 지급"
+   },
+   {
+    "name": "LG 임직원몰 포인트",
+    "detail": "연간 약 100만원"
+   },
+   {
+    "name": "자녀 학자금",
+    "detail": "지원"
+   },
+   {
+    "name": "안식휴가",
+    "detail": "근속 3년마다 5일"
+   },
+   {
+    "name": "선임 호칭 변경 축하",
+    "detail": "100만원 상당 IT 기기"
+   },
+   {
+    "name": "교육·자격증",
+    "detail": "사내외 교육 플랫폼, 자격증 응시료 지원"
+   },
+   {
+    "name": "건강",
+    "detail": "건강검진·심리상담 지원"
+   },
+   {
+    "name": "여가",
+    "detail": "법인 콘도, LG TWINS 홈경기 관람, 사내 동호회, 전자도서관"
+   },
+   {
+    "name": "경조사·기념일",
+    "detail": "지원"
+   }
+  ],
+  "note": "비즈테크아이가 다른 경력 공고(데이터엔지니어링 PL)에 직접 적은 목록이다 [3]. 회사 공식 복리후생 페이지(biztechi.com/culture/03)는 공고에 링크만 있고 자동으로 읽히지 않았다. 계약직에도 같은지는 적혀 있지 않으니 처우제안 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "비즈테크아이 본사 (상암 DDMC)",
+  "address": "서울특별시 마포구 매봉산로 75, DDMC 12층 (상암동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+  "near": "상암 디지털미디어시티 일대 {추론}",
+  "note": "주소는 회사가 공고 맨 끝에 적은 것이다 [3][4][25]. 이 공고의 근무지는 '서울'로만 적혀 있고 고객사(LG유플러스) 시스템을 맡는 자리라, 실제 자리가 본사와 다를 수 있다 [2] {추론}."
+ }
+}

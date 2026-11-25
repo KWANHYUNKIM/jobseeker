@@ -65,6 +65,8 @@
   "jobkorea-50373063": "biztechi-data-engineering-pl",
   "jobkorea-50317228": "biztechi-data-engineering-pl",
   "dev-579992": "biztechi-data-engineering-pl",
+  "ats-lg:group:1001890": "biztechi-database-operations",
+  "dev-579980": "biztechi-database-operations",
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7793770": "coupang-ai-foundations-senior-staff-mle-mtv",
@@ -1064,6 +1066,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 19
+  },
+  {
+   "id": "biztechi-database-operations",
+   "company": "비즈테크아이",
+   "role": "데이터베이스 담당자",
+   "jobs": [
+    "ats-lg:group:1001890",
+    "dev-579980"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 22
   },
   {
    "id": "cj-oliveyoung-data-analyst",
