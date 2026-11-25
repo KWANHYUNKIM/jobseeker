@@ -227,6 +227,7 @@
   "jobkorea-50249295": "megazonecloud-security-solution-engineer",
   "ats-greeting:musinsa:197974": "musinsa-cloud-engineer-foundation-platform",
   "ats-greeting:musinsa:230871": "musinsa-core-ai-product-engineer",
+  "ats-greeting:musinsa:202445": "musinsa-dba-foundation-platform",
   "ats-greeting:musinsa:229966": "musinsa-infra-platform-engineering-manager",
   "ats-greeting:musinsa:242044": "musinsa-network-engineer",
   "wanted-366283": "musinsa-network-security-engineer-sase-casb",
@@ -2467,6 +2468,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 36
+  },
+  {
+   "id": "musinsa-dba-foundation-platform",
+   "company": "무신사",
+   "role": "DBA",
+   "jobs": [
+    "ats-greeting:musinsa:202445"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
   },
   {
    "id": "musinsa-infra-platform-engineering-manager",
