@@ -1,6 +1,8 @@
 {
  "updated_at": "2026-11-25",
  "jobs": {
+  "ats-ashby:42dot:49f9a5ec-7140-4235-bfec-c471ca884d6e": "42dot-3d-application-engineer",
+  "ats-ashby:42dot:9b9faf37-dcc9-4c54-8b67-1abacdf36478": "42dot-3d-application-engineer",
   "ats-ashby:42dot:e7cc48d8-398f-4106-b25b-635e81936721": "42dot-ad-framework-software-engineer",
   "ats-ashby:42dot:7bc7935d-2925-4a60-bd6e-f2ccfcfc7873": "42dot-ad-test-engineer",
   "ats-ashby:42dot:4a19a543-6ed0-46bf-8519-b34b45e2ffa6": "42dot-ai-engineer-navigation-agent",
@@ -385,6 +387,17 @@
   "wanted-390176": "visasq-data-platform-engineer"
  },
  "roles": [
+  {
+   "id": "42dot-3d-application-engineer",
+   "company": "포티투닷",
+   "role": "3D Application Engineer",
+   "jobs": [
+    "ats-ashby:42dot:49f9a5ec-7140-4235-bfec-c471ca884d6e",
+    "ats-ashby:42dot:9b9faf37-dcc9-4c54-8b67-1abacdf36478"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
+  },
   {
    "id": "42dot-ad-framework-software-engineer",
    "company": "포티투닷",

@@ -1,0 +1,1031 @@
+{
+ "id": "42dot-3d-application-engineer",
+ "company": "포티투닷",
+ "role": "3D Application Engineer",
+ "team": "미국 서니베일 · 차세대 디지털 콕핏의 실시간 3D(계기판·HMI) — 공고에 팀 이름은 없다",
+ "jobs": [
+  "ats-ashby:42dot:49f9a5ec-7140-4235-bfec-c471ca884d6e",
+  "ats-ashby:42dot:9b9faf37-dcc9-4c54-8b67-1abacdf36478"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "차 안 계기판·중앙 화면에 뜨는 **실시간 3D**(내 차·차로·주변 차, 운전자 보조 표시)를 언리얼·유니티·자체 렌더러로 만들고, 차량 센서 값과 잇고, 차량용 칩에서 빠르게 돌게 다듬습니다.[1] 현대차그룹의 Pleos Connect 는 이미 이런 3D 주행 뷰를 싣고 있습니다.[3][5]",
+  "env": "엔진은 언리얼(C++·블루프린트·HLSL) 또는 유니티(C#·HDRP)이고, 차량 값은 안드로이드 차량 OS 의 VHAL 로 받습니다. 우대사항은 AAOS·리눅스 배포, Cuttlefish 에뮬레이터 시험, 기능안전입니다.[1]",
+  "oneline": "게임 엔진 실력으로 **자동차 계기판**을 만드는 시니어·스태프 자리. 3D 수학·렌더링·임베디드 최적화를 셋 다 손으로 해 봤는지를 봅니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Engine Mastery: Take a primary, hands-on role in developing and optimizing our vehicle HMI using Unreal Engine (C++), Unity3D (C#) or a custom 3D rendering system. You will be responsible for building the core frameworks that power our real-time 3D clusters and HMIs.",
+   "short": "계기판·중앙 화면의 실시간 3D 를 언리얼·유니티(또는 자체 엔진)로 직접 짜고, 그 화면들이 올라탈 공통 뼈대를 만드는 일.",
+   "why": "현대차그룹의 새 인포테인먼트 Pleos Connect 는 대화면 왼쪽의 **주행 정보 화면**이 기존 계기판(클러스터) 기능 일부를 대신하고, 서 있을 때는 창문·사이드미러·트렁크를 3D 차량 그림으로 보여 줍니다.[3] 사용설명서도 정차·주행·주차에 맞춰 바뀌는 **3D 주행 뷰**를 화면 구성 요소로 적었습니다.[5] 보도에 따르면 이 3D 콘텐츠는 외부 회사(자이언트스텝)가 언리얼 엔진으로 만들었고 더 뉴 그랜저에 처음 실렸습니다.[4] 포티투닷은 Pleos Connect 개발에 참여한 회사이고[6], 이 공고는 그 3D 전략의 기술 중심(technical anchor)을 뽑는다고 적었습니다.[1] 이 자리가 그 화면을 직접 이어받는지는 공개되지 않았습니다{추론}.",
+   "actually": {
+    "intro": "엔진으로 차량 화면을 만들 때 보통 하는 일입니다. 포티투닷이 언리얼·유니티·자체 엔진 중 무엇을 쓰는지는 공고가 셋 다 적어 정해지지 않았습니다.[1]",
+    "items": [
+     "**장면 만들기** — 내 차 모델·차로·주변 차를 놓고, 기어·주차·충전 같은 상태가 바뀌면 카메라와 장면을 바꾼다. 보도는 이 화면이 이런 데이터를 실시간으로 반영한다고 적었다.[4]",
+     "**공통 뼈대(framework)** — 화면마다 새로 짜지 않도록 '차량 상태 받기 → 장면 갱신 → 그리기'를 묶은 바탕 코드와 규칙을 만든다{추론}.",
+     "**언리얼이라면** — C++ 클래스는 UObject 를 바탕으로 쓰고, 이 바탕 위에서 엔진이 참조가 끊긴 객체를 알아서 지우고(가비지 컬렉션) 속성을 읽고 저장한다(리플렉션·직렬화).[12]",
+     "**유니티라면** — 고사양 기기용 HDRP 와 여러 기기용 URP 두 렌더 파이프라인 중에서 고른다. URP 는 모바일부터 콘솔·PC 까지를 겨냥한다.[13][14]",
+     "**엔진 회사도 이 시장을 판다** — 유니티는 임베디드 리눅스·QNX·Android Automotive 를 겨냥한 자동차 HMI 견본을 내며 라즈베리파이 5 에서 최대 60fps 로 돈다고 소개했다.[15]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "주행 정보 화면이 그려지는 순서 — 보통 이런 것[3][4][16]",
+     "steps": [
+      "차량 · 센서·제어기",
+      "VHAL · 차량 상태 값",
+      "앱 · 상태 받아 정리",
+      "장면 그래프 · 차·차로·주변 물체 배치",
+      "렌더러 · 조명·그림자·후처리",
+      "화면 · 계기판·중앙 디스플레이"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "어떤 화면을 어떻게 보일지는 디자인·UX 쪽이 정하고{추론}, 이 자리는 **그 디자인이 차 안의 칩에서 끊기지 않고 돌게 하는 코드와 뼈대**를 맡습니다.[1] 공고가 '시니어 또는 스태프'를 뽑는다고 적어, 엔진 하나를 깊게 다뤄 본 실제 제품 경험을 봅니다.[1]",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "ue-objects",
+    "unity-hmi-template",
+    "game-engine-arch"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Architecture & Integration: Design the bridge between vehicle sensor data (SDV and VHAL) and the 3D scene graph, ensuring low-latency visualization of the vehicle’s surroundings.",
+   "short": "차가 보내는 센서·상태 값을 3D 장면 속 물체로 바꾸는 다리를 설계하고, 늦지 않게 화면에 뜨게 하는 일.",
+   "why": "Pleos Connect 의 주행 정보 화면은 주행 중 속도·기어·남은 연료와 함께 **차로와 주변 물체** 같은 운전자 보조(ADAS) 상태를 보여 줍니다.[3] 보도는 ADAS·주차 보조가 작동할 때 주변을 3D 로 보인다고 적었습니다.[4] 화면 속 앞차가 실제보다 늦게 움직이면 운전자가 잘못 읽을 수 있어 '낮은 지연'이 붙었습니다{추론}.",
+   "actually": {
+    "intro": "안드로이드 차량 OS 에서 값이 오는 길과, 그 값을 장면에 옮기는 일입니다.[16][17]",
+    "items": [
+     "**차량 상태 받기** — VHAL(차량 하드웨어 추상 계층)이 속도·기어 같은 차량 속성을 정의하고, 앱은 CarPropertyManager 로 읽거나 정한 주기로 구독한다.[16][17]",
+     "**주기가 다르다** — 구독 주기 상수는 가장 빠름 100Hz·빠름 10Hz·UI 5Hz·보통 1Hz 이고, 화면은 보통 60fps 로 그린다. 그 사이를 보간(interpolation)으로 메운다.[17]{추론}",
+     "**좌표 바꾸기** — 로봇·차량 쪽은 보통 앞 x·왼쪽 y·위 z(오른손, 미터)를 쓰고[26], 언리얼은 왼손·Z 위·X 앞 좌표를 쓴다.[27] 축 하나의 부호를 놓치면 옆 차로의 차가 반대편에 뜬다{추론}.",
+     "**장면 그래프** — 물체마다 부모(내 차)에 대한 위치·회전을 두고, 센서가 본 물체가 생기고 사라질 때 노드를 만들고 지운다{추론}.",
+     "**지연 재기** — 센서 시각 → 값 도착 → 장면 갱신 → 화면 표시의 구간별 시간을 찍어 어디서 늦는지 본다{추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "차량 좌표를 엔진 좌표로 — 축과 단위가 다 다르다",
+     "body": "12m 앞·3.5m 왼쪽 차로의 차를 언리얼과 유니티 좌표로 옮긴 직접 돌린 출력입니다. 언리얼은 왼손·Z 위·X 앞[27]이라 왼쪽(y)이 음수가 되고, 기본 단위 1 = 1cm 로 두었습니다{추론}. 유니티는 위가 Y, 앞이 Z 입니다.[28] 출력은 (1200.0, -350.0, 0.0) 과 (-3.5, 0.0, 12.0).",
+     "lang": "python",
+     "code": "# 차량 좌표(ISO 8855: x 앞, y 왼쪽, z 위, 오른손, m) → 엔진 좌표\ndef to_unreal(x, y, z):   # X 앞, Y 오른쪽, Z 위, 왼손, cm\n    return (x * 100, -y * 100, z * 100)\n\ndef to_unity(x, y, z):    # X 오른쪽, Y 위, Z 앞, 왼손, m\n    return (-y, z, x)\n\ncar_ahead_left = (12.0, 3.5, 0.0)       # 12m 앞, 3.5m 왼쪽 차로의 차\nprint(to_unreal(*car_ahead_left))       # (1200.0, -350.0, 0.0)\nprint(to_unity(*car_ahead_left))        # (-3.5, 0.0, 12.0)"
+    }
+   ],
+   "how_far": "어느 센서 값을 넘길지는 차량 플랫폼·ADAS 쪽이 정하고{추론}, 이 자리는 **받은 값을 장면으로 옮기는 구조와 그 지연**을 책임집니다.[1] 최소선은 VHAL 속성을 구독해 화면에 그리는 작은 앱을 만들고, 센서 주기와 화면 주기가 다를 때 어떻게 메우는지 설명하는 것입니다{추론}.",
+   "refs": [
+    1,
+    3,
+    4,
+    16,
+    17,
+    26,
+    27,
+    28
+   ],
+   "study": [
+    "aosp-vhal",
+    "carpropertymanager",
+    "aaos-emulator",
+    "math-primer"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Embedded Optimization: Profile and optimize engine performance for automotive-grade SoCs, focusing on memory footprint, GPU utilization, and thermal efficiency.",
+   "short": "차에 들어가는 칩에서 메모리·GPU·발열을 재 보고, 화면이 끊기거나 칩이 달아오르지 않게 줄이는 일.",
+   "why": "차의 칩은 게임용 PC 보다 GPU·메모리가 작고 한 칩을 내비·미디어·계기판이 나눠 쓰므로 3D 화면 하나가 다 가져갈 수 없습니다{추론}. 유니티는 차량 HMI 에서 여러 앱이 런타임 하나를 같이 써 메모리·CPU 를 아끼는 방식을 따로 내세웁니다.[15]{추론} 공고는 메모리 사용량·GPU 사용률·열 효율 셋을 이름으로 적었습니다.[1]",
+   "actually": {
+    "intro": "안드로이드 기기에서 쓰는 공개 도구와 계산입니다. 포티투닷이 어떤 칩을 쓰는지는 이 공고에 없습니다.",
+    "items": [
+     "**프레임 예산** — 60fps 면 한 장에 16.67ms. CPU(장면 갱신)와 GPU(그리기) 중 어디가 넘는지부터 가른다{추론}.",
+     "**GPU 보기** — Android GPU Inspector 는 시스템 전체 추적(Perfetto 기반)과 한 프레임을 붙잡아 GPU 명령을 뜯어보는 두 방식을 준다. 앱이 debuggable 이어야 한다.[21]",
+     "**엔진 안에서 보기** — 언리얼 Insights 는 엔진이 남기는 사건 기록을 모아 어디가 느린지 보여 준다.[30]",
+     "**메모리** — 텍스처가 가장 크다. 2048×2048 RGBA8 한 장이 밉맵 없이 16MiB, ASTC 압축(6×6 블록 = 화소당 3.56비트)이면 약 1.78MiB 다.[29]",
+     "**열** — 안드로이드 Thermal API 는 0(여유)~1(심한 감속) 사이의 여유 값을 주고, 여유가 줄면 프레임률·화질을 낮추라고 권한다.[20]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "텍스처 한 장이 메모리를 얼마나 먹나",
+     "body": "직접 돌린 출력입니다 — 16.0, 21.33, 1.78, 4.0(MiB). 밉맵(작게 줄인 사본 사슬)은 약 1/3 을 더하고, ASTC 는 블록 크기와 관계없이 블록마다 같은 크기라 블록이 클수록 작아집니다(6×6 은 화소당 3.56비트).[29]",
+     "lang": "python",
+     "code": "import math\nMiB = 1024 * 1024\n\ndef rgba8(w, h, mips=True):               # 화소당 4바이트, 밉맵 사슬은 약 1/3 더\n    total, lw, lh = 0, w, h\n    while True:\n        total += lw * lh * 4\n        if not mips or (lw == 1 and lh == 1):\n            break\n        lw, lh = max(1, lw // 2), max(1, lh // 2)\n    return total\n\ndef astc(w, h, bx, by):                   # ASTC 는 블록 크기와 관계없이 블록당 16바이트\n    return math.ceil(w / bx) * math.ceil(h / by) * 16\n\nprint(round(rgba8(2048, 2048, mips=False) / MiB, 2))   # 16.0\nprint(round(rgba8(2048, 2048) / MiB, 2))               # 21.33\nprint(round(astc(2048, 2048, 6, 6) / MiB, 2))          # 1.78 (밉 없이)\nprint(round(astc(2048, 2048, 4, 4) / MiB, 2))          # 4.0"
+    }
+   ],
+   "how_far": "칩·메모리 몫은 차량 플랫폼 쪽이 정하고{추론}, 이 자리는 **그 몫 안에 3D 화면을 넣고, 넘었을 때 어디를 깎을지** 근거를 내는 일입니다.[1] 최소선은 프로파일러로 한 프레임을 쪼개 병목을 짚고, 텍스처·그림자·후처리 중 무엇을 줄였을 때 몇 ms 가 줄었는지 숫자로 말하는 것입니다{추론}.",
+   "refs": [
+    1,
+    15,
+    20,
+    21,
+    29,
+    30
+   ],
+   "study": [
+    "agi",
+    "adpf-thermal",
+    "ue-insights",
+    "rtr4"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Tooling & Pipelines: Develop custom engine plugins and automated build pipelines to streamline the deployment of 3D assets from design to the target vehicle hardware.",
+   "short": "디자이너가 만든 3D 모델을 사람 손 없이 차 화면까지 보내는 엔진 플러그인과 자동 빌드를 만드는 일.",
+   "why": "외부 회사가 3D 콘텐츠를 만들고[4] 차종이 현대차·기아·제네시스로 넓어질 예정이라[4], 같은 자산을 여러 차·여러 판으로 반복해 내보내야 합니다{추론}. 현대차그룹은 Pleos Connect 를 2030년까지 2,000만 대에 싣겠다고 밝혔습니다.[3]",
+   "actually": {
+    "intro": "엔진들이 공식으로 주는 자동화 도구입니다.[31][32]",
+    "items": [
+     "**유니티 무인 빌드** — 편집기를 -batchmode(사람 조작 없이)로 띄우고 -executeMethod 로 빌드 함수를 불러 CI 에서 돌린다.[32]",
+     "**언리얼 빌드 그래프** — BuildGraph 는 빌드·쿠킹(대상 기기용 자산 변환)·패키징 단계를 XML 그래프로 적어 자동화한다.[31]",
+     "**자산 검사** — 들어온 모델의 폴리곤 수·텍스처 크기·압축 형식이 예산을 넘으면 빌드에서 막는다{추론}.",
+     "**엔진 플러그인** — 디자인 도구에서 온 자산을 차량용으로 바꾸는 임포터, 차량 상태를 흉내 내는 편집기 도구 같은 것{추론}.",
+     "**차까지 배포** — 만든 묶음을 시험 기기·벤치에 올리고 화면을 찍어 비교한다{추론}. 같은 회사 서니베일 공고는 진짜 제어기를 꽂는 시험 벤치와 CI 회귀 시험을 따로 뽑고 있다.[8]"
+    ]
+   },
+   "how_far": "자산의 모양은 디자이너가, 빌드 서버 운영은 인프라 쪽이 맡을 가능성이 높고{추론}, 이 자리는 **자산이 디자인 도구에서 차 화면까지 가는 길을 자동으로 만드는 것**입니다.[1] 최소선은 엔진 하나로 명령줄 빌드를 CI 에 올려 본 경험입니다{추론}.",
+   "refs": [
+    1,
+    3,
+    4,
+    8,
+    31,
+    32
+   ],
+   "study": [
+    "unity-cli",
+    "ue-buildgraph"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Hands-on Engine Expertise:",
+   "short": "아래 두 줄(언리얼 또는 유니티) 중 하나를 '써 봤다'가 아니라 엔진 속까지 손으로 다뤄 본 경험이 필요하다는 머리말.",
+   "why": "공고가 이 줄을 머리말로 두고 언리얼용·유니티용 요건을 따로 적었습니다.[1] 업무 첫 줄도 언리얼·유니티·자체 렌더러 중 하나를 적어, 둘 다가 아니라 **어느 한쪽의 깊이**를 보는 것으로 읽힙니다{추론}.",
+   "how_far": "두 엔진을 다 할 필요는 없어 보이고{추론}, 고른 쪽에서 편집기 사용을 넘어 엔진 코드·플러그인·셰이더까지 손댄 사례가 있어야 합니다.[1]{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ue-objects",
+    "unity-hmi-template"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "For Unreal: Deep experience with C++, Blueprints, UObject system, and custom shader development (HLSL).",
+   "short": "언리얼이라면 C++ 와 블루프린트, 엔진 객체 체계(UObject), 직접 짠 셰이더(HLSL)까지 깊게 다뤄 봤어야 한다.",
+   "why": "언리얼로 차량 화면을 만들면 엔진 기능 위에 차량 상태 연결·화면 전환을 C++ 로 얹어야 하고, 디자이너가 쓰는 블루프린트(노드를 잇는 시각적 스크립트)와 경계를 정해야 합니다{추론}. Pleos Connect 의 3D 화면은 언리얼 기반으로 보도됐습니다.[4]",
+   "actually": {
+    "intro": "공고의 네 낱말이 가리키는 것 — 에픽 문서 기준입니다.[12]",
+    "items": [
+     "**UObject 체계** — UCLASS·UPROPERTY·UFUNCTION 매크로를 단 클래스는 헤더 도구(UHT)가 미리 읽어 리플렉션·직렬화·가비지 컬렉션을 붙인다.[12]",
+     "**참조 규칙** — UPROPERTY 로 잡은 포인터는 객체를 살려 두고, 약한 포인터는 그렇지 않다. UObject 는 new 로 만들지 않는다.[12]",
+     "**C++ 와 블루프린트** — 무거운 계산·차량 연결은 C++ 에, 화면 흐름은 블루프린트에 두는 식으로 나눈다{추론}.",
+     "**HLSL 셰이더** — 차량 도장 반사·차로 표시선 빛 같은 표현을 머티리얼만으로 못 하면 직접 셰이더를 쓴다{추론}."
+    ]
+   },
+   "how_far": "'Deep experience' 라 엔진 소스나 객체 수명 문제(지워진 객체를 잡고 있다 터지는 것)를 실제로 디버깅해 본 경험이 필요해 보입니다{추론}. 최소선은 UObject 가 왜 따로 있는지, 가비지 컬렉션이 무엇을 살려 두는지 설명하는 것입니다.[12]",
+   "refs": [
+    4,
+    12
+   ],
+   "study": [
+    "ue-objects",
+    "ue-coord",
+    "game-engine-arch"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "For Unity: Mastery of C#, the High Definition Render Pipeline (HDRP), and custom package development.",
+   "short": "유니티라면 C#, 고사양 렌더 파이프라인(HDRP), 직접 만든 패키지 배포까지 능숙해야 한다.",
+   "why": "유니티는 토요타·마쓰다·메르세데스-벤츠 같은 회사의 차량 HMI 에 쓰인다고 알려져 있고[15], 화면 여러 개가 같은 코드를 나눠 쓰려면 기능을 패키지로 묶어야 합니다{추론}.",
+   "actually": {
+    "intro": "유니티 공식 문서의 구분입니다.[13][14]",
+    "items": [
+     "**HDRP 는 고사양용** — 현재 문서의 지원 기기는 윈도우(DirectX 11·12)·콘솔 등이고, 컴퓨트 셰이더가 있어야 하며 OpenGL·OpenGL ES 기기는 지원하지 않는다.[13]",
+     "**그래서 모바일·임베디드는 보통 URP** — URP 는 모바일부터 고사양 콘솔·PC 까지 최적화된 그래픽을 겨냥한다.[14] 공고가 HDRP 를 적은 것이 차 안 칩에서 HDRP 를 돌린다는 뜻인지, 고사양 표현 경험을 보려는 것인지는 공고만으로 알 수 없다{추론}.",
+     "**패키지** — 기능을 패키지로 묶어 버전을 매기고 여러 화면·프로젝트가 같은 판을 쓰게 한다{추론}.",
+     "**C#** — 차량 상태를 받는 플랫폼 코드(Kotlin/Java)와 유니티 C# 사이를 잇는 다리를 짠다{추론}."
+    ]
+   },
+   "how_far": "'Mastery' 라 렌더 파이프라인을 고르고 고쳐 써 본 경험이 필요해 보입니다{추론}. 면접에서 'HDRP 와 URP 중 차량 칩에는 무엇을, 왜' 를 물을 만합니다{추론}[13][14].",
+   "refs": [
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "unity-hdrp",
+    "unity-urp",
+    "unity-hmi-template"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Graphics Programming: Strong understanding of the modern rendering pipeline, including PBR, lighting, and post-processing, specifically for mobile or embedded targets.",
+   "short": "물리 기반 재질(PBR)·조명·후처리가 그려지는 순서를 알고, 그걸 작은 차량 칩에 맞게 줄일 줄 알아야 한다.",
+   "why": "차량 3D 화면은 도장·유리·금속 질감을 사실적으로 보이려 해서 PBR 을 쓰는 경우가 많습니다{추론}. 하지만 차 칩은 데스크톱 GPU 보다 약해 같은 효과를 그대로 켤 수 없어, 공고가 '모바일 또는 임베디드 대상'을 붙였습니다.[1]{추론}",
+   "actually": {
+    "intro": "공개 교재·발표가 정리한 것입니다.[25][33]",
+    "items": [
+     "**PBR** — 표면을 아주 작은 면(마이크로패싯)의 모임으로 보고, 들어온 빛보다 많이 반사하지 않게(에너지 보존) 계산한다. 흔한 식이 Cook-Torrance(GGX·Schlick·Smith)다.[33]",
+     "**언리얼의 PBR** — 에픽은 2013 SIGGRAPH 강의에서 언리얼 엔진 4 의 실시간 셰이딩 모델을 공개했다.[25]",
+     "**조명** — 실시간 그림자는 비싸서 미리 구워 둔 조명·반사 맵을 섞는다{추론}.",
+     "**후처리** — 블룸·톤 매핑·안티에일리어싱은 화면 전체를 한 번 더 그리므로 화소 수가 큰 차량 디스플레이에서 비용이 크다{추론}.",
+     "**모바일 GPU** — 타일 단위로 그리는 GPU 가 많아, 화면 전체를 여러 번 읽고 쓰는 효과가 특히 비싸다{추론}[34]."
+    ]
+   },
+   "how_far": "식을 외우기보다 **한 프레임이 그려지는 순서와 단계별 비용**을 설명하고, 무엇을 끄면 어떤 모습이 바뀌는지 아는 수준입니다{추론}.",
+   "refs": [
+    1,
+    25,
+    33,
+    34
+   ],
+   "study": [
+    "learnopengl-pbr",
+    "rtr4",
+    "pbr-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Core Languages: Expert-level proficiency in C++ and familiarity with modern languages like Kotlin or Swift for platform-level integration.",
+   "short": "C++ 는 전문가 수준으로, 안드로이드·애플 플랫폼 쪽을 붙일 Kotlin·Swift 는 익숙한 정도로 다룰 줄 알아야 한다.",
+   "why": "언리얼과 대부분의 렌더러는 C++ 이고[12], 차량 상태는 안드로이드 쪽 API(CarPropertyManager, Java/Kotlin)로 들어옵니다.[17] 둘 사이를 잇는 코드가 이 자리 몫이라 두 언어가 같이 적혔습니다{추론}.",
+   "actually": {
+    "items": [
+     "**C++** — 객체 수명·메모리 배치·멀티스레드. 프레임마다 도는 코드에서 할당을 줄이는 일{추론}.",
+     "**Kotlin** — 안드로이드 서비스에서 차량 속성을 구독해 엔진 쪽(JNI)에 넘기는 얇은 층{추론}[17].",
+     "**Swift** — 공고가 '플랫폼 통합'용으로 적었지만 어떤 기기와 이어지는지는 적혀 있지 않다{추론}."
+    ]
+   },
+   "how_far": "C++ 는 '전문가' 라 면접 코딩 테스트와 깊은 질문이 C++ 로 나올 가능성이 높습니다{추론}. 전형에 코딩 테스트가 있습니다.[1] Kotlin·Swift 는 'familiarity' 라 읽고 고칠 수 있는 정도면 됩니다.[1]",
+   "refs": [
+    1,
+    12,
+    17
+   ],
+   "study": [
+    "carpropertymanager",
+    "game-engine-arch"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Mathematics: Strong foundation in 3D math (vectors, quaternions, matrices) required for complex spatial transformations and camera logic.",
+   "short": "벡터·쿼터니언·행렬로 물체를 옮기고 돌리고, 카메라가 어디서 무엇을 볼지 계산할 줄 알아야 한다.",
+   "why": "주변 차를 장면에 놓으려면 차량 좌표를 엔진 좌표로 바꿔야 하고, 정차·주행·주차마다 3D 뷰의 시점이 바뀌므로 카메라를 부드럽게 옮겨야 합니다.[5]{추론}",
+   "actually": {
+    "intro": "이 자리에서 수학이 쓰이는 곳입니다.[35]",
+    "items": [
+     "**변환 행렬** — 물체 → 내 차 → 세계 → 카메라 → 화면 순으로 행렬을 곱한다.[35]",
+     "**쿼터니언** — 회전을 네 수로 적어 짐벌 락(두 축이 겹쳐 회전 하나를 잃는 것)을 피하고, 두 회전 사이를 부드럽게 잇는다(slerp).[35]",
+     "**각도 보간의 함정** — 359° 에서 1° 로 갈 때 그냥 빼면 358° 를 거꾸로 돈다. 짧은 쪽으로 2° 만 돌게 해야 한다{추론}.",
+     "**카메라** — 차 뒤를 따라가는 시점·위에서 보는 시점 사이를 시간에 따라 옮기고, 차가 화면 밖으로 나가지 않게 한다{추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "10Hz 센서 값을 60fps 화면에 — 각도 보간과 쿼터니언 회전",
+     "body": "직접 돌린 출력입니다. 한 프레임 16.67ms, 359° → 1° 를 여섯 프레임에 나누면 359.0, 359.33, 359.67, 0.0, 0.33, 0.67, 1.0 으로 짧은 쪽만 돕니다. z 축 90° 쿼터니언으로 앞 4m 를 돌리면 (0.0, 4.0, 0.0), 곧 왼쪽 4m 입니다.[35]",
+     "lang": "python",
+     "code": "import math\n\ndef quat_yaw(deg):                        # z 축(위) 둘레 회전 쿼터니언 (w, x, y, z)\n    h = math.radians(deg) / 2\n    return (math.cos(h), 0.0, 0.0, math.sin(h))\n\ndef rotate(q, v):                         # v' = q v q*\n    w, x, y, z = q\n    vx, vy, vz = v\n    tx = 2 * (y * vz - z * vy); ty = 2 * (z * vx - x * vz); tz = 2 * (x * vy - y * vx)\n    return (vx + w * tx + (y * tz - z * ty),\n            vy + w * ty + (z * tx - x * tz),\n            vz + w * tz + (x * ty - y * tx))\n\ndef slerp_yaw(a, b, t):                   # 각도로 짧은 쪽 보간 (359 → 1 은 2도만 돈다)\n    d = (b - a + 180) % 360 - 180\n    return (a + d * t) % 360\n\n# 센서는 10Hz(100ms), 화면은 60fps(16.7ms) — 사이 프레임을 채운다\nprint(round(1000 / 60, 2))                                  # 16.67\nprint([round(slerp_yaw(359, 1, k / 6), 2) for k in range(7)])\np = rotate(quat_yaw(90), (4.0, 0.0, 0.0))                   # 앞 4m 를 90도 돌리면 왼쪽 4m\nprint(tuple(round(c, 6) + 0.0 for c in p))"
+    }
+   ],
+   "how_far": "라이브러리가 대신해 주는 계산이라도 **어느 순서로 곱하고 어느 좌표계인지** 틀렸을 때 고칠 수 있어야 합니다{추론}. 최소선은 위 예처럼 좌표 바꾸기·쿼터니언 회전·보간을 손으로 짜 보는 것입니다{추론}.",
+   "refs": [
+    5,
+    35
+   ],
+   "study": [
+    "math-primer",
+    "game-math-ko",
+    "ue-coord"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience deploying Unity or Unreal-based HMI onto Android Automotive OS (AAOS) or specialized Linux distributions.",
+   "short": "유니티·언리얼로 만든 차량 화면을 실제로 Android Automotive OS 나 차량용 리눅스 위에 올려 본 경험이면 좋다.",
+   "why": "포티투닷은 Android Automotive OS(AAOS, 차량용 안드로이드) 기반 차세대 인포테인먼트를 직접 개발한다고 소개합니다.[6] 엔진 화면을 데스크톱에서 만드는 것과 차량 OS 위에 앱으로 올리는 것은 다른 일이라 따로 우대했습니다{추론}.",
+   "actually": {
+    "items": [
+     "**AAOS 위에 올리기** — 엔진 결과물을 안드로이드 앱으로 묶고, 차량 속성 권한을 받아 VHAL 값을 읽는다.[16][17]",
+     "**계기판 화면** — 안드로이드에는 운전대 뒤 보조 디스플레이(계기판)에 내비 같은 앱을 띄우는 Instrument Cluster API 가 따로 있다.[36]",
+     "**리눅스·QNX** — 계기판을 안드로이드가 아닌 별도 OS 에 두는 차도 있어, 엔진이 그 OS 를 지원하는지가 갈린다. 유니티 견본은 임베디드 리눅스·QNX·AAOS 를 겨냥한다.[15]",
+     "**부팅** — 차를 켜자마자 계기판이 떠야 해서 엔진 시작 시간이 따로 문제가 된다{추론}."
+    ]
+   },
+   "refs": [
+    6,
+    15,
+    16,
+    17,
+    36
+   ],
+   "study": [
+    "aosp-vhal",
+    "aaos-emulator",
+    "unity-hmi-template"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Familiarity with emulator-based testing environments (e.g., Cuttlefish) for 3D UI validation.",
+   "short": "실제 차 없이 가상 안드로이드 기기(Cuttlefish 같은 에뮬레이터)에서 3D 화면을 시험해 봤으면 좋다.",
+   "why": "포티투닷은 차 없이 먼저 개발·시험하는 방식을 소개했고, 외부 개발자용 Pleos Playground 에 에뮬레이터를 제공합니다.[6] 차와 벤치는 수가 적어 화면 시험을 에뮬레이터에서 먼저 돌려야 회귀 시험을 자주 할 수 있습니다{추론}.",
+   "actually": {
+    "intro": "공식 문서가 설명하는 도구입니다.[18][19]",
+    "items": [
+     "**Cuttlefish** — 원격(클라우드)이나 리눅스 x86·ARM64 기계에서 도는 설정 가능한 가상 안드로이드 기기.[19]",
+     "**AAOS 에뮬레이터** — 확장 제어의 Car data 로 속도·기어 같은 VHAL 속성을 실행 중에 바꿔 주행을 흉내 낼 수 있다.[18]",
+     "**화면 비교 시험** — 같은 차량 상태를 넣고 찍은 화면을 기준 그림과 비교한다{추론}.",
+     "**한계** — 가상 GPU 는 차 칩과 성능이 달라, 모양 시험은 에뮬레이터에서·성능 시험은 실제 칩에서 나눠 한다{추론}."
+    ]
+   },
+   "refs": [
+    6,
+    18,
+    19
+   ],
+   "study": [
+    "cuttlefish",
+    "aaos-emulator"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Knowledge of functional safety standards and their impact on real-time graphics in a vehicle environment.",
+   "short": "차량 기능안전 기준(ISO 26262 등)이 계기판 그래픽에 무엇을 요구하는지 알면 좋다.",
+   "why": "포티투닷은 차량 기능안전 개발 프로세스로 ISO 26262 인증을 받았다고 보도됐습니다.[24] 계기판의 경고등·속도처럼 운전에 꼭 필요한 표시는 3D 화면이 멈춰도 보여야 해서 안전 기준이 그래픽 설계까지 닿습니다{추론}.",
+   "actually": {
+    "intro": "공개 자료가 말하는 것과, 보통의 설계입니다.[22][23]",
+    "items": [
+     "**ISO 26262** — 도로 차량의 전기·전자 시스템 기능안전 국제 표준.[23]",
+     "**안전용 그래픽 API** — 크로노스의 Vulkan SC 는 Vulkan 1.2 에서 안전 분야에 필요 없는 기능을 빼고 정의되지 않은 동작을 없앤 판으로, ISO 26262 ASIL D 같은 인증을 겨냥한다.[22]",
+     "**길을 나누기** — 경고등·속도 같은 필수 표시는 인증된 작은 렌더러가, 꾸밈 3D 는 엔진이 맡게 나누는 설계가 흔하다{추론}.",
+     "**멈춤 감지** — 3D 화면이 멈추거나 늦으면 감시 장치가 알아채고 단순 화면으로 바꾼다{추론}."
+    ]
+   },
+   "refs": [
+    22,
+    23,
+    24
+   ],
+   "study": [
+    "vulkan-sc",
+    "iso26262"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "ue-objects",
+   "title": "Objects in Unreal Engine",
+   "by": "Epic Games",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/objects-in-unreal-engine",
+   "why": "언리얼 요건의 UObject — 매크로·가비지 컬렉션·참조 규칙을 한 페이지에서."
+  },
+  {
+   "id": "ue-coord",
+   "title": "Coordinate System and Spaces in Unreal Engine",
+   "by": "Epic Games",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/coordinate-system-and-spaces-in-unreal-engine",
+   "why": "센서 값을 장면에 놓는 업무 — 언리얼의 왼손·Z 위 좌표와 공간 종류."
+  },
+  {
+   "id": "ue-insights",
+   "title": "Unreal Insights in Unreal Engine",
+   "by": "Epic Games",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine",
+   "why": "임베디드 최적화 업무 — 엔진 안에서 프레임 시간을 쪼개 보는 도구."
+  },
+  {
+   "id": "ue-buildgraph",
+   "title": "BuildGraph for Unreal Engine",
+   "by": "Epic Games",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/buildgraph-for-unreal-engine",
+   "why": "자동 빌드 파이프라인 업무 — 빌드·쿠킹·패키징을 그래프로 자동화."
+  },
+  {
+   "id": "unity-hdrp",
+   "title": "HDRP · System Requirements",
+   "by": "Unity",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.3/manual/System-Requirements.html",
+   "why": "유니티 HDRP 요건 — 어떤 기기에서 돌고 무엇이 필요한지(컴퓨트 셰이더, OpenGL ES 미지원)."
+  },
+  {
+   "id": "unity-urp",
+   "title": "Introduction to the Universal Render Pipeline",
+   "by": "Unity",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.unity.com/en-us/engine/current/manual/render-pipelines/universal-render-pipeline/urp-introduction",
+   "why": "모바일·임베디드 대상 그래픽 요건 — 유니티에서 작은 기기용으로 쓰는 파이프라인."
+  },
+  {
+   "id": "unity-cli",
+   "title": "Unity Editor command line arguments",
+   "by": "Unity",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.unity.com/en-us/engine/current/manual/unity-editor/command-line-arguments/editor",
+   "why": "자동 빌드 업무 — -batchmode·-executeMethod 로 CI 에서 유니티 빌드."
+  },
+  {
+   "id": "unity-hmi-template",
+   "title": "Unity Industry automotive HMI template targeting embedded systems",
+   "by": "Unity Blog",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://unity.com/blog/unity-industry-hmi-template-for-embedded-systems",
+   "why": "엔진으로 만든 차량 HMI 의 모양 — 계기판·ADAS 뷰·공조를 가진 견본을 받아 뜯어본다."
+  },
+  {
+   "id": "aosp-vhal",
+   "title": "AOSP · Vehicle Hardware Abstraction Layer (VHAL)",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/automotive/vhal",
+   "why": "SDV·VHAL 연결 업무 — 차량 속성이 무엇이고 어떻게 정의되는지."
+  },
+  {
+   "id": "carpropertymanager",
+   "title": "CarPropertyManager",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/reference/android/car/hardware/property/CarPropertyManager",
+   "why": "차량 값을 앱에서 받는 법 — 읽기·쓰기·구독과 주기 상수."
+  },
+  {
+   "id": "aaos-emulator",
+   "title": "Test using the Android Automotive OS emulator",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/training/cars/testing/emulator",
+   "why": "AAOS 배포·에뮬레이터 우대 — 차 없이 속도·기어를 바꿔 가며 화면을 시험."
+  },
+  {
+   "id": "cuttlefish",
+   "title": "Cuttlefish virtual Android devices",
+   "by": "Android Open Source Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/devices/cuttlefish",
+   "why": "Cuttlefish 우대 — 가상 안드로이드 기기를 띄우는 법."
+  },
+  {
+   "id": "agi",
+   "title": "Android GPU Inspector",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/agi/start",
+   "why": "GPU 사용률 최적화 — 시스템 추적과 프레임 분석으로 병목 찾기."
+  },
+  {
+   "id": "adpf-thermal",
+   "title": "Android ADPF · Thermal API",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/games/optimize/adpf/thermal",
+   "why": "열 효율 요건 — 발열 여유를 읽고 화질·프레임을 낮추는 법."
+  },
+  {
+   "id": "learnopengl-pbr",
+   "title": "LearnOpenGL · PBR Theory",
+   "by": "Joey de Vries",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learnopengl.com/PBR/Theory",
+   "why": "PBR 요건 — 마이크로패싯·에너지 보존·Cook-Torrance 를 코드와 함께."
+  },
+  {
+   "id": "rtr4",
+   "title": "Real-Time Rendering, 4th Edition",
+   "by": "Tomas Akenine-Möller 외",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.realtimerendering.com/",
+   "why": "렌더링 파이프라인·조명·후처리·성능 전반의 표준 교과서 — 필요한 장만 찾아 읽는다."
+  },
+  {
+   "id": "pbr-book",
+   "title": "Physically Based Rendering: From Theory to Implementation (4th ed., 무료 웹판)",
+   "by": "Matt Pharr · Wenzel Jakob · Greg Humphreys",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://pbr-book.org/",
+   "why": "PBR 의 물리적 바탕 — 실시간용이 아니라 원리를 깊게 볼 때."
+  },
+  {
+   "id": "math-primer",
+   "title": "3D Math Primer for Graphics and Game Development (무료 웹판)",
+   "by": "Fletcher Dunn · Ian Parberry",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://gamemath.com/book/",
+   "why": "3D 수학 요건 — 벡터·행렬·쿼터니언·좌표계 변환을 처음부터."
+  },
+  {
+   "id": "game-math-ko",
+   "title": "이득우의 게임 수학",
+   "by": "이득우",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%EB%93%9D%EC%9A%B0%EC%9D%98%20%EA%B2%8C%EC%9E%84%20%EC%88%98%ED%95%99",
+   "why": "3D 수학을 한국어로 — 직접 소프트웨어 렌더러를 만들며 벡터·행렬·쿼터니언을 익힌다."
+  },
+  {
+   "id": "game-engine-arch",
+   "title": "Game Engine Architecture, 3rd Edition",
+   "by": "Jason Gregory · CRC Press · 2018",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.taylorfrancis.com/books/9781138035454",
+   "why": "엔진 뼈대 업무 — 엔진이 객체·메모리·렌더링·도구를 어떻게 나누는지."
+  },
+  {
+   "id": "vulkan-sc",
+   "title": "Vulkan SC",
+   "by": "Khronos Group",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.khronos.org/vulkansc/",
+   "why": "기능안전 우대 — 안전 인증을 겨냥한 그래픽 API 가 무엇을 빼고 무엇을 보장하나."
+  },
+  {
+   "id": "iso26262",
+   "title": "ISO 26262-1:2018 Road vehicles — Functional safety — Vocabulary",
+   "by": "ISO",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/68383.html",
+   "why": "기능안전 우대 — 표준의 범위와 낱말(본문은 유료라 요약 페이지와 해설로 먼저)."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "3D 수학 손으로",
+   "time": "2주",
+   "goal": "좌표계 변환·쿼터니언 회전·보간을 라이브러리 없이 짜고, 축·단위가 다른 좌표계 사이를 틀리지 않고 옮긴다.",
+   "resources": [
+    "math-primer",
+    "game-math-ko",
+    "ue-coord"
+   ],
+   "task": "가상의 차량 센서 기록(10Hz, 앞차·옆 차 위치와 방향)을 만들어 60fps 로 보간하고, 언리얼·유니티 좌표로 바꿔 위에서 본 그림으로 찍는다. 359°→1° 처럼 경계를 넘는 경우를 시험으로 고정한다."
+  },
+  {
+   "title": "엔진 하나 깊게",
+   "time": "3주",
+   "goal": "언리얼(UObject·C++·블루프린트) 또는 유니티(C#·URP·패키지) 중 하나로 간단한 3D 계기판을 만든다.",
+   "resources": [
+    "ue-objects",
+    "unity-urp",
+    "unity-hdrp",
+    "unity-hmi-template",
+    "game-engine-arch"
+   ],
+   "task": "속도·기어·차로·앞차를 보여 주는 가상 계기판을 만든다. 차량 상태는 1단계의 기록을 재생해 넣고, 정차·주행·주차마다 카메라 시점을 부드럽게 바꾼다."
+  },
+  {
+   "title": "그리기 원리와 비용",
+   "time": "2주",
+   "goal": "PBR·조명·후처리가 한 프레임에서 차지하는 비용을 재고, 무엇을 끄면 무엇이 바뀌는지 설명한다.",
+   "resources": [
+    "learnopengl-pbr",
+    "rtr4",
+    "pbr-book"
+   ],
+   "task": "2단계 계기판의 내 차 모델에 PBR 재질을 직접 셰이더로 쓰고, 그림자·블룸·안티에일리어싱을 하나씩 껐다 켜며 프레임 시간을 표로 남긴다."
+  },
+  {
+   "title": "안드로이드 차량 위로",
+   "time": "2~3주",
+   "goal": "엔진 결과물을 AAOS 에뮬레이터에 올려 VHAL 값으로 움직이고, GPU·메모리·발열을 잰다.",
+   "resources": [
+    "aosp-vhal",
+    "carpropertymanager",
+    "aaos-emulator",
+    "cuttlefish",
+    "agi",
+    "adpf-thermal"
+   ],
+   "task": "2단계 계기판을 안드로이드 앱으로 묶어 AAOS 에뮬레이터에서 띄우고, 에뮬레이터의 Car data 로 속도·기어를 바꿔 화면이 따라오는지 본다. 실제 안드로이드 폰에서 AGI 로 한 프레임을 붙잡아 병목을 적고, 텍스처를 ASTC 로 바꿔 메모리가 얼마나 줄었는지 잰다."
+  },
+  {
+   "title": "자동 빌드와 안전한 화면",
+   "time": "1~2주",
+   "goal": "자산 검사·빌드·화면 비교를 CI 로 돌리고, 3D 화면이 멈춰도 필수 표시가 남는 구조를 설명한다.",
+   "resources": [
+    "unity-cli",
+    "ue-buildgraph",
+    "vulkan-sc",
+    "iso26262"
+   ],
+   "task": "명령줄 빌드를 CI 에 올려 폴리곤·텍스처 예산을 넘는 자산이 들어오면 실패하게 한다. 같은 차량 상태에서 찍은 화면을 기준 그림과 비교하는 시험을 붙이고, 경고등을 3D 와 따로 그리는 구조를 한 쪽 문서로 그린다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 **연 $172,000 ~ $237,800**(미국 서니베일)이 적혀 있다. 시니어·스태프 두 등급을 한 공고로 뽑는다",
+  "rows": [
+   {
+    "label": "이 공고 연봉 범위",
+    "value": "$172,000 ~ $237,800",
+    "basis": "공고 · 2026-11 수집",
+    "note": "공고의 Compensation 칸. 기본급인지 총보상인지는 적혀 있지 않다. 같은 내용의 다른 공고 사본도 같은 범위다 [1][2]"
+   },
+   {
+    "label": "Sr. Test Automation Engineer, SIL/HIL (서니베일)",
+    "value": "$185,000 ~ $250,000",
+    "basis": "공고 · 2026-11 수집",
+    "peer": true,
+    "note": "같은 회사 서니베일 공고, 시니어·스태프 [8]"
+   },
+   {
+    "label": "Sr. Embedded Software Engineer (서니베일)",
+    "value": "$175,000 ~ $248,000",
+    "basis": "공고 · 2026-11 수집",
+    "peer": true,
+    "note": "같은 회사 서니베일 공고 [9]"
+   }
+  ],
+  "how": "캘리포니아는 일정 규모 이상 회사가 공고에 급여 범위를 적도록 한다 [11]. 범위 안 어디에 놓이는지는 전형 끝의 처우 협의(Offer Negotiation)에서 정해진다 [1]. 시니어와 스태프를 한 범위로 적어서 등급에 따라 위치가 갈릴 것이다{추론}. 한국 본사 집계 평균과는 나라·통화·기준이 달라 나란히 놓지 않았다{추론}."
+ },
+ "location": {
+  "name": "42dot Inc. 서니베일 사무소",
+  "address": "380 N Pastoria Ave, Sunnyvale, CA 94085, USA",
+  "postal": "94085",
+  "map_url": "https://map.naver.com/p/search/380%20N%20Pastoria%20Ave%2C%20Sunnyvale%2C%20CA%2094085",
+  "note": "공고 근무지는 'Sunnyvale, United States' [1]. 번지는 Dun & Bradstreet 의 42Dot Inc. 회사 정보 [10]이고, 회사 채용 사이트 거점 목록에도 서니베일이 있다 [7]. 근무 형태(출근·원격)는 공고에 적혀 있지 않다{추론}."
+ },
+ "fit": {
+  "good": [
+   "게임·실시간 3D 를 만들다가 '진짜로 쓰이는 화면'을 해 보고 싶은 사람{추론}",
+   "엔진 기능을 쓰는 데서 그치지 않고 프레임 시간·메모리를 숫자로 깎는 게 즐거운 사람[1]",
+   "좌표계·쿼터니언 같은 수학을 코드로 옮기는 데 막힘이 없는 사람[1]",
+   "미국 서니베일에서 일할 수 있는 사람[1]"
+  ],
+  "hard": [
+   "화려한 고사양 그래픽만 해 봤다면 — 차 칩의 예산 안에 넣는 일이 큰 몫이다{추론}",
+   "차량 안전·인증 절차 때문에 바꾸는 속도가 게임보다 느릴 수 있다{추론}[24]",
+   "엔진 하나를 깊게 다룬 제품 경험이 없다면 — 시니어·스태프 자리다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "센서는 10Hz 로 오고 화면은 60fps 입니다. 앞차가 부드럽게 움직이게 하려면요? 지연은 어떻게 재나요?",
+   "a": "차량 값과 장면 그래프를 잇는 업무 — 보간·외삽·구간별 시간 기록.[1][17]"
+  },
+  {
+   "q": "차량 좌표(x 앞·y 왼쪽·z 위)로 온 물체를 언리얼 장면에 놓을 때 무엇을 바꿔야 하나요?",
+   "a": "축·손잡이 방향·단위.[26][27]"
+  },
+  {
+   "q": "차 칩에서 계기판이 가끔 30fps 로 떨어집니다. 무엇부터 보겠어요?",
+   "a": "프레임 예산 쪼개기 — CPU/GPU, 프로파일러, 텍스처·후처리, 발열 감속.[20][21][30]"
+  },
+  {
+   "q": "유니티로 한다면 HDRP 와 URP 중 무엇을, 왜 고르겠어요?",
+   "a": "HDRP 는 컴퓨트 셰이더 필요·OpenGL ES 미지원, URP 는 모바일까지.[13][14]"
+  },
+  {
+   "q": "3D 화면이 멈춰도 경고등은 떠야 합니다. 구조를 어떻게 나누겠어요?",
+   "a": "기능안전 우대 — 필수 표시와 꾸밈 그래픽의 분리, 안전용 그래픽 API.[22][23]"
+  },
+  {
+   "q": "UObject 를 C++ 원시 포인터로만 잡고 있으면 무슨 일이 생기나요?",
+   "a": "가비지 컬렉션과 UPROPERTY 참조 규칙.[12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · 3D Application Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/49f9a5ec-7140-4235-bfec-c471ca884d6e",
+   "kind": "posting",
+   "note": "이 공고. 역할 소개(차세대 디지털 콕핏, 시니어 또는 스태프, 3D 전략의 기술 중심)·업무 4·자격 6·우대 3·전형(서류 → 코딩 테스트 → 1차 → 2차 → 처우 협의)·연봉 $172,000~$237,800. 근무지 Sunnyvale, 수집 2026-11-24"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 채용 · 3D Application Engineer (Automotive 3D Visualization)",
+   "url": "https://jobs.ashbyhq.com/42dot/9b9faf37-dcc9-4c54-8b67-1abacdf36478",
+   "kind": "posting",
+   "note": "[1] 과 같은 내용의 다른 게시(줄바꿈만 다름), 연봉 범위 같음"
+  },
+  {
+   "n": 3,
+   "title": "현대자동차그룹 · 새로운 이동 경험을 만드는 차세대 인포테인먼트 시스템, Pleos Connect",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000210298",
+   "kind": "company",
+   "note": "2026-04-30. 대화면 세 구역, 왼쪽 주행 정보 화면이 기존 클러스터 일부 기능 대체, 주행 중 속도·기어·연료/배터리·ADAS(차로·주변 물체), 정차 중 창문·미러·트렁크 3D 차량 그래픽, 더 뉴 그랜저 첫 탑재, 2030년 2,000만 대 목표. 3D 엔진·포티투닷 언급 없음"
+  },
+  {
+   "n": 4,
+   "title": "벤처스퀘어 · '자동차 계기판도 게임 엔진으로 만든다'…자이언트스텝, 현대차 차세대 SDV 플랫폼 탑재",
+   "url": "https://www.venturesquare.net/1091685/",
+   "kind": "news",
+   "note": "2026-06-17. 자이언트스텝이 Pleos Connect 주행 정보 화면의 실시간 3D 콘텐츠를 언리얼 엔진으로 제작, 기어·주차·충전 상태 실시간 반영, ADAS·주차 보조 때 주변 3D, 더 뉴 그랜저 첫 탑재 후 현대차·기아·제네시스로 확대. 포티투닷 언급 없음"
+  },
+  {
+   "n": 5,
+   "title": "현대자동차 사용설명서 · Pleos Connect (플레오스 커넥트) 화면 구성",
+   "url": "https://ownersmanual.hyundai.com/full_webhelp/CN8/2027/ko_KR/cluster-cluster_disp_info.html",
+   "kind": "company",
+   "note": "3D 주행 뷰 — 정차·주행·주차에 맞는 3D 차량 뷰 전환, 문·창문·트렁크 상태, 운전자 보조 작동 정보. 사양·소프트웨어 버전에 따라 다름"
+  },
+  {
+   "n": 6,
+   "title": "포티투닷 · 인포테인먼트 (Android Automotive OS 기반 차세대 IVI 시스템)",
+   "url": "https://42dot.ai/ko/sdv/infotainment",
+   "kind": "company",
+   "note": "AAOS 기반 자체 개발, Vehicle API·Cloud API, Pleos Playground(SDK·Devbox·Emulator). 같은 회사 다른 풀이에서 확인, 게시일 표기 없음. Pleos Connect 개발 참여는 현대차그룹 발표(같은 회사 다른 풀이의 출처)"
+  },
+  {
+   "n": 7,
+   "title": "포티투닷 채용 · Locations",
+   "url": "https://42dot.ai/en/careers/locations",
+   "kind": "company",
+   "note": "회사 거점 목록(같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 8,
+   "title": "포티투닷 채용 · Sr. Test Automation Engineer (SIL/HIL Infrastructure)",
+   "url": "https://jobs.ashbyhq.com/42dot/3d96a60d-be22-4d72-a50a-320e79d1b21c",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고. HIL 벤치·CI 회귀 시험, 연봉 $185,000~$250,000(같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 9,
+   "title": "포티투닷 채용 · Sr. Embedded Software Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/6e9418ea-6dfa-4ca2-b419-e564e1479a1b",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고, 연봉 $175,000~$248,000(같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 10,
+   "title": "Dun & Bradstreet · 42Dot Inc. 회사 정보",
+   "url": "https://www.dnb.com/business-directory/company-profiles.42dot_inc.def7cddb34743142dccfcd05cd4b8a33.html",
+   "kind": "reference",
+   "note": "미국 법인 주소 380 N Pastoria Ave, Sunnyvale, CA 94085(같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 11,
+   "title": "California Labor Commissioner · Pay Transparency",
+   "url": "https://www.dir.ca.gov/dlse/Pay-Transparency.htm",
+   "kind": "reference",
+   "note": "공고의 급여 범위 기재 의무(SB 1162)"
+  },
+  {
+   "n": 12,
+   "title": "Epic Games · Objects in Unreal Engine",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/objects-in-unreal-engine",
+   "kind": "reference",
+   "note": "UE 5.9 문서. UCLASS·GENERATED_BODY·UHT, 가비지 컬렉션·리플렉션·직렬화, UPROPERTY 강한 참조·약한 포인터, new 금지"
+  },
+  {
+   "n": 13,
+   "title": "Unity · HDRP System Requirements (17.3)",
+   "url": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.3/manual/System-Requirements.html",
+   "kind": "reference",
+   "note": "윈도우 DX11·12 등, 컴퓨트 셰이더 필요, OpenGL·OpenGL ES 미지원(검색 요약으로 확인)"
+  },
+  {
+   "n": 14,
+   "title": "Unity · Introduction to the Universal Render Pipeline",
+   "url": "https://docs.unity.com/en-us/engine/current/manual/render-pipelines/universal-render-pipeline/urp-introduction",
+   "kind": "reference",
+   "note": "모바일부터 고사양 콘솔·PC 까지 최적화된 그래픽"
+  },
+  {
+   "n": 15,
+   "title": "Unity Blog · Unity Industry automotive HMI template targeting embedded systems",
+   "url": "https://unity.com/blog/unity-industry-hmi-template-for-embedded-systems",
+   "kind": "reference",
+   "note": "다른 회사(엔진 회사) 자료. 임베디드 리눅스·QNX·Android Automotive 대상, 라즈베리파이 5 에서 최대 60fps. 같은 회사의 HMI 소개 페이지는 Render Service(앱 여럿이 런타임 하나 공유)·토요타·마쓰다·메르세데스-벤츠 사례를 든다(검색 요약으로 확인). 블로그 게시일은 화면에 2026-10-06 으로 보였다"
+  },
+  {
+   "n": 16,
+   "title": "AOSP · Vehicle Hardware Abstraction Layer (VHAL)",
+   "url": "https://source.android.com/docs/automotive/vhal",
+   "kind": "reference",
+   "note": "차량 속성 정의, 안드로이드 13부터 AIDL"
+  },
+  {
+   "n": 17,
+   "title": "Android Developers · CarPropertyManager",
+   "url": "https://developer.android.com/reference/android/car/hardware/property/CarPropertyManager",
+   "kind": "reference",
+   "note": "get/set·구독, 주기 상수 FASTEST 100·FAST 10·UI 5·NORMAL 1Hz(같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 18,
+   "title": "Android Developers · Test using the Android Automotive OS emulator",
+   "url": "https://developer.android.com/training/cars/testing/emulator",
+   "kind": "reference",
+   "note": "확장 제어의 Car data 로 실행 중 VHAL 속성 바꾸기(같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 19,
+   "title": "AOSP · Cuttlefish virtual Android devices",
+   "url": "https://source.android.com/docs/devices/cuttlefish",
+   "kind": "reference",
+   "note": "원격(클라우드)·로컬(리눅스 x86·ARM64)에서 도는 설정 가능한 가상 안드로이드 기기. 이 페이지에는 자동차 언급 없음"
+  },
+  {
+   "n": 20,
+   "title": "Android Developers · Thermal API (ADPF)",
+   "url": "https://developer.android.com/games/optimize/adpf/thermal",
+   "kind": "reference",
+   "note": "안드로이드 11(API 30)부터, 0.0(감속 없음)~1.0(심한 감속), 여유가 줄면 작은 코어·낮은 프레임률·낮은 화질로(검색 요약으로 확인)"
+  },
+  {
+   "n": 21,
+   "title": "Android Developers · Android GPU Inspector",
+   "url": "https://developer.android.com/agi/start",
+   "kind": "reference",
+   "note": "시스템 프로파일러(Perfetto 기반)·프레임 프로파일러, 앱이 debuggable 이어야(검색 요약으로 확인)"
+  },
+  {
+   "n": 22,
+   "title": "Khronos · Vulkan SC",
+   "url": "https://www.khronos.org/vulkansc/",
+   "kind": "reference",
+   "note": "Vulkan 1.2 에서 파생, 1.0 사양 2022-03, 안전 분야에 필요 없는 기능 제거·정의되지 않은 동작 제거, ISO 26262 ASIL D 등 인증 겨냥(검색 요약으로 확인)"
+  },
+  {
+   "n": 23,
+   "title": "ISO · ISO 26262-1:2018 Road vehicles — Functional safety — Vocabulary",
+   "url": "https://www.iso.org/standard/68383.html",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "바이라인네트워크 · 포티투닷 차량 기능안전 개발 프로세스, 국제 표준 인증 획득",
+   "url": "https://byline.network/2023/09/25-289/",
+   "kind": "news",
+   "note": "DNV ISO 26262 인증(같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 25,
+   "title": "Brian Karis · Real Shading in Unreal Engine 4 (SIGGRAPH 2013 강의 노트)",
+   "url": "https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf",
+   "kind": "reference",
+   "note": "다른 곳(에픽) 발표. PDF 가 커서 직접 열지 못했고, LearnOpenGL 의 연결로 제목을 확인"
+  },
+  {
+   "n": 26,
+   "title": "ROS REP 103 · Standard Units of Measure and Coordinate Conventions",
+   "url": "https://www.ros.org/reps/rep-0103.html",
+   "kind": "reference",
+   "note": "x 앞·y 왼쪽·z 위, 오른손, 미터 — 로봇·차량 소프트웨어에서 흔한 약속"
+  },
+  {
+   "n": 27,
+   "title": "Epic Games · Coordinate System and Spaces in Unreal Engine",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/coordinate-system-and-spaces-in-unreal-engine",
+   "kind": "reference",
+   "note": "왼손·Z 위, X 앞. 단위는 이 페이지에 없음"
+  },
+  {
+   "n": 28,
+   "title": "Unity Scripting API · Vector3.forward",
+   "url": "https://docs.unity3d.com/ScriptReference/Vector3-forward.html",
+   "kind": "reference",
+   "note": "앞 = (0, 0, 1), 위는 Vector3.up = (0, 1, 0)"
+  },
+  {
+   "n": 29,
+   "title": "GitHub · ARM-software/astc-encoder",
+   "url": "https://github.com/ARM-software/astc-encoder",
+   "kind": "reference",
+   "note": "ASTC 화소당 0.89~8비트, 6×6 블록은 3.56비트"
+  },
+  {
+   "n": 30,
+   "title": "Epic Games · Unreal Insights in Unreal Engine",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine",
+   "kind": "reference",
+   "note": "사건 기록(trace)·Trace Server·Insights 화면"
+  },
+  {
+   "n": 31,
+   "title": "Epic Games · BuildGraph for Unreal Engine",
+   "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/buildgraph-for-unreal-engine",
+   "kind": "reference",
+   "note": "노드·작업을 XML 그래프로, UnrealBuildTool·AutomationTool·편집기와 연동"
+  },
+  {
+   "n": 32,
+   "title": "Unity · Editor command line arguments",
+   "url": "https://docs.unity.com/en-us/engine/current/manual/unity-editor/command-line-arguments/editor",
+   "kind": "reference",
+   "note": "-batchmode(사람 조작 없이), -executeMethod(프로젝트를 열 때 정적 메서드 실행)"
+  },
+  {
+   "n": 33,
+   "title": "LearnOpenGL · PBR Theory",
+   "url": "https://learnopengl.com/PBR/Theory",
+   "kind": "reference",
+   "note": "마이크로패싯·에너지 보존·반사 방정식·Cook-Torrance(GGX·Schlick·Smith)"
+  },
+  {
+   "n": 34,
+   "title": "Real-Time Rendering, 4th Edition",
+   "url": "https://www.realtimerendering.com/",
+   "kind": "reference",
+   "note": "Akenine-Möller 외. 렌더링 파이프라인·모바일 GPU(타일 기반) 장"
+  },
+  {
+   "n": 35,
+   "title": "Fletcher Dunn · Ian Parberry · 3D Math Primer for Graphics and Game Development",
+   "url": "https://gamemath.com/book/",
+   "kind": "reference",
+   "note": "무료 웹판 — 좌표계·행렬·쿼터니언·slerp"
+  },
+  {
+   "n": 36,
+   "title": "AOSP · Instrument Cluster API",
+   "url": "https://source.android.com/docs/automotive/displays/cluster_api",
+   "kind": "reference",
+   "note": "운전대 뒤 보조 디스플레이(계기판)에 내비 같은 앱을 띄우는 API, CarService 와 OEM 클러스터 서비스"
+  }
+ ],
+ "caveat": "이 자리(서니베일 3D 콕핏)를 다룬 포티투닷의 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 쪽 근거는 이 공고와 같은 내용의 사본, 현대차그룹의 Pleos Connect 소개 글·사용설명서, 3D 콘텐츠를 언리얼로 만든 외부 회사(자이언트스텝)의 보도, 포티투닷 인포테인먼트 페이지입니다. Pleos Connect 3D 화면을 이 팀이 이어받는지, 언리얼·유니티·자체 엔진 중 무엇을 쓰는지, 어떤 차량 칩을 쓰는지는 공개되지 않아 에픽·유니티·안드로이드·크로노스·ARM 의 공식 문서와 공개 교재로 '보통 이런 것'을 보였고 판단은 {추론}으로 표시했습니다. 유니티 HDRP 요건·안드로이드 Thermal API·AGI·Vulkan SC·유니티 HMI 소개 페이지는 검색 요약으로 확인했습니다. 미국 법인 복리후생은 공식 자료를 찾지 못했고 회사 복지 페이지는 한국 본사 기준이라 싣지 않았습니다. 코드 예시 3개는 직접 돌려 출력을 확인했습니다. 2026-11-25 기준."
+}
