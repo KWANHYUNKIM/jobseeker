@@ -1,0 +1,533 @@
+{
+  "id": "xcena-dqa-validation-hw-fa",
+  "company": "엑시나",
+  "role": "DQA Validation & HW FA Engineer",
+  "team": "Solutions Development",
+  "jobs": ["ats-greeting:xcena:245888"],
+  "researched_at": "2026-11-26",
+  "tldr": {
+    "what": "엑시나 칩(MX1)을 얹은 **PCIe 카드(AIC) 보드**가 처음 전원을 넣는 날부터 양산·고객 반품까지 **전기적으로 맞게 도는지 재고, 고장 나면 어디가 원인인지 갈라내는** 하드웨어 품질 자리입니다.[1][5]",
+    "env": "PCIe Gen6·DDR5 고속 인터페이스가 달린 보드를 오실로스코프·BERT(비트 오류 측정기)·전력 측정기로 실측하고[1], X-ray·단면 분석은 외부 FA(불량 분석) 랩과 함께 합니다.[1] 판교 본사, 경력 7년 이상.[1]",
+    "oneline": "보드 bring-up 과 불량 분석을 오래 해 온 HW 엔지니어가 **PCIe 6.0 카드 하나의 품질을 처음부터 끝까지** 맡는 자리 — 코드보다 계측기·회로도·납땜 인두가 중심입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "EVT/DVT 단계의 보드 검증 계획 수립 및 테스트 항목, Pass/Fail 판정 기준 정의",
+      "short": "시제품 보드를 무엇으로·몇 번 재서 '합격'이라 할지 미리 표로 정해 두는 일.",
+      "why": "엑시나의 MX1 은 2025년 10월 파트너 시제품을 거쳐 2026년 8월 양산 제품군을 내놓았습니다.[4][6] 시리즈 B 투자금도 고객 검증·양산 준비에 쓴다고 밝혔습니다.[7] EVT(설계가 맞나)·DVT(설계가 규격을 다 채우나)는 양산(PVT) 전에 거치는 단계라[11], 이 단계의 합격 기준이 곧 '양산해도 되나'의 근거가 됩니다 {추론}.",
+      "actually": {
+        "items": [
+          "**항목 뽑기** — 전원 레일 전압·리플, 전원 순서, 클록 주파수·지터(흔들림), 리셋, PCIe 링크 속도·폭, DDR5 동작 속도, 온도별 동작 {추론}.",
+          "**판정 기준** — 숫자 한계(예: 0.8V 코어 ±3%, 리플 40mVpp 이하)와 반복 횟수(전원 켜고 끄기 1,000회 중 실패 0회) {추론}.",
+          "**출처 대조** — 각 한계가 칩 데이터시트·PCIe 규격·DDR5 규격 중 어디서 왔는지 같이 적는다.[10][26]",
+          "**EVT 와 DVT 의 차이** — EVT 는 기능이 되나, DVT 는 온도·전압 끝단까지 규격을 채우나와 신뢰성 시험까지.[11]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "판정 기준을 코드로 — 전원 순서 검사",
+          "body": "오실로스코프로 잡은 레일별 '90% 도달 시각'(가상 값)을 순서 규칙과 대조합니다. 마지막 규칙은 PCIe 카드 규격의 '전원 안정 뒤 일정 시간 지나 리셋 해제'를 흉내 낸 가상 기준입니다. 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "rails = {\"12V_IN\": 0.0, \"3V3_AUX\": 1.2, \"0V8_CORE\": 4.9, \"1V1_DDR\": 4.1, \"PERST#\": 103.0}\nrules = [(\"12V_IN\", \"3V3_AUX\", 0.0), (\"0V8_CORE\", \"1V1_DDR\", 0.5), (\"1V1_DDR\", \"PERST#\", 100.0)]\nfor a, b, gap in rules:\n    d = rails[b] - rails[a]\n    print(f\"{a:>8} -> {b:<8} 간격 {d:6.1f}ms (기준 >={gap}) {'PASS' if d >= gap else 'FAIL'}\")\n\n# 출력\n#   12V_IN -> 3V3_AUX  간격    1.2ms (기준 >=0.0) PASS\n# 0V8_CORE -> 1V1_DDR  간격   -0.8ms (기준 >=0.5) FAIL\n#  1V1_DDR -> PERST#   간격   98.9ms (기준 >=100.0) FAIL"
+        }
+      ],
+      "how_far": "한계값의 원본(칩 사양·규격)은 설계 조직과 칩 데이터시트가 정하고, 이 자리는 그것을 **시험 항목·횟수·장비·판정표**로 바꾸고 결과로 합격/불합격을 내립니다 {추론}. 최소선은 '이 항목은 왜 이 숫자인가'를 출처와 함께 말할 수 있는 것입니다.",
+      "refs": [1, 4, 6, 7, 10, 11, 26],
+      "study": ["wiki-evt", "agans-debugging"]
+    },
+    {
+      "section": "task",
+      "quote": "Board Bring-up 수행 및 전원 시퀀스, 클록, 리셋, 주요 인터페이스 동작 검증",
+      "short": "새 보드에 처음 전원을 넣어 전원→클록→리셋→인터페이스 순으로 하나씩 살려 내는 일.",
+      "why": "포지션 소개가 'EVB Bring-up 부터' 이 자리가 맡는다고 적었습니다.[1] 보드가 처음 나오면 아무것도 확인되지 않은 상태라, 전원이 맞게 오르지 않으면 그 뒤 PCIe·DDR5 시험은 시작도 못 합니다 {추론}.",
+      "actually": {
+        "items": [
+          "**전원** — 전원을 넣기 전 레일 사이 단락 저항부터 재고, 전류 제한을 건 전원 공급기로 서서히 올린다 {추론}.",
+          "**전원 시퀀스** — 여러 전압이 정해진 순서·간격으로 오르는지 오실로스코프 여러 채널로 한 화면에 잡는다(위 예시).[23]",
+          "**클록·리셋** — 기준 클록 주파수·지터, 리셋 신호가 전원 안정 뒤 풀리는지.[10]",
+          "**인터페이스** — 디버그 포트(UART·JTAG)로 칩이 부팅 메시지를 내는지, 호스트에 꽂아 `lspci` 에 장치가 보이는지 {추론}."
+        ]
+      },
+      "flows": [
+        {
+          "caption": "보드 bring-up 순서(보통)",
+          "steps": ["외관·단락 검사 · 납땜 불량·쇼트부터", "전원 레일 · 전압·리플·순서", "클록·리셋 · 주파수·지터·해제 시점", "칩 부팅 · 디버그 포트 메시지", "호스트 인식 · PCIe 링크 속도·폭", "메모리 · DDR5 트레이닝·읽기쓰기"],
+          "mine_from": 0
+        }
+      ],
+      "how_far": "펌웨어·칩 설정은 해당 조직이 맡고, 이 자리는 **보드가 전기적으로 정상인지**를 계측으로 증명합니다 {추론}. '안 켜진다'는 보고를 '3.3V 레일이 1.2ms 늦게 올라 리셋이 먼저 풀렸다' 수준으로 바꿔 넘길 수 있으면 됩니다 {추론}.",
+      "refs": [1, 10, 23],
+      "study": ["tek-xyz", "pcie-tech"]
+    },
+    {
+      "section": "task",
+      "quote": "회로도, PCB Layout, SI/PI 시뮬레이션 결과 검토 및 오실로스코프, BERT, 전력 측정 장비를 활용한 실측 및 비교 분석",
+      "short": "설계 때 계산한 신호·전원 품질을 실제 보드에서 재서 둘이 맞는지 견주는 일.",
+      "why": "포지션 소개가 '시뮬레이션 결과를 실측 데이터와 비교하여 설계 리스크와 개선 사항을 도출'한다고 적었습니다.[1] SI(신호 무결성)는 고속 신호가 모양을 잃지 않고 도착하나, PI(전원 무결성)는 칩에 가는 전압이 흔들리지 않나입니다.[22][36] PCIe 6.0 은 레인당 64GT/s 에 PAM4(4단계 전압) 신호라 여유가 매우 좁습니다.[10]",
+      "actually": {
+        "items": [
+          "**아이 다이어그램** — 신호를 겹쳐 그린 '눈' 모양의 높이·폭을 시뮬레이션 예측과 견준다.[34]",
+          "**BERT** — 알려진 비트 패턴을 보내고 받아 오류 비율(BER)을 센다.[30]",
+          "**전원 리플·임피던스** — 칩이 갑자기 전류를 당길 때 코어 전압이 얼마나 내려가나.[22]",
+          "**어긋남 정리** — 실측이 시뮬레이션보다 나쁘면 모델(기판 재질·비아)·측정 방법·실제 제작 오차 중 무엇 때문인지 가른다 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "BER 목표를 증명하는 데 드는 시간",
+          "body": "'오류 0개'로 BER 목표를 95% 신뢰로 보이려면 대략 3/BER 비트를 봐야 합니다(통계 근사).[30] 레인당 64Gb/s 로 계산한 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "import math\nfor ber in (1e-12, 1e-15):\n    n = -math.log(1 - 0.95) / ber\n    sec = n / 64e9\n    print(f\"BER {ber:.0e}: {n:.2e} 비트 · 레인당 {sec:,.0f}초 ({sec/60:.1f}분)\")\n\n# 출력\n# BER 1e-12: 3.00e+12 비트 · 레인당 47초 (0.8분)\n# BER 1e-15: 3.00e+15 비트 · 레인당 46,808초 (780.1분)"
+        }
+      ],
+      "how_far": "시뮬레이션은 SI/PI 설계 담당이 돌리고, 이 자리는 **결과를 읽고 실측으로 확인**합니다.[1] 프로브를 어디에 어떻게 대야 측정 자체가 신호를 망치지 않는지 아는 것이 최소선입니다.[23]",
+      "refs": [1, 10, 22, 23, 30, 34, 36],
+      "study": ["bogatin-spi", "tek-xyz"]
+    },
+    {
+      "section": "task",
+      "quote": "개발, 양산, 고객 RMA 단계의 보드 불량 재현 및 근본 원인 분석(Root Cause Analysis)",
+      "short": "고장 난 보드의 증상을 다시 일으켜 보고, '왜'를 끝까지 따라가 진짜 원인을 찾는 일.",
+      "why": "RMA 는 고객이 고장품을 돌려보내는 반품 절차입니다.[33] MX1 은 이미 파트너·고객 서버에서 시험 중이라[6] 개발 중 불량뿐 아니라 고객 현장 불량도 이 자리로 옵니다.[1] 재현하지 못한 불량은 고쳤는지 확인할 방법도 없습니다.[13]",
+      "actually": {
+        "items": [
+          "**재현** — 고객이 쓴 서버·온도·부하 조건을 맞춰 같은 증상을 다시 낸다.[13]",
+          "**좁히기** — 한 번에 한 가지만 바꿔(보드·칩·펌웨어·슬롯) 증상이 무엇을 따라가는지 본다.[13]",
+          "**근본 원인** — '커패시터가 깨졌다'에서 멈추지 않고 '왜 깨졌나(조립 때 휨·부품 불량·설계 여유 부족)'까지.[12]",
+          "**재현이 안 될 때(NTF)** — '문제 없음'으로 닫지 않고 조건을 넓혀 다시 시도하거나 이력으로 남긴다 {추론}."
+        ]
+      },
+      "how_far": "원인을 찾아 '어느 조직이 무엇을 고쳐야 하나'까지 넘기는 것이 이 자리의 끝입니다 {추론}. 증상·조건·재현율(50번 중 3번)을 숫자로 적는 습관이 최소선입니다.[13]",
+      "refs": [1, 6, 12, 13, 33],
+      "study": ["agans-debugging", "wiki-8d"]
+    },
+    {
+      "section": "task",
+      "quote": "SoC/Package, PCB/Assembly, System/Firmware 간 원인 분리(Fault Isolation)",
+      "short": "고장이 칩 탓인지, 보드·조립 탓인지, 서버·펌웨어 탓인지 셋 중 하나로 가르는 일.",
+      "why": "MX1 카드는 삼성 4나노로 만든 칩(SoC)·패키지, 그걸 얹은 PCB, 그 위의 펌웨어와 호스트 서버가 겹쳐 있습니다.[5] 원인이 어느 층이냐에 따라 고칠 곳(칩 설계·보드 설계·조립 공장·펌웨어 팀)이 완전히 달라집니다 {추론}.",
+      "actually": {
+        "items": [
+          "**맞바꾸기** — 칩을 다른 보드에, 보드를 다른 서버에 옮겨 불량이 무엇을 따라가는지 본다(아래 예시).[13]",
+          "**조립 의심** — X-ray 로 칩 밑 납볼(BGA) 연결을 본다.[39]",
+          "**펌웨어 의심** — 같은 보드에 펌웨어만 이전 판으로 바꿔 본다 {추론}.",
+          "**호스트 의심** — 다른 CPU·BIOS 서버에서도 나는지.[2]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "맞바꾸기 결과를 표로 읽기",
+          "body": "불량 칩·보드를 서로 바꿔 꽂은 가상 결과입니다. 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "runs = {(\"칩A\",\"보드1\"): \"FAIL\", (\"칩A\",\"보드2\"): \"FAIL\", (\"칩B\",\"보드1\"): \"PASS\", (\"칩B\",\"보드2\"): \"PASS\"}\nfor (c, b), r in runs.items(): print(c, b, r)\nchip_follows = all((r == \"FAIL\") == (c == \"칩A\") for (c, b), r in runs.items())\nprint(\"불량이 칩을 따라간다\" if chip_follows else \"칩만으로 설명 안 됨\")\n\n# 출력\n# 칩A 보드1 FAIL\n# 칩A 보드2 FAIL\n# 칩B 보드1 PASS\n# 칩B 보드2 PASS\n# 불량이 칩을 따라간다"
+        }
+      ],
+      "how_far": "칩 내부 원인까지 파는 것은 SoC 쪽 일이고, 이 자리는 **'칩 쪽이다'를 증거와 함께 넘기는 데까지**입니다 {추론}. 칩을 옮겨 다는 리워크를 직접 할 수 있어야 이 맞바꾸기가 됩니다(자격요건 솔더링 줄).[1]",
+      "refs": [1, 2, 5, 13, 39],
+      "study": ["agans-debugging"]
+    },
+    {
+      "section": "task",
+      "quote": "PCIe Link Training 실패, DDR5 Training 실패, BER 증가 등 고속 인터페이스 불량 분석",
+      "short": "PCIe·DDR5 가 켜질 때 속도를 못 맞추거나 오류가 늘어나는 원인을 찾는 일.",
+      "why": "MX1 은 호스트 쪽 PCIe 6.0 x8 과 뒤쪽 DDR5 4채널(최대 2TB)을 가집니다.[5] 둘 다 켜질 때 '트레이닝'(송수신 쪽이 신호 세기·타이밍을 서로 맞추는 과정)을 거치고, 여기서 실패하면 속도가 떨어지거나 장치가 안 보입니다.[28][25]",
+      "actually": {
+        "items": [
+          "**PCIe** — 링크 상태 기계(LTSSM)가 어느 상태에서 멈췄나, x8 대신 x4·낮은 세대로 붙었나.[28][29]",
+          "**DDR5** — 쓰기 레벨링·읽기 트레이닝 같은 단계 중 어디서 실패했나, 특정 채널·특정 DIMM 만인가.[25][26]",
+          "**BER 증가** — 처음엔 괜찮다가 온도가 오르면 오류가 늘어나는 식. 리눅스 AER(PCIe 오류 보고) 로그의 정정 가능 오류 개수로도 본다.[14]",
+          "**원인 후보** — 기판 손실, 커넥터, 기준 클록 지터, 전원 노이즈, 송신 설정(이퀄라이저) {추론}."
+        ]
+      },
+      "how_far": "트레이닝 알고리즘 자체는 칩·펌웨어가 정하고, 이 자리는 **실패한 조건에서 신호·전원을 재서 하드웨어 원인인지 판정**합니다 {추론}. LTSSM 상태 이름과 DDR5 트레이닝 단계 이름을 보고 '어디서 멈췄다'를 말할 수 있으면 출발선입니다.[25][29]",
+      "refs": [5, 14, 25, 26, 28, 29],
+      "study": ["pcie-tech", "linux-aer"]
+    },
+    {
+      "section": "task",
+      "quote": "비파괴 분석(X-ray, C-SAM, Thermal Imaging) 및 파괴 분석(Cross-section, Dye and Pry) 계획 수립과 외부 FA Lab 협업",
+      "short": "보드를 안 깨고 들여다볼지, 잘라 볼지 순서를 정하고 외부 분석 랩에 맡기는 일.",
+      "why": "칩 밑 납볼 연결은 눈으로 안 보입니다. 파괴 분석은 시료를 한 번만 쓸 수 있어 비파괴 → 파괴 순서와 무엇을 볼지를 먼저 정해야 합니다 {추론}. 공고는 이 분석을 외부 FA Lab 과 협업한다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**X-ray** — 납볼 빠짐·합선·기포(void) 확인.[39]",
+          "**C-SAM(초음파 현미경)** — 패키지 안 층이 들뜬 박리를 초음파 반사로 본다.[32]",
+          "**열화상** — 전원을 넣고 비정상적으로 뜨거운 점(단락 위치)을 찾는다.[40]",
+          "**단면(Cross-section)** — 의심 지점을 잘라 갈아서 현미경으로 금이 간 곳을 본다.[27]",
+          "**Dye and Pry** — 염료를 스며들게 한 뒤 부품을 떼어 내 금이 이미 있던 납볼을 찾는다(IPC 시험법 2.4.53, 지금 이름은 dye and pull).[17][18]"
+        ]
+      },
+      "how_far": "장비를 직접 다루기보다 **어떤 분석을 어떤 순서로, 어느 핀을 보라고 의뢰할지** 정하고 결과 보고서를 읽어 판단하는 쪽입니다.[1] 시료 수와 비용을 맞춰 계획을 세우는 것까지 맡습니다 {추론}.",
+      "refs": [1, 17, 18, 27, 32, 39, 40],
+      "study": ["ipc-dyepull"]
+    },
+    {
+      "section": "task",
+      "quote": "보드 수준 신뢰성 시험(Thermal Cycling, HAST, Vibration) 계획 수립 및 실패 시료 분석",
+      "short": "보드를 덥게·춥게·습하게·흔들어 일부러 빨리 늙혀서 약한 곳을 먼저 찾는 일.",
+      "why": "데이터센터 카드는 몇 년을 켜 두고 씁니다. 그 시간을 기다릴 수 없어 가속 시험으로 수명 문제를 미리 끌어냅니다 {추론}.",
+      "actually": {
+        "items": [
+          "**온도 순환** — 저온·고온을 반복해 납 연결이 피로로 갈라지나 본다. 보드 수준 표면실장 납땜의 순환 시험 방법은 IPC-9701B(2022)가 정한다.[20]",
+          "**HAST** — 고온·고습·고압 용기에 넣어 습기로 인한 부식을 빠르게 일으킨다(JEDEC JESD22-A110).[19][41]",
+          "**진동** — 운송·장착 중 흔들림에 부품이 떨어지나.[21]",
+          "**실패 시료** — 시험 중 저항 변화로 고장 시점을 잡고, 앞 줄의 X-ray·단면 분석으로 넘긴다.[20]"
+        ]
+      },
+      "how_far": "시험 조건(온도 범위·횟수·시간)은 표준과 고객 요구에서 고르고, 이 자리는 **시료 수·모니터링 방법·합격 기준을 정하고 결과를 해석**합니다 {추론}. 표준 본문은 유료라 회사가 가진 판을 읽게 됩니다.[19][20]",
+      "refs": [19, 20, 21, 41],
+      "study": ["ipc-9701", "jesd22-a110"]
+    },
+    {
+      "section": "task",
+      "quote": "8D Report 작성, 시정조치(Corrective Action) 수립, 효과 검증 및 이력 관리",
+      "short": "불량 하나를 '팀 구성→봉쇄→원인→대책→확인→재발 방지' 8단계 보고서로 닫는 일.",
+      "why": "8D 는 제조업에서 고객 불량에 답하는 표준 보고 형식입니다.[12] 같은 회사 Product Engineer 공고도 양산 불량의 평가 이력을 관리한다고 적어[3], 고객에게 원인과 대책을 문서로 내는 일이 회사 안에서 이어지고 있습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**D1~D3** — 팀을 꾸리고 문제를 숫자로 정의하고, 당장 불량이 더 나가지 않게 막는다(재고 선별 등).[12]",
+          "**D4** — 근본 원인과 '왜 검사에서 못 잡았나' 두 가지를 따로 찾는다.[12]",
+          "**D5~D7** — 대책을 정하고, 적용 뒤 정말 줄었는지 숫자로 확인하고, 설계·공정 문서에 반영한다.[12]",
+          "**이력 관리** — 같은 증상이 다시 오면 찾을 수 있게 불량 번호·보드 일련번호·대책을 쌓는다 {추론}."
+        ]
+      },
+      "how_far": "8D 의 기술 칸(D4~D6)을 쓰는 사람이 이 자리입니다 {추론}. '효과 검증'은 대책 뒤 같은 조건에서 몇 대를 몇 번 돌려 0건이었는지로 보입니다.[12]",
+      "refs": [3, 12],
+      "study": ["wiki-8d"]
+    },
+    {
+      "section": "task",
+      "quote": "분석 결과의 차기 설계 및 DFM 가이드 반영",
+      "short": "찾은 원인을 다음 보드 설계와 '만들기 쉬운 설계' 규칙에 넣어 같은 불량을 막는 일.",
+      "why": "DFM(제조 용이성 설계)은 공장에서 실수 없이 만들 수 있게 설계 단계에서 규칙을 지키는 것입니다.[31] 포지션 소개는 이 자리가 양산 전환 검증까지 맡는다고 했고[1], 엑시나는 시제품(MX1P)에서 양산 제품군으로 넘어가는 중입니다.[6]",
+      "actually": {
+        "items": [
+          "**설계 피드백** — '이 커패시터는 보드 가장자리에서 더 떨어뜨린다', '이 비아 배치는 신호 손실이 크다' 같은 다음 판 수정 목록 {추론}.",
+          "**DFM 가이드** — 부품 간격·패드 크기·납볼 아래 비아 처리 같은 규칙에 불량 사례를 근거로 줄을 더한다.[31]",
+          "**검증 항목 추가** — 이번에 놓친 불량을 다음 EVT 검증 계획의 항목으로 넣는다 {추론}."
+        ]
+      },
+      "how_far": "설계 변경 결정은 HW 설계 조직이 하고, 이 자리는 **근거(불량 데이터·분석 사진)와 제안**을 냅니다 {추론}.",
+      "refs": [1, 6, 31],
+      "study": ["bogatin-spi"]
+    },
+    {
+      "section": "qualification",
+      "quote": "전기전자공학 또는 관련 분야 학사 학위 보유자",
+      "short": "회로·신호·전원을 이론으로 배운 전기전자 계열 학사가 기본선이라는 뜻.",
+      "why": "회로도를 읽고 측정 지점을 고르는 일, SI/PI 결과를 읽는 일이 이 자리의 중심이라[1] 회로 이론·전자기 기초가 필요합니다 {추론}.",
+      "actually": {
+        "items": [
+          "**회로 이론** — 전압 분배, RC 시정수, 임피던스.",
+          "**전자기·전송선** — 고속 신호가 선로를 따라 '파동'으로 움직인다는 것.[22]",
+          "**관련 분야** — 전자·반도체·제어 계열도 포함된다고 읽힌다 {추론}."
+        ]
+      },
+      "how_far": "학위 자체보다 아래 경력 7년 요건이 실제 문턱입니다 {추론}.",
+      "refs": [1, 22],
+      "study": ["bogatin-spi"]
+    },
+    {
+      "section": "qualification",
+      "quote": "하드웨어 검증, Board Bring-up 또는 하드웨어 디버깅 관련 경력 7년 이상",
+      "short": "보드를 직접 살리고 고장을 잡아 본 실무가 7년 넘게 있어야 한다는 뜻.",
+      "why": "이 자리는 EVB bring-up 부터 양산 전환까지 하드웨어 품질 전 과정을 맡습니다.[1] 혼자 판정하고 외부 랩·협력사를 이끌어야 해서 경력 하한이 높습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**맞는 경력** — 서버·SSD·그래픽카드·네트워크 카드 같은 고속 보드의 HW 검증, 보드 bring-up, 양산 불량 분석 {추론}.",
+          "**세 갈래 중 하나** — 공고는 검증·bring-up·디버깅을 '또는'으로 묶었다.[1]"
+        ]
+      },
+      "how_far": "7년 안에 **새 보드를 처음 켜 본 경험과 끝까지 원인을 찾아 닫은 불량 사례**를 이력서에 숫자로 적을 수 있어야 합니다 {추론}.",
+      "refs": [1],
+      "study": ["agans-debugging"]
+    },
+    {
+      "section": "qualification",
+      "quote": "PCIe, DDR 등 고속 인터페이스 검증 및 디버깅 경험",
+      "short": "PCIe·DDR 링크가 안 붙거나 오류가 날 때 직접 원인을 잡아 본 경험이 필요하다는 뜻.",
+      "why": "이 카드의 핵심 인터페이스가 PCIe Gen6 과 DDR5 입니다.[1][5] 세대는 달라도 트레이닝·이퀄라이저·아이 다이어그램을 읽는 방법은 이어집니다 {추론}.",
+      "actually": {
+        "items": [
+          "**PCIe** — 링크 속도·폭 확인, LTSSM 상태 추적, AER 오류 읽기.[14][29]",
+          "**DDR** — 트레이닝 결과(마진) 읽기, 특정 채널 불량 좁히기.[25]",
+          "**계측** — 고속 프로브로 신호 품질 측정.[23]"
+        ]
+      },
+      "level": {
+        "basic": "lspci 로 링크 속도·폭을 읽고 AER 로그에서 오류 종류를 구분한다.[14]",
+        "work": "트레이닝 실패 보드에서 신호·전원·클록을 재서 하드웨어 원인 후보를 좁힌다 {추론}.",
+        "team": "PCIe 6.0(PAM4·FLIT) 과 DDR5 를 같은 보드에서 다루며 양산 불량까지 판정한다.[1][10]"
+      },
+      "how_far": "Gen6·DDR5 경험이 꼭 있어야 한다고는 적지 않았습니다 — '등 고속 인터페이스'입니다.[1]",
+      "refs": [1, 5, 10, 14, 23, 25, 29],
+      "study": ["pcie-tech", "linux-aer"]
+    },
+    {
+      "section": "qualification",
+      "quote": "회로도를 기반으로 보드의 동작 원리를 이해하고 적절한 측정 지점과 분석 방법을 선정할 수 있는 분",
+      "short": "회로도만 보고 '여기를 이 장비로 재면 원인이 보인다'를 고를 수 있어야 한다는 뜻.",
+      "why": "측정은 대는 곳이 틀리면 결과가 의미 없습니다. 예를 들어 전원 리플은 칩 바로 옆 커패시터에서 재야 칩이 받는 전압이 보입니다.[22][23]",
+      "actually": {
+        "items": [
+          "**전원 트리 읽기** — 12V 입력에서 어느 변환기가 어느 레일을 만들고 어느 칩에 가는지.",
+          "**측정 지점** — 테스트 포인트·커패시터 패드·커넥터 핀 중 어디를 잡을지 {추론}.",
+          "**방법 고르기** — 전압은 오실로스코프, 링크 품질은 BERT, 전력은 전력 측정기, 단락은 열화상.[1][40]"
+        ]
+      },
+      "how_far": "회로를 새로 설계할 수 있을 필요는 없지만, **설계자가 왜 이렇게 그렸는지 읽고 질문**할 수 있어야 합니다 {추론}.",
+      "refs": [1, 22, 23, 40],
+      "study": ["tek-xyz", "bogatin-spi"]
+    },
+    {
+      "section": "qualification",
+      "quote": "오실로스코프 등 계측기를 활용한 하드웨어 불량 원인 분석 및 문제 해결 경험",
+      "short": "오실로스코프로 파형을 잡아 고장 원인을 직접 찾아 고쳐 본 경험이 필요하다는 뜻.",
+      "why": "이 자리의 근거는 대부분 계측 파형입니다.[1] 트리거를 잘못 걸면 가끔 나는 불량은 화면에 잡히지 않습니다.[23]",
+      "actually": {
+        "items": [
+          "**트리거** — 리셋이 걸리는 순간·전압이 한계 밑으로 떨어지는 순간에 화면을 멈춘다.[23]",
+          "**프로브** — 대역폭·접지선 길이가 측정 결과를 바꾼다는 것.[23]",
+          "**문제 해결** — 측정 → 가설 → 하나만 바꾸기 → 다시 측정.[13]"
+        ]
+      },
+      "how_far": "장비 사용법은 기본이고, **측정값이 이상할 때 측정이 틀렸는지 보드가 틀렸는지를 먼저 의심**하는 습관이 실무선입니다 {추론}.",
+      "refs": [1, 13, 23],
+      "study": ["tek-xyz", "agans-debugging"]
+    },
+    {
+      "section": "qualification",
+      "quote": "미세 부품 솔더링 및 현미경 기반 리워크 경험",
+      "short": "현미경 밑에서 작은 부품을 직접 떼고 다시 붙여 보드를 고쳐 볼 수 있어야 한다는 뜻.",
+      "why": "원인 분리(Fault Isolation)는 부품을 바꿔 달아 봐야 확인되는 경우가 많고, 측정용 선을 미세 패드에 붙이는 일도 손으로 합니다 {추론}. 리워크는 조립된 보드의 부품을 떼고 다시 다는 수리 작업입니다.[35]",
+      "actually": {
+        "items": [
+          "**작은 칩 부품 교체** — 0201·0402 크기 저항·커패시터를 인두·열풍기로 바꾼다.[35]",
+          "**측정선 달기** — 신호를 보려고 패드에 가는 선을 붙인다 {추론}.",
+          "**하지 말아야 할 것** — 열을 너무 오래 줘서 기판 패드를 들뜨게 하는 것.[35]"
+        ]
+      },
+      "how_far": "칩(BGA) 자체를 다시 다는 큰 리워크는 장비가 있는 협력사가 하는 경우가 많고, 이 자리는 **작은 부품 교체와 측정선 달기를 직접** 하는 수준으로 읽힙니다 {추론}.",
+      "refs": [35],
+      "study": ["ipc-dyepull"]
+    },
+    {
+      "section": "qualification",
+      "quote": "검증 결과와 기술적 이슈를 명확하게 전달하고 유관 부서와 원활하게 협업할 수 있는 분",
+      "short": "측정 결과를 칩·보드·펌웨어 팀과 외부 랩이 바로 움직일 수 있게 정리해 넘기라는 뜻.",
+      "why": "이 자리는 사내 개발 조직과 외부 협력업체 사이에서 일합니다.[1] 원인이 어느 층이냐에 따라 넘길 곳이 달라서(원인 분리 줄), 증거가 분명해야 다른 팀이 받습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**한 장 요약** — 증상·조건·재현율·측정 사진·추정 원인·요청 사항 {추론}.",
+          "**8D 보고서** — 고객에게 내는 공식 문서.[12]",
+          "**외부 랩 의뢰서** — 무엇을, 어느 위치를, 어떤 순서로 분석할지.[1]"
+        ]
+      },
+      "how_far": "회의에서 '아마도'가 아니라 '이 파형에서 이 값이 기준을 넘었다'로 말할 수 있으면 됩니다 {추론}.",
+      "refs": [1, 12],
+      "study": ["wiki-8d"]
+    },
+    {
+      "section": "preference",
+      "quote": "PCIe Electrical Compliance Test 경험",
+      "short": "PCIe 규격이 정한 전기 시험(송신 파형·수신 내성)을 정식 장비로 돌려 본 경험.",
+      "why": "PCIe 카드는 PCI-SIG 준수 시험을 통과해야 공식 목록(Integrators List)에 오르고, 그러려면 물리층·데이터링크층·상호운용 시험을 거칩니다.[15] 카드 시험은 PCI-SIG 의 시험용 기판(CBB)에 꽂아 카드 커넥터 위치에서 잽니다.[15]",
+      "actually": {
+        "items": [
+          "**송신 시험** — 카드가 내보내는 신호의 아이·지터·이퀄라이저 설정이 규격 안인가.[15][16]",
+          "**수신 시험** — 일부러 망가뜨린 신호를 넣어도 오류 없이 받나. PCIe 6.0 은 50GHz 이상 대역의 오실로스코프로 보정한다.[15]",
+          "**골드 시스템** — 준수 시험의 기준이 되는 상대 장치.[38]"
+        ]
+      },
+      "how_far": "우대사항이라 경험이 없어도 지원은 됩니다.[1] 시험 순서와 실패했을 때 무엇을 조정하는지 정도를 알면 면접에서 대화가 됩니다 {추론}.",
+      "refs": [1, 15, 16, 38],
+      "study": ["grl-rx", "pcisig-6"]
+    },
+    {
+      "section": "preference",
+      "quote": "SI/PI에 대한 이해 및 신호 품질, 전원 무결성 측정 및 분석 경험",
+      "short": "신호가 왜 찌그러지고 전원이 왜 흔들리는지 알고 그것을 직접 재 본 경험.",
+      "why": "주요업무에 SI/PI 시뮬레이션 결과 검토와 실측 비교가 있습니다.[1] 신호 무결성·전원 무결성·전자파 문제는 원인이 몇 갈래로 정리됩니다.[22]",
+      "actually": {
+        "items": [
+          "**SI** — 반사·누화(옆 선의 간섭)·손실이 아이를 닫는다.[22][34][37]",
+          "**PI** — 전원 분배망 임피던스가 높으면 칩이 전류를 당길 때 전압이 내려간다.[22][36]",
+          "**측정** — 아이 다이어그램, 전원 리플, 임피던스 측정 {추론}."
+        ]
+      },
+      "how_far": "시뮬레이션 툴을 돌리는 것보다 **결과 그래프를 읽고 실측과 어긋난 이유를 말하는 것**이 이 자리에서 쓰는 수준입니다 {추론}.",
+      "refs": [1, 22, 34, 36],
+      "study": ["bogatin-spi"]
+    },
+    {
+      "section": "preference",
+      "quote": "양산 전환 검증 및 RMA 제품의 하드웨어 불량 분석 경험",
+      "short": "시제품에서 공장 양산으로 넘어갈 때의 검증과 고객 반품 불량을 분석해 본 경험.",
+      "why": "엑시나는 2026년 8월 MX1 양산 제품군을 발표했고[6] 이 자리가 양산 전환 검증까지 맡습니다.[1] 양산에서는 소수 시제품에서 안 보이던 조립 편차 불량이 나옵니다 {추론}.",
+      "actually": {
+        "items": [
+          "**양산 전환** — 공장 조립 보드 여러 대를 같은 기준으로 재서 편차를 본다(PVT 단계).[11]",
+          "**RMA 분석** — 반품 보드의 증상 재현 → 원인 분리 → 8D.[12][33]",
+          "**불량 무더기 줄이기** — 한쪽에 쌓인 불량 보드를 원인별로 나눠 줄여 간다.[27]"
+        ]
+      },
+      "how_far": "우대사항입니다.[1] 개발 단계 경험만 있다면 '양산에서 무엇이 달라지나'를 설명할 수 있게 준비하면 됩니다 {추론}.",
+      "refs": [1, 6, 11, 12, 27, 33],
+      "study": ["wiki-8d", "agans-debugging"]
+    },
+    {
+      "section": "preference",
+      "quote": "Python 등 스크립트를 활용한 계측기 제어, 테스트 자동화 및 데이터 분석 경험",
+      "short": "계측기를 파이썬으로 돌려 측정을 수백 번 자동으로 하고 결과를 숫자로 정리해 본 경험.",
+      "why": "전원 켜고 끄기 1,000회, 온도별 측정처럼 반복이 많은 검증은 손으로 하면 끝나지 않습니다 {추론}. 파이썬에서는 PyVISA 가 GPIB·USB·이더넷 계측기를 같은 방식으로 다루는 사실상 표준입니다.[24]",
+      "actually": {
+        "items": [
+          "**계측기 제어** — SCPI 명령(`*IDN?`, 측정 질의)을 보내고 값을 받는다.[24]",
+          "**자동 반복** — 전원 공급기 켜기 → 대기 → 측정 → 끄기를 N회.",
+          "**데이터 분석** — 평균·최대·한계 초과 횟수, 온도별 그래프 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "측정 200회를 자동으로 — 가짜 장비로 뼈대 돌려 보기",
+          "body": "실제로는 `pyvisa.ResourceManager().open_resource(...)` 로 연 장비에 `query()` 를 보냅니다.[24] 여기서는 같은 `query()` 모양의 가짜 장비로 돌렸고 값은 가상입니다. 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "import random, statistics\nclass FakeScope:\n    def __init__(self, seed): self.r = random.Random(seed)\n    def query(self, cmd):\n        if cmd == \"*IDN?\": return \"FAKE,SCOPE,0,1.0\"\n        if cmd.startswith(\"MEAS:VPP?\"): return f\"{0.030 + self.r.gauss(0, 0.004):.4f}\"\nscope = FakeScope(7)\nprint(scope.query(\"*IDN?\"))\nlimit = 0.040\nvals = [float(scope.query(\"MEAS:VPP? CH1\")) for _ in range(200)]\nfails = sum(v > limit for v in vals)\nprint(f\"200회 평균 {statistics.mean(vals)*1000:.1f}mV · 최대 {max(vals)*1000:.1f}mV · 한계 초과 {fails}회\")\n\n# 출력\n# FAKE,SCOPE,0,1.0\n# 200회 평균 30.0mV · 최대 41.0mV · 한계 초과 1회"
+        }
+      ],
+      "how_far": "소프트웨어 개발자 수준이 아니라 **측정 스크립트를 짜고 결과를 표·그래프로 내는 수준**이면 충분합니다 {추론}. 공고 기술 태그도 Python 입니다.[1]",
+      "refs": [1, 24],
+      "study": ["pyvisa"]
+    },
+    {
+      "section": "preference",
+      "quote": "영문 기술 문서 작성 및 영어 커뮤니케이션 능력",
+      "short": "영어 규격을 읽고, 해외 고객·협력사에 영어로 보고서를 쓰고 말할 수 있으면 좋다는 뜻.",
+      "why": "엑시나는 미국 실리콘밸리에 지사가 있고 하이퍼스케일러·클라우드 고객을 대상으로 합니다.[1] PCIe·DDR5·IPC·JEDEC 규격도 모두 영어입니다.[10][19][26]",
+      "actually": {
+        "items": [
+          "**영문 8D 보고서** — 해외 고객 RMA 에 답하는 문서.[12]",
+          "**규격 읽기** — PCIe·JEDEC·IPC 원문 {추론}.",
+          "**회의** — 해외 고객·외부 랩과 불량 조건·결과를 영어로 맞춘다 {추론}."
+        ]
+      },
+      "how_far": "우대사항입니다.[1] 기술 문서를 영어로 정확히 쓰는 것이 유창한 회화보다 먼저입니다 {추론}.",
+      "refs": [1, 10, 12, 19, 26],
+      "study": ["wiki-8d"]
+    }
+  ],
+  "resources": [
+    {"id": "bogatin-spi", "title": "Signal and Power Integrity - Simplified (3rd Edition)", "by": "Eric Bogatin · Pearson", "kind": "book", "url": "https://www.pearson.com/en-us/subject-catalog/p/signal-and-power-integrity-simplified/P200000000140/9780134513416", "lang": "en", "level": "실무", "why": "SI/PI 문제가 생기는 원인 갈래를 수식보다 그림으로 잡는다 — SI/PI 결과 검토·실측 비교 줄과 우대사항의 바탕. 한국어 번역판이 국회도서관에 있으나 출판사는 확인하지 못했다."},
+    {"id": "tek-xyz", "title": "XYZs of Oscilloscopes", "by": "Tektronix", "kind": "doc", "url": "https://www.tek.com.cn/document/online/primer/xyzs-scopes/ch1/oscilloscope-basics", "lang": "en", "free": true, "level": "입문", "why": "트리거·프로브·대역폭 등 오실로스코프로 측정하는 기본 — 계측기 불량 분석·측정 지점 선정 줄."},
+    {"id": "pcie-tech", "title": "PCI Express Technology 3.0", "by": "Mike Jackson · Ravi Budruk · MindShare Press", "kind": "book", "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=All&SearchWord=PCI+Express+Technology+3.0", "lang": "en", "level": "심화", "why": "링크 초기화·트레이닝(LTSSM)·이퀄라이저 장 — 링크 트레이닝 실패 분석 줄."},
+    {"id": "pcisig-6", "title": "PCI Express 6.0 Specification", "by": "PCI-SIG", "kind": "doc", "url": "https://pcisig.com/pci-express-6.0-specification", "lang": "en", "level": "심화", "why": "64GT/s·PAM4·FLIT 의 원본. 회원 전용 본문은 회사가 가진 판으로 읽는다."},
+    {"id": "grl-rx", "title": "PCIe Receiver Compliance Testing Guide", "by": "Granite River Labs 기술 블로그 · 2024", "kind": "doc", "url": "https://www.graniteriverlabs.com/en-us/technical-blog/pcie-receiver-compliance-testing-guide", "lang": "en", "free": true, "level": "실무", "why": "준수 시험의 세 갈래, CEM 시험 기판, 수신 시험 보정 — PCIe Electrical Compliance 우대사항."},
+    {"id": "linux-aer", "title": "PCI Express AER Driver Guide", "by": "Linux kernel 문서", "kind": "doc", "url": "https://docs.kernel.org/PCI/pcieaer-howto.html", "lang": "en", "free": true, "level": "입문", "why": "정정 가능/불가 오류 구분과 로그 읽기 — BER 증가·링크 불량을 호스트 쪽에서 보는 법."},
+    {"id": "agans-debugging", "title": "Debugging: The 9 Indispensable Rules for Finding Even the Most Elusive Software and Hardware Problems", "by": "David J. Agans", "kind": "book", "url": "https://debuggingrules.com/", "lang": "en", "level": "입문", "why": "'실패를 다시 일으켜라·한 번에 하나만 바꿔라' — 불량 재현·근본 원인·원인 분리 줄의 사고방식."},
+    {"id": "ipc-dyepull", "title": "IPC-TM-650 2.4.53 Dye and Pull Test Method (Formerly Known as Dye and Pry)", "by": "IPC", "kind": "doc", "url": "https://www.ipc.org/sites/default/files/test_methods_docs/2.4.53.pdf", "lang": "en", "free": true, "level": "실무", "why": "파괴 분석(Dye and Pry) 절차와 거짓 합격이 나는 경우 — FA 계획 줄."},
+    {"id": "ipc-9701", "title": "IPC-9701B Test Methods and Qualification Requirements for Surface Mount Solder Attachments", "by": "IPC · 2022", "kind": "doc", "url": "https://webstore.ansi.org/standards/ipc/ipc9701b2022", "lang": "en", "level": "심화", "why": "보드 수준 온도 순환 시험의 표준 방법 — 신뢰성 시험 계획 줄. 유료 표준."},
+    {"id": "jesd22-a110", "title": "JESD22-A110 Highly Accelerated Temperature and Humidity Stress Test (HAST)", "by": "JEDEC", "kind": "doc", "url": "https://standards.globalspec.com/std/14626070/jesd22-a110e-01", "lang": "en", "level": "심화", "why": "HAST 의 목적·장비·불량 판정 — 신뢰성 시험 계획 줄."},
+    {"id": "pyvisa", "title": "PyVISA: Control your instruments with Python", "by": "PyVISA 문서", "kind": "doc", "url": "https://pyvisa.readthedocs.io/en/latest/", "lang": "en", "free": true, "level": "입문", "why": "계측기를 파이썬으로 여는 법과 SCPI 질의 — 계측기 제어·테스트 자동화 우대사항."},
+    {"id": "wiki-8d", "title": "Eight disciplines problem solving", "by": "Wikipedia", "kind": "doc", "url": "https://en.wikipedia.org/wiki/Eight_disciplines_problem_solving", "lang": "en", "free": true, "level": "입문", "why": "8D 각 단계가 무엇을 요구하나 — 8D Report·시정조치 줄."},
+    {"id": "wiki-evt", "title": "Engineering validation test", "by": "Wikipedia", "kind": "doc", "url": "https://en.wikipedia.org/wiki/Engineering_validation_test", "lang": "en", "free": true, "level": "입문", "why": "EVT·DVT·PVT 단계의 차이 — 검증 계획 줄."}
+  ],
+  "study_path": [
+    {"title": "계측 기본기 다지기", "time": "1~2주", "goal": "트리거·프로브 선택을 이유와 함께 설명하고, 전원 순서·리플을 한 화면에 잡는다.", "task": "가상 레일 4개의 상승 시각 표를 만들고 순서 규칙을 판정하는 스크립트를 짠다(위 예시를 늘려 지연 한계·과전압도 넣는다).", "resources": ["tek-xyz", "wiki-evt"]},
+    {"title": "SI/PI 와 BER 감 잡기", "time": "2~3주", "goal": "아이가 닫히는 원인(반사·누화·손실)과 전원 임피던스를 그림으로 설명하고 BER 목표에 필요한 시험 시간을 계산한다.", "task": "BER 1e-12·1e-15 목표의 x8 시험 시간표와, 시뮬레이션 대비 실측 아이 높이 차이를 '원인 후보' 표로 정리한다(가상 값).", "resources": ["bogatin-spi"]},
+    {"title": "PCIe·DDR5 트레이닝 읽기", "time": "2주", "goal": "LTSSM 상태와 DDR5 트레이닝 단계 이름을 보고 어디서 멈췄는지 말한다.", "task": "LTSSM 상태도를 손으로 그리고, 가상 AER 로그 100줄을 읽어 오류 종류별 개수를 세는 스크립트를 짠다.", "resources": ["pcie-tech", "linux-aer", "pcisig-6"]},
+    {"title": "불량 분석과 8D", "time": "2주", "goal": "비파괴 → 파괴 분석 순서를 정하고 8D 보고서 D4~D7 을 쓴다.", "task": "'온도 순환 500회 뒤 링크가 x4 로 떨어진 보드' 가상 사례로 분석 의뢰서와 8D 보고서 한 벌을 쓴다.", "resources": ["ipc-dyepull", "ipc-9701", "jesd22-a110", "wiki-8d", "agans-debugging"]},
+    {"title": "측정 자동화", "time": "1~2주", "goal": "PyVISA 로 계측기를 열어 반복 측정하고 결과를 표·그래프로 낸다.", "task": "가짜 장비 클래스로 전원 켜고 끄기 1,000회 시험 뼈대를 만들고, 한계 초과 횟수·분포 그래프를 CSV 와 함께 낸다.", "resources": ["pyvisa"]}
+  ],
+  "pay": {
+    "summary": "공고에 연봉이 없고, 비상장 스타트업이라 공시 평균 급여도 없다. 공공데이터 집계도 초봉·평균 모두 **'아직 수집 중'**이다",
+    "rows": [
+      {"label": "공고 표기 연봉", "value": "적혀 있지 않음", "basis": "공고 · 2026년", "note": "공고에 연봉·처우 문장이 없다 [1]"},
+      {"label": "신입 초봉 · 평균 연봉", "value": "집계 숫자 없음(수집 중)", "basis": "공공데이터 집계 · 2026년", "note": "자소설닷컴 기업 페이지가 신입 연봉·평균 연봉 모두 '아직 수집 중'으로 표시. 사원수 60명(공공데이터, 갱신 시점 미표기) [9]"}
+    ],
+    "how": "비상장사라 사업보고서의 1인 평균 급여가 없고, 공공데이터 집계 사이트도 아직 숫자가 없습니다 [9]. 이 자리는 경력 7년 이상이라 신입 초봉과는 거리가 멀고, 처우는 면접 뒤 협의에서 정해집니다 {추론}. 기업가치(시리즈 B 때 8,000억 원)[7]로 보수를 짐작할 수는 없어 숫자를 넣지 않았습니다."
+  },
+  "benefits": {
+    "items": [
+      {"name": "MX Day", "detail": "한 달에 한 번 전사가 함께 쉬는 유급 휴일, 연 12회"},
+      {"name": "유연근무", "detail": "선택적 근로시간제 기반"},
+      {"name": "식사", "detail": "점심 식대 지원"},
+      {"name": "복지포인트", "detail": "지급(금액 미표기)"},
+      {"name": "건강검진", "detail": "임직원 및 임직원 가족 건강검진 지원"}
+    ],
+    "note": "이 공고의 복리후생 [1](2026-11 확인). 같은 문구가 같은 회사 다른 공고에도 있어[2][3] 회사 공통으로 보인다 {추론}. 금액은 공개되지 않았다."
+  },
+  "location": {
+    "name": "엑시나 본사(미래에셋벤처타워)",
+    "address": "경기도 성남시 분당구 판교역로241번길 20, 9층 (삼평동, 미래에셋벤처타워)",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C241%EB%B2%88%EA%B8%B8%2020",
+    "near": "신분당선·경강선 판교역 {추론}",
+    "note": "공고의 근무지 [1]와 회사 웹사이트 하단 주소 [8]. 미국 지사는 실리콘밸리에 있다 [1]."
+  },
+  "fit": {
+    "good": [
+      "서버·SSD·그래픽카드 같은 고속 보드를 처음 켜 보고 양산 불량까지 잡아 본 HW 엔지니어[1]",
+      "회로도를 보고 측정 지점을 고르는 일, 원인을 끝까지 좁히는 일이 즐거운 사람[1][13]",
+      "PCIe 6.0·DDR5 같은 최신 인터페이스 보드를 직접 다뤄 보고 싶은 사람[1][5]",
+      "칩 하나가 시제품에서 양산 제품군이 되는 과정을 한 회사에서 겪어 보고 싶은 사람[6]"
+    ],
+    "hard": [
+      "코드를 쓰는 SW 개발이 주가 되길 원한다면 맞지 않는다 — 스크립트는 우대사항이다[1]",
+      "칩 설계(RTL) 검증을 원한다면 별도 SoC 디자인 검증 공고가 그 자리다[2]",
+      "서버에 꽂아 CXL 기능·호환성을 보는 일은 CXL Product Engineer 공고 쪽에 가깝다[2]",
+      "현미경 밑 납땜 같은 손 작업을 꺼린다면 자격요건에 걸린다[1]"
+    ]
+  },
+  "interview": [
+    {"q": "새 보드에 처음 전원을 넣는 날, 무엇을 어떤 순서로 하나요?", "a": "Board Bring-up 줄 — 단락 검사부터 전원 순서·클록·리셋·인터페이스까지.[1]"},
+    {"q": "PCIe x8 카드가 특정 서버에서만 x4 로 붙어요. 칩·보드·서버 중 어디부터 의심하나요?", "a": "Fault Isolation·링크 트레이닝 실패 줄 — 맞바꾸기와 LTSSM.[13][29]"},
+    {"q": "BER 1e-12 를 '오류 0개'로 증명하려면 얼마나 돌려야 하나요?", "a": "SI/PI 실측·BERT 줄 — 약 3/BER 비트.[30]"},
+    {"q": "실측 아이 높이가 시뮬레이션보다 20% 작아요. 무엇을 확인하나요?", "a": "시뮬레이션 결과 검토 및 실측 비교 줄 — 모델·측정·제작 오차 가르기.[1][22]"},
+    {"q": "온도 순환 후 실패한 BGA 보드, 비파괴·파괴 분석을 어떤 순서로 의뢰하나요?", "a": "FA 계획·신뢰성 시험 줄 — X-ray·C-SAM → 단면·Dye and Pry.[17][20]"},
+    {"q": "8D 의 D4 에서 '원인'과 '유출 원인'은 어떻게 다른가요?", "a": "8D Report 줄 — 왜 생겼나와 왜 못 잡았나.[12]"}
+  ],
+  "sources": [
+    {"n": 1, "title": "엑시나 채용 · [Solutions Development] DQA Validation & HW FA Engineer", "url": "https://xcena.career.greetinghr.com/ko/o/245888", "kind": "posting", "date": "2026-11-25", "note": "포지션 소개(ASIC 기반 PCIe AIC, DDR5·PCIe Gen6, EVB Bring-up~양산 전환), 업무·자격·우대, 근무지·복리후생"},
+    {"n": 2, "title": "엑시나 채용 · CXL Product Engineer", "url": "https://xcena.career.greetinghr.com/ko/o/237698", "kind": "posting", "note": "같은 회사 — 서버에서 CXL 기능·호환성 검증, 같은 복리후생 문구, 원문에 SoC 디자인 검증 본문이 붙어 있음"},
+    {"n": 3, "title": "엑시나 채용 · Product Engineer", "url": "https://xcena.career.greetinghr.com/ko/o/161178", "kind": "posting", "note": "같은 회사 — Qual 절차·RDT·샘플·평가 이력 관리"},
+    {"n": 4, "title": "StorageNewsletter · FMS 2025: XCENA Unveils MX1 Computational Memory Supporting PCIe 6.0 and CXL 3.2", "url": "https://www.storagenewsletter.com/2025/08/07/fms-2025-xcena-unveils-mx1-computational-memory-supporting-pcie-6-0-and-cxl-3-2/", "kind": "news", "date": "2025-08-07", "note": "회사 보도자료 기반 — 2025-10 파트너 샘플, 양산판 2026 목표"},
+    {"n": 5, "title": "ServeTheHome · XCENA MX1 CXL Computational Memory Device at Hot Chips 2026 with Samsung", "url": "https://servethehome.com/xcena-mx1-cxl-computational-memory-device-at-hot-chips-2026", "kind": "news", "date": "2026-08-25", "note": "삼성 4나노, PCIe Gen6 x8, DDR5 4채널 최대 2TB"},
+    {"n": 6, "title": "StorageNewsletter · FMS 2026: XCENA Unveils MX1 Production Lineup", "url": "https://www.storagenewsletter.com/2026/08/06/fms-2026-xcena-unveils-mx1-production-lineup-to-accelerate-push-into-hyperscale-ai-infrastructure/", "kind": "news", "date": "2026-08-06", "note": "MX1 Compute·MX1 Expand 양산 제품군, MX1P 시제품 PoC"},
+    {"n": 7, "title": "뉴스1 · '목표액 1.4배 흥행'…'차세대 메모리' 엑시나, 시리즈B 2018억 유치", "url": "https://www.news1.kr/industry/sb-founded/6185394", "kind": "news", "date": "2026-06-02", "note": "기업가치 8,000억 원, 투자금은 MX1 고객 검증·양산 준비"},
+    {"n": 8, "title": "XCENA 공식 웹사이트", "url": "https://www.xcena.com", "kind": "company", "note": "하단 회사 정보 — 판교역로241번길 20"},
+    {"n": 9, "title": "자소설닷컴 · 엑시나 기업정보", "url": "https://jasoseol.com/companies/15972", "kind": "reference", "note": "공공데이터 기반 — 사원수 60명, 신입·평균 연봉 '아직 수집 중'"},
+    {"n": 10, "title": "PCI-SIG · PCI Express 6.0 Specification", "url": "https://pcisig.com/pci-express-6.0-specification", "kind": "reference", "note": "64GT/s, PAM4, FLIT 모드"},
+    {"n": 11, "title": "Wikipedia · Engineering validation test", "url": "https://en.wikipedia.org/wiki/Engineering_validation_test", "kind": "reference", "note": "EVT·DVT·PVT 단계"},
+    {"n": 12, "title": "Wikipedia · Eight disciplines problem solving (8D)", "url": "https://en.wikipedia.org/wiki/Eight_disciplines_problem_solving", "kind": "reference"},
+    {"n": 13, "title": "David J. Agans · Debugging: The 9 Indispensable Rules", "url": "https://debuggingrules.com/", "kind": "reference", "note": "실패를 다시 일으켜라·한 번에 하나만 바꿔라"},
+    {"n": 14, "title": "Linux kernel 문서 · PCI Express AER Driver Guide", "url": "https://docs.kernel.org/PCI/pcieaer-howto.html", "kind": "reference"},
+    {"n": 15, "title": "Granite River Labs · PCIe Receiver Compliance Testing Guide", "url": "https://www.graniteriverlabs.com/en-us/technical-blog/pcie-receiver-compliance-testing-guide", "kind": "reference", "date": "2024-04-08", "note": "물리층·데이터링크층·상호운용 3갈래, Integrators List, CEM 시험 기판(CBB), 50GHz 이상 오실로스코프"},
+    {"n": 16, "title": "Electronic Design · Mastering PCIe 6.0 Receiver Compliance: Key Challenges and Best Practices", "url": "https://www.electronicdesign.com/sponsored/article/55395463/mastering-pcie-60-receiver-compliance-key-challenges-and-best-practices", "kind": "reference", "note": "카드의 초기 송신 이퀄라이저 확인 등(후원 기사)"},
+    {"n": 17, "title": "IPC-TM-650 2.4.53 · Dye and Pull Test Method", "url": "https://www.ipc.org/sites/default/files/test_methods_docs/2.4.53.pdf", "kind": "reference", "date": "2017-08", "note": "옛 이름 dye and pry, 플럭스 잔여로 인한 거짓 합격 주의"},
+    {"n": 18, "title": "Wikipedia · Dye-and-pry", "url": "https://en.wikipedia.org/wiki/Dye-and-pry", "kind": "reference"},
+    {"n": 19, "title": "JEDEC JESD22-A110E.01 · Highly Accelerated Temperature and Humidity Stress Test (HAST)", "url": "https://standards.globalspec.com/std/14626070/jesd22-a110e-01", "kind": "reference", "date": "2021-05", "note": "비밀봉 패키지의 습기 환경 신뢰성 평가, 바이어스 인가"},
+    {"n": 20, "title": "IPC-9701B (2022) · Surface Mount Solder Attachments 시험 방법", "url": "https://webstore.ansi.org/standards/ipc/ipc9701b2022", "kind": "reference", "date": "2022-02", "note": "표면실장 납땜의 온도 순환 특성화 방법"},
+    {"n": 21, "title": "Texas Instruments · Reliability testing", "url": "https://www.ti.com/quality-reliability/reliability/testing.html", "kind": "reference", "note": "제조사의 신뢰성 시험 항목과 근거 표준"},
+    {"n": 22, "title": "Eric Bogatin · Signal and Power Integrity - Simplified, 3rd edition (Pearson)", "url": "https://www.pearson.com/en-us/subject-catalog/p/signal-and-power-integrity-simplified/P200000000140/9780134513416", "kind": "reference", "note": "SI·PI·EMC 문제의 근본 원인 갈래"},
+    {"n": 23, "title": "Tektronix · XYZs of Oscilloscopes", "url": "https://www.tek.com.cn/document/online/primer/xyzs-scopes/ch1/oscilloscope-basics", "kind": "reference", "note": "트리거·프로브·측정"},
+    {"n": 24, "title": "PyVISA · Control your instruments with Python", "url": "https://pyvisa.readthedocs.io/en/latest/", "kind": "reference"},
+    {"n": 25, "title": "Cadence · DDR5 Verification IP", "url": "https://www.cadence.com/ko_KR/home/tools/system-design-and-verification/verification-ip/simulation-vip/memory-models/dram/ddr5.html", "kind": "reference", "note": "DDR5 트레이닝 모드 목록(읽기 트레이닝·CA/CS 트레이닝·쓰기 레벨링 등)"},
+    {"n": 26, "title": "JEDEC JESD79-5 · DDR5 SDRAM", "url": "https://standards.globalspec.com/std/14328154/jedec-jesd-79-5", "kind": "reference"},
+    {"n": 27, "title": "I-Connect007 · Knocking Down the Bone Pile: Getting to the Root Cause of BGA Assembly Problems", "url": "https://iconnect007.com/article/123705/knocking-down-the-bone-pile-getting-to-the-root-cause-of-bga-assembly-problems/123708/smt", "kind": "reference", "note": "BGA 조립 불량 원인 찾기, 단면·염료 분석"},
+    {"n": 28, "title": "Wikipedia · PCI Express", "url": "https://en.wikipedia.org/wiki/PCI_Express", "kind": "reference"},
+    {"n": 29, "title": "Mike Jackson · Ravi Budruk · PCI Express Technology 3.0 (MindShare Press)", "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=All&SearchWord=PCI+Express+Technology+3.0", "kind": "reference", "note": "링크 초기화·트레이닝(LTSSM) 장"},
+    {"n": 30, "title": "Wikipedia · Bit error rate", "url": "https://en.wikipedia.org/wiki/Bit_error_rate", "kind": "reference"},
+    {"n": 31, "title": "Wikipedia · Design for manufacturability", "url": "https://en.wikipedia.org/wiki/Design_for_manufacturability", "kind": "reference"},
+    {"n": 32, "title": "Wikipedia · Scanning acoustic microscope", "url": "https://en.wikipedia.org/wiki/Scanning_acoustic_microscope", "kind": "reference"},
+    {"n": 33, "title": "Wikipedia · Return merchandise authorization", "url": "https://en.wikipedia.org/wiki/Return_merchandise_authorization", "kind": "reference"},
+    {"n": 34, "title": "Wikipedia · Eye pattern", "url": "https://en.wikipedia.org/wiki/Eye_pattern", "kind": "reference"},
+    {"n": 35, "title": "Wikipedia · Rework (electronics)", "url": "https://en.wikipedia.org/wiki/Rework_(electronics)", "kind": "reference"},
+    {"n": 36, "title": "Wikipedia · Power integrity", "url": "https://en.wikipedia.org/wiki/Power_integrity", "kind": "reference"},
+    {"n": 37, "title": "Wikipedia · Signal integrity", "url": "https://en.wikipedia.org/wiki/Signal_integrity", "kind": "reference"},
+    {"n": 38, "title": "Synopsys 블로그 · PCIe 6.x: Synopsys IP Selected as First Gold System for Compliance Testing", "url": "https://www.synopsys.com/blogs/chip-design/pcie-6x-compliance-testing-gold-system.html", "kind": "reference"},
+    {"n": 39, "title": "Wikipedia · Automated X-ray inspection", "url": "https://en.wikipedia.org/wiki/Automated_X-ray_inspection", "kind": "reference"},
+    {"n": 40, "title": "Wikipedia · Thermography", "url": "https://en.wikipedia.org/wiki/Thermography", "kind": "reference"},
+    {"n": 41, "title": "Wikipedia · Highly accelerated stress test", "url": "https://en.wikipedia.org/wiki/Highly_accelerated_stress_test", "kind": "reference"}
+  ],
+  "caveat": "엑시나가 보드 검증·불량 분석 절차를 직접 설명한 글·발표 영상은 찾지 못했습니다(같은 회사 다른 풀이도 FMS 2026 'Validating the XCENA MX1' 세션 자료를 받지 못했습니다). 그래서 제품 사양은 Hot Chips·FMS 보도로, 업무 방식은 PCI-SIG·JEDEC·IPC 표준 소개와 시험 장비 회사 글로 '보통 이런 것'을 보였고, 이 팀의 방식인지는 {추론}으로 표시했습니다. IPC·JEDEC 표준 본문은 유료라 공개 요약만 읽었습니다. 코드의 측정값·한계값은 모두 가상입니다."
+}

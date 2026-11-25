@@ -638,6 +638,7 @@
   "wanted-390176": "visasq-data-platform-engineer",
   "ats-greeting:xcena:235024": "xcena-compiler-engineer",
   "ats-greeting:xcena:237698": "xcena-cxl-product-engineer",
+  "ats-greeting:xcena:245888": "xcena-dqa-validation-hw-fa",
   "ats-greeting:xcena:237697": "xcena-hw-board",
   "ats-greeting:xcena:240539": "xcena-hw-sw-codesign-architect",
   "ats-greeting:xcena:245212": "xcena-it-ops-security",
@@ -6010,6 +6011,16 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 51
+  },
+  {
+   "id": "xcena-dqa-validation-hw-fa",
+   "company": "엑시나",
+   "role": "DQA Validation & HW FA Engineer",
+   "jobs": [
+    "ats-greeting:xcena:245888"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 22
   },
   {
    "id": "xcena-hw-board",
