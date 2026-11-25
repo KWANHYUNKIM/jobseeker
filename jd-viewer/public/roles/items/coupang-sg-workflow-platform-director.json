@@ -1,0 +1,1010 @@
+{
+ "id": "coupang-sg-workflow-platform-director",
+ "company": "쿠팡 (Coupang)",
+ "role": "Director - Backend Engineering",
+ "team": "Application Infrastructure 조직 · 내구 실행(durable execution) 워크플로 플랫폼 신설 팀 · 싱가포르",
+ "jobs": [
+  "ats-greenhouse:coupang:8040140"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡의 수백 개 도메인 팀이 \"며칠씩 걸려도 중간에 죽지 않는 업무 흐름\"(주문 → 재고 → 배송 같은)을 코드로 쓰게 해 주는 **워크플로 엔진을 처음부터** 설계하고, 그걸 만드는 엔지니어 10명 안팎의 팀을 이끕니다.[1]",
+  "env": "Java·Spring·AWS·Kubernetes 위에서, 저장소는 Cassandra·TiDB, 모범은 Temporal·Cadence 같은 오픈소스 엔진입니다. 목표 가용성은 1년에 몇십 초~5분만 멈추는 **5~6 나인**입니다.[1][2]",
+  "oneline": "코드도 깊게 보고 사람도 뽑는 기술 리드 겸 매니저(TLM). 분산 상태·타이머·락을 직접 따져 본 12년 차급 백엔드 인프라 개발자의 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Architect from Zero: Lead the end-to-end design of a distributed workflow engine. You will Build the Best Team and Help Them Grow by setting the gold standard for architectural integrity and high-performance code.",
+   "short": "로켓배송 같은 긴 업무 흐름을 받쳐 줄 분산 워크플로 엔진을 빈 종이부터 설계하고, 팀의 설계·코드 기준을 세운다.",
+   "why": "공고는 이 팀을 **새로 만드는(greenfield) 팀**이라고 소개합니다. 수백 개 도메인 팀이 워크플로를 빨리 만들 수 있게 하는 시스템이고, 로켓배송 같은 핵심 인프라와 수억 달러 매출이 그 위를 지나간다고 적었습니다.[1] 같은 팀의 Staff 엔지니어 공고도 같은 설명을 씁니다 — 디렉터 혼자가 아니라 팀을 꾸려 짓는 일입니다.[2]",
+   "actually": {
+    "intro": "\"워크플로 엔진\"은 쿠팡이 내부 구조를 공개하지 않았습니다. 공고가 기준으로 든 Temporal·Cadence의 공개 구조로 보면 이런 부품을 설계합니다.[1][7][9]",
+    "items": [
+     "**앞문(Frontend)** — 요청을 받아 권한 확인·속도 제한·전달만 하는 상태 없는 서버.[7]",
+     "**기록 담당(History)** — 워크플로마다 일어난 일을 순서대로 적은 **이벤트 기록**과 타이머·대기열을 들고 있는 서버. 워크플로는 해시로 **샤드**(조각)에 나뉜다.[7]",
+     "**일감 배달(Matching)** — 도메인 팀이 띄운 작업자(worker)에게 \"다음에 할 일\"을 나눠 주는 대기열.[7]",
+     "**저장소** — 이벤트 기록이 쌓이는 DB. Temporal은 Cassandra·MySQL·PostgreSQL을 지원한다.[8]",
+     "**도메인 팀이 쓰는 SDK** — 평범한 Java 코드처럼 쓰지만 서버가 죽었다 살아나도 그 줄부터 이어지게 하는 라이브러리.[6]",
+     "**운영 화면·지표** — 수천만 개 워크플로 중 어디서 막혔는지 찾는 검색·추적.[15]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "Temporal식 엔진에서 요청 하나가 지나는 길[7]",
+     "steps": [
+      "도메인 서비스 · 워크플로 시작 요청",
+      "Frontend · 권한·속도 제한",
+      "History · 샤드에 이벤트 기록·타이머",
+      "Matching · 작업 대기열",
+      "도메인 팀 worker · 실제 일(Activity) 실행 후 결과 보고"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "새 엔진을 직접 짤지, Temporal·Cadence를 가져다 고칠지부터 이 자리가 정합니다 — 공고는 어느 쪽인지 적지 않았습니다.[1] {추론} 최소선은 위 부품들이 **왜 나뉘어 있는지**(어느 것이 상태를 들고, 어느 것을 마음대로 늘려도 되나)를 그림 한 장으로 설명하고, 샤드 수처럼 **나중에 못 바꾸는 결정**을 미리 골라내는 것입니다. Temporal은 샤드 수를 한번 정하면 바꿀 수 없다고 적었습니다.[7]",
+   "refs": [
+    1,
+    2,
+    6,
+    7,
+    8,
+    9,
+    15
+   ],
+   "study": [
+    "temporal-101",
+    "temporal-docs",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Define Extreme Availability: Design for \"5-6 nines\" (99.9999% availability). You will Dive Deep into the tail latencies and edge cases of distributed state management to ensure our platform is always on for our customers.",
+   "short": "1년에 멈춰도 되는 시간이 5분(5 나인)~31초(6 나인)뿐인 시스템을 설계하고, 느린 꼬리 요청까지 잡는다.",
+   "why": "이 엔진이 멈추면 그 위의 모든 도메인 팀 워크플로가 함께 멈춥니다.[1] 쿠팡 인프라 공고들은 이미 99.999%를 팀 목표로 적고 있고(트래픽 관리 팀)[4], 이 자리는 거기서 한 자리 더 올렸습니다.[1]",
+   "actually": {
+    "items": [
+     "**나인을 시간으로 바꾸기** — 99.99%는 1년에 약 52.6분 멈춤까지다.[11] 같은 계산으로 99.999%는 약 5.3분, 99.9999%는 약 31.5초다(아래 출력).",
+     "**의존하는 것의 나인** — 이 엔진이 DB·네트워크·Kubernetes에 기대면, 그것들이 이 엔진보다 더 높아야 한다. 99.99%짜리 셋에 차례로 기대면 합쳐서 99.97%로 떨어진다(아래 출력). {추론}",
+     "**오류 예산** — 목표가 99.999%면 0.001%가 \"써도 되는 실패\"다. 예산이 남으면 배포를 계속하고, 다 쓰면 배포를 멈춘다.[11]",
+     "**꼬리 지연** — 서버 한 대가 100번 중 1번만 느려도, 요청 하나가 100대를 거치면 요청의 63%가 느린 서버를 만난다.[13] 평균이 아니라 p99·p99.9를 본다.",
+     "**분산 상태의 모서리** — 샤드를 넘겨받는 순간, 같은 일을 두 서버가 동시에 했다고 믿는 순간, 타이머가 서버 재시작과 겹치는 순간을 시험으로 일부러 만든다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "나인을 1년 멈춤 시간으로 (직접 돌린 출력)",
+     "body": "공고의 5~6 나인이 실제로 얼마나 빡빡한지. 마지막 줄은 99.99%짜리 의존 셋에 차례로 기댈 때입니다.",
+     "lang": "python",
+     "code": "YEAR = 365 * 24 * 3600\nfor a in [\"99.9\", \"99.99\", \"99.999\", \"99.9999\"]:\n    down = YEAR * (1 - float(a) / 100)\n    print(f\"{a}% -> {down/60:.1f} min/year ({down:.1f} s)\")\nprint(\"serial 3 deps @99.99:\", round(0.9999 ** 3 * 100, 4), \"%\")\n\n# 99.9% -> 525.6 min/year (31536.0 s)\n# 99.99% -> 52.6 min/year (3153.6 s)\n# 99.999% -> 5.3 min/year (315.4 s)\n# 99.9999% -> 0.5 min/year (31.5 s)\n# serial 3 deps @99.99: 99.97 %"
+    },
+    {
+     "title": "꼬리 지연이 커지는 이유 (직접 돌린 출력)",
+     "body": "서버마다 1%만 느려도, 거치는 서버가 많아지면 대부분의 요청이 느려집니다.[13]",
+     "lang": "python",
+     "code": "for n in [1, 10, 100]:\n    print(n, \"servers:\", f\"{(1 - 0.99 ** n) * 100:.0f}% of requests hit a p99-slow server\")\n\n# 1 servers: 1% ...\n# 10 servers: 10% ...\n# 100 servers: 63% ..."
+    }
+   ],
+   "how_far": "6 나인은 사람이 알람 받고 들어와 고칠 시간이 없다는 뜻입니다 — **사람 없이 스스로 넘어가는 구조**(여러 영역 복제·자동 전환)가 기본입니다. {추론} 이 자리는 목표 숫자를 **SLO·오류 예산으로 쪼개 팀에 나눠 주고**, 의존하는 DB·Kubernetes가 그 목표를 받칠 수 있는지 따지는 데까지 책임집니다.[11]",
+   "refs": [
+    1,
+    4,
+    11,
+    13
+   ],
+   "study": [
+    "sre-book",
+    "tail-at-scale"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI-Driven Automation: Integrate AI/ML models to automate system functionality, including predictive scaling, automated bottleneck detection, and intelligent error recovery,\nensuring we Wow the Customer through seamless platform performance and availability.",
+   "short": "트래픽을 미리 예측해 서버를 늘리고, 병목을 자동으로 찾고, 오류를 알아서 복구하는 데 AI/ML을 붙인다.",
+   "why": "공고는 AI로 복잡한 시스템 동작과 **스스로 낫는(self-healing)** 기능을 자동화하는 것을 이 팀의 책임으로 적었습니다.[1] 6 나인 목표에서는 사람이 대응할 시간이 거의 없어서, 자동으로 판단하는 부분이 늘 수밖에 없습니다. {추론}",
+   "actually": {
+    "intro": "쿠팡이 어떤 모델을 쓰는지는 공개되지 않았습니다. 공개된 비슷한 기능으로 보면 이런 것입니다.",
+    "items": [
+     "**예측 확장** — 지금 부하에 반응해 늘리는 보통 자동 확장(Kubernetes HPA)[16]과 달리, 지난 부하 기록으로 앞으로를 예측해 미리 늘린다. AWS의 예측 확장은 최소 24시간 기록으로 앞 48시간을 예측한다.[14]",
+     "**병목 자동 찾기** — 분산 추적(요청이 지난 서비스 경로와 구간별 시간)에서 평소와 다르게 느려진 구간을 골라낸다.[15] {추론}",
+     "**똑똑한 오류 복구** — 실패를 \"다시 하면 되는 것(일시 장애)\"과 \"다시 해도 안 되는 것(잘못된 입력)\"으로 나눠, 앞의 것만 재시도하고 뒤의 것은 사람에게 넘긴다. Temporal의 Activity 재시도가 이 바탕이다.[6] {추론}",
+     "**예: 쇼핑 대목** — 특가 시작 시각처럼 미리 아는 몰림은 예측 확장, 모르는 몰림은 반응 확장으로 받는 식으로 둘을 겹쳐 쓴다. {추론}"
+    ]
+   },
+   "how_far": "모델을 처음부터 학습시키는 ML 연구 자리는 아닙니다 — 우대사항도 \"경험 또는 강한 설계 비전\"이라고 적었습니다.[1] 핵심은 **AI가 틀렸을 때 시스템이 망가지지 않게** 거는 안전장치(상한·되돌리기·사람 확인)입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "aws-predictive",
+    "otel-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Solve Hard Problems: Address challenges related to distributed locking, timers, and deterministic execution. You must Be Data-Driven to validate architectural decisions against massive traffic patterns.",
+   "short": "여러 서버가 같은 일을 겹쳐 하지 않게 하는 락, 며칠 뒤 깨우는 타이머, 다시 돌려도 같은 결과를 내는 실행을 푼다.",
+   "why": "워크플로 엔진의 약속은 \"서버가 죽어도 그 자리부터 정확히 한 번 이어 간다\"입니다. 이 약속을 깨는 곳이 바로 이 세 가지라서 공고가 콕 집었습니다.[1][6]",
+   "actually": {
+    "items": [
+     "**분산 락의 함정** — 락에 유효 시간(lease)을 걸어도, 락을 쥔 서버가 GC(가비지 컬렉션)로 잠깐 멈춘 사이 시간이 지나면 다른 서버가 락을 잡는다. 깨어난 서버는 그걸 모르고 쓴다.[12]",
+     "**펜싱 토큰** — 그래서 락을 줄 때마다 1씩 커지는 번호를 주고, 저장소가 \"본 것보다 작은 번호의 쓰기\"를 거절하게 한다(아래 출력).[12]",
+     "**타이머** — \"30분 뒤 결제 안 됐으면 주문 취소\" 같은 수백만 개 타이머를 메모리가 아니라 저장소에 두고, 서버가 바뀌어도 한 번만 울리게 한다. Temporal에서는 History 서비스가 타이머를 들고 있다.[7]",
+     "**결정적 실행(deterministic)** — 엔진은 서버가 죽으면 이벤트 기록을 처음부터 다시 돌려(replay) 그 자리로 돌아온다. 그래서 워크플로 코드 안에서 현재 시각·난수·외부 호출을 직접 쓰면 안 되고, 바깥 일은 Activity로 뺀다.[6]",
+     "**데이터로 확인** — 샤드 수·락 방식 같은 결정을 실제 트래픽 모양(몰림·하루 주기)을 흉내 낸 부하 시험으로 검증한다.[1] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "펜싱 토큰 — GC로 멈췄다 깨어난 서버의 쓰기를 막는다 (직접 돌린 출력)",
+     "body": "Kleppmann 글의 예를 그대로 옮긴 것입니다. 1번 서버(토큰 33)가 멈춘 사이 2번 서버가 토큰 34로 먼저 썼습니다.[12]",
+     "lang": "python",
+     "code": "class Storage:\n    def __init__(self): self.max_token = 0; self.value = None\n    def write(self, token, value):\n        if token < self.max_token:\n            return f\"reject token {token} (seen {self.max_token})\"\n        self.max_token = token; self.value = value\n        return f\"ok token {token} -> {value}\"\n\ns = Storage()\nprint(s.write(34, \"client2\"))\nprint(s.write(33, \"client1\"))\n\n# ok token 34 -> client2\n# reject token 33 (seen 34)"
+    },
+    {
+     "title": "워크플로 안에서 난수를 쓰면 다시 돌릴 때 갈라진다 (직접 돌린 출력)",
+     "body": "첫 실행에서는 난수 0.3으로 타이머를 걸었는데, 다시 돌릴 때 난수가 0.7이 나오면 다른 명령이 나옵니다. Temporal은 이 어긋남을 비결정성 오류로 멈춥니다.[6]",
+     "lang": "python",
+     "code": "def workflow(rnd):\n    cmds = [\"schedule:reserve_stock\"]\n    cmds.append(\"timer:30m\" if rnd() < 0.5 else \"schedule:notify\")\n    return cmds\n\nhistory = workflow(lambda: 0.3)   # 첫 실행 → 기록\nreplay = workflow(lambda: 0.7)    # 재실행 때 random() 이 또 불림\nfor i, (h, r) in enumerate(zip(history, replay)):\n    print(i, h, \"==\" if h == r else \"!=\", r)\n\n# 0 schedule:reserve_stock == schedule:reserve_stock\n# 1 timer:30m != schedule:notify"
+    }
+   ],
+   "how_far": "이 자리는 \"락은 Redis로 걸면 된다\"에서 멈추면 안 되는 자리입니다. **락이 깨지는 경우를 먼저 말하고, 그래도 데이터가 안 망가지는 장치(펜싱·멱등성)**를 설계에 넣을 수 있어야 합니다.[12] {추론}",
+   "refs": [
+    1,
+    6,
+    7,
+    12
+   ],
+   "study": [
+    "kleppmann-lock",
+    "ddia",
+    "temporal-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "As a TLM you will lead a team of up to 10 engineers, collaborating across the organization to ensure this platform becomes the backbone of our global operations.",
+   "short": "엔지니어 최대 10명을 직접 이끄는 기술 리드 겸 매니저(TLM)로, 이 엔진을 회사 전체가 쓰는 뼈대로 만든다.",
+   "why": "공고는 이 자리를 \"Technical Lead Manager\"라고 부르며 설계와 구현을 함께 이끈다고 적었습니다.[1] 같은 조직의 미국 디렉터 공고도 채용·팀 문화·로드맵을 맡되 필요하면 코드에 직접 들어가는 사람을 찾습니다.[3]",
+   "actually": {
+    "items": [
+     "**사람 뽑기** — 같은 팀이 Senior/Staff 엔지니어를 따로 뽑고 있다. 그 사람들의 면접·합류가 이 자리 일이다.[2]",
+     "**설계 리뷰** — 엔진의 핵심 결정(샤드·저장소·SDK 모양)은 TLM이 직접 문서로 쓰고 리뷰를 연다. {추론}",
+     "**성장시키기** — 공고 첫 줄의 \"최고의 팀을 만들고 성장시킨다\"는 쿠팡 리더십 원칙 문구다.[1]",
+     "**뼈대로 만들기** — 엔진이 좋아도 도메인 팀이 옮겨 와야 뼈대가 된다. 옮겨 오는 길(예제·이관 도구·지원)을 만드는 것도 팀 일이다. {추론}"
+    ]
+   },
+   "how_far": "10명은 매니저 한 명이 직접 볼 수 있는 크기입니다. 그래서 회의만 하는 관리자가 아니라 **설계 문서와 코드 리뷰에 직접 손이 가는** 사람이 필요합니다.[1][3] {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "manager-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Stakeholder management - Work cross functionally with our product teams to provide infrastructure which serves the company’s business needs",
+   "short": "엔진을 쓸 제품 팀들과 일정·요구를 맞춰, 회사 사업에 실제로 필요한 인프라를 내놓는다.",
+   "why": "이 엔진의 손님은 쿠팡의 수백 개 도메인 팀입니다.[1] 미국 쪽 같은 조직 공고도 핵심 이해관계자와 로드맵을 맞추고 회사 전체가 쓰게 만드는 일을 디렉터 몫으로 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "어느 팀의 흐름(예: 배송 단계 관리, 반품 처리)을 먼저 옮길지 고른다 — 매출이 크고 실패 비용이 큰 흐름이 첫 손님이 되기 쉽다. {추론}",
+     "제품 팀이 원하는 기능(버전 바꾸기, 수십 일짜리 대기)과 플랫폼이 지켜야 할 것(결정성·가용성)을 맞바꾼다.[6] {추론}",
+     "쿠팡 백엔드는 상품 데이터를 카탈로그·가격·풀필먼트처럼 팀별로 나눠 들고 있어, 흐름 하나가 여러 팀 서비스를 거친다.[5]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bachelor's degree in computer science, Electrical Engineering, Math, or a closely related field",
+   "short": "컴퓨터공학·전기공학·수학이나 가까운 전공의 학사 학위가 기본 조건이라서.",
+   "why": "쿠팡 해외 엔지니어링 공고들의 공통 첫 조건입니다. 같은 조직 미국 디렉터 공고도 컴퓨터공학 또는 관련 기술 분야 학사를 적었습니다.[3]",
+   "how_far": "\"가까운 분야\"까지 열어 두었습니다. 싱가포르 근무라 취업 비자(EP) 심사에서도 학위가 보는 항목이 될 수 있습니다. {추론}",
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "8 years of experience in backend software development",
+   "short": "백엔드 개발 8년 이상 — 우대 기준은 12년 이상이라 실제 눈높이는 더 높다.",
+   "why": "기본은 8년이지만 우대사항이 12년 이상의 대규모 백엔드 인프라 경험을 적었습니다.[1] 같은 조직 미국 디렉터는 8년(석사 이상이면 10년) + 매니저 5년입니다.[3]",
+   "how_far": "8년 중 상당 부분이 **남이 쓰는 인프라**(DB·메시징·오케스트레이션)를 만든 경험이면 강합니다. 서비스 기능 개발만 8년이면 우대 조건의 '처음부터 지은 분산 시스템' 이야기를 따로 준비해야 합니다. {추론}",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Proficiency in Java and the Spring Framework",
+   "short": "쿠팡 백엔드의 기본 언어가 Java·Spring이라, 엔진 SDK와 도메인 팀 코드도 이 위에 선다.",
+   "why": "도메인 팀이 워크플로를 \"코드로\" 쓴다고 했으니[1], 그 팀들이 쓰는 언어로 SDK가 나와야 합니다. 이 공고의 기술 칸과 미국 쪽 Staff 공고들도 Java·Spring을 기본으로 적습니다.[1][2]",
+   "level": {
+    "basic": "Java 컬렉션·예외·스트림, Spring 빈·설정·트랜잭션",
+    "work": "스레드 풀·CompletableFuture·동시성 컬렉션, Spring Boot 운영(지표·헬스체크·우아한 종료)",
+    "team": "SDK를 만드는 쪽 — 사용자 코드가 결정적으로 돌게 막는 장치, 가상 스레드(JDK 21)·메모리 모델 이해"
+   },
+   "actually": {
+    "items": [
+     "Temporal Java SDK는 워크플로를 평범한 Java 인터페이스로 쓰게 하고, 바깥 일은 Activity 인터페이스로 뺀다.[6]",
+     "워크플로 하나가 며칠 \"기다리는\" 동안 스레드를 붙잡지 않는 것이 중요하다 — 대기 중 워크플로가 수백만 개일 수 있다.[6] {추론}",
+     "JDK 21의 가상 스레드는 기다리는 일이 많은 서버에서 적은 OS 스레드로 많은 동시 작업을 돌리게 한다.[21]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    6,
+    21
+   ],
+   "study": [
+    "jcip",
+    "jep444",
+    "temporal-101"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience working in cloud environments, particularly AWS",
+   "short": "쿠팡 서비스가 AWS 위에 있어서, 엔진도 AWS의 영역·장애 단위를 전제로 설계한다.",
+   "why": "공고 기술 칸에 AWS가 들어가 있고, 특히 AWS라고 짚었습니다.[1] 6 나인을 노린다면 데이터센터 하나(가용 영역)가 통째로 꺼져도 버티는 배치가 필요합니다. {추론}",
+   "actually": {
+    "items": [
+     "**영역 나눠 두기** — 저장소 복제본과 서버를 여러 가용 영역에 나눠 하나가 죽어도 과반이 살아 있게. {추론}",
+     "**확장** — 부하 예측에 따라 미리 늘리는 AWS 예측 확장 같은 기능을 엔진의 \"예측 확장\"과 맞물린다.[14]",
+     "**비용** — 6 나인 복제는 돈이 든다. 얼마를 더 쓰면 나인 하나가 오르나를 숫자로 말해야 한다.[11] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    11,
+    14
+   ],
+   "study": [
+    "aws-predictive"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Demonstrated experience in building and maintaining highly available, distributed systems",
+   "short": "여러 서버에 나뉘어 돌며 일부가 죽어도 멈추지 않는 시스템을 실제로 짓고 운영해 본 경험.",
+   "why": "이 팀의 일 전체가 고가용성 분산 시스템입니다.[1] 같은 조직은 OLTP·메시징·캐시처럼 회사의 모든 서비스가 기대는 기반을 만든다고 소개합니다.[3]",
+   "actually": {
+    "items": [
+     "복제·합의(과반이 동의해야 확정), 장애 감지와 자동 전환, 네트워크가 끊겨 서버들이 갈라졌을 때의 처리.[22]",
+     "\"짓고 **운영**한\" 경험 — 장애 회고(무엇이 왜 멈췄고 무엇을 바꿨나)를 숫자로 말할 수 있어야 한다. {추론}",
+     "쿠팡 백엔드 블로그는 대규모 트래픽에서 높은 읽기 처리량과 서비스 간 실시간 데이터 일관성을 함께 지키는 것을 목표로 든다.[5]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    5,
+    22
+   ],
+   "study": [
+    "ddia",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Managed a team of 5-10 engineers",
+   "short": "엔지니어 5~10명 팀을 맡아 본 경험 — 이 자리 팀 크기(최대 10명)와 같다.",
+   "why": "업무 줄의 \"최대 10명 팀\"과 짝을 이룹니다.[1] 처음 매니저가 되는 사람이 아니라 이미 그 크기를 해 본 사람을 찾는다는 뜻입니다.",
+   "how_far": "채용·성과 평가·저성과자 대응·승진 추천을 직접 해 봤는지가 경계입니다. 기술 리드로 '사실상 이끌었다'는 경험은 우대사항의 '3년 매니저'와 구분해서 말합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Extensive Experience: 12+ years of professional software development experience, specifically building backend infrastructure that supports global-scale traffic.",
+   "short": "12년 이상, 그중에서도 전 세계 규모 트래픽을 받는 백엔드 인프라를 만든 경력이면 더 좋다.",
+   "why": "이 엔진은 쿠팡의 \"전 세계 운영의 뼈대\"가 되는 것이 목표라고 적었습니다.[1] 쿠팡은 한국·대만 등 여러 나라에서 서비스하고, 싱가포르·미국 등에 엔지니어링 거점을 두고 있습니다.[3][19]",
+   "refs": [
+    1,
+    3,
+    19
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "3 years of experience managing a team of 5-10 engineers",
+   "short": "5~10명 팀 매니저 경험이 3년 이상이면 더 좋다 — 한 번의 채용·평가 주기를 넘겨 본 사람.",
+   "why": "자격요건의 '팀을 맡아 본 경험'을 기간으로 높인 줄입니다.[1] 미국 쪽 같은 조직 디렉터는 기본 조건으로 매니저 5년을 요구합니다.[3]",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "manager-path"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "High Availability Mastery: Proven track record of managing and maintaining systems with 5-6 nines of availability. You understand that \"good enough\" isn't enough; we Focus on the Customer and the Experience by ensuring zero downtime.",
+   "short": "5~6 나인을 실제로 운영해 지킨 기록 — 숫자를 목표가 아니라 측정값으로 보여 줄 수 있으면 더 좋다.",
+   "why": "업무 줄의 5~6 나인 목표를 이미 해 본 사람이면 시행착오를 줄일 수 있습니다.[1] 가용성은 보통 요청 성공률로 잽니다 — 하루 250만 요청에 99.99%면 하루 오류 250건까지입니다.[11]",
+   "how_far": "\"몇 나인이었나\"보다 **어떻게 쟀고(무엇을 실패로 셌나) 예산을 넘었을 때 무엇을 멈췄나**를 말하는 것이 증거가 됩니다.[11] {추론}",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Distributed Systems Expert: Deep expertise in designing and deploying mission-critical systems (e.g., databases, messaging queues, or orchestration engines) from the ground up.",
+   "short": "DB·메시지 큐·오케스트레이션 엔진 같은 핵심 시스템을 바닥부터 설계·배포해 본 사람이면 더 좋다.",
+   "why": "워크플로 엔진은 안에 저장소·대기열·타이머를 다 가진 시스템입니다 — Uber의 Cadence도 자체 저장·대기열·타이머를 갖춘 오케스트레이션 엔진이라고 소개됩니다.[9] 그래서 예로 든 세 가지가 모두 이 엔진의 부품 경험입니다.[1]",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "ddia"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Technical Mastery: Expert-level proficiency in Java, Python with deep understanding of concurrency and memory management.",
+   "short": "Java·Python을 전문가 수준으로, 특히 동시성과 메모리 관리를 깊이 아는 사람이면 더 좋다.",
+   "why": "엔진 서버는 수많은 워크플로를 동시에 다루고, 위의 락 문제처럼 **GC 멈춤 하나가 정합성을 깨기도** 합니다.[12] Python은 도메인·ML 팀이 쓰는 SDK와 AI 자동화 쪽에서 필요할 것입니다. {추론}",
+   "actually": {
+    "items": [
+     "Java 메모리 모델(한 스레드가 쓴 값이 다른 스레드에 언제 보이나)과 락·원자 연산의 차이.[20]",
+     "GC가 긴 멈춤을 만들 때 락 유효 시간·하트비트가 어떻게 깨지나.[12]",
+     "가상 스레드가 많은 기다림을 싸게 만들지만, 그 안에서 락을 잡고 오래 막히면 효과가 줄어드는 점.[21]"
+    ]
+   },
+   "refs": [
+    12,
+    20,
+    21
+   ],
+   "study": [
+    "jcip",
+    "jep444"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI Integration: Experience or a strong architectural vision for using AI/ML to automate system-level functionality and operational tasks.",
+   "short": "AI/ML로 시스템 동작·운영 일을 자동화해 본 경험, 아니면 그 설계 그림이 분명한 사람이면 더 좋다.",
+   "why": "업무 줄의 예측 확장·병목 찾기·오류 복구를 받치는 요건입니다.[1] \"비전\"도 인정한다고 적어 경험이 없어도 설계안으로 말할 수 있습니다.[1]",
+   "how_far": "면접에서는 \"무엇을 자동으로 결정하게 하고, 틀리면 무엇이 막아 주나\"를 한 장으로 그릴 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "aws-predictive"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Specialized Knowledge: Deep familiarity with the Temporal or Cadence programming models and their underlying architecture. Experience in Kubernetes and containerization.",
+   "short": "Temporal·Cadence 프로그래밍 모델과 그 속 구조를 깊이 알고, Kubernetes·컨테이너 경험이 있으면 더 좋다.",
+   "why": "이 팀이 만드는 것이 바로 이 계열 엔진입니다.[1] Cadence는 Uber가 만들어 2017년에 공개했고[9], Temporal은 Cadence를 만든 두 사람이 Uber를 나와 2019년에 세운 회사의 후속 엔진입니다.[10] 같은 팀 Staff 공고에도 똑같은 줄이 있습니다.[2]",
+   "actually": {
+    "items": [
+     "**프로그래밍 모델** — Workflow(결정적 코드)·Activity(바깥 일, 재시도)·Signal(밖에서 넣는 이벤트)·Timer.[6]",
+     "**속 구조** — Frontend·History·Matching·Worker 네 서비스와 history 샤드, 저장소 위의 이벤트 기록.[7][8]",
+     "**버전 바꾸기** — 이미 돌고 있는 워크플로가 있는데 코드를 바꾸면 재실행이 어긋난다. 명령 순서를 바꾸려면 버전 장치(Patched·GetVersion)를 거쳐야 한다.[6]",
+     "**Kubernetes** — 엔진 서비스와 도메인 팀 worker를 컨테이너로 띄우고 늘리고 줄인다.[16]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    6,
+    7,
+    8,
+    9,
+    10,
+    16
+   ],
+   "study": [
+    "temporal-101",
+    "temporal-102",
+    "temporal-docs",
+    "cadence-uber"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Stateful Database Experience: Experience with Cassandra and TiDB preferred",
+   "short": "엔진의 이벤트 기록을 담을 상태 저장 DB — Cassandra와 TiDB 경험이 있으면 더 좋다.",
+   "why": "워크플로 엔진의 신뢰성은 결국 아래 저장소가 정합니다. Temporal은 Cassandra와 MySQL 계열을 저장소로 지원하고[8], 같은 조직 미국 공고도 Cassandra를 대표 기술로 꼽습니다.[3]",
+   "actually": {
+    "items": [
+     "**Cassandra** — 주인 서버 없이 여러 노드가 데이터를 나눠 복제하고, 읽기·쓰기마다 몇 개 복제본이 답해야 성공인지(일관성 수준)를 고른다.[17]",
+     "**TiDB** — MySQL과 호환되면서 수평으로 늘어나는 분산 SQL DB. 데이터는 여러 복제본에 Raft 합의로 둔다.[18]",
+     "둘을 같이 적은 까닭은 공개되지 않았다. 대량 쓰기는 Cassandra, 트랜잭션·SQL이 필요한 쪽은 TiDB로 나누는 식일 수 있다. {추론}"
+    ]
+   },
+   "refs": [
+    3,
+    8,
+    17,
+    18
+   ],
+   "study": [
+    "cassandra-docs",
+    "tidb-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Open Source Leadership: Experience contributing to major open-source distributed systems projects.",
+   "short": "큰 오픈소스 분산 시스템 프로젝트에 기여해 본 경험이 있으면 더 좋다.",
+   "why": "Temporal·Cadence·Cassandra·TiDB가 모두 오픈소스입니다.[8][9][18] 가져다 쓰든 새로 짓든, 그 코드를 읽고 고쳐 본 경험이 바로 쓰입니다. {추론}",
+   "refs": [
+    8,
+    9,
+    18
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Observability Expert: Expertise in building highly observable systems using distributed tracing and advanced telemetry to proactively identify issues.",
+   "short": "분산 추적·지표로 문제를 터지기 전에 찾는, 속이 훤히 보이는 시스템을 만들어 본 사람이면 더 좋다.",
+   "why": "워크플로 하나가 여러 팀 서비스를 몇 시간·며칠에 걸쳐 지나가서, 어디서 막혔는지 보이지 않으면 6 나인을 지킬 수 없습니다. {추론} 같은 팀 Staff 공고에도 같은 줄이 있습니다.[2]",
+   "actually": {
+    "items": [
+     "**분산 추적** — 요청 하나에 붙은 추적 번호로 서비스마다의 구간(span)을 이어 한 장의 흐름으로 본다.[15]",
+     "**워크플로 단위 지표** — 대기열에 쌓인 일 수, 일감이 worker에게 가기까지 걸린 시간, 재시도 횟수. {추론}",
+     "**먼저 찾기** — 위의 \"병목 자동 찾기\"가 이 데이터 위에서 돈다.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    15
+   ],
+   "study": [
+    "otel-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Recruitment Process\nApplication Review - Job Fit Interview - Focus Interview – Offer\nThe exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.\nInterview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "전형은 서류 → 직무 적합 면접 → 집중 면접 → 처우 제안이고, 일정·결과는 지원 때 낸 이메일로 온다.",
+   "why": "우대사항이 아니라 공고 끝의 전형 안내입니다.[1] 미국 쪽 같은 조직 공고는 서류 → 전화 면접 → 현장(또는 화상) 면접 → 제안으로 적어, 나라마다 이름이 조금 다릅니다.[3]",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to Consider\nThis job posting may be closed prior to the stated end date for application if all openings are filled.\nCoupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.\nThose eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.\nJob titles and responsibilities may be subject to change depending on the candidate’s overall experience, etc. This will be communicated to the candidate at the appropriate time before the offer.\nHiring may be restricted in case the legal qualifications required for hiring and work performance is not met.",
+   "short": "자리가 차면 일찍 닫히고, 직급·업무는 경력에 따라 제안 전에 바뀔 수 있다는 안내.",
+   "why": "공고 끝의 유의사항입니다.[1] 지원자에게 실제로 의미 있는 것은 둘입니다 — 마감일 전에도 닫힐 수 있고, **직함과 맡는 범위가 경력에 따라 조정**됩니다(디렉터로 냈어도 다른 직급으로 제안될 수 있다).[1] {추론} 싱가포르 근무라 취업 자격(비자) 요건을 못 채우면 채용이 제한될 수 있다는 줄도 같이 있습니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "분산 시스템이 깨지는 모서리(락·타이머·재실행)를 파고드는 게 즐거운 사람",
+   "빈 종이에서 시스템과 팀을 같이 짓고 싶은 사람 — 신설 팀이다[1]",
+   "매니저가 되어도 설계 문서와 코드 리뷰를 놓고 싶지 않은 사람[1][3]",
+   "Temporal·Cadence를 써 보다가 속이 궁금해진 사람"
+  ],
+  "hard": [
+   "6 나인 목표라 장애 한 번의 무게가 크다 — 운영 부담이 큰 자리다[1] {추론}",
+   "근무지가 싱가포르라 이주·비자 절차가 필요하다[1][19]",
+   "엔진을 직접 지을지 오픈소스를 고칠지가 정해지지 않은 채 시작할 수 있다 — 공고에 적혀 있지 않다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "락 유효 시간이 지난 걸 모르는 서버가 쓰기를 하면 어떻게 막나요?",
+   "a": "GC 멈춤과 펜싱 토큰 — 업무 '어려운 문제'의 첫 항목.[12]"
+  },
+  {
+   "q": "워크플로 코드 안에서 System.currentTimeMillis()나 난수를 쓰면 무슨 일이 생기나요?",
+   "a": "재실행이 어긋나는 결정성 문제.[6]"
+  },
+  {
+   "q": "99.9999%를 목표로 하면 의존하는 DB와 Kubernetes는 몇 나인이어야 하나요?",
+   "a": "나인을 시간으로 바꾸고 의존 관계를 곱하는 계산.[11]"
+  },
+  {
+   "q": "history 샤드 수를 어떻게 정하겠어요? 나중에 바꿀 수 없다면요?",
+   "a": "Temporal이 샤드 수 변경 불가를 명시한 부분.[7]"
+  },
+  {
+   "q": "이미 수십만 개가 돌고 있는 워크플로의 코드를 바꿔야 한다면?",
+   "a": "버전 장치(Patched·GetVersion).[6]"
+  },
+  {
+   "q": "AI가 잘못 판단해 서버를 줄였다면 무엇이 그걸 막아 줘야 하나요?",
+   "a": "예측 확장의 안전장치 — 업무 'AI 자동화'.[1][14]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Director - Backend Engineering (Infrastructure), Singapore",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8040140",
+   "kind": "posting",
+   "date": "2026-07",
+   "note": "역할 소개(greenfield · durable execution 플랫폼 · 5~6 나인)·업무·요건·전형. 2026-07-01 게시, 10-02 갱신"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · Staff Backend Engineer (Infrastructure), Singapore",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8047677",
+   "kind": "posting",
+   "note": "같은 팀 Senior/Staff 엔지니어 공고 — 팀 소개·Temporal/Cadence·Cassandra/TiDB 요건이 같다"
+  },
+  {
+   "n": 3,
+   "title": "Coupang Careers · Director of Backend Engineering (Mountain View · Seattle)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8386063",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 Application Infrastructure 조직의 미국 디렉터 공고 — 조직 소개(OLTP·메시징·캐시)·요건·기본급 범위·복리후생"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Careers · Staff Back-end Engineer (Traffic Management)",
+   "url": "https://www.coupang.jobs/jp/jobs/8104792/staff-back-end-engineer-traffic-management/",
+   "kind": "posting",
+   "note": "Technical Infrastructure & Platform 조직 — 99.999% 가용성 목표"
+  },
+  {
+   "n": 5,
+   "title": "Coupang Engineering · Our backend strategy to handle massive traffic",
+   "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+   "kind": "company",
+   "date": "2022-08",
+   "note": "연재 1편. 본문은 자동 접속이 막혀 검색 요약(목표·팀별 데이터 소유)만 확인했다"
+  },
+  {
+   "n": 6,
+   "title": "Temporal Docs · Workflow Definition (결정성 제약)",
+   "url": "https://docs.temporal.io/workflow-definition",
+   "kind": "reference",
+   "note": "결정성·재실행·Activity로 빼야 할 것·버전 장치"
+  },
+  {
+   "n": 7,
+   "title": "Temporal Docs · Temporal Server",
+   "url": "https://docs.temporal.io/temporal-service/temporal-server",
+   "kind": "reference",
+   "note": "Frontend·History·Matching·Worker, history 샤드(설정 뒤 변경 불가)"
+  },
+  {
+   "n": 8,
+   "title": "Temporal Docs · Persistence",
+   "url": "https://docs.temporal.io/temporal-service/persistence",
+   "kind": "reference",
+   "note": "지원 저장소: Cassandra·PostgreSQL·MySQL(SQLite는 개발용)"
+  },
+  {
+   "n": 9,
+   "title": "Uber Blog · Conducting Better Business with Uber's Open Source Orchestration Tool, Cadence",
+   "url": "https://www.uber.com/blog/open-source-orchestration-tool-cadence-overview/",
+   "kind": "reference",
+   "date": "2019-11-12",
+   "note": "Cadence 소개 — 2017년 공개, 자체 저장·대기열·타이머, Cassandra 바탕"
+  },
+  {
+   "n": 10,
+   "title": "Temporal Blog · A journey: Durable Task Framework, Uber, & open source magic",
+   "url": "https://temporal.io/blog/samars-journey",
+   "kind": "reference",
+   "note": "Cadence를 만든 두 사람이 2019-10 Temporal을 세운 과정"
+  },
+  {
+   "n": 11,
+   "title": "Google SRE Book · Embracing Risk",
+   "url": "https://sre.google/sre-book/embracing-risk/",
+   "kind": "reference",
+   "note": "99.99% = 1년 52.56분, 요청 성공률로 재는 가용성, 오류 예산"
+  },
+  {
+   "n": 12,
+   "title": "Martin Kleppmann · How to do distributed locking",
+   "url": "https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html",
+   "kind": "reference",
+   "date": "2016-02-08",
+   "note": "GC 멈춤과 lease 락, 펜싱 토큰"
+  },
+  {
+   "n": 13,
+   "title": "Dean · Barroso · The Tail at Scale (CACM 2013)",
+   "url": "https://research.google/pubs/the-tail-at-scale/",
+   "kind": "reference",
+   "note": "서버 100대 팬아웃이면 요청의 63%가 느린 서버를 만난다"
+  },
+  {
+   "n": 14,
+   "title": "AWS Docs · Predictive scaling for Amazon EC2 Auto Scaling",
+   "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-predictive-scaling.html",
+   "kind": "reference",
+   "note": "지난 부하로 앞 48시간 예측(최소 24시간 기록)"
+  },
+  {
+   "n": 15,
+   "title": "OpenTelemetry · Traces",
+   "url": "https://opentelemetry.io/docs/concepts/signals/traces/",
+   "kind": "reference",
+   "note": "분산 추적·span 개념"
+  },
+  {
+   "n": 16,
+   "title": "Kubernetes Docs · Horizontal Pod Autoscaling",
+   "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+   "kind": "reference",
+   "note": "지표에 반응하는 자동 확장"
+  },
+  {
+   "n": 17,
+   "title": "Apache Cassandra Docs · Architecture overview",
+   "url": "https://cassandra.apache.org/doc/latest/cassandra/architecture/overview.html",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "TiDB Docs · TiDB Introduction",
+   "url": "https://docs.pingcap.com/tidb/stable/overview",
+   "kind": "reference",
+   "note": "MySQL 호환·수평 확장·Raft 복제"
+  },
+  {
+   "n": 19,
+   "title": "Coupang Careers · Singapore 근무지",
+   "url": "https://www.coupang.jobs/en/locations/singapore/",
+   "kind": "company",
+   "note": "Suntec Tower 5 사무실 주소·가까운 역"
+  },
+  {
+   "n": 20,
+   "title": "Java Language Specification · 17.4 Memory Model",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html#jls-17.4",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "OpenJDK · JEP 444: Virtual Threads",
+   "url": "https://openjdk.org/jeps/444",
+   "kind": "reference",
+   "note": "JDK 21 정식 기능"
+  },
+  {
+   "n": 22,
+   "title": "데이터 중심 애플리케이션 설계 (마틴 클레프만 · 위키북스)",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "kind": "reference",
+   "note": "복제·분할·합의·분산 시스템의 문제 — 일반 교재"
+  },
+  {
+   "n": 23,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 중위 보수 — 달러 환산"
+  },
+  {
+   "n": 24,
+   "title": "Coupang Careers · Why Coupang (Culture and benefits)",
+   "url": "https://www.coupang.jobs/en/why-coupang/",
+   "kind": "company",
+   "note": "전 세계 공통 복리후생 소개 — 금액 없음"
+  }
+ ],
+ "caveat": "쿠팡은 이 워크플로 엔진의 내부 설계를 공개하지 않았습니다. 업무 풀이의 구조·계산은 공고가 기준으로 든 Temporal·Cadence의 공식 문서와 분산 시스템 일반 자료로 \"보통 이런 것\"을 보인 것이고, 쿠팡이 그대로 만든다는 뜻이 아닙니다. 회사 발표 영상은 찾지 못했습니다. 싱가포르 공고에는 연봉이 없어, 같은 조직 미국 공고의 기본급 범위를 참고로 실었습니다.",
+ "resources": [
+  {
+   "id": "temporal-101",
+   "title": "Temporal 101 with Java",
+   "by": "Temporal · 약 2시간",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.temporal.io/courses/temporal_101/java/",
+   "why": "Workflow·Activity·worker를 Java로 직접 돌려 본다. 우대사항 'Temporal 프로그래밍 모델'의 첫걸음."
+  },
+  {
+   "id": "temporal-102",
+   "title": "Temporal 102: Exploring Durable Execution with Java",
+   "by": "Temporal · 약 4시간",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.temporal.io/courses/temporal_102/java/",
+   "why": "재실행·이벤트 기록·결정성을 손으로 확인한다. 업무 '결정적 실행'을 몸으로 익히는 강의."
+  },
+  {
+   "id": "temporal-docs",
+   "title": "Temporal Docs · Temporal Service · Persistence · Workflow Definition",
+   "by": "Temporal 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.temporal.io/temporal-service",
+   "why": "엔진 속 구조(네 서비스·샤드·저장소)를 설계자 눈으로 읽는다. 업무 '처음부터 설계'의 참고 도면."
+  },
+  {
+   "id": "cadence-uber",
+   "title": "Conducting Better Business with Uber's Open Source Orchestration Tool, Cadence",
+   "by": "Uber Engineering · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.uber.com/blog/open-source-orchestration-tool-cadence-overview/",
+   "why": "Cadence가 왜 생겼고 어떤 업무(가입·주문 처리)에 쓰였는지 — 이 엔진이 쿠팡에서 맡을 자리를 그려 보기."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "복제·분할·트랜잭션·분산 시스템의 문제·합의 장. 고가용성 분산 시스템 요건 전체의 바탕."
+  },
+  {
+   "id": "kleppmann-lock",
+   "title": "How to do distributed locking",
+   "by": "Martin Kleppmann · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html",
+   "why": "업무 '분산 락'의 핵심 함정과 펜싱 토큰을 한 글로."
+  },
+  {
+   "id": "sre-book",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "벳시 베이어 외 · 제이펍 · 2018 (원서는 sre.google 에서 무료)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%82%AC%EC%9D%B4%ED%8A%B8%20%EC%8B%A0%EB%A2%B0%EC%84%B1%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "SLO·오류 예산·장애 대응. 5~6 나인 목표를 팀 규칙으로 바꾸는 방법."
+  },
+  {
+   "id": "tail-at-scale",
+   "title": "The Tail at Scale",
+   "by": "Jeffrey Dean · Luiz André Barroso · CACM 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google/pubs/the-tail-at-scale/",
+   "why": "업무 '꼬리 지연'을 왜 평균이 아니라 p99로 봐야 하나, 줄이는 기법(헤지 요청 등)."
+  },
+  {
+   "id": "jcip",
+   "title": "자바 병렬 프로그래밍",
+   "by": "브라이언 게츠 외 · 에이콘출판 · 2008",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9E%90%EB%B0%94%20%EB%B3%91%EB%A0%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+   "why": "스레드 안전·가시성·락·스레드 풀. 우대사항 '동시성 깊은 이해'의 표준 교재(가상 스레드 이전 책이라 JEP 444로 보충)."
+  },
+  {
+   "id": "jep444",
+   "title": "JEP 444: Virtual Threads",
+   "by": "OpenJDK",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://openjdk.org/jeps/444",
+   "why": "기다림이 많은 서버를 적은 스레드로 돌리는 JDK 21 기능 — 엔진·SDK 설계 때 고를 선택지."
+  },
+  {
+   "id": "aws-predictive",
+   "title": "Predictive scaling for Amazon EC2 Auto Scaling",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-predictive-scaling.html",
+   "why": "업무 'AI 자동화'의 예측 확장이 실제 제품에서 어떻게 동작하나(예측 기간·필요한 기록)."
+  },
+  {
+   "id": "otel-docs",
+   "title": "OpenTelemetry · Traces",
+   "by": "OpenTelemetry 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://opentelemetry.io/docs/concepts/signals/traces/",
+   "why": "우대사항 '분산 추적'의 기본 개념(trace·span·문맥 전파)."
+  },
+  {
+   "id": "cassandra-docs",
+   "title": "Apache Cassandra · Architecture overview",
+   "by": "Apache Cassandra 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cassandra.apache.org/doc/latest/cassandra/architecture/overview.html",
+   "why": "주인 없는 복제·일관성 수준 — 엔진 저장소로 쓸 때 무엇을 보장받나."
+  },
+  {
+   "id": "tidb-docs",
+   "title": "TiDB Introduction",
+   "by": "PingCAP 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.pingcap.com/tidb/stable/overview",
+   "why": "MySQL 호환 분산 SQL — 우대사항 TiDB의 구조(저장·계산 분리, Raft)를 잡는다."
+  },
+  {
+   "id": "manager-path",
+   "title": "개발 7년차, 매니저 1일차",
+   "by": "카미유 푸르니에 · 한빛미디어 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423",
+   "why": "기술 리드 → 팀 매니저 → 여러 팀 관리로 가는 단계별 일. 'TLM으로 10명 팀' 요건을 점검하는 책."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "durable execution 손에 익히기",
+   "time": "1~2주",
+   "goal": "Workflow·Activity·Timer·Signal로 긴 업무 흐름을 쓰고, 왜 결정적이어야 하는지 설명할 수 있다.",
+   "resources": [
+    "temporal-101",
+    "temporal-102",
+    "cadence-uber"
+   ],
+   "task": "가상 주문 흐름(재고 예약 → 30분 결제 대기 타이머 → 출고 or 취소)을 Temporal Java로 만들고, worker를 중간에 죽였다 살려 그 자리부터 이어지는지 확인한다. 워크플로 안에 난수를 넣어 비결정성 오류도 일부러 내 본다."
+  },
+  {
+   "title": "엔진 속 들여다보기",
+   "time": "2~3주",
+   "goal": "Frontend·History·Matching·샤드·저장소가 왜 그렇게 나뉘었는지, 어느 결정이 되돌릴 수 없는지 말할 수 있다.",
+   "resources": [
+    "temporal-docs",
+    "ddia",
+    "cassandra-docs",
+    "tidb-docs"
+   ],
+   "task": "로컬 Temporal 서버를 Cassandra(또는 MySQL)로 띄우고 샤드 수를 4와 16으로 바꿔 같은 부하를 넣어 본다. 결과와 함께 '샤드 수를 정하는 기준' 한 쪽짜리 설계 메모를 쓴다."
+  },
+  {
+   "title": "깨지는 모서리 다루기",
+   "time": "2주",
+   "goal": "분산 락·타이머·재시도가 깨지는 경우를 재현하고 막는 장치(펜싱·멱등성)를 넣을 수 있다.",
+   "resources": [
+    "kleppmann-lock",
+    "jcip",
+    "jep444"
+   ],
+   "task": "lease 락을 쥔 Java 프로세스를 일부러 멈췄다 깨워(긴 sleep으로 GC 멈춤 흉내) 이중 쓰기를 재현하고, 펜싱 토큰을 넣어 거절되는지 테스트로 보인다."
+  },
+  {
+   "title": "나인과 꼬리를 숫자로",
+   "time": "1~2주",
+   "goal": "목표 가용성을 SLO·오류 예산으로 쪼개고, p99 지연과 병목을 추적으로 찾을 수 있다.",
+   "resources": [
+    "sre-book",
+    "tail-at-scale",
+    "otel-docs",
+    "aws-predictive"
+   ],
+   "task": "1단계 흐름에 OpenTelemetry 추적을 붙이고 한 Activity만 1% 확률로 느려지게 해, 추적 화면에서 그 구간을 찾아낸다. 같은 데이터로 '99.999% 목표면 이번 달 오류 예산이 얼마 남았나'를 계산하는 표를 만든다."
+  },
+  {
+   "title": "TLM으로 말하기 (선택)",
+   "time": "계속",
+   "goal": "엔진 설계안과 팀 구성·채용 계획을 한 문서로 설명할 수 있다.",
+   "resources": [
+    "manager-path"
+   ],
+   "task": "2~4단계 결과로 '쿠팡식 워크플로 플랫폼 첫 6개월' 설계 문서(문제·부품·되돌릴 수 없는 결정·SLO·필요한 사람 5~10명의 역할)를 쓴다 — 집중 면접 대비용."
+  }
+ ],
+ "pay": {
+  "summary": "싱가포르 공고에는 연봉이 없다. 같은 조직의 **미국 디렉터 공고**는 기본급 **$159,000~$324,000**(+보너스 0~20%)이고, 회사 전체 중위 직원 보수는 **$33,831**(공시) — 물류 인력이 섞인 값이라 이 자리와 거리가 멀다",
+  "rows": [
+   {
+    "label": "같은 조직 미국 디렉터 기본급",
+    "value": "$159,000 ~ $324,000 / 년",
+    "basis": "공고 · 2026년 (미국)",
+    "peer": true,
+    "note": "Application Infrastructure 조직의 Director of Backend Engineering(마운틴뷰·시애틀) 공고. 지역·경력에 따라 다르고 기본급만이다 — 연 보너스는 기본급의 0~20%, 주식 등 '그 밖의 보상'은 따로 [3]"
+   },
+   {
+    "label": "쿠팡 Inc. 전 직원 중위 보수",
+    "value": "$33,831 / 년",
+    "basis": "공시 · 2025년",
+    "note": "미국 SEC 위임장 설명서(DEF 14A)의 CEO 보수 배율 공시. 한국 물류·현장 직원이 대부분인 회사 전체의 가운데 값을 2025년 평균 환율로 달러 환산한 것이다 [23]"
+   }
+  ],
+  "how": "싱가포르 공고에는 연봉이 적혀 있지 않고, 전형 마지막 단계가 처우 제안(Offer)이다 [1]. 미국 공고 숫자는 미국 생활비를 반영한다고 적혀 있어 싱가포르 금액과 같지 않다 [3]. 중위 보수는 회사 전체 가운데 값이라 디렉터 연봉으로 읽으면 안 된다 {추론}. 직급은 경력에 따라 조정될 수 있다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "의료 보험",
+    "detail": "본인과 직계 가족"
+   },
+   {
+    "name": "가족 휴가",
+    "detail": "경조사 유급 휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "외국어·소프트 스킬 강좌"
+   },
+   {
+    "name": "글로벌 프로젝트",
+    "detail": "직무에 따라 여러 나라 팀과 협업"
+   },
+   {
+    "name": "행사",
+    "detail": "팀·회사 행사"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·차·간식 라운지, 하루 세 끼 카페테리아"
+   },
+   {
+    "name": "유연 근무",
+    "detail": "유연 근무 시간 또는 재택"
+   },
+   {
+    "name": "열린 문화",
+    "detail": "칸막이·직급·직함 대신 열린 협업"
+   }
+  ],
+  "note": "쿠팡 채용 사이트 'Why Coupang'의 전 세계 공통 소개다 [24]. 금액은 적혀 있지 않고, 직무·근무지·자격에 따라 달라진다고 적었다 — 싱가포르 사무실에 어느 항목이 그대로 적용되는지는 처우 제안 때 확인한다 {추론}. 사내 식당·라운지는 서울 사무실 기준 설명일 수 있다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 싱가포르 사무실 (Suntec Tower 5)",
+  "address": "5 Temasek Boulevard, Suntec Tower 5, 17층, Singapore",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=Suntec%20Tower%205%2C%205%20Temasek%20Boulevard%2C%20Singapore",
+  "near": "Promenade 역 걸어서 약 3분 [19]",
+  "note": "공고 근무지는 'Singapore' [1]. 주소와 가까운 역은 쿠팡 채용 사이트의 싱가포르 근무지 안내(Suntec City, Downtown Core) [19]. 우편번호는 안내에 없어 비웠다."
+ }
+}
