@@ -16,6 +16,7 @@
   "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c": "42dot-senior-release-engineer",
   "ats-ashby:42dot:406f59e5-d04b-4f9b-a519-19da3b4c895c": "42dot-senior-service-architect-playground",
   "ats-ashby:42dot:6e9418ea-6dfa-4ca2-b419-e564e1479a1b": "42dot-sr-embedded-software-engineer",
+  "ats-ashby:42dot:a82b98bb-2519-4b69-990b-77300b8d136b": "42dot-staff-embedded-software-engineer",
   "ats-ashby:42dot:1cfd36d5-26ce-4928-be2a-712c125d6d71": "42dot-sw-test-engineer-body",
   "ats-ashby:42dot:efbd4971-b841-410f-aa6b-e333c64cfe23": "42dot-sw-test-engineer-diagnostics",
   "ats-ashby:42dot:2276c44d-d0d6-48d5-ad44-014e8da6fa55": "42dot-system-test-engineer-verification",
@@ -497,6 +498,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "42dot-staff-embedded-software-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "Staff Embedded Software Engineer",
+   "jobs": [
+    "ats-ashby:42dot:a82b98bb-2519-4b69-990b-77300b8d136b"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
   },
   {
    "id": "42dot-sw-test-engineer-body",

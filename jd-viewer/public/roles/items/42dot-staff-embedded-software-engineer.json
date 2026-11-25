@@ -1,0 +1,1358 @@
+{
+ "id": "42dot-staff-embedded-software-engineer",
+ "company": "포티투닷(42dot)",
+ "role": "Staff Embedded Software Engineer",
+ "team": "미국 서니베일 · 차세대 차량 플랫폼 실시간 소프트웨어의 기술 중심축",
+ "jobs": [
+  "ats-ashby:42dot:a82b98bb-2519-4b69-990b-77300b8d136b"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "현대차그룹 차세대 차량 플랫폼의 **실시간 소프트웨어 구조를 정하는 사람**입니다 — 보드 바닥 코드·드라이버·통신 스택·RTOS 의 설계를 이끌고, 새 칩을 서니베일 랩에서 살리며, 남이 못 잡은 버그의 마지막 창구가 됩니다.[1]",
+  "env": "**ASIL-D 를 향하는** 안전 규칙(MISRA C/C++ · ISO 26262 · 정적 분석 기준선) 위에서 FreeRTOS · SafeRTOS · AUTOSAR OS 급 RTOS 를 여러 코어에 나눠 올리고, Git · Bazel · CI 로 일합니다.[1][11]",
+  "oneline": "같은 팀 Sr. 자리(7년)가 '다 짜는 손'이라면, 이 자리(10년)는 **구조·기준·방법을 정하고 사람을 키우는 손**입니다.[1][8]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Platform Architecture & Firmware Development: Drive the technical design, implementation, and evolution of low-level BSPs, hardware abstraction layers, peripheral drivers (GPIO, ADC, PWM, Timers), and high-throughput\ncommunication stacks (CAN-FD, Ethernet/TSN, SPI, I2C).",
+   "short": "보드 바닥 코드·하드웨어 추상화 층·드라이버·고속 통신 스택의 설계를 이끌고, 직접 짜고, 판이 바뀌어도 이어 가게 한다.",
+   "why": "공고는 이 자리를 차세대 차량 플랫폼 실시간 소프트웨어의 '기술 중심축(technical anchor)'으로 소개하고, BSP 부터 RTOS·통신·안전 로직까지 구조 결정을 이끈다고 적었습니다.[1] 포티투닷은 차의 기능을 고성능 제어기(HPVC)와 위치별 영역 제어기(zone controller)로 모으는 구조를 CES 2024 에서 보였습니다.[5] 같은 팀 Sr. 공고는 같은 층을 '짜고 유지하는' 일로 적었는데, 이 공고는 '설계를 이끌고 진화시키는' 일로 적었습니다.[1][8]",
+   "flows": [
+    {
+     "caption": "한 제어기 펌웨어의 층 — 이 자리는 층을 나누는 선부터 정한다[1][37]",
+     "steps": [
+      "BSP · 클럭·핀·메모리·시작 코드",
+      "하드웨어 추상화 층(HAL) · 칩이 바뀌어도 위층이 그대로이게 하는 경계",
+      "주변장치 드라이버 · GPIO·ADC·PWM·타이머",
+      "고속 통신 스택 · CAN-FD·이더넷/TSN·SPI·I2C",
+      "RTOS · 작업·인터럽트·작업 간 통신",
+      "안전 플랫폼 로직 · 감시·고장 시 안전 상태"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "intro": "Staff 자리에서 '설계를 이끈다'의 보통 모양입니다.",
+    "items": [
+     "**층의 경계 정하기** — 하드웨어 추상화 층(HAL, Hardware Abstraction Layer)의 함수 모양을 정해, 칩이나 보드 판이 바뀌어도 위층 코드를 안 고치게 한다. AUTOSAR 는 이 경계를 마이크로컨트롤러 추상화 → ECU 추상화 → 서비스 → 앱으로 표준화했다.[37]",
+     "**고속 통신 스택 구조** — '고처리량(high-throughput)'이라 적었다. CAN-FD 는 한 프레임 최대 64바이트, 이더넷은 시간 맞춤 전송(TSN)까지 다룬다.[25][26] 받는 쪽 버퍼를 어디에 두고 복사를 몇 번 하나 같은 결정이 처리량을 정한다. {추론}",
+     "**드라이버 기준 코드** — GPIO·ADC·PWM·타이머 드라이버의 본보기를 직접 써서 팀이 따라 쓰게 한다. {추론}",
+     "**진화(evolution)** — 새 칩·새 보드가 들어와도 같은 구조가 버티게 하고, 바꿀 때는 설계 문서와 리뷰로 바꾼다. {추론}",
+     "**구현도 한다** — 공고 동사에 'implementation' 이 있어서 설계만 하고 손을 떼는 자리는 아니다.[1]"
+    ]
+   },
+   "how_far": "제어기가 할 일은 시스템 엔지니어가, 회로는 하드웨어 팀이 정합니다.[1] 이 자리는 **소프트웨어 층의 구조와 경계를 정하고, 그 결정을 문서·본보기 코드로 남겨 팀이 따르게** 합니다. 레지스터 문서를 읽고 드라이버를 맨바닥부터 쓸 수 있는 것은 출발선입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    8,
+    25,
+    26,
+    37
+   ],
+   "study": [
+    "autosar-lsa",
+    "making-embedded",
+    "kr-embedded-os"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "RTOS & Concurrency Architecture: Architect and optimize RTOS environments (FreeRTOS, SafeRTOS, AUTOSAR OS), defining task partitioning, scheduling policies, IPC mechanisms, memory isolation, and\ndeterministic execution budgets across multi-core systems.",
+   "short": "여러 코어에 작업을 어떻게 나누고, 어떤 순서로 돌리고, 메모리를 어떻게 막고, 시간을 얼마씩 줄지 RTOS 구조로 정한다.",
+   "why": "한 칩 안에서 통신 받기·제어 계산·진단 응답이 동시에 도는데, 코어가 여럿이면 '어느 코어에서 도나'와 '코어 사이에 무엇을 넘기나'까지 정해야 합니다. 공고는 이것을 '정의한다(defining)'고 적었습니다.[1] SafeRTOS 는 ISO 26262 ASIL D 사전 인증을 내세우는 안전 인증 RTOS 이고[18], AUTOSAR OS 는 작업·인터럽트를 실행 전에 설정으로 모두 정하고 시간 보호·메모리 보호를 요건으로 둡니다.[19]",
+   "actually": {
+    "intro": "공고가 적은 다섯 가지를 하나씩 풀면 이렇습니다.",
+    "items": [
+     "**작업 나누기(task partitioning)** — 통신 코어·제어 코어처럼 일을 코어에 나누고, 한 코어 안에서도 작업 단위를 정한다. 같이 자주 말하는 작업은 같은 코어에 둬야 코어 사이 통신이 준다. {추론}",
+     "**스케줄 정책** — 주기가 짧을수록 높은 우선순위(비율 단조)가 흔한 출발점이다. ISR(인터럽트 처리 함수)은 짧게 두고 긴 일은 작업에 넘긴다 — FreeRTOS 는 ISR 전용 API 를 따로 둔다.[13]",
+     "**작업 간 통신(IPC)** — 큐·세마포어·뮤텍스·이벤트. 뮤텍스의 우선순위 상속은 우선순위 역전을 줄일 뿐 없애지 못한다.[13][17]",
+     "**메모리 격리** — 작업마다 MPU(메모리 보호 장치)로 쓸 수 있는 영역을 나눠, 한 작업이 남의 메모리를 덮어도 거기서 멈추게 한다. AUTOSAR OS 의 메모리 보호가 이 요건이다.[19]",
+     "**결정적 실행 예산** — 작업마다 '최악으로 몇 ms 까지 쓴다'를 정하고, 넘으면 잡아내는 시간 보호를 둔다.[19] 예산은 측정(실행 프로파일링)으로 채운다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "코어 둘에 나눈 작업 셋이 마감을 지키나 — 응답 시간 분석(가상의 값)",
+     "body": "코어마다 따로 '나보다 높은 작업이 끼어드는 시간'을 더해 최악 응답 시간 R 을 구하고 주기와 견줍니다. 통신 코어 사용률 52%, 제어 코어 60% 이고 가장 낮은 작업도 마감 안에 끝납니다. 이 계산은 코어 사이 공유 자원 대기를 빼고 본 것이라, 실제로는 공유 메모리·잠금 대기 시간을 더해야 합니다. {추론}",
+     "lang": "python",
+     "code": "import math\n# 코어별로 나눈 작업 (이름, C ms, T ms) — 주기 짧을수록 높은 우선순위\ncores = {\n    \"core0(comm)\": [(\"can_rx\", 1, 5), (\"eth_rx\", 2, 10), (\"diag\", 6, 50)],\n    \"core1(ctrl)\": [(\"ctrl\", 3, 10), (\"monitor\", 4, 20), (\"log\", 10, 100)],\n}\ndef rta(tasks):\n    out = []\n    for i, (name, c, t) in enumerate(tasks):\n        r = c\n        while True:\n            nr = c + sum(math.ceil(r / tj) * cj for _, cj, tj in tasks[:i])\n            if nr == r or nr > t: break\n            r = nr\n        out.append((name, nr, t))\n    return out\nfor core, tasks in cores.items():\n    U = sum(c / t for _, c, t in tasks)\n    print(f\"{core}: U={U:.2f}\")\n    for name, r, t in rta(tasks):\n        print(f\"  {name}: R={r}ms / {t}ms {'OK' if r <= t else 'MISS'}\")\n# core0(comm): U=0.52\n#   can_rx: R=1ms / 5ms OK\n#   eth_rx: R=3ms / 10ms OK\n#   diag: R=10ms / 50ms OK\n# core1(ctrl): U=0.60\n#   ctrl: R=3ms / 10ms OK\n#   monitor: R=7ms / 20ms OK\n#   log: R=20ms / 100ms OK"
+    }
+   ],
+   "how_far": "Sr. 공고의 동사는 '설정하고 다듬는다(Configure and optimize)'였고, 이 공고는 '구조를 짓고(Architect) 정의한다'입니다.[1][8] RTOS 자체를 새로 만드는 것이 아니라, **고른 RTOS 위에서 코어·작업·메모리·시간 예산의 표를 처음 그리는 사람**입니다. 그 표가 맞는지 측정으로 증명하는 것까지가 이 자리입니다. {추론}",
+   "refs": [
+    1,
+    8,
+    13,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "freertos-book",
+    "interrupt-ctx",
+    "inflearn-freertos"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Safety Coding & Quality Standards: Enforce rigorous MISRA C/C++ compliance and ISO 26262 safety practices (ASIL-D trajectory); establish static analysis baselines, triage workflows, and sound justification standards for the team.",
+   "short": "팀이 MISRA C/C++·ISO 26262 를 지키게 하고, 정적 분석 기준선·경고 분류 절차·억제 사유의 기준을 만든다.",
+   "why": "이 플랫폼은 ASIL-D(차량 안전 등급 중 가장 높은 단계)를 향합니다.[1] 같은 서니베일 펌웨어 공고는 MISRA C·정적 분석 편차 0·구조 커버리지를 인증 증거로 요구합니다.[11] 포티투닷은 2023년 ISO 26262 개발 프로세스 인증을 받았다고 발표했습니다.[6] Sr. 공고가 '규칙대로 쓰고 치명 경고 0을 유지'였다면, 이 공고는 **팀의 기준을 세우는(establish) 일**입니다.[1][8]",
+   "actually": {
+    "intro": "'기준선·분류 절차·정당화 기준'을 세운다는 것의 실제 모양입니다.",
+    "items": [
+     "**기준선(baseline)** — 오늘 이미 있는 경고 목록을 찍어 두고, 그보다 새로 생긴 경고만 빌드를 막는다. 옛 경고는 따로 '고칠 목록'으로 줄여 간다. {추론}",
+     "**규칙 세트 고르기** — MISRA C:2023 규칙마다 필수·권고를 나누고, 이 팀이 어느 규칙을 어떤 등급으로 볼지 정한다.[20]",
+     "**분류 절차(triage)** — 경고 하나가 오면 진짜 결함 / 거짓 경보 / 설계상 필요로 나누고, 누가 언제까지 보나를 정한다. {추론}",
+     "**정당화 기준** — 억제는 Cppcheck 라면 `cppcheck-suppress <규칙>` 주석으로 줄 단위로 하고[22], 억제마다 이유·영향·검토자를 남기게 양식을 정한다. {추론}",
+     "**안전 관행** — ISO 26262-6 은 코딩 지침(동적 객체 제한 등)과 단위 시험을 요구한다.[23] 동적 메모리·재귀를 안 쓰는 규칙을 팀 규칙으로 못 박는다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "기준선과 비교해 새 경고만 막기(가상의 경고 셋)",
+     "body": "같은 경고인지는 (파일, 규칙, 함수)로 알아봅니다. 옛 경고는 '고칠 목록', 사유를 단 억제는 통과, 새 경고만 빌드를 막습니다. 실제 도구는 줄 번호가 바뀌어도 같은 경고를 알아보는 지문을 씁니다. {추론}",
+     "lang": "python",
+     "code": "# 정적 분석 기준선(baseline) 비교 — (파일, 규칙, 함수) 로 같은 경고를 알아본다\nbaseline = {(\"can.c\", \"misra-c2012-10.4\", \"can_tx\"), (\"adc.c\", \"misra-c2012-11.4\", \"adc_init\")}\nsuppressed = {(\"adc.c\", \"misra-c2012-11.4\", \"adc_init\"): \"DEV-012 레지스터 주소 변환, 검토 2026-10\"}\ntoday = [(\"can.c\", \"misra-c2012-10.4\", \"can_tx\"), (\"adc.c\", \"misra-c2012-11.4\", \"adc_init\"),\n         (\"pwm.c\", \"misra-c2012-17.7\", \"pwm_set\")]\nfor f in today:\n    if f in suppressed: print(\"SUPPRESSED\", f[0], f[1], \"->\", suppressed[f])\n    elif f in baseline: print(\"BASELINE  \", f[0], f[1], \"(고칠 목록)\")\n    else: print(\"NEW       \", f[0], f[1], \"-> 빌드 실패\")\n# BASELINE   can.c misra-c2012-10.4 (고칠 목록)\n# SUPPRESSED adc.c misra-c2012-11.4 -> DEV-012 레지스터 주소 변환, 검토 2026-10\n# NEW        pwm.c misra-c2012-17.7 -> 빌드 실패"
+    }
+   ],
+   "how_far": "안전 목표와 ASIL 등급은 안전 담당·시스템 쪽이 정합니다. 이 자리는 **코드 쪽 규칙의 운영자**입니다 — 규칙 세트·기준선·억제 양식을 만들고, 리뷰에서 지키게 하고, 감사에 낼 근거가 남게 합니다.[1] {추론}",
+   "refs": [
+    1,
+    6,
+    8,
+    11,
+    20,
+    22,
+    23
+   ],
+   "study": [
+    "misra",
+    "cppcheck-note",
+    "iso26262-6"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Silicon Bring-Up & System Characterization: Lead hardware bring-up for new silicon and custom prototype boards; define methodologies for system characterization, interrupt latency analysis, execution profiling, and power/resource budgeting.",
+   "short": "새 칩·시제품 보드를 살리는 일을 이끌고, 실행 시간·인터럽트 지연·전력을 재는 방법 자체를 정한다.",
+   "why": "공고는 서니베일 랩에서 하드웨어 브링업을 이끌고, 시스템 특성 측정과 타이밍 예산을 세운다고 적었습니다.[1] 현대차그룹은 실리콘밸리에 소프트웨어 연구 거점을 세운다고 발표했습니다.[7] Sr. 공고는 '시제품 보드'였는데 이 공고는 '새 실리콘(칩)'까지 적었고, 측정을 '한다'가 아니라 '방법을 정한다(define methodologies)'입니다.[1][8]",
+   "actually": {
+    "intro": "브링업(bring-up, 새 칩·보드 살리기)과 측정 방법 정하기의 보통 모양입니다. {추론}",
+    "items": [
+     "**브링업 순서표** — 전원·클럭 확인 → 디버거(JTAG/SWD) 연결 → LED·UART 한 줄 → 주변장치 하나씩. 시작 코드·링커 스크립트가 맞는지는 main 까지 가는지로 본다.[36]",
+     "**새 칩이면** — 데이터시트와 실제 칩이 다른 곳(정오표, errata)을 찾아 기록하고 드라이버에 우회 코드를 넣는다. {추론}",
+     "**인터럽트 지연 측정법** — 입력 핀을 바꾼 순간부터 ISR 첫 줄의 핀 토글까지를 오실로스코프로 잰다. Cortex-M4 의 진입은 대기 없는 메모리에서 12사이클이고[16], 실제 지연은 인터럽트를 막은 구간·더 높은 ISR 때문에 늘어난다.[15]",
+     "**실행 프로파일링법** — 사이클 카운터나 핀 토글로 작업마다 최악 실행 시간을 모으고, 몇 번·어떤 부하에서 재야 '최악'이라 부를지 정한다.",
+     "**전력·자원 예산** — 플래시·RAM·CPU 사용률·전류를 제어기마다 표로 두고, 새 기능이 예산을 넘으면 리뷰에서 걸린다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "12사이클은 몇 나노초인가",
+     "body": "Cortex-M4 진입 12사이클[16]은 48MHz 에서 250ns, 160MHz 에서 75ns, 320MHz 에서 37.5ns 입니다(12 ÷ 클럭). 잰 지연이 마이크로초 단위면 코드가 인터럽트를 막아 둔 구간이 원인일 가능성이 큽니다. {추론}"
+    }
+   ],
+   "how_far": "보드 회로를 고치는 것은 하드웨어 팀입니다. 이 자리는 **브링업 계획과 측정 절차를 문서로 만들어, 다른 사람이 같은 방법으로 재도 같은 숫자가 나오게** 하는 것까지입니다. '이건 소프트웨어 문제가 아니다'를 파형으로 보이는 손은 기본입니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    15,
+    16,
+    36
+   ],
+   "study": [
+    "making-embedded",
+    "interrupt-nvic",
+    "interrupt-boot"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Complex Triage & Root-Cause Analysis: Serve as an escalation point for elusive hardware/software interaction bugs, timing issues, and race conditions using JTAG/SWD debuggers, logic analyzers, oscilloscopes, and bus analyzers.",
+   "short": "남이 못 잡은 하드웨어·소프트웨어 얽힌 버그·타이밍·경쟁 상태가 마지막으로 오는 창구가 되어 원인까지 판다.",
+   "why": "임베디드 버그는 코드만 봐서는 안 보이는 경우가 많습니다 — 신호 타이밍, 버스 충돌, 전원 순간 저하가 원인일 수 있습니다. 공고는 이 자리를 '에스컬레이션 지점(다른 사람이 막히면 넘겨받는 곳)'으로 적었습니다.[1]",
+   "actually": {
+    "intro": "도구마다 보는 것이 다르고, 어려운 버그는 여러 도구의 시각을 맞춰 봅니다.",
+    "items": [
+     "**JTAG/SWD 디버거** — 칩을 멈추고 레지스터·메모리를 본다. HardFault(Cortex-M 의 오류 예외)가 나면 쌓인 레지스터로 어느 명령에서 죽었는지 거꾸로 찾는다.[15]",
+     "**로직 분석기·버스 분석기** — SPI·I2C·CAN 선의 0/1 을 시간 순으로 바이트로 풀어 '보냈는데 안 받는다'를 가른다. CANoe 같은 도구는 없는 제어기를 흉내 내 혼자 시험하게 한다.[30]",
+     "**오실로스코프** — 신호가 느리게 올라가거나 튀는 아날로그 문제, 전원 순간 저하를 본다. {추론}",
+     "**경쟁 상태(race condition)** — ISR 과 작업이 같은 변수를 읽고-고치고-쓰는 사이에 끼어드는 버그. 짧은 임계 구역이나 원자 연산으로 막는다.[14]",
+     "**우선순위 역전 같은 타이밍 버그** — 특정 순서로 겹칠 때만 나서 재현이 어렵다. RTOS 추적 도구로 작업 전환 기록을 남겨 본다.[17]"
+    ]
+   },
+   "how_far": "원인이 하드웨어인지 소프트웨어인지 **증거로 가르고, 같은 종류의 버그가 다시 안 나게 규칙·시험을 남기는 것**까지가 이 자리입니다. 같은 회사 시험 공고들이 CANoe 를 공통 도구로 적은 것을 보면 팀 사이 증거도 이 도구로 주고받습니다.[10] {추론}",
+   "refs": [
+    1,
+    10,
+    14,
+    15,
+    17,
+    30
+   ],
+   "study": [
+    "interrupt-nvic",
+    "canoe",
+    "vector-can"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Technical Interface Ownership: Partner closely with hardware design, systems engineering, and V&V teams to define rigorous Hardware-Software Interface specifications (ICDs) and drive bring-up tooling requirements.",
+   "short": "하드웨어·시스템·검증 팀과 HW/SW 경계 문서(ICD)를 엄격하게 정하는 주인이 되고, 브링업 도구에 필요한 것을 정해 끌고 간다.",
+   "why": "핀 하나, 레지스터 하나의 의미가 두 팀 사이에 다르면 보드가 나온 뒤에 큰 비용이 듭니다. 공고는 이 경계 문서(ICD, Interface Control Document)를 '소유(Ownership)'한다고 적었습니다.[1] 포티투닷 대표는 하드웨어와 소프트웨어를 따로 개발하던 방식 대신 동시에 개발해 검증 기간을 줄인다고 말했습니다.[41]",
+   "actually": {
+    "intro": "ICD 와 도구 요구에 들어가는 것입니다. {추론}",
+    "items": [
+     "**ICD 내용** — 핀 이름·방향·전압, ADC 채널과 환산식(숫자 → 전압 → 온도), CAN 메시지 ID·주기·신호 배치, 고장 시 기본값.",
+     "**'엄격하게(rigorous)'** — 항목마다 ID 를 달아 요구사항·드라이버 코드·시험과 잇는다. 추적이 안 되는 항목은 쓰지 않는다.[23]",
+     "**변경 관리** — 보드 판이 바뀌면 ICD 판도 올리고, 바뀐 줄이 어느 드라이버·시험에 닿는지 찾는다.[40]",
+     "**브링업 도구 요구** — 검증(V&V) 팀의 HIL(Hardware-in-the-Loop, 차 대신 시뮬레이터가 신호를 넣는 벤치)과 랩 도구에 무엇이 필요한지 정한다. 같은 회사 시험 자동화 공고가 이 벤치를 만든다.[10]"
+    ]
+   },
+   "how_far": "시스템 요구사항은 시스템 엔지니어가, 회로는 하드웨어 팀이 정합니다. 이 자리는 **경계 문서의 소프트웨어 쪽 책임자**로, 문서가 최신인지·양쪽이 같은 뜻으로 읽는지를 끝까지 챙깁니다.[1] {추론}",
+   "refs": [
+    1,
+    10,
+    23,
+    40,
+    41
+   ],
+   "study": [
+    "acorn-auto-sw",
+    "canoe"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Engineering Standards & Mentorship: Elevate code quality, design consistency, and review standards across the firmware organization; mentor senior and mid-level engineers.",
+   "short": "펌웨어 조직 전체의 코드 품질·설계 일관성·리뷰 기준을 끌어올리고, 시니어·중간 연차 개발자를 키운다.",
+   "why": "공고는 이 일을 한 팀이 아니라 '펌웨어 조직 전체(across the firmware organization)'에 걸쳐 적었고, 키울 대상으로 시니어까지 적었습니다.[1] 같은 서니베일에 Sr. Embedded·Sr. Staff Firmware 자리가 함께 열려 있습니다.[8][11]",
+   "actually": {
+    "intro": "Staff 급이 기준과 사람을 다루는 보통 방법입니다.",
+    "items": [
+     "**리뷰 기준** — 리뷰는 '완벽한 코드'가 아니라 '코드베이스 전체를 나아지게 하는 변경'을 통과시키는 것이라는 구글 공개 지침처럼, 무엇을 막고 무엇을 넘길지 글로 정한다.[44]",
+     "**설계 일관성** — 드라이버 모양·오류 반환 방식·이름 규칙을 설계 문서와 본보기 코드로 정해, 누가 짜도 비슷하게 보이게 한다. {추론}",
+     "**멘토링** — 어려운 버그를 같이 잡고, 설계 문서를 같이 쓰고, 리뷰에서 이유를 적어 준다. {추론}",
+     "**Staff 라는 자리** — 관리자가 아니면서 여러 팀의 기술 방향을 잡는 역할이다. Will Larson 은 이 자리를 기술 방향 정하기·후배 키우기·조직 사이 연결로 묶어 설명했다.[43]"
+    ]
+   },
+   "how_far": "사람을 관리(평가·채용)하는 자리는 아닙니다. **기준을 글로 만들고, 리뷰와 멘토링으로 팀이 그 기준을 자기 것으로 쓰게** 하는 것이 몫입니다. 면접에서는 '남의 코드를 어떻게 나아지게 했나'를 사례로 묻게 됩니다. {추론}",
+   "refs": [
+    1,
+    8,
+    11,
+    43,
+    44
+   ],
+   "study": [
+    "staffeng",
+    "google-review"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience: 10+ years of hands-on embedded software engineering experience delivering production-grade firmware for safety-critical or resource-constrained platforms (Automotive, Aerospace, Medical Devices,\nIndustrial Robotics, or Consumer Electronics).",
+   "short": "안전이 걸리거나 자원이 빠듯한 기기에 실제로 출시된 펌웨어를 10년 이상 직접 만들어 봤어야 해서.",
+   "why": "'production-grade'(양산 품질)와 'delivering'(출시)을 같이 적었습니다 — 시제품이 아니라 실제 제품에 들어가 오래 돈 코드입니다.[1] 자동차만이 아니라 항공·의료기기·산업용 로봇·가전도 인정합니다.[1]",
+   "how_far": "같은 팀 Sr. 공고는 7년 이상, 이 Staff 공고는 10년 이상입니다.[1][8] Sr. 공고에는 없던 '안전이 걸린(safety-critical)'이 앞에 붙었습니다.[1][8] 햇수보다 **양산까지 간 제품에서 구조를 정해 본 경험**을 경력서에 보여야 합니다. {추론}",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "making-embedded"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C/C++ Mastery: Expert proficiency in embedded C and modern embedded C++, with deep knowledge of memory models, low-level concurrency, compiler optimization behaviors, and deterministic execution.",
+   "short": "임베디드 C 와 현대 C++ 를 메모리 모델·바닥 동시성·컴파일러 최적화·결정적 실행까지 깊게 알아야 해서.",
+   "why": "최적화를 켠 빌드에서는 변수가 레지스터에만 있거나 코드 순서가 바뀌어 소스와 실제 동작이 다릅니다. 여러 코어가 메모리를 나누면 '한 코어가 쓴 값을 다른 코어가 언제 보나'(메모리 모델)도 따져야 합니다. 공고가 이 둘을 따로 적었습니다.[1]",
+   "actually": {
+    "intro": "임베디드 C/C++ 에서 '전문가 수준'이 보통 뜻하는 것입니다.",
+    "items": [
+     "**volatile 과 그 한계** — 하드웨어 레지스터나 ISR 이 바꾸는 변수를 컴파일러가 지우지 않게 하지만, 코어 사이 순서는 보장하지 않는다. 그 순서는 원자 연산·메모리 장벽으로 맞춘다. {추론}",
+     "**정의되지 않은 동작(UB)** — 부호 있는 정수 넘침·배열 밖 접근을 컴파일러는 '없다'고 가정하고 최적화한다. CERT C 가 규칙으로 정리했다.[21]",
+     "**바닥 동시성** — ISR 과 작업 사이의 읽기-고치기-쓰기 끼어듦, 문맥 전환 때 무엇이 저장되나.[14]",
+     "**현대 임베디드 C++** — 예외·동적 할당 없이 클래스·템플릿·constexpr 로 비용 없는 추상화를 만든다. {추론}",
+     "**결정적 실행** — 실행 시간이 입력에 따라 크게 흔들리는 코드(동적 메모리·끝을 모르는 반복)를 피한다.[23]"
+    ]
+   },
+   "level": {
+    "basic": "포인터·배열·구조체·비트 연산 · 동적 메모리 없이 쓰기",
+    "work": "volatile · 정렬/패딩 · ISR 과 공유 변수 · 링커 맵 · 디스어셈블리 읽기",
+    "team": "멀티코어 메모리 순서 · 최적화 빌드의 버그 · 정의되지 않은 동작 · 비용 없는 C++ 추상화"
+   },
+   "how_far": "전형 첫 단계 뒤가 코딩 테스트입니다.[1] 시험이 C 로 나오는지는 공개되지 않았지만, 포인터·비트 연산 코드를 막힘없이 쓰고 '이 코드가 최적화 빌드에서 왜 달라지나'를 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    14,
+    21,
+    23
+   ],
+   "study": [
+    "cert-c",
+    "making-embedded",
+    "yiu-m33"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "RTOS Architecture Depth: Proven track record architecting, tuning, and debugging production multi-threaded software on commercial or open-source RTOS platforms, including formal timing analysis and\nsynchronization primitives.",
+   "short": "상용·오픈소스 RTOS 위의 양산 멀티스레드 소프트웨어를 설계·튜닝·디버깅했고, 정식 타이밍 분석을 해 봤어야 해서.",
+   "why": "업무②(RTOS 구조 정의)를 바로 맡으려면 필요합니다.[1] Sr. 공고의 '타이밍 분석'과 달리 '정식(formal) 타이밍 분석'이라 적었습니다 — 재 보고 감으로 맞추는 것이 아니라 계산으로 마감을 증명하는 것입니다.[1][8]",
+   "actually": {
+    "intro": "'정식 타이밍 분석'과 '동기화 도구'의 보통 내용입니다.",
+    "items": [
+     "**응답 시간 분석** — 작업마다 최악 응답 시간을 계산해 마감과 견준다(업무② 예시). 측정한 최악 실행 시간이 입력이다. {추론}",
+     "**막힘 시간(blocking)** — 낮은 작업이 쥔 자원을 기다리는 시간을 더해야 한다. 우선순위 상속은 이 시간을 줄일 뿐 없애지 못한다.[17]",
+     "**동기화 도구** — 큐·세마포어·뮤텍스·이벤트를 어디에 무엇을 쓰나, ISR 에서 쓸 수 있는 것과 없는 것.[13]",
+     "**문맥 전환** — Cortex-M 에서 PendSV 예외가 작업을 바꾸고, 작업은 PSP·커널은 MSP 스택을 쓴다.[14]",
+     "**스택 넘침** — 높은 물 표시(high water mark)로 작업 스택 여유를 잰다.[13]"
+    ]
+   },
+   "how_far": "'Proven track record' 라서 **RTOS 위 양산 제품에서 구조를 정하고 문제를 고친 사례**를 원인·숫자·결과로 말해야 합니다. 응답 시간 계산을 화이트보드에서 손으로 할 수 있으면 최소선입니다. {추론}",
+   "refs": [
+    1,
+    8,
+    13,
+    14,
+    17
+   ],
+   "study": [
+    "freertos-book",
+    "interrupt-ctx",
+    "inflearn-freertos"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Static Analysis Governance: Extensive hands-on experience with enterprise static analysis tools (Coverity, Polyspace, QAC, or Cppcheck), including establishing rulesets, resolving complex findings,\nand managing defensible suppressions.",
+   "short": "상용 정적 분석기로 규칙 세트를 세우고, 어려운 경고를 풀고, 감사에서 버틸 억제를 관리해 봤어야 해서.",
+   "why": "업무③(기준선·분류 절차·정당화 기준 세우기)을 맡으려면 필요합니다.[1] 같은 플랫폼의 펌웨어 공고는 '편차 0'을 인증 증거로 요구합니다.[11] Sr. 공고는 '분류·고치기·정당화된 억제'였고 이 공고는 '규칙 세트를 세운다'가 더 붙었습니다.[1][8]",
+   "actually": {
+    "intro": "'거버넌스(관리 체계)'의 실제 내용입니다.",
+    "items": [
+     "**규칙 세트 세우기** — MISRA 규칙 중 무엇을 켜고, 무엇을 '필수'로 볼지 정해 도구 설정으로 박는다.[20]",
+     "**어려운 경고 풀기** — 여러 함수를 건너는 경로에서 나는 경고(널 포인터·배열 밖)를 실제로 그 경로가 가능한지 따라가 판정한다. {추론}",
+     "**도구 차이** — Polyspace Code Prover 는 추상 해석(abstract interpretation)으로 실행 중 오류가 없음을 증명하는 방식이라 결과를 '증명됨/오류/확인 안 됨'처럼 나눈다.[42] Cppcheck 는 오픈소스이고 MISRA 애드온이 있다.[22]",
+     "**감사에서 버티는 억제(defensible)** — 억제마다 규칙·사유·영향·검토자·날짜가 있고, 코드가 바뀌면 다시 검토되게 한다. {추론}",
+     "**CI 에 묶기** — 빌드마다 분석을 돌려 기준선보다 늘면 막는다(업무③ 예시).[11]"
+    ]
+   },
+   "how_far": "도구 이름은 '또는'이라 하나를 깊게 써 봤으면 됩니다.[1] 핵심은 **팀 단위로 규칙과 억제를 운영해 본 경험** — 혼자 경고를 고친 것과 다릅니다. {추론}",
+   "refs": [
+    1,
+    8,
+    11,
+    20,
+    22,
+    42
+   ],
+   "study": [
+    "cppcheck-note",
+    "polyspace",
+    "misra"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Full-Stack Hardware Literacy: Strong architectural understanding of modern MCU/SoC architectures (ARM Cortex-M/R, TriCore, or similar), register-level programming, memory-mapped I/O, and automotive buses (CAN-FD, Ethernet, SPI, I2C).",
+   "short": "MCU·SoC 구조(Cortex-M/R·TriCore)와 레지스터·메모리 맵 입출력, 차량 버스를 바닥까지 알아야 해서.",
+   "why": "업무①의 HAL 경계를 정하려면 칩이 어떻게 생겼는지부터 알아야 합니다.[1] 같은 플랫폼 펌웨어 공고는 NXP S32K3급 칩을 대상으로 적었습니다.[11]",
+   "actually": {
+    "intro": "세 계열의 차이와 버스의 핵심입니다.",
+    "items": [
+     "**Cortex-M** — 마이크로컨트롤러용. 인터럽트 컨트롤러(NVIC)가 코어에 붙어 있고 예외 처리 방식이 세대마다 거의 같다.[15] S32K3 이 이 계열이다.[35]",
+     "**Cortex-R** — 실시간·안전용으로 지연이 일정하게 설계된 계열. {추론}",
+     "**TriCore(인피니언 AURIX)** — 차량 제어용. TC4x 는 최대 500MHz 의 TriCore 1.8 코어를 락스텝(두 코어가 같은 일을 하며 서로 검사)으로 ASIL-D 를 겨냥한다.[31]",
+     "**메모리 맵 입출력** — 주변장치 레지스터가 메모리 주소에 붙어 있어 포인터로 읽고 쓴다. 그래서 volatile 과 접근 크기(8/16/32비트)가 중요하다. {추론}",
+     "**버스** — SPI(빠른 칩 간 통신), I2C(느린 칩 간, 주소로 여럿), CAN-FD(제어기 사이, 최대 64바이트), 이더넷(큰 데이터).[25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CAN-FD 길이 칸(DLC)은 8 넘으면 건너뛴다",
+     "body": "CAN-FD 의 길이 코드 9~15 는 12·16·20·24·32·48·64바이트를 뜻합니다.[25] 33바이트를 보내려면 48바이트 칸을 써야 해 15바이트가 남습니다 — 메시지를 설계할 때 신호를 이 칸에 맞춰 묶는 이유입니다.",
+     "lang": "python",
+     "code": "DLC = {**{i: i for i in range(9)}, 9: 12, 10: 16, 11: 20,\n       12: 24, 13: 32, 14: 48, 15: 64}\ndef dlc_for(n):\n    return min(d for d, b in DLC.items() if b >= n)\nfor n in (8, 9, 20, 33):\n    d = dlc_for(n)\n    print(f\"payload {n:2d}B -> DLC {d:2d} ({DLC[d]}B, pad {DLC[d]-n})\")\n# payload  8B -> DLC  8 (8B, pad 0)\n# payload  9B -> DLC  9 (12B, pad 3)\n# payload 20B -> DLC 11 (20B, pad 0)\n# payload 33B -> DLC 14 (48B, pad 15)"
+    }
+   ],
+   "how_far": "'구조적 이해(architectural understanding)'라 한 칩의 레지스터를 아는 것을 넘어, **계열이 다른 칩으로 옮길 때 무엇이 바뀌나**를 말할 수 있어야 합니다. 한 계열을 깊게, 다른 계열은 차이를 아는 정도면 됩니다. {추론}",
+   "refs": [
+    1,
+    11,
+    15,
+    25,
+    31,
+    35
+   ],
+   "study": [
+    "yiu-m33",
+    "interrupt-nvic",
+    "vector-can"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bring-Up Leadership: Demonstrated success leading board bring-up in a hardware lab, utilizing oscilloscopes, logic analyzers, and bus analyzers to diagnose board- and silicon-level defects.",
+   "short": "하드웨어 랩에서 보드 브링업을 이끌어 성공했고, 계측기로 보드·칩 수준 결함을 찾아 봤어야 해서.",
+   "why": "업무④⑤(브링업 주도·마지막 디버깅 창구)를 바로 맡으려면 필요합니다.[1] '보드 수준'뿐 아니라 '칩(실리콘) 수준' 결함까지 적었습니다 — 칩 자체의 결함을 찾아 칩 회사에 알리는 일까지 포함됩니다. {추론}",
+   "how_far": "'Demonstrated success leading' 이라 **브링업을 맡아 이끈 사례**가 있어야 합니다. 체크리스트를 만들고 팀에 일을 나눴는지, 칩·보드 결함을 어떤 파형으로 증명했는지를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "making-embedded",
+    "interrupt-boot"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Regulated Safety Track Record: Practical experience developing and delivering software under a regulated safety framework (ISO 26262, IEC 62304, DO-178C) with strict traceability to requirements.",
+   "short": "ISO 26262·IEC 62304·DO-178C 같은 규제 안전 체계 아래에서 요구사항 추적을 엄격히 지키며 출시해 봤어야 해서.",
+   "why": "ASIL-D 를 향하는 플랫폼이라 코드마다 '어느 요구사항 때문에 있고 어느 시험이 확인했나'를 보여야 합니다.[1][11] 세 표준은 자동차·의료기기·항공용이고 등급 이름이 다릅니다(ASIL A~D / 안전 등급 A~C / DAL A~E).[38][39]",
+   "actually": {
+    "intro": "'엄격한 추적(strict traceability)'의 실제 모양입니다.",
+    "items": [
+     "**요구사항 → 설계 → 코드 → 시험** 을 ID 로 잇는다. 시험이 없는 요구사항, 요구사항이 없는 코드를 찾아낸다.[23]",
+     "**단위 시험 커버리지** — 높은 등급일수록 문장·분기·MC/DC(조건 하나하나가 결과를 바꾸는지) 커버리지를 요구한다.[24]",
+     "**변경 관리** — 요구사항이 바뀌면 영향받는 코드·시험을 찾아 다시 확인한다.[40]",
+     "**도구 신뢰** — 컴파일러·분석기를 믿어도 되는지 따지는 도구 자격 평가도 이 체계에 있다.[40]"
+    ]
+   },
+   "how_far": "Sr. 공고는 '실무 지식(Working knowledge)'이었고 이 공고는 '실제로 개발하고 출시한 기록(Practical experience … delivering)'입니다.[1][8] **그 체계 아래에서 제품을 끝까지 내 본 경험**이 필요하고, 세 표준 중 하나면 됩니다. {추론}",
+   "refs": [
+    1,
+    8,
+    11,
+    23,
+    24,
+    38,
+    39,
+    40
+   ],
+   "study": [
+    "iso26262-6",
+    "parasoft-cov",
+    "acorn-auto-sw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Modern Build & CI Tooling: Proficiency with Git, Bazel (or modern build systems), and automated CI/CD pipelines for firmware build verification and automated testing.",
+   "short": "Git·Bazel(또는 요즘 빌드 도구)·CI/CD 로 펌웨어 빌드 검증과 시험을 자동으로 돌릴 줄 알아야 해서.",
+   "why": "업무③의 '기준선보다 새 경고가 늘면 막기'는 사람이 아니라 CI 가 빌드마다 지킵니다. 같은 플랫폼 펌웨어 공고는 Bazel 같은 밀폐 빌드를 요구합니다.[11] Bazel 은 빌드가 바깥 환경에 기대지 않아 같은 입력이면 같은 결과를 내는 밀폐성을 목표로 둡니다.[32]",
+   "actually": {
+    "items": [
+     "**Bazel 로 펌웨어 빌드** — Cortex-M 용 교차 컴파일러를 Bazel 툴체인으로 등록한다. Pigweed 프로젝트가 툴체인 예와 부품을 공개했다.[33]",
+     "**아직 다듬는 중** — Bazel 팀은 2024년 임베디드 지원을 소개하며 툴체인 설정이 크게 나아졌지만 아직 성숙하지 않다고 적었다.[34]",
+     "**CI 단계** — 빌드 → 정적 분석 → 호스트 단위 시험 → (벤치가 있으면) 실제 보드 시험 → 산출물 보관. {추론}",
+     "**Git** — 브랜치·리뷰·태그로 어떤 판이 어느 보드에 들어갔는지 남긴다. {추론}"
+    ]
+   },
+   "how_far": "Sr. 공고는 'Bazel' 이었고 이 공고는 'Bazel(또는 요즘 빌드 도구)'로 넓혔습니다.[1][8] CMake 같은 다른 도구로 교차 빌드·분석·시험을 한 번에 돌려 본 경험이면 되고, Bazel 개념(타깃·툴체인·밀폐성)은 익혀 오면 됩니다. {추론}",
+   "refs": [
+    1,
+    8,
+    11,
+    32,
+    33,
+    34
+   ],
+   "study": [
+    "bazel-herm",
+    "pigweed-bazel"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Automotive Stacks & Diagnostics: Deep familiarity with ISO 14229 (UDS), SOME/IP, DoIP, or automotive Ethernet communication stacks.",
+   "short": "차량 진단(UDS)·서비스 통신(SOME/IP)·이더넷 진단(DoIP)·차량 이더넷 스택을 깊이 알면 좋아서.",
+   "why": "차 제어기는 정비소 진단기와 UDS 로 말하고, 이더넷 위에서는 SOME/IP 로 서비스를 주고받고, DoIP 로 진단 메시지를 이더넷에 싣습니다.[27][28][29] 영역 제어기 구조는 이더넷 비중을 키웁니다.[5] {추론}",
+   "actually": {
+    "items": [
+     "**UDS(ISO 14229)** — 서비스 번호로 요청한다(예: 0x22 데이터 읽기, 0x27 보안 접근, 0x34~0x37 재프로그래밍). 거절할 때는 부정 응답 코드(NRC)를 돌려준다.[27]",
+     "**SOME/IP** — 이더넷 위의 서비스 호출·이벤트 알림 형식. 헤더에 서비스 ID·메서드 ID 가 있다.[28]",
+     "**DoIP(ISO 13400-2)** — UDS 메시지를 TCP/IP 로 보내는 운반 규약.[29]",
+     "**TSN** — 차량 이더넷에서 정해진 시간 창에 중요한 프레임을 보내게 하는 표준 묶음(시간 동기화 802.1AS·시간 맞춤 전송 802.1Qbv 등).[26]"
+    ]
+   },
+   "how_far": "우대 사항입니다. '깊이 안다(Deep familiarity)'라 이 중 하나의 메시지를 와이어 바이트 수준으로 풀고, 스택을 어떤 층으로 나눴는지 설명할 수 있으면 강점이 됩니다. {추론}",
+   "refs": [
+    5,
+    26,
+    27,
+    28,
+    29
+   ],
+   "study": [
+    "uds-wiki",
+    "someip-prs",
+    "tsn-ieee"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Multi-Core & Security: Experience architecting multi-core microcontroller solutions, Hardware Security Modules (HSM), or secure boot implementations.",
+   "short": "멀티코어 MCU 구조·하드웨어 보안 모듈(HSM)·보안 부팅을 설계해 봤으면 좋아서.",
+   "why": "업무②가 여러 코어에 걸친 RTOS 구조입니다.[1] 같은 플랫폼의 다른 공고는 S32K3 의 보안 엔진(HSE)으로 서명된 코드만 부팅하는 일을 맡습니다.[11] 이 자리의 드라이버·RTOS 가 그 부트 체인 위에서 돕니다. {추론}",
+   "actually": {
+    "items": [
+     "**멀티코어 설계** — 코어마다 다른 일을 주고 공유 메모리·메일박스로 주고받는다. 락스텝 코어는 두 코어가 같은 일을 하며 서로 검사한다.[31]",
+     "**HSM/HSE** — 키를 칩 안 보안 영역에 두고 서명 검증·암호화를 맡긴다. 앱 코어는 키를 직접 보지 못한다.[35]",
+     "**보안 부팅** — 단계마다 다음 단계 이미지의 서명을 확인하고 넘긴다.[35][36]"
+    ]
+   },
+   "how_far": "우대 사항입니다. 보안 부팅 자체는 다른 자리가 맡으므로[11], 이 자리는 **멀티코어에 작업·드라이버를 나눠 올린 설계 경험**이 더 가깝습니다. {추론}",
+   "refs": [
+    1,
+    11,
+    31,
+    35,
+    36
+   ],
+   "study": [
+    "nxp-an13465",
+    "yiu-m33"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Communication Protocol Design: Experience designing, implementing, and validating custom or standardized protocol state machines, serialization layers, and fault-recovery logic.",
+   "short": "자체·표준 프로토콜의 상태 기계·직렬화 층·고장 복구 로직을 설계하고 검증해 봤으면 좋아서.",
+   "why": "업무①의 고속 통신 스택을 설계하려면 바이트를 보내는 것을 넘어, 메시지가 깨지거나 상대가 응답하지 않을 때의 동작을 정해야 합니다.[1]",
+   "actually": {
+    "intro": "작은 프로토콜 하나를 설계하면 이런 것을 정합니다. {추론}",
+    "items": [
+     "**메시지 형식** — 머리말(종류·길이·순번) + 데이터 + 검사값(CRC).",
+     "**직렬화 층** — 구조체를 바이트로 바꿀 때 바이트 순서(엔디언)·패딩을 명시한다.",
+     "**상태 기계** — 대기 → 연결 → 전송 중 → 확인 대기처럼 상태와 넘어가는 조건을 표로.",
+     "**고장 복구** — 시간 초과·재전송 횟수·순번이 튀면 버리기·상대가 재부팅하면 다시 맞추기.",
+     "**검증** — 일부러 깨진 메시지를 보내 보고, UDS 의 시간 매개변수(P2 기본 50ms 등)처럼 표준이 정한 시한을 지키는지 본다.[27]"
+    ]
+   },
+   "how_far": "우대 사항입니다. 직접 만든 프로토콜의 상태 기계 그림과 오류 처리 규칙을 설명할 수 있으면 강점입니다. {추론}",
+   "refs": [
+    1,
+    27
+   ],
+   "study": [
+    "someip-prs",
+    "uds-wiki"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Object-Oriented Architecture: Proven ability to apply structured OOP design patterns, clean interface abstractions, and data encapsulation in embedded C++ contexts.",
+   "short": "임베디드 C++ 에서 디자인 패턴·깔끔한 인터페이스·데이터 캡슐화로 구조를 짜 봤으면 좋아서.",
+   "why": "업무①의 하드웨어 추상화 층이 곧 인터페이스 설계입니다.[1] 드라이버를 인터페이스 뒤에 두면 보드가 바뀌어도 위층 코드를 덜 고치고, 호스트 PC 에서 가짜 드라이버로 단위 시험을 돌릴 수 있습니다. {추론}",
+   "actually": {
+    "intro": "임베디드에서 쓰는 모양입니다. {추론}",
+    "items": [
+     "**인터페이스** — `IGpio`·`ICan` 같은 추상 클래스(또는 C 의 함수 포인터 표) 뒤에 실제·가짜 드라이버를 둔다.",
+     "**캡슐화** — 레지스터 값·상태를 클래스 안에 숨기고 바꾸는 길을 하나로 둔다.",
+     "**정적 다형성** — 가상 함수 대신 템플릿으로 실행 비용 없이 바꿔 끼운다.",
+     "**패턴** — 상태 기계(State), 관찰자(이벤트 알림), 어댑터(벤더 드라이버 감싸기)."
+    ]
+   },
+   "how_far": "우대 사항입니다. **시험을 위해 하드웨어를 갈라 낸 구조**를 그림과 코드로 보여 줄 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "making-embedded"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Automation & Tooling: Proficiency in Python for developing internal bring-up tooling, HIL automation, or custom build/test scripts.",
+   "short": "Python 으로 브링업 도구·HIL 자동화·빌드/시험 스크립트를 만들 줄 알면 좋아서.",
+   "why": "업무⑥에서 브링업 도구의 요구를 정하는데, 직접 만들 수 있으면 더 빠릅니다.[1] 같은 회사의 시험 자동화 공고가 HIL 벤치와 CI 회귀 시험을 만듭니다.[10]",
+   "actually": {
+    "items": [
+     "**브링업 도구** — 레지스터 값 덤프·비교, 보드 판 읽기, 플래시 굽기를 명령 하나로. {추론}",
+     "**HIL 자동화** — 스크립트가 시뮬레이터에 입력을 넣고 제어기 출력을 읽어 합격/불합격을 낸다.[10]",
+     "**진단 스크립트** — Python UDS 라이브러리로 제어기에 요청을 보내고 응답을 검사한다.[27] {추론}",
+     "**빌드/시험 스크립트** — 기준선 비교(업무③ 예시)처럼 CI 의 작은 관문을 직접 쓴다. {추론}"
+    ]
+   },
+   "how_far": "우대 사항입니다. 펌웨어를 위한 도구를 하나 만들어 팀이 쓰게 한 경험이면 충분합니다. {추론}",
+   "refs": [
+    1,
+    10,
+    27
+   ],
+   "study": [
+    "udsoncan",
+    "pigweed-bazel"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "드라이버를 짜는 것보다 '층을 어디서 나눌까'를 정하는 일이 더 즐거운 사람[1]",
+   "남이 못 잡은 버그를 오실로스코프·디버거로 끝까지 파는 사람[1]",
+   "정적 분석 규칙과 억제 양식을 팀 단위로 굴려 본 사람[1]",
+   "리뷰와 멘토링으로 시니어까지 키워 본 사람[1]"
+  ],
+  "hard": [
+   "양산 펌웨어 10년 이상 · 규제 안전 체계 아래 출시 기록 · RTOS 구조 설계 사례가 모두 필수다[1]",
+   "같은 팀 Sr. 자리와 일이 겹치되 '정하는 사람'이라, 구조·기준을 이끈 사례가 없으면 Sr. 자리가 더 맞을 수 있다[1][8] {추론}",
+   "근무지가 미국 서니베일 랩이라 한국 지원자는 현지 근무 자격이 먼저 문제다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "코어 두 개짜리 MCU 에 통신·제어·진단 작업을 나눈다면 기준이 무엇이고, 코어 사이에는 무엇을 넘기겠나요?",
+   "a": "작업 나누기 · 공유 자원 대기 · 응답 시간 분석 — 업무② 예시.[1]"
+  },
+  {
+   "q": "정적 분석 경고가 이미 2천 개 있는 코드베이스를 맡았습니다. 첫 달에 무엇을 하겠나요?",
+   "a": "기준선 찍기 · 새 경고만 막기 · 규칙 세트 정하기 · 억제 양식(업무③).[1][22]"
+  },
+  {
+   "q": "volatile 만으로 코어 사이 플래그 공유가 안전하지 않은 이유는?",
+   "a": "메모리 모델 · 원자 연산 · 장벽(C/C++ 자격요건).[1][14]"
+  },
+  {
+   "q": "새 칩의 인터럽트 지연을 어떤 방법으로 재고, 숫자가 데이터시트보다 길면 무엇을 의심하나요?",
+   "a": "핀 토글 + 오실로스코프 · 막아 둔 구간 · 높은 우선순위 ISR.[15][16]"
+  },
+  {
+   "q": "하드웨어 팀과 핀 하나의 의미가 달라 보드가 다시 나와야 했던 적이 있나요? ICD 를 어떻게 바꿨나요?",
+   "a": "경계 문서의 ID · 추적 · 변경 관리(업무⑥).[1][40]"
+  },
+  {
+   "q": "시니어 개발자의 설계에 동의하지 않을 때 어떻게 리뷰하나요?",
+   "a": "글로 된 리뷰 기준 · 이유를 적는 리뷰(업무⑦).[1][44]"
+  },
+  {
+   "q": "Polyspace 가 '확인 안 됨'으로 표시한 줄을 어떻게 처리하나요?",
+   "a": "경로 따라가기 · 정당화된 억제 · 감사 근거.[42]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · Staff Embedded Software Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/a82b98bb-2519-4b69-990b-77300b8d136b",
+   "kind": "posting",
+   "note": "이 공고. 역할 소개(기술 중심축 · 서니베일 랩) · 업무 · 자격 · 우대 · 전형(코딩 테스트 포함) · 연봉 범위. 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 · 업무 몰입 프로그램(복리후생)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준이라 미국 자리에는 싣지 않았다"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 채용 · Locations",
+   "url": "https://42dot.ai/en/careers/locations",
+   "kind": "company",
+   "note": "회사 거점 목록"
+  },
+  {
+   "n": 4,
+   "title": "Dun & Bradstreet · 42Dot Inc. 회사 정보",
+   "url": "https://www.dnb.com/business-directory/company-profiles.42dot_inc.def7cddb34743142dccfcd05cd4b8a33.html",
+   "kind": "reference",
+   "note": "미국 법인 주소 380 N Pastoria Ave, Sunnyvale, CA 94085"
+  },
+  {
+   "n": 5,
+   "title": "포티투닷 블로그 · 42dot at CES 2024: Software-Defined Vehicle Technology",
+   "url": "https://42dot.ai/ko/stories/blog-news/ces-2024-software-defined-vehicle",
+   "kind": "company",
+   "date": "2024-03-28",
+   "note": "HPVC · 영역 제어기(zone controller) · SDV OS"
+  },
+  {
+   "n": 6,
+   "title": "바이라인네트워크 · 포티투닷 차량 기능안전 개발 프로세스, 국제 표준 인증 획득",
+   "url": "https://byline.network/2023/09/25-289/",
+   "kind": "news",
+   "date": "2023-09-25",
+   "note": "DNV ISO 26262 인증"
+  },
+  {
+   "n": 7,
+   "title": "KED Global · Hyundai Motor to set up software R&D center in Silicon Valley",
+   "url": "https://www.kedglobal.com/newsView/ked202407010005",
+   "kind": "news",
+   "date": "2024-07-01"
+  },
+  {
+   "n": 8,
+   "title": "포티투닷 채용 · Sr. Embedded Software Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/6e9418ea-6dfa-4ca2-b419-e564e1479a1b",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고. 같은 플랫폼의 한 단계 아래 자리 · 경력 7년 이상 · 연봉 범위"
+  },
+  {
+   "n": 9,
+   "title": "포티투닷 채용 · Embedded SW Engineer",
+   "url": "https://jobs.ashbyhq.com/42dot/be911f50-1c25-4598-bc12-ef502a27f165",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고. 임베디드 리눅스 · 연봉 범위"
+  },
+  {
+   "n": 10,
+   "title": "포티투닷 채용 · Sr. Test Automation Engineer (SIL/HIL Infrastructure)",
+   "url": "https://jobs.ashbyhq.com/42dot/3d96a60d-be22-4d72-a50a-320e79d1b21c",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고. HIL 벤치 · Python 시험 자동화 · CI 회귀 시험 · CANoe"
+  },
+  {
+   "n": 11,
+   "title": "포티투닷 채용 · Sr. Staff Firmware Engineer (Secure Boot & OTA)",
+   "url": "https://jobs.ashbyhq.com/42dot/63196d96-2810-4348-8aa5-077d8c0ee710",
+   "kind": "posting",
+   "note": "같은 회사 서니베일 공고. ASIL-D 펌웨어 플랫폼 · NXP S32K3 + HSE · MISRA · 정적 분석 편차 0 · Bazel · 연봉 범위"
+  },
+  {
+   "n": 12,
+   "title": "California Labor Commissioner · Pay Transparency",
+   "url": "https://www.dir.ca.gov/dlse/Pay-Transparency.htm",
+   "kind": "reference",
+   "note": "캘리포니아 공고의 급여 범위 기재 의무(SB 1162)"
+  },
+  {
+   "n": 13,
+   "title": "FreeRTOS · Mastering the FreeRTOS Real Time Kernel (공식 책)",
+   "url": "https://www.freertos.org/Documentation/02-Kernel/07-Books-and-manual/01-RTOS_book",
+   "kind": "reference",
+   "note": "Richard Barry · 무료. 작업 · 큐 · 세마포어 · ISR 용 API · 스택 검사"
+  },
+  {
+   "n": 14,
+   "title": "Interrupt (Memfault) · ARM Cortex-M RTOS Context Switching",
+   "url": "https://interrupt.memfault.com/blog/cortex-m-rtos-context-switching",
+   "kind": "reference",
+   "note": "PendSV · MSP/PSP · FPU 문맥"
+  },
+  {
+   "n": 15,
+   "title": "Interrupt (Memfault) · A Practical guide to ARM Cortex-M Exception Handling",
+   "url": "https://interrupt.memfault.com/blog/arm-cortex-m-exceptions-and-nvic",
+   "kind": "reference",
+   "note": "NVIC · 우선순위 · 예외 처리는 ARMv6-M~v8-M 에서 거의 같다"
+  },
+  {
+   "n": 16,
+   "title": "Arm Community · A Beginner's Guide on Interrupt Latency and Interrupt Latency of the Arm Cortex-M processors",
+   "url": "https://developer.arm.com/community/arm-community-blogs/b/architectures-and-processors-blog/posts/beginner-guide-on-interrupt-latency-and-interrupt-latency-of-the-arm-cortex-m-processors",
+   "kind": "reference",
+   "note": "Cortex-M3/M4 진입 12사이클(대기 없는 메모리)"
+  },
+  {
+   "n": 17,
+   "title": "Zephyr Project · RTOS Debugging: When the Important Stuff Has to Wait (Percepio)",
+   "url": "https://www.zephyrproject.org/rtos-debugging-when-the-important-stuff-has-to-wait/",
+   "kind": "reference",
+   "note": "우선순위 역전 · 우선순위 상속은 줄일 뿐 없애지 못한다 · 추적 도구"
+  },
+  {
+   "n": 18,
+   "title": "TI · WITTENSTEIN SAFERTOS",
+   "url": "https://www.ti.com/tool/WHIS-3P-SAFERTOS",
+   "kind": "reference",
+   "note": "안전 인증 RTOS 소개"
+  },
+  {
+   "n": 19,
+   "title": "AUTOSAR · Requirements on Operating System (R22-11, Classic)",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SRS_OS.pdf",
+   "kind": "reference",
+   "note": "정적 구성 · 시간/메모리 보호 요건"
+  },
+  {
+   "n": 20,
+   "title": "MISRA · Publications (MISRA C:2023)",
+   "url": "https://misra.org.uk/publications",
+   "kind": "reference",
+   "note": "규칙 원문은 유료"
+  },
+  {
+   "n": 21,
+   "title": "SEI CERT C Coding Standard (위키)",
+   "url": "https://wiki.sei.cmu.edu/confluence/display/c",
+   "kind": "reference",
+   "note": "규칙마다 위험 평가 · 관련 지침 · 참고 문헌"
+  },
+  {
+   "n": 22,
+   "title": "TF-RMM 문서 · Cppcheck Application Note",
+   "url": "https://tf-rmm.readthedocs.io/en/latest/resources/application-notes/cppcheck.html",
+   "kind": "reference",
+   "note": "Cppcheck 줄 단위 억제 · MISRA 애드온 사용 예"
+  },
+  {
+   "n": 23,
+   "title": "ISO 26262-6:2018 · Product development at the software level",
+   "url": "https://www.iso.org/standard/68388.html",
+   "kind": "reference",
+   "note": "유료 표준. 코딩 지침 · 단위 시험"
+  },
+  {
+   "n": 24,
+   "title": "Parasoft · ISO 26262 code coverage",
+   "url": "https://www.parasoft.com/learning-center/iso-26262/code-coverage/",
+   "kind": "reference",
+   "note": "도구 회사 설명 — 표준 표 원문 아님"
+  },
+  {
+   "n": 25,
+   "title": "Wikipedia · CAN FD",
+   "url": "https://en.wikipedia.org/wiki/CAN_FD",
+   "kind": "reference",
+   "note": "최대 64바이트 · 길이 코드 9~15 = 12~64바이트"
+  },
+  {
+   "n": 26,
+   "title": "IEEE SA · TSN for Automotive (2021)",
+   "url": "https://grouper.ieee.org/groups/802/1/files/public/marketing/IEEE-SA_TSN_Automotive_2021.pdf",
+   "kind": "reference",
+   "date": "2021",
+   "note": "802.1AS · 802.1Qbv · 802.1Qbu · P802.1DG"
+  },
+  {
+   "n": 27,
+   "title": "Wikipedia · Unified Diagnostic Services",
+   "url": "https://en.wikipedia.org/wiki/Unified_Diagnostic_Services",
+   "kind": "reference",
+   "note": "서비스 번호 · NRC · 표준 원문(ISO 14229-1)은 유료"
+  },
+  {
+   "n": 28,
+   "title": "AUTOSAR · SOME/IP Protocol Specification (R22-11)",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/FO/AUTOSAR_PRS_SOMEIPProtocol.pdf",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "ISO · ISO 13400-2 DoIP — Transport protocol and network layer services",
+   "url": "https://www.iso.org/standard/87961.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Vector · CANoe 제품 소개",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canoe/",
+   "kind": "reference",
+   "note": "시뮬레이션 · 분석 · 시험 · 진단"
+  },
+  {
+   "n": 31,
+   "title": "Infineon · AURIX TC4x 문서",
+   "url": "https://documentation.infineon.com/aurixtc4xx/docs/ukk1718002103459",
+   "kind": "reference",
+   "note": "TriCore 1.8 최대 500MHz · 락스텝 · ASIL-D"
+  },
+  {
+   "n": 32,
+   "title": "Bazel · Hermeticity",
+   "url": "https://bazel.build/basics/hermeticity",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "Pigweed · pw_toolchain_bazel",
+   "url": "https://pigweed.googlesource.com/pigweed/pigweed/+/HEAD/pw_toolchain_bazel/docs.rst",
+   "kind": "reference",
+   "note": "Bazel 로 밀폐 C/C++ 툴체인 만들기 · Cortex-M 예"
+  },
+  {
+   "n": 34,
+   "title": "Bazel Blog · Bazel for embedded (2024-08-08)",
+   "url": "https://blog.bazel.build/2024/08/08/bazel-for-embedded.html",
+   "kind": "reference",
+   "date": "2024-08-08",
+   "note": "Pigweed 와 함께 임베디드 지원, 툴체인 설정은 아직 성숙 전"
+  },
+  {
+   "n": 35,
+   "title": "NXP AN13465 · S32K3xx Secure Boot",
+   "url": "https://www.nxp.com/docs/en/application-note/AN13465.pdf",
+   "kind": "reference",
+   "note": "개요만 확인"
+  },
+  {
+   "n": 36,
+   "title": "Interrupt (Memfault) · From Zero to main(): How to Write a Bootloader from Scratch",
+   "url": "https://interrupt.memfault.com/blog/how-to-write-a-bootloader-from-scratch",
+   "kind": "reference",
+   "date": "2019-08-13"
+  },
+  {
+   "n": 37,
+   "title": "AUTOSAR · Layered Software Architecture (R22-11)",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "Electronic Design · Software Process Standards Ensure Safe Transportation",
+   "url": "https://www.electronicdesign.com/technologies/embedded/article/21799604/software-process-standards-ensure-safe-transportation",
+   "kind": "reference",
+   "note": "ISO 26262 · IEC 62304 · DO-178C 비교"
+  },
+  {
+   "n": 39,
+   "title": "Jama Software · What Is IEC 62304?",
+   "url": "https://www.jamasoftware.com/requirements-management-guide/medical-devices/iec-62304/",
+   "kind": "reference",
+   "note": "의료기기 소프트웨어 안전 등급 A~C"
+  },
+  {
+   "n": 40,
+   "title": "ISO 26262-8:2018 · Supporting processes",
+   "url": "https://www.iso.org/standard/68390.html",
+   "kind": "reference",
+   "note": "변경 관리 · 형상 관리 · 도구 자격"
+  },
+  {
+   "n": 41,
+   "title": "뉴데일리 · 송창현 \"기존 제조사들의 하드웨어 중심 개발로는 해답 못 찾아\"(HMG 개발자 컨퍼런스 키노트)",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2023/11/13/2023111300204.amp.html",
+   "kind": "news",
+   "date": "2023-11-13",
+   "note": "하드웨어 · 소프트웨어 분리 → 동시 개발로 검증 기간 단축"
+  },
+  {
+   "n": 42,
+   "title": "MathWorks · Polyspace Code Prover",
+   "url": "https://www.mathworks.com/products/polyspace-code-prover.html",
+   "kind": "reference",
+   "note": "추상 해석(정형 방법)으로 실행 중 오류가 없음을 증명 · 코드에 색으로 판정 표시"
+  },
+  {
+   "n": 43,
+   "title": "Will Larson · Staff Engineer: Leadership beyond the management track",
+   "url": "https://staffeng.com/book",
+   "kind": "reference",
+   "date": "2021",
+   "note": "관리자가 아닌 Staff 급 엔지니어의 역할 · 사례 인터뷰"
+  },
+  {
+   "n": 44,
+   "title": "Google Engineering Practices · The Standard of Code Review",
+   "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+   "kind": "reference",
+   "note": "완벽보다 코드베이스 전체를 나아지게 하는 변경을 통과시킨다"
+  }
+ ],
+ "caveat": "이 자리(서니베일 차세대 플랫폼의 실시간 소프트웨어 Staff)를 다룬 포티투닷의 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 같은 서니베일 공고 네 건(특히 같은 플랫폼의 Sr. 자리와 줄마다 견줬다), CES 2024 블로그, ISO 26262 인증 보도, 대표 키노트 보도이고, 나머지는 FreeRTOS · AUTOSAR · MISRA · CERT · ISO 문서, Arm · Interrupt 글, Polyspace 설명, Staff 엔지니어 책 · 구글 리뷰 지침으로 '보통 이런 것'을 보였습니다. 어떤 칩 · RTOS 를 실제로 쓰는지는 공고에 예시로만 있습니다. 미국 법인 복리후생은 공식 자료를 찾지 못했고, 회사 복지 페이지는 한국 본사 기준이라 싣지 않았습니다[2]. 코드 예시 셋(코어별 응답 시간 분석 · 정적 분석 기준선 비교 · CAN-FD DLC)은 직접 돌려 출력을 확인했습니다. 2026-11-25 기준.",
+ "resources": [
+  {
+   "id": "freertos-book",
+   "title": "Mastering the FreeRTOS Real Time Kernel — A Hands-On Tutorial Guide",
+   "by": "Richard Barry · FreeRTOS 팀",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.freertos.org/Documentation/02-Kernel/07-Books-and-manual/01-RTOS_book",
+   "why": "작업 · 큐 · 세마포어 · 뮤텍스 · ISR 용 API 를 예제로. RTOS 구조 업무를 정하기 전에 도구 하나하나의 쓰임을 다진다."
+  },
+  {
+   "id": "inflearn-freertos",
+   "title": "FreeRTOS 프로그래밍",
+   "by": "인프런 강의",
+   "kind": "course",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.inflearn.com/course/freertos-프로그래밍",
+   "why": "FreeRTOS 작업 · 동기화를 한국어로 실습. 영어 책과 같이 보면 빠르다."
+  },
+  {
+   "id": "interrupt-ctx",
+   "title": "ARM Cortex-M RTOS Context Switching",
+   "by": "Interrupt(Memfault)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://interrupt.memfault.com/blog/cortex-m-rtos-context-switching",
+   "why": "RTOS 가 작업을 바꾸는 순간 하드웨어에서 무슨 일이 나는지. RTOS 깊이 · 바닥 동시성 요건의 바닥."
+  },
+  {
+   "id": "interrupt-nvic",
+   "title": "A Practical guide to ARM Cortex-M Exception Handling",
+   "by": "Interrupt(Memfault)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://interrupt.memfault.com/blog/arm-cortex-m-exceptions-and-nvic",
+   "why": "인터럽트 우선순위 · 중첩 · 예외 진입. 인터럽트 지연 측정법과 HardFault 추적에 쓴다."
+  },
+  {
+   "id": "interrupt-boot",
+   "title": "From Zero to main(): How to Write a Bootloader from Scratch",
+   "by": "François Baldassari · Interrupt(Memfault) · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://interrupt.memfault.com/blog/how-to-write-a-bootloader-from-scratch",
+   "why": "시작 코드 · 링커 스크립트 · 메모리 맵 — 브링업 순서표의 첫 칸."
+  },
+  {
+   "id": "kr-embedded-os",
+   "title": "임베디드 OS 개발 프로젝트",
+   "by": "이만우 · 인사이트 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003160848",
+   "why": "ARM 위에서 부트 코드 · 인터럽트 · 태스크 · 문맥 전환을 직접 만든다. 층 나눔을 맨바닥부터 이해하는 한국어 책."
+  },
+  {
+   "id": "making-embedded",
+   "title": "Making Embedded Systems (2판)",
+   "by": "Elecia White · O'Reilly · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/making-embedded-systems/9781098151539/",
+   "why": "펌웨어 구조 · 시험을 위한 하드웨어 갈라내기 · 디버깅. 플랫폼 구조와 객체지향 우대 줄까지."
+  },
+  {
+   "id": "yiu-m33",
+   "title": "Definitive Guide to Arm Cortex-M23 and Cortex-M33 Processors",
+   "by": "Joseph Yiu · Newnes · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/definitive-guide-to/9780128207369/",
+   "why": "Cortex-M 의 예외 · 메모리 보호(MPU) · 보안 확장을 레지스터 수준으로. 하드웨어 이해 · 메모리 격리 요건."
+  },
+  {
+   "id": "misra",
+   "title": "MISRA C:2023",
+   "by": "MISRA",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://misra.org.uk/publications",
+   "why": "규칙 세트를 세우려면 원본이 필요하다. 규칙 번호 · 분류(필수 · 권고)를 같이 익힌다."
+  },
+  {
+   "id": "cert-c",
+   "title": "SEI CERT C Coding Standard",
+   "by": "Carnegie Mellon SEI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://wiki.sei.cmu.edu/confluence/display/c",
+   "why": "정의되지 않은 동작 · 정수 넘침 · 버퍼 규칙을 위험도와 예시로. C 전문가 요건의 점검표."
+  },
+  {
+   "id": "cppcheck-note",
+   "title": "Cppcheck Application Note",
+   "by": "TF-RMM 프로젝트 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://tf-rmm.readthedocs.io/en/latest/resources/application-notes/cppcheck.html",
+   "why": "실제 펌웨어 프로젝트가 Cppcheck · MISRA 애드온을 돌리고 줄 단위로 억제하는 법. 기준선 · 억제 양식 연습용."
+  },
+  {
+   "id": "polyspace",
+   "title": "Polyspace Code Prover",
+   "by": "MathWorks",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.mathworks.com/products/polyspace-code-prover.html",
+   "why": "공고가 이름으로 적은 상용 분석기가 '증명' 방식으로 무엇을 판정하는지. 어려운 경고 풀기 요건."
+  },
+  {
+   "id": "iso26262-6",
+   "title": "ISO 26262-6:2018",
+   "by": "ISO",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/68388.html",
+   "why": "소프트웨어 단계의 코딩 지침 · 단위 시험 요구. 팀 안전 관행의 원본(유료)."
+  },
+  {
+   "id": "parasoft-cov",
+   "title": "ISO 26262 code coverage",
+   "by": "Parasoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.parasoft.com/learning-center/iso-26262/code-coverage/",
+   "why": "등급별 문장 · 분기 · MC/DC 커버리지 요구를 정리. 추적 · 시험 요건."
+  },
+  {
+   "id": "acorn-auto-sw",
+   "title": "자동차 임베디드 소프트웨어 개발 프로세스와 기술 입문",
+   "by": "에이콘 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000010184723",
+   "why": "차량 소프트웨어 개발 절차 · 안전 · 통신을 한국어로 한 번에 훑는다. ICD · 추적 줄의 바탕."
+  },
+  {
+   "id": "vector-can",
+   "title": "Vector E-Learning · CAN",
+   "by": "Vector Informatik",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://elearning.vector.com/course/view.php?id=20",
+   "why": "CAN 프레임 · 중재 · 오류 처리. 버스 요건과 버스 분석기 디버깅의 바탕."
+  },
+  {
+   "id": "canoe",
+   "title": "CANoe",
+   "by": "Vector Informatik",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canoe/",
+   "why": "같은 회사 시험 팀이 쓰는 버스 분석 도구의 기능 범위."
+  },
+  {
+   "id": "autosar-lsa",
+   "title": "AUTOSAR Layered Software Architecture (R22-11)",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf",
+   "why": "BSP → 추상화 → 서비스 → 앱 층 나눔의 표준 그림. 플랫폼 구조 업무에서 경계를 어디에 긋나."
+  },
+  {
+   "id": "uds-wiki",
+   "title": "Unified Diagnostic Services",
+   "by": "Wikipedia",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://en.wikipedia.org/wiki/Unified_Diagnostic_Services",
+   "why": "UDS 서비스 번호 · 부정 응답 코드 표. 진단 우대 줄."
+  },
+  {
+   "id": "someip-prs",
+   "title": "SOME/IP Protocol Specification (R22-11)",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/FO/AUTOSAR_PRS_SOMEIPProtocol.pdf",
+   "why": "메시지 형식 · 직렬화 · 오류 처리를 실제 표준으로 보는 프로토콜 설계 교본."
+  },
+  {
+   "id": "udsoncan",
+   "title": "udsoncan 문서 (Python UDS 클라이언트)",
+   "by": "Pier-Yves Lessard",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://udsoncan.readthedocs.io/",
+   "why": "Python 으로 진단 요청을 보내는 브링업 도구 · HIL 자동화 연습."
+  },
+  {
+   "id": "tsn-ieee",
+   "title": "TSN for Automotive",
+   "by": "IEEE SA · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://grouper.ieee.org/groups/802/1/files/public/marketing/IEEE-SA_TSN_Automotive_2021.pdf",
+   "why": "차량 이더넷 TSN 표준 묶음 한눈에. 'Ethernet/TSN' 업무 줄."
+  },
+  {
+   "id": "bazel-herm",
+   "title": "Bazel · Hermeticity",
+   "by": "Bazel 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://bazel.build/basics/hermeticity",
+   "why": "밀폐 빌드가 무엇이고 왜 안전 인증 빌드에 맞는지."
+  },
+  {
+   "id": "pigweed-bazel",
+   "title": "pw_toolchain_bazel",
+   "by": "Pigweed(Google)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://pigweed.googlesource.com/pigweed/pigweed/+/HEAD/pw_toolchain_bazel/docs.rst",
+   "why": "Cortex-M 교차 컴파일러를 Bazel 툴체인으로 만드는 실제 예."
+  },
+  {
+   "id": "nxp-an13465",
+   "title": "AN13465 · S32K3xx Secure Boot",
+   "by": "NXP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.nxp.com/docs/en/application-note/AN13465.pdf",
+   "why": "같은 플랫폼이 쓰는 칩 계열의 보안 부팅 · HSE. 보안 우대 줄."
+  },
+  {
+   "id": "staffeng",
+   "title": "Staff Engineer: Leadership beyond the management track",
+   "by": "Will Larson · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://staffeng.com/book",
+   "why": "관리자가 아니면서 기술 방향 · 기준 · 사람 키우기를 맡는 자리가 실제로 무엇을 하는지. 기준 · 멘토링 업무 줄."
+  },
+  {
+   "id": "google-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "리뷰 기준을 글로 정하는 본보기. 조직 리뷰 기준을 세우는 업무 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "MCU 를 맨바닥부터 켜고 층을 나누기",
+   "time": "3~4주",
+   "goal": "시작 코드 · 링커 스크립트 · 클럭 설정으로 main 까지 가고, GPIO · 타이머 · UART 드라이버를 하드웨어 추상화 층 뒤에 둔다.",
+   "resources": [
+    "kr-embedded-os",
+    "interrupt-boot",
+    "making-embedded",
+    "autosar-lsa"
+   ],
+   "task": "값싼 Cortex-M 보드(또는 QEMU)에서 레지스터만으로 LED · 타이머 인터럽트 · UART 를 만들고, 같은 위층 코드가 호스트 PC 의 가짜 드라이버로도 돌게 HAL 인터페이스를 나눈다. 브링업 순서표를 문서로 남긴다."
+  },
+  {
+   "title": "RTOS 구조를 표로 그리고 계산으로 증명하기",
+   "time": "3~4주",
+   "goal": "작업 · 우선순위 · 큐 · 뮤텍스 · 메모리 영역 · 시간 예산의 표를 만들고, 응답 시간 분석으로 마감을 증명한다.",
+   "resources": [
+    "freertos-book",
+    "inflearn-freertos",
+    "interrupt-ctx",
+    "interrupt-nvic"
+   ],
+   "task": "가상의 5ms 통신 · 10ms 제어 · 50ms 진단 작업을 FreeRTOS 로 만들고, 핀 토글로 잰 최악 실행 시간을 응답 시간 분석에 넣는다. 일부러 우선순위 역전을 만들어 막힘 시간을 재고, 이 작업들을 '통신 코어 / 제어 코어'로 나누면 무엇을 넘겨야 하는지 표로 그린다."
+  },
+  {
+   "title": "팀 규칙 만들기 — 정적 분석 기준선과 억제 양식",
+   "time": "2~3주",
+   "goal": "규칙 세트 · 기준선 · 억제 양식 · 분류 절차를 문서와 CI 로 만든다.",
+   "resources": [
+    "misra",
+    "cert-c",
+    "cppcheck-note",
+    "polyspace",
+    "bazel-herm",
+    "pigweed-bazel"
+   ],
+   "task": "1~2단계 코드에 Cppcheck(MISRA 애드온)를 돌려 기준선을 찍고, 새 경고만 막는 스크립트(업무③ 예시)를 CI 에 붙인다. 억제 셋을 사유 · 영향 · 검토자 양식으로 쓰고, 팀원이 따라 할 한 쪽짜리 분류 절차를 쓴다."
+  },
+  {
+   "title": "경계 문서와 추적",
+   "time": "2주",
+   "goal": "가상 보드의 ICD 를 쓰고, 요구사항 ↔ 코드 ↔ 시험을 ID 로 잇는다.",
+   "resources": [
+    "acorn-auto-sw",
+    "iso26262-6",
+    "parasoft-cov",
+    "vector-can"
+   ],
+   "task": "가상의 영역 제어기(스위치 입력 4개 · 조명 출력 2개 · CAN 메시지 3개)의 ICD 를 표로 쓰고, 항목마다 요구사항 ID 와 단위 시험을 단다. 보드 판이 바뀌어 핀 하나가 옮겨졌다고 치고, 영향받는 드라이버 · 시험을 표에서 찾는다."
+  },
+  {
+   "title": "Staff 의 일 — 기준을 글로, 사람을 리뷰로 (선택 · 계속)",
+   "time": "계속",
+   "goal": "리뷰 기준과 설계 문서를 써서 남이 따라 쓰게 하고, 차량 통신 · 보안 부팅의 기본 동작을 설명할 수 있다.",
+   "resources": [
+    "staffeng",
+    "google-review",
+    "someip-prs",
+    "tsn-ieee",
+    "nxp-an13465",
+    "yiu-m33"
+   ],
+   "task": "위 단계의 결과물로 '이 펌웨어의 설계 원칙' 한 쪽과 리뷰 점검표를 쓰고, 오픈소스 임베디드 프로젝트에 리뷰나 작은 수정을 올려 본다. Wireshark 로 SOME/IP 샘플 캡처의 헤더를 손으로 풀어 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 **연 $210,000 ~ $320,000**(미국 서니베일)이 적혀 있다. 같은 플랫폼의 Sr. 자리는 $175,000 ~ $248,000 이다",
+  "rows": [
+   {
+    "label": "이 공고 연봉 범위",
+    "value": "$210,000 ~ $320,000",
+    "basis": "공고 · 2026-11 수집",
+    "note": "공고의 Compensation 칸. 기본급인지 총보상인지는 적혀 있지 않다 [1]"
+   },
+   {
+    "label": "Sr. Embedded Software Engineer (서니베일)",
+    "value": "$175,000 ~ $248,000",
+    "basis": "공고 · 2026-11 수집",
+    "peer": true,
+    "note": "같은 회사 공고, 같은 플랫폼의 한 단계 아래 · 경력 7년 이상 [8]"
+   },
+   {
+    "label": "Sr. Staff Firmware Engineer (서니베일)",
+    "value": "$189,240 ~ $266,760",
+    "basis": "공고 · 2026-11 수집",
+    "peer": true,
+    "note": "같은 회사 공고, 보안 부팅 · OTA 펌웨어 [11]"
+   },
+   {
+    "label": "Embedded SW Engineer (서니베일)",
+    "value": "$214,970 ~ $303,030",
+    "basis": "공고 · 2026-11 수집",
+    "peer": true,
+    "note": "같은 회사 공고, 임베디드 리눅스 · 경력 10년 이상 [9]"
+   }
+  ],
+  "how": "캘리포니아는 일정 규모 이상 회사가 공고에 급여 범위를 적도록 한다 [12]. 범위 안 어디에 놓이는지는 전형 끝의 처우 협의(Offer Negotiation) 단계에서 정해진다 [1]. 한국 본사의 집계 평균과는 나라 · 통화 · 기준이 달라 나란히 놓지 않았다{추론}."
+ },
+ "location": {
+  "name": "42dot Inc. 서니베일 사무소",
+  "address": "380 N Pastoria Ave, Sunnyvale, CA 94085, USA",
+  "postal": "94085",
+  "map_url": "https://map.naver.com/p/search/380%20N%20Pastoria%20Ave%2C%20Sunnyvale%2C%20CA%2094085",
+  "note": "공고 근무지는 'Sunnyvale, United States', 역할 소개에 '서니베일 랩'에서 브링업을 이끈다고 적혀 있다 [1]. 번지는 Dun & Bradstreet 의 42Dot Inc. 회사 정보 [4]이고, 회사 채용 사이트 거점 목록에도 서니베일이 있다 [3]. 랩 자리가 이 주소와 다를 수 있다{추론}."
+ }
+}
