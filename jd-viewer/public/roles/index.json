@@ -282,6 +282,7 @@
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
   "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
+  "boards-gamejob:dev:285795": "smilegate-lostark-game-data-engineer",
   "wanted-386999": "speee-dx-sre",
   "wanted-393877": "speee-realestate-senior-product-engineer",
   "wanted-389900": "technopro-cloud-engineer-aws-japan",
@@ -332,6 +333,7 @@
   "ats-toss:group:7784598003": "toss-commerce-ads-mle",
   "ats-toss:group:6545457003": "toss-commerce-ai-engineer",
   "ats-toss:group:7827378003": "toss-commerce-data-graph-mle",
+  "ats-toss:group:6543801003": "toss-commerce-recommendation-mle",
   "ats-toss:group:7992223003": "toss-commerce-search-relevance-mle",
   "ats-toss:group:6085421003": "toss-commerce-server-developer",
   "ats-toss:group:7795787003": "toss-commerce-signal-data-scientist",
@@ -2822,6 +2824,16 @@
    "lines": 25
   },
   {
+   "id": "smilegate-lostark-game-data-engineer",
+   "company": "스마일게이트",
+   "role": "[LOST ARK] 게임 데이터엔지니어",
+   "jobs": [
+    "boards-gamejob:dev:285795"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
+  },
+  {
    "id": "speee-dx-sre",
    "company": "Speee(스피)",
    "role": "SRE 엔지니어 · 현장산업 DX 분야",
@@ -3284,6 +3296,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 14
+  },
+  {
+   "id": "toss-commerce-recommendation-mle",
+   "company": "토스",
+   "role": "ML 엔지니어 (Commerce Recommendation)",
+   "jobs": [
+    "ats-toss:group:6543801003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
   },
   {
    "id": "toss-commerce-search-relevance-mle",

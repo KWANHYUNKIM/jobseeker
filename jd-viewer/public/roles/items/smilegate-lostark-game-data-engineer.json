@@ -1,0 +1,814 @@
+{
+ "id": "smilegate-lostark-game-data-engineer",
+ "company": "스마일게이트",
+ "role": "[LOST ARK] 게임 데이터엔지니어",
+ "team": "로스트아크 모바일 · 로아개발본부",
+ "jobs": [
+  "boards-gamejob:dev:285795"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "로스트아크의 **나쁜 말·봇·계정 도용·결제 사기**를 잡는 모델을 계속 다시 학습·배포하는 길(MLOps)과, 운영자가 결과를 보고 판정하는 화면을 만듭니다.[1]",
+  "env": "게임 로그를 **Hadoop·Spark·Kafka·Airflow** 위에서 가공하고, 모델과 운영 화면은 **파이썬**(Flask·Django)으로 짭니다.[1]",
+  "oneline": "게임 안의 \"나쁜 행동\"을 로그와 모델로 찾는 데이터 엔지니어. 모델 연구보다 **파이프라인과 운영 도구** 쪽 무게가 큽니다 {추론}."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "로스트아크의 불건전언어, 어뷰징(봇핵,계정도용,결제사기) 탐지를 위한 MLOps 플랫폼 구축",
+   "short": "나쁜 말·봇·도용·결제 사기를 잡는 모델을 \"만들고 → 내보내고 → 다시 학습\"하는 길을 깔아 주는 일.",
+   "why": "공고는 이 일을 두 갈래로 적었습니다. 하나는 **불건전 언어**, 다른 하나는 **봇핵·계정 도용·결제 사기**입니다.[1] 스마일게이트는 AI 센터가 이미 악플·혐오 표현을 가르는 데이터셋(1만 문장 안팎, 10개 라벨)과 기준 모델을 공개했습니다.[2][3] MLOps(모델을 한 번 만들고 끝내지 않고, 데이터가 바뀌면 다시 학습·검증·배포하는 운영 방식)는 그런 모델을 게임 서비스에 계속 붙여 두는 일입니다.[6]",
+   "actually": {
+    "intro": "구글 클라우드가 정리한 MLOps의 \"보통 이런 것\"입니다. 이 팀이 이 구성을 그대로 쓰는지는 공개되지 않았습니다.[6]",
+    "items": [
+     "**수동(수준 0)** — 노트북에서 학습하고 파일로 넘긴다. 학습과 서비스가 따로 놀고 배포 자동화가 없다.[6]",
+     "**학습 자동화(수준 1)** — 새 데이터가 오면 파이프라인이 알아서 다시 학습한다. 데이터·모델 검증, 실행 기록(메타데이터)이 들어간다.[6]",
+     "**배포까지 자동화(수준 2)** — 코드 버전 관리, 테스트·빌드, 모델 보관소(레지스트리), 피처 저장소, 오케스트레이터가 붙는다.[6]",
+     "**탐지 모델이 둘 이상** — 글(불건전 언어)과 행동 기록(봇·도용·결제)은 입력도 정답 만드는 법도 달라 파이프라인 모양이 갈린다 {추론}.",
+     "**되돌리기** — 새 모델이 오탐을 늘리면 이전 모델로 돌아갈 길이 있어야 한다. 제재가 걸린 일이라 특히 그렇다 {추론}."
+    ]
+   },
+   "how_far": "플랫폼을 처음부터 혼자 짓는다기보다, 모델 담당자가 만든 모델을 **같은 절차로 내보내고 감시하게** 하는 쪽이 중심입니다 {추론}. 최소선은 수준 1: 새 데이터가 오면 학습·평가·기록이 자동으로 돌고 결과를 사람이 확인하는 것.[6]",
+   "refs": [
+    1,
+    2,
+    3,
+    6
+   ],
+   "study": [
+    "gcp-mlops",
+    "huyen-dmls",
+    "reis-fode"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "인게임 로그 분석, 피쳐/데이터 선정, 모델 학습/평가 프로세스를 통한 지속적인 모델 성능 고도화",
+   "short": "게임 기록에서 \"봇다운 신호\"를 골라 모델에 먹이고, 틀린 것을 보며 계속 고치는 일.",
+   "why": "로그 분석이 일의 절반입니다. 학계 발표에서도 게임봇은 일별 플레이 시간·획득 아이템 양·획득 경험치 같은 기록으로 헤비 유저와 갈렸습니다.[4] 넥슨은 카트라이더에서 초당 쌓이는 속도·충돌·드리프트 기록으로 이상 행동을 찾았습니다.[5] 로스트아크에서 어떤 신호를 쓰는지는 공개되지 않았습니다.",
+   "actually": {
+    "intro": "다른 곳이 공개한 방식으로 본 \"보통 이런 일\"입니다.[4][5]",
+    "items": [
+     "**피처 만들기** — 하루 플레이 시간, 접속 간 휴식 길이, 같은 동선 반복 횟수, 획득량의 변동 폭 같은 숫자로 바꾼다.[4]",
+     "**정답(라벨) 구하기** — 운영팀이 제재한 계정을 \"봇\"으로, 정상 계정을 \"사람\"으로 둔다. 제재 기록이 곧 정답이라 **제재가 놓친 봇은 정상으로 학습**되는 약점이 있다 {추론}.",
+     "**평가** — 정확도 하나가 아니라 정밀도(잡은 것 중 진짜 비율)와 재현율(진짜 중 잡은 비율)을 본다. 무고한 유저를 잘못 제재하는 쪽이 더 비싸다 {추론}.",
+     "**설명 붙이기** — 판단 근거를 사람이 읽을 수 있게 설명 가능한 AI(XAI)를 얹은 사례가 있다.[4]",
+     "**고도화** — 틀린 사례를 모아 피처를 바꾸고 다시 학습하는 반복."
+    ]
+   },
+   "examples": [
+    {
+     "title": "봇 의심 피처 — 사람과 봇의 일별 플레이 시간 (가상 값)",
+     "body": "가상의 7일치입니다(직접 돌린 출력). 봇은 평균이 높을 뿐 아니라 **날마다 거의 같다**(표준편차 0.14). 발표가 말한 일별 플레이 시간 신호의 모양입니다.[4]",
+     "lang": "python",
+     "code": "import statistics as st\nhuman=[3.2,5.1,2.0,4.4,6.0,1.5,3.8]; bot=[23.5,23.8,23.6,23.7,23.5,23.9,23.6]\nfor n,x in [('사람',human),('봇',bot)]:\n    print(n,'평균 %.1f시간'%st.mean(x),'표준편차 %.2f'%st.pstdev(x),'20시간 넘는 날',sum(v>20 for v in x))\n# 사람 평균 3.7시간 표준편차 1.50 20시간 넘는 날 0\n# 봇   평균 23.7시간 표준편차 0.14 20시간 넘는 날 7"
+    },
+    {
+     "title": "정밀도와 재현율 (가상 값)",
+     "body": "제재 후보 100건 중 90건이 진짜면 정밀도 0.9, 실제 봇 120명 중 90명을 잡았으면 재현율 0.75입니다(직접 돌린 출력). 오탐 10건은 무고한 유저입니다."
+    }
+   ],
+   "how_far": "피처·모델 설계는 데이터 사이언티스트와 나눠 맡을 가능성이 큽니다 {추론}. 엔지니어는 **같은 로그에서 같은 피처가 매번 같은 값으로 나오게** 만들고 학습·평가를 재현 가능하게 합니다. 제재 판단 자체는 운영 정책이라 개발자가 정하지 않습니다.",
+   "refs": [
+    4,
+    5
+   ],
+   "study": [
+    "huyen-dmls",
+    "reis-fode",
+    "pydata-wes"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영자를 위한 데이터기반 웹 서비스 개발(Flask, Django)",
+   "short": "모델이 찍은 \"의심 계정\"을 운영자가 보고 확정·기각하는 관리 화면을 만드는 일.",
+   "why": "탐지 모델의 점수만으로 제재하면 오탐이 곧바로 유저 피해가 됩니다. 그래서 의심 목록을 사람이 보는 화면이 필요합니다 {추론}. 공고가 이 화면의 대상을 \"운영자\"로 적은 것도 같은 뜻입니다.[1] Flask·Django는 파이썬 웹 틀입니다. 모델·데이터 코드가 파이썬이라 같은 언어로 서비스까지 만드는 것으로 읽힙니다 {추론}.",
+   "actually": {
+    "items": [
+     "**의심 목록 화면** — 점수 순으로 계정을 보여주고, 근거가 된 피처·최근 행동을 같이 띄운다 {추론}.",
+     "**판정 기록** — 운영자가 \"확정/기각\"을 누르면 그 결과가 **다음 학습의 정답(라벨)**이 된다. 화면이 데이터 수집 장치를 겸한다 {추론}.",
+     "**Django를 고르는 경우** — 로그인·권한·관리자 화면·DB 모델이 기본으로 있어 내부 도구에 빠르다.",
+     "**Flask를 고르는 경우** — 모델 점수를 돌려주는 가벼운 API 한두 개를 만들 때 편하다."
+    ]
+   },
+   "how_far": "외부 유저가 쓰는 서비스가 아니라 **내부 운영 도구**라 화려함보다 정확한 데이터와 권한 관리가 중요합니다 {추론}. 최소선은 목록·상세·판정 저장 세 화면.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "django-docs",
+    "flask-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "실시간 데이터 가공 및 처리",
+   "short": "게임에서 쏟아지는 로그를 쌓아 두었다 쓰지 않고, 들어오는 즉시 변환해 탐지에 쓰는 일.",
+   "why": "결제 사기나 계정 도용은 늦게 알수록 피해가 커서 일 단위 배치로는 부족할 수 있습니다 {추론}. 우대사항이 Kafka·Spark Streaming을 따로 꼽은 것도 이 줄과 이어집니다.[1]",
+   "actually": {
+    "intro": "스파크 문서가 설명하는 스트림 처리의 \"보통 이런 것\"입니다.[7][8]",
+    "items": [
+     "**Kafka에서 읽기** — 게임 서버가 보낸 이벤트를 Kafka에 쌓고 Spark가 소스로 읽는다.[8]",
+     "**마이크로배치** — 들어온 로그를 아주 짧은 간격으로 묶어 처리한다(Spark 기본 방식).[7]",
+     "**시간 창 집계** — \"최근 1분간 이 계정의 거래 횟수\"처럼 시간 구간별로 센다.",
+     "**결과 내보내기** — 점수·경보를 다시 Kafka나 저장소로 쓴다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "시간 창 집계 흉내 (가상 이벤트)",
+     "body": "이벤트를 60초 창으로 묶어 계정별로 센 것입니다(직접 돌린 출력). 스트림 엔진이 하는 일의 축소판입니다.",
+     "lang": "python",
+     "code": "from collections import Counter\nev=[('u1',5),('u1',20),('u2',30),('u1',65),('u1',70),('u1',75)]\nc=Counter((u,t//60) for u,t in ev)\nprint(sorted(c.items()))\n# [(('u1', 0), 2), (('u1', 1), 3), (('u2', 0), 1)]"
+    }
+   ],
+   "how_far": "\"실시간\"이 몇 초인지는 공고에 없습니다. 분 단위면 마이크로배치로 충분하고, 결제 사기 즉시 차단이면 더 짧아야 합니다 {추론}.",
+   "refs": [
+    1,
+    7,
+    8
+   ],
+   "study": [
+    "spark-streaming",
+    "kafka-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "유관 업무 경력 4년 이상 (신입 기능 가능)",
+   "short": "\"4년\"은 기준선이지만 신입도 받는다고 적어 둔 열린 문장.",
+   "why": "같은 공고가 신입 가능을 같이 적었으므로 경력 연차가 당락의 전부는 아닙니다.[1] 상시 채용이라 일찍 마감될 수 있다고도 적혀 있습니다.[1]",
+   "how_far": "신입이라면 경력 대신 **상용 서비스처럼 돌아간 프로젝트 하나**(데이터 수집 → 학습 → 배포 → 감시)를 보여 주는 것이 최소선입니다 {추론}. 경력 지원자는 상세 경력기술서가 필수입니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "huyen-dmls"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터 사이언스/엔지니어링, 수학 관련 전공 학사 이상",
+   "short": "컴공·수학·통계 계열 학사를 보는 학력 기준.",
+   "why": "모델 평가와 피처 설계에 확률·통계가 쓰이고, 파이프라인에는 자료구조·시스템 지식이 쓰이기 때문으로 읽힙니다 {추론}.",
+   "how_far": "전공이 달라도 해당 과목을 스스로 채웠음을 프로젝트로 보이는 것이 현실적인 길입니다 {추론}. 공고 문장은 \"관련 전공\"이라 해석의 폭이 있습니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "huyen-dmls"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대화의 핵심을 쉽게 파악하고, 팀원 및 타부서와의 원활한 커뮤니케이션 능력을 가지신 분",
+   "short": "운영팀·기획·모델 담당과 \"무엇을 잡고 싶은지\"를 같은 말로 맞추는 능력.",
+   "why": "이 일은 개발자 혼자 정의하지 못합니다. 무엇이 \"어뷰징\"인지는 운영 정책이고, 정답 라벨도 운영자의 판정에서 나옵니다 {추론}. 공고가 타부서와의 소통을 요건으로 적은 이유입니다.[1]",
+   "actually": {
+    "items": [
+     "\"봇 같다\"는 말을 **숫자로 확인할 수 있는 정의**(하루 20시간 이상 접속 등)로 바꿔 되묻는다 {추론}.",
+     "오탐을 어디까지 감수할지 운영팀과 합의한다 {추론}.",
+     "모델이 틀렸을 때 숨기지 않고 사례와 함께 공유한다 {추론}."
+    ]
+   },
+   "how_far": "화려한 발표보다 **되묻기와 기록**이 최소선입니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "huyen-dmls"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "오너십을 갖고 주도적인 문제 해결이 가능하신 분",
+   "short": "정해진 티켓만 처리하지 않고 문제를 찾아 끝까지 책임지는 태도.",
+   "why": "탐지는 회피하는 쪽이 계속 방법을 바꾸는 싸움이라 정해진 일만 해서는 성능이 금방 떨어질 수 있습니다 {추론}. \"지속적인 모델 성능 고도화\"라는 업무 문장과 이어집니다.[1]",
+   "actually": {
+    "items": [
+     "성능이 떨어진 것을 **알림이 오기 전에 대시보드로 먼저 발견**한다 {추론}.",
+     "원인(데이터가 바뀌었나, 파이프라인이 깨졌나, 정책이 바뀌었나)을 가르는 순서를 만든다 {추론}."
+    ]
+   },
+   "how_far": "면접에서는 \"직접 문제를 정의하고 끝까지 갔던 경험\" 하나를 구체 숫자와 함께 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "huyen-dmls"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL 과 RDB, Hadoop Ecosystem 개념에 대한 탄탄한 지식",
+   "short": "로그를 SQL로 뽑고 분산 저장소(Hadoop 계열)가 왜 필요한지 말로 설명할 수 있어야 한다.",
+   "why": "게임 로그는 양이 커서 한 대의 DB에 못 담기 때문에 분산 저장·처리가 필요합니다 {추론}. 요건이 \"개념\"이라고 적은 것은 도구 이름보다 원리를 보겠다는 뜻으로 읽힙니다.[1]",
+   "actually": {
+    "items": [
+     "**SQL** — 계정별·일별 집계, 윈도우 함수로 \"직전 접속과의 간격\" 구하기.",
+     "**RDB** — 키·인덱스·정규화, 운영 도구의 판정 기록을 저장하는 곳.",
+     "**Hadoop 계열** — HDFS(분산 파일 저장), 하이브·스파크(큰 표에 SQL), 파티션으로 날짜별 나눠 읽기."
+    ]
+   },
+   "level": {
+    "basic": "JOIN · GROUP BY · 서브쿼리 · NULL 처리",
+    "work": "윈도우 함수 · 파티션 · 날짜 함수 · 실행계획 읽기",
+    "team": "로그 테이블을 날짜 파티션으로 설계 · 큰 집계를 스파크 SQL로 옮기기 {추론}"
+   },
+   "refs": [
+    1
+   ],
+   "study": [
+    "reis-fode",
+    "spark-streaming"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실무에서의 AI/ML 프로젝트 수행 및 AI/ML 모델 구축 경험(상용서비스 기준)",
+   "short": "연습용 모델이 아니라 실제 서비스에 붙어 돌아간 모델을 만들어 본 경험.",
+   "why": "\"상용서비스 기준\"이라는 말은 평가 점수보다 **운영에서 생기는 문제**(데이터가 바뀌어 성능이 떨어지는 것, 오탐 민원)를 겪어 봤는지를 본다는 뜻으로 읽힙니다 {추론}.[6]",
+   "actually": {
+    "items": [
+     "학습 때와 서비스 때 피처가 다르게 계산되는 문제를 잡는다.[6]",
+     "성능이 시간이 지나며 떨어지는지 감시한다.[6]",
+     "오탐이 나왔을 때 되돌릴 수 있는 장치를 둔다 {추론}."
+    ]
+   },
+   "how_far": "상용 경험이 없다면 공개 데이터(예: UnSmile)[3]로 만든 모델을 API로 띄우고 오탐을 기록하는 작은 서비스가 대체 근거가 됩니다 {추론}.",
+   "refs": [
+    3,
+    6
+   ],
+   "study": [
+    "huyen-dmls",
+    "gcp-mlops",
+    "unsmile"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Pytorch, AutoML, Tensorflow, Keras 등 딥 러닝 프레임워크 활용 능력",
+   "short": "모델을 직접 학습시키거나, 다른 사람이 만든 학습 코드를 읽고 고칠 수 있어야 한다.",
+   "why": "스마일게이트 AI 센터가 공개한 혐오 표현 분류 모델은 트랜스포머(BERT 계열) 모델이고 파이토치로 올라와 있습니다.[3] 불건전 언어 쪽에서는 이런 글 분류 모델을 다룰 가능성이 큽니다 {추론}.",
+   "actually": {
+    "items": [
+     "**PyTorch/TensorFlow·Keras** — 학습 루프, 손실·평가 지표, 모델 저장·불러오기.",
+     "**AutoML** — 모델·설정 후보를 자동으로 시험해 주는 도구. 우대사항에서 더 깊이 나온다.[1]",
+     "**글 분류** — 사전학습 언어모델에 라벨 층을 얹어 미세조정한다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "우회 표기 정규화 — 글 분류 앞단 (가상 입력)",
+     "body": "나쁜 말을 기호·반복으로 비튼 글을 모델에 넣기 전에 정리하는 단순 규칙입니다(직접 돌린 출력). 실제 서비스가 이 규칙을 쓰는지는 공개되지 않았습니다.",
+     "lang": "python",
+     "code": "import unicodedata, re\ndef norm(t):\n    t = unicodedata.normalize('NFKC', t)\n    t = re.sub(r'[^0-9A-Za-z가-힣]', '', t)   # 사이에 낀 기호 제거\n    t = re.sub(r'(.)\\1{2,}', r'\\1\\1', t)      # 3번 이상 반복 -> 2번\n    return t.lower()\nfor s in ['나.쁜.말', '나ㅡ쁜ㅡ말', '나쁜말말말말', 'Bad_Word!!']:\n    print(repr(s), '->', repr(norm(s)))\n# '나.쁜.말' -> '나쁜말'\n# '나ㅡ쁜ㅡ말' -> '나쁜말'\n# '나쁜말말말말' -> '나쁜말말'\n# 'Bad_Word!!' -> 'badword'"
+    }
+   ],
+   "how_far": "엔지니어에게는 \"직접 새 구조를 연구\"가 아니라 **학습 코드를 재현 가능하게 돌리는 능력**이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "pytorch-tut",
+    "unsmile",
+    "huyen-dmls"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java, Scala, Python(pyspark/Numpy/pandas) 등의 프로그래밍 언어 중 최소 1개의 언어를 능숙하게 사용",
+   "short": "셋 중 하나만 능숙하면 된다. 이 일은 파이썬이 가장 자연스럽다.",
+   "why": "웹 서비스(Flask·Django)와 모델 코드가 파이썬이고 스파크도 pyspark로 쓸 수 있어 파이썬 하나로 대부분 닿습니다 {추론}.[1][7] Java·Scala는 스파크·카프카 쪽에서 쓰입니다.",
+   "actually": {
+    "items": [
+     "**pandas·NumPy** — 로그 표 가공, 피처 계산.",
+     "**pyspark** — 같은 일을 분산 환경에서.[7]",
+     "**Java/Scala** — 스파크 내부 확장이나 카프카 클라이언트가 필요할 때 {추론}."
+    ]
+   },
+   "how_far": "\"최소 1개\"라고 적었으므로 셋 다 필요하지 않습니다.[1] 하나로 로그 가공 + 학습 코드 + 작은 API를 직접 짜 본 것이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "pydata-wes",
+    "spark-streaming"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Airflow를 통한 파이프라인 구축 경험",
+   "short": "\"매일 수집 → 피처 → 학습 → 평가\"를 순서대로, 실패하면 다시 돌게 엮어 본 경험.",
+   "why": "MLOps의 학습 자동화(수준 1)가 곧 이 파이프라인입니다.[6] Airflow는 워크플로를 파이썬 코드로 적어 스케줄과 모니터링까지 하는 도구입니다.[9]",
+   "actually": {
+    "items": [
+     "**DAG** — 작업과 순서를 파이썬으로 적은 그래프.[9]",
+     "**스케줄·재실행** — 정해진 시각에 돌고, 실패한 작업만 다시 돈다.[9]",
+     "**백필** — 과거 날짜 구간을 다시 채워 돌린다.",
+     "**ML 파이프라인에 적용** — 데이터 검증 → 피처 → 학습 → 평가 → (통과 시) 모델 등록.[6]"
+    ]
+   },
+   "how_far": "도구 이름보다 **멱등성**(같은 날짜를 두 번 돌려도 결과가 같게)과 실패 시 재실행 설계를 설명할 수 있는 것이 최소선입니다 {추론}.",
+   "refs": [
+    6,
+    9
+   ],
+   "study": [
+    "airflow-docs",
+    "harenslak",
+    "gcp-mlops"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "모델 결과를 시각화하고, 데이터 기반의 커뮤니케이션을 통해 유관 부서를 설득한 경험과 능력",
+   "short": "숫자와 그림으로 \"이 모델을 믿어도 되는 이유\"를 운영팀에 설명해 본 경험.",
+   "why": "오탐이 곧 유저 불만이라 모델 결과를 운영팀이 받아들이려면 근거를 보여 줘야 합니다 {추론}. 학계 발표도 판단 근거를 설명하는 XAI를 붙여 설득력을 보완했다고 말합니다.[4]",
+   "actually": {
+    "items": [
+     "정밀도·재현율을 임계값별로 그린 곡선으로 \"어디에 선을 그을지\" 보인다.",
+     "오탐 사례 몇 건을 근거 피처와 함께 보여 준다.[4]",
+     "주간 탐지 건수·확정 비율 추이를 한 장으로."
+    ]
+   },
+   "refs": [
+    4
+   ],
+   "study": [
+    "pydata-wes"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 모델 자동 최적화 기법 개발(AutoML, Neural Architecture Search 등)",
+   "short": "모델 구조·설정을 사람이 손으로 고르지 않고 자동으로 탐색하게 만드는 기술(우대).",
+   "why": "필수가 아니라 우대이며, 연구에 가까운 영역입니다.[1] 모델이 여러 개이고 자주 다시 학습한다면 설정 탐색의 자동화가 이득입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**AutoML** — 후보 모델·하이퍼파라미터를 자동 시험.",
+     "**NAS(신경망 구조 탐색)** — 층 구성 자체를 탐색. 계산량이 커서 보통 연구 조직이 한다 {추론}."
+    ]
+   },
+   "how_far": "필수 요건을 채운 뒤에 보는 것입니다. 하이퍼파라미터 탐색 도구를 한 번 써 본 정도로도 말할 거리가 됩니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "pytorch-tut",
+    "huyen-dmls"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Spark, EMR 등의 빅데이터 프레임워크와 분산처리 기술로 대용량 데이터 처리 및 파이프라인을 구축해보신 분",
+   "short": "큰 로그를 여러 대로 나눠 처리하는 파이프라인을 만들어 본 경험(EMR은 아마존의 스파크 서비스).",
+   "why": "게임 로그는 한 대에 안 담기는 양이라 Spark 같은 분산 처리가 필요하고, 공고도 AWS·Azure를 우대로 적었습니다.[1] 스파크는 스트림과 배치를 같은 SQL 엔진 위에서 다룹니다.[7]",
+   "actually": {
+    "items": [
+     "**파티션·셔플** — 날짜·계정으로 나누고, 합칠 때의 비용을 안다.",
+     "**EMR** — 스파크 클러스터를 클라우드에서 빌려 쓰는 서비스 {추론}.",
+     "**배치+스트림** — 같은 변환을 과거 전체(배치)와 지금 들어오는 것(스트림)에 쓴다.[7]"
+    ]
+   },
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "spark-streaming",
+    "reis-fode"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kafka, Spark-Streaming 등의 스트림 프로세싱 시스템에 대한 경험이 있으신 분",
+   "short": "메시지 큐(Kafka)에서 읽어 실시간으로 처리해 본 경험 — 업무 4번 줄의 도구.",
+   "why": "스파크 문서는 Kafka를 스트림의 소스와 싱크로 쓰는 방법을 따로 설명합니다.[8] 공고가 실시간 처리를 업무로 적은 만큼 이 우대는 업무와 직접 이어집니다.[1]",
+   "actually": {
+    "items": [
+     "**토픽·파티션·컨슈머 그룹** — 이벤트를 나눠 담고 여러 소비자가 나눠 읽는 구조.",
+     "**오프셋과 재처리** — 어디까지 읽었는지 기억해 장애 뒤 이어서 읽는다.[8]",
+     "**중복·순서** — 같은 이벤트가 두 번 와도 결과가 같도록 설계한다 {추론}."
+    ]
+   },
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "kafka-guide",
+    "spark-streaming"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, Azure 등 클라우드 기반 서비스 환경에서의 개발 경험이 있으신 분",
+   "short": "학습·배포·저장소를 클라우드 서비스로 꾸려 본 경험.",
+   "why": "공고는 AWS·Azure를 예시로 들었고, MLOps 구성요소(저장소·오케스트레이터·모델 보관소)는 클라우드 서비스로 이루어지는 경우가 많습니다.[1][6] 어느 클라우드를 쓰는지는 공고에 없습니다.",
+   "actually": {
+    "items": [
+     "객체 저장소(S3·Blob)에 로그 저장.",
+     "관리형 스파크(EMR 등)와 컨테이너 배포 {추론}.",
+     "권한(IAM)과 비용 관리."
+    ]
+   },
+   "how_far": "한 클라우드에서 위 셋을 직접 해 본 경험이면 \"AWS 또는 Azure\" 중 어느 쪽이든 인정될 가능성이 큽니다 {추론}.",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "gcp-mlops",
+    "reis-fode"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "게임 로그를 보며 이상한 패턴을 찾는 걸 즐기는 사람",
+   "모델을 만든 뒤 운영·감시까지 책임지고 싶은 사람",
+   "운영팀·기획과 말을 맞추며 일하는 걸 꺼리지 않는 사람[1]"
+  ],
+  "hard": [
+   "제재가 걸린 일이라 오탐을 줄이는 압박이 크다 {추론}",
+   "정답 라벨이 운영팀 판정에서 나와 데이터가 완전하지 않다 {추론}",
+   "요건이 넓다 — SQL·Hadoop·딥러닝·Airflow·웹까지 한 공고에 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "봇 탐지 모델에서 정확도 대신 무엇을 보나요?",
+   "a": "오탐 비용이 큰 일이라 정밀도·재현율을 가르는 질문.[1]"
+  },
+  {
+   "q": "제재 기록을 정답으로 쓰면 어떤 문제가 생기나요?",
+   "a": "제재가 놓친 봇이 정상으로 학습되는 라벨 편향. {추론}"
+  },
+  {
+   "q": "새 모델 성능이 시간이 지나 떨어졌다면 원인을 어떻게 가르나요?",
+   "a": "MLOps의 감시·재학습 질문.[6]"
+  },
+  {
+   "q": "Airflow DAG를 같은 날짜로 두 번 돌려도 결과가 같게 하려면?",
+   "a": "멱등성 질문.[9]"
+  },
+  {
+   "q": "1분 단위 계정별 거래 횟수를 Kafka·Spark로 어떻게 구하나요?",
+   "a": "실시간 처리 업무와 이어지는 질문.[8]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "게임잡 · [LOST ARK] 게임 데이터엔지니어 담당 모집",
+   "url": "https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=285795",
+   "kind": "posting",
+   "note": "업무·자격·우대·채용 절차 원문"
+  },
+  {
+   "n": 2,
+   "title": "스마일게이트 뉴스룸 · AI 센터 악플·혐오 표현 데이터셋 공개",
+   "url": "https://newsroom.smilegate.com/eng/Smilegate_AI_Center",
+   "kind": "company",
+   "date": "2022-01",
+   "note": "스마일게이트 AI 센터가 직접 밝힌 글 — 포털·커뮤니티 글 55만 건 중 약 1만 건, 혐오 8개 주제"
+  },
+  {
+   "n": 3,
+   "title": "GitHub · smilegate-ai/korean_unsmile_dataset",
+   "url": "https://github.com/smilegate-ai/korean_unsmile_dataset",
+   "kind": "company",
+   "date": "2022",
+   "note": "10개 라벨·18,742문장, 데이터 CC-BY-NC-ND 4.0, 코드·기준 모델 Apache 2.0"
+  },
+  {
+   "n": 4,
+   "title": "테크M · [NDC21] 악성행위는 전염된다",
+   "url": "https://www.techm.kr/news/articleView.html?idxno=84724",
+   "kind": "news",
+   "date": "2021-06",
+   "note": "김휘강 교수(고려대)의 게임봇 탐지 발표 — 다른 회사·학계 사례"
+  },
+  {
+   "n": 5,
+   "title": "아시아경제 · 넥슨 카트라이더 AI 탐지",
+   "url": "https://www.asiae.co.kr/en/article/2020022409394074110",
+   "kind": "news",
+   "date": "2020-02",
+   "note": "다른 게임사가 로그로 이상 행동을 찾은 사례(영문 번역본)"
+  },
+  {
+   "n": 6,
+   "title": "Google Cloud · MLOps — 지속 전달과 자동화 파이프라인",
+   "url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+   "kind": "reference",
+   "note": "MLOps 수준 0·1·2와 구성요소"
+  },
+  {
+   "n": 7,
+   "title": "Apache Spark · Structured Streaming 개요",
+   "url": "https://spark.apache.org/docs/latest/streaming/index.html",
+   "kind": "reference",
+   "note": "마이크로배치 기본"
+  },
+  {
+   "n": 8,
+   "title": "Apache Spark · Structured Streaming + Kafka 연동",
+   "url": "https://spark.apache.org/docs/latest/streaming/structured-streaming-kafka-integration.html",
+   "kind": "reference",
+   "note": "Kafka 소스·싱크"
+  },
+  {
+   "n": 9,
+   "title": "Apache Airflow 문서",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+   "kind": "reference",
+   "note": "워크플로를 파이썬 코드로 정의·스케줄"
+  },
+  {
+   "n": 10,
+   "title": "자소설닷컴 · 스마일게이트",
+   "url": "https://jasoseol.com/companies/11383",
+   "kind": "reference",
+   "note": "공공데이터 집계 초봉·평균(검색 결과 표시값 — 페이지 직접 열기는 403)"
+  },
+  {
+   "n": 11,
+   "title": "게임잡 · 스마일게이트 기업정보",
+   "url": "https://www.gamejob.co.kr/Company/Detail?M=18216698&tabcode=1",
+   "kind": "company",
+   "date": "2026",
+   "note": "복리후생 항목명 13개·회사 주소"
+  }
+ ],
+ "caveat": "스마일게이트가 로스트아크의 어뷰징 탐지 구조·모델·피처를 공개한 발표·글은 이 회차에서 찾지 못했습니다(NDC·기술 블로그·보도 검색). 회사 자신의 근거는 이 공고와 AI 센터의 혐오 표현 데이터셋 공개(2022)뿐이고, 나머지는 다른 곳(고려대 교수 발표·넥슨 사례·구글·Apache 문서)의 \"보통 이런 것\"입니다. 연봉은 집계 사이트 값이고 공시 평균 급여는 확인하지 못했습니다.",
+ "resources": [
+  {
+   "id": "gcp-mlops",
+   "title": "MLOps: Continuous delivery and automation pipelines in machine learning",
+   "by": "Google Cloud 문서",
+   "kind": "doc",
+   "url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "업무①·\"상용서비스\" 요건 — 수동·학습 자동화·배포 자동화 세 수준과 구성요소를 한 번에 본다."
+  },
+  {
+   "id": "huyen-dmls",
+   "title": "Designing Machine Learning Systems",
+   "by": "Chip Huyen · O'Reilly · 2022",
+   "kind": "book",
+   "url": "https://www.oreilly.com/search/?q=Designing%20Machine%20Learning%20Systems%20Chip%20Huyen",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "모델을 서비스에 붙인 뒤 생기는 문제(데이터 변화·감시·재학습)를 다룬다. 업무①②와 \"상용서비스 기준\" 요건에 맞다."
+  },
+  {
+   "id": "reis-fode",
+   "title": "Fundamentals of Data Engineering",
+   "by": "Joe Reis · Matt Housley · O'Reilly · 2022",
+   "kind": "book",
+   "url": "https://www.oreilly.com/search/?q=Fundamentals%20of%20Data%20Engineering%20Reis%20Housley",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "로그 수집·저장·변환·서빙의 전체 그림. 분산 저장·SQL·스트림·클라우드 요건의 바탕."
+  },
+  {
+   "id": "harenslak",
+   "title": "Data Pipelines with Apache Airflow",
+   "by": "Bas Harenslak · Julian de Ruiter · Manning · 2021",
+   "kind": "book",
+   "url": "https://www.manning.com/books/data-pipelines-with-apache-airflow",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "Airflow 요건 — DAG·스케줄·백필·재실행을 예제로 익힌다."
+  },
+  {
+   "id": "airflow-docs",
+   "title": "Apache Airflow 공식 문서",
+   "by": "Apache Software Foundation",
+   "kind": "doc",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "Airflow 요건 — 튜토리얼로 첫 DAG를 만들어 본다."
+  },
+  {
+   "id": "spark-streaming",
+   "title": "Structured Streaming 프로그래밍 가이드 · Kafka 연동",
+   "by": "Apache Spark 문서",
+   "kind": "doc",
+   "url": "https://spark.apache.org/docs/latest/streaming/structured-streaming-kafka-integration.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "업무④와 우대 — Kafka에서 읽고 쓰는 스트림 처리의 사용법."
+  },
+  {
+   "id": "kafka-guide",
+   "title": "Apache Kafka 공식 문서",
+   "by": "Apache Software Foundation",
+   "kind": "doc",
+   "url": "https://kafka.apache.org/documentation/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "Kafka 우대 — 토픽·파티션·컨슈머 그룹·오프셋 개념."
+  },
+  {
+   "id": "flask-docs",
+   "title": "Flask 공식 문서",
+   "by": "Pallets",
+   "kind": "doc",
+   "url": "https://flask.palletsprojects.com/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "업무③ — 모델 점수를 돌려주는 작은 API."
+  },
+  {
+   "id": "django-docs",
+   "title": "Django 공식 문서 · 튜토리얼",
+   "by": "Django Software Foundation",
+   "kind": "doc",
+   "url": "https://docs.djangoproject.com/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "업무③ — 로그인·관리자·DB 모델이 있는 내부 도구."
+  },
+  {
+   "id": "pytorch-tut",
+   "title": "PyTorch 공식 튜토리얼",
+   "by": "PyTorch",
+   "kind": "doc",
+   "url": "https://pytorch.org/tutorials/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "딥러닝 프레임워크 요건 — 학습 루프·저장·불러오기."
+  },
+  {
+   "id": "pydata-wes",
+   "title": "Python for Data Analysis (3판)",
+   "by": "Wes McKinney · O'Reilly · 2022",
+   "kind": "book",
+   "url": "https://www.oreilly.com/search/?q=Python%20for%20Data%20Analysis%20McKinney",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "pandas·NumPy 요건 — 로그 표를 가공해 피처를 만드는 법."
+  },
+  {
+   "id": "unsmile",
+   "title": "Korean UnSmile Dataset (스마일게이트 AI)",
+   "by": "스마일게이트 AI 센터 · 2022",
+   "kind": "doc",
+   "url": "https://github.com/smilegate-ai/korean_unsmile_dataset",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "회사가 직접 공개한 불건전 언어 분류 자료. 10개 라벨·18,742문장으로 글 분류 모델을 직접 학습해 볼 수 있다(데이터는 CC-BY-NC-ND 4.0 — 학습·개인 연습용)."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "MLOps 그림 잡기",
+   "time": "1주",
+   "goal": "수준 0·1·2의 차이를 말로 설명한다.",
+   "resources": [
+    "gcp-mlops",
+    "huyen-dmls"
+   ],
+   "task": "UnSmile 같은 공개 글 분류 문제를 골라, 수준 0(노트북)과 수준 1(자동 파이프라인)에서 달라지는 단계를 표로 적는다."
+  },
+  {
+   "title": "로그에서 피처 만들기",
+   "time": "1~2주",
+   "goal": "계정별·일별 집계로 피처를 만들고 정밀도·재현율로 평가한다.",
+   "resources": [
+    "pydata-wes",
+    "reis-fode"
+   ],
+   "task": "가상 로그(계정 1,000개 × 30일)를 pandas로 만들어 일별 플레이 시간 평균·표준편차 피처를 뽑고 간단한 임계값 규칙의 정밀도·재현율을 잰다."
+  },
+  {
+   "title": "글 분류 모델 학습",
+   "time": "2~3주",
+   "goal": "공개 데이터로 글 분류 모델을 학습·저장·불러온다.",
+   "resources": [
+    "unsmile",
+    "pytorch-tut"
+   ],
+   "task": "UnSmile 일부로 작은 분류 모델을 학습하고, 우회 표기 정규화 전·후 성능을 비교한다."
+  },
+  {
+   "title": "Airflow로 학습 자동화",
+   "time": "2주",
+   "goal": "수집 → 피처 → 학습 → 평가가 순서대로 돌고 실패 시 재실행된다.",
+   "resources": [
+    "airflow-docs",
+    "harenslak"
+   ],
+   "task": "3단계 DAG를 만들고 같은 날짜를 두 번 돌려도 결과가 같게(멱등) 만든 뒤 7일치를 백필한다."
+  },
+  {
+   "title": "운영 화면과 스트림",
+   "time": "2~3주",
+   "goal": "의심 목록을 보여 주는 화면과, 들어오는 이벤트를 즉시 집계하는 흐름을 만든다.",
+   "resources": [
+    "django-docs",
+    "flask-docs",
+    "spark-streaming",
+    "kafka-guide"
+   ],
+   "task": "Flask API로 점수를 돌려주고 Django 관리 화면에 판정 버튼을 붙인다. 로컬 Kafka에 가상 이벤트를 넣고 Spark로 1분 창 집계를 읽는다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 4,619만원**, 평균 연봉 **약 7,107만원**(공공데이터 집계) — 공시 숫자는 이 회차에서 확인하지 못했다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,619만원",
+    "amount": 4619,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 스마일게이트 페이지의 표시값. 법인 단위 집계라 로스트아크 개발 직군과 다를 수 있다 [10]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 7,107만원",
+    "amount": 7107,
+    "basis": "공공데이터 집계",
+    "note": "같은 페이지의 표시값. 경력직이 섞인 전체 평균이라 초봉이 아니다 [10]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 이 회차에서는 사업보고서의 직원 평균 급여를 확인하지 못했고(공시 숫자 없음), 집계 사이트 페이지도 직접 열리지 않아 검색 결과에 표시된 값을 옮겼다 [10]. 평균은 초봉이 아니다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "개발 환경",
+    "detail": "책상 및 고사양 PC 제공, 모니터·키보드 등 맞춤 개발환경"
+   },
+   {
+    "name": "식사",
+    "detail": "조식·중식·석식 지원"
+   },
+   {
+    "name": "복지포인트",
+    "detail": "항목명만 공개"
+   },
+   {
+    "name": "자사 게임비 지원",
+    "detail": "항목명만 공개"
+   },
+   {
+    "name": "사내 무이자대출",
+    "detail": "항목명만 공개"
+   },
+   {
+    "name": "단체상해보험",
+    "detail": "항목명만 공개"
+   },
+   {
+    "name": "경조사비·이사비 지원",
+    "detail": "항목명만 공개"
+   },
+   {
+    "name": "헬스장 이용권",
+    "detail": "항목명만 공개"
+   },
+   {
+    "name": "오아시스 휴가",
+    "detail": "항목명만 공개"
+   },
+   {
+    "name": "장기근속자 포상",
+    "detail": "항목명만 공개"
+   },
+   {
+    "name": "52시간제 준수",
+    "detail": "항목명만 공개"
+   }
+  ],
+  "note": "게임잡 스마일게이트 기업정보의 복리후생 13개 항목명이다(2026년 페이지, 금액·조건은 적혀 있지 않다) [11]. 이 페이지의 법인이 이 공고의 법인(로아개발본부)과 같다고는 적혀 있지 않다 {추론}."
+ },
+ "location": {
+  "name": "스마일게이트 (판교미래에셋센터)",
+  "address": "경기도 성남시 분당구 판교역로192번길 12 (삼평동, 판교미래에셋센터)",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C192%EB%B2%88%EA%B8%B8%2012",
+  "near": "신분당선·경강선 판교역 근처 {추론}",
+  "note": "게임잡 기업정보의 회사 주소(B1·5·6층) [11]. 공고 근무지는 '경기 성남시'까지만 적혀 있어 팀 자리가 이 건물인지는 확인하지 못했다 [1]."
+ }
+}
