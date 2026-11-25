@@ -346,6 +346,7 @@
   "jobkorea-50361414": "nextsecurities-ai-engineer-video",
   "jobkorea-50361367": "nextsecurities-ai-governance-manager",
   "jobkorea-50361059": "nextsecurities-backend-data",
+  "ats-greeting:nextsecurities:172335": "nextsecurities-business-analyst",
   "jobkorea-50361209": "nextsecurities-channel-backend",
   "saramin-55282490": "nextsecurities-channel-backend",
   "wanted-378758": "nextsecurities-cloud-architect",
@@ -353,6 +354,7 @@
   "wanted-388908": "nextsecurities-data-analytics-engineer",
   "jobkorea-50357268": "nextsecurities-data-platform-engineer",
   "wanted-388957": "nextsecurities-data-platform-engineer",
+  "ats-greeting:nextsecurities:231113": "nextsecurities-derivatives-backoffice-planner",
   "ats-greeting:nextsecurities:245534": "nextsecurities-erp-developer",
   "wanted-400000": "nextsecurities-frontend-internal-platform",
   "jobkorea-50360665": "nextsecurities-fx-transfer-backend",
@@ -3521,6 +3523,16 @@
    "lines": 17
   },
   {
+   "id": "nextsecurities-business-analyst",
+   "company": "넥스트증권",
+   "role": "업무개발 담당자 (증권 서비스·백오피스 기획)",
+   "jobs": [
+    "ats-greeting:nextsecurities:172335"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 15
+  },
+  {
    "id": "nextsecurities-channel-backend",
    "company": "넥스트증권",
    "role": "Backend Engineer — 채널 서비스/플랫폼",
@@ -3571,6 +3583,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 28
+  },
+  {
+   "id": "nextsecurities-derivatives-backoffice-planner",
+   "company": "넥스트증권",
+   "role": "파생 업무개발 담당자",
+   "jobs": [
+    "ats-greeting:nextsecurities:231113"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 16
   },
   {
    "id": "nextsecurities-erp-developer",
