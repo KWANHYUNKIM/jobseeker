@@ -19,6 +19,7 @@
   "ats-ashby:42dot:a82b98bb-2519-4b69-990b-77300b8d136b": "42dot-staff-embedded-software-engineer",
   "ats-ashby:42dot:1cfd36d5-26ce-4928-be2a-712c125d6d71": "42dot-sw-test-engineer-body",
   "ats-ashby:42dot:efbd4971-b841-410f-aa6b-e333c64cfe23": "42dot-sw-test-engineer-diagnostics",
+  "ats-ashby:42dot:403e89b4-fdf4-4168-a115-163706830174": "42dot-system-test-engineer-sw-update",
   "ats-ashby:42dot:2276c44d-d0d6-48d5-ad44-014e8da6fa55": "42dot-system-test-engineer-verification",
   "ats-ashby:42dot:c184cf35-51e2-4e80-87bc-579089f07472": "42dot-tts-deep-learning-engineer",
   "ats-ashby:42dot:beb84dde-9182-4441-a25b-c03644640854": "42dot-vehicle-system-integration",
@@ -528,6 +529,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 29
+  },
+  {
+   "id": "42dot-system-test-engineer-sw-update",
+   "company": "포티투닷(42dot)",
+   "role": "System Test Engineer",
+   "jobs": [
+    "ats-ashby:42dot:403e89b4-fdf4-4168-a115-163706830174"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
   },
   {
    "id": "42dot-system-test-engineer-verification",
