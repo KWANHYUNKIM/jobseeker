@@ -68,6 +68,7 @@
   "ats-greenhouse:coupang:7834206": "coupang-search-ai-engineer-senior-staff-mtv",
   "ats-greenhouse:coupang:8239021": "coupang-search-discovery-senior-staff-ds",
   "ats-greenhouse:coupang:7977000": "coupang-search-ranking-personalization-senior-staff-mtv",
+  "ats-greenhouse:coupang:8090443": "coupang-search-relevance-senior-staff-mle-mtv",
   "ats-greenhouse:coupang:8207116": "coupang-security-automation-engineer-seattle",
   "ats-greenhouse:coupang:7342961": "coupang-security-infra-senior-staff-backend-mtv",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
@@ -948,6 +949,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 22
+  },
+  {
+   "id": "coupang-search-relevance-senior-staff-mle-mtv",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior Staff II Machine Learning Engineer — 검색 관련성(Search Relevance) (L7-2)",
+   "jobs": [
+    "ats-greenhouse:coupang:8090443"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
   },
   {
    "id": "coupang-security-automation-engineer-seattle",

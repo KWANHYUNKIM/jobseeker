@@ -1,0 +1,811 @@
+{
+ "id": "coupang-search-relevance-senior-staff-mle-mtv",
+ "company": "쿠팡 (Coupang)",
+ "role": "Senior Staff II Machine Learning Engineer — 검색 관련성(Search Relevance) (L7-2)",
+ "team": "Search and Discovery · 검색·탐색 관련성 (마운틴뷰)",
+ "jobs": [
+  "ats-greenhouse:coupang:8090443"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡 검색창에 친 말과 **수십억 개 상품 가운데 정말 맞는 것**을 이어 주는 일(검색 관련성)을 서빙·파이프라인·머신러닝까지 통째로 끌고 가는 **엔지니어 리더** 자리입니다.[1]",
+  "env": "쿠팡 검색은 검색어 이해 → 후보 찾기 → 순위의 3단계로 돕니다.[6] 관련성은 '정확히 맞음·대체품·무관' 세 칸으로 매기고, 대만처럼 새로 연 시장에서는 14B LLM 을 선생으로 학습시킨 뒤 CPU 에서 도는 작은 두 탑(twin-tower) 모델로 줄여 썼습니다 — 온라인에서 무관 상품 비율 45.8% 감소, 세션 구매율 0.866% 상승.[5]",
+  "oneline": "한 모델을 잘 만드는 사람이 아니라 **'관련성을 어떻게 재고, 무엇부터 고칠지'를 정하고 여러 팀을 그 방향으로 맞추는** 사람. 경력 10년 이상, 검색 VP·시니어 디렉터와 직접 일합니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Build end-end Search & Discovery systems and help design the next-generation AI products to support the business growth",
+   "short": "검색어 이해부터 후보 찾기·순위·서빙까지 검색을 끝에서 끝까지 만들고, 다음 세대 AI 검색을 설계하는 일.",
+   "why": "공고는 검색·탐색을 쿠팡에서 고객과 가장 많이 닿는 경험이라 부르고, 앞으로 몇 년의 급성장을 버틸 다음 세대 바탕을 서빙·파이프라인·머신러닝 전체에 걸쳐 만드는 자리라고 적었습니다.[1]",
+   "flows": [
+    {
+     "caption": "쿠팡 검색 한 번의 흐름 — 이 자리는 전부를 보되 관련성 칸이 중심 [6][5]{추론}",
+     "steps": [
+      "검색어 이해(의도·카테고리·브랜드)",
+      "후보 찾기(낱말 검색 + 임베딩 검색)",
+      "관련성 판정(무관 거르기)",
+      "순위(관련성 + 평점·리뷰·가격·브랜드)",
+      "실시간 서빙",
+      "기록 → 학습 데이터"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**검색어 이해** — '나이키 운동화'에서 브랜드(나이키)와 카테고리(운동화)를 뽑아 둔다. 쿠팡 검색 글이 첫 단계로 꼽은 일이다.[6]",
+     "**후보 찾기** — 낱말이 겹치는 상품(BM25)과 뜻이 가까운 상품(임베딩 검색)을 함께 모은다.[5][8]",
+     "**관련성** — 모은 후보가 정말 맞는지 판정해 무관한 것을 걸러 내고, 정확히 맞는 것을 위로 올린다.[5]",
+     "**순위** — 관련성만이 아니라 평점·리뷰·가격·브랜드도 같이 본다고 쿠팡 검색 글이 적었다.[6]",
+     "**다음 세대** — 큰 LLM 을 실시간에 그대로 쓰지 않고, 선생 모델로 학습시킨 뒤 작은 모델로 줄여 서빙한다 — 쿠팡이 실제로 낸 길이다.[5][7]"
+    ]
+   },
+   "how_far": "Senior Staff II 는 한 칸이 아니라 **칸 사이 맞물림**(검색어 이해가 바뀌면 후보·순위가 어떻게 흔들리나)을 책임집니다. 각 칸은 다른 팀이 맡고, 이 사람은 그 사이의 설계와 우선순위를 냅니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    7,
+    8
+   ],
+   "study": [
+    "iir-book",
+    "relevant-search",
+    "ai-powered-search"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Have strong execution with the ability to drive key developments and overcome technical blockers",
+   "short": "중요한 개발을 끝까지 밀고, 막힌 기술 문제(느린 서빙·데이터 부족 등)를 직접 뚫는 실행력.",
+   "why": "공고는 아래 부품까지 깊이 파고들어 전체를 설계·최적화하고, '끈기(grit)'로 결과를 내는 본보기가 되라고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**막힘의 예 ① 데이터 없음** — 새 시장에는 사람 라벨과 클릭 기록이 거의 없다. 쿠팡은 한국 라벨 500만 건에 대만 50만 건을 더하고, 번역 과제를 같이 학습시켜 한국에서 배운 것을 넘겼다.[5]",
+     "**막힘의 예 ② 서빙 비용** — 14B 모델을 모든 검색에 돌릴 수 없어 작은 모델로 증류했다.[5]",
+     "**막힘의 예 ③ 라벨 오류** — 사람 라벨이 틀린 경우를 줄이려고 이전 회차 모델이 매긴 확률을 섞어 다시 학습시켰다(아래 자기 증류).[5]",
+     "**막힘의 예 ④ GPU** — 쿠팡은 GPU 가 모자라고 비싸다는 점을 LLM 도입의 어려움으로 적었다.[7]"
+    ]
+   },
+   "how_far": "막힌 것을 남에게 넘기지 않고 **직접 코드·실험으로 풀어 보일 수 있는** 사람이어야 합니다 — 이 급에서도 손을 놓지 않는다는 뜻입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    7
+   ],
+   "study": [
+    "csrm-paper",
+    "coupang-llm-blog"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Ensure solid ML design and operational excellence",
+   "short": "모델 설계가 탄탄한지, 배포·감시·되돌리기가 잘 도는지 책임지는 일.",
+   "why": "공고는 '질 좋은 머신러닝 시스템을 만드는 본보기'를 이 자리에 요구했습니다.[1] 쿠팡 ML 플랫폼은 배포 전 학습·예측 불일치 검사, 일부만 먼저 켜는 카나리, 점진 확대를 거칩니다.[8]",
+   "actually": {
+    "items": [
+     "**설계 검토** — 학습 데이터가 실제 검색 분포와 맞나, 라벨 기준이 같은가, 새 모델이 무관 상품을 더 들이지 않나. {추론}",
+     "**학습·서빙 일치** — 오프라인에서 잰 정확도가 서빙에서도 나오나. 쿠팡 논문은 선생 모델과 증류한 작은 모델의 정확도를 따로 견줬다.[5]",
+     "**배포** — 카나리 → 점진 확대, 문제가 보이면 바로 되돌림.[8]",
+     "**운영** — 지연(p99), 무관 비율, 색인 갱신 주기를 계속 본다. 쿠팡의 작은 모델은 상품 임베딩을 미리 계산해 두고 주기적으로 갱신한다.[5]"
+    ]
+   },
+   "how_far": "직접 다 고치는 사람이 아니라 **팀들이 지켜야 할 기준(설계 문서 양식·출시 기준·감시 지표)을 세우는** 사람입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    8
+   ],
+   "study": [
+    "ml-design-book",
+    "coupang-ml-platform"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Be metrics driven and can identify big opportunities",
+   "short": "관련성을 숫자(무관 비율·NDCG·구매율)로 재고, 그 숫자로 가장 크게 남는 일을 골라낸다.",
+   "why": "검색 관련성은 '좋아 보인다'로는 고칠 수 없습니다. 쿠팡은 관련성 모델을 오프라인 F1, 사람이 본 상위 5개 무관 비율, 온라인 A/B 의 세션 구매율로 나눠 쟀습니다.[5]",
+   "actually": {
+    "items": [
+     "**사람 평가** — 검색어·상품 짝마다 정확(2)·대체(1)·무관(0)을 매긴다. 쿠팡 시험 묶음은 2만 건을 8명이 매기고 7명 넘게 같은 답을 낸 것만 썼다.[5]",
+     "**순위 지표** — 위쪽에 맞는 것이 있을수록 높은 NDCG.[9] 아래 예시처럼 NDCG 가 올라도 무관 상품이 상위 5개에 남을 수 있어 지표를 둘 다 본다. {추론}",
+     "**온라인** — A/B 실험으로 구매율·장바구니 담기를 본다. 쿠팡 관련성 모델은 세션 구매율을 0.866% 올렸다.[5][10]",
+     "**큰 기회 찾기** — 실패한 검색어를 묶어(오타·브랜드·새 시장 언어) 가장 많이 걸리는 묶음부터 고친다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "NDCG@5 와 '상위 5개에 무관 상품이 있나' (직접 돌린 출력)",
+     "body": "같은 다섯 상품의 순서만 바꿨습니다. NDCG 는 0.785 → 1.0 으로 올랐지만 무관(0) 상품이 여전히 다섯 안에 남습니다 — 순위 지표와 무관 비율을 따로 보는 이유입니다. {추론}",
+     "lang": "python",
+     "code": "import math\ndef dcg(gains):\n    return sum((2**g - 1) / math.log2(i + 2) for i, g in enumerate(gains))\ndef ndcg(gains, k=5):\n    ideal = sorted(gains, reverse=True)\n    return dcg(gains[:k]) / dcg(ideal[:k])\n# 2=정확히 맞음, 1=대체품, 0=무관 (검색어 '나이키 운동화' 상위 5개)\nbefore = [1, 2, 0, 2, 1]\nafter  = [2, 2, 1, 1, 0]\nprint(\"before\", round(ndcg(before), 3))\nprint(\"after \", round(ndcg(after), 3))\ndefect5 = lambda g: any(x == 0 for x in g[:5])\nprint(\"top5 무관 포함:\", defect5(before), defect5(after))\n# before 0.785\n# after  1.0\n# top5 무관 포함: True True"
+    }
+   ],
+   "how_far": "지표를 보는 사람이 아니라 **어떤 지표를 목표로 삼을지 정하는** 사람입니다 — 사람 평가 기준(가이드라인)과 온라인 지표의 연결까지. {추론}",
+   "refs": [
+    5,
+    9,
+    10
+   ],
+   "study": [
+    "kohavi-ko",
+    "google-raters",
+    "ndcg-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Build strong collaborations with partner teams",
+   "short": "검색 인프라·카탈로그·광고·추천·ML 플랫폼 같은 이웃 팀과 기술 방향을 맞춘다.",
+   "why": "공고는 각 팀 리더들과 효과적으로 일하고 핵심 이해관계자와 기술 방향을 맞추는 능력이 이 자리의 성공 열쇠라고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**카탈로그** — 상품 제목·카테고리·브랜드가 엉망이면 관련성 모델이 아무리 좋아도 틀린다. 쿠팡 논문은 카테고리·브랜드 한–중 대응표 5만 건씩을 사람이 만들어 썼다.[5]",
+     "**ML 플랫폼** — 학습·서빙 바닥(Triton·Ray·vLLM)은 플랫폼 팀 몫이다.[7]",
+     "**광고·추천** — 같은 검색 결과 화면에 광고와 추천이 같이 놓인다. 관련성 기준을 같이 쓰는지 맞춘다. {추론}",
+     "**설계 문서** — 여러 팀이 합의하는 도구는 결국 글이다. {추론}"
+    ]
+   },
+   "how_far": "Senior Staff 의 협업은 회의 참석이 아니라 **다른 팀의 로드맵에 내 요구가 들어가게 하는 것**입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    7
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Recruit and develop world-class talent",
+   "short": "좋은 검색·ML 엔지니어를 뽑고(면접·채용 기준) 팀원이 자라게 이끄는 일.",
+   "why": "공고 제목은 개인 기여자(IC) 직급이지만 업무에 채용과 육성이 들어 있고, 우대사항에 팀 리드·매니저 경험이 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**채용** — 면접 문제와 합격 기준을 만들고 면접관으로 들어간다. {추론}",
+     "**육성** — 설계 검토·코드 리뷰로 팀원의 판단을 키운다. {추론}",
+     "**구성** — 같은 조직에는 시니어 디렉터·스태프·시니어 MLE 자리가 따로 있다 — 이 자리는 그 사이의 기술 리더다.[2][3][4]"
+    ]
+   },
+   "how_far": "사람 관리 책임이 꼭 붙는다고 적혀 있지는 않습니다. 다만 **'이 사람 밑에서 일하면 자란다'는 평판**이 이 급의 기대입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "10+ years of industry experience in technology companies",
+   "short": "기술 회사 실무 10년 이상 — Senior Staff II(Lv. 7-II) 직급에 맞는 숫자다.",
+   "why": "이 공고의 직급은 Lv. 7-II 입니다.[1] 같은 회사 같은 급 공고들도 경력 8~10년 이상을 적었습니다.[11][12]",
+   "how_far": "연수보다 **그 10년 안에 큰 검색·ML 시스템을 몇 번 처음부터 끝까지 이끌었나**가 실제 기준입니다. {추론}",
+   "refs": [
+    1,
+    11,
+    12
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Have a broad and deep understanding of key technology areas including information retrieval, deep learning, large language modeling, data processing, real-time serving",
+   "short": "정보 검색·딥러닝·LLM·대용량 데이터 처리·실시간 서빙 다섯 분야를 넓고 깊게 안다.",
+   "why": "쿠팡의 관련성 작업 하나에 다섯이 다 들어갑니다 — BM25(정보 검색)로 가짜 짝을 만들고, 임베딩 검색(딥러닝)을 증류하고, 14B LLM 을 미세조정하고, 한 달치 노출 기록(데이터 처리)으로 작은 모델을 학습시켜 CPU 에서 서빙합니다.[5]",
+   "actually": {
+    "items": [
+     "**정보 검색** — 역색인·BM25·NDCG. BM25 는 낱말 빈도와 문서 길이로 점수를 매긴다.[13]",
+     "**딥러닝** — 검색어와 상품을 따로 벡터로 만드는 두 탑 모델. 상품 벡터는 미리 계산해 두고 검색어만 실시간으로 만든다.[5][14]",
+     "**LLM** — 쿠팡은 한국어·중국어 번체에서 성적이 나은 Orion-14B 를 골라 LoRA 로 미세조정했다(학습 파라미터 1.07%).[5]",
+     "**데이터 처리** — 노출 기록·사람 라벨·번역 데이터를 학습 묶음으로 모은다.[5]",
+     "**실시간 서빙** — 수십 ms 안에 수백 개 후보를 판정해야 한다. 그래서 LLM 이 아니라 증류한 작은 모델이 서빙한다.[5] {추론}"
+    ]
+   },
+   "level": {
+    "basic": "BM25·임베딩 검색·NDCG 를 설명하고 작은 검색기를 직접 짤 수 있다",
+    "work": "두 탑 모델 학습·근사 최근접 색인·A/B 실험·LLM 미세조정을 실제로 해 봤다",
+    "team": "LLM 선생 → 작은 서빙 모델 증류처럼 다섯 분야를 엮은 설계를 비용·지연과 함께 맞바꿔 고를 수 있다"
+   },
+   "refs": [
+    5,
+    13,
+    14
+   ],
+   "study": [
+    "iir-book",
+    "sbert",
+    "lora-paper",
+    "csrm-paper"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Solid track record of delivering large and complex systems with big business impacts",
+   "short": "크고 복잡한 시스템을 실제로 내놓아 사업 숫자(매출·구매율)를 움직인 실적.",
+   "why": "쿠팡은 관련성 개선을 '무관 비율 45.8% 감소, 세션 구매율 0.866% 상승'처럼 사업 숫자로 보고했습니다.[5] 공고도 사업 필요에서 거꾸로 기술을 짜라고 적었습니다.[1]",
+   "how_far": "이력서·면접에서 **내가 정한 것(구조·지표)과 그 결과 숫자**를 말할 수 있어야 합니다. 구매율 0.866% 는 작아 보이지만 쿠팡 규모에서는 큰 돈이라는 감각도 필요합니다. {추론}",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong design and problem-solving skills",
+   "short": "검색 시스템 설계 면접을 통과할 설계력 — 정답보다 맞바꿈(정확도·지연·비용)을 설명하는 힘.",
+   "why": "공고는 전체 스택을 끝에서 끝까지 설계·최적화하는 능력을 요구했습니다.[1]",
+   "actually": {
+    "items": [
+     "**맞바꿈의 예** — 검색어·상품을 한꺼번에 넣는 모델(한 탑)이 더 정확하지만 실시간에 비싸다. 쿠팡은 두 탑을 쓰고 한 탑은 앞으로 할 일로 남겼다.[5]",
+     "**맞바꿈의 예** — LLM 이 직접 판정하면 정확하지만 비싸다 → 선생으로만 쓰고 작은 모델에 넘긴다.[5]",
+     "**문제 풀이** — 문제를 쪼개 원인(검색어 이해·후보·순위 중 어디서 틀렸나)을 가른다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    5
+   ],
+   "study": [
+    "ml-design-book",
+    "ai-powered-search"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Excellent communications and collaborations across teams and across functionalities",
+   "short": "엔지니어뿐 아니라 제품·사업·평가 담당과도 말이 통하는 소통력.",
+   "why": "이 자리는 검색 VP·시니어 디렉터와 가까이 일하고, 여러 팀 리더와 기술 방향을 맞춥니다.[1]",
+   "how_far": "모델 이야기를 **사업 쪽 말(구매율·고객 불만)로 바꿔 설명할 수 있는** 수준입니다. 마운틴뷰 팀은 한국·대만 시장을 다루므로 시차를 넘는 협업도 따라옵니다.[5] {추론}",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Prefered Skills:",
+   "short": "아래 세 줄은 우대사항 — 있으면 좋지만 필수는 아니다.",
+   "why": "공고는 자격요건 칸 안에 '우대 기술' 머리말을 두고 세 줄을 붙였습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Working experiences on search and recommendations systems.",
+   "short": "검색이나 추천 시스템을 실제로 만들고 운영해 본 경험.",
+   "why": "이 자리의 부서가 Search and Discovery 입니다.[1] 같은 조직의 지난 공고들도 검색·정보 검색·추천 경험을 우대했습니다.[3][4]",
+   "actually": {
+    "items": [
+     "**검색** — 검색어가 있다. 관련성이 먼저다.",
+     "**추천** — 검색어가 없다. 사용자 기록이 검색어 대신이다.",
+     "**공통** — 후보 찾기 → 순위 2단계, 임베딩 검색, A/B 실험. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    4
+   ],
+   "study": [
+    "ai-powered-search"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Search relevance and query understanding",
+   "short": "검색 관련성 판정과 검색어 이해(의도·오타·동의어·브랜드)를 직접 다뤄 본 경험 — 이 자리 이름이다.",
+   "why": "공고 제목이 'Search Relevance' 이고, 역할 소개도 검색 관련성과 품질 향상에 초점을 둔다고 적었습니다.[1] 쿠팡 논문은 검색어 이해를 돕고 쇼핑 지식을 넣으려고 '비슷한 상품 제목을 찾아 붙이는' 방법을 썼습니다.[5]",
+   "actually": {
+    "items": [
+     "**관련성 세 칸** — '운동화'에 나이키 운동화는 정확히 맞음, '나이키 신발'에 아디다스 운동화는 대체품. 쿠팡 논문이 든 예다.[5]",
+     "**검색어 보강** — 검색어만으로는 뜻을 모를 때(예: 지명 '안성'), 그 검색어로 찾은 상품 제목(예: 안성탕면)을 LLM 입력에 붙인다.[5]",
+     "**그 검색기 만들기** — BM25 로 짝을 만들고(사람이 본 정확도 65%), 한국 구매 기록으로 학습한 LLM 이 구매 확률을 매겨 임베딩 검색기를 증류했더니 82% 로 올랐다.[5]",
+     "**라벨 오류 줄이기** — 이전 회차 모델의 확률과 사람 라벨을 반반 섞어 다시 학습한다. 2회차에서 F1 0.965 로 가장 좋았다.[5]",
+     "**검색어 이해 일반** — 오타(편집 거리)·동의어·카테고리 추정.[15] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "자기 증류 — 사람 라벨과 이전 모델 확률을 반반 섞은 손실 (직접 돌린 출력)",
+     "body": "쿠팡 논문의 섞는 비율(α = 0.5)을 따랐고 확률 숫자는 가정값입니다.[5] 사람이 '대체품'으로 매겼지만 이전 모델은 '정확'일 확률을 높게 봤다면, 사람 라벨만 쓸 때(1.204)보다 덜 세게 당깁니다.",
+     "lang": "python",
+     "code": "import math\n# 세 칸 확률: [정확, 대체, 무관]\nhuman = [0, 1, 0]            # 사람 라벨: 대체품(틀렸을 수도 있다)\nteacher = [0.78, 0.18, 0.04] # 이전 회차 모델이 매긴 확률\nstudent = [0.60, 0.30, 0.10] # 지금 학습 중인 모델\nce = lambda target, p: -sum(t * math.log(q) for t, q in zip(target, p))\nalpha = 0.5\nloss = alpha * ce(teacher, student) + (1 - alpha) * ce(human, student)\nprint(\"soft\", round(ce(teacher, student), 3), \"hard\", round(ce(human, student), 3), \"loss\", round(loss, 3))\n# soft 0.707 hard 1.204 loss 0.956"
+    }
+   ],
+   "how_far": "관련성 모델을 학습시켜 본 것만이 아니라 **관련성 기준(무엇이 '대체품'인가)을 정하고 사람 평가와 모델을 맞춰 본** 경험이 이 자리의 핵심입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    15
+   ],
+   "study": [
+    "csrm-paper",
+    "relevant-search",
+    "google-raters",
+    "hinton-distill"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Technical Lead or Manager of teams",
+   "short": "팀의 기술 리드나 매니저를 해 본 경험.",
+   "why": "업무에 채용·육성과 여러 팀 협업이 있어서입니다.[1]",
+   "how_far": "매니저가 아니어도 됩니다 — **기술 리드로 팀의 설계와 우선순위를 정해 본** 경험이면 같은 줄을 채웁니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "staff-path"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "검색 관련성 지표(사람 평가·NDCG·무관 비율)를 정하고 고쳐 본 사람[5]",
+   "LLM 을 실시간에 쓰지 않고도 그 힘을 작은 모델로 옮겨 본 사람[5]",
+   "여러 팀에 걸친 설계를 글로 정리해 합의를 끌어낸 사람[1]",
+   "다국어(한국어·중국어) 검색 문제에 관심 있는 사람[5]"
+  ],
+  "hard": [
+   "마운틴뷰 근무다 — 같은 조직의 지난 공고들은 사무실 출근으로 적혀 있었다[3][16]",
+   "경력 10년 이상이 조건이다[1]",
+   "모델 하나만 깊이 파고 싶다면 범위가 넓다 — 서빙·파이프라인·채용까지 맡는다[1]",
+   "한국·대만 시장 데이터와 팀을 다뤄 시차가 따라온다[5] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "새로 연 시장에 사람 라벨이 5만 건밖에 없어요. 관련성 모델을 어떻게 만드나요?",
+   "a": "다른 시장 라벨 + 번역 과제로 넘기기, 검색어 보강, 자기 증류.[5]"
+  },
+  {
+   "q": "LLM 판정이 정확하지만 검색마다 돌리기엔 비싸요. 어떻게 서빙하나요?",
+   "a": "선생 LLM → 두 탑 학생 모델 증류, 상품 벡터 미리 계산.[5][17]"
+  },
+  {
+   "q": "NDCG 는 올랐는데 고객 불만은 그대로예요. 무엇을 보나요?",
+   "a": "상위 무관 비율·사람 평가·온라인 구매율을 따로 본다.[5][9]"
+  },
+  {
+   "q": "'나이키 신발'에 아디다스 운동화가 나왔어요. 버그인가요?",
+   "a": "관련성 세 칸(정확·대체·무관)과 기준 정하기.[5]"
+  },
+  {
+   "q": "검색어 '안성'은 무엇을 찾는 걸까요? 모델이 어떻게 알게 하나요?",
+   "a": "검색어로 찾은 상품 제목을 입력에 붙이는 보강.[5]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior Staff ll, Machine Learning Engineer - Search Relevance",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8090443",
+   "kind": "posting",
+   "date": "2026-09-10",
+   "note": "이 공고. 그린하우스 공고 정보로 첫 게시 2026-09-10·갱신 2026-10-30, 부서 'Search and Discovery', 직급 Lv. 7-II, 요청 번호 R0076859, 근무지 Mountain View. 역할 소개(검색 VP·시니어 디렉터와 협업, 서빙·파이프라인·ML 전체, 관련성·품질 초점)·업무 6·요건 5·우대 3·기본급 범위·복리후생"
+  },
+  {
+   "n": 2,
+   "title": "Built In · Coupang Sr. Director, Search AI - Production Engineering",
+   "url": "https://builtin.com/job/sr-director-search-ai-production-engineering/9008093",
+   "kind": "posting",
+   "note": "같은 조직 디렉터 자리 — 같은 회사 다른 풀이에서 읽은 공고. 2026-10-13 내려감"
+  },
+  {
+   "n": 3,
+   "title": "Built In · Coupang Staff ML Engineer - Search Relevance & Retrieval",
+   "url": "https://builtin.com/job/senior-staff-ml-engineer-search-relevance-retrieval/3365865",
+   "kind": "posting",
+   "note": "같은 일의 한 단계 아래 직급(R0046443, 마운틴뷰, 사무실 출근) — 검색 순위·의미 검색·검색어 이해·개인화, 트랜스포머·대조 학습·벡터 검색, Spark·Airflow·Kubeflow·MLflow, 응용 ML 6년, 기본급 $142,000~$309,000. 2025-08-27 내려감"
+  },
+  {
+   "n": 4,
+   "title": "Built In · Coupang Senior Machine Learning Engineer, Generative AI Search",
+   "url": "https://builtin.com/job/senior-machine-learning-engineer-generative-ai-search/8395408",
+   "kind": "posting",
+   "note": "같은 조직(R0059270) — 같은 회사 다른 풀이에서 읽은 공고. 검색·추천 경험 우대. 2026-03-27 내려감"
+  },
+  {
+   "n": 5,
+   "title": "Coupang · CSRM-LLM: Embracing Multilingual LLMs for Cold-Start Relevance Matching in Emerging E-commerce Markets (arXiv 2509.01566, CIKM 2025)",
+   "url": "https://arxiv.org/abs/2509.01566",
+   "kind": "company",
+   "date": "2025-09",
+   "note": "저자 전원 Coupang(베이징·서울·마운틴뷰). 한국 라벨 500만 + 대만(번체 중국어) 50만, 관련성 3칸(정확 2·대체 1·무관 0), 시험 2만 건·8명 중 7명 일치, Orion-14B + LoRA(1.07%), 번역 보조 과제(카테고리·브랜드 각 5만·제목 70만·검색어 3만), 검색어 보강(BM25 65% → 증류 임베딩 검색 82%), 자기 증류 α 0.5·2회차 F1 0.965(RoBERTa-large 0.780, GPT-4o 0.850), 두 탑 학생 모델(CPU·상품 임베딩 미리 계산)로 증류, 온라인 무관 비율 45.8% 감소·세션 구매율 0.866% 상승"
+  },
+  {
+   "n": 6,
+   "title": "Coupang Engineering (Medium) · Fueling the Coupang search engine",
+   "url": "https://medium.com/coupang-tech/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+   "kind": "company",
+   "note": "쿠팡 검색 색인 플랫폼 — 검색어 이해(의도·카테고리·브랜드) → 후보 찾기 → 순위, 순위는 평점·리뷰·가격·브랜드도 본다. Medium 이 자동 접속을 막아(403) 검색 결과 요약으로만 확인"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Engineering · Accelerating Coupang's AI Journey with LLMs",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/",
+   "kind": "company",
+   "date": "2024-10-15",
+   "note": "ML 플랫폼 팀 — 검색 팀이 LLM 을 일찍 도입, Triton 실시간·Ray+vLLM 대량, 증류, 약한 정답으로 관련성 모델 학습, GPU 부족·비용. 같은 회사 다른 풀이에서 읽은 글"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+   "kind": "company",
+   "date": "2023-09-08",
+   "note": "검색어 이해용 Ko-BERT, 임베딩 검색, 피처 스토어, 카나리·점진 배포. 같은 회사 다른 풀이에서 읽은 글"
+  },
+  {
+   "n": 9,
+   "title": "Järvelin · Kekäläinen · Cumulated gain-based evaluation of IR techniques (ACM TOIS, 2002)",
+   "url": "https://dl.acm.org/doi/10.1145/582415.582418",
+   "kind": "reference",
+   "date": "2002",
+   "note": "NDCG 의 원 논문"
+  },
+  {
+   "n": 10,
+   "title": "Kohavi · Tang · Xu · Trustworthy Online Controlled Experiments",
+   "url": "https://experimentguide.com/",
+   "kind": "reference",
+   "date": "2020",
+   "note": "온라인 A/B 실험 교과서"
+  },
+  {
+   "n": 11,
+   "title": "Coupang Careers · Senior Staff Back-end Engineer (eCommerce Engineering;Interstellar)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078707",
+   "kind": "posting",
+   "note": "같은 회사 같은 직급(서울) — 백엔드 경력 10년 이상"
+  },
+  {
+   "n": 12,
+   "title": "Coupang Careers · Senior Staff Cloud Backend Engineer",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8205728",
+   "kind": "posting",
+   "note": "같은 회사 같은 직급(시애틀) — 백엔드 경력 8년"
+  },
+  {
+   "n": 13,
+   "title": "Robertson · Zaragoza · The Probabilistic Relevance Framework: BM25 and Beyond (2009)",
+   "url": "https://dl.acm.org/doi/10.1561/1500000019",
+   "kind": "reference",
+   "note": "BM25 의 원리 정리"
+  },
+  {
+   "n": 14,
+   "title": "Reimers · Gurevych · Sentence-BERT (arXiv 1908.10084)",
+   "url": "https://arxiv.org/abs/1908.10084",
+   "kind": "reference",
+   "date": "2019",
+   "note": "문장을 따로 벡터로 만들어 코사인 거리로 견주는 두 갈래 구조"
+  },
+  {
+   "n": 15,
+   "title": "Elastic Docs · Fuzzy query",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html",
+   "kind": "reference",
+   "note": "편집 거리(레벤슈타인)로 오타 허용"
+  },
+  {
+   "n": 16,
+   "title": "Coupang Careers · Mountain View",
+   "url": "https://www.coupang.jobs/en/locations/mountain-view/",
+   "kind": "company",
+   "note": "605 Fairchild Dr, Mountain View, CA 94043 — NASA 에임스 연구센터 맞은편, 다운타운 환승센터(칼트레인·VTA) 가까움, 주차 무제한. 같은 회사 다른 풀이에서 읽은 페이지"
+  },
+  {
+   "n": 17,
+   "title": "Hinton · Vinyals · Dean · Distilling the Knowledge in a Neural Network (arXiv 1503.02531)",
+   "url": "https://arxiv.org/abs/1503.02531",
+   "kind": "reference",
+   "date": "2015",
+   "note": "큰 모델의 확률(소프트 라벨)로 작은 모델을 학습시키는 증류"
+  },
+  {
+   "n": 18,
+   "title": "California Labor Code § 432.3 (Justia)",
+   "url": "https://law.justia.com/codes/california/code-lab/division-2/part-1/chapter-3/article-3/section-432-3",
+   "kind": "reference",
+   "note": "직원 15명 이상 고용주는 공고에 급여 범위를 적어야 한다(2023-01-01 시행)"
+  }
+ ],
+ "caveat": "이 팀이 내부 구조를 직접 설명한 발표 영상은 찾지 못했습니다(받은 영상 없음). 가장 가까운 회사 근거는 쿠팡 저자들이 쓴 대만 시장 관련성 논문(CSRM-LLM, 2025)이고, 이 공고의 팀이 그 논문의 팀인지는 공고에 없습니다. 쿠팡 검색 색인 글(Medium)은 자동 접속이 막혀 검색 결과 요약으로만 확인했습니다. 지표·검색어 이해의 일반 방법은 공개 논문·문서로 '보통 이런 것'을 보였고, 예시의 확률·순위 숫자는 가정값입니다.",
+ "resources": [
+  {
+   "id": "csrm-paper",
+   "title": "CSRM-LLM: Embracing Multilingual LLMs for Cold-Start Relevance Matching in Emerging E-commerce Markets",
+   "by": "쿠팡 · CIKM 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2509.01566",
+   "why": "쿠팡이 검색 관련성을 실제로 어떻게 정의·학습·증류·측정했는지. 지원 전에 가장 먼저 읽을 회사 자료."
+  },
+  {
+   "id": "coupang-llm-blog",
+   "title": "Accelerating Coupang's AI Journey with LLMs",
+   "by": "쿠팡 ML 플랫폼 팀 · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/",
+   "why": "검색 팀이 쓰는 LLM 학습·서빙 바닥과 그 한계(GPU). 업무 '막힌 기술 문제'의 배경."
+  },
+  {
+   "id": "coupang-ml-platform",
+   "title": "Meet Coupang's Machine Learning Platform",
+   "by": "쿠팡 ML 플랫폼 팀 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+   "why": "검색어 이해 모델·임베딩 검색·카나리 배포 — 업무 '운영 수준'이 올라서는 바닥."
+  },
+  {
+   "id": "iir-book",
+   "title": "Introduction to Information Retrieval",
+   "by": "Christopher D. Manning · Prabhakar Raghavan · Hinrich Schütze · Cambridge University Press · 2008",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://nlp.stanford.edu/IR-book/",
+   "why": "역색인·BM25·평가 지표 — 요건 첫 분야 '정보 검색'의 교과서(저자 공개 무료판)."
+  },
+  {
+   "id": "relevant-search",
+   "title": "Relevant Search",
+   "by": "Doug Turnbull · John Berryman · Manning · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/relevant-search",
+   "why": "검색 관련성을 실무에서 고치는 법 — 검색어 이해·점수 조정·관련성 평가 기준 세우기."
+  },
+  {
+   "id": "ai-powered-search",
+   "title": "AI-Powered Search",
+   "by": "Trey Grainger · Doug Turnbull · Max Irwin · Manning · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.manning.com/books/ai-powered-search",
+   "why": "클릭 신호·순위 학습·임베딩 검색·LLM 검색까지 — '다음 세대 AI 검색' 설계의 지도."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "A/B 테스트: 신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 · 이기홍 · 김기영 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "why": "구매율 0.866% 같은 작은 차이를 믿을 수 있게 재는 법. 업무 '지표 중심'."
+  },
+  {
+   "id": "google-raters",
+   "title": "Search Quality Rater Guidelines",
+   "by": "Google · 2025-09",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://static.googleusercontent.com/media/guidelines.raterhub.com/en//searchqualityevaluatorguidelines.pdf",
+   "why": "사람이 검색 결과의 맞음을 몇 단계로 매기는 공개 기준의 대표 예. 쿠팡은 자기 기준을 공개하지 않았다."
+  },
+  {
+   "id": "ndcg-paper",
+   "title": "Cumulated gain-based evaluation of IR techniques",
+   "by": "Kalervo Järvelin · Jaana Kekäläinen · ACM TOIS 2002",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://dl.acm.org/doi/10.1145/582415.582418",
+   "why": "NDCG 가 왜 위쪽 결과에 무게를 두는지 원래 정의로 이해한다."
+  },
+  {
+   "id": "sbert",
+   "title": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks",
+   "by": "Nils Reimers · Iryna Gurevych · EMNLP 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1908.10084",
+   "why": "쿠팡이 서빙에 쓴 두 탑(검색어·상품을 따로 벡터로) 구조의 바탕."
+  },
+  {
+   "id": "lora-paper",
+   "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+   "by": "Hu 외 · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2106.09685",
+   "why": "쿠팡이 14B 모델을 파라미터 1% 남짓만 학습시킨 방법."
+  },
+  {
+   "id": "hinton-distill",
+   "title": "Distilling the Knowledge in a Neural Network",
+   "by": "Geoffrey Hinton · Oriol Vinyals · Jeff Dean · 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1503.02531",
+   "why": "선생 LLM → 작은 서빙 모델, 그리고 자기 증류의 소프트 라벨이 왜 통하는지."
+  },
+  {
+   "id": "ml-design-book",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "학습·서빙 불일치·배포·감시 — 업무 'ML 설계와 운영 수준'의 바탕."
+  },
+  {
+   "id": "staff-path",
+   "title": "The Staff Engineer's Path",
+   "by": "Tanya Reilly · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "why": "관리자가 아닌 기술 리더가 여러 팀을 맞추고 사람을 키우는 법 — 협업·채용·육성 업무."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "쿠팡이 관련성을 다루는 법 읽기",
+   "time": "1주",
+   "goal": "쿠팡 검색 3단계와 관련성 세 칸, 선생 LLM → 학생 모델 구조를 그림으로 설명할 수 있다.",
+   "resources": [
+    "csrm-paper",
+    "coupang-llm-blog",
+    "coupang-ml-platform"
+   ],
+   "task": "CSRM-LLM 논문의 흐름(번역 과제·검색어 보강·자기 증류·증류 서빙)을 한 장 그림으로 그리고, 단계마다 오프라인 F1 이 얼마나 올랐는지 표로 옮긴다."
+  },
+  {
+   "title": "검색기와 지표 직접 만들기",
+   "time": "2~3주",
+   "goal": "BM25 + 임베딩 검색을 만들고, 사람 라벨로 NDCG·상위 무관 비율을 잰다.",
+   "resources": [
+    "iir-book",
+    "sbert",
+    "ndcg-paper",
+    "google-raters"
+   ],
+   "task": "가상 상품 2,000개·검색어 100개에 정확·대체·무관 라벨을 직접 달고, BM25 와 임베딩 검색의 NDCG@5·무관 비율을 위 예시 코드로 견준다."
+  },
+  {
+   "title": "관련성 모델과 증류",
+   "time": "3주",
+   "goal": "작은 LLM 을 관련성 3칸 분류기로 미세조정하고, 그 확률로 두 탑 학생 모델을 학습시킨다.",
+   "resources": [
+    "lora-paper",
+    "hinton-distill",
+    "relevant-search"
+   ],
+   "task": "2단계 라벨로 작은 공개 LLM 을 LoRA 미세조정하고, 그 확률을 소프트 라벨로 두 탑 모델을 학습시켜 선생·학생 F1 과 요청당 지연을 비교한다. 라벨 10% 를 일부러 뒤섞고 자기 증류(α 0.5)가 얼마나 되살리는지 잰다."
+  },
+  {
+   "title": "실험과 리더십",
+   "time": "계속",
+   "goal": "관련성 개선을 A/B 로 증명하고, 여러 팀이 따를 설계 문서를 쓸 수 있다.",
+   "resources": [
+    "kohavi-ko",
+    "ai-powered-search",
+    "ml-design-book",
+    "staff-path"
+   ],
+   "task": "3단계 모델을 넣는 가상 A/B 실험 계획서(목표 지표·가드레일·표본 크기)와, 검색어 이해·후보·순위 팀이 함께 볼 한 쪽짜리 설계 문서를 써 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 **기본급 연 18만 7천 ~ 32만 2천 달러**가 적혀 있다 — 미국 여러 지역 시장을 한 범위에 담은 값이고, 보너스·주식 같은 '그 밖의 보상'은 따로다",
+  "rows": [
+   {
+    "label": "공고 표기 기본급 (하한)",
+    "value": "연 $187,000",
+    "basis": "공고 · 2026년",
+    "note": "가장 낮은 지역 시장 기준이라고 적었다 [1]"
+   },
+   {
+    "label": "공고 표기 기본급 (상한)",
+    "value": "연 $322,000",
+    "basis": "공고 · 2026년",
+    "note": "가장 높은 지역 시장 기준. 지식·기술·경력에 따라 달라진다고 적었다 [1]"
+   },
+   {
+    "label": "그 밖의 보상",
+    "value": "보너스·주식 등 (금액 표기 없음)",
+    "basis": "공고 · 2026년",
+    "note": "'Other Compensation' 칸 — 급여 범위에 더해 줄 수 있다고만 적었다 [1]"
+   },
+   {
+    "label": "같은 일 한 단계 아래 Staff (관련성·검색)",
+    "value": "연 $142,000 ~ $309,000",
+    "basis": "공고 · 2025년",
+    "peer": true,
+    "note": "R0046443, 마운틴뷰, 2025-08 내려감 [3]"
+   }
+  ],
+  "how": "캘리포니아는 직원 15명 이상 회사가 공고에 급여 범위를 적게 한다(2023년부터) — 그래서 숫자가 있다 [18]. 범위가 지역 시장을 넓게 담은 값이라 실제 제안은 마운틴뷰 시장 쪽으로 정해질 것이다 {추론}. 한국 쿠팡(주)의 평균 급여와는 나라·기준이 달라 나란히 놓지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "보험",
+    "detail": "의료·치과·안과·생명보험, 상해 사망·장해(AD&D)"
+   },
+   {
+    "name": "의료비 계좌",
+    "detail": "FSA(유연 지출 계좌)·HSA(건강 저축 계좌)"
+   },
+   {
+    "name": "장단기 장애 보장",
+    "detail": "Long-term/Short-term Disability"
+   },
+   {
+    "name": "직원 지원 프로그램",
+    "detail": "EAP(상담 등)"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "401K, 회사 매칭"
+   },
+   {
+    "name": "유급 휴가",
+    "detail": "근속에 따라 연 18~21일 PTO + 유급 공휴일 12일"
+   },
+   {
+    "name": "육아 휴직",
+    "detail": "유급(기간은 공고에 없음)"
+   },
+   {
+    "name": "출퇴근",
+    "detail": "세전 통근비 혜택"
+   },
+   {
+    "name": "전기차 충전",
+    "detail": "마운틴뷰(MTV) 사무실 무료 충전소"
+   },
+   {
+    "name": "주차",
+    "detail": "사무실 무제한 주차"
+   }
+  ],
+  "note": "주차를 뺀 항목은 이 공고의 'General Description of All Benefits' 칸이다(2026년 공고, 미국 근무자 기준) [1]. 주차는 쿠팡 채용 사이트의 마운틴뷰 안내다 [16]. 한국 쿠팡 공고의 복지와는 다르다."
+ },
+ "location": {
+  "name": "쿠팡 마운틴뷰 오피스",
+  "address": "605 Fairchild Dr, Mountain View, CA 94043, USA",
+  "postal": "94043",
+  "map_url": "https://map.naver.com/p/search/605%20Fairchild%20Dr%20Mountain%20View",
+  "near": "NASA 에임스 연구센터 맞은편, 다운타운 환승센터(칼트레인·VTA) 가까움 [16]",
+  "note": "공고 근무지는 'Mountain View, USA'다[1]. 주소는 쿠팡 채용 사이트의 마운틴뷰 안내다 [16]."
+ }
+}
