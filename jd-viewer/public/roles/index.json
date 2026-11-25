@@ -169,6 +169,7 @@
   "ats-greenhouse:daangn:7990084003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8201153003": "daangn-community-backend-intern",
+  "ats-greenhouse:daangn:6652141003": "daangn-feed-ml-data-platform-backend",
   "ats-greenhouse:daangn:8201152003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:7659289003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
@@ -2028,6 +2029,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 56
+  },
+  {
+   "id": "daangn-feed-ml-data-platform-backend",
+   "company": "당근",
+   "role": "피드 ML 데이터 플랫폼 백엔드 엔지니어",
+   "jobs": [
+    "ats-greenhouse:daangn:6652141003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 22
   },
   {
    "id": "daangn-mydaangn-backend-intern",

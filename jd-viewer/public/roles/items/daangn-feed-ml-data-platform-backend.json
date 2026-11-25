@@ -1,0 +1,1103 @@
+{
+ "id": "daangn-feed-ml-data-platform-backend",
+ "company": "당근",
+ "role": "피드 ML 데이터 플랫폼 백엔드 엔지니어",
+ "team": "피드실 · ML 데이터 플랫폼팀",
+ "jobs": [
+  "ats-greenhouse:daangn:6652141003"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "당근 홈 피드 추천이 쓰는 재료 — 사용자의 최근 행동, 글 정보, LLM·임베딩 모델이 만든 벡터 — 를 **모으고(수집) 쌓고(피처 스토어) 30ms 안에 내주는(서빙)** 플랫폼과 추천 엔진을 만듭니다.[1][2][3]",
+  "env": "서빙은 AWS(Go·gRPC·Redis·DynamoDB·Kafka), 임베딩 추론은 GCP(Python·Beam·Dataflow·BigQuery) — 초당 100K+ 요청, 이벤트 스트림 100개 이상, 피처 1,000개 이상입니다.[1][4]",
+  "oneline": "ML 팀 이름이지만 일의 중심은 **캐시·저장소·스트림·비용을 다루는 대규모 백엔드**입니다. ML 경력은 요구하지 않습니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "추천 시스템에 필요한 추천 엔진, 피쳐 스토어, 임베딩 생성 플랫폼 등의 서비스들을 개발하고 운영해요",
+   "short": "홈 피드가 \"이 사람에게 뭘 보여 줄까\"를 정할 때 쓰는 재료 창고(피처 스토어)와 그 재료를 받아 순위를 매기는 서버를 만든다.",
+   "why": "당근은 처음에 추천 로직이 중고거래 서버 안의 라이브러리였습니다. 그래서 피처(추천 모델에 넣는 재료 — 최근 클릭한 글, 알림 키워드 같은 값) 하나를 더할 때마다 중고거래 앱 코드를 고쳐 배포해야 했고, 동네생활·알바·광고 같은 다른 글은 다루지도 못했습니다.[2] 이를 떼어 내 만든 것이 피처 플랫폼이고, 2025년 2월 기준 10개 넘는 추천 지면이 이 위에서 돕니다.[3] 팀 소개도 이 팀이 피처 스토어·추천 엔진·임베딩 파이프라인을 직접 설계하고 운영한다고 적었습니다.[1]",
+   "actually": {
+    "intro": "회사가 공개한 이 팀의 시스템 세 덩어리입니다.",
+    "items": [
+     "**피처 서빙** — 추천 엔진이 \"사용자 1234의 최근 클릭 30개\"를 물으면 30ms 안에 돌려준다. 서버(EKS 위 파드) → 원격 캐시(ElastiCache) → DB(DynamoDB) 순서로 찾는다.[2]",
+     "**피처 수집(스트림)** — 여러 서비스가 Kafka(MSK)에 내보내는 사건과 DB 변경 기록(CDC)을 받아, 피처그룹 명세대로 가공해 DB·캐시에 넣는다.[3]",
+     "**피처 수집(배치)** — 새 피처를 만들면 과거 데이터를 한꺼번에 채운다(백필). 서비스와 떨어진 AWS Batch(Fargate)에서 서버 1,000대 이상을 써도 운영 서비스에 영향이 없게 했다.[3]",
+     "**추천 엔진** — 피처를 받아 후보를 고르고 순위를 매기는 서버. 이 팀 엔지니어가 설계·운영한다고 소개됐다.[2] 추천은 후보를 단계별로 좁히는 멀티 스테이지 구조이고, 2024년부터 중고거래의 추천을 다른 서비스로 넓혔다.[6]",
+     "**임베딩 생성 플랫폼** — 글·이미지를 모델에 넣어 벡터로 바꾸는 추론 파이프라인. Apache Beam + Dataflow로 수십억 건을 몇 시간 안에 처리하도록 만들었다.[4][5]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "피처 하나가 추천에 쓰이기까지[2][3]",
+     "steps": [
+      "사건 발생 · 사용자가 글을 클릭, 글 상태가 바뀜",
+      "메시지 브로커 · Kafka(MSK)에 쌓임",
+      "수집기 · Dispatcher가 관련 피처 로직에 나눠 주고 Aggregator가 피처로 가공",
+      "저장 · DynamoDB(원본) + ElastiCache(캐시)",
+      "서빙 · 피처 서버가 3단 캐시로 응답",
+      "추천 엔진 · 후보 선택 → 순위 → 홈 피드"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "모델을 만드는 사람은 따로 있고, 이 자리는 **모델이 쓸 재료를 빠르고 틀림없이 내주는 시스템**을 맡습니다. 공고 FAQ도 ML 실무 경험이 아니라 소프트웨어 엔지니어링 역량이 핵심이라고 적었습니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "aws-fp1",
+    "aws-fp2",
+    "feast-docs",
+    "mlsd"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 트래픽 환경에서도 안정적으로 동작할 수 있도록 성능과 비용을 지속적으로 최적화해요",
+   "short": "초당 10만 건 넘는 요청을 p99.9 30ms 안에 답하면서, 캐시·DB·GPU에 드는 돈을 줄이는 일.",
+   "why": "팀 소개에 따르면 이 시스템은 초당 100K+ 요청을 p99.9(1,000번 중 999번째로 느린 응답) 기준 30ms 이하로 처리하고, 당근의 수백 개 백엔드 중 손꼽히는 처리량입니다.[1] 피처 서빙·수집 트래픽은 2021년 처음 잡은 목표보다 약 90배 늘었습니다.[2] 트래픽이 커지면 같은 구조라도 캐시·DB 비용이 함께 커져서, 회사는 ElastiCache 구성을 바로잡아 비용을 40% 가까이 줄인 일을 성과로 적었습니다.[3]",
+   "actually": {
+    "intro": "회사가 실제로 겪고 고친 문제들입니다.",
+    "items": [
+     "**캐시 미스** — 만료 직전 값을 확률적으로 미리 새로 고치는 PEE(확률적 조기 만료)로 한꺼번에 DB로 몰리는 캐시 쇄도(stampede)를 줄이고, 락을 함께 써 DynamoDB 한 파티션에 몰리는 것(핫 파티션)을 막는다.[2][11]",
+     "**캐시 정합성** — 만료를 \"새로 고칠 때(soft TTL)\"와 \"버릴 때(hard TTL)\"로 나누고, 필요하면 쓸 때 캐시도 같이 쓰는(write-through) 방식을 쓴다. 비슷한 때 쓴 값이 동시에 만료되지 않게 TTL에 무작위 흔들림(지터)을 더한다.[2][12]",
+     "**캐시 관통** — DB에 없는 피처를 계속 물으면 매번 DB까지 내려간다. \"없음\"도 캐시에 적어 두는 negative caching으로 막고, 그 비율을 지켜본다.[2]",
+     "**키 설계** — DynamoDB 키를 `피처그룹이름#id` + 시각으로 잡아 \"이 사용자의 최근 N개\"를 한 번에 읽는다.[2][13]",
+     "**GPU 비용** — 트래픽이 적은 임베딩 파이프라인 여러 개가 각자 GPU를 붙잡고 있어 기본 비용이 나오자 하나로 합쳤다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "3단 캐시 · 없는 값 캐시 · 지터 · 확률적 조기 만료 (직접 돌린 출력)",
+     "body": "가상 키로 흉내 낸 것입니다. 없는 키(fg#9)는 두 번째부터 DB에 안 내려가고(neg 2), 로컬 캐시가 비어도 원격 캐시가 받아 줍니다(remote 2). 조기 만료 확률식은 Vattani 외(2015)의 것입니다.[11]",
+     "lang": "python",
+     "code": "# ... (3단 get 함수 생략)\nfor k in [\"fg#1\", \"fg#2\", \"fg#9\", \"fg#1\", \"fg#9\", \"fg#9\"]: get(k)\nprint(hits)   # {'local': 1, 'remote': 0, 'db': 3, 'neg': 2}\nlocal.clear() # 서버 재시작\nfor k in [\"fg#1\", \"fg#2\"]: get(k)\nprint(hits)   # {'local': 1, 'remote': 2, 'db': 3, 'neg': 2}\n\n# TTL 600초에 ±60초 지터: 1초에 동시 만료되는 수 1000 → 최대 17\n\n# XFetch: -delta*beta*ln(rand) >= 남은 시간이면 미리 갱신 (delta=0.05초)\n# 만료까지 1.0초 → 0.000 / 0.2초 → 0.018 / 0.05초 → 0.366 / 0.01초 → 0.817"
+    },
+    {
+     "title": "p99.9 읽기",
+     "body": "요청 1,000건 중 990건이 10ms, 8건이 25ms, 1건씩 40ms·120ms면 p50·p99는 10ms지만 p99.9는 40ms입니다(직접 계산). 평균만 보면 느린 1,000분의 1을 못 봅니다. 백분위로 목표를 잡는 이유는 Google SRE 책이 설명합니다.[21]"
+    }
+   ],
+   "how_far": "\"최적화\"는 감이 아니라 **지표를 보고 고친 뒤 숫자로 보여 주는 것**입니다 — 캐시 적중률, p99.9, 비용. 회사도 앞으로 캐시할 가치가 있는 값만 골라 담는 정책과 TTL 최적값을 데이터로 찾는 일을 숙제로 적었습니다.[2]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    12,
+    13,
+    21
+   ],
+   "study": [
+    "aws-fp1",
+    "elasticache-strategies",
+    "dynamodb-keys",
+    "pee-paper",
+    "sre-slo"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LLM 기반 임베딩 벡터와 모델 추론 결과를 추천 시스템에서 안정적으로 활용할 수 있는 파이프라인을 구축해요",
+   "short": "LLM·임베딩 모델이 뽑은 벡터와 예측값을 수십억 건 단위로 만들어, 추천이 바로 꺼내 쓸 수 있게 흘려보내는 길을 만든다.",
+   "why": "예전 추천은 카테고리·키워드를 손으로 골라 넣고 규칙으로 맞췄습니다. 임베딩(글·이미지의 뜻을 숫자 벡터로 바꾼 것)을 쓰면 키워드가 달라도 비슷한 글을 찾고, 이력이 없는 새 글(콜드 스타트)도 추천할 수 있습니다.[4] 회사는 글·이미지 임베딩과 LLM으로 예측한 중고 물품 카테고리를 피처로 쓰고 있다고 밝혔습니다.[3] 피처 서빙 쪽에서도 임베딩 때문에 저장할 값이 커져 새 저장 방식을 검토 중입니다.[2]",
+   "actually": {
+    "intro": "PyCon Korea 2025에서 이 팀(ML 데이터 플랫폼) 엔지니어가 발표한 추론 파이프라인입니다.[4][5]",
+    "items": [
+     "**요구사항** — 수십억 건을 몇 시간 안에, GPU로, 데이터 양에 따라 자동 확장, 파이썬으로, 인프라 관리는 최소로.[4]",
+     "**왜 바꿨나** — 예전엔 파이프라인은 Kotlin, 추론 서버는 파이썬(Vertex AI 엔드포인트)이라 ML 엔지니어가 두 프로젝트를 오갔고, 배치가 평소의 100배 요청을 쏘면 추론 서버 확장이 따라가지 못해 스트림 처리가 멈췄다.[4]",
+     "**고른 것** — Beam + Dataflow(서버리스·자동 확장·BigQuery/GCS 기본 연동). Spark·Flink와 비교한 표를 공개했다. 파이프라인과 모델의 수명이 같이 가서, 안 쓰는 파이프라인을 내리면 모델도 같이 내려간다.[4][5]",
+     "**흐름** — Kafka/PubSub/BigQuery에서 읽기 → 걸러내기 → 전처리(이미지 받기·크기 조절·프롬프트 만들기) → 추론 → 형식 변환 → BigQuery와 Kafka에 동시에 쓰기.[5]",
+     "**겪은 문제** — 외부 호출을 한 건씩 기다리느라 CPU는 놀고 워커만 늘었다 → 비동기 묶음 호출로 동시성 128배. 스레드마다 모델(3GB 이상)을 올려 16GB GPU가 터졌다 → Beam의 MultiprocessShared로 모델 하나를 여러 프로세스가 같이 쓴다.[4][5][16]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "임베딩으로 고르기, 그리고 모델 버전을 섞으면 생기는 일 (직접 돌린 출력)",
+     "body": "4차원 가상 벡터입니다(실제는 128·768차원[4]). 같은 글이라도 다른 모델로 뽑은 벡터는 다른 공간에 있어 점수가 엉뚱해집니다 — 파이프라인이 모델 버전을 벡터와 같이 실어 날라야 하는 이유입니다 {추론}.",
+     "lang": "python",
+     "code": "def cos(a, b): ...  # 코사인 유사도\nuser = [0.9, 0.1, 0.0, 0.4]\n# 몬스테라 화분: 0.979\n# 식물 영양제:   0.962\n# 아이폰 케이스: 0.133\n# 모델 섞임(같은 화분, 새 모델 벡터): 0.412"
+    }
+   ],
+   "how_far": "모델을 고르고 학습하는 건 ML 엔지니어 몫이고, 이 자리는 **그 모델을 대량으로·싸게·멈추지 않게 돌려 결과를 피처로 넣는 길**을 맡습니다. 실패한 묶음을 다시 돌릴 수 있고, 어느 모델 버전이 만든 값인지 남기는 것이 최소선입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    5,
+    16
+   ],
+   "study": [
+    "pycon25",
+    "beam-guide",
+    "beam-ml",
+    "dataflow-ml"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "추천 품질과 데이터 품질을 더 잘 관찰할 수 있도록 Data Quality 모니터링 시스템을 구축해요",
+   "short": "피처가 비었거나 늦었거나 갑자기 달라졌을 때, 추천이 망가지기 전에 먼저 알아채는 감시 장치를 만든다.",
+   "why": "피처 플랫폼을 만든 이유 중 하나가 데이터 신뢰도였습니다 — 여러 저장소에서 스키마도 수집 경로도 제각각이라 값이 최신인지·맞는지 믿기 어려웠습니다.[2] 지금도 DynamoDB에 값이 없는 피처그룹 비율, 없음 캐시 적중률, 정합성 문제를 지켜보고 있습니다.[2] 학습 쪽에서는 TFX의 데이터 검증·이상 감지 단계를 파이프라인에 넣었습니다.[4][5]",
+   "actually": {
+    "intro": "데이터 품질 감시에서 보통 보는 것들입니다. 당근 팀의 구체적인 지표는 공개되지 않아, TFX 데이터 검증(TFDV) 문서의 분류를 빌렸습니다.[17]",
+    "items": [
+     "**스키마** — 칸의 자료형·필수 여부가 약속과 같나. 당근은 모든 피처를 피처그룹 명세(스키마)로 정의한다.[2][17]",
+     "**빈 값·없음 비율** — 예: 가격 칸의 40%가 비었다, 조회한 피처그룹의 몇 %가 DB에 없다.[2]",
+     "**신선도** — 마지막으로 값이 들어온 지 얼마나 됐나. 스트림 소비가 밀리면 \"최근 클릭\"이 최근이 아니게 된다 {추론}.",
+     "**분포 변화(drift)** — 어제와 오늘 값의 분포가 크게 다르면 원천 서비스가 바뀌었거나 수집이 깨진 것일 수 있다.[17]",
+     "**학습·서빙 차이(skew)** — 학습 때 쓴 피처와 서빙 때 내준 피처가 다르면 오프라인 점수가 좋아도 실제 추천이 나빠진다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "피처 하나에 거는 검사 세 가지 (직접 돌린 출력, 가상 값)",
+     "body": "PSI(분포 변화 지수)의 0.1·0.25 기준은 업계에서 흔히 쓰는 경험값이지 정해진 표준이 아닙니다 {추론}.",
+     "lang": "python",
+     "code": "# 빈 값 비율 40%  (기준 10% 넘으면 알림)\n# 마지막 적재 후 0:40:00 → 알림 (기준 30분)\nlast_week = {\"가구\": 0.30, \"의류\": 0.40, \"전자\": 0.30}\ntoday     = {\"가구\": 0.10, \"의류\": 0.45, \"전자\": 0.45}\npsi = sum((today[k]-last_week[k]) * math.log(today[k]/last_week[k]) for k in last_week)\nprint(f\"PSI {psi:.3f}\")  # PSI 0.286"
+    }
+   ],
+   "how_far": "어떤 피처가 중요한지는 ML 엔지니어가 압니다. 이 자리는 **1,000개 넘는 피처에 검사를 쉽게 걸고, 알림이 담당자에게 바로 가게** 만드는 쪽입니다 — ML 인프라팀이 학습 파이프라인 실패 알림에 담당자 이름·실패 단계·로그를 붙여 슬랙으로 보내게 바꾼 방식이 참고가 됩니다.[1][5]",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    17
+   ],
+   "study": [
+    "tfdv",
+    "mlsd"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "이런 기술을 사용하고 있어요 Go, gRPC, Redis, AWS DynamoDB, Kafka, GCP Pub/Sub, GCP BigQuery Kotlin, Python, Apache Beam, GCP Dataflow, GCP Vertex AI",
+   "short": "서빙은 Go·gRPC·Redis·DynamoDB(AWS), 데이터·추론은 Kotlin·Python·Beam·Dataflow(GCP) — 두 클라우드를 오간다.",
+   "why": "피처 서빙과 수집은 AWS(EKS·ElastiCache·DynamoDB·MSK) 위에 있고[2][3], 임베딩 추론과 ML 학습은 GCP(Dataflow·BigQuery·Vertex AI) 위에 있습니다.[4][5] 회사는 원본 데이터가 다른 클라우드에 있어 모든 걸 한쪽에서 처리하면 비용이 크게 든다고 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**Go · gRPC** — 추천 엔진·피처 서버처럼 지연이 중요한 서버. gRPC는 정의 파일(.proto)로 요청·응답 형식을 정하고 서버·클라이언트 코드를 만들어 준다.[20]",
+     "**Redis · DynamoDB** — 2단 캐시와 원본 저장소.[2]",
+     "**Kafka · Pub/Sub** — 이벤트가 드나드는 통로. 팀 소개 기준 100개 넘는 이벤트 스트림.[1]",
+     "**BigQuery** — 학습 데이터·임베딩 결과를 쌓는 분석 DB.[5]",
+     "**Kotlin** — 예전부터 있던 데이터 파이프라인 서비스의 언어.[4]",
+     "**Python · Beam · Dataflow** — 임베딩 추론 파이프라인.[4]",
+     "**Vertex AI** — 학습 파이프라인(Kubeflow·TFX)을 서버리스로 돌리는 곳. ML 인프라팀이 옮겼다.[4][24]"
+    ]
+   },
+   "how_far": "목록을 다 써 본 사람은 드뭅니다. 면접 라이브 코딩은 C++·Go·Java·Python 중 하나로 볼 수 있으니[1], **한 언어로 서버를 잘 짜고 나머지는 들어와서 익힐 수 있다**는 걸 보여 주면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    20,
+    24
+   ],
+   "study": [
+    "go-tour",
+    "grpc-go",
+    "kafka-book",
+    "beam-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "2년 이상의 경력이 있거나 혹은 그에 준하는 역량을 가지신 분",
+   "short": "연차보다 \"초당 수만 건짜리 시스템을 만들고 운영해 봤나\"가 본론 — 2년은 그 경험이 쌓이는 최소 기간.",
+   "why": "\"그에 준하는 역량\"이 붙어 있고, 당근 채용 FAQ는 모든 포지션에 나이·학력 제한이 없다고 밝혔습니다.[1][8] 경력 기간에 따라 역량을 더 보려고 최대 3개월 계약직으로 일할 수 있다는 안내도 공고에 있습니다.[1]",
+   "how_far": "연차를 못 채웠다면 아래 요건③(확장 가능한 백엔드·파이프라인)을 개인·팀 프로젝트로라도 **숫자(처리량·지연·비용)로** 보여 줄 수 있어야 '준하는 역량'으로 읽힙니다 {추론}.",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "탄탄한 Computer Science 기본기를 바탕으로 엔지니어링 문제를 잘 풀어내는 능력을 갖추신 분",
+   "short": "캐시·해시·정렬·동시성·네트워크 같은 기본기로 \"왜 느린지, 왜 틀리는지\"를 스스로 풀 수 있어야 해서.",
+   "why": "이 팀이 공개한 문제는 거의 다 교과서 주제입니다 — 캐시 쇄도·TTL·없는 값 캐시(캐시 이론), 한 파티션 안 병렬 처리와 오프셋 커밋(동시성·메시징), GPU 메모리를 프로세스끼리 나눠 쓰기(운영체제), 블로킹 I/O와 커넥션 풀(네트워크).[2][3][4] 화상 면접에 라이브 코딩, 직무 면접에 시스템 설계 테스트가 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**자료구조·알고리즘** — 최근 N개 유지(정렬된 키·힙), 해시 분산, 근사 최근접 이웃(ANN) 검색의 뜻.[2][4]",
+     "**운영체제** — 프로세스·스레드·공유 메모리. Beam이 CPU 코어마다 프로세스를 띄워 모델을 여러 번 올린 사례.[4]",
+     "**네트워크** — 동기 호출이 스레드를 묶는 이유, 커넥션 풀, 타임아웃·재시도의 함정.[5]",
+     "**분산 시스템** — 최소 한 번 전달(at-least-once), 캐시와 DB의 정합성, 파티션 키 설계.[3][13]"
+    ]
+   },
+   "how_far": "외워서 답하는 수준이 아니라, 위 회사 사례 하나를 놓고 \"왜 그렇게 고쳤나\"를 설명할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    13
+   ],
+   "study": [
+    "ddia",
+    "sysdesign"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Scalable한 백엔드 시스템 또는 Scalable한 데이터 파이프라인을 설계 및 구현 해본 경험이 있으신 분",
+   "short": "트래픽이 90배 늘어도 구조를 갈아엎지 않고 장비만 늘려 버티는 서버나 데이터 흐름을 직접 짜 본 경험.",
+   "why": "회사는 2021년에 당시 필요보다 높은 목표(서빙 1,500 RPS·수집 400 WPS·피처 30억 개)를 잡았고, 4년 뒤 트래픽이 약 90배·피처 수가 수백 배 늘었는데 이 구조 덕분에 버텼다고 적었습니다.[2]",
+   "actually": {
+    "intro": "이 팀이 \"확장 가능하게\" 만든 방법들입니다.",
+    "items": [
+     "**상태 없는 서버 + 공유 캐시 + 무한히 늘어나는 저장소** — 서버는 쿠버네티스 파드라 늘리기만 하면 되고, DynamoDB는 읽기·쓰기·저장 모두 운영 손 없이 늘었다.[2][3]",
+     "**일반화된 스키마** — 피처마다 표를 새로 만들지 않고 \"피처그룹\" 하나의 모양(키 = 이름#id + 시각, 값 = 순서 번호로 압축한 피처들)으로 모든 피처를 담는다.[2]",
+     "**이벤트 M:N 처리** — 한 사건이 여러 피처의 재료가 되고 한 피처가 여러 사건에서 만들어지므로, 사건을 받아 나눠 주는 Dispatcher와 피처로 만드는 Aggregator를 나눴다.[3]",
+     "**한 파티션 안의 병렬 처리** — 사건을 잃지 않으려 처리 끝난 것만 커밋(manual commit)하자 속도가 10배 느려졌다. 파티션을 늘릴 권한은 팀마다 나뉘어 있어, 한 번에 가져온 묶음을 스레드로 동시에 처리하고 성공한 것 중 가장 큰 오프셋을 커밋, 실패분은 재시도 토픽으로 보내는 소비자를 직접 만들었다.[3][14]",
+     "**운영과 분리된 배치** — 대량 백필은 서비스와 다른 컴퓨팅 환경에서 돈다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 파티션 묶음을 동시에 처리하고 어디까지 커밋하나 (직접 돌린 출력)",
+     "body": "offset 100~107 중 103이 실패한 가상 상황입니다. 실패분을 재시도 토픽에 넘긴 뒤라면 108(가장 큰 성공 + 1)을 커밋해도 잃는 사건이 없습니다 — 회사가 설명한 방식입니다.[3] 재시도 토픽에 넘기기 전에 커밋하면 103은 사라집니다 {추론}.",
+     "lang": "python",
+     "code": "with ThreadPoolExecutor(max_workers=8) as pool:\n    futures = {pool.submit(handle, o): o for o in range(100, 108)}\n    for f, o in futures.items():\n        try: ok.append(f.result())\n        except Exception: retry.append(o)   # retry 토픽으로\nprint(sorted(ok))        # [100, 101, 102, 104, 105, 106, 107]\nprint(retry)             # [103]\nprint(max(ok) + 1)       # 108 ← 커밋할 offset"
+    }
+   ],
+   "how_far": "\"Scalable\"을 말로 쓰지 말고 **무엇이 병목이었고, 무엇을 나눠서 몇 배를 버텼나**를 숫자로 적습니다. 직무 면접 시스템 설계 테스트가 이 질문입니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    14
+   ],
+   "study": [
+    "aws-fp2",
+    "ddia",
+    "kafka-book",
+    "sysdesign"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "베스트 프랙티스대로 사용 가능한 프로그래밍 언어가 하나 이상 있고, 필요에 따라 새로운 언어를 배우는 데 거부감이 없는 분",
+   "short": "한 언어를 \"돌아가게\"가 아니라 그 언어답게(동시성·오류 처리·테스트) 쓰고, Go·Kotlin·Python을 오갈 수 있어야 해서.",
+   "why": "이 팀 일에는 Go·Kotlin·Python이 같이 나옵니다.[1] 회사는 ML 엔지니어가 파이썬 추론 서버와 Kotlin 파이프라인을 오가며 생긴 맥락 전환 비용을 문제로 꼽았고, 결국 파이썬 하나로 합쳤습니다.[4] 같은 조직의 ML 인프라팀은 파이썬의 동적 타입 문제를 Protobuf 설정으로 막았다고 발표했습니다.[4][5]",
+   "actually": {
+    "items": [
+     "**Go** — 고루틴·채널로 동시 요청 처리, context로 타임아웃 전파, gRPC 서버.[20][25]",
+     "**Python** — 비동기(asyncio) 묶음 호출, 타입 힌트·Protobuf로 설정 검증.[5]",
+     "**공통 베스트 프랙티스** — 오류를 삼키지 않기, 재시도에 상한 두기, 테스트 가능한 구조 {추론}."
+    ]
+   },
+   "how_far": "라이브 코딩은 C++·Go·Java·Python 중 하나로 볼 수 있습니다.[1] 가장 자신 있는 언어 하나로 보고, Go는 들어와서 배워도 된다는 뜻으로 읽힙니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    5,
+    20,
+    25
+   ],
+   "study": [
+    "go-tour",
+    "grpc-go"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "업무의 실제 비즈니스 임팩트를 이해하고, 필요한 동료들과 협업하여 문제를 끝까지 해결할 수 있는 분",
+   "short": "지연 몇 ms·비용 몇 %가 추천 클릭과 전환에 어떻게 이어지는지 알고, ML·제품 팀과 끝까지 맞춰 가야 해서.",
+   "why": "회사는 피처 플랫폼으로 추천을 고도화해 게시글 추천의 클릭률 30%, 전환율 70%가 늘었다고 밝혔습니다.[3] 추천 시스템은 클릭률 하나만 보다가 채팅 발생·체류 시간 같은 여러 신호를 합친 가치 함수로 옮겨 갔습니다 — 무엇을 재느냐가 바뀌면 이 팀이 내줄 피처도 바뀝니다.[6] 당근은 직무 경계를 넘어 문제를 끝까지 푸는 것을 일하는 방식으로 내세웁니다.[7]",
+   "how_far": "\"협업\"의 실체는 ML 엔지니어·제품 팀이 원하는 피처를 **스스로 정의하고 추가할 수 있게** 만드는 것입니다 — 회사는 사내 누구나 피처를 찾고 더할 수 있게 한 것을 성과로 꼽았습니다.[3]",
+   "refs": [
+    3,
+    6,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "제품과 비즈니스 문제를 엔지니어링 관점에서 발견하고, 기술적 해결책을 주도하여 실질적인 임팩트로 연결하는 과정을 즐기시는 분",
+   "short": "\"시켜서 만든 것\"보다 문제를 먼저 찾아 기술로 풀고 숫자로 효과를 낸 경험을 반긴다는 뜻.",
+   "why": "당근 채용 사이트는 소수정예 팀에서 한 사람이 맡는 문제의 크기가 크고, 직무 경계를 넘는 오너십을 일하는 방식으로 적었습니다.[7] 이 팀도 늘어나는 파이프라인을 적은 인원으로 감당하려고 구조를 바꾼 사례를 발표했습니다.[4]",
+   "how_far": "이력서에 \"무엇을 발견했고 → 무엇을 바꿨고 → 지표가 얼마나 움직였나\" 한 줄씩이면 됩니다 {추론}.",
+   "refs": [
+    4,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "피쳐 스토어, 추천 엔진, 모델 서빙 시스템 등 ML 인프라를 설계하거나 운영해 본 경험이 있으신 분",
+   "short": "이 팀이 만드는 것 자체(피처 스토어·추천 엔진·모델 서빙)를 해 봤다면 바로 일할 수 있어서.",
+   "why": "이 세 가지가 업무① 그대로입니다.[1] 피처 스토어는 학습과 서빙에 같은 피처를 일관되게 내주는 저장소로, 오픈소스 Feast 같은 제품도 같은 문제를 풉니다.[23]",
+   "actually": {
+    "items": [
+     "**피처 스토어** — 온라인(지연 ms 단위, 최신 값) / 오프라인(학습용 과거 값) 저장소, 시점에 맞는 값 꺼내기.[23]",
+     "**추천 엔진** — 후보 생성(검색) → 순위 → 재정렬의 다단계 구조.[6][18]",
+     "**모델 서빙** — 학습이 끝난 모델을 저장소에 올리고 서버를 다시 띄워 새 모델로 답하게 하는 단계.[5]"
+    ]
+   },
+   "how_far": "경험이 없어도 지원 FAQ대로 문제는 없습니다.[1] 대신 Google 추천 시스템 강의 정도로 후보 생성·순위의 뜻을 알고 오면 면접 대화가 쉬워집니다 {추론}.",
+   "refs": [
+    1,
+    5,
+    6,
+    18,
+    23
+   ],
+   "study": [
+    "feast-docs",
+    "google-recsys",
+    "aws-fp1"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Google Cloud Dataflow 또는 Apache Flink를 활용해 스트리밍 데이터 파이프라인을 구축해 본 경험이 있으신 분",
+   "short": "Kafka·Pub/Sub로 들어오는 사건을 끊김 없이 실시간 가공하는 파이프라인을 만들어 봤나 — 임베딩 추론이 Dataflow 위에 있어서.",
+   "why": "임베딩 추론 파이프라인이 Kafka에서 읽어 Beam으로 가공하고 Kafka·BigQuery로 내보냅니다.[5] Beam은 배치와 스트리밍을 같은 코드로 짜고 Dataflow·Spark·Flink 위에서 돌릴 수 있는 모델이라, 회사는 Flink도 후보로 비교했습니다(GPU 연동과 운영 복잡도 때문에 고르지 않았다).[4][15]",
+   "actually": {
+    "items": [
+     "**윈도·워터마크** — 끝이 없는 흐름을 시간 칸으로 자르고, 늦게 온 사건을 어디까지 기다릴지 정한다.[15][19]",
+     "**묶음(번들)과 퓨전** — Beam은 이어진 단계를 하나로 합쳐(fusion) 실행하는데, 묶음이 작으면 외부 호출의 동시성이 떨어진다. Reshuffle로 끊고 BatchElements로 묶어 해결했다.[4][5]",
+     "**자동 확장의 함정** — CPU는 놀아도 밀린 일이 쌓이면 워커만 늘어 비용이 커진다.[5]"
+    ]
+   },
+   "how_far": "Spark나 Kafka Streams로 해 봤다면 개념은 같습니다. 이 팀이 Beam·Dataflow를 쓰는 이유와 겪은 문제를 이해하고 오면 충분합니다 {추론}.",
+   "refs": [
+    4,
+    5,
+    15,
+    19
+   ],
+   "study": [
+    "beam-guide",
+    "dataflow-ml",
+    "flink-docs",
+    "pycon25"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ML 모델의 학습부터 서비스 배포 및 개선까지 ML flywheel에 대한 경험이 있으신 분",
+   "short": "데이터 → 학습 → 배포 → 실험 → 다시 데이터로 도는 바퀴(flywheel)를 한 바퀴라도 돌려 봤나.",
+   "why": "당근의 학습 파이프라인은 BigQuery에서 데이터를 읽어 검증·변환 → 학습·평가 → 모델 업로드·서버 재시작 순서로 돌고, 하루 수천 번 실행됩니다.[4][5] 학습 데이터는 피처 플랫폼에 미리 넣어 둔 것을 여러 파이프라인이 다시 쓰기도 해서, 이 팀이 만드는 피처가 바퀴의 첫 칸입니다.[4]",
+   "flows": [
+    {
+     "caption": "당근 학습 파이프라인의 기본 칸[5]",
+     "steps": [
+      "데이터 · BigQuery 추출 → 검증 → 변환",
+      "학습 · 학습 → 평가",
+      "배포 · 모델 업로드(GCS/S3) → 추론 서버 재시작",
+      "서비스 · 추천 결과와 사용자 반응이 다시 로그로"
+     ]
+    }
+   ],
+   "how_far": "모델을 직접 잘 만들 필요는 없습니다. **자기 피처가 학습·서빙에서 똑같이 쓰이는지, 새 모델이 나갔을 때 무엇이 바뀌는지**를 따라갈 수 있으면 됩니다 {추론}.",
+   "refs": [
+    4,
+    5
+   ],
+   "study": [
+    "mlsd",
+    "vertex-pipelines"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "팀 이름에 ML이 있는데요. ML 실무 경험이나 깊은 이해가 필요한가요? 아니요, 저희 팀은 ML기반 추천 서비스를 지탱하기 위한 고성능의 시스템을 만드는게 팀의 비전이기 때문에 Software Engineering 역량을 핵심으로 생각하고 있어요 팀에 조인하면 실무적인 ML 및 추천과 관련된 도메인 지식을 습득해서 적응하실 수 있으니 해당 부분은 걱정하지 않으셔도 돼요 다만 팀 업무에 흥미를 위해서는 ML이나 추천시스템에 많은 관심이 있기를 기대하고 있어요",
+   "short": "ML 경력은 안 본다 — 핵심은 소프트웨어 엔지니어링이고, ML·추천 지식은 들어와서 배운다. 관심만은 있어야 한다.",
+   "why": "팀이 직접 답한 FAQ입니다.[1] 실제로 공개된 이 팀의 문제(캐시·키 설계·Kafka 커밋·GPU 메모리)도 ML 이론보다 시스템 문제입니다.[2][3][4]",
+   "how_far": "\"추천이 왜 이 글을 보여 줬을까\"를 궁금해할 정도의 관심 — 바이라인 기사로 당근 추천이 5년간 어떻게 바뀌었는지 읽고 가면 대화 소재가 됩니다.[6]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    6
+   ],
+   "study": [
+    "google-recsys"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "팀에서 작성한 블로그 글이 있나요? 네, 아래의 글을 참고 해주세요 How Karrot built a feature platform on AWS, Part 1: Motivation and feature serving How Karrot built a feature platform on AWS, Part 2: Feature ingestion",
+   "short": "팀이 지원 전에 읽으라고 직접 건 글 두 편 — 피처 서빙(1부)과 피처 수집(2부). 면접 대화의 바탕이다.",
+   "why": "공고가 이 글을 FAQ에 걸었습니다.[1] 한국어판이 AWS 기술 블로그에 있고, 필자 세 명이 이 팀의 피처 플랫폼·추천 엔진 엔지니어입니다.[2][3]",
+   "actually": {
+    "items": [
+     "**1부** — 왜 떼어 냈나, 요구사항 숫자, 3단 캐시, 키 설계, 캐시 미스·정합성·관통 문제와 해법.[2]",
+     "**2부** — 스트림 수집(Dispatcher·Aggregator, 한 파티션 병렬 소비자), 배치 수집(AWS Batch), 성과(클릭률 30%·전환율 70%·캐시 비용 40% 절감).[3]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "aws-fp1",
+    "aws-fp2"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "정규직 채용의 경우 3개월의 수습기간이 있어요 ‘장애인고용촉진 및 직업재활법’, ‘국가유공자 등 예우 및 지원에 관한 법률’에 따라 장애인 및 보훈대상자는 채용 전형 시 우대하고 있어요 이 포지션은 산업기능요원으로 채용이 가능한 포지션이에요 (현역 전직, 보충역 신규 편입, 보충역 전직) 전문연구요원 편입 및 전직은 불가해요",
+   "short": "정규직은 수습 3개월. 산업기능요원(현역 전직·보충역)으로도 지원 가능, 전문연구요원은 안 된다.",
+   "why": "공고의 안내입니다.[1] 채용 FAQ도 엔지니어 직군에 한해 산업기능요원 채용이 가능하고 현역 신규 편입은 안 된다고 적었습니다.[8] 산업기능요원은 군 복무 대신 병무청이 지정한 업체에서 일하는 제도입니다.[22]",
+   "refs": [
+    1,
+    8,
+    22
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "화상 면접에서 이력 기반 질문과 라이브 코딩 테스트가 있을 예정이에요 C++, Go, Java, Python 언어로 진행하실 수 있어요 직무 면접에서 시스템 설계 테스트가 진행될 예정이에요",
+   "short": "화상 면접은 이력 질문 + 라이브 코딩(C++·Go·Java·Python), 직무 면접은 시스템 설계.",
+   "why": "공고가 이 자리 전형을 따로 적었습니다.[1] 시스템 설계 문제로는 이 팀이 공개한 것 — \"초당 10만 건을 30ms로 답하는 피처 서버\", \"사건을 잃지 않는 빠른 소비자\" — 과 닮은 것이 나올 가능성이 있습니다 {추론}.",
+   "how_far": "라이브 코딩은 자료구조·알고리즘 기본을 말로 설명하며 짜는 연습, 시스템 설계는 캐시·저장소·큐를 놓고 병목과 실패를 따지는 연습이면 됩니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sysdesign",
+    "ddia"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "1. 서류 전형 → 2. 화상 인터뷰(라이브 코딩 테스트) → 3. 직무 인터뷰 → 4. 컬처핏 인터뷰 및 레퍼런스 체크 → 5. 처우협의 → 6. 최종 합격 및 입사",
+   "short": "서류 → 화상(라이브 코딩) → 직무(시스템 설계) → 컬처핏·레퍼런스 체크 → 처우 협의 → 합격.",
+   "why": "공고의 전형 순서입니다.[1] 연봉은 다섯째 단계인 처우 협의에서 정합니다.[1] 화상·직무 인터뷰 뒤에 떨어지면 같은 공고는 6개월 뒤, 컬처핏 뒤면 모든 공고에 1년 뒤 다시 지원할 수 있습니다.[8]",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "당근은 자유형식의 지원서를 받고 있어요. 본인의 강점이 잘 드러나는 다양한 정보를 자유롭게 활용해 이력서를 작성해 주세요. 문서 형식은 hwp(한글) 파일을 제외하고 word, pdf, 웹 링크 등 자유롭게 선택해주시면 돼요. 웹 링크(노션, 구글드라이브 등)로 서류를 제출해주실 때는 접근 권한을 꼭 열어주세요. 평가와 상관 없는 사진, 주소 등의 개인정보는 제외해주세요.",
+   "short": "이력서 양식은 자유. hwp만 빼고 PDF·링크 다 되며, 링크는 권한을 열고, 사진·주소는 빼라.",
+   "why": "당근 공통 서류 안내입니다.[1] 채용 FAQ는 PDF를 권하고, zip은 못 내며, 국내 포지션은 국문을 권한다고 덧붙였습니다.[8]",
+   "how_far": "자유 형식이라 이 공고의 업무 네 줄에 맞춰 **처리량·지연·비용 숫자가 있는 경험**을 맨 위에 둡니다 {추론}.",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "지원해주신 직무와 업무 연관성이 높은 당근 팀원과 화상으로 직무와 관련된 기본적인 지식에 대해 이야기를 나누는 단계예요. 직무에 따라 과제 전형이 있어요. 과제는 직무 능력과 연관된 내용으로 출제돼요. 과제 전형을 별도로 운영하는 직무도 있고, 화상 면접 또는 직무 면접에서 과제가 함께 출제되는 경우도 있어요. 지원하신 직무와 업무 연관성이 높은 당근 팀원들과 직무 역량, 경험에 대해 화상 면접보다 심층적인 이야기를 나누는 단계예요. 과제가 출제되었을 경우 과제에 대한 질문을 드려요.",
+   "short": "화상은 기본 지식 대화, 직무는 경험을 더 깊게. 직무에 따라 과제가 따로 나오거나 면접 중에 나온다.",
+   "why": "당근 공통 면접 안내입니다.[1] 이 공고에서는 화상 단계에 라이브 코딩, 직무 단계에 시스템 설계가 들어간다고 따로 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "컬쳐핏 면접(정규직 공통) 당근은 면접을 단순히 회사에 사람을 뽑는 자리로 생각하지 않아요. 당근과 지원자가 서로 추구하는 가치관과 생각을 교환하는 시간이라고 생각하고 있어요. 컬쳐핏 단계는 당근이 추구하는 문화와 일하는 방식과 잘 어울릴 수 있는 분인지 확인하는 단계예요. 또한 포지션에 대한 전문성을 다시금 확인하는 이야기를 나눠요.",
+   "short": "정규직 공통 마지막 면접 — 당근의 일하는 방식과 맞는지, 전문성도 한 번 더 확인한다.",
+   "why": "당근 공통 안내입니다.[1] 채용 사이트가 적은 일하는 방식은 직무 경계를 넘는 오너십, 솔직한 충돌 뒤 한 방향 실행, 사용자 기준, 작게 내고 빠르게 검증, 결정 맥락 공개입니다.[7]",
+   "how_far": "이 다섯 가지에 맞는 내 경험 한 가지씩을 준비해 두면 됩니다 {추론}.",
+   "refs": [
+    1,
+    7
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "p99 숫자가 내려가는 걸 보는 게 즐거운 사람",
+   "캐시·큐·DB 같은 기본기 문제를 끝까지 파는 사람[2][3]",
+   "추천이 왜 이 글을 보여 줬는지 궁금한 사람[1]",
+   "적은 인원으로 큰 시스템을 맡고 싶은 사람[4][7]"
+  ],
+  "hard": [
+   "AWS와 GCP, Go·Kotlin·Python을 같이 다뤄야 한다[1][3]",
+   "모델을 직접 만드는 일은 거의 없다 — ML 연구를 원하면 결이 다르다[1]",
+   "초당 10만 건 서비스라 작은 실수도 홈 피드 전체에 바로 보인다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "캐시가 동시에 만료돼 DB로 요청이 몰리는 걸 어떻게 막겠어요?",
+   "a": "회사가 PEE·지터·락으로 실제로 푼 문제.[2][11]"
+  },
+  {
+   "q": "DB에 없는 키를 계속 물어보는 요청은요?",
+   "a": "없는 값 캐시(negative caching)와 그 감시.[2]"
+  },
+  {
+   "q": "Kafka에서 사건을 잃지 않으면서 한 파티션을 빠르게 처리하려면? 언제 커밋하나요?",
+   "a": "manual commit으로 10배 느려진 뒤 직접 만든 병렬 소비자.[3]"
+  },
+  {
+   "q": "초당 10만 건을 p99.9 30ms로 답하는 피처 서버를 설계해 보세요.",
+   "a": "직무 면접 시스템 설계 테스트와 이 팀의 실제 숫자.[1][2]"
+  },
+  {
+   "q": "GPU 하나에 모델을 여러 번 올려 메모리가 터지면?",
+   "a": "Beam MultiprocessShared로 푼 사례.[4][16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "당근 채용 · Software Engineer, Backend - 피드 (ML Data Platform)",
+   "url": "https://about.daangn.com?gh_jid=6652141003",
+   "kind": "posting",
+   "note": "팀 소개(초당 100K+·p99.9 30ms·이벤트 스트림 100+·피처 1,000+)·업무·요건·FAQ·전형"
+  },
+  {
+   "n": 2,
+   "title": "AWS 기술 블로그 · 당근의 AWS 기반 피처 플랫폼 구축 여정, Part 1: 구축 배경과 피처 서빙",
+   "url": "https://aws.amazon.com/ko/blogs/tech/how-karrot-built-a-feature-platform-on-aws-part-1-motivation-and-feature-serving/",
+   "kind": "company",
+   "date": "2025-10-21",
+   "note": "당근 김현호·서진형·권민재 공동 작성, 숫자는 2025년 2월 기준"
+  },
+  {
+   "n": 3,
+   "title": "AWS 기술 블로그 · 당근의 AWS 기반 피처 플랫폼 구축 여정, Part 2: 피처 수집",
+   "url": "https://aws.amazon.com/ko/blogs/tech/how-karrot-built-a-feature-platform-on-aws-part-2-feature-ingestion/",
+   "kind": "company",
+   "date": "2025-10-21",
+   "note": "공고 FAQ가 건 글"
+  },
+  {
+   "n": 4,
+   "title": "PyCon Korea 2025 · Python과 함께하는 AI 플랫폼: ML Infra 기반부터 대규모 Inference Pipeline 구축까지 (박준성·변규현)",
+   "url": "https://www.youtube.com/watch?v=hB3MXDeViGk",
+   "kind": "company",
+   "date": "2025",
+   "note": "당근 ML 인프라팀·ML 데이터 플랫폼팀 · 30분, 자막 전부 확인"
+  },
+  {
+   "n": 5,
+   "title": "발표자 블로그 · AI Platform with Python at Karrot — Inference Pipeline Part (PyCon Korea 2025)",
+   "url": "https://novemberde.github.io/post/2025/10/04/pycon-korea-2025-dataflow-at-karrot/",
+   "kind": "company",
+   "date": "2025-10-04",
+   "note": "발표자(ML 데이터 플랫폼팀)가 정리한 발표 내용·코드"
+  },
+  {
+   "n": 6,
+   "title": "바이라인네트워크 · 당근의 추천시스템은 LLM 안 부럽다",
+   "url": "https://byline.network/2026/04/17_28182764/",
+   "kind": "news",
+   "date": "2026-04-21",
+   "note": "추천 시스템 5년 변화(2021 클릭률 정렬 → 2022 멀티 스테이지·대조 학습 → 2023 가치 함수 → 2024 전 서비스 확장)"
+  },
+  {
+   "n": 7,
+   "title": "당근 채용 · 팀 문화(일하는 방식·복지)",
+   "url": "https://careers.daangn.com/culture/",
+   "kind": "company",
+   "note": "2026-11-25 확인"
+  },
+  {
+   "n": 8,
+   "title": "당근 채용 · 자주 묻는 질문",
+   "url": "https://careers.daangn.com/faq/",
+   "kind": "company",
+   "note": "서류 형식·재지원·나이 학력 제한 없음·병역특례 · 2026-11-25 확인"
+  },
+  {
+   "n": 9,
+   "title": "원티드 · 당근마켓 기업 정보(평균연봉·올해 입사자 평균연봉)",
+   "url": "https://www.wanted.co.kr/company/2826",
+   "kind": "reference",
+   "note": "금감원·국민연금 자료로 계산한 집계 · 2026-11-25 확인"
+  },
+  {
+   "n": 10,
+   "title": "헤럴드경제 · \"똑같이 야근하는데, 카카오 절반도 못 받네\"(당근마켓 2021년 감사보고서 평균 연봉)",
+   "url": "https://v.daum.net/v/E0TBuDZZNt",
+   "kind": "news",
+   "date": "2022-04-16"
+  },
+  {
+   "n": 11,
+   "title": "Vattani 외 · Optimal Probabilistic Cache Stampede Prevention (VLDB 2015)",
+   "url": "https://www.vldb.org/pvldb/vol8/p886-vattani.pdf",
+   "kind": "reference",
+   "note": "확률적 조기 만료(XFetch) 원 논문"
+  },
+  {
+   "n": 12,
+   "title": "Amazon ElastiCache 문서 · 캐싱 전략(지연 로딩·write-through·TTL)",
+   "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Strategies.html",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Amazon DynamoDB 개발자 안내서 · 파티션 키 설계 모범 사례",
+   "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Apache Kafka 문서 · 소비자 설정(enable.auto.commit)·오프셋",
+   "url": "https://kafka.apache.org/documentation/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Apache Beam Programming Guide",
+   "url": "https://beam.apache.org/documentation/programming-guide/",
+   "kind": "reference",
+   "note": "파이프라인·변환·윈도·워터마크"
+  },
+  {
+   "n": 16,
+   "title": "Apache Beam 문서 · multi_process_shared 모듈",
+   "url": "https://beam.apache.org/releases/pydoc/current/apache_beam.utils.multi_process_shared.html",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "TensorFlow Data Validation(TFDV) 안내",
+   "url": "https://www.tensorflow.org/tfx/guide/tfdv",
+   "kind": "reference",
+   "note": "스키마 검사·학습/서빙 차이·분포 변화"
+  },
+  {
+   "n": 18,
+   "title": "Google for Developers · Recommendation systems 강의",
+   "url": "https://developers.google.com/machine-learning/recommendation",
+   "kind": "reference",
+   "note": "후보 생성 → 점수 → 재정렬"
+  },
+  {
+   "n": 19,
+   "title": "Apache Flink 문서",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "gRPC 문서 · Go Basics tutorial",
+   "url": "https://grpc.io/docs/languages/go/basics/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Google SRE 책 · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "평균 대신 백분위로 지연을 재는 이유"
+  },
+  {
+   "n": 22,
+   "title": "병무청 · 산업기능요원·전문연구요원 안내",
+   "url": "https://www.mma.go.kr/contents.do?mc=mma0000760",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Feast 문서 · Introduction (오픈소스 피처 스토어)",
+   "url": "https://docs.feast.dev/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Google Cloud 문서 · Vertex AI Pipelines 소개",
+   "url": "https://cloud.google.com/vertex-ai/docs/pipelines/introduction",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "A Tour of Go",
+   "url": "https://go.dev/tour/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "회사 글의 숫자는 2025년 2월 기준이고 발표는 2025년 것이라 지금은 달라졌을 수 있습니다. 추천 엔진 내부 구조와 데이터 품질 모니터링의 구체 지표는 공개되지 않아, 공식 문서(TFDV·Feast·Google 추천 강의)로 \"보통 이런 것\"을 보였습니다.",
+ "resources": [
+  {
+   "id": "aws-fp1",
+   "title": "당근의 AWS 기반 피처 플랫폼 구축 여정, Part 1: 구축 배경과 피처 서빙",
+   "by": "당근 · AWS 기술 블로그 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://aws.amazon.com/ko/blogs/tech/how-karrot-built-a-feature-platform-on-aws-part-1-motivation-and-feature-serving/",
+   "why": "업무①② — 피처 서버의 3단 캐시·키 설계·캐시 문제 세 가지. 지원 전에 꼭 읽으라고 공고가 건 글."
+  },
+  {
+   "id": "aws-fp2",
+   "title": "당근의 AWS 기반 피처 플랫폼 구축 여정, Part 2: 피처 수집",
+   "by": "당근 · AWS 기술 블로그 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://aws.amazon.com/ko/blogs/tech/how-karrot-built-a-feature-platform-on-aws-part-2-feature-ingestion/",
+   "why": "요건③ — 한 파티션 안 병렬 소비자, 이벤트 M:N 처리, 배치 백필을 왜 그렇게 짰는지."
+  },
+  {
+   "id": "pycon25",
+   "title": "PyCon Korea 2025 · Python과 함께하는 AI 플랫폼: ML Infra 기반부터 대규모 Inference Pipeline 구축까지",
+   "by": "당근 박준성·변규현 · 30분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=hB3MXDeViGk",
+   "why": "업무③ — 임베딩 추론 파이프라인을 Beam·Dataflow로 옮긴 이유와 GPU 메모리·네트워크 병목 해결. 뒤 절반이 이 팀 발표."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "요건②③ — 복제·파티셔닝·스트림 처리·정합성. 캐시와 DB, Kafka 소비자 문제를 이론으로 받쳐 준다. 파티셔닝·스트림 장부터."
+  },
+  {
+   "id": "sysdesign",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84",
+   "why": "직무 면접 시스템 설계 테스트 — 캐시·샤딩·메시지 큐를 놓고 말하는 틀을 익힌다."
+  },
+  {
+   "id": "mlsd",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84",
+   "why": "업무①④·우대④ — 피처 엔지니어링, 데이터 분포 변화, 모델 배포·모니터링을 ML 바깥 엔지니어 눈높이로. ML 경험 없이 이 팀에 가는 사람의 첫 책."
+  },
+  {
+   "id": "kafka-book",
+   "title": "실전 카프카 개발부터 운영까지",
+   "by": "고승범",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8B%A4%EC%A0%84%20%EC%B9%B4%ED%94%84%EC%B9%B4%20%EA%B0%9C%EB%B0%9C%EB%B6%80%ED%84%B0%20%EC%9A%B4%EC%98%81%EA%B9%8C%EC%A7%80",
+   "why": "요건③ — 소비자 그룹·오프셋 커밋·재처리. 이 팀이 auto-commit을 버린 이유를 이해하는 바탕."
+  },
+  {
+   "id": "elasticache-strategies",
+   "title": "Amazon ElastiCache · 캐싱 전략",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Strategies.html",
+   "why": "업무② — 지연 로딩·write-through·TTL의 장단점. 회사 글의 soft/hard TTL·write-through를 읽기 전 기초."
+  },
+  {
+   "id": "dynamodb-keys",
+   "title": "DynamoDB · 파티션 키 설계 모범 사례",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html",
+   "why": "업무② — 핫 파티션이 왜 생기고 키를 어떻게 퍼뜨리나. `피처그룹#id` 키 설계를 이해하는 데."
+  },
+  {
+   "id": "pee-paper",
+   "title": "Optimal Probabilistic Cache Stampede Prevention",
+   "by": "Vattani · Chierichetti · Lowenstein · VLDB 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.vldb.org/pvldb/vol8/p886-vattani.pdf",
+   "why": "업무② — 회사가 쓴 PEE(확률적 조기 만료)의 원 논문. 식 하나만 이해해도 직접 구현할 수 있다."
+  },
+  {
+   "id": "sre-slo",
+   "title": "Site Reliability Engineering · Service Level Objectives",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "why": "업무② — p99.9 같은 백분위 목표를 왜 쓰고 어떻게 정하나."
+  },
+  {
+   "id": "beam-guide",
+   "title": "Apache Beam Programming Guide",
+   "by": "Apache Beam 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://beam.apache.org/documentation/programming-guide/",
+   "why": "업무③·우대③ — PCollection·ParDo·윈도·워터마크. 발표 코드(`|` 문법)를 읽는 데 필요하다."
+  },
+  {
+   "id": "beam-ml",
+   "title": "About Beam ML",
+   "by": "Apache Beam 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://beam.apache.org/documentation/ml/about-ml/",
+   "why": "업무③ — Beam에서 모델 추론(RunInference)을 돌리는 공식 방법과 모델 공유."
+  },
+  {
+   "id": "dataflow-ml",
+   "title": "Dataflow ML",
+   "by": "Google Cloud 공식 문서",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://cloud.google.com/dataflow/docs/machine-learning",
+   "why": "업무③ — Dataflow에서 GPU 추론·임베딩 생성 파이프라인을 구성하는 법."
+  },
+  {
+   "id": "tfdv",
+   "title": "TensorFlow Data Validation",
+   "by": "TFX 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.tensorflow.org/tfx/guide/tfdv",
+   "why": "업무④ — 스키마 검사·학습/서빙 차이·분포 변화 감지. 당근 학습 파이프라인이 쓰는 TFX의 검증 도구."
+  },
+  {
+   "id": "feast-docs",
+   "title": "Feast 문서",
+   "by": "Feast(오픈소스 피처 스토어)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.feast.dev/",
+   "why": "업무①·우대② — 온라인/오프라인 저장소, 시점에 맞는 피처 조회가 무엇인지 작은 예제로 직접 돌려 볼 수 있다."
+  },
+  {
+   "id": "google-recsys",
+   "title": "Recommendation systems",
+   "by": "Google for Developers",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/recommendation",
+   "why": "우대②·FAQ — 후보 생성 → 점수 → 재정렬, 임베딩 기반 추천의 뜻을 짧게. ML 지식 없이 들어가는 사람의 관심 증명."
+  },
+  {
+   "id": "flink-docs",
+   "title": "Apache Flink 문서",
+   "by": "Apache Flink 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/",
+   "why": "우대③ — 공고가 Dataflow와 나란히 적은 스트림 엔진. 상태·체크포인트 개념 비교용."
+  },
+  {
+   "id": "go-tour",
+   "title": "A Tour of Go",
+   "by": "Go 공식",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://go.dev/tour/",
+   "why": "기술 목록·요건④ — 서빙 언어 Go를 처음 잡는 공식 실습. 고루틴·채널까지."
+  },
+  {
+   "id": "grpc-go",
+   "title": "gRPC Go Basics tutorial",
+   "by": "gRPC 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://grpc.io/docs/languages/go/basics/",
+   "why": "기술 목록 — .proto로 서비스를 정의하고 Go 서버·클라이언트를 만드는 흐름."
+  },
+  {
+   "id": "vertex-pipelines",
+   "title": "Vertex AI Pipelines 소개",
+   "by": "Google Cloud 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cloud.google.com/vertex-ai/docs/pipelines/introduction",
+   "why": "우대④ — 당근 학습 파이프라인이 도는 곳. Kubeflow·TFX 파이프라인을 서버리스로 실행하는 구조."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 글로 지도 그리기",
+   "time": "1주",
+   "goal": "이 팀 시스템 세 덩어리(서빙·스트림 수집·배치 수집)와 임베딩 파이프라인을 그림 한 장으로 설명할 수 있다.",
+   "resources": [
+    "aws-fp1",
+    "aws-fp2",
+    "pycon25"
+   ],
+   "task": "글 두 편과 발표를 보고 사건 발생 → 추천 응답까지의 흐름도를 직접 그리고, 칸마다 회사가 겪은 문제 하나씩을 적는다."
+  },
+  {
+   "title": "캐시 앞에 선 서버",
+   "time": "2~3주",
+   "goal": "3단 캐시·없는 값 캐시·TTL 지터·조기 만료를 직접 구현하고 p99를 잰다.",
+   "resources": [
+    "elasticache-strategies",
+    "dynamodb-keys",
+    "pee-paper",
+    "sre-slo",
+    "go-tour",
+    "grpc-go"
+   ],
+   "task": "Go + gRPC로 \"사용자 id → 최근 클릭 30개\" 피처 서버를 만든다(로컬 맵 → Redis → 가상 DB). 부하 도구로 초당 수천 건을 쏴 캐시를 켜고 끌 때 p99·p99.9와 DB 조회 수를 비교한다."
+  },
+  {
+   "title": "사건을 잃지 않는 소비자",
+   "time": "2주",
+   "goal": "Kafka 오프셋 커밋과 재시도 토픽으로 최소 한 번 처리를 보장하면서 한 파티션을 병렬로 처리한다.",
+   "resources": [
+    "kafka-book",
+    "ddia",
+    "aws-fp2"
+   ],
+   "task": "로컬 Kafka에 가상 클릭 사건 10만 건을 넣고, auto-commit / 한 건씩 manual-commit / 묶음 병렬 + 최대 오프셋 커밋 세 방식의 처리 속도와 강제 종료 뒤 잃은 사건 수를 표로 만든다."
+  },
+  {
+   "title": "임베딩 파이프라인과 품질 감시",
+   "time": "2~3주",
+   "goal": "Beam으로 글 → 임베딩 → 저장 파이프라인을 짜고, 결과 피처에 품질 검사를 건다.",
+   "resources": [
+    "beam-guide",
+    "beam-ml",
+    "dataflow-ml",
+    "tfdv",
+    "mlsd"
+   ],
+   "task": "가상 중고 글 1만 개를 작은 오픈소스 임베딩 모델로 Beam(DirectRunner)에서 벡터화하고, 모델 버전을 같이 저장한다. 빈 값 비율·신선도·분포 변화(PSI) 검사를 붙여 일부러 깨진 데이터를 넣었을 때 알림이 뜨게 한다."
+  },
+  {
+   "title": "추천과 시스템 설계 말하기",
+   "time": "1~2주",
+   "goal": "\"초당 10만 건 피처 서버\" 같은 설계 문제를 병목·실패·비용 순서로 말할 수 있다.",
+   "resources": [
+    "sysdesign",
+    "google-recsys",
+    "feast-docs",
+    "vertex-pipelines"
+   ],
+   "task": "2~4단계 결과물을 묶어 A4 한 장 설계 문서를 쓴다 — 요구 숫자, 구조, 무엇이 먼저 터지나, 비용을 어디서 줄이나. 친구에게 30분 동안 질문받아 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 평균은 **약 6,032만원**, 올해 입사자 평균은 **약 3,888만원** — 둘 다 전 직군·신입·경력이 섞인 값이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 금감원·국민연금 자료로 계산한 값이다. 기준일 표기가 없고 직군 구분이 없다 [9]"
+   },
+   {
+    "label": "올해 입사자 평균 연봉",
+    "value": "3,888만원",
+    "amount": 3888,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 국민연금 자료로 계산한 값이다. 신입·경력·인턴, 모든 직군이 섞여 있어 이 자리 연봉으로 읽으면 안 된다 [9]"
+   },
+   {
+    "label": "평균 연봉(감사보고서 계산)",
+    "value": "5,162만원",
+    "amount": 5162,
+    "basis": "감사보고서 · 2021년",
+    "note": "기자가 2021년 직원급여 총액 130억원을 정원 250명(인턴 포함)으로 나눈 값이다. 회사는 인력이 한 해 두 배 넘게 늘어 실급여는 더 높다고 답했다 [10]"
+   }
+  ],
+  "how": "당근마켓은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 공고에도 연봉이 없고, 전형 다섯째 단계 **처우 협의**에서 사람마다 정한다 [1]. 국민연금 기반 집계는 납부 상한 때문에 높은 연봉이 낮게 잡히는 경향이 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "업무 환경",
+    "detail": "인체공학 오피스 가구, 최신 사양 업무 기기"
+   },
+   {
+    "name": "식사",
+    "detail": "식사 및 음료비 지원"
+   },
+   {
+    "name": "야근 교통",
+    "detail": "야근 시 택시비 지원"
+   },
+   {
+    "name": "교육",
+    "detail": "업무 관련 교육·어학 교육비, 국내외 컨퍼런스 참가비와 관련 휴가"
+   },
+   {
+    "name": "학습 도구",
+    "detail": "업무 관련 도서·논문·AI Tool 포함"
+   },
+   {
+    "name": "휴가",
+    "detail": "승인 없이 자유롭게 쓰는 휴가, 연간 최대 25일"
+   },
+   {
+    "name": "문화의 날",
+    "detail": "매월 운영"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 종합건강검진, 연 8회 심리 상담"
+   },
+   {
+    "name": "단체 상해보험",
+    "detail": "본인·배우자·자녀·부모님"
+   },
+   {
+    "name": "가족",
+    "detail": "어린이집 자녀 보육 지원, 경조사 및 명절 지원"
+   }
+  ],
+  "note": "당근 채용 사이트의 '팀 문화' 페이지에 적힌 것이다(2026-11-25 확인) [7]. 금액과 고용 형태별 적용 범위는 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "당근 본사 (교보강남타워)",
+  "address": "서울특별시 서초구 강남대로 465, 교보강남타워 11층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
+  "near": "9호선 신논현역 앞 {추론}",
+  "note": "공고 근무지 표기는 'SEOUL'이고, 주소는 당근 채용 사이트 하단의 회사 정보다 [7]. 팀 자리 층은 다를 수 있다 {추론}."
+ }
+}
