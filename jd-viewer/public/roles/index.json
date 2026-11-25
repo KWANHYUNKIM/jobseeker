@@ -67,6 +67,7 @@
   "dev-579992": "biztechi-data-engineering-pl",
   "ats-lg:group:1001890": "biztechi-database-operations",
   "dev-579980": "biztechi-database-operations",
+  "ats-lg:group:1002386": "biztechi-m365-operations-engineer",
   "ats-lg:group:1001888": "biztechi-network-operations",
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
@@ -1078,6 +1079,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 22
+  },
+  {
+   "id": "biztechi-m365-operations-engineer",
+   "company": "비즈테크아이",
+   "role": "M365 운영 및 기술지원 엔지니어",
+   "jobs": [
+    "ats-lg:group:1002386"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "biztechi-network-operations",
