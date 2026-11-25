@@ -1,0 +1,1227 @@
+{
+ "id": "kakaomobility-ad-ai-perception",
+ "company": "카카오모빌리티",
+ "role": "자율주행 AI Perception 엔지니어",
+ "team": "자율주행개발팀",
+ "jobs": [
+  "ats-greeting:kakaomobility:225964",
+  "ats-kakao:group:S-4725"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "카메라 7대·라이다 3대·레이더 5대가 본 것을 합쳐 **\"주변에 무엇이 어디 있나\"를 알아내는 AI 모델**을 만들고, 그 모델을 차 안 컴퓨터에서 실시간으로 돌게 합니다.[1][6]",
+  "env": "강남 심야 로보택시 '서울자율차'가 실제로 달리며 모은 데이터로 학습하고, 연말까지 인지와 판단을 한 모델(E2E)로 합치는 전환 한가운데서 일합니다.[5][6]",
+  "oneline": "논문 속 3D 인지 모델을 **실제 도로·실제 차·실제 데이터 파이프라인** 위에 올리는 5년 차 이상 자리. 기하(좌표·보정)와 배포(TensorRT)까지 같이 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Perception AI 개발",
+   "short": "센서 신호를 \"차·사람·신호등이 어디에, 어느 방향으로\"로 바꾸는 AI를 만든다.",
+   "why": "자율주행은 사람 운전처럼 인지 → 판단 → 제어 순서로 돌고, 그중 인지와 판단이 가장 어렵다고 카카오는 설명합니다.[11] 카카오모빌리티는 인지·판단·제어를 따로 둔 규칙 기반 구조에서 출발해, 판단에 AI 플래너를 더했고 연말까지 인지와 판단을 E2E(입력부터 출력까지 한 모델) 하나로 맡길 계획입니다.[5][6] 같은 공고가 원티드에도 올라와 있습니다.[2] 자율주행개발팀은 관제·배차·운영 플랫폼, 데이터 AI 플랫폼, 인지·판단·제어 알고리즘을 함께 맡고, HD맵도 자체 제작합니다.[8]",
+   "actually": {
+    "intro": "이 공고의 업무 줄 9개가 모두 이 한 줄의 세부입니다.[1]",
+    "items": [
+     "**무엇을 찾나** — 3D 동적 객체(사람·차·자전거)와 2D 정적 객체(신호등·표지판). 회사가 공개한 학습 데이터도 이 두 갈래로 나뉜다.[12]",
+     "**어떤 센서로** — 차 지붕의 AV-KIT(자체 개발 센서 키트)에 라이다 3대·카메라 7대·레이더 5대.[6][9]",
+     "**어디로 넘기나** — 인지 결과는 판단(경로를 고르는 AI 플래너 + 법규를 지키는 규칙 플래너)으로 간다.[5]",
+     "**E2E 이후에도** — 인지·판단을 한 모델이 해도, 결과는 교통법규·승차감을 다시 보는 '세이프티 이밸류에이터'가 한 번 더 걸러 제어로 보낸다.[7]"
+    ]
+   },
+   "how_far": "모델 하나를 잘 만드는 것보다 **센서 → 모델 → 판단으로 끊기지 않고 실시간에 나오게** 하는 것이 일의 단위입니다. 판단·플래닝 모델은 같은 팀의 'AI 엔지니어' 자리가 따로 맡습니다.[3]",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    12
+   ],
+   "study": [
+    "km-news",
+    "coursera-perception"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Camera 기반 2D / 3D Detection & segmentation",
+   "short": "카메라 사진에서 물체 상자·픽셀 구분(2D)을 하고, 거리까지 붙여 3D 위치로 올린다.",
+   "why": "신호등 색·표지판 글자처럼 라이다로는 못 보는 것을 카메라가 봅니다. 회사 공개 데이터셋도 신호등·표지판을 2D 정적 객체로, 사람·차를 3D 동적 객체로 따로 라벨링했고, ETRI 검증에서 신호등 인식이 약 2% 올랐다고 밝혔습니다.[12]",
+   "actually": {
+    "items": [
+     "**2D 검출** — 사진 위에 상자와 종류(신호등·보행자…)를 친다.",
+     "**세그멘테이션** — 픽셀마다 '도로·차선·보도' 같은 이름을 붙인다. 회사 데이터에도 세그멘테이션 라벨이 들어 있다.[10]",
+     "**3D 검출** — 카메라 한 장은 거리를 직접 재지 못해서, 픽셀마다 깊이 분포를 추정해 3D로 들어 올리는 방법(Lift-Splat 계열)이 널리 쓰인다.[20]",
+     "**카메라 여러 대** — 7대의 시야가 겹치는 곳에서 같은 물체를 한 번만 세야 한다. 그래서 각 카메라 결과를 위에서 내려다본 한 판(BEV)에 모은다(다음 줄의 일).[19]"
+    ]
+   },
+   "how_far": "학습된 백본을 가져다 쓰는 것은 기본이고, 이 자리는 **한국 도로(야간·우천·터널)에서 틀리는 경우를 찾아 고치는** 쪽입니다. 회사 데이터가 도로 유형·주야간·날씨 31개 범주로 나뉜 것도 그 이유입니다.[12] {추론}",
+   "refs": [
+    10,
+    12,
+    19,
+    20
+   ],
+   "study": [
+    "lss",
+    "bevformer",
+    "opencv4-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LiDAR 기반 3D detection / occupancy",
+   "short": "라이다 점구름에서 물체의 3D 상자를 찾고, 상자로 안 잡히는 '막힌 칸'까지 지도로 낸다.",
+   "why": "라이다는 거리를 cm 단위로 직접 재서 3D 위치가 정확합니다. 그런데 낙하물·공사 자재처럼 정해진 종류에 없는 것은 상자 검출이 놓칩니다. 회사가 꼽은 엣지 케이스에 공사로 바뀐 도로·택배 낙하물이 들어 있습니다.[6][7] 그래서 '무엇인지 몰라도 막혀 있다'를 칸 단위로 내는 occupancy(점유 격자)가 같이 필요합니다.[23]",
+   "actually": {
+    "items": [
+     "**3D 상자 검출** — 점구름을 기둥(pillar)이나 작은 상자(voxel)로 묶어 2D 판처럼 만든 뒤 검출한다(PointPillars).[21] 물체 중심점을 찾고 크기·방향을 붙이는 방식(CenterPoint)도 많이 쓴다.[22]",
+     "**점유(occupancy)** — 공간을 작은 칸으로 나눠 칸마다 '비었다/막혔다/모른다'와 종류를 매긴다. 공개 벤치마크(Occ3D)는 0.4m 칸을 쓴다.[23]",
+     "**점구름 세그멘테이션** — 점 하나하나에 이름을 붙인다. 회사 공개 데이터에 라이다 점구름 좌표와 세그멘테이션이 들어 있다.[12]",
+     "**사각지대 보완** — 도로변에 고정한 라이다·카메라(엣지 인프라) 데이터로 차가 못 보는 곳을 채우는 연구도 했다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "점구름을 0.5m 칸으로 — 가장 단순한 BEV 점유 지도",
+     "body": "가상 점구름(땅 2,000점 + 5~9.5m 앞의 차 한 대 300점)을 칸에 담고, 땅보다 30cm 높은 점이 있는 칸만 '막힘'으로 표시합니다(직접 돌린 출력: 막힌 칸 36 / 1600, 범위 x 5.0~9.5m · y −1.0~1.0m). 실제 모델은 이 규칙 대신 학습으로 칸을 채우지만, 입력을 칸에 담는 단계는 같습니다.[21][23]",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(0)\nground = np.c_[rng.uniform(0,20,2000), rng.uniform(-10,10,2000), rng.normal(0,0.02,2000)]\ncar = np.c_[rng.uniform(5,9.5,300), rng.uniform(-1,1,300), rng.uniform(0.2,1.5,300)]\npts = np.vstack([ground, car])\ncell = 0.5\nix = (pts[:,0] / cell).astype(int)\niy = ((pts[:,1] + 10) / cell).astype(int)\ngrid = np.zeros((40, 40), bool)\nhigh = pts[:,2] > 0.3\ngrid[ix[high], iy[high]] = True\nprint(\"막힌 칸 수:\", grid.sum(), \"/\", grid.size)\n# 막힌 칸 수: 36 / 1600"
+    }
+   ],
+   "how_far": "점유 모델을 새로 발명할 필요는 없습니다. **칸 크기·범위·높이 기준이 계산량과 놓치는 물체를 어떻게 바꾸는지** 설명하고, 상자 검출과 점유 결과가 어긋날 때 무엇을 믿을지 판단할 수 있어야 합니다. {추론}",
+   "refs": [
+    6,
+    7,
+    10,
+    12,
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "pointpillars",
+    "centerpoint",
+    "occ3d"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Sensor fusion / BEV representation",
+   "short": "카메라·라이다·레이더가 본 것을 위에서 내려다본 한 장의 지도(BEV)에 겹쳐 하나로 만든다.",
+   "why": "센서마다 잘하는 것이 다릅니다 — 카메라는 색·글자, 라이다는 거리, 레이더는 속도와 악천후. 카카오는 인지를 '여러 센서 정보를 융합해 주변을 파악하는 것'으로 설명하고, 레벨4로 가려면 복수 센서 융합 같은 이중화가 필요하다고 했습니다.[11]",
+   "actually": {
+    "intro": "회사 인지 모델의 구조는 공개되지 않았습니다. 아래는 공개 논문에서 널리 쓰이는 방식입니다.",
+    "items": [
+     "**BEV(조감도) 표현** — 앞·옆·뒤 카메라와 라이다를 모두 차 기준 위에서 본 격자로 옮기면 서로 다른 센서를 같은 칸끼리 더할 수 있다.[18]",
+     "**카메라 → BEV** — 픽셀마다 깊이를 추정해 들어 올리거나(LSS)[20], BEV 칸이 카메라 이미지를 되짚어 보는 어텐션으로 채운다(BEVFormer).[19]",
+     "**합치기** — 카메라 BEV와 라이다 BEV를 같은 격자에서 합친다(BEVFusion). 논문은 이 방식이 계산을 크게 줄였다고 보고했다.[18]",
+     "**레이더** — 도플러로 속도를 바로 재고 비·안개에 강하다. 공개 데이터셋 nuScenes 도 카메라 6·라이다 1·레이더 5를 함께 싣는다.[24]",
+     "**전제 조건** — 모든 센서의 시각을 맞추고(시간 동기화), 서로의 위치를 정확히 알아야(캘리브레이션) 겹친다. 회사 데이터 구축에서도 고정밀 위치 기준 시공간 동기화 → 다중 센서 캘리브레이션 → 좌표 변환·정합 순서를 밟았다.[10]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "카메라·라이다를 BEV에서 합치는 흐름(공개 논문의 보통 구조)[18]",
+     "steps": [
+      "센서 입력 · 카메라 7 · 라이다 3 · 레이더 5",
+      "시간·좌표 맞추기 · 동기화 + 캘리브레이션",
+      "센서별 특징 뽑기 · 이미지 백본 · 점구름 백본",
+      "BEV 격자로 옮기기 · 차 기준 위에서 본 판",
+      "합치기 · 같은 칸끼리 결합",
+      "출력 · 3D 상자 · 점유 · 차선"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "센서 수가 공개 데이터셋과 다르고(카메라 7·라이다 3)[6], 차량 시스템(온보드 컴퓨터·ROS2·시간 동기화)은 같은 팀 '시스템 엔지니어' 자리가 맡습니다.[4] 이 자리는 **그 위에서 모델이 받을 좌표·시간이 맞는지 의심하고 확인하는** 데까지입니다. {추론}",
+   "refs": [
+    4,
+    6,
+    10,
+    11,
+    18,
+    19,
+    20,
+    24
+   ],
+   "study": [
+    "bevfusion",
+    "lss",
+    "bevformer",
+    "nuscenes"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ONNX/TensorRT 기반 모델 배포",
+   "short": "PyTorch로 학습한 모델을 차 안 GPU에서 정해진 시간 안에 돌도록 변환·최적화해 싣는다.",
+   "why": "차는 한 바퀴 돌 때마다 센서 15대의 입력을 처리해야 해서, 학습 서버에서 잘 되던 모델도 차 안에서는 늦을 수 있습니다. 같은 팀 AI 엔지니어 공고도 CUDA/TensorRT 최적화와 ONNX/ROS 통합을 우대로 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**ONNX로 내보내기** — PyTorch 모델을 중간 형식(ONNX)으로 바꾼다. 조건문·동적 크기가 있는 코드는 그대로 안 넘어가서 고쳐야 할 때가 많다.[26]",
+     "**TensorRT 엔진 만들기** — ONNX를 읽어 그 GPU에 맞게 층을 합치고 정밀도를 FP16·INT8로 낮춘다. INT8은 대표 데이터로 값 범위를 재는 보정(calibration)이 필요하다.[25]",
+     "**지원 안 되는 연산** — 3D 검출에 흔한 연산(점구름 묶기 등)은 TensorRT 플러그인을 직접 쓰는 일이 생긴다.[25]",
+     "**검증** — 변환 전후 결과가 같은지(정확도 하락), 몇 ms 걸리는지 실제 차량 컴퓨터에서 잰다. {추론}"
+    ]
+   },
+   "how_far": "\"변환 버튼 누르기\"가 아니라 **변환이 실패하거나 느릴 때 모델 구조를 고쳐 다시 내보내는** 수준입니다. FP16과 INT8에서 정확도가 얼마나 떨어지는지 숫자로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    25,
+    26
+   ],
+   "study": [
+    "pytorch-onnx",
+    "tensorrt-docs",
+    "cuda-guide"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Multi Sensor Calibration(In-House, On-Road) 기능 개발",
+   "short": "센서끼리의 위치·각도를 정확히 재는 기능 — 정비소 안에서 한 번, 달리면서 계속.",
+   "why": "BEV에 겹치려면 '라이다 점이 카메라 사진의 어느 픽셀인가'를 알아야 하고, 이 값이 틀리면 융합이 통째로 어긋납니다. 회사 데이터 구축에서도 다중 센서 캘리브레이션으로 오차를 보정하는 단계를 따로 두었습니다.[10]",
+   "actually": {
+    "items": [
+     "**내부 파라미터(카메라 하나)** — 초점거리·중심·렌즈 왜곡. 체커보드를 여러 각도로 찍어 구한다(Zhang 방식, OpenCV에 구현).[27][28]",
+     "**외부 파라미터(센서 사이)** — 라이다와 카메라 사이의 회전·이동. 정비소(In-House)에서는 보정판(target)을 놓고 잰다. 카메라·IMU 보정 도구로 Kalibr가 널리 쓰인다.[30]",
+     "**도로 위(On-Road)** — 진동·온도로 센서가 조금씩 틀어진다. 보정판 없이 주행 장면만으로 맞추는 방법이 연구돼 왔다 — 예: 라이다 반사도와 카메라 밝기의 상호정보량(mutual information)을 최대로 하는 각도를 찾는다.[29]",
+     "**틀어짐 감지** — 라이다 점을 사진에 겹쳐 그려 가장자리가 맞는지 보는 것이 가장 빠른 확인이다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "회전 0.5°와 이동 5cm — 어느 쪽이 더 무서운가",
+     "body": "라이다 점을 카메라 픽셀로 옮기는 식(외부 → 내부 → 원근 나눗셈)입니다. 가상 값으로 돌린 출력: 20m 앞·2m 왼쪽 점은 (860, 500) 픽셀. 회전이 0.5° 틀리면 10·20·50m 모두 **약 9픽셀** 어긋나고, 땅에서는 0.09 → 0.17 → **0.44m**로 커집니다. 이동이 5cm 틀리면 5.0 → 2.5 → 1.0픽셀로 줄어듭니다. 그래서 멀리 볼수록 **각도 보정**이 중요합니다.",
+     "lang": "python",
+     "code": "import numpy as np\nK = np.array([[1000,0,960],[0,1000,540],[0,0,1.0]])\nR = np.array([[0,-1,0],[0,0,-1],[1,0,0.0]])  # 라이다(앞·왼·위) -> 카메라(오른·아래·앞)\nt = np.array([0,-0.3,0.0])\ndef project(p):\n    uvw = K @ (R @ p + t)\n    return uvw[:2] / uvw[2]\nprint(project(np.array([20.0, 2.0, 0.5])))   # [860. 500.]\na = np.deg2rad(0.5)\nRz = np.array([[np.cos(a),-np.sin(a),0],[np.sin(a),np.cos(a),0],[0,0,1]])\nfor d in (10, 20, 50):\n    q = np.array([d, 2.0, 0.5])\n    print(d, round(float(np.linalg.norm(project(q) - project(Rz @ q))), 1))\n# 10 9.1 / 20 8.8 / 50 8.7"
+    }
+   ],
+   "how_far": "보정판 앞에서 OpenCV로 값을 구하는 것은 최소선입니다. 이 자리는 **센서 15대를 매일 운행하는 차에서 틀어짐을 자동으로 찾아 다시 맞추는 기능**까지 맡습니다(공고의 On-Road). {추론}",
+   "refs": [
+    10,
+    27,
+    28,
+    29,
+    30
+   ],
+   "study": [
+    "opencv-calib",
+    "kalibr",
+    "pandey-mi",
+    "hz-mvg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 주도 자율주행 Perception 개발",
+   "short": "규칙을 손으로 더하는 대신, 틀린 장면을 모아 다시 학습시키는 순환으로 인지를 고친다.",
+   "why": "카카오모빌리티는 데이터의 양보다 **정제·분석하는 기술**이 경쟁력을 가른다고 했고, 쉬운 곳에서 오래 달리는 것보다 어려운 곳(강남)에서 짧게 달리는 편이 학습에 낫다고 설명했습니다.[5][13] 강남 서울자율차는 3~8월에 약 1만 3천km·2천 건 넘게 달렸습니다.[5][6]",
+   "actually": {
+    "items": [
+     "**순환** — 주행 기록에서 엣지 케이스를 골라 → AI가 상황을 자동 표시 → 재학습 → 다시 차량에 배포.[5][6]",
+     "**검색** — 주행 상황·날씨·시간대·도로 구조·차량 거동으로 데이터를 찾을 수 있게 정리한다.[5]",
+     "**난이도 구분** — 자율주행 데이터를 주행 난이도에 따라 5단계로 나눈다고 밝혔다.[13]",
+     "**관제가 주는 데이터** — 관제에서 본 이상 상황이 다시 기술 개발로 돌아오는 구조다.[6]"
+    ]
+   },
+   "how_far": "\"모델을 바꿨더니 좋아졌다\"가 아니라 **\"이 종류의 장면에서 틀려서, 이 데이터를 더해, 이 지표가 이만큼 올랐다\"**를 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    5,
+    6,
+    13
+   ],
+   "study": [
+    "km-news",
+    "km-dataset"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 파이프라인(수집/전처리/관리) 구조 설계 및 개발",
+   "short": "차에서 나온 센서 기록을 시간 맞추고·가리고·나눠 학습에 바로 쓸 수 있게 흘리는 길을 만든다.",
+   "why": "공고 팀 소개 첫머리가 '방대한 이동 데이터를 가치 있는 지능으로 바꾸는 데이터 파이프라인'입니다.[1] 회사는 3만km 넘는 실도로 데이터를 15만 프레임 넘는 학습 데이터로 가공한 경험이 있습니다.[10]",
+   "actually": {
+    "items": [
+     "**수집** — 카메라·라이다·레이더·GNSS/IMU 기록. 차량 쪽 수집 환경은 시스템 엔지니어 자리가 구성한다.[4][10]",
+     "**전처리** — 시간 동기화·좌표 변환·정합, 그리고 얼굴·번호판 자동 블러(모든 영상).[10][11]",
+     "**원본 영상 활용** — 2024년 3월 규제 특례로 원본 영상을 AI 학습에 쓸 수 있게 됐다 — 원본과 가린 본을 따로 관리해야 한다는 뜻이다.[11] {추론}",
+     "**관리** — 장면을 조건별로 찾고, 어떤 모델이 어떤 데이터 버전으로 학습됐는지 남긴다.[5] {추론}",
+     "**품질 검사** — 라벨의 형식·의미 정확성을 자동 도구로 정량 평가한다.[10]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "카카오모빌리티가 공개한 데이터 구축 순서[10]",
+     "steps": [
+      "수집 · 차량 + 도로변 엣지 인프라",
+      "시공간 동기화 · 고정밀 위치 기준",
+      "다중 센서 캘리브레이션 · 좌표 변환 · 정합",
+      "개인정보 처리 · 얼굴·번호판 블러 + 검수",
+      "어노테이션 · 자동화 도구 + 능동학습 선별",
+      "품질 검증 · 적합성·구문·의미·유효성"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "refs": [
+    1,
+    4,
+    5,
+    10,
+    11
+   ],
+   "study": [
+    "km-dataset",
+    "nuscenes"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모델 학습 및 평가, 개선 등 모델 성능 개선을 위한 연구",
+   "short": "지표(mAP 등)로 모델을 재고, 어디서 왜 틀리는지 쪼개 본 뒤 구조·데이터·학습법을 바꾼다.",
+   "why": "회사는 데이터 구축 과제에서 객체 검출 정확도 81 mAP를 보고했고[10], 자율주행 AI 챌린지(3D 검출·신호등 인식 등 4분야, 279팀)를 함께 열었습니다.[10] 숫자로 비교하는 문화입니다.",
+   "actually": {
+    "items": [
+     "**3D 검출 지표** — mAP(상자가 얼마나 겹치나·맞혔나). nuScenes는 위치·크기·방향·속도 오차를 묶은 NDS도 쓴다.[24]",
+     "**점유 지표** — 칸별 IoU(맞힌 칸 / 예측·정답을 합친 칸).[23]",
+     "**쪼개서 보기** — 주야간·날씨·거리 구간·물체 종류별로 나눠야 '야간 50m 밖 보행자'처럼 고칠 곳이 보인다. 회사 데이터의 31개 환경 범주가 그 칸이다.[12]",
+     "**실차 지표** — 오인지로 인한 급감속을 줄이는 것이 E2E 도입의 기대 효과로 꼽혔다. 오프라인 지표와 실제 주행 불편을 잇는 일이다.[5][6]"
+    ]
+   },
+   "how_far": "논문을 재현해 숫자를 맞추는 것은 기본, **우리 데이터에서 왜 안 오르는지 실험으로 가르는** 것이 이 자리의 연구입니다. {추론}",
+   "refs": [
+    5,
+    6,
+    10,
+    12,
+    23,
+    24
+   ],
+   "study": [
+    "nuscenes",
+    "centerpoint"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Corner-case mining / auto-labeling / active learning",
+   "short": "드문 위험 장면을 골라내고, 라벨은 기계가 먼저 달고, 사람은 모델이 헷갈린 장면만 본다.",
+   "why": "엣지 케이스는 드물어서 '많이, 잘 골라 모으는 것'이 중요하다고 AI주행파트 리더가 말했습니다.[7] 예로 불법 유턴·무단횡단·공사 구간·택배 낙하물·취객 돌출을 들었습니다.[6][7] 회사 데이터 구축에서는 어노테이션 자동화율 87.9%와 능동학습 기반 선별을 썼습니다.[10]",
+   "actually": {
+    "items": [
+     "**코너 케이스 찾기** — 사람이 개입한 순간, 급감속, 모델 둘의 답이 다른 순간처럼 '이상 신호'로 기록을 거른다. 회사는 VLM(그림을 읽는 언어 모델)으로 이상 상황을 분석하는 기능도 시험 중이다.[5] {추론}",
+     "**자동 라벨링** — 차 위에서는 못 쓰는 큰 모델·앞뒤 프레임을 모두 써서 라벨을 단다. Waymo는 이렇게 단 라벨이 사람 라벨에 가깝다고 보고했다.[31]",
+     "**능동학습** — 모델이 가장 불확실한 장면부터 사람에게 보낸다. 불확실성은 확률의 엔트로피로 잴 수 있다.[32]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "어느 장면을 사람에게 보낼까 — 엔트로피 순",
+     "body": "가상 장면 5개의 클래스 확률(차·보행자·자전거)로 엔트로피를 계산해 높은 것부터 줄 세웁니다(직접 돌린 출력: scene_d 1.099 → scene_b 1.081 → scene_e 0.752 → scene_c 0.394 → scene_a 0.154, 보낼 2장 = d, b). 셋이 거의 같은 확률인 장면이 가장 헷갈린 장면입니다.[32]",
+     "lang": "python",
+     "code": "import numpy as np\nprobs = {\"scene_a\": [0.97,0.02,0.01], \"scene_b\": [0.40,0.35,0.25],\n         \"scene_c\": [0.90,0.05,0.05], \"scene_d\": [0.34,0.33,0.33],\n         \"scene_e\": [0.60,0.38,0.02]}\ndef entropy(p):\n    p = np.array(p); return float(-(p * np.log(p)).sum())\nranked = sorted(probs, key=lambda k: entropy(probs[k]), reverse=True)\nprint(ranked[:2])   # ['scene_d', 'scene_b']"
+    }
+   ],
+   "how_far": "세 가지를 따로 아는 것이 아니라 **한 순환으로 엮어 라벨 비용 대비 성능이 오르는지** 보여야 합니다. 3D 검출에서는 장면 하나에 물체가 여럿이라 장면 점수를 어떻게 모을지(최댓값·평균)도 정해야 합니다. {추론}",
+   "refs": [
+    5,
+    6,
+    7,
+    10,
+    31,
+    32
+   ],
+   "study": [
+    "waymo-offboard",
+    "settles-al",
+    "entropy-lecture"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "유관 업무 경험 5년 이상이신 분",
+   "short": "인지 모델을 실제 제품·차량에 올려 본 경력이 5년 넘게 필요하다.",
+   "why": "같은 팀의 AI·SLAM·시스템 엔지니어 공고도 모두 5년 이상을 요구합니다.[3][4] 팀이 레벨3 소규모 실증에서 레벨4 무인 상용화로 넘어가는 단계라, 바로 맡길 사람을 찾는 것으로 보입니다.[5][6] {추론}",
+   "how_far": "'유관'은 자율주행만이 아니라 로보틱스·드론·3D 비전 제품 경력까지 넓게 읽힐 여지가 있습니다. 이력서에는 **센서·데이터·배포 중 어디를 직접 맡았는지**를 숫자로 적는 편이 낫습니다. {추론}",
+   "refs": [
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Computer Vision(Geometry, Projection, Calibration, Reconstruction 등)에 대한 기본적인 이해가 있으신 분",
+   "short": "3D 점을 사진 픽셀로 옮기는 식과, 그 반대(픽셀에서 3D 되찾기)를 손으로 풀 수 있어야 해서.",
+   "why": "BEV 융합·캘리브레이션·카메라 3D 검출이 모두 '좌표계 사이를 오가는 계산' 위에 서 있습니다. 회사 데이터 구축도 3차원 좌표 변환·정합 단계를 따로 뒀습니다.[10]",
+   "level": {
+    "basic": "핀홀 카메라 모델 · 내부(K)·외부(R, t) 파라미터 · 동차 좌표 · 원근 나눗셈",
+    "work": "렌즈 왜곡 · 체커보드 보정 · 재투영 오차 · 에피폴라 기하 · 삼각측량",
+    "team": "센서 15대의 좌표계 사슬 관리 · 주행 중 틀어짐 추정 · 다중 시점 복원으로 자동 라벨 만들기"
+   },
+   "actually": {
+    "items": [
+     "**Geometry/Projection** — 3D 점 → 카메라 좌표(R, t) → 픽셀(K). 위 캘리브레이션 줄의 코드가 그것이다.[27]",
+     "**Calibration** — 내부·외부 파라미터를 측정으로 구하고 재투영 오차로 확인한다.[27][28]",
+     "**Reconstruction** — 여러 장면·여러 시점으로 3D 구조를 되찾는다. 자동 라벨링에서 앞뒤 프레임을 모으는 것과 같은 원리다.[31][35]",
+     "**입문 강의** — 토론토대 자율주행 인지 강의가 카메라 모델·캘리브레이션·스테레오·검출을 자율주행 예제로 묶어 다룬다.[36]"
+    ]
+   },
+   "how_far": "'기본적인 이해'라고 적었지만 면접에서 **회전·이동 오차가 거리에 따라 어떻게 커지는지** 같은 질문을 받을 수 있는 수준을 생각해 두는 편이 안전합니다. {추론}",
+   "refs": [
+    10,
+    27,
+    28,
+    31,
+    35,
+    36
+   ],
+   "study": [
+    "hz-mvg",
+    "coursera-perception",
+    "opencv-calib"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C++/CUDA/Python, ROS/PyTorch 등 프로그래밍 역량을 갖추신 분",
+   "short": "학습은 Python·PyTorch, 차 안 실행은 C++·CUDA·ROS — 양쪽을 다 오가야 해서.",
+   "why": "모델은 PyTorch로 학습하지만, 차 위의 인지 노드는 ROS2 위에서 C++로 돌고, 무거운 전처리는 CUDA로 GPU에 올립니다. 같은 팀 시스템 엔지니어 공고는 온보드 x86·Ubuntu·ROS2 플랫폼을 다룬다고 적었습니다.[4] 지원 절차에 코딩 테스트(안내 후 7일 이내)가 있습니다.[1] ROS 2 의 노드·토픽·좌표계(tf)[33]와 CUDA 의 스레드·메모리 구조[34]가 그 바닥입니다.",
+   "level": {
+    "basic": "Python·PyTorch로 학습 루프·데이터 로더 작성 · C++ 기본 문법·STL",
+    "work": "C++로 ROS 2 노드(구독·발행) · 메시지 시간 맞추기 · CUDA 커널 하나(점구름 → 칸 담기) 작성",
+    "team": "TensorRT 엔진을 C++ 노드에 붙여 ms 단위로 재기 · 메모리 복사 줄이기"
+   },
+   "how_far": "CUDA 전문가일 필요는 없고 **느린 전처리 하나를 GPU로 옮겨 빨라진 것을 재 본** 정도면 이야기가 됩니다. {추론}",
+   "refs": [
+    1,
+    4,
+    33,
+    34
+   ],
+   "study": [
+    "ros2-docs",
+    "cuda-guide",
+    "pytorch-onnx"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "자율주행, 로보틱스 관련 개발 경험이 있으신 분",
+   "short": "센서가 흔들리고·늦고·끊기는 실제 기계 위에서 모델을 돌려 본 경험이 필요해서.",
+   "why": "강남 서울자율차는 안전요원이 타는 레벨3 실증으로, 골목·공사 구간·음주 단속에서는 사람이 개입합니다.[5] 실제 차량에서는 시간 지연·센서 고장·진동이 모두 인지 오차로 나타납니다. {추론}",
+   "how_far": "자율주행차가 아니어도 로봇·드론·실내 이동체에서 **센서 → 인지 → 동작이 실시간으로 이어지는 시스템**을 만들어 봤다면 같은 종류의 경험입니다. {추론}",
+   "refs": [
+    5
+   ],
+   "study": [
+    "ros2-docs",
+    "coursera-perception"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Camera/LiDAR/Radar 등 Sensor Fusion 및 Calibration 관련 경험이 있으신 분",
+   "short": "업무의 융합·보정 두 줄을 실제로 해 본 사람을 찾는 줄이다.",
+   "why": "업무 줄 'Sensor fusion / BEV'와 'Multi Sensor Calibration'을 그대로 자격으로 옮긴 것입니다.[1] 차에는 라이다·카메라·레이더가 모두 달려 있습니다.[6]",
+   "actually": {
+    "items": [
+     "**융합의 층** — 원시 데이터 단계(점을 사진에 겹침), 특징 단계(BEV에서 합침), 결과 단계(각자 낸 상자를 합침). 어느 층에서 합쳐 봤는지 말할 수 있어야 한다.[18]",
+     "**보정의 종류** — 카메라 내부, 카메라–라이다 외부, 카메라–IMU, 시간 오프셋.[27][30]",
+     "**레이더** — 해상도가 낮고 잡음이 많아 점이 드물다. 그래서 속도 정보를 보조로 쓰는 식이 많다.[24] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    18,
+    24,
+    27,
+    30
+   ],
+   "study": [
+    "bevfusion",
+    "kalibr",
+    "nuscenes"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "주행 데이터 기반 모델 학습, 배포 관련 경험이 있으신 분",
+   "short": "공개 데이터셋이 아니라 직접 모은 주행 기록으로 학습해 차에 다시 올려 본 경험.",
+   "why": "회사는 수집 → 재학습 → 차량 재배포 파이프라인을 만들었다고 밝혔고[6], 기존 공개 데이터셋은 해외·특정 시간대에 치우쳐 국내 환경에 한계가 있다고 했습니다.[12]",
+   "how_far": "nuScenes 같은 공개 데이터로만 해 봤다면, 그 데이터로 학습한 모델을 **다른 환경 데이터에 돌려 어디서 떨어지는지** 재 본 경험이 대신 이야기가 됩니다. {추론}",
+   "refs": [
+    6,
+    12
+   ],
+   "study": [
+    "nuscenes",
+    "km-dataset",
+    "tensorrt-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "박사 학위 소지자 또는 박사 과정 졸업 예정자이신 분",
+   "short": "공고 제목이 R&D라서 — 연구 주제를 스스로 세우고 실험으로 답을 내 본 사람을 우대한다.",
+   "why": "같은 팀 AI·SLAM 엔지니어 공고도 '관련 석/박사 학위'를 우대로 적었습니다.[3] 필수가 아니라 우대입니다.[1]",
+   "how_far": "학위가 없다면 업무 줄 '모델 성능 개선을 위한 연구'를 **문제 → 가설 → 실험 → 숫자**로 정리한 사례가 같은 역할을 합니다. {추론}",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "관련 탑티어 학회 논문(CVPR/ICCV/ECCV/CoRL 등) 게재 경험이 있으신 분",
+   "short": "컴퓨터 비전 3대 학회와 로봇 학습 학회에 실린 연구 실적을 우대한다.",
+   "why": "CVPR·ICCV·ECCV는 컴퓨터 비전 학회이고 논문은 CVF 공개 저장소에서 무료로 읽을 수 있습니다.[37] CoRL은 로봇 학습 학회입니다.[38] BEV 융합·점유처럼 이 공고의 업무 이름 상당수가 이 학회들에서 나온 연구에서 왔습니다.[18][19] {추론}",
+   "how_far": "논문이 없어도 위 학회의 BEV·점유 논문을 **재현하고 우리 데이터에서의 한계를 적은** 공개 저장소가 있으면 대화를 시작할 수 있습니다. {추론}",
+   "refs": [
+    18,
+    19,
+    37,
+    38
+   ],
+   "study": [
+    "bevfusion",
+    "occ3d"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "영입 여정은 이렇게 진행됩니다 서류 → Coding Test → 1차 인터뷰 → 2차 인터뷰 → 처우 협의 서류 전형 Coding Test 1차 인터뷰 1차 인터뷰는 이력서 및 포트폴리오 기반으로 함께 일하는 동료들이 참석하여 진행됩니다. 2차 인터뷰 1Round 는 핵심가치 기반의 HR 인터뷰로 HR담당자가 참석하여 진행됩니다. 2Round 는 조직 문화 인터뷰로 조직장이 참석하여 진행됩니다.",
+   "short": "요건이 아니라 전형 순서다 — 코딩 테스트를 먼저 보고, 동료가 이력서·포트폴리오로 기술을 본다.",
+   "why": "서류 다음에 코딩 테스트가 있고, 안내를 받은 뒤 7일 안에 끝내야 합니다. 1차는 함께 일할 동료가 이력서·포트폴리오로, 2차는 HR(핵심가치)과 조직장(조직 문화)이 봅니다. 1차에 사전과제나 라이브 코딩이 붙을 수 있습니다.[1]",
+   "how_far": "코딩 테스트에 떨어지면 6개월, 인터뷰에 떨어지면 1년 동안 같은 자리에 다시 지원할 수 없습니다. 이력서는 PDF로 내고 연봉 정보는 적지 않습니다.[1] 포트폴리오에는 위 업무 줄(융합·보정·배포·데이터 순환) 중 직접 한 것을 숫자와 함께 담는 편이 낫습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": []
+  }
+ ],
+ "fit": {
+  "good": [
+   "논문 숫자보다 '실제 차에서 급감속이 줄었나'가 더 궁금한 사람[5]",
+   "좌표계·보정처럼 지루해 보이는 기하를 끝까지 맞추는 사람",
+   "틀린 장면을 찾아 데이터로 고치는 순환을 좋아하는 사람[6][7]",
+   "규칙 기반에서 E2E로 넘어가는 전환을 현장에서 겪고 싶은 사람[5]"
+  ],
+  "hard": [
+   "자격 첫 줄이 경력 5년 이상 — 신입·주니어 자리가 아니다[1]",
+   "인지·판단 구조가 연말 E2E 전환으로 바뀌는 중이라 맡는 범위가 움직일 수 있다[5] {추론}",
+   "실차 실증은 심야(평일 22시~05시) 운행이 중심이다 — 데이터·이슈가 그 시간에 생긴다[5] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "카메라–라이다 외부 파라미터의 회전이 0.5° 틀렸을 때와 이동이 5cm 틀렸을 때, 50m 앞 물체에서 어느 쪽이 더 문제인가요?",
+   "a": "On-Road 캘리브레이션이 업무에 있고, 기하 이해가 자격 요건이라서.[1][27]"
+  },
+  {
+   "q": "카메라 7대의 결과를 BEV에 합칠 때 겹치는 시야의 같은 물체를 어떻게 한 번만 세나요?",
+   "a": "Sensor fusion / BEV 업무와 이 차의 센서 수.[1][6][19]"
+  },
+  {
+   "q": "택배 낙하물처럼 학습 클래스에 없는 물체는 어떻게 잡나요?",
+   "a": "회사가 꼽은 엣지 케이스와 occupancy 업무.[6][23]"
+  },
+  {
+   "q": "TensorRT INT8로 바꿨더니 먼 거리 보행자 mAP만 떨어졌습니다. 무엇부터 보겠어요?",
+   "a": "배포 업무와 INT8 보정.[1][25]"
+  },
+  {
+   "q": "라벨 예산이 한 달 1만 프레임이라면 어떤 장면을 고르겠어요?",
+   "a": "엣지 케이스를 '많이, 잘 골라' 모은다는 회사 설명과 능동학습 업무.[7][10][32]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "카카오모빌리티 채용 · 자율주행 AI Perception 엔지니어 (R&D)",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/225964",
+   "kind": "posting",
+   "note": "팀 소개·업무·자격·우대·전형(코딩 테스트 7일)·근무지"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 카카오모빌리티 자율주행 AI Perception 엔지니어 (R&D)",
+   "url": "https://www.wanted.co.kr/wd/372211",
+   "kind": "posting",
+   "note": "같은 공고의 원티드 판 — all_jobs 에는 없음"
+  },
+  {
+   "n": 3,
+   "title": "카카오모빌리티 채용 · 자율주행 AI 엔지니어 (R&D)",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/205613",
+   "kind": "posting",
+   "note": "같은 팀 — E2E·AI 플래닝, CUDA/TensorRT·ONNX/ROS 우대"
+  },
+  {
+   "n": 4,
+   "title": "카카오모빌리티 채용 · 자율주행 시스템 엔지니어 (R&D)",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/230974",
+   "kind": "posting",
+   "note": "같은 팀 — 온보드 컴퓨터·Ubuntu·ROS2·데이터 수집 환경"
+  },
+  {
+   "n": 5,
+   "title": "바이라인네트워크 · 카카오모빌리티 서울자율차 운영 현황·E2E 연내 도입",
+   "url": "https://byline.network/2026/09/09_kakaomobility/",
+   "kind": "news",
+   "date": "2026-09-10",
+   "note": "9월 9일 기자간담회 — AI 플래너·규칙 플래너 혼합, 엣지 케이스 파이프라인, 1만 3천km"
+  },
+  {
+   "n": 6,
+   "title": "전자신문 · 카카오모빌리티 서울자율차 E2E 연내 도입",
+   "url": "https://etnews.com/20260909000306",
+   "kind": "news",
+   "date": "2026-09-09",
+   "note": "라이다 3·카메라 7·레이더 5, 재학습·재배포 파이프라인, 엣지 케이스 예"
+  },
+  {
+   "n": 7,
+   "title": "머니투데이방송 · \"베테랑 드라이버 같은 판단\"…카카오모빌리티, 자율주행모델 현황 공개",
+   "url": "https://news.mtn.co.kr/news-detail/2026090916330214933",
+   "kind": "news",
+   "date": "2026-09-09",
+   "note": "세이프티 이밸류에이터, AI주행파트 리더 발언"
+  },
+  {
+   "n": 8,
+   "title": "바이라인네트워크 · AME 2026 카카오모빌리티 김진규 부사장 발표",
+   "url": "https://byline.network/2026/08/28_2918273/",
+   "kind": "news",
+   "date": "2026-08-31",
+   "note": "HD맵 자체 제작, 자율주행개발팀 담당 범위"
+  },
+  {
+   "n": 9,
+   "title": "머니투데이 · [르포] 강남의 밤, 핸들에서 손을 뗐다…'AI 기사님' 택시 타보니",
+   "url": "https://www.mt.co.kr/tech/2026/03/24/2026032412542461516",
+   "kind": "news",
+   "date": "2026-03-24",
+   "note": "AV-KIT 2018년부터 자체 개발, 자동 라벨링"
+  },
+  {
+   "n": 10,
+   "title": "카카오 테크에식스 19호 · 산학연 협력으로 구축한 데이터 전격 공개",
+   "url": "https://www.kakaocorp.com/page/detail/11509",
+   "kind": "company",
+   "note": "동기화·캘리브레이션·정합, 자동화율 87.9%, 81 mAP, 3만km → 15만 프레임, AI 챌린지 279팀"
+  },
+  {
+   "n": 11,
+   "title": "카카오 테크에식스 11호 · 이용자의 안전과 데이터 보호를 우선하는 자율주행",
+   "url": "https://www.kakaocorp.com/page/detail/11031",
+   "kind": "company",
+   "note": "인지·판단·제어, 이중화, 영상 블러, 원본 영상 규제 특례(2024-03)"
+  },
+  {
+   "n": 12,
+   "title": "CIO Korea · 카카오모빌리티, 자율주행 AI 학습용 데이터셋 공개",
+   "url": "https://www.cio.com/article/3835316/",
+   "kind": "news",
+   "date": "2025-02-28",
+   "note": "10개 유형 15만 건, 31개 환경 범주, ETRI 검증(3D 5~8%·신호등 2%) — 테크에식스와 유형 수 표기가 다름"
+  },
+  {
+   "n": 13,
+   "title": "블로터 · 자율주행 힘주는 카카오모빌리티…'韓 특화 데이터' 앞세워 빅테크와 경쟁",
+   "url": "https://v.daum.net/v/UIEsECnQHJ",
+   "kind": "news",
+   "date": "2026-09",
+   "note": "데이터 5단계 난이도, 정제·분석 기술 강조"
+  },
+  {
+   "n": 14,
+   "title": "아이뉴스24 · 카카오모빌리티 2025년 상반기 공시(직원 수·1인 평균 급여)",
+   "url": "https://www.inews24.com/view/1876724",
+   "kind": "news",
+   "date": "2025-08-14"
+  },
+  {
+   "n": 15,
+   "title": "자소설닷컴 · 카카오모빌리티(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/10478",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음, 검색 결과 요약으로 확인"
+  },
+  {
+   "n": 16,
+   "title": "카카오모빌리티 채용 · 복리후생&성장지원",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/benefit",
+   "kind": "company"
+  },
+  {
+   "n": 17,
+   "title": "카카오모빌리티 · 회사 사이트 하단 회사 정보",
+   "url": "https://www.kakaomobility.com/",
+   "kind": "company"
+  },
+  {
+   "n": 18,
+   "title": "BEVFusion: Multi-Task Multi-Sensor Fusion with Unified Bird's-Eye View Representation",
+   "url": "https://arxiv.org/abs/2205.13542",
+   "kind": "reference",
+   "date": "2022"
+  },
+  {
+   "n": 19,
+   "title": "BEVFormer: Learning Bird's-Eye-View Representation from Multi-Camera Images via Spatiotemporal Transformers",
+   "url": "https://arxiv.org/abs/2203.17270",
+   "kind": "reference",
+   "date": "2022"
+  },
+  {
+   "n": 20,
+   "title": "Lift, Splat, Shoot: Encoding Images From Arbitrary Camera Rigs by Implicitly Unprojecting to 3D",
+   "url": "https://arxiv.org/abs/2008.05711",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 21,
+   "title": "PointPillars: Fast Encoders for Object Detection from Point Clouds",
+   "url": "https://arxiv.org/abs/1812.05784",
+   "kind": "reference",
+   "date": "2018"
+  },
+  {
+   "n": 22,
+   "title": "Center-based 3D Object Detection and Tracking (CenterPoint)",
+   "url": "https://arxiv.org/abs/2006.11275",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 23,
+   "title": "Occ3D: A Large-Scale 3D Occupancy Prediction Benchmark for Autonomous Driving",
+   "url": "https://arxiv.org/abs/2304.14365",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 24,
+   "title": "nuScenes: A multimodal dataset for autonomous driving",
+   "url": "https://arxiv.org/abs/1903.11027",
+   "kind": "reference",
+   "date": "2019"
+  },
+  {
+   "n": 25,
+   "title": "NVIDIA TensorRT 문서",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "PyTorch · torch.onnx 문서",
+   "url": "https://pytorch.org/docs/stable/onnx.html",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "OpenCV · Camera Calibration 튜토리얼",
+   "url": "https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Zhang · A Flexible New Technique for Camera Calibration",
+   "url": "https://www.microsoft.com/en-us/research/publication/a-flexible-new-technique-for-camera-calibration/",
+   "kind": "reference",
+   "date": "2000"
+  },
+  {
+   "n": 29,
+   "title": "Pandey 외 · Automatic Targetless Extrinsic Calibration of a 3D Lidar and Camera by Maximizing Mutual Information (AAAI)",
+   "url": "https://ojs.aaai.org/index.php/AAAI/article/view/8379",
+   "kind": "reference",
+   "date": "2012"
+  },
+  {
+   "n": 30,
+   "title": "Kalibr — 카메라·IMU 캘리브레이션 도구(ETH Zurich ASL)",
+   "url": "https://github.com/ethz-asl/kalibr",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Offboard 3D Object Detection from Point Cloud Sequences (Waymo)",
+   "url": "https://arxiv.org/abs/2103.05073",
+   "kind": "reference",
+   "date": "2021"
+  },
+  {
+   "n": 32,
+   "title": "Settles · Active Learning Literature Survey",
+   "url": "https://burrsettles.com/pub/settles.activelearning.pdf",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "ROS 2 문서",
+   "url": "https://docs.ros.org/en/rolling/",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "NVIDIA · CUDA C++ Programming Guide",
+   "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "Hartley · Zisserman · Multiple View Geometry in Computer Vision",
+   "url": "https://www.robots.ox.ac.uk/~vgg/hzbook/",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "Coursera · Visual Perception for Self-Driving Cars (University of Toronto)",
+   "url": "https://www.coursera.org/learn/visual-perception-self-driving-cars",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "CVF Open Access — CVPR·ICCV 논문 공개 저장소",
+   "url": "https://openaccess.thecvf.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "Conference on Robot Learning (CoRL)",
+   "url": "https://www.corl.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 39,
+   "title": "아이뉴스24 · 카카오모빌리티, 2024년 매출 6750억원⋯류긍선 대표 보수 9.7억원",
+   "url": "https://v.daum.net/v/uTwZAfwMlq",
+   "kind": "news",
+   "date": "2025-03-31",
+   "note": "임직원 914명, 1인 평균 급여 약 9,014만원(스톡옵션 차익 제외) — 같은 회사 HW 테크니션 풀이의 출처"
+  }
+ ],
+ "caveat": "회사 인지 모델의 구조(백본·BEV 방식·점유 사용 여부)와 캘리브레이션 방법은 공개되지 않았습니다. 회사가 직접 밝힌 것은 센서 구성·데이터 순환·데이터 구축 절차·E2E 계획까지이고, 모델 내부는 공개 논문으로 '보통 이런 것'을 보였습니다. E2E 연내 도입은 2026년 9월 기준 계획입니다. 회사 기술 발표 영상은 찾지 못해 받은 영상이 없습니다.",
+ "resources": [
+  {
+   "id": "km-news",
+   "title": "카카오모빌리티 서울자율차 운영 현황·E2E 연내 도입 (기자간담회 기사)",
+   "by": "바이라인네트워크 · 2026-09",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://byline.network/2026/09/09_kakaomobility/",
+   "why": "이 팀이 지금 어떤 구조(AI 플래너 + 규칙 플래너)에서 어디로(E2E) 가는지, 데이터를 어떻게 돌리는지 회사 사람 말로 본다. 지원 전에 먼저 읽는다."
+  },
+  {
+   "id": "km-dataset",
+   "title": "산학연 협력으로 구축한 데이터 전격 공개 (테크에식스 19호)",
+   "by": "카카오",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.kakaocorp.com/page/detail/11509",
+   "why": "동기화 → 캘리브레이션 → 정합 → 블러 → 자동 라벨 → 품질 검증 — 데이터 파이프라인·자동 라벨링 업무의 회사판 설명."
+  },
+  {
+   "id": "coursera-perception",
+   "title": "Visual Perception for Self-Driving Cars",
+   "by": "University of Toronto · Coursera",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.coursera.org/learn/visual-perception-self-driving-cars",
+   "why": "카메라 모델·캘리브레이션·스테레오·검출·세그멘테이션을 자율주행 예제로 한 번에. 기하 자격 요건의 출발점."
+  },
+  {
+   "id": "hz-mvg",
+   "title": "Multiple View Geometry in Computer Vision (2판)",
+   "by": "Richard Hartley · Andrew Zisserman · Cambridge University Press",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.robots.ox.ac.uk/~vgg/hzbook/",
+   "why": "투영·캘리브레이션·에피폴라·복원의 교과서. Geometry/Projection/Calibration/Reconstruction 자격 줄이 이 책의 장 제목과 겹친다. 필요한 장만 골라 읽는다."
+  },
+  {
+   "id": "opencv4-book",
+   "title": "OpenCV 4로 배우는 컴퓨터 비전과 머신 러닝",
+   "by": "황선규",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754025931",
+   "why": "C++로 영상 처리·검출을 직접 짜 보는 한국어 책. C++ 요건과 카메라 2D 처리 감을 같이 잡는다."
+  },
+  {
+   "id": "opencv-calib",
+   "title": "Camera Calibration (OpenCV 튜토리얼)",
+   "by": "OpenCV 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html",
+   "why": "체커보드로 내부 파라미터·왜곡을 구하고 재투영 오차로 확인하는 코드. In-House 캘리브레이션의 최소선."
+  },
+  {
+   "id": "kalibr",
+   "title": "Kalibr",
+   "by": "ETH Zurich ASL · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/ethz-asl/kalibr",
+   "why": "여러 카메라·카메라–IMU 외부 파라미터와 시간 오프셋을 같이 추정하는 공개 도구. 다중 센서 보정의 실제 절차를 따라 해 본다."
+  },
+  {
+   "id": "pandey-mi",
+   "title": "Automatic Targetless Extrinsic Calibration of a 3D Lidar and Camera by Maximizing Mutual Information",
+   "by": "Pandey · McBride · Savarese · Eustice · AAAI 2012",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://ojs.aaai.org/index.php/AAAI/article/view/8379",
+   "why": "보정판 없이 주행 장면만으로 라이다–카메라를 맞추는 고전 방법. On-Road 캘리브레이션을 어떻게 시작하는지."
+  },
+  {
+   "id": "lss",
+   "title": "Lift, Splat, Shoot",
+   "by": "Philion · Fidler · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2008.05711",
+   "why": "카메라 픽셀을 깊이 분포로 들어 올려 BEV에 까는 생각의 원형. 카메라 3D 검출과 BEV 표현 줄의 기초."
+  },
+  {
+   "id": "bevformer",
+   "title": "BEVFormer",
+   "by": "Li 외 · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2203.17270",
+   "why": "여러 카메라·여러 시점을 어텐션으로 BEV에 모으는 방식. 카메라 7대의 결과를 한 판에 합치는 문제를 이해한다."
+  },
+  {
+   "id": "bevfusion",
+   "title": "BEVFusion",
+   "by": "Liu 외 (MIT) · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2205.13542",
+   "why": "카메라와 라이다를 같은 BEV 격자에서 합치는 대표 논문. Sensor fusion / BEV 업무의 공개 기준선."
+  },
+  {
+   "id": "pointpillars",
+   "title": "PointPillars",
+   "by": "Lang 외 · 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1812.05784",
+   "why": "점구름을 기둥으로 묶어 빠르게 검출하는 방식. 차 위에서 돌릴 수 있는 라이다 3D 검출의 기본형."
+  },
+  {
+   "id": "centerpoint",
+   "title": "Center-based 3D Object Detection and Tracking (CenterPoint)",
+   "by": "Yin · Zhou · Krähenbühl · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2006.11275",
+   "why": "물체 중심점을 찾고 크기·방향·속도를 붙이는 3D 검출·추적. nuScenes 지표로 평가하는 법도 같이 본다."
+  },
+  {
+   "id": "occ3d",
+   "title": "Occ3D",
+   "by": "Tian 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2304.14365",
+   "why": "3D 점유 예측의 공개 벤치마크 — 칸 크기·라벨 만드는 법·IoU 평가. occupancy 업무의 기준선."
+  },
+  {
+   "id": "nuscenes",
+   "title": "nuScenes: A multimodal dataset for autonomous driving",
+   "by": "Caesar 외 · Motional · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1903.11027",
+   "why": "카메라·라이다·레이더가 모두 있는 공개 데이터와 mAP·NDS 지표. 직접 주행 데이터가 없을 때 연습장."
+  },
+  {
+   "id": "pytorch-onnx",
+   "title": "torch.onnx",
+   "by": "PyTorch 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://pytorch.org/docs/stable/onnx.html",
+   "why": "학습한 모델을 ONNX로 내보내는 공식 방법과 안 넘어가는 경우. 배포 업무의 첫 단계."
+  },
+  {
+   "id": "tensorrt-docs",
+   "title": "NVIDIA TensorRT 문서",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+   "why": "ONNX → 엔진 변환, FP16·INT8 정밀도와 보정, 플러그인. 차 안 실시간 실행의 핵심 도구."
+  },
+  {
+   "id": "cuda-guide",
+   "title": "CUDA C++ Programming Guide",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/",
+   "why": "스레드·메모리 계층·커널 작성. 점구름 전처리처럼 느린 부분을 GPU로 옮길 때."
+  },
+  {
+   "id": "ros2-docs",
+   "title": "ROS 2 문서",
+   "by": "Open Robotics",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.ros.org/en/rolling/",
+   "why": "노드·토픽·메시지 시간 맞추기·tf(좌표계 사슬). 인지 모델을 차량 소프트웨어에 붙이는 바닥."
+  },
+  {
+   "id": "waymo-offboard",
+   "title": "Offboard 3D Object Detection from Point Cloud Sequences",
+   "by": "Qi 외 (Waymo) · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2103.05073",
+   "why": "차 밖에서 앞뒤 프레임을 모두 써서 라벨을 자동으로 다는 방법. auto-labeling 업무의 공개 사례."
+  },
+  {
+   "id": "settles-al",
+   "title": "Active Learning Literature Survey",
+   "by": "Burr Settles",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://burrsettles.com/pub/settles.activelearning.pdf",
+   "why": "불확실성·위원회·기대 변화 같은 '무엇을 라벨링할까' 전략의 정리. active learning 업무의 개념서."
+  },
+  {
+   "id": "entropy-lecture",
+   "title": "Entropy (for data science) Clearly Explained!!! (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/YtebGVx-Fxw",
+   "why": "능동학습에서 '헷갈림'을 재는 엔트로피를 처음부터. 위 코드 예시의 계산을 이해한다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 문제 알기",
+   "time": "3일",
+   "goal": "이 팀의 센서 구성·데이터 순환·E2E 전환 계획을 한 장으로 설명할 수 있다.",
+   "resources": [
+    "km-news",
+    "km-dataset"
+   ],
+   "task": "기사 두 편을 읽고 '센서 → 인지 → 판단 → 안전 평가 → 제어'와 '수집 → 자동 라벨 → 재학습 → 배포' 두 그림을 직접 그려 본다."
+  },
+  {
+   "title": "카메라 기하와 캘리브레이션",
+   "time": "2~3주",
+   "goal": "라이다 점을 카메라 픽셀에 겹치고, 외부 파라미터 오차가 거리에 따라 어떻게 보이는지 설명한다.",
+   "resources": [
+    "coursera-perception",
+    "opencv-calib",
+    "hz-mvg",
+    "kalibr"
+   ],
+   "task": "가상 체커보드 사진 20장(합성)으로 내부 파라미터를 구하고, 가상 점구름을 투영해 회전 0.5°·이동 5cm 오차를 넣었을 때의 어긋남 그래프를 만든다."
+  },
+  {
+   "title": "3D 검출과 BEV 융합",
+   "time": "4~6주",
+   "goal": "nuScenes 미니 데이터로 라이다 3D 검출과 카메라–라이다 BEV 융합 모델을 학습·평가한다.",
+   "resources": [
+    "nuscenes",
+    "pointpillars",
+    "centerpoint",
+    "lss",
+    "bevfusion"
+   ],
+   "task": "PointPillars 하나를 학습해 mAP·NDS를 재고, 주야간·거리 구간별로 나눈 표를 만든다. 그다음 카메라 BEV를 더해 어느 칸이 좋아지는지 비교한다."
+  },
+  {
+   "title": "점유와 데이터 순환",
+   "time": "3~4주",
+   "goal": "점유 격자를 만들고, 불확실한 장면을 골라 라벨링하면 같은 예산에서 성능이 더 오르는지 보인다.",
+   "resources": [
+    "occ3d",
+    "waymo-offboard",
+    "settles-al",
+    "entropy-lecture"
+   ],
+   "task": "학습 데이터의 20%만 쓰고, 나머지에서 무작위 vs 엔트로피 순으로 10%씩 더해 가며 성능 곡선 두 개를 그린다."
+  },
+  {
+   "title": "차 안에서 돌리기",
+   "time": "2~3주",
+   "goal": "학습한 모델을 ONNX → TensorRT로 바꿔 ROS 2 노드에서 ms 단위로 잰다.",
+   "resources": [
+    "pytorch-onnx",
+    "tensorrt-docs",
+    "ros2-docs",
+    "cuda-guide"
+   ],
+   "task": "3단계 모델을 FP32·FP16·INT8 엔진으로 각각 만들고, 지연 시간과 mAP 변화를 한 표에 적는다. 점구름 → 칸 담기 전처리를 CUDA 커널로 옮겨 전후 시간을 잰다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 4,706만원**(집계), 임직원 평균 급여 **약 9,014만원**(2024년, 보도) — 평균은 경력직이 섞인 회사 전체 값이고, 이 자리는 처우 협의로 따로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,706만원",
+    "amount": 4706,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [15]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,853만원",
+    "amount": 6853,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 — 경력직이 섞인 회사 전체 값이다 [15]"
+   },
+   {
+    "label": "임직원 1인 평균 급여",
+    "value": "약 9,014만원",
+    "amount": 9014,
+    "basis": "보도 · 2024년",
+    "note": "2024년 말 임직원 914명(기간제 포함), 스톡옵션 행사 차익을 뺀 급여 총액 기준. 회사 실적 공시를 다룬 2025년 3월 기사 [39]"
+   },
+   {
+    "label": "1인 평균 급여(상반기 6개월)",
+    "value": "4,718만원",
+    "basis": "공시 · 2025년 상반기",
+    "note": "2025년 1~6월 6개월치다(연봉이 아니다). 6월 말 직원 931명, 평균 근속 3.8년 [14]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 전형 마지막에 **처우 협의** 단계가 있다 [1]. 이력서에 연봉 정보를 적으면 서류가 검토되지 않을 수 있다고 공고가 적었다 [1]. 집계 평균은 경력직이 섞인 회사 전체 값이라 이 자리(5년 이상 R&D)의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "주택 대출 이자",
+    "detail": "주택 관련 대출 최대 3억원에 대한 이자 지원"
+   },
+   {
+    "name": "생활 안정 자금",
+    "detail": "최대 5천만원 한도 이자 지원"
+   },
+   {
+    "name": "휴가",
+    "detail": "매년 최대 25일"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "선택적 근로시간제, 금요일 2시간 조기 퇴근"
+   },
+   {
+    "name": "점심",
+    "detail": "점심시간 1시간 30분, 점심 식대 매월 20만원"
+   },
+   {
+    "name": "간식",
+    "detail": "간식·음료 무제한"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "카카오 T 앱과 국내 가맹점에서 사용"
+   },
+   {
+    "name": "차량 대여",
+    "detail": "추첨으로 3박 4일"
+   },
+   {
+    "name": "육아",
+    "detail": "사내 어린이집, 육아 휴직 최대 2년"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 건강검진(검진 당일 유급휴가, 가족 양도 가능), MOS 상담 지원"
+   },
+   {
+    "name": "보험",
+    "detail": "본인·배우자 부모 실손 보험 지원, 가족사랑 지원제도(사망 시 보험금)"
+   },
+   {
+    "name": "휴양",
+    "detail": "파라스파라·아난티·롯데리조트·캠핑카 등 휴양 시설"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "마사지샵, 안마실·수면실·안마의자, 통근버스"
+   },
+   {
+    "name": "장비",
+    "detail": "애플 트랙패드·업무용 소프트웨어 등"
+   },
+   {
+    "name": "경조사",
+    "detail": "경조 휴가, 경조사비·화환·용품"
+   }
+  ],
+  "note": "카카오모빌리티 채용 사이트의 복리후생 페이지다 [16]. 작성 연도가 페이지에 없고, 금액이 적히지 않은 항목(복지 포인트·경조사비 등)이 있어 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "카카오모빌리티 판교 오피스(알파돔타워)",
+  "address": "경기도 성남시 분당구 판교역로 152, 알파돔타워 13층",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 바로 옆 {추론}",
+  "note": "공고의 근무지(판교 오피스, 판교역로 152 알파돔타워)[1]와 회사 사이트 하단 주소(13층)[17]. 실차 시험·차고지는 따로일 수 있다 {추론}."
+ }
+}
