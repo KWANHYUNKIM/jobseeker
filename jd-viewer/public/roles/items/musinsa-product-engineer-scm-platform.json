@@ -1,0 +1,1138 @@
+{
+ "id": "musinsa-product-engineer-scm-platform",
+ "company": "무신사",
+ "role": "Product Engineer (SCM Platform)",
+ "team": "Core · SCM(Supply Chain Management) 팀",
+ "jobs": [
+  "ats-greeting:musinsa:235686"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사·29CM 전 채널의 **상품 기준정보(SKU 마스터)·발주·입고·재고·소유권 전환**을 하나의 시스템으로 만드는 공급망 서버입니다.[1]",
+  "env": "Java·Kotlin·Spring Boot, Kafka·RabbitMQ, MySQL·PostgreSQL·Redis, AWS·Kubernetes 위에서 AI 코딩 에이전트를 쓰는 Product Engineer 직군입니다(경력 8년+).[1]",
+  "oneline": "돈과 물건이 오가는 숫자를 **틀리지 않고 추적하는 서버**. 재고 원장·소유권 전환·SAP 단계적 이전이 핵심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "SKU 마스터 및 기준정보 플랫폼 개발",
+   "short": "상품·옵션·바코드를 '재고 한 칸' 단위로 하나의 표준 목록에 모으는 시스템을 만드는 일(소제목).",
+   "why": "팀 소개가 '전 채널의 상품 기준정보와 재고를 하나의 시스템으로 통합'이라고 적었다.[1] SKU(재고 관리 단위)는 같은 티셔츠도 색·사이즈마다 따로 센다.",
+   "actually": {
+    "items": [
+     "상품 → 옵션(색·사이즈) → SKU → 바코드의 계층을 정한다.",
+     "무신사·29CM 등 채널이 SKU 를 같은 번호로 부르게 한다 {추론}."
+    ]
+   },
+   "how_far": "소제목 줄이라 아래 세부 줄이 실제 일이다. 아래 줄을 읽으면 된다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddd-evans",
+    "gs1-spec"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전사 단일 SKU 마스터(SSoT)를 설계·운영하고, 플랫폼별로 파편화된 상품·옵션·바코드 식별 체계를 통합합니다.",
+   "short": "채널마다 제각각이던 상품·옵션·바코드 번호를 하나의 '정답 목록'(SSoT)으로 합치고 운영하는 일.",
+   "why": "플랫폼마다 같은 옷을 다른 코드로 부르면 재고가 합쳐지지 않는다. 공고가 '온·오프라인 어디서든 동일한 재고 기준'을 목표로 적었다.[1]",
+   "actually": {
+    "items": [
+     "옛 코드 → 새 SKU 번호 매핑표(교차 참조)를 만들고 신규 상품은 한 곳에서만 발급한다.",
+     "바코드(GTIN)는 국제 표준 번호 체계라 같은 상품이 두 번호를 갖는 경우를 걸러야 한다.[10]",
+     "변경(옵션명 수정·단종)을 이력으로 남긴다 {추론}.",
+     "각 채널이 읽는 API·이벤트로 배포한다."
+    ]
+   },
+   "how_far": "마스터를 '누가 고칠 수 있나'는 상품·MD 조직과 정한다. 개발자는 번호 발급·중복 방지·이력·배포를 맡는다 {추론}.",
+   "refs": [
+    1,
+    10
+   ],
+   "study": [
+    "ddd-evans",
+    "gs1-spec",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "커머스 유형(1P/2P/PB/3P)별 소유권을 모델링하고, 기준정보 배포를 위한 인터페이스를 설계합니다.",
+   "short": "같은 SKU 라도 매입(1P)·위탁(2P)·자체제작(PB)·입점(3P)에 따라 '누구 재고인가'를 표현하는 구조를 만들고 다른 시스템에 알려 주는 일.",
+   "why": "팀이 서로 다른 커머스 유형을 하나의 SKU 체계와 재고 모델로 수렴시킨다고 소개했다.[1]",
+   "actually": {
+    "items": [
+     "SKU 에 소유자(무신사/파트너)·유형 필드를 두고 재고 행마다 소유권을 같이 적는다 {추론}.",
+     "정산 방식(매입은 재고 자산, 위탁은 판매 시 정산)이 유형마다 다르다는 점을 이벤트에 싣는다 {추론}.",
+     "배포: 변경 이벤트를 Kafka 로 내보내 구독하게 한다.[1]"
+    ]
+   },
+   "how_far": "유형 정의(무엇이 1P/2P 인가)는 사업이 정한다. 개발자는 그 정의가 바뀌어도 코드가 덜 바뀌는 모델을 만든다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddd-evans",
+    "kafka-guide"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "주문·물류·카탈로그·ERP 등 다양한 연동 시스템을 고려하여 확장 가능한 기준정보 아키텍처를 설계합니다.",
+   "short": "주문·물류·카탈로그·ERP 가 모두 기준정보를 읽어 가므로, 연결이 늘어도 무너지지 않게 구조를 잡는 일.",
+   "why": "무신사는 OCMP 로 공통 영역을 코어로 묶는 중이고[2][3], 이 팀이 그 코어의 상품·재고 부분이다 {추론}.",
+   "actually": {
+    "items": [
+     "읽는 쪽 부하는 캐시·복제본으로, 바뀐 내용은 이벤트로 흘려 보낸다.",
+     "소비자가 늘어도 마스터가 직접 호출받지 않게 한다(발행·구독).",
+     "스키마를 바꿀 때 구버전 소비자가 깨지지 않게 호환 규칙을 둔다.",
+     "아키텍처 결정은 ADR 로 남긴다.[1]"
+    ]
+   },
+   "how_far": "한 번에 완벽한 구조는 없다. 연동 하나를 더할 때 마스터 코드를 고치지 않아도 되는지가 기준이다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "newman-micro",
+    "ddia",
+    "adr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "팀과 팀원의 기술적 성장을 주도합니다.",
+   "short": "코드 리뷰·설계 리뷰·멘토링으로 팀원의 기술 수준을 끌어올리는 일.",
+   "why": "8년+ 시니어 자리이고 팀 소개의 '오너십'을 같이 지는 사람이라 리드 역할이 따른다 {추론}.",
+   "actually": {
+    "items": [
+     "설계 리뷰에서 대안과 트레이드오프를 묻는다.",
+     "결정 기록·테크 블로그 글쓰기를 권한다(우대사항의 문화).[1]",
+     "AI 에이전트 활용 규칙을 팀에 나눈다."
+    ]
+   },
+   "how_far": "직책이 아니라 영향력의 문제다. 팀장급 관리는 이 줄에 없다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "adr",
+    "pragmatic-eng"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "발주 및 입고 프로세스 개발",
+   "short": "무신사가 파트너 물건을 주문(발주)하고 창고로 들여오는(입고) 흐름을 만드는 일(소제목).",
+   "why": "팀 소개가 '발주부터 입고·매입까지 이어지는 공급망 흐름'을 통합한다고 적었다.[1]",
+   "actually": {
+    "items": [
+     "발주서(PO) 상태: 요청 → 승인 → 발주 → 입고 완료.",
+     "입고 단계마다 수량이 어긋날 수 있다(부분 입고·과입고)."
+    ]
+   },
+   "how_far": "소제목 줄이라 아래 세부 줄이 실제 일이다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddd-evans"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구매요청(PR)부터 발주(PO)까지 이어지는 워크플로우와 매입예산(OTB) 검증 시스템을 구축합니다.",
+   "short": "'사고 싶다'는 요청(PR)이 승인을 거쳐 발주서(PO)가 되는 단계와, 쓸 수 있는 매입 예산(OTB)을 넘지 않는지 검사하는 일.",
+   "why": "패션은 시즌마다 살 금액 한도를 정해 두고 발주한다(OTB, Open-To-Buy: 아직 살 수 있는 금액) {추론}. 한도 검증이 시스템에 없으면 사람이 엑셀로 맞춰야 한다.",
+   "actually": {
+    "items": [
+     "PR → 승인선(금액별) → PO 상태 기계를 만든다.",
+     "발주 시점에 월·시즌·브랜드별 남은 예산을 보고 초과하면 막거나 추가 승인을 요구한다.",
+     "승인·수정을 모두 이력으로 남긴다.",
+     "동시에 두 발주가 마지막 예산을 쓰려 할 때 한 건만 통과시킨다(잠금·조건부 갱신)."
+    ]
+   },
+   "how_far": "예산 기준(어떤 단위로 한도를 두나)은 MD·재무가 정한다. 개발자는 규칙을 설정값으로 두고 틀리지 않게 계산한다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddd-evans",
+    "jpa-orm-book",
+    "ddia"
+   ],
+   "examples": [
+    {
+     "title": "남은 매입예산 안에서만 발주 승인 (가상 값, 직접 실행)",
+     "body": "실행 출력: ok 400000 / reject 600000 400000",
+     "lang": "python",
+     "code": "otb=1000000\nfor q in (30,30):\n    need=q*20000\n    if need>otb: print('reject',need,otb)\n    else: otb-=need; print('ok',otb)\n"
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "파트너의 입고 신청부터 ASN 등록, 물류센터 입고 지시 및 실적 반영까지 이어지는 입고 파이프라인을 개발합니다.",
+   "short": "파트너가 '보내겠다' 신청 → 상세 출하 예고서(ASN) 등록 → 물류센터에 입고 지시 → 실제 받은 수량 반영까지 이어 주는 일.",
+   "why": "ASN(Advance Shipping Notice)은 보내는 쪽이 '무엇을 몇 개 보낸다'고 미리 알리는 문서이고, 표준 전자문서(EDI 856 등)가 있다.[11][12]",
+   "actually": {
+    "items": [
+     "신청 → ASN(상품·수량·박스 단위) → 입고 지시 → 검수 결과 → 재고 반영의 상태 흐름.",
+     "ASN 수량과 실제 입고 수량이 다를 때 차이를 기록하고 파트너에게 알린다.",
+     "물류센터(WMS) 와는 지시·실적 메시지로 주고받는다 {추론}.",
+     "같은 실적 메시지가 두 번 와도 재고가 두 번 늘지 않게 한다(멱등).",
+     "DB 반영과 메시지 발행이 어긋나지 않게 묶는 방법으로 outbox 패턴이 있다.[13]"
+    ]
+   },
+   "how_far": "물류센터 작업 규칙은 물류 조직이 정한다. 개발자는 메시지 약속(필드·상태·재전송)과 차이 처리를 맡는다 {추론}.",
+   "refs": [
+    11,
+    12,
+    13
+   ],
+   "study": [
+    "ddia",
+    "outbox",
+    "kafka-guide"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "레거시 ERP(SAP) 연동 인터페이스를 개발하고, 자체 시스템으로의 단계적인 전환(디커플링)을 설계합니다.",
+   "short": "지금 쓰는 ERP(SAP)와 주고받는 연결부를 만들고, 일을 하나씩 우리 시스템으로 옮겨 SAP 의존을 줄이는 설계.",
+   "why": "공고가 '단계적 전환'이라 적었다 — 한 번에 갈아엎지 않고 조각씩 옮기는 방식을 말한다.[1] 이런 방식에 잘 알려진 이름이 Strangler Fig 패턴이다.[14]",
+   "actually": {
+    "items": [
+     "SAP 앞에 어댑터 층을 둬서 우리 시스템은 SAP 형식을 직접 모르게 한다.",
+     "기능별로 '정본이 어디인가'를 한 번에 하나만 둔다(이중 정본 금지).",
+     "옮기는 동안 두 쪽 숫자가 같은지 대조 리포트를 돌린다.",
+     "옮긴 뒤 SAP 쪽 경로를 닫는다."
+    ]
+   },
+   "how_far": "SAP 내부 설정은 ERP 팀이 안다. 개발자는 어댑터·대조·전환 순서를 맡고 롤백 가능한 단위로 쪼갠다 {추론}. 무신사의 실제 SAP 구성은 공개 자료가 없다.",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "strangler",
+    "newman-micro",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "재고 및 소유권 전환 시스템 개발",
+   "short": "재고 숫자와 '누구 것인가'가 바뀌는 순간을 다루는 시스템을 만드는 일(소제목).",
+   "why": "팀의 가장 큰 목표가 온·오프라인 동일 재고 기준이다.[1]",
+   "actually": {
+    "items": [
+     "재고 = 상품 × 물리 단위 × 위치.",
+     "변동은 지우지 않고 쌓는다."
+    ]
+   },
+   "how_far": "소제목 줄이라 아래 세부 줄이 실제 일이다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddd-evans"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "상품·물리 단위·보관 위치를 기준으로 재고 모델을 설계하고, 모든 재고 변동에 대한 감사 추적(Audit Trail)을 구현합니다.",
+   "short": "재고를 'SKU × 박스/낱개 × 보관 위치'로 나눠 세고, 늘고 줄 때마다 누가·왜 바꿨는지 기록으로 남기는 일.",
+   "why": "재고 숫자만 덮어쓰면 어디서 틀어졌는지 추적할 수 없다. 변동을 사건으로 쌓는 방식(이벤트 소싱)이 이런 감사에 쓰인다.[15]",
+   "actually": {
+    "items": [
+     "변동 원장: (SKU, 위치, 수량 증감, 사유, 시각, 행위자) 한 줄씩 추가만 한다.",
+     "현재 재고 = 원장 합. 빠른 조회용 요약표는 따로 둔다.",
+     "가용 재고 = 현재 - 예약(주문 잡힘) - 보류(검수 중)처럼 나눈다 {추론}.",
+     "실사(재고 조사)와 전산 숫자가 다르면 보정 변동을 남긴다."
+    ]
+   },
+   "how_far": "원장은 수정·삭제 없이 쌓기만 한다는 규칙이 최소선이다. 보관 기간·접근 권한은 회사 정책이다 {추론}.",
+   "refs": [
+    15
+   ],
+   "study": [
+    "event-sourcing",
+    "ddia",
+    "jpa-orm-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "위탁(2P)에서 매입(1P)으로의 소유권 전환 과정에서 물류·주문 시스템을 연계하는 End-to-End 오케스트레이션을 설계합니다.",
+   "short": "위탁으로 맡아 둔 재고를 무신사가 사들이는 매입으로 바꿀 때, 창고 재고·주문·정산이 어긋나지 않게 전체 순서를 짜는 일.",
+   "why": "물건은 그대로인데 주인만 바뀌므로 판매 중에도 재고가 사라지거나 두 번 잡히면 안 된다 {추론}. 여러 시스템에 걸친 처리는 보상 작업을 둔 Saga 로 푸는 것이 통상적이다.[16]",
+   "actually": {
+    "items": [
+     "전환 요청 → 대상 재고 잠금 → 2P 재고 차감·1P 재고 가산 → 정산·세금 처리 → 주문 시스템 반영 순서.",
+     "중간에 실패하면 이미 한 단계를 되돌리는 보상 단계를 둔다.",
+     "같은 요청을 다시 받아도 한 번만 적용(멱등 키).",
+     "전환 중 들어온 주문은 어느 소유로 잡을지 규칙을 정한다."
+    ]
+   },
+   "how_far": "전환 시점·세무 처리 같은 사업·재무 규칙은 해당 조직이 정한다. 개발자는 순서·실패 복구·대조를 맡는다 {추론}.",
+   "refs": [
+    15,
+    16
+   ],
+   "study": [
+    "saga",
+    "ddia",
+    "event-sourcing"
+   ],
+   "examples": [
+    {
+     "title": "소유권 전환은 수량 합을 바꾸지 않는다 (가상 값, 직접 실행)",
+     "body": "실행 출력: 2P 0 1P 8 sum 8",
+     "lang": "python",
+     "code": "ledger=[('2P',10),('2P',-2),('2P',-8),('1P',8)]\nbal=lambda o: sum(q for ow,q in ledger if ow==o)\nprint('2P',bal('2P'),'1P',bal('1P'),'sum',bal('2P')+bal('1P'))\n"
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "PM·디자이너 및 유관 조직과 함께 해결할 고객 문제와 우선순위를 정의하고, 모호한 요구는 측정 가능한 가설로 바꾸며, 출시 이후 지표로 성과를 확인해 다음 개선으로 연결합니다.",
+   "short": "고객 문제를 먼저 정의하고 막연한 요구를 '이 숫자가 오른다'는 가설로 바꾼 뒤, 출시 후 숫자로 확인하는 일.",
+   "why": "무신사는 서버·웹·모바일 엔지니어를 Product Engineer 한 직군으로 묶고 지표 확인까지 PM 과 함께하게 한다.[1]",
+   "actually": {
+    "items": [
+     "'입고가 느리다' → '신청부터 반영까지 평균 N시간을 M시간으로'로 바꾼다.",
+     "출시 전에 볼 숫자를 정하고 출시 뒤 확인한다.",
+     "내부 도구라 A/B 가 어려우면 전후 비교·일부 파트너 먼저 열기로 대신한다 {추론}."
+    ]
+   },
+   "how_far": "개발자는 지표 정의와 측정 코드를 같이 책임진다. 목표 수치는 PM·사업과 합의한다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "kohavi",
+    "doerr-okr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 코딩 에이전트를 설계·구현·테스트·코드 리뷰·운영 전반에 적극 활용하고, 그 경험을 팀과 나눠 개발 생산성과 품질을 높이는 AI 기반 개발 방식을 조직에 만들어 갑니다.",
+   "short": "AI 코딩 에이전트를 개발 전 과정에 쓰고, 그 방법을 팀에 퍼뜨려 속도와 품질을 같이 올리는 일.",
+   "why": "무신사는 AI 에이전트를 전사 도구로 지원한다고 보도됐다.[7][4]",
+   "actually": {
+    "items": [
+     "에이전트에게 맡길 일(테스트 초안·반복 수정)과 사람이 볼 일(재고 계산·정산 규칙)을 가른다.",
+     "에이전트 변경도 같은 리뷰·테스트를 통과시킨다.",
+     "잘 된 사례와 실패를 팀에 공유한다."
+    ]
+   },
+   "how_far": "도구 비용·보안 지침은 회사가 정한다. 개발자는 쓰는 방식과 검증 기준을 맡는다 {추론}.",
+   "refs": [
+    1,
+    4,
+    7
+   ],
+   "study": [
+    "claude-code",
+    "accelerate"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "8년 이상의 백엔드 개발 경험을 보유하며, 복잡한 비즈니스 로직을 코드와 아키텍처로 구조화할 수 있는 분",
+   "short": "백엔드 8년+ 경력과, 복잡한 업무 규칙을 코드 구조로 옮기는 능력.",
+   "why": "SKU·소유권·발주 상태처럼 규칙이 얽힌 도메인이라 연수보다 규칙을 구조로 정리한 경험을 본다 {추론}.",
+   "actually": {
+    "items": [
+     "업무 용어(발주·입고·재고)를 클래스·상태·이벤트 이름으로 맞춘다.",
+     "규칙이 바뀔 곳을 한곳에 모은다.",
+     "면접에서 직접 설계한 도메인 사례를 묻는다 {추론}."
+    ]
+   },
+   "how_far": "8년은 서류 문턱이다. 부족하면 설계 책임 범위로 보완한다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddd-evans",
+    "clean-arch"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java/Kotlin 및 Spring 기반의 실무 역량이 탄탄하며, 대규모 트래픽 환경을 경험해 보신 분",
+   "short": "Java/Kotlin·Spring 을 실무로 깊이 쓰고, 트래픽 많은 서비스를 다뤄 본 경험.",
+   "why": "스택이 Java·Kotlin·Spring Boot·Spring Cloud·JPA/Hibernate 다.[1]",
+   "actually": {
+    "items": [
+     "트랜잭션 경계와 JPA 연관관계 문제(N+1)를 안다.",
+     "재고 조회처럼 읽기가 많은 곳은 캐시(Redis)·읽기 복제로 나눈다.",
+     "동시에 같은 재고를 차감하는 요청을 낙관·비관 락으로 막는다."
+    ]
+   },
+   "how_far": "수치 기준은 공고에 없다. 처리량 숫자를 말할 수 있으면 충분하다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "spring-core-int",
+    "jpa-orm-book",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "도메인의 복잡도를 이해하고, 객체 지향적인 설계와 클린 코드를 지향하시는 분",
+   "short": "업무 영역의 복잡함을 이해하고 객체 지향 설계·읽기 쉬운 코드를 지키려는 태도.",
+   "why": "소유권·재고 규칙은 시간이 지나며 늘어나므로 읽히는 코드가 곧 유지보수 비용이다 {추론}.",
+   "actually": {
+    "items": [
+     "상태 변경 규칙을 객체 메서드로 가둔다(수량 음수 불가 등).",
+     "작은 단위 테스트로 규칙을 고정한다."
+    ]
+   },
+   "how_far": "스타일 논쟁보다 팀 합의 규칙(리뷰 기준)을 따르는 것이 현실적이다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "clean-arch",
+    "ddd-evans"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "비즈니스 목표를 달성하기 위해 기술적 의사결정을 주도하고 리딩해 본 경험이 있으신 분",
+   "short": "사업 목표를 위해 기술 선택을 직접 이끌어 본 경험.",
+   "why": "SAP 디커플링·SSoT 같은 되돌리기 어려운 결정을 개발자가 주도해야 하는 자리다.[1]",
+   "actually": {
+    "items": [
+     "선택지 비교표와 추천안을 쓴다.",
+     "반대 의견을 모아 결정과 이유를 남긴다.",
+     "결정 뒤 결과를 확인한다."
+    ]
+   },
+   "how_far": "'내가 정한 것'과 '내가 설득한 것'을 구분해 말할 수 있으면 된다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "adr",
+    "pragmatic-eng"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "CI/CD 기반의 배포 자동화 및 안정적인 서비스 운영 프로세스에 대한 경험과 이해를 갖추신 분",
+   "short": "자동 빌드·배포와 안정적 운영(모니터링·장애 대응) 경험.",
+   "why": "스택에 Kubernetes·Terraform·Datadog·Prometheus·Grafana 가 있다.[1]",
+   "actually": {
+    "items": [
+     "PR 마다 테스트·빌드 후 무중단 배포.",
+     "재고 오차·메시지 지연 같은 업무 지표 알람.",
+     "장애 후 원인 정리와 재발 방지."
+    ]
+   },
+   "how_far": "인프라 구성은 플랫폼 팀 몫이고 개발자는 서비스 배포·알람·대응을 맡는다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "accelerate",
+    "aws-waf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "구현에 머무르지 않고 고객 문제를 함께 정의하고, 출시 이후의 지표로 결과를 확인하며 일해 오신 분",
+   "short": "개발만 하지 않고 고객 문제를 함께 정의하고 출시 뒤 지표로 확인해 온 경험.",
+   "why": "Product Engineer 직군의 공통 요구다.[1]",
+   "actually": {
+    "items": [
+     "출시 후 지표를 직접 본 사례와 그 숫자로 방향을 바꾼 사례.",
+     "실패해 접은 기능도 인정된다 — 공고가 성공·실패를 가리지 않는다고 했다.[1]"
+    ]
+   },
+   "how_far": "이력서에 '목표 지표 → 결과'를 프로젝트마다 적으라는 안내와 맞는다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "kohavi",
+    "doerr-okr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기술적 의사결정을 트레이드오프와 함께 문서로 정리하고, 이를 비즈니스 맥락에서 설명할 수 있는 분",
+   "short": "기술 선택을 장단점과 함께 문서로 남기고 사업 맥락에서 설명하는 능력.",
+   "why": "마스터·ERP 같은 결정은 나중에 이유를 찾을 수 있어야 한다 {추론}.",
+   "actually": {
+    "items": [
+     "ADR 네 칸(상황·선택지·결정·결과).",
+     "임원에게는 비용·위험·일정으로 말한다."
+    ]
+   },
+   "how_far": "문서 길이보다 '왜 다른 안을 안 골랐나'가 적혀 있는지가 본다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "adr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 코딩 에이전트(Codex, Claude Code 등)를 실무에 적극 활용하고, 그 결과물의 품질을 스스로 검증하고 책임질 수 있는 분",
+   "short": "AI 코딩 에이전트를 실무에 쓰고 결과물을 스스로 검증·책임지는 능력.",
+   "why": "공고가 지원 서류에 활용 방식·결과·검증 방법을 적으라고 했다.[1]",
+   "actually": {
+    "items": [
+     "에이전트 코드에 테스트·리뷰·정적 분석을 똑같이 건다.",
+     "도메인 규칙(재고 계산)은 사람이 확인한다.",
+     "잘 된 일과 틀린 일을 기록한다."
+    ]
+   },
+   "how_far": "검증 방법까지 지원서에 적는 것이 최소선이다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "claude-code",
+    "accelerate"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "레거시 시스템을 점진적으로 개선하거나 MSA로 전환하는 과정을 주도하고, 성공적으로 안착시킨 경험이 있으신 분",
+   "short": "낡은 시스템을 조금씩 고치거나 MSA 로 옮기는 일을 이끌어 안착시킨 경험.",
+   "why": "이 자리의 SAP 단계적 전환과 직접 겹친다.[1]",
+   "actually": {
+    "items": [
+     "어댑터·대조 리포트로 안전하게 옮긴 사례.",
+     "옮긴 뒤 장애·비용 변화."
+    ]
+   },
+   "how_far": "'한 번에 갈아엎지 않았다'는 점을 숫자와 함께 말하면 충분하다 {추론}.",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "strangler",
+    "newman-micro"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "기술적 문제를 글로 정리하고 공유하는 테크니컬 라이팅 및 코드 리뷰 문화를 즐기시는 분",
+   "short": "기술 문제를 글로 정리해 공유하고 코드 리뷰를 즐기는 문화.",
+   "why": "무신사 테크는 블로그·유튜브·링크드인을 운영한다.[1]",
+   "actually": {
+    "items": [
+     "장애 회고·설계 결정을 글로 남긴다.",
+     "리뷰 댓글에 이유를 적는다."
+    ]
+   },
+   "how_far": "필수가 아닌 우대다. 쓴 글 링크 한두 개면 충분하다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "adr",
+    "pragmatic-eng"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "물류/커머스 도메인에 대한 깊은 이해나 구축 경험이 있으신 분",
+   "short": "물류·커머스 업무를 깊이 알거나 그 시스템을 만든 경험.",
+   "why": "이 팀의 일감이 발주·입고·재고라 도메인 이해가 곧 속도다.[1]",
+   "actually": {
+    "items": [
+     "입고 검수·재고 조사·반품 흐름.",
+     "WMS·OMS·ERP 가 각각 맡는 일."
+    ]
+   },
+   "how_far": "경험이 없으면 용어와 흐름을 먼저 익혀 오는 것으로 보완한다 {추론}.",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "ddd-evans",
+    "gs1-spec"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "비즈니스 KPI를 기술로 개선하고 수치로 증명해 본 경험이 있으신 분",
+   "short": "기술로 사업 지표를 개선하고 숫자로 증명한 경험.",
+   "why": "공고 전체가 출시 후 지표를 강조한다.[1]",
+   "actually": {
+    "items": [
+     "처리 시간·오류율·재고 오차율의 전후 값.",
+     "그 변화에서 기술 몫을 가려 말한다."
+    ]
+   },
+   "how_far": "기여를 과장하지 않고 같이 바뀐 요인을 함께 적는다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "kohavi",
+    "doerr-okr"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "가설 수립 → 실험 → 데이터 검증을 거쳐 제품 의사결정에 참여해 본 경험이 있으신 분",
+   "short": "가설→실험→데이터 검증으로 제품 결정에 참여한 경험.",
+   "why": "공고가 모호한 요구를 측정 가능한 가설로 바꾸라고 요구한다.[1]",
+   "actually": {
+    "items": [
+     "가설·성공 기준·기간을 사전에 적는다.",
+     "표본이 작을 때 한계를 밝힌다."
+    ]
+   },
+   "how_far": "실험 플랫폼 없이도 단계적 출시와 전후 비교로 충분하다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "kohavi"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 개발 프로세스에 도입해 팀 단위 생산성이나 품질을 개선한 경험이 있으신 분",
+   "short": "AI 를 개발 과정에 도입해 팀의 생산성·품질을 개선한 경험.",
+   "why": "공고 첫머리가 AI 로 개발 방식을 바꾸는 것이다.[1]",
+   "actually": {
+    "items": [
+     "리뷰 시간·결함 수·리드타임의 전후 지표.",
+     "팀 규칙과 교육."
+    ]
+   },
+   "how_far": "개인 사용이 아니라 팀 확산 사례를 요구한다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "accelerate",
+    "claude-code"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 활용해 클라이언트 밖의 영역(서버 API, 데이터 파이프라인 등)까지 직접 문제를 풀어 본 경험이 있으신 분",
+   "short": "AI 로 클라이언트 밖(서버 API·데이터 파이프라인 등)까지 직접 문제를 푼 경험.",
+   "why": "Product Engineer 는 전문 영역 밖으로 문제를 넓혀 푼다.[1]",
+   "actually": {
+    "items": [
+     "프론트 개발자가 서버 API·배치까지 고친 사례.",
+     "검증 방법 포함."
+    ]
+   },
+   "how_far": "전문 영역 밖에서 풀어 본 경험을 지원서에 적으라는 안내가 있다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "claude-code"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "ddd-evans",
+   "title": "Domain-Driven Design",
+   "by": "Eric Evans · Addison-Wesley · 2003",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/domain-driven-design-tackling/0321125215/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "복잡한 업무 규칙을 도메인 모델로 옮기는 법 — SKU·소유권·발주 모델링 요건."
+  },
+  {
+   "id": "ddia",
+   "title": "Designing Data-Intensive Applications",
+   "by": "Martin Kleppmann · O'Reilly · 2017",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "복제·메시지·일관성 — 재고 원장·이벤트 배포 설계의 기본서. 한국어판도 있다."
+  },
+  {
+   "id": "newman-micro",
+   "title": "Building Microservices (2nd ed.)",
+   "by": "Sam Newman · O'Reilly · 2021",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/building-microservices-2nd/9781492034018/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "서비스 경계·SAP 같은 레거시 분리·소비자 호환."
+  },
+  {
+   "id": "saga",
+   "title": "Pattern: Saga",
+   "by": "Chris Richardson · microservices.io",
+   "kind": "doc",
+   "url": "https://microservices.io/patterns/data/saga.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "여러 시스템에 걸친 소유권 전환을 보상 작업으로 되돌리는 법."
+  },
+  {
+   "id": "outbox",
+   "title": "Pattern: Transactional outbox",
+   "by": "Chris Richardson · microservices.io",
+   "kind": "doc",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "DB 변경과 메시지 발행을 어긋나지 않게 묶는 법 — 입고 실적·재고 이벤트."
+  },
+  {
+   "id": "strangler",
+   "title": "Strangler Fig Application",
+   "by": "Martin Fowler · martinfowler.com",
+   "kind": "doc",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "레거시를 조각씩 옮기는 방식 — SAP 단계적 전환."
+  },
+  {
+   "id": "event-sourcing",
+   "title": "Event Sourcing",
+   "by": "Martin Fowler · martinfowler.com",
+   "kind": "doc",
+   "url": "https://martinfowler.com/eaaDev/EventSourcing.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "상태 대신 변동을 쌓는 방식 — 재고 감사 추적."
+  },
+  {
+   "id": "gs1-spec",
+   "title": "GS1 General Specifications",
+   "by": "GS1",
+   "kind": "doc",
+   "url": "https://www.gs1.org/standards/barcodes-epcrfid-id-keys/gs1-general-specifications",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "GTIN 등 상품 식별 번호 규칙 — 바코드 통합 요건."
+  },
+  {
+   "id": "kafka-guide",
+   "title": "Kafka: The Definitive Guide (2nd ed.)",
+   "by": "Gwen Shapira 외 · O'Reilly · 2021",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/kafka-the-definitive/9781492043072/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "발행·구독, 재전송, 순서 — 기준정보 배포와 입고 실적 메시지."
+  },
+  {
+   "id": "adr",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · Cognitect 블로그 · 2011",
+   "kind": "doc",
+   "url": "https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "결정 기록 서식 — 트레이드오프 문서화."
+  },
+  {
+   "id": "jpa-orm-book",
+   "title": "자바 ORM 표준 JPA 프로그래밍",
+   "by": "김영한 · 에이콘출판사 · 2015",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=자바 ORM 표준 JPA 프로그래밍",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "엔티티·연관관계·락 — 재고 차감 동시성."
+  },
+  {
+   "id": "spring-core-int",
+   "title": "스프링 핵심 원리 - 기본편",
+   "by": "김영한 · 인프런 강의",
+   "kind": "course",
+   "url": "https://www.inflearn.com/course/스프링-핵심-원리-기본편",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "Spring 의존성 주입·객체 지향 설계 기본."
+  },
+  {
+   "id": "clean-arch",
+   "title": "Clean Architecture",
+   "by": "Robert C. Martin · Pearson · 2017",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "업무 규칙을 프레임워크에서 떼어 두는 구조."
+  },
+  {
+   "id": "pragmatic-eng",
+   "title": "The Pragmatic Engineer 가이드 — 시니어 엔지니어",
+   "by": "Gergely Orosz · newsletter",
+   "kind": "doc",
+   "url": "https://blog.pragmaticengineer.com/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "시니어의 리드·글쓰기·설계 리뷰 방식 읽을거리."
+  },
+  {
+   "id": "kohavi",
+   "title": "Trustworthy Online Controlled Experiments",
+   "by": "Ron Kohavi, Diane Tang, Ya Xu · Cambridge University Press · 2020",
+   "kind": "book",
+   "url": "https://experimentguide.com/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "가설·지표·실험."
+  },
+  {
+   "id": "doerr-okr",
+   "title": "Measure What Matters",
+   "by": "John Doerr · Portfolio · 2018",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Measure What Matters",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "목표를 숫자로 거는 법 — KPI 줄."
+  },
+  {
+   "id": "accelerate",
+   "title": "Accelerate",
+   "by": "Nicole Forsgren, Jez Humble, Gene Kim · IT Revolution · 2018",
+   "kind": "book",
+   "url": "https://itrevolution.com/product/accelerate/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "배포 빈도·리드타임 — CI/CD·AI 효과 측정."
+  },
+  {
+   "id": "claude-code",
+   "title": "Claude Code overview",
+   "by": "Anthropic 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "코딩 에이전트가 하는 일·권한 — 활용·검증 요건."
+  },
+  {
+   "id": "aws-waf",
+   "title": "AWS Well-Architected Framework",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "신뢰성·운영 우수성 — 안정적 운영 요건."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "도메인 모델링",
+   "time": "2주",
+   "goal": "SKU·옵션·소유권을 모델로 그린다.",
+   "task": "상품→옵션→SKU→바코드 표와 1P/2P 소유 필드를 가진 가상 모델을 그린다.",
+   "resources": [
+    "ddd-evans",
+    "gs1-spec",
+    "spring-core-int"
+   ]
+  },
+  {
+   "title": "재고 원장과 동시성",
+   "time": "2~3주",
+   "goal": "변동을 쌓아 현재 재고를 계산하고 동시 차감을 막는다.",
+   "task": "가상 원장 표와 차감 API 를 만들고 두 요청을 동시에 보내도 음수가 안 되게 한다.",
+   "resources": [
+    "event-sourcing",
+    "jpa-orm-book",
+    "ddia"
+   ]
+  },
+  {
+   "title": "메시지와 보상 처리",
+   "time": "2~3주",
+   "goal": "중복·실패에도 맞는 입고·전환 흐름을 만든다.",
+   "task": "입고 실적을 Kafka 로 보내 같은 메시지 두 번에도 한 번만 반영하는 예제와 2P→1P 전환 Saga 를 만든다.",
+   "resources": [
+    "kafka-guide",
+    "outbox",
+    "saga"
+   ]
+  },
+  {
+   "title": "레거시 단계적 전환",
+   "time": "1~2주",
+   "goal": "한 번에 갈아엎지 않고 옮기는 계획을 쓴다.",
+   "task": "가상 ERP 앞에 어댑터를 두고 대조 리포트 한 장과 ADR 한 장을 쓴다.",
+   "resources": [
+    "strangler",
+    "newman-micro",
+    "adr"
+   ]
+  },
+  {
+   "title": "지표·AI 활용 정리",
+   "time": "1~2주",
+   "goal": "가설·지표와 AI 활용·검증 사례를 지원서 형태로 쓴다.",
+   "task": "프로젝트 하나를 '문제→가설→지표→결과→AI 활용·검증' 한 장으로 정리한다.",
+   "resources": [
+    "kohavi",
+    "doerr-okr",
+    "claude-code",
+    "accelerate"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 없음. 집계 기준 신입 초봉 2,313만원·평균 3,453만원, 원티드 표기 평균 6,082만원 — 경력 8년+ 개발직 연봉과는 무관한 전체 값.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아닌 회사 전체 값, 연도 미표기.[5]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 경력직이 섞인 전체 평균.[5]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위와 2천만원 넘게 달라 산출 방식이 다른 것으로 보인다.[6]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시 평균 급여가 없다(확인 못 함). 위는 모두 집계이고 **평균은 초봉이 아니며** 8년 이상 경력직 연봉은 협의 단계에서 정해진다.[1] 직급·보상 체계는 공개되지 않았다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "코어타임 11~16시, 휴가 1일·0.5일·0.25일 단위"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기근속",
+    "detail": "3년마다 리프레시 휴가 7일 + 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "전사 AI 에이전트 지원, 허먼 밀러 의자, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급(이 공고 기타사항)"
+   }
+  ],
+  "note": "무신사 채용 사이트 복지 페이지(날짜 미표기, 첨부 이미지 2025-07)와 이 공고 기타사항.[4][1] 회사 전체 공통이며 '근무 장소·기간·시점에 따라 일부 변경될 수 있다'고 적혀 있다.[4]"
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 약 6분",
+  "note": "공고 근무지 표기는 '무신사 성수 오피스'.[1] 주소는 무신사 상품 페이지 하단 사업자 정보.[9] 2022-09 성수 캠퍼스 N1 이전과 도보 거리는 보도.[8]"
+ },
+ "fit": {
+  "good": [
+   "물류·커머스·ERP 연동 경험이 있는 백엔드[1]",
+   "재고·정산처럼 틀리면 안 되는 숫자를 다뤄 본 사람[1]",
+   "레거시를 단계적으로 옮겨 본 사람[1]"
+  ],
+  "hard": [
+   "경력 8년+ 문턱[1]",
+   "공고에 연봉 범위가 없다[1]",
+   "물류 도메인 경험이 없으면 용어부터 익혀야 한다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "같은 재고를 두 주문이 동시에 차감하려 할 때 어떻게 막나요?",
+   "a": "1차 인터뷰가 Live Coding 과 Architecture Design 이다.[1]"
+  },
+  {
+   "q": "위탁→매입 소유권 전환 중 한 단계가 실패하면 어떻게 복구하나요?",
+   "a": "공고가 End-to-End 오케스트레이션 설계를 업무로 적었다.[1]"
+  },
+  {
+   "q": "SAP 의존을 어떤 순서로 줄이겠어요?",
+   "a": "공고가 단계적 전환(디커플링)을 적었다.[1]"
+  },
+  {
+   "q": "AI 에이전트가 만든 코드를 어떻게 검증했나요?",
+   "a": "지원 서류에 활용·검증 방식을 적으라고 공고가 요구한다.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Product Engineer (SCM Platform)",
+   "url": "https://www.musinsacareers.com/ko/o/235686",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "업무·자격·우대·팀 소개·기술 스택·전형"
+  },
+  {
+   "n": 2,
+   "title": "무신사, AI 활용 OCMP 구축 — 바이라인네트워크",
+   "url": "https://byline.network/2024/10/28_2818720",
+   "kind": "news",
+   "date": "2024-10-28",
+   "note": "OCMP: 공통은 코어, 고유 기능은 플랫폼별. 같은 회사 풀이에서 읽은 내용을 옮김"
+  },
+  {
+   "n": 3,
+   "title": "무신사 뉴스룸 — OCMP 구축 발표",
+   "url": "https://newsroom.musinsa.com/newsroom-menu/2024-1028-2",
+   "kind": "company",
+   "date": "2024-10-28",
+   "note": "같은 회사 풀이에서 확인한 것을 옮김"
+  },
+  {
+   "n": 4,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "'일부 변경될 수 있다' 문구"
+  },
+  {
+   "n": 5,
+   "title": "자소설닷컴 — 무신사",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "초봉 2,313만원·평균 3,453만원(검색 요약, 직접 열람 403 — 같은 회사 풀이 값)"
+  },
+  {
+   "n": 6,
+   "title": "원티드 — 무신사 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "평균연봉 6,082만원 표기. 기준 설명 없음"
+  },
+  {
+   "n": 7,
+   "title": "CIO 코리아 — 무신사 AX 방식 (코어 AI 디렉터 인터뷰)",
+   "url": "https://www.cio.com/article/4219031/",
+   "kind": "news",
+   "date": "2026-09-08",
+   "note": "AI 도입. 같은 회사 풀이에서 읽은 내용"
+  },
+  {
+   "n": 8,
+   "title": "무신사, 성수동 캠퍼스 N1 본사 이전 — 일간스포츠",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09",
+   "note": "성수역 도보 6분"
+  },
+  {
+   "n": 9,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company",
+   "note": "주소 아차산로13길 11 — 같은 회사 풀이에서 확인한 것을 옮김"
+  },
+  {
+   "n": 10,
+   "title": "GS1 Standards for Delivery Management (PDF)",
+   "url": "https://gs1.org/docs/tl/GS1Standards_DeliveryManagement.pdf",
+   "kind": "reference",
+   "note": "상품 마스터 데이터 정렬과 DESADV/856 — 검색 요약으로 읽음"
+  },
+  {
+   "n": 11,
+   "title": "EDI 856 Advance Ship Notice — CASRAI",
+   "url": "https://casrai.org/guides/edi-856-advance-ship-notice",
+   "kind": "reference",
+   "note": "ASN 에 GTIN·박스 식별(SSCC) 연결 — 검색 요약"
+  },
+  {
+   "n": 12,
+   "title": "EDI 856: Ship Notice/Manifest — SPS Commerce",
+   "url": "https://www.spscommerce.com/community/articles/edi-856-ship-notice-manifest",
+   "kind": "reference",
+   "note": "ASN 의 항목·수량·팩 단위 — 검색 요약"
+  },
+  {
+   "n": 13,
+   "title": "Pattern: Transactional outbox — microservices.io",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "kind": "reference",
+   "note": "DB 변경과 메시지 발행 일관성"
+  },
+  {
+   "n": 14,
+   "title": "Strangler Fig Application — Martin Fowler",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference",
+   "note": "레거시를 조각씩 대체"
+  },
+  {
+   "n": 15,
+   "title": "Event Sourcing — Martin Fowler",
+   "url": "https://martinfowler.com/eaaDev/EventSourcing.html",
+   "kind": "reference",
+   "note": "변동을 쌓는 저장 방식"
+  },
+  {
+   "n": 16,
+   "title": "Pattern: Saga — microservices.io",
+   "url": "https://microservices.io/patterns/data/saga.html",
+   "kind": "reference",
+   "note": "보상 작업으로 여러 서비스 처리"
+  }
+ ],
+ "caveat": "무신사 SCM 팀의 기술 블로그·발표·영상을 찾지 못했다(검색에서 팀 자체 글 없음). 회사 근거는 이 공고와 OCMP 발표 기사, 같은 회사 다른 풀이의 출처이고, 재고 원장·ASN·SAP 전환 구조는 공개 문서(GS1·EDI·Fowler·microservices.io)로 '보통 이런 것'을 보였다. 연봉은 집계 사이트 값만 있다(검색 요약; 직접 열람 403)."
+}
