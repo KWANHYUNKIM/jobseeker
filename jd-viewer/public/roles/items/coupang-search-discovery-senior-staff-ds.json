@@ -1,0 +1,964 @@
+{
+ "id": "coupang-search-discovery-senior-staff-ds",
+ "company": "쿠팡",
+ "role": "Senior Staff Data Scientist",
+ "team": "Search and Discovery (검색·발견) 조직",
+ "jobs": [
+  "ats-greenhouse:coupang:8239021"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡 검색창에 무언가를 친 사람이 **무엇을 보고 · 누르고 · 사는지**를 데이터로 읽고, 검색 순위·추천을 바꾼 효과를 **A/B 실험으로 증명**하는 검색 조직의 데이터 과학 책임자입니다.[1] 검색과 추천이 상품 발견의 70% 넘게를 만든다고 공고가 적었습니다.[1]",
+  "env": "회사 전체가 한 실험 플랫폼 위에서 **동시에 800개 안팎의 실험**을 돌리고, 지표는 설정 파일로 정의해 Spark 로 계산합니다.[2] 검색 결과는 수천만 상품에서 수천 개를 고르고(검색 단계) 100개 넘는 기준으로 줄 세웁니다(랭킹 단계).[6]",
+  "oneline": "모델을 직접 만드는 사람보다 **모델을 바꿨더니 손님이 정말 더 잘 찾았나**를 판정하고 다음 실험을 고르는 사람. 경력 10년 이상, 직급 Lv.7 입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Own the Data Science function within a core pillar of Search and Discovery org",
+   "short": "검색 조직의 한 축(예: 검색 관련성·개인화·추천)에서 데이터 과학 전체를 책임지는 자리다.",
+   "why": "공고가 설명하는 검색 조직은 검색어 이해 → 관련성 → 개인화·카테고리별 검색과 추천까지 여러 갈래(pillar)로 나뉩니다.[1] 같은 조직 공고를 보면 갈래마다 다른 팀이 있습니다 — 추천 팀은 카테고리 페이지 상품 순위와 리뷰 순위까지 맡고[10], 개인화 랭킹 팀은 검색 순위·의미 검색·검색어 이해를 맡습니다.[8] 이 자리는 그중 한 갈래의 '숫자로 판정하는 사람'입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**지표 정하기** — 그 갈래의 성공 지표(검색 후 구매 전환·검색당 클릭·결과 없음 비율)와 지켜야 할 지표(가드레일, 예: 응답 시간·반품)를 고르고 정의를 문서로 남긴다.[17]",
+     "**실험 일정 관리** — 랭킹·ML 엔지니어가 내는 변경안 가운데 무엇을 먼저 실험할지 고른다.[1]",
+     "**판정** — 끝난 실험마다 출시·보류·재실험을 권한다. 쿠팡 실험 수명 주기의 마지막 단계가 '출시 검토(Launch review)'다.[3]",
+     "**사람** — Senior Staff 는 혼자 분석하는 사람이 아니라 다른 분석가·과학자의 방법을 맞추고 검토하는 사람이다 {추론}."
+    ]
+   },
+   "how_far": "'Own' 은 그 갈래의 지표 정의와 실험 판정 기준을 **본인이 정하고 책임진다**는 뜻입니다. 어느 갈래(pillar)인지는 공고에 없습니다 — 면접에서 먼저 묻습니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    8,
+    10,
+    17
+   ],
+   "study": [
+    "kohavi-ko",
+    "coupang-stg222"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Analyze how customers interact with Coupang’s search results to determine how to improve customer experience and business performance",
+   "short": "검색 결과에서 손님이 어디를 보고 누르고 사는지 로그로 읽어, 무엇을 고칠지 찾는 일.",
+   "why": "같은 조직 공고는 매주 수백만 명이 검색을 쓰고 그중 3분의 1 넘게가 구매하며, 검색과 추천이 매출의 절반 넘게를 만든다고 적었습니다.[8] 검색 결과의 작은 변화가 매출 전체에 바로 닿는 자리라 '어디서 손님이 막히나'를 찾는 분석이 업무의 바탕입니다 {추론}.",
+   "actually": {
+    "intro": "검색 분석에서 흔히 보는 것들입니다. 쿠팡이 어떤 지표를 쓰는지는 공개되지 않았습니다 {추론}.",
+    "items": [
+     "**검색 깔때기** — 검색 → 결과 노출 → 클릭 → 장바구니 → 구매를 검색어별·카테고리별로 끊어 본다.",
+     "**결과 없음·재검색** — 결과가 0개인 검색, 바로 다른 말로 다시 치는 검색은 '못 찾았다'는 신호다.",
+     "**위치 효과** — 위에 있을수록 많이 눌린다. 클릭 수만 보면 순위가 좋아 보이는 착시가 생겨 위치를 빼고 읽어야 한다.[23]",
+     "**긴 검색어** — 여러 낱말을 붙인 구체적인 검색은 결과가 적고 전환이 다르게 나온다(아래 예시).",
+     "**신선식품과 노트북은 다르다** — 공고 스스로 카테고리마다 검색 경험이 달라야 한다고 적었다 — 분석도 카테고리별로 끊는다.[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "검색어별 결과 없음·클릭·구매 비율 (가상 로그, 직접 돌린 출력)",
+     "body": "가상 검색 로그 4,000건에서 하루치를 검색어별로 끊었습니다. 길고 구체적인 검색어는 절반이 결과 없음이고 클릭·구매도 낮습니다 — 이런 칸이 '어디를 고칠까'의 출발점입니다. 실행 계획은 다음 요건(데이터 뽑기 최적화)에서 다시 씁니다.\n\n```\n('무선 이어폰 노이즈캔슬링 화이트', 404, 50.0, 23.8, 5.4)\n('청바지', 394, 0.0, 44.7, 7.9)\n('아이폰 케이스', 403, 0.0, 42.7, 9.2)\n('생수', 406, 0.0, 44.8, 10.6)\n('노트북', 393, 0.0, 44.0, 9.4)\n--- 실행 계획 (날짜 조건) ---\nSEARCH search_log USING INDEX ix_dt (dt=?)\nUSE TEMP B-TREE FOR GROUP BY\nUSE TEMP B-TREE FOR ORDER BY\n--- 실행 계획 (날짜를 함수로 감싸면) ---\nSCAN search_log\nUSE TEMP B-TREE FOR GROUP BY\nUSE TEMP B-TREE FOR ORDER BY\n```",
+     "lang": "python",
+     "code": "import sqlite3, random\nrandom.seed(3)\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"create table search_log(dt text, user_id int, query text, n_results int, clicked int, purchased int)\")\nqueries = [\"노트북\", \"생수\", \"청바지\", \"아이폰 케이스\", \"무선 이어폰 노이즈캔슬링 화이트\"]\nfor d in [\"2026-11-01\", \"2026-11-02\"]:\n    for _ in range(2000):\n        q = random.choice(queries)\n        n = 0 if (q.count(\" \") >= 3 and random.random() < 0.5) else random.randint(5, 500)\n        c = 1 if n and random.random() < 0.45 else 0\n        p = 1 if c and random.random() < 0.2 else 0\n        db.execute(\"insert into search_log values (?,?,?,?,?,?)\", (d, random.randint(1, 800), q, n, c, p))\ndb.execute(\"create index ix_dt on search_log(dt)\")\n\nsql = \"\"\"\nselect query,\n       count(*)                                   as searches,\n       round(avg(n_results = 0) * 100, 1)         as zero_pct,\n       round(avg(clicked) * 100, 1)               as ctr_pct,\n       round(sum(purchased) * 100.0 / count(*), 1) as conv_pct\nfrom search_log\nwhere dt = '2026-11-02'\ngroup by query\norder by zero_pct desc\n\"\"\"\nfor r in db.execute(sql):\n    print(r)\nprint(\"--- 실행 계획 (날짜 조건) ---\")\nfor r in db.execute(\"explain query plan \" + sql):\n    print(r[-1])\nprint(\"--- 실행 계획 (날짜를 함수로 감싸면) ---\")\nfor r in db.execute(\"explain query plan \" + sql.replace(\"where dt = '2026-11-02'\", \"where substr(dt,1,10) = '2026-11-02'\")):\n    print(r[-1])"
+    }
+   ],
+   "how_far": "대시보드를 만드는 데서 끝나지 않고 **'이 칸을 고치면 매출·경험이 얼마 좋아질까'를 크기로 말하고, 그걸 실험 후보로 넘기는 것**까지입니다 {추론}.",
+   "refs": [
+    1,
+    8,
+    23
+   ],
+   "study": [
+    "iir-book",
+    "sql-levelup",
+    "relevant-search"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Lead experiment ideation, design, measurement, and interpretation",
+   "short": "실험 아이디어 고르기 → 설계 → 측정 → 해석까지 A/B 실험 한 바퀴를 이끈다.",
+   "why": "쿠팡은 2014년 중순부터 자체 실험 플랫폼을 만들었고[4], 2022년 발표에서 **사이트에 800개 가까운 실험이 동시에** 돈다고 했습니다.[2] 발표자는 다섯 단계(설계 → 구현 → 감시 → 분석 → 결정) 가운데 **설계가 가장 중요하다**며, 기간·대상·가설·성공 지표·보조 지표를 실험 전에 정해야 실험 문화가 무너지지 않는다고 설명했습니다.[2][3] 쿠팡이츠 검색 조직 공고도 A/B 테스트 설계·분석을 업무로 적었습니다.[9]",
+   "actually": {
+    "intro": "쿠팡이 발표에서 든 실험 두 개와, 검색 실험에서 흔히 쓰는 방법입니다.",
+    "items": [
+     "**위젯 위치 실험** — 라이브 위젯이 없는 기준안과, 5번째·10번째 자리에 넣는 두 안을 비교했다. 매출과 사용 경험 사이의 맞바꿈을 보려고 안을 둘로 나눴다.[2]",
+     "**매출이 목적이 아닌 실험** — 리뷰 칸에 판매자 이름을 보여 주는 실험은 매출이 아니라 '첫 노출 뒤 다시 찾아온 날 수'가 늘었다.[2][3]",
+     "**표본 크기·기간** — 전환율 1%의 작은 차이도 가리려면 군마다 수십만~수백만 명이 필요하다(아래 예시). 그래서 무엇을 잴지가 설계의 대부분이다.[17]",
+     "**분산 줄이기(CUPED)** — 실험 전 같은 사람의 행동으로 잡음을 덜어 같은 인원으로 더 작은 차이를 본다.[19]",
+     "**교차 배치(interleaving)** — 두 순위 결과를 한 화면에 섞어 보여 주고 어느 쪽 상품이 눌리나 본다. Airbnb·Walmart 가 랭킹 실험을 빨리 하려고 쓴다고 공개했다 — 쿠팡이 쓰는지는 공개되지 않았다.[21][22]",
+     "**해석** — 군 나누기 비율이 어긋났는지(SRM)부터 확인하고, 여러 지표를 동시에 보면 우연히 유의한 것이 나온다는 점을 감안한다.[20][17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "작은 차이를 가리려면 몇 명이 필요한가 (직접 돌린 출력)",
+     "body": "양측 5% · 검정력 80% 기준입니다. 검색 후 구매 전환율이 5%일 때 상대 1% 차이(5.00% → 5.05%)를 가리려면 군마다 약 298만 명이 필요합니다. 랭킹 개선은 보통 이렇게 작아서, 지표를 더 민감한 것(클릭·장바구니)으로 고르거나 분산 줄이기·교차 배치를 같이 고민합니다 {추론}.\n\n```\n전환율 5% · 상대 1% 차이 → 군마다    2,982,606명\n전환율 5% · 상대 2% 차이 → 군마다      745,652명\n전환율 5% · 상대 5% 차이 → 군마다      119,305명\n전환율 10% · 상대 1% 차이 → 군마다    1,412,814명\n전환율 10% · 상대 2% 차이 → 군마다      353,204명\n전환율 10% · 상대 5% 차이 → 군마다       56,513명\n```",
+     "lang": "python",
+     "code": "import math\n# 검색 후 구매 전환율 p 에서 상대 lift 를 가리려면 군마다 몇 명이 필요한가 (양측 5%, 검정력 80%)\nz_a, z_b = 1.96, 0.8416\ndef n_per_arm(p, rel_lift):\n    d = p * rel_lift\n    return math.ceil(2 * (z_a + z_b) ** 2 * p * (1 - p) / d ** 2)\nfor p in (0.05, 0.10):\n    for lift in (0.01, 0.02, 0.05):\n        print(f\"전환율 {p:.0%} · 상대 {lift:.0%} 차이 → 군마다 {n_per_arm(p, lift):>12,}명\")"
+    }
+   ],
+   "how_far": "Senior Staff 는 실험을 돌리는 사람이 아니라 **실험 설계를 검토하고 '이 결과로 출시해도 되나'를 판정하는 사람**입니다. 최소선은 표본 크기 계산, 비율 지표의 분산, SRM 점검, 여러 지표 비교의 함정을 남에게 설명할 수 있는 정도입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    9,
+    17,
+    19,
+    20,
+    21,
+    22
+   ],
+   "study": [
+    "coupang-stg222",
+    "kohavi-ko",
+    "cuped",
+    "srm",
+    "airbnb-interleave"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Build datasets to increase the speed and accuracy with which the team analyzes data",
+   "short": "팀이 매번 원본 로그를 뒤지지 않게, 검증된 분석용 표를 미리 만들어 두는 일.",
+   "why": "쿠팡 데이터 플랫폼은 2022년 기준 데이터 레이크 32PB, 분당 로그 710만 건, 하루 데이터 처리 작업 12만 개였고, 1,300명이 날마다 데이터를 보고 결정한다고 했습니다.[2] 발표 자료는 데이터셋 15만 개 가운데 **인증된 데이터셋 5,500개**를 따로 셌습니다.[3] 원본이 이렇게 크면 같은 질문에 사람마다 다른 숫자가 나오기 쉬워, 검증된 표를 두는 것이 속도와 정확성 둘 다를 위한 일입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**검색 세션 표** — 검색 한 번을 한 줄로: 검색어·결과 수·노출 상품·클릭 위치·구매 여부·실험 군. 대부분의 분석이 이 표 하나로 끝나게 한다 {추론}.",
+     "**랭킹 신호 표** — 쿠팡 검색 조직은 랭킹 신호(상품별 판매·클릭 같은 값)를 Hive 표에서 색인 플랫폼으로 옮겨, 랭킹 엔지니어가 신호의 논리에만 집중하게 했다.[5]",
+     "**지표 정의를 코드 대신 설정으로** — 쿠팡 실험 플랫폼은 지표마다 분자·분모를 적은 지표 설정과, 데이터 위치·파티션을 적은 이벤트 설정 두 가지만 넣으면 한 엔진이 계산하게 바꿨다.[2] 2018년 글에서도 '설정 가능한 지표 엔진'을 만드는 중이라고 했다.[4]",
+     "**누적 계산은 상태를 남긴다** — 실험 지표는 날마다 누적이라, 하루가 틀리면 그 뒤를 다 다시 계산해야 했다. 쿠팡은 '마지막으로 맞았던 누적'을 기억해 거기서부터 병렬로 다시 계산하는 방식으로 바꿨다(아래 예시).[2][3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "하루가 틀렸을 때 다시 읽는 양 — 세 방식 (직접 돌린 출력)",
+     "body": "쿠팡 발표가 설명한 세 방식을 셈으로 옮겼습니다.[2] 어제 누적 + 오늘만 읽는 증분 방식은 평소엔 싸지만 하루가 틀리면 그날부터 **순서대로** 다시 쌓아야 합니다. 매번 처음부터 읽는 방식은 병렬로 되지만 비쌉니다. 상태를 남기는 방식은 틀린 날 직전의 맞는 누적에서 출발해 병렬로 계산합니다 — 95일째가 틀리면 27묶음·1단계로 끝납니다. 첫날이 틀리면 어느 방식이든 거의 전부를 다시 읽습니다.\n\n```\n  1일째가 틀림 | 증분(어제 누적+오늘) | 읽는 묶음   200 | 순서대로 100단계\n  1일째가 틀림 | 매번 전체        | 읽는 묶음  5050 | 순서대로   1단계\n  1일째가 틀림 | 상태 저장        | 읽는 묶음  5150 | 순서대로   1단계\n 95일째가 틀림 | 증분(어제 누적+오늘) | 읽는 묶음    12 | 순서대로   6단계\n 95일째가 틀림 | 매번 전체        | 읽는 묶음   585 | 순서대로   1단계\n 95일째가 틀림 | 상태 저장        | 읽는 묶음    27 | 순서대로   1단계\n```",
+     "lang": "python",
+     "code": "# 100일짜리 실험에서 하루 데이터가 잘못돼 다시 계산할 때 읽는 '하루치 묶음' 수\nD = 100\ndef incremental(bad):      # 어제 누적 + 오늘. 고치려면 bad 날부터 끝까지 한 줄로(순서대로)\n    steps = D - bad + 1\n    return steps * 2, steps            # 읽는 묶음 수, 순서대로 기다려야 하는 단계 수\ndef full(bad):             # 날마다 첫날부터 전부 다시 읽는다. 날짜끼리는 따로(병렬)\n    return sum(d for d in range(bad, D + 1)), 1\ndef with_state(bad):       # 마지막으로 맞았던 누적(bad-1) + 그 뒤 날들. 날짜끼리는 병렬\n    return sum((d - bad + 1) + 1 for d in range(bad, D + 1)), 1\nfor bad in (1, 95):\n    for name, f in [(\"증분(어제 누적+오늘)\", incremental), (\"매번 전체\", full), (\"상태 저장\", with_state)]:\n        reads, serial = f(bad)\n        print(f\"{bad:>3}일째가 틀림 | {name:12} | 읽는 묶음 {reads:>5} | 순서대로 {serial:>3}단계\")"
+    }
+   ],
+   "how_far": "데이터 엔지니어처럼 파이프라인 전체를 운영하는 것까지는 아니고, **분석가들이 믿고 쓰는 표의 정의(한 줄의 뜻·키·지표 계산식)를 정하고 검증**하는 것까지입니다. 일정 실행은 데이터 엔지니어링과 나눠 맡는 경우가 많습니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "coupang-exp-blog",
+    "coupang-stg222",
+    "spark-tuning"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Understand the nuances of ML ranking models, LLMs, and more to determine how our core search product can be optimized",
+   "short": "순위 모델·LLM 이 어떻게 결과를 바꾸는지 알아야 '무엇을 바꿔 볼까'를 제안할 수 있어서.",
+   "why": "쿠팡 검색은 수천만 상품에서 수천 개를 고르는 검색 단계와, 관련성·리뷰·별점·가격 등 100개 넘는 기준으로 줄 세우는 랭킹 단계로 나뉩니다.[6] 같은 조직은 트랜스포머·임베딩 기반 검색·LLM 으로 검색어 이해와 관련성을 높이고 있고[8], 시애틀 ML 조직은 LLM 으로 상품 정보를 읽어 검색·광고·추천에 넣습니다.[7] 이런 변경의 효과를 판정하려면 모델이 무엇을 바꾸는지 알아야 합니다.",
+   "actually": {
+    "items": [
+     "**오프라인 지표와 온라인 결과 잇기** — 모델 팀은 NDCG 같은 순위 지표로 새 모델을 고르고, 실제 효과는 A/B 실험의 전환으로 본다. 둘이 엇갈릴 때 왜인지 찾는 것이 이 자리의 일이다 {추론}.[24]",
+     "**위치 치우침** — 클릭 기록으로 학습한 모델은 '위에 있어서 눌린 것'을 배운다. 이를 바로잡는 방법(반사실 학습)이 있다.[23]",
+     "**학습 목표** — 순위 모델(LambdaMART 등)은 순서를 맞추는 목표로 학습한다. 무엇을 정답(클릭·구매·체류)으로 삼느냐가 결과를 바꾼다.[25]",
+     "**LLM 이 하는 일** — 검색어 뜻 풀기, 상품 정보 정리, 관련성 판정. 사람 대신 LLM 이 매긴 관련도를 평가에 쓸 때 그 판정이 사람과 맞는지 따로 확인한다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 상품 다섯 개, 순서만 바꿨을 때 NDCG (직접 돌린 출력)",
+     "body": "관련도 3인 상품을 1위로 올리자 NDCG@5 가 0.706 → 0.990 으로 뛰었습니다. 1위의 가중치는 1.00, 5위는 0.39 라 **위쪽 순서가 점수를 좌우**합니다.[24] 온라인 실험에서도 위쪽 몇 칸의 변화가 클릭을 크게 바꿉니다 {추론}.\n\n```\n지금 순위 NDCG@5 = 0.706\n새 순위  NDCG@5 = 0.990\n1위 할인 1.00 · 5위 할인 0.39\n```",
+     "lang": "python",
+     "code": "import math\n# 검색어 '노트북' 결과 5개의 관련도(0~3, 사람이 매긴 등급)\ndef dcg(rels):\n    return sum((2 ** r - 1) / math.log2(i + 2) for i, r in enumerate(rels))\ndef ndcg(rels):\n    return dcg(rels) / dcg(sorted(rels, reverse=True))\n\nold = [1, 3, 0, 2, 3]   # 지금 순위\nnew = [3, 3, 1, 2, 0]   # 새 모델 순위 (같은 상품, 순서만 다름)\nprint(f\"지금 순위 NDCG@5 = {ndcg(old):.3f}\")\nprint(f\"새 순위  NDCG@5 = {ndcg(new):.3f}\")\n# 1위와 5위를 바꾸는 것은 4위와 5위를 바꾸는 것보다 점수가 훨씬 크게 움직인다\nprint(f\"1위 할인 {1/math.log2(2):.2f} · 5위 할인 {1/math.log2(6):.2f}\")"
+    }
+   ],
+   "how_far": "모델을 직접 학습시키는 것은 ML 엔지니어 몫입니다. 이 자리는 **어떤 모델 변경이 어떤 손님 행동을 바꿀지 가설을 세우고, 오프라인 점수와 실험 결과가 어긋날 때 이유를 찾는 것**까지입니다 {추론}.",
+   "refs": [
+    6,
+    7,
+    8,
+    23,
+    24,
+    25
+   ],
+   "study": [
+    "iir-book",
+    "burges-lambdamart",
+    "joachims-ultr",
+    "ai-powered-search"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "10+ years experience as a data scientist/analyst in customer-facing technology companies",
+   "short": "손님이 직접 쓰는 서비스에서 10년 넘게 데이터 분석·과학을 한 경력이 필요하다.",
+   "why": "공고 직급이 Lv.7(Senior Staff)입니다.[1] 같은 조직 미국 공고의 Staff 랭킹 엔지니어가 7년 이상이었던 것과 비교하면 한 단계 위 자리입니다.[8] 'customer-facing'(손님이 직접 쓰는) 이라고 못박은 것은 내부 운영 분석보다 **제품 실험 경험**을 보겠다는 뜻으로 읽힙니다 {추론}.",
+   "how_far": "연차보다 **'내 분석·실험으로 제품 결정이 바뀐 사례'를 여러 개 말할 수 있느냐**가 실제 기준입니다. 공고는 직급·업무 범위가 경력에 따라 바뀔 수 있다고 적었습니다.[1]",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Expertise in experimentation and statistics",
+   "short": "A/B 실험과 통계 — 이 자리의 핵심 기술이다. '전문가 수준'을 요구한다.",
+   "why": "쿠팡 실험 플랫폼은 실험마다 지표 수백 개를 계산하고 p값을 날마다 그립니다.[2] 판매자 이름 실험 결과 화면도 누적 평균의 차이와 p값 선으로 읽게 되어 있습니다.[2][3] 수치가 이렇게 많으면 '유의하다'의 함정을 아는 사람이 판정해야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**비율 지표의 분산** — 사용자로 군을 나눴는데 지표가 '검색당 클릭'이면 검색끼리 독립이 아니다. 델타 방법으로 분산을 계산한다(아래 예시).[18]",
+     "**분산 줄이기** — CUPED.[19]",
+     "**SRM** — 군 크기가 계획과 다르면 결과를 믿지 않는다.[20]",
+     "**누적 p값 엿보기** — 날마다 p값을 보고 멈추면 거짓 양성이 늘어난다. 기간을 미리 정하거나 순차 검정을 쓴다.[17]",
+     "**여러 지표·여러 군** — 지표 수백 개 중 몇 개는 우연히 유의하다. 성공 지표를 미리 하나로 정해 둔다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "검색 CTR 을 검색 단위로 계산하면 표준오차를 작게 본다 (가상 실험, 직접 돌린 출력)",
+     "body": "사용자 5,000명씩, 20%는 검색을 아주 많이 하는 사람으로 만든 가상 실험입니다. 검색 한 번을 독립으로 보면 표준오차가 0.00197, 사용자 단위 델타 방법으로는 0.00224 — **12% 작게** 봅니다. 이 예에서는 둘 다 유의하지만, 경계에 있는 실험이면 틀린 쪽이 '유의함'을 잘못 냅니다.[18]\n\n```\n검색 단위(틀림)  | CTR A 0.2852 B 0.2917 | 표준오차 0.00197 | z =  2.31\n델타 방법      | CTR A 0.2852 B 0.2917 | 표준오차 0.00224 | z =  2.07\n```",
+     "lang": "python",
+     "code": "import random, math\nrandom.seed(7)\n# 사용자 단위로 나눈 실험. 검색 CTR = 클릭 수 / 검색 수 (비율 지표)\ndef sim(n_users, lift):\n    rows = []\n    for _ in range(n_users):\n        heavy = random.random() < 0.2          # 20% 는 검색을 많이 하는 사람\n        searches = random.randint(20, 60) if heavy else random.randint(1, 5)\n        p = (0.25 if heavy else 0.40) * (1 + lift)\n        clicks = sum(random.random() < p for _ in range(searches))\n        rows.append((searches, clicks))\n    return rows\n\ndef naive_se(rows):          # 검색 한 번을 독립 표본으로 본다 (틀린 방법)\n    S = sum(s for s, _ in rows); C = sum(c for _, c in rows); p = C / S\n    return p, math.sqrt(p * (1 - p) / S)\n\ndef delta_se(rows):          # 사용자 단위 비율의 델타 방법\n    n = len(rows)\n    xs = [c for _, c in rows]; ys = [s for s, _ in rows]\n    mx = sum(xs) / n; my = sum(ys) / n\n    vx = sum((x - mx) ** 2 for x in xs) / (n - 1)\n    vy = sum((y - my) ** 2 for y in ys) / (n - 1)\n    cxy = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / (n - 1)\n    r = mx / my\n    var = (vx - 2 * r * cxy + r * r * vy) / (n * my * my)\n    return r, math.sqrt(var)\n\na = sim(5000, 0.0); b = sim(5000, 0.02)\nfor name, f in [(\"검색 단위(틀림)\", naive_se), (\"델타 방법\", delta_se)]:\n    pa, sa = f(a); pb, sb = f(b)\n    z = (pb - pa) / math.sqrt(sa ** 2 + sb ** 2)\n    print(f\"{name:10} | CTR A {pa:.4f} B {pb:.4f} | 표준오차 {sa:.5f} | z = {z:5.2f}\")"
+    }
+   ],
+   "level": {
+    "basic": "가설 검정·신뢰구간·표본 크기 계산을 손으로 할 수 있다.",
+    "work": "비율 지표의 델타 방법, CUPED, SRM 점검, 여러 지표 보정을 실제 실험에 적용해 봤다.",
+    "team": "수백 개가 동시에 도는 실험에서 판정 기준을 세우고 남의 분석을 검토한다 — 쿠팡 규모(동시 약 800개)의 실험 문화에 맞는 기준을 만드는 수준.[2]"
+   },
+   "how_far": "공고 표현이 'Expertise' 입니다. 통계 이론보다 **실제 실험에서 틀리기 쉬운 지점(분산·SRM·엿보기·다중 비교)을 알고 막는 것**이 최소선입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    17,
+    18,
+    19,
+    20
+   ],
+   "study": [
+    "kohavi-ko",
+    "deng-delta",
+    "cuped",
+    "srm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong coding skills, including SQL and R/Python",
+   "short": "SQL 로 직접 뽑고, R 이나 파이썬으로 통계·시뮬레이션을 짤 수 있어야 한다.",
+   "why": "쿠팡 실험 지표는 Spark(EMR) 로 계산되고 결과는 RDS 에 쌓입니다.[2] 분석가가 엔지니어를 기다리지 않고 원본에서 직접 뽑아 검증해야 하는 이유입니다 {추론}. 공고 기술 칸도 파이썬을 적었습니다.[1]",
+   "level": {
+    "basic": "JOIN·GROUP BY·윈도우 함수로 검색 깔때기 표를 뽑는다. 파이썬 pandas 로 집계한다.",
+    "work": "날짜 파티션을 타는 쿼리, 사용자 단위로 접은 뒤 비율을 내는 쿼리, 부트스트랩·시뮬레이션 코드.",
+    "team": "수십억 건 로그에서 실험 군·노출을 붙이는 쿼리를 남이 재사용할 수 있게 짜고, 지표 계산을 코드로 검증한다 {추론}."
+   },
+   "how_far": "R 과 파이썬은 '또는'입니다 — 하나면 됩니다.[1] SQL 은 기본으로 봅니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "sql-levelup",
+    "spark-tuning"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience with massive datasets, with an understanding of how to optimize data extraction",
+   "short": "수십억 건 로그에서 필요한 것만 빨리·싸게 뽑는 법을 아는 경험이 필요하다.",
+   "why": "같은 조직은 사용자 행동 기록 수십억 건과 PB(페타바이트) 단위 원본 로그를 다룬다고 적었습니다.[8] 쿠팡 실험 플랫폼도 초기엔 실험 24개 지표 계산에 3시간 가까이 걸렸고, 실험별로 데이터를 나눠 따로 처리하는 식으로 Spark 계산을 줄였습니다.[4]",
+   "actually": {
+    "items": [
+     "**파티션 걸러내기** — 날짜 파티션 컬럼에 조건을 그대로 걸면 그날 것만 읽는다. 컬럼을 함수로 감싸면 전부 읽는다(위 업무 줄 예시의 실행 계획: 색인 검색 vs 전체 훑기).[26]",
+     "**필요한 컬럼만** — 열 단위 저장(Parquet)에서는 고르는 컬럼만 읽는다.[26]",
+     "**먼저 줄이고 붙이기** — 실험 군 표(작다)와 로그(크다)를 붙이기 전에 로그를 사용자·날짜 단위로 먼저 접는다. 작은 표는 방송 조인(broadcast)으로.[26]",
+     "**치우친 키** — 검색이 아주 많은 소수 사용자·검색어가 한 작업에 몰리면 느려진다(skew).[26]",
+     "**실험별로 쪼개기** — 쿠팡은 전체 입력을 한 번에 처리하지 않고 실험별로 나눠 독립 처리했다.[4]"
+    ]
+   },
+   "how_far": "Spark 튜닝 전문가일 필요는 없습니다. **느린 쿼리를 보고 '어디서 전부 읽고 있나'를 찾아 고칠 수 있는 정도**가 최소선입니다 {추론}.",
+   "refs": [
+    4,
+    8,
+    26
+   ],
+   "study": [
+    "spark-tuning",
+    "sql-levelup"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Ability to communicate data concepts simply and succinctly to cross-functional team members, up to the C-suite",
+   "short": "엔지니어·기획자부터 경영진까지, 실험 결과를 짧고 쉽게 설명할 수 있어야 한다.",
+   "why": "검색과 추천이 매출의 절반 넘게를 만드는 조직이라[8] 출시 판정은 경영진의 관심사입니다 {추론}. 쿠팡 실험 수명 주기의 마지막 단계도 '출시 검토'입니다.[3]",
+   "actually": {
+    "items": [
+     "**한 문장 결론부터** — '출시 권함: 검색 후 구매 +0.4%(95% 구간 +0.1~+0.7%), 응답 시간 변화 없음' 처럼 결론·크기·불확실성·가드레일을 한 줄로 {추론}.",
+     "**맞바꿈을 보이기** — 위젯 위치 실험처럼 매출과 경험이 엇갈리면 두 안을 나란히 보여 주고 고르게 한다.[2]",
+     "**매출 아닌 성과도 숫자로** — 판매자 이름 실험의 '재방문 일수'처럼, 매출이 아닌 지표가 왜 중요한지 설명한다.[2]"
+    ]
+   },
+   "how_far": "경영진 보고서의 기본은 '그래서 무엇을 하자'입니다. 통계 용어를 빼고도 불확실성을 전할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    8
+   ],
+   "study": [
+    "storytelling"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Understanding of ML concepts, and how different model configurations affect model outcomes",
+   "short": "모델 설정(학습 목표·특징·임계값)을 바꾸면 결과가 어떻게 달라지는지 이해해야 한다.",
+   "why": "같은 조직 공고들은 실험 전에 데이터 작업으로 특징을 만들고 모델을 학습해 실험한다고 적었습니다.[10] 모델 설정의 차이가 실험 결과의 차이로 이어지므로, 결과를 해석하려면 설정을 읽을 수 있어야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**학습 목표** — 클릭을 맞추게 학습하면 눌리기 쉬운 상품이, 구매를 맞추게 하면 팔리는 상품이 올라온다.[25]",
+     "**학습 데이터의 치우침** — 지금 순위에서 나온 클릭으로 학습하면 지금 순위를 닮는다.[23]",
+     "**오프라인 지표의 한계** — 오프라인 점수가 올라도 온라인 결과가 같이 움직이지 않을 수 있다. 출시 전에 실험으로 확인한다.[27]",
+     "**임계값·후보 수** — 검색 단계에서 몇 개를 넘기느냐(수천 개)가 랭킹 단계가 고를 수 있는 범위를 정한다.[6]"
+    ]
+   },
+   "how_far": "직접 모델을 짜는 수준이 아니라 **'이 설정 변경이 어떤 상품을 올리고 내릴까'를 예상하고 실험으로 확인할 수 있는 수준**입니다 {추론}.",
+   "refs": [
+    6,
+    10,
+    23,
+    25,
+    27
+   ],
+   "study": [
+    "handson-ml",
+    "rules-ml",
+    "burges-lambdamart"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "English fluency",
+   "short": "영어로 일한다 — 같은 검색 조직이 미국(마운틴뷰·시애틀)에도 있어서.",
+   "why": "같은 Search & Discovery 조직의 공고가 미국 마운틴뷰에 있고[8], 시애틀 ML 조직도 검색에 들어가는 모델을 만듭니다.[7] 서울 추천 팀 공고도 글로벌 팀과 긴밀히 일한다며 영어를 요구했습니다.[10]",
+   "how_far": "'fluency' 입니다 — 회의에서 실험 결과를 영어로 설명하고 반론에 답할 수 있어야 합니다. 이력서·면접 일부가 영어일 수 있습니다 {추론}.",
+   "refs": [
+    7,
+    8,
+    10
+   ],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "Experience in e-commerce and/or search",
+   "short": "쇼핑몰이나 검색 서비스에서 일해 본 경험 — 지표와 함정을 이미 알아서 빨리 시작한다.",
+   "why": "커머스 검색은 일반 웹 검색과 달리 결과 다음에 '구매'가 있고, 가격·재고·배송이 순위에 섞입니다. 쿠팡 랭킹도 리뷰·별점·가격을 기준에 넣습니다.[6]",
+   "actually": {
+    "items": [
+     "**커머스 지표** — 검색 후 구매 전환, 검색당 매출, 결과 없음 비율, 재검색 비율 {추론}.",
+     "**검색 고유의 문제** — 동의어·오타, 긴 검색어, 카테고리 의도 파악(공고의 '카테고리/미션 인지 검색').[1][15]",
+     "**순위 평가** — 관련도 등급과 NDCG.[24]"
+    ]
+   },
+   "how_far": "없어도 지원할 수 있는 우대입니다. 검색 경험이 없다면 위 지표와 순위 평가 방법을 작은 예로 설명할 수 있게 준비합니다 {추론}.",
+   "refs": [
+    1,
+    6,
+    15,
+    24
+   ],
+   "study": [
+    "relevant-search",
+    "iir-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Mandarin fluency",
+   "short": "중국어 — 쿠팡이 대만 사업을 키우고 있어 대만 검색·팀과 일할 수 있으면 좋아서.",
+   "why": "쿠팡은 대만을 해외 성장의 핵심 거점으로 삼고 있다고 보도됐습니다.[16] 대만 쇼핑 검색은 중국어(번체) 검색어를 다루므로, 그 언어를 읽을 수 있으면 검색어 분석·결과 점검을 직접 할 수 있습니다 {추론}.",
+   "how_far": "우대 사항입니다. 이 자리가 대만 검색을 맡는지는 공고에 없습니다 {추론}.",
+   "refs": [
+    16
+   ],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "Application Review - Job Fit Interview - Focus Interview – Offer",
+   "short": "전형은 서류 → 직무 적합 면접 → 집중 면접 → 처우 제안 순서다(공고 하단의 전형 안내).",
+   "why": "공고 하단의 전형 안내입니다. 일정·과정은 직무와 사정에 따라 바뀔 수 있고 결과는 지원 때 낸 이메일로 알립니다. 정규직은 수습 12주이고, 직급·업무 범위는 경력에 따라 바뀔 수 있다고 적었습니다.[1]",
+   "how_far": "직무 적합 면접에서는 실험 설계·통계, 집중 면접에서는 지난 실험의 판정 사례를 물을 가능성이 큽니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": []
+  }
+ ],
+ "fit": {
+  "good": [
+   "실험 결과를 보고 '출시하지 말자'고 말해 본 사람 — 쿠팡은 매출이 아닌 지표로도 판정한다[2]",
+   "검색 로그의 위치 효과·결과 없음 같은 함정을 숫자로 찾는 게 즐거운 사람[23]",
+   "지표 정의 한 줄(분자·분모)을 두고 오래 토론할 수 있는 사람[2]"
+  ],
+  "hard": [
+   "10년 이상 경력이 기본 요건이라 주니어는 대상이 아니다[1]",
+   "동시에 약 800개 실험이 도는 곳이라 실험끼리 겹침·지표 정의 차이를 늘 신경 써야 한다[2] {추론}",
+   "미국 조직과 영어로 일하고 시차가 있다[8] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "사용자로 군을 나눈 실험에서 '검색당 클릭률'의 신뢰구간을 어떻게 계산해요?",
+   "a": "비율 지표의 분산 — 요건 '실험과 통계'의 첫 함정.[18]"
+  },
+  {
+   "q": "새 랭킹 모델이 오프라인 NDCG 는 올랐는데 A/B 에서 구매가 그대로예요. 무엇부터 보겠어요?",
+   "a": "오프라인·온라인 지표 잇기 — 업무 다섯째 줄.[24][27]"
+  },
+  {
+   "q": "전환율 5%에서 상대 1% 개선을 가리려면 몇 명이 필요해요? 너무 많으면 어떻게 해요?",
+   "a": "표본 크기와 분산 줄이기·교차 배치.[17][19][21]"
+  },
+  {
+   "q": "실험 군 비율이 50:50 이 아니라 50.6:49.4 로 나왔어요. 결과를 써도 돼요?",
+   "a": "SRM 점검.[20]"
+  },
+  {
+   "q": "매출은 그대로인데 재방문이 늘었다면 출시하겠어요? 경영진에게 어떻게 설명해요?",
+   "a": "쿠팡이 발표에서 든 판매자 이름 실험.[2]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "coupang-stg222",
+   "title": "AWS re:Invent 2022 · Use data analytics to improve product quality & customer satisfaction (STG222)",
+   "by": "Seshu Adunuthula · Aldi Tjahjadi(쿠팡) · Seth Markle(AWS) · 2022",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=DDOPrE8-vAs",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "쿠팡 실험 플랫폼을 쿠팡 사람이 직접 설명한 발표. 25분 무렵부터 — 실험 수명 주기·지표 엔진 설정·누적 계산 방식. 업무 '실험'·'데이터셋' 줄의 회사 근거."
+  },
+  {
+   "id": "coupang-exp-blog",
+   "title": "Coupang Experiment Platform : 지표(Metric) 연산 프레임워크의 변천사",
+   "by": "쿠팡 엔지니어링 블로그 · 2018",
+   "kind": "doc",
+   "url": "https://theteams.kr/teams/8226/post/73236",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "실험 지표 계산이 3시간 → 15분·4시간 주기로 바뀐 과정. 요건 '대용량 데이터 뽑기 최적화'를 쿠팡 사례로."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "A/B 테스트 — 신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 · 에이콘출판 · 2022",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "성공 지표·가드레일·SRM·엿보기 문제까지 온라인 실험의 표준 교과서. 업무 '실험 설계·해석'과 요건 '실험·통계' 전체."
+  },
+  {
+   "id": "deng-delta",
+   "title": "Applying the Delta Method in Metric Analytics",
+   "by": "Alex Deng · Ulf Knoblich · Jiannan Lu · KDD 2018",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1803.06336",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "검색당 클릭률 같은 비율 지표의 분산을 바르게 계산하는 법. 면접 단골."
+  },
+  {
+   "id": "cuped",
+   "title": "Improving the Sensitivity of Online Controlled Experiments by Utilizing Pre-Experiment Data (CUPED)",
+   "by": "Alex Deng 외 · WSDM 2013",
+   "kind": "doc",
+   "url": "https://doi.org/10.1145/2433396.2433413",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "같은 인원으로 더 작은 차이를 가리는 분산 줄이기. 작은 랭킹 개선을 재야 하는 이 자리에 바로 쓰인다."
+  },
+  {
+   "id": "srm",
+   "title": "Diagnosing Sample Ratio Mismatch in Online Controlled Experiments",
+   "by": "Aleksander Fabijan 외 · KDD 2019",
+   "kind": "doc",
+   "url": "https://doi.org/10.1145/3292500.3330722",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "군 크기가 어긋난 실험을 찾고 원인을 가리는 법. '해석' 단계의 첫 점검."
+  },
+  {
+   "id": "airbnb-interleave",
+   "title": "Harnessing the Power of Interleaving and Counterfactual Evaluation for Airbnb Search Ranking",
+   "by": "Airbnb · arXiv 2025",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2508.00751",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "검색 랭킹 실험을 A/B 보다 빨리 하는 교차 배치를 다른 회사가 실제로 쓴 기록."
+  },
+  {
+   "id": "iir-book",
+   "title": "Introduction to Information Retrieval",
+   "by": "Christopher D. Manning · Prabhakar Raghavan · Hinrich Schütze · Cambridge University Press · 2008",
+   "kind": "book",
+   "url": "https://nlp.stanford.edu/IR-book/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "검색 단계·랭킹·평가 지표(NDCG 등)의 기초. 무료 온라인판 8장(평가)부터."
+  },
+  {
+   "id": "relevant-search",
+   "title": "Relevant Search",
+   "by": "Doug Turnbull · John Berryman · Manning · 2016",
+   "kind": "book",
+   "url": "https://www.manning.com/books/relevant-search",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "검색 관련성을 실무에서 어떻게 재고 고치나. 우대 '검색 경험'이 없을 때 가장 빨리 메우는 책."
+  },
+  {
+   "id": "ai-powered-search",
+   "title": "AI-Powered Search",
+   "by": "Trey Grainger · Doug Turnbull · Max Irwin · Manning · 2025",
+   "kind": "book",
+   "url": "https://www.manning.com/books/ai-powered-search",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "학습 기반 랭킹·임베딩 검색·LLM 을 검색에 넣는 법. 업무 'ML 랭킹 모델·LLM' 줄."
+  },
+  {
+   "id": "burges-lambdamart",
+   "title": "From RankNet to LambdaRank to LambdaMART: An Overview",
+   "by": "Chris Burges · Microsoft Research · 2010",
+   "kind": "doc",
+   "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "순위 모델이 무엇을 목표로 학습하는지. '모델 설정이 결과를 어떻게 바꾸나' 요건의 바탕."
+  },
+  {
+   "id": "joachims-ultr",
+   "title": "Unbiased Learning-to-Rank with Biased Feedback",
+   "by": "Thorsten Joachims 외 · WSDM 2017",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "클릭 기록의 위치 치우침과 그 보정. 검색 로그 분석에서 가장 먼저 부딪히는 함정."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "by": "미크 · 한빛미디어",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "CASE·윈도우 함수로 한 번에 집계하고, 느린 쿼리의 원인을 읽는 법. 요건 'SQL'·'데이터 뽑기 최적화'."
+  },
+  {
+   "id": "spark-tuning",
+   "title": "Spark SQL Performance Tuning",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "방송 조인·치우침 처리·파티션. 쿠팡 실험 지표가 도는 Spark 에서 쿼리를 빠르게 하는 공식 안내."
+  },
+  {
+   "id": "handson-ml",
+   "title": "핸즈온 머신러닝 (3판)",
+   "by": "오렐리앙 제롱 · 박해선 옮김 · 한빛미디어 · 2023",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005426230",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "학습 목표·과적합·평가를 한국어로 한 번에. 요건 'ML 개념' 의 최소선."
+  },
+  {
+   "id": "rules-ml",
+   "title": "Rules of Machine Learning",
+   "by": "Martin Zinkevich · Google",
+   "kind": "doc",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "오프라인 지표와 실제 결과가 어긋나는 이유 등 제품 ML 의 경험 규칙. 업무 'ML 랭킹 이해' 줄."
+  },
+  {
+   "id": "storytelling",
+   "title": "Storytelling with Data: A Data Visualization Guide for Business Professionals",
+   "by": "Cole Nussbaumer Knaflic · Wiley · 2015",
+   "kind": "book",
+   "url": "https://www.wiley.com/en-us/storytelling-with-data-a-data-visualization-guide-for-business-professionals-p-9781119002253",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "경영진에게 숫자 하나로 결론을 전하는 그림·문장. 요건 '경영진까지 쉽게 설명'."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "쿠팡 실험 플랫폼 이해하기",
+   "time": "1주",
+   "goal": "쿠팡 실험의 다섯 단계와 지표 엔진·누적 계산 방식을 한 장 그림으로 설명할 수 있다.",
+   "task": "STG222 발표 25분부터 보고, 위 '하루가 틀렸을 때' 예시를 고쳐 실험 기간 30·100·200일에서 세 방식의 비용 표를 만든다.",
+   "resources": [
+    "coupang-stg222",
+    "coupang-exp-blog"
+   ]
+  },
+  {
+   "title": "실험 통계 기본기",
+   "time": "2~3주",
+   "goal": "표본 크기·비율 지표의 분산·SRM·엿보기 문제를 각각 숫자 예로 보인다.",
+   "task": "가상 사용자 1만 명 실험을 만들어 델타 방법·CUPED 적용 전후 표준오차를 비교하고, 군 비율을 일부러 어긋나게 한 뒤 카이제곱으로 SRM 을 잡는다.",
+   "resources": [
+    "kohavi-ko",
+    "deng-delta",
+    "cuped",
+    "srm"
+   ]
+  },
+  {
+   "title": "검색 로그 분석",
+   "time": "2주",
+   "goal": "검색 깔때기·결과 없음·재검색·위치별 클릭률을 SQL 로 뽑고 위치 효과를 설명한다.",
+   "task": "가상 검색 로그(검색어·노출 순위·클릭·구매)를 만들어 위치별 CTR 곡선과 검색어별 깔때기 표를 SQL 로 뽑고, 날짜 파티션 조건 유무로 실행 계획을 비교한다.",
+   "resources": [
+    "sql-levelup",
+    "iir-book",
+    "joachims-ultr",
+    "spark-tuning"
+   ]
+  },
+  {
+   "title": "랭킹 모델과 평가",
+   "time": "2~3주",
+   "goal": "NDCG 를 계산하고, 학습 목표(클릭·구매)를 바꾸면 어떤 상품이 오르내리는지 예로 보인다.",
+   "task": "가상 상품 50개 × 검색어 20개 관련도 표로 NDCG@10 을 계산하고, LightGBM 등의 랭킹 목표로 클릭 기준·구매 기준 모델을 학습해 상위 결과를 비교한다.",
+   "resources": [
+    "burges-lambdamart",
+    "relevant-search",
+    "ai-powered-search",
+    "handson-ml"
+   ]
+  },
+  {
+   "title": "판정과 보고",
+   "time": "계속",
+   "goal": "실험 하나를 결론·크기·불확실성·가드레일 한 장으로 경영진에게 보고한다.",
+   "task": "2단계의 가상 실험 결과로 한 장짜리 출시 권고문(결론 한 줄 → 그림 하나 → 위험)을 영어와 한국어로 쓴다.",
+   "resources": [
+    "storytelling",
+    "rules-ml"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 쿠팡(주) 집계(초봉 약 3,531만 · 평균 약 5,175만)는 물류 현장 인력이 섞인 회사 전체 값이라 **경력 10년 이상 Lv.7 자리와 거리가 멀다**. 같은 조직 미국 Staff 공고는 기본급 15.2만~27.7만 달러를 적었다",
+  "rows": [
+   {
+    "label": "쿠팡(주) 신입 초봉",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값. 직군 구분이 없고 기준일 표기가 없다 [13]"
+   },
+   {
+    "label": "쿠팡(주) 직원 평균",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균. 물류·현장 직원이 많은 회사 값이라 경력 데이터 과학자 연봉으로 읽으면 안 된다 [13]"
+   },
+   {
+    "label": "쿠팡 Inc. 전 직원 보수 중간값",
+    "value": "3만 3,831달러 / 년",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "CEO 를 뺀 전 세계 직원의 가운데 값을 달러로 바꾼 것 [14]"
+   },
+   {
+    "label": "같은 조직 미국 Staff 랭킹 엔지니어 기본급",
+    "value": "15.2만~27.7만 달러 / 년 (+ 상여 0~20%)",
+    "basis": "공고 · 미국 마운틴뷰 · 2026년",
+    "note": "같은 Search & Discovery 조직의 미국 공고가 적은 Staff 등급 기본급 범위. 나라·직군이 달라 이 서울 자리의 금액이 아니다 [8]"
+   }
+  ],
+  "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **국내 공시 숫자 없음**. 위 값은 모두 경력·직군이 섞인 값이고 평균은 초봉이 아니다. 공고는 직급·업무 범위가 경력에 따라 바뀔 수 있고 제안 전에 알린다고 적었다 [1]. 금액은 그 무렵 협의에서 확인한다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "주 5일 유연근무제, 라이프스타일에 따른 자율 책임근무"
+   },
+   {
+    "name": "휴가",
+    "detail": "사유 없는 연차 사용"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 대상 실손보험"
+   },
+   {
+    "name": "쇼핑",
+    "detail": "쿠팡 구매금액의 5% 캐시백 (최대 연 400만원)"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조휴가"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "한강뷰 카페테리아, 휴게 공간"
+   },
+   {
+    "name": "배움·동호회",
+    "detail": "사내 기술 공유·스터디, 동호회와 동호회비 지원"
+   }
+  ],
+  "note": "이 공고에는 복리후생 칸이 없다 [1]. 위 항목은 같은 쿠팡(주) 서울 기술 조직(Interstellar) 공고의 원티드 '혜택 및 복지'다 [15]. 쿠팡 채용 사이트 'Why Coupang' 도 유연근무·단체 보험·교육·카페테리아를 그룹 공통 복지로 적었다(금액 없음) [12]. 이 자리에 그대로 적용되는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 서울 사무소 (이스트폴 타워)",
+  "address": "서울특별시 광진구 아차산로 412 (이스트폴 타워)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 [11]",
+  "note": "공고 근무지는 'Seoul, South Korea' 뿐이다 [1]. 쿠팡 채용 사이트는 서울 사무소로 이스트폴 타워(아차산로 412)와 로켓랩(강남구 역삼동)을 든다 [11]. 검색 조직이 어느 건물인지는 공고에 없어 대표 사무소를 적었다 {추론}."
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior Staff Data Scientist (Search and Discovery)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8239021",
+   "kind": "posting",
+   "date": "2026-10-12",
+   "note": "그린하우스 원문(영문) — 조직 소개(검색·추천이 상품 발견의 70% 넘게), 업무 5·요건 7·우대 2, 전형(서류 → 직무 적합 → 집중 → 제안), 수습 12주. 그린하우스 API: 첫 게시 10-12·갱신 11-23, 부서 Search and Discovery, 직급 Lv. 7-I. 연봉·복지 칸 없음"
+  },
+  {
+   "n": 2,
+   "title": "AWS re:Invent 2022 · Use data analytics to improve product quality & customer satisfaction (STG222) — 발표 영상",
+   "url": "https://www.youtube.com/watch?v=DDOPrE8-vAs",
+   "kind": "company",
+   "date": "2022-12",
+   "note": "쿠팡 데이터 플랫폼 책임자·데이터 인텔리전스 디렉터 발표(25분부터, 공식 자막 전부 읽음) — 이용자 1,800만, 레이크 32PB·웨어하우스 2PB, 데이터 사용자 1,300명, 작업 12만/일, 로그 710만/분, 동시 실험 약 800개, 실험 5단계(설계가 가장 중요), 라이브 위젯 5·10번째 자리 실험, 리뷰 판매자 이름 실험(재방문 일수·p값), 설정·SDK·Kafka·S3·Spark on EMR·RDS 구조, 지표·이벤트 설정 두 개로 도는 지표 엔진, 증분·전체·상태 저장 누적 계산"
+  },
+  {
+   "n": 3,
+   "title": "AWS re:Invent 2022 · STG222 발표 자료(PDF)",
+   "url": "https://d1.awsstatic.com/events/Summits/reinvent2022/STG222_Using-data-analytics-to-improve-product-quality-and-customer-satisfaction.pdf",
+   "kind": "company",
+   "date": "2022-12",
+   "note": "19쪽 데이터 플랫폼 규모(31.5PB·데이터셋 15만·인증 5,500·EMR 노드 5.5만/일·쿼리 50만/일), 22쪽 실험 수명 주기(설계 관문 → 무작위·기록 → 경보 → 셀프 분석 → 출시 검토), 27쪽 구조, 29~31쪽 재방문 일수·누적 계산"
+  },
+  {
+   "n": 4,
+   "title": "쿠팡 엔지니어링 블로그 · Coupang Experiment Platform : 지표(Metric) 연산 프레임워크의 변천사",
+   "url": "https://theteams.kr/teams/8226/post/73236",
+   "kind": "company",
+   "date": "2018",
+   "note": "2014년 중순 실험 플랫폼 시작, 초기 실험 24개 지표 계산 약 3시간·실험끼리 묶여 일부만 재계산 불가, 2016 Spark — 주요 지표 15분·PV/판매 4시간, 실험별로 나눠 독립 처리, 2018 설정 가능한 지표 엔진. 원문(Medium·재게재)이 자동 접속을 막아 검색 결과 요약으로 확인"
+  },
+  {
+   "n": 5,
+   "title": "쿠팡 엔지니어링 블로그 · Fueling the Coupang search engine (검색 색인 플랫폼의 진화)",
+   "url": "https://medium.com/coupang-tech/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+   "kind": "company",
+   "date": "2020",
+   "note": "랭킹의 바탕은 믿을 수 있는 데이터와 랭킹 신호, 수백만 상품·PB 단위 행동 데이터, 랭킹 신호를 Hive 표에서 색인 플랫폼(Indexing Platform 2.0)으로 — 랭킹 엔지니어는 신호 논리에 집중. 원문이 자동 접속을 막아 검색 결과 요약으로 확인"
+  },
+  {
+   "n": 6,
+   "title": "About Coupang · The Coupang AI & Data Science students learned about",
+   "url": "https://www.aboutcoupang.com/?p=1364",
+   "kind": "company",
+   "date": "2024-06-03",
+   "note": "검색 조직 랭킹 엔지니어 발표 — 검색은 수천만 상품에서 수천 개를 고르는 검색 단계와 관련성·리뷰·별점·가격 등 100개 넘는 기준의 랭킹 단계"
+  },
+  {
+   "n": 7,
+   "title": "About Coupang · Meet Behdad Dehghani: Scaling AI at Coupang",
+   "url": "https://www.aboutcoupang.com/?p=3687",
+   "kind": "company",
+   "date": "2026-03-11",
+   "note": "시애틀 ML 디렉터 — 검색·추천 시스템, LLM 으로 상품 정보 이해, 모델이 검색 결과·광고·추천에 들어간다"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Careers · Senior Staff Ranking Engineer, Personalization (Search & Discovery)",
+   "url": "https://www.coupang.jobs/en/jobs/7977000/senior-staff-ranking-engineer-personalization/",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 조직 미국 마운틴뷰 — 매주 수백만 명 검색·3분의 1 넘게 구매, 매출 절반 넘게가 검색+추천, 행동 기록 수십억 건·PB 로그, 트랜스포머·임베딩 검색·LLM, Spark·Airflow·Kubeflow·MLflow, 7년 이상, Staff 기본급 15.2만~27.7만 달러·상여 0~20%"
+  },
+  {
+   "n": 9,
+   "title": "원티드 · [쿠팡이츠] Machine Learning Engineer (Coupang Eats)",
+   "url": "https://www.wanted.co.kr/wd/365897",
+   "kind": "posting",
+   "note": "마감된 공고 — 쿠팡이츠 검색 조직, 검색 단계부터 랭킹까지, A/B 테스트 설계·분석, 한국·일본"
+  },
+  {
+   "n": 10,
+   "title": "Built In · [Search & Discovery] Staff, Machine Learning Engineer (Ranking/Recommendations)",
+   "url": "https://builtin.com/job/search-discovery-staff-machine-learning-engineer-ranking-recommendations/6770249",
+   "kind": "posting",
+   "date": "2026-03-24",
+   "note": "서울, 내려간 공고 — 추천 팀이 추천 품질·카테고리 페이지 상품 순위·리뷰 순위, ML 특징용 데이터 작업·학습·출시 전 실험, 글로벌 팀 협업·영어"
+  },
+  {
+   "n": 11,
+   "title": "Coupang Careers · Seoul",
+   "url": "https://www.coupang.jobs/en/locations/seoul/",
+   "kind": "company",
+   "note": "서울 사무소 — 이스트폴 타워(광진구 아차산로 412)·로켓랩(강남구 역삼동), 가까운 역 구의(같은 회사 다른 풀이에서 읽은 값)"
+  },
+  {
+   "n": 12,
+   "title": "Coupang Careers · 왜 쿠팡인가(문화와 복지제도)",
+   "url": "https://www.coupang.jobs/kr/why-coupang/",
+   "kind": "company",
+   "note": "그룹 공통 안내 — 단체상해보험·휴가·교육·카페테리아·유연근무, 금액 없음"
+  },
+  {
+   "n": 13,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "쿠팡(주) 값, 기준일 표기 없음. 사이트가 자동 접속을 막아 같은 회사 다른 풀이에서 확인한 값"
+  },
+  {
+   "n": 14,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 보수 중간값(달러 환산) — 같은 회사 다른 풀이에서 읽은 값"
+  },
+  {
+   "n": 15,
+   "title": "원티드 · 쿠팡 Staff Backend Engineer (Interstellar)",
+   "url": "https://www.wanted.co.kr/wd/391136",
+   "kind": "posting",
+   "date": "2026-10-08",
+   "note": "같은 쿠팡(주) 서울 기술 조직의 회사 직접 공고 — '혜택 및 복지' 칸, 근무지 서울 광진구"
+  },
+  {
+   "n": 16,
+   "title": "Korea Times · Coupang turns to Taiwan as key hub for global growth",
+   "url": "https://www.koreatimes.co.kr/business/companies/20260919/coupang-turns-to-taiwan-as-key-hub-for-global-growth",
+   "kind": "news",
+   "date": "2026-09-19"
+  },
+  {
+   "n": 17,
+   "title": "Kohavi · Tang · Xu · Trustworthy Online Controlled Experiments (Cambridge, 2020)",
+   "url": "https://experimentguide.com/",
+   "kind": "reference",
+   "note": "다른 회사(Microsoft·Google·LinkedIn) 경험 — 성공 지표·가드레일·표본 크기·엿보기·다중 비교"
+  },
+  {
+   "n": 18,
+   "title": "Deng · Knoblich · Lu · Applying the Delta Method in Metric Analytics (KDD 2018)",
+   "url": "https://arxiv.org/abs/1803.06336",
+   "kind": "reference",
+   "note": "다른 회사(Microsoft) — 사용자로 나눈 실험에서 CTR 같은 비율 지표의 분산"
+  },
+  {
+   "n": 19,
+   "title": "Deng 외 · Improving the Sensitivity of Online Controlled Experiments by Utilizing Pre-Experiment Data (WSDM 2013)",
+   "url": "https://doi.org/10.1145/2433396.2433413",
+   "kind": "reference",
+   "note": "CUPED — 실험 전 데이터로 분산 줄이기"
+  },
+  {
+   "n": 20,
+   "title": "Fabijan 외 · Diagnosing Sample Ratio Mismatch in Online Controlled Experiments (KDD 2019)",
+   "url": "https://doi.org/10.1145/3292500.3330722",
+   "kind": "reference",
+   "note": "군 비율 불일치(SRM) 찾기와 원인"
+  },
+  {
+   "n": 21,
+   "title": "Harnessing the Power of Interleaving and Counterfactual Evaluation for Airbnb Search Ranking",
+   "url": "https://arxiv.org/abs/2508.00751",
+   "kind": "reference",
+   "date": "2025",
+   "note": "다른 회사(Airbnb) — 검색 랭킹 실험에 교차 배치"
+  },
+  {
+   "n": 22,
+   "title": "Walmart Global Tech · Driving faster experimentation through interleaving in Walmart Search",
+   "url": "https://tech.walmart.com/content/walmart-global-tech/en_us/blog/post/driving-faster-experimentation-through-interleaving-in-walmart-search.html",
+   "kind": "reference",
+   "note": "다른 회사(Walmart) — 검색 실험을 빨리 하려고 교차 배치"
+  },
+  {
+   "n": 23,
+   "title": "Joachims 외 · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "kind": "reference",
+   "note": "클릭 기록의 위치 치우침과 보정"
+  },
+  {
+   "n": 24,
+   "title": "Wikipedia · Discounted cumulative gain (NDCG)",
+   "url": "https://en.wikipedia.org/wiki/Discounted_cumulative_gain",
+   "kind": "reference",
+   "note": "관련도 등급·위치 할인 log2(i+1)·이상적 순서로 나눈 정규화"
+  },
+  {
+   "n": 25,
+   "title": "Burges · From RankNet to LambdaRank to LambdaMART: An Overview (Microsoft Research, 2010)",
+   "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/",
+   "kind": "reference",
+   "note": "순위 학습 목표"
+  },
+  {
+   "n": 26,
+   "title": "Apache Spark · Spark SQL Performance Tuning",
+   "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+   "kind": "reference",
+   "note": "방송 조인·치우침 처리(AQE)·파티션 — 공식 문서"
+  },
+  {
+   "n": 27,
+   "title": "Google · Rules of Machine Learning (Martin Zinkevich)",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "kind": "reference",
+   "note": "오프라인 지표와 실제 목표의 차이 등 제품 ML 경험 규칙"
+  }
+ ],
+ "caveat": "쿠팡 검색 조직이 검색 실험을 어떻게 판정하는지(성공 지표·교차 배치 사용 여부)를 직접 설명한 글·발표는 찾지 못했습니다. 회사 근거는 이 공고와 같은 조직 공고, 쿠팡 실험 플랫폼 발표(AWS re:Invent 2022 — 영상 자막을 다 읽음)와 2018년 블로그, 검색 색인 블로그(2020), 회사 소개 글입니다. 쿠팡 기술 블로그 두 글은 자동 접속이 막혀 검색 결과 요약으로만 확인했습니다. 델타 방법·CUPED·SRM·교차 배치·NDCG 는 다른 회사·공개 문서로 '보통 이런 것'을 보였고, 예시 숫자는 모두 가상 값입니다. 발표 숫자(동시 실험 약 800개 등)는 2022년 기준입니다."
+}

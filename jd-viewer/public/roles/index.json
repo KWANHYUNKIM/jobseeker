@@ -61,6 +61,7 @@
   "ats-greenhouse:coupang:8345323": "coupang-ppe-data-engineer-bengaluru",
   "ats-greenhouse:coupang:8248619": "coupang-retail-ops-planning-ai-manager",
   "ats-greenhouse:coupang:8258122": "coupang-rocket-content-editor",
+  "ats-greenhouse:coupang:8239021": "coupang-search-discovery-senior-staff-ds",
   "ats-greenhouse:coupang:8207116": "coupang-security-automation-engineer-seattle",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
@@ -870,6 +871,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 22
+  },
+  {
+   "id": "coupang-search-discovery-senior-staff-ds",
+   "company": "쿠팡",
+   "role": "Senior Staff Data Scientist",
+   "jobs": [
+    "ats-greenhouse:coupang:8239021"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
   },
   {
    "id": "coupang-security-automation-engineer-seattle",
