@@ -1,0 +1,1168 @@
+{
+  "id": "42dot-tts-deep-learning-engineer",
+  "company": "포티투닷",
+  "role": "Deep Learning Engineer (음성 합성 개발)",
+  "team": "Gleo AI · 음성 합성(TTS)",
+  "jobs": [
+    "ats-ashby:42dot:c184cf35-51e2-4e80-87bc-579089f07472"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "차량용 음성 AI 에이전트 **글레오 AI**의 '입' — 답을 사람처럼 읽어 주는 음성 합성(TTS) 모델을 만들고, 차 안의 칩과 서버에서 **빠르고 가볍게** 돌게 다듬습니다.[1][2]",
+    "env": "2026년 5월 신형 그랜저부터 실제 차에 실린 제품입니다. 급한 일은 차 안(온디바이스), 무거운 계산은 클라우드에서 나눠 하는 구조이고, 음성 인식·합성은 자체 개발이라고 밝혔습니다.[2][4]",
+    "oneline": "논문 쓰는 연구자와 배포하는 엔지니어 사이. **TTS 지식 + 양자화·TensorRT·지연 시간**이 중심입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "On-device / Server 환경을 위한 TTS 모델 최적화",
+      "short": "같은 목소리를 차 안의 작은 칩에서도, 서버의 GPU에서도 제시간에 나오게 다듬는 일.",
+      "why": "포티투닷은 글레오 AI를 **하이브리드 구조**로 설명했습니다 — 지연이 중요한 차량·시스템 기능은 차 안(온디바이스)에서, 계산이 큰 일은 클라우드에서 처리합니다.[2] 앞으로 온디바이스 AI 비중을 늘리겠다고도 했습니다.[4] 그래서 TTS 모델 하나를 두 환경에 맞춰야 합니다.",
+      "actually": {
+        "intro": "TTS 를 빠르게 만들 때 실제로 손대는 자리입니다. 포티투닷이 어떤 칩·어떤 모델을 쓰는지는 공개되지 않았습니다.",
+        "items": [
+          "**속도 재기** — 실시간 비율(RTF, 만드는 데 걸린 시간 ÷ 만든 음성 길이)을 잰다. F5-TTS 논문은 10초 음성 기준 RTX 3090에서 RTF 0.15(16단계)를 적었다.[9]",
+          "**단계 수 줄이기** — Flow Matching 계열은 계산을 몇 번 반복하느냐(NFE)가 곧 속도다. Matcha-TTS 는 2·4·10단계를 비교했고 단계를 줄일수록 빨라졌다.[10]",
+          "**보코더(멜 그림 → 소리) 고르기** — HiFi-GAN 은 V100 GPU에서 실시간의 167.9배, 작은 판은 CPU에서 13.4배 빠르다고 적었다.[12]",
+          "**정밀도 낮추기** — 숫자를 32비트에서 16·8비트로 줄여 메모리와 시간을 아낀다(다음 줄).[14]",
+          "**엔진 변환** — PyTorch 모델을 ONNX 로 내보내고, NVIDIA 칩이면 TensorRT 엔진으로 굽는다.[14][15]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "RTF 와 '첫 소리'는 다른 숫자다 (직접 돌린 출력)",
+          "body": "10초 음성을 1.5초에 만들면 RTF 0.15 입니다. 그래도 통째로 다 만든 뒤 틀면 사용자는 1.5초를 기다립니다. 그래서 차 안 대화에서는 RTF 와 함께 **첫 소리까지 걸린 시간**을 따로 잽니다. {추론}",
+          "lang": "python",
+          "code": "print(\"RTF\", 1.5 / 10.0)\n# RTF 0.15"
+        }
+      ],
+      "how_far": "어떤 칩에 얼마의 메모리·시간을 쓸지는 제품·플랫폼 쪽과 정합니다 {추론}. 이 자리는 **그 예산 안에서 음질을 덜 잃고 속도를 맞추는** 사람입니다. 최소선은 '모델 하나를 ONNX → TensorRT 로 바꿔 RTF·메모리를 재고 음질 변화를 들어 비교한 경험'입니다. {추론}",
+      "refs": [
+        2,
+        4,
+        9,
+        10,
+        12,
+        14,
+        15
+      ],
+      "study": [
+        "trt-quant",
+        "ort-quant",
+        "matcha",
+        "f5tts",
+        "lec-cs336-inference"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Quantization 기반 모델 경량화 및 성능 최적화",
+      "short": "모델 숫자를 32비트에서 8비트 같은 작은 단위로 줄여, 메모리와 계산을 아끼되 음질은 지키는 일.",
+      "why": "차 안의 칩은 서버 GPU보다 메모리와 전력이 적습니다 {추론}. 숫자 하나를 8비트로 줄이면 무게 파일이 4분의 1이 됩니다(아래 출력). 온디바이스 비중을 늘리겠다는 계획[4]과 바로 이어지는 일입니다.",
+      "actually": {
+        "intro": "양자화(quantization, 실수를 정수 칸에 반올림해 담기)의 실제 선택지입니다.",
+        "items": [
+          "**형식** — TensorRT 는 INT8 · FP8 · INT4(가중치만) · FP4 를 지원한다.[14]",
+          "**학습 뒤(PTQ) vs 학습 중(QAT)** — PTQ 는 대표 데이터를 흘려 보정(calibration)해 눈금을 정하고, 그 눈금을 Q/DQ 노드(양자화·복원 표시)로 모델에 박는다.[14]",
+          "**정적 vs 동적** — 동적은 눈금을 실행 중에 계산해 보정 데이터가 필요 없지만 조금 느리다. ONNX Runtime 은 트랜스포머·RNN 에는 동적, CNN 에는 정적을 권한다.[15]",
+          "**눈금 단위** — TensorRT 는 활성값은 텐서 하나에 눈금 하나, 가중치는 채널마다 눈금을 쓰라고 권한다.[14] 튀는 값 하나가 있으면 채널별 눈금이 훨씬 덜 틀린다(아래 출력).",
+          "**어디를 빼나** — 음질에 민감한 층(보코더 끝, 음높이 예측)을 16비트로 남기고 나머지만 줄이는 식으로 섞는다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "눈금 하나 vs 채널마다 눈금 (직접 돌린 출력)",
+          "body": "256×256 가중치에 튀는 값 1.2 를 하나 넣고 INT8 로 줄였다가 되돌린 평균 오차입니다. 크기는 4분의 1이 됩니다.",
+          "lang": "python",
+          "code": "import numpy as np\nrng = np.random.default_rng(0)\nw = rng.normal(0, 0.05, size=(256, 256)).astype(np.float32)\nw[0, 0] = 1.2  # 튀는 값 하나\n\ndef q_per_tensor(x):\n    s = np.abs(x).max() / 127\n    return np.clip(np.round(x / s), -127, 127) * s\n\ndef q_per_channel(x):\n    s = np.abs(x).max(axis=1, keepdims=True) / 127\n    return np.clip(np.round(x / s), -127, 127) * s\n\nfor name, f in [(\"per-tensor\", q_per_tensor), (\"per-channel\", q_per_channel)]:\n    print(f\"{name:11s} 평균 오차 {np.abs(f(w) - w).mean():.6f}\")\nprint(\"FP32\", w.nbytes // 1024, \"KB → INT8\", w.size // 1024, \"KB\")\n# per-tensor  평균 오차 0.002376\n# per-channel 평균 오차 0.000308\n# FP32 256 KB → INT8 64 KB"
+        }
+      ],
+      "how_far": "INT8 로 바꾸는 명령 자체는 어렵지 않습니다. 이 자리가 보는 것은 **줄인 뒤 음질이 얼마나 나빠졌는지 재고(MOS·발음 오류율), 어느 층을 남길지 고르는 판단**입니다. {추론}",
+      "refs": [
+        4,
+        14,
+        15
+      ],
+      "study": [
+        "trt-quant",
+        "ort-quant",
+        "pt-quant"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "실시간(streaming) 음성 합성 시스템 개발 및 latency 최적화",
+      "short": "문장을 다 만들기 전에 앞부분부터 소리를 내보내, 말을 걸면 곧바로 대답이 들리게 하는 일.",
+      "why": "포티투닷은 글레오 AI의 TTS 를 '끊김 없는 대화'를 위한 **초저지연 응답**으로 소개했습니다.[2] 운전 중 대화에서는 대답이 늦으면 다시 말하거나 화면을 보게 됩니다 {추론}.",
+      "actually": {
+        "intro": "공개된 스트리밍 TTS 의 보통 구조입니다(알리바바 CosyVoice 2). 포티투닷의 구조는 공개되지 않았습니다.[8]",
+        "items": [
+          "**조각 단위로 만들기** — 텍스트 토큰 5개를 받으면 음성 토큰 15개를 내는 식(5:15)으로 텍스트와 음성을 섞어 앞에서부터 만든다.[8]",
+          "**뒤를 안 보는 계산** — 멜 그림을 만드는 Flow Matching 을 '조각만 보는(chunk-aware causal)' 방식으로 바꿔 조각마다 바로 낸다.[8]",
+          "**첫 소리 지연 공식** — 첫 조각의 토큰 수 × (언어 모델 + Flow Matching + 보코더가 토큰 하나에 쓰는 시간). 대화라면 앞에 LLM 이 답 글자를 만드는 시간이 더 붙는다.[8]",
+          "**음질 손해 확인** — CosyVoice 2 는 스트리밍과 한꺼번에 만들기의 품질 차이가 거의 없다고 보고했다.[8]",
+          "**조각 이음매** — 조각 사이에 '틱' 소리·끊김이 없도록 겹쳐 이어 붙이고, 재생 버퍼가 비지 않게 다음 조각을 미리 만든다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "첫 조각만 먼저 내면 (직접 돌린 출력, 시간은 가정한 값)",
+          "body": "음성 토큰이 초당 25개(CosyVoice 2)[8]이고 토큰 하나에 총 16ms가 든다고 가정했습니다.",
+          "lang": "python",
+          "code": "d = 0.010 + 0.004 + 0.002  # 토큰 하나당 LM·flow·보코더(초, 가정)\nprint(f\"첫 조각 15토큰(0.6초 분량) 먼저: 첫 소리까지 {15*d*1000:.0f}ms\")\nprint(f\"10초(250토큰) 다 만든 뒤 재생: 첫 소리까지 {250*d*1000:.0f}ms\")\n# 첫 조각 15토큰(0.6초 분량) 먼저: 첫 소리까지 240ms\n# 10초(250토큰) 다 만든 뒤 재생: 첫 소리까지 4000ms"
+        }
+      ],
+      "flows": [
+        {
+          "caption": "대답 한 마디가 스피커에 닿기까지 {추론}[2][8]",
+          "steps": [
+            "음성 인식 · 운전자 말을 글자로",
+            "LLM · 대답 글자를 앞에서부터 생성",
+            "TTS 언어 모델 · 글자 조각 → 음성 토큰",
+            "Flow Matching · 토큰 → 멜 그림 조각",
+            "보코더 · 멜 그림 → 소리 조각, 재생"
+          ],
+          "mine_from": 2
+        }
+      ],
+      "how_far": "같은 Gleo 조직에 LLM 에이전트 공고[16]와 Gleo Core·Gleo Foundation 팀[17], 음성 인식 공고[19]가 따로 있어, LLM 과 음성 인식은 다른 사람 몫으로 보입니다 {추론}. 이 자리는 **글자가 들어온 순간부터 첫 소리까지**를 책임지고, 그 숫자를 측정·분해해 어느 단계가 느린지 말할 수 있어야 합니다. {추론}",
+      "refs": [
+        2,
+        8,
+        16,
+        17,
+        19
+      ],
+      "study": [
+        "cosyvoice2",
+        "f5tts",
+        "lec-elevenlabs"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "다국어 / 다화자 TTS 모델 개발 및 서비스 적용",
+      "short": "한 모델이 여러 언어를 여러 목소리로 말하게 — 한국어 목소리로 영어 노래 제목도 읽게 하는 일.",
+      "why": "이 팀은 이 주제로 논문을 계속 냈습니다. 2023년 CrossSpeech 는 **한 사람 목소리로 다른 언어를 말하게(교차 언어 TTS)** 할 때 목소리가 흐려지는 문제를 다뤘고(ICASSP 2023)[5], 2024년 CrossSpeech++ 는 영어·중국어·일본어·한국어로 넓혔습니다.[6] 차가 여러 나라에 팔리고 현대·기아·제네시스가 같은 글레오 바탕에 브랜드별 성격을 얹는다는 보도도 있습니다.[18]",
+      "actually": {
+        "intro": "이 팀 논문에서 다룬 실제 문제입니다.",
+        "items": [
+          "**언어와 목소리가 엉킨다** — 보통 한 화자는 한 언어로만 녹음돼 있어, 모델이 '이 목소리 = 이 언어'로 외워 버린다.[5]",
+          "**나눠서 만든다** — 화자와 상관없는 부분(발음·억양 흐름)과 화자에 따른 부분(음색·음높이)을 따로 만드는 두 생성기로 나눴다.[5][6]",
+          "**결과** — 기준 모델(FastPitch) 대비 교차 언어 화자 유사도(SMOS)가 2.67 → 3.85 로 올랐다.[5]",
+          "**데이터** — CrossSpeech++ 의 한국어는 6명 14.1시간, 모두 16kHz 로 맞추고 발음 기호(IPA)로 적었다. 학습은 A6000 8장.[6]",
+          "**음역된 글자** — 'pi ttamnunmul' 처럼 로마자로 적힌 한국 노래 제목을 원래 발음으로 읽을지 글자대로 읽을지 고르는 FACTSpeech(Interspeech 2023).[7] 차 안에서 음악 제목·지명을 읽을 때 생기는 문제다 {추론}."
+        ]
+      },
+      "how_far": "새 언어를 붙일 때 데이터를 모으고 발음 규칙(글자 → 발음 기호)을 맞추는 일까지 포함됩니다 {추론}. '서비스 적용'이라 논문 점수보다 **실제 문장에서 틀린 발음을 줄이는 것**이 끝입니다. {추론}",
+      "refs": [
+        5,
+        6,
+        7,
+        18
+      ],
+      "study": [
+        "crossspeech",
+        "crossspeechpp",
+        "factspeech",
+        "hf-audio"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "LLM 및 Flow Matching 기반 최신 TTS 모델 연구 및 개발",
+      "short": "요즘 TTS 의 두 축 — 말을 토큰으로 이어 쓰는 언어 모델과, 잡음을 소리 그림으로 바꾸는 Flow Matching 을 쓰는 일.",
+      "why": "포티투닷은 글레오 AI 의 음성 합성을 '최신 LLM 기반 TTS'라고 밝혔습니다.[2] 팀 소개도 Neural Audio Codec(소리를 토큰으로 바꾸는 압축기)·Speech Language Model 을 빠르게 실험한다고 적었습니다.[1]",
+      "actually": {
+        "intro": "공개된 대표 모델로 본 두 축입니다.",
+        "items": [
+          "**LLM 기반** — 소리를 초당 25개 정도의 음성 토큰으로 바꾸고, 언어 모델이 텍스트 다음에 올 음성 토큰을 하나씩 예측한다. CosyVoice 2 는 Qwen2.5-0.5B 를 바탕으로 썼다.[8]",
+          "**Flow Matching** — 무작위 잡음에서 멜 그림까지 가는 '길'을 배워, 몇 번의 계산(NFE)으로 따라간다. Matcha-TTS 는 이를 최적 수송(OT-CFM)으로 곧게 펴 적은 단계로도 좋은 소리를 냈다.[10]",
+          "**둘을 이어서** — CosyVoice 2 는 언어 모델이 낸 토큰을 Flow Matching 이 멜 그림으로 바꾸고 보코더가 소리로 바꾼다.[8]",
+          "**정렬 없이** — F5-TTS 는 글자-소리 정렬기·길이 예측기 없이 Flow Matching 만으로 학습했고(10만 시간), 전체 길이는 글자 수 비율로 정한다.[9]",
+          "**그 전 세대** — 이 팀의 2023~2024 논문은 FastPitch(길이·음높이를 예측해 한 번에 멜 그림을 내는 모델)를 바탕으로 했다.[5][7]"
+        ]
+      },
+      "how_far": "'연구 및 개발'이지만 팀 소개는 가능성이 확인된 기술을 **실제 서비스로 옮기는 것**을 강조합니다.[1] 최신 논문 모델을 공개 코드로 돌려 보고, 우리 데이터·지연 예산에서 쓸 만한지 판단할 수 있으면 됩니다. {추론}",
+      "refs": [
+        1,
+        2,
+        5,
+        7,
+        8,
+        9,
+        10
+      ],
+      "study": [
+        "cosyvoice2",
+        "f5tts",
+        "matcha",
+        "lec-diffusion"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "최신 생성 모델 기반의 음성 합성 데이터 구축 및 품질 개선",
+      "short": "녹음만으로 모자란 학습 데이터를 생성 모델로 늘리고, 잘못 들린 발음·잡음을 걸러 데이터를 다듬는 일.",
+      "why": "팀 소개는 데이터 구축 → 모델 학습 → 추론 최적화 → 음질·발음 개선 → 서비스 적용을 한 팀이 잇는다고 적었습니다.[1] 다국어·다화자 모델은 언어×화자 조합의 녹음이 늘 모자랍니다.[5]",
+      "actually": {
+        "intro": "보통 이런 일입니다. 포티투닷의 데이터 규모·방법은 공개되지 않았습니다.",
+        "items": [
+          "**전사 맞추기** — 녹음과 글자가 맞는지 음성 인식으로 다시 받아 적어 비교하고, 글자 오류율(CER)이 큰 것을 뺀다. CrossSpeech++ 도 합성 결과를 CER 로 쟀다.[6]",
+          "**음높이·세기 뽑기** — pYIN 으로 음높이를, 멜 프레임 크기로 세기를 뽑아 학습 정답으로 쓴다(FACTSpeech).[7]",
+          "**음역 데이터 늘리기** — FACTSpeech 는 문장의 외국어 낱말을 로마자 음역으로 바꿔 학습 데이터를 늘렸다.[7]",
+          "**합성으로 늘리기** — 좋은 TTS 로 만든 음성을 다른 모델(작은 온디바이스 모델 등)의 학습 데이터로 쓴다. {추론}",
+          "**품질 재기** — 사람 평가(MOS·SMOS)와 자동 지표(UTMOS 예측 점수, 화자 유사도 SECS)를 같이 본다.[6]"
+        ]
+      },
+      "how_far": "데이터 정리 스크립트를 짜고, 걸러 낸 기준을 숫자로 설명할 수 있어야 합니다. 녹음 계획·성우 계약은 다른 부서 몫입니다 {추론}.",
+      "refs": [
+        1,
+        5,
+        6,
+        7
+      ],
+      "study": [
+        "crossspeechpp",
+        "factspeech",
+        "hf-audio"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "양산 환경에서 발생하는 TTS 모델 및 서비스 이슈 분석 및 해결",
+      "short": "팔린 차에서 '이 낱말을 이상하게 읽는다', '대답이 늦다' 같은 문제가 들어오면 원인을 찾아 고치는 일.",
+      "why": "글레오 AI 는 2026년 5월 신형 그랜저부터 실제 차에 들어갔고[3][4], 포티투닷은 OTA(무선 업데이트)와 실주행 데이터로 고도화하겠다고 했습니다.[4] 양산(실제 팔린 차) 문제는 연구실에서 안 보이던 문장·환경에서 터집니다 {추론}.",
+      "actually": {
+        "intro": "보통 들어오는 문제와 첫 확인 순서입니다. {추론}",
+        "items": [
+          "**발음** — 숫자·단위·영어 약어·지명·노래 제목. 글자 → 발음 바꾸는 규칙(텍스트 정규화) 문제인지 모델 문제인지 가른다.",
+          "**지연** — 특정 문장 길이에서만 느린지, 칩 온도·다른 앱과 자원 다툼인지 기록으로 가른다.",
+          "**음질** — 양자화 뒤 특정 음역에서만 깨지는지, 서버판과 차량판을 같은 문장으로 들어 비교한다.",
+          "**재현** — 문제 문장·버전·장비를 고정해 다시 내고, 고친 뒤 같은 묶음으로 회귀 시험한다.",
+          "**사투리·지칭어** — 글레오는 사투리와 '거기' 같은 말을 알아듣는다고 소개됐다.[3] 대답에도 그런 낱말이 섞여 TTS 로 넘어온다."
+        ]
+      },
+      "how_far": "고친 것을 OTA 로 내보내는 일정은 제품 쪽이 정합니다 {추론}. 이 자리는 **문제를 재현하고, 원인을 한 단계로 좁히고, 고친 뒤 다시 깨지지 않게 시험 묶음에 넣는** 데까지입니다. {추론}",
+      "refs": [
+        3,
+        4
+      ],
+      "study": [
+        "sre-postmortem"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "TTS 유관 경력 3년 이상",
+      "short": "TTS 모델을 직접 학습·배포해 본 3년 — 입문자가 아니라 바로 맡길 수 있는 사람을 찾는다.",
+      "why": "팀은 데이터부터 서비스까지 전 과정을 직접 잇는다고 적었습니다.[1] 처음부터 가르치기보다 한 단계 이상을 혼자 맡길 사람을 원하는 것으로 읽힙니다 {추론}.",
+      "how_far": "'유관'이라 TTS 만이 아니라 음성 인식·음성 변환·오디오 생성 경력도 이어질 수 있습니다 {추론}. 같은 회사에 음성 인식·호출어(wake word) 공고가 따로 있습니다.[19] 경력이 모자라면 공개 TTS 를 내 데이터로 다시 학습하고 경량화까지 한 결과물이 대신 말해 줍니다 {추론}.",
+      "refs": [
+        1,
+        19
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "음성 합성(TTS)에 대한 기본 개념/지식을 보유하신 분",
+      "short": "글자 → 발음 → 길이·음높이 → 멜 그림 → 소리 순서와, 각 칸을 맡는 모델 이름을 설명할 수 있으면 된다.",
+      "why": "업무 줄 대부분이 이 순서의 어느 칸을 고치는 일입니다.",
+      "actually": {
+        "intro": "면접에서 설명할 수 있어야 하는 기본입니다.",
+        "items": [
+          "**텍스트 앞단** — 숫자·약어를 읽는 말로 풀고(정규화), 글자를 발음 기호로 바꾼다(G2P). 이 팀 논문은 IPA 를 썼다.[5][6]",
+          "**음향 모델** — 발음마다 길이·음높이·세기를 정해 멜 그림(시간 × 주파수 칸의 소리 세기 그림)을 만든다. FastPitch·FACTSpeech 가 이 칸이다.[7]",
+          "**보코더** — 멜 그림을 실제 소리 파형으로 바꾼다. HiFi-GAN.[12]",
+          "**한 번에(end-to-end)** — VITS 는 변분 오토인코더·흐름·적대 학습을 묶어 글자에서 바로 소리를 낸다.[11]",
+          "**평가** — MOS(사람이 매긴 자연스러움 1~5), 화자 유사도, 글자 오류율.[5][6]"
+        ]
+      },
+      "refs": [
+        5,
+        6,
+        7,
+        11,
+        12
+      ],
+      "study": [
+        "hf-audio",
+        "slp3",
+        "vits",
+        "tts-survey"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "모델 경량화 및 연산 최적화 경험을 보유하신 분",
+      "short": "모델을 작게(가지치기·증류·양자화), 계산을 빠르게(연산 합치기·반복 줄이기) 해 본 경험.",
+      "why": "업무 첫 두 줄(온디바이스·양자화)을 바로 맡기려면 필요합니다.[1] 온디바이스 확대 계획도 있습니다.[4]",
+      "actually": {
+        "items": [
+          "**작은 모델** — Matcha-TTS 는 1,820만 개 매개변수로 빠른 모델 수준의 속도를 냈다(보코더 1,390만 개 별도).[10]",
+          "**단계 줄이기** — Flow Matching 반복 수를 10 → 4 → 2 로 줄이면 RTF 가 0.038 → 0.019 → 0.015 로 내려갔다(RTX 3090, 보코더 포함).[10]",
+          "**증류** — 큰 모델(선생)의 출력을 작은 모델(학생)이 따라 배우게 해 단계 수나 크기를 줄인다. {추론}",
+          "**연산 합치기** — TensorRT 같은 엔진이 층 여러 개를 하나의 커널로 묶어 메모리 왕복을 줄인다. {추론}"
+        ]
+      },
+      "how_far": "기법 이름보다 **'무엇을 줄였더니 속도는 몇 배, 음질은 얼마 잃었다'를 숫자로 말할 수 있는 경험**이 핵심입니다. {추론}",
+      "refs": [
+        1,
+        4,
+        10
+      ],
+      "study": [
+        "matcha",
+        "trt-quant",
+        "lec-cs336-gpu"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Quantization, Memory / Latency 최적화 경험",
+      "short": "비트 수를 줄이고, 메모리 사용을 재고, 지연을 단계별로 쪼개 잰 경험.",
+      "why": "온디바이스 칩은 메모리가 정해져 있고, 대화는 지연이 곧 사용감입니다.[2]",
+      "level": {
+        "basic": "FP16·INT8 차이, 보정(calibration) 데이터가 무엇인지, RTF 재기",
+        "work": "PTQ 로 INT8 엔진 만들기, 층별 민감도 보고 섞기(mixed precision), 첫 소리 지연 재기",
+        "team": "스트리밍 조각 크기·버퍼와 지연의 맞바꿈, 차량 칩에서 메모리 최대치 맞추기 {추론}"
+      },
+      "actually": {
+        "items": [
+          "**메모리** — 가중치 + 중간 계산값(활성값) + 언어 모델이면 KV 캐시(앞 토큰 계산 저장소)까지 더한다. {추론}",
+          "**지연 쪼개기** — 언어 모델·Flow Matching·보코더가 토큰 하나에 쓰는 시간을 따로 잰다(CosyVoice 2 의 지연 공식이 이 셋의 합).[8]",
+          "**양자화 형식 고르기** — ONNX Runtime 은 S8S8 + QDQ 형식을 '먼저 써 볼 기본'으로 권한다.[15]"
+        ]
+      },
+      "refs": [
+        2,
+        8,
+        15
+      ],
+      "study": [
+        "ort-quant",
+        "trt-quant",
+        "pt-quant",
+        "lec-cs336-inference"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "TensorRT, ONNX 기반 모델 최적화 경험",
+      "short": "PyTorch 모델을 ONNX 로 내보내고 TensorRT 엔진으로 바꿔, 실제로 더 빨라졌는지 재 본 경험.",
+      "why": "차 안과 서버 양쪽에 같은 모델을 내보내려면 프레임워크와 무관한 형식(ONNX)과 칩 전용 엔진(TensorRT)이 필요합니다 {추론}. 차량 칩 종류는 공개되지 않았습니다.",
+      "actually": {
+        "items": [
+          "**내보내기** — `torch.onnx.export` 로 그래프를 뽑는다. 음성은 길이가 매번 달라 입력 길이를 동적으로 열어 둬야 한다. {추론}",
+          "**안 되는 연산** — 반복문·조건문이 많은 디코딩은 그래프로 안 뽑힐 때가 많아 바깥 루프를 코드로 남긴다. {추론}",
+          "**ONNX 를 TensorRT 로** — ONNX 의 QuantizeLinear/DequantizeLinear 노드는 TensorRT 의 양자화 층으로 그대로 들어간다.[14]",
+          "**결과 맞추기** — 원래 PyTorch 와 엔진 출력의 차이를 숫자로 비교하고, 귀로도 들어 본다. {추론}"
+        ]
+      },
+      "how_far": "최소선은 작은 TTS(예: VITS·Matcha) 하나를 ONNX → TensorRT FP16 으로 바꿔 RTF 를 비교한 경험입니다 {추론}.",
+      "refs": [
+        14
+      ],
+      "study": [
+        "onnx-export",
+        "trt-quant",
+        "ort-quant"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "오디오 신호 처리 (Audio Signal Processing)에 대한 이해를 보유하신 분",
+      "short": "샘플링 레이트·STFT·멜 그림·음높이를 알아야, 모델 입력·출력과 '이상한 소리'의 원인을 읽을 수 있어서.",
+      "why": "TTS 의 학습 정답(멜 그림·음높이·세기)은 모두 신호 처리로 만듭니다.[7] 모델마다 샘플링 레이트도 다릅니다 — CrossSpeech 22,050Hz[5], CrossSpeech++ 16kHz[6], CosyVoice 2 24kHz[8].",
+      "actually": {
+        "items": [
+          "**샘플링 레이트** — 1초에 소리를 몇 번 재나. 섞인 데이터는 한 값으로 다시 샘플링한다.[6]",
+          "**STFT → 멜** — 짧은 구간마다 주파수를 나누고, 사람 귀에 맞게 낮은 음을 촘촘히 묶은 칸(멜)으로 모은다. 한 칸이 몇 ms 인지는 hop 길이로 정해진다(아래 출력).",
+          "**음높이** — pYIN 같은 알고리즘으로 프레임마다 기본 주파수를 뽑는다.[7]",
+          "**세기** — 멜 프레임 크기의 L2 노름으로 계산했다(FACTSpeech).[7]",
+          "**소리 문제 읽기** — 잡음(쉬익), 금속성 소리, 끊김을 멜 그림에서 찾아 어느 단계 문제인지 가른다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "멜 프레임 한 칸의 길이 (직접 돌린 출력)",
+          "body": "22,050Hz · hop 256 이면 프레임 하나가 약 11.6ms 입니다. 2초 음성은 멜 그림 173칸이 됩니다.",
+          "lang": "python",
+          "code": "sr, hop = 22050, 256\nprint(\"2초 =\", int(2*sr), \"샘플 → 멜\", int(2*sr)//hop + 1, \"프레임, 한 프레임\", round(hop/sr*1000, 1), \"ms\")\n# 2초 = 44100 샘플 → 멜 173 프레임, 한 프레임 11.6 ms"
+        }
+      ],
+      "refs": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "study": [
+        "hf-audio",
+        "slp3",
+        "torchaudio"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Linux 환경에서의 개발 및 디버깅 경험을 보유하신 분",
+      "short": "학습 서버도, 차량용 시험 장비도 리눅스라 — 원격 접속·로그·프로세스·메모리를 직접 보며 고칠 수 있어야 해서.",
+      "why": "학습은 GPU 서버에서 돌고, 이 팀은 테스트 장비에 모델을 직접 올려 보는 경험을 우대합니다.[1] 이런 장비는 보통 리눅스 기반입니다 {추론}.",
+      "how_far": "셸로 장비에 들어가 프로세스 메모리(`top`·`free`)와 GPU 사용(`nvidia-smi`)을 보고, 죽은 프로그램의 로그·코어 덤프를 따라가는 정도가 최소선입니다. {추론}",
+      "refs": [
+        1
+      ],
+      "study": [
+        "tlcl"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "문제 해결을 위한 프로그래밍 능력을 보유하신 분 (Python/C++/shell 등)",
+      "short": "학습·실험은 Python, 차 안에서 도는 추론은 C++, 반복 작업은 shell — 세 군데를 오갈 수 있어서.",
+      "why": "공고 기술 목록이 C++·Linux·PyTorch·Python 입니다.[1] 온디바이스 추론 코드는 보통 C++ 로 엔진을 부릅니다 {추론}.",
+      "actually": {
+        "items": [
+          "**Python** — 데이터 정리, 학습, 평가 스크립트.",
+          "**C++** — TensorRT·ONNX Runtime 을 부르는 추론 코드, 스트리밍 버퍼·스레드. {추론}",
+          "**shell** — 장비에 모델 올리기, 같은 시험을 여러 번 돌려 기록 모으기. {추론}"
+        ]
+      },
+      "refs": [
+        1
+      ],
+      "study": [
+        "tlcl",
+        "onnx-export"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "오픈소스 기반 딥러닝 프레임워크 활용 능력을 보유하신 분 (PyTorch 등)",
+      "short": "모델을 PyTorch 로 짜고 학습하고, 공개 TTS 코드를 읽어 고쳐 쓸 수 있으면 된다.",
+      "why": "최신 TTS 는 대부분 PyTorch 코드로 공개됩니다 — F5-TTS 는 MIT 라이선스 공개 코드입니다.[9] 이 팀의 CrossSpeech++ 도 A6000 8장에서 학습했습니다.[6]",
+      "how_far": "공개 코드를 받아 내 데이터로 다시 학습하고, 손실이 이상할 때 데이터·코드 중 어디가 문제인지 찾을 수 있으면 됩니다. 분산 학습은 쓸 줄 아는 정도. {추론}",
+      "refs": [
+        6,
+        9
+      ],
+      "study": [
+        "f5tts",
+        "lec-cs336-pytorch"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "새로운 기술과 환경의 변화에 유연하게 대응하고, 빠르게 학습하고 적용하시는 분",
+      "short": "TTS 는 1~2년마다 주류가 바뀌어서 — 이 팀도 FastPitch 에서 LLM·Flow Matching 으로 옮겨 왔다.",
+      "why": "이 팀 2023년 논문은 FastPitch 기반이었고[5][7], 2026년 제품은 LLM 기반 TTS 라고 밝혔습니다.[2] 3년 사이 바탕 모델이 바뀐 셈입니다.",
+      "refs": [
+        2,
+        5,
+        7
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "새로운 AI 기술을 직접 실험하고 결과를 분석하며 지속적으로 개선하는 것을 즐기시는 분",
+      "short": "새 모델을 돌려 보고, 숫자와 귀로 비교하고, 이유를 찾는 반복이 일의 대부분이라서.",
+      "why": "팀 소개는 최신 음성 생성 기술을 '빠르게 실험하고' 가능성이 확인된 것을 서비스로 옮긴다고 적었습니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "실제 테스트 장비에 모델을 직접 포팅하고, 실행 결과와 성능을 분석하며 문제를 해결하는 Hands-on 경험을 선호하시는 분",
+      "short": "PC 에서 빠른 모델이 차량용 장비에서는 느릴 수 있어, 직접 올려 재 봐야 해서.",
+      "why": "온디바이스 처리를 하는 하이브리드 구조[2]라, 실제 장비에서 잰 숫자가 기준이 됩니다 {추론}.",
+      "how_far": "개발 보드(예: 임베디드 GPU 보드)에 모델을 올려 RTF·메모리·온도에 따른 속도를 잰 경험이면 이 줄과 맞습니다. {추론}",
+      "refs": [
+        2
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "양산 환경에서 발생하는 문제를 주도적으로 분석하고 끝까지 해결하는 책임감을 가지신 분",
+      "short": "실제 차에 실린 제품이라, 문제가 들어오면 다른 팀에 넘기지 않고 원인까지 따라갈 사람이 필요해서.",
+      "why": "글레오 AI 는 신형 그랜저부터 양산 차에 들어갔습니다.[3][4]",
+      "refs": [
+        3,
+        4
+      ],
+      "study": [
+        "sre-postmortem"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "불확실한 문제에도 적극적으로 도전하고, 스스로 해결책을 찾아 실행하시는 분",
+      "short": "'차 안에서 자연스러운 목소리'처럼 정답이 정해지지 않은 문제를 직접 정의해야 해서.",
+      "why": "팀 소개는 어려운 문제를 끝까지 파고들고 새 기술을 주도적으로 실험하는 사람을 원한다고 적었습니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "다국어(multilingual) 및 다화자(multi-speaker) TTS 모델 개발 경험을 보유하신 분",
+      "short": "이 팀이 논문을 낸 바로 그 주제라서 — 겪어 본 사람이면 첫날부터 대화가 통한다.",
+      "why": "CrossSpeech·CrossSpeech++·FACTSpeech 가 모두 다국어·다화자 문제입니다.[5][6][7]",
+      "how_far": "언어·화자 조합이 없는 데이터(한 화자 = 한 언어)에서 목소리를 지키며 다른 언어를 말하게 해 본 경험이 가장 가깝습니다.[5]",
+      "refs": [
+        5,
+        6,
+        7
+      ],
+      "study": [
+        "crossspeech",
+        "crossspeechpp",
+        "factspeech"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "음성/오디오 토큰화 기술에 대한 이해와 관련 연구 또는 개발 경험을 보유하신 분",
+      "short": "LLM 이 소리를 다루려면 소리를 토큰으로 바꿔야 해서 — LLM 기반 TTS 의 첫 칸이다.",
+      "why": "팀 소개에 Neural Audio Codec·Speech Language Model 이 나오고[1], 제품 TTS 는 LLM 기반입니다.[2]",
+      "actually": {
+        "items": [
+          "**압축기 토큰(음향 토큰)** — EnCodec 은 24kHz 소리를 초당 75칸으로 줄이고, 칸마다 여러 단계의 코드북(1,024개짜리, 최대 32개)으로 겹쳐 적는다(RVQ). 1.5~24kbps.[13]",
+          "**의미 토큰** — CosyVoice 2 는 음성 인식 모델에서 뽑은 특징을 FSQ(유한 스칼라 양자화)로 초당 25개 토큰으로 만든다. 소리 세부는 뒤의 Flow Matching 이 채운다.[8]",
+          "**맞바꿈** — 토큰이 많으면 소리는 정확하지만 언어 모델이 만들 길이가 길어져 느려진다. {추론}"
+        ]
+      },
+      "refs": [
+        1,
+        2,
+        8,
+        13
+      ],
+      "study": [
+        "encodec",
+        "cosyvoice2"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "음성합성/기계학습/인공지능 분야 상위급 학회 및 저널 논문 저자",
+      "short": "이 팀이 ICASSP·Interspeech 에 논문을 내 온 팀이라서.",
+      "why": "CrossSpeech(ICASSP 2023)[5], FACTSpeech(Interspeech 2023, 저자 7명 모두 42dot)[7]가 있습니다.",
+      "how_far": "우대 사항입니다. 논문이 없으면 공개 저장소의 재현 실험·기술 글이 그 자리를 일부 대신합니다. {추론}",
+      "refs": [
+        5,
+        7
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "상기 관련 분야 석/박사 학위 보유 및 수료자",
+      "short": "논문을 읽고 재현하는 훈련이 된 사람을 우대한다는 뜻 — 필수 요건은 아니다.",
+      "why": "이 줄은 우대 사항에 있습니다. 필수 요건은 경력 3년입니다.[1]",
+      "refs": [
+        1
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "모델 점수보다 '귀에 들리는 차이'가 신경 쓰이는 사람",
+      "논문 모델을 실제 장비에서 돌려 숫자를 재는 게 즐거운 사람[1]",
+      "여러 언어의 발음 규칙이 궁금한 사람[5][7]",
+      "내가 만든 소리가 실제 차에서 나오는 걸 보고 싶은 사람[4]"
+    ],
+    "hard": [
+      "양산 제품이라 새 모델을 바로 넣지 못하고 검증 절차를 거친다 {추론}",
+      "음질·속도·메모리를 동시에 맞추는 맞바꿈이 끝없이 이어진다 {추론}",
+      "경력 3년이 필수 요건이라 신입·전환자에게는 문이 좁다[1]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "RTF 0.15 인데 사용자는 대답이 느리다고 해요. 왜 그럴까요?",
+      "a": "RTF 와 첫 소리 지연은 다른 숫자 — 스트리밍 구조와 지연 공식.[8]"
+    },
+    {
+      "q": "INT8 로 바꾼 뒤 특정 화자 목소리만 금속성으로 들려요. 무엇부터 보나요?",
+      "a": "보정 데이터에 그 화자가 있었나, 어느 층이 민감한가, 채널별 눈금.[14][15]"
+    },
+    {
+      "q": "한국인 성우 목소리로 영어 문장을 읽게 하면 목소리가 달라져요. 왜죠?",
+      "a": "언어와 화자가 엉키는 문제 — 이 팀의 CrossSpeech 가 다룬 주제.[5]"
+    },
+    {
+      "q": "Flow Matching TTS 를 빠르게 만들려면 무엇을 줄이나요? 무엇을 잃나요?",
+      "a": "반복 단계(NFE)와 음질의 맞바꿈.[9][10]"
+    },
+    {
+      "q": "음향 토큰과 의미 토큰은 무엇이 다른가요?",
+      "a": "EnCodec 과 CosyVoice 2 의 토큰 비교.[8][13]"
+    }
+  ],
+  "resources": [
+    {
+      "id": "crossspeech",
+      "title": "CrossSpeech: Speaker-independent Acoustic Representation for Cross-lingual Speech Synthesis",
+      "by": "김지훈 외 · 42dot · ICASSP 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2302.14370",
+      "why": "이 팀이 직접 쓴 논문. 업무④·우대⑥ 교차 언어 TTS 에서 목소리가 흐려지는 이유와 해법을 회사 자신의 말로."
+    },
+    {
+      "id": "crossspeechpp",
+      "title": "CrossSpeech++: Cross-lingual Speech Synthesis with Decoupled Language and Speaker Generation",
+      "by": "김지훈 외 · 42dot·KAIST · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2412.20048",
+      "why": "4개 언어로 넓힌 후속 논문. 데이터 구성·평가 지표(MOS·UTMOS·SECS·CER)를 이 팀이 어떻게 재는지 보기."
+    },
+    {
+      "id": "factspeech",
+      "title": "FACTSpeech: Speaking a Foreign Language Pronunciation Using Only Your Native Characters",
+      "by": "양홍선 외 · 42dot · Interspeech 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://www.isca-archive.org/interspeech_2023/yang23x_interspeech.html",
+      "why": "음역된 노래 제목·지명 읽기. 업무⑥ 데이터 늘리기와 요건⑥ 음높이·세기 뽑기를 이 팀 방식으로."
+    },
+    {
+      "id": "hf-audio",
+      "title": "Hugging Face Audio Course",
+      "by": "Hugging Face",
+      "kind": "course",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://huggingface.co/learn/audio-course",
+      "why": "오디오 데이터·멜 그림부터 TTS 단원(데이터셋·사전학습 모델·미세 조정)까지 코드로. 요건② TTS 기본과 요건⑥ 신호 처리의 출발점."
+    },
+    {
+      "id": "slp3",
+      "title": "Speech and Language Processing (3rd ed. draft)",
+      "by": "Daniel Jurafsky · James H. Martin",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://web.stanford.edu/~jurafsky/slp3/",
+      "why": "무료 공개 교과서. 음성 특징(STFT·멜)과 TTS 장을 이론으로 정리 — 요건②⑥."
+    },
+    {
+      "id": "tts-survey",
+      "title": "A Survey on Neural Speech Synthesis",
+      "by": "Xu Tan 외 · Microsoft Research · 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2106.15561",
+      "why": "텍스트 앞단·음향 모델·보코더·한 번에 모델을 한 지도로. 요건② 면접 대비용 정리."
+    },
+    {
+      "id": "vits",
+      "title": "Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech (VITS)",
+      "by": "Jaehyeon Kim · Jungil Kong · Juhee Son · ICML 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2106.06103",
+      "why": "글자에서 바로 소리를 내는 대표 모델. 요건② 기본 구조와 경량화 실습 대상."
+    },
+    {
+      "id": "matcha",
+      "title": "Matcha-TTS: A fast TTS architecture with conditional flow matching",
+      "by": "Shivam Mehta 외 · KTH · ICASSP 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2309.03199",
+      "why": "Flow Matching TTS 를 가장 작게 보여 주는 논문. 업무⑤ Flow Matching 과 요건③ 단계 수·속도 맞바꿈."
+    },
+    {
+      "id": "f5tts",
+      "title": "F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching",
+      "by": "Yushen Chen 외 · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://github.com/SWivid/F5-TTS",
+      "why": "MIT 공개 코드가 있는 최신 Flow Matching TTS. 업무⑤ 재현 실습과 요건⑨ PyTorch 코드 읽기."
+    },
+    {
+      "id": "cosyvoice2",
+      "title": "CosyVoice 2: Scalable Streaming Speech Synthesis with Large Language Models",
+      "by": "Alibaba · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2412.10117",
+      "why": "LLM + Flow Matching + 스트리밍을 한 논문에. 업무③⑤와 우대⑦ 음성 토큰의 교과서 같은 예. 한국어도 다룬다."
+    },
+    {
+      "id": "encodec",
+      "title": "High Fidelity Neural Audio Compression (EnCodec)",
+      "by": "Alexandre Défossez 외 · Meta · 2022",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2210.13438",
+      "why": "신경망 오디오 코덱과 RVQ 토큰. 우대⑦ 오디오 토큰화와 팀 소개의 Neural Audio Codec."
+    },
+    {
+      "id": "trt-quant",
+      "title": "TensorRT 문서 · Working with Quantized Types",
+      "by": "NVIDIA",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/work-quantized-types.html",
+      "why": "INT8·FP8·INT4·FP4, Q/DQ 노드, PTQ 보정. 업무②·요건④⑤의 원문."
+    },
+    {
+      "id": "ort-quant",
+      "title": "ONNX Runtime 문서 · Quantize ONNX models",
+      "by": "Microsoft",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html",
+      "why": "정적·동적 양자화, QDQ 형식, 보정 방법(MinMax·Entropy·Percentile). 요건④⑤."
+    },
+    {
+      "id": "pt-quant",
+      "title": "PyTorch 문서 · Quantization",
+      "by": "PyTorch",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.pytorch.org/docs/stable/quantization.html",
+      "why": "학습 중 양자화(QAT)와 학습 뒤 양자화(PTQ)를 PyTorch 안에서. 업무②."
+    },
+    {
+      "id": "onnx-export",
+      "title": "PyTorch 문서 · torch.onnx (ONNX 내보내기)",
+      "by": "PyTorch",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.pytorch.org/docs/stable/onnx.html",
+      "why": "동적 길이 입력을 열어 두고 그래프를 내보내는 법. 요건⑤의 첫 단계."
+    },
+    {
+      "id": "torchaudio",
+      "title": "torchaudio 문서 · Audio Feature Extractions",
+      "by": "PyTorch",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.pytorch.org/audio/stable/tutorials/audio_feature_extractions_tutorial.html",
+      "why": "STFT·멜 스펙트로그램·음높이를 코드로 직접 뽑아 보기. 요건⑥."
+    },
+    {
+      "id": "tlcl",
+      "title": "The Linux Command Line",
+      "by": "William Shotts",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://linuxcommand.org/tlcl.php",
+      "why": "셸 기본부터 스크립트까지 무료. 요건⑦⑧ 리눅스·shell."
+    },
+    {
+      "id": "sre-postmortem",
+      "title": "Google SRE Book · Postmortem Culture",
+      "by": "Google",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://sre.google/sre-book/postmortem-culture/",
+      "why": "양산 문제를 재현하고 원인·재발 방지를 남기는 글쓰기. 업무⑦·우대④."
+    },
+    {
+      "id": "lec-elevenlabs",
+      "title": "Stanford CS153 · ElevenLabs Mati Staniszewski — The Future of Voice Systems 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/vfF011ko89o",
+      "why": "음성 AI 회사가 보는 음성 제품의 흐름. 업무③ 실시간 대화 음성이 왜 중요한지 큰 그림."
+    },
+    {
+      "id": "lec-cs336-inference",
+      "title": "Stanford CS336 Lecture 10: Inference 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/EfM546A79aM",
+      "why": "언어 모델 추론의 지연·메모리·KV 캐시·양자화. LLM 기반 TTS 의 앞 칸을 빠르게 만드는 바탕(요건④)."
+    },
+    {
+      "id": "lec-cs336-gpu",
+      "title": "Stanford CS336 Lecture 5: GPUs, TPUs 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/izZba4UA7iY",
+      "why": "메모리 이동이 왜 병목인지. 요건③ 연산 최적화를 이해하는 바탕."
+    },
+    {
+      "id": "lec-cs336-pytorch",
+      "title": "Stanford CS336 Lecture 2: PyTorch (einops) 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/kuYAsz7zspQ",
+      "why": "텐서 모양·연산량을 세며 PyTorch 를 쓰는 법. 요건⑨."
+    },
+    {
+      "id": "lec-diffusion",
+      "title": "But how do AI images and videos actually work? (Welch Labs) 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/iv-5mZ_9CPY",
+      "why": "잡음에서 그림을 만드는 확산·흐름 모델의 직관. 업무⑤ Flow Matching 을 처음 볼 때."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "소리와 TTS 기본",
+      "time": "2~3주",
+      "goal": "샘플링 레이트·STFT·멜 그림·음높이를 직접 뽑고, TTS 의 세 칸(텍스트 앞단·음향 모델·보코더)을 설명한다.",
+      "resources": [
+        "hf-audio",
+        "torchaudio",
+        "slp3",
+        "tts-survey"
+      ],
+      "task": "내 목소리 10문장을 녹음해 멜 그림·pYIN 음높이를 그려 보고, 사전학습 TTS 로 같은 문장을 만들어 두 그림을 나란히 비교한 노트를 쓴다."
+    },
+    {
+      "title": "모델 하나를 끝까지 — 학습과 평가",
+      "time": "3~4주",
+      "goal": "공개 TTS(VITS 또는 Matcha-TTS)를 작은 데이터로 학습하고 MOS 대신 자동 지표(CER·화자 유사도)로 잰다.",
+      "resources": [
+        "vits",
+        "matcha",
+        "lec-cs336-pytorch",
+        "crossspeechpp"
+      ],
+      "task": "공개 단일 화자 데이터 일부로 Matcha-TTS 를 학습하고, 단계 수 2·4·10 에서 RTF 와 음성 인식 CER 을 표로 만든다."
+    },
+    {
+      "title": "빠르게 — ONNX·TensorRT·양자화",
+      "time": "3~4주",
+      "goal": "같은 모델을 FP32 → FP16 → INT8 로 바꾸며 속도·메모리·음질 변화를 숫자로 보고한다.",
+      "resources": [
+        "onnx-export",
+        "ort-quant",
+        "trt-quant",
+        "pt-quant",
+        "lec-cs336-gpu"
+      ],
+      "task": "앞 단계 모델(또는 보코더)을 ONNX 로 내보내고 ONNX Runtime 동적·정적 INT8, TensorRT FP16 엔진을 만든다. 각 판의 RTF·최대 메모리·CER 과 문장 5개 녹음을 한 장에 정리한다."
+    },
+    {
+      "title": "LLM 기반·스트리밍 TTS",
+      "time": "3~4주",
+      "goal": "음성 토큰 → Flow Matching → 보코더 구조와 첫 소리 지연을 직접 재고 설명한다.",
+      "resources": [
+        "cosyvoice2",
+        "f5tts",
+        "encodec",
+        "lec-cs336-inference",
+        "lec-elevenlabs"
+      ],
+      "task": "공개 스트리밍 TTS 를 돌려 조각 크기를 바꿔 가며 첫 소리 지연과 전체 RTF 를 재고, 단계별(언어 모델·flow·보코더) 시간 막대 그래프를 만든다."
+    },
+    {
+      "title": "다국어·다화자 (우대)",
+      "time": "계속",
+      "goal": "한 화자 = 한 언어 데이터에서 목소리를 지키며 다른 언어를 말하게 하는 문제를 설명하고 작게 재현한다.",
+      "resources": [
+        "crossspeech",
+        "crossspeechpp",
+        "factspeech"
+      ],
+      "task": "한국어·영어 공개 데이터로 다화자 모델을 학습해, 한국어 화자에게 영어 문장을 읽혀 화자 유사도가 얼마나 떨어지는지 재고 CrossSpeech 의 표와 비교한다."
+    }
+  ],
+  "pay": {
+    "summary": "공고·공시에 연봉이 없다 — 공공데이터 집계 평균 **약 6,032만원**(회사 전체, 경력직 포함). 이 자리는 TTS 경력 3년 이상이다",
+    "rows": [
+      {
+        "label": "직원 평균 연봉",
+        "value": "6,032만원",
+        "amount": 6032,
+        "basis": "공공데이터 집계",
+        "note": "원티드가 국민연금 가입 정보로 계산해 보여 주는 값이다. 기준월이 적혀 있지 않다 [21]"
+      }
+    ],
+    "how": "포티투닷은 비상장 회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 위 평균은 신입·경력·직군이 섞인 회사 전체 값이라 이 자리(TTS 경력 3년 이상[1])가 받는 금액으로 읽으면 안 된다 {추론}. 전형 마지막에 **처우 협의** 단계가 따로 있어 연봉은 사람마다 정한다 [1]."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "유연근무제",
+        "detail": "재량·선택 근무"
+      },
+      {
+        "name": "리커버리 휴가",
+        "detail": "법정 연차와 별도로 매월 1회 유급"
+      },
+      {
+        "name": "건강검진",
+        "detail": "프리미엄 종합검진 전액 지원"
+      },
+      {
+        "name": "단체상해보험",
+        "detail": "본인·배우자·자녀·본인 부모 — 실손·입원·통원·치과·도수 치료"
+      },
+      {
+        "name": "식사",
+        "detail": "사내 식당 하루 세 끼 무료, 사내 카페"
+      },
+      {
+        "name": "사내 의료·상담",
+        "detail": "상주 간호사·응급 처치·만성질환 관리·예방접종, 심리·재무·법률·가족 상담(EAP)"
+      },
+      {
+        "name": "운동",
+        "detail": "사내 피트니스, 1:1 PT·GX 수업"
+      },
+      {
+        "name": "복지 포인트",
+        "detail": "연간 최대 300만원"
+      },
+      {
+        "name": "전기차 구매 지원",
+        "detail": "차량 가격의 최대 15%(최대 1,000만원 한도), 전기차 대여 프로그램"
+      },
+      {
+        "name": "교육비",
+        "detail": "국내외 교육·세미나·워크숍·컨퍼런스 참가비 지원(금액 표기 없음)"
+      },
+      {
+        "name": "무이자 사내 대출",
+        "detail": "근속에 따라 1,000만원~5,000만원, 금리 0%"
+      },
+      {
+        "name": "직장 어린이집",
+        "detail": "임직원 자녀 대상, 언어·골프·승마 프로그램"
+      },
+      {
+        "name": "그 밖에",
+        "detail": "장기근속 포상, 휴양시설(매월 추첨), 명절 복지 포인트, 경조사 지원, 추천 보상금"
+      }
+    ],
+    "note": "포티투닷 채용 사이트의 '업무 몰입 프로그램' 페이지다 [20]. 페이지는 한국 본사 기준이며 해외 법인은 다를 수 있다고 적었고, 게시일은 적혀 있지 않다. 이 공고 자체에는 복리후생 칸이 없다 [1]."
+  },
+  "location": {
+    "name": "포티투닷 판교 사옥 (소프트웨어 드림센터 A동)",
+    "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+    "near": "판교 제2테크노밸리 {추론}",
+    "note": "주소는 포티투닷 홈페이지 하단 회사 정보다 [22]. 공고의 근무지 표기는 'Pangyo (Software Dream Center), South Korea (Remote)'이고 재택 범위는 적혀 있지 않다 [1]."
+  },
+  "sources": [
+    {
+      "n": 1,
+      "title": "포티투닷 채용 · Deep Learning Engineer (음성 합성 개발)",
+      "url": "https://jobs.ashbyhq.com/42dot/c184cf35-51e2-4e80-87bc-579089f07472",
+      "kind": "posting",
+      "note": "Gleo AI 팀 소개·업무·요건·우대·전형"
+    },
+    {
+      "n": 2,
+      "title": "포티투닷 · '사람처럼 자연스러운 대화' 가능한 차량용 음성 AI 에이전트 '글레오 AI' 기술 공개",
+      "url": "https://42dot.ai/ko/stories/blog-news/42dot-unveils-gleo-ai",
+      "kind": "company",
+      "date": "2026-05-21",
+      "note": "LLM 기반 TTS·초저지연, 음성 전처리·인식·합성 자체 개발, 하이브리드(온디바이스·클라우드). 목록 게시일은 2026-07-15"
+    },
+    {
+      "n": 3,
+      "title": "뉴시스 · \"성심당 빵 메뉴까지 추천\"…현대차그룹 '글레오AI 에이전트' 뭐길래",
+      "url": "https://www.newsis.com/view/NISX20260429_0003610848",
+      "kind": "news",
+      "date": "2026-04-30",
+      "note": "더 뉴 그랜저 첫 적용, 사투리·지칭어 이해, 좌석별 음성 인식, 기능에 따라 외부 LLM API 사용"
+    },
+    {
+      "n": 4,
+      "title": "헤럴드경제 · 포티투닷, 車 AI 비서 '글레오 AI' 공개",
+      "url": "https://www.heraldk.com/article/2026052016554565137",
+      "kind": "news",
+      "date": "2026-05-20",
+      "note": "2024년 개발 착수, 자체 LLM·온디바이스 확대, OTA 고도화 계획"
+    },
+    {
+      "n": 5,
+      "title": "CrossSpeech (ICASSP 2023) · arXiv 2302.14370",
+      "url": "https://arxiv.org/abs/2302.14370",
+      "kind": "company",
+      "date": "2023-02",
+      "note": "42dot 저자 — FastPitch 기반, 22,050Hz·IPA, 교차 언어 SMOS 2.67→3.85"
+    },
+    {
+      "n": 6,
+      "title": "CrossSpeech++ · arXiv 2412.20048",
+      "url": "https://arxiv.org/abs/2412.20048",
+      "kind": "company",
+      "date": "2024-12",
+      "note": "42dot 저자 4명 + KAIST — en·zh·ja·ko, 한국어 6명 14.1시간, 16kHz, A6000 8장, MOS·UTMOS·SECS·CER"
+    },
+    {
+      "n": 7,
+      "title": "FACTSpeech (Interspeech 2023)",
+      "url": "https://www.isca-archive.org/interspeech_2023/yang23x_interspeech.html",
+      "kind": "company",
+      "date": "2023-08",
+      "note": "저자 7명 모두 42dot — 음역 텍스트 발음 제어, FastPitch 기반, pYIN 음높이·멜 L2 세기, 음역 데이터 늘리기"
+    },
+    {
+      "n": 8,
+      "title": "CosyVoice 2: Scalable Streaming Speech Synthesis with Large Language Models",
+      "url": "https://arxiv.org/abs/2412.10117",
+      "kind": "reference",
+      "date": "2024-12",
+      "note": "다른 회사(알리바바) — 25Hz FSQ 토큰, Qwen2.5-0.5B, 5:15 섞기, chunk-aware causal flow matching, 첫 소리 지연 공식, 24kHz"
+    },
+    {
+      "n": 9,
+      "title": "F5-TTS · arXiv 2410.06885",
+      "url": "https://arxiv.org/abs/2410.06885",
+      "kind": "reference",
+      "date": "2024-10",
+      "note": "RTF 0.15(16 NFE, RTX 3090, 10초 음성), 10만 시간, 정렬기·길이 예측기 없음, MIT 코드"
+    },
+    {
+      "n": 10,
+      "title": "Matcha-TTS · arXiv 2309.03199",
+      "url": "https://arxiv.org/abs/2309.03199",
+      "kind": "reference",
+      "date": "2023-09",
+      "note": "OT-CFM, NFE 2·4·10의 RTF 0.015·0.019·0.038(RTX 3090, 보코더 포함), 1,820만 매개변수"
+    },
+    {
+      "n": 11,
+      "title": "VITS · arXiv 2106.06103",
+      "url": "https://arxiv.org/abs/2106.06103",
+      "kind": "reference",
+      "date": "2021-06",
+      "note": "변분 추론 + 정규화 흐름 + 적대 학습, 한 번에 TTS"
+    },
+    {
+      "n": 12,
+      "title": "HiFi-GAN · arXiv 2010.05646",
+      "url": "https://arxiv.org/abs/2010.05646",
+      "kind": "reference",
+      "date": "2020-10",
+      "note": "V100 실시간 167.9배, 작은 판 CPU 13.4배"
+    },
+    {
+      "n": 13,
+      "title": "High Fidelity Neural Audio Compression (EnCodec) · arXiv 2210.13438",
+      "url": "https://arxiv.org/abs/2210.13438",
+      "kind": "reference",
+      "date": "2022-10",
+      "note": "24kHz 초당 75칸, 1,024개 코드북 최대 32개, 1.5~24kbps"
+    },
+    {
+      "n": 14,
+      "title": "NVIDIA TensorRT · Working with Quantized Types",
+      "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/work-quantized-types.html",
+      "kind": "reference",
+      "note": "INT8·FP8·INT4·FP4, Q/DQ, PTQ 보정, 활성값 텐서별·가중치 채널별"
+    },
+    {
+      "n": 15,
+      "title": "ONNX Runtime · Quantize ONNX models",
+      "url": "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html",
+      "kind": "reference",
+      "note": "동적·정적, QDQ·QOperator, 트랜스포머·RNN 동적 / CNN 정적, S8S8+QDQ 기본"
+    },
+    {
+      "n": 16,
+      "title": "포티투닷 채용 · Senior AI Agent Engineer (Gleo Interactor)",
+      "url": "https://jobs.ashbyhq.com/42dot/464eb98e-07e6-4cd4-af5d-2d9e9322a3cc",
+      "kind": "posting",
+      "note": "같은 Gleo 조직 — LLM 이 차량 기능·앱을 쓰게 하는 에이전트"
+    },
+    {
+      "n": 17,
+      "title": "포티투닷 블로그 · Gleo Guard l 차량 AI Agent를 위한 안전 가드레일",
+      "url": "https://42dot.ai/ko/stories/blog-news/gleoguard",
+      "kind": "company",
+      "date": "2026-09-11",
+      "note": "Gleo Core·Gleo Foundation 팀 이름이 보인다"
+    },
+    {
+      "n": 18,
+      "title": "머니투데이 · 차 안의 AI비서… 브랜드마다 다른 얼굴",
+      "url": "https://www.mt.co.kr/article/2026102019575795544",
+      "kind": "news",
+      "date": "2026-10-21",
+      "note": "현대·기아·제네시스가 같은 글레오 바탕(음성 인식 등)에 브랜드별 페르소나"
+    },
+    {
+      "n": 19,
+      "title": "포티투닷 채용 · Deep Learning Engineer (음성 인식 및 wake word detection 개발)",
+      "url": "https://jobs.ashbyhq.com/42dot/17ff2b4f-2d65-47a3-aa6f-39835d39a21a",
+      "kind": "posting",
+      "note": "같은 회사의 음성 인식·호출어 공고"
+    },
+    {
+      "n": 20,
+      "title": "포티투닷 · 42dot만의 업무 몰입 프로그램",
+      "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+      "kind": "company",
+      "note": "한국 본사 기준(해외 법인은 다를 수 있음), 게시일 표기 없음"
+    },
+    {
+      "n": 21,
+      "title": "원티드 · 포티투닷 회사 정보(평균연봉·국민연금 가입자 수)",
+      "url": "https://www.wanted.co.kr/company/8794",
+      "kind": "reference",
+      "note": "공공데이터 집계 — 기준월 표기 없음"
+    },
+    {
+      "n": 22,
+      "title": "포티투닷 홈페이지 · 하단 회사 정보",
+      "url": "https://42dot.ai/ko",
+      "kind": "company",
+      "note": "경기도 성남시 수정구 창업로40번길 20, A동"
+    }
+  ],
+  "caveat": "포티투닷 TTS 팀의 기술 발표·블로그 글은 찾지 못했습니다(받은 영상 없음 — Work&Way 인터뷰 글에는 영상 주소를 확인하지 못했습니다). 회사가 밝힌 것은 'LLM 기반 TTS · 초저지연 · 음성 기술 자체 개발 · 하이브리드 구조'[2]와 2023~2024년 논문 셋[5][6][7]까지이고, 제품 TTS 의 모델 구조·차량 칩·지연 숫자·양자화 방식은 공개되지 않아 공개 논문과 공식 문서로 \"보통 이런 일\"을 보였습니다. 기능에 따라 외부 LLM API 를 쓴다는 보도[3]와 자체 개발 발표[2]는 시점·기능이 다를 수 있습니다."
+}
