@@ -1,0 +1,1062 @@
+{
+ "id": "daangn-ads-backend",
+ "company": "당근",
+ "role": "Software Engineer, Backend - 광고",
+ "team": "광고실 (서빙팀 · DSP팀 등)",
+ "jobs": [
+  "ats-greenhouse:daangn:6640363003"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "당근 매출의 99.8%를 내는 **광고 시스템** — 광고주가 광고를 만드는 DSP, 지면마다 광고를 고르는 AdServer·RTB, 노출·클릭·전환을 모으는 데이터 — 의 서버를 만듭니다.[1][4][10]",
+  "env": "하루 수억 건 요청을 **초당 수천 번 고르며** 밀리초 안에 답하고, 한 단계가 고장 나도 대체 경로로 광고를 내는 마이크로서비스 위에서 일합니다.[2][5]",
+  "oneline": "돈과 트래픽이 동시에 걸린 시니어 백엔드 자리. **지연·장애 격리·정확한 과금**이 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "대규모 광고 트래픽을 다루는 전문가로 성장할 수 있어요 당근마켓은 1,900만 MAU를 보유한 거대 플랫폼이에요. 이런 대규모 환경에서 광고 시스템을 안정적으로 운영하는 것은 큰 도전이자 기회예요. 광고실에 합류하면 하루 수억건의 광고 요청을 처리하는 시스템을 다루게 될 거예요. 여기서 발생하는 다양한 장애 상황에 대처하는 방법을 배우면서, 고가용성 시스템 구축 능력과 실전 문제 해결 능력을 키울 수 있어요. 특히 서빙팀에서는 실시간 입찰(RTB) 시스템을 다루게 될 텐데, 밀리초 단위의 응답 시간을 요구하는 이 시스템을 통해 초저지연 분산 시스템 설계와 구현 능력을 획득할 수 있어요. DSP팀에서는 대용량 광고 데이터 처리를 위한 성능 최적화와 확장성 있는 아키텍처 설계 능력을 키울 수 있죠.",
+   "short": "하루 수억 건의 광고 요청에 밀리초 안에 답하고, 한 곳이 고장 나도 광고가 끊기지 않게 하는 일.",
+   "why": "당근 매출의 99.8%가 광고입니다.[10] 광고 추천팀은 약 2,000만 MAU 앞에서 하루 수억 건의 광고 요청을 받고[5], 2023년 인터뷰에서도 이미 하루 2억 건이 넘었습니다.[7] 광고 DSP팀 개발자는 광고가 실시간으로 나가고 광고주·대행사 사이에 돈이 오가므로 **안정성과 고가용성**(일부가 고장 나도 서비스가 계속 도는 성질)을 가장 신경 써야 한다고 말했습니다.[8]",
+   "actually": {
+    "intro": "당근 AdServer(광고를 골라 지면에 보내는 서버) 글이 밝힌 요청 하나의 길과 어려움입니다.[2]",
+    "items": [
+     "**지면 판별** — 검색 결과처럼 맥락이 있는 자리인지, 홈 피드처럼 맥락이 없는 자리인지 가린다.[2]",
+     "**오디언스 추정** — ML 로 이 사용자의 위치·성별·연령·관심사를 추정한다.[2]",
+     "**후보 찾기** — 지면·오디언스·집행 기간에 맞고 **예산이 남은** 광고만 고른다.[2]",
+     "**순위 매기기** — eCPM(노출 1,000번당 기대 수익)으로 줄 세운다. 비슷한 광고도 eCPM 이 10배 넘게 차이 난다.[2]",
+     "**내보내기** — 이긴 광고에 추적 링크를 붙여 지면에 보낸다.[2]",
+     "**규모** — 수만 개 광고 가운데 초당 수천 번 고르고, 몰리면 수 초 안에 서버가 늘어나야 하며, 데이터를 가져올 네트워크 대역폭도 한계다.[2]",
+     "**대체 경로** — 오디언스 추정이 실패하면 타게팅 없는 광고, 후보 조회가 실패하면 직전 후보 목록을 정해진 시간 동안 재사용, 그것도 안 되면 연결된 DSP 의 광고를 낸다.[2]",
+     "**RTB(실시간 입찰)의 시간 제한** — 업계 표준 OpenRTB 요청에는 입찰을 받아 주는 최대 시간 `tmax`(밀리초)가 실려 오고[15], 구글 광고 거래소는 80~1000ms 를 기다리며 응답의 85% 를 기한 안에 못 내는 입찰자는 요청을 줄인다.[16] 당근 서빙팀 RTB 의 기한은 공개되지 않았습니다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "eCPM 으로 줄 세우기 — 예산 없는 광고는 후보에서 빠진다",
+     "body": "클릭당 과금(CPC) 광고의 eCPM 은 보통 '클릭당 입찰가 × 예상 클릭률 × 1000' 으로 계산합니다 {추론}. 입찰가가 가장 높은 미용실B 가 3등이 됩니다. 직접 돌린 출력은 카페A 6000원 → 쇼핑D 4500원 → 미용실B 3200원(학원C 는 예산 0이라 빠짐)입니다.",
+     "lang": "python",
+     "code": "# eCPM 줄 세우기 (CPC 광고: eCPM = 클릭당 입찰가 × 예상 클릭률 × 1000)\nads = [\n    {\"id\": \"카페A\", \"bid_cpc\": 300, \"pctr\": 0.020, \"budget_left\": 5000},\n    {\"id\": \"미용실B\", \"bid_cpc\": 800, \"pctr\": 0.004, \"budget_left\": 12000},\n    {\"id\": \"학원C\", \"bid_cpc\": 500, \"pctr\": 0.010, \"budget_left\": 0},\n    {\"id\": \"쇼핑D\", \"bid_cpc\": 150, \"pctr\": 0.030, \"budget_left\": 900},\n]\ncands = [a for a in ads if a[\"budget_left\"] > 0]  # 예산 남은 것만 후보\nfor a in cands:\n    a[\"ecpm\"] = a[\"bid_cpc\"] * a[\"pctr\"] * 1000\nfor a in sorted(cands, key=lambda a: a[\"ecpm\"], reverse=True):\n    print(f'{a[\"id\"]:<5} eCPM {a[\"ecpm\"]:>7.0f}원')"
+    },
+    {
+     "title": "기한을 넘기면 기다리지 않고 대체 광고로",
+     "body": "AdServer 글의 '오디언스 추정이 실패하면 타게팅 없는 광고'[2]를 50ms 기한으로 흉내 낸 것입니다. 200ms 걸리는 추정을 기다리지 않고 약 60ms 안에 답합니다(직접 돌린 출력: `audience: None → 비타게팅 광고로 대체 (62ms 안에 응답)`).",
+     "lang": "python",
+     "code": "import asyncio, time\nasync def audience():  # 오디언스 추정이 느려진 상황\n    await asyncio.sleep(0.2)\n    return {\"age\": \"30대\"}\n\n\nasync def serve():\n    t = time.perf_counter()\n    try:\n        aud = await asyncio.wait_for(audience(), timeout=0.05)  # 50ms 기한\n    except asyncio.TimeoutError:\n        aud = None  # 대체: 타게팅 없이\n    ms = (time.perf_counter() - t) * 1000\n    kind = \"타게팅 광고\" if aud else \"비타게팅 광고로 대체\"\n    print(\"audience:\", aud, \"→\", kind, f\"({ms:.0f}ms 안에 응답)\")\n\n\nasyncio.run(serve())"
+    }
+   ],
+   "how_far": "경매 규칙과 가격 정책은 PM·ML 엔지니어와 같이 정하고 {추론}, 서버 개발자는 **기한 안에 답하는 길·실패했을 때 대체하는 길·몰릴 때 늘어나는 구조·무엇이 느린지 보이는 관측**을 맡습니다.[2] 최소선은 요청 하나의 시간 예산을 단계별로 나눠 보고, 평균이 아니라 p99(가장 느린 1%) 지연을 재고 줄여 본 경험입니다 {추론}.",
+   "refs": [
+    2,
+    5,
+    7,
+    8,
+    10,
+    15,
+    16
+   ],
+   "study": [
+    "blog-adserver",
+    "openrtb",
+    "sre-cascading",
+    "sysdesign"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 기반의 의사결정과 최적화 경험을 쌓을 수 있어요 광고실 개발자로 방대한 양의 사용자 데이터와 광고 성과 데이터를 다루게 돼요. 이 데이터를 효율적으로 수집, 처리, 분석하는 파이프라인을 구축하고 최적화하는 경험을 할 수 있어요. 빅데이터 처리 기술, 데이터 웨어하우징, 실시간 데이터 스트리밍 등 다양한 데이터 엔지니어링 스킬을 향상시킬 수 있죠. 또한, 머신러닝 모델을 실제 광고 시스템에 적용하는 경험도 할 수 있어요. 사용자 타겟팅, 광고 효과 예측, 실시간 입찰가 결정 등 다양한 영역에서 AI/ML 기술을 활용하여 광고 시스템을 지속적으로 개선하는 과정에 참여할 수 있어요.",
+   "short": "노출·클릭·전환 기록을 모아 광고주 성과 보고와 ML 모델의 학습·실험에 쓰게 만드는 일.",
+   "why": "당근 광고는 광고주가 노출·클릭·전환(구매·채팅)을 보고 ROAS(광고비 대비 매출)를 다시 계산하며 광고를 고치는 고리로 돕니다.[3] 이 기록과 연령·성별·관심사를 모아 두는 곳이 DMP(데이터 관리 플랫폼)이고, ML 은 모든 광고의 클릭률·전환율을 예측합니다.[4] 전환 최적화 상품은 지금 광고 매출의 27%, 광고주 500곳 넘게 캠페인 1만 개 넘게 돌고 있습니다.[6]",
+   "actually": {
+    "items": [
+     "**클릭에서 전환으로** — 예전 상품은 클릭률 모델(pCTR)을 썼다. 전환은 드물어서 학습 데이터가 클릭보다 훨씬 적다.[6]",
+     "**전환 추적** — 광고주 사이트에 추적 코드를 심고 바깥 이벤트를 우리 광고와 맞추는 일이 어렵지만 빼놓을 수 없었다.[6]",
+     "**매주 실험** — 모델 개선 실험을 주 1회 이상, 오프라인·온라인을 번갈아 돌렸다. CPA(전환 1건당 비용)를 올린 모델도 있었고 그 실패를 다음 실험에 썼다.[6]",
+     "**공정한 비교** — 예전엔 A/B 결과가 섞여 모델끼리 믿고 비교할 수 없었다. 스카이넷은 시험하는 요인 하나만 바꾸고 나머지를 고정한다.[5]",
+     "**일 나누기** — ML 엔지니어가 실험 조건·피처·로그 설계·분석을, 백엔드 엔지니어가 아키텍처·인프라·코드를 맡았다.[5]",
+     "**로그 비용** — 모든 경쟁을 다 남기기엔 너무 비싸 로그를 추상화했다. '왜 이 광고가 나갔나·안 나갔나'를 설명하는 것은 아직 진행 중인 목표다.[2]",
+     "**큰 규모의 클릭률 예측** — 구글 검색 광고는 온라인 학습(FTRL-Proximal)과 메모리 절약 기법으로 이 문제를 풀었다(다른 회사의 공개 논문).[19]"
+    ]
+   },
+   "how_far": "모델 자체는 ML 엔지니어 몫입니다. 백엔드 개발자는 **로그를 빠짐없이·중복 없이 남기고, 실험 트래픽을 나누고, 모델을 바꿔 끼워도 서빙이 흔들리지 않게** 하는 바닥을 만듭니다.[5] 최소선은 노출 → 클릭 → 전환을 한 광고·한 사용자로 잇는 키를 설계해 보는 것입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    19
+   ],
+   "study": [
+    "blog-skynet",
+    "kohavi-ab",
+    "ddia",
+    "mcmahan-ctr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "지속적으로 성장하는 서비스의 기술적 도전을 해결하는 경험을 할 수 있어요 당근은 끊임없이 성장하고 있어요. 이에 따라 광고 시스템도 지속적으로 확장되고 새로운 기능이 추가되고 있죠. 새로운 광고 상품 출시, 타겟팅 옵션 확대, 광고 효과 측정 방식 개선 등 다양한 변화에 맞춰 시스템을 발전시키는 경험을 할 수 있어요. 예를 들어, DSP팀에서는 새로운 광고 포맷에 맞는 로직을 개발하고, 새로운 데이터 소스를 통합하며, 서빙팀에서는 새로운 광고 노출 방식을 구현하는 등 다양한 도전 과제를 해결하게 될 거예요. 이 과정에서 최신 기술 트렌드를 학습하고 적용하면서 기술적 역량을 크게 향상시킬 수 있어요.",
+   "short": "새 광고 상품·타게팅·성과 측정이 계속 붙어서, 기존 시스템을 깨지 않고 로직을 넓히는 일.",
+   "why": "2024년 광고 매출은 전년보다 48%, 광고주는 37%, 집행 광고는 52% 늘었습니다.[10] 광고 사업은 2018년에 시작했고 2022년에 전문가모드가 나왔으며, 두 명으로 시작한 팀이 50명 넘게 컸습니다.[8]",
+   "actually": {
+    "items": [
+     "**광고 상품** — 피드·검색 광고(클릭당 과금), 카탈로그 상품 광고, 중고거래 판매자의 이웃광고.[10]",
+     "**두 모드** — 동네 사장님용 간편모드(모바일)와 브랜드·대행사용 전문가모드(PC). 간편모드는 입찰·예산 속도 옵션을 숨기고 시스템이 최적화한다.[3][8]",
+     "**타게팅** — 가게에서 최소 반경 300m 까지 고르는 지역 타게팅[8], 전문가모드의 성별·연령·OS·관심사.[10]",
+     "**측정 방식** — 노출 → 클릭 → 전환의 '2.0' 으로 왔고, 다음은 앱 설치·회원가입 전환과 입찰가를 안 정한 광고주를 위한 자동 입찰이다.[6]",
+     "**덩치** — DSP 는 코드 약 17만 줄·표 60개·API 150개가 넘는다. 테스트·코드 리뷰·통합 테스트·점진 배포를 지키고, 큰 기능 전엔 배경·접근·위험을 적은 tech spec 을 먼저 쓴다.[3]",
+     "**정책과 맞물린 로직** — ROAS 만 좇으면 예산이 안 쓰이고, 지면을 다 사면 예산은 빨리 쓰이지만 ROAS 가 나빠진다.[3] 예산을 기간 전체에 고르게 쓰게 하는 것을 페이싱이라 하며, LinkedIn 은 단순한 탐욕적 선택에 공급 흐름을 본 페이싱을 더하는 방법을 발표했다.[20]"
+    ]
+   },
+   "how_far": "무엇을 만들지는 PM·세일즈와 정하고, 개발자는 **17만 줄을 깨지 않고 새 규칙을 얹는 설계와 tech spec** 을 맡습니다.[3] 최소선은 기존 코드에 테스트를 먼저 깔고 작은 단계로 바꿔 본 경험입니다 {추론}.",
+   "refs": [
+    3,
+    6,
+    8,
+    10,
+    20
+   ],
+   "study": [
+    "blog-dsp",
+    "refactoring",
+    "agarwal-pacing"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "마이크로서비스 아키텍처를 직접 설계하고 운영하는 경험을 할 수 있어요 광고실은 마이크로서비스 아키텍처를 채택하고 있어요. DSP, DMP, 추천시스템등 각 영역별로 독립적인 마이크로서비스를 설계하고 구현하는 경험을 할 수 있어요. 이 과정에서 서비스 간 통신, API 설계, 분산 트랜잭션 처리 등 마이크로서비스 아키텍처의 핵심 개념들을 실제로 적용해볼 수 있죠. 또한, 각 마이크로서비스의 독립적인 배포와 운영, 모니터링 시스템 구축, 장애 격리(Fault Isolation) 전략 수립 등을 통해 대규모 시스템의 안정적인 운영 노하우를 쌓을 수 있어요. 광고실의 백엔드 개발자로서, 최고의 광고 기술을 다루면서 동시에 실제 비즈니스 임팩트를 만들어내는 특별한 경험을 하게 될 거예요. 대규모 트래픽 처리, 데이터 기반 의사결정, 지속적인 기술 혁신, 마이크로서비스 아키텍처 등 다양한 영역에서의 경험을 통해 폭넓고 깊이 있는 기술력을 갖춘 엔지니어로 성장할 수 있어요.",
+   "short": "DSP·DMP·추천(스카이넷)·AdServer 를 따로 배포되는 서비스로 나누고, 서로 부르는 길을 설계·운영한다.",
+   "why": "당근 광고 시스템은 광고주 도구(DSP)·광고 고르기(AdServer)·데이터(DMP)·ML 로 나뉩니다.[4] 예전엔 추천 로직이 여러 서버에 흩어져 ML 모델 하나 바꾸려 해도 백엔드 손이 필요했고, 한 곳을 고치면 다른 곳이 깨졌습니다 — 그래서 2023년에 추천만 떼어 '스카이넷' 플랫폼을 만들었습니다.[5]",
+   "actually": {
+    "items": [
+     "**데이터 대 주기** — DSP 는 사내외 서비스에 광고 데이터를 준다. 수백만 건, 아래쪽에선 수십만 광고에 초당 수천 번 계산이 돈다. 그래서 캐시 API·이벤트 전달·DB 스냅샷을 요구마다 골라 섞었다.[3]",
+     "**옮기기** — 스카이넷은 트래픽을 한 번에 옮기지 않고 조금씩 넘기며 문제가 생기면 바로 되돌렸다. 약 두 달 만에 운영에 올렸고 응답 시간이 20~30% 넘게 빨라지고 인프라 비용이 줄었다.[5]",
+     "**장애 격리** — 한 단계가 실패해도 대체 경로로 광고를 낸다.[2] 흔한 방법이 서킷 브레이커(실패가 문턱을 넘으면 그 호출을 잠시 바로 실패로 돌려 장애가 번지지 않게 하는 장치)다.[22]",
+     "**설계 원칙** — 서비스는 따로 배포할 수 있어야 하고, 모든 호출은 실패할 수 있다고 보고 만든다.[21] 재시도는 층마다 하지 않고 서버 전체 재시도 예산을 둔다.[23]",
+     "**조직과 맞물림** — 광고실은 서빙팀·DSP팀·세일즈팀·사업주 커뮤니케이션팀·프론트엔드팀이 있는 매트릭스 조직이다.[9]"
+    ]
+   },
+   "how_far": "서비스를 어디서 자를지는 팀 경계와 같이 정합니다 {추론}[9]. 개발자는 **자기 서비스의 API·배포·모니터링·장애 대응을 끝까지** 맡습니다. 최소선은 '이 호출이 느려지면 위로 어떻게 번지나'를 그림으로 설명하는 것입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    5,
+    9,
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "blog-skynet",
+    "msa-build",
+    "fowler-cb",
+    "sre-cascading"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 이상의 서버 개발 경험, 혹은 이에 준하는 역량을 보유하신 분",
+   "short": "5년 안팎 시니어 자리 — 연차 숫자보다 '큰 트래픽 서버를 맡아 운영해 봤나'를 본다.",
+   "why": "'혹은 이에 준하는 역량'이 붙어 있습니다.[1] 채용 FAQ 는 나이·학력 제한이 없다고 적었습니다.[12] 광고실 DSP 팀장은 게임 개발 14~15년, 커머스 회사의 광고 웹 개발 2년을 거쳐 들어왔고[7], 스카이넷을 만든 팀도 처음엔 광고·ML 경험이 적은 사람이 대부분이었습니다.[5]",
+   "how_far": "광고 도메인 경험은 요건에 없습니다.[1] 대신 **장애를 직접 받아 고쳐 본 서버, 지연·처리량 숫자가 있는 경험**을 맨 앞에 둡니다 {추론}.",
+   "refs": [
+    1,
+    5,
+    7,
+    12
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "하나 이상의 프로그래밍 언어에 능숙하신 분",
+   "short": "언어 하나를 동시성·타임아웃·프로파일링까지 깊게. 광고실 백엔드는 여러 언어를 쓴다.",
+   "why": "광고실 인터뷰는 백엔드가 여러 언어를 쓰고 기술 선택이 유연하다고만 했고, 특정 언어는 공개 글에 없습니다.[7] 초당 수천 번 광고를 고르는 서버라[2] '능숙'은 문법보다 동시 처리와 느린 곳 찾기입니다 {추론}.",
+   "level": {
+    "basic": "표준 라이브러리 · 오류 처리 · 단위 테스트 · 패키지 구조",
+    "work": "동시성(스레드·코루틴·고루틴) · 타임아웃과 취소 · 커넥션 풀 · 프로파일러로 병목 찾기",
+    "team": "초당 수천 요청에서 메모리 할당·GC 멈춤 줄이기 · p99 지연 개선 · 여러 언어 서비스 사이의 gRPC 계약"
+   },
+   "how_far": "한 언어로 위 '실무' 줄을 다 설명할 수 있으면 됩니다. 다른 언어는 들어가서 읽을 수 있는 정도면 충분합니다 {추론}.",
+   "refs": [
+    2,
+    7
+   ],
+   "study": [
+    "grpc-deadlines"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "스스로 데이터베이스를 설계하고 개발/운영해 본 경험이 있으신 분",
+   "short": "캠페인·예산·과금 표를 직접 설계·운영 — 돈이 걸려 있어 중복 과금·예산 초과가 없어야 한다.",
+   "why": "DSP 한 곳에만 표가 60개입니다.[3] 피드·검색 광고는 클릭당 과금이고[10], 광고주와 대행사 사이에 돈이 오가니 정확성이 곧 신뢰입니다.[8] AdServer 는 **예산이 남은** 광고만 후보로 올립니다.[2]",
+   "level": {
+    "basic": "정규화 · 인덱스 · 트랜잭션 · 고유 제약",
+    "work": "격리 수준과 동시 갱신 · 조건부 UPDATE · 실행계획 · 무중단 스키마 변경",
+    "team": "초당 수천 번 읽는 데이터를 DB 대신 캐시·스냅샷·이벤트로 나눠 주기 · 수백만 건 데이터 이관"
+   },
+   "actually": {
+    "items": [
+     "**중복 클릭** — 같은 클릭이 두 번 들어와도 한 번만 과금하도록 클릭 id 에 고유 제약을 건다 {추론}.",
+     "**예산 초과 막기** — '남은 예산 확인 → 차감'을 두 번에 나누면 동시에 들어온 요청이 둘 다 통과한다. 조건을 UPDATE 한 문장 안에 넣는다 {추론}.",
+     "**읽기 부담 덜기** — DSP 는 수백만 건 데이터를 내줄 때 DB 스냅샷·캐시 API·이벤트를 골라 쓴다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "중복 클릭 무시 + 예산 넘기지 않기 (SQLite 로 직접 돌림)",
+     "body": "예산 1,000원, 클릭당 300원. 출력: c1 과금 → c1 중복 클릭 — 무시 → c2 과금 → c3 과금 → c4 예산 소진 — 과금 안 함, 마지막 (1000, 900).",
+     "lang": "python",
+     "code": "# 클릭 과금: 같은 클릭이 두 번 와도 한 번만, 예산을 넘겨 쓰지 않게\nimport sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\nCREATE TABLE campaign(id TEXT PRIMARY KEY, budget INTEGER, spent INTEGER);\nCREATE TABLE click(click_id TEXT PRIMARY KEY, campaign_id TEXT, cost INTEGER);\nINSERT INTO campaign VALUES ('cafe', 1000, 0);\n\"\"\")\n\n\ndef charge(click_id, cost):\n    with db:  # 트랜잭션\n        cur = db.execute(\n            \"INSERT OR IGNORE INTO click VALUES (?, 'cafe', ?)\", (click_id, cost))\n        if cur.rowcount == 0:\n            return \"중복 클릭 — 무시\"\n        cur = db.execute(\n            \"UPDATE campaign SET spent = spent + ? \"\n            \"WHERE id='cafe' AND spent + ? <= budget\", (cost, cost))\n        if cur.rowcount == 0:\n            db.execute(\"DELETE FROM click WHERE click_id=?\", (click_id,))\n            return \"예산 소진 — 과금 안 함\"\n        return \"과금\"\n\n\nfor cid in [\"c1\", \"c1\", \"c2\", \"c3\", \"c4\"]:\n    print(cid, charge(cid, 300))\nprint(db.execute(\"SELECT budget, spent FROM campaign\").fetchone())"
+    }
+   ],
+   "how_far": "'스스로 설계하고 개발/운영' 이므로 남이 준 스키마를 쓴 경험이 아니라 **표를 처음 나누고, 운영하며 인덱스·이관을 해 본 경험**을 말할 수 있어야 합니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    8,
+    10
+   ],
+   "study": [
+    "real-mysql",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "마이크로서비스 아키텍쳐와 REST, gRPC 등 서비스 간 통신에 대한 높은 이해가 있으신 분",
+   "short": "서비스끼리 REST·gRPC 로 부를 때의 기한·재시도·장애 전파를 알고 골라 쓸 수 있어야 한다.",
+   "why": "광고실은 DSP·DMP·추천을 독립 서비스로 나눈 마이크로서비스 구조이고, 공고가 서비스 간 통신으로 gRPC 를 이름 붙였습니다.[1]",
+   "actually": {
+    "items": [
+     "**gRPC 의 바탕** — `.proto` 파일에 서비스와 메시지를 정의하면 서버·클라이언트 코드가 만들어진다. 기본 직렬화는 Protocol Buffers 다.[18]",
+     "**호출 네 가지** — 요청 하나·응답 하나(단항), 서버 스트리밍, 클라이언트 스트리밍, 양방향 스트리밍.[18]",
+     "**기한(deadline)** — gRPC 는 기본으로 기한이 없어 영원히 기다릴 수 있으니 늘 정해야 한다. 넘으면 `DEADLINE_EXCEEDED`, 서버 쪽 호출은 취소되며 Go·Java 는 받은 기한을 다음 호출로 넘기는 게 기본이다.[17]",
+     "**재시도** — 층마다 재시도하면 시도 횟수가 곱으로 불어난다. 지수 백오프와 재시도 예산을 쓴다.[23]",
+     "**REST 와 나눠 쓰기** — 내부 고빈도 호출은 gRPC, 광고주·백오피스 화면처럼 사람이 쓰는 API 는 HTTP·JSON 이 흔하다 {추론}."
+    ]
+   },
+   "how_far": "'높은 이해'는 쓸 줄 아는 것보다 **느려지거나 죽었을 때 어떻게 되는지**를 설명하는 수준입니다 {추론}. 기한을 어디서 얼마로 잡고 넘기는지, 재시도는 누가 하는지를 답할 수 있으면 됩니다.[17][23]",
+   "refs": [
+    1,
+    17,
+    18,
+    23
+   ],
+   "study": [
+    "grpc-core",
+    "grpc-deadlines",
+    "msa-build"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "코드 리뷰에 긍정적이고, 테스트 및 이해하기 쉬운 좋은 코드 작성에 관심이 많으신 분",
+   "short": "17만 줄짜리 시스템을 여럿이 고치니까 — 리뷰받기 쉬운 작은 변경과 테스트가 기본기다.",
+   "why": "DSP 팀은 도메인이 복잡해 테스트·코드 리뷰·통합 테스트·점진 배포를 규칙으로 둡니다.[3]",
+   "actually": {
+    "items": [
+     "**리뷰 기준** — 구글 공개 지침은 완벽하지 않아도 코드 전체 상태를 분명히 낫게 하면 승인하라고 한다.[24]",
+     "**테스트 대상** — 예산 차감·과금·타게팅 조건처럼 돈과 노출을 바꾸는 규칙부터 {추론}.",
+     "**큰 변경 전 글** — 큰 기능은 배경·접근·위험을 적은 tech spec 을 먼저 쓴다.[3]"
+    ]
+   },
+   "how_far": "리뷰를 '받는' 것만이 아니라 남의 변경을 읽고 근거 있게 말해 본 경험까지 말할 수 있으면 좋습니다 {추론}.",
+   "refs": [
+    3,
+    24
+   ],
+   "study": [
+    "unit-testing",
+    "google-eng",
+    "wiki-practical-testing"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Code Level Architecture (layered architecture, clean architecture 등)에 대한 이해가 있으신 분",
+   "short": "예산·타게팅·과금 같은 규칙을 DB·프레임워크와 떼어 두는 코드 구조를 알면 좋다.",
+   "why": "DSP 는 코드 17만 줄·API 150개 넘는 복잡한 도메인입니다.[3] 클린 아키텍처의 핵심은 의존성 규칙 — 안쪽(업무 규칙)은 바깥(DB·웹·프레임워크)을 몰라야 한다는 것입니다.[26]",
+   "how_far": "계층형·헥사고날·클린 중 하나를 골라 **왜 그렇게 나눴는지와 그 대가(파일·매핑이 늘어남)**를 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    3,
+    26
+   ],
+   "study": [
+    "clean-arch"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대용량 데이터 처리를 위한 효율적인 애플리케이션 아키텍처 및 데이터베이스 구성에 대한 이해도가 있으신 분",
+   "short": "수십만 광고·수백만 건 데이터를 초당 수천 번 읽어도 버티게 캐시·스냅샷·이벤트로 나누는 감각.",
+   "why": "AdServer 는 초당 수천 번 고르면서 데이터를 가져올 네트워크 대역폭에 막히고[2], DSP 는 수백만 건 데이터를 캐시 API·이벤트·DB 스냅샷으로 나눠 줍니다.[3]",
+   "actually": {
+    "items": [
+     "**가까이 두기** — 매 요청마다 DB 를 부르지 않고 후보 목록을 메모리·캐시에 두고 정해진 시간 재사용한다.[2]",
+     "**바뀐 것만 보내기** — 전체를 다시 읽지 않고 바뀔 때 이벤트로 알린다.[3]",
+     "**통째로 넘기기** — 한꺼번에 많이 읽는 곳엔 DB 스냅샷을 준다.[3]",
+     "**대가** — 캐시·스냅샷은 낡을 수 있다. 예산이 다 쓰인 광고가 몇 초 더 나갈 수 있는지 같은 허용치를 정해야 한다 {추론}."
+    ]
+   },
+   "refs": [
+    2,
+    3
+   ],
+   "study": [
+    "ddia",
+    "sysdesign"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kubernetes, AWS, GCP 등 클라우드 환경에서의 운영 경험이 있으신 분",
+   "short": "서버가 쿠버네티스 위 AWS·GCP 에서 돈다 — 수 초 안에 늘어나는 오토스케일을 다뤄 본 경험.",
+   "why": "공고 기술 표기가 AWS·GCP·Kubernetes 입니다.[1] AdServer 는 몰릴 때 수 초 안에 서버가 늘어나야 하고[2], 광고실 개발자는 정책 안에서 인프라·보안팀과 함께 인프라까지 손댑니다.[7]",
+   "actually": {
+    "items": [
+     "**HPA** — 쿠버네티스는 CPU 같은 지표를 보고 파드(서버 묶음) 수를 자동으로 늘리고 줄인다.[27]",
+     "**늘어나는 시간** — 새 파드가 떠서 준비될 때까지의 시간이 '수 초' 목표를 좌우한다 — 이미지 크기·초기화·준비 검사 {추론}."
+    ]
+   },
+   "how_far": "클러스터를 짓는 건 인프라 조직 몫이고, 이 자리는 **자기 서비스의 자원 요청·오토스케일·배포를 설정하고 문제를 읽는** 수준이면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    7,
+    27
+   ],
+   "study": [
+    "wiki-kubernetes",
+    "k8s-hpa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "간단한 백오피스 개발이 가능하신 분",
+   "short": "광고 심사·광고주 관리 같은 내부 화면을 백엔드 개발자가 직접 만들 일이 있어서.",
+   "why": "광고 심사는 하루 최대 수만 건이고 약 70% 가 자동, 나머지는 사람이 봅니다.[3] 전문가모드를 짧은 기간에 낼 때 백엔드 개발자 여럿이 프론트엔드까지 맡았습니다.[7]",
+   "how_far": "'간단한' 이므로 화려한 화면이 아니라 운영자가 검색·수정·승인할 수 있는 관리 화면이면 됩니다 {추론}.",
+   "refs": [
+    3,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "자기주도성, 적극적인 커뮤니케이션, 빠른 실행력을 갖추신 분",
+   "short": "두 달 만에 플랫폼을 띄운 팀 — 일을 정해 주길 기다리지 않고 먼저 움직이는 사람.",
+   "why": "스카이넷은 약 두 달 만에 운영에 올라갔습니다.[5] 광고실은 매일 광고 지표를 슬랙 대시보드로 함께 보고[7], 목표가 해마다 몇 배씩 커졌다고 말합니다.[8]",
+   "how_far": "'내가 먼저 문제를 찾아 제안하고 끝까지 낸' 일 하나를 숫자와 함께 준비합니다 {추론}.",
+   "refs": [
+    5,
+    7,
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "데이터 파이프라인 구축/운영을 실제로 경험했거나 높은 이해도가 있으신 분",
+   "short": "노출·클릭·전환 로그를 모아 보고서·과금·모델 학습으로 흘려보내는 길을 알면 좋다.",
+   "why": "DMP 가 노출·클릭·전환 기록을 모으고[4], 전환 최적화는 바깥 전환 이벤트를 맞추는 데서 시작했습니다.[6] 공고도 실시간 스트리밍·데이터 웨어하우징을 이 자리에서 키울 기술로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**한 번만 세기** — 같은 이벤트가 두 번 와도 보고서와 과금에 한 번만 잡히게 이벤트 id 로 중복을 지운다 {추론}.",
+     "**늦게 오는 전환** — 클릭 며칠 뒤에 온 전환을 어느 광고에 붙일지 기간을 정한다 {추론}.",
+     "**실시간과 일 단위** — 예산 차감처럼 바로 필요한 값과, 일별 리포트처럼 모아 계산하는 값을 다른 길로 보낸다 {추론}."
+    ]
+   },
+   "refs": [
+    1,
+    4,
+    6
+   ],
+   "study": [
+    "wiki-kafka",
+    "ddia"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "정규직 채용의 경우 3개월의 수습기간이 있어요 ‘장애인고용촉진 및 직업재활법’, ‘국가유공자 등 예우 및 지원에 관한 법률’에 따라 장애인 및 보훈대상자는 채용 전형 시 우대하고 있어요 이 포지션은 산업기능요원으로 채용이 가능한 포지션이에요. (현역 전직, 보충역 신규 편입, 보충역 전직) 전문연구요원 편입 및 전직은 불가해요.",
+   "short": "정규직은 수습 3개월. 산업기능요원(현역 전직·보충역)으로도 지원 가능, 전문연구요원은 안 된다.",
+   "why": "공고의 안내입니다.[1] 채용 FAQ 도 엔지니어 직군에 한해 산업기능요원 채용이 가능하다고 적었습니다.[12] 산업기능요원은 군 복무 대신 병무청이 지정한 업체에서 일하는 제도입니다.[25]",
+   "refs": [
+    1,
+    12,
+    25
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "1. 서류 전형 → 2. 화상 인터뷰 → 3. 직무 인터뷰 → 4. 컬처핏 인터뷰 및 레퍼런스 체크 → 5. 처우협의 → 6. 최종 합격",
+   "short": "서류 → 화상 → 직무 → 컬처핏·레퍼런스 체크 → 처우 협의 → 합격. 연봉은 다섯째 단계에서 정한다.",
+   "why": "공고의 전형 순서입니다.[1] 화상·직무 인터뷰 뒤에 떨어지면 같은 공고는 6개월 뒤, 컬처핏 뒤면 모든 공고에 1년 뒤 다시 지원할 수 있습니다.[12] 경력 기간에 따라 최대 3개월 계약직으로 먼저 일할 수 있다는 안내도 있습니다.[1]",
+   "refs": [
+    1,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "당근은 자유형식의 지원서를 받고 있어요. 본인의 강점이 잘 드러나는 다양한 정보를 자유롭게 활용해 이력서를 작성해 주세요. 문서 형식은 hwp(한글) 파일을 제외하고 word, pdf, 웹 링크 등 자유롭게 선택해주시면 돼요. 웹 링크(노션, 구글드라이브 등)로 서류를 제출해주실 때는 접근 권한을 꼭 열어주세요. 평가와 상관 없는 사진, 주소 등의 개인정보는 제외해주세요.",
+   "short": "이력서 양식은 자유. hwp만 빼고 PDF·링크 다 되며, 링크는 권한을 열고, 사진·주소는 뺀다.",
+   "why": "당근 공통 서류 안내입니다.[1] 채용 FAQ 는 PDF 를 권하고 국내 포지션은 국문을 권한다고 덧붙였습니다.[12]",
+   "how_far": "자유 형식이라 **요청 수·지연(p99)·장애 시간·비용처럼 숫자가 있는 경험**을 맨 위에 둡니다 {추론}.",
+   "refs": [
+    1,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "지원해주신 직무와 업무 연관성이 높은 당근 팀원과 화상으로 직무와 관련된 기본적인 지식에 대해 이야기를 나누는 단계예요. 직무에 따라 과제 전형이 있어요. 과제는 직무 능력과 연관된 내용으로 출제돼요. 과제 전형을 별도로 운영하는 직무도 있고, 화상 면접 또는 직무 면접에서 과제가 함께 출제되는 경우도 있어요. 지원하신 직무와 업무 연관성이 높은 당근 팀원들과 직무 역량, 경험에 대해 화상 면접보다 심층적인 이야기를 나누는 단계예요. 과제가 출제되었을 경우 과제에 대한 질문을 드려요.",
+   "short": "화상은 기본 지식 대화, 직무는 경험을 더 깊게. 직무에 따라 과제가 따로 나오거나 면접 중에 나온다.",
+   "why": "당근 공통 면접 안내입니다.[1] 이 자리의 과제 여부는 공고에 적혀 있지 않습니다.[1]",
+   "how_far": "기본 지식으로는 서비스 간 통신(gRPC 기한·재시도), DB 트랜잭션, 캐시 같은 요건 줄의 바닥이 자연스럽습니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sysdesign"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "컬쳐핏 면접(정규직 공통) 당근은 면접을 단순히 회사에 사람을 뽑는 자리로 생각하지 않아요. 당근과 지원자가 서로 추구하는 가치관과 생각을 교환하는 시간이라고 생각하고 있어요. 컬쳐핏 단계는 당근이 추구하는 문화와 일하는 방식과 잘 어울릴 수 있는 분인지 확인하는 단계예요. 또한 포지션에 대한 전문성을 다시금 확인하는 이야기를 나눠요.",
+   "short": "정규직 공통 마지막 면접 — 당근의 일하는 방식과 맞는지, 전문성도 한 번 더 확인한다.",
+   "why": "당근 공통 안내입니다.[1] 채용 사이트가 적은 일하는 방식은 직무 경계를 넘는 오너십, 솔직한 충돌 뒤 한 방향 실행, 사용자 기준, 작게 내고 빠르게 검증, 결정 맥락 공개입니다.[11]",
+   "how_far": "이 다섯 가지에 맞는 내 경험 한 가지씩을 준비해 두면 됩니다 {추론}.",
+   "refs": [
+    1,
+    11
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "p99 지연·처리량 숫자가 줄어드는 걸 보는 게 즐거운 사람[2]",
+   "광고 하나가 왜 나갔는지를 끝까지 따져 보고 싶은 사람[2]",
+   "ML 엔지니어와 실험을 같이 설계하는 걸 좋아하는 사람[5][6]",
+   "광고·ML 경험이 없어도 배우며 플랫폼을 처음부터 세워 보고 싶은 사람[5]"
+  ],
+  "hard": [
+   "경력 5년 안팎 시니어 자리다[1]",
+   "1원·1밀리초가 광고주 돈과 매출로 바로 이어져 실수의 비용이 크다[8]",
+   "목표가 해마다 몇 배씩 커지는 빠른 팀이다[8]",
+   "광고실 언어·저장소·큐 같은 세부 기술은 공개 글에 없어 들어가서 배울 부분이 크다[7]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "광고 하나를 고르는 데 50ms 가 주어졌다면 단계별로 시간을 어떻게 나누고, 오디언스 추정이 늦으면 어떻게 하겠어요?",
+   "a": "AdServer 의 다섯 단계와 대체 경로.[2]"
+  },
+  {
+   "q": "같은 클릭이 두 번 들어오거나, 예산이 거의 다 쓰인 광고에 클릭이 동시에 몰리면?",
+   "a": "고유 제약과 조건부 UPDATE {추론}."
+  },
+  {
+   "q": "gRPC 호출에 기한을 안 걸면 무슨 일이 생기나요? 재시도는 어느 층에서 하나요?",
+   "a": "기한 기본값 없음·전파, 재시도 예산.[17][23]"
+  },
+  {
+   "q": "ROAS 를 최대로 하면 왜 예산이 안 쓰이나요? 서버는 무엇으로 이를 조절하나요?",
+   "a": "DSP 팀의 정책 고민과 예산 페이싱.[3][20]"
+  },
+  {
+   "q": "흩어진 추천 로직을 새 플랫폼으로 옮길 때 트래픽을 어떻게 넘기고 무엇을 비교하겠어요?",
+   "a": "스카이넷의 점진 이전·즉시 롤백·한 요인만 바꾸는 실험.[5]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "당근 채용 · Software Engineer, Backend - 광고",
+   "url": "https://about.daangn.com?gh_jid=6640363003",
+   "kind": "posting",
+   "note": "광고실 소개·업무·요건·전형 · 2026-11-25 수집본"
+  },
+  {
+   "n": 2,
+   "title": "당근 블로그 · 사용자를 위한 최적의 광고를 찾아서, AdServer (광고실 소개 3)",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B4%91%EA%B3%A0%EC%8B%A4-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EC%84%9C%EB%B2%84-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4-dsp/",
+   "kind": "company",
+   "date": "2024-12-12",
+   "note": "광고실 서버 엔지니어 · 서빙 5단계·규모·장애 대체"
+  },
+  {
+   "n": 3,
+   "title": "당근 블로그 · 당근 광고가 만들어지는 곳, DSP (광고실 소개 2)",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B4%91%EA%B3%A0-%EA%B0%9C%EB%B0%9C%EC%9E%90-dsp/",
+   "kind": "company",
+   "date": "2024-08-06",
+   "note": "DSP팀 · 17만 줄·표 60개·API 150개·심사 자동화"
+  },
+  {
+   "n": 4,
+   "title": "당근 블로그 · 전단지를 대체할 당근 광고의 등장 (광고실 소개 1)",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B4%91%EA%B3%A0%EC%8B%A4-%EB%8F%99%EB%84%A4-%EC%82%AC%EC%9E%A5%EB%8B%98-%EA%B4%91%EA%B3%A0/",
+   "kind": "company",
+   "date": "2023-11-23",
+   "note": "DSP·AdServer·DMP·ML 네 부분"
+  },
+  {
+   "n": 5,
+   "title": "당근 블로그 · 대규모 트래픽 위에서 스카이넷은 어떻게 두 달 만에 탄생했을까? (Behind The Ads 2)",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B4%91%EA%B3%A0%EC%8B%A4-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4-%EC%BB%A4%EB%A6%AC%EC%96%B4/",
+   "kind": "company",
+   "date": "2025-09-12",
+   "note": "광고 추천팀 백엔드 엔지니어 Allan"
+  },
+  {
+   "n": 6,
+   "title": "당근 블로그 · 당근 광고는 어떻게 전환 최적화로 2.0 시대를 열었을까? (Behind The Ads 3)",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B4%91%EA%B3%A0%EC%8B%A4-%ED%94%84%EB%A1%9C%EB%8D%95%ED%8A%B8-%EB%A7%A4%EB%8B%88%EC%A0%80-%EC%BB%A4%EB%A6%AC%EC%96%B4/",
+   "kind": "company",
+   "date": "2025-09-19",
+   "note": "광고 상품팀 PM"
+  },
+  {
+   "n": 7,
+   "title": "당근 블로그 · 3번의 지원, 5배의 성장 (광고실 백엔드 엔지니어 인터뷰)",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EB%B0%B1%EC%97%94%EB%93%9C%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4-%EC%B1%84%EC%9A%A9-%EC%9D%B8%ED%84%B0%EB%B7%B0/",
+   "kind": "company",
+   "date": "2023-12-20",
+   "note": "광고실 DSP 팀장 Linus · 하루 2억 건"
+  },
+  {
+   "n": 8,
+   "title": "당근 블로그 · 동네부터 기업까지, 광고실이 목표를 향해 달리는 법",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B4%91%EA%B3%A0%EC%8B%A4-%EC%B1%84%EC%9A%A9-%EB%AA%A9%ED%91%9C%EB%8B%AC%EC%84%B1-%EB%A7%A4%EC%B6%9C-%ED%8C%80%EB%AC%B8%ED%99%94/",
+   "kind": "company",
+   "date": "2024-06-18",
+   "note": "광고실 리더·DSP팀 서버 개발자·PM 인터뷰"
+  },
+  {
+   "n": 9,
+   "title": "당근 블로그 · 입사 5일차에 쓰는 글 (광고실 프론트엔드)",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EC%8B%A0%EA%B7%9C%EC%9E%85%EC%82%AC%EC%9E%90-%EC%98%A8%EB%B3%B4%EB%94%A9/",
+   "kind": "company",
+   "date": "2023-07-06",
+   "note": "광고실 매트릭스 조직의 팀 이름"
+  },
+  {
+   "n": 10,
+   "title": "바이라인네트워크 · 당근이 돈 버는 법 (2024.ver)",
+   "url": "https://byline.network/2025/04/09_daangn",
+   "kind": "news",
+   "date": "2025-04-09",
+   "note": "2024 사업보고서 매출 구성·광고 상품"
+  },
+  {
+   "n": 11,
+   "title": "당근 채용 · 팀 문화(일하는 방식·복지)",
+   "url": "https://careers.daangn.com/culture/",
+   "kind": "company",
+   "note": "2026-11-25 확인"
+  },
+  {
+   "n": 12,
+   "title": "당근 채용 · 자주 묻는 질문",
+   "url": "https://careers.daangn.com/faq/",
+   "kind": "company",
+   "note": "서류 형식·재지원·나이 학력 제한 없음·병역특례 · 2026-11-25 확인"
+  },
+  {
+   "n": 13,
+   "title": "원티드 · 당근마켓 기업 정보(평균연봉·올해 입사자 평균연봉)",
+   "url": "https://www.wanted.co.kr/company/2826",
+   "kind": "reference",
+   "note": "금감원·국민연금 자료로 계산한 집계 · 2026-11-25 확인"
+  },
+  {
+   "n": 14,
+   "title": "헤럴드경제 · \"똑같이 야근하는데, 카카오 절반도 못 받네\"(당근마켓 2021년 감사보고서 평균 연봉)",
+   "url": "https://v.daum.net/v/E0TBuDZZNt",
+   "kind": "news",
+   "date": "2022-04-16"
+  },
+  {
+   "n": 15,
+   "title": "IAB Tech Lab · OpenRTB 2.6 규격",
+   "url": "https://github.com/InteractiveAdvertisingBureau/openrtb2.x/blob/main/2.6.md",
+   "kind": "reference",
+   "note": "tmax(ms)·at(1 첫째 가격, 2 둘째 가격+)·입찰 없음은 HTTP 204"
+  },
+  {
+   "n": 16,
+   "title": "Google Authorized Buyers · RTB 피어링 안내",
+   "url": "https://developers.google.com/authorized-buyers/rtb/peer-guide",
+   "kind": "reference",
+   "note": "다른 회사의 공개 문서 — 기한 80~1000ms, 85% 기한 안 응답"
+  },
+  {
+   "n": 17,
+   "title": "gRPC 문서 · Deadlines",
+   "url": "https://grpc.io/docs/guides/deadlines/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "gRPC 문서 · Core concepts",
+   "url": "https://grpc.io/docs/what-is-grpc/core-concepts/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "McMahan 외 · Ad Click Prediction: a View from the Trenches (KDD 2013)",
+   "url": "https://research.google/pubs/ad-click-prediction-a-view-from-the-trenches/",
+   "kind": "reference",
+   "note": "구글 검색 광고의 클릭률 예측 사례"
+  },
+  {
+   "n": 20,
+   "title": "Agarwal 외 · Budget Pacing for Targeted Online Advertisements at LinkedIn (KDD 2014)",
+   "url": "https://doi.org/10.1145/2623330.2623366",
+   "kind": "reference",
+   "note": "초록 기준 확인"
+  },
+  {
+   "n": 21,
+   "title": "Martin Fowler · Microservices",
+   "url": "https://martinfowler.com/articles/microservices.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Martin Fowler · CircuitBreaker",
+   "url": "https://martinfowler.com/bliki/CircuitBreaker.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Google SRE 책 · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference",
+   "note": "기한·부하 차단·재시도 예산"
+  },
+  {
+   "n": 24,
+   "title": "Google Engineering Practices · Code Review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "병무청 · 산업기능요원·전문연구요원 안내",
+   "url": "https://www.mma.go.kr/contents.do?mc=mma0000760",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Robert C. Martin · The Clean Architecture",
+   "url": "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Kubernetes 문서 · Horizontal Pod Autoscaling",
+   "url": "https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "당근 광고실 글은 2023~2025년 것이라 지금은 달라졌을 수 있습니다. 서빙팀 RTB 의 기한·입찰 방식, 광고실이 쓰는 언어·DB·큐는 공개되지 않아 OpenRTB·구글 광고 거래소·gRPC·SRE 공개 문서로 \"보통 이런 것\"을 보였고, 과금·중복 제거 예시는 {추론} 으로 표시했습니다.",
+ "resources": [
+  {
+   "id": "blog-adserver",
+   "title": "사용자를 위한 최적의 광고를 찾아서, AdServer",
+   "by": "당근 광고실 서버 엔지니어 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B4%91%EA%B3%A0%EC%8B%A4-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EC%84%9C%EB%B2%84-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4-dsp/",
+   "why": "업무① 의 바닥 — 요청 하나가 지면 판별부터 eCPM 순위까지 어떻게 흐르고, 실패하면 무엇으로 대체하나. 지원 전에 꼭 읽을 글."
+  },
+  {
+   "id": "blog-dsp",
+   "title": "당근 광고가 만들어지는 곳, DSP",
+   "by": "당근 광고 DSP팀 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B4%91%EA%B3%A0-%EA%B0%9C%EB%B0%9C%EC%9E%90-dsp/",
+   "why": "업무③ 의 덩치(17만 줄·API 150개)와 리뷰·테스트·tech spec 규칙, ROAS 와 예산 소진 사이의 고민."
+  },
+  {
+   "id": "blog-skynet",
+   "title": "대규모 트래픽 위에서 스카이넷은 어떻게 두 달 만에 탄생했을까?",
+   "by": "당근 광고 추천팀 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EA%B4%91%EA%B3%A0%EC%8B%A4-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4-%EC%BB%A4%EB%A6%AC%EC%96%B4/",
+   "why": "업무②④ — 흩어진 추천 로직을 독립 플랫폼으로 떼어 내고 트래픽을 조금씩 옮긴 과정."
+  },
+  {
+   "id": "openrtb",
+   "title": "OpenRTB 2.6",
+   "by": "IAB Tech Lab",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/InteractiveAdvertisingBureau/openrtb2.x/blob/main/2.6.md",
+   "why": "RTB 요청·응답에 무엇이 오가나(tmax·imp·가격·입찰 없음). 업무① RTB 를 처음 볼 때 필드 정의만 골라 읽는다."
+  },
+  {
+   "id": "mcmahan-ctr",
+   "title": "Ad Click Prediction: a View from the Trenches",
+   "by": "H. Brendan McMahan 외 · KDD 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google.com/pubs/archive/41159.pdf",
+   "why": "업무② — 클릭률 예측을 실제 서비스에서 돌릴 때 생기는 메모리·학습·평가 문제. 모델러가 아니어도 서빙 쪽 고민을 알 수 있다."
+  },
+  {
+   "id": "agarwal-pacing",
+   "title": "Budget Pacing for Targeted Online Advertisements at LinkedIn",
+   "by": "Deepak Agarwal 외 · KDD 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/2623330.2623366",
+   "why": "업무③ 의 '예산을 기간에 고르게 쓰기' 문제를 실제 회사가 어떻게 풀었나."
+  },
+  {
+   "id": "grpc-core",
+   "title": "gRPC Core concepts",
+   "by": "gRPC 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://grpc.io/docs/what-is-grpc/core-concepts/",
+   "why": "요건④ — .proto 정의, 호출 네 종류, 스트리밍."
+  },
+  {
+   "id": "grpc-deadlines",
+   "title": "gRPC Deadlines",
+   "by": "gRPC 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://grpc.io/docs/guides/deadlines/",
+   "why": "요건④ — 기한을 정하고 넘기는 법. 밀리초 단위 서빙에서 가장 먼저 알아야 할 설정."
+  },
+  {
+   "id": "sre-cascading",
+   "title": "Addressing Cascading Failures",
+   "by": "Google SRE 책",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "why": "업무①④ — 한 서비스가 느려질 때 위로 번지는 장애를 기한·부하 차단·재시도 예산으로 막는 법."
+  },
+  {
+   "id": "fowler-cb",
+   "title": "CircuitBreaker",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/bliki/CircuitBreaker.html",
+   "why": "업무④ '장애 격리' — 닫힘·열림·반열림 세 상태를 짧은 예제로."
+  },
+  {
+   "id": "msa-build",
+   "title": "마이크로서비스 아키텍처 구축(전면 개정판)",
+   "by": "샘 뉴먼 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/maikeuroseobiseu-akitegceo-gucug-jeonmyeon/9791169211192/",
+   "why": "업무④·요건④ — 서비스 경계 나누기·통신·배포·팀이 서비스를 갖는 법."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://wikibook.co.kr/data-intensive-applications/",
+   "why": "요건③·우대②⑥ — 복제·트랜잭션·스트림 처리. 캐시·스냅샷·이벤트 중 무엇을 고를지의 원리."
+  },
+  {
+   "id": "sysdesign",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "why": "업무①·우대② — 캐시·부하분산·처리율 제한을 놓고 설계안을 견주는 연습. 직무 인터뷰 대비."
+  },
+  {
+   "id": "real-mysql",
+   "title": "Real MySQL 8.0 (1·2권)",
+   "by": "백은빈 · 이성욱 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002928545",
+   "why": "요건③ — 인덱스·실행계획·잠금·격리 수준. 예산·과금 표를 동시에 고칠 때의 바닥."
+  },
+  {
+   "id": "kohavi-ab",
+   "title": "A/B 테스트: 신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비·다이앤 탕·야 쉬 지음, 이기홍·김기영 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "why": "업무② — 스카이넷이 고친 '섞인 A/B 결과' 문제. 실험 단위·지표·흔한 함정."
+  },
+  {
+   "id": "clean-arch",
+   "title": "만들면서 배우는 클린 아키텍처",
+   "by": "톰 홈버그 · 박소은 옮김 · 위키북스 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005295801",
+   "why": "우대① — 업무 규칙을 바깥과 떼는 구조를 코드로 직접 짜 본다."
+  },
+  {
+   "id": "refactoring",
+   "title": "리팩터링 (2판)",
+   "by": "마틴 파울러 · 한빛미디어 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%AC%ED%8C%A9%ED%84%B0%EB%A7%81%202%ED%8C%90",
+   "why": "업무③ — 큰 코드에 새 규칙을 얹기 전, 동작을 지키며 구조를 바꾸는 작은 단계."
+  },
+  {
+   "id": "unit-testing",
+   "title": "단위 테스트",
+   "by": "블라디미르 코리코프 · 에이콘출판",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8B%A8%EC%9C%84%20%ED%85%8C%EC%8A%A4%ED%8A%B8%20%EC%BD%94%EB%A6%AC%EC%BD%94%ED%94%84",
+   "why": "요건⑤ — 무엇을 테스트하고 무엇을 가짜로 바꿀지."
+  },
+  {
+   "id": "google-eng",
+   "title": "Google Engineering Practices — Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "요건⑤ — 리뷰를 무엇을 기준으로, 얼마나 빨리 하나의 공개 기준."
+  },
+  {
+   "id": "wiki-practical-testing",
+   "title": "Practical Testing — 실용적인 테스트 가이드",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/practical-testing",
+   "why": "요건⑤ — 실제로 돌린 테스트 결과로 리뷰받을 만한 테스트 쓰기."
+  },
+  {
+   "id": "wiki-kubernetes",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "우대③ — 파드가 왜 안 뜨나(Pending·CrashLoopBackOff)를 읽는 눈."
+  },
+  {
+   "id": "k8s-hpa",
+   "title": "Horizontal Pod Autoscaling",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/",
+   "why": "우대③ — 지표를 보고 파드 수를 늘리는 규칙. AdServer 의 '수 초 안에 늘리기'."
+  },
+  {
+   "id": "wiki-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "우대⑥ — 보냈다는 것과 처리됐다는 것 사이. 노출·클릭 이벤트가 중복·누락되는 자리를 직접 본다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "당근 광고 구조 읽기",
+   "time": "1주",
+   "goal": "요청 하나가 지면 → 오디언스 → 후보 → eCPM 순위 → 내보내기로 흐르는 길과 각 팀(DSP·서빙·추천)의 몫을 그림으로 설명할 수 있다.",
+   "resources": [
+    "blog-adserver",
+    "blog-dsp",
+    "blog-skynet",
+    "openrtb"
+   ],
+   "task": "가상 광고 20개(입찰가·예상 클릭률·예산·타게팅)로 위 다섯 단계를 함수 다섯 개로 짜고, 예산 0 광고가 빠지는지 테스트를 붙인다."
+  },
+  {
+   "title": "돈이 걸린 표 설계",
+   "time": "2~3주",
+   "goal": "캠페인·예산·클릭 표를 설계하고 중복 과금·예산 초과가 동시 요청에서도 안 생기게 만든다.",
+   "resources": [
+    "real-mysql",
+    "ddia"
+   ],
+   "task": "MySQL 이나 PostgreSQL 에 표 3개를 만들고, 스레드 50개가 같은 광고에 동시에 클릭을 넣어도 spent 가 budget 을 넘지 않는지 확인하는 부하 스크립트를 짠다."
+  },
+  {
+   "title": "밀리초 안에 답하는 서비스",
+   "time": "2~4주",
+   "goal": "gRPC 서비스 두 개를 기한·재시도 예산·서킷 브레이커로 엮고 p99 지연을 잰다.",
+   "resources": [
+    "grpc-core",
+    "grpc-deadlines",
+    "sre-cascading",
+    "fowler-cb",
+    "sysdesign"
+   ],
+   "task": "1단계의 다섯 단계를 '오디언스 서비스'와 '광고 서버'로 나눠 gRPC 로 잇는다. 오디언스 서비스에 일부러 200ms 지연을 넣고, 50ms 기한 → 비타게팅 대체가 되는지와 p99 를 부하 도구로 잰다."
+  },
+  {
+   "title": "로그와 실험",
+   "time": "2주",
+   "goal": "노출·클릭·전환을 한 줄로 잇는 로그를 남기고, 트래픽을 나눠 두 모델을 공정하게 비교한다.",
+   "resources": [
+    "kohavi-ab",
+    "wiki-kafka",
+    "mcmahan-ctr"
+   ],
+   "task": "3단계 서버가 노출·클릭 이벤트를 Kafka 로 보내게 하고, 사용자 id 해시로 트래픽을 반씩 나눠 '예상 클릭률 두 가지' 를 비교하는 일별 집계를 만든다. 같은 이벤트를 두 번 보내도 한 번만 세는지 확인한다."
+  },
+  {
+   "title": "운영과 구조 (선택)",
+   "time": "계속",
+   "goal": "쿠버네티스에 올려 오토스케일을 걸고, 업무 규칙을 바깥과 떼는 구조로 다시 정리한다.",
+   "resources": [
+    "wiki-kubernetes",
+    "k8s-hpa",
+    "clean-arch",
+    "msa-build",
+    "refactoring"
+   ],
+   "task": "3단계 서비스를 로컬 쿠버네티스(kind 등)에 올리고 HPA 를 건 뒤 부하를 넣어 파드가 몇 초 만에 늘어나는지 잰다. 예산·타게팅 규칙을 DB 코드와 떼는 리팩터링을 테스트를 지키며 한다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 평균은 **약 6,032만원**, 올해 입사자 평균은 **약 3,888만원** — 둘 다 전 직군·신입·경력이 섞인 값이라 5년차 시니어 자리와는 다르다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 금감원·국민연금 자료로 계산한 값이다. 기준일 표기가 없고 직군 구분이 없다 [13]"
+   },
+   {
+    "label": "올해 입사자 평균 연봉",
+    "value": "3,888만원",
+    "amount": 3888,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 국민연금 자료로 계산한 값이다. 신입·경력·인턴, 모든 직군이 섞여 있다 [13]"
+   },
+   {
+    "label": "평균 연봉(감사보고서 계산)",
+    "value": "5,162만원",
+    "amount": 5162,
+    "basis": "감사보고서 · 2021년",
+    "note": "기자가 2021년 직원급여 총액 130억원을 정원 250명(인턴 포함)으로 나눈 값이다. 회사는 인력이 한 해 두 배 넘게 늘어 실급여는 더 높다고 답했다 [14]"
+   }
+  ],
+  "how": "당근마켓은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 공고에도 연봉이 없고, 전형 다섯째 단계 **처우 협의**에서 사람마다 정한다 [1]. 경력 5년 이상을 찾는 자리라 회사 평균보다 경력·협상에 따라 크게 달라진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "업무 환경",
+    "detail": "인체공학 오피스 가구, 최신 사양 업무 기기"
+   },
+   {
+    "name": "식사",
+    "detail": "식사 및 음료비 지원"
+   },
+   {
+    "name": "야근 교통",
+    "detail": "야근 시 택시비 지원"
+   },
+   {
+    "name": "교육",
+    "detail": "업무 관련 교육·어학 교육비, 국내외 컨퍼런스 참가비와 관련 휴가"
+   },
+   {
+    "name": "학습 도구",
+    "detail": "업무 관련 도서·논문·AI Tool 포함"
+   },
+   {
+    "name": "휴가",
+    "detail": "승인 없이 자유롭게 쓰는 휴가, 연간 최대 25일"
+   },
+   {
+    "name": "문화의 날",
+    "detail": "매월 운영"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 종합건강검진, 연 8회 심리 상담"
+   },
+   {
+    "name": "단체 상해보험",
+    "detail": "본인·배우자·자녀·부모님"
+   },
+   {
+    "name": "가족",
+    "detail": "어린이집 자녀 보육 지원, 경조사 및 명절 지원"
+   }
+  ],
+  "note": "당근 채용 사이트의 '팀 문화' 페이지에 적힌 것이다(2026-11-25 확인) [11]. 광고실 신규 입사자 글도 매월 마지막 수요일 문화의 날을 적었다 [9]. 금액과 고용 형태별 적용 범위는 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "당근 본사 (교보강남타워)",
+  "address": "서울특별시 서초구 강남대로 465, 교보강남타워 11층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
+  "near": "9호선 신논현역 앞 {추론}",
+  "note": "공고 근무지 표기는 'SEOUL'이고, 주소는 당근 채용 사이트 하단의 회사 정보다 [11]. 팀 자리 층은 다를 수 있다 {추론}."
+ }
+}
