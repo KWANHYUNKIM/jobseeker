@@ -9,9 +9,11 @@
   "wanted-396324": "coupang-catalog-taxonomy-pm",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
+  "ats-greenhouse:coupang:8413572": "coupang-fc-logistics-network-engineer",
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
+  "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
   "ats-greenhouse:coupang:8094014": "coupang-taiwan-catalog-ai-tpm-director",
   "ats-greenhouse:coupang:8300309": "coupang-taiwan-security-engineering-director",
@@ -350,6 +352,16 @@
    "lines": 41
   },
   {
+   "id": "coupang-fc-logistics-network-engineer",
+   "company": "쿠팡",
+   "role": "Senior Network Engineer (물류 네트워크)",
+   "jobs": [
+    "ats-greenhouse:coupang:8413572"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 29
+  },
+  {
    "id": "coupang-financial-credit-strategy-ds",
    "company": "쿠팡파이낸셜",
    "role": "Staff Data Scientist (Credit Strategy)",
@@ -378,6 +390,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 17
+  },
+  {
+   "id": "coupang-sg-security-infra-director",
+   "company": "쿠팡",
+   "role": "Director Backend Engineering (Security Infrastructure)",
+   "jobs": [
+    "ats-greenhouse:coupang:8040145"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
   },
   {
    "id": "coupang-sg-workflow-platform-director",

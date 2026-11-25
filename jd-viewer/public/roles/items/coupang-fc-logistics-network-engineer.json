@@ -1,0 +1,1143 @@
+{
+ "id": "coupang-fc-logistics-network-engineer",
+ "company": "쿠팡",
+ "role": "Senior Network Engineer (물류 네트워크)",
+ "team": "Fulfillment and Logistics Network Engineering",
+ "jobs": [
+  "ats-greenhouse:coupang:8413572"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "전국 물류센터(FC)·배송 캠프·데이터센터를 잇는 **사내망(유선·무선·광역·방화벽)을 짓고 운영**합니다. 센터 안의 PDA·로봇이 이 망으로 일을 받습니다.[1][4]",
+  "env": "Cisco·Juniper(HPE Aruba)·Fortinet·Palo Alto 장비, 새 센터가 계속 열리는 현장 — 전국 출장이 있습니다.[1][6]",
+  "oneline": "코드보다 **장비·프로토콜·현장**이 중심인 네트워크 운영 엔지니어. 같은 팀 Staff(10년, 설계) 밑의 8년차 실무 자리입니다.[2]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "쿠팡은 전국에 분산된 Fulfillment Center(FC), Camp 및 Data Center 환경을 연결하는 대규모 엔터프라이즈 네트워크를 운영하고 있습니다. Senior, Network Engineer는 안정적이고 확장 가능한 네트워크 인프라의 구축 및 운영을 담당하며, 비즈니스 성장과 운영 효율성을 지원하는 중요한 역할을 수행합니다. 본 역할은 엔터프라이즈 네트워크 환경에서 발생하는 다양한 기술적 문제를 해결하고, 신규 사이트 구축 및 운영 개선 프로젝트에 참여하며, 안정적인 서비스 제공을 지원합니다. 성공적인 업무 수행을 위해서는 네트워크 기본 기술에 대한 탄탄한 이해와 실무 경험, 뛰어난 문제 해결 능력, 그리고 다양한 팀과의 협업 역량이 필요합니다.",
+   "short": "전국 물류센터(FC)·배송 캠프·데이터센터를 잇는 사내망을 짓고 지키는 자리다. 설계를 이끄는 Staff 밑의 실무 축.",
+   "why": "쿠팡은 10년간 전국 30개 지역에 100여 개 물류 거점을 지었고, 2024년부터 3년간 3조 원 넘게 더 지어 2027년까지 로켓배송을 전국으로 넓힌다고 밝혔습니다.[6] 거점이 늘 때마다 그 안의 PDA(손에 드는 업무 단말기)·로봇·프린터가 붙을 망이 새로 필요합니다.[4] 같은 팀의 Staff 공고는 **설계·기획**과 **FC 설계 팀과의 아키텍처 협업**·멘토링을 맡고[2], 이 Senior 공고는 그 자리에서 '설계'를 빼고 **구축·운영·장애 해결**을 중심에 뒀습니다.[1]",
+   "actually": {
+    "items": [
+     "**같은 팀 두 자리 비교** — Staff(사람인)는 경력 10년↑·'설계, 기획, 구축 및 유지 관리'·'심각한 인시던트 대응 주도'·멘토링, Senior(이 공고)는 8년↑·'구축, 운영 및 유지보수'·'장애 분석과 복구'.[1][2]",
+     "**연결 대상 셋** — FC(물건을 쌓고 골라 포장하는 대형 창고), Camp(배송 기사가 물건을 받아 가는 거점), Data Center(서버가 모인 곳).[1]",
+     "**센터 안에서 망을 쓰는 것** — 사람이 드는 PDA, 선반을 작업대로 실어 나르는 AGV(무인 운반 로봇), 상자를 나르는 로봇, 자동 포장기.[4][5]"
+    ]
+   },
+   "how_far": "'네트워크 기본 기술에 대한 탄탄한 이해'와 '문제 해결'이 맨 앞에 있습니다. 새 설계를 만드는 것보다 **정해진 표준대로 짓고, 망가지면 빨리 원인을 찾는 사람**을 찾는 문장입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    4,
+    6
+   ],
+   "study": [
+    "netbook-gilbut",
+    "huni-cisco"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Fulfillment Center(FC), Delivery Center(Camp) 및 Data Center를 지원하는 엔터프라이즈 네트워크 인프라(LAN, WLAN, WAN, Network Security)의 구축, 운영 및 유지보수",
+   "short": "센터 안 유선망(LAN)·무선망(WLAN), 센터끼리 잇는 광역망(WAN), 방화벽까지 네 겹을 다 맡는다.",
+   "why": "센터 한 곳의 망이 멈추면 PDA가 다음 작업을 받지 못하고 로봇도 멈춥니다. 쿠팡 FC는 AI·실시간 데이터로 작업자에게 일을 나눠 주고 동선을 정하는데, 그 지시가 PDA로 갑니다.[4] 그래서 네 겹 중 하나만 고장 나도 센터 출고가 늦어집니다 {추론}.",
+   "actually": {
+    "items": [
+     "**LAN** — 스위치로 층·구역마다 유선을 깔고, 용도별로 가상 망(VLAN)을 나눈다(PDA·로봇·CCTV·사무 PC를 섞지 않는다) {추론}.",
+     "**WLAN** — 축구장 몇 개 넓이의 창고[4] 천장에 무선 AP(접속 장치)를 깔아 움직이는 단말이 끊기지 않게 한다.",
+     "**WAN** — 각 센터를 데이터센터·클라우드와 잇는 회선·라우터. 같은 회사 도쿄 공고는 SD-WAN(여러 회선을 소프트웨어로 묶어 쓰는 방식)을 적었다.[8]",
+     "**Network Security** — 방화벽·VPN·접속 인증. 같은 팀 Staff 공고는 Fortinet·Palo Alto·Zscaler 방화벽과 Cisco ISE(누가 망에 붙나 인증하는 서버)를 적었다.[2]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "PDA 한 대가 작업 지시를 받기까지 {추론}",
+     "steps": [
+      "PDA · 작업자가 바코드를 찍는다",
+      "AP · 천장 무선 접속 장치",
+      "액세스·분배 스위치 · 센터 안 유선",
+      "방화벽 · 센터 밖으로 나가는 문",
+      "WAN 라우터 · 센터와 데이터센터를 잇는 회선",
+      "데이터센터·클라우드 · 창고 관리 시스템이 다음 작업을 돌려준다"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "센터 한 곳의 주소 나누기 — 용도별 VLAN",
+     "body": "가상의 FC에 /16 대역을 받았을 때 단말 수에 맞게 칸을 나눈 결과입니다(직접 돌린 출력). 실제 쿠팡 숫자가 아니라 계산 방법의 예입니다.",
+     "lang": "python",
+     "code": "import ipaddress\nsite = ipaddress.ip_network(\"10.40.0.0/16\")\nneed = {\"PDA·스캐너\": 1500, \"AGV·로봇\": 600, \"프린터·라벨기\": 200,\n        \"PC·사무\": 300, \"CCTV\": 400, \"AP 관리\": 120}\ncur, vlan = site.network_address, 110\nfor name, n in sorted(need.items(), key=lambda x: -x[1]):\n    prefix = 32 - (n + 1).bit_length()\n    net = ipaddress.ip_network(f\"{cur}/{prefix}\")\n    print(f\"VLAN {vlan} {name} 필요 {n} -> {net} ({net.num_addresses - 2})\")\n    cur = net.broadcast_address + 1; vlan += 10\n# VLAN 110 PDA·스캐너 필요 1500 -> 10.40.0.0/21 (2046)\n# VLAN 120 AGV·로봇 필요 600 -> 10.40.8.0/22 (1022)\n# VLAN 130 CCTV 필요 400 -> 10.40.12.0/23 (510)\n# VLAN 140 PC·사무 필요 300 -> 10.40.14.0/23 (510)\n# VLAN 150 프린터·라벨기 필요 200 -> 10.40.16.0/24 (254)\n# VLAN 160 AP 관리 필요 120 -> 10.40.17.0/25 (126)"
+    }
+   ],
+   "how_far": "네 겹을 다 깊게 알 필요는 없지만, 장애가 났을 때 **어느 겹에서 막혔는지 가를 수 있어야** 합니다. 규모가 큰 표준 설계는 Staff·글로벌 팀이 정하고, Senior는 그 표준을 센터마다 똑같이 짓고 운영합니다 {추론}.",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "netbook-gilbut",
+    "huni-cisco"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 장비(Switch, Router, Wireless Controller, Access Point, Firewall 등)의 설치, 구성 및 운영",
+   "short": "장비를 랙에 달고, 설정을 넣고, 매일 상태를 본다 — 손과 명령어로 하는 일이다.",
+   "why": "공고가 요건으로 Cisco·Juniper(HPE Aruba) 장비 운영 경험을 따로 적었고, 우대에 Fortinet·Palo Alto를 더했습니다.[1] 장비마다 명령어와 설정 문법이 다르기 때문입니다.",
+   "actually": {
+    "items": [
+     "**Switch** — 포트마다 VLAN·속도·루프 방지(STP) 설정. 단말이 꽂히는 액세스 포트와 스위치끼리 잇는 업링크 포트를 다르게 둔다.[12]",
+     "**Router** — 센터 밖 경로. OSPF(사내 경로 자동 교환)·BGP(조직 사이 경로 교환)를 설정한다.[10][11]",
+     "**Wireless Controller·AP** — AP 수십~수백 대를 한 곳에서 묶어 설정하는 장치와, 천장에 다는 AP 자체. 채널·출력·SSID(무선 이름)를 정한다.",
+     "**Firewall** — 누가 어디로 나갈 수 있나 규칙표를 관리한다.[13]",
+     "**괄호의 뜻** — 'Juniper(HPE Aruba)'는 HPE가 2025-07 Juniper를 인수해 Aruba(HPE의 기존 무선 브랜드)와 한 회사가 됐다는 뜻으로 읽힌다.[9]"
+    ]
+   },
+   "how_far": "최소선은 스위치 한 대를 처음부터 설정해 VLAN·업링크·관리 접속까지 붙이고, `show` 명령으로 상태를 읽는 것입니다. 이 공고는 8년 경력을 요구하니 **두 회사 이상 장비를 실제로 돌려 본 경험**이 기대치입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    9
+   ],
+   "study": [
+    "netbook-gilbut",
+    "huni-cisco",
+    "ccnp-ent"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "신규 FC, Camp 및 Data Center 구축 프로젝트에 참여하여 네트워크 구축 및 안정화 지원",
+   "short": "새 센터가 문을 열기 전에 망을 깔고, 열고 난 뒤 몇 주는 흔들리는 곳을 잡는다.",
+   "why": "쿠팡은 2024년 발표에서 9개 지역에 새 물류센터를 짓는다고 했고 2025년에도 김해 등 새 센터 계획이 이어졌습니다.[6] 센터가 열릴 때마다 망이 하나씩 새로 생깁니다.",
+   "actually": {
+    "items": [
+     "**공사 단계** — 건물 도면에 통신실·케이블 경로·AP 자리를 정하고, 설계 팀과 업체 일정에 맞춘다. 같은 팀 Staff 공고는 'FC 설계 팀과 협력'을 적었다.[2]",
+     "**장비 들이기** — 미리 표준 설정을 넣어 두고 현장에서는 꽂기만 하게 한다 {추론}.",
+     "**개장 전 점검** — 창고 전체를 돌며 무선 신호를 재고(사이트 서베이), 선반이 다 채워진 뒤 다시 잰다. 물건과 선반·움직이는 장비가 무선을 가린다.[15][23]",
+     "**개장 뒤 안정화** — 첫 성수기 전까지 끊김 기록을 보며 AP 위치·출력을 고친다 {추론}."
+    ]
+   },
+   "how_far": "우대 '사이트 오픈 프로젝트 참여 경험'과 같은 줄입니다. 일정·업체를 이끄는 건 프로젝트 담당이고, 엔지니어는 **망이 날짜에 맞게 다 붙고 문을 연 날 멈추지 않게** 하는 몫입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    6
+   ],
+   "study": [
+    "netbook-gilbut",
+    "coupang-robotics"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 장애를 분석하고 원인을 파악하여 신속한 복구 및 문제 해결 수행",
+   "short": "\"PDA가 안 돼요\" 한 마디에서 시작해 어느 장비·어느 겹이 원인인지 좁히고 먼저 살린다.",
+   "why": "자동화 창고에서는 망이 멈추면 바로 일이 멈춥니다. 창고 무선은 느리거나 되거나 둘 중 하나지 중간이 없다는 단말 회사 담당자의 말이 있을 정도입니다.[15] 같은 팀 Staff 공고는 '심각한 인시던트 대응 주도'를, Senior인 이 공고는 분석·복구를 적었습니다.[1][2]",
+   "actually": {
+    "items": [
+     "**먼저 살리기** — 원인을 다 알기 전에 예비 회선·예비 장비로 돌린다.[14]",
+     "**겹을 따라 좁히기** — 단말 한 대인가 구역 전체인가 → 무선인가 유선인가 → 센터 안인가 WAN인가 {추론}.",
+     "**흔한 원인** — 루프(케이블 하나 잘못 꽂아 망 전체가 넘침 — STP가 막아야 한다)[12], 무선 사각지대·간섭[15], 회선 장애, 바뀐 설정.",
+     "**기록 남기기** — 복구 뒤 원인과 재발 방지를 장애 보고서(RCA)로.[14]"
+    ]
+   },
+   "how_far": "새벽·주말 장애가 있을 수 있습니다 — 물류센터는 밤에도 돌아갑니다 {추론}. 최소선은 `ping`·`traceroute`·스위치 MAC 표·인터페이스 오류 수를 읽어 **원인 후보를 셋 안으로 좁히는 것**입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    14,
+    15
+   ],
+   "study": [
+    "sre-postmortem",
+    "netbook-gilbut"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 성능, 가용성 및 트래픽 데이터를 모니터링하고 개선 활동 수행",
+   "short": "장비가 내는 숫자(사용률·오류·끊김)를 매일 보고, 터지기 전에 고친다.",
+   "why": "같은 팀 Staff 공고는 같은 줄을 '심층적으로 분석하여 잠재적 문제를 선제적으로 예방'이라고 적었습니다.[2] 장애가 난 뒤가 아니라 그 전에 보자는 것입니다.",
+   "actually": {
+    "items": [
+     "**가용성** — 한 달에 몇 분 멈췄나. 99.9%면 한 달 43.2분까지 멈춰도 된다는 뜻이다(아래 계산).",
+     "**사용률** — 업링크가 70~80%를 넘나드는 구간을 찾아 증설 순서를 정한다 {추론}.",
+     "**오류 수** — 포트의 CRC 오류가 늘면 케이블·광모듈이 상하고 있다는 신호 {추론}.",
+     "**무선** — 단말이 AP를 옮겨 탈 때(로밍) 걸린 시간·실패 수. 단말 회사는 빠른 로밍 표준 802.11r을 권한다.[16]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "목표 가용성이 허락하는 멈춤 시간, 그리고 이중화",
+     "body": "직렬로 이어진 장비는 가용성이 곱해져 낮아지고, 같은 장비를 둘 두면 다시 올라갑니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "for slo in (99.9, 99.95, 99.99):\n    m = (1 - slo / 100) * 30 * 24 * 60\n    print(f\"{slo}% -> 한 달 {m:.1f}분\")\na = 0.999\nprint(\"직렬 3단:\", round(a ** 3 * 100, 3), \"%\")\nprint(\"분배만 2대:\", round((1 - (1 - a) ** 2) * a * a * 100, 4), \"%\")\n# 99.9% -> 한 달 43.2분\n# 99.95% -> 한 달 21.6분\n# 99.99% -> 한 달 4.3분\n# 직렬 3단: 99.7 %\n# 분배만 2대: 99.8 %"
+    }
+   ],
+   "how_far": "모니터링 도구 자체를 만드는 자리는 아닙니다. 이미 있는 도구의 **그래프를 읽고 '이건 이상하다'를 숫자로 말하는 것**, 그리고 개선을 작업 계획으로 바꾸는 것까지입니다 {추론}.",
+   "refs": [
+    2,
+    14,
+    16
+   ],
+   "study": [
+    "sre-postmortem",
+    "netbook-gilbut"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영 가이드, 구성 문서 및 장애 보고서(RCA) 작성",
+   "short": "다음 사람이 혼자 따라 할 수 있는 절차서와, 장애가 왜 났는지 밝히는 보고서를 쓴다.",
+   "why": "센터가 전국에 흩어져 있고 같은 표준을 여러 곳에 깔아야 하니 문서가 곧 표준입니다 {추론}. 같은 팀 Staff 공고는 '고품질의 기술 문서화를 수행하고 자산화'라고 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**운영 가이드(런북)** — '업링크 하나가 끊기면 1·2·3번 순서로 확인' 같은 단계별 절차.",
+     "**구성 문서** — 센터마다 장비 목록·포트 연결표·주소 칸·VLAN 표.",
+     "**RCA(근본 원인 분석)** — 무슨 일이, 언제, 누구에게 영향을 줬나 → 원인 → 다시 안 생기게 할 일. 구글 SRE 책은 사람 탓을 하지 않고(blameless) 시스템을 고치는 쪽으로 쓰라고 한다.[14]",
+     "**글로벌 팀** — 요건에 영어 업무 소통이 있어, 문서 일부는 영어로 쓰게 될 수 있다.[1] {추론}"
+    ]
+   },
+   "how_far": "문장력보다 **빠짐없음과 재현성**입니다. 내가 없는 날 다른 사람이 문서만 보고 같은 결과를 낼 수 있으면 충분합니다 {추론}.",
+   "refs": [
+    2,
+    14
+   ],
+   "study": [
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "자동화, 로보틱스, FC 운영, 인프라 및 보안 조직과 협업하여 비즈니스 요구사항 지원",
+   "short": "로봇 팀·센터 운영 팀이 \"이 장비 붙여 주세요\"라고 하면 망에서 무엇을 열고 나눌지 정한다.",
+   "why": "쿠팡 FC에는 선반을 작업대로 실어 오는 AGV(한 번에 평균 약 2분), 5초 만에 포장하는 자동 포장기가 있습니다.[4] 로보틱스 운영 팀은 AGV 망 개선과 상자 운반 로봇·로봇 포장기 도입을 맡는다고 소개됐습니다.[5] 모두 망에 붙는 장비입니다.",
+   "actually": {
+    "items": [
+     "**새 로봇 도입** — 로봇 업체가 요구하는 무선 대역·주소·포트를 받아 VLAN과 방화벽 규칙을 만든다 {추론}.",
+     "**운영 요구** — 성수기 전에 단말이 몇 대 늘어나는지 듣고 AP·주소 칸을 미리 넓힌다 {추론}.",
+     "**보안 조직** — 로봇·업체 원격 접속을 어디까지 열어 줄지 함께 정한다. Staff 공고는 '안전한 네트워크 환경 내에서' 로봇·창고 시스템 배포를 지원한다고 적었다.[2]"
+    ]
+   },
+   "how_far": "로봇을 만드는 자리가 아닙니다. 상대 팀의 요구를 **'어느 VLAN, 어느 포트, 어느 규칙'으로 번역하는 것**이 이 줄의 일입니다 {추론}.",
+   "refs": [
+    2,
+    4,
+    5
+   ],
+   "study": [
+    "netbook-gilbut"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 하드웨어 교체, 소프트웨어 업그레이드 및 유지보수 활동 수행",
+   "short": "낡은 장비를 바꾸고 장비 펌웨어를 올리되, 센터 운영을 멈추지 않는 시간에 한다.",
+   "why": "장비는 제조사 지원이 끝나면 보안 패치가 나오지 않습니다 {추론}. Staff 공고는 이 일을 '수명 주기 활동(용량 계획·하드웨어 교체·소프트웨어 유지보수)'이라고 묶었습니다.[2]",
+   "actually": {
+    "items": [
+     "**작업 창** — 출고가 적은 시간을 센터 운영과 맞춰 잡는다 {추론}.",
+     "**되돌리기 계획** — 업그레이드가 실패하면 이전 버전으로 몇 분 안에 돌아갈 방법을 미리 적는다 {추론}.",
+     "**한 곳 먼저** — 센터 한 곳에서 먼저 올려 보고 문제없으면 나머지에 편다 {추론}."
+    ]
+   },
+   "how_far": "작업 계획서(무엇을·언제·실패하면 어떻게)를 혼자 써서 승인받고 실행할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    2
+   ],
+   "study": [
+    "netbook-gilbut"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 보안 정책 및 운영 표준 준수",
+   "short": "회사 보안 규칙과 글로벌 망 표준에서 벗어난 설정을 만들지 않고, 찾아서 고친다.",
+   "why": "쿠팡은 2025-12 대규모 고객 정보 유출이 보도됐습니다.[25] 그 뒤 보안 기준이 더 엄격해졌을 수 있습니다 {추론}. Staff 공고는 이 줄을 '보안, 소프트웨어, 운영 및 글로벌 네트워크 표준에 대한 규정 준수를 보장'이라고 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**표준 설정과 비교** — 현장 장비 설정이 표준 틀과 다른 곳을 찾는다(아래 예).",
+     "**방화벽 규칙 정리** — 쓰지 않는 규칙·너무 넓게 열린 규칙을 주기적으로 걷어낸다. NIST 지침은 방화벽 정책을 정기적으로 검토하라고 한다.[13]",
+     "**접근 통제** — 장비 관리 접속은 정해진 망과 계정으로만 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "표준 설정과 현장 설정의 차이 찾기",
+     "body": "PDA 포트의 표준 틀과 어느 센터 스위치의 실제 설정을 비교하면, VLAN이 1로 남았고 루프 방지 설정(bpduguard)이 빠진 것이 드러납니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import difflib\nstd = \"\"\"interface Gi1/0/10\n switchport mode access\n switchport access vlan 110\n spanning-tree portfast\n spanning-tree bpduguard enable\"\"\".splitlines()\nrun = \"\"\"interface Gi1/0/10\n switchport mode access\n switchport access vlan 1\n spanning-tree portfast\"\"\".splitlines()\nfor line in difflib.unified_diff(std, run, \"표준\", \"현장\", lineterm=\"\", n=0):\n    print(line)\n# --- 표준\n# +++ 현장\n# @@ -3 +3 @@\n# - switchport access vlan 110\n# + switchport access vlan 1\n# @@ -5 +4,0 @@\n# - spanning-tree bpduguard enable"
+    }
+   ],
+   "how_far": "표준을 만드는 건 Staff·글로벌 팀이고, 이 자리는 **표준대로 지키고 어긋난 곳을 찾아 고치는 쪽**입니다 {추론}.",
+   "refs": [
+    2,
+    13,
+    25
+   ],
+   "study": [
+    "nist-fw",
+    "netauto-hanbit"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 개선 및 확장 프로젝트 수행",
+   "short": "센터가 커지거나 로봇이 늘 때 망을 넓히는 작은 프로젝트를 맡아 끝낸다.",
+   "why": "Staff 공고는 '비즈니스 성장을 지원하기 위해 네트워크 용량 계획'을 적었고[2], 회사는 2027년까지 물류망을 계속 넓힌다고 했습니다.[6]",
+   "actually": {
+    "items": [
+     "**용량 늘리기** — 업링크 1G → 10G, AP 추가 {추론}.",
+     "**구조 고치기** — 장애가 잦은 구간에 이중화 추가 {추론}.",
+     "**자동화** — 반복 설정을 스크립트로(우대 Python·Ansible)[1]."
+    ]
+   },
+   "how_far": "목표·범위·일정·되돌리기를 한 장으로 쓰고 끝까지 가져가는 것 — '참여'가 아니라 '수행'이라 작은 프로젝트는 혼자 맡을 수 있어야 합니다 {추론}.",
+   "refs": [
+    2,
+    6
+   ],
+   "study": [
+    "coupang-robotics"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 엔터프라이즈 네트워크 구축, 운영 및 유지보수 경력 8년 이상 보유하신 분",
+   "short": "기업 사내망을 짓고 돌려 본 경력 8년. 같은 팀 Staff 자리는 10년이다.",
+   "why": "같은 팀 Staff 공고는 10년↑(우대 15년↑), 리멤버의 같은 자리 글은 10~25년을 적었습니다.[2][3] 이 Senior 자리는 한 단계 아래로 8년입니다.[1]",
+   "how_far": "'엔터프라이즈'가 핵심입니다 — 통신사 백본이나 데이터센터만이 아니라 **사무실·공장·창고 같은 사람이 쓰는 망**의 경력입니다. 공고 끝에 직급은 경력에 따라 바뀔 수 있다고 적혀 있습니다.[1]",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "TCP/IP, VLAN, STP, OSPF, BGP 등 네트워크 프로토콜에 대한 기본적인 이해 및 실무 경험을 보유하신 분",
+   "short": "망이 어떻게 길을 찾고(OSPF·BGP), 어떻게 나뉘고(VLAN), 어떻게 고리를 막나(STP)를 설명하고 다룬다.",
+   "why": "장애 원인의 대부분이 이 다섯 가지 안에서 나옵니다 {추론}. 같은 팀 Staff 공고는 같은 줄을 '심도 깊은 이해'로, Senior는 '기본적인 이해 및 실무 경험'으로 적었습니다.[1][2]",
+   "actually": {
+    "items": [
+     "**TCP/IP** — 주소·서브넷·게이트웨이. 위 업무② 예처럼 칸을 나누는 계산이 매일 나온다.",
+     "**VLAN** — 스위치 한 대 안에서 망을 여러 개로 나눈다.",
+     "**STP** — 스위치를 고리 모양으로 이어도 고리가 생기지 않게 한 길을 막는다. 빠른 판(RSTP)은 이웃이 보내던 신호(BPDU)를 3번 연속 못 받으면 이웃을 잃었다고 본다(기본 2초 간격).[12]",
+     "**OSPF** — 사내 라우터끼리 연결 상태를 나눠 가장 짧은 길을 스스로 계산한다.[10]",
+     "**BGP** — 조직·회선 사업자와 경로를 주고받는 규칙. TCP 179번 포트로 이웃을 맺는다.[11]"
+    ]
+   },
+   "level": {
+    "basic": "TCP/IP 계층 · 서브넷 계산 · VLAN과 트렁크 · ARP · DHCP",
+    "work": "STP 루트 선정과 포트 역할 · OSPF 영역과 비용 · BGP 이웃 맺기와 경로 고르기",
+    "team": "여러 센터를 잇는 WAN에서 경로가 어떻게 바뀌나 설명 · 루프·경로 흔들림 장애를 로그로 짚기 {추론}"
+   },
+   "how_far": "'기본적인 이해'라 표준 문서를 다 외울 필요는 없습니다. **장비 출력(STP 상태·OSPF 이웃·BGP 경로표)을 보고 지금 무슨 일이 일어나는지 말할 수 있으면** 실무 수준입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "netbook-gilbut",
+    "huni-cisco",
+    "rfc-ospf",
+    "rfc-bgp",
+    "cisco-rstp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Cisco 또는 Juniper(HPE Aruba) 기반의 Switching 및 Routing 환경 운영 경험을 보유하신 분",
+   "short": "기업망 장비를 많이 파는 두 회사 중 한 곳의 스위치·라우터를 실제로 돌려 봤어야 한다.",
+   "why": "공고는 '또는'이라 둘 중 하나면 됩니다.[1] 같은 팀 Staff 공고는 'Cisco 및 Juniper (HPE)'로 둘 다를 요구합니다.[2] 같은 회사 도쿄·데이터센터 공고도 Cisco 장비를 적었습니다.[7][8]",
+   "actually": {
+    "items": [
+     "**Cisco** — IOS 계열 명령어(`show running-config`, `show interfaces`).",
+     "**Juniper** — Junos는 설정을 고친 뒤 확정(commit)하는 방식이라 되돌리기가 쉽다 {추론}.",
+     "**HPE Aruba** — 2025-07 HPE가 Juniper를 인수해 한 회사가 됐다.[9] 공고가 괄호로 묶은 이유로 읽힌다 {추론}."
+    ]
+   },
+   "how_far": "한 회사 장비를 깊게, 다른 회사 것은 명령어 차이를 찾아 읽을 수 있는 정도면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    7,
+    8,
+    9
+   ],
+   "study": [
+    "huni-cisco",
+    "ccnp-ent"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Enterprise Wireless LAN 환경 구축 및 운영 경험을 보유하신 분",
+   "short": "넓은 창고에서 움직이는 PDA·로봇이 끊기지 않게 무선망을 깔고 돌려 봤어야 한다.",
+   "why": "쿠팡 FC는 축구장 여러 개 넓이이고 작업자는 PDA로 일합니다.[4] 창고 무선은 선반·물건·움직이는 장비가 신호를 가려 사무실보다 어렵습니다.[15][23]",
+   "actually": {
+    "items": [
+     "**사각지대** — 단말 회사 블로그의 사례는 AP를 바꾸고 전문가 사이트 서베이를 여러 번 한 뒤에야 끊김이 줄었다.[15]",
+     "**간섭** — 선반·이동 장비·재고가 간섭원이라 AP 채널·출력을 계속 바꿔 줘야 한다.[23]",
+     "**로밍** — 사람이 걸어가면 단말이 AP를 옮겨 탄다. 단말 회사는 빠른 로밍(802.11r)을 가장 먼저 권한다.[16]",
+     "**SSID 수 줄이기** — AP마다 꼭 필요한 무선 이름만 둔다.[16]"
+    ],
+    "intro": "창고 무선의 보통 어려움입니다(다른 회사 자료 — 쿠팡 내부 설계는 공개되지 않았습니다)."
+   },
+   "how_far": "사무실 Wi-Fi를 깔아 본 것과 **움직이는 단말 수백 대가 있는 넓은 공간**은 다릅니다. 사이트 서베이 결과를 읽고 AP 위치·출력·채널을 정해 본 경험이 핵심입니다 {추론}.",
+   "refs": [
+    4,
+    15,
+    16,
+    23
+   ],
+   "study": [
+    "netbook-gilbut",
+    "zebra-aruba"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Firewall 운영, 정책 적용 및 기본적인 네트워크 보안 관리 경험을 보유하신 분",
+   "short": "방화벽 규칙을 넣고 빼며, 그 규칙이 왜 있는지 설명할 수 있어야 한다.",
+   "why": "같은 팀 Staff 공고는 Fortinet·Palo Alto·Zscaler 방화벽·VPN을 적었습니다.[2] 센터마다 업체 원격 접속·로봇 관리 접속이 있어 규칙이 계속 늘어납니다 {추론}.",
+   "actually": {
+    "items": [
+     "**규칙 하나** — 출발지·목적지·포트·허용/차단. 위에서 아래로 처음 맞는 규칙이 이긴다.[13]",
+     "**기본 차단** — 명시해 열지 않은 것은 막는다.[13]",
+     "**정리** — 오래된 임시 규칙을 찾아 지운다.[13]"
+    ]
+   },
+   "how_far": "'기본적인'이라 보안 전문가 수준은 아닙니다. 요청을 받아 **필요한 만큼만 여는 규칙**을 쓰고 검토할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    2,
+    13
+   ],
+   "study": [
+    "nist-fw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크 모니터링 및 분석 도구를 활용한 장애 분석 및 문제 해결 경험을 보유하신 분",
+   "short": "그래프·로그·패킷을 보고 원인을 짚어 본 경험. 감이 아니라 숫자로 말한다.",
+   "why": "같은 팀 Staff 공고는 '데이터 기반의 분석 능력'이라고 적었습니다.[2] 업무⑤⑥(장애·모니터링)의 바탕입니다.[1]",
+   "actually": {
+    "items": [
+     "**장비 숫자 모으기** — SNMP·스트리밍으로 사용률·오류를 모아 그래프로 {추론}.",
+     "**로그** — 장비 로그(syslog)를 한 곳에 모아 시간순으로 맞춘다 {추론}.",
+     "**패킷** — Wireshark로 실제로 오간 패킷을 본다 {추론}."
+    ]
+   },
+   "how_far": "특정 도구 이름보다 **'무슨 숫자를 보고 무엇을 의심했나'를 설명할 수 있는 사례 2~3개**가 면접에서 쓰입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    14
+   ],
+   "study": [
+    "sre-postmortem",
+    "netbook-gilbut"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기술 문서 작성 및 운영 절차 수립 역량을 보유하신 분",
+   "short": "절차서를 처음부터 만들어 본 적이 있어야 한다 — 남이 쓴 걸 따라 한 것만으로는 부족하다.",
+   "why": "업무⑦(운영 가이드·RCA)과 짝입니다.[1] 전국 센터에 같은 표준을 깔려면 절차가 문서로 있어야 합니다 {추론}.",
+   "how_far": "자기 손으로 쓴 런북·RCA 예시를 지원서·면접에서 보일 수 있으면 좋습니다(회사 정보는 지우고) {추론}.",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 이해관계자와 원활하게 협업할 수 있는 커뮤니케이션 역량을 보유하신 분",
+   "short": "센터 운영자·로봇 팀·보안 팀·장비 업체와 서로 다른 말을 맞춘다.",
+   "why": "업무⑧이 협업할 조직을 다섯 개 적었습니다.[1] Staff 공고는 '외부 벤더'까지 넣었습니다.[2]",
+   "how_far": "기술 용어를 운영자가 알아듣는 말로 바꿔 '언제까지 무엇이 된다'로 말하기 — 장애 때 특히 중요합니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "글로벌 팀과 영어로 기본적인 업무 커뮤니케이션이 가능하신 분",
+   "short": "해외 팀과 메일·채팅·회의를 영어로 할 수 있어야 한다. 유창함보다 기술 소통.",
+   "why": "공고가 영어 채용 사이트에도 같이 올라와 있고, 같은 회사 네트워크 공고가 도쿄·벵갈루루에도 있습니다.[1][8]",
+   "how_far": "'기본적인'이라 장애 내용·작업 계획을 짧은 영어 문장으로 쓰고 읽는 정도가 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    8
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "전국의 FC, Camp 및 Data Center로 출장 및 이동에 제약이 없으신 분",
+   "short": "현장 일이다 — 새 센터 개장·큰 장애 때 지방 센터로 가야 한다.",
+   "why": "물류 거점이 전국 30개 지역에 있고 남쪽 끝까지 넓히는 중입니다.[6] 무선 서베이·장비 교체는 원격으로 못 합니다 {추론}.",
+   "how_far": "근무지는 서울이지만 출장 빈도는 공고에 적혀 있지 않습니다 — 면접에서 확인할 것 {추론}.",
+   "refs": [
+    6
+   ],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "컴퓨터공학, 정보기술, 전자공학 또는 관련 분야 학사 이상 학위를 보유하신 분",
+   "short": "관련 전공 학사. 필수가 아니라 우대라서 경력으로 대신할 수 있다.",
+   "why": "자격요건이 아니라 우대에 있습니다.[1] 같은 팀 Staff 공고는 '학사 이상 + 해당 직무 경력 15년 이상'을 한 줄로 묶었습니다.[2]",
+   "how_far": "전공이 아니면 자격증(아래 CCNP 등)과 실제 구축 경력이 그 자리를 채웁니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "Cisco, Juniper(HPE Aruba), Fortinet, Palo Alto 등 엔터프라이즈 네트워크 장비 운영 경험을 보유하신 분",
+   "short": "요건의 '둘 중 하나'를 넘어 스위치·방화벽 여러 회사 장비를 다뤄 봤으면 좋다.",
+   "why": "요건은 Cisco 또는 Juniper 하나지만, 우대에 방화벽 회사(Fortinet·Palo Alto)까지 넓혔습니다.[1] 센터마다 들어간 시기가 달라 장비가 섞여 있을 수 있습니다 {추론}.",
+   "how_far": "회사마다 같은 기능(VLAN·방화벽 규칙)을 부르는 이름과 명령이 다르다는 걸 알고, 문서를 보며 옮길 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    8
+   ],
+   "study": [
+    "ccnp-ent"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "네트워크 구축 또는 사이트 오픈 프로젝트 참여 경험을 보유하신 분",
+   "short": "빈 건물에 망을 처음부터 깔아 문을 열어 본 경험.",
+   "why": "업무③(신규 FC·Camp·DC 구축)이 그대로 이 경험입니다.[1] 회사는 새 센터를 계속 짓고 있습니다.[6]",
+   "how_far": "'참여'라 이끈 경험이 아니어도 됩니다. 그 프로젝트에서 **내가 맡은 칸**(무선 서베이·장비 설정·케이블 검수)을 분명히 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "coupang-robotics"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Python, Ansible 등 자동화 도구 활용 경험을 보유하신 분",
+   "short": "장비 수백 대에 같은 설정을 손으로 넣지 않고 코드로 넣는다.",
+   "why": "센터가 늘수록 장비도 늘어 손으로 하면 실수가 쌓입니다 {추론}. 공고의 기술 태그도 Ansible·Python입니다.[1] Cisco 자격증에도 자동화 과목(ENAUTO)이 따로 있습니다.[17]",
+   "actually": {
+    "items": [
+     "**설정 모으기** — 모든 스위치의 `show` 결과를 밤마다 받아 저장한다. Python 라이브러리 Netmiko가 여러 회사 장비에 SSH로 붙는다.[18]",
+     "**표준과 비교** — 업무⑩의 예처럼 표준 틀과 다른 곳을 자동으로 찾는다.",
+     "**같은 설정 넣기** — Ansible 플레이북으로 새 VLAN을 센터 장비 전체에 {추론}."
+    ]
+   },
+   "how_far": "'활용 경험'이라 도구를 만드는 수준이 아니라, **반복 작업 하나를 스크립트로 바꿔 실제로 써 본 경험**이면 충분합니다 {추론}.",
+   "refs": [
+    1,
+    17,
+    18
+   ],
+   "study": [
+    "netauto-hanbit",
+    "netmiko",
+    "ccnp-ent"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Cisco ISE, VPN, NAC 등 네트워크 보안 솔루션 운영 경험을 보유하신 분",
+   "short": "망에 붙는 단말이 회사 것인지 확인하고(NAC·ISE), 밖에서 안으로 안전하게 들어오게(VPN) 한다.",
+   "why": "Staff 공고는 이걸 요건으로, Senior인 이 공고는 우대로 뒀습니다.[1][2] 같은 회사 도쿄 공고도 Cisco ISE를 적었습니다.[8]",
+   "actually": {
+    "items": [
+     "**NAC(망 접근 통제)** — 포트에 꽂거나 무선에 붙은 단말이 등록된 것인지 확인하고, 아니면 격리 VLAN으로 보낸다 {추론}.",
+     "**Cisco ISE** — 그 확인을 해 주는 Cisco의 인증 서버.[2]",
+     "**VPN** — 업체·재택 직원이 사내망에 암호화된 길로 들어오게.[2]"
+    ]
+   },
+   "how_far": "창고에는 PDA·로봇처럼 사람이 로그인하지 않는 단말이 많아, 단말 자체를 어떻게 알아보는지가 이 일의 핵심 질문입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    8
+   ],
+   "study": [
+    "nist-fw"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CCNP, JNCIP 또는 이에 준하는 네트워크 관련 자격증을 보유하신 분",
+   "short": "Cisco·Juniper의 중급 전문 자격증. 실력을 짧게 증명하는 수단이다.",
+   "why": "CCNP Enterprise는 공통 시험 350-401 ENCOR(120분)와 고르는 전문 시험 하나로 딴다.[17] Staff 공고는 CCIE·JNCIE(최상위 자격)까지 적었습니다.[2]",
+   "how_far": "우대라 필수는 아닙니다. 경력이 짧거나 분야를 옮길 때 **기본기를 증명하는 수단**으로 더 쓸모가 있습니다 {추론}.",
+   "refs": [
+    2,
+    17
+   ],
+   "study": [
+    "ccnp-ent"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "물류(Logistics), 제조(Manufacturing), E-commerce 환경에서의 네트워크 운영 경험을 보유하신 분",
+   "short": "사무실이 아니라 창고·공장처럼 넓고, 기계가 많고, 24시간 도는 곳의 망 경험.",
+   "why": "같은 팀 Staff 공고와 리멤버 글이 모두 '물류 네트워크 환경'을 우대로 적었습니다.[2][3] 창고는 무선이 어렵고 멈추면 출고가 멈춥니다.[15]",
+   "how_far": "같은 업종이 아니어도 공장·병원·공항처럼 **움직이는 단말이 많은 넓은 공간**의 경험이면 이야기할 거리가 됩니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    15,
+    23
+   ],
+   "study": [
+    "zebra-aruba"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "구조화된 케이블링 및 Physical Network Infrastructure에 대한 이해를 보유하신 분",
+   "short": "통신실·랙·광케이블·패치 패널을 표준대로 정리해 까는 법을 안다.",
+   "why": "Staff 공고는 이걸 요건('수동 네트워킹 기술 및 구조화된 케이블링 인프라')으로 뒀습니다.[2] 새 센터를 지을 때 케이블 경로를 처음 정하는 것도 이 지식입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**구조화 케이블링** — 건물 배선을 주 통신실 → 층·구역 통신실 → 단말 자리로 나눠 표준 규격대로 까는 방식.[24]",
+     "**물리 층** — 광 vs 구리, 케이블 길이 한계, 랙 전원·냉방 {추론}.",
+     "**라벨** — 케이블 양 끝 번호를 문서와 맞춘다. 장애 때 시간을 줄인다 {추론}."
+    ]
+   },
+   "how_far": "직접 케이블을 까는 건 업체 몫이고, 엔지니어는 **설계도를 검토하고 시공 결과를 검수**하는 쪽입니다 {추론}.",
+   "refs": [
+    2,
+    24
+   ],
+   "study": [
+    "structured-cabling"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "망이 멈춘 순간 원인을 좁혀 가는 일이 즐거운 사람",
+   "현장에 가서 직접 재고 고치는 걸 마다하지 않는 사람[1]",
+   "로봇·자동화 창고처럼 눈에 보이는 결과를 받치는 일을 원하는 사람[4][5]",
+   "반복 설정을 스크립트로 바꾸고 싶은 사람[1]"
+  ],
+  "hard": [
+   "전국 센터 출장이 요건이다[1]",
+   "물류센터는 밤에도 돌아 장애가 시간을 가리지 않는다 {추론}",
+   "설계 주도권은 같은 팀 Staff·글로벌 표준 쪽에 있다[2] {추론}",
+   "소프트웨어 개발 자리가 아니다 — 자동화는 우대일 뿐이다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "창고 한 구역에서만 PDA가 자주 끊긴다고 합니다. 어디부터 보겠어요?",
+   "a": "업무 '장애 분석'과 요건 '무선 운영' — 창고 무선 사각지대·간섭·로밍.[15][16][23]"
+  },
+  {
+   "q": "스위치를 고리로 이었는데 망 전체가 느려졌습니다. 무슨 일이고 어떻게 막나요?",
+   "a": "요건 STP — 루프와 RSTP 포트 역할.[12]"
+  },
+  {
+   "q": "새 센터에 PDA 1,500대·로봇 600대가 들어옵니다. 주소와 VLAN을 어떻게 나누겠어요?",
+   "a": "업무 '신규 구축' — 위 주소 나누기 계산."
+  },
+  {
+   "q": "로봇 업체가 원격 접속을 열어 달라고 합니다. 방화벽 규칙을 어떻게 쓰겠어요?",
+   "a": "요건 방화벽·우대 VPN/NAC — 필요한 만큼만 열기.[2][13]"
+  },
+  {
+   "q": "최근에 쓴 장애 보고서 하나를 설명해 주세요. 재발 방지는 무엇이었나요?",
+   "a": "업무 RCA 작성.[14]"
+  },
+  {
+   "q": "같은 설정을 센터 수십 곳 장비에 넣어야 한다면?",
+   "a": "우대 Python·Ansible.[17][18]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior, Network Engineer (Fulfillment and Logistics Network Engineering)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8413572",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "직무 소개·업무·요건·우대·전형(서류 → 직무 적합성 → 핵심 역량), 정규직·수습 12주, 근무지 Seoul"
+  },
+  {
+   "n": 2,
+   "title": "사람인 · 쿠팡 네트워크엔지니어 (Fulfillment and Logistics)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55263228",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "같은 팀 Staff 자리 — 10년↑, 설계·기획, FC 설계 팀 협업, Fortinet/Palo Alto/Zscaler·Cisco ISE·DHCP, 구조화 케이블링 요건, 근무지 테헤란로 332 HJ타워, 접수 2026-10-12 ~ 12-11"
+  },
+  {
+   "n": 3,
+   "title": "리멤버 · 쿠팡 Network Engineer (Fulfillment and Logistics Network Engineering)",
+   "url": "https://career.rememberapp.co.kr/job/posting/325975",
+   "kind": "posting",
+   "note": "같은 팀 Staff 글 — 경력 10~25년, 물류 네트워크 환경 우대, 복지 태그(유연근무·식대·저녁·성과급·사내대출 등)"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Careers · A symphony of people and technology: an inside look at a Coupang fulfillment center",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/coupang-news/a-symphony-of-people-and-technology-an-inside-look-at-a-coupang-fulfillment-center/",
+   "kind": "company",
+   "date": "2022-11-20",
+   "note": "PDA로 작업 지시, AGV 평균 약 2분 운반, 자동 포장기 5초, 축구장 여러 개 넓이"
+  },
+  {
+   "n": 5,
+   "title": "Coupang Careers · Inside Coupang's Robotics Operations team",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/inside-coupang-s-robotics-operations-team-driving-advanced-automation-to-wow-customers/",
+   "kind": "company",
+   "date": "2025-07-08",
+   "note": "AGV 망 개선, 상자 운반 로봇·로봇 포장기 도입, 업체·운영·자동화 팀 협업. 네트워크 언급은 없음"
+  },
+  {
+   "n": 6,
+   "title": "바이라인네트워크 · 쿠팡, 향후 3년간 물류 인프라 3조원 투자…2027년 5000만 인구 로켓배송",
+   "url": "https://byline.network/2024/03/27_3992761/",
+   "kind": "news",
+   "date": "2024-03-27",
+   "note": "10년간 약 6조 2천억 원·30개 지역 100여 개 물류 인프라, 9개 지역 신규. 본문은 검색 요약으로 확인"
+  },
+  {
+   "n": 7,
+   "title": "Built In · [Coupang] Staff, Datacenter Network Engineer",
+   "url": "https://builtin.com/job/coupang-staff-datacenter-network-engineer/6525288",
+   "kind": "posting",
+   "note": "같은 회사 데이터센터 망 자리(한국) — BGP·OSPF·VXLAN, Cisco ACI·Arista, CCIE/JNCIE. 2026-01 내려간 공고의 남은 본문"
+  },
+  {
+   "n": 8,
+   "title": "Built In · Coupang Enterprise Network Senior Engineer (Tokyo)",
+   "url": "https://builtin.com/job/senior-network-engineer/9443484",
+   "kind": "posting",
+   "note": "같은 회사 일본 사무실 망 — Wi-Fi·WAN·SD-WAN, Cisco Wi-Fi·ISE·Palo Alto, CCNP/PCNSA, 5년↑. 2026-08 내려간 공고의 남은 본문"
+  },
+  {
+   "n": 9,
+   "title": "HPE · Hewlett Packard Enterprise closes acquisition of Juniper Networks",
+   "url": "https://www.hpe.com/us/en/newsroom/press-release/2025/07/hewlett-packard-enterprise-closes-acquisition-of-juniper-networks-to-offer-industry-leading-comprehensive-cloud-native-ai-driven-portfolio.html",
+   "kind": "reference",
+   "date": "2025-07-02",
+   "note": "약 140억 달러, HPE 네트워킹 사업 두 배. 페이지가 열리지 않아 검색 요약으로 확인"
+  },
+  {
+   "n": 10,
+   "title": "RFC 2328 · OSPF Version 2",
+   "url": "https://www.rfc-editor.org/rfc/rfc2328",
+   "kind": "reference",
+   "date": "1998-04"
+  },
+  {
+   "n": 11,
+   "title": "RFC 4271 · A Border Gateway Protocol 4 (BGP-4)",
+   "url": "https://www.rfc-editor.org/rfc/rfc4271",
+   "kind": "reference",
+   "date": "2006-01",
+   "note": "TCP 179, 메시지 최대 4096바이트"
+  },
+  {
+   "n": 12,
+   "title": "Cisco · Understand Rapid Spanning Tree Protocol (802.1w)",
+   "url": "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24062-146.html",
+   "kind": "reference",
+   "date": "2023-02-09",
+   "note": "hello 2초, BPDU 3번 놓치면 이웃 잃음, 엣지 포트"
+  },
+  {
+   "n": 13,
+   "title": "NIST SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy",
+   "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+   "kind": "reference",
+   "date": "2009-09"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Book · 15장 Postmortem Culture: Learning from Failure",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "note": "보고서를 쓰는 경우, 사람 탓 없는 보고서"
+  },
+  {
+   "n": 15,
+   "title": "Zebra 블로그 · Is this why a stable Wi-Fi connection remains elusive in warehouses and DCs?",
+   "url": "https://www.zebra.com/us/en/blog/posts/2025/why-is-stable-wifi-connection-elusive-in-warehouses.html",
+   "kind": "reference",
+   "date": "2025-02-04",
+   "note": "다른 회사 — 창고 무선 사각지대, AP 교체·사이트 서베이 반복, '느리거나 되거나' 발언"
+  },
+  {
+   "n": 16,
+   "title": "Zebra 문서 · Best Practices for Voice Deployment with Aruba WLAN — General WLAN Recommendations",
+   "url": "https://docs.zebra.com/us/en/mobile-computers/software/best-practices-for-voice-deployment-with-aruba-wlan-infrastructure/c-aruba-infrastructure-and-vendor-model-recommendations/r-sd660-aruba-recommendations.html",
+   "kind": "reference",
+   "note": "802.11r 빠른 로밍 권장, SSID는 필요한 것만. 검색 요약으로 확인"
+  },
+  {
+   "n": 17,
+   "title": "Cisco · CCNP Enterprise",
+   "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccnp-enterprise/index.html",
+   "kind": "reference",
+   "note": "공통 350-401 ENCOR(120분, 400달러) + 전문 시험 하나(ENARSI·ENSDWI·ENAUTO 등)"
+  },
+  {
+   "n": 18,
+   "title": "GitHub · ktbyers/netmiko",
+   "url": "https://github.com/ktbyers/netmiko",
+   "kind": "reference",
+   "note": "여러 회사 장비 SSH 자동화 Python 라이브러리, MIT"
+  },
+  {
+   "n": 19,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "쿠팡(주) 초봉·평균, 기준 연도·직군 구분 없음. 자동 접속이 막혀 검색 결과에 실린 값으로 확인(같은 회사 다른 풀이와 같은 값)"
+  },
+  {
+   "n": 20,
+   "title": "원티드 · 쿠팡 회사 정보",
+   "url": "https://www.wanted.co.kr/company/53",
+   "kind": "reference",
+   "note": "평균연봉·고용보험 가입 인원"
+  },
+  {
+   "n": 21,
+   "title": "원티드 · [쿠팡] 카탈로그 Taxonomy 및 데이터 분석 PM",
+   "url": "https://www.wanted.co.kr/wd/396324",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 다른 공고의 '혜택 및 복지' 칸(쿠팡(주) 공통 안내)"
+  },
+  {
+   "n": 22,
+   "title": "Coupang Careers · Why Coupang",
+   "url": "https://www.coupang.jobs/kr/why-coupang/",
+   "kind": "company",
+   "note": "복지 항목(금액 없음)"
+  },
+  {
+   "n": 23,
+   "title": "Juniper · Prime Cargo 사례(창고 물류 무선)",
+   "url": "https://www.juniper.net/us/en/customers/2025/prime-cargo-case-study.html",
+   "kind": "reference",
+   "date": "2025",
+   "note": "다른 회사 — 스캐너·노트북 무선, 선반·이동 장비·재고를 간섭원으로 보고 채널·출력 자동 조정. 페이지가 HPE로 옮겨져 검색 요약으로 확인"
+  },
+  {
+   "n": 24,
+   "title": "Wikipedia · Structured cabling",
+   "url": "https://en.wikipedia.org/wiki/Structured_cabling",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "바이라인네트워크 · 3370만건 고객정보 털린 쿠팡, 뭐가 문제였을까?",
+   "url": "https://byline.network/2025/12/1-1389/",
+   "kind": "news",
+   "date": "2025-12",
+   "note": "수사 결과 전 보도 기준"
+  }
+ ],
+ "caveat": "쿠팡은 물류 네트워크 설계(장비 구성·무선 설계 기준·WAN 구조)를 공개한 글이나 발표가 없습니다(찾지 못했습니다). 그래서 회사 근거는 이 공고·같은 팀 Staff 공고·같은 회사 다른 네트워크 공고·센터 소개 글이고, 창고 무선의 보통 어려움은 단말·장비 회사 자료로 보였습니다. 주소 나누기·가용성 예는 가상 숫자입니다.",
+ "resources": [
+  {
+   "id": "netbook-gilbut",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "by": "고재성 · 이상훈 · 길벗 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "VLAN·STP·라우팅·DHCP·DNS·방화벽을 실제 장비 구성 흐름으로 묶어 설명한다. 업무 전반과 요건 '프로토콜 기본 이해'의 첫 책."
+  },
+  {
+   "id": "huni-cisco",
+   "title": "후니의 쉽게 쓴 시스코 네트워킹",
+   "by": "진강훈 · 성안당",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%9B%84%EB%8B%88%EC%9D%98%20%EC%89%BD%EA%B2%8C%20%EC%93%B4%20%EC%8B%9C%EC%8A%A4%EC%BD%94%20%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%82%B9",
+   "why": "Cisco 장비 기준으로 스위칭·라우팅·무선을 차례로 다룬다. 요건 'Cisco 기반 Switching·Routing 운영'의 명령어 감을 잡는 데."
+  },
+  {
+   "id": "ccnp-ent",
+   "title": "CCNP Enterprise 자격 안내",
+   "by": "Cisco",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccnp-enterprise/index.html",
+   "why": "공통 시험 ENCOR 범위가 이 공고 요건(스위칭·라우팅·무선·보안·자동화)과 거의 겹친다. 우대 자격증과 공부 목차를 겸한다."
+  },
+  {
+   "id": "rfc-ospf",
+   "title": "RFC 2328 · OSPF Version 2",
+   "by": "J. Moy · IETF · 1998",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc2328",
+   "why": "OSPF 원문. 이웃 맺기·영역·최단 경로 계산이 막힐 때 근거를 찾는 곳. 처음부터 다 읽지 말고 필요한 절만."
+  },
+  {
+   "id": "rfc-bgp",
+   "title": "RFC 4271 · A Border Gateway Protocol 4 (BGP-4)",
+   "by": "Y. Rekhter 외 · IETF · 2006",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc4271",
+   "why": "BGP 이웃 상태와 경로 고르기 순서의 원문. WAN 장애에서 '왜 이 경로를 골랐나'를 설명할 때."
+  },
+  {
+   "id": "cisco-rstp",
+   "title": "Understand Rapid Spanning Tree Protocol (802.1w)",
+   "by": "Cisco",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24062-146.html",
+   "why": "포트 역할·엣지 포트·타이머가 숫자와 함께 있다. 루프 장애를 읽는 법(요건 STP)."
+  },
+  {
+   "id": "nist-fw",
+   "title": "SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy",
+   "by": "NIST · 2009",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+   "why": "방화벽 정책을 세우고 검토하는 절차. 요건 '방화벽 운영·정책 적용'과 업무 '보안 정책 준수'의 기준 문서."
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Site Reliability Engineering · 15장 Postmortem Culture",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "언제 장애 보고서를 쓰고 어떻게 사람 탓 없이 쓰나. 업무 'RCA 작성'의 틀."
+  },
+  {
+   "id": "zebra-aruba",
+   "title": "Best Practices for Voice Deployment with Aruba WLAN Infrastructure",
+   "by": "Zebra",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.zebra.com/us/en/mobile-computers/software/best-practices-for-voice-deployment-with-aruba-wlan-infrastructure/c-aruba-infrastructure-and-vendor-model-recommendations/r-sd660-aruba-recommendations.html",
+   "why": "창고 단말 회사가 무선 장비에 권하는 설정(빠른 로밍·SSID 수). 요건 'Enterprise WLAN 운영'을 단말 쪽에서 보는 법."
+  },
+  {
+   "id": "netauto-hanbit",
+   "title": "네트워크 인프라 자동화",
+   "by": "맷 오스왈트 외 · 이주호 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC%20%EC%9D%B8%ED%94%84%EB%9D%BC%20%EC%9E%90%EB%8F%99%ED%99%94",
+   "why": "『Network Programmability and Automation』 한국어판. Python·Ansible·설정 템플릿·Git으로 망을 다루는 법 — 우대 '자동화 도구 활용'."
+  },
+  {
+   "id": "netmiko",
+   "title": "Netmiko",
+   "by": "Kirk Byers · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/ktbyers/netmiko",
+   "why": "여러 회사 장비에 SSH로 붙어 명령을 보내는 Python 라이브러리. 자동화 첫 과제(설정 모으기)에 바로 쓴다."
+  },
+  {
+   "id": "structured-cabling",
+   "title": "Structured cabling",
+   "by": "Wikipedia",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://en.wikipedia.org/wiki/Structured_cabling",
+   "why": "통신실·수평·수직 배선 구분과 표준 이름(TIA-568 등)을 한 장에. 우대 '구조화된 케이블링'의 낱말 잡기."
+  },
+  {
+   "id": "coupang-robotics",
+   "title": "Coupang Careers · Robotics Operations Team 소개",
+   "by": "쿠팡 · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/inside-coupang-s-robotics-operations-team-driving-advanced-automation-to-wow-customers/",
+   "why": "센터에 어떤 로봇이 새로 들어오고 어떤 팀이 함께 도입하는지. 업무 '신규 구축·협업'에서 망이 받쳐야 할 상대를 미리 안다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "기본기 다시 세우기",
+   "time": "2~3주",
+   "goal": "TCP/IP·VLAN·STP·OSPF·BGP를 장비 출력과 함께 설명할 수 있다.",
+   "task": "무료 가상 실습 도구(예: GNS3·Containerlab)로 스위치 3대·라우터 2대 망을 만들고, 일부러 고리를 만들어 STP가 막는 포트를 확인한다. OSPF 이웃·BGP 이웃 출력을 캡처해 한 줄씩 해석을 단다.",
+   "resources": [
+    "netbook-gilbut",
+    "huni-cisco",
+    "cisco-rstp"
+   ]
+  },
+  {
+   "title": "센터 하나 설계해 보기",
+   "time": "1~2주",
+   "goal": "가상의 물류센터 한 곳의 주소·VLAN·무선·방화벽 표를 혼자 만든다.",
+   "task": "단말 수(PDA 1,500 · 로봇 600 · CCTV 400 …)를 정하고 업무② 예처럼 주소 칸을 나눈다. 구역별 AP 수, 방화벽 규칙 10줄, 업링크 이중화 그림까지 한 문서로.",
+   "resources": [
+    "netbook-gilbut",
+    "nist-fw",
+    "zebra-aruba"
+   ]
+  },
+  {
+   "title": "장애와 문서",
+   "time": "1~2주",
+   "goal": "장애를 재현하고 런북과 RCA를 쓸 수 있다.",
+   "task": "1단계 실습 망에서 업링크 하나를 끊고, VLAN을 잘못 넣고, 방화벽 규칙 하나를 빼 본다. 각 장애에 대해 '증상 → 확인 순서 → 원인 → 재발 방지' RCA를 한 장씩 쓴다.",
+   "resources": [
+    "sre-postmortem"
+   ]
+  },
+  {
+   "title": "자동화 하나",
+   "time": "2~3주",
+   "goal": "반복 작업 하나를 스크립트로 바꿔 쓴다.",
+   "task": "Netmiko로 실습 장비 전체의 설정을 모아 파일로 저장하고, 업무⑩ 예처럼 표준 틀과 다른 줄을 보고서로 뽑는다. 같은 VLAN 추가를 Ansible 플레이북으로도 해 본다.",
+   "resources": [
+    "netauto-hanbit",
+    "netmiko"
+   ]
+  },
+  {
+   "title": "자격증으로 묶기 (선택)",
+   "time": "2~3개월",
+   "goal": "CCNP Enterprise 공통 시험 범위를 한 번 훑는다.",
+   "task": "ENCOR 시험 범위 목록을 받아 1~4단계에서 한 것과 안 한 것을 표시하고, 비어 있는 칸(무선 설계·QoS 등)을 실습 과제로 하나씩 채운다.",
+   "resources": [
+    "ccnp-ent",
+    "rfc-ospf",
+    "rfc-bgp",
+    "structured-cabling"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 집계 사이트의 쿠팡(주) 초봉 **약 3,531만원**·평균 **약 5,175만원**은 물류·운영 인력이 섞인 회사 전체 값이라 8년차 엔지니어와 거리가 크다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 쿠팡(주). 기업이 공공데이터에 낸 정보로 계산한 값이고 기준 연도·직군 구분이 없다 [19]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "note": "같은 페이지의 평균. 경력직·전 직군이 섞인 값 [19]"
+   },
+   {
+    "label": "직원 평균 연봉 (원티드)",
+    "value": "5,856만원",
+    "amount": 5856,
+    "basis": "공공데이터 집계",
+    "note": "원티드 회사 페이지 표기, 기준일 표기 없음 [20]"
+   }
+  ],
+  "how": "쿠팡(주)은 미국 상장사 쿠팡 Inc.의 국내 자회사라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **공시 숫자 없음**. 같은 팀 사람인 공고는 급여를 '면접 후 결정'으로 적었고 [2], 이 공고는 직급과 업무 범위를 경력에 따라 정해 최종 합격 전에 알려 준다고 적었다 [1]. 평균은 경력직이 섞인 회사 전체 값이라 이 자리 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무",
+    "detail": "주 5일 유연근무제"
+   },
+   {
+    "name": "휴가",
+    "detail": "사유 없이 연차 사용"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"
+   },
+   {
+    "name": "쇼핑",
+    "detail": "쿠팡 구매금액 5% 캐시백(연 최대 400만원)"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조휴가"
+   },
+   {
+    "name": "동호회",
+    "detail": "사내 동호회와 동호회비 지원"
+   },
+   {
+    "name": "배움",
+    "detail": "사내 기술 공유 스터디, 외국어·직무 교육 프로그램"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "휴게 공간, 커피·차·간식, 사내 식당"
+   }
+  ],
+  "note": "이 공고에는 복리후생 칸이 없다 [1]. 위 항목은 같은 회사 쿠팡(주)의 다른 공고 '혜택 및 복지' 칸(2026-11) [21]과 쿠팡 채용 사이트 안내 [22]다. 같은 팀 리멤버 글은 식대·저녁·성과급·사내대출·휴양시설을 태그로 달았다(조건·금액 없음) [3]. 이 팀에 그대로 적용되는지는 처우 단계에서 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 HJ타워 (강남 사무실)",
+  "address": "서울특별시 강남구 테헤란로 332 (HJ타워)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20332",
+  "near": "2호선 역삼역과 선릉역 사이 테헤란로 {추론}",
+  "note": "이 공고의 근무지는 'Seoul, South Korea'뿐이다 [1]. 도로명 주소는 같은 팀 Staff 자리 사람인 공고의 근무지 표기다 [2]. 일은 전국 센터 출장이 섞인다 [1]."
+ }
+}
