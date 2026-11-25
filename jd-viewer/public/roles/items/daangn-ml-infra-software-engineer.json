@@ -1,0 +1,1175 @@
+{
+  "id": "daangn-ml-infra-software-engineer",
+  "company": "당근",
+  "role": "Software Engineer, Machine Learning — ML 인프라",
+  "team": "ML 인프라팀",
+  "jobs": [
+    "ats-greenhouse:daangn:7498021003"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "당근의 모든 팀이 ML·LLM 을 쓸 때 밑에 깔리는 것을 만듭니다 — 모든 AI 호출이 지나는 **LLM 라우터**, 실험·운영 기록을 잇는 **ML 메타데이터 시스템**, 학습한 모델을 서버에 올리는 **모델 배포 시스템**.[1][2]",
+    "env": "파이썬. 학습 파이프라인은 Kubeflow·TFX 로 짜서 Vertex AI Pipelines 에서 돌리고, 설정은 protobuf, 사내 SDK 는 uv 로 GCP·AWS 양쪽에 배포, 라우터는 vLLM 과 외부 API 를 OpenAI 형식으로 묶습니다.[2][4]",
+    "oneline": "고객이 사내 ML 엔지니어인 플랫폼 개발자. 팀이 작아서(2024년 3명으로 시작) **하나 만들면 여러 팀이 쓰는 구조**를 고르는 일이 핵심입니다.[2]"
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "사내 프롬프트 스튜디오와 에이전트 시스템을 지원하는 LLM 라우터를 개발하고 있어요. 단순한 프록시를 넘어서, 다양한 LLM의 기능과 특성을 자연스럽게 활용할 수 있도록 추상화하고 확장하고 있어요",
+      "short": "사내 모든 AI 호출이 지나는 관문을 만든다 — 모델이 어디 있든 한 형식으로 부르게 해서.",
+      "why": "이 팀이 vLLM(직접 띄운 모델을 빠르게 돌리는 서버)으로 사내 모델 서빙과 LLM 라우터를 직접 만들었고, 공개된 gpt-oss-120b 같은 자체 호스팅 모델과 외부 API 모델을 모두 한 곳에서 부르게 했다고 발표했습니다.[2] 사내 프롬프트 실험 도구(Prompt Studio)와 에이전트들이 이 라우터 위에서 돕니다.[2][3]",
+      "flows": [
+        {
+          "caption": "AI 호출 한 번이 지나는 길[2][3]",
+          "steps": [
+            "사내 서비스·에이전트 · OpenAI 형식으로 호출",
+            "LLM 라우터 · 모델 이름으로 위치를 찾고 형식을 맞춤",
+            "기록 · 호출 수·토큰·비용을 서비스별로",
+            "모델 · 자체 호스팅(vLLM) 또는 외부 API"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "actually": {
+        "items": [
+          "**한 형식으로 맞추기** — OpenAI 인터페이스를 표준으로 삼아, 개발자는 주소·SDK 를 바꾸지 않고 모델 이름만 바꾼다.[2][3]",
+          "**어디 있는지 감추기** — 자체 호스팅(vLLM)·사내 미세조정 모델·외부 API 를 라우터가 찾아 보낸다. vLLM 은 원래 OpenAI 형식 서버를 열 수 있어 이 묶음이 쉽다.[2][21]",
+          "**비용 세기** — 호출 수·토큰 수·비용을 서비스별로 쌓아 쓰는 쪽이 비용을 줄이게 한다.[2]",
+          "**'프록시를 넘어서'** — 모델마다 다른 기능(이미지 입력·도구 호출·긴 문맥)을 같은 형식 안에서 쓰게 번역하는 일이다. 무엇을 더 넣는지는 공개되지 않았다.{추론} 공개 연구에는 요청마다 강한·약한 모델을 골라 비용을 줄이는 라우팅도 있다.[22]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "모델 이름으로 공급자를 찾고, 형식을 바꾸고, 비용을 남긴다 (가상 값)",
+          "body": "같은 요청이 모델 이름에 따라 다른 곳으로 가고, 서비스별 비용이 쌓입니다. 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "# 서비스는 OpenAI 형식 하나로 부르고, 라우터가 모델 이름으로 공급자를 찾아 번역하고 비용을 남긴다 (가상 값)\nROUTES = {\n    \"gpt-oss-120b\": {\"provider\": \"self-hosted-vllm\", \"in\": 0.0, \"out\": 0.0},\n    \"claude-x\":     {\"provider\": \"anthropic\", \"in\": 3.0, \"out\": 15.0},   # 100만 토큰당 달러\n    \"gemini-x\":     {\"provider\": \"google\",    \"in\": 0.3, \"out\": 2.5},\n}\nledger = {}\n\ndef to_provider(req, provider):\n    msgs = req[\"messages\"]\n    if provider == \"anthropic\":   # system 을 따로 빼는 형식\n        system = \" \".join(m[\"content\"] for m in msgs if m[\"role\"] == \"system\")\n        return {\"system\": system, \"messages\": [m for m in msgs if m[\"role\"] != \"system\"]}\n    return {\"messages\": msgs}      # vLLM·OpenAI 호환은 그대로\n\ndef route(service_id, req, usage):\n    r = ROUTES[req[\"model\"]]\n    body = to_provider(req, r[\"provider\"])\n    cost = (usage[0] * r[\"in\"] + usage[1] * r[\"out\"]) / 1e6\n    ledger[service_id] = ledger.get(service_id, 0) + cost\n    return r[\"provider\"], sorted(body)\n\nreq = {\"model\": \"claude-x\", \"messages\": [{\"role\": \"system\", \"content\": \"요약해\"}, {\"role\": \"user\", \"content\": \"글\"}]}\nprint(route(\"search\", req, (2000, 300)))\nprint(route(\"search\", {**req, \"model\": \"gpt-oss-120b\"}, (2000, 300)))\nprint(route(\"feed\", {**req, \"model\": \"gemini-x\"}, (50000, 1000)))\nprint({k: round(v, 4) for k, v in ledger.items()})\n# ('anthropic', ['messages', 'system'])\n# ('self-hosted-vllm', ['messages'])\n# ('google', ['messages'])\n# {'search': 0.0105, 'feed': 0.0175}"
+        }
+      ],
+      "how_far": "라우터의 몸통은 이미 돌고 있습니다.[2] 들어가서 하는 일은 새 모델·새 기능을 붙이고, 요청이 늘어도 버티게 하고, 비용·사용량을 보이게 하는 것입니다.{추론} 모델 품질 비교 자체는 쓰는 팀과 Prompt Studio 의 평가 기능 몫입니다.[3]",
+      "refs": [
+        2,
+        3,
+        21,
+        22
+      ],
+      "study": [
+        "talk-pycon",
+        "daangn-genai",
+        "vllm-openai",
+        "routellm"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "ML 메타데이터 관리 및 조회 시스템을 자체 개발하고 있어요. 단순한 관리 도구를 넘어서 AI 에이전트 기반으로 실험과 운영을 분석하고, 자동화하는 방향으로 발전시키고 있어요",
+      "short": "어떤 데이터로 어떤 실행이 어떤 모델을 만들었나를 기록·조회하고, 그걸 에이전트가 읽게 하는 일.",
+      "why": "학습 파이프라인이 하루 수천 개로 늘었고 팀은 3명으로 2024년을 시작했습니다.[2] 그래서 팀은 ML 메타데이터를 읽어 '어느 프로젝트·어느 단계에서 무슨 오류가 났고 담당자가 누군가'를 붙인 알림을 직접 만들었습니다.[2] 이 공고의 시스템은 그 기록을 사람이 찾아보는 데서 나아가 에이전트가 분석하게 하려는 것입니다.[1]",
+      "actually": {
+        "intro": "보통 ML 메타데이터는 이런 것을 담습니다 — 당근 시스템의 구조는 공개되지 않았습니다.",
+        "items": [
+          "**산출물(Artifact)** — 데이터셋·모델·평가 결과와 그 위치(BigQuery 표, GCS 경로).[18]",
+          "**실행(Execution)과 이벤트** — 어느 실행이 무엇을 읽고(in) 무엇을 냈나(out). 이 줄을 따라가면 모델의 계보가 나온다.[18][19]",
+          "**실험 기록** — 파라미터·지표·누가 돌렸나. MLflow 같은 도구가 같은 칸을 담는다.[20]",
+          "**에이전트 쪽** — '어제 실패한 파이프라인을 원인별로 묶어 줘', '이 모델은 어떤 데이터로 학습됐나' 같은 질문을 조회 도구로 열어 주는 일이다. 사내에는 이미 도구를 에이전트에 붙이는 MCP(에이전트가 도구를 부르는 표준 규약) 기반 체계와 사내 에이전트 플랫폼이 있다.[3][9][32] 정해진 질의는 고정된 흐름으로, 열린 질문만 에이전트에 맡기는 것이 보통 권하는 나눔이다.[31]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "운영 중 모델의 계보를 묻고, 실패·오래 도는 실행을 담당자와 함께 뽑기 (가상 값)",
+          "body": "실행–산출물–이벤트 세 표만으로 '이 모델은 어떤 데이터로 만들었나'와 알림 대상이 나옵니다. 발표의 알림(실패·너무 오래 도는 파이프라인·담당자 멘션)을 작게 흉내 낸 것입니다.[2] 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "# ML 메타데이터: 실행(run) - 입력 데이터 - 만든 모델을 잇고, 운영 중 모델의 계보와 문제 실행을 묻는다 (가상 값)\nimport sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\ncreate table run(id text, pipeline text, owner text, status text, minutes int);\ncreate table artifact(id text, kind text, uri text);\ncreate table event(run text, artifact text, dir text);  -- in / out\ninsert into run values ('r1','feed-rank','@alice','SUCCEEDED',42),('r2','feed-rank','@alice','RUNNING',410),\n                       ('r3','spam-clf','@bob','FAILED',7);\ninsert into artifact values ('d1','dataset','bq://events/2026-11-24'),('m1','model','gs://models/feed-rank/2026.11.24.1'),\n                            ('d2','dataset','bq://events/2026-11-25');\ninsert into event values ('r1','d1','in'),('r1','m1','out'),('r2','d2','in');\n\"\"\")\nprint(db.execute(\"\"\"select r.id, r.pipeline, i.uri from artifact m\n  join event o on o.artifact=m.id and o.dir='out' join run r on r.id=o.run\n  join event e on e.run=r.id and e.dir='in' join artifact i on i.id=e.artifact\n  where m.uri like '%2026.11.24.1'\"\"\").fetchall())\nfor row in db.execute(\"select pipeline, owner, status, minutes from run where status='FAILED' or minutes > 6*60\"):\n    print(\"ALERT\", row)\n# [('r1', 'feed-rank', 'bq://events/2026-11-24')]\n# ALERT ('feed-rank', '@alice', 'RUNNING', 410)\n# ALERT ('spam-clf', '@bob', 'FAILED', 7)"
+        }
+      ],
+      "how_far": "필요한 것은 계보 모델링(무엇을 칸으로 둘지)과 조회 API, 그리고 그것을 에이전트용 도구로 감싸는 일입니다.{추론} Vertex AI Pipelines 는 실행 메타데이터를 자동으로 남기므로, 새로 모으기보다 흩어진 기록을 잇는 일이 클 수 있습니다.[17][19]{추론}",
+      "refs": [
+        1,
+        2,
+        3,
+        9,
+        17,
+        18,
+        19,
+        20,
+        31,
+        32
+      ],
+      "study": [
+        "tfx-mlmd",
+        "mlflow-docs",
+        "building-agents",
+        "vertex-pipelines"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "여러 학습 프레임워크를 위한 머신러닝 모델 배포 시스템을 운영/개발하고 있어요. 사내 배포 시스템(Kontrol)과 긴밀하게 연동해, 누구나 쉽고 안정적으로 모델을 서빙하고 관리할 수 있는 환경을 만들고 있어요",
+      "short": "학습이 끝난 모델을 서버에 올리는 길을 사내 배포 도구와 이어, ML 엔지니어가 혼자 배포하게 하는 일.",
+      "why": "지금 기본 흐름은 학습이 끝난 모델을 GCS·S3 에 올리고 서버를 다시 띄워 새 모델을 서빙하는 것입니다.[2] Kontrol 은 당근 SRE 가 만든 사내 배포 도구로, '쿠버네티스를 몰라도 배포할 수 있어야 한다'는 원칙으로 쿠버네티스 설정을 감춥니다.[5] 2023년에 배포 엔진을 Argo Workflows(쿠버네티스 위에서 단계를 엮어 돌리는 도구)[24] 로 바꾸면서 다음 일로 카나리 배포와 ML 배포 기능을 검토했다고 당근 엔지니어가 적었습니다.[6]",
+      "flows": [
+        {
+          "caption": "모델 하나가 서비스에 나가는 길[2][5]",
+          "steps": [
+            "학습 파이프라인 · Vertex AI Pipelines 에서 학습",
+            "저장 · 모델을 GCS·S3 에 버전별로 올림",
+            "배포 · Kontrol 이 서빙 서버를 띄우거나 다시 시작",
+            "서빙 · TensorFlow Serving 등 사내 빌드",
+            "확인 · 지표 보고 유지 또는 되돌리기"
+          ],
+          "mine_from": 2
+        }
+      ],
+      "actually": {
+        "items": [
+          "**여러 프레임워크** — 팀은 TensorFlow Serving 에 S3 연동·ARM 지원 같은 패치를 넣은 사내 빌드를 유지한다.[2] 다른 프레임워크(PyTorch 등)는 다른 서버가 필요해 배포 길이 여러 갈래가 된다.{추론}",
+          "**모델 버전** — 서빙 서버는 버전별 폴더를 보고 새 버전을 무중단으로 올린다.[23] 팀의 사내 패키지는 날짜형 버전(YYYY.MM.DD.시각)을 쓴다.[2]",
+          "**Kontrol 연동** — 모델 서버도 일반 서비스처럼 Kontrol 의 설정 한 장으로 배포·되돌리기를 하게 만드는 일이다.[5][6]{추론}",
+          "**안정성** — 새 모델을 일부 요청에만 먼저 보내고(카나리) 지표가 나쁘면 되돌린다. 원리는 일반 서비스 배포와 같다.[6][25]{추론}"
+        ]
+      },
+      "how_far": "Kontrol 자체는 SRE 의 것이고, 이 자리는 그 위에 **모델 배포라는 갈래**를 얹고 운영합니다.[5][6]{추론} 쿠버네티스 매니페스트(배포 설정 파일)를 읽을 줄 알고, 서빙 서버 하나를 직접 띄워 버전을 바꿔 본 경험이면 출발선입니다.{추론}",
+      "refs": [
+        2,
+        5,
+        6,
+        23,
+        24,
+        25
+      ],
+      "study": [
+        "outsider-deck",
+        "tf-serving",
+        "argo-workflows",
+        "k8s-book"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "그 외에도 당근에서 머신러닝과 AI를 더 잘 활용할 수 있다면, 문제의 크기나 형태에 관계없이 필요한 모든 것을 만들어가고 있어요",
+      "short": "정해진 목록 밖의 일도 맡는다 — 사내 SDK, 알림, 커스텀 빌드처럼 ML 을 쓰는 팀이 막히는 곳 전부.",
+      "why": "발표에서 이 팀이 한 일은 파이프라인 운영에 그치지 않았습니다 — 여러 팀이 같이 고치는 사내 파이프라인 SDK, 알림 서비스, TensorFlow IO·Serving·ScaNN(벡터 근사 검색 라이브러리)의 사내용 패치까지 만들었습니다.[2]",
+      "actually": {
+        "items": [
+          "**사내 SDK** — 자주 쓰는 TFX 컴포넌트와 유틸을 묶어 pyproject.toml·uv 로 패키징하고, GCP·AWS 양쪽 패키지 저장소에 올린다.[2][34]",
+          "**중앙 설정** — 꼭 바꿔야 하는 운영 설정은 Central Dogma(설정 저장소)로 넣어, 사용자가 SDK 를 올리지 않아도 반영되게 한다.[2][28]",
+          "**커스텀 빌드** — 라이브러리에 S3 연동·최적화 런타임·ARM 지원을 직접 넣어 쓴다.[2]"
+        ]
+      },
+      "how_far": "\"모든 것\"은 범위를 넓게 둔다는 뜻이지 혼자 다 하라는 뜻은 아닙니다 — 팀 소개가 말하듯 기준은 '다른 팀이 복잡함을 감당하지 않게'입니다.[1] 처음엔 맡은 시스템 하나를 깊게, 주변 일은 필요할 때 넓히는 순서가 보통입니다.{추론}",
+      "refs": [
+        1,
+        2,
+        28,
+        34
+      ],
+      "study": [
+        "talk-pycon",
+        "uv-docs",
+        "ml-tech-debt"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "당근에서 다루는 문제들은 뚜렷한 정답이나 레퍼런스가 없는 경우가 많아요. 새로운 문제를 정의하고 해결하는 과정을 즐기시는 분과 함께하고 싶어요",
+      "short": "교과서 답이 없는 문제가 많다 — 문제를 스스로 정의하는 사람을 찾는다.",
+      "why": "팀은 인원이 줄던 2024년에 파이프라인이 몇 배로 늘자, 직접 서버리스 실행 환경으로 옮기고 알림을 다시 짜 운영 부담을 줄였습니다.[2] 누가 시킨 과제가 아니라 상황에서 문제를 골라낸 사례입니다.{추론}",
+      "how_far": "면접에서는 '무엇이 문제였고, 왜 그걸 골랐고, 무엇을 버렸나'를 묻는다고 보는 편이 안전합니다.{추론} 내가 정의한 문제 하나를 처음부터 끝까지 말할 수 있으면 충분합니다.{추론}",
+      "refs": [
+        2
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "머신러닝과 AI를 통해 더 나은 당근 서비스에 기여하고 싶은 열정적인 분을 찾고 있어요. 기술 자체보다, 실제 문제를 해결하고 사용자 가치를 만드는 데에 관심이 있는 분이면 좋아요",
+      "short": "기술 그 자체보다 '그래서 무엇이 나아졌나'에 관심 있는 사람.",
+      "why": "이 팀의 사용자는 사내 ML 엔지니어와 제품 팀이고, 그 팀들이 사기 탐지·피드 추천·게시물 분류 같은 서비스 기능을 만듭니다.[4][7] 플랫폼의 가치는 그 팀이 얼마나 빨라졌나로 재집니다.[1]",
+      "how_far": "자기소개에서 기술 목록보다 '누가 얼마나 편해졌나'(배포 시간, 장애 수, 온콜 호출 수)를 숫자로 말하는 편이 이 줄에 맞습니다.{추론}",
+      "refs": [
+        1,
+        4,
+        7
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "파이썬을 주요 언어로 사용하고 있어요. 파이썬 기반의 개발 환경에 익숙하거나, 사용하는 데에 부담이 없는 분이면 잘 맞아요",
+      "short": "주 언어는 파이썬 — 스크립트가 아니라 타입·설정·패키징까지 갖춘 파이썬.",
+      "why": "학습 파이프라인·SDK·알림 서비스가 모두 파이썬이고, 팀은 동적 타입 때문에 생기는 오류를 줄이려고 설정을 protobuf(형식을 먼저 정의하는 데이터 규격)로 정의해 사람이 읽는 pbtxt 로 적게 합니다.[2][4] 추론 파이프라인도 ML 엔지니어가 쉽게 고치도록 파이썬(Apache Beam)으로 통일했습니다.[2]",
+      "actually": {
+        "items": [
+          "**형식이 있는 설정** — YAML 이면 어떤 값이 허용되는지 코드를 열어 봐야 하지만, 스키마가 있으면 파일만 보고 알고 틀린 값은 실행 전에 막힌다.[2][27]",
+          "**패키징** — pyproject.toml·uv 로 사내 패키지를 만들고 버전을 붙인다.[2][34]",
+          "**동시성** — 외부 API 를 기다리는 일은 asyncio 로 여러 개를 한꺼번에 보낸다.[2]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "형식을 정해 둔 설정은 오타를 실행 전에 잡는다",
+          "body": "팀은 protobuf 로 하지만, 여기서는 파이썬 표준(dataclass·Enum)만으로 같은 효과를 흉내 냈습니다 — 없는 선택지와 칸 이름 오타가 학습을 돌리기 전에 걸립니다.[2] 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "# 형식이 정해진 설정: 오타·없는 선택지를 실행 전에 잡는다 (protobuf 대신 파이썬 표준만으로 흉내)\nfrom dataclasses import dataclass, fields\nfrom enum import Enum\n\n\nclass Sampling(Enum):\n    RANDOM = \"RANDOM\"\n    STRATIFIED = \"STRATIFIED\"\n\n\n@dataclass\nclass TrainConfig:\n    sampling: Sampling\n    sample_ratio: float\n\n\ndef load(d):\n    extra = set(d) - {f.name for f in fields(TrainConfig)}\n    if extra:\n        raise ValueError(f\"모르는 칸: {extra}\")\n    return TrainConfig(Sampling(d[\"sampling\"]), float(d[\"sample_ratio\"]))\n\n\nfor cfg in ({\"sampling\": \"STRATIFIED\", \"sample_ratio\": \"0.1\"},\n            {\"sampling\": \"STRATIFED\", \"sample_ratio\": 0.1},\n            {\"sampling\": \"RANDOM\", \"sample_ratoi\": 0.1}):\n    try:\n        print(\"OK \", load(cfg))\n    except (ValueError, KeyError) as e:\n        print(\"ERR\", type(e).__name__, e)\n# OK  TrainConfig(sampling=<Sampling.STRATIFIED: 'STRATIFIED'>, sample_ratio=0.1)\n# ERR ValueError 'STRATIFED' is not a valid Sampling\n# ERR ValueError 모르는 칸: {'sample_ratoi'}"
+        }
+      ],
+      "how_far": "프레임워크 이름보다 **타입 힌트·데이터 클래스·패키지 만들기·asyncio** 를 실무에서 써 봤는지가 기준입니다.{추론} 다른 언어 경력자도 '부담이 없는' 수준이면 된다고 공고가 열어 두었습니다.[1]",
+      "level": {
+        "basic": "함수·클래스·예외·가상환경",
+        "work": "타입 힌트 · dataclass/Enum · pyproject 패키징 · asyncio · pytest",
+        "team": "protobuf 설정(pbtxt) · TFX·KFP 컴포넌트 · Apache Beam 파이썬 SDK"
+      },
+      "refs": [
+        1,
+        2,
+        4,
+        27,
+        34
+      ],
+      "study": [
+        "effective-python",
+        "protobuf-text",
+        "uv-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "특정 도메인 경험보다 문제 해결 능력을 더 중요하게 생각해요. 이미 다른 영역에서 복잡한 문제를 잘 풀어오신 분이라면, ML이나 LLM이라는 새로운 분야에서도 빠르게 성장하실 수 있다고 믿어요",
+      "short": "ML 경력이 없어도 된다 — 다른 영역에서 복잡한 문제를 푼 경험을 본다.",
+      "why": "이 팀의 일 상당 부분은 배포·알림·패키징·서버처럼 일반 백엔드·인프라 일입니다.[2] ML 시스템에서 모델 코드는 작은 칸이고 나머지(설정·데이터·서빙·모니터링)가 대부분이라는 것이 잘 알려진 관찰입니다.[26]",
+      "how_far": "ML 이론보다 '모델이 학습되고 서빙되는 흐름'을 이해하면 시작할 수 있습니다.[26]{추론} 합류 전에 작은 모델 하나를 학습 → 저장 → 서빙까지 직접 해 보면 면접에서 말할 거리가 생깁니다.{추론}",
+      "refs": [
+        2,
+        26
+      ],
+      "study": [
+        "ml-tech-debt",
+        "mlops-google"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "백엔드 시스템이나 머신러닝 시스템을 개발해본 경험이 있다면, 팀에 더 빠르게 적응하실 수 있어요",
+      "short": "백엔드든 ML 시스템이든 하나를 만들어 운영해 봤으면 빨리 적응한다.",
+      "why": "라우터·메타데이터 조회·알림은 백엔드 서버이고, 학습·추론 파이프라인은 ML 시스템입니다.[1][2] 어느 쪽 경험이든 이 팀의 절반에 바로 닿습니다.{추론}",
+      "actually": {
+        "items": [
+          "**백엔드 쪽** — API 서버, 비동기 처리, DB 조회, 서비스별 사용량 기록(라우터·메타데이터).[2]",
+          "**ML 쪽** — 학습 파이프라인 컴포넌트, 피처 플랫폼에서 가공된 데이터 가져오기, 모델 저장·서빙.[2][8]"
+        ]
+      },
+      "how_far": "둘 다 깊을 필요는 없고, 한쪽에서 만든 것을 운영해 본 경험이 중요합니다.{추론}",
+      "refs": [
+        1,
+        2,
+        8
+      ],
+      "study": [
+        "mlsd-book",
+        "kfp-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "실무에서 약 3년 이상 문제를 풀어오신 분을 기대하고 있어요 (미드 레벨)",
+      "short": "미드 레벨은 실무 약 3년 이상.",
+      "why": "공고가 경력을 두 단계로 나눠 받습니다.[1] 연차보다 '문제를 풀어 온' 기간이라고 적은 점이 앞 줄(문제 해결 능력)과 이어집니다.[1]",
+      "how_far": "미드 레벨이면 맡은 시스템 하나를 스스로 설계·운영하는 수준을 기대한다고 보는 것이 보통입니다.{추론} 산업기능요원 전직·편입도 가능한 자리입니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "실무에서 약 5년 이상 문제를 풀어오신 분을 기대하고 있어요 (시니어 레벨)",
+      "short": "시니어는 실무 약 5년 이상 — 여러 팀이 쓰는 구조를 정하는 사람.",
+      "why": "같은 공고에 두 레벨을 함께 열었습니다.[1] 처우는 전형 다섯째 단계 처우 협의에서 정합니다.[1]",
+      "how_far": "시니어는 시스템 하나가 아니라 '다른 팀이 어떻게 쓰게 할까'(인터페이스·마이그레이션·기준)를 정하는 역할을 기대한다고 보는 편이 맞습니다.{추론} 우대사항의 '팀과 함께 기준을 만들어 가는 분'이 그 모습입니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "당근 ML 인프라팀은 단순히 인프라를 운영하는 팀이라기보다, 당근의 AI 개발 방식 자체를 새롭게 설계하는 팀에 가까워요",
+      "short": "서버를 지키는 팀이 아니라 사내 AI 개발 방식을 설계하는 팀.",
+      "why": "팀 소개는 목표를 '이렇게까지 간단해도 되나?' 싶을 만큼 단순한 경험을 다른 팀에 주는 것으로 적었습니다.[1] 실제로 이 팀은 학습 파이프라인 틀(TFX·protobuf·공용 저장소)을 정해 누구나 온보딩만 거치면 실험을 돌리게 했습니다.[2][4]",
+      "how_far": "결과물은 서버 하나가 아니라 **표준**(설정 형식·SDK·배포 방식)입니다.[2] 그래서 문서·온보딩·하위 호환을 챙기는 일이 코드만큼 큽니다.{추론}",
+      "refs": [
+        1,
+        2,
+        4
+      ],
+      "study": [
+        "tfx-karrot",
+        "cncf-platforms"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "그래서 이 팀에서는 문제를 발견하면 우선 임시방편으로 덮기보다 구조적으로 풀고 싶어 하고, 반복되는 불편을 보면 개인의 노하우로 남기기보다 공통 시스템으로 만들고 싶어 하며, 복잡한 기술을 다루더라도 결국 다른 팀에게는 더 단순한 경험으로 전달하고 싶어 하는 분과 잘 맞아요",
+      "short": "땜질보다 구조, 개인 노하우보다 공통 시스템, 복잡함은 숨기고 단순하게 — 세 가지 태도.",
+      "why": "팀의 사례가 그대로 이 셋입니다 — 온콜이 로그를 뒤지던 일을 메타데이터 알림으로 바꿨고(구조), 자주 쓰는 컴포넌트를 SDK 로 묶었고(공통 시스템), 비슷한 파이프라인 설정을 한 저장소에 모아 새 실험은 설정 파일 하나를 더하는 일로 만들었습니다(단순한 경험).[2] 사내 배포 도구 Kontrol 도 쿠버네티스를 감추는 같은 방향입니다.[5]",
+      "how_far": "면접에서 '같은 불편을 두 번 겪었을 때 무엇을 만들었나'를 말할 수 있으면 이 줄에 맞습니다.{추론}",
+      "refs": [
+        2,
+        5
+      ],
+      "study": [
+        "talk-pycon",
+        "outsider-deck"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "조금 더 구체적으로는 이런 분이면 좋아요. 작더라도 실제 서비스 운영 과정에서 생기는 현실적인 문제를 직접 다뤄본 분",
+      "short": "작아도 좋으니 운영 중에 터진 문제를 직접 다뤄 본 경험.",
+      "why": "팀이 겪은 문제는 운영에서 나왔습니다 — 사용자 코드 오류와 인프라 오류가 섞여 온콜이 다 받았고, 노드 그룹·쿼터·오토스케일링을 직접 챙겨야 했습니다.[2] 추론 파이프라인에서는 GPU 메모리 부족으로 처리가 멈추는 일도 겪었습니다.[2]",
+      "actually": {
+        "items": [
+          "**오류 가르기** — Vertex AI Pipelines 로 옮기며 사용자 코드 오류와 인프라 오류가 로그 라벨로 자동으로 갈려 온콜 부담이 줄었다.[2]",
+          "**알림 다시 짜기** — 파이프라인 이름·상태만 알리던 것을 프로젝트·컴포넌트·오류·담당자 멘션까지 붙여, 온콜 없이 담당자가 바로 대응하게 했다.[2][33]"
+        ]
+      },
+      "how_far": "장애 하나를 '무엇이 보였고 → 무엇을 의심했고 → 무엇을 바꿨나' 순서로 말할 수 있으면 됩니다.{추론}",
+      "refs": [
+        2,
+        33
+      ],
+      "study": [
+        "mlops-google"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "확장성, 안정성, 성능 같은 주제를 말로만이 아니라 실제 구조 개선으로 연결해본 분",
+      "short": "성능·안정성을 '측정 → 구조 변경 → 숫자로 확인'까지 해 본 경험.",
+      "why": "같은 발표의 추론 파이프라인 사례가 좋은 본보기입니다(ML 데이터 플랫폼팀).[2] 외부 API 를 하나씩 기다리던 처리를 묶음 + 비동기로 바꿔 동시성을 128배로 올렸고, 스레드마다 모델을 올리던 것을 프로세스 간 공유 객체로 바꿔 GPU 메모리 부족을 없앴습니다.[2][29][35]",
+      "examples": [
+        {
+          "title": "기다리는 일은 하나씩보다 동시에 (호출 하나 50ms 로 흉내)",
+          "body": "외부 서비스를 기다리는 호출 64개를 하나씩 보내면 시간이 64배로 쌓이고, 동시 한도를 두고 한꺼번에 보내면 한도만큼 줄어듭니다 — 발표의 '세마포어 크기만큼 빨라졌다'와 같은 원리입니다.[2] 이 PC 에서 직접 돌린 출력이고, 하나씩 보낸 쪽이 3.2초(50ms×64)보다 긴 것은 윈도 타이머 단위 때문입니다.",
+          "lang": "python",
+          "code": "# 외부 API(이미지 서버·LLM)를 기다리는 일: 하나씩 vs 동시에 (호출 하나 50ms 로 흉내)\nimport asyncio\nimport time\n\n\nasync def call(i):\n    await asyncio.sleep(0.05)\n    return i\n\n\nasync def one_by_one(n):\n    return [await call(i) for i in range(n)]\n\n\nasync def batched(n, limit):\n    sem = asyncio.Semaphore(limit)\n\n    async def guarded(i):\n        async with sem:\n            return await call(i)\n    return await asyncio.gather(*(guarded(i) for i in range(n)))\n\n\nfor name, coro in ((\"one_by_one\", one_by_one(64)), (\"limit=16\", batched(64, 16)), (\"limit=64\", batched(64, 64))):\n    t = time.perf_counter()\n    asyncio.run(coro)\n    print(f\"{name:10s} {time.perf_counter() - t:.2f}s\")\n# one_by_one 3.77s\n# limit=16   0.24s\n# limit=64   0.06s"
+        }
+      ],
+      "how_far": "이 팀 공고라서 GPU 최적화까지 요구하는 것은 아닙니다.{추론} '어디서 기다리나(I/O·CPU·메모리)를 재고 구조를 바꿔 숫자로 확인'하는 습관을 보여 주면 됩니다.{추론}",
+      "refs": [
+        2,
+        29,
+        35
+      ],
+      "study": [
+        "ddia",
+        "effective-python"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "여러 팀이 함께 쓸 플랫폼, 공통 도구, 내부 시스템을 고민해본 분",
+      "short": "내 팀만이 아니라 여러 팀이 쓰는 도구를 만들어 본 경험.",
+      "why": "이 팀의 SDK 는 여러 팀이 함께 기여하고, 버전을 붙여 배포하며, 꼭 필요한 운영 설정은 중앙에서 넣어 사용자가 SDK 를 올리지 않아도 반영되게 했습니다.[2] 여러 팀이 쓰는 도구에서 생기는 문제(버전이 흩어짐·업그레이드 안 함)를 구조로 푼 예입니다.{추론}",
+      "actually": {
+        "items": [
+          "**셀프서비스** — 쓰는 팀이 요청서 없이 스스로 쓰게 한다. 내부 플랫폼을 제품처럼 대하라는 것이 CNCF 의 권고다.[30]",
+          "**버전과 하위 호환** — 날짜형 버전과 protobuf 의 하위 호환으로 옛 설정이 깨지지 않게.[2][27]",
+          "**관례가 설정보다 먼저** — Kontrol 이 내세운 원칙이 '관례 우선·의견이 있는 설계'다.[5]"
+        ]
+      },
+      "how_far": "작은 사내 라이브러리나 공용 CLI 라도 '다른 사람이 쓰게 만든' 경험이면 이 줄에 닿습니다.{추론}",
+      "refs": [
+        2,
+        5,
+        27,
+        30
+      ],
+      "study": [
+        "cncf-platforms",
+        "outsider-deck"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "ML 시스템(서빙, 학습 파이프라인 등)이나 LLM 기반 서비스의 흐름을 이해하고 있거나, 빠르게 배우며 실제 문제에 적용해본 분",
+      "short": "학습 → 저장 → 서빙, 또는 프롬프트 → 평가 → 배포의 흐름을 아는 사람.",
+      "why": "이 팀의 학습 파이프라인은 BigQuery 에서 SQL 로 읽고 → 검증·변환 → 학습 → GCS·S3 저장 → 서버 재시작으로 서빙하는 기본선에 사용자 컴포넌트를 더하는 꼴입니다.[2] LLM 쪽은 Prompt Studio 에서 템플릿·MCP 에이전트·BigQuery 평가셋·버전 되돌리기를 거쳐 라우터로 나갑니다.[2][3]",
+      "flows": [
+        {
+          "caption": "당근 학습 파이프라인 기본선[2]",
+          "steps": [
+            "데이터 · BigQuery 에서 SQL 로 읽기(또는 피처 플랫폼)",
+            "검증·변환 · 학습에 맞는 꼴로",
+            "학습 · TFX 컴포넌트 + 사용자 컴포넌트",
+            "저장 · GCS·S3 에 모델 올리기",
+            "서빙 · 서버 재시작으로 새 모델"
+          ]
+        }
+      ],
+      "actually": {
+        "items": [
+          "**학습 파이프라인 도구** — Kubeflow Pipelines 와 TFX 컴포넌트로 짜고 Vertex AI Pipelines 에서 돌린다.[2][16][17]",
+          "**피처** — 주기적인 운영 파이프라인은 피처 플랫폼이 미리 만든 데이터를 가져와 학습부터 시작한다.[2][8]",
+          "**LLM 서비스** — 프롬프트 버전·평가·모니터링이 '배포'에 해당한다.[2][3]"
+        ]
+      },
+      "how_far": "각 단계에서 무엇이 실패할 수 있는지(데이터 누락·버전 꼬임·서빙 지연) 말할 수 있으면 충분합니다.{추론}",
+      "refs": [
+        2,
+        3,
+        8,
+        16,
+        17
+      ],
+      "study": [
+        "mlsd-book",
+        "ai-eng-book",
+        "kfp-docs",
+        "vertex-pipelines"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "정답이 없는 환경에서 오히려 더 재미를 느끼고, 팀과 함께 기준을 만들어가는 분",
+      "short": "정답 없는 곳에서 팀과 함께 기준을 만드는 걸 즐기는 사람.",
+      "why": "LLM 라우터·메타데이터 에이전트처럼 사내에 앞선 예가 없는 일이 많고, 팀 소개도 기준을 함께 만든다고 적었습니다.[1] 예를 들어 추론 파이프라인 도구를 고를 때 Beam·Spark·Flink 를 요구사항 표로 견주고 고른 이유를 공개했습니다.[2]",
+      "how_far": "결정을 혼자 내리기보다 '선택지·기준·버린 이유'를 글로 남겨 합의한 경험을 보여 주면 됩니다.{추론}",
+      "refs": [
+        1,
+        2
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "이 팀에서의 일은 종종 눈에 잘 보이지 않을 수 있어요. 하지만 우리가 만든 구조 하나가 다른 팀의 속도를 바꾸고, 더 많은 AI 서비스를 가능하게 만들어요. 겉으로 드러나는 기능보다, 그 기능이 가능해지는 기반을 만드는 일에 보람을 느끼는 분이라면 잘 맞을 거예요",
+      "short": "화면에 안 보이는 기반 일 — 다른 팀의 속도로 보람을 느끼는 사람.",
+      "why": "팀은 성과를 '파이프라인이 몇 배로 늘어도 운영 부담이 크게 늘지 않았다'로 말했습니다.[2] 기반 팀의 결과는 이렇게 다른 팀의 숫자로 드러납니다.{추론}",
+      "how_far": "이력서에는 내가 만든 기능 대신 '내 도구를 쓴 팀 수·줄어든 배포 시간·온콜 호출 수' 같은 숫자를 적는 편이 이 자리와 맞습니다.{추론}",
+      "refs": [
+        2
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "정규직 채용의 경우 3개월의 수습기간이 있어요 장애인고용촉진 및 직업재활법’, ‘국가유공자 등 예우 및 지원에 관한 법률’에 따라 장애인 및 보훈대상자는 채용 전형 시 우대하고 있어요 이 포지션은 산업기능요원으로 채용이 가능한 포지션이에요. (현역 전직, 보충역 신규 편입, 보충역 전직) 전문연구요원 편입 및 전직은 불가해요",
+      "short": "정규직은 수습 3개월. 산업기능요원(군 복무 대신 지정 업체 근무)으로 지원할 수 있다.",
+      "why": "공고 안내입니다.[1] 산업기능요원은 병무청이 지정한 업체에서 일하는 것으로 병역을 대신하는 제도이고, 전문연구요원(연구기관 석사 이상)과는 다른 제도입니다.[15] 경력에 따라 최대 3개월 계약직으로 먼저 일할 수 있다는 안내도 있습니다.[1]",
+      "refs": [
+        1,
+        15
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "1. 서류 전형 → 2. 화상 인터뷰 → 3. 직무 인터뷰→ 4. 컬처핏 인터뷰 및 레퍼런스 체크 → 5. 처우협의 → 6. 최종 합격 및 입사",
+      "short": "서류 → 화상 → 직무 → 컬처핏·레퍼런스 → 처우 협의 → 입사, 여섯 단계.",
+      "why": "공고의 전형 순서입니다.[1] 연봉은 공고에 없고 다섯째 단계에서 정해집니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "당근은 자유형식의 지원서를 받고 있어요. 본인의 강점이 잘 드러나는 다양한 정보를 자유롭게 활용해 이력서를 작성해 주세요. 문서 형식은 hwp(한글) 파일을 제외하고 word, pdf, 웹 링크 등 자유롭게 선택해주시면 돼요. 웹 링크(노션, 구글드라이브 등)로 서류를 제출해주실 때는 접근 권한을 꼭 열어주세요. 평가와 상관 없는 사진, 주소 등의 개인정보는 제외해주세요.",
+      "short": "자유 형식 — hwp만 빼고 아무 형식. 링크면 접근 권한을 열고 사진·주소는 빼라.",
+      "why": "공고 안내입니다.[1] 형식이 자유라 만든 도구의 저장소·설계 문서·운영 지표를 링크로 바로 보여 줄 수 있습니다.{추론}",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "화상 면접 지원해주신 직무와 업무 연관성이 높은 당근 팀원과 화상으로 직무와 관련된 기본적인 지식에 대해 이야기를 나누는 단계예요. 과제 전형 직무에 따라 과제 전형이 있어요. 과제는 직무 능력과 연관된 내용으로 출제돼요. 과제 전형을 별도로 운영하는 직무도 있고, 화상 면접 또는 직무 면접에서 과제가 함께 출제되는 경우도 있어요. 직무 면접 지원하신 직무와 업무 연관성이 높은 당근 팀원들과 직무 역량, 경험에 대해 화상 면접보다 심층적인 이야기를 나누는 단계예요. 과제가 출제되었을 경우 과제에 대한 질문을 드려요. 컬쳐핏 면접(정규직 공통) 당근은 면접을 단순히 회사에 사람을 뽑는 자리로 생각하지 않아요. 당근과 지원자가 서로 추구하는 가치관과 생각을 교환하는 시간이라고 생각하고 있어요. 컬쳐핏 단계는 당근이 추구하는 문화와 일하는 방식과 잘 어울릴 수 있는 분인지 확인하는 단계예요. 또한 포지션에 대한 전문성을 다시금 확인하는 이야기를 나눠요.",
+      "short": "화상(기본 지식) → 과제(직무에 따라) → 직무(경험 심층) → 컬처핏(일하는 방식).",
+      "why": "공고 안내입니다.[1] 이 자리는 화상 면접에서 파이썬·ML 파이프라인·서빙의 기본을, 직무 면접에서 '공통 시스템을 만들고 운영한' 경험을 깊게 물을 가능성이 큽니다.{추론}",
+      "refs": [
+        1
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "같은 불편을 두 번 보면 도구로 만드는 사람[1][2]",
+      "백엔드·인프라 경험을 ML 쪽으로 넓히고 싶은 사람[1]",
+      "다른 팀이 빨라지는 것에서 보람을 느끼는 사람[1]",
+      "파이썬을 타입·패키징까지 갖춰 쓰는 사람[2]"
+    ],
+    "hard": [
+      "모델을 직접 만들어 정확도를 올리는 일이 주업이길 바라면 맞지 않는다[1]{추론}",
+      "작은 팀이 전사 파이프라인을 받쳐 운영·온콜 부담이 있다[2]",
+      "결과가 화면에 안 보여 성과를 스스로 숫자로 말해야 한다[1]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "파이프라인이 세 배로 늘고 팀원이 한 명 줄었다면 무엇부터 바꾸겠습니까?",
+      "a": "팀이 실제로 한 순서 — 서버리스 실행 환경, 오류 가르기, 담당자 멘션 알림, SDK.[2]"
+    },
+    {
+      "q": "학습 설정을 YAML 대신 protobuf 로 적으면 무엇이 좋아지고 무엇이 불편해지나요?",
+      "a": "형식 검사·하위 호환·파일만 보고 아는 구조 대 스키마를 먼저 고쳐야 하는 번거로움.[2][4][27]"
+    },
+    {
+      "q": "LLM 라우터가 OpenAI 형식으로 통일했는데, 그 형식에 없는 기능을 가진 모델이 들어오면 어떻게 하나요?",
+      "a": "업무 첫 줄 '단순한 프록시를 넘어서' — 확장 칸·모델별 번역.[1][2]"
+    },
+    {
+      "q": "'이 모델은 어떤 데이터로 학습됐나'에 답하려면 메타데이터에 무엇을 남겨야 하나요?",
+      "a": "실행·산출물·입출력 이벤트로 잇는 계보.[18]"
+    },
+    {
+      "q": "새 모델 버전이 서빙 중 지표를 떨어뜨렸습니다. 배포 시스템은 무엇을 해 줘야 하나요?",
+      "a": "버전별 보관·카나리·되돌리기.[6][23]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "당근 채용 · Software Engineer, Machine Learning - ML 인프라",
+      "url": "https://about.daangn.com?gh_jid=7498021003",
+      "kind": "posting",
+      "note": "팀 소개(LLM 라우터·대규모 학습 파이프라인·ML 메타데이터 시스템)·업무·요건·우대·전형"
+    },
+    {
+      "n": 2,
+      "title": "PyCon Korea 2025 · Python과 함께하는 AI 플랫폼: ML Infra 기반부터 대규모 Inference Pipeline 구축까지 (박준성·변규현)",
+      "url": "https://www.youtube.com/watch?v=hB3MXDeViGk",
+      "kind": "company",
+      "date": "2025",
+      "note": "1부 ML 인프라팀(학습 파이프라인·Vertex AI Pipelines·알림·SDK·LLM 라우터·Prompt Studio·커스텀 빌드), 2부 ML 데이터 플랫폼팀(Beam 추론 파이프라인) · 자막 30분 전부와 슬라이드 확인"
+    },
+    {
+      "n": 3,
+      "title": "당근 기술 블로그 · Karrot’s Generative AI Platform (Tommy Park)",
+      "url": "https://medium.com/daangn/karrots-genai-platform-5cf6e813838e",
+      "kind": "company",
+      "date": "2025-12-22",
+      "note": "LLM Router·Prompt Studio·MCP Hub·Agent Builder·KarrotChat — 같은 회사 다른 풀이에서 본문 전부 확인"
+    },
+    {
+      "n": 4,
+      "title": "TensorFlow Blog · Why Karrot Uses TFX, and How to Improve Productivity on ML Pipeline Development",
+      "url": "https://blog.tensorflow.org/2022/05/why-karrot-uses-tfx.html",
+      "kind": "company",
+      "date": "2022-05-06",
+      "note": "당근 엔지니어 3인 — 사기 탐지·피드 추천 파이프라인, Kubeflow + TFX, protobuf 설정(pbtxt), 공용 템플릿·컴포넌트 라이브러리"
+    },
+    {
+      "n": 5,
+      "title": "Outsider · 당근 개발자 플랫폼은 어떤 문제를 해결하고 있는가? (AWSKRUG 플랫폼엔지니어링 모임)",
+      "url": "https://speakerdeck.com/outsider/danggeun-gaebalja-peulraespomeun-eoddeon-munjereul-haegyeolhago-issneunga",
+      "kind": "company",
+      "date": "2024-01-10",
+      "note": "당근 SRE 딜리버리 파트 발표 자료 113장 — 배포 시스템에서 내부 개발자 플랫폼(Kontrol)으로. 글자로 된 슬라이드 제목 위주로 읽음(그림 속 내용은 못 읽음)"
+    },
+    {
+      "n": 6,
+      "title": "모두의 근삼이 · 레거시 교체! 달리는 기차의 바퀴를 갈아 끼우다",
+      "url": "https://ykarma1996.tistory.com/198",
+      "kind": "community",
+      "date": "2024-01-14",
+      "note": "당근 SRE 엔지니어 개인 블로그 — Kontrol 배포 엔진을 GoCD → Argo Workflows 로(2023년 1분기 글로벌 오픈), 이후 카나리·ML 배포 검토"
+    },
+    {
+      "n": 7,
+      "title": "Google Cloud 고객 사례 · 당근마켓 — TensorFlow 인프라로 커뮤니티 게시물 운영 효율성 극대화",
+      "url": "https://cloud.google.com/customers/daangn-market?hl=ko",
+      "kind": "company",
+      "date": "2019",
+      "note": "게시물 분류·추천 모델, AI Platform 학습·배포, BigQuery, 추천 모델 하루 4회 재학습, ML 인력 1~2명 시절"
+    },
+    {
+      "n": 8,
+      "title": "AWS 기술 블로그 · 당근의 AWS 기반 피처 플랫폼 구축 여정, Part 1: 구축 배경과 피처 서빙",
+      "url": "https://aws.amazon.com/ko/blogs/tech/how-karrot-built-a-feature-platform-on-aws-part-1-motivation-and-feature-serving/",
+      "kind": "company",
+      "date": "2025-10-21",
+      "note": "당근 엔지니어 공동 작성 — 학습 파이프라인이 미리 가공된 피처를 가져다 쓰는 곳"
+    },
+    {
+      "n": 9,
+      "title": "바이라인네트워크 · '당근'이 AI 에이전트 활용하는 법",
+      "url": "https://byline.network/2025/11/25_danggn-2/",
+      "kind": "news",
+      "date": "2025-11-28",
+      "note": "당근 AI 에이전트 팀 리더의 발표 보도 — KAMP, 사내 에이전트, LLM 심판"
+    },
+    {
+      "n": 10,
+      "title": "당근 채용 · 팀 문화(복지)",
+      "url": "https://careers.daangn.com/culture/",
+      "kind": "company"
+    },
+    {
+      "n": 11,
+      "title": "당근 채용 · 채용공고(사이트 하단 회사 정보)",
+      "url": "https://careers.daangn.com/jobs/",
+      "kind": "company"
+    },
+    {
+      "n": 12,
+      "title": "원티드 · 당근마켓 기업 정보(평균연봉·입사자 평균연봉)",
+      "url": "https://www.wanted.co.kr/company/2826",
+      "kind": "reference",
+      "note": "금감원·국민연금 자료로 계산한 집계 — 기준일 표기 없음"
+    },
+    {
+      "n": 13,
+      "title": "헤럴드경제 · \"신입 초봉 6000만원, 휴가 한달 마음껏\"…",
+      "url": "https://www.heraldk.com/article/2026040404400043838",
+      "kind": "news",
+      "date": "2026-04-04",
+      "note": "개발자 신입 초봉 6000만원 — 기사에 근거 자료 표기 없음"
+    },
+    {
+      "n": 14,
+      "title": "바이라인네트워크 · 당근, 2025년 매출 2707억원···전년 대비 43%↑",
+      "url": "https://byline.network/2026/03/27_192874-2/",
+      "kind": "news",
+      "date": "2026-03-27"
+    },
+    {
+      "n": 15,
+      "title": "병무청 · 산업기능요원·전문연구요원 안내",
+      "url": "https://www.mma.go.kr/contents.do?mc=mma0000760",
+      "kind": "reference"
+    },
+    {
+      "n": 16,
+      "title": "Kubeflow 문서 · Kubeflow Pipelines 개요",
+      "url": "https://www.kubeflow.org/docs/components/pipelines/overview/",
+      "kind": "reference"
+    },
+    {
+      "n": 17,
+      "title": "Google Cloud 문서 · Vertex AI Pipelines 소개",
+      "url": "https://cloud.google.com/vertex-ai/docs/pipelines/introduction",
+      "kind": "reference",
+      "note": "KFP·TFX 파이프라인을 서버리스로 실행, 메타데이터 자동 기록"
+    },
+    {
+      "n": 18,
+      "title": "TensorFlow 문서 · ML Metadata(MLMD) 안내",
+      "url": "https://www.tensorflow.org/tfx/guide/mlmd",
+      "kind": "reference",
+      "note": "Artifact·Execution·Event·Context 로 계보를 저장"
+    },
+    {
+      "n": 19,
+      "title": "Google Cloud 문서 · Vertex ML Metadata 소개",
+      "url": "https://cloud.google.com/vertex-ai/docs/ml-metadata/introduction",
+      "kind": "reference"
+    },
+    {
+      "n": 20,
+      "title": "MLflow 문서",
+      "url": "https://mlflow.org/docs/latest/",
+      "kind": "reference",
+      "note": "실험 추적(파라미터·지표·산출물)·모델 레지스트리"
+    },
+    {
+      "n": 21,
+      "title": "vLLM 문서 · OpenAI-Compatible Server",
+      "url": "https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html",
+      "kind": "reference"
+    },
+    {
+      "n": 22,
+      "title": "RouteLLM: Learning to Route LLMs with Preference Data (Ong 외, ICLR 2025)",
+      "url": "https://arxiv.org/abs/2406.18665",
+      "kind": "reference",
+      "date": "2024-06"
+    },
+    {
+      "n": 23,
+      "title": "TensorFlow 문서 · TensorFlow Serving",
+      "url": "https://www.tensorflow.org/tfx/guide/serving",
+      "kind": "reference",
+      "note": "모델 버전 폴더를 감시해 새 버전을 무중단으로 올리기"
+    },
+    {
+      "n": 24,
+      "title": "Argo Workflows 문서",
+      "url": "https://argo-workflows.readthedocs.io/en/latest/",
+      "kind": "reference"
+    },
+    {
+      "n": 25,
+      "title": "Google Cloud 아키텍처 센터 · MLOps: 머신러닝의 지속적 배포 및 자동화 파이프라인",
+      "url": "https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+      "kind": "reference",
+      "note": "MLOps 수준 0·1·2"
+    },
+    {
+      "n": 26,
+      "title": "Hidden Technical Debt in Machine Learning Systems (Sculley 외, NeurIPS 2015)",
+      "url": "https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems",
+      "kind": "reference",
+      "date": "2015",
+      "note": "ML 코드는 시스템의 작은 칸 — 설정·데이터 의존·모니터링 부채"
+    },
+    {
+      "n": 27,
+      "title": "Protocol Buffers 문서 · Text Format Language Specification",
+      "url": "https://protobuf.dev/reference/protobuf/textformat-spec/",
+      "kind": "reference"
+    },
+    {
+      "n": 28,
+      "title": "Central Dogma (LINE 오픈소스 설정 저장소)",
+      "url": "https://line.github.io/centraldogma/",
+      "kind": "reference"
+    },
+    {
+      "n": 29,
+      "title": "Apache Beam 문서 · multi_process_shared 모듈",
+      "url": "https://beam.apache.org/releases/pydoc/current/apache_beam.utils.multi_process_shared.html",
+      "kind": "reference"
+    },
+    {
+      "n": 30,
+      "title": "CNCF TAG App Delivery · Platforms White Paper",
+      "url": "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+      "kind": "reference",
+      "note": "내부 플랫폼을 제품처럼 — 셀프서비스·사용자 조사·문서"
+    },
+    {
+      "n": 31,
+      "title": "Anthropic · Building effective agents",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "kind": "reference",
+      "date": "2024-12"
+    },
+    {
+      "n": 32,
+      "title": "Model Context Protocol 명세",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25",
+      "kind": "reference"
+    },
+    {
+      "n": 33,
+      "title": "Google SRE Book · Being On-Call",
+      "url": "https://sre.google/sre-book/being-on-call/",
+      "kind": "reference"
+    },
+    {
+      "n": 34,
+      "title": "uv 문서 (Astral)",
+      "url": "https://docs.astral.sh/uv/",
+      "kind": "reference"
+    },
+    {
+      "n": 35,
+      "title": "발표자 블로그 · AI Platform with Python at Karrot — Inference Pipeline Part (PyCon Korea 2025)",
+      "url": "https://novemberde.github.io/post/2025/10/04/pycon-korea-2025-dataflow-at-karrot/",
+      "kind": "company",
+      "date": "2025-10-04",
+      "note": "같은 발표 2부를 발표자(ML 데이터 플랫폼팀)가 글로 정리"
+    }
+  ],
+  "caveat": "팀 자신의 근거는 PyCon Korea 2025 발표(2025년, 자막 전부 확인)와 2022년 TensorFlow 블로그다. ML 메타데이터 시스템과 모델 배포 시스템의 설계는 공개되지 않아 공개 문서(MLMD·Vertex ML Metadata·MLflow·TF Serving)로 '보통 이런 것'을 보였다. Kontrol 은 SRE 발표 자료(제목 위주로 읽음)와 당근 엔지니어 개인 블로그로만 확인했다 — ML 배포 기능을 '검토 중'이라 적은 것은 2024년 1월 기준이다. 추론 파이프라인 성능 사례는 같은 발표의 ML 데이터 플랫폼팀 몫이다. 연봉·복지·위치는 같은 회사 다른 풀이의 출처를 그대로 썼다.",
+  "resources": [
+    {
+      "id": "talk-pycon",
+      "title": "Python과 함께하는 AI 플랫폼: ML Infra 기반부터 대규모 Inference Pipeline 구축까지",
+      "by": "박준성(ML 인프라팀)·변규현 · PyCon Korea 2025",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=hB3MXDeViGk",
+      "why": "이 팀 사람이 직접 말한 지금의 일 — 학습 파이프라인 운영, 알림, 사내 SDK, LLM 라우터, Prompt Studio. 지원 전에 앞 13분은 꼭 본다."
+    },
+    {
+      "id": "daangn-genai",
+      "title": "Karrot’s Generative AI Platform",
+      "by": "Tommy Park · 당근 기술 블로그 · 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://medium.com/daangn/karrots-genai-platform-5cf6e813838e",
+      "why": "업무 첫 줄 'LLM 라우터·프롬프트 스튜디오'가 사내에서 어떻게 쓰이는지 회사가 쓴 글."
+    },
+    {
+      "id": "tfx-karrot",
+      "title": "Why Karrot Uses TFX, and How to Improve Productivity on ML Pipeline Development",
+      "by": "당근 엔지니어 3인 · TensorFlow Blog · 2022",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://blog.tensorflow.org/2022/05/why-karrot-uses-tfx.html",
+      "why": "학습 파이프라인을 TFX·protobuf 설정·공용 템플릿으로 묶은 이유. 지금 구조의 출발점."
+    },
+    {
+      "id": "outsider-deck",
+      "title": "당근 개발자 플랫폼은 어떤 문제를 해결하고 있는가?",
+      "by": "Outsider(당근 SRE) · AWSKRUG · 2024",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://speakerdeck.com/outsider/danggeun-gaebalja-peulraespomeun-eoddeon-munjereul-haegyeolhago-issneunga",
+      "why": "업무 셋째 줄의 사내 배포 시스템 Kontrol 이 왜 생겼고 어떤 원칙(쿠버네티스를 몰라도 배포)을 따르나."
+    },
+    {
+      "id": "mlsd-book",
+      "title": "머신러닝 시스템 설계",
+      "by": "칩 후옌 · 한빛미디어 · 2023",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+      "why": "학습 데이터·배포·모니터링·지속 학습까지 ML 시스템 전체. 우대 'ML 시스템(서빙, 학습 파이프라인)의 흐름'의 뼈대."
+    },
+    {
+      "id": "ai-eng-book",
+      "title": "AI 엔지니어링",
+      "by": "칩 후옌",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ridibooks.com/books/6071000005",
+      "why": "기초 모델로 앱을 만들 때의 평가·프롬프트·비용·추론 최적화. 'LLM 기반 서비스의 흐름'을 위해."
+    },
+    {
+      "id": "ml-design-patterns",
+      "title": "머신러닝 디자인 패턴",
+      "by": "발리아파 락쉬마난 외 · 한빛미디어",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EB%94%94%EC%9E%90%EC%9D%B8%20%ED%8C%A8%ED%84%B4",
+      "why": "재현성·서빙·워크플로 파이프라인·모델 버전 같은 패턴을 이름 붙여 정리. 공통 시스템을 설계할 때 말이 통한다."
+    },
+    {
+      "id": "kfp-docs",
+      "title": "Kubeflow Pipelines 개요",
+      "by": "Kubeflow",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.kubeflow.org/docs/components/pipelines/overview/",
+      "why": "팀이 학습 파이프라인을 짜는 틀. 컴포넌트·파이프라인·실행이 무엇인지부터."
+    },
+    {
+      "id": "vertex-pipelines",
+      "title": "Vertex AI Pipelines 소개",
+      "by": "Google Cloud",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://cloud.google.com/vertex-ai/docs/pipelines/introduction",
+      "why": "팀이 클러스터 운영 대신 옮겨 간 서버리스 실행 환경. 메타데이터가 어떻게 자동으로 남는지."
+    },
+    {
+      "id": "tfx-mlmd",
+      "title": "ML Metadata(MLMD) 안내",
+      "by": "TensorFlow",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.tensorflow.org/tfx/guide/mlmd",
+      "why": "업무 둘째 줄 'ML 메타데이터'의 기본 모양 — 산출물·실행·이벤트·묶음으로 계보를 잇는 법."
+    },
+    {
+      "id": "mlflow-docs",
+      "title": "MLflow 문서",
+      "by": "MLflow",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://mlflow.org/docs/latest/",
+      "why": "실험 추적·모델 레지스트리를 가장 쉽게 손으로 해 보는 도구. 메타데이터 시스템이 무엇을 담아야 하는지 감을 잡는다."
+    },
+    {
+      "id": "vllm-openai",
+      "title": "OpenAI-Compatible Server",
+      "by": "vLLM 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html",
+      "why": "직접 띄운 모델을 OpenAI 형식으로 여는 법. 팀의 라우터가 자체 호스팅 모델을 묶는 방식."
+    },
+    {
+      "id": "routellm",
+      "title": "RouteLLM: Learning to Route LLMs with Preference Data",
+      "by": "Ong 외 · ICLR 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2406.18665",
+      "why": "'다양한 LLM 의 특성을 활용'의 한 방향 — 요청마다 강한·약한 모델을 골라 비용을 줄이는 연구."
+    },
+    {
+      "id": "building-agents",
+      "title": "Building effective agents",
+      "by": "Anthropic",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "why": "정해진 흐름과 에이전트의 차이. '에이전트 기반으로 실험과 운영을 분석·자동화'를 설계하기 전 기본 그림."
+    },
+    {
+      "id": "tf-serving",
+      "title": "TensorFlow Serving",
+      "by": "TensorFlow",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.tensorflow.org/tfx/guide/serving",
+      "why": "모델 버전을 폴더로 두고 새 버전을 무중단으로 올리는 서빙 서버. 팀이 커스텀 빌드를 유지하는 대상."
+    },
+    {
+      "id": "argo-workflows",
+      "title": "Argo Workflows 문서",
+      "by": "Argo Project",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://argo-workflows.readthedocs.io/en/latest/",
+      "why": "Kontrol 의 배포 단계를 돌리는 엔진. 쿠버네티스 위에서 단계를 YAML 로 엮는 법."
+    },
+    {
+      "id": "mlops-google",
+      "title": "MLOps: 머신러닝의 지속적 배포 및 자동화 파이프라인",
+      "by": "Google Cloud 아키텍처 센터",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+      "why": "손으로 하는 단계 → 자동 학습 → 파이프라인 자체의 CI/CD. 팀의 일이 어느 칸인지 한 장으로 본다."
+    },
+    {
+      "id": "ml-tech-debt",
+      "title": "Hidden Technical Debt in Machine Learning Systems",
+      "by": "Sculley 외 · NeurIPS 2015",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems",
+      "why": "왜 ML 인프라팀이 필요한가를 가장 잘 설명하는 글 — 모델 코드보다 설정·데이터·모니터링이 더 크다."
+    },
+    {
+      "id": "protobuf-text",
+      "title": "Text Format Language Specification",
+      "by": "Protocol Buffers 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://protobuf.dev/reference/protobuf/textformat-spec/",
+      "why": "팀이 학습 설정을 적는 pbtxt 형식. 스키마(.proto)와 값(.pbtxt)을 나누는 법."
+    },
+    {
+      "id": "cncf-platforms",
+      "title": "Platforms White Paper",
+      "by": "CNCF TAG App Delivery",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+      "why": "우대 '여러 팀이 함께 쓸 플랫폼' — 내부 플랫폼을 제품처럼 만들고 재는 법."
+    },
+    {
+      "id": "uv-docs",
+      "title": "uv 문서",
+      "by": "Astral",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.astral.sh/uv/",
+      "why": "팀의 사내 SDK 가 쓰는 파이썬 패키지 관리자. pyproject.toml 로 패키지를 만들고 내보내는 법."
+    },
+    {
+      "id": "effective-python",
+      "title": "파이썬 코딩의 기술 (개정2판)",
+      "by": "브렛 슬라킨 · 길벗",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%EC%BD%94%EB%94%A9%EC%9D%98%20%EA%B8%B0%EC%88%A0",
+      "why": "요건 '파이썬 기반 개발 환경' — 타입 힌트·데이터 클래스·동시성(asyncio)을 실무 꼴로."
+    },
+    {
+      "id": "ddia",
+      "title": "데이터 중심 애플리케이션 설계",
+      "by": "마틴 클레프만 · 위키북스",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "심화",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+      "why": "우대 '확장성·안정성·성능을 구조 개선으로' — 맞바꾸기를 말로 설명하는 기본기."
+    },
+    {
+      "id": "k8s-book",
+      "title": "쿠버네티스 입문",
+      "by": "우리 사이트의 책",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/wiki/kubernetes",
+      "why": "모델 서버·파이프라인이 도는 바닥. Pending·CrashLoopBackOff 를 읽는 법부터."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "팀이 말한 것 읽기",
+      "time": "2~3일",
+      "goal": "학습 파이프라인·라우터·Prompt Studio·Kontrol 이 각각 무슨 문제를 풀었는지 한 장 그림으로 설명한다.",
+      "resources": [
+        "talk-pycon",
+        "tfx-karrot",
+        "daangn-genai",
+        "outsider-deck"
+      ],
+      "task": "발표 앞 13분과 글 셋을 보고 '데이터 → 학습 → 저장 → 배포 → 서빙'과 'AI 호출 → 라우터 → 모델'을 한 장에 그리고, 칸마다 팀이 겪은 문제를 한 줄씩 적는다."
+    },
+    {
+      "title": "작은 학습 파이프라인 + 메타데이터",
+      "time": "1~2주",
+      "goal": "파이프라인을 컴포넌트로 짜고, 실행마다 무엇이 들어가고 나왔는지 조회할 수 있다.",
+      "resources": [
+        "kfp-docs",
+        "vertex-pipelines",
+        "tfx-mlmd",
+        "mlflow-docs",
+        "protobuf-text"
+      ],
+      "task": "가상 거래 데이터 1만 줄로 '읽기 → 검증 → 학습 → 모델 저장' 4단계 파이프라인을 KFP(로컬 실행)로 만들고, 설정은 스키마가 있는 파일로 적는다. MLflow 에 실행·지표·모델을 남기고 '이 모델의 입력 데이터'를 묻는 조회 함수를 만든다."
+    },
+    {
+      "title": "모델 배포와 되돌리기",
+      "time": "1~2주",
+      "goal": "모델 서버를 쿠버네티스에 올리고, 새 버전을 일부에만 보냈다가 되돌린다.",
+      "resources": [
+        "tf-serving",
+        "k8s-book",
+        "argo-workflows",
+        "mlsd-book"
+      ],
+      "task": "2단계 모델 두 버전을 TensorFlow Serving(또는 같은 역할의 서버)으로 kind 클러스터에 올린다. 요청 10%만 새 버전으로 보내고, 가상 오류율이 문턱을 넘으면 자동으로 옛 버전으로 돌리는 스크립트를 만든다."
+    },
+    {
+      "title": "작은 LLM 라우터와 알림",
+      "time": "1~2주",
+      "goal": "여러 모델을 OpenAI 형식 하나로 부르고, 서비스별 비용과 실패를 담당자에게 알린다.",
+      "resources": [
+        "vllm-openai",
+        "routellm",
+        "ai-eng-book",
+        "effective-python"
+      ],
+      "task": "FastAPI 로 OpenAI 형식 요청을 받아 로컬 모델(vLLM 또는 Ollama)과 가짜 외부 API 로 보내는 라우터를 만든다. 서비스별 토큰·비용 표를 남기고, 2단계 파이프라인 실패 기록을 읽어 담당자 이름을 붙인 알림 문장을 만든다."
+    },
+    {
+      "title": "공통 도구로 내보내기",
+      "time": "계속",
+      "goal": "만든 것을 다른 사람이 설치해 쓰는 패키지로 만든다.",
+      "resources": [
+        "uv-docs",
+        "cncf-platforms",
+        "ml-tech-debt"
+      ],
+      "task": "2~4단계의 공통 코드를 uv 로 패키징해 날짜형 버전을 붙이고, README 한 장만 보고 다른 사람이 새 파이프라인을 추가하게 만든다. 써 본 사람 의견을 받아 고친 점을 기록한다."
+    }
+  ],
+  "pay": {
+    "summary": "공시 숫자는 없다(비상장). 집계 평균은 **약 6,032만원**, 올해 입사자 평균은 **약 3,888만원** — 보도는 개발자 신입 초봉을 **6,000만원**으로 적었지만 근거가 없다",
+    "rows": [
+      {
+        "label": "직원 평균 연봉",
+        "value": "6,032만원",
+        "amount": 6032,
+        "basis": "공공데이터 집계",
+        "note": "원티드가 금감원·국민연금 자료로 계산한 값이다. 기준일 표기가 없고 직군 구분이 없어 개발자·비개발자가 섞여 있다 [12]"
+      },
+      {
+        "label": "올해 입사자 평균 연봉",
+        "value": "3,888만원",
+        "amount": 3888,
+        "basis": "공공데이터 집계",
+        "note": "원티드가 국민연금 자료로 계산한 값이다. 신입·경력·인턴, 모든 직군이 섞인 값이라 개발자 초봉으로 읽으면 안 된다 [12]"
+      },
+      {
+        "label": "개발자 신입 초봉(보도)",
+        "value": "6,000만원",
+        "amount": 6000,
+        "basis": "보도 · 2026년",
+        "note": "헤럴드경제 기사가 '개발자 신입 초봉 6000만원에 달한다'고 적었으나 근거 자료를 밝히지 않았다 [13]"
+      }
+    ],
+    "how": "당근마켓은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다(2025년 연결 매출 2,707억원·영업이익 146억원으로 흑자다 [14]). 위 집계는 국민연금 납부액으로 거꾸로 계산하는 방식이라 소득 상한이 있어 높은 연봉이 낮게 잡히는 경향이 있다 {추론}. 공고에 연봉이 없고, 전형 다섯째 단계 **처우 협의**에서 사람마다 정한다 [1]."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "업무 환경",
+        "detail": "인체공학 오피스 가구, 최신 사양 업무 기기"
+      },
+      {
+        "name": "식사",
+        "detail": "식사 및 음료비 지원"
+      },
+      {
+        "name": "야근 교통",
+        "detail": "야근 시 택시비 지원"
+      },
+      {
+        "name": "교육",
+        "detail": "업무 관련 교육·어학 교육비, 국내외 컨퍼런스 참가비와 관련 휴가"
+      },
+      {
+        "name": "학습 도구",
+        "detail": "업무 관련 도서·논문·AI Tool 포함"
+      },
+      {
+        "name": "휴가",
+        "detail": "승인 없이 자유롭게 쓰는 휴가, 연간 최대 25일"
+      },
+      {
+        "name": "문화의 날",
+        "detail": "매월 운영"
+      },
+      {
+        "name": "건강",
+        "detail": "연 1회 종합건강검진, 연 8회 심리 상담"
+      },
+      {
+        "name": "단체 상해보험",
+        "detail": "본인·배우자·자녀·부모님"
+      },
+      {
+        "name": "가족",
+        "detail": "어린이집 자녀 보육 지원, 경조사 및 명절 지원"
+      }
+    ],
+    "note": "당근 채용 사이트의 '팀 문화' 페이지에 적힌 것이다(2026-11 확인) [10]. 금액은 적혀 있지 않고, 계열사·고용 형태별 적용 범위도 밝히지 않았으니 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "당근 본사 (교보강남타워)",
+    "address": "서울특별시 서초구 강남대로 465, 교보강남타워 11층",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
+    "near": "9호선 신논현역 앞 {추론}",
+    "note": "공고 근무지 표기는 'SEOUL'이고, 주소는 당근 채용 사이트 하단의 회사 정보다 [11]. 회사 소개 사이트(about.daangn.com) 하단에는 계열사 당근서비스의 구로구 주소가 따로 적혀 있다. 팀 자리 층은 다를 수 있다 {추론}."
+  }
+}

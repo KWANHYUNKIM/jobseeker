@@ -172,6 +172,7 @@
   "ats-greenhouse:daangn:5296522003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:5046759003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:4496730003": "daangn-android-software-engineer",
+  "ats-greenhouse:daangn:7980543003": "daangn-android-software-engineer",
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8201153003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:7644271003": "daangn-content-serving-backend",
@@ -181,6 +182,7 @@
   "ats-greenhouse:daangn:7774455003": "daangn-lessons-tutoring-frontend",
   "jobkorea-50227006": "daangn-lessons-tutoring-frontend",
   "ats-greenhouse:daangn:5781885003": "daangn-local-jobs-backend",
+  "ats-greenhouse:daangn:7498021003": "daangn-ml-infra-software-engineer",
   "ats-greenhouse:daangn:8201152003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:7659289003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:6043519003": "daangn-security-detection-response",
@@ -2041,10 +2043,11 @@
    "company": "당근",
    "role": "Android 엔지니어 — 서비스·클라이언트 플랫폼·개발 환경·App Health",
    "jobs": [
-    "ats-greenhouse:daangn:4496730003"
+    "ats-greenhouse:daangn:4496730003",
+    "ats-greenhouse:daangn:7980543003"
    ],
    "researched_at": "2026-11-25",
-   "lines": 24
+   "lines": 37
   },
   {
    "id": "daangn-community-backend-intern",
@@ -2108,6 +2111,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "daangn-ml-infra-software-engineer",
+   "company": "당근",
+   "role": "Software Engineer, Machine Learning — ML 인프라",
+   "jobs": [
+    "ats-greenhouse:daangn:7498021003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "daangn-mydaangn-backend-intern",
