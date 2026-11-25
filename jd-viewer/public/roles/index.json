@@ -69,10 +69,12 @@
   "ats-lg:group:1001890": "biztechi-database-operations",
   "dev-579980": "biztechi-database-operations",
   "ats-lg:group:1002386": "biztechi-m365-operations-engineer",
+  "ats-lg:group:1001568": "biztechi-m365-si-sm-senior",
   "ats-lg:group:1001888": "biztechi-network-operations",
   "ats-lg:group:1001514": "biztechi-sap-ewm-tm-consultant",
   "ats-lg:group:1001414": "biztechi-sap-fico-sd-consultant",
   "ats-lg:group:1001499": "biztechi-sap-sm-operations",
+  "ats-lg:group:1002219": "biztechi-vdi-ta-infra",
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7793770": "coupang-ai-foundations-senior-staff-mle-mtv",
@@ -1105,6 +1107,16 @@
    "lines": 17
   },
   {
+   "id": "biztechi-m365-si-sm-senior",
+   "company": "비즈테크아이",
+   "role": "M365 구축·운영(SI·SM) 경력 엔지니어",
+   "jobs": [
+    "ats-lg:group:1001568"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 14
+  },
+  {
    "id": "biztechi-network-operations",
    "company": "비즈테크아이",
    "role": "네트워크 운영 담당자",
@@ -1143,6 +1155,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 15
+  },
+  {
+   "id": "biztechi-vdi-ta-infra",
+   "company": "비즈테크아이",
+   "role": "VDI TA·인프라 운영 담당자",
+   "jobs": [
+    "ats-lg:group:1002219"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 14
   },
   {
    "id": "cj-oliveyoung-data-analyst",

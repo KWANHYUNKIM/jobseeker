@@ -1,0 +1,1083 @@
+{
+ "id": "biztechi-m365-si-sm-senior",
+ "company": "비즈테크아이",
+ "role": "M365 구축·운영(SI·SM) 경력 엔지니어",
+ "team": "클라우드인프라사업팀 · CI3파트",
+ "jobs": [
+  "ats-lg:group:1001568"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "LG그룹 계열사와 외부 고객사에 **Microsoft 365 를 새로 깔아 주고(SI), 깐 뒤에는 맡아서 운영(SM)** 합니다. E3/E5 요금제에 맞춰 메일(Exchange)·보안 기능을 세우고, 인사 시스템과 계정·라이선스·조직도를 잇는 일까지 합니다.[1]",
+  "env": "LG CNS 자회사이고, 클라우드인프라사업팀 안의 CI3파트가 M365 설계·구축·운영을 맡는다고 공고에 적었습니다.[1] 회사는 M365 를 Citrix VDI 와 함께 클라우드 사업의 솔루션 서비스로 소개합니다.[2][3] 같은 팀의 운영 엔지니어 공고(3년 이상)가 따로 있어, 이 자리는 7년 이상의 **구축·컨설팅을 이끄는 쪽**입니다.[9]",
+  "oneline": "고객사 M365 를 설계하고 제안·발표까지 하는 7년차 이상 엔지니어. 사내 AD·Exchange 와 클라우드를 잇는 하이브리드, 그리고 **로그·패킷·덤프로 원인을 증명하는 장애 분석**이 이 공고의 무게 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "LG그룹사 및 오픈고객사 대상 M365 L3/L2 SI 프로젝트 수행 및 SM운영",
+   "short": "그룹 계열사와 외부 회사에 M365 를 도입해 주고(SI), 그 뒤 운영을 맡는 일(SM). 깊은 장애는 이 자리가 받는다.",
+   "why": "공고는 대상을 'LG그룹사'와 '오픈고객사'(그룹 밖 고객)로 나눠 적었습니다.[1] 비즈테크아이는 LG그룹 계열사 같은 대형 엔터프라이즈 환경의 인프라 IT 운영을 해 왔다고 소개하고[3], LG CNS 는 2019년에 그룹웨어 '지포탈'에 Office 365 를 묶어 LG CNS 부터 적용하고 계열사로 넓히는 협약을 Microsoft 와 맺었습니다.[8]",
+   "actually": {
+    "intro": "SI·SM 과 L3/L2 는 국내 IT 서비스 회사에서 흔히 쓰는 말입니다. 회사의 정확한 정의는 공개되지 않았습니다. {추론}",
+    "items": [
+     "**SI(시스템 구축)** — 정해진 기간에 고객사 M365 를 세운다. 테넌트(회사 하나의 M365 공간) 설계, 계정 동기화, 메일 이전, 보안 정책을 끝내고 넘긴다. {추론}",
+     "**SM(운영 유지보수)** — 구축 뒤 계약 기간 동안 변경 요청·장애·월간 보고를 맡는다. {추론}",
+     "**L2 / L3** — 지원 단계의 이름이다. 보통 L1 은 사용자 문의 접수, L2 는 관리 센터에서 설정을 바꿔 푸는 관리자, L3 는 로그·패킷·덤프를 보고 원인을 밝히거나 Microsoft 지원에 근거를 넘기는 엔지니어다. 자격요건에 로그·덤프 분석이 있는 것도 이 때문이다. {추론}",
+     "**Microsoft 쪽과 나누기** — Microsoft 쪽 장애는 관리 센터의 서비스 상태에 뜨고, 예정 변경은 메시지 센터에 뜬다. 우리 설정 문제와 먼저 가르는 것이 첫 단계다.[20]"
+    ]
+   },
+   "how_far": "고객 계약과 범위는 영업·PM 이 정합니다. 엔지니어는 **구축 설계서·이전 계획·운영 인수인계 문서**를 쓰고, 운영 중에는 아래 단계에서 못 푼 문제를 받아 원인을 증명합니다. 7년차 자리라 혼자 한 고객사의 기술 책임을 질 수 있는지가 기준입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    8,
+    20
+   ],
+   "study": [
+    "m365-inside-out",
+    "service-health"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "M365 E3/E5 라이선스 기반 서비스 구축/운영",
+   "short": "고객이 산 요금제(E3·E5)에 들어 있는 기능만큼 — 특히 보안·규정 준수 기능 — 을 실제로 켜고 운영하는 일.",
+   "why": "요금제마다 쓸 수 있는 기능이 다릅니다. E5 는 E3 위에 Entra ID P2(위험 기반 로그인 판단)·Defender XDR 전체·고급 Purview 를 더합니다.[18] 메일 보안도 갈립니다 — 모든 클라우드 사서함에 기본으로 붙는 EOP(스팸·악성코드·피싱 거르기) 위에, Defender for Office 365 Plan 1(안전한 링크·안전한 첨부)은 E3 에, Plan 2(위협 탐색기·공격 모의 훈련·자동 조사)는 E5 에 들어 있습니다.[25][26]",
+   "actually": {
+    "items": [
+     "**요금제 기능표 만들기** — 고객이 산 요금제로 켤 수 있는 것과 없는 것을 표로 정리한다. 'E5 를 샀는데 안 켜 둔 기능'이 컨설팅 거리가 된다.[18] {추론}",
+     "**라이선스 배정** — 사용자마다 손으로 주지 않고 그룹에 배정한다. 수량 부족·겹치는 서비스 플랜·사용 위치 미지정 오류는 따로 찾아야 한다.[14]",
+     "**메일 보안 세우기** — EOP 기본 정책은 끌 수 없고 더 센 정책으로 덮어쓴다. Plan 1·2 가 있으면 안전한 링크·첨부 정책을 건다.[25][26]",
+     "**계정 보안** — 조건부 액세스(로그인 조건에 따라 허용·추가 인증·차단)는 P1(E3 포함)부터, 위험 기반 정책은 P2(E5 포함)가 필요하다.[10][18]",
+     "**데이터 보호** — Purview 의 민감도 레이블·DLP(개인정보 유출 막기)·보존 정책.[19]"
+    ]
+   },
+   "how_far": "무엇을 살지는 고객이 정합니다. 엔지니어는 **산 요금제로 무엇이 되고 무엇이 안 되는지 정확히 말하고, 켜는 순서(시범 그룹 → 전체)와 되돌리는 법**을 설계합니다. 요금제 이름과 묶음은 Microsoft 가 자주 바꾸니 공식 비교표를 기준으로 삼습니다. {추론}",
+   "refs": [
+    10,
+    14,
+    18,
+    19,
+    25,
+    26
+   ],
+   "study": [
+    "e3-e5-e7",
+    "mdo-docs",
+    "ms102-guide"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "M365 정책관리 및 고객사 니즈 파악을 통한 컨설팅 진행",
+   "short": "고객사가 원하는 것(외부 공유 허용, 개인 폰 사용 등)을 듣고 그걸 M365 정책으로 바꿔 제안하는 일.",
+   "why": "M365 는 Microsoft 가 서버를 돌리는 SaaS(빌려 쓰는 소프트웨어)라, 고객이 정할 것은 주로 정책입니다 — 누가 어디서 무엇에 들어올 수 있나, 문서를 밖으로 얼마나 공유하나. {추론} 자격요건에 '고객 컨설팅(제안·발표)'이 같이 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**로그인 정책** — 관리자는 항상 MFA, 옛 인증 방식 차단, 사외에서는 회사 관리 기기만 같은 규칙을 조건부 액세스로 만든다.[10] 조건부 액세스를 쓰려면 무료 기본값(보안 기본값)을 꺼야 한다.[11]",
+     "**기기 정책** — 회사 노트북은 기기째 관리(MDM), 개인 폰은 업무 앱 데이터만 관리(MAM)로 나눈다.[13]",
+     "**공유·데이터 정책** — 외부 공유 범위, 민감도 레이블, 메일 DLP.[19]",
+     "**제안서·발표** — 현황 진단 → 위험 → 권장 정책 → 영향(누가 불편해지나) → 일정. {추론}"
+    ]
+   },
+   "how_far": "결정은 고객사 보안·IT 담당이 합니다. 엔지니어는 **선택지마다 막히는 사람과 남는 위험을 숫자·사례로 보여 주고**, 정책을 먼저 보고 전용 모드로 시험한 결과를 근거로 냅니다. {추론}",
+   "refs": [
+    1,
+    10,
+    11,
+    13,
+    19
+   ],
+   "study": [
+    "entra-ca",
+    "security-defaults",
+    "intune-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "M365 연관 서비스(인사연동, 라이선스 프로비저닝, 조직도 및 기타) 구축/운영 관리",
+   "short": "인사 시스템의 입사·이동·퇴사가 계정·라이선스·조직도에 저절로 반영되게 잇는 일.",
+   "why": "직원이 수천 명이면 계정을 손으로 만들 수 없습니다. {추론} Microsoft 는 인사 시스템 같은 '원본 명단'을 Graph API 로 올리면 Entra 가 속성 규칙대로 계정을 만들고 바꾸는 API 기반 수신 프로비저닝을 제공합니다 — 하이브리드 사용자는 사내 AD 에, 클라우드 전용 사용자는 Entra ID 에 만듭니다.[24]",
+   "actually": {
+    "items": [
+     "**인사 연동** — 인사 명단(사번·부서·직급·상사·재직 상태)을 받아 계정 속성으로 옮긴다. API 기반 수신 프로비저닝은 Entra ID P1·P2 또는 Governance 라이선스가 있어야 하고, 한 번에 50건, 5초에 40번까지 올릴 수 있다.[24]",
+     "**라이선스 프로비저닝** — 부서·직급 규칙으로 그룹을 정하고, 그룹이 라이선스를 준다. 퇴사하면 그룹에서 빠져 라이선스가 회수된다.[14]",
+     "**조직도** — 계정의 '상사' 속성을 채워야 Outlook·Teams 의 조직도가 맞게 나온다. {추론}",
+     "**스크립트 연동** — 옛 MSOnline·AzureAD 모듈로 짠 연동 스크립트는 폐기돼 Graph PowerShell 로 옮겨야 한다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "인사 명단과 Entra 계정 맞춰 보기 (가상 값, 직접 돌린 출력)",
+     "body": "인사 시스템을 원본으로 두고 '해야 할 일'만 뽑는 모형입니다. 실제 연동은 이 비교를 프로비저닝 서비스가 속성 매핑으로 합니다.[24] 라이선스는 그룹으로 준다고 놓았습니다.[14]",
+     "lang": "python",
+     "code": "hr = [  # 인사 시스템이 내보낸 오늘 자 명단(가상)\n    {\"emp\": \"1001\", \"name\": \"김하나\", \"dept\": \"재무\", \"title\": \"팀장\", \"manager\": None, \"status\": \"재직\"},\n    {\"emp\": \"1002\", \"name\": \"이두리\", \"dept\": \"재무\", \"title\": \"사원\", \"manager\": \"1001\", \"status\": \"재직\"},\n    {\"emp\": \"1003\", \"name\": \"박세찬\", \"dept\": \"영업\", \"title\": \"사원\", \"manager\": \"1001\", \"status\": \"퇴직\"},\n    {\"emp\": \"1004\", \"name\": \"최네온\", \"dept\": \"IT\", \"title\": \"사원\", \"manager\": \"1001\", \"status\": \"재직\"},\n]\nentra = {  # 지금 Entra ID 에 있는 계정(가상)\n    \"1001\": {\"dept\": \"재무\", \"manager\": None, \"enabled\": True, \"group\": \"LIC-E5\"},\n    \"1002\": {\"dept\": \"영업\", \"manager\": \"1001\", \"enabled\": True, \"group\": \"LIC-E3\"},\n    \"1003\": {\"dept\": \"영업\", \"manager\": \"1001\", \"enabled\": True, \"group\": \"LIC-E3\"},\n}\n\ndef license_group(p):  # 규칙: 팀장·IT 는 E5, 나머지는 E3\n    return \"LIC-E5\" if p[\"title\"] == \"팀장\" or p[\"dept\"] == \"IT\" else \"LIC-E3\"\n\nfor p in hr:\n    cur = entra.get(p[\"emp\"])\n    if p[\"status\"] == \"퇴직\":\n        if cur and cur[\"enabled\"]:\n            print(f'{p[\"emp\"]} {p[\"name\"]}: 로그인 막기 · {cur[\"group\"]} 에서 빼기(라이선스 회수)')\n        continue\n    want = {\"dept\": p[\"dept\"], \"manager\": p[\"manager\"], \"enabled\": True, \"group\": license_group(p)}\n    if cur is None:\n        print(f'{p[\"emp\"]} {p[\"name\"]}: 새 계정 만들기 · {want[\"group\"]} 에 넣기')\n        continue\n    diff = [f\"{k} {cur[k]}→{v}\" for k, v in want.items() if cur[k] != v]\n    if diff:\n        print(f'{p[\"emp\"]} {p[\"name\"]}: 고치기 ' + \", \".join(diff))\n\n# 1002 이두리: 고치기 dept 영업→재무\n# 1003 박세찬: 로그인 막기 · LIC-E3 에서 빼기(라이선스 회수)\n# 1004 최네온: 새 계정 만들기 · LIC-E5 에 넣기"
+    }
+   ],
+   "how_far": "어떤 직급이 어떤 요금제를 받는지는 고객사가 정합니다. 엔지니어는 **속성 매핑표(인사 칸 → 계정 칸)·그룹 규칙·예외 처리(겸직·휴직·파견)**를 설계하고, 연동이 실패했을 때 프로비저닝 기록에서 어느 사람이 왜 빠졌는지 찾아냅니다.[24] {추론}",
+   "refs": [
+    14,
+    17,
+    24
+   ],
+   "study": [
+    "inbound-provisioning",
+    "graph-license",
+    "graph-powershell"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "학력 : 4년제 정규대학 학사학위 이상 보유자",
+   "short": "서류 관문. 같은 회사 다른 공고에도 똑같이 붙는 공통 조건이다.",
+   "why": "같은 팀의 M365 운영 엔지니어 공고도 같은 학력 줄로 시작합니다.[9]",
+   "how_far": "전공 제한은 적혀 있지 않습니다.[1]",
+   "refs": [
+    1,
+    9
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력 : 관련업무 7년 이상",
+   "short": "구축을 이끌고 고객 앞에서 제안까지 할 7년차 이상 — 같은 팀 운영 자리(3년)보다 한 단계 위다.",
+   "why": "같은 팀 운영·기술지원 공고는 3년 이상을 요구합니다.[9] 이 공고는 컨설팅·구축과 L3 분석을 같이 맡겨 연차를 높게 잡았습니다.[1] {추론}",
+   "how_far": "'관련업무'에는 사내 Exchange·AD 운영, 그룹웨어 이전도 들어갈 수 있습니다. 면접에서는 **직접 설계한 구축 하나와 직접 원인을 밝힌 장애 하나**를 처음부터 끝까지 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    9
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "M365 E3/E5 라이선스 기반 고객 컨설팅(제안·발표), 구축/운영 경험자",
+   "short": "요금제로 무엇을 할 수 있는지 고객 앞에서 설명하고, 그걸 직접 세우고 운영까지 해 본 사람.",
+   "why": "업무②·③을 한 사람이 해 본 경험을 묻는 줄입니다.[1] E3 와 E5 의 차이는 대부분 보안·규정 준수 기능이라, 컨설팅의 중심도 거기 있습니다.[18][26]",
+   "actually": {
+    "items": [
+     "**제안** — 'E5 로 올리면 무엇이 생기나'를 위협 대응(Defender)·계정 보호(Entra P2)·데이터 보호(Purview) 셋으로 나눠 설명한다.[18]",
+     "**구축** — 정책 설계서 → 시범 그룹 적용 → 전체 확대 → 운영 인수인계. {추론}",
+     "**운영** — 월간 보고(라이선스 사용률·보안 경보·장애 건수). {추론}"
+    ]
+   },
+   "how_far": "발표 자료를 혼자 만들고, 고객 질문에 **'공식 문서 기준으로 됩니다/안 됩니다'**를 근거와 함께 답할 수 있는 정도. {추론}",
+   "refs": [
+    1,
+    18,
+    26
+   ],
+   "study": [
+    "e3-e5-e7",
+    "ms102-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Hybrid 환경 구축/운영 경험자",
+   "short": "사내 AD·Exchange 서버를 남겨 둔 채 클라우드와 한 회사처럼 묶는 구성을 세워 보고 운영해 본 사람.",
+   "why": "큰 회사는 사내 AD(계정 서버)를 바로 버리지 못해, 사내 계정을 Entra ID 로 동기화해 씁니다. Microsoft 는 이를 위해 사내 서버형 Entra Connect Sync 와 클라우드에서 관리하는 Cloud Sync 를 내놓았고, Cloud Sync 를 먼저 검토하라고 안내합니다.[21][22] 메일도 사내 Exchange 와 Exchange Online 을 한 조직처럼 묶는 하이브리드 배포가 있습니다.[23]",
+   "level": {
+    "basic": "동기화가 무엇을 옮기나(사용자·그룹·연락처) · 로그인 방식 셋 — 비밀번호 해시 동기화, 통과 인증, 페더레이션(AD FS)[21]",
+    "work": "동기화 오류(속성 충돌·중복) 찾기, 하이브리드 구성 마법사로 Exchange 하이브리드 세우기, 사서함을 클라우드로 옮기기[23]",
+    "team": "여러 계열사(여러 포리스트)를 한 테넌트로 모으기 — Cloud Sync 는 끊어진 여러 포리스트를 지원한다[22]"
+   },
+   "actually": {
+    "items": [
+     "**계정 동기화** — Entra Connect V1 은 2022년 8월 31일에 은퇴했고 V2 로 옮겨야 한다. Connect Health 는 Entra ID P1 이 필요하다.[21]",
+     "**Exchange 하이브리드** — 공유 메일 도메인·하나의 주소록·서로의 일정 보기·양방향 사서함 이동·사내와 클라우드를 넘는 메시지 추적을 준다. 디렉터리 동기화가 30분마다 돌아야 한다.[23]",
+     "**지원 버전** — Exchange 2016 CU8 이상·2013 CU15 이상·2010 SP3 RU11 이상.[23]",
+     "**이전 순서** — 동기화 → 하이브리드 구성 → 시범 사서함 이동 → 부서별 이동 → 메일 흐름(MX) 전환. {추론}"
+    ]
+   },
+   "how_far": "동기화 서버를 새로 세우고, 동기화 오류를 스스로 고치고, 사서함 이동 일정을 짤 수 있으면 실무선입니다. 계열사 여러 곳을 한 테넌트로 모으는 설계는 이 팀 수준의 일입니다. {추론}",
+   "refs": [
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "entra-connect",
+    "cloud-sync",
+    "exchange-hybrid",
+    "m365-inside-out"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "M365 보안서비스 및 메세징(Exchange) 시스템 구축/운영 경험자",
+   "short": "메일 시스템(Exchange)과 그 메일을 지키는 보안(스팸·피싱·악성 첨부 거르기)을 세우고 운영해 본 사람.",
+   "why": "메일은 피싱·악성코드가 가장 많이 들어오는 길입니다. {추론} Exchange Online 의 모든 사서함에는 EOP 가 붙어 악성코드·스팸·피싱을 거르고, 메일 흐름 규칙·격리·메시지 추적을 제공합니다.[25] Defender for Office 365 가 그 위에 안전한 링크·안전한 첨부·사칭 보호를 더합니다.[26]",
+   "actually": {
+    "items": [
+     "**메일 흐름** — 커넥터·메일 흐름 규칙, 메시지 추적으로 안 간 메일 찾기.[25]",
+     "**옛 인증 정리** — Exchange Online 의 기본 인증(아이디·비밀번호만 보내는 옛 방식)은 이미 꺼져 다시 켤 수 없어, 옛 메일 프로그램·장비(복합기 등) 대응이 남는다.[12]",
+     "**보안 정책** — EOP 기본 정책은 끌 수 없고 덮어쓴다. Plan 1 은 안전한 링크·첨부, Plan 2 는 위협 탐색기·자동 조사·공격 모의 훈련.[25][26]",
+     "**격리 운영** — 오탐으로 격리된 메일을 풀고, 정책을 고쳐 재발을 막는다. {추론}"
+    ]
+   },
+   "how_far": "Exchange 를 깊게 아는 것이 이 자리의 축입니다. **메일 한 통이 들어와서 받은편지함에 닿기까지 어떤 검사를 거치는지** 순서대로 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    12,
+    25,
+    26
+   ],
+   "study": [
+    "eop-docs",
+    "mdo-docs",
+    "exo-powershell"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "M365 로그 및 Dump 분석, NetMon, Fiddler 사용 경험 및 로그 분석 능력 보유자",
+   "short": "'안 된다'를 느낌이 아니라 기록 — 서비스 로그·통신 기록·프로그램 메모리 덤프 — 으로 증명하는 능력.",
+   "why": "L3 자리는 원인을 밝히거나, 못 밝히면 Microsoft 지원에 넘길 근거를 모아야 합니다.[1] {추론} Microsoft 도 인증 문제를 진단할 때 Office 로그·Entra 클라이언트 로그·Fiddler HTTP/HTTPS 기록을 한 번에 모으는 도구(MSOAID)를 줍니다.[30]",
+   "actually": {
+    "items": [
+     "**Fiddler** — PC 와 서버 사이의 HTTP/HTTPS 요청을 가로채 보는 도구. Exchange 팀이 낸 확장은 세션을 오류 유형별로 색칠하고, 옛 인증·현대 인증 구분, 자동 검색(Autodiscover) 경로, 프록시가 Outlook 통신을 막는 경우를 보여 준다.[31]",
+     "**NetMon(Network Monitor)** — Microsoft 의 패킷 분석기. 3.4 판은 보관판으로 더는 개발되지 않고, 후속작 Message Analyzer 는 2019년 11월 25일에 내려갔다. Microsoft 는 다른 회사의 분석기(Wireshark 등)를 쓰라고 안내한다.[29]",
+     "**덤프** — Outlook 이 죽거나 멈출 때 ProcDump 로 프로그램 메모리를 파일로 뜬다. `-ma` 는 전체 메모리, `-e` 는 처리 안 된 예외가 났을 때 뜬다.[32] 그 전에 안전 모드·추가 기능 끄기·Office 복구·새 프로필을 먼저 해 본다.[33]",
+     "**서비스 로그** — 로그인 기록(어느 조건부 액세스 정책이 막았나), 메시지 추적, 감사 기록. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "Fiddler 세션 목록에서 의심 칸 고르기 (가상 값, 직접 돌린 출력)",
+     "body": "407(프록시 인증 요구)·회사 프록시가 발급한 인증서(중간에서 TLS 를 풀어 봄)·느린 응답·없는 자동 검색 주소를 거릅니다. Microsoft 는 M365 주소에 대해 TLS 해독·프록시 인증을 빼라고 안내합니다.[27]",
+     "lang": "python",
+     "code": "sessions = [  # Fiddler 에서 내보낸 세션 요약(가상)\n    {\"host\": \"outlook.office365.com\", \"status\": 200, \"ms\": 180, \"cert\": \"DigiCert\"},\n    {\"host\": \"login.microsoftonline.com\", \"status\": 407, \"ms\": 30, \"cert\": None},\n    {\"host\": \"teams.microsoft.com\", \"status\": 200, \"ms\": 2400, \"cert\": \"CorpProxy-CA\"},\n    {\"host\": \"contoso.sharepoint.com\", \"status\": 200, \"ms\": 210, \"cert\": \"DigiCert\"},\n    {\"host\": \"autodiscover.contoso.com\", \"status\": 404, \"ms\": 95, \"cert\": \"DigiCert\"},\n]\nfor s in sessions:\n    why = []\n    if s[\"status\"] == 407:\n        why.append(\"프록시가 인증을 요구 — M365 주소는 프록시 인증을 빼야 한다\")\n    if s[\"cert\"] and s[\"cert\"] not in (\"DigiCert\", \"Microsoft\"):\n        why.append(f'인증서 발급자 {s[\"cert\"]} — 중간에서 TLS 를 풀어 보고 있다')\n    if s[\"ms\"] > 1000:\n        why.append(f'{s[\"ms\"]}ms 로 느림')\n    if s[\"status\"] == 404 and s[\"host\"].startswith(\"autodiscover\"):\n        why.append(\"자동 검색 주소가 없음 — DNS·하이브리드 설정 확인\")\n    if why:\n        print(f'{s[\"host\"]:<26} {s[\"status\"]}  ' + \" / \".join(why))\n\n# login.microsoftonline.com  407  프록시가 인증을 요구 — M365 주소는 프록시 인증을 빼야 한다\n# teams.microsoft.com        200  인증서 발급자 CorpProxy-CA — 중간에서 TLS 를 풀어 보고 있다 / 2400ms 로 느림\n# autodiscover.contoso.com   404  자동 검색 주소가 없음 — DNS·하이브리드 설정 확인"
+    }
+   ],
+   "how_far": "덤프를 직접 해석(디버거로 콜 스택 읽기)하는 것까지는 드뭅니다. **언제·어떤 도구로·무엇을 떠서 넘겨야 하는지 알고, Fiddler·패킷 기록에서 실패한 요청과 그 이유(상태 코드·인증서·인증 방식)를 짚어 내는** 것이 최소선입니다. 기록에는 다른 통신·사용자 정보가 섞이므로 보관·전달에 주의합니다.[30] {추론}",
+   "refs": [
+    1,
+    27,
+    29,
+    30,
+    31,
+    32,
+    33
+   ],
+   "study": [
+    "fiddler-book",
+    "packet-analysis",
+    "msoaid",
+    "procdump"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Powershell 사용 경험 보유자",
+   "short": "수천 명 계정·사서함·라이선스를 한 번에 조회·변경하는 관리 도구라서. 구축·이전 작업은 대부분 스크립트다.",
+   "why": "Exchange 일괄 작업은 ExchangeOnlineManagement 모듈로, 계정·라이선스는 Microsoft Graph PowerShell 로 합니다.[16][15] 옛 AzureAD·MSOnline 모듈은 폐기돼 Graph PowerShell 로 옮겨야 합니다.[17]",
+   "level": {
+    "basic": "Get-·Set- 명령, 파이프라인으로 거르기, CSV 로 내보내기·읽기",
+    "work": "Connect-ExchangeOnline·Connect-MgGraph 로 붙어 사서함 권한·라이선스를 일괄 변경, 바꾸기 전 대상 목록부터 뽑기[15][16]",
+    "team": "무인 스크립트(인증서 연결)로 인사 연동·정기 점검을 돌리기[16][24]"
+   },
+   "actually": {
+    "items": [
+     "**라이선스** — Get-MgSubscribedSku 로 수량을 보고 Set-MgUserLicense 로 배정·회수한다. 배정 전에 사용 위치를 넣어야 한다.[15]",
+     "**사서함 이전·권한** — 이전 대상 목록, 공유 사서함 권한을 CSV 로 받아 일괄 적용. {추론}",
+     "**인사 연동** — 인사 명단을 읽어 Graph 의 일괄 업로드 엔드포인트로 올리는 스크립트도 PowerShell 로 짤 수 있다.[24]"
+    ]
+   },
+   "how_far": "'사용 경험'이라 큰 모듈 개발까지는 아닙니다. **조회 → 거르기 → 보고서·일괄 변경** 스크립트를 쓰고 되돌리는 법을 같이 준비하는 정도. {추론}",
+   "refs": [
+    15,
+    16,
+    17,
+    24
+   ],
+   "study": [
+    "ps-lunches",
+    "graph-powershell",
+    "exo-powershell"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "인프라 기반의 보안서비스(방화벽, Anti-Ware, etc)에 대한 이해 보유자",
+   "short": "고객사 방화벽·프록시·백신이 M365 통신을 막거나 느리게 하는 일이 잦아, 그 장비들의 동작을 알아야 한다.",
+   "why": "Microsoft 는 M365 주소에 대해 TLS 해독·패킷 깊이 검사·콘텐츠 필터·프록시를 거치지 말고 바로 보내라고 안내하고, TLS 종단·QUIC·웹소켓 차단·경로 위 프록시 인증을 문제를 일으키는 구성으로 꼽습니다.[27] 주소 목록은 Optimize·Allow·Default 로 나눠 공개합니다.[28]",
+   "actually": {
+    "items": [
+     "**방화벽·프록시 예외** — Optimize·Allow 주소는 프록시를 거치지 않고 바로 나가게 하고, Default 주소는 프록시를 통해도 된다. PAC 파일로 나눠 보낸다.[28]",
+     "**로컬 출구** — 지사 트래픽을 본사로 돌려 나가지 말고 가까운 곳에서 인터넷으로 내보내고, DNS 도 가까이서 푼다. VPN 사용자는 분할 터널링.[27]",
+     "**백신·안티 멀웨어** — 사내 메일 게이트웨이·PC 백신이 EOP·Defender 와 겹치거나 충돌하는지 본다. EOP 기본 정책은 끌 수 없다.[25] {추론}",
+     "**고객 보안팀과 협의** — 예외를 열어 달라는 요청서를 근거(공식 주소 목록) 붙여 쓴다. {추론}"
+    ]
+   },
+   "how_far": "방화벽을 직접 운영하지는 않습니다. **어느 주소·포트를 왜 예외로 해야 하는지 설명하고, 통신 기록으로 막힌 곳을 짚어** 고객 보안팀에 넘기는 것까지가 몫입니다. {추론}",
+   "refs": [
+    25,
+    27,
+    28
+   ],
+   "study": [
+    "m365-network",
+    "packet-analysis"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 환경에서 M365 운영 경험자",
+   "short": "수천~수만 명, 여러 계열사가 한 테넌트에 얽힌 환경을 다뤄 봤으면 좋다 — 고객이 LG그룹 계열사라서.",
+   "why": "비즈테크아이는 LG그룹 계열사 같은 대형 엔터프라이즈 IT 운영을 해 왔다고 소개합니다.[3] 같은 그룹의 LG유플러스는 M365 에 들어 있는 Viva Engage 를 사내 소통에 씁니다.[36]",
+   "actually": {
+    "items": [
+     "**대량 라이선스** — 그룹 배정과 오류 재처리.[14]",
+     "**여러 포리스트 동기화** — 계열사마다 따로인 AD 를 한 테넌트로.[22]",
+     "**변경 관리** — 정책 하나가 수만 명에게 닿으니 시범 → 확대 순서와 공지가 필수. {추론}",
+     "**인사 연동 한도** — API 기반 수신 프로비저닝은 P1·P2 기준 하루 2,000번(Governance 6,000번) 호출 한도가 있어 대량 변경 일정을 나눠야 한다.[24]"
+    ]
+   },
+   "refs": [
+    3,
+    14,
+    22,
+    24,
+    36
+   ],
+   "study": [
+    "m365-inside-out",
+    "cloud-sync"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SC 300, SC900 자격증 보유자",
+   "short": "계정·접근 관리자 시험(SC-300)과 보안·규정 준수·계정 기초 시험(SC-900). 둘 다 2026-11 현재 은퇴 안내가 없다.",
+   "why": "이 공고의 하이브리드 계정·조건부 액세스·보안 서비스 요건과 범위가 겹칩니다.[34][35] 비즈테크아이 복리후생에 '자격증 지원'이 있습니다.[4]",
+   "actually": {
+    "items": [
+     "**SC-300**(Identity and Access Administrator) — 사용자 계정 20~25%·인증과 접근 관리 25~30%·워크로드 계정 20~25%·계정 거버넌스 20~25%(2026년 10월 28일 기준 출제 범위).[34]",
+     "**SC-900**(Security, Compliance, and Identity Fundamentals) — 개념 10~15%·Entra 25~30%·보안 솔루션 35~40%·규정 준수 솔루션 20~25%(2026년 10월 21일 기준).[35]",
+     "같은 팀 운영 공고는 MS-102·MS-900·AZ-104 를 우대로 적었다.[9]"
+    ]
+   },
+   "how_far": "SC-900 은 기초라 며칠~몇 주면 준비할 수 있고, SC-300 은 조건부 액세스·하이브리드 계정 실무와 겹쳐 경력자에게 효율이 좋습니다. 자격증보다 실제 구축 경험을 먼저 봅니다. {추론}",
+   "refs": [
+    4,
+    9,
+    34,
+    35
+   ],
+   "study": [
+    "sc300-guide",
+    "sc300-book",
+    "sc900-guide"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "로그·패킷 기록을 뒤져 '누가 막았나'를 증명하는 게 재미있는 사람[1]",
+   "사내 서버와 클라우드가 섞인 복잡한 구성을 그림으로 정리하길 좋아하는 사람",
+   "고객 앞에서 선택지와 위험을 설명하는 일을 꺼리지 않는 사람[1]",
+   "반복 작업을 스크립트로 바꾸는 사람"
+  ],
+  "hard": [
+   "Microsoft 가 요금제·기능·도구 이름을 자주 바꿔 계속 따라가야 한다[17][29]",
+   "정책 결정권은 고객사에 있다{추론}",
+   "구축 일정과 운영 장애 대응이 겹칠 수 있다{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "지사 직원만 Teams 가 느리고 가끔 로그인이 끊깁니다. 무엇부터 보겠어요?",
+   "a": "서비스 상태 → Fiddler·패킷 기록에서 407·회사 프록시 인증서·지연 → M365 주소의 프록시·TLS 검사 예외와 로컬 출구.[20][27][28]"
+  },
+  {
+   "q": "Entra Connect Sync 와 Cloud Sync 중 무엇을 고르겠어요?",
+   "a": "Microsoft 가 Cloud Sync 를 먼저 검토하라고 하는 이유(사내 동기화 서버가 없음·여러 포리스트)와, 필요한 기능이 Connect 에만 있는지 확인.[21][22]"
+  },
+  {
+   "q": "사내 Exchange 에서 Exchange Online 으로 5,000 사서함을 옮기는 계획을 말해 보세요.",
+   "a": "하이브리드 구성 → 시범 이동 → 부서별 이동 → MX 전환, 하이브리드가 주는 것(일정 공유·주소록·양방향 이동).[23]"
+  },
+  {
+   "q": "E3 고객에게 E5 를 제안한다면 무엇을 근거로 들겠어요?",
+   "a": "Entra P2 위험 기반 정책·Defender for Office 365 Plan 2·고급 Purview — 고객의 실제 사고·감사 요구와 연결.[18][26]"
+  },
+  {
+   "q": "Outlook 이 특정 PC 에서만 시작할 때 죽습니다. 덤프를 뜨기 전에 무엇을 하겠어요?",
+   "a": "안전 모드·추가 기능 끄기·Office 복구·새 프로필, 그래도 안 되면 ProcDump -e -ma.[32][33]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "LG Careers · [비즈테크아이] M365 구축·운영(SI·SM) 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001568",
+   "kind": "posting",
+   "note": "업무·요건·우대·팀 소개(클라우드인프라사업팀 CI3파트 — M365 설계·구축·운영). 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "비즈테크아이 · CLOUD › 솔루션/IT보안",
+   "url": "https://www.biztechi.com/business/cloud/04",
+   "kind": "company",
+   "note": "Microsoft 기반 M365·Citrix VDI 운영 서비스. 화면 문구는 사이트 스크립트에서 확인"
+  },
+  {
+   "n": 3,
+   "title": "비즈테크아이 · CLOUD › 사업 소개",
+   "url": "https://www.biztechi.com/business/cloud/01",
+   "kind": "company",
+   "note": "M365 등 클라우드·인프라 전문 기술자 보유, LG그룹 계열사 등 대형 엔터프라이즈 IT 운영"
+  },
+  {
+   "n": 4,
+   "title": "비즈테크아이 · Culture › 복리후생",
+   "url": "https://www.biztechi.com/culture/03",
+   "kind": "company",
+   "note": "다섯 갈래 복리후생 목록"
+  },
+  {
+   "n": 5,
+   "title": "비즈테크아이 · 오시는 길(사이트 하단 회사 정보)",
+   "url": "https://www.biztechi.com/about/05",
+   "kind": "company"
+  },
+  {
+   "n": 6,
+   "title": "자소설닷컴 — 비즈테크아이 기업정보(공공데이터 집계: 초봉·평균 연봉)",
+   "url": "https://jasoseol.com/companies/14512",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음, 사원 수 945명 표기"
+  },
+  {
+   "n": 7,
+   "title": "자소설닷컴 — LG CNS 기업정보(공공데이터 집계: 초봉·평균 연봉)",
+   "url": "https://jasoseol.com/companies/57",
+   "kind": "reference",
+   "note": "모회사 비교용, 같은 집계 기준"
+  },
+  {
+   "n": 8,
+   "title": "LG · LG CNS, MS와 차세대 업무혁신 솔루션 개발 추진",
+   "url": "https://www.lg.co.kr/media/release/20678",
+   "kind": "company",
+   "date": "2019-06-17",
+   "note": "지포탈 + Windows 10·Office 365 결합, LG CNS 우선 적용 뒤 LG 계열사로"
+  },
+  {
+   "n": 9,
+   "title": "LG Careers · [비즈테크아이] M365 운영 및 기술지원 엔지니어 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1002386",
+   "kind": "posting",
+   "note": "같은 팀 운영 공고 — 경력 3년 이상, MS-102·MS-900·AZ-104 우대"
+  },
+  {
+   "n": 10,
+   "title": "Microsoft Learn · What is Conditional Access?",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview",
+   "kind": "reference",
+   "date": "2026-04"
+  },
+  {
+   "n": 11,
+   "title": "Microsoft Learn · Security defaults in Microsoft Entra ID",
+   "url": "https://learn.microsoft.com/en-us/entra/fundamentals/security-defaults",
+   "kind": "reference",
+   "date": "2026-10"
+  },
+  {
+   "n": 12,
+   "title": "Microsoft Learn · Deprecation of Basic authentication in Exchange Online",
+   "url": "https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/deprecation-of-basic-authentication-exchange-online",
+   "kind": "reference",
+   "date": "2026-07"
+  },
+  {
+   "n": 13,
+   "title": "Microsoft Learn · What is Microsoft Intune?",
+   "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/what-is-intune",
+   "kind": "reference",
+   "date": "2026-05"
+  },
+  {
+   "n": 14,
+   "title": "Microsoft Learn · Assign or unassign licenses to a group (group-based licensing)",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-assign",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Microsoft Learn · Assign Microsoft 365 licenses to user accounts with PowerShell",
+   "url": "https://learn.microsoft.com/en-us/microsoft-365/enterprise/assign-licenses-to-user-accounts-with-microsoft-365-powershell",
+   "kind": "reference",
+   "date": "2026-11"
+  },
+  {
+   "n": 16,
+   "title": "Microsoft Learn · Connect to Exchange Online PowerShell",
+   "url": "https://learn.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell",
+   "kind": "reference",
+   "date": "2026-06"
+  },
+  {
+   "n": 17,
+   "title": "Microsoft Learn · Azure AD PowerShell 개요(AzureAD·MSOnline 폐기 안내)",
+   "url": "https://learn.microsoft.com/en-us/powershell/azure/active-directory/overview",
+   "kind": "reference",
+   "note": "2024-03-30 폐기 안내. 대체는 Microsoft Graph PowerShell"
+  },
+  {
+   "n": 18,
+   "title": "Microsoft Learn · Compare Microsoft 365 E3, E5 and E7",
+   "url": "https://learn.microsoft.com/en-us/copilot/plan/compare-copilot-e3-e5-e7",
+   "kind": "reference",
+   "date": "2026-11"
+  },
+  {
+   "n": 19,
+   "title": "Microsoft Learn · Learn about Microsoft Purview",
+   "url": "https://learn.microsoft.com/en-us/purview/purview",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Microsoft Learn · How to check Microsoft 365 service health",
+   "url": "https://learn.microsoft.com/en-us/microsoft-365/enterprise/view-service-health",
+   "kind": "reference",
+   "date": "2026-10"
+  },
+  {
+   "n": 21,
+   "title": "Microsoft Learn · What is Microsoft Entra Connect?",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-azure-ad-connect",
+   "kind": "reference",
+   "date": "2026-11-19",
+   "note": "로그인 방식 셋, V1 2022-08-31 은퇴, Connect Health 는 P1, Cloud Sync 먼저 검토 권장"
+  },
+  {
+   "n": 22,
+   "title": "Microsoft Learn · What is Microsoft Entra Cloud Sync?",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/hybrid/cloud-sync/what-is-cloud-sync",
+   "kind": "reference",
+   "date": "2026-10-21",
+   "note": "가벼운 사내 에이전트, 클라우드에서 설정, 끊어진 여러 포리스트 지원"
+  },
+  {
+   "n": 23,
+   "title": "Microsoft Learn · Exchange Server hybrid deployments",
+   "url": "https://learn.microsoft.com/en-us/exchange/exchange-hybrid",
+   "kind": "reference",
+   "date": "2025-12-24",
+   "note": "하이브리드 기능 목록, 구성 마법사, 30분 동기화, 지원 버전"
+  },
+  {
+   "n": 24,
+   "title": "Microsoft Learn · API-driven inbound provisioning concepts",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/app-provisioning/inbound-provisioning-api-concepts",
+   "kind": "reference",
+   "date": "2026-08-20",
+   "note": "인사 시스템 → /bulkUpload → AD 또는 Entra ID. P1·P2·Governance, 호출 한도"
+  },
+  {
+   "n": 25,
+   "title": "Microsoft Learn · Exchange Online Protection overview",
+   "url": "https://learn.microsoft.com/en-us/defender-office-365/eop-about",
+   "kind": "reference",
+   "date": "2026-08-12"
+  },
+  {
+   "n": 26,
+   "title": "Microsoft Learn · Microsoft Defender for Office 365 overview",
+   "url": "https://learn.microsoft.com/en-us/defender-office-365/mdo-about",
+   "kind": "reference",
+   "date": "2026-06-17",
+   "note": "Plan 1(E3·Business Premium)·Plan 2(E5) 기능. 라이선스 목록은 예시이고 전체는 라이선스 문서"
+  },
+  {
+   "n": 27,
+   "title": "Microsoft Learn · Microsoft 365 network connectivity principles",
+   "url": "https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-network-connectivity-principles",
+   "kind": "reference",
+   "date": "2026-10-30"
+  },
+  {
+   "n": 28,
+   "title": "Microsoft Learn · Microsoft 365 URLs and IP address ranges",
+   "url": "https://learn.microsoft.com/en-us/microsoft-365/enterprise/urls-and-ip-address-ranges",
+   "kind": "reference",
+   "date": "2026-10-30",
+   "note": "Optimize·Allow·Default 분류. 우회 권고는 연결된 관리 문서(managing-office-365-endpoints)"
+  },
+  {
+   "n": 29,
+   "title": "Microsoft Learn · Collect data using Network Monitor",
+   "url": "https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/collect-data-using-network-monitor",
+   "kind": "reference",
+   "date": "2026-02-19",
+   "note": "NetMon 3.4 보관판, Message Analyzer 2019-11-25 내려감"
+  },
+  {
+   "n": 30,
+   "title": "Microsoft Learn · Use MSOAID for authentication issues",
+   "url": "https://learn.microsoft.com/en-us/microsoft-365/troubleshoot/diagnostic-logs/use-msoaid-for-authentication-issues",
+   "kind": "reference",
+   "date": "2026-09-15"
+  },
+  {
+   "n": 31,
+   "title": "Exchange Team Blog · Introducing the Exchange Online Fiddler Extension",
+   "url": "https://techcommunity.microsoft.com/blog/exchange/introducing-the-exchange-online-fiddler-extension/608788",
+   "kind": "reference",
+   "date": "2018-12-11",
+   "note": "뒤에 Office 365 Fiddler Extension 으로 이름이 바뀜"
+  },
+  {
+   "n": 32,
+   "title": "Microsoft Learn · Sysinternals ProcDump",
+   "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/procdump",
+   "kind": "reference",
+   "date": "2026-10-16"
+  },
+  {
+   "n": 33,
+   "title": "Microsoft Learn · Outlook crashes or stops responding (Microsoft 365)",
+   "url": "https://learn.microsoft.com/en-us/exchange/troubleshoot/outlook-issues/crash-issues",
+   "kind": "reference",
+   "date": "2025-06-25"
+  },
+  {
+   "n": 34,
+   "title": "Microsoft Learn · Study guide for Exam SC-300",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-300",
+   "kind": "reference",
+   "date": "2026-11-05",
+   "note": "출제 범위 2026-10-28 기준. 시험 페이지에 은퇴 안내 없음"
+  },
+  {
+   "n": 35,
+   "title": "Microsoft Learn · Study guide for Exam SC-900",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-900",
+   "kind": "reference",
+   "date": "2026-11-20",
+   "note": "출제 범위 2026-10-21 기준. 시험 페이지에 은퇴 안내 없음"
+  },
+  {
+   "n": 36,
+   "title": "Microsoft 고객 사례 · LG U+ Viva Engage",
+   "url": "https://www.microsoft.com/en/customers/story/1693523122411101137-lguplus-telecommunications-microsoft-365-en-korea",
+   "kind": "reference",
+   "date": "2023-10-25",
+   "note": "같은 그룹 다른 회사의 M365 사용 사례"
+  }
+ ],
+ "caveat": "비즈테크아이 M365 팀의 발표·기술 글은 찾지 못했습니다. 회사 근거는 이 공고, 같은 팀의 운영 공고, 회사 사이트의 사업 소개뿐이고, 고객사 이름·SI 와 SM 의 비중·L2/L3 의 정의·상주 여부는 공개되지 않았습니다. 그 밖의 '실제로는'은 Microsoft 공식 문서로 '보통 이런 일'을 보였습니다. 요금제·자격증·도구 이름은 2026-11-25 기준입니다.",
+ "resources": [
+  {
+   "id": "m365-inside-out",
+   "title": "Microsoft 365 Administration Inside Out (3판)",
+   "by": "Aaron Guilmette · Darryl Kegg · Ed Fisher · Microsoft Press · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.pearson.com/store/en-gb/p/microsoft-365-administration-inside-out/P200000007284/9780137908851",
+   "why": "Exchange·계정 동기화·하이브리드를 관리자 입장에서 한 권으로. 업무①·② 와 Hybrid 요건의 바탕."
+  },
+  {
+   "id": "service-health",
+   "title": "How to check Microsoft 365 service health",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/microsoft-365/enterprise/view-service-health",
+   "why": "장애 분석 첫 단계 — Microsoft 쪽 장애인지 우리 설정인지 가르기."
+  },
+  {
+   "id": "e3-e5-e7",
+   "title": "Compare Microsoft 365 E3, E5 and E7",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/copilot/plan/compare-copilot-e3-e5-e7",
+   "why": "업무② 'E3/E5 기반 구축'과 컨설팅 제안의 기능표."
+  },
+  {
+   "id": "ms102-guide",
+   "title": "Exam MS-102: Microsoft 365 Administrator (시험 안내·학습 안내서)",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/ms-102/",
+   "why": "테넌트·Entra·Defender·Purview 출제 범위가 업무 목록과 겹친다. 시험이 은퇴해도 공부 범위 목차로 쓴다."
+  },
+  {
+   "id": "entra-ca",
+   "title": "What is Conditional Access?",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview",
+   "why": "업무③ 정책 컨설팅의 중심인 로그인 정책 — 신호·결정·라이선스 조건."
+  },
+  {
+   "id": "security-defaults",
+   "title": "Security defaults in Microsoft Entra ID",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/entra/fundamentals/security-defaults",
+   "why": "무료 기본값과 조건부 액세스의 차이 — 작은 고객에게 무엇을 권할지 정할 때."
+  },
+  {
+   "id": "intune-docs",
+   "title": "What is Microsoft Intune?",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/what-is-intune",
+   "why": "기기 정책(MDM·MAM)을 제안할 때의 기본."
+  },
+  {
+   "id": "inbound-provisioning",
+   "title": "API-driven inbound provisioning concepts",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/app-provisioning/inbound-provisioning-api-concepts",
+   "why": "업무④ '인사 연동'의 공식 구조 — 흐름·라이선스·호출 한도·권한."
+  },
+  {
+   "id": "graph-license",
+   "title": "Assign Microsoft 365 licenses to user accounts with PowerShell",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/microsoft-365/enterprise/assign-licenses-to-user-accounts-with-microsoft-365-powershell",
+   "why": "업무④ '라이선스 프로비저닝'을 스크립트로 연습."
+  },
+  {
+   "id": "graph-powershell",
+   "title": "Microsoft Graph PowerShell overview",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/powershell/microsoftgraph/overview",
+   "why": "폐기된 AzureAD·MSOnline 을 대신하는 도구. 옛 연동 스크립트를 옮길 때."
+  },
+  {
+   "id": "exo-powershell",
+   "title": "Connect to Exchange Online PowerShell",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell",
+   "why": "Exchange 일괄 작업과 무인 스크립트(인증서 연결)의 출발점."
+  },
+  {
+   "id": "ps-lunches",
+   "title": "Learn PowerShell in a Month of Lunches (4판)",
+   "by": "Travis Plunk · James Petty · Tyler Leonhardt · Jeffery Hicks · Manning · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.manning.com/books/learn-powershell-in-a-month-of-lunches",
+   "why": "PowerShell 요건의 기본기 — 파이프라인·객체 거르기·스크립트."
+  },
+  {
+   "id": "entra-connect",
+   "title": "What is Microsoft Entra Connect?",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-azure-ad-connect",
+   "why": "Hybrid 요건의 계정 쪽 — 로그인 방식 셋과 동기화 서버."
+  },
+  {
+   "id": "cloud-sync",
+   "title": "What is Microsoft Entra Cloud Sync?",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/entra/identity/hybrid/cloud-sync/what-is-cloud-sync",
+   "why": "Microsoft 가 먼저 권하는 동기화 방식. 여러 계열사(포리스트)를 묶는 대규모 우대와 연결."
+  },
+  {
+   "id": "exchange-hybrid",
+   "title": "Exchange Server hybrid deployments",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://learn.microsoft.com/en-us/exchange/exchange-hybrid",
+   "why": "Hybrid·메시징 요건의 메일 쪽 — 하이브리드가 주는 기능과 구성 마법사."
+  },
+  {
+   "id": "eop-docs",
+   "title": "Exchange Online Protection overview",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/defender-office-365/eop-about",
+   "why": "'M365 보안서비스' 중 모든 사서함에 기본으로 붙는 메일 보호 — 무엇을 거르고 어디서 보나."
+  },
+  {
+   "id": "mdo-docs",
+   "title": "Microsoft Defender for Office 365 overview",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/defender-office-365/mdo-about",
+   "why": "E3(Plan 1)과 E5(Plan 2)의 메일 보안 차이 — 업무②와 E5 제안의 근거."
+  },
+  {
+   "id": "m365-network",
+   "title": "Microsoft 365 network connectivity principles",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-network-connectivity-principles",
+   "why": "'방화벽 등 인프라 보안 이해' 요건 — 프록시·TLS 검사 예외와 로컬 출구를 고객 보안팀에 설명할 근거."
+  },
+  {
+   "id": "fiddler-book",
+   "title": "Debugging with Fiddler (2판)",
+   "by": "Eric Lawrence · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://ericlaw.gumroad.com/l/dwf2",
+   "why": "Fiddler 를 만든 사람이 쓴 사용서. HTTPS 해독·세션 읽기 — 로그 분석 요건의 Fiddler 부분. Fiddler 4.5 기준이라 화면은 지금과 다르다."
+  },
+  {
+   "id": "packet-analysis",
+   "title": "Practical Packet Analysis (3판)",
+   "by": "Chris Sanders · No Starch Press · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://nostarch.com/packetanalysis3",
+   "why": "NetMon 이 멈춘 뒤 쓰는 Wireshark 로 패킷 읽기. TCP·TLS 연결이 어디서 끊겼는지 보는 기본기."
+  },
+  {
+   "id": "msoaid",
+   "title": "Use MSOAID for authentication issues",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/microsoft-365/troubleshoot/diagnostic-logs/use-msoaid-for-authentication-issues",
+   "why": "로그인 문제 때 Microsoft 가 원하는 기록(Office 로그·Entra 클라이언트 로그·Fiddler)을 한 번에 모으는 법."
+  },
+  {
+   "id": "procdump",
+   "title": "Sysinternals ProcDump",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/procdump",
+   "why": "요건의 'Dump 분석' — Outlook 이 죽을 때 덤프를 뜨는 옵션."
+  },
+  {
+   "id": "sc300-guide",
+   "title": "Study guide for Exam SC-300: Microsoft Identity and Access Administrator",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-300",
+   "why": "우대 SC-300 의 공식 출제 범위. 하이브리드 계정·조건부 액세스 요건과 겹친다."
+  },
+  {
+   "id": "sc300-book",
+   "title": "Microsoft Identity and Access Administrator SC-300 Exam Guide (2판)",
+   "by": "Aaron Guilmette 외 · Packt · 2025",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.barnesandnoble.com/w/microsoft-identity-and-access-administrator-sc-300-exam-guide-aaron-guilmette/1146387620",
+   "why": "바뀐 SC-300 범위에 맞춘 판. 시험 준비와 Entra 계정 설계를 한 권으로."
+  },
+  {
+   "id": "sc900-guide",
+   "title": "Study guide for Exam SC-900: Security, Compliance, and Identity Fundamentals",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-900",
+   "why": "우대 SC-900 의 공식 범위 — 보안·규정 준수·계정을 한 번에 훑는 기초."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "요금제와 보안 기능 지도",
+   "time": "1~2주",
+   "goal": "E3 와 E5 로 켤 수 있는 보안·규정 준수 기능을 표 한 장으로 설명할 수 있다.",
+   "task": "가상 회사 2곳(E3 1,200명·E5 300명)의 '산 것·켠 것·안 켠 것' 표를 만들고, E5 로 올릴 때의 제안 슬라이드 5장을 쓴다.",
+   "resources": [
+    "e3-e5-e7",
+    "mdo-docs",
+    "eop-docs",
+    "sc900-guide"
+   ]
+  },
+  {
+   "title": "하이브리드 — 계정 동기화와 Exchange",
+   "time": "3~4주",
+   "goal": "사내 AD·Exchange 가 있는 회사를 클라우드로 옮기는 순서와 동기화 방식을 고를 수 있다.",
+   "task": "가상 계열사 3곳(포리스트 3개)·사서함 5,000개를 한 테넌트로 모으는 설계서를 쓴다 — 동기화 방식 선택 이유, 로그인 방식, 시범·부서별 이동 일정, MX 전환일.",
+   "resources": [
+    "entra-connect",
+    "cloud-sync",
+    "exchange-hybrid",
+    "m365-inside-out"
+   ]
+  },
+  {
+   "title": "로그인 정책과 인사 연동",
+   "time": "2~3주",
+   "goal": "조건부 액세스 정책과 인사 → 계정 → 라이선스 흐름을 설계할 수 있다.",
+   "task": "위 풀이의 인사 연동 예시를 넓혀 휴직·겸직·파견 예외와 상사(조직도) 칸까지 처리하고, 같은 규칙을 PowerShell 로 옮겨 '바꿀 목록만 뽑는 모드'를 넣는다.",
+   "resources": [
+    "entra-ca",
+    "inbound-provisioning",
+    "graph-license",
+    "graph-powershell",
+    "ps-lunches",
+    "sc300-guide"
+   ]
+  },
+  {
+   "title": "기록으로 장애 증명하기",
+   "time": "2~4주",
+   "goal": "Fiddler·패킷 기록·덤프에서 실패 원인을 짚고 Microsoft 지원에 넘길 자료를 만들 수 있다.",
+   "task": "내 PC 에서 Fiddler 로 Outlook 웹·Teams 웹 접속을 떠서 인증 흐름(로그인 주소 → 토큰 → 서비스)을 그림으로 그리고, 일부러 프록시를 끼워 407 이 나는 기록과 비교한 장애 보고서를 쓴다.",
+   "resources": [
+    "fiddler-book",
+    "packet-analysis",
+    "msoaid",
+    "procdump",
+    "m365-network"
+   ]
+  },
+  {
+   "title": "자격증 (선택)",
+   "time": "계속",
+   "goal": "SC-900 → SC-300 순으로 우대 자격을 갖춘다.",
+   "task": "SC-300 출제 범위 네 영역마다 실제로 해 본 일 하나씩을 적은 경험표를 만들어 면접 답변으로 쓴다.",
+   "resources": [
+    "sc900-guide",
+    "sc300-guide",
+    "sc300-book"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉은 **약 3,800만원**, 전체 평균은 **약 5,700만원**(둘 다 공공데이터 집계) — 이 자리는 7년 이상 경력직이라 둘 다 그대로 받는 금액이 아니다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "3,811만원",
+    "amount": 3811,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일·직군 구분이 없다 [6]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "5,748만원",
+    "amount": 5748,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균. 사원 수 945명 표기 [6]"
+   },
+   {
+    "label": "LG CNS 초봉",
+    "value": "5,071만원",
+    "amount": 5071,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 기준 [7]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "7,802만원",
+    "amount": 7802,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 기준 [7]"
+   }
+  ],
+  "how": "공고에 연봉이 적혀 있지 않습니다 [1]. 비즈테크아이는 상장사가 아니라 사업보고서의 '직원 1인 평균 급여' 공시 숫자가 없어 집계 값만 실었습니다. 평균은 경력직이 섞인 회사 전체 값이고, 7년차 경력직 연봉은 이전 연봉·경력으로 처우 협의 때 정해집니다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "가족",
+    "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진·단체보험, 전문 심리 상담"
+   },
+   {
+    "name": "금융",
+    "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+   },
+   {
+    "name": "배움",
+    "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+   },
+   {
+    "name": "조직 문화",
+    "detail": "공유오피스, 승진·호칭 변경 선물, 장기근속 포상, 간식 행사, LG TWINS 야구 관람 지원"
+   }
+  ],
+  "note": "비즈테크아이 공식 사이트의 복리후생 페이지 목록이다 [4]. 금액·조건은 적혀 있지 않고 글의 작성 연도도 없다 — 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "비즈테크아이 본사 (상암 DDMC)",
+  "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+  "near": "상암 디지털미디어시티(DMC) 일대 {추론}",
+  "note": "회사 사이트 하단 회사 정보의 주소다 [5]. 공고 근무지는 '서울특별시'로만 적혀 있고, SI 프로젝트 특성상 고객사에 상주할 수 있는지는 공고에 없다 {추론}."
+ }
+}
