@@ -31,6 +31,7 @@
   "ats-ashby:42dot:464eb98e-07e6-4cd4-af5d-2d9e9322a3cc": "42dot-senior-ai-agent-engineer-gleo-interactor",
   "ats-ashby:42dot:75e6abe9-9195-43c3-abdf-60feff10bd47": "42dot-senior-ai-data-pipeline-engineer",
   "wanted-384995": "42dot-senior-backend-gateway-iam",
+  "ats-ashby:42dot:b3d8e3b5-7708-443e-a10f-d6e0a2467c88": "42dot-senior-backend-intelligence-data-platform",
   "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
   "ats-ashby:42dot:08d5a10e-10f6-4821-ba21-66cda54064ef": "42dot-senior-devops-cicd",
   "ats-ashby:42dot:4e0a3e0c-ad0e-47e2-b937-cdc9633fd52b": "42dot-senior-ml-engineer-ai-data",
@@ -728,6 +729,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "42dot-senior-backend-intelligence-data-platform",
+   "company": "포티투닷(42dot)",
+   "role": "Senior Backend Engineer (Intelligence Data Platform)",
+   "jobs": [
+    "ats-ashby:42dot:b3d8e3b5-7708-443e-a10f-d6e0a2467c88"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 25
   },
   {
    "id": "42dot-senior-cv-engineer-ad",
