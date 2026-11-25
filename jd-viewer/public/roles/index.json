@@ -229,6 +229,7 @@
   "jobkorea-50249295": "megazonecloud-security-solution-engineer",
   "ats-greeting:musinsa:197974": "musinsa-cloud-engineer-foundation-platform",
   "ats-greeting:musinsa:230871": "musinsa-core-ai-product-engineer",
+  "ats-greeting:musinsa:240047": "musinsa-data-operations-ai-part-lead",
   "ats-greeting:musinsa:202445": "musinsa-dba-foundation-platform",
   "ats-greeting:musinsa:229966": "musinsa-infra-platform-engineering-manager",
   "ats-greeting:musinsa:242044": "musinsa-network-engineer",
@@ -247,6 +248,7 @@
   "ats-greeting:musinsa:239873": "musinsa-product-engineering-manager-pricing",
   "ats-greeting:musinsa:183840": "musinsa-security-compliance-manager",
   "ats-greeting:musinsa:228188": "musinsa-security-engineer-access-kms",
+  "ats-greeting:musinsa:245271": "musinsa-security-engineer-appsec-pentest",
   "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
   "wanted-394722": "nhn-japan-frontend",
@@ -2479,6 +2481,16 @@
    "lines": 36
   },
   {
+   "id": "musinsa-data-operations-ai-part-lead",
+   "company": "무신사",
+   "role": "Data Operations AI 파트 리드",
+   "jobs": [
+    "ats-greeting:musinsa:240047"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
+  },
+  {
    "id": "musinsa-dba-foundation-platform",
    "company": "무신사",
    "role": "DBA",
@@ -2654,6 +2666,16 @@
    "role": "Security Engineer (접근제어·암호키관리 운영)",
    "jobs": [
     "ats-greeting:musinsa:228188"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 16
+  },
+  {
+   "id": "musinsa-security-engineer-appsec-pentest",
+   "company": "무신사",
+   "role": "Security Engineer (모의해킹·소스코드 진단)",
+   "jobs": [
+    "ats-greeting:musinsa:245271"
    ],
    "researched_at": "2026-11-25",
    "lines": 16
