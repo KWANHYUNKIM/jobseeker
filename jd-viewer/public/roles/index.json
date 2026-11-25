@@ -159,10 +159,13 @@
   "saramin-55604373": "hyundai-energy-tech-market-research",
   "saramin-55605963": "hyundai-ict-ax-project-manager",
   "ats-hkmc:hyundai:2026N2420": "hyundai-ict-sw-architect",
+  "ats-hkmc:hyundai:2026N2425": "hyundai-infra-security-public-cloud",
+  "wanted-398820": "hyundai-infra-security-public-cloud",
   "ats-hkmc:hyundai:2026N2366": "hyundai-lunar-rover-autonomy-sw",
   "ats-hkmc:hyundai:2026N2363": "hyundai-lunar-rover-thermal-control",
   "saramin-55604144": "hyundai-manufacturing-vision-ai-ops",
   "wanted-398824": "hyundai-manufacturing-vision-ai-ops",
+  "ats-hkmc:hyundai:2026N2430": "hyundai-mobility-security-vehicle",
   "ats-hkmc:hyundai:2026N2209": "hyundai-npu-dl-compiler",
   "ats-hkmc:hyundai:2026N2329": "hyundai-robotics-joint-robot-mechanism",
   "ats-hkmc:hyundai:2026N2331": "hyundai-robotics-joint-robot-production",
@@ -1821,6 +1824,17 @@
    "lines": 24
   },
   {
+   "id": "hyundai-infra-security-public-cloud",
+   "company": "현대자동차",
+   "role": "Infra Security Engineer - Public Cloud Security",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2425",
+    "wanted-398820"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
+  },
+  {
    "id": "hyundai-lunar-rover-autonomy-sw",
    "company": "현대자동차",
    "role": "달 탐사 모빌리티 자율주행 소프트웨어 엔지니어",
@@ -1850,6 +1864,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 30
+  },
+  {
+   "id": "hyundai-mobility-security-vehicle",
+   "company": "현대자동차",
+   "role": "Mobility Security Engineer — 차량보안(양산 후 사고·취약점 대응)",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2430"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
   },
   {
    "id": "hyundai-npu-dl-compiler",
