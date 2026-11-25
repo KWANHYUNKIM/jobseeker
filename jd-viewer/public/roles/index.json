@@ -30,11 +30,14 @@
   "ats-greenhouse:coupang:8127212": "coupang-pay-sdet-backend-contract",
   "ats-greenhouse:coupang:8212656": "coupang-pay-senior-backend-test-ops",
   "ats-greenhouse:coupang:8222501": "coupang-pay-senior-platform-engineer",
+  "ats-greenhouse:coupang:8194393": "coupang-pay-staff-android",
+  "wanted-391099": "coupang-pay-staff-android",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8054705": "coupang-pay-staff-frontend-fintech",
   "wanted-389697": "coupang-pay-staff-frontend-fintech",
   "ats-greenhouse:coupang:8212664": "coupang-pay-staff-platform-engineer",
   "ats-greenhouse:coupang:8210828": "coupang-play-cx-backend-senior-sg",
+  "ats-greenhouse:coupang:8384805": "coupang-play-monetization-backend-senior",
   "ats-greenhouse:coupang:8345323": "coupang-ppe-data-engineer-bengaluru",
   "ats-greenhouse:coupang:8248619": "coupang-retail-ops-planning-ai-manager",
   "ats-greenhouse:coupang:8258122": "coupang-rocket-content-editor",
@@ -571,6 +574,17 @@
    "lines": 20
   },
   {
+   "id": "coupang-pay-staff-android",
+   "company": "쿠팡페이",
+   "role": "Staff Android Engineer",
+   "jobs": [
+    "ats-greenhouse:coupang:8194393",
+    "wanted-391099"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 34
+  },
+  {
    "id": "coupang-pay-staff-backend-rocketpay",
    "company": "쿠팡페이",
    "role": "Staff Back-end Engineer",
@@ -607,6 +621,16 @@
    "role": "Senior, Back-end Engineer (CX) — Coupang Play",
    "jobs": [
     "ats-greenhouse:coupang:8210828"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
+  },
+  {
+   "id": "coupang-play-monetization-backend-senior",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior Backend Engineer (Monetization) — Coupang Play",
+   "jobs": [
+    "ats-greenhouse:coupang:8384805"
    ],
    "researched_at": "2026-11-25",
    "lines": 17

@@ -1,0 +1,1122 @@
+{
+  "id": "coupang-pay-staff-android",
+  "company": "쿠팡페이",
+  "role": "Staff Android Engineer",
+  "team": "쿠팡페이 제품 엔지니어링(Coupang Pay Tech)",
+  "jobs": [
+    "ats-greenhouse:coupang:8194393",
+    "wanted-391099"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쿠팡·쿠팡이츠 앱 안에서, 이제는 쿠팡 밖 가맹점에서 넘어온 사용자에게도 뜨는 **결제 경험(쿠페이 → 로켓페이)**의 안드로이드 쪽 구조를 정하고 직접 만드는 자리입니다.[1][2][8][9]",
+    "env": "Java·Kotlin 안드로이드가 바탕이고, 우대사항에 Flutter 가 있습니다.[1] 쿠팡 안드로이드 앱은 2018년부터 모듈로 쪼개 왔고, 모듈끼리는 회사가 만든 메시지 버스로 말을 주고받습니다.[4][6]",
+    "oneline": "안드로이드 6년 이상이 **'한 번 눌렀으면 한 번만 결제, 수백만 대 기기에서 죽지 않고 빠르게'**를 지키는 앱 구조를 설계하고 팀을 끌어올리는 자리 — 화면 구현자보다 기술 오너에 가깝습니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "쿠팡 주식회사에서 분사한 쿠팡페이는 늘어나는 쿠팡 고객의 니즈에 부응하기 위해 개발된 맞춤형 전자결제대행서비스(PG)를 제공합니다. 쿠팡페이는 쿠팡 및 쿠팡이츠에서 물건을 구매하는 고객부터 쿠팡의 오픈마켓을 이용하는 판매자 그리고 쿠팡이츠 가맹점까지 쿠팡의 플랫폼을 이용하는 모든 이들에게 혁신적인 결제 및 금융 서비스 솔루션을 제공하는 데 중점을 두고 있습니다.핀테크 분야에서 풍부한 경험을 쌓고 쿠팡 사업에 대해 그 누구보다 잘 알고 있는 직원들과 함께 쿠팡페이는 고객의 결제와 관련된 모든 경험들을 혁신하고자 합니다. 쿠팡페이에 대해 더 알고 싶으신가요? 쿠팡페이의 여정에 함께 하세요.",
+      "short": "쿠팡에서 갈라져 나온 결제 회사라, 쿠팡·쿠팡이츠의 모든 결제가 이 팀 앱 코드를 지나서.",
+      "why": "쿠팡페이는 쿠팡 앱 안의 간편결제(쿠페이)·제휴 신용카드·판매자용 금융(BaaS, 은행 기능을 다른 서비스에 붙여 주는 것)을 한국과 대만에서 운영합니다.[3] 2026년 7월에는 이름을 **로켓페이**로 바꿔 쿠팡 밖 온라인 가맹점으로, 그다음 오프라인으로 넓힌다고 발표했고,[8] 8월 첫 외부 가맹점(마이리얼트립)에서도 결제는 **쿠팡 앱으로 넘어와** 이뤄졌습니다.[9] 그래서 이 자리의 안드로이드 코드는 남의 서비스에서 들어온 사용자까지 받는 결제 입구가 됩니다. {추론}",
+      "actually": {
+        "intro": "PG·간편결제 회사의 앱 쪽에서 보통 다루는 화면들입니다.",
+        "items": [
+          "**결제 수단 고르기** — 은행 계좌·신용/체크카드·충전금을 지원한다고 발표됐다.[8]",
+          "**외부에서 들어오는 결제** — 다른 회사 앱·웹에서 '로켓페이'를 누르면 쿠팡 앱이 열리고 결제를 마친 뒤 돌아간다.[9]",
+          "**대량 트래픽** — 대만 광군제(2024) 때 평소의 약 20배 트래픽을 받았다고 회사가 말했다.[10]",
+          "**금융 기능** — 판매자용 정산·자금 서비스, 제휴 카드.[3]"
+        ]
+      },
+      "how_far": "공고에는 '쿠팡페이 Product 앱들'이 정확히 어떤 앱인지 적혀 있지 않습니다.[1] 면접 전에 쿠팡 앱에서 쿠페이 결제·충전·카드 등록을 직접 해 보고 화면 흐름을 그려 가는 정도면 충분합니다. {추론}",
+      "refs": [3, 8, 9, 10],
+      "study": ["rocketpay-news"]
+    },
+    {
+      "section": "task",
+      "quote": "서울에 본사를 둔 쿠팡페이 제품 엔지니어링 팀은 제품 개발, 출시 및 관리를 진행하고 있으며 매일 고객을 열광시키고 있습니다. 혁신적인 고객 경험을 제공하는 소프트웨어를 만들고 확장시킨 경험이 풍부한 숙련된 소프트웨어 설계자를 찾고 있습니다.",
+      "short": "만들기만 하는 게 아니라 출시·운영까지 맡는 팀이라, 커진 앱을 다뤄 본 설계자를 찾아서.",
+      "why": "'개발, 출시 및 관리'는 앱을 내놓은 뒤 비정상 종료·느려짐·구버전 사용자까지 책임진다는 뜻입니다. 안드로이드 앱은 한 번 깔리면 사용자가 업데이트할 때까지 옛 코드가 계속 돌기 때문입니다. {추론} '확장시킨 경험'은 쿠팡 앱이 화면 다섯 개에서 시작해 모듈과 메시지 버스를 새로 짜야 할 만큼 커진 역사와 맞닿아 있습니다.[4]",
+      "actually": {
+        "items": [
+          "**출시** — Play 콘솔의 단계적 출시로 일부 사용자에게 먼저 내고 지표를 보며 넓힌다.[33]",
+          "**관리** — Android vitals(구글 플레이가 재는 앱 품질 지표)의 비정상 종료율·ANR(앱 응답 없음) 비율을 본다.[15]",
+          "**원격 끄기** — 문제 있는 기능을 앱 업데이트 없이 끌 수 있게 서버 설정(기능 플래그)을 둔다.[34]"
+        ]
+      },
+      "how_far": "'소프트웨어 설계자'라는 말이 핵심입니다 — Staff 는 혼자 빨리 만드는 사람보다 구조를 정하고 남이 그 위에서 안전하게 만들게 하는 사람입니다.[26]",
+      "refs": [4, 15, 26, 33, 34],
+      "study": ["android-vitals", "staff-path"]
+    },
+    {
+      "section": "task",
+      "quote": "쿠팡페이 Product 앱들의 설계를 리드하고 구현합니다.",
+      "short": "결제 기능을 어떤 모듈·계층으로 나눌지 정하고, 가장 어려운 부분은 직접 짜는 일.",
+      "why": "쿠팡 안드로이드 앱은 이미 큰 하나의 앱이라 결제 기능도 그 안의 모듈로 들어갑니다. 쿠팡은 2018년에 앱 모듈 하나와 핵심(core) 모듈 13개로 나누고 모듈마다 단위 테스트 커버리지 80%를 지켰다고 썼습니다.[6] 2022년 글에서는 기능 하나 고치려면 여러 모듈을 건드리고 전체 회귀 테스트를 해야 했던 결합 문제를 메시지 버스로 풀었다고 했습니다.[4]",
+      "actually": {
+        "intro": "안드로이드 앱 '설계'가 실제로 정하는 것들입니다.",
+        "items": [
+          "**계층** — 화면(UI)·데이터 계층을 나누고, 필요하면 둘 사이에 도메인 계층을 둔다(구글 권장 구조).[13]",
+          "**모듈 경계** — 결제 기능을 어떤 모듈로 나누고 무엇만 밖에 공개할지(internal·private). 너무 잘게 쪼개면 빌드 설정만 늘고, 너무 크게 두면 다시 한 덩어리가 된다.[14]",
+          "**패턴 선택** — 쿠팡은 변형 MVC → MVP 로 옮기며 구글 아키텍처 컴포넌트를 들였다.[5] 기능 단위 패키징으로 결합을 줄였다.[7]",
+          "**모듈 사이 통신** — 쿠팡은 LiveData(화면 수명주기를 아는 관찰 데이터)[18] 위에 인터페이스로 메시지를 정의하는 버스를 만들어, 컴파일할 때 타입이 틀리면 잡히게 했다.[4]",
+          "**결제 상태 모델** — 대기·진행·성공·실패·확인 필요를 한 타입으로 묶어 화면이 '없는 상태'를 그리지 못하게 한다. {추론}"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "결제 버튼 하나가 지나는 길(일반적인 구조).[13]",
+          "steps": [
+            "상품·장바구니 모듈 · 결제 시작 메시지를 보낸다",
+            "결제 화면(UI 계층) · 수단·할부·쿠폰을 고른다",
+            "ViewModel · 상태를 들고 버튼 중복을 막는다",
+            "결제 저장소(데이터 계층) · 멱등 키를 붙여 서버에 요청",
+            "인증 · 생체 인증·비밀번호",
+            "결과 · 성공/실패/확인 필요를 돌려주고 원래 화면으로"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "how_far": "회사 글은 2018·2022년 것이라 지금 쿠팡 앱 구조와 다를 수 있습니다.[4][6] 면접에서는 '왜 이 모듈 경계인가'를 빌드 시간·소유 팀·테스트 범위로 설명할 수 있으면 됩니다. {추론}",
+      "refs": [4, 5, 6, 7, 13, 14],
+      "study": ["coupang-msgbus", "android-arch-guide", "android-modularization", "nia", "arch-book"]
+    },
+    {
+      "section": "task",
+      "quote": "Coupang Pay Android 애플리케이션의 아키텍처 설계 및 개발을 주도합니다.",
+      "short": "위 줄과 같은 일 — 원티드 사본의 표현. 결제 앱 구조를 정하고 직접 만든다.",
+      "why": "그린하우스 원문의 '쿠팡페이 Product 앱들의 설계를 리드'와 같은 자리입니다.[1][2] 원티드 사본은 'Android 애플리케이션'으로 플랫폼을 못 박았습니다.[2]",
+      "how_far": "바로 위 줄의 풀이(계층·모듈 경계·통신·상태 모델)를 그대로 봅니다.",
+      "refs": [1, 2],
+      "study": ["android-arch-guide"]
+    },
+    {
+      "section": "task",
+      "quote": "시니어/주니어 개발자들과 함께 시스템 디자인 논의에 참여하고 리드합니다.",
+      "short": "앱·서버·보안이 걸린 설계를 문서로 쓰고, 리뷰에서 결론을 끌어내는 일.",
+      "why": "결제 기능 하나에는 앱·백엔드·보안·디자인이 같이 걸립니다. 원티드 사본은 PM·디자이너·백엔드와 협업한다고 적었습니다.[2] 앱 쪽에서는 '이 화면은 네이티브인가 Flutter 인가', '실패를 어떻게 다시 시도하나' 같은 결정을 근거와 함께 남겨야 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**설계 문서** — 배경·목표·안 두세 개·고른 이유·물러설 길(되돌리기)을 쓴다. {추론}",
+          "**코드 리뷰** — 리뷰의 기준은 '코드베이스 건강이 나아지나'이고 응답은 늦어도 한 영업일이라는 구글 지침이 공통 말로 쓰인다.[25]",
+          "**앱 ↔ 서버 약속** — 응답 시간 제한·재시도 횟수·오류 코드 의미를 백엔드와 같이 정한다. {추론}"
+        ]
+      },
+      "how_far": "Staff 는 모든 결정을 직접 내리는 자리가 아니라 **결정이 나게 하는** 자리입니다 — 주니어가 안을 쓰고 Staff 가 빠진 질문을 던지는 모습이 이상적입니다.[26]",
+      "refs": [2, 25, 26],
+      "study": ["google-eng", "staff-path"]
+    },
+    {
+      "section": "task",
+      "quote": "시니어 및 주니어 엔지니어들과 함께 시스템 디자인 및 기술 의사결정을 리드합니다.",
+      "short": "위 줄과 같은 일 — 설계 논의에 '기술 의사결정'까지 맡는다고 적었다.",
+      "why": "원티드 사본은 '기술 의사결정'을 덧붙였습니다.[2] 라이브러리 도입·최소 지원 OS 버전·Flutter 사용 범위 같은 결정이 여기에 들어갑니다. {추론}",
+      "how_far": "결정마다 '무엇을 포기했나'를 한 줄씩 남기는 습관이면 충분합니다. {추론}",
+      "refs": [2],
+      "study": ["staff-path"]
+    },
+    {
+      "section": "task",
+      "quote": "미션 크리티컬 프로젝트에서 엔지니어를 이끌고 복잡한 비즈니스 문제를 빠르게 해결합니다.",
+      "short": "틀리면 돈이 잘못 나가는 결제 프로젝트를, 일정 안에 사고 없이 끝까지 끌고 가는 일.",
+      "why": "'미션 크리티컬'은 멈추거나 틀리면 바로 손해가 나는 기능입니다. 결제에서는 두 번 승인·승인됐는데 화면은 실패·돈은 나갔는데 주문이 없음 같은 사고가 그것입니다. {추론} 쿠팡페이는 외부 가맹점으로 넓히는 중이라, 새 결제 흐름이 다른 회사 일정과 함께 움직입니다.[8][9]",
+      "actually": {
+        "intro": "앱 쪽에서 '사고 없이'를 지키는 장치들입니다.",
+        "items": [
+          "**한 번만 결제** — 같은 결제 시도에는 같은 멱등 키(같은 요청이면 몇 번 보내도 한 번만 처리하게 하는 표)를 붙인다. 공개 결제 API 의 대표 예가 Stripe 다.[24]",
+          "**모르는 결과는 '확인 필요'로** — 응답이 끊기면 실패로 단정하지 않고 서버에 결과를 다시 묻는다. {추론}",
+          "**단계적 출시와 끄는 스위치** — 일부 사용자에게 먼저 내고, 문제가 보이면 원격 설정으로 끈다.[33][34]",
+          "**오류 예산** — 얼마나 실패를 허용할지 숫자로 정하고 그 안에서 속도를 낸다(SRE 의 생각).[32]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "결제 버튼을 세 번 눌러도 승인은 한 번 (가상 값)",
+          "body": "앱이 결제 시도마다 키를 하나 만들고 재시도에도 같은 키를 보내면, 서버는 두 번째부터 앞의 결과를 돌려줍니다.[24] 같은 로직을 파이썬으로 옮겨 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "charges = {}\ndef server_pay(key, amount):\n    if key in charges:\n        return charges[key] + \" (같은 키 — 다시 승인 안 함)\"\n    charges[key] = f\"승인 {amount:,}원\"\n    return charges[key]\n\nkey = \"order-1001-attempt-1\"\nfor i in range(3):\n    print(f\"탭 {i+1}:\", server_pay(key, 32000))\nprint(\"실제 승인 건수:\", len(charges))\n# 탭 1: 승인 32,000원\n# 탭 2: 승인 32,000원 (같은 키 — 다시 승인 안 함)\n# 탭 3: 승인 32,000원 (같은 키 — 다시 승인 안 함)\n# 실제 승인 건수: 1"
+        }
+      ],
+      "how_far": "멱등 처리는 서버가 하지만, **키를 언제 새로 만들고 언제 재사용할지**는 앱이 정합니다(버튼을 다시 누름 = 같은 시도, 수단을 바꿈 = 새 시도). 이 구분을 말로 설명할 수 있어야 합니다. {추론}",
+      "refs": [8, 9, 24, 32, 33, 34],
+      "study": ["stripe-idem", "sre-risk"]
+    },
+    {
+      "section": "task",
+      "quote": "Mission Critical 프로젝트에서 기술 리더 역할을 수행하며 복잡한 비즈니스 문제를 해결합니다.",
+      "short": "위 줄과 같은 일 — 원티드 사본은 '기술 리더'로 적었다.",
+      "why": "그린하우스 원문의 '엔지니어를 이끌고'와 같은 뜻입니다.[1][2]",
+      "how_far": "바로 위 줄의 장치(멱등 키·확인 필요 상태·단계적 출시)를 봅니다.",
+      "refs": [1, 2],
+      "study": ["stripe-idem"]
+    },
+    {
+      "section": "task",
+      "quote": "시니어/주니어 개발자들의 멘토로서 성장을 이끕니다.",
+      "short": "리뷰·짝 프로그래밍·설계 연습으로 팀원이 혼자 결정할 수 있게 키우는 일.",
+      "why": "Staff 의 일 가운데 하나는 자기 코드보다 **팀 전체의 기준을 올리는 것**입니다.[26] 결제처럼 실수 비용이 큰 영역에서는 리뷰가 곧 안전장치입니다. {추론}",
+      "actually": {
+        "items": [
+          "**리뷰 코멘트를 가르침으로** — '왜'를 같이 적고, 꼭 고칠 것과 취향을 구분한다.[25]",
+          "**설계 문서를 주니어가 쓰게** — Staff 는 빠진 실패 경우를 질문한다. {추론}",
+          "**사고 회고** — 비난 없이 원인과 다음 장치를 남긴다(SRE 문화). {추론}"
+        ]
+      },
+      "how_far": "면접에서는 '누구를 어떻게 키웠고 그 사람이 무엇을 혼자 하게 됐나'를 구체적인 예 하나로 말할 수 있으면 됩니다. {추론}",
+      "refs": [25, 26],
+      "study": ["staff-path", "google-eng"]
+    },
+    {
+      "section": "task",
+      "quote": "엔지니어링 우수성을 높이기 위해 개발자들을 멘토링하고 성장시킵니다.",
+      "short": "위 줄과 같은 일 — 원티드 사본은 목적을 '엔지니어링 우수성'으로 적었다.",
+      "why": "멘토링의 목표가 코드 품질·테스트·출시 안정성이라는 뜻입니다.[2] 쿠팡 안드로이드 팀이 모듈별 커버리지 80%를 지켰다고 쓴 것도 같은 방향의 기준입니다.[6]",
+      "how_far": "바로 위 줄의 풀이를 봅니다.",
+      "refs": [2, 6],
+      "study": ["staff-path"]
+    },
+    {
+      "section": "task",
+      "quote": "혁신적인 소비자용 모바일 프로덕트 개발을 위한 최고의 프로그래밍 기술을 제공합니다.",
+      "short": "팀이 쓸 공통 기반(네트워크·결제 UI 부품·테스트 도구)을 가장 잘 짜서 내놓는 일.",
+      "why": "'기술을 제공한다'는 남이 가져다 쓰는 기반을 만든다는 뜻으로 읽힙니다. {추론} 쿠팡의 메시지 버스가 그런 예입니다 — 회사는 이 버스로 화면 사이 연동 개발 시간을 50% 줄이고 코드를 60% 줄였다고 썼습니다.[4]",
+      "actually": {
+        "items": [
+          "**공통 네트워크 층** — 시간 제한·재시도·인증서 고정을 한곳에서. OkHttp 가 안드로이드의 표준적인 HTTP 클라이언트다.[30]",
+          "**코루틴** — 비동기 작업을 화면 수명에 묶어 화면이 사라지면 같이 취소되게 한다.[19]",
+          "**결제 UI 부품** — 금액 표시·수단 카드·버튼을 상태별로 한 번만 만든다. 새 화면은 Jetpack Compose 로 많이 짠다.[36]"
+        ]
+      },
+      "how_far": "'최고의 기술'은 최신 기술이 아니라 팀이 실수하기 어렵게 만드는 기반입니다. 새 라이브러리를 들일 때는 앱 크기·시작 시간·유지보수 부담을 같이 잽니다. {추론}",
+      "refs": [4, 19, 30, 36],
+      "study": ["kotlin-coroutines-doc", "coroutine-book", "okhttp"]
+    },
+    {
+      "section": "task",
+      "quote": "고객 중심의 혁신적인 모바일 결제 경험을 설계하고 구현합니다.",
+      "short": "결제 단계를 줄이고, 생체 인증·실패 안내까지 사용자가 망설이지 않게 만드는 일.",
+      "why": "로켓페이의 목표는 외부 가맹점까지 쓰는 간편결제라, 결제가 빠르고 쉬울수록 가맹점과 사용자가 붙습니다.[8] 외부 가맹점 결제가 쿠팡 앱으로 넘어오는 구조라 '앱 열기 → 결제 → 원래 앱으로 돌아가기'가 매끄러워야 합니다.[9]",
+      "actually": {
+        "items": [
+          "**생체 인증** — 지문·얼굴로 결제를 승인한다. 안드로이드는 BiometricPrompt 로 기기마다 같은 창을 띄운다.[35]",
+          "**키 보관** — 결제용 키를 앱 파일이 아니라 기기의 안전한 저장소(Android Keystore)에 둔다.[22]",
+          "**앱 무결성 확인** — 위조·변조된 앱이나 루팅 기기인지 서버가 확인하게 Play Integrity API 를 쓴다.[23]",
+          "**외부 앱에서 들어오고 나가기** — 딥 링크로 쿠팡 앱을 열고, 결제 결과를 원래 앱에 돌려준다. {추론}"
+        ]
+      },
+      "how_far": "보안 항목은 보안팀이 기준을 정하고, 앱 개발자는 그 기준을 코드로 지킵니다. 모바일 앱 보안 점검 국제 기준(OWASP MASVS)의 묶음 이름(저장·암호·인증·네트워크·플랫폼·코드·변조 방지·개인정보) 정도는 알고 가면 좋습니다.[21]",
+      "refs": [8, 9, 21, 22, 23, 35],
+      "study": ["masvs", "keystore", "play-integrity"]
+    },
+    {
+      "section": "task",
+      "quote": "Product Manager, Designer, Backend Engineer 등 다양한 이해관계자와 협업하여 최고의 사용자 경험을 제공합니다.",
+      "short": "기획·디자인·서버와 '이 실패는 어떻게 보이나'까지 같이 정해 화면으로 옮기는 일.",
+      "why": "결제 화면의 문구·순서는 기획과 디자인이, 응답 형식과 오류 코드는 백엔드가 정합니다. 앱은 그 사이에서 '응답이 늦을 때·끊길 때'를 가장 먼저 겪는 쪽이라 질문을 먼저 던져야 합니다.[2] {추론}",
+      "actually": {
+        "items": [
+          "**실패 상태 목록** — 잔액 부족·한도 초과·시간 초과·이미 결제됨·인증 취소를 디자이너와 같이 정한다. {추론}",
+          "**API 계약** — 백엔드와 응답 시간 제한·재시도 가능 여부를 오류 코드마다 정한다. {추론}"
+        ]
+      },
+      "how_far": "협업 줄은 면접에서 '의견이 갈렸을 때 무엇을 근거로 정했나' 질문으로 확인됩니다. {추론}",
+      "refs": [2],
+      "study": ["staff-path"]
+    },
+    {
+      "section": "task",
+      "quote": "Android 플랫폼의 기술 방향성 및 Best Practice를 정의하고 조직 전반에 확산합니다.",
+      "short": "코딩 규칙·라이브러리·구조 기준을 문서와 도구로 정해 다른 팀까지 같은 길로 가게 하는 일.",
+      "why": "쿠팡 안드로이드는 여러 팀이 한 앱을 같이 만드는 구조라 기준이 없으면 모듈마다 방식이 갈립니다.[4][6] 원티드 사본은 이 기준을 '조직 전반에 확산'하는 것까지 맡긴다고 적었습니다.[2]",
+      "actually": {
+        "items": [
+          "**구조 기준** — 계층·모듈 규칙을 문서로, 지켜지는지는 빌드 검사로. 구글은 Now in Android 예제를 기준 모양으로 낸다.[14][37]",
+          "**언어 전환** — 남은 Java 코드를 Kotlin 으로 옮기는 순서와 규칙. 공고 요건이 'Java 또는 Kotlin'인 것도 둘이 섞여 있을 수 있다는 뜻으로 읽힌다.[1] {추론}",
+          "**품질 지표 공유** — 비정상 종료율·시작 시간을 팀마다 같은 표로 본다.[15][16]"
+        ]
+      },
+      "how_far": "기준은 문서보다 **기본값과 도구**로 퍼집니다 — 새 모듈 틀(템플릿)·린트 규칙·CI 검사를 만들어 두면 따르기 쉬워집니다. {추론}",
+      "refs": [1, 2, 4, 6, 14, 15, 16, 37],
+      "study": ["nia", "android-modularization", "effective-kotlin"]
+    },
+    {
+      "section": "qualification",
+      "quote": "팀 플레이어",
+      "short": "혼자 빛나는 사람보다 리뷰·설계·장애 대응을 같이 하는 사람을 찾는다는 뜻.",
+      "why": "업무 줄 절반이 리드·멘토링·협업입니다.[1] 결제 앱은 여러 팀의 코드가 한 앱에 같이 실리니 남의 모듈을 존중하는 태도가 곧 안정성입니다. {추론}",
+      "how_far": "면접에서 '내 설계가 거절당한 경험'을 담담하게 말할 수 있으면 됩니다. {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "팀워크 및 원활한 커뮤니케이션 역량을 갖춘 분",
+      "short": "위 줄과 같은 뜻 — 원티드 사본은 '커뮤니케이션'을 덧붙였다.",
+      "why": "PM·디자이너·백엔드와 협업한다는 업무 줄과 짝입니다.[2]",
+      "refs": [2]
+    },
+    {
+      "section": "qualification",
+      "quote": "Java 또는 Kotlin으로 Android 코딩 개발 경력 최소 6년 이상",
+      "short": "안드로이드 앱을 6년 넘게 직접 짠 사람 — Java·Kotlin 둘 다 읽을 줄 알면 좋다.",
+      "why": "쿠팡 안드로이드 앱은 2012년부터 이어진 앱이라 Java 코드와 Kotlin 코드가 함께 있습니다 — 회사 글의 예제도 Java 와 Kotlin 이 섞여 있습니다.[4] 6년은 Staff 자리의 최소선입니다.[1]",
+      "level": {
+        "basic": "Activity·Fragment 수명주기, ViewModel, 코루틴으로 화면 하나를 만든다.[13][19]",
+        "work": "모듈 나누기·의존성 주입·오프라인/재시도 처리·테스트까지 한 기능을 끝까지 낸다.[14]",
+        "team": "여러 팀이 같이 쓰는 앱에서 구조 기준을 정하고, 메시지 버스 같은 공통 기반의 버그(수명주기·스레드)를 찾아 고친다.[4]"
+      },
+      "examples": [
+        {
+          "title": "쿠팡이 고친 LiveData 의 두 함정 (회사 글의 내용을 파이썬으로 옮겨 돌림)",
+          "body": "① 늦게 붙은 구독자가 예전 메시지를 받는다(버전 번호가 -1 에서 시작하기 때문) → 구독할 때 버전을 맞춘다. ② 메인 스레드가 돌기 전에 postValue 를 여러 번 부르면 마지막 값만 전달된다 → 부를 때마다 따로 넘긴다.[4] 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "class Bus:\n    def __init__(s): s.version = -1; s.data = None; s.obs = []\n    def set(s, v):\n        s.version += 1; s.data = v\n        for o in s.obs: s.notify(o)\n    def notify(s, o):\n        if o['last'] >= s.version: return\n        o['last'] = s.version; o['got'].append(s.data)\n    def observe(s, name, sticky=True):\n        o = {'name': name, 'last': -1, 'got': []}\n        if not sticky: o['last'] = s.version  # 버전을 맞춰 옛 메시지를 건너뛴다\n        s.obs.append(o); s.notify(o); return o\n\nb = Bus(); b.set(\"결제 완료 #1\")\na = b.observe(\"새 화면(기본)\"); c = b.observe(\"새 화면(non-sticky)\", sticky=False)\nb.set(\"결제 완료 #2\")\nprint(a['name'], a['got'])\nprint(c['name'], c['got'])\n# 새 화면(기본) ['결제 완료 #1', '결제 완료 #2']\n# 새 화면(non-sticky) ['결제 완료 #2']\n\npending = None; queue = []; delivered = []\ndef post_value(v):\n    global pending\n    first = pending is None\n    pending = v\n    if first: queue.append(lambda: delivered.append(pending))\nfor v in [\"카드 등록\", \"쿠폰 적용\", \"결제 요청\"]: post_value(v)\nfor r in queue: r()\nprint(\"기본 postValue:\", delivered)\n# 기본 postValue: ['결제 요청']"
+        }
+      ],
+      "how_far": "언어보다 **안드로이드 플랫폼 이해**(수명주기·메인 스레드·메모리)가 본질입니다. Kotlin 이 주력이라도 Java 코드를 읽고 옮길 수 있어야 합니다. {추론}",
+      "refs": [1, 4, 13, 14, 19],
+      "study": ["coupang-msgbus", "kia2", "effective-kotlin", "coroutine-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Android 애플리케이션 개발 경력 6년 이상",
+      "short": "위 줄과 같은 요건 — 원티드 사본은 언어를 적지 않았다.",
+      "why": "원티드 사본은 경력 6년 이상으로 같습니다.[2]",
+      "refs": [2],
+      "study": ["kia2"]
+    },
+    {
+      "section": "qualification",
+      "quote": "고품질의 대규모 소비자 앱 개발 경험이 있는 분",
+      "short": "수백만 명이 수천 종 기기에서 쓰는 앱을 비정상 종료·느려짐 없이 운영해 본 경험.",
+      "why": "대규모 앱에서는 0.1%의 문제도 수천 명입니다. 구글 플레이는 사용자 체감 비정상 종료율 1.09%·ANR 비율 0.47%를 넘으면 '나쁜 동작'으로 보고 앱 노출을 줄일 수 있고, 기기 모델 하나에서 8%를 넘으면 그 기기 사용자에게 경고를 띄웁니다.[15]",
+      "actually": {
+        "items": [
+          "**지표 보기** — 비정상 종료율·ANR 비율·시작 시간(콜드 스타트)을 버전·기기별로.[15][16]",
+          "**기기 파편화** — 오래된 OS·메모리 작은 기기에서만 나는 문제를 찾는다.[17]",
+          "**앱 크기와 시작 시간** — 라이브러리 하나가 시작 시간을 늘리지 않았나 잰다.[16]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "비정상 종료율 1.15% 는 나쁨 (가상 값)",
+          "body": "하루 사용자 200만 명 중 2만 3천 명이 비정상 종료를 겪으면 1.15% 로 기준 1.09%를 넘습니다.[15] 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "dau = 2_000_000; crash_users = 23_000\nrate = crash_users / dau * 100\nprint(f\"비정상 종료율 {rate:.2f}% / 기준 1.09% →\", \"나쁨\" if rate > 1.09 else \"통과\")\n# 비정상 종료율 1.15% / 기준 1.09% → 나쁨"
+        }
+      ],
+      "how_far": "'고품질'을 숫자로 말할 수 있어야 합니다 — 내가 맡았던 앱의 비정상 종료율·시작 시간을 얼마에서 얼마로 바꿨나. {추론}",
+      "refs": [15, 16, 17],
+      "study": ["android-vitals", "android-perf"]
+    },
+    {
+      "section": "qualification",
+      "quote": "대규모 Consumer App 개발 및 운영 경험이 있는 분",
+      "short": "위 줄과 같은 요건 — 원티드 사본은 '운영'까지 적었다.",
+      "why": "만든 뒤 지표를 보고 고치는 운영 경험까지 본다는 뜻입니다.[2]",
+      "how_far": "바로 위 줄의 Android vitals 기준을 봅니다.[15]",
+      "refs": [2, 15],
+      "study": ["android-vitals"]
+    },
+    {
+      "section": "qualification",
+      "quote": "미션 크리티컬 시스템 제공에 대한 입증된 실적.",
+      "short": "틀리면 돈·안전이 걸리는 기능을 내놓고 사고 없이 운영한 결과를 보여 달라는 뜻.",
+      "why": "결제 앱은 기능 하나의 버그가 곧 금전 사고입니다. '입증된'은 말이 아니라 결과 — 출시한 기능·지표·장애 대응 기록 — 로 보여 달라는 뜻입니다. {추론}",
+      "actually": {
+        "items": [
+          "**출시 방식** — 단계적 출시와 지표 확인 뒤 확대.[33]",
+          "**장애 대응** — 원격 설정으로 기능 끄기, 강제 업데이트 기준.[34]",
+          "**실패 허용치** — 오류 예산으로 속도와 안정성 사이를 숫자로 정한다.[32]"
+        ]
+      },
+      "how_far": "이력서에 '어떤 위험이 있었고 무엇으로 막았고 결과 지표가 어땠나'를 한 줄씩 적는 것이 이 요건에 맞는 답입니다. {추론}",
+      "refs": [32, 33, 34],
+      "study": ["sre-risk"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Mission Critical 서비스 개발 및 운영 경험이 있는 분",
+      "short": "위 줄과 같은 요건 — 원티드 사본의 표현.",
+      "why": "그린하우스 원문의 '미션 크리티컬 시스템 제공 실적'과 같은 뜻입니다.[1][2]",
+      "refs": [1, 2],
+      "study": ["sre-risk"]
+    },
+    {
+      "section": "qualification",
+      "quote": "모바일 앱 성능 최적화, 메모리 관리, 네트워크 처리, 앱 아키텍처 설계 경험이 있는 분",
+      "short": "느린 시작·메모리 부족·끊기는 네트워크·엉킨 구조를 직접 재고 고쳐 본 경험.",
+      "why": "원티드 사본에만 있는 줄로, 이 자리가 실제로 볼 기술 네 가지를 이름으로 적었습니다.[2] 결제 화면은 결제 직전에 뜨기 때문에 느리거나 죽으면 바로 결제 포기로 이어집니다. {추론}",
+      "actually": {
+        "intro": "네 낱말이 가리키는 일입니다.",
+        "items": [
+          "**성능** — 앱 시작 시간을 재고(콜드·웜·핫 스타트), 시작 때 하는 일을 미룬다.[16]",
+          "**메모리** — 큰 이미지·화면을 잡고 놓지 않는 객체(메모리 누수)를 찾는다. 쿠팡은 예전 이벤트 버스가 화면(View)을 잡고 있어 누수 위험이 컸다고 썼다.[4][17]",
+          "**네트워크** — 시간 제한·재시도·끊김 처리를 공통 층에서. 결제 요청은 아무 때나 다시 보내면 안 되므로 멱등 키와 같이 다룬다.[24][30]",
+          "**아키텍처** — 계층·모듈 경계·모듈 사이 통신.[13][14]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "사진 한 장이 메모리를 얼마나 먹나",
+          "body": "비트맵은 가로 × 세로 × 4바이트(ARGB_8888)를 씁니다. 원본 크기로 띄우면 화면 크기로 줄여 띄울 때보다 열 배 넘게 큽니다.[17] 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "for w, h in [(4000, 3000), (1080, 810)]:\n    print(f\"{w}x{h}: {w*h*4/1024/1024:.1f} MB\")\n# 4000x3000: 45.8 MB\n# 1080x810: 3.3 MB"
+        },
+        {
+          "title": "재시도 간격 — 두 배씩, 상한을 두고",
+          "body": "끊긴 요청을 곧바로 다시 보내면 서버가 몰립니다. 간격을 두 배씩 늘리고 상한을 둡니다(결제 요청이면 같은 멱등 키로).[24] 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "print(\"재시도 대기(초):\", [min(2**i * 0.5, 8) for i in range(6)])\n# 재시도 대기(초): [0.5, 1.0, 2.0, 4.0, 8.0, 8]"
+        }
+      ],
+      "how_far": "네 가지 모두 '재 봤다'가 핵심입니다 — 프로파일러로 잰 전후 숫자를 말할 수 있어야 합니다. 이 팀 수준은 공통 기반(네트워크 층·메시지 버스)을 직접 고쳐 다른 팀까지 좋아지게 하는 것입니다.[4] {추론}",
+      "refs": [2, 4, 13, 14, 16, 17, 24, 30],
+      "study": ["android-perf", "android-memory", "okhttp", "android-arch-guide"]
+    },
+    {
+      "section": "qualification",
+      "quote": "B2C 비지니스 도메인에 대한 경험.",
+      "short": "기업 내부용이 아니라 일반 소비자가 쓰는 서비스를 만들어 본 경험.",
+      "why": "쿠페이·로켓페이는 쿠팡 고객이 직접 쓰는 결제입니다.[3][8] 소비자 서비스는 실험(A/B 테스트)·이탈률·리뷰 평점 같은 지표로 움직입니다. {추론}",
+      "how_far": "소비자 지표(전환율·이탈률)와 내 기능을 이어 말할 수 있으면 됩니다. {추론}",
+      "refs": [3, 8]
+    },
+    {
+      "section": "qualification",
+      "quote": "B2C 서비스 개발 경험이 있는 분",
+      "short": "위 줄과 같은 요건 — 원티드 사본의 표현.",
+      "why": "그린하우스 원문의 'B2C 비지니스 도메인 경험'과 같습니다.[1][2]",
+      "refs": [1, 2]
+    },
+    {
+      "section": "qualification",
+      "quote": "컴퓨터 공학 또는 관련 기술 분야의 학사 학위를 소지한 자",
+      "short": "컴퓨터공학이나 가까운 전공 학사 — 원티드 사본에는 이 줄이 없다.",
+      "why": "그린하우스 원문에만 있고 원티드 사본에는 없습니다.[1][2] 6년 이상 경력직이라 실무 실적이 더 크게 보일 것입니다. {추론}",
+      "how_far": "비전공이면 자료구조·운영체제(스레드·메모리) 기초를 면접에서 설명할 수 있게 준비합니다. {추론}",
+      "refs": [1, 2]
+    },
+    {
+      "section": "preference",
+      "quote": "Payment 도메인에서 근무 경력.",
+      "short": "결제·PG·간편결제를 만들어 봐서 승인·취소·환불·인증 흐름을 이미 아는 사람.",
+      "why": "결제에는 다른 앱에 없는 규칙이 많습니다 — 승인과 매입(실제 돈이 오가는 확정)의 차이, 부분 취소, 인증 단계. 쿠팡페이는 전자결제대행(PG)이고 외부 가맹점 수수료까지 공개하며 넓히는 중입니다.[1][8] 원티드 사본에도 같은 줄이 있습니다.[2]",
+      "actually": {
+        "items": [
+          "**결제 상태** — 요청 → 인증 → 승인 → (취소/부분 취소) 를 앱 상태로 옮긴다. {추론}",
+          "**중복 방지** — 멱등 키.[24]",
+          "**보안 기준** — 키는 Keystore, 앱 위변조는 서버 확인.[22][23]"
+        ]
+      },
+      "how_far": "결제 경험이 없으면 결제사 공개 문서로 흐름을 따라 만들어 보는 것으로 상당 부분 메울 수 있습니다(아래 로드맵 2단계). {추론}",
+      "refs": [1, 2, 8, 22, 23, 24],
+      "study": ["stripe-idem", "masvs"]
+    },
+    {
+      "section": "preference",
+      "quote": "Cross-Platform(Flutter) 기반의 모바일 개발 경험",
+      "short": "한 코드로 안드로이드·iOS 를 같이 만드는 Flutter 를 써 봤으면 좋다는 뜻.",
+      "why": "쿠팡 안에는 이미 Flutter 앱이 있습니다 — 쿠팡이츠 배달파트너·스토어앱을 Flutter 로 만들고 Dart·BLoC·Melos 를 쓰며, 네이티브 경험만 있어도 지원할 수 있다고 적은 공고가 있습니다.[11][12] 쿠팡페이 앱에서 Flutter 를 어디까지 쓰는지는 공고에 없습니다.[1]",
+      "actually": {
+        "intro": "기존 네이티브 앱에 Flutter 를 붙일 때(add-to-app) 보통 마주치는 것입니다.[20]",
+        "items": [
+          "**Flutter 를 라이브러리로** — 안드로이드 앱에 AAR 로 넣고, 화면 일부나 전체를 Flutter 로 띄운다.",
+          "**첫 화면 지연** — 엔진을 미리 띄워(pre-warm) 두지 않으면 화면을 열 때 엔진 시작 비용을 다 낸다.",
+          "**여러 화면** — FlutterEngineGroup 으로 엔진끼리 자원을 나누면 추가 인스턴스당 약 180kB 로 줄어든다.",
+          "**네이티브와 대화** — 플랫폼 채널·Pigeon 으로 메시지를 주고받는다. 결제 인증 같은 기기 기능은 네이티브 쪽에 남는 경우가 많다. {추론}"
+        ]
+      },
+      "how_far": "우대사항이라 Flutter 앱을 처음부터 만든 경험까지는 필요 없습니다. 네이티브 앱에 Flutter 화면 하나를 붙이고 채널로 결과를 돌려받는 데까지 해 보면 면접 이야기가 됩니다. {추론}",
+      "refs": [1, 11, 12, 20],
+      "study": ["flutter-add-to-app"]
+    },
+    {
+      "section": "preference",
+      "quote": "빠르게 변화하는 환경에서 여러 경쟁 우선 순위를 처리 할 수있는 능력",
+      "short": "외부 가맹점 일정·보안 점검·장애 대응이 겹칠 때 무엇부터 할지 정하는 능력.",
+      "why": "로켓페이는 2026년 하반기 외부 확장을 발표한 뒤 가맹점을 하나씩 붙이는 중이라 일정이 다른 회사와 엮입니다.[8][9] {추론}",
+      "how_far": "'급한 것 vs 중요한 것'을 누구와 어떻게 합의했는지 예 하나면 됩니다. {추론}",
+      "refs": [8, 9]
+    },
+    {
+      "section": "preference",
+      "quote": "빠르게 변화하는 환경에서 여러 우선순위를 효과적으로 관리할 수 있는 분",
+      "short": "위 줄과 같은 뜻 — 원티드 사본의 표현.",
+      "why": "그린하우스 원문과 같은 우대사항입니다.[1][2]",
+      "refs": [1, 2]
+    },
+    {
+      "section": "preference",
+      "quote": "Product을 구현하는 것에 대한 강한 열정.",
+      "short": "기술 자체보다 사용자가 실제로 쓰는 결제 기능을 내놓는 데 즐거움을 느끼는 사람.",
+      "why": "Staff 자리라도 공통 기반만이 아니라 사용자 기능을 직접 만드는 비중이 있다는 뜻으로 읽힙니다 — 업무 첫 줄이 '설계를 리드하고 **구현**'입니다.[1] {추론}",
+      "how_far": "내가 만든 기능이 사용자 지표를 어떻게 바꿨나를 말할 수 있으면 됩니다. {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "고객 중심 Product 개발에 대한 강한 열정을 가진 분",
+      "short": "위 줄과 같은 뜻 — 원티드 사본은 '고객 중심'을 앞에 붙였다.",
+      "why": "그린하우스 원문과 같은 우대사항입니다.[1][2]",
+      "refs": [1, 2]
+    },
+    {
+      "section": "preference",
+      "quote": "애자일 소프트웨어 방법론이 익숙하신 분",
+      "short": "짧은 주기로 만들고 내놓고 고치는 방식(스프린트·회고)에 익숙한 사람.",
+      "why": "앱은 스토어 심사·단계적 출시가 있어 웹보다 출시 주기 관리가 까다롭습니다.[33] 애자일의 대표 틀인 스크럼은 짧은 주기(스프린트)·매일 짧은 회의·회고로 일합니다.[27]",
+      "how_far": "용어보다 '2주마다 무엇을 내놓고 어떻게 되돌아봤나'를 말할 수 있으면 됩니다. {추론}",
+      "refs": [27, 33],
+      "study": ["scrum"]
+    },
+    {
+      "section": "preference",
+      "quote": "Agile 개발 환경 경험이 있는 분",
+      "short": "위 줄과 같은 뜻 — 원티드 사본의 표현.",
+      "why": "그린하우스 원문과 같은 우대사항입니다.[1][2]",
+      "refs": [1, 2],
+      "study": ["scrum"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "버튼 한 번에 결제 한 번, 응답이 끊겨도 돈이 꼬이지 않게 하는 일에 집착하는 사람",
+      "수백만 대 기기의 비정상 종료율·시작 시간 숫자를 보며 고치는 게 재밌는 사람",
+      "남이 그 위에서 만드는 공통 기반(네트워크 층·메시지 버스·UI 부품)을 만드는 게 편한 사람",
+      "Java 와 Kotlin, 네이티브와 Flutter 가 섞인 큰 앱을 겁내지 않는 사람"
+    ],
+    "hard": [
+      "안드로이드 경력 6년 이상이 자격요건이다[1]",
+      "결제는 장애의 무게가 커서 대응 부담이 있을 수 있다 — 쿠팡페이 팀 안내는 조직에 따라 교대·휴일·야간 근무가 있을 수 있다고 적었다[3]",
+      "'쿠팡페이 Product 앱들'이 무엇인지 공고에 없어 입사 전에 알기 어렵다[1]",
+      "새 화면보다 구조·호환성·검증의 비중이 크다 {추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "사용자가 결제 버튼을 빠르게 세 번 눌렀고, 두 번째 요청은 응답 없이 끊겼습니다. 앱은 무엇을 하나요?",
+      "a": "버튼 잠금 + 같은 멱등 키로 재요청 + '확인 필요' 상태에서 서버에 결과 조회.[24]"
+    },
+    {
+      "q": "이벤트 버스로 결제 완료를 알렸더니 나중에 연 화면이 예전 결제 완료 메시지를 받습니다. 왜 그런가요?",
+      "a": "LiveData 의 끈적임(버전 -1 시작) — 쿠팡이 실제로 겪고 고친 문제.[4]"
+    },
+    {
+      "q": "새 버전을 낸 뒤 특정 기기에서만 비정상 종료가 늘었습니다. 무엇부터 보고, 무엇으로 막나요?",
+      "a": "Android vitals 의 기기별 비율(8% 경고 기준) · 단계적 출시 멈춤 · 원격 설정 끄기.[15][33][34]"
+    },
+    {
+      "q": "결제 모듈을 앱의 다른 모듈과 어떻게 나누고, 무엇만 밖에 공개하겠습니까?",
+      "a": "공개 인터페이스만 노출, 나머지 internal — 너무 잘게/너무 크게의 비용.[6][14]"
+    },
+    {
+      "q": "기존 네이티브 결제 앱에 Flutter 화면을 붙이자는 제안이 왔습니다. 무엇을 따져 보나요?",
+      "a": "엔진 시작 비용·메모리·네이티브 인증 기능과의 채널.[20]"
+    },
+    {
+      "q": "결제용 키와 토큰을 앱의 어디에 두고, 위조된 앱은 어떻게 걸러 내나요?",
+      "a": "Android Keystore · Play Integrity · MASVS 의 저장/변조 방지 묶음.[21][22][23]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "Coupang Careers · [Coupang Pay Tech] Staff Android Engineer",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8194393",
+      "kind": "posting",
+      "date": "2026-11-24",
+      "note": "그린하우스 원문(한국어) — 회사·팀 소개, 업무 5줄·요건 6·우대 5, 전형(서류 → 전화 → 대면/화상). 연봉·복지 칸 없음"
+    },
+    {
+      "n": 2,
+      "title": "원티드 · 쿠팡페이 Staff Android Engineer",
+      "url": "https://www.wanted.co.kr/wd/391099",
+      "kind": "posting",
+      "note": "같은 자리의 사본(다른 문장) — 업무 7줄·요건 6(성능·메모리·네트워크·아키텍처 줄)·우대 4, 경력 6년 이상, 근무지 아차산로 412 이스트폴 타워 A, 혜택·복지, 상시채용"
+    },
+    {
+      "n": 3,
+      "title": "Coupang Careers · Coupang Pay 팀 소개",
+      "url": "https://www.coupang.jobs/en/teams/coupang-pay/",
+      "kind": "company",
+      "note": "쿠페이·제휴 신용카드·판매자 BaaS, 한국·대만, 잠실 오피스, FAQ(교대·휴일·야간 근무 가능성, 원격은 조직별)"
+    },
+    {
+      "n": 4,
+      "title": "Coupang Engineering Blog · The evolution of our Android message passing mechanism",
+      "url": "https://medium.com/coupang-engineering/the-evolution-of-our-android-message-passing-mechanism-44b87e8cdf74",
+      "kind": "company",
+      "date": "2022-05-06",
+      "note": "쿠팡 안드로이드 메시지 전달 세 시기(2012~2018 Handler·브로드캐스트 / 2018~2019 ViewEventManager / 2019~ LiveData 기반 ElegantLiveDataBus) — 인터페이스로 메시지 정의, 동적 프록시, 끈적임·postValue 유실 수정, 수명주기별 구독 4종, 화면 간 연동 개발 시간 50%·코드 60% 감소. 미디엄이 403 이라 웹 아카이브로 전부 읽음"
+    },
+    {
+      "n": 5,
+      "title": "Coupang Engineering · Transforming Coupang's legacy architecture for Android — Part 1",
+      "url": "https://medium.com/coupang-tech/coupang-android-architecture-part-1-10be2ce231ac",
+      "kind": "company",
+      "date": "2018-05-21",
+      "note": "관심사 분리 — 변형 MVC → MVP, 구글 아키텍처 컴포넌트 도입. 본문이 막혀 검색 요약으로 확인"
+    },
+    {
+      "n": 6,
+      "title": "Coupang Engineering · The Android app modularization (Part 2)",
+      "url": "https://medium.com/coupang-tech/coupang-android-architecture-part-2-3448d8f1099b",
+      "kind": "company",
+      "date": "2018-10-30",
+      "note": "앱 모듈 1개 + 핵심 모듈 13개, 모듈별 단위 테스트 커버리지 80%, 기능 모듈 분리는 진행 중. 본문이 막혀 검색 요약으로 확인"
+    },
+    {
+      "n": 7,
+      "title": "Coupang Engineering · Packaging by feature for loose coupling (Part 3)",
+      "url": "https://medium.com/coupang-engineering/coupang-android-architecture-part-3-ac336f435a17",
+      "kind": "company",
+      "date": "2018-12-31",
+      "note": "기능 단위 패키징, 분석 도구로 의존성을 재고 두 달 뒤 변화를 봄. 검색 요약으로 확인"
+    },
+    {
+      "n": 8,
+      "title": "뉴데일리 · 쿠팡페이 개편한 로켓페이 하반기 출시",
+      "url": "https://biz.newdaily.co.kr/site/data/html/2026/07/10/2026071000246.html",
+      "kind": "news",
+      "date": "2026-07-10",
+      "note": "쿠팡페이 → 로켓페이, 외부 온라인 → 오프라인, 계좌·카드·충전금"
+    },
+    {
+      "n": 9,
+      "title": "바이라인네트워크 · 쿠팡 로켓페이, 마이리얼트립 시작으로 외부 확장 시동",
+      "url": "https://byline.network/2026/08/28_182763/",
+      "kind": "news",
+      "date": "2026-08-29",
+      "note": "첫 외부 가맹점, 결제는 쿠팡 앱으로 넘어와 진행, 수수료(카드 최대 3.2%)"
+    },
+    {
+      "n": 10,
+      "title": "AWS 대만 · Coupang Pay 인터뷰(2025 AWS 금융 포럼)",
+      "url": "https://aws.amazon.com/tw/events/taiwan/interviews/coupangpay",
+      "kind": "company",
+      "note": "2024 광군제 평소의 약 20배 트래픽"
+    },
+    {
+      "n": 11,
+      "title": "리멤버 · 쿠팡이츠 Flutter Engineer",
+      "url": "https://career.rememberapp.co.kr/job/posting/323593",
+      "kind": "posting",
+      "note": "같은 회사 다른 자리 — Flutter/Dart·Kotlin·Swift·BLoC/Cubit·Clean Architecture·Melos, 모바일 5년 이상, 네이티브 경험만 있어도 지원 가능. 검색 요약으로 확인"
+    },
+    {
+      "n": 12,
+      "title": "리멤버 · 쿠팡이츠 Flutter 엔지니어(배달파트너·스토어앱)",
+      "url": "https://career.rememberapp.co.kr/job/posting/279655",
+      "kind": "posting",
+      "note": "Flutter 기반 배달파트너·스토어앱 신규 기능·아키텍처, 정규직 수습 12주. 검색 요약으로 확인"
+    },
+    {
+      "n": 13,
+      "title": "Android Developers · Guide to app architecture",
+      "url": "https://developer.android.com/topic/architecture",
+      "kind": "reference",
+      "note": "UI·데이터 계층, 선택적 도메인 계층"
+    },
+    {
+      "n": 14,
+      "title": "Android Developers · Guide to Android app modularization",
+      "url": "https://developer.android.com/topic/modularization",
+      "kind": "reference",
+      "note": "재사용·공개 범위 통제·빌드 시간, 너무 잘게/너무 크게/너무 복잡하게의 함정"
+    },
+    {
+      "n": 15,
+      "title": "Android Developers · Android vitals",
+      "url": "https://developer.android.com/topic/performance/vitals",
+      "kind": "reference",
+      "note": "사용자 체감 비정상 종료율 1.09%·ANR 0.47%(전체), 기기 모델별 8% — 넘으면 노출 감소·스토어 경고"
+    },
+    {
+      "n": 16,
+      "title": "Android Developers · App startup time",
+      "url": "https://developer.android.com/topic/performance/vitals/launch-time",
+      "kind": "reference",
+      "note": "콜드·웜·핫 스타트"
+    },
+    {
+      "n": 17,
+      "title": "Android Developers · Manage your app's memory",
+      "url": "https://developer.android.com/topic/performance/memory",
+      "kind": "reference"
+    },
+    {
+      "n": 18,
+      "title": "Android Developers · LiveData overview",
+      "url": "https://developer.android.com/topic/libraries/architecture/livedata",
+      "kind": "reference",
+      "note": "수명주기를 아는 관찰 가능한 데이터"
+    },
+    {
+      "n": 19,
+      "title": "Kotlin 공식 문서 · Coroutines",
+      "url": "https://kotlinlang.org/docs/coroutines-overview.html",
+      "kind": "reference"
+    },
+    {
+      "n": 20,
+      "title": "Flutter 공식 문서 · Add Flutter to an existing app",
+      "url": "https://docs.flutter.dev/add-to-app",
+      "kind": "reference",
+      "note": "AAR 로 넣기, 엔진 미리 띄우기(성능 문서), FlutterEngineGroup — 추가 인스턴스 약 180kB(여러 인스턴스 문서)"
+    },
+    {
+      "n": 21,
+      "title": "OWASP · Mobile Application Security Verification Standard (MASVS)",
+      "url": "https://mas.owasp.org/MASVS/",
+      "kind": "reference",
+      "note": "STORAGE·CRYPTO·AUTH·NETWORK·PLATFORM·CODE·RESILIENCE·PRIVACY 여덟 묶음"
+    },
+    {
+      "n": 22,
+      "title": "Android Developers · Android Keystore system",
+      "url": "https://developer.android.com/privacy-and-security/keystore",
+      "kind": "reference"
+    },
+    {
+      "n": 23,
+      "title": "Android Developers · Play Integrity API",
+      "url": "https://developer.android.com/google/play/integrity",
+      "kind": "reference"
+    },
+    {
+      "n": 24,
+      "title": "Stripe API · Idempotent requests",
+      "url": "https://docs.stripe.com/api/idempotent_requests",
+      "kind": "reference",
+      "note": "다른 회사 — 멱등 키의 공개 예"
+    },
+    {
+      "n": 25,
+      "title": "Google Engineering Practices · Code Review",
+      "url": "https://google.github.io/eng-practices/review/",
+      "kind": "reference",
+      "note": "코드베이스 건강 기준, 리뷰 응답은 늦어도 한 영업일"
+    },
+    {
+      "n": 26,
+      "title": "The Staff Engineer's Path (Tanya Reilly, O'Reilly, 2022)",
+      "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+      "kind": "reference",
+      "note": "큰 그림·프로젝트 끌고 가기·기준 올리기"
+    },
+    {
+      "n": 27,
+      "title": "The Scrum Guide",
+      "url": "https://scrumguides.org/scrum-guide.html",
+      "kind": "reference"
+    },
+    {
+      "n": 28,
+      "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+      "url": "https://jasoseol.com/companies/192",
+      "kind": "reference",
+      "note": "모회사 쿠팡(주) 값 — 쿠팡페이 법인 아님. 같은 조직 다른 풀이(프런트엔드·백엔드)와 같은 값"
+    },
+    {
+      "n": 29,
+      "title": "캐치 · 쿠팡페이 기업 정보",
+      "url": "https://www.catch.co.kr/Comp/CompSummary/E94228",
+      "kind": "reference",
+      "note": "사원 수 278명(2025-12 기준). 초봉·평균 칸은 가려져 있음"
+    },
+    {
+      "n": 30,
+      "title": "OkHttp 공식 문서",
+      "url": "https://square.github.io/okhttp/",
+      "kind": "reference",
+      "note": "안드로이드·JVM HTTP 클라이언트 — 시간 제한·인터셉터·인증서 고정"
+    },
+    {
+      "n": 32,
+      "title": "Google SRE Book · Embracing Risk",
+      "url": "https://sre.google/sre-book/embracing-risk/",
+      "kind": "reference",
+      "note": "오류 예산"
+    },
+    {
+      "n": 33,
+      "title": "Play Console 고객센터 · 단계적 출시(Release app updates with staged rollouts)",
+      "url": "https://support.google.com/googleplay/android-developer/answer/6346149",
+      "kind": "reference"
+    },
+    {
+      "n": 34,
+      "title": "Firebase · Remote Config",
+      "url": "https://firebase.google.com/docs/remote-config",
+      "kind": "reference",
+      "note": "앱 업데이트 없이 기능 켜고 끄기의 공개 예"
+    },
+    {
+      "n": 35,
+      "title": "Android Developers · Show a biometric authentication dialog",
+      "url": "https://developer.android.com/identity/sign-in/biometric-auth",
+      "kind": "reference",
+      "note": "BiometricPrompt"
+    },
+    {
+      "n": 36,
+      "title": "Android Developers · Jetpack Compose",
+      "url": "https://developer.android.com/compose",
+      "kind": "reference"
+    },
+    {
+      "n": 37,
+      "title": "GitHub · android/nowinandroid",
+      "url": "https://github.com/android/nowinandroid",
+      "kind": "reference",
+      "note": "구글의 모듈화·아키텍처 기준 예제 앱"
+    }
+  ],
+  "caveat": "쿠팡페이 안드로이드 팀을 다룬 회사 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음 — 드로이드나이츠 등에서도 쿠팡 발표를 못 찾음). 회사 근거는 공고 두 판, 쿠팡페이 팀 소개, 쿠팡 엔지니어링 블로그의 안드로이드 글 네 편이 전부입니다 — 2022년 메시지 버스 글은 웹 아카이브로 전부 읽었고, 2018년 구조 3부작은 본문이 막혀 검색 요약으로만 확인했습니다. 블로그 글은 쿠팡 앱 전체 이야기라 쿠팡페이 팀 구조와 같다는 보장은 없습니다. 결제·보안·Flutter 부분은 Android·Flutter·OWASP·Stripe 공식 문서로 '보통 이런 것'을 보였습니다. 그린하우스 원문과 원티드 사본은 문장이 달라 두 판의 줄을 모두 풀었습니다. 코드 예시는 이 실행 환경에서 Kotlin 을 돌릴 수 없어 같은 로직을 파이썬으로 옮겨 돌려 출력을 확인했습니다.",
+  "resources": [
+    {
+      "id": "coupang-msgbus",
+      "title": "The evolution of our Android message passing mechanism",
+      "by": "Coupang Engineering Blog · 2022",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://medium.com/coupang-engineering/the-evolution-of-our-android-message-passing-mechanism-44b87e8cdf74",
+      "why": "쿠팡 앱이 모듈 결합을 어떻게 풀었고 LiveData 의 어떤 함정을 고쳤는지 회사가 직접 쓴 글. 요건 '6년 이상'의 이 팀 수준을 가늠하는 데 가장 가깝다."
+    },
+    {
+      "id": "coupang-arch",
+      "title": "The Android app modularization (Coupang Android Architecture Part 2)",
+      "by": "Coupang Engineering · 2018",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://medium.com/coupang-tech/coupang-android-architecture-part-2-3448d8f1099b",
+      "why": "쿠팡 앱을 핵심 모듈 13개로 나눈 과정. 업무 '설계를 리드' 줄의 배경."
+    },
+    {
+      "id": "rocketpay-news",
+      "title": "쿠팡 로켓페이, 마이리얼트립 시작으로 외부 확장 시동",
+      "by": "바이라인네트워크 · 2026",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://byline.network/2026/08/28_182763/",
+      "why": "외부 가맹점 결제가 쿠팡 앱으로 넘어오는 구조 — 이 자리 앱 코드가 왜 결제 입구가 되는지."
+    },
+    {
+      "id": "android-arch-guide",
+      "title": "Guide to app architecture",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.android.com/topic/architecture",
+      "why": "UI·데이터·도메인 계층의 공통 말. 설계 논의의 출발점(한국어 번역 있음)."
+    },
+    {
+      "id": "android-modularization",
+      "title": "Guide to Android app modularization",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/topic/modularization",
+      "why": "모듈 경계·공개 범위·너무 잘게 쪼갤 때의 비용. 결제 모듈을 어떻게 나눌지 말하려면."
+    },
+    {
+      "id": "nia",
+      "title": "Now in Android",
+      "by": "Google · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://github.com/android/nowinandroid",
+      "why": "구글이 낸 다중 모듈·Compose·코루틴 기준 예제. '베스트 프랙티스를 정의' 줄의 본보기 모양."
+    },
+    {
+      "id": "arch-book",
+      "title": "아키텍처를 알아야 앱 개발이 보인다",
+      "by": "옥수환 · 비제이퍼블릭 · 2020",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002986668",
+      "why": "Dagger2·Jetpack·RxJava 로 안드로이드 앱 구조를 짜는 한국어 책. 계층·의존성 주입을 한 권으로."
+    },
+    {
+      "id": "kia2",
+      "title": "Kotlin in Action, Second Edition",
+      "by": "Svetlana Isakova · Sebastian Aigner · Roman Elizarov · Manning · 2024",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.manning.com/books/kotlin-in-action-second-edition",
+      "why": "Kotlin 언어와 코루틴·Flow 까지. 요건 'Java 또는 Kotlin' 줄에서 Java 개발자가 Kotlin 으로 넘어갈 때."
+    },
+    {
+      "id": "effective-kotlin",
+      "title": "이펙티브 코틀린",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "심화",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%EC%BD%94%ED%8B%80%EB%A6%B0",
+      "why": "안전성·가독성·재사용성 아이템. 팀 코딩 기준을 정할 때 근거로 쓰기 좋다."
+    },
+    {
+      "id": "kotlin-coroutines-doc",
+      "title": "Coroutines",
+      "by": "Kotlin 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://kotlinlang.org/docs/coroutines-overview.html",
+      "why": "비동기 작업을 화면 수명에 묶는 기본. 네트워크·결제 요청을 안전하게 취소하려면."
+    },
+    {
+      "id": "coroutine-book",
+      "title": "코틀린 코루틴의 정석",
+      "by": "조세영 · 에이콘출판 · 2024",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000007956109",
+      "why": "구조화된 동시성·예외 전파·취소·withTimeout. 결제 요청의 시간 제한과 취소를 정확히 다루려면."
+    },
+    {
+      "id": "android-vitals",
+      "title": "Android vitals",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.android.com/topic/performance/vitals",
+      "why": "비정상 종료율·ANR 의 기준(1.09%·0.47%·기기별 8%). 요건 '고품질 대규모 앱'을 숫자로 말하려면."
+    },
+    {
+      "id": "android-perf",
+      "title": "App startup time",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/topic/performance/vitals/launch-time",
+      "why": "콜드·웜·핫 스타트를 재고 줄이는 법. 요건 '성능 최적화' 줄."
+    },
+    {
+      "id": "android-memory",
+      "title": "Manage your app's memory",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/topic/performance/memory",
+      "why": "메모리 누수·큰 비트맵·메모리 부족 신호 처리. 요건 '메모리 관리' 줄."
+    },
+    {
+      "id": "okhttp",
+      "title": "OkHttp",
+      "by": "Square",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://square.github.io/okhttp/",
+      "why": "시간 제한·인터셉터·인증서 고정. 요건 '네트워크 처리' 줄의 공통 층을 짜려면."
+    },
+    {
+      "id": "flutter-add-to-app",
+      "title": "Add Flutter to an existing app",
+      "by": "Flutter 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.flutter.dev/add-to-app",
+      "why": "네이티브 앱에 Flutter 화면을 붙이는 법과 엔진 비용. 우대 'Flutter' 줄."
+    },
+    {
+      "id": "masvs",
+      "title": "OWASP MASVS",
+      "by": "OWASP",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://mas.owasp.org/MASVS/",
+      "why": "모바일 앱 보안 점검의 국제 기준. 결제 앱에서 저장·인증·변조 방지를 어디까지 하나."
+    },
+    {
+      "id": "keystore",
+      "title": "Android Keystore system",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/privacy-and-security/keystore",
+      "why": "결제용 키를 기기 안전 저장소에 두는 법. 업무 '모바일 결제 경험' 줄."
+    },
+    {
+      "id": "play-integrity",
+      "title": "Play Integrity API",
+      "by": "Android Developers",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/google/play/integrity",
+      "why": "위변조 앱·변조 기기를 서버가 걸러 내게 하는 법."
+    },
+    {
+      "id": "stripe-idem",
+      "title": "Idempotent requests",
+      "by": "Stripe API 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.stripe.com/api/idempotent_requests",
+      "why": "멱등 키의 공개 예. '한 번 눌렀으면 한 번만 결제'를 앱·서버가 어떻게 나눠 지키는지."
+    },
+    {
+      "id": "sre-risk",
+      "title": "Embracing Risk",
+      "by": "Google SRE Book",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://sre.google/sre-book/embracing-risk/",
+      "why": "오류 예산으로 속도와 안정성을 숫자로 정하기. 요건 '미션 크리티컬' 줄."
+    },
+    {
+      "id": "google-eng",
+      "title": "Google Engineering Practices — Code Review",
+      "by": "Google",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://google.github.io/eng-practices/review/",
+      "why": "리뷰 기준·속도·코멘트 쓰는 법. 업무 '시스템 디자인 리드'·'멘토' 줄."
+    },
+    {
+      "id": "staff-path",
+      "title": "The Staff Engineer's Path",
+      "by": "Tanya Reilly · O'Reilly · 2022",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+      "why": "Staff 의 세 기둥(큰 그림·프로젝트 끌고 가기·기준 올리기). 업무 리드·멘토 줄이 무엇을 기대하는지."
+    },
+    {
+      "id": "scrum",
+      "title": "The Scrum Guide",
+      "by": "Ken Schwaber · Jeff Sutherland",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://scrumguides.org/scrum-guide.html",
+      "why": "애자일의 대표 틀을 짧게. 우대 '애자일' 줄의 공통 말."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "쿠팡 앱과 결제를 사용자 눈으로",
+      "time": "1주",
+      "goal": "쿠페이·로켓페이가 어디서 뜨고, 쿠팡 앱 구조가 어떻게 커져 왔는지 설명할 수 있다.",
+      "resources": ["rocketpay-news", "coupang-msgbus", "coupang-arch"],
+      "task": "쿠팡 앱에서 결제·충전·카드 등록 흐름을 직접 따라가 화면 목록을 그린다. 메시지 버스 글을 읽고 '세 시기 비교표'(방식·장점·문제)를 한 장으로 만든다."
+    },
+    {
+      "title": "결제 기능 하나를 모듈로",
+      "time": "2~3주",
+      "goal": "계층·모듈 경계를 정하고 Kotlin·코루틴으로 결제 흐름을 만들 수 있다.",
+      "resources": ["android-arch-guide", "android-modularization", "nia", "coroutine-book", "kia2"],
+      "task": "가상의 간편결제 앱을 :app·:feature:checkout·:core:network·:core:model 모듈로 나눈다. 결제 상태(대기·진행·성공·실패·확인 필요)를 sealed 타입으로 묶고, 버튼 중복 탭은 ViewModel 에서 막고, 결제 요청에 멱등 키를 붙여 가짜 서버(MockWebServer)로 시험한다."
+    },
+    {
+      "title": "결제 앱의 안전장치",
+      "time": "2주",
+      "goal": "끊긴 응답·재시도·키 보관·앱 무결성을 결제 기준으로 처리할 수 있다.",
+      "resources": ["stripe-idem", "okhttp", "keystore", "play-integrity", "masvs"],
+      "task": "응답이 끊기면 '확인 필요' 상태로 두고 결과 조회 API 를 부르는 흐름을 만든다. 재시도는 두 배씩 늘리되 같은 키로. 토큰은 Keystore 로 암호화해 두고 BiometricPrompt 로 승인한다. MASVS 묶음별로 내 앱 점검표를 쓴다."
+    },
+    {
+      "title": "빠르고 죽지 않게",
+      "time": "2주",
+      "goal": "시작 시간·메모리·비정상 종료를 재고 전후 숫자로 말할 수 있다.",
+      "resources": ["android-vitals", "android-perf", "android-memory"],
+      "task": "2단계 앱의 콜드 스타트를 재고 시작 때 하는 일을 미뤄 20% 줄여 본다. 일부러 메모리 누수(화면을 잡는 리스너)를 만들고 프로파일러로 찾아 고친다. 가상 사용자 수로 비정상 종료율을 계산하는 작은 표를 만든다."
+    },
+    {
+      "title": "Flutter 를 붙이고, Staff 답게",
+      "time": "계속",
+      "goal": "네이티브 앱에 Flutter 화면을 붙이고, 설계 문서와 리뷰로 팀 기준을 제안할 수 있다.",
+      "resources": ["flutter-add-to-app", "staff-path", "google-eng", "sre-risk", "scrum"],
+      "task": "2단계 앱의 결과 화면만 Flutter 로 바꿔 add-to-app 으로 붙이고, 엔진을 미리 띄울 때와 아닐 때 첫 화면 시간을 잰다. 그 결과로 '결제 앱 구조 제안서'(A4 두 장 — 모듈 경계·네이티브/Flutter 범위·출시와 끄는 스위치·오류 예산)를 쓴다."
+    }
+  ],
+  "pay": {
+    "summary": "쿠팡페이 자체의 연봉 공개 숫자는 없다 — 비상장 자회사라 공시 평균이 없고 집계 사이트도 가려 놨다. 모회사 쿠팡(주) 집계(초봉 약 3,531만 · 평균 약 5,175만)는 물류 인력이 섞여 이 자리와 거리가 멀다",
+    "rows": [
+      {
+        "label": "쿠팡(주) 신입 초봉 (모회사)",
+        "value": "약 3,531만원",
+        "amount": 3531,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값이다. 쿠팡페이 법인이 아니고 직군 구분도 없다 [28]"
+      },
+      {
+        "label": "쿠팡(주) 직원 평균 (모회사)",
+        "value": "약 5,175만원",
+        "amount": 5175,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 개발자, 특히 6년 이상 Staff 연봉으로 읽으면 안 된다 [28]"
+      }
+    ],
+    "how": "공고 두 판 모두 연봉이 없다 [1][2]. 쿠팡페이(사원 278명, 2025-12)는 캐치 같은 집계 사이트에서도 초봉·평균이 가려져 있다 [29]. 모회사 집계는 회사 전체 평균이라 이 자리 금액과 다르다 — 실제 금액은 최종 합격 전 처우 협의에서 확인한다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      { "name": "근무", "detail": "주 5일 유연근무제, 자율 책임근무" },
+      { "name": "교육", "detail": "사내 기술 공유를 통한 스터디" },
+      { "name": "보험", "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원" },
+      { "name": "휴게 공간", "detail": "한강 전망 카페테리아, 음료 300원 자판기" },
+      { "name": "휴가", "detail": "사유 없는 연차 사용" },
+      { "name": "쇼핑 캐시백", "detail": "쿠팡 구매 금액의 5% (연 최대 400만원)" },
+      { "name": "동호회", "detail": "사내 동호회와 동호회비 지원" },
+      { "name": "장비", "detail": "최신 맥북 지원" },
+      { "name": "건강", "detail": "연 1회 건강검진" },
+      { "name": "상여·경조", "detail": "명절 상여금, 경조금·경조 휴가" }
+    ],
+    "note": "원티드 사본의 혜택 및 복지 칸이다 [2]. 그린하우스 원문에는 복지 칸이 없다 [1]. 원격·유연 근무는 조직·직무마다 다르게 적용한다고 팀 안내에 적혀 있다 [3]."
+  },
+  "location": {
+    "name": "쿠팡 구의오피스 (이스트폴 타워 A동)",
+    "address": "서울특별시 광진구 아차산로 412 (이스트폴 타워 A)",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+    "near": "2호선 구의역 근처 {추론}",
+    "note": "원티드 사본의 근무지 칸이다 [2]. 쿠팡페이 팀 안내는 잠실 오피스를 주 근무지로 적어 그 뒤 옮긴 것으로 보인다 [3] {추론}."
+  }
+}
