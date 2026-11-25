@@ -231,6 +231,7 @@
   "ats-greeting:musinsa:242044": "musinsa-network-engineer",
   "wanted-366283": "musinsa-network-security-engineer-sase-casb",
   "ats-greeting:musinsa:245811": "musinsa-product-engineer-commerce",
+  "ats-greeting:musinsa:245407": "musinsa-product-engineer-global-integration-open",
   "ats-greeting:musinsa:245715": "musinsa-product-engineer-global-integration",
   "ats-greeting:musinsa:241118": "musinsa-product-engineer-partner-ads-growth",
   "ats-greeting:musinsa:246226": "musinsa-product-engineer-partner-platform",
@@ -2502,6 +2503,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 22
+  },
+  {
+   "id": "musinsa-product-engineer-global-integration-open",
+   "company": "무신사",
+   "role": "Product Engineer (Global Integration)",
+   "jobs": [
+    "ats-greeting:musinsa:245407"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
   },
   {
    "id": "musinsa-product-engineer-global-integration",
