@@ -185,6 +185,7 @@
   "ats-greenhouse:daangn:7774455003": "daangn-lessons-tutoring-frontend",
   "jobkorea-50227006": "daangn-lessons-tutoring-frontend",
   "ats-greenhouse:daangn:5781885003": "daangn-local-jobs-backend",
+  "ats-greenhouse:daangn:5248527003": "daangn-ml-engineer-feed-ads",
   "ats-greenhouse:daangn:7498021003": "daangn-ml-infra-software-engineer",
   "ats-greenhouse:daangn:8201152003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:7659289003": "daangn-mydaangn-backend-intern",
@@ -2144,6 +2145,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "daangn-ml-engineer-feed-ads",
+   "company": "당근",
+   "role": "머신러닝 엔지니어 (피드 품질 · 광고추천)",
+   "jobs": [
+    "ats-greenhouse:daangn:5248527003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
   },
   {
    "id": "daangn-ml-infra-software-engineer",
