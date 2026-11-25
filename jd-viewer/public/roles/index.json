@@ -219,6 +219,7 @@
   "jobkorea-50249295": "megazonecloud-security-solution-engineer",
   "ats-greeting:musinsa:230871": "musinsa-core-ai-product-engineer",
   "ats-greeting:musinsa:241118": "musinsa-product-engineer-partner-ads-growth",
+  "ats-greeting:musinsa:172721": "musinsa-product-engineering-manager-core-partner",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
@@ -2363,6 +2364,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 33
+  },
+  {
+   "id": "musinsa-product-engineering-manager-core-partner",
+   "company": "무신사",
+   "role": "Product Engineering Manager (코어 파트너)",
+   "jobs": [
+    "ats-greeting:musinsa:172721"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 32
   },
   {
    "id": "nhn-japan-frontend",
