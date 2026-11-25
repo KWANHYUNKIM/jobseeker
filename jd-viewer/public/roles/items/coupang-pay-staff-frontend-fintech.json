@@ -1,0 +1,1193 @@
+{
+ "id": "coupang-pay-staff-frontend-fintech",
+ "company": "쿠팡페이",
+ "role": "Staff Front-end Engineer (New Fintech Product · Rocket Pay)",
+ "team": "쿠팡페이 프론트엔드팀",
+ "jobs": [
+  "ats-greenhouse:coupang:8054705",
+  "wanted-389697"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡·쿠팡이츠·쿠팡플레이에서, 이제는 쿠팡 밖 가맹점에서도 뜨는 **결제 화면(쿠페이·로켓페이)**의 웹 구조를 정하고 팀의 코드 품질을 끌어올리는 자리입니다.[2][3][6]",
+  "env": "React·TypeScript 중심의 PC/모바일 웹, 앱 안의 웹뷰(인앱 브라우저), A/B 테스트 플랫폼 위에서 일합니다.[1][3] 우대사항에 Node.js·Spring·MSA 가 있어 화면 뒤 서버까지 읽을 줄 알아야 합니다.[1]",
+  "oneline": "8년 이상 프런트엔드가 **'결제 버튼 한 번에 한 번만, 어느 앱 안에서든 빠르게'**를 지키는 웹 구조를 설계하고 리뷰하는 자리 — 화면 구현자보다 기술 오너에 가깝습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "쿠팡페이 프론트엔드팀은 쿠페이 간편결제 서비스를 이용하는 사용자가 경험하는 User Interface 영역을 개발하고 있습니다. 복잡한 결제서비스를 유기적으로 통합하고 연결하여 사용자에게 가장 편리하고 신속한 온라인 결제 경험을 제공하고 있습니다. 끊임없는 실험과 도전을 반복하는 개발 문화 속에서 최선의 기술을 이용하여 최고의 사용자 경험을 제공하기 위해 오늘도 노력하고 있습니다. 혁신적인 쿠페이 간편결제 서비스를 개발하는 여정에 같이 할 열정적이고 진취적인 프론트엔드 엔지니어를 애타게 기다리고 있습니다.",
+   "short": "쿠팡·쿠팡이츠·쿠팡플레이 어디서 사든 뜨는 같은 '결제하기' 화면을 만드는 팀이라서.",
+   "why": "이 팀의 화면은 한 서비스 안에 있지 않습니다. 팀장 인터뷰에 따르면 쿠팡이츠·로켓와우·쿠팡플레이 등 여러 서비스의 결제 흐름 UI 를 만들고, 플랫폼·기기마다 흩어진 결제 서비스를 하나의 빠르고 편한 결제로 잇는 것이 팀의 목표입니다.[3] 2026년 7월에는 쿠팡페이가 **로켓페이**로 개편해 쿠팡 밖 온라인 가맹점으로 나간다고 발표했고,[6] 8월 첫 외부 가맹점에서도 결제는 쿠팡 앱에서 이뤄졌습니다.[7]",
+   "actually": {
+    "intro": "'실험과 도전'이 실제로 가리키는 것입니다.",
+    "items": [
+     "**A/B 테스트** — 쿠팡페이에는 원할 때 사용자 경험을 시험할 수 있는 A/B 테스트 플랫폼이 있다.[3]",
+     "**새 기술은 이유가 있을 때만** — 새것이라서가 아니라 사용자 경험이나 서비스 성장에 도움이 될 때 들인다고 팀장이 말했다.[3]",
+     "**접근성 개선** — 결제 화면을 쓰기 어렵다는 사용자 의견을 받아, 화면 낭독기(TTS)로 플랫폼·기기마다 시험하며 고친 프로젝트가 있었다. 시험이 가장 오래 걸릴 것을 처음부터 일정에 넣어 제때 끝냈다.[3]",
+     "**매일 공부 시간** — 팀이 주제를 골라 날마다 시간을 떼어 스터디한다.[3]"
+    ]
+   },
+   "how_far": "인터뷰는 2022년 12월 것이라 지금 팀 모습과 다를 수 있습니다.[3] 지원자가 먼저 잡을 것은 '결제 화면은 여러 앱·서비스 안에 끼워져 뜬다'는 조건입니다 — 아래 줄 대부분이 여기서 나옵니다. {추론}",
+   "refs": [
+    3,
+    6,
+    7
+   ],
+   "study": [
+    "theo-story",
+    "web-vitals"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Product Owner, UX Designer, SW Engineer와 협업하여 product를 개발/운영 합니다.",
+   "short": "무엇을 만들지는 PO, 어떻게 보일지는 디자이너, 돈이 맞게 도는지는 백엔드 — 그 사이를 화면으로 잇는 일.",
+   "why": "팀장은 자기 역할을 PO·UX 디자이너·백엔드·QA 사이를 조율하는 사람으로 설명했고, 기능 하나가 나가려면 이해관계자가 많아 소통·협업 능력이 중요하다고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**기획 단계** — PO 가 '할부 선택을 한 화면에 넣자'고 하면, 화면에 필요한 값(카드별 할부 가능 개월 등)이 API 에 있는지 백엔드와 먼저 맞춘다. {추론}",
+     "**디자인 단계** — 시안에 빠진 상태(로딩·실패·잔액 부족·시간 초과·이미 결제됨)를 찾아 되묻는다. 결제 화면은 성공 화면보다 실패 화면이 많다. {추론}",
+     "**QA 와 함께** — 플랫폼·기기별 시험 범위를 처음부터 일정에 넣는다. 접근성 프로젝트에서 팀이 실제로 그렇게 했다.[3]",
+     "**운영** — 배포 뒤 결제 완료율·이탈을 A/B 테스트와 지표로 보고, 떨어지면 원인을 같이 찾는다.[3] {추론}"
+    ]
+   },
+   "how_far": "'개발/운영'이라 만들고 끝이 아니라 배포한 화면의 장애·지표까지 맡습니다.[1] 8년 이상 자리라 시안을 받아 구현하는 것을 넘어 빠진 경우를 먼저 짚는 것이 기대치입니다. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "theo-story",
+    "lean-ux"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시스템 디자인 리뷰 및 코드 리뷰에 참여하여 팀이 표준을 지키고 좋은 품질의 코드를 유지할 수 있도록",
+   "short": "남의 설계·코드를 읽고 '이대로 가면 반년 뒤 무엇이 아픈가'를 말해 주는 일 — Staff 의 기본 업무.",
+   "why": "Staff(팀장이 아닌 최상위 실무 엔지니어급)는 내 코드 양보다 팀 전체 코드의 질로 평가받습니다. 구글의 공개 코드 리뷰 지침은 승인 기준을 '완벽한 코드'가 아니라 **코드베이스 전체 건강을 나아지게 하느냐**로 둡니다.[13]",
+   "actually": {
+    "items": [
+     "**표준을 글로** — 폴더 구조·상태 관리·API 호출·오류 처리 규칙을 문서로 정하고, 리뷰는 그 문서를 근거로 한다. {추론}",
+     "**기계가 잡을 건 기계로** — 포맷·린트·타입 오류는 CI 가 막고 사람은 설계·이름·경계 상황을 본다.[13]",
+     "**결제 화면에서 특히 보는 것** — 버튼 두 번 눌림, 뒤로 가기 뒤 재제출, 금액을 화면에서 다시 계산하는 코드, 카드번호 같은 값이 로그·분석 도구로 새는지. {추론}",
+     "**리뷰는 빨리** — 구글 지침은 리뷰 요청에 늦어도 하루(영업일) 안에 답하라고 한다.[13]"
+    ]
+   },
+   "how_far": "리뷰에서 이기는 게 아니라 팀이 같은 판단을 하게 만드는 것이 목표입니다. 같은 지적이 세 번 나오면 린트 규칙이나 문서로 옮기는 데까지가 Staff 몫입니다. {추론}",
+   "refs": [
+    13
+   ],
+   "study": [
+    "google-eng",
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시니어 개발자들과 함께 시스템 디자인 논의에 참여합니다.",
+   "short": "'결제 화면을 어디서 그리고, 여러 앱에 어떻게 끼우고, 누가 배포하나' 같은 큰 그림을 같이 정한다.",
+   "why": "결제 화면은 쿠팡 앱 안, 쿠팡이츠·쿠팡플레이, 이제는 외부 가맹점에서도 뜹니다.[3][6] 어디서 그릴지(서버·브라우저), 어떻게 끼울지(페이지 이동·웹뷰·SDK), 배포를 누가 하는지가 화면 코드보다 먼저 정해져야 합니다. {추론}",
+   "actually": {
+    "intro": "프런트엔드 시스템 디자인 논의에 흔히 오르는 질문입니다. 쿠팡페이의 실제 구조는 공개되지 않았습니다.",
+    "items": [
+     "**렌더링 위치** — 첫 화면을 서버에서 그려 보낼지(SSR), 빈 페이지에 브라우저가 그릴지(SPA). 서버에서 그리면 첫 내용이 빨리 보이고, 대신 서버가 하나 더 생긴다.[19]",
+     "**나눠 배포하기** — 여러 팀의 화면을 따로 배포해 한 페이지에 합치는 방식(마이크로 프런트엔드)은 팀 독립성을 주지만 번들 중복·화면 일관성 비용이 있다.[21]",
+     "**화면 전용 서버** — 화면이 여러 백엔드를 직접 부를지, 화면용 중간 서버(BFF)를 둘지. 우대사항의 Node.js·NestJS 가 이 자리일 수 있다.[1] {추론}",
+     "**실패 설계** — 승인 응답이 늦을 때 화면이 무엇을 보여 주고, 새로고침·앱 전환 뒤 어떻게 이어지나. {추론}"
+    ]
+   },
+   "how_far": "결론을 혼자 내는 자리가 아니라 근거(측정값·장애 기록·팀 비용)를 들고 선택지를 비교해 쓰는 자리입니다. 설계 문서 한 장을 쓸 수 있으면 최소선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    6,
+    19,
+    21
+   ],
+   "study": [
+    "micro-fe",
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "쿠팡페이 웹 플랫폼 전략과 아키텍처 설계 및 유연하고 효율적인 PC/모바일 웹 아키텍쳐 구축",
+   "short": "결제 웹 전체가 1~2년 뒤 어떤 모양이어야 하는지 정하고, PC·모바일·앱 안 웹을 한 구조로 묶는 일.",
+   "why": "원티드 사본에만 있는 줄로, 이 자리가 리뷰 참여자를 넘어 **웹 구조의 주인**이라는 뜻입니다.[2] 로켓페이가 외부 온라인에서 오프라인까지 넓히겠다고 밝힌 만큼,[6] 결제 화면이 붙는 곳마다 따로 만들면 감당이 안 됩니다. {추론}",
+   "flows": [
+    {
+     "caption": "결제 화면 하나가 여러 곳에 뜨는 모양 {추론}",
+     "steps": [
+      "주문 서비스(쿠팡·쿠팡이츠·외부 가맹점)",
+      "결제 진입(페이지 이동·웹뷰·SDK)",
+      "결제 웹(수단 선택·할부·인증)",
+      "승인 요청 → 결과 화면",
+      "주문 서비스로 결과 돌려주기"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**한 벌의 코드, 여러 환경** — PC 브라우저·모바일 브라우저·앱 웹뷰에서 같은 결제 웹이 뜨되, 환경마다 다른 것(뒤로 가기·키보드·앱과의 통신)은 한곳에 모은다. {추론}",
+     "**공통 부품** — 버튼·입력·카드 선택 같은 UI 를 디자인 시스템으로 묶어 팀마다 다시 만들지 않게 한다.[14] {추론}",
+     "**성능 예산** — 결제 첫 화면의 자바스크립트 크기·LCP 목표를 정하고 CI 에서 넘으면 막는다.[9] {추론}",
+     "**점진 이관** — 도는 결제 화면을 멈추지 않고 새 구조로 조금씩 옮긴다. {추론}"
+    ]
+   },
+   "how_far": "전략·아키텍처 '설계'와 '구축'이 같이 적혀 있어 문서만 쓰는 자리가 아니라 첫 골격 코드도 직접 짭니다.[2] {추론}",
+   "refs": [
+    2,
+    6,
+    9,
+    14
+   ],
+   "study": [
+    "micro-fe",
+    "staff-path",
+    "react-deep"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "새로운 고객 경험을 위한 웹 기능 구축 및 개발",
+   "short": "공고 제목의 'New Fintech Product' — 결제 다음에 붙는 새 금융 화면을 직접 만든다.",
+   "why": "공고 제목이 'New Fintech Product'이고,[1] 팀장 인터뷰에서도 팀이 쿠팡페이의 핵심이 될 새 서비스를 만들고 있다고 했습니다.[3] 무엇인지는 공개되지 않았습니다. 쿠팡페이는 와우카드·판매자 BaaS(은행 기능을 빌려 판매자에게 금융 서비스 제공) 같은 결제 밖 사업도 하고 있습니다.[1][4]",
+   "actually": {
+    "intro": "새 금융 화면에 보통 들어가는 것입니다. 이 공고의 제품이 무엇인지는 알 수 없습니다. {추론}",
+    "items": [
+     "**가입·동의 흐름** — 약관 동의·본인 인증·정보 입력이 여러 단계로 이어지고, 중간에 나갔다 와도 이어진다.",
+     "**숫자 화면** — 혜택·한도·금액을 보여 주되 계산은 서버가 하고 화면은 받은 값을 정확히 표시만 한다.",
+     "**실험** — 문구·순서를 A/B 테스트로 비교한다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "규칙은 한곳에서 — 할부 선택지를 금액 규칙에서 만든다 (가상 규칙, 직접 돌린 출력)",
+     "body": "'5만 원 이상만 할부' 같은 규칙을 화면 곳곳에 흩지 않고 한 함수(또는 서버 응답)에 둡니다. 실제 규칙은 카드사·서버가 정합니다. 계산 뼈대를 파이썬으로 돌렸습니다.",
+     "lang": "python",
+     "code": "def installment_options(amount, max_months=12, min_amount=50000):\n    return [\"일시불\"] + ([f\"{m}개월\" for m in range(2, max_months + 1)] if amount >= min_amount else [])\n\nprint(installment_options(12900))               # ['일시불']\nprint(installment_options(129000, max_months=6)) # ['일시불', '2개월', '3개월', '4개월', '5개월', '6개월']"
+    }
+   ],
+   "how_far": "새 제품이라 정해진 화면을 옮기는 게 아니라 PO 와 같이 모양을 잡아 가는 일입니다. 금액·한도 계산을 화면에 넣지 않는 것이 금융 화면의 기본선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4
+   ],
+   "study": [
+    "lean-ux",
+    "react-deep"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "팀이 담당하는 웹 제품들의 품질과 생산성을 제고 및 팀 엔지니어들이 좋은 품질의 아키텍쳐 및 디자인을 만들 수 있도록 가이드",
+   "short": "내가 다 짜는 게 아니라, 팀원들이 혼자서도 좋은 구조를 고르게 길과 도구를 깔아 주는 일.",
+   "why": "Staff 의 일은 팀 전체의 속도와 품질을 올리는 것입니다.[2] 팀장 인터뷰도 팀이 능력을 쓸 수 있는 환경을 만드는 것을 자기 역할로 꼽았습니다.[3]",
+   "actually": {
+    "items": [
+     "**품질 장치** — 단위 테스트(Jest)·컴포넌트 카탈로그(Storybook)·타입 검사를 CI 에 걸어, 깨진 코드가 합쳐지지 않게 한다.[14][15]",
+     "**생산성 장치** — 새 화면을 만드는 틀(템플릿), 공통 API 클라이언트, 빌드 시간 줄이기. {추론}",
+     "**가이드** — 설계 문서 양식, 리뷰 체크리스트, 짝 프로그래밍·스터디. 팀은 매일 스터디 시간을 둔다.[3]"
+    ]
+   },
+   "how_far": "'가이드'는 지시가 아니라 본보기 코드와 문서입니다. 팀원이 그 길을 따랐을 때 실제로 빨라졌다는 숫자(빌드 시간·장애 수)를 보여 줄 수 있으면 충분합니다. {추론}",
+   "refs": [
+    2,
+    3,
+    14,
+    15
+   ],
+   "study": [
+    "google-eng",
+    "staff-path",
+    "storybook-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Web Frontend 개발 분야 8년 이상의 경험을 갖추신 분",
+   "short": "Staff 직급이라서. 원티드 사본의 경력 범위는 7~14년이다.",
+   "why": "업무가 구현보다 설계·리뷰·가이드 쪽이라 여러 번 구조를 짜고 그 결과를 겪어 본 사람을 찾습니다.[1] 원티드 사본은 경력 범위를 7~14년으로 적었습니다.[2]",
+   "how_far": "연수보다 '내가 정한 구조로 몇 명이 몇 년을 일했나'를 말할 수 있어야 합니다. 이 줄을 처음 해 보는 사람을 뽑는 자리는 아닙니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "JavaScript(ES6), TypeScript, HTML5, CSS, React, Redux, Vue.js, Angular 등 프로그래밍 경험을 갖추신 분",
+   "short": "웹 프런트엔드의 기본 도구 전부. 셋 다가 아니라 한 프레임워크를 깊게, 나머지는 읽을 줄 아는 정도.",
+   "why": "'등'으로 끝나는 목록이라 하나하나가 필수라기보다 웹 프런트엔드 기본기를 묻는 줄입니다.[1] 여러 서비스의 결제 화면을 오래 맡아 온 팀이라 서로 다른 시기의 코드가 섞여 있을 수 있습니다. {추론}",
+   "level": {
+    "basic": "ES6 문법(모듈·async/await·구조 분해) · 타입 지정 · 시맨틱 HTML · Flex/Grid",
+    "work": "React 렌더링 흐름·훅·상태 관리(Redux 등) · 제네릭·유니온 타입 · 반응형 CSS",
+    "team": "렌더링 비용을 읽고 줄이기 · 타입으로 잘못된 상태를 못 만들게 하기(결제 상태 유니온) · 다른 프레임워크 코드도 읽고 고치기"
+   },
+   "examples": [
+    {
+     "title": "같은 주문의 결제 요청은 하나만 (직접 돌린 출력)",
+     "body": "버튼이 세 번 눌려도 진행 중인 요청을 같이 기다리게 하면 서버 호출은 한 번입니다. 프런트에서는 Promise 를 주문 번호로 묶어 같은 일을 합니다. 화면 쪽 방어일 뿐이고 최종 방어는 서버의 멱등 키입니다. 실행 환경 사정으로 같은 로직을 파이썬 asyncio 로 돌렸습니다.",
+     "lang": "python",
+     "code": "import asyncio\ncalls, inflight = 0, {}\n\nasync def fake_approve(order_id):\n    global calls\n    calls += 1\n    await asyncio.sleep(0.05)\n    return {\"orderId\": order_id, \"status\": \"APPROVED\"}\n\ndef pay(order_id):\n    if order_id in inflight:\n        return inflight[order_id]\n    t = asyncio.ensure_future(fake_approve(order_id))\n    t.add_done_callback(lambda _: inflight.pop(order_id, None))\n    inflight[order_id] = t\n    return t\n\nasync def main():\n    rs = await asyncio.gather(pay(\"A1\"), pay(\"A1\"), pay(\"A1\"))\n    print(\"응답\", len(rs), \"개 / 서버 호출\", calls, \"번\")  # 응답 3 개 / 서버 호출 1 번\n\nasyncio.run(main())"
+    }
+   ],
+   "refs": [
+    1
+   ],
+   "study": [
+    "react-deep",
+    "effective-ts"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Webpack, Babel, Jest, Storybook 등 경험을 갖추신 분",
+   "short": "코드를 묶는 도구(Webpack)·옛 브라우저용으로 바꾸는 도구(Babel)·테스트(Jest)·부품 카탈로그(Storybook).",
+   "why": "넷 다 '내 코드가 사용자 기기까지 가는 길'에 있는 도구입니다. Staff 가 빌드·테스트 설정을 못 고치면 팀 생산성 업무(업무 마지막 줄)를 할 수 없습니다.[2] {추론}",
+   "actually": {
+    "items": [
+     "**Webpack** — 여러 파일을 브라우저용 묶음(번들)으로 합치고, 처음 필요 없는 코드는 나눠서 나중에 받게 한다(코드 분할).[16]",
+     "**Babel** — 새 문법을 지원 대상 브라우저가 읽는 문법으로 바꾼다. 대상은 browserslist 같은 설정으로 정한다.[17][18]",
+     "**Jest** — 함수·컴포넌트 단위 테스트. 금액 표시·상태 전환처럼 틀리면 안 되는 로직을 고정한다.[15]",
+     "**Storybook** — 컴포넌트를 상태별(로딩·오류·비활성)로 따로 띄워 보고, 디자이너·QA 와 같은 화면을 놓고 이야기한다.[14]"
+    ]
+   },
+   "how_far": "설정 파일을 처음부터 쓸 줄 아는 것보다 '빌드가 왜 느린가·번들이 왜 커졌나'를 찾아 고칠 줄 아는 수준입니다. 요즘은 Vite 같은 다른 도구도 많아 원리가 더 중요합니다. {추론}",
+   "refs": [
+    2,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "study": [
+    "webpack-docs",
+    "jest-docs",
+    "storybook-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "웹표준 및 브라우저 호환성 경험을 갖추신 분",
+   "short": "결제 화면은 최신 크롬만이 아니라 오래된 폰·앱 웹뷰·화면 낭독기에서도 돼야 해서.",
+   "why": "쿠팡페이 팀은 사용자 의견을 받아 결제 화면의 접근성을 고쳤고, 화면 낭독기 시험을 플랫폼·기기마다 해야 해 일반 시험보다 오래 걸렸다고 했습니다.[3] 웹 접근성의 국제 기준은 W3C 의 WCAG 입니다.[12]",
+   "actually": {
+    "items": [
+     "**표준대로 짜기** — 버튼은 button, 입력에는 label. 그래야 화면 낭독기와 키보드가 제대로 동작한다.[12]",
+     "**지원 범위 정하기** — 어느 브라우저·OS 버전까지 지원할지 표로 정하고 빌드 설정에 넣는다.[18]",
+     "**웹뷰 차이** — 같은 페이지라도 앱 안 웹뷰에서는 팝업·새 창·파일 받기·뒤로 가기가 다르게 동작한다.[20]"
+    ]
+   },
+   "how_far": "모든 기기를 손으로 다 시험하는 게 아니라, 지원 범위를 문서로 정하고 자동 검사(접근성 린트)와 기기 목록으로 지키는 수준. WCAG 의 A·AA 단계가 흔한 목표입니다.[12] {추론}",
+   "refs": [
+    3,
+    12,
+    18,
+    20
+   ],
+   "study": [
+    "wcag",
+    "android-webview"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "가용성, 확장성 및 재사용성 높은 UI Component 제작 경험을 갖추신 분",
+   "short": "쿠팡·쿠팡이츠·외부 가맹점이 같은 결제 부품을 가져다 쓰니, 한 번 잘 만든 부품이 여러 곳을 버텨야 해서.",
+   "why": "한 팀의 화면이 여러 서비스의 결제 흐름에 들어갑니다.[3] 부품이 서비스마다 갈라지면 같은 버그를 여러 번 고쳐야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**가용성** — 데이터가 늦거나 일부 실패해도 부품이 깨지지 않고 대체 상태를 보여 준다(로딩·빈 값·오류).",
+     "**확장성** — 새 결제 수단·새 서비스가 붙어도 부품 안을 고치지 않고 설정(속성)으로 늘린다.",
+     "**재사용성** — 겉모양은 디자인 시스템 규칙을 따르고, 상태별 모습을 Storybook 으로 남긴다.[14]"
+    ]
+   },
+   "how_far": "부품을 '많이' 만드는 게 아니라 속성(props) 설계를 잘하는 것입니다. 너무 많은 옵션을 받는 부품은 재사용이 아니라 혼란이 됩니다. {추론}",
+   "refs": [
+    3,
+    14
+   ],
+   "study": [
+    "storybook-docs",
+    "react-deep"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "복잡도 높고 익숙하지 않은 코드도 빠르게 분석하고 작업할 수 있는 능력을 갖추신 분",
+   "short": "여러 해 여러 서비스에 붙어 온 결제 코드는 처음 보면 낯설다 — 그걸 빨리 읽고 안전하게 고치는 능력.",
+   "why": "팀장은 2019년, 쿠팡페이가 분사(2020년)하기 전부터 이 일을 했다고 소개됐습니다.[3] 오래 쌓인 결제 화면 코드를 새 구조로 옮기는 일(업무 다섯째 줄)과 바로 이어집니다. {추론}",
+   "actually": {
+    "items": [
+     "**먼저 지도를 그린다** — 진입점·상태 흐름·API 호출을 그림으로 그려 본다. {추론}",
+     "**고치기 전에 테스트로 묶는다** — 지금 동작을 그대로 확인하는 테스트(특성 테스트)를 먼저 쓰고 고친다.",
+     "**조금씩** — 한 번에 갈아엎지 않고 작은 단위로 바꿔 매번 배포 가능한 상태를 유지한다."
+    ]
+   },
+   "how_far": "면접에서 '처음 보는 큰 코드에서 버그를 찾은 과정'을 순서대로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3
+   ],
+   "study": [
+    "legacy-code"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "사용성, Lean UX 설계, 개념적 모델링, 트렌드에 대한 지식과 이해도를 갖추신 분",
+   "short": "디자이너가 하는 일까지 이해해, '이렇게 만들면 사용자가 헷갈린다'를 화면 만들기 전에 말할 수 있어야 해서.",
+   "why": "팀장은 지원자에게 화려한 것보다 **고객이 실제로 겪는 어려움을 이해하는 것**을 중요하게 보라고 했고, 만들고 고치는 반복을 예상하라고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**사용성** — 결제는 망설임 하나가 이탈이 된다. 버튼 문구·단계 수·오류 문장을 사용자 입장에서 줄인다. {추론}",
+     "**Lean UX** — 완성품 대신 가설 → 작은 실험 → 측정 → 학습을 짧게 도는 방식. 팀의 A/B 테스트 플랫폼이 그 도구다.[3]",
+     "**개념적 모델링** — 사용자가 머릿속에 가진 모델(내 카드·내 포인트·결제 수단)과 화면 구조를 맞추는 것. 시스템 내부 구조를 그대로 화면에 드러내지 않는다. {추론}"
+    ]
+   },
+   "how_far": "UX 디자이너가 될 필요는 없습니다. 실험 하나를 '가설·지표·결과'로 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3
+   ],
+   "study": [
+    "lean-ux",
+    "krug"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "긍정적이며 서비스 개선에 대한 열의와 자기 주도적인 성장이 가능한 태도를 보유하신 분",
+   "short": "팀이 매일 스스로 공부 시간을 두는 문화라, 시키지 않아도 배우고 고치는 사람이 맞아서.",
+   "why": "팀은 주제를 정해 매일 스터디 시간을 떼어 둡니다.[3]",
+   "how_far": "면접에서는 태도를 말이 아니라 사례로 봅니다 — 아무도 시키지 않았는데 고친 것 하나를 준비합니다. {추론}",
+   "refs": [
+    3
+   ],
+   "study": [
+    "theo-story"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "팀 플레이어로 우수한 협업 능력 및 커뮤니케이션 스킬을 보유하신 분",
+   "short": "기능 하나가 나가려면 PO·디자이너·백엔드·QA 가 다 붙어서.",
+   "why": "팀장이 지원자 조언으로 직접 꼽은 능력입니다 — 기능 하나에 이해관계자가 많다는 이유였습니다.[3]",
+   "how_far": "Staff 는 설계 문서·리뷰 글처럼 **글로 하는 소통**의 비중이 큽니다. 반대 의견을 근거와 함께 남기는 습관이 최소선입니다. {추론}",
+   "refs": [
+    3
+   ],
+   "study": [
+    "google-eng"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "애자일 소프트웨어 방법론 경험하신 분",
+   "short": "크게 계획해 한 번에 내놓지 않고, 짧게 만들어 보고 고치는 방식으로 일해서.",
+   "why": "팀은 만들고 고치는 반복과 실험을 개발 문화로 소개합니다.[1][3] 스크럼은 그런 방식의 대표 틀로, 짧은 주기(스프린트)·계획·회고를 정해 둡니다.[24]",
+   "how_far": "용어를 아는 것보다 '2주 안에 쪼개서 내보낸 경험'과 회고로 무엇을 바꿨는지 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    3,
+    24
+   ],
+   "study": [
+    "scrum"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라이언트 성능 최적화를 위한 브라우저 로딩/렌더링 최적화 경험이 있으신 분",
+   "short": "결제 화면이 늦게 뜨거나 버튼이 늦게 반응하면 사람들이 결제를 포기해서.",
+   "why": "팀의 목표가 '가장 빠른 결제 경험'입니다.[2] 같은 회사 쿠팡플레이의 Staff 프런트엔드 공고도 SSR 성능과 Core Web Vitals(구글이 정한 사용자 체감 속도 지표)를 업무로 적었습니다.[8]",
+   "actually": {
+    "items": [
+     "**무엇을 재나** — 큰 내용이 뜨는 시간(LCP, 2.5초 이하가 좋음), 눌렀을 때 반응(INP, 200ms 이하), 화면 밀림(CLS, 0.1 이하). 사용자 75번째 백분위로 본다.[9][10]",
+     "**로딩** — 첫 화면에 필요 없는 스크립트 늦게 받기, 폰트·이미지 최적화, 중요한 자원 먼저 받기.[11]",
+     "**렌더링** — 불필요한 다시 그리기 줄이기, 긴 자바스크립트 작업 쪼개기(INP 개선).[10]",
+     "**인앱 환경** — 앱 웹뷰는 처음 띄울 때 비용이 더 들 수 있어 따로 잰다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균은 괜찮은데 p75 는 기준 밖 (가상 값, 직접 돌린 출력)",
+     "body": "사용자 20명의 LCP 평균은 2.4초로 '좋음' 같지만, Web Vitals 기준인 75번째 백분위는 2.6초로 기준(2.5초)을 넘습니다. 2.5초를 넘는 사람이 6명입니다.[9]",
+     "lang": "python",
+     "code": "import math\nlcp = [900,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2600,2900,3400,4200,5100,6800]\ns = sorted(lcp)\np75 = s[math.ceil(0.75 * len(s)) - 1]\nprint(\"평균\", sum(lcp) / len(lcp), \"ms / p75\", p75, \"ms / 2500ms 넘는 사람\", sum(x > 2500 for x in lcp), \"명\")\n# 평균 2400.0 ms / p75 2600 ms / 2500ms 넘는 사람 6 명"
+    }
+   ],
+   "how_far": "'빠르게 했다'가 아니라 **전후 숫자**(실사용자 p75 기준)로 말할 수 있어야 합니다. 실험실 점수(Lighthouse)와 실사용자 값은 다릅니다.[9]",
+   "refs": [
+    2,
+    8,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "web-vitals",
+    "fe-perf-book",
+    "mdn-crp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SPA(Single Page Application), SSR(Server Side Rendering), 인앱브라우저 환경 개발을 경험하신 분",
+   "short": "결제 화면이 브라우저·서버·남의 앱 안(웹뷰) 세 곳 모두에서 돌아가야 해서.",
+   "why": "쿠페이·로켓페이 결제는 쿠팡 앱 안에서 이뤄지고,[7] 결제 화면이 여러 서비스에 들어갑니다.[3] 쿠팡플레이 프런트엔드도 PC 웹·스마트TV 웹앱·모바일 앱 웹뷰를 함께 다룬다고 공고에 적었습니다.[8]",
+   "actually": {
+    "items": [
+     "**SPA** — 한 번 받은 뒤 화면 전환을 브라우저가 처리. 결제 단계 이동이 빠르지만 첫 로딩이 무겁다.",
+     "**SSR** — 서버가 HTML 을 그려 보내고 브라우저가 이어받는다(hydration). 첫 화면이 빠르다.[19]",
+     "**인앱 브라우저(웹뷰)** — 앱이 띄운 웹. 앱과 메시지를 주고받는 다리(JavaScript 인터페이스)가 있고, 외부 앱(카드사 인증 앱) 호출·뒤로 가기·쿠키가 일반 브라우저와 다르다.[20]"
+    ]
+   },
+   "how_far": "세 방식의 장단점을 결제 화면 기준으로 고를 수 있고, 웹뷰에서만 나는 버그(외부 앱 호출 뒤 돌아오기 등)를 하나라도 직접 잡아 봤으면 강점입니다. {추론}",
+   "refs": [
+    3,
+    7,
+    8,
+    19,
+    20
+   ],
+   "study": [
+    "react-deep",
+    "android-webview"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Node.js, Express, NestJs 등 기반의 웹 개발을 경험하신 분",
+   "short": "SSR 서버나 화면 전용 중간 서버(BFF)를 프런트엔드 팀이 직접 돌릴 수 있어서.",
+   "why": "SSR 을 하려면 HTML 을 그리는 서버가 있어야 하고, React 의 서버 렌더링 API 는 Node.js 같은 환경에서 돕니다.[19] NestJS 는 Node.js 서버를 모듈·의존성 주입 구조로 짜는 프레임워크입니다.[26]",
+   "how_far": "백엔드 수준이 아니라 **내 화면을 그리는 서버를 띄우고, 느리거나 죽을 때 로그·지표로 원인을 찾는** 수준. {추론}",
+   "refs": [
+    19,
+    26
+   ],
+   "study": [
+    "nest-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 서비스 설계, 구축, 운영을 경험하신 분",
+   "short": "평소의 수십 배가 몰리는 날에도 결제 화면이 떠야 해서.",
+   "why": "쿠팡페이 대만은 2024년 광군제(11월 11일 할인 행사)에 평소의 약 20배 트래픽을 받았다고 밝혔습니다.[5] 로켓페이는 연간 수십조 원 규모의 결제를 다룬다고 보도됐습니다.[6]",
+   "actually": {
+    "items": [
+     "**정적 자원은 CDN 으로** — 스크립트·이미지는 서버가 아니라 CDN 이 나눠 준다. {추론}",
+     "**SSR 서버는 무너질 때를 대비** — 몰리면 서버 렌더링을 포기하고 브라우저 렌더링으로 물러서는 길을 둔다. {추론}",
+     "**배포는 조금씩** — 일부 사용자에게 먼저 내보내고 오류율을 본 뒤 넓힌다. {추론}"
+    ]
+   },
+   "how_far": "'대규모'를 숫자(동시 사용자·초당 요청·오류율)로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    5,
+    6
+   ],
+   "study": [
+    "web-vitals"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Git 등의 형상 관리 도구 및 CI/CD 도구의 활용을 경험하신 분",
+   "short": "여러 명이 같은 결제 코드를 고치고 하루에도 여러 번 배포하니, 합치기·검사·배포가 자동이어야 해서.",
+   "why": "업무의 '팀 품질과 생산성'은 결국 CI(합칠 때마다 자동 검사)와 CD(자동 배포) 설정으로 구현됩니다.[2] {추론}",
+   "actually": {
+    "items": [
+     "**합치기 전 검사** — 타입 검사·린트·Jest·Storybook 화면 비교가 통과해야 합칠 수 있다.[14][15] {추론}",
+     "**되돌리기** — 문제가 생기면 몇 분 안에 이전 버전으로. 결제 화면은 되돌리는 시간이 곧 손실이다. {추론}"
+    ]
+   },
+   "how_far": "파이프라인 설정 파일을 읽고 단계 하나를 더하거나 느린 단계를 찾아 줄일 수 있는 수준. {추론}",
+   "refs": [
+    2,
+    14,
+    15
+   ],
+   "study": [
+    "jest-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Spring Framework를 경험하신 분",
+   "short": "쿠팡페이 결제 서버가 Java·Spring 이라, 백엔드 코드를 읽을 줄 알면 API 논의가 빨라져서.",
+   "why": "같은 조직의 결제 백엔드 공고들은 Java/Kotlin·Spring·JPA 를 요건으로 적었습니다.[25]",
+   "how_far": "Spring 개발자가 되라는 게 아니라 컨트롤러·DTO 를 읽고 'API 가 왜 이렇게 생겼나'를 이해하는 수준. {추론}",
+   "refs": [
+    25
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Micro service architecture 기반의 서비스 개발 경험이 있으신 분",
+   "short": "결제·포인트·카드·회원이 각각 다른 서버라, 화면 하나가 여러 서버를 부른다.",
+   "why": "쿠팡은 2013년부터 큰 한 덩어리 서버를 작은 서비스들로 나눠 왔고,[31] 결제 백엔드도 MSA 위에 있습니다.[25] 화면 쪽은 여러 서비스 응답을 모아 한 화면을 그려야 합니다. 프런트엔드도 같은 생각으로 나눌 수 있습니다(마이크로 프런트엔드).[21]",
+   "how_far": "한 서비스가 늦거나 실패할 때 화면 일부만 대체 상태로 보여 주는 설계를 해 봤으면 충분합니다. {추론}",
+   "refs": [
+    21,
+    25,
+    31
+   ],
+   "study": [
+    "micro-fe"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Open API SDK 등 라이브러리 개발 경험이 있으신 분",
+   "short": "외부 가맹점이 로켓페이를 붙이려면 그쪽 개발자가 쓸 결제 SDK(스크립트 한 줄로 결제창 띄우기)가 필요해서.",
+   "why": "로켓페이는 쿠팡 밖 가맹점으로 넓히는 중입니다.[6][7] 다른 결제사들은 가맹점용 자바스크립트 SDK 를 공개 문서로 제공합니다 — 예를 들어 토스페이먼츠 결제위젯 SDK.[22] 쿠팡페이 SDK 의 실제 모습은 공개되지 않았습니다.",
+   "actually": {
+    "intro": "가맹점용 SDK 를 만들 때 보통 신경 쓰는 것입니다. {추론}",
+    "items": [
+     "**남의 페이지에서 돈다** — 가맹점 페이지의 CSS·전역 변수와 충돌하지 않게 격리하고(iframe 등), 가맹점의 보안 정책(CSP)과 맞춘다.[30]",
+     "**버전 약속** — 바꾸면 가맹점이 깨지므로 버전 규칙(유의적 버전)을 지키고 오래 하위 호환한다.[23]",
+     "**작고 빠르게** — 가맹점 페이지 속도를 늦추지 않게 크기를 줄인다.",
+     "**문서와 예제** — 가맹점 개발자가 읽는 문서·오류 코드표가 SDK 의 절반이다."
+    ]
+   },
+   "how_far": "npm 패키지 하나라도 남이 쓰게 배포하고 버전을 올려 본 경험이면 출발선입니다. {추론}",
+   "refs": [
+    6,
+    7,
+    22,
+    23,
+    30
+   ],
+   "study": [
+    "toss-sdk",
+    "semver"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "결제 버튼 하나의 0.5초·문구 하나에 집착하는 사람",
+   "여러 앱 안에 끼워져 도는 웹(웹뷰·SDK)의 까다로움이 재밌는 사람",
+   "코드만큼 리뷰·설계 문서로 팀을 끌어올리는 게 편한 사람",
+   "매일 스터디하는 팀 문화가 맞는 사람[3]"
+  ],
+  "hard": [
+   "경력 8년 이상이 자격요건이다[1]",
+   "결제는 장애의 무게가 커서 대응 부담이 있을 수 있다 — 쿠팡페이 채용 안내는 조직에 따라 교대·휴일·야간 근무가 있을 수 있다고 적었다[4]",
+   "제품('New Fintech Product')이 무엇인지 공고에 없어 입사 전에 알기 어렵다[1]",
+   "새 화면보다 구조·호환성·검증의 비중이 크다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "사용자가 결제 버튼을 빠르게 세 번 눌렀습니다. 화면과 서버에서 각각 무엇으로 막나요?",
+   "a": "진행 중 요청 묶기 + 서버 멱등 키 — 화면 방어는 보조다. {추론}"
+  },
+  {
+   "q": "결제 첫 화면 LCP 평균은 2.4초인데 왜 '개선 필요'로 나오나요?",
+   "a": "Web Vitals 는 평균이 아니라 75번째 백분위로 본다.[9]"
+  },
+  {
+   "q": "같은 결제 페이지가 앱 웹뷰에서만 카드사 인증 앱에서 돌아온 뒤 멈춥니다. 무엇부터 보나요?",
+   "a": "웹뷰의 외부 앱 호출·복귀·쿠키 차이.[20]"
+  },
+  {
+   "q": "결제 화면을 SSR 로 바꾸자는 제안을 설계 리뷰에서 받았습니다. 무엇을 근거로 판단하나요?",
+   "a": "첫 화면 지표·서버 비용·장애 시 물러설 길.[9][19]"
+  },
+  {
+   "q": "외부 가맹점용 결제 SDK 의 API 를 바꿔야 합니다. 이미 붙은 가맹점은요?",
+   "a": "유의적 버전과 하위 호환 기간.[23]"
+  },
+  {
+   "q": "화면 낭독기로 결제를 끝까지 할 수 있게 하려면 무엇을 바꾸나요?",
+   "a": "이 팀이 실제로 한 접근성 프로젝트와 WCAG.[3][12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · [Coupang Pay] Staff Front-end Engineer (New Fintech Product)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8054705",
+   "kind": "posting",
+   "date": "2026-11-23",
+   "note": "그린하우스 원문(한국어) — 회사·팀 소개, 업무 3줄·요건 7·우대 11, 전형(서류 → 직무 적합성 → 핵심 역량), 정규직 수습 12주. 연봉·복지 칸 없음"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · [쿠팡페이] Staff Front-end Engineer (Rocket Pay)",
+   "url": "https://www.wanted.co.kr/wd/389697",
+   "kind": "posting",
+   "note": "같은 공고의 사본 — 업무 3줄 더(웹 플랫폼 전략·새 웹 기능·팀 가이드), 경력 7~14년, 서울 광진구, 혜택·복지, 전형에 리크루터 스크리닝콜"
+  },
+  {
+   "n": 3,
+   "title": "Coupang Careers · A facilitator always looking for the best solution",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/a-facilitator-always-looking-for-the-best-solution/",
+   "kind": "company",
+   "date": "2022-12-04",
+   "note": "쿠팡페이 프런트엔드 팀장 인터뷰 — 쿠팡이츠·로켓와우·쿠팡플레이 결제 UI, PO·UX·백엔드·QA 조율, 접근성(TTS) 프로젝트, A/B 테스트 플랫폼, 매일 스터디, 지원자 조언"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Careers · Coupang Pay 팀 소개",
+   "url": "https://www.coupang.jobs/en/teams/coupang-pay/",
+   "kind": "company",
+   "note": "쿠페이·와우카드·판매자 BaaS, 한국·대만, 잠실 오피스(변경 가능), FAQ(교대·휴일·야간 근무 가능성, 원격은 조직별)"
+  },
+  {
+   "n": 5,
+   "title": "AWS 대만 · Coupang Pay 인터뷰(2025 AWS 금융 포럼)",
+   "url": "https://aws.amazon.com/tw/events/taiwan/interviews/coupangpay",
+   "kind": "company",
+   "note": "2024 광군제 평소의 약 20배 트래픽"
+  },
+  {
+   "n": 6,
+   "title": "뉴데일리 · 쿠팡, 로켓페이로 간편 결제 출사표",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2026/07/10/2026071000246.html",
+   "kind": "news",
+   "date": "2026-07-10",
+   "note": "쿠팡페이 → 로켓페이 개편, 외부 온라인 → 오프라인, 연 수십조 원 결제"
+  },
+  {
+   "n": 7,
+   "title": "바이라인네트워크 · 쿠팡 로켓페이, 마이리얼트립 시작으로 외부 확장 시동",
+   "url": "https://byline.network/2026/08/28_182763/",
+   "kind": "news",
+   "date": "2026-08-29",
+   "note": "첫 외부 가맹점, 결제는 쿠팡 앱에서"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Careers · Staff Front-end Engineer (CX) — Coupang Play",
+   "url": "https://www.coupang.jobs/en/jobs/7959627/staff-front-end-engineer-cx-coupang-play/",
+   "kind": "posting",
+   "note": "같은 회사 다른 프런트엔드 자리 — Next.js(PC 웹)·Solid.js(스마트TV)·모바일 웹뷰, SSR 성능·Core Web Vitals. 검색 요약으로 확인"
+  },
+  {
+   "n": 9,
+   "title": "web.dev · Web Vitals",
+   "url": "https://web.dev/articles/vitals",
+   "kind": "reference",
+   "note": "LCP 2.5초·INP 200ms·CLS 0.1, 75번째 백분위로 판정"
+  },
+  {
+   "n": 10,
+   "title": "web.dev · Interaction to Next Paint (INP)",
+   "url": "https://web.dev/articles/inp",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "MDN · Critical rendering path",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Critical_rendering_path",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "W3C · Web Content Accessibility Guidelines (WCAG) 2.2",
+   "url": "https://www.w3.org/TR/WCAG22/",
+   "kind": "reference",
+   "note": "A·AA·AAA 단계"
+  },
+  {
+   "n": 13,
+   "title": "Google Engineering Practices · Code Review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference",
+   "note": "코드베이스 건강 기준, 리뷰 응답은 늦어도 한 영업일"
+  },
+  {
+   "n": 14,
+   "title": "Storybook 공식 문서",
+   "url": "https://storybook.js.org/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Jest 공식 문서 · Getting Started",
+   "url": "https://jestjs.io/docs/getting-started",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "webpack 공식 문서 · Concepts",
+   "url": "https://webpack.js.org/concepts/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Babel 공식 문서",
+   "url": "https://babeljs.io/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Browserslist",
+   "url": "https://github.com/browserslist/browserslist",
+   "kind": "reference",
+   "note": "지원 브라우저 범위를 한 설정으로 — Babel·Autoprefixer 가 같이 읽는다"
+  },
+  {
+   "n": 19,
+   "title": "React 공식 문서 · Server React DOM APIs",
+   "url": "https://react.dev/reference/react-dom/server",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Android Developers · Build web apps in WebView",
+   "url": "https://developer.android.com/develop/ui/views/layout/webapps/webview",
+   "kind": "reference",
+   "note": "JavaScript 인터페이스, 링크·탐색 처리"
+  },
+  {
+   "n": 21,
+   "title": "martinfowler.com · Micro Frontends (Cam Jackson)",
+   "url": "https://martinfowler.com/articles/micro-frontends.html",
+   "kind": "reference",
+   "note": "장점(독립 배포)과 비용(번들 중복·일관성)"
+  },
+  {
+   "n": 22,
+   "title": "토스페이먼츠 개발자센터 · JavaScript SDK",
+   "url": "https://docs.tosspayments.com/sdk/v2/js",
+   "kind": "reference",
+   "note": "다른 회사 — 가맹점용 결제 SDK 의 공개 예"
+  },
+  {
+   "n": 23,
+   "title": "유의적 버전 2.0.0 (Semantic Versioning)",
+   "url": "https://semver.org/lang/ko/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "The Scrum Guide",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "원티드 · 쿠팡 Staff Back-end Engineer (Rocket Pay)",
+   "url": "https://www.wanted.co.kr/wd/381767",
+   "kind": "posting",
+   "note": "같은 조직 백엔드 공고 — Java/Kotlin·Spring·JPA 위의 MSA"
+  },
+  {
+   "n": 26,
+   "title": "NestJS 공식 문서",
+   "url": "https://docs.nestjs.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "모회사 쿠팡(주) 값 — 쿠팡페이 법인 아님. 사이트가 자동 접속을 막아 검색 결과에 실린 값으로 확인(같은 조직 백엔드 풀이와 같은 값)"
+  },
+  {
+   "n": 28,
+   "title": "캐치 · 쿠팡페이 기업 정보",
+   "url": "https://www.catch.co.kr/Comp/CompSummary/E94228",
+   "kind": "reference",
+   "note": "사원 수 278명(2025-12 기준). 초봉·평균 칸은 가려져 있음"
+  },
+  {
+   "n": 29,
+   "title": "원티드 · 쿠팡 Manager, Back-end Engineering (Rocket Pay)",
+   "url": "https://www.wanted.co.kr/wd/381757",
+   "kind": "posting",
+   "note": "마감 — 같은 조직. 근무지 아차산로 412 이스트폴 타워 A"
+  },
+  {
+   "n": 30,
+   "title": "MDN · Content Security Policy (CSP)",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Coupang Engineering · 행복을 찾기 위한 우리의 여정 (How Coupang built a microservice architecture)",
+   "url": "https://medium.com/coupang-tech/행복을-찾기-위한-우리의-여정-94678fe9eb61",
+   "kind": "company",
+   "note": "2013년 MSA 전환 결정(Vitamin 프로젝트). 본문은 자동 접속이 막혀 검색 요약으로 확인"
+  }
+ ],
+ "caveat": "쿠팡페이 프런트엔드 구조를 다룬 회사 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음, FEConf 등에서도 쿠팡 발표 없음). 회사 근거는 공고 두 판과 2022년 팀장 인터뷰가 전부라, 렌더링·SDK·웹뷰 부분은 web.dev·MDN·W3C·React·Android 공식 문서와 다른 결제사 SDK 문서로 '보통 이런 것'을 보였습니다. 'New Fintech Product'가 무엇인지는 공개되지 않았습니다. 그린하우스 원문에는 업무가 3줄, 원티드 사본에는 6줄이라 둘을 합쳐 풀었습니다. 코드 예시는 이 실행 환경에서 node 를 돌릴 수 없어 같은 로직을 파이썬으로 돌려 출력을 확인했습니다.",
+ "resources": [
+  {
+   "id": "theo-story",
+   "title": "A facilitator always looking for the best solution",
+   "by": "Coupang Careers · 쿠팡페이 프런트엔드 팀장 인터뷰 · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/a-facilitator-always-looking-for-the-best-solution/",
+   "why": "이 팀이 무엇을 만들고 어떻게 일하는지(조율·접근성·A/B 테스트·스터디) 회사가 직접 말한 유일한 글. 지원 전에 꼭 읽는다."
+  },
+  {
+   "id": "web-vitals",
+   "title": "Web Vitals",
+   "by": "web.dev (Google)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://web.dev/articles/vitals",
+   "why": "LCP·INP·CLS 기준과 75번째 백분위 판정. 우대 '로딩/렌더링 최적화'를 숫자로 말하려면 여기서 시작한다(한국어 번역 있음)."
+  },
+  {
+   "id": "mdn-crp",
+   "title": "Critical rendering path",
+   "by": "MDN",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Critical_rendering_path",
+   "why": "HTML → DOM·CSSOM → 레이아웃 → 페인트 순서. 무엇이 첫 화면을 막는지 원리부터."
+  },
+  {
+   "id": "fe-perf-book",
+   "title": "프론트엔드 성능 최적화 가이드",
+   "by": "유동균",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C%20%EC%84%B1%EB%8A%A5%20%EC%B5%9C%EC%A0%81%ED%99%94%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "React 예제로 로딩·렌더링 최적화를 측정부터 따라 한다. 우대 '브라우저 로딩/렌더링 최적화' 연습용."
+  },
+  {
+   "id": "react-deep",
+   "title": "모던 리액트 Deep Dive",
+   "by": "김용찬 · 위키북스 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%AA%A8%EB%8D%98%20%EB%A6%AC%EC%95%A1%ED%8A%B8%20Deep%20Dive",
+   "why": "React 렌더링 원리·훅·SSR·Next.js 까지. 요건 둘째 줄과 우대 SPA/SSR 줄을 한 권으로."
+  },
+  {
+   "id": "effective-ts",
+   "title": "이펙티브 타입스크립트",
+   "by": "댄 밴더캄 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8",
+   "why": "타입으로 잘못된 상태를 못 만들게 하는 법. 결제 상태(대기·성공·실패)를 유니온 타입으로 묶는 연습."
+  },
+  {
+   "id": "webpack-docs",
+   "title": "webpack Concepts",
+   "by": "webpack 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://webpack.js.org/concepts/",
+   "why": "entry·loader·plugin·코드 분할. 번들이 왜 커졌는지 찾으려면 이 말부터."
+  },
+  {
+   "id": "jest-docs",
+   "title": "Jest Getting Started",
+   "by": "Jest 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://jestjs.io/docs/getting-started",
+   "why": "금액 표시·상태 전환 같은 틀리면 안 되는 로직을 테스트로 고정한다."
+  },
+  {
+   "id": "storybook-docs",
+   "title": "Storybook Docs",
+   "by": "Storybook 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://storybook.js.org/docs",
+   "why": "재사용 UI 부품을 상태별로 남기고 디자이너·QA 와 같은 화면으로 이야기하기 — 요건 '재사용성 높은 UI Component'."
+  },
+  {
+   "id": "wcag",
+   "title": "WCAG 2.2",
+   "by": "W3C",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.w3.org/TR/WCAG22/",
+   "why": "웹 접근성 국제 기준. 이 팀이 실제로 한 결제 화면 접근성 작업의 바탕."
+  },
+  {
+   "id": "android-webview",
+   "title": "Build web apps in WebView",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/develop/ui/views/layout/webapps/webview",
+   "why": "인앱 브라우저가 일반 브라우저와 무엇이 다른지(앱과의 다리·탐색 처리). 우대 '인앱브라우저' 줄."
+  },
+  {
+   "id": "micro-fe",
+   "title": "Micro Frontends",
+   "by": "Cam Jackson · martinfowler.com",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://martinfowler.com/articles/micro-frontends.html",
+   "why": "여러 팀의 화면을 나눠 배포하는 방법과 비용. 업무 '웹 플랫폼 전략과 아키텍처' 논의의 공통 말."
+  },
+  {
+   "id": "google-eng",
+   "title": "Google Engineering Practices — Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "리뷰 기준·속도·코멘트 쓰는 법. 업무 둘째 줄을 Staff 답게 하는 법."
+  },
+  {
+   "id": "staff-path",
+   "title": "The Staff Engineer's Path",
+   "by": "Tanya Reilly · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "why": "Staff 의 세 기둥(큰 그림·프로젝트 끌고 가기·기준 올리기). 업무 다섯째·일곱째 줄이 무엇을 기대하는지."
+  },
+  {
+   "id": "legacy-code",
+   "title": "레거시 코드 활용 전략",
+   "by": "마이클 C. 페더스 · 에이콘출판",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A0%88%EA%B1%B0%EC%8B%9C%20%EC%BD%94%EB%93%9C%20%ED%99%9C%EC%9A%A9%20%EC%A0%84%EB%9E%B5",
+   "why": "테스트 없는 코드를 안전하게 고치는 법(특성 테스트·의존성 끊기). 요건 '익숙하지 않은 코드' 줄."
+  },
+  {
+   "id": "lean-ux",
+   "title": "Lean UX",
+   "by": "Jeff Gothelf · Josh Seiden · O'Reilly",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/search/?q=lean%20ux%20gothelf",
+   "why": "가설 → 실험 → 학습의 짧은 반복. 요건 'Lean UX 설계'가 무엇인지 원전으로."
+  },
+  {
+   "id": "krug",
+   "title": "사용자를 생각하게 하지 마!",
+   "by": "스티브 크룩 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%82%AC%EC%9A%A9%EC%9E%90%EB%A5%BC%20%EC%83%9D%EA%B0%81%ED%95%98%EA%B2%8C%20%ED%95%98%EC%A7%80%20%EB%A7%88",
+   "why": "사용성의 기본 — 망설임 하나가 이탈이 되는 결제 화면을 보는 눈."
+  },
+  {
+   "id": "scrum",
+   "title": "The Scrum Guide",
+   "by": "Ken Schwaber · Jeff Sutherland",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "why": "애자일의 대표 틀을 짧게(약 13쪽). 우대 '애자일' 줄의 공통 말."
+  },
+  {
+   "id": "nest-docs",
+   "title": "NestJS Documentation",
+   "by": "NestJS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nestjs.com/",
+   "why": "SSR·BFF 서버를 구조 있게 짜는 Node.js 프레임워크. 우대 Node.js 줄."
+  },
+  {
+   "id": "toss-sdk",
+   "title": "토스페이먼츠 JavaScript SDK",
+   "by": "토스페이먼츠 개발자센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.tosspayments.com/sdk/v2/js",
+   "why": "가맹점이 쓰는 결제 SDK 가 어떤 모양인지(초기화·결제 요청·오류) 한국어로 보는 공개 예. 우대 'Open API SDK' 줄."
+  },
+  {
+   "id": "semver",
+   "title": "유의적 버전 2.0.0",
+   "by": "semver.org",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://semver.org/lang/ko/",
+   "why": "남이 쓰는 라이브러리의 버전 약속. SDK 를 바꿔도 가맹점이 안 깨지게."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "결제 화면을 사용자 눈으로",
+   "time": "1주",
+   "goal": "이 팀이 무엇을 만들고 왜 빠름·접근성·실험을 중시하는지 설명할 수 있다.",
+   "resources": [
+    "theo-story",
+    "krug",
+    "lean-ux"
+   ],
+   "task": "가상의 간편결제 화면(수단 선택 → 할부 → 승인 → 결과)을 그리고, 실패 상태 6가지(잔액 부족·시간 초과·이미 결제됨 등)의 화면과 문구를 정한다. A/B 테스트 가설 하나를 '가설·지표·기간'으로 쓴다."
+  },
+  {
+   "title": "부품과 타입",
+   "time": "2~3주",
+   "goal": "재사용 결제 부품을 타입·테스트·Storybook 으로 남길 수 있다.",
+   "resources": [
+    "react-deep",
+    "effective-ts",
+    "storybook-docs",
+    "jest-docs"
+   ],
+   "task": "React + TypeScript 로 카드 선택·할부 선택·결제 버튼 부품을 만들고, 결제 상태를 유니온 타입으로 묶는다. 버튼 중복 클릭 방지와 금액 표시를 Jest 로, 상태별 모습을 Storybook 으로 남긴다."
+  },
+  {
+   "title": "빠르게, 어디서나",
+   "time": "2~3주",
+   "goal": "결제 첫 화면을 SSR 로 띄우고, 실사용자 지표(p75)로 전후를 비교할 수 있다.",
+   "resources": [
+    "web-vitals",
+    "mdn-crp",
+    "fe-perf-book",
+    "webpack-docs"
+   ],
+   "task": "2단계 화면을 SSR 판과 SPA 판으로 만들어 LCP·INP 를 재고, 번들 분석으로 첫 화면 스크립트를 30% 줄여 본다. 접근성 린트와 화면 낭독기로 결제를 끝까지 해 본다(WCAG AA 기준)."
+  },
+  {
+   "title": "남의 앱 안에서",
+   "time": "2주",
+   "goal": "웹뷰·외부 가맹점 페이지에서 도는 결제 웹과 SDK 를 만들 수 있다.",
+   "resources": [
+    "android-webview",
+    "toss-sdk",
+    "semver",
+    "wcag"
+   ],
+   "task": "안드로이드 웹뷰 예제 앱에 결제 웹을 띄우고 앱과 메시지를 주고받는다. 가맹점 페이지에 스크립트 한 줄로 결제창(iframe)을 띄우는 작은 SDK 를 npm 패키지로 내고, v1 → v2 바꿀 때의 하위 호환 계획을 쓴다."
+  },
+  {
+   "title": "Staff 답게",
+   "time": "계속",
+   "goal": "설계 문서와 리뷰로 팀의 기준을 올릴 수 있다.",
+   "resources": [
+    "staff-path",
+    "google-eng",
+    "micro-fe",
+    "legacy-code"
+   ],
+   "task": "1~4단계 결과로 '결제 웹 구조 제안서'(A4 두 장 — 렌더링 위치·배포 단위·성능 예산·이관 순서)를 쓰고, 일부러 나쁜 PR 하나를 만들어 리뷰 코멘트를 남겨 본다."
+  }
+ ],
+ "pay": {
+  "summary": "쿠팡페이 자체의 연봉 공개 숫자는 없다 — 비상장 자회사라 공시 평균이 없고 집계 사이트도 가려 놨다. 모회사 쿠팡(주) 집계(초봉 약 3,531만 · 평균 약 5,175만)는 물류 인력이 섞여 이 자리와 거리가 멀다",
+  "rows": [
+   {
+    "label": "쿠팡(주) 신입 초봉 (모회사)",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값이다. 쿠팡페이 법인이 아니고 직군 구분도 없다. 사이트가 자동 접속을 막아 검색 결과에 실린 값으로 확인했다 [27]"
+   },
+   {
+    "label": "쿠팡(주) 직원 평균 (모회사)",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 개발자, 특히 8년 이상 Staff 연봉으로 읽으면 안 된다 [27]"
+   }
+  ],
+  "how": "공고 두 판 모두 연봉이 없다 [1][2]. 쿠팡페이(사원 278명, 2025-12)는 캐치 같은 집계 사이트에서도 초봉·평균이 가려져 있다 [28]. 모회사 집계는 회사 전체 평균이라 이 자리 금액과 다르다 — 실제 금액은 최종 합격 전 처우 협의에서 확인한다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무",
+    "detail": "주 5일 유연근무제, 자율 책임근무"
+   },
+   {
+    "name": "교육",
+    "detail": "사내 기술 공유를 통한 스터디"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"
+   },
+   {
+    "name": "휴게 공간",
+    "detail": "한강 전망 카페테리아, 음료 300원 자판기"
+   },
+   {
+    "name": "휴가",
+    "detail": "사유 없는 연차 사용"
+   },
+   {
+    "name": "쇼핑 캐시백",
+    "detail": "쿠팡 구매 금액의 5% (연 최대 400만원)"
+   },
+   {
+    "name": "동호회",
+    "detail": "사내 동호회와 동호회비 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최신 맥북 지원"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조 휴가"
+   }
+  ],
+  "note": "원티드 사본의 혜택 및 복지 칸이다 [2]. 그린하우스 원문에는 복지 칸이 없다 [1]. 원격·유연 근무는 조직·직무마다 다르게 적용한다고 팀 안내에 적혀 있다 [4]."
+ },
+ "location": {
+  "name": "쿠팡 구의오피스 (이스트폴 타워 A동)",
+  "address": "서울특별시 광진구 아차산로 412 (업무시설 A동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 근처 {추론}",
+  "note": "이 공고의 근무지는 '서울 광진구'이고 [2], 도로명 주소는 같은 조직(로켓페이)의 다른 공고에 적힌 것이다 [29]. 2023년 팀 안내는 잠실 오피스를 주 근무지로 적어 그 뒤 옮긴 것으로 보인다 [4] {추론}."
+ }
+}
