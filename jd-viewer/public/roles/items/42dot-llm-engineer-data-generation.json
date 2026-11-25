@@ -1,0 +1,1471 @@
+{
+ "id": "42dot-llm-engineer-data-generation",
+ "company": "포티투닷(42dot)",
+ "role": "LLM 엔지니어 — 학습 데이터 생성",
+ "team": "LLM Engineer (Data Generation) · 모델 성능을 데이터로 올리는 Data-Centric AI 자리(Gleo AI 의 LLM)",
+ "jobs": [
+  "ats-ashby:42dot:c8f106b0-a428-4a87-a823-40c3fdde27ae"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "언어모델이 **어디서 틀리는지 찾아, 그걸 고칠 학습 데이터를 설계·생성·평가**합니다 — 지시·선호·추론·분야 데이터를 LLM 으로 만들고(합성 데이터), 거르고, 학습해 보고 효과를 재서 다음 판을 고치는 일입니다.[1]",
+  "env": "포티투닷은 현대차·기아 차량 음성 비서 **Gleo AI** 를 만들고, 자체 42dot LLM 을 사후학습해 씁니다 — 2026-05 신형 그랜저부터 실렸습니다.[4][7][10]2026-09 Gleo Guard 글에서 정책 → 공격자 LLM 합성 데이터 → 검증기 → SFT → GRPO 공정과 내부 평가 숫자를 공개했고, 한국어·차량 데이터가 웹에 적어 합성 데이터를 연구한다고 밝혔습니다.[4][8] 도구는 Python 과 LLM API, 큰 규모에서는 Airflow·Ray·Spark 입니다.[1]",
+  "oneline": "모델을 학습시키는 사람이 아니라 **모델에게 무엇을 먹일지 정하고 만들어, 먹인 효과를 숫자로 증명하는** 사람."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "모델 성능 개선을 위한 데이터 설계 및 생성",
+   "short": "모델이 틀리는 곳을 찾아, 그걸 고칠 학습 데이터를 직접 설계하고 만든다 — 아래 세 줄의 묶음 제목.",
+   "why": "팀 소개가 이 자리를 'Data-Centric AI'(모델 구조보다 데이터를 고쳐 성능을 올리는 관점)라고 부릅니다.[1] 포티투닷 연구진도 한국어·차량 데이터는 웹에서 구하기 어려워 합성 데이터를 연구한다고 말했습니다.[8]",
+   "how_far": "모델 구조와 학습 실행은 옆 자리 LLM Training, 학습된 모델을 줄이고 빠르게 하는 일은 LLM Optimization 이 맡고, 이 자리는 **무엇을 먹일지**를 맡습니다.[2][3]{추론} 포티투닷은 큰 모델에서 7B·1~3B 차량용 모델로 증류(큰 모델의 답으로 작은 모델을 학습)하는 방향을 밝힌 적이 있어, 큰 모델이 만든 데이터가 작은 모델의 학습 재료가 되는 흐름과도 맞닿아 있습니다.[9]{추론}",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "42dot-gleoguard",
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Research 및 Model Training 팀과 협업하여 모델의 성능 병목, Failure Case, 학습 목표를 분석하고 데이터 요구사항을 정의합니다.",
+   "short": "모델이 어디서 왜 틀리는지 모아 분류하고, '이런 데이터가 몇 건 필요하다'는 주문서를 쓰는 일.",
+   "why": "데이터를 많이 만드는 것보다 **모델이 약한 곳**을 겨냥하는 것이 이 팀의 출발점입니다 — 포티투닷은 합성 데이터를 '양을 늘리는 것'이 아니라 '개선이 필요한 지점을 집중적으로 만드는 것'으로 설명했습니다.[8] Gleo Guard 에서는 키워드만 보고 판단하기 어려운 경계 사례(비속어가 있어도 정상인 전화 요청 등)가 그 약한 곳이었습니다.[4]",
+   "actually": {
+    "items": [
+     "**실패 모으기** — 평가셋·사용자 로그·레드티밍(일부러 공격해 보기)에서 틀린 답을 모은다. 포티투닷은 레드티밍 실패를 합성 데이터 파이프라인에 다시 넣는 구조를 다음 계획으로 밝혔다.[4]",
+     "**실패 분류** — '지시를 무시함 / 사실이 틀림 / 도구 인자가 틀림 / 과하게 거절함'처럼 칸을 나눠 칸마다 건수를 센다.{추론}",
+     "**원인 가르기** — 데이터가 없어서인지(그런 예를 본 적 없음), 데이터가 틀려서인지(라벨 오류), 모델 크기의 한계인지를 가른다.{추론}",
+     "**요구사항 쓰기** — '여러 턴에 걸쳐 의도를 드러내는 위험 요청 N건, 그와 짝인 정상 요청 N건'처럼 유형·분량·형식·검증 방법을 적는다. Gleo Guard 의 생성 조건(정책·허용 여부·의도·턴 수·차량 기능 관련성)이 그런 주문서의 예다.[4]",
+     "**학습 목표와 맞추기** — 같은 실패라도 SFT 로 고칠지, 선호 데이터·강화학습으로 고칠지 학습 팀과 정한다. Gleo Guard 는 SFT 로 기본 경계를 익힌 뒤 GRPO 로 경계 사례를 다듬었다.[4]"
+    ]
+   },
+   "how_far": "평가 지표·학습 방법을 혼자 정하지는 않습니다. 최소선은 **실패를 칸으로 나눠 건수로 보이고, 각 칸에 어떤 데이터가 필요한지 한 장으로 쓰는 것**입니다.{추론} 품질이 양을 이긴다는 근거로 LIMA(고른 예시 1,000개로 지시 학습)가 자주 인용됩니다.[13]",
+   "refs": [
+    4,
+    8,
+    13,
+    20
+   ],
+   "study": [
+    "42dot-gleoguard",
+    "cs336-eval",
+    "cme295-eval"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Instruction Data, Preference Data, Reasoning Data, Domain-specific Data 등 목적에 맞는 학습 데이터를 설계·생성·정제합니다.",
+   "short": "지시 따르기·선호 비교·추론 풀이·차량 같은 분야 데이터를 목적마다 다른 모양으로 만든다.",
+   "why": "포티투닷은 1.3B 지시 학습 모델 때 질문·응답 쌍을 직접 구성했고(한 턴·여러 턴), Gleo Guard 에서는 정책에서 출발한 합성 데이터로 SFT 와 강화학습을 했습니다.[5][4] 데이터 종류마다 학습 방식이 달라서 모양도 다릅니다.{추론}",
+   "actually": {
+    "intro": "네 가지는 '한 줄에 무엇이 들어 있나'가 다릅니다.",
+    "items": [
+     "**Instruction(지시) 데이터** — 질문 → 좋은 답 한 쌍. SFT(정답을 보여 주며 따라 하게 하는 학습)에 쓴다. 사람이 쓴 씨앗 175개에서 모델이 5만 개 넘게 늘린 Self-Instruct 가 시작점이다.[11]",
+     "**Preference(선호) 데이터** — 질문 하나에 더 나은 답과 덜 나은 답 한 쌍. DPO(보상 모델 없이 쌍을 바로 학습)·RLHF 에 쓴다.[16] UltraFeedback 은 프롬프트 약 6만 4천 개에 답을 4개씩 만들어 GPT-4 가 채점했다.[15]",
+     "**Reasoning(추론) 데이터** — 답만이 아니라 풀이 과정까지. 정답을 맞힌 풀이만 남겨 다시 학습하는 STaR, 단계마다 라벨을 붙인 PRM800K, 거절 표집(여러 번 풀게 해 맞은 것만 남김)으로 약 60만 개를 모은 DeepSeek-R1 이 대표 예다.[21][22][50]",
+     "**Domain(분야) 데이터** — 차량처럼 웹에 없는 말투·기능. Gleo Guard 는 전화·문자·목적지·차량 제어를 '허용/차단/추가 확인'으로 정한 행동 단위 데이터를 따로 만들었고, 실제 전화번호·주소는 넣지 않았다.[4]",
+     "**정제** — 형식이 깨진 것, 정책과 어긋난 것, 개인정보가 든 것을 빼는 단계. Nemotron-4 340B 는 정렬 데이터의 98% 넘게를 합성으로 만들었을 만큼 생성 자체는 싸져서, 남길 것을 고르는 쪽이 일의 큰 몫이다.[26][4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "선호 데이터 한 줄은 이렇게 생겼다",
+     "body": "TRL 같은 학습 도구는 선호 데이터를 질문(prompt)·고른 답(chosen)·버린 답(rejected) 세 칸으로 받습니다.[37] 차량 예로 바꾸면 질문 '창문 열어 줘(주행 중, 뒷좌석 아이 잠금 켜짐)', 고른 답 '뒷좌석은 잠금이 켜져 있어 운전석 창문만 열게요', 버린 답 '네, 모든 창문을 열게요' 같은 꼴입니다.{추론}"
+    }
+   ],
+   "how_far": "네 종류 모두 처음부터 혼자 만들 필요는 없고, **종류마다 '한 줄의 모양'과 '좋은 한 줄의 기준'을 말할 수 있는 것**이 최소선입니다.{추론}",
+   "refs": [
+    4,
+    5,
+    11,
+    14,
+    15,
+    16,
+    21,
+    22,
+    26,
+    50
+   ],
+   "study": [
+    "hands-on-llm",
+    "cs336-posttrain",
+    "trl-docs",
+    "tulu3"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "생성된 데이터가 모델 성능에 미치는 영향을 실험적으로 분석하고, 결과를 바탕으로 데이터 생성 전략을 반복적으로 개선합니다.",
+   "short": "데이터를 넣고 뺀 모델을 비교해, 그 데이터가 정말 점수를 올렸는지 숫자로 확인하고 다음 판을 고친다.",
+   "why": "만든 데이터가 좋은지는 **학습해 봐야** 압니다. Gleo Guard 글도 개선 사례가 악화 사례보다 4.2배 많다는 것으로 '재생성 잡음이 아니라 실제 효과'라고 판단했습니다.[4]",
+   "actually": {
+    "items": [
+     "**제거 실험(ablation)** — 같은 기반 모델·같은 설정에서 새 데이터만 넣고 뺀 두 모델을 학습해 비교한다. Tülu 3 보고서가 데이터 묶음마다 이렇게 넣고 뺀 표를 공개했다.[49]",
+     "**작게 먼저** — 작은 모델·짧은 학습으로 방향을 보고, 효과가 보이면 큰 모델로 옮긴다.{추론}",
+     "**전체 점수와 칸별 점수** — 겨냥한 실패 칸이 좋아졌는지와, 다른 능력이 떨어지지 않았는지(망각)를 같이 본다.{추론}",
+     "**섞는 비율** — 새 데이터를 몇 % 섞을지도 실험 변수다. Llama 3 도 데이터 섞는 비율을 작은 모델 실험으로 정했다.[14]",
+     "**차이가 잡음보다 큰가** — 평가셋이 작으면 몇 %p 차이는 우연일 수 있어 신뢰 구간을 낸다(아래 예)."
+    ]
+   },
+   "examples": [
+    {
+     "title": "500문항에서 8%p 올랐다 — 우연일까",
+     "lang": "python",
+     "body": "가상 정답 기록 두 줄(기존 모델 · 새 데이터 넣은 모델)을 2,000번 다시 뽑아(bootstrap) 차이의 95% 구간을 냈습니다. 구간이 0 을 넘지 않으므로 이 표본에서는 우연으로 보기 어렵습니다. 문항이 적거나 차이가 작으면 구간이 0 을 걸칩니다.{추론}",
+     "code": "import random\nrandom.seed(0)\nn = 500\nbase = [1 if random.random() < 0.62 else 0 for _ in range(n)]\nnew = [1 if random.random() < 0.66 else 0 for _ in range(n)]\nd = sum(new) / n - sum(base) / n\ndiffs = []\nfor _ in range(2000):\n    idx = [random.randrange(n) for _ in range(n)]\n    diffs.append(sum(new[i] - base[i] for i in idx) / n)\ndiffs.sort()\nprint(round(d, 3), round(diffs[50], 3), round(diffs[1949], 3))\n# 출력: 0.08 0.022 0.136"
+    }
+   ],
+   "how_far": "실험 설계(무엇과 무엇을 비교할지)와 결과 해석은 이 자리가 맡고, 큰 학습 실행은 학습 팀과 나눌 것으로 보입니다.[2]{추론} 최소선은 **'이 데이터 묶음을 넣으면 이 칸이 몇 %p, 구간은 얼마'를 표 한 장으로 보이는 것**입니다.{추론}",
+   "refs": [
+    4,
+    14,
+    49
+   ],
+   "study": [
+    "cs336-eval",
+    "tulu3",
+    "cme295-tuning"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Data Generation Pipeline 구축",
+   "short": "데이터 만들기를 사람 손이 아니라 반복해 돌릴 수 있는 자동 공정으로 만든다 — 아래 세 줄의 묶음 제목.",
+   "why": "포티투닷은 합성 데이터 생성 → 형식 검증 → 품질 평가 → 다시 학습을 하나의 **순환 구조**로 설명했습니다.[8] 순환을 자주 돌리려면 공정이 자동이어야 합니다.{추론}",
+   "flows": [
+    {
+     "caption": "Gleo Guard 에서 밝힌 정책 → 데이터 흐름",
+     "steps": [
+      "정책 카드 · 허용·제한 규칙과 차량 예외를 카드로",
+      "생성 조건 조합 · 정책 × 허용 여부 × 의도 × 턴 수 × 차량 기능",
+      "사례 생성 · 공격자 LLM 이 경계 사례·짝인 정상 사례",
+      "검증기 · 정책·기대 행동이 맞는지, 위험·개인정보 제거",
+      "공개 데이터 보완 · 라벨 맞추기·중복 제거",
+      "SFT → GRPO · 사람 검수 신호로 다듬기"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "흐름은 Gleo Guard 글에 적힌 단계를 그대로 옮긴 것이고, 이 공고의 팀이 같은 공정을 쓰는지는 공개되지 않았습니다.[4]{추론}",
+   "refs": [
+    8
+   ],
+   "study": [
+    "cs336-data2",
+    "datatrove"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Synthetic Data를 포함한 학습 데이터 생성 자동화 파이프라인을 설계하고 운영합니다.",
+   "short": "프롬프트 틀·생성 모델·검사기를 엮어 '주문서 → 데이터'가 자동으로 나오는 공정을 만들고 돌린다.",
+   "why": "합성 데이터(모델이 만든 학습 데이터)는 한국어·차량 데이터가 부족한 문제의 회사 답입니다.[8] Gleo Guard 도 공격자 역할 LLM 으로 경계 사례를 만들었습니다.[4]",
+   "actually": {
+    "intro": "합성 방법은 보통 몇 갈래로 나뉩니다.",
+    "items": [
+     "**씨앗에서 늘리기** — 사람이 쓴 예 몇 개를 보여 주고 비슷한 새 예를 만들게 한다(Self-Instruct).[11]",
+     "**어렵게 바꾸기** — 있는 지시에 조건을 더하거나 단계를 늘려 난도를 올린다(Evol-Instruct).[12]",
+     "**틀만 주기** — 질문 칸을 비운 채팅 틀만 주면 정렬된 모델이 질문을 스스로 지어낸다는 점을 쓴다(Magpie).[27]",
+     "**조건 조합** — 정책·의도·턴 수 같은 축을 곱해 빈칸 없이 덮는다. Gleo Guard 의 방식이다.[4]",
+     "**실행해서 확인** — 도구 호출 데이터는 형식 검사 → 실제 실행 → 의미 검사 3단으로 거른다(APIGen).[28]",
+     "**운영** — 프롬프트 틀·생성 모델·검사 규칙에 판 번호를 붙여, 어떤 판이 만든 데이터인지 줄마다 남긴다.{추론}"
+    ]
+   },
+   "how_far": "생성 모델을 직접 학습하지는 않습니다. 최소선은 **주문서 하나를 넣으면 생성 → 검사 → 저장이 끝까지 돌고, 다시 돌려도 같은 판을 재현할 수 있는 공정**입니다.{추론}",
+   "refs": [
+    4,
+    8,
+    11,
+    12,
+    27,
+    28
+   ],
+   "study": [
+    "self-instruct",
+    "hands-on-llm",
+    "cs336-data2"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 데이터 생성 Workflow를 구축하여 안정적이고 효율적인 데이터 생산 환경을 제공합니다.",
+   "short": "수십만 건을 만들 때 멈추거나 중복되지 않게 작업을 쪼개 예약·재시도·이어 하기를 하는 일.",
+   "why": "생성 호출이 수십만 번이면 일부는 반드시 실패합니다 — 시간 초과·형식 깨짐·API 제한.{추론} 우대 줄에 Airflow·Ray·Spark 가 있는 이유입니다.[1]",
+   "actually": {
+    "items": [
+     "**작업 쪼개기** — 주문서를 수천 개 조각으로 나눠 조각마다 끝났는지 기록한다. 멈추면 끝난 조각은 건너뛰고 이어 한다.{추론}",
+     "**예약·의존** — '생성 → 검사 → 중복 제거 → 내보내기'를 순서 그래프(DAG)로 예약한다(Airflow).[32]",
+     "**GPU 로 직접 생성** — 자체·공개 모델로 만들 때는 vLLM 같은 추론 엔진으로 묶어 돌린다. vLLM 은 KV 캐시 메모리를 쪽(page) 단위로 관리해 처리량을 올렸다.[35] Ray Data 는 GPU 작업자에 묶음 추론을 나눠 맡긴다.[33]",
+     "**API 로 생성** — 급하지 않은 대량 호출은 일괄 처리(Batch API)로 보내면 24시간 안에 50% 싸게 받는다.[36]",
+     "**같은 일 두 번 안 하기** — 입력 해시로 이미 만든 것은 다시 부르지 않는다.{추론}"
+    ]
+   },
+   "how_far": "클러스터 자체 운영은 인프라 쪽 몫으로 보이고, 이 자리는 **데이터 공정이 멈춰도 이어 돌고, 몇 건이 어디서 실패했는지 보이는 상태**까지 책임집니다.{추론}",
+   "refs": [
+    1,
+    32,
+    33,
+    35,
+    36
+   ],
+   "study": [
+    "ray-data",
+    "vllm-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "생성 비용, 처리 속도 및 품질을 고려한 Pipeline을 지속적으로 최적화합니다.",
+   "short": "같은 품질을 더 싸고 빠르게 — 버려지는 생성까지 셈한 '남은 한 건당 비용'을 줄이는 일.",
+   "why": "합성 데이터는 만들고 나서 상당수를 버리므로, 진짜 비용은 **남은 한 건당** 비용입니다.{추론} 작은 모델과 큰 모델의 요청당 비용 차이가 수십 배라는 설명도 포티투닷 기술 설명회 글에 나옵니다.[8]",
+   "actually": {
+    "items": [
+     "**모델 고르기** — 쉬운 생성은 작은 모델, 어려운 생성·심판은 큰 모델로 나눈다.{추론}",
+     "**앞에서 싸게 거르기** — 형식·길이 같은 규칙 검사를 비싼 LLM 심판보다 먼저 돌린다.{추론}",
+     "**묶어 보내기** — 일괄 처리 할인과 GPU 묶음 추론으로 단가를 낮춘다.[36][35]",
+     "**남는 비율 올리기** — 버려지는 이유를 세어 프롬프트 틀을 고치면, 같은 비용에 남는 건수가 는다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "10만 건 만들어 55% 남기면 한 건에 얼마",
+     "lang": "python",
+     "body": "가상 단가(입력·출력 100만 토큰당 1·4달러)로 생성 220달러, 심판 110달러, 남은 한 건당 약 0.006달러입니다. 남는 비율이 55% → 80% 가 되면 같은 돈으로 남는 건수가 약 1.45배가 됩니다. 단가는 지어낸 값이라 실제 계약값과 다릅니다.{추론}",
+     "code": "n = 100_000; tin = 600; tout = 400\np_in, p_out = 1.0, 4.0   # 가상 단가: 100만 토큰당 달러\nkeep = 0.55              # 거르고 남는 비율\ngen = n * (tin * p_in + tout * p_out) / 1e6\njudge = n * (900 * p_in + 50 * p_out) / 1e6\nprint(round(gen), round(judge), round((gen + judge) / (n * keep), 4))\n# 출력: 220 110 0.006"
+    }
+   ],
+   "how_far": "최소선은 **공정의 단계마다 비용·시간·버린 비율을 숫자로 내고, 어디를 바꿔 얼마 줄었는지 보이는 것**입니다.{추론}",
+   "refs": [
+    8,
+    35,
+    36
+   ],
+   "study": [
+    "ai-engineering",
+    "vllm-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Data Quality 및 Evaluation",
+   "short": "만든 데이터가 좋은지, 학습에 도움이 됐는지를 재는 기준과 도구를 만든다 — 아래 세 줄의 묶음 제목.",
+   "why": "포티투닷 연구진은 자기 모델이 만든 데이터로 다시 학습하면 잘하는 곳만 강해지고 오류가 되풀이될 수 있다는 우려(모델 붕괴)를 '만만치 않은 과제'로 인정하고, 엄격한 거르기와 실패 되먹임으로 대응한다고 했습니다.[8] 모델 붕괴는 Nature 논문이 생성 데이터를 대를 이어 학습하면 분포의 꼬리(드문 경우)가 사라진다고 보고한 현상입니다.[23]",
+   "refs": [
+    8,
+    23
+   ],
+   "study": [
+    "cs336-eval",
+    "cme295-eval"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터의 품질과 학습 효과를 정량적·정성적으로 평가하는 기준을 정의합니다.",
+   "short": "'좋은 데이터'를 숫자 기준(통과율·중복률·다양성)과 사람이 읽는 기준(정확·자연스러움)으로 적는 일.",
+   "why": "기준이 없으면 생성기·심판이 바뀔 때마다 '좋다'의 뜻이 바뀝니다.{추론} Gleo Guard 는 정책 일치·기대 행동 일치·위험 정보와 개인정보 없음을 검증 기준으로 썼고, 학습 효과는 Macro Accuracy(안전·위험 각각의 정답률 평균)와 과잉 차단율로 쟀습니다.[4]",
+   "actually": {
+    "items": [
+     "**데이터 한 줄의 기준** — 형식이 맞나, 지시대로 답했나, 사실이 맞나, 안전한가, 너무 짧거나 길지 않나.{추론}",
+     "**묶음 전체의 기준** — 중복률, 주제·난도의 고르기, 정책 칸마다 빈칸이 없나. 중복은 학습을 해치는 것으로 알려져 있다 — C4 에서는 61단어 문장 하나가 6만 번 넘게 반복됐다.[24]",
+     "**학습 효과의 기준** — 그 데이터를 넣은 모델의 칸별 점수 변화(위 제거 실험).{추론}",
+     "**정성 평가** — 무작위 표본을 사람이 읽고 실패 유형을 적는다. 숫자가 놓치는 '이상하게 같은 말투' 같은 것을 잡는다.{추론}",
+     "**점수로 거르기** — FineWeb-Edu 는 큰 모델이 매긴 교육성 점수로 작은 분류기를 학습해 수조 토큰을 걸렀다.[25]"
+    ]
+   },
+   "how_far": "기준표 초안을 이 자리가 쓰고, 학습 팀·서비스 팀과 맞춰 확정하는 그림으로 읽습니다.{추론}",
+   "refs": [
+    4,
+    24,
+    25
+   ],
+   "study": [
+    "cs336-data",
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LLM-as-a-Judge, Rule-based Validation, Human Feedback 등을 활용하여 데이터 품질을 검증합니다.",
+   "short": "LLM 심판·규칙 검사·사람 검수를 섞어 걸러내고, 심판이 사람과 얼마나 맞는지도 잰다.",
+   "why": "포티투닷은 이 세 가지를 실제로 썼습니다 — 1.3B 지시 모델은 GPT-4 심판으로 121문항을 평가했고, Gleo Guard 는 검증기로 데이터를 거른 뒤 사람이 검수한 신호로 강화학습을 했으며, 실제 흐름 15,010건은 Kanana Safeguard 8B 가 채점했습니다.[5][4]",
+   "actually": {
+    "items": [
+     "**규칙 검사(Rule-based)** — JSON 이 열리나, 값이 허용 범위인가, 금지어·개인정보 패턴이 없나. 싸고 빨라서 맨 앞에 둔다(아래 예).{추론}",
+     "**LLM 심판** — 기준표를 주고 점수나 둘 중 나은 쪽을 고르게 한다. GPT-4 심판은 사람과 80% 넘게 일치해 사람끼리의 일치와 비슷했지만, 앞에 놓인 답·긴 답·자기 답을 편드는 버릇이 있다.[20] 순서만 바꿔도 판정이 뒤집히므로 두 순서로 물어 본다.[47]",
+     "**사람 검수** — 표본을 사람이 라벨해 심판의 정답지로 쓰고, 심판과 사람의 일치도(카파)를 잰다.[46]",
+     "**섞는 순서** — 규칙 → LLM 심판 → 애매한 것만 사람.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "규칙 검사로 5건 중 3건을 버리다",
+     "lang": "python",
+     "body": "가상 차량 명령 데이터에서 JSON 이 깨진 것 1건, 온도가 허용 범위(16~30도, 가상 규칙)를 넘는 것 1건, 띄어쓰기만 다른 중복 1건을 버리고 2건이 남습니다. LLM 심판을 부르기 전에 이렇게 싼 검사로 먼저 줄입니다.{추론}",
+     "code": "import json, re\nsamples = [\n {\"q\": \"에어컨 22도로 맞춰줘\", \"a\": '{\"action\":\"set_ac\",\"temp\":22}'},\n {\"q\": \"에어컨 22도로 맞춰 줘\", \"a\": '{\"action\":\"set_ac\",\"temp\":22}'},\n {\"q\": \"창문 좀 열어\", \"a\": '{\"action\":\"open_window\",\"seat\":\"driver\"'},\n {\"q\": \"히터 40도\", \"a\": '{\"action\":\"set_ac\",\"temp\":40}'},\n {\"q\": \"근처 주유소 찾아줘\", \"a\": '{\"action\":\"search_poi\",\"category\":\"gas\"}'},\n]\ndef ok(s):\n    try:\n        a = json.loads(s[\"a\"])\n    except json.JSONDecodeError:\n        return \"json\"\n    if a.get(\"action\") == \"set_ac\" and not 16 <= a[\"temp\"] <= 30:\n        return \"range\"\n    return None\ndef norm(t):\n    return re.sub(r\"\\s+\", \"\", t)\nseen, kept, why = set(), [], {}\nfor s in samples:\n    r = ok(s)\n    if r:\n        why[r] = why.get(r, 0) + 1\n        continue\n    k = norm(s[\"q\"])\n    if k in seen:\n        why[\"dup\"] = why.get(\"dup\", 0) + 1\n        continue\n    seen.add(k)\n    kept.append(s)\nprint(len(kept), why)\n# 출력: 2 {'dup': 1, 'json': 1, 'range': 1}"
+    },
+    {
+     "title": "심판이 사람과 85% 맞는데 믿어도 되나",
+     "lang": "python",
+     "body": "가상 20건에서 일치율은 0.85 지만 우연한 일치를 뺀 카파는 0.63 입니다. 사람이 '나쁨'이라 한 7건 중 3건을 심판이 '좋음'으로 통과시켰습니다 — 거르기 용도로는 이 칸이 가장 위험합니다.[46]{추론}",
+     "code": "human = [1,1,0,1,0,1,1,0,0,1,1,1,0,1,0,1,1,0,1,1]\njudge = [1,1,0,1,1,1,1,0,1,1,1,1,0,1,0,1,1,1,1,1]\nn = len(human)\nagree = sum(h == j for h, j in zip(human, judge)) / n\nph, pj = sum(human) / n, sum(judge) / n\npe = ph * pj + (1 - ph) * (1 - pj)\nkappa = (agree - pe) / (1 - pe)\nfp = sum(1 for h, j in zip(human, judge) if h == 0 and j == 1)\nprint(round(agree, 2), round(kappa, 2), fp, n - sum(human))\n# 출력: 0.85 0.63 3 7"
+    }
+   ],
+   "how_far": "최소선은 **심판 프롬프트를 쓰는 것에서 그치지 않고, 사람 라벨 표본으로 심판을 검증해 숫자로 보이는 것**입니다.{추론}",
+   "refs": [
+    4,
+    5,
+    20,
+    46,
+    47
+   ],
+   "study": [
+    "mt-bench",
+    "cme295-eval",
+    "deepeval"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 품질 개선을 위한 Iterative Generation 및 Filtering 전략을 개발합니다.",
+   "short": "만들고 → 거르고 → 실패를 보고 → 생성 틀을 고쳐 다시 만드는 고리를 여러 번 돌리는 전략.",
+   "why": "포티투닷은 시뮬레이션에서 찾은 실패를 다시 학습 데이터로 넣는 순환을 만들고 있다고 했고, Gleo Guard 다음 계획으로도 레드티밍 실패를 합성 파이프라인에 되돌리는 구조를 밝혔습니다.[8][4]",
+   "actually": {
+    "items": [
+     "**자기 비평·고치기** — 모델이 원칙에 비춰 제 답을 비평하고 고친 답으로 학습한다(Constitutional AI).[18]",
+     "**맞힌 것만 남기기** — 여러 번 풀게 해 정답·실행 통과한 것만 남긴다(STaR, 거절 표집). Llama 3 는 실행 결과로 거른 코드 합성 데이터를 약 270만 개 만들었다.[21][14][50]",
+     "**어려운 것 더 만들기** — 모델이 이미 다 맞히는 쉬운 예는 줄이고, 틀리는 칸의 예를 늘린다.{추론}",
+     "**붕괴 막기** — 사람이 쓴 원래 데이터를 버리지 않고 섞어 두고, 다양성 지표가 줄면 멈춘다. 생성 데이터만으로 대를 이으면 드문 경우가 사라진다는 보고가 있다.[23]{추론}"
+    ]
+   },
+   "how_far": "고리를 몇 번 돌리고 언제 멈출지(점수가 더 안 오를 때)를 정하는 것까지가 이 자리 몫으로 보입니다.{추론}",
+   "refs": [
+    4,
+    8,
+    14,
+    18,
+    21,
+    23,
+    50
+   ],
+   "study": [
+    "cs336-rlvr",
+    "cme295-reasoning",
+    "self-instruct"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM, Machine Learning 또는 Data Generation 관련 업무 경력 3년 이상",
+   "short": "LLM·머신러닝·데이터 생성 중 하나로 3년 넘게 일한 경력 — 꼭 LLM 이 아니어도 된다.",
+   "why": "세 분야를 '또는'으로 묶어 문을 넓혔습니다.[1] 옆 자리 LLM Training 공고와 비교하면 이 자리는 학습 실행보다 데이터 쪽 경험을 봅니다.[2]",
+   "how_far": "LLM 이전의 머신러닝 데이터 일(라벨링 공정·데이터 품질 관리·추천 학습 데이터)도 3년에 넣어 설명할 수 있다고 읽습니다.{추론} 이력서에는 **어떤 데이터를 몇 건 만들어 무엇이 몇 % 나아졌나**를 적는 편이 이 공고에 맞습니다.{추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "딥러닝, 머신러닝 및 자연어처리에 대한 전반적인 이해",
+   "short": "학습이 어떻게 데이터에 반응하는지(손실·과적합·토큰화) 아는 정도의 바탕 지식.",
+   "why": "데이터가 모델 점수를 왜 바꾸는지 설명하려면 학습의 기본이 필요합니다.{추론} 전형에 코딩·과제 테스트가 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**학습의 기본** — 손실 함수, 과적합, 학습·검증·평가셋을 나누는 이유.{추론}",
+     "**언어모델** — 다음 토큰 예측, 토큰화가 한국어 길이에 주는 영향, 문맥 길이.{추론}",
+     "**사후학습** — SFT·선호 학습·강화학습이 데이터를 각각 어떤 모양으로 받는지.[37]"
+    ]
+   },
+   "how_far": "모델을 처음부터 짤 수준까지는 아니어도, **작은 모델을 직접 미세조정해 본 손 경험**이 있으면 면접에서 말할 거리가 생깁니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "llm-scratch-kr",
+    "cs336-posttrain",
+    "cme295-tuning"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모델 학습 데이터의 구성, 전처리, 품질 평가 및 학습 반영 과정에 대한 이해",
+   "short": "데이터가 어떤 칸으로 짜이고, 어떻게 다듬어져, 학습에 몇 % 섞여 들어가는지 흐름 전체를 아는 것.",
+   "why": "업무 세 묶음(설계·공정·품질)을 한 줄로 줄인 요건입니다.[1]",
+   "actually": {
+    "items": [
+     "**구성** — 데이터 묶음(지시·선호·추론·분야)과 섞는 비율.[49]",
+     "**전처리** — 대화 형식을 모델의 채팅 틀(chat template)에 맞추기, 길이 자르기, 개인정보 지우기.[51]",
+     "**품질 평가** — 위 기준표와 심판.{추론}",
+     "**학습 반영** — 데이터 판 번호·섞는 비율·에폭을 학습 설정과 같이 기록해, 어떤 모델이 어떤 데이터로 나왔는지 거꾸로 찾을 수 있게.{추론} Llama 3 보고서가 이 흐름을 단계별로 공개한 좋은 예다.[14]"
+    ]
+   },
+   "how_far": "최소선은 **공개 사후학습 보고서 하나(Tülu 3·Llama 3)의 데이터 흐름을 그림으로 그려 설명하는 것**입니다.[49][14]{추론}",
+   "refs": [
+    1,
+    14,
+    49,
+    51
+   ],
+   "study": [
+    "cs336-data",
+    "cs336-data2",
+    "tulu3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python 기반 데이터 처리 및 자동화 개발 역량",
+   "short": "수십만 줄 JSONL 을 Python 으로 읽고 거르고 합치고, 그 일을 스크립트·작업으로 자동화하는 힘.",
+   "why": "공고 기술 표기가 Python 이고, 생성·검사·중복 제거·내보내기가 모두 데이터 처리 코드입니다.[1]",
+   "level": {
+    "basic": "JSON·JSONL 읽고 쓰기, 정규식, 집계, 예외 처리",
+    "work": "멀티프로세싱·비동기로 API 수천 번 호출, 재시도·속도 제한, 데이터 판 관리",
+    "team": "Ray·datatrove 같은 분산 처리로 수백만 줄을 거르고 중복 제거{추론}"
+   },
+   "how_far": "비동기 호출·재시도·체크포인트가 있는 스크립트를 직접 짜 본 적이 있으면 실무선이라고 읽습니다.{추론}",
+   "refs": [
+    1,
+    33,
+    39
+   ],
+   "study": [
+    "datatrove",
+    "ray-data"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 학습 데이터셋의 처리, 정제, 필터링 및 품질 관리 경험 또는 이에 준하는 역량",
+   "short": "메모리에 안 들어가는 크기의 데이터를 거르고 중복을 지우며 품질을 지켜 본 경험.",
+   "why": "생성 데이터와 공개 데이터를 합치면 크기가 금방 커지고, Gleo Guard 도 공개 안전 데이터를 라벨에 맞추고 중복을 지워 넣었습니다.[4]",
+   "actually": {
+    "items": [
+     "**중복 제거** — 완전 같은 것은 해시로, 거의 같은 것은 MinHash(단어 묶음 집합이 얼마나 겹치는지 빠르게 어림) 같은 방법으로.[24][39]",
+     "**거르기** — 언어 판별, 길이, 반복 비율, 품질 분류기 점수.[25]",
+     "**오염 막기** — 평가셋 문항이 학습 데이터에 섞이면 점수가 부풀려진다. 문장을 바꿔 쓴 것까지는 단순 겹침 검사로 못 잡는다는 보고가 있다.[48]",
+     "**품질 관리** — 판마다 건수·거른 이유·표본 검수 결과를 기록한다.{추론}"
+    ]
+   },
+   "how_far": "'이에 준하는 역량'이라고 열어 두어, 공개 데이터셋을 직접 걸러 본 개인 프로젝트도 설명 거리로 쓸 수 있다고 읽습니다.[1]{추론}",
+   "refs": [
+    4,
+    24,
+    25,
+    39,
+    48
+   ],
+   "study": [
+    "datatrove",
+    "cs336-data"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM을 활용한 Synthetic Data 생성, Data Evaluation 또는 Data Curation 경험",
+   "short": "LLM 으로 데이터를 만들거나, 평가하거나, 골라 모아 본 경험 — 셋 중 하나면 된다.",
+   "why": "이 자리의 본업 셋을 그대로 요건으로 옮긴 줄입니다.[1] 포티투닷은 세 가지 모두를 Gleo Guard 에서 했습니다(생성 → 검증 → 공개 데이터 선별).[4]",
+   "actually": {
+    "items": [
+     "**생성** — 씨앗 예 → 합성 → 거르기의 한 바퀴.[11]",
+     "**평가** — 답 여러 개를 LLM 이 채점해 선호 쌍을 만든 UltraFeedback 같은 일.[15]",
+     "**큐레이션** — 있는 데이터에서 남길 것을 고르는 일(점수 기반 거르기·중복 제거·섞기).[25]"
+    ]
+   },
+   "how_far": "경험을 말할 때는 **몇 건을 만들어 몇 % 를 버렸고, 그 데이터로 무엇이 얼마나 나아졌나**를 숫자로 대는 것이 핵심이라고 봅니다.{추론}",
+   "refs": [
+    1,
+    4,
+    11,
+    15,
+    25
+   ],
+   "study": [
+    "self-instruct",
+    "hands-on-llm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM API 및 Prompting/Generation Strategy에 대한 이해 또는 활용 경험",
+   "short": "LLM API 를 코드로 불러 프롬프트·온도·형식을 조절해 원하는 데이터를 뽑아 본 경험.",
+   "why": "합성 데이터의 품질과 비용은 프롬프트 틀과 생성 설정에서 대부분 정해집니다.{추론} 공고 기술 태그에 OpenAI 가 붙어 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**프롬프트 틀** — 역할·기준·예시(few-shot)·출력 형식(JSON 스키마)을 나눠 쓴다. Gleo Guard 는 같은 정책을 여러 시스템 프롬프트·예시로 바꿔 구성해 특정 예시만 외우지 않게 했다.[4]",
+     "**생성 설정** — 온도·top-p 로 다양성과 정확성을 맞바꾼다.{추론}",
+     "**전략** — 조건 조합, 난도 올리기(Evol-Instruct), 틀만 주기(Magpie).[12][27]",
+     "**API 운영** — 구조화 출력·일괄 처리·속도 제한·재시도.[36]"
+    ]
+   },
+   "how_far": "여러 회사 API 와 자체 모델을 바꿔 끼울 수 있게 호출부를 감싸 본 경험이면 충분히 실무선입니다.{추론}",
+   "refs": [
+    1,
+    12,
+    27,
+    36
+   ],
+   "study": [
+    "hands-on-llm",
+    "cs329z-tools"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "뛰어난 문제 해결 능력과 협업 및 커뮤니케이션 역량",
+   "short": "학습·연구 팀의 '모델이 이상하다'를 데이터 문제로 바꿔 정의하고, 결과를 표로 설명하는 힘.",
+   "why": "첫 업무 줄이 Research·Model Training 팀과의 협업입니다.[1] 데이터 쪽 결정(무엇을 몇 % 섞을지)은 학습 결과를 같이 본 팀이 정합니다.{추론}",
+   "how_far": "면접(2차 3시간)에서 지난 일의 문제 정의·대안·결과를 순서대로 설명할 수 있게 준비합니다.[1]{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM Pre-training, Supervised Fine-tuning(SFT), Preference Optimization(DPO/RLHF/RLAIF) 등 LLM 대규모 학습 데이터 구축 경험",
+   "short": "사전학습 말뭉치·SFT 데이터·선호 데이터 중 하나라도 큰 규모로 만들어 본 경험.",
+   "why": "포티투닷은 1.3B 모델을 1.4조 토큰으로 사전학습하고 지시 데이터를 직접 만든 적이 있고, Gleo Guard 에서는 SFT 뒤 GRPO 를 했습니다.[6][5][4]",
+   "actually": {
+    "items": [
+     "**사전학습 데이터** — 웹 문서를 거르고 중복 제거한 수조 토큰 말뭉치(FineWeb 처럼).[25]",
+     "**SFT 데이터** — 지시·답 쌍. 양보다 고른 품질이 중요하다는 보고가 많다.[13]",
+     "**RLHF** — 사람이 매긴 선호로 보상 모델을 학습하고 강화학습(InstructGPT).[17]",
+     "**DPO** — 보상 모델 없이 선호 쌍을 바로 학습.[16]",
+     "**RLAIF** — 선호 라벨을 사람 대신 AI 가 매긴다. 요약 과제 등에서 RLHF 와 비슷한 결과가 보고됐다.[19]",
+     "**GRPO** — 답 여러 개를 묶음 안에서 비교해 보상하는 강화학습. Gleo Guard 가 쓴 방식이다.[38][4]"
+    ]
+   },
+   "how_far": "우대 줄이라 전부 할 필요는 없고, 셋 중 하나의 데이터를 직접 만들어 학습까지 이어 본 경험이면 강점입니다.{추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    16,
+    17,
+    19,
+    25,
+    38
+   ],
+   "study": [
+    "cs336-posttrain",
+    "cs336-rlvr",
+    "trl-docs",
+    "tulu3"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM Evaluation Framework(OpenAI Evals, LM Evaluation Harness, DeepEval 등) 또는 자체 평가 시스템 구축 경험",
+   "short": "공개 평가 도구를 써 보거나, 우리 데이터에 맞는 평가 시스템을 직접 만들어 본 경험.",
+   "why": "데이터 효과를 재려면 평가가 자동으로 돌아야 합니다.{추론} Gleo Guard 의 평가셋은 포티투닷 내부 평가셋이었고, 외부 검증은 없었습니다.[4]",
+   "actually": {
+    "items": [
+     "**OpenAI Evals** — 평가 과제를 등록부에 적어 두고 모델마다 돌리는 틀.[29]",
+     "**LM Evaluation Harness** — 학계 벤치마크를 같은 조건으로 돌리는 도구. 체크포인트마다 점수를 내는 데 흔히 쓴다.[30]",
+     "**DeepEval** — 단위 테스트처럼 LLM 답을 지표(LLM 심판 기반 포함)로 검사하는 도구.[31]",
+     "**자체 평가** — 차량 명령처럼 공개 벤치마크가 없는 분야는 평가셋·채점기를 직접 만든다. Gleo Guard 가 그 예다.[4]"
+    ]
+   },
+   "how_far": "공개 도구에 내 과제 하나를 붙여 본 것만으로도 이 줄의 첫걸음입니다.{추론}",
+   "refs": [
+    4,
+    29,
+    30,
+    31
+   ],
+   "study": [
+    "lm-eval-harness",
+    "deepeval",
+    "openai-evals"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "멀티턴 대화, Tool Calling, Agent, Reasoning, Code Generation 등 고난도 LLM 데이터 설계 경험",
+   "short": "한 번 묻고 답하는 것보다 어려운 데이터 — 여러 턴·도구 호출·에이전트·풀이·코드 — 를 설계해 본 경험.",
+   "why": "Gleo AI 는 차량 기능을 음성으로 실행하는 에이전트라 도구 호출과 여러 턴 대화가 핵심이고, Gleo Guard 도 여러 턴에 걸쳐 의도를 드러내는 사례를 일부러 만들었습니다.[7][4]",
+   "actually": {
+    "items": [
+     "**여러 턴** — 앞 턴의 '거기'·'그거'를 이어 받는지, 중간에 의도가 바뀌는지.[4]",
+     "**도구 호출** — 함수 이름·인자가 맞는지 실제 실행으로 확인한다(APIGen 의 3단 검사).[28]",
+     "**추론** — 답만 맞고 풀이가 틀린 경우를 걸러야 해서, 단계별 라벨이나 검증기가 필요하다.[22]",
+     "**코드** — 생성한 코드를 실제로 돌려 테스트 통과한 것만 남긴다(Llama 3).[14]"
+    ]
+   },
+   "how_far": "이 공고의 회사가 '고난도'로 꼽은 것 중 차량 에이전트에 가장 가까운 것은 여러 턴 + 도구 호출입니다.{추론}",
+   "refs": [
+    4,
+    7,
+    14,
+    22,
+    28
+   ],
+   "study": [
+    "cs329z-tools",
+    "terminal-bench",
+    "cme295-reasoning"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Python 기반 데이터 파이프라인(Airflow, Ray, Spark 등) 또는 대규모 데이터 처리 환경 구축 경험",
+   "short": "Airflow 로 작업을 예약하거나, Ray·Spark 로 여러 서버에 데이터 처리를 나눠 본 경험.",
+   "why": "대규모 생성 Workflow 업무 줄을 도구 이름으로 옮긴 우대입니다.[1]",
+   "actually": {
+    "items": [
+     "**Airflow** — 단계를 순서 그래프로 예약·재시도·감시한다.[32]",
+     "**Ray** — Python 함수를 여러 서버·GPU 에 나눠 돌린다. 묶음 추론(생성·심판)에 잘 맞는다.[33]",
+     "**Spark** — 큰 표 데이터의 거르기·조인·집계.[34]"
+    ]
+   },
+   "how_far": "셋 중 하나를 써서 '수백만 줄을 나눠 처리하고 실패한 조각만 다시 돌린' 경험이면 충분하다고 읽습니다.{추론}",
+   "refs": [
+    1,
+    32,
+    33,
+    34
+   ],
+   "study": [
+    "ray-data"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Generative AI, LLM, NLP 관련 오픈소스 프로젝트 기여 또는 논문·기술 발표 경험",
+   "short": "생성형 AI·LLM·자연어처리 오픈소스에 코드를 보탰거나, 논문·발표를 해 본 경험.",
+   "why": "포티투닷은 1.3B 모델과 지시 모델을 Hugging Face 에 직접 공개했습니다.[5][6]",
+   "how_far": "공개 데이터셋을 만들어 데이터 카드와 함께 올리는 것도 이 줄에 맞는 결과물입니다.{추론} 학회 투고는 ACL 계열 심사 창구(ACL Rolling Review)가 있습니다.[52]",
+   "refs": [
+    5,
+    6,
+    52
+   ],
+   "study": [
+    "42dot-sft-card"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "모델 점수표보다 '틀린 답 200개'를 읽는 게 재미있는 사람",
+   "프롬프트 몇 줄을 고쳐 버리는 비율이 줄어드는 걸 숫자로 보는 사람",
+   "데이터 공정을 스크립트로 자동화하고 재현 가능하게 남기는 사람",
+   "LLM 심판도 의심하고 사람 라벨로 검증하는 사람"
+  ],
+  "hard": [
+   "이 팀 자체의 공정·규모·지표를 설명한 공개 글은 없어서, 들어가기 전에는 Gleo Guard 글로 짐작할 수밖에 없다[4]",
+   "데이터의 효과는 학습해 봐야 알아서, 실험 한 번이 며칠 걸릴 수 있다{추론}",
+   "내가 만든 데이터의 결과가 모델 점수로 묻혀 성과가 잘 안 보일 수 있다{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "모델이 '비속어가 섞인 정상 전화 요청'을 자꾸 거절합니다. 어떤 데이터를 몇 건, 어떻게 만들겠어요?",
+   "a": "경계 사례와 짝인 정상 사례를 조건 조합으로 만들고, 과잉 차단율로 효과를 잰다 — Gleo Guard 의 방식.[4]"
+  },
+  {
+   "q": "LLM 심판이 사람과 85% 맞습니다. 이 심판으로 데이터를 걸러도 될까요?",
+   "a": "카파·칸별 오류(나쁜 것을 통과시킨 비율)·위치 편향을 따로 본다.[20][46][47]"
+  },
+  {
+   "q": "새 합성 데이터를 넣었더니 평가 점수가 2%p 올랐습니다. 무엇을 더 확인하나요?",
+   "a": "제거 실험의 조건 통제, 신뢰 구간, 다른 능력의 하락, 평가셋 오염.[48][49]"
+  },
+  {
+   "q": "자기 모델이 만든 데이터로 계속 학습하면 무엇이 위험하고, 어떻게 막나요?",
+   "a": "드문 경우가 사라지는 모델 붕괴 — 원래 데이터 섞기, 다양성 지표, 실패 되먹임.[8][23]"
+  },
+  {
+   "q": "10만 건 생성에 예산이 반만 있다면 어디부터 줄이나요?",
+   "a": "남은 한 건당 비용으로 보고, 앞단 규칙 검사·작은 모델·일괄 처리로 줄인다.[36]"
+  },
+  {
+   "q": "도구 호출 데이터의 정답은 어떻게 확인하나요?",
+   "a": "형식 검사 → 실제 실행 → 의미 검사.[28]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "42dot 채용 · LLM Engineer (Data Generation)",
+   "url": "https://jobs.ashbyhq.com/42dot/c8f106b0-a428-4a87-a823-40c3fdde27ae",
+   "kind": "posting",
+   "note": "팀 소개(Data-Centric AI)·업무·요건·우대·전형(서류 → 코딩·과제 → 1차 화상 1시간 → 2차 3시간 → 처우 협의), 근무지 판교(원격 표기), 수습 3개월 가능"
+  },
+  {
+   "n": 2,
+   "title": "42dot 채용 · LLM Engineer (LLM Training)",
+   "url": "https://jobs.ashbyhq.com/42dot/4efa5e05-972f-4887-b3bd-f87862200f86",
+   "kind": "posting",
+   "note": "옆 자리 — 사전·사후 학습 효율, Self-Refine 학습 구조"
+  },
+  {
+   "n": 3,
+   "title": "42dot 채용 · LLM Engineer (Optimization)",
+   "url": "https://jobs.ashbyhq.com/42dot/a83b4909-4d4f-41c5-b212-a1db321965a5",
+   "kind": "posting",
+   "note": "옆 자리 — 학습된 모델의 추론 최적화·경량화"
+  },
+  {
+   "n": 4,
+   "title": "42dot 기술 블로그 · Gleo Guard l 차량 AI Agent를 위한 안전 가드레일",
+   "url": "https://42dot.ai/ko/stories/blog-news/gleoguard",
+   "kind": "company",
+   "date": "2026-09-11",
+   "note": "정책 카드 → 생성 조건 조합 → 공격자 LLM 으로 경계 사례 생성 → 검증기로 거르기 → 공개 안전 데이터 매핑·중복 제거 → SFT → GRPO(사람 검수 신호). 내부 평가 Macro Accuracy 98.26%, 실제 흐름 15,010건을 Kanana Safeguard 8B 로 채점해 위험 응답 4.5% → 1.6%. 학습 데이터 건수는 없음"
+  },
+  {
+   "n": 5,
+   "title": "Hugging Face · 42dot/42dot_LLM-SFT-1.3B",
+   "url": "https://huggingface.co/42dot/42dot_LLM-SFT-1.3B",
+   "kind": "company",
+   "date": "2023-09",
+   "note": "질문·지시와 응답 쌍을 직접 구성(한 턴·여러 턴), A100 약 112시간, GPT-4 심판 평가 121문항·10분야, 비교 ChatGPT·Bard·KORani — 데이터 건수 없음"
+  },
+  {
+   "n": 6,
+   "title": "42dot 기술 블로그 · 42dot LLM 1.3B",
+   "url": "https://42dot.ai/ko/stories/blog-news/42dot-llm-1-3b",
+   "kind": "company",
+   "date": "2024-03-29",
+   "note": "1.4조 토큰 사전학습, 자체 클러스터, 지시 학습 112시간"
+  },
+  {
+   "n": 7,
+   "title": "42dot · 차량용 음성 AI 에이전트 '글레오 AI' 기술 공개",
+   "url": "https://42dot.ai/ko/stories/blog-news/42dot-unveils-gleo-ai",
+   "kind": "company",
+   "date": "2026-05-21",
+   "note": "온디바이스·클라우드 하이브리드, 차량 기능 음성 제어, VOC 반영·OTA, 자체 LLM 비중 확대 계획"
+  },
+  {
+   "n": 8,
+   "title": "요즘IT · 차량 안팎의 변수, 42dot이 Agentic AI로 풀어야 할 문제(포티투닷 협찬 글)",
+   "url": "https://yozm.wishket.com/magazine/detail/3954/",
+   "kind": "company",
+   "date": "2026-09-18",
+   "note": "협찬 글이라 회사 쪽 자료로 분류. 한국어·차량 데이터 부족 → 개선이 필요한 지점에 집중한 합성 데이터, 형식 검증·품질 평가 뒤 다시 학습, 시뮬레이션 실패 사례 되먹임, 모델 붕괴 우려는 엄격한 거르기와 실패 되먹임으로 대응 중 — 규모·지표 숫자 없음"
+  },
+  {
+   "n": 9,
+   "title": "SKT 뉴스룸 · 포티투닷 Gleo AI 그룹장 인터뷰",
+   "url": "https://news.sktelecom.com/216640",
+   "kind": "news",
+   "date": "2025-11-13",
+   "note": "큰 모델 → 7B·1~3B 차량용 증류 — 포티투닷 쪽 발언"
+  },
+  {
+   "n": 10,
+   "title": "현대자동차그룹 · Pleos Connect 차세대 인포테인먼트 발표",
+   "url": "https://www.hyundaimotorgroup.com/news/hyundai-motor-group-redefines-in-vehicle-experience-with-pleos-connect-next-generation-infotainment-system",
+   "kind": "company",
+   "date": "2026-04-30",
+   "note": "Gleo AI 는 LLM 기반 음성 비서, 2026-05 신형 그랜저부터"
+  },
+  {
+   "n": 11,
+   "title": "Self-Instruct: Aligning Language Models with Self-Generated Instructions",
+   "url": "https://arxiv.org/abs/2212.10560",
+   "kind": "reference",
+   "note": "씨앗 과제 175개 → 약 5만 2천 개 지시, ROUGE-L 0.7 이상 비슷하면 버림"
+  },
+  {
+   "n": 12,
+   "title": "WizardLM: Empowering Large Language Models to Follow Complex Instructions (Evol-Instruct)",
+   "url": "https://arxiv.org/abs/2304.12244",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "LIMA: Less Is More for Alignment",
+   "url": "https://arxiv.org/abs/2305.11206",
+   "kind": "reference",
+   "note": "고른 예시 1,000개로 지시 학습"
+  },
+  {
+   "n": 14,
+   "title": "The Llama 3 Herd of Models",
+   "url": "https://arxiv.org/abs/2407.21783",
+   "kind": "reference",
+   "note": "거절 표집, 실행 결과로 거른 코드 합성 데이터 약 270만 개, 모델 기반 품질 거르기"
+  },
+  {
+   "n": 15,
+   "title": "UltraFeedback: Boosting Language Models with Scaled AI Feedback",
+   "url": "https://arxiv.org/abs/2310.01377",
+   "kind": "reference",
+   "note": "프롬프트 약 6만 4천 개 × 응답 4개, GPT-4 가 네 측면 채점"
+  },
+  {
+   "n": 16,
+   "title": "Direct Preference Optimization (DPO, NeurIPS 2023)",
+   "url": "https://arxiv.org/abs/2305.18290",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Training language models to follow instructions with human feedback (InstructGPT)",
+   "url": "https://arxiv.org/abs/2203.02155",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Constitutional AI: Harmlessness from AI Feedback",
+   "url": "https://arxiv.org/abs/2212.08073",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "RLAIF vs. RLHF: Scaling Reinforcement Learning from Human Feedback with AI Feedback",
+   "url": "https://arxiv.org/abs/2309.00267",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "kind": "reference",
+   "note": "GPT-4 심판과 사람의 일치가 80% 넘어 사람끼리 일치와 비슷, 위치·장황함·자기 편향"
+  },
+  {
+   "n": 21,
+   "title": "STaR: Bootstrapping Reasoning With Reasoning",
+   "url": "https://arxiv.org/abs/2203.14465",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Let's Verify Step by Step (PRM800K)",
+   "url": "https://arxiv.org/abs/2305.20050",
+   "kind": "reference",
+   "note": "풀이 단계마다 사람 라벨 약 80만 개"
+  },
+  {
+   "n": 23,
+   "title": "AI models collapse when trained on recursively generated data (Nature, 2024)",
+   "url": "https://www.nature.com/articles/s41586-024-07566-y",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Deduplicating Training Data Makes Language Models Better",
+   "url": "https://arxiv.org/abs/2107.06499",
+   "kind": "reference",
+   "note": "C4 에서 61단어 문장 하나가 6만 번 넘게 반복"
+  },
+  {
+   "n": 25,
+   "title": "The FineWeb Datasets: Decanting the Web for the Finest Text Data at Scale",
+   "url": "https://arxiv.org/abs/2406.17557",
+   "kind": "reference",
+   "note": "FineWeb-Edu: 큰 모델이 매긴 교육성 점수로 분류기를 학습해 거름"
+  },
+  {
+   "n": 26,
+   "title": "Nemotron-4 340B Technical Report",
+   "url": "https://arxiv.org/abs/2406.11704",
+   "kind": "reference",
+   "note": "정렬 학습 데이터의 98% 넘게 합성"
+  },
+  {
+   "n": 27,
+   "title": "Magpie: Alignment Data Synthesis from Scratch by Prompting Aligned LLMs with Nothing",
+   "url": "https://arxiv.org/abs/2406.08464",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "APIGen: Automated Pipeline for Generating Verifiable and Diverse Function-Calling Datasets",
+   "url": "https://arxiv.org/abs/2406.18518",
+   "kind": "reference",
+   "note": "형식 검사 → 실제 실행 → 의미 검사 3단, 6만 건 공개"
+  },
+  {
+   "n": 29,
+   "title": "OpenAI Evals (GitHub)",
+   "url": "https://github.com/openai/evals",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "EleutherAI LM Evaluation Harness (GitHub)",
+   "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "DeepEval (GitHub)",
+   "url": "https://github.com/confident-ai/deepeval",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Apache Airflow 문서",
+   "url": "https://airflow.apache.org/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "Ray Data 문서",
+   "url": "https://docs.ray.io/en/latest/data/data.html",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "Apache Spark 문서",
+   "url": "https://spark.apache.org/docs/latest/",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "Efficient Memory Management for LLM Serving with PagedAttention (vLLM)",
+   "url": "https://arxiv.org/abs/2309.06180",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "OpenAI 문서 · Batch API",
+   "url": "https://platform.openai.com/docs/guides/batch",
+   "kind": "reference",
+   "note": "24시간 안 처리, 일반 호출보다 50% 싸다"
+  },
+  {
+   "n": 37,
+   "title": "Hugging Face TRL 문서",
+   "url": "https://huggingface.co/docs/trl",
+   "kind": "reference",
+   "note": "SFT·DPO·GRPO 학습기와 데이터 형식"
+  },
+  {
+   "n": 38,
+   "title": "DeepSeekMath (GRPO)",
+   "url": "https://arxiv.org/abs/2402.03300",
+   "kind": "reference"
+  },
+  {
+   "n": 39,
+   "title": "Hugging Face datatrove (GitHub)",
+   "url": "https://github.com/huggingface/datatrove",
+   "kind": "reference",
+   "note": "대규모 텍스트 거르기·중복 제거 라이브러리"
+  },
+  {
+   "n": 40,
+   "title": "원티드 · 포티투닷 회사 정보(국민연금 기반 평균 연봉·인원)",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "2026-11-25 확인(같은 회사 다른 풀이) — 기준 월 표기 없음"
+  },
+  {
+   "n": 41,
+   "title": "원티드 · 현대오토에버 회사 정보(같은 집계)",
+   "url": "https://www.wanted.co.kr/company/4730",
+   "kind": "reference",
+   "note": "검색 요약으로 확인 — 페이지는 열지 않음"
+  },
+  {
+   "n": 42,
+   "title": "42dot 회사 사이트 하단 회사 정보",
+   "url": "https://42dot.ai",
+   "kind": "company"
+  },
+  {
+   "n": 43,
+   "title": "42dot 채용 · 복리후생(Employee Engagement Program)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준, 날짜 표기 없음(© 2026)"
+  },
+  {
+   "n": 44,
+   "title": "42dot 채용 · 채용 절차",
+   "url": "https://42dot.ai/ko/careers/hiring-process",
+   "kind": "company",
+   "note": "면접 통과 뒤 연봉·입사 조건을 정하는 처우 협의"
+  },
+  {
+   "n": 45,
+   "title": "뉴스스페이스 · 포티투닷 2025년 연결 감사보고서",
+   "url": "https://newsspace.kr/news/article.html?no=15231",
+   "kind": "news",
+   "date": "2026-09-14",
+   "note": "급여 891억원 — 직원 수가 없어 평균은 계산하지 않음"
+  },
+  {
+   "n": 46,
+   "title": "scikit-learn 문서 · cohen_kappa_score",
+   "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html",
+   "kind": "reference"
+  },
+  {
+   "n": 47,
+   "title": "Large Language Models are not Fair Evaluators",
+   "url": "https://arxiv.org/abs/2305.17926",
+   "kind": "reference",
+   "note": "답 순서만 바꿔도 판정이 뒤집힘(위치 편향)"
+  },
+  {
+   "n": 48,
+   "title": "Rethinking Benchmark and Contamination for Language Models with Rephrased Samples",
+   "url": "https://arxiv.org/abs/2311.04850",
+   "kind": "reference"
+  },
+  {
+   "n": 49,
+   "title": "Tülu 3: Pushing Frontiers in Open Language Model Post-Training",
+   "url": "https://arxiv.org/abs/2411.15124",
+   "kind": "reference",
+   "note": "공개 사후학습 데이터 조합, 페르소나 기반 합성, 평가셋 오염 제거, RLVR"
+  },
+  {
+   "n": 50,
+   "title": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
+   "url": "https://arxiv.org/abs/2501.12948",
+   "kind": "reference",
+   "note": "거절 표집으로 추론 약 60만 개 + 그 밖 약 20만 개 SFT"
+  },
+  {
+   "n": 51,
+   "title": "Hugging Face Transformers 문서 · Chat templates",
+   "url": "https://huggingface.co/docs/transformers/main/en/chat_templating",
+   "kind": "reference"
+  },
+  {
+   "n": 52,
+   "title": "ACL Rolling Review",
+   "url": "https://aclrollingreview.org/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "이 팀(LLM Engineer, Data Generation)이 쓰는 생성 공정·데이터 규모·평가 지표를 직접 설명한 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 옆 자리 공고 둘, Gleo Guard 기술 블로그(2026-09 — 합성 데이터 공정이 가장 자세함), 1.3B 지시 모델 카드(2023), Gleo AI 소개(2026-05), 포티투닷 협찬 기사의 기술 설명회 내용(2026-09)입니다. Gleo Guard 글은 안전 가드레일 데이터 이야기라 이 팀의 일 전부를 대표하지 않을 수 있습니다. 나머지는 공개 논문·공식 문서로 '보통 이런 것'을 보였고, 코드 예시는 가상 데이터·가상 단가로 직접 돌린 출력입니다.",
+ "resources": [
+  {
+   "id": "42dot-gleoguard",
+   "title": "Gleo Guard l 차량 AI Agent를 위한 안전 가드레일 (회사 기술 블로그)",
+   "by": "포티투닷 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://42dot.ai/ko/stories/blog-news/gleoguard",
+   "why": "정책 → 합성 데이터 → 검증기 → SFT → GRPO 를 회사 말로. 이 공고의 업무 세 묶음이 한 글에 다 있다 — 가장 먼저 읽는다."
+  },
+  {
+   "id": "42dot-sft-card",
+   "title": "42dot LLM-SFT-1.3B 모델 카드",
+   "by": "포티투닷 · Hugging Face · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://huggingface.co/42dot/42dot_LLM-SFT-1.3B",
+   "why": "회사가 지시 데이터를 어떻게 만들고 GPT-4 심판으로 어떻게 평가했는지. 공개 모델이라 직접 받아 실험해 볼 수 있다(비상업 라이선스)."
+  },
+  {
+   "id": "cs336-data",
+   "title": "Stanford CS336 · Lecture 13: Data (Sources, Datasets) (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/-qm0ln33G24",
+   "why": "학습 데이터의 출처와 공개 데이터셋 — 데이터 구성·전처리 요건의 바탕."
+  },
+  {
+   "id": "cs336-data2",
+   "title": "Stanford CS336 · Lecture 14: Data (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/5sxHosTLPF8",
+   "why": "거르기·중복 제거·섞기 — 데이터 공정과 정제 요건."
+  },
+  {
+   "id": "cs336-eval",
+   "title": "Stanford CS336 · Lecture 12: Evaluation (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/JpAxdTWQJxM",
+   "why": "벤치마크·심판 평가의 함정과 오염 — '데이터가 효과 있었나'를 재는 법."
+  },
+  {
+   "id": "cs336-posttrain",
+   "title": "Stanford CS336 · Lecture 15: Mid/Post-Training (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/2oH6PWPrYFo",
+   "why": "SFT·선호 학습이 데이터를 어떻게 받는지 — 지시·선호 데이터 설계 줄."
+  },
+  {
+   "id": "cs336-rlvr",
+   "title": "Stanford CS336 · Lecture 16: Post-Training - RLVR (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/dIFAi87Ws4E",
+   "why": "확인 가능한 보상으로 하는 강화학습 — 추론 데이터·반복 생성 줄과 Gleo Guard 의 GRPO."
+  },
+  {
+   "id": "cme295-eval",
+   "title": "Stanford CME295 · Lecture 8 - LLM Evaluation (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/8fNP4N46RRo",
+   "why": "LLM 심판을 포함한 평가 방법 정리 — 품질 검증 줄."
+  },
+  {
+   "id": "cme295-tuning",
+   "title": "Stanford CME295 · Lecture 5 - LLM tuning (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/PmW_TMQ3l0I",
+   "why": "SFT·선호 최적화의 흐름 — 딥러닝·NLP 이해 요건과 제거 실험의 바탕."
+  },
+  {
+   "id": "cme295-reasoning",
+   "title": "Stanford CME295 · Lecture 6 - LLM Reasoning (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/k5Fh-UgTuCo",
+   "why": "추론 데이터와 그것을 키우는 학습 — Reasoning Data 설계 줄."
+  },
+  {
+   "id": "cs329z-tools",
+   "title": "Stanford CS329Z · Lecture 4: How AI Agents Use Tools (Function Calling & MCP) (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/s0S38lz6O7M",
+   "why": "도구 호출의 형식과 실패 — Tool Calling 데이터 설계 우대 줄."
+  },
+  {
+   "id": "terminal-bench",
+   "title": "Stanford CS329Z · Terminal-Bench: Evaluating AI Agents (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/7GW-9ug2nvw",
+   "why": "에이전트 평가 과제를 어떻게 만들고 채점하나 — 자체 평가 시스템 우대 줄."
+  },
+  {
+   "id": "hands-on-llm",
+   "title": "핸즈온 LLM",
+   "by": "제이 알아마르 · 마르턴 흐루턴도르스트 · 박해선 옮김 · 한빛미디어 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%95%B8%EC%A6%88%EC%98%A8%20LLM",
+   "why": "프롬프트·임베딩·미세조정을 코드로 한국어로 — LLM API·생성 전략 요건의 첫 손 경험."
+  },
+  {
+   "id": "llm-scratch-kr",
+   "title": "밑바닥부터 만들면서 배우는 LLM",
+   "by": "세바스찬 라시카 · 박해선 옮김 · 길벗 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754046318",
+   "why": "GPT 를 직접 짜서 사전학습·지시 미세조정까지 — 데이터가 학습에 어떻게 들어가는지 손으로 확인한다."
+  },
+  {
+   "id": "ai-engineering",
+   "title": "AI Engineering: Building Applications with Foundation Models",
+   "by": "Chip Huyen · O'Reilly · 2025",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/ai-engineering/9781098166298/",
+   "why": "데이터셋 엔지니어링(합성·거르기·큐레이션)과 평가 장이 이 공고와 가장 가깝다. 한국어판 「AI 엔지니어링」(2025-10)도 있다."
+  },
+  {
+   "id": "self-instruct",
+   "title": "Self-Instruct (논문)",
+   "by": "Wang 외 · ACL 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://arxiv.org/abs/2212.10560",
+   "why": "씨앗 → 합성 → 비슷한 것 거르기의 원형. 합성 데이터 공정을 처음 짤 때 본보기."
+  },
+  {
+   "id": "tulu3",
+   "title": "Tülu 3 기술 보고서",
+   "by": "Allen Institute for AI · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2411.15124",
+   "why": "공개된 사후학습 데이터 조합·합성·오염 제거·제거 실험 표 — 데이터 효과 분석 줄의 실물 예."
+  },
+  {
+   "id": "mt-bench",
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (논문)",
+   "by": "Zheng 외 · NeurIPS 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "why": "LLM 심판이 사람과 얼마나 맞고 어떤 편향이 있나 — LLM-as-a-Judge 업무 줄."
+  },
+  {
+   "id": "trl-docs",
+   "title": "Hugging Face TRL 문서",
+   "by": "Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://huggingface.co/docs/trl",
+   "why": "SFT·DPO·GRPO 학습기와 데이터 형식 — 만든 데이터로 직접 학습해 효과를 재 볼 도구."
+  },
+  {
+   "id": "datatrove",
+   "title": "datatrove",
+   "by": "Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/huggingface/datatrove",
+   "why": "대규모 텍스트 거르기·중복 제거 공정 — 대규모 정제 요건."
+  },
+  {
+   "id": "ray-data",
+   "title": "Ray Data 문서",
+   "by": "Anyscale · Ray 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.ray.io/en/latest/data/data.html",
+   "why": "여러 GPU 에 묶음 생성·심판을 나눠 돌리기 — 대규모 생성 Workflow·파이프라인 우대 줄."
+  },
+  {
+   "id": "vllm-docs",
+   "title": "vLLM 문서",
+   "by": "vLLM 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.vllm.ai/",
+   "why": "자체·공개 모델로 대량 생성할 때의 추론 엔진 — 생성 비용·속도 최적화 줄."
+  },
+  {
+   "id": "lm-eval-harness",
+   "title": "LM Evaluation Harness",
+   "by": "EleutherAI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+   "why": "체크포인트마다 같은 조건으로 벤치마크 점수 내기 — 평가 프레임워크 우대 줄."
+  },
+  {
+   "id": "deepeval",
+   "title": "DeepEval",
+   "by": "Confident AI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/confident-ai/deepeval",
+   "why": "LLM 답을 단위 테스트처럼 검사 — 데이터 품질 검증과 자체 평가 시스템."
+  },
+  {
+   "id": "openai-evals",
+   "title": "OpenAI Evals",
+   "by": "OpenAI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/openai/evals",
+   "why": "평가 과제 등록부 방식 — 평가 프레임워크 우대 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 글로 일의 모양 잡기",
+   "time": "1주",
+   "goal": "Gleo Guard 의 정책 → 데이터 → 학습 → 평가 흐름을 내 말로 그리고, 단계마다 무엇이 빠져 있는지 말할 수 있다.",
+   "resources": [
+    "42dot-gleoguard",
+    "42dot-sft-card",
+    "cs336-data",
+    "cs336-data2"
+   ],
+   "task": "가상의 차량 비서 정책 카드 3장(허용·제한·예외)을 쓰고, 생성 조건 축(의도·턴 수·차량 기능)을 곱해 만들 사례 목록 표를 만든다."
+  },
+  {
+   "title": "합성 한 바퀴 돌리기",
+   "time": "2주",
+   "goal": "씨앗 예 → LLM 생성 → 규칙 검사 → 중복 제거까지 자동으로 도는 작은 공정을 짤 수 있다.",
+   "resources": [
+    "self-instruct",
+    "hands-on-llm",
+    "llm-scratch-kr",
+    "datatrove"
+   ],
+   "task": "씨앗 20개로 가상 차량 명령 지시 데이터 2,000건을 만들고, JSON·값 범위·중복 검사로 거른 뒤 버린 이유별 건수 표를 낸다."
+  },
+  {
+   "title": "심판을 믿을 수 있게",
+   "time": "2주",
+   "goal": "LLM 심판 프롬프트를 쓰고, 사람 라벨 표본으로 일치율·카파·위치 편향을 잴 수 있다.",
+   "resources": [
+    "mt-bench",
+    "cme295-eval",
+    "cs336-eval",
+    "deepeval"
+   ],
+   "task": "위 데이터 200건을 직접 라벨하고 심판 판정과 비교해 카파를 내고, 두 답의 순서를 바꿨을 때 판정이 뒤집힌 비율을 센다."
+  },
+  {
+   "title": "데이터가 점수를 올렸나",
+   "time": "2~3주",
+   "goal": "같은 모델에 데이터를 넣고 뺀 제거 실험을 돌리고, 차이의 신뢰 구간까지 낼 수 있다.",
+   "resources": [
+    "trl-docs",
+    "cme295-tuning",
+    "cs336-posttrain",
+    "tulu3",
+    "lm-eval-harness"
+   ],
+   "task": "1B 안팎 공개 모델을 (가) 씨앗만 (나) 합성 데이터까지로 각각 LoRA SFT 하고, 직접 만든 평가 300문항의 칸별 점수와 bootstrap 구간을 표로 만든다."
+  },
+  {
+   "title": "선호·추론·도구 데이터와 대규모 공정 (심화)",
+   "time": "계속",
+   "goal": "선호 쌍·도구 호출 데이터를 실행 검사로 만들고, 공정을 여러 GPU·작업으로 나눠 돌릴 수 있다.",
+   "resources": [
+    "cs336-rlvr",
+    "cme295-reasoning",
+    "cs329z-tools",
+    "terminal-bench",
+    "ray-data",
+    "vllm-docs",
+    "ai-engineering",
+    "openai-evals"
+   ],
+   "task": "가상 차량 함수 5개를 정의해 도구 호출 데이터를 만들고 실제 실행으로 거른 뒤, 같은 질문의 좋은·나쁜 답으로 DPO 쌍 500개를 만들어 DPO 전후 도구 호출 정확도를 비교한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 국민연금 기반 집계로 직원 평균 **약 6,032만원** — 신입 초봉 숫자는 찾지 못했고, 평균은 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 국민연금 납부액으로 추정한 회사 전체 평균(국민연금 가입 804명), 기준 월 표기 없음. 같은 회사 다른 풀이에서 2026-11-25 확인 [40]"
+   },
+   {
+    "label": "현대오토에버 평균",
+    "value": "9,423만원",
+    "amount": 9423,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "같은 그룹 소프트웨어 회사, 같은 원티드 국민연금 집계(5,598명) — 검색 요약으로 확인 [41]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여'가 없다(공시 숫자 없음). 2025년 감사보고서의 급여 총액은 891억원이지만 직원 수가 함께 나오지 않아 평균을 계산하지 않았다 [45]. 국민연금 기반 집계는 납부 상한이 있어 실제보다 낮게 나오는 경향이 있다 {추론}. 이 자리는 경력 3년 이상이라 회사 평균과 다를 수 있고, 연봉은 면접을 통과한 뒤 **처우 협의** 단계에서 사람마다 정한다 [44]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "재량근무·선택근무, 최고 사양 업무 장비"
+   },
+   {
+    "name": "회복의 날",
+    "detail": "법정 연차와 별도로 매월 유급 하루"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당 하루 세 끼 무료, 사내 카페 음료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 최대 300만원, 설·추석 명절 포인트"
+   },
+   {
+    "name": "전기차 구매 지원",
+    "detail": "차량 가격의 최대 15%, 1,000만원 한도 · 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 대출",
+    "detail": "근속에 따라 1,000만~5,000만원, 이자 0%"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진 전액, 사내 간호사·심리·재무·법률 상담(EAP), 사내 피트니스(1:1 PT·그룹 수업)"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·자녀·부모 — 실손·입원·통원·치과·도수치료"
+   },
+   {
+    "name": "성장",
+    "detail": "국내외 교육·세미나·컨퍼런스 지원, 팀 워크숍비"
+   },
+   {
+    "name": "가족",
+    "detail": "직장 어린이집, 수유실, 경조금·경조휴가"
+   },
+   {
+    "name": "그 밖의",
+    "detail": "장기근속 휴가·포상, 휴양 시설 추첨, 추천 보상"
+   }
+  ],
+  "note": "포티투닷 채용 사이트의 복리후생 페이지(한국 본사 기준, 날짜 표기 없음 · © 2026)다 [43]. 금액이 적히지 않은 항목은 비웠다. 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "포티투닷 본사 · 소프트웨어드림센터 A동 (판교 제2테크노밸리)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선·경강선 판교역에서 버스로 가는 거리 {추론}",
+  "note": "주소는 42dot 사이트 하단 회사 정보다 [42]. 공고의 근무지 표기는 'Pangyo (Software Dream Center), South Korea (Remote)'인데, 원격 근무 범위는 공고에 적혀 있지 않다 [1]."
+ }
+}
