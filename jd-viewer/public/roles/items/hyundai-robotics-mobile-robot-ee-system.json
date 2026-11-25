@@ -1,0 +1,1143 @@
+{
+ "id": "hyundai-robotics-mobile-robot-ee-system",
+ "company": "현대자동차",
+ "role": "모바일로봇 전장 시스템 개발",
+ "team": "로보틱스랩",
+ "jobs": [
+  "saramin-55022391"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "바퀴 달린 로봇(모바일로봇)의 **전기·전자 뼈대** — 두뇌 역할 제어기 보드, 모터를 돌리는 모터드라이버 보드, 배터리에서 각 부품으로 가는 전원·통신 배선 — 를 회로부터 설계하고, 고장 나도 위험하지 않게 만드는 **기능안전** 구조까지 맡습니다.[1]",
+  "env": "현대차·기아 로보틱스랩(의왕). 랩의 대표 이동 로봇 **모베드(MobED)** 는 바퀴 4개에 바퀴마다 모터 3개(구동·조향·자세)가 들어가고, 1.47kWh·36~49.2V 배터리로 4시간 넘게 달리며, 2026년에 양산·판매에 들어갔습니다.[4][6] 같은 랩에 이 로봇의 위치 추정·주행 제어 SW 자리가 따로 있습니다.[3]",
+  "oneline": "로봇 한 대의 **회로도·PCB·모터 보호·CAN 배선·안전 문서**를 책임지는 하드웨어 엔지니어. 코드는 펌웨어 수준이고 중심은 **회로 설계와 검증**입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "제어기 및 모터드라이버 기반의 전장 플랫폼 개발과 제어 시스템 개발, 기능안전 아키텍처 설계를 바탕으로 안정적이고 신뢰성 높은 로봇 제어 시스템 및 전장 플랫폼 개발 업무를 수행합니다.",
+   "short": "여러 로봇이 같이 쓰는 전기·전자 바탕(보드·전원·통신)을 만들고, 고장에도 안전하게 설계하는 일.",
+   "why": "**전장(電裝)** 은 차·로봇에 들어가는 전기·전자 장치 전부를 말합니다. 모베드는 위에 얹는 모듈(배송함·골프백 거치대 등)이 로봇의 배터리와 제어기를 그대로 쓰도록 전용 포트를 두었습니다.[5] 그래서 전장은 로봇 한 대가 아니라 여러 응용이 올라타는 **플랫폼**이 됩니다. 실제로 같은 바탕에서 배송·촬영·집기(Pick & Place)·골프 모델이 나왔습니다.[5][9]",
+   "actually": {
+    "intro": "모베드 양산형이 공개한 사양이 이 자리가 지키는 숫자입니다.[4]",
+    "items": [
+     "**배터리** — 정격 1.47kWh, 팩 전압 36~49.2V, 정격 방전 전류 33.6A. 충전량 90→10% 로 4시간 이상, 10→90% 충전 2시간 30분 이내.",
+     "**위 모듈용 전원 포트** — 24V·300W 와 48V·500W 두 가지.",
+     "**외부 통신** — 상위 기종(Pro)은 이더넷, 기본형(Basic)은 RS422 로 명령을 받는다.",
+     "**정비** — 유선으로 소프트웨어 업데이트와 진단기 연결.",
+     "**인증 목표** — CE(ISO 13482·ISO 3691-4), UL 3100·3300 은 진행 중, 배터리는 UL 2271, 방진·방수 IP54."
+    ]
+   },
+   "how_far": "로봇의 용도·사양은 과제 책임자가 정하고, 이 자리는 **그 사양을 만족하는 보드·배선·안전 구조**를 그립니다. 주행 알고리즘은 같은 랩의 주행 제어 자리 몫입니다.[3] {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    9
+   ],
+   "study": [
+    "hmg-mobed",
+    "hmg-irex"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 모바일로봇 회로 설계",
+   "short": "아래 여섯 줄의 묶음 제목 — 제어기·모터드라이버 보드를 회로도부터 직접 그리는 일.",
+   "why": "모베드는 바퀴마다 구동·조향·자세 모터 3개가 있어 모터가 모두 12개입니다.[6] 콘셉트 시절부터 바퀴마다 인휠 모터를 넣는 구조였습니다.[7] 이 모터들을 돌리는 보드와 그걸 지휘하는 보드가 로봇 전장의 중심이라 첫 묶음이 회로 설계입니다. {추론}",
+   "refs": [
+    6,
+    7
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 제어기 및 모터드라이버 회로 설계/개발",
+   "short": "명령을 계산하는 제어기 보드와, 배터리 전기를 모터 전류로 바꾸는 드라이버 보드를 만든다.",
+   "why": "**제어기**는 마이크로컨트롤러(MCU, 작은 컴퓨터 칩)가 센서·명령을 받아 '이 모터에 이만큼 힘'을 계산하는 보드입니다. **모터드라이버**는 그 계산대로 배터리 직류를 전력 스위치(MOSFET) 6개로 끊어 3상 교류를 만드는 보드입니다.[17] 인휠 모터(바퀴 안에 든 모터) 로봇은 드라이버가 바퀴 가까이 여러 개 놓입니다.[5][8] {추론}",
+   "actually": {
+    "items": [
+     "**제어기** — MCU·전원·클록·디버그 포트·CAN 송수신기·센서 입력(엔코더·전류·온도). 회로 부품 고르는 감각은 실무 전자회로 교과서가 기본이다.[23]",
+     "**드라이버** — 3상 브리지(MOSFET 6개)·게이트 드라이버(스위치를 켜고 끄는 칩)·전류 감지·DC 링크 커패시터.",
+     "**둘을 한 보드로 할지 나눌지** — 바퀴 모듈 안에 넣으면 선이 짧아지고, 나누면 열과 노이즈를 떼어 놓기 쉽다. {추론}"
+    ]
+   },
+   "how_far": "부품 하나하나의 계산은 직접 하고, 시제품 보드가 나오면 **오실로스코프로 파형을 재서 설계 의도와 맞는지** 확인하는 데까지가 이 자리입니다. 양산 보드의 제작·실장은 협력사와 나눕니다. {추론}",
+   "refs": [
+    5,
+    8,
+    17,
+    23
+   ],
+   "study": [
+    "ti-foc",
+    "art-electronics"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 제어기 및 모터드라이버 회로 설계, 부품 선정 및 회로 검증 수행",
+   "short": "부품을 고르고(전압·전류·온도 여유), 시제품에서 파형을 재서 회로가 맞게 도는지 확인한다.",
+   "why": "모터드라이버는 큰 전류를 빠르게 켜고 끄기 때문에 부품 여유가 모자라면 바로 탑니다. 예를 들어 게이트 드라이버가 위쪽 스위치를 켜려면 **부트스트랩 회로**(커패시터에 전기를 담아 스위치를 켤 전압을 만드는 회로)를 계산해야 하고, TI 문서는 그 커패시터를 스위치 게이트 용량의 10배 이상으로 잡는 등의 규칙을 예제로 보입니다.[20]",
+   "actually": {
+    "items": [
+     "**정격 여유** — MOSFET 내압은 배터리 최고 전압(49.2V)보다 넉넉히, 전류는 막혔을 때 전류까지 본다.[4] {추론}",
+     "**전류 감지 저항(션트)** — 저항이 크면 신호가 크지만 열도 커진다(아래 예).",
+     "**부트스트랩·게이트 저항** — 켜고 끄는 속도와 노이즈의 맞바꿈.[20]",
+     "**검증** — 데드타임(위·아래 스위치가 동시에 켜지지 않게 두는 틈), 스위칭 파형의 튐(오버슈트), 발열을 측정한다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "전류 감지 션트 고르기 — 정격 방전 33.6A 에서(직접 돌린 출력)",
+     "body": "모베드 배터리의 정격 방전 전류[4]를 한 줄에 흘린다고 가정한 계산입니다. 1mΩ 이면 신호 33.6mV 에 발열 1.13W — 신호를 키울수록 열이 늘어 부품 크기가 달라집니다.",
+     "lang": "python",
+     "code": "I = 33.6\nfor r_mohm in (0.5, 1.0, 2.0):\n    v = I * r_mohm / 1000\n    p = I**2 * r_mohm / 1000\n    print(f\"shunt {r_mohm}mOhm: signal {v*1000:.1f}mV, heat {p:.2f}W\")\n# shunt 0.5mOhm: signal 16.8mV, heat 0.56W\n# shunt 1.0mOhm: signal 33.6mV, heat 1.13W\n# shunt 2.0mOhm: signal 67.2mV, heat 2.26W"
+    }
+   ],
+   "how_far": "부품 선정 근거(정격·여유·대체품)를 표로 남기고, 시제품의 측정 결과로 그 근거를 닫는 수준입니다. {추론}",
+   "refs": [
+    4,
+    20
+   ],
+   "study": [
+    "ti-bootstrap",
+    "art-electronics"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 통신 및 전력 관리 회로 설계",
+   "short": "보드끼리 말하는 통신(CAN·이더넷·RS422) 회로와, 배터리 전압을 각 부품 전압으로 나누는 전원 회로.",
+   "why": "모베드는 외부와 이더넷 또는 RS422 로 통신하고, 위 모듈에 24V·48V 전원을 내주며, 배터리 상태를 BMS(배터리 관리 장치)로 관리합니다.[4] 36~49.2V 로 오르내리는 배터리 전압을 MCU 의 3.3V, 센서의 12V·24V 같은 여러 전압으로 바꿔야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**통신 회로** — CAN 송수신기·종단 저항(버스 양 끝 120Ω)·절연, 이더넷 PHY·자기 결합, RS422 차동 송수신기.[18]",
+     "**전원 회로** — 48V→24V·12V·5V·3.3V 변환기, 켜지는 순서(시퀀싱), 역접속·돌입 전류 보호.",
+     "**위 모듈 포트** — 300W·500W 를 내주는 출력의 과전류 차단과 꽂고 뽑을 때의 보호.[4] {추론}",
+     "**대기 전력** — 꺼져 있을 때 배터리를 갉아먹지 않게. {추론}"
+    ]
+   },
+   "how_far": "변환기 칩을 고르고 주변 회로를 계산하며, 부하가 갑자기 바뀔 때 전압이 흔들리지 않는지 측정까지 합니다. {추론}",
+   "refs": [
+    4,
+    18
+   ],
+   "study": [
+    "ti-can",
+    "art-electronics"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 기능안전 HW 아키텍처 설계",
+   "short": "부품이 고장 나도 로봇이 위험해지지 않도록, 고장을 잡아내고 안전하게 멈추는 회로 구조를 짠다.",
+   "why": "**기능안전**은 '고장은 일어난다'고 보고, 일어났을 때 위험하지 않게 만드는 분야입니다. 모베드는 사람 곁에서 다니는 로봇의 안전 기준 **ISO 13482** 와 무인 운반차·AMR 의 안전 기준 **ISO 3691-4** 로 CE 인증을 목표로 했습니다.[4][10][11] 회사는 센서 하나가 고장 나도 다른 센서가 대신하는 중복 구조를 안전 특징으로 꼽았습니다.[5]",
+   "actually": {
+    "items": [
+     "**고장 → 위험 연결 끊기** — 모터가 멋대로 돌거나, 멈춰야 할 때 안 멈추는 경우를 막는다.",
+     "**토크 차단(STO)** — 모터에 힘이 안 가게 하는 표준 안전 기능. 구동 장치 안전 규격 IEC 61800-5-2 가 정의한다.[14][15]",
+     "**이중화** — TI 의 STO 참고 설계는 게이트 드라이버 전원과 24V 입력을 두 갈래로 끊어, 한쪽이 고장 나도 차단되게 했다.[16]",
+     "**감시** — 워치독(제어기가 멈췄는지 지켜보는 회로)·전압 감시·두 MCU 의 결과 비교. {추론}"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    10,
+    11,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "iso26262-guide",
+    "ti-sto"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 기능안전 요구사항 분석 및 HW 아키텍처 설계",
+   "short": "'어떤 고장이 얼마나 위험한가'에서 회로가 지켜야 할 안전 요구를 뽑고, 그걸 지키는 블록 구조를 그린다.",
+   "why": "기능안전은 위험 분석 → 안전 목표 → 안전 요구 → 하드웨어 설계 순서로 내려갑니다.[12][34] 요구가 정해져야 '어떤 부품에 감시를 붙일지'가 나옵니다.",
+   "actually": {
+    "items": [
+     "**위험 분석** — '주행 중 한 바퀴만 멋대로 돈다' 같은 상황마다 심각도·노출·통제 가능성을 매긴다(자동차 규격의 방식).[12]",
+     "**안전 요구** — '의도하지 않은 토크를 ○ms 안에 감지하고 차단한다'처럼 숫자로.",
+     "**블록 구조** — 감지(전류·속도), 판단(MCU·감시 칩), 차단(STO·전원 차단 스위치)을 블록으로 나누고 블록마다 진단을 단다.",
+     "**규격 선택** — 로봇은 ISO 13482·ISO 3691-4 가 안전 기능의 수준을 ISO 13849-1(성능 수준 PL)로 요구하는 경우가 많고, 회로 설계 방법은 자동차의 ISO 26262 나 IEC 61508 을 빌려 쓰기도 한다.[10][11][28] {추론}"
+    ]
+   },
+   "how_far": "위험 분석은 시스템·안전 담당과 같이 하고, 이 자리는 **안전 요구가 회로 블록 어디에서 어떻게 지켜지는지**를 설계·설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    10,
+    11,
+    12,
+    28,
+    34
+   ],
+   "study": [
+    "iso26262-guide",
+    "iso13849"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 안전 목표 달성을 위한 회로 구조 검토",
+   "short": "그린 회로가 안전 목표를 정말 지키는지 — 부품 고장률과 진단으로 계산해 확인한다.",
+   "why": "자동차 기능안전 규격 ISO 26262 의 하드웨어 편(5부)은 회로가 충분히 안전한지 **하드웨어 구조 지표**로 판정합니다.[12] 진단으로 못 잡는 단일 고장의 비율을 보는 SPFM 이 대표적이고, 등급이 높을수록 문턱이 높습니다(ASIL B 90%·C 97%·D 99% 이상 — 2차 해설 기준).[13]",
+   "actually": {
+    "items": [
+     "**FMEDA** — 부품마다 고장률(FIT, 10억 시간당 고장 수)과 고장 모드, 그 고장을 잡는 진단의 비율(진단 커버리지)을 표로 만든다.[13]",
+     "**SPFM·LFM** — 잡히지 않고 바로 위험해지는 고장, 숨어 있다가 다른 고장과 겹칠 때 위험한 고장의 비율.[13]",
+     "**고치는 법** — 진단을 더하거나(탈포화 감지·전압 감시), 부품을 이중화한다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "진단을 더하면 SPFM 이 얼마나 오르나(가상의 숫자, 직접 돌린 출력)",
+     "body": "게이트 드라이버와 스위치의 진단 커버리지를 60% → 99% 로 올리자 SPFM 이 87.0% → 96.6% 로 올랐습니다. 90% 문턱(ASIL B)[13]은 넘고 97%(ASIL C)에는 못 미칩니다.",
+     "lang": "python",
+     "code": "parts = [(\"MCU\", 50, 0.5, 0.90), (\"gate driver\", 20, 0.6, 0.60),\n         (\"MOSFET x6\", 30, 0.5, 0.60), (\"current sense\", 10, 1.0, 0.90)]\n# (부품, 고장률 FIT, 위험으로 가는 비율, 진단 커버리지)\ndef spfm(parts):\n    total = sum(f for _, f, _, _ in parts)\n    residual = sum(f * share * (1 - dc) for _, f, share, dc in parts)\n    return total, residual, 1 - residual / total\n\nt, r, s = spfm(parts)\nprint(f\"before: total {t} FIT, residual {r:.1f} FIT, SPFM {s*100:.1f}%\")\nparts2 = [(n, f, sh, 0.99 if n in (\"gate driver\", \"MOSFET x6\") else dc)\n          for n, f, sh, dc in parts]\nt, r, s = spfm(parts2)\nprint(f\"after : total {t} FIT, residual {r:.1f} FIT, SPFM {s*100:.1f}%\")\n# before: total 110 FIT, residual 14.3 FIT, SPFM 87.0%\n# after : total 110 FIT, residual 3.8 FIT, SPFM 96.6%"
+    }
+   ],
+   "how_far": "로봇 규격이 ISO 26262 를 그대로 요구하지는 않습니다. 이 랩이 어느 규격의 어느 지표를 쓰는지는 공개되지 않았으니 면접에서 묻는 게 좋습니다. 계산 방법(FMEDA)은 어느 규격이든 비슷합니다. {추론}",
+   "refs": [
+    12,
+    13,
+    19
+   ],
+   "study": [
+    "iso26262-guide",
+    "batterydesign-metrics"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 기능안전 관련 기술 문서 작성 및 설계 산출물 관리",
+   "short": "인증 심사관이 읽을 안전 문서(요구·분석·검증 기록)를 쓰고, 회로도·BOM 같은 산출물의 판을 관리한다.",
+   "why": "기능안전 규격은 '안전하게 만들었다'를 **문서로 증명**하게 합니다. TI 의 STO 참고 설계도 TÜV SÜD 의 평가를 받으며 설계 안내서와 개념 문서를 따로 냈습니다.[16] 모베드는 CE·UL 인증을 받았거나 진행 중입니다.[4]",
+   "actually": {
+    "items": [
+     "**문서** — 안전 요구 명세, 하드웨어 설계 명세, FMEDA, 검증 계획·보고서.[12]",
+     "**추적** — 요구 하나가 어느 회로 블록·어느 시험으로 닫혔는지 잇는 표.",
+     "**판 관리** — 회로도·PCB·부품 목록(BOM)의 판이 바뀌면 안전 분석도 다시 본다. {추론}",
+     "**영어** — 해외 인증 기관·부품사와 주고받는 문서라 자격요건에 영어 문서 작성이 있다.[1] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    4,
+    12,
+    16
+   ],
+   "study": [
+    "iso26262-guide",
+    "ti-sto"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 모바일로봇 모터 제어 시스템 개발",
+   "short": "아래 네 줄의 묶음 제목 — 모터를 어떻게 돌릴지(제어)와 고장 나면 어떻게 지킬지(보호)를 만드는 일.",
+   "why": "회사는 모베드의 모터가 힘 전달·조향·몸 전체 자세 제어를 모두 맡는다고 설명했습니다.[5] 바퀴가 연석(최대 20cm)을 넘고 ±10° 경사에서 수평을 지키는 것도 모터 제어로 합니다.[4][5]",
+   "refs": [
+    4,
+    5
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 모터 제어기 및 구동 제어 시스템 개발",
+   "short": "모터 한 개를 정확히 돌리는 제어기와, 여러 모터를 묶어 로봇을 움직이는 구동 시스템을 만든다.",
+   "why": "모베드는 2.8m/s(시속 약 10km)까지 달리고, 몸을 안쪽으로 접은 자세에서는 0.3m/s 로 제한됩니다.[4] 같은 로봇이 빠르게도, 좁은 곳에서 천천히도 움직이려면 모터마다 전류·속도·위치를 따로 제어해야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**전류(토크) 루프** — 가장 안쪽, 수십 kHz 로 모터 전류를 맞춘다.[17]",
+     "**속도·위치 루프** — 그 바깥에서 바퀴 속도·조향 각도·자세 높이를 맞춘다.",
+     "**구동 시스템** — 상위 제어기가 정한 로봇의 움직임을 바퀴 12개 모터 지령으로 나누는 부분은 주행 제어 SW 와 맞닿는다. 회사는 이 부분에 2차 계획법(QP) 최적 제어를 썼다고 밝혔다.[5]"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    17
+   ],
+   "study": [
+    "ti-foc",
+    "sul-motor"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 모터 구동 방식 및 제어 로직 설계·개발",
+   "short": "어떤 모터를 어떤 방식(6스텝·FOC, 센서 유무)으로 돌릴지 정하고, 그 제어 코드를 만든다.",
+   "why": "브러시 없는 모터(BLDC·PMSM)는 돌리는 방식에 따라 소음·효율·저속 힘이 달라집니다. 저속에서 부드럽게 힘을 내야 하는 바퀴·자세 모터에는 **FOC(벡터 제어)** 가 흔히 쓰이고, TI 는 이를 C2000 MCU 예제로 공개했습니다.[17] {추론}",
+   "actually": {
+    "items": [
+     "**6스텝** — 단순하고 싸지만 토크가 울컥인다.",
+     "**FOC** — 3상 전류를 회전 좌표로 바꿔(클라크·파크 변환) 토크와 자속을 따로 제어한다.[17]",
+     "**센서** — 엔코더·홀 센서로 회전자 위치를 재거나, 관측기로 추정한다(센서리스). 정지·저속 힘이 필요하면 센서를 쓴다.[17] {추론}",
+     "**코드** — PWM 타이머·ADC 동기, 제어 주기 안에 계산이 끝나는지 확인."
+    ]
+   },
+   "how_far": "제어 이론을 새로 만드는 자리는 아니고, **검증된 방식을 고르고 파라미터를 맞춰 실제 모터에서 돌게** 하는 수준입니다. 자격요건의 '임베디드 시스템 개발'이 여기에 해당합니다.[1] {추론}",
+   "refs": [
+    1,
+    17
+   ],
+   "study": [
+    "ti-foc",
+    "sul-motor",
+    "kim-motor"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 모터 상태 진단, 이상 감지 및 보호 기능 개발",
+   "short": "과전류·과열·저전압·단선을 스스로 알아채고, 순간 고장은 바로 끊고 서서히 쌓이는 열은 계산해 끊는다.",
+   "why": "바퀴가 막히거나 배선이 합선되면 모터와 드라이버가 몇 ms 안에 탈 수 있습니다. TI 는 전력 스위치의 단락 보호로 **탈포화 감지(DESAT)** 를 가장 흔한 방법으로 소개합니다.[19] 모베드에는 유선 진단기 연결이 있어 진단 결과를 정비에도 씁니다.[4]",
+   "actually": {
+    "items": [
+     "**빠른 보호(하드웨어)** — 단락·과전류는 비교기·게이트 드라이버가 μs 단위로 끊는다.[19]",
+     "**느린 보호(소프트웨어)** — 정격을 넘는 전류가 오래가면 I²t(전류 제곱 × 시간)로 열을 누적해 끊는다.",
+     "**진단** — 저전압·과전압, 온도, 엔코더 신호 끊김, 상 단선을 감지하고 고장 코드를 남긴다.",
+     "**대응 등급** — 경고만 / 출력 제한 / 정지(STO). {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "두 겹 보호 — 순간 과전류와 I²t(가상의 숫자, 직접 돌린 출력)",
+     "body": "정격 10A 모터가 연석을 넘으며 25A 를 1초 쓰는 건 통과시키고, 바퀴가 막혀 25A 가 이어지면 1.52초에 끊고, 60A 단락은 바로 끊습니다.",
+     "lang": "python",
+     "code": "I_RATED, I_TRIP, I2T_LIMIT = 10.0, 40.0, 800.0\nDT = 0.01\ndef run(profile):\n    acc = 0.0\n    for k, i in enumerate(profile):\n        t = k * DT\n        if abs(i) >= I_TRIP:\n            return f\"t={t:.2f}s overcurrent trip ({i}A)\"\n        acc = max(0.0, acc + (i * i - I_RATED ** 2) * DT)\n        if acc >= I2T_LIMIT:\n            return f\"t={t:.2f}s I2t trip (acc {acc:.0f})\"\n    return f\"ok (acc {acc:.0f})\"\nprint(\"curb climb 25A x 1s :\", run([25.0] * 100 + [8.0] * 200))\nprint(\"stall 25A x 2s      :\", run([25.0] * 200))\nprint(\"short circuit 60A   :\", run([8.0] * 5 + [60.0]))\n# curb climb 25A x 1s : ok (acc 453)\n# stall 25A x 2s      : t=1.52s I2t trip (acc 803)\n# short circuit 60A   : t=0.05s overcurrent trip (60.0A)"
+    }
+   ],
+   "how_far": "단락 보호는 반드시 하드웨어로 — 소프트웨어 10ms 주기 검사로는 늦습니다(위 예의 0.05s). 문턱값은 모터·드라이버 열 시험으로 정합니다. {추론}",
+   "refs": [
+    4,
+    19
+   ],
+   "study": [
+    "ti-protection",
+    "ti-foc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- CAN 등 차량·로봇 내 통신 기반의 제어기 연동 기능 설계",
+   "short": "제어기와 모터 드라이버·배터리가 CAN 으로 주고받을 메시지(무엇을·몇 번·얼마나 자주)를 설계한다.",
+   "why": "**CAN** 은 차 안에서 제어기끼리 두 가닥 선으로 말하는 표준 통신입니다. ID 가 작은 메시지가 먼저 나가는 중재 방식과 오류 처리 규칙이 있습니다.[18] 모터가 12개인 로봇은 메시지 양이 금방 버스 용량을 넘습니다(아래 예).[6]",
+   "actually": {
+    "items": [
+     "**메시지 표** — 메시지 ID·주기·데이터 배치를 정한다(차에서는 DBC 파일로 관리). {추론}",
+     "**버스 부하** — 보통 절반 아래로 남긴다. 넘으면 묶어 보내거나, 버스를 나누거나, CAN FD(한 번에 최대 64바이트)로 간다.[27] {추론}",
+     "**끊김 대응** — 지령이 정해진 시간 안에 안 오면 모터가 스스로 멈추게(타임아웃).",
+     "**외부 연결** — 위 모듈과는 이더넷·RS422 로 따로 연결한다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "모터 12개를 1kHz 로 돌리면 CAN 이 버틸까(가상의 배치, 직접 돌린 출력)",
+     "body": "8바이트 프레임은 최악의 비트 스터핑까지 135비트입니다. 모터마다 지령·상태를 따로 보내면 1Mbit/s 버스의 324%, 묶어도 105% 라 넘칩니다. 바퀴마다 버스를 나누면 30% 로 떨어집니다.",
+     "lang": "python",
+     "code": "def frame_bits(dlc):\n    base = 1 + 11 + 1 + 1 + 1 + 4 + 8 * dlc + 15\n    stuff = (base - 1) // 4\n    return base + stuff + 1 + 1 + 1 + 7 + 3\ndef load(msgs, rate):\n    return sum(frame_bits(d) * n * hz for n, hz, d in msgs) / rate * 100\nnaive = [(12, 1000, 8), (12, 1000, 8)]\npacked = [(3, 1000, 8), (4, 1000, 8), (8, 100, 8)]\nsplit = [(1, 1000, 8), (1, 1000, 8), (2, 100, 8)]\nprint(\"frame:\", frame_bits(8), \"bits\")\nprint(f\"naive  @1Mbit/s: {load(naive, 1_000_000):.0f}%\")\nprint(f\"packed @1Mbit/s: {load(packed, 1_000_000):.1f}%\")\nprint(f\"per-wheel bus @1Mbit/s: {load(split, 1_000_000):.1f}%\")\n# frame: 135 bits\n# naive  @1Mbit/s: 324%\n# packed @1Mbit/s: 105.3%\n# per-wheel bus @1Mbit/s: 29.7%"
+    }
+   ],
+   "how_far": "모베드가 실제로 CAN 을 몇 개 쓰는지는 공개되지 않았습니다. 이 자리는 **메시지 표와 부하 계산, 타임아웃 같은 안전 동작**까지 정하고, 상위 SW 와 인터페이스를 맞춥니다. {추론}",
+   "refs": [
+    4,
+    6,
+    18,
+    27
+   ],
+   "study": [
+    "ti-can",
+    "vector-can",
+    "can-wave"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 모바일로봇 전장 인터페이스 설계",
+   "short": "아래 세 줄의 묶음 제목 — 보드·배터리·센서·모듈을 선과 커넥터로 잇는 구조를 정하는 일.",
+   "why": "모베드 상위 기종은 GPS·3D 라이다 2개·카메라 3개·레이더 8개·IMU(관성 센서)를 싣습니다.[5] 이 센서들과 모터 12개, 배터리, 위 모듈 포트가 모두 전장 배선으로 이어집니다.[4][6]",
+   "refs": [
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 전장 시스템 및 인터페이스 설계",
+   "short": "로봇 전체의 '전기 지도' — 어느 장치가 어느 전원·통신에 붙는지 — 를 그리고 지킨다.",
+   "why": "부품을 따로 잘 만들어도 이어 붙이는 자리에서 문제가 납니다(전압 강하·노이즈·커넥터 접촉 불량). 이동 로봇은 진동이 있어 배선과 커넥터가 특히 약한 곳입니다. {추론}",
+   "actually": {
+    "items": [
+     "**전원 분배도** — 배터리 → 차단기·퓨즈 → 각 장치, 장치별 최대 전류.",
+     "**통신 구성도** — CAN 버스·이더넷 스위치·RS422 가 어디로 지나는지.",
+     "**접지 계획** — 모터 전류가 흐르는 접지와 센서 신호 접지를 어디서 만나게 할지.[22] {추론}"
+    ]
+   },
+   "refs": [
+    22
+   ],
+   "study": [
+    "ott-emc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 전장품 간 인터페이스 정의 및 연결 구조 검토",
+   "short": "장치끼리 맞물리는 규칙(커넥터·핀·전압·신호)을 문서로 못 박고, 연결이 맞는지 확인한다.",
+   "why": "모베드는 위 모듈이 로봇의 배터리·제어기를 쓰는 전용 포트와 통신 API 를 열어 두었고, 외부 회사들과 '모베드 얼라이언스'를 만들어 모듈을 붙입니다.[4][5] 남이 만든 모듈이 꽂히려면 인터페이스가 문서로 정해져 있어야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**인터페이스 문서** — 커넥터 형번·핀 배치·전압·최대 전류·통신 규격·켜지는 순서.",
+     "**검토** — 상대 장치의 문서와 대조해 전압 범위·극성·종단 저항 중복 같은 어긋남을 찾는다.",
+     "**변경 관리** — 한쪽이 바뀌면 상대 쪽에 알리고 판을 올린다. {추론}"
+    ]
+   },
+   "refs": [
+    4,
+    5
+   ],
+   "study": [
+    "hmg-irex"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 전력 전달, 신호 무결성, 설치성 등을 고려한 전장 설계 수행",
+   "short": "굵은 전류는 손실 없이, 빠른 신호는 깨지지 않게, 선과 커넥터는 로봇 안에 실제로 들어가게 설계한다.",
+   "why": "배터리 전류(정격 33.6A)를 바퀴까지 보내는 동안 선 저항으로 전압이 떨어지고 열이 납니다.[4] 빠른 신호(이더넷·엔코더)는 반사·간섭으로 깨질 수 있어 **신호 무결성**(신호가 모양을 유지하는가)을 봐야 합니다.[21] '설치성'은 그 선과 커넥터가 정해진 공간에 조립되고 정비되느냐입니다. {추론}",
+   "actually": {
+    "items": [
+     "**전력** — 선 굵기·길이·커넥터 정격으로 전압 강하와 발열을 계산한다(아래 예).",
+     "**신호 무결성** — 차동 신호의 꼬임·임피던스 맞춤·종단, 모터 선과 신호선 떼어 놓기.[21][22]",
+     "**전원 무결성** — 스위칭 전류가 만드는 전원 흔들림을 커패시터 배치로 줄인다.[21]",
+     "**설치성** — 굽힘 반경, 회전·승강하는 바퀴 모듈을 지나는 선의 여유, 방진·방수(IP54)를 지키는 커넥터.[4] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "배선 굵기별 전압 강하 — 33.6A, 왕복 3m(배선 길이는 가상, 직접 돌린 출력)",
+     "body": "2.5mm² 선이면 0.69V 가 떨어지고 23W 가 열로 나갑니다. 배터리가 바닥 근처(36V)일 때 1.9% 를 잃는 셈입니다.",
+     "lang": "python",
+     "code": "rho = 0.0172   # 구리 옴·mm²/m\nI = 33.6\nfor area in (2.5, 4.0, 6.0):\n    R = rho * (2 * 1.5) / area\n    print(f\"{area}mm2: R={R*1000:.1f}mOhm drop={I*R:.2f}V loss={I*I*R:.1f}W ({I*R/36*100:.1f}% of 36V)\")\n# 2.5mm2: R=20.6mOhm drop=0.69V loss=23.3W (1.9% of 36V)\n# 4.0mm2: R=12.9mOhm drop=0.43V loss=14.6W (1.2% of 36V)\n# 6.0mm2: R=8.6mOhm drop=0.29V loss=9.7W (0.8% of 36V)"
+    }
+   ],
+   "refs": [
+    4,
+    21,
+    22
+   ],
+   "study": [
+    "bogatin-si",
+    "ott-emc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 전기·전자, 메카트로닉스, 로봇공학, 자동차공학 등 유관 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "회로 이론·전자회로·제어공학을 학교에서 배운 바탕이 필요해서.",
+   "why": "업무 줄들이 회로 설계·모터 제어·통신이라 전기전자 바탕 과목(회로이론·전자회로·전력전자·제어공학)이 전제입니다.[1] 같은 공고의 다른 사본은 모집 직무를 전기·전자·기계·로봇설계로 적었습니다.[2]",
+   "how_far": "학사 이상이면 되고, 실제 판정은 다음 줄의 5년 경력이 합니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 5년 이상의 회로 설계 및 임베디드 시스템 개발 경력을 보유하신 분",
+   "short": "보드를 그려 양산까지 몇 바퀴 돌려 본 사람 — 회로와 펌웨어를 둘 다 해 본 5년차 이상.",
+   "why": "이 자리는 회로(하드웨어)와 모터 제어 로직(펌웨어)을 한 사람이 같이 봅니다.[1] 같은 공고를 옮긴 다른 사이트는 '경력 4년 이상'으로 적기도 했으니 원문(5년 이상)을 기준으로 봅니다.[2]",
+   "how_far": "'보드를 설계 → 시제품 → 측정·수정 → 양산 판'까지 끌고 간 경험을 경력기술서에 숫자(보드 수·전압·전류·통신)로 보이는 게 최소선입니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 비즈니스 영어 커뮤니케이션 및 영어 문서 작성 역량을 보유하신 분",
+   "short": "부품사 데이터시트·해외 인증 문서·해외 협력처와 영어로 일해서.",
+   "why": "부품 문서와 규격(ISO·IEC·UL)이 영어이고, 모베드는 CE·UL 인증을 진행했으며 2026 CES 같은 해외 무대에 나갔습니다.[4][9] 같은 랩의 다른 공고도 비즈니스 영어를 요구합니다.[1]",
+   "how_far": "부품사 기술 지원에 메일로 질문하고, 안전 문서·시험 보고서를 영어로 쓸 수 있는 수준이면 됩니다. {추론}",
+   "refs": [
+    1,
+    4,
+    9
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 회로 설계 및 전장 플랫폼 설계 업무 경험을 보유하신 분",
+   "short": "보드 하나가 아니라 여러 보드·배선을 묶은 '시스템'으로 설계해 본 경험.",
+   "why": "업무의 세 묶음(회로·모터 제어·인터페이스)이 모두 '플랫폼' 단위입니다.[1] 여러 응용 모듈이 같은 전원·제어기를 쓰는 구조라서 보드 하나만 그려 본 경험으로는 모자랍니다.[5] {추론}",
+   "how_far": "차량 전장(ECU·하네스)·로봇·AGV·전동 킥보드·산업 장비처럼 **배터리 + 모터 + 통신이 같이 있는 제품**의 전장을 맡아 본 경험이면 잘 맞습니다. {추론}",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· PADS, Altium, Allegro 등의 PCB 설계 소프트웨어 활용이 가능하신 분",
+   "short": "회로도와 PCB 를 직접 그리는 도구 — 셋 중 하나를 실무에서 써 봤으면 된다.",
+   "why": "세 도구 모두 회로도 → PCB 배치·배선 → 설계 규칙 검사를 하는 전문 도구입니다. Altium 은 설계 규칙을 10개 분류 65종으로 나눠 걸고[24], Allegro 는 고속·다층 기판 설계를 앞세우며[25], PADS 는 Siemens 의 도구입니다.[26]",
+   "actually": {
+    "items": [
+     "**회로도** — 부품 심볼·라이브러리 관리, 판 관리.",
+     "**배치·배선** — 큰 전류 길은 넓고 짧게, 차동 신호는 길이·간격 맞춰, 발열 부품은 열 빠지게.",
+     "**규칙 검사** — 간격·폭·임피던스 규칙을 걸고 위반을 없앤다.[24]",
+     "**제작 파일** — 거버·BOM·조립도를 넘기고 제작사 질의에 답한다. {추론}"
+    ]
+   },
+   "how_far": "직접 그리든 아트워크 담당에게 맡기든, **배치·배선 규칙을 정하고 결과를 검토**할 수 있어야 합니다. 도구는 하나를 익히면 다른 것으로 옮기기 쉽습니다. {추론}",
+   "refs": [
+    24,
+    25,
+    26
+   ],
+   "study": [
+    "altium-rules",
+    "bogatin-si"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "보드를 켜자마자 오실로스코프부터 대 보는 사람",
+   "회로·펌웨어·배선을 한 덩어리로 보는 게 즐거운 사람",
+   "'고장 나면 어떻게 되지?'를 먼저 묻는 사람 — 기능안전이 업무의 한 축이다[1]",
+   "양산·판매 중인 로봇 플랫폼에서 일해 보고 싶은 사람[4]"
+  ],
+  "hard": [
+   "공고에 우대사항 칸이 없고 요건이 5년 경력이라 신입·주니어 자리는 아니다[1]",
+   "안전·인증 문서 쓰는 일이 설계만큼 많다[12] {추론}",
+   "근무지가 의왕이다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "48V 배터리로 도는 모터 드라이버에서 MOSFET 내압과 전류 정격을 어떻게 고르겠어요?",
+   "a": "최고 전압 49.2V 와 막혔을 때 전류, 스위칭 튐을 같이 본다.[4]"
+  },
+  {
+   "q": "모터 단락은 어떻게 감지하고 몇 초 안에 끊어야 하나요? 소프트웨어로 해도 되나요?",
+   "a": "탈포화 감지 같은 하드웨어 보호와 I²t 같은 느린 보호의 구분.[19]"
+  },
+  {
+   "q": "모터 12개를 1kHz 로 제어하면 CAN 버스 부하는요? 넘치면?",
+   "a": "프레임 비트 수 계산과 묶기·버스 나누기·CAN FD.[18][27]"
+  },
+  {
+   "q": "STO 는 무엇이고 왜 두 갈래로 끊나요?",
+   "a": "한쪽 차단이 고장 나도 토크가 끊기게.[14][16]"
+  },
+  {
+   "q": "SPFM 이 목표에 모자라면 회로를 어떻게 바꾸겠어요?",
+   "a": "진단 추가(커버리지)와 이중화.[13]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "사람인 · 현대자동차 [로보틱스랩] 모바일로봇 전장 시스템 개발",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55022391",
+   "kind": "posting",
+   "note": "업무·요건 원문, 근무지 의왕, 접수 2026-11-01~11-30, 우대사항 칸 없음"
+  },
+  {
+   "n": 2,
+   "title": "캐치 · [현대자동차] [로보틱스랩] 모바일로봇 전장 시스템 개발 채용",
+   "url": "https://m.catch.co.kr/NCS/RecruitInfoDetails/570804",
+   "kind": "posting",
+   "note": "같은 공고의 다른 사본 — 경력 표기 4년·5년이 섞여 있고 모집 직무 전기·전자·기계·로봇설계"
+  },
+  {
+   "n": 3,
+   "title": "캐치 · [현대자동차] [로보틱스랩] 모바일로봇 위치 추정 및 주행 제어 채용",
+   "url": "https://m.catch.co.kr/NCS/RecruitInfoDetails/570801",
+   "kind": "posting",
+   "note": "같은 랩의 주행 SW 자리"
+  },
+  {
+   "n": 4,
+   "title": "현대자동차 뉴스룸 · iREX 2025 에서 양산형 자율 이동 로봇 플랫폼 'MobED' 공개",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001082",
+   "kind": "company",
+   "date": "2025-12-03",
+   "note": "양산형 사양표 — 배터리 1.47kWh·36~49.2V·33.6A, 포트 24V 300W/48V 500W, 이더넷/RS422, CE(ISO 13482·3691-4), UL 진행, IP54"
+  },
+  {
+   "n": 5,
+   "title": "현대자동차그룹 · MobED, next-gen mobility robot platform",
+   "url": "https://www.hyundaimotorgroup.com/en/story/mobed-next-gen-mobility-robot-platform",
+   "kind": "company",
+   "date": "2026-01-15",
+   "note": "DnL 모듈·인휠 모터, QP 최적 제어, 센서 구성과 중복 설계, 위 모듈용 전용 포트"
+  },
+  {
+   "n": 6,
+   "title": "한국경제 · 현대차·기아, 모베드 양산형 공개",
+   "url": "https://www.hankyung.com/article/202512030830g",
+   "kind": "news",
+   "date": "2025-12-03",
+   "note": "바퀴마다 구동·조향·자세 모터 3개, 폭 74cm·길이 115cm, 시속 10km, 4시간"
+  },
+  {
+   "n": 7,
+   "title": "HMG 저널 · 모베드를 만든 로봇플랫폼팀 인터뷰",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000008512",
+   "kind": "company",
+   "date": "2021-12-16",
+   "note": "콘셉트 시절 — 2kWh·40kg, 바퀴마다 인휠 모터, 시험 모듈부터 1년 넘게 설계(양산형과 숫자가 다르다)"
+  },
+  {
+   "n": 8,
+   "title": "현대자동차그룹 · 로봇 친화 빌딩 팩토리얼 성수",
+   "url": "https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000155028",
+   "kind": "company",
+   "date": "2024-06-20",
+   "note": "배송 로봇 달이 딜리버리 — PnD 모듈(인휠 모터·조향·서스펜션·브레이크 일체) 4개"
+  },
+  {
+   "n": 9,
+   "title": "현대자동차 뉴스룸 · CES 2026 로보틱스 부문 최고 혁신상(MobED)",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001097",
+   "kind": "company",
+   "date": "2026-01-04",
+   "note": "로보틱스랩 개발, 물류·방송·안내·사이니지 용도, 2026년 초 양산"
+  },
+  {
+   "n": 10,
+   "title": "ISO 13482:2014 Robots and robotic devices — Safety requirements for personal care robots",
+   "url": "https://www.iso.org/standard/53820.html",
+   "kind": "reference",
+   "note": "이동 서비스 로봇·신체 보조·사람 운반 로봇의 안전"
+  },
+  {
+   "n": 11,
+   "title": "ISO 3691-4:2023 Industrial trucks — Driverless industrial trucks and their systems",
+   "url": "https://www.iso.org/standard/83545.html",
+   "kind": "reference",
+   "date": "2023-06",
+   "note": "AGV·AMR 안전"
+  },
+  {
+   "n": 12,
+   "title": "ISO 26262-5:2018 Road vehicles — Functional safety — Part 5: Product development at the hardware level",
+   "url": "https://www.iso.org/standard/68387.html",
+   "kind": "reference",
+   "date": "2018-12",
+   "note": "하드웨어 구조 지표·무작위 하드웨어 고장 평가"
+  },
+  {
+   "n": 13,
+   "title": "Battery Design · BMS hardware architectural metrics: SPFM, LFM, PMHF",
+   "url": "https://www.batterydesign.net/battery-management-system/functional-safety/bms-hardware-architectural-metrics-spfm-lfm-pmhf/",
+   "kind": "reference",
+   "note": "ISO 26262-5 지표 해설 — ASIL B/C/D 문턱(2차 해설)"
+  },
+  {
+   "n": 14,
+   "title": "IEC 61800-5-2:2016 Adjustable speed electrical power drive systems — Safety requirements — Functional",
+   "url": "https://webstore.iec.ch/publication/24556",
+   "kind": "reference",
+   "note": "STO 등 구동 장치 안전 기능"
+  },
+  {
+   "n": 15,
+   "title": "Pilz · Safe Torque Off (STO) 용어 해설",
+   "url": "https://www.pilz.com/en-ES/support/lexicon/articles/200448",
+   "kind": "reference",
+   "note": "STO·SS1·SS2 와 정지 범주"
+  },
+  {
+   "n": 16,
+   "title": "TI · TIDA-01599 Safe Torque Off 참고 설계",
+   "url": "https://www.ti.com/tool/TIDA-01599",
+   "kind": "reference",
+   "note": "두 갈래 차단(게이트 드라이버 전원·24V), TÜV SÜD 평가"
+  },
+  {
+   "n": 17,
+   "title": "TI SPRABQ3 · Sensorless Field Oriented Control of 3-Phase PMSM",
+   "url": "https://ti.com/lit/SPRABQ3",
+   "kind": "reference",
+   "date": "2013-07",
+   "note": "FOC 구조·변환·관측기, C2000 예제"
+  },
+  {
+   "n": 18,
+   "title": "TI SLOA101 · Introduction to the Controller Area Network (CAN)",
+   "url": "https://ti.com/lit/SLOA101",
+   "kind": "reference",
+   "date": "2016-05",
+   "note": "프레임·중재·오류 처리"
+  },
+  {
+   "n": 19,
+   "title": "TI SLUAAY2 · Choosing Appropriate Protection Approach for IGBT and SiC Power Modules",
+   "url": "https://ti.com/lit/pdf/sluaay2",
+   "kind": "reference",
+   "date": "2024",
+   "note": "단락·과전류 보호, DESAT"
+  },
+  {
+   "n": 20,
+   "title": "TI SLUA887 · Bootstrap Circuitry Selection for Half-Bridge Configurations",
+   "url": "https://ti.com/lit/SLUA887",
+   "kind": "reference",
+   "date": "2023-09",
+   "note": "부트스트랩 커패시터·다이오드 선정 예제"
+  },
+  {
+   "n": 21,
+   "title": "Eric Bogatin · Signal and Power Integrity — Simplified (3판)",
+   "url": "https://www.pearson.com/store/en-us/p/signal-and-power-integrity---simplified/P200000000140",
+   "kind": "reference",
+   "note": "신호·전원 무결성 교과서"
+  },
+  {
+   "n": 22,
+   "title": "Henry Ott · Electromagnetic Compatibility Engineering",
+   "url": "https://gov.wiley.com/WileyCDA/WileyTitle/productCd-0470189304.html",
+   "kind": "reference",
+   "date": "2009",
+   "note": "접지·차폐·노이즈 교과서"
+  },
+  {
+   "n": 23,
+   "title": "Horowitz · Hill · The Art of Electronics (3판)",
+   "url": "https://www.cambridge.org/9780521809269",
+   "kind": "reference",
+   "date": "2015",
+   "note": "실무 전자회로 교과서"
+  },
+  {
+   "n": 24,
+   "title": "Altium · PCB Design Rule Types",
+   "url": "https://www.altium.com/documentation/altium-designer/pcb-design-rule-types",
+   "kind": "reference",
+   "note": "10개 분류 65종 설계 규칙"
+  },
+  {
+   "n": 25,
+   "title": "Cadence · Allegro X Design Platform",
+   "url": "https://www.cadence.com/en_US/home/resources/datasheets/allegro-x-design-platform-ds.html",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Siemens · PADS",
+   "url": "https://eda.sw.siemens.com/en-US/pcb/pads",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Vector E-Learning · CAN",
+   "url": "https://elearning.vector.com/course/view.php?id=20",
+   "kind": "reference",
+   "note": "CAN 기초부터 CAN FD 까지 6장"
+  },
+  {
+   "n": 28,
+   "title": "ISO 13849-1:2023 Safety of machinery — Safety-related parts of control systems",
+   "url": "https://www.iso.org/standard/73481.html",
+   "kind": "reference",
+   "date": "2023-04",
+   "note": "기계 제어계 안전 부품 설계(PL)"
+  },
+  {
+   "n": 29,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 30,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 31,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생"
+  },
+  {
+   "n": 32,
+   "title": "SBS Biz · 현대차 경기 의왕연구소 화재…인명 피해 없어",
+   "url": "https://biz.sbs.co.kr/amp/article/20000341082",
+   "kind": "news",
+   "date": "2026-10-20",
+   "note": "의왕연구소 위치 — 경기 의왕시 삼동"
+  },
+  {
+   "n": 33,
+   "title": "세계일보 · 현대차 로보틱스랩, 첨단차플랫폼본부로…박민우 사장이 이끈다",
+   "url": "https://www.segye.com/newsView/20260429512286",
+   "kind": "news",
+   "date": "2026-04-29",
+   "note": "R&D 본부 → AVP 본부"
+  },
+  {
+   "n": 34,
+   "title": "IEC · Overview of IEC 61508 & Functional Safety",
+   "url": "https://assets.iec.ch/public/acos/IEC%2061508%20&%20Functional%20Safety-2022.pdf",
+   "kind": "reference",
+   "date": "2022",
+   "note": "기능안전 수명주기 개요(IEC 발표 자료)"
+  }
+ ],
+ "caveat": "로보틱스랩이 모베드의 회로·모터 드라이버·안전 구조를 직접 설명한 발표나 기술 글은 찾지 못했습니다(발표 영상도 찾지 못해 받지 않았습니다). 회사 쪽 근거는 이 공고·같은 랩 공고·모베드 공식 사양표와 회사 글·보도이고, 회로·보호·CAN·기능안전의 '보통 이런 것'은 TI 응용 노트·국제 규격·교과서로 보였습니다. ISO 26262 지표의 숫자는 규격 원문이 아니라 2차 해설에서 옮겼습니다. 코드 예시의 숫자(부품 고장률·모터 정격·배선 길이·메시지 배치)는 모두 가상의 값이고, 배터리 전압·전류만 공식 사양입니다. 조직이 2026년 5월 AVP 본부로 옮겨[33] 과제가 바뀌었을 수 있습니다.",
+ "resources": [
+  {
+   "id": "hmg-mobed",
+   "title": "MobED, next-gen mobility robot platform",
+   "by": "현대자동차그룹 · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundaimotorgroup.com/en/story/mobed-next-gen-mobility-robot-platform",
+   "why": "이 랩의 이동 로봇이 모터·센서·포트를 어떻게 나눴는지. 지원 전에 먼저 읽을 회사 글."
+  },
+  {
+   "id": "hmg-irex",
+   "title": "iREX 2025 MobED 양산형 공개(사양표)",
+   "by": "현대자동차 뉴스룸 · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001082",
+   "why": "배터리 전압·전류·포트·인증 목표가 표로 있다. 전원·인터페이스 줄의 숫자가 여기서 나온다."
+  },
+  {
+   "id": "art-electronics",
+   "title": "The Art of Electronics (3판)",
+   "by": "Paul Horowitz · Winfield Hill · Cambridge University Press · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.cambridge.org/9780521809269",
+   "why": "전원·MOSFET·연산증폭기·디지털 인터페이스 — 제어기·드라이버 회로의 부품 선정 감각을 실무 예로 잡는다."
+  },
+  {
+   "id": "ti-foc",
+   "title": "Sensorless Field Oriented Control of 3-Phase PMSM (SPRABQ3)",
+   "by": "Texas Instruments · 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://ti.com/lit/SPRABQ3",
+   "why": "FOC 의 변환·전류 루프·관측기를 MCU 코드 구조와 함께. '모터 구동 방식 및 제어 로직' 줄의 바탕."
+  },
+  {
+   "id": "sul-motor",
+   "title": "전기기기 제어론 (개정증보판)",
+   "by": "설승기 · 홍릉 · 2016",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=95802528",
+   "why": "교류 전동기 벡터 제어·전류 제어기·인버터를 한국어로 깊게. 모터 제어 면접 질문의 근거 교과서."
+  },
+  {
+   "id": "kim-motor",
+   "title": "모터제어 — DC, AC, BLDC Motors (제7판)",
+   "by": "김상훈 · 복두출판사 · 2026",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=387545932",
+   "why": "DC·BLDC·AC 모터를 MCU 로 돌리는 실습 중심. 6스텝과 FOC 를 직접 해 보기 좋다."
+  },
+  {
+   "id": "ti-bootstrap",
+   "title": "Bootstrap Circuitry Selection for Half-Bridge Configurations (SLUA887)",
+   "by": "Texas Instruments · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://ti.com/lit/SLUA887",
+   "why": "게이트 드라이버 주변 부품을 계산하는 예제. '부품 선정 및 회로 검증' 줄을 숫자로 연습한다."
+  },
+  {
+   "id": "ti-protection",
+   "title": "Choosing Appropriate Protection Approach for IGBT and SiC Power Modules (SLUAAY2)",
+   "by": "Texas Instruments · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://ti.com/lit/pdf/sluaay2",
+   "why": "단락·과전류 보호 방식(DESAT 등)의 비교. '이상 감지 및 보호 기능' 줄의 하드웨어 쪽."
+  },
+  {
+   "id": "ti-can",
+   "title": "Introduction to the Controller Area Network (SLOA101)",
+   "by": "Texas Instruments · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://ti.com/lit/SLOA101",
+   "why": "CAN 프레임·중재·오류 처리를 20쪽 남짓으로. 버스 부하 계산 전에 읽는다."
+  },
+  {
+   "id": "vector-can",
+   "title": "Vector E-Learning — CAN",
+   "by": "Vector Informatik",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://elearning.vector.com/course/view.php?id=20",
+   "why": "CAN 기초부터 CAN FD 까지 6장, 단원마다 10분 안팎. 차량 통신 실무 용어를 잡는다."
+  },
+  {
+   "id": "can-wave",
+   "title": "CAN통신 파형분석과 리버스",
+   "by": "김인옥 · 골든벨 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=365074539",
+   "why": "실제 차량 CAN 파형을 오실로스코프로 읽는 한국어 책. 통신 회로 검증 감각."
+  },
+  {
+   "id": "iso26262-guide",
+   "title": "ISO 26262 자동차 기능안전 실행 가이드",
+   "by": "김병철 · 강성춘 · 김동규 · 에이디에스스퀘어 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=243420643",
+   "why": "위험 분석 → 안전 목표 → 하드웨어 설계·지표 → 문서의 흐름을 한국어로. 기능안전 업무 세 줄의 바탕."
+  },
+  {
+   "id": "batterydesign-metrics",
+   "title": "BMS hardware architectural metrics: SPFM, LFM, PMHF",
+   "by": "Battery Design",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.batterydesign.net/battery-management-system/functional-safety/bms-hardware-architectural-metrics-spfm-lfm-pmhf/",
+   "why": "SPFM·LFM 계산과 등급별 문턱을 짧게. FMEDA 연습 전에 읽는다."
+  },
+  {
+   "id": "ti-sto",
+   "title": "TIDA-01599 Safe Torque Off 참고 설계",
+   "by": "Texas Instruments",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.ti.com/tool/TIDA-01599",
+   "why": "두 갈래 토크 차단 회로와 인증 평가 문서까지 공개된 예. 기능안전 HW 아키텍처의 실물 본보기."
+  },
+  {
+   "id": "iso13849",
+   "title": "ISO 13849-1:2023 Safety-related parts of control systems",
+   "by": "ISO",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/73481.html",
+   "why": "로봇·기계 쪽 안전 기능 수준(PL)의 원본. 로봇 규격이 무엇을 요구하는지 확인할 때."
+  },
+  {
+   "id": "bogatin-si",
+   "title": "Signal and Power Integrity — Simplified (3판)",
+   "by": "Eric Bogatin · Pearson",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.pearson.com/store/en-us/p/signal-and-power-integrity---simplified/P200000000140",
+   "why": "임피던스·반사·전원 흔들림을 수식 적게. '신호 무결성' 줄과 PCB 배선 규칙의 근거."
+  },
+  {
+   "id": "ott-emc",
+   "title": "Electromagnetic Compatibility Engineering",
+   "by": "Henry Ott · Wiley · 2009",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://gov.wiley.com/WileyCDA/WileyTitle/productCd-0470189304.html",
+   "why": "접지·차폐·케이블 노이즈. 모터 전류와 센서 신호를 한 로봇 안에 같이 두는 전장 설계의 교과서."
+  },
+  {
+   "id": "altium-rules",
+   "title": "Altium Designer · PCB Design Rule Types",
+   "by": "Altium",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.altium.com/documentation/altium-designer/pcb-design-rule-types",
+   "why": "간격·폭·차동 쌍 같은 설계 규칙의 종류. 도구 요건 줄 — 규칙을 걸고 검사하는 법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 로봇 알기",
+   "time": "2~3일",
+   "goal": "모베드의 전원·모터·통신·인증 숫자를 외워 설명할 수 있다.",
+   "resources": [
+    "hmg-mobed",
+    "hmg-irex"
+   ],
+   "task": "공식 사양표를 보고 모베드의 전원 분배도(배터리 → 모터 12개·센서·위 모듈 포트 24V/48V)를 한 장으로 그려 본다."
+  },
+  {
+   "title": "모터 드라이버 한 장",
+   "time": "3~4주",
+   "goal": "48V 3상 브리지 드라이버의 부품을 계산해 고르고, 보호 회로를 붙인다.",
+   "resources": [
+    "art-electronics",
+    "ti-bootstrap",
+    "ti-protection",
+    "altium-rules"
+   ],
+   "task": "가상 사양(48V·정격 10A·순간 40A)으로 MOSFET·게이트 드라이버·부트스트랩·션트를 고른 근거표를 만들고, 회로도와 2층 PCB 를 그려 설계 규칙 검사를 통과시킨다."
+  },
+  {
+   "title": "모터 돌리기와 지키기",
+   "time": "3~4주",
+   "goal": "평가 보드로 BLDC 를 FOC 로 돌리고, 과전류·I²t·타임아웃 보호를 넣는다.",
+   "resources": [
+    "ti-foc",
+    "kim-motor",
+    "sul-motor"
+   ],
+   "task": "시판 모터 평가 키트로 속도 루프까지 돌리고, 바퀴를 손으로 막았을 때 I²t 로 끊기는지, 지령이 끊기면 멈추는지 로그로 보인다."
+  },
+  {
+   "title": "CAN 으로 묶기",
+   "time": "1~2주",
+   "goal": "여러 드라이버의 CAN 메시지 표를 설계하고 버스 부하를 계산·측정한다.",
+   "resources": [
+    "ti-can",
+    "vector-can",
+    "can-wave"
+   ],
+   "task": "모터 12개 로봇을 가정해 메시지 표(ID·주기·데이터)를 만들고, 위 계산기로 부하를 낸 뒤 두 보드를 실제로 이어 오실로스코프로 프레임을 확인한다."
+  },
+  {
+   "title": "기능안전 한 바퀴",
+   "time": "2~3주",
+   "goal": "위험 분석에서 안전 요구를 뽑고, FMEDA 로 SPFM 을 계산해 회로를 고친다.",
+   "resources": [
+    "iso26262-guide",
+    "batterydesign-metrics",
+    "ti-sto",
+    "iso13849"
+   ],
+   "task": "'한 바퀴가 멋대로 돈다' 위험 하나로 안전 목표·요구를 쓰고, 2단계 드라이버의 FMEDA 표를 만들어 STO 를 더하기 전후의 SPFM 을 비교한다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일 표기가 없고 직군 구분이 없다. 이 자리는 경력 5년 이상이라 그대로 해당하지 않는다 [30]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [30]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [29]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값 [29]"
+   }
+  ],
+  "how": "공고의 급여 칸은 '면접 후 결정'이다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 경력 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [31]. 공고 본문에는 복리후생 칸이 없다 [1]. 어린이집 목록에 의왕이 없어 이 근무지에서 쓸 수 있는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대차그룹 의왕연구소",
+  "address": "경기도 의왕시 삼동 (현대차그룹 의왕연구소)",
+  "map_url": "https://map.naver.com/p/search/%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%9D%98%EC%99%95%EC%97%B0%EA%B5%AC%EC%86%8C",
+  "near": "1호선 의왕역 근처 {추론}",
+  "note": "공고의 근무지는 '의왕'이다 [1]. 의왕연구소는 경기 의왕시 삼동에 있는 현대차그룹 연구 단지로 보도됐다 [32]. 사업장 안내에서 도로명 번지는 확인하지 못했다 — 지도 링크는 이름 검색이다 {추론}."
+ }
+}

@@ -165,6 +165,7 @@
   "ats-hkmc:hyundai:2026N2209": "hyundai-npu-dl-compiler",
   "ats-hkmc:hyundai:2026N2329": "hyundai-robotics-joint-robot-mechanism",
   "ats-hkmc:hyundai:2026N2331": "hyundai-robotics-joint-robot-production",
+  "saramin-55022391": "hyundai-robotics-mobile-robot-ee-system",
   "ats-hkmc:hyundai:2026N2322": "hyundai-robotics-perceptive-ai",
   "wanted-387529": "hyundai-robotics-perceptive-ai",
   "wanted-387536": "hyundai-sdf-data-architect",
@@ -1867,6 +1868,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 29
+  },
+  {
+   "id": "hyundai-robotics-mobile-robot-ee-system",
+   "company": "현대자동차",
+   "role": "모바일로봇 전장 시스템 개발",
+   "jobs": [
+    "saramin-55022391"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "hyundai-robotics-perceptive-ai",
