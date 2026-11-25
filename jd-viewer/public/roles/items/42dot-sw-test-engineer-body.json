@@ -1,0 +1,1046 @@
+{
+ "id": "42dot-sw-test-engineer-body",
+ "company": "포티투닷",
+ "role": "SW 테스트 엔지니어 — 차량 바디·편의",
+ "team": "SDV 통합 소프트웨어 검증(편의) — 팀 이름은 공개되지 않음",
+ "jobs": [
+  "ats-ashby:42dot:1cfd36d5-26ce-4928-be2a-712c125d6d71"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "문·공조(HVAC)·시트 같은 편의 기능이 **여러 제어기를 거쳐서도 맞게, 제때** 움직이는지 통합 시험을 설계·실행하고, 그 시험이 릴리스마다 저절로 돌게 만듭니다.[1]",
+  "env": "현대차그룹 SDV 의 고성능 차량 컴퓨터 + 구역 제어기 구조 위에서,[4][12] Linux·RTOS 와 CAN 망, CANoe·CANape, HIL/SIL 벤치와 실차로 시험합니다. 회사는 2주 단위 회차와 CI/CD 로 개발한다고 밝혔습니다.[1][4]",
+  "oneline": "바디·편의 기능의 **통합 품질 담당 + 시험 자동화 개발자**. 자동차 소프트웨어 평가 경력 5년 이상이 자격요건입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "SDV 통합 소프트웨어 QA 엔지니어는 새로운 설계(zonal architecture 등)와 동작 방식에 기반한 통합 소프트웨어 검증 계획을 수립합니다.",
+   "short": "문·공조·시트를 '기능별 제어기'가 아니라 '자리별 구역 제어기 + 중앙 컴퓨터'가 나눠 맡는 새 구조에 맞춰 시험 계획을 세운다.",
+   "why": "예전 차는 문·시트·공조마다 제어기가 따로 있었습니다. 현대차그룹은 Pleos 를 발표하며 제어기를 고성능 차량 컴퓨터(HPVC)와 구역 제어기(zone controller)로 통합한다고 밝혔고,[12] 포티투닷도 CES 2024 에서 같은 구조를 내세웠습니다.[4] 구역 구조(zonal architecture)는 제어기를 기능이 아니라 **차 안의 위치**로 묶고, 구역 제어기가 그 자리의 센서·모터를 연결하고 전원까지 나눕니다.[13][14] 바디처럼 좌우가 대칭인 영역에 특히 잘 맞는다는 설명도 있습니다.[15]문 열림 하나가 구역 제어기·중앙 컴퓨터·다른 구역을 거쳐 처리되므로 시험 계획도 그 길을 따라 다시 짜야 합니다.{추론}",
+   "actually": {
+    "items": [
+     "**기능이 지나가는 길 그리기** — 예: 운전석 문 손잡이 → 앞 왼쪽 구역 제어기 → 중앙 컴퓨터(잠금 판단) → 네 문의 구역 제어기 → 모터. 어느 칸이 바뀌었는지 표시한다.{추론}",
+     "**옛 기능 목록 옮기기** — 바디 제어기(BCM)·공조·시트 제어기가 하던 기능이 새 구조에서 어느 제어기로 갔는지 표로 맞춘다. Aptiv 는 바디·보안·공조 제어를 구역·중앙 제어기로 옮길 후보로 꼽았다.[13]",
+     "**무엇을 어디서** — 기능마다 SIL(가상)·HIL(벤치)·실차 중 어디서 시험할지, 릴리스마다 어느 묶음을 돌릴지 정한다.[1][21]",
+     "**근거 남기기** — 계획·시험·결과를 서로 이어 두는 것은 자동차 개발 프로세스 모델(ASPICE)이 요구하는 산출물이다.[22]"
+    ]
+   },
+   "how_far": "기능 요구(문이 언제 잠겨야 하나)는 시스템·기능 개발 쪽이 정합니다.{추론} 이 자리는 그걸 받아 **통합 관점에서 무엇을 어디까지 시험할지 정하고 빠진 경우를 찾아내는** 쪽입니다.[1]",
+   "refs": [
+    4,
+    12,
+    13,
+    14,
+    15,
+    22
+   ],
+   "study": [
+    "aptiv-zone",
+    "ti-zone",
+    "aspice-pam"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "테스트 케이스 설계와 테스트 환경/조건을 설계하고, 단일 소프트웨어가 아닌 통합 검증 관점에서 검증 수행을 준비합니다.",
+   "short": "'문 제어기 혼자 맞나'가 아니라 '차속·문·잠금·경고가 함께 맞게 도나'를 시나리오로 짠다.",
+   "why": "공고 팀 소개는 도어·공조(HVAC)·시트 같은 편의 장치와 제어 소프트웨어 사이의 **상호작용**을 통합 관점에서 검증하고 시나리오 기반 시험을 설계한다고 적었습니다.[1] 단품 시험이 다 통과해도 두 제어기가 신호 시점이나 해석을 다르게 하면 기능은 실패합니다.{추론}",
+   "actually": {
+    "items": [
+     "**시나리오 = 시간 순서** — '20km/h 로 1초 넘게 달리면 잠김'처럼 여러 제어기의 신호가 시간에 따라 바뀌는 흐름을 한 시험으로 적는다.{추론}",
+     "**경계와 예외** — 문턱 바로 밑(14km/h)·문턱 근처를 오르내리는 경우·문이 열린 채 달리는 경우처럼 규칙이 갈리는 지점을 일부러 넣는다.{추론}",
+     "**상태 조합** — 시동 상태 × 문 열림 × 잠금 상태 × 차속처럼 조건을 곱해 표로 만들고, 위험한 조합부터 고른다.{추론}",
+     "**환경 조건** — 시험 벤치의 전원 전압·버스 부하·가짜 제어기(나머지 차를 흉내 내는 시뮬레이션)를 시험마다 적어 둔다.[16][21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "가상 자동 잠금 규칙을 시나리오 표로 시험하기(직접 실행)",
+     "body": "규칙은 설명용으로 지어낸 것입니다 — '차속 15km/h 이상 1초 이어지면 잠금, 문이 열려 있으면 안 잠금'. 넷째 시나리오는 문턱을 오르내려 시간이 이어지지 않는 경우, 다섯째는 '열린 문이 닫히는 순간 이미 1초가 넘었으면 바로 잠기나'를 봅니다. 차속은 다른 구역에서, 문 상태는 문 구역에서 오는 신호라 이런 시험이 곧 통합 시험입니다.{추론}",
+     "lang": "python",
+     "code": "# 가상 규칙: 차속 15km/h 이상이 1초 이어지면 문을 잠근다. 단, 문이 열려 있으면 잠그지 않는다.\nclass DoorZone:                      # 앞좌석 구역 제어기(가짜)\n    def __init__(self):\n        self.locked = False\n        self.fast_ms = 0\n    def step(self, speed_kmh, door_open, dt_ms=100):\n        self.fast_ms = self.fast_ms + dt_ms if speed_kmh >= 15 else 0\n        if self.fast_ms >= 1000 and not door_open:\n            self.locked = True\n\ndef run(name, timeline, expect_locked):\n    zone = DoorZone()\n    for speed, door_open, ms in timeline:      # (차속, 문 열림, 유지 시간 ms)\n        for _ in range(ms // 100):\n            zone.step(speed, door_open)\n    print(\"PASS\" if zone.locked == expect_locked else \"FAIL\", name, \"| 잠김 =\", zone.locked)\n\nrun(\"20km/h 1.5초 → 잠김\", [(20, False, 1500)], True)\nrun(\"20km/h 0.5초 → 안 잠김\", [(20, False, 500)], False)\nrun(\"문 열린 채 20km/h → 안 잠김\", [(20, True, 2000)], False)\nrun(\"16↔14km/h 오르내림 → 안 잠김\", [(16, False, 600), (14, False, 100), (16, False, 600)], False)\nrun(\"달리다 문 닫힘 → 바로 잠김\", [(20, True, 1200), (20, False, 100)], True)\n# PASS 20km/h 1.5초 → 잠김 | 잠김 = True\n# PASS 20km/h 0.5초 → 안 잠김 | 잠김 = False\n# PASS 문 열린 채 20km/h → 안 잠김 | 잠김 = False\n# PASS 16↔14km/h 오르내림 → 안 잠김 | 잠김 = False\n# PASS 달리다 문 닫힘 → 바로 잠김 | 잠김 = True"
+    }
+   ],
+   "how_far": "시나리오 표를 **요구사항 번호와 이어서** 쓸 줄 알면 됩니다 — 어느 요구를 어떤 시험이 덮는지 빈칸이 보이게.[22]{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "python-can",
+    "pytest-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "주요 마일스톤(릴리스나 게이트 등)의 품질 목표 달성을 위한 검증을 실행합니다.",
+   "short": "소프트웨어를 내보내기 전 관문마다 정해 둔 시험 묶음을 돌리고 '통과/보류' 근거를 낸다.",
+   "why": "포티투닷은 2주 단위 회차(스프린트)와 CI/CD 로 개발한다고 밝혔습니다.[4] 회차가 짧을수록 릴리스·게이트(다음 단계로 넘어가도 되는지 판정하는 관문)가 잦아져, 관문마다 무엇을 돌릴지가 정해져 있어야 합니다.{추론} 같은 회사 진단 시험 공고도 '릴리스 및 품질 게이트에 맞춰' 검증한다고 적었습니다.[10]",
+   "actually": {
+    "items": [
+     "**관문별 묶음** — 매일 도는 짧은 회귀 시험, 릴리스 후보에 돌리는 전체 통합 시험, 양산 전 실차 확인을 나눈다.{추론}",
+     "**품질 목표 숫자** — 요구 대비 시험 덮은 비율, 통과율, 남은 치명 결함 0건 같은 출고 기준.{추론}",
+     "**판정 근거** — 실패가 있으면 결함 번호·영향 기능·우회 여부를 붙여 '보류'인지 '조건부 통과'인지 판단할 자료를 낸다.{추론}"
+    ]
+   },
+   "how_far": "최종 출시 결정은 릴리스·품질 조직이 하겠지만,{추론} 공고는 **목표 달성을 위한 검증 실행**을 이 자리 몫으로 적었습니다.[1]",
+   "refs": [
+    4,
+    10
+   ],
+   "study": [
+    "aspice-pam"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "소프트웨어 통합 검증 외에 제어기와 연동되는 테스트 벤치 조건 및 실차 환경에서 검증을 수행할 수 있습니다.",
+   "short": "가상 환경에서 끝나지 않고, 진짜 제어기를 묶은 벤치(HIL)와 실제 차에서도 문·공조·시트를 눌러 보며 확인한다.",
+   "why": "HIL(Hardware-in-the-Loop)은 진짜 제어기에 가짜 차(실시간 시뮬레이션)를 이어 붙여 시험하는 방식입니다.[21] 같은 회사에는 SIL/HIL 벤치를 짓는 공고가 따로 있고,[8] 판교 사옥에는 시험차를 점검하는 비히클 워크숍이 있습니다.[6]",
+   "actually": {
+    "items": [
+     "**SIL** — 제어 소프트웨어를 PC 에서 돌리고 나머지 차는 모델로 흉내 낸다. 빠르고 많이 돌린다.[31]",
+     "**HIL 벤치** — 진짜 구역 제어기에 모터·스위치 대신 부하·신호 장치를 달고, 버스로 나머지 제어기를 흉내 낸다.[21]",
+     "**실차** — 문을 실제로 여닫고, 공조 바람·시트 움직임처럼 사람이 느끼는 결과를 본다. 벤치가 흉내 내지 못한 전원·배선·소음 문제가 여기서 나온다.{추론}"
+    ]
+   },
+   "how_far": "'수행할 수 있습니다'라 실차 시험이 주 업무는 아니지만 **벤치 조건을 바꾸고 실차 로그를 받아 올 수는** 있어야 합니다.[1]{추론}",
+   "refs": [
+    6,
+    8,
+    21,
+    31
+   ],
+   "study": [
+    "mathworks-hil"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "자동화 도구를 개발 또는 적용하여 통합 검증 활동을 효율화합니다.",
+   "short": "같은 시나리오를 릴리스마다 손으로 누르지 않게, 시험 실행·판정·로그 모으기를 코드로 돌린다.",
+   "why": "같은 회사 시스템 검증 공고는 CANoe 제어부터 서버·DB·대시보드·보고서까지 자동화한다고 적었고,[9] SIL/HIL 공고는 GitLab CI·Jenkins 로 회귀 시험을 돌린다고 적었습니다.[8] 하드웨어·소프트웨어를 따로 개발해 동시에 진행하면 검증 기간이 줄어든다는 것이 회사의 설명입니다.[29]",
+   "actually": {
+    "items": [
+     "**시험 도구 원격 조종** — CANoe 같은 평가 도구를 스크립트로 띄워 시나리오를 돌리고 결과를 받는다.[9][16]",
+     "**가짜 신호 넣기** — python-can 같은 라이브러리로 버스에 차속·스위치 신호를 넣고 응답을 읽는다.[30]",
+     "**판정 자동화** — 기대값과 비교해 PASS/FAIL 을 내고, 실패하면 그 앞뒤 로그를 같이 저장한다.{추론}",
+     "**파이프라인에 얹기** — 소프트웨어가 새로 빌드될 때마다 벤치 시험이 저절로 돌게 한다.[8]"
+    ]
+   },
+   "how_far": "회사 프레임워크를 쓰며 **시험 스크립트를 쓰고 고칠 수 있는** 것이 기본, 반복 일을 찾아 도구로 바꿔 본 경험이 있으면 좋습니다.{추론} 1차 면접에 온라인 코딩 테스트가 있습니다.[1]",
+   "refs": [
+    8,
+    9,
+    29
+   ],
+   "study": [
+    "python-can",
+    "pytest-docs",
+    "canoe"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "검증 결과를 문서화하고 분석 내용을 구조화합니다.",
+   "short": "'실패했다'로 끝내지 않고 언제·어떤 조건에서·어느 제어기 쪽 문제인지를 정리해 개발자가 바로 고칠 수 있게 쓴다.",
+   "why": "통합 시험의 실패는 여러 제어기에 걸쳐 있어서 원인이 어느 쪽인지 가르는 정리가 없으면 결함이 팀 사이를 떠돕니다.{추론} ASPICE 는 시험 결과를 요구사항·시험 항목과 이어서 기록하도록 요구합니다.[22][33]",
+   "actually": {
+    "items": [
+     "**재현 조건** — 소프트웨어 버전, 벤치/실차, 시나리오 단계, 전원·버스 상태.{추론}",
+     "**원인 가르기** — 요청 신호가 나갔나 → 받는 쪽이 받았나 → 판단했나 → 모터·출력이 움직였나를 로그로 단계별로 짚는다.{추론}",
+     "**추적** — 결함 ↔ 시험 ↔ 요구사항을 이어 둔다.[22]"
+    ]
+   },
+   "refs": [
+    22,
+    33
+   ],
+   "study": [
+    "aspice-pam"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "필요에 따라 분석 내용에 대한 대시보드를 구성하여 시각화할 수 있습니다.",
+   "short": "릴리스마다 통과율·남은 결함·기능별 실패를 한눈에 보는 화면을 만든다.",
+   "why": "같은 회사 시스템 검증 공고는 자동화 범위에 서버·DB·대시보드를 넣었습니다.[9] 품질 목표(통과율·결함)를 숫자로 관리하려면 회차별로 쌓아 비교하는 화면이 필요합니다.{추론}",
+   "how_far": "'필요에 따라'라 필수는 아닙니다.[1] 시험 결과를 DB 나 표에 쌓고 Grafana·사내 BI 같은 도구로 **회차별 추이를 그릴 수 있는** 정도면 됩니다.{추론}",
+   "refs": [
+    9
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "프로세스 구축 및 개선",
+   "short": "아래 줄의 묶음 제목 — 통합 시험의 기준·절차·지표를 정하고 고치는 일.",
+   "why": "공고는 업무를 계획 → 설계 → 수행 → 자동화 → 분석 → 프로세스의 여섯 묶음으로 나눴고 이것이 마지막 묶음입니다.[1] 같은 회사 진단 시험 공고도 같은 여섯 묶음을 씁니다.[10]",
+   "refs": [
+    1,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "통합 소프트웨어 검증의 효율성과 정확성을 높일 수 있는 프로세스와 절차를 정의하고 개선합니다.",
+   "short": "시험을 어떤 순서·기준으로 하고 무엇을 남길지 규칙을 만들고, 회차마다 고친다.",
+   "why": "공고 팀 소개는 양산 전·후 품질 지표를 관리하고 품질 개선과 **내재화**를 리딩한다고 적었습니다.[1] 포티투닷은 개발 프로세스로 ISO 26262(기능안전) 인증을 받았다고 알렸습니다.[7]",
+   "actually": {
+    "items": [
+     "**시험 등급 나누기** — 안전과 이어진 기능(문 잠김·끼임 방지 등)은 더 촘촘히, 편의 기능은 대표 경우만.{추론}",
+     "**들어가고 나오는 기준** — 어떤 빌드면 통합 시험을 시작하고, 어떤 결과면 끝내나.{추론}",
+     "**회고** — 실차에서 처음 나온 결함을 왜 벤치에서 못 잡았는지 따져 시나리오·벤치를 보탠다.{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    22
+   ],
+   "study": [
+    "aspice-pam",
+    "iso26262"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 이상 자동차 소프트웨어 기능/성능 평가 업무 경험을 보유하신 분",
+   "short": "완성차·부품사에서 차량 기능을 시험·평가해 본 경력이 5년 넘게 필요해서.",
+   "why": "차량 신호·평가 도구·벤치·실차 시험은 일반 소프트웨어 QA 와 바탕이 달라, 공고는 자동차 소프트웨어 평가 경력을 첫 요건으로 둡니다.[1]",
+   "how_far": "'기능/성능 평가'라 직접 제어 코드를 짠 경력이 아니어도 됩니다 — **편의·바디 기능을 시험하고 결함을 찾아낸 경험**이 중심입니다.{추론} 경력직 자리라 이 칸은 메우기 어렵습니다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "acorn-auto-sw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Linux와 RTOS와 같은 운영체제에 대한 이해가 높으신 분",
+   "short": "중앙 컴퓨터는 Linux 계열, 구역 제어기는 실시간 운영체제(RTOS)로 돌아서 — 둘이 다르게 실패한다.",
+   "why": "RTOS(실시간 운영체제)는 정해진 시간 안에 반드시 반응하도록 작업 순서를 정하는 운영체제입니다.[19] 제어기 소프트웨어 표준 구조(AUTOSAR)도 운영체제를 한 층으로 둡니다.[20] 같은 회사 SW Update 시험 공고도 Linux 를 요건에 넣었습니다.[11]",
+   "actually": {
+    "items": [
+     "**Linux 쪽** — 부팅 순서, 프로세스·서비스 상태, 로그(journal), CPU·메모리 부하를 보고 '기능이 늦게 뜨는 이유'를 찾는다.{추론}",
+     "**RTOS 쪽** — 작업(태스크)의 주기·우선순위 때문에 응답이 늦어지거나 빠지는 문제를 이해한다.[19]",
+     "**둘 사이** — 중앙 컴퓨터가 잠금을 판단하고 구역 제어기가 모터를 돌리면, 지연이 어느 쪽에서 생겼는지 가를 줄 알아야 한다.{추론}"
+    ]
+   },
+   "how_far": "운영체제를 만들 수준은 아닙니다. **셸로 로그·프로세스를 다루고, 주기·우선순위·시간 제한이 시험 결과에 어떻게 드러나는지** 설명할 수 있으면 됩니다.{추론}",
+   "refs": [
+    11,
+    19,
+    20
+   ],
+   "study": [
+    "rtos-wiki",
+    "autosar-lsa",
+    "linux-cmd"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "자동차 네트워크 평가 툴(CANoe, CANape 등) 사용 경험이 있으신 분",
+   "short": "차 안 신호를 보고·흉내 내고·기록하는 업계 표준 도구를 이미 손에 익혔어야 해서.",
+   "why": "CANoe 는 Vector 의 제어기·네트워크 개발과 시험 도구로 시뮬레이션·분석·시험·진단을 한 곳에서 합니다.[16] CANape 는 같은 회사의 측정·보정 도구로 제어기 내부 값과 버스 신호를 시간축에 함께 기록합니다.[17] 같은 회사 SW Update 시험 공고도 Linux·CANoe·CANape 를 요건에 적었습니다.[11]",
+   "actually": {
+    "items": [
+     "**나머지 차 흉내** — CANoe 에서 시험 대상이 아닌 제어기들의 메시지를 시뮬레이션해 벤치를 '차처럼' 만든다.[16]",
+     "**신호 보기** — 신호표(DBC 등)로 바이트를 차속·문 상태 같은 값으로 풀어 그래프로 본다.[16]",
+     "**측정 기록** — CANape 로 제어기 안 변수와 버스 신호를 같이 기록해, 판단이 어디서 달라졌는지 본다.[17]",
+     "**시험 자동화** — 도구의 시험 기능이나 스크립트로 시나리오를 반복한다.[9][16]"
+    ]
+   },
+   "how_far": "도구가 비싸 개인이 연습하기 어렵습니다.{추론} 경력이 없다면 python-can·cantools 로 **가상 버스에 신호를 넣고 신호표로 풀어 보는** 연습이 원리를 대신 익히는 길입니다.[30] CAN 프레임·주기의 기본은 도구 회사의 무료 강의로 먼저 잡습니다.[32]",
+   "refs": [
+    11,
+    16,
+    17,
+    30,
+    32
+   ],
+   "study": [
+    "vector-can",
+    "canoe",
+    "vector-canape"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "자동차 평가 로그 데이터 분석 경험이 있으신 분",
+   "short": "버스 로그와 측정 파일을 시간 순서로 읽어 '요청 → 응답'이 맞게, 제때 일어났는지 가려내야 해서.",
+   "why": "CANape 같은 도구는 기록을 ASAM MDF(MF4) 형식으로 저장하고, 이 형식은 CAN·CAN FD·LIN 기록의 업계 표준입니다.[17][18] 공고 팀 소개도 로그 데이터 분석으로 품질 지표를 관리한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**형식 열기** — MF4·BLF·ASC 같은 기록 파일을 도구나 파이썬으로 연다.[18][30]",
+     "**사건 짝짓기** — 요청 신호와 그 결과 신호를 짝지어 걸린 시간을 재고, 응답이 빠진 경우를 찾는다.{추론}",
+     "**긴 기록 훑기** — 실차 몇 시간 기록에서 이상한 구간(재시작·신호 끊김)만 골라낸다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "잠금 해제 요청 → 문 상태 응답 시간 재기(직접 실행)",
+     "body": "신호 번호·기준(300ms)은 설명용으로 지어낸 것입니다. candump 꼴 로그에서 요청(3A0)과 응답(4B1)을 짝지어 늦은 응답과 빠진 응답을 찾습니다.{추론}",
+     "lang": "python",
+     "code": "# candump 꼴 로그: (시각) 채널 ID#데이터. 0x3A0 = 잠금 해제 요청, 0x4B1 = 문 상태(첫 바이트 00 = 해제됨) — 가상 신호표\nLOG = \"\"\"(0.000) can0 3A0#01\n(0.180) can0 4B1#00\n(5.000) can0 3A0#01\n(5.420) can0 4B1#00\n(9.000) can0 3A0#01\n(9.150) can0 4B1#00\n(12.000) can0 3A0#01\"\"\"\nLIMIT_MS = 300                                   # 가상 기준: 요청 뒤 300ms 안에 해제\npending = None\nfor line in LOG.splitlines():\n    t, _, frame = line.split()\n    t = float(t.strip(\"()\"))\n    can_id, data = frame.split(\"#\")\n    if can_id == \"3A0\":\n        if pending is not None:\n            print(f\"FAIL {pending:.3f}s 요청 — 응답 없음\")\n        pending = t\n    elif can_id == \"4B1\" and data[:2] == \"00\" and pending is not None:\n        ms = round((t - pending) * 1000)\n        print(\"PASS\" if ms <= LIMIT_MS else \"FAIL\", f\"{pending:.3f}s 요청 → {ms}ms\")\n        pending = None\nif pending is not None:\n    print(f\"FAIL {pending:.3f}s 요청 — 응답 없음\")\n# PASS 0.000s 요청 → 180ms\n# FAIL 5.000s 요청 → 420ms\n# PASS 9.000s 요청 → 150ms\n# FAIL 12.000s 요청 — 응답 없음"
+    }
+   ],
+   "how_far": "도구 화면으로 보는 것을 넘어 **스크립트로 여러 기록을 한꺼번에 훑어 숫자로 내는** 수준이면 강점입니다.{추론}",
+   "refs": [
+    1,
+    17,
+    18
+   ],
+   "study": [
+    "asam-mdf",
+    "cantools",
+    "python-can"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Agile 프로세스와 CI/CD 환경에서 검증 활동을 진행한 경험이 있으신 분",
+   "short": "2주마다 새 소프트웨어가 나오는 흐름에서, 시험이 그 속도를 따라가게 해 본 경험.",
+   "why": "포티투닷은 2주 단위 스프린트와 CI/CD 를 쓴다고 밝혔습니다.[4] 스크럼은 짧은 회차마다 쓸 수 있는 결과물을 내는 방식이라 시험도 회차 안에 끝나야 합니다.[26]",
+   "actually": {
+    "items": [
+     "**회차 안에 시험** — 새 기능의 시험 시나리오를 개발과 같은 회차에 쓴다.{추론}",
+     "**빌드마다 자동 회귀** — 커밋·야간 빌드에 SIL·HIL 시험을 붙인다.[8]",
+     "**실패를 빨리 알리기** — 실패를 결함 관리·채팅으로 바로 알려 그 회차에 고치게 한다.{추론}"
+    ]
+   },
+   "how_far": "파이프라인 도구(GitLab CI·Jenkins)를 직접 설정해 보지 않았어도 **시험이 파이프라인 어디에 끼고 결과가 어떻게 돌아오는지** 설명할 수 있으면 됩니다.[8]{추론}",
+   "refs": [
+    4,
+    8,
+    26
+   ],
+   "study": [
+    "scrum-guide",
+    "pytest-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "최신 기술에 관심이 많고 변화에 유연하게 대처할 수 있는 역량을 보유하신 분",
+   "short": "구조(구역 제어기·OTA)와 시험 방법(가상 벤치·LLM 자동화)이 계속 바뀌는 자리라서.",
+   "why": "포티투닷은 OTA(무선 업데이트)로 차 기능을 계속 고친다고 밝혔고,[5] 우대사항에 클라우드·LLM 을 쓴 검증 경험까지 넣었습니다.[1]",
+   "how_far": "새 구조·도구를 **이름과 왜 나왔나** 정도로 설명하고, 지난 경력에서 도구·방식을 바꿔 본 예 하나를 들 수 있으면 됩니다.{추론}",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "임베디드 개발환경에서의 프로그래밍 언어(C/C++, Python, Rust 등)에 대한 높은 이해도",
+   "short": "시험 자동화는 Python, 제어기 코드를 읽을 땐 C/C++ — 둘 다 읽고 쓸 줄 알면 좋다.",
+   "why": "같은 회사 시험 공고들은 Python·C/C++ 로 자동화 프레임워크를 만든다고 적었습니다.[8][9] 1차 면접에 온라인 코딩 테스트가 붙어 있습니다.[1]",
+   "level": {
+    "basic": "Python 으로 파일·바이트·정규식 다루기, 로그 파싱",
+    "work": "C/C++ 제어기 코드를 읽고 신호 처리 흐름을 따라간다",
+    "team": "Python·C++ 로 벤치 제어·판정 프레임워크를 만든다[8]"
+   },
+   "how_far": "우대사항이라 셋 다 필요하지 않습니다.[1] **Python 실무 + C 읽기**가 현실적인 최소선입니다.{추론}",
+   "refs": [
+    1,
+    8,
+    9
+   ],
+   "study": [
+    "python-can",
+    "pytest-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 환경(AWS, Azure 등)에서의 소프트웨어 품질 관리 업무 경험",
+   "short": "시험 결과·로그·가상 제어기를 클라우드에 올려 여러 팀이 같이 돌리고 보는 경험.",
+   "why": "CES 2024 에서 포티투닷은 클라우드와 이어진 SDV 개발 환경을 소개했습니다.[4] 시험 기록이 커지면 결과 저장·대시보드·가상 시험을 클라우드에서 돌리는 일이 늘어납니다.{추론}",
+   "how_far": "클라우드 인프라를 운영할 수준은 아니고 **시험 결과를 클라우드 저장소·DB 에 쌓고 거기서 보고서를 뽑아 본** 경험이면 충분합니다.{추론}",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "제어기 또는 차량 평가 자동화 구축 경험 (HIL, SIL 등)",
+   "short": "남이 만든 벤치를 쓰는 것을 넘어 HIL·SIL 시험 환경을 직접 꾸려 본 경험.",
+   "why": "같은 회사에 SIL/HIL 벤치를 짓는 공고가 따로 있을 만큼 벤치가 중요합니다.[8] 시험 담당이 환경을 알면 전원·버스 조건을 직접 바꿔 시나리오를 넓힐 수 있습니다.{추론}",
+   "how_far": "벤치 전체를 혼자 지을 필요는 없고 **전원 장치·버스 인터페이스·시뮬레이션 모델을 엮어 시험이 무인으로 돌게 만든** 경험이면 됩니다.{추론}",
+   "refs": [
+    8,
+    21,
+    31
+   ],
+   "study": [
+    "mathworks-hil"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "A-SPICE 또는 ISO 26262 적용 경험",
+   "short": "자동차 개발 프로세스 모델(ASPICE)과 기능안전 표준(ISO 26262)이 요구하는 시험 산출물을 만들어 본 경험.",
+   "why": "ASPICE 는 요구 → 설계 → 통합 시험 → 검증의 각 단계가 남겨야 할 것을 정한 평가 모델이고,[22] 시스템 통합 시험(SYS.4) 단계가 따로 있습니다.[33] ISO 26262 는 차량 전기·전자 시스템의 기능안전 표준이며,[23] 포티투닷은 이 표준에 맞춘 개발 프로세스 인증을 받았습니다.[7]",
+   "how_far": "심사를 이끈 경험까지는 아니어도 **통합 시험 명세·결과 보고서를 표준이 요구하는 꼴(추적표 포함)로 써 본** 경험이면 닿습니다.{추론}",
+   "refs": [
+    7,
+    22,
+    23,
+    33
+   ],
+   "study": [
+    "aspice-pam",
+    "iso26262"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Cloud service(fleet management 등)와 실차간 연동 경험",
+   "short": "차에서 클라우드로 데이터를 올리고, 클라우드에서 차로 명령·설정이 내려가는 길을 시험해 본 경험.",
+   "why": "fleet management(여러 대 차량 관리) 서비스는 차에서 정해진 조건에 맞는 데이터를 모아 클라우드로 보냅니다. 예를 들어 AWS IoT FleetWise 는 '무엇을 언제 모을지'를 캠페인으로 정해 차에 내려보내고, 차가 다음에 접속할 때 적용합니다.[24] 포티투닷도 OTA 로 기능을 고칩니다.[5]",
+   "actually": {
+    "items": [
+     "**올라가는 길** — 차가 보낸 신호값이 클라우드에 빠짐없이·제 시각으로 도착했나.[24]{추론}",
+     "**내려오는 길** — 원격 명령(예: 원격 공조 켜기)·설정이 차에 반영되고 결과가 돌아오나.{추론}",
+     "**끊김** — 통신이 끊겼다 이어질 때 쌓아 둔 데이터를 다시 보내나.[24]"
+    ]
+   },
+   "how_far": "클라우드 서비스를 직접 만들 필요는 없고 **차 쪽 로그와 클라우드 쪽 기록을 맞대어 어긋남을 찾을 수 있는** 정도면 됩니다.{추론}",
+   "refs": [
+    5,
+    24
+   ],
+   "study": [
+    "aws-fleetwise"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM을 이용한 검증 업무 자동화 진행 경험",
+   "short": "요구사항 문장에서 시험 시나리오를 뽑거나 로그를 요약하는 데 LLM 을 써 보고, 결과를 사람이 고쳐 쓴 경험.",
+   "why": "메르세데스-벤츠 쪽 연구진은 자동차 요구사항과 그림에서 LLM 으로 시험 케이스(Gherkin 꼴)와 파이썬 시험 코드를 만들었지만 여전히 사람이 손봐야 했다고 보고했습니다.[25] 포티투닷은 LLM 개발자도 뽑는 회사입니다.[6]",
+   "actually": {
+    "items": [
+     "**요구 → 시나리오 초안** — 요구사항 문장을 주고 정상·경계·예외 시나리오 초안을 받는다.[25]",
+     "**초안 검토** — 빠진 경계값·틀린 신호 이름을 사람이 고친다. 이 단계를 빼면 안 된다.[25]",
+     "**로그·결함 요약** — 긴 실패 로그를 요약하거나 비슷한 결함을 묶는다.{추론}"
+    ]
+   },
+   "how_far": "'진행 경험'이라 작은 사례면 됩니다 — **무엇을 맡겼고, 얼마나 고쳐야 했고, 무엇은 맡기면 안 되는지** 설명할 수 있어야 합니다.{추론}",
+   "refs": [
+    6,
+    25
+   ],
+   "study": [
+    "arxiv-llm-test"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "'이 상황이면 문이 잠겨야 하나?'를 경우마다 따지는 일이 즐거운 사람.{추론}",
+   "완성차·부품사에서 바디·편의 기능 평가를 해 왔고 이제 그걸 코드로 자동화하고 싶은 사람.[1]",
+   "버스 로그를 시간 순서로 읽어 어느 제어기 쪽 문제인지 좁히는 일을 해 본 사람.[1]"
+  ],
+  "hard": [
+   "차량 경력이 없는 일반 소프트웨어 개발자 — 자동차 소프트웨어 평가 경력 5년이 자격요건입니다.[1]",
+   "새 기능을 직접 만들고 싶은 사람 — 이 자리의 개발은 시험 자동화 도구 쪽입니다.[1]",
+   "벤치·실차 시험처럼 장비와 현장 일이 섞이는 것이 싫은 사람.{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "'차속 15km/h 이상 1초면 자동 잠금' 요구에서 시험 시나리오를 다섯 개만 고른다면요?",
+   "a": "시나리오·경계·예외를 고르는 통합 시험 설계 줄.[1]"
+  },
+  {
+   "q": "문 잠금 응답이 가끔 400ms 넘게 늦습니다. 중앙 컴퓨터 쪽인지 구역 제어기 쪽인지 어떻게 가르나요?",
+   "a": "로그 분석 요건과 Linux·RTOS 요건이 겹치는 곳.[1][19]"
+  },
+  {
+   "q": "옛 바디 제어기(BCM) 기능이 구역 제어기로 옮겨 갔습니다. 회귀 시험 범위를 어떻게 다시 잡겠어요?",
+   "a": "구역 구조 기반 검증 계획 줄.[1][13]"
+  },
+  {
+   "q": "벤치에서는 통과했는데 실차에서 실패한 결함, 다음에 벤치에서 잡으려면 무엇을 바꾸나요?",
+   "a": "벤치·실차 줄과 프로세스 개선 줄.[1][21]"
+  },
+  {
+   "q": "LLM 에 시험 케이스를 맡겼을 때 믿으면 안 되는 부분은요?",
+   "a": "LLM 우대 줄 — 사람 손질이 여전히 필요했다는 연구.[25]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · SW Test Engineer (편의)",
+   "url": "https://jobs.ashbyhq.com/42dot/1cfd36d5-26ce-4928-be2a-712c125d6d71",
+   "kind": "posting",
+   "note": "이 공고. 팀 소개(도어·HVAC·시트, 양산 전·후 품질 지표)·업무 여섯 묶음·자격·우대·전형(코딩 테스트, 2차 3시간). 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 · 업무 몰입 프로그램(복리후생)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 홈페이지(하단 회사 정보)",
+   "url": "https://42dot.ai/ko",
+   "kind": "company"
+  },
+  {
+   "n": 4,
+   "title": "포티투닷 블로그 · 42dot at CES 2024: Software-Defined Vehicle Technology",
+   "url": "https://42dot.ai/ko/stories/blog-news/ces-2024-software-defined-vehicle",
+   "kind": "company",
+   "date": "2024-03-28",
+   "note": "HPVC·zone controller·SDV OS, 2주 스프린트, CI/CD"
+  },
+  {
+   "n": 5,
+   "title": "아이뉴스24 · 사람 눈 대신 카메라가 본다…현대차 SDV 테스트카의 자율주행은[현장]",
+   "url": "https://inews24.com/view/2004893",
+   "kind": "news",
+   "date": "2026-09-13",
+   "note": "포티투닷 미디어데이. 비히클 워크숍 점검·OTA"
+  },
+  {
+   "n": 6,
+   "title": "전자신문 · 포티투닷, 우수 개발자 확보…\"AI 자율주행부터 LLM까지\"",
+   "url": "https://www.etnews.com/20261105000388",
+   "kind": "news",
+   "date": "2026-11-05",
+   "note": "판교 사옥 비히클 워크숍·LLM 채용"
+  },
+  {
+   "n": 7,
+   "title": "바이라인네트워크 · 포티투닷 차량 기능안전 개발 프로세스, 국제 표준 인증 획득",
+   "url": "https://byline.network/2023/09/25-289/",
+   "kind": "news",
+   "date": "2023-09-25",
+   "note": "DNV ISO 26262 인증"
+  },
+  {
+   "n": 8,
+   "title": "포티투닷 채용 · Sr. Test Automation Engineer (SIL/HIL Infrastructure)",
+   "url": "https://jobs.ashbyhq.com/42dot/3d96a60d-be22-4d72-a50a-320e79d1b21c",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. vECU·HIL 벤치 구축·GitLab CI/Jenkins 회귀 시험"
+  },
+  {
+   "n": 9,
+   "title": "포티투닷 채용 · System Test Engineer (System Verification)",
+   "url": "https://jobs.ashbyhq.com/42dot/2276c44d-d0d6-48d5-ad44-014e8da6fa55",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. CANoe 제어·서버/DB/대시보드·보고서까지 자동화"
+  },
+  {
+   "n": 10,
+   "title": "포티투닷 채용 · SW Test Engineer (Diagnostics)",
+   "url": "https://jobs.ashbyhq.com/42dot/efbd4971-b841-410f-aa6b-e333c64cfe23",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. 같은 여섯 묶음 구성, 릴리스·품질 게이트"
+  },
+  {
+   "n": 11,
+   "title": "포티투닷 채용 · System Test Engineer (SW Update)",
+   "url": "https://jobs.ashbyhq.com/42dot/403e89b4-fdf4-4168-a115-163706830174",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. Linux·CANoe·CANape 요건"
+  },
+  {
+   "n": 12,
+   "title": "현대자동차 · Hyundai Motor Group Launches 'Pleos' Software Brand",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000000921",
+   "kind": "news",
+   "date": "2025-03-28",
+   "note": "Pleos 25 — 제어기를 HPVC 와 zone controller 로 통합, Pleos Vehicle OS"
+  },
+  {
+   "n": 13,
+   "title": "Aptiv · Zone Controller 백서",
+   "url": "https://www.aptiv.com/docs/default-source/white-papers/2021_aptiv_whitepaper_zonecontroller.pdf",
+   "kind": "reference",
+   "date": "2021",
+   "note": "위치 기준으로 센서·모터를 구역 제어기에 연결, 전원 분배. 바디·보안·공조 제어를 통합 후보로"
+  },
+  {
+   "n": 14,
+   "title": "TI · 구역 아키텍처 기술 글(SSZT211)",
+   "url": "https://ti.com/document-viewer/lit/html/SSZT211",
+   "kind": "reference",
+   "date": "2023-04",
+   "note": "제어기를 차 안 위치로 분류, 중앙 게이트웨이, 구역별 전원 분배"
+  },
+  {
+   "n": 15,
+   "title": "STMicroelectronics · Zonal architecture",
+   "url": "https://www.st.com/en/applications/ee-architecture-software-defined-vehicle/zonal-architecture.html",
+   "kind": "reference",
+   "note": "바디·파워트레인·섀시처럼 좌우 대칭인 영역에 잘 맞음, 도어 구역 제어 칩"
+  },
+  {
+   "n": 16,
+   "title": "Vector · CANoe 제품 소개",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canoe/",
+   "kind": "reference",
+   "note": "시뮬레이션·분석·시험·진단"
+  },
+  {
+   "n": 17,
+   "title": "Vector · CANape 제품 소개",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canape/",
+   "kind": "reference",
+   "note": "측정·보정·기록"
+  },
+  {
+   "n": 18,
+   "title": "ASAM · MDF (Measurement Data Format)",
+   "url": "https://www.asam.net/standards/detail/mdf/",
+   "kind": "reference",
+   "note": "MF4 측정 파일 표준, 최신 V4.2.0(2019)"
+  },
+  {
+   "n": 19,
+   "title": "Wikipedia · Real-time operating system",
+   "url": "https://en.wikipedia.org/wiki/Real-time_operating_system",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "AUTOSAR · Layered Software Architecture (R22-11)",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "MathWorks · What Is Hardware-in-the-Loop (HIL)?",
+   "url": "https://www.mathworks.com/discovery/hardware-in-the-loop-hil.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "VDA QMC · Automotive SPICE PAM 4.0",
+   "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+   "kind": "reference",
+   "date": "2023-11-29"
+  },
+  {
+   "n": 23,
+   "title": "ISO · ISO 26262-1:2018 Road vehicles — Functional safety — Vocabulary",
+   "url": "https://www.iso.org/standard/68383.html",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "AWS IoT FleetWise 개발자 안내서 · Collect data with campaigns",
+   "url": "https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/campaigns.html",
+   "kind": "reference",
+   "note": "무엇을 언제 모을지 정한 캠페인을 차에 내려보냄, 다음 접속 때 적용"
+  },
+  {
+   "n": 25,
+   "title": "arXiv 2509.05112 · LLM 으로 자동차 요구사항에서 시험 케이스·시험 코드 만들기(Mercedes-Benz AG 등)",
+   "url": "https://arxiv.org/abs/2509.05112",
+   "kind": "reference",
+   "date": "2025-09",
+   "note": "Gherkin 시험 케이스 → 파이썬 시험 코드, 사람 손질 여전히 필요"
+  },
+  {
+   "n": 26,
+   "title": "The Scrum Guide",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "kind": "reference",
+   "note": "2020년판"
+  },
+  {
+   "n": 27,
+   "title": "원티드 · 포티투닷(42dot) 기업 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "평균연봉 6,032만원 · 국민연금 가입 사원 804명 표기(2026-11-25 확인)"
+  },
+  {
+   "n": 28,
+   "title": "벤처스퀘어 · 판교 제2테크노밸리 소프트웨어드림센터 스타트업 입주기업 모집 공고",
+   "url": "https://www.venturesquare.net/announcement/955032",
+   "kind": "reference",
+   "note": "소재지 창업로40번길 20 소프트웨어드림센터"
+  },
+  {
+   "n": 29,
+   "title": "뉴데일리 · 송창현 \"기존 제조사들의 하드웨어 중심 개발로는 해답 못 찾아\"(HMG 개발자 컨퍼런스 키노트)",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2023/11/13/2023111300204.amp.html",
+   "kind": "news",
+   "date": "2023-11-13",
+   "note": "하드웨어·소프트웨어 분리 → 동시 개발로 검증 기간 단축"
+  },
+  {
+   "n": 30,
+   "title": "python-can 문서",
+   "url": "https://python-can.readthedocs.io/",
+   "kind": "reference",
+   "note": "가상 버스·로그 파일(BLF·ASC·MF4) 읽기"
+  },
+  {
+   "n": 31,
+   "title": "MathWorks Answers · What are MIL, SIL, PIL, and HIL?",
+   "url": "https://mathworks.com/matlabcentral/answers/440277-what-is-mil-sil-pil-hil-and-how-do-they-integrate-in-model-based-design-approach",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Vector E-Learning · CAN",
+   "url": "https://elearning.vector.com/course/view.php?id=20",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "UL Solutions · System Integration and Integration Test (SYS.4) Automotive SPICE",
+   "url": "https://www.ul.com/sis/insights/system-integration-and-integration-test-sys4-automotive-spice",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "포티투닷이 바디·편의 기능 시험을 직접 다룬 기술 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고·같은 회사 시험 공고 넷·CES 2024 블로그·현대차그룹 Pleos 발표·보도이고, 구역 구조·평가 도구·측정 파일·RTOS·ASPICE·fleet 연동·LLM 시험 생성은 반도체·도구 회사 자료와 공개 표준·논문으로 '보통 이런 것'을 보였습니다. 예시 코드의 규칙·신호 번호·기준값은 설명용으로 지어낸 것입니다. 팀 이름·규모·벤치 구성은 공개되지 않았습니다. 2026-11-25 기준.",
+ "resources": [
+  {
+   "id": "acorn-auto-sw",
+   "title": "자동차 임베디드 소프트웨어 개발 프로세스와 기술 입문",
+   "by": "에이콘 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000010184723",
+   "why": "차량 개발 절차·표준·네트워크를 한국어로 한 번에 훑어 검증 계획·경력 요건의 배경을 잡습니다."
+  },
+  {
+   "id": "aptiv-zone",
+   "title": "Zone Controller 백서",
+   "by": "Aptiv · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.aptiv.com/docs/default-source/white-papers/2021_aptiv_whitepaper_zonecontroller.pdf",
+   "why": "구역 구조 줄 — 바디·공조 기능이 어느 제어기로 옮겨 가는지, 구역 제어기가 전원·입출력을 어떻게 맡는지 그림으로 봅니다."
+  },
+  {
+   "id": "ti-zone",
+   "title": "구역 아키텍처 기술 글(SSZT211)",
+   "by": "Texas Instruments · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://ti.com/document-viewer/lit/html/SSZT211",
+   "why": "제어기를 위치로 나누는 이유와 중앙 게이트웨이의 자리 — 통합 시험 범위를 그릴 때 바탕 그림."
+  },
+  {
+   "id": "aspice-pam",
+   "title": "Automotive SPICE PAM 4.0",
+   "by": "VDA QMC · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+   "why": "검증 계획·결과 문서화·프로세스·A-SPICE 우대 줄 — 통합 시험 단계가 무엇을 남겨야 하는지 원문으로 봅니다."
+  },
+  {
+   "id": "iso26262",
+   "title": "ISO 26262 (기능안전) 소개 페이지",
+   "by": "ISO",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.iso.org/standard/68383.html",
+   "why": "ISO 26262 우대 줄 — 유료 표준이라 공식 페이지로 범위만 확인하고, 실무에서는 회사 사본을 봅니다."
+  },
+  {
+   "id": "rtos-wiki",
+   "title": "Real-time operating system",
+   "by": "Wikipedia",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://en.wikipedia.org/wiki/Real-time_operating_system",
+   "why": "RTOS 요건 — 우선순위 스케줄링·시간 제한이 무엇인지 먼저 잡습니다."
+  },
+  {
+   "id": "autosar-lsa",
+   "title": "AUTOSAR Layered Software Architecture (R22-11)",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf",
+   "why": "운영체제 요건 — 제어기 소프트웨어에서 운영체제·통신 층이 어디에 있는지 그림으로 봅니다."
+  },
+  {
+   "id": "linux-cmd",
+   "title": "리눅스 커맨드라인 완벽 입문서",
+   "by": "윌리엄 샤츠 주니어 · 비제이퍼블릭",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%AC%EB%88%85%EC%8A%A4%20%EC%BB%A4%EB%A7%A8%EB%93%9C%EB%9D%BC%EC%9D%B8%20%EC%99%84%EB%B2%BD%20%EC%9E%85%EB%AC%B8%EC%84%9C",
+   "why": "Linux 요건 — 셸·프로세스·로그 다루기. 중앙 컴퓨터 쪽 로그를 직접 꺼내 볼 때 필요한 기본기."
+  },
+  {
+   "id": "vector-can",
+   "title": "Vector E-Learning · CAN",
+   "by": "Vector Informatik",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://elearning.vector.com/course/view.php?id=20",
+   "why": "네트워크 평가 툴 요건 — 도구를 쓰기 전에 CAN 프레임·주기·오류를 도구 회사가 만든 무료 강의로 익힙니다."
+  },
+  {
+   "id": "canoe",
+   "title": "CANoe",
+   "by": "Vector Informatik",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canoe/",
+   "why": "평가 툴 요건 — CANoe 가 시뮬레이션·분석·시험·진단에서 무엇을 하는지 공식 소개로 봅니다."
+  },
+  {
+   "id": "vector-canape",
+   "title": "Vector CANape",
+   "by": "Vector Informatik",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canape/",
+   "why": "CANape 요건 — 제어기 내부 값과 버스 신호를 시간축에 같이 기록하는 도구가 무엇을 하는지."
+  },
+  {
+   "id": "asam-mdf",
+   "title": "ASAM MDF",
+   "by": "ASAM",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.asam.net/standards/detail/mdf/",
+   "why": "로그 분석 요건 — 측정 파일(MF4) 표준이 무엇이고 왜 도구 사이에서 통하는지."
+  },
+  {
+   "id": "cantools",
+   "title": "cantools 문서",
+   "by": "cantools 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cantools.readthedocs.io/",
+   "why": "로그 분석 요건 — DBC 신호표로 CAN 바이트를 차속·문 상태 같은 값으로 풉니다."
+  },
+  {
+   "id": "python-can",
+   "title": "python-can 문서",
+   "by": "python-can 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://python-can.readthedocs.io/",
+   "why": "장비 없이 가상 CAN 버스로 신호를 넣고 로그 파일을 읽어 자동화·로그 분석 줄을 집에서 연습합니다."
+  },
+  {
+   "id": "pytest-docs",
+   "title": "pytest documentation",
+   "by": "pytest-dev",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.pytest.org/",
+   "why": "시나리오 표를 시험 함수로 바꾸고 결과를 모으는 파이썬 시험 러너. CI 에 얹기 쉽습니다."
+  },
+  {
+   "id": "mathworks-hil",
+   "title": "What Is Hardware-in-the-Loop (HIL)?",
+   "by": "MathWorks",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.mathworks.com/discovery/hardware-in-the-loop-hil.html",
+   "why": "벤치·실차 줄과 HIL/SIL 우대 줄 — 무엇을 진짜로, 무엇을 가짜로 두는지 구분합니다."
+  },
+  {
+   "id": "scrum-guide",
+   "title": "The Scrum Guide (한국어판 있음)",
+   "by": "Ken Schwaber · Jeff Sutherland",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "why": "Agile 요건 — 짧은 회차·완료 정의가 무엇인지 원문 20쪽 안팎으로 봅니다."
+  },
+  {
+   "id": "aws-fleetwise",
+   "title": "AWS IoT FleetWise 개발자 안내서 · 캠페인",
+   "by": "Amazon Web Services",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/campaigns.html",
+   "why": "fleet management 연동 우대 줄 — 차에서 무엇을 언제 모아 올리는지 정하는 구조를 한 예로 봅니다."
+  },
+  {
+   "id": "arxiv-llm-test",
+   "title": "LLM 으로 자동차 요구사항에서 시험 케이스 만들기 (arXiv 2509.05112)",
+   "by": "Mercedes-Benz AG 등 · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2509.05112",
+   "why": "LLM 검증 자동화 우대 줄 — 요구 → 시험 케이스 → 시험 코드 흐름과 사람이 고쳐야 했던 지점."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "새 차 구조 그리기",
+   "time": "1~2주",
+   "goal": "구역 구조에서 문 잠금·공조 명령이 어느 제어기를 거치는지 그림으로 설명한다.",
+   "resources": [
+    "aptiv-zone",
+    "ti-zone",
+    "acorn-auto-sw"
+   ],
+   "task": "가상 차 한 대를 앞 왼쪽·앞 오른쪽·뒤 구역 + 중앙 컴퓨터로 나누고, 문 잠금·원격 공조·시트 기억 기능 셋이 지나가는 길을 그린다. 칸마다 SIL·HIL·실차 중 어디서 시험할지 적는다."
+  },
+  {
+   "title": "신호와 도구",
+   "time": "2~3주",
+   "goal": "CAN 신호를 신호표로 풀고 가상 버스에 넣고 기록할 수 있다.",
+   "resources": [
+    "vector-can",
+    "canoe",
+    "vector-canape",
+    "cantools",
+    "python-can"
+   ],
+   "task": "차속·문 상태·잠금 요청 세 신호로 작은 DBC 를 만들고, python-can 가상 버스에 넣어 기록한 뒤 cantools 로 풀어 값 그래프를 그린다."
+  },
+  {
+   "title": "시나리오 시험 묶음",
+   "time": "3~4주",
+   "goal": "요구사항 문장에서 경계·예외를 포함한 시나리오 표를 만들고 자동 판정한다.",
+   "resources": [
+    "pytest-docs",
+    "python-can",
+    "mathworks-hil"
+   ],
+   "task": "위 '가상 자동 잠금' 예시를 가상 CAN 위 가짜 구역 제어기 둘로 나눠 구현하고, 시나리오 표에서 pytest 시험을 만들어 돌린다. 한쪽 제어기의 차속 해석을 일부러 틀리게 해 통합 시험만 잡아내는지 본다."
+  },
+  {
+   "title": "로그 분석과 운영체제",
+   "time": "2주",
+   "goal": "긴 기록에서 응답 지연·누락을 숫자로 뽑고, 지연이 Linux 쪽인지 RTOS 쪽인지 가설을 세운다.",
+   "resources": [
+    "asam-mdf",
+    "rtos-wiki",
+    "linux-cmd",
+    "autosar-lsa"
+   ],
+   "task": "3단계 시험에 무작위 지연을 넣어 1시간짜리 가상 기록을 만들고, 요청→응답 시간 분포(중앙값·상위 1%)와 응답 없음 건수를 내는 스크립트를 쓴다."
+  },
+  {
+   "title": "파이프라인·보고·표준",
+   "time": "1~2주",
+   "goal": "시험이 커밋마다 돌고, 회차별 통과율과 요구 추적표가 남는다.",
+   "resources": [
+    "scrum-guide",
+    "aspice-pam",
+    "iso26262",
+    "arxiv-llm-test"
+   ],
+   "task": "3단계 시험을 CI(예: GitHub Actions)에 얹고 회차별 통과율·실패 목록을 표로 쌓는다. 요구사항 5개 ↔ 시험 ↔ 결과 추적표를 만들고, LLM 에 같은 요구를 주어 받은 시나리오 초안과 내 표를 비교해 빠진 경우를 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 원티드 기업 정보의 평균연봉 표기는 **6,032만원** — 공시가 아니라 집계값이고, 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 원티드 기업 정보(2026-11 확인)",
+    "note": "같은 화면의 국민연금 가입 사원 수 804명. 원티드가 이 값을 어떤 자료로 계산했는지는 화면에서 확인하지 못했다 [27]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 공시가 없다{추론}. 공고에 연봉은 없고 전형 끝에 처우 협의 단계가 있다 [1]. 이 자리는 경력 5년 이상이라 신입 초봉은 해당하지 않고, 평균은 연차·직군이 섞인 회사 전체 값이라 제안 금액으로 읽으면 안 된다{추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "리커버리 휴가",
+    "detail": "법정 연차와 별도로 매월 1회 유급"
+   },
+   {
+    "name": "유연근무제",
+    "detail": "재량근무·선택적근무 운영"
+   },
+   {
+    "name": "식사",
+    "detail": "Kitchen 42 — 셰프가 만든 식사 하루 세 끼 무료, Cafe 42 음료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "여가·건강 등에 자유 사용, 연간 최대 300만원. 설·추석에 복지 포인트 추가"
+   },
+   {
+    "name": "건강",
+    "detail": "프리미엄 건강검진 전액 지원, 단체상해보험(본인·배우자·자녀·본인 부모), 상주 간호사·심리·재무·법률 상담(EAP)"
+   },
+   {
+    "name": "운동",
+    "detail": "Fitness 42 — 사내 피트니스, 1:1 PT·GX"
+   },
+   {
+    "name": "전기차",
+    "detail": "구매 시 차량 가격 최대 15%(한도 1,000만원) 지원, 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 사내 대출",
+    "detail": "근속 연수에 따라 1,000만~5,000만원, 이자 0%"
+   },
+   {
+    "name": "교육",
+    "detail": "국내외 교육·세미나·학회 참가비 지원"
+   },
+   {
+    "name": "직장 어린이집",
+    "detail": "임직원 자녀 대상, 특별활동 운영"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "최신 업무 기기, 장기근속 포상(휴가·포상금), 휴양시설 매월 추첨, 경조사 지원, 인재 추천 보상, 자발적 팀 워크숍 비용"
+   }
+  ],
+  "note": "포티투닷 채용 사이트 '업무 몰입 프로그램' 페이지 기준(게시일 표시 없음, 2026-11-25 확인). 한국 본사 기준이고 해외 법인은 현지 정책을 따른다고 적혀 있다 [2]"
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥(소프트웨어드림센터)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "note": "주소는 포티투닷 홈페이지 하단 회사 정보 [3]. 공고 근무지는 'Pangyo (Software Dream Center)'이고 채용 페이지 표기에 '(Remote)'가 붙어 있지만, 벤치·실차 시험이 업무라 출근 비중은 처우 협의 때 확인한다 [1]{추론}. 같은 주소가 소프트웨어드림센터 소재지로 공고된 바 있고 [28], 판교 사옥 안에 비히클 워크숍이 있다 [6]"
+ }
+}
