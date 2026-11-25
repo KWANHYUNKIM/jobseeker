@@ -1,0 +1,439 @@
+{
+  "id": "smilegate-threat-incident-response",
+  "company": "스마일게이트",
+  "role": "보안 위협 분석 및 침해사고 대응 담당",
+  "team": "정보보안 조직 · CERT/SOC",
+  "jobs": [
+    "jobkorea-50274656",
+    "ats-smilegate:group:6226"
+  ],
+  "researched_at": "2026-11-26",
+  "tldr": {
+    "what": "스마일게이트의 서버·서비스·사내 PC에서 올라오는 **보안 경보를 읽고 '진짜 공격인가'를 판단**하고, 공격이면 어디로 들어와 어디까지 갔는지 추적해 막은 뒤, 같은 일이 다시 안 생기게 탐지 규칙과 통제를 고치는 자리입니다.[1][2] 반복 업무는 Python·생성형 AI로 자동화합니다.[1]",
+    "env": "2026년 1월 세 법인이 한 회사로 합쳐진 매출 1조 원대 회사라[7][8] 한 보안 조직이 게임·플랫폼(스토브)·사내 시스템을 함께 봅니다{추론}. 같은 조직이 진단(팀장급)·게임 해킹 대응·게임 보안 SDK 자리를 따로 뽑고 있어[3][4][5], 이 자리는 **경보 분석과 사고 대응(CERT)** 몫입니다. 24시간 경보를 보는 보안관제(SOC) 조직이 따로 있고 그 팀과 함께 일합니다.[1]",
+    "oneline": "경보를 '사건'으로 바꾸고, 사건을 '다시 안 생기는 규칙'으로 바꾸는 7년차 이상의 사고 대응 전문가."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "주요 시스템의 침해 가능성을 사전에 점검하고 보안 취약요소에 대한 개선 방안 수립",
+      "short": "사고가 나기 전에 '공격자라면 어디로 들어올까'를 주요 시스템마다 따져 보고 막을 방법을 정하는 일.",
+      "why": "사고 대응 조직이지만 업무 첫 줄이 '사전 점검'입니다.[1] 게임사는 이미 계정 대입 공격(다른 사이트에서 샌 아이디·비밀번호로 로그인 시도)을 크게 겪었고[6], 보안 솔루션을 통한 공급망 공격이 국내 게임사들을 노린 사례도 발표됐습니다.[19] 막는 쪽 시간을 벌려면 들어올 길을 먼저 줄여야 합니다{추론}.",
+      "actually": {
+        "intro": "사고 대응 조직이 하는 '사전 점검'은 보통 이런 것입니다. 스마일게이트의 실제 점검 목록은 공개되지 않았습니다.",
+        "items": [
+          "**외부에 열린 것 목록** — 인터넷에 열린 관리자 페이지·VPN·원격 접속(RDP)·테스트 서버를 찾는다. 공격자가 제일 먼저 보는 곳이다.[9]",
+          "**공격 기법 표에 대보기** — MITRE ATT&CK(실제 공격에서 관찰된 기법을 단계별로 모은 표)에서 '첫 침투'·'권한 상승' 기법을 골라, 우리 시스템에서 그 기법이 막히는지·탐지되는지 칸을 채운다.[11]",
+          "**계정과 권한** — 퇴사자 계정, 공용 계정, 다단계 인증이 빠진 관리자 계정을 찾는다.",
+          "**외부 업체 경로** — 보안 솔루션·업데이트 서버처럼 외부 업체가 우리 안으로 들어오는 길을 따로 점검한다.[19]",
+          "**개선안** — '무엇을 언제까지 누가' 형태로 담당 팀에 넘기고 끝났는지 확인한다."
+        ]
+      },
+      "how_far": "모의해킹처럼 깊게 뚫는 진단은 같은 조직의 진단 팀 몫으로 보입니다[3]{추론}. 이 자리는 **사고 대응자의 눈으로 '이 길로 들어오면 우리는 알아챌 수 있나'**를 점검하는 쪽에 무게가 있습니다{추론}.",
+      "refs": [1, 3, 6, 9, 11, 19],
+      "study": ["mitre-attack", "nist-800-61r3"]
+    },
+    {
+      "section": "task",
+      "quote": "신규 취약점, 대/내외 보안 위협 등 선제적 점검 및 침해사고 예방 활동 수행",
+      "short": "새 취약점·공격 소식이 나오면 '우리도 해당되나'를 먼저 확인하고 막는 일.",
+      "why": "유명 소프트웨어의 취약점은 공개 직후부터 실제 공격에 쓰입니다. 미국 CISA는 '실제로 악용된 취약점' 목록(KEV)을 따로 내고[17], 국내는 KISA 보호나라가 보안 공지를 냅니다.[18] 이 소식을 우리 자산과 대조하는 사람이 있어야 패치가 공격보다 먼저 갑니다{추론}.",
+      "actually": {
+        "items": [
+          "**소식 받기** — KISA 보안 공지[18]·CISA KEV[17]·제조사 공지를 매일 본다.",
+          "**해당 여부** — 그 제품·버전을 우리가 쓰는지 자산 목록에서 찾는다. 목록이 없으면 이 단계에서 막힌다.",
+          "**급한 순서** — 심각도(CVSS)[15]만 보지 않고, 실제 악용 여부(KEV)[17]·악용 확률(EPSS)[16]·인터넷 노출 여부를 같이 본다.",
+          "**임시 조치** — 패치가 늦으면 차단 규칙·기능 끄기 같은 우회책을 먼저 건다.",
+          "**흔적 찾기** — 공개 전부터 당했을 수 있으니, 공개된 공격 흔적(IoC — 공격에 쓰인 IP·파일 해시 같은 지표)으로 지난 로그를 거꾸로 검색한다.",
+          "**내부 위협** — 퇴사 예정자 대량 다운로드처럼 안에서 생기는 위험도 '대내' 위협에 들어간다{추론}."
+        ]
+      },
+      "how_far": "패치는 각 서비스 팀이 합니다. 이 자리는 **'우리가 해당되는가·얼마나 급한가'를 하루 안에 답하고 조치를 끝까지 확인**하는 몫입니다{추론}.",
+      "refs": [15, 16, 17, 18],
+      "study": ["kev", "epss", "boho"]
+    },
+    {
+      "section": "task",
+      "quote": "보안 이벤트 및 이상징후를 분석하여 침해사고 여부와 대응 필요성을 판단하고, 사고 발생 시 원인 분석 및 대응 수행",
+      "short": "쏟아지는 경보 중 진짜 사고를 골라내고, 사고면 바로 막고 원인을 찾는 일 — 이 자리의 한가운데.",
+      "why": "경보는 대부분 사고가 아닙니다. 그래도 하나를 놓치면 큰 사고가 되므로, '사고다/아니다/더 봐야 한다'를 판단하는 사람이 필요합니다.[9] 공고가 이 일을 판단과 대응 두 겹으로 적은 이유입니다.[1]",
+      "actually": {
+        "intro": "NIST의 사고 대응 지침(SP 800-61 3판)이 말하는 흐름입니다.[9] 스마일게이트의 실제 절차는 공개되지 않았습니다.",
+        "items": [
+          "**분류(트리아지)** — 경보를 받으면 '어떤 시스템인가·평소와 무엇이 다른가·같은 시간에 다른 경보가 있나'를 본다.",
+          "**판단** — 오탐·정상 업무·실제 공격 중 하나로 가르고 근거를 적는다.",
+          "**억제** — 공격이면 계정 잠금·PC 망 분리·IP 차단으로 번지는 것을 먼저 막는다.",
+          "**보존** — 끄거나 지우기 전에 메모리·디스크·로그를 남긴다. 원인 분석과 신고의 증거다.",
+          "**신고** — 침해사고는 KISA 등에 신고하고[29], 개인정보가 샜으면 정해진 기한 안에 신고·통지한다(1천 명 이상 등은 72시간)[23].",
+          "**복구와 기록** — 정상으로 돌린 뒤 시간순 경과표를 남긴다."
+        ]
+      },
+      "examples": [
+        {
+          "title": "대입 공격인가, 본인 오타인가",
+          "body": "같은 '로그인 실패' 경보라도 한 IP가 여러 계정을 두드리면 계정 대입 공격(ATT&CK T1110.004)[12]이고, 한 계정만 몇 번 틀리면 대개 본인입니다. 가상 로그로 돌린 출력입니다. 대입 공격 쪽에서 한 계정(dave)이 **성공**했으므로 그 계정부터 잠그고 확인해야 합니다[20].",
+          "lang": "python",
+          "code": "from collections import defaultdict\n# (분, IP, 계정, 성공여부) — 가상의 로그인 기록\nlogs = [\n    (0, \"203.0.113.7\", \"alice\", False), (0, \"203.0.113.7\", \"bob\", False),\n    (1, \"203.0.113.7\", \"carol\", False), (1, \"203.0.113.7\", \"dave\", True),\n    (2, \"203.0.113.7\", \"erin\", False), (2, \"198.51.100.4\", \"frank\", False),\n    (3, \"198.51.100.4\", \"frank\", False), (3, \"198.51.100.4\", \"frank\", True),\n]\naccts, fails, ok = defaultdict(set), defaultdict(int), defaultdict(list)\nfor t, ip, user, success in logs:\n    accts[ip].add(user)\n    if success: ok[ip].append(user)\n    else: fails[ip] += 1\nfor ip in accts:\n    stuffing = len(accts[ip]) >= 5 and fails[ip] >= 4   # 한 IP가 여러 계정을 두드림\n    print(ip, \"계정\", len(accts[ip]), \"실패\", fails[ip], \"성공\", ok[ip],\n          \"→ 대입 공격 의심\" if stuffing else \"→ 본인 오타로 보임\")\n\n# 출력\n# 203.0.113.7 계정 5 실패 4 성공 ['dave'] → 대입 공격 의심\n# 198.51.100.4 계정 1 실패 2 성공 ['frank'] → 본인 오타로 보임"
+        }
+      ],
+      "how_far": "'사고인가'의 최종 판단과 대응 지휘가 이 자리 몫으로 읽힙니다[1]{추론}. 7년차 이상이라 **혼자 판단하고, 판단 근거를 남에게 설명할 수 있는 수준**을 봅니다{추론}.",
+      "refs": [1, 9, 12, 20, 23, 29],
+      "study": ["nist-800-61r3", "ir-cf-book", "bots-v3", "owasp-cred-stuffing"]
+    },
+    {
+      "section": "task",
+      "quote": "침해사고 원인과 침해 경로를 분석하고 취약점 제거 및 재발 방지 대책 수립·적용",
+      "short": "공격자가 어디로 들어와 어떻게 옮겨 다녔는지 되짚고, 그 길을 막아 다시 못 오게 하는 일.",
+      "why": "급한 불만 끄면 같은 길로 또 들어옵니다. 네오위즈 CISO의 발표도 사고 뒤 외부 업체·솔루션 검증을 강화하고 SBOM(쓰는 소프트웨어 부품 목록)·최소 권한을 도입하자는 '재발 방지'로 끝났습니다.[19] NIST 지침은 사고에서 배운 것을 위험 관리 전체에 되돌리라고 합니다.[9]",
+      "actually": {
+        "items": [
+          "**첫 침투 지점 찾기** — 피싱 메일·취약한 서버·도난 계정·외부 업체 중 어디로 들어왔는지 증거로 확인한다.",
+          "**경로 그리기** — 첫 PC → 계정 탈취 → 다른 서버 이동 → 자료 반출을 시간순으로 잇는다. ATT&CK 기법 이름을 붙이면 다른 사람도 같은 그림을 읽는다.[11]",
+          "**영향 범위** — 어떤 계정·서버·데이터가 닿았는지 정한다. 신고와 고객 안내의 범위가 된다.",
+          "**뿌리 제거** — 심어 둔 백도어·새로 만든 계정·예약 작업을 다 찾아 지운다. 하나라도 남으면 다시 온다.",
+          "**재발 방지** — 그 길을 막는 통제(다단계 인증, 망 분리, 업체 접근 제한)와 그 길을 다시 쓰면 울리는 탐지 규칙을 함께 넣는다."
+        ]
+      },
+      "how_far": "포렌식(증거 수집·분석) 손기술과 '왜 이 통제가 필요한가'를 설명하는 보고서를 둘 다 봅니다{추론}. 큰 사고는 외부 전문 업체와 함께 분석하는 일이 흔해, **업체 결과를 검증할 수 있는 수준**이면 됩니다{추론}.",
+      "refs": [9, 11, 19],
+      "study": ["ir-cf-book", "mitre-attack", "reversing-core", "cyberdefenders"]
+    },
+    {
+      "section": "task",
+      "quote": "보안관제 조직과 협업하여 주요 이벤트 분석 및 대응 절차를 개선하고 탐지·모니터링 기준 고도화",
+      "short": "경보를 24시간 보는 관제 팀이 무엇을 보고·언제 넘길지 기준을 같이 고치는 일.",
+      "why": "보안관제(SOC)는 경보를 1차로 거르고, 깊은 분석은 CERT로 넘깁니다. 넘기는 기준이 흐리면 관제는 다 넘기거나 놓칩니다.[21] 공고가 관제 조직과의 '협업'을 업무로 따로 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**대응 절차서(플레이북)** — '대입 공격 경보면 1) 성공한 계정 확인 2) 잠금 3) 본인 확인' 처럼 경보 종류마다 단계를 적어 관제가 그대로 따르게 한다.",
+          "**넘기는 기준** — 몇 건 이상·어떤 시스템이면 CERT를 부르는지 정한다.",
+          "**탐지 규칙 고치기** — 오탐이 많은 규칙은 조건을 좁히고, 사고에서 나온 새 기법은 규칙으로 더한다. 제품에 매이지 않는 공개 규칙 형식으로 Sigma가 있다.[13]",
+          "**흔적보다 행동** — IP·해시처럼 공격자가 쉽게 바꾸는 지표보다 '어떤 행동을 했나'를 잡는 규칙이 오래 간다(고통의 피라미드)[14]. 게임업계 세미나에서도 IoC에서 행위 기반 탐지(IoA)로 옮겨 간다는 이야기가 나왔다.[19]",
+          "**빈칸 찾기** — ATT&CK 표에 우리 규칙을 대서 탐지가 하나도 없는 기법을 찾는다.[11]"
+        ]
+      },
+      "how_far": "관제 인력을 관리하는 자리는 아닙니다{추론}. **규칙과 절차의 주인**으로서 무엇을 탐지할지 정하고, 그 규칙이 실제로 울리는지 시험하는 데까지가 몫으로 읽힙니다{추론}. 국내 인증(ISMS-P)은 사고 대응 절차와 로그 점검 기록을 증거로 보므로, 고친 절차는 문서로 남겨야 합니다[22].",
+      "refs": [1, 11, 13, 14, 19, 21, 22],
+      "study": ["sigma", "pyramid-pain", "nsm-book", "first-csirt", "isms-p"]
+    },
+    {
+      "section": "task",
+      "quote": "반복적으로 발생하는 보안 이벤트를 분석하여 예방 가능한 보안 통제 및 개선 과제로 전환",
+      "short": "같은 경보가 매주 수백 건 뜨면 하나씩 닫지 말고, 원인을 고쳐 경보 자체를 없애는 일.",
+      "why": "반복 경보는 분석가의 시간을 먹고, 진짜 경보를 묻히게 합니다{추론}. NIST CSF 2.0은 사고에서 얻은 교훈으로 보호 조치를 고치는 '개선'을 따로 둡니다.[10]",
+      "actually": {
+        "items": [
+          "**많이 뜨는 순서로 세기** — 규칙 × 대상별로 한 주 경보 수를 센다.",
+          "**원인 묻기** — '관리자 페이지가 왜 외부에 열려 있나', '왜 구버전이 아직 있나'처럼 경보 뒤의 설정 문제를 찾는다.",
+          "**통제로 바꾸기** — 접근 제한·버전 올리기·정책 변경을 담당 팀 과제로 넘긴다.",
+          "**닫힘 확인** — 과제가 끝나면 그 경보가 실제로 줄었는지 다음 주 숫자로 본다."
+        ]
+      },
+      "examples": [
+        {
+          "title": "한 주 경보의 94% 는 두 가지 원인",
+          "body": "가상의 한 주 경보를 규칙 × 대상으로 센 출력입니다. 위 두 줄(관리자 페이지 외부 노출, 구버전 서버)은 설정을 고치면 경보 자체가 사라지고, 남는 것은 사람이 봐야 하는 40건입니다.{추론}",
+          "lang": "python",
+          "code": "from collections import Counter\n# 한 주 동안 쌓인 가상 경보 (규칙, 대상)\nalerts = [(\"관리자 페이지 외부 접근\", \"ops-web\")] * 412 + \\\n         [(\"구버전 Log4j 스캔\", \"event-web\")] * 230 + \\\n         [(\"해외 로그인\", \"vpn\")] * 37 + [(\"의심 PowerShell\", \"pc-118\")] * 3\nc = Counter(alerts); total = sum(c.values())\nfor (rule, host), n in c.most_common():\n    print(f\"{rule} | {host} | {n}건 | {n/total:.1%}\")\ntop2 = sum(n for _, n in c.most_common(2))\nprint(f\"위 2개를 막으면 경보 {top2/total:.0%} 가 사라진다\")\n\n# 출력\n# 관리자 페이지 외부 접근 | ops-web | 412건 | 60.4%\n# 구버전 Log4j 스캔 | event-web | 230건 | 33.7%\n# 해외 로그인 | vpn | 37건 | 5.4%\n# 의심 PowerShell | pc-118 | 3건 | 0.4%\n# 위 2개를 막으면 경보 94% 가 사라진다"
+        }
+      ],
+      "how_far": "통제를 직접 거는 것은 인프라·서비스 팀일 때가 많습니다{추론}. 이 자리는 **숫자로 원인을 보이고 과제를 만들어 닫힐 때까지 끄는 것**까지입니다{추론}.",
+      "refs": [10],
+      "study": ["nist-csf", "bots-v3"]
+    },
+    {
+      "section": "task",
+      "quote": "Python 및 AI·GenAI 기술을 활용하여 보안 점검, 위협 분석 및 반복 업무를 자동화하고 CERT/SOC 업무 효율화",
+      "short": "경보 정리·지표 조회·보고서 초안 같은 반복 일을 Python과 생성형 AI로 맡기는 일.",
+      "why": "공고 기술 칸에 적힌 것은 Python 하나이고[1], 우대사항에도 자동화와 GenAI·Agentic AI(스스로 도구를 불러 일을 이어 가는 AI) 경험이 따로 있습니다.[1] 사람이 적은 CERT에서 반복 일을 줄여야 판단할 시간이 생깁니다{추론}.",
+      "actually": {
+        "items": [
+          "**지표 뽑기** — 경보 문서에서 IP·해시·도메인을 뽑아 위협 정보 서비스에 한 번에 조회한다(아래 예).",
+          "**경보 묶기** — 같은 공격에서 나온 경보 여러 개를 한 건으로 묶는다.",
+          "**새 취약점 대조** — 공지의 제품·버전을 자산 목록과 자동으로 맞춘다.",
+          "**GenAI 쓰기** — 긴 로그 요약, 보고서·경과표 초안, 탐지 규칙 초안. 사람이 검토한다.",
+          "**GenAI의 위험** — 공격자가 로그·메일 안에 'AI에게 내리는 지시'를 숨기면(프롬프트 주입) 분석 AI가 속을 수 있다. OWASP가 LLM 앱의 대표 위험으로 꼽는다.[24] 사내 로그를 외부 AI에 보내도 되는지도 정해야 한다{추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "경보 문서에서 지표 뽑기",
+          "body": "보안 문서는 실수로 클릭되지 않게 주소를 `[.]`·`hxxp` 로 바꿔 적습니다. 되돌린 뒤 정규식(문자열 패턴)[25]으로 IP·MD5 해시·도메인을 뽑은 출력입니다. 해시는 시험용 EICAR 파일의 것입니다(가상 값).",
+          "lang": "python",
+          "code": "import re\n# 경보 문서에서 지표(IP·해시·도메인)를 뽑아 정규화 — 위협 정보 조회 전 단계\ntext = \"\"\"[경보] pc-118 에서 hxxp://update-check[.]example 로 접속,\n파일 해시 44d88612fea8a8f36de82e1278abb02f, 원격지 203.0.113[.]9:443\"\"\"\nclean = text.replace(\"[.]\", \".\").replace(\"hxxp\", \"http\")\niocs = {\n    \"ip\": re.findall(r\"\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b\", clean),\n    \"md5\": re.findall(r\"\\b[a-f0-9]{32}\\b\", clean),\n    \"domain\": re.findall(r\"https?://([\\w.-]+)\", clean),\n}\nprint(iocs)\n\n# 출력\n# {'ip': ['203.0.113.9'], 'md5': ['44d88612fea8a8f36de82e1278abb02f'], 'domain': ['update-check.example']}"
+        }
+      ],
+      "level": {
+        "basic": "로그 파일·CSV를 읽어 세고 거르는 스크립트, 정규식, HTTP API 호출.",
+        "work": "보안 장비·위협 정보 API를 엮어 경보 하나를 자동으로 조회·정리하는 도구. 실패해도 멈추지 않게 예외 처리.",
+        "team": "LLM에게 로그 요약·분류를 맡기되 결과를 사람이 확인하는 흐름, 프롬프트 주입과 데이터 반출 위험을 막는 장치까지 {추론}."
+      },
+      "how_far": "개발자 수준의 서비스를 만들 필요는 없습니다{추론}. **자기 팀의 반복 일 하나를 골라 줄인 결과(전후 시간·건수)를 보여 줄 수 있으면** 이 줄에 답이 됩니다 — 지원 때 포트폴리오를 냅니다[1].",
+      "refs": [1, 24, 25],
+      "study": ["automate-boring", "owasp-llm10"]
+    },
+    {
+      "section": "qualification",
+      "quote": "CERT, CSIRT, SOC, 침해사고 대응 분야에서 7년 이상의 경력 또는 이에 준하는 실무 경험을 보유하신 분",
+      "short": "사고 대응·관제 쪽 7년 — 진단·개발만 했다면 이 줄이 가장 먼저 걸린다.",
+      "why": "CERT·CSIRT(침해사고 대응팀)·SOC(보안관제센터)는 이름은 달라도 '사고를 받아 처리하는' 조직입니다.[21] 잡코리아 판 경력 칸은 '경력 7년↑'이고, 경력기술서와 포트폴리오를 같이 냅니다.[1]",
+      "how_far": "관제 업체에서 분석가로 시작해 기업 CERT로 옮기는 길이 흔합니다{추론}. '이에 준하는 실무 경험'이라 연수보다 **직접 맡아 끝낸 사고의 종류와 깊이**를 경력기술서로 보이는 것이 중요합니다{추론}.",
+      "refs": [1, 21],
+      "study": ["first-csirt"]
+    },
+    {
+      "section": "qualification",
+      "quote": "보안 위협·취약점 분석부터 대응 및 후속 개선까지 수행한 경험이 있으신 분",
+      "short": "분석에서 끝나지 않고 막고·고치고·재발 방지까지 한 바퀴를 돌려 본 경험.",
+      "why": "업무 일곱 줄이 '점검 → 판단 → 대응 → 재발 방지 → 통제 전환'으로 이어집니다.[1] NIST 지침도 대응을 준비·탐지·대응·복구·개선이 도는 고리로 그립니다.[9]",
+      "how_far": "한 사고를 골라 **무엇을 봤고 → 무엇을 막았고 → 무엇이 바뀌었나**를 한 장으로 말할 수 있으면 됩니다{추론}.",
+      "refs": [1, 9],
+      "study": ["nist-800-61r3"]
+    },
+    {
+      "section": "qualification",
+      "quote": "다양한 보안 로그와 시스템 정보를 기반으로 이상행위 및 공격 징후를 분석할 수 있으신 분",
+      "short": "방화벽·서버·PC·인증 로그를 이어 붙여 '평소와 다른 것'을 찾아내는 능력.",
+      "why": "공격 한 번은 여러 로그에 조각으로 남습니다 — 메일 서버에 피싱, PC에 실행 기록, 인증 서버에 이상 로그인.[11] 한 장비만 봐서는 사고가 안 보입니다{추론}.",
+      "actually": {
+        "items": [
+          "**네트워크** — 방화벽·프록시·DNS 로그로 이상한 외부 접속을 본다.[30]",
+          "**PC·서버** — 윈도우 이벤트 로그(로그온·프로세스 생성), EDR(PC에 깔린 행위 감시 도구) 기록.",
+          "**인증** — 로그인 성공·실패, 불가능한 이동(서울에서 접속한 지 5분 뒤 해외 접속).",
+          "**시간 맞추기** — 장비마다 시각대가 달라 먼저 한 시각으로 맞춘다.",
+          "**평소 알기** — 이상을 찾으려면 평소 모습(누가 언제 어디서 접속하나)을 알아야 한다."
+        ]
+      },
+      "how_far": "특정 제품(SIEM — 로그를 모아 검색·경보를 거는 시스템) 이름보다, **검색 언어로 직접 질문을 던져 답을 찾는 능력**을 봅니다{추론}. 공개 연습용 데이터셋(Splunk BOTS)으로 연습할 수 있습니다.",
+      "refs": [11, 30],
+      "study": ["bots-v3", "nsm-book", "cyberdefenders"]
+    },
+    {
+      "section": "qualification",
+      "quote": "침해사고 발생 시 공격 원인, 침해 경로 및 영향 범위를 분석하고 대응 방안을 수립할 수 있으신 분",
+      "short": "사고가 나면 '어디로·어떻게·어디까지'를 증거로 답하고 무엇을 할지 정할 수 있는 사람.",
+      "why": "영향 범위는 신고·고객 안내·복구 범위를 정합니다. 개인정보가 샜다면 법정 기한 안에 신고해야 해서[23], 범위를 빨리 좁히는 능력이 곧 회사의 대응 속도입니다{추론}.",
+      "how_far": "디스크·메모리 증거를 직접 열어 보는 포렌식 기본기와, 결정자에게 '지금 확실한 것·아직 모르는 것'을 나눠 보고하는 습관을 봅니다{추론}.",
+      "refs": [23],
+      "study": ["ir-cf-book", "reversing-core"]
+    },
+    {
+      "section": "qualification",
+      "quote": "침해사고 및 보안 위협에 대한 기술적 분석 능력",
+      "short": "악성 파일·공격 도구·로그를 직접 뜯어 무엇을 했는지 설명하는 손기술.",
+      "why": "회사 채용 사이트 판에는 이 '필요역량' 다섯 줄만 자격요건으로 올라가 있습니다 — 경력 연수보다 역량으로 본다는 뜻으로 읽힙니다.[2]{추론}",
+      "actually": {
+        "items": [
+          "**악성코드 기초 분석** — 실행하지 않고 문자열·가져다 쓰는 함수 보기, 격리 환경에서 실행해 행동 보기.",
+          "**로그 분석** — 위 자격요건의 여러 로그를 잇는 일.",
+          "**공격 도구 이해** — 원격 제어 도구·계정 탈취 도구가 남기는 흔적을 안다."
+        ]
+      },
+      "how_far": "역분석(리버싱) 전문가 수준까지는 아니더라도, **의심 파일 하나를 받아 '무엇을 하는가'를 한 시간 안에 1차로 말할 수 있는 수준**이 보통의 기대입니다{추론}.",
+      "refs": [2],
+      "study": ["reversing-core", "cyberdefenders"]
+    },
+    {
+      "section": "qualification",
+      "quote": "공격 과정과 원인을 추적하고 대응 방향을 수립하는 문제 해결 능력",
+      "short": "흩어진 단서로 공격 순서를 다시 세우고, 그다음 무엇을 할지 정하는 힘.",
+      "why": "사고는 정답이 정해진 문제가 아닙니다. 단서는 늘 모자라고 시간은 짧아, '가설 → 확인 → 다음 가설'을 빨리 도는 사람이 필요합니다{추론}.",
+      "how_far": "면접에서 상황을 주고 '다음에 무엇을 보겠어요'를 묻는 식으로 확인하기 쉬운 역량입니다{추론}. ATT&CK 단계(침투 → 실행 → 지속 → 이동 → 반출)를 머릿속 지도로 쓰면 빠뜨리는 단계가 줄어듭니다.[11]",
+      "refs": [11],
+      "study": ["mitre-attack", "threat-hunting-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "새로운 취약점 및 공격 기법을 빠르게 파악하고 실제 환경에 적용하는 능력",
+      "short": "새 공격 소식을 읽고 '우리 환경이면 어디에 해당하나·어떻게 탐지하나'로 바꾸는 능력.",
+      "why": "업무 둘째 줄(신규 취약점 선제 점검)을 해내는 데 필요한 역량입니다.[1] 공개된 공격 보고서는 다른 회사 이야기라서, 우리 자산·로그에 옮겨야 쓸모가 생깁니다{추론}.",
+      "how_far": "새 공격 보고서 하나를 읽고 **우리 쪽 점검 질문 세 개와 탐지 규칙 한 개**로 바꿔 보는 연습이 그대로 이 줄의 증거가 됩니다{추론}.",
+      "refs": [1],
+      "study": ["kev", "boho", "sigma"]
+    },
+    {
+      "section": "qualification",
+      "quote": "분석 결과를 탐지·예방·보안통제 개선으로 연결하는 실행력",
+      "short": "분석 보고서로 끝내지 않고 규칙·설정·절차가 실제로 바뀌게 만드는 힘.",
+      "why": "업무 넷째·다섯째·여섯째 줄이 모두 '개선·고도화·전환'으로 끝납니다.[1] 사고 대응의 성과는 다음 사고가 덜 나는 것으로 보입니다{추론}.",
+      "how_far": "'몇 건 처리했나'보다 **'어떤 규칙·통제가 생겼고 그 뒤 무엇이 줄었나'**를 경력기술서에 적으면 이 줄에 답이 됩니다{추론}.",
+      "refs": [1],
+      "study": ["nist-csf", "sigma"]
+    },
+    {
+      "section": "qualification",
+      "quote": "다양한 조직과 원활하게 협업하고 보안 과제를 추진할 수 있는 커뮤니케이션 능력",
+      "short": "사고 중엔 개발·인프라·법무·홍보와, 평소엔 과제를 받을 팀과 말이 통해야 한다.",
+      "why": "통합 법인이라 한 보안 조직이 여러 사업 조직을 상대합니다[7]{추론}. 계정 대입 공격 같은 사고는 고객 안내·비밀번호 초기화처럼 서비스 쪽 결정이 같이 필요합니다.[6]",
+      "how_far": "사고 중 짧은 상황 공유(무엇이 일어났나·무엇을 하고 있나·다음 공유는 언제)를 정해진 틀로 하는 습관이 기본입니다{추론}.",
+      "refs": [6, 7],
+      "study": ["nist-800-61r3"]
+    },
+    {
+      "section": "preference",
+      "quote": "침해사고 대응과 함께 취약점 및 위협 분석을 통한 사전 예방 업무 경험이 있으신 분",
+      "short": "터진 뒤만이 아니라 터지기 전 막는 일도 해 본 사람 — 업무 첫 두 줄과 같다.",
+      "why": "업무 일곱 줄 중 둘이 사전 점검·예방입니다.[1] 사고만 다뤄 온 사람보다 '들어올 길을 먼저 줄인' 경험이 있는 사람을 더 반긴다는 뜻입니다{추론}.",
+      "how_far": "취약점 대응 기한을 정하고 지킨 경험, 위협 사냥(경보가 없어도 가설을 세워 흔적을 먼저 찾는 일)을 해 본 경험이 좋은 예입니다{추론}.",
+      "refs": [1],
+      "study": ["threat-hunting-book", "epss"]
+    },
+    {
+      "section": "preference",
+      "quote": "Python 등을 활용한 보안 업무 자동화 경험이 있으신 분",
+      "short": "직접 짠 스크립트로 반복 보안 업무를 줄여 본 사람.",
+      "why": "업무 마지막 줄의 자동화를 바로 할 수 있는 사람이라는 뜻입니다.[1]",
+      "how_far": "GitHub에 올린 작은 도구(지표 조회·로그 정리)와 '하루 몇 시간이 몇 분이 됐다'는 숫자가 있으면 충분합니다{추론}. 포트폴리오 제출이 있으니 그 자리에 넣습니다.[1]",
+      "refs": [1],
+      "study": ["automate-boring"]
+    },
+    {
+      "section": "preference",
+      "quote": "GenAI 또는 Agentic AI를 활용한 보안 분석·자동화 경험이 있으신 분",
+      "short": "LLM에게 로그 요약·분류·조회를 맡겨 본 경험 — 어디서 틀리는지까지 아는 사람.",
+      "why": "공고가 업무와 우대 두 곳에 AI를 적었습니다.[1] 보안 분석에 AI를 붙이면 프롬프트 주입·과도한 권한 같은 새 위험도 같이 들어옵니다.[24]",
+      "how_far": "AI가 내린 결론을 사람이 확인하는 지점을 어디에 두었는지, 틀린 사례를 어떻게 걸렀는지를 설명할 수 있으면 됩니다{추론}.",
+      "refs": [1, 24],
+      "study": ["owasp-llm10"]
+    },
+    {
+      "section": "preference",
+      "quote": "외부 SOC/MSSP 운영 및 협업 경험이 있으신 분",
+      "short": "관제를 외부 업체(MSSP)에 맡겨 굴려 본 경험 — 이 회사도 외부 관제를 함께 쓸 수 있다는 신호.",
+      "why": "MSSP는 보안관제를 대신 해 주는 업체입니다.[21] 이 줄이 우대에 있는 것은 외부 관제와 함께 일할 일이 있다는 뜻으로 읽힙니다{추론} — 실제 위탁 여부는 공개되지 않았습니다.",
+      "actually": {
+        "items": [
+          "**계약 기준** — 무엇을 몇 분 안에 알려 주나(서비스 수준), 어떤 로그를 넘기나.",
+          "**넘기는 품질** — 업체가 보내는 경보의 오탐률을 재고 규칙 조정을 요청한다.",
+          "**권한 나누기** — 업체가 우리 시스템에 어디까지 손댈 수 있나 정한다. 외부 업체는 그 자체로 침투 경로가 될 수 있다.[19]"
+        ]
+      },
+      "how_far": "업체에 '이 경보는 이렇게 처리해 달라'를 문서로 주고 결과를 점검해 본 경험이면 됩니다{추론}.",
+      "refs": [19, 21],
+      "study": ["first-csirt"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "경보 수백 건 속에서 '이건 다르다'를 찾아내는 순간이 즐거운 사람",
+      "사고를 처리한 뒤 '왜 생겼나'까지 파고들어야 직성이 풀리는 사람",
+      "Python으로 내 반복 일을 먼저 줄여 온 사람[1]",
+      "게임 서비스(계정·결제)가 어떻게 공격받는지 궁금한 사람[6]"
+    ],
+    "hard": [
+      "7년 이상 사고 대응·관제 경력 — 진단·컨설팅만 했다면 직접 맡은 사고를 따로 보여 줘야 한다[1]",
+      "사고는 시간을 가리지 않아 밤·주말 대응이 생길 수 있다 {추론}",
+      "모의해킹·게임 치트 분석은 같은 조직의 다른 자리 몫이다[3][4]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "새벽 3시, 관리자 계정이 해외 IP에서 로그인에 성공했다는 경보가 왔어요. 처음 30분 동안 무엇을 하겠어요?",
+      "a": "업무③ 판단과 억제 — 확인할 것과 먼저 막을 것의 순서.[9]"
+    },
+    {
+      "q": "한 IP가 5분 동안 계정 300개에 로그인을 시도했고 12개가 성공했어요. 무엇부터 하겠어요?",
+      "a": "이 회사가 실제로 겪은 계정 대입 공격.[6][12][20]"
+    },
+    {
+      "q": "새 VPN 취약점이 공개됐어요. 우리가 해당되는지, 이미 당했는지는 어떻게 확인해요?",
+      "a": "업무② 신규 취약점 선제 점검 — 해당 여부와 거꾸로 찾기.[16][17]"
+    },
+    {
+      "q": "관제 팀이 하루 500건을 넘기는데 진짜는 거의 없어요. 무엇을 바꾸겠어요?",
+      "a": "업무⑤·⑥ 탐지 기준 고도화와 반복 경보의 통제 전환.[13][14]"
+    },
+    {
+      "q": "LLM에게 경보 분류를 맡긴다면 어디서 틀릴 수 있고, 어떻게 막겠어요?",
+      "a": "업무⑦·우대 GenAI — 프롬프트 주입과 사람 확인 지점.[24]"
+    }
+  ],
+  "sources": [
+    {"n": 1, "title": "잡코리아 · [스마일게이트] [정보보안] 보안 위협 분석 및 침해사고 대응 담당", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50274656", "kind": "posting", "date": "2026-10-30", "note": "업무·자격요건·필요역량·우대·제출서류(경력기술서·포트폴리오)·채용 절차, 경력 7년↑, 기술 칸 Python, 근무지 경기 성남시"},
+    {"n": 2, "title": "스마일게이트 채용 · [정보보안] 보안 위협 분석 및 침해사고 대응 담당", "url": "https://careers.smilegate.com/apply/announce/view?seq=6226", "kind": "posting", "note": "같은 공고의 회사 채용 사이트 판 — 자격요건 칸에 필요역량 다섯 줄, 수습 3개월"},
+    {"n": 3, "title": "잡코리아 · [스마일게이트] [정보보안] 정보보안 분석 담당 (팀장급)", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50244585", "kind": "posting", "note": "같은 조직의 진단·개발보안 자리"},
+    {"n": 4, "title": "스마일게이트 채용 · [정보보안] 게임보안 분석 및 대응 담당 (팀장급)", "url": "https://careers.smilegate.com/apply/announce/view?seq=6186", "kind": "posting", "note": "같은 조직 — 치팅 툴·메모리 변조·안티치트"},
+    {"n": 5, "title": "잡코리아 · [스마일게이트] [정보보안] 게임 보안 SDK 개발 담당", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50274592", "kind": "posting", "note": "같은 조직 — 스토브 게임 보안 SDK"},
+    {"n": 6, "title": "한국콘텐츠진흥원 글로벌 게임산업 트렌드 2023년 5+6월호 · 연이은 사이버 공격에 대한 글로벌 게임사의 대응 방안은?", "url": "https://www.kocca.kr/global/2023_5+6/sub02_03.html", "kind": "reference", "date": "2023-06-15", "note": "스토브·로스트아크 계정 대입 공격과 스마일게이트 대응"},
+    {"n": 7, "title": "아시아경제 · 스마일게이트, 통합법인 체제로 전환", "url": "https://www.asiae.co.kr/en/article/2025112615295592284", "kind": "news", "date": "2025-11-26", "note": "2026-01-01 홀딩스·엔터테인먼트·RPG 세 법인 통합"},
+    {"n": 8, "title": "디지털데일리 · 스마일게이트, 지난해 매출 1조4365억원…영업익 30.1% 감소", "url": "https://www.ddaily.co.kr/page/view/2026041417073986105", "kind": "news", "date": "2026-04-14"},
+    {"n": 9, "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations for Cybersecurity Risk Management", "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final", "kind": "reference", "date": "2025-04", "note": "CSF 2.0 에 맞춘 사고 대응 지침, Rev. 2(2012)를 대체"},
+    {"n": 10, "title": "NIST Cybersecurity Framework 2.0", "url": "https://www.nist.gov/cyberframework", "kind": "reference", "date": "2024"},
+    {"n": 11, "title": "MITRE ATT&CK", "url": "https://attack.mitre.org/", "kind": "reference", "note": "실제 관찰된 공격 기법을 단계별로 모은 표"},
+    {"n": 12, "title": "MITRE ATT&CK · T1110.004 Brute Force: Credential Stuffing", "url": "https://attack.mitre.org/techniques/T1110/004/", "kind": "reference"},
+    {"n": 13, "title": "SigmaHQ · Sigma 탐지 규칙 저장소", "url": "https://github.com/SigmaHQ/sigma", "kind": "reference", "note": "제품에 매이지 않는 로그 탐지 규칙 형식"},
+    {"n": 14, "title": "David J. Bianco · The Pyramid of Pain", "url": "http://detect-respond.blogspot.com/2013/03/the-pyramid-of-pain.html", "kind": "reference", "date": "2013-03"},
+    {"n": 15, "title": "FIRST · CVSS v4.0", "url": "https://www.first.org/cvss/v4-0/", "kind": "reference"},
+    {"n": 16, "title": "FIRST · Exploit Prediction Scoring System (EPSS)", "url": "https://www.first.org/epss/", "kind": "reference"},
+    {"n": 17, "title": "CISA · Known Exploited Vulnerabilities Catalog", "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog", "kind": "reference"},
+    {"n": 18, "title": "KISA 보호나라 · 보안공지", "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205020&bbsId=B0000133", "kind": "reference"},
+    {"n": 19, "title": "게임메카 · 보안 솔루션으로 침투, 게임사 노린 해킹 모범 대응 사례", "url": "https://www.gamemeca.com/view.php?gid=1767650", "kind": "news", "date": "2025-10-27", "note": "네오위즈 CISO 발표(게임산업협회·정보보호산업협회 세미나) — 보안 솔루션 경유 공급망 공격, SBOM·제로 트러스트, IoC→IoA"},
+    {"n": 20, "title": "OWASP Cheat Sheet Series · Credential Stuffing Prevention", "url": "https://cheatsheetseries.owasp.org/cheatsheets/Credential_Stuffing_Prevention_Cheat_Sheet.html", "kind": "reference"},
+    {"n": 21, "title": "FIRST · CSIRT Services Framework v2.1", "url": "https://www.first.org/standards/frameworks/csirts/csirt_services_framework_v2.1", "kind": "reference", "note": "사고 대응팀이 제공하는 서비스 분류"},
+    {"n": 22, "title": "KISA · 정보보호 및 개인정보보호 관리체계 인증(ISMS-P)", "url": "https://isms.kisa.or.kr/", "kind": "reference"},
+    {"n": 23, "title": "국가법령정보센터 · 개인정보 보호법", "url": "https://www.law.go.kr/법령/개인정보보호법", "kind": "reference", "note": "제34조 유출 통지·신고, 시행령 제39·40조(1천 명 이상 등 72시간)"},
+    {"n": 24, "title": "OWASP Top 10 for LLM Applications", "url": "https://genai.owasp.org/llm-top-10/", "kind": "reference", "note": "프롬프트 주입·과도한 권한"},
+    {"n": 25, "title": "Python 문서 · re — 정규식 연산", "url": "https://docs.python.org/ko/3/library/re.html", "kind": "reference"},
+    {"n": 26, "title": "자소설닷컴 · 스마일게이트 기업 정보", "url": "https://jasoseol.com/companies/11383", "kind": "reference", "note": "초봉·평균 연봉(공공데이터 집계). 기준일·직군 구분 없음, 같은 회사의 다른 풀이에서 확인한 값"},
+    {"n": 27, "title": "스마일게이트 채용 · LIFE AT SMILEGATE", "url": "https://careers.smilegate.com/life", "kind": "company", "note": "복지 목록 — 연도 표기 없음"},
+    {"n": 28, "title": "스마일게이트 뉴스룸 · [AI Revolution] 스마일게이트 — 휴먼라이크 AI", "url": "https://newsroom.smilegate.com/eng/1684893399", "kind": "company", "date": "2023-05", "note": "페이지 하단 회사 주소"},
+    {"n": 29, "title": "국가법령정보센터 · 정보통신망 이용촉진 및 정보보호 등에 관한 법률", "url": "https://www.law.go.kr/법령/정보통신망이용촉진및정보보호등에관한법률", "kind": "reference", "note": "제48조의3 침해사고 신고"},
+    {"n": 30, "title": "Richard Bejtlich · The Practice of Network Security Monitoring", "url": "https://nostarch.com/nsm", "kind": "reference", "date": "2013", "note": "네트워크 로그로 침입을 찾는 방법"}
+  ],
+  "caveat": "스마일게이트 정보보안 조직이 직접 쓴 기술 글·발표는 이 회차에 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고 두 판과 같은 조직의 다른 공고 셋, 2023년 계정 대입 공격 기록, 법인 통합 보도뿐이고, 사고 대응 절차·탐지 규칙·관제 협업은 국제 기준(NIST·MITRE·FIRST·OWASP)과 다른 게임사의 공개 발표로 '보통 이렇게 한다'를 보였습니다. 외부 관제(MSSP) 위탁 여부와 CERT 인원은 공개되지 않았습니다. 코드 예시의 값은 모두 가상입니다.",
+  "resources": [
+    {"id": "nist-800-61r3", "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations for Cybersecurity Risk Management", "by": "NIST · 2025", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final", "why": "사고 대응 전체 흐름의 국제 기준. 업무③④의 판단·억제·복구·개선 순서를 여기 맞춰 말할 수 있게 된다."},
+    {"id": "nist-csf", "title": "NIST Cybersecurity Framework (CSF) 2.0", "by": "NIST · 2024", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.nist.gov/cyberframework", "why": "식별·보호·탐지·대응·복구·거버넌스로 나눈 틀. 업무⑥ '통제로 전환'이 전체의 어디인지 보인다."},
+    {"id": "mitre-attack", "title": "MITRE ATT&CK", "by": "MITRE", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://attack.mitre.org/", "why": "공격 경로를 그리고 탐지 빈칸을 찾을 때 쓰는 공통 언어. 업무①④⑤와 자격요건의 '공격 과정 추적'."},
+    {"id": "sigma", "title": "Sigma 탐지 규칙 (SigmaHQ)", "by": "SigmaHQ", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://github.com/SigmaHQ/sigma", "why": "공개 탐지 규칙 수천 개와 형식. 업무⑤ 탐지 기준 고도화를 제품과 상관없이 연습한다."},
+    {"id": "pyramid-pain", "title": "The Pyramid of Pain", "by": "David J. Bianco · 2013", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "http://detect-respond.blogspot.com/2013/03/the-pyramid-of-pain.html", "why": "IP·해시보다 행동을 잡는 탐지가 왜 오래 가는지 한 장으로. 탐지 규칙의 우선순위를 정할 때."},
+    {"id": "owasp-cred-stuffing", "title": "OWASP Credential Stuffing Prevention Cheat Sheet", "by": "OWASP", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://cheatsheetseries.owasp.org/cheatsheets/Credential_Stuffing_Prevention_Cheat_Sheet.html", "why": "이 회사가 실제로 겪은 계정 대입 공격의 탐지·방어 방법 모음."},
+    {"id": "kev", "title": "CISA Known Exploited Vulnerabilities Catalog", "by": "CISA", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog", "why": "실제로 악용된 취약점 목록. 업무② 신규 취약점의 '급한 것'을 고르는 첫 기준."},
+    {"id": "epss", "title": "Exploit Prediction Scoring System (EPSS)", "by": "FIRST", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.first.org/epss/", "why": "악용될 확률을 숫자로. 취약점 수백 개 중 무엇부터 막을지 정할 때."},
+    {"id": "cvss", "title": "CVSS v4.0 Specification", "by": "FIRST", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.first.org/cvss/v4-0/", "why": "취약점 심각도 점수의 정의. 보안 공지를 읽는 기본."},
+    {"id": "boho", "title": "KISA 보호나라 보안공지", "by": "한국인터넷진흥원", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205020&bbsId=B0000133", "why": "국내 보안 업데이트 권고를 한국어로. 업무② 소식 받기의 출발점."},
+    {"id": "first-csirt", "title": "FIRST CSIRT Services Framework v2.1", "by": "FIRST", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.first.org/standards/frameworks/csirts/csirt_services_framework_v2.1", "why": "CERT·SOC·MSSP가 각각 무엇을 맡는지 나눈 표. 관제 협업과 외부 업체 관리 줄."},
+    {"id": "ir-cf-book", "title": "Incident Response & Computer Forensics, Third Edition", "by": "Jason Luttgens · Matthew Pepe · Kevin Mandia · McGraw-Hill · 2014", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=Incident%20Response%20%26%20Computer%20Forensics", "why": "사고 대응 실무서의 고전. 증거 보존·원인·경로·영향 범위 분석을 사례로."},
+    {"id": "nsm-book", "title": "The Practice of Network Security Monitoring", "by": "Richard Bejtlich · No Starch Press · 2013", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://nostarch.com/nsm", "why": "네트워크 로그로 침입을 찾고 대응하는 관제의 원리. '다양한 보안 로그로 이상행위 분석' 줄."},
+    {"id": "threat-hunting-book", "title": "Practical Threat Intelligence and Data-Driven Threat Hunting", "by": "Valentina Costa-Gazcón · Packt · 2021", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://search.kyobobook.co.kr/search?keyword=Practical%20Threat%20Intelligence%20and%20Data-Driven%20Threat%20Hunting", "why": "ATT&CK로 가설을 세워 흔적을 먼저 찾는 위협 사냥. 우대 '사전 예방' 줄."},
+    {"id": "reversing-core", "title": "리버싱 핵심원리", "by": "이승원 · 인사이트 · 2012", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%AC%EB%B2%84%EC%8B%B1%20%ED%95%B5%EC%8B%AC%EC%9B%90%EB%A6%AC", "why": "윈도우 실행 파일을 뜯어보는 기초를 한국어로. 의심 파일의 '기술적 분석' 줄."},
+    {"id": "bots-v3", "title": "Splunk Boss of the SOC (BOTS) v3 Dataset", "by": "Splunk", "kind": "course", "lang": "en", "free": true, "level": "실무", "url": "https://github.com/splunk/botsv3", "why": "실제 공격을 흉내 낸 공개 로그 묶음. 여러 로그를 이어 공격을 재구성하는 연습장."},
+    {"id": "cyberdefenders", "title": "CyberDefenders — Blue Team 실습", "by": "CyberDefenders", "kind": "course", "lang": "en", "free": true, "level": "실무", "url": "https://cyberdefenders.org/", "why": "포렌식·로그 분석 문제를 무료 실습으로. 원인·경로·영향 범위를 직접 찾아본다."},
+    {"id": "automate-boring", "title": "Automate the Boring Stuff with Python", "by": "Al Sweigart · No Starch Press", "kind": "book", "lang": "en", "free": true, "level": "입문", "url": "https://automatetheboringstuff.com/", "why": "파일·정규식·웹 요청 자동화의 기초(온라인 무료판). 업무⑦과 우대 Python 자동화의 출발점."},
+    {"id": "owasp-llm10", "title": "OWASP Top 10 for LLM Applications", "by": "OWASP", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://genai.owasp.org/llm-top-10/", "why": "보안 분석에 LLM을 붙일 때 생기는 위험 목록. 우대 GenAI·Agentic AI 줄."},
+    {"id": "isms-p", "title": "정보보호 및 개인정보보호 관리체계 인증(ISMS-P)", "by": "한국인터넷진흥원", "kind": "doc", "lang": "ko", "free": true, "level": "실무", "url": "https://isms.kisa.or.kr/", "why": "국내 인증의 사고 대응·로그 관리 항목. 절차를 고칠 때 무엇이 증거로 남아야 하는지."}
+  ],
+  "study_path": [
+    {"title": "사고 대응의 뼈대", "time": "1~2주", "goal": "NIST 흐름(준비 → 탐지·분석 → 억제·제거·복구 → 개선)과 ATT&CK 단계로 사고 하나를 설명할 수 있다.", "resources": ["nist-800-61r3", "mitre-attack", "first-csirt"], "task": "가상의 게임사에서 '운영툴 관리자 계정 탈취' 사고가 났다고 정하고, 단계마다 할 일·남길 증거·담당 팀을 한 장 표로 만든다."},
+    {"title": "로그로 공격 재구성", "time": "3~4주", "goal": "여러 로그를 시간순으로 이어 첫 침투·이동·반출을 찾을 수 있다.", "resources": ["bots-v3", "cyberdefenders", "nsm-book", "ir-cf-book"], "task": "BOTS v3 데이터에서 문제 다섯 개를 풀고, 그중 한 공격을 시간순 경과표(시각·근거 로그·ATT&CK 기법)로 다시 쓴다."},
+    {"title": "탐지 규칙 만들기", "time": "2~3주", "goal": "사고에서 나온 행동을 Sigma 규칙으로 쓰고 오탐을 줄일 수 있다.", "resources": ["sigma", "pyramid-pain", "owasp-cred-stuffing"], "task": "가상 로그인 로그(정상 1만 줄 + 대입 공격 300줄)를 만들고 대입 공격 탐지 규칙을 Sigma로 쓴 뒤, 문턱을 바꿔 가며 놓친 것·오탐 수를 표로 남긴다."},
+    {"title": "선제 점검과 우선순위", "time": "1~2주", "goal": "새 취약점 공지를 받아 해당 여부·급한 순서·임시 조치를 하루 안에 낼 수 있다.", "resources": ["boho", "kev", "epss", "cvss"], "task": "가상 자산 목록(서버 30대·제품 버전)과 이번 달 KISA 공지를 대조해 해당 취약점을 KEV·EPSS·노출 여부로 줄 세운 표를 만든다."},
+    {"title": "자동화와 AI", "time": "2~3주", "goal": "반복 일 하나를 Python으로 줄이고, LLM을 붙일 때 사람 확인 지점을 설계할 수 있다.", "resources": ["automate-boring", "owasp-llm10"], "task": "경보 문서에서 지표를 뽑아 조회·정리해 주는 스크립트를 만들고, LLM 요약 단계를 붙인 뒤 로그 안에 숨긴 '지시문'에 속는지 시험해 막는 장치를 적는다. 전후 처리 시간을 포트폴리오에 적는다."}
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없습니다. 집계 사이트 기준 스마일게이트 초봉 **약 4,619만원**, 전체 평균 **약 7,107만원** — 7년차 이상 경력 처우는 공개된 숫자가 없습니다.",
+    "rows": [
+      {"label": "신입 초봉(집계)", "value": "약 4,619만원", "amount": 4619, "basis": "공공데이터 집계", "note": "자소설닷컴 기업 페이지의 초봉. 기준일·직군 구분이 없다 [26]"},
+      {"label": "전체 평균 연봉(집계)", "value": "약 7,107만원", "amount": 7107, "basis": "공공데이터 집계", "note": "같은 페이지의 평균. 경력직이 섞인 회사 전체 값이라 초봉이 아니다 [26]"}
+    ],
+    "how": "비상장사라 사업보고서의 '직원 1인 평균 급여' 같은 공시 숫자가 없어 집계 값만 실었다(공시 숫자 없음). 집계 기준 법인이 2026년 1월 통합[7] 전의 어느 법인인지도 적혀 있지 않다. 이 자리는 7년 이상 경력직이라 위 평균과 거리가 있고, 연봉은 협의로 정해진다고 보는 것이 맞다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {"name": "복지포인트", "detail": "건강관리·자기계발·여행/문화에 사용"},
+      {"name": "건강", "detail": "종합건강검진, EAP(심리 상담)"},
+      {"name": "가족", "detail": "직장어린이집 '스마일토리', 콘도·하계휴양소 지원, 단체 상해보험, 경조사 지원"},
+      {"name": "일과 삶", "detail": "선택적 근무제도, 직무도서 구입비 지원, 출근 셔틀버스(12개 노선), 힐링룸"},
+      {"name": "장기근속", "detail": "장기근속 포상(휴가·여행비)"},
+      {"name": "동료·성장", "detail": "스마일카페, 동호회, 사내 게임장, 학습 프로그램"}
+    ],
+    "note": "스마일게이트 채용 사이트의 복지 소개다 [27]. 글에 연도·적용 범위가 적혀 있지 않고, 정규직은 3개월 수습 동안에도 복리후생이 같다고 이 공고에 적혀 있다 [2]."
+  },
+  "location": {
+    "name": "스마일게이트 판교 사옥 (쏠리드 스페이스 빌딩)",
+    "address": "경기도 성남시 분당구 판교역로 220 (삼평동) 쏠리드 스페이스 빌딩",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20220",
+    "near": "신분당선 판교역 근처 {추론}",
+    "note": "주소는 스마일게이트 뉴스룸 페이지 하단의 회사 주소다 [28]. 공고 근무지는 '경기 성남시'까지만 적혀 있어 [1] 이 팀의 자리가 이 건물인지는 확인하지 못했다 {추론}."
+  }
+}
