@@ -1,0 +1,1188 @@
+{
+ "id": "42dot-system-test-engineer-verification",
+ "company": "포티투닷(42dot)",
+ "role": "시스템 테스트 엔지니어 — 시스템 검증",
+ "team": "SDV 시스템 검증 — 공고에 팀 이름은 없다",
+ "jobs": [
+  "ats-ashby:42dot:2276c44d-d0d6-48d5-ad44-014e8da6fa55"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "소프트웨어 중심 차(SDV)의 여러 제어기가 **함께 맞게 움직이는지** 시스템 수준에서 시험하고, 그 시험을 릴리스부터 보고서까지 **사람 손 없이 돌게** 만듭니다.[1]",
+  "env": "Kiosk·시뮬레이터·HIL 벤치 위에서 CANoe 같은 통신 시뮬레이터를 Python/C++ 로 조종하고, CI/CD·서버·DB·대시보드까지 직접 짓습니다.[1] 회사는 2주 단위 회차와 CI/CD 로 개발한다고 밝혔습니다.[4]",
+  "oneline": "차량 시스템 시험의 **설계자 + 자동화 개발자**. 경력 5년 이상, CAN·LIN·이더넷과 CANoe·CAPL 을 다뤄 봐야 합니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "시스템 요구사항 기반 평가 요구사항 분석, 자동화 검증 환경 구조 설계",
+   "short": "차 전체 요구사항을 '무엇을 어떻게 재면 통과인가'로 바꾸고, 그걸 자동으로 잴 벤치 구조를 그린다.",
+   "why": "이 팀은 차량 시스템의 기능·통합 검증을 맡고, 그 검증을 돌릴 자동화 평가 환경까지 직접 설계·개발한다고 소개합니다.[1] 포티투닷이 내세우는 구조는 여러 제어기가 하던 일을 고성능 차량 컴퓨터(HPVC)와 구역 제어기(zone controller — 차의 앞·뒤·좌·우 구역 장치를 묶어 맡는 제어기)로 모은 것이라,[4] 기능 하나가 여러 제어기와 망을 거쳐 일어납니다. 그래서 제어기 단품이 아니라 **시스템 수준**에서 요구를 다시 읽어야 합니다.{추론}",
+   "actually": {
+    "items": [
+     "**시험할 수 있는 말로 바꾸기** — '문을 잠그면 빨리 반응한다'를 '잠금 요청 뒤 200ms 안에 상태 신호가 바뀐다'처럼 숫자·조건이 있는 평가 요구사항으로 고친다.{추론}",
+     "**추적 잇기** — 시스템 요구사항 → 평가 요구사항 → 시험 케이스 → 결과를 이어 두는 것이 자동차 개발 프로세스 모델(ASPICE)의 시스템 통합·시험 과정이 요구하는 것이다.[17][34]",
+     "**환경 구조 정하기** — 어떤 요구는 PC 안 가상 제어기(SIL)로, 어떤 것은 진짜 제어기 + 가짜 차 신호(HIL)로, 어떤 것은 실차로 잴지 나누고, 장비·통신·서버가 어떻게 이어질지 그린다.[8][18]",
+     "**빈 곳 찾기** — 요구에 시간 한도·이상 상황이 빠져 있으면 시스템 쪽에 되묻는다. 같은 회사 SIL/HIL 공고도 '요구사항의 빈틈을 찾아내는 것'을 업무로 적었다.[8]"
+    ]
+   },
+   "how_far": "요구사항 자체는 시스템 엔지니어링 쪽이 쓰고,{추론} 이 자리는 **그 요구를 잴 수 있는 꼴로 바꾸고, 자동으로 잴 환경의 설계도를 내는** 쪽입니다.[1]",
+   "refs": [
+    1,
+    4,
+    17,
+    34
+   ],
+   "study": [
+    "aspice-pam",
+    "ul-sys4",
+    "acorn-auto-sw"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "자동화 테스트 모듈, 장비 제어 및 통신 인터페이스 설계",
+   "short": "시험 코드를 부품처럼 나누고, 전원 장치·버스 장비·시뮬레이터를 코드로 부를 길을 정한다.",
+   "why": "자동화 평가 시스템은 시험 순서만이 아니라 전원 공급기·릴레이·버스 인터페이스·통신 시뮬레이터 같은 장비를 코드로 움직여야 돕니다.[1][8] 같은 회사 IVI 시험 자동화 공고도 스마트 전원 분배기(PDU)·릴레이 모듈을 원격으로 제어하는 스크립트 경험을 우대합니다.[12]",
+   "actually": {
+    "items": [
+     "**시험 모듈 나누기** — '전원 켜기 → 제어기 깨우기 → 신호 보내기 → 응답 재기'를 다시 쓸 수 있는 함수·모듈로 나눠, 시험마다 조합만 바꾼다.{추론}",
+     "**장비 제어 층** — 전원 공급기·릴레이·계측기마다 같은 꼴(켜기·끄기·값 읽기)의 인터페이스를 두고 장비가 바뀌어도 시험 코드는 그대로 둔다.{추론}",
+     "**통신 인터페이스** — CANoe 는 바깥 프로그램이 COM 인터페이스로 설정을 열고 측정을 시작·중지하게 해 주며, 이를 파이썬에서 부르는 공개 라이브러리(py_canoe)도 있다.[20][22]",
+     "**가상과 진짜를 같은 꼴로** — 같은 시험이 가상 제어기와 진짜 벤치 양쪽에서 돌도록 통신 부분만 갈아 끼운다.[8]{추론}"
+    ]
+   },
+   "how_far": "벤치 하드웨어를 처음부터 짓는 일은 SIL/HIL 인프라 공고와 겹칩니다.[8] 이 자리는 **시험이 장비를 부르는 경계(인터페이스)를 깔끔하게 설계**하는 것이 핵심입니다.{추론}",
+   "refs": [
+    1,
+    8,
+    12,
+    20,
+    22
+   ],
+   "study": [
+    "py-canoe",
+    "python-can",
+    "canoe"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "자동 검증 실행, 결과 신뢰성·재현성 확보",
+   "short": "무인으로 돌린 시험 결과를 믿을 수 있게 — 같은 조건이면 같은 결과가 나오게 만든다.",
+   "why": "자동 시험이 가끔만 실패하면(flaky — 코드는 그대로인데 결과가 오락가락) 사람들이 실패를 무시하기 시작합니다. 구글은 시험 실행의 약 1.5%가 이런 결과를 낸다고 밝혔습니다.[30] 같은 회사 IVI 시험 공고도 간헐적 실패를 줄이는 일을 따로 업무로 적었습니다.[12]",
+   "actually": {
+    "items": [
+     "**시작 상태 고정** — 시험 전에 전원을 껐다 켜고, 제어기 소프트웨어 판을 확인하고, 버스를 비운 뒤 시작한다.{추론}",
+     "**같은 시험 여러 번** — 의심스러운 시험은 여러 번 돌려 늘 통과/늘 실패/오락가락을 가른다(아래 예시).[30]",
+     "**기록 남기기** — 결과마다 소프트웨어 판·벤치 번호·장비 설정을 같이 저장해 '어디서 돌린 결과인가'를 다시 만들 수 있게 한다.{추론}",
+     "**벤치 탓과 제품 탓 가르기** — 벤치 연결 불량·장비 오류로 난 실패는 결함이 아니라 '무효'로 따로 센다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 시험을 10번 돌려 늘 통과·늘 실패·오락가락 가르기(직접 실행)",
+     "body": "door_lock 은 10번 중 8번만 한도(200ms) 안에 들어와 '오락가락'입니다 — 버스가 바쁠 때만 늦는 진짜 타이밍 문제일 수도, 벤치 문제일 수도 있어 따로 파야 합니다. wake 는 늘 실패하니 결함 보고로 바로 넘깁니다.",
+     "lang": "python",
+     "code": "import random\n\ndef door_lock_test(seed):\n    # 가짜 벤치: 잠금 요청 뒤 상태 신호가 바뀌기까지 걸린 시간(ms). 가끔 버스가 바빠 늦어진다.\n    rnd = random.Random(seed)\n    return rnd.choice([80, 90, 95, 110, 260])\n\ndef speed_test(seed):\n    return 40            # 늘 같은 답\n\ndef wake_test(seed):\n    return 900           # 늘 한도를 넘는다(진짜 결함)\n\nLIMIT = {\"door_lock\": 200, \"speed\": 100, \"wake\": 500}\nTESTS = {\"door_lock\": door_lock_test, \"speed\": speed_test, \"wake\": wake_test}\n\nfor name, fn in TESTS.items():\n    runs = [fn(seed) <= LIMIT[name] for seed in range(10)]   # 같은 시험을 10번\n    p = sum(runs)\n    verdict = \"PASS\" if p == 10 else \"FAIL\" if p == 0 else \"FLAKY\"\n    print(f\"{name:9s} 10번 중 통과 {p:2d} → {verdict}\")\n# door_lock 10번 중 통과  8 → FLAKY\n# speed     10번 중 통과 10 → PASS\n# wake      10번 중 통과  0 → FAIL"
+    }
+   ],
+   "how_far": "**'이 실패를 믿어도 되나'에 답할 수 있게** 만드는 것까지가 이 줄입니다. 경력 5년 자리라 면접에서 오락가락 시험을 어떻게 다뤘는지 물을 수 있습니다.{추론}",
+   "refs": [
+    12,
+    30,
+    1
+   ],
+   "study": [
+    "google-flaky",
+    "pytest-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Python/C++ 기반 자동화 SW, CANoe 등 차량 통신 Simulator 제어 및 데이터 수집 개발",
+   "short": "파이썬·C++ 로 CANoe 같은 통신 시뮬레이터를 원격 조종하고, 버스 기록·측정값을 모으는 프로그램을 짠다.",
+   "why": "CANoe 는 Vector 사의 차량 망 개발·시험 도구로, 실제로 없는 제어기를 흉내 내고(잔여 버스 시뮬레이션) 오간 메시지를 기록·분석합니다.[19][20] 같은 회사 시험 공고들이 모두 CANoe 를 적었고,[9][10][11] SIL/HIL 공고는 Python·C/C++ 로 자동화 프레임워크를 만든다고 적었습니다.[8]",
+   "actually": {
+    "items": [
+     "**시뮬레이터 조종** — 설정 파일 열기 → 측정 시작 → 시험 모듈 실행 → 측정 중지를 바깥 코드가 차례로 부른다.[20][22]",
+     "**신호 넣고 빼기** — 시험 중에 차속·기어 같은 신호 값을 바꿔 넣고, 제어기가 내보낸 신호를 읽는다.{추론}",
+     "**데이터 수집** — 버스 기록 파일(로그)과 제어기 로그를 시험 번호로 묶어 서버로 올린다.{추론}",
+     "**장비 없이 연습** — 파이썬 python-can 은 가상 버스로 메시지를 주고받게 해 줘 집에서도 같은 흐름을 만들어 볼 수 있다.[23]"
+    ]
+   },
+   "level": {
+    "basic": "Python 으로 바이트·파일·정규식을 다루고 pytest 로 시험 함수를 쓴다",
+    "work": "가상 CAN 버스로 메시지를 보내고 받아 주기·값을 판정한다",
+    "team": "CANoe·벤치 장비를 코드로 제어해 릴리스마다 무인으로 돈다[8]"
+   },
+   "how_far": "CANoe 는 유료라 회사 밖 연습이 어렵습니다.{추론} 파이썬 가상 버스로 **'시뮬레이터 켜기 → 신호 넣기 → 기록 모으기 → 판정'을 끝까지 돌린 경험**을 보여 주면 출발점이 됩니다.{추론}",
+   "refs": [
+    8,
+    9,
+    10,
+    11,
+    19,
+    20,
+    22,
+    23
+   ],
+   "study": [
+    "inflearn-capl",
+    "canoe",
+    "py-canoe",
+    "python-can"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CI/CD 연동, Server·DB·Dashboard 및 Report 시스템 구축",
+   "short": "새 소프트웨어가 나오면 시험이 저절로 돌고, 결과가 DB 에 쌓여 대시보드·보고서로 나오게 한다.",
+   "why": "팀 소개가 'SW 릴리스부터 시험 실행, 결과 수집·분석, 보고서 생성까지' 처음부터 끝까지 자동화한다고 적었습니다.[1] 포티투닷은 2주 단위 회차와 CI/CD 로 개발한다고 밝혔고,[4] SIL/HIL 공고는 시험 반복을 Git 기반 CI(GitLab CI·Jenkins 등)에 묶어 자주 도는 회귀 시험을 돌린다고 적었습니다.[8]",
+   "flows": [
+    {
+     "caption": "팀 소개의 자동화 흐름[1] — 칸 안의 풀이는 {추론}",
+     "steps": [
+      "SW 릴리스 · 새 빌드가 나온다",
+      "벤치 준비 · 빌드를 제어기에 올리고 전원·망을 맞춘다",
+      "시험 실행 · 시뮬레이터·장비를 코드로 돌린다",
+      "결과 수집 · 판정·로그를 서버·DB 에 쌓는다",
+      "분석 · 이전 회차와 비교해 새로 깨진 것을 찾는다",
+      "보고서 · 통과율·결함 목록을 대시보드와 문서로"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**CI 연동** — 빌드 서버가 새 빌드를 알리면 시험 작업이 벤치를 잡아 돈다. 벤치가 몇 대뿐이라 작업이 줄을 서게 한다.{추론}",
+     "**DB** — 회차·시험·판정·소프트웨어 판·로그 위치를 표로 쌓아 '언제부터 깨졌나'를 쿼리 한 번으로 찾는다(아래 예시).{추론}",
+     "**보고서** — CANoe 시험 결과도 XML·HTML 보고서로 내보낼 수 있어 그걸 모아 회차 보고서로 묶는다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "회차별 통과율과 '새로 깨진 시험' 뽑기(직접 실행)",
+     "body": "통과율만 보면 75% → 60% 로 떨어졌지만, 실제로 새로 깨진 건 speed 하나이고 seat 는 새로 들어온 시험입니다. 보고서는 통과율보다 **이 차이 목록**을 먼저 보여 줘야 합니다.{추론}",
+     "lang": "python",
+     "code": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"create table result(run text, test text, verdict text)\")\nrows = [(\"r41\", \"door_lock\", \"PASS\"), (\"r41\", \"speed\", \"PASS\"), (\"r41\", \"wake\", \"FAIL\"), (\"r41\", \"hvac\", \"PASS\"),\n        (\"r42\", \"door_lock\", \"PASS\"), (\"r42\", \"speed\", \"FAIL\"), (\"r42\", \"wake\", \"FAIL\"), (\"r42\", \"hvac\", \"PASS\"),\n        (\"r42\", \"seat\", \"PASS\")]\ndb.executemany(\"insert into result values (?,?,?)\", rows)\n\nfor run, total, ok in db.execute(\n        \"select run, count(*), sum(verdict='PASS') from result group by run order by run\"):\n    print(f\"{run}: {ok}/{total} 통과 ({ok/total:.0%})\")\n\nq = \"\"\"select n.test, o.verdict, n.verdict from result n left join result o\n       on o.test = n.test and o.run = 'r41' where n.run = 'r42' and n.verdict != coalesce(o.verdict, '-')\"\"\"\nfor test, old, new in db.execute(q):\n    tag = \"새로 깨짐\" if new == \"FAIL\" and old == \"PASS\" else \"새 시험\" if old is None else \"바뀜\"\n    print(f\"  {test}: {old or '-'} → {new}  ({tag})\")\n# r41: 3/4 통과 (75%)\n# r42: 3/5 통과 (60%)\n#   speed: PASS → FAIL  (새로 깨짐)\n#   seat: - → PASS  (새 시험)"
+    }
+   ],
+   "how_far": "CI 서버 자체는 DevOps 조직(같은 회사 CI/CD 파이프라인 공고)이 운영합니다.[13] 이 자리는 **시험 작업을 파이프라인에 얹고, 결과 DB·대시보드를 직접 만드는** 데까지입니다.[1]",
+   "refs": [
+    1,
+    4,
+    8,
+    21
+   ],
+   "study": [
+    "cd-book",
+    "pytest-docs",
+    "pro-git"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "로그 분석, 시스템 결함 식별, 자동 결과 판정, 로그 처리",
+   "short": "버스 기록·제어기 로그를 코드로 훑어 '규칙 위반'을 자동으로 찾고, 실패 원인을 좁힌다.",
+   "why": "시스템 시험은 여러 제어기가 함께 움직여 결함이 어느 쪽에서 났는지 겉으로 안 보입니다.{추론} 같은 회사 시험 공고들도 로그 분석·결함 식별을 핵심 업무로 적었고,[9][10] 자격요건에도 차량 네트워크·SW 동작 로그 분석이 따로 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**주기 검사** — 메시지마다 정해진 주기(예: 10ms)가 있어, 주기보다 오래 안 오면 끊긴 것이다(아래 예시).[26]{추론}",
+     "**신호 풀기** — 통신 사양서(DBC 파일)로 바이트를 차속·문 상태 같은 값으로 풀어 기대값과 비교한다.[33]",
+     "**자동 판정** — 사람이 그래프를 보던 것을 '이 시각 이후 X ms 안에 값이 Y 로 바뀌었나' 같은 규칙으로 바꾼다.{추론}",
+     "**로그 처리** — 수백 MB 버스 기록에서 실패 시각 앞뒤만 잘라 결함 보고에 붙인다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "버스 기록에서 주기 끊김 찾기(직접 실행)",
+     "body": "0x1A0 은 10ms 마다 와야 하는데 0.030s 와 0.082s 사이가 52ms 비었고, 0x2B0 은 200ms 주기인데 400ms 가 비었습니다. 주기의 1.5배를 '끊김' 문턱으로 둔 것은 예시이고, 실제 문턱은 그 차의 통신 사양을 따릅니다.{추론}",
+     "lang": "python",
+     "code": "log = \"\"\"0.000 1A0 00 00\n0.010 1A0 00 00\n0.020 1A0 00 00\n0.030 1A0 01 00\n0.082 1A0 01 00\n0.092 1A0 01 00\n0.100 2B0 10\n0.300 2B0 10\n0.700 2B0 11\"\"\"\nCYCLE = {0x1A0: 0.010, 0x2B0: 0.200}   # 메시지별 주기(초) — 실제로는 통신 사양서 값\nTOL = 1.5                              # 주기의 1.5배를 넘으면 끊긴 것으로 본다\nlast = {}\nfor line in log.splitlines():\n    t, mid, *data = line.split()\n    t, mid = float(t), int(mid, 16)\n    if mid in last:\n        gap = t - last[mid]\n        if gap > CYCLE[mid] * TOL:\n            print(f\"FAIL 0x{mid:03X} {last[mid]:.3f}s→{t:.3f}s {gap*1000:.0f}ms 끊김 (주기 {CYCLE[mid]*1000:.0f}ms)\")\n    last[mid] = t\nprint(\"검사한 메시지:\", \", \".join(f\"0x{m:03X}\" for m in last))\n# FAIL 0x1A0 0.030s→0.082s 52ms 끊김 (주기 10ms)\n# FAIL 0x2B0 0.300s→0.700s 400ms 끊김 (주기 200ms)\n# 검사한 메시지: 0x1A0, 0x2B0"
+    }
+   ],
+   "how_far": "고치는 건 제어기 개발팀이지만,{추론} **'어느 제어기가, 몇 시 몇 초에, 무엇을 어겼다'까지 자동으로 뽑아 넘기는 것**이 이 자리의 몫입니다.[1]",
+   "refs": [
+    1,
+    9,
+    10,
+    26,
+    33
+   ],
+   "study": [
+    "cantools",
+    "python-can",
+    "vector-can"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "프로세스 구축 및 개선",
+   "short": "아래 줄의 묶음 제목 — 시험 범위를 넓히고 자동화 코드를 오래 버티게 고치는 일.",
+   "why": "공고는 업무를 계획 → 설계 → 수행 → 자동화 → 분석 → 프로세스의 여섯 묶음으로 나눴고 이것이 마지막 묶음입니다.[1] 같은 회사 시험 공고들도 같은 여섯 묶음을 씁니다.[9][10][11]",
+   "refs": [
+    1,
+    9,
+    10,
+    11
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "평가 범위 확대, 검증 효율 및 정확성 개선, 자동화 모듈 확장성·유지보수성·안정성 개선",
+   "short": "자동 시험이 덮는 기능을 늘리고, 시험 코드가 차종·벤치가 늘어도 안 무너지게 다듬는다.",
+   "why": "차 기능은 무선 업데이트(OTA)로 계속 바뀌고,[5] 소프트웨어 회차가 2주 단위라[4] 시험도 회차마다 늘어납니다. 시험 코드가 엉키면 시험을 고치는 데 시간이 더 들게 됩니다.{추론}",
+   "actually": {
+    "items": [
+     "**범위 넓히기** — 손으로 하던 시나리오를 자동 시험으로 옮기고, 실차에서 처음 잡힌 결함을 벤치 시험으로 당겨 와 더 일찍 잡는다.{추론}",
+     "**효율** — 바뀐 부분에 걸린 시험만 먼저 돌리고 전체는 밤에 돌린다.{추론}",
+     "**정확성** — 오락가락 시험을 따로 모아 고치고, 고칠 때까지 판정에서 뺀다.[30]",
+     "**확장성·유지보수성** — 차종·벤치마다 다른 값(주소·주기·장비)은 설정 파일로 빼고 시험 코드는 하나로 둔다.{추론}"
+    ]
+   },
+   "how_far": "경력 5년 자리라 **지난 회사에서 무엇을 자동화해 시간이 얼마나 줄었나**를 숫자로 말할 수 있으면 좋습니다.{추론}",
+   "refs": [
+    4,
+    5,
+    30
+   ],
+   "study": [
+    "google-flaky",
+    "cd-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 이상의 자동차 SW 개발/테스트 자동화/시스템 검증 관련 경험이 있으신 분",
+   "short": "완성차·부품사·평가 회사에서 차량 소프트웨어를 만들거나 시험을 자동화하거나 검증한 지 5년이 넘어야 한다.",
+   "why": "같은 회사 시험 공고(진단·편의)도 5년 이상을 첫 줄에 두고,[9][10] SW 업데이트 시험 공고만 3년 이상입니다.[11] 시스템 검증 전략을 세우고 벤치를 짓는 일이라 차량 현장 경험을 먼저 봅니다.{추론}",
+   "how_far": "'개발/테스트 자동화/시스템 검증' 중 하나라 시험만 해 왔을 필요는 없습니다.[1] 차량 소프트웨어 개발자였다면 **시험 자동화를 직접 만든 경험**을 따로 보여 주는 것이 좋습니다.{추론}",
+   "refs": [
+    9,
+    10,
+    11,
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "시스템 아키텍처 제어기 연동 구조 이해도를 보유하신 분",
+   "short": "기능 하나가 어느 제어기에서 시작해 어느 망을 거쳐 어디서 끝나는지 그릴 줄 아는 사람.",
+   "why": "포티투닷의 구조는 고성능 차량 컴퓨터와 구역 제어기가 함께 있는 꼴입니다.[4] 같은 '문 잠금'도 중앙 컴퓨터 → 이더넷 → 구역 제어기 → LIN → 문 모듈처럼 여러 층을 지나므로, 실패했을 때 어느 구간을 의심할지 알려면 연동 구조를 알아야 합니다.{추론}",
+   "actually": {
+    "items": [
+     "**층** — 제어기 안의 소프트웨어는 통신·진단·운영체제 서비스·응용 층으로 나뉜다(AUTOSAR 구조).[31]",
+     "**망 사이** — 이더넷 쪽은 서비스 호출(SOME/IP), CAN·LIN 쪽은 신호 프레임으로 오가고, 그 사이를 게이트웨이가 옮긴다.[32]{추론}",
+     "**그림 그리기** — 시험 대상 기능마다 '신호가 지나는 길'을 그려 두면 실패 때 볼 로그가 정해진다.{추론}"
+    ]
+   },
+   "how_far": "설계자가 아니라 **시험하는 사람의 눈으로 구조를 읽는** 수준입니다 — 그림을 받아 '여기와 여기 사이를 재야 한다'를 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    4,
+    31,
+    32
+   ],
+   "study": [
+    "autosar-lsa",
+    "inflearn-autosar",
+    "acorn-auto-sw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "CAN, LIN, Ethernet 이해도 및 CANoe, CAPL 등 활용 경험이 있으신 분",
+   "short": "차 안의 세 가지 망을 알고, CANoe 와 그 전용 스크립트 언어 CAPL 로 시험을 짜 본 사람.",
+   "why": "CAN 은 제어기들이 메시지 번호(ID)로 우선순위를 겨루며 주고받는 차량 버스이고,[26] LIN 은 문·거울·시트 같은 몸체 장치용으로 CAN 보다 싸게 만든 느린 버스이며,[24] 이더넷은 중앙 컴퓨터 사이 큰 데이터를 나릅니다.[32] CAPL 은 CANoe 안에서 '이 메시지가 오면 이렇게'처럼 사건마다 도는 C 비슷한 언어입니다.[19]",
+   "actually": {
+    "items": [
+     "**CAN** — 프레임 ID·길이·주기, 오류 프레임. 같은 ID 가 늦게 오면 받는 쪽이 '끊김'으로 판단한다.[26]",
+     "**LIN** — 지휘 노드(예전 이름 master) 하나가 정해진 일정표(schedule table) 순서대로 각 노드에게 답할 차례를 준다. 국제 표준은 ISO 17987 이고 2025년 판은 commander·responder 라는 이름을 쓴다.[24][25]",
+     "**이더넷** — IP 위 서비스 호출(SOME/IP)·진단(DoIP). 중앙 컴퓨터 구조에서 비중이 커진다.[4][32]",
+     "**CAPL** — 메시지 받기·타이머·키 입력 같은 사건 처리 함수로 시험 절차와 가짜 제어기를 짠다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "LIN 일정표 한 바퀴와 응답 간격 계산(직접 실행)",
+     "body": "LIN 은 일정표 순서대로만 말할 수 있어 '같은 프레임이 다시 오는 간격 = 표 한 바퀴'입니다. 칸 이름과 시간은 예시이고, 실제 값은 그 차의 LIN 설정 파일에 있습니다.[25]",
+     "lang": "python",
+     "code": "# LIN 은 지휘 노드(예전 이름 master)가 정해진 표 순서대로 '이 칸은 누가 답해라'를 부른다.\nschedule = [(\"DoorFL_Status\", 10), (\"DoorFR_Status\", 10), (\"Mirror_Cmd\", 10), (\"Seat_Status\", 20)]\ncycle = sum(ms for _, ms in schedule)\nprint(f\"표 한 바퀴 {cycle}ms → 같은 프레임은 {cycle}ms 마다 한 번\")\nt = 0\nfor rnd in range(2):\n    for name, ms in schedule:\n        print(f\"  {t:3d}ms {name}\")\n        t += ms\nREQ = {\"DoorFL_Status\": 60}   # 요구: 문 상태는 60ms 안에 다시 와야 한다\nfor name, lim in REQ.items():\n    print(f\"{name}: 간격 {cycle}ms / 한도 {lim}ms →\", \"PASS\" if cycle <= lim else \"FAIL\")\n# 표 한 바퀴 50ms → 같은 프레임은 50ms 마다 한 번\n#     0ms DoorFL_Status\n#    10ms DoorFR_Status\n#    20ms Mirror_Cmd\n#    30ms Seat_Status\n#    50ms DoorFL_Status\n#    60ms DoorFR_Status\n#    70ms Mirror_Cmd\n#    80ms Seat_Status\n# DoorFL_Status: 간격 50ms / 한도 60ms → PASS"
+    }
+   ],
+   "how_far": "'이해도 및 활용 경험'이라 세 망을 다 깊게 알 필요는 없습니다.[1] **CANoe 에서 CAPL 로 시험·가짜 제어기를 짜 본 경험**은 이 공고가 이름을 찍은 도구라 면접에서 확인할 가능성이 큽니다.{추론}",
+   "refs": [
+    19,
+    20,
+    24,
+    25,
+    26,
+    32
+   ],
+   "study": [
+    "inflearn-capl",
+    "vector-can",
+    "iso17987",
+    "matheus-ethernet"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "검증 설계 자동화 테스트 설계 및 HW/SW 연동 개발 역량을 보유하신 분",
+   "short": "시험을 사람이 아니라 코드가 돌게 설계하고, 진짜 장비와 소프트웨어를 이어 붙이는 개발을 할 수 있는 사람.",
+   "why": "업무의 '검증 설계(자동화 시험 모듈·장비 제어·통신 인터페이스)'를 그대로 맡을 능력을 묻는 줄입니다.[1] 1차 면접에 온라인 코딩 테스트가 붙어 있어 코드는 직접 짤 줄 알아야 합니다.[1]",
+   "actually": {
+    "items": [
+     "**자동화 시험 설계** — 시험을 '준비 → 자극 → 관찰 → 판정 → 정리' 다섯 칸으로 나눠 칸마다 함수로 만든다.{추론}",
+     "**HW/SW 연동** — 전원 공급기·릴레이·버스 인터페이스를 코드로 부르고, 진짜 제어기를 실시간 모델과 묶는 것이 HIL 이다.[8][18]",
+     "**시간 맞추기** — 장비 응답이 늦거나 안 올 때를 대비해 기다림 한도와 재시도를 둔다.{추론}"
+    ]
+   },
+   "how_far": "**장비 하나를 파이썬으로 제어해 시험 하나를 무인으로 끝까지 돌린 경험**이면 이 줄을 설명할 수 있습니다.{추론}",
+   "refs": [
+    1,
+    8,
+    18
+   ],
+   "study": [
+    "mathworks-hil",
+    "python-can",
+    "pytest-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "CI/CD에 대한 이해, 자동화 Tool 개발, Linux/Git 활용 경험을 보유하신 분",
+   "short": "시험 도구를 직접 만들고, Git 으로 관리하고, Linux 서버·벤치 PC 에서 CI 로 돌려 본 사람.",
+   "why": "포티투닷은 CI/CD 로 개발하고,[4] SIL/HIL 공고는 GNU/Linux 환경과 Git 기반 CI 를 적었습니다.[8] 송창현 대표도 하드웨어와 소프트웨어를 나눠 동시에 개발해 검증 기간을 줄이겠다고 말했습니다.[14]",
+   "level": {
+    "basic": "Git 브랜치·병합, Linux 셸에서 파일·프로세스·로그 다루기",
+    "work": "시험 스크립트를 CI 작업으로 등록하고 결과 파일을 모은다",
+    "team": "벤치를 잡는 시험 작업을 줄 세우고 회차 결과를 DB 로 올린다[8]{추론}"
+   },
+   "how_far": "CI 서버 운영자가 아니라 **CI 위에서 시험 작업을 만들고 깨지면 고치는** 수준이 기준입니다.[13]{추론}",
+   "refs": [
+    4,
+    8,
+    14,
+    13
+   ],
+   "study": [
+    "pro-git",
+    "tlcl",
+    "cd-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "차량 네트워크 및 SW 동작 로그 분석, 디버깅 경험이 있으신 분",
+   "short": "버스 기록과 제어기 로그를 시각 순서로 맞춰 '어디서 왜'를 찾아 본 사람.",
+   "why": "업무의 '결과 분석' 묶음을 맡을 능력입니다.[1] 차량 결함은 다시 만들기 어려워 남은 로그만으로 원인을 좁혀야 할 때가 많습니다.{추론}",
+   "actually": {
+    "items": [
+     "**버스 기록** — 메시지 순서·주기·오류 프레임을 읽는다.[26]",
+     "**신호로 풀기** — DBC 로 바이트를 값으로 바꿔 '차속 0 인데 문이 열렸다' 같은 모순을 찾는다.[33]",
+     "**시각 맞추기** — 버스 기록과 제어기·중앙 컴퓨터 로그의 시계가 다르면 공통 사건(전원 켬 등)으로 맞춘다.{추론}"
+    ]
+   },
+   "how_far": "**실제로 잡은 결함 하나를 '증상 → 본 로그 → 좁힌 과정 → 원인' 순서로 말할 수 있으면** 됩니다. 2차 면접이 3시간 내외라 깊게 물을 수 있습니다.[1]{추론}",
+   "refs": [
+    1,
+    26,
+    33
+   ],
+   "study": [
+    "cantools",
+    "vector-can"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "벤치 환경 Kiosk, Simulator, HIL 등의 구축 및 운영 경험이 있으신 분",
+   "short": "시험대(키오스크형 벤치·시뮬레이터·HIL)를 꾸리고 고장 나면 고치며 굴려 본 사람.",
+   "why": "팀 소개가 Kiosk·Simulator·HIL 같은 벤치 환경을 지어 차량 동작 시나리오를 평가한다고 적었습니다.[1] HIL 은 진짜 제어기에 실시간 모델이 만든 가짜 차 신호를 물려 시험하는 방식입니다.[18] 공고는 Kiosk 가 무엇인지 따로 풀지 않았습니다.[1]",
+   "actually": {
+    "items": [
+     "**Kiosk** — 공고에 정의는 없습니다. 이름으로 보면 화면·조작부를 갖춘 서서 쓰는 시험대처럼 사람이 차 기능을 눌러 보고 자동 시험도 돌리는 벤치일 수 있습니다 — 면접에서 확인할 것.{추론}",
+     "**Simulator** — 없는 제어기와 차량 신호를 소프트웨어로 흉내 내는 환경(CANoe 잔여 버스 시뮬레이션 등).[19][20]",
+     "**HIL** — 진짜 제어기 + 실시간 모델 + 전원·망 장비. 같은 회사에 HIL 벤치를 처음부터 짓는 공고가 따로 있다.[8][18]",
+     "**운영** — 벤치마다 소프트웨어 판·배선·장비 상태를 기록하고, 벤치 고장과 제품 결함을 가른다.{추론} 포티투닷은 판교 사옥 안 비히클 워크숍에서 시험차를 점검·업데이트한다고 소개했다.[5][6]"
+    ]
+   },
+   "how_far": "벤치 하나를 **처음 받은 상태에서 시험이 도는 상태까지 만들고, 몇 달 굴려 본 경험**이 이 줄의 뜻입니다.{추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    8,
+    18
+   ],
+   "study": [
+    "mathworks-hil",
+    "canoe"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "C/C++/Rust 기반 임베디드/시스템 SW 개발 경험",
+   "short": "시험 대상인 제어기 코드를 읽고, 성능이 필요한 시험 도구는 C++ 로 짤 수 있으면 좋다.",
+   "why": "업무에 Python/C++ 기반 자동화 SW 가 적혀 있고,[1] 같은 회사 진단·편의 시험 공고도 C/C++·Python·Rust 를 같은 말로 우대합니다.[9][10]",
+   "how_far": "셋 다 필요하지 않습니다.[1] **Python 실무 + C/C++ 읽기**가 현실적인 최소선이고, 실시간에 가까운 장비 제어나 대량 로그 처리를 C++ 로 짜 봤다면 더 좋습니다.{추론}",
+   "refs": [
+    1,
+    9,
+    10
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CI/CD 자동화 파이프라인 구축",
+   "short": "시험이 도는 파이프라인을 남이 만든 걸 쓰는 데서 그치지 않고 직접 처음부터 꾸려 본 경험.",
+   "why": "업무의 'CI/CD 연동'을 바로 맡을 수 있다는 증거라 우대합니다.[1] SIL/HIL 공고는 GitLab CI·Jenkins 를 예로 들었습니다.[8]",
+   "how_far": "회사 도구가 아니어도 됩니다 — 가상 CAN 위 시험을 pytest 로 묶어 CI 에서 돌리고 결과를 쌓은 개인 프로젝트도 설명거리가 됩니다.{추론}",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "cd-book",
+    "pytest-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "검증 환경 활용 및 자동화 인프라 구축",
+   "short": "벤치·시뮬레이터·서버를 엮어 여러 시험이 한꺼번에 무인으로 도는 바탕을 만들어 본 경험.",
+   "why": "팀 소개의 '끝에서 끝까지 자동화 평가 시스템'이 이 인프라입니다.[1] 같은 회사 SIL/HIL 공고는 자주 도는 회귀 시험 농장(regression farm — 여러 벤치에서 같은 시험 묶음을 계속 돌리는 곳)을 적었습니다.[8]",
+   "actually": {
+    "items": [
+     "**벤치 나눠 쓰기** — 시험 작업이 벤치를 빌리고 돌려주는 예약 구조.{추론}",
+     "**벤치 상태 감시** — 벤치가 살아 있는지, 어느 판이 올라가 있는지 대시보드로 보인다.{추론}"
+    ]
+   },
+   "how_far": "여러 벤치를 **한 사람이 손대지 않고 밤새 돌게 만든 경험**이면 우대 요건에 닿습니다.{추론}",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "mathworks-hil",
+    "cd-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "기능 안전 Fault Injection, Fail-safe 검증",
+   "short": "일부러 고장을 넣어(신호 끊기·값 틀리기) 제어기가 안전한 상태로 물러나는지 확인하는 시험.",
+   "why": "포티투닷은 차량 기능안전 국제 표준(ISO 26262) 개발 프로세스 인증을 받았습니다.[7] 이 표준은 평소에는 동작하지 않는 안전 장치를 확인하려고 시스템·하드웨어·소프트웨어 단계에서 고장 주입 시험을 권하고, 안전 등급(ASIL)이 높을수록 더 강하게 권합니다.[27]",
+   "actually": {
+    "items": [
+     "**통신 고장** — 메시지 끊기·늦게 보내기·값 뒤집기·같은 값 반복(멈춘 신호)을 넣는다.{추론}",
+     "**전원 고장** — 저전압·순간 정전 중 동작을 본다.{추론}",
+     "**판정** — 정해진 시간 안에 안전 상태(fail-safe — 기능을 줄이거나 끄고 경고)로 가는지, 고장이 풀리면 돌아오는지(아래 예시).[27]{추론}",
+     "**가상으로도** — 가상 제어기에 고장을 넣으면 실차에서 못 해 볼 고장도 안전하게 반복할 수 있다.[27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "차속 신호를 끊어 안전 상태로 가는 시간 재기(직접 실행)",
+     "body": "300~600ms 동안 차속 메시지를 막자 제어기가 400ms 에 안전 상태로 갔고(끊긴 뒤 100ms), 다시 보내자 바로 돌아왔습니다. 요구 한도 150ms 안이라 PASS. 시각을 실수(0.01초씩 더하기)로 계산하면 경계에서 10ms 일찍 판정되는 일이 생겨 정수 ms 로 셉니다.",
+     "lang": "python",
+     "code": "class Ecu:\n    \"\"\"차속 신호를 받아 기능을 켜는 가짜 제어기. 신호가 끊기면 안전 상태로 물러나야 한다.\"\"\"\n    TIMEOUT = 100        # ms — 차속이 100ms 넘게 안 오면 끊긴 것\n    def __init__(self):\n        self.last_rx, self.mode = 0, \"NORMAL\"\n    def rx_speed(self, t):\n        self.last_rx = t\n        if self.mode == \"SAFE\":\n            self.mode = \"NORMAL\"\n    def tick(self, t):\n        if t - self.last_rx > self.TIMEOUT:\n            self.mode = \"SAFE\"\n\ndef run(cut_from, cut_to, end=1000, step=10):   # 시각은 정수 ms 로 — 실수로 더하면 경계가 흔들린다\n    ecu, safe_at, back_at = Ecu(), None, None\n    for t in range(0, end + 1, step):\n        if not (cut_from <= t < cut_to):         # 결함 주입: 이 구간엔 차속 메시지를 막는다\n            ecu.rx_speed(t)\n        ecu.tick(t)\n        if ecu.mode == \"SAFE\" and safe_at is None:\n            safe_at = t\n        if safe_at is not None and back_at is None and ecu.mode == \"NORMAL\":\n            back_at = t\n    return safe_at, back_at\n\nsafe_at, back_at = run(300, 600)\nprint(f\"차속 끊음 300ms → 안전 상태 {safe_at}ms ({safe_at - 300}ms 뒤)\")\nprint(f\"차속 다시 보냄 600ms → 정상 복귀 {back_at}ms\")\nLIMIT = 150   # 요구사항: 끊기고 150ms 안에 안전 상태\nprint(\"판정:\", \"PASS\" if safe_at - 300 <= LIMIT else \"FAIL\")\n# 차속 끊음 300ms → 안전 상태 400ms (100ms 뒤)\n# 차속 다시 보냄 600ms → 정상 복귀 600ms\n# 판정: PASS"
+    }
+   ],
+   "how_far": "안전 목표·한도는 기능안전 담당이 정합니다.{추론} 이 자리는 **그 고장을 벤치에서 재현해 넣고 정해진 시간 안에 안전하게 물러나는지 재는** 쪽입니다.{추론}",
+   "refs": [
+    7,
+    27,
+    8
+   ],
+   "study": [
+    "sae-fi",
+    "mathworks-hil"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM 평가 자동화 테스트 생성, 로그 분석 및 Report 자동화",
+   "short": "LLM 으로 요구사항에서 시험 초안을 뽑고, 로그를 요약하고, 보고서를 쓰는 일을 자동화해 본 경험.",
+   "why": "같은 회사 편의 시험 공고도 'LLM 을 이용한 검증 업무 자동화'를 우대합니다.[10] 메르세데스-벤츠 연구진은 LLM 으로 자연어 요구사항과 시스템 그림에서 시험 시나리오와 실행 코드를 만드는 방법을 SDV 플랫폼에서 보였고,[28] 많은 요구사항을 묶어서 넣어야 시험 명세가 덜 어긋난다는 연구도 있습니다.[29]",
+   "actually": {
+    "items": [
+     "**시험 생성** — 요구사항 문장 → 시험 시나리오 초안(준비·자극·기대값) → 사람이 검토해 확정.[28]",
+     "**로그 분석** — 실패한 시험의 로그 앞뒤를 요약해 '의심 구간'을 먼저 짚게 한다.{추론}",
+     "**보고서** — 회차 결과 표에서 바뀐 점을 문장으로 정리한다.{추론}",
+     "**지켜야 할 것** — LLM 이 만든 기대값은 틀릴 수 있어 판정 기준은 사람이 정한 요구사항에서 온다.{추론}"
+    ]
+   },
+   "how_far": "우대사항이라 **작게라도 '요구사항 몇 줄 → 시험 초안 → 사람이 고친 비율'을 재 본 경험**이면 이야기가 됩니다.{추론}",
+   "refs": [
+    10,
+    28,
+    29
+   ],
+   "study": [
+    "arxiv-genai-sdv"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Server/DB/API 검증 데이터 관리 및 분석 경험",
+   "short": "시험 결과·로그를 서버에 쌓고, DB 로 묻고, API 로 다른 도구가 꺼내 쓰게 해 본 경험.",
+   "why": "업무의 'Server·DB·Dashboard 및 Report 시스템 구축'과 짝을 이루는 줄입니다.[1] 회차·벤치·차종이 늘수록 결과를 파일로만 두면 비교가 어렵습니다.{추론}",
+   "actually": {
+    "items": [
+     "**표 설계** — 회차·시험·판정·소프트웨어 판·벤치·로그 위치.{추론}",
+     "**분석 쿼리** — 시험별 통과율 추이, 벤치별 실패율(벤치 탓 찾기), 새로 깨진 시험.{추론}",
+     "**API** — 대시보드·CI·결함 관리 도구가 같은 결과를 꺼내 쓰게 한다.{추론}"
+    ]
+   },
+   "how_far": "웹 백엔드 전문가 수준은 아니고, **SQL 로 결과를 묻고 간단한 API 서버를 띄울 수 있는** 정도면 됩니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "pytest-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "손으로 하던 차량 시험을 코드로 옮겨 밤새 돌게 만드는 일이 즐거운 사람.[1]",
+   "벤치·장비·서버를 한꺼번에 엮는 '배관 공사'를 마다하지 않는 사람.{추론}",
+   "버스 기록을 읽고 '어느 제어기가 언제 어겼나'를 좁히는 일을 해 본 사람.[1]"
+  ],
+  "hard": [
+   "차량 경력이 없는 일반 소프트웨어 개발자 — 자동차 SW 개발·시험 자동화·검증 경력 5년이 자격요건입니다.[1]",
+   "차 기능 자체를 만들고 싶은 사람 — 이 자리의 개발은 시험 자동화·인프라 쪽입니다.[1]",
+   "장비·배선이 섞인 현장 일이 싫은 사람.{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "'문을 잠그면 빨리 반응한다'는 요구를 자동 시험으로 바꾸려면 무엇을 정해야 하나요?",
+   "a": "평가 요구사항 분석 줄 — 시간 한도·시작 조건·판정 방법.[1][17]"
+  },
+  {
+   "q": "밤새 돌린 시험이 10번 중 8번만 통과했어요. 결함인지 벤치 문제인지 어떻게 가르겠어요?",
+   "a": "결과 신뢰성·재현성 줄과 flaky 시험.[1][30]"
+  },
+  {
+   "q": "CANoe 를 바깥 코드에서 조종하려면 어떤 길이 있나요? CAPL 과 무엇을 나눠 맡기겠어요?",
+   "a": "COM 인터페이스·CAPL 의 사건 처리.[19][20][22]"
+  },
+  {
+   "q": "10ms 주기 메시지가 가끔 50ms 비는 걸 로그에서 어떻게 자동으로 찾나요?",
+   "a": "로그 분석·자동 판정 줄.[1][26]"
+  },
+  {
+   "q": "차속 신호가 끊겼을 때 안전 상태로 가는지 벤치에서 어떻게 시험하겠어요?",
+   "a": "Fault Injection·Fail-safe 우대 줄.[27]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "aspice-pam",
+   "title": "Automotive SPICE PAM 4.0",
+   "by": "VDA QMC · 2023",
+   "kind": "doc",
+   "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "검증 계획 줄 — 시스템 요구사항에서 시험·결과까지 무엇을 남기고 어떻게 이어야 하는지 원문으로 봅니다."
+  },
+  {
+   "id": "ul-sys4",
+   "title": "System Integration and Integration Test (SYS.4) — Automotive SPICE",
+   "by": "UL Solutions",
+   "kind": "doc",
+   "url": "https://www.ul.com/sis/insights/system-integration-and-integration-test-sys4-automotive-spice",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "시스템 통합 시험 과정이 무엇을 요구하는지 짧게 정리한 글. PAM 원문 전에 읽습니다."
+  },
+  {
+   "id": "acorn-auto-sw",
+   "title": "자동차 임베디드 소프트웨어 개발 프로세스와 기술 입문",
+   "by": "에이콘 · 2024",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000010184723",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "차량 개발 절차·표준·네트워크를 한국어로 한 번에 훑어 검증 계획·연동 구조 줄의 배경을 잡습니다."
+  },
+  {
+   "id": "mathworks-hil",
+   "title": "What Is Hardware-in-the-Loop (HIL)?",
+   "by": "MathWorks",
+   "kind": "doc",
+   "url": "https://www.mathworks.com/discovery/hardware-in-the-loop-hil.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "벤치 구축 요건 — HIL 에서 무엇을 진짜로, 무엇을 모델로 두는지 구분합니다."
+  },
+  {
+   "id": "vector-can",
+   "title": "Vector E-Learning · CAN",
+   "by": "Vector Informatik",
+   "kind": "course",
+   "url": "https://elearning.vector.com/course/view.php?id=20",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "CAN 요건 — 프레임·주기·오류를 도구 회사가 만든 무료 강의로 익힙니다."
+  },
+  {
+   "id": "inflearn-capl",
+   "title": "실무자가 알려주는 CANoe - CAPL과 Panel 기본 사용법",
+   "by": "인프런",
+   "kind": "course",
+   "url": "https://www.inflearn.com/course/실무자가-알려주는-canoe-capl과-panel기본",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "CANoe·CAPL 요건 — CAPL 기본 문법과 패널(시험용 조작 화면)을 한국어로. 강사는 CAN·CANoe 기초를 먼저 알고 들으라고 안내합니다."
+  },
+  {
+   "id": "canoe",
+   "title": "CANoe",
+   "by": "Vector Informatik",
+   "kind": "doc",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canoe/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "통신 시뮬레이터 제어 줄 — CANoe 가 시뮬레이션·분석·시험에서 무엇을 하는지 공식 소개로 봅니다."
+  },
+  {
+   "id": "py-canoe",
+   "title": "py_canoe — Python package for controlling Vector CANoe",
+   "by": "chaitu-ycr · PyPI",
+   "kind": "doc",
+   "url": "https://pypi.org/project/py-canoe/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "CANoe 를 COM 인터페이스로 파이썬에서 여는 공개 라이브러리. 설정 열기·측정 시작·중지 흐름을 코드로 봅니다(윈도우·CANoe 필요, 데모판도 일부 동작)."
+  },
+  {
+   "id": "python-can",
+   "title": "python-can 문서",
+   "by": "python-can 프로젝트",
+   "kind": "doc",
+   "url": "https://python-can.readthedocs.io/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "장비 없이 가상 CAN 버스로 메시지를 주고받아 자동화·데이터 수집 줄을 집에서 연습합니다."
+  },
+  {
+   "id": "cantools",
+   "title": "cantools 문서",
+   "by": "cantools 프로젝트",
+   "kind": "doc",
+   "url": "https://cantools.readthedocs.io/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "로그 분석 줄 — DBC 통신 사양으로 바이트를 신호 값으로 풀어 자동 판정에 씁니다."
+  },
+  {
+   "id": "iso17987",
+   "title": "ISO 17987-3:2025 Road vehicles — Local Interconnect Network (LIN) — Part 3: Protocol specification",
+   "by": "ISO",
+   "kind": "doc",
+   "url": "https://www.iso.org/standard/85127.html",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "LIN 요건 — 일정표·프레임 전송·지휘/응답 노드를 정한 원문. 유료라 공식 요약으로 범위를 봅니다."
+  },
+  {
+   "id": "matheus-ethernet",
+   "title": "Automotive Ethernet (3판)",
+   "by": "Kirsten Matheus · Thomas Königseder · Cambridge University Press · 2021",
+   "kind": "book",
+   "url": "https://doi.org/10.1017/9781108895248",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "이더넷 요건 — 차량 이더넷의 물리층부터 프로토콜·시스템 설계까지. 필요한 장만 읽습니다."
+  },
+  {
+   "id": "autosar-lsa",
+   "title": "AUTOSAR Layered Software Architecture (R22-11)",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "제어기 연동 구조 요건 — 제어기 소프트웨어 층 이름과 통신 모듈의 자리를 그림으로 봅니다."
+  },
+  {
+   "id": "inflearn-autosar",
+   "title": "[AUTOSAR] 신입사원에게 들려주는 AUTOSAR기초 개념 완성",
+   "by": "인프런",
+   "kind": "course",
+   "url": "https://www.inflearn.com/course/autosar-기초-개념-완성",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "AUTOSAR 용어(BSW·RTE·MCAL)를 한국어로 먼저 귀에 익힙니다."
+  },
+  {
+   "id": "pytest-docs",
+   "title": "pytest documentation",
+   "by": "pytest-dev",
+   "kind": "doc",
+   "url": "https://docs.pytest.org/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "시험을 함수로 쓰고 결과를 모으는 파이썬 시험 러너. CI·결과 DB 에 얹기 쉽습니다."
+  },
+  {
+   "id": "google-flaky",
+   "title": "Flaky Tests at Google and How We Mitigate Them",
+   "by": "Google Testing Blog · 2016",
+   "kind": "doc",
+   "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "결과 신뢰성 줄 — 오락가락 시험이 왜 생기고 어떻게 가려 다루는지."
+  },
+  {
+   "id": "cd-book",
+   "title": "Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation",
+   "by": "Jez Humble · David Farley · Addison-Wesley · 2010",
+   "kind": "book",
+   "url": "https://www.martinfowler.com/books/continuousDelivery.html",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "CI/CD 연동 줄 — 빌드 하나를 단계별 시험으로 올려 보내는 배포 파이프라인의 원전."
+  },
+  {
+   "id": "pro-git",
+   "title": "Pro Git (한국어판)",
+   "by": "Scott Chacon · Ben Straub",
+   "kind": "book",
+   "url": "https://git-scm.com/book/ko/v2",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "Git 활용 요건 — 브랜치·병합·되돌리기를 무료 한국어판으로."
+  },
+  {
+   "id": "tlcl",
+   "title": "The Linux Command Line",
+   "by": "William Shotts",
+   "kind": "book",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "Linux 활용 요건 — 벤치 PC·서버에서 셸·파일·프로세스·로그를 다루는 기본기."
+  },
+  {
+   "id": "sae-fi",
+   "title": "Virtualized Fault Injection Methods in the Context of the ISO 26262 Standard",
+   "by": "SAE Technical Paper 2012-01-0001",
+   "kind": "doc",
+   "url": "https://saemobilus.sae.org/articles/virtualized-fault-injection-methods-context-iso-26262-standard-2012-01-0001",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "Fault Injection 우대 — ISO 26262 가 어느 단계에서 고장 주입 시험을 권하는지와 가상 환경에서 주입하는 방법."
+  },
+  {
+   "id": "arxiv-genai-sdv",
+   "title": "GenAI-based test case generation and execution in SDV platform",
+   "by": "arXiv 2509.05112",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2509.05112",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "LLM 시험 생성 우대 — 요구사항·시스템 그림에서 시험 시나리오와 실행 코드를 만드는 흐름을 차량 플랫폼 예로 봅니다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "차 안의 망과 구조 읽기",
+   "time": "2~3주",
+   "goal": "기능 하나가 중앙 컴퓨터 → 이더넷 → 구역 제어기 → CAN/LIN 을 어떻게 지나는지 그린다.",
+   "resources": [
+    "acorn-auto-sw",
+    "vector-can",
+    "autosar-lsa",
+    "iso17987"
+   ],
+   "task": "가상 차 기능 셋(문 잠금·차속 표시·시트 조절)마다 신호가 지나는 길과 메시지 주기를 표로 적고, LIN 일정표 한 바퀴 시간을 계산해 요구 한도와 비교한다."
+  },
+  {
+   "title": "시험을 잴 수 있는 말로",
+   "time": "1~2주",
+   "goal": "시스템 요구사항을 시간 한도·조건·판정이 있는 평가 요구사항과 시험 케이스로 바꾼다.",
+   "resources": [
+    "ul-sys4",
+    "aspice-pam"
+   ],
+   "task": "요구사항 10줄을 지어 평가 요구사항 → 시험 케이스로 바꾸고, 요구 ↔ 시험 ↔ 결과 추적표를 만든다."
+  },
+  {
+   "title": "가상 버스에서 무인 시험",
+   "time": "3~4주",
+   "goal": "파이썬으로 가짜 제어기를 띄우고 신호를 넣어 응답·주기를 자동 판정한다.",
+   "resources": [
+    "python-can",
+    "cantools",
+    "pytest-docs",
+    "inflearn-capl"
+   ],
+   "task": "가상 CAN 위에 가짜 문 제어기를 만들고 DBC 를 써서 pytest 시험 10개를 짠다. 같은 시험을 10번씩 돌려 PASS/FAIL/FLAKY 를 가르고, 차속 신호를 끊는 고장 주입 시험을 하나 넣는다."
+  },
+  {
+   "title": "CANoe 와 벤치",
+   "time": "2~3주",
+   "goal": "통신 시뮬레이터를 코드로 조종하는 흐름과 HIL 의 구성을 설명한다.",
+   "resources": [
+    "canoe",
+    "py-canoe",
+    "mathworks-hil",
+    "inflearn-capl"
+   ],
+   "task": "CANoe 데모판(있으면)이나 3단계 가상 버스로 '설정 열기 → 측정 시작 → 시험 → 중지 → 기록 저장'을 한 스크립트로 묶고, HIL 벤치 구성도(제어기·실시간 모델·전원·버스 장비)를 그린다."
+  },
+  {
+   "title": "파이프라인·DB·보고서",
+   "time": "2주",
+   "goal": "커밋마다 시험이 돌고 결과가 DB 에 쌓여 회차 비교 보고서가 나온다.",
+   "resources": [
+    "cd-book",
+    "pro-git",
+    "tlcl",
+    "google-flaky",
+    "arxiv-genai-sdv"
+   ],
+   "task": "3단계 시험을 CI(예: GitHub Actions)에 얹고 결과를 SQLite 에 쌓아 '새로 깨진 시험·새 시험' 보고서를 만든다. 선택: LLM 으로 2단계 요구사항에서 시험 초안을 뽑고 사람이 고친 비율을 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 원티드 기업 정보의 평균연봉 표기는 **6,032만원** — 공시가 아니라 집계값이고, 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계 · 원티드 기업 정보(2026-11 확인)",
+    "note": "같은 화면의 국민연금 가입 사원 수 804명. 원티드가 이 값을 어떤 자료로 계산했는지는 화면에서 확인하지 못했다 [15]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 공시가 없다{추론}. 공고에 연봉은 없고 전형 끝에 처우 협의 단계가 있다 [1]. 이 자리는 경력 5년 이상이라 신입 초봉은 해당하지 않고, 평균은 연차·직군이 섞인 회사 전체 값이라 제안 금액으로 읽으면 안 된다{추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "리커버리 휴가",
+    "detail": "법정 연차와 별도로 매월 1회 유급"
+   },
+   {
+    "name": "유연근무제",
+    "detail": "재량근무·선택적근무 운영"
+   },
+   {
+    "name": "식사",
+    "detail": "Kitchen 42 — 셰프가 만든 식사 하루 세 끼 무료, Cafe 42 음료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "여가·건강 등에 자유 사용, 연간 최대 300만원. 설·추석에 복지 포인트 추가"
+   },
+   {
+    "name": "건강",
+    "detail": "프리미엄 건강검진 전액 지원, 단체상해보험(본인·배우자·자녀·본인 부모), 상주 간호사·심리·재무·법률 상담(EAP)"
+   },
+   {
+    "name": "운동",
+    "detail": "Fitness 42 — 사내 피트니스, 1:1 PT·GX"
+   },
+   {
+    "name": "전기차",
+    "detail": "구매 시 차량 가격 최대 15%(한도 1,000만원) 지원, 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 사내 대출",
+    "detail": "근속 연수에 따라 1,000만~5,000만원, 이자 0%"
+   },
+   {
+    "name": "교육",
+    "detail": "국내외 교육·세미나·학회 참가비 지원"
+   },
+   {
+    "name": "직장 어린이집",
+    "detail": "임직원 자녀 대상, 특별활동 운영"
+   },
+   {
+    "name": "그 밖에",
+    "detail": "최신 업무 기기, 장기근속 포상(휴가·포상금), 휴양시설 매월 추첨, 경조사 지원, 인재 추천 보상, 자발적 팀 워크숍 비용"
+   }
+  ],
+  "note": "포티투닷 채용 사이트 '업무 몰입 프로그램' 페이지 기준(게시일 표시 없음, 2026-11-25 확인). 한국 본사 기준이고 해외 법인은 현지 정책을 따른다고 적혀 있다 [2]"
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥(소프트웨어드림센터)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/경기도 성남시 수정구 창업로40번길 20",
+  "note": "주소는 포티투닷 홈페이지 하단 회사 정보 [3]. 공고 근무지는 'Pangyo (Software Dream Center)'이고 '(Remote)'가 붙어 있지만, 벤치 구축·운영이 업무라 출근 비중은 처우 협의 때 확인한다 [1]{추론}. 같은 주소가 소프트웨어드림센터 소재지로 공고된 바 있고 [16], 판교 사옥 안에 비히클 워크숍이 있다 [6]"
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "포티투닷 채용 · System Test Engineer (System Verification)",
+   "url": "https://jobs.ashbyhq.com/42dot/2276c44d-d0d6-48d5-ad44-014e8da6fa55",
+   "kind": "posting",
+   "note": "이 공고. 팀 소개(Kiosk·Simulator·HIL 벤치, 릴리스→보고서 자동화)·업무 여섯 묶음·자격·우대·전형(코딩 테스트, 2차 3시간). 수집 2026-11-24"
+  },
+  {
+   "n": 2,
+   "title": "포티투닷 · 업무 몰입 프로그램(복리후생)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company"
+  },
+  {
+   "n": 3,
+   "title": "포티투닷 홈페이지(하단 회사 정보)",
+   "url": "https://42dot.ai/ko",
+   "kind": "company"
+  },
+  {
+   "n": 4,
+   "title": "포티투닷 블로그 · 42dot at CES 2024: Software-Defined Vehicle Technology",
+   "url": "https://42dot.ai/ko/stories/blog-news/ces-2024-software-defined-vehicle",
+   "kind": "company",
+   "date": "2024-03-28",
+   "note": "HPVC·zone controller·SDV OS, 2주 스프린트, CI/CD"
+  },
+  {
+   "n": 5,
+   "title": "아이뉴스24 · 사람 눈 대신 카메라가 본다…현대차 SDV 테스트카의 자율주행은[현장]",
+   "url": "https://inews24.com/view/2004893",
+   "kind": "news",
+   "date": "2026-09-13",
+   "note": "포티투닷 미디어데이. 비히클 워크숍 점검·OTA"
+  },
+  {
+   "n": 6,
+   "title": "전자신문 · 포티투닷, 우수 개발자 확보…\"AI 자율주행부터 LLM까지\"",
+   "url": "https://www.etnews.com/20261105000388",
+   "kind": "news",
+   "date": "2026-11-05",
+   "note": "판교 사옥 비히클 워크숍"
+  },
+  {
+   "n": 7,
+   "title": "바이라인네트워크 · 포티투닷 차량 기능안전 개발 프로세스, 국제 표준 인증 획득",
+   "url": "https://byline.network/2023/09/25-289/",
+   "kind": "news",
+   "date": "2023-09-25",
+   "note": "DNV ISO 26262 인증"
+  },
+  {
+   "n": 8,
+   "title": "포티투닷 채용 · Sr. Test Automation Engineer (SIL/HIL Infrastructure)",
+   "url": "https://jobs.ashbyhq.com/42dot/3d96a60d-be22-4d72-a50a-320e79d1b21c",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. Python·C/C++ 프레임워크, HIL 벤치를 처음부터, 요구사항 빈틈 찾기, GitLab CI/Jenkins 회귀 시험 농장, GNU/Linux"
+  },
+  {
+   "n": 9,
+   "title": "포티투닷 채용 · SW Test Engineer (Diagnostics)",
+   "url": "https://jobs.ashbyhq.com/42dot/efbd4971-b841-410f-aa6b-e333c64cfe23",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. 5년 이상, CANoe·CANape, C/C++·Python·Rust 우대"
+  },
+  {
+   "n": 10,
+   "title": "포티투닷 채용 · SW Test Engineer (편의)",
+   "url": "https://jobs.ashbyhq.com/42dot/1cfd36d5-26ce-4928-be2a-712c125d6d71",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. 같은 여섯 묶음, LLM 검증 자동화 우대"
+  },
+  {
+   "n": 11,
+   "title": "포티투닷 채용 · System Test Engineer (SW Update)",
+   "url": "https://jobs.ashbyhq.com/42dot/403e89b4-fdf4-4168-a115-163706830174",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. 3년 이상, OTA 업데이트 검증"
+  },
+  {
+   "n": 12,
+   "title": "원티드 · 포티투닷 Test Automation Engineer (IVI System)",
+   "url": "https://www.wanted.co.kr/wd/395192",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. 간헐적 실패 줄이기, 스마트 PDU·릴레이 원격 제어 우대"
+  },
+  {
+   "n": 13,
+   "title": "포티투닷 채용 · Senior DevOps Engineer (CI/CD Pipeline)",
+   "url": "https://jobs.ashbyhq.com/42dot/08d5a10e-10f6-4821-ba21-66cda54064ef",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고. CI/CD 파이프라인 운영 조직"
+  },
+  {
+   "n": 14,
+   "title": "뉴데일리 · 송창현 \"기존 제조사들의 하드웨어 중심 개발로는 해답 못 찾아\"(HMG 개발자 컨퍼런스 키노트)",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2023/11/13/2023111300204.amp.html",
+   "kind": "news",
+   "date": "2023-11-13",
+   "note": "하드웨어·소프트웨어 분리 → 동시 개발로 검증 기간 단축"
+  },
+  {
+   "n": 15,
+   "title": "원티드 · 포티투닷(42dot) 기업 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "평균연봉 6,032만원 · 국민연금 가입 사원 804명 표기(2026-11-25 확인)"
+  },
+  {
+   "n": 16,
+   "title": "벤처스퀘어 · 판교 제2테크노밸리 소프트웨어드림센터 스타트업 입주기업 모집 공고",
+   "url": "https://www.venturesquare.net/announcement/955032",
+   "kind": "reference",
+   "note": "소재지 창업로40번길 20 소프트웨어드림센터"
+  },
+  {
+   "n": 17,
+   "title": "VDA QMC · Automotive SPICE PAM 4.0",
+   "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+   "kind": "reference",
+   "date": "2023-11-29"
+  },
+  {
+   "n": 18,
+   "title": "MathWorks · What Is Hardware-in-the-Loop (HIL)?",
+   "url": "https://www.mathworks.com/discovery/hardware-in-the-loop-hil.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Wikipedia · CANoe",
+   "url": "https://en.wikipedia.org/wiki/CANoe",
+   "kind": "reference",
+   "note": "잔여 버스 시뮬레이션·분석, CAPL(사건 기반 C 비슷한 언어)"
+  },
+  {
+   "n": 20,
+   "title": "Vector · CANoe 제품 소개",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canoe/",
+   "kind": "reference",
+   "note": "시뮬레이션·분석·시험·진단"
+  },
+  {
+   "n": 21,
+   "title": "Vector · CANoe Test Package EV",
+   "url": "https://www.vector.com/en/product/canoe-test-package-ev/",
+   "kind": "reference",
+   "note": "시험 결과를 보고서 뷰어 또는 XML/HTML 로 내보낸다"
+  },
+  {
+   "n": 22,
+   "title": "PyPI · py_canoe",
+   "url": "https://pypi.org/project/py-canoe/",
+   "kind": "reference",
+   "note": "COM 인터페이스로 CANoe 제어(윈도우·CANoe v11 이상, MIT)"
+  },
+  {
+   "n": 23,
+   "title": "python-can 문서",
+   "url": "https://python-can.readthedocs.io/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Wikipedia · Local Interconnect Network",
+   "url": "https://en.wikipedia.org/wiki/Local_Interconnect_Network",
+   "kind": "reference",
+   "note": "CAN 보다 싼 몸체 전자장치용 버스, 지휘 노드 1 + 응답 노드 최대 15"
+  },
+  {
+   "n": 25,
+   "title": "ISO · ISO 17987-3:2025 LIN — Protocol specification",
+   "url": "https://www.iso.org/standard/85127.html",
+   "kind": "reference",
+   "note": "2025년 2판. 일정표 처리, commander·responder 용어"
+  },
+  {
+   "n": 26,
+   "title": "Wikipedia · CAN bus",
+   "url": "https://en.wikipedia.org/wiki/CAN_bus",
+   "kind": "reference",
+   "note": "ID 로 우선순위를 겨루는 차량 버스, 오류 프레임"
+  },
+  {
+   "n": 27,
+   "title": "SAE · Virtualized Fault Injection Methods in the Context of the ISO 26262 Standard",
+   "url": "https://saemobilus.sae.org/articles/virtualized-fault-injection-methods-context-iso-26262-standard-2012-01-0001",
+   "kind": "reference",
+   "date": "2012",
+   "note": "ISO 26262 4·5·6부에서 고장 주입 권고, ASIL 에 따라 강도가 다름(검색 요약으로 확인)"
+  },
+  {
+   "n": 28,
+   "title": "arXiv · GenAI-based test case generation and execution in SDV platform",
+   "url": "https://arxiv.org/abs/2509.05112",
+   "kind": "reference",
+   "date": "2025-09",
+   "note": "메르세데스-벤츠 연구진. 요구사항·시스템 그림 → Gherkin 시나리오 → 파이썬 시험 코드"
+  },
+  {
+   "n": 29,
+   "title": "arXiv · Cluster-Aware Dual-Level Test Specification Generation for Large-Scale Automotive Software Requirements",
+   "url": "https://arxiv.org/abs/2606.17197",
+   "kind": "reference",
+   "date": "2026-06",
+   "note": "요구사항을 묶어 LLM 에 넣어 ASPICE SWE.6 시험 명세 생성"
+  },
+  {
+   "n": 30,
+   "title": "Google Testing Blog · Flaky Tests at Google and How We Mitigate Them",
+   "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
+   "kind": "reference",
+   "date": "2016-05",
+   "note": "시험 실행의 약 1.5% 가 flaky 결과"
+  },
+  {
+   "n": 31,
+   "title": "AUTOSAR · Layered Software Architecture (R22-11)",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "AUTOSAR · SOME/IP Protocol Specification (R22-11)",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/FO/AUTOSAR_PRS_SOMEIPProtocol.pdf",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "cantools 문서",
+   "url": "https://cantools.readthedocs.io/",
+   "kind": "reference",
+   "note": "DBC 신호표로 CAN 메시지 풀기"
+  },
+  {
+   "n": 34,
+   "title": "UL Solutions · System Integration and Integration Test (SYS.4) Automotive SPICE",
+   "url": "https://www.ul.com/sis/insights/system-integration-and-integration-test-sys4-automotive-spice",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "포티투닷이 시스템 검증·시험 자동화를 직접 다룬 기술 글이나 발표 영상은 찾지 못했습니다(HMG 개발자 컨퍼런스 검색, 받은 영상 없음). 회사 근거는 이 공고·같은 회사 시험·DevOps 공고 여섯·CES 2024 블로그·보도이고, CAN·LIN·CANoe·CAPL·고장 주입·LLM 시험 생성은 공개 표준·도구 문서·논문으로 '보통 이런 것'을 보였습니다. 'Kiosk' 벤치가 무엇인지는 공고에 정의가 없습니다. 팀 이름·규모·벤치 대수·쓰는 CI 도구는 공개되지 않았습니다. 2026-11-25 기준."
+}
