@@ -69,7 +69,9 @@
   "dev-579980": "biztechi-database-operations",
   "ats-lg:group:1002386": "biztechi-m365-operations-engineer",
   "ats-lg:group:1001888": "biztechi-network-operations",
+  "ats-lg:group:1001514": "biztechi-sap-ewm-tm-consultant",
   "ats-lg:group:1001414": "biztechi-sap-fico-sd-consultant",
+  "ats-lg:group:1001499": "biztechi-sap-sm-operations",
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7793770": "coupang-ai-foundations-senior-staff-mle-mtv",
@@ -1102,6 +1104,16 @@
    "lines": 17
   },
   {
+   "id": "biztechi-sap-ewm-tm-consultant",
+   "company": "비즈테크아이",
+   "role": "SAP 물류 모듈 컨설턴트",
+   "jobs": [
+    "ats-lg:group:1001514"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 14
+  },
+  {
    "id": "biztechi-sap-fico-sd-consultant",
    "company": "비즈테크아이",
    "role": "SAP 모듈(CO·FI·SD) 컨설턴트",
@@ -1110,6 +1122,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 16
+  },
+  {
+   "id": "biztechi-sap-sm-operations",
+   "company": "비즈테크아이",
+   "role": "SAP SM 모듈 운영 담당자",
+   "jobs": [
+    "ats-lg:group:1001499"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
   },
   {
    "id": "cj-oliveyoung-data-analyst",
