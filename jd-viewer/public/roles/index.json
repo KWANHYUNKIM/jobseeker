@@ -291,6 +291,8 @@
   "ats-kakao:group:S-4725": "kakaomobility-ad-ai-perception",
   "ats-greeting:kakaomobility:205613": "kakaomobility-ad-ai-planning-e2e",
   "ats-kakao:group:S-4680": "kakaomobility-ad-ai-planning-e2e",
+  "ats-greeting:kakaomobility:205618": "kakaomobility-ad-slam",
+  "ats-kakao:group:S-4681": "kakaomobility-ad-slam",
   "ats-greeting:kakaomobility:228360": "kakaomobility-ai-eng-server-contract",
   "ats-kakao:group:S-4731": "kakaomobility-ai-eng-server-contract",
   "boards-superookie:it:6ad1d713b7b3bd5b7431a782": "kakaomobility-ai-eng-server-contract",
@@ -2985,6 +2987,17 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 13
+  },
+  {
+   "id": "kakaomobility-ad-slam",
+   "company": "카카오모빌리티",
+   "role": "자율주행 SLAM 엔지니어",
+   "jobs": [
+    "ats-greeting:kakaomobility:205618",
+    "ats-kakao:group:S-4681"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 14
   },
   {
    "id": "kakaomobility-ai-eng-server-contract",

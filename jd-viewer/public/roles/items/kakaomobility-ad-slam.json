@@ -1,0 +1,1074 @@
+{
+ "id": "kakaomobility-ad-slam",
+ "company": "카카오모빌리티",
+ "role": "자율주행 SLAM 엔지니어",
+ "team": "자율주행개발팀",
+ "jobs": [
+  "ats-greeting:kakaomobility:205618",
+  "ats-kakao:group:S-4681"
+ ],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "카메라·라이다·IMU(가속도·회전 센서)·GNSS(위성 측위)를 합쳐 **차가 지금 지도 위 어디에, 어느 방향으로 서 있는지**를 cm 단위로 계속 계산하는 알고리즘(SLAM·측위)을 만듭니다.[1]",
+  "env": "강남 심야 로보택시 '서울자율차'가 고층 빌딩·터널·지하차도 사이를 달리는 도시에서 일합니다 — 위성 신호가 가장 잘 끊기는 곳입니다.[6][10][15]",
+  "oneline": "인지 팀이 '무엇이 있나'를 본다면 이 자리는 '나는 어디 있나'를 맡는 5년 차 이상 자리. 필터·최적화 수학과 C++ 실시간 코드를 같이 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "자율주행을 위한 카메라 및 라이다 기반의 SLAM, 측위 알고리즘 개발",
+   "short": "센서로 주변 지도를 만들면서 그 지도 위 내 위치를 동시에 구하는 계산을 만든다.",
+   "why": "자율주행차는 인지·판단·제어 모두가 '내 차가 어디 있나'를 전제로 돌아갑니다. 카카오모빌리티는 HD맵(차선·표지까지 담은 고정밀 지도)을 직접 만들고[8], 그 지도는 약 20cm 정밀도를 목표로 했습니다.[10][11] 지도가 정밀해도 차가 지도 위 자기 자리를 그만큼 정확히 알아야 쓸모가 있습니다. 회사 디지털 트윈 담당 리더는 도심에서는 위성 기반 측위가 어렵고 여러 측위 센서를 융합·필터링해야 위치와 속도를 추정할 수 있다고 설명했습니다.[10]",
+   "actually": {
+    "intro": "SLAM(Simultaneous Localization and Mapping)은 '지도 만들기'와 '지도 위 위치 찾기'를 한 번에 푸는 문제입니다. 공개 조사 논문이 정리한 보통 구조는 이렇습니다.[21]",
+    "items": [
+     "**앞단(front-end)** — 사진에서 특징점을 따라가거나(카메라), 점구름끼리 맞대어(라이다) 짧은 시간 동안 얼마나 움직였는지 잰다.",
+     "**뒷단(back-end)** — 그 측정들을 그래프(위치 = 점, 측정 = 선)로 묶고, 전체 오차가 가장 작은 궤적을 최적화로 구한다. GTSAM 같은 라이브러리가 이 일을 한다.[21][35]",
+     "**루프 클로저** — 같은 곳에 다시 왔음을 알아채 그동안 쌓인 오차를 한 번에 펴 준다.[21][22]",
+     "**지도 기반 측위** — 이미 만든 HD맵·점구름 지도에 지금 보이는 점구름을 맞대어 위치를 구한다. 회사 지도 제작 과정에도 '점구름 정합(registration)' 단계가 있다.[10]",
+     "**전제 조건** — 센서끼리 시각과 위치 관계가 맞아야 한다. 회사 데이터 구축도 고정밀 위치 기준 시공간 동기화 → 다중 센서 캘리브레이션 → 좌표 변환·정합 순서를 밟았다.[9]",
+     "**확률로 다루기** — 위치는 한 점이 아니라 불확실성을 가진 분포로 다룬다. 이 관점의 교과서가 확률 로보틱스다.[31]",
+     "**좌표계 사슬** — 지도(map) → 주행 기록 좌표(odom) → 차체(base_link)로 이어지는 좌표계를 따로 두는 것이 ROS 의 관례다. 측위는 map→odom 을, 주행 기록은 odom→base_link 를 맡는다.[38]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "카메라·라이다 SLAM 의 보통 구조(공개 조사 논문)[21]",
+     "steps": [
+      "센서 입력 · 카메라 · 라이다 · IMU · GNSS · 바퀴 속도",
+      "시간·좌표 맞추기 · 동기화 + 캘리브레이션",
+      "앞단 · 특징점 추적 / 점구름 맞대기",
+      "뒷단 · 그래프 최적화 · 필터",
+      "루프 클로저 · 지도 정합",
+      "출력 · 차의 위치·자세(6자유도) + 지도"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "센서 키트와 차량 컴퓨터는 같은 팀의 시스템 엔지니어 자리가 맡고[5], 이 자리는 **그 센서 기록으로 위치를 계산하는 알고리즘**이 단위입니다. 공개 오픈소스(ORB-SLAM3·LIO-SAM 등)를 돌려 보는 것은 출발점이고, 이 도시·이 차에서 어디서 왜 틀어지는지 찾아 고치는 것이 일입니다. {추론} 한국어로 시작하려면 Visual SLAM 번역서가 있습니다.[40]",
+   "refs": [
+    5,
+    8,
+    9,
+    10,
+    11,
+    21,
+    22,
+    31,
+    35,
+    38,
+    40
+   ],
+   "study": [
+    "cadena-survey",
+    "coursera-state",
+    "barfoot",
+    "ko-vslam-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "카메라를 활용한 VIO 개발",
+   "short": "카메라 영상과 IMU 를 합쳐 '방금 얼마나 움직였나'를 끊김 없이 계산한다.",
+   "why": "카메라만 쓰면 어두운 곳·빠른 회전에서 놓치고, 카메라 한 대로는 거리의 축척(scale)을 모릅니다. IMU 는 1초에 수백 번 움직임을 재지만 금방 틀어집니다. 둘을 합친 VIO(Visual-Inertial Odometry)는 서로의 약점을 메우는 방식입니다.[23] 회사 차에는 카메라 7대가 달려 있습니다.[7]",
+   "actually": {
+    "intro": "회사가 쓰는 방식은 공개되지 않았습니다. 공개 연구에서 널리 쓰이는 갈래입니다.",
+    "items": [
+     "**필터 방식** — 확장 칼만 필터로 IMU 를 적분해 예측하고, 사진 속 특징점으로 보정한다. 여러 시점의 카메라 자세를 창(window)에 두고 특징점을 묶어 쓰는 MSCKF 가 대표형이며, OpenVINS 가 그 공개 구현이다.[24]",
+     "**최적화 방식** — 최근 몇 프레임을 창에 두고 영상 오차 + IMU 오차를 같이 최소화한다(VINS-Mono).[23]",
+     "**IMU 미리 적분(preintegration)** — 두 사진 사이 IMU 측정 수백 개를 하나의 상대 움직임으로 묶어 최적화를 빠르게 한다.[25]",
+     "**초기화** — 처음에 중력 방향·속도·축척·IMU 치우침(bias)을 함께 추정해야 한다. 여기서 틀리면 뒤가 다 틀어진다.[23]",
+     "**여러 카메라·지도 재사용** — ORB-SLAM3 는 단안·스테레오·IMU 조합과 여러 지도를 이어 붙이는 기능을 하나로 묶었다.[22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "IMU 만 믿으면 — 가속도 치우침 0.01m/s² 의 대가",
+     "body": "가속도계에 0.01m/s²(중력의 약 1/1000) 치우침이 있으면 위치 오차는 ½·b·t² 로 커집니다. 직접 돌린 출력: 1초 0.005m · 10초 0.5m · 30초 4.5m · 60초 18m. 그래서 IMU 는 카메라·라이다가 수십 ms 마다 잡아 줘야 하고, VIO 는 치우침 자체를 상태로 놓고 같이 추정합니다.[23][25]",
+     "lang": "python",
+     "code": "b = 0.01  # m/s^2 가속도 치우침\nfor t in (1, 10, 30, 60):\n    print(t, round(0.5 * b * t * t, 3))\n# 1 0.005 / 10 0.5 / 30 4.5 / 60 18.0"
+    }
+   ],
+   "how_far": "공개 VIO 를 돌려 보는 것을 넘어 **카메라–IMU 시간 어긋남·외부 파라미터를 직접 보정하고(Kalibr 류), 실패하는 장면(야간·터널·비 오는 유리)에서 왜 틀어지는지** 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    7,
+    22,
+    23,
+    24,
+    25
+   ],
+   "study": [
+    "vins-mono",
+    "openvins",
+    "forster-preint",
+    "orbslam3"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "라이다를 활용한 LIO 개발",
+   "short": "라이다 점구름과 IMU 를 합쳐, 위성 신호가 없는 곳에서도 차의 움직임을 cm 단위로 잡는다.",
+   "why": "라이다는 거리를 직접 재서 축척 문제가 없고 조명에 강합니다. 회사 차는 라이다 3대를 단다고 밝혔고[7], 회사 지도 제작 장비(ARGOS)도 카메라·라이다·GNSS·IMU 를 묶어 터널 안과 시속 100km 넘는 주행에서도 3차원 데이터를 모은다고 했습니다.[10] LIO(LiDAR-Inertial Odometry)는 그 라이다를 IMU 와 합쳐 움직임을 계산합니다.",
+   "actually": {
+    "intro": "공개 연구에서 널리 쓰이는 방식입니다(회사 구현은 공개되지 않음).",
+    "items": [
+     "**점구름 맞대기** — 두 스캔이 가장 잘 겹치는 회전·이동을 찾는다. 가장 기본형이 ICP(가장 가까운 점끼리 짝짓고 반복)다.[41]",
+     "**특징 기반** — 모서리·평면 점만 골라 맞대어 빠르게 한다(LOAM).[26]",
+     "**IMU 로 왜곡 펴기** — 라이다는 한 바퀴 도는 0.1초 동안 차가 움직여 점구름이 휜다. IMU 로 점마다 시각을 맞춰 편다.[27][28]",
+     "**그래프로 묶기** — LIO-SAM 은 라이다 주행 기록·IMU 미리 적분·GNSS·루프 클로저를 한 그래프에 넣는다.[27]",
+     "**필터로 바로** — FAST-LIO2 는 특징 추출 없이 원 점을 반복 칼만 필터로 지도에 직접 맞댄다.[28]",
+     "**잘 안 되는 곳** — 긴 터널·고가 아래처럼 벽이 한결같은 곳은 진행 방향으로 맞댈 단서가 없다(퇴화). {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "ICP — 5° 돌고 0.8m 움직인 스캔 되찾기",
+     "body": "가상 점 200개를 5° 돌리고 (0.8, −0.3)m 옮긴 뒤 1cm 잡음을 넣은 스캔을, 가까운 점 짝짓기 + SVD 로 20번 반복해 되찾습니다. 직접 돌린 출력: 회전 4.998° · 이동 (0.8, −0.3). 처음 짐작이 멀면 엉뚱한 짝을 지어 실패하므로, 실제로는 IMU 로 짐작을 먼저 줍니다.[41][27]",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(0)\nsrc = np.c_[rng.uniform(-10,10,200), rng.uniform(-10,10,200)]\nth = np.deg2rad(5.0)\nR = np.array([[np.cos(th),-np.sin(th)],[np.sin(th),np.cos(th)]])\ndst = src @ R.T + [0.8,-0.3] + rng.normal(0,0.01,src.shape)\ncur, Rt, tt = src.copy(), np.eye(2), np.zeros(2)\nfor _ in range(20):\n    m = dst[((cur[:,None]-dst[None])**2).sum(-1).argmin(1)]\n    mc, cc = m.mean(0), cur.mean(0)\n    U, S, Vt = np.linalg.svd((cur-cc).T @ (m-mc))\n    Ri = Vt.T @ U.T\n    ti = mc - Ri @ cc\n    cur = cur @ Ri.T + ti\n    Rt, tt = Ri @ Rt, Ri @ tt + ti\nprint(round(float(np.rad2deg(np.arctan2(Rt[1,0], Rt[0,0]))),3), np.round(tt,3))\n# 4.998 [ 0.8 -0.3]"
+    }
+   ],
+   "how_far": "LIO-SAM·FAST-LIO2 를 자기 데이터에 올려 보는 것은 최소선입니다. 이 자리는 **라이다 3대를 한 좌표로 묶고, 터널·고가처럼 맞댈 단서가 없는 구간을 감지해 다른 센서에 더 기대게 하는** 데까지 생각해야 합니다. {추론}",
+   "refs": [
+    7,
+    10,
+    26,
+    27,
+    28,
+    41
+   ],
+   "study": [
+    "loam",
+    "lio-sam",
+    "fast-lio2",
+    "coursera-state"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "유관 업무 경험 5년 이상",
+   "short": "자격 줄은 이 하나뿐 — 측위·SLAM 을 실제 제품·차량에서 5년 넘게 다뤄 본 사람을 찾는다.",
+   "why": "같은 팀 인지(Perception) 공고도 5년 이상을 요구합니다.[5] 같은 회사의 다른 측위 연구 공고(AI연구개발팀)도 측위 경력 5년 이상과 C/C++·Python 을 요건으로 적었습니다.[4] 팀이 레벨3 실증에서 무인 상용화로 넘어가는 중이라 바로 맡길 사람을 찾는 것으로 보입니다.[6] {추론}",
+   "how_far": "'유관'은 자율주행만이 아니라 로봇·드론·지도 제작(MMS)·AR 측위 경력까지 넓게 읽힐 여지가 있습니다. 이력서에는 **어떤 센서 조합으로, 어떤 환경에서, 오차를 몇 cm(또는 주행거리의 몇 %)까지 줄였는지**를 숫자로 적는 편이 낫습니다. {추론}",
+   "refs": [
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "실제 차량 기반의 자율주행 기술 개발 경험이 있으신 분",
+   "short": "공개 데이터셋이 아니라 진짜 차에 센서를 달고 달리며 측위를 맞춰 본 경험을 우대한다.",
+   "why": "강남 서울자율차는 6대가 밤 10시~새벽 5시에 달리며 누적 1만 3천km 를 넘겼습니다.[15] 실제 차에서는 센서 시간 지연·진동·라이다 노면 반사 차이가 모두 위치 오차로 나타납니다. 회사 HD맵 리더도 같은 라이다라도 쓰다 보면 반사 세기 범위가 달라지고, 날씨·주야간에 따라 데이터가 달라진다고 말했습니다.[14]",
+   "how_far": "차가 없다면 KITTI 같은 실차 공개 데이터로 궤적을 만들고 **정답 궤적과 비교한 오차표**를 내 보는 것이 가장 가까운 대신입니다.[32] {추론}",
+   "refs": [
+    14,
+    15,
+    32
+   ],
+   "study": [
+    "kitti-odom",
+    "evo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "다음 주제에 대한 프로젝트 수행 혹은 특허 / 논문을 보유하신 분",
+   "short": "아래 네 주제(VIO/LIO·SLAM·측위·GNSS/INS) 중 하나라도 결과물로 보여 줄 수 있으면 우대한다.",
+   "why": "업무 세 줄(SLAM·측위, VIO, LIO)을 그대로 우대 주제로 다시 적은 것입니다.[1] 같은 공고가 카카오 공동체 채용과 원티드에도 같은 줄로 올라와 있습니다.[2][3] 공고 제목이 R&D 라서 연구 결과(특허·논문)도 같이 봅니다.[1]",
+   "how_far": "특허·논문이 없어도 공개 저장소에 **공개 데이터로 돌린 결과와 정답 비교(ATE 등)**를 남긴 프로젝트가 같은 역할을 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "VIO / LIO",
+   "short": "업무의 VIO(카메라+IMU)·LIO(라이다+IMU) 두 줄을 직접 해 본 경험.",
+   "why": "업무 줄 '카메라를 활용한 VIO', '라이다를 활용한 LIO'와 같은 주제입니다.[1] 대표 공개 구현은 VINS-Mono·OpenVINS(VIO)[23][24], LIO-SAM·FAST-LIO2(LIO)입니다.[27][28]",
+   "how_far": "둘 중 하나를 깊게 — 예: 공개 구현의 **초기화·치우침 추정·왜곡 펴기 중 한 곳을 고쳐 오차가 줄어든 것을 숫자로** 보이면 이야기가 됩니다. {추론}",
+   "refs": [
+    1,
+    23,
+    24,
+    27,
+    28
+   ],
+   "study": [
+    "vins-mono",
+    "lio-sam"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SLAM",
+   "short": "앞단·뒷단·루프 클로저까지 한 바퀴 돌아가는 SLAM 을 만들거나 고쳐 본 경험.",
+   "why": "업무 첫 줄의 SLAM 입니다.[1] 조사 논문은 SLAM 을 앞단(측정 만들기)과 뒷단(그래프 최적화)으로 나눠 설명합니다.[21]",
+   "how_far": "오도메트리(움직임 누적)만 해 봤다면 **루프 클로저를 붙여 오차가 펴지는 것**까지 보여 주면 'SLAM 경험'이 됩니다. {추론}",
+   "refs": [
+    1,
+    21
+   ],
+   "study": [
+    "cadena-survey",
+    "gtsam"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Localization",
+   "short": "만들어 둔 지도 위에서 지금 차의 위치를 찾아내는 측위 — 서비스에 실제로 쓰이는 쪽이다.",
+   "why": "회사는 HD맵을 직접 만들어 자율주행 버스·수요응답 서비스에 공급해 왔고[8], 지도 위 측위는 그 지도를 쓰는 차 쪽 일입니다. 카카오모빌리티는 자율주행 밖에서도 측위를 서비스로 만들어 왔습니다 — 터널 안 LTE 신호로 위치를 내는 FIN(2020년 시범 시작)은 100건 넘는 경로에서 평균 오차 약 50m, 95%가 반경 200m 안이었고 길 안내 이탈이 약 10% 줄었다고 발표했습니다.[12] 코엑스 지하 주차장에서는 점구름으로 실내 지도를 만들고 블루투스 비콘 측위와 GPS 를 함께 판단하는 실내외 측위 SDK 를 만들었습니다.[13]",
+   "actually": {
+    "intro": "FIN 은 내비 쪽 기술이라 자율주행과 정밀도 단위가 다르지만, 측위를 재는 방식은 같습니다.",
+    "items": [
+     "**정답 위치 만들기** — 터널에서는 정답 장비도 틀려서, 스마트폰 GPS·도로망·차량 속도(OBD2)를 칼만 스무더(앞뒤 측정을 다 쓰는 필터)로 묶어 기준 위치를 만들었다.[12]",
+     "**지도와 맞대기** — 속도가 다른 신호 기록을 지도에 맞대려고 동적 시간 정렬(DTW)을 썼다.[12]",
+     "**지표** — 평균 오차와 CEP95(95% 가 들어오는 반경)를 같이 본다.[12] 자율주행 궤적 평가는 보통 ATE(전체 궤적 오차)와 RPE(짧은 구간 상대 오차)를 쓴다.[33]",
+     "**자율주행의 측위** — 점구름 지도에 지금 스캔을 맞대어 위치를 구하고, GNSS·IMU 와 융합해 끊김 없게 한다.[10][27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "궤적 오차 재기 — ATE RMSE",
+     "body": "정답은 x 축을 따라 100m 직진, 추정은 1m 갈 때마다 옆으로 2cm 씩 밀린다고 가정합니다. 직접 돌린 출력: ATE RMSE 1.146m · 최대 1.98m. 평균 하나보다 **최대·구간별 오차**를 같이 적어야 '어디서 틀어졌나'가 보입니다.[33][34]",
+     "lang": "python",
+     "code": "import numpy as np\nx = np.arange(0, 100, 1.0)\nest = np.c_[x, 0.02 * x]\ngt = np.c_[x, np.zeros(100)]\nerr = np.sqrt(((est - gt) ** 2).sum(1))\nprint(round(float(np.sqrt((err ** 2).mean())), 3), round(float(err.max()), 3))\n# 1.146 1.98"
+    }
+   ],
+   "how_far": "측위 결과를 **정답 궤적과 비교해 ATE·RPE·최대 오차로 말할 수 있고**, 정답 자체가 불확실한 구간(터널)에서 정답을 어떻게 만들지까지 생각해 둬야 합니다. {추론}",
+   "refs": [
+    8,
+    10,
+    12,
+    13,
+    27,
+    33,
+    34
+   ],
+   "study": [
+    "km-fin-video",
+    "km-indoor-video",
+    "evo",
+    "kitti-odom"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "GNSS/INS 센서 경험 및 이해",
+   "short": "위성 측위(GNSS)와 관성 항법(INS)을 합쳐, 신호가 끊겨도 위치를 이어 가는 방법을 안다.",
+   "why": "GNSS 는 넓은 곳에서 절대 위치를 주지만 빌딩 사이에서는 반사·가림으로 튀고, 터널에서는 끊깁니다. 회사 리더는 도심 위성 측위가 어렵다고 했고[10], 같은 회사 측위 연구 공고도 터널·지하주차장 같은 GNSS 음영 지역 측위를 업무로 적었습니다.[4] 회사 FIN 발표에서도 터널 정답 위치를 얻으려고 고가의 GNSS/IMU 장비를 빌렸지만 길고 굽은 터널에서는 그것도 정확하지 않았다고 했습니다.[12]",
+   "actually": {
+    "items": [
+     "**GNSS** — 위성 여러 개까지의 거리로 위치를 구한다. 기준국 보정을 받는 RTK 는 cm 급까지 가능하다. 공개 도구 RTKLIB 으로 원시 관측값을 직접 풀어 볼 수 있다.[37]",
+     "**INS** — IMU 의 가속도·회전을 적분해 위치·자세를 낸다. 짧게는 정확하지만 치우침 때문에 시간이 지날수록 커진다(위 VIO 줄의 예시).[30] 3차원 회전을 오차 없이 다루는 수학은 로봇 상태 추정 교과서가 자세하다.[29]",
+     "**필터 입문** — 칼만 필터·확장·무향 칼만 필터를 예제로 익히는 한국어 책이 있다.[39]",
+     "**결합** — 느슨한 결합(GNSS 가 낸 위치를 필터에 넣음)과 강한 결합(위성별 원시 거리를 필터에 넣음)이 있다. 강한 결합은 위성이 몇 개만 보여도 쓸 수 있다.[30]",
+     "**강의로 배우기** — 토론토대 강의가 최소제곱 → 칼만 필터(선형·확장·오차 상태·무향) → GNSS/INS → 라이다 측위 → 실제 차 데이터 융합 순서로 다룬다.[36]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "속도계만 vs 1초마다 GNSS 로 보정 — 1차원 칼만 필터",
+     "body": "시속 36km(10m/s)로 60초 달리는데 속도계가 0.2m/s 높게 잰다고 가정합니다. 속도만 적분하면 오차가 쌓이고, 1초마다 오차 3m 짜리 GNSS 로 보정하면 묶입니다. 직접 돌린 출력: 속도만 +11.77m · 칼만 필터 −0.62m(필터가 아는 불확실성 표준편차 1.37m).[30][36]",
+     "lang": "python",
+     "code": "import numpy as np\nrng = np.random.default_rng(1)\ndt, v = 0.1, 10.0\nx_true = x_dr = x = 0.0; P = 1.0\nq, r = 0.05, 3.0 ** 2\nfor k in range(1, 601):\n    x_true += v * dt\n    v_meas = v + 0.2 + rng.normal(0, 0.1)\n    x_dr += v_meas * dt\n    x += v_meas * dt; P += q\n    if k % 10 == 0:\n        z = x_true + rng.normal(0, 3.0)\n        K = P / (P + r); x += K * (z - x); P *= (1 - K)\nprint(round(x_dr - x_true, 2), round(x - x_true, 2), round(P ** 0.5, 2))\n# 11.77 -0.62 1.37"
+    }
+   ],
+   "how_far": "장비를 꽂아 쓰는 사용자를 넘어 **GNSS 품질 지표(위성 수·고정해 여부)를 보고 필터가 GNSS 를 얼마나 믿을지 바꾸는** 수준을 생각해 두면 좋습니다. 위 예에서 속도계 치우침을 상태로 같이 추정하면 오차가 더 줄어듭니다. {추론}",
+   "refs": [
+    4,
+    10,
+    12,
+    29,
+    30,
+    36,
+    37,
+    39
+   ],
+   "study": [
+    "groves",
+    "coursera-state",
+    "kalman-book",
+    "rtklib"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "신기술 연구 및 검증을 위한 SW 개발 경험이 있으신 분",
+   "short": "논문 방법을 직접 구현하고, 같은 데이터로 기존 방식과 나란히 재는 실험 도구를 만들어 본 경험.",
+   "why": "공고 제목이 R&D 이고 팀 소개는 견고하고 확장 가능한 모듈형 구조와 데이터 파이프라인을 강조합니다.[1] 회사 HD맵 리더는 변화 탐지 같은 알고리즘을 계속 다듬고 품질 검증을 거쳐 서비스에 넣는다고 설명했습니다.[14]",
+   "actually": {
+    "items": [
+     "**다시 돌리기(replay)** — 주행 기록(ROS bag 등)을 그대로 다시 흘려 새 알고리즘과 옛 알고리즘을 같은 입력으로 비교한다. {추론}",
+     "**평가 도구** — 궤적 비교·그래프는 evo 같은 공개 도구가 있다.[34]",
+     "**벤치마크** — KITTI 오도메트리는 주행거리 대비 이동·회전 오차로 순위를 낸다.[32]"
+    ]
+   },
+   "how_far": "알고리즘 하나보다 **'새 방법이 나아졌다'를 누구나 다시 확인할 수 있게 만든 실험 틀**을 보여 주는 편이 R&D 자리에서는 더 설득력이 있습니다. {추론}",
+   "refs": [
+    1,
+    14,
+    32,
+    34
+   ],
+   "study": [
+    "evo",
+    "kitti-odom"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "C, C++, Python 언어 개발 경험이 있으신 분",
+   "short": "차 위 실시간 측위는 C++, 실험·분석은 Python — 두 언어를 같이 쓴다.",
+   "why": "공고의 기술 스택이 C++·Python 이고[1], 같은 회사 측위 연구 공고도 C/C++·Python 능숙을 요건으로 적었습니다.[4] 공개 SLAM·VIO 구현(ORB-SLAM3·VINS-Mono·OpenVINS)과 최적화 라이브러리(GTSAM)는 대부분 C++ 입니다.[22][23][24][35] 전형에 코딩 테스트(안내 후 7일 안)가 있습니다.[1]",
+   "level": {
+    "basic": "C++ 클래스·STL·포인터, Python numpy 로 행렬 계산",
+    "work": "Eigen 으로 회전(쿼터니언)·변환 다루기 · ROS 2 노드로 센서 메시지 받기 · 프로파일러로 느린 곳 찾기",
+    "team": "센서 수십 Hz 입력을 놓치지 않는 실시간 C++ · 최적화 문제를 GTSAM/Ceres 로 세우기"
+   },
+   "how_far": "C 는 센서 드라이버·임베디드 코드를 읽을 정도, C++ 가 주력, Python 은 데이터 분석·실험 자동화 수준이면 됩니다. {추론}",
+   "refs": [
+    1,
+    4,
+    22,
+    23,
+    24,
+    35
+   ],
+   "study": [
+    "gtsam",
+    "orbslam3"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "관련 석/박사 학위가 있으신 분",
+   "short": "로봇·측량·전자 분야 대학원에서 측위·SLAM 을 연구한 사람을 우대한다(필수는 아니다).",
+   "why": "같은 팀 인지 공고도 박사 학위를 우대로 적었습니다.[5] 회사 지도·측위 쪽 발표자 중에도 박사가 여럿 있습니다.[14] 이 공고에서는 우대 줄입니다.[1]",
+   "how_far": "학위가 없다면 업무 세 줄 중 하나를 **문제 → 가설 → 실험 → 숫자**로 정리한 사례가 같은 역할을 합니다. {추론}",
+   "refs": [
+    1,
+    5,
+    14
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "영입 여정은 이렇게 진행됩니다 서류 → Coding Test → 1차 인터뷰 → 2차 인터뷰 → 처우 협의 서류 전형 Coding Test 1차 인터뷰 1차 인터뷰 진행 전 사전과제가 진행될 수 있습니다. 1차 인터뷰는 이력서 및 포트폴리오 기반으로 함께 일하는 동료들이 참석하여 진행됩니다. 2차 인터뷰 1Round 는 핵심가치 기반의 HR 인터뷰로 HR담당자가 참석하여 진행됩니다. 2Round 는 조직 문화 인터뷰로 조직장이 참석하여 진행됩니다.",
+   "short": "요건이 아니라 전형 순서다 — 코딩 테스트를 먼저 보고, 동료가 이력서·포트폴리오로 기술을 본다.",
+   "why": "서류 다음에 코딩 테스트가 있고 안내를 받은 뒤 7일 안에 끝내야 합니다. 1차 전에 사전과제가, 1차에 라이브 코딩이 붙을 수 있고, 1차는 함께 일할 동료가, 2차는 HR(핵심가치)과 조직장(조직 문화)이 봅니다.[1]",
+   "how_far": "코딩 테스트에 떨어지면 6개월, 인터뷰에 떨어지면 1년 동안 같은 자리에 다시 지원할 수 없습니다. 이력서는 PDF 로 내고 연봉 정보는 적지 않습니다.[1] 포트폴리오에는 궤적 그림과 오차표(ATE·최대 오차·실패 구간)를 넣는 편이 낫습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": []
+  }
+ ],
+ "fit": {
+  "good": [
+   "'몇 cm 틀렸나'를 끝까지 파고드는 사람 — 지도 정밀도 목표가 20cm 급이다[10]",
+   "칼만 필터·최적화 같은 수학을 C++ 실시간 코드로 옮기는 게 즐거운 사람",
+   "터널·빌딩 숲처럼 센서가 하나씩 무너지는 상황을 설계로 버티게 하고 싶은 사람[10][12]",
+   "지도(HD맵)를 직접 만드는 회사에서 지도와 측위를 같이 보고 싶은 사람[8]"
+  ],
+  "hard": [
+   "자격 줄이 경력 5년 이상 — 신입·주니어 자리가 아니다[1]",
+   "인지·판단이 E2E(한 모델)로 바뀌는 중이라, 측위가 그 구조에서 맡는 몫이 움직일 수 있다[6] {추론}",
+   "실차 운행이 밤 10시~새벽 5시라 데이터·이슈가 그 시간에 생긴다[15] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "긴 터널 안에서 LIO 가 진행 방향으로 미끄러집니다. 왜 그렇고, 어떻게 감지·대응하겠어요?",
+   "a": "LIO 업무와 회사가 꼽은 터널·지하차도 환경.[1][10][12]"
+  },
+  {
+   "q": "단안 VIO 의 초기화에서 무엇을 추정해야 하고, 실패하면 어떤 증상이 보이나요?",
+   "a": "VIO 업무 — 축척·중력·IMU 치우침.[1][23]"
+  },
+  {
+   "q": "GNSS 가 빌딩 반사로 20m 튀었습니다. 필터가 그걸 받아들이지 않게 하려면?",
+   "a": "GNSS/INS 우대와 도심 측위 어려움.[1][10]"
+  },
+  {
+   "q": "정답 장비도 틀리는 구간에서 측위 정확도를 어떻게 평가하겠어요?",
+   "a": "회사 FIN 발표의 칼만 스무더 기준 위치와 평가 지표.[12][33]"
+  },
+  {
+   "q": "라이다 3대와 카메라 7대의 좌표계를 측위에 어떻게 묶겠어요? 좌표계 이름(map·odom·base_link)으로 설명해 주세요.",
+   "a": "회사 차 센서 구성과 ROS 좌표계 관례.[7][38]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "카카오모빌리티 채용 · 자율주행 SLAM 엔지니어 (R&D)",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/205618",
+   "kind": "posting",
+   "note": "팀 소개·업무 3줄·자격·우대·전형(코딩 테스트 7일)·근무지·기술 스택 C++/Python"
+  },
+  {
+   "n": 2,
+   "title": "카카오 공동체 채용 · [공동체] 카카오모빌리티 자율주행 SLAM 엔지니어 (R&D)",
+   "url": "https://careers.kakao.com/jobs/S-4681",
+   "kind": "posting",
+   "note": "같은 공고의 카카오 공동체 채용판 — 접수는 그리팅 공고로 연결"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · 카카오모빌리티 자율주행 SLAM 엔지니어 (R&D)",
+   "url": "https://www.wanted.co.kr/wd/361689",
+   "kind": "posting",
+   "note": "같은 공고의 원티드판 — 경력 5년 이상, 판교 알파돔타워"
+  },
+  {
+   "n": 4,
+   "title": "원티드 · 카카오모빌리티 측위 research scientist",
+   "url": "https://www.wanted.co.kr/wd/362825",
+   "kind": "posting",
+   "note": "같은 회사 AI연구개발팀 — GNSS·RF·비전 측위, 터널·지하주차장 음영 지역, 경력 5년 이상(확인 시점 마감)"
+  },
+  {
+   "n": 5,
+   "title": "카카오모빌리티 채용 · 자율주행 AI Perception 엔지니어 (R&D)",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/o/225964",
+   "kind": "posting",
+   "note": "같은 팀 — 경력 5년 이상, 박사 우대. 같은 회사 인지 풀이의 출처"
+  },
+  {
+   "n": 6,
+   "title": "바이라인네트워크 · 카카오모빌리티 서울자율차 운영 현황·E2E 연내 도입",
+   "url": "https://byline.network/2026/09/09_kakaomobility/",
+   "kind": "news",
+   "date": "2026-09-10",
+   "note": "레벨3 실증, AI 플래너·규칙 플래너, E2E 계획 — 같은 회사 인지 풀이의 출처"
+  },
+  {
+   "n": 7,
+   "title": "전자신문 · 카카오모빌리티 서울자율차 E2E 연내 도입",
+   "url": "https://etnews.com/20260909000306",
+   "kind": "news",
+   "date": "2026-09-09",
+   "note": "라이다 3·카메라 7·레이더 5 — 같은 회사 인지 풀이의 출처"
+  },
+  {
+   "n": 8,
+   "title": "바이라인네트워크 · AME 2026 카카오모빌리티 김진규 부사장 발표",
+   "url": "https://byline.network/2026/08/28_2918273/",
+   "kind": "news",
+   "date": "2026-08-31",
+   "note": "HD맵 자체 제작, 자율주행개발팀 담당 범위"
+  },
+  {
+   "n": 9,
+   "title": "카카오 테크에식스 19호 · 산학연 협력으로 구축한 데이터 전격 공개",
+   "url": "https://www.kakaocorp.com/page/detail/11509",
+   "kind": "company",
+   "note": "고정밀 위치 기준 시공간 동기화 → 다중 센서 캘리브레이션 → 좌표 변환·정합"
+  },
+  {
+   "n": 10,
+   "title": "산업일보 · 카카오·네이버 힘 쏟는 고정밀지도(HD Map)…자율주행 이끈다",
+   "url": "https://kidd.co.kr/news/226062",
+   "kind": "news",
+   "date": "2022-03-02",
+   "note": "ARGOS MMS(카메라·라이다·GNSS·IMU), 센서 캘리브레이션·정밀 측위 분석·점구름 정합, 3,370km·20TB, 20cm, 도심 위성 측위 어려움(홍승환 리더)"
+  },
+  {
+   "n": 11,
+   "title": "지디넷코리아 · 이동수단 혁신한 카카오모빌리티…'이제는 자율주행 시대 공략'",
+   "url": "https://zdnet.co.kr/view/?no=20220210190704",
+   "kind": "news",
+   "date": "2022-02-10",
+   "note": "NEMO 2022 — HD맵 약 20cm 정밀도, 차량·로봇형 MMS, 스트리스 인수"
+  },
+  {
+   "n": 12,
+   "title": "[ifkakao2020] 터널 안에서 위치를 계산하는 FIN 기술 (카카오모빌리티 전상훈)",
+   "url": "https://www.youtube.com/watch?v=21zAIe223RI",
+   "kind": "company",
+   "date": "2020",
+   "note": "자막 전부 읽음 — LTE 핑거프린팅·누적 매칭, 칼만 스무더 기준 위치(GPS·도로망·OBD2), DTW, 평균 50m·CEP95 200m, 이탈 10% 감소"
+  },
+  {
+   "n": 13,
+   "title": "[NEMO 2023] 실내 측위 및 디지털 트윈을 통한 실내 내비게이션 구현 (카카오모빌리티 이성우)",
+   "url": "https://www.youtube.com/watch?v=wuw7lTqF4XE",
+   "kind": "company",
+   "date": "2023",
+   "note": "자막 전부 읽음 — 코엑스 점구름 지도, 비콘 측위(TJ랩스 협업), 실내외 복합 측위 SDK, 2023년 6월 실험실 기능"
+  },
+  {
+   "n": 14,
+   "title": "[NEMO 2023] Ask KM Anything (카카오모빌리티 홍승환·박일석·이성우·나윤서·서정훈)",
+   "url": "https://www.youtube.com/watch?v=hOk6YAQhgIk",
+   "kind": "company",
+   "date": "2023",
+   "note": "자막 전부 읽음 — 라이다 반사 세기 차이, 데이터 균형, 지도 갱신·변화 탐지·품질 검증"
+  },
+  {
+   "n": 15,
+   "title": "지디넷코리아 · 카카오 서울자율차가 복잡한 강남 밤길 누비는 이유",
+   "url": "https://zdnet.co.kr/view?no=20260909160312",
+   "kind": "news",
+   "date": "2026-09-09",
+   "note": "6대, 22~05시, 누적 1만 3천km·2천 건"
+  },
+  {
+   "n": 16,
+   "title": "아이뉴스24 · 카카오모빌리티 2025년 상반기 공시(직원 수·1인 평균 급여)",
+   "url": "https://www.inews24.com/view/1876724",
+   "kind": "news",
+   "date": "2025-08-14"
+  },
+  {
+   "n": 17,
+   "title": "자소설닷컴 · 카카오모빌리티(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/10478",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음. 같은 회사 인지 풀이의 값"
+  },
+  {
+   "n": 18,
+   "title": "카카오모빌리티 채용 · 복리후생&성장지원",
+   "url": "https://kakaomobility.career.greetinghr.com/ko/benefit",
+   "kind": "company"
+  },
+  {
+   "n": 19,
+   "title": "카카오모빌리티 · 회사 사이트 하단 회사 정보",
+   "url": "https://www.kakaomobility.com/",
+   "kind": "company"
+  },
+  {
+   "n": 20,
+   "title": "아이뉴스24 · 카카오모빌리티, 2024년 매출 6750억원⋯류긍선 대표 보수 9.7억원",
+   "url": "https://v.daum.net/v/uTwZAfwMlq",
+   "kind": "news",
+   "date": "2025-03-31",
+   "note": "임직원 914명, 1인 평균 급여 약 9,014만원(스톡옵션 차익 제외)"
+  },
+  {
+   "n": 21,
+   "title": "Cadena 외 · Past, Present, and Future of Simultaneous Localization and Mapping",
+   "url": "https://arxiv.org/abs/1606.05830",
+   "kind": "reference",
+   "date": "2016"
+  },
+  {
+   "n": 22,
+   "title": "ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM",
+   "url": "https://arxiv.org/abs/2007.11898",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 23,
+   "title": "VINS-Mono: A Robust and Versatile Monocular Visual-Inertial State Estimator",
+   "url": "https://arxiv.org/abs/1708.03852",
+   "kind": "reference",
+   "date": "2017"
+  },
+  {
+   "n": 24,
+   "title": "OpenVINS 문서 (University of Delaware RPNG)",
+   "url": "https://docs.openvins.com/",
+   "kind": "reference",
+   "note": "MSCKF 기반 VIO 공개 구현"
+  },
+  {
+   "n": 25,
+   "title": "Forster 외 · On-Manifold Preintegration for Real-Time Visual-Inertial Odometry",
+   "url": "https://arxiv.org/abs/1512.02363",
+   "kind": "reference",
+   "date": "2015"
+  },
+  {
+   "n": 26,
+   "title": "Zhang · Singh · LOAM: Lidar Odometry and Mapping in Real-time (RSS)",
+   "url": "https://www.roboticsproceedings.org/rss10/p07.pdf",
+   "kind": "reference",
+   "date": "2014"
+  },
+  {
+   "n": 27,
+   "title": "LIO-SAM: Tightly-coupled Lidar Inertial Odometry via Smoothing and Mapping",
+   "url": "https://arxiv.org/abs/2007.00258",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 28,
+   "title": "FAST-LIO2: Fast Direct LiDAR-inertial Odometry",
+   "url": "https://arxiv.org/abs/2107.06829",
+   "kind": "reference",
+   "date": "2021"
+  },
+  {
+   "n": 29,
+   "title": "Barfoot · State Estimation for Robotics (2판, Cambridge University Press)",
+   "url": "https://asrl.utias.utoronto.ca/~tdb/",
+   "kind": "reference",
+   "date": "2024",
+   "note": "저자 페이지에 2판 비공식 PDF"
+  },
+  {
+   "n": 30,
+   "title": "Groves · Principles of GNSS, Inertial, and Multisensor Integrated Navigation Systems (2판, Artech House)",
+   "url": "https://www.amazon.com/s?k=Principles+of+GNSS+Inertial+and+Multisensor+Integrated+Navigation+Systems",
+   "kind": "reference",
+   "note": "서점 검색 링크"
+  },
+  {
+   "n": 31,
+   "title": "Thrun · Burgard · Fox · Probabilistic Robotics (MIT Press)",
+   "url": "http://www.probabilistic-robotics.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "KITTI Visual Odometry / SLAM Evaluation",
+   "url": "https://www.cvlibs.net/datasets/kitti/eval_odometry.php",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "Sturm 외 · A Benchmark for the Evaluation of RGB-D SLAM Systems (TUM, ATE·RPE)",
+   "url": "https://cvg.cit.tum.de/data/datasets/rgbd-dataset",
+   "kind": "reference",
+   "date": "2012"
+  },
+  {
+   "n": 34,
+   "title": "evo — 궤적 평가 도구 (Michael Grupp)",
+   "url": "https://github.com/MichaelGrupp/evo",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "GTSAM — 그래프 최적화 라이브러리",
+   "url": "https://gtsam.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "Coursera · State Estimation and Localization for Self-Driving Cars (University of Toronto)",
+   "url": "https://www.coursera.org/learn/state-estimation-localization-self-driving-cars",
+   "kind": "reference",
+   "note": "최소제곱 → 칼만 필터 → GNSS/INS → 라이다 측위 → CARLA 데이터 융합"
+  },
+  {
+   "n": 37,
+   "title": "RTKLIB — GNSS 측위 공개 프로그램",
+   "url": "https://github.com/tomojitakasu/RTKLIB",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "ROS REP 105 · Coordinate Frames for Mobile Platforms",
+   "url": "https://www.ros.org/reps/rep-0105.html",
+   "kind": "reference"
+  },
+  {
+   "n": 39,
+   "title": "한빛출판네트워크 · 칼만 필터는 어렵지 않아 with MATLAB Examples (김성필)",
+   "url": "https://www.hanbit.co.kr/books/B4956047798",
+   "kind": "reference"
+  },
+  {
+   "n": 40,
+   "title": "교보문고 · 자율주행을 위한 비주얼 슬램 (가오시앙·장타오 지음, 김필은 옮김, 지니북스)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000011317162",
+   "kind": "reference",
+   "date": "2023-09"
+  },
+  {
+   "n": 41,
+   "title": "Besl · McKay · A Method for Registration of 3-D Shapes (ICP, IEEE TPAMI)",
+   "url": "https://doi.org/10.1109/34.121791",
+   "kind": "reference",
+   "date": "1992"
+  }
+ ],
+ "caveat": "회사 자율주행 측위·SLAM 의 구조(필터인지 최적화인지, 어떤 지도에 맞대는지)는 공개되지 않았습니다. 회사가 직접 밝힌 것은 센서 구성, HD맵 자체 제작과 지도 제작 장비(ARGOS)의 센서·처리 순서, 내비 쪽 측위(FIN·실내 측위)의 방법과 성과까지이고, 자율주행 측위 내부는 공개 논문으로 '보통 이런 것'을 보였습니다. FIN·실내 측위는 카카오내비 서비스 기술이라 자율주행 측위와 정밀도 단위가 다릅니다. 지도 관련 기사는 2022년 것입니다.",
+ "resources": [
+  {
+   "id": "km-fin-video",
+   "title": "[ifkakao2020] 터널 안에서 위치를 계산하는 FIN 기술",
+   "by": "카카오모빌리티 전상훈 · if(kakao) 2020",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=21zAIe223RI",
+   "why": "이 회사가 위성 신호 없는 곳의 측위를 어떻게 풀고 어떻게 쟀는지(기준 위치 만들기·평균 오차·CEP95)를 회사 사람 말로 본다. Localization·GNSS 우대 줄의 출발점."
+  },
+  {
+   "id": "km-indoor-video",
+   "title": "[NEMO 2023] 실내 측위 및 디지털 트윈을 통한 실내 내비게이션 구현",
+   "by": "카카오모빌리티 이성우 · NEMO 2023",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=wuw7lTqF4XE",
+   "why": "점구름 지도 + 여러 측위 출처를 판단해 하나의 위치를 내는 회사의 복합 측위 사례. 지도 위 측위를 서비스로 만든 흐름을 본다."
+  },
+  {
+   "id": "ko-vslam-book",
+   "title": "자율주행을 위한 비주얼 슬램",
+   "by": "가오시앙·장타오 지음 · 김필은 옮김 · 지니북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000011317162",
+   "why": "카메라 기반 SLAM(Visual SLAM)을 소개하는 한국어 번역서(서점 소개 기준). VIO·SLAM 업무의 기초 낱말을 한국어로 먼저 잡고, 영어 논문으로 넘어간다."
+  },
+  {
+   "id": "kalman-book",
+   "title": "칼만 필터는 어렵지 않아 with MATLAB Examples",
+   "by": "김성필 · 한빛출판네트워크",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.hanbit.co.kr/books/B4956047798",
+   "why": "수식 유도보다 예제로 칼만 필터·확장·무향 칼만 필터를 익히는 한국어 입문서. GNSS/INS 결합과 VIO 필터 방식의 바닥."
+  },
+  {
+   "id": "coursera-state",
+   "title": "State Estimation and Localization for Self-Driving Cars",
+   "by": "University of Toronto · Coursera",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.coursera.org/learn/state-estimation-localization-self-driving-cars",
+   "why": "최소제곱 → 칼만 필터 → GNSS/INS → 라이다 측위 → 실제 차 데이터 융합을 한 강의로. 이 공고 업무 세 줄과 GNSS/INS 우대를 한 번에 훑는다."
+  },
+  {
+   "id": "barfoot",
+   "title": "State Estimation for Robotics (2판)",
+   "by": "Timothy D. Barfoot · Cambridge University Press",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://asrl.utias.utoronto.ca/~tdb/",
+   "why": "회전·자세를 다루는 수학(리 군)부터 배치 최적화·필터까지. 저자 페이지에 비공식 PDF 가 있다. VIO·LIO 논문의 수식이 막힐 때 펴는 책."
+  },
+  {
+   "id": "groves",
+   "title": "Principles of GNSS, Inertial, and Multisensor Integrated Navigation Systems (2판)",
+   "by": "Paul D. Groves · Artech House",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.amazon.com/s?k=Principles+of+GNSS+Inertial+and+Multisensor+Integrated+Navigation+Systems",
+   "why": "GNSS 원리·INS 오차·느슨한/강한 결합을 한 권에. GNSS/INS 우대 줄의 교과서."
+  },
+  {
+   "id": "cadena-survey",
+   "title": "Past, Present, and Future of Simultaneous Localization and Mapping",
+   "by": "Cadena 외 · IEEE T-RO 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1606.05830",
+   "why": "앞단·뒷단·그래프 최적화·루프 클로저·남은 문제를 정리한 조사 논문. SLAM 이 무엇으로 이뤄지는지 지도를 먼저 그린다."
+  },
+  {
+   "id": "orbslam3",
+   "title": "ORB-SLAM3",
+   "by": "Campos 외 · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2007.11898",
+   "why": "단안·스테레오·IMU 조합과 여러 지도 잇기를 한 C++ 구현에 담은 대표 공개 SLAM. 코드를 읽어 앞단·뒷단이 실제로 어떻게 나뉘는지 본다."
+  },
+  {
+   "id": "vins-mono",
+   "title": "VINS-Mono",
+   "by": "Qin · Li · Shen (HKUST) · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1708.03852",
+   "why": "창 최적화 방식 VIO 의 표준 — 초기화·IMU 미리 적분·재측위까지. 카메라 VIO 업무의 기준선."
+  },
+  {
+   "id": "openvins",
+   "title": "OpenVINS",
+   "by": "University of Delaware RPNG",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.openvins.com/",
+   "why": "MSCKF(필터 방식) VIO 공개 구현과 자세한 문서. 최적화 방식(VINS-Mono)과 나란히 놓고 차이를 본다."
+  },
+  {
+   "id": "forster-preint",
+   "title": "On-Manifold Preintegration for Real-Time Visual-Inertial Odometry",
+   "by": "Forster 외 · 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1512.02363",
+   "why": "IMU 측정 수백 개를 한 덩어리로 묶는 미리 적분 — VIO·LIO 그래프 방식이 모두 이것을 쓴다."
+  },
+  {
+   "id": "loam",
+   "title": "LOAM: Lidar Odometry and Mapping in Real-time",
+   "by": "Ji Zhang · Sanjiv Singh · RSS 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.roboticsproceedings.org/rss10/p07.pdf",
+   "why": "모서리·평면 특징으로 라이다 주행 기록을 빠르게 하는 고전. LIO-SAM 등 뒤의 방법이 여기서 출발한다."
+  },
+  {
+   "id": "lio-sam",
+   "title": "LIO-SAM",
+   "by": "Shan 외 · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2007.00258",
+   "why": "라이다·IMU·GNSS·루프 클로저를 한 그래프로 묶는 LIO. 라이다 LIO 업무와 GNSS 결합을 같이 본다."
+  },
+  {
+   "id": "fast-lio2",
+   "title": "FAST-LIO2",
+   "by": "Xu 외 (HKU) · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2107.06829",
+   "why": "특징 추출 없이 반복 칼만 필터로 원 점구름을 지도에 맞대는 빠른 LIO. 그래프 방식(LIO-SAM)과 비교해 본다."
+  },
+  {
+   "id": "gtsam",
+   "title": "GTSAM",
+   "by": "Georgia Tech · 공식 사이트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://gtsam.org/",
+   "why": "위치 = 점, 측정 = 선으로 그래프를 세워 최적화하는 C++/Python 라이브러리. 뒷단·루프 클로저를 직접 짜 본다."
+  },
+  {
+   "id": "kitti-odom",
+   "title": "KITTI Visual Odometry / SLAM Evaluation",
+   "by": "KIT · Toyota Technological Institute",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cvlibs.net/datasets/kitti/eval_odometry.php",
+   "why": "실제 차의 카메라·라이다·GPS/IMU 기록과 정답 궤적. 차가 없을 때 실차 측위를 연습하는 곳."
+  },
+  {
+   "id": "evo",
+   "title": "evo",
+   "by": "Michael Grupp · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://github.com/MichaelGrupp/evo",
+   "why": "추정 궤적과 정답을 맞대어 ATE·RPE 와 그림을 내는 도구. 포트폴리오의 오차표를 여기서 만든다."
+  },
+  {
+   "id": "rtklib",
+   "title": "RTKLIB",
+   "by": "T. Takasu · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/tomojitakasu/RTKLIB",
+   "why": "GNSS 원시 관측값으로 단독·RTK 측위를 직접 풀어 보는 공개 프로그램. GNSS 가 왜·어떻게 튀는지 손으로 본다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 문제 알기",
+   "time": "3일",
+   "goal": "이 회사가 지도(HD맵)·측위를 어떻게 만들고 재 왔는지, 자율주행 팀이 어디로 가는지 설명할 수 있다.",
+   "resources": [
+    "km-fin-video",
+    "km-indoor-video"
+   ],
+   "task": "발표 두 편을 보고 'FIN 이 기준 위치를 만든 방법'과 '실내외 측위 SDK 가 여러 위치 중 하나를 고르는 흐름'을 각각 한 장 그림으로 그린다."
+  },
+  {
+   "title": "필터와 상태 추정",
+   "time": "3~4주",
+   "goal": "칼만·확장 칼만 필터로 속도계 + GNSS 를 융합하고, 치우침을 상태로 같이 추정할 수 있다.",
+   "resources": [
+    "kalman-book",
+    "coursera-state",
+    "barfoot"
+   ],
+   "task": "가상 2D 주행(원을 도는 차)에 가속도 치우침·GNSS 3m 잡음·터널 30초 끊김을 넣고, 확장 칼만 필터로 위치와 치우침을 추정해 오차 그래프를 그린다."
+  },
+  {
+   "title": "카메라 VIO",
+   "time": "4주",
+   "goal": "공개 VIO 를 데이터셋에 돌리고, 초기화·치우침이 틀어질 때의 증상을 설명한다.",
+   "resources": [
+    "ko-vslam-book",
+    "vins-mono",
+    "openvins",
+    "forster-preint"
+   ],
+   "task": "같은 데이터에 VINS-Mono 와 OpenVINS 를 돌려 ATE 를 비교하고, IMU 치우침 값을 일부러 바꿔 넣었을 때 궤적이 어떻게 틀어지는지 그림으로 남긴다."
+  },
+  {
+   "title": "라이다 LIO 와 지도 위 측위",
+   "time": "4~5주",
+   "goal": "LIO 로 점구름 지도를 만들고, 그 지도에 다른 날의 스캔을 맞대 위치를 구한다.",
+   "resources": [
+    "loam",
+    "lio-sam",
+    "fast-lio2",
+    "gtsam",
+    "kitti-odom"
+   ],
+   "task": "KITTI 한 구간으로 LIO-SAM·FAST-LIO2 를 돌려 오차를 비교하고, 만든 지도에 ICP 로 다른 구간 스캔을 맞대 측위한다. 진행 방향 단서가 적은 구간을 표시해 본다."
+  },
+  {
+   "title": "평가와 포트폴리오",
+   "time": "2주",
+   "goal": "측위 결과를 ATE·RPE·최대 오차·실패 구간으로 정리해 남이 다시 돌릴 수 있게 한다.",
+   "resources": [
+    "evo",
+    "cadena-survey",
+    "groves",
+    "rtklib"
+   ],
+   "task": "위 3·4단계 결과를 evo 로 한 표에 모으고, GNSS 를 넣은 판과 뺀 판을 비교한 README 를 쓴다(재현 명령 포함)."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 4,706만원**(집계), 임직원 평균 급여 **약 9,014만원**(2024년, 보도) — 평균은 경력직이 섞인 회사 전체 값이고, 이 자리는 처우 협의로 따로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,706만원",
+    "amount": 4706,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [17]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,853만원",
+    "amount": 6853,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 — 경력직이 섞인 회사 전체 값이다 [17]"
+   },
+   {
+    "label": "임직원 1인 평균 급여",
+    "value": "약 9,014만원",
+    "amount": 9014,
+    "basis": "보도 · 2024년",
+    "note": "2024년 말 임직원 914명(기간제 포함), 스톡옵션 행사 차익을 뺀 급여 총액 기준. 회사 실적 공시를 다룬 2025년 3월 기사 [20]"
+   },
+   {
+    "label": "1인 평균 급여(상반기 6개월)",
+    "value": "4,718만원",
+    "basis": "공시 · 2025년 상반기",
+    "note": "2025년 1~6월 6개월치다(연봉이 아니다). 6월 말 직원 931명, 평균 근속 3.8년 [16]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 전형 마지막에 **처우 협의** 단계가 있다 [1]. 이력서에 연봉 정보를 적으면 서류가 검토되지 않을 수 있다고 공고가 적었다 [1]. 집계 평균은 경력직이 섞인 회사 전체 값이라 이 자리(5년 이상 R&D)의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "주택 대출 이자",
+    "detail": "주택 관련 대출 최대 3억원에 대한 이자 지원"
+   },
+   {
+    "name": "생활 안정 자금",
+    "detail": "최대 5천만원 한도 이자 지원"
+   },
+   {
+    "name": "휴가",
+    "detail": "매년 최대 25일"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "선택적 근로시간제, 금요일 2시간 조기 퇴근"
+   },
+   {
+    "name": "점심",
+    "detail": "점심시간 1시간 30분, 점심 식대 매월 20만원"
+   },
+   {
+    "name": "간식",
+    "detail": "간식·음료 무제한"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "카카오 T 앱과 국내 가맹점에서 사용"
+   },
+   {
+    "name": "차량 대여",
+    "detail": "추첨으로 3박 4일"
+   },
+   {
+    "name": "육아",
+    "detail": "사내 어린이집, 육아 휴직 최대 2년"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 건강검진(검진 당일 유급휴가, 가족 양도 가능), MOS 상담 지원"
+   },
+   {
+    "name": "보험",
+    "detail": "본인·배우자 부모 실손 보험 지원, 가족사랑 지원제도(사망 시 보험금)"
+   },
+   {
+    "name": "휴양",
+    "detail": "파라스파라·아난티·롯데리조트·캠핑카 등 휴양 시설"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "마사지샵, 안마실·수면실·안마의자, 통근버스"
+   },
+   {
+    "name": "장비",
+    "detail": "애플 트랙패드·업무용 소프트웨어 등"
+   },
+   {
+    "name": "경조사",
+    "detail": "경조 휴가, 경조사비·화환·용품"
+   }
+  ],
+  "note": "카카오모빌리티 채용 사이트의 복리후생 페이지다 [18]. 같은 회사 인지 풀이에서 옮겼다. 작성 연도가 페이지에 없고, 금액이 적히지 않은 항목(복지 포인트·경조사비 등)이 있어 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "카카오모빌리티 판교 오피스(알파돔타워)",
+  "address": "경기도 성남시 분당구 판교역로 152, 알파돔타워 13층",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 바로 옆 {추론}",
+  "note": "공고의 근무지(판교 오피스, 판교역로 152 알파돔타워)[1]와 회사 사이트 하단 주소(13층)[19]. 실차 시험·차고지는 따로일 수 있다 {추론}."
+ }
+}
