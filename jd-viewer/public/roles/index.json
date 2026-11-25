@@ -217,6 +217,7 @@
   "ats-skcareers:sk:R262568": "skax-mfg-equipment-quality-ai",
   "dev-583961": "skax-mfg-equipment-quality-ai",
   "ats-skcareers:sk:R262582": "skax-mfg-ito-quality-itsm",
+  "ats-skcareers:sk:R262584": "skax-mfg-monitoring-ai-pm-pl",
   "ats-skcareers:sk:R262571": "skax-mfg-pt-ai-mes-contract",
   "dev-583964": "skax-mfg-pt-ai-mes-contract",
   "ats-skcareers:sk:R262586": "skax-mfg-system-ops-mes",
@@ -241,6 +242,7 @@
   "jobkorea-50208226": "skax-semicon-cloud-ai-platform",
   "wanted-393398": "skax-semicon-cloud-ai-platform",
   "dev-582839": "skax-semicon-cloud-ai-platform",
+  "ats-skcareers:sk:R262564": "skax-semicon-mdm-sap-mdg-regular",
   "ats-skcareers:sk:R262445": "skax-semicon-mdm-sap-mdg",
   "ats-skcareers:sk:R262477": "skax-semicon-rnd-app-architect",
   "wanted-398293": "skax-semicon-rnd-app-architect",
@@ -2294,6 +2296,16 @@
    "lines": 20
   },
   {
+   "id": "skax-mfg-monitoring-ai-pm-pl",
+   "company": "SK주식회사(AX)",
+   "role": "제조 시스템 모니터링 AI 전환 과제 PM/PL",
+   "jobs": [
+    "ats-skcareers:sk:R262584"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
+  },
+  {
    "id": "skax-mfg-pt-ai-mes-contract",
    "company": "SK주식회사(AX)",
    "role": "제조 P&T AI, MES 전문가",
@@ -2453,6 +2465,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 21
+  },
+  {
+   "id": "skax-semicon-mdm-sap-mdg-regular",
+   "company": "SK주식회사(AX)",
+   "role": "반도체 제조 기준정보(MDM) 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262564"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
   },
   {
    "id": "skax-semicon-mdm-sap-mdg",
