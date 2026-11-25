@@ -4,7 +4,8 @@
  "role": "Software Engineer, Backend (채용전환형 인턴) — 커뮤니티",
  "team": "커뮤니티실 · 커뮤니티 홈팀",
  "jobs": [
-  "ats-greenhouse:daangn:8201151003"
+  "ats-greenhouse:daangn:8201151003",
+  "ats-greenhouse:daangn:8201153003"
  ],
  "researched_at": "2026-11-25",
  "tldr": {
@@ -285,6 +286,85 @@
   },
   {
    "section": "preference",
+   "quote": "피드, 추천, 개인화 등 콘텐츠 서빙 도메인에 관심이 있거나 경험해 본 분",
+   "short": "수많은 글 중 '이 사람에게 지금 보여 줄 것'을 골라 빠르게 내주는 일에 관심·경험이 있는 분.",
+   "why": "피드 인프라팀은 앱을 열면 가장 먼저 보이는 홈 피드를 맡고, 좋아할 콘텐츠를 모아 안정적으로 내주는(서빙) 일과 어떤 모양으로 보여 줄지를 같이 고민한다고 소개합니다.[40] 당근 피드실은 앱을 여는 사용자의 99%가 피드를 거쳐 간다고 소개된 조직입니다.[42] 인턴 과제도 홈 피드 글 사이에 넣을 **새 캐러셀**(옆으로 넘기는 묶음 칸)을 처음부터 맡는 것입니다.[40] 당근 추천은 2021년 클릭률 정렬에서 시작해 2022년 여러 단계로 후보를 좁히는 구조·사용자와 글을 숫자 벡터로 바꾸는 후보 모델·여러 서비스가 같이 쓰는 랭킹 파이프라인으로 바뀌었다고 보도됐습니다.[41]",
+   "actually": {
+    "items": [
+     "**후보 모으기** — 중고거래·동네생활·알바·부동산처럼 캐러셀에 담을 콘텐츠를 서비스 팀에서 받아 온다.[40]",
+     "**고르기(랭킹)** — 후보마다 점수를 매겨 줄 세운다. 보통 '후보 생성 → 점수 → 다시 줄 세우기' 3단계로 나눈다.[46]",
+     "**섞기** — 피드의 몇 번째 자리에, 얼마나 자주 캐러셀을 넣을지 정한다 — 공고가 인턴에게 제안·검증을 맡긴 부분이다.[40]",
+     "**서빙** — 앱이 피드를 열 때마다 짧은 시간 안에 답해야 해서 캐시(Redis)·서비스 간 호출(gRPC)이 쓰인다.[40] {추론}",
+     "**피드백** — 숨김·신고 같은 부정 반응은 뒤로 미는 쪽으로 설계했다고 한다.[41]"
+    ]
+   },
+   "how_far": "추천 모델을 직접 학습시키는 자리는 아닙니다 — 추천·랭킹은 피드실이 이미 갖고 있고, 인턴은 그 위에 캐러셀을 붙이는 서버 개발과 '무엇을 누구에게 언제'를 정하는 기준 설계를 맡습니다.[40] 지원 단계에서는 '후보 → 점수 → 섞기' 흐름을 말로 설명하고, 작은 서비스에서라도 정렬 기준을 바꿔 본 경험이 있으면 충분합니다. {추론}",
+   "study": [
+    "google-recsys",
+    "daangn-recsys-news"
+   ],
+   "refs": [
+    40,
+    41,
+    42,
+    46
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "A/B 테스트 등 데이터 기반 실험을 설계하고 검증해 본 분",
+   "short": "사용자를 둘로 나눠 바꾼 것만 비교하고, 숫자로 '정말 나아졌나'를 가려 본 경험.",
+   "why": "이 자리의 목표는 캐러셀 클릭만이 아니라 **홈 피드 전체의 체류와 재방문을 해치지 않으면서** 새 가치를 더했다는 것을 A/B 실험으로 확인하는 것입니다.[40] 피드실은 실험 환경을 정비해 새 캐러셀을 붙이고 실험하는 비용을 낮춰 왔다고 했고, 사내 실험 플랫폼으로 가설을 검증한다고 적었습니다.[40] 당근 추천 조직은 단기 지표보다 긴 실험으로 행동 변화를 본다고 보도됐습니다.[41]",
+   "actually": {
+    "items": [
+     "**가설 한 문장** — '홈 피드 10번째 자리에 동네 가게 캐러셀을 넣으면 7일 재방문이 늘 것'처럼 바꿀 것·기대 지표·기간을 적는다.[45]",
+     "**주 지표와 가드레일** — 주 지표(새 캐러셀의 가치) 하나와 망가지면 안 되는 지표(피드 체류·재방문)를 미리 정한다 — 이 공고가 콕 집은 부분이다.[40][45]",
+     "**나누기** — 사용자 id 로 A/B 를 고정해 같은 사람은 늘 같은 화면을 본다.[45]",
+     "**읽기** — 아래 예시처럼 캐러셀 클릭이 생겨도 피드 체류가 줄면 확대하지 않는다.[40]",
+     "**실패도 기록** — 기대와 달라도 누가 무엇에 반응했는지 설명하면 성과로 본다고 공고가 밝혔다.[40]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "캐러셀 클릭은 늘었는데 — 가드레일 지표(가상 값)",
+     "lang": "python",
+     "code": "groups = {\n    \"A(기존)\": {\"users\": 5000, \"carousel_clicks\": 0, \"feed_minutes\": 41000, \"revisit_7d\": 3100},\n    \"B(새 캐러셀)\": {\"users\": 5000, \"carousel_clicks\": 900, \"feed_minutes\": 39500, \"revisit_7d\": 3060},\n}\nbase = groups[\"A(기존)\"]\nfor name, g in groups.items():\n    ctr = g[\"carousel_clicks\"] / g[\"users\"]\n    dwell = g[\"feed_minutes\"] / g[\"users\"]\n    rev = g[\"revisit_7d\"] / g[\"users\"]\n    print(f\"{name}: 1인당 캐러셀 클릭 {ctr:.2f} · 1인 피드 체류 {dwell:.2f}분 · 7일 재방문 {rev:.1%}\")\nb = groups[\"B(새 캐러셀)\"]\nd_dwell = (b[\"feed_minutes\"] - base[\"feed_minutes\"]) / base[\"feed_minutes\"]\nd_rev = (b[\"revisit_7d\"] - base[\"revisit_7d\"]) / base[\"revisit_7d\"]\nverdict = \"확대 보류\" if d_dwell < -0.02 else \"확대 검토\"\nprint(f\"가드레일: 체류 {d_dwell:+.1%}, 재방문 {d_rev:+.1%} → {verdict}\")",
+     "body": "실행 결과:\nA(기존): 1인당 캐러셀 클릭 0.00 · 1인 피드 체류 8.20분 · 7일 재방문 62.0%\nB(새 캐러셀): 1인당 캐러셀 클릭 0.18 · 1인 피드 체류 7.90분 · 7일 재방문 61.2%\n가드레일: 체류 -3.7%, 재방문 -1.3% → 확대 보류\n\n새 칸은 눌렸지만 그만큼 피드 전체 체류가 줄었다 — 이 공고가 '클릭만 보지 않는다'고 한 이유다. 기준(-2%)은 예시로 정한 값이고, 실제로는 표본 크기와 함께 우연인지도 본다."
+    }
+   ],
+   "how_far": "통계 도구를 만드는 자리는 아닙니다 — 사내 실험 플랫폼이 있습니다.[40] 인턴은 가설·지표·가드레일을 미리 적고, 이벤트 로그를 빠짐없이 심고, 결과를 과장 없이 읽는 것까지 합니다. 지원 단계에서는 작은 서비스에서 두 안을 비교해 본 경험이나, 두 비율의 차이가 우연인지 따져 본 경험이면 됩니다. {추론}",
+   "study": [
+    "ab-kohavi",
+    "growth-hacking"
+   ],
+   "refs": [
+    40,
+    41,
+    45
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "직군을 넘나들며 프로덕트를 처음부터 끝까지 만들어 본 분 (사이드 프로젝트도 좋아요)",
+   "short": "기획·화면·서버·데이터까지 혼자 또는 작은 팀으로 서비스 하나를 끝까지 내 본 경험.",
+   "why": "인턴 과제가 데이터로 기회 찾기 → 가설 → 후보·기준 설계 → 서버 개발 → 출시·A/B → 결과 분석까지 한 사람이 끝까지 맡는 구조입니다.[40] 캐러셀 콘텐츠를 가진 서비스 팀, 화면을 만드는 디자이너·클라이언트 개발자와도 협업합니다.[40] 공고는 AI 로 구현 비용이 낮아진 만큼 '무엇을 왜 만들지' 판단하는 빌더를 찾는다고 적었습니다.[40]",
+   "actually": {
+    "items": [
+     "**문제 고르기** — 데이터에서 '홈 피드에 아직 없는 콘텐츠'를 찾아 캐러셀 후보로 정한다.[40]",
+     "**남의 영역 말하기** — 디자이너에게 화면 모양을, 서비스 팀에게 콘텐츠 API 를 요청할 수 있을 만큼 각 직군의 말을 안다.[40] {추론}",
+     "**출시 뒤까지** — 배포·실험·분석·다음 캐러셀 플레이북 정리까지가 한 바퀴다.[40]"
+    ]
+   },
+   "how_far": "모든 직군을 잘할 필요는 없습니다. 사이드 프로젝트라도 '내가 정한 문제 → 만들기 → 실제 사용자 → 숫자로 확인'을 한 바퀴 돈 기록을 포트폴리오에 보이면 됩니다 — 지원 서류가 바로 그것(팀 구성·지표·바꾼 것·기술 선택)을 묻습니다.[40]",
+   "study": [
+    "inspired"
+   ],
+   "refs": [
+    40
+   ]
+  },
+  {
+   "section": "preference",
    "quote": "팀에서 사용하는 기술이에요",
    "short": "여기부터는 요건이 아니라 이 팀이 실제로 쓰는 기술 목록이다.",
    "why": "바로 아래에 \"위 기술을 써 보지 않았더라도 괜찮다\"고 적었습니다.[1]",
@@ -508,6 +588,40 @@
    "refs": [
     10,
     12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "팀에서는 Go, gRPC, gRPC-Gateway, MySQL, MongoDB, Redis, Kafka, Kubernetes, Istio를 사용하고 있어요.",
+   "short": "피드 인프라팀은 Go 서버가 gRPC 로 말하고, 저장은 MySQL·MongoDB·Redis, 이벤트는 Kafka, 배포는 쿠버네티스.",
+   "why": "이 목록은 피드 인프라팀 공고에만 있습니다 — 같은 인턴십의 커뮤니티팀(Kotlin·Spring)과 언어가 다릅니다.[40][1] 공고는 써 보지 않았어도 괜찮다고 밝혔습니다.[40]",
+   "actually": {
+    "items": [
+     "**Go** — 구글이 만든 컴파일 언어. 문법이 작고, 동시에 여러 일을 하는 고루틴이 기본이다.[47]",
+     "**gRPC + gRPC-Gateway** — 서버끼리는 gRPC(.proto 로 정한 계약)로 부르고, gRPC-Gateway 가 같은 정의에서 REST·JSON 입구를 만들어 준다.[43][23]",
+     "**MySQL · MongoDB · Redis** — 표 형태 데이터, 모양이 자주 바뀌는 문서형 데이터(MongoDB 는 JSON 같은 문서를 저장한다), 빠른 캐시.[48] 어느 데이터를 어디에 두는지는 공개되지 않았다. {추론}",
+     "**Kafka** — 노출·클릭 같은 이벤트를 흘려보내는 통로.[25]",
+     "**Kubernetes · Istio** — 컨테이너를 띄우고 늘리는 플랫폼[49], 그 위에서 서비스 간 트래픽 나누기·보안·관측을 코드 수정 없이 더하는 서비스 메시.[44]"
+    ]
+   },
+   "how_far": "Java·Kotlin 으로 서버를 만들어 봤다면 Go 는 Tour of Go 로 며칠이면 읽힙니다.[47] {추론} 인턴이 Istio·Kubernetes 설정을 직접 바꿀 일은 적고, 배포된 서비스의 로그·지표를 읽을 줄 알면 됩니다. {추론}",
+   "study": [
+    "go-tour",
+    "grpc-docs",
+    "grpc-gateway-docs",
+    "istio-docs",
+    "kafka-book"
+   ],
+   "refs": [
+    1,
+    40,
+    47,
+    43,
+    23,
+    48,
+    25,
+    49,
+    44
    ]
   },
   {
@@ -1091,6 +1205,74 @@
    "kind": "company",
    "date": "2024-10-07",
    "note": "발표 제목 목록 — 영상은 재생목록"
+  },
+  {
+   "title": "당근 채용 · Software Engineer, Backend (채용전환형) - 피드 인프라",
+   "url": "https://about.daangn.com?gh_jid=8201153003",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 2027 프로덕트 빌더 인턴십의 피드 인프라팀 공고 — 홈 피드 새 캐러셀 과제·팀 기술",
+   "n": 40
+  },
+  {
+   "title": "바이라인네트워크 · 당근의 추천시스템은 LLM 안 부럽다",
+   "url": "https://byline.network/2026/04/17_28182764/",
+   "kind": "news",
+   "date": "2026-04-21",
+   "note": "당근 추천 시스템 연표(2021 클릭률 정렬 → 2022 다단계 추천·임베딩 후보·랭킹 파이프라인 → 2024 전 서비스 확장)",
+   "n": 41
+  },
+  {
+   "title": "당근의 성공을 견인하는 첫 화면의 비밀 | 피드실 인터뷰",
+   "url": "https://eopla.net/magazines/25059",
+   "kind": "company",
+   "date": "2025-01-13",
+   "note": "당근 팀 블로그 글을 EO 가 다시 실은 것 — 본문은 로그인 뒤라 소개 문구만 확인",
+   "n": 42
+  },
+  {
+   "title": "gRPC-Gateway 문서",
+   "url": "https://grpc-ecosystem.github.io/grpc-gateway/",
+   "kind": "reference",
+   "n": 43
+  },
+  {
+   "title": "Istio 문서 · What is Istio?",
+   "url": "https://istio.io/latest/docs/overview/what-is-istio/",
+   "kind": "reference",
+   "n": 44
+  },
+  {
+   "title": "A/B 테스트 — 신뢰도 높은 온라인 통제 실험 (코하비·탕·쉬, 에이콘)",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296254070",
+   "kind": "reference",
+   "date": "2022",
+   "n": 45
+  },
+  {
+   "title": "Google for Developers · Recommendation Systems 과정",
+   "url": "https://developers.google.com/machine-learning/recommendation",
+   "kind": "reference",
+   "note": "후보 생성 → 점수 매기기 → 다시 줄 세우기 3단계 설명",
+   "n": 46
+  },
+  {
+   "title": "Go 공식 문서 · A Tour of Go",
+   "url": "https://go.dev/tour/",
+   "kind": "reference",
+   "n": 47
+  },
+  {
+   "title": "MongoDB 문서 · Introduction",
+   "url": "https://www.mongodb.com/docs/manual/introduction/",
+   "kind": "reference",
+   "n": 48
+  },
+  {
+   "title": "Kubernetes 문서 · Overview",
+   "url": "https://kubernetes.io/docs/concepts/overview/",
+   "kind": "reference",
+   "n": 49
   }
  ],
  "caveat": "커뮤니티 서버 구조는 2026년 7월 글 기준이고, Exposed·gRPC 를 어디에 쓰는지는 공개 자료에 없습니다. 어린이집 대기 알림의 실제 구현도 공개되지 않아 일반적인 구조로 '보통 이런 것'을 보였습니다. 인턴 급여는 공개 자료를 찾지 못했습니다.",
@@ -1281,6 +1463,81 @@
    "level": "입문",
    "url": "https://docs.claude.com/en/docs/claude-code/overview",
    "why": "규칙 파일·명령·검증 순서를 갖춘 나만의 AI 작업 방식을 만드는 출발점."
+  },
+  {
+   "id": "google-recsys",
+   "title": "Recommendation Systems",
+   "by": "Google for Developers · 머신러닝 과정",
+   "kind": "course",
+   "url": "https://developers.google.com/machine-learning/recommendation",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "'피드·추천·개인화' 줄 — 후보 생성·점수·재정렬 3단계를 한 번에 잡는다."
+  },
+  {
+   "id": "daangn-recsys-news",
+   "title": "당근의 추천시스템은 LLM 안 부럽다",
+   "by": "바이라인네트워크 · 2026",
+   "kind": "doc",
+   "url": "https://byline.network/2026/04/17_28182764/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "당근 홈 피드 추천이 2021년부터 어떻게 바뀌었는지 — 면접 전 회사 맥락."
+  },
+  {
+   "id": "ab-kohavi",
+   "title": "A/B 테스트 — 신뢰도 높은 온라인 통제 실험",
+   "by": "론 코하비·다이앤 탕·야 쉬 · 이기홍·김기영 옮김 · 에이콘출판 · 2022",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296254070",
+   "lang": "ko",
+   "level": "실무",
+   "why": "'A/B 테스트' 줄 — 주 지표·가드레일 고르기와 실험을 망치는 함정."
+  },
+  {
+   "id": "growth-hacking",
+   "title": "그로스 해킹 — 데이터와 실험을 통해 성장하는 서비스를 만드는 방법",
+   "by": "양승화 · 위키북스 · 2021",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=259675310",
+   "lang": "ko",
+   "level": "입문",
+   "why": "재방문율·체류·코호트 — 캐러셀 목표를 지표로 바꾸는 법."
+  },
+  {
+   "id": "go-tour",
+   "title": "A Tour of Go",
+   "by": "Go 팀 · go.dev",
+   "kind": "doc",
+   "url": "https://go.dev/tour/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "피드 인프라팀 서버 언어 Go — 문법·고루틴을 브라우저에서 바로 돌려 본다."
+  },
+  {
+   "id": "grpc-gateway-docs",
+   "title": "gRPC-Gateway",
+   "by": "grpc-ecosystem",
+   "kind": "doc",
+   "url": "https://grpc-ecosystem.github.io/grpc-gateway/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": ".proto 하나로 gRPC 와 REST 입구를 같이 내는 법."
+  },
+  {
+   "id": "istio-docs",
+   "title": "What is Istio?",
+   "by": "Istio 문서",
+   "kind": "doc",
+   "url": "https://istio.io/latest/docs/overview/what-is-istio/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "서비스 메시가 무엇을 대신해 주는지 — 트래픽·보안·관측."
   }
  ],
  "study_path": [
@@ -1417,5 +1674,6 @@
   "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
   "near": "9호선·신분당선 신논현역 근처 {추론}",
   "note": "공고의 근무지 표기는 'SEOUL'이고, 주소는 당근 채용 사이트 하단의 회사 정보다 [14]. 회사 소개 사이트 하단의 구로구 주소는 자회사 당근서비스 것이다 [15]. 같은 건물 다른 층을 쓸 수 있다 {추론}."
- }
+ },
+ "updated_at": "2026-11-25"
 }
