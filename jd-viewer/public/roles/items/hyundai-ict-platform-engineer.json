@@ -1,0 +1,993 @@
+{
+  "id": "hyundai-ict-platform-engineer",
+  "company": "현대자동차",
+  "role": "Platform Engineer",
+  "team": "ICT 담당 · GPU 기반 AI 클라우드와 AI 플랫폼을 만드는 조직",
+  "jobs": [
+    "saramin-55605742",
+    "wanted-398827"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "사내 개발자·연구자가 **GPU를 빌려 모델을 학습시키고 서비스로 띄우는 AI 클라우드**를 만듭니다. 위층은 쿠버네티스 위의 학습·추론 플랫폼과 포털, 아래층은 GPU 서버·고속 네트워크(IB·RoCE)·고성능 스토리지입니다.[1][2]",
+    "env": "회사는 2021년부터 공용 GPU 팜 위에 컨테이너 개발 환경을 주는 AI 플랫폼을 운영해 왔고[5], 2026년 4분기부터 대규모 GPU와 자체 AI 플랫폼으로 서비스 역량을 갖추며 2029년 하반기 새만금 AI 데이터센터에서 GPU 1만 장 이상을 쓰는 것이 목표라고 밝혔습니다.[4][6]",
+    "oneline": "모델을 만드는 사람이 아니라 **모델을 만드는 사람들이 쓰는 GPU 클라우드를 만드는** 자리. 쿠버네티스와 GPU·네트워크·스토리지 하드웨어를 둘 다 봐야 합니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "- GPU를 기반으로 하는 AI 클라우드 내 인프라 프로덕트 및 AI 플랫폼의 개발 및 고도화 업무를 수행합니다.",
+      "short": "GPU를 사내 사용자에게 '빌려 쓰는 서비스'로 내주는 클라우드와 그 위의 AI 플랫폼을 만드는 일.",
+      "why": "현대차 ICT는 2021년에 이미 공용 GPU 팜 위에서 도커 컨테이너로 AI 개발 환경을 나눠 주는 플랫폼을 소개했습니다. 플랫폼이 없을 때는 GPU 서버를 준비하는 데 몇 달, 개발 환경을 꾸리는 데 1주일이 걸렸는데, 플랫폼을 쓰면 첫 준비 약 2일·환경 배포 약 3분이라고 적었습니다.[5] 이제 규모가 커집니다 — 그룹은 새만금에 GPU 5만 장급 AI 데이터센터를 단계적으로 짓겠다고 했고[6], 데이터센터를 짓는 법인과 GPU 서비스를 맡는 법인을 따로 세운다고 보도됐습니다.[7]",
+      "actually": {
+        "intro": "'인프라 프로덕트'는 GPU 자체를 상품처럼 내주는 층이고, 'AI 플랫폼'은 그 위에서 학습·배포를 쉽게 해 주는 층입니다 {추론}.",
+        "items": [
+          "**인프라 프로덕트** — GPU 몇 장짜리 작업 공간(노트북·컨테이너)·학습 작업·추론 서버를 신청하면 내주는 기능 {추론}",
+          "**AI 플랫폼** — 학습 작업 제출, 모델 저장·버전 관리, 추론 서버 배포를 한 화면·한 API로 묶는 것.[5][18][19][21]",
+          "**사용자** — 사내 AI 과제 팀과, 대고객 기술 지원이 적힌 것으로 보아 그룹사·외부 고객도 있을 수 있다.[1][7] {추론} 회사는 자율주행·로봇용 파운데이션 모델은 직접 만들고 사내 업무용 AI(H Chat Pro 등)는 외부 기술을 쓴다고 밝혔는데[8][12], GPU를 많이 먹는 쪽은 앞의 직접 만드는 학습이다 {추론}.",
+          "**기반** — 같은 조직은 자체 프라이빗 클라우드(H클라우드)와 쿠버네티스 서비스(HKS)를 운영해 왔다.[10][11]"
+        ]
+      },
+      "how_far": "GPU 데이터센터 건물·전력은 별도 법인과 시설 쪽 일입니다.[7] 이 자리는 **서버가 들어온 다음부터 — 서버·네트워크·스토리지를 묶어 쿠버네티스로 내주고, 그 위 플랫폼을 만드는 것**까지입니다 {추론}.",
+      "refs": [1, 5, 6, 7, 10, 11],
+      "study": ["hmg-ai-platform-2021", "dc-internal"]
+    },
+    {
+      "section": "task",
+      "quote": "■ AI 플랫폼 고도화",
+      "short": "위층 — 사용자가 직접 만지는 학습·추론·MLOps·포털을 더 좋게 만드는 묶음.",
+      "why": "2021년 글의 로드맵은 분산 학습(데이터 병렬) → ML·서비스화 도구 → 빅데이터 연동 순서였습니다.[5] '고도화'는 그 다음 단계를 대규모 GPU에 맞게 다시 만드는 일로 읽힙니다 {추론}.",
+      "actually": {
+        "items": [
+          "아래 네 줄(학습·추론 설계, MLOps, 포털, 쿠버네티스 기능)이 이 묶음의 내용이다.[1]",
+          "사용자 쪽에서 보면 '신청 → 기다림 → 실행 → 결과 확인'의 시간을 줄이는 것이 목표다.[5] {추론}"
+        ]
+      },
+      "refs": [1, 5]
+    },
+    {
+      "section": "task",
+      "quote": "· 대규모 GPU 서버를 이용한 AI 학습/추론 플랫폼 설계",
+      "short": "GPU 수백~수천 장을 학습(여러 장이 한 작업)과 추론(한 장씩 많이)에 어떻게 나눌지 그리는 일.",
+      "why": "학습과 추론은 GPU를 쓰는 방식이 정반대입니다. 학습은 여러 GPU가 한 작업을 같이 하며 매 단계 서로 값을 맞추고(집합 통신), 추론은 요청마다 짧게 많이 돌립니다.[20][26] 그룹 목표가 GPU 1만 장 이상이라[4] 이 둘을 한 클러스터에서 어떻게 나눌지가 설계의 첫 질문이 됩니다 {추론}.",
+      "actually": {
+        "items": [
+          "**학습 작업은 '전부 아니면 하나도'** — GPU 64장짜리 작업에 60장만 잡히면 아무것도 못 하고 자원만 묶인다. 그래서 묶음 단위로 올리는 gang 스케줄링(Volcano PodGroup 의 minMember)을 쓴다.[17]",
+          "**팀별 몫** — 팀마다 GPU 한도를 주고 남으면 빌려 쓰게 하는 대기열(Kueue ClusterQueue 의 nominalQuota·borrowingLimit, 같은 cohort 끼리 빌림).[16]",
+          "**배치 위치** — 같은 학습 작업은 같은 네트워크 스위치 아래, 같은 NVLink 묶음 안에 모아야 빠르다.[20] {추론}",
+          "**추론은 따로 묶음** — 추론 서버는 요청량에 따라 늘었다 줄었다 해야 해서 학습 노드와 섞지 않거나, 밤에 노는 추론 GPU를 배치 작업에 돌린다 {추론}.",
+          "**고장 가정** — Meta 는 H100 1만6천 장으로 54일 학습하는 동안 466번 중단됐고 대부분 하드웨어 문제였다고 적었다(다른 회사).[37] 그래서 체크포인트·자동 재시작이 설계에 들어간다."
+        ]
+      },
+      "flows": [
+        {
+          "caption": "학습 작업 하나가 GPU를 받기까지 (보통 이런 것 — Kueue·Volcano 문서 기준)",
+          "steps": [
+            "제출 · 사용자가 포털이나 CLI로 'GPU 16장, 이미지, 데이터 경로'를 낸다",
+            "대기열 · 팀 몫(쿼터)을 넘지 않는지, 빌릴 수 있는지 본다[16]",
+            "입장 · 16장이 한꺼번에 들어갈 자리가 있을 때만 통과[16][17]",
+            "배치 · 같은 스위치·노드 묶음에 파드를 올린다",
+            "실행 · NCCL 로 GPU끼리 통신하며 학습, 주기적으로 체크포인트[25]",
+            "끝·실패 · 자원을 돌려주고, 실패면 마지막 체크포인트에서 다시"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "how_far": "모델 구조나 학습 기법은 사용자(연구자) 몫입니다. 이 자리는 **GPU를 공정하게·빨리·안 끊기게 내주는 규칙과 장치**를 설계합니다. 최소선은 'gang 스케줄링이 왜 필요한가'와 '쿼터·선점'을 설명하고 직접 설정해 본 것 {추론}.",
+      "refs": [4, 16, 17, 20, 25, 26, 37],
+      "study": ["kueue-docs", "volcano-docs", "cs336-parallel", "ml-eng-book"]
+    },
+    {
+      "section": "task",
+      "quote": "· AI모델 Lifecycle 전반에 대한 MLOps 설계 및 구축",
+      "short": "데이터 → 학습 → 저장·버전 → 배포 → 감시 → 재학습 흐름을 사람 손 없이 이어 주는 장치를 만드는 일.",
+      "why": "MLOps 는 ML 시스템에 DevOps(자동 시험·배포) 원칙을 적용하는 것이고, 수동 단계(수준 0)에서 학습 파이프라인 자동화(1), 파이프라인 자체의 CI/CD(2)로 올라갑니다.[22] 같은 시기 같은 ICT 조직은 모델 서빙용 CI/CD 를 맡는 백엔드 개발자도 따로 뽑았습니다.[3] 이 자리는 그 흐름이 올라탈 **플랫폼 쪽**을 맡는 것으로 보입니다 {추론}.",
+      "actually": {
+        "items": [
+          "**실험 기록·모델 등록** — 학습 결과를 이름·버전으로 쌓는다. MLflow 모델 레지스트리는 같은 이름으로 등록할 때마다 버전이 1부터 올라가고, `@champion` 같은 별칭으로 '지금 쓰는 버전'을 가리키며, 버전마다 만든 실행(run)이 이어진다.[21]",
+          "**학습 실행** — 쿠버네티스 위 분산 학습은 Kubeflow Trainer 의 TrainJob 같은 리소스로 낸다(PyTorch·DeepSpeed·JAX 등).[18]",
+          "**배포** — 등록된 모델을 추론 서버로 띄운다. KServe 는 InferenceService 하나로 자동 확장·버전·트래픽 나누기를 다룬다.[19]",
+          "**감시·되돌리기** — 지연·오류·GPU 포화를 보고, 새 버전이 나쁘면 별칭을 이전 버전으로 돌린다.[21][34] {추론}",
+          "**재현성** — 같은 데이터·코드·이미지로 다시 돌리면 같은 모델이 나오도록 세 가지를 같이 기록한다 {추론}."
+        ]
+      },
+      "flows": [
+        {
+          "caption": "모델 생애주기 (Google Cloud MLOps 문서의 단계를 우리 말로)",
+          "steps": [
+            "데이터 준비 · 학습 데이터를 모으고 나눈다",
+            "학습 · GPU 클러스터에서 실행, 실험 기록",
+            "검증 · 기준 점수를 넘는지 자동 시험",
+            "등록 · 모델 레지스트리에 버전으로 저장",
+            "배포 · 추론 서버로 띄우고 트래픽을 조금씩 옮긴다",
+            "감시 · 성능이 떨어지면 재학습을 건다"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "how_far": "모델의 품질 기준은 과제 팀이 정합니다. 플랫폼 엔지니어는 **각 단계가 쓸 도구를 고르고 설치·연결해, 과제 팀이 YAML 몇 줄로 쓰게** 만들면 됩니다. MLflow·Kubeflow·KServe 중 둘 이상을 직접 깔아 연결해 본 경험이 최소선 {추론}.",
+      "refs": [3, 18, 19, 21, 22, 34],
+      "study": ["google-mlops", "mlflow-registry", "kubeflow-trainer", "kserve-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "· AI플랫폼의 서비스 포털 개발 및 고도화",
+      "short": "사용자가 GPU 신청·작업 제출·사용량 확인을 클릭으로 하는 웹 화면과 그 뒤 API를 만드는 일.",
+      "why": "2021년 글에서 회사가 내세운 효과가 바로 '환경 배포 약 3분'이었습니다.[5] 쿠버네티스 YAML을 모르는 연구자도 GPU를 쓰게 하려면 포털이 입구가 됩니다 {추론}. 다른 회사 예로, 쿠팡은 GPU를 CLI·API·UI로 셀프서비스하게 만든 뒤 GPU 활용률이 65%에서 95%로 올랐다고 발표했습니다.[43]",
+      "actually": {
+        "items": [
+          "**신청 화면** — GPU 종류·장수·기간·이미지를 고르면 뒤에서 쿠버네티스 리소스(작업·노트북·추론 서버)를 만들어 준다 {추론}",
+          "**내 작업 보기** — 대기 중·실행 중·실패 이유(왜 Pending 인가)를 사람 말로 보여 준다 {추론}",
+          "**사용량·몫** — 팀별 GPU 시간, 남은 한도. 쿠버네티스는 확장 자원(GPU)에 대해 requests 기준의 쿼터를 건다.[42]",
+          "**권한** — 사내 계정으로 로그인, 팀 = 네임스페이스로 나눠 남의 작업을 못 보게 {추론}",
+          "**문서 연결** — 화면마다 사용 가이드로 가는 길(업무 '문서화'와 이어진다).[1]"
+        ]
+      },
+      "how_far": "디자인·화면 기획 전문가가 따로 있을 수 있고, 플랫폼 엔지니어는 **포털이 부르는 백엔드 API와 쿠버네티스 연동**이 중심입니다 {추론}. 웹 프레임워크 하나로 CRUD + 쿠버네티스 클라이언트 라이브러리 호출을 해 본 수준이면 시작할 수 있습니다 {추론}.",
+      "refs": [1, 5, 42, 43],
+      "study": ["k8s-operator", "wiki-kubernetes"]
+    },
+    {
+      "section": "task",
+      "quote": "· Kubernetes 기반의 AI 학습/추론 플랫폼 기능 개발",
+      "short": "쿠버네티스에 'GPU 학습 작업'·'추론 서버' 같은 새 기능을 오퍼레이터·설정으로 붙이는 개발.",
+      "why": "쿠버네티스는 GPU를 장치 플러그인이 알리는 자원(`nvidia.com/gpu`)으로 다루고, 개수는 limits 에 정수로 적습니다.[13] 그 위에 학습·추론에 맞는 동작(묶음 배치, 쪼개 쓰기, 자동 확장)은 기본에 없어서 직접 붙여야 합니다.[13][16][17]",
+      "actually": {
+        "items": [
+          "**GPU 노드 준비** — 드라이버·컨테이너 툴킷·장치 플러그인·모니터링(DCGM)·MIG 관리자를 클러스터에 한꺼번에 까는 NVIDIA GPU Operator.[14]",
+          "**쪼개 쓰기** — 시간 나누기(격리 없음) 또는 MIG(최대 7조각, 메모리·오류 격리).[14] 다른 회사 예로 토스증권은 작업의 약 1/3이 GPU의 1/4도 못 쓰는 것을 보고 MIG를 들였다.[35]",
+          "**새 리소스** — '학습 작업'·'노트북' 같은 사용자 정의 리소스(CRD)와 그걸 실제 파드로 바꾸는 컨트롤러 — 오퍼레이터 패턴.[41]",
+          "**추론 자동 확장** — KServe 는 기본으로 Knative 를 깔아 요청이 없으면 0까지 줄이는 서버리스 배포를 한다.[19]",
+          "**고속 네트워크 붙이기** — 파드가 IB·RoCE 카드를 직접 쓰게(GPUDirect RDMA) GPU Operator·Network Operator 설정.[15]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "GPU 2장을 요청하는 파드 (Kubernetes 문서의 형식)",
+          "body": "GPU는 limits 에 정수로 적습니다. requests 를 같이 쓰면 같은 값이어야 합니다.[13] 아래는 형식 예이고 이미지 이름은 가상입니다.",
+          "lang": "yaml",
+          "code": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: train-demo\nspec:\n  restartPolicy: OnFailure\n  containers:\n  - name: trainer\n    image: example.registry/train:1.0   # 가상\n    resources:\n      limits:\n        nvidia.com/gpu: 2"
+        }
+      ],
+      "how_far": "쿠버네티스 자체를 고치는 게 아니라 **확장 지점(CRD·컨트롤러·스케줄러 플러그인·Helm 값)으로 기능을 더하는** 일입니다. Go 로 간단한 컨트롤러를 만들어 봤거나, 오픈소스 오퍼레이터 설정을 깊게 바꿔 본 경험이면 좋습니다 {추론}.",
+      "refs": [13, 14, 15, 16, 17, 19, 35, 41],
+      "study": ["k8s-gpu", "gpu-operator", "k8s-operator", "toss-mig", "k8s-in-action"]
+    },
+    {
+      "section": "task",
+      "quote": "■ AI 클라우드 시스템 구축/관리",
+      "short": "아래층 — GPU 서버·네트워크·스토리지라는 실제 장비를 들이고 세우고 지키는 묶음.",
+      "why": "그룹은 엔비디아 블랙웰 GPU 최대 5만 장 규모의 AI 팩토리를 발표했고[9], 새만금 데이터센터는 2027년 착공·2029년 완공이 목표입니다.[6] 완공 전에도 2026년 4분기부터 GPU 서비스 역량을 단계적으로 갖춘다고 했습니다.[4]",
+      "actually": {
+        "items": [
+          "아래 다섯 줄(서버 설계, 네트워크·스토리지, 문서·지원, 솔루션 도입, 운영 자동화)이 이 묶음이다.[1]",
+          "장비가 한꺼번에 들어오는 게 아니라 단계적으로 늘어나서 '들이고 → 시험하고 → 내주는' 일이 반복된다.[4][6] {추론}"
+        ]
+      },
+      "refs": [1, 4, 6, 9]
+    },
+    {
+      "section": "task",
+      "quote": "· 최신 GPU서버 도입을 위한 시스템 설계",
+      "short": "새 GPU 서버 몇 대를 어떤 구성·전력·네트워크로 들여 기존 클러스터에 붙일지 정하는 일.",
+      "why": "최신 GPU 서버는 한 대가 GPU 8장·전력 최대 10.2kW·네트워크 카드(400Gb/s ConnectX-7) 8장인 식이라(DGX H100 기준)[27] 랙 전력·냉각·스위치 포트가 같이 정해져야 합니다. 그룹이 들이기로 한 블랙웰 세대는 이보다 더 큽니다.[9] {추론}",
+      "actually": {
+        "items": [
+          "**구성 고르기** — GPU 세대·장수, 노드 사이 연결(IB냐 RoCE냐), 로컬 NVMe 크기 {추론}",
+          "**숫자로 묶기** — 서버 한 대의 전력·네트워크 카드 수 × 대수 → 랙·스위치 수.[27] {추론}",
+          "**단위 설계** — NVIDIA 기준 설계(DGX SuperPOD)는 서버 묶음(SU, 확장 단위)마다 스토리지 읽기·쓰기 대역폭을 정해 둔다(표준: SU당 읽기 40GB/s·쓰기 20GB/s).[28]",
+          "**섞어 쓰기** — 세대가 다른 GPU가 한 클러스터에 섞이면 노드에 라벨을 달아 작업이 원하는 종류를 고르게 한다 {추론}",
+          "**받아들이기 시험** — 들어온 서버를 진단 도구(DCGM diag r1~r4)로 돌려 불량을 걸러 낸 뒤 내준다.[30]"
+        ]
+      },
+      "how_far": "서버 사양 최종 선택과 구매는 예산·협력사와 같이 정합니다. 이 자리는 **요구(어떤 작업이 몇 장)를 서버·네트워크·스토리지 숫자로 바꾸고, 들어온 장비를 시험해 클러스터에 붙이는** 데까지 {추론}.",
+      "refs": [9, 27, 28, 30],
+      "study": ["dgx-h100-guide", "dgx-superpod-storage", "dc-internal", "cs336-gpus"]
+    },
+    {
+      "section": "task",
+      "quote": "· GPU서버, 고속 네트워크(IB, RoCE), 고성능 스토리지 구축 및 테스트",
+      "short": "GPU끼리 빠르게 말하는 길(IB·RoCE)과 데이터를 빨리 먹이는 저장소를 세우고 제 속도가 나는지 재는 일.",
+      "why": "여러 GPU 학습은 단계마다 기울기를 서로 맞추므로(all-reduce) 노드 사이 네트워크가 느리면 GPU가 놉니다.[26] 스토리지도 마찬가지 — 다른 회사 예로 토스증권은 체크포인트 저장 때 느린 스토리지 하나가 클러스터 전체를 멈추는 문제를 겪었다고 적었습니다.[36]",
+      "actually": {
+        "items": [
+          "**IB(InfiniBand)** — GPU 클러스터 전용으로 많이 쓰는 망. RDMA(상대 메모리를 CPU 거치지 않고 직접 읽고 쓰기)를 기본으로 한다 {추론}.",
+          "**RoCE** — 같은 RDMA를 이더넷 위에 얹은 것. RoCEv2 는 UDP/IP(목적지 포트 4791)에 싸서 라우팅이 된다.[23] 패킷을 잃으면 크게 느려져 PFC·ECN 으로 '안 잃는 망'을 만든다.[24]",
+          "**GPU가 카드를 직접 쓰게** — GPUDirect RDMA(GPU ↔ 네트워크 카드 직접), GPUDirect Storage(스토리지 ↔ GPU 메모리 직접).[15][29]",
+          "**재기** — nccl-tests 로 all-reduce 의 busbw(버스 대역폭)를 재서 카드 속도에 가까운지 본다.[26] NCCL_DEBUG=INFO 로 실제로 IB를 탔는지(NET/IB) 확인.[25]",
+          "**스토리지 재기** — 기준 설계는 자동차·비전 작업에 GPU당 읽기 4GB/s, LLM 은 쓰기가 읽기의 절반 이상이어야 한다고 적었다.[28]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "망 속도가 학습 한 걸음에 얼마나 드나 (가상 값, 직접 돌린 출력)",
+          "body": "nccl-tests 의 환산식(busbw = algbw × 2(n−1)/n)[26]을 거꾸로 써서, 8B 모델의 bf16 기울기 16GB를 GPU 16장이 맞추는 시간을 냈습니다. 400Gb/s 와 100Gb/s 는 네 배 차이가 납니다. 체크포인트 크기의 '파라미터당 14바이트'(bf16 가중치 + fp32 원본 + Adam 두 값)는 흔한 어림셈입니다 {추론}. 쓰기 20·62GB/s 는 기준 설계의 SU당 표준·향상 값입니다.[28]",
+          "lang": "python",
+          "code": "def allreduce_sec(size_gb, n, busbw_gbs):\n    return size_gb * 2 * (n - 1) / n / busbw_gbs\n\ngrad_gb = 8 * 2  # 8B 모델 bf16 기울기\nfor label, gbs in [(\"400Gb/s(50GB/s)\", 50), (\"100Gb/s(12.5GB/s)\", 12.5)]:\n    print(f\"GPU 16장 · {label} → {allreduce_sec(grad_gb, 16, gbs):.2f}초\")\n\nsize = 70 * 14  # 70B 체크포인트 GB\nfor bw in (2, 20, 62):\n    print(f\"70B 체크포인트 {size:,}GB · 쓰기 {bw}GB/s → {size / bw:,.0f}초\")\n\n# 출력\n# GPU 16장 · 400Gb/s(50GB/s) → 0.60초\n# GPU 16장 · 100Gb/s(12.5GB/s) → 2.40초\n# 70B 체크포인트 980GB · 쓰기 2GB/s → 490초\n# 70B 체크포인트 980GB · 쓰기 20GB/s → 49초\n# 70B 체크포인트 980GB · 쓰기 62GB/s → 16초"
+        }
+      ],
+      "how_far": "스위치 펌웨어·배선 같은 물리 작업은 네트워크·시설 담당이나 협력사와 나눌 가능성이 큽니다 {추론}. 이 자리의 최소선은 **IB와 RoCE의 차이, 왜 '안 잃는 망'이 필요한지 설명하고, nccl-tests·스토리지 벤치마크를 돌려 숫자로 합격·불합격을 말할 수 있는 것** {추론}.",
+      "refs": [15, 23, 24, 25, 26, 28, 29, 36],
+      "study": ["roce-doca", "nccl-tests", "nccl-docs", "gds-docs", "dgx-superpod-storage", "toss-gpu-cluster-1", "net-intro"]
+    },
+    {
+      "section": "task",
+      "quote": "· AI 클라우드에 대한 문서화, 사용 가이드 제공 및 대고객 기술 지원",
+      "short": "'GPU 어떻게 쓰나요'에 답하는 설명서를 쓰고, 사용자가 막히면 같이 원인을 찾아 주는 일.",
+      "why": "플랫폼은 사용자가 혼자 쓸 수 있어야 의미가 있습니다. 2021년 글도 플랫폼의 효과를 사용자가 환경을 꾸리는 시간으로 쟀습니다.[5] '대고객'이라는 말은 GPU 서비스 법인이 따로 서는 그룹 계획과 이어질 수 있습니다.[7] {추론}",
+      "actually": {
+        "items": [
+          "**시작 안내** — 계정 받기 → 첫 노트북 띄우기 → 첫 학습 작업 내기를 한 쪽으로 {추론}",
+          "**자주 막히는 곳** — 작업이 Pending 인 이유(몫 초과·자리 없음), GPU 메모리 부족, 망이 IB를 안 탐(NCCL 로그 보는 법).[25] {추론}",
+          "**지원 창구** — 문의를 받아 사용자 코드 문제인지 플랫폼 문제인지 가르고, 플랫폼 문제면 고친다 {추론}",
+          "**문서 = 운영의 일부** — 같은 문의가 반복되면 문서나 자동화로 없앤다. 반복 수작업(toil)을 줄이는 것이 운영의 목표다.[33]"
+        ]
+      },
+      "how_far": "기술 문서를 따로 쓰는 사람이 없을 가능성이 높아 엔지니어가 직접 씁니다 {추론}. **남이 따라 해서 되는 설명서**를 써 본 경험(사내 위키·README)이면 충분합니다 {추론}.",
+      "refs": [5, 7, 25, 33],
+      "study": ["sre-book"]
+    },
+    {
+      "section": "task",
+      "quote": "· 클라우드 솔루션 개발 및 도입 관리",
+      "short": "필요한 기능을 직접 만들지, 오픈소스·상용 제품을 들일지 정하고 들인 것을 붙여 관리하는 일.",
+      "why": "GPU 클라우드에 필요한 부품(스케줄러·모델 레지스트리·서빙·모니터링·스토리지)은 오픈소스와 상용이 이미 많습니다.[16][19][21][31] 그룹은 엔비디아와 AI 팩토리 협력을 발표했으니[9] 협력사 소프트웨어 도입도 일에 들어갈 수 있습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**고르기** — 같은 일을 하는 후보 2~3개를 시험 클러스터에 깔아 기능·성능·운영 부담을 비교 {추론}",
+          "**붙이기** — 사내 계정·네트워크·보안 기준에 맞게 설정, H클라우드·HKS 같은 기존 바탕과 연결.[10][11] {추론}",
+          "**버전 관리** — 쿠버네티스·드라이버·GPU Operator 버전이 서로 맞아야 해서 올리는 순서를 정한다.[14] {추론}",
+          "**만들기** — 제품이 없는 틈(사내 결재 연동, 과금·사용량 보고)은 직접 개발 {추론}"
+        ]
+      },
+      "how_far": "구매 계약은 다른 부서 일입니다. 엔지니어는 **기술 검토(PoC) 결과를 숫자로 내고, 들인 뒤 운영 가능한 상태로 붙이는** 데까지 {추론}.",
+      "refs": [9, 10, 11, 14, 16, 19, 21, 31],
+      "study": ["gpu-operator", "kserve-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "· 지속적인 운영 안정화 및 자동화를 위한 개선작업",
+      "short": "GPU 고장·작업 실패를 빨리 알아채고, 반복되는 손일을 코드로 바꿔 사람 없이 돌게 하는 일.",
+      "why": "대규모 GPU는 자주 고장 납니다 — 다른 회사 예로 Meta 의 54일 학습 중 중단 466번.[37] GPU 오류는 Xid 번호로 드라이버 로그에 남고(79번 = GPU가 버스에서 떨어짐)[32], 사람이 일일이 보면 따라갈 수 없습니다.",
+      "actually": {
+        "items": [
+          "**감시** — dcgm-exporter 로 GPU 사용률·온도·전력·Xid 를 Prometheus 지표로 모은다.[31] 서비스는 지연·트래픽·오류·포화 네 신호로 본다.[34]",
+          "**자동 격리** — Xid 가 뜬 노드는 새 작업을 안 받게 표시하고(cordon) 진단을 돌린 뒤 돌려놓는다.[30][32] {추론}",
+          "**자동 재시작** — 학습 작업이 노드 고장으로 죽으면 마지막 체크포인트에서 다시 {추론}",
+          "**손일 없애기** — 서버 받아들이기 시험·드라이버 올리기·사용자 계정 만들기를 스크립트·파이프라인으로. 구글 SRE 는 운영 손일을 각자 시간의 50% 아래로 두는 것을 목표로 한다.[33]",
+          "**사후 기록** — 큰 장애는 원인·조치·재발 방지를 남긴다 {추론}"
+        ]
+      },
+      "how_far": "**지표 → 경보 → 대응 절차 → 자동화** 순서로 하나라도 끝까지 만들어 본 경험이 최소선입니다 {추론}.",
+      "refs": [30, 31, 32, 33, 34, 37],
+      "study": ["dcgm-docs", "xid-docs", "prom-book", "sre-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "· 학사 이상의 학위를 보유하신 분",
+      "short": "4년제 학사 이상이면 되고, 전공 제한은 적혀 있지 않다.",
+      "why": "공고는 학사 이상만 적고 전공을 정하지 않았습니다.[1] 같은 시기 같은 조직의 MLOps 백엔드 공고는 '컴퓨터공학 등 관련 분야'를 붙였습니다.[3]",
+      "actually": {
+        "items": [
+          "전공보다 아래 세 줄(GPU 경력·쿠버네티스 AI 플랫폼·클라우드 인프라)이 서류에서 실제로 걸러지는 기준이 된다 {추론}."
+        ]
+      },
+      "refs": [1, 3]
+    },
+    {
+      "section": "qualification",
+      "quote": "· 3년 이상의 GPU 기반 시스템 또는 플랫폼 경험을 보유하신 분",
+      "short": "GPU 서버나 GPU를 내주는 플랫폼을 3년 넘게 직접 만들거나 운영해 본 사람.",
+      "why": "GPU는 CPU 서버와 다른 고장(Xid)·다른 통신(NCCL·RDMA)·다른 자원 관리(장치 플러그인·MIG)를 가집니다.[13][14][25][32] 이걸 처음 배우는 사람에게 맡기기에는 장비가 비쌉니다 {추론}.",
+      "actually": {
+        "items": [
+          "**인정될 만한 경험** — GPU 서버 클러스터 운영, GPU 쿠버네티스 노드 관리, 학습·추론 플랫폼 개발, 클라우드 GPU 인스턴스로 서비스 운영 {추론}",
+          "**이력서에 쓸 숫자** — GPU 몇 장, 몇 개 팀이 썼나, 사용률을 얼마에서 얼마로, 장애를 몇 분 안에 {추론}",
+          "**'시스템 또는 플랫폼'** — 하드웨어 쪽(서버·드라이버)이든 소프트웨어 쪽(플랫폼)이든 한쪽 3년이면 된다는 뜻으로 읽힌다.[1] {추론}"
+        ]
+      },
+      "level": {
+        "basic": "nvidia-smi 로 GPU 상태를 읽고, 컨테이너에서 GPU를 잡아 학습 코드를 돌려 봤다.",
+        "work": "GPU 노드 여러 대를 운영하며 드라이버·장치 플러그인을 올리고, GPU 장애를 Xid·DCGM 으로 진단했다.",
+        "team": "수백 장 이상 클러스터에서 팀 몫·쪼개 쓰기·고속 망·스토리지까지 다룬 경험."
+      },
+      "refs": [1, 13, 14, 25, 32],
+      "study": ["ml-eng-book", "cs336-gpus", "xid-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "· Kubernetes 기반 AI 플랫폼 설계/개발/운영 경험을 보유하신 분",
+      "short": "쿠버네티스 위에 학습·추론·노트북을 올리는 플랫폼을 설계부터 운영까지 해 본 사람.",
+      "why": "이 조직의 바탕이 자체 쿠버네티스 서비스(HKS)이고[10][11], 공고의 기술 태그도 쿠버네티스 하나입니다.[1] 업무의 '쿠버네티스 기반 학습/추론 플랫폼 기능 개발'을 바로 하려면 필요합니다.",
+      "actually": {
+        "items": [
+          "**설계** — 네임스페이스·쿼터로 팀 나누기[42], gang 스케줄링·대기열 고르기[16][17]",
+          "**개발** — CRD·컨트롤러, Helm 차트, 플랫폼 API",
+          "**운영** — GPU Operator 버전 올리기[14], 노드 장애 대응, Pending 원인 찾기",
+          "**자주 쓰이는 구성 요소** — Kubeflow(학습·파이프라인)[18], KServe(서빙)[19], MLflow(레지스트리)[21] — 공고에 이름은 없다 {추론}"
+        ]
+      },
+      "level": {
+        "basic": "Deployment·Service·PVC 를 직접 쓰고 kubectl 로 Pending·CrashLoopBackOff 를 읽는다.",
+        "work": "GPU 노드가 있는 클러스터를 운영하며 쿼터·스케줄러·오퍼레이터를 설정했다.",
+        "team": "여러 팀이 같이 쓰는 AI 플랫폼을 설계하고, 기능을 컨트롤러·API로 직접 개발했다."
+      },
+      "refs": [1, 10, 11, 14, 16, 17, 18, 19, 21, 42],
+      "study": ["wiki-kubernetes", "k8s-in-action", "cka", "kueue-docs", "kubeflow-trainer"]
+    },
+    {
+      "section": "qualification",
+      "quote": "· 중간 규모 이상의 클라우드 컴퓨팅, 스토리지, 네트워크 관련 경험을 보유하신 분",
+      "short": "서버 몇 대가 아니라 수십 대 이상의 컴퓨팅·스토리지·네트워크를 함께 다뤄 본 사람.",
+      "why": "업무 절반이 GPU 서버·IB/RoCE·고성능 스토리지를 세우고 시험하는 일입니다.[1] 쿠버네티스만 알면 '왜 느린지'가 아래층에서 막힙니다 {추론}.",
+      "actually": {
+        "items": [
+          "**컴퓨팅** — 서버·가상 머신 수십 대 이상을 자동으로 세우고 관리 {추론}",
+          "**스토리지** — 병렬·분산 파일 시스템이나 오브젝트 스토리지 운영, 처리량·지연을 재 본 경험.[28][29] {추론}",
+          "**네트워크** — VLAN·라우팅·대역폭 개념, 가능하면 RDMA(IB·RoCE).[23][24]",
+          "**'중간 규모'** — 공고에 숫자는 없다. 혼자 서버 한두 대가 아니라 팀 단위 운영이라는 뜻으로 읽힌다 {추론}."
+        ]
+      },
+      "level": {
+        "basic": "TCP/IP·서브넷·스위치를 설명하고, 리눅스에서 디스크·네트워크 속도를 재 본다.",
+        "work": "수십 대 규모 클라우드(사설·공용)를 운영하며 스토리지·네트워크 장애를 직접 잡았다.",
+        "team": "RDMA 망과 병렬 스토리지를 GPU 클러스터에 붙이고 nccl-tests·스토리지 벤치마크로 합격선을 잡았다."
+      },
+      "refs": [1, 23, 24, 28, 29],
+      "study": ["net-intro", "roce-doca", "dgx-superpod-storage", "terraform-iac"]
+    },
+    {
+      "section": "preference",
+      "quote": "• IT 분야에서 석사 이상의 학위를 보유하신 분 (컴퓨터 공학, 전산학 등)",
+      "short": "컴퓨터공학·전산학 석사면 더 좋다는 뜻 — 필수는 학사다.",
+      "why": "필수 요건은 학사 이상이고 석사는 우대 칸에만 있습니다(원티드 판).[1][2] 분산 시스템·고성능 컴퓨팅·ML 시스템 같은 전공 연구가 이 일과 겹치기 때문으로 보입니다 {추론}.",
+      "actually": {
+        "items": [
+          "석사 논문·연구가 분산 학습, 스케줄링, 네트워크, 스토리지 쪽이면 경력처럼 이야기할 수 있다 {추론}",
+          "석사가 없으면 위 요건의 '3년 GPU 경험'을 숫자로 보이는 것이 같은 무게를 낸다 {추론}"
+        ]
+      },
+      "refs": [1, 2]
+    },
+    {
+      "section": "preference",
+      "quote": "• 클라우드 관련 자격증을 (AWS, GCP, Azure, Kubernetes 등) 보유하신 분",
+      "short": "AWS·GCP·Azure·쿠버네티스 자격증이 있으면 가산 — 실기형 CKA가 이 자리와 가장 가깝다.",
+      "why": "공고가 쿠버네티스 경험을 필수로 두었고[1], 자격증은 그 경험을 서류에서 짧게 보이는 수단입니다 {추론}. CKA 는 클러스터 관리·장애 처리를 실기로 봅니다.[44]",
+      "actually": {
+        "items": [
+          "**쿠버네티스** — CKA(관리자)·CKAD(개발자)·CKS(보안). 이 자리 업무에는 CKA 가 가장 겹친다.[44] {추론}",
+          "**공용 클라우드** — AWS·GCP·Azure 의 아키텍트·운영 자격. 사내 클라우드라도 같은 개념(네트워크·스토리지·권한)을 쓴다 {추론}",
+          "자격증만으로는 GPU 경험을 대신하지 못한다 — 필수 요건이 GPU 3년이다.[1]"
+        ]
+      },
+      "refs": [1, 44],
+      "study": ["cka"]
+    },
+    {
+      "section": "preference",
+      "quote": "• Tensorflow, Pytorch 등 프레임워크 활용 및 MLOps 플랫폼을 이용한 모델 학습/추론 구현 경험을 보유하신 분",
+      "short": "플랫폼 사용자 쪽 일 — 직접 PyTorch로 학습·추론을 돌려 봐서 사용자가 무엇에 막히는지 아는 사람.",
+      "why": "플랫폼의 사용자는 모델을 학습시키는 사람들이라[5], 그들이 쓰는 도구를 직접 써 본 사람이 불편을 빨리 알아챕니다 {추론}. 여러 GPU 학습은 PyTorch DDP 같은 방식으로 프로세스마다 GPU 하나를 잡고 기울기를 맞춥니다.[45]",
+      "actually": {
+        "items": [
+          "**학습** — PyTorch 로 작은 모델을 GPU 한 장 → 여러 장(DDP)으로 학습해 본 것.[45]",
+          "**MLOps 플랫폼 위에서** — Kubeflow·MLflow 같은 도구로 실험을 기록하고 작업을 제출해 본 것.[18][21]",
+          "**추론** — 학습한 모델을 서버로 띄워 요청을 받아 본 것(KServe·vLLM 등).[19][20]",
+          "모델 성능을 높이는 연구 경험까지는 아니다 — '구현 경험'이다.[2] {추론}"
+        ]
+      },
+      "refs": [2, 5, 18, 19, 20, 21, 45],
+      "study": ["pytorch-ddp", "kubeflow-trainer", "mlflow-registry"]
+    },
+    {
+      "section": "preference",
+      "quote": "• GPU를 기반으로 하는 AI/ML 워크로드 및 LLM 모델에 대한 기본 이해를 보유하신 분",
+      "short": "학습·추론이 GPU의 메모리·연산·통신을 어떻게 쓰는지, LLM이 왜 GPU를 많이 먹는지 아는 정도.",
+      "why": "같은 GPU라도 학습은 통신·스토리지, 추론은 메모리(KV 캐시)에 묶입니다.[20][26] 플랫폼을 설계할 때 이 차이를 모르면 학습 노드와 추론 노드를 같은 기준으로 나눠 버립니다 {추론}.",
+      "actually": {
+        "items": [
+          "**메모리** — 8B 모델은 bf16(숫자 하나 2바이트)으로 가중치만 약 16GB. 학습은 옵티마이저 상태까지 몇 배 더 든다 {추론}",
+          "**통신** — 여러 GPU 학습은 단계마다 all-reduce, 그래서 망 속도가 학습 속도가 된다.[26]",
+          "**추론** — 한 GPU에 안 들어가면 텐서·파이프라인 병렬로 나눠 싣는다.[20]",
+          "**LLM 서비스 규모** — 그룹 사내 생성형 AI 사용이 늘어 GPU 서비스가 필요해졌다.[4][12]"
+        ]
+      },
+      "how_far": "'기본 이해'라고 적혀 있어 모델 내부 수식까지는 아닙니다.[2] **GPU 몇 장이 필요한지 어림셈하고, 학습이 느릴 때 계산·통신·저장 중 어디가 병목인지 짐작하는** 수준이면 됩니다 {추론}.",
+      "refs": [2, 4, 12, 20, 26],
+      "study": ["cs336-gpus", "cs336-inference", "cs336-parallel"]
+    },
+    {
+      "section": "preference",
+      "quote": "• 대규모 GPU를 이용한 플랫폼 엔지니어링 경험을 보유하신 분",
+      "short": "GPU 수백 장 이상을 여러 팀이 같이 쓰는 플랫폼을 운영해 본 사람이면 우대.",
+      "why": "필수는 GPU 경험 3년이고, 우대는 그 규모가 큰 경우입니다.[2] 그룹 목표가 GPU 1만 장 이상이라[4] 몇 장일 때 생기지 않던 문제(잦은 고장·스케줄링 경합·망 혼잡)를 겪어 본 사람이 필요합니다.[37] {추론}",
+      "actually": {
+        "items": [
+          "**고장이 일상** — 큰 클러스터에서는 하루에도 여러 번 GPU·노드가 떨어진다. 다른 회사 예로 Meta 는 54일에 466번.[37]",
+          "**경합** — 팀이 많아지면 몫·선점·우선순위 규칙이 곧 정책이 된다.[16]",
+          "**배치 위치** — 같은 작업을 같은 스위치 아래에 모으지 않으면 망이 막힌다 {추론}",
+          "**사용률** — 비싼 장비라 놀리는 GPU를 줄이는 것이 성과가 된다. 다른 회사 예로 쿠팡 65% → 95%.[43]"
+        ]
+      },
+      "refs": [2, 4, 16, 37, 43],
+      "study": ["ml-eng-book", "kueue-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "• CUDA, NCCL 등 Nvidia Software Stack 기술 경험을 보유하신 분",
+      "short": "GPU 드라이버·CUDA·NCCL 버전을 맞추고, GPU 통신이 제 길로 가는지 진단해 본 경험.",
+      "why": "그룹은 엔비디아 GPU로 AI 팩토리를 짓는다고 발표했습니다.[9] 엔비디아 GPU 클러스터는 드라이버·CUDA·NCCL·GPU Operator 가 버전으로 엮여 있어 하나를 올리면 나머지를 같이 봐야 합니다.[14] {추론}",
+      "actually": {
+        "items": [
+          "**CUDA** — GPU에서 계산을 돌리는 프로그래밍 모델과 런타임. 플랫폼 쪽은 커널을 짜기보다 버전 호환(드라이버 ↔ CUDA ↔ 프레임워크)을 관리한다.[46] {추론}",
+          "**NCCL** — GPU끼리 all-reduce 같은 집합 통신을 하는 라이브러리. NCCL_DEBUG=INFO 로 IB·소켓 중 어느 길을 탔는지 보고, NCCL_IB_HCA 로 카드를 고른다.[25]",
+          "**재기** — nccl-tests 로 busbw 를 재서 기준과 비교.[26]",
+          "**진단** — DCGM 진단과 Xid 로그.[30][32]"
+        ]
+      },
+      "refs": [9, 14, 25, 26, 30, 32, 46],
+      "study": ["nccl-docs", "nccl-tests", "cuda-guide", "dcgm-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "• 다양한 오픈소스 활용 및 운영 경험을 보유하신 분 (LDAP, Keycloak, Prometheus, ELK 등)",
+      "short": "로그인(LDAP·Keycloak)·지표(Prometheus)·로그(ELK) 같은 플랫폼 공통 부품을 직접 깔아 운영해 본 경험.",
+      "why": "GPU 플랫폼도 결국 '여러 사람이 로그인해 쓰고, 고장을 지표와 로그로 찾는' 서비스입니다. 괄호 안 네 가지가 그 공통 부품입니다.[2] {추론}",
+      "actually": {
+        "items": [
+          "**LDAP·Keycloak** — 사내 계정 목록(LDAP)을 Keycloak 에 이어 포털·쿠버네티스·노트북에 한 번 로그인(SSO). Keycloak 은 LDAP 를 사용자 연동(user federation)으로 붙인다.[47]",
+          "**Prometheus** — 지표를 모아 저장하고 질의·경보. GPU 지표는 dcgm-exporter 가 Prometheus 형식으로 낸다.[31][48]",
+          "**ELK** — Elasticsearch(검색 저장)·Logstash(수집)·Kibana(화면). 학습 작업 로그·시스템 로그를 한 곳에서 찾는다.[49]",
+          "**운영** — 깔기보다 어렵다: 버전 올리기, 저장 용량, 고장 때 복구 {추론}"
+        ]
+      },
+      "refs": [2, 31, 47, 48, 49],
+      "study": ["keycloak-docs", "prom-book", "elastic-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "• Python, Golang 등 개발 언어 경험을 보유하신 분",
+      "short": "자동화 스크립트·ML 도구는 Python, 쿠버네티스 오퍼레이터·컨트롤러는 Go 로 짜는 경우가 많다.",
+      "why": "업무에 '플랫폼 기능 개발'과 '자동화를 위한 개선작업'이 있어 코드를 씁니다.[1] 쿠버네티스 컨트롤러를 만드는 대표 도구 Kubebuilder 는 Go 로 씁니다.[50]",
+      "actually": {
+        "items": [
+          "**Python** — 운영 자동화, MLflow·Kubeflow SDK, 사용자 예제 코드 {추론}",
+          "**Go** — CRD·컨트롤러(Kubebuilder), 쿠버네티스 API 를 부르는 client-go.[50][51]",
+          "**둘 중 하나를 깊게** — 공고는 '등'이라 적었다. 한쪽으로 실제 도구를 만들어 본 것이 중요하다 {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "노드별 남은 GPU 세기 (가상 데이터, 직접 돌린 출력)",
+          "body": "포털의 'GPU 몇 장 남았나' 칸이 뒤에서 하는 계산을 가상 노드 목록으로 흉내 냈습니다. 실제로는 쿠버네티스 API 에서 노드의 할당 가능 GPU와 파드의 GPU 요청을 읽습니다 {추론}.",
+          "lang": "python",
+          "code": "nodes = {\"gpu-a01\": 8, \"gpu-a02\": 8, \"gpu-b01\": 8}\npods = [(\"gpu-a01\", 4), (\"gpu-a01\", 4), (\"gpu-a02\", 2), (\"gpu-b01\", 1)]\n\nused = {n: 0 for n in nodes}\nfor node, gpus in pods:\n    used[node] += gpus\n\nfor n, total in nodes.items():\n    print(f\"{n}: {total - used[n]}/{total} 남음\")\nprint(\"8장 한 노드에 들어갈 곳:\", [n for n in nodes if nodes[n] - used[n] >= 8] or \"없음\")\n\n# 출력\n# gpu-a01: 0/8 남음\n# gpu-a02: 6/8 남음\n# gpu-b01: 7/8 남음\n# 8장 한 노드에 들어갈 곳: 없음"
+        }
+      ],
+      "refs": [1, 50, 51],
+      "study": ["kubebuilder", "k8s-operator"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "쿠버네티스를 해 봤고 그 아래(서버·망·스토리지)까지 내려가 보고 싶은 사람[1]",
+      "GPU 수천~수만 장 규모로 커지는 단계의 플랫폼을 처음부터 같이 짓고 싶은 사람[4][6]",
+      "'남이 쓰는 도구'를 만드는 데서 보람을 느끼는 사람 — 사용자는 사내 AI 과제 팀[5]",
+      "숫자(대역폭·사용률·대기 시간)로 장비를 시험하고 합격선을 정하는 일이 즐거운 사람"
+    ],
+    "hard": [
+      "하드웨어부터 웹 포털까지 범위가 넓다 — 한쪽만 깊게 하고 싶은 사람에게는 산만할 수 있다[1] {추론}",
+      "모델은 직접 만들지 않는다 — 학습·연구를 하고 싶은 사람에게는 맞지 않다[1]",
+      "그룹 GPU 서비스는 별도 법인 설립·데이터센터 착공 단계라 조직·역할이 바뀌는 중일 수 있다[6][7] {추론}",
+      "문서화·대고객 기술 지원이 업무에 들어 있어 문의 응대 시간이 생긴다[1]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "GPU 64장짜리 학습 작업이 60장만 잡힌 채 멈춰 있습니다. 무엇이 문제고 어떻게 막나요?",
+      "a": "gang 스케줄링·대기열 입장 허가.[16][17]"
+    },
+    {
+      "q": "16장 학습이 8장 학습보다 별로 빨라지지 않습니다. 무엇부터 보겠어요?",
+      "a": "nccl-tests busbw, NCCL_DEBUG 로 IB 경로 확인.[25][26]"
+    },
+    {
+      "q": "IB 대신 RoCE로 GPU 클러스터를 짓는다면 스위치에 무엇을 꼭 설정해야 하나요?",
+      "a": "PFC·ECN 무손실.[23][24]"
+    },
+    {
+      "q": "작은 추론 모델 여러 개가 GPU 한 장씩 차지해 사용률이 20%입니다. 어떻게 하겠어요?",
+      "a": "MIG·시간 나누기의 격리 차이.[14][35]"
+    },
+    {
+      "q": "체크포인트 저장 때마다 전체 학습이 몇 분씩 멈춥니다. 원인과 대책은?",
+      "a": "스토리지 쓰기 대역폭·아웃라이어.[28][36]"
+    },
+    {
+      "q": "어느 노드에서 Xid 79가 떴습니다. 무엇을 하겠어요?",
+      "a": "격리·진단·자동화.[30][32]"
+    },
+    {
+      "q": "새로 들어온 GPU 서버 40대를 사용자에게 내주기 전에 무엇을 확인하나요?",
+      "a": "DCGM diag·nccl-tests·스토리지 벤치마크.[26][28][30]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "사람인 · 현대자동차 [ICT] Platform Engineer",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55605742",
+      "kind": "posting",
+      "note": "업무·요건(우대사항 칸 없음), 기술 태그 Kubernetes, 정규직, 급여 면접 후 결정, 근무지 서울, 접수 2026-11-16 ~ 11-30, 서류 → 면접(인성검사) → 채용검진"
+    },
+    {
+      "n": 2,
+      "title": "원티드 · 현대자동차그룹 [ICT] Platform Engineer",
+      "url": "https://www.wanted.co.kr/wd/398827",
+      "kind": "posting",
+      "note": "같은 공고의 다른 판 — 경력 3년 이상, 근무지 서울 서초구 헌릉로 12(현대기아자동차빌딩), 마감 2026-11-30, 업무·필수 요건은 사람인 판과 같고 우대사항 8줄(석사·클라우드 자격증·PyTorch·LLM 기본·대규모 GPU·CUDA/NCCL·LDAP/Keycloak/Prometheus/ELK·Python/Go)이 더 있다. 복지는 '홈페이지 참조'"
+    },
+    {
+      "n": 3,
+      "title": "사람인 · 현대자동차 [ICT] Backend Developer - MLOps 개발",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55605652",
+      "kind": "posting",
+      "note": "같은 시기 같은 ICT 공고 — 모델 서빙 시스템·서빙용 CI/CD·Spring 백엔드, 컴퓨터공학 등 관련 분야 학사 이상"
+    },
+    {
+      "n": 4,
+      "title": "파이낸셜뉴스 · 현대차 직원 70%가 AI 쓴다…2029년 GPU 1만장 구축",
+      "url": "https://www.fnnews.com/news/202610220852181299",
+      "kind": "news",
+      "date": "2026-10-22",
+      "note": "소프티어 테크톡 오프데이 2026 — 2026년 4분기부터 대규모 GPU·자체 AI 플랫폼으로 서비스 역량, 2029년 하반기 새만금 AI 데이터센터에서 GPU 1만 장 이상"
+    },
+    {
+      "n": 5,
+      "title": "현대자동차그룹 · 현대차그룹 AI 플랫폼 소개 (AI 플랫폼 담당 글)",
+      "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000088491",
+      "kind": "company",
+      "date": "2021-06-18",
+      "note": "공용 GPU 팜 위 도커 컨테이너 AI 개발 환경·데이터 볼륨 공유, 플랫폼 없을 때 GPU 서버 준비 수개월·환경 1주일 → 첫 준비 약 2일·환경 배포 약 3분, 2021-05 분산 학습(데이터 병렬) → 2022 ML·서비스화 도구 → 2024 빅데이터 연동 로드맵"
+    },
+    {
+      "n": 6,
+      "title": "현대자동차그룹 뉴스 · 새만금 로봇·AI·수소 투자협약",
+      "url": "https://www.hyundaimotorgroup.com/ko/news/CONT0000000000204454",
+      "kind": "company",
+      "date": "2026-02-27",
+      "note": "총 9조 원 중 AI 데이터센터 5조 8천억 원, 단계적으로 GPU 5만 장급, 2027년 착공·2029년 완공 목표"
+    },
+    {
+      "n": 7,
+      "title": "서울신문 · 현대차그룹, AI 데이터센터 설립 속도… 새만금 AI 밸리 투자 본격화",
+      "url": "https://www.seoul.co.kr/news/newsView.php?id=20261030500167",
+      "kind": "news",
+      "date": "2026-10-30",
+      "note": "11월 출범 예정 법인 둘 — 데이터센터 SPC(건축·인프라), GPU 서비스 SPC(GPU 확보·서비스), 현대오토에버 이사회가 GPU 서비스 SPC 참여 의결"
+    },
+    {
+      "n": 8,
+      "title": "아이뉴스24 · 현대차, AI 직접 만든다⋯새만금 500MW 데이터센터에 엔비디아 GPU 확보",
+      "url": "https://www.inews24.com/view/1994311",
+      "kind": "news",
+      "date": "2026-08-12",
+      "note": "현대차그룹 AX 성과 발표회, 진은숙 ICT담당 사장 — 자율주행·로봇용 파운데이션 모델은 직접, 사내 업무는 외부 기술, 새만금 500MW 부지, GPU는 엔비디아 제휴로 확보"
+    },
+    {
+      "n": 9,
+      "title": "NVIDIA 뉴스룸 · NVIDIA and Hyundai Motor Group Team on AI Factory",
+      "url": "https://nvidianews.nvidia.com/news/hyundai-motor-group-ai-factory",
+      "kind": "news",
+      "date": "2025-10-30",
+      "note": "블랙웰 GPU 최대 5만 장 규모 AI 팩토리 — 그룹 단위 발표"
+    },
+    {
+      "n": 10,
+      "title": "SUSECON 2024 · The journey of Hyundai Motor Group to develop a private cloud for connected car service",
+      "url": "https://youtu.be/BLVywVGIikA",
+      "kind": "company",
+      "date": "2024-06",
+      "note": "현대차 ICT 클라우드개발 조직 발표 — H클라우드·HKS(같은 회사 앞 풀이에서 자막 전부 확인한 내용을 옮김, 이번 회차에 영상은 다시 받지 않음)"
+    },
+    {
+      "n": 11,
+      "title": "바이라인네트워크 · 현대자동차가 구축한 'H클라우드', 전세계 1000만 커넥티드 카 서비스 뒷받침",
+      "url": "https://byline.network/2024/06/24-313/",
+      "kind": "news",
+      "date": "2024-06-25",
+      "note": "같은 발표의 국내 보도 — 프라이빗 클라우드 H클라우드, 맞춤형 쿠버네티스 HKS"
+    },
+    {
+      "n": 12,
+      "title": "현대차그룹 뉴스룸 · 전사 DX·AX 여정과 성과 공개",
+      "url": "https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-group-dx-ax-ai-innovation",
+      "kind": "company",
+      "date": "2026-08-12",
+      "note": "H Chat Pro 등 사내 AI 활용"
+    },
+    {
+      "n": 13,
+      "title": "Kubernetes 문서 · Schedule GPUs",
+      "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+      "kind": "reference",
+      "note": "장치 플러그인 자원 nvidia.com/gpu, limits 에 정수, requests 와 같아야 함"
+    },
+    {
+      "n": 14,
+      "title": "NVIDIA GPU Operator 문서 · 개요와 GPU 나눠 쓰기(Time-Slicing·MIG)",
+      "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-sharing.html",
+      "kind": "reference",
+      "note": "드라이버·툴킷·장치 플러그인·DCGM·MIG Manager, 시간 나누기는 격리 없음, MIG 최대 7조각·격리"
+    },
+    {
+      "n": 15,
+      "title": "NVIDIA GPU Operator 문서 · GPUDirect RDMA and GPUDirect Storage",
+      "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-operator-rdma.html",
+      "kind": "reference",
+      "note": "GPU ↔ 다른 PCIe 장치 직접 교환(RDMA), 스토리지 ↔ GPU 메모리 직접 경로(GDS), gds.enabled, Network Operator 와 함께 씀"
+    },
+    {
+      "n": 16,
+      "title": "Kueue 문서 · Cluster Queue",
+      "url": "https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/",
+      "kind": "reference",
+      "note": "nominalQuota·borrowingLimit·lendingLimit, cohort 빌려 쓰기, 선점, 입장 허가"
+    },
+    {
+      "n": 17,
+      "title": "Volcano 문서 · PodGroup",
+      "url": "https://volcano.sh/docs/Concepts/PodGroup",
+      "kind": "reference",
+      "note": "minMember 를 못 채우면 하나도 올리지 않는 gang 스케줄링"
+    },
+    {
+      "n": 18,
+      "title": "Kubeflow 문서 · Trainer Overview",
+      "url": "https://www.kubeflow.org/docs/components/trainer/overview/",
+      "kind": "reference",
+      "note": "쿠버네티스 네이티브 분산 학습, TrainJob·Runtime API, PyTorch·DeepSpeed·JAX·XGBoost, JobSet 재사용"
+    },
+    {
+      "n": 19,
+      "title": "KServe 문서 · Welcome to KServe / Concepts",
+      "url": "https://kserve.github.io/website/docs/intro",
+      "kind": "reference",
+      "note": "InferenceService — 자동 확장·버전·트래픽 관리, 기본으로 Knative 서버리스 배포, LLM 용 LLMInferenceService"
+    },
+    {
+      "n": 20,
+      "title": "vLLM 문서 · Parallelism and Scaling",
+      "url": "https://docs.vllm.ai/en/latest/serving/parallelism_scaling.html",
+      "kind": "reference",
+      "note": "노드 안 텐서 병렬·노드 사이 파이프라인 병렬, 멀티 노드엔 InfiniBand"
+    },
+    {
+      "n": 21,
+      "title": "MLflow 문서 · Model Registry",
+      "url": "https://mlflow.org/docs/latest/ml/model-registry/",
+      "kind": "reference",
+      "note": "같은 이름 등록마다 버전 1부터 증가, 별칭(models:/MyModel@champion), 버전 ↔ 실행 계보"
+    },
+    {
+      "n": 22,
+      "title": "Google Cloud · MLOps: 머신러닝의 지속적 배포 및 자동화 파이프라인",
+      "url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+      "kind": "reference",
+      "note": "ML 시스템에 DevOps 원칙, 수준 0·1·2"
+    },
+    {
+      "n": 23,
+      "title": "NVIDIA DOCA 문서 · RDMA over Converged Ethernet",
+      "url": "https://docs.nvidia.com/doca/sdk/RDMA+over+Converged+Ethernet",
+      "kind": "reference",
+      "note": "RoCEv1 은 EtherType 0x8915·한 L2 도메인, RoCEv2 는 UDP/IP 포트 4791 로 L3 라우팅"
+    },
+    {
+      "n": 24,
+      "title": "NVIDIA Networking · HowTo Configure RoCEv2 Lossless Fabric",
+      "url": "https://networking-docs.nvidia.com/sol/howto-configure-rocev2-lossless-fabric-for-vmware-esxi-6-5-and-above",
+      "kind": "reference",
+      "note": "PFC(IEEE 802.1Qbb)·ECN으로 무손실 RoCE"
+    },
+    {
+      "n": 25,
+      "title": "NVIDIA NCCL 문서 · Environment Variables",
+      "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html",
+      "kind": "reference",
+      "note": "NCCL_DEBUG·NCCL_IB_HCA·NCCL_SOCKET_IFNAME"
+    },
+    {
+      "n": 26,
+      "title": "nccl-tests · PERFORMANCE.md",
+      "url": "https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md",
+      "kind": "reference",
+      "note": "algbw·busbw 정의, all-reduce 환산 2(n-1)/n"
+    },
+    {
+      "n": 27,
+      "title": "NVIDIA DGX H100 사용자 가이드 · 소개",
+      "url": "https://docs.nvidia.com/dgx/dgxh100-user-guide/introduction-to-dgxh100.html",
+      "kind": "reference",
+      "note": "최대 10.2kW, H100 8장, 400Gb/s ConnectX-7 8장"
+    },
+    {
+      "n": 28,
+      "title": "NVIDIA DGX SuperPOD 기준 설계(B200) · Storage Architecture",
+      "url": "https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-b200/latest/storage-architecture.html",
+      "kind": "reference",
+      "note": "표 6 — 표준 SU당 읽기 40GB/s·쓰기 20GB/s, 향상 125·62GB/s, 자동차·비전 작업 GPU당 읽기 4GB/s, LLM 은 쓰기 ≥ 읽기의 절반"
+    },
+    {
+      "n": 29,
+      "title": "NVIDIA GPUDirect Storage 개요",
+      "url": "https://docs.nvidia.com/gpudirect-storage/overview-guide/index.html",
+      "kind": "reference",
+      "note": "스토리지 ↔ GPU 메모리 DMA, CPU 경유 버퍼를 건너뜀"
+    },
+    {
+      "n": 30,
+      "title": "NVIDIA DCGM 문서 · Diagnostics",
+      "url": "https://docs.nvidia.com/datacenter/dcgm/latest/user-guide/dcgm-diagnostics.html",
+      "kind": "reference",
+      "note": "dcgmi diag r1~r4"
+    },
+    {
+      "n": 31,
+      "title": "dcgm-exporter · default-counters.csv",
+      "url": "https://github.com/NVIDIA/dcgm-exporter/blob/main/etc/default-counters.csv",
+      "kind": "reference",
+      "note": "사용률·온도·전력·DCGM_FI_DEV_XID_ERROR 지표 이름"
+    },
+    {
+      "n": 32,
+      "title": "NVIDIA Xid Errors 문서",
+      "url": "https://docs.nvidia.com/deploy/xid-errors/index.html",
+      "kind": "reference",
+      "note": "Xid 의 뜻, 79 = GPU가 버스에서 떨어짐"
+    },
+    {
+      "n": 33,
+      "title": "Google SRE Book · Eliminating Toil",
+      "url": "https://sre.google/sre-book/eliminating-toil/",
+      "kind": "reference",
+      "note": "toil 정의(수동·반복·자동화 가능·서비스와 함께 늘어남), 운영 손일 각자 시간의 50% 아래 목표"
+    },
+    {
+      "n": 34,
+      "title": "Google SRE Book · Monitoring Distributed Systems",
+      "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+      "kind": "reference",
+      "note": "네 가지 황금 신호(지연·트래픽·오류·포화)"
+    },
+    {
+      "n": 35,
+      "title": "Toss Tech · GPU를 밀도 있게 쓰는 방법 — 토스증권의 GPU 가상화(MIG) 도입기",
+      "url": "https://toss.tech/article/toss-securities-gpu-mig",
+      "kind": "reference",
+      "note": "다른 회사 — 작업 약 1/3이 GPU의 1/4도 못 씀, H100·H200, MIG 도입"
+    },
+    {
+      "n": 36,
+      "title": "Toss Tech · 고성능 GPU 클러스터 도입기 #1",
+      "url": "https://toss.tech/article/securities_llm_1",
+      "kind": "reference",
+      "note": "다른 회사 — 체크포인트 저장 때 느린 스토리지 하나가 클러스터 전체를 멈추는 문제"
+    },
+    {
+      "n": 37,
+      "title": "The Llama 3 Herd of Models (Meta)",
+      "url": "https://arxiv.org/abs/2407.21783",
+      "kind": "reference",
+      "note": "다른 회사 — H100 16K, 54일 중단 466번, 대부분 하드웨어"
+    },
+    {
+      "n": 38,
+      "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+      "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+      "kind": "news",
+      "date": "2026-04-08",
+      "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+    },
+    {
+      "n": 39,
+      "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+      "url": "https://jasoseol.com/companies/1472",
+      "kind": "reference",
+      "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+    },
+    {
+      "n": 40,
+      "title": "2024 현대자동차 지속가능성 보고서",
+      "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+      "kind": "company",
+      "date": "2024-06",
+      "note": "62쪽 맞춤형 복리후생 지원, 본사 주소"
+    },
+    {
+      "n": 41,
+      "title": "Kubernetes 문서 · Operator pattern",
+      "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/",
+      "kind": "reference"
+    },
+    {
+      "n": 42,
+      "title": "Kubernetes 문서 · Resource Quotas",
+      "url": "https://kubernetes.io/docs/concepts/policy/resource-quotas/",
+      "kind": "reference",
+      "note": "확장 자원(GPU)은 requests 접두사로만 쿼터"
+    },
+    {
+      "n": 43,
+      "title": "바이라인네트워크 · 엔비디아 풀 스택 장착한 쿠팡, AI 팩토리 구축한다",
+      "url": "https://byline.network/2026/03/18_291774/",
+      "kind": "news",
+      "date": "2026-03-18",
+      "note": "다른 회사 — GTC 2026 발표, 셀프서비스 AI 팩토리(CLI·API·UI), GPU 활용률 65% → 95%"
+    },
+    {
+      "n": 44,
+      "title": "Linux Foundation · Certified Kubernetes Administrator (CKA)",
+      "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+      "kind": "reference",
+      "note": "클러스터 관리·장애 처리 실기 시험"
+    },
+    {
+      "n": 45,
+      "title": "PyTorch 문서 · Distributed Data Parallel",
+      "url": "https://docs.pytorch.org/docs/stable/notes/ddp.html",
+      "kind": "reference",
+      "note": "프로세스마다 모델 사본, 역전파 때 기울기 all-reduce"
+    },
+    {
+      "n": 46,
+      "title": "NVIDIA CUDA C++ Programming Guide",
+      "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/",
+      "kind": "reference",
+      "note": "CUDA 프로그래밍 모델·런타임, 호환성"
+    },
+    {
+      "n": 47,
+      "title": "Keycloak 문서 · Server Administration Guide (LDAP and Active Directory)",
+      "url": "https://www.keycloak.org/docs/latest/server_admin/",
+      "kind": "reference",
+      "note": "사용자 연동(user federation)으로 LDAP 를 붙이고 SSO"
+    },
+    {
+      "n": 48,
+      "title": "Prometheus 문서 · Overview",
+      "url": "https://prometheus.io/docs/introduction/overview/",
+      "kind": "reference",
+      "note": "지표 수집·시계열 저장·PromQL·경보"
+    },
+    {
+      "n": 49,
+      "title": "Elastic 문서 (Elasticsearch · Logstash · Kibana)",
+      "url": "https://www.elastic.co/docs",
+      "kind": "reference"
+    },
+    {
+      "n": 50,
+      "title": "The Kubebuilder Book",
+      "url": "https://book.kubebuilder.io/",
+      "kind": "reference",
+      "note": "CRD와 컨트롤러를 Go로 만드는 프레임워크·안내서"
+    },
+    {
+      "n": 51,
+      "title": "kubernetes/client-go (GitHub)",
+      "url": "https://github.com/kubernetes/client-go",
+      "kind": "reference",
+      "note": "쿠버네티스 API 를 부르는 Go 클라이언트"
+    }
+  ],
+  "caveat": "이 팀이 지금 쓰는 플랫폼 구성(스케줄러·서빙·스토리지 제품, GPU 세대·장수)을 직접 밝힌 발표·글은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 원티드 판, 같은 조직의 MLOps 백엔드 공고, 2021년 AI 플랫폼 글, 새만금·GPU 서비스 법인 발표와 보도, 테크톡 보도, 같은 조직의 H클라우드 발표입니다. 학습·추론 스케줄링, 고속 망, 스토리지의 구체 방법은 쿠버네티스·NVIDIA·Kubeflow·KServe·MLflow 공식 문서와 다른 회사(토스증권·Meta·쿠팡)의 공개 글로 '보통 이런 것'을 보였습니다. GPU 서비스 법인이 세워지는 중이라 이 자리의 범위가 바뀔 수 있습니다. 계산 예시는 가상 값으로 직접 돌린 것입니다.",
+  "resources": [
+    {"id": "hmg-ai-platform-2021", "title": "현대차그룹 AI 플랫폼 소개 (현대자동차그룹 스토리)", "by": "현대자동차그룹 AI 플랫폼 담당 · 2021", "kind": "doc", "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000088491", "lang": "ko", "free": true, "level": "입문", "why": "이 조직이 GPU 팜을 컨테이너로 나눠 주던 출발점과 로드맵. 업무 첫 줄 '인프라 프로덕트·AI 플랫폼'이 무엇을 이어받는지 본다."},
+    {"id": "wiki-kubernetes", "title": "쿠버네티스 입문", "by": "우리 사이트의 책", "kind": "internal", "url": "/wiki/kubernetes", "lang": "ko", "free": true, "level": "입문", "why": "Pending·CrashLoopBackOff 를 읽는 눈 — 쿠버네티스 요건과 사용자 지원 줄의 바탕."},
+    {"id": "k8s-in-action", "title": "쿠버네티스 인 액션", "by": "마르코 룩샤 · 강인호 외 옮김 · 에이콘출판 · 2020", "kind": "book", "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=235962702", "lang": "ko", "free": false, "level": "실무", "why": "스케줄러·컨트롤러·자원 요청이 안에서 어떻게 움직이는지. '쿠버네티스 기반 플랫폼 기능 개발'을 하려면 확장 지점을 알아야 한다."},
+    {"id": "cka", "title": "Certified Kubernetes Administrator (CKA)", "by": "Linux Foundation · CNCF", "kind": "course", "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/", "lang": "en", "free": false, "level": "실무", "why": "클러스터 관리·장애 처리를 실기로 보는 자격 — 쿠버네티스 '운영 경험' 요건을 보여 줄 수단."},
+    {"id": "k8s-gpu", "title": "Kubernetes 문서 · Schedule GPUs", "by": "Kubernetes", "kind": "doc", "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/", "lang": "en", "free": true, "level": "입문", "why": "GPU가 쿠버네티스 자원이 되는 방법. 학습·추론 플랫폼 기능 개발의 첫 장."},
+    {"id": "gpu-operator", "title": "NVIDIA GPU Operator 문서", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html", "lang": "en", "free": true, "level": "실무", "why": "GPU 노드에 깔리는 것 전부와 MIG·시간 나누기·GPUDirect 설정. 서버 도입·플랫폼 기능 줄."},
+    {"id": "k8s-operator", "title": "Kubernetes 문서 · Operator pattern", "by": "Kubernetes", "kind": "doc", "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/", "lang": "en", "free": true, "level": "실무", "why": "'학습 작업'·'노트북' 같은 새 리소스를 만드는 방식. 포털이 뒤에서 부르는 기능을 이렇게 만든다."},
+    {"id": "kueue-docs", "title": "Kueue 문서 (ClusterQueue · Cohort)", "by": "Kubernetes SIG Scheduling", "kind": "doc", "url": "https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/", "lang": "en", "free": true, "level": "실무", "why": "팀별 GPU 몫·빌려 쓰기·선점 — 대규모 학습/추론 플랫폼 설계의 핵심 규칙."},
+    {"id": "volcano-docs", "title": "Volcano 문서 (PodGroup · Queue)", "by": "Volcano (CNCF)", "kind": "doc", "url": "https://volcano.sh/docs/Concepts/PodGroup", "lang": "en", "free": true, "level": "실무", "why": "여러 GPU 작업을 '전부 아니면 하나도' 올리는 gang 스케줄링."},
+    {"id": "kubeflow-trainer", "title": "Kubeflow 문서 · Trainer", "by": "Kubeflow", "kind": "doc", "url": "https://www.kubeflow.org/docs/components/trainer/overview/", "lang": "en", "free": true, "level": "실무", "why": "쿠버네티스 위 분산 학습 작업(TrainJob). MLOps 의 '학습' 단계를 플랫폼으로 내주는 방법."},
+    {"id": "kserve-docs", "title": "KServe 문서", "by": "KServe (CNCF)", "kind": "doc", "url": "https://kserve.github.io/website/docs/intro", "lang": "en", "free": true, "level": "실무", "why": "모델을 InferenceService 하나로 배포·확장·트래픽 나누기. 추론 플랫폼과 솔루션 도입 줄."},
+    {"id": "mlflow-registry", "title": "MLflow 문서 · Model Registry", "by": "MLflow", "kind": "doc", "url": "https://mlflow.org/docs/latest/ml/model-registry/", "lang": "en", "free": true, "level": "입문", "why": "모델 버전·별칭·계보. 'AI 모델 Lifecycle 전반 MLOps'에서 등록·되돌리기 단계."},
+    {"id": "google-mlops", "title": "MLOps: Continuous delivery and automation pipelines in machine learning", "by": "Google Cloud 아키텍처 센터", "kind": "doc", "url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning", "lang": "en", "free": true, "level": "입문", "why": "MLOps 수준 0·1·2 — 생애주기 자동화가 어디까지인지 큰 그림."},
+    {"id": "roce-doca", "title": "NVIDIA DOCA 문서 · RDMA over Converged Ethernet", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/doca/sdk/RDMA+over+Converged+Ethernet", "lang": "en", "free": true, "level": "심화", "why": "RoCEv1·v2 차이와 설정. 업무 '고속 네트워크(IB, RoCE)'."},
+    {"id": "nccl-docs", "title": "NVIDIA NCCL 사용자 가이드", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html", "lang": "en", "free": true, "level": "실무", "why": "GPU끼리 통신이 어느 길(IB·소켓)을 탔는지 보는 법. 망 시험과 사용자 지원 줄."},
+    {"id": "nccl-tests", "title": "nccl-tests · PERFORMANCE.md (algbw·busbw)", "by": "NVIDIA · GitHub", "kind": "doc", "url": "https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md", "lang": "en", "free": true, "level": "실무", "why": "망이 제 속도인지 숫자로 판정하는 도구와 계산식. '구축 및 테스트'의 테스트."},
+    {"id": "gds-docs", "title": "NVIDIA GPUDirect Storage 개요", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/gpudirect-storage/overview-guide/index.html", "lang": "en", "free": true, "level": "심화", "why": "스토리지에서 GPU로 CPU를 건너뛰어 읽는 길. '고성능 스토리지' 줄."},
+    {"id": "dgx-superpod-storage", "title": "NVIDIA DGX SuperPOD 기준 설계 · Storage Architecture", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-b200/latest/storage-architecture.html", "lang": "en", "free": true, "level": "심화", "why": "GPU 묶음당 필요한 스토리지 읽기·쓰기 숫자. 서버 도입 설계·스토리지 시험의 합격선."},
+    {"id": "dgx-h100-guide", "title": "NVIDIA DGX H100 사용자 가이드", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/dgx/dgxh100-user-guide/introduction-to-dgxh100.html", "lang": "en", "free": true, "level": "입문", "why": "GPU 서버 한 대의 전력·네트워크 카드·구성. 'GPU서버 도입을 위한 시스템 설계'를 숫자로."},
+    {"id": "dcgm-docs", "title": "NVIDIA DCGM 문서 · Diagnostics", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/datacenter/dcgm/latest/user-guide/dcgm-diagnostics.html", "lang": "en", "free": true, "level": "실무", "why": "들어온 서버 받아들이기 시험과 장애 노드 진단. 운영 안정화 줄."},
+    {"id": "xid-docs", "title": "NVIDIA Xid Errors 문서", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/deploy/xid-errors/index.html", "lang": "en", "free": true, "level": "실무", "why": "GPU 오류 번호를 읽는 법. 자동 격리 규칙을 만들 근거."},
+    {"id": "toss-mig", "title": "GPU를 밀도 있게 쓰는 방법 — 토스증권의 GPU 가상화(MIG) 도입기", "by": "토스증권 ML Engineer · Toss Tech · 2025", "kind": "doc", "url": "https://toss.tech/article/toss-securities-gpu-mig", "lang": "ko", "free": true, "level": "실무", "why": "다른 회사지만 한국어로 된 MIG 실전 설정. GPU 쪼개 쓰기 기능 개발을 구체적으로 본다."},
+    {"id": "toss-gpu-cluster-1", "title": "고성능 GPU 클러스터 도입기 #1", "by": "토스증권 ML Engineer · Toss Tech · 2024", "kind": "doc", "url": "https://toss.tech/article/securities_llm_1", "lang": "ko", "free": true, "level": "입문", "why": "자체 GPU 클러스터를 들일 때 스토리지가 왜 문제가 되는지 — 스토리지 구축·시험 줄의 감."},
+    {"id": "ml-eng-book", "title": "Machine Learning Engineering Open Book", "by": "Stas Bekman · GitHub", "kind": "book", "url": "https://github.com/stas00/ml-engineering", "lang": "en", "free": true, "level": "실무", "why": "가속기·네트워크·스토리지·디버깅을 대규모 GPU 클러스터 운영자 눈으로 정리한 무료 책. 아래층 업무 전부."},
+    {"id": "cs336-gpus", "title": "Stanford CS336 · Lecture 5: GPUs, TPUs (강의 노트)", "by": "우리 사이트 강의 노트", "kind": "internal", "url": "/lectures/izZba4UA7iY", "lang": "ko", "free": true, "level": "입문", "why": "GPU 메모리 계층과 대역폭 — 'GPU 기반 시스템 경험' 요건을 말로 설명할 바탕."},
+    {"id": "cs336-parallel", "title": "Stanford CS336 Lecture 7: Parallelism — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/SzpOcwdIL0Y", "lang": "ko", "free": true, "level": "심화", "why": "데이터·텐서·파이프라인 병렬이 망에 무엇을 요구하는지. 학습 플랫폼 설계와 IB 줄."},
+    {"id": "net-intro", "title": "IT 엔지니어를 위한 네트워크 입문", "by": "고재성 · 이상훈 · 길벗 · 2020", "kind": "book", "url": "https://ridibooks.com/books/754029945", "lang": "ko", "free": false, "level": "입문", "why": "TCP/IP·스위치·라우팅을 운영자 눈높이로. '네트워크 관련 경험' 요건의 기초."},
+    {"id": "terraform-iac", "title": "테라폼으로 시작하는 IaC (개정판)", "by": "김민수·김재준·이규석·이유종 · 한빛미디어 · 2024", "kind": "book", "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=346369474", "lang": "ko", "free": false, "level": "입문", "why": "인프라를 코드로 세우는 흐름. 중간 규모 클라우드 운영과 '자동화를 위한 개선작업'."},
+    {"id": "prom-book", "title": "프로메테우스, 오픈소스 모니터링 시스템", "by": "브라이언 브라질 · 김영기·김현진 옮김 · 책만 · 2019", "kind": "book", "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=212221193", "lang": "ko", "free": false, "level": "실무", "why": "GPU 지표(dcgm-exporter)를 모아 경보를 거는 바탕. 운영 안정화 줄."},
+    {"id": "sre-book", "title": "Site Reliability Engineering (구글 SRE 책)", "by": "Google · 웹 무료(한국어판: 사이트 신뢰성 엔지니어링 · 제이펍 · 2018)", "kind": "book", "url": "https://sre.google/sre-book/table-of-contents/", "lang": "en", "free": true, "level": "실무", "why": "손일 없애기·모니터링 네 신호. 운영 자동화와 문서·지원 줄."},
+    {"id": "pytorch-ddp", "title": "PyTorch 문서 · Distributed Data Parallel", "by": "PyTorch", "kind": "doc", "url": "https://docs.pytorch.org/docs/stable/notes/ddp.html", "lang": "en", "free": true, "level": "실무", "why": "여러 GPU 학습이 실제로 무엇을 주고받는지. 우대 'PyTorch 로 학습/추론 구현'과 망 시험 줄."},
+    {"id": "cuda-guide", "title": "NVIDIA CUDA C++ Programming Guide", "by": "NVIDIA", "kind": "doc", "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/", "lang": "en", "free": true, "level": "심화", "why": "CUDA 의 실행 모델과 호환성. 우대 'CUDA, NCCL 등 Nvidia Software Stack'의 바탕."},
+    {"id": "keycloak-docs", "title": "Keycloak 문서 · Server Administration Guide", "by": "Keycloak", "kind": "doc", "url": "https://www.keycloak.org/docs/latest/server_admin/", "lang": "en", "free": true, "level": "실무", "why": "LDAP 연동·SSO 설정. 우대 '오픈소스 운영(LDAP, Keycloak)'과 포털 로그인."},
+    {"id": "elastic-docs", "title": "Elastic 문서 (Elasticsearch · Logstash · Kibana)", "by": "Elastic", "kind": "doc", "url": "https://www.elastic.co/docs", "lang": "en", "free": true, "level": "실무", "why": "로그를 모아 찾는 ELK. 우대 '오픈소스 운영(ELK)'과 장애 원인 찾기."},
+    {"id": "kubebuilder", "title": "The Kubebuilder Book", "by": "Kubernetes SIGs", "kind": "doc", "url": "https://book.kubebuilder.io/", "lang": "en", "free": true, "level": "실무", "why": "Go 로 CRD·컨트롤러를 만드는 안내서. 우대 'Golang'과 플랫폼 기능 개발 줄."},
+    {"id": "cs336-inference", "title": "Stanford CS336 Lecture 10: Inference — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/EfM546A79aM", "lang": "ko", "free": true, "level": "실무", "why": "추론이 메모리(KV 캐시)에 묶이는 이유. 우대 'LLM 모델에 대한 기본 이해'."},
+    {"id": "dc-internal", "title": "AI 데이터센터 — 보유 칩·성능·금액 (우리 사이트)", "by": "우리 사이트 하드웨어 조사", "kind": "internal", "url": "/hardware/datacenter", "lang": "ko", "free": true, "level": "입문", "why": "회사·기관별 GPU 수와 전력·건설비. 'GPU 1만 장'을 몇 kW·몇 랙으로 생각하는 연습."}
+  ],
+  "study_path": [
+    {
+      "title": "GPU 한 장을 쿠버네티스로 내주기",
+      "time": "1~2주",
+      "goal": "GPU가 쿠버네티스 자원이 되는 과정을 알고, GPU를 요청하는 파드를 띄우고 왜 Pending 인지 읽을 수 있다.",
+      "task": "GPU가 있는 PC나 저가 클라우드 GPU 한 대에 k3s·kind 같은 작은 클러스터를 세우고 GPU Operator 를 깐다. GPU 1장 파드를 띄운 뒤 2장을 요청해 Pending 이 되는 것을 보고 이유를 적는다. MIG 가 안 되는 GPU면 시간 나누기로 한 장을 둘로 보이게 해 본다.",
+      "resources": ["wiki-kubernetes", "k8s-gpu", "gpu-operator", "cs336-gpus"]
+    },
+    {
+      "title": "여러 팀이 나눠 쓰는 학습 대기열",
+      "time": "2주",
+      "goal": "팀별 GPU 몫·빌려 쓰기·gang 스케줄링을 설정하고 작업 제출 흐름을 설명할 수 있다.",
+      "task": "가상 팀 A·B에 GPU 몫을 나눠 Kueue ClusterQueue 를 만들고, A가 쉬는 동안 B가 빌려 쓰다가 A 작업이 오면 선점되는 것을 기록한다. 같은 작업을 Volcano PodGroup 으로도 내 '일부만 잡히는' 상황이 막히는지 본다(GPU가 없으면 CPU 자원으로 흉내).",
+      "resources": ["kueue-docs", "volcano-docs", "k8s-in-action", "cs336-parallel"]
+    },
+    {
+      "title": "모델 생애주기 한 바퀴",
+      "time": "2주",
+      "goal": "학습 → 등록 → 배포 → 되돌리기를 도구로 잇고, 사용자가 YAML 몇 줄로 쓰게 만들 수 있다.",
+      "task": "작은 분류 모델을 Kubeflow Trainer(또는 쿠버네티스 Job)로 학습해 MLflow 에 버전으로 등록하고, @champion 별칭을 KServe InferenceService 가 읽게 한다. 일부러 나쁜 버전을 올려 별칭을 되돌리는 데 걸리는 시간을 잰다.",
+      "resources": ["google-mlops", "kubeflow-trainer", "mlflow-registry", "kserve-docs"]
+    },
+    {
+      "title": "망과 스토리지를 숫자로 재기",
+      "time": "2주",
+      "goal": "IB·RoCE·GPUDirect 의 차이를 설명하고, nccl-tests·스토리지 벤치마크로 합격선을 말할 수 있다.",
+      "task": "위 예시 계산을 내 조건(모델 크기·GPU 수·망 속도·스토리지 쓰기 속도)으로 바꿔 표를 만든다. GPU 두 장 이상을 빌릴 수 있으면 nccl-tests all_reduce_perf 를 돌려 busbw 를 적고 NCCL_DEBUG=INFO 로 어떤 길을 탔는지 기록한다. 없으면 fio 로 로컬 디스크의 순차 쓰기를 재서 70B 체크포인트 저장 시간을 계산한다.",
+      "resources": ["roce-doca", "nccl-tests", "nccl-docs", "gds-docs", "dgx-superpod-storage", "net-intro", "ml-eng-book"]
+    },
+    {
+      "title": "고장 나도 사람 없이 돌게",
+      "time": "1~2주",
+      "goal": "GPU 지표를 모아 경보를 걸고, 고장 노드를 자동으로 빼는 절차와 사용 가이드를 쓸 수 있다.",
+      "task": "dcgm-exporter + Prometheus + Grafana 로 GPU 사용률·온도·Xid 판을 만든다. Xid 지표가 0보다 크면 노드를 cordon 하는 작은 스크립트를 짜고(가상 지표로 시험), '내 작업이 왜 Pending 인가요' 한 쪽짜리 사용 가이드를 쓴다.",
+      "resources": ["dcgm-docs", "xid-docs", "prom-book", "sre-book", "terraform-iac"]
+    }
+  ],
+  "pay": {
+    "summary": "공시 1인 평균 급여 **1억 3,100만원**(2025), 공공데이터 집계 평균 **약 7,708만원** — 기준이 달라 차이가 크고, 이 자리는 경력 3년 이상이라 경력에 따라 협의로 정해진다",
+    "rows": [
+      {"label": "직원 1인 평균 급여", "value": "1억 3,100만원", "amount": 13100, "basis": "사업보고서 · 2025년", "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다. 생산직을 포함한 전 직원 값 [38]"},
+      {"label": "직원 평균(집계)", "value": "약 7,708만원", "amount": 7708, "basis": "공공데이터 집계", "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일이 적혀 있지 않다 [39]"},
+      {"label": "신입 초봉", "value": "약 5,010만원", "amount": 5010, "basis": "공공데이터 집계", "note": "같은 집계 사이트의 초봉. 이 자리는 경력 3년 이상 채용이라 출발점 참고용이다 [39]"},
+      {"label": "기아 1인 평균 급여", "value": "1억 3,400만원", "amount": 13400, "basis": "사업보고서 · 2025년", "peer": true, "note": "같은 기사의 같은 공시 값 [38]"}
+    ],
+    "how": "공고의 급여는 '면접 후 결정'이다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 달라 섞어 비교하지 않는다. 평균은 초봉이 아니며, 경력직 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {"name": "선택적 근로시간제", "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"},
+      {"name": "사내 어린이집", "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"},
+      {"name": "육아휴직", "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"},
+      {"name": "육아기 근로시간 단축", "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"},
+      {"name": "배우자 출산 휴가", "detail": "출산일로부터 90일 안에 최대 10일"},
+      {"name": "가족돌봄 휴직", "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"},
+      {"name": "심리 상담", "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"},
+      {"name": "피트니스 센터", "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"},
+      {"name": "퇴직연금", "detail": "전 직원 대상, 준비금 사외 적립"}
+    ],
+    "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [40]. 공고에는 복지 칸이 없고 [1][2], 주택·학자금·차량 구입 지원 같은 금액 항목은 공식 자료에서 확인하지 못해 뺐다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "현대자동차 양재 본사(현대기아자동차빌딩)",
+    "address": "서울특별시 서초구 헌릉로 12 (양재동)",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%ED%97%8C%EB%A6%89%EB%A1%9C%2012",
+    "near": "신분당선 양재시민의숲역 근처 {추론}",
+    "note": "사람인 공고의 근무지는 '서울'이고 [1], 원티드 판은 헌릉로 12(양재동, 현대기아자동차빌딩)로 적었다 [2]. 지속가능성 보고서의 본사 소재지와 같다 [40]."
+  }
+}

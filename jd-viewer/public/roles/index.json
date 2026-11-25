@@ -338,6 +338,7 @@
   "wanted-400000": "nextsecurities-frontend-internal-platform",
   "jobkorea-50360665": "nextsecurities-fx-transfer-backend",
   "wanted-400001": "nextsecurities-internal-platform-backend",
+  "jobkorea-50360739": "nextsecurities-overseas-order-backend",
   "jobkorea-50356663": "nextsecurities-senior-ai-governance",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
@@ -2579,7 +2580,7 @@
     "wanted-398827"
    ],
    "researched_at": "2026-11-25",
-   "lines": 16
+   "lines": 24
   },
   {
    "id": "hyundai-ict-sw-architect",
@@ -3423,6 +3424,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 27
+  },
+  {
+   "id": "nextsecurities-overseas-order-backend",
+   "company": "넥스트증권",
+   "role": "Backend Engineer — 해외 주식 주문/체결",
+   "jobs": [
+    "jobkorea-50360739"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 30
   },
   {
    "id": "nextsecurities-senior-ai-governance",
