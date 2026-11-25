@@ -121,6 +121,7 @@
   "ats-greenhouse:coupang:8239021": "coupang-search-discovery-senior-staff-ds",
   "ats-greenhouse:coupang:7977000": "coupang-search-ranking-personalization-senior-staff-mtv",
   "ats-greenhouse:coupang:8090443": "coupang-search-relevance-senior-staff-mle-mtv",
+  "ats-greenhouse:coupang:8239014": "coupang-security-architect-senior-staff-seoul",
   "ats-greenhouse:coupang:8207116": "coupang-security-automation-engineer-seattle",
   "ats-greenhouse:coupang:7342961": "coupang-security-infra-senior-staff-backend-mtv",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
@@ -1576,6 +1577,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 15
+  },
+  {
+   "id": "coupang-security-architect-senior-staff-seoul",
+   "company": "쿠팡",
+   "role": "시니어 스태프 보안 아키텍트 (Senior Staff Security Engineer)",
+   "jobs": [
+    "ats-greenhouse:coupang:8239014"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 42
   },
   {
    "id": "coupang-security-automation-engineer-seattle",
