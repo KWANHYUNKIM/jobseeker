@@ -195,6 +195,7 @@
   "ats-greenhouse:daangn:5004587003": "daangn-network-engineer",
   "jobkorea-50331592": "daangn-network-engineer",
   "ats-greenhouse:daangn:6043519003": "daangn-security-detection-response",
+  "ats-greenhouse:daangn:8204751003": "daangn-service-ops-backend-intern",
   "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
   "boards-superookie:it:6afd0847a0717c1c4126d602": "daangn-shortform-backend-intern",
   "ats-greenhouse:daangn:5811688003": "daangn-sre-cluster",
@@ -2222,6 +2223,16 @@
    "role": "Security Engineer — 인프라 (Detection & Response)",
    "jobs": [
     "ats-greenhouse:daangn:6043519003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
+  },
+  {
+   "id": "daangn-service-ops-backend-intern",
+   "company": "당근",
+   "role": "Software Engineer, Backend (인턴) — 서비스 운영 (운영개발)",
+   "jobs": [
+    "ats-greenhouse:daangn:8204751003"
    ],
    "researched_at": "2026-11-25",
    "lines": 18
