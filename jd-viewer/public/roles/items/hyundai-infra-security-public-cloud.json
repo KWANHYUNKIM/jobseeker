@@ -1,0 +1,1043 @@
+{
+ "id": "hyundai-infra-security-public-cloud",
+ "company": "현대자동차",
+ "role": "Infra Security Engineer - Public Cloud Security",
+ "team": "통합보안센터 · 인프라보안팀",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2425",
+  "wanted-398820"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "현대차가 AWS·GCP·Azure 에 올린 서비스(차와 연결된 서비스 포함)가 안전하게 돌도록 **보안 기준을 정하고, 지켜지는지 매일 기계로 확인하고, 어긋난 곳을 담당 조직과 같이 고치는** 일입니다.[1][3]",
+  "env": "그룹 보안 조직을 한데 모은 **통합보안센터**(2024년 ICT본부 아래 신설)의 인프라보안팀입니다. 회사는 2022년부터 클라우드 보안 점검 도구로 **Wiz** 를 검토해 130개 넘는 보안 요구사항을 자동 점검에 묶었습니다.[3][4][5]",
+  "oneline": "클라우드를 직접 짓는 사람이 아니라 **클라우드의 규칙을 정하고 그 규칙을 코드와 도구로 지키게 하는** 6년차 이상 보안 엔지니어 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Hybrid 클라우드 환경(IDC, 클라우드)의 인프라에 대한 폭넓은 이해를 바탕으로, 당사 퍼블릭 클라우드 인프라 보안 정책을 수립·전개하고 취약점 점검 및 개선활동을 통해 안전한 클라우드 보안체계를 구축합니다.",
+   "short": "자체 데이터센터와 퍼블릭 클라우드가 섞인 환경에서, 퍼블릭 클라우드 쪽 보안 규칙을 정하고 지키게 하는 자리다.",
+   "why": "현대차는 커넥티드카 서비스를 자체 데이터센터의 **H클라우드**(직접 지은 사설 클라우드) 위에 올렸고[7], 동시에 AWS·GCP·Azure 같은 퍼블릭 클라우드(남의 데이터센터를 빌려 쓰는 클라우드)에도 서비스가 있습니다.[3] 인프라보안팀은 사내 서버·네트워크·퍼블릭 클라우드까지 IT 인프라 전체의 보안을 맡고, 이 자리는 그중 퍼블릭 클라우드 칸입니다.[1][3]",
+   "actually": {
+    "intro": "현직자가 소개한 이 자리의 일을 세 가지로 묶으면 이렇습니다.[3]",
+    "items": [
+     "**보안 체계 구축·운영** — 클라우드 환경에서 서비스가 안전하게 돌도록 기준과 절차를 만든다.",
+     "**취약점 탐지·개선** — 설정 실수·과한 권한·공개된 자원을 찾아 담당 조직이 고치게 한다.",
+     "**AI 영역까지** — 클라우드에 AI 서비스가 많이 들어오면서 그 보안까지 업무가 넓어지고 있다.",
+     "IDC(자체 데이터센터) 쪽과 기준이 어긋나지 않게 맞춘다 — 한 서비스가 두 곳에 걸쳐 있으면 약한 쪽이 뚫린다 {추론}."
+    ]
+   },
+   "how_far": "공고가 「폭넓은 이해」라고 쓴 것처럼 IDC 의 서버·네트워크를 직접 운영할 필요는 없습니다. 퍼블릭 클라우드 보안이 본업이고, IDC 와 이어지는 지점(전용선·VPN·계정 연동)을 설명할 수 있는 정도가 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    7
+   ],
+   "study": [
+    "team-hmg",
+    "aws-srm",
+    "practical-cloud-sec"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 클라우드 보안 정책·아키텍처 수립",
+   "short": "어떤 계정 구조·네트워크·권한으로 클라우드를 써야 하는지 회사 표준을 그리는 일.",
+   "why": "클라우드는 누구나 몇 번의 클릭으로 서버와 저장소를 만들 수 있어서, 표준이 없으면 팀마다 다른 방식으로 열어 둡니다. 클라우드 회사는 「클라우드 자체」의 보안만 책임지고 그 위에 올린 설정·권한·데이터는 고객 몫이라, 이 칸을 회사가 직접 정해야 합니다.[17]",
+   "refs": [
+    17
+   ],
+   "study": [
+    "aws-srm",
+    "aws-sra"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· AWS·GCP·Azure 등 하이브리드 클라우드 환경의 인프라 구성 검토, 전사 표준 보안 아키텍처 설계 및 수립",
+   "short": "새 서비스의 클라우드 구성도를 보고 위험을 짚고, 회사 전체가 따를 계정·네트워크·권한 표준을 만든다.",
+   "why": "현대차는 차를 여러 나라에 팔고 커넥티드카 서비스를 전 세계에 제공해서, 나라마다 요구되는 서비스 특성과 규제가 다르고 그에 맞는 보안 기준을 따로 세워야 한다고 현직자가 설명했습니다.[3] 그래서 단순한 IT 인프라가 아니라 **모빌리티 서비스 자체를 이해해야** 한다고 했습니다.[3]",
+   "actually": {
+    "intro": "현대차의 표준 문서는 공개되지 않았습니다. 아래는 AWS 가 권하는 보통의 표준 구조입니다.[9][10][11]",
+    "items": [
+     "**계정 나누기** — 서비스·환경(운영/개발)마다 계정을 나누고, 보안 도구 전용 계정과 로그 보관 전용 계정을 따로 둔다.[9]",
+     "**조직 전체 울타리(SCP)** — 「이 리전 밖에는 못 만든다」「로그 끄기 금지」처럼 계정 위에서 상한을 건다. SCP 는 권한을 주지 않고 최대치만 막으며, 관리(최상위) 계정에는 걸리지 않는다.[10]",
+     "**사람은 임시 자격 증명으로** — 회사 로그인(SSO)으로 들어와 임시 키를 받고, 오래 가는 키는 만들지 않는다. MFA(두 가지 이상 수단으로 로그인 확인) 필수.[11]",
+     "**네트워크** — 인터넷에 열 것과 사내망(IDC)과만 통할 것을 나누고, 그 사이를 지나는 길을 정한다 {추론}.",
+     "**구성 검토** — 새 서비스의 구성도를 받아 공개 노출·권한·암호화·로그 항목을 체크리스트로 본다 {추론}."
+    ]
+   },
+   "how_far": "표준의 최종 승인은 센터·회사가 하고, 이 자리는 **초안을 쓰고 근거(위협·규제·사례)를 붙이고 각 서비스팀이 따를 수 있게 설명**합니다. 세 클라우드의 개념 대응표(AWS 계정 ↔ GCP 프로젝트 ↔ Azure 구독, IAM 역할 ↔ 서비스 계정 ↔ 관리 ID)를 머리에 두는 것이 최소선입니다 {추론}.",
+   "refs": [
+    3,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "aws-sra",
+    "scp-docs",
+    "aws-iam-bp",
+    "practical-cloud-sec"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· CSP의 AI 서비스를 포함한 신규 클라우드 서비스 보안 기준 및 요구사항 수립",
+   "short": "Bedrock·Vertex AI·Azure OpenAI 같은 새 클라우드 서비스를 회사가 쓰기 전에 「이 조건이면 써도 된다」를 정한다.",
+   "why": "현직자는 최근 AI 서비스가 클라우드에 많이 도입되면서 **AI 영역의 보안까지 업무가 넓어지고 있다**고 했습니다.[3] 회사가 Wiz 를 쓰면서 EC2·컨테이너 안의 AI 작업을 찾아내고 그 권한과 통신을 시나리오 단위로 파악하게 했다는 발표도 있습니다.[4]",
+   "actually": {
+    "items": [
+     "**데이터** — 프롬프트와 답이 어디에 저장되고 학습에 쓰이는지, 어느 리전에 머무는지 확인하는 항목 {추론}.",
+     "**접근** — 모델 호출 권한을 누구에게 줄지, 인터넷 대신 사설 연결로만 부르게 할지 {추론}.",
+     "**LLM 고유 위험** — 프롬프트 주입(입력으로 지시를 바꿔치기), 민감정보 노출, AI 에이전트에게 너무 큰 권한 주기 같은 항목을 OWASP 가 10가지로 정리했다.[15]",
+     "**목록에 올리기** — 회사 안 어느 계정에서 어떤 AI 서비스가 돌고 있는지부터 안다(AI-SPM, AI 보안 상태 관리).[4]"
+    ]
+   },
+   "how_far": "AI 모델을 만드는 자리가 아닙니다. 클라우드 회사의 AI 서비스가 **데이터·권한·네트워크 관점에서 어떻게 작동하는지 문서로 확인하고, 사용 조건을 체크리스트로 쓰는** 수준입니다 {추론}.",
+   "refs": [
+    3,
+    4,
+    15
+   ],
+   "study": [
+    "owasp-llm",
+    "mitre-atlas"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 클라우드 보안 기술·위협 동향 및 침해사고 사례 분석을 통한 보안 정책·아키텍처 선제적 고도화",
+   "short": "다른 회사가 클라우드에서 어떻게 뚫렸는지 읽고, 우리 표준에 같은 구멍이 없는지 먼저 막는다.",
+   "why": "현대차그룹은 2025년 그룹 차원의 사이버위협대응팀을 새로 만들었고(팀장은 통합보안센터장), 현대차·기아의 정보보호 투자는 2025년 621억원으로 전년보다 46% 늘었습니다.[6] 현직자도 보안 위협은 계속 바뀌기 때문에 하나의 지식에 머물지 않는 것이 가장 중요한 역량이라고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**공격 기법 지도와 대조** — MITRE ATT&CK 의 클라우드 표(유효한 클라우드 계정 탈취, 메타데이터 서비스에서 키 훔치기 등)를 우리 탐지 규칙과 대조한다.[14]",
+     "**사례 → 규칙** — 예: 웹 서버가 공격자 대신 내부 주소를 부르게 만드는 공격(SSRF)으로 서버의 임시 키를 빼내는 수법 → 모든 서버에 IMDSv2(토큰을 먼저 받아야 메타데이터를 주는 방식) 강제.[12][16]",
+     "**동향** — 새 서비스·새 기본값이 나오면 우리 표준이 그걸 막는지 다시 본다 {추론}."
+    ]
+   },
+   "refs": [
+    3,
+    6,
+    12,
+    14,
+    16
+   ],
+   "study": [
+    "attack",
+    "cloudgoat"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 클라우드 보안 정책 검증 및 고도화",
+   "short": "정해 둔 규칙이 실제 계정에서 지켜지는지 주기적으로 확인하고, 모자란 규칙은 고치는 일.",
+   "why": "현직자는 팀이 가장 집중하는 과제를 **보안 활동을 「지속 가능한 체계」로 만드는 것** — 점검부터 취약점 조치, 사후 검증까지 하나의 흐름으로 잇는 것 — 이라고 했습니다.[3]",
+   "flows": [
+    {
+     "caption": "현직자가 말한 하나의 흐름[3]",
+     "steps": [
+      "기준 · 정책·표준을 정한다",
+      "점검 · 계정·자원이 기준대로인지 본다",
+      "조치 · 담당 조직이 고친다",
+      "사후 검증 · 정말 고쳐졌는지 다시 본다"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "refs": [
+    3
+   ],
+   "study": [
+    "team-hmg",
+    "cis-bench"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 퍼블릭 클라우드 운영 계정·리소스의 보안 정책 적용 여부 및 적정성 주기적 검증",
+   "short": "수백 개 계정의 설정이 회사 기준과 같은지 도구로 매일 대조하고, 기준 자체가 적당한지도 본다.",
+   "why": "현대차는 Wiz 를 도입한 뒤 그룹이 가진 **130개가 넘는 클라우드 보안 요구사항**을 한 방식으로 연동·자동화했다고 발표했습니다.[4] 사람이 쿼리를 만들고 검증하던 시간을 줄이려는 것이 도입 이유였습니다.[4]",
+   "actually": {
+    "intro": "「적용 여부」는 지켜졌나, 「적정성」은 그 규칙이 맞나입니다.",
+    "items": [
+     "**적용 여부** — 예: 모든 계정에 CloudTrail(누가 무엇을 했나 기록) 켜짐, 루트 계정 MFA, 공개 S3 없음. CIS 벤치마크(AWS 기초 7.1.0판)가 이런 항목을 번호로 정리해 두었다.[13]",
+     "**예외 관리** — 일부러 공개한 웹 자원처럼 규칙을 어기는 게 맞는 곳은 이유·기한을 적고 예외로 등록한다 {추론}.",
+     "**적정성** — 아무도 안 걸리는 규칙, 늘 오탐인 규칙, 새 서비스를 못 잡는 규칙을 골라 고친다 {추론}.",
+     "**권한 정리** — 90일 넘게 안 쓴 사용자·역할·키를 찾아 지운다. AWS 도 사용하지 않는 자격 증명의 정기 제거를 권한다.[11]"
+    ]
+   },
+   "how_far": "점검 도구는 이미 있습니다.[4] 이 자리는 **도구가 보는 규칙을 회사 기준에 맞게 고르고·만들고·예외를 관리**하는 쪽입니다. 도구 화면을 보는 데서 그치지 않고 규칙을 쿼리·코드로 직접 쓸 수 있어야 합니다 {추론}.",
+   "refs": [
+    4,
+    11,
+    13
+   ],
+   "study": [
+    "cis-bench",
+    "aws-iam-bp",
+    "cnapp-ms"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 신규 클라우드 서비스·기능 및 최신 보안 위협·모범사례를 반영한 보안 정책 지속 개선",
+   "short": "클라우드에 새 기능이 나오거나 새 공격이 알려지면 회사 규칙을 그에 맞게 고쳐 쓴다.",
+   "why": "세 클라우드는 해마다 서비스와 기본 설정을 바꾸고, 클라우드 회사의 권장 사항도 바뀝니다. AWS IAM 모범 사례만 해도 「사람은 SSO 임시 자격 증명」「여러 계정에 권한 가드레일」처럼 계정 구조를 전제로 한 항목이 들어 있습니다.[11]",
+   "actually": {
+    "items": [
+     "클라우드 회사의 보안 권고·새 기능 소식을 읽고 우리 표준에 반영할지 정한다 {추론}.",
+     "CIS 벤치마크 판이 바뀌면 바뀐 항목을 점검 규칙에 옮긴다.[13]",
+     "규칙을 바꾸면 기존 자원이 몇 개 새로 걸리는지 먼저 세어 보고 담당 조직에 알린다 {추론}."
+    ]
+   },
+   "refs": [
+    11,
+    13
+   ],
+   "study": [
+    "aws-iam-bp",
+    "cis-bench"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 클라우드 보안 점검 및 취약점 개선조치",
+   "short": "도구로 찾은 문제를 실제로 고쳐지게 만드는 일 — 찾기보다 고치게 하기가 더 길다.",
+   "why": "현대차는 Wiz 로 찾은 취약점에 대해 조치 필요성과 세부 가이드를 담은 티켓을 유관 부서에 자동으로 보내고, CVE(공개된 소프트웨어 취약점) 조치율 98% 이상, 외부 공격 표면(EASM) 조치율 95% 이상을 냈다고 발표했습니다.[4]",
+   "refs": [
+    4
+   ],
+   "study": [
+    "isec-hmc",
+    "cnapp-ms"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· CNAPP 솔루션을 활용한 보안 설정·접근 권한·로그 및 주요 보안 이벤트 상시 점검·모니터링",
+   "short": "설정·권한·작업 부하·이벤트를 한 화면에서 보는 클라우드 보안 도구(CNAPP)로 상시 감시한다.",
+   "why": "CNAPP(클라우드 네이티브 앱 보호 플랫폼)는 따로 있던 도구들 — 설정 점검(CSPM), 권한 점검(CIEM), 서버·컨테이너 보호(CWPP), IaC 스캔, 클라우드 탐지·대응(CDR) — 을 하나로 묶은 것입니다.[8] 현대차는 Wiz 를 쓰고, 별도 에이전트(서버에 까는 프로그램) 없이 디스크 스냅숏으로 자산을 읽어 자동으로 늘었다 줄었다 하는 서버까지 본다고 했습니다.[4] Wiz 는 업계에서 CNAPP 로 분류되는 제품입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**보안 설정** — 공개 저장소, 암호화 안 된 디스크, 인터넷에 열린 관리 포트.[8]",
+     "**접근 권한** — 너무 넓은 역할, 다른 계정·외부에 열린 신뢰 관계, 오래된 키.[8][11]",
+     "**공격 경로** — 「인터넷에 열린 서버 + 그 서버의 역할이 중요 데이터 읽기 가능」처럼 여러 약점을 이어서 위험을 높게 매긴다 {추론}.",
+     "**로그·이벤트** — 루트 로그인, 로그 끄기, 처음 보는 나라에서의 키 사용 같은 이벤트 알림.[8][14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "탐지 결과를 담당 조직별 티켓으로 묶기",
+     "body": "CNAPP 결과를 그대로 넘기면 수백 줄이 됩니다. 인터넷 노출이면 한 단계 올리고, 주인 태그로 묶어 기한을 붙입니다(가상 데이터, 기한은 예시 · 직접 돌린 출력은 맨 아래 주석).",
+     "lang": "python",
+     "code": "from collections import defaultdict\n\nfindings = [\n    {\"rule\": \"S3 버킷 공개\", \"account\": \"conn-car-prod\", \"severity\": \"CRITICAL\", \"internet\": True,  \"tags\": {\"owner\": \"connected-svc\"}},\n    {\"rule\": \"IMDSv1 허용\", \"account\": \"conn-car-prod\", \"severity\": \"HIGH\",     \"internet\": True,  \"tags\": {\"owner\": \"connected-svc\"}},\n    {\"rule\": \"MFA 없는 콘솔 사용자\", \"account\": \"hr-dev\",   \"severity\": \"HIGH\",     \"internet\": False, \"tags\": {}},\n    {\"rule\": \"오래된 액세스 키(120일)\", \"account\": \"ai-sandbox\", \"severity\": \"MEDIUM\", \"internet\": False, \"tags\": {\"owner\": \"ai-platform\"}},\n    {\"rule\": \"IMDSv1 허용\", \"account\": \"ai-sandbox\", \"severity\": \"HIGH\",     \"internet\": False, \"tags\": {\"owner\": \"ai-platform\"}},\n]\nORDER = {\"CRITICAL\": 0, \"HIGH\": 1, \"MEDIUM\": 2, \"LOW\": 3}\nDUE = {\"CRITICAL\": 3, \"HIGH\": 14, \"MEDIUM\": 30, \"LOW\": 90}  # 조치 기한(일)\n\ntickets = defaultdict(list)\nfor f in findings:\n    sev = f[\"severity\"]\n    if f[\"internet\"] and sev == \"HIGH\":   # 인터넷 노출이면 한 단계 올린다\n        sev = \"CRITICAL\"\n    owner = f[\"tags\"].get(\"owner\", \"UNOWNED\")  # 주인 없으면 보안팀이 주인부터 찾는다\n    tickets[owner].append((sev, f[\"rule\"], f[\"account\"]))\n\nfor owner, items in sorted(tickets.items()):\n    print(f\"[{owner}]\")\n    for sev, rule, acct in sorted(items, key=lambda x: ORDER[x[0]]):\n        print(f\"  {sev:<8} {DUE[sev]:>2}일 안에  {rule} ({acct})\")\n\n# [UNOWNED]\n#   HIGH     14일 안에  MFA 없는 콘솔 사용자 (hr-dev)\n# [ai-platform]\n#   HIGH     14일 안에  IMDSv1 허용 (ai-sandbox)\n#   MEDIUM   30일 안에  오래된 액세스 키(120일) (ai-sandbox)\n# [connected-svc]\n#   CRITICAL  3일 안에  S3 버킷 공개 (conn-car-prod)\n#   CRITICAL  3일 안에  IMDSv1 허용 (conn-car-prod)"
+    }
+   ],
+   "how_far": "도구를 처음부터 고르는 일은 이미 끝났습니다(2022년부터 검토).[4] 이 자리는 **도구의 알림을 읽고, 진짜 위험을 골라내고, 규칙과 우선순위를 회사에 맞게 조정**합니다 {추론}.",
+   "refs": [
+    4,
+    8,
+    11,
+    14
+   ],
+   "study": [
+    "cnapp-ms",
+    "isec-hmc",
+    "aws-iam-bp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 보안 취약점 식별 시 유관 조직과 협업하여 개선조치를 수행하고 정책·설정·운영 절차 지속 개선",
+   "short": "취약점은 서비스팀이 고친다. 이 자리는 왜·어떻게 고칠지 알려 주고, 같은 문제가 다시 안 나게 절차를 바꾼다.",
+   "why": "현직자는 **담당자가 누구든, 언제든 같은 기준으로 빠르게 대응할 수 있는 자동화 체계**를 만드는 데 가장 중점을 둔다고 했습니다.[3] 회사는 취약점 티켓에 조치 가이드를 붙여 유관 부서로 자동 발행합니다.[4]",
+   "actually": {
+    "items": [
+     "**고치는 법까지 적기** — 「S3 공개」만 보내지 않고 어느 설정을 어떻게 바꾸면 되는지, IaC 라면 어느 줄인지 적는다 {추론}.",
+     "**기한과 확인** — 심각도별 기한을 두고, 고쳤다고 하면 다시 스캔해 닫는다(사후 검증).[3]",
+     "**재발 막기** — 같은 실수가 반복되면 배포 전에 막는 규칙(IaC 검사·SCP)으로 올린다 {추론}.",
+     "**설득** — 서비스 일정과 부딪치면 실제 위험(인터넷 노출, 중요 데이터 접근 여부)으로 우선순위를 설명한다 {추론}."
+    ]
+   },
+   "refs": [
+    3,
+    4
+   ],
+   "study": [
+    "team-hmg",
+    "checkov"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 컴퓨터 또는 보안 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "컴퓨터·보안 쪽 학사 이상. 서류 거름망이다.",
+   "why": "같은 시기 현대차 ICT 공고들도 같은 학위 조건을 둡니다.[1] 실제 평가는 아래의 경력·경험 줄에서 갈립니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 6년 이상의 퍼블릭 클라우드 인프라·보안 관련 경력을 보유하신 분 (3년 이상의 클라우드 보안 업무 경험 포함)",
+   "short": "클라우드 인프라·보안 6년 이상, 그중 클라우드 「보안」만 3년 이상. 시니어 자리다.",
+   "why": "표준을 정하고 다른 조직을 설득하는 자리라, 클라우드를 직접 운영해 본 사람이어야 기준이 현실적입니다 {추론}. 클라우드 보안 자격증들도 비슷한 문턱을 둡니다 — AWS 보안 전문 자격은 IT 보안 5년·AWS 실무 2년 이상을 권장합니다.[18]",
+   "how_far": "「인프라 3년 + 클라우드 보안 3년」도 맞습니다. 클라우드 운영(DevOps·SRE) 경력에서 넘어오는 경우, 그 안에서 IAM·보안 그룹·로그·취약점 조치를 직접 맡았던 3년을 보여 주는 것이 핵심입니다 {추론}.",
+   "refs": [
+    18
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· AWS·GCP·Azure 등 퍼블릭 클라우드 환경의 보안 정책 수립, 취약점 분석 또는 보안 운영 경험을 보유하신 분",
+   "short": "세 가지 중 하나 이상 — 정책 쓰기, 취약점 분석, 보안 운영. 한 클라우드라도 깊게.",
+   "why": "공고 문장이 「또는」이라 셋 다 필요하진 않습니다.[1][2] 현대차는 세 클라우드를 다 쓰지만[3], 개념은 서로 대응되어서 한 곳을 깊게 알면 나머지는 옮겨 배울 수 있습니다 {추론}.",
+   "actually": {
+    "intro": "세 클라우드의 같은 개념입니다 {추론}.",
+    "items": [
+     "**묶는 단위** — AWS 계정·조직 / GCP 프로젝트·폴더·조직 / Azure 구독·관리 그룹.",
+     "**권한** — AWS IAM 역할·정책 / GCP IAM 역할·서비스 계정 / Azure RBAC·Entra ID.",
+     "**조직 울타리** — AWS SCP[10] / GCP 조직 정책 / Azure Policy.",
+     "**활동 기록** — AWS CloudTrail / GCP Cloud Audit Logs / Azure 활동 로그."
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    10
+   ],
+   "study": [
+    "aws-security-book",
+    "practical-cloud-sec",
+    "aws-scs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· CNAPP 구축·운영 또는 이를 활용한 클라우드 보안 점검 및 모니터링 경험을 보유하신 분",
+   "short": "Wiz·Prisma Cloud·Defender for Cloud 같은 CNAPP 를 깔거나, 그것으로 점검·감시해 본 경험.",
+   "why": "이 팀은 이미 CNAPP(Wiz)로 130개 넘는 요구사항을 자동 점검하고 있어서[4], 첫날부터 그 결과를 읽고 규칙을 손볼 사람이 필요합니다 {추론}.",
+   "how_far": "특정 제품이 아니어도 됩니다 — CNAPP 의 구성 요소(CSPM·CIEM·CWPP·IaC 스캔)가 무엇을 보는지 알고[8], 결과에서 **오탐을 걸러내고 진짜 위험의 우선순위를 매긴** 경험을 말할 수 있으면 됩니다. 써 본 적이 없다면 클라우드 회사의 무료 도구(AWS Security Hub·GuardDuty 등)로 같은 일을 해 본 경험이 대신입니다 {추론}.",
+   "refs": [
+    4,
+    8
+   ],
+   "study": [
+    "cnapp-ms",
+    "isec-hmc",
+    "cis-bench"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· IaC 기반 클라우드 인프라 구축·운영 또는 보안 자동화 경험을 보유하신 분",
+   "short": "Terraform 같은 코드로 인프라를 만들어 봤거나, 보안 점검·조치를 스크립트로 자동화해 본 경험.",
+   "why": "현직자가 말한 「누가 하든 같은 기준」은 사람 손이 아니라 코드로만 지켜집니다.[3] IaC(인프라를 코드로 적어 만드는 방식)면 배포 전에 설정을 검사할 수 있습니다 — Checkov 같은 도구는 Terraform·CloudFormation 코드를 읽어 잘못된 설정을 찾습니다.[25]",
+   "examples": [
+    {
+     "title": "배포 전에 Terraform 계획을 검사하기",
+     "body": "terraform show -json 결과를 흉내 낸 가상 데이터에서 세 가지 규칙(S3 공개 차단, IMDSv2 강제[12], SSH 전체 공개 금지)을 검사합니다. 실제로는 Checkov·OPA 같은 도구에 규칙을 넣습니다(직접 돌린 출력은 맨 아래 주석).",
+     "lang": "python",
+     "code": "import json\n\nplan = json.loads(\"\"\"\n{\"resource_changes\": [\n  {\"address\": \"aws_s3_bucket_public_access_block.logs\",\n   \"type\": \"aws_s3_bucket_public_access_block\",\n   \"change\": {\"after\": {\"block_public_acls\": true, \"restrict_public_buckets\": false}}},\n  {\"address\": \"aws_instance.api\",\n   \"type\": \"aws_instance\",\n   \"change\": {\"after\": {\"metadata_options\": [{\"http_tokens\": \"optional\"}]}}},\n  {\"address\": \"aws_security_group_rule.ssh\",\n   \"type\": \"aws_security_group_rule\",\n   \"change\": {\"after\": {\"type\": \"ingress\", \"from_port\": 22, \"to_port\": 22,\n                        \"cidr_blocks\": [\"0.0.0.0/0\"]}}}\n]}\n\"\"\")\n\ndef check(rc):\n    t, a = rc[\"type\"], rc[\"change\"][\"after\"]\n    if t == \"aws_s3_bucket_public_access_block\":\n        off = [k for k, v in a.items() if v is False]\n        if off:\n            return f\"S3 공개 차단 꺼짐: {off}\"\n    if t == \"aws_instance\":\n        if a.get(\"metadata_options\", [{}])[0].get(\"http_tokens\") != \"required\":\n            return \"IMDSv2 강제 안 됨(http_tokens != required)\"\n    if t == \"aws_security_group_rule\" and a.get(\"type\") == \"ingress\":\n        if \"0.0.0.0/0\" in a.get(\"cidr_blocks\", []) and a[\"from_port\"] <= 22 <= a[\"to_port\"]:\n            return \"SSH(22)가 인터넷 전체에 열림\"\n    return None\n\nfails = [(rc[\"address\"], msg) for rc in plan[\"resource_changes\"] if (msg := check(rc))]\nfor addr, msg in fails:\n    print(f\"FAIL {addr}: {msg}\")\nprint(f\"{len(fails)}건 위반 → 배포 중단\" if fails else \"통과\")\n\n# FAIL aws_s3_bucket_public_access_block.logs: S3 공개 차단 꺼짐: ['restrict_public_buckets']\n# FAIL aws_instance.api: IMDSv2 강제 안 됨(http_tokens != required)\n# FAIL aws_security_group_rule.ssh: SSH(22)가 인터넷 전체에 열림\n# 3건 위반 → 배포 중단"
+    }
+   ],
+   "how_far": "「또는」이라 둘 중 하나면 됩니다.[1] 최소선은 Terraform 으로 VPC·서버·권한을 만들고 지워 본 경험, 또는 클라우드 API(boto3 등)로 점검 결과를 모으고 조치를 자동으로 건 경험입니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    12,
+    25
+   ],
+   "study": [
+    "tf-tutorials",
+    "tf-uar",
+    "checkov"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· IaC 기반의 클라우드 보안인프라 구축 및 운영 경험이 있으신 분",
+   "short": "보안 장치 자체(로그 수집·탐지 서비스·조직 정책)를 코드로 깔고 운영해 본 경험.",
+   "why": "앞 줄이 「인프라를 코드로」라면 이 줄은 **보안 인프라를 코드로**입니다. 계정이 늘 때마다 로그 보관·탐지 서비스·보안 도구 연동이 자동으로 붙어야 빠짐이 없습니다. AWS 의 보안 참조 구조도 보안 서비스를 조직 전체에 위임 관리자 방식으로 켜는 구성을 권합니다.[9]",
+   "actually": {
+    "items": [
+     "새 계정이 생기면 CloudTrail·로그 보관 계정 전송·탐지 서비스가 자동으로 켜지게 코드로 적는다.[9]",
+     "SCP·조직 정책 자체를 코드로 관리하고, 바꿀 때는 검토(PR)를 거친다.[10] {추론}",
+     "CNAPP 연동(점검용 읽기 전용 역할)을 모든 계정에 같은 코드로 배포한다 {추론}."
+    ]
+   },
+   "refs": [
+    9,
+    10
+   ],
+   "study": [
+    "aws-sra",
+    "scp-docs",
+    "tf-uar"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 글로벌 업무 수행을 위한 영어 커뮤니케이션(회의, 이메일, 문서) 역량을 보유하신 분",
+   "short": "해외 법인·해외 클라우드 담당자와 영어로 회의하고 표준 문서를 써야 해서.",
+   "why": "현대차는 여러 나라에 차를 팔고 커넥티드카 서비스를 전 세계에 제공하며, 나라마다 보안 기준을 따로 세운다고 했습니다.[3] 현직자의 경력도 미국 공장(HMGMA) 등 회사가 커지며 보안 조직이 넓어진 흐름 위에 있습니다.[3] 해외 사업장 보안 점검도 매년으로 바뀌었습니다.[5]",
+   "refs": [
+    3,
+    5
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· AWS·GCP·Azure 등 클라우드 보안 관련 자격증을 보유하신 분",
+   "short": "AWS 보안 전문·GCP 보안 엔지니어·CCSP 같은 자격증. 지식을 증명하는 보조 수단이다.",
+   "why": "세 클라우드를 다 다루는 자리라 한 곳의 보안 지식을 객관적으로 보여 주는 수단이 됩니다 {추론}.",
+   "actually": {
+    "items": [
+     "**AWS Certified Security – Specialty** — 65문항·170분, IT 보안 5년·AWS 실무 2년 이상 권장.[18]",
+     "**Google Professional Cloud Security Engineer** — 업계 3년·Google Cloud 1년 이상 권장, 접근 설정·경계 보호·데이터 보호·운영·규정 준수를 본다.[19]",
+     "**Azure** — Azure Security Engineer Associate(AZ-500)는 2026년 8월 31일에 폐지됐다. 지금 따려면 Microsoft 의 다른 보안 자격을 확인해야 한다.[20]",
+     "**CCSP(ISC2)** — 특정 클라우드가 아닌 클라우드 보안 전반, 실무 경력 5년 필요.[21]"
+    ]
+   },
+   "refs": [
+    18,
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "aws-scs",
+    "gcp-pcse",
+    "ccsp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· Python, Bash 등 프로그래밍 언어를 활용한 보안 운영·분석 자동화 경험을 보유하신 분",
+   "short": "점검 결과 모으기·티켓 만들기·자동 조치를 Python·Bash 스크립트로 짜 본 경험.",
+   "why": "현직자가 가장 중점을 둔다는 것이 **자동화 체계**이고[3], 회사는 탐지 결과를 조치 가이드 티켓으로 자동 발행합니다.[4] 도구와 도구 사이(CNAPP → 티켓 시스템 → 재점검)를 잇는 접착제가 보통 이런 스크립트입니다 {추론}.",
+   "how_far": "개발자 수준의 서비스를 만들 필요는 없습니다. 클라우드 API 로 계정 수백 개를 돌며 설정을 모으고, JSON 을 걸러 표로 만들고, 정해진 조치를 안전하게(먼저 시험 모드로) 거는 정도입니다 {추론}.",
+   "refs": [
+    3,
+    4
+   ],
+   "study": [
+    "aws-iam-bp",
+    "cloudgoat"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 생성형 AI를 보안 분석·자동화 등에 활용하거나 LLM 기반 AI Agent를 구축해 본 경험을 보유하신 분",
+   "short": "LLM 으로 탐지 결과를 요약·분류하거나 조치 가이드를 쓰게 만들어 본 경험.",
+   "why": "현대차는 Wiz 의 AI 기능으로 조치 필요성과 세부 가이드를 담은 티켓을 자동 발행한다고 발표했습니다.[4] 그룹 차원의 위협 대응이 커지면서 사람이 다 읽기 힘든 양을 다뤄야 하는 것도 이유입니다.[6] {추론}",
+   "how_far": "AI 에이전트를 만들 때는 이 자리가 지키는 쪽이기도 합니다 — 에이전트에게 클라우드 권한을 줄 때 너무 큰 권한·프롬프트 주입 같은 위험을 같이 설명할 수 있어야 합니다.[15]",
+   "refs": [
+    4,
+    6,
+    15
+   ],
+   "study": [
+    "owasp-llm",
+    "mitre-atlas"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "클라우드 콘솔을 클릭하는 것보다 그 규칙을 코드로 적는 게 즐거운 사람[3]",
+   "새 서비스·새 위협을 계속 배우는 게 부담이 아닌 사람 — 현직자가 꼽은 가장 중요한 역량[3]",
+   "차와 연결된 서비스처럼 IT 밖의 도메인까지 이해하고 싶은 사람[3]",
+   "그룹 전체 규모(수많은 계정·해외 법인)의 보안 기준을 만들어 보고 싶은 사람[5][6]"
+  ],
+  "hard": [
+   "클라우드 6년·클라우드 보안 3년이라는 경력 문턱이 높다[1]",
+   "고치는 것은 서비스팀이라, 일의 큰 부분이 설득과 조율이다[3] {추론}",
+   "나라마다 다른 규제와 높은 보안 등급의 정보 때문에 기준과 절차가 일반 IT 회사보다 무겁다[3]",
+   "세 클라우드를 다 다뤄서 공부할 범위가 넓다[3]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "계정이 수백 개인 조직에서 「모든 계정에 CloudTrail 을 켜고 아무도 못 끄게」 하려면 어떻게 하겠어요?",
+   "a": "보안 참조 구조의 로그 보관 계정과 SCP 의 상한 개념.[9][10]"
+  },
+  {
+   "q": "웹 서버에 SSRF 취약점이 있으면 클라우드에서는 무엇까지 털릴 수 있나요? 무엇으로 막나요?",
+   "a": "메타데이터 서비스의 임시 키, IMDSv2 강제.[12][16]"
+  },
+  {
+   "q": "CNAPP 에서 하루에 수백 건이 뜬다면 무엇부터 고치게 하겠어요?",
+   "a": "회사가 실제로 한 자동 티켓·조치율 관리와, 노출·권한을 이어 보는 우선순위.[4][8]"
+  },
+  {
+   "q": "서비스팀이 「출시가 급하니 이 공개 설정은 다음 달에 고치겠다」고 하면요?",
+   "a": "점검 → 조치 → 사후 검증을 한 흐름으로 만든다는 팀 과제와 예외 관리.[3]"
+  },
+  {
+   "q": "사내에서 클라우드의 생성형 AI 서비스를 쓰고 싶다는 요청이 오면 어떤 조건을 걸겠어요?",
+   "a": "공고 업무의 AI 서비스 보안 기준, LLM 위험 목록.[1][15]"
+  },
+  {
+   "q": "같은 규칙을 AWS 와 GCP 에 둘 다 걸려면 무엇이 대응되나요?",
+   "a": "세 클라우드를 함께 쓰는 환경.[3]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · [통합보안] Infra Security Engineer - Public Cloud Security",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=425",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대, 근무지 양재본사, 마감 2026-11-30"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차 [통합보안] Infra Security Engineer - Public Cloud Security",
+   "url": "https://www.wanted.co.kr/wd/398820",
+   "kind": "posting",
+   "note": "같은 공고"
+  },
+  {
+   "n": 3,
+   "title": "TEAM HMG · 모빌리티를 연결하는 클라우드 환경을 지키다, 현대자동차 인프라보안 직무",
+   "url": "https://www.youtube.com/watch?v=CLmSR8ay3yU",
+   "kind": "company",
+   "date": "2026-10-08",
+   "note": "통합보안센터 인프라보안팀 퍼블릭 클라우드 보안 엔지니어 인터뷰(4분 26초) · 자막이 없어 2초 간격 장면의 화면 자막을 전부 읽음"
+  },
+  {
+   "n": 4,
+   "title": "산업일보 · 「클라우드·AI 보안, 맥락 파악이 핵심」… 현대차그룹의 통합 가시성 확보 전략",
+   "url": "https://kidd.co.kr/news/247014",
+   "kind": "news",
+   "date": "2026-08-13",
+   "note": "ISEC 2026 현대자동차 발표 보도 — Wiz 도입, 130개+ 요구사항 자동화, CVE 조치율 98%+, EASM 95%+, 에이전트리스, AI-SPM"
+  },
+  {
+   "n": 5,
+   "title": "파이낸셜뉴스 · 현대차그룹, 보안 컨트롤타워 「통합보안센터」 신설",
+   "url": "https://www.fnnews.com/news/202407221558354508",
+   "kind": "news",
+   "date": "2024-07-22",
+   "note": "ICT본부 산하 신설, 현대차·기아 정보보호센터 등 통합, 해외 사업장 점검 매년"
+  },
+  {
+   "n": 6,
+   "title": "보안뉴스 · 현대차그룹, 사이버보안 전담 조직 「그룹사이버위협대응팀」 신설",
+   "url": "https://m.boannews.com/html/detail.html?idx=140397",
+   "kind": "news",
+   "date": "2025-11-18",
+   "note": "팀장 통합보안센터장, KISA 집계 정보보호 투자 621억원(+46.1%)"
+  },
+  {
+   "n": 7,
+   "title": "바이라인네트워크 · 현대자동차가 구축한 「H클라우드」, 전세계 1000만 커넥티드 카 서비스 뒷받침",
+   "url": "https://byline.network/2024/06/24-313/",
+   "kind": "news",
+   "date": "2024-06-25",
+   "note": "현대차 ICT 클라우드개발 조직의 SUSECON 2024 발표 보도 — 사설 클라우드"
+  },
+  {
+   "n": 8,
+   "title": "Microsoft Security 101 · What is CNAPP?",
+   "url": "https://www.microsoft.com/en-us/security/business/security-101/what-is-cnapp",
+   "kind": "reference",
+   "note": "CNAPP 구성 요소 — CSPM·KSPM·IaC 스캔·DSPM·CIEM·CWPP·CDR"
+  },
+  {
+   "n": 9,
+   "title": "AWS Security Reference Architecture",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html",
+   "kind": "reference",
+   "note": "보안 도구 계정·로그 보관 계정, 조직 단위 보안 서비스 위임 관리"
+  },
+  {
+   "n": 10,
+   "title": "AWS Organizations · 서비스 제어 정책(SCP)",
+   "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+   "kind": "reference",
+   "note": "SCP 는 권한을 주지 않고 최대치만 정한다, 관리 계정에는 적용 안 됨"
+  },
+  {
+   "n": 11,
+   "title": "AWS IAM 사용 설명서 · IAM의 보안 모범 사례",
+   "url": "https://docs.aws.amazon.com/ko_kr/IAM/latest/UserGuide/best-practices.html",
+   "kind": "reference",
+   "note": "페더레이션 임시 자격 증명·MFA·루트 보호·최소 권한·미사용 자격 증명 제거·다중 계정 가드레일"
+  },
+  {
+   "n": 12,
+   "title": "Amazon EC2 · 인스턴스 메타데이터 서비스(IMDSv2) 구성",
+   "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html",
+   "kind": "reference",
+   "note": "세션 토큰(PUT) 필수, 토큰 없으면 401, 기본 홉 제한 1"
+  },
+  {
+   "n": 13,
+   "title": "CIS Amazon Web Services Benchmarks",
+   "url": "https://www.cisecurity.org/benchmark/amazon_web_services",
+   "kind": "reference",
+   "note": "AWS Foundations 7.1.0판 등, 비상업 무료"
+  },
+  {
+   "n": 14,
+   "title": "MITRE ATT&CK · Cloud Matrix",
+   "url": "https://attack.mitre.org/matrices/enterprise/cloud/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference",
+   "note": "프롬프트 주입·민감정보 노출·과도한 권한 등"
+  },
+  {
+   "n": 16,
+   "title": "Rhino Security Labs · CloudGoat",
+   "url": "https://github.com/RhinoSecurityLabs/cloudgoat",
+   "kind": "reference",
+   "note": "일부러 취약하게 만든 AWS 실습 환경 — ec2_ssrf·iam_enum_basics 등 시나리오"
+  },
+  {
+   "n": 17,
+   "title": "AWS 공동 책임 모델",
+   "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "AWS Certified Security – Specialty",
+   "url": "https://aws.amazon.com/certification/certified-security-specialty/",
+   "kind": "reference",
+   "note": "65문항·170분·USD 300, IT 보안 5년·AWS 실무 2년 이상 권장"
+  },
+  {
+   "n": 19,
+   "title": "Google Cloud · Professional Cloud Security Engineer",
+   "url": "https://cloud.google.com/learn/certification/cloud-security-engineer",
+   "kind": "reference",
+   "note": "업계 3년·Google Cloud 1년 이상 권장"
+  },
+  {
+   "n": 20,
+   "title": "Microsoft Learn · Azure Security Engineer Associate",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-security-engineer/",
+   "kind": "reference",
+   "note": "2026-08-31 폐지 안내"
+  },
+  {
+   "n": 21,
+   "title": "ISC2 · CCSP",
+   "url": "https://www.isc2.org/certifications/ccsp",
+   "kind": "reference",
+   "note": "실무 경력 5년, 6개 영역"
+  },
+  {
+   "n": 22,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 24,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원, 4·124쪽 본사 주소"
+  },
+  {
+   "n": 25,
+   "title": "Checkov 문서",
+   "url": "https://www.checkov.io/",
+   "kind": "reference",
+   "note": "Terraform·CloudFormation·쿠버네티스 등 IaC 정적 분석"
+  }
+ ],
+ "caveat": "현대차가 공개한 것은 현직자 인터뷰 영상과 컨퍼런스 발표 보도(Wiz 도입·자동화 수치)까지입니다. 실제 계정 구조·보안 표준 문서·국가별 기준·티켓 절차는 공개되지 않아 AWS·CIS·OWASP 같은 공개 문서로 '보통 이런 것'을 보였습니다. 발표 보도에는 'CNAPP' 라는 말이 없고, Wiz 를 CNAPP 로 본 것은 업계 분류에 따른 판단입니다.",
+ "resources": [
+  {
+   "id": "team-hmg",
+   "title": "TEAM HMG · 현대자동차 인프라보안 직무",
+   "by": "현대자동차그룹 · 2026-10",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=CLmSR8ay3yU",
+   "why": "이 팀 현직자가 직접 말하는 일의 범위(세 클라우드·AI 보안)와 팀 과제(점검→조치→검증 자동화). 4분이라 지원 전에 꼭 본다."
+  },
+  {
+   "id": "isec-hmc",
+   "title": "「클라우드·AI 보안, 맥락 파악이 핵심」… 현대차그룹의 통합 가시성 확보 전략",
+   "by": "산업일보 · 2026-08",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://kidd.co.kr/news/247014",
+   "why": "이 회사가 CNAPP(Wiz)로 무엇을 자동화했고 어떤 숫자를 관리하는지 — 업무③·자격④의 실제 모습."
+  },
+  {
+   "id": "aws-srm",
+   "title": "AWS 공동 책임 모델",
+   "by": "Amazon Web Services",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+   "why": "클라우드 회사와 고객의 보안 책임 경계. 이 자리가 왜 필요한지의 출발점."
+  },
+  {
+   "id": "aws-iam-bp",
+   "title": "IAM의 보안 모범 사례",
+   "by": "AWS 공식 문서(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/ko_kr/IAM/latest/UserGuide/best-practices.html",
+   "why": "임시 자격 증명·MFA·최소 권한·미사용 권한 정리 — 정책 검증 업무에서 가장 많이 걸리는 항목들의 원문."
+  },
+  {
+   "id": "aws-sra",
+   "title": "AWS Security Reference Architecture",
+   "by": "AWS Prescriptive Guidance",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html",
+   "why": "전사 표준 보안 아키텍처의 교과서 — 계정 나누기, 보안 도구·로그 계정, 보안 서비스를 조직 전체에 켜는 법."
+  },
+  {
+   "id": "scp-docs",
+   "title": "서비스 제어 정책(SCP)",
+   "by": "AWS Organizations 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+   "why": "조직 전체에 거는 울타리. 표준을 '못 어기게' 만드는 도구라 자격⑤⑥과 바로 이어진다."
+  },
+  {
+   "id": "cnapp-ms",
+   "title": "What is CNAPP?",
+   "by": "Microsoft Security 101",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.microsoft.com/en-us/security/business/security-101/what-is-cnapp",
+   "why": "CSPM·CIEM·CWPP·IaC 스캔 등 CNAPP 의 칸이 무엇을 보는지 한 장으로. 제품 없이 개념부터 잡기."
+  },
+  {
+   "id": "cis-bench",
+   "title": "CIS Benchmarks — Amazon Web Services",
+   "by": "Center for Internet Security",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cisecurity.org/benchmark/amazon_web_services",
+   "why": "점검 규칙이 번호로 정리된 업계 기준. 「적용 여부 검증」의 체크리스트로 그대로 쓰인다."
+  },
+  {
+   "id": "attack",
+   "title": "MITRE ATT&CK · Cloud Matrix",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://attack.mitre.org/matrices/enterprise/cloud/",
+   "why": "클라우드 공격 기법 지도. 위협 동향·사고 사례를 우리 정책과 대조할 때 공통어가 된다."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "why": "CSP AI 서비스 보안 기준을 쓸 때의 위험 목록 — 업무②와 우대④."
+  },
+  {
+   "id": "mitre-atlas",
+   "title": "MITRE ATLAS",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://atlas.mitre.org/",
+   "why": "AI 시스템을 노리는 공격 기법 지도. AI 영역 보안으로 넓어지는 업무에 쓴다."
+  },
+  {
+   "id": "cloudgoat",
+   "title": "CloudGoat",
+   "by": "Rhino Security Labs",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/RhinoSecurityLabs/cloudgoat",
+   "why": "일부러 취약한 AWS 환경을 내 계정에 깔고 직접 뚫어 본다(SSRF·IAM 권한 상승 등). 취약점 분석 경험을 만드는 가장 빠른 길. 리눅스·맥용이고, 다 쓰면 반드시 지운다."
+  },
+  {
+   "id": "checkov",
+   "title": "Checkov 문서",
+   "by": "Checkov (Prisma Cloud 오픈소스)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.checkov.io/",
+   "why": "Terraform 코드에서 잘못된 보안 설정을 배포 전에 찾는 도구. IaC 보안 자동화(자격⑤)의 입문."
+  },
+  {
+   "id": "tf-tutorials",
+   "title": "Terraform 튜토리얼",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.hashicorp.com/terraform/tutorials",
+   "why": "AWS·GCP·Azure 각각의 시작 과정이 있다. IaC 로 인프라를 만들고 지워 보는 최소선."
+  },
+  {
+   "id": "tf-uar",
+   "title": "Terraform: Up & Running (3판)",
+   "by": "Yevgeniy Brikman · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/terraform-up-and/9781098116736/",
+   "why": "모듈·상태 관리·테스트·팀 작업 흐름 — 보안 인프라를 여러 계정에 같은 코드로 배포하려면 필요한 것들."
+  },
+  {
+   "id": "practical-cloud-sec",
+   "title": "Practical Cloud Security (2판)",
+   "by": "Chris Dotson · O'Reilly · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/practical-cloud-security/9781098148164/",
+   "why": "자산 관리·IAM·취약점 관리·네트워크·사고 대응을 멀티·하이브리드 클라우드 관점에서. 세 클라우드를 같이 보는 이 자리에 맞다."
+  },
+  {
+   "id": "aws-security-book",
+   "title": "AWS Security",
+   "by": "Dylan Shields · Manning · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/aws-security",
+   "why": "IAM·네트워크·로그·데이터 보호를 AWS 서비스 단위로. 한 클라우드를 깊게 아는 출발점."
+  },
+  {
+   "id": "aws-scs",
+   "title": "AWS Certified Security – Specialty",
+   "by": "Amazon Web Services",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://aws.amazon.com/certification/certified-security-specialty/",
+   "why": "우대② 자격증. 시험 안내서의 영역 목록이 그대로 AWS 보안 공부 범위다."
+  },
+  {
+   "id": "gcp-pcse",
+   "title": "Professional Cloud Security Engineer",
+   "by": "Google Cloud",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://cloud.google.com/learn/certification/cloud-security-engineer",
+   "why": "우대② 자격증(GCP). 조직 정책·서비스 계정·경계 보호를 GCP 식으로 정리한다."
+  },
+  {
+   "id": "ccsp",
+   "title": "CCSP",
+   "by": "ISC2",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.isc2.org/certifications/ccsp",
+   "why": "특정 클라우드가 아닌 클라우드 보안 전반(규정·데이터·운영). 정책 수립 쪽 경력을 보여 주는 자격."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 자리의 그림 잡기",
+   "time": "1주",
+   "goal": "공동 책임 모델과 이 팀의 과제(점검→조치→사후 검증)를 내 말로 설명할 수 있다.",
+   "resources": [
+    "team-hmg",
+    "isec-hmc",
+    "aws-srm",
+    "cnapp-ms"
+   ],
+   "task": "영상과 발표 보도를 보고, 공고 업무 줄마다 '누가 기준을 정하고·누가 찾고·누가 고치고·누가 확인하나'를 한 장 표로 적는다."
+  },
+  {
+   "title": "한 클라우드의 계정·권한 표준 짜기",
+   "time": "2~4주",
+   "goal": "AWS 조직에서 계정을 나누고 SCP·IAM 기준으로 울타리를 거는 표준 초안을 쓸 수 있다.",
+   "resources": [
+    "aws-iam-bp",
+    "aws-sra",
+    "scp-docs",
+    "aws-security-book"
+   ],
+   "task": "무료 계정 두세 개로 작은 조직을 만들어 '리전 제한·CloudTrail 끄기 금지' SCP 를 걸고, 막히는지 직접 확인한 뒤 표준 문서 2쪽을 쓴다."
+  },
+  {
+   "title": "점검 규칙을 코드로",
+   "time": "2~3주",
+   "goal": "CIS 항목을 골라 배포 전(IaC)과 배포 후(계정 점검) 양쪽에서 자동으로 검사할 수 있다.",
+   "resources": [
+    "cis-bench",
+    "tf-tutorials",
+    "checkov",
+    "tf-uar"
+   ],
+   "task": "Terraform 으로 일부러 틀린 인프라(공개 S3·IMDSv1·SSH 전체 공개)를 쓰고, Checkov 로 배포 전에 잡은 뒤, 고친 코드로 다시 통과시킨다. 결과를 담당별 티켓 목록으로 바꾸는 스크립트를 붙인다."
+  },
+  {
+   "title": "공격자 눈으로 보기",
+   "time": "2주",
+   "goal": "클라우드 사고 사례를 ATT&CK 기법으로 읽고, 막는 정책을 거꾸로 쓸 수 있다.",
+   "resources": [
+    "cloudgoat",
+    "attack",
+    "practical-cloud-sec"
+   ],
+   "task": "CloudGoat 의 SSRF·IAM 시나리오 두 개를 풀고(다 쓰면 지운다), 각각 '어떤 설정이 막았을까'를 SCP·IMDSv2·권한 정책 한 줄로 적는다."
+  },
+  {
+   "title": "AI 서비스와 두 번째 클라우드 (선택)",
+   "time": "계속",
+   "goal": "CSP AI 서비스 사용 기준을 쓰고, 같은 표준을 GCP 또는 Azure 로 옮길 수 있다.",
+   "resources": [
+    "owasp-llm",
+    "mitre-atlas",
+    "gcp-pcse",
+    "aws-scs",
+    "ccsp"
+   ],
+   "task": "가상의 '사내 챗봇을 Bedrock 으로 만들고 싶다' 요청에 대해 데이터·접근·네트워크·LLM 위험 항목 체크리스트를 쓰고, 2단계 표준을 GCP 개념(조직 정책·서비스 계정)으로 바꿔 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 1인 평균 급여 **1억 3,100만원**(2025), 공공데이터 집계 평균 **약 7,708만원** — 기준이 달라 차이가 크고, 이 자리는 경력 6년 이상이라 개인 협의로 정해진다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다. 생산직을 포함한 전 직원 값 [22]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일이 적혀 있지 않다 [23]"
+   },
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 초봉. 이 자리는 경력 6년 이상이라 해당하지 않는다 [23]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값 [22]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 달라 섞어 비교하지 않는다. 경력 6년 이상 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "임신기 근로시간 단축",
+    "detail": "임신 12주 이내·36주 이상 하루 2시간 단축"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [24]. 공고에는 복지 칸이 없고 [1], 주택·학자금·차량 구입 지원 같은 금액 항목은 공식 자료에서 확인하지 못해 뺐다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 양재 본사(현대기아자동차빌딩)",
+  "address": "서울특별시 서초구 헌릉로 12 (양재동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%ED%97%8C%EB%A6%89%EB%A1%9C%2012",
+  "near": "신분당선 양재시민의숲역 근처 {추론}",
+  "note": "공고의 근무지는 '양재본사'이고 [1], 지속가능성 보고서의 본사 소재지가 헌릉로 12다 [24]."
+ }
+}
