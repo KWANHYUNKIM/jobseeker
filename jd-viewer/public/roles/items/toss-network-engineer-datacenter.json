@@ -1,0 +1,1004 @@
+{
+ "id": "toss-network-engineer-datacenter",
+ "company": "토스",
+ "role": "네트워크 엔지니어 (Network Engineer)",
+ "team": "Infra Engineering Tribe · Network Engineering Team",
+ "jobs": [
+  "ats-toss:group:4071172003"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "토스 데이터센터 안의 네트워크(서버를 잇는 스위치 망)와 센터 사이 길(DCI)을 직접 설계·구축하고, 끊기지 않게 감시·운영하는 자리입니다.[1]",
+  "env": "센터 두 곳을 동시에 쓰는 Active-Active 구조에 퍼블릭 클라우드가 섞인 환경입니다.[1][5] 요건이 BGP·EVPN(VXLAN)이고, 같은 팀은 ISP 와 eBGP·센터 사이 iBGP, curl·MTR·Zabbix·Grafana 감시를 공개했습니다.[1][2]",
+  "oneline": "서버를 짜는 자리가 아니라 **센터 안 패브릭과 길을 설계·운영하는 네트워크 엔지니어** 자리이고, 5년 이상 경력을 요구합니다.[1] 센터 안 패브릭의 구체 장비·방식은 공개되지 않아 이 풀이는 RFC 로 '보통 이런 것'을 보였습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "다양한 서비스를 제공하는 토스 데이터센터의 네트워크를 직접 설계, 구축하고 운영하는 역할이에요",
+   "short": "센터 안 스위치 망(패브릭)과 센터끼리 잇는 길(DCI)을 직접 그려 깔고, 24시간 굴리는 일.",
+   "why": "팀 소개는 데이터센터 내부 Fabric 과 DCI 를 포함한 전 계층을 직접 설계·구축·운영한다고 적었습니다.[1] 토스는 데이터센터 두 곳을 동시에 쓰는 Active-Active 구조이고, 평소 50:50 으로 나누다 한쪽으로 100% 옮기는 작업도 자주 한다고 밝혔습니다.[5] 같은 팀의 SLASH 24 발표는 데이터센터·장비·인터넷 회선·ISP 까지 이중화했다고 설명합니다.[2][3] 2020년 인터뷰에서도 센터 두 곳과 이중화가 이 팀의 시작점으로 소개됐습니다.[4]",
+   "actually": {
+    "intro": "토스가 공개한 것은 이중화의 큰 그림까지이고, 센터 안 패브릭의 장비·프로토콜은 공개되지 않았습니다. 아래 패브릭 내용은 공고(BGP·EVPN·VXLAN)와 국제 문서(RFC)로 보인 '보통 이런 것'입니다.",
+    "items": [
+     "**두 센터 + 이중 회선** — 센터 두 곳을 동시에 쓰고, 인터넷은 ISP 둘과 eBGP 로 잇고, 센터 사이는 iBGP 로 이어 eBGP 경로의 백업으로 쓴다.[2]",
+     "**스파인-리프 패브릭** — 서버가 붙는 리프 스위치와 그 리프들을 모두 잇는 스파인 스위치로 센터 안을 짠다. 어느 리프 사이든 거치는 단이 같아 지연이 일정하고, 스파인을 늘려 대역폭을 키운다.[10]",
+     "**언더레이 + 오버레이** — 언더레이(스위치끼리의 IP 길)는 BGP 로 주소를 주고받고, 그 위에 VXLAN 터널(오버레이)로 '서버가 같은 네트워크에 있는 것처럼' 보이게 만든다. 어느 서버가 어느 리프 뒤에 있는지는 EVPN(BGP 로 MAC·IP 정보를 알리는 방식)이 퍼뜨린다.[7][8][9]",
+     "**DCI** — 두 센터의 패브릭을 회선으로 잇고, 센터 사이에는 필요한 정보만 넘기는 구조(Multisite)를 쓰기도 한다.[11]",
+     "**설계가 먼저 묻는 것** — 한 스파인·리프·회선이 죽으면 서버는 어느 길로 가나, 센터 하나가 통째로 죽으면 반대 센터가 100% 를 받을 수 있나.[2][5]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "센터 안 패브릭의 보통 모양 (공개 문서 기준 {추론})[7][9][10]",
+     "steps": [
+      "서버 · 리프 스위치에 연결",
+      "리프 · VTEP(VXLAN 터널 끝점) · 서버 트래픽을 터널에 담는다",
+      "스파인 · 언더레이 IP 로만 나른다(ECMP)",
+      "반대편 리프 · 터널을 풀어 서버에 전달",
+      "BGP EVPN · 어느 서버가 어느 리프 뒤인지 알려 준다"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "VXLAN 이 언더레이 MTU 에 먹는 자리와 BGP 가 길을 고르는 순서 (가상 값)",
+     "body": "VXLAN 은 안쪽 프레임에 VXLAN 8·UDP 8·바깥 IPv4 20 바이트를 더 붙입니다.[9] 그래서 서버 MTU 를 1500 으로 쓰려면 스위치 사이 링크는 1550 이상이어야 합니다. BGP 는 같은 목적지의 여러 길 중 선호도(local-pref)가 큰 쪽, 같으면 AS 경로가 짧은 쪽을 고릅니다.[12] 직접 돌린 출력은 주석입니다.",
+     "lang": "python",
+     "code": "for m in (1500, 9000):\n    print('안쪽 MTU', m, '-> 언더레이 IP MTU 최소', m + 14 + 8 + 8 + 20)\n\nroutes = [\n    {'via': 'ISP_A', 'local_pref': 200, 'as_path': [65001, 64512]},\n    {'via': 'ISP_B', 'local_pref': 100, 'as_path': [65002]},\n    {'via': 'ISP_C', 'local_pref': 200, 'as_path': [65003]},\n]\npick = lambda: sorted(routes, key=lambda r: (-r['local_pref'], len(r['as_path'])))[0]['via']\nprint('best:', pick())\nroutes[2]['local_pref'] = 50\nprint('C 낮춘 뒤 best:', pick())\n\n# 출력(직접 돌림):\n# 안쪽 MTU 1500 -> 언더레이 IP MTU 최소 1550\n# 안쪽 MTU 9000 -> 언더레이 IP MTU 최소 9050\n# best: ISP_C\n# C 낮춘 뒤 best: ISP_A"
+    }
+   ],
+   "how_far": "이 줄은 '직접' 설계·구축·운영이라 장비 선정·주소 계획·BGP 정책·변경 작업까지 맡는 자리입니다 {추론}. 공고는 신입 설계자를 찾지 않고 5년 이상을 적었습니다.[1] 최소선은 스파인-리프 한 장을 그려 놓고 '스파인 하나·리프 하나·센터 하나가 죽으면 트래픽이 어디로 가나'를 말하는 것입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "nw-intro",
+    "rfc-dc-bgp",
+    "rfc-vxlan",
+    "rfc-evpn",
+    "slash24-ext"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "서비스 중단 없는 네트워크를 만들기 위해, 모니터링 시스템을 구축하고 운영해요.",
+   "short": "ISP·센터 경로마다 따로 지연을 재서, 한 길이 아프면 서비스가 느끼기 전에 먼저 알아채는 일.",
+   "why": "팀 소개는 반복 작업 자동화와 모니터링 고도화를 팀의 과제로 적었습니다.[1] 같은 팀 발표는 인터넷 구간을 엔지니어에게 보이지 않는 회색 지대라 하고, 센터 × ISP 경로별 감시를 직접 구성한 과정을 보였습니다.[2]",
+   "actually": {
+    "intro": "토스 네트워크팀이 SLASH 24 에서 발표한 감시 구성입니다.[2]",
+    "items": [
+     "**나가는 길** — 센터마다 서버 4대, 모두 8대가 외부 서비스에 요청을 보내 잰다. 프록시·NAT·BGP 를 조정해 1번 서버는 ISP A, 2번 서버는 ISP B 로만 나가게 고정한다. 서비스는 두 ISP 를 같이 쓰니 한 ISP 가 아파도 절반쯤만 흔들리지만 고정된 감시는 100% 실패해 더 빨리 보인다.[2]",
+     "**들어오는 길** — 국내 통신 3사의 LTE 단말과 클라우드 4개 리전에서 토스 서비스를 바깥에서 두드린다.[2]",
+     "**무엇을 재나** — curl 로 DNS 조회·TCP 연결·TLS 핸드셰이크·전체 시간과 HTTP 코드를, MTR 로 구간별 지연과 거친 장비를 재서 JSON 으로 내보내고 Zabbix 가 모아 Grafana 로 본다. 감시 환경은 11개.[2][17][18][19]",
+     "**센터 안쪽 감시** — 패브릭의 링크 사용률·오류 패킷·BGP 이웃 상태·장비 온도는 장비가 SNMP·스트리밍 텔레메트리로 내주는 것을 모으는 것이 보통이다. 토스가 어떤 방식을 쓰는지는 공개되지 않았다 {추론}."
+    ]
+   },
+   "how_far": "무엇을 잴지(지표·경로·임계치)를 정하고, 수집 도구를 붙이고, 경고가 사람을 깨울 만한지 다듬는 것까지입니다. 구글 SRE 책은 사람이 바로 움직여야 하는 경고만 남기라고 권하고[20], 토스 발표도 다음 목표로 경고 소음 감소와 정확한 임계치를 꼽았습니다.[2]",
+   "refs": [
+    1,
+    2,
+    17,
+    18,
+    19,
+    20
+   ],
+   "study": [
+    "slash24-ext",
+    "sre-monitoring",
+    "zabbix-docs",
+    "curl-man"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "최상의 서비스 품질을 위하여 네트워크를 최적화 하고, 이를 위한 과정에서 다양한 이슈의 트러블 슈팅을 담당해요.",
+   "short": "느려지거나 끊기는 원인을 구간별 숫자로 좁히고, 원인이 풀리기 전에 경로부터 돌려 영향을 줄이는 일.",
+   "why": "토스는 장애가 나면 원인 규명보다 복구를 먼저 하고 반대 센터로 트래픽을 옮겨 장애 시간을 줄인다고 밝혔습니다.[5] 팀 소개도 이슈 분석 → 기술 검증 → 구조 개선을 한 사이클로 돈다고 적었습니다.[1]",
+   "actually": {
+    "intro": "토스가 발표한 실제 사례입니다.[2]",
+    "items": [
+     "**증상** — 약 1주일 동안 밤 20시~0시에 해외 사이트 하나가 가끔 타임아웃.[2]",
+     "**좁히기** — 센터 1 의 ISP A 경로에서만 지연이 크게 보였고, MTR 결과를 시간순으로 보니 특정 구간 이후 경로가 자주 바뀌었다. 주소의 망 번호(AS)를 조회하니 해외 망 구간이었다.[2]",
+     "**돌리기** — ISP 에 문의하되 해결을 기다리지 않고, 지연 없던 ISP 로 그 통신이 나가게 장비 설정을 바꿨다. 해외 쪽이 해결한 뒤 되돌렸다.[2]",
+     "**패브릭 쪽 트러블슈팅의 흔한 순서** — 링크 오류 카운터 → BGP 이웃이 올라와 있나 → 경로 표에 그 목적지가 있나 → MTU 가 맞나 → 해시가 한쪽 길로 쏠리나. 특히 ECMP 는 흐름 하나는 한 길로만 가서 큰 흐름 하나가 한 링크를 채울 수 있다 {추론}.[10]",
+     "**자동화** — 토스는 BGP 상태 점검과 조정 확인을 스크립트로 자동화했고, 시스템이 임계치를 보고 스스로 경로를 바꾸는 것이 목표라고 했다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "ECMP 해시가 흐름을 나누는 모습 — 흐름이 많으면 고르게, 하나면 한 곳으로 (가상 값)",
+     "body": "스파인 4개로 가는 경로 4개에 5-tuple(출발·도착 주소·포트·프로토콜) 해시로 흐름을 나눈다고 가정한 흉내입니다. 실제 장비의 해시 함수와는 다릅니다. 직접 돌린 출력은 주석입니다.",
+     "lang": "python",
+     "code": "import hashlib\nfrom collections import Counter\n\ndef path(key):\n    return int(hashlib.md5(key.encode()).hexdigest(), 16) % 4\n\nmany = Counter(path(f'10.0.{i % 250}.1:{40000 + i}->10.1.0.9:443/tcp') for i in range(4000))\none = Counter(path('10.0.0.1:40000->10.1.0.9:443/tcp') for _ in range(4000))\nprint('흐름 4000개:', sorted(many.items()))\nprint('큰 흐름 하나:', sorted(one.items()))\n\n# 출력(직접 돌림):\n# 흐름 4000개: [(0, 1053), (1, 985), (2, 948), (3, 1014)]\n# 큰 흐름 하나: [(3, 4000)]"
+    }
+   ],
+   "how_far": "원인을 끝까지 고치는 사람이 우리 쪽이 아닐 때가 많습니다(해외 망·ISP·기관·장비 제조사). 그래서 최소선은 **어느 구간인지 숫자로 증명하고, 우리가 바꿀 수 있는 것(경로·분산 비율)으로 영향부터 줄이는 것**이고, 바꾼 설정은 원인이 풀리면 되돌리는 것까지입니다.[2]",
+   "refs": [
+    1,
+    2,
+    5,
+    10
+   ],
+   "study": [
+    "slash24-ext",
+    "cf-bgp",
+    "wireshark-guide",
+    "tcpip-illustrated"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 이상 네트워크 구축·운영 경험이 있는 분",
+   "short": "장비를 들여 깔고(구축) 장애를 직접 받아 본(운영) 경력이 5년 이상 필요하다. 신입 자리가 아니다.",
+   "why": "이 팀은 패브릭과 DCI 를 포함한 전 계층을 직접 설계·구축·운영하고 365일 무중단 서비스를 지킵니다.[1] 같은 팀의 대외계(Edge) 쪽 공고는 3년 이상을 적었는데, 이 공고는 센터 내부 설계까지 맡아 5년 이상입니다.[27]",
+   "how_far": "이력서 안내는 기술 문제를 고친 사례 두 가지와, 내가 기여한 프로젝트의 역할·기술 스택·전후 개선을 자세히 쓰라고 합니다.[1] 그래서 '몇 년 했나'보다 **구축 한 건과 장애 한 건을 처음부터 끝까지 말할 수 있나**가 기준일 것입니다 {추론}.",
+   "refs": [
+    1,
+    27
+   ],
+   "study": [
+    "nw-intro",
+    "infra-interview"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "BGP와 EVPN(VXLAN) 기반 데이터센터 네트워크를 직접 설계하고 구축해보신 분",
+   "short": "센터 안 서버끼리 어디에 있든 한 망처럼 이어 주는 최신 방식(BGP EVPN + VXLAN)이 이 팀의 기본이라서.",
+   "why": "공고가 센터 내부 Fabric 설계를 팀의 일로 적고 요건으로 BGP·EVPN(VXLAN)을 못 박았습니다.[1] 토스는 ISP 와 eBGP, 센터 사이는 iBGP 를 쓴다고 발표했습니다.[2] 센터 안 패브릭을 EVPN 으로 짠다는 공식 설명은 없고 요건 문구가 근거입니다.[1]",
+   "level": {
+    "basic": "스파인-리프 구조·BGP 이웃 맺기·AS 번호·VLAN 과 VXLAN 의 차이(VNI)",
+    "work": "언더레이(eBGP 로 루프백 주소 교환)·오버레이 EVPN 경로 종류(MAC/IP·Prefix)·Anycast Gateway·ECMP·MLAG 와 EVPN 멀티호밍[7][8][10]",
+    "team": "이기종 벤더 사이의 EVPN 상호 연동·센터 사이 Multisite·변경을 자동화하고 검증하는 방법[11] {추론}"
+   },
+   "actually": {
+    "items": [
+     "**왜 BGP 인가** — 대규모 센터에서는 기존 라우팅 프로토콜 대신 BGP 만으로 패브릭을 짜는 방법이 문서로 정리돼 있다. 스위치마다 AS 번호를 주고 정책을 걸기 쉽기 때문이다.[10]",
+     "**VXLAN** — 안쪽 이더넷 프레임을 UDP 로 감싸 IP 망 위로 나르는 터널. VNI(24비트)로 가상 망을 구분해 VLAN 의 4096 개 한계를 넘는다.[9]",
+     "**EVPN** — VXLAN 이 '어느 서버가 어디 있나'를 흘려 배우던 방식(브로드캐스트)을 BGP 로 알려 주게 바꿔, 불필요한 범람을 줄이고 정책을 걸 수 있게 한다.[7][8]",
+     "**이 요건이 막힐 때** — 이웃이 안 맺힘(AS·루프백·MTU), 경로는 있는데 서버끼리 안 통함(VNI·RT 불일치), 한쪽 방향만 통함(Anycast Gateway·ARP 억제) 같은 것이 흔한 갈래다 {추론}."
+    ]
+   },
+   "how_far": "'직접 설계하고 구축'이라 주소 계획·AS 설계·VNI 배치·리프 구성 템플릿까지 만들어 본 사람을 찾습니다 {추론}. 최소선은 가상 장비(컨테이너 라우터)로 스파인 2·리프 4 를 올려 서로 다른 리프 뒤의 두 서버가 같은 VNI 로 통하게 만들어 본 것입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "rfc-dc-bgp",
+    "rfc-vxlan",
+    "rfc-evpn",
+    "cf-bgp",
+    "npa"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Public Cloud와 Private Cloud를 연동하는 하이브리드 환경을 구축·운영해보신 분",
+   "short": "토스는 센터와 퍼블릭 클라우드가 함께 돌아서, 둘 사이 길(VPN·전용 연결)을 이 팀이 이어서.",
+   "why": "팀 소개가 데이터센터와 퍼블릭 클라우드가 공존하는 환경이라고 적었습니다.[1] 2021년 기사 기준으로 DNS 설정·이미지 검수·정적 파일 등 일부는 AWS 를 썼고[5], 감시용 바깥 지점도 클라우드 4개 리전에 두었습니다.[2]",
+   "actually": {
+    "intro": "센터와 클라우드를 잇는 흔한 방식입니다. 토스가 어떤 방식을 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**IPsec VPN** — 인터넷 위에 암호화 터널을 맺는다. AWS Site-to-Site VPN 은 연결 하나에 터널이 두 개 생기고 정적 경로나 BGP 로 경로를 주고받는다.[21]",
+     "**GCP HA VPN** — 게이트웨이 인터페이스 두 개에 터널을 각각 맺어 이중화한다.[22]",
+     "**Azure VPN Gateway** — 가상 네트워크에 게이트웨이를 두고 사이트 간 IPsec/IKE 터널을 맺는다.[23]",
+     "**전용 연결(클라우드 쪽 전용선 상품)** — 인터넷을 거치지 않아 지연이 일정하다. 대신 개통 기간·비용이 든다 {추론}.",
+     "**주소와 경로 설계** — 센터·클라우드의 사설 주소 대역이 겹치지 않아야 하고, 경로가 BGP 로 양쪽에 퍼지므로 '어느 쪽이 어느 대역을 알릴지'를 정해야 한다 {추론}."
+    ]
+   },
+   "how_far": "요건이라 한 곳(예: AWS)에서라도 VPC·라우팅 표·보안 그룹·VPN 터널을 만들어 센터와 이어 운영한 경험은 필요합니다 {추론}. 세 클라우드 모두는 우대에 적혔습니다.[1] 최소선은 VPN 터널 둘로 이중화하고, 한 터널이 죽었을 때 경로가 넘어가는 것을 확인해 본 것입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    5,
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "aws-s2s",
+    "gcp-havpn",
+    "rfc-ipsec",
+    "cf-bgp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이기종 벤더 장비를 활용한 EVPN Multisite 또는 다중 데이터센터 DCI 설계·구축 경험",
+   "short": "센터 두 곳의 패브릭을 서로 다른 제조사 장비로 잇는 경험 — 우대. 제조사마다 말이 달라서 어렵다.",
+   "why": "토스는 센터 두 곳을 동시에 쓰고 센터 사이를 iBGP 등으로 이어 운영합니다.[2][5] 공고가 DCI 설계를 팀의 일로, 이기종 장비 연동을 우대로 적었습니다.[1]",
+   "actually": {
+    "intro": "토스가 쓰는 장비 제조사와 DCI 방식은 공개되지 않았습니다. IETF 의 DCI 문서로 '보통 이런 것'을 보입니다.[11]",
+    "items": [
+     "**Multisite 란** — 센터마다 EVPN 패브릭을 독립으로 두고, 센터 가장자리 장비(border gateway)끼리만 EVPN 경로와 터널을 이어 준다. 한 센터의 문제가 다른 센터로 번지는 범위를 줄인다.[11]",
+     "**L2 확장 vs L3 만 잇기** — 두 센터에 같은 서브넷을 펴면 서버 이동은 쉽지만 한 센터의 브로드캐스트·루프 문제가 번질 수 있다. 서브넷을 센터마다 나누고 L3 로만 이으면 단순하다 {추론}.",
+     "**이기종의 어려움** — 같은 표준(RFC 7432·8365)을 따라도 기본값·확장 기능·장애 때 동작이 장비마다 달라, 검증 환경에서 둘을 직접 붙여 보는 일이 된다 {추론}.[7][8]"
+    ]
+   },
+   "how_far": "우대 사항입니다.[1] 실제 두 센터 구축 경험이 없다면 '표준 문서의 어떤 부분이 장비마다 달랐나'를 실습으로 확인한 이야기로 채울 수 있습니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    5,
+    7,
+    8,
+    11
+   ],
+   "study": [
+    "rfc-dci",
+    "rfc-evpn",
+    "slash24-ext"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, GCP, Azure 등 퍼블릭 클라우드 운영 경험",
+   "short": "센터와 이어진 클라우드 쪽 네트워크(VPC·라우팅·VPN)를 운영해 본 경험 — 한 곳이면 충분하다.",
+   "why": "팀 소개가 센터와 퍼블릭 클라우드의 공존을 적었고[1], 토스는 일부 서비스에 AWS 를 썼으며[5] 감시 지점도 클라우드 리전에 두었습니다.[2]",
+   "how_far": "우대 사항입니다.[1] 세 곳 모두가 아니라 한 곳에서 VPC·라우팅 표·보안 그룹·VPN 을 직접 만들어 본 정도면 이야기할 거리가 됩니다 {추론}. 구체 방식은 위 요건(하이브리드)의 항목을 참고하세요.[21][22][23]",
+   "refs": [
+    1,
+    2,
+    5,
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "aws-s2s",
+    "gcp-havpn"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Active-Active 데이터센터에서 대용량 트래픽을 다뤄본 경험",
+   "short": "센터 두 곳이 동시에 서비스하는 구조에서, 한쪽이 죽으면 반대쪽이 전부 받을 수 있게 키워 본 경험.",
+   "why": "토스는 평소 두 센터에 50:50 으로 나누고 한쪽으로 100% 옮기는 작업을 자주 한다고 밝혔고, 팀 소개도 Active-Active 이중화를 상시 검증한다고 적었습니다.[1][5] SLASH 21 에서도 Active-Active 운영이 서버 기술의 첫 주제였습니다.[6]",
+   "actually": {
+    "items": [
+     "**용량 계산** — 센터 하나가 100% 를 받는 날을 견디려면 평소 각 센터의 사용률이 절반 이하여야 한다. 회선·방화벽·로드밸런서·ISP 대역 모두 해당된다 {추론}.",
+     "**옮기는 방법** — 전환은 DNS·GSLB 로 하는 경우가 많고, 토스도 대외 연결에 GSLB 를 쓰는 것을 발표했다.[2][24]",
+     "**상시 검증** — 실제로 옮겨 보는 훈련이 이중화가 살아 있다는 유일한 증거다. 토스가 자주 옮긴다고 한 이유다.[5]"
+    ]
+   },
+   "how_far": "우대 사항입니다.[1] 대용량 숫자(Gbps·pps)보다 '한 센터를 비웠을 때 무엇이 먼저 한계에 닿았나'를 말할 수 있는 경험이 값어치가 있습니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    24
+   ],
+   "study": [
+    "slash24-ext",
+    "cf-gslb",
+    "sre-monitoring"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "TCP/IP와 TLS(HTTPS) 통신에 대한 이해를 바탕으로 문제해결의 경험이 있으신 분",
+   "short": "'느리다·끊긴다'를 DNS·TCP 연결·TLS·응답 중 어느 단계인지로 쪼갤 줄 알아서.",
+   "why": "토스의 감시는 HTTPS 요청 한 번을 DNS → TCP → TLS → 전체 시간으로 쪼개 재고, 이 단계를 알아야 숫자가 튈 때 어디를 볼지 정할 수 있습니다.[2][15][16]",
+   "level": {
+    "basic": "3-way 핸드셰이크·FIN/RST·라우팅 표 읽기·HTTPS 가 TCP 위 TLS 라는 것",
+    "work": "재전송·창 크기·MTU/MSS·TLS 1.2/1.3 차이·인증서 체인·패킷 캡처 읽기",
+    "team": "구간별 시간(curl -w)·MTR 로 ISP/해외 망/기관 쪽을 가르기[2]"
+   },
+   "actually": {
+    "items": [
+     "**단계별 시간** — curl 의 time_namelookup·time_connect·time_appconnect·time_total 은 시작부터의 누적 시각이라 앞 값을 빼야 단계 시간이 된다.[17]",
+     "**재전송과 끊김** — 응답이 없으면 TCP 가 기다리는 시간을 늘려 가며 다시 보내고, RST 를 받으면 바로 끊긴다.[16]",
+     "**VXLAN 환경에서의 MTU** — 안쪽 큰 패킷만 사라지면 터널 오버헤드로 MTU 가 모자란 것부터 의심한다 (위 업무 1번 예시).[9]"
+    ]
+   },
+   "how_far": "'문제해결의 경험'을 묻습니다. 이력서의 사례를 패킷 수준까지 따라 내려가는지 볼 것입니다 {추론}. 최소선은 캡처 하나를 열어 SYN·재전송·RST·TLS 경고를 찾아 무슨 일이 있었는지 말하는 것입니다 {추론}.",
+   "refs": [
+    2,
+    9,
+    15,
+    16,
+    17
+   ],
+   "study": [
+    "hpbn",
+    "tcpip-illustrated",
+    "bulletproof-tls",
+    "wireshark-guide",
+    "curl-man"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "L4/L7 스위치, IPSEC VPN 운영 경험",
+   "short": "서버 앞 부하분산(L4/L7)과 암호화 터널(IPsec)을 직접 굴려 본 경험 — 토스 대외 연결의 뼈대.",
+   "why": "토스 발표는 대외 연결에서 L4 로드밸런서를 프록시로 세워 기관 서버 상태를 확인하고 살아 있는 쪽으로만 보내게 했고, 보안이 더 필요하면 VPN 장비의 IPsec 을 쓴다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**헬스체크 세 가지** — ICMP 핑, TCP 연결로 보는 L4 체크, 앱 응답까지 보는 L7 체크. 토스는 L4 를 쓰고 SYN → SYN+ACK 를 받으면 RST 로 바로 끊는 방식을 그림으로 보였다.[2]",
+     "**IPsec 터널 맺기** — 두 장비가 IKE 로 서로를 확인하고 암호 방식을 맞춘 뒤 데이터는 ESP 로 감싸 보낸다. 양쪽 설정이 하나라도 다르면 터널이 안 열린다.[13][14]",
+     "**터널 안 MTU** — ESP 머리·IV·인증 태그만큼 안쪽 패킷이 줄어, 큰 응답만 멈추면 MTU/MSS 부터 본다 {추론}."
+    ]
+   },
+   "how_far": "'운영 경험'이라 장비 화면에서 VIP·헬스체크·터널을 만들고 고쳐 본 경험을 뜻합니다 {추론}. 최소선은 터널이 안 열릴 때 1단계(IKE)와 2단계(ESP) 중 어디서 막혔는지 로그로 가르고, 헬스체크 방식마다 무엇을 놓치는지 설명하는 것입니다 {추론}.",
+   "refs": [
+    2,
+    13,
+    14
+   ],
+   "study": [
+    "rfc-ipsec",
+    "aws-s2s",
+    "slash24-ext",
+    "cf-gslb"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "오픈소스나 AI 도구를 활용해 모니터링·운영 업무를 개선해본 경험",
+   "short": "이 팀 감시가 curl·MTR·Zabbix·Grafana 같은 오픈소스로 직접 짠 것이고, 다음 목표가 자동 대응이라서.",
+   "why": "토스의 경로 감시는 curl·MTR 로 재고 Zabbix 로 모아 Grafana 로 보는 구성이고, BGP 점검도 스크립트로 자동화했습니다.[2] 팀 소개도 반복 작업 자동화를 팀의 과제로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "curl·MTR 의 JSON 출력을 NMS 가 읽기 좋게 붙인다.[2][17][18]",
+     "Zabbix 경고 → Jenkins 스크립트로 BGP 상태 확인 → 메신저 알림(발표 화면).[2]",
+     "반복되는 설정 백업·변경 전후 비교·BGP 이웃 점검을 파이썬 스크립트로 바꾸는 것이 흔한 출발점이다 {추론}.[19]"
+    ]
+   },
+   "how_far": "AI 도구를 팀이 어떻게 쓰는지는 공개되지 않았습니다.[1] 작은 것이라도 '손으로 하던 일 → 스크립트 → 줄어든 시간·실수'가 숫자로 남은 사례면 충분합니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "npa",
+    "zabbix-docs",
+    "grafana-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "네트워크 개선을 위해 새로운 도전을 하며 자신의 영역을 확장시킨 경험",
+   "short": "장비 설정만 하지 않고 구조를 바꿔 본 경험 — 토스는 로드밸런서를 대외 프록시로 쓴 팀이다.",
+   "why": "SLASH 24 발표자는 회선 장애를 서버가 모르는 문제를 앱을 고치는 대신 네트워크에서 풀 길을 찾았고, 로드밸런서를 대외 프록시로 쓰는 '전통적이지 않은' 길을 택했다고 했습니다.[2] 팀 소개도 이슈 분석과 기술 검증으로 구조 개선까지 하는 사이클을 적었습니다.[1]",
+   "how_far": "새 장비 이름보다 **기존 구조의 문제를 정의하고, 검증해서 바꾸고, 결과를 잰** 이야기가 맞습니다 {추론}. '무엇이 문제였나 → 무엇으로 바꿨나 → 무엇이 좋아졌나' 세 줄로 준비합니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "slash24-ext",
+    "npa"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "장애 때 원인보다 우회를 먼저 생각하고, 그다음 끝까지 원인을 증명하는 사람[2][5]",
+   "그림(스파인-리프)을 그려 놓고 '이게 죽으면 어디로 가나'를 따지는 걸 좋아하는 사람[10]",
+   "장비 설정에서 그치지 않고 스크립트로 반복 작업을 없애고 싶은 사람[1][2]"
+  ],
+  "hard": [
+   "365일 무중단 서비스라 장애 대응 부담이 있다[1]",
+   "원인이 ISP·해외 망·장비 제조사에 있을 때가 많아 기다리고 조율하는 시간이 든다[2]",
+   "5년 이상 구축·운영 경력이 필수라 신입·전환자에게는 문이 좁다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "스파인 4·리프 16 패브릭에서 스파인 하나가 죽으면 서버 트래픽은 어떻게 되고, 무엇을 먼저 확인하겠어요?",
+   "a": "업무 1번 — ECMP 경로 수가 줄고 남은 스파인으로 쏠린다.[10]"
+  },
+  {
+   "q": "EVPN 이 VXLAN 만 쓸 때보다 나은 점은? 두 서버가 같은 VNI 인데 안 통하면 어디부터 보나요?",
+   "a": "요건 2번 — BGP 로 MAC·IP 를 알리는 방식과 흔한 불일치.[7][8][9]"
+  },
+  {
+   "q": "서버 MTU 를 9000 으로 쓰는 VXLAN 패브릭에서 큰 패킷만 사라집니다. 원인은요?",
+   "a": "업무 1번 예시 — 터널이 먹는 50바이트.[9]"
+  },
+  {
+   "q": "센터 하나를 통째로 비우고 반대 센터가 100% 를 받는 날, 어떤 숫자를 미리 보겠어요?",
+   "a": "우대 Active-Active — 회선·장비·ISP 의 사용률 여유.[5]"
+  },
+  {
+   "q": "특정 해외 사이트가 밤에만 가끔 타임아웃 납니다. 어떤 숫자를 모으고 원인 해결 전에 무엇을 하겠어요?",
+   "a": "업무 3번 — 토스가 발표한 실제 사례.[2]"
+  },
+  {
+   "q": "센터와 클라우드를 VPN 터널 둘로 이었는데 한 터널이 죽었습니다. 경로는 어떻게 넘어가고 어떻게 확인하나요?",
+   "a": "요건 3번 — BGP 경로 전환과 터널 상태.[21]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 네트워크 엔지니어 (Network Engineer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4071172003",
+   "kind": "posting",
+   "note": "Infra Engineering Tribe Network Engineering Team · 패브릭·DCI 포함 전 계층 · Active-Active 이중화 상시 검증 · 자동화·모니터링 고도화 · 이력서 안내·전형"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 24 · 대외계 구조 개선과 모니터링 강화로 시스템 연속성 확보하기",
+   "url": "https://www.youtube.com/watch?v=TgHueXsfcPg",
+   "kind": "company",
+   "date": "2024-09",
+   "note": "토스 Network Engineer 발표 19분 — 같은 팀 형제 풀이(toss-network-engineer-edge)에서 자막·화면 전부 읽은 내용을 가져옴(ISP 이중화·eBGP/iBGP·감시 구성·curl/MTR→Zabbix→Grafana·해외 망 타임아웃 사례·BGP 점검 자동화·L4 프록시와 헬스체크·GSLB)"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 24 세션 소개 · 대외계 구조 개선과 모니터링 강화로 시스템 연속성 확보하기",
+   "url": "https://toss.im/slash-24/sessions/17",
+   "kind": "company",
+   "date": "2024-09"
+  },
+  {
+   "n": 4,
+   "title": "토스피드 · 토스 서비스의 근간을 다지는 사람들, 인프라 엔지니어링 팀을 만나다",
+   "url": "https://toss.im/tossfeed/article/infraengineeringteam-interview",
+   "kind": "company",
+   "date": "2020-01-10",
+   "note": "데이터센터 두 곳·네트워크 엔지니어가 라우터·방화벽·스위치·로드밸런서와 은행·카드사 전용선 담당·1인→6명·IaC·우회 자동화"
+  },
+  {
+   "n": 5,
+   "title": "바이라인네트워크 · 토스가 안정적으로 서버를 운영하는 방법",
+   "url": "https://byline.network/2021/04/29-107/",
+   "kind": "news",
+   "date": "2021-04-30",
+   "note": "SLASH 21 내용 — 센터 두 곳 평소 50:50·자주 100% 전환·복구 우선·일부 AWS"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 21 세션 · 토스 서비스를 구성하는 서버 기술",
+   "url": "https://toss.im/slash-21/sessions/1-3",
+   "kind": "company",
+   "date": "2021-04",
+   "note": "Active-Active 데이터센터 운영 — 세션 소개만 확인"
+  },
+  {
+   "n": 7,
+   "title": "RFC 7432 · BGP MPLS-Based Ethernet VPN",
+   "url": "https://www.rfc-editor.org/rfc/rfc7432",
+   "kind": "reference",
+   "date": "2015-02",
+   "note": "EVPN 의 기본 규격 — BGP 로 MAC·IP 정보를 알리는 방식"
+  },
+  {
+   "n": 8,
+   "title": "RFC 8365 · A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)",
+   "url": "https://www.rfc-editor.org/rfc/rfc8365",
+   "kind": "reference",
+   "date": "2018-03",
+   "note": "VXLAN 등 오버레이 위의 EVPN"
+  },
+  {
+   "n": 9,
+   "title": "RFC 7348 · Virtual eXtensible Local Area Network (VXLAN)",
+   "url": "https://www.rfc-editor.org/rfc/rfc7348",
+   "kind": "reference",
+   "date": "2014-08",
+   "note": "UDP 캡슐화·24비트 VNI"
+  },
+  {
+   "n": 10,
+   "title": "RFC 7938 · Use of BGP for Routing in Large-Scale Data Centers",
+   "url": "https://www.rfc-editor.org/rfc/rfc7938",
+   "kind": "reference",
+   "date": "2016-08",
+   "note": "스파인-리프에서 BGP 만으로 라우팅하는 설계·ECMP"
+  },
+  {
+   "n": 11,
+   "title": "RFC 9014 · Interconnect Solution for Ethernet VPN (EVPN) Overlay Networks",
+   "url": "https://www.rfc-editor.org/rfc/rfc9014",
+   "kind": "reference",
+   "date": "2021-05",
+   "note": "EVPN 패브릭 사이의 DCI 방식"
+  },
+  {
+   "n": 12,
+   "title": "RFC 4271 · A Border Gateway Protocol 4 (BGP-4)",
+   "url": "https://www.rfc-editor.org/rfc/rfc4271",
+   "kind": "reference",
+   "date": "2006-01"
+  },
+  {
+   "n": 13,
+   "title": "RFC 4301 · Security Architecture for the Internet Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc4301",
+   "kind": "reference",
+   "date": "2005-12"
+  },
+  {
+   "n": 14,
+   "title": "RFC 7296 · Internet Key Exchange Protocol Version 2 (IKEv2)",
+   "url": "https://www.rfc-editor.org/rfc/rfc7296",
+   "kind": "reference",
+   "date": "2014-10"
+  },
+  {
+   "n": 15,
+   "title": "RFC 8446 · The Transport Layer Security (TLS) Protocol Version 1.3",
+   "url": "https://www.rfc-editor.org/rfc/rfc8446",
+   "kind": "reference",
+   "date": "2018-08"
+  },
+  {
+   "n": 16,
+   "title": "RFC 9293 · Transmission Control Protocol (TCP)",
+   "url": "https://www.rfc-editor.org/rfc/rfc9293",
+   "kind": "reference",
+   "date": "2022-08"
+  },
+  {
+   "n": 17,
+   "title": "curl 매뉴얼 · -w, --write-out",
+   "url": "https://curl.se/docs/manpage.html#-w",
+   "kind": "reference",
+   "note": "time_namelookup·time_connect·time_appconnect·time_total 은 시작부터의 누적 시각"
+  },
+  {
+   "n": 18,
+   "title": "mtr — a network diagnostic tool",
+   "url": "https://github.com/traviscross/mtr",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Zabbix 공식 문서",
+   "url": "https://www.zabbix.com/documentation/current/en/manual",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Google SRE 책 · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "AWS Site-to-Site VPN 사용 설명서 · Tunnel options",
+   "url": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPNTunnels.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Google Cloud · Cloud VPN overview (HA VPN)",
+   "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Microsoft Learn · About Azure VPN Gateway",
+   "url": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Cloudflare Learning · What is global server load balancing (GSLB)?",
+   "url": "https://www.cloudflare.com/learning/cdn/glossary/global-server-load-balancing-gslb/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 26,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 27,
+   "title": "토스 채용 · 네트워크 엔지니어 (Edge) (Network Engineer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7821080003",
+   "kind": "posting",
+   "note": "같은 팀의 대외계 쪽 공고 — 3년 이상"
+  },
+  {
+   "n": 28,
+   "title": "토스 회사 소개 (회사 정보 — 본사 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company",
+   "note": "형제 풀이(toss-network-engineer-edge)가 회사 소개 페이지 하단 회사 정보에서 옮긴 주소"
+  }
+ ],
+ "caveat": "회사 근거의 중심은 같은 팀 네트워크 엔지니어들의 SLASH 24 발표(2024)이고, 이 회차에서는 영상을 다시 받지 않고 형제 풀이(toss-network-engineer-edge)가 자막·화면을 전부 읽고 옮긴 내용을 가져왔습니다. 센터 안 패브릭(EVPN·VXLAN)·DCI·장비 제조사·클라우드 연결 방식은 토스가 공개하지 않아 공고 문구와 RFC·클라우드 공식 문서로 '보통 이런 것'을 보였고, 그 부분은 {추론} 로 표시했습니다. 코드 예시는 가상 값을 직접 돌린 출력입니다. 주소는 형제 풀이가 옮긴 값이라 이 회차에서 회사 페이지를 다시 열어 확인하지 못했습니다.",
+ "resources": [
+  {
+   "id": "slash24-ext",
+   "title": "SLASH 24 · 대외계 구조 개선과 모니터링 강화로 시스템 연속성 확보하기",
+   "by": "토스 Network Engineer · 19분",
+   "kind": "video",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=TgHueXsfcPg",
+   "why": "업무 2·3번, 우대 — 이 팀이 ISP·센터 이중화와 경로 감시, 대외 프록시·GSLB 를 어떻게 다루는지. 지원 전 꼭 볼 영상.",
+   "free": true
+  },
+  {
+   "id": "infra-interview",
+   "title": "토스 서비스의 근간을 다지는 사람들, 인프라 엔지니어링 팀을 만나다",
+   "by": "토스피드 · 2020",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://toss.im/tossfeed/article/infraengineeringteam-interview",
+   "why": "요건 1번 — 이 팀이 무엇을 맡아 왔는지. 시점이 오래됐다.",
+   "free": true
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "by": "고재성 외",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "업무 1번·요건 — 스위치·라우터·방화벽·로드밸런서가 실제 망에서 어떻게 배치되는지 한국어로."
+  },
+  {
+   "id": "rfc-dc-bgp",
+   "title": "RFC 7938 · Use of BGP for Routing in Large-Scale Data Centers",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.rfc-editor.org/rfc/rfc7938",
+   "why": "업무 1번·요건 2번 — 스파인-리프 패브릭을 BGP 로 짜는 이유와 AS 번호·ECMP 설계.",
+   "free": true
+  },
+  {
+   "id": "rfc-vxlan",
+   "title": "RFC 7348 · VXLAN",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.rfc-editor.org/rfc/rfc7348",
+   "why": "요건 2번 — VXLAN 헤더와 VNI, 터널이 먹는 바이트(MTU)를 원문으로.",
+   "free": true
+  },
+  {
+   "id": "rfc-evpn",
+   "title": "RFC 7432 · BGP MPLS-Based Ethernet VPN · RFC 8365 · EVPN 오버레이",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc8365",
+   "why": "요건 2번·우대 1번 — EVPN 이 BGP 로 무엇을 알리고 VXLAN 위에서 어떻게 쓰이는지.",
+   "free": true
+  },
+  {
+   "id": "rfc-dci",
+   "title": "RFC 9014 · Interconnect Solution for EVPN Overlay Networks",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc9014",
+   "why": "우대 1번 — 센터 패브릭 사이를 EVPN 으로 잇는 방식(Multisite 포함).",
+   "free": true
+  },
+  {
+   "id": "hpbn",
+   "title": "High Performance Browser Networking",
+   "by": "Ilya Grigorik · O'Reilly · 2013",
+   "kind": "book",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://hpbn.co/",
+   "why": "우대 TCP/TLS 줄 — 핸드셰이크·혼잡 제어·TLS 왕복이 지연에 주는 영향. 온라인 무료.",
+   "free": true
+  },
+  {
+   "id": "tcpip-illustrated",
+   "title": "TCP/IP Illustrated, Volume 1: The Protocols (2nd Edition)",
+   "by": "Kevin R. Fall · W. Richard Stevens · Addison-Wesley · 2011",
+   "kind": "book",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.informit.com/store/tcp-ip-illustrated-volume-1-the-protocols-9780321336316",
+   "why": "업무 3번·우대 TCP 줄 — 재전송·창·MTU 를 패킷 캡처로 보여 주는 고전."
+  },
+  {
+   "id": "bulletproof-tls",
+   "title": "Bulletproof TLS and PKI (2nd Edition)",
+   "by": "Ivan Ristić · Feisty Duck · 2022",
+   "kind": "book",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.feistyduck.com/books/bulletproof-tls-and-pki/",
+   "why": "우대 TCP/TLS 줄 — TLS 핸드셰이크·인증서 체인·배포 실수."
+  },
+  {
+   "id": "rfc-ipsec",
+   "title": "RFC 4301 · RFC 7296 (IPsec 구조 · IKEv2)",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc7296",
+   "why": "우대 L4/L7·IPsec 줄 — 터널이 안 열릴 때 IKE 메시지 순서와 협상 항목 원문.",
+   "free": true
+  },
+  {
+   "id": "aws-s2s",
+   "title": "AWS Site-to-Site VPN 사용 설명서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPNTunnels.html",
+   "why": "요건 3번(하이브리드)·IPsec — 터널 두 개·BGP·IKE 옵션을 직접 만들며 손에 익힌다.",
+   "free": true
+  },
+  {
+   "id": "gcp-havpn",
+   "title": "Cloud VPN overview (HA VPN)",
+   "by": "Google Cloud",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/overview",
+   "why": "요건 3번·우대 클라우드 줄 — 클라우드 쪽 VPN 이중화 구성.",
+   "free": true
+  },
+  {
+   "id": "cf-gslb",
+   "title": "What is global server load balancing (GSLB)?",
+   "by": "Cloudflare Learning",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.cloudflare.com/learning/cdn/glossary/global-server-load-balancing-gslb/",
+   "why": "Active-Active 줄 — DNS 로 살아 있는 곳만 알려 주는 GSLB 의 기본.",
+   "free": true
+  },
+  {
+   "id": "cf-bgp",
+   "title": "What is BGP?",
+   "by": "Cloudflare Learning",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.cloudflare.com/learning/security/glossary/what-is-bgp/",
+   "why": "업무 3번·요건 2번 — BGP 와 AS 번호의 기본. EVPN 으로 가기 전 출발점.",
+   "free": true
+  },
+  {
+   "id": "curl-man",
+   "title": "curl 매뉴얼 · --write-out",
+   "by": "curl",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://curl.se/docs/manpage.html#-w",
+   "why": "업무 2번·TCP/TLS 줄 — 토스가 재는 DNS·연결·TLS·전체 시간을 내 PC 에서 잰다.",
+   "free": true
+  },
+  {
+   "id": "wireshark-guide",
+   "title": "Wireshark User's Guide",
+   "by": "Wireshark",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+   "why": "업무 3번 — 캡처를 걸고 필터로 재전송·RST·TLS 경고를 찾는 법.",
+   "free": true
+  },
+  {
+   "id": "sre-monitoring",
+   "title": "Site Reliability Engineering · Monitoring Distributed Systems",
+   "by": "Google · O'Reilly · 2016",
+   "kind": "book",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "why": "업무 2번 — 무엇을 재고 언제 사람을 깨울지.",
+   "free": true
+  },
+  {
+   "id": "zabbix-docs",
+   "title": "Zabbix 공식 문서",
+   "by": "Zabbix",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.zabbix.com/documentation/current/en/manual",
+   "why": "업무 2번·우대 오픈소스 줄 — 토스가 쓰는 NMS. 외부 스크립트 결과를 받고 트리거를 거는 법.",
+   "free": true
+  },
+  {
+   "id": "grafana-docs",
+   "title": "Grafana 공식 문서",
+   "by": "Grafana Labs",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://grafana.com/docs/grafana/latest/",
+   "why": "우대 오픈소스 줄 — 센터 × 경로 대시보드를 직접 그려 본다.",
+   "free": true
+  },
+  {
+   "id": "npa",
+   "title": "Network Programmability and Automation (2nd Edition)",
+   "by": "Matt Oswalt · Christian Adell · Scott S. Lowe · Jason Edelman · O'Reilly · 2023",
+   "kind": "book",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/network-programmability-and/9781098110826/",
+   "why": "우대 오픈소스·도전 줄 — 파이썬·API·템플릿으로 장비 설정과 점검을 자동화."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀의 그림 읽기",
+   "time": "1주",
+   "goal": "토스가 공개한 이중화(센터·ISP·eBGP/iBGP)와 대외 프록시·GSLB 그림에서 무엇이 고장 나면 누가 대신하는지 말할 수 있다.",
+   "resources": [
+    "slash24-ext",
+    "infra-interview",
+    "cf-gslb"
+   ],
+   "task": "센터 2곳 × ISP 2곳의 가상 그림을 그리고, 회선·장비·센터가 하나씩 죽을 때 트래픽이 어디로 가는지 표로 적는다."
+  },
+  {
+   "title": "BGP 와 스파인-리프",
+   "time": "2주",
+   "goal": "BGP 이웃을 맺고 경로 선호도를 바꿔 길이 바뀌는 것을 볼 수 있다.",
+   "resources": [
+    "cf-bgp",
+    "rfc-dc-bgp",
+    "nw-intro"
+   ],
+   "task": "컨테이너 라우터(FRRouting 등) 스파인 2·리프 4 를 올려 eBGP 로 루프백 주소를 주고받고, 스파인 하나를 끄면 경로가 어떻게 남는지 기록한다."
+  },
+  {
+   "title": "VXLAN + EVPN 올리기",
+   "time": "2~3주",
+   "goal": "서로 다른 리프 뒤의 두 서버를 같은 VNI 로 통하게 하고, EVPN 경로를 읽을 수 있다.",
+   "resources": [
+    "rfc-vxlan",
+    "rfc-evpn",
+    "rfc-dc-bgp"
+   ],
+   "task": "위 실습 위에 VXLAN·EVPN 을 얹어 두 서버 통신을 만들고, MTU 를 일부러 1500 으로 두었을 때 큰 패킷만 막히는 것과 고쳤을 때를 캡처로 비교한다."
+  },
+  {
+   "title": "센터 사이·클라우드 잇기",
+   "time": "2주",
+   "goal": "VPN 으로 두 환경을 잇고 이중화 터널의 전환을 확인할 수 있다.",
+   "resources": [
+    "rfc-dci",
+    "aws-s2s",
+    "gcp-havpn",
+    "rfc-ipsec"
+   ],
+   "task": "가상 '센터' 둘을 VPN 으로 잇고 한쪽 터널을 끄면 BGP 경로가 반대로 넘어가는 시간을 재어 한 장으로 정리한다. 가능하면 AWS 무료 범위에서 Site-to-Site VPN 하나를 만들어 본다."
+  },
+  {
+   "title": "경로 감시와 자동화",
+   "time": "2~3주",
+   "goal": "경로별 지연을 모아 경고를 걸고 반복 점검을 스크립트로 바꿀 수 있다.",
+   "resources": [
+    "curl-man",
+    "zabbix-docs",
+    "grafana-docs",
+    "sre-monitoring",
+    "npa",
+    "wireshark-guide"
+   ],
+   "task": "curl 시간 네 가지와 BGP 이웃 상태를 모아 Grafana 대시보드를 만들고, 이웃이 끊기면만 울리는 경고 규칙과 그 근거를 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 이 자리는 5년 이상 경력이라 초봉 숫자는 해당하지 않는다. 공시된 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉(참고)",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없고 신입 기준이라 이 공고(5년 이상)와는 거리가 있다 [25]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [25]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우 협의** 단계에서 정한다고 적었다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 집계값은 추정이라 5년 이상 경력자의 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [26]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 같은 팀 형제 풀이가 토스 회사 소개 페이지 하단 회사 정보에서 옮긴 것이다 [28]. 공고 근무지는 'Seoul'로만 적혀 있고 데이터센터 위치는 공개되지 않았다 [1]."
+ }
+}
