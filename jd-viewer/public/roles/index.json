@@ -62,6 +62,8 @@
   "ats-lg:group:1002199": "biztechi-ai-engineer",
   "saramin-55458469": "biztechi-ai-engineer",
   "ats-lg:group:1001506": "biztechi-ai-pm-pl",
+  "ats-lg:group:1002107": "biztechi-application-architect-container",
+  "dev-579986": "biztechi-application-architect-container",
   "ats-lg:group:1002184": "biztechi-cloud-operations",
   "dev-579987": "biztechi-cloud-operations",
   "ats-lg:group:1002372": "biztechi-data-engineering-pl",
@@ -1084,6 +1086,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 15
+  },
+  {
+   "id": "biztechi-application-architect-container",
+   "company": "비즈테크아이",
+   "role": "어플리케이션 아키텍트(클라우드·컨테이너)",
+   "jobs": [
+    "ats-lg:group:1002107",
+    "dev-579986"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 6
   },
   {
    "id": "biztechi-cloud-operations",
