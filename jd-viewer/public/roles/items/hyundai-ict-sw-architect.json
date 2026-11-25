@@ -1,0 +1,1043 @@
+{
+ "id": "hyundai-ict-sw-architect",
+ "company": "현대자동차",
+ "role": "SW Architect",
+ "team": "ICT 담당 · 전사 아키텍처 리뷰·거버넌스 조직",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2420"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "현대차 ICT가 만드는 **비즈니스 플랫폼**(사내외 서비스의 공통 바탕)의 핵심 모듈을 직접 설계하고, 다른 프로젝트의 설계를 **착수 단계부터 리뷰**해 전사 기준을 세우는 자리입니다.[1]",
+  "env": "같은 ICT 조직은 동기식 모놀리식(한 덩어리) 앱을 **MSA·비동기**로 다시 짜고 자체 프라이빗 클라우드(H클라우드·HKS)를 4개 리전에 올렸습니다 — 이런 결정을 검토하고 표준으로 만드는 일입니다.[2][3]",
+  "oneline": "10년 넘게 설계해 본 사람이 **남의 설계를 같이 고치고 기준을 문서로 남기는** 자리. 코드도 짜지만 리뷰·교육·표준 비중이 큽니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "비즈니스 플랫폼의 개발과 운영에 필요한 기반 기술과 아키텍처를 전반적으로 설계하고 검토하는 역할을 수행합니다.",
+   "short": "여러 서비스가 같이 올라타는 공통 바탕의 구조를 짜고, 남이 짠 구조를 검토하는 일.",
+   "why": "팀 소개가 이 조직의 일을 **프로젝트 단계별 아키텍처 리뷰·기술 타당성 검토와 전사 아키텍처 거버넌스(누가 어떤 기준으로 설계를 승인하나) 운영**이라고 적었습니다.[1] 현대차그룹은 해외 법인까지 시스템·데이터·프로세스를 하나의 IT 표준으로 맞추는 중이라, 설계 기준을 한곳에서 잡는 자리가 필요합니다.[6]",
+   "actually": {
+    "items": [
+     "**설계** — 공통 모듈(인증·게이트웨이·메시징 같은 바탕)의 구조를 직접 정한다 {추론}.",
+     "**검토** — 다른 프로젝트가 낸 설계 문서를 착수·설계·오픈 전 같은 단계마다 본다.[1]",
+     "**기준** — 반복해서 나오는 지적을 표준·가이드로 바꿔 다음 프로젝트가 처음부터 지키게 한다.[1]"
+    ]
+   },
+   "how_far": "'전반적으로'라 한 기술의 전문가보다 **여러 층(애플리케이션·데이터·인프라)을 같이 보는 눈**이 먼저입니다 {추론}.",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "sa101",
+    "iso42010"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 핵심 시스템 아키텍처 설계 및 구현",
+   "short": "검토만 하는 자리가 아니라 핵심 모듈은 직접 설계하고 만든다는 묶음.",
+   "why": "업무 네 묶음 중 첫째가 '설계 및 구현'입니다.[1] 리뷰어가 직접 만들어 본 경험이 있어야 리뷰가 현실적이 됩니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 비즈니스 플랫폼의 핵심 모듈 아키텍처 설계 및 구현",
+   "short": "여러 서비스가 공통으로 쓰는 모듈(게이트웨이·인증·메시징 등)의 뼈대를 직접 짜고 첫 구현까지 한다.",
+   "why": "같은 ICT 조직의 발표에서 커넥티드카 앱은 처음에 동기식 모놀리식이라 **한 기능이 죽으면 전체가 멈췄고**, MSA로 다시 짜서 장애가 난 서비스만 내려가게 했습니다.[2] 제네시스 앱을 하나로 합칠 때는 **게이트웨이** 구성이 핵심 주제였습니다.[4] 이런 공통 모듈이 '핵심 모듈'의 보통 예입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**쪼개기** — 어디까지를 한 서비스로 묶을지(경계) 정한다. 같이 바뀌는 것은 같이 둔다.[2]",
+     "**동기 ↔ 비동기** — 사용자가 몰리는 기능(겨울 아침 원격 시동)은 요청을 큐에 넣고 따로 처리해 지연을 줄인다.[2]",
+     "**장애 격리** — 한 서비스 실패가 다른 서비스로 번지지 않게(시간 제한·재시도 한도·차단기) 설계한다.[2][7]",
+     "**구현** — 뼈대와 첫 버전을 직접 만들어 다른 팀이 따라 쓸 본보기로 남긴다 {추론}."
+    ]
+   },
+   "how_far": "모듈 하나를 끝까지 만들어 운영까지 넘길 수 있어야 합니다. 같은 회사의 아키텍처 백엔드 공고도 컴포넌트 단위 실패 격리와 API 표준화를 요구합니다.[7]",
+   "refs": [
+    2,
+    4,
+    7
+   ],
+   "study": [
+    "msa-patterns",
+    "hmg-hcloud-talk"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 주요 기술 의사결정 수행 및 타당성 분석",
+   "short": "'이 기술을 쓸까'를 근거(성능·비용·운영 부담·팀 숙련도)로 비교해 정하고, 그 이유를 기록으로 남긴다.",
+   "why": "같은 ICT 조직은 퍼블릭 클라우드와 자체 클라우드를 놓고 **처음엔 퍼블릭이 싸지만 시간이 갈수록 비용이 커진다**는 판단, 제어권·응답 시간·커버리지를 근거로 프라이빗을 골랐습니다.[2][3] 이런 결정이 '주요 기술 의사결정'의 실제 예입니다.",
+   "actually": {
+    "intro": "회사가 결정 절차를 공개하지 않아, 업계에서 보통 쓰는 방법입니다.",
+    "items": [
+     "**품질 속성 먼저** — 성능·가용성·보안·변경 쉬움 중 무엇이 이 시스템에 중요한지 시나리오로 적고 우선순위를 매긴다(ATAM의 유틸리티 트리).[10]",
+     "**후보 비교** — 같은 기준으로 후보 2~3개를 점수로 비교하고, 어느 점에서 무엇을 포기하는지(트레이드오프)를 적는다.[10]",
+     "**결정 기록(ADR)** — 상황·결정·결과를 한 장으로 남겨, 나중에 온 사람이 '왜 이렇게 했나'를 알 수 있게 한다.[9]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "가중 점수표 — 점수보다 가중치가 결정을 바꾼다",
+     "body": "가상의 메시지 브로커 비교입니다. 성능만 보면 Kafka지만, 운영 난이도·팀 숙련도에 가중치를 주면 결과가 뒤집힙니다(직접 돌린 출력: Kafka 26 / 40, RabbitMQ 29 / 40). 가중치를 누가 왜 그렇게 정했는지가 ADR에 남아야 합니다.[9]",
+     "lang": "python",
+     "code": "weights = {\"성능\": 3, \"운영 난이도\": 2, \"팀 숙련도\": 2, \"비용\": 1}\noptions = {\n    \"Kafka\":    {\"성능\": 5, \"운영 난이도\": 2, \"팀 숙련도\": 2, \"비용\": 3},\n    \"RabbitMQ\": {\"성능\": 3, \"운영 난이도\": 4, \"팀 숙련도\": 4, \"비용\": 4},\n}\nfor name, s in options.items():\n    total = sum(weights[k] * s[k] for k in weights)\n    print(name, total, \"/\", 5 * sum(weights.values()))\n# Kafka 26 / 40\n# RabbitMQ 29 / 40"
+    }
+   ],
+   "how_far": "결론보다 **근거와 포기한 것을 글로 설명**할 수 있어야 합니다. 큰 결정(클라우드 방식 같은)은 경영진 승인까지 가고[3], 아키텍트는 그 판단 자료를 만듭니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    9,
+    10
+   ],
+   "study": [
+    "adr",
+    "atam",
+    "hardparts"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 시스템 간 인터페이스 및 통합 아키텍처 설계",
+   "short": "시스템끼리 무엇을 어떤 방식(API·메시지·파일)으로 주고받을지 정하고, 한쪽이 바뀌어도 다른 쪽이 안 깨지게 한다.",
+   "why": "현대차의 서비스는 50개 넘는 나라·4개 리전에 걸쳐 있고[2], 그룹 IT 표준도 시스템·데이터를 맞추는 쪽으로 가고 있습니다.[6] 같은 회사 아키텍처 백엔드 공고는 **전사(HMG) 플랫폼과의 책임 경계, 컴포넌트 간 인터페이스·API 표준화**를 따로 적었습니다.[7]",
+   "actually": {
+    "items": [
+     "**방식 고르기** — 바로 답이 필요하면 동기 API, 나중에 처리해도 되면 메시지(큐·이벤트), 대량이면 배치 파일.[19]",
+     "**계약** — 요청·응답 형식, 오류 코드, 버전 규칙(옛 버전을 언제까지 살려 두나)을 문서로 고정한다 {추론}.",
+     "**실패 처리** — 같은 메시지가 두 번 와도 결과가 같게(멱등), 재시도·순서·중복을 설계에 넣는다.[19]",
+     "**옛 시스템 바꾸기** — 한 번에 갈아엎지 않고 앞에 경로를 두고 기능을 하나씩 새 시스템으로 옮긴다(스트랭글러 피그).[18]"
+    ]
+   },
+   "refs": [
+    2,
+    6,
+    7,
+    18,
+    19
+   ],
+   "study": [
+    "eip",
+    "strangler",
+    "msa-patterns"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· PoC 수행 및 신기술 적용 가능성 검증",
+   "short": "새 기술을 도입하기 전에 작게 만들어 보고 '우리 조건에서 되나'를 숫자로 확인한다.",
+   "why": "같은 ICT 조직은 자체 클라우드를 만들며 **10배 넘는 부하로 성능을 검증**했고, 발표자는 많은 사람이 품질 검증을 빠뜨린다고 강조했습니다.[2][3] 지금은 AI 지원 환경과 공장 쪽 엣지 클라우드를 다음 과제로 들었고[2], 그룹은 AI도 기존 IT와 같은 보안·거버넌스 안에서 관리한다는 원칙을 세웠습니다.[6]",
+   "actually": {
+    "items": [
+     "**성공 기준 먼저** — '초당 몇 건, 응답 몇 ms, 장애 시 몇 초 안에 넘어감'처럼 통과선을 시작 전에 정한다 {추론}.",
+     "**작게·짧게** — 몇 주 안에 끝나는 범위로, 가장 위험한 가정 하나를 확인한다 {추론}.",
+     "**등급 매기기** — 기술을 채택·시험·검토·보류 네 칸으로 나눠 관리하는 방식(Thoughtworks 기술 레이더)이 널리 쓰인다.[17]",
+     "**결과는 문서로** — 된 것·안 된 것·남은 위험을 ADR로 남긴다.[9]"
+    ]
+   },
+   "how_far": "PoC 코드를 그대로 운영에 올리지 않습니다. 결론과 근거 숫자가 산출물입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    6,
+    9,
+    17
+   ],
+   "study": [
+    "radar",
+    "hmg-hcloud-talk"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 개발자 교육 및 멘토링",
+   "short": "설계를 혼자 잘하는 것보다 개발자들이 스스로 잘 설계하게 만드는 일이 두 번째 묶음.",
+   "why": "현대차 ICT는 2023년부터 임직원끼리 프로젝트 경험을 나누는 '소프티어 테크톡'을 운영하고, 오프라인 행사를 정례화하며 외부 연사 비중을 줄이려 합니다.[5] 사내 사람이 가르치는 문화를 키우는 중입니다.",
+   "refs": [
+    5
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 개발자 대상 아키텍처·설계 교육 운영 및 교육 자료 작성",
+   "short": "설계 원칙·패턴·자주 나오는 실수를 사내 강의와 자료로 만든다.",
+   "why": "같은 회사 공고가 '설계 원칙과 베스트 프랙티스 교육'을 아키텍트 업무로 적었고[7], 사내 테크톡은 실무 노하우와 자체 피드백을 같이 보여 주는 형식입니다.[5]",
+   "actually": {
+    "items": [
+     "**실제 사례로** — 우리 리뷰에서 나온 지적(이름을 지운)을 교재로 쓴다 {추론}.",
+     "**그림 규칙** — 모두 같은 그림 언어로 그리게 한다. C4는 맥락 → 컨테이너 → 컴포넌트 → 코드 네 단계로 확대한다.[11]",
+     "**실습** — 작은 서비스를 같이 쪼개 보고 ADR을 써 보는 시간 {추론}."
+    ]
+   },
+   "refs": [
+    5,
+    7,
+    11
+   ],
+   "study": [
+    "c4",
+    "sa101"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 코드 리뷰와 설계 리뷰를 통한 실무 중심 코칭",
+   "short": "남의 코드·설계를 보며 '왜 이렇게 바꾸면 좋은지'를 설명해 가르친다.",
+   "why": "구글은 거의 모든 변경을 리뷰하고, 리뷰의 목적으로 결함 찾기보다 **지식 나누기·일관성·읽기 쉬움**을 꼽습니다.[13] 코칭 수단으로 쓰기 좋은 이유입니다.",
+   "actually": {
+    "items": [
+     "**완벽 대신 나아짐** — 코드 건강을 분명히 좋게 하면 완벽하지 않아도 승인한다는 기준.[12]",
+     "**이유를 적는다** — 고쳐 달라는 말에 원칙을 붙이고, 사소한 것은 '선택(nit)'이라고 표시한다.[12]",
+     "**빨리 답한다** — 리뷰가 늦으면 팀 전체 속도가 떨어진다. 구글 기준은 늦어도 하루 안.[12]",
+     "**설계 리뷰** — 코드 전에 문서로 경계·데이터 흐름·실패 처리를 먼저 본다 {추론}."
+    ]
+   },
+   "refs": [
+    12,
+    13
+   ],
+   "study": [
+    "google-review",
+    "swe-google"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 아키텍처 리뷰 문서 검토 및 이슈 해결 지원",
+   "short": "프로젝트가 낸 설계 문서의 빈 곳을 찾고, 막힌 기술 문제는 같이 푼다.",
+   "why": "팀 소개의 '프로젝트 단계별 아키텍처 리뷰'가 이 줄입니다.[1]",
+   "actually": {
+    "intro": "국제 표준(ISO/IEC/IEEE 42010)이 말하는 좋은 설계 문서의 뼈대입니다.[8]",
+    "items": [
+     "**이해관계자와 관심사** — 누가(운영·보안·사업) 무엇을 걱정하는지 적었나.",
+     "**관점과 뷰** — 그 걱정마다 맞는 그림(배포도·데이터 흐름·순서도)이 있나.",
+     "**결정과 근거** — 중요한 선택마다 이유와 대안이 남아 있나.[9]",
+     "**위험** — ATAM은 리뷰 결과를 위험·위험 아님·민감 지점·트레이드오프로 정리한다.[10]"
+    ]
+   },
+   "refs": [
+    1,
+    8,
+    9,
+    10
+   ],
+   "study": [
+    "iso42010",
+    "atam",
+    "arc42"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 아키텍처 표준 및 가이드라인 수립",
+   "short": "리뷰에서 반복되는 지적을 문서 기준으로 만들어 처음부터 지키게 하는 묶음.",
+   "why": "그룹은 '글로벌 One IT 표준'으로 시스템·데이터·프로세스를 맞추고 있습니다.[6] 이 조직은 그 기준 중 아키텍처 쪽을 맡습니다 {추론}.",
+   "refs": [
+    6
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 기술 표준 문서 작성 및 아키텍처 가이드라인 관리",
+   "short": "'우리 회사는 이렇게 만든다'(언어·프레임워크·API 규칙·로그·보안)를 문서로 정하고 계속 고친다.",
+   "why": "같은 ICT 클라우드 조직은 **글로벌 인프라 표준을 먼저 정의한 뒤** 제품을 만들고 검증해 여러 리전에 배포했습니다 — 표준이 있어야 다른 지역으로 쉽게 옮기고 넓힐 수 있다는 이유였습니다.[2]",
+   "actually": {
+    "items": [
+     "**고를 수 있는 목록** — 권장 기술·쓰지 말 기술을 레이더처럼 칸으로 나눠 관리한다.[17]",
+     "**공통 규칙** — API 이름·오류 형식·인증·로그·모니터링 지표를 맞춘다 {추론}.",
+     "**바탕에 심기** — 같은 조직의 HKS는 CI/CD(GitLab·Argo CD)와 코드 품질·보안 검사(SonarQube·Black Duck), 지표 수집을 기본으로 넣어 사용자가 따로 설정하지 않게 했다.[2][3] 문서보다 플랫폼에 심은 기준이 잘 지켜진다 {추론}.",
+     "**고치기** — 버전을 매기고, 바꾼 이유를 남긴다 {추론}."
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    17
+   ],
+   "study": [
+    "aws-waf",
+    "radar",
+    "evo-arch"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 프로젝트 착수 시 아키텍처 설계 가이드 제공 및 기술 방향성 제시",
+   "short": "프로젝트가 시작될 때 '이 표준·구조로 가라'를 먼저 주어 나중에 뜯어고칠 일을 줄인다.",
+   "why": "팀 소개가 '착수 단계부터 설계 가이드와 기술 방향성'을 이 조직의 특징으로 들었습니다.[1] 늦게 발견한 구조 문제일수록 고치는 비용이 커지기 때문입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**요구 읽기** — 사용자 수·지역·가용성 목표를 묻고 맞는 구조 틀을 고른다 {추론}.",
+     "**출발 틀** — 표준 저장소 틀·배포 방식·모니터링 기본값을 쥐여 준다 {추론}.",
+     "**점검표** — 클라우드라면 AWS Well-Architected처럼 운영·보안·안정성·성능·비용·지속가능성 여섯 기둥으로 질문한다.[16]"
+    ]
+   },
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "aws-waf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 아키텍처 설계 문서 리뷰",
+   "short": "설계 문서를 기준표에 맞춰 읽고 빠진 것·위험한 것을 짚는다.",
+   "why": "착수 가이드를 준 뒤 실제 설계가 그대로 됐는지 보는 단계입니다.[1]",
+   "how_far": "지적만 하지 않고 고칠 방향까지 제시해야 다음 묶음(이슈 해결 지원)과 이어집니다.[1] 리뷰 결과는 위험·트레이드오프로 정리하면 읽는 사람이 우선순위를 압니다.[10]",
+   "refs": [
+    1,
+    10
+   ],
+   "study": [
+    "atam",
+    "arc42"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 시스템 품질 검증 및 개선",
+   "short": "만든 뒤에 성능·안정성·확장성이 정말 나오는지 재고 고치는 묶음.",
+   "why": "같은 ICT 조직은 MSA·자체 클라우드 전환 뒤 가입자가 늘어도 다운타임이 줄었고, 가용성 **99.95%**로 운영한다고 발표했습니다.[2]",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 소프트웨어 품질(성능, 안정성, 확장성) 검토 및 개선 방안 도출",
+   "short": "느린 곳·잘 죽는 곳·사람이 몰리면 버티지 못할 곳을 숫자로 찾아 고칠 방법을 낸다.",
+   "why": "커넥티드카 서비스는 겨울·여름 아침에 원격 공조 요청이 한꺼번에 몰리고, 가입자는 1,000만 명을 넘어 2026년 2,000만 명을 예상했습니다.[2] 몰릴 때 버티는지가 품질입니다.",
+   "actually": {
+    "items": [
+     "**성능** — 평균 대신 분위수(p95·p99)로 본다. 느린 몇 %가 사용자 불만을 만든다.[14]",
+     "**안정성** — 의존하는 시스템이 많을수록 전체 가용률은 곱으로 떨어진다. 그래서 장애 격리가 필요하다 {추론}.",
+     "**확장성** — 부하를 몇 배로 올려 어디서 먼저 막히는지 본다. 같은 조직은 10배 넘게 시험했다.[3]",
+     "**자원 점검** — CPU·메모리·디스크·네트워크마다 사용률·포화·오류를 본다(USE 방법).[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균은 느린 요청을 가린다",
+     "body": "가상의 요청 100건(90건 120ms, 8건 300ms, 2건 2.5초). 평균은 182ms로 괜찮아 보이지만 p99는 2,500ms입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import statistics\nms = [120]*90 + [300]*8 + [2500]*2\ndef pct(xs, p):\n    xs = sorted(xs); return xs[int(len(xs)*p/100) - 1]\nprint(\"평균\", statistics.mean(ms))\nprint(\"p50\", pct(ms, 50), \"p95\", pct(ms, 95), \"p99\", pct(ms, 99))\n# 평균 182\n# p50 120 p95 300 p99 2500"
+    },
+    {
+     "title": "99.95% 서비스 3개를 차례로 부르면",
+     "body": "한 달(30일) 기준 허용 중단은 99.9%면 43.2분, 99.95%면 21.6분입니다. 99.95% 서비스 셋을 줄줄이 부르면 전체는 99.8501%, 한 달 64.8분으로 늘어납니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "month_min = 30 * 24 * 60\nfor a in (0.999, 0.9995):\n    print(f\"{a:.2%} 한 달 허용 중단 {month_min*(1-a):.1f}분\")\nchain = 0.9995 ** 3\nprint(f\"3단 연결 {chain:.4%} → 한 달 {month_min*(1-chain):.1f}분\")\n# 99.90% 한 달 허용 중단 43.2분\n# 99.95% 한 달 허용 중단 21.6분\n# 3단 연결 99.8501% → 한 달 64.8분"
+    }
+   ],
+   "refs": [
+    2,
+    3,
+    14,
+    15
+   ],
+   "study": [
+    "sre-monitoring",
+    "use-method",
+    "aws-waf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 개발·운영 조직과 협업하여 설계 품질 개선 및 기술 역량 향상 지원",
+   "short": "고치는 일은 개발·운영팀이 하고, 아키텍트는 방향과 방법을 같이 잡아 준다.",
+   "why": "이 조직은 직접 모든 시스템을 만들지 않고 프로젝트를 지원하는 자리입니다.[1] 같은 ICT 조직은 현대오토에버와 함께 테크톡을 운영해 그룹사 개발자까지 경험을 나눕니다.[5]",
+   "how_far": "권한으로 시키기보다 **근거로 설득**해야 하는 자리입니다 {추론}.",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 컴퓨터공학 등 관련 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "'등 관련 분야'라 컴퓨터공학 외 전공도 열려 있다. 10년 경력이 더 무겁다.",
+   "why": "같은 회사 아키텍처 백엔드 공고는 컴퓨터공학·소프트웨어공학·전자공학·정보통신공학을 나열했습니다.[7] 이 공고는 더 넓게 '등 관련 분야'라고만 적었습니다.[1]",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 10년 이상의 SW Architect 경력을 보유하신 분",
+   "short": "개발 10년이 아니라 '아키텍트로' 10년 — 설계를 정하고 책임진 경험이 중심이다.",
+   "why": "이 자리는 남의 설계를 리뷰하고 전사 기준을 만듭니다.[1] 같은 회사 아키텍처 백엔드 공고는 '백엔드 개발 경력 8년'을 요구해[7], 이 공고가 한 단계 위의 경력을 본다는 걸 알 수 있습니다.",
+   "how_far": "직함이 아키텍트가 아니었어도 **여러 팀이 쓰는 구조를 정하고 그 결과를 운영까지 겪은 경험**을 경력서에 구체적으로(규모·결정·결과 숫자) 적는 것이 중요합니다 {추론}.",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "sa101",
+    "hardparts"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Java, Python 등 백엔드 개발 언어를 활용한 시스템 개발 경험을 보유하신 분",
+   "short": "리뷰어도 코드를 읽고 짤 줄 알아야 해서. 핵심 모듈 구현도 이 자리 몫이다.",
+   "why": "업무 첫 줄이 '설계 및 구현'입니다.[1] 같은 회사 백엔드 공고들은 Java·Spring Boot 기반 MSA를 요구해[7], 리뷰할 코드도 대부분 그쪽일 것입니다 {추론}.",
+   "level": {
+    "basic": "한 언어로 API 서버를 만들고 테스트를 붙인다",
+    "work": "동시성·트랜잭션·커넥션 풀·GC 같은 성능 원인을 코드에서 찾는다",
+    "team": "남의 코드에서 구조 문제(경계·의존 방향·실패 처리)를 짚고 대안을 코드로 보인다"
+   },
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "msa-patterns",
+    "google-review"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 리눅스/유닉스 기반 서비스 개발 및 운영 경험을 보유하신 분",
+   "short": "서비스가 도는 바닥이 리눅스라서. 장애·성능 문제를 서버에서 직접 확인할 줄 알아야 한다.",
+   "why": "같은 ICT 조직의 클라우드는 OpenStack·Kubernetes(Rancher) 위에 직접 만든 것이고 가상 머신·컨테이너·베어메탈을 모두 제공합니다.[2][3] 모두 리눅스 위에서 돕니다 {추론}.",
+   "actually": {
+    "items": [
+     "**자원 보기** — CPU·메모리·디스크·네트워크마다 사용률·포화·오류를 차례로 확인한다(USE 방법).[15]",
+     "**로그·프로세스** — 서비스 로그, 열린 파일·연결 수, 프로세스 상태를 본다 {추론}.",
+     "**운영 경험** — 배포·재시작·설정 바꾸기를 직접 해 본 적이 있어야 운영 가이드를 쓸 수 있다 {추론}."
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    15
+   ],
+   "study": [
+    "tlcl",
+    "use-method"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 개발조직 대상 사내 교육 혹은 멘토링 경험을 보유하신 분",
+   "short": "업무 둘째 묶음(교육·멘토링)을 해 본 사람이면 바로 맡길 수 있어서.",
+   "why": "ICT는 사내 테크톡을 키우고 외부 연사 비중을 줄이려 합니다.[5] 같은 회사 아키텍처 백엔드 공고도 주니어 멘토링을 우대합니다.[7]",
+   "how_far": "강의 제목·인원·횟수, 멘토링한 사람이 무엇을 할 수 있게 됐는지를 적을 수 있으면 됩니다 {추론}.",
+   "refs": [
+    5,
+    7
+   ],
+   "study": [
+    "swe-google"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 성능 모니터링 및 성능 지표 관리 경력을 보유하신 분",
+   "short": "품질 개선을 숫자로 하려면 무엇을 재고 어떤 선을 지킬지 정해 본 경험이 필요해서.",
+   "why": "같은 ICT 조직은 자체 모니터링(Hubble)과 끝에서 끝까지 상태 확인(Sonar)을 따로 만들었고, 모든 컨테이너·가상 머신의 지표를 자동으로 모읍니다.[2][3]",
+   "actually": {
+    "items": [
+     "**네 가지 신호** — 지연·처리량·오류·포화를 기본으로 본다.[14]",
+     "**목표선(SLO)** — '요청의 99%가 300ms 안' 같은 선을 정하고 넘으면 알린다 {추론}.",
+     "**분위수로** — 평균이 아니라 p95·p99를 대시보드에 둔다.[14]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    14
+   ],
+   "study": [
+    "sre-monitoring"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 클라우드 기반 서비스 개발 및 운영 경력을 보유하신 분",
+   "short": "회사 서비스가 자체 클라우드와 퍼블릭 클라우드를 섞어 돌기 때문에.",
+   "why": "H클라우드는 한국·아시아태평양·북미·유럽 4개 리전이고, 작은 지역은 퍼블릭 클라우드와 함께 쓰는 하이브리드입니다. 리전마다 데이터센터를 둘 이상 두어 하나가 내려가도 서비스가 이어지게 했습니다.[2][3]",
+   "how_far": "특정 클라우드 자격증보다 **여러 데이터센터에 나눠 배포하고 장애 때 넘기는 구조**를 설계·운영해 본 경험이 더 직접 쓰입니다 {추론}. 같은 회사 다른 아키텍처 공고는 AWS·GCP 아키텍트 자격증을 우대로 적었습니다.[7]",
+   "refs": [
+    2,
+    3,
+    7
+   ],
+   "study": [
+    "aws-waf",
+    "hmg-hcloud-talk"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "직접 만드는 것만큼 남이 잘 만들게 돕는 데서 보람을 느끼는 사람[1]",
+   "결정의 이유를 글로 남기는 게 귀찮지 않은 사람[9]",
+   "한 기술보다 여러 층(앱·데이터·인프라)을 같이 보는 게 즐거운 사람",
+   "대규모 글로벌 서비스(50개국 이상)의 구조를 다뤄 보고 싶은 사람[2]"
+  ],
+  "hard": [
+   "아키텍트로 10년이라는 경력 문턱이 높다[1]",
+   "결정권이 프로젝트팀·경영진과 나뉘어 있어 설득이 일의 큰 부분이다 {추론}",
+   "자기 코드보다 문서·리뷰·교육에 쓰는 시간이 길다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "모놀리식 서비스에서 한 기능 장애가 전체를 멈춘다면 어떻게 바꾸겠어요? 한 번에 바꿀 수 없다면요?",
+   "a": "같은 조직이 실제로 겪고 MSA·비동기로 바꾼 일.[2] 점진 전환은 스트랭글러 피그.[18]"
+  },
+  {
+   "q": "퍼블릭 클라우드와 자체 클라우드 중 하나를 고른다면 무엇을 근거로 하겠어요?",
+   "a": "회사가 밝힌 판단 근거(비용 추이·제어권·응답 시간).[3]"
+  },
+  {
+   "q": "최근 내린 기술 결정 하나를 ADR 형식으로 말해 보세요. 무엇을 포기했나요?",
+   "a": "타당성 분석 줄 — 상황·결정·결과.[9]"
+  },
+  {
+   "q": "설계 문서를 리뷰할 때 가장 먼저 보는 것은요?",
+   "a": "이해관계자·관심사·관점, 위험·트레이드오프.[8][10]"
+  },
+  {
+   "q": "평균 응답 시간은 괜찮은데 사용자 불만이 늘었습니다. 무엇을 보겠어요?",
+   "a": "분위수와 네 가지 신호.[14]"
+  },
+  {
+   "q": "주니어의 설계가 마음에 안 들 때 코드 리뷰에서 어떻게 말하겠어요?",
+   "a": "완벽 대신 나아짐, 이유를 붙이는 리뷰.[12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · [ICT] SW Architect",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=420",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대, 근무지 양재본사, 마감 2026-11-30"
+  },
+  {
+   "n": 2,
+   "title": "SUSECON 2024 · The journey of Hyundai Motor Group to develop a private cloud for connected car service",
+   "url": "https://youtu.be/BLVywVGIikA",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "현대차 ICT 클라우드개발 조직 책임자 발표 · 자막 전부 확인(27분)"
+  },
+  {
+   "n": 3,
+   "title": "바이라인네트워크 · 현대자동차가 구축한 'H클라우드', 전세계 1000만 커넥티드 카 서비스 뒷받침",
+   "url": "https://byline.network/2024/06/24-313/",
+   "kind": "news",
+   "date": "2024-06-25",
+   "note": "같은 발표의 국내 보도 — H클라우드 구성·HKS·4개 리전·99.95%"
+  },
+  {
+   "n": 4,
+   "title": "현대자동차그룹 · 소프티어 테크밋업",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000094086",
+   "kind": "company",
+   "date": "2023-05-30",
+   "note": "ICT본부 비즈플랫폼개발팀 발표 '제네시스 원 앱' — 게이트웨이 구성"
+  },
+  {
+   "n": 5,
+   "title": "현대자동차그룹 · 소프티어 테크톡 오프데이",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000133609",
+   "kind": "company",
+   "date": "2024-02-05",
+   "note": "ICT본부·현대오토에버 임직원 지식 공유, 2023년부터 운영"
+  },
+  {
+   "n": 6,
+   "title": "현대자동차그룹 · HMG 글로벌 IT 포럼 2026",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/hmg-global-it-forum-2026-hyundai-motor-groups-global-it-teams-under-one-roof",
+   "kind": "company",
+   "date": "2026-04-28",
+   "note": "글로벌 One IT 표준, AI 실행 가이드라인(보안·거버넌스)"
+  },
+  {
+   "n": 7,
+   "title": "현대자동차 채용 · [ICT] Backend Developer - 아키텍처",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=415",
+   "kind": "posting",
+   "note": "같은 회사 같은 시기 ICT 공고 — 실패 격리·API 표준화·멘토링·자격 요건 비교"
+  },
+  {
+   "n": 8,
+   "title": "ISO/IEC/IEEE 42010:2022 · Architecture description",
+   "url": "https://www.iso.org/standard/74393.html",
+   "kind": "reference",
+   "note": "이해관계자·관심사·관점·뷰 — 설계 문서의 국제 표준(유료)"
+  },
+  {
+   "n": 9,
+   "title": "Michael Nygard · Documenting Architecture Decisions",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "kind": "reference",
+   "date": "2011-11-15",
+   "note": "ADR — 제목·상황·결정·상태·결과"
+  },
+  {
+   "n": 10,
+   "title": "SEI · Architecture Tradeoff Analysis Method(ATAM) Collection",
+   "url": "https://sei.cmu.edu/library/architecture-tradeoff-analysis-method-collection/",
+   "kind": "reference",
+   "note": "품질 속성 시나리오·유틸리티 트리·위험·민감 지점·트레이드오프"
+  },
+  {
+   "n": 11,
+   "title": "The C4 model for visualising software architecture",
+   "url": "https://c4model.com/",
+   "kind": "reference",
+   "note": "맥락·컨테이너·컴포넌트·코드 네 단계 그림"
+  },
+  {
+   "n": 12,
+   "title": "Google Engineering Practices · Code Review Developer Guide",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference",
+   "note": "승인 기준(코드 건강이 나아지면), 리뷰 속도, 말하는 법"
+  },
+  {
+   "n": 13,
+   "title": "Software Engineering at Google · 9장 Code Review",
+   "url": "https://abseil.io/resources/swe-book/html/ch09.html",
+   "kind": "reference",
+   "note": "리뷰의 이점 — 지식 나누기·일관성·읽기 쉬움"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "note": "네 가지 황금 신호(지연·트래픽·오류·포화), 평균 대신 분포"
+  },
+  {
+   "n": 15,
+   "title": "Brendan Gregg · The USE Method",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "kind": "reference",
+   "note": "자원마다 사용률·포화·오류"
+  },
+  {
+   "n": 16,
+   "title": "AWS Well-Architected Framework",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "kind": "reference",
+   "note": "여섯 기둥 — 운영 우수성·보안·안정성·성능 효율·비용 최적화·지속가능성"
+  },
+  {
+   "n": 17,
+   "title": "Thoughtworks · Technology Radar",
+   "url": "https://www.thoughtworks.com/radar",
+   "kind": "reference",
+   "note": "채택(Adopt)·시험(Trial)·검토(Assess)·보류(Hold) 네 칸"
+  },
+  {
+   "n": 18,
+   "title": "Martin Fowler · Strangler Fig Application",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference",
+   "note": "옛 시스템을 조금씩 새 시스템으로 옮기는 방법"
+  },
+  {
+   "n": 19,
+   "title": "Gregor Hohpe · Enterprise Integration Patterns",
+   "url": "https://www.enterpriseintegrationpatterns.com/",
+   "kind": "reference",
+   "note": "메시지 채널·라우터·변환기 등 시스템 통합 패턴"
+  },
+  {
+   "n": 20,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 21,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원, 4·124쪽 본사 주소"
+  }
+ ],
+ "caveat": "이 팀(전사 아키텍처 리뷰·거버넌스 조직)이 직접 낸 발표·글은 찾지 못했습니다. 같은 ICT 조직의 다른 팀 발표(클라우드개발, 비즈플랫폼개발)와 같은 회사의 다른 공고로 회사의 실제 아키텍처 결정을 보였고, 리뷰 절차·문서 형식·표준의 내용은 공개되지 않아 국제 표준과 업계 공개 문서로 '보통 이런 것'을 보였습니다. 발표는 2023~2024년 것이라 지금은 달라졌을 수 있습니다.",
+ "resources": [
+  {
+   "id": "hmg-hcloud-talk",
+   "title": "SUSECON 2024 · The journey of Hyundai Motor Group to develop a private cloud for connected car service",
+   "by": "현대차 ICT 클라우드개발 조직 · 27분",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://youtu.be/BLVywVGIikA",
+   "why": "이 회사가 실제로 내린 큰 아키텍처 결정(모놀리식 → MSA·비동기, 퍼블릭 → 프라이빗 클라우드, 표준 먼저 정하고 넓히기)을 직접 설명한다. 면접 전에 꼭 볼 영상."
+  },
+  {
+   "id": "sa101",
+   "title": "소프트웨어 아키텍처 101",
+   "by": "마크 리처즈 · 닐 포드 · 한빛미디어 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942580",
+   "why": "아키텍처 특성(품질 속성)·스타일·컴포넌트 나누기·결정 기록까지 아키텍트 일의 전체 지도. 교육 자료의 뼈대로 쓰기 좋다."
+  },
+  {
+   "id": "hardparts",
+   "title": "소프트웨어 아키텍처 The Hard Parts",
+   "by": "닐 포드 · 마크 리처즈 외",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98%20The%20Hard%20Parts",
+   "why": "서비스를 쪼갤까 합칠까, 데이터를 나눌까 — 정답 없는 결정을 트레이드오프로 분석하는 법. '타당성 분석' 줄에 바로 쓰인다."
+  },
+  {
+   "id": "msa-patterns",
+   "title": "마이크로서비스 패턴",
+   "by": "크리스 리처드슨 · 길벗 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4",
+   "why": "서비스 분해·서비스 간 통신·트랜잭션(사가)·조회 패턴을 Java 예제로. 핵심 모듈 설계와 인터페이스 설계 줄의 기본기."
+  },
+  {
+   "id": "evo-arch",
+   "title": "진화적 아키텍처",
+   "by": "닐 포드 · 레베카 파슨스 · 패트릭 쿠아 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%A7%84%ED%99%94%EC%A0%81%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98",
+   "why": "표준을 문서가 아니라 자동 검사(적합성 함수)로 지키게 하는 법 — 가이드라인 관리 줄에 맞는다."
+  },
+  {
+   "id": "adr",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · 2011",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "why": "짧은 글 하나로 ADR 형식을 익힌다. 기술 의사결정·PoC 결과를 남기는 기본 틀."
+  },
+  {
+   "id": "atam",
+   "title": "Architecture Tradeoff Analysis Method Collection",
+   "by": "Carnegie Mellon SEI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://sei.cmu.edu/library/architecture-tradeoff-analysis-method-collection/",
+   "why": "설계 리뷰를 품질 속성 시나리오와 위험·트레이드오프로 정리하는 원조 방법. 리뷰 문서 검토 줄의 틀."
+  },
+  {
+   "id": "iso42010",
+   "title": "ISO/IEC/IEEE 42010:2022 Architecture description",
+   "by": "ISO · IEC · IEEE · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/74393.html",
+   "why": "좋은 설계 문서가 갖춰야 할 것(이해관계자·관심사·관점·뷰)의 국제 표준. 리뷰 기준표를 만들 때 바탕."
+  },
+  {
+   "id": "c4",
+   "title": "The C4 model",
+   "by": "Simon Brown",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://c4model.com/",
+   "why": "누구나 같은 방식으로 구조 그림을 그리게 하는 네 단계 표기법. 교육 자료와 리뷰 문서 양식에 쓴다."
+  },
+  {
+   "id": "arc42",
+   "title": "arc42 — Template for documenting software architecture",
+   "by": "arc42",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arc42.org/",
+   "why": "설계 문서 목차 틀(목표·제약·맥락·구성·배포·결정·위험). 프로젝트 착수 가이드의 양식으로 바로 쓸 수 있다."
+  },
+  {
+   "id": "google-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "무엇을 보고, 언제 승인하고, 어떻게 말하나. 코드 리뷰 코칭의 기준."
+  },
+  {
+   "id": "swe-google",
+   "title": "Software Engineering at Google (온라인판)",
+   "by": "Titus Winters · Tom Manshreck · Hyrum Wright · O'Reilly",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://abseil.io/resources/swe-book/html/ch09.html",
+   "why": "9장 코드 리뷰와 지식 공유·멘토링 장. 교육·멘토링 묶음을 조직 차원에서 어떻게 운영하나."
+  },
+  {
+   "id": "sre-monitoring",
+   "title": "Site Reliability Engineering · Monitoring Distributed Systems",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "why": "네 가지 신호와 분위수로 보는 법. 성능 모니터링·지표 관리 우대 줄."
+  },
+  {
+   "id": "use-method",
+   "title": "The USE Method",
+   "by": "Brendan Gregg",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "why": "리눅스 서버에서 자원마다 사용률·포화·오류를 차례로 보는 점검표. 리눅스 운영 요건과 품질 검토 줄."
+  },
+  {
+   "id": "tlcl",
+   "title": "The Linux Command Line",
+   "by": "William Shotts",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "why": "리눅스 셸·프로세스·권한·로그 기본기를 무료로. 운영 경험이 적다면 여기부터."
+  },
+  {
+   "id": "aws-waf",
+   "title": "AWS Well-Architected Framework",
+   "by": "Amazon Web Services",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "why": "여섯 기둥별 질문 목록. 클라우드 설계 리뷰 점검표로, 특정 클라우드가 아니어도 그대로 쓸 만하다."
+  },
+  {
+   "id": "radar",
+   "title": "Thoughtworks Technology Radar",
+   "by": "Thoughtworks",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.thoughtworks.com/radar",
+   "why": "기술을 채택·시험·검토·보류로 나눠 관리하는 본보기. PoC 결과와 기술 표준 목록을 정리하는 틀."
+  },
+  {
+   "id": "eip",
+   "title": "Enterprise Integration Patterns",
+   "by": "Gregor Hohpe · Bobby Woolf",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.enterpriseintegrationpatterns.com/",
+   "why": "시스템끼리 메시지로 잇는 패턴 사전. 통합 아키텍처 설계 줄."
+  },
+  {
+   "id": "strangler",
+   "title": "Strangler Fig Application",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "why": "옛 시스템을 멈추지 않고 조금씩 바꾸는 법. 레거시가 많은 회사의 통합·전환 설계에 자주 쓰인다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사의 실제 결정 읽기",
+   "time": "1주",
+   "goal": "현대차 ICT가 왜 MSA·비동기·자체 클라우드를 골랐는지 근거와 함께 설명할 수 있다.",
+   "resources": [
+    "hmg-hcloud-talk",
+    "sa101"
+   ],
+   "task": "발표를 보고 결정 세 가지(앱 구조·클라우드 방식·표준 먼저)를 각각 ADR 한 장(상황·결정·결과·포기한 것)으로 다시 써 본다."
+  },
+  {
+   "title": "결정과 기록의 틀",
+   "time": "2~3주",
+   "goal": "품질 속성 시나리오로 후보를 비교하고 ADR로 남길 수 있다.",
+   "resources": [
+    "adr",
+    "atam",
+    "hardparts"
+   ],
+   "task": "가상의 '차량 원격 제어 API'에 대해 품질 속성 시나리오 5개(겨울 아침 10배 트래픽 등)를 쓰고, 메시지 브로커 후보 둘을 가중 점수표로 비교해 ADR로 마무리한다."
+  },
+  {
+   "title": "구조 그리기와 리뷰",
+   "time": "2주",
+   "goal": "C4 그림과 arc42 목차로 설계 문서를 쓰고, 남의 문서를 기준표로 리뷰할 수 있다.",
+   "resources": [
+    "c4",
+    "arc42",
+    "iso42010",
+    "google-review"
+   ],
+   "task": "2단계 서비스를 C4 맥락·컨테이너 그림 두 장과 arc42 문서로 만들고, 이해관계자·관심사·위험 항목으로 된 리뷰 점검표 10줄을 만들어 스스로 리뷰한다."
+  },
+  {
+   "title": "품질을 숫자로",
+   "time": "2~3주",
+   "goal": "분위수·네 가지 신호·USE 방법으로 성능 문제를 찾고 목표선을 정할 수 있다.",
+   "resources": [
+    "sre-monitoring",
+    "use-method",
+    "tlcl",
+    "aws-waf"
+   ],
+   "task": "작은 API를 리눅스 컨테이너에 띄우고 부하 도구로 1배·5배·10배 부하를 준 뒤 p50·p95·p99와 CPU·메모리 포화를 표로 기록하고, 처음 막힌 곳과 고칠 방안을 한 장으로 쓴다."
+  },
+  {
+   "title": "통합과 가르치기",
+   "time": "계속",
+   "goal": "시스템 간 인터페이스를 설계하고, 그 내용을 30분 강의로 가르칠 수 있다.",
+   "resources": [
+    "msa-patterns",
+    "eip",
+    "strangler",
+    "swe-google",
+    "evo-arch"
+   ],
+   "task": "모놀리식 예제 앱 하나를 스트랭글러 피그로 두 서비스로 나누는 계획(경로·메시지 형식·중복 처리)을 세우고, 그 과정을 슬라이드 10장짜리 사내 교육 자료로 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 1인 평균 급여 **1억 3,100만원**(2025), 공공데이터 집계 평균 **약 7,708만원** — 기준이 달라 차이가 크고, 이 자리는 경력 10년 이상이라 개인 협의로 정해진다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다. 생산직을 포함한 전 직원 값 [20]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일이 적혀 있지 않다 [21]"
+   },
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 초봉. 이 자리는 경력 10년 이상이라 해당하지 않는다 [21]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값 [20]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 달라 섞어 비교하지 않는다. 경력 10년 이상 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "임신기 근로시간 단축",
+    "detail": "임신 12주 이내·36주 이상 하루 2시간 단축"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [22]. 공고에는 복지 칸이 없고 [1], 주택·학자금·차량 구입 지원 같은 금액 항목은 공식 자료에서 확인하지 못해 뺐다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 양재 본사(현대기아자동차빌딩)",
+  "address": "서울특별시 서초구 헌릉로 12 (양재동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%ED%97%8C%EB%A6%89%EB%A1%9C%2012",
+  "near": "신분당선 양재시민의숲역 근처 {추론}",
+  "note": "공고의 근무지는 '양재본사'이고 [1], 지속가능성 보고서의 본사 소재지가 헌릉로 12다 [22]. 사내 테크톡도 이 본사 대강당에서 열렸다 [5]."
+ }
+}

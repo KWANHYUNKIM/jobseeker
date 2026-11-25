@@ -155,6 +155,7 @@
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
   "wanted-385521": "hyundai-autoever-smart-tag-service-engineer",
   "saramin-55604373": "hyundai-energy-tech-market-research",
+  "ats-hkmc:hyundai:2026N2420": "hyundai-ict-sw-architect",
   "ats-hkmc:hyundai:2026N2366": "hyundai-lunar-rover-autonomy-sw",
   "saramin-55604144": "hyundai-manufacturing-vision-ai-ops",
   "wanted-398824": "hyundai-manufacturing-vision-ai-ops",
@@ -166,6 +167,8 @@
   "wanted-393817": "hyundai-sdv-controller-sw-integration",
   "ats-hkmc:hyundai:2026N298": "hyundai-shucle-data-engineer",
   "wanted-387545": "hyundai-shucle-data-engineer",
+  "ats-hkmc:hyundai:2026N2224": "hyundai-shucle-map-software-engineer",
+  "wanted-387543": "hyundai-shucle-map-software-engineer",
   "ats-hkmc:hyundai:2026N2386": "hyundai-shucle-platform-ux-planning",
   "ats-hkmc:hyundai:2026N2294": "hyundai-shucle-service-ux-planning",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
@@ -1779,6 +1782,16 @@
    "lines": 29
   },
   {
+   "id": "hyundai-ict-sw-architect",
+   "company": "현대자동차",
+   "role": "SW Architect",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2420"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
+  },
+  {
    "id": "hyundai-lunar-rover-autonomy-sw",
    "company": "현대자동차",
    "role": "달 탐사 모빌리티 자율주행 소프트웨어 엔지니어",
@@ -1860,6 +1873,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 25
+  },
+  {
+   "id": "hyundai-shucle-map-software-engineer",
+   "company": "현대자동차",
+   "role": "모빌리티 서비스 Software Engineer for Map (셔클)",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2224",
+    "wanted-387543"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
   },
   {
    "id": "hyundai-shucle-platform-ux-planning",
