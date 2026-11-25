@@ -1,0 +1,946 @@
+{
+ "id": "musinsa-data-scientist-personalization",
+ "company": "주식회사 무신사",
+ "role": "Data Scientist",
+ "team": "Personalization팀",
+ "jobs": [
+  "ats-greeting:musinsa:240567"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사·29CM·글로벌 화면에서 **누구에게 무엇을 먼저 보여 줄지** 정하는 추천 모델을 만들고, 로그 → 피처 → 학습 → 서빙 고리를 직접 운영합니다.[1]",
+  "env": "PyTorch·Kafka·Redis·BigQuery·Databricks·Kubernetes 위에서, 데이터 엔지니어·ML 엔지니어·백엔드와 한 팀으로 일합니다.[1] 회사는 이미 홈 배너·푸시·속성 추천을 A/B 수치로 공개했습니다.[3][4][7]",
+  "oneline": "추천 모델을 '만드는' 사람이 아니라 '서비스 지표를 책임지는' 시니어 DS. 콜드 스타트와 실시간이 우대 포인트입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "무신사, 29CM 등 팀무신사의 다양한 플랫폼을 대상으로 개인화 추천 모델을 개발하고 실제 서비스에 적용·운영합니다.",
+   "short": "무신사·29CM 화면의 '나에게 맞는 순서'를 정하는 모델을 만들고, 실제 화면에 올려 계속 돌보는 일.",
+   "why": "무신사 홈 맨 위 배너는 트래픽의 약 97%가 보고 전체 클릭의 35%가 그곳에서 나온다고 팀이 밝혔습니다 — 무엇을 먼저 보여 주느냐가 곧 매출입니다.[2][3] 팀은 추천 하나가 아니라 메시지·추천/검색·배너/광고·페르소나까지 여러 화면에 개인화를 붙인다고 소개합니다.[1]",
+   "actually": {
+    "intro": "회사가 공개한 사례들입니다.",
+    "items": [
+     "**홈 배너 개인화** — 클릭률만 보던 밴딧(MAB, 여러 후보를 번갈아 내며 잘 되는 쪽에 몰아주는 방식)을 클릭 예측 모델(DeepFM·Two-Tower)로 바꿨고, 스토어마다 다른 모델을 골랐다(메인 DeepFM, 전문관 Two-Tower).[3][13]",
+     "**속성 기반 추천** — 상품에 감성 속성(무드·스타일 같은 것)을 붙여 추천에 쓰자 '최근 본 상품' 방식보다 CTR이 41%, 인당 상품 클릭이 54% 올랐다고 밝혔다.[7]",
+     "**개인화 푸시** — 공통 유저 임베딩으로 푸시 점수를 매겨 DeepFM 대비 CTR +21.3%, 발송은 26% 줄이고 발송당 거래액은 57% 늘렸다.[4]",
+     "**29CM 푸시** — 최근 본 브랜드·좋아요 같은 행동을 우선순위대로 골라 문구를 만들어 푸시 클릭률을 6배로 올렸다고 팀원이 인터뷰에서 말했다.[9]",
+     "**이미지 기반 유사 상품** — 스냅·인플루언서 사진에서 옷을 찾아 임베딩(사진을 숫자 벡터로 바꾼 것)으로 비슷한 상품을 잇는 사례가 AWS 블로그에 소개됐다.[8]"
+    ]
+   },
+   "how_far": "'적용·운영'까지가 이 자리 몫입니다 — 팀은 데이터 엔지니어·DS·ML 엔지니어·백엔드가 한 팀에서 end-to-end로 일한다고 적었습니다.[1] 모델만 넘기는 게 아니라 A/B 결과로 지표를 책임지는 수준입니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    8,
+    9,
+    13
+   ],
+   "study": [
+    "google-recsys",
+    "bischof",
+    "deepfm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 사용자 행동 로그를 기반으로 추천 모델에 필요한 피처 파이프라인과 지속적인 모델 개선을 위한 피드백 루프를 설계·고도화합니다.",
+   "short": "클릭·구매 로그를 모델이 먹을 숫자(피처)로 바꾸고, 모델 결과가 다시 학습 데이터로 돌아오는 고리를 만드는 일.",
+   "why": "홈 배너 모델은 **매시간 최근 3시간 로그로** 이어서 학습(continual learning)해 CTR을 더 올렸다고 밝혔습니다.[3] 피드백 루프가 빠를수록 신상·이벤트 배너처럼 금방 바뀌는 대상에 맞출 수 있습니다.[3]",
+   "flows": [
+    {
+     "caption": "로그에서 다시 학습까지 — 보통 이런 고리 {추론}[17]",
+     "steps": [
+      "행동 로그 · 노출·클릭·구매(Kafka)",
+      "집계 · 유저×브랜드 최근 클릭 수 등",
+      "학습 데이터 · 노출 시점 기준으로 피처를 붙임",
+      "학습 · 매시간/매주",
+      "서빙 · 점수 → 화면 순서",
+      "새 로그 · 다시 첫 단계로"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**노출 시점 피처** — 학습 행마다 '그 노출 순간까지' 로그로만 피처를 만든다. 나중 클릭이 섞이면 오프라인 점수만 좋고 실서비스에선 떨어진다(학습/서빙 어긋남).[17][31]",
+     "**주기 나누기** — 무거운 전체 재학습은 주 1회, 가벼운 갱신은 매시간처럼 나눈다. 무신사 푸시 임베딩은 주 1회 전체 재학습, 배너는 매시간 이어 학습이다.[3][4]",
+     "**학습률 조절** — 배너 모델은 주간 피크엔 학습률을 최대 5배, 밤엔 2배로 활동량에 맞췄다.[3]",
+     "**노출 편향** — 위에 보여 준 것만 클릭을 받으므로 로그가 모델 자신의 선택에 치우친다. 탐색 노출·자리 보정으로 고리가 좁아지는 것을 막는다.[24][32]",
+     "**공통 피처 재사용** — 회사는 한 화면에서 배운 고객 표현을 다른 화면(예: 광고 → 푸시)에서 다시 쓰도록 단계별 결과를 저장한다고 밝혔다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "노출 시점 기준 피처 — 미래 로그가 섞이면 숫자가 달라진다",
+     "body": "11월 3일 12시 노출 행의 '브랜드 A 클릭 수'는 그 전 2건이어야 합니다. 로그 전체로 세면 노출 뒤 클릭까지 들어가 3이 됩니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "# 피처 파이프라인: 노출 '그 시점'까지의 로그만으로 피처를 만든다(미래 누수 방지)\nfrom datetime import datetime as dt\n\nclicks = [  # (유저, 브랜드, 클릭 시각)\n    (\"u1\", \"A\", dt(2026, 11, 1, 10)),\n    (\"u1\", \"A\", dt(2026, 11, 2, 9)),\n    (\"u1\", \"A\", dt(2026, 11, 3, 20)),  # 노출 뒤의 클릭\n]\nimpression = (\"u1\", \"A\", dt(2026, 11, 3, 12))  # 학습 행 하나\n\ndef brand_clicks(user, brand, until):\n    return sum(1 for u, b, t in clicks if u == user and b == brand and t < until)\n\nu, b, t = impression\nprint(\"leaky feature (all logs):\", sum(1 for x in clicks if x[0] == u and x[1] == b))\nprint(\"point-in-time feature   :\", brand_clicks(u, b, t))\n# leaky feature (all logs): 3\n# point-in-time feature   : 2"
+    }
+   ],
+   "how_far": "로그 수집기·Kafka 자체는 데이터 엔지니어가 맡고, 이 자리는 **어떤 피처를 어떤 주기로 만들지, 학습 데이터를 어떻게 자를지**를 정하고 검증합니다.[1] {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    6,
+    17,
+    24,
+    31,
+    32
+   ],
+   "study": [
+    "dmls-ko",
+    "rules-of-ml",
+    "feast-pit"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 서비스와 비즈니스 요구사항을 반영할 수 있도록 추천 시스템의 아키텍처와 인프라를 설계·개선하고, 안정적으로 확장할 수 있는 구조를 구축합니다.",
+   "short": "화면·캠페인이 늘 때마다 모델을 새로 짜지 않도록, 후보 고르기·점수·정책을 나눈 공통 구조를 만드는 일.",
+   "why": "무신사는 추천·검색(NeXA)과 푸시 자리·쿠폰 예산 배분(DeciML)을 **이해(표현·피처) → 가치 매기기(점수) → 고르기(제약 안에서 선택)** 세 단계로 똑같이 나눠 템플릿·서빙 규칙을 공유한다고 밝혔습니다.[6] 캠페인 쪽도 콘텐츠마다 어댑터를 둬 한 구조로 모았습니다.[5]",
+   "flows": [
+    {
+     "caption": "무신사 홈 배너 추천의 단계[3]",
+     "steps": [
+      "배너 표현 · 텍스트·이미지·연결 상품으로 그래프 임베딩",
+      "클릭 예측 · DeepFM·Two-Tower(64차원)",
+      "점수 · 데이터 많은 유저는 개인 점수, 신규는 세그먼트",
+      "정책 덧씌우기 · 캠페인·긴급 변경 실시간 반영",
+      "상위 N개 노출"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**후보 → 랭킹 2단** — 수십만 상품을 다 점수 매길 수 없어 빠른 모델로 수백 개를 먼저 고르고 무거운 모델로 줄 세운다. 가장 많이 인용되는 구조다.[12][23]",
+     "**Two-Tower** — 유저 탑과 상품 탑을 따로 계산해 내적만 하면 되므로 상품 벡터를 미리 구워 두고 벡터 검색으로 후보를 뽑는다.[14]",
+     "**정책 층 분리** — 동의·기간 같은 필수 조건을 먼저 거르고, 모델 점수, 그다음 우선순위·빈도 상한·겹침 조절 순서로 적용한다.[5]",
+     "**서빙 형태 셋** — 회사는 실시간 API·배치 작업·비동기 작업자로 나눠 서빙한다고 다음 글을 예고했다.[6]",
+     "**도구** — 공고 스택은 Kubernetes·Argo·Airflow·Databricks, 서빙은 Triton·Ray·MLflow와 사내 A/B 플랫폼이다.[1] 같은 회사 MLE 공고는 SageMaker 엔드포인트와 EKS 위 FastAPI 모델 서버를 적었다.[10]"
+    ]
+   },
+   "how_far": "인프라를 직접 깔기보다, **새 화면이 붙을 때 무엇을 공통으로 쓰고 무엇만 바꾸나**를 정하는 설계가 핵심입니다. 7년 이상 자리라 이 판단을 맡깁니다.[1] {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    6,
+    10,
+    12,
+    14,
+    23
+   ],
+   "study": [
+    "youtube-dnn",
+    "two-tower",
+    "bischof"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "최신 AI/ML 기술을 탐색하고 추천 시스템에 적용하여 모델과 서비스의 품질을 지속적으로 고도화합니다.",
+   "short": "그래프·LLM 같은 새 방법을 시험해 보고, A/B로 이길 때만 실제 추천에 넣는 일.",
+   "why": "공고는 LLM·그래프 기반 추천을 직접 들었습니다.[1] 회사는 이미 배너 표현에 그래프 신경망(GraphSAGE 등)을, 푸시에 지식 그래프 임베딩(TransE)을 썼다고 밝혔습니다.[3][4]",
+   "actually": {
+    "items": [
+     "**그래프 임베딩** — 유저·브랜드·카테고리 등 12종 개체와 23종 관계, 약 1억 5천만 개 연결로 128차원 공통 유저 표현(Layer 0)을 만들었다.[4][16]",
+     "**모델 교체 이유를 적기** — 배너는 평균만 내던 PinSAGE식 방법이 새 배너를 못 다뤄 다른 그래프 모델로 바꿨다고 밝혔다.[3][15]",
+     "**LLM** — 회사는 ChatGPT 안 상품 추천 앱과 에이전트 기반 추천을 시연했다.[11]",
+     "**다음 과제** — 배너 팀은 실시간 서빙 전환과 CTR·거래액을 함께 보는 멀티태스크 학습을 다음 일로 꼽았다.[3]"
+    ]
+   },
+   "how_far": "'최신'을 쓰는 게 목적이 아니라 **기존 모델 대비 온라인 지표로 이겼나**가 기준입니다 — 회사 글들은 모두 기존 방식 대비 A/B 수치로 끝납니다.[3][4][7]",
+   "refs": [
+    1,
+    3,
+    4,
+    7,
+    11,
+    15,
+    16
+   ],
+   "study": [
+    "pinsage",
+    "transe",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "추천, 랭킹, 검색 등 ML 모델 및 서비스 개발 경험이 7년 이상이거나 이에 준하는 역량을 보유하신 분",
+   "short": "추천·랭킹·검색 모델을 만들어 실서비스에 붙인 경력이 오래 쌓인 사람 — 연수보다 '서비스까지'가 핵심.",
+   "why": "업무가 모델 하나가 아니라 여러 플랫폼의 구조 설계까지 가기 때문입니다.[1] 같은 회사 검색·추천 MLE 공고도 7년 이상에 랭킹·추천·검색 프로덕션 경험을 요구합니다.[10]",
+   "how_far": "'이에 준하는 역량'이 붙어 있어 연수가 모자라도 **서비스에 올려 지표를 바꾼 사례**로 대신할 수 있습니다.[1] 이력서 안내도 문제 정의·전략·성과와 프로젝트별 기여도를 쓰라고 합니다.[1]",
+   "refs": [
+    1,
+    10
+   ],
+   "study": [
+    "bischof",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 사용자 행동 로그를 활용하여 ML 모델을 개발하고, 실제 프로덕션 환경에 적용·운영해보신 분",
+   "short": "수천만 줄 클릭 로그로 학습하고, 배포 뒤 성능이 떨어지는 것까지 다뤄 본 경험.",
+   "why": "29CM 푸시 사례만 해도 매일 약 350만 행을 BigQuery에서 뽑아 Redis에 미리 모아 두는 작업이 있었습니다.[9] 로그가 크면 학습 데이터 자르기·편향·서빙 지연이 모두 문제가 됩니다.[17]",
+   "actually": {
+    "items": [
+     "**희소 사용자 거르기** — 무신사는 활동이 적은 유저를 학습에서 빼 그래프를 줄였다고 밝혔다.[4]",
+     "**배포 뒤 감시** — 분포가 바뀌면(시즌·세일) 모델이 낡는다. 그래서 배너는 매시간 이어 학습한다.[3][22]",
+     "**미리 계산 vs 실시간** — 하루 한 번 점수를 구워 Redis에 넣을지, 요청마다 계산할지 정한다.[9][12]",
+     "**오프라인 ≠ 온라인** — 오프라인 지표가 좋아도 A/B에서 지는 일이 흔해 둘 다 본다.[21]"
+    ]
+   },
+   "how_far": "공고의 기술 스택(PyTorch·Kafka·Redis·BigQuery·Databricks)으로 학습과 서빙을 이어 본 경험이면 됩니다.[1] 데이터 크기보다 **운영 중 문제를 찾고 고친 이야기**가 면접에서 중요할 것입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    9,
+    12,
+    17,
+    21,
+    22
+   ],
+   "study": [
+    "dmls-ko",
+    "rules-of-ml",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 등 클라우드 환경을 기반으로 서비스를 구축하고 운영해보신 분",
+   "short": "모델 학습·서빙을 클라우드(AWS·Kubernetes) 위에서 직접 띄우고 돌려 본 경험.",
+   "why": "공고 인프라가 AWS·Kubernetes·Docker이고, 같은 회사 MLE 공고는 SageMaker 엔드포인트와 EKS(AWS의 쿠버네티스)를 적었습니다.[1][10] AWS 블로그의 무신사 사례도 AWS 서비스 위에서 만든 것입니다.[8]",
+   "how_far": "클러스터 운영은 플랫폼 팀 몫일 가능성이 크고, 이 자리는 **모델 컨테이너를 만들어 배포하고 비용·지연을 보는** 수준이면 됩니다. {추론}",
+   "refs": [
+    1,
+    8,
+    10
+   ],
+   "study": [
+    "k8s-internal",
+    "triton-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "복잡한 비즈니스 및 서비스 요구사항을 구조화하고, 대규모 추천 시스템의 설계와 구축을 주도해보신 분",
+   "short": "'이 화면엔 이 캠페인을 먼저' 같은 요구를 모델·정책·제약으로 나눠 설계를 이끌어 본 경험.",
+   "why": "무신사 배너 추천은 모델 점수 위에 캠페인·긴급 변경을 실시간으로 덧씌우는 정책 단계를 따로 뒀습니다.[3] 캠페인 엔진도 필수 조건 → 점수 → 우선순위·빈도 상한 순으로 요구를 층으로 나눴습니다.[5]",
+   "actually": {
+    "items": [
+     "**한 달 약 1,000개 CRM 캠페인**을 사람이 개당 약 2시간씩 세팅하던 것을 한 구조로 바꿨다 — 요구가 많을수록 구조화가 일이다.[5]",
+     "**목표가 여럿** — 클릭만 보면 싼 상품이 위로 온다. 배너 팀이 CTR과 거래액을 같이 보려는 이유다.[3][30]"
+    ]
+   },
+   "refs": [
+    3,
+    5,
+    30
+   ],
+   "study": [
+    "bischof",
+    "youtube-dnn"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Flink, Kafka 등을 활용한 실시간 데이터 스트리밍 파이프라인을 구축하거나 운영해보신 분",
+   "short": "방금 본 상품이 몇 초 안에 추천에 반영되도록, 로그를 흘리며 바로 집계하는 파이프라인 경험.",
+   "why": "공고는 피드백 루프를 '실시간으로 반영'하겠다고 했고, 스택에 Kafka·Redis가 있습니다.[1] 배너 팀도 실시간 서빙 전환을 다음 과제로 꼽았습니다.[3]",
+   "actually": {
+    "items": [
+     "**Kafka** — 클릭 이벤트를 파티션 순서대로 쌓아 여러 소비자가 나눠 읽는다.[18]",
+     "**Flink** — 이벤트를 흘리며 '최근 30분 클릭 브랜드' 같은 상태를 들고 집계하고, 장애가 나도 체크포인트로 이어 간다.[19]",
+     "**결과 놓기** — 집계를 Redis 같은 빠른 저장소에 써 두고 서빙이 읽는다.[1][9]"
+    ]
+   },
+   "how_far": "우대사항이라 직접 운영해 봤으면 좋고, 아니면 **배치 피처와 실시간 피처가 같은 값을 내게 맞추는 문제**를 설명할 수 있으면 됩니다.[17] {추론}",
+   "refs": [
+    1,
+    3,
+    9,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "internal-kafka",
+    "flink-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 트래픽 환경에서 모델 서빙 성능을 최적화하고 장애를 대응해보신 분",
+   "short": "트래픽 대부분이 지나는 화면에서 모델이 느려지거나 죽지 않게 지연·처리량을 다뤄 본 경험.",
+   "why": "홈 배너는 무신사 트래픽의 약 97%가 봅니다 — 추천 서버가 느리면 첫 화면이 느립니다.[3] 공고 서빙 스택에 Triton Inference Server·Ray가 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**요청 묶기(동적 배칭)** — Triton은 짧은 시간 들어온 요청을 묶어 GPU 한 번에 계산한다.[20]",
+     "**미리 굽기** — 상품 벡터·인기 목록을 미리 계산해 두면 요청 때 할 일이 준다.[12][14]",
+     "**물러설 자리** — 모델이 실패하면 세그먼트·인기순 같은 기본 목록을 낸다 {추론}. 배너 팀도 데이터 적은 유저엔 세그먼트 추천을 낸다.[3]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    12,
+    14,
+    20
+   ],
+   "study": [
+    "triton-doc",
+    "bischof"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "콜드 스타트 등 실제 서비스 환경에서 발생하는 문제를 해결하며 추천 모델을 최적화해보신 분",
+   "short": "기록이 없는 새 유저·새 상품에도 엉뚱하지 않은 추천을 내 본 경험.",
+   "why": "패션은 신상과 기획전이 계속 바뀌어 늘 '처음 보는 것'이 많습니다 {추론}. 무신사는 배너에서 새 배너를 못 다루던 모델을 바꿨고, 신규 유저는 세그먼트로 받습니다.[3]",
+   "actually": {
+    "items": [
+     "**새 상품** — 행동이 없으면 속성(브랜드·카테고리·무드) 임베딩을 모아 자리를 잡는다. 무신사 푸시의 Layer 0가 이렇게 한다.[4]",
+     "**새 유저** — 세그먼트(성별·연령대 같은 묶음) 추천으로 시작하고 데이터가 쌓이면 개인 점수로 넘어간다.[3]",
+     "**탐색** — 밴딧처럼 일부를 일부러 새 것에 나눠 반응을 모은다.[24]",
+     "**세션** — 로그인 전 방금 본 상품 순서만으로도 다음 상품을 맞힐 수 있다.[33]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "새 상품을 속성 평균으로 놓고 유저와 점수 매기기",
+     "body": "학습된 속성 벡터 셋(브랜드·카테고리·무드)의 평균이 새 상품 벡터가 되고, 유저 벡터와 내적하면 점수가 나옵니다. 숫자는 가상, 출력은 직접 돌린 것입니다.",
+     "lang": "python",
+     "code": "# 콜드 스타트: 행동 기록이 없는 새 상품은 속성 임베딩의 평균으로 자리를 잡는다\nattr = {  # 이미 학습된 속성 임베딩(가상, 3차원)\n    \"brand:A\": [0.9, 0.1, 0.0],\n    \"cat:jacket\": [0.2, 0.8, 0.1],\n    \"mood:street\": [0.7, 0.0, 0.6],\n}\nuser = [0.8, 0.3, 0.5]  # 유저 임베딩(가상)\n\ndef mean(vs):\n    return [round(sum(x) / len(vs), 3) for x in zip(*vs)]\n\ndef dot(a, b):\n    return round(sum(x * y for x, y in zip(a, b)), 3)\n\nnew_item = mean([attr[\"brand:A\"], attr[\"cat:jacket\"], attr[\"mood:street\"]])\nprint(\"new item vector:\", new_item)\nprint(\"score(user, new item):\", dot(user, new_item))\n# new item vector: [0.6, 0.3, 0.233]\n# score(user, new item): 0.686"
+    }
+   ],
+   "refs": [
+    3,
+    4,
+    24,
+    33
+   ],
+   "study": [
+    "ts-tutorial",
+    "transe",
+    "gru4rec"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "패션·커머스 도메인에 대한 높은 관심이 있거나 관련 서비스 경험이 있으신 분",
+   "short": "옷은 취향·사이즈·시즌이 추천을 좌우해서, 그 감을 아는 사람이 피처를 더 잘 고른다.",
+   "why": "무신사는 감성 속성을 추천에 넣어 CTR을 크게 올렸고[7], 29CM 실험에선 고객이 가장 원하는 정보가 '브랜드'였다고 했습니다.[9] 도메인 감이 곧 피처입니다 {추론}.",
+   "refs": [
+    7,
+    9
+   ],
+   "study": [
+    "google-recsys"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "모델 점수보다 A/B 결과를 먼저 묻는 사람[3][4]",
+   "패션·브랜드 취향을 피처로 바꾸는 게 재밌는 사람[7][9]",
+   "모델부터 서빙·파이프라인까지 한 팀에서 끝내고 싶은 사람[1]"
+  ],
+  "hard": [
+   "경력 7년 이상 기준이라 서비스 적용 사례가 없으면 서류부터 어렵다[1]",
+   "여러 플랫폼·캠페인 정책이 얽혀 모델만 다듬을 수는 없다[5]",
+   "인터뷰가 세 차례다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "밴딧에서 클릭 예측 모델로 바꾸면 무엇이 좋아지고 무엇을 잃나요?",
+   "a": "무신사 홈 배너가 실제로 한 전환.[3][24]"
+  },
+  {
+   "q": "행동 기록이 전혀 없는 새 상품의 점수는 어떻게 내겠어요?",
+   "a": "공통 임베딩의 속성 집계 방식과 세그먼트 대체.[3][4]"
+  },
+  {
+   "q": "오프라인 AUC는 올랐는데 A/B에서 졌습니다. 무엇부터 보나요?",
+   "a": "누수·학습/서빙 어긋남·노출 편향.[17][21]"
+  },
+  {
+   "q": "매시간 이어 학습하면 어떤 위험이 있고 어떻게 막나요?",
+   "a": "배너 팀의 3시간 창·학습률 조절.[3]"
+  },
+  {
+   "q": "추천 서버가 느려졌을 때 첫 화면을 어떻게 지키나요?",
+   "a": "트래픽 97%가 보는 자리 — 배칭·미리 굽기·대체 목록.[3][20]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 · Data Scientist (Personalization)",
+   "url": "https://www.musinsacareers.com/ko/o/240567",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "팀 소개·업무·기술 스택·요건·지원 서류·전형"
+  },
+  {
+   "n": 2,
+   "title": "무신사 테크 · 당신이 보는 첫 화면은 어떻게 정해질까 — 홈 배너 개인화 추천 이야기",
+   "url": "https://techblog.musinsa.com/%EB%8B%B9%EC%8B%A0%EC%9D%B4-%EB%B3%B4%EB%8A%94-%EC%B2%AB-%ED%99%94%EB%A9%B4%EC%9D%80-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%A0%95%ED%95%B4%EC%A7%88%EA%B9%8C-%EB%AC%B4%EC%8B%A0%EC%82%AC-%ED%99%88-%EB%B0%B0%EB%84%88-%EA%B0%9C%EC%9D%B8%ED%99%94-%EC%B6%94%EC%B2%9C-%EC%9D%B4%EC%95%BC%EA%B8%B0-33b96721db54",
+   "kind": "company",
+   "date": "2025-06",
+   "note": "원문은 403으로 직접 못 읽음 — 내용은 [3] 요약으로 확인"
+  },
+  {
+   "n": 3,
+   "title": "GeekNews · 무신사 홈 배너 개인화 추천 이야기(요약)",
+   "url": "https://news.hada.io/topic?id=21282",
+   "kind": "community",
+   "date": "2025-06-05",
+   "note": "[2]의 요약 — MAB 대비 Two-Tower +11.2%·DeepFM +16.1%, 매시간 최근 3시간 로그 이어 학습, 신규 유저 세그먼트, 트래픽 97%"
+  },
+  {
+   "n": 4,
+   "title": "무신사 테크 · 통합임베딩으로 개인화 푸시 CTR +21.3%를 만든 과정",
+   "url": "https://techblog.musinsa.com/%ED%86%B5%ED%95%A9%EC%9E%84%EB%B2%A0%EB%94%A9%EC%9C%BC%EB%A1%9C-%EA%B0%9C%EC%9D%B8%ED%99%94-%ED%91%B8%EC%8B%9C-ctr-21-3-%EB%A5%BC-%EB%A7%8C%EB%93%A0-%EA%B3%BC%EC%A0%95-08bd63623aff",
+   "kind": "company",
+   "date": "2026-08-31",
+   "note": "원문 403 — 블로그 RSS 피드로 내용 확인(TransE 128차원, 개체 12종·관계 23종·연결 약 1.5억, 콜드 개체는 속성 집계, DeepFM 대비 A/B)"
+  },
+  {
+   "n": 5,
+   "title": "무신사 테크 · 캠페인 메타엔진 — 무진장 많은 콘텐츠를 하나의 캠페인 구조로 통합하다",
+   "url": "https://techblog.musinsa.com/%EC%BA%A0%ED%8E%98%EC%9D%B8-%EB%A9%94%ED%83%80%EC%97%94%EC%A7%84-%EB%AC%B4%EC%A7%84%EC%9E%A5-%EB%A7%8E%EC%9D%80-%EC%BD%98%ED%85%90%EC%B8%A0%EB%A5%BC-%ED%95%98%EB%82%98%EC%9D%98-%EC%BA%A0%ED%8E%98%EC%9D%B8-%EA%B5%AC%EC%A1%B0%EB%A1%9C-%ED%86%B5%ED%95%A9%ED%95%98%EB%8B%A4-a29ece6ae6d9",
+   "kind": "company",
+   "date": "2026-11-09",
+   "note": "개인화 플랫폼 MATCH 의 캠페인 층 — RSS 본문으로 확인"
+  },
+  {
+   "n": 6,
+   "title": "무신사 테크 · 예측을 넘어 결정과 발견으로: DeciML과 NeXA를 만든 이유",
+   "url": "https://techblog.musinsa.com/%EC%98%88%EC%B8%A1%EC%9D%84-%EB%84%98%EC%96%B4-%EA%B2%B0%EC%A0%95%EA%B3%BC-%EB%B0%9C%EA%B2%AC%EC%9C%BC%EB%A1%9C-deciml%EA%B3%BC-nexa%EB%A5%BC-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%9C%A0-9313debb2a4f",
+   "kind": "company",
+   "date": "2026-11-03",
+   "note": "이해 → 가치 매기기 → 고르기 3단계, RSS 본문으로 확인"
+  },
+  {
+   "n": 7,
+   "title": "무신사 테크 · 속성을 활용한 추천 고도화 Part 2 — 무신사가 개인화 추천을 하는 방법",
+   "url": "https://techblog.musinsa.com/%EC%86%8D%EC%84%B1%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%B6%94%EC%B2%9C-%EA%B3%A0%EB%8F%84%ED%99%94-part-2-%EB%AC%B4%EC%8B%A0%EC%82%AC%EA%B0%80-%EA%B0%9C%EC%9D%B8%ED%99%94-%EC%B6%94%EC%B2%9C%EC%9D%84-%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95-71f7aeb1dc5d",
+   "kind": "company",
+   "note": "원문 403 — 검색 요약으로만 확인(CTR +41%, 인당 상품 클릭 +54%)"
+  },
+  {
+   "n": 8,
+   "title": "AWS 기술 블로그 · 무신사의 AI 기반 상품 추천 및 검색 시스템 구현 사례",
+   "url": "https://aws.amazon.com/ko/blogs/tech/musinsa-ai-base-product-recommendation/",
+   "kind": "company",
+   "note": "본문을 직접 열지 못해 검색 요약(스냅·인플루언서 이미지, 패션 객체 탐지, 임베딩 유사도)만 인용"
+  },
+  {
+   "n": 9,
+   "title": "요즘IT · 푸시 클릭률 6배 — 29CM 개인화 푸시 프로젝트",
+   "url": "https://yozm.wishket.com/magazine/detail/2362",
+   "kind": "news",
+   "date": "2023-12-13",
+   "note": "29CM PO·마케터·백엔드 개발자 인터뷰. 브랜드 신호 우선, 하루 약 350만 행 BigQuery → Redis"
+  },
+  {
+   "n": 10,
+   "title": "리멤버 · 무신사 Machine Learning Engineer (Search & Recommendation)",
+   "url": "https://career.rememberapp.co.kr/job/posting/302787",
+   "kind": "posting",
+   "note": "같은 회사 검색·추천 MLE 공고 — SageMaker·EKS FastAPI 서빙, 라이브 코딩·시스템 설계 면접"
+  },
+  {
+   "n": 11,
+   "title": "무신사 뉴스룸 · 전사 AI 리터러시 강화",
+   "url": "https://about.musinsa.com/newsroom/2025-1120",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "개인화 추천에 AI 활용 확대, ChatGPT 안 추천 앱 시연, ML 채용"
+  },
+  {
+   "n": 12,
+   "title": "Covington 외 · Deep Neural Networks for YouTube Recommendations (RecSys 2016)",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "kind": "reference",
+   "note": "다른 회사 — 후보 생성 + 랭킹 2단 구조"
+  },
+  {
+   "n": 13,
+   "title": "Guo 외 · DeepFM: A Factorization-Machine based Neural Network for CTR Prediction (2017)",
+   "url": "https://arxiv.org/abs/1703.04247",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Yi 외 · Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations (RecSys 2019)",
+   "url": "https://research.google/pubs/sampling-bias-corrected-neural-modeling-for-large-corpus-item-recommendations/",
+   "kind": "reference",
+   "note": "다른 회사(YouTube) — Two-Tower 후보 생성"
+  },
+  {
+   "n": 15,
+   "title": "Ying 외 · Graph Convolutional Neural Networks for Web-Scale Recommender Systems (PinSage, KDD 2018)",
+   "url": "https://arxiv.org/abs/1806.01973",
+   "kind": "reference",
+   "note": "다른 회사(Pinterest)"
+  },
+  {
+   "n": 16,
+   "title": "Bordes 외 · Translating Embeddings for Modeling Multi-relational Data (TransE, NeurIPS 2013)",
+   "url": "https://proceedings.neurips.cc/paper/2013/hash/1cecc7a77928ca8133fa24680a88d2f9-Abstract.html",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Google · Rules of Machine Learning",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "kind": "reference",
+   "note": "학습/서빙 어긋남·서빙 때 쓴 피처를 기록해 학습에 쓰기"
+  },
+  {
+   "n": 18,
+   "title": "Apache Kafka Documentation",
+   "url": "https://kafka.apache.org/documentation/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Apache Flink Documentation — Stateful Stream Processing·Checkpointing",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "NVIDIA Triton Inference Server — User Guide",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+   "kind": "reference",
+   "note": "동적 배칭·여러 모델 동시 서빙"
+  },
+  {
+   "n": 21,
+   "title": "론 코하비 외 · 신뢰할 수 있는 온라인 종합 대조 실험 (이기홍·김기영 옮김)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "kind": "reference",
+   "note": "실험 단위·표본·지표"
+  },
+  {
+   "n": 22,
+   "title": "칩 후옌 · 머신러닝 시스템 설계 (한빛미디어, 2023)",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "kind": "reference",
+   "note": "데이터 분포 변화·배포 뒤 감시"
+  },
+  {
+   "n": 23,
+   "title": "Google for Developers · 추천 시스템 과정",
+   "url": "https://developers.google.com/machine-learning/recommendation?hl=ko",
+   "kind": "reference",
+   "note": "후보 생성·점수·재순위 개요(한국어)"
+  },
+  {
+   "n": 24,
+   "title": "Russo 외 · A Tutorial on Thompson Sampling (2017)",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "kind": "reference",
+   "note": "밴딧 — 탐색과 활용"
+  },
+  {
+   "n": 25,
+   "title": "무신사 채용 · 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company",
+   "note": "같은 회사 다른 풀이에서 2026-11 확인한 내용"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 · 무신사 기업정보",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "공공데이터 집계 — 같은 회사 다른 풀이에서 옮긴 값(페이지 직접 열람은 403)"
+  },
+  {
+   "n": 27,
+   "title": "원티드 · 무신사 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "평균연봉 6,082만원 표기, 기준 설명 없음"
+  },
+  {
+   "n": 28,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company",
+   "note": "회사 주소 표기"
+  },
+  {
+   "n": 29,
+   "title": "일간스포츠 · 무신사, 성수동 캠퍼스 N1 으로 본사 이전",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09"
+  },
+  {
+   "n": 30,
+   "title": "Bischof · Yee · Building Recommendation Systems in Python and JAX (O'Reilly, 2023)",
+   "url": "https://www.oreilly.com/library/view/building-recommendation-systems/9781492097983/",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Feast · Point-in-time joins",
+   "url": "https://docs.feast.dev/getting-started/concepts/point-in-time-joins",
+   "kind": "reference",
+   "note": "피처 스토어 — 학습 행의 시각 기준으로 피처 붙이기"
+  },
+  {
+   "n": 32,
+   "title": "Joachims 외 · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "kind": "reference",
+   "note": "자리 편향 보정"
+  },
+  {
+   "n": 33,
+   "title": "Hidasi 외 · Session-based Recommendations with Recurrent Neural Networks (GRU4Rec, ICLR 2016)",
+   "url": "https://arxiv.org/abs/1511.06939",
+   "kind": "reference",
+   "note": "로그인 없는 세션 추천"
+  }
+ ],
+ "caveat": "무신사 테크 블로그 원문(techblog.musinsa.com)은 직접 열면 403이라, 배너 글은 GeekNews 요약으로, 푸시·캠페인·DeciML 글은 블로그 RSS 피드로, 속성 추천 글은 검색 요약으로 확인했습니다 — 세부 수치는 원문과 다를 수 있습니다. Personalization팀 자체의 발표 영상은 찾지 못했고, 피처 파이프라인·서빙의 내부 구조는 공개된 부분 밖은 다른 회사 논문·공식 문서로 '보통 이런 것'을 보였습니다.",
+ "resources": [
+  {
+   "id": "google-recsys",
+   "title": "추천 시스템 과정 (Recommendation Systems)",
+   "by": "Google for Developers",
+   "kind": "course",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/recommendation?hl=ko",
+   "why": "후보 생성 → 점수 → 재순위, 콘텐츠 기반·협업 필터링·임베딩을 짧게. 업무①의 전체 그림을 처음 잡는다."
+  },
+  {
+   "id": "youtube-dnn",
+   "title": "Deep Neural Networks for YouTube Recommendations",
+   "by": "Covington · Adams · Sargin · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "why": "후보 생성과 랭킹을 두 단으로 나누는 대표 사례. 업무③ 아키텍처 설계의 출발점."
+  },
+  {
+   "id": "two-tower",
+   "title": "Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations",
+   "by": "Yi 외 · RecSys 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google/pubs/sampling-bias-corrected-neural-modeling-for-large-corpus-item-recommendations/",
+   "why": "무신사 배너가 쓴 Two-Tower를 대규모로 학습할 때의 인기 편향 보정과 스트리밍 학습."
+  },
+  {
+   "id": "deepfm",
+   "title": "DeepFM: A Factorization-Machine based Neural Network for CTR Prediction",
+   "by": "Guo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1703.04247",
+   "why": "무신사 메인스토어 배너·푸시 비교 기준이 된 CTR 모델의 원 논문."
+  },
+  {
+   "id": "pinsage",
+   "title": "Graph Convolutional Neural Networks for Web-Scale Recommender Systems (PinSage)",
+   "by": "Ying 외 · KDD 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1806.01973",
+   "why": "그래프 기반 추천(공고가 든 최신 기술)의 실서비스 사례. 무신사 배너 팀이 바꾸기 전 쓰던 방식이라 바꾼 이유를 이해하는 데 쓴다."
+  },
+  {
+   "id": "transe",
+   "title": "Translating Embeddings for Modeling Multi-relational Data (TransE)",
+   "by": "Bordes 외 · NeurIPS 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://proceedings.neurips.cc/paper/2013/hash/1cecc7a77928ca8133fa24680a88d2f9-Abstract.html",
+   "why": "무신사 공통 유저 표현(Layer 0)이 쓴 지식 그래프 임베딩. 콜드 스타트 우대사항과 잇는다."
+  },
+  {
+   "id": "bischof",
+   "title": "Building Recommendation Systems in Python and JAX",
+   "by": "Bryan Bischof · Hector Yee · O'Reilly · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/building-recommendation-systems/9781492097983/",
+   "why": "추천을 수학보다 시스템 문제로 — 데이터 모으기·실시간 서빙·비즈니스 로직·편향. 업무③과 우대 1·3번."
+  },
+  {
+   "id": "dmls-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "피처 파이프라인·데이터 누수·학습/서빙 어긋남·배포 뒤 감시와 이어 학습. 업무②와 자격 2번."
+  },
+  {
+   "id": "rules-of-ml",
+   "title": "Rules of Machine Learning",
+   "by": "Martin Zinkevich · Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "why": "학습/서빙 어긋남과 피드백 루프의 함정을 짧은 규칙으로. 업무②의 기본기."
+  },
+  {
+   "id": "feast-pit",
+   "title": "Point-in-time joins",
+   "by": "Feast 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.feast.dev/getting-started/concepts/point-in-time-joins",
+   "why": "노출 시점 기준으로 피처를 붙이는 법 — 위 예시 코드의 누수를 도구로 막는 방식."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "why": "새 모델이 정말 이겼는지 A/B로 판단하는 법. 업무④와 '추천 성능 지표를 책임진다'는 팀 소개."
+  },
+  {
+   "id": "ts-tutorial",
+   "title": "A Tutorial on Thompson Sampling",
+   "by": "Russo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "why": "무신사 배너의 예전 방식(MAB)과 콜드 스타트 탐색을 예제로 익힌다."
+  },
+  {
+   "id": "gru4rec",
+   "title": "Session-based Recommendations with Recurrent Neural Networks",
+   "by": "Hidasi 외 · ICLR 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1511.06939",
+   "why": "로그인 전·신규 유저를 세션 행동 순서만으로 추천하는 기본 논문. 콜드 스타트 우대사항."
+  },
+  {
+   "id": "internal-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "by": "우리 사이트 책 ⑱",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki",
+   "why": "실시간 스트리밍 우대사항 — Kafka로 보낸 이벤트가 처리되기까지를 명령과 출력으로."
+  },
+  {
+   "id": "flink-doc",
+   "title": "Apache Flink Documentation",
+   "by": "Apache Flink 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/",
+   "why": "상태를 들고 흐르는 집계·체크포인트. '최근 30분 클릭' 같은 실시간 피처를 만드는 법."
+  },
+  {
+   "id": "triton-doc",
+   "title": "NVIDIA Triton Inference Server User Guide",
+   "by": "NVIDIA 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+   "why": "공고 서빙 스택. 동적 배칭·모델 여러 개 동시 서빙으로 지연과 처리량을 맞추는 법."
+  },
+  {
+   "id": "k8s-internal",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책 ⑫",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki",
+   "why": "클라우드 요건 — 모델 서버를 컨테이너로 띄우고 kubectl 출력으로 상태를 읽는다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 글로 그림 잡기",
+   "time": "1주",
+   "goal": "무신사 추천이 어떤 단계(표현 → 점수 → 정책)로 돌고 각 사례가 무엇을 바꿨는지 말할 수 있다.",
+   "resources": [
+    "google-recsys",
+    "youtube-dnn"
+   ],
+   "task": "위 풀이의 회사 사례 다섯 개(배너·속성·푸시·29CM 푸시·이미지)를 '기존 방식 → 바꾼 것 → 지표' 한 줄씩 표로 정리한다."
+  },
+  {
+   "title": "CTR 모델 직접 돌리기",
+   "time": "2~3주",
+   "goal": "가상 노출 로그로 Two-Tower와 DeepFM을 학습하고 오프라인 지표(AUC·logloss)를 비교한다.",
+   "resources": [
+    "deepfm",
+    "two-tower",
+    "bischof"
+   ],
+   "task": "가상 유저 1만·상품 2천·노출 100만 건을 만들고 PyTorch로 두 모델을 학습해 AUC를 비교한다. 상품 벡터를 미리 구워 상위 100개 후보를 뽑아 본다."
+  },
+  {
+   "title": "피처 파이프라인과 피드백 루프",
+   "time": "2주",
+   "goal": "노출 시점 기준 피처를 만들고, 이어 학습을 했을 때와 안 했을 때를 비교한다.",
+   "resources": [
+    "dmls-ko",
+    "rules-of-ml",
+    "feast-pit"
+   ],
+   "task": "2단계 로그를 하루 단위로 잘라, 매일 이어 학습하는 모델과 첫날 모델을 고정한 경우의 지표를 날짜별로 그린다. 중간에 '세일 기간'처럼 분포를 바꿔 본다."
+  },
+  {
+   "title": "콜드 스타트와 실험",
+   "time": "2주",
+   "goal": "새 상품·새 유저 처리 방식을 만들고 A/B로 비교하는 계획을 쓴다.",
+   "resources": [
+    "transe",
+    "ts-tutorial",
+    "gru4rec",
+    "kohavi-ko"
+   ],
+   "task": "새 상품 벡터를 속성 평균으로 만드는 방식과 인기순 대체를 비교하고, Thompson Sampling으로 새 상품에 노출 10%를 나눠 반응을 모으는 시뮬레이션을 돌린다. 실험 단위·지표·표본 수를 한 쪽으로 적는다."
+  },
+  {
+   "title": "실시간과 서빙 (선택)",
+   "time": "계속",
+   "goal": "Kafka→집계→Redis→모델 서버 흐름을 로컬에서 이어 지연을 잰다.",
+   "resources": [
+    "internal-kafka",
+    "flink-doc",
+    "triton-doc",
+    "k8s-internal"
+   ],
+   "task": "가상 클릭 이벤트를 Kafka로 흘려 '최근 30분 브랜드 클릭'을 집계해 Redis에 쓰고, 모델 서버가 그 값을 읽어 점수를 내게 한 뒤 요청당 지연(p95)을 잰다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 없음 — 집계 사이트 평균은 3,453만원(자소설)과 6,082만원(원티드)으로 기준이 다르고, 7년 이상 경력 자리는 '처우 협의'로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 회사 전체 값이고 연도 표기를 확인하지 못했다 [26]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 경력직이 섞인 회사 전체 평균이다 [26]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위 값과 크게 달라 산출 방식·시점이 다른 것으로 보인다 [27]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시 평균 급여 숫자를 확인하지 못했습니다. 위 숫자는 모두 집계이고 **초봉이 아니라 경력직이 섞인 회사 전체 평균**입니다. 이 공고는 경력 7년 이상 자리라 이 평균들과 거리가 멀고, 전형 끝에 '처우 협의' 단계가 따로 있습니다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "월 소정 근로시간 내 유연 근무, 코어타임 11~16시"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원, 복지카드 연동"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기 근속",
+    "detail": "근속 3년당 리프레시 휴가 7일, 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기마다 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 월 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "허먼 밀러 의자 등 업무 장비, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급"
+   }
+  ],
+  "note": "무신사 채용 사이트 복지 페이지(같은 회사 다른 풀이에서 2026-11 확인)를 옮겼다 [25]. 페이지에 '근무 장소·기간·시점에 따라 일부 변경될 수 있다'는 문구가 있다 [25]. 수습 3개월 급여 100%는 이 공고에도 적혀 있다 [1]."
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%B1%EB%8F%99%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C13%EA%B8%B8%2011",
+  "near": "2호선 성수역 도보 6분",
+  "note": "공고의 근무지 표기는 '무신사 성수 오피스'다 [1]. 주소는 무신사 상품 페이지 하단 사업자 정보 표기 [28], 성수 본사 이전과 도보 거리는 2022년 보도 [29]. 팀 자리가 다른 건물일 수 있다 {추론}."
+ }
+}

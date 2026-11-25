@@ -230,6 +230,7 @@
   "ats-greeting:musinsa:197974": "musinsa-cloud-engineer-foundation-platform",
   "ats-greeting:musinsa:230871": "musinsa-core-ai-product-engineer",
   "ats-greeting:musinsa:240047": "musinsa-data-operations-ai-part-lead",
+  "ats-greeting:musinsa:240567": "musinsa-data-scientist-personalization",
   "ats-greeting:musinsa:202445": "musinsa-dba-foundation-platform",
   "ats-greeting:musinsa:229966": "musinsa-infra-platform-engineering-manager",
   "ats-greeting:musinsa:242044": "musinsa-network-engineer",
@@ -2490,6 +2491,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 15
+  },
+  {
+   "id": "musinsa-data-scientist-personalization",
+   "company": "주식회사 무신사",
+   "role": "Data Scientist",
+   "jobs": [
+    "ats-greeting:musinsa:240567"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 12
   },
   {
    "id": "musinsa-dba-foundation-platform",
