@@ -168,6 +168,7 @@
   "wanted-383708": "creationline-fullstack-sherpa-japan",
   "ats-greenhouse:daangn:7990084003": "daangn-ai-platform-software-engineer",
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
+  "ats-greenhouse:daangn:8201152003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
   "boards-superookie:it:6afd0847a0717c1c4126d602": "daangn-shortform-backend-intern",
   "wanted-389061": "datachain-senior-sre-stablecoin",
@@ -2024,6 +2025,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 52
+  },
+  {
+   "id": "daangn-mydaangn-backend-intern",
+   "company": "당근",
+   "role": "백엔드 엔지니어 (채용전환형 인턴) — 나의당근",
+   "jobs": [
+    "ats-greenhouse:daangn:8201152003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 55
   },
   {
    "id": "daangn-shortform-backend-intern",
