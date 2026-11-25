@@ -11,6 +11,7 @@
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
   "ats-greenhouse:coupang:8413572": "coupang-fc-logistics-network-engineer",
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
+  "ats-greenhouse:coupang:8203405": "coupang-network-security-engineer-detection-ops",
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
@@ -370,6 +371,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 23
+  },
+  {
+   "id": "coupang-network-security-engineer-detection-ops",
+   "company": "쿠팡",
+   "role": "시니어 네트워크 보안 엔지니어",
+   "jobs": [
+    "ats-greenhouse:coupang:8203405"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 28
   },
   {
    "id": "coupang-pay-director-backend-rocketpay",

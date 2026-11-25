@@ -1,0 +1,575 @@
+{
+ "id": "coupang-network-security-engineer-detection-ops",
+ "company": "쿠팡",
+ "role": "시니어 네트워크 보안 엔지니어",
+ "team": "Digital Trust(보안 조직) · Detection Operations 팀",
+ "jobs": [
+  "ats-greenhouse:coupang:8203405"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡의 데이터센터(IDC)와 사무실 네트워크에 놓인 **보안 장비(방화벽·IDS/IPS·NDR·디도스 방어·암호 트래픽 복호화 장비)를 운영**하고, 그 장비들이 내는 경보를 **탐지 룰로 다듬어** 진짜 공격만 남게 만듭니다.[1]",
+  "env": "웹·네트워크·이메일·엔드포인트 보안을 한 팀이 나눠 맡고, SOC(관제)·DART(사고 대응)·Detection Engineering(탐지 로직 개발)·위협 헌팅 팀과 붙어서 일합니다.[1][6][7] 2025년 내부자 정보 유출 뒤라 **비정상 접속 탐지 강화**가 정부 권고 항목입니다.[11]",
+  "oneline": "장비를 켜 두는 사람이 아니라, 장비가 **무엇을 보고 무엇을 놓치는지** 책임지는 네트워크 출신 탐지 운영자. 경력 5년이 두 번 나오는 시니어 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "국내외 IDC/Office 네트워크 환경의 보안 가시성 확보를 위한 모니터링 계획, 운영 및 환경 개선",
+   "short": "데이터센터·사무실을 오가는 트래픽 중 보안 장비가 못 보는 구간을 찾아, 보이게 만드는 일.",
+   "why": "공고는 이 팀의 일을 넓은 공격 표면(Attack Surface — 공격이 들어올 수 있는 모든 입구)에서 위협을 탐지·차단하는 것이라고 적었습니다.[1] 보이지 않는 구간에서 일어난 공격은 탐지 룰이 아무리 좋아도 못 잡습니다. 2025년 사고 조사단도 위·변조된 출입 토큰으로 한 비정상 접속을 **탐지·차단하지 못했다**고 지적하고 비정상 접속 탐지·모니터링 강화를 권고했습니다.[11][12]",
+   "actually": {
+    "intro": "‘가시성(visibility)’은 보통 이렇게 쪼개서 잽니다. 쿠팡이 어떤 표로 관리하는지는 공개되지 않았습니다.[14][22]",
+    "items": [
+     "**구간 지도** — 인터넷 ↔ IDC, IDC ↔ 사무실, IDC ↔ 클라우드, 사무실 ↔ 인터넷 구간마다 어떤 장비가 트래픽을 보는지 표로 만든다.",
+     "**복사 지점** — 스위치의 미러 포트나 탭(TAP)에서 트래픽을 떠서 패킷 브로커(NPB)로 모으고, 장비별로 나눠 준다.[22]",
+     "**암호화 구간** — HTTPS 처럼 암호화된 트래픽은 복호화 장비(SSLVA)를 거치지 않으면 IDS 가 내용을 못 본다 {추론}.",
+     "**로그가 오는가** — 장비마다 SIEM 에 로그가 실제로 들어오는지, 끊기면 알림이 오는지 확인한다.[15]",
+     "**해외 거점** — 대만 등 해외 IDC·사무실도 같은 기준으로 맞춘다. 그래서 출장 가능 요건이 있다.[1]"
+    ]
+   },
+   "how_far": "어느 구간을 먼저 메울지 우선순위를 정하고, 장비 배치와 로그 흐름을 바꾸는 계획까지 세우는 수준입니다. 시니어 자리라 ‘보이지 않는 곳 목록’을 스스로 만들어 오는 사람을 기대합니다 {추론}.",
+   "refs": [1, 11, 12, 14, 15, 22],
+   "study": ["nsm-book", "nist-800-94"]
+  },
+  {
+   "section": "task",
+   "quote": "IDC/Office 내 보안 장비들에 대한 운영 및 자산 관리",
+   "short": "어디에 어떤 보안 장비가 몇 대, 어떤 버전·계약으로 있는지 장부를 정확히 유지하는 일.",
+   "why": "모르는 장비는 지킬 수 없습니다. 보안 장비도 펌웨어 취약점·인증서 만료·라이선스 만료가 있고, 만료된 장비는 조용히 탐지를 멈춥니다 {추론}. 쿠팡 2025 회계연도 연차보고서는 보안 조직이 200명 넘고 ISO 27001·ISMS-P 인증을 받는다고 적었는데[10], 이런 인증 심사는 자산 목록부터 봅니다 {추론}.",
+   "actually": {
+    "items": [
+     "장비 목록 — 모델·시리얼·위치(랙)·관리 IP·펌웨어 버전·담당자·유지보수 계약 끝나는 날.",
+     "펌웨어·시그니처 업데이트 일정과 기록.",
+     "인증서·라이선스 만료 알림 — 만료 30일 전에 알리는 식.",
+     "고장·교체(RMA) 이력, 벤더 지원 티켓."
+    ]
+   },
+   "refs": [10],
+   "study": ["nist-800-94"]
+  },
+  {
+   "section": "task",
+   "quote": "IDC/Office 내 보안 장비에 대한 모니터링 정책 수립, 재해복구 계획 수립 및 이행",
+   "short": "보안 장비가 죽거나 과부하일 때 바로 알게 하고, 장비가 통째로 멈춰도 서비스가 서지 않게 대비하는 일.",
+   "why": "방화벽·IPS 는 트래픽이 지나가는 길목(인라인)에 서 있어서, 장비가 멈추면 탐지만 멈추는 게 아니라 **통신이 끊길 수도** 있습니다 {추론}. 그래서 장비 상태 감시와 재해복구(DR) 계획이 한 줄에 묶여 있습니다.",
+   "actually": {
+    "intro": "미국 NIST 의 비상 계획 지침이 말하는 순서를 보안 장비에 대입하면 이렇습니다.[16]",
+    "items": [
+     "**상태 감시** — CPU·메모리·세션 수·패킷 드롭·HA(이중화) 상태·로그 전송 여부에 문턱값을 건다.",
+     "**영향 분석** — 장비별로 멈추면 무엇이 끊기나, 몇 분까지 버틸 수 있나(RTO)를 적는다.",
+     "**우회 방식** — 장비 고장 때 트래픽을 그냥 통과시킬지(fail-open), 막을지(fail-close) 구간마다 정한다 {추론}.",
+     "**설정 백업** — 정책·설정을 정기적으로 백업하고, 다른 센터에서 복원해 본다.",
+     "**훈련** — 계획은 실제로 전환해 봐야 쓸모가 있다. 연습 결과를 계획에 되먹인다.[16]"
+    ]
+   },
+   "refs": [16],
+   "study": ["nist-800-34"]
+  },
+  {
+   "section": "task",
+   "quote": "보안 이벤트 탐지 룰 관리 (정책 생성, 업데이트, 예외처리, 제거 등)",
+   "short": "탐지 룰을 새로 만들고, 고치고, 예외를 달고, 쓸모없어지면 지우는 룰의 일생 전체를 관리한다.",
+   "why": "같은 보안 조직의 Detection Engineering 팀은 탐지 로직을 코드처럼 버전 관리(Detection-as-Code)하고 변경 이력을 문서화한다고 적었습니다.[4] 장비 쪽 룰도 같은 규율이 필요합니다 — 누가 언제 왜 예외를 걸었는지 모르면 그 예외가 공격 통로가 됩니다 {추론}.",
+   "actually": {
+    "intro": "Palantir 가 공개한 탐지 전략 틀(ADS)은 룰마다 아래 칸을 적게 합니다.[19]",
+    "items": [
+     "**목적** — 무엇을 잡으려는 룰인가(ATT&CK 기법 번호와 함께).[19][21]",
+     "**사각지대(Blind Spots)** — 이 룰이 못 잡는 경우.",
+     "**오탐(False Positives)** — 정상인데 걸리는 경우와 그 예외.",
+     "**검증(Validation)** — 룰이 실제로 울리는지 재현해 보는 방법.",
+     "**제거** — 대상 시스템이 사라졌거나 다른 룰과 겹치면 지운다. 안 지우면 경보만 쌓인다 {추론}."
+    ]
+   },
+   "how_far": "룰 문법(IDS 시그니처, SIEM 검색식)을 쓸 줄 아는 것은 기본이고, **예외를 좁게 거는 판단**이 시니어의 몫입니다 — IP 하나로 끝날 예외를 대역 전체로 걸지 않는 것.",
+   "refs": [4, 19, 21],
+   "study": ["palantir-ads", "sigma", "suricata-docs", "tde-ko"]
+  },
+  {
+   "section": "task",
+   "quote": "보안 이벤트에 대한 정탐/오탐/미탐 분석 및 개선 조치",
+   "short": "경보가 진짜 공격이었나(정탐), 헛경보였나(오탐), 공격인데 안 울렸나(미탐)를 따져 룰을 고친다.",
+   "why": "오탐이 많으면 관제 요원이 경보를 무시하게 되고, 미탐은 사고 뒤에야 드러납니다. 쿠팡 위협 관리 팀장은 공격자가 들어와 머무는 시간(dwell time)을 줄이는 것을 목표로 꼽았습니다.[8] 미탐 하나가 곧 그 시간입니다.",
+   "actually": {
+    "items": [
+     "**정탐률(정밀도)** — 울린 경보 중 진짜 공격의 비율.",
+     "**미탐** — 사고 조사·레드팀 훈련·위협 헌팅에서 ‘이건 왜 안 울렸지’로 찾는다. 쿠팡은 레드팀과 위협 관리 팀이 함께 탐지되지 않은 약점을 찾는다고 발표했다.[9]",
+     "**원인 나누기** — 룰이 틀렸나, 장비가 트래픽을 못 봤나(가시성), 로그가 안 왔나.",
+     "**개선** — 조건을 좁히기, 예외 달기, 다른 로그와 엮기(상관 분석), 룰 끄기."
+    ]
+   },
+   "examples": [
+    {
+     "title": "예외 하나가 정밀도를 어떻게 바꾸나 (가상 숫자, 직접 돌린 출력)",
+     "body": "한 달 경보 260건 중 180건이 사내 취약점 스캐너였다고 합시다. 스캐너 IP 하나만 예외로 빼면 정탐은 그대로인데 정밀도가 7.7% → 25.0% 로 오릅니다. 미탐(5건)은 예외로 줄지 않습니다 — 미탐은 룰을 넓히거나 새 로그를 붙여야 줄어듭니다.",
+     "lang": "python",
+     "code": "alerts = ([(\"10.0.5.20\", \"scanner\")] * 180 + [(\"10.0.9.7\", \"backup\")] * 60\n          + [(\"203.0.113.9\", \"attack\")] * 12 + [(\"198.51.100.4\", \"attack\")] * 8)\nmissed = 5\n\ndef report(rows, label):\n    tp = sum(1 for _, k in rows if k == \"attack\")\n    print(f\"{label}: 경보 {len(rows)}건 · 정탐 {tp} · 오탐 {len(rows)-tp} · 미탐 {missed} \"\n          f\"· 정밀도 {tp/len(rows):.1%} · 재현율 {tp/(tp+missed):.1%}\")\n\nreport(alerts, \"예외 전\")\nreport([a for a in alerts if a[0] != \"10.0.5.20\"], \"예외 후\")\n# 예외 전: 경보 260건 · 정탐 20 · 오탐 240 · 미탐 5 · 정밀도 7.7% · 재현율 80.0%\n# 예외 후: 경보 80건 · 정탐 20 · 오탐 60 · 미탐 5 · 정밀도 25.0% · 재현율 80.0%"
+    }
+   ],
+   "refs": [8, 9],
+   "study": ["tde-ko", "palantir-ads"]
+  },
+  {
+   "section": "task",
+   "quote": "보안 모니터링을 위한 시나리오 및 Playbook 생성",
+   "short": "‘이런 공격이면 이런 경보가 뜬다’는 시나리오와, 뜨면 누가 무엇을 하나를 순서대로 적은 대응서.",
+   "why": "같은 회사 웹 보안 자리(같은 Detection Operations 팀)도 플레이북 작성을 업무로 적었습니다.[3] 플레이북이 있어야 새벽에 경보가 떠도 사람마다 다르게 대응하지 않습니다 {추론}.",
+   "actually": {
+    "intro": "미국 CISA 의 사고 대응 플레이북 순서가 흔한 뼈대입니다.[18]",
+    "items": [
+     "**시나리오** — 예: 외부 IP 가 1분에 포트 수십 개 두드림 → 방화벽 차단 로그 급증 → IPS 스캔 경보.",
+     "**판단 기준** — 우리 자산 대상인가, 성공한 접속이 있나, 같은 IP 가 다른 곳에도 왔나.",
+     "**조치** — 차단·격리·증거 보전(로그·패킷)·SOC/DART 로 넘기기.",
+     "**기록과 회고** — 무엇이 늦었나를 적고 룰·플레이북을 고친다.[17]"
+    ]
+   },
+   "refs": [3, 17, 18],
+   "study": ["cisa-playbook", "nist-800-61"]
+  },
+  {
+   "section": "task",
+   "quote": "신규 프로젝트를 위한 보안 장비 및 네트워크 환경 구축",
+   "short": "새 데이터센터·사무실·서비스가 생길 때 보안 장비를 어디에 어떻게 끼울지 설계하고 직접 세운다.",
+   "why": "쿠팡은 해외(대만 등)로 사업과 보안 조직을 넓히고 있고, 위협 관리 팀도 대만으로 확장할 계획이라고 했습니다.[8] 새 거점이 생기면 같은 수준의 보안 장비가 함께 들어가야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "구간별 장비 배치(경계 방화벽 → 디도스 방어 → IPS → 복호화 → NDR 복사 지점).[24]",
+     "이중화(HA) 구성과 장비 고장 때 우회 방식.",
+     "로그를 SIEM 으로 보내는 경로와 시간 동기화(NTP) — 시간이 어긋나면 상관 분석이 안 된다.[15]",
+     "개통 전 점검표 — 정책이 의도대로 막고 여는지 시험한다."
+    ]
+   },
+   "refs": [8, 15, 24],
+   "study": ["nist-800-41", "netsec-ko"]
+  },
+  {
+   "section": "task",
+   "quote": "벤더 및 파트너와의 협업을 통한 작업 계획 수립, 배정, 지시 및 프로젝트 리딩",
+   "short": "장비 회사·협력사 엔지니어에게 일을 나눠 주고 일정을 끌고 가는 사람 — 내가 다 하지 않는다.",
+   "why": "보안 장비 설치·교체·장애 분석은 장비 회사 엔지니어가 함께 하는 경우가 많습니다. 이 자리는 그 작업의 **계획을 세우고 지시하는 쪽**입니다 — 공고가 ‘배정, 지시, 리딩’이라고 썼습니다.[1]",
+   "how_far": "작업 범위·순서·되돌리기 계획을 내가 쓰고, 벤더는 그 계획대로 작업합니다. 장애 때 벤더에게 ‘무엇을 보고 싶은지’ 정확히 요청할 수 있어야 합니다 {추론}.",
+   "refs": [1]
+  },
+  {
+   "section": "task",
+   "quote": "SOP(Standard Operating Procedure) 개발, 개선 및 문서화",
+   "short": "누가 해도 같은 결과가 나오도록 반복 작업의 순서를 문서로 만든다.",
+   "why": "같은 회사의 이전 웹 보안 공고(Blue Operations)도 SOP 와 자동화를 같은 줄에 묶었습니다.[7] SOP 가 있어야 자동화할 대상이 보입니다 {추론}.",
+   "actually": {
+    "items": [
+     "정책 변경 요청 → 검토 → 적용 → 확인 → 기록 순서.",
+     "장비 펌웨어 업그레이드 절차와 되돌리기.",
+     "신규 탐지 룰 배포 전 시험 절차.",
+     "교대·해외 팀에 넘기는 인수인계 양식."
+    ]
+   },
+   "refs": [7]
+  },
+  {
+   "section": "task",
+   "quote": "운영 자동화 구현 및 효율화",
+   "short": "손으로 하던 정책 반영·로그 확인·보고서 만들기를 스크립트와 API 로 바꾼다.",
+   "why": "쿠팡 보안 조직은 자동화를 여러 공고에서 요구합니다 — Detection Engineering 은 AI 기반 자동 대응까지 말했고[4], 위협 헌팅 자리는 Python 자동화를 적었습니다.[6] ISEC 2025 발표에서도 추가 예산·인력 없이 보안 수준을 높였다고 했습니다.[9]",
+   "actually": {
+    "items": [
+     "장비 REST API 로 차단 IP 목록을 일괄 반영.",
+     "매일 장비 상태·로그 유입량을 확인해 이상하면 알림.",
+     "오래 안 걸린 정책·예외를 찾아 정리 후보로 올리기.",
+     "주간 탐지 통계 보고서를 자동으로 만들기."
+    ]
+   },
+   "refs": [4, 6, 9],
+   "study": ["npa2"]
+  },
+  {
+   "section": "task",
+   "quote": "신규 서비스/장비에 대한 PoC 수행, 비교 분석 및 결과 도출",
+   "short": "새 보안 장비·서비스를 사기 전에 우리 트래픽으로 시험해 보고 무엇을 살지 근거를 낸다.",
+   "why": "장비 회사의 자료가 아니라 **우리 환경의 숫자**로 골라야 합니다. 비교 결과가 곧 구매 결정의 근거라, 요건의 ‘데이터로 설득’과 이어집니다.[1]",
+   "actually": {
+    "items": [
+     "평가 항목 — 탐지율(재현해 본 공격 중 잡은 비율), 오탐, 처리량, 지연, 운영 편의, 로그 연동, 비용.",
+     "같은 트래픽(복사본)을 후보 장비들에 동시에 흘려 비교.",
+     "공격 재현은 ATT&CK 기법 목록에서 고른다.[21]",
+     "결과 보고서 — 숫자 표와 권고, 남는 위험."
+    ]
+   },
+   "refs": [1, 21]
+  },
+  {
+   "section": "task",
+   "quote": "보안 가시성이 부족한 영역에 대한 모니터링 개선",
+   "short": "‘이 기법은 우리가 못 잡는다’는 빈칸을 찾아, 로그·장비·룰을 더해 메운다.",
+   "why": "같은 조직의 GHOST 팀은 장비 로그에서 ATT&CK 탐지 범위까지 이어 보는 플랫폼을 만들어 **탐지 빈칸 분석**을 한다고 적었습니다.[5] 이 줄은 그 빈칸을 네트워크 쪽에서 실제로 메우는 일입니다 {추론}.",
+   "actually": {
+    "items": [
+     "ATT&CK 기법별로 ‘어떤 로그·룰이 잡나’ 표를 만들고 빈칸을 센다.[21]",
+     "빈칸마다 — 로그가 없다(장비·복사 지점 추가), 로그는 있는데 룰이 없다(룰 작성), 룰은 있는데 시험 안 했다(검증).",
+     "2025년 사고처럼 정상 토큰 모양의 내부 접근은 네트워크 시그니처로 안 보인다. 인증·애플리케이션 로그와 엮어야 한다.[11][12] {추론}"
+    ]
+   },
+   "refs": [5, 11, 12, 21],
+   "study": ["attack", "tde-ko"]
+  },
+  {
+   "section": "task",
+   "quote": "보안 장비 로그 분석 및 리포트/대시보드 구현",
+   "short": "장비 로그를 모아 SQL·SIEM 으로 집계하고, 경보 추이·차단량·장비 상태를 한 화면에 보이게 한다.",
+   "why": "로그는 사고 조사의 원재료입니다. 2025년 사고 조사에서 정부는 25.6TB·6,642억 건의 웹 로그를 분석했고[13], 보존 설정 때문에 일부 로그가 지워진 일이 문제가 됐습니다.[11] 로그를 ‘쌓아 두는 것’과 ‘보는 것’이 둘 다 이 줄입니다.",
+   "actually": {
+    "items": [
+     "로그 정규화 — 장비마다 다른 필드 이름(src, srcip, source_address)을 하나로 맞춘다.[15]",
+     "보존 기간 정하기 — 사고 분석·피해자 확인에 충분하게. 조사단 권고 항목이다.[11]",
+     "대시보드 — 룰별 경보 수 추이, 정탐률, 장비별 로그 유입량(갑자기 0 이면 장비·연동 고장).",
+     "보고서 — 월간 차단·탐지 통계, 개선한 룰과 그 효과."
+    ]
+   },
+   "examples": [
+    {
+     "title": "방화벽 로그에서 포트 스캔 찾기 — 그리고 고정 창의 함정 (SQLite, 직접 돌린 출력)",
+     "body": "한 IP 가 60초 동안 포트 120개를 두드렸는데, 1분 단위 고정 창으로 자르면 분 경계에 걸려 40개·80개로 갈립니다. 문턱 50이면 앞 창(40)은 놓치고 뒤 창(80)만 걸립니다. 공격자가 문턱 밑으로 나눠 오면 고정 창은 다 놓칩니다 — 실무에서는 미끄러지는 창(sliding window)이나 더 긴 창을 같이 씁니다 {추론}.",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE fw_log(ts INTEGER, src TEXT, dst TEXT, dport INTEGER, action TEXT)\")\nrows = [(1000 + p % 60, \"203.0.113.9\", \"10.1.0.5\", p, \"deny\") for p in range(20, 140)]\nrows += [(1000 + i, \"198.51.100.\" + str(i % 5), \"10.1.0.5\", 443, \"allow\") for i in range(50)]\ndb.executemany(\"INSERT INTO fw_log VALUES (?,?,?,?,?)\", rows)\nq = \"\"\"SELECT src, ts/60 AS minute, COUNT(DISTINCT dport) AS ports, SUM(action='deny') AS denied\nFROM fw_log GROUP BY src, ts/60 HAVING COUNT(DISTINCT dport) >= 50\"\"\"\nfor r in db.execute(q):\n    print(r)\n# ('203.0.113.9', 17, 80, 80)   ← 16분 창의 40개는 문턱 밑이라 안 나온다"
+    }
+   ],
+   "refs": [11, 13, 15],
+   "study": ["nist-800-92", "sql-levelup"]
+  },
+  {
+   "section": "task",
+   "quote": "유관 부서와의 원활한 커뮤니케이션 및 인시던트 대응",
+   "short": "경보가 사고로 커지면 관제·사고 대응·인프라 팀과 함께 막고, 원인을 찾아 재발을 막는다.",
+   "why": "팀 소개가 ‘정확한 원인 분석을 통한 재발 방지 체계’를 핵심 역할로 적었습니다.[1] 2025년 사고에서는 CISO 보고 뒤 법정 24시간을 넘겨 신고해 과태료 대상이 됐습니다[13] — 사고 때는 기술만큼 보고 절차와 시간이 중요합니다.",
+   "actually": {
+    "intro": "NIST 사고 대응 지침(2025 개정)은 대응을 탐지·분석·격리·복구·회고로 이어지는 위험 관리의 일부로 봅니다.[17]",
+    "items": [
+     "네트워크 쪽 증거 — 해당 시간대의 방화벽·IPS·NDR 로그와 패킷을 보전한다.",
+     "격리 — 차단 정책을 넣되 서비스 영향을 인프라 팀과 확인.",
+     "사고 대응 팀(DART)·관제(SOC)에 넘길 때 무엇을 봤고 무엇을 못 봤는지 같이 넘긴다.[6][7]",
+     "회고 — 이 사고를 잡을 수 있었던 룰·가시성은 무엇이었나를 이 팀의 개선 목록으로."
+    ]
+   },
+   "refs": [1, 6, 7, 13, 17],
+   "study": ["nist-800-61", "cisa-playbook"]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터공학, 정보보호, 전산학 등 관련 분야 학사 이상의 학위를 보유하신 분",
+   "short": "관련 전공 학사 이상. 같은 팀 다른 공고는 ‘또는 그에 준하는 경험’도 받는다.",
+   "why": "같은 Detection Operations 팀의 웹 보안 공고는 학사 ‘또는 동등한 경험’으로 적었습니다.[3] 이 공고는 학사 이상만 적었습니다.[1]",
+   "how_far": "전공이 다르면 서류에서 경력·자격증으로 메우는 경우가 많습니다 {추론}. 지원 전에 채용 담당자에게 확인하는 편이 안전합니다.",
+   "refs": [1, 3]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 이상의 네트워크(L3, L4, L7) 운영 실무 경험을 보유하신 분",
+   "short": "라우팅(L3)·세션과 포트(L4)·HTTP 같은 응용(L7)까지, 장비가 어느 층을 보는지 아는 운영 경험 5년.",
+   "why": "보안 장비마다 보는 층이 다릅니다 — 방화벽은 주로 L3/L4, IPS·WAF 는 L7, 디도스 방어는 L3~L7 전부. 층을 모르면 ‘왜 이 장비가 이 공격을 못 봤나’를 설명할 수 없습니다 {추론}. 같은 자리의 다른 사이트 공고는 경력을 **10~25년**으로 적었습니다.[2]",
+   "level": {
+    "basic": "IP·서브넷·라우팅·VLAN · TCP 3-way handshake · NAT",
+    "work": "BGP/OSPF 경로 · 로드밸런서(L4/L7) · TCP 상태와 재전송 · 패킷 캡처 읽기",
+    "team": "IDC 규모 장애에서 어느 층·어느 장비가 문제인지 패킷으로 가르기"
+   },
+   "actually": {
+    "items": [
+     "L3 — 경로가 비대칭이면 상태 기반 방화벽이 응답 패킷을 버린다 {추론}.",
+     "L4 — SYN 폭주 같은 디도스는 연결 대기열을 채운다. SYN 쿠키 같은 방어 원리.[23]",
+     "L7 — 같은 443 포트라도 정상 API 호출과 악성 요청은 내용(복호화 후)에서만 갈린다."
+    ]
+   },
+   "refs": [2, 23],
+   "study": ["net-intro-ko", "ppa3", "rfc4987"]
+  },
+  {
+   "section": "qualification",
+   "quote": "5년 이상의 침입 탐지 및 이상행위 기반 이벤트 분석 실무 경험을 보유하신 분",
+   "short": "알려진 공격 패턴(시그니처)만이 아니라 ‘평소와 다르다’로 잡는 이상행위 분석을 5년 해 본 사람.",
+   "why": "시그니처는 알려진 공격만 잡습니다. 2025년 사고처럼 정상 토큰 모양으로 들어온 내부자 접근은 패턴이 아니라 **조회량·접속 방식이 평소와 다른 것**으로만 보입니다.[11][12] NIST IDPS 지침도 시그니처 기반과 이상 기반을 서로 다른 방식으로 나눠 장단점을 설명합니다.[14]",
+   "actually": {
+    "items": [
+     "**기준선** — 출발지별 평소 접속 수·전송량·접속 시간대를 잡아 둔다.",
+     "**벗어남** — 새벽에 처음 보는 국가에서 관리 포트 접속, 평소의 100배 조회 같은 것.",
+     "**엮기** — 네트워크 이상 + 인증 실패 + 새 프로세스를 같은 시간대로 묶어 본다.",
+     "같은 조직의 위협 헌팅 자리는 통계·행동 기준선으로 이상을 찾는다고 적었다.[6]"
+    ]
+   },
+   "refs": [6, 11, 12, 14],
+   "study": ["nsm-book", "nist-800-94", "zeek-docs"]
+  },
+  {
+   "section": "qualification",
+   "quote": "IDS/IPS, NDR, NPB Switch, DDoS, SSLVA, Firewall 등 주요 보안 솔루션의 정책 수립 및 운영 경험을 보유하신 분",
+   "short": "이 팀이 실제로 돌리는 장비 목록이다. 전부가 아니어도 몇 가지는 정책을 직접 짜 본 경험이 필요하다.",
+   "why": "공고가 장비 이름을 나열한 것은 곧 이 팀의 운영 대상입니다.[1] 같은 자리의 다른 사이트 공고는 WAF 도 같이 적었습니다.[2]",
+   "actually": {
+    "intro": "장비마다 하는 일입니다.",
+    "items": [
+     "**Firewall** — 출발지·목적지·포트로 허용/차단. 정책이 쌓이면 겹치고 안 쓰는 규칙 정리가 일이다.[24]",
+     "**IDS/IPS** — 패킷 내용을 시그니처로 검사. IDS 는 알리기만, IPS 는 길목에서 막는다.[14]",
+     "**NDR** — 네트워크 흐름을 행동으로 분석해 내부 이동·유출 같은 이상을 찾는다 {추론}.",
+     "**NPB(패킷 브로커)** — 여러 링크의 복사 트래픽을 모아 걸러서 각 보안 장비에 나눠 준다.[22]",
+     "**DDoS 방어** — 트래픽 폭주를 걸러 내는 장비. 문턱값을 서비스별로 맞춘다.[23]",
+     "**SSLVA** — 암호화 트래픽을 풀어 IDS·NDR 에 보여 주고 다시 암호화한다. 개인정보·금융 사이트는 풀지 않는 예외를 둔다 {추론}."
+    ]
+   },
+   "how_far": "모든 장비의 전문가일 필요는 없지만, 트래픽이 이 장비들을 **어떤 순서로 지나가고 각자 무엇을 보는지** 한 장 그림으로 설명할 수 있어야 합니다 {추론}.",
+   "flows": [
+    {
+     "caption": "IDC 경계에서 흔한 배치 {추론}",
+     "steps": [
+      "인터넷",
+      "DDoS 방어 · 폭주 거르기",
+      "Firewall · 포트·주소 허용",
+      "IPS · 내용 검사·차단",
+      "서비스",
+      "복사(TAP) → NPB → SSLVA → IDS·NDR · 보기만 하는 쪽"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "refs": [1, 2, 14, 22, 23, 24],
+   "study": ["netsec-ko", "nist-800-41", "suricata-docs", "nist-800-94"]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 솔루션에 대한 보안 이벤트 로그 분석 및 탐지 정책 수립 경험(SIEM, NDR 등 활용)을 보유하신 분",
+   "short": "여러 장비 로그를 SIEM 에 모아 검색식으로 탐지 룰을 만들어 본 경험.",
+   "why": "장비 하나의 경보로는 판단이 안 되는 일이 많습니다. 같은 조직의 탐지 엔지니어 자리는 네트워크·OS·앱·클라우드·인증 로그로 SIEM 탐지를 만들고 SQL·Python·SPL(Splunk 검색어)을 요구했습니다.[4]",
+   "actually": {
+    "items": [
+     "필드 정규화 후 검색식 — 출발지·목적지·사용자·동작으로 묶어 센다.[15]",
+     "상관 룰 — ‘방화벽 차단 50번 뒤 같은 IP 의 허용 접속 1번’처럼 순서를 본다.",
+     "벤더에 묶이지 않는 룰 형식으로 Sigma 가 있다. 3,000개 넘는 공개 룰이 있다.[20]"
+    ]
+   },
+   "refs": [4, 15, 20],
+   "study": ["sigma", "tde-ko", "nist-800-92"]
+  },
+  {
+   "section": "qualification",
+   "quote": "해외 출장 시 필요한 비자, 여권 등 관련 서류에 결격 사유가 없으신 분",
+   "short": "국내외 IDC·사무실이 업무 범위라 해외 현장에 직접 갈 수 있어야 한다.",
+   "why": "업무 첫 줄이 ‘국내외 IDC/Office’입니다.[1] 쿠팡은 대만 등 해외로 보안 조직을 넓히는 중입니다.[8] 장비 설치·교체는 원격으로 다 못 합니다 {추론}.",
+   "refs": [1, 8]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터와 인사이트를 기반으로 이해관계자를 설득하고 공감대를 형성할 수 있는 뛰어난 커뮤니케이션 역량을 보유하신 분",
+   "short": "‘이 장비를 사자’, ‘이 정책을 바꾸자’를 탐지 숫자로 설득하는 능력.",
+   "why": "보안 정책을 바꾸면 다른 팀의 서비스가 영향을 받습니다. PoC 결과·정탐률·빈칸 표 같은 숫자가 설득의 재료입니다.[1] 전형에 ‘핵심 역량 인터뷰’가 따로 있습니다.[1]",
+   "how_far": "면접에서 ‘숫자로 사람을 움직인 경험’ 하나를 상황·근거·결과로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [1]
+  },
+  {
+   "section": "preference",
+   "quote": "보안, 네트워크, 시스템 관련 자격증(CCIE, CISSP, 네트워크관리사, 정보보안기사, 정보처리기사 등)을 보유하신 분",
+   "short": "자격증은 우대일 뿐 필수가 아니다. 국제 자격(CCIE·CISSP)과 국내 자격이 같은 줄에 있다.",
+   "why": "CCIE 는 Cisco 의 최상위 네트워크 자격, CISSP 는 ISC2 의 보안 관리 자격으로 8개 영역·5년 실무 경력을 요구합니다.[32] 국내 정보보안기사·네트워크관리사·정보처리기사도 같이 적어 문턱을 낮췄습니다.[1]",
+   "how_far": "경력 5년 이상이면 CISSP 경력 조건도 채울 수 있습니다.[32] 자격증 하나보다 요건의 장비 경험이 먼저입니다 {추론}.",
+   "refs": [1, 32],
+   "study": ["cissp"]
+  },
+  {
+   "section": "preference",
+   "quote": "SQL 쿼리 작성, 데이터 시각화 등 데이터 분석 관련 업무 지식을 보유하신 분",
+   "short": "로그를 SQL 로 집계하고 그래프로 보이는 능력 — 리포트·대시보드 업무와 바로 이어진다.",
+   "why": "업무에 로그 분석·리포트·대시보드가 있고[1], 같은 조직의 탐지 엔지니어·CTEM 자리도 SQL 을 요구합니다.[4][5]",
+   "level": {
+    "basic": "SELECT · WHERE · GROUP BY · COUNT(DISTINCT) · JOIN",
+    "work": "시간 창 집계 · 윈도우 함수(LAG 로 이전 접속과 비교) · 대용량에서 기간 조건 먼저",
+    "team": "SIEM 검색어(SPL 등)와 SQL 을 오가며 같은 탐지를 두 가지로 써 보기"
+   },
+   "refs": [1, 4, 5],
+   "study": ["sql-levelup"]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, Azure, GCP 등 클라우드 플랫폼 환경에서 네트워크 보안 구성 및 정책 관리 경험을 보유하신 분",
+   "short": "IDC 밖 클라우드에서도 방화벽·흐름 로그를 같은 기준으로 다뤄 본 경험.",
+   "why": "같은 조직의 탐지 엔지니어 자리는 AWS 보안 로그를 요구했습니다.[4] 클라우드에는 물리 장비 대신 관리형 방화벽·흐름 로그가 있어 가시성을 만드는 방법이 다릅니다 {추론}.",
+   "actually": {
+    "items": [
+     "흐름 로그(VPC Flow Logs) — 누가 누구에게 몇 바이트 보냈나. 패킷 내용은 없다.",
+     "관리형 방화벽(AWS Network Firewall 등)을 경로에 끼워 IDS 룰을 건다.",
+     "IDC 와 클라우드 사이 구간이 가시성 빈칸이 되기 쉽다 {추론}."
+    ]
+   },
+   "refs": [4],
+   "study": ["aws-nfw", "vpc-flowlogs"]
+  },
+  {
+   "section": "preference",
+   "quote": "글로벌 보안 프로젝트 또는 다국적 환경에서의 협업 경험을 보유하신 분",
+   "short": "해외 거점·해외 팀과 같이 일하는 자리라서.",
+   "why": "쿠팡 보안 조직에는 한국·미국·대만 팀이 있고, 위협 관리 팀장은 아시아에서 사람 구하기가 어렵다고 말했습니다.[8] 해외 IDC 작업은 현지 팀·벤더와 시차를 두고 진행됩니다 {추론}.",
+   "refs": [8]
+  },
+  {
+   "section": "preference",
+   "quote": "OWASP, MITRE ATT&CK 관련 지식 또는 실제 적용 경험을 보유하신 분",
+   "short": "웹 공격 목록(OWASP)과 공격자 기법 사전(ATT&CK)으로 탐지 범위를 말할 수 있는 사람.",
+   "why": "같은 조직의 위협 헌팅·CTEM 자리가 ATT&CK 으로 탐지 범위를 잰다고 적었습니다.[5][6] OWASP Top 10 은 웹 애플리케이션 위험의 표준 목록이고 지금 판은 2025년판입니다.[31]",
+   "actually": {
+    "items": [
+     "ATT&CK — 기법마다 번호가 있어 ‘T1046 네트워크 서비스 스캔은 이 룰이 잡는다’처럼 표를 만든다.[21]",
+     "OWASP — IPS·WAF 의 웹 공격 시그니처가 어떤 위험 분류에 해당하는지 말할 수 있다.[31]"
+    ]
+   },
+   "refs": [5, 6, 21, 31],
+   "study": ["attack", "owasp-top10"]
+  },
+  {
+   "section": "preference",
+   "quote": "원활한 영어 커뮤니케이션 역량을 보유하신 분",
+   "short": "공고가 영어 사이트에 올라오고, 해외 팀·벤더·문서가 영어라서.",
+   "why": "이 공고는 쿠팡의 글로벌 채용 사이트에 올라와 있고[1], 같은 조직의 CTEM 자리는 글로벌 협업용 영어를 적었습니다.[5] 보안 장비 문서·벤더 지원도 대부분 영어입니다 {추론}.",
+   "refs": [1, 5]
+  },
+  {
+   "section": "preference",
+   "quote": "Python, Go, JavaScript 등 프로그래밍 언어 활용 역량을 보유하신 분",
+   "short": "자동화 업무용이다. 장비 API 를 부르고 로그를 다듬는 스크립트 수준이면 충분하다.",
+   "why": "업무에 ‘운영 자동화’가 있고[1], 같은 팀의 이전 웹 보안 공고도 같은 세 언어를 적었습니다.[7]",
+   "how_far": "서비스 개발 수준이 아니라 **API 호출·JSON 처리·로그 파싱·스케줄 실행**이 되면 됩니다. 위 두 예제 정도를 스스로 짤 수 있는 것이 최소선입니다 {추론}.",
+   "refs": [1, 7],
+   "study": ["npa2"]
+  }
+ ],
+ "fit": {
+  "good": [
+   "네트워크 장비를 오래 만졌고 이제 ‘무엇을 잡나’로 넘어가고 싶은 사람",
+   "헛경보를 줄여 가는 꾸준한 개선이 즐거운 사람",
+   "웹·이메일·엔드포인트까지 보안 전반으로 넓히고 싶은 사람 — 팀 소개가 꼽은 장점[1]",
+   "해외 거점 작업과 출장이 괜찮은 사람[1]"
+  ],
+  "hard": [
+   "경력 요건이 두 번(네트워크 5년·탐지 5년) 나오고 다른 사이트 공고는 10~25년이다 — 주니어에게는 문이 좁다[1][2]",
+   "장비 운영·자산 관리·문서화처럼 눈에 덜 띄는 일이 업무의 절반이다",
+   "큰 사고 뒤라 규제·감사 대응과 보고 압박이 크다[11][13]",
+   "인라인 장비 작업은 실수 하나가 서비스 장애로 이어진다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "IPS 가 HTTPS 공격을 못 잡았습니다. 어디부터 보겠어요?",
+   "a": "복호화(SSLVA)·복사 지점·룰 순서로 가시성부터 가르는지 본다.[22]"
+  },
+  {
+   "q": "한 달에 경보 수천 건이 뜨는데 대부분 오탐인 룰이 있습니다. 어떻게 하겠어요?",
+   "a": "예외를 좁게, 미탐은 따로 — 업무 다섯째 줄.[19]"
+  },
+  {
+   "q": "정상 토큰처럼 보이는 내부 접근으로 대량 조회가 일어나면 네트워크 쪽에서 무엇을 볼 수 있나요?",
+   "a": "2025년 사고 조사단의 지적과 이상행위 요건.[11][12]"
+  },
+  {
+   "q": "방화벽이 HA 로 묶여 있는데 둘 다 죽으면 fail-open 과 fail-close 중 무엇을 고르겠어요?",
+   "a": "구간마다 다른 판단과 DR 계획.[16]"
+  },
+  {
+   "q": "우리 탐지가 ATT&CK 의 어느 기법을 못 잡는지 어떻게 알아내겠어요?",
+   "a": "같은 조직 GHOST 팀이 하는 빈칸 분석.[5][21]"
+  }
+ ],
+ "sources": [
+  {"n": 1, "title": "Coupang Careers · Senior, Network Security Engineer (Detection Operations)", "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8203405", "kind": "posting", "date": "2026-11-23", "note": "팀 소개·업무·요건·우대·전형(서류 → 직무 적합성 → 핵심 역량 → 합격)·정규직 수습 12주. 연봉·복지 표기 없음"},
+  {"n": 2, "title": "리멤버 · [쿠팡] 네트워크 보안 엔지니어 (Detection Operations) 경력직", "url": "https://career.rememberapp.co.kr/job/posting/341558", "kind": "posting", "note": "같은 자리 — 경력 10~25년, WAF 포함, 연봉협의, 복지 태그(금액 없음)"},
+  {"n": 3, "title": "원티드 · [쿠팡] Senior~Staff, Security Engineer (Web Security)", "url": "https://www.wanted.co.kr/wd/394615", "kind": "posting", "note": "같은 Detection Operations 팀 웹 보안 자리 — 플레이북·WAF·디도스, 학사 또는 동등 경험, 근무지 아차산로 412 이스트폴 타워 A"},
+  {"n": 4, "title": "원티드 · [쿠팡] Sr. Threat Detection Engineer (Detection Engineering)", "url": "https://www.wanted.co.kr/wd/388331", "kind": "posting", "note": "같은 보안 조직(Digital Trust) — Detection-as-Code, SIEM 룰(SQL·Python·SPL), 네트워크·OS·앱·클라우드·인증 로그, AWS 보안 로그"},
+  {"n": 5, "title": "원티드 · [쿠팡] CTEM Platform Engineer (GHOST)", "url": "https://www.wanted.co.kr/wd/390009", "kind": "posting", "note": "같은 조직 — 장비 로그 → ATT&CK 탐지 범위 이어 보기, 탐지 빈칸 분석, BAS, SQL, 영어"},
+  {"n": 6, "title": "원티드 · [쿠팡] Cyber Threat Hunting (GHOST, 마감)", "url": "https://www.wanted.co.kr/wd/390010", "kind": "posting", "note": "SOC·IR·Insider Threat·Detection Engineering·TI 와 협업, 통계·행동 기준선, Python 자동화"},
+  {"n": 7, "title": "원티드 · [쿠팡] Web Security Engineer (Blue Operations, 마감)", "url": "https://www.wanted.co.kr/wd/327332", "kind": "posting", "note": "이전 공고 — 블루팀은 SOC·DART·Detection Engineering·Blue Operations, SOP·자동화, Python/Go/JavaScript"},
+  {"n": 8, "title": "Forrester · Inside An E-Commerce Giant’s Threat Intelligence Strategy", "url": "https://www.forrester.com/blogs/inside-an-e-commerce-giants-threat-intelligence-strategy/", "kind": "company", "date": "2025-10-05", "note": "쿠팡 위협 관리 팀장 인터뷰 — 2024년 중반 CISO 밑에 신설, 위협 정보·헌팅·공격 모의·탐지 엔지니어링, 체류 시간 단축, 대만 확장, 아시아 채용 어려움"},
+  {"n": 9, "title": "보안뉴스 · [ISEC 2025] 쿠팡 ‘레드팀-위협정보팀 협업 기반 선제적 보안’", "url": "https://www.boannews.com/news/articleView.html?idxno=138898", "kind": "company", "date": "2025-08-26", "note": "쿠팡 디렉터 키노트 기사 — 레드팀이 탐지 안 된 약점 찾기, 위협 정보로 탐지(CTD)·제거, 2024 정보보호 투자 860억원"},
+  {"n": 10, "title": "Board Cybersecurity · Coupang 10-K(2025 회계연도) 사이버보안 항목 정리", "url": "https://www.board-cybersecurity.com/annual-reports/tracker/20260226-coupang-inc-cybersecurity-10k", "kind": "reference", "date": "2026-02-26", "note": "10-K 원문 대신 정리 페이지 — 보안 조직 200명 이상, ISO 27001·27017·27701·ISMS-P"},
+  {"n": 11, "title": "바이라인네트워크 · 쿠팡 3367만건 고객정보 유출 공식 확인", "url": "https://byline.network/2026/02/10-611/", "kind": "news", "date": "2026-02-10", "note": "민관합동조사단 결과 — 위·변조 출입 토큰으로 게이트웨이 통과, 비정상 접속 미탐지, 로그 보존 설정으로 웹 로그 약 5개월 삭제, 권고: 토큰 발급·사용 이력, 비정상 접속 탐지 강화, 로그 보존"},
+  {"n": 12, "title": "머니투데이 · 조사단이 밝힌 쿠팡의 잘못", "url": "https://www.mt.co.kr/tech/2026/02/10/2026021013535454383", "kind": "news", "date": "2026-02-10", "note": "정상 발급 여부 검증 체계 부재, 서명키가 개발자 노트북에, 위·변조 출입증 접속 미탐지·미차단, 배송·주문 페이지에 사용자 식별자 로그 없음"},
+  {"n": 13, "title": "뉴시스 · 쿠팡 해킹 개인정보, 제3자 전송 확인 안돼…재발 방지책 마련", "url": "https://www.newsis.com/view/NISX20260210_0003510021", "kind": "news", "date": "2026-02-10", "note": "웹 로그 25.6TB·6,642억 건 분석, CISO 보고 뒤 24시간 넘겨 신고 → 과태료, 자료 보전 명령 미이행"},
+  {"n": 14, "title": "NIST SP 800-94 · Guide to Intrusion Detection and Prevention Systems (IDPS)", "url": "https://csrc.nist.gov/pubs/sp/800/94/final", "kind": "reference", "date": "2007-02", "note": "네트워크·무선·행동 분석·호스트 IDPS, 시그니처·이상 기반 탐지"},
+  {"n": 15, "title": "NIST SP 800-92 · Guide to Computer Security Log Management", "url": "https://csrc.nist.gov/pubs/sp/800/92/final", "kind": "reference", "date": "2006-09"},
+  {"n": 16, "title": "NIST SP 800-34 Rev. 1 · Contingency Planning Guide", "url": "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final", "kind": "reference", "date": "2010-11", "note": "영향 분석(BIA)·복구 목표·시험과 훈련"},
+  {"n": 17, "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations", "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final", "kind": "reference", "date": "2025-04-03", "note": "CSF 2.0 틀로 다시 쓴 사고 대응 지침, Rev. 2 대체"},
+  {"n": 18, "title": "CISA · Federal Government Cybersecurity Incident and Vulnerability Response Playbooks", "url": "https://www.cisa.gov/resources-tools/resources/federal-government-cybersecurity-incident-and-vulnerability-response-playbooks", "kind": "reference"},
+  {"n": 19, "title": "Palantir · Alerting and Detection Strategy Framework", "url": "https://github.com/palantir/alerting-detection-strategy-framework", "kind": "reference", "note": "룰마다 목적·사각지대·오탐·검증 칸을 적는 틀(MIT)"},
+  {"n": 20, "title": "SigmaHQ · Sigma 룰 저장소", "url": "https://github.com/SigmaHQ/sigma", "kind": "reference", "note": "벤더 중립 로그 탐지 룰 형식, 3,000개 넘는 룰"},
+  {"n": 21, "title": "MITRE ATT&CK", "url": "https://attack.mitre.org/", "kind": "reference"},
+  {"n": 22, "title": "Wikipedia · Data monitoring switch (Network packet broker)", "url": "https://en.wikipedia.org/wiki/Data_monitoring_switch", "kind": "reference", "note": "여러 링크의 트래픽을 모아 걸러 모니터링 도구에 나눠 주는 장비"},
+  {"n": 23, "title": "RFC 4987 · TCP SYN Flooding Attacks and Common Mitigations", "url": "https://www.rfc-editor.org/rfc/rfc4987", "kind": "reference", "date": "2007"},
+  {"n": 24, "title": "NIST SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy", "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final", "kind": "reference", "date": "2009"},
+  {"n": 25, "title": "자소설닷컴 · 쿠팡", "url": "https://jasoseol.com/companies/192", "kind": "reference", "note": "공공데이터 기반 초봉·평균, 기준 연도 없음"},
+  {"n": 26, "title": "자소설닷컴 · 네이버", "url": "https://jasoseol.com/companies/511", "kind": "reference", "note": "같은 방식의 비교 값"},
+  {"n": 27, "title": "원티드 · 쿠팡 회사 정보", "url": "https://www.wanted.co.kr/company/53", "kind": "reference", "note": "평균연봉·고용보험 가입 인원"},
+  {"n": 28, "title": "원티드 · 지마켓 회사 정보", "url": "https://www.wanted.co.kr/company/373", "kind": "reference", "note": "같은 방식의 비교 값"},
+  {"n": 29, "title": "원티드 · [쿠팡] 카탈로그 Taxonomy 및 데이터 분석 PM (혜택 및 복지 칸)", "url": "https://www.wanted.co.kr/wd/396324", "kind": "posting", "date": "2026-11", "note": "같은 회사 다른 공고의 복리후생 — 금액이 적힌 항목"},
+  {"n": 30, "title": "아시아경제 · 이스트폴(구의역 KT 부지 개발)과 쿠팡 입주", "url": "https://www.asiae.co.kr/en/article/2025081219080020350", "kind": "news", "date": "2025-08", "note": "구의역 인근, 쿠팡 직원 약 7,000명 입주"},
+  {"n": 31, "title": "OWASP Top 10", "url": "https://owasp.org/www-project-top-ten/", "kind": "reference", "note": "현재 2025년판"},
+  {"n": 32, "title": "ISC2 · CISSP", "url": "https://www.isc2.org/certifications/cissp", "kind": "reference", "note": "8개 영역, 실무 경력 5년, 2027-04-15 새 시험 범위"}
+ ],
+ "caveat": "쿠팡 Detection Operations 팀이 어떤 장비 제품·SIEM 을 쓰는지, 탐지 룰을 어떻게 관리하는지는 공개 발표가 없습니다(회사 발표 영상은 찾지 못했다). 같은 보안 조직의 다른 공고·인터뷰·키노트 기사와 2026년 2월 정부 조사 결과로 이 팀이 놓인 상황을 보였고, 장비·절차는 NIST·CISA·공개 탐지 틀로 ‘보통 이런 것’을 보였습니다. 경력 요건이 사이트마다 다르니(5년 / 10~25년) 지원 전에 확인하세요.",
+ "resources": [
+  {"id": "coupang-isec", "title": "[ISEC 2025] 쿠팡 ‘레드팀-위협정보팀 협업 기반 선제적 보안’", "by": "보안뉴스 · 2025-08", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.boannews.com/news/articleView.html?idxno=138898", "why": "이 팀이 속한 보안 조직이 탐지를 어떻게 바라보는지 — 레드팀이 찾은 미탐을 탐지로 되먹이는 구조. 면접 전에 읽는다."},
+  {"id": "net-intro-ko", "title": "IT 엔지니어를 위한 네트워크 입문", "by": "고재성", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://ridibooks.com/books/754029945", "why": "L3·L4·L7, 로드밸런서·방화벽 동작을 한국어로 처음부터 — 네트워크 5년 요건의 빈 곳을 메우는 출발점."},
+  {"id": "netsec-ko", "title": "처음 배우는 네트워크 보안", "by": "장상근 · 한빛미디어 · 2021", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942552", "why": "방화벽·NIDS/NIPS(Suricata)·관제 센터 구축까지 — 공고가 나열한 장비들을 한 흐름으로 보는 한국어 책."},
+  {"id": "tde-ko", "title": "실전 위협 탐지 엔지니어링", "by": "메건 로디 · 제이슨 데이알싱 · 게리 J. 캐츠 · 서도현 옮김 · 에이콘출판 · 2026", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012746248", "why": "탐지 룰의 설계·개발·검증과 효과 측정 — 룰 관리와 정탐/오탐/미탐 분석 업무 그대로."},
+  {"id": "nsm-book", "title": "The Practice of Network Security Monitoring", "by": "Richard Bejtlich · No Starch Press · 2013", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://nostarch.com/nsm", "why": "네트워크에서 무엇을 모아야 탐지·대응이 되나 — ‘보안 가시성’ 업무의 교과서. 앞 장(수집·배치)부터."},
+  {"id": "ppa3", "title": "Practical Packet Analysis, 3rd Edition", "by": "Chris Sanders · No Starch Press · 2017", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://nostarch.com/packetanalysis3", "why": "Wireshark 로 장애·공격 패킷을 읽는 사례 — L3~L7 운영 요건과 사고 때 증거 보기."},
+  {"id": "nist-800-94", "title": "NIST SP 800-94 · Guide to IDPS", "by": "NIST · 2007", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://csrc.nist.gov/pubs/sp/800/94/final", "why": "IDS/IPS 종류·배치·시그니처와 이상 기반 탐지의 차이 — 요건 둘째·넷째 줄의 바탕."},
+  {"id": "nist-800-41", "title": "NIST SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy", "by": "NIST · 2009", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final", "why": "방화벽 배치와 정책 작성·관리 원칙 — 신규 구축과 정책 운영 업무."},
+  {"id": "nist-800-92", "title": "NIST SP 800-92 · Guide to Computer Security Log Management", "by": "NIST · 2006", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://csrc.nist.gov/pubs/sp/800/92/final", "why": "로그 수집·보존·분석 체계 — 로그 분석·대시보드 업무와 로그 보존 기간 정하기."},
+  {"id": "nist-800-34", "title": "NIST SP 800-34 Rev. 1 · Contingency Planning Guide", "by": "NIST · 2010", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final", "why": "영향 분석·복구 목표·훈련 — 보안 장비 재해복구 계획 업무의 틀."},
+  {"id": "nist-800-61", "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations", "by": "NIST · 2025", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final", "why": "최신 사고 대응 지침 — 인시던트 대응 업무와 회고로 탐지를 고치는 흐름."},
+  {"id": "cisa-playbook", "title": "Cybersecurity Incident & Vulnerability Response Playbooks", "by": "CISA", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.cisa.gov/resources-tools/resources/federal-government-cybersecurity-incident-and-vulnerability-response-playbooks", "why": "플레이북이 실제로 어떻게 생겼나 — 시나리오·Playbook 작성 업무의 본보기."},
+  {"id": "palantir-ads", "title": "Alerting and Detection Strategy Framework", "by": "Palantir", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://github.com/palantir/alerting-detection-strategy-framework", "why": "룰마다 목적·사각지대·오탐·검증을 적는 양식 — 탐지 룰 관리 업무를 문서로 하는 법."},
+  {"id": "sigma", "title": "Sigma 룰 저장소", "by": "SigmaHQ", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://github.com/SigmaHQ/sigma", "why": "SIEM 에 상관없이 쓰는 공개 탐지 룰 3,000여 개 — SIEM 탐지 정책 요건을 읽고 따라 써 보는 교재."},
+  {"id": "suricata-docs", "title": "Suricata Rules", "by": "Suricata 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.suricata.io/en/latest/rules/intro.html", "why": "오픈소스 IDS/IPS 의 시그니처 문법 — 장비 회사마다 문법은 달라도 구조(동작·헤더·조건)가 같다."},
+  {"id": "zeek-docs", "title": "Zeek Documentation", "by": "Zeek 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.zeek.org/en/master/", "why": "트래픽을 연결·DNS·HTTP 로그로 바꾸는 오픈소스 — NDR·이상행위 분석의 재료가 어떻게 생기는지 손으로 본다."},
+  {"id": "attack", "title": "MITRE ATT&CK", "by": "MITRE", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://attack.mitre.org/", "why": "공격 기법 사전 — 우대 요건이자 탐지 빈칸 표의 세로축."},
+  {"id": "owasp-top10", "title": "OWASP Top 10 (2025)", "by": "OWASP", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://owasp.org/www-project-top-ten/", "why": "웹 애플리케이션 위험 목록 — IPS·WAF 웹 시그니처를 분류해 말하는 기준."},
+  {"id": "rfc4987", "title": "RFC 4987 · TCP SYN Flooding Attacks and Common Mitigations", "by": "IETF · 2007", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.rfc-editor.org/rfc/rfc4987", "why": "SYN 폭주와 방어 원리 — 디도스 장비 정책을 왜 그렇게 거는지."},
+  {"id": "aws-nfw", "title": "What is AWS Network Firewall?", "by": "AWS 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.aws.amazon.com/network-firewall/latest/developerguide/what-is-aws-network-firewall.html", "why": "클라우드에서 IDS 룰을 거는 관리형 방화벽 — 클라우드 네트워크 보안 우대 요건."},
+  {"id": "vpc-flowlogs", "title": "Logging IP traffic using VPC Flow Logs", "by": "AWS 문서", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html", "why": "클라우드 흐름 로그에 무엇이 남고 무엇이 안 남나 — 클라우드 쪽 가시성의 출발점."},
+  {"id": "npa2", "title": "Network Programmability and Automation, 2nd Edition", "by": "Matt Oswalt · Christian Adell · Scott S. Lowe · Jason Edelman · O'Reilly · 2023", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.oreilly.com/library/view/network-programmability-and/9781098110826/", "why": "네트워크 엔지니어의 Python·API·Git·Ansible — 운영 자동화 업무와 프로그래밍 우대 요건."},
+  {"id": "sql-levelup", "title": "SQL 레벨업", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85", "why": "CASE·윈도우 함수로 한 번에 집계하기 — 로그 리포트와 SQL 우대 요건."},
+  {"id": "cissp", "title": "CISSP", "by": "ISC2", "kind": "course", "lang": "en", "free": false, "level": "심화", "url": "https://www.isc2.org/certifications/cissp", "why": "우대 자격증 중 보안 관리 쪽 — 8개 영역으로 보안 전반을 한 번 훑는다. 2027-04 시험 범위가 바뀐다."}
+ ],
+ "study_path": [
+  {"title": "장비 지도 그리기", "time": "1~2주", "goal": "공고가 나열한 장비(Firewall·IPS·NDR·NPB·DDoS·SSLVA)가 트래픽의 어디에 서서 무엇을 보는지 한 장으로 설명한다.", "resources": ["netsec-ko", "net-intro-ko", "nist-800-41", "nist-800-94"], "task": "가상 IDC 하나(인터넷 → 서비스 → DB, 사무실 연결 포함)를 그리고 장비를 배치한 뒤, 구간마다 ‘이 장비는 무엇을 못 보나’를 적은 가시성 표를 만든다."},
+  {"title": "패킷과 로그 손으로 읽기", "time": "2~3주", "goal": "패킷 캡처와 Zeek 로그로 스캔·SYN 폭주·이상 전송을 직접 찾는다.", "resources": ["ppa3", "nsm-book", "zeek-docs", "rfc4987"], "task": "가상 머신 두 대로 nmap 스캔과 대량 전송을 일으켜 캡처하고, Wireshark 와 Zeek 로그에서 각각 찾아 무엇이 같고 다른지 정리한다."},
+  {"title": "탐지 룰 만들고 재기", "time": "2~4주", "goal": "IDS 시그니처와 SIEM 검색식을 쓰고, 정탐률·미탐을 숫자로 잰다.", "resources": ["suricata-docs", "sigma", "palantir-ads", "tde-ko"], "task": "Suricata 를 띄워 2단계 트래픽에 룰 3개를 걸고, 룰마다 ADS 양식(목적·사각지대·오탐·검증)을 채운다. 예외 하나를 넣기 전후의 정밀도를 위 예제처럼 계산한다."},
+  {"title": "빈칸 표와 플레이북", "time": "1~2주", "goal": "ATT&CK 기법별로 무엇을 잡고 못 잡는지 표로 보이고, 경보 하나의 대응 순서를 문서로 만든다.", "resources": ["attack", "cisa-playbook", "nist-800-61"], "task": "네트워크 관련 ATT&CK 기법 10개를 골라 3단계 룰로 잡히는지 표를 만들고, ‘외부 포트 스캔 후 허용 접속 발생’ 플레이북을 판단 기준·조치·넘길 곳까지 쓴다."},
+  {"title": "자동화와 대시보드 (계속)", "time": "계속", "goal": "로그를 SQL 로 집계하고 상태 점검·보고서를 스크립트로 돌린다.", "resources": ["npa2", "sql-levelup", "nist-800-92", "nist-800-34"], "task": "3단계 경보 로그를 SQLite 에 넣어 룰별 일간 경보 수·정탐률·장비별 로그 유입량(0 이면 알림)을 뽑는 스크립트를 만들고, 장비 하나가 죽었을 때의 DR 점검표를 붙인다."}
+ ],
+ "pay": {
+  "summary": "공고에 연봉 표기는 없다(연봉협의). 집계 사이트 기준 쿠팡(주) 초봉 **약 3,531만원**·평균 **약 5,175만원** — 물류·운영 인력이 섞인 회사 전체 값이라 경력 5~25년 보안 엔지니어와는 거리가 크다",
+  "rows": [
+   {"label": "신입 초봉", "value": "약 3,531만원", "amount": 3531, "basis": "공공데이터 집계", "note": "자소설닷컴 쿠팡 회사 페이지. 기업이 공공데이터에 낸 정보로 계산한 값이고 기준 연도·직군 구분이 없다 [25]"},
+   {"label": "직원 평균 연봉", "value": "약 5,175만원", "amount": 5175, "basis": "공공데이터 집계", "note": "같은 페이지의 평균. 경력직·전 직군이 섞인 값 [25]"},
+   {"label": "직원 평균 연봉 (원티드)", "value": "5,856만원", "amount": 5856, "basis": "공공데이터 집계", "note": "원티드 회사 페이지 표기, 기준일 표기 없음 [27]"},
+   {"label": "네이버 평균", "value": "약 7,602만원", "amount": 7602, "peer": true, "basis": "공공데이터 집계", "note": "자소설닷컴 같은 방식의 값 [26]"},
+   {"label": "지마켓 평균", "value": "6,032만원", "amount": 6032, "peer": true, "basis": "공공데이터 집계", "note": "원티드 같은 방식의 값 [28]"}
+  ],
+  "how": "쿠팡(주)은 미국 상장사 쿠팡 Inc.의 국내 자회사라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **공시 숫자 없음**. 다른 사이트의 같은 공고는 '연봉협의'다 [2]. 직급과 업무 범위는 후보자 경력으로 정하고 최종 합격 전에 알려 준다고 공고에 적혀 있다 [1]. 위 평균은 운영·물류 직군이 섞여 시니어 보안 경력직 연봉보다 낮게 나올 가능성이 크다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {"name": "근무", "detail": "주 5일 유연근무제"},
+   {"name": "휴가", "detail": "사유 없이 연차 사용"},
+   {"name": "보험", "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"},
+   {"name": "쇼핑", "detail": "쿠팡 구매금액 5% 캐시백(연 최대 400만원)"},
+   {"name": "건강", "detail": "연 1회 건강검진"},
+   {"name": "상여·경조", "detail": "명절 상여금, 경조금·경조휴가"},
+   {"name": "배움", "detail": "사내 기술 공유 스터디, 외국어·직무 교육 프로그램"},
+   {"name": "사내 시설", "detail": "휴게 공간, 커피·차·간식, 사내 식당"},
+   {"name": "그 밖의 표시", "detail": "재택근무제·식대 지원·저녁 제공·성과급·사내대출·휴양시설·임신/출산 지원(금액 표기 없음)"}
+  ],
+  "note": "이 공고(그린하우스)에는 복지 칸이 없다 [1]. 위 금액·조건은 같은 회사 다른 공고의 '혜택 및 복지' 칸(2026-11) [29]이고, 마지막 줄은 같은 자리 리멤버 공고의 복지 태그다 [2]. 회사 공통 항목으로 보이지만 이 팀에 그대로 적용되는지는 처우 협의 때 확인한다 {추론}. 수습 12주가 있다 [1]."
+ },
+ "location": {
+  "name": "쿠팡 본사 (이스트폴 타워)",
+  "address": "서울특별시 광진구 아차산로 412, 이스트폴 타워 A",
+  "postal": "05050",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 [30]",
+  "note": "이 공고의 근무지 표기는 'Seoul, South Korea' 뿐이다 [1]. 같은 Detection Operations 팀의 웹 보안 공고가 근무지를 아차산로 412 이스트폴 타워 A 로 적었다 [3]. 업무에 국내외 IDC·사무실 현장 작업과 해외 출장이 있다 [1]."
+ }
+}
