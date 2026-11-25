@@ -466,6 +466,8 @@
   "ats-smilegate:group:6145": "smilegate-ai-web-service-dev",
   "boards-gamejob:dev:285795": "smilegate-lostark-game-data-engineer",
   "ats-smilegate:group:4590": "smilegate-lostark-game-data-engineer",
+  "jobkorea-50244585": "smilegate-security-analysis-lead",
+  "ats-smilegate:group:6270": "smilegate-security-analysis-lead",
   "wanted-386999": "speee-dx-sre",
   "wanted-393877": "speee-realestate-senior-product-engineer",
   "wanted-389900": "technopro-cloud-engineer-aws-japan",
@@ -4401,6 +4403,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 18
+  },
+  {
+   "id": "smilegate-security-analysis-lead",
+   "company": "스마일게이트",
+   "role": "정보보안 분석 담당 (팀장급)",
+   "jobs": [
+    "jobkorea-50244585",
+    "ats-smilegate:group:6270"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 21
   },
   {
    "id": "speee-dx-sre",
