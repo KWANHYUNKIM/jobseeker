@@ -236,6 +236,7 @@
   "ats-greeting:musinsa:245811": "musinsa-product-engineer-commerce",
   "ats-greeting:musinsa:245407": "musinsa-product-engineer-global-integration-open",
   "ats-greeting:musinsa:245715": "musinsa-product-engineer-global-integration",
+  "ats-greeting:musinsa:241603": "musinsa-product-engineer-member-serving",
   "ats-greeting:musinsa:241118": "musinsa-product-engineer-partner-ads-growth",
   "ats-greeting:musinsa:246226": "musinsa-product-engineer-partner-platform",
   "ats-greeting:musinsa:236337": "musinsa-product-engineer-platform-innovation",
@@ -2552,6 +2553,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "musinsa-product-engineer-member-serving",
+   "company": "무신사",
+   "role": "Product Engineer (Member&Serving)",
+   "jobs": [
+    "ats-greeting:musinsa:241603"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
   },
   {
    "id": "musinsa-product-engineer-partner-ads-growth",

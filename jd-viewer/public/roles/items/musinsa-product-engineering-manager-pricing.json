@@ -1,0 +1,1079 @@
+{
+ "id": "musinsa-product-engineering-manager-pricing",
+ "company": "무신사",
+ "role": "Product Engineering Manager (프라이싱)",
+ "team": "무신사 테크 · 프라이싱 개발팀",
+ "jobs": [
+  "ats-greeting:musinsa:239873"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사·29CM·글로벌·오프라인 매장의 **가격·할인·쿠폰·프로모션 엔진을 하나의 멀티테넌트 'Pricing Biz Platform'** 으로 합치는 팀을 이끕니다.[1]",
+  "env": "운영자·파트너가 할인·쿠폰·수수료 정책을 직접 넣는 제품이고[2], 무진장 블랙프라이데이처럼 분당 주문 수천 건이 몰리는 피크를 견뎌야 합니다.[1][5] 서버·웹·모바일을 묶은 Product Engineer 직군이 AI 코딩 에이전트와 일합니다.[1]",
+  "oneline": "할인 계산을 직접 짜기보다 **무엇을 공통으로 만들고, 블프 전에 무엇을 끝내고, 사람을 어디에 둘지** 정하는 12년+ 리더 자리 {추론}."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Pricing Biz Platform 방향성 수립 및 로드맵 관리: 무신사, 29CM, 오프라인 등 다양한 자사 서비스의 프라이싱 요구를 수용하는 비즈니스 플랫폼의 중장기 방향성을 수립하고, 실행 로드맵을 관리합니다.",
+   "short": "무신사·29CM·글로벌·오프라인이 따로 갖던 가격·할인·쿠폰 엔진을 하나의 공통 플랫폼으로 모으는 길을 정하는 일.",
+   "why": "프라이싱 개발팀은 여러 온·오프라인 채널의 가격·할인·쿠폰·프로모션 엔진을 하나로 합친 'Pricing Biz Platform' 으로 가는 중이고, 여러 플랫폼이 같이 쓰는 **멀티테넌트**(한 시스템을 여러 고객사·채널이 나눠 쓰는 구조) 플랫폼을 미션으로 적었습니다.[1] 회사 전체로도 공통은 코어에 두고 채널 고유 기능만 따로 두는 OCMP(One Core Multi Platform)를 만들고 있습니다.[1][10] 출발점도 공개돼 있습니다 — 무신사 쿠폰 시스템은 15년 동안 쌓인 표 구조와 들쭉날쭉한 데이터 모델 때문에 DB 가 버거웠고, 세일개발팀이 이를 기술 부채로 보고 갚았습니다.[31]",
+   "actually": {
+    "items": [
+     "**무엇을 공통으로 둘지 정하기** — 가격 계산·쿠폰 발급·할인 적용 순서는 공통 엔진, 채널마다 다른 화면 문구·노출은 채널 쪽에 두는 식의 경계 {추론}.",
+     "**채널(테넌트)별 차이를 설정으로** — 29CM 는 상품 쿠폰과 장바구니 쿠폰을 함께 쓰는 캠페인을 열고[7], 무신사 쿠폰은 오프라인 매장에서도 쓰이게 됐습니다.[9] 같은 엔진이 채널별 규칙을 설정값으로 받아야 합니다.",
+     "**옮기는 순서** — 한 채널씩 새 엔진으로 넘기고 옛 엔진을 조금씩 끄는 이전 방식(strangler fig, 옛 시스템을 새 시스템이 조금씩 감싸며 대체하는 방식).[28]",
+     "**분기·반기 로드맵** — 블랙프라이데이 같은 큰 행사 날짜를 기준으로 '그 전에 끝낼 것'과 '행사 뒤에 할 것'을 가른다 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "가격이 고객에게 닿기까지(일반적인 커머스 흐름 — 무신사 내부 구조는 공개되지 않음)",
+     "steps": [
+      "정책 설정 · 운영자·파트너가 할인·쿠폰·수수료 정책을 넣는다[2]",
+      "가격 계산 · 정가 → 즉시할인(세일가) → 상품 쿠폰 → 장바구니 쿠폰 순서로 적용 {추론}",
+      "노출 · 채널(무신사·29CM·글로벌·매장)별 화면에 최종가 표시",
+      "주문·결제 · 쿠폰 사용 처리, 수량 한정 쿠폰 차감",
+      "정산 · 할인액을 브랜드·플랫폼이 얼마씩 부담했는지 나눠 정산"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "방향(무엇을 공통으로, 어떤 순서로)은 이 자리가 PM·사업 쪽과 함께 정하고, 세부 설계는 팀의 엔지니어가 맡는 구조로 읽힙니다 {추론}. 최소한 '왜 이 순서인가'를 한 장 문서로 설명할 수 있어야 합니다.",
+   "refs": [
+    1,
+    7,
+    9,
+    10,
+    19,
+    28,
+    31
+   ],
+   "study": [
+    "aws-saas",
+    "strangler",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "비즈니스 요구사항 정의 및 성과 검증: PO·PM, 디자이너, 사업·운영 등 유관 조직과 협업하여 해결할 고객 문제와 우선순위를 정의합니다. 모호한 요구사항을 측정 가능한 가설로 구체화하고, 출시 이후 지표를 통해 성과를 검증하여 후속 개선으로 연결합니다.",
+   "short": "PM·디자이너·사업·운영과 '어떤 고객 문제를 먼저 풀지' 정하고, 막연한 요구를 숫자로 확인할 가설로 바꾼 뒤 출시 후 지표로 확인하는 일.",
+   "why": "무신사 PE 직군 소개가 '기능이 왜 필요한지 이해하고 출시 이후 지표로 결과를 확인해 다음 개선으로 잇는 데까지 PM과 함께 참여'한다고 적었습니다.[1] 같은 조직의 PM(프라이싱) 공고도 사업부 전략을 시스템 정책으로 옮기고 성과를 분석하는 일을 맡깁니다.[2]",
+   "actually": {
+    "items": [
+     "'쿠폰을 더 쓰게 해 달라' → '장바구니 쿠폰 노출을 바꾸면 쿠폰 사용 주문 비율이 2%p 오른다'처럼 지표·크기·기간을 정한 가설로 바꾸기 {추론}.",
+     "출시 뒤 지표(쿠폰 사용률, 할인 비용 대비 매출, 결제 전환)를 실험군·대조군으로 비교.[24]",
+     "결과가 기대와 다르면 이유를 정리해 다음 과제로 넘기기 — 실패도 기록한다.[24]"
+    ]
+   },
+   "how_far": "지표 정의와 실험 설계의 큰 틀은 PM 과 함께, 개발 쪽은 '그 지표를 정확히 남기는 로그·이벤트'와 '실험을 켜고 끄는 장치'를 책임진다고 보면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    24
+   ],
+   "study": [
+    "kohavi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "프로젝트 리소스 및 리스크 관리: 비즈니스 우선순위와 로드맵에 따라 팀 리소스를 효율적으로 배분하고, 프로젝트 일정과 의존성, 리스크를 총괄 관리합니다.",
+   "short": "행사·로드맵 우선순위에 맞춰 사람을 어디에 둘지 정하고, 일정·팀 사이 의존·위험을 미리 챙기는 일.",
+   "why": "공고가 로드맵에 따른 팀 리소스 배분과 일정·의존성·리스크 총괄을 맡겼고[1], 같은 조직 PM 공고는 블랙프라이데이 같은 대규모 프로모션에 맞춘 기능 기획과 리스크 관리를 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "행사 전 '코드 동결' 시점과 그 전에 끝낼 과제 목록을 정하기 {추론}.",
+     "결제·주문·전시 등 다른 팀에 기대는 일(의존성)을 표로 관리하고, 막히면 일찍 올리기 {추론}.",
+     "위험 목록 — 예: 수량 한정 쿠폰 초과 발급, 쿠폰과 재고가 안 맞아 발급한 쿠폰을 취소하는 일(실제로 보도된 적이 있다[8]).",
+     "행사 중 문제가 생기면 그 할인·쿠폰만 끌 수 있는 스위치(feature toggle, 코드 배포 없이 기능을 켜고 끄는 설정)를 미리 준비.[27]"
+    ]
+   },
+   "how_far": "리스크를 '없애는' 일이 아니라 **보이게 만들고 순서를 정하는** 일입니다. 위험마다 담당자·대응·마감을 적은 표를 매주 갱신할 정도면 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    8,
+    27
+   ],
+   "study": [
+    "larson-puzzle",
+    "feature-toggles"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "조직 리딩 및 구성원 성장 지원: 팀원 채용, 성과 평가, 1:1 면담, 역량 개발 지원을 통해 구성원의 성장을 돕고, 건강하고 주도적인 팀 문화를 조성합니다.",
+   "short": "팀원을 뽑고, 평가하고, 1:1 로 이야기하며 키우고, 스스로 움직이는 팀 분위기를 만드는 일.",
+   "why": "공고가 채용·성과 평가·1:1·역량 개발을 이 자리의 일로 적었습니다.[1] 무신사는 PE 직군에 AI 를 써서 인접 영역까지 푸는 사람을 원한다고 밝혀서[1], 팀원 성장도 그 방향으로 이끌어야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "채용: 서류·인터뷰 설계와 면접관 역할 — 이 회사 전형은 서류 → 1차 → 2차 인터뷰 → 처우 협의입니다.[1]",
+     "1:1: 주기적으로 일의 막힘·성장 목표·피드백을 나눈다.[29]",
+     "평가: 기대치를 미리 말로 맞추고, 근거(결과물·지표)로 평가한다.[29]",
+     "도메인 교육: 할인·쿠폰·정산 규칙은 처음 온 사람이 헷갈리기 쉬워 문서·온보딩이 중요하다 {추론}."
+    ]
+   },
+   "how_far": "직접 개발보다 사람에 쓰는 시간이 커지는 자리로 읽힙니다 {추론}. 지원서에는 '키운 사람·바꾼 팀 문화'를 사례와 숫자로 쓰는 것이 공고 작성 팁과 맞습니다.[1]",
+   "refs": [
+    1,
+    29
+   ],
+   "study": [
+    "manager-path-ko",
+    "grove-hom"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 기반 개발 및 운영 고도화: 설계·구현·테스트·코드 리뷰·운영 전반에 AI 코딩 에이전트와 자동화를 활용하여 개발 생산성, 서비스 안정성, 플랫폼 품질을 높입니다. 활용 경험과 노하우를 팀에 공유하고, 효과적인 개발·운영 방식으로 정착시킵니다.",
+   "short": "AI 코딩 에이전트로 설계·구현·테스트·리뷰·운영을 빠르게 하고, 그 방법을 팀 규칙으로 정착시키는 일.",
+   "why": "무신사는 PE 가 AI 에이전트와 함께 낯선 코드베이스까지 빠르게 파악하되 결과물 품질은 직접 검증·책임진다고 적었습니다.[1] 회사는 전사적으로 AI 도입과 ROI 를 관리한다고 밝혔습니다.[11]",
+   "actually": {
+    "items": [
+     "할인 규칙처럼 경우의 수가 많은 코드의 테스트 케이스를 에이전트로 늘리고, 사람이 기대값을 검토 {추론}.",
+     "코드 리뷰 1차를 에이전트에 맡기고, 돈 계산·권한 같은 위험한 부분은 사람이 반드시 본다 {추론}.",
+     "장애 때 로그·지표를 에이전트로 요약해 원인 후보를 빨리 좁힌다 {추론}.",
+     "효과를 리드 타임·배포 빈도·장애 복구 시간 같은 지표로 보인다.[25]"
+    ]
+   },
+   "how_far": "'써 봤다'가 아니라 **팀이 같은 방식으로 쓰게 만든 규칙**(맡길 일·사람이 볼 일·검증 방법)과 그 전후 숫자가 있어야 합니다. 지원 서류도 AI 활용 방식·결과·검증 방법을 적으라고 합니다.[1]",
+   "refs": [
+    1,
+    11,
+    25,
+    26
+   ],
+   "study": [
+    "claude-code",
+    "accelerate"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서비스 개발 및 운영 경력 12년 이상으로, Engineering Manager(EM) 또는 이에 준하는 조직 관리 및 프로젝트 리더십 경험이 3년 이상이신 분",
+   "short": "서비스를 만들고 운영한 지 12년 이상, 그중 팀을 맡거나 프로젝트를 이끈 기간이 3년 이상이어야 한다는 문턱.",
+   "why": "공고가 숫자로 정한 요건입니다.[1] 같은 회사의 다른 EM 공고(코어 파트너)는 12년에 EM 5년·팀장 관리를 요구해서[30], 이 자리는 리더 경력 문턱이 그보다 낮은 '한 팀을 맡는 EM' 쪽으로 읽힙니다 {추론}.",
+   "actually": {
+    "items": [
+     "'EM 에 준하는' 경험 — 직함이 없어도 테크 리드로 일정·사람·우선순위를 맡았다면 그 범위를 구체적으로 적는다 {추론}.",
+     "운영 경력 — 장애 대응·온콜(근무 시간 밖 장애 호출 당번) 경험이 '운영'의 증거가 된다 {추론}."
+    ]
+   },
+   "how_far": "연수 자체보다 그 기간에 **무엇을 책임졌는지**가 서류에서 보여야 합니다. 공고의 작성 팁도 프로젝트별 기여도를 표기하라고 합니다.[1]",
+   "refs": [
+    1,
+    30
+   ],
+   "study": [
+    "manager-path-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "개별 서비스 중심의 시스템을 전사 공통 비즈니스 플랫폼(Biz Platform)으로 확장하는 과정이나 프로젝트를 경험해 보신 분",
+   "short": "채널마다 따로 만든 시스템을 여러 서비스가 같이 쓰는 공통 플랫폼으로 바꿔 본 경험.",
+   "why": "이 팀의 미션이 바로 여러 채널의 가격 엔진을 하나의 멀티테넌트 비즈니스 플랫폼으로 합치는 것입니다.[1]",
+   "actually": {
+    "items": [
+     "공통 모델 정하기 — 채널마다 다른 '쿠폰' 개념(정률·정액, 상품·장바구니, 사용 범위)을 하나의 모델로 묶기.[6][18] 무신사 쿠폰 글은 범용성을 노린 과잉 설계와 고르지 않은 정규화를 문제로 꼽았습니다 — 공통화는 '다 담는 표'가 아니라는 교훈입니다.[31]",
+     "쿼리 하나에 모든 규칙을 넣지 않기 — 600줄 쿠폰 쿼리를 작은 쿼리와 애플리케이션 계산·캐시로 나눠 DB 사용률을 72.5% 에서 13.6% 로 낮춘 사례.[32]",
+     "테넌트 분리 — 한 채널의 대량 발급이 다른 채널을 느리게 하지 않게 자원·데이터를 나누는 방식(사일로·풀·혼합).[19]",
+     "이전 — 옛 시스템과 새 시스템이 같은 답을 내는지 나란히 돌려 비교한 뒤 넘기기.[28]",
+     "사용자 늘리기 — 공통 플랫폼은 다른 팀이 '써 줘야' 성공이라 API 문서·온보딩이 일이다 {추론}."
+    ]
+   },
+   "how_far": "꼭 가격 도메인일 필요는 없습니다 — 회원·결제·알림 등 다른 도메인에서 '하나를 여럿이 쓰게' 바꾼 경험이면 같은 질문(공통 모델·분리·이전)에 답할 수 있습니다 {추론}.",
+   "refs": [
+    1,
+    6,
+    18,
+    19,
+    28,
+    31,
+    32
+   ],
+   "study": [
+    "aws-saas",
+    "strangler",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "사업·기획·운영 등 다양한 이해관계자와 원활히 소통하고, 조직 간 우선순위와 리소스를 조율하실 수 있는 분",
+   "short": "사업·기획·운영 쪽과 말이 통하고, 팀 사이에서 무엇을 먼저 할지·사람을 어떻게 나눌지 조율하는 능력.",
+   "why": "할인·쿠폰·수수료 정책은 사업부와 운영자·파트너가 정하고 시스템이 그 정책을 실행합니다.[2] 이 자리가 그 사이에서 우선순위를 맞춥니다.[1]",
+   "actually": {
+    "items": [
+     "MD·마케팅이 원하는 쿠폰 조건이 엔진에 없을 때 '언제까지 무엇으로 대체'를 합의 {추론}.",
+     "운영자가 직접 설정할 수 있는 범위와 개발이 필요한 범위를 나눠 요청을 줄인다.[2]",
+     "여러 채널의 요청이 겹치면 매출 영향·행사 일정으로 순서를 정하고 이유를 공유 {추론}."
+    ]
+   },
+   "how_far": "정답이 있는 일이 아니라 **결정 이유를 남기는 습관**이 핵심입니다. 회의 뒤 결정·근거·다음 일을 한 문단으로 남길 수 있으면 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "비즈니스 목표와 고객 문제를 팀의 과제 및 우선순위로 구체화하고, 출시 이후 지표를 통해 성과를 검증하며 개선해 오신 분",
+   "short": "사업 목표·고객 문제를 팀 과제와 우선순위로 바꾸고, 출시 뒤 지표로 성과를 확인하며 고쳐 온 경험.",
+   "why": "업무 두 번째 줄과 같은 내용을 요건으로 다시 적었습니다 — 그만큼 중요하게 봅니다.[1]",
+   "actually": {
+    "items": [
+     "목표 '블프 쿠폰 비용 대비 매출 개선' → 과제 '쿠폰 대상 정밀화', '중복 할인 상한' 같은 팀 일감으로 쪼개기 {추론}.",
+     "출시 전에 성공 기준(지표·크기·기간)을 적어 두고, 뒤에 그대로 확인.[24]",
+     "할인은 매출만 보면 안 되고 할인 비용·마진도 같이 본다 {추론}."
+    ]
+   },
+   "how_far": "서류에는 '무엇을 바꿨더니 어떤 지표가 얼마 변했다'를 숫자로 — 공고 작성 팁이 그대로 요구합니다.[1]",
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "kohavi"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기술적 의사결정의 근거와 트레이드오프를 문서화하고, 이를 비즈니스 맥락에서 설명하실 수 있는 분",
+   "short": "기술 선택의 이유와 잃는 것(트레이드오프)을 문서로 남기고, 그걸 사업 언어로 설명하는 능력.",
+   "why": "공통 플랫폼 결정은 여러 채널·팀에 영향을 주어 나중에 '왜 이렇게 했나'를 설명할 일이 많습니다 {추론}. 공고가 문서화와 비즈니스 맥락 설명을 요건으로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "결정 기록(ADR, Architecture Decision Record — 맥락·결정·결과를 적는 짧은 문서) 한 장.[23]",
+     "예: '쿠폰 잔량을 DB 잠금으로 셀까, 메모리 저장소(Redis)로 셀까' — 정확성·속도·장애 때 복구를 나란히 비교 {추론}.",
+     "사업 언어로 바꾸기 — '초당 처리량' 대신 '블프 첫 1분 주문을 놓치지 않는다'.[5]"
+    ]
+   },
+   "how_far": "길이보다 **선택지 둘 이상과 버린 이유**가 있는지가 기준입니다.[23]",
+   "refs": [
+    1,
+    5,
+    23
+   ],
+   "study": [
+    "adr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 코딩 에이전트(Codex, Claude Code 등)를 실무에 적극 활용하며, 결과물의 품질을 직접 검증하고 책임지실 수 있는 분",
+   "short": "Codex·Claude Code 같은 코딩 에이전트를 실제 일에 쓰되, 결과물을 직접 확인하고 책임지는 능력.",
+   "why": "무신사 PE 직군 소개의 핵심 문장입니다 — 에이전트와 함께 일하되 품질은 직접 검증하고 책임진다.[1] 회사는 코딩 에이전트를 전사 장비로 지원합니다.[12]",
+   "actually": {
+    "items": [
+     "에이전트가 만든 할인 계산 코드에 경계값(0원, 쿠폰이 가격보다 큼, 반올림) 테스트를 사람이 덧붙인다 {추론}.",
+     "에이전트에게 맡긴 변경도 리뷰·테스트·배포 기준은 똑같이 적용.[26]",
+     "무엇을 맡기고 무엇을 안 맡길지 적은 팀 규칙 {추론}."
+    ]
+   },
+   "how_far": "면접에서 '에이전트가 틀린 것을 잡아낸 사례'를 구체적으로 말할 수 있으면 됩니다 {추론}. 지원 서류에도 검증 방법을 적으라고 합니다.[1]",
+   "refs": [
+    1,
+    12,
+    26
+   ],
+   "study": [
+    "claude-code"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 이커머스·플랫폼·핀테크 환경에서 할인, 쿠폰, 정산, 프로모션 등 핵심 프라이싱 도메인 프로젝트를 리드해 보신 분",
+   "short": "할인·쿠폰·정산·프로모션 같은 가격 핵심 영역 프로젝트를 큰 커머스·플랫폼·핀테크에서 이끌어 본 경험.",
+   "why": "이 팀이 맡는 도메인 그 자체입니다.[1] 무신사 행사에는 판매액 달성마다 선착순으로 주는 카운트업 쿠폰, 살 때마다 커지는 릴레이 장바구니 쿠폰 같은 규칙이 있습니다.[3]",
+   "actually": {
+    "items": [
+     "**적용 순서** — 정가 → 즉시할인 → 상품 쿠폰 → 장바구니 쿠폰. 순서를 바꾸면 결제 금액이 달라진다(아래 예).[17][18]",
+     "**결합 규칙** — 어떤 할인끼리 같이 쓸 수 있나(상품 할인 + 주문 할인 결합 허용 여부).[17]",
+     "**사용 범위** — 쿠폰마다 적용 브랜드·상품·기간이 다르고 현금으로 돌려주지 않는다.[6]",
+     "**분담과 정산** — 할인액 중 브랜드와 플랫폼이 각각 얼마를 부담하는지가 정산 금액을 바꾼다 {추론}. 수수료 정책도 이 조직이 다룬다.[2]",
+     "**돈 계산** — 원 단위 반올림·버림을 한 곳에서 정하고 실수형(float)을 쓰지 않는다.[22]",
+     "**최대 혜택가** — 쓸 수 있는 쿠폰 조합 중 가장 싼 값을 보여 주는 계산은 비싸서, 무신사는 행사 때 누를 때만 계산하게 바꿨다.[31]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "할인 적용 순서와 분담 — 정액 쿠폰을 먼저 빼면 500원이 달라진다",
+     "body": "10만원 상품, 즉시할인 20%, 상품 쿠폰 10%, 장바구니 쿠폰 5,000원. 숫자와 분담 비율(브랜드 60%)은 가상 값입니다. 직접 돌린 출력: `세일가 80000 | 상품쿠폰 8000 | 장바구니쿠폰 5000 | 결제 67000` / `정액 먼저 적용하면 67500 → 차이 -500` / `브랜드 부담 4800 | 플랫폼 부담 8200`.",
+     "lang": "python",
+     "code": "from decimal import Decimal as D, ROUND_DOWN\n\ndef won(x):  # 원 단위 버림\n    return x.quantize(D(\"1\"), rounding=ROUND_DOWN)\n\nlist_price = D(\"100000\")\nsale = won(list_price * D(\"0.80\"))       # 즉시할인 20% → 세일가\nitem_coupon = won(sale * D(\"0.10\"))      # 상품 쿠폰 10% (세일가 기준)\ncart_coupon = D(\"5000\")                  # 장바구니 쿠폰 5,000원 정액\npay = sale - item_coupon - cart_coupon\nprint(\"세일가\", sale, \"| 상품쿠폰\", item_coupon, \"| 장바구니쿠폰\", cart_coupon, \"| 결제\", pay)\n\nalt = sale - cart_coupon                 # 순서를 바꿔 정액을 먼저 빼면\nalt = alt - won(alt * D(\"0.10\"))\nprint(\"정액 먼저 적용하면\", alt, \"→ 차이\", pay - alt)\n\nbrand = won(item_coupon * D(\"0.6\"))      # 상품쿠폰: 브랜드 60%·플랫폼 40%\nplatform = item_coupon - brand + cart_coupon  # 장바구니쿠폰: 플랫폼 100%\nprint(\"브랜드 부담\", brand, \"| 플랫폼 부담\", platform)"
+    }
+   ],
+   "how_far": "도메인 경험이 없으면 최소한 '순서·결합·분담·반올림' 네 가지를 설명할 수 있게 준비하는 편이 좋습니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    17,
+    18,
+    22,
+    31
+   ],
+   "study": [
+    "shopify-combo",
+    "ct-discounts",
+    "fowler-money"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "다양한 채널과 서비스로 확장하는 조직에서 팀 성장과 업무 프로세스 정립을 이끌어 보신 분",
+   "short": "여러 채널·서비스로 넓어지는 조직에서 팀을 키우고 일하는 방식을 정해 본 경험.",
+   "why": "프라이싱 팀은 무신사·29CM·글로벌·오프라인까지 맡는 범위를 넓히는 중입니다.[1] 무신사는 일본 조조타운·중국 티몰 글로벌 같은 해외 판매처로도 넓히고 있습니다.[10]",
+   "actually": {
+    "items": [
+     "채널이 늘 때마다 요청 접수·우선순위 회의·배포 일정 같은 공통 절차를 정한다 {추론}.",
+     "팀이 커지면 도메인(가격 계산·쿠폰·프로모션 운영 도구)별로 담당을 나누고 경계를 문서로 {추론}.",
+     "새 채널 담당자가 들어올 때의 온보딩 자료 {추론}."
+    ]
+   },
+   "how_far": "규모를 숫자로 말하면 좋습니다 — 몇 명에서 몇 명, 채널 몇 개에서 몇 개로 {추론}.",
+   "refs": [
+    1,
+    10
+   ],
+   "study": [
+    "larson-puzzle",
+    "team-topologies"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 이벤트와 순간적으로 집중되는 트래픽에 대한 이해를 바탕으로 서비스 운영 리스크를 관리해 보신 분",
+   "short": "블랙프라이데이처럼 짧은 시간에 몰리는 트래픽을 알고, 그때의 운영 위험을 관리해 본 경험.",
+   "why": "팀 소개가 무진장 블랙프라이데이 같은 피크 트래픽을 안정적으로 받는 구조를 지향한다고 적었습니다.[1] 2025 여름 무진장은 종료 직전 분당 주문이 약 7,650건까지 올랐고 평균 DAU 가 240만 명 이상이었다고 보도됐습니다.[5] 겨울 행사는 열흘간 3,685억원, 시간당 약 15억원어치가 팔렸다고 합니다.[4] 회사 블로그에 따르면 블프 트래픽은 평소의 3배를 넘고[34], 무진장 기간에는 걸린 쿠폰 수가 10배 가까이 늘어 쿠폰 DB 를 압박했습니다.[31]",
+   "actually": {
+    "items": [
+     "**무신사가 실제로 한 것** — 겨울 무진장 때 '최대 혜택가'(쓸 수 있는 쿠폰을 다 조합한 최저가)를 늘 계산하지 않고 사용자가 누를 때만 계산하게 바꿔 API 요청을 약 1/4 로 줄였습니다. 상품 상세의 쿠폰 조회는 하루 551만 번이고, 쿼리를 나누고 캐시를 둬 DB CPU 최대 80% 를 10%대로 낮췄습니다.[31]",
+     "**캐시 자체의 한계** — 29CM 행사 첫날 Redis 의 CPU 는 멀쩡했는데 네트워크 대역폭(기본 0.937Gbps, 피크 2.0Gbps)이 넘쳐 전시가 멈췄고, 노드를 키워 진정시킨 뒤 로컬 캐시 → Redis → DB 층으로 나눴습니다.[33]",
+     "**선착순 쿠폰** — 판매액 100억원 달성마다 1,000명에게 주는 쿠폰[3]은 수많은 요청이 같은 잔량을 동시에 깎는다. 확인과 차감을 한 번에 하지 않으면 초과 발급된다(아래 예). Redis 라면 스크립트 한 번으로 묶어 원자적(중간에 끼어들 수 없게)으로 처리.[21]",
+     "**가격 조회 폭증** — 목록·상세마다 최종가를 계산하므로 미리 계산해 캐시하고, 정책이 바뀔 때만 다시 계산 {추론}.",
+     "**과부하 때 덜 중요한 것부터 버리기** — 추천 쿠폰 표시는 늦어도 되지만 결제 금액 계산은 틀리면 안 된다.[20]",
+     "**미리 시험** — 행사 규모를 흉내 낸 부하 시험과 기능 끄기 스위치.[27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "선착순 1,000장 — 확인과 차감을 따로 하면 2배 넘게 나간다",
+     "body": "스레드 8개가 300번씩 쿠폰을 요청하는 흉내입니다. 직접 두 번 돌린 출력: `따로 확인·차감: 발급 2400장, 남은 재고 495`(두 번째는 501), `한 번에 확인·차감: 발급 1000장, 남은 재고 0`. 따로 하는 쪽은 돌릴 때마다 숫자가 다르고, 한 번에 하는 쪽은 늘 1,000장입니다.",
+     "lang": "python",
+     "code": "import threading, time\n\ndef run(safe):\n    stock = [1000]; issued = [0]; lock = threading.Lock()\n    def naive():\n        for _ in range(300):\n            if stock[0] > 0:\n                s = stock[0]          # 잔량을 읽고\n                time.sleep(0)         # 다른 요청이 끼어든다\n                stock[0] = s - 1      # 나중에 쓴다\n                issued[0] += 1\n    def atomic():\n        for _ in range(300):\n            with lock:                # 확인+차감을 한 번에\n                if stock[0] > 0:\n                    stock[0] -= 1; issued[0] += 1\n    ts = [threading.Thread(target=atomic if safe else naive) for _ in range(8)]\n    [t.start() for t in ts]; [t.join() for t in ts]\n    return issued[0], stock[0]\n\nprint(\"따로 확인·차감: 발급 %d장, 남은 재고 %d\" % run(False))\nprint(\"한 번에 확인·차감: 발급 %d장, 남은 재고 %d\" % run(True))"
+    }
+   ],
+   "how_far": "EM 이 직접 튜닝할 필요는 없지만, 행사 전 점검표(부하 시험 결과·끄기 스위치·당번)를 만들고 승인하는 것은 이 자리 몫으로 읽힙니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    20,
+    21,
+    27,
+    31,
+    33,
+    34
+   ],
+   "study": [
+    "sre-overload",
+    "alex-xu",
+    "redis-lua"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "가설 수립·실험·데이터 검증을 통해 제품 의사결정에 참여하고, 기술로 비즈니스 KPI를 개선해 수치로 입증해 보신 분",
+   "short": "가설·실험·데이터로 제품 결정에 참여하고, 기술로 사업 KPI 를 올려 숫자로 보인 경험.",
+   "why": "같은 조직 PM 공고가 데이터 기반 의사결정과 Amplitude·SQL·BigQuery 같은 분석 도구를 우대로 적었습니다.[2] 이 자리도 출시 후 지표 검증을 요구합니다.[1]",
+   "actually": {
+    "items": [
+     "쿠폰 금액·대상을 실험군별로 나눠 매출과 할인 비용을 함께 비교.[24]",
+     "실험 단위를 사람으로 할지 주문으로 할지, 같은 사람이 두 가격을 보지 않게 하는 설계 — 가격 실험은 공정성 문제도 있다 {추론}.",
+     "KPI 예: 쿠폰 사용 주문 비율, 할인 비용 대비 추가 매출, 결제 단계 이탈률 {추론}."
+    ]
+   },
+   "how_far": "'얼마 올렸다'와 함께 '어떻게 그게 내 변경 때문인지 알았나(대조군)'를 말할 수 있어야 합니다.[24]",
+   "refs": [
+    1,
+    2,
+    24
+   ],
+   "study": [
+    "kohavi"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM·AI 에이전트를 모니터링, 코드 리뷰, 테스트 자동화, 문서화 등 개발·운영 프로세스에 도입하여 서비스 안정성과 팀 단위 생산성 또는 품질을 높여 보신 분",
+   "short": "LLM·AI 에이전트를 모니터링·코드 리뷰·테스트 자동화·문서화에 들여와 팀의 안정성·생산성·품질을 올린 경험.",
+   "why": "업무 다섯 번째 줄을 '팀에 도입한 결과'로 다시 적은 우대입니다.[1] 회사는 AI 도입의 비용 대비 효과를 따진다고 밝혔습니다.[11]",
+   "actually": {
+    "items": [
+     "장애 알림이 오면 관련 로그·최근 배포를 에이전트가 모아 요약 {추론}.",
+     "PR 마다 에이전트 1차 리뷰 + 사람 최종 리뷰를 규칙으로 {추론}.",
+     "할인 규칙 문서와 코드가 어긋나지 않게 문서 갱신을 자동화 {추론}.",
+     "도입 전후를 같은 지표(리뷰 대기 시간·변경 실패율·복구 시간)로 비교.[25]"
+    ]
+   },
+   "how_far": "개인이 잘 쓰는 것을 넘어 **팀 단위 숫자**가 있어야 이 우대에 맞습니다.[1]",
+   "refs": [
+    1,
+    11,
+    25
+   ],
+   "study": [
+    "accelerate",
+    "claude-code"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 활용하여 서버 API, 데이터 파이프라인 등 클라이언트 외 영역까지 직접 문제를 해결해 보신 분",
+   "short": "AI 를 써서 화면 밖(서버 API·데이터 파이프라인 등)의 문제까지 직접 풀어 본 경험.",
+   "why": "무신사는 서버·웹·모바일을 PE 하나로 묶고, AI 로 인접 영역까지 처음부터 끝까지 풀기를 기대한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "화면 출신이라도 에이전트와 함께 할인 계산 API 를 고치고 테스트까지 넣어 본 경험 {추론}.",
+     "할인 효과 분석용 데이터 집계(쿼리·배치)를 직접 만든 경험 {추론}."
+    ]
+   },
+   "how_far": "EM 자리라 본인이 직접 다 할 필요는 없지만, 팀원에게 같은 방식을 권하려면 한 번은 해 본 사례가 있으면 좋습니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "claude-code"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "manager-path-ko",
+   "title": "개발 7년차, 매니저 1일차",
+   "by": "카미유 푸르니에 · 한빛미디어 · 2020",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%9C%EB%B0%9C%207%EB%85%84%EC%B0%A8%20%EB%A7%A4%EB%8B%88%EC%A0%80%201%EC%9D%BC%EC%B0%A8",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "The Manager's Path 한국어판. 1:1·평가·채용 같은 '조직 리딩' 업무가 무엇인지 단계별로 잡는다."
+  },
+  {
+   "id": "grove-hom",
+   "title": "High Output Management",
+   "by": "Andrew S. Grove · Random House",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=High%20Output%20Management",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "관리자의 산출은 팀의 산출 — 1:1·위임·성과 점검 요건의 바탕."
+  },
+  {
+   "id": "larson-puzzle",
+   "title": "An Elegant Puzzle: Systems of Engineering Management",
+   "by": "Will Larson · Stripe Press · 2019",
+   "kind": "book",
+   "url": "https://press.stripe.com/an-elegant-puzzle",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "팀 규모·우선순위·로드맵 — 리소스 배분과 조직 간 조율 요건."
+  },
+  {
+   "id": "team-topologies",
+   "title": "Team Topologies",
+   "by": "Matthew Skelton, Manuel Pais · IT Revolution · 2019",
+   "kind": "book",
+   "url": "https://teamtopologies.com/book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "공통 플랫폼 팀과 채널 팀의 경계·소통 방식 — 플랫폼으로 넓어지는 조직 우대사항."
+  },
+  {
+   "id": "aws-saas",
+   "title": "SaaS Tenant Isolation Strategies",
+   "by": "AWS 백서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/saas-tenant-isolation-strategies/saas-tenant-isolation-strategies.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "사일로·풀 같은 테넌트 분리 방식 — '멀티테넌트 프라이싱 플랫폼'을 설계할 때의 선택지."
+  },
+  {
+   "id": "strangler",
+   "title": "Strangler Fig Application",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "채널별 옛 엔진을 공통 플랫폼으로 조금씩 옮기는 방법."
+  },
+  {
+   "id": "ddia",
+   "title": "Designing Data-Intensive Applications",
+   "by": "Martin Kleppmann · O'Reilly · 2017",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "동시성·트랜잭션·복제 — 쿠폰 차감과 공통 플랫폼 데이터 설계의 기본서. 한국어판 '데이터 중심 애플리케이션 설계'도 있다."
+  },
+  {
+   "id": "alex-xu",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "처리율 제한·캐시·규모 추정 — 피크 트래픽 우대사항을 말로 설명하는 기초."
+  },
+  {
+   "id": "redis-lua",
+   "title": "Scripting with Lua",
+   "by": "Redis 공식 문서",
+   "kind": "doc",
+   "url": "https://redis.io/docs/latest/develop/interact/programmability/eval-intro/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "확인과 차감을 한 번에 실행하는 법 — 선착순 쿠폰 초과 발급을 막는다."
+  },
+  {
+   "id": "sre-overload",
+   "title": "Site Reliability Engineering — Handling Overload",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "과부하 때 덜 중요한 요청부터 버리는 법 — 대형 이벤트 운영 리스크."
+  },
+  {
+   "id": "feature-toggles",
+   "title": "Feature Toggles (aka Feature Flags)",
+   "by": "Pete Hodgson · martinfowler.com",
+   "kind": "doc",
+   "url": "https://martinfowler.com/articles/feature-toggles.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "배포 없이 할인·쿠폰 기능을 켜고 끄는 장치 — 리스크 관리와 실험."
+  },
+  {
+   "id": "shopify-combo",
+   "title": "Discount combinations",
+   "by": "Shopify Help Center",
+   "kind": "doc",
+   "url": "https://help.shopify.com/en/manual/discounts/discount-combinations",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "상품·주문·배송 할인을 어떻게 겹쳐 쓰게 하나 — 결합 규칙의 일반 예."
+  },
+  {
+   "id": "ct-discounts",
+   "title": "Cart Discounts",
+   "by": "commercetools 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.commercetools.com/api/projects/cartDiscounts",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "할인의 적용 순서·중복 적용 설정을 데이터 모델로 어떻게 두나 — 공통 가격 엔진 설계 참고."
+  },
+  {
+   "id": "fowler-money",
+   "title": "Money (Patterns of Enterprise Application Architecture)",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "url": "https://martinfowler.com/eaaCatalog/money.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "금액을 실수형이 아닌 화폐 값으로 다루는 법 — 할인·분담 계산."
+  },
+  {
+   "id": "adr",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · Cognitect 블로그 · 2011",
+   "kind": "doc",
+   "url": "https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "결정 기록 서식 — 트레이드오프 문서화 요건."
+  },
+  {
+   "id": "kohavi",
+   "title": "Trustworthy Online Controlled Experiments",
+   "by": "Ron Kohavi, Diane Tang, Ya Xu · Cambridge University Press · 2020",
+   "kind": "book",
+   "url": "https://experimentguide.com/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "가설·지표·대조군 — 출시 후 성과 검증과 가격 실험."
+  },
+  {
+   "id": "accelerate",
+   "title": "Accelerate",
+   "by": "Nicole Forsgren, Jez Humble, Gene Kim · IT Revolution · 2018",
+   "kind": "book",
+   "url": "https://itrevolution.com/product/accelerate/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "배포 빈도·리드 타임·복구 시간 — AI 도입 효과를 팀 숫자로 보이는 법."
+  },
+  {
+   "id": "claude-code",
+   "title": "Claude Code overview",
+   "by": "Anthropic 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "코딩 에이전트가 하는 일과 권한 — 에이전트 활용·검증 요건."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "가격 도메인 감 잡기",
+   "time": "1~2주",
+   "goal": "할인 적용 순서·결합·분담·반올림을 설명한다.",
+   "task": "가상 상품 5개에 즉시할인·상품 쿠폰·장바구니 쿠폰을 걸고, 적용 순서 두 가지로 결제액과 브랜드·플랫폼 분담을 계산하는 표와 테스트를 만든다.",
+   "resources": [
+    "shopify-combo",
+    "ct-discounts",
+    "fowler-money"
+   ]
+  },
+  {
+   "title": "공통 플랫폼 설계",
+   "time": "2주",
+   "goal": "멀티테넌트 분리 방식과 이전 순서를 고른다.",
+   "task": "'무신사·29CM·매장' 세 테넌트가 쓰는 쿠폰 모델을 그리고, 사일로/풀 중 하나를 고른 이유를 ADR 한 장으로 쓴다.",
+   "resources": [
+    "aws-saas",
+    "strangler",
+    "adr",
+    "ddia"
+   ]
+  },
+  {
+   "title": "피크 트래픽 대비",
+   "time": "1~2주",
+   "goal": "선착순 쿠폰과 가격 조회 폭증을 견디는 법을 말한다.",
+   "task": "가상 쿠폰 1,000장을 동시 요청 수만 건으로 발급하는 실험 — 초과 발급이 나는 판과 안 나는 판을 비교하고, 행사 전 점검표를 쓴다.",
+   "resources": [
+    "redis-lua",
+    "sre-overload",
+    "alex-xu",
+    "feature-toggles"
+   ]
+  },
+  {
+   "title": "지표와 실험",
+   "time": "1주",
+   "goal": "요구를 가설로 바꾸고 결과를 대조군으로 확인한다.",
+   "task": "'장바구니 쿠폰 노출 변경' 가설의 지표·성공 기준·실험 단위 표를 만든다.",
+   "resources": [
+    "kohavi"
+   ]
+  },
+  {
+   "title": "리더로서의 일",
+   "time": "1~2주",
+   "goal": "1:1·평가·채용·AI 활용 팀 규칙을 설계한다.",
+   "task": "가상 6명 팀의 한 분기 1:1 일정, 블프 전 리소스 배분표, 에이전트 사용 규칙 한 장을 만든다.",
+   "resources": [
+    "manager-path-ko",
+    "grove-hom",
+    "larson-puzzle",
+    "accelerate",
+    "claude-code"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 없음('처우 협의'). 집계 기준 신입 초봉 2,313만원·평균 3,453만원, 원티드 표기 평균 6,082만원 — 12년+ 리더 연봉과는 무관한 값.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아닌 회사 전체 값, 연도 미표기.[13]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 경력직이 섞인 전체 평균.[13]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위와 2천만원 넘게 달라 산출 방식이 다른 것으로 보인다.[14]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시로 확인한 직원 평균 급여가 없다(이번에도 확인 못 함). 위 숫자는 모두 집계이고 **평균은 초봉이 아니며**, 12년 이상 경력의 리더 자리 연봉은 공고의 '처우 협의' 단계에서 정해진다.[1] 직급·보상 체계는 공개되지 않았다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "코어타임 11~16시, 휴가 1일·0.5일·0.25일 단위"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기근속",
+    "detail": "3년마다 리프레시 휴가 7일 + 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기당 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 지원금 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "전사 AI 에이전트 지원, 허먼 밀러 의자, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급(이 공고 기타사항)"
+   }
+  ],
+  "note": "무신사 채용 사이트 복지 페이지(날짜 미표기, 첨부 이미지 2025-07)와 이 공고 기타사항.[12][1] 회사 전체 공통이며 '근무 장소·기간·시점에 따라 일부 변경될 수 있다'고 적혀 있다.[12]"
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 약 6분",
+  "note": "공고 근무지 표기는 '무신사 성수 오피스'.[1] 주소는 무신사 상품 페이지 하단 사업자 정보 표기.[16] 2022-09 성수 캠퍼스 N1 이전과 도보 거리는 보도.[15]"
+ },
+ "fit": {
+  "good": [
+   "할인·쿠폰·정산 같은 가격 도메인을 이끌어 본 사람[1]",
+   "여러 서비스가 같이 쓰는 공통 플랫폼으로 바꿔 본 사람[1]",
+   "대형 행사 피크를 운영해 본 사람[1]"
+  ],
+  "hard": [
+   "직접 개발 비중이 낮을 수 있다 {추론}",
+   "할인 규칙·분담·정산을 처음 보면 익힐 것이 많다 {추론}",
+   "공고에 연봉 범위가 없고 처우 협의다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "무신사·29CM·매장의 쿠폰 규칙이 서로 다를 때 무엇을 공통 엔진에 두겠어요?",
+   "a": "팀 미션이 여러 채널의 가격 엔진을 하나의 멀티테넌트 플랫폼으로 합치는 것이다.[1]"
+  },
+  {
+   "q": "판매액 100억원마다 1,000장씩 나가는 선착순 쿠폰을 어떻게 초과 발급 없이 내보내겠어요?",
+   "a": "실제 무진장 행사 규칙이고[3], 팀이 피크 트래픽 안정성을 지향한다.[1]"
+  },
+  {
+   "q": "블프 2주 전, 사업부가 새 쿠폰 유형을 요청하면 어떻게 하겠어요?",
+   "a": "리소스·일정·리스크 총괄과 이해관계자 조율이 업무·요건이다.[1][2]"
+  },
+  {
+   "q": "할인 정책 변경이 매출에 효과가 있었는지 어떻게 증명하겠어요?",
+   "a": "출시 후 지표 검증과 KPI 개선 입증을 요구한다.[1]"
+  },
+  {
+   "q": "에이전트가 만든 할인 계산 코드를 팀은 어떻게 검증하나요?",
+   "a": "결과물 품질을 직접 검증·책임지는 것이 PE 직군의 원칙이다.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Product Engineering Manager (Pricing)",
+   "url": "https://www.musinsacareers.com/ko/o/239873",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "조직 소개(Pricing Biz Platform·멀티테넌트·무진장 피크)·PE 직군 소개·업무·자격·우대·서류 팁·전형"
+  },
+  {
+   "n": 2,
+   "title": "무신사 채용 — Product Manager (프라이싱) (데모데이 사본, 마감)",
+   "url": "https://demoday.co.kr/recruits/12458",
+   "kind": "posting",
+   "note": "같은 프라이싱 조직: 세일·쿠폰 가격 관리, 국내·글로벌 통합, 운영자·파트너가 할인·쿠폰·수수료 정책 설정, 블프 대응·리스크, Amplitude·SQL·BigQuery 우대"
+  },
+  {
+   "n": 3,
+   "title": "무진장 25 겨울 블랙프라이데이 혜택 가이드 — 무신사",
+   "url": "https://www.musinsa.com/content/1435875586701137327",
+   "kind": "company",
+   "date": "2025-11-14",
+   "note": "카운트업 쿠폰(판매액 100억마다 선착순 1,000명, 최대 40%)·릴레이 장바구니 쿠폰(4회차)·웰컴/파이널 쿠폰"
+  },
+  {
+   "n": 4,
+   "title": "무신사 뉴스룸 — 무진장 25 겨울 블랙프라이데이 결과",
+   "url": "https://newsroom.musinsa.com/newsroom-menu/2025-1127",
+   "kind": "company",
+   "date": "2025-11-27",
+   "note": "열흘 온라인 719만 개·3,685억원·시간당 15억원 — 원문이 열리지 않아 검색 요약(같은 숫자를 옮긴 한국경제 기사)으로 읽음"
+  },
+  {
+   "n": 5,
+   "title": "무신사 무진장 여름 결과 — 뉴데일리",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2025/06/26/2025062600092.amp.html",
+   "kind": "news",
+   "date": "2025-06-26",
+   "note": "누적 2,466억원, 분당 주문 시작 2,000건·종료 직전 약 7,650건, 평균 DAU 240만+ — 검색 요약으로 읽음"
+  },
+  {
+   "n": 6,
+   "title": "무신사 쿠폰 이용 안내",
+   "url": "https://www.musinsa.com/app/contents/coupon_offline",
+   "kind": "company",
+   "note": "쿠폰별 적용 브랜드·상품·기간 제한, 현금·적립금 환불 불가 — 검색 요약"
+  },
+  {
+   "n": 7,
+   "title": "29CM 29DAY 캠페인 페이지",
+   "url": "https://www.29cm.co.kr/content/campaign/2026/01/29day",
+   "kind": "company",
+   "date": "2026-01",
+   "note": "하루 29% 상품 쿠폰 + 장바구니 쿠폰 두 장 — 검색 요약"
+  },
+  {
+   "n": 8,
+   "title": "[단독] 무신사, 할인쿠폰 또 일방적 취소…재고 부족 — SBS Biz",
+   "url": "https://biz.sbs.co.kr/amp/article/20000218987",
+   "kind": "news",
+   "date": "2025-02",
+   "note": "발급량에 비해 재고가 부족해 입점사 쿠폰이 무효 처리된 사례 — 검색 요약"
+  },
+  {
+   "n": 9,
+   "title": "무신사 5만원 쿠폰팩 — 허프포스트코리아",
+   "url": "https://www.huffingtonpost.kr/article/241708",
+   "kind": "news",
+   "date": "2026-01",
+   "note": "스토어·슈즈·뷰티·유즈드로 나눈 쿠폰팩, 뒤에 오프라인 매장 사용 추가 — 검색 요약"
+  },
+  {
+   "n": 10,
+   "title": "무신사, AI 활용 OCMP 구축 — 바이라인네트워크",
+   "url": "https://byline.network/2024/10/28_2818720",
+   "kind": "news",
+   "date": "2024-10-28",
+   "note": "공통은 코어, 고유 기능은 플랫폼별. 같은 회사 풀이에서 읽은 내용을 옮김"
+  },
+  {
+   "n": 11,
+   "title": "CIO 코리아 — 무신사 AX 방식 (코어 AI 디렉터 인터뷰)",
+   "url": "https://www.cio.com/article/4219031/",
+   "kind": "news",
+   "date": "2026-09-08",
+   "note": "AI 도입·ROI 관리. 같은 회사 풀이에서 읽은 내용"
+  },
+  {
+   "n": 12,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "'일부 변경될 수 있다' 문구"
+  },
+  {
+   "n": 13,
+   "title": "자소설닷컴 — 무신사",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "초봉 2,313만원·평균 3,453만원(검색 요약, 직접 열람 403)"
+  },
+  {
+   "n": 14,
+   "title": "원티드 — 무신사 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "평균연봉 6,082만원 표기. 기준 설명 없음"
+  },
+  {
+   "n": 15,
+   "title": "무신사, 성수동 캠퍼스 N1 본사 이전 — 일간스포츠",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09",
+   "note": "성수역 도보 6분"
+  },
+  {
+   "n": 16,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company",
+   "note": "주소 아차산로13길 11 — 같은 회사 기존 풀이에서 확인한 것을 옮김"
+  },
+  {
+   "n": 17,
+   "title": "Discount combinations — Shopify Help Center",
+   "url": "https://help.shopify.com/en/manual/discounts/discount-combinations",
+   "kind": "reference",
+   "note": "다른 커머스 플랫폼의 할인 결합 규칙 — 일반 예"
+  },
+  {
+   "n": 18,
+   "title": "Cart Discounts — commercetools",
+   "url": "https://docs.commercetools.com/api/projects/cartDiscounts",
+   "kind": "reference",
+   "note": "할인 적용 순서(sortOrder)·중복 적용 설정 — 일반 문서"
+  },
+  {
+   "n": 19,
+   "title": "SaaS Tenant Isolation Strategies — AWS 백서",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/saas-tenant-isolation-strategies/saas-tenant-isolation-strategies.html",
+   "kind": "reference",
+   "note": "사일로·풀·브리지 분리 모델"
+  },
+  {
+   "n": 20,
+   "title": "Handling Overload — Google SRE Book",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "kind": "reference",
+   "note": "중요도별 요청 버리기"
+  },
+  {
+   "n": 21,
+   "title": "Scripting with Lua — Redis",
+   "url": "https://redis.io/docs/latest/develop/interact/programmability/eval-intro/",
+   "kind": "reference",
+   "note": "스크립트는 원자적으로 실행된다"
+  },
+  {
+   "n": 22,
+   "title": "Money pattern — Martin Fowler",
+   "url": "https://martinfowler.com/eaaCatalog/money.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Documenting Architecture Decisions — Michael Nygard",
+   "url": "https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Trustworthy Online Controlled Experiments",
+   "url": "https://experimentguide.com/",
+   "kind": "reference",
+   "note": "가설·지표·대조군 실험"
+  },
+  {
+   "n": 25,
+   "title": "DORA — 소프트웨어 전달 성과 지표",
+   "url": "https://dora.dev/",
+   "kind": "reference",
+   "note": "배포 빈도·리드 타임·변경 실패율·복구 시간"
+  },
+  {
+   "n": 26,
+   "title": "Claude Code overview — Anthropic",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Feature Toggles — Pete Hodgson (martinfowler.com)",
+   "url": "https://martinfowler.com/articles/feature-toggles.html",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Strangler Fig Application — Martin Fowler",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "개발 7년차, 매니저 1일차 (The Manager's Path 한국어판) — 한빛미디어",
+   "url": "https://www.oreilly.com/library/view/-/9791162242551/",
+   "kind": "reference",
+   "date": "2020",
+   "note": "1:1·평가·팀 리드의 일"
+  },
+  {
+   "n": 30,
+   "title": "무신사 채용 — Product Engineering Manager (코어 파트너)",
+   "url": "https://www.musinsacareers.com/ko/o/172721",
+   "kind": "posting",
+   "note": "같은 회사 다른 EM 공고 — 12년·EM 5년·Manager of Managers"
+  },
+  {
+   "n": 31,
+   "title": "무신사 쿠폰 시스템, DB 성능 64% 개선으로 기술 부채를 갚다 — 무신사 테크 블로그",
+   "url": "https://techblog.musinsa.com/%EB%AC%B4%EC%8B%A0%EC%82%AC-%EC%BF%A0%ED%8F%B0-%EC%8B%9C%EC%8A%A4%ED%85%9C-db-%EC%84%B1%EB%8A%A5-64-%EA%B0%9C%EC%84%A0%EC%9C%BC%EB%A1%9C-%EA%B8%B0%EC%88%A0-%EB%B6%80%EC%B1%84%EB%A5%BC-%EA%B0%9A%EB%8B%A4-8bfe5c0211e1",
+   "kind": "company",
+   "date": "2025-07-27",
+   "note": "세일개발팀. 15년 쌓인 쿠폰 표·들쭉날쭉한 모델링, 상품 상세 쿠폰 조회 하루 551만 번, DB CPU 최대 80%→10%대, 무진장 때 쿠폰 수 약 10배, '최대 혜택가' 계산을 누를 때만으로 바꿔 요청 약 1/4. 본문은 같은 회사 DBA 풀이가 Medium RSS 로 읽은 내용을 옮김"
+  },
+  {
+   "n": 32,
+   "title": "무신사 성장과 함께 거대해져온 600줄짜리 쿠폰 쿼리와의 아름다운 이별 — 무신사 테크 블로그",
+   "url": "https://techblog.musinsa.com/%EB%AC%B4%EC%8B%A0%EC%82%AC-%EC%84%B1%EC%9E%A5%EA%B3%BC-%ED%95%A8%EA%BB%98-%EA%B1%B0%EB%8C%80%ED%95%B4%EC%A0%B8%EC%98%A8-600%EC%A4%84%EC%A7%9C%EB%A6%AC-%EC%BF%A0%ED%8F%B0-%EC%BF%BC%EB%A6%AC%EC%99%80%EC%9D%98-%EC%95%84%EB%A6%84%EB%8B%A4%EC%9A%B4-%EC%9D%B4%EB%B3%84-e689d7d932b5",
+   "kind": "company",
+   "date": "2024-11-13",
+   "note": "캠페인개발팀. 거대 쿼리를 작은 쿼리 + 애플리케이션 계산 + 캐시로, DB 사용률 72.5%→13.6%. 같은 회사 DBA 풀이에서 읽은 내용"
+  },
+  {
+   "n": 33,
+   "title": "이구위크 전시 장애 대응기: Redis에는 무슨 일이 있었나 — 무신사 테크 블로그(29CM)",
+   "url": "https://techblog.musinsa.com/%EC%9D%B4%EA%B5%AC%EC%9C%84%ED%81%AC-%EC%A0%84%EC%8B%9C-%EC%9E%A5%EC%95%A0-%EB%8C%80%EC%9D%91%EA%B8%B0-redis%EC%97%90%EB%8A%94-%EB%AC%B4%EC%8A%A8-%EC%9D%BC%EC%9D%B4-%EC%9E%88%EC%97%88%EB%82%98-5599562d76b9",
+   "kind": "company",
+   "date": "2026-01-06",
+   "note": "29CM 행사 첫날 Redis 네트워크 대역폭 초과(기본 0.937Gbps·피크 2.0Gbps), 노드 증설로 진정, 로컬 캐시 → Redis → DB 층. 같은 회사 DBA 풀이에서 읽은 내용"
+  },
+  {
+   "n": 34,
+   "title": "무신사가 퍼블릭 클라우드를 선택한 이유 — 무신사 테크 블로그",
+   "url": "https://techblog.musinsa.com/cloudmigration-3475c33ec677",
+   "kind": "company",
+   "date": "2021-05-21",
+   "note": "블랙프라이데이 때 트래픽 3배 이상. 같은 회사 DBA 풀이에서 읽은 내용"
+  }
+ ],
+ "caveat": "무신사 테크 블로그(Medium)가 이번 회차에 429·403 으로 열리지 않아, 쿠폰·캐시 글 넷[31]~[34]은 같은 회사 DBA 풀이가 앞서 본문을 읽고 정리한 내용을 옮겼다. 글을 쓴 세일개발팀·캠페인개발팀이 지금의 프라이싱 개발팀과 어떤 관계인지는 공개되지 않았다 {추론}. 프라이싱 플랫폼 자체의 구조를 설명한 발표·영상은 찾지 못했다. 그 밖의 회사 근거는 이 공고·같은 조직 PM 공고·행사 안내·실적 보도(일부는 검색 요약)이고, 할인 적용 순서·분담·테넌트 분리는 다른 커머스 플랫폼과 공식 문서로 '보통 이런 것'을 보였다. 예시 숫자(할인율·분담 비율)는 가상 값이다. 연봉은 집계 사이트 값만 있다."
+}
