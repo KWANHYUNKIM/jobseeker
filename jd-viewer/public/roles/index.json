@@ -8,11 +8,13 @@
   "ats-ashby:42dot:905f1b60-158a-4aca-a3c3-376cbfdcefa9": "42dot-cloud-infrastructure-engineer",
   "ats-ashby:42dot:63196d96-2810-4348-8aa5-077d8c0ee710": "42dot-firmware-secure-boot-ota",
   "ats-ashby:42dot:a83b4909-4d4f-41c5-b212-a1db321965a5": "42dot-llm-optimization-engineer",
+  "ats-ashby:42dot:c4af7536-c24f-4754-9fe9-d92d237403f3": "42dot-msphd-intern-ai-engineer",
   "ats-ashby:42dot:810a8fe2-0790-42cf-b973-df16b553fa08": "42dot-mts-foundation-models",
   "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
   "ats-ashby:42dot:08d5a10e-10f6-4821-ba21-66cda54064ef": "42dot-senior-devops-cicd",
   "ats-ashby:42dot:e505b80b-4b42-401c-a36e-eb11fb422931": "42dot-senior-platform-engineer-warsaw",
   "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c": "42dot-senior-release-engineer",
+  "ats-ashby:42dot:6e9418ea-6dfa-4ca2-b419-e564e1479a1b": "42dot-sr-embedded-software-engineer",
   "ats-ashby:42dot:efbd4971-b841-410f-aa6b-e333c64cfe23": "42dot-sw-test-engineer-diagnostics",
   "ats-ashby:42dot:c184cf35-51e2-4e80-87bc-579089f07472": "42dot-tts-deep-learning-engineer",
   "ats-ashby:42dot:beb84dde-9182-4441-a25b-c03644640854": "42dot-vehicle-system-integration",
@@ -414,6 +416,16 @@
    "lines": 36
   },
   {
+   "id": "42dot-msphd-intern-ai-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "[MS/PhD Intern] AI Engineer (정규직 전환형)",
+   "jobs": [
+    "ats-ashby:42dot:c4af7536-c24f-4754-9fe9-d92d237403f3"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
+  },
+  {
    "id": "42dot-mts-foundation-models",
    "company": "포티투닷(42dot)",
    "role": "Member of Technical Staff, Foundation Models",
@@ -462,6 +474,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 24
+  },
+  {
+   "id": "42dot-sr-embedded-software-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "Sr. Embedded Software Engineer",
+   "jobs": [
+    "ats-ashby:42dot:6e9418ea-6dfa-4ca2-b419-e564e1479a1b"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
   },
   {
    "id": "42dot-sw-test-engineer-diagnostics",
