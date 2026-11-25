@@ -61,6 +61,10 @@
   "wanted-395344": "autoever-india-security-expat",
   "ats-lg:group:1002199": "biztechi-ai-engineer",
   "saramin-55458469": "biztechi-ai-engineer",
+  "ats-lg:group:1002372": "biztechi-data-engineering-pl",
+  "jobkorea-50373063": "biztechi-data-engineering-pl",
+  "jobkorea-50317228": "biztechi-data-engineering-pl",
+  "dev-579992": "biztechi-data-engineering-pl",
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7793770": "coupang-ai-foundations-senior-staff-mle-mtv",
@@ -1047,6 +1051,19 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "biztechi-data-engineering-pl",
+   "company": "비즈테크아이",
+   "role": "데이터엔지니어링 PL",
+   "jobs": [
+    "ats-lg:group:1002372",
+    "jobkorea-50373063",
+    "jobkorea-50317228",
+    "dev-579992"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
   },
   {
    "id": "cj-oliveyoung-data-analyst",
