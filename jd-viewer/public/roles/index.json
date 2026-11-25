@@ -28,10 +28,12 @@
   "ats-greenhouse:coupang:8312121": "coupang-pay-it-ai-compliance",
   "ats-greenhouse:coupang:8078891": "coupang-pay-manager-backend-rocketpay",
   "ats-greenhouse:coupang:8127212": "coupang-pay-sdet-backend-contract",
+  "ats-greenhouse:coupang:8316795": "coupang-pay-senior-backend-giftcard-cash",
   "ats-greenhouse:coupang:8212656": "coupang-pay-senior-backend-test-ops",
   "ats-greenhouse:coupang:8222501": "coupang-pay-senior-platform-engineer",
   "ats-greenhouse:coupang:8194393": "coupang-pay-staff-android",
   "wanted-391099": "coupang-pay-staff-android",
+  "ats-greenhouse:coupang:8287908": "coupang-pay-staff-backend-global-payments",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8054705": "coupang-pay-staff-frontend-fintech",
   "wanted-389697": "coupang-pay-staff-frontend-fintech",
@@ -554,6 +556,16 @@
    "lines": 17
   },
   {
+   "id": "coupang-pay-senior-backend-giftcard-cash",
+   "company": "쿠팡페이",
+   "role": "Senior Back-end Engineer (Gift Card, Cash & Assets)",
+   "jobs": [
+    "ats-greenhouse:coupang:8316795"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 16
+  },
+  {
    "id": "coupang-pay-senior-backend-test-ops",
    "company": "쿠팡페이",
    "role": "Senior Back-end Engineer (Pay Test Operations)",
@@ -583,6 +595,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 34
+  },
+  {
+   "id": "coupang-pay-staff-backend-global-payments",
+   "company": "쿠팡페이",
+   "role": "Staff Back-end Engineer (Global Payments)",
+   "jobs": [
+    "ats-greenhouse:coupang:8287908"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "coupang-pay-staff-backend-rocketpay",
