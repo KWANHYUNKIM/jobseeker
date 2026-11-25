@@ -20,6 +20,7 @@
   "ats-ashby:42dot:810a8fe2-0790-42cf-b973-df16b553fa08": "42dot-mts-foundation-models",
   "ats-ashby:42dot:2b5a9e26-853d-4131-a11e-123aa2ba9139": "42dot-os-tools-software-engineer",
   "ats-ashby:42dot:442d28d0-1c6a-40a1-8729-9e8db1ab14f9": "42dot-sdv-vehicle-connect-software-engineer",
+  "ats-ashby:42dot:464eb98e-07e6-4cd4-af5d-2d9e9322a3cc": "42dot-senior-ai-agent-engineer-gleo-interactor",
   "ats-ashby:42dot:75e6abe9-9195-43c3-abdf-60feff10bd47": "42dot-senior-ai-data-pipeline-engineer",
   "wanted-384995": "42dot-senior-backend-gateway-iam",
   "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
@@ -559,6 +560,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 18
+  },
+  {
+   "id": "42dot-senior-ai-agent-engineer-gleo-interactor",
+   "company": "포티투닷(42dot)",
+   "role": "시니어 AI 에이전트 엔지니어 — 실행 구조·대화 흐름",
+   "jobs": [
+    "ats-ashby:42dot:464eb98e-07e6-4cd4-af5d-2d9e9322a3cc"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 16
   },
   {
    "id": "42dot-senior-ai-data-pipeline-engineer",

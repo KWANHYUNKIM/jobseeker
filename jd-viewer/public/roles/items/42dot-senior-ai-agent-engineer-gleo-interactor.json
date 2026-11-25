@@ -1,0 +1,1376 @@
+{
+ "id": "42dot-senior-ai-agent-engineer-gleo-interactor",
+ "company": "포티투닷(42dot)",
+ "role": "시니어 AI 에이전트 엔지니어 — 실행 구조·대화 흐름",
+ "team": "Gleo Interactor 팀 · 차량 음성 에이전트 Gleo AI 가 차량 기능·앱을 실제로 움직이는 부분",
+ "jobs": [
+  "ats-ashby:42dot:464eb98e-07e6-4cd4-af5d-2d9e9322a3cc"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "현대차 더 뉴 그랜저에 처음 실린 음성 에이전트 **Gleo AI** 가 사용자의 말을 **차량 기능·앱의 실제 동작으로 바꾸는 부분**을 만듭니다 — 실행 구조(도구 호출·여러 단계 계획), 차량 상태로 '지금 해도 되나'를 막는 관문, 대화 흐름, 그리고 그 품질을 재는 평가 환경까지입니다.[1][2]",
+  "env": "Gleo 는 감독 에이전트가 요청을 나눠 내비·연락처·문자 같은 전문 에이전트에 맡기고, 차량 제어는 차 안에서·무거운 추론은 클라우드에서 처리합니다.[4][12] 요청은 안전 거름 모델 Gleo Guard 가 먼저 봅니다.[3] 공고의 기술 표기는 Android·Kotlin 입니다.[1]",
+  "oneline": "**LLM 이 틀려도 차가 잘못 움직이지 않게** 만드는 실행 쪽 책임자. 8년 이상, 기술 방향을 주도하는 시니어 자리입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "LLM 기반 AI Agent의 구조와 실행 방식을 설계하고 개발",
+   "short": "말 한마디가 어느 모델·어느 에이전트·어느 도구를 거쳐 차량 동작이 되는지, 그 뼈대를 짜는 일.",
+   "why": "Gleo AI 는 LLM 이 의도를 읽고 일을 나눠 맡기는 구조이고, 이해·판단·응답 생성 단계마다 다른 LLM 을 고릅니다.[2] 팀 소개는 이 시스템이 **차량의 여러 기능과 앱을 골라 필요한 동작을 하고 결과를 전달**한다고 적었습니다.[1] 같은 조직의 Gleo Core 팀은 공통 뼈대(계획·도구 사용·맥락 관리)를 맡고[8], 이 팀(Interactor)은 그 위에서 **사용자와 차량을 잇는 실행**을 맡는 것으로 읽힙니다 {추론}.",
+   "flows": [
+    {
+     "caption": "요청 하나가 차량 동작이 되기까지 — 회사가 밝힌 단계와 일반 구조 {추론}[3][4]",
+     "steps": [
+      "음성 인식 · 호출어 → 말을 글자로",
+      "Gleo Guard · 답해도 되나, 실행해도 되나",
+      "Supervisor · 의도 파악, 일 나누기",
+      "전문 에이전트·도구 호출 · 내비·연락처·문자·공조",
+      "실행 관문 · 차량 상태로 되나, 확인이 필요한가",
+      "실행·결과 확인 · 성공/실패를 차량에서 다시 읽기",
+      "응답 · 무엇을 했는지 말로 알림"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "actually": {
+    "intro": "회사가 밝힌 구조와 각 부분의 일반 원리입니다.",
+    "items": [
+     "**감독 + 전문 에이전트** — 감독(Supervisor) 에이전트가 요청을 해석해 일을 나누고 내비·도착 시간(ETA)·연락처·문자 같은 전문 에이전트를 골라 실행 계획 하나로 묶는다.[4]",
+     "**차 안과 클라우드 나누기** — 즉시 해야 하는 차량 제어는 차 안 작은 모델이, 복잡한 추론·외부 서비스는 클라우드 큰 모델이 맡는다.[4][12] 포티투닷은 큰 모델을 7B·1~3B 차량용 모델로 줄인다고 밝혔다.[11]",
+     "**앞단 거름** — 요청은 실행 전에 Gleo Guard 가 '답해도 되나·차량에서 해도 되나'를 먼저 본다.[3]",
+     "**에이전트로 둘 것과 흐름으로 둘 것** — 순서가 정해진 일(에어컨 22도)은 정해진 흐름으로, 순서를 모델이 정해야 하는 일만 에이전트로 두라는 권고가 있다.[14]",
+     "**실행 루프** — 모델이 도구 이름·인자를 내면 앱(런타임)이 실제로 실행하고 결과를 다시 모델에 준다. 모델은 실행하지 않는다.[13][15]"
+    ]
+   },
+   "how_far": "모델을 학습시키는 일은 Gleo Foundation 쪽 몫으로 보입니다 {추론}[3]. 이 자리는 **요청 → 거름 → 계획 → 도구 호출 → 결과 확인 → 응답**의 흐름과 각 단계의 실패 처리를 정하고 코드로 만듭니다. 시니어 자리라 '왜 이 구조인가(지연·안전·비용)'를 남에게 설명하는 설계 문서가 결과물의 절반입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    8,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "gleo-blog",
+    "building-agents",
+    "cme295-agent",
+    "cs329z-patterns",
+    "react-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "복잡한 사용자 요청을 단계적으로 수행할 수 있도록 Agent Orchestration 및 Tool Calling 기반 실행 구조 개발",
+   "short": "'집 가는 길에 주차 편한 카페 찾고 엄마한테 늦는다고 보내 줘'를 여러 도구 호출로 쪼개 끝까지 실행시키는 일.",
+   "why": "회사는 '집에 가는 길에 주차 편한 카페 찾아줘' 한 문장이 장소 검색 → 목적지 변경 → 도착 시간 재계산 → 연락처 선택 → 메시지 작성 → 사용자 확인 → 실행까지 9단계로 처리된다고 소개했습니다.[4] 시연에서도 여러 명령을 한 번에 처리하는 것을 보였습니다.[5]",
+   "actually": {
+    "items": [
+     "**쪼개기와 순서** — 도착 시간을 알아야 문자 내용('20분 늦어')을 쓸 수 있다. 앞 결과가 뒤 인자가 되는 의존을 계획에 적는다 {추론}[4].",
+     "**도구 설명 쓰기** — 도구 이름·설명·인자 형식(JSON 스키마)을 모델이 헷갈리지 않게 쓴다. 비슷한 도구 둘(경유지 추가 vs 목적지 변경)은 설명으로 갈라 줘야 한다.[15][33]",
+     "**중간 실패 처리** — 카페 검색 결과가 0건이면 반경을 넓히거나 되묻는다. 시간 제한·재시도·여기까지 한 일 되돌리기는 런타임이 맡는다 {추론}.",
+     "**에이전트 사이 넘기기** — 여러 에이전트로 나누면 서로 말이 어긋나거나 아무도 끝을 확인하지 않는 실패가 생긴다는 분석이 있다.[34]",
+     "**규약** — 도구를 붙이는 공개 규약(MCP)처럼 도구 목록·호출·결과 형식을 한 가지로 맞춰 두면 앱이 늘어도 실행기는 그대로다.[16]"
+    ]
+   },
+   "how_far": "어떤 앱 기능을 도구로 열지는 앱·플랫폼 팀과 정합니다 {추론}. 이 자리는 **계획 형식, 도구 호출 규약, 실패했을 때의 동작**을 정하고, '여러 단계 요청 성공률'을 숫자로 올리는 것까지 맡습니다.[1] 최소선은 3단계 이상 요청을 도구 호출 순서로 그리고, 2단계에서 실패했을 때 무슨 일이 일어나는지 답할 수 있는 것입니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    5,
+    15,
+    16,
+    33,
+    34
+   ],
+   "study": [
+    "cs329z-tools",
+    "claude-tooluse",
+    "mcp-spec",
+    "cs329z-multi",
+    "context-eng"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "차량의 상황과 제약을 기반으로 Agent의 실행 가능 여부와 행동을 제어하여 잘못된 차량 제어와 오동작 방지",
+   "short": "달리는 중·비 오는 중·뒷좌석 발화처럼 '지금 해도 되나'를 실행 직전에 따져, 잘못 움직이지 않게 막는 일.",
+   "why": "팀 소개의 핵심 과제가 이것입니다 — 차량에서는 LLM 판단이 실제 동작으로 이어져 일반 대화형 AI 보다 높은 신뢰성이 필요하다고 적었습니다.[1] 포티투닷 이종호 TL 은 개발에서 가장 어려운 것으로 'AI의 거짓말'을 꼽고, 잘못된 추론이 안전 문제로 이어질 수 있어 더 엄격한 기준을 둔다고 말했습니다.[5] Gleo Guard 는 '답해도 되나'뿐 아니라 '차량에서 실행해도 되나'를 같이 판단합니다.[3]",
+   "actually": {
+    "items": [
+     "**차량 상태 읽기** — 속도·기어·문 열림·좌석별 탑승 같은 차량 신호는 안드로이드 자동차 플랫폼에서 VHAL property(읽기·쓰기·구독)로 오간다.[21]",
+     "**주행 중 제한** — 안드로이드 자동차는 주행 중 키보드·동영상·문자 메시지 입력 등을 막는 제한 묶음(CarUxRestrictions)을 둔다.[22][23] 첫 OTA 기사에는 뒷좌석의 전화·문자 제한도 나온다.[7]",
+     "**허용·차단·확인** — Gleo Guard 학습 데이터는 전화·메시지·목적지 검색·연락처 조회·일정 등록·차량 기능 제어마다 허용·차단·추가 확인을 정했다.[3]",
+     "**누가 최종 결정하나** — 전화·문자·목적지 변경은 사용자 확인을 받는다. 매번 물으면 쓸모가 줄고, 줄이면 원치 않은 실행이 생겨 '위험도를 나누는 기준'이 어렵다고 회사가 말했다.[4]",
+     "**실행 뒤 확인** — 명령을 보낸 뒤 차량 값을 다시 읽어 바뀌었는지 보고, 안 바뀌었으면 '했다'고 말하지 않는다 {추론}[21].",
+     "**모르는 도구는 막기** — 모델이 목록에 없는 도구 이름을 지어내면 실행하지 않는다. OWASP 는 필요 이상 권한을 준 것(Excessive Agency)을 LLM 앱의 대표 위험으로 꼽는다.[20]",
+     "**밖에서 온 글의 숨은 지시** — 검색 결과·받은 문자 안에 '이전 지시를 무시하라' 같은 글이 숨어 있으면 그걸 읽은 에이전트가 따를 수 있다.[42] Gleo Guard 의 위험 정책에도 프롬프트 주입이 들어 있다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "차량 상태로 도구 호출을 거르는 실행 관문 (가상 규칙, 직접 돌린 출력)",
+     "body": "시속 62km·D단·비 오는 중이라는 가상 상태에서 다섯 호출을 걸렀습니다. 규칙은 모델 밖의 코드라 모델이 무엇을 내든 같은 판정이 나옵니다. 실제 규칙·위험 등급은 회사가 공개하지 않았습니다 {추론}.",
+     "lang": "python",
+     "code": "# 차량 상태로 도구 호출을 거르는 실행 관문 (가상 규칙)\nRULES = {\n    \"seat_heat.off\": {\"block_if\": lambda s: False, \"confirm\": False},\n    \"window.open\": {\"block_if\": lambda s: s[\"speed\"] > 0 and s[\"rain\"], \"confirm\": False},\n    \"trunk.open\": {\"block_if\": lambda s: s[\"gear\"] != \"P\", \"confirm\": True},\n    \"message.send\": {\"block_if\": lambda s: False, \"confirm\": True},\n}\n\n\ndef gate(tool, s):\n    r = RULES.get(tool)\n    if r is None:\n        return \"BLOCK(모르는 도구)\"\n    if r[\"block_if\"](s):\n        return \"BLOCK(차량 상태)\"\n    return \"CONFIRM\" if r[\"confirm\"] else \"RUN\"\n\n\nstate = {\"speed\": 62, \"gear\": \"D\", \"rain\": True}\nfor t in [\"seat_heat.off\", \"window.open\", \"trunk.open\", \"message.send\", \"sunroof.tilt\"]:\n    print(f\"{t:14} -> {gate(t, state)}\")\n# seat_heat.off  -> RUN\n# window.open    -> BLOCK(차량 상태)\n# trunk.open     -> BLOCK(차량 상태)\n# message.send   -> CONFIRM\n# sunroof.tilt   -> BLOCK(모르는 도구)"
+    }
+   ],
+   "how_far": "어떤 기능이 위험한지(등급표)는 안전·법규·차량 기능 담당과 같이 정합니다 {추론}. 이 자리는 **그 표를 모델 밖 코드로 강제하는 관문, 확인을 언제 물을지의 규칙, 실행 결과를 차량에서 다시 읽는 확인**을 만듭니다. 최소선은 '모델이 틀린 호출을 내도 차가 움직이지 않는' 구조를 설명하고 시험으로 보이는 것입니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    7,
+    20,
+    21,
+    22,
+    23,
+    42
+   ],
+   "study": [
+    "gleoguard",
+    "android-vhal",
+    "android-distraction",
+    "caruxrestrictions",
+    "owasp-llm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사용자 의도와 상황에 맞는 대화 흐름을 설계하고, Agent의 행동과 응답을 연결하는 Conversation Design 개발",
+   "short": "되묻기·확인·실패 안내·'거기'가 어딘지 알아듣기까지, 말과 행동이 어긋나지 않는 대화 흐름을 짜는 일.",
+   "why": "회사는 '거기', '가는 길', '첫 번째'처럼 맥락에 기대는 말을 차량 에이전트의 필수 조건으로 꼽았고[4], 시연에서는 '시트가 왜 이리 뜨겁지'에 열선을 끄고 '거기서 뭐 살까'를 직전 대화로 알아들었습니다.[5] 반면 시승기에는 정보 검색 뒤에는 마이크가 열려 있는데 실행 명령 뒤에는 다시 불러야 하고, 응답 중 끼어들기가 아직 불완전하다는 관찰이 있습니다.[4]",
+   "actually": {
+    "items": [
+     "**대화 상태 추적** — 지금까지 정해진 값(목적지=성심당, 받는 사람=엄마)을 칸(slot)으로 들고 다닌다. 과업형 대화 연구의 대표 데이터 MultiWOZ 가 이 칸 추적을 잰다.[25]",
+     "**되묻기** — 받는 사람이 둘 이상 맞으면('김민수'가 둘) 고르게 하고, 하나면 바로 확인만 받는다 {추론}.",
+     "**행동과 응답 맞추기** — 말로는 '보냈어요'인데 실제로는 실패했다면 가장 나쁜 경험이다. 응답 문장은 실행 결과를 보고 만든다 {추론}[5].",
+     "**실패·거절 문장** — 막힌 이유를 짧게 말하고 할 수 있는 대안을 준다. 대화 설계 안내는 오류 처리를 따로 설계하라고 권한다.[24]",
+     "**짧게** — 운전 중에는 화면 글·목록 길이를 줄이는 제한이 있다[23]. 음성 응답도 핵심 한 문장부터 말한다 {추론}."
+    ]
+   },
+   "how_far": "말투·페르소나는 UX·디자인 쪽과 같이 정합니다 {추론}. 이 자리는 **대화 상태·되묻기·확인·실패 안내를 실행 결과와 묶는 코드**를 맡습니다. 최소선은 '목적지 변경' 한 기능의 정상·애매·실패·거절 대화를 다 그리고 각각 어떤 상태값에서 갈리는지 설명하는 것입니다 {추론}.",
+   "refs": [
+    4,
+    5,
+    23,
+    24,
+    25
+   ],
+   "study": [
+    "conv-design",
+    "multiwoz",
+    "cs329z-context"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LLM Agent 평가 지표, 데이터셋, 평가 환경을 구축하고, 평가 결과를 기반으로 Agent 품질 개선",
+   "short": "도구를 맞게·맞는 인자로·해야 할 때만 불렀는지 재는 시험지와 시험장을 만들고, 그 숫자로 고치는 일.",
+   "why": "Gleo Guard 글은 자체 평가셋 정확도(98.26%)와 실제 흐름 15,010건을 다른 LLM 채점기로 판정한 위험 응답 비율(4.5% → 1.6%)을 함께 냈습니다.[3] 같은 방식의 평가가 실행(도구 호출) 쪽에도 필요합니다 {추론}. 기사는 이 숫자가 외부 검증 없는 자체 평가셋 결과라는 점도 적었습니다.[12]",
+   "actually": {
+    "items": [
+     "**지표 나누기** — 도구 이름이 맞았나 · 인자까지 맞았나 · 불러선 안 될 때 안 불렀나를 따로 센다. BFCL 도 '관련 없음' 판단을 따로 잰다.[17]",
+     "**최종 상태로 채점** — 대화가 끝난 뒤 차량·앱 상태(에어컨 22도, 문자 1건 발송)가 정답과 같은지로 본다(τ-bench 방식).[18]",
+     "**여러 번 돌리기** — 같은 요청을 k번 돌려 매번 성공하는 비율(pass^k)을 본다. τ-bench 소매 과제는 한 번 성공 약 61% 가 8번 연속이면 약 25% 로 떨어졌다.[18]",
+     "**평가 환경** — 실제 차 없이 차량 상태·도구 응답을 흉내 내는 모의 환경과, 사용자 역할 LLM 을 둔다 {추론}[18].",
+     "**LLM 채점기** — 응답 품질은 LLM 이 채점하되 위치·길이 치우침이 있어 사람 표본과 맞춰 본다.[19] Gleo Guard 는 Kanana Safeguard 8B 를 채점기로 썼다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "도구 이름만 맞은 것과 인자까지 맞은 것 (가상 6건, 직접 돌린 출력)",
+     "body": "이름 정확도는 83% 인데 인자까지 보면 50% 입니다. '성심당'과 '성심당 본점', 운전석과 조수석은 차에서는 다른 동작입니다. '오늘 좀 춥네'에 에어컨을 26도로 올린 것은 하지 말아야 할 때 실행한 경우로 따로 셉니다 {추론}.",
+     "lang": "python",
+     "code": "# 도구 호출 평가 — 도구 이름만 맞은 것과 인자까지 맞은 것 (가상 6건)\ngold = [\n    (\"climate.set\", {\"temp\": 22}),\n    (\"nav.set_dest\", {\"poi\": \"성심당 본점\"}),\n    (\"message.send\", {\"to\": \"김민수\", \"text\": \"10분 늦어\"}),\n    (\"seat_heat.off\", {\"seat\": \"driver\"}),\n    (\"window.open\", {\"seat\": \"rear_left\", \"pct\": 30}),\n    (\"none\", {}),  # \"오늘 좀 춥네\" — 아무것도 하지 않는 게 정답\n]\npred = [\n    (\"climate.set\", {\"temp\": 22}),\n    (\"nav.set_dest\", {\"poi\": \"성심당\"}),\n    (\"message.send\", {\"to\": \"김민수\", \"text\": \"10분 늦어\"}),\n    (\"seat_heat.off\", {\"seat\": \"passenger\"}),\n    (\"window.open\", {\"seat\": \"rear_left\", \"pct\": 30}),\n    (\"climate.set\", {\"temp\": 26}),\n]\nname_ok = sum(g[0] == p[0] for g, p in zip(gold, pred))\nfull_ok = sum(g == p for g, p in zip(gold, pred))\nover = sum(g[0] == \"none\" and p[0] != \"none\" for g, p in zip(gold, pred))\nprint(f\"도구 이름 정확도 {name_ok}/{len(gold)} = {name_ok/len(gold):.0%}\")\nprint(f\"인자까지 정확도 {full_ok}/{len(gold)} = {full_ok/len(gold):.0%}\")\nprint(f\"하지 말아야 할 때 실행 {over}건\")\n# 도구 이름 정확도 5/6 = 83%\n# 인자까지 정확도 3/6 = 50%\n# 하지 말아야 할 때 실행 1건"
+    }
+   ],
+   "how_far": "평가셋에 들어갈 '정답 행동'은 기획·안전 쪽과 합의합니다 {추론}. 이 자리는 **시험지·채점기·모의 환경을 만들고, 매번 바꿀 때 회귀 시험으로 돌리는 체계**를 운영합니다. 최소선은 '이 지표가 올랐는데 실제 사용자 불만은 그대로'인 경우를 찾아낼 수 있는 지표 설계입니다 {추론}.",
+   "refs": [
+    3,
+    12,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "tau-bench",
+    "bfcl",
+    "mt-bench",
+    "cme295-eval",
+    "cs336-eval"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "관련 경력 8년 이상 또는 이에 준하는 전문성을 보유하신 분",
+   "short": "8년 이상 — 같은 조직 다른 자리(4년)의 두 배. 연차보다 '이 정도 설계를 혼자 끌어 봤나'를 본다.",
+   "why": "같은 Gleo 조직의 Self-Evolving·Personalized 에이전트 공고는 석사 이상 + 4년 이상이고[8][9], 이 자리는 학위 조건 없이 8년 이상 또는 그에 준하는 전문성입니다.[1] 제목에 Senior 가 붙고, 기술 방향을 주도하라는 요건이 따로 있습니다.[1]",
+   "how_far": "'또는 이에 준하는 전문성'이라 연차가 모자라도 비슷한 규모 시스템을 설계·운영한 증거가 있으면 문장상 맞습니다 {추론}. LLM 에이전트 자체는 역사가 짧아 8년 전부가 LLM 일 수는 없습니다 — 대화 시스템·모바일/차량 플랫폼·백엔드 경력에 최근 LLM 서비스 경험을 더한 모양이 자연스럽습니다 {추론}.",
+   "refs": [
+    1,
+    8,
+    9
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "복잡한 요구사항을 구조화하고 안정적인 AI 시스템으로 구현할 수 있는 높은 수준의 설계 및 문제 해결 역량을 보유하신 분",
+   "short": "'차에서 말로 다 되게'라는 막연한 요구를 상태·규칙·실패 처리가 있는 구조로 바꾸고, 그대로 돌게 만드는 힘.",
+   "why": "요구가 넓습니다 — 바뀌는 맥락(위치·경로·차량 상태·화면·이전 대화), 여러 도구, 안전한 실행을 한꺼번에 맞춰야 한다고 회사가 정리했습니다.[4] 그리고 그것이 양산차에서 매일 돌아야 합니다.[1][6]",
+   "actually": {
+    "items": [
+     "**경계 긋기** — 모델이 정할 것(의도·인자)과 코드가 정할 것(허용 여부·확인)을 나눈다 {추론}[3].",
+     "**실패를 먼저 적기** — 인식 오류·도구 시간 초과·통신 끊김·사용자가 중간에 취소 같은 경우를 표로 먼저 만든다 {추론}.",
+     "**단순한 것부터** — 에이전트를 늘리기 전에 한 번의 호출로 되는지 보라는 권고가 있다.[14]"
+    ]
+   },
+   "how_far": "면접 2차가 3시간 안팎이라 설계 문제를 길게 풀 가능성이 있습니다[1] {추론}. '요구 → 구조 그림 → 실패 표 → 지표'를 한 번에 그려 보이는 연습이 맞는 준비입니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    4,
+    6,
+    14
+   ],
+   "study": [
+    "building-agents",
+    "ai-engineering",
+    "cs329z-multi"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Prompt, Context, Tool Calling 등 LLM 기반 시스템의 주요 기술을 이해하고 실제 서비스에 적용한 경험이 있으신 분",
+   "short": "프롬프트·맥락에 무엇을 넣나·도구 호출 형식을 원리로 알고, 실제 사용자가 쓰는 서비스에 넣어 본 경험.",
+   "why": "Gleo 는 좌석 위치·차량 상태·이전 대화를 같이 보고[2][12], 단계마다 다른 LLM 을 고르며[2], 기능에 따라 외부 LLM API 도 씁니다.[6] 세 기술이 전부 실제 서비스에서 맞물려 있습니다.",
+   "actually": {
+    "items": [
+     "**Prompt** — 역할·규칙·출력 형식을 정한다. 이종호 TL 이 말한 '명확한 지침과 규약'이 이 자리다.[5]",
+     "**Context** — 맥락은 한정된 자원이라 지금 필요한 것만 고른다.[33] 긴 입력의 가운데는 모델이 덜 쓴다는 실험이 있다.[32]",
+     "**Tool Calling** — 모델은 호출을 '글로 내고' 앱이 실행해 결과를 돌려준다.[15]"
+    ]
+   },
+   "level": {
+    "basic": "맥락 창·온도·구조화 출력(JSON)·도구 호출 형식·ReAct 반복",
+    "work": "도구 설명 다듬기·맥락 고르기·출력 검사와 재시도·지연과 비용 재기",
+    "team": "차량 상태를 맥락에 넣는 방식, 차 안 작은 모델과 클라우드 모델 나누기, 실행 관문과 묶기 {추론}"
+   },
+   "how_far": "'써 봤다'보다 **실서비스에서 무엇이 틀렸고 어떻게 고쳤나**가 이 줄의 핵심입니다 {추론}.",
+   "refs": [
+    2,
+    5,
+    6,
+    12,
+    15,
+    32,
+    33
+   ],
+   "study": [
+    "cs329z-context",
+    "context-eng",
+    "claude-tooluse",
+    "lost-in-middle"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM Agent의 품질을 정량, 정성적으로 평가하기 위한 지표, 데이터셋, 평가 환경을 설계, 구축하고 결과를 분석해본 경험 이 있으신 분",
+   "short": "숫자(성공률·오실행률)와 사람 눈(대화가 자연스러운가)으로 에이전트를 재는 체계를 직접 만들어 본 경험.",
+   "why": "업무 다섯째 줄을 이미 해 봤는지 묻는 요건입니다.[1] 회사 글도 숫자 평가(정확도·오판율)와 LLM 채점기 평가를 같이 썼습니다.[3]",
+   "actually": {
+    "items": [
+     "**정량** — 과제 성공률·인자 정확도·하지 말아야 할 때 실행 비율·pass^k·지연.[17][18]",
+     "**정성** — 대화 기록을 직접 읽고 실패 종류를 이름 붙여 센다(오인식·잘못된 도구·확인 누락·말과 행동 불일치) {추론}.",
+     "**채점기 검증** — LLM 채점이 사람 판정과 얼마나 맞는지 먼저 본다.[19]"
+    ]
+   },
+   "how_far": "분석까지가 요건입니다 — '숫자가 몇이었다'가 아니라 '그래서 무엇을 고쳤고 얼마나 나아졌다'를 말할 수 있어야 합니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "tau-bench",
+    "mt-bench",
+    "cme295-eval"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "새로운 AI 기술을 빠르게 학습하고 실제 제품에 적용할 수 있는 실행력을 갖추신 분",
+   "short": "새 모델·새 규약이 나오면 Gleo 문제에서 직접 재 보고, 쓸 만하면 차에 넣는 속도.",
+   "why": "Gleo 는 2026년 5월 더 뉴 그랜저에 처음 실렸고 10월에 첫 OTA 로 기능을 늘렸습니다 — 고치는 주기가 짧습니다.[2][7] 회사는 OTA 로 기능과 품질을 계속 개선한다고 밝혔습니다.[2]",
+   "actually": {
+    "items": [
+     "**재현** — 논문·발표 숫자를 그대로 믿지 않고 우리 평가셋에서 다시 잰다 {추론}.",
+     "**작게 넣기** — 새 기법은 기능 하나·사용자 일부에 먼저 넣고 지표를 본다 {추론}."
+    ]
+   },
+   "how_far": "최근 1년 안에 새 기술(예: 새 도구 규약·새 모델)을 실제 제품에 넣어 본 사례 하나가 있으면 좋습니다 {추론}.",
+   "refs": [
+    2,
+    7
+   ],
+   "study": [
+    "cs329z-patterns",
+    "mcp-spec"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 직군과 협업하며 기술적 방향을 주도하고 실행할 수 있는 분",
+   "short": "안전·UX·앱·모델 학습 팀 사이에서 '실행 구조는 이렇게 간다'를 정하고 끌고 가는 역할.",
+   "why": "Gleo 는 여러 팀이 같이 만듭니다 — Gleo Core·Gleo Foundation 이 Gleo Guard 를 같이 썼고[3], 같은 조직에 Core·Navigation·개인화 자리가 따로 있습니다.[8][9][10] 실행 구조는 그 결과물이 모두 지나가는 자리입니다 {추론}.",
+   "how_far": "시니어 요건입니다. 여러 팀이 같이 쓰는 도구 호출 규약·평가 기준을 문서로 정하고 합의를 이끈 경험을 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    3,
+    8,
+    9,
+    10
+   ],
+   "study": [
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Android / Kotlin 기반 앱 또는 차량·모바일 플랫폼 개발 경험",
+   "short": "차 안 실행기가 안드로이드 위에서 돌 가능성이 커서, 차량 쪽 코드를 직접 만질 수 있으면 좋다.",
+   "why": "공고의 기술 표기가 Android·Kotlin 입니다.[1] 같은 조직 Core 팀 공고는 Python 또는 Kotlin 을 선호합니다.[8] 차량 제어는 차 안에서 처리하므로[12], 모델이 낸 호출을 실제 차량 기능에 잇는 코드가 차 쪽에 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**차량 신호** — 안드로이드 자동차 플랫폼의 VHAL 은 차량 값을 property 로 읽고 쓰고 구독하게 한다.[21]",
+     "**주행 중 제한** — 주행 상태에 따라 앱이 할 수 있는 것을 바꾸는 CarUxRestrictions.[23]",
+     "**비동기** — 도구 호출·음성·차량 값 구독이 동시에 오가 Kotlin 코루틴(시간 제한·취소)이 쓰인다 {추론}."
+    ]
+   },
+   "how_far": "우대입니다. 앱을 처음부터 만드는 것보다 **실행 관문·차량 신호 연결 쪽을 읽고 고칠 수 있는** 수준이면 이 자리에 맞습니다 {추론}.",
+   "refs": [
+    1,
+    8,
+    12,
+    21,
+    23
+   ],
+   "study": [
+    "android-vhal",
+    "caruxrestrictions",
+    "kotlin-coroutines"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Voice / Conversational AI 또는 LLM 기반 Agent 시스템 개발 경험",
+   "short": "음성 비서나 챗봇, 혹은 LLM 에이전트를 만들어 본 경험 — 둘 중 하나면 된다.",
+   "why": "Gleo 는 음성으로 쓰는 에이전트라 받아쓰기 오류·호출어·끼어들기 같은 음성 쪽 문제가 대화 흐름에 그대로 섞입니다 — 시승기에는 '이제 끝나고'가 '이재 끝나고'로 받아써진 사례가 나옵니다.[4]",
+   "actually": {
+    "items": [
+     "**음성 특유의 문제** — 호출어는 가벼운 모델로 후보를 거르고 정밀 모델로 다시 확인하는 2단계다.[4] 발화가 끝났는지 판단, 고유명사(지명·연락처) 인식도 따로 다룬다.[4]",
+     "**음성 응답** — 화면이 아니라 귀로 듣기 때문에 목록을 길게 읽지 않는다 {추론}."
+    ]
+   },
+   "how_far": "'또는'이라 LLM 에이전트 경험만 있어도 맞습니다.[1] 음성 쪽 경험이 있으면 인식 오류를 대화 흐름에서 받아내는 설계에서 앞섭니다 {추론}.",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "conv-design",
+    "multiwoz"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM Fine-tuning / Post-training 또는 On-Device AI / LLM 개발 경험",
+   "short": "작은 차량용 모델을 우리 도구 호출에 맞게 더 학습시키거나, 기기 안에서 LLM 을 돌려 본 경험.",
+   "why": "포티투닷은 큰 모델을 7B·1~3B 차량용 모델로 줄이고 칩에 맞춰 양자화한다고 했고[11], Gleo Guard 는 SFT 뒤 GRPO 로 더 학습했습니다.[3] 차량 제어는 차 안에서 처리합니다.[12] 42dot 은 한국어·영어 1.3B 모델을 공개한 적도 있습니다.[41]",
+   "actually": {
+    "items": [
+     "**미세조정** — 일부 가중치만 학습하는 LoRA 로 우리 도구 호출 형식을 익힌다.[29]",
+     "**사후 학습** — 좋은 답·나쁜 답 쌍으로 학습하는 DPO[30], 그룹 안 상대 비교로 학습하는 GRPO[31]. Gleo Guard 는 GRPO 로 '비속어가 섞였지만 정상인 전화 요청'을 가려내게 됐다.[3]",
+     "**기기 안 LLM** — 다른 회사 예로, 안드로이드의 Gemini Nano 는 네트워크 없이 기기 안에서 돌고 안 되면 클라우드로 넘긴다.[28]"
+    ]
+   },
+   "how_far": "학습 자체는 모델 팀 몫일 수 있습니다 {추론}. 이 자리에서는 **무엇을 학습시킬지(실패 사례 → 학습 데이터)와 학습한 모델이 실행 품질을 올렸는지**를 판단하는 데 쓰입니다 {추론}.",
+   "refs": [
+    3,
+    11,
+    12,
+    28,
+    29,
+    30,
+    31,
+    41
+   ],
+   "study": [
+    "cme295-tuning",
+    "cs336-post",
+    "lora-paper",
+    "dpo-paper",
+    "trl-docs",
+    "gemini-nano"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Embedding 기반 Semantic Search 및 Entity Retrieval 기술 개발 경험",
+   "short": "'민수한테 전화해'의 민수, '그 빵집'의 빵집을 연락처·장소·기능 목록에서 정확히 찾아내는 기술.",
+   "why": "차량 에이전트는 지명·연락처 같은 고유명사를 잘 알아들어야 한다고 회사가 꼽았고[4], 시연에서도 '성심당'을 찾아 길을 안내했습니다.[6] 도구 호출의 인자가 이 이름들이라, 이름을 잘못 찾으면 엉뚱한 사람에게 문자가 갑니다 {추론}.",
+   "actually": {
+    "items": [
+     "**뜻으로 찾기** — 문장을 벡터로 바꿔 가까운 것을 찾는다(Sentence-BERT).[26] 한국어를 포함한 여러 언어를 한 모델로 다루는 BGE-M3 같은 임베딩이 쓰인다.[27]",
+     "**이름 찾기(Entity Retrieval)** — 받아쓰기가 틀린 이름('김민쑤')도 맞는 연락처로 잇는다. 한글은 글자 대신 자모로 비교하면 차이가 잘 드러난다(아래 예).",
+     "**기능 찾기** — 도구가 수백 개면 전부 맥락에 넣지 않고, 요청과 가까운 도구 설명만 골라 넣는다 {추론}[33]."
+    ]
+   },
+   "examples": [
+    {
+     "title": "받아쓰기가 틀린 이름을 연락처에서 찾기 — 글자 vs 자모 (가상 연락처, 직접 돌린 출력)",
+     "body": "'김민쑤'를 글자로 비교하면 김민수·김민서가 0.67 로 같아 고를 수 없습니다. 자모(ㄱㅣㅁㅁㅣㄴ…)로 비교하면 김민수 0.88 이 앞섭니다. 점수 차가 작으면 되묻기로 넘기는 것이 안전합니다 {추론}. 실제 서비스는 임베딩·발음 유사도를 섞어 씁니다 {추론}.",
+     "lang": "python",
+     "code": "# 음성 인식이 틀린 이름을 연락처에서 찾기 — 글자 대신 자모로 비교 (가상 연락처)\nfrom difflib import SequenceMatcher\n\nCHO = \"ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ\"\nJUNG = \"ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ\"\nJONG = \" ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ\"\n\n\ndef jamo(s):\n    out = []\n    for ch in s:\n        c = ord(ch) - 0xAC00\n        if 0 <= c < 11172:\n            out += [CHO[c // 588], JUNG[(c % 588) // 28], JONG[c % 28].strip()]\n        else:\n            out.append(ch)\n    return \"\".join(out)\n\n\ncontacts = [\"김민수\", \"김민서\", \"김인수\", \"박민수 팀장\", \"엄마\"]\nheard = \"김민쑤\"\nfor name, f in [(\"글자\", lambda x: x), (\"자모\", jamo)]:\n    ranked = sorted(contacts, key=lambda c: -SequenceMatcher(None, f(heard), f(c)).ratio())\n    top = [(c, round(SequenceMatcher(None, f(heard), f(c)).ratio(), 2)) for c in ranked[:3]]\n    print(name, top)\n# 글자 [('김민수', 0.67), ('김민서', 0.67), ('김인수', 0.33)]\n# 자모 [('김민수', 0.88), ('김민서', 0.75), ('김인수', 0.75)]"
+    }
+   ],
+   "how_far": "우대입니다. 임베딩 검색을 붙여 본 것보다 **틀린 이름을 얼마나 줄였는지 재 본** 경험이 이 자리에 맞습니다 {추론}.",
+   "refs": [
+    4,
+    6,
+    26,
+    27,
+    33
+   ],
+   "study": [
+    "sbert",
+    "bge-m3",
+    "cs329z-rag"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Agent의 행동과 응답을 세밀하게 제어하고 사용자 로그 데이터를 기반으로 품질을 분석하고 개선한 경험",
+   "short": "실제 사용자 로그에서 '말은 했는데 행동이 틀린' 경우를 찾아 규칙·프롬프트·데이터로 고쳐 본 경험.",
+   "why": "42dot 은 실제 주행 데이터와 사용자 의견(VOC)을 반영해 OTA 로 고친다고 밝혔고[2], 첫 OTA 에서 내비 연동을 늘렸습니다.[7] Gleo Guard 도 서비스 로그에서 시나리오를 만들고 실패 사례를 합성 데이터로 되돌리는 계획을 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**실패 신호** — 같은 말을 바로 다시 함·취소·'아니 그거 말고'를 실패 후보로 모은다 {추론}.",
+     "**종류별로 세기** — 인식 오류 / 잘못된 도구 / 틀린 인자 / 확인 누락 / 말과 행동 불일치로 나눠 가장 큰 칸부터 고친다 {추론}.",
+     "**세밀한 제어** — 도구마다 허용 조건, 확인 문장, 응답 틀을 따로 둔다 {추론}[3].",
+     "**개인정보** — Gleo Guard 학습 데이터에는 실제 전화번호·주소·메시지 원문을 넣지 않았다.[3]"
+    ]
+   },
+   "how_far": "로그를 직접 SQL·파이썬으로 나눠 보는 것은 기본이고, '무엇을 봤고 무엇을 고쳐 얼마나 나아졌다'는 사례 하나가 이 줄의 답입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    7
+   ],
+   "study": [
+    "kohavi-ab",
+    "ai-engineering"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "'모델은 틀린다'를 전제로 모델 밖 안전장치를 설계하는 게 자연스러운 사람[1][3]",
+   "대화 기록을 하나씩 읽으며 '말과 행동이 어긋난 곳'을 찾는 게 재밌는 사람",
+   "안드로이드·차량 플랫폼 쪽 코드와 LLM 쪽을 둘 다 만질 수 있는 사람[1]",
+   "양산차에서 매일 쓰이는 에이전트를 만들고 싶은 사람[2][6]"
+  ],
+  "hard": [
+   "8년 이상이라 연차 문턱이 높다(같은 조직 다른 자리는 4년)[1][8]",
+   "같은 Gleo 조직에 에이전트 자리가 여럿이라 Core 팀과의 경계는 들어가기 전엔 흐릿하다[8][9][10]",
+   "실행 관문·확인 규칙의 실제 구조를 회사가 공개한 글은 없다",
+   "차량이라 '좋아졌다'보다 '위험이 늘지 않았다'를 먼저 보여야 해 배포가 느릴 수 있다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "'창문 열어 줘'를 시속 100km·비 오는 중에 받았습니다. 무엇이 어디서 판정하나요?",
+   "a": "모델 밖 실행 관문이 차량 상태로 막고, 대안을 말한다 — Gleo Guard 의 '실행해도 되나'와 VHAL 신호.[3][21]"
+  },
+  {
+   "q": "문자 보내기 전에 매번 확인을 물으면 귀찮다는 불만이 나왔습니다. 어떻게 줄이겠어요?",
+   "a": "회사가 꼽은 '확인 시점' 문제 — 위험도 등급·되돌릴 수 있나·받는 사람 확신도로 나누기.[4]"
+  },
+  {
+   "q": "응답은 '에어컨 켰어요'인데 실제로는 실패한 건이 로그에 있습니다. 어디를 고치겠어요?",
+   "a": "실행 결과를 다시 읽고 그 결과로 응답 만들기, 말과 행동 불일치를 지표로.[5][18]"
+  },
+  {
+   "q": "도구 호출 정확도가 95%인데 사용자 불만은 그대로입니다. 무엇을 의심하겠어요?",
+   "a": "이름만 맞고 인자가 틀림, 하지 말아야 할 때 실행, 한 번 성공과 늘 성공의 차이(pass^k).[17][18]"
+  },
+  {
+   "q": "'김민수한테 전화해'에 연락처에 김민수가 둘, 김민서가 하나 있습니다.",
+   "a": "이름 찾기 점수와 되묻기 기준, 받아쓰기 오류 — 회사가 꼽은 고유명사 인식.[4][27]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "42dot 채용 · Senior AI Agent Engineer (Gleo Interactor)",
+   "url": "https://jobs.ashbyhq.com/42dot/464eb98e-07e6-4cd4-af5d-2d9e9322a3cc",
+   "kind": "posting",
+   "note": "팀 소개(LLM 판단이 실제 차량 동작으로 이어져 높은 신뢰성 필요)·업무·요건·우대·전형(서류 → 1차 화상 1시간 → 2차 3시간 → 처우 협의), 기술 표기 Android·Kotlin, 근무지 판교(원격 표기), 수습 3개월 가능"
+  },
+  {
+   "n": 2,
+   "title": "42dot · 차량용 음성 AI 에이전트 '글레오 AI' 기술 공개",
+   "url": "https://42dot.ai/ko/stories/blog-news/42dot-unveils-gleo-ai",
+   "kind": "company",
+   "date": "2026-05-21",
+   "note": "LLM 이 의도 파악·과업 배분, 단계별 LLM 선택, 좌석 위치·차량 상태 인식, 온디바이스·클라우드 하이브리드, VOC 반영·OTA, 개인화 계획 — 같은 날 다른 풀이에서 읽은 내용"
+  },
+  {
+   "n": 3,
+   "title": "42dot 기술 블로그 · Gleo Guard l 차량 AI Agent를 위한 안전 가드레일",
+   "url": "https://42dot.ai/ko/stories/blog-news/gleoguard",
+   "kind": "company",
+   "date": "2026-09-11",
+   "note": "저자 조성국(Gleo Core)·장준원(Gleo Foundation). '답해도 되나'와 '차량에서 실행해도 되나'를 같이 판단, Critical·Caution 정책, 행동마다 허용·차단·추가 확인을 정한 Action-Aware 데이터, SFT → GRPO, 내부 평가 Macro Accuracy 98.26%(GPT-5.6-luna 88.00%), 위험을 안전으로 본 비율 7.50% → 1.66%, 과잉 차단 16.50% → 1.82%, 실제 흐름 15,010건 위험 응답 4.5% → 1.6%"
+  },
+  {
+   "n": 4,
+   "title": "요즘IT · 차량 안팎의 변수, 42dot이 Agentic AI로 풀어야 할 문제(포티투닷 협찬 글)",
+   "url": "https://yozm.wishket.com/magazine/detail/3954/",
+   "kind": "company",
+   "date": "2026-09-18",
+   "note": "Gleo AI 기술 설명회·시승기. 네 조건(Dynamic Context·Context-Dependent Intent·Multiple Tools & Services·Safe & Verifiable Action), Supervisor → 전문 에이전트, '집에 가는 길에 주차 편한 카페' 9단계, 안전 질문 셋(무엇이 사실인가·무엇을 실행해도 되나·누가 최종 결정하나), 전화·문자·목적지 변경은 사용자 확인, 확인 시점의 어려움, 시승 중 받아쓰기 오류·재호출·끼어들기(barge-in) 미흡 — 협찬 글이라 회사 쪽 자료로 분류"
+  },
+  {
+   "n": 5,
+   "title": "비즈워치(다음 뉴스) · 현대차, 대화형 AI '거짓말' 어떻게 잡았나",
+   "url": "https://v.daum.net/v/20260430083146869",
+   "kind": "news",
+   "date": "2026-04-30",
+   "note": "플레오스 커넥트 미디어 데이(2026-04-29). 포티투닷 이종호 TL — 가장 어려운 것은 'AI의 거짓말', 잘못된 추론이 안전 문제로, 명확한 지침·규약으로 정확한 기능 실행, 규칙 기반 고도화 훈련, 참조 지식 확대. '시트가 왜 이리 뜨겁지' → 열선 끄기, '거기'·'이 근처' 이해, 여러 명령 한 번에"
+  },
+  {
+   "n": 6,
+   "title": "뉴시스 · \"성심당 빵 메뉴까지 추천\"…현대차그룹 '글레오AI 에이전트' 뭐길래",
+   "url": "https://www.newsis.com/view/NISX20260429_0003610848",
+   "kind": "news",
+   "date": "2026-04-30",
+   "note": "더 뉴 그랜저 첫 적용, 사투리·지칭어 시연, 기능에 따라 외부 LLM API 사용"
+  },
+  {
+   "n": 7,
+   "title": "스타뉴스 · 글레오 AI 첫 OTA 업데이트(내비게이션 연동 강화)",
+   "url": "https://www.starnewskorea.com/en/business-life/2026/10/30/2026103009493948696",
+   "kind": "news",
+   "date": "2026-10-30",
+   "note": "휴게소·주유소·화장실 추천, 경유지 남은 시간, 뒷좌석 전화·문자 제한 — 영문 기계번역판(같은 날 다른 풀이에서 읽음)"
+  },
+  {
+   "n": 8,
+   "title": "42dot 채용 · AI Engineer (Self-Evolving Agent)",
+   "url": "https://jobs.ashbyhq.com/42dot/5baee8ca-8d47-4690-bae5-a5a1858256bc",
+   "kind": "posting",
+   "note": "같은 Gleo 조직의 Gleo Core 팀 — 계획·도구 사용·맥락 관리·조율 공통 뼈대, 데이터 플라이휠, 석사·4년 이상"
+  },
+  {
+   "n": 9,
+   "title": "42dot 채용 · AI Engineer (Personalized & Proactive Agent)",
+   "url": "https://jobs.ashbyhq.com/42dot/ed545c48-5d1d-4ba8-ba83-ad0087d56ed4",
+   "kind": "posting",
+   "note": "같은 조직 — 장기 기억·개인화·선제 제안, 오프라인 평가·A/B"
+  },
+  {
+   "n": 10,
+   "title": "42dot 채용 · AI Engineer (Navigation Agent)",
+   "url": "https://jobs.ashbyhq.com/42dot/4a19a543-6ed0-46bf-8519-b34b45e2ffa6",
+   "kind": "posting",
+   "note": "같은 조직 — 내비 기능 에이전트 학습·평가"
+  },
+  {
+   "n": 11,
+   "title": "SKT 뉴스룸 · 포티투닷 Gleo AI 그룹장 인터뷰",
+   "url": "https://news.sktelecom.com/216640",
+   "kind": "news",
+   "date": "2025-11-13",
+   "note": "큰 모델 → 7B·1~3B 차량용 증류, 칩 맞춤 양자화 — 포티투닷 쪽 발언(같은 날 다른 풀이에서 읽음)"
+  },
+  {
+   "n": 12,
+   "title": "AI매터스 · 포티투닷 차량 AI '글레오', 안전 판정에서 GPT-5.6-루나보다 10%p 높은 정확도",
+   "url": "https://aimatters.co.kr/news-report/53071/",
+   "kind": "news",
+   "date": "2026-09-23",
+   "note": "Gleo Guard 글 요약 + 좌석 위치·주행 상황·대화 맥락 파악, 안전과 직결되는 차량 제어는 기기 안에서. 근거가 자체 평가셋이라는 점을 기사도 밝힘"
+  },
+  {
+   "n": 13,
+   "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+   "url": "https://arxiv.org/abs/2210.03629",
+   "kind": "reference",
+   "date": "2022",
+   "note": "생각 → 행동 → 관찰 반복"
+  },
+  {
+   "n": 14,
+   "title": "Anthropic · Building effective agents",
+   "url": "https://www.anthropic.com/research/building-effective-agents",
+   "kind": "reference",
+   "date": "2024-12",
+   "note": "정해진 흐름(workflow)과 에이전트의 구분, 단순한 구조부터, 오케스트레이터-작업자 패턴"
+  },
+  {
+   "n": 15,
+   "title": "Claude 문서 · Tool use with Claude",
+   "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+   "kind": "reference",
+   "note": "모델이 tool_use 블록을 내면 앱이 실행하고 tool_result 로 돌려준다 — 도구 실행은 앱의 몫"
+  },
+  {
+   "n": 16,
+   "title": "Model Context Protocol 명세",
+   "url": "https://modelcontextprotocol.io/specification",
+   "kind": "reference",
+   "note": "도구 목록·호출·결과 형식을 정한 공개 규약"
+  },
+  {
+   "n": 17,
+   "title": "Berkeley Function Calling Leaderboard (BFCL)",
+   "url": "https://gorilla.cs.berkeley.edu/leaderboard.html",
+   "kind": "reference",
+   "note": "도구 호출 정확도 공개 순위 — 여러 호출·병렬 호출·호출하지 말아야 할 때(관련 없음) 판단을 따로 잰다"
+  },
+  {
+   "n": 18,
+   "title": "τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains",
+   "url": "https://arxiv.org/abs/2406.12045",
+   "kind": "reference",
+   "date": "2024-06",
+   "note": "사용자 흉내 LLM 과 대화한 뒤 최종 데이터베이스 상태로 성공 판정, pass^k, 소매 과제 pass^1 약 61% → pass^8 약 25%"
+  },
+  {
+   "n": 19,
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "kind": "reference",
+   "date": "2023",
+   "note": "GPT-4 채점이 사람과 80% 넘게 일치, 위치·길이 치우침"
+  },
+  {
+   "n": 20,
+   "title": "OWASP Top 10 for LLM Applications",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference",
+   "note": "프롬프트 주입·과한 권한(Excessive Agency)"
+  },
+  {
+   "n": 21,
+   "title": "Android 오픈소스 프로젝트 · Vehicle Hardware Abstraction Layer(VHAL)",
+   "url": "https://source.android.com/docs/automotive/vhal",
+   "kind": "reference",
+   "note": "차량 신호를 property 로 읽기·쓰기·구독, Android 13 이상 AIDL"
+  },
+  {
+   "n": 22,
+   "title": "Android 오픈소스 프로젝트 · Driver distraction guidelines",
+   "url": "https://source.android.com/docs/automotive/driver_distraction/guidelines",
+   "kind": "reference",
+   "note": "주행 중 UX 제한 상태에서 돌 수 있는 앱은 Distraction Optimized 로 선언"
+  },
+  {
+   "n": 23,
+   "title": "Android 개발자 문서 · CarUxRestrictions",
+   "url": "https://developer.android.com/reference/android/car/drivingstate/CarUxRestrictions",
+   "kind": "reference",
+   "note": "주행 중 제한 묶음 — NO_KEYBOARD·NO_VIDEO·NO_TEXT_MESSAGE·NO_VOICE_TRANSCRIPTION·LIMIT_STRING_LENGTH 등, 전부 켜면 FULLY_RESTRICTED"
+  },
+  {
+   "n": 24,
+   "title": "Google for Developers · Conversation Design",
+   "url": "https://developers.google.com/assistant/conversation-design/welcome",
+   "kind": "reference",
+   "note": "요구사항 → 페르소나 → 샘플 대화 → 오류 처리 순서의 대화 설계 안내. 바탕 제품(Conversational Actions)은 2023-06-13 종료됐지만 설계 안내는 남아 있다"
+  },
+  {
+   "n": 25,
+   "title": "MultiWOZ: A Large-Scale Multi-Domain Wizard-of-Oz Dataset for Task-Oriented Dialogue Modelling",
+   "url": "https://arxiv.org/abs/1810.00278",
+   "kind": "reference",
+   "date": "2018",
+   "note": "과업형 대화 약 1만 건, 대화 상태(slot) 추적의 대표 데이터"
+  },
+  {
+   "n": 26,
+   "title": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks",
+   "url": "https://arxiv.org/abs/1908.10084",
+   "kind": "reference",
+   "date": "2019"
+  },
+  {
+   "n": 27,
+   "title": "M3-Embedding (BGE-M3): Multi-Linguality, Multi-Functionality, Multi-Granularity Text Embeddings",
+   "url": "https://arxiv.org/abs/2402.03216",
+   "kind": "reference",
+   "date": "2024-02",
+   "note": "100개 넘는 언어, 밀집·다중 벡터·희소 검색을 한 모델로, 최대 8,192 토큰"
+  },
+  {
+   "n": 28,
+   "title": "Android 개발자 문서 · Gemini Nano",
+   "url": "https://developer.android.com/ai/gemini-nano",
+   "kind": "reference",
+   "note": "AICore 시스템 서비스에서 네트워크 없이 도는 기기 안 모델, 안 되면 클라우드로 넘기는 하이브리드 API — 다른 회사의 기기 안 LLM 사례"
+  },
+  {
+   "n": 29,
+   "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+   "url": "https://arxiv.org/abs/2106.09685",
+   "kind": "reference",
+   "date": "2021"
+  },
+  {
+   "n": 30,
+   "title": "Direct Preference Optimization (DPO)",
+   "url": "https://arxiv.org/abs/2305.18290",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 31,
+   "title": "DeepSeekMath (GRPO 를 처음 제안한 논문)",
+   "url": "https://arxiv.org/abs/2402.03300",
+   "kind": "reference",
+   "date": "2024"
+  },
+  {
+   "n": 32,
+   "title": "Lost in the Middle: How Language Models Use Long Contexts",
+   "url": "https://arxiv.org/abs/2307.03172",
+   "kind": "reference",
+   "date": "2023",
+   "note": "긴 입력 가운데 정보는 덜 쓰인다"
+  },
+  {
+   "n": 33,
+   "title": "Anthropic Engineering · Effective context engineering for AI agents",
+   "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+   "kind": "reference",
+   "date": "2025-09",
+   "note": "맥락은 한정된 자원 — 고르기·압축·도구 설명 다듬기"
+  },
+  {
+   "n": 34,
+   "title": "Why Do Multi-Agent LLM Systems Fail? (MAST)",
+   "url": "https://arxiv.org/abs/2503.13657",
+   "kind": "reference",
+   "date": "2025-03",
+   "note": "명세 문제·에이전트 간 어긋남·검증 실패"
+  },
+  {
+   "n": 35,
+   "title": "원티드 · 포티투닷 회사 정보(국민연금 기반 평균 연봉·인원)",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "2026-11-25 확인(같은 날 다른 풀이에서) — 기준 월 표기 없음"
+  },
+  {
+   "n": 36,
+   "title": "원티드 · 현대오토에버 회사 정보(같은 집계)",
+   "url": "https://www.wanted.co.kr/company/4730",
+   "kind": "reference",
+   "note": "검색 요약으로 확인(같은 날 다른 풀이에서)"
+  },
+  {
+   "n": 37,
+   "title": "뉴스스페이스 · 포티투닷 2025년 연결 감사보고서",
+   "url": "https://newsspace.kr/news/article.html?no=15231",
+   "kind": "news",
+   "date": "2026-09-14",
+   "note": "급여 891억원 — 직원 수가 없어 평균은 계산하지 않음"
+  },
+  {
+   "n": 38,
+   "title": "42dot 회사 사이트 하단 회사 정보",
+   "url": "https://42dot.ai",
+   "kind": "company"
+  },
+  {
+   "n": 39,
+   "title": "42dot 채용 · 복리후생(Employee Engagement Program)",
+   "url": "https://42dot.ai/ko/careers/employee-engagement-program",
+   "kind": "company",
+   "note": "한국 본사 기준, 날짜 표기 없음"
+  },
+  {
+   "n": 40,
+   "title": "42dot 채용 · 채용 절차",
+   "url": "https://42dot.ai/ko/careers/hiring-process",
+   "kind": "company",
+   "note": "면접 통과 뒤 처우 협의"
+  },
+  {
+   "n": 41,
+   "title": "Hugging Face · 42dot/42dot_LLM-SFT-1.3B",
+   "url": "https://huggingface.co/42dot/42dot_LLM-SFT-1.3B",
+   "kind": "company",
+   "date": "2023-09",
+   "note": "42dot 이 공개한 한국어·영어 1.3B 지시 학습 모델"
+  },
+  {
+   "n": 42,
+   "title": "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection",
+   "url": "https://arxiv.org/abs/2302.12173",
+   "kind": "reference",
+   "date": "2023"
+  }
+ ],
+ "caveat": "Gleo Interactor 팀의 실행 관문·확인 규칙·평가 지표를 기술적으로 설명한 글이나 발표 영상은 찾지 못했습니다(2026년 HMG Tech Talent Forum 의 Gleo 발표가 있었다는 기록만 있고 영상은 찾지 못해 받은 영상 없음). 회사 근거는 이 공고와 같은 조직 공고 셋, Gleo AI 소개 글(2026-05)·Gleo Guard 기술 블로그(2026-09), 협찬 기사의 기술 설명회 내용(2026-09), 미디어 데이 보도(2026-04)입니다. 협찬 글은 회사 쪽 자료로 분류했습니다. 차량 신호·주행 중 제한은 안드로이드 자동차 공식 문서로 '보통 이런 것'을 보였고, Gleo 가 그 API 를 그대로 쓰는지는 공개되지 않았습니다. 코드 예시는 가상 규칙·가상 데이터로 직접 돌린 출력입니다.",
+ "resources": [
+  {
+   "id": "gleo-blog",
+   "title": "'사람처럼 자연스러운 대화' 가능한 차량용 음성 AI 에이전트 '글레오 AI' 기술 공개",
+   "by": "42dot 블로그 · 2026",
+   "kind": "doc",
+   "url": "https://42dot.ai/ko/stories/blog-news/42dot-unveils-gleo-ai",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "회사가 직접 밝힌 Gleo 구조(단계별 LLM·차 안과 클라우드) — 업무 첫 줄의 출발점."
+  },
+  {
+   "id": "gleoguard",
+   "title": "Gleo Guard l 차량 AI Agent를 위한 안전 가드레일",
+   "by": "42dot 기술 블로그 · 2026",
+   "kind": "doc",
+   "url": "https://42dot.ai/ko/stories/blog-news/gleoguard",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "'실행해도 되나'를 판단하는 방식과 평가 숫자 — 오동작 방지·평가 줄을 회사 말로 읽는다."
+  },
+  {
+   "id": "building-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic · 2024",
+   "kind": "doc",
+   "url": "https://www.anthropic.com/research/building-effective-agents",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "정해진 흐름과 에이전트를 언제 나누나 — 실행 구조 설계의 기준."
+  },
+  {
+   "id": "context-eng",
+   "title": "Effective context engineering for AI agents",
+   "by": "Anthropic Engineering · 2025",
+   "kind": "doc",
+   "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "맥락에 무엇을 넣고 도구 설명을 어떻게 쓰나 — Prompt·Context 요건."
+  },
+  {
+   "id": "react-paper",
+   "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+   "by": "Yao 외 · ICLR 2023",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2210.03629",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "생각 → 행동 → 관찰 반복 — 도구를 부르는 에이전트의 기본 고리."
+  },
+  {
+   "id": "claude-tooluse",
+   "title": "Tool use with Claude",
+   "by": "Anthropic 공식 문서",
+   "kind": "doc",
+   "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "모델이 호출을 내고 앱이 실행하는 실제 형식 — Tool Calling 요건을 손으로 익힌다."
+  },
+  {
+   "id": "mcp-spec",
+   "title": "Model Context Protocol 명세",
+   "by": "MCP 프로젝트",
+   "kind": "doc",
+   "url": "https://modelcontextprotocol.io/specification",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "도구 목록·호출·결과를 한 규약으로 묶는 법 — 도구가 늘어도 실행기를 그대로 두는 설계."
+  },
+  {
+   "id": "bfcl",
+   "title": "Berkeley Function Calling Leaderboard (BFCL)",
+   "by": "UC Berkeley Gorilla",
+   "kind": "doc",
+   "url": "https://gorilla.cs.berkeley.edu/leaderboard.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "도구 호출을 어떤 칸으로 나눠 재나 — 평가 지표 설계의 본보기."
+  },
+  {
+   "id": "tau-bench",
+   "title": "τ-bench (논문·코드)",
+   "by": "Sierra Research",
+   "kind": "doc",
+   "url": "https://github.com/sierra-research/tau-bench",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "사용자 역할 LLM·최종 상태 채점·pass^k — 평가 환경을 만들 때 그대로 따라 할 수 있다."
+  },
+  {
+   "id": "mt-bench",
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "by": "Zheng 외 · NeurIPS 2023",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "LLM 채점기의 치우침과 사람과의 일치 — 정성 평가를 자동으로 돌릴 때."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications",
+   "by": "OWASP GenAI Security Project",
+   "kind": "doc",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "과한 권한·프롬프트 주입 — 오동작 방지 줄의 위험 목록."
+  },
+  {
+   "id": "android-vhal",
+   "title": "Vehicle Hardware Abstraction Layer (VHAL)",
+   "by": "Android 오픈소스 프로젝트",
+   "kind": "doc",
+   "url": "https://source.android.com/docs/automotive/vhal",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "차량 값을 읽고 쓰는 방식 — 실행 관문이 무엇을 보고 판정하는지."
+  },
+  {
+   "id": "android-distraction",
+   "title": "Driver distraction guidelines",
+   "by": "Android 오픈소스 프로젝트",
+   "kind": "doc",
+   "url": "https://source.android.com/docs/automotive/driver_distraction/guidelines",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "주행 중 앱이 할 수 있는 것의 기준 — 차량 제약 요건."
+  },
+  {
+   "id": "caruxrestrictions",
+   "title": "CarUxRestrictions (API 문서)",
+   "by": "Android 개발자 문서",
+   "kind": "doc",
+   "url": "https://developer.android.com/reference/android/car/drivingstate/CarUxRestrictions",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "주행 상태별 제한 묶음의 실제 이름 — 대화 길이·입력 제한을 설계할 때."
+  },
+  {
+   "id": "conv-design",
+   "title": "Conversation Design",
+   "by": "Google for Developers",
+   "kind": "doc",
+   "url": "https://developers.google.com/assistant/conversation-design/welcome",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "샘플 대화·페르소나·오류 처리 순서 — Conversation Design 줄의 기본기(바탕 제품은 종료)."
+  },
+  {
+   "id": "multiwoz",
+   "title": "MultiWOZ: A Large-Scale Multi-Domain Wizard-of-Oz Dataset",
+   "by": "Budzianowski 외 · EMNLP 2018",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1810.00278",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "대화 상태(slot) 추적의 대표 데이터 — 되묻기·확인 흐름을 시험할 재료."
+  },
+  {
+   "id": "sbert",
+   "title": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks",
+   "by": "Reimers · Gurevych · EMNLP 2019",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1908.10084",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "문장 임베딩 검색의 기본 — Semantic Search 우대 줄."
+  },
+  {
+   "id": "bge-m3",
+   "title": "M3-Embedding (BGE-M3)",
+   "by": "Chen 외 · 2024",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2402.03216",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "한국어를 포함한 여러 언어·밀집/희소 검색을 한 모델로 — 이름·기능 찾기에 바로 쓸 수 있다."
+  },
+  {
+   "id": "gemini-nano",
+   "title": "Gemini Nano",
+   "by": "Android 개발자 문서",
+   "kind": "doc",
+   "url": "https://developer.android.com/ai/gemini-nano",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "기기 안 LLM 과 클라우드 넘김의 한 사례 — On-Device 우대 줄."
+  },
+  {
+   "id": "lora-paper",
+   "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+   "by": "Hu 외 · 2021",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2106.09685",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "작은 모델을 우리 도구 호출 형식에 맞추는 가장 흔한 방법."
+  },
+  {
+   "id": "dpo-paper",
+   "title": "Direct Preference Optimization (DPO)",
+   "by": "Rafailov 외 · 2023",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2305.18290",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "좋은 행동·나쁜 행동 쌍으로 학습 — Post-training 우대 줄."
+  },
+  {
+   "id": "trl-docs",
+   "title": "Hugging Face TRL 문서",
+   "by": "Hugging Face",
+   "kind": "doc",
+   "url": "https://huggingface.co/docs/trl",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SFT·DPO·GRPO 학습기를 실제로 돌려 볼 수 있다."
+  },
+  {
+   "id": "kotlin-coroutines",
+   "title": "Coroutines guide",
+   "by": "Kotlin 공식 문서",
+   "kind": "doc",
+   "url": "https://kotlinlang.org/docs/coroutines-guide.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "시간 제한·취소가 있는 비동기 호출 — 차 쪽 실행기 코드를 읽고 고치려면."
+  },
+  {
+   "id": "lost-in-middle",
+   "title": "Lost in the Middle: How Language Models Use Long Contexts",
+   "by": "Liu 외 · 2023",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2307.03172",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "맥락이 길어지면 무엇을 놓치나 — 차량 상태·대화 기록을 넣는 자리 정하기."
+  },
+  {
+   "id": "kohavi-ab",
+   "title": "A/B 테스트: 신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비·다이앤 탕·야 쉬 지음, 이기홍·김기영 옮김",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "lang": "ko",
+   "level": "실무",
+   "why": "로그로 '나아졌다'를 믿을 수 있게 재는 법 — 로그 기반 품질 개선 줄."
+  },
+  {
+   "id": "ai-engineering",
+   "title": "AI Engineering",
+   "by": "Chip Huyen · O'Reilly · 2025",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/ai-engineering/9781098166298/",
+   "lang": "en",
+   "level": "실무",
+   "why": "LLM 제품의 평가·맥락·에이전트·운영을 한 권으로 — 설계 역량·협업 요건 전체의 지도."
+  },
+  {
+   "id": "cs329z-tools",
+   "title": "Stanford CS329Z Lecture 4: How AI Agents Use Tools — Function Calling & MCP (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/s0S38lz6O7M",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "도구 호출과 MCP 를 우리 말로 — Orchestration·Tool Calling 줄의 첫 공부."
+  },
+  {
+   "id": "cs329z-patterns",
+   "title": "Stanford CS329Z Lecture 6: AI Agent Design Patterns — ReAct, CodeAct & More (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/JC_pLC5EX_w",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "에이전트 설계 패턴 비교 — 구조를 고르는 근거."
+  },
+  {
+   "id": "cs329z-context",
+   "title": "Stanford CS329Z Lecture 2: LLMs for Agent Builders — Context Engineering (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/Vr1NzH8bT44",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "맥락에 무엇을 넣나 — Prompt·Context 요건과 대화 상태."
+  },
+  {
+   "id": "cs329z-multi",
+   "title": "Stanford CS329Z Lecture 8: Multi-Agent Systems — When More Agents Help or Hurt (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/TlX_ft_PQIM",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "에이전트를 나눌 때 생기는 실패 — Supervisor 구조를 설계할 때."
+  },
+  {
+   "id": "cs329z-rag",
+   "title": "Stanford CS329Z Lecture 3: RAG Explained — From BM25 to Agentic RAG (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/psLc-46GqY0",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "BM25·임베딩 검색 — Semantic Search 우대 줄."
+  },
+  {
+   "id": "cme295-agent",
+   "title": "Stanford CME295 Lecture 7: Agentic LLMs (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/h-7S6HNq0Vg",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "에이전트·도구·계획 전체 그림 — 업무 첫 줄."
+  },
+  {
+   "id": "cme295-eval",
+   "title": "Stanford CME295 Lecture 8: LLM Evaluation (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/8fNP4N46RRo",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "LLM 채점·사람 평가의 장단 — 정량·정성 평가 요건."
+  },
+  {
+   "id": "cme295-tuning",
+   "title": "Stanford CME295 Lecture 5: LLM tuning (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/PmW_TMQ3l0I",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "미세조정의 종류 — Fine-tuning 우대 줄의 첫 공부."
+  },
+  {
+   "id": "cs336-post",
+   "title": "Stanford CS336 Lecture 15: Mid/Post-Training (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/2oH6PWPrYFo",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "사후 학습이 무엇을 바꾸나 — Post-training 우대 줄."
+  },
+  {
+   "id": "cs336-eval",
+   "title": "Stanford CS336 Lecture 12: Evaluation (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/JpAxdTWQJxM",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "평가셋·지표를 고르는 법 — 평가 업무 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "도구를 부르는 에이전트 하나",
+   "time": "1~2주",
+   "goal": "모델이 도구 호출을 내고 앱이 실행해 결과를 돌려주는 고리를 직접 짜고 설명할 수 있다.",
+   "resources": [
+    "cme295-agent",
+    "cs329z-tools",
+    "claude-tooluse",
+    "react-paper",
+    "building-agents"
+   ],
+   "task": "가상 차량(에어컨·창문·열선·내비·문자 도구 5개, 상태는 파이썬 dict)을 만들고, LLM 이 도구를 불러 '좀 덥다'·'성심당 가자' 같은 요청 20개를 처리하게 한다. 호출·결과를 모두 기록으로 남긴다."
+  },
+  {
+   "title": "실행 관문과 확인",
+   "time": "2주",
+   "goal": "모델 밖 코드로 '지금 해도 되나'를 판정하고, 확인을 언제 물을지 규칙으로 쓸 수 있다.",
+   "resources": [
+    "gleoguard",
+    "android-vhal",
+    "android-distraction",
+    "caruxrestrictions",
+    "owasp-llm"
+   ],
+   "task": "1단계 차량에 속도·기어·비·발화 좌석 상태를 넣고, 도구마다 허용·차단·확인 표를 만든다. 일부러 틀린 호출 30개(주행 중 트렁크 열기, 없는 도구 이름)를 넣어 한 건도 실행되지 않는지 시험한다."
+  },
+  {
+   "title": "여러 단계 요청과 대화 흐름",
+   "time": "2주",
+   "goal": "3단계 이상 요청을 계획으로 쪼개고, 되묻기·실패 안내까지 대화 상태로 관리할 수 있다.",
+   "resources": [
+    "cs329z-multi",
+    "cs329z-context",
+    "conv-design",
+    "multiwoz",
+    "context-eng"
+   ],
+   "task": "'집 가는 길에 카페 들르고 엄마한테 늦는다고 보내 줘' 류 요청 15개를 만들고, 받는 사람이 둘인 경우·검색 결과 0건·중간 취소 대화를 처리하게 한다. 말한 내용과 실제 실행 결과가 다른 건수를 센다."
+  },
+  {
+   "title": "평가 환경 만들기",
+   "time": "2~3주",
+   "goal": "도구 이름·인자·하지 말아야 할 때·pass^k 로 에이전트를 재고, LLM 채점기를 사람 판정과 맞춰 볼 수 있다.",
+   "resources": [
+    "tau-bench",
+    "bfcl",
+    "mt-bench",
+    "cme295-eval",
+    "cs336-eval"
+   ],
+   "task": "1~3단계 요청 100개에 정답 최종 상태를 붙인 시험지를 만들고, 사용자 역할 LLM 으로 각 요청을 5번씩 돌려 pass^1·pass^5·오실행률을 표로 낸다. 응답 품질 LLM 채점 30건을 직접 매긴 판정과 비교한다."
+  },
+  {
+   "title": "이름 찾기와 작은 모델",
+   "time": "계속",
+   "goal": "틀리게 받아쓴 이름을 연락처·장소에서 찾고, 작은 모델을 도구 호출 형식에 맞게 미세조정해 4단계 시험으로 비교할 수 있다.",
+   "resources": [
+    "bge-m3",
+    "sbert",
+    "cs329z-rag",
+    "cme295-tuning",
+    "lora-paper",
+    "trl-docs"
+   ],
+   "task": "가상 연락처 200개와 받아쓰기 오류 50개로 글자·자모·임베딩 검색의 맞힌 비율을 비교한다. 이어서 1~3B 공개 모델을 LoRA 로 도구 호출 데이터에 미세조정해 4단계 시험지에서 인자 정확도가 얼마나 바뀌는지 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 국민연금 기반 집계로 직원 평균 **약 6,032만원** — 신입 초봉 숫자는 찾지 못했고, 평균은 경력직이 섞인 회사 전체 값이다(이 자리는 8년 이상 시니어)",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 국민연금 납부액으로 추정한 회사 전체 평균(국민연금 가입 804명), 기준 월 표기 없음 — 같은 날 다른 풀이에서 확인 [35]"
+   },
+   {
+    "label": "현대오토에버 평균",
+    "value": "9,423만원",
+    "amount": 9423,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "같은 그룹 소프트웨어 회사, 같은 원티드 국민연금 집계 — 검색 요약으로 확인 [36]"
+   }
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여'가 없다(공시 숫자 없음). 2025년 감사보고서의 급여 총액은 891억원이지만 직원 수가 함께 나오지 않아 평균을 계산하지 않았다 [37]. 국민연금 기반 집계는 납부 상한이 있어 실제보다 낮게 나오는 경향이 있다 {추론}. 평균은 신입부터 시니어까지 섞인 값이라 8년 이상 자리의 처우와는 다르다 {추론}. 연봉은 면접을 통과한 뒤 **처우 협의** 단계에서 정한다 [1][40]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "재량근무·선택근무, 최고 사양 업무 장비"
+   },
+   {
+    "name": "회복의 날",
+    "detail": "법정 연차와 별도로 매월 유급 하루"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당 하루 세 끼 무료, 사내 카페 음료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 최대 300만원, 설·추석 명절 포인트"
+   },
+   {
+    "name": "전기차 구매 지원",
+    "detail": "차량 가격의 최대 15%, 1,000만원 한도 · 전기차 대여 프로그램"
+   },
+   {
+    "name": "무이자 대출",
+    "detail": "근속에 따라 1,000만~5,000만원, 이자 0%"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진 전액, 사내 간호사·심리·재무·법률 상담(EAP), 사내 피트니스(1:1 PT·그룹 수업)"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·자녀·부모 — 실손·입원·통원·치과·도수치료"
+   },
+   {
+    "name": "성장",
+    "detail": "국내외 교육·세미나·컨퍼런스 지원, 팀 워크숍비"
+   },
+   {
+    "name": "가족",
+    "detail": "직장 어린이집, 수유실, 경조금·경조휴가"
+   },
+   {
+    "name": "그 밖의",
+    "detail": "장기근속 휴가·포상, 휴양 시설 추첨, 추천 보상"
+   }
+  ],
+  "note": "포티투닷 채용 사이트의 복리후생 페이지(한국 본사 기준, 날짜 표기 없음)다 [39]. 같은 날 다른 풀이에서 읽은 내용을 옮겼다. 금액이 적히지 않은 항목은 비웠다. 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "포티투닷 본사 · 소프트웨어드림센터 A동 (판교 제2테크노밸리)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선·경강선 판교역에서 버스로 가는 거리 {추론}",
+  "note": "주소는 42dot 사이트 하단 회사 정보다 [38]. 공고의 근무지 표기는 'Pangyo (Software Dream Center), South Korea (Remote)'인데, 원격 근무 범위는 공고에 적혀 있지 않다 [1]."
+ }
+}
