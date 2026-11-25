@@ -172,6 +172,8 @@
   "wanted-398824": "hyundai-manufacturing-vision-ai-ops",
   "ats-hkmc:hyundai:2026N2430": "hyundai-mobility-security-vehicle",
   "ats-hkmc:hyundai:2026N2209": "hyundai-npu-dl-compiler",
+  "ats-hkmc:hyundai:2026N2321": "hyundai-robotics-bimanual-learning",
+  "wanted-387554": "hyundai-robotics-bimanual-learning",
   "ats-hkmc:hyundai:2026N2329": "hyundai-robotics-joint-robot-mechanism",
   "ats-hkmc:hyundai:2026N2331": "hyundai-robotics-joint-robot-production",
   "ats-hkmc:hyundai:2026N2326": "hyundai-robotics-joint-robot-system-sw",
@@ -1942,6 +1944,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 27
+  },
+  {
+   "id": "hyundai-robotics-bimanual-learning",
+   "company": "현대자동차",
+   "role": "학습 기반 양팔 조작(Bi-manipulation) 모델 개발",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2321",
+    "wanted-387554"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "hyundai-robotics-joint-robot-mechanism",
