@@ -217,6 +217,7 @@
   "saramin-55436318": "megazone-product-build-engineering-lead",
   "jobkorea-50250360": "megazonecloud-ai-engineer",
   "jobkorea-50249295": "megazonecloud-security-solution-engineer",
+  "ats-greeting:musinsa:197974": "musinsa-cloud-engineer-foundation-platform",
   "ats-greeting:musinsa:230871": "musinsa-core-ai-product-engineer",
   "ats-greeting:musinsa:245811": "musinsa-product-engineer-commerce",
   "ats-greeting:musinsa:241118": "musinsa-product-engineer-partner-ads-growth",
@@ -2348,6 +2349,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 35
+  },
+  {
+   "id": "musinsa-cloud-engineer-foundation-platform",
+   "company": "무신사",
+   "role": "Cloud Engineer (Foundation Platform)",
+   "jobs": [
+    "ats-greeting:musinsa:197974"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 28
   },
   {
    "id": "musinsa-core-ai-product-engineer",

@@ -1,0 +1,1048 @@
+{
+ "id": "musinsa-cloud-engineer-foundation-platform",
+ "company": "무신사",
+ "role": "Cloud Engineer (Foundation Platform)",
+ "team": "Foundation Platform · Infra Platform",
+ "jobs": [
+  "ats-greeting:musinsa:197974"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사 전 서비스가 올라타는 **AWS·EKS 바닥**을 코드(테라폼·테라그런트)로 운영하고, 블랙프라이데이 같은 20배 트래픽 이벤트와 SLO 를 책임지는 Infra Platform 자리입니다.[1]",
+  "env": "AWS, EKS(쿠버네티스), Terraform·Terragrunt, Karpenter·KEDA, 깃 기반 CI/CD. 7년+ 경력.[1]",
+  "oneline": "서버를 손으로 만지는 운영이 아니라 **모든 것을 코드와 자동화로** 두고, 이벤트 전에 용량을 미리 만들며 장애 후 근본 원인을 없애는 시니어 자리 {추론}."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Cloud 환경 운영에 필요한 업무를 담당합니다.",
+   "short": "AWS 위에서 서비스가 돌도록 계정·서버·권한을 책임지는 일의 큰 묶음.",
+   "why": "무신사 인프라는 AWS 기반이고 2019년 물리 서버에서 옮겨 왔다.[1][2]",
+   "actually": {
+    "items": [
+     "서버(EC2)·네트워크·권한을 계정 단위로 나누고 관리",
+     "비용·사용량을 보고 크기를 조정",
+     "개발팀이 요청한 자원을 안전하게 내준다"
+    ]
+   },
+   "how_far": "큰 제목 줄이다. 구체 범위는 바로 아래 줄들이 정한다.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "aws-waf",
+    "eks-bp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AWS 기반 인프라를 전사 서비스의 핵심 플랫폼으로 운영합니다.",
+   "short": "AWS 를 전사 서비스가 올라타는 바닥으로 두고 운영하는 일.",
+   "why": "한 번 멈추면 모든 서비스가 같이 멈추는 자리라 '핵심 플랫폼' 이라 적었다.[1]",
+   "actually": {
+    "items": [
+     "계정 구조·VPC·공용 서비스 변경을 한 곳에서 책임",
+     "장애 시 AWS 쪽 원인과 우리 쪽 원인을 가른다",
+     "변경 전 영향 범위를 따져 공지"
+    ]
+   },
+   "how_far": "플랫폼 팀이 바닥을 맡고 서비스 팀은 그 위에서 쓴다. 세부 분담은 공개되지 않았다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "aws-waf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "EC2, IAM 권한 관리, 방화벽 설정 등 주요 AWS 서비스 활용 및 최적화를 위해 노력합니다.",
+   "short": "EC2·IAM(누가 무엇을 할 수 있나)·방화벽(보안 그룹)을 쓰고 비용·성능에 맞게 다듬는 일.",
+   "why": "권한과 방화벽 실수가 가장 흔한 보안·장애 원인이라 기본기로 못 박았다 {추론}.",
+   "actually": {
+    "items": [
+     "IAM 은 최소 권한으로: 필요한 동작만 허용",
+     "보안 그룹은 출발지·포트를 좁게",
+     "안 쓰는 인스턴스를 찾아 줄이거나 예약 구매 검토"
+    ]
+   },
+   "how_far": "서비스 하나하나의 세부 설정보다 공통 규칙과 점검 자동화가 이 자리 몫이다 {추론}.",
+   "refs": [
+    3
+   ],
+   "study": [
+    "aws-waf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Kubernetes 기반 서비스 운영에 필요한 업무를 담당합니다.",
+   "short": "쿠버네티스(컨테이너를 알아서 배치·재시작해 주는 시스템) 위 서비스 운영 업무의 묶음.",
+   "why": "무신사는 2021년 초 쿠버네티스를 도입했다고 직접 밝혔다.[2]",
+   "actually": {
+    "items": [
+     "클러스터 업그레이드·애드온 관리",
+     "배포·롤백이 안전하게 되는지 점검",
+     "리소스 요청/제한값 기준 정리"
+    ]
+   },
+   "how_far": "제목 줄이다. 구체 일은 아래 줄.",
+   "refs": [
+    2
+   ],
+   "study": [
+    "eks-bp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모든 애플리케이션을 EKS 기반으로 컨테이너화합니다.",
+   "short": "모든 앱을 컨테이너로 만들어 AWS 의 쿠버네티스(EKS) 위에 올리는 일.",
+   "why": "모든 서비스를 한 방식으로 배포해야 운영·자동화 규칙이 하나로 모인다 {추론}.",
+   "actually": {
+    "items": [
+     "서비스마다 Dockerfile·헬름 차트(배포 묶음) 표준 제공",
+     "EKS 버전 업그레이드를 일정으로 관리",
+     "남은 EC2 서비스를 컨테이너로 옮기도록 개발팀과 협의"
+    ]
+   },
+   "how_far": "공고는 '모든 애플리케이션' 이라 적었다. 이관 일정은 공개되지 않았다.[1]",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "eks-bp",
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "IaC(Infrastructure as Code)를 지향합니다.",
+   "short": "인프라를 클릭이 아니라 코드로 정의해 두고 쓰는 것을 지향한다는 선언.",
+   "why": "콘솔에서 손으로 만든 서버는 누가 왜 만들었는지 남지 않는다. 코드는 기록이 남고 되돌릴 수 있다.[4]",
+   "actually": {
+    "items": [
+     "변경은 코드 수정→리뷰→반영 순서",
+     "콘솔에서 바꾼 것을 코드와 맞춘다(드리프트 점검)"
+    ]
+   },
+   "how_far": "'지향한다'는 표현이라 아직 100%는 아닐 수 있다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "tf-up",
+    "tf-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Terraform, Terragrunt를 활용하여 모든 인프라를 코드로 관리합니다.",
+   "short": "테라폼·테라그런트로 모든 인프라를 코드에 담아 관리하는 일.",
+   "why": "테라그런트는 테라폼 설정을 환경별로 반복 없이 쌓게 해 주는 도구다.[5] 무신사는 예전 SRE 가 테라폼·앤서블을 썼다고 밝혔다.[2]",
+   "actually": {
+    "items": [
+     "환경(dev·stage·prod)마다 폴더 하나, 공통 모듈은 하나",
+     "상태 파일(state)을 원격 저장소에 두고 잠금",
+     "plan 결과를 보고 apply"
+    ]
+   },
+   "how_far": "2021년 발표에서 개발팀이 테라폼 문법에 막혀 사일로가 생겼다고 했다.[2] 그래서 쓰기 쉬운 모듈이 중요하다 {추론}.",
+   "refs": [
+    2,
+    4,
+    5
+   ],
+   "study": [
+    "tf-up",
+    "terragrunt"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "표준화된 모듈 설계 및 재사용 가능한 인프라 구성을 제공합니다.",
+   "short": "개발팀이 가져다 쓸 수 있게 규격화한 재사용 모듈을 만들어 주는 일.",
+   "why": "개발팀이 직접 쓰기 어렵다는 사일로 문제의 해법이 '쓰기 쉬운 표준 부품' 이다 {추론}.[2]",
+   "actually": {
+    "items": [
+     "DB·버킷·큐 같은 자원을 값 몇 개로 만드는 모듈",
+     "기본값은 안전하게(암호화·최소 권한)",
+     "버전을 붙여 호환성 관리"
+    ]
+   },
+   "how_far": "모듈 인터페이스(입력값)를 얼마나 단순하게 두는지가 품질이다 {추론}.",
+   "refs": [
+    2,
+    4
+   ],
+   "study": [
+    "tf-up",
+    "tf-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "코드 리뷰 및 Git 기반 워크플로우를 통한 변경 및 관리합니다.",
+   "short": "변경을 풀 리퀘스트로 올려 리뷰받고 깃에서 관리하는 일.",
+   "why": "리뷰 기록이 곧 변경 이력이다. 사고가 나면 누가 무엇을 바꿨는지 바로 찾는다 {추론}.",
+   "actually": {
+    "items": [
+     "plan 결과를 PR 에 자동 첨부",
+     "승인 후 병합해야 apply",
+     "실수로 파괴적 변경이 들어가는지 검사"
+    ]
+   },
+   "how_far": "리뷰어가 되는 비중도 커 다른 사람의 변경을 읽는 능력이 필요하다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "tf-up",
+    "opengitops"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "자동화 및 효율화를 통한 업무를 추진합니다.",
+   "short": "자동화로 일을 줄이는 큰 묶음.",
+   "why": "직접 만든 인프라 플랫폼으로 개발팀이 바로 쓰는 환경을 얻게 한다고 팀 소개가 밝혔다.[1]",
+   "actually": {
+    "items": [
+     "반복 요청을 셀프서비스로",
+     "점검·알림 자동화"
+    ]
+   },
+   "how_far": "제목 줄이다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "accelerate"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "반복적이고 단순한 운영 업무를 자동화하여 운영 부담을 최소화합니다.",
+   "short": "반복되는 단순 운영 일을 자동화해 사람 손이 덜 가게 하는 일.",
+   "why": "SRE 에서는 반복되는 수작업(toil)을 줄이는 것을 핵심 업무로 본다.[7]",
+   "actually": {
+    "items": [
+     "월 몇 번 하는 요청을 세어 많은 것부터 자동화",
+     "스크립트→도구→셀프서비스 순으로 키운다"
+    ]
+   },
+   "how_far": "자동화 자체가 목적이 아니라 사람이 장애 예방·설계에 쓸 시간을 만드는 것이다 {추론}.",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "sre-book",
+    "accelerate"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CI/CD 파이프라인 최적화 및 배포 자동화를 추진합니다.",
+   "short": "빌드·테스트·배포 흐름을 더 빠르고 안전하게 다듬고 자동으로 배포하게 하는 일.",
+   "why": "무신사는 연 3.9만회·하루 108회 배포하고 배포 시간을 15분에서 7분으로 줄였다고 밝혔다(2021).[2]",
+   "actually": {
+    "items": [
+     "느린 단계(이미지 빌드·테스트) 측정 후 캐시·병렬화",
+     "롤백 자동화",
+     "배포 실패 시 알림"
+    ]
+   },
+   "how_far": "배포 지표(빈도·소요·실패율)를 먼저 재고 줄인다 {추론}.",
+   "refs": [
+    2
+   ],
+   "study": [
+    "accelerate",
+    "argo"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모니터링, 알림, 장애 대응 프로세스의 자동화를 추진합니다.",
+   "short": "모니터링·알림·장애 대응 흐름을 자동화하는 일.",
+   "why": "장애는 새벽에도 나므로 사람이 보기 전에 알림이 가고 첫 대응이 자동이어야 한다 {추론}.",
+   "actually": {
+    "items": [
+     "지표 기준 알림(오류율·지연)",
+     "알림에서 대시보드·런북 링크로 연결",
+     "자주 나는 장애의 자동 복구"
+    ]
+   },
+   "how_far": "알림이 너무 많으면 무시되니 '조치할 것만' 울리게 정리한다.[7]",
+   "refs": [
+    7
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 트래픽 대응에 필요한 업무를 수행합니다.",
+   "short": "큰 트래픽을 견디게 하는 일의 묶음.",
+   "why": "팀 소개에 블랙프라이데이 같은 이벤트에 평소 20배 이상 트래픽이 온다고 적었다.[1]",
+   "actually": {
+    "items": [
+     "이벤트 일정을 받아 미리 용량 확보",
+     "부하 시험",
+     "병목 지점 파악"
+    ]
+   },
+   "how_far": "제목 줄이다.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "release-it"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대형 이벤트 및 시즌성 트래픽 급증에 대비한 사전 프로비저닝 자동화를 추진합니다.",
+   "short": "큰 세일·시즌 전에 서버를 미리 자동으로 늘려 두는 일.",
+   "why": "2019년 블랙프라이데이에 첫 트래픽부터 장애가 났고, 2020년엔 거의 없었다고 무신사가 밝혔다.[2] 지금은 마케팅 일정과 연계된 자동 프로비저닝 플랫폼을 쓴다고 한다.[1]",
+   "actually": {
+    "items": [
+     "이벤트 일정 → 예상 배수 → 필요한 노드 수를 계산",
+     "미리 늘려 두고 끝나면 줄인다",
+     "부하 시험 결과로 배수를 보정"
+    ]
+   },
+   "how_far": "예측이 틀려도 대비해야 한다. 자동 확장(반응형)과 미리 늘림(예측형)을 같이 쓴다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "karpenter",
+    "release-it"
+   ],
+   "examples": [
+    {
+     "title": "20배 이벤트에 노드는 몇 대? — 직접 돌린 결과",
+     "body": "가상 값: 평소 파드 40개, 이벤트 20배, 노드 하나에 파드 8개, 여유 20%. 미리 늘릴 크기를 계산한다.",
+     "lang": "python",
+     "code": "import math\nbase=40; mult=20; per=8; head=1.2\nprint(math.ceil(base/per), math.ceil(base*mult*head/per))\n# 출력: 5 120"
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Karpenter, keda 기반의 자원 관리 체계를 구축합니다.",
+   "short": "카펜터·케다로 자원을 필요할 때 늘리고 줄이는 체계를 만드는 일.",
+   "why": "카펜터는 파드가 자리가 없을 때 알맞은 노드를 바로 띄워 주고,[3] 케다는 큐 길이 같은 외부 신호로 파드 수를 조절한다.[8]",
+   "actually": {
+    "items": [
+     "카펜터 NodePool 로 인스턴스 종류·스팟 허용 범위 지정",
+     "케다 ScaledObject 로 큐·지표에 맞춰 파드 증감",
+     "파드 개수(HPA)와 노드(카펜터)가 서로 맞물리는지 확인"
+    ]
+   },
+   "how_far": "기준값(최소·최대·쿨다운)은 부하 시험으로 정한다 {추론}.",
+   "refs": [
+    3,
+    8
+   ],
+   "study": [
+    "karpenter",
+    "keda"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영 안정성 확보를 위한 업무를 수행합니다.",
+   "short": "서비스 안정을 지키는 일의 묶음.",
+   "why": "플랫폼 팀의 성과가 '얼마나 안 죽었나' 로 재어지는 자리라 따로 묶었다 {추론}.",
+   "actually": {
+    "items": [
+     "신뢰성 목표 설정",
+     "장애 분석"
+    ]
+   },
+   "how_far": "제목 줄이다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SLA/SLO 기반의 서비스 신뢰성을 위해 관리 및 노력합니다.",
+   "short": "목표(SLO)를 정하고 그에 맞는 서비스 신뢰성을 관리하는 일.",
+   "why": "SLA 는 고객과 한 약속, SLO 는 내부 목표다. SLO 를 숫자로 두면 '지금 배포해도 되나' 를 판단할 수 있다.[7]",
+   "actually": {
+    "items": [
+     "SLI(성공 요청 비율)·SLO(99.9%) 정의",
+     "오류 예산 소진 속도(번 레이트) 알림",
+     "예산이 바닥나면 신규 배포를 늦춘다"
+    ]
+   },
+   "how_far": "99.9% 를 30일에 두면 허용 불가동은 43.2분이다(직접 계산).[7]",
+   "refs": [
+    7
+   ],
+   "study": [
+    "sre-workbook",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장애 후 Postmortem을 통한 근본 원인을 제거하며 개선을 위해 노력합니다.",
+   "short": "장애가 난 뒤 원인 분석(비난 없는 사후 검토)을 쓰고 근본 원인을 없애는 일.",
+   "why": "같은 장애가 반복되면 신뢰가 떨어진다. 사람 탓이 아니라 시스템의 빈틈을 찾는 방식이 표준이다.[6]",
+   "actually": {
+    "items": [
+     "타임라인·영향·원인·재발 방지 액션 정리",
+     "액션에 담당자·기한을 붙여 추적",
+     "공유 회의에서 학습"
+    ]
+   },
+   "how_far": "재발 방지 액션이 실제로 닫혔는지까지 챙겨야 완료다.[6]",
+   "refs": [
+    6
+   ],
+   "study": [
+    "sre-book"
+   ],
+   "examples": [
+    {
+     "title": "SLO 99.9% 의 오류 예산 — 직접 돌린 결과",
+     "body": "30일 동안 0.1% 까지 실패해도 되는 시간과, 1시간 동안 1% 가 실패할 때 예산이 닿는 속도.",
+     "lang": "python",
+     "code": "m=30*24*60\nprint(round(m*(1-0.999),1), round(0.01/(1-0.999),1))\n# 출력: 43.2 10.0"
+    }
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "개발 및 인프라 운영 경력 포함 7년 이상 혹은 그에 준하는 역량을 보유하신 분",
+   "short": "개발·인프라 운영 합쳐 7년 이상(또는 그에 준하는 역량).",
+   "why": "연차는 혼자 판단하고 설계하는 자리라는 신호다 {추론}.",
+   "actually": {
+    "items": [
+     "운영 경력만이 아니라 개발 경력도 합산",
+     "'준하는 역량' 이라 연차보다 사례가 중요"
+    ]
+   },
+   "how_far": "연차가 모자라도 규모 있는 사례를 설명할 수 있으면 길이 있다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "accelerate"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 및 Kubernetes 운영 경험이 있으신 분",
+   "short": "AWS 와 쿠버네티스를 실제로 운영해 본 경험.",
+   "why": "이 팀의 두 바닥이 AWS 와 EKS 이기 때문이다.[1]",
+   "actually": {
+    "items": [
+     "EKS 업그레이드·노드 교체·장애 대응 경험",
+     "IAM·VPC 설계 경험"
+    ]
+   },
+   "how_far": "자격증보다 장애 대응 이야기가 설득력이 있다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "eks-bp",
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Terraform, Terragrunt 등 IaC 기반의 인프라 운영 경험이 있으신 분",
+   "short": "테라폼·테라그런트 같은 코드형 인프라 운영 경험.",
+   "why": "모든 인프라를 코드로 관리한다고 적었다.[1]",
+   "actually": {
+    "items": [
+     "모듈·상태 파일 분리 경험",
+     "여러 환경 관리",
+     "대규모 변경의 안전한 반영"
+    ]
+   },
+   "how_far": "테라그런트 경험이 없어도 테라폼 모듈 경험이 있으면 이어 갈 수 있다 {추론}.",
+   "refs": [
+    1,
+    5
+   ],
+   "study": [
+    "tf-up",
+    "terragrunt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "트래픽 급증 환경에서의 안정적 운영 경험이 있으신 분",
+   "short": "트래픽이 갑자기 늘어도 안정적으로 돌려 본 경험.",
+   "why": "20배 트래픽 이벤트를 치르는 팀이기 때문이다.[1]",
+   "actually": {
+    "items": [
+     "이벤트 전 부하 시험",
+     "자동 확장 설정과 한계 확인",
+     "병목(DB·캐시) 대응"
+    ]
+   },
+   "how_far": "규모가 같지 않아도 '무엇을 측정해 어떻게 대비했나' 를 말할 수 있어야 한다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "release-it",
+    "karpenter"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "기술 과제를 주도적으로 수행한 경험이 있으신 분 (Cloud Native 기반 아키텍처 설계 및 기술 표준 수립, SLA/SLO 달성을 위한 안정성 강화 등)",
+   "short": "주도적으로 기술 과제를 이끈 경험(클라우드 네이티브 설계·표준·SLA/SLO 강화 등).",
+   "why": "표준을 만들고 설득하는 사람이 필요한 자리다 {추론}.",
+   "actually": {
+    "items": [
+     "표준 문서 작성·전파",
+     "SLO 도입으로 장애 감소 사례"
+    ]
+   },
+   "how_far": "숫자(장애 시간·배포 시간)가 들어간 사례가 좋다. 제출 팁에도 정량 성과를 적으라 했다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sre-workbook",
+    "accelerate"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Java, Go, Python, Node.js 등 최소 한 가지 이상의 개발 언어 사용이 가능하신 분",
+   "short": "자바·고·파이썬·노드 중 하나 이상으로 코딩할 수 있는 것.",
+   "why": "팀은 문제를 개발로 푸는 엔지니어링 조직이라 밝혔다.[1]",
+   "actually": {
+    "items": [
+     "운영 자동화 도구·쿠버네티스 컨트롤러 작성(무신사는 컨트롤러를 직접 만든다고 밝혔다)[2]",
+     "API 호출 스크립트"
+    ]
+   },
+   "how_far": "서비스 개발자 수준보다 도구를 짤 수 있는 수준이다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "e-commerce 서비스의 특성을 잘 이해하고 있으신 분",
+   "short": "이커머스의 특성(세일·재고·결제 피크)을 이해하는 것.",
+   "why": "트래픽이 이벤트에 몰리고 장애가 곧 매출 손실이다 {추론}.[1]",
+   "actually": {
+    "items": [
+     "이벤트 일정과 트래픽 곡선",
+     "결제·재고 같은 중요 경로를 따로 보호"
+    ]
+   },
+   "how_far": "경험이 없으면 이 공고의 20배 이벤트 이야기를 공부해 질문으로 보여도 된다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "release-it"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CI/CD, 배포 자동화, GitOps 도입 경험이 있으신 분",
+   "short": "CI/CD·배포 자동화·깃옵스(깃을 기준으로 배포 상태를 맞추는 방식) 도입 경험.",
+   "why": "깃 기반 워크플로를 이미 쓰고 있고 배포를 더 자동화하려 한다.[1]",
+   "actually": {
+    "items": [
+     "Argo CD 같은 도구로 깃과 클러스터를 동기화",
+     "배포 실패 시 자동 롤백"
+    ]
+   },
+   "how_far": "도구 이름보다 '무엇을 기준으로 배포 상태를 정하나' 를 설명한다.[9]",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "opengitops",
+    "argo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 활용한 자동화나 업무 효율화를 수행하신 경험이 있으신 분",
+   "short": "AI 로 자동화·업무 효율화를 해 본 경험.",
+   "why": "최근 공고들이 AI 활용을 공통으로 요구한다 {추론}.",
+   "actually": {
+    "items": [
+     "알림 요약·런북 검색 같은 운영 보조",
+     "코드 생성 도구로 모듈 초안"
+    ]
+   },
+   "how_far": "AI 가 낸 결과를 사람이 검증한다는 선까지 말한다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "accelerate"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "aws-waf",
+   "title": "AWS Well-Architected Framework",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "신뢰성·보안·비용 점검 틀 — AWS 운영 요건의 공통 어휘를 얻는다."
+  },
+  {
+   "id": "eks-bp",
+   "title": "Amazon EKS Best Practices Guide",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/introduction.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "EKS 신뢰성·보안·확장 권장 — EKS 운영 요건과 확장 체계 줄의 기준."
+  },
+  {
+   "id": "k8s-docs",
+   "title": "Kubernetes 공식 문서",
+   "by": "kubernetes.io",
+   "kind": "doc",
+   "url": "https://kubernetes.io/ko/docs/home/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "파드·배포·HPA 기본 개념 — 컨테이너화·운영 줄의 바탕."
+  },
+  {
+   "id": "tf-up",
+   "title": "Terraform: Up & Running (3rd ed.)",
+   "by": "Yevgeniy Brikman · O'Reilly · 2022",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/terraform-up-and/9781098116736/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "모듈·상태·팀 워크플로 — 코드형 인프라 요건과 재사용 모듈 줄."
+  },
+  {
+   "id": "tf-docs",
+   "title": "Terraform 모듈 문서",
+   "by": "HashiCorp 공식",
+   "kind": "doc",
+   "url": "https://developer.hashicorp.com/terraform/language/modules",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "모듈의 입력·출력 설계 — 표준 모듈 줄."
+  },
+  {
+   "id": "terragrunt",
+   "title": "Terragrunt 문서",
+   "by": "Gruntwork 공식",
+   "kind": "doc",
+   "url": "https://terragrunt.gruntwork.io/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "환경별 설정을 반복 없이 쌓는 법 — 테라그런트 요건."
+  },
+  {
+   "id": "karpenter",
+   "title": "Karpenter 문서",
+   "by": "karpenter.sh 공식",
+   "kind": "doc",
+   "url": "https://karpenter.sh/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "NodePool·통합(consolidation) — 카펜터 기반 자원 관리 줄."
+  },
+  {
+   "id": "keda",
+   "title": "KEDA 문서",
+   "by": "keda.sh 공식",
+   "kind": "doc",
+   "url": "https://keda.sh/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "ScaledObject 와 외부 신호 확장 — 케다 기반 자원 관리 줄."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly · 2016 (무료 공개)",
+   "kind": "book",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SLO·사후 검토·toil — 안정성 업무 줄 전체의 원전."
+  },
+  {
+   "id": "sre-workbook",
+   "title": "The Site Reliability Workbook",
+   "by": "Google · O'Reilly · 2018 (무료 공개)",
+   "kind": "book",
+   "url": "https://sre.google/workbook/table-of-contents/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SLO 구현·오류 예산 알림 — SLA/SLO 줄과 우대 줄."
+  },
+  {
+   "id": "release-it",
+   "title": "Release It! (2nd ed.)",
+   "by": "Michael T. Nygard · Pragmatic Bookshelf · 2018",
+   "kind": "book",
+   "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "장애 전파·방어 패턴 — 트래픽 급증 안정 운영 요건."
+  },
+  {
+   "id": "accelerate",
+   "title": "Accelerate",
+   "by": "Nicole Forsgren, Jez Humble, Gene Kim · IT Revolution · 2018",
+   "kind": "book",
+   "url": "https://itrevolution.com/product/accelerate/",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "배포 빈도·실패율 같은 지표 — 배포 자동화·성과 설명."
+  },
+  {
+   "id": "opengitops",
+   "title": "OpenGitOps Principles",
+   "by": "OpenGitOps(CNCF)",
+   "kind": "doc",
+   "url": "https://opengitops.dev/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "깃옵스 네 원칙 — 깃옵스 우대 줄."
+  },
+  {
+   "id": "argo",
+   "title": "Argo CD 문서",
+   "by": "argo-cd.readthedocs.io",
+   "kind": "doc",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "깃과 클러스터 동기화 — 배포 자동화 줄."
+  },
+  {
+   "id": "musinsa-kcd",
+   "title": "무신사가 가고 있는 클라우드 네이티브 여정",
+   "by": "바이라인네트워크 · 2021-10-13",
+   "kind": "doc",
+   "url": "https://byline.network/2021/10/13-153/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "이 팀 선배가 직접 말한 이전·쿠버네티스·테라폼 사일로 이야기."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "클라우드·쿠버네티스 기본",
+   "time": "2~3주",
+   "goal": "파드·서비스·노드와 AWS 권한·네트워크 구성을 설명한다.",
+   "task": "가상 서비스 하나를 작은 EKS(또는 로컬 kind)에 올리고 IAM 최소 권한을 적는다.",
+   "resources": [
+    "k8s-docs",
+    "eks-bp",
+    "aws-waf"
+   ]
+  },
+  {
+   "title": "코드형 인프라",
+   "time": "2~3주",
+   "goal": "테라폼 모듈과 환경 분리를 만든다.",
+   "task": "VPC+클러스터를 모듈로 만들고 dev/prod 두 환경을 테라그런트로 나눈다.",
+   "resources": [
+    "tf-up",
+    "tf-docs",
+    "terragrunt"
+   ]
+  },
+  {
+   "title": "자동 확장",
+   "time": "2주",
+   "goal": "카펜터와 케다가 어떻게 맞물리는지 설명한다.",
+   "task": "큐 길이로 파드가 늘고 노드가 따라 늘어나는 실험을 하고 지연을 기록한다.",
+   "resources": [
+    "karpenter",
+    "keda",
+    "release-it"
+   ]
+  },
+  {
+   "title": "신뢰성·SLO·사후 검토",
+   "time": "2주",
+   "goal": "SLO·오류 예산·비난 없는 분석을 쓴다.",
+   "task": "가상 장애 한 건의 사후 검토 문서와 SLO 알림 규칙을 쓴다.",
+   "resources": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "title": "배포 자동화·깃옵스·사례 정리",
+   "time": "1~2주",
+   "goal": "배포 흐름과 내 사례를 숫자로 말한다.",
+   "task": "깃 푸시→Argo CD 동기화 실습, 이력서에 쓸 정량 사례 3개 정리.",
+   "resources": [
+    "opengitops",
+    "argo",
+    "accelerate",
+    "musinsa-kcd"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 없음('처우 협의'). 집계 기준 신입 초봉 2,313만원·평균 3,453만원, 원티드 표기 평균은 6,082만원 — 7년+ 경력직 연봉과는 무관한 전사 값.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아닌 회사 전체 값, 연도 미표기.[11]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 경력직이 섞인 전체 평균.[11]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위와 2천만원 넘게 달라 산출 방식이 다른 것으로 보인다.[12]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시 평균 급여가 없다(확인 못 함). 위 숫자는 모두 집계이고 **평균은 초봉이 아니며**, 7년 이상 경력 자리의 연봉은 공고의 '처우 협의' 단계에서 정해진다.[1] 직급·보상 체계는 공개되지 않았다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "코어타임 11~16시, 휴가 1일·0.5일·0.25일 단위"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기근속",
+    "detail": "3년마다 리프레시 휴가 7일 + 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기당 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 지원금 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "전사 AI 에이전트 지원, 허먼 밀러 의자, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급(이 공고 기타사항)"
+   }
+  ],
+  "note": "무신사 채용 사이트 복지 페이지(날짜 미표기, 첨부 이미지 2025-07)와 이 공고 기타사항.[10][1] 회사 전체 공통이며 '근무 장소·기간·시점에 따라 일부 변경될 수 있다'고 적혀 있다.[10]"
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 약 6분",
+  "note": "공고 근무지 표기는 '무신사 성수 오피스'.[1] 주소는 무신사 상품 페이지 하단 사업자 정보 표기.[14] 2022-09 성수 캠퍼스 N1 이전과 도보 거리는 보도.[13]"
+ },
+ "fit": {
+  "good": [
+   "테라폼 모듈과 EKS 를 직접 운영해 본 사람[1]",
+   "이벤트 트래픽을 대비해 본 사람[1]",
+   "SLO·사후 검토를 써 본 사람[1]"
+  ],
+  "hard": [
+   "공고에 연봉 범위가 없고 처우 협의다[1]",
+   "이벤트 규모(평소 20배)의 경험이 없으면 사례를 만들기 어렵다[1]",
+   "팀 규모·온콜 방식은 공개되지 않았다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "20배 트래픽 이벤트를 앞두고 무엇부터 하시겠어요?",
+   "a": "이 팀은 마케팅 일정과 연계한 사전 프로비저닝 플랫폼을 쓴다고 밝혔다.[1]"
+  },
+  {
+   "q": "카펜터와 케다를 같이 쓸 때 주의할 점은?",
+   "a": "공고가 둘 다 명시했다.[1] 파드 증가가 노드 증가를 따라가는지 본다.[3][8]"
+  },
+  {
+   "q": "테라폼 코드가 개발팀에게 어렵다는 문제를 어떻게 풀겠어요?",
+   "a": "무신사 SRE 가 직접 밝힌 사일로 문제다.[2]"
+  },
+  {
+   "q": "가장 큰 장애와 사후 검토에서 바꾼 것은?",
+   "a": "공고가 사후 분석과 근본 원인 제거를 요구한다.[1][6]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Cloud Engineer (Foundation Platform)",
+   "url": "https://www.musinsacareers.com/ko/o/197974",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "업무·자격·우대·Infra Platform 소개"
+  },
+  {
+   "n": 2,
+   "title": "무신사가 가고 있는 클라우드 네이티브 여정 — 바이라인네트워크",
+   "url": "https://byline.network/2021/10/13-153/",
+   "kind": "news",
+   "date": "2021-10-13",
+   "note": "KCD 발표(SRE 파트 리더) 기사. 2019 이전·2020 무장애·2021 쿠버네티스·테라폼 사일로"
+  },
+  {
+   "n": 3,
+   "title": "Amazon EKS Best Practices — Karpenter",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html",
+   "kind": "reference",
+   "note": "카펜터 동작·권장 — 일반 문서"
+  },
+  {
+   "n": 4,
+   "title": "Terraform 모듈 문서",
+   "url": "https://developer.hashicorp.com/terraform/language/modules",
+   "kind": "reference",
+   "note": "모듈·코드형 인프라 — 일반 문서"
+  },
+  {
+   "n": 5,
+   "title": "Terragrunt 문서",
+   "url": "https://terragrunt.gruntwork.io/docs/",
+   "kind": "reference",
+   "note": "환경별 설정 — 일반 문서"
+  },
+  {
+   "n": 6,
+   "title": "Google SRE Book — Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "note": "비난 없는 사후 검토 — 일반 문서"
+  },
+  {
+   "n": 7,
+   "title": "Google SRE Book — Service Level Objectives / Eliminating Toil",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·번 레이트 일반 설명 — toil 은 같은 책 'Eliminating Toil' 장"
+  },
+  {
+   "n": 8,
+   "title": "KEDA 문서",
+   "url": "https://keda.sh/docs/",
+   "kind": "reference",
+   "note": "외부 신호 기반 확장 — 일반 문서"
+  },
+  {
+   "n": 9,
+   "title": "OpenGitOps Principles",
+   "url": "https://opengitops.dev/",
+   "kind": "reference",
+   "note": "깃옵스 원칙 — 일반 문서"
+  },
+  {
+   "n": 10,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "'일부 변경될 수 있다' 문구"
+  },
+  {
+   "n": 11,
+   "title": "자소설닷컴 — 무신사",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "초봉 2,313만원·평균 3,453만원(검색 요약, 직접 열람 403)"
+  },
+  {
+   "n": 12,
+   "title": "원티드 — 무신사 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "평균연봉 6,082만원 표기, 기준 설명 없음"
+  },
+  {
+   "n": 13,
+   "title": "무신사, 성수동 캠퍼스 N1 본사 이전 — 일간스포츠",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09",
+   "note": "성수역 도보 6분"
+  },
+  {
+   "n": 14,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company",
+   "note": "주소 아차산로13길 11 — 같은 회사 기존 풀이에서 확인한 것을 옮김"
+  }
+ ],
+ "caveat": "무신사 Infra Platform 팀의 최근 기술 글·발표 영상은 찾지 못했다. 회사 근거는 이 공고와 2021 KCD 발표 기사(바이라인)뿐이라 EKS·카펜터·케다의 실제 구성은 공개 문서(AWS·KEDA·Google SRE)로 '보통 이런 것'을 보였다. '20배' 수치는 공고 자기 서술이다. 연봉은 집계값만 있다."
+}
