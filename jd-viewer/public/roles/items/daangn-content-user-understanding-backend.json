@@ -1,0 +1,429 @@
+{
+ "id": "daangn-content-user-understanding-backend",
+ "company": "당근",
+ "role": "Software Engineer, Backend - Content & User Understanding",
+ "team": "Content & User Understanding 팀 (회사 글에서는 Taxonomy 팀)",
+ "jobs": [
+  "ats-greenhouse:daangn:7995038003"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "당근에 매일 수십만 건씩 올라오는 글(중고거래·동네생활·모임·숏폼…)에 **카테고리와 속성을 LLM으로 자동으로 달고**, 2,100만 사용자의 행동에서 **의도·상태·선호 태그**를 추론하는 백엔드·데이터 시스템을 만듭니다.[1]",
+  "env": "팀은 나무 모양의 분류 체계(택소노미)를 설정 파일로 관리하고, Dataflow(Beam) 파이프라인이 스트림·배치로 분류해 BigQuery에 쌓으면 피드·검색·추천·광고가 가져다 씁니다.[2][3]",
+  "oneline": "LLM을 '많이, 싸게, 믿을 수 있게' 돌리는 데이터 백엔드. 모델 연구보다 **파이프라인 · 평가 · 비용**이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "새로 생성되는 콘텐츠마다 카테고리와 속성을 AI로 자동 추출하고, 그 데이터의 품질을 각 팀과 함께 관리해요",
+   "short": "새 글마다 LLM이 '무슨 물건·어떤 상태'를 표로 뽑아 달고, 틀린 비율을 팀과 같이 지켜보는 일.",
+   "why": "사용자가 고르는 카테고리는 굵고 자주 틀립니다. 피드·검색이 \"이 글은 아이폰 15, 미개봉, 직거래\"처럼 알아들으려면 글을 정해진 칸과 속성으로 바꿔야 합니다. 공고는 이 데이터가 특히 **피드 추천과 검색 품질을 개선하는 핵심 데이터**라고 밝힙니다.[1] 2024년 당근 ML 팀 글도 비정형 글에서 정보를 뽑는 것을 LLM의 대표 쓰임으로 들었습니다.[4]",
+   "actually": {
+    "intro": "회사 글 요약에 나온 이 팀의 파이프라인과, 같은 일을 하는 다른 회사의 공개 사례입니다.",
+    "items": [
+     "**카테고리 추론** — 나무 모양 분류 체계에서 글이 들어갈 칸을 고른다. 칸이 수천 개면 한 번에 다 보여 주지 않고 위 칸부터 좁혀 가는 방식을 쓴다.[2][3]",
+     "**속성 추론** — 칸마다 정해 둔 속성(브랜드·용량·상태 등)의 값을 뽑는다. 글만이 아니라 **이미지도** 입력으로 쓴다.[3]",
+     "**결과 저장** — 분류 결과는 BigQuery에 쌓아 다른 팀이 자유롭게 꺼내 쓰게 했다.[2]",
+     "**품질 관리** — 정답을 아는 표본에 LLM 심판(LLM as a Judge)을 붙여 정확도를 계속 잰다.[3]",
+     "**다른 회사도 같은 길** — 쿠팡은 카테고리마다 따로 두던 분류 모델을 LLM 분류기 하나로 바꿨고[16], 인스타카트는 LLM에게 답이 맞는지 다시 물어 확신이 낮은 것만 사람 검수로 보낸다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "칸이 2,000개일 때 한 번에 고르기 vs 깊이마다 고르기 — 프롬프트 길이",
+     "lang": "python",
+     "code": "L1, L2, L3 = 20, 10, 10          # 깊이별 갈래 수\nleaves = L1 * L2 * L3            # 맨 아래 칸 2,000개\ntok_per_cat, post = 8, 300       # 칸 이름 8토큰, 글 300토큰(가정)\nsingle = post + leaves * tok_per_cat\nhier = 3 * post + (L1 + L2 + L3) * tok_per_cat\nprint(\"leaves\", leaves, \"single\", single, \"tok / hierarchical\", hier, \"tok (3 calls)\")",
+     "output": "leaves 2000 single 16300 tok / hierarchical 1220 tok (3 calls)"
+    }
+   ],
+   "how_far": "어떤 칸·속성을 둘지는 각 서비스 팀과 함께 정합니다(공고의 '각 팀과 함께').[1] 이 자리는 **그 체계를 받아 매일 새 글에 빠짐없이 달고, 정확도가 떨어지면 알아채는 파이프라인**을 맡습니다. 최소선은 스트림으로 들어온 글을 LLM에 보내 JSON으로 받고, 실패·재시도·백필까지 되는 작업 하나를 혼자 만들 수 있는 정도입니다. {추론}",
+   "refs": [1, 2, 3, 4, 16, 17],
+   "study": ["dg-2t", "dg-llm-2024", "ai-eng-book"]
+  },
+  {
+   "section": "task",
+   "quote": "유저의 행동과 프로필에서 의도·상태·선호 등의 태그를 AI로 자동 추론하고, 그 데이터의 품질을 각 팀과 함께 관리해요",
+   "short": "누가 무엇을 보고 샀는지로 '이사 준비 중', '육아 중' 같은 사람 태그를 붙이는 일.",
+   "why": "같은 '유아용품' 글도 아이를 키우는 사람에게 먼저 보여야 합니다. 공고는 MAU 2,100만 사용자의 앱 안 행동을 바탕으로 의도·상태·선호를 태그로 추론한다고 적었습니다.[1] 당근은 이미 사용자 활동 상태(신규·유지·복귀 같은 상태와 그 전이)를 전사 공통 데이터 층으로 만든 적이 있습니다.[7]",
+   "actually": {
+    "intro": "사용자 태그는 보통 이런 재료로 만듭니다. 당근의 구체 규칙은 공개되지 않았습니다.",
+    "items": [
+     "**재료** — 최근 본 글의 카테고리(위 줄에서 만든 데이터), 검색어, 채팅·거래, 프로필.[1] {추론}",
+     "**의도 태그** — '이사 준비 중'처럼 짧게 바뀌는 것. 최근일수록 무게를 크게 준다(아래 예).",
+     "**상태·선호 태그** — '육아 중', '캠핑 좋아함'처럼 오래 가는 것. 긴 기간을 본다. {추론}",
+     "**LLM의 자리** — 행동 요약을 주고 태그 후보 중 고르게 하거나, 규칙으로 만든 태그가 맞는지 판정하게 한다. {추론}",
+     "**태그 만료** — 의도는 시간이 지나면 지워야 한다. 날짜별 스냅샷으로 하루치만 다시 읽게 하면 백필이 싸진다는 것이 당근 활동 상태 층의 방식이다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "행동 점수로 '이사 준비 중' 태그 달기(반감기 7일)",
+     "lang": "python",
+     "code": "from collections import Counter\nevents = [(\"이사·용달\", 1), (\"가구\", 2), (\"가구\", 9), (\"유아용품\", 20), (\"이사·용달\", 3)]  # (본 카테고리, 며칠 전)\nscore = Counter()\nfor cat, days in events:\n    score[cat] += 0.5 ** (days / 7)\nmove = score[\"이사·용달\"] + score[\"가구\"]\nprint({k: round(v, 2) for k, v in score.items()}, \"move\", round(move, 2), \"tag\" if move >= 1.5 else \"no\")",
+     "output": "{'이사·용달': 1.65, '가구': 1.23, '유아용품': 0.14} move 2.88 tag"
+    }
+   ],
+   "how_far": "어떤 태그를 둘지와 문턱은 쓰는 팀(피드·광고)이 함께 정합니다.[1] 이 자리는 태그를 매일 계산해 이력과 함께 쌓고, 분포가 갑자기 바뀌면 알리는 쪽입니다. 개인 데이터라 어떤 행동을 재료로 써도 되는지는 회사 정책을 따릅니다. {추론}",
+   "refs": [1, 7],
+   "study": ["google-recsys", "mlsd-book"]
+  },
+  {
+   "section": "task",
+   "quote": "각 팀이 분류 체계와 태그를 스스로 정의하고 실험하고 평가할 수 있도록, 쉽고 편리한 셀프서비스 플랫폼을 만들어요",
+   "short": "다른 팀이 이 팀을 부르지 않고도 칸·태그를 만들고 돌려 보고 점수까지 보는 도구를 만드는 일.",
+   "why": "도메인이 중고거래·동네생활·모임·동네업체·광고·커머스·숏폼으로 많습니다.[1] 새 칸 하나마다 이 팀이 손으로 붙으면 팀이 병목이 됩니다. 회사 글은 택소노미와 파이프라인 설정을 **YAML 파일**로 두고, 프롬프트·모델·전략을 모듈로 나눠 반복 실험하는 방식이 쓸모 있었다고 정리합니다.[2][3]",
+   "actually": {
+    "intro": "셀프서비스라면 보통 이 네 가지가 화면이나 설정 한 장으로 됩니다.",
+    "items": [
+     "**정의** — 칸·속성·태그와 설명·예시를 설정 파일로 적는다(회사 글의 YAML).[3]",
+     "**검사** — 부모 없는 칸, 겹치는 이름, 빠진 설명을 저장 전에 막는다(아래 예).",
+     "**실험** — 프롬프트·모델을 바꾼 판을 표본에 돌려 기존 판과 나란히 비교한다. 당근 사내 에이전트 플랫폼(KAMP)도 판(버전)마다 배포·되돌리기·비교 평가를 둔다.[5]",
+     "**평가** — 골든셋 점수와 LLM 심판 점수를 판마다 남긴다.[3][5]",
+     "**계정·비용** — 당근의 사내 LLM 관문(LLM Router)은 모든 요청을 보낸 서비스에 묶어 기록해 누가 어느 모델을 얼마나 쓰는지 보인다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "분류 체계 설정에서 부모 없는 칸 찾기",
+     "lang": "python",
+     "code": "tax = {\"digital\": None, \"digital/phone\": \"digital\", \"digital/phone/iphone\": \"digital/phone\",\n       \"furniture\": None, \"furniture/bed\": \"furnitur\"}   # 오타 난 부모\nbad = [k for k, p in tax.items() if p and p not in tax]\nprint(\"orphan:\", bad)",
+     "output": "orphan: ['furniture/bed']"
+    }
+   ],
+   "how_far": "화면을 화려하게 만드는 것보다 **설정 형식 · 검사 · 실험 결과 비교**가 먼저입니다. {추론} 백엔드 개발자로서 API와 작업 실행기를 맡고, 화면은 사내 도구 수준이면 됩니다. {추론}",
+   "refs": [1, 2, 3, 5, 6],
+   "study": ["dg-2t", "daangn-genai", "byline-kamp"]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 AI 추론의 비용과 처리량, 품질을 최적화하고, 더 나은 분류 체계와 추론 방법을 리서치하고 프로덕션에 적용해요",
+   "short": "같은 정확도를 더 적은 토큰·더 싼 호출로 내는 방법을 찾아 실제 파이프라인에 넣는 일.",
+   "why": "회사 글 제목이 '2조 토큰'입니다 — 그만큼 썼다는 뜻이라 토큰 단가가 곧 비용입니다.[2] 회사 글은 운영 비용 절감·정확도 실험, 프롬프트 캐싱 배치, 모델 변경을 따로 다뤘고[3], 사전 필터링으로 토큰을 줄이고 호출 수를 줄이면서 성능은 유지했다고 전합니다.[2]",
+   "actually": {
+    "intro": "LLM 비용을 줄이는 공개된 방법들입니다. 당근이 어떤 공급자·모델을 쓰는지는 회사 글 요약에 없습니다.",
+    "items": [
+     "**배치로 보내기** — 즉시 답이 필요 없는 분류는 배치 API로. Anthropic·Google 모두 배치 요청을 실시간보다 **50%** 싸게 받고 대부분 24시간 안에 끝낸다.[11][13]",
+     "**프롬프트 캐싱** — 매번 같은 앞부분(지시문·칸 목록)은 캐시에 두면 읽기 값이 기본 입력의 약 0.1배다(쓰기 1.25배, 기본 5분 유지).[12]",
+     "**사전 필터링** — LLM에 보내기 전에 규칙·작은 모델로 후보 칸을 줄여 입력 토큰을 줄인다.[2]",
+     "**호출 수 줄이기** — 깊이마다 묻던 것을 한 번에 묻거나, 바뀐 글만 다시 분류한다.[2] {추론}",
+     "**모델 바꾸기** — 더 싼 모델로 바꾸기 전에 골든셋 점수를 같은 표본으로 비교한다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "하루 30만 건 — 실시간 · 배치 · 배치+캐시(입력 100만 토큰당 1달러라는 장난감 단가)",
+     "lang": "python",
+     "code": "n, hier, price = 300_000, 1220, 1.0 / 1_000_000\nonline = n * hier * price\nbatch = online * 0.5\ncached = n * ((hier - 600) + 600 * 0.1) * price * 0.5   # 앞 600토큰은 캐시 읽기 0.1배\nprint(f\"online ${online:,.0f}/day  batch ${batch:,.0f}  batch+cache ${cached:,.0f}\")",
+     "output": "online $366/day  batch $183  batch+cache $102"
+    }
+   ],
+   "how_far": "\"리서치\"는 논문을 쓰는 일이 아니라 **실험을 설계하고 숫자로 고르는 일**입니다 — 같은 표본, 같은 지표로 판을 비교하고 이긴 판을 배포합니다.[3] {추론} 단가표를 외울 필요는 없고, 토큰·호출 수·지연·정확도를 한 표로 놓고 고를 수 있으면 됩니다. {추론}",
+   "refs": [2, 3, 11, 12, 13],
+   "study": ["claude-batch", "claude-cache", "vertex-batch", "ai-eng-book"]
+  },
+  {
+   "section": "task",
+   "quote": "LLM으로 만든 데이터를 학습 데이터로 삼아 자체 경량 ML 모델을 구축하고, 대규모 추론을 LLM 의존 없이 운영할 수 있게 해요",
+   "short": "LLM이 단 정답으로 작은 모델을 가르쳐, 대부분의 글은 작은 모델이 싸게 분류하게 하는 일(증류).",
+   "why": "매일 수십만 건을 계속 LLM에 보내면 비용과 외부 의존이 남습니다.[1] 큰 모델의 답으로 작은 모델을 가르치는 것을 **지식 증류**라고 하고[9], LLM이 단 답과 그 이유로 작은 모델을 가르치면 7억7천만 개 매개변수 모델이 5,400억 개짜리 LLM을 이긴 결과도 있습니다.[10]",
+   "actually": {
+    "intro": "보통 이렇게 나눕니다.",
+    "items": [
+     "**정답 만들기** — LLM이 단 카테고리·속성을 학습 데이터로 모은다(BigQuery에 이미 쌓인다).[2]",
+     "**작은 모델 학습** — 글 임베딩 + 분류기처럼 싸고 빠른 모델. {추론}",
+     "**나눠 맡기기** — 작은 모델이 자신 있는 글만 맡고, 자신 없는 글은 LLM으로 보낸다(아래 예).",
+     "**계속 재기** — 작은 모델 답을 골든셋·LLM 심판으로 계속 재서 떨어지면 다시 학습한다.[3] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "확신 0.9 이상만 작은 모델, 나머지는 LLM",
+     "lang": "python",
+     "code": "conf = [0.99, 0.97, 0.95, 0.62, 0.91, 0.88, 0.55, 0.98, 0.93, 0.70]\nth = 0.9\nsmall = [c for c in conf if c >= th]\nprint(f\"small {len(small)}/{len(conf)} = {len(small)/len(conf):.0%}, LLM fallback {len(conf)-len(small)}\")",
+     "output": "small 6/10 = 60%, LLM fallback 4"
+    }
+   ],
+   "how_far": "백엔드 자리라 모델 구조를 새로 짜기보다 **학습 데이터 뽑기 → 학습 작업 → 서빙 → 문턱 정하기**를 파이프라인으로 엮는 것이 중심입니다. {추론} 분류기 하나를 학습시켜 정밀도·재현율을 읽고 문턱을 정할 수 있으면 출발선입니다. {추론}",
+   "refs": [1, 2, 3, 9, 10],
+   "study": ["distill", "distill-sbs", "mlsd-book"]
+  },
+  {
+   "section": "task",
+   "quote": "이렇게 만들어진 데이터를 피드, 검색, 추천, 광고 등 여러 서비스가 안정적으로 쓸 수 있도록 연동하고 관리해요",
+   "short": "분류·태그 결과를 피드·검색·광고가 제때, 같은 모양으로 받아 가게 이어 주고 지키는 일.",
+   "why": "공고의 미션은 모든 서비스가 이 데이터를 **믿고 쓸 수 있게** 하는 것입니다.[1] 회사 글의 파이프라인은 결과를 BigQuery(배치로 읽는 쪽)와 Kafka(바로 받는 쪽) 두 곳으로 내보냅니다.[3]",
+   "actually": {
+    "intro": "여러 팀이 같이 쓰는 데이터를 운영할 때 보통 지키는 것들입니다.",
+    "items": [
+     "**두 갈래 출구** — 새 글은 Kafka로 바로, 전체는 BigQuery 표로. 같은 판정이 두 곳에 같게 있어야 한다.[3]",
+     "**형식 약속** — 칸 이름을 바꾸면 쓰는 쪽이 깨진다. 칸 id는 그대로 두고 이름만 바꾸거나 판(버전)을 올린다. {추론}",
+     "**백필** — 분류 체계나 모델이 바뀌면 지난 글을 다시 분류한다. 회사 글은 백필까지 운영 체계에 넣으라고 정리한다.[3]",
+     "**중복·순서** — Kafka는 기본 설정에서 같은 메시지가 두 번 갈 수 있어 받는 쪽이 같은 글을 두 번 받아도 괜찮게 만든다.[19]",
+     "**날짜 파티션** — BigQuery 표를 날짜로 나눠 하루치만 읽게 하면 비용이 준다.[18]"
+    ]
+   },
+   "how_far": "쓰는 팀의 모델은 그 팀이 만듭니다. 이 자리는 **데이터가 늦거나 틀렸을 때 먼저 알아채는 쪽**입니다 — 신선도·건수·분포 경보와 담당 팀 연락까지. {추론}",
+   "refs": [1, 3, 18, 19],
+   "study": ["beam-guide", "bq-guide", "ddia"]
+  },
+  {
+   "section": "qualification",
+   "quote": "실제 서비스 규모로 백엔드 시스템이나 데이터 파이프라인을 설계·운영해본 경험이 있는 분",
+   "short": "장난감이 아니라 매일 수십만 건이 흐르고 멈추면 누가 아는 시스템을 돌려 본 경험.",
+   "why": "매일 수십만 건의 새 글과 2,100만 사용자를 다룹니다.[1] 회사 글이 강조한 것도 분류 로직보다 **평가·모니터링·백필까지 포함한 운영 체계**입니다.[3]",
+   "how_far": "면접에서 \"얼마나 들어왔고, 어디서 막혔고, 어떻게 알았나\"를 숫자로 말할 수 있으면 됩니다. 백엔드 API든 데이터 파이프라인이든 한쪽이면 된다고 공고가 열어 뒀습니다.[1]",
+   "level": "실무",
+   "refs": [1, 3],
+   "study": ["ddia"]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM API를 프로덕션 시스템에 통합하고 운영해본 경험이 있는 분",
+   "short": "데모가 아니라 실제 서비스에서 LLM을 부르고, 실패·지연·비용·형식 깨짐을 다뤄 본 경험.",
+   "why": "이 팀의 본업이 LLM 호출입니다.[2] 당근 ML 팀은 LLM을 서비스에 붙일 때 테스트셋으로 반복 평가, JSON 출력, 예시 주기, 작업 쪼개기, 변경 관리를 팁으로 들었습니다.[4] 당근의 사내 LLM 관문은 일시 오류 재시도, 다른 지역·다른 모델로 대체, 계속 실패하는 모델 막기(서킷 브레이커)를 둡니다.[6]",
+   "actually": {
+    "intro": "프로덕션 LLM 호출에서 보통 부딪히는 것들입니다.",
+    "items": [
+     "**형식** — JSON 스키마를 주고 받은 답을 검사한다. 칸 목록에 없는 값이면 버리거나 다시 묻는다.[4] {추론}",
+     "**실패** — 호출 한도·시간 초과·일시 오류에 재시도와 대체 경로.[6]",
+     "**판 관리** — 프롬프트를 바꾸면 결과가 바뀐다. 프롬프트·모델 판을 결과와 함께 저장해 나중에 무엇으로 만든 데이터인지 안다.[4][5] {추론}"
+    ]
+   },
+   "how_far": "사내 관문은 플랫폼 팀이 이미 있습니다.[6] 이 자리는 그 위에서 **많은 양을 안전하게 돌리는 쪽** — 재시도해도 결과가 두 번 쌓이지 않고, 판이 기록되는 수준이면 됩니다. {추론}",
+   "level": "이 팀",
+   "refs": [2, 4, 5, 6],
+   "study": ["dg-llm-2024", "daangn-genai", "ai-eng-book"]
+  },
+  {
+   "section": "qualification",
+   "quote": "대용량 배치·스트림 처리 시스템이나 데이터 웨어하우스로 대규모 데이터를 다뤄본 경험이 있는 분",
+   "short": "새 글은 흘러오는 대로(스트림), 지난 글은 몰아서(배치) 처리하고 창고(BigQuery)에 쌓아 본 경험.",
+   "why": "회사 글의 분류 파이프라인은 Dataflow(Beam) 위에서 스트림 분류와 배치 분류를 둘 다 하고, 결과를 BigQuery와 Kafka로 냅니다.[3] Beam은 같은 코드로 배치와 스트림을 다 돌리는 처리 모델입니다.[27]",
+   "actually": {
+    "intro": "이 팀 일에 대어 보면 이렇습니다.",
+    "items": [
+     "**스트림** — 새 글 이벤트를 받아 바로 분류해 Kafka로 낸다.[3]",
+     "**배치** — 모델·체계가 바뀌면 지난 글 수천만 건을 다시 분류(백필)한다.[3] {추론}",
+     "**웨어하우스** — 분류 결과를 날짜 파티션 표로 쌓고 SQL로 정확도·분포를 본다.[18]"
+    ]
+   },
+   "how_far": "Beam·Dataflow를 꼭 써 봤어야 하는 건 아닙니다 — 공고는 '배치·스트림 처리 시스템이나 데이터 웨어하우스'로 넓게 적었습니다.[1] Spark·Flink·Kafka Streams 중 하나로 늦게 온 데이터와 재처리를 다뤄 봤으면 옮겨 갈 수 있습니다. {추론}",
+   "level": "실무",
+   "refs": [1, 3, 18, 27],
+   "study": ["beam-guide", "bq-guide"]
+  },
+  {
+   "section": "qualification",
+   "quote": "분류 체계나 데이터 모델을 설계하고, 여러 팀이 공통으로 사용하는 데이터 자산을 만들어본 경험이 있는 분",
+   "short": "한 팀용이 아니라 여러 팀이 같이 쓰는 표·체계를, 나중에 바꿔도 안 깨지게 설계해 본 경험.",
+   "why": "공고는 여러 도메인의 콘텐츠를 **일관된 분류 체계**로 정의한다고 밝힙니다.[1] 회사 글도 새 택소노미를 만들고 넓히는 일, 다른 언어로 옮긴 체계를 검증하는 일을 따로 다룹니다.[3]",
+   "actually": {
+    "intro": "분류 체계를 설계할 때 보통 정하는 것들입니다.",
+    "items": [
+     "**위아래 관계** — 칸마다 상위(broader)·하위(narrower), 그리고 나무 밖의 연관(related). W3C의 SKOS 표준이 이 관계를 정의한다.[14]",
+     "**칸 대신 속성** — '여성 골프화'를 새 칸으로 두지 않고 '운동화 + 종목=골프 + 성별=여성'으로 본다(쇼피파이 방식).[15]",
+     "**바뀌지 않는 id** — 이름·위치가 바뀌어도 칸 id는 그대로. 쓰는 팀이 깨지지 않게. {추론}",
+     "**다국어** — 같은 칸을 여러 언어로. 당근은 위 칸부터 깊이 우선으로 내려가며 위 칸의 번역을 함께 줘서 위아래 표현을 맞췄다고 전해진다.[2]"
+    ]
+   },
+   "how_far": "도서관학 수준까지는 아닙니다. **공용 표의 키·단위·이력 관리**를 설계해 본 경험이면 이 줄을 말할 수 있습니다. {추론}",
+   "level": "실무",
+   "refs": [1, 2, 3, 14, 15],
+   "study": ["skos", "shopify-taxonomy", "hedden"]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM 프롬프트와 출력 품질을 평가하는 체계(골든셋, LLM-as-a-judge, 품질 지표)를 직접 설계·운영해본 분",
+   "short": "사람이 정답을 단 표본(골든셋)과 LLM 채점관으로, 프롬프트를 바꿀 때마다 점수를 재 본 경험.",
+   "why": "회사 글은 LLM as a Judge 평가 체계를 따로 다뤘습니다.[3] 당근 KAMP는 사람이 먼저 평가하고, LLM 채점이 사람과 **90% 이상** 같아지면 그 뒤를 LLM에 맡깁니다.[5] LLM 채점관은 사람 선호와 80% 넘게 일치하지만, 앞에 놓인 답을 고르거나 긴 답을 좋아하는 버릇이 있다고 알려져 있습니다.[8]",
+   "actually": {
+    "intro": "평가 체계는 보통 이렇게 쌓습니다.",
+    "items": [
+     "**골든셋** — 칸마다 고르게 뽑은 글 수백 건에 사람이 정답을 단다. 드문 칸도 빠지지 않게. {추론}",
+     "**지표** — 칸별 정밀도·재현율, 그리고 '모름' 비율. 전체 정확도만 보면 드문 칸 문제가 가려진다. {추론}",
+     "**심판 검증** — 심판과 사람의 일치율·카파(우연히 맞을 확률을 뺀 일치도)를 잰다(아래 예).[5][20]",
+     "**주기 평가** — 새 글에서 표본을 계속 뽑아 점수를 다시 잰다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "20건 표본에서 심판과 사람의 일치율·카파",
+     "lang": "python",
+     "code": "human = list(\"AAABBBCCCCAABBCCAAAB\")\njudge = list(\"AAABBBCCCBAABBCCAACB\")\nN = len(human)\nagree = sum(h == j for h, j in zip(human, judge)) / N\ncats = set(human) | set(judge)\npe = sum((human.count(c) / N) * (judge.count(c) / N) for c in cats)\nkappa = (agree - pe) / (1 - pe)\nprint(f\"agree {agree:.0%} kappa {kappa:.2f} ->\", \"judge\" if agree >= 0.9 else \"human\")",
+     "output": "agree 90% kappa 0.85 -> judge"
+    }
+   ],
+   "how_far": "우대 사항이지만 이 팀 일의 한가운데입니다.[3] 골든셋을 만들고 판을 비교하는 작은 평가 스크립트를 직접 굴려 본 경험만 있어도 이야기할 거리가 됩니다. {추론}",
+   "refs": [3, 5, 8, 20],
+   "study": ["llm-judge", "byline-kamp", "sklearn-kappa"]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM 호출의 비용·처리량을 최적화해본 경험이 있는 분",
+   "short": "배치·캐시·짧은 프롬프트·싼 모델로 같은 일을 더 싸고 많이 돌려 본 경험.",
+   "why": "업무 넷째 줄과 같은 일입니다. 회사 글이 비용 절감 실험과 프롬프트 캐싱 배치를 따로 다뤘습니다.[3] 당근 사내 에이전트 플랫폼도 배포가 쉬워지며 비용이 크게 늘어 최적화가 과제라고 밝혔습니다.[5]",
+   "how_far": "\"얼마에서 얼마로 줄였고 정확도는 그대로였다\"를 숫자 둘로 말할 수 있으면 됩니다. {추론} 처리량은 호출 한도 안에서 동시성을 조절하는 것까지. {추론}",
+   "refs": [3, 5],
+   "study": ["claude-batch", "claude-cache", "vertex-batch"]
+  },
+  {
+   "section": "preference",
+   "quote": "유저 행동 데이터를 바탕으로 유저 모델링이나 세그먼트·태그 추론을 해본 경험이 있는 분",
+   "short": "사용자 로그를 묶어 '이런 사람'으로 나누고 그 결과를 추천·광고에 써 본 경험.",
+   "why": "업무 둘째 줄(사용자 태그)을 위한 우대입니다.[1] 당근은 사용자 활동 상태를 공통 층으로 만들어 팀마다 따로 계산하지 않게 했습니다.[7]",
+   "how_far": "추천 모델을 만든 경험까지는 아니어도 됩니다. 로그를 사용자 단위로 모아 기간·최근성으로 점수를 매기고, 그 태그가 실제로 쓸모 있었는지(클릭·전환) 재 본 경험이면 이야기가 됩니다. {추론}",
+   "refs": [1, 7],
+   "study": ["google-recsys"]
+  },
+  {
+   "section": "preference",
+   "quote": "콘텐츠를 분류하는 시스템이나 지식 체계(taxonomy, ontology)를 구축해본 분",
+   "short": "칸 나무(택소노미)나 개념 사이 관계망(온톨로지)을 직접 짜고 운영해 본 경험.",
+   "why": "이 팀이 회사 글에서 스스로를 Taxonomy 팀이라고 부릅니다.[2] 택소노미는 위아래가 있는 칸 나무이고, 온톨로지는 거기에 '이 칸은 저 칸과 관련 있다' 같은 관계와 속성까지 적은 것입니다.[14]",
+   "how_far": "커머스 카테고리·태그 체계를 바꿔 본 경험, 공개 체계(쇼피파이·구글 상품 분류)를 분석해 본 경험도 이 줄에 해당합니다.[15] {추론}",
+   "refs": [2, 14, 15],
+   "study": ["shopify-taxonomy", "skos", "hedden"]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM 출력을 학습 데이터로 활용해 ML 모델을 학습하거나 증류해본 경험이 있는 분",
+   "short": "LLM이 단 라벨로 작은 모델을 학습시켜 실제로 바꿔 끼워 본 경험.",
+   "why": "업무 다섯째 줄(LLM 없이 대규모 추론 운영)을 위한 우대입니다.[1] 큰 모델의 답으로 작은 모델을 가르치는 지식 증류[9]와, LLM의 이유 설명까지 함께 가르치는 방식[10]이 대표적입니다.",
+   "how_far": "LLM 라벨의 오류가 작은 모델에 그대로 옮는다는 점을 알고, 사람 정답으로 따로 재 봤다면 충분합니다. {추론}",
+   "refs": [1, 9, 10],
+   "study": ["distill", "distill-sbs"]
+  },
+  {
+   "section": "preference",
+   "quote": "전형과 입사 후 업무 모두 한국어로 원활히 소통 가능하신 분",
+   "short": "면접도 회의도 한국어다.",
+   "why": "공고 안내입니다.[1] 분류 대상이 한국어 글이고 각 서비스 팀과 함께 품질을 관리하는 자리라 한국어 소통이 일의 일부입니다. {추론}",
+   "refs": [1]
+  },
+  {
+   "section": "preference",
+   "quote": "참고해 주세요 정규직 채용의 경우 3개월의 수습기간이 있어요 ‘장애인고용촉진 및 직업재활법’, ‘국가유공자 등 예우 및 지원에 관한 법률’에 따라 장애인 및 보훈대상자는 채용 전형 시 우대하고 있어요 이 포지션은 산업기능요원으로 채용이 가능한 포지션이에요 (현역 전직, 보충역 신규 편입, 보충역 전직) 전문연구요원 편입 및 전직은 불가해요",
+   "short": "정규직은 수습 3개월. 산업기능요원(군 복무 대신 지정 업체 근무)으로도 지원할 수 있다.",
+   "why": "공고 안내입니다.[1] 산업기능요원은 병무청이 지정한 업체에서 일하는 것으로 병역을 대신하는 제도이고, 전문연구요원(연구기관 석사 이상)과는 다른 제도입니다.[25] 경력에 따라 최대 3개월 계약직으로 먼저 일할 수 있다는 안내도 있습니다.[1]",
+   "refs": [1, 25]
+  },
+  {
+   "section": "preference",
+   "quote": "이렇게 합류해요 1. 서류 전형 → 2. 화상 인터뷰 → 3. 직무 인터뷰 → 4. 컬처핏 인터뷰 및 레퍼런스 체크 → 5. 처우협의 → 6. 최종 합격 및 입사 당근 전형 소개 서류 전형 당근은 자유형식의 지원서를 받고 있어요. 본인의 강점이 잘 드러나는 다양한 정보를 자유롭게 활용해 이력서를 작성해 주세요. 문서 형식은 hwp(한글) 파일을 제외하고 word, pdf, 웹 링크 등 자유롭게 선택해주시면 돼요. 웹 링크(노션, 구글드라이브 등)로 서류를 제출해주실 때는 접근 권한을 꼭 열어주세요. 평가와 상관 없는 사진, 주소 등의 개인정보는 제외해주세요. 화상 면접 지원해주신 직무와 업무 연관성이 높은 당근 팀원과 화상으로 직무와 관련된 기본적인 지식에 대해 이야기를 나누는 단계예요. 과제 전형 직무에 따라 과제 전형이 있어요. 과제는 직무 능력과 연관된 내용으로 출제돼요. 과제 전형을 별도로 운영하는 직무도 있고, 화상 면접 또는 직무 면접에서 과제가 함께 출제되는 경우도 있어요. 직무 면접 지원하신 직무와 업무 연관성이 높은 당근 팀원들과 직무 역량, 경험에 대해 화상 면접보다 심층적인 이야기를 나누는 단계예요. 과제가 출제되었을 경우 과제에 대한 질문을 드려요. 컬쳐핏 면접(정규직 공통) 당근은 면접을 단순히 회사에 사람을 뽑는 자리로 생각하지 않아요. 당근과 지원자가 서로 추구하는 가치관과 생각을 교환하는 시간이라고 생각하고 있어요. 컬쳐핏 단계는 당근이 추구하는 문화와 일하는 방식과 잘 어울릴 수 있는 분인지 확인하는 단계예요. 또한 포지션에 대한 전문성을 다시금 확인하는 이야기를 나눠요.",
+   "short": "서류 → 화상 → 직무 → 컬처핏·평판 조회 → 처우 협의. 이력서 형식은 자유(hwp만 안 됨).",
+   "why": "전형 안내입니다.[1] 직무에 따라 과제가 따로 나오거나 면접 중에 나올 수 있다고 적혀 있습니다.[1] 연봉은 다섯째 단계 처우 협의에서 정합니다.[1]",
+   "how_far": "자유 형식이니 이 공고의 업무 여섯 줄에 맞춰 '얼마나 많은 데이터를, 얼마의 비용으로, 어떤 품질 지표로' 다뤘는지를 앞에 두는 것이 좋습니다. {추론}",
+   "refs": [1]
+  }
+ ],
+ "fit": {
+  "good": [
+   "LLM 답을 그대로 믿지 않고 표본으로 재 보는 사람[3][5]",
+   "토큰·호출 수·정확도를 한 표에 놓고 고르는 게 즐거운 사람[2]",
+   "다른 팀이 내 데이터를 믿고 쓰게 만드는 데서 보람을 느끼는 사람[1]",
+   "백엔드와 데이터 파이프라인을 가리지 않는 사람[1]"
+  ],
+  "hard": [
+   "화면을 만드는 일은 거의 없다 — 결과물이 표와 파이프라인이다 {추론}",
+   "여러 서비스 팀이 기준을 다르게 원해 조율이 많다[1] {추론}",
+   "모델 구조를 연구하는 ML 자리를 원하면 범위가 다르다 — 백엔드 자리다[1] {추론}"
+  ]
+ },
+ "interview": [
+  {"q": "칸이 수천 개인 분류 체계에서 LLM에게 글 하나의 칸을 고르게 하려면, 한 번에 다 보여 주나요 깊이마다 묻나요? 각각 무엇이 나빠지죠?", "a": "회사 글이 비교한 한 번 고르기와 깊이별 고르기, 그리고 사전 필터링.[2]"},
+  {"q": "프롬프트를 바꿨더니 전체 정확도는 그대로인데 피드 팀이 이상하다고 합니다. 무엇부터 보겠어요?", "a": "칸별 지표와 드문 칸, 골든셋 구성.[3]"},
+  {"q": "LLM 채점관을 쓰겠다면 그 채점관은 어떻게 믿나요?", "a": "사람 평가와 90% 이상 일치하면 넘기는 KAMP 방식과 채점관의 버릇.[5][8]"},
+  {"q": "하루 수십만 건 분류 비용을 절반으로 줄여야 합니다. 정확도를 지키면서 무엇을 순서대로 하겠어요?", "a": "배치·캐시·사전 필터·모델 교체·증류를 골든셋으로 비교.[2][11][12]"},
+  {"q": "분류 체계에서 칸 하나를 둘로 나누면 지난 데이터와 쓰는 팀은 어떻게 되나요?", "a": "바뀌지 않는 id, 판 관리, 백필.[3]"}
+ ],
+ "sources": [
+  {"n": 1, "title": "당근 채용 · Software Engineer, Backend - Content & User Understanding", "url": "https://about.daangn.com?gh_jid=7995038003", "kind": "posting", "date": "2026-09-15", "note": "팀 소개(매일 수십만 건·MAU 2,100만·도메인 목록·피드/검색/추천/광고)·업무·요건·전형 — 2026-11-25 수정판"},
+  {"n": 2, "title": "당근 기술 블로그 · 2조 토큰을 카테고리 분류에 쓰면서 알게 된 것들 (Taxonomy 팀)", "url": "https://medium.com/daangn/2%EC%A1%B0-%ED%86%A0%ED%81%B0%EC%9D%84-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EB%B6%84%EB%A5%98%EC%97%90-%EC%93%B0%EB%A9%B4%EC%84%9C-%EC%95%8C%EA%B2%8C%EB%90%9C-%EA%B2%83%EB%93%A4-f619f1db6b7b", "kind": "company", "date": "2026-02-27", "note": "공고가 '팀이 어떻게 일하는지'로 건 글. Medium 본문은 403 — 검색 결과에 나온 본문 발췌(택소노미·사전 필터링·BigQuery 적재·번역 때 깊이 우선 순서)와 [3]의 요약으로만 확인"},
+  {"n": 3, "title": "Velopers · 2조 토큰을 카테고리 분류에 쓰면서 알게된 것들 (당근 기술블로그 요약)", "url": "https://velopers.kr/post/6418", "kind": "reference", "note": "[2]의 목차 요약 — Dataflow(Beam)·BigQuery·Kafka sink, YAML 설정, LLM as a Judge, 프롬프트 캐싱 배치, 이미지, 모델 변경, 다국어 검증, 백필. 숫자는 없음"},
+  {"n": 4, "title": "당근 기술 블로그 · 당근에서 LLM 활용하기", "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EC%97%90%EC%84%9C-llm-%ED%99%9C%EC%9A%A9%ED%95%98%EA%B8%B0-76131ecebce1", "kind": "company", "date": "2024-04-15", "note": "본문 403 — Velopers 요약(velopers.kr/post/741)으로 확인: 비정형 글 추출·추천·자동 입력, 테스트셋 반복 평가·JSON 출력·예시·작업 분할·변경 관리"},
+  {"n": 5, "title": "바이라인네트워크 · '당근'이 AI 에이전트 활용하는 법", "url": "https://byline.network/2025/11/25_danggn-2/", "kind": "news", "date": "2025-11-28", "note": "당근 AI 에이전트 팀 리더 발표 보도 — KAMP 판 관리·비교 평가, 사람과 90% 이상 일치하면 LLM 심판, 비용 증가"},
+  {"n": 6, "title": "당근 기술 블로그 · Karrot’s Generative AI Platform (Tommy Park)", "url": "https://medium.com/daangn/karrots-genai-platform-5cf6e813838e", "kind": "company", "date": "2025-12-22", "note": "LLM Router(서비스별 기록)·Prompt Studio(재시도·지역/모델 대체·서킷 브레이커) — 같은 회사 다른 풀이에서 확인한 내용"},
+  {"n": 7, "title": "당근 기술 블로그 · 당근은 왜 User Activation을 전사 공통 데이터 레이어로 만들었을까?", "url": "https://medium.com/daangn/f40d362107ff", "kind": "company", "date": "2026-01-02", "note": "본문 403 — Velopers 요약(velopers.kr/post/6092)으로 확인: 활동 상태·전이를 공통 모델로, 날짜별 스냅샷으로 백필 비용 절감"},
+  {"n": 8, "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (Zheng 외, 2023)", "url": "https://arxiv.org/abs/2306.05685", "kind": "reference"},
+  {"n": 9, "title": "Distilling the Knowledge in a Neural Network (Hinton 외, 2015)", "url": "https://arxiv.org/abs/1503.02531", "kind": "reference"},
+  {"n": 10, "title": "Distilling Step-by-Step! (Hsieh 외, Findings of ACL 2023)", "url": "https://arxiv.org/abs/2305.02301", "kind": "reference", "note": "770M T5가 few-shot 540B PaLM을 한 벤치마크에서 앞섬"},
+  {"n": 11, "title": "Anthropic 문서 · Batch processing", "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing", "kind": "reference", "note": "표준 가격의 50%, 24시간 안에 안 끝나면 만료 · 2026-11-25 확인"},
+  {"n": 12, "title": "Anthropic 문서 · Prompt caching", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching", "kind": "reference", "note": "캐시 읽기 기본 입력의 0.1배(일부 모델은 더 낮음), 5분 쓰기 1.25배, 기본 5분 · 2026-11-25 확인"},
+  {"n": 13, "title": "Google Cloud 문서 · Vertex AI Gemini 배치 추론", "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/batch-prediction-gemini", "kind": "reference", "note": "실시간 대비 50% 할인, 대부분 24시간 안 · 2026-11-25 확인"},
+  {"n": 14, "title": "W3C · SKOS Simple Knowledge Organization System Reference", "url": "https://www.w3.org/TR/skos-reference/", "kind": "reference", "date": "2009-08-18"},
+  {"n": 15, "title": "Shopify Engineering · Beyond classification: How AI agents are evolving Shopify's product taxonomy at scale", "url": "https://shopify.engineering/product-taxonomy-at-scale", "kind": "reference", "note": "칸 대신 속성으로 표현하기"},
+  {"n": 16, "title": "Coupang Engineering · Accelerating Coupang's AI Journey with LLMs", "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/", "kind": "reference", "note": "다른 회사 — 카테고리별 분류 모델을 LLM 분류기 하나로"},
+  {"n": 17, "title": "Instacart · Scaling Catalog Attribute Extraction with Multi-modal LLMs", "url": "https://company.instacart.com/tech-innovation/scaling-catalog-attribute-extraction-with-multi-modal-llms", "kind": "reference", "note": "다른 회사 — 확신 점수로 사람 검수 보내기"},
+  {"n": 18, "title": "Google Cloud 문서 · BigQuery 파티션을 나눈 테이블 소개", "url": "https://cloud.google.com/bigquery/docs/partitioned-tables", "kind": "reference"},
+  {"n": 19, "title": "Apache Kafka 문서 · Message Delivery Semantics", "url": "https://kafka.apache.org/documentation/#semantics", "kind": "reference"},
+  {"n": 20, "title": "scikit-learn · cohen_kappa_score", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html", "kind": "reference"},
+  {"n": 21, "title": "당근 채용 · 팀 문화(복지)", "url": "https://careers.daangn.com/culture/", "kind": "company"},
+  {"n": 22, "title": "당근 채용 · 채용공고(사이트 하단 회사 정보)", "url": "https://careers.daangn.com/jobs/", "kind": "company"},
+  {"n": 23, "title": "원티드 · 당근마켓 기업 정보(평균연봉·입사자 평균연봉)", "url": "https://www.wanted.co.kr/company/2826", "kind": "reference", "note": "금감원·국민연금 자료로 계산한 집계 — 기준일 표기 없음"},
+  {"n": 24, "title": "헤럴드경제 · \"신입 초봉 6000만원, 휴가 한달 마음껏\"…", "url": "https://www.heraldk.com/article/2026040404400043838", "kind": "news", "date": "2026-04-04", "note": "개발자 신입 초봉 6000만원 — 기사에 근거 자료 표기 없음"},
+  {"n": 25, "title": "병무청 · 산업기능요원·전문연구요원 안내", "url": "https://www.mma.go.kr/contents.do?mc=mma0000760", "kind": "reference"},
+  {"n": 26, "title": "바이라인네트워크 · 당근, 2025년 매출 2707억원···전년 대비 43%↑", "url": "https://byline.network/2026/03/27_192874-2/", "kind": "news", "date": "2026-03-27"},
+  {"n": 27, "title": "Apache Beam Programming Guide", "url": "https://beam.apache.org/documentation/programming-guide/", "kind": "reference", "note": "같은 파이프라인 코드로 배치·스트림"}
+ ],
+ "caveat": "팀이 직접 쓴 글(2026년 2월)은 Medium 본문이 막혀 목차 요약과 검색 발췌로만 읽었습니다 — 토큰 단가·정확도·칸 개수·쓰는 모델 같은 숫자는 확인하지 못했습니다. 사용자 태그 추론과 증류 모델은 공고에만 있고 구조가 공개되지 않아, 공개 연구·공식 문서로 '보통 이런 방식'을 보였습니다. 예시 코드의 단가·건수는 계산을 보이려고 정한 가정값입니다.",
+ "resources": [
+  {"id": "dg-2t", "title": "2조 토큰을 카테고리 분류에 쓰면서 알게 된 것들", "by": "당근 Taxonomy 팀 · 당근 기술 블로그 · 2026", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://medium.com/daangn/2%EC%A1%B0-%ED%86%A0%ED%81%B0%EC%9D%84-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EB%B6%84%EB%A5%98%EC%97%90-%EC%93%B0%EB%A9%B4%EC%84%9C-%EC%95%8C%EA%B2%8C%EB%90%9C-%EA%B2%83%EB%93%A4-f619f1db6b7b", "why": "공고가 직접 건 팀 글. 업무 여섯 줄 전부 — 분류 전략·YAML 설정·LLM 심판·비용 실험·백필 — 의 출발점. 지원 전에 꼭 읽는다."},
+  {"id": "dg-llm-2024", "title": "당근에서 LLM 활용하기", "by": "당근 기술 블로그 · 2024", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EC%97%90%EC%84%9C-llm-%ED%99%9C%EC%9A%A9%ED%95%98%EA%B8%B0-76131ecebce1", "why": "요건 'LLM API 프로덕션 통합' — 당근이 LLM을 서비스에 붙일 때 쓴 평가·출력 형식·작업 분할 팁."},
+  {"id": "daangn-genai", "title": "Karrot’s Generative AI Platform", "by": "Tommy Park · 당근 기술 블로그 · 2025", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://medium.com/daangn/karrots-genai-platform-5cf6e813838e", "why": "이 팀이 올라탈 사내 LLM 관문과 프롬프트 도구의 구조. 업무 셋째 줄 셀프서비스 플랫폼을 어디까지 새로 만들고 무엇을 빌려 쓸지 감을 잡는다."},
+  {"id": "byline-kamp", "title": "'당근'이 AI 에이전트 활용하는 법", "by": "바이라인네트워크 · 2025", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://byline.network/2025/11/25_danggn-2/", "why": "우대 '평가 체계' — 당근이 LLM 심판을 사람 평가와 맞춰 보는 기준(90%)과 판 관리."},
+  {"id": "ai-eng-book", "title": "AI 엔지니어링", "by": "칩 후옌", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://ridibooks.com/books/6071000005", "why": "LLM 앱의 평가(AI 심판 포함)·프롬프트·비용과 지연 최적화·증류를 한 권으로. 업무 ①④⑤와 우대 평가·비용 줄의 바탕."},
+  {"id": "mlsd-book", "title": "머신러닝 시스템 설계", "by": "칩 후옌 · 한빛미디어 · 2023", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://www.oreilly.com/library/view/-/9791169210850/", "why": "학습 데이터 라벨링·분포 변화·모델 배포와 모니터링 — 업무 ②⑤를 백엔드 개발자 눈높이로."},
+  {"id": "ddia", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 위키북스", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84", "why": "요건 첫 줄과 업무 ⑥ — 배치·스트림 처리, 스키마 변화, 여러 소비자에게 데이터를 안전하게 내보내기."},
+  {"id": "bq-guide", "title": "구글 빅쿼리 완벽 가이드", "by": "발리아파 락쉬마난 · 조던 티가니 · 2021", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002986366", "why": "분류 결과가 쌓이는 BigQuery — 파티션·비용·대량 적재. 요건 '데이터 웨어하우스' 줄."},
+  {"id": "beam-guide", "title": "Apache Beam Programming Guide", "by": "Apache Beam 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://beam.apache.org/documentation/programming-guide/", "why": "팀 파이프라인이 도는 Dataflow(Beam)의 기본 — 같은 코드로 배치·스트림, 윈도·늦은 데이터."},
+  {"id": "llm-judge", "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena", "by": "Zheng 외 · 2023", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/2306.05685", "why": "우대 평가 줄 — LLM 심판이 사람과 얼마나 맞고 어떤 버릇(위치·길이 편향)이 있는지의 원 논문."},
+  {"id": "sklearn-kappa", "title": "cohen_kappa_score", "by": "scikit-learn 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html", "why": "심판과 사람의 일치도를 우연을 빼고 재는 함수. 골든셋 평가 스크립트에 바로 쓴다."},
+  {"id": "distill", "title": "Distilling the Knowledge in a Neural Network", "by": "Hinton · Vinyals · Dean · 2015", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/1503.02531", "why": "업무 ⑤·우대 증류 줄 — 큰 모델의 답으로 작은 모델을 가르치는 생각의 출발점."},
+  {"id": "distill-sbs", "title": "Distilling Step-by-Step!", "by": "Hsieh 외 · Findings of ACL 2023", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/2305.02301", "why": "LLM이 단 답과 이유로 작은 모델을 학습시키는 방법. '적은 데이터·작은 모델로 LLM을 이긴다'는 결과가 업무 ⑤의 근거."},
+  {"id": "claude-batch", "title": "Batch processing", "by": "Anthropic 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing", "why": "업무 ④ — 급하지 않은 대량 호출을 절반 값에 보내는 배치 API의 제약(24시간)과 사용법."},
+  {"id": "claude-cache", "title": "Prompt caching", "by": "Anthropic 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching", "why": "업무 ④ — 매번 같은 지시문·칸 목록을 캐시해 입력 비용을 줄이는 법. 회사 글의 '프롬프트 캐싱 배치'를 이해하는 바탕."},
+  {"id": "vertex-batch", "title": "Vertex AI Gemini 배치 추론", "by": "Google Cloud 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/batch-prediction-gemini", "why": "BigQuery 표를 입력으로 바로 넣는 배치 추론. GCP(Dataflow·BigQuery) 위의 팀이라 같이 읽어 둔다."},
+  {"id": "skos", "title": "SKOS Simple Knowledge Organization System Reference", "by": "W3C · 2009", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://www.w3.org/TR/skos-reference/", "why": "요건 '분류 체계 설계'·우대 taxonomy/ontology — 상위·하위·연관 관계와 다국어 이름을 표준으로 적는 법."},
+  {"id": "shopify-taxonomy", "title": "Shopify Standard Product Taxonomy (GitHub)", "by": "Shopify · MIT 라이선스", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://github.com/Shopify/product-taxonomy", "why": "실제로 쓰이는 칸·속성·값 체계가 파일로 공개돼 있다. 설정 파일로 택소노미를 관리하는 모습을 직접 열어 본다."},
+  {"id": "hedden", "title": "The Accidental Taxonomist, Third Edition", "by": "Heather Hedden · Information Today · 2022", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://books.infotoday.com/Ebooks/489_The-Accidental-Taxonomist-Third-Edition.htm", "why": "분류 체계를 만들고 고치는 실무서. 칸 이름 짓기·동의어·다국어·관리 절차."},
+  {"id": "google-recsys", "title": "Recommendation systems", "by": "Google for Developers", "kind": "course", "lang": "en", "free": true, "level": "입문", "url": "https://developers.google.com/machine-learning/recommendation", "why": "업무 ②·우대 유저 모델링 — 사용자 특징이 추천의 후보 생성·점수에 어떻게 쓰이는지 짧게."}
+ ],
+ "study_path": [
+  {"title": "팀 글과 LLM 운영 기본", "time": "1주", "goal": "이 팀의 파이프라인(체계 → 분류 → 평가 → 적재)을 그림 한 장으로 설명할 수 있다.", "resources": ["dg-2t", "dg-llm-2024", "daangn-genai", "byline-kamp"], "task": "가상의 중고거래 글 50개와 칸 20개짜리 2단 분류 체계를 만들고, LLM에게 JSON으로 칸·속성을 받는 스크립트를 짠다. 목록에 없는 칸이 오면 다시 묻게 한다."},
+  {"title": "평가 체계 만들기", "time": "1~2주", "goal": "골든셋으로 프롬프트 두 판을 비교하고, LLM 심판의 일치율·카파를 낸다.", "resources": ["ai-eng-book", "llm-judge", "sklearn-kappa"], "task": "1단계 글 50개에 직접 정답을 단다. 프롬프트 A·B를 돌려 칸별 정밀도·재현율 표를 만들고, LLM 심판 판정과 내 정답의 일치율을 잰다."},
+  {"title": "많이, 싸게 돌리기", "time": "2주", "goal": "배치·캐시·사전 필터로 같은 정확도에서 비용을 줄이고 숫자로 보인다.", "resources": ["claude-batch", "claude-cache", "vertex-batch", "beam-guide"], "task": "글 1,000개를 실시간·배치·캐시 적용으로 각각 돌려 토큰·비용·시간·정확도를 한 표로. 키워드 사전 필터로 후보 칸을 줄인 판도 비교한다."},
+  {"title": "증류와 연동", "time": "2~3주", "goal": "LLM 라벨로 작은 분류기를 학습시켜 확신 문턱으로 LLM과 나눠 맡기고, 결과를 날짜 파티션 표로 낸다.", "resources": ["distill", "distill-sbs", "mlsd-book", "bq-guide", "ddia"], "task": "3단계 LLM 라벨로 임베딩 + 로지스틱 회귀 분류기를 학습시킨다. 문턱을 바꿔 가며 '작은 모델이 맡는 비율 vs 정확도' 곡선을 그리고, 결과를 날짜별 파일로 쌓아 다시 돌려도 두 번 쌓이지 않게 한다."},
+  {"title": "분류 체계 설계 (선택)", "time": "계속", "goal": "칸·속성·관계를 바뀌지 않는 id로 설계하고, 칸을 나눌 때의 이관 계획을 쓸 수 있다.", "resources": ["shopify-taxonomy", "skos", "hedden", "google-recsys"], "task": "쇼피파이 체계에서 한 갈래를 골라 우리 동네 거래에 맞게 고친 YAML을 만들고, 칸 하나를 둘로 나누는 변경의 백필·소비자 알림 계획을 한 쪽으로 쓴다."}
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 평균은 **약 6,032만원**, 올해 입사자 평균은 **약 3,888만원** — 보도는 개발자 신입 초봉을 **6,000만원**으로 적었지만 근거가 없다",
+  "rows": [
+   {"label": "직원 평균 연봉", "value": "6,032만원", "amount": 6032, "basis": "공공데이터 집계", "note": "원티드가 금감원·국민연금 자료로 계산한 값이다. 기준일 표기가 없고 직군 구분이 없어 개발자·비개발자가 섞여 있다 [23]"},
+   {"label": "올해 입사자 평균 연봉", "value": "3,888만원", "amount": 3888, "basis": "공공데이터 집계", "note": "원티드가 국민연금 자료로 계산한 값이다. 신입·경력·인턴, 모든 직군이 섞인 값이라 이 자리 연봉으로 읽으면 안 된다 [23]"},
+   {"label": "개발자 신입 초봉(보도)", "value": "6,000만원", "amount": 6000, "basis": "보도 · 2026년", "note": "헤럴드경제 기사가 '개발자 신입 초봉 6000만원에 달한다'고 적었으나 근거 자료를 밝히지 않았다 [24]"}
+  ],
+  "how": "당근마켓은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다(2025년 연결 매출 2,707억원으로 흑자다 [26]). 위 집계는 국민연금 납부액으로 거꾸로 계산하는 방식이라 소득 상한 때문에 높은 연봉이 낮게 잡히는 경향이 있다 {추론}. 평균은 경력직이 섞인 회사 전체 값이다. 공고에 연봉이 없고, 전형 다섯째 단계 **처우 협의**에서 사람마다 정한다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {"name": "업무 환경", "detail": "인체공학 오피스 가구, 최신 사양 업무 기기"},
+   {"name": "식사", "detail": "식사 및 음료비 지원"},
+   {"name": "야근 교통", "detail": "야근 시 택시비 지원"},
+   {"name": "교육", "detail": "업무 관련 교육·어학 교육비, 국내외 컨퍼런스 참가비와 관련 휴가"},
+   {"name": "학습 도구", "detail": "업무 관련 도서·논문·AI Tool 포함"},
+   {"name": "휴가", "detail": "승인 없이 자유롭게 쓰는 휴가, 연간 최대 25일"},
+   {"name": "문화의 날", "detail": "매월 운영"},
+   {"name": "건강", "detail": "연 1회 종합건강검진, 연 8회 심리 상담"},
+   {"name": "단체 상해보험", "detail": "본인·배우자·자녀·부모님"},
+   {"name": "가족", "detail": "어린이집 자녀 보육 지원, 경조사 및 명절 지원"}
+  ],
+  "note": "당근 채용 사이트의 '팀 문화' 페이지에 적힌 것이다(2026-11 확인) [21]. 금액은 적혀 있지 않고 고용 형태별 적용 범위도 밝히지 않았으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "당근 본사 (교보강남타워)",
+  "address": "서울특별시 서초구 강남대로 465, 교보강남타워 11층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
+  "near": "9호선 신논현역 앞 {추론}",
+  "note": "공고 근무지 표기는 'SEOUL'이고, 주소는 당근 채용 사이트 하단의 회사 정보다 [22]. 팀 자리 층은 다를 수 있다 {추론}."
+ }
+}

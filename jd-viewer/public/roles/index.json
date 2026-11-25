@@ -177,6 +177,7 @@
   "ats-greenhouse:daangn:8201151003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:8201153003": "daangn-community-backend-intern",
   "ats-greenhouse:daangn:7644271003": "daangn-content-serving-backend",
+  "ats-greenhouse:daangn:7995038003": "daangn-content-user-understanding-backend",
   "ats-greenhouse:daangn:7668837003": "daangn-engagement-frontend",
   "ats-greenhouse:daangn:5046757003": "daangn-feed-infra-backend",
   "ats-greenhouse:daangn:6652141003": "daangn-feed-ml-data-platform-backend",
@@ -2087,6 +2088,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 24
+  },
+  {
+   "id": "daangn-content-user-understanding-backend",
+   "company": "당근",
+   "role": "Software Engineer, Backend - Content & User Understanding",
+   "jobs": [
+    "ats-greenhouse:daangn:7995038003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "daangn-engagement-frontend",
