@@ -282,6 +282,7 @@
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
   "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
+  "boards-gamejob:dev:285958": "smilegate-ai-qa-automation-rnd-intern",
   "boards-gamejob:dev:285795": "smilegate-lostark-game-data-engineer",
   "wanted-386999": "speee-dx-sre",
   "wanted-393877": "speee-realestate-senior-product-engineer",
@@ -2822,6 +2823,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 25
+  },
+  {
+   "id": "smilegate-ai-qa-automation-rnd-intern",
+   "company": "스마일게이트",
+   "role": "AI QA 자동화 기술 R&D (인턴 6개월)",
+   "jobs": [
+    "boards-gamejob:dev:285958"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
   },
   {
    "id": "smilegate-lostark-game-data-engineer",
