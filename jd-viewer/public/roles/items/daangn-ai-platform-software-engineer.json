@@ -7,7 +7,8 @@
   "ats-greenhouse:daangn:7990084003",
   "ats-greenhouse:daangn:4300801003",
   "ats-greenhouse:daangn:6610455003",
-  "ats-greenhouse:daangn:5296522003"
+  "ats-greenhouse:daangn:5296522003",
+  "ats-greenhouse:daangn:5046759003"
  ],
  "researched_at": "2026-11-25",
  "tldr": {
@@ -732,6 +733,207 @@
    ]
   },
   {
+   "section": "task",
+   "quote": "대규모 인증 트래픽을 견디는 고가용성 아키텍처를 설계해요.",
+   "short": "하루 40억 건의 인증 요청이 멈추지 않게, 부품 하나가 죽어도 계속 도는 구조를 짓는 일.",
+   "why": "팀 소개에 따르면 2,100만 MAU(한 달에 한 번 이상 쓰는 사람)가 만드는 인증·인가 요청이 하루 40억 건이 넘고, 평균 4.6만 RPS(초당 요청 수)를 p99(가장 느린 1%를 뺀 응답 시간) 20ms 이하로 처리합니다.[79] 유저·인증이 흔들리면 반드시 전사 장애가 되기 때문에 중고거래 서버에서 가장 먼저 떼어 낸 서비스이기도 합니다.[83] 토큰 서명만 따져도 하루 6,500만 건이 넘습니다.[80]",
+   "actually": {
+    "intro": "팀이 직접 공개한, 고가용성을 위해 한 일입니다.",
+    "items": [
+     "**서명 백엔드 이중화** — JWT(서명으로 위·변조를 막는 인증 토큰) 서명을 인터페이스 하나 뒤에 숨기고, HSM(키를 밖으로 꺼낼 수 없는 전용 보안 장비)을 Active, AWS KMS를 Standby로 두었다. HSM이 실패하거나 늦으면 100ms부터 3초까지 간격을 늘리며 최대 3번 다시 시도한 뒤 KMS로 넘긴다.[82]",
+     "**실제로 살린 사례** — 배포 중 Istio 설정 문제로 HSM 응답이 갑자기 느려졌을 때 자동으로 KMS 서명으로 넘어가, 에러율·토큰 발급 실패율이 정상으로 유지됐다.[82]",
+     "**용량은 N+1로** — 평균 트래픽이 아니라 '장비 한 대가 빠져도 버티나'로 잡는다. 목표 6,000 RPS 이상에 HSM 4대가 약 7,000 RPS를 냈다.[80]",
+     "**알고리즘으로 용량 늘리기** — 서명 방식을 RS256에서 ES256으로 바꿔 서명이 256바이트에서 64바이트로, 토큰이 약 800바이트에서 약 500바이트로 줄었다. 같은 장비로 더 많이 서명한다.[82]",
+     "**몰리면 실패보다 대기** — HSM 세션을 많이 열수록 빠를 것 같았지만 HSM 내부 대기열이 넘쳐 오류가 났다. 세션 수를 줄이고 앱 쪽에서 기다리게 하자 오류가 0건이 됐다.[82]",
+     "**DB 부하 줄이기** — 요청 하나 안에서 같은 유저를 여러 번 읽던 것을 요청 범위 캐시로 묶어 쓰기 DB 조회를 30% 줄였다.[83]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "Active 실패 → 간격 늘려 재시도 → Standby 로 (가상 값)",
+     "body": "블로그의 재시도 규칙(100ms부터 두 배씩, 최대 3번, 상한 3초)[82]을 작게 흉내 냈습니다. 2·3번 요청은 0.7초를 기다린 뒤 KMS가 받아 사용자는 로그인에 성공합니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "hsm_up = {1: True, 2: False, 3: False, 4: True}  # 요청 번호 -> HSM 정상?\n\ndef sign(req):\n    waits = []\n    for i in range(3):                           # 최대 3회\n        if hsm_up[req]:\n            return \"hsm\", waits\n        waits.append(min(0.1 * 2 ** i, 3.0))     # 0.1 -> 0.2 -> 0.4초 (상한 3초)\n    return \"kms\", waits                          # Standby 로 넘긴다\n\nfor r in (1, 2, 3, 4):\n    who, waits = sign(r)\n    print(r, who, \"waited\", round(sum(waits), 1), \"s\")\n# 1 hsm waited 0 s\n# 2 kms waited 0.7 s\n# 3 kms waited 0.7 s\n# 4 hsm waited 0 s"
+    }
+   ],
+   "how_far": "40억 건 구조를 처음부터 새로 짤 일은 드뭅니다. 대부분은 이미 도는 구조에서 **부품 하나가 죽으면 무엇이 같이 죽나**를 찾아 끊는 일입니다. {추론} 면접에서는 RPS·p99 같은 숫자로 말하고, 장애 하나를 '알아챔 → 자동 전환 → 원인 수정' 순서로 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    79,
+    80,
+    82,
+    83
+   ],
+   "study": [
+    "aws-karrot-hsm",
+    "sre-book",
+    "sysdesign"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "OAuth 2.0, OpenID Connect(OIDC) 기반 인증 서버를 구축해요.",
+   "short": "'당근 계정으로 로그인'을 다른 서비스에 열어 주는 표준 인증 서버를 만드는 일.",
+   "why": "팀이 지금 푸는 문제 중 하나가 'OIDC 기반 외부 서비스 연동' — 당근 계정으로 외부 서비스에 안전하게 로그인하게 하는 인증 서버입니다.[79] OAuth 2.0은 비밀번호를 넘기지 않고 '이 일을 해도 된다'는 권한만 빌려주는 규약이고[84], OIDC는 그 위에 '이 사람이 누구인가'를 알려 주는 ID 토큰을 더한 것입니다.[85]",
+   "flows": [
+    {
+     "caption": "외부 서비스가 '당근으로 로그인'할 때 — 인가 코드 + PKCE (표준의 기본 흐름)[85][87]",
+     "steps": [
+      "외부 서비스 · 사용자를 당근 인증 화면으로 보냄(client_id · redirect_uri · scope=openid · code_challenge)",
+      "당근 인증 서버 · 로그인·동의를 확인하고 한 번만 쓰는 인가 코드를 돌려줌",
+      "외부 서비스 서버 · 인가 코드 + code_verifier 로 토큰 요청",
+      "당근 인증 서버 · 검사 뒤 ID 토큰(누구인가)·액세스 토큰(무엇을 해도 되나) 발급",
+      "외부 서비스 · 공개키 목록(JWKS)으로 ID 토큰의 서명·iss·aud·exp·nonce 확인"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "intro": "당근의 OIDC 서버 설계는 공개되지 않았습니다 — 표준이 정한 '보통 이런 것'입니다.",
+    "items": [
+     "**표준이 정한 창구** — 인가 엔드포인트, 토큰 엔드포인트, 사용자 정보(UserInfo), 그리고 이 주소들과 공개키 목록 주소(jwks_uri)를 적어 두는 `/.well-known/openid-configuration`.[86]",
+     "**ID 토큰** — 서명된 JWT로 발급자(iss)·사용자 식별자(sub)·받는 쪽(aud)·만료(exp)·재사용 방지값(nonce)을 담는다.[85][99]",
+     "**요즘 규칙** — OAuth 보안 모범 사례(RFC 9700)는 토큰을 주소창으로 바로 주는 암묵적 흐름을 쓰지 말고 인가 코드 흐름에 PKCE(가로챈 코드를 못 쓰게 하는 장치)를 붙이라고 한다.[88]",
+     "**키 공개와 교체** — 당근 토큰은 헤더의 kid(키 이름)로 어느 키로 서명했는지 표시하고, 검증하는 쪽은 그 kid의 공개키로 확인한다.[82] 외부에 열 때는 이 공개키들을 JWK Set(공개키 목록 표준 형식)으로 내보내는 것이 표준이다.[86][98]",
+     "**외부에 주는 정보 줄이기** — 서비스마다 다른 sub를 주면(pairwise) 외부 서비스끼리 같은 사람을 맞춰 보지 못한다.[85] 당근이 이 방식을 쓰는지는 공개되지 않았다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "PKCE — code_verifier 에서 code_challenge 만들기 (RFC 7636 부록 B 값)",
+     "body": "S256 방식은 verifier 를 SHA-256 으로 해시해 base64url 로 적습니다.[87] 인증 서버는 나중에 토큰 요청에 함께 온 verifier 로 같은 계산을 해서 맞는지 봅니다. 표준 문서의 예시 값과 같게 나오는지 직접 돌려 확인했습니다.",
+     "lang": "python",
+     "code": "import base64, hashlib\nverifier = \"dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk\"   # 외부 서비스가 몰래 만든 값\ndigest = hashlib.sha256(verifier.encode()).digest()\nchallenge = base64.urlsafe_b64encode(digest).rstrip(b\"=\").decode()\nprint(\"code_challenge =\", challenge)                     # 인가 요청에 실어 보내는 값\nprint(\"RFC 7636 example:\", challenge == \"E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM\")\n# code_challenge = E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM\n# RFC 7636 example: True"
+    }
+   ],
+   "how_far": "표준을 처음부터 짜는 능력보다 **흐름을 그림으로 그리고, 각 검사(redirect_uri 정확히 일치 · state · nonce · PKCE)가 어떤 공격을 막는지** 설명하는 것이 최소선입니다.[88]{추론} 어느 외부 서비스에 어떤 정보(scope)를 줄지는 보안·개인정보 담당과 함께 정합니다. {추론}",
+   "refs": [
+    79,
+    82,
+    84,
+    85,
+    86,
+    87,
+    88,
+    98,
+    99
+   ],
+   "study": [
+    "oauth-in-action",
+    "oidc-core",
+    "rfc9700",
+    "spring-security"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "가입/로그인 플로우 설계와 가입 전환율 지표 개선 실험을 진행해요.",
+   "short": "가입·로그인 화면 순서를 짜고, 단계마다 빠져나가는 사람을 줄이는 실험을 돌리는 일.",
+   "why": "팀 소개는 인증 흐름이 1초 느려지면 가입 전환율이 떨어진다고 적고, 가입·로그인·탈퇴 같은 사용자 경험 지표까지 팀이 직접 책임진다고 했습니다.[79] 지금 과제에 나라별 인증 수단과 가입 퍼널(단계별 이탈 흐름)을 다듬는 '글로벌 가입 전환율 개선'이 있습니다.[79]",
+   "actually": {
+    "items": [
+     "**퍼널 쪼개기** — 앱 열기 → 번호 입력 → 인증번호 확인 → 동네 설정 → 가입 완료처럼 단계별 통과율을 본다. 가장 많이 빠지는 단계가 다음 실험 후보다. {추론}",
+     "**나라마다 다른 수단** — 팀 발표에 일본 소셜 로그인을 gRPC로 붙인 사례가 나온다. 로그인 방식이 하나 늘 때마다 코드·테스트가 통째로 복제되던 구조(커밋 하나에 6,000줄 가까이)를 계층 분리로 고쳤다.[83]",
+     "**실험** — 사용자를 무작위로 둘로 나눠 한쪽에만 바뀐 흐름을 보여 주고 가입 완료율을 비교한다. 우연히 좋아 보인 것을 가려내려면 표본 크기와 유의성 검정이 필요하다.[97] 당근 제품 팀은 1주에 실험 1개를 목표로 굴린 기록을 공개했다.[96]",
+     "**같이 보는 지표** — 전환율만 보면 확인을 느슨하게 할수록 좋아 보인다. 팀이 '보안과 편의, 둘 다 타협하지 않는다'고 적은 이유다.[79] 도용·사기 신고 같은 지표를 함께 지켜보는 것이 보통이다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "단계별 통과율과 A/B 차이 검정 (가상 값)",
+     "body": "두 비율의 z 검정입니다. |z| 가 1.96 보다 크면 5% 수준에서 우연으로 보기 어렵다고 판단합니다.[97] 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "import math\nfunnel = [(\"open\", 10000), (\"phone\", 7200), (\"code\", 6100), (\"town\", 5400), (\"done\", 5100)]\nfor (_, before), (step, n) in zip(funnel, funnel[1:]):\n    print(f\"{step:6s} {n:6d}  pass {n / before:.0%}\")\n\n# 인증번호 자동 입력을 B 에만 켠 실험\na_n, a_ok, b_n, b_ok = 20000, 10200, 20000, 10560\npa, pb = a_ok / a_n, b_ok / b_n\np = (a_ok + b_ok) / (a_n + b_n)\nz = (pb - pa) / math.sqrt(p * (1 - p) * (1 / a_n + 1 / b_n))\nprint(f\"A {pa:.1%}  B {pb:.1%}  z={z:.2f}\", \"-> significant\" if abs(z) > 1.96 else \"-> maybe luck\")\n# phone    7200  pass 72%\n# code     6100  pass 85%\n# town     5400  pass 89%\n# done     5100  pass 94%\n# A 51.0%  B 52.8%  z=3.60 -> significant"
+    }
+   ],
+   "how_far": "지표 정의·실험 설계는 PM·데이터 분석가와 함께 하고, 개발자는 **사용자를 나누는 장치(실험 플래그) · 단계별 이벤트 기록 · 빠른 되돌리기**를 맡는 것이 보통입니다. {추론} 퍼널 하나를 이벤트로 정의하고 A/B 결과를 숫자로 읽을 수 있으면 됩니다. {추론}",
+   "refs": [
+    79,
+    83,
+    96,
+    97
+   ],
+   "study": [
+    "blog-experiment",
+    "ab-kohavi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "개인정보 보호와 보안을 전제로 한 계정·권한 관리 시스템을 설계해요.",
+   "short": "개인 계정 위에 조직·역할·권한을 얹고, 여러 계정 전환까지 — 새는 곳 없이 설계하는 일.",
+   "why": "팀이 지금 푸는 문제에 '업무계정'(개인 계정 체계 위에 조직·역할·권한 모델을 어떻게 올릴까)과 '멀티 로그인'(여러 계정을 쓰는 사람을 위한 세션·토큰 모델)이 있습니다.[79] 계정 하나가 뚫리면 곧 사기가 된다고 팀 소개가 적었습니다.[79]",
+   "actually": {
+    "intro": "업무계정·멀티 로그인 설계는 공개되지 않았습니다. 같은 팀이 공개한 '최소 권한' 사례와 보통의 방식입니다.",
+    "items": [
+     "**역할에 권한 묶기** — 사람에게 바로 권한을 주지 않고 '조직 안의 역할'에 권한을 묶는 것이 보통이다(역할 기반 접근 제어). 조직에 사람이 들고 나도 역할만 바꾸면 된다. {추론}",
+     "**키는 꺼낼 수 없게** — 토큰 서명키를 HSM 안에서 '추출 불가 · 삭제 불가'로 만들고, 서명 앱은 서명만 되는 읽기 전용 사용자로만 붙인다. 일반 개발자는 HSM에 접근할 수 없다.[81]",
+     "**허용 목록** — Istio AuthorizationPolicy로 Identity 관련 서버처럼 명시한 워크로드만 토큰 발급기를 부르게 하고, Kyverno(쿠버네티스 정책 도구)로 다른 파드가 그 권한을 가로채지 못하게 막았다.[81][93]",
+     "**기록** — 키와 관리 장비에 누가 언제 접근했는지 CloudTrail로 계속 남겨 이상 접근을 찾는다.[81]",
+     "**본인 확인의 강도** — 미국 표준(NIST)은 문자 인증번호를 '제한적' 수단으로 분류해, 위험을 알리고 다른 수단도 쓸 수 있게 하라고 한다.[89] 위험이 큰 작업(번호 변경·탈퇴 등)에 무엇을 더 물을지가 설계 거리다. {추론}"
+    ]
+   },
+   "how_far": "권한 정책(누가 무엇을 해도 되나)은 보안·법무·각 서비스와 함께 정하고, 이 팀은 **모든 서비스가 같은 방식으로 묻는 권한 확인 창구와 그 기록**을 만듭니다. {추론} 개인 계정·업무 계정·여러 계정 전환이 토큰 안에서 어떻게 구분되는지 그려 볼 수 있으면 됩니다. {추론}",
+   "refs": [
+    79,
+    81,
+    89,
+    93
+   ],
+   "study": [
+    "aws-karrot-hsm",
+    "nist-63b",
+    "istio-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "인증 정책 변경이 서비스 전체에 미치는 영향을 예측하고, 무중단으로 마이그레이션해요.",
+   "short": "인증 규칙을 바꿀 때 이미 나간 토큰·옛 앱이 깨지지 않게, 순서를 정해 조금씩 옮기는 일.",
+   "why": "인증 서비스는 모든 서비스의 관문이라 규칙 하나가 전사로 퍼집니다.[80] 팀은 큰 이전을 이미 두 번 했습니다 — 초당 20만 호출이 들어오는 유저 서비스를 중고거래 서버에서 떼어 낼 때 DB와 응답의 정합성 99.999%를 목표로 했고[83], 서명키를 새 시스템으로 옮길 때 이미 발급된 토큰 수천만 개를 그대로 살렸습니다.[82] 인증 시스템 중앙화 때는 의견이 갈렸지만 논의 끝에 더 안전한 구조로 합의했다고 팀이 적었습니다.[79]",
+   "flows": [
+    {
+     "caption": "서명키 무중단 전환 5단계 — 서명(쓰기)을 먼저, 검증(읽기) 정리는 나중에[82]",
+     "steps": [
+      "새 키 만들고 공개키 먼저 등록 · 서명은 아직 옛 키",
+      "가중치로 서명을 조금씩 새 키로 · 단계마다 에러율·지연 확인",
+      "옛 키 서명 중단 · 검증용 공개키는 남김",
+      "옛 토큰 만료 대기 · 토큰 수명만큼",
+      "옛 공개키 제거 · 전환 끝"
+     ]
+    }
+   ],
+   "actually": {
+    "items": [
+     "**캐시까지 계산** — 검증하는 쪽의 공개키 캐시가 늦게 갱신되면 전환 직후 검증이 실패할 수 있어, 캐시 유지 시간만큼 기다린 뒤 비율을 올렸다. 시계 차이와 옛 버전 앱도 고려했다.[82]",
+     "**재배포 없이 바꾸기** — 가중치·공개키 목록을 동적 설정(재시작 없이 바뀌는 설정 저장소)에 두었다.[82]",
+     "**호환성 먼저** — ES256으로 바꿀 때 검증하는 모든 서비스·앱이 그 알고리즘을 허용하는지 먼저 보고, 되돌릴 길을 준비했다.[82]",
+     "**넓히고 → 옮기고 → 좁히기** — 옛 것과 새 것을 함께 받는 기간을 두고, 옛 것 사용량이 0이 된 것을 지표로 확인한 뒤 지우는 것이 일반적인 방법이다(Parallel Change).[91] 위 5단계가 바로 이 모양이다.",
+     "**분리 이전 때의 선택** — 서비스를 떼어 낼 때는 추상화를 미루고 가입·로그인을 한 함수에 몰아, 정합성이 어긋나면 바로 찾게 했다.[83]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "kid 로 어느 키인지 고르기 — 순서를 어기면 (HMAC 으로 흉내, 가상 값)",
+     "body": "실제 당근은 ES256 서명이지만[82] 짧게 보이려고 파이썬 표준 라이브러리의 HMAC 으로 흉내 냈습니다. 공개키를 등록하기 전에 서명부터 바꾸거나, 옛 토큰이 만료되기 전에 옛 키를 지우면 멀쩡한 토큰이 거절됩니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "import base64, hashlib, hmac, json\nb64 = lambda b: base64.urlsafe_b64encode(b).rstrip(b\"=\")\nsecret = {\"local-1\": b\"old\", \"hsm-2\": b\"new\"}\n\ndef issue(kid, sub):\n    head = b64(json.dumps({\"alg\": \"HS256\", \"kid\": kid}).encode())\n    body = b64(json.dumps({\"sub\": sub}).encode())\n    sig = b64(hmac.new(secret[kid], head + b\".\" + body, hashlib.sha256).digest())\n    return head + b\".\" + body + b\".\" + sig\n\ndef verify(tok, known):\n    head, body, sig = tok.split(b\".\")\n    kid = json.loads(base64.urlsafe_b64decode(head + b\"=\" * (-len(head) % 4)))[\"kid\"]\n    if kid not in known:\n        return \"REJECT (unknown kid)\"\n    good = b64(hmac.new(secret[kid], head + b\".\" + body, hashlib.sha256).digest())\n    return \"ok\" if hmac.compare_digest(good, sig) else \"REJECT (bad sig)\"\n\nold, new = issue(\"local-1\", \"u1\"), issue(\"hsm-2\", \"u2\")\nprint(\"both keys known :\", verify(old, {\"local-1\", \"hsm-2\"}), \"/\", verify(new, {\"local-1\", \"hsm-2\"}))\nprint(\"new key unknown :\", verify(new, {\"local-1\"}))   # 공개키 등록 전에 서명부터 바꾸면\nprint(\"old key removed :\", verify(old, {\"hsm-2\"}))     # 옛 토큰 만료 전에 지우면\n# both keys known : ok / ok\n# new key unknown : REJECT (unknown kid)\n# old key removed : REJECT (unknown kid)"
+    }
+   ],
+   "how_far": "**전환 계획서**(단계 · 단계마다 볼 지표 · 되돌리는 조건)를 쓸 수 있는 것이 핵심입니다. {추론} 몇 %씩 언제 올릴지는 팀이 함께 정합니다. {추론}",
+   "refs": [
+    79,
+    80,
+    82,
+    83,
+    91
+   ],
+   "study": [
+    "aws-karrot-hsm",
+    "talk-msa",
+    "newman-msa"
+   ]
+  },
+  {
    "section": "qualification",
    "quote": "빌더로서 아이디어를 실제 결과물로 만들어내는 것을 좋아하는 분 아이디어나 논의에 머무르지 않고 직접 만들어 빠르게 검증하고, 사용자 피드백을 바탕으로 반복적으로 개선해 실제로 쓰이는 제품과 시스템으로 발전시켜 나가는 분",
    "short": "말보다 만든 것으로 보여 주는 사람 — 써 본 사람의 피드백으로 계속 고친 경험이 핵심.",
@@ -1207,6 +1409,125 @@
    ]
   },
   {
+   "section": "qualification",
+   "quote": "백엔드 서비스 개발 경험 3년 이상 또는 그에 준하는 엔지니어링 역량을 가지신 분",
+   "short": "연차보다 '그에 준하는 역량' — 실제 트래픽이 흐르는 서버를 맡아 본 경험이 기준이다.",
+   "why": "공고가 '3년 이상 또는 그에 준하는 역량'이라고 적어 연차를 절대 조건으로 두지 않았습니다.[79] 경력 기간에 따라 최대 3개월 계약직으로 역량을 더 확인할 수 있다는 안내도 있습니다.[79]",
+   "how_far": "운영 중인 서버를 배포·장애 대응까지 맡아 본 경험을 숫자(RPS · 지연 · 장애 시간)와 함께 말할 수 있으면 연차가 조금 모자라도 겨뤄 볼 만합니다. {추론}",
+   "refs": [
+    79
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "트래픽 규모를 고려해 API·인터페이스를 설계해본 경험이 있으신 분",
+   "short": "초당 수만 건이 와도 버티게 API를 정한다 — 내부 호출 횟수·응답 크기·중복 요청까지.",
+   "why": "팀은 평균 4.6만 RPS를 p99 20ms 이하로 처리하고, Go · gRPC · gRPC-Gateway를 씁니다.[79] gRPC-Gateway는 gRPC로 정의한 API를 HTTP·JSON으로도 열어 주는 도구입니다.[95]",
+   "actually": {
+    "intro": "팀이 공개한, 규모 때문에 API를 손본 사례입니다.",
+    "items": [
+     "**중복 요청 막기** — 가입·로그인 API 앞에 중복 요청 방어 · 요청 값 검사 · 분석 기록을 데코레이터(앞뒤에 끼우는 함수)처럼 꽂는 구조로 바꿨다.[83]",
+     "**응답 크기** — ES256으로 바꿔 토큰이 약 800바이트에서 약 500바이트가 됐다. 모든 요청에 실리는 값이라 대역폭이 줄었다.[82]",
+     "**안에서 몇 번 부르나** — 로그인 한 번에 같은 유저를 여러 번 읽어 초당 약 1,000번 중복 조회가 났고, 요청 범위 캐시로 없앴다.[83]",
+     "**한 함수 vs 계층** — 1,500줄 함수와 12,000줄 테스트를 계층으로 나누자 테스트 코드 70%가 지워졌다. 대신 순환 참조 · 트랜잭션 복잡도 · 중복 조회가 새로 생겨 따로 풀었다.[83]"
+    ]
+   },
+   "how_far": "면접에서 'API 하나가 초당 몇 번, 그 안에서 DB·다른 서비스를 몇 번, 응답 몇 바이트'를 스스로 계산해 보이면 좋습니다. {추론}",
+   "refs": [
+    79,
+    82,
+    83,
+    95
+   ],
+   "study": [
+    "sysdesign",
+    "grpc-gateway",
+    "talk-msa"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "분산 시스템에서 정합성과 장애 전파를 고민해본 경험이 있으신 분",
+   "short": "DB엔 저장됐는데 이벤트는 못 나간 경우, 한 곳이 느려 다 같이 느려지는 경우를 막아 본 경험.",
+   "why": "가입이 끝나면 환영 인사 같은 후처리가 Kafka 이벤트로 나가는데, DB 저장은 성공하고 이벤트 발행이 실패하면 어디까지 됐는지 알기 어렵습니다 — 팀이 아웃박스 패턴을 쓰는 이유입니다.[83] 유저·인증이 흔들리면 전사 장애가 됩니다.[83]",
+   "actually": {
+    "items": [
+     "**아웃박스** — 유저 저장과 '보낼 이벤트' 저장을 같은 트랜잭션으로 묶고, 발행에 성공하면 상태를 완료로 바꾼다. 실패한 것은 배치로 다시 보내고, 받는 쪽은 이벤트 ID로 중복을 거른다.[83][90]",
+     "**나눈 뒤의 트랜잭션** — 폰·디바이스 서비스가 각자 저장하면 한쪽만 성공할 수 있다. 트랜잭션 매니저가 작업을 모아 한 번에 커밋하고, 커밋된 뒤에만 이벤트를 내게 했다.[83]",
+     "**캐시 정합성** — 수정·삭제가 일어나면 요청 범위 유저 캐시를 통째로 비운다. 보조 키로 읽는 경우까지 따로 관리하기 어려워 안전한 쪽을 골랐다.[83]",
+     "**장애 전파 끊기** — 뒤쪽 하나가 느려지면 기다리는 요청이 쌓여 앞쪽까지 무너진다. 시간 제한 · 재시도 횟수 제한 · 대체 경로로 끊는 것이 기본이다.[92] 당근은 서명 백엔드를 Active-Standby로 두어 HSM 문제가 로그인 장애로 번지지 않게 했다.[82]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "아웃박스 — 가입이 롤백되면 이벤트도 없다 (sqlite, 가상 값)",
+     "body": "두 번째 가입은 커밋 전에 죽어 유저도 이벤트도 남지 않습니다. 브로커가 죽어 있던 첫 회차에 못 보낸 이벤트는 다음 회차에 나갑니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"create table users(id integer primary key, phone text unique);\"\n                 \"create table outbox(id integer primary key, type text, user_id int, sent int default 0);\")\n\ndef signup(phone, crash=False):\n    try:\n        with db:  # 한 트랜잭션: 유저 + 보낼 이벤트\n            uid = db.execute(\"insert into users(phone) values (?)\", (phone,)).lastrowid\n            if crash:\n                raise RuntimeError(\"crash before commit\")\n            db.execute(\"insert into outbox(type, user_id) values ('signed_up', ?)\", (uid,))\n    except RuntimeError as e:\n        print(\"rollback:\", e)\n\nsignup(\"010-0000-0001\"); signup(\"010-0000-0002\", crash=True); signup(\"010-0000-0003\")\nfor attempt, broker_up in enumerate([False, True], 1):  # 처음엔 브로커가 죽어 있다\n    for (oid,) in db.execute(\"select id from outbox where sent = 0\").fetchall():\n        if broker_up:\n            db.execute(\"update outbox set sent = 1 where id = ?\", (oid,)); db.commit()\n    left = db.execute(\"select count(*) from outbox where sent = 0\").fetchone()[0]\n    print(\"relay\", attempt, \"| unsent\", left)\nprint(\"users\", db.execute(\"select count(*) from users\").fetchone()[0],\n      \"events\", db.execute(\"select count(*) from outbox\").fetchone()[0])\n# rollback: crash before commit\n# relay 1 | unsent 2\n# relay 2 | unsent 0\n# users 2 events 2"
+    }
+   ],
+   "how_far": "'정확히 한 번'을 약속하는 대신 **적어도 한 번 보내고, 받는 쪽이 중복을 거른다**는 조합을 설명할 수 있으면 됩니다.[90]{추론}",
+   "refs": [
+    82,
+    83,
+    90,
+    92
+   ],
+   "study": [
+    "ddia",
+    "kafka-book",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "성능·비용·보안처럼 서로 충돌하는 요구 사이에서, 근거를 갖고 결정을 내리고 그 결정을 설명해본 경험이 있으신 분",
+   "short": "빠르게·싸게·안전하게가 부딪칠 때 숫자로 고르고, 왜 그랬는지 남에게 설명할 수 있는 사람.",
+   "why": "팀 소개는 보안과 사용성이 서로 반대 방향인 경우가 많다고 적고, 중요한 시스템일수록 설계·코드 리뷰부터 솔직하게 부딪친다고 했습니다.[79]",
+   "actually": {
+    "intro": "팀이 공개한 결정과 그 근거입니다.",
+    "items": [
+     "**KMS vs CloudHSM** — 하루 6,500만 건 기준 서명 비용이 KMS 약 $975, HSM 4대 약 $148로 약 85% 쌌고, 지연도 p99 30ms 대 5ms였다. 대신 운영이 어렵다. 결론은 HSM을 주로, KMS를 대비책으로 — 둘의 장애 지점이 서로 달라서다.[80][82]",
+     "**RS256 vs ES256** — 같은 장비로 더 많이 서명하려 바꿨지만, 모든 검증 쪽의 호환을 먼저 확인했다.[82]",
+     "**세션 수** — 많이 열면 빠를 것 같았지만 HSM 대기열이 넘쳤다. 조금 기다리게 하는 쪽이 오류 0건이었다.[82]",
+     "**한 함수 vs 계층** — 이전할 때는 정합성 디버깅이 쉬운 한 함수를, 기능을 늘릴 때는 테스트가 줄어드는 계층을 골랐다.[83]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "언제부터 HSM 이 싸지나 — 손익분기 (블로그의 단가로 계산)",
+     "body": "블로그가 제시한 식 '서명 건수 × KMS 단가' 대 'HSM 대수 × 시간 단가'[80]를 그대로 계산했습니다. 부대 운영비는 빠져 있어 실제 분기점은 이보다 높습니다.[80] 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "kms_per_req = 0.15 / 10000          # 비대칭 서명 1건 (달러)\nhsm_per_day = 4 * 1.54 * 24          # hsm2m.medium 4대, 하루\nprint(f\"KMS at 65M/day : ${65_000_000 * kms_per_req:,.0f}\")\nprint(f\"HSM 4 units    : ${hsm_per_day:,.0f}\")\nprint(f\"break-even     : {hsm_per_day / kms_per_req:,.0f} signatures/day\")\n# KMS at 65M/day : $975\n# HSM 4 units    : $148\n# break-even     : 9,856,000 signatures/day"
+    }
+   ],
+   "how_far": "결정 하나를 한 장(선택지 · 숫자 · 고른 것 · 포기한 것 · 되돌릴 조건)으로 적어 본 경험이면 충분합니다. {추론}",
+   "refs": [
+    79,
+    80,
+    82,
+    83
+   ],
+   "study": [
+    "aws-karrot-hsm",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "사용자 니즈를 파악하고 이를 기반으로 서비스를 지속적으로 개선해본 경험이 있으신 분",
+   "short": "가입·로그인을 쓰는 사람(앱 사용자와 사내 팀)이 겪는 불편을 찾아 계속 고쳐 본 경험.",
+   "why": "이 팀은 플랫폼을 만들면서 가입·로그인·탈퇴 지표도 직접 책임지고, 가입 전환율을 올리는 그로스 업무까지 합니다.[79] 고객이 둘입니다 — 앱 사용자와, 인증·유저 정보를 받아 쓰는 사내 팀들.[83]",
+   "how_far": "'사용자가 무엇에서 막혔고 → 어떻게 알았고(지표·문의) → 무엇을 바꿨고 → 숫자가 얼마나 움직였나'를 한 사례로 끝까지 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    79,
+    83
+   ],
+   "study": [
+    "blog-experiment"
+   ]
+  },
+  {
    "section": "preference",
    "quote": "현재 팀에서는 아래 기술을 주로 사용하고 있어요. 비슷한 환경에서의 경험이 있다면 더 좋아요. Python, FastAPI 기반 백엔드 개발",
    "short": "라우터·플랫폼 API가 이 위에 있다 — 비동기 API 서버를 만들고 운영할 줄 아는 수준.",
@@ -1535,6 +1856,105 @@
   },
   {
    "section": "preference",
+   "quote": "OAuth 2.0 / OIDC 등 표준 인증 프로토콜 기반 시스템을 설계·운영해본 경험이 있으신 분",
+   "short": "표준 인증 서버를 운영해 봤다면 — 키 교체·토큰 수명·외부 연동의 함정을 이미 아는 사람.",
+   "why": "OIDC 외부 연동이 지금 팀 과제입니다.[79] 운영에서 부딪치는 것은 대개 리다이렉트 주소 검사, 토큰 수명과 갱신 토큰(refresh token) 관리, 키 교체 같은 일입니다.[88] 당근도 검증 쪽 공개키 캐시를 계산에 넣고 키를 바꿨습니다.[82]",
+   "refs": [
+    79,
+    82,
+    88
+   ],
+   "study": [
+    "oauth-in-action",
+    "rfc9700"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대용랑 데이터 처리, 마이그레이션 그리고 다양한 데이터베이스에 대한 경험이 있으신분",
+   "short": "2천만 명 가까운 유저 데이터를 옮기고, MySQL·Redis·Kafka를 각자 맞는 자리에 써 본 경험.",
+   "why": "유저 서비스를 떼어 낼 때 2천만에 가까운 유저와 초당 20만 호출을 정합성 99.999% 목표로 옮겼습니다.[83] 쓰기 DB·읽기 DB·배치 DB가 따로 있고 그중 쓰기 DB 부하가 가장 큽니다.[83] 팀 기술은 MySQL · Redis · Kafka입니다.[79]",
+   "actually": {
+    "intro": "팀 발표에 나온 저장소별 쓰임입니다.[83]",
+    "items": [
+     "**MySQL** — 유저 · 디바이스 · 폰 번호 · 아웃박스 이벤트 테이블을 한 트랜잭션으로.",
+     "**Redis** — 가입이 끝나면 유저 정보를 빨리 읽도록 캐시에 넣는다.",
+     "**Kafka** — 가입 완료 같은 후처리 이벤트를 여러 구독 서비스가 가져간다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "99.999% 는 얼마나 엄격한가 (하루 40억 건에 대 본 계산)",
+     "body": "공고의 하루 40억 건[79]에 발표의 정합성 목표[83]를 대 본 단순 계산입니다 — 99.999% 여도 하루 4만 건이 어긋날 수 있다는 뜻이라, 어긋난 것을 모아 고치는 장치가 같이 필요합니다. {추론} 실제로 무엇을 몇 건 비교했는지는 공개되지 않았습니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "per_day = 4_000_000_000\nfor target in (0.999, 0.9999, 0.99999):\n    print(f\"{target:.3%} -> up to {per_day * (1 - target):,.0f} mismatches/day\")\n# 99.900% -> up to 4,000,000 mismatches/day\n# 99.990% -> up to 400,000 mismatches/day\n# 99.999% -> up to 40,000 mismatches/day"
+    }
+   ],
+   "how_far": "옛 시스템과 새 시스템에 같은 요청을 보내 응답을 비교하고(그림자 비교), 어긋난 것을 고친 뒤 비율을 올리는 방식을 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    79,
+    83
+   ],
+   "study": [
+    "realmysql",
+    "kafka-book",
+    "newman-msa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Golang을 활용한 프로덕션 서비스 개발 및 운영 경험이 있으신 분",
+   "short": "팀 주력 언어 — 예외도 마법도 없는 Go 방식(명시적 에러·context·defer)에 익숙한지가 관건.",
+   "why": "팀은 Go · gRPC로 서버를 만듭니다.[79] 발표자는 Go의 철학을 '단순함과 안전'으로 소개하고, 그래서 중요한 가입·로그인을 한 함수에 몰아 두었다가 기능이 늘자 계층으로 나눴다고 설명했습니다.[83]",
+   "actually": {
+    "intro": "팀 발표와 블로그에 나온 Go 쓰임입니다.",
+    "items": [
+     "**context** — 요청 하나의 수명을 따라가는 값. 취소 · 시간 제한을 하위 작업에 전하고 요청 범위 값(추적 ID · 인증 정보)을 나른다.[94] 팀은 여기에 요청 범위 DB 캐시를 얹었다.[83]",
+     "**defer** — 함수가 끝날 때 반드시 실행. 잠금 해제 · 캐시 비우기에 썼다.[83]",
+     "**상속 대신 인터페이스 임베딩** — 객체 만들기와 의존성 넣기를 두 단계로 나눠 서비스 간 순환 참조를 풀었다.[83]",
+     "**C 라이브러리 부르기** — HSM의 C 표준 인터페이스(PKCS#11)를 Go에서 쓰려 crypto11 래퍼를 썼다. 세션 상태를 직접 관리해야 해서다.[82]"
+    ]
+   },
+   "how_far": "Java·Kotlin 경험자라면 '애노테이션·프레임워크가 해 주던 일을 Go에서는 함수로 직접 쓴다'를 몸으로 아는 정도가 출발점입니다. {추론}",
+   "refs": [
+    79,
+    82,
+    83,
+    94
+   ],
+   "study": [
+    "learning-go",
+    "go-tour",
+    "talk-msa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "k8s/Istio 환경의 서비스 운영 경험이 있으신 분",
+   "short": "누가 누구를 부를 수 있는지(mTLS·허용 목록)를 서비스 메시에서 정하고 운영해 본 경험.",
+   "why": "팀 기술에 k8s · Istio가 있습니다.[79] 토큰 발급기에는 Istio AuthorizationPolicy로 허용된 워크로드만 닿고, 서비스끼리 서로 인증서를 확인하는 mTLS로 위장 요청을 거릅니다.[81] Istio 설정 문제로 HSM 응답이 느려진 일도 실제로 있었습니다.[82]",
+   "actually": {
+    "items": [
+     "**AuthorizationPolicy** — 어떤 서비스 계정에서 온 요청을 어느 경로에 허락할지 적는 Istio 규칙.[93]",
+     "**메시와 안 맞는 것** — HSM은 자체 TLS를 써서, Egress Gateway(밖으로 나가는 트래픽을 모으는 관문)를 거치게 하자 연결 오류가 대량으로 났다. 결국 권장 방식대로 직접 붙였다.[81]",
+     "**늘려도 안 빨라질 때** — HSM을 늘려도 처리량이 안 올랐다. 세션이 앱 시작 때 기존 장비에 고정돼서라, 늘릴 때마다 앱을 다시 띄웠다.[82]"
+    ]
+   },
+   "how_far": "메시를 직접 짓기보다 **내 서비스에 걸린 정책을 읽고, 요청이 막혔을 때 사이드카(옆에 붙는 프록시) 로그로 원인을 찾는** 정도면 됩니다. {추론}",
+   "refs": [
+    79,
+    81,
+    82,
+    93
+   ],
+   "study": [
+    "istio-docs",
+    "istio-in-action",
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "preference",
    "quote": "참고해 주세요 정규직 채용의 경우 3개월의 수습기간이 있어요 ‘장애인고용촉진 및 직업재활법’, ‘국가유공자 등 예우 및 지원에 관한 법률’에 따라 장애인 및 보훈대상자는 채용 전형 시 우대하고 있어요 이 포지션은 산업기능요원으로 채용이 가능한 포지션이에요. (현역 전직, 보충역 신규 편입, 보충역 전직) 전문연구요원 편입 및 전직은 불가해요.",
    "short": "정규직은 수습 3개월. 산업기능요원(군 복무 대신 지정 업체 근무)으로도 지원할 수 있다.",
    "why": "공고 안내입니다.[1] 산업기능요원은 병무청이 지정한 업체에서 일하는 것으로 병역을 대신하는 제도이고, 전문연구요원(연구기관 석사 이상)과는 다른 제도입니다.[24] 경력에 따라 최대 3개월 계약직으로 먼저 일할 수 있다는 안내도 있습니다.[1]",
@@ -1633,6 +2053,22 @@
   {
    "q": "자동완성 개인화 모델을 A/B 테스트했더니 클릭률은 올랐는데 검색 뒤 채팅 비율은 그대로입니다. 배포하겠습니까?",
    "a": "당근이 실험으로 자동완성을 바꾸고 A/B 없이 바꾼 버튼에서 데이터로 배운 사례가 있어, 주 지표와 가드레일을 나눠 판단하는지를 본다.[44][49][60]"
+  },
+  {
+   "q": "당근 계정으로 외부 서비스 로그인을 연다면, 인가 코드 흐름의 state · nonce · PKCE · redirect_uri 검사는 각각 무엇을 막나요?",
+   "a": "Identity 공고의 OIDC 외부 연동 과제와 표준·보안 모범 사례.[79][85][88]"
+  },
+  {
+   "q": "토큰 서명키를 바꿀 때 이미 발급된 토큰은 어떻게 살리나요? 순서를 바꾸면 무엇이 깨지죠?",
+   "a": "kid 기반 5단계 전환과 공개키 캐시.[82]"
+  },
+  {
+   "q": "가입 DB 저장은 됐는데 가입 완료 이벤트 발행이 실패하면 어떻게 되나요?",
+   "a": "팀 발표의 아웃박스 패턴.[83][90]"
+  },
+  {
+   "q": "서명 장비가 30초 동안 느려지면 로그인은 어떻게 동작해야 하나요? 세션을 더 열면 해결될까요?",
+   "a": "Active-Standby 서명과 '실패보다 대기'.[82]"
   }
  ],
  "sources": [
@@ -2174,9 +2610,152 @@
    "url": "https://rt.molit.go.kr/",
    "kind": "reference",
    "note": "신고된 매매·전월세 실거래가를 누구나 조회 — 시세 데이터의 대표 공개 출처"
+  },
+  {
+   "n": 79,
+   "title": "당근 채용 · Software Engineer, Backend - 서비스 코어 (Identity Service)",
+   "url": "https://about.daangn.com?gh_jid=5046759003",
+   "kind": "posting",
+   "note": "팀 소개(2,100만 MAU·하루 40억 건·4.6만 RPS·p99 20ms)·지금 푸는 문제 넷·일하는 방식·기술·업무·요건·우대"
+  },
+  {
+   "n": 80,
+   "title": "AWS 기술 블로그 · 당근이 AWS CloudHSM으로 대규모 서명키 관리 시스템을 구축한 방법 – 1부: 서명키 보안의 중요성과 서비스 선택",
+   "url": "https://aws.amazon.com/ko/blogs/tech/how-karrot-built-a-large-scale-signing-key-management-system-with-aws-cloudhsm-part1/",
+   "kind": "company",
+   "date": "2026-07-30",
+   "note": "당근 Identity 엔지니어(조승환·오현준)·SRE(최용환)와 함께 쓴 글, AWS Summit Seoul 2026 발표 기반 — 하루 6,500만 건 JWT 서명, KMS·CloudHSM 비교. 본문 전부 확인"
+  },
+  {
+   "n": 81,
+   "title": "AWS 기술 블로그 · 같은 시리즈 2부: CloudHSM 아키텍처와 다계층 접근 제어",
+   "url": "https://aws.amazon.com/ko/blogs/tech/how-karrot-built-a-large-scale-signing-key-management-system-with-aws-cloudhsm-part2/",
+   "kind": "company",
+   "date": "2026-07-30",
+   "note": "Istio AuthorizationPolicy·mTLS·Kyverno·HSM 사용자 분리·키 속성. 본문 전부 확인"
+  },
+  {
+   "n": 82,
+   "title": "AWS 기술 블로그 · 같은 시리즈 3부: 서명 시스템 구현, 트러블슈팅, 무중단 키 전환",
+   "url": "https://aws.amazon.com/ko/blogs/tech/how-karrot-built-a-large-scale-signing-key-management-system-with-aws-cloudhsm-part3/",
+   "kind": "company",
+   "date": "2026-07-30",
+   "note": "Go crypto11, Active-Standby 서명, RS256→ES256, 세션 튜닝, kid 기반 5단계 키 전환. 본문 전부 확인"
+  },
+  {
+   "n": 83,
+   "title": "MSA로 분리 후 행복하게 살았답니다?: Go Server의 성장기 | 2025 당근 플랫폼 밋업",
+   "url": "https://www.youtube.com/watch?v=V4jPe5RnyUY",
+   "kind": "company",
+   "date": "2025",
+   "note": "Identity Service 팀 박성준(브레이브) 발표 · 자막 전부 확인 — 유저·인증 분리(초당 20만 호출, 정합성 99.999%), 계층 분리, 아웃박스, 트랜잭션 매니저, 요청 범위 캐시(쓰기 DB 조회 30%↓)"
+  },
+  {
+   "n": 84,
+   "title": "RFC 6749 · The OAuth 2.0 Authorization Framework",
+   "url": "https://www.rfc-editor.org/rfc/rfc6749",
+   "kind": "reference"
+  },
+  {
+   "n": 85,
+   "title": "OpenID Connect Core 1.0",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "kind": "reference",
+   "note": "ID 토큰 칸(iss·sub·aud·exp·nonce)·pairwise 식별자"
+  },
+  {
+   "n": 86,
+   "title": "OpenID Connect Discovery 1.0",
+   "url": "https://openid.net/specs/openid-connect-discovery-1_0.html",
+   "kind": "reference",
+   "note": "/.well-known/openid-configuration 과 jwks_uri"
+  },
+  {
+   "n": 87,
+   "title": "RFC 7636 · Proof Key for Code Exchange (PKCE)",
+   "url": "https://www.rfc-editor.org/rfc/rfc7636",
+   "kind": "reference",
+   "note": "부록 B 예시 값으로 코드 확인"
+  },
+  {
+   "n": 88,
+   "title": "RFC 9700 · Best Current Practice for OAuth 2.0 Security",
+   "url": "https://www.rfc-editor.org/rfc/rfc9700",
+   "kind": "reference",
+   "date": "2025-01"
+  },
+  {
+   "n": 89,
+   "title": "NIST SP 800-63B-4 · Authentication and Authenticator Management",
+   "url": "https://pages.nist.gov/800-63-4/sp800-63b.html",
+   "kind": "reference",
+   "note": "문자(PSTN) 인증번호를 '제한적' 수단으로 분류"
+  },
+  {
+   "n": 90,
+   "title": "microservices.io · Pattern: Transactional outbox",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "kind": "reference"
+  },
+  {
+   "n": 91,
+   "title": "Martin Fowler · Parallel Change (expand–migrate–contract)",
+   "url": "https://martinfowler.com/bliki/ParallelChange.html",
+   "kind": "reference"
+  },
+  {
+   "n": 92,
+   "title": "Google SRE Book · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference"
+  },
+  {
+   "n": 93,
+   "title": "Istio 문서 · Authorization Policy",
+   "url": "https://istio.io/latest/docs/reference/config/security/authorization-policy/",
+   "kind": "reference"
+  },
+  {
+   "n": 94,
+   "title": "Go 표준 라이브러리 · context 패키지",
+   "url": "https://pkg.go.dev/context",
+   "kind": "reference"
+  },
+  {
+   "n": 95,
+   "title": "gRPC-Gateway 문서",
+   "url": "https://grpc-ecosystem.github.io/grpc-gateway/",
+   "kind": "reference"
+  },
+  {
+   "n": 96,
+   "title": "1주 1개 실험하는 프로덕트 팀이 되는 여정",
+   "url": "https://eopla.net/magazines/9046",
+   "kind": "company",
+   "date": "2023-12-07",
+   "note": "당근 팀 블로그 글을 EO 가 다시 실은 것"
+  },
+  {
+   "n": 97,
+   "title": "A/B 테스트 — 신뢰도 높은 온라인 통제 실험 (코하비·탕·쉬, 에이콘)",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296254070",
+   "kind": "reference",
+   "date": "2022"
+  },
+  {
+   "n": 98,
+   "title": "RFC 7517 · JSON Web Key (JWK)",
+   "url": "https://www.rfc-editor.org/rfc/rfc7517",
+   "kind": "reference"
+  },
+  {
+   "n": 99,
+   "title": "RFC 7519 · JSON Web Token (JWT)",
+   "url": "https://www.rfc-editor.org/rfc/rfc7519",
+   "kind": "reference"
   }
  ],
- "caveat": "회사 블로그는 2025년 12월, 에이전트 발표는 2025년 11월 것이라 지금 구조는 달라졌을 수 있습니다. 공고의 도전 과제 넷(모델 자동 선택·에이전트 권한·A2A·메모리)은 앞으로 할 일이라 당근의 설계가 공개되지 않았고, 공개 연구·표준으로 '보통 이런 방식'을 보였습니다. Krayon은 공개 설명을 찾지 못했습니다. 검색(품질) 공고 줄은 2026-11-25 에 덧붙였다 — 당근이 컬렉션 랭킹·지식그래프의 구조는 공개하지 않아 공개 연구로 '보통 이런 방식'을 보였고, 2022년 검색 랭킹 글은 본문 열람이 막혀 RSS 요약으로만 확인했다.",
+ "caveat": "회사 블로그는 2025년 12월, 에이전트 발표는 2025년 11월 것이라 지금 구조는 달라졌을 수 있습니다. 공고의 도전 과제 넷(모델 자동 선택·에이전트 권한·A2A·메모리)은 앞으로 할 일이라 당근의 설계가 공개되지 않았고, 공개 연구·표준으로 '보통 이런 방식'을 보였습니다. Krayon은 공개 설명을 찾지 못했습니다. 검색(품질) 공고 줄은 2026-11-25 에 덧붙였다 — 당근이 컬렉션 랭킹·지식그래프의 구조는 공개하지 않아 공개 연구로 '보통 이런 방식'을 보였고, 2022년 검색 랭킹 글은 본문 열람이 막혀 RSS 요약으로만 확인했다. Identity Service 공고 줄(2026-11-25 덧붙임)은 팀이 직접 말한 2025 당근 플랫폼 밋업 발표와 당근 엔지니어가 함께 쓴 AWS 기술 블로그 3부작(AWS Summit Seoul 2026 발표 기반)을 근거로 했습니다. 업무계정 · 멀티 로그인 · OIDC 외부 연동의 설계는 공개되지 않아 표준 문서로 '보통 이런 것'을 보였습니다.",
  "resources": [
   {
    "id": "daangn-genai",
@@ -2760,6 +3339,182 @@
    "level": "입문",
    "url": "https://ko.react.dev/learn",
    "why": "우대 'React 기반 클라이언트' — 이 팀은 저장소를 합쳐 백엔드도 화면 코드를 고친다. 컴포넌트·상태만 알아도 시작할 수 있다."
+  },
+  {
+   "id": "aws-karrot-hsm",
+   "title": "당근이 AWS CloudHSM으로 대규모 서명키 관리 시스템을 구축한 방법 (1~3부)",
+   "by": "AWS 기술 블로그 · 당근 Identity·SRE 엔지니어 공동 집필 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/ko/blogs/tech/how-karrot-built-a-large-scale-signing-key-management-system-with-aws-cloudhsm-part1/",
+   "why": "Identity 공고의 고가용성 · 권한 · 무중단 전환 줄을 이 팀이 직접 푼 기록. 지원 전에 세 편 다 읽는다."
+  },
+  {
+   "id": "oauth-in-action",
+   "title": "OAuth 2 in Action",
+   "by": "Justin Richer · Antonio Sanso · Manning · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/oauth-2-in-action",
+   "why": "클라이언트·인가 서버·보호 자원을 직접 짜 보며 OAuth 흐름과 흔한 취약점을 익힌다. 'OAuth·OIDC 인증 서버 구축' 줄."
+  },
+  {
+   "id": "oidc-core",
+   "title": "OpenID Connect Core 1.0 · Discovery 1.0",
+   "by": "OpenID Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "why": "ID 토큰의 칸과 검사 규칙, 공개키 목록을 알리는 방법의 원문. 외부 서비스 연동 과제의 기준."
+  },
+  {
+   "id": "rfc9700",
+   "title": "RFC 9700 · Best Current Practice for OAuth 2.0 Security",
+   "by": "IETF · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc9700",
+   "why": "지금 쓰면 안 되는 흐름과 꼭 넣어야 할 검사(PKCE·리다이렉트 일치·토큰 묶기). 인증 서버를 운영하는 쪽의 점검표."
+  },
+  {
+   "id": "nist-63b",
+   "title": "NIST SP 800-63B-4 · Authentication and Authenticator Management",
+   "by": "NIST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://pages.nist.gov/800-63-4/sp800-63b.html",
+   "why": "인증 수단별 강도(문자 인증번호·OTP·패스키)와 세션 규칙. 계정 보안 정책을 근거로 정할 때."
+  },
+  {
+   "id": "spring-security",
+   "title": "스프링 시큐리티 완전 정복",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-security",
+   "why": "OAuth2 로그인·JWT 장 — 예제는 Java 지만 토큰이 오가는 HTTP와 막히는 자리를 눈으로 본다."
+  },
+  {
+   "id": "blog-experiment",
+   "title": "1주 1개 실험하는 프로덕트 팀이 되는 여정",
+   "by": "당근 팀 블로그(EO 재게재) · 2023",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://eopla.net/magazines/9046",
+   "why": "'가입 전환율 개선 실험' 줄 — 당근 제품 팀이 실험을 어떻게 굴리는지."
+  },
+  {
+   "id": "ab-kohavi",
+   "title": "A/B 테스트 — 신뢰도 높은 온라인 통제 실험",
+   "by": "론 코하비·다이앤 탕·야 쉬 · 이기홍·김기영 옮김 · 에이콘출판 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296254070",
+   "why": "전환율 실험의 주 지표·가드레일 고르기와 실험을 망치는 함정."
+  },
+  {
+   "id": "sysdesign",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "why": "규모 어림셈·캐시·처리율 제한 장. '트래픽 규모를 고려한 API 설계' 줄."
+  },
+  {
+   "id": "newman-msa",
+   "title": "마이크로서비스 도입, 이렇게 한다",
+   "by": "샘 뉴먼 · 박재호 옮김 · 책만 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=260639815",
+   "why": "레거시에서 조금씩 떼어 내는 패턴(병행 실행·데이터 나누기). '무중단 마이그레이션' 줄."
+  },
+  {
+   "id": "realmysql",
+   "title": "Real MySQL 8.0",
+   "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0",
+   "why": "인덱스·잠금·트랜잭션 — 쓰기 DB 부하가 가장 큰 팀에서 쿼리를 읽는 기본기."
+  },
+  {
+   "id": "kafka-book",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "보냈다는 것과 처리됐다는 것 사이 — 아웃박스·중복 거르기를 실제 명령 출력으로."
+  },
+  {
+   "id": "learning-go",
+   "title": "러닝 Go",
+   "by": "존 보드너 · 윤대석 옮김 · 한빛미디어 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%9F%AC%EB%8B%9D%20Go",
+   "why": "다른 언어를 아는 개발자가 Go다운 코드(에러 처리·인터페이스·context·동시성)로 넘어가는 책. 우대 'Golang 프로덕션'."
+  },
+  {
+   "id": "grpc-gateway",
+   "title": "gRPC-Gateway 문서",
+   "by": "grpc-ecosystem",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://grpc-ecosystem.github.io/grpc-gateway/",
+   "why": "gRPC 정의 하나로 HTTP·JSON API까지 여는 법. 팀이 쓰는 API 구성."
+  },
+  {
+   "id": "istio-docs",
+   "title": "Istio 공식 문서 · Security(AuthorizationPolicy·mTLS)",
+   "by": "Istio",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/reference/config/security/authorization-policy/",
+   "why": "서비스끼리 누가 누구를 부를 수 있는지 적는 규칙. 토큰 발급기를 허용 목록으로 막는 방식의 원문."
+  },
+  {
+   "id": "istio-in-action",
+   "title": "Istio in Action",
+   "by": "Christian E. Posta · Rinor Maloku · Manning · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.manning.com/books/istio-in-action",
+   "why": "트래픽 제어·mTLS·관측·문제 찾기를 한 권으로. 우대 'k8s/Istio 운영'."
   }
  ],
  "study_path": [
@@ -2833,6 +3588,20 @@
     "onnx-quant"
    ],
    "task": "가상 검색 로그 1만 줄(검색어·클릭)을 만들어 앞글자 자동완성과 자모 편집 거리 오타교정을 만든다. 사람이 점수를 매긴 검색어 50개로 NDCG를 재고, 가상 A/B 결과를 z 검정으로 판정하고, 문장 임베딩 모델을 int8로 줄여 크기·지연 전후를 표로 남긴다."
+  },
+  {
+   "title": "(Identity Service 공고) 작은 인증 서버와 무중단 키 교체",
+   "time": "2~3주",
+   "goal": "OIDC 인가 코드 + PKCE 로 로그인시키는 작은 인증 서버를 만들고, 이미 나간 토큰을 깨뜨리지 않고 서명키를 바꾼다.",
+   "resources": [
+    "talk-msa",
+    "aws-karrot-hsm",
+    "oauth-in-action",
+    "oidc-core",
+    "learning-go",
+    "rfc9700"
+   ],
+   "task": "Go 로 가상 사용자 100명의 인증 서버(인가·토큰·JWKS·discovery)를 만들고, 다른 프로그램이 '이 서버로 로그인'하게 한다. 가입 저장과 '가입 완료' 이벤트를 아웃박스로 묶고, 서명키를 5단계(공개키 등록 → 가중치 전환 → 옛 키 서명 중단 → 만료 대기 → 제거)로 바꾸는 동안 검증 실패가 0건인지 로그로 확인한다."
   }
  ],
  "pay": {
