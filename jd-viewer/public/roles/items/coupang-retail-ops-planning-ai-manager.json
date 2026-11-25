@@ -1,0 +1,913 @@
+{
+ "id": "coupang-retail-ops-planning-ai-manager",
+ "company": "쿠팡",
+ "role": "리테일 운영기획 매니저 (프로세스 개선 및 AI 활용)",
+ "team": "Retail Onboarding Planning 팀 · Selection Quality Audit 팀 (통합 채용)",
+ "jobs": [
+  "ats-greenhouse:coupang:8248619"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "로켓배송 상품이 **등록(온보딩)되고 검수(오딧)되는 운영 흐름**의 지표를 재고, 기준(SOP·SLA)을 쓰고, 문제가 되풀이되는 원인을 찾아 없애며, AI·자동화로 사람 손을 줄이는 과제를 기획합니다.[1]",
+  "env": "두 팀의 통합 채용이라 합격 뒤 **온보딩 기획 팀**(카테고리별 등록 이슈의 관제탑) 또는 **셀렉션 품질 오딧 팀**(타겟팅 정합성·셀렉션 품질·어뷰징 검수) 중 한 곳으로 갑니다.[1] 같은 조직의 실무 공고는 리드타임·품질·생산성을 관리 대상으로 적었습니다.[4]",
+  "oneline": "코드를 짜는 자리가 아니라 **운영을 숫자로 재고 규칙과 자동화로 바꾸는** 기획자입니다. 경력 10년 이상이 문턱이고 SQL·BI·생성형 AI는 우대입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "리테일 비즈니스 프로그램 및 프로젝트 운영 전반의 지표 관리 및 성과 분석",
+   "short": "등록·검수 운영이 잘 돌고 있는지 숫자(처리량·소요 시간·결함률)로 매주 보고 원인을 짚는 일.",
+   "why": "오딧 팀은 자기 일을 리테일 **GMV(총 거래액) 성장과 Lost GMV(놓친 매출) 감소**로 설명합니다.[1] 운영 활동이 그 숫자에 닿았는지 보려면 중간 지표가 필요합니다. 같은 조직 실무 공고는 엑셀·구글 시트 기반 지표 관리 경험을 자격으로 적었습니다.[4]",
+   "actually": {
+    "intro": "운영 조직에서 흔히 보는 지표 묶음입니다. 쿠팡의 실제 지표 목록은 공개되지 않았습니다 {추론}.",
+    "items": [
+     "**양** — 하루 등록 요청 건수, 처리 건수, 밀린 건수(백로그).",
+     "**속도** — 요청부터 판매 시작까지 걸린 시간(리드타임)의 평균과 p90(느린 쪽 10%의 경계).[4]",
+     "**품질** — 검수에서 걸린 비율, 다시 고친 비율, 고객 신고로 뒤늦게 발견된 비율.",
+     "**사람** — 1인당 시간당 처리 건수(생산성).[4]",
+     "**결과** — 늦게 올라가 못 판 기간의 매출(Lost GMV) 추정.[1] 아마존식 주간 지표 회의는 이처럼 **내가 움직일 수 있는 입력 지표**와 결과 지표를 나눠 본다.[23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균만 보면 늦은 건이 안 보인다 (직접 돌린 출력)",
+     "body": "등록 요청 10건, SLA 48시간. 평균은 37.7시간으로 괜찮아 보이지만 p90은 70시간입니다. 밀린 요청이 1,200건이고 하루 400건을 처리하면 리틀의 법칙(밀린 양 = 처리 속도 × 걸리는 시간)으로 평균 3일이 걸립니다.[17]",
+     "lang": "python",
+     "code": "hours = [5, 12, 20, 26, 30, 31, 40, 47, 70, 96]\nsla = 48\nmet = sum(h <= sla for h in hours)\nprint(f\"SLA 지킴률: {met}/{len(hours)} = {met/len(hours):.0%}\")  # 8/10 = 80%\nprint(f\"평균: {sum(hours)/len(hours):.1f}시간\")               # 37.7시간\nprint(f\"p90(10건 중 9번째): {sorted(hours)[8]}시간\")          # 70시간\nwip, per_day = 1200, 400\nprint(f\"평균 소요: {wip/per_day:.1f}일\")                       # 3.0일"
+    }
+   ],
+   "how_far": "지표를 **정의(분자·분모·기간)부터 적고** 매주 같은 방식으로 내는 것이 최소선입니다. 대시보드를 직접 만들 필요는 없어도 숫자가 왜 움직였는지 한 문장으로 설명할 수 있어야 합니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    17,
+    23
+   ],
+   "study": [
+    "commoncog-wbr",
+    "little-law",
+    "sql-recipe"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "신규 운영 프로세스 설계 및 기존 프로세스 개선, SOP·SLA 등 운영 표준 수립 및 최적화",
+   "short": "누가 언제 무엇을 하나(SOP)와 몇 시간 안에 끝내나(SLA)를 문서로 정하고 숫자로 고쳐 가는 일.",
+   "why": "같은 오딧 조직은 이전 공고에서도 프로세스 안의 SOP/SLA 수립을 업무로 적었습니다 — 이 자리의 고정 업무입니다.[5] 등록 실무 공고도 업무 표준화와 서비스 수준 관리를 우대했습니다.[4]",
+   "actually": {
+    "items": [
+     "**SOP(표준 작업 절차)** — 단계·담당·판단 기준·예외 처리를 적은 문서. 예: '이미지 규격 미달이면 공급사에 반려하고 사유 코드를 남긴다'.",
+     "**SLA(서비스 수준 약속)** — 다른 팀·공급사와 맺는 약속. 구글 SRE 책은 재는 값(SLI), 목표(SLO), 어겼을 때 결과가 따르는 약속(SLA)을 나눈다.[15]",
+     "**목표 정하기** — 지금 분포를 먼저 보고 '요청의 90%를 48시간 안에'처럼 비율로 정한다. 평균으로 정하면 느린 건이 묻힌다.[15]",
+     "**최적화** — 단계마다 대기 시간을 재서 가장 오래 기다리는 단계(병목)부터 줄인다 {추론}."
+    ]
+   },
+   "how_far": "SOP 문서를 쓰고, SLA 목표를 데이터로 정해 관련 팀과 합의하고, 지켜지는지 재는 데까지 맡습니다 {추론}. 실제 작업은 운영 인력이 합니다.",
+   "refs": [
+    4,
+    5,
+    15
+   ],
+   "study": [
+    "sre-slo",
+    "the-goal"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 및 데이터 기반 운영 효율화 과제 발굴 및 프로세스 혁신 프로젝트 기획·실행",
+   "short": "사람이 반복하는 확인 작업 중 AI·규칙으로 넘길 것을 골라 효과를 재며 넣는 일.",
+   "why": "쿠팡은 상품 분류와 속성 추출에 LLM을 쓴다고 직접 밝혔습니다.[6] 등록 실무 공고는 리드타임 단축을 위한 **자동화 과제 발굴**을 업무로 적었습니다.[4]",
+   "actually": {
+    "intro": "다른 회사가 공개한 상품 정보 자동화의 예입니다.",
+    "items": [
+     "범용 LLM으로 상품 정보의 오류·누락을 찾는다(아마존).[19]",
+     "정보를 뽑는 모델과 검증하는 모델을 나누고, 확신이 문턱을 넘을 때만 바로 반영한다(월마트).[20]",
+     "**과제 고르기** — 건수 × 1건당 시간 × 자동화로 줄일 비율 ÷ 들어가는 품으로 줄 세운다(RICE 같은 점수).[22]",
+     "**처음엔 단순하게** — 정해진 순서대로 도는 흐름(워크플로)이 되면 자율 에이전트까지 가지 않는다.[21]"
+    ]
+   },
+   "how_far": "모델을 만드는 자리가 아닙니다. 과제를 고르고, 정답 표본으로 AI 판정을 검증하고, 사람 검수를 남길 조건을 정하고, 줄어든 시간을 숫자로 보고하는 것까지입니다 {추론}.",
+   "refs": [
+    4,
+    6,
+    19,
+    20,
+    21,
+    22
+   ],
+   "study": [
+    "coupang-llm",
+    "amazon-listings",
+    "walmart-llm",
+    "anthropic-agents",
+    "rice"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "상품 Onboarding 및 Quality Audit 영역의 운영 체계 구축 및 고도화",
+   "short": "상품이 등록되고 검수되는 전체 흐름의 단계·담당·기준·지표를 한 벌로 짜는 일.",
+   "why": "온보딩 조직은 공급사와 소통하며 로켓배송 상품을 빠르고 정확하게 등록하고, 오딧 조직은 등록된 상품의 셀렉션 품질과 어뷰징을 검수합니다.[1] 앞이 흔들리면 뒤가 막힙니다.",
+   "flows": [
+    {
+     "caption": "등록에서 검수까지 — 공고의 팀 소개로 그린 흐름[1][4] {추론}",
+     "steps": [
+      "공급사 등록 요청",
+      "정보 확인 · 반려/보완",
+      "등록 · 판매 시작",
+      "셀렉션 품질 오딧",
+      "원인 분석 · 기준 개정"
+     ],
+     "mine_from": 3
+    }
+   ],
+   "actually": {
+    "items": [
+     "단계마다 들어오는 것·나가는 것·담당·판단 기준·소요 목표를 표로 적는다 {추론}.",
+     "공급사 커뮤니케이션과 가이드·매뉴얼 관리가 실무 팀의 일이다.[4]",
+     "검수 결과가 다시 등록 기준으로 돌아오는 고리를 만든다 — 이것이 '고도화'의 핵심이다 {추론}."
+    ]
+   },
+   "how_far": "체계를 설계하고 바꾸는 쪽이고, 운영 실무는 각 팀이 합니다. 두 팀 중 어디로 배치되느냐에 따라 앞쪽(등록)이나 뒤쪽(검수)에 무게가 실립니다.[1]",
+   "refs": [
+    1,
+    4
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영 이슈에 대한 Root Cause Analysis 및 개선 방안 도출, 신규 운영 지표 발굴",
+   "short": "같은 문제가 또 나는 이유를 끝까지 파고들어 고치고, 그걸 잴 새 지표를 만든다.",
+   "why": "온보딩 기획 팀은 카테고리별 등록 이슈에 빠르게 대응하고 근본 원인 분석으로 이슈 흐름을 파악해 근본 해결을 이끈다고 소개됩니다.[1]",
+   "actually": {
+    "items": [
+     "**파레토** — 이슈를 원인별로 세어 큰 것부터 쌓는다. 보통 상위 몇 개가 대부분을 차지한다.[16]",
+     "**피시본(이시카와 도표)** — 사람·방법·자료·도구 같은 갈래로 가능한 원인을 늘어놓는다.[16]",
+     "**5 Whys** — '왜?'를 다섯 번쯤 물어 겉 증상 밑의 원인까지 간다.[16]",
+     "**새 지표** — 고친 원인이 다시 안 나는지 볼 숫자를 정한다(예: 그 사유의 반려 비율).",
+     "**흔들림 감지** — 매일 비율이 평소 범위를 벗어나는지 관리도로 본다.[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "반려 사유 100건을 파레토로 (직접 돌린 출력)",
+     "body": "가상 반려 사유입니다. 위 세 가지가 82%라서 거기부터 고칩니다.",
+     "lang": "python",
+     "code": "from collections import Counter\nissues = [\"속성 누락\"]*42 + [\"이미지 규격\"]*25 + [\"카테고리 오분류\"]*15 + [\"가격 오기\"]*10 + [\"기타\"]*8\nc = Counter(issues); total = sum(c.values()); acc = 0\nfor name, n in c.most_common():\n    acc += n\n    print(f\"{name} {n}건 누적 {acc/total:.0%}\")\n# 속성 누락 42건 누적 42%\n# 이미지 규격 25건 누적 67%\n# 카테고리 오분류 15건 누적 82%\n# 가격 오기 10건 누적 92%\n# 기타 8건 누적 100%"
+    }
+   ],
+   "how_far": "원인을 데이터로 증명하고, 고칠 팀과 방안을 정하고, 효과를 다시 재는 데까지입니다. 원인 분석 보고서 한 장으로 끝내지 않습니다 {추론}.",
+   "refs": [
+    1,
+    16,
+    18
+   ],
+   "study": [
+    "asq-rca",
+    "nist-ewma"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "유관부서 협업을 통한 비즈니스 요구사항 정의 및 프로젝트 리딩",
+   "short": "카테고리·프로덕트·공급사 담당과 무엇을 바꿀지 합의해 문서로 만들고 끝까지 끌고 간다.",
+   "why": "오딧 팀은 다수의 유관 조직과 긴밀히 협업해 비즈니스 프로세스를 만들고 최적화한다고 소개됩니다.[1] 등록 실무도 공급사·비즈니스 매니저와 함께 일합니다.[4]",
+   "actually": {
+    "items": [
+     "**요구사항 문서** — 문제(숫자), 바꿀 것, 바꾸지 않을 것, 성공 기준을 한 장으로. 아마존식으로는 결과를 먼저 쓰고 거꾸로 일한다.[23]",
+     "도구가 필요하면 프로덕트·개발 팀에 넘길 요구를 '누가·언제·무엇을 보면 무엇을 한다'로 적는다 {추론}.",
+     "일정·담당·위험을 매주 공유하고 막힌 것을 올린다 {추론}."
+    ]
+   },
+   "how_far": "개발자가 읽고 바로 만들 수 있을 만큼 구체적인 요구사항을 쓰는 것이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    23
+   ],
+   "study": [
+    "working-backwards"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 관점의 문제 정의 및 데이터 기반 인사이트 도출을 통한 비즈니스 성과 개선",
+   "short": "운영 편의가 아니라 고객이 겪는 문제(못 찾는 상품, 틀린 정보)로 과제를 정하고 매출로 잇는다.",
+   "why": "쿠팡은 이 공고 첫머리에 고객 감동을 존재 이유로 적었고,[1] 상품 커머스 활성 고객이 2,460만 명이라 작은 정보 오류도 많은 사람에게 닿습니다.[7]",
+   "actually": {
+    "items": [
+     "'등록이 늦다'를 '고객이 찾는 상품이 며칠 동안 없다'로 바꿔 말하고 그 기간의 놓친 매출을 추정한다 {추론}.",
+     "검수 기준을 고객 노출(조회 수)로 가중해 많이 보이는 상품의 오류부터 잡는다 {추론}.",
+     "개선 효과는 가능하면 대조 실험으로 잰다.[24]"
+    ]
+   },
+   "how_far": "인사이트는 '그래서 무엇을 하자'로 끝나야 합니다. 숫자 → 해석 → 제안 → 예상 효과 한 장이 기본 단위입니다 {추론}.",
+   "refs": [
+    1,
+    7,
+    24
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이커머스 또는 온·오프라인 유통 환경에서 10년 이상의 운영기획, 프로세스 개선, 프로젝트 관리, AI 관리 경험을 보유하신 분",
+   "short": "두 팀의 운영 체계를 맡길 시니어라서 — 유통 운영 10년 이상이 문턱.",
+   "why": "같은 오딧 조직의 이전 공고도 10년 이상·부장 직급이었습니다.[5] 리멤버 사본은 10~16년차로 적었습니다.[2] 같은 조직의 실무(온보딩 프로세스 운영) 공고는 5년 이상입니다.[4]",
+   "how_far": "개발자 경력만으로는 맞추기 어렵습니다. 커머스 회사에서 운영 도구·자동화를 만들며 운영 팀과 지표를 같이 책임진 경험이 있다면 '프로세스 개선·AI 관리' 쪽으로 설명할 수 있습니다 {추론}. 직급과 업무 범위는 경력에 따라 바뀔 수 있다고 공고에 적혀 있습니다.[1]",
+   "refs": [
+    1,
+    2,
+    4,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터 기반으로 문제를 정의하고 실행 가능한 개선안을 도출한 경험을 보유하신 분",
+   "short": "'느낌상 늦다'가 아니라 '어느 단계가 몇 시간'으로 문제를 세우고 바로 할 수 있는 안을 낸 경험.",
+   "why": "이 자리의 업무 대부분(지표·원인 분석·과제 발굴)이 이 능력 위에 서 있습니다.[1]",
+   "how_far": "면접에서는 문제 → 쓴 데이터 → 찾은 원인 → 한 일 → 전후 숫자를 이어 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sql-recipe",
+    "asq-rca"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "KPI 수립, 프로세스 표준화 및 운영 체계 구축 경험을 보유하신 분",
+   "short": "무엇을 잘했다고 볼지(KPI)를 정하고, 그걸 지키게 하는 절차를 만들어 본 경험.",
+   "why": "업무의 지표 관리·SOP·SLA·운영 체계 구축 줄과 그대로 이어집니다.[1]",
+   "actually": {
+    "items": [
+     "**KPI 정의서** — 이름·정의·분자·분모·기간·담당·목표·지켜야 할 보조 지표를 적는다.",
+     "**좋은 지표의 조건** — 비교할 수 있고 비율이며 행동을 바꾸게 하는 것(린 분석).[25]",
+     "속도 KPI만 올리면 품질이 떨어질 수 있어 결함률을 함께 지킨다 {추론}."
+    ]
+   },
+   "how_far": "KPI 하나를 처음부터 정해 몇 달 운영해 본 경험이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    25
+   ],
+   "study": [
+    "lean-analytics",
+    "sre-slo"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "복수의 프로젝트를 동시에 관리하며 우선순위를 효과적으로 조정할 수 있는 분",
+   "short": "카테고리마다 터지는 이슈와 장기 개선 과제를 같이 들고, 무엇부터 할지 근거로 정한다.",
+   "why": "관제탑 역할로 카테고리별 이슈에 빠르게 대응하면서 프로세스 혁신 과제도 맡습니다.[1]",
+   "how_far": "점수(RICE 같은 것)로 순서를 설명하고, 순서를 바꿀 때 누구와 무엇을 합의했는지 말할 수 있으면 됩니다.[22]",
+   "refs": [
+    1,
+    22
+   ],
+   "study": [
+    "rice"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 이해관계자와 원활하게 협업할 수 있는 커뮤니케이션 역량을 보유하신 분",
+   "short": "공급사·카테고리·프로덕트·운영 인력이 서로 다른 목표를 가져서 — 숫자로 합의를 만든다.",
+   "why": "두 팀 모두 유관 조직·공급사와의 협업을 팀 소개에 적었습니다.[1][4]",
+   "how_far": "결정을 받을 사람에게 한 장 문서로 선택지와 숫자를 내놓는 습관이면 충분합니다 {추론}.",
+   "refs": [
+    1,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "빠르게 변화하는 환경에서 유연하게 문제를 해결하고 실행할 수 있는 분",
+   "short": "정책·카테고리가 자주 바뀌어서 — 완벽한 계획보다 작게 바꾸고 재는 쪽.",
+   "why": "쿠팡은 스타트업 문화와 기민함, 계속되는 신규 서비스를 회사 소개에 적었습니다.[1]",
+   "how_far": "바뀐 기준을 며칠 안에 SOP·지표에 반영해 본 경험을 예로 들 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI, 생성형 AI 또는 자동화 도구를 활용한 업무 프로세스 개선 경험을 보유하신 분",
+   "short": "공고 제목이 'AI 활용'이라서 — 생성형 AI로 반복 업무를 줄여 본 경험이 가장 강한 우대.",
+   "why": "등록 실무 공고에도 자동화 과제가 업무로 있고,[4] 쿠팡은 카탈로그에 LLM을 쓰고 있습니다.[6]",
+   "actually": {
+    "items": [
+     "상품 정보에서 필수 속성 누락을 LLM으로 먼저 걸러 사람 검수량을 줄인다.[19]",
+     "확신이 낮은 건만 사람에게 보내는 규칙을 둔다.[20]",
+     "반려 사유 문구·공급사 안내문을 생성형 AI로 초안 잡고 사람이 고친다 {추론}."
+    ]
+   },
+   "how_far": "써 봤다보다 **정확도를 어떻게 확인했고 몇 시간을 줄였는지**를 말할 수 있어야 합니다 {추론}.",
+   "refs": [
+    4,
+    6,
+    19,
+    20
+   ],
+   "study": [
+    "anthropic-agents",
+    "amazon-listings"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "운영 혁신 또는 프로세스 개선 성과를 정량적으로 설명할 수 있는 프로젝트 경험을 보유하신 분",
+   "short": "'리드타임 4일 → 2일, 인력 같은데 처리량 30%↑'처럼 전후 숫자로 말할 수 있는 경험.",
+   "why": "같은 오딧 조직의 이전 공고도 정량적 성과 중심의 개선 포트폴리오를 우대했습니다.[5]",
+   "how_far": "전후 비교의 기간·조건이 같았는지, 다른 요인이 섞이지 않았는지까지 설명하면 강합니다.[24]",
+   "refs": [
+    5,
+    24
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SQL, BI Tool 등 데이터 분석 도구 활용 경험을 보유하신 분",
+   "short": "지표를 남에게 부탁하지 않고 직접 뽑고 그려 보기 위해서.",
+   "why": "같은 조직 실무 공고는 SQL·Tableau·Power BI를 우대 도구로 적었습니다.[4]",
+   "level": {
+    "basic": "SELECT · WHERE · GROUP BY · JOIN · 날짜 필터",
+    "work": "CASE로 구간 나누기 · 윈도 함수로 단계 간 소요 시간 · 백분위수",
+    "team": "BI 대시보드를 지표 정의서와 같은 정의로 유지하기 {추론}"
+   },
+   "how_far": "우대사항이라 필수는 아닙니다. 요청 → 등록 → 검수 시각이 담긴 표에서 단계별 소요 시간을 직접 뽑을 수 있으면 충분합니다 {추론}.",
+   "refs": [
+    4
+   ],
+   "study": [
+    "sql-recipe"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "비즈니스 영어 커뮤니케이션이 가능하신 분",
+   "short": "쿠팡은 미국 상장사라 리더·유관 조직과 영어 문서·회의가 섞여서.",
+   "why": "같은 오딧 조직의 이전 공고도 비즈니스 영어를 우대했습니다.[5] 카탈로그·오딧 관련 다른 쿠팡 공고들도 영어 공고로 함께 나옵니다.[6]",
+   "how_far": "지표 보고서 한 장을 영어로 쓰고 질문에 답할 수 있는 정도 {추론}.",
+   "refs": [
+    5,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 운영 조직 또는 인력 운영 경험을 보유하신 분",
+   "short": "등록·검수에 많은 운영 인력이 붙어 있어서 — 생산성·배치·교육까지 다뤄 본 경험.",
+   "why": "등록 실무 공고에 생산성 관리가 업무로 있고,[4] 이전 오딧 공고도 대규모 인력 운영을 우대했습니다.[5]",
+   "how_far": "직접 관리자가 아니어도 인력 계획(처리량 ÷ 1인 생산성 = 필요 인원)을 세워 본 경험이면 설명할 수 있습니다.[17] {추론}",
+   "refs": [
+    4,
+    5,
+    17
+   ],
+   "study": [
+    "little-law"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "운영 흐름을 단계로 쪼개 어디가 막히는지 숫자로 찾는 걸 좋아하는 사람",
+   "문서(SOP·요구사항)를 잘 쓰고 여러 팀의 합의를 끌어내는 사람[1]",
+   "AI 도구를 '써 봤다'가 아니라 정확도와 줄인 시간으로 증명하고 싶은 사람"
+  ],
+  "hard": [
+   "코드를 짜는 시간이 거의 없다 — 개발을 계속하고 싶다면 맞지 않는다 {추론}",
+   "경력 10년 이상 문턱[1]",
+   "두 팀 중 어디로 갈지 합격 뒤에 정해진다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "등록 평균 소요가 37시간인데 SLA 48시간을 왜 못 지킨다고 하죠?",
+   "a": "평균과 p90의 차이, 목표를 비율로 정하기.[15]"
+  },
+  {
+   "q": "반려가 늘었어요. 어디부터 보겠어요?",
+   "a": "사유별 파레토 → 상위 원인에 5 Whys → 고칠 팀과 재발 지표.[16]"
+  },
+  {
+   "q": "LLM으로 속성 누락 검수를 자동화하자는 안이 있어요. 넣기 전에 무엇을 정하겠어요?",
+   "a": "정답 표본으로 정밀도·재현율, 사람 검수 문턱, 줄어드는 시간.[19][20]"
+  },
+  {
+   "q": "리드타임을 줄였더니 오딧 결함률이 올랐어요. 성공인가요?",
+   "a": "지켜야 할 보조 지표와 균형.[24][25]"
+  },
+  {
+   "q": "하루 400건 처리하는데 밀린 게 1,200건이에요. 이틀 안에 처리하려면 인력을 얼마나 늘려야 하나요?",
+   "a": "리틀의 법칙과 1인 생산성.[17]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "sre-slo",
+   "title": "Site Reliability Engineering · Chapter 4 Service Level Objectives",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "why": "재는 값·목표·약속(SLI·SLO·SLA)의 구분과 백분위수로 목표 정하기. SOP·SLA 업무와 KPI 요건의 바탕."
+  },
+  {
+   "id": "asq-rca",
+   "title": "ASQ · Problem Solving / Root Cause Analysis",
+   "by": "미국품질학회(ASQ)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://asq.org/quality-resources/problem-solving",
+   "why": "파레토·피시본·5 Whys로 원인을 찾는 절차. 'Root Cause Analysis' 업무 줄을 위해."
+  },
+  {
+   "id": "little-law",
+   "title": "Little's Law as Viewed on Its 50th Anniversary",
+   "by": "John D. C. Little · Operations Research 59(3), 2011",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://people.cs.umass.edu/~emery/classes/cmpsci691st/readings/OS/Littles-Law-50-Years-Later.pdf",
+   "why": "밀린 양·처리 속도·소요 시간의 관계. 리드타임 지표와 인력 계획을 계산할 때."
+  },
+  {
+   "id": "nist-ewma",
+   "title": "NIST/SEMATECH e-Handbook · EWMA Control Charts",
+   "by": "미국 국립표준기술연구소(NIST)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc324.htm",
+   "why": "매일의 비율이 평소 범위를 벗어났는지 보는 관리도. 신규 운영 지표의 이상 감지."
+  },
+  {
+   "id": "coupang-llm",
+   "title": "Accelerating Coupang's AI Journey with LLMs",
+   "by": "Coupang Engineering · 2024-10",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/",
+   "why": "쿠팡이 상품 분류·속성 추출에 LLM을 쓰는 방식 — AI 효율화 과제의 회사 쪽 출발점."
+  },
+  {
+   "id": "amazon-listings",
+   "title": "Using LLMs to improve Amazon product listings",
+   "by": "Amazon Science",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.amazon.science/blog/using-llms-to-improve-amazon-product-listings",
+   "why": "상품 정보의 오류·누락을 LLM으로 찾는 예. 검수 자동화의 범위를 정할 때."
+  },
+  {
+   "id": "walmart-llm",
+   "title": "How Walmart uses LLMs to manage its massive product catalogs",
+   "by": "Walmart Global Tech · 2025-05",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://tech.walmart.com/content/walmart-global-tech/en_us/blog/post/using-llms-to-manage-product-catalogs.html",
+   "why": "추출·검증 모델 분리와 문턱 — 사람 검수를 남길 조건을 정할 때."
+  },
+  {
+   "id": "anthropic-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "why": "정해진 흐름(워크플로)과 자율 에이전트를 언제 고르나. AI 자동화 과제를 단순하게 시작하기 위해."
+  },
+  {
+   "id": "rice",
+   "title": "RICE: Simple prioritization for product managers",
+   "by": "Intercom",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/",
+   "why": "영향 범위·크기·확신·품으로 과제 순서를 정하는 점수. 복수 프로젝트 우선순위 요건을 위해."
+  },
+  {
+   "id": "commoncog-wbr",
+   "title": "The Amazon Weekly Business Review",
+   "by": "Commoncog",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://commoncog.com/the-amazon-weekly-business-review/",
+   "why": "입력 지표와 결과 지표를 나눠 매주 보는 회의 방식. 지표 관리·성과 분석 업무의 본보기."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "A/B 테스트 — 신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 지음, 이기홍 · 김기영 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://experimentguide.com/wp-content/uploads/2022/07/2022-07-04-Trustworthy-Online-Controlled-Experiments_Korean_Chapter1.pdf",
+   "why": "개선 효과를 대조 실험으로 증명하고 지켜야 할 지표를 고르는 법. 정량 성과 우대 줄을 위해. 1장은 무료."
+  },
+  {
+   "id": "sql-recipe",
+   "title": "데이터 분석을 위한 SQL 레시피",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942290",
+   "why": "집계·윈도 함수·이상 수치 찾기 예제. 단계별 소요 시간과 지표를 직접 뽑는 SQL 우대 줄을 위해."
+  },
+  {
+   "id": "working-backwards",
+   "title": "순서 파괴 (Working Backwards 한국어판)",
+   "by": "콜린 브라이어 · 빌 카",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%88%9C%EC%84%9C%20%ED%8C%8C%EA%B4%B4",
+   "why": "결과를 먼저 쓰는 문서와 입력 지표 관리. 요구사항 정의·프로젝트 리딩 업무를 위해."
+  },
+  {
+   "id": "the-goal",
+   "title": "더 골",
+   "by": "엘리야후 골드랫",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%94%20%EA%B3%A8%20%EA%B3%A8%EB%93%9C%EB%9E%AB",
+   "why": "흐름에서 가장 막힌 단계(병목)부터 푸는 사고방식을 소설로. 프로세스 최적화 업무의 감 잡기."
+  },
+  {
+   "id": "lean-analytics",
+   "title": "린 분석",
+   "by": "앨리스테어 크롤 · 벤저민 요스코비츠",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%B0%20%EB%B6%84%EC%84%9D",
+   "why": "좋은 지표의 조건과 가장 중요한 지표 고르기. KPI 수립 요건을 위해."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "운영 흐름을 숫자로",
+   "time": "1~2주",
+   "goal": "등록 흐름의 단계별 처리량·소요 시간·p90을 정의하고 계산할 수 있다.",
+   "task": "가상 등록 요청 1,000건(요청·확인·등록·검수 시각)을 만들어 SQL로 단계별 소요 시간 평균과 p90을 내고, 리틀의 법칙으로 밀린 양과 맞는지 확인한다.",
+   "resources": [
+    "sql-recipe",
+    "little-law",
+    "commoncog-wbr"
+   ]
+  },
+  {
+   "title": "SOP와 SLA 쓰기",
+   "time": "1~2주",
+   "goal": "한 단계의 SOP 문서와 비율로 된 SLA 목표, 그 KPI 정의서를 쓸 수 있다.",
+   "task": "1단계 데이터의 '정보 확인' 단계에 대해 판단 기준·예외·반려 사유 코드가 든 SOP 한 장과 'p90 48시간' 같은 SLA, 결함률을 보조 지표로 둔 KPI 정의서를 쓴다.",
+   "resources": [
+    "sre-slo",
+    "lean-analytics",
+    "the-goal"
+   ]
+  },
+  {
+   "title": "원인 분석과 감지",
+   "time": "2주",
+   "goal": "이슈를 파레토·5 Whys로 좁히고, 재발을 관리도로 감지할 수 있다.",
+   "task": "가상 반려 사유 300건을 파레토로 묶어 상위 원인 하나에 5 Whys를 적고, 그 사유의 일별 비율에 관리도를 그려 개선 전후를 비교한다.",
+   "resources": [
+    "asq-rca",
+    "nist-ewma"
+   ]
+  },
+  {
+   "title": "AI로 손 줄이기",
+   "time": "2주",
+   "goal": "자동화 과제를 점수로 고르고, LLM 판정을 정답 표본으로 검증해 줄어든 시간을 낼 수 있다.",
+   "task": "반복 작업 다섯 개를 RICE로 줄 세운 뒤 1등(예: 필수 속성 누락 확인)을 상품명 100개에 LLM으로 돌려 직접 만든 정답과 비교하고, 확신 낮은 건만 사람에게 보낼 때 줄어드는 검수 시간을 계산한다.",
+   "resources": [
+    "rice",
+    "coupang-llm",
+    "amazon-listings",
+    "walmart-llm",
+    "anthropic-agents"
+   ]
+  },
+  {
+   "title": "성과를 증명하고 설득",
+   "time": "1주",
+   "goal": "개선 효과를 전후·대조로 재고 한 장 문서로 결정을 받을 수 있다.",
+   "task": "4단계 과제를 '결과 먼저' 한 장 제안서(문제 숫자·안·성공 기준·지킬 지표·실험 계획)로 쓰고 영어 요약 한 단락을 붙인다.",
+   "resources": [
+    "working-backwards",
+    "kohavi-ko"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 표기는 없다(협의). 집계 사이트 기준 쿠팡(주) 초봉 **약 3,531만원**·평균 **약 5,175만원** — 물류·운영 인력이 섞인 회사 전체 값이라 이 자리(경력 10년 이상)와는 거리가 크다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 쿠팡 회사 페이지. 기업이 공공데이터에 낸 정보로 계산한 값이고 기준 연도·직군 구분이 없다 [10]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "note": "같은 페이지의 평균. 경력직·전 직군이 섞인 값 [10]"
+   },
+   {
+    "label": "직원 평균 연봉 (원티드)",
+    "value": "5,856만원",
+    "amount": 5856,
+    "basis": "공공데이터 집계",
+    "note": "원티드 회사 페이지 표기, 기준일 표기 없음 [11]"
+   },
+   {
+    "label": "네이버 평균",
+    "value": "약 7,602만원",
+    "amount": 7602,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 같은 방식의 값 [12]"
+   },
+   {
+    "label": "지마켓 평균",
+    "value": "6,032만원",
+    "amount": 6032,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "원티드 같은 방식의 값 [13]"
+   }
+  ],
+  "how": "쿠팡(주)은 미국 상장사 쿠팡 Inc.의 국내 자회사라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **공시 숫자 없음**. 위 값은 집계 사이트 것이고 운영·물류 직군이 섞여 10년 이상 경력직 연봉보다 낮게 나올 가능성이 크다 {추론}. 리멤버 사본은 '연봉 협의'로 적었고 [2], 직급과 업무 범위는 경력에 따라 정해 최종 합격 전에 알려 준다고 공고에 적혀 있다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무",
+    "detail": "주 5일 유연근무제"
+   },
+   {
+    "name": "휴가",
+    "detail": "사유 없이 연차 사용"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"
+   },
+   {
+    "name": "쇼핑",
+    "detail": "쿠팡 구매금액 5% 캐시백(연 최대 400만원)"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "외국어·직무 교육 프로그램"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "휴게 공간, 커피·차·간식, 사내 식당"
+   }
+  ],
+  "note": "이 공고에는 복리후생 칸이 없다 [1]. 위 항목은 같은 회사 카탈로그 공고의 '혜택 및 복지' 칸(원티드, 2026-11) [9]과 쿠팡 채용 사이트 'Why Coupang' 소개 [8]다. 이 자리에 똑같이 적용되는지는 처우 협의 때 확인한다 {추론}. 정규직이며 수습 12주가 있다 [1]."
+ },
+ "location": {
+  "name": "쿠팡 본사 (이스트폴 타워)",
+  "address": "서울특별시 광진구 아차산로 412, 이스트폴 타워",
+  "postal": "05050",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 [14]",
+  "note": "공고 근무지 표기는 'Seoul, South Korea'뿐이다 [1]. 같은 공고의 원티드 사본은 아차산로 412(EP Tower)로 [3], 리멤버 사본은 '서울 송파구'로 적었다 [2] — 이전 근무지 표기가 남은 것일 수 있다 {추론}. 지원 때 근무지를 확인한다."
+ },
+ "caveat": "쿠팡은 온보딩·셀렉션 품질 오딧 팀의 지표·SOP·SLA 숫자를 공개하지 않았고 팀 발표 영상·글도 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 그 사본 둘, 같은 조직의 다른 공고 둘(리멤버 — 페이지를 읽어 요약한 것), 쿠팡 LLM 글 한 편, 실적 발표입니다. 지표·SLA·원인 분석·자동화는 구글 SRE 책·ASQ·리틀의 법칙·NIST와 아마존·월마트의 공개 자료로 '보통 이런 것'을 보였습니다. 연봉은 공시가 없어 집계 사이트 값입니다.",
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · [쿠팡] 리테일 운영기획 매니저 (프로세스 개선 및 AI 활용)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8248619",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "두 팀 통합 채용, 팀 소개 둘, 업무·자격·우대, 전형(서류 → 직무 적합성 → 핵심 역량), 정규직·수습 12주. 연봉·복지 칸 없음"
+  },
+  {
+   "n": 2,
+   "title": "리멤버 · [쿠팡] 리테일 운영기획 매니저 (프로세스 개선 및 AI 활용)",
+   "url": "https://career.rememberapp.co.kr/job/posting/346275",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 공고 사본 — 10~16년차, 학사 이상, 연봉 협의, 근무지 서울 송파구 표기"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · [쿠팡] 리테일 운영기획 매니저",
+   "url": "https://www.wanted.co.kr/wd/392334",
+   "kind": "posting",
+   "note": "같은 공고 사본(마감 표시) — 10~19년, 근무지 서울 광진구 아차산로 412(EP Tower)"
+  },
+  {
+   "n": 4,
+   "title": "리멤버 · [쿠팡] 로켓배송 상품 등록(온보딩) 프로세스 운영팀 매니저",
+   "url": "https://career.rememberapp.co.kr/job/posting/346505",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 Retail Onboarding 조직 — 운영 기준·품질 관리, 등록 리드타임 단축 자동화 과제, 공급사 커뮤니케이션·생산성 관리, 5년 이상, 엑셀·구글 시트 지표, 우대 SQL·Tableau·Power BI"
+  },
+  {
+   "n": 5,
+   "title": "리멤버 · [쿠팡] 카탈로그 운영 프로세스 개선 매니저 (Selection Quality Audit)",
+   "url": "https://career.rememberapp.co.kr/job/posting/254553",
+   "kind": "posting",
+   "note": "같은 오딧 조직의 이전 공고(마감) — SOP/SLA 수립, 근본 원인 분석, 10년 이상·부장, 우대 정량 성과 포트폴리오·비즈니스 영어·대규모 인력 운영"
+  },
+  {
+   "n": 6,
+   "title": "Coupang Engineering · Accelerating Coupang's AI Journey with LLMs",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/",
+   "kind": "company",
+   "date": "2024-10",
+   "note": "상품 분류·속성 추출에 LLM"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Announces Results for Fourth Quarter 2025",
+   "url": "https://ir.aboutcoupang.com/news-events/news/news-details/2026/Coupang-Announces-Results-for-Fourth-Quarter-2025/default.aspx",
+   "kind": "company",
+   "date": "2026-02",
+   "note": "상품 커머스 활성 고객 2,460만 명"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Careers · Why Coupang",
+   "url": "https://www.coupang.jobs/kr/why-coupang/",
+   "kind": "company",
+   "note": "복지 항목 소개"
+  },
+  {
+   "n": 9,
+   "title": "원티드 · [쿠팡] 카탈로그 Taxonomy 및 데이터 분석 PM",
+   "url": "https://www.wanted.co.kr/wd/396324",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 공고의 '혜택 및 복지' 칸"
+  },
+  {
+   "n": 10,
+   "title": "자소설닷컴 · 쿠팡",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "공공데이터 기반 초봉·평균, 기준 연도 없음"
+  },
+  {
+   "n": 11,
+   "title": "원티드 · 쿠팡 회사 정보",
+   "url": "https://www.wanted.co.kr/company/53",
+   "kind": "reference",
+   "note": "평균연봉"
+  },
+  {
+   "n": 12,
+   "title": "자소설닷컴 · 네이버",
+   "url": "https://jasoseol.com/companies/511",
+   "kind": "reference",
+   "note": "같은 방식의 비교 값"
+  },
+  {
+   "n": 13,
+   "title": "원티드 · 지마켓 회사 정보",
+   "url": "https://www.wanted.co.kr/company/373",
+   "kind": "reference",
+   "note": "같은 방식의 비교 값"
+  },
+  {
+   "n": 14,
+   "title": "아시아경제 · 이스트폴(구의역 KT 부지 개발)과 쿠팡 입주",
+   "url": "https://www.asiae.co.kr/en/article/2025081219080020350",
+   "kind": "news",
+   "date": "2025-08",
+   "note": "구의역 인근"
+  },
+  {
+   "n": 15,
+   "title": "Google · Site Reliability Engineering, Chapter 4 Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA 구분, 백분위수 목표"
+  },
+  {
+   "n": 16,
+   "title": "ASQ · Problem Solving",
+   "url": "https://asq.org/quality-resources/problem-solving",
+   "kind": "reference",
+   "note": "근본 원인 분석 — 파레토·피시본·5 Whys"
+  },
+  {
+   "n": 17,
+   "title": "John D. C. Little · Little's Law as Viewed on Its 50th Anniversary (Operations Research 59(3), 2011)",
+   "url": "https://people.cs.umass.edu/~emery/classes/cmpsci691st/readings/OS/Littles-Law-50-Years-Later.pdf",
+   "kind": "reference",
+   "note": "L = λW, 운영 관리에서의 쓰임"
+  },
+  {
+   "n": 18,
+   "title": "NIST/SEMATECH e-Handbook · EWMA Control Charts",
+   "url": "https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc324.htm",
+   "kind": "reference",
+   "note": "관리도로 흔들림 감지"
+  },
+  {
+   "n": 19,
+   "title": "Amazon Science · Using LLMs to improve Amazon product listings",
+   "url": "https://www.amazon.science/blog/using-llms-to-improve-amazon-product-listings",
+   "kind": "reference",
+   "note": "다른 회사 — 범용 LLM으로 상품 정보 점검"
+  },
+  {
+   "n": 20,
+   "title": "Walmart Global Tech · How Walmart uses LLMs to manage its massive product catalogs",
+   "url": "https://tech.walmart.com/content/walmart-global-tech/en_us/blog/post/using-llms-to-manage-product-catalogs.html",
+   "kind": "reference",
+   "date": "2025-05",
+   "note": "다른 회사 — 추출·검증 모델, 문턱"
+  },
+  {
+   "n": 21,
+   "title": "Anthropic · Building effective agents",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "kind": "reference",
+   "note": "워크플로와 에이전트 구분, 단순한 것부터"
+  },
+  {
+   "n": 22,
+   "title": "Intercom · RICE: Simple prioritization for product managers",
+   "url": "https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/",
+   "kind": "reference",
+   "note": "영향 범위 × 영향 크기 × 확신 ÷ 품"
+  },
+  {
+   "n": 23,
+   "title": "Commoncog · The Amazon Weekly Business Review",
+   "url": "https://commoncog.com/the-amazon-weekly-business-review/",
+   "kind": "reference",
+   "note": "다른 회사 — 주간 지표 리뷰, 입력 지표와 결과 지표"
+  },
+  {
+   "n": 24,
+   "title": "Trustworthy Online Controlled Experiments 한국어판 1장",
+   "url": "https://experimentguide.com/wp-content/uploads/2022/07/2022-07-04-Trustworthy-Online-Controlled-Experiments_Korean_Chapter1.pdf",
+   "kind": "reference",
+   "note": "대조 실험으로 효과 재기, 지켜야 할 지표"
+  },
+  {
+   "n": 25,
+   "title": "교보문고 · 린 분석",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%B0%20%EB%B6%84%EC%84%9D",
+   "kind": "reference",
+   "note": "좋은 지표의 조건(비교 가능·비율·행동을 바꾸는 것)"
+  }
+ ]
+}
