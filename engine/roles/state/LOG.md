@@ -389,3 +389,4 @@
 - 2026-11-25 · (막힘·미완) musinsa-pem-scf · 무신사 Product Engineering Manager (SC&F) — ats-greeting:musinsa:237055 · 직전 회차와 같은 사유: 무신사·29CM 테크 블로그·자소설닷컴 접근 불가(이번 회차는 curl 도 막힘), 회사 근거 없이 40줄을 쓰지 않아 산출물 없음 · 집기 풀어 둠 — 사람이 글 본문을 붙여 주기 전에는 이 공고를 건너뛸 것
 - 2026-11-25 · (건너뜀) 무신사 Product Engineer (Purchase) — ats-greeting:musinsa:241770 · 재시도도 막힘: 검색으로 techblog 글 제목(레거시 전환 전략·나야, 주문·무신사페이·환불서비스 개선)은 찾았지만 본문은 열람 불가(403), 연봉·주소·복지 근거 확인 못 함. 요약 조각만으로 49줄을 쓰지 않음 — 산출물 없음, 집기만 풂
 - 2026-11-25 · (건너뜀) 무신사 Product Engineer (Purchase) — ats-greeting:musinsa:241770 · 세 번째 막힘: 이번 회차는 외부 접근(curl)이 허용되지 않아 techblog·연봉·주소 근거를 못 구함, 같은 공고가 반복해서 막히니 사람이 글 본문을 붙여 주기 전에는 건너뛸 것 — 산출물 없음, 집기만 풂
+- 2026-11-25 · (건너뜀) 무신사 Product Engineer (Purchase) — ats-greeting:musinsa:241770 · 네 번째 막힘: 이번 회차도 외부 접근(curl)이 허용되지 않아 techblog·연봉·주소 근거를 못 구함, 사람이 글 본문을 붙여 주기 전에는 건너뛸 것 — 산출물 없음, 집기만 풂
