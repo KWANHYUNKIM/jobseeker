@@ -244,6 +244,7 @@
   "saramin-55605742": "hyundai-ict-platform-engineer",
   "wanted-398827": "hyundai-ict-platform-engineer",
   "ats-hkmc:hyundai:2026N2420": "hyundai-ict-sw-architect",
+  "ats-hkmc:hyundai:2026N2416": "hyundai-ict-web-commerce-service-planner",
   "ats-hkmc:hyundai:2026N2425": "hyundai-infra-security-public-cloud",
   "wanted-398820": "hyundai-infra-security-public-cloud",
   "saramin-55605795": "hyundai-integrated-security-ad",
@@ -2595,6 +2596,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 24
+  },
+  {
+   "id": "hyundai-ict-web-commerce-service-planner",
+   "company": "현대자동차",
+   "role": "Service Planner — 글로벌 웹·커머스 기획/운영",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2416"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
   },
   {
    "id": "hyundai-infra-security-public-cloud",
