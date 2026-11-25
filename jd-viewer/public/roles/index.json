@@ -96,10 +96,14 @@
   "saramin-55604144": "hyundai-manufacturing-vision-ai-ops",
   "wanted-398824": "hyundai-manufacturing-vision-ai-ops",
   "ats-hkmc:hyundai:2026N2209": "hyundai-npu-dl-compiler",
+  "ats-hkmc:hyundai:2026N2329": "hyundai-robotics-joint-robot-mechanism",
   "ats-hkmc:hyundai:2026N2331": "hyundai-robotics-joint-robot-production",
   "wanted-387536": "hyundai-sdf-data-architect",
   "ats-hkmc:hyundai:2026N2387": "hyundai-sdv-controller-sw-integration",
   "wanted-393817": "hyundai-sdv-controller-sw-integration",
+  "ats-hkmc:hyundai:2026N298": "hyundai-shucle-data-engineer",
+  "wanted-387545": "hyundai-shucle-data-engineer",
+  "ats-hkmc:hyundai:2026N2386": "hyundai-shucle-platform-ux-planning",
   "ats-hkmc:hyundai:2026N2294": "hyundai-shucle-service-ux-planning",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
@@ -1113,6 +1117,16 @@
    "lines": 27
   },
   {
+   "id": "hyundai-robotics-joint-robot-mechanism",
+   "company": "현대자동차",
+   "role": "관절로봇 기구설계 및 메커니즘 개발",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2329"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 25
+  },
+  {
    "id": "hyundai-robotics-joint-robot-production",
    "company": "현대자동차",
    "role": "관절로봇 양산개발",
@@ -1142,6 +1156,27 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 45
+  },
+  {
+   "id": "hyundai-shucle-data-engineer",
+   "company": "현대자동차",
+   "role": "모빌리티 서비스 Data Engineer (셔클)",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N298",
+    "wanted-387545"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 25
+  },
+  {
+   "id": "hyundai-shucle-platform-ux-planning",
+   "company": "현대자동차",
+   "role": "모빌리티 플랫폼 UX 기획",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2386"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 25
   },
   {
    "id": "hyundai-shucle-service-ux-planning",
