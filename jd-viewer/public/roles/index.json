@@ -10,6 +10,7 @@
   "ats-greenhouse:coupang:8275940": "coupang-catalog-quality-senior-pm",
   "wanted-396324": "coupang-catalog-taxonomy-pm",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
+  "ats-greenhouse:coupang:8316768": "coupang-cls-waterflex-logistics-data-analyst",
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
   "ats-greenhouse:coupang:8364554": "coupang-data-ingestion-analytics-director-us",
   "ats-greenhouse:coupang:8275812": "coupang-eats-android-senior-bengaluru",
@@ -393,6 +394,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 31
+  },
+  {
+   "id": "coupang-cls-waterflex-logistics-data-analyst",
+   "company": "쿠팡로지스틱스서비스(CLS)",
+   "role": "물류 데이터 분석 담당자 (신입 가능)",
+   "jobs": [
+    "ats-greenhouse:coupang:8316768"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 12
   },
   {
    "id": "coupang-dart-taiwan-manager",
