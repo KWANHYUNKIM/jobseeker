@@ -205,6 +205,8 @@
   "ats-skcareers:sk:R262283": "skax-ax-ai-project-pm-pl",
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
   "ats-skcareers:sk:R262429": "skax-digital-twin-developer",
+  "ats-skcareers:sk:R262569": "skax-fab-equipment-quality-ai-agent",
+  "dev-583962": "skax-fab-equipment-quality-ai-agent",
   "ats-skcareers:sk:R262544": "skax-hotel-ito-app-ops-pl",
   "ats-skcareers:sk:R262566": "skax-hris-pm-pl",
   "ats-skcareers:sk:R262274": "skax-ict-application-contract",
@@ -2203,6 +2205,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 18
+  },
+  {
+   "id": "skax-fab-equipment-quality-ai-agent",
+   "company": "SK주식회사(AX)",
+   "role": "제조 AI 장비/품질 자동화 시스템 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262569",
+    "dev-583962"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
   },
   {
    "id": "skax-hotel-ito-app-ops-pl",
