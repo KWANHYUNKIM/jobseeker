@@ -4,6 +4,7 @@
   "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-395344": "autoever-india-security-expat",
   "wanted-359170": "cj-oliveyoung-data-analyst",
+  "ats-greenhouse:coupang:8398431": "coupang-audit-ai-ops-analyst-bengaluru",
   "ats-greenhouse:coupang:8385253": "coupang-audit-ai-ops-pm-bengaluru",
   "wanted-396324": "coupang-catalog-taxonomy-pm",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
@@ -294,6 +295,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 13
+  },
+  {
+   "id": "coupang-audit-ai-ops-analyst-bengaluru",
+   "company": "쿠팡 (Coupang)",
+   "role": "Analyst, Audit AI OPS (벵갈루루)",
+   "jobs": [
+    "ats-greenhouse:coupang:8398431"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 30
   },
   {
    "id": "coupang-audit-ai-ops-pm-bengaluru",

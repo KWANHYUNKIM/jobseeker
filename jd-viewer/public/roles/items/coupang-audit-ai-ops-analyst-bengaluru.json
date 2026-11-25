@@ -1,0 +1,979 @@
+{
+ "id": "coupang-audit-ai-ops-analyst-bengaluru",
+ "company": "쿠팡 (Coupang)",
+ "role": "Analyst, Audit AI OPS (벵갈루루)",
+ "team": "Audit Intelligence 조직 · PBS and Pricing Ops 부서",
+ "jobs": [
+  "ats-greenhouse:coupang:8398431"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡 가격이 **고객 신뢰·판매 기회·시장 경쟁력** 면에서 어디가 어긋나는지를 SQL·Python으로 **먼저 찾아내는 신호**를 만들고, 그 분석을 매일 저절로 도는 장치로 바꿉니다.[1]",
+  "env": "인도 벵갈루루 사무소, 주 3일 이상 출근하는 하이브리드입니다.[1][7] 가격 조직과 따로 움직이는 **독립 감사 조직**이고, GPT·Gemini·Kiro·Devin 같은 AI 도구로 반복 조사를 줄이는 것이 업무에 들어 있습니다.[1]",
+  "oneline": "같은 조직 PM이 '무엇을 의심할지'를 설계한다면, 이 자리는 **그 의심을 쿼리와 점수로 직접 만드는** 분석가. SQL 필수, 경력 3년 이상."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Generate Customer Intelligence",
+   "short": "고객이 '쿠팡 가격은 믿을 만하다'고 느끼는지를 숫자로 재는 묶음.",
+   "why": "업무는 다섯 묶음이고 이것이 첫째입니다.[1] 공고는 이 조직을 가격 생태계 전체를 살피는 **독립된 발견 엔진**이라고 소개하고, 가격 결정이 고객 신뢰를 직접 좌우한다고 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "You will develop analytical frameworks that evaluate how pricing decisions influence customer trust, customer competitiveness, and long-term customer experience.",
+   "short": "가격 결정이 고객 신뢰·경쟁력·장기 고객 경험에 어떤 영향을 주는지 재는 분석 틀을 만든다.",
+   "why": "쿠팡은 2018년에 '다른 곳이 더 싸면 차액을 돌려준다'는 가격 보장 표시(CouRantee)를 내걸었을 만큼 가격 신뢰를 고객 약속으로 다뤄 왔습니다.[5] 이 자리의 소속은 'PBS and Pricing Ops' 부서로 등록돼 있습니다.[1]",
+   "actually": {
+    "intro": "쿠팡이 지표 정의를 공개하지 않아, 같은 일을 하는 공개 도구의 정의로 '보통 이런 것'을 보였습니다.",
+    "items": [
+     "**가격 차이(%)** — 같은 상품의 우리 가격과 비교 가격(benchmark, 기준값)의 차이. 구글 쇼핑 도구는 같은 상품 번호(GTIN)로 묶은 다른 판매처 가격을 기준값으로 쓴다.[10]",
+     "**경쟁력 비율(win rate)** — 비교한 상품 중 우리가 같거나 더 싼 상품의 비율. {추론}",
+     "**조회 가중** — 같은 비율이라도 많이 보는 상품에 무게를 준다. 공고가 '트래픽 많은 페이지'를 따로 짚었다.[1]",
+     "**장기 고객 경험** — 가격 문제가 재구매·이탈로 이어지는지 시간을 두고 본다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "카테고리별 경쟁력 비율 — 상품 수 기준과 조회 가중 (SQLite로 직접 돌린 출력)",
+     "body": "가상 상품 6개(생활 3 · 유아 3). 상품 수로 세면 생활은 33.3%만 이기지만, 많이 보는 라면(B)이 이기고 있어 조회로 가중하면 40.2%입니다. 유아는 66.7% → 89.3%. **같은 데이터도 무엇으로 나누느냐에 따라 보고 숫자가 달라집니다.** 출력: `('생활', 33.3, 40.2)` / `('유아', 66.7, 89.3)`",
+     "lang": "sql",
+     "code": "-- 가상 데이터: 상품, 카테고리, 우리 가격, 경쟁사 최저가, 하루 조회수\nSELECT cat,\n       ROUND(100.0 * SUM(ours <= comp_min) / COUNT(*), 1)              AS win_pct,\n       ROUND(100.0 * SUM((ours <= comp_min) * views) / SUM(views), 1) AS win_pct_by_views\nFROM price GROUP BY cat;"
+    }
+   ],
+   "how_far": "지표의 이름과 정의(무엇을 '같은 상품'으로 볼지, 비교 가격을 최저가로 할지 평균으로 할지)를 **문서로 남기고 SQL로 계산하는 것**까지가 Analyst의 몫입니다. 어떤 문턱에서 조치할지는 PM·가격 조직과 정합니다 — 같은 조직의 PM 공고가 '지표·경보 기준을 만드는 프로그램'을 맡습니다.[2] {추론}",
+   "study": [
+    "gmc-price",
+    "sql-tanimura"
+   ],
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Examples include, but are not limited to, identifying Blue Badge Trust risks where products may no longer meet customer trust expectations",
+   "short": "신뢰 배지 자격이 흔들리는 상품, 전환을 깎는 가격 차이, 노출 큰 페이지의 기회, 불만 전 문제 찾기.",
+   "why": "업무 묶음 ①의 구체 예입니다.[1] 같은 조직 PM 공고도 '신뢰 표시 점검·고객 경쟁력 점수표·가격 신뢰 악화 탐지'를 같은 묶음에 넣었습니다.[2]",
+   "actually": {
+    "items": [
+     "**Blue Badge Trust 위험** — 고객 신뢰 기대를 더는 못 맞추는 상품을 찾는 일이다.[1] 배지가 정확히 무엇인지는 공개 자료가 없다. 2018년 CouRantee 표시가 무료배송·평점 높은 판매자·경쟁력 있는 가격 세 조건을 달았던 것처럼, 조건을 단 신뢰 표시일 것으로 보인다.[5] {추론}",
+     "**전환을 깎는 가격 차이** — 비싼 상품 중 실제로 구매 전환이 떨어진 것을 따로 고른다.[1]",
+     "**가격 날카로움(price sharpness) 기회** — 트래픽 많은 페이지에서 더 싸게 할 여지.[1] 대만의 같은 이름 팀은 상품 표본을 뽑아 비교 판매자와 견주는 감사를 했다.[3]",
+     "**불만 전에 잡기** — 차이가 한 번 튄 것과 조금씩 계속 벌어지는 것을 가른다. EWMA(지수 가중 이동 평균, 최근 값에 무게를 더 준 평균) 관리도가 작은 변화를 잡는 표준 방법이다.[12]"
+    ]
+   },
+   "how_far": "배지를 줄지 뺄지는 Analyst가 정하지 않습니다. **'이 조건을 지금 못 맞추는 상품 목록과 근거 숫자'**를 매일 만들어 넘기는 데까지입니다. {추론}",
+   "study": [
+    "nist-ewma",
+    "gmc-price"
+   ],
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    12
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Generate Commercial Intelligence",
+   "short": "어디서 더 팔 수 있나(성장·구색·카테고리 실적)를 찾는 묶음.",
+   "why": "다섯 묶음 중 둘째입니다. 고객 신뢰가 '지키는' 쪽이라면 이쪽은 '더 키우는' 쪽입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "You will identify commercial opportunities that improve growth, assortment quality, category performance, and customer adoption.",
+   "short": "성장·구색 품질·카테고리 실적·고객 채택을 끌어올릴 기회를 데이터에서 짚어 낸다.",
+   "why": "감사 조직이 이 일을 하는 이유는 예에서 드러납니다 — 첫 예가 '가격 때문에 실적이 꺾인 핵심 상품'입니다.[1] 가격이 원인인 실적 문제는 가격 조직 안에서 보이지 않을 수 있어 독립 조직이 따로 봅니다. {추론}",
+   "how_far": "어떤 상품을 들여오고 가격을 얼마로 할지는 카테고리·가격 조직이 정합니다. 이 자리는 **'여기를 봐야 한다'는 신호를 근거 숫자와 함께 넘기는** 데까지입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Examples include, but are not limited to, identifying key products suffering from pricing-related performance challenges",
+   "short": "가격 탓에 꺾인 상품, MoM·YoY 비정상 감소, 새 상품, 계절 회복, 끝자락 상품의 기회를 찾는 일.",
+   "why": "업무 묶음 ②의 구체 예입니다.[1] PM 공고는 같은 일을 '구색 기회 엔진·수요 감소 감시'라고 불렀습니다.[2]",
+   "actually": {
+    "items": [
+     "**비정상 수요 감소** — 전월 대비(MoM, Month over Month)·전년 같은 달 대비(YoY, Year over Year) 수요가 이상하게 줄어든 상품.[1]",
+     "**계절과 가르기** — 계절이 있는 숫자는 추세·계절을 먼저 빼고 남은 부분(나머지)으로 이상을 본다. STL 분해가 이 일을 하는 표준 방법이다.[11] 가장 쉬운 첫걸음은 전월과 작년 같은 달을 **함께** 보는 것이다. {추론}",
+     "**새 상품(cold-start)** — 판매 기록이 짧아 비교할 과거가 없는 상품. 비슷한 상품의 처음 몇 주와 견준다. {추론}",
+     "**계절 회복 기회** — 작년 이맘때 살아났던 상품이 올해 안 살아나는 경우.[1]",
+     "**tail-of-tail** — 아주 드물게 팔리는 끝자락 상품 중 아직 못 살린 잠재력.[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "전월과 작년 같은 달을 함께 보기 (SQLite로 직접 돌린 출력)",
+     "body": "선풍기는 10월에 전월보다 66% 줄지만 작년 10월보다는 6.7% 많습니다 — 계절이라 조사하지 않습니다. 보조배터리는 전월 −47.5%, 작년 −17.6%라 **둘 다 걸려** 조사 대상입니다. 전월만 봤다면 선풍기가 1순위였을 것입니다. LAG(앞 행 값 가져오기)는 SQLite 3.25부터 되는 윈도우 함수입니다.[20] 출력: `('보조배터리', '2026-10', 420, -47.5, -17.6, '조사')` / `('선풍기', '2026-10', 320, -66.3, 6.7, '')`",
+     "lang": "sql",
+     "code": "WITH t AS (\n  SELECT sku, month, units,\n         LAG(units, 1) OVER w AS prev_m,\n         LAG(units, 2) OVER w AS prev_y   -- 이 예는 해마다 두 달만 있어 2칸 앞이 작년 같은 달\n  FROM sales WINDOW w AS (PARTITION BY sku ORDER BY month))\nSELECT sku, month, units,\n       ROUND(100.0*(units-prev_m)/prev_m,1) AS mom,\n       ROUND(100.0*(units-prev_y)/prev_y,1) AS yoy,\n       CASE WHEN units < prev_m*0.7 AND units < prev_y*0.85 THEN '조사' ELSE '' END AS flag\nFROM t WHERE month='2026-10';"
+    }
+   ],
+   "how_far": "문턱(−30%·−15%)은 예시입니다. 실제로는 상품군마다 흔들림 크기가 달라 **같은 문턱이 생활용품엔 너무 느슨하고 패션엔 너무 빡빡할** 수 있습니다 — 경보 수와 놓친 건을 세어 문턱을 고치는 것까지가 이 일입니다. {추론}",
+   "study": [
+    "fppkr",
+    "fpp3-stl",
+    "sql-tanimura"
+   ],
+   "refs": [
+    1,
+    2,
+    11,
+    20
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Generate Market Intelligence",
+   "short": "바깥 시장과 경쟁사를 보고 쿠팡이 어디서 이기고 지는지를 재는 묶음.",
+   "why": "다섯 묶음 중 셋째입니다.[1] 내부 판매 숫자만 보면 경쟁사가 먼저 움직인 것을 늦게 알게 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "You will continuously evaluate external competitive conditions and identify where Coupang is gaining or losing market competitiveness.",
+   "short": "바깥 경쟁 상황을 계속 재서 쿠팡이 어느 상품·카테고리에서 경쟁력을 얻고 잃는지 짚는다.",
+   "why": "공고는 이 역할을 '과거를 설명하는 보고'가 아니라 **앞으로의 위험과 기회를 먼저 보는 일**이라고 했습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Examples include, but are not limited to, competitiveness monitoring, comparative rank deterioration analysis, competitor promotion detection",
+   "short": "경쟁력 추적, 비교 순위 하락, 경쟁사 행사 감지, 바깥 가격 변동, 카테고리 변화, 점유율 위험 신호.",
+   "why": "업무 묶음 ③의 구체 예입니다.[1] PM 공고에는 '경쟁사 행사 감시·점유율 위험 탐지'로 적혀 있습니다.[2]",
+   "actually": {
+    "items": [
+     "**같은 상품 맞추기** — 비교의 첫 단추는 '같은 상품인가'다. 구글 도구는 상품 번호(GTIN)가 같은 것만 비교값에 넣는다.[10]",
+     "**비교 순위 하락** — 같은 상품을 파는 곳들 사이에서 우리 가격 순위가 내려가는 것.[1]",
+     "**경쟁사 행사 감지** — 경쟁사 가격이 하루에 크게 내려간 날을 행사로 의심한다. {추론}",
+     "**카테고리·점유율 위험** — 상품 하나가 아니라 카테고리 단위로 묶어 본 경쟁력 변화.[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "경쟁사 행사와 우리 순위 (가상 데이터, 직접 돌린 출력)",
+     "body": "우리는 5일 내내 10,200원인데 X몰이 4일째 8,900원으로 18.3% 내립니다. 우리 가격은 그대로지만 순위가 1위에서 2위로 밀립니다 — **우리가 바꾼 것이 없어도 경쟁력은 떨어집니다.** 출력 중: `4일째 X몰 10900→8900 (-18.3%) 행사 의심` / `4일째 우리 순위 2/3`",
+     "lang": "python",
+     "code": "comp = {\"X몰\": [10900, 10900, 10900, 8900, 8900], \"Y마켓\": [10500, 10400, 10500, 10500, 10400]}\nours = [10200, 10200, 10200, 10200, 10200]\nfor day in range(1, 5):\n    for name, p in comp.items():\n        drop = (p[day - 1] - p[day]) / p[day - 1] * 100\n        if drop >= 10:                      # 하루에 10% 넘게 내리면 행사로 의심\n            print(f\"{day+1}일째 {name} {p[day-1]}→{p[day]} (-{drop:.1f}%) 행사 의심\")\n    rank = 1 + sum(p[day] < ours[day] for p in comp.values())\n    print(f\"{day+1}일째 우리 순위 {rank}/3\")"
+    }
+   ],
+   "how_far": "경쟁사 가격을 어떻게 모으는지는 공고에 없습니다. Analyst는 **받은 가격 데이터에서 신호를 만드는 쪽**이고, 수집 방법은 데이터 엔지니어·법무와 정해진 범위 안에서 씁니다. {추론}",
+   "study": [
+    "gmc-price"
+   ],
+   "refs": [
+    1,
+    2,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Leverage AI Agents and Automation",
+   "short": "반복 조사·이상 탐지를 AI 에이전트와 자동화로 늘리는 묶음. 직무 이름의 'AI OPS'.",
+   "why": "다섯 묶음 중 넷째입니다.[1] 공고는 데이터 엔지니어와 함께 **AI 에이전트**를 협업 상대로 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "You will deploy modern LLMs and agentic workflows (GPT, Gemini, Kiro, Devin) to accelerate anomaly detection, automate repetitive investigations, and expand audit coverage.",
+   "short": "GPT·Gemini·Kiro·Devin 같은 LLM·에이전트로 이상 탐지를 빠르게, 반복 조사를 자동으로, 감사 범위를 넓게.",
+   "why": "사람 수를 늘리지 않고 볼 수 있는 상품 수를 늘리려는 것입니다. {추론} 공고가 도구 이름까지 적었으니 이미 이 도구들을 쓰는 조직입니다.[1]",
+   "actually": {
+    "items": [
+     "**GPT·Gemini** — 글을 읽고 쓰는 대형 언어 모델(LLM). 조사 메모·요약 초안, 원인 가설 쓰기.[1]",
+     "**Devin** — Cognition이 만든 '자율 AI 소프트웨어 엔지니어'. 코드를 쓰고 돌리고 테스트한다.[15] 분석 스크립트·반복 쿼리를 맡기는 용도로 보인다. {추론}",
+     "**Kiro** — 요구사항 → 설계 → 작업 목록(spec)으로 일을 쪼개는 AI 개발 환경이다.[14]",
+     "**정해진 길 vs 스스로 고르는 길** — 앤트로픽은 코드로 정한 순서대로 LLM을 부르는 흐름(workflow)과, LLM이 다음 행동을 스스로 고르는 에이전트(agent)를 나누고, 가장 단순한 쪽부터 시작하라고 권한다.[13]"
+    ]
+   },
+   "how_far": "모델을 만드는 자리가 아닙니다. **이미 있는 도구에 우리 데이터·조사 순서를 붙여 실제로 돌게 하는 것**까지입니다. 탐지 자체(문턱·통계)는 SQL·Python으로 하고, LLM은 조사·요약 쪽에 두는 편이 안전합니다. {추론}",
+   "study": [
+    "anthropic-agents",
+    "kiro-docs",
+    "devin-docs"
+   ],
+   "refs": [
+    1,
+    13,
+    14,
+    15
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Examples include creating AI-assisted workflows that automatically investigate competitiveness losses, automate opportunity identification",
+   "short": "경쟁력 하락 자동 조사, 기회 찾기 자동화, 리더 리뷰용 요약, 매일 우선순위 정하기를 AI로 돕는다.",
+   "why": "업무 묶음 ④의 구체 예입니다.[1] 조직 구호가 '빨리 찾고, 객관적으로 증명하고, 끝까지 올리고, 영구적으로 고친다'라서[1], AI가 빨리 찾아도 **증명은 숫자로** 해야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**경쟁력 하락 자동 조사** — 경보가 뜨면 정해진 순서(우리 가격 변경 이력 → 경쟁사 가격 → 재고 → 노출)로 표를 뽑아 메모 초안을 쓴다. 순서가 정해진 일이라 workflow 쪽이다.[13] {추론}",
+     "**리더 리뷰 요약** — 이번 주 상위 건을 AI가 문장으로 접는다.[1]",
+     "**매일 우선순위** — 점수 순 대기열을 아침마다 만든다.[1]",
+     "**숫자 대조** — 요약 문장에 나온 숫자가 원본 표에 있는지 기계로 먼저 확인한다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "AI가 쓴 요약의 숫자를 원본과 대조하기 (가상 데이터, 직접 돌린 출력)",
+     "body": "요약에 '12.5% 비싸다'가 나왔지만 원본 표의 C 가격 차이는 15.2%입니다. 숫자 하나가 틀리면 리더 보고 전체가 의심받습니다 — 이런 검사를 흐름 끝에 붙여 둡니다. 출력: `6.2 확인` / `-47.8 확인` / `12.5 원본에 없음 — 사람이 본다`",
+     "lang": "python",
+     "code": "import re\ntable = {\"A 가격 차이\": \"6.2\", \"A 전월 대비\": \"-47.8\", \"C 가격 차이\": \"15.2\"}\nsummary = \"A는 경쟁사보다 6.2% 비싸고 판매가 전월 대비 -47.8% 줄었다. C는 12.5% 비싸다.\"  # AI가 쓴 요약이라 치자\nknown = set(table.values())\nfor n in re.findall(r\"-?\\d+(?:\\.\\d+)?\", summary):\n    print(n, \"확인\" if n in known else \"원본에 없음 — 사람이 본다\")"
+    }
+   ],
+   "how_far": "AI가 낸 원인은 **가설**로만 올리고, 증명은 데이터로 합니다. 이 자리가 맡는 최소선은 '무엇을 AI에 맡겼고, 사람이 무엇을 확인했나'를 기록해 남기는 것입니다. {추론}",
+   "study": [
+    "anthropic-agents"
+   ],
+   "refs": [
+    1,
+    13
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Build Repeatable Intelligence Mechanisms",
+   "short": "한 번 하고 끝나는 분석을 매일 저절로 도는 장치로 바꾸는 묶음.",
+   "why": "다섯 묶음 중 마지막입니다.[1] PM 공고도 이 조직의 목표를 '그때그때 하는 분석에서 벗어나 자동 탐지 장치로'라고 적었습니다.[2]",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "You will help transform one-time analyses into scalable mechanisms that can continuously operate with minimal manual intervention.",
+   "short": "한 번 돌린 분석을 사람 손이 거의 안 가도 계속 도는 구조로 바꾸는 일을 돕는다.",
+   "why": "Analyst 혼자가 아니라 '돕는다'로 적혀 있습니다 — 데이터 엔지니어가 파이프라인을, PM이 운영 주기를 맡고 Analyst는 **로직과 정의**를 맡는 그림입니다.[1][2] {추론}",
+   "actually": {
+    "items": [
+     "**쿼리를 일정에 올리기** — 노트북에서 돌린 쿼리를 매일 도는 작업으로. {추론}",
+     "**정의 문서** — 지표 이름·계산식·문턱·담당을 한 곳에. 아마존식 주간 지표 리뷰도 지표마다 담당자를 정해 둔다.[17]",
+     "**결과 확인 자리** — 경보가 실제로 맞았나를 주기적으로 되짚는다. {추론}"
+    ]
+   },
+   "how_far": "'장치'라고 부르려면 **주기 · 담당 · 결과를 확인하는 자리**가 있어야 합니다. 면접에서 '매일 아침 7시에 돌아 대기열을 만들고, 주간 리뷰에서 맞은 비율을 본다'처럼 설명할 수 있으면 됩니다. {추론}",
+   "study": [
+    "commoncog-wbr"
+   ],
+   "refs": [
+    1,
+    2,
+    17
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Examples include automated signal detection workflows, opportunity scoring systems, categorization frameworks, prioritization models",
+   "short": "자동 신호 탐지, 기회 점수, 분류 틀, 우선순위 모델, 감사·가격 조직이 같이 보는 대시보드.",
+   "why": "업무 묶음 ⑤의 구체 예입니다.[1] 대시보드는 감사와 가격 두 조직이 함께 씁니다.[1]",
+   "actually": {
+    "items": [
+     "**기회 점수** — 단위가 다른 신호(감소율 %, 조회수, 가격 차이 %)를 하나로 합친다. 표준화(z점수, 평균에서 몇 표준편차 떨어졌나) 뒤 가중합이 가장 단순하다. {추론}",
+     "**우선순위 모델** — 영향 범위 × 영향 크기 × 확신 ÷ 드는 품으로 줄 세우는 RICE 같은 틀도 있다.[16]",
+     "**분류 틀** — '가격 탓 · 재고 탓 · 노출 탓 · 계절'처럼 원인 칸을 정해 건마다 붙인다. {추론}",
+     "**대시보드** — Tableau·Power BI·Looker 같은 도구로. 공고 우대사항에 이름이 나온다.[1][19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "단위가 다른 신호를 점수 하나로 (가상 데이터, 직접 돌린 출력)",
+     "body": "감소율 50% · 조회 30% · 가격 차이 20%로 가중했습니다. 가격 차이가 가장 큰 C(15.2%)보다, 크게 줄고 많이 보는 A가 1위입니다. 가중치를 누가 왜 정했는지 남겨 두는 것이 '장치'의 일부입니다. {추론} 출력: `A 1.09` / `C 0.23` / `B -0.32` / `D -1.0`",
+     "lang": "python",
+     "code": "items = {  # 수요 감소율(%), 하루 조회수, 가격 차이(%)\n    \"A\": (-48, 52000, 6.2), \"B\": (-12, 41000, 0.0), \"C\": (-35, 9000, 15.2), \"D\": (-5, 18000, -3.0)}\ndef z(vals):                       # 단위가 다른 값을 '평균에서 몇 표준편차'로 맞춘다\n    m = sum(vals) / len(vals); s = (sum((v - m) ** 2 for v in vals) / len(vals)) ** 0.5\n    return [(v - m) / s for v in vals]\nnames = list(items)\nzd = z([-items[k][0] for k in names]); zv = z([items[k][1] for k in names]); zg = z([items[k][2] for k in names])\nscore = {k: round(0.5 * zd[i] + 0.3 * zv[i] + 0.2 * zg[i], 2) for i, k in enumerate(names)}\nfor k, s in sorted(score.items(), key=lambda x: -x[1]): print(k, s)"
+    }
+   ],
+   "how_far": "머신러닝 모델을 처음부터 만드는 것은 필수가 아닙니다 — ML 팀과 함께 일한 경험은 우대사항입니다.[1] 규칙·가중합으로 먼저 돌리고, 맞은 비율을 재서 고치는 것까지가 최소선입니다. {추론}",
+   "study": [
+    "rice",
+    "tableau-learn"
+   ],
+   "refs": [
+    1,
+    16,
+    19
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bachelor's degree or equivalent practical experience.",
+   "short": "학사 학위, 또는 그만한 실무 경험. 전공 제한은 없다.",
+   "why": "공고에 전공이 적혀 있지 않고 '그에 준하는 실무 경험'도 받습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "3+ years of experience in Analytics, Business Intelligence, Operations Excellence, Audit, Marketplace Operations, Pricing, Strategy, or related disciplines.",
+   "short": "분석·BI·운영 혁신·감사·마켓플레이스 운영·가격·전략 쪽 경력 3년 이상.",
+   "why": "그린하우스 공고 정보에 직급이 'Lv. 4'로 붙어 있습니다.[1] 같은 조직 PM은 7년 이상이라[2] 이 자리는 직접 분석을 맡는 실무자 칸으로 읽힙니다. {추론}",
+   "how_far": "개발자 경력만 3년이면 '관련'이 약합니다. 커머스·가격 데이터를 다루는 내부 도구나 지표 파이프라인을 만들었다면 그 부분을 앞세웁니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong analytical and problem-solving skills.",
+   "short": "숫자를 읽고 '진짜 문제인가, 흔들림인가'를 가려 내는 힘.",
+   "why": "조직 구호의 둘째가 '객관적으로 증명하라'입니다.[1] 감사 결과는 남의 조직 일을 바꾸게 하므로 근거가 약하면 받아들여지지 않습니다. {추론}",
+   "actually": {
+    "items": [
+     "**계절·행사 가르기** — 위 선풍기 예처럼 계절 때문에 줄어든 것을 문제로 올리지 않는다.[11]",
+     "**분모 고르기** — 상품 수로 나눌지 조회로 나눌지에 따라 결론이 바뀐다(업무 ① 예). {추론}",
+     "**원인 쪼개기** — 판매 감소를 가격·재고·노출·계절로 나눠 본다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    11
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience working with large datasets.",
+   "short": "상품 수백만 개 × 매일 × 경쟁사 여럿 같은 큰 표를 다뤄 본 경험.",
+   "why": "공고는 이 자리가 대규모 운영·시장 데이터를 고가치 인사이트로 바꾼다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**전체를 다 읽지 않기** — 날짜·카테고리로 먼저 거르고, 필요한 열만 고른다. {추론}",
+     "**표본으로 먼저** — 대만 가격 감사 팀처럼 상품 표본을 뽑아 보고 전체로 넓힌다.[3]",
+     "**집계 수준 맞추기** — 일·상품 단위로 미리 접은 표를 만들어 두고 거기서 분석한다. {추론}"
+    ]
+   },
+   "how_far": "어떤 저장소를 쓰는지는 공고에 없습니다. 도구 이름보다 '한 번에 몇 억 행을 다뤘고, 느릴 때 무엇을 바꿨나'를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Proficiency in SQL.",
+   "short": "SQL은 필수. 이 공고에서 유일하게 '필수'로 적힌 기술이다.",
+   "why": "자격요건에 기술 이름은 SQL 하나입니다.[1] PM 공고에서는 SQL이 우대였는데 여기서는 필수라[2], 직접 쿼리를 짜는 사람이 이 자리입니다. {추론}",
+   "level": {
+    "basic": "SELECT · JOIN · GROUP BY · CASE · 조건부 합(SUM(조건))",
+    "work": "윈도우 함수(LAG · RANK · 이동 평균) · 날짜별 집계 · 전월·전년 비교 · CTE(WITH)",
+    "team": "가격 차이·경쟁력 비율·수요 감소 신호를 SQL 하나로 매일 계산 · 조회 가중 비율 · 상품 매칭 표 조인"
+   },
+   "how_far": "위 풀이의 예 세 개(경쟁력 비율, 전월·전년 비교)를 보지 않고 짤 수 있으면 실무선입니다. 윈도우 함수 문법은 SQLite 공식 문서로 확인할 수 있습니다.[20] {추론}",
+   "study": [
+    "sql-tanimura",
+    "sqlite-window"
+   ],
+   "refs": [
+    1,
+    2,
+    20
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong written and verbal communication skills.",
+   "short": "찾은 문제를 남의 조직이 고치게 만드는 글과 말 — 영어로.",
+   "why": "조직 구호의 셋째가 '끝까지 올려라(escalate)', 넷째가 '영구적으로 고쳐라'입니다.[1] 공고는 이 일이 경영진을 먼저 움직이게 하는 것이라고 적었습니다.[1]",
+   "how_far": "한 건을 '무엇이 · 얼마나 · 왜 · 누가 무엇을 해야'의 네 줄로 쓸 수 있으면 됩니다. 쿠팡 리더십 원칙에도 '깊이 파고들기(Dive Deep)'가 있습니다 — 짧게 쓰되 눌러 들어가면 근거가 나와야 합니다.[6] {추론}",
+   "study": [
+    "swd"
+   ],
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience with AI-enabled analytical tools.",
+   "short": "AI가 붙은 분석 도구를 실제 일에 써 본 경험 — 업무 ④를 바로 맡을 수 있어서.",
+   "why": "업무 다섯 묶음 중 하나가 AI 에이전트·자동화입니다.[1] 개발자 출신에게 가장 가까운 줄입니다. {추론}",
+   "how_far": "'써 봤다'보다 **어떤 일에 붙였고, 맞은 비율이 얼마였고, 사람이 무엇을 확인했나**를 말할 수 있으면 강합니다.[13] {추론}",
+   "study": [
+    "anthropic-agents"
+   ],
+   "refs": [
+    1,
+    13
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience using Python or automation frameworks.",
+   "short": "Python이나 자동화 도구로 반복 분석을 돌려 본 경험.",
+   "why": "SQL로 뽑은 표에 통계·점수·AI 호출을 붙이고 일정에 올리는 일이 업무 ④⑤입니다.[1]",
+   "level": {
+    "basic": "pandas로 표 읽고 거르기·합치기 · 함수로 묶기",
+    "work": "z점수·이동 평균 같은 간단한 통계 · 정해진 시각에 도는 스크립트 · API 호출",
+    "team": "SQL 결과 → 점수 → 대기열 → 요약까지 한 흐름으로 묶고 숫자 대조 검사 붙이기"
+   },
+   "how_far": "위 풀이의 Python 예(행사 감지·기회 점수·숫자 대조)를 스스로 고쳐 쓸 수 있으면 됩니다. {추론}",
+   "study": [
+    "pandas-book"
+   ],
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience with Tableau, Power BI, Looker, or similar platforms.",
+   "short": "Tableau·Power BI·Looker 같은 대시보드 도구 경험. 감사·가격 조직이 같이 보는 화면을 만든다.",
+   "why": "업무 ⑤의 예에 '감사·가격 조직이 쓰는 대시보드'가 있습니다.[1]",
+   "how_far": "셋 중 하나를 익히면 나머지는 금방 옮겨 갑니다. Tableau는 무료 학습 자료를 공개합니다.[19] 화면 꾸미기보다 **'이 화면을 보고 무엇을 결정하나'**가 먼저입니다. {추론}",
+   "study": [
+    "tableau-learn",
+    "swd"
+   ],
+   "refs": [
+    1,
+    19
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "E-commerce, marketplace, retail, or pricing experience.",
+   "short": "커머스·가격 일을 해 봤으면 '같은 상품', 행사, 판매자 구조를 바로 읽을 수 있어서.",
+   "why": "업무 다섯 묶음이 전부 가격과 연결돼 있습니다.[1] 서울의 가격 운영 공고도 가격 정책 위반을 찾는 운영 감사를 따로 두었습니다.[4]",
+   "refs": [
+    1,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience working with Machine Learning or Applied Science teams.",
+   "short": "ML·응용과학 팀과 일해 봤으면 가격·수요 모델이 낸 결과를 감사할 때 말이 통해서.",
+   "why": "공고 첫머리가 '가격 시스템이 정교한 자동화와 데이터 기반 모델로 커지고 있다'입니다.[1] 모델이 정한 가격을 감사하려면 모델 쪽 사람과 같은 말을 써야 합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Type of work model",
+   "short": "여기부터는 우대사항이 아니라 근무 형태 안내다.",
+   "why": "공고 양식상 우대사항 칸 뒤에 붙은 근무 방식 설명입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Our Hybrid work model: Coupang hybrid work model is designed to enable a culture of collaboration",
+   "short": "주 3일 이상 사무실, 주 2일 재택 가능. 업무에 따라 더 나와야 할 수 있다.",
+   "why": "공고에 그렇게 적혀 있습니다.[1] 근무지는 벵갈루루 사무소입니다.[7]",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to consider",
+   "short": "아래는 법에 따른 안내 문구다.",
+   "why": "쿠팡 공고에 공통으로 붙는 마지막 칸입니다.[1][2]",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Those eligible for employment protection (recipients of veteran",
+   "short": "보훈 대상자·장애인 등은 관련 법에 따라 채용에서 우대받을 수 있다는 표준 문구.",
+   "why": "같은 문구가 같은 조직의 PM 공고에도 그대로 있습니다.[2]",
+   "refs": [
+    2
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자에서 '이상한 것'을 찾고 그 원인을 끝까지 파는 것이 재미있는 사람",
+   "한 번의 분석보다 매일 저절로 도는 쿼리·점수를 만들고 싶은 사람[1]",
+   "AI 에이전트를 실제 조사 흐름에 붙여 보고 싶은 사람[1]",
+   "커머스 가격·경쟁사 비교에 관심 있는 사람"
+  ],
+  "hard": [
+   "찾은 문제를 남의 조직이 고쳐야 해서 영어 글쓰기·보고가 일의 큰 부분이다[1]",
+   "SQL이 필수이고, 가격 데이터의 '같은 상품' 맞추기 같은 지저분한 일이 많다[1][10]",
+   "모델을 만드는 ML 자리가 아니다 — AI는 조사·자동화 도구로 쓴다[1]",
+   "인도 벵갈루루 근무이고 주 3일 이상 출근한다[1][7]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "카테고리 경쟁력 비율을 상품 수로 나눌 때와 조회로 가중할 때 결론이 다르면 무엇을 보고하나요?",
+   "a": "분모가 무엇을 뜻하나, 둘 다 보이고 결정에 맞는 쪽을 앞에.[1][10]"
+  },
+  {
+   "q": "어떤 상품 판매가 전월보다 66% 줄었습니다. 조사 대상인가요?",
+   "a": "전년 같은 달·계절 분해로 먼저 가르기.[11]"
+  },
+  {
+   "q": "우리 가격은 그대로인데 경쟁력 순위가 떨어졌습니다. 어떤 순서로 원인을 찾나요?",
+   "a": "경쟁사 가격 변동·행사, 같은 상품 매칭 확인부터.[1][10]"
+  },
+  {
+   "q": "경쟁력 하락 조사를 AI에게 맡긴다면 어디까지 맡기고 무엇을 검사하나요?",
+   "a": "정해진 흐름 vs 에이전트, 요약 숫자 대조, 가설과 증명 구분.[13]"
+  },
+  {
+   "q": "단위가 다른 신호 세 개를 점수 하나로 합쳐야 합니다. 어떻게 하고, 가중치는 어떻게 정하나요?",
+   "a": "표준화 + 가중합, 맞은 비율로 되짚기.[16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Analyst, Audit AI OPS (Bengaluru)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8398431",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "이 공고. 그린하우스 공고 정보(boards-api)로 첫 게시 2026-11-18, 부서 'PBS and Pricing Ops', 직급 Lv. 4, 마감일 없음을 확인"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · Program Manager, Audit AI Ops (Bengaluru)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8385253",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 조직 PM 공고 — 업무 여섯 묶음, 경력 7년 이상, SQL·Python은 우대"
+  },
+  {
+   "n": 3,
+   "title": "Built In · Coupang Senior Manager, Price Sharpness (Taipei)",
+   "url": "https://builtin.com/job/senior-manager-price-sharpness/4660992",
+   "kind": "posting",
+   "note": "다른 지역 가격 감사 팀 — 상품 표본을 비교 판매자와 견주는 감사. 2026-04 내려감"
+  },
+  {
+   "n": 4,
+   "title": "Built In · Coupang Senior Program Manager (Operational Excellence – Pricing), Seoul",
+   "url": "https://builtin.com/job/senior-program-manager-operational-excellence-pricing/6237669",
+   "kind": "posting",
+   "note": "가격 정책 위반을 찾는 운영 감사·품질 점검 틀. 2025-09 내려감"
+  },
+  {
+   "n": 5,
+   "title": "PR Newswire · Coupang launches \"CouRantee\" for products that customers can trust",
+   "url": "https://prnewswire.com/news-releases/coupang-launches-courantee-for-products-that-customers-can-trust-300644123.html",
+   "kind": "company",
+   "date": "2018",
+   "note": "쿠팡 보도자료 — 무료배송·우수 판매자·경쟁력 있는 가격 조건, 더 싼 곳이 있으면 차액 보상"
+  },
+  {
+   "n": 6,
+   "title": "Coupang Careers · Why Coupang (리더십 원칙·복지)",
+   "url": "https://www.coupang.jobs/en/why-coupang/",
+   "kind": "company",
+   "note": "리더십 원칙, 복지 소개 — 직무·지역에 따라 다를 수 있다고 적혀 있음"
+  },
+  {
+   "n": 7,
+   "title": "Coupang Careers · Bengaluru",
+   "url": "https://www.coupang.jobs/en/locations/bengaluru/",
+   "kind": "company",
+   "note": "벵갈루루 사무소 주소. 이 공고가 최신 공고 목록에 있음(2026-11-25 확인)"
+  },
+  {
+   "n": 8,
+   "title": "Coupang, Inc. 2026 Proxy Statement · CEO Pay Ratio",
+   "url": "https://s206.q4cdn.com/919117365/files/doc_financials/2026/ar/459762_P45313_Coupang-Inc-_2026-_ROXY_PROOF_REV1_RC-Ebook-Final-4-23-26.pdf",
+   "kind": "company",
+   "date": "2026-04",
+   "note": "미국 공시(위임장) — 2025년 직원 보수 중간값"
+  },
+  {
+   "n": 9,
+   "title": "Coupang, Inc. Form DEF 14A (2025) · CEO Pay Ratio",
+   "url": "https://www.sec.gov/Archives/edgar/data/1834584/000114036125016000/ny20041603x1_def14a.htm",
+   "kind": "company",
+   "date": "2025-04",
+   "note": "2024년 직원 보수 중간값과 중간값 직원을 고른 방법"
+  },
+  {
+   "n": 10,
+   "title": "Google Merchant Center 도움말 · About Pricing in Merchant Center Analytics",
+   "url": "https://support.google.com/merchants/answer/9626903?hl=en",
+   "kind": "reference",
+   "note": "다른 회사 — 가격 비교 기준값(benchmark)과 가격 차이의 공개 정의"
+  },
+  {
+   "n": 11,
+   "title": "Forecasting: Principles and Practice (3판) · STL decomposition",
+   "url": "https://otexts.com/fpp3/stl.html",
+   "kind": "reference",
+   "note": "Hyndman · Athanasopoulos — 추세·계절·나머지로 나누기"
+  },
+  {
+   "n": 12,
+   "title": "NIST/SEMATECH e-Handbook · EWMA Control Charts",
+   "url": "https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc324.htm",
+   "kind": "reference",
+   "note": "작은 변화를 잡는 관리도, λ는 보통 0.2~0.3"
+  },
+  {
+   "n": 13,
+   "title": "Anthropic · Building effective agents",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "kind": "reference",
+   "date": "2024-12",
+   "note": "workflow와 agent의 구분, 단순한 것부터"
+  },
+  {
+   "n": 14,
+   "title": "Kiro 문서",
+   "url": "https://kiro.dev/docs/",
+   "kind": "reference",
+   "note": "spec(요구사항·설계·작업) 기반 AI 개발 환경"
+  },
+  {
+   "n": 15,
+   "title": "Devin 문서",
+   "url": "https://docs.devin.ai/",
+   "kind": "reference",
+   "note": "Cognition의 자율 AI 소프트웨어 엔지니어"
+  },
+  {
+   "n": 16,
+   "title": "Intercom · RICE: Simple prioritization for product managers",
+   "url": "https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/",
+   "kind": "reference",
+   "date": "2018-01",
+   "note": "영향 범위 × 영향 크기 × 확신 ÷ 품"
+  },
+  {
+   "n": 17,
+   "title": "Commoncog · The Amazon Weekly Business Review",
+   "url": "https://commoncog.com/the-amazon-weekly-business-review/",
+   "kind": "reference",
+   "note": "다른 회사 — 주간 지표 리뷰, 지표마다 담당, 입력 지표와 결과 지표"
+  },
+  {
+   "n": 18,
+   "title": "CXOToday · Coupang Expands India Tech Footprint with Hyderabad Office Launch",
+   "url": "https://cxotoday.com/press-release/coupang-expands-india-tech-footprint-with-hyderabad-office-launch-strengthens-global-innovation-leadership/",
+   "kind": "news",
+   "date": "2025-08",
+   "note": "인도 개발 센터(벵갈루루)는 2023년 말 문을 열었다는 회사 발표"
+  },
+  {
+   "n": 19,
+   "title": "Tableau · Free Training Videos",
+   "url": "https://www.tableau.com/learn/training",
+   "kind": "reference",
+   "note": "Tableau 공식 무료 학습 영상"
+  },
+  {
+   "n": 20,
+   "title": "SQLite · Window Functions",
+   "url": "https://www.sqlite.org/windowfunctions.html",
+   "kind": "reference",
+   "note": "LAG·윈도우 함수 문법, 3.25.0부터 지원"
+  }
+ ],
+ "caveat": "쿠팡은 Audit Intelligence 조직의 지표 정의·탐지 방법·도구 구성을 공개하지 않았습니다. 회사 근거는 이 공고(그린하우스 공고 정보 포함)와 같은 조직의 PM 공고, 다른 지역 가격 감사 공고, 2018년 가격 보장 보도자료뿐이고 팀 발표 영상·기술 블로그 글은 찾지 못했습니다. 'Blue Badge'가 무엇인지도 공개 자료가 없습니다. 계산 방식은 구글 쇼핑의 가격 비교 정의·통계 교재·NIST 관리도로 '보통 이런 것'을 보였고, 코드 예시는 모두 가상 데이터입니다. 연봉은 인도 법인 숫자가 없어 미국 공시의 전 세계 직원 중간값만 실었습니다.",
+ "resources": [
+  {
+   "id": "pm-posting",
+   "title": "Program Manager, Audit AI Ops (같은 조직 공고)",
+   "by": "Coupang Careers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8385253",
+   "why": "같은 조직이 무엇을 '프로그램'으로 운영하는지 보여 준다. Analyst가 만든 신호가 어디로 넘어가는지 이 공고로 확인한다."
+  },
+  {
+   "id": "gmc-price",
+   "title": "About Pricing in Merchant Center Analytics",
+   "by": "Google Merchant Center 도움말",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://support.google.com/merchants/answer/9626903?hl=en",
+   "why": "같은 상품을 묶고 기준 가격과 차이를 재는 공개 정의. 업무 ①③의 경쟁력 지표를 설계할 때 출발점."
+  },
+  {
+   "id": "sql-tanimura",
+   "title": "SQL로 시작하는 데이터 분석",
+   "by": "캐시 타니무라 · 한빛미디어 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%EB%A1%9C%20%EC%8B%9C%EC%9E%91%ED%95%98%EB%8A%94%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%B6%84%EC%84%9D",
+   "why": "시계열·코호트·이상값 탐지를 SQL로 하는 장이 있다. 필수 요건 'SQL'과 업무 ②의 전월·전년 비교 쿼리에 바로 쓴다."
+  },
+  {
+   "id": "sqlite-window",
+   "title": "Window Functions",
+   "by": "SQLite 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.sqlite.org/windowfunctions.html",
+   "why": "LAG·RANK·이동 구간(frame)의 정확한 문법. 내 컴퓨터에서 바로 돌려 보며 윈도우 함수를 익힐 때."
+  },
+  {
+   "id": "fppkr",
+   "title": "예측: 원리와 실제 (2판, 온라인 무료)",
+   "by": "Rob J Hyndman · George Athanasopoulos",
+   "kind": "book",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://otexts.com/fppkr/",
+   "why": "시계열 분해·계절성을 한국어로. 업무 ②에서 계절 탓과 진짜 감소를 가르는 눈을 기른다."
+  },
+  {
+   "id": "fpp3-stl",
+   "title": "Forecasting: Principles and Practice (3판) · STL decomposition",
+   "by": "Rob J Hyndman · George Athanasopoulos",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://otexts.com/fpp3/stl.html",
+   "why": "STL 분해 한 절. 계절을 뺀 나머지로 이상을 보는 출발점."
+  },
+  {
+   "id": "nist-ewma",
+   "title": "EWMA Control Charts",
+   "by": "NIST/SEMATECH e-Handbook",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc324.htm",
+   "why": "조금씩 나빠지는 신호를 잡는 관리도의 식과 한계선. 업무 ①의 '불만 전에 잡기'를 문턱 하나보다 낫게 만든다."
+  },
+  {
+   "id": "pandas-book",
+   "title": "파이썬 라이브러리를 활용한 데이터 분석 (3판)",
+   "by": "웨스 맥키니 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EB%A5%BC%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%B6%84%EC%84%9D",
+   "why": "pandas를 만든 사람이 쓴 책. 우대사항 'Python'에서 SQL 결과를 받아 점수·대기열로 바꾸는 손을 익힌다."
+  },
+  {
+   "id": "tableau-learn",
+   "title": "Tableau Free Training Videos",
+   "by": "Tableau",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.tableau.com/learn/training",
+   "why": "우대사항에 이름이 나온 대시보드 도구의 공식 무료 강의. 업무 ⑤의 '감사·가격 조직이 같이 보는 대시보드'를 직접 만들어 본다."
+  },
+  {
+   "id": "swd",
+   "title": "Storytelling with Data",
+   "by": "Cole Nussbaumer Knaflic · Wiley · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.storytellingwithdata.com/books",
+   "why": "숫자를 결정으로 잇는 차트·글쓰기. 요건 '글·말 소통'과 리더 보고용 화면을 만들 때."
+  },
+  {
+   "id": "commoncog-wbr",
+   "title": "The Amazon Weekly Business Review",
+   "by": "Cedric Chin · Commoncog",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://commoncog.com/the-amazon-weekly-business-review/",
+   "why": "지표마다 담당을 두고 매주 되짚는 방식. 업무 ⑤의 '계속 도는 장치'를 어떻게 굴리는지 감을 준다."
+  },
+  {
+   "id": "rice",
+   "title": "RICE: Simple prioritization for product managers",
+   "by": "Sean McBride · Intercom",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/",
+   "why": "점수로 줄 세우는 가장 단순한 틀. 업무 ⑤의 기회 점수·우선순위 모델을 처음 만들 때."
+  },
+  {
+   "id": "anthropic-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "why": "정해진 흐름과 에이전트를 언제 쓰나. 업무 ④에서 어떤 조사를 AI에 맡길지 정하는 기준."
+  },
+  {
+   "id": "kiro-docs",
+   "title": "Kiro 문서",
+   "by": "Kiro",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kiro.dev/docs/",
+   "why": "공고에 이름이 나온 도구. 요구사항 → 설계 → 작업으로 자동화 일을 쪼개는 방식을 한 번 써 본다."
+  },
+  {
+   "id": "devin-docs",
+   "title": "Devin 문서",
+   "by": "Cognition",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.devin.ai/",
+   "why": "공고에 이름이 나온 도구. 반복 분석 스크립트를 맡기고 결과를 검토하는 사용 사례를 본다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 조직의 말 익히기",
+   "time": "1주",
+   "goal": "가격 차이·경쟁력 비율·신뢰 배지 위험·수요 감소 신호가 무엇인지 예를 들어 설명할 수 있다.",
+   "resources": [
+    "pm-posting",
+    "gmc-price"
+   ],
+   "task": "두 공고(Analyst·PM)의 업무 예를 표 하나로 합치고, 칸마다 '무엇을 재나 · 분모 · 누가 고치나'를 한 줄씩 채운다."
+  },
+  {
+   "title": "SQL로 신호 만들기",
+   "time": "3주",
+   "goal": "가상 가격·판매 데이터에서 카테고리 경쟁력 비율(상품 수·조회 가중), 전월·전년 동시 감소를 쿼리 하나씩으로 뽑는다.",
+   "resources": [
+    "sql-tanimura",
+    "sqlite-window"
+   ],
+   "task": "가상 상품 300개 × 24개월 판매량, 경쟁사 3곳 일별 가격 표를 만들고 위 풀이의 쿼리 두 개를 카테고리·주 단위로 확장한다."
+  },
+  {
+   "title": "흔들림과 진짜 변화 가르기",
+   "time": "2주",
+   "goal": "계절 분해와 EWMA로 '오늘 조사할까'를 근거 있게 정한다.",
+   "resources": [
+    "fppkr",
+    "fpp3-stl",
+    "nist-ewma"
+   ],
+   "task": "2단계 데이터에 계절과 경쟁사 행사를 심어 두고, 단순 문턱 · 전월+전년 · EWMA 세 방식의 경보 수와 놓친 건을 표로 비교한다."
+  },
+  {
+   "title": "점수와 대시보드",
+   "time": "2주",
+   "goal": "단위가 다른 신호를 점수로 합쳐 매일 대기열을 만들고, 감사·가격 담당이 볼 화면 하나를 만든다.",
+   "resources": [
+    "pandas-book",
+    "rice",
+    "tableau-learn",
+    "swd"
+   ],
+   "task": "Python으로 z점수 가중합 대기열을 만들고 Tableau Public에 '이번 주 상위 10건 · 카테고리 경쟁력 추이' 화면을 올린다."
+  },
+  {
+   "title": "AI로 조사 1차 정리 (장치로 묶기)",
+   "time": "2주",
+   "goal": "대기열 상위 건의 조사 메모를 AI가 쓰고, 숫자 대조 검사를 붙여 매일 도는 흐름으로 만든다.",
+   "resources": [
+    "anthropic-agents",
+    "kiro-docs",
+    "devin-docs",
+    "commoncog-wbr"
+   ],
+   "task": "건마다 정해진 순서로 표를 뽑아 LLM에 원인 가설 3개를 쓰게 하고, 요약의 숫자를 원본과 대조하는 검사와 '맞은 비율' 기록 칸을 붙인다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공시로 확인되는 것은 **전 세계 직원 보수 중간값(2025년 3만 3,831달러)** 뿐이고, 물류 시급·계절 직원까지 섞인 값이라 인도 경력 3년 분석가 연봉으로 읽으면 안 된다",
+  "rows": [
+   {
+    "label": "직원 보수 중간값",
+    "value": "3만 3,831달러",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "CEO를 뺀 전 세계 직원의 중간값. 기본급·상여·수당·주식 보상 포함, 달러가 아닌 급여는 연평균 환율로 바꿨다 [8]"
+   },
+   {
+    "label": "직원 보수 중간값",
+    "value": "3만 5,545달러",
+    "basis": "공시(미국 위임장) · 2024년",
+    "note": "2024년 12월 31일 기준 전 세계 직원(시급·계절 직원 포함)에서 고른 중간값 [9]"
+   }
+  ],
+  "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없고, 인도 법인 숫자도 공개되지 않았다 — **인도 숫자 없음**. 위 값은 평균도 초봉도 아닌 전 세계 **중간값**이고 시급·계절 직원이 포함돼 있다[8] {추론}. 공고에도 연봉 범위가 없으니(직급 Lv. 4만 적혀 있다) 처우 협의 때 확인한다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "하이브리드 — 주 3일 이상 사무실, 주 2일 재택 가능(업무에 따라 더 출근)"
+   },
+   {
+    "name": "의료",
+    "detail": "본인과 직계가족을 보장하는 의료보험"
+   },
+   {
+    "name": "가족 휴가",
+    "detail": "가족 관련 휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "학습 프로그램, 여러 나라가 함께하는 프로젝트"
+   },
+   {
+    "name": "행사",
+    "detail": "팀·회사 행사"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "라운지·카페테리아"
+   },
+   {
+    "name": "유연 근무",
+    "detail": "유연한 근무 방식"
+   }
+  ],
+  "note": "근무 방식은 이 공고 [1], 나머지는 쿠팡 채용 사이트의 'Why Coupang' 소개다 [6]. 사이트는 복지가 직무·지역·자격에 따라 다를 수 있다고 적었고 금액·조건은 없다 — 인도 사무소에 무엇이 그대로 적용되는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 벵갈루루 사무소 (인도 개발 센터)",
+  "address": "6th Floor, RMZ Ecoworld, Campus 20, Units 601 & 602, Bhoganahalli Village, Varthur Hobli, Bengaluru Urban, Karnataka, India",
+  "map_url": "https://map.naver.com/p/search/RMZ%20Ecoworld%20Campus%2020%20Bengaluru",
+  "near": "벵갈루루 동남부 바르투르(Varthur)·벨란두르 쪽 업무 단지 {추론}",
+  "note": "공고 근무지는 'Bengaluru' [1], 주소는 쿠팡 채용 사이트의 벵갈루루 안내다(우편번호는 적혀 있지 않다) [7]. 인도 개발 센터는 2023년 말 문을 열었다 [18]. 이 팀 자리가 이 건물인지는 공고에 없다 {추론}."
+ }
+}
