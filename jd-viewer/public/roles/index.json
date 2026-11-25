@@ -201,6 +201,7 @@
   "jobkorea-50384211": "skax-ai-studio-mlops-pl",
   "dev-581141": "skax-ai-studio-mlops-pl",
   "ats-skcareers:sk:R262523": "skax-aidc-power-construction",
+  "ats-skcareers:sk:R262580": "skax-aidc-ulsan-health-manager",
   "ats-skcareers:sk:R262275": "skax-ax-ai-pm-pl",
   "ats-skcareers:sk:R262283": "skax-ax-ai-project-pm-pl",
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
@@ -223,6 +224,7 @@
   "ats-skcareers:sk:R262586": "skax-mfg-system-ops-mes",
   "jobkorea-50340705": "skax-nova-bss-oss-app-dev",
   "wanted-396834": "skax-nova-bss-oss-app-dev",
+  "ats-skcareers:sk:R262585": "skax-overseas-fab-system-operation-pm",
   "jobkorea-50122605": "skax-plant-energy-chem-ai-dt",
   "wanted-391836": "skax-plant-energy-chem-aidt",
   "ats-skcareers:sk:R262159": "skax-plant-energy-chem-aidt",
@@ -2172,6 +2174,16 @@
    "lines": 25
   },
   {
+   "id": "skax-aidc-ulsan-health-manager",
+   "company": "SK주식회사(AX)",
+   "role": "울산 AI DC B동 신축공사 보건관리자 (계약직)",
+   "jobs": [
+    "ats-skcareers:sk:R262580"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 22
+  },
+  {
    "id": "skax-ax-ai-pm-pl",
    "company": "SK주식회사(AX)",
    "role": "AX/AI 프로젝트 PM/PL",
@@ -2336,6 +2348,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 34
+  },
+  {
+   "id": "skax-overseas-fab-system-operation-pm",
+   "company": "SK주식회사(AX)",
+   "role": "해외 FAB 구축 System Operation PM/PL",
+   "jobs": [
+    "ats-skcareers:sk:R262585"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 29
   },
   {
    "id": "skax-plant-energy-chem-ai-dt",
