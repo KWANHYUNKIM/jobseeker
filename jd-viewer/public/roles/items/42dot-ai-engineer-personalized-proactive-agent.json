@@ -1,0 +1,493 @@
+{
+ "id": "42dot-ai-engineer-personalized-proactive-agent",
+ "company": "포티투닷(42dot)",
+ "role": "AI 엔지니어 — 개인화·선제 제안 에이전트",
+ "team": "Gleo Core 팀 · 차량 음성 비서 Gleo AI의 기억·개인화·추천·먼저 말 걸기",
+ "jobs": [
+  "ats-ashby:42dot:ed545c48-5d1d-4ba8-ba83-ad0087d56ed4"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "차량 음성 비서 **Gleo AI**가 운전자를 **기억하고**(선호·루틴·자주 가는 곳), 묻기 전에 **먼저 제안하게**(\"지금 출발하면 회의에 늦어요\", \"경로 앞 주유소가 싸요\") 만드는 자리입니다.[1] Gleo AI는 현대차 더 뉴 그랜저에 처음 실린 LLM 기반 음성 에이전트이고, 회사는 \"말하지 않아도 필요한 것을 돕는 개인화 AI\"를 다음 목표로 밝혔습니다.[2][5]",
+  "env": "LLM 하나가 아니라 **LLM + 추천·랭킹 ML + 통계 + 규칙**을 문제마다 골라 씁니다.[1] 기억을 저장·검색하는 시스템, 장소·미디어 추천, 말 걸 때를 정하는 정책, 그리고 오프라인 평가와 A/B 실험이 한 묶음입니다. 언어는 Python 또는 Kotlin이 선호됩니다.[1] Gleo AI는 빨라야 하는 일은 차 안에서, 무거운 일은 클라우드에서 처리합니다.[2]",
+  "oneline": "**기억(Memory) + 추천(Ranking) + 개입 시점(언제 말 걸까) + 실험(A/B)**을 한 사람이 끝까지 책임지는 응용 AI 엔지니어. 석사 이상 · 4년 이상 경력 자리입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "사용자 Interaction에서 경험, 선호, 맥락을 학습하고 활용하는 Long-term Memory, Retrieval, Personalization 시스템과 Learning Loop를 구축합니다.",
+   "short": "대화·행동에서 \"이 사람은 이렇다\"를 뽑아 저장하고, 필요할 때 꺼내 쓰고, 쓸수록 나아지게 하는 일.",
+   "why": "지금 Gleo AI가 이어서 이해하는 것은 **이전 대화와 상황**까지이고[2], 사용자의 행동과 선호를 이해하는 개인화·추천 고도화는 회사가 밝힌 다음 과제입니다.[2] LLM은 대화가 끝나면 아무것도 기억하지 못하므로, 기억은 모델 밖에 따로 저장하고 꺼내 와야 합니다.[11]",
+   "flows": [
+    {
+     "caption": "기억이 쌓이고 쓰이는 고리 {추론}[11][12][13]",
+     "steps": [
+      "대화·행동 로그 · \"주말엔 대전 부모님 댁\"",
+      "기억 뽑기 · 사실·선호·루틴을 짧은 문장으로",
+      "저장·갱신 · 옛 기억과 겹치면 합치고, 바뀌었으면 고친다",
+      "꺼내기(Retrieval) · 지금 질문·상황과 관련 있는 것만",
+      "사용 · 대답·추천·제안에 넣는다",
+      "되먹임(Learning Loop) · 맞았나/틀렸나를 다시 기억·모델에 반영"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "intro": "Gleo의 기억 구조는 공개되지 않았습니다. 공개 연구가 보통 쓰는 방식입니다.",
+    "items": [
+     "**기억 뽑기** — 대화를 통째로 쌓지 않고, LLM이 \"선호: 디카페인\", \"루틴: 평일 8시 판교 출근\" 같은 짧은 사실로 바꿔 저장한다.[12][13]",
+     "**기억 층 나누기** — 지금 대화에 들어가는 작은 기억과, 밖에 쌓아 두고 필요할 때 불러오는 큰 기억을 나눈다. MemGPT는 이를 컴퓨터의 메모리·디스크처럼 다뤘다.[11]",
+     "**꺼내기 점수** — 얼마나 최근인가 · 얼마나 중요한가 · 지금 질문과 얼마나 관련 있나를 더해 위에서부터 고른다(Generative Agents 방식).[12]",
+     "**바뀐 기억 처리** — 이사·이직처럼 사실이 바뀌면 옛 기억을 고쳐야 한다. LongMemEval은 이것(knowledge update)과 시간 추론, 모르면 모른다고 하기를 따로 잰다.[13]",
+     "**Learning Loop** — 제안을 받아들였나·닫았나를 다시 선호 점수와 학습 데이터로 돌린다. 같은 Gleo 조직은 이것을 데이터 플라이휠로 부른다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "기억 꺼내기 — 점수 순으로, 토큰 예산 안에서 (직접 돌린 출력)",
+     "body": "\"대전 가는 길에 뭐 사 갈까\"에 대해 최근성(시간마다 0.995배)·중요도·관련도를 더해 줄 세웠습니다. 예산 30토큰이라 3위 '출근' 기억(10토큰)은 들어가지 못하고, 더 짧은 '디카페인'이 들어갑니다 — 예산이 있으면 순서만으로는 정해지지 않습니다.[12]",
+     "lang": "python",
+     "code": "mem = [  # (내용, 몇 시간 전, 중요도 1~10, 관련도 0~1, 토큰)\n  (\"주말엔 대전 부모님 댁에 간다\", 300, 8, 0.90, 12),\n  (\"커피는 디카페인\", 20, 4, 0.10, 8),\n  (\"지난주 성심당 들렀다\", 150, 5, 0.85, 9),\n  (\"평일 8시 판교 출근\", 2, 6, 0.20, 10),\n  (\"아이 둘, 뒷좌석 카시트\", 900, 7, 0.40, 11),\n]\ndef score(h, imp, rel): return 0.995 ** h + imp / 10 + rel\nranked = sorted(mem, key=lambda m: -score(m[1], m[2], m[3]))\nbudget, used, picked = 30, 0, []\nfor m in ranked:\n    if used + m[4] <= budget: picked.append(m[0]); used += m[4]\nfor m in ranked: print(f\"{score(m[1],m[2],m[3]):.2f} {m[0]}\")\nprint(\"넣음:\", picked, used, \"토큰\")\n# 1.92 주말엔 대전 부모님 댁에 간다\n# 1.82 지난주 성심당 들렀다\n# 1.79 평일 8시 판교 출근\n# 1.40 커피는 디카페인\n# 1.11 아이 둘, 뒷좌석 카시트\n# 넣음: ['주말엔 대전 부모님 댁에 간다', '지난주 성심당 들렀다', '커피는 디카페인'] 29 토큰"
+    }
+   ],
+   "how_far": "기억 저장소(벡터 검색·키값)를 붙이는 것만으로는 부족합니다. **무엇을 기억할지·언제 고칠지·언제 잊을지 규칙을 정하고, 기억이 대답을 실제로 낫게 했는지 숫자로 보이는** 데까지가 이 줄입니다.[1][13] {추론}",
+   "refs": [1, 2, 6, 11, 12, 13],
+   "study": ["cs329z-memory", "memgpt-paper", "generative-agents", "longmemeval"]
+  },
+  {
+   "section": "task",
+   "quote": "제한된 Context Window와 Latency 제약 안에서 기억과 맥락을 선별하고 압축하는 Context Engineering, Context Summarization 전략을 설계합니다.",
+   "short": "모델에 넣을 수 있는 글자 수와 시간은 정해져 있다 — 그 안에 꼭 필요한 기억·맥락만 골라 줄여 넣는 일.",
+   "why": "Gleo AI는 저지연이 필요한 일을 차 안에서 처리하고[2], 회사는 큰 모델을 7B·1~3B급 차량용 모델로 줄여 싣는다고 말했습니다.[10] 작은 모델일수록 넣을 수 있는 맥락이 적고, 맥락이 길수록 답이 늦어집니다 {추론}. 긴 입력의 가운데에 놓인 정보는 모델이 잘 못 쓴다는 연구도 있습니다.[14]",
+   "actually": {
+    "items": [
+     "**고르기** — 위 예처럼 관련도·최근성으로 기억을 추리고, 지금 상황(주행 중·목적지·시간대)에 맞는 것만 넣는다.[12][16]",
+     "**요약** — 길어진 대화를 앞부분부터 짧은 요약으로 바꿔 두고 최근 몇 턴만 원문으로 둔다.[11][16]",
+     "**압축** — 덜 중요한 토큰을 지워 입력을 줄이는 방법(LLMLingua 등)도 있다.[15]",
+     "**놓는 자리** — 중요한 것은 입력의 앞이나 끝에 둔다. 가운데는 덜 쓰인다.[14]",
+     "**측정** — 넣은 토큰 수, 첫 글자까지 걸린 시간, 정답률을 같이 잰다. 줄였더니 빨라졌는데 틀리면 소용없다 {추론}."
+    ]
+   },
+   "how_far": "'전략을 설계'까지입니다. 맥락 크기·요약 주기·넣는 순서를 바꿔 가며 **정확도와 응답 시간의 맞바꿈 표**를 만들고 하나를 고를 근거를 대는 수준입니다. 추론 엔진 자체의 가속은 LLM 최적화 쪽 공고가 따로 있습니다.[9] {추론}",
+   "refs": [2, 9, 10, 11, 12, 14, 15, 16],
+   "study": ["cs329z-context", "anthropic-context", "lost-in-middle", "llmlingua"]
+  },
+  {
+   "section": "task",
+   "quote": "선호, 루틴, 일정, 위치, 주행 맥락을 바탕으로 장소와 미디어의 후보 생성과 Ranking을 설계하여 추천하고, 적절한 시점에 대화, 알림, Reminder, Briefing을 제공하는 Proactive Agent Experience를 개발합니다.",
+   "short": "갈 만한 곳·들을 만한 것을 골라 줄 세우고, '지금 말해도 되나'를 판단해 먼저 말을 거는 경험을 만든다.",
+   "why": "Gleo AI의 첫 OTA는 지금 위치·거리를 보고 휴게소·주유소·화장실을 추천하고, 주유소는 연료별 가격을 알려 주도록 내비 연동을 넓혔습니다.[4] 회사는 다음 단계로 \"말하지 않아도 필요한 것을 돕는\" 개인화 AI를 밝혔습니다.[2] 운전 중에는 잘못된 시점의 말 한마디가 방해가 되므로, **무엇을**과 **언제**를 둘 다 정해야 합니다 {추론}.",
+   "flows": [
+    {
+     "caption": "추천 하나가 말이 되기까지 {추론}[18][19][20]",
+     "steps": [
+      "신호 모으기 · 선호·루틴·일정·위치·연료·시간대",
+      "후보 만들기 · 경로 앞 장소·자주 듣는 채널 수백 개",
+      "순위 매기기 · 이 사람·이 순간에 맞는 순서",
+      "말 걸까 판단 · 이득 대 방해, 운전 부하",
+      "전달 · 대화·알림·리마인더·브리핑 중 하나"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**후보 → 순위 2단계** — 수많은 장소·콘텐츠에서 먼저 수백 개를 빠르게 추리고, 정밀한 모델로 순서를 정한다(유튜브 추천 구조).[18]",
+     "**맥락 신호** — 일정(회의 9시)·위치(출근 경로)·연료(30km 남음)·시간대(아침엔 뉴스, 저녁엔 음악)가 피처다.",
+     "**먼저 말하기의 판단** — \"제안이 받아들여질 확률 × 이득\"이 \"거절될 확률 × 방해 비용\"보다 클 때만 말한다. 사람과 시스템이 주도권을 나누는 인터페이스 원칙으로 오래전에 정리됐다.[20]",
+     "**LLM이 먼저 돕기** — 사용자의 활동·환경을 보고 할 일을 예측해 돕는 에이전트를 학습한 연구에서, 미세조정 모델이 '도울 때'를 맞힌 F1이 약 66%였다 — 아직 쉬운 문제가 아니다.[19]",
+     "**전달 방식** — 바로 대화로 할지, 화면 알림으로 둘지, 정차 뒤 브리핑으로 미룰지도 정책이다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "지금 먼저 말할까 — 기대 이득과 운전 부하 (직접 돌린 출력)",
+     "body": "수락 확률 0.6이면 기대 이득 +0.40이라 말하고, 근거가 약해 0.2면 −0.20이라 말하지 않습니다. 합류 구간처럼 운전 부하가 높으면 확률과 상관없이 미룹니다. 숫자는 가상입니다.[20]",
+     "lang": "python",
+     "code": "def decide(p, gain, cost, load):\n    if load == \"높음\": return \"미룸\"\n    ev = p * gain - (1 - p) * cost\n    return f\"{'말함' if ev > 0 else '안 함'} (EV {ev:+.2f})\"\nprint(decide(0.6, 1.0, 0.5, \"낮음\"))  # 연료 부족 + 경로 앞 주유소\nprint(decide(0.2, 1.0, 0.5, \"낮음\"))  # 근거 약한 맛집 추천\nprint(decide(0.6, 1.0, 0.5, \"높음\"))  # 합류 구간\n# 말함 (EV +0.40)\n# 안 함 (EV -0.20)\n# 미룸"
+    }
+   ],
+   "how_far": "추천 모델 하나보다 **후보·순위·개입 판단·전달 방식을 잇는 구조**를 설계하는 줄입니다. 화면·음성 문구는 UX 조직, 장소 데이터는 내비게이션 조직과 나눌 것으로 보입니다.[7] {추론}",
+   "refs": [2, 4, 7, 18, 19, 20],
+   "study": ["youtube-dnn", "proactive-agent", "horvitz-mixed", "handson-ml"]
+  },
+  {
+   "section": "task",
+   "quote": "개인화와 선제적 개입의 효과를 검증하는 Offline 평가와 Online A/B 실험을 설계하고, 품질과 임팩트를 드러내는 지표를 정의하여 Memory, 추천, 개입 정책을 지속적으로 개선하는 Closed-loop Evaluation 체계를 구축합니다.",
+   "short": "\"개인화했더니 정말 나아졌나\"를 출시 전엔 지난 로그로, 출시 후엔 A/B 실험으로 재고, 그 결과로 다시 고친다.",
+   "why": "먼저 말을 거는 기능은 잘못되면 방해가 되므로 효과를 숫자로 확인해야 합니다 {추론}. 회사는 Gleo Guard를 내부 평가셋과 1만 5천여 건 실제 흐름 평가로 나눠 쟀고, 실패 사례를 다시 데이터 생성으로 돌리는 고리를 계획했습니다.[3] Gleo AI는 주행 데이터와 고객 의견을 OTA로 계속 반영한다고 밝혔습니다.[2]",
+   "actually": {
+    "items": [
+     "**오프라인 평가** — 지난 로그로 새 정책을 미리 잰다. 옛 정책이 고른 것만 결과가 남아 있으므로, 고른 확률로 나눠 보정한다(IPS, 역확률 가중).[22]",
+     "**온라인 A/B** — 사용자를 둘로 나눠 한쪽만 새 정책을 쓰고 차이를 통계로 확인한다. 표본 크기·실험 기간·여러 지표를 동시에 볼 때의 함정을 미리 정한다.[23]",
+     "**지표 층** — 품질(추천 수락률·기억 정답률), 임팩트(재사용·만족), 가드 지표(제안을 닫은 비율·운전 중 개입 수)를 나눈다 {추론}.",
+     "**LLM 판정** — 요약이 맞는지·대답이 자연스러운지는 다른 LLM이 채점하기도 한다. 순서·길이에 치우치는 버릇을 알고 써야 한다.[28]",
+     "**Closed-loop** — 실패 사례 → 원인 분류 → 기억 규칙·추천 모델·개입 문턱 수정 → 다시 실험."
+    ]
+   },
+   "examples": [
+    {
+     "title": "지난 로그로 미리 재기(IPS)와 A/B 검정 (직접 돌린 출력)",
+     "body": "로그 6건으로 새 정책 수락률을 0.678로 추정했지만, 확률 0.2로 뽑혔던 한 건이 가중치 3배를 받아 값이 크게 흔들립니다. A/B에서 12.0% → 12.9%(각 1만 명)는 z = 1.93으로 양측 5% 기준을 못 넘고, 이 차이를 80% 확률로 잡으려면 칸당 약 2만 1천 명이 필요합니다.[22][23]",
+     "lang": "python",
+     "code": "import math\nlogs = [(\"주유소\", 0.5, 1), (\"카페\", 0.3, 0), (\"주유소\", 0.5, 0),\n        (\"휴게소\", 0.2, 1), (\"카페\", 0.3, 1), (\"휴게소\", 0.2, 0)]  # (보여준 것, 옛 정책 확률, 수락)\nnew = {\"주유소\": 0.2, \"카페\": 0.2, \"휴게소\": 0.6}\nips = sum(new[a] / p * r for a, p, r in logs) / len(logs)\nprint(\"옛 정책\", round(sum(r for *_, r in logs) / len(logs), 3), \"· 새 정책 IPS\", round(ips, 3))\ndef z(c1, n1, c2, n2):\n    p1, p2, p = c1/n1, c2/n2, (c1+c2)/(n1+n2)\n    return (p2 - p1) / math.sqrt(p * (1-p) * (1/n1 + 1/n2))\nprint(\"z =\", round(z(1200, 10000, 1290, 10000), 2))\np1, p2 = 0.12, 0.129; pb = (p1+p2)/2\nn = (1.96*math.sqrt(2*pb*(1-pb)) + 0.8416*math.sqrt(p1*(1-p1)+p2*(1-p2)))**2 / (p2-p1)**2\nprint(\"필요 표본(칸당)\", math.ceil(n))\n# 옛 정책 0.5 · 새 정책 IPS 0.678\n# z = 1.93\n# 필요 표본(칸당) 21124"
+    }
+   ],
+   "how_far": "실험 플랫폼을 처음부터 만드는 것이 아니라, **무엇을 재고(지표 정의)·얼마나 오래·몇 명에게 돌릴지 정하고, 결과를 다음 수정으로 잇는** 체계가 이 줄의 몫입니다. 차 한 대에 운전자가 여럿일 수 있어 실험 단위(사람·차량)를 정하는 것도 여기 들어갑니다. {추론}",
+   "refs": [2, 3, 22, 23, 28],
+   "study": ["kohavi-ab", "li-offline-eval", "cs336-eval", "cme295-eval"]
+  },
+  {
+   "section": "task",
+   "quote": "관련 최신 연구와 기술을 실험하고, 문제 특성에 따라 LLM, 머신러닝·통계 모델, 규칙 기반 시스템을 선택하고 조합하여 안정적인 Production Capability로 구현합니다.",
+   "short": "모든 걸 LLM에 맡기지 않는다 — 문제마다 LLM·ML·통계·규칙 중 맞는 것을 골라 섞고, 실제 차에서 안 깨지게 만든다.",
+   "why": "Gleo AI는 이해·판단·응답 단계마다 목적에 맞는 LLM을 골라 쓰는 구조이고, 차량 제어는 안전 상황을 확인한 뒤 실행되도록 짜여 있습니다.[2] 같은 Gleo 조직의 내비게이션 공고도 분류·예측·랭킹 같은 전통 ML을 에이전트 옆에 둡니다.[7]",
+   "actually": {
+    "items": [
+     "**LLM** — 대화에서 선호·사실을 뽑기, 브리핑 문장 만들기처럼 말을 다루는 일.",
+     "**ML·랭킹** — 장소·미디어 순위, 수락 확률 예측. 빠르고 로그로 계속 학습된다 {추론}.",
+     "**통계** — 루틴 찾기(평일 8시 ±15분 출발이 몇 주째인가), 실험 검정.",
+     "**규칙** — 운전 부하가 높을 때 말 걸지 않기, 하루 알림 횟수 상한처럼 꼭 지켜야 할 것 {추론}.",
+     "**안정성** — 기억 저장이 실패하거나 모델이 늦으면 개인화 없는 기본 동작으로 물러선다 {추론}."
+    ]
+   },
+   "how_far": "\"왜 이 문제엔 LLM 대신 규칙을 썼나\"를 지연·비용·안전·설명 가능성으로 말할 수 있어야 합니다. 논문을 재현해 보는 실험과 서비스에 넣는 판단을 같이 맡습니다.[1] {추론}",
+   "refs": [1, 2, 7],
+   "study": ["ai-engineering", "cme295-agent"]
+  },
+  {
+   "section": "qualification",
+   "quote": "컴퓨터공학, 인공지능 등 관련 분야 석사 학위 이상 및 AI/ML 또는 소프트웨어 엔지니어링 분야 4년 이상의 실무 경력",
+   "short": "석사 이상 + 4년 이상. 둘 다 필요한 '그리고' 조건이다.",
+   "why": "연구를 읽고 실험하는 일과 서비스로 만드는 일을 같이 하는 자리라서입니다.[1] 같은 Gleo Core 팀의 Self-Evolving Agent 공고도 같은 조건이고[6], 내비게이션 에이전트 공고에는 연차가 적혀 있지 않습니다.[7]",
+   "how_far": "경력은 AI/ML이 아니라 **소프트웨어 엔지니어링도 인정**됩니다.[1] 백엔드 4년 + 추천·LLM 석사 연구 조합도 맞는 셈입니다 {추론}.",
+   "refs": [1, 6, 7]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM 및 Agentic AI의 핵심 원리를 이해하고 실서비스에 적용한 경험",
+   "short": "LLM이 왜 그렇게 답하는지(토큰·맥락·도구 호출)를 알고, 그것을 실제 사용자 앞에 내놓아 본 경험.",
+   "why": "Gleo AI는 LLM이 의도를 파악해 알맞은 에이전트를 골라 조합하고 응답을 만드는 구조입니다.[1][2]",
+   "level": {
+    "basic": "프롬프트·맥락 길이·도구 호출(function calling) 흐름을 설명할 수 있다",
+    "work": "에이전트를 서비스에 내고 실패 로그로 고쳐 본 적이 있다",
+    "team": "기억·맥락 설계가 대답 품질·지연을 어떻게 바꾸는지 실험으로 보여 줄 수 있다"
+   },
+   "how_far": "'적용한 경험'이 핵심입니다. 데모가 아니라 실제 사용자가 쓴 에이전트 하나를 지연·실패율과 함께 말할 수 있어야 합니다.[1] {추론}",
+   "refs": [1, 2],
+   "study": ["cme295-agent", "cs329z-context", "ai-engineering"]
+  },
+  {
+   "section": "qualification",
+   "quote": "실사용 로그와 데이터를 분석해 문제를 발견하고, 개선 방향과 우선순위를 도출한 경험",
+   "short": "로그를 직접 뒤져 \"여기가 제일 크게 틀린다\"를 찾고, 무엇부터 고칠지 정해 본 경험.",
+   "why": "회사는 실제 주행 데이터와 고객 의견을 서비스에 바로 반영하는 체계를 말했고[2], 첫 OTA도 출시 뒤 의견으로 내비 연동을 손봤습니다.[4]",
+   "actually": {
+    "items": [
+     "제안을 닫은 비율을 시간대·경로·제안 종류별로 나눠 본다",
+     "기억이 틀린 사례(이사 전 주소를 '집'으로 씀)를 모아 종류를 센다",
+     "가장 자주·가장 크게 불편한 칸부터 고친다 — 빈도 × 영향 {추론}"
+    ]
+   },
+   "how_far": "SQL·파이썬으로 로그를 직접 나눠 보는 수준은 기본입니다. \"무엇을 봤고, 그래서 무엇을 먼저 고쳤고, 얼마나 나아졌다\"는 이야기 하나가 있으면 좋습니다. {추론}",
+   "refs": [2, 4],
+   "study": ["kohavi-ab", "ai-engineering"]
+  },
+  {
+   "section": "qualification",
+   "quote": "가설 수립, 실험, 평가를 통해 불확실한 문제를 구조화하고 개선할 수 있는 역량",
+   "short": "\"먼저 말 걸면 좋아할까?\"처럼 답이 없는 질문을 가설 → 실험 → 지표로 바꿔 푸는 힘.",
+   "why": "업무 네 번째 줄(오프라인 평가·A/B·지표 정의)을 위한 요건입니다.[1] 먼저 돕는 에이전트는 정답 데이터가 거의 없는 새 문제입니다.[19]",
+   "how_far": "가설을 \"아침 출근길 브리핑을 켜면 7일 안 재사용이 늘어난다\"처럼 **잴 수 있게** 쓰고, 지표·표본·실험 기간을 미리 정하는 수준입니다.[23] {추론}",
+   "refs": [1, 19, 23],
+   "study": ["kohavi-ab"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Production 수준의 AI/ML 시스템을 설계, 구현, 운영할 수 있는 소프트웨어 개발 역량 (Python 또는 Kotlin 선호)",
+   "short": "모델을 서비스로 띄우고, 느려지거나 깨지면 고칠 수 있는 개발 실력. 파이썬이나 코틀린.",
+   "why": "공고 기술 스택이 Python·Kotlin입니다.[1] 연구 모델은 파이썬, 서버·차량 쪽 서비스는 코틀린으로 나뉘는 경우가 흔합니다 {추론}.",
+   "level": {
+    "basic": "파이썬으로 데이터 처리·모델 학습, API 하나 띄우기",
+    "work": "기억 저장소·추천 서비스를 지연·장애 대응까지 포함해 운영",
+    "team": "LLM·ML·규칙을 묶은 서비스를 버전 관리하고, 실험 플래그로 일부 사용자에게만 켜기"
+   },
+   "how_far": "'운영'까지가 조건입니다. 로그·지표·알림을 붙이고, 모델을 바꿔도 서비스가 멈추지 않게 배포해 본 경험이 최소선입니다. {추론}",
+   "refs": [1],
+   "study": ["ai-engineering", "handson-ml"]
+  },
+  {
+   "section": "qualification",
+   "quote": "중요한 문제를 스스로 정의하고 사용자에게 전달되는 결과까지 책임지는 Ownership과 협업 역량",
+   "short": "누가 시키기 전에 문제를 고르고, 사용자에게 닿는 순간까지 끝을 본다.",
+   "why": "팀 소개가 \"연구 수준의 데모가 아니라 수많은 사용자가 매일 경험하는 안정적이고 유용한 서비스\"를 강조합니다.[1] 2차 면접이 3시간 안팎이라 협업과 문제 정의도 같이 볼 것으로 보입니다.[1] {추론}",
+   "refs": [1]
+  },
+  {
+   "section": "preference",
+   "quote": "Long-term Memory, Retrieval, User Modeling, Personalization, Recommendation System 관련 연구 또는 개발 경험",
+   "short": "업무 첫 줄과 세 번째 줄을 이미 해 본 사람 — 기억·검색·사용자 모델·추천.",
+   "why": "업무가 기억·검색·개인화 시스템 구축과 장소·미디어 추천입니다.[1]",
+   "actually": {
+    "items": [
+     "**Retrieval** — 질문과 비슷한 글을 찾아 모델에 넣기(RAG).[17]",
+     "**User Modeling** — 사용자를 피처·임베딩·짧은 사실 목록으로 표현하기.[12][18]",
+     "**Recommendation** — 후보 생성과 순위 매기기, 랭킹 지표.[18][25]",
+     "**Long-term Memory** — 세션을 넘어 기억하고, 바뀐 사실을 고치고, 모르면 모른다고 하기.[11][13]"
+    ]
+   },
+   "refs": [1, 11, 12, 13, 17, 18, 25],
+   "study": ["cs329z-memory", "cs329z-rag", "rag-paper", "youtube-dnn", "lambdamart"]
+  },
+  {
+   "section": "preference",
+   "quote": "일정, 위치, 이동 패턴 등 다양한 Context Signal을 활용한 Context-aware 또는 Proactive Assistant 개발 경험",
+   "short": "일정·위치·이동 패턴을 보고 상황에 맞게 반응하거나 먼저 도와주는 비서를 만들어 본 경험.",
+   "why": "Gleo는 발화자 위치·대화 맥락·주행 상황을 함께 이해한다고 설명하고[2][6], 첫 OTA의 추천도 현재 위치·거리를 씁니다.[4] Gleo Guard 글은 일정 등록을 차량이 실행할 수 있는 행동 유형의 하나로 듭니다.[3]",
+   "actually": {
+    "items": [
+     "**이동 패턴** — 평일 출발 시각·자주 가는 곳을 모아 '다음 목적지' 후보를 만든다 {추론}",
+     "**일정** — 다음 일정 장소와 예상 도착 시간을 비교해 늦을 것 같으면 알린다 {추론}",
+     "**주행 상태** — 연료·배터리 잔량, 고속도로 여부, 동승자 유무가 제안의 조건이 된다.[2][4]"
+    ]
+   },
+   "refs": [2, 3, 4, 6],
+   "study": ["proactive-agent", "horvitz-mixed"]
+  },
+  {
+   "section": "preference",
+   "quote": "사용자 Interaction 데이터에서 명시적·암묵적 Feedback을 추출하고 User Profile이나 Feature로 연결하는 데이터 파이프라인을 구축한 경험",
+   "short": "\"좋아\"(명시)뿐 아니라 '경로로 정함·닫음·무시'(암묵)까지 신호로 바꿔 사용자 프로필에 쌓는 파이프라인.",
+   "why": "차 안에서 사용자가 별점을 주는 일은 드물어 대부분의 신호는 행동에서 나옵니다 {추론}. 암묵 피드백은 '싫다'가 잘 드러나지 않고 신뢰도가 제각각이라 명시 평점과 다르게 다뤄야 한다는 것이 추천 연구의 오래된 결론입니다.[24]",
+   "examples": [
+    {
+     "title": "행동 로그 → 장소별 선호 점수 (직접 돌린 출력)",
+     "body": "추천에서 경로로 정함 +1, 무시 −0.1, 닫음 −0.5로 두고, 사용자가 스스로 검색한 것은 1.5배 강한 신호로 셌습니다. 가중치는 가상이고, 실제로는 실험으로 정합니다.[24]",
+     "lang": "python",
+     "code": "events = [(\"스타벅스 판교\", \"추천\", \"경로 설정\"), (\"스타벅스 판교\", \"추천\", \"경로 설정\"),\n          (\"이디야 서현\", \"추천\", \"닫기\"), (\"이디야 서현\", \"추천\", \"무시\"),\n          (\"성심당 본점\", \"직접 검색\", \"경로 설정\"), (\"스타벅스 판교\", \"추천\", \"닫기\")]\nW = {\"경로 설정\": 1.0, \"무시\": -0.1, \"닫기\": -0.5}\npref = {}\nfor place, how, act in events:\n    w = W[act] * (1.5 if how == \"직접 검색\" else 1.0)\n    pref[place] = round(pref.get(place, 0) + w, 2)\nprint(sorted(pref.items(), key=lambda x: -x[1]))\n# [('스타벅스 판교', 1.5), ('성심당 본점', 1.5), ('이디야 서현', -0.6)]"
+    }
+   ],
+   "refs": [24],
+   "study": ["hu-implicit", "handson-ml"]
+  },
+  {
+   "section": "preference",
+   "quote": "Ranking, Contextual Bandit, Sequential Decision Making 등의 방법으로 추천과 선제적 개입 정책을 실험하고 최적화한 경험",
+   "short": "고르고 → 반응 보고 → 다음 고르기를 고치는 방법들. '아직 모르는 것도 가끔 시도해 봐야' 배운다.",
+   "why": "먼저 말 걸기는 한 번 정하고 끝나는 문제가 아니라, 반응을 보며 계속 고쳐야 하는 정책입니다 {추론}. 업무 세 번째·네 번째 줄(추천·개입 정책 개선)을 위한 우대입니다.[1]",
+   "actually": {
+    "items": [
+     "**Ranking** — 후보 순서 자체를 학습(LambdaMART 등).[25]",
+     "**Contextual Bandit** — 상황(아침·저녁)을 보고 하나를 고른 뒤 그 결과만 보고 배운다. 야후 뉴스 추천에 쓰인 LinUCB가 대표 예다.[21]",
+     "**Sequential Decision Making** — 지금 말하면 나중 반응도 바뀐다(자주 말하면 꺼 버린다). 이런 연쇄는 강화학습의 MDP로 다룬다.[37]",
+     "**오프라인 평가와 짝** — 밴딧 로그에 고른 확률을 남겨야 나중에 새 정책을 미리 잴 수 있다.[22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "상황별로 고르는 엡실론 탐욕 밴딧 (직접 돌린 출력)",
+     "body": "아침엔 브리핑(실제 수락률 0.55), 저녁엔 음악(0.6)이 낫다고 가정했습니다. 전혀 탐색하지 않으면(eps 0) 처음 운에 갇혀 0.471, 늘 무작위면 0.419, 10%만 탐색하면 0.546으로 최선 0.575에 가깝습니다.[21][37]",
+     "lang": "python",
+     "code": "import random\nrandom.seed(0)\ntrue = {\"아침:뉴스 브리핑\": 0.55, \"아침:음악\": 0.35, \"저녁:음악\": 0.6, \"저녁:뉴스 브리핑\": 0.2}\ndef run(eps, T=4000):\n    n, s, got = {}, {}, 0\n    for t in range(T):\n        ctx = \"아침\" if t % 2 == 0 else \"저녁\"\n        arms = [k for k in true if k.startswith(ctx)]\n        if random.random() < eps or not all(a in n for a in arms):\n            a = random.choice(arms)\n        else:\n            a = max(arms, key=lambda k: s[k] / n[k])\n        r = 1 if random.random() < true[a] else 0\n        n[a] = n.get(a, 0) + 1; s[a] = s.get(a, 0) + r; got += r\n    return got / T\nfor e in (0.0, 0.1, 1.0): print(f\"eps {e}: 수락률 {run(e):.3f} (최선 0.575)\")\n# eps 0.0: 수락률 0.471 (최선 0.575)\n# eps 0.1: 수락률 0.546 (최선 0.575)\n# eps 1.0: 수락률 0.419 (최선 0.575)"
+    }
+   ],
+   "refs": [1, 21, 22, 25, 37],
+   "study": ["linucb-paper", "sutton-barto", "cs221-mdp", "cs221-rl", "lambdamart"]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM의 Mid-training, Post-training 또는 추천·랭킹 등 머신러닝 모델을 직접 학습하고 서비스에 적용한 경험",
+   "short": "가져다 쓴 모델이 아니라 직접 학습시킨 모델 — LLM 후속 학습이든 추천 모델이든.",
+   "why": "회사는 자체 LLM 비중을 늘리겠다고 했고[2], Gleo Guard를 SFT 다음 GRPO(강화학습) 순서로 직접 학습해 범용 대형 모델보다 높은 정확도를 냈다고 밝혔습니다.[3] 대형 사전학습은 LLM Training 팀 공고가 따로 있습니다.[9]",
+   "actually": {
+    "items": [
+     "**Mid-training** — 사전학습과 마무리 학습 사이에 특정 분야(차량·대화) 데이터로 더 학습하는 단계.",
+     "**Post-training** — 지시 따르기(SFT)·선호 학습(DPO)·강화학습(GRPO).[26][27]",
+     "**추천·랭킹 모델** — 수락 확률 예측, 순위 학습.[25]"
+    ]
+   },
+   "refs": [2, 3, 9, 25, 26, 27],
+   "study": ["cs336-post", "cs329z-optimize", "lambdamart"]
+  },
+  {
+   "section": "preference",
+   "quote": "On-device AI와 Cloud AI를 결합하거나 Privacy와 민감정보 처리 원칙을 제품에 적용한 경험",
+   "short": "무엇을 차 안에서, 무엇을 서버에서 처리할지 나누고, 위치·일정 같은 민감정보를 안전하게 다뤄 본 경험.",
+   "why": "Gleo AI는 저지연·안정성이 필요한 일은 차 안, 고성능 연산은 클라우드로 나누는 하이브리드 구조이고, 회사는 차량 인터랙션 데이터가 개인정보와 주행 맥락이 결합돼 엄격한 통제가 필요하다고 밝혔습니다.[2] Gleo Guard 학습 데이터에서도 개인정보가 담긴 사례를 지우고 실제 전화번호·주소·메시지 원문은 쓰지 않았습니다.[3]",
+   "actually": {
+    "items": [
+     "**나누기** — 빠른 판단(지금 말 걸까)은 차 안, 큰 요약·추천 학습은 서버 {추론}.[2]",
+     "**보내는 것 줄이기** — 원문 대화 대신 뽑은 사실만, 정확한 좌표 대신 동네 단위로 {추론}.",
+     "**법** — 국내에서 개인위치정보를 수집·이용하려면 위치정보법에 따른 동의·고지가 필요하다.[35]",
+     "**서버 처리도 보호** — 애플은 클라우드로 보낸 개인 데이터를 처리 뒤 남기지 않고 외부가 검증할 수 있게 하는 구조를 공개했다(다른 회사 사례).[36]",
+     "**지우기** — 사용자가 \"그거 잊어\"라고 하면 기억 저장소와 파생 피처에서 함께 지워야 한다 {추론}."
+    ]
+   },
+   "refs": [2, 3, 35, 36],
+   "study": ["apple-pcc", "location-law"]
+  },
+  {
+   "section": "preference",
+   "quote": "AI/LLM 시스템의 품질, 개입 시점, Latency, Cost, Reliability를 평가하고 최적화한 경험",
+   "short": "잘 맞히나·제때 말하나·빠른가·싼가·안 깨지나 — 다섯 가지를 같이 재고 맞바꿔 본 경험.",
+   "why": "회사는 초저지연 응답을 강조하고[2], 큰 모델을 차량용 작은 모델로 줄이고 칩에 맞게 양자화한다고 말했습니다.[10] '개입 시점'이 평가 항목에 따로 적힌 것이 이 자리의 특징입니다.[1]",
+   "actually": {
+    "items": [
+     "**품질** — 기억 정답률, 추천 수락률.",
+     "**개입 시점** — 제안을 받아들인 비율과 닫은 비율을 상황(정차·고속도로·합류)별로.",
+     "**Latency** — 첫 글자까지 시간, 전체 응답 시간. 기억 검색·순위 계산 시간도 더한다.",
+     "**Cost** — 요청당 토큰·서버 비용. 기억이 많아질수록 늘어난다.",
+     "**Reliability** — 기억 저장소가 응답하지 않을 때 물러서는 비율, 같은 입력에 같은 결과를 내는 비율 {추론}."
+    ]
+   },
+   "refs": [1, 2, 10],
+   "study": ["cs336-eval", "cme295-eval", "ai-engineering"]
+  }
+ ],
+ "fit": {
+  "good": [
+   "추천 시스템과 LLM 에이전트를 둘 다 해 본, 혹은 하고 싶은 사람[1]",
+   "\"언제 말 걸까\" 같은 답 없는 문제를 실험으로 푸는 게 재미있는 사람",
+   "A/B 실험 숫자를 믿기 전에 의심부터 하는 사람[23]",
+   "모델이 실제 차에서 매일 쓰이는 걸 보고 싶은 사람[2][5]"
+  ],
+  "hard": [
+   "석사 이상 + 4년 이상이 '그리고' 조건이라 둘 중 하나만 있으면 지원 문턱을 넘기 어렵다[1]",
+   "개인화·선제 제안은 회사가 '다음 과제'로 밝힌 단계라 기존 시스템보다 새로 만드는 일이 많을 수 있다[2] {추론}",
+   "Gleo 조직에 비슷한 에이전트 공고가 여럿이라 팀 경계가 들어가기 전엔 흐릿하다[6][7][8]",
+   "이 팀의 기억·추천 구조를 공개한 글·발표가 없다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "운전자가 이사를 했습니다. '집으로 가자'가 옛 주소로 가지 않게 기억 시스템을 어떻게 설계하겠어요?",
+   "a": "기억 갱신·충돌 처리·시간 정보, 확신 없으면 되묻기 — LongMemEval의 knowledge update·abstention.[13]"
+  },
+  {
+   "q": "맥락 창이 4천 토큰인 차량 모델에 기억 200개를 어떻게 넣겠어요?",
+   "a": "최근성·중요도·관련도로 고르기, 요약, 놓는 자리.[12][14][16]"
+  },
+  {
+   "q": "출근길 브리핑을 먼저 켜 주는 기능을 출시할지 어떻게 정하겠어요?",
+   "a": "오프라인 IPS로 거르고 A/B로 확인, 수락률과 함께 닫은 비율·운전 중 개입 수를 가드 지표로.[22][23]"
+  },
+  {
+   "q": "수락률이 오르는데 기능을 끄는 사용자도 늘었습니다. 무엇을 보겠어요?",
+   "a": "단기 지표와 장기 반응의 차이 — 순차 결정 문제로 보기, 개입 빈도 상한.[20][37]"
+  },
+  {
+   "q": "어떤 개인화를 차 안에서, 어떤 것을 클라우드에서 하겠어요?",
+   "a": "지연·안정성·개인정보로 나누기 — Gleo의 하이브리드 구조.[2][3]"
+  }
+ ],
+ "sources": [
+  {"n": 1, "title": "42dot 채용 · AI Engineer (Personalized & Proactive Agent)", "url": "https://jobs.ashbyhq.com/42dot/ed545c48-5d1d-4ba8-ba83-ad0087d56ed4", "kind": "posting", "note": "Gleo Core 팀 소개·업무·요건·우대·전형(서류 → 1차 1시간 → 2차 3시간 → 처우 협의), 기술 스택 Kotlin·Python, 근무지 판교(원격 표기)"},
+  {"n": 2, "title": "42dot · 차량용 음성 AI 에이전트 '글레오 AI' 기술 공개", "url": "https://42dot.ai/ko/stories/blog-news/42dot-unveils-gleo-ai", "kind": "company", "date": "2026-05-21", "note": "본문의 공개일(페이지 상단 날짜는 2026-07-15). 이전 대화·상황 이해, 목적별 LLM 선택, 온디바이스·클라우드 하이브리드, 개인정보·주행 맥락 거버넌스, 다음 과제로 개인화·추천 고도화·'말하지 않아도 돕는 개인화 AI' — 기억 구조·지연 숫자 없음"},
+  {"n": 3, "title": "42dot 기술 블로그 · Gleo Guard l 차량 AI Agent를 위한 안전 가드레일", "url": "https://42dot.ai/ko/stories/blog-news/gleoguard", "kind": "company", "date": "2026-09-11", "note": "SFT → GRPO, 내부 평가셋 정확도 98.26%, 실제 흐름 평가 15,010건, 개인정보 사례 제거·실제 번호·주소·원문 미사용, 행동 유형에 일정 등록 포함, 실패 사례를 합성 데이터로 되돌리는 계획"},
+  {"n": 4, "title": "스타뉴스 · 글레오 AI 첫 OTA 업데이트(내비게이션 연동 강화)", "url": "https://www.starnewskorea.com/en/business-life/2026/10/30/2026103009493948696", "kind": "news", "date": "2026-10-30", "note": "위치·거리 기반 휴게소·주유소·화장실 추천, 연료별 가격, 경유지 남은 시간 — 영문 기계번역판으로 확인(같은 날 다른 풀이에서)"},
+  {"n": 5, "title": "뉴시스 · \"성심당 빵 메뉴까지 추천\"…현대차그룹 '글레오AI 에이전트' 뭐길래", "url": "https://www.newsis.com/view/NISX20260429_0003610848", "kind": "news", "date": "2026-04-30", "note": "더 뉴 그랜저 첫 적용, 시연"},
+  {"n": 6, "title": "42dot 채용 · AI Engineer (Self-Evolving Agent)", "url": "https://jobs.ashbyhq.com/42dot/5baee8ca-8d47-4690-bae5-a5a1858256bc", "kind": "posting", "note": "같은 Gleo Core 팀 — 위치·대화 맥락·주행 상황 이해, 데이터 플라이휠, 석사·4년 이상"},
+  {"n": 7, "title": "42dot 채용 · AI Engineer (Navigation Agent)", "url": "https://jobs.ashbyhq.com/42dot/4a19a543-6ed0-46bf-8519-b34b45e2ffa6", "kind": "posting", "note": "같은 Gleo 조직 — 분류·예측·랭킹 ML, 연차 표기 없음"},
+  {"n": 8, "title": "42dot 채용 · Senior AI Agent Engineer (Gleo Interactor)", "url": "https://jobs.ashbyhq.com/42dot/464eb98e-07e6-4cd4-af5d-2d9e9322a3cc", "kind": "posting", "note": "Agent 실행 구조·대화 흐름, 8년 이상"},
+  {"n": 9, "title": "42dot 채용 · LLM Engineer (LLM Training)", "url": "https://jobs.ashbyhq.com/42dot/4efa5e05-972f-4887-b3bd-f87862200f86", "kind": "posting", "note": "사전·사후 학습 효율, 분산 학습"},
+  {"n": 10, "title": "SKT 뉴스룸 · 포티투닷 Gleo AI 그룹장 인터뷰", "url": "https://news.sktelecom.com/216640", "kind": "news", "date": "2025-11-13", "note": "큰 모델 → 7B·1~3B 차량용 증류, 칩 맞춤 양자화 — 포티투닷 쪽 발언"},
+  {"n": 11, "title": "MemGPT: Towards LLMs as Operating Systems", "url": "https://arxiv.org/abs/2310.08560", "kind": "reference", "date": "2023", "note": "맥락 안 기억과 밖 기억을 메모리·디스크처럼 나눠 관리"},
+  {"n": 12, "title": "Generative Agents: Interactive Simulacra of Human Behavior", "url": "https://arxiv.org/abs/2304.03442", "kind": "reference", "date": "2023", "note": "기억 꺼내기 점수 = 최근성 + 중요도 + 관련도"},
+  {"n": 13, "title": "LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory (ICLR 2025)", "url": "https://arxiv.org/abs/2410.10813", "kind": "reference", "date": "2024-10", "note": "정보 뽑기·여러 세션 추론·시간 추론·지식 갱신·모르면 모른다고 하기, 상용 비서·긴 맥락 모델 정확도 약 30% 하락"},
+  {"n": 14, "title": "Lost in the Middle: How Language Models Use Long Contexts", "url": "https://arxiv.org/abs/2307.03172", "kind": "reference", "date": "2023", "note": "긴 입력의 가운데 정보는 덜 쓰인다"},
+  {"n": 15, "title": "LLMLingua: Compressing Prompts for Accelerated Inference of Large Language Models", "url": "https://arxiv.org/abs/2310.05736", "kind": "reference", "date": "2023"},
+  {"n": 16, "title": "Anthropic Engineering · Effective context engineering for AI agents", "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", "kind": "reference", "date": "2025", "note": "맥락은 한정된 자원, 작은 고신호 토큰 집합, 요약(compaction)"},
+  {"n": 17, "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (RAG)", "url": "https://arxiv.org/abs/2005.11401", "kind": "reference", "date": "2020"},
+  {"n": 18, "title": "Deep Neural Networks for YouTube Recommendations (RecSys 2016)", "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/", "kind": "reference", "date": "2016", "note": "후보 생성 → 순위 매기기 2단계"},
+  {"n": 19, "title": "Proactive Agent: Shifting LLM Agents from Reactive Responses to Active Assistance (ICLR 2025)", "url": "https://arxiv.org/abs/2410.12361", "kind": "reference", "date": "2024-10", "note": "ProactiveBench 6,790건, 미세조정 모델의 선제 도움 F1 66.47%"},
+  {"n": 20, "title": "Horvitz · Principles of Mixed-Initiative User Interfaces (CHI 1999)", "url": "https://dl.acm.org/doi/10.1145/302979.303030", "kind": "reference", "date": "1999", "note": "도움의 기대 이득과 방해 비용을 견줘 개입 여부를 정한다"},
+  {"n": 21, "title": "A Contextual-Bandit Approach to Personalized News Article Recommendation (LinUCB)", "url": "https://arxiv.org/abs/1003.0146", "kind": "reference", "date": "2010", "note": "야후 뉴스 추천"},
+  {"n": 22, "title": "Unbiased Offline Evaluation of Contextual-bandit-based News Article Recommendation Algorithms", "url": "https://arxiv.org/abs/1003.5956", "kind": "reference", "date": "2011", "note": "로그로 새 정책을 치우침 없이 재기"},
+  {"n": 23, "title": "Trustworthy Online Controlled Experiments (Kohavi · Tang · Xu)", "url": "https://www.cambridge.org/core/books/trustworthy-online-controlled-experiments/D97B26382EB0EB2DC2019A7A7B518F59", "kind": "reference", "date": "2020", "note": "Cambridge University Press, A/B 실험 설계·지표·함정"},
+  {"n": 24, "title": "Hu · Koren · Volinsky · Collaborative Filtering for Implicit Feedback Datasets (ICDM 2008)", "url": "https://ieeexplore.ieee.org/document/4781121", "kind": "reference", "date": "2008", "note": "암묵 피드백은 부정 신호가 없고 신뢰도가 달라 명시 평점과 다르게 다룬다"},
+  {"n": 25, "title": "From RankNet to LambdaRank to LambdaMART: An Overview (Burges, Microsoft Research)", "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/", "kind": "reference", "date": "2010"},
+  {"n": 26, "title": "Direct Preference Optimization (DPO)", "url": "https://arxiv.org/abs/2305.18290", "kind": "reference", "date": "2023"},
+  {"n": 27, "title": "DeepSeekMath (GRPO를 처음 제안한 논문)", "url": "https://arxiv.org/abs/2402.03300", "kind": "reference", "date": "2024"},
+  {"n": 28, "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena", "url": "https://arxiv.org/abs/2306.05685", "kind": "reference", "date": "2023", "note": "LLM 채점의 위치·길이 치우침"},
+  {"n": 29, "title": "원티드 · 포티투닷 회사 정보(국민연금 기반 평균 연봉·인원)", "url": "https://www.wanted.co.kr/company/8794", "kind": "reference", "note": "2026-11-25 확인(같은 날 다른 풀이에서) — 기준 월 표기 없음"},
+  {"n": 30, "title": "원티드 · 현대오토에버 회사 정보(같은 집계)", "url": "https://www.wanted.co.kr/company/4730", "kind": "reference", "note": "검색 요약으로 확인"},
+  {"n": 31, "title": "뉴스스페이스 · 포티투닷 2025년 연결 감사보고서", "url": "https://newsspace.kr/news/article.html?no=15231", "kind": "news", "date": "2026-09-14", "note": "급여 891억원 — 직원 수가 없어 평균은 계산하지 않음"},
+  {"n": 32, "title": "42dot 회사 사이트 하단 회사 정보", "url": "https://42dot.ai", "kind": "company"},
+  {"n": 33, "title": "42dot 채용 · 복리후생(Employee Engagement Program)", "url": "https://42dot.ai/ko/careers/employee-engagement-program", "kind": "company", "note": "한국 본사 기준, 날짜 표기 없음"},
+  {"n": 34, "title": "42dot 채용 · 채용 절차", "url": "https://42dot.ai/ko/careers/hiring-process", "kind": "company", "note": "면접 통과 뒤 처우 협의"},
+  {"n": 35, "title": "국가법령정보센터 · 위치정보의 보호 및 이용 등에 관한 법률", "url": "https://www.law.go.kr/법령/위치정보의보호및이용등에관한법률", "kind": "reference", "note": "개인위치정보 수집·이용·제공의 동의·고지"},
+  {"n": 36, "title": "Apple Security Research · Private Cloud Compute: A new frontier for AI privacy in the cloud", "url": "https://security.apple.com/blog/private-cloud-compute/", "kind": "reference", "date": "2024-06", "note": "다른 회사의 온디바이스·클라우드 결합 사례"},
+  {"n": 37, "title": "Sutton · Barto · Reinforcement Learning: An Introduction (2판)", "url": "http://incompleteideas.net/book/the-book-2nd.html", "kind": "reference", "date": "2018", "note": "밴딧(2장)·MDP(3장), 저자 공개 PDF"}
+ ],
+ "caveat": "Gleo Core 팀의 기억·추천·개입 정책 구조나 지표를 공개한 기술 글·발표 영상은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 같은 조직의 공고 넷, Gleo AI 소개 글(개인화는 '다음 과제'로만 나온다)·Gleo Guard 기술 블로그, 2025~2026년 보도입니다. 첫 OTA 기사는 영문 기계번역판을 같은 날 다른 풀이에서 읽은 것입니다. 기억·맥락·추천·밴딧·실험 풀이는 논문과 다른 회사 공개 자료로 '보통 이런 것'을 보였고, 예시 코드는 가상 데이터로 직접 돌린 것입니다.",
+ "resources": [
+  {"id": "cs329z-memory", "title": "Stanford CS329Z Lecture 7: How AI Agent Memory Works (MemGPT & Memory Types) — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/qh5tP6PBZ6U", "lang": "ko", "free": true, "level": "입문", "why": "에이전트 기억의 종류와 MemGPT 구조 — 업무 첫 줄 Long-term Memory의 첫 그림."},
+  {"id": "cs329z-context", "title": "Stanford CS329Z Lecture 2: LLMs for Agent Builders — Context Engineering — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/Vr1NzH8bT44", "lang": "ko", "free": true, "level": "입문", "why": "맥락에 무엇을 어떻게 넣나 — 업무 두 번째 줄 Context Engineering."},
+  {"id": "cs329z-rag", "title": "Stanford CS329Z Lecture 3: RAG Explained — From BM25 to Agentic RAG — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/psLc-46GqY0", "lang": "ko", "free": true, "level": "입문", "why": "검색 방식(BM25·임베딩)과 꺼낸 글 쓰기 — Retrieval 요건."},
+  {"id": "cs329z-optimize", "title": "Stanford CS329Z Lecture 9: Optimizing AI Agents — Prompts vs. Weights (GEPA, GRPO) — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/e_m99aR7_3Q", "lang": "ko", "free": true, "level": "심화", "why": "프롬프트를 고칠까 가중치를 학습할까 — Post-training 우대 줄의 판단."},
+  {"id": "cs221-mdp", "title": "Stanford CS221 Lecture 7: Markov Decision Processes — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/2ZtF1j3n6XE", "lang": "ko", "free": true, "level": "입문", "why": "지금 고른 것이 다음 상태를 바꾸는 문제 — Sequential Decision Making."},
+  {"id": "cs221-rl", "title": "Stanford CS221 Lecture 8: Reinforcement Learning — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/34Hk2v2kwg4", "lang": "ko", "free": true, "level": "입문", "why": "탐색과 활용의 균형 — 밴딧·개입 정책 최적화."},
+  {"id": "cs336-post", "title": "Stanford CS336 Lecture 15: Mid/Post-Training — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/2oH6PWPrYFo", "lang": "ko", "free": true, "level": "실무", "why": "Mid-training과 Post-training이 각각 무엇을 바꾸나 — 우대 줄 그대로."},
+  {"id": "cs336-eval", "title": "Stanford CS336 Lecture 12: Evaluation — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/JpAxdTWQJxM", "lang": "ko", "free": true, "level": "실무", "why": "평가셋·지표를 고르는 법 — Offline 평가 줄."},
+  {"id": "cme295-agent", "title": "Stanford CME295 Lecture 7: Agentic LLMs — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/h-7S6HNq0Vg", "lang": "ko", "free": true, "level": "입문", "why": "에이전트·도구·계획의 전체 구조 — LLM·Agentic AI 원리 요건."},
+  {"id": "cme295-eval", "title": "Stanford CME295 Lecture 8: LLM Evaluation — 강의 노트", "by": "우리 사이트의 강의 노트", "kind": "internal", "url": "/lectures/8fNP4N46RRo", "lang": "ko", "free": true, "level": "실무", "why": "LLM 채점·사람 평가의 장단 — 품질 평가 우대 줄."},
+  {"id": "memgpt-paper", "title": "MemGPT: Towards LLMs as Operating Systems", "by": "Packer 외 · 2023", "kind": "doc", "url": "https://arxiv.org/abs/2310.08560", "lang": "en", "free": true, "level": "실무", "why": "맥락 안·밖 기억을 나눠 옮기는 설계 원문 — 기억 시스템 구조를 잡을 때."},
+  {"id": "generative-agents", "title": "Generative Agents: Interactive Simulacra of Human Behavior", "by": "Park 외 · Stanford · 2023", "kind": "doc", "url": "https://arxiv.org/abs/2304.03442", "lang": "en", "free": true, "level": "실무", "why": "기억 흐름·꺼내기 점수·되돌아보기(reflection) — 경험에서 선호를 뽑는 구조."},
+  {"id": "longmemeval", "title": "LongMemEval (논문·코드)", "by": "Wu 외 · UCLA · ICLR 2025", "kind": "doc", "url": "https://arxiv.org/abs/2410.10813", "lang": "en", "free": true, "level": "심화", "why": "장기 기억을 다섯 능력으로 나눠 재는 법 — 기억 시스템의 평가셋을 만들 때 그대로 본뜬다."},
+  {"id": "anthropic-context", "title": "Effective context engineering for AI agents", "by": "Anthropic Engineering · 2025", "kind": "doc", "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", "lang": "en", "free": true, "level": "입문", "why": "맥락을 한정 자원으로 보고 고르기·요약하기 — Context Summarization 전략의 출발점."},
+  {"id": "lost-in-middle", "title": "Lost in the Middle: How Language Models Use Long Contexts", "by": "Liu 외 · 2023", "kind": "doc", "url": "https://arxiv.org/abs/2307.03172", "lang": "en", "free": true, "level": "실무", "why": "넣는 자리가 성능을 바꾼다 — 기억을 어디에 둘지 정할 근거."},
+  {"id": "llmlingua", "title": "LLMLingua: Compressing Prompts for Accelerated Inference", "by": "Jiang 외 · Microsoft · 2023", "kind": "doc", "url": "https://arxiv.org/abs/2310.05736", "lang": "en", "free": true, "level": "심화", "why": "입력을 지워 줄이는 압축 — 지연 제약 안의 맥락 압축."},
+  {"id": "rag-paper", "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", "by": "Lewis 외 · 2020", "kind": "doc", "url": "https://arxiv.org/abs/2005.11401", "lang": "en", "free": true, "level": "실무", "why": "검색해서 넣고 생성하기의 원형 — Retrieval 우대 줄."},
+  {"id": "youtube-dnn", "title": "Deep Neural Networks for YouTube Recommendations", "by": "Covington 외 · Google · 2016", "kind": "doc", "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/", "lang": "en", "free": true, "level": "실무", "why": "후보 생성 → 순위 매기기 2단계 — 장소·미디어 추천 줄의 뼈대."},
+  {"id": "lambdamart", "title": "From RankNet to LambdaRank to LambdaMART: An Overview", "by": "Christopher Burges · Microsoft Research · 2010", "kind": "doc", "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/", "lang": "en", "free": true, "level": "심화", "why": "순서 자체를 학습하는 랭킹 — Ranking 우대 줄."},
+  {"id": "hu-implicit", "title": "Collaborative Filtering for Implicit Feedback Datasets", "by": "Hu · Koren · Volinsky · ICDM 2008", "kind": "doc", "url": "https://ieeexplore.ieee.org/document/4781121", "lang": "en", "free": false, "level": "실무", "why": "행동 신호를 선호와 신뢰도로 나눠 다루기 — 암묵 피드백 파이프라인 우대 줄."},
+  {"id": "linucb-paper", "title": "A Contextual-Bandit Approach to Personalized News Article Recommendation", "by": "Li 외 · Yahoo! · 2010", "kind": "doc", "url": "https://arxiv.org/abs/1003.0146", "lang": "en", "free": true, "level": "심화", "why": "상황을 보고 고르는 밴딧(LinUCB)과 실서비스 적용 — Contextual Bandit 우대 줄."},
+  {"id": "li-offline-eval", "title": "Unbiased Offline Evaluation of Contextual-bandit-based News Article Recommendation Algorithms", "by": "Li 외 · WSDM 2011", "kind": "doc", "url": "https://arxiv.org/abs/1003.5956", "lang": "en", "free": true, "level": "심화", "why": "로그로 새 정책을 미리 재는 법 — Offline 평가 줄."},
+  {"id": "kohavi-ab", "title": "A/B 테스트: 신뢰할 수 있는 온라인 종합 대조 실험", "by": "론 코하비·다이앤 탕·야 쉬 지음, 이기홍·김기영 옮김", "kind": "book", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885", "lang": "ko", "free": false, "level": "실무", "why": "실험 설계·지표 정의·흔한 함정을 사례로 — Online A/B 실험과 '가설·실험·평가' 요건 전반."},
+  {"id": "sutton-barto", "title": "Reinforcement Learning: An Introduction (2판)", "by": "Richard Sutton · Andrew Barto", "kind": "book", "url": "http://incompleteideas.net/book/the-book-2nd.html", "lang": "en", "free": true, "level": "심화", "why": "밴딧(2장)과 MDP(3장) — 탐색·활용과 순차 결정의 기본."},
+  {"id": "proactive-agent", "title": "Proactive Agent: Shifting LLM Agents from Reactive Responses to Active Assistance", "by": "Lu 외 · Tsinghua · ICLR 2025", "kind": "doc", "url": "https://arxiv.org/abs/2410.12361", "lang": "en", "free": true, "level": "실무", "why": "LLM이 '도울 때'를 예측하게 학습·평가하는 법 — Proactive Agent 줄."},
+  {"id": "horvitz-mixed", "title": "Principles of Mixed-Initiative User Interfaces", "by": "Eric Horvitz · CHI 1999", "kind": "doc", "url": "https://dl.acm.org/doi/10.1145/302979.303030", "lang": "en", "free": true, "level": "입문", "why": "먼저 끼어들지 말지를 이득과 방해 비용으로 정하는 원칙 — 개입 시점 설계."},
+  {"id": "apple-pcc", "title": "Private Cloud Compute: A new frontier for AI privacy in the cloud", "by": "Apple Security Research · 2024", "kind": "doc", "url": "https://security.apple.com/blog/private-cloud-compute/", "lang": "en", "free": true, "level": "실무", "why": "온디바이스와 클라우드를 잇되 개인 데이터를 남기지 않는 설계 사례 — Privacy 우대 줄."},
+  {"id": "location-law", "title": "위치정보의 보호 및 이용 등에 관한 법률", "by": "국가법령정보센터", "kind": "doc", "url": "https://www.law.go.kr/법령/위치정보의보호및이용등에관한법률", "lang": "ko", "free": true, "level": "입문", "why": "위치 신호를 쓰려면 무엇을 동의받고 알려야 하나 — 위치·이동 패턴을 다루는 모든 줄."},
+  {"id": "handson-ml", "title": "핸즈온 머신러닝 (3판)", "by": "오렐리앙 제롱 · 한빛미디어", "kind": "book", "url": "https://search.kyobobook.co.kr/search?keyword=%ED%95%B8%EC%A6%88%EC%98%A8%20%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D", "lang": "ko", "free": false, "level": "입문", "why": "분류·트리·평가 지표·과적합 — 수락 확률 예측·랭킹 모델의 기본기를 한국어로."},
+  {"id": "ai-engineering", "title": "AI Engineering", "by": "Chip Huyen · O'Reilly · 2025", "kind": "book", "url": "https://www.oreilly.com/library/view/ai-engineering/9781098166298/", "lang": "en", "free": false, "level": "실무", "why": "평가·RAG·에이전트·피드백 고리를 제품 관점에서 — Production 운영·로그 분석 요건 전반."}
+ ],
+ "study_path": [
+  {"title": "기억과 맥락 감 잡기", "time": "1~2주", "goal": "에이전트 기억의 종류와 맥락 창 안에 무엇을 넣는지 설명하고, 꺼내기 점수를 직접 짤 수 있다.", "resources": ["cs329z-memory", "cs329z-context", "anthropic-context", "generative-agents", "memgpt-paper"], "task": "가상 운전자 한 명의 대화 200턴을 만들고, LLM으로 사실·선호를 뽑아 저장한 뒤 최근성·중요도·관련도 점수로 토큰 예산 500 안에 넣는 꺼내기를 만든다."},
+  {"title": "기억을 재기", "time": "2주", "goal": "기억 시스템을 정답률로 비교할 수 있다.", "resources": ["longmemeval", "lost-in-middle", "llmlingua", "cs336-eval"], "task": "1단계 데이터에 '이사함', '커피 끊음' 같은 바뀐 사실과 시간 질문 50개를 넣어 평가셋을 만들고, 원문 전부 넣기·요약·꺼내기 세 방식의 정답률과 입력 토큰 수를 표로 비교한다."},
+  {"title": "추천 — 후보와 순위", "time": "2~3주", "goal": "행동 로그로 선호를 만들고 장소 순위 모델을 학습해 랭킹 지표로 잰다.", "resources": ["youtube-dnn", "hu-implicit", "lambdamart", "handson-ml"], "task": "가상 운전자 1,000명의 추천 로그(경로 설정·닫음·무시, 시간대·거리)를 만들어 암묵 피드백 점수를 붙이고, XGBoost 랭킹 모델이 '거리순'보다 NDCG@3을 얼마나 올리는지 본다."},
+  {"title": "언제 말 걸까 — 밴딧과 오프라인 평가", "time": "2주", "goal": "개입 정책을 밴딧으로 돌리고, 로그로 새 정책을 미리 잰다.", "resources": ["horvitz-mixed", "proactive-agent", "linucb-paper", "li-offline-eval", "sutton-barto", "cs221-rl"], "task": "시간대·운전 부하를 상황으로 둔 시뮬레이터에서 엡실론 탐욕과 LinUCB를 비교하고, 고른 확률을 남긴 로그로 새 정책의 IPS 추정값이 실제 시뮬레이션 값과 얼마나 가까운지 확인한다."},
+  {"title": "A/B 실험과 닫힌 고리", "time": "계속", "goal": "가설·지표·가드 지표·표본 크기를 한 장으로 쓰고 결과를 다음 수정으로 잇는다.", "resources": ["kohavi-ab", "ai-engineering", "apple-pcc", "location-law"], "task": "'출근길 브리핑을 먼저 켜면 7일 재사용이 는다'를 실험 계획서 한 장(지표·가드 지표·표본·기간·실험 단위)으로 쓰고, 4단계 시뮬레이터로 A/B를 돌려 z 검정까지 해 본다. 위치 신호를 쓰는 부분에 필요한 동의 항목도 적는다."}
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 국민연금 기반 집계로 직원 평균 **약 6,032만원** — 신입 초봉 숫자는 찾지 못했고, 평균은 경력직이 섞인 회사 전체 값이다(이 자리는 석사·4년 이상 경력직)",
+  "rows": [
+   {"label": "직원 평균 연봉", "value": "6,032만원", "amount": 6032, "basis": "공공데이터 집계", "note": "원티드가 국민연금 납부액으로 추정한 회사 전체 평균(국민연금 가입 804명), 기준 월 표기 없음 [29]"},
+   {"label": "현대오토에버 평균", "value": "9,423만원", "amount": 9423, "peer": true, "basis": "공공데이터 집계", "note": "같은 그룹 소프트웨어 회사, 같은 원티드 국민연금 집계 — 검색 요약으로 확인 [30]"}
+  ],
+  "how": "포티투닷은 비상장사라 사업보고서의 '직원 1인 평균 급여'가 없다(공시 숫자 없음). 2025년 감사보고서의 급여 총액은 891억원이지만 직원 수가 함께 나오지 않아 평균을 계산하지 않았다 [31]. 국민연금 기반 집계는 납부 상한이 있어 실제보다 낮게 나오는 경향이 있다 {추론}. 연봉은 면접을 통과한 뒤 **처우 협의** 단계에서 사람마다 정한다 [1][34]."
+ },
+ "benefits": {
+  "items": [
+   {"name": "근무 방식", "detail": "재량근무·선택근무, 최고 사양 업무 장비"},
+   {"name": "회복의 날", "detail": "법정 연차와 별도로 매월 유급 하루"},
+   {"name": "식사", "detail": "사내 식당 하루 세 끼 무료, 사내 카페 음료"},
+   {"name": "복지 포인트", "detail": "연 최대 300만원, 설·추석 명절 포인트"},
+   {"name": "전기차 구매 지원", "detail": "차량 가격의 최대 15%, 1,000만원 한도 · 전기차 대여 프로그램"},
+   {"name": "무이자 대출", "detail": "근속에 따라 1,000만~5,000만원, 이자 0%"},
+   {"name": "건강", "detail": "종합건강검진 전액, 사내 간호사·심리·재무·법률 상담(EAP), 사내 피트니스(1:1 PT·그룹 수업)"},
+   {"name": "단체 보험", "detail": "본인·배우자·자녀·부모 — 실손·입원·통원·치과·도수치료"},
+   {"name": "성장", "detail": "국내외 교육·세미나·컨퍼런스 지원, 팀 워크숍비"},
+   {"name": "가족", "detail": "직장 어린이집, 수유실, 경조금·경조휴가"},
+   {"name": "그 밖의", "detail": "장기근속 휴가·포상, 휴양 시설 추첨, 추천 보상"}
+  ],
+  "note": "포티투닷 채용 사이트의 복리후생 페이지(한국 본사 기준, 날짜 표기 없음)다 [33]. 같은 날 다른 풀이에서 읽은 내용이다. 금액이 적히지 않은 항목은 비웠다. 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "포티투닷 본사 · 소프트웨어드림센터 A동 (판교 제2테크노밸리)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "신분당선·경강선 판교역에서 버스로 가는 거리 {추론}",
+  "note": "주소는 42dot 사이트 하단 회사 정보다 [32]. 공고의 근무지 표기는 'Pangyo (Software Dream Center), South Korea (Remote)'인데, 원격 근무 범위는 공고에 적혀 있지 않다 [1]."
+ }
+}

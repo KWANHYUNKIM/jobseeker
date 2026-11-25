@@ -3,6 +3,7 @@
  "jobs": {
   "ats-ashby:42dot:7bc7935d-2925-4a60-bd6e-f2ccfcfc7873": "42dot-ad-test-engineer",
   "ats-ashby:42dot:4a19a543-6ed0-46bf-8519-b34b45e2ffa6": "42dot-ai-engineer-navigation-agent",
+  "ats-ashby:42dot:ed545c48-5d1d-4ba8-ba83-ad0087d56ed4": "42dot-ai-engineer-personalized-proactive-agent",
   "ats-ashby:42dot:5baee8ca-8d47-4690-bae5-a5a1858256bc": "42dot-ai-engineer-self-evolving-agent",
   "ats-ashby:42dot:fa24b02d-a231-4e0c-affa-319d47c19b58": "42dot-ai-infrastructure-engineer",
   "wanted-392726": "42dot-ai-infrastructure-engineer",
@@ -11,6 +12,7 @@
   "ats-ashby:42dot:63196d96-2810-4348-8aa5-077d8c0ee710": "42dot-firmware-secure-boot-ota",
   "wanted-310540": "42dot-ivi-os-camera-system",
   "ats-ashby:42dot:a83b4909-4d4f-41c5-b212-a1db321965a5": "42dot-llm-optimization-engineer",
+  "ats-ashby:42dot:4efa5e05-972f-4887-b3bd-f87862200f86": "42dot-llm-training-engineer",
   "ats-ashby:42dot:c4af7536-c24f-4754-9fe9-d92d237403f3": "42dot-msphd-intern-ai-engineer",
   "ats-ashby:42dot:810a8fe2-0790-42cf-b973-df16b553fa08": "42dot-mts-foundation-models",
   "ats-ashby:42dot:442d28d0-1c6a-40a1-8729-9e8db1ab14f9": "42dot-sdv-vehicle-connect-software-engineer",
@@ -387,6 +389,16 @@
    "lines": 19
   },
   {
+   "id": "42dot-ai-engineer-personalized-proactive-agent",
+   "company": "포티투닷(42dot)",
+   "role": "AI 엔지니어 — 개인화·선제 제안 에이전트",
+   "jobs": [
+    "ats-ashby:42dot:ed545c48-5d1d-4ba8-ba83-ad0087d56ed4"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
+  },
+  {
    "id": "42dot-ai-engineer-self-evolving-agent",
    "company": "포티투닷(42dot)",
    "role": "AI 엔지니어 — 스스로 나아지는 에이전트",
@@ -456,6 +468,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 36
+  },
+  {
+   "id": "42dot-llm-training-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "LLM 엔지니어 — LLM 학습",
+   "jobs": [
+    "ats-ashby:42dot:4efa5e05-972f-4887-b3bd-f87862200f86"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "42dot-msphd-intern-ai-engineer",
