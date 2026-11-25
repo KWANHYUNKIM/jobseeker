@@ -1,0 +1,780 @@
+{
+ "id": "biztechi-procurement-btp-fiori",
+ "company": "비즈테크아이",
+ "role": "구매 시스템 운영·온보딩 (SAP BTP / Fiori)",
+ "jobs": [
+  "ats-lg:group:1001854"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "고객사의 **구매 시스템**을 운영하고, 새 고객사·새 업무를 그 시스템에 붙이는(온보딩) 구축 일에서 분석·설계와 백엔드 개발을 맡습니다.[1] 모회사 LG CNS의 구독형 플랫폼 SINGLEX에는 구매관리 솔루션이 있고, SAP는 이 솔루션을 SAP BTP 파트너 솔루션 목록에 올려 두었습니다.[6][7][8]",
+  "env": "SAP BTP(SAP의 클라우드 개발·통합 플랫폼) 위에서 Java·JavaScript로 백엔드를 만들고, 화면은 SAP Fiori 규칙으로 짓습니다. 데이터베이스는 SAP HANA 경험을 우대합니다.[1][10][11]",
+  "oneline": "**구매 업무(요청→발주→입고→송장)를 아는 8년 차 이상 개발자**가 SAP 클라우드 위에서 그 업무를 앱으로 만드는 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "구매 운영 및 온보딩(SI) 분석/설계 및 back-end 개발",
+   "short": "돌아가는 구매 시스템을 지키면서, 새 고객사·새 업무를 붙일 때 분석부터 백엔드 코드까지 맡는 일.",
+   "why": "공고는 '운영'과 '온보딩(SI)'을 한 줄에 적었고, 맡는 범위를 분석·설계·백엔드 개발로 정했습니다.[1] 비즈테크아이는 LG CNS의 자회사이고[4], LG CNS는 2025년 SAP 아시아태평양 전략 서비스 파트너에 합류했습니다.[5] LG CNS의 SINGLEX는 여러 기업이 구독해 쓰는 업무 솔루션 묶음이고 그 안에 구매관리가 있으며, 2024년 기준 30여 개 기업이 쓴다고 밝혔습니다.[8] 구독형 서비스에서는 새 고객사를 붙이는 일이 곧 '온보딩'입니다. {추론}",
+   "actually": {
+    "intro": "LG CNS가 공개한 SINGLEX 구매관리 기능과, SAP가 설명하는 BTP 확장 방식으로 본 '보통 이런 일'입니다. 이 팀이 맡은 고객사·화면은 공개되지 않았습니다.",
+    "items": [
+     "**공급사 관리** — 협력사 발굴·선정, 여러 단계 공급망의 협력사 관리, 계약 전자서명.[7]",
+     "**견적·입찰** — 견적 요청(RFQ)·제안 요청(RFP), 정·역경매.[7]",
+     "**제조 특화 구매** — 금형은 구매 요청·원가 분석부터 입고·자산 관리·폐기까지, 설비·공사는 기술·가격 평가 → 견적 → 발주 → 인수 시험까지 관리한다.[7]",
+     "**온보딩 분석** — 새 고객사의 구매 규정(결재선·금액 한도·품목 분류)을 표준 기능과 대 보고, 표준에 없는 것만 개발 목록으로 뽑는다. {추론}",
+     "**백엔드 개발** — ERP 본체를 고치지 않고 옆(BTP)에 앱을 두고 API로 주고받는 '옆 확장(side-by-side)' 방식으로 기능을 더한다.[13]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "구매의 기본 흐름(조달→지급) — 회사마다 단계를 빼거나 더한다[16][18]",
+     "steps": [
+      "구매 요청 · 현업이 필요 물품 등록",
+      "소싱 · 견적·입찰로 공급사 선정",
+      "발주 · 구매 오더 발행·승인",
+      "입고 · 수량·품질 확인",
+      "송장 검증 · 발주·입고와 대조",
+      "지급 · 회계 전기"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "어떤 기능을 표준으로 쓸지는 고객사 구매 담당과 PM이 정합니다. 이 자리는 **요구를 설계 문서로 옮기고, 표준에 없는 부분을 BTP 위 백엔드로 직접 만들 수 있는** 수준이 기준입니다.[1][13] {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    7,
+    8,
+    13,
+    16,
+    18
+   ],
+   "study": [
+    "sap-sp-proc-ko",
+    "sap-btp-discover",
+    "cap-java"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "학력: 4년제 정규대학 학사학위 이상 보유자",
+   "short": "서류 통과 조건이다. 전공 제한은 적혀 있지 않다.",
+   "why": "같은 회사의 다른 SAP 공고들도 같은 학력 줄을 둡니다.[2][3] 전공은 적혀 있지 않습니다.[1]",
+   "how_far": "학사 학위가 있으면 이 줄은 끝입니다.",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력: 관련업무 8년 이상",
+   "short": "구매 시스템 개발·운영을 합쳐 8년 이상 — 분석·설계까지 혼자 맡겨서.",
+   "why": "같은 회사 SAP 운영 공고는 3년 이상, 물류 컨설턴트 공고는 5년 이상을 요구했습니다.[2][3] 이 자리는 8년으로 더 높고, 맡는 범위도 코드에 그치지 않고 분석·설계까지입니다.[1]",
+   "how_far": "'관련업무'의 범위는 적혀 있지 않습니다. 구매·ERP 시스템 개발과 운영을 합친 연차로 읽는 것이 자연스럽고, 면접에서는 **구매 업무를 시스템으로 옮겨 본 프로젝트**를 처음부터 끝까지 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "구매업무 경험을 보유하신 분",
+   "short": "발주·입고·송장이 어떻게 맞물리는지 업무 말로 알아야 한다 — 그걸 몰라서는 요구를 못 읽어서.",
+   "why": "주요업무가 '구매 운영'이고 분석·설계까지 맡습니다.[1] 구매 담당자의 요구는 '발주보다 송장 수량이 많으면 막아 달라'처럼 업무 말로 옵니다. SAP 교육도 구매를 조달→지급의 한 흐름으로 가르칩니다.[16][18]",
+   "actually": {
+    "items": [
+     "**구매 요청과 승인** — 금액·품목에 따라 결재선이 달라진다. {추론}",
+     "**구매 정보 기록·계약** — 공급사별 단가와 장기 계약을 미리 등록해 발주 때 끌어 쓴다.[17]",
+     "**3자 대조(three-way match)** — 송장을 발주·입고와 맞춰 보고, 어긋나면 지급을 막는다.[16] {추론}",
+     "**구매 분석** — 품목·공급사별 지출을 모아 협상·공급사 정리에 쓴다.[7] LG CNS는 SINGLEX 구매에서 공급망 위험 분석까지 다룬다고 발표했다.[9]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "3자 대조를 손으로 따라 하기 (가상 값, 직접 돌린 출력)",
+     "body": "금형 10개를 발주했는데 8개만 들어오고 송장은 10개로 왔다고 칩니다.",
+     "lang": "python",
+     "code": "po = {\"PO-4500001\": {\"item\": \"금형 A\", \"qty\": 10, \"price\": 1_200_000}}\ngr = {\"PO-4500001\": 8}\ninv = {\"PO-4500001\": (10, 1_200_000)}\nfor po_no, p in po.items():\n    got, (iq, ip) = gr.get(po_no, 0), inv[po_no]\n    issues = []\n    if iq > got: issues.append(f\"송장 수량 {iq} > 입고 {got}\")\n    if ip != p[\"price\"]: issues.append(f\"단가 {ip:,} != 발주 {p['price']:,}\")\n    print(po_no, \"지급 보류:\" if issues else \"지급 가능\", \"; \".join(issues))\n# PO-4500001 지급 보류: 송장 수량 10 > 입고 8"
+    }
+   ],
+   "how_far": "구매 담당자가 될 필요는 없습니다. **조달→지급 흐름의 단계마다 어떤 문서(요청·발주·입고·송장)가 생기고 무엇을 검사하는지** 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    7,
+    9,
+    16,
+    17,
+    18
+   ],
+   "study": [
+    "sap-exec-erp-ko",
+    "sap-sp-proc-ko",
+    "sap-purch-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SAP BTP 경험을 보유하신 분",
+   "short": "SAP 클라우드 플랫폼(BTP)에 앱을 만들어 올리고 ERP와 이어 본 경험 — 개발 무대가 거기라서.",
+   "why": "SAP BTP는 앱 개발·통합·데이터·AI를 한곳에 모은 SAP의 클라우드 플랫폼입니다.[10] SAP 파트너 솔루션 목록에서 SINGLEX 구매관리(금형 관리 포함)는 BTP를 기본 인프라로 쓰고 사용자 수·데이터량에 따라 월 단위로 과금된다고 소개됩니다.[6] SAP는 ERP 본체는 깨끗하게 두고(clean core) 확장은 BTP에서 API·이벤트로 붙이라고 권합니다.[13]",
+   "actually": {
+    "intro": "SAP 공식 문서가 말하는 BTP 개발의 기본 단위입니다.[10][11][13][30]",
+    "items": [
+     "**계정 구조** — 글로벌 계정 → 하위 계정 → 그 안에 실행 환경(Cloud Foundry 등)과 서비스 인스턴스를 만든다.[10]",
+     "**CAP(Cloud Application Programming Model)** — 데이터 모델을 CDS라는 정의 언어로 쓰면 테이블과 OData API가 따라 만들어진다. Java(Spring Boot)판과 Node.js판이 있다.[11][12]",
+     "**연결** — S/4HANA 같은 ERP는 대상 연결 정보(destination)와 API로 부른다.[13][30]",
+     "**배포** — 앱·DB·권한 설정을 한 묶음(MTA)으로 빌드해 올린다.[30]",
+     "**실행 환경 선택** — 같은 앱을 Cloud Foundry 또는 Kyma(쿠버네티스 기반)에 올릴 수 있다.[22]"
+    ]
+   },
+   "how_far": "BTP 운영자 수준은 아닙니다. **CAP 앱 하나를 만들어 BTP에 배포하고, ERP API를 불러 오고, 사용자 권한을 붙여 본** 경험이 있으면 이 줄에 맞습니다.[11][30] {추론}",
+   "refs": [
+    6,
+    10,
+    11,
+    12,
+    13,
+    22,
+    30
+   ],
+   "study": [
+    "sap-btp-discover",
+    "sap-btp-ext",
+    "sap-cap-fullstack",
+    "sappress-btp-dev"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java, Javascript 기반 개발 경험 및 기술 역량을 보유하신 분",
+   "short": "백엔드는 Java(Spring Boot 기반 CAP), 화면·스크립트는 JavaScript(SAPUI5·Fiori)라서 둘 다.",
+   "why": "공고의 주요업무가 백엔드 개발이고 제목에 Fiori가 들어 있습니다.[1] CAP의 Java판은 Spring Boot 위에서 돌고, OData V4 어댑터가 CDS 서비스를 API로 내보냅니다.[11][12] Fiori 화면은 SAPUI5(JavaScript 프레임워크)로 만들고, 목록 화면(List Report)·상세 화면(Object Page) 같은 정해진 틀(floorplan)을 씁니다.[14][15]",
+   "actually": {
+    "items": [
+     "**Java 쪽** — CDS로 정의한 엔티티(예: 구매 요청)에 저장 전 검사·승인 처리 같은 이벤트 핸들러를 Java로 단다.[11]",
+     "**OData 질의** — 화면은 `$filter`·`$select`·`$orderby`·`$top` 같은 URL 규칙으로 데이터를 달라고 하고, 서버가 그 조건으로 답한다.[29]",
+     "**JavaScript 쪽** — Fiori elements는 주석(annotation)만으로 목록·상세 화면을 만들고, 틀에 없는 동작만 JavaScript로 더한다.[14][23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "Fiori 목록 화면이 보내는 OData 질의와 그 결과 (가상 값, 직접 돌린 출력)",
+     "body": "500만 원 이상 '제출됨' 구매 요청을 금액 큰 순서로 20건 달라는 요청을 만들고, 서버가 하는 걸러 내기를 흉내 냅니다.",
+     "lang": "python",
+     "code": "from urllib.parse import urlencode, unquote_plus\nbase = \"/odata/v4/purchase/PurchaseRequests\"\nq = {\"$filter\": \"status eq 'SUBMITTED' and amount ge 5000000\",\n     \"$select\": \"ID,title,amount\", \"$orderby\": \"amount desc\", \"$top\": 20}\nprint(base + \"?\" + unquote_plus(urlencode(q)))\nrows = [{\"ID\": 1, \"title\": \"금형 수리\", \"amount\": 8000000, \"status\": \"SUBMITTED\"},\n        {\"ID\": 2, \"title\": \"사무용품\", \"amount\": 300000, \"status\": \"SUBMITTED\"},\n        {\"ID\": 3, \"title\": \"설비 부품\", \"amount\": 12000000, \"status\": \"APPROVED\"}]\nout = [{k: r[k] for k in (\"ID\", \"title\", \"amount\")}\n       for r in sorted(rows, key=lambda r: -r[\"amount\"])\n       if r[\"status\"] == \"SUBMITTED\" and r[\"amount\"] >= 5000000][:20]\nprint(out)\n# /odata/v4/purchase/PurchaseRequests?$filter=status eq 'SUBMITTED' and amount ge 5000000&$select=ID,title,amount&$orderby=amount desc&$top=20\n# [{'ID': 1, 'title': '금형 수리', 'amount': 8000000}]"
+    }
+   ],
+   "how_far": "8년 차 기준으로 **Java는 실무**(Spring 기반 서비스·트랜잭션·테스트), **JavaScript는 화면을 고치고 늘릴 수 있는 정도**가 현실적인 선입니다. CAP·SAPUI5는 일반 Java·JavaScript 위의 틀이라 입사 전에 튜토리얼 한 바퀴면 출발선에 섭니다.[11][30] {추론}",
+   "level": "실무",
+   "refs": [
+    1,
+    11,
+    12,
+    14,
+    15,
+    23,
+    29,
+    30
+   ],
+   "study": [
+    "cap-java",
+    "book-spring-core",
+    "fiori-guidelines",
+    "sappress-fiori-elements"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SAP HANA DB 경험을 보유하신 분",
+   "short": "BTP 앱의 기본 DB가 HANA Cloud라서, 그 SQL과 성능 특성을 알면 바로 쓴다.",
+   "why": "CAP 앱은 운영에서 SAP HANA Cloud를 데이터베이스로 쓰는 것이 SAP 튜토리얼의 기본 경로입니다.[30] HANA는 데이터를 열 단위로 메모리에 두는 DB라 합계·집계 질의가 빠르고, 계산 로직을 SQLScript라는 HANA 전용 절차 언어로 DB 안에 둘 수 있습니다.[19][20]",
+   "actually": {
+    "items": [
+     "**구매 분석 집계** — 품목·공급사별 지출 합계와 비중을 DB에서 바로 계산한다. {추론}",
+     "**데이터 모델** — CDS로 정의한 엔티티가 HANA 테이블·뷰로 배포된다.[20][30]",
+     "**SQLScript** — 여러 단계 계산을 DB 절차로 묶는다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "공급사별 지출 비중 (가상 값, SQLite 로 직접 돌린 출력 — HANA 에서도 같은 표준 SQL)",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\nCREATE TABLE po(po_no TEXT, vendor TEXT, category TEXT, amount INTEGER);\nINSERT INTO po VALUES\n ('P1','A정밀','금형',12000000),('P2','A정밀','금형',8000000),\n ('P3','B설비','설비',30000000),('P4','C상사','소모품',400000),('P5','B설비','설비',5000000);\n\"\"\")\nfor row in db.execute(\"\"\"\nSELECT category, vendor, SUM(amount) AS total,\n       ROUND(100.0*SUM(amount)/(SELECT SUM(amount) FROM po),1) AS pct\nFROM po GROUP BY category, vendor ORDER BY total DESC\"\"\"):\n    print(row)\n# ('설비', 'B설비', 35000000, 63.2)\n# ('금형', 'A정밀', 20000000, 36.1)\n# ('소모품', 'C상사', 400000, 0.7)"
+    }
+   ],
+   "how_far": "DB 관리자 수준은 아닙니다. **표준 SQL로 집계·조인을 쓰고, HANA Cloud 콘솔에서 질의를 돌려 느린 곳을 찾을 수 있으면** 우대 줄을 채웁니다.[20] {추론}",
+   "level": "기본",
+   "refs": [
+    19,
+    20,
+    30
+   ],
+   "study": [
+    "sap-hana-cloud-model",
+    "sap-hana-sqlscript"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "PySAP ERP 구매 모듈 경험을 보유하신 분",
+   "short": "SAP ERP의 구매 모듈(MM — 발주·입고·송장 검증)을 써 봤거나 설정해 봤으면 더 좋다.",
+   "why": "'PySAP'이라는 이름의 SAP 제품은 찾지 못했습니다. 문장 뜻으로 보면 'SAP ERP 구매 모듈'이고, 앞 글자는 오타로 보입니다. {추론} SAP S/4HANA의 구매는 '소싱 및 조달'이라는 이름으로 묶이며, 구매 기준 정보·발주·특수 조달 과정을 따로 가르칩니다.[16][17] BTP 앱은 결국 이 모듈의 데이터(발주·입고·송장)를 읽고 씁니다.[13] {추론}",
+   "actually": {
+    "items": [
+     "**기준 정보** — 자재·공급사·구매 정보 기록(공급사별 단가).[17]",
+     "**구매 문서** — 구매 요청 → 구매 오더 → 입고 → 송장 검증.[16][18]",
+     "**특수 조달** — 외주 가공·위탁 재고 같은 별도 흐름.[17]"
+    ]
+   },
+   "how_far": "모듈 컨설턴트처럼 설정 전체를 알 필요는 없습니다. **BTP 앱이 부를 구매 문서의 API와 필드를 알아보고, 표준 화면에서 같은 결과를 재현해 볼 수 있으면** 충분합니다. 공식 자격증(C_S4CPR)이 범위를 잡는 데 쓸모 있습니다.[21] {추론}",
+   "refs": [
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "study": [
+    "sap-purch-ko",
+    "sap-sp-proc-ko",
+    "sap-cpr-cert"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "sap-exec-erp-ko",
+   "title": "Executing Basic ERP Processes with SAP S/4HANA | KO",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/executing-basic-erp-processes-with-sap-s-4hana-ko",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "조달→지급·생산·판매 흐름을 한국어로 한 바퀴. '구매업무 경험' 요건의 바닥을 깐다."
+  },
+  {
+   "id": "sap-sp-proc-ko",
+   "title": "Business Processes in SAP S/4HANA Sourcing & Procurement | KO",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/business-processes-in-sap-s-4hana-sourcing-procurement-ko",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "구매 요청부터 송장 검증까지 소싱·조달 전체. 온보딩 분석에서 고객 구매 규정을 표준 흐름에 대 볼 기준."
+  },
+  {
+   "id": "sap-purch-ko",
+   "title": "Purchasing in SAP S/4HANA | KO",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/purchasing-in-sap-s-4hana-ko",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "구매 기준 정보·발주·특수 조달. 'SAP ERP 구매 모듈' 우대를 채울 때."
+  },
+  {
+   "id": "sap-btp-discover",
+   "title": "Discovering SAP Business Technology Platform",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/discovering-sap-business-technology-platform-1",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "BTP가 무엇을 모아 둔 플랫폼인지 한 시간에 잡는다. 'SAP BTP 경험' 요건의 지도."
+  },
+  {
+   "id": "sap-btp-ext",
+   "title": "Build Side-by-Side Extensions on SAP BTP (학습 여정)",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/learning-journey/build-side-by-side-extensions-on-sap-btp",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "CAP으로 ERP 옆 확장 앱을 처음부터 만든다(Node.js 판). 주요업무의 '백엔드 개발'을 BTP 방식으로 익힌다."
+  },
+  {
+   "id": "sap-cap-fullstack",
+   "title": "Develop a Full-Stack CAP Application Following the SAP BTP Developer's Guide",
+   "by": "SAP Developers",
+   "kind": "doc",
+   "url": "https://developers.sap.com/tutorials/group-develop-a-full-stack-cap-application-following-sap-btp-developer-s-guide",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "CAP 앱(Java 또는 Node.js) + Fiori 화면 + HANA Cloud + 배포까지 한 줄로 따라가는 공식 튜토리얼."
+  },
+  {
+   "id": "cap-java",
+   "title": "CAP Java — Getting Started",
+   "by": "SAP (cap.cloud.sap)",
+   "kind": "doc",
+   "url": "https://cap.cloud.sap/docs/java/getting-started",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "Spring Boot 위의 CAP Java 프로젝트 만들기·실행. 'Java 기반 개발' 요건을 BTP 문법으로 옮긴다."
+  },
+  {
+   "id": "fiori-guidelines",
+   "title": "SAP Fiori Design Guidelines — List Report Floorplan",
+   "by": "SAP",
+   "kind": "doc",
+   "url": "https://www.sap.com/design-system/fiori-design-web/v1-148/page-types/floorplans/list-report-floorplan-sap-fiori-element/usage",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "제목의 Fiori — 목록·상세 화면의 정해진 틀과 언제 무엇을 쓰는지."
+  },
+  {
+   "id": "sappress-fiori-elements",
+   "title": "SAP Fiori Elements",
+   "by": "SAP PRESS",
+   "kind": "book",
+   "url": "https://www.sap-press.com/sap-fiori-elements_5641",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "주석만으로 화면을 만들고 틀 밖 동작을 JavaScript로 더하는 법. JavaScript 요건의 Fiori 쪽."
+  },
+  {
+   "id": "sappress-btp-dev",
+   "title": "Application Development with SAP Business Technology Platform",
+   "by": "SAP PRESS",
+   "kind": "book",
+   "url": "https://www.sap-press.com/application-development-with-sap-business-technology-platform_5504/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "백엔드(Java·Node.js)와 SAPUI5 화면, 실행 환경까지 BTP 개발을 한 권에. 옆에 두고 찾아보는 참고서."
+  },
+  {
+   "id": "book-spring-core",
+   "title": "스프링 핵심 원리 — 기본편",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "url": "/wiki/spring-core",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "CAP Java가 올라타는 Spring의 빈·의존관계 주입을 실행 결과로 확인한다."
+  },
+  {
+   "id": "sap-hana-cloud-model",
+   "title": "Developing Data Models with SAP HANA Cloud",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/developing-data-models-with-sap-hana-cloud",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "HANA Cloud SQL 콘솔과 데이터 모델. 'SAP HANA DB' 우대를 손으로 채운다."
+  },
+  {
+   "id": "sap-hana-sqlscript",
+   "title": "SAP HANA SQL Script Basics and Advanced for SAP HANA",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/sap-hana-sql-script-basics-and-advanced-for-sap-hana",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "SQLScript로 DB 안 계산 로직을 짜고 성능을 다듬는다."
+  },
+  {
+   "id": "sap-cpr-cert",
+   "title": "SAP Certified Associate — Implementation Consultant, SAP S/4HANA Cloud Public Edition, Sourcing and Procurement (C_S4CPR)",
+   "by": "SAP Training",
+   "kind": "doc",
+   "url": "https://training.sap.com/certification/C_S4CPR_2402",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "구매 모듈 공식 시험 범위. 구매 업무 지식의 빈칸을 찾는 점검표로 쓴다(판마다 코드가 바뀐다)."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "구매 업무를 문서로 따라가기",
+   "time": "2주",
+   "goal": "구매 요청→소싱→발주→입고→송장 검증→지급 단계와 각 단계의 문서·검사를 설명할 수 있다",
+   "task": "가상 제조사(금형·설비·소모품)의 구매 규정 한 장(금액별 결재선·3자 대조 허용 오차)을 쓰고, 발주 5건이 어디서 막히는지 표로 따라간다",
+   "resources": [
+    "sap-exec-erp-ko",
+    "sap-sp-proc-ko"
+   ]
+  },
+  {
+   "title": "BTP와 CAP 첫 앱",
+   "time": "2~3주",
+   "goal": "CDS로 구매 요청 엔티티를 정의하고 OData API로 내보낼 수 있다",
+   "task": "CAP Java로 '구매 요청' 서비스를 만들고, 500만 원 이상이면 승인 대기로 보내는 저장 전 검사를 Java 핸들러로 단다",
+   "resources": [
+    "sap-btp-discover",
+    "cap-java",
+    "book-spring-core"
+   ]
+  },
+  {
+   "title": "Fiori 화면 붙이기",
+   "time": "2주",
+   "goal": "Fiori elements 목록·상세 화면을 주석으로 만들고 틀 밖 버튼 하나를 JavaScript로 더할 수 있다",
+   "task": "위 서비스에 목록(List Report)·상세(Object Page) 화면을 붙이고 '승인' 버튼을 더한다",
+   "resources": [
+    "fiori-guidelines",
+    "sappress-fiori-elements",
+    "sap-cap-fullstack"
+   ]
+  },
+  {
+   "title": "HANA Cloud와 ERP 연결",
+   "time": "2~3주",
+   "goal": "HANA Cloud에 배포하고, ERP 구매 문서를 API로 읽어 오는 흐름을 설명할 수 있다",
+   "task": "가상 발주 데이터로 공급사별 지출 비중 뷰를 만들고, 옆 확장(side-by-side)으로 ERP 발주를 읽어 오는 구조도를 그린다",
+   "resources": [
+    "sap-hana-cloud-model",
+    "sap-btp-ext",
+    "sap-purch-ko"
+   ]
+  },
+  {
+   "title": "구매 모듈 빈칸 점검",
+   "time": "3주",
+   "goal": "구매 모듈 공식 시험 범위에서 모르는 주제를 찾아 메운다",
+   "task": "시험 안내의 주제별로 '설명할 수 있다/없다' 표를 만들고, 없는 칸만 한국어 과정으로 채운다",
+   "resources": [
+    "sap-cpr-cert",
+    "sap-purch-ko"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원** — 8년 차 이상 경력 자리는 처우협의로 따로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,811만원",
+    "amount": 3811,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없다 [24]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,748만원",
+    "amount": 5748,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계, 경력직이 섞인 회사 전체 값이다 [24]"
+   },
+   {
+    "label": "LG CNS 초봉",
+    "value": "약 5,071만원",
+    "amount": 5071,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [25]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "약 7,802만원",
+    "amount": 7802,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [25]"
+   }
+  ],
+  "how": "공고에는 연봉이 없다 [1]. 비즈테크아이는 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 경력 전형은 평판조회 뒤 **처우협의**에서 연봉을 정한다 [26]. 평균은 신입과 경력이 섞인 값이라 8년 차 이상 자리의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "가족",
+    "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진·단체보험, 전문 심리 상담"
+   },
+   {
+    "name": "금융",
+    "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+   },
+   {
+    "name": "배움",
+    "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+   },
+   {
+    "name": "조직 문화",
+    "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"
+   }
+  ],
+  "note": "비즈테크아이 공식 사이트의 복리후생 페이지(2026-11, 같은 회사 다른 풀이에서 확인)다 [27]. 항목 이름만 있고 금액·조건은 없으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "비즈테크아이 본사 (상암 DDMC)",
+  "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+  "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [28]",
+  "note": "회사 사이트 '오시는 길'의 주소다 [28]. 공고의 근무지는 '서울특별시'로만 적혀 있다 [1]. 고객사 온보딩 때는 고객사로 나가 회의하는 일이 생길 수 있다 {추론}."
+ },
+ "fit": {
+  "good": [
+   "구매·ERP 업무를 오래 다뤘고 이제 클라우드(BTP) 개발로 옮겨 가고 싶은 개발자",
+   "요구 분석·설계와 직접 코드 쓰기를 같이 하고 싶은 사람[1]",
+   "ERP 본체를 고치지 않고 옆에 붙이는 설계(clean core)에 관심 있는 사람[13]",
+   "제조 구매(금형·설비·공사) 같은 복잡한 업무 규칙을 시스템으로 옮기는 일이 즐거운 사람[7]"
+  ],
+  "hard": [
+   "운영과 온보딩 구축이 같이 돌아 일정이 겹칠 수 있다 {추론}",
+   "CAP·SAPUI5는 SAP 생태계 밖에서는 잘 안 쓰는 틀이다 {추론}",
+   "8년 이상 + 구매 업무 + BTP를 모두 요구해 문턱이 높다[1]",
+   "이 팀의 고객사·화면은 공개 자료가 없어 입사 전에 알아보기 어렵다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "송장 수량이 입고 수량보다 많으면 시스템은 어떻게 해야 하나요? 허용 오차는 누가 정하나요?",
+   "a": "'구매업무 경험' 요건 — 3자 대조와 업무 규칙의 주인을 가르는지.[16]"
+  },
+  {
+   "q": "고객사가 표준에 없는 결재선을 요구하면 ERP 본체를 고치나요, BTP에 만드나요? 이유는?",
+   "a": "clean core와 옆 확장 방식을 판단 기준으로 말할 수 있는지.[13]"
+  },
+  {
+   "q": "CAP Java에서 저장 전에 금액을 검사하는 로직은 어디에 두나요?",
+   "a": "CDS 서비스와 이벤트 핸들러 구조를 아는지.[11]"
+  },
+  {
+   "q": "Fiori elements로 안 되는 화면 요구가 오면 어떻게 하나요?",
+   "a": "틀(floorplan)을 지키며 확장하는 법과 그 한계.[14][23]"
+  },
+  {
+   "q": "새 고객사를 구매 시스템에 붙일 때 첫 2주에 무엇을 확인하나요?",
+   "a": "주요업무의 '온보딩 분석/설계' — 규정·기준 정보·연동 범위.[1][7]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "LG Careers · [비즈테크아이] 구매 시스템 운영 및 온보딩 담당자(SAP BTP / Fiori) 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001854",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "업무·요건·우대, 근무지 서울, 마감 2026-12-31 — 우리 수집본으로 읽음"
+  },
+  {
+   "n": 2,
+   "title": "LG Careers · [비즈테크아이] SAP SM 모듈 운영 담당자 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001499",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — SAP 운영 3년 이상, 같은 학력 줄"
+  },
+  {
+   "n": 3,
+   "title": "LG Careers · [비즈테크아이] SAP 물류 모듈(eWM, TM) 컨설턴트 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001514",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — SM·SI 5년 이상, 같은 학력 줄"
+  },
+  {
+   "n": 4,
+   "title": "비즈테크아이 · Biztechi 소개",
+   "url": "https://www.biztechi.com/about/01",
+   "kind": "company",
+   "note": "LG CNS 자회사, SI 컨설팅·구축·운영 — 공고의 회사 소개와 같은 내용"
+  },
+  {
+   "n": 5,
+   "title": "LG CNS · 국내 최초 SAP 아시아태평양지역 전략 서비스 파트너 이니셔티브 합류",
+   "url": "https://www.lg.co.kr/media/release/28636",
+   "kind": "news",
+   "date": "2025-02",
+   "note": "모회사의 SAP 사업 확대"
+  },
+  {
+   "n": 6,
+   "title": "SAP · Partner solution: LG CNS SINGLEX Procurement",
+   "url": "https://www.sap.com/products/technology-platform/partners/lg-cns-co-ltd-singlex-procurement.html",
+   "kind": "reference",
+   "note": "SAP BTP 파트너 솔루션 목록. 금형 구매·관리를 BTP로 구매·개발·자산 관리와 잇고, BTP를 기본 인프라로 사용자 수·데이터량 월 과금 — 페이지 본문은 자동 읽기가 403으로 막혀 검색 결과 요약으로 확인(2026-11)"
+  },
+  {
+   "n": 7,
+   "title": "LG CNS · SINGLEX (SaaS)",
+   "url": "https://www.lgcns.com/en/business/cloud/saas",
+   "kind": "company",
+   "note": "SINGLEX Procurement Management — 다단계 공급사 관리, RFQ/RFP·정역경매, 계약 전자서명, 금형 수명 주기 관리, 설비·공사 TBE·CBE → RFQ → PO → 인수 시험(2026-11 확인)"
+  },
+  {
+   "n": 8,
+   "title": "LG · LG CNS, '싱글렉스(SINGLEX)'로 SaaS 사업 박차",
+   "url": "https://www.lg.co.kr/media/release/27978",
+   "kind": "news",
+   "date": "2024-08-08",
+   "note": "구매관리 등 핵심 업무 SaaS, 30여 기업 고객, SAP Sapphire 2024에서 구매관리 소개"
+  },
+  {
+   "n": 9,
+   "title": "디지털데일리 · [오픈테크넷 2024] LG CNS \"복잡한 업무용 솔루션들, '싱글렉스'로 해결\"",
+   "url": "https://www.ddaily.co.kr/page/view/2024092417542109706",
+   "kind": "news",
+   "date": "2024-09-25",
+   "note": "32개 서비스, 구매 공급망 위험 분석"
+  },
+  {
+   "n": 10,
+   "title": "SAP Learning · Discovering SAP Business Technology Platform",
+   "url": "https://learning.sap.com/courses/discovering-sap-business-technology-platform-1",
+   "kind": "reference",
+   "note": "BTP 기본 개념(무료, 약 1시간)"
+  },
+  {
+   "n": 11,
+   "title": "CAP · Java Getting Started",
+   "url": "https://cap.cloud.sap/docs/java/getting-started",
+   "kind": "reference",
+   "note": "Spring Boot 기반 CAP Java 프로젝트, cds init --java"
+  },
+  {
+   "n": 12,
+   "title": "CAP · Spring Boot Integration",
+   "url": "https://cap.cloud.sap/docs/java/spring-boot-integration",
+   "kind": "reference",
+   "note": "cds-starter-spring-boot-odata 가 OData V4 어댑터를 구성"
+  },
+  {
+   "n": 13,
+   "title": "SAP · Extend SAP S/4HANA processes without impacting core functionality",
+   "url": "https://www.sap.com/products/technology-platform/use-cases/s4hana-build.html",
+   "kind": "reference",
+   "note": "BTP 위 옆 확장 — API·이벤트로 ERP 본체를 고치지 않고 확장"
+  },
+  {
+   "n": 14,
+   "title": "SAP Fiori Design Guidelines · List Report Floorplan",
+   "url": "https://www.sap.com/design-system/fiori-design-web/v1-148/page-types/floorplans/list-report-floorplan-sap-fiori-element/usage",
+   "kind": "reference",
+   "note": "많은 항목을 보고 다루는 전체 화면 틀"
+  },
+  {
+   "n": 15,
+   "title": "SAP Fiori Design Guidelines · Object Page Floorplan",
+   "url": "https://www.sap.com/design-system/fiori-design-web/v1-84/page-types/floorplans/object-page/usage",
+   "kind": "reference",
+   "note": "객체 하나를 보고 다루는 틀"
+  },
+  {
+   "n": 16,
+   "title": "SAP Learning · Business Processes in SAP S/4HANA Sourcing & Procurement | KO",
+   "url": "https://learning.sap.com/courses/business-processes-in-sap-s-4hana-sourcing-procurement-ko",
+   "kind": "reference",
+   "note": "소싱·조달 전체 흐름(한국어, 무료)"
+  },
+  {
+   "n": 17,
+   "title": "SAP Learning · Purchasing in SAP S/4HANA | KO",
+   "url": "https://learning.sap.com/courses/purchasing-in-sap-s-4hana-ko",
+   "kind": "reference",
+   "note": "구매 기준 정보·조달 실행·특수 조달(한국어)"
+  },
+  {
+   "n": 18,
+   "title": "SAP Learning · Executing Basic ERP Processes with SAP S/4HANA | KO",
+   "url": "https://learning.sap.com/courses/executing-basic-erp-processes-with-sap-s-4hana-ko",
+   "kind": "reference",
+   "note": "조달→지급(procure-to-pay) 단원 포함"
+  },
+  {
+   "n": 19,
+   "title": "SAP Learning · SAP HANA SQL Script Basics and Advanced for SAP HANA",
+   "url": "https://learning.sap.com/courses/sap-hana-sql-script-basics-and-advanced-for-sap-hana",
+   "kind": "reference",
+   "note": "SQL·SQLScript로 HANA 솔루션 설계·최적화"
+  },
+  {
+   "n": 20,
+   "title": "SAP Learning · Developing Data Models with SAP HANA Cloud",
+   "url": "https://learning.sap.com/courses/developing-data-models-with-sap-hana-cloud",
+   "kind": "reference",
+   "note": "SQL 콘솔에서 질의 작성·실행"
+  },
+  {
+   "n": 21,
+   "title": "SAP Training · C_S4CPR 자격 시험 안내",
+   "url": "https://training.sap.com/certification/C_S4CPR_2402",
+   "kind": "reference",
+   "note": "S/4HANA Cloud Public Edition 소싱·조달 구현 컨설턴트 시험. 판마다 코드가 바뀜"
+  },
+  {
+   "n": 22,
+   "title": "SAP PRESS · Application Development with SAP Business Technology Platform",
+   "url": "https://www.sap-press.com/application-development-with-sap-business-technology-platform_5504/",
+   "kind": "reference",
+   "note": "Java·Node.js·ABAP 백엔드, SAPUI5·Fiori 화면, Cloud Foundry·Kyma"
+  },
+  {
+   "n": 23,
+   "title": "SAP PRESS · SAP Fiori Elements",
+   "url": "https://www.sap-press.com/sap-fiori-elements_5641",
+   "kind": "reference",
+   "note": "주석 기반 화면 개발과 확장"
+  },
+  {
+   "n": 24,
+   "title": "자소설닷컴 · 비즈테크아이 기업정보",
+   "url": "https://jasoseol.com/companies/14512",
+   "kind": "reference",
+   "note": "초봉 3,811만·평균 5,748만 — 공공데이터 집계(같은 회사 다른 풀이에서 확인한 값)"
+  },
+  {
+   "n": 25,
+   "title": "자소설닷컴 · LG CNS 기업정보",
+   "url": "https://jasoseol.com/companies/57",
+   "kind": "reference",
+   "note": "초봉 5,071만·평균 7,802만 — 같은 집계"
+  },
+  {
+   "n": 26,
+   "title": "비즈테크아이 · 채용 프로세스",
+   "url": "https://www.biztechi.com/recruit/02",
+   "kind": "company",
+   "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"
+  },
+  {
+   "n": 27,
+   "title": "비즈테크아이 · 복리후생",
+   "url": "https://www.biztechi.com/culture/03",
+   "kind": "company"
+  },
+  {
+   "n": 28,
+   "title": "비즈테크아이 · 오시는 길",
+   "url": "https://www.biztechi.com/about/05",
+   "kind": "company"
+  },
+  {
+   "n": 29,
+   "title": "OASIS · OData Version 4.01 Part 2: URL Conventions",
+   "url": "https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html",
+   "kind": "reference",
+   "note": "$filter·$select·$orderby·$top 질의 규칙"
+  },
+  {
+   "n": 30,
+   "title": "SAP Developers · Develop a Full-Stack CAP Application Following the SAP BTP Developer's Guide",
+   "url": "https://developers.sap.com/tutorials/group-develop-a-full-stack-cap-application-following-sap-btp-developer-s-guide",
+   "kind": "reference",
+   "note": "CAP(Node.js·Java) + Fiori + HANA Cloud + 배포 튜토리얼"
+  }
+ ],
+ "caveat": "이 팀의 발표·기술 글은 찾지 못했습니다. 공고가 '구매 시스템'이라고만 적어, 그것이 SINGLEX 구매관리인지는 확인되지 않았습니다 — LG CNS 의 SINGLEX 구매관리 기능과 SAP 파트너 목록(BTP 기반)으로 '보통 이런 일'을 보였습니다. 우대사항의 'PySAP' 은 같은 이름의 제품을 찾지 못해 'SAP ERP 구매 모듈'로 읽었습니다. 연봉·복지·위치는 같은 회사의 다른 풀이가 확인한 출처를 다시 썼습니다."
+}
