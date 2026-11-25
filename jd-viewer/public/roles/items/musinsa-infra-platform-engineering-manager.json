@@ -1,0 +1,924 @@
+{
+ "id": "musinsa-infra-platform-engineering-manager",
+ "company": "무신사",
+ "role": "Engineering Manager (Infra Platform)",
+ "team": "Foundation Platform · Infra Platform",
+ "jobs": [
+  "ats-greeting:musinsa:229966"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사 서비스 전체가 올라가는 **AWS·쿠버네티스(EKS) 인프라**를 설계·운영하는 팀을 이끌며, 목표·채용·기술 방향·장애 후 개선을 맡습니다.[1]",
+  "env": "AWS 위 EKS·불변/선언형 인프라, Terraform·Terragrunt, 마케팅 일정과 연동된 자동 프로비저닝 플랫폼. 블랙프라이데이엔 평소 20배 이상 트래픽이 옵니다.[1]",
+  "oneline": "코드보다 **사람·우선순위·안정성 목표**를 맡는 12년+ 인프라 리더 자리. 기술 깊이는 설계 판단과 장애 대응 질문으로 증명합니다 {추론}."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "팀 리딩 및 조직 관리 업무를 담당합니다.",
+   "short": "이 공고의 첫 묶음 제목 — 사람과 조직을 맡는다는 뜻.",
+   "why": "공고는 담당 업무를 네 묶음(조직·기술 방향·자동화·트래픽/안정성)으로 나눈다. 첫 묶음이 사람 일이라는 것은 이 자리가 직접 구현보다 팀 운영이 먼저라는 신호다 {추론}.[1]",
+   "actually": {
+    "items": [
+     "아래 네 줄(목표·코칭·채용·방향)이 이 묶음에 속한다."
+    ]
+   },
+   "how_far": "제목 줄이라 따로 할 일은 없다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Infra Platform 팀의 목표 설정, 우선순위 조정 및 로드맵 수립을 주도합니다.",
+   "short": "팀이 이번 분기에 무엇을 하고 무엇을 미룰지 정해 일정표로 만드는 일.",
+   "why": "Infra Platform 은 서비스마다 필요한 모든 인프라를 설계·운영하는 조직이라 요청이 끝없이 들어온다. 무엇을 먼저 할지 정하는 사람이 필요하다.[1]",
+   "actually": {
+    "items": [
+     "분기 목표(예: 가용성·비용·배포 속도)를 정하고 팀 일감과 연결한다.",
+     "서비스 팀의 요청과 팀 자체 개선 과제(기술 부채)를 한 목록에서 순서 매긴다.",
+     "블랙프라이데이 같은 큰 행사 일정을 먼저 박고 그 앞 준비 일정을 거꾸로 짠다.[1]"
+    ]
+   },
+   "how_far": "목표의 큰 틀은 상위 조직(Foundation Platform)과 맞추고, 매니저는 그 안에서 팀의 순서와 근거를 책임진다 {추론}.",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "팀원들의 성장을 위한 1:1 코칭, 피드백, 커리어 개발을 지원합니다.",
+   "short": "팀원과 정기적으로 일대일로 만나 성장 방향을 같이 정하는 일.",
+   "why": "인프라 엔지니어는 온콜(장애 대기) 부담이 커서 이탈하기 쉽다. 성장 지원이 곧 팀을 유지하는 방법이다 {추론}.",
+   "actually": {
+    "items": [
+     "주 또는 격주 1:1 — 일 이야기보다 막힌 점·다음 역할을 묻는다.",
+     "기술 성장(자격·발표)과 역할 성장(리드·설계)을 구분해 목표를 적는다.",
+     "성과 평가 때 쓸 근거를 평소에 메모해 둔다."
+    ]
+   },
+   "how_far": "회사의 평가 제도 안에서 한다. 제도를 바꾸는 일은 이 줄에 없다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "채용, 온보딩 등 조직 확장을 위한 업무를 주도합니다.",
+   "short": "사람을 뽑고 새 팀원이 첫 몇 주 안에 일할 수 있게 길을 닦는 일.",
+   "why": "공고 자체가 상시 채용이고 '수습 3개월'을 안내한다. 이 자리가 확장 중인 팀을 맡는다는 뜻이다.[1]",
+   "actually": {
+    "items": [
+     "직무 정의(JD)를 쓰고 면접 질문·평가표를 만든다.",
+     "첫 주 계정·권한·실습 환경을 준비한 온보딩 체크리스트.",
+     "첫 30·60·90일에 맡길 작은 일감을 정한다."
+    ]
+   },
+   "how_far": "채용 프로세스(서류→1·2차 인터뷰→처우 협의)는 회사가 정해 두었다.[1] 매니저는 면접관과 기준을 맡는다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "기술 방향성 및 아키텍처 의사결정을 리드합니다.",
+   "short": "두 번째 묶음 제목 — 인프라 구조를 어떻게 가져갈지 정하는 일.",
+   "why": "무신사는 AWS 위에서 Kubernetes(EKS)·불변 인프라·선언형 인프라를 선호한다고 밝혔다. 그 방향을 이어 가는 일이다.[1]",
+   "actually": {
+    "items": [
+     "아래 세 줄(아키텍처·IaC·코드 리뷰)이 이 묶음이다."
+    ]
+   },
+   "how_far": "제목 줄.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AWS, Kubernetes(EKS) 기반 인프라 아키텍처의 방향성을 수립하고 의사결정을 주도합니다.",
+   "short": "서버·네트워크·컨테이너를 어떤 구조로 쌓을지 정하고 그 이유를 설명하는 일.",
+   "why": "공고는 퍼블릭 클라우드에 맞춘 구조를 계속 찾고 EKS 중심 클라우드 네이티브 기술을 쓴다고 적었다. 무신사가 2019년 물리 인프라에서 AWS 로 옮겼다는 보도도 있다.[1][5]",
+   "actually": {
+    "items": [
+     "계정·네트워크(VPC) 분리, 클러스터 수와 경계(서비스별 vs 공용)를 정한다.",
+     "노드 확장 방식(Karpenter·Auto Mode 등)·비용·안정성 사이의 균형을 고른다 {추론}.",
+     "큰 결정은 문서(ADR)로 남겨 나중에 이유를 확인할 수 있게 한다."
+    ]
+   },
+   "how_far": "EKS 모범사례 문서가 보안·신뢰성·확장 항목을 나눠 놓았다.[11] 이 자리는 그 항목에서 우리 서비스에 맞는 선을 고르는 사람이다 {추론}.",
+   "refs": [
+    1,
+    5,
+    11
+   ],
+   "study": [
+    "eks-bp",
+    "eks-scaling",
+    "aws-waf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "IaC(Terraform, Terragrunt) 표준화 및 기술 부채 관리 전략을 수립합니다.",
+   "short": "인프라를 코드로 정의하는 방식을 팀 공통 규칙으로 맞추고, 낡은 부분을 정리할 계획을 세우는 일.",
+   "why": "공고는 인프라를 코드로 정의해 변경을 안정적이면서 민첩하게 하는 체계를 갖췄다고 했다.[1] 팀이 커질수록 파일마다 쓰는 방식이 갈려, 표준이 없으면 변경이 위험해진다 {추론}.",
+   "actually": {
+    "items": [
+     "모듈 규칙: 환경(dev·prod)마다 같은 모듈을 쓰고 값만 바꾼다. Terragrunt 는 이 반복을 줄이는 도구다.[10]",
+     "상태 파일(state) 보관·잠금·리뷰 절차 표준.",
+     "기술 부채 목록: 손으로 만든 리소스를 코드로 가져오기, 낡은 모듈 버전 올리기."
+    ]
+   },
+   "how_far": "도구 선택(Terragrunt 유지 여부)은 팀 합의 사항이다. 매니저는 기준과 일정·위험을 책임진다 {추론}.",
+   "refs": [
+    1,
+    10,
+    12
+   ],
+   "study": [
+    "tf-docs",
+    "tf-up-running",
+    "terragrunt"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "팀의 기술적 의사결정에 참여하고, 필요한 경우 직접 코드 리뷰 및 기술 검토를 수행합니다.",
+   "short": "직접 구현은 줄어도 중요한 변경은 눈으로 확인하는 일.",
+   "why": "'필요한 경우'라는 단서는 상시로 코드를 쓰는 자리가 아니라는 뜻이다.[1] 12년 이상 경력을 요구하는 이유도 판단을 맡기기 위해서다 {추론}.",
+   "actually": {
+    "items": [
+     "위험한 변경(네트워크·권한·클러스터 업그레이드)의 리뷰에 들어간다.",
+     "설계 문서에 질문을 남겨 놓친 장애 시나리오를 짚는다."
+    ]
+   },
+   "how_far": "모든 PR 을 보는 것이 아니라 위험이 큰 것만 본다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle",
+    "tf-up-running"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "자동화 및 효율화 전략을 추진합니다.",
+   "short": "세 번째 묶음 제목 — 반복 운영 일을 줄이는 일.",
+   "why": "공고는 직접 개발한 인프라 플랫폼으로 개발팀이 바로 쓸 수 있는 인프라 환경을 얻는다고 설명한다.[1]",
+   "actually": {
+    "items": [
+     "아래 두 줄(자동화 전략·모니터링/장애 대응)이 이 묶음이다."
+    ]
+   },
+   "how_far": "제목 줄.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "반복적이고 단순한 운영 업무를 줄이기 위한 자동화 전략을 수립하고 실행을 지원합니다.",
+   "short": "사람이 손으로 하는 반복 일의 목록을 만들어 어느 것부터 자동화할지 정하는 일.",
+   "why": "팀 소개가 '운영하는 인프라'에 머물지 않고 문제를 개발로 해결하는 엔지니어링 중심 조직이라고 했다.[1] SRE 책은 이런 반복 일을 toil(노동)로 부르고 줄이라고 권한다.[8]",
+   "actually": {
+    "items": [
+     "요청 접수 → 처리 시간·빈도를 센다(예: 계정 발급 주 20건·건당 15분).",
+     "빈도 × 시간이 큰 것부터 셀프서비스(포털·템플릿)로 바꾼다.",
+     "AI 도구를 쓸 부분과 사람이 승인할 부분을 나눈다 {추론}."
+    ]
+   },
+   "how_far": "구현은 팀원이 한다. 매니저는 우선순위와 '자동화에 쓴 시간이 이득인가' 판단을 맡는다 {추론}.",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모니터링, 장애 대응 프로세스 개선을 위한 방향을 제시합니다.",
+   "short": "무엇을 어떻게 감시하고, 장애가 나면 누가 무엇을 하는지의 순서를 개선하는 일.",
+   "why": "서비스가 쇼핑이라 멈추면 바로 매출이 걸린다. 공고도 안정적인 서비스를 최우선 가치로 둔다.[1]",
+   "actually": {
+    "items": [
+     "경보가 너무 많거나 적은 문제를 정리(사람이 봐야 할 경보만 남김).",
+     "온콜 순번·에스컬레이션(누구에게 올리나) 규칙.",
+     "장애 단계(심각도) 정의와 공지 방식."
+    ]
+   },
+   "how_far": "도구 선택은 팀이 한다. 매니저는 절차가 실제로 돌아가는지 점검한다 {추론}.",
+   "refs": [
+    1,
+    8,
+    9
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 트래픽 대응 전략을 수립합니다.",
+   "short": "네 번째 묶음 제목 — 행사 때 트래픽 급증을 견디는 계획.",
+   "why": "공고는 블랙프라이데이 같은 행사로 순간적으로 평소 20배 이상의 트래픽이 생긴다고 밝혔다.[1]",
+   "actually": {
+    "items": [
+     "아래 한 줄(프로비저닝·리소스 관리)이 이 묶음이다."
+    ]
+   },
+   "how_far": "제목 줄.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "eks-bp",
+    "eks-scaling"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대형 이벤트 및 시즌성 트래픽 급증에 대비한 프로비저닝 전략과 리소스 관리 체계를 총괄합니다.",
+   "short": "행사 전에 서버 수를 미리 늘리고 끝나면 줄이는 계획과 그 관리 방법을 책임지는 일.",
+   "why": "회사는 마케팅 이벤트 일정과 연계해 필요한 인프라 리소스를 사전에 자동 확장하는 프로비저닝 플랫폼을 만들었다고 했다.[1]",
+   "actually": {
+    "items": [
+     "마케팅 일정 → 예상 트래픽 → 필요 서버·DB 수 순서로 용량을 계산한다.",
+     "행사 전 부하 테스트로 병목(DB 연결·로드밸런서 예열 등)을 찾는다 {추론}.",
+     "행사가 끝나면 줄여 비용을 되돌린다."
+    ]
+   },
+   "how_far": "실행은 자동화 플랫폼이 한다. 매니저는 일정·위험·비용 승인과 행사 당일 지휘를 맡는다 {추론}.",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "eks-bp",
+    "eks-scaling",
+    "aws-waf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영 안정성 및 조직 간 협업을 리드합니다.",
+   "short": "다섯 번째 묶음 제목 — 목표 설정과 장애 뒤 개선, 다른 팀과의 소통.",
+   "why": "인프라는 개발팀·보안팀이 쓰는 기반이라 혼자서는 안정성을 지킬 수 없다.[1]",
+   "actually": {
+    "items": [
+     "아래 세 줄(SLA/SLO·Postmortem·협업)이 이 묶음이다."
+    ]
+   },
+   "how_far": "제목 줄.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SLA/SLO 기반의 서비스 신뢰성 목표를 설정하고 관리합니다.",
+   "short": "'이 서비스는 한 달에 몇 분까지 멈춰도 된다'를 숫자로 정하고 지키는지 보는 일.",
+   "why": "SRE 책은 지표(SLI)·목표(SLO)·약속(SLA)을 나누고 100% 가용성은 목표가 아니라고 한다.[8] 목표가 있어야 배포 속도와 안정성 사이에서 무엇을 우선할지 근거가 생긴다 {추론}.",
+   "actually": {
+    "items": [
+     "SLI: 성공한 요청 비율·응답 시간 같은 측정값.",
+     "SLO: 위 값의 목표(예: 월 99.9%). 남는 만큼이 오류 예산이다.",
+     "SLA: 고객·내부 팀과 한 약속. 어기면 책임이 따르는 쪽."
+    ]
+   },
+   "examples": [
+    {
+     "title": "SLO 99.9% 의 오류 예산 (가상 값)",
+     "body": "30일 동안 99.9% 를 지키려면 허용되는 중단은 약 43.2분입니다. 직접 돌린 출력입니다.[8]",
+     "lang": "python",
+     "code": "slo = 0.999\nminutes = 30 * 24 * 60\nbudget = minutes * (1 - slo)\nprint(f\"예산 {budget:.1f}분\")\nfor down in (10, 30, 50):\n    left = budget - down\n    print(down, \"분 장애 -> 남은 예산\", round(left, 1), \"분\", \"초과\" if left < 0 else \"\")\n# 예산 43.2분\n# 10 분 장애 -> 남은 예산 33.2 분\n# 30 분 장애 -> 남은 예산 13.2 분\n# 50 분 장애 -> 남은 예산 -6.8 분 초과"
+    }
+   ],
+   "how_far": "서비스별 목표값은 서비스 팀·기획과 합의해야 한다. 인프라 팀은 측정·보고 체계를 제공한다 {추론}.",
+   "refs": [
+    8
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장애 발생 시 Postmortem 프로세스를 주도하고, 재발 방지를 위한 개선 활동을 이끕니다.",
+   "short": "장애가 끝난 뒤 원인을 사람 탓 없이 정리하고 고칠 일을 끝까지 추적하는 일.",
+   "why": "Google 은 blameless(비난 없는) postmortem 문화를 말하며, 목적은 결함을 드러내고 고치는 것이라고 설명한다.[9]",
+   "actually": {
+    "items": [
+     "타임라인(언제 감지·완화·복구) 기록, 직접 원인과 구조적 원인 구분.",
+     "개선 과제에 담당자·기한을 붙이고 완료까지 확인.",
+     "회고 문서를 팀 밖에 공유해 같은 사고를 막는다."
+    ]
+   },
+   "how_far": "문서는 팀원이 쓰되 진행·품질·후속 추적의 책임은 매니저가 진다.",
+   "refs": [
+    9
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "타 조직(개발팀, 보안팀 등)과의 협업 및 커뮤니케이션 채널을 운영합니다.",
+   "short": "서비스 개발팀·보안팀이 인프라 요청을 어디에 어떻게 하는지 창구를 만들고 관리하는 일.",
+   "why": "Infra Platform 은 서비스마다 연관된 모든 인프라를 맡는다.[1] 요청 창구가 없으면 팀 소통이 개인 메신저에 흩어진다 {추론}.",
+   "actually": {
+    "items": [
+     "요청 채널과 처리 기한 안내, 정기 점검 미팅.",
+     "보안 요구(권한·감사 로그)와 개발 속도 사이를 조정.",
+     "행사·점검 일정 공지."
+    ]
+   },
+   "how_far": "정답은 회사 조직 구조에 달려 있다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "개발 및 인프라 운영 경력 포함 12년 이상, 이 중 팀 매니징 경험을 보유하신 분",
+   "short": "12년의 경력 중 팀을 이끈 이력이 확인되는 사람.",
+   "why": "공고 제목이 Engineering Manager 이고 경력 12년 이상으로 표기됐다. 판단·조율을 맡길 만한 시간을 요구한 것이다 {추론}.[1]",
+   "how_far": "팀장 경험의 최소 기간·인원은 적혀 있지 않다. 이력서에 팀 규모·맡은 결정·성과 숫자를 적는다 — 공고가 정량 성과를 요구한다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 및 Kubernetes 운영 경험과 이에 대한 기술적 이해를 바탕으로 팀을 리드해본 경험이 있으신 분",
+   "short": "AWS·쿠버네티스를 직접 운영해 보고, 그 이해로 팀원의 설계를 평가할 수 있는 사람.",
+   "why": "관리자가 기술을 모르면 팀의 설계를 검토할 수 없다. 공고도 기술적 이해를 바탕으로 한 리드를 요구한다.[1]",
+   "actually": {
+    "items": [
+     "Pod 가 안 뜰 때(Pending·CrashLoopBackOff) 원인을 어디서 볼지 안다.",
+     "노드 확장·업그레이드·네트워크(VPC·로드밸런서)·권한(IAM) 개념을 설명한다.",
+     "EKS 모범사례의 신뢰성·보안 항목을 안다.[11]"
+    ]
+   },
+   "how_far": "직접 YAML 을 쓰는 수준보다, 장애 상황에서 올바른 질문을 하는 수준이 목표다 {추론}.",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "eks-bp",
+    "eks-scaling"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Terraform, Terragrunt 등 IaC 기반의 인프라 운영 경험이 있으신 분",
+   "short": "인프라를 코드로 정의하고 변경하는 도구를 실제 운영에서 써 본 경험.",
+   "why": "공고 팀 소개가 인프라를 코드로 정의하는 선언형 방식을 선호한다고 했다.[1]",
+   "actually": {
+    "items": [
+     "plan 으로 변경 내용을 먼저 보고 apply 로 적용하는 흐름.[12]",
+     "환경별 반복을 줄이는 Terragrunt 구성.[10]",
+     "상태 파일 충돌·드리프트(코드와 실제 불일치) 문제 처리."
+    ]
+   },
+   "how_far": "'등'이라 다른 IaC 도구 경험도 볼 수 있다 {추론}.",
+   "refs": [
+    1,
+    10,
+    12
+   ],
+   "study": [
+    "tf-docs",
+    "tf-up-running",
+    "terragrunt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "트래픽 급증 환경에서의 안정적 운영 경험 및 이를 조직 차원에서 대응해본 경험이 있으신 분",
+   "short": "행사나 이벤트로 접속이 몰릴 때 서비스를 지킨 경험, 그것도 개인 일이 아닌 팀 운영으로.",
+   "why": "회사는 평소 대비 20배 이상 트래픽 상황을 말했다.[1] 그래서 '조직 차원'의 대응(사전 계획·역할 분담)을 요구한다.[1]",
+   "actually": {
+    "items": [
+     "행사 일정 공유 → 용량 계획 → 부하 테스트 → 당일 상황실의 순서.",
+     "자동 확장이 따라가지 못하는 병목(DB·외부 API) 사례."
+    ]
+   },
+   "how_far": "서술할 사례에 숫자(몇 배·몇 분 중단 없음)를 넣는다.[1]",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "eks-bp",
+    "eks-scaling"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "팀원의 성장을 지원하고 동기부여할 수 있는 리더십과 커뮤니케이션 역량을 보유하신 분",
+   "short": "사람에게 일을 맡기고 피드백하며 동기를 유지하는 능력.",
+   "why": "팀 소개 마지막이 팀원의 성장을 지원하고 조직의 엔지니어링 역량을 끌어올릴 리더를 찾는다는 문장이다.[1]",
+   "how_far": "면접에서는 구체적 사례(어려운 팀원과의 대화·성장을 이끈 경험)로 확인할 것이다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle",
+    "grove-hom"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "기술 조직의 채용, 온보딩, 조직문화 구축을 주도해본 경험이 있으신 분",
+   "short": "팀 규모를 키우면서 문화를 만든 경험.",
+   "why": "위 담당 업무의 채용·온보딩 줄과 같은 방향이다.[1]",
+   "how_far": "필수는 아니다 — 있으면 앞선다.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path",
+    "larson-puzzle"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "기술 과제를 주도적으로 수행한 경험이 있으신 분 (Cloud Native 기반 아키텍처 설계 및 기술 표준 수립, SLA/SLO 달성을 위한 안정성 강화 등)",
+   "short": "스스로 문제를 정의하고 클라우드 구조·표준·신뢰성 개선을 끝까지 한 경험.",
+   "why": "괄호 예시가 이 자리의 핵심 업무(아키텍처·표준·SLO)와 같다.[1]",
+   "how_far": "프로젝트별 기여도를 적으라는 지원서 안내가 있다.[1]",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook",
+    "eks-bp",
+    "eks-scaling"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "e-commerce 서비스의 특성을 잘 이해하고 있으신 분",
+   "short": "쇼핑 서비스는 행사·결제·재고 때문에 특정 시간에 몰린다는 점을 아는 것.",
+   "why": "회사는 쇼핑 서비스이며 행사 때 트래픽이 크게 늘어난다.[1]",
+   "how_far": "이커머스 경력이 없어도 급증 트래픽 경험으로 대체될 수 있다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "aws-waf"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 활용한 자동화나 업무 효율화를 조직에 도입해본 경험이 있으신 분",
+   "short": "AI 도구로 팀의 반복 일을 줄여 본 경험, 그것도 조직 도입 수준.",
+   "why": "무신사는 전사 AI 에이전트 지원을 복지로 내세운다.[2]",
+   "actually": {
+    "items": [
+     "예: 장애 로그 요약, 런북 초안, 코드 리뷰 보조 {추론}."
+    ]
+   },
+   "how_far": "도입 후 효과를 숫자로 설명하고 검증 방법(사람 승인)을 말한다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "claude-code"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "manager-path",
+   "title": "The Manager's Path",
+   "by": "Camille Fournier · O'Reilly · 2017",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/the-managers-path/9781491973882/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "팀 리더부터 임원까지 단계별 역할 — 12년 이상·팀 매니징 요건과 담당 업무가 무엇을 하는 일인지 잡는다."
+  },
+  {
+   "id": "larson-puzzle",
+   "title": "An Elegant Puzzle: Systems of Engineering Management",
+   "by": "Will Larson · Stripe Press · 2019",
+   "kind": "book",
+   "url": "https://press.stripe.com/an-elegant-puzzle",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "팀 규모·우선순위·로드맵 — 목표 설정과 로드맵 줄의 틀."
+  },
+  {
+   "id": "grove-hom",
+   "title": "High Output Management",
+   "by": "Andrew S. Grove · Random House",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=High%20Output%20Management",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "1:1·위임·성과 점검의 기본 관점."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (Google SRE Book)",
+   "by": "Beyer 외 · O'Reilly · 2016 · 온라인 무료",
+   "kind": "book",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SLO(4장)·Postmortem(15장)·toil 감소 — 신뢰성 목표·장애 후 개선·자동화 줄에 해당."
+  },
+  {
+   "id": "sre-workbook",
+   "title": "The Site Reliability Workbook",
+   "by": "Google · 온라인 무료",
+   "kind": "doc",
+   "url": "https://sre.google/workbook/table-of-contents/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SLO 를 실제로 구현하는 절차(Implementing SLOs) — 서비스별 목표를 정하는 방법."
+  },
+  {
+   "id": "tf-docs",
+   "title": "Terraform 공식 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "plan·apply·상태 파일의 기본 — IaC 운영 요건."
+  },
+  {
+   "id": "tf-up-running",
+   "title": "Terraform: Up & Running",
+   "by": "Yevgeniy Brikman · O'Reilly",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/terraform-up-and/9781098116736/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "모듈·환경 분리·팀 협업 — IaC 표준화 줄."
+  },
+  {
+   "id": "terragrunt",
+   "title": "Terragrunt 공식 문서",
+   "by": "Gruntwork",
+   "kind": "doc",
+   "url": "https://terragrunt.gruntwork.io/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "환경별 반복을 줄이는 구성 — 공고가 명시한 도구."
+  },
+  {
+   "id": "eks-bp",
+   "title": "Amazon EKS Best Practices Guides",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://aws.github.io/aws-eks-best-practices/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "신뢰성·보안·확장 모범사례 — 아키텍처 방향성 줄."
+  },
+  {
+   "id": "eks-scaling",
+   "title": "Scaling Amazon EKS infrastructure (규범적 지침)",
+   "by": "AWS Prescriptive Guidance",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/ko_kr/prescriptive-guidance/latest/scaling-amazon-eks-infrastructure/scaling-amazon-eks-infrastructure.pdf",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "노드·Pod 확장 방법 — 트래픽 급증 대응 줄."
+  },
+  {
+   "id": "aws-waf",
+   "title": "AWS Well-Architected Framework — 안정성 원칙",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "복구·용량 계획·변경 관리의 체크 항목 — 안정성·급증 트래픽 줄."
+  },
+  {
+   "id": "claude-code",
+   "title": "Claude Code 문서",
+   "by": "Anthropic",
+   "kind": "doc",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "AI 코딩 에이전트를 팀 업무에 쓰는 방법 — AI 자동화 우대 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "리더 역할 감 잡기",
+   "time": "1~2주",
+   "goal": "EM 이 하는 일을 말로 설명한다.",
+   "task": "가상 인프라 팀(6명)의 한 분기 1:1·채용·온콜 일정표를 만든다.",
+   "resources": [
+    "manager-path",
+    "larson-puzzle",
+    "grove-hom"
+   ]
+  },
+  {
+   "title": "신뢰성 목표와 장애 후 개선",
+   "time": "2주",
+   "goal": "SLO·오류 예산을 계산하고 postmortem 을 쓴다.",
+   "task": "가상 결제 API 의 SLO 를 정하고 50분 장애의 postmortem 한 장을 쓴다.",
+   "resources": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "title": "IaC 표준화",
+   "time": "2주",
+   "goal": "환경별 반복을 모듈로 줄인다.",
+   "task": "dev·prod 가 같은 모듈에 다른 값을 쓰는 Terraform+Terragrunt 폴더 구조를 만든다.",
+   "resources": [
+    "tf-docs",
+    "tf-up-running",
+    "terragrunt"
+   ]
+  },
+  {
+   "title": "EKS 와 급증 트래픽",
+   "time": "2~3주",
+   "goal": "확장 방식과 병목을 설명한다.",
+   "task": "평소 100 → 행사 2000 요청/초 가정으로 Pod·노드·DB 연결 수 용량표를 만든다.",
+   "resources": [
+    "eks-bp",
+    "eks-scaling",
+    "aws-waf"
+   ]
+  },
+  {
+   "title": "AI 자동화 도입",
+   "time": "1주",
+   "goal": "맡길 일과 사람이 승인할 일을 가른다.",
+   "task": "장애 로그 요약 자동화의 검증 규칙을 한 장으로 쓴다.",
+   "resources": [
+    "claude-code"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 없음('처우 협의'). 집계 기준 신입 초봉 2,313만원·평균 3,453만원, 원티드 표기 평균은 6,082만원 — 12년+ 관리직 연봉과는 무관한 값.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아닌 회사 전체 값, 연도 미표기.[3]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 경력직이 섞인 전체 평균.[3]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위와 2천만원 넘게 달라 산출 방식이 다른 것으로 보인다.[4]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시로 확인한 직원 평균 급여가 없다(이번에도 확인 못 함). 위 숫자는 모두 집계이고 **평균은 초봉이 아니며**, 12년 이상 경력의 리더 자리 연봉은 공고의 '처우 협의' 단계에서 정해진다.[1] 직급·보상 체계는 공개되지 않았다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "코어타임 11~16시, 휴가 1일·0.5일·0.25일 단위"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기근속",
+    "detail": "3년마다 리프레시 휴가 7일 + 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기당 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 지원금 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "전사 AI 에이전트 지원, 허먼 밀러 의자, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급(이 공고 기타사항)"
+   }
+  ],
+  "note": "무신사 채용 사이트 복지 페이지(날짜 미표기, 첨부 이미지 2025-07)와 이 공고 기타사항.[2][1] 회사 전체 공통이며 '근무 장소·기간·시점에 따라 일부 변경될 수 있다'고 적혀 있다.[2]"
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 약 6분",
+  "note": "공고 근무지 표기는 '무신사 성수 오피스'.[1] 주소는 무신사 상품 페이지 하단 사업자 정보 표기.[7] 2022-09 성수 캠퍼스 N1 이전과 도보 거리는 보도.[6]"
+ },
+ "fit": {
+  "good": [
+   "팀을 직접 관리하고 인프라 장애를 지휘해 본 사람[1]",
+   "급증 트래픽 대응을 숫자로 설명하는 사람[1]",
+   "IaC 표준을 팀에 정착시킨 사람[1]"
+  ],
+  "hard": [
+   "직접 구현 비중이 낮을 수 있다 {추론}",
+   "공고에 연봉 범위가 없고 처우 협의다[1]",
+   "12년+ 요건이라 신입·주니어는 해당하지 않는다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "평소 20배 트래픽 행사를 어떻게 준비하나요?",
+   "a": "공고가 20배 이상 트래픽과 사전 자동 확장을 말했다.[1]"
+  },
+  {
+   "q": "팀의 SLO 를 어떻게 정하고 어긴 뒤엔 무엇을 하나요?",
+   "a": "SLA/SLO 설정과 Postmortem 주도가 업무다.[1]"
+  },
+  {
+   "q": "Terraform 코드가 팀마다 달라졌다면 어떻게 표준화하나요?",
+   "a": "IaC 표준화와 기술 부채 관리가 업무다.[1]"
+  },
+  {
+   "q": "AI 도구를 팀에 도입한 사례와 검증 방법은?",
+   "a": "AI 자동화 경험이 우대 사항이다.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Engineering Manager (Infra Platform)",
+   "url": "https://www.musinsacareers.com/ko/o/229966",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "업무·자격·우대·팀 소개(20배 트래픽·프로비저닝 플랫폼)·전형"
+  },
+  {
+   "n": 2,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "'일부 변경될 수 있다' 문구"
+  },
+  {
+   "n": 3,
+   "title": "자소설닷컴 — 무신사",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "초봉 2,313만원·평균 3,453만원(검색 요약, 직접 열람 403)"
+  },
+  {
+   "n": 4,
+   "title": "원티드 — 무신사 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "평균연봉 6,082만원 표기. 기준 설명 없음"
+  },
+  {
+   "n": 5,
+   "title": "무신사가 가고 있는 클라우드 네이티브 여정 — 바이라인네트워크",
+   "url": "https://byline.network/2021/10/13-153/",
+   "kind": "news",
+   "date": "2021-10-13",
+   "note": "2019년 물리 인프라에서 AWS 로 이전. 검색 요약으로 읽음"
+  },
+  {
+   "n": 6,
+   "title": "무신사, 성수동 캠퍼스 N1 본사 이전 — 일간스포츠",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09",
+   "note": "성수역 도보 6분"
+  },
+  {
+   "n": 7,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company",
+   "note": "주소 아차산로13길 11 — 같은 회사 기존 풀이에서 확인한 것을 옮김"
+  },
+  {
+   "n": 8,
+   "title": "Site Reliability Engineering — 4장 Service Level Objectives",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA 구분, 100% 가용성은 목표가 아님(워크북 SLO 장 요약)"
+  },
+  {
+   "n": 9,
+   "title": "Site Reliability Engineering — 15장 Postmortem Culture",
+   "url": "https://www.oreilly.com/library/view/site-reliability-engineering/9781491929117/ch15.html",
+   "kind": "reference",
+   "note": "blame-free postmortem 문화"
+  },
+  {
+   "n": 10,
+   "title": "Terragrunt 공식 문서",
+   "url": "https://terragrunt.gruntwork.io/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Amazon EKS Best Practices Guides",
+   "url": "https://aws.github.io/aws-eks-best-practices/",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Terraform 공식 문서",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "무신사 Infra Platform 팀의 기술 블로그·발표는 찾지 못했다(검색에 2021 클라우드 네이티브 보도만 나옴). 회사 근거는 이 공고의 팀 소개가 중심이고, SLO·postmortem·IaC·EKS 구조는 공개 문서로 '보통 이런 것'을 보였다. 연봉은 집계 사이트 값만 있다(같은 회사 기존 풀이 재사용)."
+}
