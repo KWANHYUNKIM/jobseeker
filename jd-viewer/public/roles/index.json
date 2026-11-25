@@ -93,6 +93,7 @@
   "ats-greenhouse:coupang:8393917": "coupang-iam-access-management-senior-mtv",
   "ats-greenhouse:coupang:8059287": "coupang-india-senior-staff-backend-serving",
   "ats-greenhouse:coupang:8078707": "coupang-interstellar-senior-staff-backend-serving",
+  "ats-greenhouse:coupang:8203471": "coupang-mobile-security-senior-staff",
   "ats-greenhouse:coupang:8203405": "coupang-network-security-engineer-detection-ops",
   "ats-greenhouse:coupang:8401523": "coupang-pay-director-backend-rocketpay",
   "ats-greenhouse:coupang:8312121": "coupang-pay-it-ai-compliance",
@@ -1313,6 +1314,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 20
+  },
+  {
+   "id": "coupang-mobile-security-senior-staff",
+   "company": "쿠팡 (Coupang)",
+   "role": "모바일 보안 시니어 스태프 엔지니어",
+   "jobs": [
+    "ats-greenhouse:coupang:8203471"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 26
   },
   {
    "id": "coupang-network-security-engineer-detection-ops",

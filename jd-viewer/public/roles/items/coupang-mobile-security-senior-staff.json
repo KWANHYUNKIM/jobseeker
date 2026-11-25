@@ -1,0 +1,1235 @@
+{
+ "id": "coupang-mobile-security-senior-staff",
+ "company": "쿠팡 (Coupang)",
+ "role": "모바일 보안 시니어 스태프 엔지니어",
+ "team": "Digital Trust(보안 조직) · Security & Privacy and Data Governance",
+ "jobs": [
+  "ats-greenhouse:coupang:8203471"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡의 **모든 모바일 앱** — 고객 앱뿐 아니라 판매자·배달 라이더·물류 앱까지 — 의 보안을 처음부터 세우는 자리입니다. 위협 지도를 그리고, iOS·안드로이드 보안 기준을 정하고, 앱 보안 리뷰를 '한 번씩 하는 점검'이 아니라 **돌아가는 프로그램**으로 만듭니다.[1]",
+  "env": "처음에는 직접 앱을 뜯어보고 코드를 읽는 **혼자 뛰는 시니어 IC**(개인 기여자)로 시작해, 나중에 작은 전문 팀을 꾸립니다.[1] 200명이 넘는 보안 조직[7] 안이고, 2025년 말 대규모 개인정보 유출 뒤 인증 키·토큰 관리가 정부 조사로 지적된 회사입니다.[8][9]",
+  "oneline": "모바일 앱을 직접 뜯어볼 줄 아는 **보안 엔지니어 + 개발 조직을 움직이는 리더**. 취약점을 찾는 것보다 '다시는 안 생기게 공통 부품·기준으로 막는 것'이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Mobile Threat Landscape and Strategy\nBuild and maintain a comprehensive view of mobile threats, attack paths and systemic control gaps across the company's mobile estate.",
+   "short": "회사의 모든 앱을 놓고 '누가, 어디로 들어와, 무엇을 가져가나'의 지도를 그리고 계속 고쳐 쓰는 일.",
+   "why": "이 자리가 맡는 앱은 고객 앱 하나가 아니라 판매자·라이더·물류 앱까지입니다.[1] 앱마다 쓰는 사람과 다루는 정보(배송지·결제·정산·위치)가 달라서, 앱별 점검표만으로는 '어느 앱의 어느 틈이 가장 위험한가'가 보이지 않습니다 {추론}. 공고가 '체계적인 통제 빈칸(systemic control gaps)'이라고 쓴 것은 앱 하나의 버그가 아니라 **여러 앱에 공통으로 비어 있는 방어**를 찾으라는 뜻입니다.[1]",
+   "actually": {
+    "intro": "위협 지도는 보통 이런 칸으로 채웁니다. 쿠팡이 어떤 형식을 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**자산 목록(mobile estate)** — 앱 이름·플랫폼·사용자 수·다루는 정보·쓰는 외부 SDK(남이 만든 부품 라이브러리)·연결된 서버 API.",
+     "**공격자 유형** — 앱을 뜯어 API 를 흉내 내는 사람(매크로·스크래핑), 남의 계정을 훔치는 사람, 루팅·탈옥(기기 관리자 권한을 얻은 상태) 기기의 악성 앱, 내부자.",
+     "**공격 경로(attack path)** — '딥링크로 앱 안 웹뷰를 열게 함 → 웹뷰가 앱 기능을 부르는 다리(브리지)를 씀 → 토큰 탈취'처럼 여러 약점이 이어진 길.[16]",
+     "**통제 지도** — 앱마다 저장·암호·인증·네트워크·플랫폼 연동·코드·변조 방지·개인정보 여덟 묶음의 방어가 있나 없나. OWASP MASVS 의 묶음이 이 기준이다.[10]",
+     "**공개 위협 정보** — 같은 업계의 공개 사고·취약점, 쿠팡 자신의 2025년 사고 조사 결과(서명 키가 소스 코드에 박혀 있어 교체하지 못함).[8]"
+    ]
+   },
+   "how_far": "처음 몇 달은 앱 목록과 담당 팀을 모으는 일이 절반입니다 {추론}. 최소선은 '앱 × 통제 묶음' 표 한 장과 위험이 큰 공격 경로 몇 개를 근거와 함께 설명할 수 있는 것입니다.",
+   "refs": [
+    1,
+    8,
+    10,
+    16
+   ],
+   "study": [
+    "masvs",
+    "shostack"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Define the target mobile security posture, priorities and longer-term roadmap.",
+   "short": "'우리 앱들이 어디까지 안전해야 하나'의 목표를 정하고, 무엇부터 할지 순서와 몇 년치 계획을 세운다.",
+   "why": "목표가 없으면 모든 취약점이 똑같이 급해 보입니다. MASVS 2판은 앱의 위험에 따라 검사 강도를 고르게 하려고 기본(L1)·심층(L2)·역공학 저항(R) **검사 프로필**을 따로 두었습니다.[12] 결제가 있는 앱과 사내 물류 앱의 목표선이 같을 필요는 없다는 뜻입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**목표선 정하기** — 예: 모든 앱은 L1, 결제·개인정보가 많은 앱은 L2, 매크로·변조가 돈이 되는 앱은 R 까지 {추론}.[12]",
+     "**우선순위** — 사용자 수 × 다루는 정보 × 지금 빈칸의 크기로 줄 세우기(아래 예시).",
+     "**로드맵** — 1년 차 '모든 앱이 리뷰를 한 번 거침', 2년 차 '공통 부품으로 대체', 3년 차 '자동 검사·셀프서비스'처럼 단계로 {추론}.",
+     "**성숙도 틀** — OWASP SAMM 처럼 보안 활동의 성숙도를 단계로 재는 공개 틀을 빌려 쓰기도 한다.[25]"
+    ]
+   },
+   "how_far": "로드맵을 혼자 쓰고 끝나는 게 아니라 개발 조직 리더들이 **예산과 일정에 넣게** 하는 데까지가 이 자리입니다(업무 넷째 묶음).[1]",
+   "refs": [
+    1,
+    12,
+    25
+   ],
+   "study": [
+    "mastg",
+    "samm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Track relevant changes in iOS, Android and mobile exploitation techniques and translate them into concrete security requirements.",
+   "short": "새 iOS·안드로이드 버전과 새 공격 기법을 따라가며 '그래서 우리 앱은 이걸 바꿔야 한다'로 번역한다.",
+   "why": "모바일 보안의 바닥은 해마다 OS 가 바뀝니다. 예를 들어 안드로이드 15부터는 앱 링크 검증 정보가 기기에 퍼지는 데 최대 7일이 걸리게 바뀌었습니다.[15] 구글 Play 무결성 API 도 판정 라벨을 계속 늘려 왔습니다.[13] 이런 변화가 '개발팀이 할 일 목록'으로 바뀌어야 의미가 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**OS 변경 읽기** — 해마다 새 OS 의 보안·개인정보 변경 사항을 읽고 우리 앱에 영향이 있는 것만 고른다.",
+     "**공격 기법 따라가기** — 후킹(실행 중인 앱의 함수를 가로채 바꾸기) 도구 Frida 같은 공개 도구의 새 기능, 공개 발표·취약점 보고.[22]",
+     "**요구사항으로 번역** — '루팅 우회 도구가 X 를 숨긴다' → '결제 전 서버가 기기 무결성 판정을 다시 확인한다'처럼 검사 가능한 문장으로.",
+     "**기한 붙이기** — 스토어 정책이나 OS 지원 종료처럼 날짜가 있는 변화는 기한을 같이 적는다 {추론}."
+    ]
+   },
+   "how_far": "모든 뉴스를 전달하는 게 아니라 **우리 앱에 해당하는 것만 골라 할 일로** 바꾸는 것. 걸러 내는 판단이 시니어 스태프에게 기대되는 몫입니다 {추론}.",
+   "refs": [
+    13,
+    15,
+    22
+   ],
+   "study": [
+    "android-risks",
+    "frida"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Security Architecture and Standards\nDefine practical security standards for iOS and Android, including application integrity, device trust, authentication, credential protection, local data, WebViews, deep links and third-party SDKs.",
+   "short": "모든 앱 팀이 따를 iOS·안드로이드 보안 기준(무결성·기기 신뢰·로그인·비밀 보관·웹뷰·딥링크·외부 SDK)을 쓴다.",
+   "why": "공고가 꼽은 여덟 주제는 모바일 앱 공격이 실제로 드나드는 문입니다. '실용적인(practical)'이라는 말은 앱 팀이 읽고 그대로 구현할 수 있는 기준이라는 뜻입니다.[1] 공개 기준으로는 OWASP MASVS 가 여덟 묶음 24개 통제로 정리돼 있고[10], 국내에는 KISA 의 모바일 앱 보안취약점 점검 가이드가 안드로이드·iOS 항목을 나눠 적었습니다.[17]",
+   "actually": {
+    "intro": "주제마다 기준에 들어가는 문장의 예입니다(쿠팡의 실제 기준은 공개되지 않았습니다).",
+    "items": [
+     "**앱 무결성** — 서버가 '진짜 우리 앱이 보낸 요청인가'를 안드로이드는 Play Integrity, iOS 는 App Attest 로 확인한다. 판정은 **서버에서** 내린다.[13][14]",
+     "**기기 신뢰** — 루팅·탈옥·에뮬레이터를 앱 안에서 막기보다, 서버가 위험도에 따라 허용·추가 인증·차단을 고른다.[13]",
+     "**인증·비밀 보관** — 토큰은 안드로이드 Keystore·iOS Keychain 같은 OS 보관소에, 앱 안에 고정 비밀 키를 넣지 않는다.[19][18]",
+     "**기기 안의 데이터** — 개인정보를 평문으로 파일·로그·캐시에 남기지 않는다. KISA 가이드도 중요 정보 평문 저장을 점검 항목으로 둔다.[17]",
+     "**웹뷰** — 앱 기능을 부르는 자바스크립트 다리(addJavascriptInterface)는 우리 도메인을 HTTPS 로 연 화면에서만.[16]",
+     "**딥링크** — 검증된 앱 링크(안드로이드 App Links·iOS Universal Links)만 민감한 화면을 열 수 있게.[15][36]",
+     "**외부 SDK** — 새 SDK 를 넣기 전 권한·수집 데이터·평판을 확인(구글 Play SDK Index 같은 공개 목록).[24]"
+    ]
+   },
+   "how_far": "기준 문서는 **하지 말 것 목록이 아니라 '이 부품을 쓰면 된다'로 끝나야** 지켜집니다 — 다음 줄의 '공통 해법'과 짝입니다 {추론}. 최소선은 여덟 주제마다 필수/권장 구분과 확인 방법을 적는 것입니다.",
+   "refs": [
+    1,
+    10,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    24,
+    36
+   ],
+   "study": [
+    "masvs",
+    "kisa-mobile",
+    "owasp-cheatsheet",
+    "play-integrity",
+    "app-attest"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Identify recurring weaknesses across applications and drive platform-level solutions rather than repeated app-specific fixes.",
+   "short": "같은 약점이 앱마다 되풀이되면 앱별로 고치지 말고, 모든 앱이 가져다 쓰는 공통 부품 하나로 막는다.",
+   "why": "공고가 이 문장을 업무와 자격요건에 두 번 썼습니다.[1] 앱 수가 많으면 같은 실수(웹뷰 설정, 토큰 저장)가 팀마다 다시 생깁니다. 구글의 보안·신뢰성 책도 개발자 각자가 조심하게 하는 것보다 **안전한 쪽이 기본값인 공통 라이브러리·프레임워크**가 더 잘 지켜진다고 설명합니다.[37]",
+   "actually": {
+    "items": [
+     "**찾기** — 리뷰 결과를 '앱 × 통제' 표로 모아 두 개 이상 앱에서 실패한 통제를 고른다(아래 예시).",
+     "**공통 부품 예** — 허용 목록이 들어간 안전한 웹뷰 래퍼, 토큰 저장 라이브러리, 딥링크 라우터, 무결성 판정을 붙이는 네트워크 모듈 {추론}.",
+     "**서버 쪽 해법** — 앱을 다 고치는 대신 API 게이트웨이에서 무결성 판정·토큰 검증을 한 번에 {추론}.",
+     "**빌드 단계 검사** — 금지된 설정(평문 통신 허용, 디버그 가능 빌드)이 들어가면 빌드가 실패하게.[23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "어느 통제를 공통 부품으로 풀까 (가상 데이터, 직접 돌린 출력)",
+     "body": "앱 셋의 리뷰 결과를 모으면 웹뷰가 두 앱에서 실패했고 SDK 는 두 앱에서 확인이 안 됐습니다. 이 둘이 공통 부품 후보입니다. '모르는 칸'도 위험의 절반으로 세면 검사 범위가 좁은 앱이 위로 올라옵니다.",
+     "lang": "python",
+     "code": "from collections import Counter\n\napps = {  # 앱: (사용자 영향 가중치, {통제: pass / fail / unknown})\n    \"consumer\": (5, {\"storage\": \"pass\", \"webview\": \"fail\",    \"deeplink\": \"pass\",    \"sdk\": \"unknown\"}),\n    \"seller\":   (3, {\"storage\": \"pass\", \"webview\": \"fail\",    \"deeplink\": \"unknown\", \"sdk\": \"unknown\"}),\n    \"rider\":    (2, {\"storage\": \"fail\", \"webview\": \"unknown\", \"deeplink\": \"pass\",    \"sdk\": \"pass\"}),\n}\nfor name, (w, ctrl) in apps.items():\n    checked = sum(v != \"unknown\" for v in ctrl.values())\n    fails = [k for k, v in ctrl.items() if v == \"fail\"]\n    risk = w * (len(fails) + 0.5 * (len(ctrl) - checked))\n    print(f\"{name:8} 범위 {checked}/{len(ctrl)}  실패 {fails}  남은 위험 {risk:.1f}\")\n\nweak = Counter(k for _, (_, c) in apps.items() for k, v in c.items() if v != \"pass\")\nprint(\"공통 부품 후보:\", [k for k, n in weak.items() if n >= 2])\n\n# consumer 범위 3/4  실패 ['webview']  남은 위험 7.5\n# seller   범위 2/4  실패 ['webview']  남은 위험 6.0\n# rider    범위 3/4  실패 ['storage']  남은 위험 3.0\n# 공통 부품 후보: ['webview', 'sdk']"
+    }
+   ],
+   "how_far": "부품을 혼자 다 만들 필요는 없습니다. 플랫폼·모바일 기반 팀이 만들고 앱 팀이 옮겨 타게 **설계·검토하고 설득하는** 것이 중심입니다 {추론}.",
+   "refs": [
+    1,
+    23,
+    37
+   ],
+   "study": [
+    "bsrs",
+    "android-risks"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Provide senior technical judgement on complex vulnerabilities, incidents and architectural decisions.",
+   "short": "어려운 취약점·사고·설계 결정 앞에서 '이건 진짜 위험한가, 무엇을 먼저 하나'를 정해 주는 마지막 판단자.",
+   "why": "모바일 앱 취약점은 앱 혼자의 문제가 아니라 서버 API·인증 설계와 엮여 있어 심각도 판단이 어렵습니다 {추론}. 쿠팡의 2025년 유출도 앱이 아니라 토큰을 만드는 서명 키 관리에서 시작됐고, 정부는 키가 소스 코드에 박혀 있어 퇴사자가 생긴 뒤에도 바꾸지 못했다고 밝혔습니다.[8][9] 이런 구조적 원인을 짚는 판단이 이 줄의 뜻입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**취약점 판정** — 외부 신고·내부 리뷰에서 나온 앱 취약점이 실제로 악용 가능한지 기기에서 재현하고 심각도를 정한다.",
+     "**사고 대응** — 앱이 엮인 사고(위조 앱 유포, 매크로로 쿠폰 쓸어 가기, 계정 탈취)에서 앱 쪽 원인 분석을 맡는다 {추론}.",
+     "**설계 검토** — 새 로그인 방식·결제 흐름·웹뷰 화면 설계를 출시 전에 검토하고 조건을 붙인다.",
+     "**'안 고쳐도 된다'는 판단** — 위험을 받아들이는 결정도 근거를 남겨 내린다 {추론}."
+    ]
+   },
+   "refs": [
+    8,
+    9
+   ],
+   "study": [
+    "shostack",
+    "mastg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Security Assessment and Review Program\nBuild a repeatable, evidence-based process for assessing mobile application security.",
+   "short": "누가 해도 같은 결과가 나오고, 결과마다 증거(재현 단계·화면·코드 위치)가 남는 앱 보안 평가 절차를 만든다.",
+   "why": "'반복 가능한(repeatable)'과 '증거 기반(evidence-based)'은 사람 감에 기대는 점검이 아니라는 뜻입니다.[1] OWASP MASTG 는 MASVS 통제마다 어떤 시험을 어떻게 하는지 적은 공개 시험 안내서이고, 2025년에 2판이 정식이 되면서 시험이 '통제 → 약점 → 작은 시험' 단위로 다시 짜였습니다.[11]",
+   "actually": {
+    "items": [
+     "**범위 정하기** — 앱의 목표선(L1/L2/R)에 따라 돌릴 시험 목록이 정해진다.[12]",
+     "**정적 분석** — 설치 파일(APK·IPA)을 풀어 설정·코드·내장 비밀 값을 본다.[11]",
+     "**동적 분석** — 실제 기기에서 앱을 돌리며 통신을 가로채고, Frida 로 함수를 후킹해 우회가 되는지 본다.[22][11]",
+     "**증거 남기기** — 재현 단계·요청/응답·스크린숏·코드 위치를 결과마다 붙인다.",
+     "**같은 결과** — 체크리스트(MAS Checklist)로 통제마다 시험을 이어 두면 사람이 바뀌어도 같은 항목을 본다.[11]"
+    ]
+   },
+   "how_far": "처음엔 이 사람이 직접 평가를 돌리며 절차를 만듭니다(업무 마지막 묶음 '깊이 손을 쓰는 리더').[1] 최소선은 앱 하나를 MASTG 시험으로 평가하고 같은 형식의 보고서를 다른 사람이 이어받을 수 있게 남기는 것입니다.",
+   "refs": [
+    1,
+    11,
+    12,
+    22
+   ],
+   "study": [
+    "mastg",
+    "frida",
+    "mahh"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Own and run the mobile security review program, including methodology, prioritization, acceptance criteria and escalation.",
+   "short": "앱 보안 리뷰를 주인으로서 운영한다 — 방법, 무엇부터 볼지, 통과 기준, 안 고치면 누구에게 올릴지까지.",
+   "why": "공고가 꼽은 네 단어가 리뷰 프로그램의 뼈대입니다.[1] 같은 회사 쿠팡페이 보안 공고도 모바일 앱 **개발 단계의 보안성 검토**와 난독화·암호화 기술 지원을 업무로 적었습니다[2] — 리뷰가 출시 전 절차에 이미 들어가 있는 조직이 있다는 뜻입니다.",
+   "actually": {
+    "items": [
+     "**방법(methodology)** — 무엇을 보고(MASTG 시험) 어떤 도구로, 결과를 어떤 형식으로 남기나.[11]",
+     "**우선순위** — 새 기능 중 로그인·결제·웹뷰·딥링크·새 SDK 가 들어간 것을 먼저 {추론}.",
+     "**통과 기준(acceptance criteria)** — '심각 0건, 높음은 기한 있는 계획'처럼 출시를 막는 선.",
+     "**이관(escalation)** — 기한을 넘긴 높음 등급은 팀장 → 시니어 디렉터로 올라가는 경로를 미리 합의해 둔다 {추론}.",
+     "**흐름** — 아래 표처럼 설계 단계에서 시작해 출시 뒤 재점검까지 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "흔한 모바일 보안 리뷰 흐름 {추론}",
+     "steps": [
+      "접수 · 앱 팀이 새 기능 설계를 올림(질문지 자가 점검)",
+      "분류 · 로그인·결제·웹뷰·SDK 가 있으면 심층, 아니면 자가 점검만",
+      "설계 리뷰 · 위협 모델링으로 조건 붙이기",
+      "빌드 검사 · 정적·동적 시험, 증거 첨부",
+      "판정 · 통과 기준 대조, 예외는 기한과 책임자 기록",
+      "출시 뒤 · 고친 것 다시 확인, 결과를 앱 × 통제 표에"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "refs": [
+    1,
+    2,
+    11
+   ],
+   "study": [
+    "mastg",
+    "samm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Improve the program over time through automation, engineering self-service and better measurement of security coverage and residual risk.",
+   "short": "사람이 덜 보고도 되게 자동 검사·셀프서비스를 붙이고, '얼마나 봤나·얼마나 남았나'를 숫자로 잰다.",
+   "why": "앱이 많고 출시가 잦으면 사람 리뷰가 병목이 됩니다 {추론}. 공고는 개선 수단으로 자동화·개발자 셀프서비스·측정 세 가지를 직접 꼽았습니다.[1] 같은 보안 조직의 다른 자리들도 자동화와 대시보드를 업무로 적어 온 조직입니다.[5]",
+   "actually": {
+    "items": [
+     "**자동화** — 빌드마다 정적 검사(평문 통신 허용, 내보낸 컴포넌트, 내장 키)를 돌려 사람이 볼 것만 남긴다.[23][38]",
+     "**셀프서비스** — 앱 팀이 혼자 쓰는 질문지·체크리스트·안전한 부품 예제. 리뷰 신청 전에 쉬운 항목은 스스로 끝내게.[11]",
+     "**검사 범위(coverage)** — 앱 × 통제 표에서 확인된 칸의 비율.",
+     "**남은 위험(residual risk)** — 실패한 칸과 '모르는 칸'에 앱의 영향 가중치를 곱해 합친 값(업무 다섯째 줄 예시) {추론}.",
+     "**흐름 지표** — 리뷰 대기 시간, 발견부터 수정까지 걸린 날짜, 기한 넘긴 건수 {추론}."
+    ]
+   },
+   "how_far": "숫자는 리더들을 움직이는 도구입니다 — 업무 넷째 묶음의 '설득'에 쓰입니다 {추론}. 최소선은 범위·남은 위험·수정 기간 셋을 매달 같은 방식으로 내는 것.",
+   "refs": [
+    1,
+    5,
+    11,
+    23,
+    38
+   ],
+   "study": [
+    "samm",
+    "android-risks"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Cross-Organization Influence\nAct as an agent of change for mobile security across engineering teams.",
+   "short": "여러 개발 조직에 모바일 보안을 퍼뜨리는 '변화를 일으키는 사람' 역할 — 앞장서 바꾸게 만든다.",
+   "why": "이 자리는 고객·판매자·라이더·물류처럼 서로 다른 조직의 앱을 맡습니다.[1] 보안팀이 앱을 직접 고치지 않으니, 앱 팀이 스스로 바꾸게 만드는 것이 일의 절반입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**팀마다 연락 창구(보안 챔피언)** — 앱 팀마다 보안 질문을 받아 줄 개발자를 두는 흔한 방식 {추론}.",
+     "**짧은 교육** — 실제 우리 앱에서 나온 사례로 '이렇게 뚫린다'를 보여 주기 {추론}.",
+     "**쉬운 길 만들기** — 안전한 부품을 쓰는 게 더 빠르게(업무 다섯째 줄).[37]"
+    ]
+   },
+   "refs": [
+    1,
+    37
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Work directly with Senior Directors, Principal Engineers and senior mobile leaders to influence architecture, engineering practices and investment priorities.",
+   "short": "시니어 디렉터·수석 엔지니어와 직접 마주 앉아 구조·개발 관행·어디에 돈과 사람을 쓸지를 바꾼다.",
+   "why": "공통 부품이나 서버 쪽 무결성 검증은 한 팀이 혼자 결정할 수 없는 **투자**입니다 {추론}. 그래서 공고는 상대를 직급으로 적었습니다 — 시니어 디렉터·수석 엔지니어.[1]",
+   "actually": {
+    "items": [
+     "**설계 회의** — 새 앱 구조(예: 여러 앱이 같이 쓰는 로그인 모듈)에 보안 조건을 처음부터 넣는다.",
+     "**투자 제안** — '이 부품 하나에 몇 주를 쓰면 앱 몇 개의 같은 취약점이 사라진다'는 숫자로.",
+     "**관행 바꾸기** — 코드 리뷰 체크 항목, 출시 전 체크리스트, SDK 도입 절차에 보안 칸 넣기 {추론}."
+    ]
+   },
+   "refs": [
+    1
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Drive security improvements across organizational boundaries without relying on formal authority.",
+   "short": "명령할 권한 없이 — 근거·숫자·쉬운 해법으로 — 다른 조직이 보안을 고치게 만든다.",
+   "why": "보안팀은 앱 팀의 상사가 아닙니다. 공고는 '공식 권한에 기대지 않고'를 굳이 적었고, 자격요건에도 조직 경계를 넘어 영향력을 낸 경험을 따로 요구합니다.[1] 스태프 엔지니어 역할을 다룬 책도 이 자리의 핵심을 권한 없이 큰 방향을 잡고 일을 끌고 가는 것으로 설명합니다.[26]",
+   "how_far": "면접에서는 '설득했는데 안 됐던 일'과 그때 무엇을 바꿨는지를 물을 가능성이 큽니다 {추론}.",
+   "refs": [
+    1,
+    26
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Function Building and Leadership\nStart as a deeply hands-on technical leader, working directly with applications, code, devices and security controls where required.",
+   "short": "처음엔 직접 앱을 뜯고 코드를 읽고 기기에 붙어 시험하는 '손을 쓰는' 리더로 시작한다.",
+   "why": "공고 개요가 이 자리를 처음엔 **매우 손을 많이 쓰는 시니어 IC** 로 시작한다고 밝혔습니다.[1] 모바일 보안 전담 팀이 아직 없다는 뜻이고, 같은 회사가 다른 지역에서 앱 역공학 전문가(Frida·Xposed 후킹, 디버깅 방지 우회)를 따로 뽑은 적도 있어[4] 이 기술이 실제로 쓰이는 회사입니다.",
+   "actually": {
+    "items": [
+     "**앱 뜯기** — APK·IPA 를 풀어 코드·설정·내장 문자열을 본다(jadx·Ghidra 같은 도구) {추론}.",
+     "**기기에서 시험** — 루팅·탈옥 시험 기기, 통신 가로채기 프록시(Burp Suite 등), Frida 후킹.[22][3]",
+     "**통제 직접 확인** — 무결성 판정이 실제로 서버에서 막는지, 우회하면 무엇이 되는지 재현."
+    ]
+   },
+   "examples": [
+    {
+     "title": "딥링크·웹뷰 허용 목록 — 흔한 실수 (직접 돌린 출력)",
+     "body": "문자열 앞부분만 비교하면 공격자 도메인이 통과합니다. 주소를 파싱한 뒤 scheme 과 host 를 정확히 비교해야 합니다. 안드로이드 문서도 웹뷰에 열 주소는 scheme·host 허용 목록으로 거르라고 권합니다.[16] 첫 칸이 단순 비교, 둘째 칸이 파싱 비교입니다.",
+     "lang": "python",
+     "code": "from urllib.parse import urlparse\n\nALLOWED = {\"www.coupang.com\", \"m.coupang.com\"}  # 가상 허용 목록\n\ndef naive(url):            # 흔한 실수: 문자열 앞부분만 본다\n    return url.startswith(\"https://www.coupang.com\")\n\ndef strict(url):           # 파싱한 뒤 scheme·host 를 정확히 비교\n    u = urlparse(url)\n    return u.scheme == \"https\" and u.hostname in ALLOWED\n\nfor url in [\"https://www.coupang.com/vp/products/1\",\n            \"https://www.coupang.com.evil.example/login\",\n            \"https://www.coupang.com@evil.example/\",\n            \"javascript:alert(1)\"]:\n    print(f\"{naive(url)!s:5} {strict(url)!s:5} {url}\")\n\n# True  True  https://www.coupang.com/vp/products/1\n# True  False https://www.coupang.com.evil.example/login\n# True  False https://www.coupang.com@evil.example/\n# False False javascript:alert(1)"
+    }
+   ],
+   "refs": [
+    1,
+    3,
+    4,
+    16,
+    22
+   ],
+   "study": [
+    "frida",
+    "mahh",
+    "inflearn-android"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Establish the operating model for mobile security and identify where additional specialist capability is needed.",
+   "short": "모바일 보안이 회사 안에서 어떻게 돌아갈지(누가 무엇을 언제) 정하고, 어디에 전문가가 더 필요한지 찾는다.",
+   "why": "운영 모델은 '보안팀이 무엇을 하고 앱 팀이 무엇을 하나'의 약속입니다 {추론}. 쿠팡 보안 조직은 이미 탐지·사고 대응·레드팀처럼 기능별 팀으로 나뉘어 있어[5][6][3] 모바일 보안이 그 사이 어디에 붙을지 정해야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**역할 나누기** — 보안팀: 기준·리뷰·판정 / 앱 팀: 구현·자가 점검 / 레드팀: 공격 시험 / 사고 대응: 사고 때 앱 분석 지원 {추론}.",
+     "**모자란 능력 찾기** — iOS 역공학, 변조 방지(난독화) 운영, 매크로·어뷰징 분석처럼 한 사람이 다 못 하는 칸 {추론}.",
+     "**외부 도움** — 외부 모의해킹 업체·버그 바운티를 쓸 칸과 내부가 할 칸 {추론}."
+    ]
+   },
+   "refs": [
+    3,
+    5,
+    6
+   ],
+   "study": [
+    "samm",
+    "staff-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Over time, help build and manage a small specialist mobile security team.",
+   "short": "시간이 지나면 작은 모바일 보안 전문 팀을 뽑고 이끈다.",
+   "why": "공고가 '작은(small)' 팀이라고 적었습니다.[1] 자격요건 마지막 줄도 관리 경험은 있으면 좋지만 필수가 아니고, 처음엔 기술 리더십이 더 중요하다고 했습니다.[1]",
+   "how_far": "지원 단계에서 관리 경력은 필수가 아닙니다. 다만 '어떤 사람을 먼저 뽑겠나'에 답할 수 있어야 합니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Deep hands-on mobile security expertise across both iOS and Android, ideally developed in a large-scale consumer technology environment.",
+   "short": "iOS·안드로이드 둘 다 직접 뜯고 막아 본 깊은 경험. 사용자가 아주 많은 소비자 서비스에서 쌓았으면 더 좋다.",
+   "why": "두 OS 는 보안 구조가 다릅니다 — 비밀 보관(Keystore 와 Keychain), 무결성 확인(Play Integrity 와 App Attest), 링크(App Links 와 Universal Links).[19][13][14][15][36] 한쪽만 알면 기준 문서의 절반을 남에게 맡겨야 합니다 {추론}.",
+   "level": {
+    "basic": "두 OS 의 앱 샌드박스·권한·서명 구조를 설명하고, 앱을 설치 파일 상태로 풀어 볼 수 있다",
+    "work": "두 OS 모두에서 MASTG 시험을 직접 돌리고, 후킹·통신 가로채기로 우회를 재현한다",
+    "team": "두 OS 의 차이를 한 기준 문서로 묶고, 수천만 사용자 앱에서 생기는 문제(구형 기기·호환성)를 고려해 판단한다"
+   },
+   "refs": [
+    13,
+    14,
+    15,
+    19,
+    36
+   ],
+   "study": [
+    "elenkov",
+    "inflearn-ios",
+    "inflearn-android",
+    "mastg"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong practical experience in areas such as mobile application security, reverse engineering, app integrity, device trust, authentication, secure storage, IPC, WebViews, deep links, networking and abuse resistance.",
+   "short": "앱 보안·역공학·무결성·기기 신뢰·인증·안전한 저장·앱 사이 통신·웹뷰·딥링크·네트워크·어뷰징 방어의 실전 경험.",
+   "why": "업무 첫 묶음의 기준 주제와 거의 같은 목록입니다.[1] 업무에 없던 두 낱말이 눈에 띕니다 — **IPC**(앱과 앱, 앱과 OS 가 주고받는 통로: 안드로이드 인텐트·내보낸 컴포넌트)와 **어뷰징 저항**(매크로·가짜 계정·쿠폰 쓸어 가기 같은 악용을 견디기).",
+   "actually": {
+    "items": [
+     "**역공학** — 설치 파일을 풀어 API 호출·인증 방식을 알아내는 능력. 막는 쪽도 공격자가 어떻게 보는지 알아야 한다.[4][22]",
+     "**IPC** — 다른 앱이 우리 앱의 내보낸 화면·서비스를 부르거나 인텐트를 가로채는 위험. 안드로이드 공식 문서가 위험 목록으로 정리해 둔다.[38]",
+     "**네트워크** — 평문 통신 금지, 신뢰할 인증서 범위를 정하는 안드로이드 네트워크 보안 설정.[23]",
+     "**어뷰징 저항** — 앱 변조·자동화를 무결성 판정과 서버 위험 점수로 막는다. 판정은 '허용/차단' 둘이 아니라 여러 단계로 내리라고 구글 문서가 권한다(아래 예시).[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "무결성 판정을 서버에서 단계로 쓰기 (가상 정책, 직접 돌린 출력)",
+     "body": "Play Integrity 는 기기 라벨(STRONG·DEVICE·BASIC)과 앱 판정(PLAY_RECOGNIZED 등)을 주고, 판단은 서버에서 하라고 권합니다.[13] 같은 기기라도 결제와 둘러보기의 문턱을 다르게 두면 정상 사용자를 덜 막습니다. allow 허용 · step_up 추가 인증 · block 차단.",
+     "lang": "python",
+     "code": "def decide(device_labels, app_verdict, action):\n    device = \"MEETS_DEVICE_INTEGRITY\" in device_labels or \"MEETS_STRONG_INTEGRITY\" in device_labels\n    if app_verdict != \"PLAY_RECOGNIZED\":          # 변조·재포장된 앱\n        return \"block\" if action == \"payment\" else \"step_up\"\n    if action == \"payment\":\n        return \"allow\" if device else \"step_up\"   # 결제는 기기까지 믿을 때만\n    return \"allow\" if device_labels else \"step_up\"\n\ncases = [\n    ([\"MEETS_DEVICE_INTEGRITY\", \"MEETS_BASIC_INTEGRITY\"], \"PLAY_RECOGNIZED\", \"payment\"),\n    ([\"MEETS_BASIC_INTEGRITY\"], \"PLAY_RECOGNIZED\", \"payment\"),\n    ([\"MEETS_BASIC_INTEGRITY\"], \"PLAY_RECOGNIZED\", \"browse\"),\n    ([], \"UNRECOGNIZED_VERSION\", \"payment\"),\n    ([], \"UNRECOGNIZED_VERSION\", \"browse\"),\n]\nfor labels, app, act in cases:\n    short = \",\".join(l.split(\"_\")[1] for l in labels) or \"-\"\n    print(f\"{act:8} {app:21} {short:14} -> {decide(labels, app, act)}\")\n\n# payment  PLAY_RECOGNIZED       DEVICE,BASIC   -> allow\n# payment  PLAY_RECOGNIZED       BASIC          -> step_up\n# browse   PLAY_RECOGNIZED       BASIC          -> allow\n# payment  UNRECOGNIZED_VERSION  -              -> block\n# browse   UNRECOGNIZED_VERSION  -              -> step_up"
+    }
+   ],
+   "how_far": "목록 전부를 깊게 알 필요는 없지만 '예를 들어(such as)' 뒤의 주제마다 **직접 해 본 사례 하나**를 말할 수 있어야 합니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    13,
+    22,
+    23,
+    38
+   ],
+   "study": [
+    "play-integrity",
+    "app-attest",
+    "android-risks",
+    "app-links",
+    "mahh"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience building or running a mobile security assessment or review program, rather than only performing individual reviews.",
+   "short": "앱 하나씩 점검해 본 경험이 아니라, 점검이 계속 돌아가는 '프로그램'을 만들거나 운영해 본 경험.",
+   "why": "공고가 '개별 리뷰만 한 것이 아니라'고 선을 그었습니다.[1] 업무 셋째 묶음(평가·리뷰 프로그램)을 혼자 세워야 하는 자리라서입니다.",
+   "how_far": "이력서에는 리뷰 건수보다 **절차를 바꾼 결과**(접수 방식, 통과 기준, 자동화로 줄어든 대기 시간, 재발 감소)를 숫자로 쓰는 편이 이 줄에 맞습니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "mastg",
+    "samm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong software engineering background, ideally including production mobile development or development of mobile security tooling.",
+   "short": "탄탄한 개발 실력. 실제 출시되는 앱을 만들어 봤거나 모바일 보안 도구를 직접 개발해 봤으면 더 좋다.",
+   "why": "공통 부품을 설계하고 앱 팀과 코드로 이야기하려면 개발자여야 합니다 {추론}. 업무 다섯째 줄의 '앱별 수정 대신 플랫폼 해법'은 결국 라이브러리·빌드 규칙·서버 모듈 같은 코드입니다.[1]",
+   "actually": {
+    "items": [
+     "**앱 개발** — Kotlin/Swift 로 실제 출시 앱을 만들어 본 경험(빌드·배포·구형 OS 호환까지 아는 것).",
+     "**보안 도구** — Frida 스크립트, 빌드 단계 검사기, 설치 파일 자동 분석기 같은 것을 만들어 본 경험.[22]",
+     "**서버 감각** — 무결성 판정·토큰 검증은 서버 코드라 백엔드도 읽을 수 있어야 한다.[13][14]"
+    ]
+   },
+   "refs": [
+    1,
+    13,
+    14,
+    22
+   ],
+   "study": [
+    "frida",
+    "elenkov"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Demonstrated ability to identify systemic issues across multiple applications and translate them into reusable platform controls, standards or engineering frameworks.",
+   "short": "여러 앱에 걸친 구조적 문제를 찾아 다시 쓸 수 있는 공통 통제·기준·개발 틀로 바꿔 본 실적.",
+   "why": "업무 다섯째 줄을 자격요건으로 다시 쓴 문장입니다.[1] '보여 준(demonstrated)'이라 실제 사례를 요구합니다.",
+   "how_far": "사례 하나를 '어떤 약점이 몇 개 앱에서 나왔고 → 어떤 부품·기준으로 바꿨고 → 그 뒤 재발이 어떻게 됐나'의 순서로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "bsrs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Proven experience influencing senior engineers and engineering leaders across organizational boundaries.",
+   "short": "다른 조직의 시니어 엔지니어·개발 리더를 설득해 움직여 본 검증된 경험.",
+   "why": "업무 넷째 묶음(조직을 넘는 영향력)의 자격 버전입니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience with product security architecture and threat modelling at significant scale.",
+   "short": "큰 규모 서비스에서 제품 보안 구조를 잡고 위협 모델링(무엇이 잘못될 수 있나 미리 따져 보기)을 해 본 경험.",
+   "why": "위협 모델링은 설계 단계에서 위험을 찾는 방법입니다. Shostack 은 이를 네 질문 — 무엇을 만드나, 무엇이 잘못될 수 있나, 그래서 무엇을 하나, 잘했나 — 으로 정리했고[20], AWS 보안 설계 지침도 이 네 질문을 위협 모델링의 출발점으로 소개합니다.[21]",
+   "actually": {
+    "items": [
+     "**그림 그리기** — 앱·서버·외부 SDK·웹뷰 사이에 데이터가 오가는 그림과 신뢰 경계(믿는 쪽과 안 믿는 쪽의 선).",
+     "**위협 찾기** — 경계마다 위장·변조·부인·정보 노출·서비스 거부·권한 상승(STRIDE) 같은 틀로 묻기.[20]",
+     "**대응 정하기** — 위협마다 막기·줄이기·받아들이기를 정하고 기준 문서에 이어 붙이기.",
+     "**규모** — 앱이 많으면 모든 기능을 깊게 못 하니 리뷰 흐름의 '분류' 단계에서 깊이를 나눈다(업무 셋째 묶음) {추론}."
+    ]
+   },
+   "refs": [
+    20,
+    21
+   ],
+   "study": [
+    "shostack"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Evidence of driving changes in engineering practice, not only identifying security issues.",
+   "short": "보안 문제를 찾아낸 것만이 아니라, 개발하는 방식 자체를 바꿔 본 증거.",
+   "why": "공고 전체를 꿰는 문장입니다 — 찾는 사람이 아니라 **바꾸는 사람**을 찾습니다.[1]",
+   "how_far": "예: 'SDK 도입 절차에 보안 검토 칸이 생겼다', '웹뷰는 공통 래퍼만 쓰게 빌드 규칙이 바뀌었다'처럼 남은 흔적이 있는 변화 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Prior people management is useful but not required. Strong technical leadership and the ability to grow into management are more important for the initial phase of the role.",
+   "short": "사람 관리 경험은 있으면 좋지만 필수 아님. 처음엔 기술 리더십과 앞으로 관리자로 클 수 있는 힘이 더 중요하다.",
+   "why": "업무 마지막 묶음과 맞물립니다 — 혼자 손을 쓰며 시작하고, 나중에 작은 팀을 꾸립니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Recruitment Process and Others\nRecruitment Process\nApplication Review - Phone Interview - Onsite (or Virtual Onsite) Interview – Offer\nThe exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.\nInterview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "여기부터는 요건이 아니라 전형 안내 — 서류 → 전화 면접 → 대면(또는 화상) 면접 → 처우 제안. 결과는 이메일로.",
+   "why": "같은 회사 미국 모바일 역공학 공고도 같은 네 단계였습니다.[4] 국내 보안 공고(리멤버)는 서류 → 1차 화상 → 2차 화상 → 최종으로 적혀 있어[3] 자리마다 단계 이름이 조금 다릅니다.",
+   "refs": [
+    3,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Details to Consider\nThis job posting may be closed prior to the stated end date for application if all openings are filled.\nCoupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.\nThose eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.\nJob titles and responsibilities may be subject to change depending on the candidate’s overall experience, etc. This will be communicated to the candidate at the appropriate time before the offer.\nHiring may be restricted in case the legal qualifications required for hiring and work performance is not met.\nThis is a full-time regular position and includes 12 weeks of probation period; provided, however, the probationary period may be either skipped, shortened or extended if necessary for business purposes",
+   "short": "자리가 차면 일찍 닫히고, 직급·업무는 경력에 따라 제안 전에 바뀔 수 있다. 정규직, 수습 12주.",
+   "why": "쿠팡 공고 공통 안내입니다. 직급(이 공고는 Senior Staff)이 면접 결과에 따라 바뀔 수 있다는 줄이 실제로 중요합니다 — 처우와 연결됩니다 {추론}.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "앱을 뜯어보는 공격자 시선과, 그걸 공통 부품으로 막는 개발자 시선을 둘 다 즐기는 사람",
+   "'버그 찾기'보다 '다시 안 생기게 하기'에서 보람을 느끼는 사람[1]",
+   "아무것도 없는 데서 절차·기준·팀을 처음 세우고 싶은 사람[1]",
+   "영어로 문서를 쓰고 시니어 리더와 토론하는 데 거리낌이 없는 사람 — 공고가 영어다[1]"
+  ],
+  "hard": [
+   "처음엔 팀이 없다 — 리뷰·기준·설득을 한동안 혼자 한다[1]",
+   "권한 없이 여러 조직을 움직여야 해서, 기술보다 설득에 시간이 많이 든다[1]",
+   "2025년 사고 뒤라 보안에 대한 외부 시선과 규제 압박이 크다[8][9]",
+   "근무지 표기가 서울이지만 채용 시스템의 사무실 칸은 시애틀이다 — 지원 전 확인이 필요하다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "앱 다섯 개에서 웹뷰 취약점이 반복해서 나옵니다. 무엇을 하겠어요?",
+   "a": "업무·자격에 두 번 나온 '앱별 수정 대신 플랫폼 해법'.[1][16]"
+  },
+  {
+   "q": "루팅 기기를 앱에서 막아 달라는 요청이 왔습니다. 어떻게 답하겠어요?",
+   "a": "앱 안 탐지는 우회된다 — 서버에서 무결성 판정을 단계로 쓰기.[13]"
+  },
+  {
+   "q": "딥링크로 앱 안의 웹뷰가 임의 주소를 열 수 있습니다. 공격 경로와 고치는 법을 그려 보세요.",
+   "a": "딥링크 → 웹뷰 → 자바스크립트 다리로 이어지는 경로.[15][16]"
+  },
+  {
+   "q": "모바일 보안 리뷰 프로그램의 통과 기준과 이관 경로를 어떻게 정하겠어요?",
+   "a": "업무 셋째 묶음의 네 단어 — 방법·우선순위·통과 기준·이관.[1]"
+  },
+  {
+   "q": "앱에 API 비밀 키를 넣어야 한다는 팀이 있습니다. 어떻게 하겠어요?",
+   "a": "앱 안의 비밀은 비밀이 아니다 — 서명 키 하드코딩이 문제가 된 회사 자신의 사고.[8][18]"
+  },
+  {
+   "q": "이 프로그램이 잘 돌고 있는지 리더에게 숫자 셋으로 보여 준다면?",
+   "a": "검사 범위·남은 위험·수정 기간.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior Staff Security Engineer, Mobile Security (Digital Trust)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8203471",
+   "kind": "posting",
+   "date": "2026-11-24",
+   "note": "개요·업무 5묶음·요건 9줄·전형(서류 → 전화 → 대면/화상 → 제안)·정규직 수습 12주. 근무지 'Seoul, South Korea', 채용 시스템의 사무실 칸은 Seattle, 부서 Security & Privacy and Data Governance, 처음 게시 2026-09-18. 연봉·복지 표기 없음"
+  },
+  {
+   "n": 2,
+   "title": "리멤버 · [쿠팡페이] Sr~Staff 보안 엔지니어",
+   "url": "https://career.rememberapp.co.kr/job/posting/321669",
+   "kind": "posting",
+   "note": "같은 회사 계열 — 모바일 앱 개발 단계 보안성 검토, 난독화·암호화 기술 지원, 정보보호 5년 이상, 서울 광진구, 연봉협의"
+  },
+  {
+   "n": 3,
+   "title": "리멤버 · 쿠팡 Senior / Staff Security Engineer (Penetration Tester)",
+   "url": "https://career.rememberapp.co.kr/job/posting/338018",
+   "kind": "posting",
+   "note": "마감 — 레드팀, 웹·모바일·API·네트워크 모의해킹, Burp Suite 등, 공격 보안 3년 이상, 전형 서류 → 1차 화상 → 2차 화상 → 최종"
+  },
+  {
+   "n": 4,
+   "title": "career.com · Coupang Staff Reverse Engineer - Mobile Applications and Security",
+   "url": "https://www.career.com/job/coupang/staff-reverse-engineer-mobile-applications-and-security/j202506070009588439143",
+   "kind": "posting",
+   "date": "2026-06-21",
+   "note": "마감(2026-08-15) — 마운틴뷰, 앱 역공학으로 API·인증 방식 파악, Frida·Xposed 후킹, 디버깅·에뮬레이터·후킹 방지 우회. 기본급 13.8만~29.7만 달러, 전형 네 단계"
+  },
+  {
+   "n": 5,
+   "title": "Forrester · Inside An E-Commerce Giant’s Threat Intelligence Strategy",
+   "url": "https://www.forrester.com/blogs/inside-an-e-commerce-giants-threat-intelligence-strategy/",
+   "kind": "company",
+   "date": "2025-10-05",
+   "note": "쿠팡 위협 관리 팀장 인터뷰 — CISO 밑 위협 정보·헌팅·공격 모의·탐지 엔지니어링"
+  },
+  {
+   "n": 6,
+   "title": "보안뉴스 · [ISEC 2025] 쿠팡 ‘레드팀-위협정보팀 협업 기반 선제적 보안’",
+   "url": "https://www.boannews.com/news/articleView.html?idxno=138898",
+   "kind": "company",
+   "date": "2025-08-26",
+   "note": "쿠팡 디렉터 키노트 기사 — 보안 조직 구성, 레드팀"
+  },
+  {
+   "n": 7,
+   "title": "Board Cybersecurity · Coupang 10-K(2025 회계연도) 사이버보안 항목 정리",
+   "url": "https://www.board-cybersecurity.com/annual-reports/tracker/20260226-coupang-inc-cybersecurity-10k",
+   "kind": "reference",
+   "date": "2026-02-26",
+   "note": "10-K 원문 대신 정리 페이지 — 보안 조직 200명 이상, ISO 27001·ISMS-P"
+  },
+  {
+   "n": 8,
+   "title": "보안뉴스 · [쿠팡 해킹] 서명키 하드코딩 탓에 갱신 못해 — 과기정통부가 말하는 원인",
+   "url": "https://www.boannews.com/news/articleView.html?idxno=142059",
+   "kind": "news",
+   "date": "2026-02-10",
+   "note": "민관합동조사단 브리핑 — 토큰 서명 키가 소스 코드에 박혀 있어 교체가 어려웠고 퇴사자 키가 남음, 그 키로 만든 토큰을 게이트웨이가 통과시킴"
+  },
+  {
+   "n": 9,
+   "title": "머니투데이 · 조사단이 밝힌 쿠팡의 잘못",
+   "url": "https://www.mt.co.kr/tech/2026/02/10/2026021013535454383",
+   "kind": "news",
+   "date": "2026-02-10",
+   "note": "정상 발급 여부 검증 체계 부재, 서명 키가 개발자 노트북에"
+  },
+  {
+   "n": 10,
+   "title": "OWASP · Mobile Application Security Verification Standard (MASVS)",
+   "url": "https://mas.owasp.org/MASVS/",
+   "kind": "reference",
+   "note": "STORAGE·CRYPTO·AUTH·NETWORK·PLATFORM·CODE·RESILIENCE·PRIVACY 여덟 묶음, 통제 24개(목차에서 셈)"
+  },
+  {
+   "n": 11,
+   "title": "OWASP · Mobile Application Security Testing Guide (MASTG) · MAS Checklist",
+   "url": "https://mas.owasp.org/MASTG/",
+   "kind": "reference",
+   "note": "MASVS 통제마다 시험 방법, 체크리스트가 통제와 시험을 잇는다. 2025년 2판 정식"
+  },
+  {
+   "n": 12,
+   "title": "OWASP MASVS 릴리스 노트 (v2.0.0)",
+   "url": "https://github.com/OWASP/owasp-masvs/releases",
+   "kind": "reference",
+   "date": "2023-04",
+   "note": "L1·L2·R 을 통제에서 빼 MASTG 의 검사 프로필(MAS-L1·L2·R)로 옮김"
+  },
+  {
+   "n": 13,
+   "title": "Android Developers · Play Integrity API 개요",
+   "url": "https://developer.android.com/google/play/integrity/overview",
+   "kind": "reference",
+   "note": "앱 판정(PLAY_RECOGNIZED)·기기 라벨(STRONG·DEVICE·BASIC)·계정 판정, 서버에서 단계별 대응 권장, 재사용 방지 nonce, 하루 기본 1만 건"
+  },
+  {
+   "n": 14,
+   "title": "Apple Developer · Establishing your app’s integrity (App Attest)",
+   "url": "https://developer.apple.com/documentation/devicecheck/establishing-your-app-s-integrity",
+   "kind": "reference",
+   "note": "기기에서 키 생성 → Apple 에 키 증명(attestKey) → 요청마다 증거(generateAssertion), 서버가 검증"
+  },
+  {
+   "n": 15,
+   "title": "Android Developers · Verify Android App Links",
+   "url": "https://developer.android.com/training/app-links/verify-android-applinks",
+   "kind": "reference",
+   "note": "autoVerify, 도메인의 /.well-known/assetlinks.json, 안드로이드 15부터 반영에 최대 7일"
+  },
+  {
+   "n": 16,
+   "title": "Android Developers · Insecure WebView native bridges",
+   "url": "https://developer.android.com/privacy-and-security/risks/insecure-webview-native-bridges",
+   "kind": "reference",
+   "note": "addJavascriptInterface 가 모든 프레임에 열림 — HTTPS·scheme/host 허용 목록·신뢰 못 할 내용 전에 제거"
+  },
+  {
+   "n": 17,
+   "title": "KISA · 모바일 대민서비스 보안취약점 점검 가이드",
+   "url": "https://clik.nanet.go.kr/clikr-collection/policyinfo/19/665/2022/CLIKC65222722022768159_attach_1.pdf",
+   "kind": "reference",
+   "note": "국회도서관 지방의회 자료에 실린 사본 — 항목마다 안드로이드·iOS 해당 표시(루팅·탈옥 기기 동작, 중요 정보 평문 저장·전송 등)"
+  },
+  {
+   "n": 18,
+   "title": "OWASP Cheat Sheet Series · Mobile Application Security Cheat Sheet",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Mobile_Application_Security_Cheat_Sheet.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Android Developers · Android Keystore system",
+   "url": "https://developer.android.com/privacy-and-security/keystore",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Adam Shostack · Threat Modeling: Designing for Security (Wiley, 2014)",
+   "url": "https://www.oreilly.com/library/view/threat-modeling-designing/9781118810057/",
+   "kind": "reference",
+   "note": "네 질문 틀, STRIDE"
+  },
+  {
+   "n": 21,
+   "title": "AWS Well-Architected · SEC01-BP07 위협 모델로 위협 식별·완화 우선순위 정하기",
+   "url": "https://docs.aws.amazon.com/ko_kr/wellarchitected/2023-04-10/framework/sec_securely_operate_threat_model.html",
+   "kind": "reference",
+   "note": "Shostack 의 네 질문을 출발점으로 소개(한국어)"
+  },
+  {
+   "n": 22,
+   "title": "Frida 공식 문서",
+   "url": "https://frida.re/docs/home/",
+   "kind": "reference",
+   "note": "실행 중인 앱에 스크립트를 넣어 함수를 가로채는 동적 분석 도구"
+  },
+  {
+   "n": 23,
+   "title": "Android Developers · Network security configuration",
+   "url": "https://developer.android.com/privacy-and-security/security-config",
+   "kind": "reference",
+   "note": "평문 통신 허용 여부·신뢰할 인증서를 설정 파일로"
+  },
+  {
+   "n": 24,
+   "title": "Google Play SDK Index",
+   "url": "https://play.google.com/sdks",
+   "kind": "reference",
+   "note": "외부 SDK 의 권한·데이터 수집·정책 문제 공개 목록"
+  },
+  {
+   "n": 25,
+   "title": "OWASP SAMM (Software Assurance Maturity Model)",
+   "url": "https://owaspsamm.org/",
+   "kind": "reference",
+   "note": "보안 활동 성숙도를 단계로 재는 공개 틀"
+  },
+  {
+   "n": 26,
+   "title": "Tanya Reilly · The Staff Engineer's Path (O'Reilly, 2022)",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "kind": "reference",
+   "note": "큰 그림·프로젝트 끌고 가기·기준 올리기"
+  },
+  {
+   "n": 27,
+   "title": "자소설닷컴 · 쿠팡",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "공공데이터 기반 초봉·평균, 기준 연도 없음"
+  },
+  {
+   "n": 28,
+   "title": "자소설닷컴 · 네이버",
+   "url": "https://jasoseol.com/companies/511",
+   "kind": "reference",
+   "note": "같은 방식의 비교 값"
+  },
+  {
+   "n": 29,
+   "title": "원티드 · 쿠팡 회사 정보",
+   "url": "https://www.wanted.co.kr/company/53",
+   "kind": "reference",
+   "note": "평균연봉"
+  },
+  {
+   "n": 30,
+   "title": "원티드 · 지마켓 회사 정보",
+   "url": "https://www.wanted.co.kr/company/373",
+   "kind": "reference",
+   "note": "같은 방식의 비교 값"
+  },
+  {
+   "n": 31,
+   "title": "원티드 · [쿠팡] 카탈로그 Taxonomy 및 데이터 분석 PM (혜택 및 복지 칸)",
+   "url": "https://www.wanted.co.kr/wd/396324",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고의 복리후생 — 금액이 적힌 항목"
+  },
+  {
+   "n": 32,
+   "title": "원티드 · [쿠팡] Senior~Staff, Security Engineer (Web Security)",
+   "url": "https://www.wanted.co.kr/wd/394615",
+   "kind": "posting",
+   "note": "같은 보안 조직 서울 자리 — 근무지 아차산로 412 이스트폴 타워 A"
+  },
+  {
+   "n": 33,
+   "title": "아시아경제 · 이스트폴(구의역 KT 부지 개발)과 쿠팡 입주",
+   "url": "https://www.asiae.co.kr/en/article/2025081219080020350",
+   "kind": "news",
+   "note": "구의역 인근"
+  },
+  {
+   "n": 34,
+   "title": "Coupang Careers · Seattle",
+   "url": "https://www.coupang.jobs/en/locations/seattle/",
+   "kind": "company",
+   "note": "720 Olive Way, Suite 600, Seattle, WA 98101"
+  },
+  {
+   "n": 36,
+   "title": "Apple Developer · Supporting universal links in your app",
+   "url": "https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "Google · Building Secure and Reliable Systems (O'Reilly, 2020, 무료 공개)",
+   "url": "https://sre.google/books/",
+   "kind": "reference",
+   "note": "안전한 기본값을 가진 공통 프레임워크로 보안을 지키는 법"
+  },
+  {
+   "n": 38,
+   "title": "Android Developers · Mitigate security risks in your app",
+   "url": "https://developer.android.com/privacy-and-security/risks",
+   "kind": "reference",
+   "note": "내보낸 컴포넌트·인텐트 가로채기·웹뷰 등 위험별 문서 목록"
+  }
+ ],
+ "caveat": "쿠팡이 모바일 앱 보안에 대해 직접 발표하거나 쓴 기술 글은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고, 같은 회사의 모바일 관련 보안 공고 세 건(쿠팡페이 보안·레드팀 모의해킹·미국 모바일 역공학), 보안 조직 인터뷰·키노트 기사, 2026년 2월 정부 조사 결과입니다. 기준·리뷰·무결성·딥링크·웹뷰의 모양은 OWASP MAS·안드로이드/애플 공식 문서·KISA 가이드로 '보통 이런 것'을 보였고, 예시의 정책·가중치는 가상입니다. 채용 시스템에 근무지(서울)와 사무실(시애틀)이 다르게 적혀 있습니다.",
+ "resources": [
+  {
+   "id": "masvs",
+   "title": "OWASP Mobile Application Security Verification Standard (MASVS)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://mas.owasp.org/MASVS/",
+   "why": "업무 둘째 묶음 '기준 문서'의 뼈대. 여덟 묶음 24개 통제를 한 번 다 읽으면 공고가 꼽은 주제가 어디에 들어가는지 보인다."
+  },
+  {
+   "id": "mastg",
+   "title": "OWASP Mobile Application Security Testing Guide (MASTG)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mas.owasp.org/MASTG/",
+   "why": "업무 셋째 묶음 '반복 가능한 평가'의 교과서. 통제마다 시험·도구·데모가 있고, 검사 프로필(L1·L2·R)로 깊이를 고른다."
+  },
+  {
+   "id": "owasp-cheatsheet",
+   "title": "Mobile Application Security Cheat Sheet",
+   "by": "OWASP Cheat Sheet Series",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/Mobile_Application_Security_Cheat_Sheet.html",
+   "why": "개발자 눈높이의 짧은 요약. 앱 팀에게 줄 기준 문서의 첫 초안을 잡을 때 좋다."
+  },
+  {
+   "id": "kisa-mobile",
+   "title": "모바일 대민서비스 보안취약점 점검 가이드",
+   "by": "한국인터넷진흥원(KISA)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://clik.nanet.go.kr/clikr-collection/policyinfo/19/665/2022/CLIKC65222722022768159_attach_1.pdf",
+   "why": "한국어로 된 안드로이드·iOS 점검 항목과 진단 방법. 국내 점검 관행과 낱말을 익힌다."
+  },
+  {
+   "id": "android-risks",
+   "title": "Mitigate security risks in your app",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/privacy-and-security/risks",
+   "why": "웹뷰 브리지·내보낸 컴포넌트·인텐트 같은 IPC 위험을 위험별 한 쪽씩 — 요건 둘째 줄의 IPC·WebView 를 채운다."
+  },
+  {
+   "id": "play-integrity",
+   "title": "Play Integrity API",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/google/play/integrity/overview",
+   "why": "앱 무결성·기기 신뢰를 서버에서 판정하는 공식 방법. 판정 라벨과 단계별 대응 권장을 읽는다."
+  },
+  {
+   "id": "app-attest",
+   "title": "Establishing your app’s integrity (App Attest)",
+   "by": "Apple Developer",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.apple.com/documentation/devicecheck/establishing-your-app-s-integrity",
+   "why": "iOS 쪽 무결성 확인. 키 증명과 요청별 증거를 서버가 검증하는 흐름 — Play Integrity 와 나란히 비교해 본다."
+  },
+  {
+   "id": "app-links",
+   "title": "Verify Android App Links · Supporting universal links in your app",
+   "by": "Android Developers · Apple Developer",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/training/app-links/verify-android-applinks",
+   "why": "검증된 딥링크를 만드는 법. 아무 앱이나 같은 주소를 가로채지 못하게 하는 원리(도메인 소유 증명)를 익힌다. iOS 판은 Apple 의 Universal Links 문서."
+  },
+  {
+   "id": "frida",
+   "title": "Frida 공식 문서",
+   "by": "Frida",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://frida.re/docs/home/",
+   "why": "동적 분석·후킹의 표준 도구. 내가 만든 방어(루팅 탐지·인증서 고정)가 실제로 얼마나 쉽게 우회되나를 직접 본다."
+  },
+  {
+   "id": "inflearn-android",
+   "title": "안드로이드 모바일 앱 모의해킹과 시큐어코딩",
+   "by": "인프런",
+   "kind": "course",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.inflearn.com/course/안드로이드-앱-모의해킹-진단-완벽-실습",
+   "why": "한국어로 안드로이드 앱을 직접 뜯고 고쳐 보는 실습. 역공학 경험이 없을 때 첫걸음."
+  },
+  {
+   "id": "inflearn-ios",
+   "title": "해커를 위한 iOS 앱 모의 해킹 전문 과정",
+   "by": "인프런",
+   "kind": "course",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.inflearn.com/course/ios-모바일앱-모의해킹-입문",
+   "why": "요건 첫 줄의 'iOS·안드로이드 둘 다' 중 보통 더 약한 iOS 쪽을 채운다."
+  },
+  {
+   "id": "mahh",
+   "title": "The Mobile Application Hacker's Handbook",
+   "by": "Wiley · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/the-mobile-application/9781118958513/",
+   "why": "iOS·안드로이드 앱을 공격자 눈으로 분석하는 장들. 오래된 판이라 도구는 MASTG 로 보충하고 생각하는 순서를 배운다."
+  },
+  {
+   "id": "elenkov",
+   "title": "Android Security Internals",
+   "by": "Nikolay Elenkov · No Starch Press · 2014",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://nostarch.com/androidsecurity",
+   "why": "권한·Binder IPC·자격 증명 저장소·SELinux 등 안드로이드 보안 구조의 원리. 판은 오래됐지만 '왜 이렇게 생겼나'를 이해하는 데 좋다."
+  },
+  {
+   "id": "shostack",
+   "title": "Threat Modeling: Designing for Security",
+   "by": "Adam Shostack · Wiley · 2014",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/threat-modeling-designing/9781118810057/",
+   "why": "요건 '위협 모델링' 의 원전. 네 질문과 STRIDE 로 앱·서버·SDK 경계의 위협을 찾는 연습."
+  },
+  {
+   "id": "bsrs",
+   "title": "Building Secure and Reliable Systems",
+   "by": "Google · O'Reilly · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://sre.google/books/",
+   "why": "'앱별 수정 대신 플랫폼 해법' — 안전한 기본값의 공통 프레임워크로 보안을 지키는 구글의 방식. 무료 공개."
+  },
+  {
+   "id": "samm",
+   "title": "OWASP SAMM",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://owaspsamm.org/",
+   "why": "리뷰 프로그램의 성숙도를 단계로 재는 틀. 로드맵·측정(업무 셋째 묶음)을 설계할 때 빌려 쓴다."
+  },
+  {
+   "id": "staff-path",
+   "title": "The Staff Engineer's Path",
+   "by": "Tanya Reilly · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "why": "공고 넷째 묶음 '권한 없이 조직을 움직이기'를 스태프 엔지니어의 일로 풀어 쓴 책."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "지도 그리기 — 무엇을 지켜야 하나",
+   "time": "1~2주",
+   "goal": "MASVS 여덟 묶음으로 앱 하나의 위험을 설명하고 위협 모델 그림을 그릴 수 있다.",
+   "resources": [
+    "masvs",
+    "owasp-cheatsheet",
+    "kisa-mobile",
+    "shostack"
+   ],
+   "task": "가상의 쇼핑 앱(로그인·장바구니·결제 웹뷰·딥링크·광고 SDK 둘)을 정해 데이터 흐름 그림과 신뢰 경계를 그리고, 경계마다 STRIDE 로 위협 10개를 적어 MASVS 통제에 잇는다."
+  },
+  {
+   "title": "직접 뜯어보기 — 두 OS 모두",
+   "time": "3~6주",
+   "goal": "안드로이드·iOS 앱을 풀어 보고, 통신을 가로채고, Frida 로 함수를 바꿔 방어를 우회할 수 있다.",
+   "resources": [
+    "inflearn-android",
+    "inflearn-ios",
+    "frida",
+    "mahh",
+    "mastg"
+   ],
+   "task": "직접 만든 작은 연습 앱(토큰을 SharedPreferences 에 저장, 루팅 탐지 한 줄)을 빌드해 MASTG 시험 다섯 개를 돌리고, Frida 로 루팅 탐지를 끄는 스크립트와 증거가 붙은 보고서 한 장을 남긴다."
+  },
+  {
+   "title": "막는 법 — 플랫폼 기능으로",
+   "time": "2~4주",
+   "goal": "무결성 판정·안전한 저장·검증된 딥링크·안전한 웹뷰를 직접 구현하고 서버 판정 정책을 짤 수 있다.",
+   "resources": [
+    "play-integrity",
+    "app-attest",
+    "app-links",
+    "android-risks",
+    "elenkov"
+   ],
+   "task": "2단계 연습 앱을 고친다 — 토큰은 Keystore 로, 웹뷰는 scheme·host 허용 목록 래퍼로, 딥링크는 App Links 로. 서버 쪽에 무결성 라벨 → 허용/추가 인증/차단 정책 함수를 만들고 경우 다섯 개로 시험한다."
+  },
+  {
+   "title": "프로그램으로 — 반복·측정·자동화",
+   "time": "2~3주",
+   "goal": "리뷰 접수 → 분류 → 판정 흐름과 통과 기준을 문서로 만들고, 범위·남은 위험을 숫자로 낼 수 있다.",
+   "resources": [
+    "mastg",
+    "samm",
+    "bsrs"
+   ],
+   "task": "가상 앱 여섯 개 × 통제 여덟 개 표를 만들어 범위·남은 위험·공통 부품 후보를 뽑는 스크립트를 쓰고, 빌드 때 평문 통신 허용·debuggable 설정을 찾아 실패시키는 검사 하나를 붙인다."
+  },
+  {
+   "title": "사람을 움직이기 (계속)",
+   "time": "계속",
+   "goal": "공통 부품 하나를 도입하자는 제안서를 숫자와 함께 리더에게 설명할 수 있다.",
+   "resources": [
+    "staff-path",
+    "bsrs"
+   ],
+   "task": "4단계 표를 근거로 '안전한 웹뷰 래퍼' 도입 제안서 한 장(문제·앱 몇 개·비용·옮겨 타는 순서·성공 지표)을 영어로 써 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 표기는 없다. 집계 사이트 기준 쿠팡(주) 초봉 **약 3,531만원**·평균 **약 5,175만원** — 물류·운영 인력이 섞인 회사 전체 값이라 시니어 스태프 보안 엔지니어와는 거리가 크다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 쿠팡 회사 페이지. 기업이 공공데이터에 낸 정보로 계산한 값이고 기준 연도·직군 구분이 없다 [27]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "note": "같은 페이지의 평균. 경력직·전 직군이 섞인 값 [27]"
+   },
+   {
+    "label": "직원 평균 연봉 (원티드)",
+    "value": "5,856만원",
+    "amount": 5856,
+    "basis": "공공데이터 집계",
+    "note": "원티드 회사 페이지 표기, 기준일 표기 없음 [29]"
+   },
+   {
+    "label": "네이버 평균",
+    "value": "약 7,602만원",
+    "amount": 7602,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 같은 방식의 값 [28]"
+   },
+   {
+    "label": "지마켓 평균",
+    "value": "6,032만원",
+    "amount": 6032,
+    "peer": true,
+    "basis": "공공데이터 집계",
+    "note": "원티드 같은 방식의 값 [30]"
+   },
+   {
+    "label": "같은 회사 미국 모바일 역공학 공고 기본급",
+    "value": "연 13.8만~29.7만 달러",
+    "basis": "공고 · 미국 마운틴뷰 2026",
+    "note": "마감된 Staff Reverse Engineer(모바일) 공고의 기본급 범위 — 미국 근무 기준이라 서울 근무와 직접 비교하지 않는다 [4]"
+   }
+  ],
+  "how": "쿠팡(주)은 미국 상장사 쿠팡 Inc.의 국내 자회사라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **공시 숫자 없음**. 직급과 업무 범위는 후보자 경력으로 정하고 제안 전에 알려 준다고 공고에 적혀 있다 [1]. 위 평균은 운영·물류 직군이 섞여 시니어 스태프 보안 경력직 연봉보다 낮게 나올 가능성이 크다 {추론}. 채용 시스템의 사무실 칸이 시애틀이라 근무 국가에 따라 처우 체계가 다를 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무",
+    "detail": "주 5일 유연근무제"
+   },
+   {
+    "name": "휴가",
+    "detail": "사유 없이 연차 사용"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"
+   },
+   {
+    "name": "쇼핑",
+    "detail": "쿠팡 구매금액 5% 캐시백(연 최대 400만원)"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "사내 기술 공유 스터디, 외국어·직무 교육 프로그램"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "휴게 공간, 커피·차·간식, 사내 식당"
+   }
+  ],
+  "note": "이 공고(그린하우스)에는 복지 칸이 없다 [1]. 위 항목은 같은 회사 다른 공고의 '혜택 및 복지' 칸(2026-11) [31]이다. 회사 공통 항목으로 보이지만 이 자리(사무실 칸이 시애틀)에 그대로 적용되는지는 처우 협의 때 확인한다 {추론}. 수습 12주가 있다 [1]."
+ },
+ "location": {
+  "name": "쿠팡 본사 (이스트폴 타워)",
+  "address": "서울특별시 광진구 아차산로 412, 이스트폴 타워 A",
+  "postal": "05050",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 [33]",
+  "note": "이 공고의 근무지 표기는 'Seoul, South Korea' 뿐이다 [1]. 같은 보안 조직의 서울 자리(웹 보안)가 근무지를 아차산로 412 이스트폴 타워 A 로 적었다 [32]. 채용 시스템의 사무실 칸은 시애틀(720 Olive Way)이라 [34] 실제 근무지는 지원 때 확인한다 {추론}."
+ }
+}
