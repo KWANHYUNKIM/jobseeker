@@ -157,6 +157,7 @@
   "ats-hkmc:hyundai:2026N2392": "hyundai-aviation-motor-control-sw",
   "wanted-398569": "hyundai-aviation-motor-control-sw",
   "saramin-55604373": "hyundai-energy-tech-market-research",
+  "saramin-55605890": "hyundai-group-cyber-threat-detection",
   "saramin-55605963": "hyundai-ict-ax-project-manager",
   "ats-hkmc:hyundai:2026N2420": "hyundai-ict-sw-architect",
   "ats-hkmc:hyundai:2026N2425": "hyundai-infra-security-public-cloud",
@@ -1802,6 +1803,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 29
+  },
+  {
+   "id": "hyundai-group-cyber-threat-detection",
+   "company": "현대자동차",
+   "role": "그룹 사이버보안 탐지·대응 체계 진단",
+   "jobs": [
+    "saramin-55605890"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "hyundai-ict-ax-project-manager",
