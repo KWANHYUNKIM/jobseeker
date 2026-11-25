@@ -1,0 +1,1071 @@
+{
+ "id": "hyundai-shucle-frontend-engineer",
+ "company": "현대자동차",
+ "role": "모빌리티 서비스 Frontend Engineer (셔클)",
+ "team": "AVP 본부 · 셔클(통합 모빌리티 플랫폼) 조직",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2104",
+  "wanted-387544"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "부르면 오는 버스 **셔클**을 굴리는 사람들이 쓰는 사내 웹 — 차량·수요를 실시간으로 보는 **관제 화면**, 정류장·구역을 고치는 **맵 운영 화면**, 수요 **분석·예측 화면** — 과 그 화면들의 **디자인 시스템**을 만듭니다.[1]",
+  "env": "셔클은 호출 앱·기사 앱과 따로 관제 툴을 두고, 백엔드는 서비스끼리 API·이벤트로 통신하는 마이크로서비스입니다.[3] 서비스는 71개 지역으로 늘었고[5] 자율주행 차량 운영 플랫폼으로 넓어지는 중입니다.[6]",
+  "oneline": "지도·차트·실시간 데이터가 중심인 사내 도구 프론트엔드 리드급(8년+). 예쁜 화면보다 **많은 데이터를 버벅임 없이 보여 주는 구조와 공통 부품**이 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "모빌리티 서비스 운영 및 데이터 분석을 위한 다양한 웹 도구 개발 업무를 수행합니다.",
+   "short": "승객 앱이 아니라 셔클을 굴리는 사람(운영자·분석가)이 쓰는 사내 웹 화면을 만드는 일.",
+   "why": "셔클은 승객 호출 앱·기사 앱과 별도로 **관제 툴**을 지원해야 했다고 회사가 밝혔습니다.[3] 셔클은 운영 현황을 실시간으로 보고, 지표·차트로 분석하고, 관리자가 맵데이터를 고치는 기능을 내세웁니다.[4] 서비스 지역이 71곳까지 늘면서[5] 지역마다 이 화면들을 쓰는 운영자도 늘었습니다{추론}.",
+   "actually": {
+    "intro": "공고가 이 한 줄 밑에 업무 넷을 두 묶음(■)으로 적었습니다.[1]",
+    "items": [
+     "**관제** — 지금 몇 대가 어디서 누구를 태우고 있나, 어느 지역 대기 시간이 길어지나를 지도와 숫자로.[1][4]",
+     "**맵 운영** — 정류장·운행 구역·통행 제한을 지도 위에서 그리고 고치는 편집 화면.[1][4]",
+     "**분석·예측** — 시간대별 호출, 예측 수요 대 실제, 시뮬레이션 결과를 차트로.[1][4]",
+     "**디자인 시스템** — 위 화면들이 같은 버튼·표·지도 패널을 쓰도록 공통 부품을 만든다.[1]"
+    ]
+   },
+   "how_far": "누가 무엇을 보고 어떤 결정을 하나(화면 요구)는 운영·기획 쪽과 정합니다{추론}. 이 자리는 그 결정을 **빠르고 틀리지 않게 보여 주는 화면과 공통 부품**을 맡습니다. 같은 조직에 지도 백엔드[7]·데이터 엔지니어[8] 공고가 따로 있어 데이터는 그쪽 API 로 받습니다{추론}.",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    7,
+    8
+   ],
+   "study": [
+    "shucle-dev",
+    "shucle-tech"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 실시간 수요와 차량 위치, 서비스 상황 시각화를 통한 서비스 관제 시스템 개발",
+   "short": "차 수백 대의 위치·호출·대기 상황을 지도와 숫자로 실시간 보여 주는 관제 화면을 만든다.",
+   "why": "셔클 배차와 경로는 차가 달리는 동안 실시간으로 바뀝니다.[3] 회사는 운행 현황을 실시간으로 확인하고 비정상 운행을 탐지해 관리자에게 알리는 기능을 소개합니다.[4] 셔클이 광주 자율주행 실증에서 호출·관제·AI 배차를 묶는 운영 플랫폼을 맡는다는 보도도 있습니다.[6] 운전자가 없는 차가 늘면 사람이 보는 관제 화면의 몫이 더 커집니다{추론}.",
+   "actually": {
+    "items": [
+     "**실시간 받기** — 서버가 위치를 밀어 주는 WebSocket(연결을 열어 둔 채 주고받는 방식)이나 주기적 조회로 차량 위치를 받는다.[14]",
+     "**모아서 그리기** — 메시지가 올 때마다 다시 그리지 않고, 화면 그리기 주기(requestAnimationFrame)마다 쌓인 것을 한 번에 반영한다(아래 예).[13]",
+     "**많은 점 그리기** — 차량 점·경로 선·수요 칸을 DOM 마커 대신 WebGL 레이어로 그린다(deck.gl 같은 도구).[10]",
+     "**상태 구분** — 운행·대기·오프라인·이상을 색과 아이콘으로, 이상은 목록 맨 위와 알림으로.[4]",
+     "**되감기·필터** — 지역·차량·시간대로 좁히고, 문제가 난 시각의 상황을 다시 본다{추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "위치 메시지를 프레임마다 모으기",
+     "body": "차 300대가 0.2초마다 위치를 보내면 1초에 1,500건입니다. 받을 때마다 다시 그리면 1,500번, 화면 주기(초당 60번)마다 모으면 60번이고 옮기는 마커 수는 같습니다(직접 돌린 출력). 브라우저에서는 이 '프레임마다' 부분이 requestAnimationFrame 입니다.[13]",
+     "lang": "python",
+     "code": "import random\nrandom.seed(7)\n# 차 300대가 200ms 마다 위치를 보낸다 — 1초 분량 1,500건\nmsgs = sorted(({\"t\": t + random.random() * 200, \"id\": f\"bus-{v}\"}\n               for t in range(0, 1000, 200) for v in range(300)), key=lambda m: m[\"t\"])\nFRAME = 1000 / 60                     # 화면은 1초에 60번 그린다\nframes = moved = i = 0\nf = FRAME\nwhile f <= 1000 + FRAME:\n    pending = {}                      # 이번 프레임에 온 것 — 같은 차는 마지막 값만\n    while i < len(msgs) and msgs[i][\"t\"] < f:\n        pending[msgs[i][\"id\"]] = msgs[i]; i += 1\n    if pending:\n        frames += 1; moved += len(pending)\n    f += FRAME\nprint(\"메시지\", len(msgs), \"건 → 받을 때마다 그리면\", len(msgs), \"번 다시 그림\")\nprint(\"프레임으로 모으면\", frames, \"번 다시 그림, 옮긴 마커\", moved, \"개\")\n# 메시지 1500 건 → 받을 때마다 그리면 1500 번 다시 그림\n# 프레임으로 모으면 60 번 다시 그림, 옮긴 마커 1500 개"
+    }
+   ],
+   "how_far": "무엇을 이상으로 볼지(기준값)는 운영 쪽이 정합니다{추론}. 최소선은 **수백~수천 개 점이 초당 여러 번 바뀌어도 화면이 버벅이지 않게** 받기·모으기·그리기를 나눠 만든 경험입니다{추론}. 같은 그룹의 다른 관제 웹 공고도 대규모 관제의 웹 성능 최적화·WebSocket 실시간 데이터를 요건으로 적었습니다.[9]",
+   "refs": [
+    3,
+    4,
+    6,
+    9,
+    10,
+    13,
+    14
+   ],
+   "study": [
+    "deckgl",
+    "mdn-raf",
+    "react-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 맵 데이터 구축 및 운영 시스템 개발",
+   "short": "정류장·운행 구역·통행 제한을 지도 위에서 그리고 고치고 검수하는 편집 화면을 만든다.",
+   "why": "셔클은 도보 접근성과 수요로 정류장을 추천하고, 관리자가 맵데이터를 직관적으로 고치는 편집 도구를 기능으로 내세웁니다.[4] 같은 조직의 지도 서버 공고가 맵툴의 백엔드 API 를 맡으니[7], 이 자리는 그 앞 화면입니다{추론}. 지역마다 운영 정책이 달라[4] 정류장·구역 데이터는 계속 바뀝니다{추론}.",
+   "actually": {
+    "items": [
+     "**그리기·고치기** — 점(정류장)·선(경로)·다각형(운행 구역)을 지도에서 찍고 끌어 고친다. 주고받는 형식은 보통 GeoJSON 이다(좌표 순서가 [경도, 위도]).[16]",
+     "**검수** — 구역 밖 정류장, 겹친 다각형, 도로에서 먼 정류장을 저장 전에 화면에서 표시한다{추론}.",
+     "**변경 이력** — 누가 언제 무엇을 바꿨나, 배포 전/후 비교, 되돌리기{추론}.",
+     "**추천 띄우기** — 서버가 낸 정류장 후보를 지도에 띄우고 사람이 고르게 한다.[4]",
+     "**바탕 지도** — 벡터 타일 지도 위에 우리 데이터를 레이어로 얹는다(MapLibre·Mapbox 같은 렌더러).[11][12]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "정류장 하나가 바뀌기까지{추론}",
+     "steps": [
+      "추천 · 서버가 수요·도보 접근성으로 후보를 낸다[4]",
+      "편집 · 운영자가 지도에서 위치를 고른다",
+      "검사 · 구역 안인지, 도로에서 먼지 화면이 막는다",
+      "저장 · 맵툴 API 로 보낸다[7]",
+      "반영 · 길찾기 맵이 새로 구워져 배차에 쓰인다[7]"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "편집 규칙(정류장 간격·구역 기준)은 운영·지도 팀이 정합니다{추론}. 최소선은 **지도 위 도형 편집과 저장 전 검사, 백엔드와 형식을 맞춰 주고받는 화면**을 만들어 본 것입니다{추론}.",
+   "refs": [
+    4,
+    7,
+    11,
+    12,
+    16
+   ],
+   "study": [
+    "maplibre",
+    "geojson",
+    "shucle-tech"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 데이터 분석 및 예측 시스템 개발",
+   "short": "호출·대기·수요 예측 결과를 차트와 지도 칸으로 보여 주고, 조건을 바꿔 돌려 보게 하는 화면.",
+   "why": "셔클은 이동·인구·POI 데이터로 수요를 예측하고, 운행을 미리 돌려 보는 시뮬레이션으로 결과를 예측한다고 소개합니다.[4] 실시간 분석 지표·차트를 한곳에서 보여 주는 것도 같은 소개에 있습니다.[4] 예측 모델은 데이터 쪽이 만들고[8], 이 화면은 그 결과를 운영자가 읽고 비교하는 곳입니다{추론}.",
+   "actually": {
+    "items": [
+     "**시간 차트** — 시간대별 호출·대기 시간·탑승, 예측 대 실제를 한 축에.[17]",
+     "**지도 칸** — 호출 좌표 수만 개를 격자·육각형 칸으로 묶어 건수를 색으로(아래 예).[15]",
+     "**비교** — 지역·기간·차량 수를 바꾼 시뮬레이션 두 개를 나란히{추론}.",
+     "**내보내기** — 지자체 보고용 표·CSV{추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "호출 점 5만 개 → 칸 105개",
+     "body": "점을 그대로 그리면 겹쳐서 어디가 많은지 안 보입니다. 약 500m 칸으로 묶으면 105칸의 건수가 되고, 이것을 색으로 칠한 것이 수요 지도입니다(직접 돌린 출력). 실서비스는 같은 생각을 육각형 격자(H3)로 하는 일이 많습니다.[15]",
+     "lang": "python",
+     "code": "import random\nfrom collections import Counter\nrandom.seed(11)\nhot = [(37.4846, 127.0346), (37.5045, 127.0490)]   # 가상 수요 중심 두 곳\ncalls = []\nfor _ in range(50000):\n    la, ln = hot[0] if random.random() < 0.6 else hot[1]\n    calls.append((la + (random.random() - 0.5) * 0.03, ln + (random.random() - 0.5) * 0.03))\nCELL = 0.0045                                       # 위도 0.0045도 ≈ 500m\nbins = Counter((int(la // CELL), int(ln // CELL)) for la, ln in calls)\nprint(\"점\", len(calls), \"개 → 칸\", len(bins), \"개\")\nprint(\"호출이 많은 칸 3개:\", \", \".join(f\"{k}={n}건\" for k, n in bins.most_common(3)))\n# 점 50000 개 → 칸 105 개\n# 호출이 많은 칸 3개: (8331, 28230)=1155건, (8332, 28232)=1154건, (8332, 28231)=1146건"
+    }
+   ],
+   "how_far": "지표 정의와 예측 방법은 데이터·운영 쪽 몫입니다{추론}. 이 자리는 **큰 데이터를 미리 묶어 받고(서버 집계), 화면에서는 고르기·비교·그리기에 집중**하는 구조를 잡는 것까지입니다{추론}.",
+   "refs": [
+    4,
+    8,
+    15,
+    17
+   ],
+   "study": [
+    "echarts",
+    "deckgl",
+    "shucle-tech"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 디자인 시스템 구축",
+   "short": "업무 둘째 묶음 — 위 사내 화면들이 같은 부품과 규칙으로 만들어지게 하는 일.",
+   "why": "관제·맵 운영·분석 화면이 각자 다른 버튼·표·색을 쓰면 화면마다 배우는 비용이 들고 고칠 곳이 늘어납니다{추론}. 공고는 이 일을 웹 페이지 개발과 같은 무게의 따로 된 묶음으로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**토큰** — 색·간격·글자 크기에 이름을 붙인 값 한 벌.[20]",
+     "**컴포넌트** — 버튼·입력·표·탭·지도 패널을 토큰으로 만든 부품.[21]",
+     "**문서** — 부품마다 상태별 모습과 쓰는 법을 띄워 둔 카탈로그(Storybook 같은 도구).[19]"
+    ]
+   },
+   "how_far": "자세한 내용은 바로 아래 줄에 씁니다.",
+   "refs": [
+    1,
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "atomic"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 모빌리티 솔루션 개발을 위한 웹 기반 디자인 시스템 구축",
+   "short": "차량 상태 색·지도 패널·데이터 표 같은 공통 부품을 토큰부터 문서까지 한 벌로 만든다.",
+   "why": "공고 제목의 '모빌리티 솔루션'은 셔클이 지자체마다 다른 이름으로 들어가는 플랫폼이라는 점과 맞닿아 있습니다 — 셔클은 지역 브랜드로 서비스됩니다.[5][6] 같은 부품에 지역마다 다른 테마를 씌우려면 값(토큰)과 부품을 나눠 두는 것이 보통입니다{추론}.",
+   "actually": {
+    "items": [
+     "**토큰 → CSS 변수** — 디자인 도구와 코드가 같은 이름을 쓰게 토큰 한 벌에서 CSS 변수를 굽는다(아래 예).[20][27]",
+     "**관제 전용 부품** — 차량 상태 배지·지도 범례·시간 슬라이더·대용량 표(보이는 줄만 그리기){추론}.",
+     "**접근성** — 표·탭·대화상자를 키보드로도 쓰게 한다.[22]",
+     "**배포** — 여러 화면 저장소가 같은 판을 받아 쓰도록 패키지로 내고 판 번호를 올린다{추론}.",
+     "**시각 확인** — 부품을 상태별로 띄워 바뀐 모습을 리뷰한다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "토큰 한 벌에서 CSS 변수 굽기",
+     "body": "차량 상태 색을 토큰 한 곳에 두면 관제 지도·목록·범례가 같은 색을 씁니다. 중첩된 이름을 하이픈으로 펴서 CSS 변수로 쓴 결과입니다(직접 돌린 출력). 테마를 바꿀 때는 이 값만 갈아 끼웁니다{추론}.",
+     "lang": "python",
+     "code": "tokens = {\"color\": {\"status\": {\"running\": \"#1f9d55\", \"waiting\": \"#d97706\",\n                               \"offline\": \"#6b7280\", \"alert\": \"#dc2626\"}},\n          \"space\": {\"1\": \"4px\", \"2\": \"8px\"}}\ndef flat(o, p=()):\n    for k, v in o.items():\n        yield from flat(v, p + (k,)) if isinstance(v, dict) else [(\"-\".join(p + (k,)), v)]\nprint(\":root {\\n\" + \"\\n\".join(f\"  --{k}: {v};\" for k, v in flat(tokens)) + \"\\n}\")\n# :root {\n#   --color-status-running: #1f9d55;\n#   --color-status-waiting: #d97706;\n#   --color-status-offline: #6b7280;\n#   --color-status-alert: #dc2626;\n#   --space-1: 4px;\n#   --space-2: 8px;\n# }"
+    }
+   ],
+   "how_far": "색·모양은 디자이너가 정합니다{추론}. 이 자리는 **그 결정을 토큰·부품·문서로 굳혀 다른 개발자가 그대로 쓰게** 하는 쪽이고, 최소선은 토큰 → 부품 → 문서를 한 번 끝까지 만들어 실제 화면 두 개 이상에 붙여 본 것입니다{추론}.",
+   "refs": [
+    5,
+    6,
+    19,
+    20,
+    22,
+    27
+   ],
+   "study": [
+    "atomic",
+    "dtcg",
+    "storybook",
+    "aria-apg"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 학사 이상의 학위를 보유하신 분",
+   "short": "4년제 학사 이상이면 되고, 전공 제한은 자격요건에 없다(컴공은 우대).",
+   "why": "현대자동차 경력 채용은 지원 자격에 학위를 적는 경우가 많고, 이 공고도 전공은 우대사항으로 따로 뺐습니다.[1]",
+   "actually": {
+    "items": [
+     "학위 증명은 보통 합격 뒤 서류로 낸다{추론}.",
+     "전공 무관 — 컴퓨터 공학 전공은 우대 첫 줄에 있다.[1]"
+    ]
+   },
+   "how_far": "학사 이상이면 이 줄은 넘깁니다. 비전공이면 우대 줄 대신 경력·포트폴리오로 설명합니다{추론}.",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "· 8년 이상의 Frontend 개발 경력을 보유하신분",
+   "short": "프론트엔드만 8년 이상 — 화면 하나가 아니라 구조와 공통 부품을 정해 본 연차를 본다.",
+   "why": "디자인 시스템 구축과 여러 사내 도구의 화면 구조를 한꺼번에 맡는 자리라[1], 정해진 화면을 만드는 쪽보다 정하는 쪽의 경험을 찾는 것으로 보입니다{추론}. 원티드 사본도 '경력 8년 이상'입니다.[2]",
+   "actually": {
+    "items": [
+     "**구조** — 상태를 어디에 두고, 실시간 데이터와 서버 데이터를 어떻게 나누나{추론}.",
+     "**공통화** — 여러 화면이 같이 쓰는 부품·규칙을 만들고 유지{추론}.",
+     "**운영** — 배포 뒤 오류·성능을 재고 고친 경험{추론}."
+    ]
+   },
+   "how_far": "연차는 서류에서 숫자로 걸러집니다{추론}. 면접에서는 **8년 동안 무엇을 '정했나'**(구조·라이브러리 선택·공통 부품)를 구체적인 예로 묻는다고 보는 편이 안전합니다{추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "react-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 웹 개발 및 운영 경험을 보유하신 분",
+   "short": "만들어 배포한 뒤 실제 사용자가 쓰는 동안 오류·성능·변경을 관리해 본 경험.",
+   "why": "관제 화면은 셔클이 도는 동안 계속 켜져 있는 화면입니다{추론}. 셔클은 71개 지역에서 돌고 있어[5] 화면 하나의 장애가 여러 지역 운영에 바로 닿습니다{추론}.",
+   "actually": {
+    "items": [
+     "**배포** — 빌드·캐시·판 관리, 문제가 나면 이전 판으로 되돌리기{추론}.",
+     "**관측** — 브라우저 오류 수집, 느린 화면 측정(로딩·반응 지표).[23]",
+     "**장시간 화면** — 하루 종일 켜 둔 관제 탭의 메모리 증가·연결 끊김 뒤 다시 붙기{추론}."
+    ]
+   },
+   "how_far": "최소선은 **배포한 화면의 오류와 성능을 숫자로 보고 고쳐 본 사례**를 하나 이상 설명할 수 있는 것입니다{추론}.",
+   "refs": [
+    5,
+    23
+   ],
+   "study": [
+    "web-vitals"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Javascript Framework 사용 경험을 보유하신 분 (React, Angular, Vue 등)",
+   "short": "React·Angular·Vue 중 하나 이상으로 실무 화면을 만들어 봤으면 된다 — '등'이라 하나로 충분.",
+   "why": "공고 기술 목록에 셋이 다 올라 있어[1] 특정 하나로 못 박지 않았습니다. 셔클 사내 도구가 무엇으로 짜였는지는 공개되지 않았습니다{추론}.",
+   "actually": {
+    "items": [
+     "셋 다 **컴포넌트·반응형 상태·단방향 데이터 흐름**이 뼈대라 하나를 깊이 알면 옮겨 가기 쉽다.[24][35]",
+     "관제 화면에서 중요한 것은 프레임워크 종류보다 **다시 그리기를 언제·얼마나 하나**를 통제하는 법이다{추론}."
+    ]
+   },
+   "level": {
+    "basic": "컴포넌트·props·상태로 화면 하나를 만든다",
+    "work": "서버 데이터 캐시·전역 상태·라우팅을 나눠 여러 화면 앱을 운영한다",
+    "team": "초당 여러 번 바뀌는 데이터에서 필요한 부분만 다시 그리게 구조를 잡는다{추론}"
+   },
+   "how_far": "지원 전에 공고의 셋 중 무엇을 썼는지, 상태 관리·렌더링 최적화를 어떻게 했는지 정리해 둡니다{추론}.",
+   "refs": [
+    1,
+    24,
+    35
+   ],
+   "study": [
+    "react-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Frontend 개발에 대한 전문성을 보유하신 분 (Javascript, Typescript, ES, CSS 등)",
+   "short": "프레임워크 밑의 바탕 — 자바스크립트 동작, 타입스크립트 타입 설계, 표준(ES), CSS — 을 깊이 안다.",
+   "why": "프레임워크가 감춰 둔 것(이벤트 루프·비동기·레이아웃 계산)이 실시간 화면의 버벅임과 직결됩니다{추론}. 괄호 안의 'ES'는 자바스크립트 표준 명세(ECMAScript)입니다.[26]",
+   "actually": {
+    "items": [
+     "**자바스크립트** — 이벤트 루프·비동기·클로저·메모리(오래 켜 둔 탭에서 새는 참조).[26]",
+     "**타입스크립트** — 차량 상태·메시지 종류를 유니온 타입으로 묶어 빠진 경우를 컴파일에서 잡는다.[25]",
+     "**CSS** — Grid 로 여러 패널 화면 배치, CSS 변수로 테마, 레이아웃을 다시 계산하게 만드는 속성 피하기.[27]",
+     "**표준 기능** — 새 문법·API 가 언제 어느 브라우저에서 되나{추론}."
+    ]
+   },
+   "level": {
+    "basic": "비동기·클로저·타입 기본을 설명한다",
+    "work": "타입으로 API 응답·상태를 묶고, 성능 도구로 긴 작업·레이아웃 비용을 찾는다",
+    "team": "공통 부품의 타입·CSS 규칙을 다른 개발자가 그대로 따르게 설계한다{추론}"
+   },
+   "how_far": "최소선은 **프레임워크 없이도 같은 화면을 만들 수 있고, 느린 원인을 브라우저 도구로 찾아 설명할 수 있는 것**입니다{추론}.",
+   "refs": [
+    25,
+    26,
+    27
+   ],
+   "study": [
+    "deep-dive",
+    "effective-ts",
+    "ts-handbook",
+    "mdn-css"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 컴퓨터 공학 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "자격요건의 학위가 컴퓨터 공학이면 더 좋다는 뜻 — 없어도 지원은 된다.",
+   "why": "자격요건은 전공을 묻지 않고 이 줄만 전공을 말합니다.[1] 지도·그래프·대량 데이터 시각화는 자료구조·알고리즘 바탕이 도움이 되는 일입니다{추론}.",
+   "actually": {
+    "items": [
+     "비전공이면 자료구조·공간 색인·렌더링 같은 바탕을 프로젝트로 보이면 된다{추론}."
+    ]
+   },
+   "how_far": "8년 경력 채용이라 학위보다 경력의 무게가 큽니다{추론}.",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "· 대규모 서비스 웹 개발 및 운영 경험을 보유하신 분",
+   "short": "사용자·데이터·화면 수가 커서 성능·배포·장애가 문제였던 웹을 운영해 본 경험.",
+   "why": "셔클은 가입 130만·누적 호출 1,193만 건 규모이고 71개 지역에서 돕니다.[5] 같은 그룹의 다른 관제 웹 공고도 대규모 관제의 웹 성능 최적화를 업무로 적었습니다.[9]",
+   "actually": {
+    "items": [
+     "**성능 예산** — 첫 화면·반응 시간을 숫자로 정하고 넘으면 막는다.[23]",
+     "**대량 목록** — 수천 줄 표는 보이는 줄만 그린다{추론}.",
+     "**판 관리** — 여러 화면이 공통 부품의 다른 판을 쓸 때 깨지지 않게{추론}."
+    ]
+   },
+   "how_far": "규모를 말할 때는 **사용자 수·데이터 양·성능 숫자 전후**를 같이 적는 편이 설득력이 있습니다{추론}.",
+   "refs": [
+    5,
+    9,
+    23
+   ],
+   "study": [
+    "web-vitals"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· Map, Chart, Animation 등의 다양한 웹 UI 및 인터랙션 개발 경험을 보유하신 분",
+   "short": "지도·차트·애니메이션 — 이 공고 관제·맵·분석 화면의 세 재료를 직접 만들어 본 경험.",
+   "why": "관제는 지도 위 차량 움직임, 분석은 차트, 맵 운영은 지도 편집입니다.[1] 우대가 업무를 그대로 따라갑니다{추론}.",
+   "actually": {
+    "items": [
+     "**Map** — 바탕 지도 위 레이어, 클릭·끌기 편집, 수천 개 점 성능.[10][11]",
+     "**Chart** — 시간축 차트·확대·여러 계열 비교. 직접 축을 그리면 D3, 빨리 그리면 ECharts 같은 도구.[17][18]",
+     "**Animation** — 차량 점이 위치 사이를 부드럽게 옮겨 가게 하기, 상태가 바뀐 곳을 잠깐 강조.[13][34]"
+    ]
+   },
+   "how_far": "셋 중 지도 하나라도 **'많은 데이터·잦은 갱신'에서 성능을 잡아 본 사례**가 있으면 가장 직접 닿습니다{추론}.",
+   "refs": [
+    1,
+    10,
+    11,
+    13,
+    17,
+    18,
+    34
+   ],
+   "study": [
+    "deckgl",
+    "maplibre",
+    "echarts",
+    "mdn-raf"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· Node.js, Go 등을 이용한 백엔드 서버 개발 경험을 보유하신 분",
+   "short": "화면에 맞춘 작은 API 서버를 직접 세울 수 있으면 좋다 — 셔클 백엔드는 Go 를 쓴다.",
+   "why": "같은 조직의 지도·데이터 공고가 Go 를 기술로 적었고[7][8], 셔클 백엔드는 사용자 유형별 게이트웨이가 기능을 묶어 주는 구조입니다.[3] 관제 툴도 그 사용자 유형 중 하나입니다.[3]",
+   "actually": {
+    "items": [
+     "**화면용 API(BFF)** — 여러 서비스 응답을 화면에 맞게 합쳐 주는 얇은 서버{추론}.",
+     "**실시간 중계** — 위치 스트림을 받아 관제 화면 WebSocket 으로 나눠 보내는 서버.[14]",
+     "**도구 서버** — 맵 편집 저장 전 검사, 내보내기 같은 작은 기능.[28][29]"
+    ]
+   },
+   "how_far": "백엔드 전담 자리는 아닙니다 — 공고 업무는 웹 화면과 디자인 시스템입니다.[1] 최소선은 **Node.js 나 Go 로 API 하나를 만들어 배포·로그까지 본 것**입니다{추론}.",
+   "refs": [
+    1,
+    3,
+    7,
+    8,
+    14,
+    28,
+    29
+   ],
+   "study": [
+    "go-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "지도·차트로 '지금 무슨 일이 일어나나'를 보여 주는 화면이 좋은 사람[1]",
+   "공통 부품과 규칙을 만들어 다른 개발자가 빨리 만들게 하는 일이 즐거운 사람[1]",
+   "실제 도로 위 차량 운영과 바로 이어진 도구를 만들고 싶은 사람[4][6]"
+  ],
+  "hard": [
+   "관제·맵 편집·분석·디자인 시스템까지 범위가 넓다[1]",
+   "프론트엔드 경력 8년 이상을 요구한다[1]",
+   "사내 도구라 외부에 보여 줄 결과물이 적다{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "차량 3,000대 위치가 초당 한 번씩 옵니다. 관제 지도가 버벅이지 않게 하려면?",
+   "a": "받기와 그리기를 나누고 프레임마다 모아 그리기, WebGL 레이어.[10][13]"
+  },
+  {
+   "q": "WebSocket 이 끊겼다 다시 붙었습니다. 화면은 무엇을 해야 하나요?",
+   "a": "끊긴 사이 상태를 다시 받아 맞추고 '지연' 표시.[14]{추론}"
+  },
+  {
+   "q": "정류장 편집 화면에서 저장 전에 무엇을 검사하나요?",
+   "a": "구역 안팎·도로 거리·겹침, GeoJSON 좌표 순서.[16]{추론}"
+  },
+  {
+   "q": "디자인 시스템의 버튼 색을 바꿨더니 다른 팀 화면이 깨졌습니다. 어떻게 막나요?",
+   "a": "토큰과 부품 분리, 판 번호, 상태별 시각 확인.[19][20]"
+  },
+  {
+   "q": "하루 종일 켜 둔 관제 탭이 점점 느려집니다. 어디부터 보나요?",
+   "a": "메모리 스냅숏으로 해제 안 된 참조·리스너, 긴 작업.[23]{추론}"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · [AVP] 모빌리티 서비스 Frontend Engineer",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=104",
+   "kind": "posting",
+   "note": "팀 소개(셔클)·업무 두 묶음(웹 페이지 개발·디자인 시스템)·요건·우대, 기술 Angular·CSS·Go·JavaScript·Node.js·React·TypeScript·Vue, 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차그룹 [AVP] 모빌리티 서비스 Frontend Engineer",
+   "url": "https://www.wanted.co.kr/wd/387544",
+   "kind": "posting",
+   "date": "2026-09-17",
+   "note": "같은 공고 사본 — 경력 8년 이상, 근무지 서울 서초구, 복지 칸은 '홈페이지 참조'"
+  },
+  {
+   "n": 3,
+   "title": "HMG 저널 · 현대차의 모빌리티 서비스 플랫폼, 셔클 개발기",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000021172",
+   "kind": "company",
+   "date": "2022-04-11",
+   "note": "셔클 기술리더 글 — 호출 앱·기사 앱·관제 툴을 따로 지원, 모놀리식→MSA, 사용자 유형별 게이트웨이, 통합 IDL 저장소, 운행 중 실시간 배차·경로"
+  },
+  {
+   "n": 4,
+   "title": "셔클 · 기술",
+   "url": "https://www.shucle.com/ko/tech",
+   "kind": "company",
+   "note": "데이터 기반 운영(실시간 운행 현황·지표와 차트를 한 화면에·비정상 운행 탐지 알림), 수요 예측·운행 시뮬레이션, 맵데이터 편집 도구(도보 접근성·수요로 정류장 추천), 지역별 운영 정책"
+  },
+  {
+   "n": 5,
+   "title": "HMG 저널 · 셔클로 증명한 현대차·기아 모빌리티 플랫폼의 글로벌 경쟁력",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000192680",
+   "kind": "company",
+   "date": "2025-11-12",
+   "note": "71개 지역, 가입 130만·누적 호출 1,193만 건, 지역 브랜드, 헝가리 실증"
+  },
+  {
+   "n": 6,
+   "title": "아이뉴스24 · 현대차그룹, 교통 플랫폼 '셔클'을 로보택시 OS로",
+   "url": "https://v.daum.net/v/20260621080143341",
+   "kind": "news",
+   "date": "2026-06-21",
+   "note": "셔클플랫폼팀 대거 채용, 광주 자율주행 실증 운영 플랫폼, 호출·관제·AI 배차를 묶는 운영 OS"
+  },
+  {
+   "n": 7,
+   "title": "현대자동차 채용 · [AVP] 모빌리티 서비스 Software Engineer for Map",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=224",
+   "kind": "posting",
+   "note": "같은 조직 — 길찾기 서버·맵 컨버터·맵툴 백엔드 API 개발"
+  },
+  {
+   "n": 8,
+   "title": "현대자동차 채용 · [AVP] 모빌리티 서비스 Data Engineer",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=98",
+   "kind": "posting",
+   "note": "같은 조직 — 모빌리티 데이터 파이프라인·분석 데이터"
+  },
+  {
+   "n": 9,
+   "title": "리멤버 · 현대오토에버 프론트엔드 개발자 - 로봇/스마트팩토리 (마감)",
+   "url": "https://career.rememberapp.co.kr/job/posting/319233",
+   "kind": "posting",
+   "date": "2026-10-29",
+   "note": "같은 그룹의 다른 회사 공고(셔클 아님) — 통합관제 시각화·대규모 관제 웹 성능, React·TypeScript, 우대 OpenLayers 등 지도 라이브러리·WebSocket 실시간 데이터"
+  },
+  {
+   "n": 10,
+   "title": "deck.gl · Documentation",
+   "url": "https://deck.gl/docs",
+   "kind": "reference",
+   "note": "WebGL 로 대량의 점·선·칸을 지도 위에 그리는 레이어 라이브러리(vis.gl)"
+  },
+  {
+   "n": 11,
+   "title": "MapLibre GL JS · Documentation",
+   "url": "https://maplibre.org/maplibre-gl-js/docs/",
+   "kind": "reference",
+   "note": "벡터 타일 지도 렌더러 — 소스·레이어·스타일, GeoJSON 소스 갱신"
+  },
+  {
+   "n": 12,
+   "title": "Mapbox GL JS · Documentation",
+   "url": "https://docs.mapbox.com/mapbox-gl-js/",
+   "kind": "reference",
+   "note": "상용 벡터 지도 SDK — 같은 소스·레이어 모델"
+  },
+  {
+   "n": 13,
+   "title": "MDN · Window.requestAnimationFrame()",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Window/requestAnimationFrame",
+   "kind": "reference",
+   "note": "다음 화면 그리기 직전에 콜백을 한 번 부른다"
+  },
+  {
+   "n": 14,
+   "title": "MDN · WebSocket API",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/WebSockets_API",
+   "kind": "reference",
+   "note": "서버와 브라우저가 연결을 열어 두고 메시지를 주고받는 방식"
+  },
+  {
+   "n": 15,
+   "title": "H3 · Introduction",
+   "url": "https://h3geo.org/docs/",
+   "kind": "reference",
+   "note": "우버가 공개한 육각형 격자 위치 색인"
+  },
+  {
+   "n": 16,
+   "title": "RFC 7946 · The GeoJSON Format",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7946",
+   "kind": "reference",
+   "date": "2016",
+   "note": "점·선·다각형 지도 데이터를 JSON 으로 적는 표준, 좌표 순서 [경도, 위도]"
+  },
+  {
+   "n": 17,
+   "title": "Apache ECharts",
+   "url": "https://echarts.apache.org/",
+   "kind": "reference",
+   "note": "대량 데이터 차트 라이브러리(캔버스·SVG)"
+  },
+  {
+   "n": 18,
+   "title": "D3 · Data-Driven Documents",
+   "url": "https://d3js.org/",
+   "kind": "reference",
+   "note": "데이터를 축·눈금·모양으로 바꾸는 저수준 시각화 도구"
+  },
+  {
+   "n": 19,
+   "title": "Storybook · Docs",
+   "url": "https://storybook.js.org/docs",
+   "kind": "reference",
+   "note": "컴포넌트를 상태별로 따로 띄워 보고 문서화하는 도구"
+  },
+  {
+   "n": 20,
+   "title": "Design Tokens Community Group · Design Tokens Format Module",
+   "url": "https://tr.designtokens.org/format/",
+   "kind": "reference",
+   "note": "색·간격 같은 디자인 값을 도구끼리 주고받는 JSON 형식(W3C 커뮤니티 그룹 초안)"
+  },
+  {
+   "n": 21,
+   "title": "Brad Frost · Atomic Design",
+   "url": "https://atomicdesign.bradfrost.com/",
+   "kind": "reference",
+   "date": "2016",
+   "note": "원자→분자→유기체→템플릿→페이지로 쌓는 디자인 시스템 방법론(무료 온라인판)"
+  },
+  {
+   "n": 22,
+   "title": "W3C · ARIA Authoring Practices Guide",
+   "url": "https://www.w3.org/WAI/ARIA/apg/",
+   "kind": "reference",
+   "note": "탭·대화상자·콤보박스 등 위젯의 키보드·스크린리더 동작 규칙"
+  },
+  {
+   "n": 23,
+   "title": "web.dev · Web Vitals",
+   "url": "https://web.dev/articles/vitals",
+   "kind": "reference",
+   "note": "LCP·INP·CLS — 로딩·반응·흔들림 지표"
+  },
+  {
+   "n": 24,
+   "title": "React · 공식 문서",
+   "url": "https://react.dev/",
+   "kind": "reference",
+   "note": "컴포넌트·상태·이펙트, 렌더링을 줄이는 법"
+  },
+  {
+   "n": 25,
+   "title": "TypeScript Handbook",
+   "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+   "kind": "reference",
+   "note": "타입·좁히기·제네릭"
+  },
+  {
+   "n": 26,
+   "title": "ECMAScript Language Specification (ECMA-262)",
+   "url": "https://tc39.es/ecma262/",
+   "kind": "reference",
+   "note": "자바스크립트 표준 명세 — 'ES' 가 이것이다"
+  },
+  {
+   "n": 27,
+   "title": "MDN · CSS",
+   "url": "https://developer.mozilla.org/ko/docs/Web/CSS",
+   "kind": "reference",
+   "note": "레이아웃(Flex·Grid)·사용자 정의 속성(CSS 변수)·애니메이션"
+  },
+  {
+   "n": 28,
+   "title": "Node.js · Documentation",
+   "url": "https://nodejs.org/docs/latest/api/",
+   "kind": "reference",
+   "note": "서버용 자바스크립트 런타임 API"
+  },
+  {
+   "n": 29,
+   "title": "The Go Programming Language · Documentation",
+   "url": "https://go.dev/doc/",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 31,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 32,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원, 4·124쪽 본사 주소"
+  },
+  {
+   "n": 33,
+   "title": "현대자동차 · 본사 양재 사옥 소개",
+   "url": "https://www.hyundai.com/kr/ko/brand/business-network/korea/head-office",
+   "kind": "company",
+   "note": "서울특별시 서초구 헌릉로 12"
+  },
+  {
+   "n": 34,
+   "title": "MDN · Web Animations API",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Web_Animations_API",
+   "kind": "reference",
+   "note": "자바스크립트로 CSS 애니메이션을 만들고 제어"
+  },
+  {
+   "n": 35,
+   "title": "Vue.js · Guide / Angular · Docs",
+   "url": "https://vuejs.org/guide/introduction.html",
+   "kind": "reference",
+   "note": "Angular 는 https://angular.dev/ — 셋 다 컴포넌트·반응형 상태가 뼈대"
+  }
+ ],
+ "caveat": "셔클 프론트엔드 팀의 발표 영상·기술 글은 찾지 못했다(받은 영상 없음). 회사 근거는 이 공고와 원티드 사본·같은 조직 공고·셔클 개발기(2022, 관제 툴 언급)·셔클 기술 페이지·HMG 저널(2025-11)·보도(2026-06)다. 관제·맵 편집 화면이 어떤 프레임워크·지도 라이브러리로 만들어졌는지는 공개되지 않았다 — '실제로는'의 구현 방식은 deck.gl·MapLibre·MDN·GeoJSON 표준 같은 공개 문서와 같은 그룹 다른 회사(현대오토에버)의 관제 웹 공고로 본 보통 방식이다.",
+ "resources": [
+  {
+   "id": "shucle-dev",
+   "title": "현대차의 모빌리티 서비스 플랫폼, 셔클 개발기",
+   "by": "현대자동차 HMG 저널 · 2022",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000021172",
+   "why": "호출 앱·기사 앱·관제 툴이 어떻게 나뉘고 백엔드와 어떻게 붙는지 회사가 직접 쓴 글. 관제 화면이 누구의 무엇을 보여 주는지 먼저 안다."
+  },
+  {
+   "id": "shucle-tech",
+   "title": "셔클 · 기술",
+   "by": "현대자동차",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.shucle.com/ko/tech",
+   "why": "운영 현황·차트 지표·이상 알림·수요 예측·맵 편집 도구 — 이 공고의 업무 넷이 회사 소개에서 어떤 기능으로 나오는지 본다."
+  },
+  {
+   "id": "deep-dive",
+   "title": "모던 자바스크립트 Deep Dive",
+   "by": "이웅모 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ridibooks.com/books/1160000024",
+   "why": "실행 컨텍스트·클로저·이벤트 루프·비동기까지 자바스크립트가 어떻게 도는지. 자격 'Frontend 전문성(Javascript, ES)'을 말로 설명하는 바탕."
+  },
+  {
+   "id": "effective-ts",
+   "title": "이펙티브 타입스크립트",
+   "by": "댄 밴더캄 · 장원호 옮김 · 인사이트 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8",
+   "why": "타입 설계·좁히기·any 줄이기를 항목별로. 차량 상태·메시지 형식을 타입으로 묶어 관제 화면의 실수를 컴파일에서 잡는 감을 얻는다."
+  },
+  {
+   "id": "react-docs",
+   "title": "React 공식 문서",
+   "by": "Meta",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://react.dev/",
+   "why": "상태를 어디에 두나·이펙트가 필요 없는 경우·메모이제이션. 실시간 갱신 화면에서 다시 그리기를 줄이는 기본기."
+  },
+  {
+   "id": "ts-handbook",
+   "title": "TypeScript Handbook",
+   "by": "Microsoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+   "why": "유니온·좁히기·제네릭. 'Typescript 전문성' 요건의 최소선."
+  },
+  {
+   "id": "mdn-css",
+   "title": "MDN · CSS",
+   "by": "Mozilla",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.mozilla.org/ko/docs/Web/CSS",
+   "why": "Grid·Flex 로 여러 패널 관제 화면을 짜고, CSS 변수로 디자인 토큰을 받는 법."
+  },
+  {
+   "id": "deckgl",
+   "title": "deck.gl Documentation",
+   "by": "vis.gl (OpenJS Foundation)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://deck.gl/docs",
+   "why": "수천 대 차량 점·경로 선·수요 칸을 GPU 로 그리는 레이어 구조. 관제·수요 시각화와 우대 'Map 개발 경험'에 바로 쓰인다."
+  },
+  {
+   "id": "maplibre",
+   "title": "MapLibre GL JS Documentation",
+   "by": "MapLibre",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://maplibre.org/maplibre-gl-js/docs/",
+   "why": "지도 바탕(벡터 타일)·스타일·GeoJSON 소스 갱신. 맵 데이터 운영 화면에서 도형을 띄우고 고치는 바탕."
+  },
+  {
+   "id": "geojson",
+   "title": "RFC 7946 · The GeoJSON Format",
+   "by": "IETF · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://datatracker.ietf.org/doc/html/rfc7946",
+   "why": "정류장·운행 구역·경로를 주고받는 형식. 좌표가 [경도, 위도] 순서라는 것부터 맞춘다."
+  },
+  {
+   "id": "mdn-raf",
+   "title": "MDN · requestAnimationFrame / WebSocket API",
+   "by": "Mozilla",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Window/requestAnimationFrame",
+   "why": "실시간 위치 메시지를 받아(WebSocket) 화면 그리기 주기에 맞춰 모아 그리는(rAF) 두 도구. WebSocket 은 https://developer.mozilla.org/ko/docs/Web/API/WebSockets_API"
+  },
+  {
+   "id": "echarts",
+   "title": "Apache ECharts",
+   "by": "Apache Software Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://echarts.apache.org/",
+   "why": "시간대별 호출·대기 시간·예측 대 실제를 그리는 차트. 우대 'Chart 개발 경험'과 데이터 분석·예측 화면."
+  },
+  {
+   "id": "atomic",
+   "title": "Atomic Design",
+   "by": "Brad Frost · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://atomicdesign.bradfrost.com/",
+   "why": "버튼부터 페이지까지 컴포넌트를 쌓는 순서. '웹 기반 디자인 시스템 구축'의 뼈대를 잡는다."
+  },
+  {
+   "id": "storybook",
+   "title": "Storybook Docs",
+   "by": "Storybook",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://storybook.js.org/docs",
+   "why": "컴포넌트를 상태별로 띄워 문서·시각 테스트로 남기는 도구. 디자인 시스템을 여러 팀이 같이 쓰게 만드는 마지막 칸."
+  },
+  {
+   "id": "dtcg",
+   "title": "Design Tokens Format Module",
+   "by": "W3C Design Tokens Community Group",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://tr.designtokens.org/format/",
+   "why": "색·간격을 디자인 도구와 코드가 같은 이름으로 쓰는 형식. 토큰 한 벌에서 CSS 변수·테마를 굽는다."
+  },
+  {
+   "id": "aria-apg",
+   "title": "ARIA Authoring Practices Guide",
+   "by": "W3C WAI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.w3.org/WAI/ARIA/apg/",
+   "why": "표·탭·대화상자·콤보박스를 키보드로도 쓰게 만드는 규칙. 디자인 시스템 컴포넌트의 완성 기준."
+  },
+  {
+   "id": "web-vitals",
+   "title": "web.dev · Web Vitals",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://web.dev/articles/vitals",
+   "why": "로딩·반응·흔들림을 숫자로 재는 법. 우대 '대규모 서비스 웹 운영'에서 성능을 말할 때의 공통어."
+  },
+  {
+   "id": "go-docs",
+   "title": "The Go Programming Language · Documentation",
+   "by": "Go 팀",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://go.dev/doc/",
+   "why": "우대 'Node.js, Go 백엔드'. 화면에 맞춘 작은 API(BFF)를 직접 세워 보는 정도."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "셔클 화면이 누구의 무엇인지 알기",
+   "time": "1주",
+   "goal": "관제·맵 운영·분석 화면이 각각 누구에게 어떤 결정을 돕는지 설명할 수 있다.",
+   "resources": [
+    "shucle-dev",
+    "shucle-tech"
+   ],
+   "task": "가상 도시(정류장 20곳·차량 30대)를 정하고, 운영자가 아침 출근 시간에 보는 관제 화면 한 장을 와이어프레임으로 그린다 — 지도·대기 시간 순위·이상 알림 칸."
+  },
+  {
+   "title": "실시간 관제 지도",
+   "time": "2~3주",
+   "goal": "수천 대 위치가 초당 바뀌어도 부드러운 지도 화면을 만든다.",
+   "resources": [
+    "maplibre",
+    "deckgl",
+    "mdn-raf",
+    "react-docs"
+   ],
+   "task": "가상 차량 3,000대 위치를 초당 한 번 보내는 작은 WebSocket 서버를 띄우고, React + MapLibre + deck.gl 로 받아 그린다. 메시지마다 그리기와 프레임마다 모으기의 프레임 속도를 성능 도구로 재 표로 남긴다."
+  },
+  {
+   "title": "맵 편집과 수요 분석 화면",
+   "time": "2주",
+   "goal": "지도 위 도형 편집·저장 전 검사, 수요 칸 지도와 시간 차트를 만든다.",
+   "resources": [
+    "geojson",
+    "echarts",
+    "deckgl"
+   ],
+   "task": "운행 구역 다각형과 정류장 점을 GeoJSON 으로 편집하는 화면을 만들고 '구역 밖 정류장'을 저장 전에 막는다. 가상 호출 5만 건을 칸으로 묶어 색 지도로, 시간대별 호출을 ECharts 로 같이 띄운다."
+  },
+  {
+   "title": "디자인 시스템 한 벌",
+   "time": "2~3주",
+   "goal": "토큰 → 부품 → 문서를 만들어 앞 단계 화면 둘에 붙인다.",
+   "resources": [
+    "atomic",
+    "dtcg",
+    "storybook",
+    "aria-apg"
+   ],
+   "task": "차량 상태 색·간격 토큰에서 CSS 변수를 굽고, 상태 배지·범례·시간 슬라이더·표를 부품으로 만들어 Storybook 에 상태별로 띄운다. 2·3단계 화면을 이 부품으로 바꾸고 키보드만으로 표·탭이 쓰이는지 확인한다."
+  },
+  {
+   "title": "화면용 서버 (선택)",
+   "time": "1~2주",
+   "goal": "여러 API 를 화면에 맞게 묶는 작은 서버를 세운다.",
+   "resources": [
+    "go-docs",
+    "web-vitals"
+   ],
+   "task": "Go 로 차량 위치 스트림을 받아 지역별로 걸러 WebSocket 으로 나눠 주는 서버를 만들고, 2단계 화면을 여기에 붙인다. 첫 화면·반응 지표를 바꾸기 전후로 잰다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분이 없다. 이 자리는 경력 8년 이상이라 해당하지 않는다 [31]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [31]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [30]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값, 전년보다 1.5% 줄었다 [30]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 경력 8년 이상 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "주중 출산휴가 지원",
+    "detail": "본인·배우자 임신 6개월~출산 12개월 안에 회사 지정 호텔 숙식(최대 2박)"
+   },
+   {
+    "name": "임신기 근로시간 단축",
+    "detail": "임신 12주 이내·36주 이상 하루 2시간 단축"
+   },
+   {
+    "name": "수유 시간",
+    "detail": "생후 1년 미만 영아가 있는 여직원 하루 120분 유급"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [32]. 공고의 복지 칸은 비어 있고 원티드 사본은 '홈페이지 참조'라고만 적었다 [2]. 금액 항목(주택·학자금·차량 구입 지원)은 공식 자료에서 확인하지 못해 뺐다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 본사(현대기아자동차빌딩)",
+  "address": "서울특별시 서초구 헌릉로 12 (양재동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%ED%97%8C%EB%A6%89%EB%A1%9C%2012",
+  "near": "신분당선 양재시민의숲역 근처 {추론}",
+  "note": "원티드 사본의 근무지는 '서울 서초구'이고 [2], 회사가 밝힌 본사 주소가 서초구 헌릉로 12 다 [33]. 현대차 채용 사이트 공고는 '서울'로만 적었다 [1]. 셔클 조직의 실제 자리가 본사 건물과 다를 수 있다 {추론}."
+ }
+}

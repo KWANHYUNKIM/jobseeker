@@ -268,6 +268,8 @@
   "wanted-398813": "hyundai-sdv-network-system-sw",
   "ats-hkmc:hyundai:2026N298": "hyundai-shucle-data-engineer",
   "wanted-387545": "hyundai-shucle-data-engineer",
+  "ats-hkmc:hyundai:2026N2104": "hyundai-shucle-frontend-engineer",
+  "wanted-387544": "hyundai-shucle-frontend-engineer",
   "ats-hkmc:hyundai:2026N2224": "hyundai-shucle-map-software-engineer",
   "wanted-387543": "hyundai-shucle-map-software-engineer",
   "ats-hkmc:hyundai:2026N299": "hyundai-shucle-platform-infra-engineer",
@@ -2778,6 +2780,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 25
+  },
+  {
+   "id": "hyundai-shucle-frontend-engineer",
+   "company": "현대자동차",
+   "role": "모빌리티 서비스 Frontend Engineer (셔클)",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2104",
+    "wanted-387544"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
   },
   {
    "id": "hyundai-shucle-map-software-engineer",
