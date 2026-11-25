@@ -59,6 +59,8 @@
   "ats-ashby:42dot:beb84dde-9182-4441-a25b-c03644640854": "42dot-vehicle-system-integration",
   "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-395344": "autoever-india-security-expat",
+  "ats-lg:group:1002199": "biztechi-ai-engineer",
+  "saramin-55458469": "biztechi-ai-engineer",
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7793770": "coupang-ai-foundations-senior-staff-mle-mtv",
@@ -1034,6 +1036,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 25
+  },
+  {
+   "id": "biztechi-ai-engineer",
+   "company": "비즈테크아이",
+   "role": "AI 엔지니어",
+   "jobs": [
+    "ats-lg:group:1002199",
+    "saramin-55458469"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
   },
   {
    "id": "cj-oliveyoung-data-analyst",

@@ -1,0 +1,1168 @@
+{
+  "id": "biztechi-ai-engineer",
+  "company": "비즈테크아이",
+  "role": "AI 엔지니어",
+  "team": "AI 서비스 구축 조직 (같은 회사 AI PM/PL 공고는 'AI이행파트'로 소개)",
+  "jobs": [
+    "ats-lg:group:1002199",
+    "saramin-55458469"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "LG 계열사·공공·금융 고객사에 **생성형 AI 서비스(LLM + 사내 문서 검색 + 에이전트)** 를 만들어 넣고, 넣은 뒤 답의 품질·장애·비용까지 맡습니다.[1] 회사가 공개한 실적에는 한화생명 영업 훈련 AI(AI STS)의 프롬프트 구축이 있습니다.[4]",
+    "env": "LG CNS 자회사라 **고객사 프로젝트(SI·SM)** 로 일합니다.[1][7] 언어는 Python/FastAPI, 배포는 Docker/Kubernetes입니다.[1]",
+    "oneline": "모델을 학습시키는 연구직이 아니라 **LLM을 업무 시스템에 붙이는 백엔드 개발자**에 가깝습니다. 고객과 요구사항을 맞추는 일이 업무 목록에 들어 있습니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "생성형 AI 서비스 설계·개발 및 운영",
+      "short": "고객사에 넣을 생성형 AI 서비스를 설계하고, 만들고, 넣은 뒤에도 돌보는 일 전체를 맡는다.",
+      "why": "이 조직은 LG 계열사와 공공·금융 고객사를 상대로 생성형 AI·Vision AI 서비스 구축을 맡는 곳이라고 공고가 소개합니다.[1] 회사 사업 소개에도 DX/AX(AI 전환)를 따로 묶어 'AI 기술을 비즈니스 모델·프로세스·시스템 전반에 적용한다'고 적었습니다.[6]",
+      "actually": {
+        "intro": "아래 두 줄(구축·에이전트)과 요구사항·API 줄이 이 제목의 세부입니다.[1]",
+        "items": [
+          "**설계** — 어떤 질문에 어떤 자료로 답할지, 검색·모델·화면을 어떻게 잇는지 정한다.",
+          "**개발** — 검색 파이프라인·프롬프트·에이전트·백엔드 API를 만든다.",
+          "**운영** — 오픈 뒤 답 품질·장애·비용을 지켜보고 고친다(다음 제목 'AI 품질·성능 개선'과 이어진다)."
+        ]
+      },
+      "how_far": "한 프로젝트 안에서 설계부터 운영까지 한 사람이 다 하지는 않고, 역할은 PL이 나눕니다. 이 자리는 같은 회사의 PM/PL 공고와 따로 올라온 **실무 개발 자리**입니다.[1][3] {추론}",
+      "refs": [
+        1,
+        3,
+        6
+      ],
+      "study": [
+        "ai-eng",
+        "anthropic-agents"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "• LLM, RAG, Prompt/Context Engineering 기반 AI 서비스 구축",
+      "short": "사내 문서를 찾아 LLM에게 같이 건네 근거 있는 답을 내게 하는 서비스를 만든다.",
+      "why": "LLM은 고객사 내부 규정·상품 자료를 모릅니다. 질문과 가까운 문서를 먼저 찾아 붙여 주면 모델이 그 내용을 바탕으로 답합니다 — 이것이 RAG(검색 증강 생성)입니다.[11] 이 회사가 공개한 실적 중 한화생명 **AI STS 프롬프트 구축**이 있습니다.[4] AI STS는 설계사가 고객 이름을 넣으면 그 고객의 보험 계약 정보로 부족한 보장과 추천 상품을 설명하는 화법(말할 문장)을 만들어 주는 훈련 도구입니다.[8][9]",
+      "actually": {
+        "intro": "보통 이렇게 나뉩니다. 비즈테크아이가 프로젝트마다 어떻게 했는지는 공개되지 않아 공개 문서로 '보통 이런 것'을 보입니다.[11][13]",
+        "items": [
+          "**문서 넣기** — PDF·HWP·엑셀을 글로 바꾸고, 몇 백 자 단위 조각(청크)으로 자르고, 조각마다 숫자 벡터(임베딩)를 만들어 벡터 DB에 넣는다.",
+          "**찾기** — 질문을 벡터로 바꿔 가까운 조각을 고르고, 낱말 검색(BM25)과 섞거나 다시 줄 세운다(재순위).",
+          "**프롬프트** — 역할·말투·금지 사항·출력 형식을 적은 지시문. AI STS처럼 '최신 뉴스 → 보장 분석 → 상품 특징 → 끝인사' 같은 단계로 문장을 짜게 한다.[9]",
+          "**컨텍스트 엔지니어링** — 모델에게 한 번에 건넬 수 있는 글의 양은 한정돼 있다. 그 안에 무엇을 넣고 뺄지(대화 기록 요약, 문서 몇 개, 도구 결과)를 고르는 일이다.[13]",
+          "**출처 달기** — 답 옆에 어느 문서의 몇 쪽인지 붙여 사람이 확인하게 한다."
+        ]
+      },
+      "how_far": "모델을 처음부터 학습시키는 일은 이 줄에 없습니다. **이미 있는 모델(상용 API나 LG의 EXAONE 등)에 검색과 지시문을 붙여 쓸모 있게 만드는 것**이 일입니다.[10] {추론}",
+      "refs": [
+        4,
+        8,
+        9,
+        10,
+        11,
+        13
+      ],
+      "study": [
+        "rag-paper",
+        "anthropic-context",
+        "cs329z-rag",
+        "ai-eng"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "• Agent Workflow 및 Tool Calling 기반 AI Agent 개발·연동",
+      "short": "LLM이 사내 시스템의 함수를 골라 부르고, 여러 단계를 이어 일을 끝내게 만든다.",
+      "why": "질문에 답만 하는 챗봇을 넘어, 휴가 조회·결재 올리기처럼 **시스템을 직접 움직이는** 요구가 많아졌습니다. 모회사 LG CNS는 2025년 8월 에이전트 플랫폼 '에이전틱웍스'를 내놓으면서 ERP·CRM 같은 사내 시스템과 에이전트를 잇는 데 MCP·A2A를 지원한다고 밝혔습니다.[10]",
+      "actually": {
+        "intro": "공개 문서가 정리한 일반적인 모양입니다.[12][14]",
+        "items": [
+          "**Tool Calling** — 함수 이름·설명·인자 형식(JSON 스키마)을 모델에게 알려 주면, 모델이 '이 함수를 이 값으로 불러 달라'는 JSON을 낸다. 실제 실행은 우리 코드가 한다.",
+          "**워크플로** — 순서가 정해진 일은 코드로 단계를 고정하고(분류 → 검색 → 답), 순서를 모르는 일만 모델이 다음 도구를 고르게 한다(에이전트).[12]",
+          "**연동** — 도구 뒤에는 고객사 시스템 API가 있다. 인증·권한·실패 시 재시도를 우리 쪽 코드가 챙긴다.",
+          "**막는 장치** — 모르는 도구 이름이 오면 거절하고, 돈·데이터를 바꾸는 도구는 사람 확인을 끼운다.[17]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "모델이 낸 JSON을 코드가 실행하는 흐름(가상의 휴가 조회 도구)",
+          "body": "모델은 실행하지 않고 '무엇을 부를지'만 냅니다. 등록된 도구인지 확인한 뒤 우리 코드가 부르고, 결과를 다시 모델에게 돌려줍니다.",
+          "lang": "python",
+          "code": "import json\nTOOLS = {\"get_leave_days\": lambda emp_id: {\"emp_id\": emp_id, \"left\": 7}}\nmodel_out = '{\"tool\": \"get_leave_days\", \"args\": {\"emp_id\": \"E102\"}}'\ncall = json.loads(model_out)\nif call[\"tool\"] not in TOOLS:\n    raise ValueError(\"unknown tool\")\nresult = TOOLS[call[\"tool\"]](**call[\"args\"])\nprint(\"tool result ->\", json.dumps(result, ensure_ascii=False))\n# tool result -> {\"emp_id\": \"E102\", \"left\": 7}"
+        }
+      ],
+      "how_far": "에이전트 프레임워크를 새로 만드는 게 아니라 **LangGraph·ADK 같은 도구나 고객사가 고른 플랫폼 위에서 도구를 정의하고 잇는 것**이 기본입니다(우대사항에 프레임워크 이름이 있다).[1] {추론}",
+      "refs": [
+        1,
+        10,
+        12,
+        14,
+        17
+      ],
+      "study": [
+        "anthropic-agents",
+        "mcp-spec",
+        "cs329z-tools",
+        "cs329z-patterns"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "• 업무 요구사항 분석, 데이터·검색 구조 설계, Backend API 구현",
+      "short": "현업이 원하는 것을 기능으로 바꾸고, 문서를 어떻게 쌓고 찾을지 정하고, API로 만든다.",
+      "why": "SI 프로젝트는 고객 요구를 분석해 설계·개발·테스트로 옮기는 일이 기본이라고 회사 직무 소개가 설명합니다.[28] AI 서비스에서는 여기에 '어떤 문서를 어떤 단위로 쌓아야 질문에 맞는 조각이 나오나'가 더해집니다.[13] {추론}",
+      "actually": {
+        "items": [
+          "**요구사항** — '규정 질문에 답해 달라'를 '대상 문서 3종, 질문 유형 20개, 출처 필수, 답 3초 안'처럼 잴 수 있는 문장으로 바꾼다.",
+          "**데이터 구조** — 문서마다 부서·작성일·보안 등급 같은 꼬리표(메타데이터)를 달아 검색 때 거른다. 권한 없는 사람에게 남의 부서 문서가 나가지 않게 하는 장치다.",
+          "**검색 구조** — 조각 크기, 벡터 검색만 쓸지 낱말 검색과 섞을지, 몇 개를 넘길지 정한다.",
+          "**API** — 화면·다른 시스템이 부를 수 있게 '질문 → 답·출처' 엔드포인트를 만든다. 긴 답은 조금씩 흘려보낸다(스트리밍)."
+        ]
+      },
+      "how_far": "요구사항 문서를 혼자 쓰는 것은 PL 몫이고, 이 자리는 **그 요구를 받아 데이터·검색·API 설계를 개발 관점에서 채우는** 수준이면 됩니다. {추론}",
+      "refs": [
+        13,
+        28
+      ],
+      "study": [
+        "ai-eng",
+        "fastapi-docs",
+        "internal-http"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "AI 품질·성능 개선 및 운영 안정화",
+      "short": "오픈한 AI 서비스가 맞는 답을, 빠르게, 싸게, 멈추지 않고 내게 지키는 일이다.",
+      "why": "LLM 답은 같은 질문에도 달라질 수 있어, 일반 프로그램처럼 한 번 테스트하고 끝낼 수 없습니다. 그래서 평가 세트를 만들어 바꿀 때마다 다시 재는 것이 AI 제품의 기본이라고 실무 글들이 말합니다.[19]",
+      "actually": {
+        "intro": "아래 두 줄(품질 평가, 장애·비용)이 이 제목의 세부입니다.[1]",
+        "items": [
+          "**품질** — 답이 맞나, 지어내지 않았나, 검색이 맞는 문서를 가져왔나.",
+          "**성능·비용** — 응답 시간, 토큰(모델이 읽고 쓰는 글자 단위) 사용량.",
+          "**안정화** — 장애 원인을 찾고 같은 장애가 다시 안 나게 막는다."
+        ]
+      },
+      "how_far": "고객사 운영(SM) 계약이 붙으면 오픈 뒤에도 이 일이 이어집니다. 회사가 구축과 운영을 함께 하는 곳이라 **넣고 떠나는 것이 아니라 운영까지 책임지는** 경우가 많습니다.[6] {추론}",
+      "refs": [
+        1,
+        6,
+        19
+      ],
+      "study": [
+        "hamel-evals",
+        "ai-eng"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "• 응답 품질·할루시네이션·검색 정확도 평가 및 개선",
+      "short": "질문·정답 묶음을 만들어 답과 검색을 숫자로 재고, 떨어지는 곳을 고친다.",
+      "why": "할루시네이션(그럴듯하게 지어낸 답)은 금융·공공 고객에게 특히 치명적입니다. 한화생명은 AI STS에 대해 금융보안원의 AI 모델 보안성 제3자 검증을 받았다고 알렸습니다 — 금융권 AI는 이런 검증을 거칩니다.[9]",
+      "actually": {
+        "intro": "보통 쓰는 재는 법입니다.[19][30]",
+        "items": [
+          "**평가 세트** — 현업과 같이 질문 수십~수백 개와 정답·정답 문서를 만든다.",
+          "**검색 정확도** — 정답 문서가 위 k개 안에 들었나(recall@k), 몇 번째였나(MRR).",
+          "**답의 근거성** — 답의 문장마다 건넨 문서에 근거가 있나(faithfulness). 사람이 표본을 보거나 다른 LLM에게 채점을 맡긴다.",
+          "**고치기** — 조각 크기·검색 개수·재순위·프롬프트를 하나씩 바꾸고 같은 세트로 다시 잰다."
+        ]
+      },
+      "examples": [
+        {
+          "title": "질문 3개로 검색 정확도 재기(가상의 결과)",
+          "body": "q1은 1등, q2는 2등에서 정답을 찾았고 q3는 위 3개 안에 정답이 없습니다.",
+          "lang": "python",
+          "code": "gold = {\"q1\": \"doc7\", \"q2\": \"doc2\", \"q3\": \"doc9\"}\nranked = {\"q1\": [\"doc7\", \"doc1\", \"doc3\"], \"q2\": [\"doc5\", \"doc2\", \"doc8\"], \"q3\": [\"doc4\", \"doc6\", \"doc1\"]}\ndef recall_at(k):\n    return sum(gold[q] in ranked[q][:k] for q in gold) / len(gold)\nmrr = sum((1 / (ranked[q].index(gold[q]) + 1)) if gold[q] in ranked[q] else 0 for q in gold) / len(gold)\nprint(\"recall@1\", round(recall_at(1), 2), \"recall@3\", round(recall_at(3), 2), \"MRR\", round(mrr, 2))\n# recall@1 0.33 recall@3 0.67 MRR 0.5"
+        }
+      ],
+      "how_far": "무엇을 정답으로 볼지는 현업이 정합니다. 개발자는 **평가 세트를 자동으로 돌리는 코드와, 바꾸기 전·후 숫자를 비교해 보여 주는 것**까지 맡습니다. {추론}",
+      "refs": [
+        9,
+        19,
+        30
+      ],
+      "study": [
+        "hamel-evals",
+        "ragas-docs",
+        "cs329z-rag"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "• 로그·메트릭 기반 장애 분석, 성능·비용 최적화 및 재발 방지",
+      "short": "요청마다 검색·모델 호출·토큰·시간을 기록해 두고, 느리거나 비싸거나 틀린 곳을 찾아 고친다.",
+      "why": "LLM 서비스 비용은 대부분 **토큰 수 × 단가**라서, 검색 문서를 몇 개 넘기느냐가 곧 돈입니다. OpenTelemetry는 생성형 AI 호출에 모델 이름·입출력 토큰 수 등을 같은 이름으로 기록하는 규약을 따로 정해 두었습니다.[18]",
+      "actually": {
+        "items": [
+          "**기록** — 요청 하나에 검색 시간·모델 응답 시간·입력/출력 토큰·쓴 도구·오류를 남긴다.[18]",
+          "**장애 분석** — 모델 API 시간 초과, 호출 한도 초과, 벡터 DB 지연, 도구 API 실패를 구분한다.",
+          "**비용 줄이기** — 넘기는 문서 줄이기, 같은 질문 답 재사용(캐시), 쉬운 질문은 작은 모델로 보내기.",
+          "**재발 방지** — 원인을 적고, 경보 조건·재시도·대체 모델을 붙인다."
+        ]
+      },
+      "examples": [
+        {
+          "title": "검색 문서 5개 → 3개로 줄이면 하루 비용은?(가상의 단가·트래픽)",
+          "body": "질문 200토큰, 문서 하나 600토큰, 답 400토큰, 하루 1만 건, 100만 토큰당 입력 3달러·출력 15달러라고 가정했습니다.",
+          "lang": "python",
+          "code": "price_in, price_out = 3.0, 15.0\ndef cost(n_docs, q_tokens=200, doc_tokens=600, out_tokens=400, per_day=10000):\n    tin = q_tokens + n_docs * doc_tokens\n    return per_day * (tin * price_in + out_tokens * price_out) / 1_000_000\nprint(\"docs5 $/day\", round(cost(5), 1), \"docs3 $/day\", round(cost(3), 1))\n# docs5 $/day 156.0 docs3 $/day 120.0"
+        }
+      ],
+      "how_far": "모니터링 도구를 처음부터 세우는 것보다 **고객사 환경에 이미 있는 로그·대시보드에 AI 호출 정보를 실어 보내고 읽을 줄 아는** 수준이 최소선입니다. {추론}",
+      "refs": [
+        18
+      ],
+      "study": [
+        "otel-genai",
+        "ai-eng"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "서비스 배포·고도화",
+      "short": "만든 서비스를 고객 서버에 올리고, 써 본 반응을 받아 기능을 키우는 일이다.",
+      "why": "이 회사는 구축 방식을 고객 상황에 맞춰 고르고(전통적 방식·MSA·Agile), 운영도 DevOps 방식을 쓴다고 소개합니다.[6] 금융·공공 고객은 보안 때문에 사내 서버에 설치하는 경우가 많습니다.[10] {추론}",
+      "actually": {
+        "intro": "아래 두 줄(배포 환경, 고객 소통)이 세부입니다.[1]",
+        "items": [
+          "**배포** — 컨테이너로 묶어 Kubernetes에 올린다.",
+          "**고도화** — 1차 오픈 뒤 현업 의견을 받아 문서 범위·기능을 넓힌다."
+        ]
+      },
+      "how_far": "배포 기반(클러스터·CI/CD)은 고객사나 인프라 담당이 갖춘 경우가 많고, 이 자리는 **그 위에 자기 서비스를 올리고 고칠 수 있는** 정도면 됩니다. {추론}",
+      "refs": [
+        1,
+        6,
+        10
+      ],
+      "study": [
+        "internal-docker",
+        "internal-k8s"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "• Python/FastAPI 기반 서비스 개발 및 Docker/Kubernetes 환경 운영",
+      "short": "Python 웹 프레임워크 FastAPI로 API를 만들고, 컨테이너로 묶어 쿠버네티스에서 돌린다.",
+      "why": "LLM·검색 라이브러리가 대부분 Python이라 서비스도 Python으로 짜는 일이 많습니다. FastAPI는 타입 힌트로 요청 형식을 검사하고 문서(OpenAPI)를 자동으로 만들어 주는 프레임워크입니다.[20]",
+      "actually": {
+        "items": [
+          "**FastAPI** — 요청·응답 모양을 Pydantic 모델로 적고, 모델 호출처럼 기다리는 일이 많은 곳은 async로 짠다.[20]",
+          "**Docker** — 서비스와 라이브러리를 이미지 하나로 묶는다. 임베딩 모델처럼 큰 파일은 이미지 밖에 둔다.",
+          "**Kubernetes** — 여러 개 띄우고, 살아 있는지 검사(probe)하고, 몰리면 늘린다.[21]",
+          "**운영** — 설정·API 키는 코드 밖(Secret)에 두고, 버전을 바꿀 때 하나씩 갈아 끼운다."
+        ]
+      },
+      "how_far": "Kubernetes는 **배포 파일을 읽고 고치고, 파드가 왜 안 뜨는지 로그로 찾는** 수준이면 됩니다. 클러스터 설치·네트워크 설계까지는 아닙니다. {추론}",
+      "refs": [
+        20,
+        21
+      ],
+      "study": [
+        "fastapi-docs",
+        "internal-docker",
+        "internal-k8s"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "• 고객·현업 커뮤니케이션을 통한 요구사항 구체화 및 결과물 고도화",
+      "short": "현업에게 직접 시연하고 의견을 받아 '무엇이 좋은 답인가'를 같이 정해 간다.",
+      "why": "고객사 프로젝트라 결과물을 받아 쓰는 사람이 회사 밖에 있습니다.[1] 생성형 AI는 처음부터 요구를 다 적기 어려워, 시연하고 평가 세트를 같이 만들며 요구를 좁혀 가는 일이 반복됩니다.[19] {추론}",
+      "actually": {
+        "items": [
+          "**시연** — 실제 질문으로 돌려 보여 주고, 틀린 답을 같이 모은다.",
+          "**기준 맞추기** — '좋은 답'의 조건(길이·말투·출처·거절할 질문)을 문장으로 합의한다.",
+          "**한계 설명** — 문서에 없는 것은 답하지 못한다는 점, 비용·속도의 맞바꿈을 숫자로 설명한다."
+        ]
+      },
+      "how_far": "계약 범위·일정 협상은 PM/PL 몫이고, 이 자리는 **기술적으로 되는 것·안 되는 것을 현업 말로 설명하는** 수준입니다. {추론}",
+      "refs": [
+        1,
+        19
+      ],
+      "study": [
+        "hamel-evals"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "학력 : 4년제 정규대학 학사학위 이상 보유하신 분",
+      "short": "4년제 학사 이상이어야 지원할 수 있다. 전공 제한은 공고에 없다.",
+      "why": "공고의 필수 조건입니다.[1] 같은 회사 다른 경력 공고에도 같은 문장이 들어 있어 회사 공통 기준으로 보입니다.[3] {추론}",
+      "how_far": "전공은 적혀 있지 않습니다.[1] 서류에 졸업 증빙이 필요하고, 사실과 다르면 합격이 취소될 수 있다고 채용 안내가 밝힙니다.[26]",
+      "refs": [
+        1,
+        3,
+        26
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "경력 : 관렵 업무 2년 이상",
+      "short": "AI·백엔드 관련 실무 2년 이상. PM/PL 자리(3년 이상)보다 문턱이 낮다.",
+      "why": "같은 조직의 PM/PL 공고는 AI 관련 3년 이상을 요구하고, 이 공고는 2년 이상입니다.[1][3] 실무를 맡을 개발자 자리라는 뜻입니다. {추론}",
+      "how_far": "'관련 업무'의 범위는 공고에 없습니다. 바로 다음 줄이 GenAI/LLM·에이전트·Vision AI 중 하나의 개발·운영 경험을 요구하니, 2년 안에 **그중 하나를 실제로 만들어 돌린 경험**이 들어가야 유리합니다.[1] {추론}",
+      "refs": [
+        1,
+        3
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "GenAI/LLM, AI Agent, Vision AI 중 하나 이상 개발·운영 경험하신 분",
+      "short": "셋 중 하나만 깊게 해 봤으면 된다 — 만들어 보는 데서 그치지 않고 돌려 본 경험.",
+      "why": "이 조직은 생성형 AI와 Vision AI 과제를 함께 맡습니다.[1] 프로젝트마다 고객 과제가 달라, 셋 중 어느 쪽에서 온 사람이든 쓸 곳이 있다는 뜻으로 읽힙니다. {추론}",
+      "actually": {
+        "items": [
+          "**GenAI/LLM** — RAG 챗봇, 문서 요약·생성, 프롬프트 설계.",
+          "**AI Agent** — 도구를 부르며 여러 단계 일을 하는 서비스.",
+          "**Vision AI** — 이미지·영상에서 불량·물체·글자를 찾는 모델을 현장에 붙이는 일.",
+          "**'운영'** — 실제 사용자가 쓰고, 장애를 겪고, 고쳐 본 경험. 면접에서 숫자(사용자 수·응답 시간·정확도)로 말할 수 있으면 좋다. {추론}"
+        ]
+      },
+      "level": {
+        "basic": "공개 API로 RAG 데모를 만들어 본 정도",
+        "work": "실사용자가 있는 서비스를 오픈하고 품질·장애를 다뤄 본 정도",
+        "team": "고객사 문서·시스템에 붙여 오픈하고 운영까지 넘겨 본 정도 {추론}"
+      },
+      "how_far": "연구 성과(논문·모델 학습)는 요구하지 않습니다.[1] **개발·운영 경험**이 기준입니다.",
+      "refs": [
+        1
+      ],
+      "study": [
+        "ai-eng",
+        "cs329z-rag",
+        "opencv-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Python/FastAPI 기반 API 및 REST/JSON 개발 경험하신 분",
+      "short": "Python으로 JSON을 주고받는 REST API를 만들어 본 경험. 업무 줄의 FastAPI와 같은 이야기다.",
+      "why": "AI 기능은 결국 화면이나 다른 시스템이 부르는 API로 나갑니다. 업무 줄에도 Python/FastAPI 서비스 개발이 적혀 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**REST** — 주소(자원)와 메서드(GET·POST…)로 요청을 나누고, 상태 코드로 결과를 알린다.",
+          "**JSON** — 요청·응답 몸통 형식. 모델의 도구 호출 인자도 JSON이다.[14]",
+          "**FastAPI 실무** — 입력 검증, 오류 응답 형식 통일, 인증 헤더, 비동기 호출, 자동 생성 문서(/docs).[20]"
+        ]
+      },
+      "level": {
+        "basic": "CRUD API를 만들고 Postman으로 불러 본 정도",
+        "work": "검증·오류 처리·인증·테스트까지 갖춘 API를 배포해 본 정도",
+        "team": "LLM 호출처럼 느리고 실패할 수 있는 외부 호출을 시간 제한·재시도·스트리밍으로 감싼 API {추론}"
+      },
+      "how_far": "Django·Flask 경험도 옮겨 오기 쉽습니다. 공고가 FastAPI를 콕 집었으니 **작은 프로젝트 하나는 FastAPI로 해 두는 것**이 안전합니다. {추론}",
+      "refs": [
+        1,
+        14,
+        20
+      ],
+      "study": [
+        "fastapi-docs",
+        "internal-http"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Git, Linux, Docker 활용 역량 있으신 분",
+      "short": "코드는 Git으로, 서버는 Linux 명령으로, 배포는 Docker 이미지로 다룰 줄 알아야 한다.",
+      "why": "고객사 서버에 들어가 설치·장애 대응을 하는 일이 많아, 화면 없는 Linux 서버에서 혼자 움직일 수 있어야 합니다. 같은 조직의 PM/PL 공고도 Git·Docker·Linux 실무를 요구합니다.[3] {추론}",
+      "actually": {
+        "items": [
+          "**Git** — 브랜치를 나눠 작업하고, 병합 충돌을 풀고, 리뷰를 거쳐 합친다.[29]",
+          "**Linux** — 로그 보기(tail·grep), 프로세스·포트·디스크 확인, 권한, 환경 변수.",
+          "**Docker** — Dockerfile을 쓰고, 이미지를 빌드·실행하고, 컨테이너 로그를 본다. GPU를 쓰는 컨테이너도 있다."
+        ]
+      },
+      "level": {
+        "basic": "명령을 외워서 칠 수 있는 정도",
+        "work": "안 뜨는 컨테이너를 로그로 원인 찾아 고칠 수 있는 정도",
+        "team": "인터넷이 막힌 고객사 서버에 이미지를 옮겨 설치해 본 정도 {추론}"
+      },
+      "refs": [
+        3,
+        29
+      ],
+      "study": [
+        "pro-git",
+        "internal-docker"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "AI 서비스 개발 및 운영에 대한 기본 이해가 있으신 분",
+      "short": "모델만이 아니라 데이터·평가·배포·모니터링까지 AI 서비스 한 바퀴를 아는 것.",
+      "why": "회사 데이터 엔지니어링 소개도 AI/ML 통합(피처 엔지니어링·모델 서빙 인프라)과 MLOps를 흐름으로 꼽습니다.[5] AI 서비스는 오픈 뒤에 답 품질이 바뀌는 일이 생겨 운영 감각이 따로 필요합니다.[19] {추론}",
+      "actually": {
+        "items": [
+          "**한 바퀴** — 데이터 준비 → 모델·프롬프트 → 평가 → 배포 → 로그·모니터링 → 다시 고치기.",
+          "**바뀌는 것** — 문서가 늘거나 바뀌면 검색 결과가 달라지고, 모델 버전이 바뀌면 같은 프롬프트의 답이 달라진다.",
+          "**보안** — 프롬프트 주입(문서·입력 속에 숨긴 지시), 개인정보가 답에 새는 것.[17]"
+        ]
+      },
+      "how_far": "면접에서 '오픈 뒤에 답이 나빠졌다면 어디부터 보겠나'에 순서대로 답할 수 있으면 됩니다. {추론}",
+      "refs": [
+        5,
+        17,
+        19
+      ],
+      "study": [
+        "ai-eng",
+        "owasp-llm"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "PM/PL 및 고객·현업 커뮤니케이션 경험이 있으신 분",
+      "short": "작은 범위라도 일정·사람을 이끌어 봤거나, 고객 앞에서 요구를 정리해 본 경험.",
+      "why": "프로젝트마다 고객이 다른 SI 회사라 개발자도 고객 회의에 자주 들어갑니다.[1] 회사 인사제도는 프로젝트 리더로 크는 '전문가 Path'를 따로 둡니다.[27]",
+      "how_far": "PM/PL 자리는 따로 있습니다.[3] 이 자리에서는 **모듈 하나를 맡아 일정·이슈를 혼자 관리해 본 경험**도 충분히 말할 거리가 됩니다. {추론}",
+      "refs": [
+        1,
+        3,
+        27
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "MCP, Tool Calling, LangGraph/ADK 기반 Agent 개발 경험이 있으신 분",
+      "short": "에이전트를 만드는 표준(MCP)과 도구(LangGraph·Google ADK)로 실제 만들어 본 경험.",
+      "why": "모회사 LG CNS 에이전트 플랫폼이 MCP·A2A로 사내 시스템을 잇는다고 밝혔습니다.[10] 고객 과제에서 이런 표준·도구가 쓰이는 일이 늘었다는 뜻으로 읽힙니다. {추론}",
+      "actually": {
+        "items": [
+          "**MCP(Model Context Protocol)** — 도구·자료를 LLM 앱에 붙이는 공통 규격. 서버가 도구 목록과 실행을 내주고, 앱이 그것을 모델에게 보여 준다.[14]",
+          "**LangGraph** — 에이전트의 단계와 갈래를 그래프(노드·간선)로 짜고, 중간 상태를 저장해 이어 가게 하는 라이브러리.[15]",
+          "**ADK(Agent Development Kit)** — Google이 낸 오픈소스 에이전트 개발 도구. 여러 에이전트를 묶고 배포하는 기능이 있다.[16]",
+          "**고르는 법** — 단계가 정해진 일은 단순한 코드 흐름이 낫고, 프레임워크는 필요할 때만 쓴다는 조언도 있다.[12]"
+        ]
+      },
+      "how_far": "프레임워크 하나로 **도구 2~3개를 가진 에이전트를 만들고, 실패한 대화를 기록으로 따라가 본** 경험이면 이야기할 거리가 됩니다. {추론}",
+      "refs": [
+        10,
+        12,
+        14,
+        15,
+        16
+      ],
+      "study": [
+        "mcp-spec",
+        "mcp-beginners",
+        "langgraph-docs",
+        "adk-docs",
+        "cs329z-tools"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Vision AI, 멀티모달 또는 이미지·영상 처리 경험이 있으신 분",
+      "short": "사진·영상을 다루는 AI 경험. 이 조직은 생성형 AI와 Vision AI 과제를 함께 한다.",
+      "why": "공고가 조직 소개에 생성형 AI와 Vision AI를 나란히 적었습니다.[1] 회사가 공정·품질을 다루는 스마트팩토리 사업을 따로 두고 있어[32], 제조 현장의 영상 검사 같은 과제와 닿을 수 있습니다. {추론} 같은 조직 PM/PL 공고는 OpenCV 경험을 우대합니다.[3]",
+      "actually": {
+        "items": [
+          "**이미지 처리** — OpenCV로 자르기·크기 바꾸기·잡음 지우기 같은 전처리.[31]",
+          "**Vision 모델** — 분류·물체 찾기·글자 읽기(OCR) 모델을 학습하거나 가져다 붙이기.",
+          "**멀티모달** — 이미지와 글을 함께 받는 LLM. 문서 사진·도면을 넣고 질문하는 서비스."
+        ]
+      },
+      "how_far": "우대사항이라 필수는 아닙니다. LLM 쪽 경력자라면 **문서 이미지 → OCR/멀티모달 → RAG** 처럼 이어 본 작은 경험 하나가 말할 거리가 됩니다. {추론}",
+      "refs": [
+        1,
+        3,
+        31,
+        32
+      ],
+      "study": [
+        "opencv-docs"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "React 또는 Java/Spring 기반 시스템 연계 개발 경험이 있으신 분",
+      "short": "AI 기능을 붙일 고객사 화면(React)이나 기존 업무 시스템(Java/Spring)과 이어 본 경험.",
+      "why": "이 회사가 공개한 고객 실적은 은행·카드·증권·보험의 차세대 시스템 구축이 대부분입니다.[4][7] 국내 금융권 업무 시스템은 Java/Spring으로 된 경우가 많아, AI 서비스를 그 시스템과 잇는 일이 생깁니다. {추론}",
+      "actually": {
+        "items": [
+          "**React** — 답을 한 글자씩 흘려 보여 주는 채팅 화면, 출처 문서 미리보기.",
+          "**Java/Spring 연계** — 기존 시스템이 Python AI API를 부르거나, AI가 도구로 기존 시스템 API를 부른다. 인증 토큰·시간 제한·오류 형식을 맞춘다."
+        ]
+      },
+      "how_far": "둘 다 깊게 할 필요는 없습니다. **상대 쪽 코드를 읽고 API 계약(주소·형식)을 맞춰 붙일 수 있는** 정도면 됩니다. {추론}",
+      "refs": [
+        4,
+        7
+      ],
+      "study": [
+        "internal-spring",
+        "internal-http"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "검색·RAG 구축 경험이 있으신 분",
+      "short": "검색 엔진·벡터 DB로 '맞는 문서를 찾는 부분'을 직접 만들고 튜닝해 본 경험.",
+      "why": "RAG 답의 품질은 대부분 검색이 맞는 문서를 가져오느냐에서 갈립니다.[11][13] 업무 줄에도 검색 구조 설계와 검색 정확도 개선이 따로 적혀 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**낱말 검색** — Elasticsearch·OpenSearch의 BM25. 상품 코드·조항 번호처럼 정확한 낱말에 강하다.",
+          "**벡터 검색** — 뜻이 비슷한 문장을 찾는다. 표현이 달라도 찾지만 숫자·고유명사에 약할 수 있다.",
+          "**섞기·다시 줄 세우기** — 두 결과를 합치고 재순위 모델로 위 몇 개를 다시 고른다.",
+          "**한국어** — 형태소 분석기(낱말 자르기)를 고르는 일이 검색 품질을 바꾼다. {추론}"
+        ]
+      },
+      "how_far": "검색 엔진 운영 전문가 수준은 아니어도, **청크 크기·검색 개수·섞는 방법을 바꿔 가며 recall@k로 비교해 본** 경험이면 충분히 말할 수 있습니다. {추론}",
+      "refs": [
+        1,
+        11,
+        13
+      ],
+      "study": [
+        "rag-paper",
+        "cs329z-rag",
+        "ragas-docs"
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "모델보다 '그 모델을 업무에 쓰게 만드는 것'이 재미있는 백엔드 개발자",
+      "고객 앞에서 시연하고 의견을 받아 고치는 일을 꺼리지 않는 사람[1]",
+      "금융·제조 등 여러 업종의 과제를 돌아가며 해 보고 싶은 사람[1][7]",
+      "LG 계열 안에서 프로젝트 리더 경로로 크고 싶은 사람[27]"
+    ],
+    "hard": [
+      "고객사 프로젝트라 일정·범위를 고객 계약이 정한다 {추론}",
+      "고객사 상주나 보안 환경(인터넷 차단) 작업이 있을 수 있다 {추론}",
+      "모델 학습·연구를 하고 싶다면 맞지 않는다 — 업무 줄에 학습이 없다[1]",
+      "공개된 집계 기준으로 평균 연봉은 모회사보다 낮다[22][23]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "RAG 답이 자꾸 틀린다면, 검색 문제인지 생성 문제인지 어떻게 가르겠어요?",
+      "a": "업무 줄의 '검색 정확도 평가'를 순서대로 말할 수 있나.[1][19]"
+    },
+    {
+      "q": "모델이 등록되지 않은 도구나 잘못된 인자로 호출하면 코드에서 어떻게 막나요?",
+      "a": "Tool Calling은 실행을 우리 코드가 한다는 점.[12][17]"
+    },
+    {
+      "q": "하루 비용이 예산을 넘었습니다. 무엇부터 줄이겠어요?",
+      "a": "토큰 × 단가 구조와 검색 문서 수.[18]"
+    },
+    {
+      "q": "인터넷이 막힌 고객사 서버에 FastAPI 서비스를 컨테이너로 올리려면 무엇이 필요하죠?",
+      "a": "금융·공공 고객의 설치형 환경.[10] {추론}"
+    },
+    {
+      "q": "현업이 '답이 별로'라고만 할 때 무엇을 받아 와야 하나요?",
+      "a": "평가 세트를 같이 만드는 일.[19]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "LG Careers · [비즈테크아이] AI 엔지니어 모집 (경력)",
+      "url": "https://careers.lg.com/apply/detail?id=1002199",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "업무·요건·우대·조직 소개, 마감 2026-12-31"
+    },
+    {
+      "n": 2,
+      "title": "사람인 · [LG CNS 자회사] AI 엔지니어 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55458469",
+      "kind": "posting",
+      "note": "같은 공고. 근무지 상암동, 전형(서류 → LG Way Fit Test → 면접 → 평판조회 → 처우제안)"
+    },
+    {
+      "n": 3,
+      "title": "LG Careers · [비즈테크아이] AI 엔지니어(PM/PL) 모집(경력)",
+      "url": "https://careers.lg.com/apply/detail?id=1001506",
+      "kind": "posting",
+      "note": "같은 조직의 리더 자리 — 'AI이행파트', AI 3년 이상, OpenCV·CI/CD 우대"
+    },
+    {
+      "n": 4,
+      "title": "비즈테크아이 · 사업 소개 — 증권/보험",
+      "url": "https://www.biztechi.com/business/finance/03",
+      "kind": "company",
+      "note": "고객 실적 목록에 '한화생명 AI STS 프롬프트 구축'"
+    },
+    {
+      "n": 5,
+      "title": "비즈테크아이 · 사업 소개 — DX/AX · Data Engineering",
+      "url": "https://www.biztechi.com/business/dx-ax/02",
+      "kind": "company",
+      "note": "AI/ML 통합(피처 엔지니어링·모델 서빙), MLOps"
+    },
+    {
+      "n": 6,
+      "title": "비즈테크아이 · 사업 소개 — DX/AX · 시스템 구축/운영",
+      "url": "https://www.biztechi.com/business/dx-ax/01",
+      "kind": "company",
+      "note": "금융·공공·서비스·경영관리 고객, Waterfall·MSA·Agile, DevOps 운영"
+    },
+    {
+      "n": 7,
+      "title": "비즈테크아이 · Biztechi 소개",
+      "url": "https://www.biztechi.com/about/01",
+      "kind": "company",
+      "note": "2003년 설립, 2025년 매출 3,278억·영업이익 120억·임직원 884명, LG 그룹사·기업·공공 고객"
+    },
+    {
+      "n": 8,
+      "title": "한국경제 · 한화생명, 직원 교육부터 외국인 상담까지…'보험 AI'로 영업 문법 다시 쓴다",
+      "url": "https://www.hankyung.com/article/2026051955161",
+      "kind": "news",
+      "date": "2026-05-19",
+      "note": "AI STS: 고객 이름 → 계약 정보로 화법 생성, 음성 분석, 약 2만8천 명 사용"
+    },
+    {
+      "n": 9,
+      "title": "스마트투데이 · 한화생명, AI 가상대화 시스템 도입..FP 역량 키운다",
+      "url": "https://www.smarttoday.co.kr/ko-kr/articles/77699",
+      "kind": "news",
+      "date": "2025-04-10",
+      "note": "화법 단계 구성, 금융보안원 AI 모델 보안성 제3자 검증"
+    },
+    {
+      "n": 10,
+      "title": "LG 보도자료 · LG CNS, '에이전틱 AI 생태계' 본격 가동 (에이전틱웍스)",
+      "url": "https://lg.co.kr/media/release/29289",
+      "kind": "news",
+      "date": "2025-08-25",
+      "note": "모회사. 6개 모듈(빌더·스튜디오·지식 저장소·허브·리파이너·라우터), MCP·A2A 지원, EXAONE"
+    },
+    {
+      "n": 11,
+      "title": "Lewis 외 · Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+      "url": "https://arxiv.org/abs/2005.11401",
+      "kind": "reference",
+      "date": "2020"
+    },
+    {
+      "n": 12,
+      "title": "Anthropic · Building effective agents",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "kind": "reference",
+      "date": "2024"
+    },
+    {
+      "n": 13,
+      "title": "Anthropic · Effective context engineering for AI agents",
+      "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "kind": "reference",
+      "date": "2025"
+    },
+    {
+      "n": 14,
+      "title": "Model Context Protocol 규격 (2025-06-18)",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18",
+      "kind": "reference"
+    },
+    {
+      "n": 15,
+      "title": "LangGraph overview (공식 문서)",
+      "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+      "kind": "reference"
+    },
+    {
+      "n": 16,
+      "title": "Agent Development Kit (ADK) 공식 문서",
+      "url": "https://google.github.io/adk-docs/",
+      "kind": "reference"
+    },
+    {
+      "n": 17,
+      "title": "OWASP Top 10 for LLM Applications",
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "kind": "reference"
+    },
+    {
+      "n": 18,
+      "title": "OpenTelemetry · Semantic conventions for generative AI systems",
+      "url": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+      "kind": "reference"
+    },
+    {
+      "n": 19,
+      "title": "Hamel Husain · Your AI Product Needs Evals",
+      "url": "https://hamel.dev/blog/posts/evals/",
+      "kind": "reference",
+      "date": "2024"
+    },
+    {
+      "n": 20,
+      "title": "FastAPI 공식 문서 (한국어)",
+      "url": "https://fastapi.tiangolo.com/ko/",
+      "kind": "reference"
+    },
+    {
+      "n": 21,
+      "title": "Kubernetes 문서 · Liveness, Readiness, and Startup Probes",
+      "url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+      "kind": "reference"
+    },
+    {
+      "n": 22,
+      "title": "자소설닷컴 · 비즈테크아이 기업정보",
+      "url": "https://jasoseol.com/companies/14512",
+      "kind": "reference",
+      "note": "초봉 3,811만·평균 5,748만, 사원수 945명 — 공공데이터 집계, 초봉 갱신 메모 2026-10-26"
+    },
+    {
+      "n": 23,
+      "title": "자소설닷컴 · LG CNS 기업정보",
+      "url": "https://jasoseol.com/companies/57",
+      "kind": "reference",
+      "note": "초봉 5,071만·평균 7,802만 — 같은 집계"
+    },
+    {
+      "n": 24,
+      "title": "비즈테크아이 · 복리후생",
+      "url": "https://www.biztechi.com/culture/03",
+      "kind": "company"
+    },
+    {
+      "n": 25,
+      "title": "비즈테크아이 · 오시는 길",
+      "url": "https://www.biztechi.com/about/05",
+      "kind": "company"
+    },
+    {
+      "n": 26,
+      "title": "비즈테크아이 · 채용 프로세스",
+      "url": "https://www.biztechi.com/recruit/02",
+      "kind": "company",
+      "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"
+    },
+    {
+      "n": 27,
+      "title": "비즈테크아이 · 인사제도",
+      "url": "https://www.biztechi.com/culture/02",
+      "kind": "company",
+      "note": "리더 Path·전문가 Path, CDP 면담"
+    },
+    {
+      "n": 28,
+      "title": "비즈테크아이 · 직무소개",
+      "url": "https://www.biztechi.com/recruit/03",
+      "kind": "company"
+    },
+    {
+      "n": 29,
+      "title": "Pro Git (2판, 한국어)",
+      "url": "https://git-scm.com/book/ko/v2",
+      "kind": "reference"
+    },
+    {
+      "n": 30,
+      "title": "Ragas 공식 문서",
+      "url": "https://docs.ragas.io/",
+      "kind": "reference",
+      "note": "RAG 평가 지표(faithfulness·context recall 등)"
+    },
+    {
+      "n": 31,
+      "title": "OpenCV 공식 문서",
+      "url": "https://docs.opencv.org/4.x/",
+      "kind": "reference"
+    },
+    {
+      "n": 32,
+      "title": "비즈테크아이 · 사업 소개 — 스마트팩토리",
+      "url": "https://www.biztechi.com/business/smart-factory/01",
+      "kind": "company",
+      "note": "IoT·AI로 생산 자동화·최적화, 생산실행·공정/품질"
+    }
+  ],
+  "caveat": "비즈테크아이의 AI 팀 기술 블로그·발표는 찾지 못했습니다. 회사 사이트의 사업 소개·고객 실적(한화생명 AI STS 프롬프트 구축)과 모회사 LG CNS 발표, 같은 조직의 다른 공고가 회사 근거의 전부이고, RAG·에이전트·평가의 구체적인 방법은 공개 문서로 '보통 이런 것'을 보였습니다. 프로젝트마다 고객이 달라 실제 기술은 과제에 따라 바뀝니다.",
+  "resources": [
+    {
+      "id": "biztechi-finance",
+      "title": "비즈테크아이 사업 소개 — 증권/보험(고객 실적)",
+      "by": "비즈테크아이",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.biztechi.com/business/finance/03",
+      "why": "이 회사가 어떤 고객에게 무엇을 해 왔는지(한화생명 AI STS 프롬프트 구축 포함) — 면접 전 고객 업종 감 잡기."
+    },
+    {
+      "id": "lgcns-agenticworks",
+      "title": "LG CNS, '에이전틱 AI 생태계' 본격 가동 (보도자료)",
+      "by": "LG · 2025",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://lg.co.kr/media/release/29289",
+      "why": "모회사가 고객에게 파는 에이전트 플랫폼의 구성(지식 저장소·허브·라우터)과 MCP·A2A 지원 — 우대사항의 에이전트 줄이 왜 있는지."
+    },
+    {
+      "id": "ai-eng",
+      "title": "AI 엔지니어링",
+      "by": "칩 후옌 · 변성윤 옮김 · 한빛미디어 · 2025",
+      "kind": "book",
+      "lang": "ko",
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=AI%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+      "why": "기존 모델 위에 서비스를 만드는 일 전체(프롬프트·RAG·에이전트·평가·비용) — 이 공고 업무 목록과 거의 같은 차례."
+    },
+    {
+      "id": "rag-paper",
+      "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+      "by": "Patrick Lewis 외 · 2020",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2005.11401",
+      "why": "RAG라는 말이 나온 논문. '검색해서 붙여 준다'가 왜 지어낸 답을 줄이는지의 출발점."
+    },
+    {
+      "id": "anthropic-agents",
+      "title": "Building effective agents",
+      "by": "Anthropic · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "why": "워크플로와 에이전트를 언제 나눠 쓰나 — 'Agent Workflow' 업무 줄의 설계 기준."
+    },
+    {
+      "id": "anthropic-context",
+      "title": "Effective context engineering for AI agents",
+      "by": "Anthropic · 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "why": "업무 줄의 'Context Engineering' — 모델에게 무엇을 얼마나 넘길지 고르는 법."
+    },
+    {
+      "id": "mcp-spec",
+      "title": "Model Context Protocol 규격",
+      "by": "modelcontextprotocol.io",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18",
+      "why": "우대사항의 MCP — 도구·자료를 붙이는 공통 규격 원문."
+    },
+    {
+      "id": "mcp-beginners",
+      "title": "MCP for Beginners",
+      "by": "Microsoft · GitHub",
+      "kind": "course",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://github.com/microsoft/mcp-for-beginners",
+      "why": "MCP 서버를 직접 만들어 보는 무료 실습 과정."
+    },
+    {
+      "id": "langgraph-docs",
+      "title": "LangGraph overview",
+      "by": "LangChain 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+      "why": "우대사항의 LangGraph — 단계·갈래·상태 저장을 가진 에이전트 짜기."
+    },
+    {
+      "id": "adk-docs",
+      "title": "Agent Development Kit (ADK) 문서",
+      "by": "Google",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://google.github.io/adk-docs/",
+      "why": "우대사항의 ADK — Google 오픈소스 에이전트 개발 도구의 시작 안내."
+    },
+    {
+      "id": "hamel-evals",
+      "title": "Your AI Product Needs Evals",
+      "by": "Hamel Husain · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://hamel.dev/blog/posts/evals/",
+      "why": "평가 세트를 만들고 바꿀 때마다 다시 재는 법 — '응답 품질·할루시네이션 평가' 업무 줄."
+    },
+    {
+      "id": "ragas-docs",
+      "title": "Ragas 문서",
+      "by": "Ragas",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.ragas.io/",
+      "why": "RAG 답의 근거성·검색 재현율을 자동으로 재는 지표와 코드."
+    },
+    {
+      "id": "owasp-llm",
+      "title": "OWASP Top 10 for LLM Applications",
+      "by": "OWASP",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "why": "금융·공공 고객이 묻는 보안 질문(프롬프트 주입·정보 유출·과도한 권한)의 목록."
+    },
+    {
+      "id": "otel-genai",
+      "title": "Semantic conventions for generative AI systems",
+      "by": "OpenTelemetry",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+      "why": "'로그·메트릭 기반 장애 분석' 줄 — LLM 호출에 무엇을 기록할지의 표준 이름."
+    },
+    {
+      "id": "fastapi-docs",
+      "title": "FastAPI 공식 문서 (한국어)",
+      "by": "FastAPI",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://fastapi.tiangolo.com/ko/",
+      "why": "자격요건의 Python/FastAPI — 자습서 순서대로 따라 하면 검증·오류 처리·의존성까지 익힌다."
+    },
+    {
+      "id": "opencv-docs",
+      "title": "OpenCV 공식 문서",
+      "by": "OpenCV",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.opencv.org/4.x/",
+      "why": "우대사항의 이미지·영상 처리 — 파이썬 자습서로 전처리 기본기."
+    },
+    {
+      "id": "pro-git",
+      "title": "Pro Git (2판, 한국어)",
+      "by": "Scott Chacon · Ben Straub",
+      "kind": "book",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://git-scm.com/book/ko/v2",
+      "why": "자격요건의 Git — 브랜치·병합·충돌 풀기."
+    },
+    {
+      "id": "internal-http",
+      "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+      "kind": "internal",
+      "lang": "ko",
+      "level": "입문",
+      "url": "/wiki/http-basic",
+      "why": "REST/JSON 요건의 바탕 — 메서드·상태 코드·헤더."
+    },
+    {
+      "id": "internal-docker",
+      "title": "개발자를 위한 도커",
+      "kind": "internal",
+      "lang": "ko",
+      "level": "입문",
+      "url": "/wiki/docker",
+      "why": "Docker 요건 — 이미지 빌드·실행과 막힌 출력 읽기."
+    },
+    {
+      "id": "internal-k8s",
+      "title": "쿠버네티스 입문",
+      "kind": "internal",
+      "lang": "ko",
+      "level": "실무",
+      "url": "/wiki/kubernetes",
+      "why": "Kubernetes 운영 업무 줄 — Pending·CrashLoopBackOff 읽기."
+    },
+    {
+      "id": "internal-spring",
+      "title": "스프링 핵심 원리 — 기본편",
+      "kind": "internal",
+      "lang": "ko",
+      "level": "입문",
+      "url": "/wiki/spring-core",
+      "why": "우대사항의 Java/Spring 연계 — 상대 시스템 코드를 읽을 정도의 바탕."
+    },
+    {
+      "id": "cs329z-tools",
+      "title": "Stanford CS329Z · How AI Agents Use Tools: Function Calling & MCP (강의 노트)",
+      "kind": "internal",
+      "lang": "ko",
+      "level": "실무",
+      "url": "/lectures/s0S38lz6O7M",
+      "why": "Tool Calling과 MCP가 실제로 어떻게 오가는지 한 강의로."
+    },
+    {
+      "id": "cs329z-patterns",
+      "title": "Stanford CS329Z · AI Agent Design Patterns: ReAct, CodeAct & More (강의 노트)",
+      "kind": "internal",
+      "lang": "ko",
+      "level": "실무",
+      "url": "/lectures/JC_pLC5EX_w",
+      "why": "에이전트 설계 유형 — 'Agent Workflow' 줄."
+    },
+    {
+      "id": "cs329z-rag",
+      "title": "Stanford CS329Z · RAG Explained: From BM25 to Agentic RAG (강의 노트)",
+      "kind": "internal",
+      "lang": "ko",
+      "level": "실무",
+      "url": "/lectures/psLc-46GqY0",
+      "why": "낱말 검색부터 벡터·에이전트 RAG까지 — 검색·RAG 우대사항."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "RAG 한 바퀴",
+      "time": "2~3주",
+      "goal": "문서를 넣고, 찾고, 출처를 단 답을 내는 서비스를 혼자 만든다.",
+      "resources": [
+        "ai-eng",
+        "rag-paper",
+        "cs329z-rag",
+        "fastapi-docs"
+      ],
+      "task": "가상의 회사 규정 문서 20개(직접 쓴 짧은 글)를 조각내 벡터 DB에 넣고, FastAPI로 '질문 → 답·출처' API를 만든다."
+    },
+    {
+      "title": "재는 법",
+      "time": "1~2주",
+      "goal": "평가 세트로 검색 정확도와 답의 근거성을 숫자로 비교한다.",
+      "resources": [
+        "hamel-evals",
+        "ragas-docs"
+      ],
+      "task": "1단계 문서로 질문·정답 30개를 만들고, 조각 크기 2가지 × 검색 개수 2가지를 recall@3·MRR로 비교한 표를 만든다."
+    },
+    {
+      "title": "에이전트와 도구",
+      "time": "2주",
+      "goal": "도구를 부르는 에이전트를 만들고 잘못된 호출을 막는다.",
+      "resources": [
+        "anthropic-agents",
+        "anthropic-context",
+        "mcp-spec",
+        "mcp-beginners",
+        "langgraph-docs",
+        "adk-docs",
+        "cs329z-tools",
+        "cs329z-patterns"
+      ],
+      "task": "가상의 휴가 조회·신청 API 두 개를 MCP 서버 또는 LangGraph 도구로 붙이고, 신청 도구 앞에 사람 확인 단계를 넣는다."
+    },
+    {
+      "title": "배포와 운영",
+      "time": "1~2주",
+      "goal": "컨테이너로 올리고, 호출마다 토큰·시간을 기록해 비용을 계산한다.",
+      "resources": [
+        "pro-git",
+        "internal-docker",
+        "internal-k8s",
+        "otel-genai"
+      ],
+      "task": "1~3단계 서비스를 Docker 이미지로 묶어 로컬 Kubernetes(kind·minikube)에 올리고, 요청 100건의 토큰·응답 시간 로그로 하루 비용을 추정한다."
+    },
+    {
+      "title": "보안과 연계 (선택)",
+      "time": "계속",
+      "goal": "금융·공공 고객이 묻는 보안 질문에 답하고 기존 시스템과 잇는다.",
+      "resources": [
+        "owasp-llm",
+        "internal-spring",
+        "internal-http",
+        "opencv-docs",
+        "lgcns-agenticworks",
+        "biztechi-finance"
+      ],
+      "task": "문서 속에 숨긴 지시(프롬프트 주입) 5개로 1단계 서비스를 공격해 보고 막는 규칙을 붙인다. 여유가 있으면 문서 사진을 OCR해 RAG에 넣는 흐름을 더한다."
+    }
+  ],
+  "pay": {
+    "summary": "신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원**(둘 다 집계값) — 공시 숫자는 없고, 이 자리는 경력 2년 이상이라 초봉보다 처우 협의가 기준이다",
+    "rows": [
+      {
+        "label": "신입 초봉",
+        "value": "약 3,811만원",
+        "amount": 3811,
+        "basis": "공공데이터 집계",
+        "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없고, 2026-10-26에 초봉을 고쳤다는 메모가 있다 [22]"
+      },
+      {
+        "label": "직원 평균 연봉",
+        "value": "약 5,748만원",
+        "amount": 5748,
+        "basis": "공공데이터 집계",
+        "note": "같은 집계, 사원수 945명 기준. 경력직이 섞인 회사 전체 값이다 [22]"
+      },
+      {
+        "label": "LG CNS 초봉",
+        "value": "약 5,071만원",
+        "amount": 5071,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "모회사, 같은 집계 사이트 값 [23]"
+      },
+      {
+        "label": "LG CNS 평균",
+        "value": "약 7,802만원",
+        "amount": 7802,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "모회사, 같은 집계 사이트 값 [23]"
+      }
+    ],
+    "how": "공고에는 연봉이 없다 [1]. 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자는 없다. 경력 전형은 평판조회 뒤 **처우협의** 단계에서 연봉을 정하고 [26], 회사는 '성과에 걸맞은 대우'를 인사 원칙으로 적었다 [27]. 집계 페이지의 대표자·홈페이지는 옛 사명(비즈테크파트너스) 기준으로 남아 있어 숫자도 늦게 반영됐을 수 있다 [22] {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "가족",
+        "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+      },
+      {
+        "name": "건강",
+        "detail": "종합건강검진·단체보험, 전문 심리 상담"
+      },
+      {
+        "name": "금융",
+        "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+      },
+      {
+        "name": "배움",
+        "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+      },
+      {
+        "name": "조직 문화",
+        "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"
+      }
+    ],
+    "note": "비즈테크아이 공식 사이트의 복리후생 페이지(2026-11 확인)다 [24]. 항목 이름만 있고 금액·조건은 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "비즈테크아이 본사 (상암 DDMC)",
+    "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+    "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [25]",
+    "note": "회사 사이트 '오시는 길'의 주소다 [25]. 공고의 근무지 표기는 '서울시 마포구 상암동'이다 [2]. 고객사 프로젝트라 실제 근무지가 고객사가 될 수 있다 {추론}."
+  }
+}
