@@ -1,0 +1,864 @@
+{
+ "id": "coupang-taiwan-security-engineering-director",
+ "company": "쿠팡 (Coupang)",
+ "role": "보안 엔지니어링 디렉터 (대만)",
+ "team": "Digital Trust 조직 · 대만·일본 CISO 직속",
+ "jobs": [
+  "ats-greenhouse:coupang:8300309"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "대만에서 쿠팡이 **결제 사업을 직접 하려면 통과해야 할 보안 요건**(대만 전자지급 규제·PCI DSS)을 미리 갖추고, 감독기관 검사와 제휴사 보안 평가에서 쿠팡을 대표해 기술 질문에 답하는 자리입니다.[1]",
+  "env": "타이베이 101 사무실, 대만·일본 CISO 보고. 대만 개인정보 사고(2026년 20만 계정) 뒤라 감독기관의 눈이 매서운 때입니다.[1][4][14]",
+  "oneline": "코드를 쓰는 자리가 아니라 **규제 문장을 보안 통제와 증거로 바꾸는** 10년 차 이상 보안 책임자 자리. 경력 이직용 공고입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Responsibilities will include, but not be limited to, the following:",
+   "short": "아래 세 줄이 전부가 아니라 대표 업무라는 머리말. 대만에서 생기는 보안 일은 대부분 이 자리로 온다.",
+   "why": "공고 첫머리가 이 자리를 결제 규제 대응과 대만 전체 보안 협력을 함께 맡는 실무형 리더로 소개합니다.[1] 같은 조직의 대만 사고 대응 팀(DART TW)도 이제 막 꾸리는 중이라 역할 경계가 넓게 잡혀 있습니다.[2] {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Drives security readiness for Taiwan payment services — ensuring compliance with local standards and readiness for potential electronic payment license operations",
+   "short": "대만에서 전자지급 허가를 받는다면 첫날부터 검사를 통과하도록 보안 통제와 증거를 미리 갖춰 두는 일.",
+   "why": "대만에서는 허가받은 **전자지급기관**이 아니면 충전(선불)·송금 같은 전자지급 업무를 할 수 없습니다. 제3자 결제 업체도 맡아 둔 돈이 금융감독위원회(FSC) 기준을 넘으면 6개월 안에 허가를 신청해야 합니다.[5] 대만에는 쿠팡 주소(신의로 5단 7호 13층)로 2023년에 등록된 **酷澎支付(쿠팡페이 대만)** 법인이 있습니다.[11] 공고는 허가 운영을 '가능성(potential)'이라고 적었고, 쿠팡이 허가를 신청했다는 보도는 찾지 못했습니다. {추론}",
+   "actually": {
+    "intro": "대만 법이 허가 전후로 요구하는 것입니다.[5] 비교 사례로 LINE Pay가 같은 길을 2025년에 밟았습니다.[9][10]",
+    "items": [
+     "**두 단계 허가** — FSC 허가를 받고, 6개월 안에 영업 허가증을 따로 신청한다(13조). LINE Pay는 2025-07 허가, 12월에 서비스를 시작했다.[5][9][10]",
+     "**자본금과 법인** — 전업 기관은 주식회사로 납입자본 5억 대만달러(소액 송금 없으면 3억, 충전도 없으면 1억). LINE Pay도 자회사를 새로 세웠다.[5][9]",
+     "**보안 기준** — 32조가 거래 자료의 비밀과 정확한 처리를 요구하고, 세부 기준은 업계 협회가 만들어 FSC에 낸다. 그 기준을 시스템에 미리 반영한다.[5][6]",
+     "**협회 가입** — 영업 전에 지정 협회에 들어가야 한다(44조).[5]",
+     "**보안 조직** — FSC 2026년 검사 중점은 자산·이용자가 일정 규모를 넘으면 IT와 분리된 전담 보안 조직과 책임자를 두라는 것이다.[8]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "대만 전자지급 허가까지 (LINE Pay 사례로 본 순서)[5][9][10]",
+     "steps": [
+      "준비 · 법인·자본금·보안 통제·내부 규정",
+      "FSC 허가 신청 · 사업계획과 보안 체계 심사",
+      "허가 · 6개월 안에 영업 허가증 신청",
+      "협회 가입 · 영업 개시",
+      "상시 검사 · FSC 검사국이 언제든 검사"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "허가 신청서와 사업 판단은 법무·사업·재무가 함께 씁니다. 이 자리는 **보안 통제가 실제로 돌고 있다는 증거**(설정·로그·점검 보고서)를 만들어 두고, 모자란 칸을 엔지니어링 팀이 메우게 이끕니다. {추론}",
+   "refs": [
+    5,
+    6,
+    8,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "tw-act",
+    "epa-std",
+    "feb-focus"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Extends technical security leadership and engineering support beyond payments to assist broader e-commerce, logistics, and enterprise initiatives across Taiwan",
+   "short": "결제 말고도 대만 쇼핑몰·물류센터·사내 시스템의 보안 질문을 받아 주는 대만 현지 보안 책임자 역할.",
+   "why": "쿠팡은 대만에 물류센터 4곳(2026-04 타오위안 4호)을 두고 국토의 약 70%에 로켓배송을 하며, 2025년 한 해에만 9억 달러 넘게 투자했습니다.[12] 한국에서 **약 3,300만 계정**이 유출된 2025년 사고는 대만에도 번져 대만 계정 204,552개가 영향을 받았습니다. 쿠팡은 처음에 대만은 영향이 없다고 했다가 외부 조사(Mandiant) 뒤 이를 바로잡았습니다.[13][17]",
+   "actually": {
+    "items": [
+     "**쇼핑몰** — 로그인 보안. 대만 쿠팡은 2025년 비밀번호 대신 기기로 로그인하는 패스키(安心金鑰)를 도입했다.[15]",
+     "**물류** — 송장·배송 자료의 개인정보 가리기. 2024년 물류 데이터 마스킹을 도입했다.[15]",
+     "**통관** — 직구 통관 서류에 전자서명을 붙였다(2026).[15]",
+     "**사고 대응** — 대만 DART 팀이 대만 사고의 원인 분석·차단·보고를 직접 맡는다. 이 자리는 그 결과를 규제·사업 쪽 말로 옮긴다.[2] {추론}",
+     "**전사 보안 플랫폼과 맞추기** — 키 관리·서비스 신원·사용자 인증·권한 판단은 본사 보안 인프라 팀이 '제로 트러스트'(내부망이라도 매번 확인하는 방식)로 만든다. 대만 쪽 요구를 그 팀 로드맵에 올린다.[3]"
+    ]
+   },
+   "how_far": "직접 운영하는 팀이 따로 있습니다(사고 대응 DART, 보안 인프라).[2][3] 이 자리는 **대만에서 무엇이 먼저 막혀야 하는지 정하고 각 팀을 움직이는** 사람입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    12,
+    13,
+    15,
+    17
+   ],
+   "study": [
+    "nist-csf",
+    "bsrs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Acts as the key technical interface for local regulatory security audits and external partner assessments",
+   "short": "감독기관 검사관과 제휴사 보안 평가자가 묻는 기술 질문에 쿠팡을 대표해 답하고 증거를 내는 창구.",
+   "why": "대만 법은 FSC가 언제든 직접 또는 위탁 기관을 보내 검사할 수 있고, 외부 감사를 회사 돈으로 받게 할 수 있다고 정합니다.[5] 대만 디지털발전부는 2026년 대만 쿠팡의 개인정보 관리에 결함이 있다며 회사와 대표에게 각 75만 대만달러, 모두 150만 대만달러를 매겼습니다.[14][30] 쿠팡 본사도 이사회 감사위원회가 CISO와 정기적으로 만난다고 공시합니다.[16]",
+   "actually": {
+    "intro": "'검사'와 '제휴사 평가'에서 실제로 오가는 것입니다.",
+    "items": [
+     "**FSC 검사 중점(2026)** — 방화벽·취약점 점검·침입 탐지·모의 해킹·패치, 관리자 계정 통제와 사용 기록 검토, 사고 대응 훈련, API 보안과 앱 보안 점검, 외주·클라우드 승인.[8]",
+     "**연간 자체 평가** — 협회 기준은 내부 점검과 회계사 검토를 거친 평가 보고서를 매년 4월 말까지 내게 하고, 사회공학(피싱) 훈련 결과도 넣게 한다.[7]",
+     "**카드 업계(PCI DSS)** — 비자 기준 연 600만 건 넘게 카드 거래를 하면 Level 1 가맹점이라 해마다 공인 평가사(QSA)가 현장 평가 보고서(ROC)를 쓰고, 분기마다 외부 취약점 스캔을 받는다.[25][26]",
+     "**제휴사 평가** — 은행·카드사·PG가 보내는 보안 질문지에 답하고, 거꾸로 우리 외주 업체를 평가한다. 외부 감사 보고서(SOC 2 — 회계사가 서비스 회사의 통제를 검증한 보고서)를 주고받는 것도 흔하다.[28]",
+     "**증거 묶음** — 질문마다 설정 화면·로그·점검 보고서를 같은 형식으로 쌓아 두면 다음 검사가 빨라진다. {추론}"
+    ]
+   },
+   "how_far": "검사관은 문서만 보지 않고 실제 설정과 기록을 봅니다.[8] 그래서 공고가 '기술적' 창구라고 적었습니다. 이 자리는 질문을 받으면 **어느 팀의 어떤 시스템을 보여 줘야 하는지 바로 알고, 모자란 점은 고칠 일정까지 약속할 수 있는** 사람이어야 합니다. {추론}",
+   "refs": [
+    5,
+    7,
+    8,
+    14,
+    16,
+    25,
+    26,
+    28,
+    30
+   ],
+   "study": [
+    "feb-focus",
+    "epa-std",
+    "soc2"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bachelor/Masters/PhDs in Computer Science or Engineering, Information Security or a related field",
+   "short": "컴퓨터·공학·정보보안 계열 학사 이상. 전공보다 아래 10년 경력이 실제 문턱이다.",
+   "why": "규제 문장을 암호·인증·네트워크 설정으로 옮기려면 그 기술의 원리를 알아야 해서 공학 계열을 적었습니다. {추론} 쿠팡 보안 리더 공고들은 대부분 학위와 함께 긴 경력 연수를 요구합니다.[2][3]",
+   "how_far": "학위는 서류 통과 조건에 가깝습니다. 비전공자라도 '관련 분야'와 경력으로 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "10+ years of experience working in the field of security engineering",
+   "short": "보안 엔지니어로 10년 이상. 같은 회사 대만 사고 대응 매니저 자리는 15년을 요구한다.",
+   "why": "같은 대만 조직의 DART 매니저 공고는 정보보안 15년(그중 사고 분석 8년) 이상을 요구합니다.[2] 본사 보안 인프라 디렉터 공고도 소프트웨어 엔지니어링 12년 이상을 적었습니다.[3] 디렉터급은 직접 해 본 일의 폭으로 판단을 내리기 때문입니다. {추론}",
+   "how_far": "연수보다 **보안 엔지니어링(만들고 운영한 일)** 경력이라는 점이 중요합니다. 감사·컨설팅만 해 왔다면 직접 통제를 설계·구현한 경험을 따로 보여 줘야 합니다. {추론}",
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "A deep level of technical knowledge and hands-on experience in multiple security domains",
+   "short": "인증·암호·네트워크·앱·클라우드·사고 대응 중 여러 분야를 직접 다뤄 본 사람. 한 분야 전문가로는 부족하다.",
+   "why": "대만 전자지급 보안 기준 한 문서 안에만 인증, 암호, 앱 보안, 로그, 계정·방화벽, 점검 주기가 함께 들어 있습니다.[7] 검사관은 이 전부를 한 창구에 묻습니다.[8]",
+   "actually": {
+    "intro": "협회 기준(2024-10판)이 분야마다 요구하는 숫자입니다.[7] 2026-09 개정판은 내용을 확인하지 못했습니다.",
+    "items": [
+     "**인증** — 2단계 인증은 아는 것·가진 것·생체 중 둘 이상. 고정 비밀번호는 6자 이상, 5번 틀리면 잠금. 하드웨어 키는 CC EAL4+ 또는 FIPS 140-2 Level 3 칩.",
+     "**암호** — 기밀성은 AES 128·RSA 2048·ECC 256 이상, 무결성은 SHA 160비트 이상, 부인 방지는 SHA-256 + RSA 2048(또는 ECC 256) 서명.",
+     "**점검 주기** — 취약점 스캔 분기마다, 바뀐 프로그램 코드 점검 6개월마다, 모의 해킹 해마다.",
+     "**모바일 앱** — 해마다 공인 시험소 점검, 새 기능은 OWASP Mobile Top 10 확인, 루팅·탈옥 탐지, 배포는 두 사람 통제.",
+     "**로그·계정** — 원본 로그 2년 보관과 중앙 관리, 관리자 계정은 별도 관리 시스템에서 해마다 검토, 방화벽 규칙도 해마다 검토."
+    ]
+   },
+   "examples": [
+    {
+     "title": "금액이 곧 인증 강도 — 협회 기준의 거래 구간",
+     "body": "온라인 계정 거래는 금액에 따라 쓸 수 있는 인증이 다릅니다.[7] 건당 5,000 대만달러 미만(하루 2만·한 달 5만 안)은 고정 비밀번호 같은 가벼운 방법도 됩니다. 5,000~5만 미만은 인증서·칩 카드·OTP·2단계 인증. **건당 5만 이상**(하루 10만·한 달 20만)은 소프트웨어 OTP와 문자 OTP를 쓸 수 없습니다. 같은 송금 버튼이라도 금액마다 다른 인증 흐름을 설계해야 한다는 뜻입니다."
+    }
+   ],
+   "how_far": "모든 분야를 깊게 할 필요는 없습니다. 두세 분야는 직접 설계해 봤고, 나머지는 **담당 팀의 답이 맞는지 판단할 수 있는** 정도가 디렉터의 선입니다. {추론}",
+   "refs": [
+    7,
+    8
+   ],
+   "study": [
+    "anderson",
+    "epa-std",
+    "asvs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience in leading large scale security solutions involving cross function teams",
+   "short": "보안 팀 혼자 못 끝내는 큰 일(결제 범위 줄이기·전사 인증 바꾸기)을 여러 팀과 끝까지 끌어 본 경험.",
+   "why": "결제 보안 요건은 결제 서버만이 아니라 앱·웹·물류·고객센터 시스템을 건드립니다. 쿠팡의 보안 인프라 공고도 전사 채택과 이해관계자 정렬을 핵심 업무로 적었습니다.[3] 쿠팡 본사 보안 조직은 200명이 넘습니다.[17]",
+   "actually": {
+    "items": [
+     "**카드 정보 범위 줄이기** — PCI DSS는 카드 정보가 지나가는 범위를 해마다(서비스 제공자는 6개월마다) 다시 확인하게 한다. 범위를 줄이면 검사 대상이 줄어 여러 팀의 부담이 준다.[24]",
+     "**결제 단말 접근 MFA** — v4.0부터 카드 정보 환경에 들어가는 **모든** 사람에게 다단계 인증을 요구한다. 개발·운영·외주 계정을 한꺼번에 바꾸는 일이다.[23]",
+     "**피싱 방어** — 교육(12.6.3.1)과 별개로 자동 탐지·차단 장치(5.4.1)를 요구한다. 메일·보안·인사 팀이 같이 움직여야 한다.[19]"
+    ]
+   },
+   "how_far": "이력서에는 '무엇을 바꿨나'보다 **몇 팀을 움직였고 일정·예산을 누가 냈고 끝났을 때 무엇이 숫자로 달라졌나**를 씁니다. {추론}",
+   "refs": [
+    3,
+    17,
+    19,
+    23,
+    24
+   ],
+   "study": [
+    "ciso-drg",
+    "bsrs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Solid knowledge of Taiwan payment regulations (e.g., FSC security guidelines for electronic payment systems) and payment compliance frameworks (e.g., PCI-DSS v4.0)",
+   "short": "대만 전자지급 보안 기준과 카드 업계 표준 PCI DSS를 조항 단위로 알고, 둘이 겹치는 곳을 한 번에 맞춘다.",
+   "why": "공고가 이름을 든 'FSC 전자지급 보안 지침'은 2023-04-25까지 FSC 법규였다가 폐지됐고, 같은 이름의 **협회 자율 기준**(電子支付機構資訊系統標準及安全控管作業基準)이 이어받았습니다. 법 32조에 따라 협회가 만들고 FSC에 보고하며, 최신판은 2026-09-29입니다.[5][6] PCI DSS는 카드사들이 만든 카드 정보 보호 표준으로, 2022년 v4.0에 새 요건 64개가 들어왔고 그중 51개가 2025-03-31부터 의무가 됐습니다.[19] v4.0.1은 2024-06에 나온 문구 수정판으로 요건 추가·삭제는 없습니다.[18]",
+   "actually": {
+    "intro": "2025-03-31부터 의무가 된 PCI DSS 요건 중 쇼핑몰에 가장 큰 일입니다.[20]",
+    "items": [
+     "**6.4.3 결제 페이지 스크립트 목록** — 결제 화면에 올라가는 모든 자바스크립트를 승인하고, 내용이 안 바뀌었음을 보장하고, 왜 필요한지 적은 목록을 둔다. 결제 대행사 iframe 안쪽은 대행사 몫.[21]",
+     "**11.6.1 변조 탐지** — 브라우저가 받는 결제 페이지의 헤더와 스크립트 내용이 바뀌면 알림. 최소 주 1회(또는 위험 분석으로 정한 주기).[22]",
+     "**이유** — 결제 화면에 끼운 스크립트로 카드 번호를 빼 가는 'e-스키밍' 때문이다.[20]",
+     "**두 기준 맞추기** — 둘 다 MFA·암호·로그·취약점 점검을 요구하지만 숫자가 다르다(예: 대만 기준은 로그 2년 보관). 통제 하나에 두 기준의 조항 번호를 같이 달아 관리한다.[7] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "결제 페이지 스크립트 목록과 변조 탐지 (6.4.3·11.6.1을 작게)",
+     "body": "승인 목록에 스크립트 주소와 지문(SHA-384, 브라우저 SRI와 같은 꼴)을 두고, 실제로 받은 내용과 비교합니다. 직접 돌린 출력: 첫 줄 `['이상 없음']`, 둘째 줄 `['내용이 바뀜: https://cdn.example.tw/analytics.js', '승인 안 된 스크립트: https://evil.example/skim.js']`. 실제 제품은 사용자 브라우저가 받은 내용을 봐야 해서 이보다 복잡합니다.[22]",
+     "lang": "python",
+     "code": "import base64, hashlib, re\n\ndef sri(body: bytes) -> str:\n    # 브라우저 SRI 와 같은 꼴: sha384-<base64>\n    return \"sha384-\" + base64.b64encode(hashlib.sha384(body).digest()).decode()\n\n# 승인 목록(6.4.3): 결제 페이지에 올라가도 되는 스크립트와 그 지문\napproved = {\n    \"https://pay.example.tw/checkout.js\": sri(b\"function pay(){}\"),\n    \"https://cdn.example.tw/analytics.js\": sri(b\"track('view')\"),\n}\n\ndef check(page_html, fetched):\n    out = []\n    for url in re.findall(r'<script[^>]+src=\"([^\"]+)\"', page_html):\n        if url not in approved:\n            out.append(\"승인 안 된 스크립트: \" + url)\n        elif sri(fetched[url]) != approved[url]:\n            out.append(\"내용이 바뀜: \" + url)\n    return out or [\"이상 없음\"]\n\npage = ('<script src=\"https://pay.example.tw/checkout.js\"></script>'\n        '<script src=\"https://cdn.example.tw/analytics.js\"></script>')\nok = {\"https://pay.example.tw/checkout.js\": b\"function pay(){}\",\n      \"https://cdn.example.tw/analytics.js\": b\"track('view')\"}\nprint(check(page, ok))\n\n# 통계 스크립트에 카드 번호를 빼돌리는 줄이 끼고, 낯선 스크립트가 하나 붙었다\npage2 = page + '<script src=\"https://evil.example/skim.js\"></script>'\nbad = dict(ok)\nbad[\"https://cdn.example.tw/analytics.js\"] = b\"track('view');send(card)\"\nbad[\"https://evil.example/skim.js\"] = b\"x\"\nprint(check(page2, bad))"
+    }
+   ],
+   "how_far": "조항을 외우는 것보다 **'이 조항이면 우리 시스템 어디를 바꿔야 하나'를 바로 말하는 것**이 기준입니다. PCI 쪽은 PCI SSC 공식 자격(PCIP) 수준의 이해가 출발선입니다.[27] 대만 기준은 중국어 원문이라 원문을 직접 읽을 수 있어야 합니다. {추론}",
+   "refs": [
+    5,
+    6,
+    7,
+    18,
+    19,
+    20,
+    21,
+    22,
+    27
+   ],
+   "study": [
+    "epa-std",
+    "tw-act",
+    "pci-dss",
+    "pcip"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bilingual in Taiwanese Mandarin and English is preferred",
+   "short": "대만 감독기관·협회 문서는 중국어(번체), 본사·CISO 보고는 영어라 두 말이 다 필요하다.",
+   "why": "대만 전자지급 법과 협회 기준, FSC 검사 중점은 모두 번체 중국어로만 나옵니다.[5][6][8] 이 자리는 대만·일본 CISO에게 보고하고 본사 보안 조직과 일하므로 영어가 업무 언어입니다.[1] 이 줄은 수집본의 요건 칸에서 빠져 있고 원문에만 있습니다.[1]",
+   "how_far": "'preferred'(우대)지만, 검사관과 직접 말하는 창구라서 사실상 큰 가산점입니다. 한국어는 요구하지 않습니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Behaviors & Cultural Fit\n\nComfortable pivoting between rigorous payment regulatory compliance and fast-paced e-commerce business needs",
+   "short": "아침엔 검사관에게 조항 단위로 답하고 오후엔 쇼핑몰 기능 출시를 막지 않는 길을 찾는, 속도가 다른 두 일을 오가는 사람.",
+   "why": "'행동과 문화 적합성' 머리말 아래 첫 줄입니다. 결제는 규정을 하나라도 어기면 허가가 걸리지만, 쿠팡 대만 쇼핑몰은 물류센터를 해마다 늘리며 빠르게 크는 중입니다.[12] 이 자리가 두 쪽을 같이 맡기 때문입니다.[1]",
+   "how_far": "결제 쪽에서는 예외를 두지 않고, 쇼핑몰 쪽에서는 '안 된다' 대신 **같은 위험을 줄이는 다른 방법**을 내놓는 것이 기대치입니다. {추론}",
+   "refs": [
+    1,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Autonomy to make decisions in a rapidly growing company",
+   "short": "본사 답을 기다리지 않고 대만 현장에서 보안 결정을 내리고 책임지는 사람.",
+   "why": "대만은 쿠팡이 2025년 9억 달러 넘게 투자한 빠르게 크는 시장이고,[12] 대만 사고 대응 팀도 막 세우는 중입니다.[2] 결정할 사람이 현지에 있어야 일이 멈추지 않습니다. {추론}",
+   "refs": [
+    2,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Strong commercial mind-set\n\nA pragmatic mind-set and approach",
+   "short": "보안 비용과 사업 손실을 같은 저울에 올려, 지금 꼭 막을 것부터 고르는 현실 감각.",
+   "why": "대만 쿠팡은 2026년 초 임대 창고를 정리하고 고연봉 채용을 멈추는 등 비용을 조정했습니다.[30] 보안 투자도 '무엇을 줄이나'를 숫자로 설명해야 받아들여집니다. {추론}",
+   "actually": {
+    "items": [
+     "**위험 분석으로 주기 정하기** — PCI DSS v4.0은 일부 점검 주기를 회사가 '목표 위험 분석'으로 정하게 해, 위험이 낮은 곳은 덜 자주 할 수 있다.[22]",
+     "**사고 비용** — 한국 사고 뒤 쿠팡은 대만 이용자에게 1인당 1,000 대만달러 쿠폰, 모두 2억 대만달러 넘게 보상했다.[13] 막았을 때 아낀 돈의 실제 크기다."
+    ]
+   },
+   "refs": [
+    13,
+    22,
+    30
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Inspirational leadership\n\nStrong influencing and network capability",
+   "short": "보고 관계가 없는 팀까지 움직이게 하고, 대만 감독기관·업계·제휴사에 사람 줄을 가진 사람.",
+   "why": "이 자리가 맡는 일의 대부분은 다른 팀(엔지니어링·물류·법무)이 실행합니다.[1][3] 대만 전자지급 기준은 업계 협회가 만들어 FSC에 보고하는 구조라, 협회·감독기관과 대화할 통로가 일에 직접 영향을 줍니다.[5][6] {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    6
+   ],
+   "study": [
+    "ciso-drg"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Deals well with ambiguity\n\nComfortable getting into the detail",
+   "short": "허가를 받을지 아직 모르는 상태에서도 준비를 진행하고, 필요하면 설정 파일 한 줄까지 직접 본다.",
+   "why": "공고가 전자지급 허가 운영을 '가능성'이라고 적은 만큼 계획이 바뀔 수 있습니다.[1] 반면 검사관은 실제 설정과 기록을 봅니다.[8] 그래서 큰 그림과 세부를 함께 요구합니다. {추론}",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Acts with pace and urgency\n\nSees the bigger picture",
+   "short": "사고·검사 기한에는 빨리 움직이되, 그 대응이 대만 전체 보안 구조에 어떻게 남을지 같이 본다.",
+   "why": "대만 개인정보 사고 때 회사가 처음 발표를 바로잡아야 했고, 감독기관은 기한을 정해 고치라고 명령했습니다.[13][14] 급한 대응이 다음 검사의 증거로 남도록 하는 것이 이 자리의 몫입니다. {추론}",
+   "refs": [
+    13,
+    14
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Keen customer focus\n\nAdaptable and flexible",
+   "short": "보안 때문에 결제·로그인이 불편해지면 고객이 떠난다 — 고객이 덜 귀찮은 보안을 고르고, 상황에 맞춰 바꾼다.",
+   "why": "대만 쿠팡이 비밀번호 대신 패스키 로그인을 내놓은 것처럼, 보안과 편의를 같이 올리는 방법이 있습니다.[15] 협회 기준도 금액이 작은 거래에는 가벼운 인증을 허용합니다.[7]",
+   "refs": [
+    7,
+    15
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Recruitment Process & Others\n\nRecruitment Process \n\nApplication Review - Phone Interview - Onsite (or Virtual Onsite) Interview – Offer \n\nThe exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances. \n\nInterview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "서류 → 전화 면접 → 대면(또는 화상) 면접 → 제안. 일정과 결과는 지원 때 적은 메일로 온다.",
+   "why": "쿠팡 공고 공통 안내입니다.[1] 디렉터급은 연봉이 공고에 없고 마지막 '제안(Offer)' 단계에서 정해집니다.[1]",
+   "how_far": "전화 면접에서는 경력의 폭, 대면 면접에서는 규제 조항을 시스템 변경으로 옮기는 구체 사례를 묻는다고 보고 준비합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to Consider \n\nThis job posting may be closed prior to the stated end date for application if all openings are filled.    \n\nCoupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.    \n\nCoupang does not discriminate against disabled applicants or those with veteran status. We are proud to offer equal opportunities for all applicants. \n\nJob titles and responsibilities may be subject to change depending on the candidate’s overall experience, etc. This will be communicated to the candidate at the appropriate time before the offer.",
+   "short": "자리가 차면 일찍 마감, 거짓 기재는 제안 취소, 경력에 따라 직급·업무가 바뀔 수 있다는 공통 안내.",
+   "why": "쿠팡 공고 공통 문구입니다.[1] 마지막 줄 때문에 경력에 따라 디렉터가 아닌 다른 직급으로 제안될 수도 있습니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "규제 문장을 읽으면 바로 '어느 설정을 바꾸나'가 떠오르는 사람",
+   "결제 보안(카드·간편결제)을 직접 만들고 감사도 받아 본 사람",
+   "중국어(번체)·영어로 검사관·본사와 말할 수 있는 사람[1]",
+   "팀을 새로 세우는 단계를 좋아하는 사람 — 대만 조직이 아직 커 가는 중[2]"
+  ],
+  "hard": [
+   "결제 허가가 '가능성' 단계라 계획이 바뀔 수 있다[1]",
+   "대만 개인정보 사고와 과태료 뒤라 감독기관의 관심이 큰 때다[14]",
+   "한국어만으로는 일하기 어렵다 — 경력 10년 이상 대만 현지 근무 자리[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "대만 협회 기준과 PCI DSS가 둘 다 MFA·로그·취약점 점검을 요구할 때, 통제를 어떻게 하나로 묶어 관리하겠어요?",
+   "a": "두 기준을 같이 맞추는 것이 이 자리의 핵심 요건.[7][19]"
+  },
+  {
+   "q": "결제 페이지에 마케팅 스크립트를 추가하고 싶다는 요청이 왔습니다. 무엇을 확인하나요?",
+   "a": "2025년부터 의무인 6.4.3·11.6.1.[21][22]"
+  },
+  {
+   "q": "검사관이 관리자 계정 사용 기록을 보여 달라고 합니다. 무엇을 준비해 두나요?",
+   "a": "FSC 2026년 검사 중점 셋째 항목.[8]"
+  },
+  {
+   "q": "전자지급 허가를 받기로 했다면 첫 6개월에 무엇부터 하겠어요?",
+   "a": "두 단계 허가와 보안 조직 요건.[5][8][9]"
+  },
+  {
+   "q": "본사 사고가 대만에 번졌을 때, 대만 감독기관과 이용자에게 무엇을 언제 알리겠어요?",
+   "a": "2026년 대만 사고 대응과 처분.[13][14]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Director, Security Engineering, Taiwan",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8300309",
+   "kind": "posting",
+   "date": "2026-10-31",
+   "note": "Digital Trust 조직, 대만·일본 CISO 보고, 업무·요건·행동 적합성·전형(서류 → 전화 → 대면 → 제안). 연봉 표기 없음"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · Manager, Security Engineering _ DART Taiwan",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188073",
+   "kind": "posting",
+   "date": "2026-09-14",
+   "note": "같은 회사 대만 사고 대응 팀 — DART KR·US에 이어 DART TW 신설, 정보보안 15년·사고 분석 8년 이상"
+  },
+  {
+   "n": 3,
+   "title": "Coupang Careers · Director Backend Engineering (Security Infrastructure)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8040145",
+   "kind": "posting",
+   "note": "같은 회사 보안 인프라 — 키 관리·서비스 신원·사용자 인증·동적 권한, 제로 트러스트, 12년 이상"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Careers · Taipei 사무실",
+   "url": "https://www.coupang.jobs/en/locations/taipei/",
+   "kind": "company",
+   "note": "주소 13F, No. 7, Sec. 5, Xinyi Rd., Xinyi Dist., Taipei · 타이베이 101 · 지하철 Taipei 101/World Trade Center 역 옆. 복지 목록은 없음"
+  },
+  {
+   "n": 5,
+   "title": "全國法規資料庫 · 電子支付機構管理條例 (전자지급기관 관리 조례)",
+   "url": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0380237",
+   "kind": "reference",
+   "date": "2023-01-19",
+   "note": "5조 허가 없이 영업 금지·6개월 신청, 7조 전업, 9조 자본금, 11·13조 두 단계 허가, 32조 보안, 37조 검사, 44조 협회 가입"
+  },
+  {
+   "n": 6,
+   "title": "中華民國電子支付商業同業公會 · 자율 규범 목록",
+   "url": "https://epa.org.tw/regulations/self-discipline",
+   "kind": "reference",
+   "note": "電子支付機構資訊系統標準及安全控管作業基準 — 최신 2026-09-29판(PDF 본문은 읽지 못함). 옛 FSC 법규(G0380243)는 2023-04-25 폐지"
+  },
+  {
+   "n": 7,
+   "title": "電子支付機構資訊系統標準及安全控管作業基準 (2024-10-24판 본문)",
+   "url": "https://www.rootlaw.com.tw/LawArticle.aspx?LawID=A040390041071500-1131024",
+   "kind": "reference",
+   "date": "2024-10-24",
+   "note": "제3자 법령 사이트에 실린 본문 — 인증·암호·점검 주기·앱·로그·계정·연간 평가 보고서. 2026-09 개정판과 다를 수 있음"
+  },
+  {
+   "n": 8,
+   "title": "金管會檢查局 · 115년도(2026) 금융 검사 중점 — 전업 전자지급기관",
+   "url": "https://www.feb.gov.tw/ch/home.jsp?id=65&parentpath=0%2C4&mcustomize=onemessages_view.jsp&dataserno=202512180002&dtable=Business",
+   "kind": "reference",
+   "date": "2025-12-18",
+   "note": "전담 보안 조직, 네트워크 방어, 관리자 계정 통제·기록 검토, 사고 대응 훈련, API·앱 보안, 외주·클라우드"
+  },
+  {
+   "n": 9,
+   "title": "TechNews · LINE Pay 전자지급 허가",
+   "url": "https://technews.tw/2025/07/17/electronic-payment/",
+   "kind": "news",
+   "date": "2025-07-17",
+   "note": "다른 회사 — 자회사 連加電子支付 설립, 자본금 5억 대만달러, 10번째 전업 전자지급기관"
+  },
+  {
+   "n": 10,
+   "title": "中央社 · LINE Pay Money 12월 3일 서비스 시작",
+   "url": "https://www.cna.com.tw/news/afe/202511240264.aspx",
+   "kind": "news",
+   "date": "2025-11-24",
+   "note": "다른 회사 — 허가 뒤 영업 개시까지"
+  },
+  {
+   "n": 11,
+   "title": "台灣公司網 · 酷澎支付股份有限公司 (94243705)",
+   "url": "https://g.twincn.com/item.aspx?no=94243705",
+   "kind": "reference",
+   "note": "제3자 회사 정보 사이트 — 2023-08-29 설립, 주소 신의로 5단 7호 13층. 사업 항목·자본금은 표시 없음. 정부 등기 시스템으로 재확인 필요"
+  },
+  {
+   "n": 12,
+   "title": "The Korea Times · Coupang turns to Taiwan as key hub for global growth",
+   "url": "https://www.koreatimes.co.kr/business/companies/20260919/coupang-turns-to-taiwan-as-key-hub-for-global-growth",
+   "kind": "news",
+   "date": "2026-09-19",
+   "note": "물류센터 4곳·로켓배송 약 70%·2025년 9억 달러 넘는 투자·와우 멤버십 2025-03"
+  },
+  {
+   "n": 13,
+   "title": "數位時代 · 쿠팡 개인정보 유출의 대만 영향",
+   "url": "https://www.bnext.com.tw/article/90150/coupang-data-breach-impact-on-taiwan-market",
+   "kind": "news",
+   "date": "2026-02-25",
+   "note": "대만 계정 204,552개, 1인당 1,000 대만달러 쿠폰(2억 넘게), 처음엔 영향 없다 → Mandiant 조사 뒤 정정"
+  },
+  {
+   "n": 14,
+   "title": "中央社 · 數位發展部, 台灣酷澎 개인정보 처분",
+   "url": "https://www.cna.com.tw/news/afe/202609230304.aspx",
+   "kind": "news",
+   "date": "2026-09-23",
+   "note": "개인정보보호법 27조 1항 위반, 회사·대표 각 75만 대만달러(모두 150만), 기한 내 시정 명령"
+  },
+  {
+   "n": 15,
+   "title": "自由財經 · 쿠팡 대만, 디지털 신뢰 계획 3년째 — 통관 전자서명",
+   "url": "https://ec.ltn.com.tw/article/breakingnews/5585115",
+   "kind": "news",
+   "date": "2026-09-24",
+   "note": "2024 물류 데이터 마스킹, 2025 패스키(安心金鑰) 로그인, 2026 직구 통관 전자서명"
+  },
+  {
+   "n": 16,
+   "title": "Coupang, Inc. · 2026 주주총회 위임장(DEF 14A)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026-04-27",
+   "note": "2025년 직원 연간 총보상 중앙값 33,831달러(CEO 보수 비율), 감사위원회가 CISO와 정기 회의"
+  },
+  {
+   "n": 17,
+   "title": "Board Cybersecurity · Coupang 10-K(2025 회계연도) 사이버보안 항목 정리",
+   "url": "https://www.board-cybersecurity.com/annual-reports/tracker/20260226-coupang-inc-cybersecurity-10k",
+   "kind": "reference",
+   "date": "2026-02-26",
+   "note": "10-K 원문 PDF는 읽지 못해 정리 페이지로 확인 — 보안 조직 200명 이상, ISO 27001·27017·27701·ISMS-P, 2025-11 발견된 약 3,300만 계정 사고(전 직원)"
+  },
+  {
+   "n": 18,
+   "title": "PCI SSC 블로그 · Just Published: PCI DSS v4.0.1",
+   "url": "https://blog.pcisecuritystandards.org/just-published-pci-dss-v4-0-1",
+   "kind": "reference",
+   "date": "2024-06-11",
+   "note": "요건 추가·삭제 없는 수정판, v4.0은 2024-12-31 은퇴"
+  },
+  {
+   "n": 19,
+   "title": "PCI SSC 블로그 · Now is the Time to Adopt the Future-Dated Requirements of PCI DSS v4.x",
+   "url": "https://blog.pcisecuritystandards.org/now-is-the-time-for-organizations-to-adopt-the-future-dated-requirements-of-pci-dss-v4-x",
+   "kind": "reference",
+   "date": "2024-08-20",
+   "note": "새 요건 64개 중 51개가 2025-03-31부터 의무, v3.2.1은 2024-03-31 은퇴"
+  },
+  {
+   "n": 20,
+   "title": "PCI SSC 블로그 · Guidance for PCI DSS E-commerce Requirements Effective After 31 March 2025",
+   "url": "https://blog.pcisecuritystandards.org/coffee-with-the-council-podcast-guidance-for-pci-dss-e-commerce-requirements-effective-after-31-march-2025",
+   "kind": "reference",
+   "date": "2025-03-26",
+   "note": "6.4.3·11.6.1의 목적은 e-스키밍 위험 줄이기"
+  },
+  {
+   "n": 21,
+   "title": "WithPCI · PCI DSS v4.0.1 요건 6.4.3",
+   "url": "https://withpci.pages.dev/requirements/6/6.4/6.4.3",
+   "kind": "reference",
+   "note": "비공식 요건 원문 사이트(PCI SSC 공식 PDF는 자동 접속이 막혀 이것으로 확인)"
+  },
+  {
+   "n": 22,
+   "title": "WithPCI · PCI DSS v4.0.1 요건 11.6.1",
+   "url": "https://withpci.pages.dev/requirements/11/11.6/11.6.1",
+   "kind": "reference",
+   "note": "비공식 — 결제 페이지 헤더·스크립트 변조 알림, 최소 주 1회 또는 목표 위험 분석 주기"
+  },
+  {
+   "n": 23,
+   "title": "WithPCI · PCI DSS v4.0.1 요건 8.4.2",
+   "url": "https://withpci.pages.dev/requirements/8/8.4/8.4.2",
+   "kind": "reference",
+   "note": "비공식 — 카드 정보 환경에 들어가는 모든 비콘솔 접근에 MFA"
+  },
+  {
+   "n": 24,
+   "title": "WithPCI · PCI DSS v4.0.1 요건 12.5.2",
+   "url": "https://withpci.pages.dev/requirements/12/12.5/12.5.2",
+   "kind": "reference",
+   "note": "비공식 — 범위 확인 12개월마다(서비스 제공자 12.5.2.1은 6개월마다)"
+  },
+  {
+   "n": 25,
+   "title": "PCI SSC · Qualified Security Assessors",
+   "url": "https://www.pcisecuritystandards.org/assessors_and_solutions/qualified_security_assessors/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Visa · Compliance Validation (가맹점 등급)",
+   "url": "https://caribbean.visa.com/run-your-business/small-business/information-security/compliance-validation.html",
+   "kind": "reference",
+   "note": "Level 1 = 연 600만 건 초과, 해마다 QSA의 ROC·분기 ASV 스캔·AOC"
+  },
+  {
+   "n": 27,
+   "title": "PCI SSC · PCI Professional (PCIP) 자격",
+   "url": "https://www.pcisecuritystandards.org/program_training_and_qualification/pci_professional_qualification/",
+   "kind": "reference",
+   "note": "입문 자격, 75문항 90분 75% 합격, 3년마다 갱신"
+  },
+  {
+   "n": 28,
+   "title": "AICPA · SOC 2",
+   "url": "https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2",
+   "kind": "reference",
+   "note": "서비스 회사의 시스템 통제를 회계사가 검증한 보고서 — 외주 위험 평가에 쓰임"
+  },
+  {
+   "n": 29,
+   "title": "대만 노동부 · 114년 직종별 임금 조사",
+   "url": "https://www.mol.gov.tw/1607/1632/1633/90814/",
+   "kind": "reference",
+   "date": "2026-05-29",
+   "note": "관리·감독직 2024년 연간 NT$131.7만(2025-07 월 NT$8.1만), 전문직 NT$106.2만 — 보안 직군 구분 없음"
+  },
+  {
+   "n": 30,
+   "title": "數位時代 · 보안 사고 뒤 쿠팡 대만의 전략 조정",
+   "url": "https://www.bnext.com.tw/article/90183/coupang-strategic-adjustments-after-security-incident",
+   "kind": "news",
+   "date": "2026-02-27",
+   "note": "디지털산업서가 개인정보 관리 결함 확인·처분 예고, 임대 창고 정리·고연봉 채용 중단"
+  }
+ ],
+ "caveat": "쿠팡의 대만 보안 조직이나 결제 허가 계획을 다룬 회사 발표(블로그·컨퍼런스 영상)는 찾지 못했습니다. 그래서 대만 법령·협회 기준·감독기관 검사 중점·PCI SSC 문서로 '보통 이런 일'을 보였습니다. 협회 기준의 숫자는 2024-10판이고, 2026-09-29 개정판은 본문을 읽지 못했습니다. PCI DSS 요건 문구는 공식 PDF가 자동 접속을 막아 비공식 원문 사이트로 확인했습니다.",
+ "resources": [
+  {
+   "id": "tw-act",
+   "title": "電子支付機構管理條例 (전자지급기관 관리 조례)",
+   "by": "대만 법무부 全國法規資料庫",
+   "kind": "doc",
+   "lang": "zh",
+   "free": true,
+   "level": "입문",
+   "url": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0380237",
+   "why": "업무 첫 줄(허가 준비)의 뼈대. 5·9·11·13·32·37조만 먼저 읽으면 허가 순서와 보안·검사 의무가 잡힌다."
+  },
+  {
+   "id": "epa-std",
+   "title": "電子支付機構資訊系統標準及安全控管作業基準",
+   "by": "中華民國電子支付商業同業公會 · 2026-09-29 최신판",
+   "kind": "doc",
+   "lang": "zh",
+   "free": true,
+   "level": "실무",
+   "url": "https://epa.org.tw/regulations/self-discipline",
+   "why": "공고가 말한 'FSC 보안 지침'의 지금 이름. 인증·암호·점검 주기·앱 보안 숫자가 모두 여기 있다 — 요건 다섯째 줄의 원문."
+  },
+  {
+   "id": "feb-focus",
+   "title": "115년도 금융 검사 중점 (전업 전자지급기관)",
+   "by": "대만 金管會檢查局 · 2025-12",
+   "kind": "doc",
+   "lang": "zh",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.feb.gov.tw/ch/home.jsp?id=65&parentpath=0%2C4&mcustomize=onemessages_view.jsp&dataserno=202512180002&dtable=Business",
+   "why": "검사관이 올해 무엇을 보겠다고 미리 밝힌 목록. 업무 셋째 줄(검사 창구)의 준비 목록으로 그대로 쓴다."
+  },
+  {
+   "id": "pci-dss",
+   "title": "PCI DSS v4.0.1 · Summary of Changes",
+   "by": "PCI Security Standards Council",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.pcisecuritystandards.org/document_library/",
+   "why": "표준 원문과 v4.0 → v4.0.1 바뀐 점. 2025년부터 의무가 된 51개 요건을 원문으로 확인한다."
+  },
+  {
+   "id": "pcip",
+   "title": "PCI Professional (PCIP)",
+   "by": "PCI Security Standards Council",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.pcisecuritystandards.org/program_training_and_qualification/pci_professional_qualification/",
+   "why": "PCI DSS를 체계적으로 한 번 훑는 공식 입문 자격. 면접에서 PCI 이해 수준을 보여 줄 근거가 된다."
+  },
+  {
+   "id": "coursera-pci",
+   "title": "PCI DSS v4.0.0 Fundamentals & Compliance Guide",
+   "by": "Packt · Coursera",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.coursera.org/learn/packt-pci-dss-fundamentals-compliance-guide-56x1i",
+   "why": "약 9시간·6개 단원. v4.0.0 기준이라 v4.0.1 문구 수정은 공식 문서로 보충한다."
+  },
+  {
+   "id": "nist-csf",
+   "title": "NIST Cybersecurity Framework 2.0",
+   "by": "NIST · 2024-02",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.nist.gov/news-events/news/2024/02/nist-releases-version-20-landmark-cybersecurity-framework",
+   "why": "거버넌스·식별·보호·탐지·대응·복구 6개 기능으로 보안 프로그램 전체를 나눠 보는 틀. 쇼핑몰·물류·사내 보안을 한 지도에 올릴 때 쓴다."
+  },
+  {
+   "id": "anderson",
+   "title": "Security Engineering (3판)",
+   "by": "Ross Anderson · Wiley · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.cl.cam.ac.uk/archive/rja14/book.html",
+   "why": "인증·암호·결제·은행 보안까지 '여러 보안 분야'를 한 권으로. 저자 사이트에 장별 PDF가 무료로 있다. 결제·은행 장부터 읽는다."
+  },
+  {
+   "id": "bsrs",
+   "title": "Building Secure and Reliable Systems",
+   "by": "Heather Adkins 외 · Google",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/books/",
+   "why": "보안을 큰 조직의 설계·운영 문화로 넣는 법. 여러 팀을 움직여 보안을 바꾸는 요건(넷째 줄)에 맞는다. 온라인 무료."
+  },
+  {
+   "id": "asvs",
+   "title": "OWASP Application Security Verification Standard 5.0",
+   "by": "OWASP · 2025-05",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://asvs.owasp.org/",
+   "why": "웹·앱 보안을 검증 항목으로 정리한 표준. 대만 기준이 요구하는 앱 점검을 무엇으로 하는지 감을 잡는다."
+  },
+  {
+   "id": "isms-p-book",
+   "title": "개정판 ISMS-P 인증 실무 가이드 3/e",
+   "by": "연수권 · 신동혁 · 박나룡 · 에이콘출판 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ridibooks.com/books/3984000043",
+   "why": "한국 인증 심사를 받는 실제 절차와 증거 준비. 나라는 달라도 '통제 → 증거 → 심사' 흐름이 같아 검사 창구 연습에 좋다. 쿠팡 본사도 ISMS-P를 받는다.[17]"
+  },
+  {
+   "id": "ciso-drg",
+   "title": "CISO Desk Reference Guide",
+   "by": "Bill Bonney · Gary Hayslip · Matt Stamper",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.paloaltonetworks.com/blog/2017/12/cybersecurity-canon-review-ciso-desk-reference-guide-practical-guide-cisos/",
+   "why": "보안 책임자가 경영진·감사·사업 부서와 일하는 법. 행동 적합성 칸(영향력·사업 감각)을 구체적인 행동으로 바꿔 준다."
+  },
+  {
+   "id": "soc2",
+   "title": "SOC 2 — 서비스 회사 통제 검증 보고서",
+   "by": "AICPA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2",
+   "why": "제휴사 평가에서 가장 자주 오가는 외부 보고서가 무엇을 증명하는지."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "규제 지도 그리기",
+   "time": "1~2주",
+   "goal": "대만 전자지급 허가 순서와 보안·검사 의무를 조항 번호로 말할 수 있다.",
+   "resources": [
+    "tw-act",
+    "feb-focus"
+   ],
+   "task": "조례 5·9·11·13·32·37·44조를 한 장 표(조항 · 요구 · 누가 맡나 · 증거)로 만들고, 검사 중점 6항목을 같은 표에 붙인다."
+  },
+  {
+   "title": "두 기준 겹쳐 보기",
+   "time": "2~3주",
+   "goal": "대만 협회 기준과 PCI DSS가 같은 것을 다르게 요구하는 곳을 찾아 통제 하나로 묶는다.",
+   "resources": [
+    "epa-std",
+    "pci-dss",
+    "coursera-pci"
+   ],
+   "task": "인증·암호·로그·점검 주기 4분야로 통제 목록 20줄을 만들고, 줄마다 대만 조항과 PCI 요건 번호를 같이 달아 더 엄한 쪽 숫자를 적는다(예: 로그 보관)."
+  },
+  {
+   "title": "결제 페이지 직접 지키기",
+   "time": "1~2주",
+   "goal": "6.4.3·11.6.1을 작은 코드로 구현하고 한계를 설명할 수 있다.",
+   "resources": [
+    "pci-dss",
+    "asvs"
+   ],
+   "task": "위 예시 코드를 늘려, 가상 결제 페이지의 스크립트 목록(주소·지문·승인 이유)을 파일로 두고 매주 돌려 바뀐 것을 알리는 작업을 만든다. 브라우저 CSP 헤더 검사도 붙인다."
+  },
+  {
+   "title": "검사 하루 연습",
+   "time": "1~2주",
+   "goal": "검사관 질문에 증거로 답하는 묶음을 만들 수 있다.",
+   "resources": [
+    "isms-p-book",
+    "soc2",
+    "feb-focus"
+   ],
+   "task": "가상 회사의 관리자 계정 목록·접근 로그 100줄·방화벽 규칙 20줄을 만들고, '관리자 계정 사용 기록을 보여 달라'는 질문에 낼 증거 폴더와 한 장 요약, 고칠 점 3개를 쓴다."
+  },
+  {
+   "title": "여러 팀을 움직이는 계획 (선택)",
+   "time": "계속",
+   "goal": "보안 프로그램을 사업 말로 설명하고 우선순위를 정한다.",
+   "resources": [
+    "nist-csf",
+    "bsrs",
+    "anderson",
+    "ciso-drg"
+   ],
+   "task": "NIST CSF 6개 기능으로 가상 대만 쇼핑몰·물류·결제의 현재 수준을 매기고, 6개월 계획 1장(무엇을 · 어느 팀이 · 비용 · 줄어드는 위험)을 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "이 자리의 연봉 공개 숫자는 없다 — 공고에 금액이 없고 대만 법인은 공시가 없다. 대만 통계의 관리·감독직 연평균 NT$131.7만(2024)은 직군 구분 없는 전체 값이라 디렉터급 보안 책임자와 거리가 멀다",
+  "rows": [
+   {
+    "label": "대만 관리·감독직 연평균 임금",
+    "value": "NT$131.7만",
+    "basis": "대만 노동부 직종별 임금 조사 · 2024년",
+    "note": "모든 업종의 관리·감독직 평균이다. 보안 직군·디렉터 직급 구분이 없어 이 자리 금액으로 읽으면 안 된다 [29]"
+   },
+   {
+    "label": "대만 전문직 연평균 임금",
+    "value": "NT$106.2만",
+    "basis": "대만 노동부 직종별 임금 조사 · 2024년",
+    "note": "같은 조사의 전문직 평균. 경력 10년 이상 보안 엔지니어와 비교하는 바닥선 정도다 [29]"
+   },
+   {
+    "label": "쿠팡 Inc. 직원 총보상 중앙값 (모회사·전 세계)",
+    "value": "US$33,831",
+    "basis": "공시(위임장) · 2025년",
+    "peer": true,
+    "note": "CEO 보수 비율 공시의 중앙값 직원이다. 물류·현장 인력이 많은 전 세계 값이라 대만 디렉터 연봉과 전혀 다르다 [16]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고 전형 마지막이 **제안(Offer)** 단계다 [1]. 대만 법인 쿠팡의 평균 급여 공시는 찾지 못했다. 통계는 직군·직급을 섞은 값이라 실제 금액은 제안 단계에서 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 타이베이 사무실 (타이베이 101)",
+  "address": "台北市信義區信義路五段7號13樓 (13F, No. 7, Sec. 5, Xinyi Rd., Xinyi Dist., Taipei City)",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=Taipei%20101%2013F%20No.%207%20Sec.%205%20Xinyi%20Rd%20Taipei",
+  "near": "지하철 Taipei 101/World Trade Center 역 옆 [4]",
+  "note": "영문 주소는 쿠팡 채용 사이트의 타이베이 사무실 안내다 [4]. 중문 표기는 같은 주소로 등록된 酷澎支付 법인 정보에서 옮겼다 [11]. 공고 근무지 표기는 'Taipei, Taiwan'이다 [1]."
+ }
+}

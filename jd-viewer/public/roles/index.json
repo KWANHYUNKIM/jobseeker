@@ -10,6 +10,7 @@
   "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
+  "ats-greenhouse:coupang:8300309": "coupang-taiwan-security-engineering-director",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
   "wanted-389061": "datachain-senior-sre-stablecoin",
   "wanted-395987": "datax-software-engineer-japan",
@@ -352,6 +353,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 24
+  },
+  {
+   "id": "coupang-taiwan-security-engineering-director",
+   "company": "쿠팡 (Coupang)",
+   "role": "보안 엔지니어링 디렉터 (대만)",
+   "jobs": [
+    "ats-greenhouse:coupang:8300309"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 19
   },
   {
    "id": "creationline-fullstack-sherpa-japan",
