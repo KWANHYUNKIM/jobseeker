@@ -14,6 +14,7 @@
   "ats-ashby:42dot:905f1b60-158a-4aca-a3c3-376cbfdcefa9": "42dot-cloud-infrastructure-engineer",
   "ats-ashby:42dot:70c5a672-9bd9-4195-a305-245b578a35dc": "42dot-data-engineer-data-governance",
   "ats-ashby:42dot:96c1501f-070c-4c0f-b883-af957746e84c": "42dot-edge-ai-sw-engineer-ad",
+  "ats-ashby:42dot:be911f50-1c25-4598-bc12-ef502a27f165": "42dot-embedded-sw-engineer-linux",
   "ats-ashby:42dot:63196d96-2810-4348-8aa5-077d8c0ee710": "42dot-firmware-secure-boot-ota",
   "wanted-310540": "42dot-ivi-os-camera-system",
   "ats-ashby:42dot:a83b4909-4d4f-41c5-b212-a1db321965a5": "42dot-llm-optimization-engineer",
@@ -22,6 +23,7 @@
   "ats-ashby:42dot:810a8fe2-0790-42cf-b973-df16b553fa08": "42dot-mts-foundation-models",
   "ats-ashby:42dot:2b5a9e26-853d-4131-a11e-123aa2ba9139": "42dot-os-tools-software-engineer",
   "ats-ashby:42dot:442d28d0-1c6a-40a1-8729-9e8db1ab14f9": "42dot-sdv-vehicle-connect-software-engineer",
+  "ats-ashby:42dot:1b595f84-2557-4468-b4f8-29a0cf12f713": "42dot-security-engineer-vehicle",
   "ats-ashby:42dot:464eb98e-07e6-4cd4-af5d-2d9e9322a3cc": "42dot-senior-ai-agent-engineer-gleo-interactor",
   "ats-ashby:42dot:75e6abe9-9195-43c3-abdf-60feff10bd47": "42dot-senior-ai-data-pipeline-engineer",
   "wanted-384995": "42dot-senior-backend-gateway-iam",
@@ -496,6 +498,16 @@
    "lines": 18
   },
   {
+   "id": "42dot-embedded-sw-engineer-linux",
+   "company": "포티투닷(42dot)",
+   "role": "Embedded SW Engineer (임베디드 리눅스)",
+   "jobs": [
+    "ats-ashby:42dot:be911f50-1c25-4598-bc12-ef502a27f165"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
+  },
+  {
    "id": "42dot-firmware-secure-boot-ota",
    "company": "포티투닷(42dot)",
    "role": "Sr. Staff Firmware Engineer (Secure Boot & OTA)",
@@ -574,6 +586,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 18
+  },
+  {
+   "id": "42dot-security-engineer-vehicle",
+   "company": "포티투닷(42dot)",
+   "role": "Security Engineer (차량 보안)",
+   "jobs": [
+    "ats-ashby:42dot:1b595f84-2557-4468-b4f8-29a0cf12f713"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
   },
   {
    "id": "42dot-senior-ai-agent-engineer-gleo-interactor",
