@@ -219,6 +219,7 @@
   "jobkorea-50249295": "megazonecloud-security-solution-engineer",
   "ats-greeting:musinsa:197974": "musinsa-cloud-engineer-foundation-platform",
   "ats-greeting:musinsa:230871": "musinsa-core-ai-product-engineer",
+  "ats-greeting:musinsa:242044": "musinsa-network-engineer",
   "ats-greeting:musinsa:245811": "musinsa-product-engineer-commerce",
   "ats-greeting:musinsa:241118": "musinsa-product-engineer-partner-ads-growth",
   "ats-greeting:musinsa:246226": "musinsa-product-engineer-partner-platform",
@@ -2369,6 +2370,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 36
+  },
+  {
+   "id": "musinsa-network-engineer",
+   "company": "무신사",
+   "role": "Network Engineer",
+   "jobs": [
+    "ats-greeting:musinsa:242044"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 27
   },
   {
    "id": "musinsa-product-engineer-commerce",

@@ -1,0 +1,988 @@
+{
+ "id": "musinsa-network-engineer",
+ "company": "무신사",
+ "role": "Network Engineer",
+ "team": "공간·업무 환경 운영 조직 (Network Engineering)",
+ "jobs": [
+  "ats-greeting:musinsa:242044"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사 성수 사옥과 오프라인 매장의 유·무선 네트워크를 만들고, 업체 관리·자산 문서·장애 대응까지 운영한다.",
+  "env": "서비스 백엔드가 아니라 사무실·매장 네트워크(IT 인프라). 외부 ISP·유지보수 업체와의 조율 비중이 크다.[1]",
+  "oneline": "사옥·매장 망의 설계·운영·벤더 관리를 한 사람이 맡는 7년+ 자리."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "오프라인 매장 및 사옥 네트워크를 구축하고 운영합니다.",
+   "short": "매장·사옥에서 와이파이·유선·회선이 끊기지 않게 깔고 굴리는 일.",
+   "why": "공고는 이 자리를 구성원이 공간의 제약 없이 업무에 몰입하도록 하는 네트워크로 설명합니다.[1] 매장은 결제·재고 단말이 붙는 곳이라 끊김이 곧 영업 손실입니다. {추론}",
+   "actually": {
+    "items": [
+     "**회선** — 통신사(ISP) 인터넷·전용선을 매장·사옥에 들이고 개통 일정을 맞춘다.",
+     "**유선** — 스위치(포트를 늘려 주는 장비)와 라우터(다른 망으로 길을 잇는 장비)를 놓는다.",
+     "**무선** — 무선 AP(와이파이 송신기)를 어디에 몇 대 둘지 정한다.",
+     "**운영** — 개통 뒤 장애·변경을 받는다."
+    ]
+   },
+   "how_far": "신규 오피스·매장 설계는 설계도와 장비 목록을 만드는 데까지, 시공은 보통 협력업체가 한다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ccna"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "신규 오피스 및 오프라인 매장의 실무 네트워크 디자인 및 구축 지원",
+   "short": "새 점포가 열릴 때 망 구성도와 장비·IP 계획을 짜고 개통까지 거든다.",
+   "why": "'구축 지원'이라는 표현은 설계를 혼자 확정하기보다 계획·시공 조율을 돕는 자리임을 시사합니다.[1] {추론}",
+   "actually": {
+    "items": [
+     "**요구 확인** — 인원·단말 수, 결제기·POS·CCTV 같은 매장 장비 목록.",
+     "**IP·VLAN 계획** — 업무망·손님용 와이파이·결제망을 VLAN(한 장비를 논리적으로 여러 망으로 나누는 것)으로 나눈다.",
+     "**무선 현장 조사** — 도면 위에 AP 위치를 정하고 개통 뒤 신호를 재 본다.",
+     "**개통 점검** — 회선 속도, 장비 설정, 접속 테스트 체크리스트로 확인."
+    ]
+   },
+   "how_far": "공고가 7년 이상 경력을 요구하니 설계 초안은 본인이 낸다고 읽는 편이 안전하다. {추론}",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "ccna",
+    "kurose"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구축 과정에 수반되는 제반 행정 업무 수행",
+   "short": "발주·개통 신청·준공 서류 같은 서류 일까지 맡는다.",
+   "why": "행정 업무는 공고가 직접 적은 일입니다.[1] 서류가 밀리면 개통이 밀립니다. {추론}",
+   "actually": {
+    "items": [
+     "**발주·견적 비교** — 장비·회선 업체 견적.",
+     "**개통 신청** — 통신사 회선 신청서와 일정 조율.",
+     "**자산 등록** — 새 장비의 위치·일련번호 기록.",
+     "**비용 처리** — 세금계산서·구매 요청 문서."
+    ]
+   },
+   "how_far": "개발자 눈에는 사소해 보여도 일정의 병목은 흔히 서류다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "itil"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 인프라 유지 보수을 담당하며, 벤더를 관리합니다.",
+   "short": "직접 고치는 것과 업체에 맡기는 것을 가르고, 업체가 약속대로 하는지 챙긴다.",
+   "why": "공고가 유지보수 파트너사와 SLA 확인을 업무로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**접수** — 장애·요청을 업체에 전달.",
+     "**일정 조율** — 방문 시간 정하기.",
+     "**성과 확인** — 약속한 응답·복구 시간을 지켰는지.",
+     "**갱신** — 계약 대상·단가 점검."
+    ]
+   },
+   "how_far": "기술 판단은 본인, 계약 체결 권한은 보통 부서장이다. {추론}",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "itil"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 유지보수 파트너사(협력업체) 커뮤니케이션 및 업무 조율",
+   "short": "업체와 연락해 일정·책임을 맞추는 일.",
+   "why": "협력업체 소통은 지원자격에도 따로 적혀 있습니다(ISP·벤더사).[1]",
+   "actually": {
+    "items": [
+     "**장애 연락** — 증상·시각·영향 범위를 한 번에 전달.",
+     "**방문 일정** — 매장 영업 시간 피하기.",
+     "**보고 받기** — 작업 결과 확인."
+    ]
+   },
+   "how_far": "장애 때 '어디까지 확인했고 무엇을 요청하는지' 한 문단으로 쓰는 것이 핵심이다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "itil"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "월간 유지보수 보고서 및 SLA(서비스 수준 협약) 이행 여부 확인",
+   "short": "업체가 낸 월간 보고서를 약속한 수치와 맞춰 보는 일.",
+   "why": "SLA 는 응답·복구 시간·가용률 같은 약속 수치입니다(ITIL 용어).[12]",
+   "actually": {
+    "items": [
+     "**가용률** — (1 − 중단 분/월 전체 분) × 100.",
+     "**응답·복구 시간** — 접수에서 첫 응답까지, 복구까지.",
+     "**위반 처리** — 미달 시 계약에 정한 감액·시정 요청."
+    ]
+   },
+   "how_far": "계약서의 SLA 항목이 기준이다. 숫자는 본인이 직접 다시 계산해 본다. {추론}",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "itil"
+   ],
+   "examples": [
+    {
+     "title": "월 가용률 계산(가상 값, 직접 실행)",
+     "body": "30일 = 43,200분. 99.9% 면 월 43.2분까지만 멈출 수 있다. 50분 중단 → 99.884%(미달), 130분 → 99.699%.",
+     "lang": "python",
+     "code": "minutes=30*24*60\nfor name,down in [('AP 군',50),('매장 A 회선',130)]:\n    print(name, '%.3f%%' % ((1-down/minutes)*100))\nprint(round(minutes*0.001,1))"
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "매월 유지보수 비용 정산 및 관련 행정 처리",
+   "short": "청구서가 계약 대상과 맞는지 보고 지급 절차를 밟는다.",
+   "why": "정산은 공고가 적은 월 반복 업무입니다.[1]",
+   "actually": {
+    "items": [
+     "**청구 대조** — 청구 장비 수·단가 vs 계약.",
+     "**SLA 반영** — 미달분 차감.",
+     "**결재** — 사내 결재 문서."
+    ]
+   },
+   "how_far": "자산 목록이 정확해야 대조가 된다 — 아래 '장비 현행화' 줄과 이어진다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "itil"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 자산 및 구성 정보 형상 관리를 담당합니다.",
+   "short": "어떤 장비가 어디에 어떤 설정으로 있는지 최신 상태로 기록해 둔다.",
+   "why": "구성도·자산 문서 현행화가 공고의 업무 줄에 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**자산 대장** — 모델·일련번호·위치·펌웨어·계약 기간.",
+     "**구성도** — 물리·논리 그림.",
+     "**설정 백업** — 변경 이력(Oxidized 같은 도구).[15]"
+    ]
+   },
+   "how_far": "문서가 낡으면 장애 때 아무도 믿지 않는다. 변경 때마다 갱신하는 습관이 최소선. {추론}",
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "oxidized",
+    "netmiko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사내 네트워크 구조 파악을 통한 네트워크 구성 정보 및 관련 문서 지속적 최신화",
+   "short": "현장을 돌며 실제 구조를 확인해 문서를 고친다.",
+   "why": "'구조 파악'은 문서가 현실과 어긋나 있을 수 있음을 전제합니다. {추론}",
+   "actually": {
+    "items": [
+     "**현장 확인** — 랙·층별 통신실 장비와 케이블.",
+     "**CLI 수집** — 이웃 장비 목록(LLDP/CDP)으로 연결 확인.",
+     "**문서 반영** — 구성도·대장 수정."
+    ]
+   },
+   "how_far": "전수조사는 한 번, 이후는 변경 때마다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "netmiko",
+    "ccna"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "유지보수 계약 갱신에 대비한 대상 장비 현행화 및 정합성 확보",
+   "short": "계약서의 장비 목록과 실제 장비를 맞춘다.",
+   "why": "계약에 없는 장비는 지원이 안 되고, 없는 장비에 돈을 낼 수도 있어 갱신 전 대조가 필요합니다. {추론}",
+   "actually": {
+    "items": [
+     "**대조** — 계약 목록과 실제 목록의 차집합.",
+     "**지원 종료 확인** — 제조사 지원 종료 장비 교체 계획.",
+     "**갱신 협상 자료** — 정리된 목록 제출."
+    ]
+   },
+   "how_far": "아래 예시처럼 두 목록을 대조하는 것부터. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "netmiko"
+   ],
+   "examples": [
+    {
+     "title": "계약 vs 실제 장비 대조(가상 값, 직접 실행)",
+     "body": "SW-A02 는 계약에만, AP-2F-01 은 실제에만 있다.",
+     "lang": "python",
+     "code": "contract=set('SW-A01 SW-A02 AP-1F-01 AP-1F-02 FW-01'.split())\nlive=set('SW-A01 AP-1F-01 AP-1F-02 AP-2F-01 FW-01'.split())\nprint(sorted(contract-live)); print(sorted(live-contract))"
+    }
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크를 모니터링하고 성능을 최적화합니다.",
+   "short": "상태·속도를 계속 보고 느려지기 전에 손본다.",
+   "why": "공고 조직 소개가 가용성과 안정성 보장을 이 일의 목적으로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**지표** — 장비 up/down, 회선 사용률, 무선 접속 수·신호, 오류 패킷.",
+     "**수집** — 값은 SNMP(장비 상태를 묻는 표준)로 읽는다.[10]",
+     "**경보** — 기준(임계값)을 정한다."
+    ]
+   },
+   "how_far": "도구 선택은 팀 결정, 임계값 조정은 본인. {추론}",
+   "refs": [
+    1,
+    10,
+    16
+   ],
+   "study": [
+    "zabbix",
+    "snmp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사내 네트워크 성능을 지속적으로 모니터링하여 시스템의 가용성 및 안정성 보장",
+   "short": "대시보드·경보로 이상을 먼저 알아채는 일.",
+   "why": "공고가 도구 활용 경험을 자격요건에도 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**Zabbix 류 도구**로 수집·시각화.[16]",
+     "**로그** — syslog 로 장비 이벤트 수집.[9]",
+     "**기준선** — 평소 값과 비교."
+    ]
+   },
+   "how_far": "경보가 너무 많으면 무시된다 — 줄이는 것이 성능의 일부. {추론}",
+   "refs": [
+    1,
+    9,
+    16
+   ],
+   "study": [
+    "zabbix",
+    "syslog"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안 정책 가이드라인 내에서 네트워크 인프라에 대한 변경 사항을 안전하게 관리 및 처리",
+   "short": "보안팀 규칙 안에서 변경을 요청·승인·기록하며 하는 일.",
+   "why": "자격요건에 '변경 및 접근 제어 관리'가 따로 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**변경 요청서** — 무엇을·왜·언제·되돌리는 법.",
+     "**승인** — 보안·서비스 영향 확인.",
+     "**작업 후 확인** — 전후 상태 비교.",
+     "**접근 제어** — 802.1X, ACL, 관리자 계정 분리.[11]"
+    ]
+   },
+   "how_far": "정책을 만드는 쪽이 아니라 지키며 실행하는 쪽. {추론}",
+   "refs": [
+    1,
+    12,
+    11
+   ],
+   "study": [
+    "itil",
+    "dot1x"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장애 대응 및 유지/보수를 담당합니다.",
+   "short": "망이 멈추면 1차로 원인을 좁히고, 업체가 필요하면 부른다.",
+   "why": "장애가 영업·업무 중단으로 이어지는 자리입니다. {추론}",
+   "actually": {
+    "items": [
+     "증상 확인 → 범위 확인 → 원인 후보 → 조치 → 기록.",
+     "층별로 가르는 원리는 Kurose·Ross 교재가 정리한다.[17]"
+    ]
+   },
+   "how_far": "원인 불명 시 업체·ISP 에게 넘기는 기준을 정해 둔다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "kurose",
+    "ccna"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 장애 및 오류 발생 시 신속하고 주도적인 원인 파악 및 1/2차 대응",
+   "short": "층 순서로 확인해 원인을 좁힌다.",
+   "why": "1/2차 대응은 현장에서 확인·재시작·설정 수정까지, 이후는 업체 몫으로 읽힙니다. {추론}",
+   "actually": {
+    "items": [
+     "**물리** — 케이블·전원·포트 LED.",
+     "**링크** — 스위치 포트 오류·VLAN.",
+     "**IP** — 게이트웨이·DNS·ping/traceroute.",
+     "**무선** — AP 상태·간섭·접속 수.",
+     "**회선** — ISP 구간 vs 내부 구간 구분."
+    ]
+   },
+   "how_far": "1차: 확인·재부팅·케이블, 2차: 설정·로그 분석. {추론}",
+   "refs": [
+    1,
+    17
+   ],
+   "study": [
+    "kurose",
+    "ccna"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "인프라 유지/보수 과정에 주도적으로 참여하며 안정적인 네트워크 서비스 환경 유지",
+   "short": "업체에 맡기고 끝이 아니라 점검·교체 작업에 같이 들어간다.",
+   "why": "'주도적'이 공고 전체에서 반복됩니다.[1]",
+   "actually": {
+    "items": [
+     "정기 점검, 펌웨어 업데이트 일정 잡기, 노후 장비 교체 제안."
+    ]
+   },
+   "how_far": "교체 제안은 근거(지원 종료 일자·장애 이력)와 함께. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "itil"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "IT 인프라 및 네트워크 엔지니어링 관련 경력을 7년 이상 보유하신 분",
+   "short": "7년 이상이면 설계 판단과 장애 경험이 있다고 보는 선.",
+   "why": "경력 기준은 공고 헤더도 '경력 7년↑'입니다.[1]",
+   "actually": {
+    "items": [
+     "운영·구축 경력이 같이 증명돼야 한다 — 이력서에 규모(장비 수·거점 수)를 적는다."
+    ]
+   },
+   "how_far": "연차 요건은 회사가 판단하는 선, 실제로는 경험의 폭이 본다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ccna"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "유/무선 네트워크 장비(스위치, 라우터, 무선 AP 등) 구성, 설치 및 운영 실무 경험을 보유하신 분",
+   "short": "스위치·라우터·AP 를 직접 설정해 본 경험.",
+   "why": "핵심 필수 요건입니다.[1]",
+   "actually": {
+    "items": [
+     "VLAN·트렁크·STP·라우팅·DHCP·SSID/무선 보안 설정."
+    ]
+   },
+   "how_far": "CCNA 범위가 기본선.[7]",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "ccna"
+   ],
+   "level": {
+    "basic": "VLAN·IP 설정",
+    "work": "트렁크·STP·무선 컨트롤러",
+    "team": "다거점 표준화"
+   }
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크 성능 모니터링 툴 활용 및 트러블슈팅(장애 원인 분석 및 해결) 경험을 보유하신 분",
+   "short": "모니터링 도구를 쓰고 장애를 원인까지 판 경험.",
+   "why": "도구와 문제 해결을 같이 묻습니다.[1]",
+   "actually": {
+    "items": [
+     "Zabbix·PRTG·LibreNMS 류, 패킷 캡처(Wireshark)."
+    ]
+   },
+   "how_far": "사례 하나를 '증상→원인→조치→재발방지'로 말할 수 있으면 충분. {추론}",
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "zabbix",
+    "kurose"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "인프라 보안 정책에 대한 이해를 바탕으로 네트워크 변경 및 접근 제어 관리가 가능하신 분",
+   "short": "정책을 이해하고 ACL·인증 설정으로 반영.",
+   "why": "변경·접근 제어가 업무 줄과 연결됩니다.[1]",
+   "actually": {
+    "items": [
+     "ACL, 802.1X, 관리 접속(SSH, 계정)."
+    ]
+   },
+   "how_far": "정책 설계가 아닌 반영·점검. {추론}",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "dot1x",
+    "ccna"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "충분한 공학적 지식을 바탕으로 프로젝트 구축/테스트를 주도해 본 경험이 있으신 분",
+   "short": "구축 프로젝트의 계획·시험을 이끈 경험.",
+   "why": "오프라인 신규 점포 구축이 반복되기 때문입니다. {추론}",
+   "actually": {
+    "items": [
+     "시험 계획서, 개통 전 점검표, 성능 측정."
+    ]
+   },
+   "how_far": "규모보다 '내가 맡은 범위'를 구체로. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ccna"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 유관 부서 및 외부 파트너(ISP, 벤더사 등)와 원활하게 소통할 수 있는 커뮤니케이션 능력을 갖추신 분",
+   "short": "부서·업체와 문서·회의로 조율하는 능력.",
+   "why": "벤더·ISP 소통이 일의 큰 비중입니다.[1]",
+   "actually": {
+    "items": [
+     "장애 보고서, 일정 협의, 계약 갱신 협의."
+    ]
+   },
+   "how_far": "기술을 비개발 직군에 쉬운 말로 풀 수 있어야 한다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "itil"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "리테일 산업(오프라인 매장)의 네트워크 인프라 구축 및 운영 경험이 있으신 분",
+   "short": "여러 점포를 같은 표준으로 깔아 본 경험.",
+   "why": "매장은 작고 많은 거점이라 표준화가 핵심입니다. {추론}",
+   "actually": {
+    "items": [
+     "점포 표준 구성(회선·스위치·AP·방화벽), 결제망 분리, 원격 점검."
+    ]
+   },
+   "how_far": "우대일 뿐 — 대규모 다거점 경험으로 갈음 가능. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ccna"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "네트워크 자산 전수조사 및 유지보수 갱신 등 인프라 자산관리 프로젝트 경험이 있으신 분",
+   "short": "장비 전수 확인→계약 갱신 경험.",
+   "why": "현행화 업무와 이어집니다.[1]",
+   "actually": {
+    "items": [
+     "현장 실사, 대장 정리, 계약 대조."
+    ]
+   },
+   "how_far": "한 번이라도 해 보면 우대 충족. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "netmiko",
+    "oxidized"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "네트워크 자동화 툴 활용 및 시스템 효율화 경험이 있으신 분",
+   "short": "반복 설정·점검을 스크립트·도구로.",
+   "why": "Netmiko·Ansible·Oxidized 가 흔한 도구입니다.[13][14][15]",
+   "actually": {
+    "items": [
+     "설정 백업, 인벤토리 수집, 일괄 설정 변경."
+    ]
+   },
+   "how_far": "작은 자동화(백업·점검)로 충분. {추론}",
+   "refs": [
+    1,
+    13,
+    14
+   ],
+   "study": [
+    "netmiko",
+    "ansible",
+    "oxidized"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CCNA, 네트워크 관리사 등 네트워크 및 인프라 관련 자격증을 보유하신 분",
+   "short": "자격증으로 기본기 증명.",
+   "why": "공고가 CCNA·네트워크관리사를 직접 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "CCNA(Cisco)[8], 네트워크관리사(국내)[18]."
+    ]
+   },
+   "how_far": "7년 경력이면 있으면 가산 정도. {추론}",
+   "refs": [
+    1,
+    8,
+    18
+   ],
+   "study": [
+    "ccna-exam",
+    "icqa",
+    "ccna"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "IT 트렌드에 대한 높은 이해를 바탕으로 새로운 네트워크 기술 도입을 선도할 수 있으신 분",
+   "short": "새 기술을 근거와 함께 제안.",
+   "why": "범위가 넓은 문구라 구체적 기술명은 없습니다.[1]",
+   "actually": {
+    "items": [
+     "예: 와이파이 세대 전환, SD-WAN, 제로 트러스트 — 공고에 명시 아님 {추론}"
+    ]
+   },
+   "how_far": "도입 결정은 비용·보안 승인 필요. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "kurose"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "ccna",
+   "title": "CCNA 200-301 Official Cert Guide, Volume 1·2",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/ccna-200-301-official/9780138229856/",
+   "lang": "en",
+   "level": "입문",
+   "why": "스위치·라우팅·VLAN·무선·ACL 을 한 순서로 훑어 '유/무선 장비 구성 경험'과 CCNA 우대를 한 번에 채운다.",
+   "by": "Wendell Odom 외 · Cisco Press · 2nd ed. 2024"
+  },
+  {
+   "id": "ccna-exam",
+   "title": "CCNA 시험 안내",
+   "kind": "doc",
+   "url": "https://www.cisco.com/site/us/en/learn/training-certifications/exams/ccna.html",
+   "lang": "en",
+   "level": "입문",
+   "why": "우대 자격증 CCNA 의 출제 범위를 확인해 공부 범위를 정한다.",
+   "by": "Cisco",
+   "free": true
+  },
+  {
+   "id": "kurose",
+   "title": "Computer Networking: A Top-Down Approach 지원 사이트(강의 슬라이드·영상)",
+   "kind": "course",
+   "url": "https://gaia.cs.umass.edu/kurose_ross/",
+   "lang": "en",
+   "level": "실무",
+   "why": "IP·라우팅·무선 원리를 알아야 장애 원인을 층별로 가를 수 있다.",
+   "by": "Kurose · Ross",
+   "free": true
+  },
+  {
+   "id": "syslog",
+   "title": "RFC 5424 Syslog",
+   "kind": "doc",
+   "url": "https://www.rfc-editor.org/rfc/rfc5424",
+   "lang": "en",
+   "level": "실무",
+   "why": "장비가 남기는 로그 형식을 알아야 장애 시각을 추적한다.",
+   "by": "IETF",
+   "free": true
+  },
+  {
+   "id": "snmp",
+   "title": "RFC 3411 SNMP 구조",
+   "kind": "doc",
+   "url": "https://www.rfc-editor.org/rfc/rfc3411",
+   "lang": "en",
+   "level": "실무",
+   "why": "성능 모니터링 도구가 장비 값을 읽는 원리.",
+   "by": "IETF",
+   "free": true
+  },
+  {
+   "id": "dot1x",
+   "title": "IEEE 802.1X",
+   "kind": "doc",
+   "url": "https://1.ieee802.org/security/802-1x/",
+   "lang": "en",
+   "level": "실무",
+   "why": "접근 제어(인증된 단말만 포트·무선 허용)의 표준.",
+   "by": "IEEE",
+   "free": true
+  },
+  {
+   "id": "itil",
+   "title": "ITIL 4",
+   "kind": "doc",
+   "url": "https://www.axelos.com/certifications/itil-service-management/",
+   "lang": "en",
+   "level": "실무",
+   "why": "SLA·변경·장애 관리 용어와 절차를 맞춘다.",
+   "by": "AXELOS/PeopleCert"
+  },
+  {
+   "id": "netmiko",
+   "title": "Netmiko",
+   "kind": "doc",
+   "url": "https://github.com/ktbyers/netmiko",
+   "lang": "en",
+   "level": "실무",
+   "why": "장비 CLI 를 파이썬으로 돌려 자산·설정 수집을 자동화한다.",
+   "by": "GitHub",
+   "free": true
+  },
+  {
+   "id": "ansible",
+   "title": "Ansible Network Automation",
+   "kind": "doc",
+   "url": "https://docs.ansible.com/ansible/latest/network/index.html",
+   "lang": "en",
+   "level": "실무",
+   "why": "설정 변경을 반복 가능한 절차로 만든다.",
+   "by": "Red Hat",
+   "free": true
+  },
+  {
+   "id": "oxidized",
+   "title": "Oxidized",
+   "kind": "doc",
+   "url": "https://github.com/ytti/oxidized",
+   "lang": "en",
+   "level": "실무",
+   "why": "설정 백업·변경 이력으로 구성 정보 현행화를 자동으로 한다.",
+   "by": "GitHub",
+   "free": true
+  },
+  {
+   "id": "zabbix",
+   "title": "Zabbix 문서",
+   "kind": "doc",
+   "url": "https://www.zabbix.com/documentation/current/",
+   "lang": "en",
+   "level": "실무",
+   "why": "성능 모니터링 도구를 실제로 세워 본다.",
+   "by": "Zabbix",
+   "free": true
+  },
+  {
+   "id": "icqa",
+   "title": "네트워크관리사 자격",
+   "kind": "doc",
+   "url": "https://www.icqa.or.kr",
+   "lang": "ko",
+   "level": "입문",
+   "why": "공고가 직접 적은 자격증. 시험 범위·접수 확인.",
+   "by": "한국정보통신자격협회"
+  }
+ ],
+ "study_path": [
+  {
+   "title": "기본기 다지기",
+   "time": "3~4주",
+   "goal": "VLAN·IP·라우팅·무선 기본을 설명할 수 있다.",
+   "task": "가상 매장 3곳의 IP·VLAN 표를 만든다.",
+   "resources": [
+    "ccna",
+    "kurose"
+   ]
+  },
+  {
+   "title": "모니터링·로그",
+   "time": "2주",
+   "goal": "장비 상태·로그를 수집·경보한다.",
+   "task": "Zabbix 로 가상 장비 지표 대시보드.",
+   "resources": [
+    "zabbix",
+    "snmp",
+    "syslog"
+   ]
+  },
+  {
+   "title": "자산·구성 관리",
+   "time": "2주",
+   "goal": "장비 목록·설정 백업을 자동 유지.",
+   "task": "Netmiko 로 장비 정보를 CSV 로, 계약 목록과 대조.",
+   "resources": [
+    "netmiko",
+    "oxidized"
+   ]
+  },
+  {
+   "title": "벤더·SLA 운영",
+   "time": "1~2주",
+   "goal": "SLA 숫자를 직접 계산하고 점검표로 만든다.",
+   "task": "월간 보고서 양식과 가용률 계산 스크립트.",
+   "resources": [
+    "itil"
+   ]
+  },
+  {
+   "title": "접근 제어·자격증",
+   "time": "3~4주",
+   "goal": "802.1X·ACL 개념 정리, 자격증 준비.",
+   "task": "ACL 규칙 3개를 문장으로 설명.",
+   "resources": [
+    "dot1x",
+    "ccna-exam",
+    "icqa"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "초봉 2,313만원 · 직원 평균 3,453만원(자소설 집계) — 원티드 표기 평균 6,082만원은 기준이 다르다. 공고엔 연봉이 없다.",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 개발직이 아닌 회사 전체 값이고 연도 표기는 확인하지 못했다.[5]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계.[5]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위 값과 차이가 커 산출 방식이 다른 것으로 보인다.[6]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시 평균 급여 숫자가 없습니다. 위 값은 집계이고 평균은 초봉이 아니라 경력직이 섞인 값입니다. 이 공고는 7년 이상 경력이라 처우 협의에서 정해집니다.[1]"
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "월 소정 근로시간 내 유연 근무, 코어타임 11~16시"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원, 복지카드 연동"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기 근속",
+    "detail": "근속 3년당 리프레시 휴가 7일, 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 월 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급"
+   }
+  ],
+  "note": "회사 채용 사이트 복지 페이지(같은 회사의 다른 풀이에서 2026-11 확인한 내용)와 이 공고의 기타사항.[2][1] 근무 장소·기간에 따라 일부 변경될 수 있다."
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 아차산로13길 11",
+  "near": "2호선 성수역 도보 6분",
+  "note": "공고의 근무지 표기는 '무신사 성수 오피스'.[1] 주소는 무신사 상품 페이지 하단 사업자 정보.[4] 본사 이전과 도보 거리는 2022년 보도.[3]"
+ },
+ "fit": {
+  "good": [
+   "사옥·매장 인프라 운영과 업체 조율 경험이 있는 사람",
+   "장비 대장·문서를 꼼꼼히 관리하는 사람"
+  ],
+  "hard": [
+   "서비스 백엔드·클라우드 네트워크를 기대하는 사람 — 이 자리는 사무실·매장 망이다 {추론}",
+   "행정·정산 업무가 싫은 사람"
+  ]
+ },
+ "interview": [
+  {
+   "q": "유지보수 업체가 SLA 를 어겼을 때 어떻게 처리했나요?",
+   "a": "SLA·벤더 관리가 공고 업무에 있다.[1]"
+  },
+  {
+   "q": "장애 1차 대응에서 어떤 순서로 원인을 좁히나요?",
+   "a": "1/2차 대응이 업무에 있다.[1]"
+  },
+  {
+   "q": "장비 자산 문서와 현실이 다를 때 어떻게 맞췄나요?",
+   "a": "현행화·정합성이 업무에 있다.[1]"
+  },
+  {
+   "q": "자동화로 줄인 반복 작업 사례는?",
+   "a": "우대사항.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Network Engineer",
+   "url": "https://www.musinsacareers.com/ko/o/242044",
+   "kind": "posting",
+   "date": "2026-11"
+  },
+  {
+   "n": 2,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company"
+  },
+  {
+   "n": 3,
+   "title": "무신사, 성수동 캠퍼스 N1 으로 본사 이전 (일간스포츠)",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09"
+  },
+  {
+   "n": 4,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company"
+  },
+  {
+   "n": 5,
+   "title": "무신사 기업정보 — 자소설닷컴",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "같은 회사의 다른 풀이에서 옮긴 값(페이지 직접 열람은 403)"
+  },
+  {
+   "n": 6,
+   "title": "무신사 — 원티드 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "검색 결과 표기를 옮김"
+  },
+  {
+   "n": 7,
+   "title": "CCNA 200-301 Official Cert Guide (Wendell Odom, Cisco Press)",
+   "url": "https://www.oreilly.com/library/view/ccna-200-301-official/9780138229856/",
+   "kind": "reference"
+  },
+  {
+   "n": 8,
+   "title": "CCNA 시험 안내 — Cisco",
+   "url": "https://www.cisco.com/site/us/en/learn/training-certifications/exams/ccna.html",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "RFC 5424 — The Syslog Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc5424",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "RFC 3411 — SNMP 관리 프레임워크 구조",
+   "url": "https://www.rfc-editor.org/rfc/rfc3411",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "IEEE 802.1X — Port-Based Network Access Control",
+   "url": "https://1.ieee802.org/security/802-1x/",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "ITIL 4 — AXELOS/PeopleCert",
+   "url": "https://www.axelos.com/certifications/itil-service-management/",
+   "kind": "reference",
+   "note": "SLA·변경 관리의 공통 용어 출처"
+  },
+  {
+   "n": 13,
+   "title": "Netmiko — GitHub",
+   "url": "https://github.com/ktbyers/netmiko",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Ansible Network Automation 가이드",
+   "url": "https://docs.ansible.com/ansible/latest/network/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Oxidized — 네트워크 장비 설정 백업 (GitHub)",
+   "url": "https://github.com/ytti/oxidized",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Zabbix Documentation",
+   "url": "https://www.zabbix.com/documentation/current/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Computer Networking: A Top-Down Approach (Kurose·Ross) 지원 사이트",
+   "url": "https://gaia.cs.umass.edu/kurose_ross/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "정보통신자격 네트워크관리사 — 한국정보통신자격협회",
+   "url": "https://www.icqa.or.kr",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "2026-11-25 기준. 무신사 네트워크 팀의 기술 블로그·발표는 찾지 못해(받은 영상 없음) 회사 근거는 이 공고·복지 페이지이고, 설계·운영 설명은 표준·공식 문서와 일반 업무 관행({추론})입니다. 연봉은 집계 값이며 같은 회사 다른 풀이에서 옮겼습니다. 코드 예시는 파이썬으로 직접 실행했고 가상 값입니다."
+}
