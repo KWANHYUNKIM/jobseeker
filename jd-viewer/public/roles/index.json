@@ -4,8 +4,10 @@
   "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-395344": "autoever-india-security-expat",
   "wanted-359170": "cj-oliveyoung-data-analyst",
+  "ats-greenhouse:coupang:8385253": "coupang-audit-ai-ops-pm-bengaluru",
   "wanted-396324": "coupang-catalog-taxonomy-pm",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
+  "ats-greenhouse:coupang:8381980": "coupang-financial-credit-strategy-ds",
   "wanted-381767": "coupang-pay-staff-backend-rocketpay",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
@@ -292,6 +294,16 @@
    "lines": 13
   },
   {
+   "id": "coupang-audit-ai-ops-pm-bengaluru",
+   "company": "쿠팡 (Coupang)",
+   "role": "Program Manager, Audit AI Ops (벵갈루루)",
+   "jobs": [
+    "ats-greenhouse:coupang:8385253"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 31
+  },
+  {
    "id": "coupang-catalog-taxonomy-pm",
    "company": "쿠팡",
    "role": "카탈로그 Taxonomy 및 데이터 분석 PM",
@@ -310,6 +322,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 31
+  },
+  {
+   "id": "coupang-financial-credit-strategy-ds",
+   "company": "쿠팡파이낸셜",
+   "role": "Staff Data Scientist (Credit Strategy)",
+   "jobs": [
+    "ats-greenhouse:coupang:8381980"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "coupang-pay-staff-backend-rocketpay",
