@@ -338,6 +338,7 @@
   "jobkorea-50360975": "nextsecurities-account-instrument-backend",
   "jobkorea-50360883": "nextsecurities-account-instrument-backend",
   "jobkorea-50361255": "nextsecurities-ai-content-backend",
+  "wanted-388893": "nextsecurities-ai-content-data-engineer",
   "jobkorea-50361414": "nextsecurities-ai-engineer-video",
   "jobkorea-50361367": "nextsecurities-ai-governance-manager",
   "jobkorea-50361209": "nextsecurities-channel-backend",
@@ -349,6 +350,7 @@
   "wanted-400000": "nextsecurities-frontend-internal-platform",
   "jobkorea-50360665": "nextsecurities-fx-transfer-backend",
   "wanted-400001": "nextsecurities-internal-platform-backend",
+  "ats-greeting:nextsecurities:245530": "nextsecurities-market-data-fep",
   "jobkorea-50360739": "nextsecurities-overseas-order-backend",
   "jobkorea-50356663": "nextsecurities-senior-ai-governance",
   "ats-greeting:nextsecurities:245526": "nextsecurities-trading-backend",
@@ -3429,6 +3431,16 @@
    "lines": 25
   },
   {
+   "id": "nextsecurities-ai-content-data-engineer",
+   "company": "넥스트증권",
+   "role": "Data Engineer (AI Content Platform)",
+   "jobs": [
+    "wanted-388893"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
+  },
+  {
    "id": "nextsecurities-ai-engineer-video",
    "company": "넥스트증권",
    "role": "AI Engineer (영상 생성·자동 검수)",
@@ -3519,6 +3531,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 27
+  },
+  {
+   "id": "nextsecurities-market-data-fep",
+   "company": "넥스트증권",
+   "role": "Backend Engineer — Market Data & FEP",
+   "jobs": [
+    "ats-greeting:nextsecurities:245530"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "nextsecurities-overseas-order-backend",

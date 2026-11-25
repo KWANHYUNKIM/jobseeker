@@ -1,0 +1,483 @@
+{
+  "id": "nextsecurities-market-data-fep",
+  "company": "넥스트증권",
+  "role": "Backend Engineer — Market Data & FEP",
+  "team": "코어트레이딩플랫폼팀 · Market Data & FEP 파트",
+  "jobs": ["ats-greeting:nextsecurities:245530"],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "거래소·데이터 제공사에서 들어오는 **실시간 시세를 받아 다듬어 사내 모든 서비스에 나눠 주고**, 거래소·브로커·금융기관과 주문·자금 전문을 주고받는 **대외계(FEP — 회사 밖 기관과 잇는 관문 시스템)**를 만듭니다.[1] 국내장과 해외장이 이어져 시스템이 멈출 시간이 사실상 없다고 공고가 직접 적었습니다.[1]",
+    "env": "C/C++ · Go · Rust, TCP·UDP·멀티캐스트·FIX·WebSocket, Kafka, Linux.[1] 파생 중개·기업금융을 하던 증권사가 개인 투자자용으로 넘어가는 중이고, **미국주식 오픈 API**(2026년 4분기 비공개 베타)가 먼저, 새 MTS는 2027년 1분기 예정입니다.[4]",
+    "oneline": "회사가 바깥 세계와 만나는 접점을 맡는 7년 차 이상 시스템 개발자. **순번이 빈 시세 한 건 · 바이트 하나 어긋난 전문 · 밀리초 지연**을 잡는 자리입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "국내·해외 실시간 시세 수집·가공·배포 시스템 개발·운영",
+      "short": "거래소에서 쏟아지는 호가·체결 시세를 받아 다듬은 뒤, 주문·앱·API 서버에 빠짐없이 나눠 준다.",
+      "why": "공고는 이 파트를 '넥스트증권이 외부와 만나는 접점'이라 부르고, 거래소와 데이터 제공사의 실시간 시세를 수집·가공해 **전 서비스에 공급**한다고 적었습니다.[1] 회사가 먼저 여는 미국주식 오픈 API의 첫 기능도 시세 조회입니다.[4] 바깥 시세가 멈추면 앱의 시세도 멈춥니다 — 2026년 10월 미국 대체거래소 블루오션 장애 때 국내 증권사 대부분의 미국 주식 실시간 시세가 멈췄습니다.[23]",
+      "actually": {
+        "intro": "시세 한 건이 들어와 화면에 닿기까지의 일입니다. 넥스트증권의 실제 구조는 공개되지 않아, 공개된 거래소 규격으로 '보통 이런 것'을 보입니다.",
+        "items": [
+          "**받기** — 거래소 시세는 보통 UDP 멀티캐스트(한 번 보내면 가입한 모든 수신자가 받는 방식)로 온다. 나스닥의 공개 규격 MoldUDP64는 패킷마다 순번을 붙여 수신자가 빠진 패킷을 알아채게 한다.[13]",
+          "**구멍 메우기** — 순번이 건너뛰면 재전송 서버에 '몇 번부터 몇 개'를 다시 달라고 요청한다. 시세가 없는 한가한 시간에도 1초마다 하트비트(살아 있음 신호)가 와서 끊김을 알 수 있다.[13]",
+          "**가공** — 종목 코드·가격 단위·시각을 우리 모델로 바꾸고(다음 줄), 호가창·현재가·등락률처럼 서비스가 바로 쓸 값을 만든다 {추론}.",
+          "**배포** — 사내 서비스에는 Kafka로, 앱·외부 프로그램에는 WebSocket으로 내보낸다 — 둘 다 공고의 기술 스택에 있다.[1]",
+          "**국내 전용망** — 국내 시세와 주문은 코스콤의 금융투자 전용망(스탁넷)을 지난다. 코스콤은 대체거래소 출범에 맞춰 2025년 3월 시세망 접속 용량을 10배로 늘렸다.[10]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "순번으로 빠진 시세 알아채기 (MoldUDP64 형식)",
+          "body": "헤더는 세션 10바이트 · 첫 메시지 순번 8바이트 · 메시지 수 2바이트(빅 엔디언), 메시지 수 0은 하트비트입니다.[13] 3·4번 패킷이 사라졌다가 재전송으로 들어오고, 같은 패킷이 두 번 와도 한 번만 처리하는 흐름을 직접 돌렸습니다(종목·가격은 가상).",
+          "lang": "python",
+          "code": "import struct\nHDR = struct.Struct(\">10sQH\")  # 세션 10 · 순번 8 · 메시지 수 2 (빅 엔디언)\n\ndef packet(session, seq, msgs):\n    body = b\"\".join(struct.pack(\">H\", len(m)) + m for m in msgs)\n    return HDR.pack(session, seq, len(msgs)) + body\n\ndef on_packet(state, pkt):\n    session, seq, count = HDR.unpack_from(pkt)\n    if count == 0:\n        return \"하트비트 · 다음 순번 %d\" % seq\n    if seq > state[\"next\"]:\n        req = HDR.pack(session, state[\"next\"], seq - state[\"next\"])\n        return \"구멍! %d~%d 다시 요청 (요청 패킷 %d바이트)\" % (state[\"next\"], seq - 1, len(req))\n    if seq + count <= state[\"next\"]:\n        return \"이미 받은 순번 %d — 버림\" % seq\n    off, got = HDR.size, []\n    for _ in range(count):\n        (n,) = struct.unpack_from(\">H\", pkt, off)\n        got.append(pkt[off + 2:off + 2 + n].decode())\n        off += 2 + n\n    state[\"next\"] = seq + count\n    return \"순번 %d~%d 처리 %s\" % (seq, seq + count - 1, got)\n\nst = {\"next\": 1}\nS = b\"20261125A \"\nfor p in [packet(S, 1, [b\"005930 B 71000\", b\"005930 A 71100\"]),\n          packet(S, 5, [b\"000660 B 182000\"]),                    # 3·4번이 사라졌다\n          packet(S, 3, [b\"035720 B 41200\", b\"035720 A 41250\"]),  # 재전송으로 받음\n          packet(S, 5, [b\"000660 B 182000\"]),\n          packet(S, 5, [b\"000660 B 182000\"]),                    # 같은 패킷이 또 옴\n          packet(S, 6, [])]:\n    print(on_packet(st, p))\n\n# 출력\n# 순번 1~2 처리 ['005930 B 71000', '005930 A 71100']\n# 구멍! 3~4 다시 요청 (요청 패킷 20바이트)\n# 순번 3~4 처리 ['035720 B 41200', '035720 A 41250']\n# 순번 5~5 처리 ['000660 B 182000']\n# 이미 받은 순번 5 — 버림\n# 하트비트 · 다음 순번 6"
+        }
+      ],
+      "how_far": "실제 서버는 구멍을 메우는 동안 뒤에 온 패킷을 버리지 않고 쌓아 두었다가 순서대로 처리합니다 {추론}. 국내 거래소 시세 규격은 계약한 곳에만 주어지고, 실시간 시세를 남에게 다시 나눠 주려면 정보 이용 정책에 따른 승인이 필요합니다[12] — 그래서 규격 원문은 입사 뒤에 보게 됩니다 {추론}. 지원 전에는 공개 규격(MoldUDP64)으로 순번·재전송·하트비트를 설명할 수 있으면 됩니다 {추론}.",
+      "refs": [1, 4, 10, 12, 13, 23],
+      "study": ["moldudp64", "trading-exchanges", "tcpip-yoon"]
+    },
+    {
+      "section": "task",
+      "quote": "여러 소스의 시장 데이터를 일관된 모델로 정규화·통합",
+      "short": "거래소·제공사마다 모양이 다른 시세를 우리 모델 하나로 바꾸고, 두 거래소 호가를 하나로 합친다.",
+      "why": "2025년 3월 4일 대체거래소 넥스트레이드가 문을 열어 국내 주식이 두 곳(KRX·NXT)에서 거래됩니다. 넥스트레이드는 08:00~20:00에 프리마켓·메인마켓·애프터마켓을 엽니다.[8] 거래소가 둘 이상이면 증권사는 고객 주문을 더 좋은 곳으로 보내는 자동 주문 전송(SOR)을 써야 하고[9], 그러려면 두 곳의 시세를 한 화면·한 모델로 봐야 합니다 {추론}. 해외 시세는 또 다른 제공사에서 옵니다.[1]",
+      "actually": {
+        "items": [
+          "**이름 맞추기** — 같은 삼성전자도 한 소스는 12자리 국제 코드(KR7005930003), 다른 소스는 6자리 단축 코드(005930)로 보낸다 {추론}.",
+          "**단위 맞추기** — 가격을 문자열·소수·정수 중 무엇으로 보내는지, 시각을 마이크로초·나노초 중 무엇으로 찍는지가 소스마다 다르다. 우리 모델은 하나로 정한다 {추론}.",
+          "**출처 남기기** — 합친 뒤에도 어느 거래소의 호가인지(venue)를 지우지 않는다. SOR이 그 값으로 주문을 어디에 보낼지 정한다 {추론}.",
+          "**통합 호가** — 두 거래소의 매수 1호가 중 높은 것, 매도 1호가 중 낮은 것이 '지금 살 수 있는 가장 좋은 값'이다(아래 예).",
+          "**세션 차이** — 넥스트레이드는 KRX가 닫힌 저녁(15:40~20:00)에도 거래하고, 종가 매매 시간에는 KRX 종가로 거래한다.[8] 시간대마다 어느 소스가 살아 있는지가 다르다."
+        ]
+      },
+      "examples": [
+        {
+          "title": "두 거래소 1호가를 한 모델로",
+          "body": "소스 형식은 가상입니다. 가격은 정수(원), 시각은 나노초로 맞춘 뒤 합쳤습니다(직접 돌린 출력).",
+          "lang": "python",
+          "code": "from dataclasses import dataclass\n\n@dataclass(frozen=True)\nclass Quote:            # 우리 공통 모델\n    symbol: str\n    venue: str\n    bid: int\n    bid_qty: int\n    ask: int\n    ask_qty: int\n    ts_ns: int\n\ndef from_krx(m):        # 소스마다 필드 이름·단위가 다르다 (가상의 두 형식)\n    return Quote(m[\"isu_cd\"][3:9], \"KRX\", int(m[\"bidp1\"]), int(m[\"bidq1\"]), int(m[\"askp1\"]), int(m[\"askq1\"]), m[\"t_ns\"])\n\ndef from_nxt(m):\n    return Quote(m[\"code\"], \"NXT\", int(float(m[\"bid\"])), m[\"bidSize\"], int(float(m[\"ask\"])), m[\"askSize\"], m[\"ts_us\"] * 1000)\n\nqs = [from_krx({\"isu_cd\": \"KR7005930003\", \"bidp1\": \"71000\", \"bidq1\": \"1520\", \"askp1\": \"71100\", \"askq1\": \"880\", \"t_ns\": 1_000_000_500}),\n      from_nxt({\"code\": \"005930\", \"bid\": \"71050.0\", \"bidSize\": 300, \"ask\": \"71100.0\", \"askSize\": 120, \"ts_us\": 1_000_001})]\nfor q in qs:\n    print(q)\nbest_bid = max(qs, key=lambda q: q.bid)\nbest_ask = min(qs, key=lambda q: (q.ask, q.ts_ns))\nask_qty = sum(q.ask_qty for q in qs if q.ask == best_ask.ask)\nprint(\"통합 매수 1호가 %d원 (%s %d주)\" % (best_bid.bid, best_bid.venue, best_bid.bid_qty))\nprint(\"통합 매도 1호가 %d원 (두 곳 합 %d주)\" % (best_ask.ask, ask_qty))\n\n# 출력\n# Quote(symbol='005930', venue='KRX', bid=71000, bid_qty=1520, ask=71100, ask_qty=880, ts_ns=1000000500)\n# Quote(symbol='005930', venue='NXT', bid=71050, bid_qty=300, ask=71100, ask_qty=120, ts_ns=1000001000)\n# 통합 매수 1호가 71050원 (NXT 300주)\n# 통합 매도 1호가 71100원 (두 곳 합 1000주)"
+        }
+      ],
+      "how_far": "어떤 값을 모델에 넣을지(호가 몇 단계까지, 어떤 시각을 기준으로)는 주문·앱 쪽과 함께 정합니다 {추론}. 개발자는 **소스가 늘어도 모델을 다시 짜지 않게** 소스별 변환기를 따로 두고, 변환 전후 값을 대조하는 검사를 붙이는 데까지 맡습니다 {추론}. 큰 증권사들도 넥스트레이드 출범 때 통합시세·SOR·주문 매체를 함께 개발했다고 밝혔습니다.[9]",
+      "refs": [1, 8, 9],
+      "study": ["trading-exchanges", "ddia-ko"]
+    },
+    {
+      "section": "task",
+      "quote": "거래소·브로커·금융기관 등 대외 연계 시스템 개발·운영",
+      "short": "거래소·해외 브로커·은행 같은 바깥 기관과 주문·자금 메시지를 주고받는 관문(FEP)을 만들고 지킨다.",
+      "why": "증권사 안의 업무 시스템은 바깥 기관과 직접 말하지 않고 대외계 시스템(FEP)을 거칩니다. FEP는 바깥 기관과 메시지를 주고받고, 기관마다 다른 형식을 사내 표준으로 바꿔 업무 시스템에 넘기는 일을 합니다.[17] 넥스트증권은 미국 증권사 인터랙티브브로커스의 전략적 투자를 받아 그 플랫폼 기술을 쓰겠다고 밝혔고[5], 미국주식 주문을 먼저 엽니다[4] — 해외 브로커와 잇는 일이 이 자리에 있습니다 {추론}.",
+      "actually": {
+        "items": [
+          "**연결 상대마다 다른 말** — 해외 브로커·거래소는 FIX(증권 주문의 국제 표준 메시지)[14], 국내 금융기관은 정해진 칸 길이의 고정 길이 전문을 주로 쓴다(넷째 줄) {추론}.",
+          "**세션 지키기** — FIX는 로그온·하트비트로 연결을 지키고, 메시지마다 순번을 붙인다. 순번이 비면 '재전송 요청'을 보내고, 상대는 다시 보낼 필요 없는 구간을 '건너뛰기(Gap Fill)'로 채운다.[15][16]",
+          "**변환** — 바깥 메시지를 사내 표준 모델로, 사내 요청을 바깥 형식으로 바꾼다.[17]",
+          "**보관과 대사** — 주고받은 원문을 남겨 두고, 하루가 끝나면 상대 기관 기록과 맞춰 본다 {추론}."
+        ]
+      },
+      "how_far": "같은 회사의 Trading 공고는 주문·체결·잔고를 맡고 FIX 연동 경험을 우대합니다.[2] 이 자리는 그 주문이 **회사 밖으로 나가는 마지막 구간**입니다 {추론}. FIX 세션 계층(로그온·순번·재전송)을 직접 짜 봤거나 라이브러리 안에서 무슨 일이 나는지 설명할 수 있으면 최소선입니다 {추론}.",
+      "refs": [2, 4, 5, 14, 15, 16, 17],
+      "study": ["fix-spec", "onixs-fix"]
+    },
+    {
+      "section": "task",
+      "quote": "기관별 전문 규격 분석과 대외 연계 공통 규격·라이브러리 표준화",
+      "short": "기관마다 다른 메시지 규격서를 읽어 차이를 찾고, 모든 연계가 같이 쓰는 공통 틀·라이브러리를 만든다.",
+      "why": "공고는 이 팀이 '공통 규격과 공용 라이브러리를 기반으로 연계 대상별 서비스를 일관되게' 만든다고 적었습니다.[1] 연계 상대가 늘 때마다 연결·재시도·로그·변환을 새로 짜면 상대마다 버그가 따로 생깁니다 {추론}.",
+      "actually": {
+        "intro": "전문 규격서는 보통 칸 이름·시작 위치·길이·형식(숫자/문자)을 표로 줍니다. 국제 카드 결제 표준 ISO 8583도 같은 생각입니다.[18]",
+        "items": [
+          "**ISO 8583의 모양** — 4자리 메시지 종류(MTI) → 어떤 칸이 들어 있는지 알리는 비트맵 → 데이터 칸. 칸은 고정 길이이거나, 앞에 길이 두세 자리를 붙인 가변 길이(LLVAR·LLLVAR)다.[18]",
+          "**규격 분석** — 기관 A·B·C의 규격서를 나란히 놓고 공통 머리부(전문 종류·일련번호·시각·응답 코드)와 기관별 본문을 가른다 {추론}.",
+          "**규격을 데이터로** — 칸 정의를 코드에 박지 않고 표(설정 파일)로 둔 뒤, 그 표로 조립·해석기를 만든다. 새 기관은 표만 추가한다 {추론}.",
+          "**공용 라이브러리** — 연결 유지·하트비트·재전송·타임아웃·원문 로그를 한 벌로 둔다 {추론}."
+        ]
+      },
+      "how_far": "규격 자체는 상대 기관이 정합니다. 개발자는 **규격서의 애매한 곳을 찾아 상대에게 묻고**, 우리 공통 틀에 맞춰 넣습니다 {추론}. 팀은 이런 결정을 ADR(아키텍처 결정 기록)로 남기고 함께 리뷰합니다.[1][26]",
+      "refs": [1, 18, 26],
+      "study": ["iso8583", "fundamentals-arch"]
+    },
+    {
+      "section": "task",
+      "quote": "저지연·고가용성 환경에서의 성능 튜닝, 장애 격리 및 대응",
+      "short": "시세·주문이 마이크로초~밀리초 안에 지나가게 다듬고, 한 연계가 고장 나도 나머지는 계속 돌게 나눈다.",
+      "why": "공고는 '국내장과 해외장이 이어지면서 시스템이 멈출 수 있는 시간은 사실상 없다'고 적었습니다.[1] 넥스트레이드가 저녁 8시까지 열리고[8], 미국 프리마켓은 한국 시간 저녁에 시작합니다[30] — 하루가 거의 이어집니다. 속도 기준도 높아졌습니다: 넥스트레이드는 증권사 주문이 들어와 결과가 나가기까지 200마이크로초 안이라고 밝혔습니다.[11]",
+      "actually": {
+        "items": [
+          "**재기 먼저** — 평균이 아니라 p99(가장 느린 1%)를 본다. 구글 SRE 책도 평균은 꼬리를 숨긴다고 지적한다(아래 예).[24]",
+          "**어디서 늦나** — 네트워크 카드 → 커널 → 우리 프로세스 → Kafka 중 어느 구간인지 시각을 찍어 가른다. 리눅스 perf로 CPU가 어디에 시간을 쓰는지 본다.[22]",
+          "**장애 격리** — 연계 상대(기관)마다 프로세스·스레드·큐를 나눠, 한 기관이 느려도 다른 기관의 메시지가 막히지 않게 한다 {추론}.",
+          "**고가용성** — 시세 수신기를 두 벌 두고(같은 시세를 두 줄로 받기), 하나가 죽으면 다른 쪽 순번부터 이어 받는다 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "평균은 꼬리를 숨긴다",
+          "body": "1만 건 중 1.5%만 2~5밀리초로 느리게 만든 가상 지연입니다. 평균은 132마이크로초로 멀쩡해 보이지만 p99는 3밀리초가 넘습니다(직접 돌린 출력).",
+          "lang": "python",
+          "code": "import random, statistics\nrandom.seed(7)\nlat_us = [random.gauss(80, 10) for _ in range(9850)] + [random.uniform(2000, 5000) for _ in range(150)]\nlat_us.sort()\ndef p(q):\n    return lat_us[int(len(lat_us) * q) - 1]\nprint(\"평균 %.0fus · p50 %.0fus · p99 %.0fus · p99.9 %.0fus · 최대 %.0fus\" % (statistics.mean(lat_us), p(0.50), p(0.99), p(0.999), lat_us[-1]))\n\n# 출력\n# 평균 132us · p50 80us · p99 3170us · p99.9 4806us · 최대 4974us"
+        }
+      ],
+      "how_far": "공고는 '애플리케이션 레이어부터 네트워크 레이어까지 직접 트러블슈팅'한다고 적었습니다.[1] 네트워크 팀에 넘기지 않고 **패킷 캡처·커널 지표까지 직접 본다**는 뜻입니다 {추론}. 넥스트증권의 지연 목표 숫자는 공개되지 않았습니다.",
+      "refs": [1, 8, 11, 22, 24, 30],
+      "study": ["systems-perf", "gregg-perf", "sre-book", "release-it"]
+    },
+    {
+      "section": "preference",
+      "quote": "재현이 어려운 문제도 원인을 찾을 때까지 깊이 파고드는 분",
+      "short": "어쩌다 한 번 빠지는 시세·끊기는 연결도 로그·패킷을 맞춰 끝까지 원인을 찾는 사람.",
+      "why": "네트워크 문제는 특정 순간(장 시작 직후 몰림, 상대 기관의 재시작)에만 나서 개발 환경에서 다시 보기 어렵습니다 {추론}. 이 팀은 앱부터 네트워크 층까지 직접 들여다봅니다.[1]",
+      "how_far": "면접에서 '재현 안 되던 문제를 어떻게 잡았나' 한 가지를, 무엇을 의심했고 무엇으로 확인했는지 순서대로 말할 수 있게 준비합니다 {추론}.",
+      "refs": [1],
+      "study": ["systems-perf"]
+    },
+    {
+      "section": "preference",
+      "quote": "장애 상황에서 서두르지 않고, 순서대로 확인하며 판단하는 분",
+      "short": "장애가 나면 피해부터 막고, 바깥·네트워크·우리 코드 순으로 하나씩 지워 가는 사람.",
+      "why": "대외계 장애는 원인이 우리 쪽인지 상대 기관 쪽인지부터 가려야 합니다. 2026년 10월 시세 중단은 미국 업체 장애였습니다.[23] 구글 SRE 책은 장애 뒤 비난 없는 회고로 재발을 막으라고 권합니다.[25]",
+      "actually": {
+        "items": [
+          "**순서 예** — ① 영향 범위(어느 기관·어느 종목) ② 상대 쪽 공지·연결 상태 ③ 우리 네트워크(패킷이 오나) ④ 우리 프로세스(받았는데 못 내보내나) {추론}.",
+          "**네 신호** — 지연·트래픽·오류·포화를 먼저 본다.[24]"
+        ]
+      },
+      "refs": [23, 24, 25],
+      "study": ["sre-book"]
+    },
+    {
+      "section": "preference",
+      "quote": "밀리초 단위 지연이 어디서 생기는지 궁금해하는 분",
+      "short": "느리다는 말에 '어느 구간에서 몇 밀리초?'를 재 보고 싶어지는 사람.",
+      "why": "시세는 늦게 닿으면 틀린 값과 같습니다 {추론}. 이 파트를 공고는 '프로토콜 파싱과 저지연 튜닝을 실제 서비스 코드에서 다룰 수 있는 자리'라고 소개했습니다.[1]",
+      "actually": {
+        "items": [
+          "**작은 지연의 흔한 원인** — TCP는 작은 패킷을 모아 보내는 알고리즘(Nagle)이 기본으로 켜져 있어 TCP_NODELAY로 끈다.[21]",
+          "**CPU 흔들림** — 받은 패킷을 어느 CPU가 처리하느냐(RSS·RPS·RFS)에 따라 캐시 효율과 지연이 달라진다.[20]",
+          "**GC·락** — 메모리 회수나 잠금 대기가 꼬리 지연을 만든다 {추론}."
+        ]
+      },
+      "refs": [1, 20, 21],
+      "study": ["systems-perf", "gregg-perf"]
+    },
+    {
+      "section": "preference",
+      "quote": "데이터 한 건의 누락이나 지연도 그냥 넘기지 않는 분",
+      "short": "시세 한 건 빠지거나 늦은 것도 순번·시각으로 확인하고 넘어가는 사람.",
+      "why": "체결 시세 한 건이 빠지면 거래량·현재가가 틀리고, 그 값을 쓰는 주문·알림이 다 틀립니다 {추론}. 시세 규격이 순번과 재전송을 두는 이유가 이것입니다.[13]",
+      "actually": {
+        "items": [
+          "**순번 감시** — 소스·세션마다 마지막 순번을 지표로 내보내 구멍 수·재전송 수를 그래프로 본다 {추론}.",
+          "**지연 감시** — 거래소가 찍은 시각과 우리가 받은 시각의 차이를 종목·소스별로 잰다 {추론}.",
+          "**하루 끝 대사** — 우리가 저장한 체결 건수와 거래소가 발표한 건수를 맞춰 본다 {추론}."
+        ]
+      },
+      "refs": [13],
+      "study": ["moldudp64"]
+    },
+    {
+      "section": "preference",
+      "quote": "기술적 의사결정의 이유를 설명할 수 있고, 동료의 의견에도 열린 자세를 가진 분",
+      "short": "'왜 C++이 아니라 Go로?' 같은 결정을 글로 설명하고, 반대 의견을 듣고 바꿀 수 있는 사람.",
+      "why": "팀은 중요한 기술 결정을 ADR로 기록하고 함께 리뷰해 정합니다.[1] ADR은 결정 하나마다 맥락·결정·결과를 짧게 적는 문서입니다.[26]",
+      "actually": {
+        "items": [
+          "**이 자리의 결정 예** — 시세 배포를 Kafka로 할지 멀티캐스트로 할지, 수신기를 C++로 둘지 Go로 둘지, 전문 규격을 코드로 둘지 설정으로 둘지 {추론}."
+        ]
+      },
+      "refs": [1, 26],
+      "study": ["fundamentals-arch"]
+    },
+    {
+      "section": "qualification",
+      "quote": "백엔드·시스템 개발 경력 7년 이상",
+      "short": "서버·시스템을 만들고 운영해 온 경력 7년 이상.",
+      "why": "같은 코어트레이딩 쪽 Trading 공고(주문·체결·잔고)도 7년 이상을 요구합니다.[2] 회사 밖 기관과 맞닿는 자리라 혼자 판단할 일이 많다는 뜻으로 읽힙니다 {추론}.",
+      "how_far": "연차보다 아래 줄들(네트워크 프로그래밍·저지연·리눅스 성능 분석)을 실제로 겪은 이야기가 있는지가 중요합니다 {추론}.",
+      "refs": [2]
+    },
+    {
+      "section": "qualification",
+      "quote": "C/C++ 기반 시스템 프로그래밍 또는 Go 기반 서버·네트워크 백엔드 개발 경험",
+      "short": "C/C++로 OS 가까이에서 짜 봤거나, Go로 네트워크 서버를 만들어 본 경험.",
+      "why": "기술 스택이 C/C++ · Go · Rust입니다.[1] 'C/C++ 또는 Go'라 둘 중 하나면 됩니다.[1] 시세 수신·파싱처럼 마이크로초가 중요한 곳은 C/C++, 연계 서버·배포처럼 동시 연결이 많은 곳은 Go로 나눠 쓰는 경우가 흔합니다 {추론}.",
+      "level": {
+        "basic": "포인터·메모리 수명(C/C++) 또는 고루틴·채널(Go)로 TCP 서버를 짠다.",
+        "work": "바이트 배열을 직접 해석하고(엔디언·구조체 정렬), 메모리 할당을 줄인다.",
+        "team": "규격 파서를 할당 없이 짜고, 프로파일러로 병목을 찾아 고친다 {추론}."
+      },
+      "how_far": "Rust는 스택에 있지만 요건 줄에는 없습니다.[1] 입사 뒤 새로 짜는 부분에 쓰일 수 있다고 읽힙니다 {추론}.",
+      "refs": [1],
+      "study": ["cpp-conc", "go-conc", "tlpi"]
+    },
+    {
+      "section": "qualification",
+      "quote": "멀티스레드 / 이벤트 드리븐 아키텍처 설계 경험",
+      "short": "여러 스레드가 시세·전문을 나눠 처리하거나, 이벤트가 오면 깨어나는 구조를 설계해 본 경험.",
+      "why": "시세 수신·가공·배포가 동시에 돌고, 수십 개 연결의 메시지가 언제 올지 모릅니다 {추론}. 리눅스는 많은 소켓 중 준비된 것만 알려 주는 epoll 같은 기능을 줍니다.[21]",
+      "actually": {
+        "items": [
+          "**한 스레드 = 한 일** — 받는 스레드는 받기만, 가공 스레드는 가공만. 사이는 큐로 잇는다 {추론}.",
+          "**순서 지키기** — 같은 종목의 시세는 같은 스레드가 처리해야 순서가 안 뒤집힌다 — Kafka가 파티션 안에서만 순서를 지키는 것과 같은 생각이다.[25]",
+          "**락 줄이기** — 잠금 경쟁이 꼬리 지연을 만든다. 스레드마다 자기 데이터를 갖게 나눈다 {추론}."
+        ]
+      },
+      "refs": [21, 25],
+      "study": ["cpp-conc", "go-conc", "ddia-ko"]
+    },
+    {
+      "section": "qualification",
+      "quote": "네트워크 프로그래밍(TCP/UDP, 비동기 I/O, 소켓 프로그래밍)에 능숙하신 분",
+      "short": "TCP·UDP 소켓을 직접 열고, 끊김·부분 수신·멀티캐스트 가입까지 다뤄 본 사람.",
+      "why": "기술 스택이 TCP · UDP · 멀티캐스트 · FIX · WebSocket입니다.[1] 시세는 UDP 멀티캐스트로, 기관 연계는 TCP로 오는 경우가 많습니다.[13][14]",
+      "level": {
+        "basic": "소켓을 열고 읽고 쓴다. TCP는 경계 없는 바이트 흐름이라 '메시지 하나'를 직접 잘라야 한다는 것을 안다.",
+        "work": "비동기 I/O(epoll·Go 넷폴러)로 많은 연결을 다루고, 타임아웃·재연결·하트비트를 짠다.",
+        "team": "멀티캐스트 그룹 가입(IP_ADD_MEMBERSHIP)[28], 소켓 버퍼 크기, TCP_NODELAY[21]를 이유와 함께 고른다."
+      },
+      "actually": {
+        "items": [
+          "**TCP 메시지 자르기** — 길이 머리말(MoldUDP64의 2바이트 길이처럼[13]) 또는 고정 길이로 자른다. 한 번 읽기에 반쪽만 올 수 있다 {추론}.",
+          "**UDP는 잃어버린다** — 순번으로 알아채고 다시 달라고 한다(첫 줄 예).[13]"
+        ]
+      },
+      "refs": [1, 13, 14, 21, 28],
+      "study": ["tcpip-yoon", "tlpi", "man-tcp"]
+    },
+    {
+      "section": "qualification",
+      "quote": "저지연·고처리량 시스템 설계 및 최적화 경험",
+      "short": "빨리(지연) 그리고 많이(처리량) — 둘을 숫자로 재고 고쳐 본 경험.",
+      "why": "장 시작 직후·급등락 때 시세가 몰립니다. 넥스트레이드는 하루 120GB, 연 40TB가 넘는 거래 데이터를 만들고, 데이터가 처음 설계보다 4~5배 빨리 늘었다고 밝혔습니다.[11]",
+      "actually": {
+        "items": [
+          "**몰릴 때 버티기** — 받는 쪽이 밀리면 소켓 버퍼가 넘쳐 패킷이 버려진다. 받기와 처리를 떼어 놓는다 {추론}.",
+          "**묶어 보내기** — 메시지를 하나씩 보내지 않고 묶는다. MoldUDP64도 한 패킷에 여러 메시지를 싣는다.[13]",
+          "**숫자로 말하기** — '초당 몇 건에서 p99 몇 마이크로초'로 전후를 비교한다(업무 다섯째 줄 예) {추론}."
+        ]
+      },
+      "how_far": "'무엇을 바꿔 몇이 몇이 됐다'를 숫자로 설명할 수 있으면 됩니다 {추론}.",
+      "refs": [11, 13],
+      "study": ["systems-perf", "ddia-ko"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Linux 환경에서의 개발 및 성능 분석 경험",
+      "short": "리눅스에서 perf·strace·네트워크 통계로 '어디서 시간이 새나'를 찾아 본 경험.",
+      "why": "기술 스택에 Linux가 있고[1], 이 팀은 네트워크 층까지 직접 트러블슈팅합니다.[1]",
+      "actually": {
+        "items": [
+          "**perf** — CPU가 어느 함수에서 시간을 쓰는지 표본을 떠서 본다.[22]",
+          "**네트워크 처리 분산** — 패킷 처리를 여러 CPU에 나누는 RSS(네트워크 카드가 나눔)·RPS(커널이 나눔)·RFS(읽는 스레드의 CPU로 보냄).[20]",
+          "**버리는 곳 찾기** — 소켓 버퍼가 넘쳐 버려진 UDP 수를 커널 통계에서 본다 {추론}."
+        ]
+      },
+      "refs": [1, 20, 22],
+      "study": ["systems-perf", "gregg-perf", "kernel-scaling", "tlpi"]
+    },
+    {
+      "section": "preference",
+      "quote": "증권 시세 시스템 또는 대외계(FEP) 개발·운영 경험",
+      "short": "증권사·거래소의 시세 시스템이나 대외계를 직접 만들고 운영해 본 경험.",
+      "why": "이 파트가 하는 두 가지 일 그대로입니다.[1] 국내 금융사 대부분은 FEP를 바깥 업체 솔루션으로 쓴다는 설명도 있어[17], 직접 설계해 본 사람은 드뭅니다 {추론}.",
+      "refs": [1, 17],
+      "study": ["trading-exchanges"]
+    },
+    {
+      "section": "preference",
+      "quote": "FIX 프로토콜 기반 거래소·브로커 연동 경험",
+      "short": "FIX로 거래소·브로커와 주문을 주고받아 본 경험 — 특히 끊겼다 붙을 때의 순번 맞추기.",
+      "why": "해외 브로커·거래소 연동의 표준이 FIX입니다.[14] 같은 회사 Trading 공고도 FIX 연동을 우대합니다.[2]",
+      "actually": {
+        "items": [
+          "**세션 층** — 로그온 · 하트비트 · 순번(MsgSeqNum) · 재전송 요청 · 건너뛰기(SequenceReset의 Gap Fill).[15][16]",
+          "**앱 층** — 새 주문 · 실행 보고(체결·거부·취소) {추론}.",
+          "**운영** — 매일 정해진 시각에 순번을 처음으로 돌리고, 상대와 순번이 어긋나면 누가 무엇을 다시 보낼지 정한다 {추론}."
+        ]
+      },
+      "refs": [2, 14, 15, 16],
+      "study": ["fix-spec", "onixs-fix"]
+    },
+    {
+      "section": "preference",
+      "quote": "금융기관과 전문(고정 길이 등) 기반으로 연동하는 시스템 개발 경험",
+      "short": "칸마다 바이트 길이가 정해진 전문을 조립·해석해 은행 등과 주고받아 본 경험.",
+      "why": "공고가 '고정 길이 등'을 직접 적었습니다.[1] 국제 결제 표준 ISO 8583도 고정 길이 칸과 길이 머리말 칸을 섞어 씁니다.[18]",
+      "actually": {
+        "items": [
+          "**숫자 칸은 앞을 0으로, 문자 칸은 뒤를 공백으로 채운다** — 아래 예의 방식이다. 실제 규칙은 기관 규격서가 정한다 {추론}.",
+          "**한글은 바이트로 센다** — 국내 전문은 EUC-KR 계열(CP949)을 쓰는 경우가 많고, 이때 한글 한 자는 2바이트다.[19] 글자 수로 자르면 뒤 칸이 다 밀린다(아래 예).",
+          "**넘치면 거절** — 칸보다 긴 값은 자르지 말고 막는다 — 잘린 예금주명이 다른 사람 이름이 될 수 있다 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "고정 길이 전문 — 칸 길이는 바이트",
+          "body": "가상의 47바이트 전문입니다. 예금주 10바이트 칸에 '홍길동'(6바이트)이 들어가고, 글자 단위로 자르면 금액 칸이 3자리 밀립니다(직접 돌린 출력).",
+          "lang": "python",
+          "code": "LAYOUT = [(\"전문종별\", 4, \"N\"), (\"거래일자\", 8, \"N\"), (\"계좌번호\", 12, \"AN\"), (\"예금주\", 10, \"AN\"), (\"금액\", 13, \"N\")]\n\ndef build(rec):\n    out = b\"\"\n    for name, size, kind in LAYOUT:\n        v = str(rec[name]).encode(\"cp949\")\n        if len(v) > size:\n            raise ValueError(\"%s: %d바이트 > %d\" % (name, len(v), size))\n        out += v.rjust(size, b\"0\") if kind == \"N\" else v.ljust(size, b\" \")\n    return out\n\ndef parse(raw):\n    rec, off = {}, 0\n    for name, size, kind in LAYOUT:\n        rec[name] = raw[off:off + size].decode(\"cp949\").strip()\n        off += size\n    return rec\n\nraw = build({\"전문종별\": \"0200\", \"거래일자\": \"20261125\", \"계좌번호\": \"110123456789\", \"예금주\": \"홍길동\", \"금액\": 1500000})\nprint(len(raw), raw)\nprint(parse(raw))\ns = raw.decode(\"cp949\")\nprint(\"글자로 자르면:\", repr(s[24:34]), \"→ 금액 칸이\", repr(s[34:47]))\ntry:\n    build({\"전문종별\": \"0200\", \"거래일자\": \"20261125\", \"계좌번호\": \"110123456789\", \"예금주\": \"넥스트증권주식\", \"금액\": 1})\nexcept ValueError as e:\n    print(\"거절:\", e)\n\n# 출력\n# 47 b'020020261125110123456789\\xc8\\xab\\xb1\\xe6\\xb5\\xbf    0000001500000'\n# {'전문종별': '0200', '거래일자': '20261125', '계좌번호': '110123456789', '예금주': '홍길동', '금액': '0000001500000'}\n# 글자로 자르면: '홍길동    000' → 금액 칸이 '0001500000'\n# 거절: 예금주: 14바이트 > 10"
+        }
+      ],
+      "refs": [1, 18, 19],
+      "study": ["iso8583", "py-codecs"]
+    },
+    {
+      "section": "preference",
+      "quote": "대량 종목 시세 처리 또는 여러 소스의 시세를 정규화·통합해 본 경험",
+      "short": "수천 종목 시세를 한꺼번에 받아 봤거나, 여러 소스의 시세를 한 모델로 합쳐 본 경험.",
+      "why": "업무 둘째 줄 그대로입니다.[1] 넥스트레이드 출범으로 국내 주식 시세가 두 곳에서 나옵니다.[8]",
+      "actually": {
+        "items": [
+          "**종목 수만큼의 상태** — 종목마다 최신 호가·체결을 메모리에 들고 있다가 바뀐 것만 내보낸다 {추론}.",
+          "**처음 붙을 때** — 중간부터 받기 시작하면 앞의 상태가 없다. 스냅샷을 받고 그 뒤 순번부터 이어 붙인다 {추론}."
+        ]
+      },
+      "refs": [1, 8],
+      "study": ["trading-exchanges"]
+    },
+    {
+      "section": "preference",
+      "quote": "저지연 네트워크·커널 튜닝 경험",
+      "short": "네트워크 카드 큐·CPU 배치·소켓 옵션을 바꿔 지연을 줄여 본 경험.",
+      "why": "애플리케이션 코드만으로 줄일 수 없는 지연이 커널과 네트워크 카드 사이에 있습니다 {추론}. 이 팀은 네트워크 층까지 직접 봅니다.[1]",
+      "actually": {
+        "items": [
+          "**큐와 CPU 맞추기** — 네트워크 카드 수신 큐를 어느 CPU가 처리할지(RSS), 읽는 스레드가 있는 CPU로 보낼지(RFS)를 정한다.[20]",
+          "**소켓 옵션** — TCP_NODELAY로 작은 메시지를 바로 보낸다.[21]",
+          "**측정 먼저** — 바꾸기 전과 뒤의 p99를 같은 부하로 잰다 {추론}."
+        ]
+      },
+      "how_far": "튜닝 항목을 외우는 것보다 '왜 그 값이 이 부하에 맞았나'를 측정으로 보여 줄 수 있으면 됩니다 {추론}.",
+      "refs": [1, 20, 21],
+      "study": ["kernel-scaling", "systems-perf", "man-tcp"]
+    },
+    {
+      "section": "qualification",
+      "quote": "서류접수 → AI Screening→ 1차 인터뷰 → 2차 인터뷰 → 처우논의 → 최종합격",
+      "short": "전형 순서 — 서류 뒤 AI 면접, 면접 두 번, 연봉은 마지막 처우논의에서 정한다.",
+      "why": "공고의 합류 과정입니다. 1차 실무 면접 전에 AI 면접이 있고, 직무 역량과 소통 역량을 보는 참고 자료로 쓴다고 적었습니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "전형 단계 중 필요 시, 사전 동의 후 레퍼런스 체크 진행",
+      "short": "필요하면 지원자 동의를 받고 전 직장 동료 등에게 평판을 확인한다는 뜻.",
+      "why": "공고의 합류 과정 안내입니다.[1]",
+      "refs": [1]
+    }
+  ],
+  "fit": {
+    "good": [
+      "패킷·바이트·순번 단위로 생각하는 게 즐거운 시스템 개발자",
+      "시세·대외계를 처음부터 다시 짜 보고 싶은 사람 — 개인 투자자 서비스가 아직 문을 열기 전이다[4]",
+      "결정을 글(ADR)로 남기고 함께 리뷰하는 팀을 좋아하는 사람[1]",
+      "복수 거래소(KRX·NXT)와 해외 시세를 한 모델로 묶는 일을 해 보고 싶은 사람[8]"
+    ],
+    "hard": [
+      "국내장·해외장이 이어져 멈출 시간이 거의 없다 — 밤 장애 대응이 생길 수 있다[1]",
+      "필수 7년 이상에 네트워크·저지연·리눅스 성능 분석까지 요구해 문턱이 높다[1]",
+      "국내 시세 규격과 기관 전문 규격은 공개되지 않아 입사 전에는 실물을 보기 어렵다[12]",
+      "MTS 출시가 세 번 미뤄졌다 — 일정이 바뀌는 환경이다[4]"
+    ]
+  },
+  "interview": [
+    {"q": "UDP로 받는 시세에서 순번 101 다음에 105가 왔습니다. 무엇을 하고, 그동안 105는 어떻게 합니까? 재전송 서버도 응답이 없으면요?", "a": "순번·재전송 요청·하트비트.[13]"},
+    {"q": "같은 종목의 매도 1호가가 KRX와 NXT에서 같습니다. 통합 호가의 잔량과 출처를 어떻게 보여 주겠습니까?", "a": "정규화 모델에 거래소(venue)를 남기는 이유.[8][9]"},
+    {"q": "FIX 세션이 끊겼다 다시 붙었는데 상대가 보낸 순번이 우리가 기대한 것보다 큽니다. 다음 동작은?", "a": "재전송 요청과 Gap Fill.[15][16]"},
+    {"q": "고정 길이 전문의 예금주 칸이 10바이트인데 이름이 6글자입니다. 어떻게 처리합니까?", "a": "한글 바이트 수, 자르지 말고 거절.[19]"},
+    {"q": "평균 지연은 100마이크로초인데 사용자가 가끔 느리다고 합니다. 무엇부터 재겠습니까?", "a": "p99와 구간별 시각, perf.[22][24]"},
+    {"q": "한 금융기관 연계가 응답을 안 줘서 스레드가 쌓입니다. 다른 기관 연계까지 막히지 않게 하려면?", "a": "연계별 격리와 타임아웃.[27]"}
+  ],
+  "resources": [
+    {"id": "moldudp64", "title": "MoldUDP64 Protocol Specification", "by": "Nasdaq", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf", "why": "6쪽짜리 공개 시세 전송 규격. 순번·하트비트·재전송 요청이 어떻게 생겼는지 실물로 본다 — 시세 수신 줄의 바닥."},
+    {"id": "trading-exchanges", "title": "Trading and Exchanges: Market Microstructure for Practitioners", "by": "Larry Harris · Oxford University Press · 2002", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://www.barnesandnoble.com/w/trading-and-exchanges-larry-harris/1101401630", "why": "호가·체결·시장이 여럿일 때의 구조를 실무자 눈높이로. 시세를 정규화·통합할 때 '무엇이 같은 값인가'의 바닥."},
+    {"id": "fix-spec", "title": "FIX 4.4 (FIX Trading Community 표준 자료)", "by": "FIX Trading Community", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.fixtrading.org/standards/fix-4-4/", "why": "대외 연계·FIX 우대 줄. 세션 메시지(로그온·하트비트·재전송)와 주문 메시지의 원본."},
+    {"id": "onixs-fix", "title": "OnixS FIX 4.4 사전 · Sequence Reset", "by": "OnixS", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.onixs.biz/fix-dictionary/4.4/msgType_4_4.html", "why": "Gap Fill과 Reset 모드의 차이를 칸 단위로. 끊겼다 붙을 때 순번을 맞추는 법."},
+    {"id": "iso8583", "title": "ISO 8583 (위키백과)", "by": "Wikipedia", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://en.wikipedia.org/wiki/ISO_8583", "why": "공개된 금융 전문 표준의 모양(메시지 종류·비트맵·고정/가변 칸). 국내 기관 규격서를 읽기 전 감 잡기."},
+    {"id": "py-codecs", "title": "codecs — 코덱 레지스트리와 베이스 클래스(표준 인코딩 표)", "by": "Python 공식 문서(한국어)", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://docs.python.org/ko/3/library/codecs.html#standard-encodings", "why": "cp949·euc_kr 같은 한국어 인코딩 이름. 고정 길이 전문을 바이트로 세는 실험을 할 때."},
+    {"id": "tcpip-yoon", "title": "열혈 TCP/IP 소켓 프로그래밍", "by": "윤성우", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%97%B4%ED%98%88%20TCP%2FIP%20%EC%86%8C%EC%BC%93%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D", "why": "리눅스·윈도우 소켓을 C로. TCP/UDP·멀티캐스트·epoll까지 — 네트워크 프로그래밍 줄을 한국어로 처음 잡는 책."},
+    {"id": "tlpi", "title": "The Linux Programming Interface", "by": "Michael Kerrisk · No Starch Press · 2010", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://man7.org/tlpi/", "why": "리눅스 시스템 호출·소켓·스레드·epoll의 교과서. C/C++ 시스템 프로그래밍 줄의 참고서로 필요한 장만 본다."},
+    {"id": "man-tcp", "title": "tcp(7) · ip(7) 리눅스 매뉴얼", "by": "Linux man-pages", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://man7.org/linux/man-pages/man7/tcp.7.html", "why": "TCP_NODELAY·멀티캐스트 가입 같은 소켓 옵션의 정확한 뜻."},
+    {"id": "cpp-conc", "title": "C++ Concurrency in Action (2판)", "by": "Anthony Williams · Manning · 2019", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.manning.com/books/c-plus-plus-concurrency-in-action-second-edition", "why": "C++ 스레드·원자 연산·메모리 순서·락 없는 자료구조. 멀티스레드 시세 처리 줄."},
+    {"id": "go-conc", "title": "Concurrency in Go", "by": "Katherine Cox-Buday · O'Reilly · 2017", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.oreilly.com/library/view/concurrency-in-go/9781491941294/", "why": "고루틴·채널로 파이프라인과 취소·타임아웃을 짜는 법. Go로 연계 서버를 짤 때."},
+    {"id": "systems-perf", "title": "Systems Performance (2판)", "by": "Brendan Gregg · Addison-Wesley · 2020", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html", "why": "CPU·메모리·네트워크 지연을 재는 방법론과 도구. 리눅스 성능 분석·저지연 줄의 바닥."},
+    {"id": "gregg-perf", "title": "Linux perf Examples", "by": "Brendan Gregg", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.brendangregg.com/perf.html", "why": "perf 명령 예제 모음. 어느 함수가 CPU를 먹는지 바로 따라 해 본다."},
+    {"id": "kernel-scaling", "title": "Scaling in the Linux Networking Stack", "by": "Linux 커널 문서", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://docs.kernel.org/networking/scaling.html", "why": "RSS·RPS·RFS·XPS — 패킷 처리를 CPU에 어떻게 나누나. 커널 튜닝 우대 줄."},
+    {"id": "ddia-ko", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 위키북스", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://wikibook.co.kr/data-intensive-applications/", "why": "순서·중복·스트림 처리의 이론. 시세를 Kafka로 나눠 줄 때 순서가 언제 지켜지나."},
+    {"id": "sre-book", "title": "Site Reliability Engineering (구글 SRE 책)", "by": "Google · 웹 무료(한국어판: 사이트 신뢰성 엔지니어링 · 제이펍 · 2018)", "kind": "book", "lang": "en", "free": true, "level": "실무", "url": "https://sre.google/sre-book/table-of-contents/", "why": "네 가지 신호·꼬리 지연·장애 회고. 장애 대응 줄."},
+    {"id": "release-it", "title": "Release It! (2판)", "by": "Michael T. Nygard · Pragmatic Bookshelf · 2018", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/", "why": "느린 외부 시스템이 우리를 끌고 내려가지 않게 하는 법(격벽·타임아웃). 장애 격리 줄."},
+    {"id": "fundamentals-arch", "title": "Documenting Architecture Decisions", "by": "Michael Nygard · 2011", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions", "why": "ADR을 처음 제안한 짧은 글. 이 팀이 결정을 남기는 방식."}
+  ],
+  "study_path": [
+    {"title": "시세가 오는 길 잡기", "time": "1~2주", "goal": "호가·체결·복수 거래소·세션을 설명하고, 시세 패킷의 순번·하트비트·재전송을 그림으로 그릴 수 있다.", "resources": ["trading-exchanges", "moldudp64"], "task": "MoldUDP64 규격을 읽고 헤더 20바이트를 손으로 풀어 본다. 가상 패킷 열 개(구멍·중복·하트비트 포함)에 대해 수신기가 할 일을 표로 적는다."},
+    {"title": "소켓과 동시성 손에 익히기", "time": "3~4주", "goal": "TCP 서버와 UDP 멀티캐스트 수신기를 C/C++ 또는 Go로 짜고, 스레드 사이를 큐로 잇는다.", "resources": ["tcpip-yoon", "tlpi", "man-tcp", "cpp-conc", "go-conc"], "task": "로컬에서 멀티캐스트로 가상 시세를 쏘는 송신기와, 순번 구멍을 TCP 재전송 서버에 요청해 메우는 수신기를 만든다. 수신·가공·배포를 스레드(또는 고루틴) 셋으로 나눈다."},
+    {"title": "정규화와 전문", "time": "2주", "goal": "두 소스 시세를 한 모델로 합치고, 고정 길이 전문 조립·해석기를 규격 표에서 만들어 낸다.", "resources": ["iso8583", "py-codecs", "fix-spec", "onixs-fix"], "task": "형식이 다른 가상 소스 둘의 호가를 통합 호가로 합치는 변환기를 만들고, 칸 정의 표(CSV)를 읽어 조립·해석하는 전문 라이브러리를 짠다(한글 바이트 검사 포함). FIX 세션의 로그온·하트비트·재전송 요청을 흉내 내는 작은 상대 서버도 붙인다."},
+    {"title": "재고 줄이기", "time": "2~3주", "goal": "p99 지연을 재고, perf와 커널 설정으로 병목을 찾아 전후를 숫자로 보인다.", "resources": ["systems-perf", "gregg-perf", "kernel-scaling", "sre-book", "release-it", "fundamentals-arch"], "task": "2단계 수신기에 초당 메시지를 늘려 가며 p50·p99와 버려진 패킷 수를 잰다. perf로 가장 비싼 함수를 찾아 고치고, 결정 하나(예: 배포를 Kafka로 할지)를 ADR로 남긴다."}
+  ],
+  "pay": {
+    "summary": "공고에 연봉이 없고 공시 숫자도 찾지 못했다 — 공공데이터 집계 평균 **약 6,032만원**(경력직이 섞인 회사 전체 값)뿐이다",
+    "rows": [
+      {"label": "직원 평균 연봉", "value": "6,032만원", "amount": 6032, "basis": "공공데이터 집계", "note": "원티드 기업 정보 — 금감원 공시정보와 국민연금 가입 사업장 자료로 계산한 집계. 기준 연월이 적혀 있지 않다 [7]"}
+    ],
+    "how": "공고는 연봉을 적지 않았고 전형 끝에 '처우논의' 단계를 둔다 [1]. 넥스트증권의 사업보고서 '직원 1인 평균 급여액'은 찾지 못했다(공시 숫자 없음). 위 평균은 파생·기업금융 인력이 섞인 회사 전체 값이라 7년 차 이상 시스템 개발자가 받는 금액으로 읽으면 안 된다 {추론}. 회사 복지 안내에는 반기 성과 목표에 따라 성과급이 '지급될 수 있다'고 적혀 있다 [6]."
+  },
+  "benefits": {
+    "items": [
+      {"name": "유연 출퇴근", "detail": "월 단위 선택적 유연근무, 오전 7시~10시 사이 자율 출근"},
+      {"name": "원격 근무", "detail": "주 1회"},
+      {"name": "비포괄임금제", "detail": "초과근로수당 별도 지급"},
+      {"name": "자기개발 지원", "detail": "연간 최대 200만원"},
+      {"name": "복지카드", "detail": "연간 150만원"},
+      {"name": "단체보험", "detail": "임직원·배우자·자녀 실손 의료비 보장"},
+      {"name": "건강검진", "detail": "매년 종합건강검진"},
+      {"name": "성과급", "detail": "반기별 성과 목표 달성에 따라 지급될 수 있음"},
+      {"name": "직원 대출", "detail": "주택자금·생활안정자금"},
+      {"name": "특별상여·기념일", "detail": "설·추석 귀성비, 가정의 달 효도비, 연말 지원비 등 연 110만원"},
+      {"name": "특별휴가", "detail": "1년 이상 근무자에게 매년 3일"},
+      {"name": "장기근속 포상", "detail": "10년 근속 400만원과 기념 트로피(20년 포상도 운영)"},
+      {"name": "경조 지원", "detail": "경조 지원"}
+    ],
+    "note": "넥스트증권 채용 사이트의 'Life at Next' 복리후생 안내다 [6]. 작성 연도가 적혀 있지 않고, 공고는 복지가 근로 형태에 따라 다를 수 있다고 적었다 [1]. 지원 시점에 처우논의에서 확인한다 {추론}."
+  },
+  "location": {
+    "name": "넥스트증권 여의도 본사 (Three IFC)",
+    "address": "서울특별시 영등포구 국제금융로 10, Three IFC 12층·15층",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%98%81%EB%93%B1%ED%8F%AC%EA%B5%AC%20%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C%2010",
+    "near": "5·9호선 여의도역 근처 IFC 단지 {추론}",
+    "note": "채용 사이트 하단의 회사 주소다 [6]. 같은 코어트레이딩플랫폼팀 공고는 근무지를 '3IFC 15층'으로 적었다 [3]. 이 공고의 근무지는 '넥스트증권 여의도 본사'다 [1]."
+  },
+  "sources": [
+    {"n": 1, "title": "넥스트증권 채용 · Backend Engineer(Market Data & FEP)", "url": "https://nextsecurities.career.greetinghr.com/ko/o/245530", "kind": "posting", "date": "2026-11", "note": "직무 요약·일하는 방식·업무·기술 스택·필수/선호 자격·합류 과정"},
+    {"n": 2, "title": "넥스트증권 채용 · Backend Engineer(Trading)", "url": "https://nextsecurities.career.greetinghr.com/ko/o/245526", "kind": "posting", "note": "같은 코어트레이딩 쪽 — 주문·체결·잔고, 7년 이상, FIX 연동 우대"},
+    {"n": 3, "title": "원티드 · 넥스트증권 Backend Engineer(Platform) — 코어트레이딩플랫폼팀", "url": "https://www.wanted.co.kr/wd/400203", "kind": "posting", "note": "같은 팀 다른 공고 — 근무지 주소"},
+    {"n": 4, "title": "이코노미스트 · MTS 세 번 미룬 넥스트증권…미국주식 API 먼저 꺼낸 이유", "url": "https://economist.co.kr/article/view/ecn202611090035", "kind": "news", "date": "2026-11-16", "note": "오픈 API 기능(시세 조회·주문), 4분기 비공개 베타, MTS 2027년 1분기"},
+    {"n": 5, "title": "CEO스코어데일리 · 순익 1000% 오른 넥스트증권…'제2의 토스증권' 성장 가능할까", "url": "https://www.ceoscoredaily.com/page/view/2025031315540734424", "kind": "news", "date": "2025-03-21", "note": "인터랙티브브로커스 150억원 전략적 투자, 플랫폼 기술 활용"},
+    {"n": 6, "title": "넥스트증권 채용 · Life at Next(복리후생)", "url": "https://nextsecurities.career.greetinghr.com/ko/lifeatnext", "kind": "company", "note": "복지 항목과 금액, 사이트 하단 회사 주소"},
+    {"n": 7, "title": "원티드 · 넥스트증권 기업 정보(평균연봉)", "url": "https://www.wanted.co.kr/company/52490", "kind": "reference", "note": "금감원 공시정보·국민연금 가입 사업장 공공데이터로 계산한 집계 — 기준 연월 표기 없음"},
+    {"n": 8, "title": "CEO스코어데일리 · 국내 첫 대체거래소 포문…오전 8시부터 오후 8시까지 12시간 거래 제공", "url": "https://www.ceoscoredaily.com/page/view/2025020715204952857", "kind": "news", "date": "2025-02-07", "note": "넥스트레이드 3월 4일 출범, 프리 08:00~08:50 · 메인 09:00~15:20 · 종가매매 15:30~16:00 · 애프터 15:40~20:00"},
+    {"n": 9, "title": "아시아경제 · 대체거래소 출범 앞두고 증권사 SOR 구축", "url": "https://core.asiae.co.kr/article/2024072916200249795", "kind": "news", "date": "2024-07-29", "note": "금감원 최선집행의무 가이드라인, 거래소가 둘 이상이면 SOR 적용, 증권사의 통합시세·SOR·주문매체 개발"},
+    {"n": 10, "title": "비즈니스워치 · 코스콤 스탁넷 고도화", "url": "https://news.bizwatch.co.kr/article/market/2025/03/25/0033", "kind": "news", "date": "2025-03-25", "note": "대체거래소 출범 대비 — 시세망 접속 용량 10배, 서비스 수량 2배 이상"},
+    {"n": 11, "title": "디지털데일리 · 넥스트레이드, 하루 50조원 거래 무장애 운영 비결", "url": "https://www.ddaily.co.kr/page/view/2026043009044016196", "kind": "news", "date": "2026-04-30", "note": "주문 왕복 200마이크로초 이내, 하루 120GB·연 40TB 거래 데이터, 설계보다 4~5배 빠른 증가"},
+    {"n": 12, "title": "KRX 정보데이터시스템 · 시장정보 이용 정책(Market Data Usage Policies)", "url": "https://data.krx.co.kr/inc/datasale/Market Data Usage Polices_ko.pdf", "kind": "reference", "note": "실시간 정보를 데이터피드로 가입자에게 다시 제공하려면 사전 승인 필요"},
+    {"n": 13, "title": "Nasdaq · MoldUDP64 Protocol Specification V1.00", "url": "https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf", "kind": "reference", "note": "다른 거래소의 공개 규격 — 헤더 20바이트, 메시지 수 0 = 하트비트, 0xFFFF = 세션 종료, 재전송 요청 패킷, 수신기 흐름"},
+    {"n": 14, "title": "FIX Trading Community · FIX 4.4", "url": "https://www.fixtrading.org/standards/fix-4-4/", "kind": "reference"},
+    {"n": 15, "title": "Cboe Titanium Futures FIX 규격 · Resend Request", "url": "https://www.cboe.com/document/tech-spec/content/technical-specifications/cboe-titanium-cboe-futures-exchange-fix-specification/sessions/resend-request", "kind": "reference", "note": "다른 거래소 — 순번이 비었을 때의 재전송 요청"},
+    {"n": 16, "title": "OnixS FIX 4.4 사전 · Sequence Reset <4>", "url": "https://www.onixs.biz/fix-dictionary/4.4/msgType_4_4.html", "kind": "reference", "note": "Gap Fill 모드(GapFillFlag=Y)와 Reset 모드"},
+    {"n": 17, "title": "금융 IT 시스템 연계 — 내부연계(EAI·MCI)와 외부연계(FEP)", "url": "https://nayoungs.tistory.com/entry/%EA%B8%88%EC%9C%B5-IT-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%97%B0%EA%B3%84-%EB%82%B4%EB%B6%80%EC%97%B0%EA%B3%84EAI-MCI%EC%99%80-%EC%99%B8%EB%B6%80%EC%97%B0%EA%B3%84FEP", "kind": "reference", "note": "개인 블로그 — FEP의 역할(대외기관 통신·전문 변환), 국내 금융사 다수가 외부 솔루션 사용"},
+    {"n": 18, "title": "Wikipedia · ISO 8583", "url": "https://en.wikipedia.org/wiki/ISO_8583", "kind": "reference", "note": "MTI 4자리, 비트맵, 고정 길이·LLVAR·LLLVAR 칸"},
+    {"n": 19, "title": "Python 문서 · codecs 표준 인코딩", "url": "https://docs.python.org/ko/3/library/codecs.html#standard-encodings", "kind": "reference", "note": "cp949·euc_kr(한국어)"},
+    {"n": 20, "title": "Linux 커널 문서 · Scaling in the Linux Networking Stack", "url": "https://docs.kernel.org/networking/scaling.html", "kind": "reference", "note": "RSS·RPS·RFS·XPS"},
+    {"n": 21, "title": "Linux man-pages · tcp(7)", "url": "https://man7.org/linux/man-pages/man7/tcp.7.html", "kind": "reference", "note": "TCP_NODELAY(Nagle 끄기)"},
+    {"n": 22, "title": "Brendan Gregg · Linux perf Examples", "url": "https://www.brendangregg.com/perf.html", "kind": "reference"},
+    {"n": 23, "title": "SBS Biz · 증권사 해외주식 시세 '먹통'…美 업체 장애", "url": "https://biz.sbs.co.kr/amp/article/20000341314", "kind": "news", "date": "2026-10-21", "note": "블루오션 장애로 국내 증권사 대부분의 미국 주식 실시간 시세 중단"},
+    {"n": 24, "title": "Google SRE Book · Monitoring Distributed Systems", "url": "https://sre.google/sre-book/monitoring-distributed-systems/", "kind": "reference", "note": "네 가지 황금 신호, 평균 대신 분포(꼬리 지연)"},
+    {"n": 25, "title": "Apache Kafka 문서 · Message Delivery Semantics", "url": "https://kafka.apache.org/documentation/#semantics", "kind": "reference", "note": "파티션 안 순서"},
+    {"n": 26, "title": "Michael Nygard · Documenting Architecture Decisions", "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions", "kind": "reference", "date": "2011-11-15"},
+    {"n": 27, "title": "Release It! (2판) · Pragmatic Bookshelf", "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/", "kind": "reference", "note": "타임아웃·격벽(bulkhead) 패턴"},
+    {"n": 28, "title": "Linux man-pages · ip(7)", "url": "https://man7.org/linux/man-pages/man7/ip.7.html", "kind": "reference", "note": "IP_ADD_MEMBERSHIP(멀티캐스트 그룹 가입)"},
+    {"n": 30, "title": "Nasdaq · Trading Schedule", "url": "https://www.nasdaq.com/stock-market-trading-hours-for-nasdaq", "kind": "reference", "note": "프리마켓 04:00~09:30 ET는 한국 시간 저녁 17:00(서머타임)·18:00에 시작"}
+  ],
+  "caveat": "넥스트증권은 기술 블로그·컨퍼런스 발표를 내지 않아 회사 근거는 이 공고·같은 회사 다른 공고·보도 기사뿐입니다. 어떤 시세 제공사·해외 브로커·국내 기관과 어떤 규격으로 붙는지는 공개되지 않았고, 국내 거래소 시세 규격도 계약자에게만 주어져, 공개된 다른 거래소 규격(나스닥 MoldUDP64·FIX·ISO 8583)과 리눅스 문서로 '보통 이런 것'을 보였습니다. 코드 예의 종목 형식·전문 칸은 가상입니다."
+}
