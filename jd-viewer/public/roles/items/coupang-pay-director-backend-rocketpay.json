@@ -1,0 +1,1144 @@
+{
+ "id": "coupang-pay-director-backend-rocketpay",
+ "company": "쿠팡 (Coupang)",
+ "role": "Director of Back-end Engineering",
+ "team": "쿠팡페이 · Rocket Pay Product Engineering 조직",
+ "jobs": [
+  "ats-greenhouse:coupang:8401523"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡 안에서만 쓰던 결제(쿠페이)를 바깥 온라인·오프라인 가게에서도 쓰는 **범용 결제 Rocket Pay**로 넓히는 동안, 지갑·승인·정산·대사·가맹점 서비스 백엔드를 맡은 **여러 팀과 그 팀장들을 이끄는 자리**입니다.[1][2][5]",
+  "env": "연 수십조 원이 지나가는 결제 시스템을 Java·Spring·Kotlin·JPA 기반 MSA 위에서, 금융 규제(PG 정산자금 보호 등)와 재무 정확성을 지키며 운영합니다.[1][5][12]",
+  "oneline": "코드를 짜는 자리가 아니라 **팀장들의 팀장**. 몇 년짜리 기술 로드맵·조직 확장·장애 책임이 일의 중심이고, 결제 도메인과 MSA는 직접 깊게 알아야 합니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Strategic & Technical Leadership: Define the overarching technical vision, system architecture, and multi-year engineering roadmap for Rocket Pay’s core back-end domains (Wallet, Authorization, Settlement, Reconciliation, and Merchant Services).",
+   "short": "지갑·승인·정산·대사·가맹점 다섯 영역의 시스템 큰 그림과 몇 년짜리 기술 로드맵을 정한다.",
+   "why": "Rocket Pay는 쿠팡 안 결제를 넘어 외부 온라인 가맹점부터 열고 오프라인 매장으로 순서대로 넓힌다고 발표됐습니다.[5] 첫 외부 가맹점 계약용 **표준 수수료 체계**(카드 결제 일반가맹점 최대 3.2% 등)도 이미 만들었습니다.[6] 가게가 늘 때마다 다섯 영역이 같이 바뀌어야 해서, 한 해짜리 기능 목록이 아니라 \"몇 년 동안 무엇을 어떤 순서로 짓나\"를 정할 사람이 필요합니다.[1][2]",
+   "actually": {
+    "intro": "다섯 영역이 결제 한 건에서 맡는 일입니다. 쿠팡페이 내부 구조는 공개되지 않아, 카드 결제의 일반 흐름[10]과 국내 PG의 정산 설명[11]으로 보였습니다.",
+    "items": [
+     "**Wallet(지갑)** — 고객이 등록한 카드·계좌·충전금(쿠페이머니)을 들고 있는 곳. Rocket Pay는 은행 계좌·신용·체크카드·충전금을 다 받는다.[5][6]",
+     "**Authorization(승인)** — \"이 카드로 이 금액을 써도 되나\"를 카드사에 묻고 답을 받는 단계. 승인만으로는 돈이 움직이지 않는다.[10]",
+     "**Settlement(정산)** — 수수료를 뗀 금액을 정해진 주기에 가맹점에 보내는 일. 국내 PG는 보통 결제 뒤 1~2영업일에 정산하고, 지급 보류·보증보험·한도 문제가 있으면 멈춘다.[11]",
+     "**Reconciliation(대사)** — 우리 원장과 카드사·은행이 보낸 파일을 한 건씩 맞춰 금액·건수가 어긋난 곳을 찾는 일.[8]",
+     "**Merchant Services(가맹점 서비스)** — 가맹점 가입·계약 수수료·정산 계좌·조회 화면. 쿠팡페이는 수수료·정산 정책 운영 인력을 따로 뽑고 있다.[6]",
+     "**로드맵** — 예: \"외부 온라인 가맹점 → 오프라인\" 순서에 맞춰 어느 영역을 언제 다시 짓고, 무엇을 옛 시스템과 함께 돌리다 옮기나를 정한다.[5] {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "카드 결제 한 건이 지나는 길[10][11]",
+     "steps": [
+      "고객 · 지갑에서 결제 수단 선택",
+      "승인 · 카드사에 쓸 수 있나 묻기",
+      "매입·청산 · 거래 확인과 은행 간 금액 계산",
+      "정산 · 수수료 떼고 가맹점에 지급",
+      "대사 · 우리 원장과 외부 파일 맞추기"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "제품 방향(어떤 가맹점을 언제 여나)은 사업·제품 조직이 정하고, 이 자리는 그것을 **영역별 시스템 그림과 해마다의 순서**로 바꿉니다.[1] 최소선은 다섯 영역이 서로 무엇을 주고받는지(어느 데이터의 주인이 누구인지)를 한 장으로 그리고, 바꾸기 비싼 결정(원장 구조·영역 경계)을 먼저 골라내는 것입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    8,
+    10,
+    11
+   ],
+   "study": [
+    "stripe-clearing",
+    "pe-payment",
+    "toss-ledger"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Multi-Team & Manager Leadership: Lead, coach, and scale a high-performing organization of Engineering Managers, Tech Leads, and Senior/Staff Engineers; foster a culture of engineering excellence, ownership, and continuous growth.",
+   "short": "팀장(EM)·테크 리드·시니어/Staff 엔지니어로 된 조직을 키우고, 그 사람들이 다시 팀을 잘 키우게 한다.",
+   "why": "같은 조직의 Engineering Manager 공고가 따로 열려 있습니다 — EM은 팀 하나를 맡고 \"엔지니어들의 성장과 조직 운영\"을 책임진다고 적었습니다.[2] 디렉터는 그 EM들과, 팀에 속하지 않고 여러 팀을 가로지르는 Staff 엔지니어들까지 이끕니다.[1][3]",
+   "actually": {
+    "items": [
+     "**팀 쪼개기·만들기** — 팀은 평소 6~8명이 알맞고, 새 팀은 기존 팀을 8~10명으로 키운 뒤 둘로 나누며, 빈 팀을 만들지 않는다는 경험칙이 널리 쓰인다.[22]",
+     "**매니저 코칭** — 1:1에서 EM이 맡은 팀의 채용·성과·갈등을 같이 본다. 다른 매니저를 넷보다 적게 맡는 매니저의 매니저는 아직 배우는 단계로 본다는 경험칙도 있다.[22]",
+     "**두 갈래 성장 길** — 사람 관리(EM) 길과 기술(Staff) 길을 나눠, 좋은 엔지니어가 억지로 매니저가 되지 않게 한다.[3] {추론}",
+     "**팀 모양** — 지갑·승인처럼 고객 흐름을 맡는 팀과, 여러 팀이 쓰는 공통 플랫폼 팀을 나누는 식으로 짠다(팀 토폴로지).[25]",
+     "**문화** — \"장애 원인은 사람 탓이 아니라 구조 탓\"으로 보고 기록하게 하는 것도 디렉터가 지킨다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "사람이 늘면 맞춰야 할 대화 길",
+     "body": "두 사람씩 짝을 지으면 n명일 때 n(n−1)/2개입니다. 팀을 6~8명으로 나누는 이유가 여기 있습니다(직접 돌린 출력). {추론}",
+     "lang": "python",
+     "code": "for n in [5, 8, 15, 40]:\n    print(f\"{n:>3}명  대화 길 {n * (n - 1) // 2:>4}개\")\n#   5명  대화 길   10개\n#   8명  대화 길   28개\n#  15명  대화 길  105개\n#  40명  대화 길  780개"
+    }
+   ],
+   "how_far": "디렉터가 직접 모든 엔지니어를 코칭하지는 않습니다. **EM이 자기 팀을 잘 키우는지**를 보고, EM과 Staff가 막힐 때 길을 터 주는 것이 몫입니다.[2][22] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    15,
+    22,
+    25
+   ],
+   "study": [
+    "manager-path",
+    "elegant-puzzle",
+    "team-topologies"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Cross-Functional Executive Alignment: Partner directly with Product, Business, Finance, Risk, and Compliance leaders\nto align technical execution with regulatory requirements, financial accuracy, and aggressive business growth targets.",
+   "short": "제품·사업·재무·리스크·준법 임원과 직접 만나 \"규제·숫자 정확성·빠른 성장\"을 한 계획에 맞춘다.",
+   "why": "결제는 개발팀 혼자 정할 수 있는 것이 거의 없습니다. 수수료는 사업 조직이, 정산 주기·금액은 재무가, 이상 거래는 리스크가, 법 해석은 준법이 정합니다. 같은 조직 EM 공고도 Product·Business·Finance·Risk·Compliance와 협업해 결제 플랫폼을 짓는다고 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**규제 일정 맞추기** — 개정 전자금융거래법은 PG가 가맹점에 줄 정산자금을 **전액 외부(예치·신탁·지급보증보험)**에 두게 했고, 공포 1년 뒤부터 60%로 시작해 해마다 20%씩 올린다. 이런 날짜가 로드맵에 그대로 박힌다.[12]",
+     "**재무 정확성** — 하루 정산 금액이 1원이라도 어긋나면 재무가 마감을 못 한다. 대사 결과를 재무가 믿을 수 있는 보고서로 내는 일이 개발 조직 몫이다.[8] {추론}",
+     "**성장 목표와 부딪칠 때** — \"이번 분기 가맹점 N곳\"과 \"원장 이관 먼저\"가 부딪치면 위험과 비용을 숫자로 보여 주고 순서를 정한다. {추론}",
+     "**24시간 감시** — 쿠팡은 Rocket Pay에 24시간 거래 모니터링과 장애 대응 체계를 갖춘다고 밝혔다 — 리스크 조직과 같이 운영하는 일이다.[5]"
+    ]
+   },
+   "how_far": "규제 해석은 준법이, 숫자의 맞고 틀림은 재무가 판정합니다. 이 자리는 그 요구를 **언제까지 어떤 시스템 변경으로 지키나**를 약속하고 지키는 사람입니다. 법조문을 다 외울 필요는 없지만 PG·전자금융업 규제의 큰 줄기는 알아야 대화가 됩니다. {추론}",
+   "refs": [
+    2,
+    5,
+    8,
+    12
+   ],
+   "study": [
+    "fsc-pg",
+    "staffeng"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Platform Scalability & Reliability: Ensure ultra-high availability, low latency, and strict financial data integrity\nacross systems processing tens of trillions of KRW in transactions; lead architectural reviews and executive deep-dives into critical production incidents.",
+   "short": "수십조 원이 지나가는 결제가 멈추지 않고 빠르고 숫자가 틀리지 않게 하고, 큰 장애는 끝까지 파고든다.",
+   "why": "공고는 이 시스템이 **수십조 원 규모**의 거래를 처리한다고 적었습니다.[1][2] 쿠팡페이 제품 책임자는 2024년 광군제(11월 11일) 하루 평소의 약 **20배** 트래픽이 몰렸다고 말했습니다.[7] 결제가 1분 멈추면 그 1분 동안의 모든 주문이 멈춥니다.",
+   "actually": {
+    "items": [
+     "**가용성 목표 정하기** — 99.99%면 1년에 약 52.56분까지 멈춰도 된다는 뜻이다. 목표를 숫자로 정하고 남은 \"멈춤 예산\"으로 배포 속도를 조절한다.[13]",
+     "**지연** — 평균이 아니라 느린 쪽 끝(백분위 99 등)을 본다.[13]",
+     "**숫자 무결성** — 결제·취소를 UPDATE로 덮지 않고 INSERT로만 쌓는 원장, 이벤트에 멱등 키를 실어 중복 처리를 막는 식의 장치가 쓰인다(토스페이먼츠 사례).[8]",
+     "**타임아웃 뒤의 불일치** — 카드사에선 승인됐는데 우리 쪽은 실패로 남는 경우, 타임아웃 건을 따로 저장해 취소를 보내 맞추는 \"망취소\" 같은 장치가 필요하다.[8]",
+     "**설계 검토** — 새 영역·큰 변경마다 Staff 엔지니어들과 장애 시나리오·데이터 주인·이관 계획을 미리 검토한다. {추론}",
+     "**장애 딥다이브** — 데이터 손실·사용자에게 보인 장애·롤백이 있었다면 사후 분석(포스트모템)을 쓰고 재발 방지 항목을 끝까지 챙긴다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "나인(9) 하나가 줄여 주는 멈춤 시간",
+     "body": "가용성 목표별로 1년·30일 동안 허용되는 멈춤 시간입니다. 99.99%의 1년 52.56분은 구글 SRE 책의 값과 같습니다[13](직접 돌린 출력).",
+     "lang": "python",
+     "code": "for target in [\"99.9\", \"99.95\", \"99.99\", \"99.999\"]:\n    down = 1 - float(target) / 100\n    print(f\"{target:>7}%  1년 {down*365*24*60:8.2f}분   30일 {down*30*24*60:6.2f}분\")\n#    99.9%  1년   525.60분   30일  43.20분\n#   99.95%  1년   262.80분   30일  21.60분\n#   99.99%  1년    52.56분   30일   4.32분\n#  99.999%  1년     5.26분   30일   0.43분"
+    }
+   ],
+   "how_far": "장애를 직접 고치는 사람은 팀이고, 디렉터는 **목표 숫자를 정하고, 큰 장애의 원인을 구조 수준까지 따져 묻고, 재발 방지 일정을 로드맵에 넣는** 사람입니다. 그러려면 스레드 덤프·쿼리 실행계획·트랜잭션 경계를 같이 읽을 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    8,
+    13,
+    15
+   ],
+   "study": [
+    "sre-online",
+    "toss-ledger",
+    "stripe-idem"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Delivery & Operational Excellence: Drive agile execution across multiple concurrent, mission-critical programs, establishing rigorous engineering, testing, and operational best practices.",
+   "short": "동시에 굴러가는 중요한 프로젝트 여럿을 애자일로 끝까지 내보내고, 개발·테스트·운영 기준을 세운다.",
+   "why": "외부 가맹점 열기, 수수료 체계, 오프라인 확장, 규제 대응이 한꺼번에 진행됩니다.[5][6][12] 팀이 여럿이면 팀마다 배포·테스트 방식이 갈리기 쉬워, 공통 기준을 세우는 일이 디렉터에게 옵니다.[1]",
+   "actually": {
+    "items": [
+     "**전달 속도와 안정성을 같이 재기** — DORA는 배포 빈도·변경 리드 타임(처리량)과 변경 실패율·배포 재작업률(불안정성)을 같이 보라고 한다.[16]",
+     "**짧은 주기** — 스크럼은 한 달 이하의 고정 길이 스프린트를 쓴다. 여러 팀의 스프린트를 맞춰 의존 관계를 미리 드러낸다.[24]",
+     "**테스트 기준** — 결제는 성공보다 실패·취소·환불·재처리 흐름이 더 많다. 그 흐름을 자동 테스트로 지키게 한다. {추론}",
+     "**운영 기준** — 장애가 나면 누가 지휘하고 누가 고치고 누가 알리는지 역할을 미리 정해 둔다.[14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 달 배포 기록으로 DORA 지표 두 개 세기",
+     "body": "가상 배포 8번 중 2번이 배포 직후 롤백·핫픽스가 필요했다면 변경 실패율은 25%입니다(직접 돌린 출력). 지표 정의는 DORA 안내를 따랐습니다.[16]",
+     "lang": "python",
+     "code": "deploys = [(\"11-03\", False), (\"11-04\", False), (\"11-06\", True), (\"11-10\", False),\n           (\"11-12\", False), (\"11-17\", False), (\"11-19\", True), (\"11-24\", False)]\nfails = sum(1 for _, bad in deploys if bad)\nprint(\"배포 횟수:\", len(deploys), \"회/월\")\nprint(f\"변경 실패율: {fails / len(deploys):.1%}\")\n# 배포 횟수: 8 회/월\n# 변경 실패율: 25.0%"
+    }
+   ],
+   "how_far": "방법론 이름보다 **팀 여럿이 같은 숫자로 자기 상태를 보고, 막힌 곳이 일찍 드러나게** 만드는 것이 핵심입니다. 지표를 사람 평가에 쓰면 숫자가 꾸며진다는 점도 알아 둡니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    12,
+    14,
+    16,
+    24
+   ],
+   "study": [
+    "dora",
+    "scrum-guide",
+    "practical-testing"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Solid experience in progressive software engineering, with experience in engineering management, including 2+ years managing Engineering Managers (manager-of-managers experience).",
+   "short": "개발자로 꾸준히 올라온 경력에, 팀장들을 거느린 경험(매니저의 매니저)이 2년 넘게 있어야 한다.",
+   "why": "이 자리는 EM 여럿을 맡습니다.[1] 팀 하나를 맡는 것과 팀장들을 맡는 것은 다른 일입니다 — 직접 일을 나누는 대신 **팀장을 뽑고 키우고 평가**해야 합니다.[22] 같은 조직 EM 공고는 개발 10년 이상·관리 2년 이상을 요구했으니, 이 자리는 그 위 단계입니다.[2]",
+   "how_far": "\"2년 넘게 매니저를 관리\"는 이력서에서 바로 보이는 문턱입니다. 몇 명의 매니저를, 어떤 규모(총 몇 명) 조직에서, 무엇을 바꿨는지를 숫자로 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    22
+   ],
+   "study": [
+    "manager-path",
+    "elegant-puzzle"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Proven track record of defining technical vision and leading the architecture and delivery of large-scale, mission-critical distributed systems.",
+   "short": "멈추면 안 되는 큰 분산 시스템의 방향을 정하고, 설계부터 출시까지 이끌어 끝낸 실적이 있어야 한다.",
+   "why": "Rocket Pay는 쿠팡 안 결제 시스템 위에서 바깥 가맹점으로 넓혀 가는 일이라, 돌고 있는 시스템을 멈추지 않고 바꿔야 합니다.[5] 공고 업무 첫 줄이 기술 비전·설계·로드맵입니다.[1]",
+   "actually": {
+    "items": [
+     "**옛 것과 함께 가기** — 새 원장을 옆에 두고 두 곳에 같이 쓰며, 일정 주기로 비교·보정하다 새 쪽을 본체로 바꾸는 방식이 쓰인다. 토스페이먼츠는 이관 중 5분마다 보정 배치를 돌렸다.[8]",
+     "**나눠서 바꾸기** — 서비스마다 자기 데이터를 갖게 나누면 팀이 따로 배포할 수 있지만, 여러 서비스에 걸친 일관성은 따로 챙겨야 한다.[18]",
+     "**\"끝냈다\"의 증거** — 출시 날짜보다 바뀐 뒤의 장애 수·지연·정산 정확도 같은 숫자로 말한다. {추론}"
+    ]
+   },
+   "how_far": "면접에서는 \"무엇을 왜 그렇게 나눴고, 다시 한다면 무엇을 바꾸겠나\"를 묻기 쉽습니다. 직접 결정한 것과 팀이 한 것을 나눠 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    5,
+    8,
+    18
+   ],
+   "study": [
+    "ddia-ko",
+    "msa-patterns",
+    "toss-ledger"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Extensive experience aligning technical roadmaps across senior stakeholders (Product, Business, Risk, Finance) and Principal/Lead Engineers.",
+   "short": "제품·사업·리스크·재무 임원과 수석·리드 엔지니어 사이에서 로드맵 하나로 의견을 모아 본 경험.",
+   "why": "업무 셋째 줄(임원 정렬)을 해 본 적이 있느냐는 요건입니다.[1] 위로는 사업 목표를, 옆으로는 리스크·재무의 제약을, 아래로는 수석 엔지니어들의 기술 판단을 한 계획에 담아야 합니다.[2]",
+   "actually": {
+    "items": [
+     "**기술 판단을 사업 말로** — \"원장 재설계\"가 아니라 \"정산 오류 건수·마감 시간·새 가맹점 붙이는 기간\"으로 설명한다. {추론}",
+     "**Staff·Principal과의 관계** — 이들은 지시보다 설득으로 움직이는 사람들이다. 기술 방향의 초안을 함께 쓰고 결정 기록을 남긴다.[23]",
+     "**합의가 안 될 때** — 선택지별 위험·비용을 적어 결정할 사람과 날짜를 정해 둔다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    23
+   ],
+   "study": [
+    "staffeng",
+    "elegant-puzzle"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong organizational leadership experience, including hiring, mentoring, performance management, and scaling multi-team engineering organizations in an Agile environment.",
+   "short": "채용·멘토링·성과 관리를 하며 애자일 방식으로 여러 팀짜리 조직을 키워 본 경험.",
+   "why": "공고는 조직을 '키우는(scale)' 일을 두 번 적었습니다.[1] 외부 가맹점이 붙을수록 팀이 늘어나므로 채용과 팀 나누기가 일상 업무가 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "**채용** — 뽑을 사람의 기준(레벨별 기대치)을 적어 두고, 면접관마다 판단이 갈리지 않게 맞춘다. {추론}",
+     "**성과 관리** — 기대치를 미리 말하고, 정기 평가 전에 1:1로 자주 되짚는다.[26] {추론}",
+     "**조직 키우기** — 팀이 8~10명이 되면 둘로 나누고, 새 팀에는 이미 일을 아는 사람을 섞는다.[22]"
+    ]
+   },
+   "refs": [
+    1,
+    22,
+    26
+   ],
+   "study": [
+    "manager-path",
+    "elegant-puzzle",
+    "team-topologies"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Deep hands-on architectural understanding of Microservices Architecture (MSA), JPA, and JVM-based ecosystems (Java / Spring / Kotlin).",
+   "short": "MSA·JPA·Java/Spring/Kotlin 을 손으로 써 본 수준으로 알아, 팀의 설계를 직접 따져 볼 수 있어야 한다.",
+   "why": "같은 조직의 EM 공고도 JPA·MSA 이해와 Java·Spring·Kotlin 업무 경험을 요건에 넣었습니다 — 조직 전체가 이 바닥 위에 있습니다.[2] 쿠팡은 2013년부터 큰 시스템 하나를 여러 서비스로 쪼개는 MSA 전환을 했다고 엔지니어링 블로그에 적었습니다.[19]",
+   "level": {
+    "basic": "Spring 트랜잭션 경계 · JPA 영속성 컨텍스트와 지연 로딩 · REST/메시지로 서비스끼리 통신",
+    "work": "N+1·락·트랜잭션 전파 규칙 · 서비스마다 DB 나누기 · 메시지 중복·순서 처리",
+    "team": "여러 서비스에 걸친 결제·취소의 일관성(사가·아웃박스·멱등 키) · 원장 이관 전략을 직접 판단"
+   },
+   "actually": {
+    "items": [
+     "**트랜잭션 경계** — Spring은 이미 열린 트랜잭션에 합류할지 새로 열지를 전파 규칙(REQUIRED·REQUIRES_NEW 등)으로 정한다. 결제 기록과 이벤트 저장을 한 경계에 두는지가 정확성을 가른다.[20]",
+     "**서비스에 걸친 일** — 결제 → 포인트 → 주문처럼 서비스 여러 개를 거치는 일은 한 DB 트랜잭션으로 못 묶어, 단계마다 되돌리는 동작을 정해 두는 사가로 짠다.[17]",
+     "**이벤트 유실·중복** — DB 저장과 메시지 발행을 함께 맞추는 아웃박스, 받는 쪽이 같은 건을 두 번 처리하지 않게 하는 멱등 키.[8][9]",
+     "**JPA 쿼리 개수** — 목록 화면 하나가 쿼리 수백 개를 부르는 N+1을 설계 검토에서 잡는다. {추론}"
+    ]
+   },
+   "how_far": "디렉터가 매일 코드를 쓰지는 않지만, 공고는 'hands-on' 이해를 요구합니다.[1] 설계 문서에서 트랜잭션 경계와 데이터 주인이 틀린 곳을 짚어 낼 수 있는 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    8,
+    9,
+    17,
+    19,
+    20
+   ],
+   "study": [
+    "msa-patterns",
+    "saga-doc",
+    "jpa-basic",
+    "spring-db-1",
+    "jpa-app-2"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Demonstrated ability to lead root-cause analysis and deep-dives on complex, business-critical system issues.",
+   "short": "돈이 걸린 복잡한 장애의 진짜 원인을 끝까지 파고드는 일을 이끈 경험.",
+   "why": "업무 넷째 줄이 \"중요 장애의 임원 딥다이브\"입니다.[1] 결제는 장애가 곧 돈과 신뢰 손실이라, 겉 증상을 막는 데서 멈추지 않고 구조 원인을 찾아야 합니다.[15]",
+   "actually": {
+    "items": [
+     "**장애 중** — 지휘하는 사람·고치는 사람·알리는 사람을 나누고, 지휘자가 맡기지 않은 일은 모두 지휘자 몫이다.[14]",
+     "**사후 분석을 쓰는 때** — 사용자에게 보인 장애, 종류를 가리지 않은 데이터 손실, 롤백 같은 사람 개입, 복구 시간이 기준을 넘었을 때 등.[15]",
+     "**사람 탓 하지 않기** — 누가 틀렸나가 아니라 왜 시스템이 그 실수를 허용했나를 적는다(blameless).[15]",
+     "**결제에서 자주 보는 원인** — 외부 원천사 타임아웃 뒤 상태 불일치, 이벤트 재발행으로 생긴 중복.[8]"
+    ]
+   },
+   "how_far": "직접 로그를 다 뒤지기보다 **올바른 질문으로 팀이 원인에 닿게 하고, 재발 방지가 실제로 끝났는지 확인**하는 사람입니다. 그래도 GC 멈춤·커넥션 고갈·락 경합 같은 흔한 원인은 스스로 알아봐야 질문이 됩니다. {추론}",
+   "refs": [
+    1,
+    8,
+    14,
+    15
+   ],
+   "study": [
+    "sre-online",
+    "jvm-tuning"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Solid foundation in software engineering fundamentals, automated testing, and industry-standard system design best practices.",
+   "short": "소프트웨어 기본기·자동 테스트·업계 표준 설계 원칙이 탄탄해야 한다 — 조직 기준을 세우려면 먼저 알아야 해서.",
+   "why": "업무 다섯째 줄의 \"개발·테스트·운영 기준 세우기\"를 하려면 디렉터가 먼저 그 기준을 알아야 합니다.[1] 같은 조직 EM 공고도 엔지니어링과 테스팅의 탄탄한 기본을 요구했습니다.[2]",
+   "actually": {
+    "items": [
+     "**테스트 피라미드** — 빠른 단위 테스트를 많이, 느린 통합 테스트는 핵심 흐름에만. {추론}",
+     "**결제 흐름 테스트** — 승인 성공만이 아니라 타임아웃·부분 취소·중복 요청을 재현하는 테스트. 같은 키로 다시 요청하면 첫 응답을 그대로 돌려주는 멱등 처리처럼 정해진 동작을 검증한다.[9]",
+     "**설계 원칙** — 서비스마다 데이터를 갖게 하고, 바깥에서 보는 계약(API)을 함부로 깨지 않는다.[18]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    9,
+    18
+   ],
+   "study": [
+    "practical-testing",
+    "ddia-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong verbal and written communication skills in Korean",
+   "short": "한국어로 말과 글을 잘해야 한다 — 국내 규제·재무·사업 조직과 매일 문서로 일해서.",
+   "why": "공고 본문은 영어지만 근무지는 서울이고,[1] 함께 일할 재무·리스크·준법 조직과 국내 규제 문서는 한국어입니다.[12] {추론}",
+   "how_far": "로드맵·장애 보고·결정 기록을 한국어로 짧고 정확하게 쓰는 수준입니다. 영어 회의도 있을 수 있지만 요건은 한국어만 적었습니다.[1]",
+   "refs": [
+    1,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Bachelor’s or Master’s degree in Computer Science, Engineering, or a related technical field (or equivalent practical experience).",
+   "short": "컴퓨터공학 등 학사·석사면 좋지만, 그만한 실무 경력으로 대신할 수 있다.",
+   "why": "우대사항이고 괄호 안에 \"그에 준하는 실무 경험\"을 같이 적었습니다.[1] 같은 조직 EM 공고도 같은 문구입니다.[2]",
+   "how_far": "이 급에서는 학위보다 앞의 관리 경력·실적이 훨씬 무겁게 보일 가능성이 큽니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Extensive domain experience in Payments, Fintech, Banking, or Financial Services (e.g., authorization, clearing/settlement, ledgers, merchant acquiring, or BaaS).",
+   "short": "승인·청산/정산·원장·가맹점 매입·BaaS 같은 결제·금융 도메인을 오래 다뤄 봤으면 좋다.",
+   "why": "공고가 예로 든 다섯 낱말이 그대로 이 조직이 맡는 영역입니다.[1] 쿠팡페이는 판매자에게 BaaS(은행 기능을 빌려 쓰는 서비스) 모델과 유동성 지원을 제공한다고 소개했고,[1] 판매자 대출은 빠르면 2분 안에 나간다고 했습니다.[7]",
+   "actually": {
+    "items": [
+     "**승인(authorization)** — 카드사가 이 거래를 써도 되는지 확인. 돈은 아직 안 움직인다.[10]",
+     "**청산(clearing)·정산(settlement)** — 청산은 거래를 확인하고 은행끼리 줄 돈을 계산하는 단계, 정산은 그 뒤 실제로 돈이 옮겨 가는 단계. 카드는 보통 1~3영업일.[10]",
+     "**원장(ledger)** — 모든 결제·취소를 지우지 않고 쌓는 장부.[8]",
+     "**가맹점 매입(merchant acquiring)** — 가게의 카드 결제를 받아 주고 정산해 주는 쪽의 일. Rocket Pay가 외부 가맹점과 직접 계약하는 것이 이쪽이다.[6]",
+     "**BaaS** — 은행이 아닌 회사가 은행 기능을 자기 서비스에 얹는 것.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    7,
+    8,
+    10
+   ],
+   "study": [
+    "stripe-clearing",
+    "pe-payment",
+    "toss-ledger"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience architecting and operating high-throughput, global-scale distributed systems.",
+   "short": "초당 많은 요청을 받는 세계 규모 분산 시스템을 설계하고 운영해 봤으면 좋다.",
+   "why": "쿠팡페이는 한국과 대만에서 서비스하고,[1] 판매 행사 날에는 평소의 20배 트래픽을 받습니다.[7]",
+   "actually": {
+    "items": [
+     "**몰리는 날 대비** — 행사 날짜를 알면 미리 늘려 두고, 모르는 급증은 자동 확장으로 받는다. 쿠팡페이는 AWS의 탄력성을 이유로 들었다.[7]",
+     "**지역 나누기** — 나라마다 규제·통화가 달라 데이터와 정산을 나눠 둔다. {추론}",
+     "**목표 숫자로 운영** — 지연·오류율 목표를 정하고 넘으면 경보.[13]"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    13
+   ],
+   "study": [
+    "ddia-ko",
+    "sre-online"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Deep familiarity with high-volume financial data reconciliation (대사) and strict data consistency/auditability requirements.",
+   "short": "대량 금융 데이터의 대사와, 숫자가 늘 맞고 나중에 감사할 수 있어야 하는 요구를 잘 알면 좋다.",
+   "why": "공고가 '대사'를 한국어로 괄호에 넣어 강조했습니다.[1] 정산자금을 외부에 맡기는 규제가 단계적으로 시행되면 맡긴 돈과 줄 돈이 맞는지 계속 증명해야 합니다.[12] {추론}",
+   "actually": {
+    "items": [
+     "**건별 맞추기** — 우리 원장과 카드사·은행 파일을 거래 번호로 붙여 \"한쪽에만 있음·금액 다름\"을 찾는다.[8] {추론}",
+     "**감사 가능성** — 지우거나 덮어쓰지 않고 INSERT로만 쌓으면 과거 어느 시점의 상태든 다시 만들 수 있다.[8]",
+     "**정기 보정** — 토스페이먼츠는 새 원장으로 옮기는 동안 5분마다 옛 원장 기준으로 자동 보정 배치를 돌렸다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "원장 대 카드사 파일 대사",
+     "body": "가상 데이터입니다. 금액은 Decimal로 다룹니다 — float는 원 단위가 어긋날 수 있습니다(직접 돌린 출력). {추론}",
+     "lang": "python",
+     "code": "from decimal import Decimal as D\nledger = {\"T1\": D(\"12000\"), \"T2\": D(\"5500\"), \"T3\": D(\"30000\"), \"T4\": D(\"8900\")}\nacquirer = {\"T1\": D(\"12000\"), \"T2\": D(\"5000\"), \"T4\": D(\"8900\"), \"T5\": D(\"4300\")}\nfor tid in sorted(ledger.keys() | acquirer.keys()):\n    a, b = ledger.get(tid), acquirer.get(tid)\n    if a is None:   print(tid, \"우리 원장에 없음  (카드사\", b, \")\")\n    elif b is None: print(tid, \"카드사 파일에 없음 (우리\", a, \")\")\n    elif a != b:    print(tid, \"금액 다름\", a, \"vs\", b, \"차이\", a - b)\n# T2 금액 다름 5500 vs 5000 차이 500\n# T3 카드사 파일에 없음 (우리 30000 )\n# T5 우리 원장에 없음  (카드사 4300 )"
+    }
+   ],
+   "how_far": "디렉터는 대사 코드를 짜지 않습니다. **대사를 어느 주기로, 어떤 단위로 하고, 어긋난 건을 누가 언제까지 닫나**를 재무와 정해 시스템으로 만드는 사람입니다. {추론}",
+   "refs": [
+    1,
+    8,
+    12
+   ],
+   "study": [
+    "toss-ledger",
+    "fsc-pg",
+    "ddia-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Hands-on background with cloud-native infrastructure (AWS) and container orchestration (Kubernetes).",
+   "short": "AWS 클라우드와 쿠버네티스 위에서 직접 서비스를 굴려 봤으면 좋다.",
+   "why": "쿠팡페이 제품 책임자는 AWS의 탄력성·효율·혁신·보안을 쿠팡페이에 주는 네 가지 이점으로 들었고, 재해 복구와 데이터 보호도 말했습니다.[7] 같은 조직 EM 공고도 AWS·Kubernetes를 우대사항에 적었습니다.[2]",
+   "how_far": "클러스터를 짓는 것은 인프라 조직 몫일 가능성이 큽니다. 이 자리는 **비용·가용 영역·재해 복구 목표를 어디까지 둘지** 판단할 수 있으면 됩니다. {추론}",
+   "refs": [
+    2,
+    7
+   ],
+   "study": [
+    "kubernetes",
+    "sre-online"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience with large-scale data processing and streaming pipelines utilizing Kafka, Spark, Hadoop, Cassandra, or Airflow.",
+   "short": "Kafka·Spark·Hadoop·Cassandra·Airflow로 대량 데이터·스트리밍 파이프라인을 다뤄 봤으면 좋다.",
+   "why": "대사·정산은 하루치 거래를 통째로 모아 계산하는 배치이고, 결제 이벤트는 다른 도메인으로 흘러가는 스트림입니다.[8] 같은 조직 EM 공고도 같은 기술로 데이터 파이프라인 경험을 우대했습니다.[2]",
+   "actually": {
+    "items": [
+     "**Kafka** — 결제가 생기면 이벤트를 내고, 다른 도메인이 구독해 자기 일을 한다. 도메인끼리 DB를 직접 들여다보지 않게 된다.[8]",
+     "**배치(Spark·Airflow)** — 일 정산·월 마감·대사처럼 정해진 순서로 도는 계산. {추론}",
+     "**Cassandra** — 많이 쓰고 키로 읽는 데이터(이력 등)에 쓰이는 분산 저장소. {추론}"
+    ]
+   },
+   "refs": [
+    2,
+    8
+   ],
+   "study": [
+    "kafka",
+    "ddia-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Recruitment Process and Others\nRecruitment Process\nApplication Review - Job Fit Interview - Focus Interview – Offer\nThe exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.\nInterview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "서류 → 직무 적합 면접 → 집중 면접 → 처우 제안. 결과는 지원서의 이메일로 온다.",
+   "why": "공고 끝의 전형 안내입니다.[1] 마지막 'Offer' 단계에서 연봉이 정해집니다 — 공고에 연봉이 없는 이유입니다.[1]",
+   "how_far": "단계 이름만 보면 둘째 면접이 경험 하나를 깊게 파는 자리로 보입니다 — 위의 장애 딥다이브·로드맵 정렬 경험을 하나씩 준비해 둡니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to Consider\nThis job posting may be closed prior to the stated end date for application if all openings are filled.\nCoupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.\nThose eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.\nJob titles and responsibilities may be subject to change depending on the candidate’s overall experience, etc. This will be communicated to the candidate at the appropriate time before the offer.\nHiring may be restricted in case the legal qualifications required for hiring and work performance is not met.\nThis is a full-time regular position and includes 12 weeks of probation period; provided, however, the probationary period may be either skipped, shortened or extended if necessary for business purposes.",
+   "short": "다 뽑으면 일찍 마감, 거짓 기재는 합격 취소, 직급은 경력에 따라 바뀔 수 있음, 정규직·수습 12주.",
+   "why": "공고 끝의 유의사항입니다.[1] 이 급에서 눈여겨볼 것은 **직급·업무 범위가 경력에 따라 바뀔 수 있다**는 줄 — 디렉터로 지원해도 다른 직급으로 제안될 수 있고, 처우 제안 전에 알려 준다고 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "코드보다 조직과 시스템을 같이 설계하는 일이 즐거운 사람",
+   "결제·금융처럼 숫자 하나 틀리면 안 되는 도메인을 좋아하는 사람",
+   "범용 결제를 처음부터 넓혀 가는 시기에 들어가고 싶은 사람[5][8]",
+   "재무·리스크·준법과 같은 말로 이야기할 수 있는 사람"
+  ],
+  "hard": [
+   "손으로 코드를 짜는 시간은 거의 없다 {추론}",
+   "규제 일정과 공격적인 성장 목표가 같이 오는 자리다[1][12]",
+   "'매니저의 매니저' 2년이 문턱이라 팀장 경험만으로는 어렵다[1]",
+   "결제 장애는 곧 돈 문제라 사건 대응 부담이 크다[13][15]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "외부 가맹점을 붙이는 동안 원장을 새로 짓는다면, 옛 원장과 어떻게 함께 가고 언제 새 쪽을 본체로 바꾸겠어요?",
+   "a": "이중 쓰기·주기 보정·전환 기준 — 다른 PG가 실제로 한 일.[8]"
+  },
+  {
+   "q": "카드사 승인 요청이 타임아웃 났는데 카드사 쪽은 승인됐다면 어떻게 맞추나요?",
+   "a": "망취소와 멱등 키.[8][9]"
+  },
+  {
+   "q": "팀장 한 명이 맡은 팀이 12명이 됐어요. 어떻게 하겠어요?",
+   "a": "팀 크기 경험칙과 팀 나누기.[22]"
+  },
+  {
+   "q": "가용성 목표를 99.99%로 둔다는 건 무슨 뜻이고, 목표를 넘겨 멈춤이 많아지면 무엇을 바꾸나요?",
+   "a": "멈춤 예산과 배포 속도.[13]"
+  },
+  {
+   "q": "정산자금 외부관리 비율이 해마다 오르면 개발 조직은 무엇을 준비해야 하나요?",
+   "a": "규제 일정이 로드맵에 들어가는 예.[12]"
+  },
+  {
+   "q": "가장 컸던 장애의 사후 분석을 말해 주세요. 사람 탓이 아니라 구조 원인은 무엇이었나요?",
+   "a": "공고가 말한 임원 딥다이브.[1][15]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Director of Back-end Engineering (Rocket Pay)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8401523",
+   "kind": "posting",
+   "date": "2026-11-19",
+   "note": "그린하우스 원문 — 팀 소개(쿠페이·와우카드·BaaS·한국·대만)·역할 소개·업무·요건·우대·전형. 근무지 서울"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · Manager, Back-end Engineering (Rocket Pay)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078891",
+   "kind": "posting",
+   "date": "2026-07-28",
+   "note": "같은 조직의 팀장 공고(한국어) — Product Engineering 조직의 영역, 수십조 원 트랜잭션, 개발 10년·관리 2년, JPA·MSA, 협업 조직"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · 쿠팡 Staff Back-end Engineer (Rocket Pay)",
+   "url": "https://www.wanted.co.kr/wd/381767",
+   "kind": "posting",
+   "note": "같은 조직 Staff 엔지니어 공고 — 복리후생·전형(…처우협의)·근무지 아차산로 412 이스트폴 타워 A"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Careers · Director of Backend Engineering (Mountain View · Seattle)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8386063",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "다른 조직(미국)의 같은 직급 공고 — 기본급 범위 $159,000~$324,000, 보너스 0~20%"
+  },
+  {
+   "n": 5,
+   "title": "뉴데일리 · 온라인 넘어 오프라인 매장까지 … 쿠팡, 로켓페이로 간편 결제 출사표",
+   "url": "https://biz.newdaily.co.kr/site/data/html/2026/07/10/2026071000246.html",
+   "kind": "news",
+   "date": "2026-07-10",
+   "note": "쿠팡페이 확장, 결제 수단, 여러 인증 방식, 연 수십조 원 결제 경험·24시간 모니터링, 온라인 → 오프라인 순서"
+  },
+  {
+   "n": 6,
+   "title": "SBS Biz · 네카토에 ‘로켓페이’ 도전장…온라인 결제시장 흔드나",
+   "url": "https://biz.sbs.co.kr/amp/article/20000330838",
+   "kind": "news",
+   "date": "2026-08-26",
+   "note": "외부 가맹점 표준 수수료(상한: 영세 1.6%·중소 1.9~2.4%·일반 3.2%), 사업개발·수수료/정산 정책 인력 채용"
+  },
+  {
+   "n": 7,
+   "title": "AWS 대만 · Coupang Pay 인터뷰",
+   "url": "https://aws.amazon.com/tw/events/taiwan/interviews/coupangpay",
+   "kind": "company",
+   "note": "쿠팡페이 제품 책임자 발언 — 2024 광군제 평소 20배 트래픽, AWS 이점 넷(탄력·효율·혁신·보안), 재해 복구, 판매자 대출 최단 2분"
+  },
+  {
+   "n": 8,
+   "title": "토스 테크 · 레거시 결제 원장을 확장 가능한 시스템으로",
+   "url": "https://toss.tech/article/payments-legacy-5",
+   "kind": "reference",
+   "date": "2025-12-01",
+   "note": "다른 회사(토스페이먼츠) — INSERT 전용 원장, Kafka 이벤트, 이관 중 5분 보정 배치, 망취소, 아웃박스·이벤트 멱등 키"
+  },
+  {
+   "n": 9,
+   "title": "Stripe API · Idempotent requests",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "kind": "reference",
+   "note": "같은 키로 다시 요청하면 첫 응답을 돌려준다"
+  },
+  {
+   "n": 10,
+   "title": "Stripe · Clearing vs. settlement in payments",
+   "url": "https://stripe.com/resources/more/clearing-vs-settlement-in-payments",
+   "kind": "reference",
+   "note": "승인·청산·정산의 차이, 카드 정산 1~3영업일"
+  },
+  {
+   "n": 11,
+   "title": "토스페이먼츠 블로그 · 결제부터 정산까지, 내 돈의 흐름과 정산 기본 개념",
+   "url": "https://www.tosspayments.com/blog/articles/53681",
+   "kind": "reference",
+   "note": "다른 PG — 결제 후 1~2영업일 정산, 지급보류·보증보험·정산한도, 지급그룹"
+  },
+  {
+   "n": 12,
+   "title": "금융위원회 · 전자금융거래법 개정안 국회 본회의 통과(PG 정산자금 외부관리)",
+   "url": "https://www.fsc.go.kr/no010101/85751",
+   "kind": "reference",
+   "note": "정산자금 전액 외부관리, 공포 1년 후 시행 시 60%부터 매년 20%씩, 자본금 요건 상향"
+  },
+  {
+   "n": 13,
+   "title": "Google SRE Book · Embracing Risk",
+   "url": "https://sre.google/sre-book/embracing-risk/",
+   "kind": "reference",
+   "note": "99.99% = 1년 52.56분, 오류 예산"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Book · Managing Incidents",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "kind": "reference",
+   "note": "장애 지휘자·운영·소통·계획 역할"
+  },
+  {
+   "n": 15,
+   "title": "Google SRE Book · Postmortem Culture: Learning from Failure",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "note": "사람 탓 하지 않는 사후 분석, 사후 분석을 쓰는 조건"
+  },
+  {
+   "n": 16,
+   "title": "DORA · DORA's software delivery performance metrics",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference",
+   "note": "처리량(배포 빈도·리드 타임)과 불안정성(변경 실패율·배포 재작업률)"
+  },
+  {
+   "n": 17,
+   "title": "microservices.io · Pattern: Saga",
+   "url": "https://microservices.io/patterns/data/saga.html",
+   "kind": "reference",
+   "note": "Chris Richardson"
+  },
+  {
+   "n": 18,
+   "title": "Martin Fowler · Microservices",
+   "url": "https://martinfowler.com/articles/microservices.html",
+   "kind": "reference",
+   "note": "James Lewis · Martin Fowler — 서비스별 데이터 관리, 독립 배포"
+  },
+  {
+   "n": 19,
+   "title": "Coupang Engineering · 행복을 찾기 위한 우리의 여정 (MSA 전환)",
+   "url": "https://medium.com/coupang-engineering/행복을-찾기-위한-우리의-여정-a31fc2d5a572",
+   "kind": "company",
+   "date": "2018-05-25",
+   "note": "쿠팡의 MSA 전환(2013년 결정, Vitamin 프로젝트). 본문은 자동 접속이 막혀 같은 회사 다른 풀이의 검색 요약으로 확인"
+  },
+  {
+   "n": 20,
+   "title": "Spring Framework Docs · Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "모회사 쿠팡(주) 값 — 쿠팡페이 법인 아님. 검색 결과에 실린 값으로 확인"
+  },
+  {
+   "n": 22,
+   "title": "Will Larson · Sizing engineering teams",
+   "url": "https://lethain.com/sizing-engineering-teams/",
+   "kind": "reference",
+   "note": "『An Elegant Puzzle』 1장 — 팀 6~8명, 8~10명이 되면 둘로, 빈 팀 금지, 매니저 한 명이 8명 넘게 맡지 않기"
+  },
+  {
+   "n": 23,
+   "title": "Will Larson · Staff Engineer: Leadership beyond the management track",
+   "url": "https://staffeng.com/book",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "The Scrum Guide (2020)",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "kind": "reference",
+   "note": "스프린트는 한 달 이하 고정 길이"
+  },
+  {
+   "n": 25,
+   "title": "Team Topologies (Matthew Skelton · Manuel Pais)",
+   "url": "https://teamtopologies.com/book",
+   "kind": "reference",
+   "note": "IT Revolution 2019, 2판 2025 — 흐름 정렬 팀·플랫폼 팀·인지 부하"
+  },
+  {
+   "n": 26,
+   "title": "개발 7년차, 매니저 1일차 (카미유 푸르니에 · 한빛미디어)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423",
+   "kind": "reference",
+   "note": "원서 The Manager's Path — 1:1, 여러 팀 관리, 매니저 관리"
+  }
+ ],
+ "caveat": "쿠팡페이 결제·정산 시스템의 내부 구조나 조직 운영을 다룬 회사 발표 영상·기술 글은 찾지 못했습니다(받은 영상 없음). 쿠팡 MSA 글은 2018년 것이고 본문이 자동 접속에 막혀 있습니다. 그래서 원장·대사·이관은 토스페이먼츠 공개 글과 Stripe 문서로, 조직 운영은 Will Larson·구글 SRE·DORA 같은 공개 자료로 '보통 이런 것'을 보였습니다. Rocket Pay 기사는 2026년 7~8월 것이라 지금 가맹점 범위는 달라졌을 수 있습니다.",
+ "resources": [
+  {
+   "id": "manager-path",
+   "title": "개발 7년차, 매니저 1일차",
+   "by": "카미유 푸르니에 · 한빛미디어 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423",
+   "why": "멘토 → 테크 리드 → 팀장 → 여러 팀 관리 → 매니저의 매니저 순서로 장이 이어진다. '매니저의 매니저 2년' 요건을 무엇으로 채우나를 잡는 책."
+  },
+  {
+   "id": "elegant-puzzle",
+   "title": "An Elegant Puzzle: Systems of Engineering Management",
+   "by": "Will Larson · Stripe Press · 2019",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://press.stripe.com/an-elegant-puzzle",
+   "why": "팀 크기·팀 나누기·기술 부채·후계 계획을 결제 회사(Stripe) 출신 관리자가 썼다. 조직 확장 요건에 바로 쓰는 경험칙이 많다."
+  },
+  {
+   "id": "staffeng",
+   "title": "Staff Engineer: Leadership beyond the management track",
+   "by": "Will Larson · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://staffeng.com/book",
+   "why": "Staff·Principal 엔지니어가 무엇을 하는지. 그들과 로드맵을 맞추는 요건을 위해 '지시가 아니라 설득으로 움직이는 사람들'을 이해한다. 웹에서 무료로 읽는다."
+  },
+  {
+   "id": "team-topologies",
+   "title": "Team Topologies",
+   "by": "Matthew Skelton · Manuel Pais · IT Revolution · 2019 (2판 2025)",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://teamtopologies.com/book",
+   "why": "고객 흐름을 맡는 팀과 플랫폼 팀을 어떻게 나누나, 팀의 인지 부하. 다섯 결제 영역을 팀으로 쪼갤 때의 틀."
+  },
+  {
+   "id": "sre-online",
+   "title": "Site Reliability Engineering (구글 SRE 책)",
+   "by": "Google · 웹 무료(한국어판: 사이트 신뢰성 엔지니어링 · 제이펍 · 2018)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "3장(위험 받아들이기·오류 예산), 14장(장애 관리), 15장(사후 분석 문화)만 먼저. 가용성 목표와 장애 딥다이브 요건의 바탕."
+  },
+  {
+   "id": "dora",
+   "title": "DORA's software delivery performance metrics",
+   "by": "DORA (Google Cloud)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "why": "여러 팀의 전달 속도와 안정성을 같은 숫자로 보는 법. '개발·운영 기준 세우기' 업무에 쓰는 지표 정의."
+  },
+  {
+   "id": "scrum-guide",
+   "title": "The Scrum Guide",
+   "by": "Ken Schwaber · Jeff Sutherland · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "why": "애자일 요건의 공통 낱말(스프린트·리뷰·회고)의 원래 정의. 20쪽이 안 된다."
+  },
+  {
+   "id": "stripe-clearing",
+   "title": "Clearing vs. settlement in payments",
+   "by": "Stripe",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://stripe.com/resources/more/clearing-vs-settlement-in-payments",
+   "why": "승인·청산·정산이 어떻게 다른지 한 거래를 따라가며 설명한다. 결제 도메인 우대사항의 첫 걸음."
+  },
+  {
+   "id": "pe-payment",
+   "title": "Designing a Payment System",
+   "by": "Alex Xu · The Pragmatic Engineer",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://newsletter.pragmaticengineer.com/p/designing-a-payment-system",
+   "why": "결제 서비스·원장·지갑·외부 PG 연동·대사를 한 설계로 엮은 글. 다섯 영역의 큰 그림을 그려 보는 연습."
+  },
+  {
+   "id": "toss-ledger",
+   "title": "레거시 결제 원장을 확장 가능한 시스템으로",
+   "by": "토스페이먼츠 · 토스 테크 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/payments-legacy-5",
+   "why": "국내 PG가 원장을 새로 지으며 실제로 겪은 불일치·망취소·이벤트 중복과 그 해법. 원장 이관 로드맵과 대사 요건의 살아 있는 사례."
+  },
+  {
+   "id": "stripe-idem",
+   "title": "Idempotent requests",
+   "by": "Stripe API 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "why": "같은 결제 요청이 두 번 와도 한 번만 처리하게 하는 규칙. 짧고 정확하다."
+  },
+  {
+   "id": "fsc-pg",
+   "title": "전자금융거래법 개정안 국회 본회의 통과 (PG 정산자금 외부관리)",
+   "by": "금융위원회 보도자료",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.fsc.go.kr/no010101/85751",
+   "why": "PG 정산자금 보호 규제의 내용과 시행 일정. 준법·재무 조직과 이야기할 때의 출발점."
+  },
+  {
+   "id": "saga-doc",
+   "title": "Pattern: Saga",
+   "by": "microservices.io · Chris Richardson",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://microservices.io/patterns/data/saga.html",
+   "why": "여러 서비스에 걸친 결제·취소를 한 DB 트랜잭션 없이 맞추는 법. MSA 요건의 핵심 한 쪽."
+  },
+  {
+   "id": "msa-patterns",
+   "title": "마이크로서비스 패턴",
+   "by": "크리스 리처드슨 · 길벗",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4%20%EB%A6%AC%EC%B2%98%EB%93%9C%EC%8A%A8",
+   "why": "사가·아웃박스·서비스 분해를 예제 코드(Java·Spring)로. 설계 검토에서 팀의 MSA 결정을 따져 볼 눈을 기른다."
+  },
+  {
+   "id": "ddia-ko",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "복제·분할·트랜잭션·일관성·스트림 처리. 큰 분산 시스템 요건과 대사·일관성 우대사항의 이론 바탕."
+  },
+  {
+   "id": "jpa-basic",
+   "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/jpa-basic",
+   "why": "영속성 컨텍스트·지연 로딩이 실제로 내는 SQL. JPA 요건의 기본기를 다시 확인한다."
+  },
+  {
+   "id": "jpa-app-2",
+   "title": "스프링 부트와 JPA 활용 2편",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/jpa-app-2",
+   "why": "같은 응답의 쿼리 개수를 31에서 3으로 줄이는 과정. 설계 검토에서 N+1을 짚어 내는 감."
+  },
+  {
+   "id": "spring-db-1",
+   "title": "스프링 DB 1편",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-db-1",
+   "why": "커넥션·트랜잭션 로그로 보는 트랜잭션 경계. 결제 기록과 이벤트를 한 경계에 두는 판단의 기초."
+  },
+  {
+   "id": "practical-testing",
+   "title": "Practical Testing — 실용적인 테스트 가이드",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/practical-testing",
+   "why": "실제로 돌린 테스트 결과로 배우는 자동 테스트. 조직 테스트 기준을 세우기 전에 기준이 무엇인지 손으로 확인한다."
+  },
+  {
+   "id": "jvm-tuning",
+   "title": "자바 성능 튜닝 — JVM 과 GC",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/wiki/jvm-tuning",
+   "why": "GC 로그와 힙 스냅숏을 읽는 법. JVM 서비스 장애 딥다이브에서 올바른 질문을 하려면 필요하다."
+  },
+  {
+   "id": "kubernetes",
+   "title": "쿠버네티스 입문",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "Pending·CrashLoopBackOff를 읽는 법. Kubernetes 우대사항을 직접 만져 본 수준으로."
+  },
+  {
+   "id": "kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 서가",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "보냈다는 것과 처리됐다는 것 사이 — 결제 이벤트의 유실·중복을 이해하는 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "결제 다섯 영역 그리기",
+   "time": "1~2주",
+   "goal": "지갑·승인·정산·대사·가맹점이 결제 한 건에서 무엇을 주고받는지 그림 한 장으로 설명할 수 있다.",
+   "resources": [
+    "stripe-clearing",
+    "pe-payment",
+    "fsc-pg"
+   ],
+   "task": "가상의 범용 결제 회사를 정하고 다섯 영역의 데이터 주인·주고받는 이벤트·외부 기관(카드사·은행)을 한 장에 그린다. 정산자금 외부관리 규제가 어느 칸을 바꾸는지 표시한다."
+  },
+  {
+   "title": "원장과 대사",
+   "time": "2~3주",
+   "goal": "INSERT 전용 원장·멱등 키·건별 대사가 왜 필요한지 코드로 보일 수 있다.",
+   "resources": [
+    "toss-ledger",
+    "stripe-idem",
+    "saga-doc",
+    "spring-db-1"
+   ],
+   "task": "Spring·JPA로 결제·취소를 INSERT로만 쌓는 작은 원장을 만들고, 같은 멱등 키 요청을 두 번 보내 한 번만 처리되는지 테스트한다. 가상 카드사 파일과 대사해 '한쪽에만 있음·금액 다름'을 뽑는다."
+  },
+  {
+   "title": "가용성·장애 운영",
+   "time": "1~2주",
+   "goal": "가용성 목표·멈춤 예산·장애 역할·사후 분석을 자기 조직에 맞게 정할 수 있다.",
+   "resources": [
+    "sre-online",
+    "dora",
+    "jvm-tuning"
+   ],
+   "task": "지난 경험(또는 가상) 장애 하나를 골라 사람 탓 없는 사후 분석 문서 1쪽을 쓴다 — 타임라인·영향·구조 원인·재발 방지 항목·담당·날짜."
+  },
+  {
+   "title": "매니저의 매니저",
+   "time": "2~4주",
+   "goal": "팀을 언제 어떻게 나누고, 팀장을 어떻게 코칭·평가하나를 자기 말로 설명할 수 있다.",
+   "resources": [
+    "manager-path",
+    "elegant-puzzle",
+    "team-topologies"
+   ],
+   "task": "40명짜리 가상 결제 조직의 팀 구성안을 짠다 — 팀별 영역·인원·팀장, 1년 뒤 60명이 되면 어디를 나누나. 팀장 한 명과의 1:1 안건을 3회분 적는다."
+  },
+  {
+   "title": "로드맵과 임원 정렬",
+   "time": "계속",
+   "goal": "사업 목표·규제 일정·기술 부채를 한 로드맵에 담고 결정 근거를 남길 수 있다.",
+   "resources": [
+    "staffeng",
+    "dora",
+    "scrum-guide"
+   ],
+   "task": "'외부 온라인 가맹점 → 오프라인' 2년 로드맵을 분기 단위로 그리고, 원장 이관·규제 대응·신규 기능이 부딪치는 분기 하나를 골라 선택지별 위험·비용을 적은 결정 문서를 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없고 쿠팡페이 법인 공시도 없다. 같은 회사 **미국** 디렉터 공고의 기본급은 **$159,000~$324,000**, 모회사 쿠팡(주) 집계 평균은 **약 5,175만원** — 둘 다 이 자리 금액이 아니다",
+  "rows": [
+   {
+    "label": "같은 직급 미국 공고 기본급 (다른 조직)",
+    "value": "$159,000 ~ $324,000 / 년",
+    "basis": "공고 · 2026년 (미국)",
+    "peer": true,
+    "note": "쿠팡의 미국(마운틴뷰·시애틀) Director of Backend Engineering 공고. 미국 생활비를 반영한 기본급만이고, 연 보너스는 기본급의 0~20%로 따로 적혀 있다 [4]"
+   },
+   {
+    "label": "쿠팡(주) 신입 초봉 (모회사)",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값이다. 쿠팡페이 법인이 아니고 직군 구분도 없다 [21]"
+   },
+   {
+    "label": "쿠팡(주) 직원 평균 (모회사)",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 디렉터 연봉으로 읽으면 안 된다 [21]"
+   }
+  ],
+  "how": "이 공고에는 연봉이 적혀 있지 않고 전형 마지막이 처우 제안(Offer)이다 [1]. 같은 조직 Staff 공고도 마지막 단계가 처우협의다 [3]. 쿠팡페이는 비상장 자회사라 사업보고서 평균 급여가 없다 — 공시 숫자 없음. 미국 공고 숫자는 미국 시장 기준이라 서울 금액과 같지 않고, 모회사 평균은 경력직·현장직이 섞인 회사 전체 값이다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "교육",
+    "detail": "외국어·업무 스킬 교육 무제한 지원, 사내 기술 공유 스터디"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원 단체 상해보험, 직계가족 실손보험 지원"
+   },
+   {
+    "name": "식사",
+    "detail": "무료 조식·석식"
+   },
+   {
+    "name": "휴게 공간",
+    "detail": "한강 전망 카페테리아, 모든 음료 300원 자판기"
+   },
+   {
+    "name": "휴가",
+    "detail": "사유 없는 연차 사용"
+   },
+   {
+    "name": "쇼핑 캐시백",
+    "detail": "쿠팡 구매 금액의 5% (연 최대 400만원)"
+   },
+   {
+    "name": "동호회",
+    "detail": "사내 동호회와 동호회비 지원"
+   },
+   {
+    "name": "휴양 시설",
+    "detail": "임직원가 휴양 콘도"
+   },
+   {
+    "name": "장비",
+    "detail": "최신 장비 지원"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진"
+   },
+   {
+    "name": "상여·경조",
+    "detail": "명절 상여금, 경조금·경조 휴가"
+   }
+  ],
+  "note": "이 공고(영문)에는 복리후생 칸이 없어, 같은 Rocket Pay 조직의 Staff 엔지니어 공고 복리후생 칸을 옮겼다 [3]. 같은 회사·같은 근무지라 같을 것으로 보지만 디렉터 직급에 다른 처우가 붙는지는 처우 제안 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 구의오피스 (이스트폴 타워 A)",
+  "address": "서울특별시 광진구 아차산로 412, 이스트폴 타워 A",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C%20412",
+  "near": "2호선 구의역 근처 {추론}",
+  "note": "이 공고의 근무지는 'Seoul, South Korea'뿐이고 [1], 도로명 주소는 같은 조직 Staff 엔지니어 공고의 근무지다 [3]. 팀 자리가 다를 수 있다 {추론}."
+ }
+}
