@@ -78,6 +78,7 @@
   "ats-greenhouse:coupang:8333651": "coupang-eats-ios-engineering-manager",
   "ats-greenhouse:coupang:8318669": "coupang-eats-ios-engineering-manager",
   "wanted-394250": "coupang-eats-ios-engineering-manager",
+  "wanted-394078": "coupang-eats-ios-engineering-manager",
   "ats-greenhouse:coupang:8146344": "coupang-eats-search-senior-staff-mle",
   "ats-greenhouse:coupang:8395151": "coupang-eats-senior-android",
   "wanted-398432": "coupang-eats-senior-android",
@@ -239,6 +240,7 @@
   "ats-greeting:musinsa:236337": "musinsa-product-engineer-platform-innovation",
   "ats-greeting:musinsa:235686": "musinsa-product-engineer-scm-platform",
   "ats-greeting:musinsa:172721": "musinsa-product-engineering-manager-core-partner",
+  "ats-greeting:musinsa:239873": "musinsa-product-engineering-manager-pricing",
   "ats-greeting:musinsa:183840": "musinsa-security-compliance-manager",
   "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
@@ -1190,10 +1192,11 @@
    "jobs": [
     "ats-greenhouse:coupang:8333651",
     "ats-greenhouse:coupang:8318669",
-    "wanted-394250"
+    "wanted-394250",
+    "wanted-394078"
    ],
    "researched_at": "2026-11-25",
-   "lines": 21
+   "lines": 23
   },
   {
    "id": "coupang-eats-search-senior-staff-mle",
@@ -2588,6 +2591,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 32
+  },
+  {
+   "id": "musinsa-product-engineering-manager-pricing",
+   "company": "무신사",
+   "role": "Product Engineering Manager (프라이싱)",
+   "jobs": [
+    "ats-greeting:musinsa:239873"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "musinsa-security-compliance-manager",
