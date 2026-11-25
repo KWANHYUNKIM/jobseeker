@@ -51,6 +51,7 @@
   "ats-ashby:42dot:2276c44d-d0d6-48d5-ad44-014e8da6fa55": "42dot-system-test-engineer-verification",
   "wanted-395192": "42dot-test-automation-ivi-system",
   "ats-ashby:42dot:c184cf35-51e2-4e80-87bc-579089f07472": "42dot-tts-deep-learning-engineer",
+  "wanted-292276": "42dot-vehicle-application-engineer",
   "ats-ashby:42dot:beb84dde-9182-4441-a25b-c03644640854": "42dot-vehicle-system-integration",
   "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-395344": "autoever-india-security-expat",
@@ -860,6 +861,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 25
+  },
+  {
+   "id": "42dot-vehicle-application-engineer",
+   "company": "포티투닷(42dot)",
+   "role": "Vehicle Application Engineer",
+   "jobs": [
+    "wanted-292276"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 11
   },
   {
    "id": "42dot-vehicle-system-integration",
