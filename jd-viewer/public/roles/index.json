@@ -90,6 +90,7 @@
   "wanted-385505": "hyundai-autoever-robot-data-engineer",
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
   "wanted-385521": "hyundai-autoever-smart-tag-service-engineer",
+  "saramin-55604373": "hyundai-energy-tech-market-research",
   "ats-hkmc:hyundai:2026N2366": "hyundai-lunar-rover-autonomy-sw",
   "ats-hkmc:hyundai:2026N2209": "hyundai-npu-dl-compiler",
   "ats-hkmc:hyundai:2026N2331": "hyundai-robotics-joint-robot-production",
@@ -1055,6 +1056,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 11
+  },
+  {
+   "id": "hyundai-energy-tech-market-research",
+   "company": "현대자동차",
+   "role": "에너지 기술/시장 동향 연구",
+   "jobs": [
+    "saramin-55604373"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 29
   },
   {
    "id": "hyundai-lunar-rover-autonomy-sw",

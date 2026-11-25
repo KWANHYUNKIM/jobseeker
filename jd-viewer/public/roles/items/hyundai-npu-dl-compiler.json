@@ -1,0 +1,1213 @@
+{
+ "id": "hyundai-npu-dl-compiler",
+ "company": "현대자동차",
+ "role": "NPU 딥러닝 컴파일러 개발",
+ "team": "자율주행·로보틱스용 AI 반도체(NPU) 아키텍처·SW 조직 · 판교",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2209"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "현대차가 직접 설계하는 자율주행·로보틱스용 NPU 에서 딥러닝 모델이 돌도록, **그래프 최적화 → 칩 연산으로 낮추기 → 실행기(Runtime)**를 만듭니다.[1]",
+  "env": "같은 조직이 칩의 명령 집합(ISA)·성능 시뮬레이터·설계 공간 탐색(DSE)까지 합니다 — 칩이 나오기 전부터 **컴파일러가 칩 설계에 숫자를 대는** 자리입니다.[1] 자체 칩 일정은 업계 보도(8nm, 2028 개발·2030 양산 목표)뿐입니다.[6]",
+  "oneline": "TVM·MLIR 로 그래프를 고치고 SRAM 타일을 고르는 **가속기 컴파일러 개발자** 자리. 석사 + 관련 경험 2년(연구 기간 인정)이 문입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "딥러닝 모델의 Graph-level 최적화 및 Lowering Pass를 개발하고, 컴파일된 결과를 NPU 상에서 효율적으로 실행하기 위한 Runtime 환경을 개발하는 업무를 수행합니다.",
+   "short": "PyTorch 같은 모델을 이 회사 NPU가 알아듣는 명령으로 바꾸고, 그걸 칩 위에서 돌리는 실행기까지 만든다.",
+   "why": "이 조직은 자율주행·로보틱스용 NPU(신경망 전용 처리 장치)를 **아키텍처(ISA, 칩이 알아듣는 명령 목록)부터 직접 설계**한다고 소개합니다.[1] 새 칩은 기존 GPU용 도구가 그대로 돌지 않아서, 모델을 그 칩의 명령으로 옮기는 컴파일러와 실행기가 칩과 함께 있어야 쓸 수 있습니다.[7][9] 현대차는 2024년 무렵 차량용 반도체 내재화 팀을 꾸리고 외부 인재를 영입한다고 보도됐고[5], 자체 자율주행 칩을 삼성 8nm로 만들어 2028년 개발·2030년 양산을 노린다는 업계 보도도 있습니다(회사 공식 발표는 아닙니다).[6]",
+   "actually": {
+    "items": [
+     "**모델 받기** — PyTorch 모델은 torch.export 로 그래프를 뽑고[21], 다른 틀의 모델은 ONNX 그래프로 받는 일이 흔하다.[20]",
+     "**그래프 단계 최적화** — 모델을 연산 노드의 그래프로 보고, 필요 없는 노드 지우기·상수 미리 계산·연산 합치기(fusion)를 한다.[7][10]",
+     "**낮추기(lowering)** — '합성곱' 같은 큰 연산을 행렬 곱·더하기 같은 칩이 할 줄 아는 작은 연산으로 단계적으로 쪼갠다.[8][9]",
+     "**런타임** — 컴파일된 결과를 칩에 올리고, 입력을 넣고, 끝나면 결과를 꺼내는 실행 프로그램.[18]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "모델이 칩에서 돌기까지 — 공고의 칸 나눔[1]과 일반적인 컴파일러 구조[7][8]",
+     "steps": [
+      "모델 받기 · PyTorch·ONNX 그래프",
+      "그래프 최적화 · 합치기·지우기·배치 정하기",
+      "연산자 낮추기 · 큰 연산 → 칩 연산",
+      "메모리·데이터 흐름 스케줄 · 타일·SRAM 배치",
+      "Backend 인터페이스 · 명령 생성은 Backend 팀",
+      "런타임 · 올리기·실행·결과 꺼내기"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "칩의 명령·메모리 구조는 NPU 아키텍트가, 명령을 실제 기계어로 만드는 일은 Backend 컴파일러 개발자가 맡습니다.[1] 이 자리는 **모델 그래프에서 그 경계까지(Frontend)와 실행기(Runtime)**를 맡는 것으로 읽힙니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    7,
+    9
+   ],
+   "study": [
+    "mlc-course",
+    "tvm-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "또한 Frontend와 Backend 컴파일러 간의 인터페이스를 설계하고, NPU 아키텍트 및 Backend 컴파일러 개발자와 협업하여 End-to-End 성능을 최적화하는 업무를 수행합니다.",
+   "short": "그래프를 다루는 쪽과 기계어를 만드는 쪽이 주고받을 '중간 언어(IR)'를 정하고, 둘을 합친 전체 속도를 책임진다.",
+   "why": "컴파일러는 보통 여러 층의 중간 표현(IR, 프로그램을 컴파일러 안에서 적어 두는 형식)을 거칩니다. MLIR 은 이 층들을 dialect 라는 단위로 나눠, 층과 층 사이를 '낮추기' 규칙으로 잇는 구조를 제안했습니다.[8] 층의 경계를 잘못 정하면 위층이 알던 정보(예: 이 텐서는 다시 안 쓴다)가 아래층에서 사라져 최적화를 못 하게 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "경계에서 넘길 것 정하기 — 연산 목록, 텐서 모양·자료형, 메모리 위치(외부 DRAM / 칩 안 SRAM), 실행 순서. {추론}",
+     "Glow 는 그래프를 소수의 선형대수 원시 연산까지 낮춰 넘기면 새 하드웨어 백엔드가 구현할 연산 수가 줄어든다고 설명한다.[9]",
+     "경계를 바꾸면 양쪽 코드가 다 바뀌므로, 버전·호환 규칙과 테스트 모음을 같이 둔다. {추론}"
+    ]
+   },
+   "how_far": "인터페이스는 혼자 정하지 않습니다 — 아키텍트·Backend 개발자와 문서로 합의하고, **양쪽이 같은 시험 모델로 결과를 맞춰 보는 것**까지가 최소선입니다. {추론}",
+   "refs": [
+    8,
+    9
+   ],
+   "study": [
+    "mlir-paper",
+    "mlir-toy"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ Frontend Compiler",
+   "short": "아래 네 줄의 묶음 제목 — 모델 그래프를 받아 칩 연산으로 낮추기까지의 '앞단' 컴파일러다.",
+   "why": "공고는 업무를 Frontend · Runtime · Code Generation 세 칸으로 나눴습니다.[1] Frontend 는 모델 쪽에 가까운 층입니다.[7]",
+   "how_far": "제목 줄입니다. 세부는 바로 아래 네 줄입니다.",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Graph-level optimization pass 개발",
+   "short": "그래프 전체를 보고 연산을 합치거나 지워서, 계산과 메모리 왕복을 줄이는 변환을 만든다.",
+   "why": "NPU 는 계산은 빠르지만 바깥 메모리(DRAM)와 주고받는 데 시간과 전력이 많이 듭니다.[11] 그래서 중간 결과를 바깥에 썼다가 다시 읽는 횟수를 줄이는 것이 그래프 단계 최적화의 큰 몫입니다.[7]",
+   "actually": {
+    "items": [
+     "**연산 합치기(fusion)** — 곱하기 → 더하기 → ReLU 를 한 번에 해서 중간 결과를 메모리에 안 남긴다.[7][10]",
+     "**접어 넣기(folding)** — 추론 때 BatchNorm 은 고정된 곱·더하기라 앞 합성곱 가중치에 미리 섞어 노드 하나를 없앤다.[12]",
+     "**상수 미리 계산·안 쓰는 노드 지우기** — 컴파일 때 답이 정해지는 부분은 미리 계산한다.[10]",
+     "**배치(layout) 정하기** — NCHW·NHWC 처럼 텐서를 메모리에 놓는 순서를 칩이 좋아하는 모양으로 바꾸고, 바꾸는 연산(transpose)을 최소로.[7]",
+     "**패스(pass)** — 이런 변환 하나하나를 '그래프를 받아 그래프를 돌려주는 함수'로 만들고 차례로 건다.[22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "BatchNorm 접어 넣기 — 결과가 같은지 확인",
+     "body": "가중치 W·b 에 BN 의 g/√(var+ε) 를 곱해 넣으면 노드가 하나 줄어도 출력이 같습니다(직접 돌린 출력: 최대 차이 2.2e-16).",
+     "lang": "python",
+     "code": "s = g / np.sqrt(var + eps)\nW2 = W * s[:, None]\nb2 = (b - mu) * s + beta\nprint(np.abs(W2 @ x + b2 - y_ref).max())  # 2.220446049250313e-16"
+    },
+    {
+     "title": "합치기로 줄어드는 메모리 왕복",
+     "body": "1×64×56×56 fp16 텐서에 곱하기·더하기·ReLU 를 따로 하면 연산마다 읽고 쓰기를 해서 **2.30MB**, 셋을 합치면 한 번 읽고 한 번 써서 **0.77MB** 입니다(직접 계산한 값, 가중치 제외)."
+    }
+   ],
+   "how_far": "패스 하나를 새로 만들 때 **정답 모델(같은 입력의 원래 출력)과 숫자를 대조하는 시험**까지 같이 내는 것이 기본입니다. {추론}",
+   "refs": [
+    7,
+    10,
+    11,
+    21
+   ],
+   "study": [
+    "tvm-paper",
+    "xla-docs",
+    "mlc-course"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Operator-level lowering pass 개발",
+   "short": "합성곱·주의(attention) 같은 연산 하나를 칩이 가진 행렬 곱·벡터 연산 조합으로 쪼개 옮긴다.",
+   "why": "모델 연산자는 수백 가지지만 NPU 가 직접 하는 연산은 몇 가지뿐입니다. Glow 는 큰 연산을 작은 선형대수 연산으로 낮추면 백엔드가 다룰 연산이 줄어든다고 설명했습니다.[9] 국내 NPU 회사 FuriosaAI 의 컴파일 로그에도 그래프 나누기 → 낮추기 → 최적화 단계가 그대로 찍힙니다.[19]",
+   "actually": {
+    "items": [
+     "합성곱 → im2col(입력 조각을 줄 세우기) + 행렬 곱, 또는 칩의 합성곱 전용 단위로. {추론}",
+     "Softmax·LayerNorm → 최댓값 빼기·지수·합·나누기 같은 벡터 연산 순서로.",
+     "칩이 못 하는 연산은 CPU 로 넘기도록 그래프를 나눈다 — ONNX Runtime 도 같은 방식으로 실행기를 나눈다.[27]",
+     "MLIR 이라면 '높은 dialect → linalg(일반 선형대수) → 칩 dialect' 처럼 층을 하나씩 내려간다.[8]"
+    ]
+   },
+   "how_far": "어떤 연산을 칩 연산으로 할지는 아키텍트와 같이 정하고, 이 자리는 **낮추기 규칙을 만들고 결과 숫자가 원래 연산과 같은지(오차 범위 안) 보장**합니다. {추론}",
+   "refs": [
+    8,
+    9,
+    19
+   ],
+   "study": [
+    "glow-paper",
+    "mlir-toy"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Dataflow 및 메모리 계층 스케쥴링 최적화",
+   "short": "작은 칩 안 메모리(SRAM)에 데이터를 어떤 순서·크기로 올려 쓸지 정해, 바깥 메모리 왕복을 줄인다.",
+   "why": "가속기에서 바깥 DRAM 에서 한 번 읽는 비용은 칩 안 연산보다 훨씬 큽니다. 가속기 교과서는 같은 데이터를 칩 안에서 최대한 다시 쓰도록 '무엇을 붙잡아 둘지(가중치·출력·행)'를 데이터 흐름 방식으로 나눕니다.[11] 이 조직이 성능 시뮬레이터와 DSE(설계 공간 탐색)를 같이 한다고 적은 것도 이 선택이 칩 설계에 영향을 주기 때문입니다.[1]",
+   "actually": {
+    "items": [
+     "**타일 나누기** — 큰 행렬을 SRAM 에 들어가는 크기로 잘라 차례로 계산한다.[13][14]",
+     "**이중 버퍼링** — 한 타일을 계산하는 동안 다음 타일을 미리 읽어 온다. {추론}",
+     "**데이터 흐름 고르기** — 가중치를 붙잡아 둘지(weight stationary), 출력을 붙잡을지(output stationary).[11]",
+     "**루프라인(roofline)으로 판단** — 연산 강도(읽은 바이트당 계산 수)가 낮으면 메모리가, 높으면 계산이 병목이다.[16]",
+     "주의(attention)를 타일로 쪼개 SRAM 안에서 끝내 메모리 왕복을 줄인 FlashAttention 이 대표 예다.[26]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "타일 크기와 바깥 메모리 왕복",
+     "body": "1024×1024×1024 int8 행렬 곱(누적 int32). 타일 T 가 클수록 SRAM 은 더 쓰고 DRAM 왕복은 줄어듭니다(직접 돌린 출력). 이 맞바꿈이 스케줄링의 핵심입니다.",
+     "lang": "python",
+     "code": "for T in (64, 128, 256):\n    sram = T*K + K*T + T*T*4\n    traffic = (M//T)*(N//T)*(T*K + K*T) + M*N*4\n# T=64  SRAM 144 KB  DRAM 36.0 MB\n# T=128 SRAM 320 KB  DRAM 20.0 MB\n# T=256 SRAM 768 KB  DRAM 12.0 MB"
+    }
+   ],
+   "how_far": "SRAM 크기·대역폭은 아키텍트가 정한 숫자입니다. 이 자리는 **그 숫자 안에서 타일·순서를 고르고, 시뮬레이터로 '얼마나 빨라졌나'를 숫자로 보이는 것**까지입니다. {추론}",
+   "refs": [
+    1,
+    11,
+    16,
+    17,
+    26
+   ],
+   "study": [
+    "sze-book",
+    "roofline",
+    "timeloop"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· IR 및 컴파일 파이프라인 설계/고도화",
+   "short": "컴파일러 안에서 모델을 적어 두는 형식(IR)과, 패스를 거는 순서를 설계하고 다듬는다.",
+   "why": "IR 은 '최적화가 볼 수 있는 정보'를 정합니다. MLIR 은 한 IR 로 모든 층을 표현하지 않고 층마다 맞는 IR 을 두어 정보를 잃지 않고 내려가게 한 것이 설계 동기였습니다.[8] 패스 순서도 결과를 바꿉니다 — 예를 들어 합치기를 낮추기 전에 해야 큰 단위로 합칠 수 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "층 정하기 — 모델 그래프 IR / 텐서 연산 IR / 칩 명령 가까운 IR. {추론}",
+     "패스 관리자 — 패스를 차례로 걸고, 각 단계 뒤에 IR 이 올바른지 검사(verifier). LLVM·MLIR 이 이 구조다.[22][8]",
+     "작은 언어 하나로 dialect·패스·낮추기를 끝까지 해 보는 공식 튜토리얼이 MLIR Toy 다.[23]",
+     "디버깅 도구 — 패스 앞뒤 IR 을 덤프해 비교, 실패한 모델을 가장 작은 그래프로 줄이기. {추론}"
+    ]
+   },
+   "how_far": "처음부터 새 IR 을 만들기보다 MLIR·TVM 같은 기존 틀을 고쳐 쓰는 경우가 많습니다 — 우대사항의 '오픈소스 컴파일러 스택 기반 확장 및 내재화'가 그 뜻입니다.[1] {추론}",
+   "refs": [
+    8,
+    22,
+    23
+   ],
+   "study": [
+    "mlir-paper",
+    "mlir-toy",
+    "eac"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ Runtime",
+   "short": "아래 세 줄의 묶음 제목 — 컴파일 결과를 칩 위에서 실제로 돌리는 프로그램이다.",
+   "why": "컴파일러가 만든 건 '실행 계획'일 뿐이고, 그걸 칩에 올리고 데이터를 넣어 돌리는 실행기가 따로 필요합니다.[18]",
+   "how_far": "제목 줄입니다. 세부는 바로 아래 세 줄입니다.",
+   "refs": [
+    1,
+    18
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 컴파일된 코드 실행을 위한 runtime 개발",
+   "short": "컴파일 결과(명령·가중치)를 칩에 올리고, 입력을 넣어 실행하고, 결과를 꺼내는 프로그램을 만든다.",
+   "why": "자율주행·로봇은 카메라 영상이 들어올 때마다 같은 모델을 정해진 시간 안에 돌려야 합니다.[3] 실행기가 느리거나 멈추면 칩이 빨라도 소용이 없습니다. {추론}",
+   "actually": {
+    "items": [
+     "**올리기** — 컴파일 결과 파일을 읽어 명령과 가중치를 칩 메모리에 적재한다.[18][19]",
+     "**실행 요청** — 명령 버퍼를 칩에 넘기고, 끝났다는 신호(인터럽트·폴링)를 기다린다.[18]",
+     "**칩이 못 하는 부분** — 그 연산만 CPU 에서 돌리고 결과를 다시 칩으로.[27]",
+     "**API** — 위 응용(인지 모델 팀)이 쓰는 C/C++ 함수 — 모델 열기·입력 넣기·실행·결과 받기. {추론}"
+    ]
+   },
+   "how_far": "칩 드라이버(운영체제 쪽)와는 경계가 있습니다. 이 자리는 **드라이버 위의 사용자 공간 실행기와 API** 쪽으로 읽힙니다. {추론}",
+   "refs": [
+    3,
+    18,
+    27
+   ],
+   "study": [
+    "iree-docs",
+    "ort-ep"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 메모리 및 자원 관리 기능 개발",
+   "short": "칩 안팎 메모리를 언제 누구에게 줄지, 여러 모델이 칩을 같이 쓸 때 어떻게 나눌지 관리한다.",
+   "why": "차에서는 인지·주행 판단 같은 여러 모델이 같은 칩을 나눠 씁니다. {추론} IREE 같은 런타임은 장치·버퍼·명령 버퍼를 추상화해(HAL) 메모리 할당과 실행 순서를 관리합니다.[18]",
+   "actually": {
+    "items": [
+     "텐서 수명 보고 메모리 재사용 — 다 쓴 중간 결과 자리에 다음 결과를 넣는다. {추론}",
+     "미리 한 번에 잡아 두기(메모리 풀) — 실행 중 할당이 없도록. 실시간 시스템에서 흔한 방식이다. {추론}",
+     "여러 모델·여러 요청이 칩을 나눠 쓰는 순서와 우선순위. {추론}"
+    ]
+   },
+   "how_far": "메모리 크기 자체는 칩 사양입니다. 최소선은 **같은 모델을 여러 번 돌려도 메모리가 새지 않고, 실행 시간이 흔들리지 않는 것**입니다. {추론}",
+   "refs": [
+    18
+   ],
+   "study": [
+    "iree-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Runtime 관점에서의 성능 프로파일링 및 병목 분석 지원",
+   "short": "어느 연산·어느 메모리 이동에서 시간이 새는지 재서, 컴파일러·하드웨어 쪽에 고칠 곳을 짚어 준다.",
+   "why": "End-to-End 성능은 칩 계산 시간만이 아니라 데이터 복사·CPU 로 넘긴 연산·대기 시간까지 합친 값입니다. 루프라인 모델로 각 연산이 메모리 병목인지 계산 병목인지 가를 수 있습니다.[16]",
+   "actually": {
+    "items": [
+     "연산마다 시작·끝 시각을 찍어 시간표(타임라인)로 그린다. {추론}",
+     "칩 계산 / DRAM 전송 / CPU 처리 / 대기로 나눠 합계를 낸다. {추론}",
+     "CPU 로 넘어간 연산 목록 — 많으면 낮추기 규칙이 빠진 것이다.[27]",
+     "측정값을 시뮬레이터 예측과 비교 — 어긋나면 모델이나 칩 쪽 가정을 고친다.[1] {추론}"
+    ]
+   },
+   "how_far": "'지원'이라고 적혀 있습니다.[1] 고치는 것은 각 담당이고, 이 자리는 **재고, 숫자로 보이고, 어디를 고칠지 짚는 것**까지입니다. {추론}",
+   "refs": [
+    16,
+    27
+   ],
+   "study": [
+    "roofline"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ Code Generation",
+   "short": "아래 네 줄의 묶음 제목 — 앞단(Frontend)과 기계어를 만드는 뒷단(Backend)이 만나는 곳이다.",
+   "why": "이 칸의 줄들은 Backend 와의 경계와 전체 성능을 다룹니다.[1]",
+   "how_far": "제목 줄입니다. 세부는 바로 아래 네 줄입니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Backend compiler 인터페이스 개발",
+   "short": "앞단이 낮춘 결과를 뒷단이 받아 기계어를 만들 수 있게, 넘기는 형식과 함수를 만든다.",
+   "why": "두 번째 업무 문장의 '인터페이스 설계'를 실제 코드로 만드는 줄입니다.[1] MLIR 계열이면 경계가 dialect 하나로 정해지는 일이 많습니다.[8]",
+   "actually": {
+    "items": [
+     "넘기는 것: 칩 연산 목록·텐서 모양·메모리 주소 배정·동기화 지점. {추론}",
+     "검사기 — 뒷단이 못 받는 형태가 넘어가면 앞단에서 먼저 오류를 낸다.[8]",
+     "같은 IR 을 시뮬레이터에도 넘겨 성능을 미리 본다. {추론}"
+    ]
+   },
+   "how_far": "뒷단 내부(명령 선택·명령 스케줄링·레지스터 할당 — 컴파일러 교과서의 뒷단 주제[33])는 Backend 팀 몫입니다.[1] {추론}",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "mlir-toy",
+    "eac"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· End-to-end 성능 및 품질 개선",
+   "short": "모델 하나가 입력부터 결과까지 걸리는 시간과, 결과 숫자가 원래 모델과 맞는지를 함께 끌어올린다.",
+   "why": "'품질'은 저정밀 연산(int8 등)을 쓸 때 정확도가 떨어지지 않는지까지 포함합니다. 그룹의 자율주행 AI 도 모델을 약 1억 파라미터로 작게 설계하고 양자화 최적화를 한다고 밝혔습니다.[3] 2025년 발표에서도 Atria AI 가 고성능 CPU·NPU 로 연산하고 하드웨어·소프트웨어를 수직 계열화해 최적화했다고 소개됐습니다.[4]",
+   "actually": {
+    "items": [
+     "대표 모델 묶음(인지·검출·주의 기반 모델)으로 지연시간·처리량을 매 빌드마다 잰다. {추론}",
+     "원래 모델(fp32) 출력과 칩 출력의 차이·정확도를 같이 본다.[12]",
+     "성능이 떨어진 변경을 찾아 되돌리는 회귀 시험. {추론}"
+    ]
+   },
+   "how_far": "최소선은 **'얼마나 빨라졌고, 정확도는 얼마나 잃었나'를 같은 표로 보이는 것**입니다. {추론}",
+   "refs": [
+    3,
+    4,
+    12
+   ],
+   "study": [
+    "jacob-quant"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- 병목 구간 분석 및 frontend/backend 경계에서 개선 포인트 도출",
+   "short": "느린 이유가 앞단 결정(합치기·타일)인지 뒷단 코드인지 경계에서 가려, 고칠 쪽을 정한다.",
+   "why": "앞단은 '이렇게 합쳐 넘기면 빠르겠다'고 가정하고, 뒷단은 받은 대로 만듭니다. 그 가정이 칩에서 맞지 않으면 경계에서만 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "같은 연산을 앞단 타일 크기만 바꿔 여러 번 돌려 본다.",
+     "루프라인으로 이 연산의 상한을 계산해 실측과 비교 — 멀면 코드, 가까우면 하드웨어 한계.[16]",
+     "자동 탐색(Ansor 같은 스케줄 탐색)을 쓸 자리인지 판단.[15]"
+    ]
+   },
+   "refs": [
+    16
+   ],
+   "study": [
+    "roofline",
+    "ansor"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "- Backend, runtime, 하드웨어 아키텍트와 협업을 통한 end-to-end 성능 최적화",
+   "short": "컴파일러·실행기·칩 설계가 서로 맞물려야 빨라지므로, 세 팀과 같은 숫자를 보고 함께 고친다.",
+   "why": "이 조직은 컴파일러와 성능 시뮬레이터, DSE 를 같이 합니다.[1] 칩이 아직 나오기 전이면 컴파일러가 만든 코드를 시뮬레이터에 돌려 칩 구조(SRAM 크기·연산 단위 수)를 고르는 데 씁니다.[17] {추론}",
+   "actually": {
+    "items": [
+     "칩 설계 단계 — 컴파일러가 대표 모델을 컴파일 → 시뮬레이터가 시간·전력을 계산 → 아키텍트가 구조를 고른다.[17] {추론}",
+     "칩이 나온 뒤 — 실측과 시뮬레이터 차이를 줄인다. {추론}",
+     "공고는 영어 문서 작성을 우대한다 — 협업 상대에 해외 인력·업체가 있을 수 있다.[1] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    17
+   ],
+   "study": [
+    "timeloop",
+    "sze-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 인공지능/전자/컴퓨터공학 분야에서 석사 이상의 학위를 보유하신 분",
+   "short": "필수 조건이다. 연구 수준의 컴파일러·하드웨어 이해를 학위로 먼저 거른다.",
+   "why": "공고의 자격요건 첫 줄입니다.[1] 바로 아래 줄에 '관련 전공은 경력으로 인정'이 붙어 있어, 석사 과정에서 컴파일러·가속기를 연구했다면 그 기간이 경력 2년에 들어갈 수 있습니다.[1]",
+   "how_far": "석사가 없으면 지원 자체가 어렵습니다. 학위 연구 주제가 컴파일러·가속기·시스템이면 유리합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 2년 이상의 딥러닝 컴파일러(Graph-level) 최적화, Lowering Pass 개발 및 Runtime 환경 개발 경험을 보유하신 분 (관련 전공은 경력으로 인정)",
+   "short": "업무 세 칸을 이미 2년 해 본 사람. 석사 중 관련 연구 기간은 경력으로 친다.",
+   "why": "업무와 같은 낱말이 그대로 들어간 줄입니다 — 그래프 최적화, 낮추기, 런타임.[1]",
+   "actually": {
+    "items": [
+     "보여 줄 것: 내가 만든 패스 하나(무엇을 바꿨고 몇 % 빨라졌나), 낮춘 연산 하나(원래 연산과 숫자 대조), 런타임에서 고친 병목 하나. {추론}",
+     "세 가지를 실습으로 이어 보는 공개 강의로 MLC 가 있다.[24]",
+     "오픈소스 기여(TVM·MLIR·XLA 패치)는 경력을 보여 주는 좋은 증거다.[7][8][10] {추론}"
+    ]
+   },
+   "how_far": "세 가지를 모두 깊게 하지 않았어도, 셋이 어떻게 이어지는지 설명할 수 있어야 합니다 — 다음 줄이 '하나 이상'이라 깊이는 한 곳이면 됩니다.[1] {추론}",
+   "refs": [
+    1,
+    7,
+    8
+   ],
+   "study": [
+    "mlc-course",
+    "tvm-paper"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Graph/IR transformation, runtime, inference 성능 최적화 중 하나 이상에 대한 이해 또는 경험",
+   "short": "셋 중 하나는 깊이 알아야 한다 — 그래프 변환, 실행기, 추론 속도 최적화.",
+   "why": "앞 줄이 넓게 묻는다면 이 줄은 깊이를 하나만 요구합니다.[1]",
+   "level": {
+    "basic": "그래프·IR 이 무엇인지, 연산 합치기·상수 미리 계산을 설명",
+    "work": "패스 하나를 직접 짜고 숫자 대조, 실행 시간 프로파일 읽기",
+    "team": "SRAM·DRAM 왕복을 계산해 타일·데이터 흐름을 고르고 저정밀 오차까지 책임"
+   },
+   "refs": [
+    1,
+    12,
+    16
+   ],
+   "study": [
+    "mlc-course",
+    "roofline",
+    "jacob-quant"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· C/C++/Python 활용이 가능하신 분",
+   "short": "컴파일러·런타임 본체는 C++, 모델 다루기·시험·도구는 Python 이라서.",
+   "why": "LLVM·MLIR·TVM 의 본체는 C++ 이고, TVM·XLA 는 Python 으로 모델을 받고 시험을 짜는 층이 있습니다.[7][8][10] 실행기는 차량·로봇 쪽 응용에 붙어야 해서 C/C++ API 가 흔합니다. {추론}",
+   "level": {
+    "basic": "C++ 클래스·템플릿·스마트 포인터, Python numpy",
+    "work": "큰 C++ 코드베이스(LLVM/MLIR) 읽고 고치기, CMake, 디버거·프로파일러",
+    "team": "패스·dialect 를 C++ 로 쓰고, PyTorch 모델을 torch.export 로 뽑아 대조 시험을 Python 으로"
+   },
+   "refs": [
+    7,
+    8,
+    10,
+    21
+   ],
+   "study": [
+    "mlir-toy",
+    "torch-export"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· NPU 또는 GPU를 대상으로 한 컴파일러 분야에서 박사 학위를 보유하신 분",
+   "short": "가속기 컴파일러를 연구로 해 본 사람이면 더 좋다 — 필수는 석사, 우대는 박사.",
+   "why": "이 조직은 아키텍처·ISA 설계와 DSE 까지 하는 연구 성격이 강한 곳입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· NPU, GPU 등 AI 가속기 전문 팹리스(Fabless) 또는 관련 기업 근무 경험",
+   "short": "칩 회사에서 컴파일러를 해 본 사람은 칩과 소프트웨어를 함께 만드는 순서를 이미 안다.",
+   "why": "팹리스(공장 없이 칩을 설계만 하는 회사)는 칩·컴파일러·런타임을 한 묶음으로 내놓습니다 — 국내 NPU 회사 FuriosaAI 도 컴파일러·실행 파일 형식·명령줄 도구를 함께 낸다.[19] 현대차는 차량용 반도체 내재화를 위해 외부 인재를 영입한다고 보도됐습니다.[5]",
+   "refs": [
+    5,
+    19
+   ],
+   "study": [
+    "furiosa-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 오픈소스 컴파일러 스택 (예: TVM, MLIR, LLVM, XLA) 기반 확장 및 내재화 경험",
+   "short": "처음부터 다 짜지 않고 오픈소스를 우리 칩에 맞게 고쳐 들여온 경험이면 바로 쓸 수 있어서.",
+   "why": "네 가지는 쓰임이 다릅니다 — TVM(그래프 + 자동 스케줄)[7], MLIR(층별 IR 을 만드는 틀)[8], LLVM(범용 컴파일러 뒷단)[22], XLA(HLO 그래프 최적화)[10]. '내재화'는 그것을 우리 칩용 dialect·백엔드로 고쳐 회사 코드로 품는 것입니다. {추론}",
+   "actually": {
+    "items": [
+     "새 dialect 와 낮추기 규칙 추가[8]",
+     "TVM 에 새 타깃(BYOC — 그래프 일부를 외부 백엔드에 맡기는 방식) 붙이기 {추론}",
+     "업스트림 버전 따라가기 — 고친 부분을 따로 관리 {추론}"
+    ]
+   },
+   "refs": [
+    7,
+    8,
+    10,
+    22
+   ],
+   "study": [
+    "mlir-toy",
+    "tvm-paper",
+    "xla-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 딥러닝 모델 가속기 대상 컴파일러 또는 런타임 개발 경험",
+   "short": "GPU 가 아닌 전용 가속기에서 해 봤다면, 작은 SRAM·정해진 연산만 있는 제약을 이미 겪어 봤다.",
+   "why": "전용 가속기는 GPU 보다 연산 종류가 적고 메모리 계층을 컴파일러가 직접 관리하는 일이 많습니다.[11] {추론}",
+   "refs": [
+    11
+   ],
+   "study": [
+    "sze-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 최신 AI 모델 구조 및 저정밀 추론에 대한 이해",
+   "short": "트랜스포머 같은 새 모델 구조와 int8·FP8 같은 작은 숫자 형식으로 돌리는 법을 알면 더 좋다.",
+   "why": "그룹은 자율주행 AI 를 작게 설계하고 양자화 최적화를 한다고 밝혔고[3], 로봇용 칩은 5W 이하 저전력이 목표였습니다.[2] 작은 숫자 형식은 메모리와 전력을 줄이지만 오차를 관리해야 합니다.[12][25]",
+   "actually": {
+    "items": [
+     "int8 — 실수를 scale 하나로 나눠 정수로 반올림.[12]",
+     "FP8 — 지수 4·가수 3(E4M3) 또는 지수 5·가수 2(E5M2).[25]",
+     "튀는 값(outlier) 하나가 scale 을 키워 나머지 값의 오차가 커진다 — 묶음(채널·그룹)마다 scale 을 따로 둔다.[12] {추론}",
+     "주의(attention)는 메모리 왕복이 커서 타일로 쪼개는 계산법이 중요하다.[26]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "튀는 값 하나와 묶음별 scale",
+     "body": "가중치 1,000개 중 하나만 2.0 이고 나머지는 표준편차 0.1 일 때, 하나의 scale 이면 평균 절대 오차 **0.00382**, 100개씩 10묶음으로 나누면 **0.00091** 입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "def q(v):\n    sc = np.abs(v).max() / 127\n    return np.round(v / sc).clip(-127, 127) * sc\ne1 = np.abs(q(w) - w).mean()\ne2 = np.concatenate([np.abs(q(c) - c) for c in np.split(w, 10)]).mean()\n# per-tensor 0.00382, 10 groups 0.00091"
+    }
+   ],
+   "refs": [
+    2,
+    3,
+    12,
+    25,
+    26
+   ],
+   "study": [
+    "jacob-quant",
+    "fp8-paper"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· AI 가속기 또는 특정 도메인에 최적화된 DSL(Domain Specific Language) 설계 및 컴파일러 파이프라인 적용 경험을 보유하신 분",
+   "short": "칩 연산을 사람이 쉽게 적을 작은 전용 언어를 만들고, 그걸 컴파일러에 이어 본 경험이면 더 좋다.",
+   "why": "Halide 는 '무엇을 계산하나'와 '어떻게(순서·타일)'를 나눠 적는 DSL 로 이미지 처리를 빠르게 했고[13], Triton 은 타일 단위로 커널을 적는 DSL 입니다.[14] 새 칩에서는 연산자 개발자가 칩 연산을 직접 쓰는 언어가 필요할 수 있습니다. {추론}",
+   "refs": [
+    13,
+    14
+   ],
+   "study": [
+    "halide-paper",
+    "triton-paper"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 비즈니스 영어 커뮤니케이션 및 영어 문서 작성 역량을 보유하신 분",
+   "short": "오픈소스 커뮤니티·해외 협력사와 영어로 의논하고, 설계 문서를 영어로 남길 수 있으면 좋다.",
+   "why": "우대 앞 줄의 오픈소스 스택(TVM·MLIR·LLVM·XLA)은 토론·리뷰가 영어로 이뤄집니다.[7][8] 그룹 자율주행 개발도 한국·미국을 잇는 방식으로 돌린다고 밝혔습니다.[3]",
+   "refs": [
+    3,
+    7,
+    8
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "모델 그래프를 고쳐 몇 % 빨라졌는지 숫자로 보이는 게 즐거운 사람",
+   "C++ 큰 코드베이스(LLVM·MLIR)를 읽고 고치는 게 익숙한 사람",
+   "칩 설계 단계부터 소프트웨어로 끼어들고 싶은 사람[1]"
+  ],
+  "hard": [
+   "석사 이상이 필수다[1]",
+   "자체 칩 일정이 공식 발표가 아니라 업계 보도로만 알려져 있다[6]",
+   "칩이 나오기 전에는 시뮬레이터 숫자로 일한다[1] {추론}",
+   "회사 안 다른 팀(인지 모델·Backend·아키텍트)과 경계를 맞추는 일이 많다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "Conv 뒤의 BatchNorm 을 추론 때 없앨 수 있는 이유와, 없앨 수 없는 경우는?",
+   "a": "그래프 단계 최적화 줄의 기본 패스.[12]"
+  },
+  {
+   "q": "SRAM 이 512KB 일 때 1024×1024 행렬 곱의 타일 크기를 어떻게 고르나요? 이중 버퍼링을 하면 무엇이 바뀌죠?",
+   "a": "메모리 계층 스케줄링 줄.[11][16]"
+  },
+  {
+   "q": "칩이 지원하지 않는 연산이 모델에 있으면 컴파일러와 런타임은 각각 무엇을 하나요?",
+   "a": "낮추기 줄과 런타임 줄의 경계.[9][27]"
+  },
+  {
+   "q": "Frontend 와 Backend 사이 IR 에 메모리 주소 배정까지 넣을까요, 뺄까요?",
+   "a": "인터페이스 설계 줄.[8]"
+  },
+  {
+   "q": "int8 로 바꿨더니 한 층에서 정확도가 크게 떨어집니다. 어떻게 찾고 고치나요?",
+   "a": "저정밀 추론 우대와 품질 줄.[12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · NPU 딥러닝 컴파일러 개발",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=209",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대, 근무지 판교, 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "현대자동차그룹 · 현대차·기아, 'CES 파운드리'에서 로봇이 스스로 판단하는 AI 칩 개발 완료 발표",
+   "url": "https://www.hyundaimotorgroup.com/ko/news/hyundai-kia-ces-foundry-ai-chip-self-deciding-robot",
+   "kind": "company",
+   "date": "2026-01-09",
+   "note": "로보틱스랩 × 딥엑스 3년 협력, 5W 이하 온디바이스 AI 칩"
+  },
+  {
+   "n": 3,
+   "title": "HMG 저널 · 데이터 플라이휠로 가속하는 현대차그룹의 자율주행 기술",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/hyundai-motor-group-autonomous-driving-data-flywheel",
+   "kind": "company",
+   "date": "2026-09-14",
+   "note": "Atria AI 일정·약 1억 파라미터·양자화 최적화"
+  },
+  {
+   "n": 4,
+   "title": "뉴시스 · SW 개발 확대하는 현대차그룹, 자율주행 AI도 공개(Pleos 25)",
+   "url": "https://mobile.newsis.com/view/NISX20250328_0003117650",
+   "kind": "news",
+   "date": "2025-03-28",
+   "note": "AVP본부장 발표 — 고성능 CPU·NPU, 하드웨어·소프트웨어 수직 계열화"
+  },
+  {
+   "n": 5,
+   "title": "디지털데일리 · 美 빅테크 이어 완성차도 '자체 칩 설계'",
+   "url": "https://www.ddaily.co.kr/page/view/2024121915084430584",
+   "kind": "news",
+   "date": "2024-12-19",
+   "note": "현대차가 차량용 반도체 내재화 팀을 꾸리고 외부 인재 영입"
+  },
+  {
+   "n": 6,
+   "title": "SamMobile · Samsung will make chips for Hyundai cars",
+   "url": "https://www.sammobile.com/news/samsung-make-chips-hyundai-cars/",
+   "kind": "news",
+   "date": "2025-10",
+   "note": "업계 보도 — 자체 자율주행 칩 8nm, 개발 2028·양산 2030 목표(공식 발표 아님)"
+  },
+  {
+   "n": 7,
+   "title": "Chen 외 · TVM: An Automated End-to-End Optimizing Compiler for Deep Learning (OSDI 2018)",
+   "url": "https://arxiv.org/abs/1802.04799",
+   "kind": "reference",
+   "date": "2018",
+   "note": "그래프 단계 최적화(연산 합치기)와 연산자 단계 코드 생성의 두 겹"
+  },
+  {
+   "n": 8,
+   "title": "Lattner 외 · MLIR: A Compiler Infrastructure for the End of Moore's Law",
+   "url": "https://arxiv.org/abs/2002.11054",
+   "kind": "reference",
+   "date": "2020",
+   "note": "여러 층의 IR(dialect)과 단계적 낮추기"
+  },
+  {
+   "n": 9,
+   "title": "Rotem 외 · Glow: Graph Lowering Compiler Techniques for Neural Networks",
+   "url": "https://arxiv.org/abs/1805.00907",
+   "kind": "reference",
+   "date": "2018",
+   "note": "큰 연산을 소수의 선형대수 원시 연산으로 낮춰 새 하드웨어 백엔드 부담을 줄인다"
+  },
+  {
+   "n": 10,
+   "title": "OpenXLA · XLA 문서",
+   "url": "https://openxla.org/xla",
+   "kind": "reference",
+   "note": "HLO 그래프 최적화·연산 합치기·백엔드 코드 생성"
+  },
+  {
+   "n": 11,
+   "title": "Sze·Chen·Yang·Emer · Efficient Processing of Deep Neural Networks (Morgan & Claypool)",
+   "url": "https://link.springer.com/book/10.1007/978-3-031-01766-7",
+   "kind": "reference",
+   "date": "2020",
+   "note": "가속기 데이터 흐름(weight/output/row stationary)과 메모리 계층의 비용"
+  },
+  {
+   "n": 12,
+   "title": "Jacob 외 · Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference",
+   "url": "https://arxiv.org/abs/1712.05877",
+   "kind": "reference",
+   "date": "2018",
+   "note": "int8 정수 추론 — scale·zero point"
+  },
+  {
+   "n": 13,
+   "title": "Ragan-Kelley 외 · Halide (PLDI 2013)",
+   "url": "https://people.csail.mit.edu/jrk/halide-pldi13.pdf",
+   "kind": "reference",
+   "date": "2013",
+   "note": "무엇을 계산하나(알고리즘)와 어떻게 계산하나(스케줄)를 나누는 DSL"
+  },
+  {
+   "n": 14,
+   "title": "Tillet·Kung·Cox · Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations",
+   "url": "https://www.eecs.harvard.edu/~htk/publication/2019-mapl-tillet-kung-cox.pdf",
+   "kind": "reference",
+   "date": "2019",
+   "note": "타일 단위 DSL"
+  },
+  {
+   "n": 15,
+   "title": "Zheng 외 · Ansor: Generating High-Performance Tensor Programs for Deep Learning (OSDI 2020)",
+   "url": "https://arxiv.org/abs/2006.06762",
+   "kind": "reference",
+   "date": "2020",
+   "note": "스케줄 자동 탐색"
+  },
+  {
+   "n": 16,
+   "title": "Williams·Waterman·Patterson · Roofline (CACM 2009)",
+   "url": "https://dl.acm.org/doi/10.1145/1498765.1498785",
+   "kind": "reference",
+   "date": "2009",
+   "note": "연산 강도로 '계산이 모자라나, 메모리가 모자라나'를 가른다"
+  },
+  {
+   "n": 17,
+   "title": "NVlabs · Timeloop (가속기 매핑·설계 공간 탐색 도구)",
+   "url": "https://github.com/NVlabs/timeloop",
+   "kind": "reference",
+   "note": "같은 연산을 어떤 순서·타일로 하드웨어에 얹을지(매핑)와 그 비용 모델"
+  },
+  {
+   "n": 18,
+   "title": "IREE 문서",
+   "url": "https://iree.dev/",
+   "kind": "reference",
+   "note": "MLIR 기반 컴파일러 + 가벼운 런타임(HAL — 장치·버퍼·명령 버퍼 추상화)"
+  },
+  {
+   "n": 19,
+   "title": "FuriosaAI 개발자 문서 · 명령줄 도구(컴파일 단계 로그)",
+   "url": "https://developer.furiosa.ai/docs/v0.9.0/ko/software/cli.html",
+   "kind": "reference",
+   "note": "국내 NPU 회사 — 그래프 나누기 → 낮추기 → 최적화 → 실행 파일(ENF)"
+  },
+  {
+   "n": 20,
+   "title": "ONNX 개념 소개",
+   "url": "https://onnx.ai/onnx/intro/",
+   "kind": "reference",
+   "note": "모델 그래프 교환 형식 — 연산자 집합(opset)"
+  },
+  {
+   "n": 21,
+   "title": "PyTorch · torch.export 문서",
+   "url": "https://docs.pytorch.org/docs/stable/export.html",
+   "kind": "reference",
+   "note": "파이썬 모델을 그래프(ExportedProgram)로 뽑는 입구"
+  },
+  {
+   "n": 22,
+   "title": "LLVM 문서",
+   "url": "https://llvm.org/docs/",
+   "kind": "reference",
+   "note": "패스 관리자·백엔드 구조"
+  },
+  {
+   "n": 23,
+   "title": "MLIR Toy 튜토리얼",
+   "url": "https://mlir.llvm.org/docs/Tutorials/Toy/",
+   "kind": "reference",
+   "note": "언어 하나를 dialect 로 만들고 낮춰 실행까지"
+  },
+  {
+   "n": 24,
+   "title": "Tianqi Chen · Machine Learning Compilation 강의",
+   "url": "https://mlc.ai/",
+   "kind": "reference",
+   "note": "텐서 프로그램·그래프 변환·자동 스케줄을 실습으로"
+  },
+  {
+   "n": 25,
+   "title": "Micikevicius 외 · FP8 Formats for Deep Learning",
+   "url": "https://arxiv.org/abs/2209.05433",
+   "kind": "reference",
+   "date": "2022",
+   "note": "E4M3·E5M2 형식"
+  },
+  {
+   "n": 26,
+   "title": "Dao 외 · FlashAttention",
+   "url": "https://arxiv.org/abs/2205.14135",
+   "kind": "reference",
+   "date": "2022",
+   "note": "주의(attention)를 타일로 쪼개 SRAM 안에서 끝내 메모리 왕복을 줄인다"
+  },
+  {
+   "n": 27,
+   "title": "ONNX Runtime · Execution Providers",
+   "url": "https://onnxruntime.ai/docs/execution-providers/",
+   "kind": "reference",
+   "note": "가속기가 못 하는 연산을 CPU 로 넘기는 그래프 나누기"
+  },
+  {
+   "n": 28,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 29,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 30,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생"
+  },
+  {
+   "n": 31,
+   "title": "전자신문 · 현대차그룹, 판교 R&D 인력 1000명으로 늘린다",
+   "url": "https://m.etnews.com/20250715000287",
+   "kind": "news",
+   "date": "2025-07-15",
+   "note": "판교테크원·제2테크노밸리 소프트웨어드림센터"
+  },
+  {
+   "n": 32,
+   "title": "원티드 · 현대자동차그룹 SDV E&E 아키텍처 기반 통합제어기 Software 통합·배포·검증",
+   "url": "https://www.wanted.co.kr/wd/393817",
+   "kind": "posting",
+   "note": "같은 회사의 다른 판교 공고 — 근무지역 판교역로 152"
+  },
+  {
+   "n": 33,
+   "title": "Cooper·Torczon · Engineering a Compiler, 3rd ed. (Elsevier)",
+   "url": "https://shop.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-815412-0",
+   "kind": "reference",
+   "date": "2022",
+   "note": "IR·데이터 흐름 분석·명령 스케줄링·레지스터 할당"
+  }
+ ],
+ "caveat": "현대차가 이 NPU 조직의 칩 사양·컴파일러 구조를 공개한 발표·기술 글은 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 그룹 발표(로봇용 딥엑스 협력 칩, Atria AI 양자화)·보도(반도체 내재화 팀, 업계가 전한 8nm 자체 칩 일정)뿐이고, 공고의 칩이 그 칩인지는 확인되지 않았습니다. 컴파일러 구조는 TVM·MLIR·Glow·XLA·IREE 와 가속기 교과서로 '보통 이런 것'을 보였습니다.",
+ "resources": [
+  {
+   "id": "mlc-course",
+   "title": "Machine Learning Compilation",
+   "by": "Tianqi Chen 외 · mlc.ai",
+   "kind": "course",
+   "url": "https://mlc.ai/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "텐서 프로그램·그래프 변환·자동 스케줄을 코드로 따라 한다. 업무 Frontend 네 줄의 뼈대를 한 번에."
+  },
+  {
+   "id": "tvm-paper",
+   "title": "TVM: An Automated End-to-End Optimizing Compiler for Deep Learning",
+   "by": "Chen 외 · OSDI 2018",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1802.04799",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "그래프 단계(합치기·배치)와 연산자 단계(스케줄·코드 생성)를 어떻게 나누는지 — 공고의 Graph-level·Lowering 줄 그대로."
+  },
+  {
+   "id": "mlir-paper",
+   "title": "MLIR: A Compiler Infrastructure for the End of Moore's Law",
+   "by": "Lattner 외 · 2020",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2002.11054",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "층별 IR(dialect)과 단계적 낮추기의 설계 이유. IR·파이프라인 설계 줄과 Frontend/Backend 경계 줄."
+  },
+  {
+   "id": "mlir-toy",
+   "title": "MLIR Toy Tutorial",
+   "by": "LLVM 프로젝트",
+   "kind": "doc",
+   "url": "https://mlir.llvm.org/docs/Tutorials/Toy/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "작은 언어 하나로 dialect 만들기 → 패스 → 낮추기 → 실행까지 직접 해 본다. C++ 요건과 오픈소스 확장 우대를 같이 채운다."
+  },
+  {
+   "id": "glow-paper",
+   "title": "Glow: Graph Lowering Compiler Techniques for Neural Networks",
+   "by": "Rotem 외 · 2018",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1805.00907",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "큰 연산을 작은 선형대수 연산으로 낮춰 백엔드 부담을 줄이는 법 — Operator-level lowering 줄."
+  },
+  {
+   "id": "xla-docs",
+   "title": "XLA 문서",
+   "by": "OpenXLA",
+   "kind": "doc",
+   "url": "https://openxla.org/xla",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "실제로 쓰이는 그래프 컴파일러의 연산 합치기·백엔드 구조."
+  },
+  {
+   "id": "sze-book",
+   "title": "Efficient Processing of Deep Neural Networks",
+   "by": "Vivienne Sze · Yu-Hsin Chen · Tien-Ju Yang · Joel Emer · Morgan & Claypool · 2020",
+   "kind": "book",
+   "url": "https://link.springer.com/book/10.1007/978-3-031-01766-7",
+   "lang": "en",
+   "level": "실무",
+   "why": "가속기 데이터 흐름과 메모리 계층의 비용 — 데이터 흐름·메모리 스케줄링 줄과 가속기 경험 우대."
+  },
+  {
+   "id": "roofline",
+   "title": "Roofline: An Insightful Visual Performance Model for Multicore Architectures",
+   "by": "Williams · Waterman · Patterson · CACM 2009",
+   "kind": "doc",
+   "url": "https://dl.acm.org/doi/10.1145/1498765.1498785",
+   "lang": "en",
+   "level": "입문",
+   "why": "병목이 계산인지 메모리인지 한 장의 그림으로 가른다 — 프로파일링·병목 분석 줄."
+  },
+  {
+   "id": "timeloop",
+   "title": "Timeloop",
+   "by": "NVlabs · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/NVlabs/timeloop",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "연산을 가속기에 얹는 방식(매핑)과 비용 모델 — 아키텍트와의 협업·DSE 를 이해한다."
+  },
+  {
+   "id": "ansor",
+   "title": "Ansor: Generating High-Performance Tensor Programs for Deep Learning",
+   "by": "Zheng 외 · OSDI 2020",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2006.06762",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "타일·순서를 자동으로 찾는 법 — 경계에서 개선 포인트 찾기 줄."
+  },
+  {
+   "id": "iree-docs",
+   "title": "IREE 문서",
+   "by": "IREE 프로젝트",
+   "kind": "doc",
+   "url": "https://iree.dev/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "MLIR 컴파일러와 가벼운 런타임(HAL)을 한 묶음으로 본다 — Runtime 세 줄."
+  },
+  {
+   "id": "ort-ep",
+   "title": "ONNX Runtime Execution Providers",
+   "by": "Microsoft · ONNX Runtime",
+   "kind": "doc",
+   "url": "https://onnxruntime.ai/docs/execution-providers/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "가속기가 못 하는 연산을 CPU 로 나누는 실행기 구조."
+  },
+  {
+   "id": "jacob-quant",
+   "title": "Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference",
+   "by": "Jacob 외 · CVPR 2018",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/1712.05877",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "int8 추론의 scale·zero point 와 정확도 관리 — 저정밀 추론 우대와 품질 줄."
+  },
+  {
+   "id": "fp8-paper",
+   "title": "FP8 Formats for Deep Learning",
+   "by": "Micikevicius 외 · 2022",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2209.05433",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "E4M3·E5M2 형식의 쓰임 — 최신 저정밀 형식."
+  },
+  {
+   "id": "halide-paper",
+   "title": "Halide: A Language and Compiler for Optimizing Parallelism, Locality, and Recomputation in Image Processing Pipelines",
+   "by": "Ragan-Kelley 외 · PLDI 2013",
+   "kind": "doc",
+   "url": "https://people.csail.mit.edu/jrk/halide-pldi13.pdf",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "알고리즘과 스케줄을 나누는 DSL 설계 — DSL 우대."
+  },
+  {
+   "id": "triton-paper",
+   "title": "Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations",
+   "by": "Tillet · Kung · Cox · MAPL 2019",
+   "kind": "doc",
+   "url": "https://www.eecs.harvard.edu/~htk/publication/2019-mapl-tillet-kung-cox.pdf",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "타일 단위 DSL 과 컴파일러 — DSL 우대와 메모리 스케줄링 줄."
+  },
+  {
+   "id": "torch-export",
+   "title": "torch.export 문서",
+   "by": "PyTorch",
+   "kind": "doc",
+   "url": "https://docs.pytorch.org/docs/stable/export.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "모델을 그래프로 뽑아 컴파일러 입구에 넣는 법 — Python 요건과 대조 시험."
+  },
+  {
+   "id": "eac",
+   "title": "Engineering a Compiler, 3rd Edition",
+   "by": "Keith D. Cooper · Linda Torczon · Elsevier · 2022",
+   "kind": "book",
+   "url": "https://shop.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-815412-0",
+   "lang": "en",
+   "level": "실무",
+   "why": "IR·데이터 흐름 분석·명령 스케줄링 같은 컴파일러 기본기 — IR 설계와 Backend 인터페이스 줄."
+  },
+  {
+   "id": "furiosa-docs",
+   "title": "FuriosaAI SDK 문서(한국어)",
+   "by": "FuriosaAI",
+   "kind": "doc",
+   "url": "https://developer.furiosa.ai/docs/v0.9.0/ko/software/cli.html",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "국내 NPU 회사의 컴파일러·실행 파일·도구가 한 묶음으로 어떻게 나오는지 한국어로 본다 — 팹리스 경험 우대."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "그래프와 IR 감 잡기",
+   "time": "2~3주",
+   "goal": "모델이 그래프·IR 로 어떻게 적히고 패스가 무엇을 바꾸는지 설명한다.",
+   "task": "작은 CNN 을 torch.export 로 뽑아 노드 목록을 출력하고, Conv+BN 접어 넣기 패스를 Python 으로 짜서 원래 출력과 최대 차이를 1e-5 아래로 맞춘 보고서.",
+   "resources": [
+    "mlc-course",
+    "torch-export",
+    "tvm-paper"
+   ]
+  },
+  {
+   "title": "MLIR 로 낮추기 직접 해 보기",
+   "time": "4주",
+   "goal": "dialect·패스·낮추기를 C++ 로 짜서 실행까지 이어 본다.",
+   "task": "Toy 튜토리얼을 끝까지 따라 한 뒤, 'relu(x*w+b)' 를 한 연산으로 합치는 패스를 하나 더 넣고 패스 전후 IR 을 나란히 붙인 글.",
+   "resources": [
+    "mlir-toy",
+    "mlir-paper",
+    "glow-paper"
+   ]
+  },
+  {
+   "title": "메모리 계층과 타일",
+   "time": "3주",
+   "goal": "SRAM 크기에 맞춰 타일을 고르고 DRAM 왕복을 계산·측정한다.",
+   "task": "가상의 NPU(SRAM 512KB, DRAM 대역폭 가정)를 Python 모형으로 만들고, 행렬 곱 타일 크기별 DRAM 전송량·예상 시간을 표와 루프라인 그림으로.",
+   "resources": [
+    "sze-book",
+    "roofline",
+    "timeloop"
+   ]
+  },
+  {
+   "title": "런타임과 프로파일",
+   "time": "3주",
+   "goal": "컴파일 결과를 올리고 돌리고 재는 실행기 구조를 이해한다.",
+   "task": "IREE 로 작은 모델을 CPU 대상으로 컴파일·실행하고, 연산별 시간을 타임라인으로 그려 가장 느린 연산 세 개와 그 이유를 적은 표.",
+   "resources": [
+    "iree-docs",
+    "ort-ep",
+    "roofline"
+   ]
+  },
+  {
+   "title": "저정밀과 품질",
+   "time": "2~3주",
+   "goal": "int8 양자화가 정확도에 주는 영향을 재고 줄인다.",
+   "task": "작은 분류 모델을 fp32·int8(텐서 하나 scale)·int8(채널별 scale)로 돌려 정확도·평균 오차를 한 표에, 튀는 값이 있는 층을 찾아 표시.",
+   "resources": [
+    "jacob-quant",
+    "fp8-paper"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분이 없다. 이 자리는 석사 이상·경력 2년 이상 채용이라 해당하지 않는다 [29]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [29]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [28]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값, 전년보다 1.5% 줄었다 [28]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 석사·경력 채용이라 실제 금액은 학위·경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [30]. 공고 본문에는 복리후생 칸이 없다 [1]. 어린이집·피트니스 센터는 판교가 아닌 사업장 목록이라 이 근무지에서 쓸 수 있는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 판교 근무지",
+  "address": "경기도 성남시 분당구 판교역로 152",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 근처 {추론}",
+  "note": "이 공고의 근무지는 '판교'로만 적혀 있다 [1]. 같은 회사의 다른 판교 공고를 실은 원티드의 근무지역이 판교역로 152 라서 그 주소를 적었다 [32] — 이 팀이 같은 건물인지는 확인하지 못했다 {추론}. 현대차그룹은 판교에 SW 거점(판교테크원·제2테크노밸리 소프트웨어드림센터)을 두고 있다 [31]."
+ }
+}
