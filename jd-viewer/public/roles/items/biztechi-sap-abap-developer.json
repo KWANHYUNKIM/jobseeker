@@ -1,0 +1,272 @@
+{
+  "id": "biztechi-sap-abap-developer",
+  "company": "비즈테크아이",
+  "role": "SAP ABAP 개발자",
+  "team": "SAP 개발 파트",
+  "jobs": [
+    "ats-lg:group:1001508"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "고객사 SAP ERP(회사 전체의 돈·물건·주문을 한 시스템에 기록하는 패키지) 안에서 **ABAP(SAP 전용 프로그래밍 언어)으로 보고서·인터페이스·확장 기능을 만들고**, 새 방식인 CDS 뷰 · OData(웹 API 규격) · BTP(SAP 클라우드 플랫폼)로도 개발하는 자리입니다. SAP 프로젝트가 생기면 가장 먼저 투입되는 개발 파트 소속입니다.[1]",
+    "env": "LG CNS 자회사인 IT 서비스 회사의 ERP 사업입니다.[1] 회사는 S/4HANA Cloud Public Edition 구축 상품(EXprism4GROW), Private Edition 기반 상품(EXprism ERP), 옛 ECC → S/4HANA 전환, BTP 확장 개발(RAP·CAP·Fiori)을 사업으로 내겁니다.[2][3][4][5]",
+    "oneline": "**옛 ABAP(보고서·BAdI)으로 운영을 받치면서 CDS → RAP → OData → Fiori 로 이어지는 새 개발 방식을 직접 짤 수 있는** 2년 차 이상 SAP 개발자 자리."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "ABAP 개발",
+      "short": "고객사 SAP에서 표준 기능으로 안 되는 보고서·화면·인터페이스·확장을 ABAP 코드로 만드는 일이다.",
+      "why": "SAP는 설정으로 먼저 맞추고, 설정으로 안 되는 요구만 개발로 채우는 패키지입니다. 회사의 S/4HANA 전환 안내도 전환 대상 시스템이 ABAP 시스템이어야 한다고 적습니다 — 고객이 쌓아 둔 ABAP 코드가 전환 뒤에도 그대로 남는다는 뜻입니다.[3] 이 자리는 SAP 프로젝트가 생기면 가장 먼저 투입되는 개발 파트입니다.[1]",
+      "actually": {
+        "intro": "SAP 개발 일감은 흔히 앞 글자를 따 RICEF라고 부릅니다 — 보고서·인터페이스·전환·확장·양식.{추론}",
+        "items": [
+          "**보고서(Report)** — 현업이 원하는 조건으로 표를 읽어 목록 화면(ALV)으로 보여 준다. 가장 흔한 일감.{추론}",
+          "**인터페이스(Interface)** — MES·그룹웨어·은행 같은 바깥 시스템과 BAPI·IDoc·RFC로 데이터를 주고받는다.[15]",
+          "**전환(Conversion)** — 구축 때 옛 시스템의 거래처·자재·잔액을 새 SAP로 옮기는 프로그램.{추론}",
+          "**확장(Enhancement)** — 표준이 비워 둔 자리(BAdI)에 고객 규칙을 넣는다. 표준 코드를 직접 고치지 않는다.[10]",
+          "**양식(Form)** — 세금계산서·출하 지시서 같은 출력물.{추론}",
+          "**도구** — 예전 SAP GUI의 SE80 대신 Eclipse 기반 ADT(ABAP Development Tools)에서 짠다. CDS·RAP는 ADT에서만 만든다.[24]"
+        ]
+      },
+      "how_far": "사양서를 받아 **보고서·인터페이스 하나를 코드부터 테스트·운반(개발 → 품질 → 운영 시스템으로 옮기기)까지 혼자 끝내는 것**이 2년 차의 최소선으로 보입니다.{추론} 업무 규칙은 모듈 컨설턴트와 고객 현업이 정하고, 개발자는 그 규칙을 정확하고 빠르게 돌게 만드는 쪽을 맡습니다.{추론}",
+      "refs": [1, 3, 10, 15, 24],
+      "study": ["easy-abap", "abap-core"]
+    },
+    {
+      "section": "task",
+      "quote": "BTP / ODATA/ CDS VIEW 개발",
+      "short": "표를 CDS 뷰로 정의하고, 그것을 OData API로 내보내 Fiori 화면이나 BTP 앱이 쓰게 만드는 일이다.",
+      "why": "회사는 BTP 사업의 주요 기술로 RAP·CAP·Fiori·SAPUI5를 들고, SAP와 다른 시스템의 API 통합을 주요 기능으로 적습니다.[5] Public Edition에서는 표준을 고치지 않는 클린 코어가 필수라, 복잡한 확장은 바깥(BTP)에서 공개 API로 만듭니다.[10] 회사의 Public Edition 상품이 바로 이 환경입니다.[2]",
+      "actually": {
+        "intro": "새 방식의 개발은 층을 쌓는 순서로 이어집니다.",
+        "items": [
+          "**CDS 뷰** — 표 여러 개를 연관(association)으로 이어 하나의 '업무 데이터 모양'으로 정의한다(DEFINE VIEW ENTITY).[14]",
+          "**서비스 정의** — 그 데이터 모델 중 바깥에 내보낼 부분만 고른다.[19]",
+          "**서비스 바인딩** — 어떤 규격(OData V2/V4)·용도(UI용/API용)로 낼지 정한다. UI용 V4는 이름을 UI_ 로 시작해 _O4 로 끝내는 관례가 있다.[19]",
+          "**OData** — 웹 주소 하나에 $filter(거르기)·$select(칸 고르기)·$expand(연결된 것 같이 받기) 같은 질의 옵션을 붙여 읽고 쓰는 국제 규격이다.[21]",
+          "**BTP ABAP 환경** — SAP의 클라우드 ABAP 실행 환경(별칭 Steampunk). S/4HANA 밖에서 ABAP Cloud 규칙으로 앱·확장을 만든다.[20]",
+          "**Fiori 화면** — UI용 OData 서비스 위에 주석(annotation)만 달면 목록·상세 화면이 생긴다(Fiori elements).[19][25]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "OData 주소 한 줄이 서버에서 하는 일 — 직접 돌린 출력",
+          "body": "서비스 이름·칸 이름은 가상 값입니다. 서버(RAP 프레임워크)는 주소의 질의 옵션을 읽어 CDS 뷰에 거르기 → 정렬 → 자르기 → 칸 고르기를 해 돌려줍니다. 아래는 그 순서를 파이썬으로 흉내 낸 것입니다.{추론}",
+          "lang": "python",
+          "code": "from urllib.parse import quote\n\nrows = [\n    {\"SalesOrder\": \"5000001\", \"Customer\": \"C100\", \"NetAmount\": 1200000, \"Status\": \"OPEN\"},\n    {\"SalesOrder\": \"5000002\", \"Customer\": \"C200\", \"NetAmount\": 300000, \"Status\": \"DONE\"},\n    {\"SalesOrder\": \"5000003\", \"Customer\": \"C100\", \"NetAmount\": 800000, \"Status\": \"OPEN\"},\n]\nbase = \"/sap/opu/odata4/sap/zui_salesorder_o4/srvd/sap/zui_salesorder/0001/SalesOrder\"\nparams = {\"$select\": \"SalesOrder,NetAmount\", \"$filter\": \"Customer eq 'C100' and Status eq 'OPEN'\",\n          \"$orderby\": \"NetAmount desc\", \"$top\": \"10\"}\nsafe = \",'\"\nprint(base + \"?\" + \"&\".join(k + \"=\" + quote(v, safe=safe) for k, v in params.items()))\n\nhit = [r for r in rows if r[\"Customer\"] == \"C100\" and r[\"Status\"] == \"OPEN\"]\nhit.sort(key=lambda r: r[\"NetAmount\"], reverse=True)\nvalue = [{k: r[k] for k in (\"SalesOrder\", \"NetAmount\")} for r in hit[:10]]\nprint({\"value\": value})\n\n# 출력\n# /sap/opu/odata4/sap/zui_salesorder_o4/srvd/sap/zui_salesorder/0001/SalesOrder?$select=SalesOrder,NetAmount&$filter=Customer%20eq%20'C100'%20and%20Status%20eq%20'OPEN'&$orderby=NetAmount%20desc&$top=10\n# {'value': [{'SalesOrder': '5000001', 'NetAmount': 1200000}, {'SalesOrder': '5000003', 'NetAmount': 800000}]}"
+        }
+      ],
+      "flows": [
+        "DB 표(VBAK 같은 표준 표·Z 표)",
+        "CDS 뷰 — 업무 데이터 모양",
+        "행동 정의(RAP) — 만들기·고치기·검사",
+        "서비스 정의 — 내보낼 부분",
+        "서비스 바인딩 — OData V2/V4 · UI/API",
+        "Fiori 화면 · BTP 앱 · 바깥 시스템"
+      ],
+      "mine_from": 1,
+      "how_far": "**CDS 뷰 하나 → 서비스 정의 → V4 바인딩 → 브라우저에서 OData 주소로 결과 확인**까지 혼자 해 본 적이 있으면 이 줄의 출발선입니다.{추론} 온프레미스·Private Edition에서는 V4 바인딩을 ADT에서 바로 게시하지 못하고 관리 트랜잭션(/IWFND/V4_ADMIN)으로 게시해야 하는 차이도 알아 둡니다.[19] Fiori 화면 자체(SAPUI5 직접 코딩)는 이 줄에 적혀 있지 않습니다.[1]",
+      "refs": [1, 2, 5, 10, 14, 19, 20, 21, 25],
+      "study": ["cds-doc", "rap-course", "rap100", "odata-spec", "btp-abap"]
+    },
+    {
+      "section": "qualification",
+      "quote": "학력 : 4년제 정규대학 학사학위 이상 보유자",
+      "short": "서류 단계의 기본 조건이다. 전공 제한은 적혀 있지 않다.",
+      "why": "공고에 학사 이상만 적혀 있고 전공 조건은 없습니다.[1] 경력 전형은 서류 → LG Way Fit Test → 면접 → 평판조회 → 처우협의 순서로 진행됩니다.[22]",
+      "how_far": "학위는 서류 통과 조건일 뿐이고 실제 평가는 아래 ABAP·BTP 경력 줄에서 갈립니다.{추론}",
+      "refs": [1, 22]
+    },
+    {
+      "section": "qualification",
+      "quote": "경력 : 관련업무 2년 이상",
+      "short": "SAP ABAP 개발을 실제 프로젝트·운영에서 2년 이상 해 봤어야 한다는 뜻이다.",
+      "why": "프로젝트가 생기면 '최우선으로 투입하여 개발에 착수'하는 자리라[1], 입사 직후 교육 없이 사양서를 받아 개발할 수 있어야 합니다.{추론} 같은 회사의 SAP 운영 공고는 3년 이상을 요구하고 개발 경험은 '중급 이상'으로 적었습니다 — 이 자리는 연차보다 개발 자체에 무게를 둡니다.[23]",
+      "actually": {
+        "items": [
+          "**경력서에 쓸 것** — 맡은 고객사 업종·모듈, 만든 일감 종류(보고서·인터페이스·확장·양식)와 건수, ECC인지 S/4HANA인지.{추론}",
+          "**구축 vs 운영** — 구축에서 개발 단계를 끝까지 해 봤는지, 운영에서 남의 코드를 고쳐 봤는지 둘 다 적는다.{추론}",
+          "**다른 언어 개발자** — 자바·파이썬 경력만으로는 '관련업무'로 읽히기 어렵다. ABAP 프로젝트 경험이 먼저다.{추론}"
+        ]
+      },
+      "how_far": "2년이면 **남이 만든 ABAP 프로그램을 디버거로 따라가 고칠 수 있고, 성능 문제(반복문 안의 조회)를 찾아낼 수 있는 수준**으로 읽힙니다.{추론}",
+      "refs": [1, 23]
+    },
+    {
+      "section": "qualification",
+      "quote": "BTP / ODATA/ CDS VIEW 개발이 가능하신 분",
+      "short": "옛 ABAP만이 아니라 CDS 뷰를 정의하고 OData로 내보내는 새 방식 개발을 바로 할 수 있어야 한다.",
+      "why": "주요업무 두 번째 줄을 그대로 자격요건으로 올렸습니다 — 이 자리의 필수 기술이라는 뜻입니다.[1] Public Edition 구축에서는 표준을 고치는 옛 확장을 못 쓰고, 공개 API와 바깥 확장으로 풀어야 합니다.[10]",
+      "level": {
+        "basic": "CDS 뷰 엔티티 정의 · 연관(association)·조건 · 브라우저로 OData 주소에 $filter·$select 붙여 결과 보기",
+        "work": "서비스 정의·바인딩(V2/V4, UI/API) 만들기 · CDS 주석으로 Fiori elements 목록 화면 띄우기 · 권한(접근 제어)",
+        "team": "BTP ABAP 환경에서 ABAP Cloud 규칙(공개된 API만)으로 확장 만들기 · 고객 S/4HANA와 BTP 사이 연결"
+      },
+      "actually": {
+        "items": [
+          "**CDS 뷰** — '거래처별 미결 주문' 같은 조회를 ABAP 보고서 안의 SQL이 아니라 데이터 정의로 남긴다. 다른 뷰·화면·API가 그것을 다시 쓴다.[14]",
+          "**OData** — 같은 뷰를 웹 API로 내보내 Fiori·모바일·다른 시스템이 HTTP로 읽게 한다.[19][21]",
+          "**BTP** — SAP 클라우드 위에서 ABAP Cloud(공개된 API만 쓰는 ABAP 규칙)로 앱을 만든다. 코드는 git 기반 도구(gCTS·abapGit)로 시스템 사이를 옮긴다.[20]"
+        ]
+      },
+      "how_far": "면접에서 **'이 보고서를 CDS 뷰로 다시 만들면 무엇이 달라지나'**를 설명할 수 있어야 합니다.{추론} 실무 경험이 없다면 SAP가 무료로 여는 BTP 체험 계정과 RAP100 튜토리얼로 하나를 끝까지 만들어 보여 주는 것이 가장 빠른 증명입니다.[11][26]{추론}",
+      "refs": [1, 10, 14, 19, 20, 21, 26],
+      "study": ["cds-doc", "rap100", "btp-abap", "odata-spec"]
+    },
+    {
+      "section": "preference",
+      "quote": "PL/PM 경험이 있으신 분",
+      "short": "개발자 여럿의 일정·품질을 묶어 본 경험이 있으면 개발 PL로 쓸 수 있어서다.",
+      "why": "SAP 프로젝트가 생기면 이 파트가 먼저 들어가므로[1], 프로젝트마다 개발 일감을 나누고 진척을 보고할 사람이 필요합니다.{추론} 회사 인사제도는 리더 길과 전문가 길을 나눠 둡니다.[24]",
+      "actually": {
+        "items": [
+          "**개발 PL** — RICEF 목록을 사람별로 나누고, 사양서 검토·코드 검토·단위 테스트 결과를 모은다.{추론}",
+          "**운반 관리** — 여러 사람의 변경 요청이 섞이지 않게 묶고 운영 반영 순서를 정한다.[12][13]",
+          "**고객 보고** — 개발 진척률·결함 수를 주간 보고로 낸다.{추론}"
+        ]
+      },
+      "how_far": "2년 요건의 자리라 필수는 아닙니다.{추론} 있다면 **몇 명·몇 개월·일감 몇 건을 맡았나**를 숫자로 말합니다.{추론}",
+      "refs": [1, 12, 24]
+    },
+    {
+      "section": "preference",
+      "quote": "RAP / ODATA/ CDS VIEW 개발 경험이 있으신 분",
+      "short": "CDS·OData 위에 만들기·고치기·검사까지 넣는 RAP 업무 객체를 실제로 만들어 봤으면 더 좋다는 뜻이다.",
+      "why": "회사는 BTP 사업의 주요 기술 첫 번째로 RAP를 듭니다.[5] RAP(ABAP RESTful Application Programming Model)는 클라우드용 업무 앱·서비스·확장을 만드는 ABAP Cloud의 핵심 요소라고 SAP가 설명하고, 이를 다루는 SAP 무료 과정도 BTP ABAP 환경 개발자를 대상으로 합니다.[16][17]",
+      "actually": {
+        "intro": "자격요건 줄이 '읽기'(CDS → OData)라면, 이 줄은 **쓰기**까지입니다.",
+        "items": [
+          "**행동 정의(behavior definition)** — 이 업무 객체로 만들기·고치기·지우기를 허용할지, 어떤 칸을 읽기 전용으로 둘지 적는다.[18]",
+          "**결정(determination)** — 저장할 때 값을 자동으로 채운다(예: 상태를 '진행 중'으로).[18]",
+          "**검사(validation)** — 틀린 값이면 저장을 막고 메시지를 돌려준다.[18]",
+          "**관리형 vs 비관리형** — 저장을 프레임워크가 해 주는 관리형(managed), 옛 함수·BAPI를 불러 저장하는 비관리형(unmanaged).[18]",
+          "**초안(draft)** — 사용자가 저장 전에 화면을 떠나도 고치던 내용이 남는다.[19]",
+          "**EML** — ABAP 코드에서 RAP 업무 객체를 읽고 쓰는 SQL 비슷한 문장.[17]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "관리형 업무 객체의 저장 — 직접 돌린 출력",
+          "body": "RAP가 저장 순간에 결정 → 검사를 돌리고, 하나라도 틀리면 그 저장 단위를 되돌리는 흐름을 파이썬으로 흉내 냈습니다. 규칙·값은 가상입니다.{추론}",
+          "lang": "python",
+          "code": "class Travel:\n    def __init__(self, tid, begin, end, fee):\n        self.tid, self.begin, self.end, self.fee = tid, begin, end, fee\n        self.status = None\n\ndef determine_status(t):          # determination: 값을 채운다\n    if t.status is None:\n        t.status = \"O\"\n\ndef validate_dates(t):            # validation: 틀리면 저장을 막는다\n    return [] if t.begin <= t.end else [f\"{t.tid}: 끝 날짜가 시작보다 빠름\"]\n\ndef save(batch):\n    msgs = []\n    for t in batch:\n        determine_status(t)\n        msgs += validate_dates(t)\n    if msgs:\n        return \"ROLLBACK\", msgs\n    return \"COMMIT\", [(t.tid, t.status) for t in batch]\n\nprint(save([Travel(\"T1\", \"2026-12-01\", \"2026-12-05\", 100)]))\nprint(save([Travel(\"T2\", \"2026-12-01\", \"2026-12-05\", 100), Travel(\"T3\", \"2026-12-09\", \"2026-12-02\", 50)]))\n\n# 출력\n# ('COMMIT', [('T1', 'O')])\n# ('ROLLBACK', ['T3: 끝 날짜가 시작보다 빠름'])"
+        }
+      ],
+      "how_far": "**관리형 업무 객체 하나에 결정·검사·버튼(action) 하나씩 넣고 Fiori elements 화면에서 저장해 본 것**이면 우대 줄을 말할 거리가 됩니다.{추론} SAP의 RAP 입문 튜토리얼(RAP100)이 바로 이 범위입니다.[26]",
+      "refs": [5, 17, 18, 19, 26],
+      "study": ["rap-course", "rap100", "rap-book"]
+    },
+    {
+      "section": "preference",
+      "quote": "SAP S/4HANA 프로젝트 경험이 있으신 분",
+      "short": "옛 ECC가 아니라 S/4HANA 구축·전환에서 개발해 봤으면 바뀐 표 구조와 새 개발 방식을 바로 쓸 수 있어서다.",
+      "why": "회사는 ECC에서 S/4HANA로 옮기는 전환(기존 시스템을 올리는 Brown Field, 새로 까는 Green Field)과 Private Edition 기반 상품, Public Edition 상품을 모두 사업으로 내겁니다.[2][3][4]",
+      "actually": {
+        "items": [
+          "**옛 코드 점검** — 전환 때 고객의 Z 프로그램이 바뀐 표 구조에서 깨지지 않는지 찾아 고친다(코드 점검 도구 ATC).[20]{추론}",
+          "**표준 대체** — 옛날에 직접 만든 기능이 S/4HANA 표준이나 CDS 뷰로 이미 있으면 걷어 낸다.{추론}",
+          "**새 화면** — 사용자 화면이 SAP GUI에서 Fiori로 옮겨 가므로, 개발도 OData 서비스를 함께 만든다.[25]{추론}",
+          "**Public Edition** — 표준 코드 수정 금지, 키 유저 확장 → 바깥 확장 순서.[10]"
+        ]
+      },
+      "how_far": "S/4HANA 프로젝트를 안 해 봤다면 **ECC와 무엇이 달라졌는지(데이터 구조·화면·확장 규칙)를 말할 수 있는 정도**까지는 공부해 가는 것이 좋습니다.{추론}",
+      "refs": [2, 3, 4, 10, 20, 25],
+      "study": ["clean-core", "easy-abap"]
+    }
+  ],
+  "resources": [
+    {"id": "easy-abap", "title": "기본 이론에서 실무 예제까지, HANA 기반 Easy ABAP 3.0", "by": "임재원 외 · 프리렉 · 2025", "kind": "book", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012174400", "lang": "ko", "free": false, "level": "실무", "why": "ABAP 기초부터 HANA 시대 새 문법·Fiori까지 한국어 한 권. 'ABAP 개발' 업무의 기본서."},
+    {"id": "abap-core", "title": "Acquire Core ABAP Skills (학습 여정)", "by": "SAP Learning", "kind": "course", "url": "https://learning.sap.com/learning-journeys/acquire-core-abap-skills", "lang": "en", "free": true, "level": "입문", "why": "SAP 무료 ABAP 기초 과정. CDS 뷰·RAP 실습까지 들어 있어 경력이 옛 ABAP뿐일 때 빈칸을 채운다."},
+    {"id": "cds-doc", "title": "ABAP 키워드 문서 — DEFINE VIEW ENTITY", "by": "SAP Help Portal", "kind": "doc", "url": "https://help.sap.com/doc/abapdocu_cp_index_htm/CLOUD/en-US/abencds_define_view_entity.htm", "lang": "en", "free": true, "level": "실무", "why": "'CDS VIEW 개발' 요건의 문법 원전. 키·연관·주석을 예제로 따라 쓴다."},
+    {"id": "rap-course", "title": "Building Transactional Apps with the ABAP RESTful Application Programming Model", "by": "SAP Learning", "kind": "course", "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model", "lang": "en", "free": true, "level": "실무", "why": "RAP 구조·행동 정의·OData UI 서비스 정의를 차례로 다루는 무료 과정. RAP 우대 줄을 채우는 중심 자료."},
+    {"id": "rap100", "title": "Build an SAP Fiori elements App Using RAP (RAP100 튜토리얼)", "by": "SAP Developers", "kind": "doc", "url": "https://developers.sap.com/tutorials/group-build-an-sap-fiori-elements-app-using-the-abap-restful-application-programming-model-rap-beginner-rap100", "lang": "en", "free": true, "level": "입문", "why": "표 → CDS → 행동 → 서비스 → Fiori 화면을 손으로 한 번 끝까지 만든다. 자격요건 BTP/OData/CDS 의 연습판."},
+    {"id": "btp-abap", "title": "SAP BTP ABAP Environment (Steampunk) 개념", "by": "SAP Developers", "kind": "doc", "url": "https://developers.sap.com/concepts/sap-btp-abap-environment/", "lang": "en", "free": true, "level": "입문", "why": "'BTP 개발'이 무슨 환경인지와 관련 튜토리얼 입구. ABAP Cloud 규칙을 처음 볼 때."},
+    {"id": "odata-spec", "title": "OData Version 4.0 Part 1: Protocol", "by": "OASIS", "kind": "doc", "url": "https://docs.oasis-open.org/odata/odata/v4.0/os/part1-protocol/odata-v4.0-os-part1-protocol.html", "lang": "en", "free": true, "level": "심화", "why": "SAP 밖의 국제 규격 원문. $filter·$select·$expand 가 정확히 무엇을 하는지 막힐 때 찾아본다."},
+    {"id": "rap-book", "title": "ABAP RESTful Application Programming Model: The Comprehensive Guide", "by": "Lutz Baumbusch · Matthias Jäger · Michael Lensch · SAP PRESS", "kind": "book", "url": "https://www.sap-press.com/abap-restful-application-programming-model_6161/", "lang": "en", "free": false, "level": "심화", "why": "RAP 구조·개발 객체·행동 구현·관리형 시나리오를 한 권으로. 우대 'RAP 경험'을 깊게 챙길 때."},
+    {"id": "clean-core", "title": "Utilizing the Clean Core Strategy and Extensibility Tools", "by": "SAP Learning", "kind": "course", "url": "https://learning.sap.com/courses/exploring-sap-cloud-erp/utilizing-the-clean-core-strategy-and-extensibility-tools", "lang": "en", "free": true, "level": "입문", "why": "표준을 고치지 않고 확장하는 규칙. S/4HANA·Public Edition 프로젝트에서 옛 습관을 바꾸는 데 먼저 볼 것."}
+  ],
+  "study_path": [
+    {"title": "옛 ABAP 보고서 하나 끝내기", "time": "2~3주", "goal": "Open SQL·내부 테이블·ALV로 목록 보고서를 만들고 디버거로 따라갈 수 있다.", "task": "가상 판매 오더 표 3개(머리·품목·거래처)를 만들어 '거래처별 미결 주문 금액' 보고서를 사양서부터 짜고, 반복문 안 조회를 한 번의 조인으로 바꿔 실행 시간을 비교한다.", "resources": ["easy-abap", "abap-core"]},
+    {"title": "같은 조회를 CDS 뷰로 다시", "time": "1~2주", "goal": "보고서 안의 SQL을 CDS 뷰 엔티티와 연관으로 옮기고 차이를 설명한다.", "task": "1단계의 조회를 CDS 뷰 하나로 정의하고, 같은 조건에서 결과 건수·합계가 보고서와 같은지 대조한 표를 남긴다.", "resources": ["cds-doc", "abap-core"]},
+    {"title": "OData로 내보내 브라우저에서 읽기", "time": "1주", "goal": "서비스 정의·V4 바인딩을 만들고 $filter·$select·$expand 를 붙여 결과를 읽는다.", "task": "BTP 체험 계정에서 2단계 뷰를 UI용 V4 서비스로 내고, 질의 주소 5개와 각 응답을 문서로 정리한다(위 파이썬 예처럼 서버가 한 일을 적는다).", "resources": ["rap100", "odata-spec", "btp-abap"]},
+    {"title": "RAP 업무 객체로 쓰기까지", "time": "2~3주", "goal": "관리형 RAP에 결정·검사·버튼을 넣고 Fiori elements 화면에서 저장한다.", "task": "가상 '출장 신청' 객체에 상태 자동 채우기, 날짜 검사, '승인' 버튼을 넣고 틀린 값으로 저장해 막히는 화면을 캡처한다.", "resources": ["rap-course", "rap100", "rap-book"]},
+    {"title": "S/4HANA·클린 코어 관점 정리 (선택)", "time": "1주", "goal": "옛 확장(표준 수정·BAdI)과 클라우드 확장(키 유저·바깥 확장)을 가른다.", "task": "가상 고객 요구 8개를 '설정/BAdI/키 유저 확장/BTP 확장' 중 하나로 나누고 이유를 한 줄씩 쓴다.", "resources": ["clean-core"]}
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원** — 경력 2년 이상 자리라 처우협의가 기준이다",
+    "rows": [
+      {"label": "신입 초봉", "value": "약 3,811만원", "amount": 3811, "basis": "공공데이터 집계", "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없다 [6]"},
+      {"label": "직원 평균 연봉", "value": "약 5,748만원", "amount": 5748, "basis": "공공데이터 집계", "note": "같은 집계, 사원수 945명 기준. 경력직이 섞인 회사 전체 값이다 [6]"},
+      {"label": "LG CNS 초봉", "value": "약 5,071만원", "amount": 5071, "basis": "공공데이터 집계", "peer": true, "note": "모회사, 같은 집계 사이트 값 [7]"},
+      {"label": "LG CNS 평균", "value": "약 7,802만원", "amount": 7802, "basis": "공공데이터 집계", "peer": true, "note": "모회사, 같은 집계 사이트 값 [7]"}
+    ],
+    "how": "공고에는 연봉이 없다 [1]. 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 경력 전형은 평판조회 뒤 **처우협의** 단계에서 연봉을 정한다 [22]. 평균은 경력직이 섞인 회사 전체 값이라 이 자리 연봉으로 읽으면 안 된다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {"name": "가족", "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"},
+      {"name": "건강", "detail": "종합건강검진·단체보험, 전문 심리 상담"},
+      {"name": "금융", "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"},
+      {"name": "배움", "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"},
+      {"name": "조직 문화", "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"}
+    ],
+    "note": "비즈테크아이 공식 사이트의 복리후생 페이지(2026-11 확인)다 [8]. 항목 이름만 있고 금액·조건은 적혀 있지 않다. SAP 자격증 응시료나 BTP 유료 계정이 '자격증·교육 지원'에 드는지는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "비즈테크아이 본사 (상암 DDMC)",
+    "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+    "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [9]",
+    "note": "회사 사이트 '오시는 길'의 주소다 [9]. 공고 근무지는 '서울특별시'로만 적혀 있고 [1], 프로젝트에 투입되면 고객사 상주일 수 있다 {추론}."
+  },
+  "fit": {
+    "good": [
+      "옛 ABAP(보고서·BAdI·인터페이스)을 2년 넘게 해 봤고 CDS·RAP·OData로 넘어가고 싶은 사람[1]",
+      "여러 고객사의 구축 프로젝트에 들어가 개발 단계를 끝까지 해 보고 싶은 사람[1]",
+      "클라우드(Public Edition·BTP) 확장 경험을 쌓고 싶은 사람 — 회사가 둘 다 사업으로 한다[2][5]"
+    ],
+    "hard": [
+      "프로젝트마다 투입 고객사가 바뀌어 일하는 장소·팀이 자주 바뀔 수 있다{추론}",
+      "옛 ECC 코드와 새 클라우드 규칙을 같이 다뤄야 한다[3][10]",
+      "Public Edition에서는 표준을 고칠 수 없어 '코드로 다 푼다'는 방식이 안 통한다[10]"
+    ]
+  },
+  "interview": [
+    {"q": "보고서 안의 Open SQL 조회와 CDS 뷰로 정의한 조회는 무엇이 다릅니까?", "a": "CDS 뷰는 다른 뷰·서비스·화면이 다시 쓰는 데이터 정의다 — BTP/ODATA/CDS 줄.[14]"},
+    {"q": "서비스 정의와 서비스 바인딩은 왜 나눠져 있나요?", "a": "무엇을 내보낼지와 어떤 규격(V2/V4, UI/API)으로 낼지를 가른다.[19]"},
+    {"q": "OData 주소에 $expand 를 붙이면 서버에서 무슨 일이 일어납니까?", "a": "연결된 엔티티를 한 응답에 같이 싣는다 — OData 규격.[21]"},
+    {"q": "RAP에서 determination 과 validation 은 언제 쓰나요?", "a": "값 채우기와 저장 막기 — RAP 우대 줄.[18]"},
+    {"q": "Public Edition 고객이 표준 동작을 바꿔 달라고 하면 어떻게 하겠어요?", "a": "클린 코어 — 키 유저 확장 → 바깥(BTP) 확장 순서.[10]"},
+    {"q": "ECC에서 S/4HANA로 넘어갈 때 옛 Z 프로그램에서 무엇을 점검합니까?", "a": "바뀐 표 구조·표준 대체 여부, 코드 점검 도구(ATC).[3][20]"}
+  ],
+  "sources": [
+    {"n": 1, "title": "LG Careers · [비즈테크아이] SAP ABAP 개발자 모집(경력)", "url": "https://careers.lg.com/apply/detail?id=1001508", "kind": "posting", "date": "2026-11", "note": "업무·요건·우대, SAP 개발 파트 소속 — 프로젝트 발생 시 최우선 투입, 마감 2026-12-31"},
+    {"n": 2, "title": "비즈테크아이 · ERP — GROW (EXprism4GROW, S/4HANA Cloud Public Edition)", "url": "https://www.biztechi.com/business/erp/01", "kind": "company", "note": "중견·강소기업·해외 지사 대상, 1년 2회 자동 업그레이드"},
+    {"n": 3, "title": "비즈테크아이 · ERP — SAP S/4HANA Conversion", "url": "https://www.biztechi.com/business/erp/03", "kind": "company", "note": "Brown Field·Green Field, 전제 조건(ERP 6.0+, ABAP, 유니코드)"},
+    {"n": 4, "title": "비즈테크아이 · ERP — EXprism ERP", "url": "https://www.biztechi.com/business/erp/06", "kind": "company", "note": "Private Edition 기반 구축 상품"},
+    {"n": 5, "title": "비즈테크아이 · ERP — SAP BTP", "url": "https://www.biztechi.com/business/erp/05", "kind": "company", "note": "주요 기술 RAP·CAP·Fiori·SAPUI5, SAP·타사 시스템 API 통합"},
+    {"n": 6, "title": "자소설닷컴 · 비즈테크아이 기업정보", "url": "https://jasoseol.com/companies/14512", "kind": "reference", "note": "초봉 3,811만·평균 5,748만, 사원수 945명 — 공공데이터 집계"},
+    {"n": 7, "title": "자소설닷컴 · LG CNS 기업정보", "url": "https://jasoseol.com/companies/57", "kind": "reference", "note": "초봉 5,071만·평균 7,802만 — 같은 집계"},
+    {"n": 8, "title": "비즈테크아이 · 복리후생", "url": "https://www.biztechi.com/culture/03", "kind": "company"},
+    {"n": 9, "title": "비즈테크아이 · 오시는 길", "url": "https://www.biztechi.com/about/05", "kind": "company"},
+    {"n": 10, "title": "SAP Learning · Utilizing the Clean Core Strategy and Extensibility Tools", "url": "https://learning.sap.com/courses/exploring-sap-cloud-erp/utilizing-the-clean-core-strategy-and-extensibility-tools", "kind": "reference", "note": "Public Edition 클린 코어 필수, 키 유저 확장 먼저"},
+    {"n": 11, "title": "SAP Learning · Acquire Core ABAP Skills", "url": "https://learning.sap.com/learning-journeys/acquire-core-abap-skills", "kind": "reference", "note": "RAP 실습 포함 무료 학습 여정"},
+    {"n": 12, "title": "SAP Support · Change and Transport System", "url": "https://support.sap.com/en/tools/software-logistics-tools/change-and-transport-system.html", "kind": "reference"},
+    {"n": 13, "title": "SAP Help · Change Management in the SAP System Landscape", "url": "https://help.sap.com/saphelp_erp2005/helpdata/en/a7/bb4a3793a0ca76e10000009b38f839/content.htm", "kind": "reference", "note": "변경이 요청에 기록되고 해제 시 반출된다(옛 릴리스 문서)"},
+    {"n": 14, "title": "ABAP 키워드 문서 · DEFINE VIEW ENTITY", "url": "https://help.sap.com/doc/abapdocu_cp_index_htm/CLOUD/en-US/abencds_define_view_entity.htm", "kind": "reference"},
+    {"n": 15, "title": "SAP Learning · Explaining the Integration Technology Based on BAPIs and IDocs, Basics", "url": "https://learning.sap.com/courses/developing-integration-scenarios-using-idoc-rfc-adapter-of-sap-process-orchestration/explaining-the-integration-technology-based-on-bapis-and-idocs-basics_db458c59-a70f-480d-b139-65065be1b9e9", "kind": "reference"},
+    {"n": 16, "title": "SAP Learning · Building Transactional Apps with the ABAP RESTful Application Programming Model", "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model", "kind": "reference", "note": "BTP ABAP 환경 대상 무료 과정"},
+    {"n": 17, "title": "SAP · ABAP RESTful Application Programming Model (RAP) – Overview", "url": "https://www.sap.com/documents/2024/06/700d3390-c27e-0010-bca6-c68f7e60039b.html", "kind": "reference", "note": "RAP = ABAP Cloud 의 핵심 요소, EML"},
+    {"n": 18, "title": "SAP Learning · Understanding the ABAP RESTful Application Programming Model", "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/exploring-the-concept-and-architecture-of-rap", "kind": "reference", "note": "업무 객체·행동 정의·관리형/비관리형"},
+    {"n": 19, "title": "SAP Learning · Defining OData UI Services", "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model/defining-an-odata-ui-service", "kind": "reference", "note": "서비스 정의·바인딩, UI_ … _O4 이름 관례, 온프레미스는 /IWFND/V4_ADMIN 으로 게시, 초안"},
+    {"n": 20, "title": "SAP Developers · SAP BTP ABAP Environment (Steampunk)", "url": "https://developers.sap.com/concepts/sap-btp-abap-environment/", "kind": "reference", "note": "클라우드 ABAP 환경, ABAP Cloud, gCTS·abapGit, ATC"},
+    {"n": 21, "title": "OASIS · OData Version 4.0 Part 1: Protocol", "url": "https://docs.oasis-open.org/odata/odata/v4.0/os/part1-protocol/odata-v4.0-os-part1-protocol.html", "kind": "reference", "note": "$select·$expand·$filter 질의 옵션"},
+    {"n": 22, "title": "비즈테크아이 · 채용 프로세스", "url": "https://www.biztechi.com/recruit/02", "kind": "company", "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"},
+    {"n": 23, "title": "LG Careers · [비즈테크아이] SAP SM 모듈 운영 담당자 모집(경력)", "url": "https://careers.lg.com/apply/detail?id=1001499", "kind": "posting", "date": "2026-11", "note": "같은 회사 SAP 공고 — 운영 3년 이상, ABAP 중급 이상"},
+    {"n": 24, "title": "비즈테크아이 · 인사제도", "url": "https://www.biztechi.com/culture/02", "kind": "company", "note": "리더 Path·전문가 Path"},
+    {"n": 25, "title": "SAP · Fiori Design Guidelines", "url": "https://www.sap.com/design-system/fiori-design-web/", "kind": "reference"},
+    {"n": 26, "title": "SAP Developers · Build an SAP Fiori elements App Using RAP (RAP100)", "url": "https://developers.sap.com/tutorials/group-build-an-sap-fiori-elements-app-using-the-abap-restful-application-programming-model-rap-beginner-rap100", "kind": "reference", "note": "RAP 입문 튜토리얼 묶음"}
+  ],
+  "caveat": "어느 고객사 프로젝트에 투입되는지, 개발 파트가 ECC·S/4HANA·BTP 일을 어떤 비율로 하는지는 공개 자료가 없습니다. 공고 문장과 회사 ERP 사업 페이지, SAP 공식 학습 자료·OData 국제 규격으로 '보통 이런 일'을 보였습니다. 회사의 SAP 개발 발표 영상은 찾지 못했습니다. 연봉은 공시 숫자가 없는 비상장사라 집계 값뿐입니다."
+}

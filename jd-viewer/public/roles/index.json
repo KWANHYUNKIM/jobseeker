@@ -77,6 +77,7 @@
   "ats-lg:group:1002187": "biztechi-mes-pl",
   "ats-lg:group:1001888": "biztechi-network-operations",
   "ats-lg:group:1001854": "biztechi-procurement-btp-fiori",
+  "ats-lg:group:1001508": "biztechi-sap-abap-developer",
   "ats-lg:group:1002339": "biztechi-sap-bw-datasphere",
   "ats-lg:group:1001514": "biztechi-sap-ewm-tm-consultant",
   "ats-lg:group:1001414": "biztechi-sap-fico-sd-consultant",
@@ -1176,6 +1177,16 @@
    "role": "구매 시스템 운영·온보딩 (SAP BTP / Fiori)",
    "jobs": [
     "ats-lg:group:1001854"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 8
+  },
+  {
+   "id": "biztechi-sap-abap-developer",
+   "company": "비즈테크아이",
+   "role": "SAP ABAP 개발자",
+   "jobs": [
+    "ats-lg:group:1001508"
    ],
    "researched_at": "2026-11-25",
    "lines": 8
