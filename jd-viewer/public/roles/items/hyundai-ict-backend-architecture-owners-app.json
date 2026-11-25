@@ -1,0 +1,1108 @@
+{
+ "id": "hyundai-ict-backend-architecture-owners-app",
+ "company": "현대자동차",
+ "role": "Backend Developer - 아키텍처",
+ "team": "ICT 담당 · 글로벌 Owners App 백엔드 플랫폼 조직",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2415"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "차를 산 사람이 쓰는 **글로벌 오너 앱(Owners App)** 의 서버 쪽 바탕 — 피드(FEED)·검색·프로필·정비 예약(OSB) 같은 핵심 부품 — 을 직접 설계·구현하고, 여러 나라·여러 브랜드로 넓혀도 무너지지 않게 경계와 원칙을 세우는 자리입니다.[1][5]",
+ "env": "같은 ICT 조직은 한 덩어리(모놀리식)·동기식 앱을 **MSA·비동기**로 다시 짰고, 자체 클라우드(H클라우드)의 쿠버네티스 서비스(HKS) 위에서 4개 권역(한국·아시아·북미·유럽)으로 돌립니다.[2][3] 언어는 Java·Spring Boot, DB는 MySQL·PostgreSQL입니다.[1]",
+  "oneline": "8년 넘게 백엔드를 해 온 사람이 **부품(컴포넌트)마다 주인과 경계를 정하고, 한 부품이 죽어도 앱 전체는 살아 있게** 만드는 자리. 코드와 함께 API 리뷰·멘토링·운영 표준까지 맡습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "글로벌 Owners App의 지속 가능한 플랫폼을 구축하기 위해 FEED 기반 아키텍처와 컴포넌트 오너십 체계를 중심으로 구조적 일관성을 유지하며, 코드가 아닌 명확한 책임 경계와 설계 원칙을 통해 권역별 확장과 안정적인 사용자 경험을 제공할 수 있는 백엔드 시스템 구축과 운영 업무를 수행합니다.",
+   "short": "나라가 늘어도 같은 구조로 넓힐 수 있게, 부품마다 주인·경계·원칙을 정해 오너 앱 서버를 만들고 운영하는 일.",
+   "why": "오너 앱은 나라(권역)마다 따로 자라기 쉽습니다. 현대차 유럽 쪽은 원격 제어 앱(Bluelink)과 오너 앱(myHyundai 3.0)을 한 앱으로 합쳐 유럽 43개국으로 옮기는 중이라고 2025년 12월에 발표했습니다.[5] 제네시스도 흩어진 차량 앱을 '원 앱'으로 합쳐 글로벌로 넓힌 과정을 ICT 조직이 발표한 적이 있습니다.[4] 합친 뒤에는 '누가 어느 부품을 책임지나'를 정해 두지 않으면 권역마다 다시 갈라집니다 {추론}.",
+   "actually": {
+    "intro": "공고가 꼽은 세 낱말을 풀면 이렇습니다. FEED의 정확한 정의는 공개되지 않아 이름에서 읽은 것입니다.",
+    "items": [
+     "**FEED 기반 아키텍처** — 앱 첫 화면을 카드(차 상태·정비 알림·이벤트·소식)들의 목록으로 보고, 각 카드를 다른 부품이 채우는 구조로 보인다. 공고가 FEED를 핵심 컴포넌트 첫 번째로 적었다.[1] {추론}",
+     "**컴포넌트 오너십** — 부품(서비스)마다 담당 팀 하나가 만들고 운영까지 책임진다. 마이크로서비스의 일반 원칙('만든 사람이 돌린다')과 같다.[17][16]",
+     "**코드가 아닌 책임 경계** — 공통 코드를 늘려 묶는 대신, '이 데이터와 이 API는 이 부품만 바꾼다'는 약속으로 묶는다. 경계가 흐리면 한 권역의 요구가 모든 권역 코드를 흔든다 {추론}.",
+     "**운영까지** — 업무의 둘째 묶음이 장애 대응·모니터링이다. 만들고 넘기는 자리가 아니다.[1]"
+    ]
+   },
+   "how_far": "이 문장은 업무 전체의 요약입니다. 아래 세 묶음(설계 · 안정성 · 리더십)이 각각 무엇인지가 실제 일입니다. 면접 전에는 'FEED·컴포넌트 오너십'을 자기 말로 설명할 수 있어야 합니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    5,
+    16,
+    17
+   ],
+   "study": [
+    "msa-build",
+    "team-topologies"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 플랫폼 아키텍처 설계",
+   "short": "앱 서버의 뼈대를 직접 설계하고 만드는 묶음 — 리뷰만 하는 아키텍트 자리가 아니다.",
+   "why": "공고 제목이 'Backend Developer - 아키텍처'이고 첫 줄이 '설계 및 구현'입니다.[1] 같은 시기 ICT의 'SW Architect' 공고는 전사 리뷰·표준이 중심이라 결이 다릅니다.[8]",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· OwnersApp의 핵심 컴포넌트(FEED, Search, Profile, OSB 등) 설계 및 구현, 권역별 확장성을 고려한 아키텍처 의사결정 수행",
+   "short": "피드·검색·프로필·정비 예약 같은 핵심 부품을 만들고, 나라가 늘 때 무엇을 공통·권역별로 둘지 정한다.",
+   "why": "유럽의 새 myHyundai 앱에는 정비 예약(OSB, Online Service Booking)과 정비 이력, 딜러 찾기, 차량 상태가 한 앱에 들어 있습니다.[5][6] 나라마다 딜러·언어·법이 달라 같은 부품을 권역마다 어떻게 둘지가 설계의 중심이 됩니다 {추론}.",
+   "actually": {
+    "intro": "부품별로 보통 이런 일입니다. 현대차 내부 구조는 공개되지 않았습니다.",
+    "items": [
+     "**FEED** — 사용자·차량에 맞는 카드 목록을 모아 내려 준다. 여러 부품을 부르는 '모으는 쪽'이라 느린 부품 하나에 끌려가지 않게 시간 제한·대체값이 필요하다.[13] {추론}",
+     "**Search** — 기능·차량 매뉴얼·딜러를 찾는다. 권역마다 언어·형태소가 달라 색인을 권역별로 둘지 정한다 {추론}.",
+     "**Profile** — 회원·보유 차량·동의 정보. 개인정보라 어느 권역 데이터센터에 둘지가 법 문제와 닿는다 {추론}.",
+     "**OSB** — 정비 항목 고르기 → 가까운 딜러 → 시간 고르기를 앱에서 한다.[6] 실제 예약은 딜러 시스템에 넘겨야 한다. 같은 그룹의 태국 구매 플랫폼은 외부 시스템 연동을 **별도 서버**로 떼어 본 서버를 보호했다.[25]",
+     "**권역 결정** — H클라우드는 한국·아시아(싱가포르)·북미·유럽 4개 권역이고 권역마다 데이터센터가 둘 이상이다.[2] 어느 부품을 권역마다 띄우고 무엇을 한곳에 둘지가 '권역별 확장성' 결정이다 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "앱 첫 화면 한 번을 그릴 때 {추론}",
+     "steps": [
+      "앱 · 첫 화면 요청",
+      "게이트웨이 · 인증·권역 라우팅[4]",
+      "FEED · 카드 목록 조립",
+      "부품들 · Profile·차량 상태·OSB 알림 동시 호출",
+      "응답 · 늦은 카드는 빈 칸·대체값"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "부품 하나를 끝까지(설계 → API → DB → 배포 → 운영) 맡아 본 경험이 최소선입니다. '권역별 확장'은 같은 코드를 설정만 바꿔 다른 권역에 띄울 수 있는지, 권역 데이터가 섞이지 않는지를 설명할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    2,
+    4,
+    5,
+    6,
+    13,
+    25
+   ],
+   "study": [
+    "msa-build",
+    "msa-patterns",
+    "hmg-hcloud-talk"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 전사(HMG) 플랫폼과의 명확한 책임 경계 정의, 컴포넌트 간 인터페이스 설계 및 API 표준화 주도",
+   "short": "그룹 공통 플랫폼이 할 일과 오너 앱이 할 일을 가르고, 부품끼리 주고받는 API의 모양을 하나로 맞춘다.",
+   "why": "현대차그룹은 계열사·해외 IT 조직을 하나의 'One IT' 표준으로 묶는 방향을 2026년 글로벌 IT 포럼에서 내세웠습니다.[7] 오너 앱 아래에는 그룹이 같이 쓰는 클라우드(H클라우드)와 커넥티드카 서비스가 있습니다.[2] 회원·인증·차량 원격 제어를 누가 가지나를 정하지 않으면 같은 기능을 두 곳이 만들거나 장애 책임이 흐려집니다 {추론}.",
+   "actually": {
+    "items": [
+     "**경계 표** — 기능마다 '주인(오너 앱/그룹 플랫폼)·데이터 원본·바꿀 수 있는 쪽'을 적는다. DDD의 경계 맥락(bounded context, 같은 낱말이 같은 뜻인 범위)이 이 일에 쓰는 도구다.[16] {추론}",
+     "**인터페이스 계약** — OpenAPI 문서로 요청·응답·오류를 먼저 합의하고 코드는 뒤에 쓴다(API 먼저).[14]",
+     "**API 표준** — 주소 규칙(복수 명사, 소문자-하이픈), 페이지 나누기, 버전, 날짜 형식, 오류 응답 모양을 문서 한 장으로 정한다. Zalando 공개 지침이 대표적인 예다.[14]",
+     "**오류 모양 맞추기** — HTTP API 오류를 type·title·status·detail로 내는 국제 표준(RFC 9457)이 있다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "표준 오류 응답 한 건 (RFC 9457 형식)",
+     "body": "정비 예약 시간이 이미 찼을 때의 응답 예입니다. 부품마다 오류 모양이 다르면 앱이 부품마다 따로 해석해야 합니다.[15]",
+     "lang": "json",
+     "code": "HTTP/1.1 409 Conflict\nContent-Type: application/problem+json\n\n{\n  \"type\": \"https://api.example.com/problems/slot-taken\",\n  \"title\": \"Service slot already booked\",\n  \"status\": 409,\n  \"detail\": \"2026-12-02 10:00 slot at dealer D-1234 is full\",\n  \"instance\": \"/osb/bookings/req-7f3a\"\n}"
+    }
+   ],
+   "how_far": "표준 문서를 처음부터 다 쓰기보다, 이미 있는 지침을 골라 이 앱에 맞게 고치고 **리뷰 때 그 기준으로 지적할 수 있는** 수준입니다. 그룹 플랫폼 쪽 사람과 '이건 우리가 안 한다'를 합의하는 협상이 큰 몫입니다 {추론}.",
+   "refs": [
+    2,
+    7,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "ddd-first",
+    "zalando-api",
+    "rfc9457",
+    "http-basic"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 글로벌 다권역·다브랜드 환경에서의 공통 기능 식별, 반복되는 복잡도를 구조적으로 해결하는 재사용 가능한 컴포넌트 구축",
+   "short": "나라·브랜드마다 조금씩 다른 같은 기능을 찾아, 한 번 만들고 설정으로 갈라 쓰는 부품으로 만든다.",
+   "why": "현대·제네시스는 같은 회사의 다른 브랜드이고, 앱도 브랜드마다 따로 있습니다.[4][5] 같은 정비 예약·회원·알림을 나라 × 브랜드 수만큼 따로 만들면 고칠 곳도 그만큼 늘어납니다 {추론}.",
+   "actually": {
+    "items": [
+     "**공통/가변 나누기** — 예약 흐름은 같고, 딜러 연동 방식·언어·통화·약관만 다르다면 흐름은 공통 부품, 다른 것은 권역·브랜드별 설정이나 어댑터(갈아 끼우는 연결부)로 둔다 {추론}.",
+     "**설정으로 켜고 끄기** — 기능 플래그로 'A권역은 OSB 켬, B권역은 아직'을 코드 배포 없이 바꾼다. 유럽 앱도 나라마다 정비 예약을 순차로 켰다.[5]",
+     "**외부 연동 분리** — 딜러·은행 같은 바깥 시스템은 권역마다 달라, 연동 서버를 따로 두고 본 서버는 같은 모양의 인터페이스만 본다.[25]",
+     "**너무 일찍 묶지 않기** — 두세 번 반복된 뒤 공통화한다. 공통 부품이 모든 권역의 요구를 다 받으면 그 부품이 새 병목이 된다 {추론}."
+    ]
+   },
+   "how_far": "'어디까지 공통으로 하고 어디서부터 권역 몫으로 남기나'를 근거(반복 횟수·변경 빈도·소유 팀)로 설명할 수 있으면 됩니다. 여러 나라 서비스를 운영해 본 경험은 우대사항이지 필수는 아닙니다.[1]",
+   "refs": [
+    1,
+    4,
+    5,
+    25
+   ],
+   "study": [
+    "sa101",
+    "msa-patterns"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 서비스 안정성 관리",
+   "short": "만든 부품이 실제로 잘 도는지까지 책임지는 묶음 — 장애·모니터링·배포 검증·매뉴얼.",
+   "why": "현대차 ICT는 예전 구조에서 한 기능 장애가 전체를 멈춰 책임자가 밤늦게 집에 못 갔다고 발표했고, 구조를 바꾼 뒤 가용성 99.95%를 말했습니다.[2][3] 이 묶음은 그 수준을 지키는 일입니다 {추론}.",
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 장애 대응 및 근본 원인 분석, 컴포넌트 단위 실패 격리를 통한 전체 서비스 안정성 확보",
+   "short": "장애가 나면 고치고 진짜 원인을 찾고, 한 부품이 죽어도 나머지 앱은 돌게 막는다.",
+   "why": "같은 ICT 조직의 발표 슬라이드는 예전 모놀리식에서는 '한 서비스 장애 → 모든 서비스 중단, 한 서비스 트래픽 증가 → 모든 서비스 부하'였고, MSA로 바꾼 뒤엔 '그 서비스만 내려가고 나머지는 그대로'라고 비교했습니다.[2] 겨울 아침 원격 시동·여름 에어컨처럼 계절마다 특정 기능에 사람이 몰린다는 점도 이유로 들었습니다.[2]",
+   "actually": {
+    "items": [
+     "**시간 제한** — 부를 때마다 끝까지 기다리지 않는다. 느린 부품 하나가 스레드를 다 잡아먹는 걸 막는다.[13]",
+     "**서킷 브레이커** — 실패율이 넘으면 한동안 그 부품을 부르지 않고 바로 대체값을 준다.[13]",
+     "**벌크헤드(칸막이)** — 부품마다 스레드·커넥션 몫을 나눠 한 부품의 몰림이 다른 부품을 굶기지 않게 한다.[13]",
+     "**비동기 큐** — 바로 답할 필요 없는 일은 메시지 큐에 넣는다. 발표의 '비동기(컨테이너 기반)' 슬라이드가 이 그림이다.[2]",
+     "**근본 원인 분석** — 탓하지 않는 사후 검토(포스트모템)로 '무엇이 일어났나 · 왜 · 다시 안 나게 무엇을'을 남긴다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "피드가 부품 셋을 부를 때 — 하나는 느리고 하나는 오류",
+     "body": "부품마다 0.3초 제한과 대체값을 두면 피드는 0.31초 만에 나머지 카드로 응답합니다(직접 돌린 출력). 제한이 없으면 느린 Search 때문에 5초를 기다립니다. 실제로는 Java의 Resilience4j 같은 라이브러리가 같은 일을 합니다.[13]",
+     "lang": "python",
+     "code": "import asyncio\n\nasync def profile():   # 정상\n    await asyncio.sleep(0.05); return {\"name\": \"김현대\"}\nasync def search():    # 느려졌다\n    await asyncio.sleep(5); return {\"hits\": []}\nasync def osb():       # 오류\n    raise RuntimeError(\"dealer API 500\")\n\nFALLBACK = {\"profile\": None, \"search\": {\"hits\": [], \"degraded\": True},\n            \"osb\": {\"slots\": [], \"degraded\": True}}\n\nasync def call(name, fn, timeout=0.3):\n    try:\n        return name, await asyncio.wait_for(fn(), timeout)\n    except Exception as e:\n        print(f\"  {name}: {type(e).__name__} -> fallback\")\n        return name, FALLBACK[name]\n\nasync def feed():\n    return dict(await asyncio.gather(\n        call(\"profile\", profile), call(\"search\", search), call(\"osb\", osb)))\n\nloop = asyncio.new_event_loop(); t = loop.time()\nprint(loop.run_until_complete(feed())); print(f\"elapsed {loop.time()-t:.2f}s\")\n\n# 출력\n#   osb: RuntimeError -> fallback\n#   search: TimeoutError -> fallback\n# {'profile': {'name': '김현대'}, 'search': {'hits': [], 'degraded': True}, 'osb': {'slots': [], 'degraded': True}}\n# elapsed 0.31s"
+    }
+   ],
+   "how_far": "어느 부품이 죽으면 화면에서 무엇이 빠지고 무엇은 남는지를 **미리 정해 둔 표**가 있고, 그대로 동작하는지 시험해 본 수준이 목표입니다. 8년 차라 장애를 실제로 수습하고 원인 보고서를 써 본 이야기가 면접에서 나올 것입니다 {추론}.",
+   "refs": [
+    2,
+    11,
+    13
+   ],
+   "study": [
+    "release-it",
+    "resilience4j",
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 모니터링 체계 구축 및 성능 최적화, 배포 전후 운영 영향도 분석 및 검증 프로세스 수행",
+   "short": "무엇이 느린지 숫자로 보이게 하고, 배포가 사용자에게 해를 끼쳤는지 배포 전후를 비교해 확인한다.",
+   "why": "H클라우드는 모든 컨테이너·가상 서버의 지표를 사용자가 따로 설정하지 않아도 모으고(모니터링 서비스 Hubble), 부품마다 끝에서 끝까지 살아 있는지 보는 헬스체크(Sonar)를 따로 만들었다고 발표했습니다.[2] 배포는 GitLab과 Argo CD로 자동화돼 있고 SonarQube로 보안·품질 검사를 겁니다.[2] 바닥은 마련돼 있고, 이 자리는 **오너 앱 부품에 맞는 지표와 판단 기준**을 얹는 일입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**네 가지 신호** — 지연·트래픽·오류·포화. 지연은 평균이 아니라 분위수(p95·p99)로 본다.[10]",
+     "**부품별 대시보드** — FEED·Search·Profile·OSB마다 같은 신호 넷을 같은 모양으로. 부품 주인이 자기 대시보드를 가진다 {추론}.",
+     "**카나리 배포** — 새 버전을 일부(예: 5%)에만 먼저 내보내고 오류율·지연을 옛 버전과 비교한 뒤 넓힌다.[12]",
+     "**영향도 분석** — 배포 전에 'API 응답 모양이 바뀌나, 앱 옛 버전이 깨지나, DB 바꿈이 되돌릴 수 있나'를 점검한다. 앱은 사용자가 업데이트를 안 하면 옛 버전이 계속 서버를 부른다 {추론}.",
+     "**성능 최적화** — 느린 쿼리(JPA의 N+1 등), 캐시, 커넥션 풀 크기를 측정한 뒤 고친다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균이 숨기는 것",
+     "body": "요청 100개 중 95개는 80ms, 5개는 2,000ms일 때(직접 돌린 출력: avg 176ms · p50 80 · p95 176 · p99 2000). 평균 176ms만 보면 괜찮아 보이지만 100명 중 5명은 2초를 기다립니다.[10]",
+     "lang": "python",
+     "code": "import statistics as st\nlat = [80] * 95 + [2000] * 5\nq = st.quantiles(lat, n=100, method=\"inclusive\")\nprint(\"avg\", round(st.mean(lat)), \"ms\")\nprint(\"p50\", q[49], \"p95\", q[94], \"p99\", q[98])\n# avg 176 ms\n# p50 80.0 p95 176.0 p99 2000.0"
+    }
+   ],
+   "how_far": "모니터링 도구를 새로 만드는 게 아니라 **어떤 지표를 어느 선에서 경보할지 정하고, 배포마다 전후를 비교하는 절차**를 정하는 수준입니다. 도구는 플랫폼 쪽이 이미 깔아 두었습니다.[2]",
+   "refs": [
+    2,
+    10,
+    12
+   ],
+   "study": [
+    "sre-monitoring",
+    "sre-canary",
+    "jpa-app-2"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 운영 표준 및 장애 대응 매뉴얼 정립",
+   "short": "장애가 나면 누가 무엇을 어떤 순서로 하는지, 사람이 바뀌어도 같게 하도록 글로 정한다.",
+   "why": "부품마다 주인이 다르면 장애 때 '누구를 깨우나'부터 막힙니다. 컴포넌트 오너십 체계와 짝을 이루는 문서입니다 {추론}. 권역이 넷이라 시차까지 걸립니다.[2]",
+   "actually": {
+    "items": [
+     "**등급과 연락 순서** — 영향 범위(전 권역·한 권역·한 기능)로 장애 등급을 나누고 등급마다 부를 사람을 정한다 {추론}.",
+     "**부품별 대응 카드(런북)** — '이 경보가 울리면 먼저 이것을 본다 → 이렇게 끊는다 → 이렇게 되돌린다'.[11] {추론}",
+     "**사후 검토 양식** — 탓하지 않는 포스트모템: 타임라인 · 영향 · 원인 · 재발 방지 항목과 담당.[11]",
+     "**운영 표준** — 로그 형식, 헬스체크 주소, 지표 이름, 배포 시간대 같은 '모든 부품이 지킬 것' 목록 {추론}."
+    ]
+   },
+   "how_far": "문서를 쓰는 것보다 **훈련으로 실제로 써 보고 고치는 것**까지가 일입니다. 최소선은 자기 부품의 런북 하나와 포스트모템 한 편을 써 본 경험입니다 {추론}.",
+   "refs": [
+    2,
+    11
+   ],
+   "study": [
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 기술 리더십",
+   "short": "혼자 잘 짜는 것을 넘어 팀·협력사가 같은 원칙으로 짜게 만드는 묶음.",
+   "why": "업무 세 묶음 중 하나가 리더십이고, 우대사항에도 기술 리딩·멘토링이 다시 나옵니다.[1] 현대차 ICT는 2023년부터 사내 지식 공유 모임(소프티어 테크톡)을 열어 왔습니다.[26]",
+   "refs": [
+    1,
+    26
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· API 설계 리뷰 주도, 내부 개발팀 및 협력사 간 기술 스펙 합의 및 아키텍처 일관성 검토",
+   "short": "새 API가 표준에 맞는지 먼저 보고, 우리 팀과 외주 협력사가 같은 사양으로 만들게 합의를 이끈다.",
+   "why": "공고가 '협력사'를 직접 적었습니다.[1] 부품을 여러 팀·회사가 나눠 만들면 API 모양이 갈라지기 쉬워, 코드 전에 사양 단계에서 맞추는 리뷰가 필요합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**리뷰 대상** — 코드가 아니라 OpenAPI 사양 초안. 주소·이름·오류 모양·페이지 나누기·버전이 표준을 따르나.[14]",
+     "**호환성 점검** — 필드 이름 바꾸기·필수 필드 추가처럼 옛 앱을 깨는 변경을 잡아낸다.[14]",
+     "**합의 기록** — 결정과 이유를 남겨 다음 협력사가 같은 질문을 다시 하지 않게 한다. 협업 도구로 Jira·Confluence가 요건에 있다.[1]",
+     "**영어로** — 해외 권역 팀·협력사와는 영어 문서로 합의한다. 영어 문서 작성이 자격요건에 있다.[1]"
+    ]
+   },
+   "how_far": "자기가 정한 기준이 아니라 **문서로 합의된 기준**을 근거로 '왜 고쳐야 하나'를 설명할 수 있으면 됩니다. 협력사 사양을 받아 주는 쪽이 아니라 먼저 제안하는 쪽입니다 {추론}.",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "zalando-api",
+    "google-review"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 주니어 개발자 멘토링 및 코드 리뷰, 설계 원칙과 베스트 프랙티스 교육을 통한 팀 역량 강화",
+   "short": "주니어의 코드를 리뷰하고 설계 원칙을 가르쳐, 팀 누구나 같은 기준으로 부품을 만들게 한다.",
+   "why": "같은 시기 ICT는 3년 차 이상 백엔드 개발자도 따로 뽑고 있습니다.[9] 이 자리가 그들과 같이 일하며 기준을 전하는 쪽이 될 가능성이 큽니다 {추론}.",
+   "actually": {
+    "items": [
+     "**리뷰 기준** — 완벽한지가 아니라 코드 상태가 나아지는지로 승인하고, 지적에는 이유를 붙인다.[23]",
+     "**설계 원칙 교육** — 실패 격리·API 표준·트랜잭션 경계 같은 이 팀의 원칙을 예제로 가르친다 {추론}.",
+     "**짝 작업** — 새 사람이 작은 부품 하나를 처음부터 끝까지 맡아 보게 하고 옆에서 본다 {추론}."
+    ]
+   },
+   "refs": [
+    9,
+    23
+   ],
+   "study": [
+    "google-review"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 신규 기능 요구사항 분석 및 기술 검토, 단기 구현이 아닌 장기적 플랫폼 관점의 설계 방향성 제시",
+   "short": "새 기능 요청이 오면 '이번만 되게'가 아니라 다른 권역·브랜드에도 쓸 수 있게 어디에 넣을지 정한다.",
+   "why": "공고 첫 문장이 '지속 가능한 플랫폼'입니다.[1] 권역마다 급한 요청을 그때그때 붙이면 다권역 구조가 다시 갈라집니다 {추론}.",
+   "actually": {
+    "items": [
+     "**어느 부품이 주인인가** — 새 기능이 기존 부품에 들어가나, 새 부품이 필요하나, 그룹 플랫폼 몫인가부터 정한다 {추론}.",
+     "**선택과 포기를 글로** — 대안 두세 개와 각각의 대가를 적고 고른 이유를 남긴다(ADR, 결정 기록) {추론}.",
+     "**점진 전환** — 큰 구조를 한 번에 갈아엎지 않고 새 부품으로 조금씩 옮긴다. 현대차 ICT도 모놀리식에서 MSA로 옮겼다.[2]"
+    ]
+   },
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "sa101"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 컴퓨터공학, 소프트웨어공학, 전자공학, 정보통신공학 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "관련 전공 학사 이상 — 서류 문턱이다.",
+   "why": "대기업 공채·경력 채용의 기본 조건입니다. 같은 ICT 백엔드 공고는 전공을 적지 않고 '학사 이상'만 요구합니다.[9] 이 자리는 네 전공을 적어 조금 더 좁습니다.[1]",
+   "how_far": "적힌 전공 밖이면 8년 경력이 그 빈자리를 메우는지 서류에서 따로 판단될 수 있습니다 {추론}.",
+   "refs": [
+    1,
+    9
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 8년 이상의 백엔드 개발 경력 및 RESTful API 설계, 마이크로서비스 아키텍처 구축, 대규모 플랫폼 또는 글로벌 서비스 아키텍처 설계 및 운영 경험을 보유하신 분",
+   "short": "8년 차 이상이면서 REST API·MSA를 설계해 보고, 큰 서비스나 여러 나라 서비스를 운영해 본 사람.",
+   "why": "업무가 부품 설계·API 표준·실패 격리라서, 해 본 사람이어야 남을 이끌 수 있습니다 {추론}. 같은 회사의 일반 백엔드 공고는 3년 이상입니다.[9]",
+   "level": {
+    "basic": "자원 중심 주소·HTTP 메서드·상태 코드, 서비스 하나를 쪼개 만들어 봄",
+    "work": "서비스 간 통신(동기 REST·비동기 메시지), 서비스별 DB, 분산 트랜잭션(사가), 게이트웨이",
+    "team": "부품 경계 정하기, API 표준을 정하고 지키게 하기, 여러 권역 배포·운영"
+   },
+   "actually": {
+    "items": [
+     "**RESTful API 설계** — 자원 이름·메서드·상태 코드·버전·호환성을 일관되게.[14]",
+     "**MSA 구축** — 서비스 나누기, 서비스마다 DB, 서비스 간 데이터 맞추기(사가), 게이트웨이.[17]",
+     "**대규모·글로벌 운영** — 트래픽이 몰리는 시간대, 권역 간 지연, 권역별 데이터 저장. 현대차 커넥티드카는 2023년 6월 1,000만 가입을 넘었고 2026년 2,000만을 내다봤다.[2]"
+    ]
+   },
+   "how_far": "'대규모 플랫폼 **또는** 글로벌 서비스'라 둘 중 하나면 됩니다.[1] 면접에서는 직접 내린 설계 결정과 그 결과(잘된 것·후회한 것)를 숫자와 함께 말할 수 있어야 합니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    9,
+    14,
+    17
+   ],
+   "study": [
+    "msa-build",
+    "msa-patterns",
+    "http-basic"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 비즈니스 영어 커뮤니케이션 및 영어 문서 작성 역량을 보유하신 분",
+   "short": "해외 권역 팀·협력사와 영어로 회의하고, 설계·API 문서를 영어로 쓴다.",
+   "why": "글로벌 앱이라 유럽 등 해외 권역 조직과 같이 만듭니다. 유럽 myHyundai 앱은 유럽 쪽 계열사(Hyundai Connected Mobility)가 발표했습니다.[5] 공고가 회의와 '문서 작성'을 둘 다 적었습니다.[1]",
+   "how_far": "유창한 말보다 **오해 없는 짧은 문서**(API 사양·장애 보고·결정 기록)를 영어로 쓰는 것이 일의 대부분일 것입니다 {추론}.",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Java/Spring Boot 기반 대용량 트래픽 처리 시스템 개발, MSA 플랫폼 설계 및 구축 경험을 보유하신 분",
+   "short": "Java·Spring Boot로 사람이 몰리는 서버를 만들어 봤고, MSA 바탕(게이트웨이·통신·배포)을 깔아 본 사람.",
+   "why": "오너 앱 서버의 언어·프레임워크입니다.[1] 커넥티드카 앱은 겨울·여름 아침에 원격 시동·공조 요청이 한꺼번에 몰립니다.[2]",
+   "level": {
+    "basic": "Spring Boot로 REST API·JPA·트랜잭션, 단위·통합 테스트",
+    "work": "커넥션 풀·스레드 풀 조정, 캐시, 비동기 처리, 메시지 큐, 부하 시험",
+    "team": "게이트웨이·서비스 간 통신·실패 격리·관측(지표·로그·추적)을 플랫폼 수준에서 표준으로 깐다"
+   },
+   "actually": {
+    "items": [
+     "**몰림 견디기** — 동기 호출이 줄줄이 기다리는 구조를 비동기·큐로 바꾸고 자원을 늘리기 쉽게 한다. 현대차 ICT가 실제로 한 방향이다.[2]",
+     "**Spring Boot 운영 기능** — Actuator(상태·지표 주소)로 헬스체크와 지표를 내보낸다 {추론}.",
+     "**실패 격리 라이브러리** — Resilience4j의 서킷 브레이커·벌크헤드·재시도·시간 제한.[13]"
+    ]
+   },
+   "how_far": "'대용량'은 숫자로 말해야 합니다 — 초당 요청 수, p99 지연, 몰릴 때 몇 배까지 버텼는지. 그 숫자가 없으면 설득이 어렵습니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    13
+   ],
+   "study": [
+    "spring-boot",
+    "resilience4j",
+    "kafka"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Java, Spring Framework, JPA/Hibernate, MySQL/PostgreSQL, Git, Docker, Kubernetes, Jira, Confluence 등 백엔드 개발 및 협업 도구 사용 경험을 보유하신 분",
+   "short": "이 팀이 매일 쓰는 도구 목록 — 언어·DB·컨테이너·협업 도구를 써 본 적이 있으면 된다.",
+   "why": "H클라우드의 컨테이너 서비스(HKS)가 쿠버네티스(Rancher 기반)라서 배포 단위가 도커 이미지입니다.[2] Jira·Confluence는 협력사와의 합의·기록에 씁니다.[1]",
+   "actually": {
+    "items": [
+     "**JPA/Hibernate** — 엔티티 매핑, 지연 로딩, N+1 문제를 알고 실행되는 SQL을 확인한다.",
+     "**MySQL/PostgreSQL** — 인덱스, 실행 계획, 트랜잭션 격리 수준.",
+     "**Docker·Kubernetes** — 이미지 만들기, 배포(Deployment)·서비스·설정(ConfigMap)·자원 한도. 클러스터 운영은 플랫폼 쪽 몫이다.[2] {추론}",
+     "**Git** — 브랜치 전략과 리뷰 흐름. 배포 파이프라인은 GitLab과 Argo CD다.[2]"
+    ]
+   },
+   "how_far": "'사용 경험'이라 각 도구의 전문가일 필요는 없습니다. 다만 8년 차라 JPA가 내는 SQL과 쿠버네티스에서 파드가 왜 안 뜨는지는 스스로 읽을 수 있어야 합니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "jpa-basic",
+    "docker",
+    "kubernetes"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 클라우드 아키텍처 관련 자격증을 보유하신 분 (AWS Certified Solutions Architect, Google Cloud Professional Architect 등)",
+   "short": "클라우드 설계 자격증이 있으면 가산점 — 권역·가용 영역·장애 대비를 표준 용어로 말할 수 있다는 증거.",
+   "why": "회사는 자체 클라우드를 쓰지만 권역·데이터센터 이중화 같은 설계 개념은 공용 클라우드와 같습니다 — H클라우드도 권역마다 데이터센터를 둘 이상 두고 배치 위치를 사용자가 고르게 했습니다.[2] 기술 스택에 AWS도 올라 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**AWS Solutions Architect** — 어소시에이트·프로페셔널 두 단계. 안정적·안전·비용 효율적인 구조를 고르는 능력을 본다.[18]",
+     "**Google Cloud Professional Cloud Architect** — 사례 연구를 두고 설계·운영 결정을 묻는 시험.[19]"
+    ]
+   },
+   "how_far": "우대사항이라 없어도 지원할 수 있습니다. 자격증보다 '권역 장애 때 우리 부품은 어떻게 되나'를 설명하는 쪽이 면접에서는 더 직접적입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    18,
+    19
+   ],
+   "study": [
+    "aws-saa",
+    "gcp-pca"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 모바일 앱 서비스를 위한 백엔드 플랫폼 구축 경험, 컴포넌트 기반 아키텍처 설계 경험, 글로벌 멀티 브랜드 서비스 운영 경험, 기술 리딩 및 주니어 개발자 멘토링 경험을 보유하신 분",
+   "short": "앱 서버·부품 단위 설계·여러 나라·여러 브랜드 운영·팀 이끌기 — 업무를 그대로 해 본 사람이면 더 좋다.",
+   "why": "업무 세 묶음을 그대로 옮긴 우대사항입니다.[1] 모바일 앱 백엔드는 웹과 달리 사용자가 업데이트하지 않은 옛 앱 버전이 계속 서버를 부르고, 푸시 알림·네트워크 끊김을 다뤄야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**모바일 앱 백엔드** — 앱 버전별 호환, 화면에 맞춘 응답(BFF, 화면 전용 API 층), 푸시 알림 {추론}.",
+     "**멀티 브랜드** — 현대·제네시스처럼 같은 기능을 브랜드별 화면·규칙으로 내보낸다.[4][5]",
+     "**기술 리딩** — 위 '기술 리더십' 묶음과 같은 일.[1]"
+    ]
+   },
+   "how_far": "네 가지를 다 갖출 필요는 없습니다. 하나라도 구체적인 숫자·사례로 말할 수 있는 것을 고르는 편이 낫습니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    5
+   ],
+   "study": [
+    "msa-patterns",
+    "team-topologies"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "내 코드보다 '구조가 오래 버티는지'에 관심이 가는 사람[1]",
+   "장애 원인을 끝까지 파고들고 글로 남기는 걸 즐기는 사람[11]",
+   "여러 나라 사용자가 쓰는 큰 서비스(커넥티드카 가입 1,000만 이상)를 다뤄 보고 싶은 사람[2]",
+   "주니어·협력사와 같이 기준을 맞춰 가는 일이 맞는 사람[1]"
+  ],
+  "hard": [
+   "8년 이상 경력과 MSA·글로벌 운영 경험이 필수라 문턱이 높다[1]",
+   "그룹 플랫폼·해외 권역·협력사와 합의할 일이 많아 설득과 문서가 일의 큰 몫이다 {추론}",
+   "영어 회의·문서가 자격요건이다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "피드 화면이 부품 다섯 개를 부르는데 그중 하나가 느려졌습니다. 사용자는 무엇을 보게 하겠어요?",
+   "a": "실패 격리 줄 — 시간 제한·대체값·서킷 브레이커.[2][13]"
+  },
+  {
+   "q": "회원 정보는 그룹 플랫폼에도, 오너 앱에도 있습니다. 누가 원본을 가져야 하나요?",
+   "a": "전사 플랫폼과의 책임 경계 줄.[16]"
+  },
+  {
+   "q": "유럽만 정비 예약 기능이 먼저 필요합니다. 코드를 어떻게 나누겠어요?",
+   "a": "공통 기능·권역별 설정, 외부 연동 분리.[5][25]"
+  },
+  {
+   "q": "협력사가 응답 필드 이름을 바꿔 달라고 합니다. 이미 배포된 앱이 있다면요?",
+   "a": "API 호환성과 표준.[14]"
+  },
+  {
+   "q": "평균 응답 시간은 그대로인데 불만이 늘었습니다. 무엇을 보겠어요?",
+   "a": "분위수와 네 가지 신호.[10]"
+  },
+  {
+   "q": "가장 기억에 남는 장애 하나를 포스트모템 형식으로 말해 보세요.",
+   "a": "근본 원인 분석·장애 대응 매뉴얼 줄.[11]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · [ICT] Backend Developer - 아키텍처",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=415",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대, 근무지 양재본사, 마감 2026-11-30"
+  },
+  {
+   "n": 2,
+   "title": "SUSECON 2024 · The journey of Hyundai Motor Group to develop a private cloud for connected car service",
+   "url": "https://youtu.be/BLVywVGIikA",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "현대차 ICT 클라우드개발 조직 책임자 발표 · 자막 전부와 슬라이드 확인(27분) — 모놀리식→MSA·비동기, 4개 권역, HKS·Hubble·Sonar, 99.95%"
+  },
+  {
+   "n": 3,
+   "title": "바이라인네트워크 · 현대자동차가 구축한 'H클라우드', 전세계 1000만 커넥티드 카 서비스 뒷받침",
+   "url": "https://byline.network/2024/06/24-313/",
+   "kind": "news",
+   "date": "2024-06-25",
+   "note": "같은 발표의 국내 보도"
+  },
+  {
+   "n": 4,
+   "title": "현대자동차그룹 · 소프티어 테크밋업",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000094086",
+   "kind": "company",
+   "date": "2023-05-30",
+   "note": "ICT본부 비즈플랫폼개발팀 '제네시스 원 앱 글로벌로 쏘아 올리기' — 흩어진 앱 통합, 게이트웨이 구성, 글로벌 확장"
+  },
+  {
+   "n": 5,
+   "title": "Hyundai Newsroom Europe · Hyundai Connected Mobility launches new myHyundai app",
+   "url": "https://www.hyundai.news/eu/articles/press-releases/hyundai-connected-mobility-launches-myhyundai-app.html",
+   "kind": "company",
+   "date": "2025-12-04",
+   "note": "Bluelink + myHyundai 3.0 통합, 유럽 43개국, 정비 예약(OSB)·정비 이력·딜러 찾기"
+  },
+  {
+   "n": 6,
+   "title": "Hyundai Europe · myHyundai app — Vehicle care",
+   "url": "https://www.hyundai.com/eu/en/driving-hyundai/owning-a-hyundai/discover-myhyundai-app/vehicle-care.html",
+   "kind": "company",
+   "note": "앱 안 정비 예약(항목 → 딜러 → 시간), 정비 이력, 차량 상태"
+  },
+  {
+   "n": 7,
+   "title": "현대자동차그룹 · HMG 글로벌 IT 포럼 2026",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/hmg-global-it-forum-2026-hyundai-motor-groups-global-it-teams-under-one-roof",
+   "kind": "company",
+   "date": "2026-04-28",
+   "note": "그룹 글로벌 IT 조직의 One IT 표준"
+  },
+  {
+   "n": 8,
+   "title": "현대자동차 채용 · [ICT] SW Architect",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=420",
+   "kind": "posting",
+   "note": "같은 시기 ICT 공고 — 전사 아키텍처 리뷰·표준"
+  },
+  {
+   "n": 9,
+   "title": "현대자동차 채용 · [ICT] Backend Developer",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=375",
+   "kind": "posting",
+   "note": "같은 시기 ICT 공고 — Java 백엔드 3년 이상, 학사 이상"
+  },
+  {
+   "n": 10,
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "note": "네 가지 황금 신호, 평균 대신 분포"
+  },
+  {
+   "n": 11,
+   "title": "Google SRE Book · Postmortem Culture: Learning from Failure",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "note": "탓하지 않는 사후 검토"
+  },
+  {
+   "n": 12,
+   "title": "Google SRE Workbook · Canarying Releases",
+   "url": "https://sre.google/workbook/canarying-releases/",
+   "kind": "reference",
+   "note": "일부에 먼저 배포하고 비교하기"
+  },
+  {
+   "n": 13,
+   "title": "Resilience4j 공식 문서 · CircuitBreaker·Bulkhead·TimeLimiter",
+   "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+   "kind": "reference",
+   "note": "Java 실패 격리 라이브러리"
+  },
+  {
+   "n": 14,
+   "title": "Zalando RESTful API and Event Guidelines",
+   "url": "https://opensource.zalando.com/restful-api-guidelines/",
+   "kind": "reference",
+   "note": "API 먼저, 이름·페이지 나누기·호환성 규칙의 공개 지침"
+  },
+  {
+   "n": 15,
+   "title": "RFC 9457 · Problem Details for HTTP APIs",
+   "url": "https://www.rfc-editor.org/rfc/rfc9457",
+   "kind": "reference",
+   "date": "2023-07",
+   "note": "HTTP API 오류 응답 표준"
+  },
+  {
+   "n": 16,
+   "title": "Team Topologies (Matthew Skelton · Manuel Pais)",
+   "url": "https://teamtopologies.com/book",
+   "kind": "reference",
+   "note": "팀과 소프트웨어 경계를 맞추는 법 — 플랫폼 팀·흐름 팀"
+  },
+  {
+   "n": 17,
+   "title": "Martin Fowler · Microservices",
+   "url": "https://martinfowler.com/articles/microservices.html",
+   "kind": "reference",
+   "note": "서비스별 DB, 제품 단위 팀(만든 팀이 운영)"
+  },
+  {
+   "n": 18,
+   "title": "AWS Certification · Solutions Architect",
+   "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Google Cloud · Professional Cloud Architect 자격증",
+   "url": "https://cloud.google.com/learn/certification/cloud-architect",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 21,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생 지원, 본사 주소"
+  },
+  {
+   "n": 23,
+   "title": "Google Engineering Practices · Code Review Developer Guide",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference",
+   "note": "코드 상태가 나아지면 승인, 이유를 붙여 말하기"
+  },
+  {
+   "n": 25,
+   "title": "현대자동차그룹 · 온라인 구매 플랫폼의 프론트엔드·백엔드 개발 이야기",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000163030",
+   "kind": "company",
+   "date": "2024-10-24",
+   "note": "IT비즈플랫폼개발실 태국 커머셜 플랫폼 — 딜러 연동, 외부 시스템 연동 서버 분리, 로그·추적"
+  },
+  {
+   "n": 26,
+   "title": "현대자동차그룹 · 소프티어 테크톡 오프데이",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000133609",
+   "kind": "company",
+   "date": "2024-02-05",
+   "note": "ICT본부·현대오토에버 임직원 지식 공유, 2023년부터"
+  }
+ ],
+ "caveat": "이 팀(글로벌 Owners App 백엔드)이 직접 낸 발표·글은 찾지 못했고, FEED·컴포넌트 오너십 체계의 실제 정의도 공개되지 않았습니다. 같은 ICT 조직의 클라우드 발표(2024), 제네시스 원 앱 발표 소개(2023), 유럽 myHyundai 앱 발표(2025)로 회사가 실제로 한 일을 보였고, 부품 설계·API 표준·실패 격리의 구체적 방법은 업계 공개 문서로 '보통 이런 것'을 보였습니다. 유럽 앱은 현대차 유럽 계열사가 발표한 것이라 이 자리가 그 앱을 직접 만드는지는 확인되지 않습니다.",
+ "resources": [
+  {
+   "id": "hmg-hcloud-talk",
+   "title": "SUSECON 2024 · The journey of Hyundai Motor Group to develop a private cloud for connected car service",
+   "by": "현대차 ICT 클라우드개발 조직 · 27분",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://youtu.be/BLVywVGIikA",
+   "why": "이 자리가 일할 바닥(MSA·비동기·HKS·4개 권역)과 '실패 격리'를 왜 하는지를 회사가 직접 말한 영상. 지원 전에 먼저 본다."
+  },
+  {
+   "id": "msa-build",
+   "title": "마이크로서비스 아키텍처 구축(전면 개정판)",
+   "by": "샘 뉴먼 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/maikeuroseobiseu-akitegceo-gucug-jeonmyeon/9791169211192/",
+   "why": "서비스 경계 나누기·통신·배포·조직(팀이 서비스를 갖는 법)까지 — 업무 첫 문장 '컴포넌트 오너십'과 자격요건 MSA 줄의 기본서."
+  },
+  {
+   "id": "msa-patterns",
+   "title": "마이크로서비스 패턴",
+   "by": "크리스 리처드슨 · 길벗 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4",
+   "why": "게이트웨이·사가·서비스별 DB·조회 모으기(API 조합) 패턴 — 피드가 여러 부품을 모으는 구조를 코드 수준으로."
+  },
+  {
+   "id": "release-it",
+   "title": "Release의 모든 것 2판 — 대규모 웹 분산 시스템을 위한 운영 고려 설계",
+   "by": "마이클 나이가드 · 박성철 옮김 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ridibooks.com/books/443001250",
+   "why": "시간 제한·서킷 브레이커·벌크헤드 같은 안정성 패턴의 원전. '컴포넌트 단위 실패 격리' 줄을 위한 책."
+  },
+  {
+   "id": "ddd-first",
+   "title": "도메인 주도 설계 첫걸음",
+   "by": "블라드 코노노프 · 위키북스 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/1160000173",
+   "why": "경계 맥락으로 '누가 이 데이터의 주인인가'를 정하는 법 — 전사 플랫폼과의 책임 경계 줄."
+  },
+  {
+   "id": "sa101",
+   "title": "소프트웨어 아키텍처 101",
+   "by": "마크 리처즈 · 닐 포드 · 한빛미디어 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942580",
+   "why": "아키텍처 결정·트레이드오프·컴포넌트 나누기 — '장기적 플랫폼 관점의 설계 방향성' 줄을 말로 풀어내는 틀."
+  },
+  {
+   "id": "team-topologies",
+   "title": "Team Topologies",
+   "by": "Matthew Skelton · Manuel Pais · IT Revolution · 2019",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://teamtopologies.com/book",
+   "why": "플랫폼 팀과 기능 팀의 경계, 부품과 팀을 맞추는 법 — 컴포넌트 오너십 체계의 조직 쪽 그림."
+  },
+  {
+   "id": "zalando-api",
+   "title": "Zalando RESTful API and Event Guidelines",
+   "by": "Zalando",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://opensource.zalando.com/restful-api-guidelines/",
+   "why": "회사 하나가 실제로 쓰는 API 표준 문서. 'API 표준화 주도'와 'API 설계 리뷰' 줄의 본보기로 그대로 읽어 볼 만하다."
+  },
+  {
+   "id": "rfc9457",
+   "title": "RFC 9457 · Problem Details for HTTP APIs",
+   "by": "IETF · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.rfc-editor.org/rfc/rfc9457",
+   "why": "부품마다 다른 오류 응답을 하나로 맞추는 표준 — API 표준의 첫 항목으로 쓰기 좋다."
+  },
+  {
+   "id": "resilience4j",
+   "title": "Resilience4j 공식 문서",
+   "by": "Resilience4j",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+   "why": "Spring Boot에서 서킷 브레이커·벌크헤드·시간 제한을 실제로 거는 법."
+  },
+  {
+   "id": "sre-monitoring",
+   "title": "Site Reliability Engineering · Monitoring Distributed Systems",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "why": "네 가지 신호와 분위수 — '모니터링 체계 구축' 줄에서 무엇을 잴지 정하는 기준."
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Site Reliability Engineering · Postmortem Culture",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "근본 원인 분석과 장애 대응 매뉴얼 줄 — 탓하지 않는 사후 검토 양식."
+  },
+  {
+   "id": "sre-canary",
+   "title": "The Site Reliability Workbook · Canarying Releases",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/workbook/canarying-releases/",
+   "why": "'배포 전후 운영 영향도 분석' 줄 — 일부에 먼저 내보내고 무엇을 비교할지."
+  },
+  {
+   "id": "google-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "리뷰어의 승인 기준과 말하는 법 — API 설계 리뷰·주니어 코드 리뷰 줄."
+  },
+  {
+   "id": "aws-saa",
+   "title": "AWS Certified Solutions Architect – Associate",
+   "by": "Amazon Web Services",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+   "why": "우대 자격증의 시험 안내·범위. 권역·가용 영역·이중화 설계 용어를 정리하기 좋다."
+  },
+  {
+   "id": "gcp-pca",
+   "title": "Google Cloud Professional Cloud Architect",
+   "by": "Google Cloud",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://cloud.google.com/learn/certification/cloud-architect",
+   "why": "우대 자격증의 시험 안내와 사례 연구 — 설계 결정을 글로 설명하는 연습이 된다."
+  },
+  {
+   "id": "spring-boot",
+   "title": "스프링 부트 — 핵심 원리와 활용",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "기동 로그·Actuator 엔드포인트·지표 — Spring Boot 서버를 운영 가능한 상태로 만드는 부분."
+  },
+  {
+   "id": "jpa-basic",
+   "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/jpa-basic",
+   "why": "JPA/Hibernate 요건 — 매핑과 실제로 나가는 SQL."
+  },
+  {
+   "id": "jpa-app-2",
+   "title": "스프링 부트와 JPA 활용 2편",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/jpa-app-2",
+   "why": "API 응답 하나를 만드는 쿼리 개수를 줄이는 법(N+1) — 성능 최적화 줄."
+  },
+  {
+   "id": "http-basic",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "메서드·상태 코드·헤더 — REST API 설계와 API 표준의 바탕."
+  },
+  {
+   "id": "docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "Docker 요건 — 이미지 만들기와 막힌 출력 읽기."
+  },
+  {
+   "id": "kubernetes",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "Kubernetes 요건 — 배포·서비스와 Pending·CrashLoopBackOff 읽기. 회사의 HKS가 쿠버네티스다."
+  },
+  {
+   "id": "kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "동기 호출을 비동기 메시지로 바꿀 때 — '보냈다'와 '처리됐다' 사이를 다루는 법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사가 실제로 한 결정 읽기",
+   "time": "1주",
+   "goal": "현대차 ICT가 왜 모놀리식에서 MSA·비동기로 옮겼고 권역을 어떻게 나눴는지 근거와 함께 설명할 수 있다.",
+   "resources": [
+    "hmg-hcloud-talk",
+    "msa-build"
+   ],
+   "task": "발표를 보고 '예전 구조 → 바꾼 구조 → 얻은 것'을 슬라이드 한 장으로 다시 그리고, 오너 앱의 FEED·Search·Profile·OSB를 그 그림 위에 놓아 본다."
+  },
+  {
+   "title": "경계 긋기와 API 표준",
+   "time": "2~3주",
+   "goal": "부품마다 데이터 주인과 API 계약을 정하고, 표준 문서 한 장을 쓸 수 있다.",
+   "resources": [
+    "ddd-first",
+    "zalando-api",
+    "rfc9457",
+    "http-basic"
+   ],
+   "task": "가상의 오너 앱을 부품 4개(피드·검색·프로필·정비 예약)로 나눠 경계 표(주인·원본 데이터·바꿀 수 있는 쪽)를 쓰고, OpenAPI 사양 4개와 공통 API 표준(이름·페이지 나누기·오류 모양) 한 장을 만든다."
+  },
+  {
+   "title": "Spring Boot로 부품 만들기",
+   "time": "3~4주",
+   "goal": "Java·Spring Boot·JPA로 부품 둘을 만들어 컨테이너로 띄우고, 실행되는 SQL과 지표를 볼 수 있다.",
+   "resources": [
+    "spring-boot",
+    "jpa-basic",
+    "jpa-app-2",
+    "docker",
+    "kubernetes"
+   ],
+   "task": "프로필·정비 예약 부품을 Spring Boot·PostgreSQL로 만들고 Docker 이미지로 로컬 쿠버네티스(kind 등)에 배포한다. Actuator로 헬스체크·지표 주소를 열고 N+1 쿼리 하나를 일부러 만든 뒤 고친다."
+  },
+  {
+   "title": "실패 격리와 관측",
+   "time": "2~3주",
+   "goal": "한 부품이 느리거나 죽어도 피드가 나머지 카드로 답하게 만들고, 그 상황을 지표로 볼 수 있다.",
+   "resources": [
+    "release-it",
+    "resilience4j",
+    "sre-monitoring",
+    "kafka"
+   ],
+   "task": "피드 부품을 만들어 둘을 동시에 부르고 Resilience4j로 시간 제한·서킷 브레이커를 건다. 정비 예약에 2초 지연을 넣고 부하 도구로 p50·p95·p99와 오류율이 어떻게 바뀌는지 표로 남긴다. 예약 확정 알림은 Kafka 메시지로 바꿔 본다."
+  },
+  {
+   "title": "운영 표준과 리더십",
+   "time": "계속",
+   "goal": "배포 전후 비교 절차·런북·포스트모템을 쓰고, 남의 API 사양을 기준표로 리뷰할 수 있다.",
+   "resources": [
+    "sre-canary",
+    "sre-postmortem",
+    "google-review",
+    "sa101",
+    "team-topologies"
+   ],
+   "task": "4단계에서 일으킨 장애로 포스트모템 한 편과 부품별 런북을 영어로 쓴다. 새 버전 배포 때 비교할 지표 다섯 개를 정한 카나리 점검표를 만들고, 2단계 API 표준으로 친구의 API 사양 하나를 리뷰해 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 1인 평균 급여 **1억 3,100만원**(2025), 공공데이터 집계 평균 **약 7,708만원** — 기준이 달라 차이가 크고, 이 자리는 경력 8년 이상이라 개인 협의로 정해진다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다. 생산직을 포함한 전 직원 값 [20]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일이 적혀 있지 않다 [21]"
+   },
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 초봉. 이 자리는 경력 8년 이상이라 해당하지 않는다 [21]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값 [20]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 달라 섞어 비교하지 않는다. 경력 8년 이상 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [22]. 공고에는 복지 칸이 없고 [1], 주택·학자금·차량 구입 지원 같은 금액 항목은 공식 자료에서 확인하지 못해 뺐다. 지금 제도와 이 자리 적용 여부는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 양재 본사(현대기아자동차빌딩)",
+  "address": "서울특별시 서초구 헌릉로 12 (양재동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%ED%97%8C%EB%A6%89%EB%A1%9C%2012",
+  "near": "신분당선 양재시민의숲역 근처 {추론}",
+  "note": "공고의 근무지는 '양재본사'이고 [1], 지속가능성 보고서의 본사 소재지가 헌릉로 12다 [22]."
+ }
+}
