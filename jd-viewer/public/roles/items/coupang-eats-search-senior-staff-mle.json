@@ -1,0 +1,910 @@
+{
+ "id": "coupang-eats-search-senior-staff-mle",
+ "company": "쿠팡",
+ "role": "Senior Staff, Machine Learning Engineer (쿠팡이츠 검색)",
+ "team": "쿠팡이츠 Search — 검색 ML 리드(검색어 이해·후보 찾기·관련도·품질 평가)",
+ "jobs": [
+  "ats-greenhouse:coupang:8146344"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡이츠 앱에서 \"떡볶이\"·\"bhc\"를 쳤을 때 **맞는 브랜드·가게·메뉴·상품이 빨리 나오고 주문까지 이어지게** 하는 검색 ML 전체(검색어 이해 → 후보 찾기 → 관련도 → 품질 평가)를 맡는 리드 자리입니다.[1]",
+  "env": "배달 검색은 **지역·영업 여부·배달 시간·가격·프로모션**이 시시각각 바뀌고[1], 같은 조직은 한국 배달·한국 퀵커머스·일본 배달 세 갈래 검색을 함께 봅니다.[4][6]",
+  "oneline": "모델 하나를 잘 만드는 사람이 아니라 **지표를 정하고 몇 년짜리 로드맵을 짜서 ML·인프라 엔지니어를 이끄는** 검색 전문가. 검색·IR·NLP 10년 이상, 석사 이상이 조건입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Customer and Business Outcomes: Own the machine learning strategy, metrics, and execution for improving brand, store, dish, and product retrieval and increasing conversion across Coupang Eats Search surfaces.",
+   "short": "브랜드·가게·메뉴·상품이 검색에 잘 걸리고 주문으로 이어지게 하는 ML 전략과 숫자를 책임진다.",
+   "why": "이 자리는 브랜드·가게·메뉴·상품을 **제대로 찾아 준 비율**을 높이고 관련도와 전환(검색 뒤 주문)을 숫자로 올리는 책임을 집니다.[1] 쿠팡이츠는 음식 배달에서 장보기·쇼핑으로 넓히는 중이라[1] 검색이 찾아야 할 물건 종류가 늘었습니다. 2025년 10월 월 사용자 1,230만 명으로 배달 앱 2위였습니다.[10]",
+   "actually": {
+    "intro": "\"검색 성과\"는 보통 이런 숫자로 쪼갭니다 — 쿠팡이츠의 실제 지표 이름은 공개되지 않았습니다.{추론}",
+    "items": [
+     "**결과 없음 비율** — 쳤는데 아무것도 안 나온 검색의 비율. 오타·없는 메뉴·영업 끝난 가게에서 생긴다.",
+     "**클릭률·주문 전환율** — 검색 한 번이 가게 클릭·장바구니·주문으로 이어진 비율.[1]",
+     "**찾은 자리** — 사람이 원한 가게가 몇 번째에 나왔나. 브랜드 검색(\"bhc\")은 1등이어야 한다.",
+     "**종류별로 따로** — 브랜드·가게·메뉴·상품 검색은 성격이 달라 같은 숫자로 섞지 않는다.[1]"
+    ]
+   },
+   "how_far": "어떤 숫자를 회사 목표로 둘지는 리더·제품 쪽과 함께 정합니다. 이 자리는 **그 숫자를 움직일 ML 계획을 세우고 실행을 끝까지 책임지는** 쪽입니다.[1] 같은 조직의 한국어 공고도 같은 일을 \"고객·비즈니스 성과에 대한 ML 전략·지표·실행 책임\"으로 적었습니다.[2]",
+   "refs": [
+    1,
+    2,
+    10
+   ],
+   "study": [
+    "kohavi-ko",
+    "ai-powered-search"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Establish clear outcome metrics and targets and use rigorous experimentation and diagnostics to deliver sustained improvements while protecting key guardrail metrics and customer experience.",
+   "short": "목표 숫자를 정하고 실험으로 확인하며, 다른 중요한 숫자(가드레일)가 나빠지지 않게 지킨다.",
+   "why": "검색 하나를 바꾸면 주문은 늘어도 응답이 느려지거나 특정 손님 무리의 경험이 나빠질 수 있습니다. 공고는 개선을 내면서 **가드레일 지표**(나빠지면 안 되는 숫자)와 고객 경험을 지키라고 적었습니다.[1]",
+   "actually": {
+    "intro": "온라인 실험 교과서가 말하는 기본입니다.[15]",
+    "items": [
+     "**목표 지표 하나 + 가드레일 여럿** — 예: 목표는 검색 전환율, 가드레일은 응답 지연·결과 없음 비율·취소율.",
+     "**표본 비율 확인** — 50:50 으로 나눴는데 실제로 52:48 이면 실험 자체가 깨진 것이라 결과를 믿지 않는다.[15]",
+     "**오래 가는 개선** — 신기해서 잠깐 누르는 효과가 빠진 뒤에도 남는지 몇 주 본다.[15]",
+     "**진단** — 숫자가 움직이면 어느 검색어·어느 지역·어느 손님 무리에서 움직였는지 쪼개 본다.[1]"
+    ]
+   },
+   "how_far": "실험 플랫폼(사람 나누기·집계)은 따로 있는 것이 보통입니다.{추론} 이 자리는 **무엇을 목표로·무엇을 가드레일로 둘지, 언제 출시하고 언제 되돌릴지**를 정하는 사람입니다.[1]",
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Query and Product Understanding: improve query intent and entity understanding, menu and restaurant representation, typo tolerance, synonym expansion, and query rewriting.",
+   "short": "\"엽떡\"이 엽기떡볶이 브랜드라는 걸 알아듣고, 오타·동의어를 고쳐 검색어를 다시 쓰는 일.",
+   "why": "배달 앱 검색어는 짧고 줄임말·오타·브랜드명이 많습니다. 공고는 검색어 의도, 이름 붙은 대상(브랜드·가게·메뉴) 알아보기, 메뉴·가게를 어떻게 표현해 둘지, 오타 허용, 동의어 넓히기, 검색어 다시 쓰기를 모두 적었습니다.[1] 쿠팡 본 검색도 첫 단계를 의도를 짐작하고 카테고리·브랜드 같은 속성을 다는 일로 설명합니다.[8]",
+   "actually": {
+    "intro": "같은 일을 하는 다른 배달 회사가 공개한 방식입니다.[11][12]",
+    "items": [
+     "**의도 나누기** — 이 검색어가 음식(가게)인지 장보기(상품)인지 먼저 가른다. 도어대시는 검색어를 쪼개고 대상에 잇고 오타를 고치고 식당/식료품 중 무엇인지 예측하는 단계를 둔다.[12]",
+     "**대상 잇기** — \"엽떡\" → 브랜드 '엽기떡볶이', \"마라\" → 메뉴 속성. 도어대시는 LLM 이 고른 낱말을 자기 분류표의 낱말로만 고르게 묶는다(RAG — 찾아 온 후보 안에서만 답하게 하기).[12]",
+     "**오타** — 우버이츠는 \"mozzarela\" 같은 오타, \"gf pizza\" 같은 줄임말을 의미 검색이 받아야 할 예로 든다.[11] 글자 검색에서는 편집 거리(글자 몇 개 고치면 같아지나)로 허용한다.[22]",
+     "**동의어** — \"soda\"와 \"soft drink\"처럼 다른 낱말·같은 뜻.[11] 한국어는 \"치킨/통닭\", \"아아/아이스 아메리카노\" 같은 짝.{추론}",
+     "**메뉴·가게 표현** — 가게마다 메뉴 이름을 제멋대로 쓰므로(\"반반\", \"순살 세트 A\") 표준 요리 분류에 붙여 둔다.{추론}"
+    ]
+   },
+   "how_far": "사전(동의어·브랜드 목록)을 손으로 관리하는 일과 모델로 넓히는 일을 둘 다 아는 수준입니다. 리드는 **어느 실패를 사전으로, 어느 실패를 모델로 풀지** 고르고 효과를 실험으로 확인합니다.{추론}",
+   "refs": [
+    1,
+    8,
+    11,
+    12,
+    22
+   ],
+   "study": [
+    "doordash-llm",
+    "ai-powered-search",
+    "relevant-search"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Retrieval: Advance lexical, semantic, and hybrid retrieval. design scalable, low-latency retrieval strategies, including indexing, feature pipelines, model life cycle.",
+   "short": "글자가 맞는 것·뜻이 가까운 것을 같이 찾아 섞고, 그걸 빠르게 돌리는 색인·특징 데이터·모델 교체까지.",
+   "why": "검색은 수백만 개 후보에서 먼저 수백 개를 **빨리** 추린 뒤 정렬합니다.[8] 공고는 글자 검색(lexical)·의미 검색(semantic)·둘을 섞는 검색(hybrid)을 모두 키우고, 색인·특징 파이프라인·모델 수명 주기까지 설계하라고 적었습니다.[1]",
+   "actually": {
+    "intro": "보통 이렇게 생겼습니다.",
+    "items": [
+     "**글자 검색** — 낱말이 겹치는 문서를 BM25(낱말이 드물수록, 자주 나올수록 점수를 주는 공식)로 점수 매긴다.[20]",
+     "**의미 검색** — 검색어와 가게·메뉴를 숫자 벡터(임베딩)로 바꿔 가까운 것을 찾는다. 우버이츠는 LLM 을 바탕으로 한 두 갈래 모델로 문서 벡터를 미리 계산해 수십억 후보를 근사 최근접 검색(HNSW) 색인에 넣는다.[11]",
+     "**섞기** — 두 목록의 순위를 합치는 RRF 가 흔하다. 문서마다 1 / (60 + 순위)를 더한다(60 이 기본값).[13]",
+     "**먼저 거르기** — 우버이츠는 배달 가능 구역·도시·문서 종류·배송 방식을 벡터 검색 **전에** 걸러 낸다.[11]",
+     "**모델 수명 주기** — 우버이츠는 2주마다 색인을 새로 굽고, 새 벡터 칸과 옛 벡터 칸을 나란히 두어 검사를 통과하면 바꾸고 아니면 되돌린다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "RRF 로 두 목록 섞기 (직접 돌린 출력)",
+     "body": "글자 검색과 의미 검색 결과를 순위만으로 합칩니다. 두 목록 모두 위쪽에 있는 '분식B'가 1등이 됩니다. 공식은 Elastic 문서의 것입니다.[13]",
+     "lang": "python",
+     "code": "def rrf(lists, k=60):\n    s = {}\n    for lst in lists:\n        for r, d in enumerate(lst, 1):\n            s[d] = s.get(d, 0) + 1 / (k + r)\n    return sorted(s, key=s.get, reverse=True)\n\nlexical  = [\"떡볶이집A\", \"분식B\", \"떡볶이밀키트\"]   # 글자가 맞는 것\nsemantic = [\"분식B\", \"로제떡볶이C\", \"떡볶이집A\"]    # 뜻이 가까운 것\nprint(rrf([lexical, semantic]))\n# ['분식B', '떡볶이집A', '로제떡볶이C', '떡볶이밀키트']"
+    }
+   ],
+   "how_far": "검색 엔진 자체(색인 서버)를 짓는 일은 인프라 엔지니어 몫일 수 있습니다 — 공고도 인프라 엔지니어를 이끌라고 적었습니다.[1] 이 자리는 **어떤 방식으로 후보를 찾을지 정하고, 지연·비용·찾아낸 비율 사이에서 고르는** 사람입니다.{추론}",
+   "refs": [
+    1,
+    8,
+    11,
+    13,
+    20
+   ],
+   "study": [
+    "iir-book",
+    "uber-search",
+    "es-rrf",
+    "sbert"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Relevance Measurement and Experimentation: Establish a rigorous quality framework using offline evaluation, human judgments, online experiments, guardrail metrics,",
+   "short": "검색이 좋아졌는지를 오프라인 점수·사람 평가·온라인 실험·가드레일로 재는 틀을 만든다.",
+   "why": "온라인 실험은 느리고 비쌉니다. 그래서 출시 전에 **저장해 둔 검색어와 사람이 매긴 정답**으로 먼저 재고, 통과한 것만 실험에 올리는 틀이 필요합니다.[1][15]",
+   "actually": {
+    "intro": "보통의 품질 틀입니다.",
+    "items": [
+     "**오프라인 평가** — 검색어마다 결과에 관련도 점수(0~3)를 붙이고 NDCG(위쪽에 좋은 게 있을수록 높은 점수, 0~1)로 잰다.[21]",
+     "**사람 평가** — 평가자가 지침대로 결과를 매긴다. 구글은 180쪽 넘는 평가자 지침에 \"요구를 얼마나 채웠나\"를 Fully Meets·Highly Meets·Moderately Meets 같은 등급으로 둔다.[14]",
+     "**LLM 평가** — 사람 평가는 비싸서 LLM 으로 라벨을 늘리는 것이 요즘 흐름이고, 같은 조직 공고도 LLM 을 라벨링·평가에 쓰라고 적었다.[1][6]",
+     "**온라인 실험** — 마지막엔 실제 손님 A/B 실험으로 전환을 확인한다.[1][4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "NDCG — 좋은 게 위에 있을수록 높다 (직접 돌린 출력)",
+     "body": "관련도 [3, 2, 0, 1] 순서와 [0, 3, 2, 1] 순서를 비교합니다. 같은 결과라도 제일 좋은 것이 1등이 아니면 점수가 크게 떨어집니다.[21]",
+     "lang": "python",
+     "code": "import math\ndef ndcg(rels, k):\n    dcg = sum((2**g - 1) / math.log2(i + 2) for i, g in enumerate(rels[:k]))\n    ideal = sorted(rels, reverse=True)\n    idcg = sum((2**g - 1) / math.log2(i + 2) for i, g in enumerate(ideal[:k]))\n    return round(dcg / idcg, 3)\nprint(ndcg([3, 2, 0, 1], 4), ndcg([0, 3, 2, 1], 4))\n# 0.993 0.676"
+    }
+   ],
+   "how_far": "평가 지침서를 직접 쓰고, 오프라인 점수가 온라인 결과를 얼마나 맞히는지 확인해 틀을 믿을 만하게 만드는 데까지가 리드 몫입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    6,
+    14,
+    15,
+    21
+   ],
+   "study": [
+    "iir-book",
+    "kohavi-ko",
+    "google-raters"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "and diagnostics for tail queries, cold-start cases, and customer segments.",
+   "short": "드물게 들어오는 검색어, 새로 연 가게, 손님 무리별로 따로 떼어 어디가 약한지 본다.",
+   "why": "평균 숫자는 자주 치는 검색어가 끌고 갑니다. 공고는 **꼬리 검색어**(드물지만 종류가 아주 많은 검색어), **콜드 스타트**(주문 기록이 없는 새 가게·새 메뉴), **손님 무리**를 따로 진단하라고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**꼬리 검색어** — 하루 몇 번뿐인 검색어를 모아 따로 평가 묶음을 만든다. 오타·긴 문장 검색이 여기 많다.{추론}",
+     "**콜드 스타트** — 새 가게는 클릭·주문 기록이 없어 기록 기반 점수가 낮다. 메뉴 글·사진 같은 내용으로 만든 벡터가 이 빈자리를 메운다.[11]",
+     "**손님 무리** — 새 손님/단골, 도시/지방, 한국/일본처럼 나눠 본다. 이 조직은 한국·일본을 함께 본다.[4][6]"
+    ]
+   },
+   "how_far": "\"전체 +1%\"보다 \"어느 칸이 왜 나빠졌나\"를 설명할 수 있어야 합니다.{추론}",
+   "refs": [
+    1,
+    4,
+    6,
+    11
+   ],
+   "study": [
+    "kohavi-ko",
+    "ai-powered-search"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ML and LLM Innovation: Apply modern machine learning, embeddings, and LLMs to query and menu understanding, candidate generation, labeling, evaluation, and defect analysis,",
+   "short": "임베딩·LLM 을 검색어·메뉴 이해, 후보 찾기, 정답 라벨 만들기, 평가, 실패 원인 찾기에 쓴다.",
+   "why": "이 조직의 공고들은 줄곧 **LLM 기반 모델을 연구·튜닝해 검색 품질을 올리는 일**을 핵심으로 적었습니다.[3][4][7] 이 공고는 쓸 곳을 다섯 군데로 적었습니다.[1]",
+   "actually": {
+    "intro": "다른 배달 회사가 공개한 쓰임새입니다.",
+    "items": [
+     "**검색어 이해** — 도어대시는 LLM 이 검색어를 쪼개고 분류표 낱말에 잇게 하되, 근사 검색으로 고른 후보 100개 안에서만 고르게 한다.[12]",
+     "**후보 찾기** — 우버이츠는 LLM 을 바탕으로 한 벡터 모델로 의미가 같은 메뉴를 찾는다.[11]",
+     "**라벨·평가** — 사람 대신 LLM 이 \"이 결과가 이 검색어에 맞나\"를 매겨 평가 묶음을 늘린다.[1]",
+     "**실패 분석** — 잘못 나온 결과를 LLM 이 유형(오타·동의어 누락·영업 종료…)별로 묶어 고칠 순서를 정한다.[1] {추론}"
+    ]
+   },
+   "how_far": "모델을 만드는 것만이 아니라 **사람 평가와 얼마나 일치하는지 검증**해야 LLM 라벨을 믿을 수 있습니다.{추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    7,
+    11,
+    12
+   ],
+   "study": [
+    "doordash-llm",
+    "uber-search",
+    "rag-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "with clear customer impact and cost discipline.",
+   "short": "LLM 을 쓰되 손님에게 보이는 효과가 있어야 하고, 돈(추론 비용·지연)을 아껴야 한다.",
+   "why": "검색은 하루 수천만 번 불립니다. 공고는 LLM 을 쓸 때 **고객 효과와 비용 규율**을 함께 요구했습니다.[1]",
+   "actually": {
+    "items": [
+     "**미리 계산** — 무거운 모델은 문서 쪽 벡터를 오프라인에서 미리 굽고, 실시간에는 검색어 쪽만 계산한다.[11]",
+     "**작게 줄이기** — 우버이츠는 벡터를 256차원으로 잘라도 품질 손실이 0.3% 미만이었고 저장 공간이 거의 절반 줄었다.[11]",
+     "**양자화** — 벡터 숫자를 작은 정수로 바꿔 지연을 절반 넘게 줄이면서 찾아낸 비율 0.95 이상을 지켰다.[11]",
+     "**자주 치는 검색어는 저장** — 같은 검색어의 LLM 결과를 캐시해 다시 부르지 않는다.{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "uber-search"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Multi-Market and Localization: Build reusable capabilities while adapting language understanding, cuisine taxonomies, customer preferences, and marketplace signals to the needs of each market.",
+   "short": "한국·일본 등 나라마다 언어·요리 분류·입맛·시장 신호가 달라, 공통 부품은 하나로 두고 나라별로 맞춘다.",
+   "why": "이 조직은 한국 배달·한국 퀵커머스·일본 배달 세 갈래 검색을 함께 맡습니다.[4][6] 공고는 재사용할 부품을 만들면서 나라마다 언어 이해·요리 분류·선호·시장 신호를 맞추라고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**언어** — 한국어는 띄어쓰기·조사가, 일본어는 띄어쓰기 없음과 가나·한자 섞어 쓰기가 낱말 자르기를 어렵게 한다.{추론}",
+     "**요리 분류** — \"분식\", \"라멘\"처럼 나라마다 있는 갈래를 같은 틀(분류표)의 다른 가지로 둔다.{추론}",
+     "**재사용** — 우버이츠는 여러 언어를 한 벡터 모델로 받고, 영어·스페인어 품질을 따로 재 확인했다.[11]"
+    ]
+   },
+   "how_far": "모든 나라를 따로 만들면 사람이 모자라고, 하나로만 만들면 품질이 떨어집니다. **어디까지 공통, 어디부터 나라별**인지 정하는 것이 리드의 결정입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    6,
+    11
+   ],
+   "study": [
+    "uber-search",
+    "ai-powered-search"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Organization Leadership: coach machine learning engineers, infra engineers, and work with data analysts to build a world-class Coupang Eats Search experience.",
+   "short": "ML 엔지니어·인프라 엔지니어를 가르치고 이끌며, 데이터 분석가와 함께 검색을 만든다.",
+   "why": "공고는 이 자리를 쿠팡이츠 검색의 **ML 리드**로 부르고, 몇 년짜리 로드맵을 세워 ML·엔지니어링을 가로지르는 프로젝트를 이끌라고 적었습니다.[1] 같은 조직은 연차 1년부터 7년 이상까지 여러 단계의 ML 엔지니어를 뽑아 왔습니다.[3][4][5][7]",
+   "actually": {
+    "items": [
+     "**로드맵** — 반기·연 단위로 검색어 이해·후보 찾기·평가 중 무엇에 사람을 쓸지 순서를 정한다.[1]",
+     "**코칭** — 주니어가 낸 실험 설계·모델 변경을 검토하고, 실패한 실험에서 배울 것을 정리한다.{추론}",
+     "**분석가와** — 실험 결과 해석과 지표 정의는 데이터 분석가와 함께 한다.[1]"
+    ]
+   },
+   "how_far": "직함이 매니저가 아니어도 **기술 방향을 정하고 사람을 키우는** 몫이 큽니다. 같은 조직의 '테크 리더' 공고도 검색 구조 설계와 A/B 실험 전략을 맡겼습니다.[3]",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    7
+   ],
+   "study": [
+    "staff-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "10+ years in search, information retrieval, NLP",
+   "short": "검색·정보 검색(IR)·자연어 처리 분야에서 10년 이상.",
+   "why": "위 일곱 가지를 모두 한 사람이 방향을 잡아야 해서, 이 분야의 실패 사례를 많이 본 사람을 찾습니다.{추론} 같은 자리의 한국어 사본도 검색·IR·NLP 10년 이상을 적었습니다.[2]",
+   "how_far": "\"ML 10년\"이 아니라 **검색·IR·NLP 10년**입니다. 추천만 했거나 이미지 모델만 했다면 이 칸이 약합니다. 같은 조직의 다른 자리는 3년 이상[4], 7년 이상[3]이었습니다 — 연차가 모자라면 그쪽 공고를 봅니다.",
+   "refs": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Deep expertise in product understanding, retrieval, relevance, and modern LLM techniques.",
+   "short": "상품(메뉴·가게) 이해, 후보 찾기, 관련도, 요즘 LLM 기법을 깊이 안다.",
+   "why": "업무 줄의 세 축(이해·찾기·관련도)과 LLM 쓰임새를 그대로 요건으로 옮긴 것입니다.[1]",
+   "how_far": "면접에서는 \"왜 BM25 가 아직도 쓰이나\", \"임베딩 검색이 놓치는 검색어는 무엇인가\", \"LLM 라벨을 어떻게 믿나\" 같은 판단을 설명할 수 있어야 합니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "iir-book",
+    "ai-powered-search",
+    "sbert",
+    "colbert"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Proven delivery of large-scale consumer Search systems with measurable customer and business impact.",
+   "short": "많은 사람이 쓰는 검색을 실제로 출시해 숫자로 효과를 낸 경험.",
+   "why": "연구 성과보다 **실제 손님 숫자가 움직인 경험**을 봅니다 — 업무 첫 줄이 성과 책임이기 때문입니다.[1]",
+   "how_far": "이력서에는 \"무엇을 바꿔 어떤 지표가 몇 % 움직였나, 가드레일은 어땠나\"를 적는 것이 맞습니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience in designing retrieval methods for distributed, low-latency systems at scale with relevance guarantee.",
+   "short": "여러 서버에 나뉜 큰 색인에서 빠르면서도 관련도를 지키는 후보 찾기를 설계해 본 경험.",
+   "why": "배달 검색은 지역·영업 여부가 바뀌어 미리 계산해 둘 수 없는 부분이 많고, 그래도 빨라야 합니다.[1]",
+   "actually": {
+    "intro": "우버이츠가 공개한 조정 예입니다.[11]",
+    "items": [
+     "**조각마다 가져올 개수** — 색인 조각(shard)마다 1,200개씩 가져오던 것을 200개쯤으로 줄여 지연 34%·CPU 17%를 줄였고 찾아낸 비율 손실은 거의 없었다.",
+     "**거르기 먼저** — 배달 구역 같은 조건을 벡터 검색 앞에서 걸러 헛계산을 줄였다.",
+     "**작은 재정렬기** — 근사 검색 뒤에 작은 신경망 재정렬을 선택으로 붙였다."
+    ]
+   },
+   "how_far": "\"관련도 보장\"은 빠르게 하려고 근사를 써도 **찾아낸 비율(recall)이 정한 선 밑으로 안 떨어지게** 재고 지킨다는 뜻으로 읽힙니다.{추론}",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "uber-search",
+    "iir-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Masters or Ph.D. in Computer Science or related technical fields.",
+   "short": "컴퓨터공학이나 가까운 분야 석사·박사.",
+   "why": "같은 조직의 Staff 공고도 석사·박사를 적었고[6], 한국어 사본도 같습니다.[2]",
+   "how_far": "필수 요건입니다. 학사만 있다면 대신할 만한 논문·특허·공개 성과가 있는지 지원 전에 따져 봅니다.{추론}",
+   "refs": [
+    2,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Food delivery, local commerce, e-commerce, advertising experience.",
+   "short": "배달·동네 상권·이커머스·광고 분야 경험.",
+   "why": "배달 검색은 일반 웹 검색과 달리 **가게가 열려 있고 배달이 되는지**가 관련도의 일부입니다.[1] 광고는 검색 결과 자리를 놓고 돈과 관련도를 같이 다루는 일이라 비슷한 판단이 필요합니다.{추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Hyperlocal, time-sensitive ranking using location, availability, delivery time, price, and promotion signals.",
+   "short": "내 위치·지금 주문 가능 여부·배달 시간·가격·프로모션으로 순서를 매겨 본 경험.",
+   "why": "공고가 이 검색을 \"동네 단위이고 시간에 민감하다\"고 설명하고, 결과가 위치·가게와 메뉴의 주문 가능 여부·배달 시간·가격·프로모션·품질·실시간 상황에 맞아야 한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**가까운 가게** — 같은 \"치킨\"이라도 배달 가능 구역 안의 가게만 후보다.[11]",
+     "**지금 되는가** — 재료 소진·영업 종료 가게는 내리거나 뺀다. 이 값은 분 단위로 바뀌어 색인을 다시 굽기보다 실시간 신호로 거른다.{추론}",
+     "**배달 시간** — 쿠팡이츠는 배달 예상 시간을 위해 자체 지도 서비스를 만들었다고 밝혔다.[9]",
+     "**가격·프로모션** — 할인 중인 가게를 얼마나 올릴지는 관련도와 사업 목표 사이의 저울질이다.{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    9,
+    11
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Multilingual or localized Search experience across markets.",
+   "short": "여러 언어·여러 나라에 맞춘 검색을 해 본 경험.",
+   "why": "이 조직은 한국과 일본을 함께 보고[4][6], 업무에도 나라별 현지화가 있습니다.[1] 같은 조직의 주니어 공고는 한국어 필수·영어 우대였습니다.[7]",
+   "refs": [
+    1,
+    4,
+    6,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Practical experience with embeddings, transformers, LLMs that delivered measurable impact.",
+   "short": "임베딩·트랜스포머·LLM 을 실제로 써서 숫자로 효과를 낸 경험.",
+   "why": "\"써 봤다\"가 아니라 **효과를 숫자로 냈다**가 조건입니다 — 비용 규율을 요구한 업무 줄과 이어집니다.[1]",
+   "how_far": "시제품 데모보다 \"출시해서 전환 몇 %, 비용 얼마\"를 말할 수 있는 경험이 맞습니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sbert",
+    "colbert",
+    "rag-paper"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Publications in search, NLP, e-commerce, or advertising.",
+   "short": "검색·자연어 처리·이커머스·광고 분야 논문.",
+   "why": "석사·박사 요건과 같은 줄기입니다 — 최신 기법을 읽고 판단할 수 있는지를 봅니다.[1] {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Recruitment Process and Others:\nRecruitment Process\nApplication Review - Job Fit Interview - Focus Interview – Offer\nThe exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.\nInterview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "서류 → 직무 적합성 면접 → 집중 면접 → 처우 제안. 일정·결과는 지원 때 낸 이메일로 온다.",
+   "why": "공고 끝에 붙은 전형 안내입니다. 순서는 직무·일정에 따라 바뀔 수 있다고 적혀 있습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Things to Consider\nThis job posting may be closed prior to the stated end date for application if all openings are filled.\nCoupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.\nCoupang does not discriminate against disabled applicants or those with veteran status. We are proud to offer equal opportunities for all applicants.",
+   "short": "다 뽑으면 일찍 마감하고, 거짓 기재가 드러나면 합격을 취소하며, 장애·보훈 여부로 차별하지 않는다.",
+   "why": "공고 끝의 유의 사항입니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "검색 결과 한 줄 한 줄을 보며 \"왜 이게 여기 있나\"를 따지는 게 즐거운 사람",
+   "모델 점수보다 실험 숫자와 가드레일로 판단하는 사람[1]",
+   "몇 년짜리 로드맵을 쓰고 사람을 키우는 일까지 하고 싶은 사람[1]",
+   "한국·일본처럼 여러 시장을 한 틀로 묶는 문제를 좋아하는 사람[4][6]"
+  ],
+  "hard": [
+   "검색·IR·NLP 10년 이상과 석사 이상이 필수라 문이 좁다[1]",
+   "성과 책임이 전환·관련도 숫자로 바로 보인다[1]",
+   "배달 검색은 영업 여부·배달 시간처럼 분 단위로 바뀌는 신호가 많아 오프라인 평가와 실제가 어긋나기 쉽다[1] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "\"엽떡\"을 쳤을 때 엽기떡볶이 가게가 안 나온다면 어디부터 보겠어요?",
+   "a": "검색어 이해(브랜드 잇기·동의어) → 후보 찾기 → 정렬 순서로 쪼개기.[1][12]"
+  },
+  {
+   "q": "글자 검색과 벡터 검색 결과를 어떻게 섞나요? 점수 척도가 다르면요?",
+   "a": "순위로 합치는 RRF 와 그 상수.[13]"
+  },
+  {
+   "q": "검색 전환율이 올랐는데 지연이 늘었습니다. 출시하겠어요?",
+   "a": "목표 지표와 가드레일을 미리 정하는 이유.[15]"
+  },
+  {
+   "q": "새로 연 가게가 검색에서 묻히지 않게 하려면?",
+   "a": "콜드 스타트 — 기록 대신 내용 기반 벡터와 따로 떼어 본 진단.[1][11]"
+  },
+  {
+   "q": "LLM 으로 만든 관련도 라벨을 어떻게 믿을 수 있나요?",
+   "a": "사람 평가 일부와 맞춰 보는 검증, 평가자 지침.[14]"
+  },
+  {
+   "q": "벡터 검색 지연을 절반으로 줄여야 합니다. 무엇을 바꾸겠어요?",
+   "a": "조각당 가져올 개수·양자화·차원 줄이기·앞단 거르기.[11]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior Staff, Machine Learning Engineer (Coupang Eats Search)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8146344",
+   "kind": "posting",
+   "date": "2026-11-24",
+   "note": "업데이트일 기준. 자리 소개(ML 리드·끝에서 끝까지·몇 년 로드맵·동네 단위·시간 민감), 업무 7·요건 5·우대 5, 전형, 근무지 Seoul, 연봉·복지 칸 없음"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · [쿠팡] ML Lead (Coupang Eats Search)",
+   "url": "https://www.wanted.co.kr/wd/382275",
+   "kind": "posting",
+   "note": "마감. 같은 일의 한국어판 — 검색어·메뉴 이해, 글자·의미·혼합 검색, 사람 평가·가드레일, 검색·IR·NLP 10년 이상, 석사 이상, 근무지 테헤란로 332 HJ타워"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · [쿠팡][쿠팡이츠] 머신러닝 엔지니어 (Search and Discovery)",
+   "url": "https://www.wanted.co.kr/wd/370976",
+   "kind": "posting",
+   "note": "마감. 같은 조직 테크 리더 — 검색 구조 설계·LLM 기반 핵심 모델·A/B 실험 전략, 실무 ML 7년 이상, HJ타워"
+  },
+  {
+   "n": 4,
+   "title": "원티드 · [쿠팡] Senior Machine Learning Engineer (Eats S&D)",
+   "url": "https://www.wanted.co.kr/wd/366261",
+   "kind": "posting",
+   "note": "마감. 한국·일본의 음식 배달·퀵커머스 검색, 후보 찾기·관련도·검색어 이해·의도·순위, LLM 연구·튜닝, A/B 실험, 3년 이상, HJ타워"
+  },
+  {
+   "n": 5,
+   "title": "원티드 · [쿠팡] 쿠팡이츠 ML Engineer (Search and Discovery)",
+   "url": "https://www.wanted.co.kr/wd/366235",
+   "kind": "posting",
+   "note": "마감. 같은 조직 경력 1~7년 자리, 근무지 선릉역 부근 HJ타워"
+  },
+  {
+   "n": 6,
+   "title": "Built In · Staff Machine Learning Engineer (Coupang Eats)",
+   "url": "https://builtin.com/job/staff-machine-learning-engineer-coupang-eats/9698270",
+   "kind": "posting",
+   "note": "2026-08-05 내려감. 세 갈래(한국 배달·한국 퀵커머스·일본 배달) 검색, LLM·ML 모델을 후보 찾기·관련도·검색어 이해·순위에, 석사·박사"
+  },
+  {
+   "n": 7,
+   "title": "Built In · Machine Learning Engineer (Eats Search and Discovery)",
+   "url": "https://builtin.com/job/machine-learning-engineer-eats-search-and-discovery/9607925",
+   "kind": "posting",
+   "note": "2026-08-14 내려감. 주니어 자리 — LLM 기반 모델 연구·튜닝, 온라인 실험, ML 1년 이상, 한국어 필수·영어 우대"
+  },
+  {
+   "n": 8,
+   "title": "Coupang Engineering (Medium) · Fueling the Coupang search engine (Winter Wang)",
+   "url": "https://medium.com/coupang-tech/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+   "kind": "company",
+   "note": "쿠팡 본 검색(이츠 아님)의 색인 플랫폼 — 검색어 이해 → 후보 찾기 → 순위 3단계, 순위는 평점·리뷰·가격·브랜드도 본다. Medium 이 자동 접속을 막아(403) 검색 결과 요약으로만 확인"
+  },
+  {
+   "n": 9,
+   "title": "Coupang Engineering (Medium) · Building in-house map service at Eats",
+   "url": "https://medium.com/coupang-engineering/building-in-house-map-service-at-eats-268d5c8913f6",
+   "kind": "company",
+   "date": "2022-10",
+   "note": "배달 예상 시간·경로를 위한 자체 지도. 같은 회사 다른 풀이에서처럼 검색 결과 요약으로만 확인(403)"
+  },
+  {
+   "n": 10,
+   "title": "바이라인네트워크 · '역대 최대' 기록한 쿠팡이츠·땡겨요·먹깨비",
+   "url": "https://byline.network/2025/11/25_12837731/",
+   "kind": "news",
+   "date": "2025-11-25",
+   "note": "와이즈앱·리테일 2025년 10월 MAU — 쿠팡이츠 1,230만(배달 앱 2위)"
+  },
+  {
+   "n": 11,
+   "title": "Uber Blog · Evolution and Scale of Uber's Delivery Search Platform",
+   "url": "https://www.uber.com/au/en/blog/evolution-and-scale-of-ubers-delivery-search-platform/",
+   "kind": "reference",
+   "date": "2026-04-14",
+   "note": "다른 회사 — LLM 바탕 두 갈래 벡터 모델·HNSW·앞단 거르기·조각당 1,200→200(지연 −34%·CPU −17%)·양자화·256차원(손실 0.3% 미만)·2주마다 색인 교체"
+  },
+  {
+   "n": 12,
+   "title": "DoorDash Engineering · How DoorDash leverages LLMs for better search retrieval",
+   "url": "https://careersatdoordash.com/blog/how-doordash-leverages-llms-for-better-search-retrieval/",
+   "kind": "reference",
+   "date": "2024-11-19",
+   "note": "다른 회사 — 검색어 쪼개기·대상 잇기·RAG 로 분류표 낱말만, 후보 100개. 사이트가 자동 접속을 막아(403) 검색 결과 요약으로만 확인"
+  },
+  {
+   "n": 13,
+   "title": "Elastic Docs · Reciprocal rank fusion",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html",
+   "kind": "reference",
+   "note": "점수 += 1 / (k + 순위), k 기본 60"
+  },
+  {
+   "n": 14,
+   "title": "Google · Search Quality Rater Guidelines",
+   "url": "https://static.googleusercontent.com/media/guidelines.raterhub.com/en//searchqualityevaluatorguidelines.pdf",
+   "kind": "reference",
+   "date": "2025-09-11",
+   "note": "182쪽. 3부 Needs Met 등급(Fully·Highly·Moderately Meets …) — 차례로 확인"
+  },
+  {
+   "n": 15,
+   "title": "Kohavi · Tang · Xu · Trustworthy Online Controlled Experiments (Cambridge University Press, 2020)",
+   "url": "https://experimentguide.com/",
+   "kind": "reference",
+   "note": "온라인 실험 교과서 — 목표·가드레일 지표, 표본 비율 어긋남, 신기 효과"
+  },
+  {
+   "n": 16,
+   "title": "Coupang Careers · Why Coupang (리더십 원칙·문화와 복지제도)",
+   "url": "https://www.coupang.jobs/kr/why-coupang/",
+   "kind": "company",
+   "note": "복지 8가지(금액·조건 없음) — 같은 회사 다른 풀이에서 읽은 것과 같은 페이지"
+  },
+  {
+   "n": 17,
+   "title": "Coupang Careers · Seoul",
+   "url": "https://www.coupang.jobs/en/locations/seoul/",
+   "kind": "company",
+   "note": "서울 사무소 — 이스트폴 타워(광진구 아차산로 412)·로켓랩(강남구)"
+  },
+  {
+   "n": 18,
+   "title": "자소설닷컴 · 쿠팡 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/192",
+   "kind": "reference",
+   "note": "쿠팡(주) 값, 기준일 표기 없음. 사이트가 자동 접속을 막아 같은 회사 다른 풀이에서 검색 결과로 확인한 값"
+  },
+  {
+   "n": 19,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 보수 중간값 — 달러 환산"
+  },
+  {
+   "n": 20,
+   "title": "Robertson · Zaragoza · The Probabilistic Relevance Framework: BM25 and Beyond (2009)",
+   "url": "https://dl.acm.org/doi/10.1561/1500000019",
+   "kind": "reference",
+   "note": "BM25 의 원리 정리"
+  },
+  {
+   "n": 21,
+   "title": "Järvelin · Kekäläinen · Cumulated gain-based evaluation of IR techniques (ACM TOIS, 2002)",
+   "url": "https://dl.acm.org/doi/10.1145/582415.582418",
+   "kind": "reference",
+   "note": "NDCG 의 원 논문"
+  },
+  {
+   "n": 22,
+   "title": "Elastic Docs · Fuzzy query",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html",
+   "kind": "reference",
+   "note": "편집 거리(레벤슈타인)로 오타 허용"
+  }
+ ],
+ "caveat": "쿠팡이츠 검색의 실제 구조(검색 엔진 제품·임베딩 모델·지표 이름·팀 규모)는 공개되지 않았습니다. 회사 근거는 이 공고, 같은 조직의 마감·내려간 공고 6개(원티드 4·Built In 2), 쿠팡 본 검색 색인 글과 이츠 지도 글(둘 다 Medium 접속이 막혀 검색 결과 요약만)입니다. 쿠팡이츠 검색 발표 영상은 찾지 못했습니다(받은 영상 없음). 후보 찾기·평가·LLM 쓰임새는 우버이츠·도어대시의 공개 글과 Elastic·구글·실험 교과서로 '보통 이런 것'을 보였습니다. 근무 건물은 같은 조직 공고들이 HJ타워로 적었지만 이 공고에는 'Seoul' 뿐이라 면접 때 확인이 필요합니다.",
+ "resources": [
+  {
+   "id": "iir-book",
+   "title": "Introduction to Information Retrieval",
+   "by": "Christopher D. Manning · Prabhakar Raghavan · Hinrich Schütze · Cambridge University Press · 2008",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://nlp.stanford.edu/IR-book/",
+   "why": "색인·점수 매기기·평가(정밀도·재현율·NDCG)의 기본. 저자가 전문을 무료로 공개했다. 후보 찾기·품질 평가 업무의 바닥."
+  },
+  {
+   "id": "relevant-search",
+   "title": "Relevant Search",
+   "by": "Doug Turnbull · John Berryman · Manning · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/relevant-search",
+   "why": "Elasticsearch·Solr 로 동의어·낱말 자르기·점수 조정을 하는 실무서. 검색어 이해·글자 검색 줄을 손으로 익힌다."
+  },
+  {
+   "id": "ai-powered-search",
+   "title": "AI-Powered Search",
+   "by": "Trey Grainger · Doug Turnbull · Max Irwin · Manning · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.manning.com/books/ai-powered-search",
+   "why": "의미 검색·혼합 검색·클릭 신호로 배우는 순위·LLM 을 검색에 붙이기까지. 이 공고의 업무 줄 대부분을 한 권으로 훑는다."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "A/B 테스트: 신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 · 이기홍 · 김기영 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "why": "목표·가드레일 지표 정하기, 실험이 깨졌는지 알아보기 — 업무 첫 두 줄과 품질 틀 줄의 교과서. 원서는 Cambridge University Press 2020."
+  },
+  {
+   "id": "google-raters",
+   "title": "Search Quality Rater Guidelines",
+   "by": "Google · 2025-09",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://static.googleusercontent.com/media/guidelines.raterhub.com/en//searchqualityevaluatorguidelines.pdf",
+   "why": "사람 평가 지침서가 어떻게 생겼는지 보는 실물. Needs Met 등급 부분만 읽고 배달 검색용 지침을 직접 써 본다."
+  },
+  {
+   "id": "uber-search",
+   "title": "Evolution and Scale of Uber's Delivery Search Platform",
+   "by": "Uber Engineering · 2026-04",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.uber.com/au/en/blog/evolution-and-scale-of-ubers-delivery-search-platform/",
+   "why": "같은 업종(배달)의 의미 검색을 지연·비용·색인 교체까지 숫자로 보여 준다. 분산·저지연 요건을 준비할 때 가장 가까운 사례."
+  },
+  {
+   "id": "doordash-llm",
+   "title": "How DoorDash leverages LLMs for better search retrieval",
+   "by": "DoorDash Engineering · 2024-11",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://careersatdoordash.com/blog/how-doordash-leverages-llms-for-better-search-retrieval/",
+   "why": "LLM 으로 검색어를 쪼개고 분류표에 잇는 방법 — 검색어 이해 줄을 LLM 으로 풀 때의 본보기."
+  },
+  {
+   "id": "es-rrf",
+   "title": "Reciprocal rank fusion",
+   "by": "Elastic 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html",
+   "why": "혼합 검색에서 두 목록을 합치는 가장 흔한 방법과 설정값."
+  },
+  {
+   "id": "sbert",
+   "title": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks",
+   "by": "Nils Reimers · Iryna Gurevych · EMNLP 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1908.10084",
+   "why": "문장을 벡터로 바꿔 가까운 것을 찾는 두 갈래(bi-encoder) 구조의 출발점. 의미 검색 줄의 기초."
+  },
+  {
+   "id": "colbert",
+   "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+   "by": "Omar Khattab · Matei Zaharia · SIGIR 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2004.12832",
+   "why": "빠른 벡터 검색과 정확한 재정렬 사이의 중간 방식. 지연과 관련도를 저울질하는 감을 준다."
+  },
+  {
+   "id": "rag-paper",
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "by": "Patrick Lewis 외 · NeurIPS 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "why": "찾아 온 자료 위에서 생성하게 하는 RAG 의 원 논문. LLM 을 분류표·메뉴 사전에 묶어 쓰는 방식의 뿌리."
+  },
+  {
+   "id": "staff-path",
+   "title": "The Staff Engineer's Path",
+   "by": "Tanya Reilly · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "why": "매니저가 아닌 리드가 로드맵을 쓰고 여러 팀을 움직이는 법. 조직 리더십 줄을 위한 책."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "검색의 바닥 다지기",
+   "time": "2~3주",
+   "goal": "색인·BM25·정밀도/재현율·NDCG 를 말과 숫자로 설명한다.",
+   "resources": [
+    "iir-book",
+    "relevant-search"
+   ],
+   "task": "가상 가게 500곳·메뉴 5,000개 데이터를 만들어 BM25 검색기를 짜고, 검색어 30개에 관련도 0~3을 직접 매겨 NDCG@10 을 잰다."
+  },
+  {
+   "title": "검색어 이해",
+   "time": "2주",
+   "goal": "오타·줄임말·동의어·브랜드를 고쳐 다시 쓰는 단계를 만들고 효과를 잰다.",
+   "resources": [
+    "relevant-search",
+    "doordash-llm",
+    "ai-powered-search"
+   ],
+   "task": "1단계 데이터에 \"엽떡\"·\"bhcc\"·\"아아\" 같은 검색어 50개를 더하고, 사전 방식과 LLM 방식의 검색어 다시 쓰기를 각각 붙여 결과 없음 비율과 NDCG 를 비교한다."
+  },
+  {
+   "title": "의미 검색과 혼합",
+   "time": "2~3주",
+   "goal": "임베딩 검색을 붙이고 RRF 로 섞어, 지연과 품질을 함께 잰다.",
+   "resources": [
+    "sbert",
+    "es-rrf",
+    "uber-search",
+    "colbert"
+   ],
+   "task": "공개 문장 임베딩 모델로 메뉴 벡터를 미리 굽고 근사 검색 색인에 넣는다. 글자·의미·혼합 세 방식의 NDCG 와 p95 지연을 표로 만들고, 차원을 절반으로 줄였을 때 차이를 적는다."
+  },
+  {
+   "title": "평가 틀과 실험",
+   "time": "2주",
+   "goal": "목표·가드레일 지표를 정하고, 오프라인 점수와 가상 A/B 결과를 함께 읽는다.",
+   "resources": [
+    "kohavi-ko",
+    "google-raters"
+   ],
+   "task": "배달 검색용 평가 지침을 한 쪽으로 쓰고, LLM 라벨과 내 라벨이 몇 % 일치하는지 잰다. 가상 클릭 로그로 A/B 를 흉내 내 전환율 차이와 표본 비율 검사를 해 본다."
+  },
+  {
+   "title": "리드로 말하기",
+   "time": "계속",
+   "goal": "1년 로드맵을 쓰고 우선순위 이유를 숫자로 설명한다.",
+   "resources": [
+    "staff-path",
+    "ai-powered-search"
+   ],
+   "task": "1~4단계 결과로 '검색어 이해 → 혼합 검색 → 평가 자동화' 1년 로드맵 한 쪽을 쓰고, 각 분기의 목표 지표·가드레일·필요 인원을 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 쿠팡(주) 집계(초봉 약 3,531만 · 평균 약 5,175만)와 쿠팡 Inc. 전 직원 보수 중간값(2025년 3만 3,831달러)은 물류 현장 인력이 섞인 회사 전체 값이라 **검색·IR 10년 이상 Senior Staff 연봉과 거리가 멀다**",
+  "rows": [
+   {
+    "label": "쿠팡(주) 신입 초봉",
+    "value": "약 3,531만원",
+    "amount": 3531,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴이 공공데이터로 계산한 쿠팡(주) 값. 직군 구분이 없다 [18]"
+   },
+   {
+    "label": "쿠팡(주) 직원 평균",
+    "value": "약 5,175만원",
+    "amount": 5175,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 평균. 물류·현장 직원이 많은 회사 전체 값이라 개발자, 특히 Senior Staff 연봉으로 읽으면 안 된다 [18]"
+   },
+   {
+    "label": "쿠팡 Inc. 전 직원 보수 중간값",
+    "value": "3만 3,831달러 / 년",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "CEO 를 뺀 전 세계 직원의 가운데 값을 2025년 평균 환율로 달러로 바꾼 것 [19]"
+   }
+  ],
+  "how": "쿠팡은 미국 상장사 쿠팡 Inc.라 국내 사업보고서의 '직원 1인 평균 급여'가 없다 — **국내 공시 숫자 없음**. 위 값은 모두 경력·직군이 섞인 회사 전체 값이고 평균은 초봉이 아니다. 공고 전형 끝이 처우 제안(Offer)이라 금액은 그때 정해진다 [1] {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "열린 문화",
+    "detail": "칸막이와 위계 대신 열린 업무 공간"
+   },
+   {
+    "name": "보험",
+    "detail": "임직원과 직계가족을 보장하는 단체 상해보험"
+   },
+   {
+    "name": "휴가",
+    "detail": "가족 행사·모임을 위한 유급휴가"
+   },
+   {
+    "name": "교육",
+    "detail": "외국어와 업무 스킬 교육 프로그램"
+   },
+   {
+    "name": "글로벌 협업",
+    "detail": "여러 나라가 함께하는 프로젝트와 협업 기회"
+   },
+   {
+    "name": "사내 행사",
+    "detail": "게임·음식이 있는 사내 이벤트"
+   },
+   {
+    "name": "휴게·식당",
+    "detail": "휴게 공간과 사내 카페테리아 '쿠테리아'(식단·포장)"
+   },
+   {
+    "name": "유연근무",
+    "detail": "근무시간 조정, 재택근무 가능"
+   }
+  ],
+  "note": "쿠팡 채용 사이트 'Why Coupang'(한국어)의 '문화와 복지제도'다 [16]. 이 공고에는 복리후생 칸이 없고 금액·조건이 적혀 있지 않다 [1]. 이 자리에 어디까지 적용되는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡이츠 검색 조직 (HJ타워)",
+  "address": "서울특별시 강남구 테헤란로 332",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20332",
+  "near": "2호선·수인분당선 선릉역 부근 [5]",
+  "note": "이 공고 근무지는 'Seoul, South Korea' 뿐이다 [1]. 같은 쿠팡이츠 검색 조직의 한국어 공고들이 강남구 테헤란로 332 HJ타워로 적었다 [2][3][4]. 쿠팡 서울 본사는 광진구 아차산로 412 이스트폴 타워라 [17] 실제 자리는 면접 때 확인한다 {추론}."
+ }
+}

@@ -26,6 +26,7 @@
   "ats-greenhouse:coupang:8333651": "coupang-eats-ios-engineering-manager",
   "ats-greenhouse:coupang:8318669": "coupang-eats-ios-engineering-manager",
   "wanted-394250": "coupang-eats-ios-engineering-manager",
+  "ats-greenhouse:coupang:8146344": "coupang-eats-search-senior-staff-mle",
   "ats-greenhouse:coupang:8395151": "coupang-eats-senior-android",
   "wanted-398432": "coupang-eats-senior-android",
   "ats-greenhouse:coupang:8382219": "coupang-fashion-program-manager",
@@ -555,6 +556,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "coupang-eats-search-senior-staff-mle",
+   "company": "쿠팡",
+   "role": "Senior Staff, Machine Learning Engineer (쿠팡이츠 검색)",
+   "jobs": [
+    "ats-greenhouse:coupang:8146344"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 22
   },
   {
    "id": "coupang-eats-senior-android",
