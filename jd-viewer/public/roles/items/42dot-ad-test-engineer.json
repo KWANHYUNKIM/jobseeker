@@ -1,0 +1,1156 @@
+{
+ "id": "42dot-ad-test-engineer",
+ "company": "포티투닷(42dot)",
+ "role": "자율주행 테스트 엔지니어",
+ "team": "AD Test팀 (자율주행 실차·시뮬레이션 검증)",
+ "jobs": [
+  "ats-ashby:42dot:7bc7935d-2925-4a60-bd6e-f2ccfcfc7873"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "현대차그룹 자율주행(Atria AI)의 **주행·능동 안전·주차** 기능을 실제 도로와 시뮬레이션에서 시험하고, 약한 상황을 찾아 개발 조직에 돌려주는 자리입니다.[1]",
+  "env": "시험차 20여 대[2]로 도로를 달리고, 이상 상황은 앞뒤 15초 기록으로 서버에 올라와 다시 학습·재설치되는 **도로 → 실험실 → 도로** 순환 위에서 일합니다.[2][3] 도로에서 재현하기 어려운 장면은 실제 주행 데이터를 3D로 되살린 가상 검증으로 반복합니다.[3]",
+  "oneline": "코드를 만드는 쪽이 아니라 **'이 버전이 어디서 안 되나'를 찾아 숫자와 재현 방법으로 증명하는** 시험 자리. 3년 이상 AD·ADAS 시험 경력과 실차 운전 능력이 필수입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "자율주행 시스템의 주행(Driving), 능동 안전(Active Safety), 주차(Parking) 등 주요 기능에 대한 실차 및 Simulation 기반 성능 평가",
+   "short": "차선 유지·차간 거리·긴급 제동·자동 주차가 얼마나 잘 되는지 도로와 가상 환경에서 재는 일.",
+   "why": "팀 소개가 이 세 갈래(주행·능동 안전·주차)를 평가 대상으로 못 박았습니다.[1] 현대차그룹은 Atria AI를 얹은 Level 2++ 양산차를 2029년 하반기 목표로 두고 있어[2][3], 양산 전에 기능마다 '어디까지 되나'를 숫자로 쌓아야 합니다{추론}.",
+   "actually": {
+    "intro": "기능마다 재는 것이 다릅니다. 아래는 보통의 예이고 42dot의 실제 평가 항목은 공개되지 않았습니다.",
+    "items": [
+     "**주행** — 차선 중앙에서 얼마나 벗어나나, 끼어들기·정차 차량·비보호 좌회전에서 운전자가 손을 대야 했나(개입). 현대차그룹이 공개한 도심 영상도 끼어들기·비보호 좌회전·좁은 길 마주 오는 차 같은 열 가지 어려운 장면을 골라 보였다.[3]",
+     "**능동 안전** — 앞차가 서 있거나·같은 속도로 가거나·급제동할 때 부딪히지 않고 서나. 유럽 신차 평가(Euro NCAP)는 이 셋을 CCRs·CCRm·CCRb로 나눠 시험한다.[18]",
+     "**주차** — 칸을 찾는 데 걸린 시간, 칸 안에 들어간 정도, 몇 번 앞뒤로 움직였나 {추론}.",
+     "**실차와 시뮬레이션 둘 다** — 도로에서는 진짜 센서·날씨를, 시뮬레이션에서는 위험해서 못 하는 장면과 같은 장면의 반복을 맡는다.[3][4]"
+    ]
+   },
+   "how_far": "평가 기준의 큰 틀(무엇이 합격인가)은 팀과 기능 개발 조직이 같이 정하고, 이 자리는 **정해진 방법대로 재고, 측정값이 믿을 만한지(장비·조건이 맞았는지) 책임지는** 수준이 기본입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    18
+   ],
+   "study": [
+    "euroncap-aeb",
+    "coursera-sdc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "자율주행 기능, ODD 및 주행 환경을 고려한 Test Scenario, Test Procedure 개발 및 평가 기준 수립",
+   "short": "\"어떤 길·날씨·상황에서 무엇을 시험하고 무엇이면 합격인가\"를 문서로 만드는 일.",
+   "why": "ODD(Operational Design Domain, 이 기능이 쓰이도록 설계된 도로·날씨·속도 같은 조건)는 기능마다 다릅니다. 고속도로용 기능을 골목에서 시험할 이유는 없고, 반대로 ODD 안의 조건은 빠짐없이 봐야 합니다. ISO 34503은 ODD를 계층으로 나눠 적는 형식을 정했습니다.[14]",
+   "actually": {
+    "items": [
+     "**시나리오 세 겹** — 말로 쓴 기능 시나리오(\"앞차가 옆 차선에서 끼어든다\") → 변수에 범위를 준 논리 시나리오(내 속도 40~80km/h, 간격 10~30m) → 값을 하나씩 정한 구체 시나리오. 논리 하나에서 구체 시나리오가 수십 개 나온다.[16]",
+     "**절차(Procedure)** — 출발 위치, 속도를 맞추는 방법, 상대 차를 언제 움직일지, 몇 번 반복할지, 무엇을 기록할지.",
+     "**평가 기준** — 합격·불합격 문턱(예: 부딪히지 않음, 개입 없음, 최소 TTC 몇 초 이상). Euro NCAP은 충돌까지 4초 남은 순간을 시작 기준점으로 둔다.[28]",
+     "**ODD 적기** — 넣을 것·뺄 것·조건부(비 오면 속도 제한)로 나눠 적는다.[14]",
+     "**위험 요인에서 시나리오 뽑기** — ISO 34502는 위험 요인으로 중요한 시나리오를 뽑고 구체 시험으로 나누는 절차를 둔다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "논리 시나리오 하나 → 구체 시나리오 18개",
+     "body": "끼어들기 시나리오에 내 속도 3가지 × 간격 3가지 × 끼어드는 시간 2가지를 주면 구체 시나리오가 18개 생깁니다(직접 돌린 출력). 변수가 늘면 곱으로 커져서 '다 돌리기'보다 '어느 칸을 먼저 돌리나'가 일이 됩니다.",
+     "lang": "python",
+     "code": "from itertools import product\nego = [40, 60, 80]; gap = [10, 20, 30]; cutin = [1.0, 2.0]\ncombos = list(product(ego, gap, cutin))\nprint(\"구체 시나리오\", len(combos), \"개, 예:\", combos[0], combos[-1])\n# 구체 시나리오 18 개, 예: (40, 10, 1.0) (80, 30, 2.0)"
+    }
+   ],
+   "how_far": "공고가 '개발 및 평가 기준 수립'까지 적었으니 남이 쓴 절차를 수행하는 데서 그치지 않고 **새 기능이 오면 시나리오 목록과 합격 기준 초안을 스스로 쓰는** 수준을 봅니다 {추론}.",
+   "refs": [
+    13,
+    14,
+    16,
+    28
+   ],
+   "study": [
+    "menzel-scenarios",
+    "iso34503",
+    "iso34502"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "개발 조직과 협업하여 신규 기능 및 개발 버전에 대한 정기적인 실차·Simulation 검증 수행",
+   "short": "개발팀이 새 버전을 낼 때마다 정해진 주기로 도로·시뮬레이션 시험을 돌려 결과를 돌려준다.",
+   "why": "42dot은 새 소프트웨어를 시험차에 깔면 먼저 사옥의 비히클 워크숍에서 기본 기능과 제어기 통신을 점검(스모크 테스트)하고, 통과한 차만 도로에 내보냅니다.[2] 자율주행 테스트팀장도 데이터 수집 → 학습 → 소프트웨어 재적용 → 워크숍·도로 반복 검증을 한 바퀴로 설명했습니다.[2]",
+   "flows": [
+    {
+     "caption": "42dot이 설명한 한 바퀴[2][3]",
+     "steps": [
+      "새 버전 설치 · 워크숍(OTA 포함)",
+      "스모크 테스트 · 기본 기능·통신",
+      "도로 시험 · 이상 시 SER 앞뒤 15초 저장",
+      "분석 · 왜 감속했나·무엇을 오판했나",
+      "재학습 · 다시 설치"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "버전마다 같은 노선·같은 시나리오 묶음을 돌려 **지난 버전과 비교**한다.",
+     "시험차는 자율주행만이 아니라 다른 42dot 기술에도 쓰여 20여 대를 나눠 쓴다[2] — 차와 노선 시간을 미리 잡는 일정 조율이 따라온다 {추론}.",
+     "한국과 미국 개발 센터가 시간대를 넘겨 수집·이슈 분석·모델 개선을 이어 가는 'Follow-the-Sun' 방식이라고 밝혔다[3] — 결과 보고가 다음 시간대 팀이 바로 쓸 수 있게 정리돼야 한다 {추론}."
+    ]
+   },
+   "refs": [
+    2,
+    3
+   ],
+   "study": [
+    "geiger-sdc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "자율주행 시스템의 개발 및 배포 일정에 따른 Test Plan 수립 및 검증 수행",
+   "short": "배포 날짜에 맞춰 \"무엇을 언제 몇 대로 얼마나 시험할지\" 계획표를 짜고 지킨다.",
+   "why": "차·운전자·노선·시뮬레이션 계산 자원은 한정돼 있고 배포일은 정해져 있습니다. 시험 범위를 줄일지 늘릴지를 미리 정해 두지 않으면 배포 직전에 '어디까지 봤나'를 답할 수 없습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**범위** — 이번 버전에서 바뀐 기능, 다시 봐야 할 기존 기능(회귀), 이번엔 안 보는 것.",
+     "**자원** — 시험차 대수·운전자·노선·날씨 조건·시뮬레이션 실행 수.",
+     "**완료 조건** — 몇 km·몇 시나리오를 돌리고, 치명 이슈 0건이면 통과 같은 문턱.",
+     "**일정 위험** — 비·야간 같은 조건은 날을 기다려야 해서 앞에 배치 {추론}."
+    ]
+   },
+   "how_far": "계획서의 형식은 팀에 있을 것이고, 지원자는 **시험 범위를 바뀐 것 중심으로 고르고 그 이유를 설명할 수 있는** 정도면 됩니다 {추론}.",
+   "refs": [],
+   "study": [
+    "menzel-scenarios"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "실차 주행 및 Simulation 테스트 결과 분석을 통한 성능 평가, 취약 시나리오 발굴 및 개선사항 도출",
+   "short": "시험 로그를 숫자로 정리해 \"어느 상황에서 약한가\"를 찾아내고 고칠 방향을 적는다.",
+   "why": "현대차그룹은 AI가 힘들어하는 주행 상황을 자동으로 찾아 학습에 먼저 넣는 'Hard Example Mining'을 데이터 플라이휠의 한 단계로 소개했습니다.[3] 시험팀이 찾은 취약 시나리오는 그 목록의 입력입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**지표 계산** — 개입 1회당 주행 거리, 최소 TTC(앞차와 부딪히기까지 남은 시간), 급감속 횟수, 차선 이탈 거리.",
+     "**쪼개 보기** — 같은 지표를 노선·날씨·시간대·시나리오별로 나눠야 약한 곳이 보인다. 전체 평균은 좋아도 비 오는 판교에서만 나쁠 수 있다.",
+     "**취약 시나리오 분류** — 공사 구간, 악천후, 급한 차선 변경, 골목 주차 차량, 복잡한 도심 교통 — 현대차그룹이 모으는 어려운 사례의 갈래다.[3]",
+     "**개선사항** — '언제·어디서·무엇이' 나빴는지와 재현 방법을 붙여 개발 조직에 넘긴다.[1]",
+     "**알려지지 않은 위험 찾기** — 기능 안전 표준 SOTIF(ISO 21448)는 고장이 아니라 기능의 한계(센서가 못 보는 날씨·드문 물체)에서 오는 위험을 다룬다. 시험은 이미 아는 위험 장면을 확인하는 일과 아직 모르는 위험 장면을 찾아 '아는 것'으로 옮기는 일, 두 가지다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "전체 평균은 괜찮아도 한 조건이 나쁘다",
+     "body": "가상 주행 기록 4건으로 개입 1회당 거리를 계산했습니다(직접 돌린 출력). 전체는 11.4km인데 '판교 비'만 4.0km로 떨어집니다 — 분석은 이 줄을 찾아내는 일입니다.",
+     "lang": "python",
+     "code": "drives = [(\"강남\", 42.0, 3), (\"판교\", 30.5, 1), (\"잠실\", 18.0, 2), (\"판교 비\", 12.0, 3)]\nfor name, km, n in drives:\n    print(f\"{name} {km:.1f}km 개입 {n}회 -> {km/n:.1f} km/개입\")\ntot_km = sum(d[1] for d in drives); tot_n = sum(d[2] for d in drives)\nprint(f\"전체 {tot_km:.1f}km / {tot_n}회 = {tot_km/tot_n:.1f} km/개입\")\n# 강남 42.0km 개입 3회 -> 14.0 km/개입\n# 판교 30.5km 개입 1회 -> 30.5 km/개입\n# 잠실 18.0km 개입 2회 -> 9.0 km/개입\n# 판교 비 12.0km 개입 3회 -> 4.0 km/개입\n# 전체 102.5km / 9회 = 11.4 km/개입"
+    }
+   ],
+   "refs": [
+    1,
+    3,
+    15
+   ],
+   "study": [
+    "ca-dmv",
+    "pandas-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "테스트 과정에서 발생한 이슈의 재현, 원인 분석 지원 및 개선 여부 검증",
+   "short": "문제가 난 장면을 다시 일으켜 보이고, 고쳤다는 버전에서 정말 고쳐졌는지 확인한다.",
+   "why": "42dot 시험차에는 직접 만든 SER(Special Event Recorder)이 있어 자율주행 중 이상 상황이 생기면 앞뒤 15초 데이터를 서버로 보내고, 개발자가 왜 감속했는지·무엇을 잘못 판단했는지 분석합니다.[2] 시험 엔지니어는 그 장면을 다시 일으킬 수 있어야 원인 분석이 빨라집니다 {추론}.",
+   "actually": {
+    "items": [
+     "**재현** — 같은 노선·시간·속도로 다시 달리거나, 기록을 시뮬레이션에 넣어 같은 장면을 반복.[3]",
+     "**원인 분석 '지원'** — 원인 판정은 개발 조직 몫이고, 시험팀은 로그 구간·센서 상태·차량 신호를 묶어 '언제부터 이상했나'를 좁혀 준다.[1]",
+     "**개선 확인** — 고친 버전에서 같은 장면을 여러 번 돌려 통과하는지, 다른 장면이 나빠지지 않았는지(회귀)를 본다.",
+     "**이슈 기록** — 재현 조건·빈도(10번 중 몇 번)·영상·로그 위치를 남긴다 {추론}."
+    ]
+   },
+   "how_far": "원인을 코드 줄까지 찾는 것은 요구하지 않습니다(공고가 '지원'이라 적었다[1]). **재현 확률을 높이는 조건을 찾아 숫자로 말하는** 것이 이 자리의 몫입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "jira-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "실차 검증 결과를 기반으로 Simulation Scenario 및 Regression Test Case 개발·고도화",
+   "short": "도로에서 찾은 문제 장면을 시뮬레이션 시험으로 옮겨, 다음 버전마다 자동으로 다시 돌게 만든다.",
+   "why": "팀 소개가 이 연결을 그대로 적었습니다 — 실차에서 찾은 이슈를 시뮬레이션 시나리오와 회귀 시험에 잇고 반복 검증한다.[1] 현대차그룹도 실제 주행 데이터를 3D 가우시안 스플래팅으로 되살려, 새로 학습한 모델이 기존 성능을 잃지 않았는지 반복해서 본다고 밝혔습니다.[3]",
+   "actually": {
+    "items": [
+     "**장면 옮기기** — 도로 기록에서 상대 차의 위치·속도를 뽑아 시나리오 파일로 만든다. 업계 표준 형식으로 ASAM OpenSCENARIO(.xosc)가 있다.[17]",
+     "**변형 만들기** — 같은 장면의 속도·간격을 바꿔 '조금 더 어려운' 버전을 같이 넣는다.[16]",
+     "**합격 기준 붙이기** — 각 시나리오에 자동 판정 조건(충돌 없음, 최소 TTC)을 단다.",
+     "**회귀 묶음 관리** — 버전마다 전부 다시 돌리고, 지난번 통과가 이번에 실패한 것(퇴행)을 먼저 보고한다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "통과 수는 같은데 퇴행이 숨어 있다",
+     "body": "통과 개수는 3/4 그대로지만, 하나는 고쳐지고 하나는 새로 깨졌습니다(직접 돌린 출력). 회귀 시험은 합계가 아니라 **시나리오별 변화**를 봅니다.",
+     "lang": "python",
+     "code": "old = {\"S01_끼어들기\": \"PASS\", \"S02_정차차량\": \"PASS\", \"S03_비보호좌회전\": \"FAIL\", \"S04_보행자\": \"PASS\"}\nnew = {\"S01_끼어들기\": \"PASS\", \"S02_정차차량\": \"FAIL\", \"S03_비보호좌회전\": \"PASS\", \"S04_보행자\": \"PASS\"}\nfor s in old:\n    if old[s] != new[s]:\n        kind = \"고쳐짐\" if new[s] == \"PASS\" else \"퇴행\"\n        print(f\"{s}: {old[s]} -> {new[s]}  {kind}\")\nprint(\"통과\", sum(v == \"PASS\" for v in old.values()), \"->\", sum(v == \"PASS\" for v in new.values()), \"/\", len(new))\n# S02_정차차량: PASS -> FAIL  퇴행\n# S03_비보호좌회전: FAIL -> PASS  고쳐짐\n# 통과 3 -> 3 / 4"
+    }
+   ],
+   "refs": [
+    1,
+    3,
+    16,
+    17
+   ],
+   "study": [
+    "openscenario",
+    "carla-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 도로 및 주행 환경에 대한 검증 노선 발굴, 난이도 분석 및 테스트 커버리지 확대",
+   "short": "시험할 길을 새로 찾고, 길마다 얼마나 어려운지 매겨, 아직 안 본 조건을 줄여 나간다.",
+   "why": "도로 주행만으로 안전을 증명하려면 수억~수천억 마일이 필요하다는 계산이 있습니다.[19] 그래서 '많이'보다 '안 본 조건을 골라' 달리는 것이 중요하고, 현대차그룹도 강남 출근길·잠실 버스 많은 길·비 오는 판교처럼 조건이 다른 노선을 골라 보였습니다.[3]",
+   "actually": {
+    "items": [
+     "**노선 발굴** — 회전 교차로, 공사 구간, 좁은 골목, 버스 차로처럼 기능의 약점을 건드리는 길을 찾는다.",
+     "**난이도 매기기** — 교차로 수, 끼어들기 빈도, 보행자 밀도, 차선 표시 상태 같은 항목에 점수를 준다 {추론}.",
+     "**커버리지** — ODD 조건(날씨 × 시간 × 도로 유형)의 칸 중 몇 칸을 시험했는지 센다.[14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "ODD 칸 커버리지 세기",
+     "body": "날씨 2 × 시간 2 × 도로 3 = 12칸 중 5칸만 시험했습니다(직접 돌린 출력). 빈 칸 목록이 다음 노선 계획이 됩니다.",
+     "lang": "python",
+     "code": "from itertools import product\nweather = [\"맑음\", \"비\"]; time = [\"낮\", \"밤\"]; road = [\"고속도로\", \"도심\", \"주차장\"]\ncells = list(product(weather, time, road))\ntested = {(\"맑음\", \"낮\", \"고속도로\"), (\"맑음\", \"낮\", \"도심\"), (\"비\", \"낮\", \"도심\"),\n          (\"맑음\", \"밤\", \"도심\"), (\"맑음\", \"낮\", \"주차장\")}\nprint(f\"커버리지 {len(tested)}/{len(cells)} = {len(tested)/len(cells):.0%}\")\n# 커버리지 5/12 = 42%"
+    }
+   ],
+   "refs": [
+    3,
+    14,
+    19
+   ],
+   "study": [
+    "rand-miles",
+    "iso34503"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "테스트 결과 및 성능 지표 관리, 개발 조직 및 유관부서와의 협업을 통한 검증 프로세스 개선",
+   "short": "시험 결과와 지표를 한곳에 쌓아 버전끼리 비교되게 하고, 시험하는 방식 자체를 고쳐 나간다.",
+   "why": "팀은 시나리오와 검증 체계를 계속 고도화해 효율적인 검증 환경을 만드는 데 기여한다고 적었습니다.[1] 결과가 흩어져 있으면 '지난 버전보다 나아졌나'를 답할 수 없습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**지표 관리** — 버전 × 노선 × 시나리오 × 지표 표를 쌓고 대시보드로 본다 {추론}.",
+     "**이슈 관리** — JIRA 같은 도구에 재현 조건·담당·상태를 남기고 Confluence에 절차를 정리한다(우대사항에 두 도구가 나온다).[1]",
+     "**프로세스 개선** — 사람이 매번 하던 판정·보고를 자동화하고, 실차에서 자주 나오는 이슈는 시뮬레이션으로 먼저 걸러 실차 시간을 아낀다 {추론}."
+    ]
+   },
+   "refs": [
+    1
+   ],
+   "study": [
+    "jira-docs",
+    "pandas-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "3년 이상의 자율주행(AD), ADAS 또는 차량 기능·성능 시험 및 검증 업무 경험을 보유하신 분",
+   "short": "차량 시험의 기본(장비·절차·안전)을 이미 몸으로 아는 사람을 찾아서. AD가 아니어도 차량 시험이면 된다.",
+   "why": "공고가 AD뿐 아니라 ADAS(운전자 보조)와 '차량 기능·성능 시험'까지 열어 두었습니다.[1] 시험장 운영·계측 장비·안전 절차는 차량 시험 전반에 공통이라서로 보입니다 {추론}.",
+   "how_far": "완성차·부품사·시험 기관에서 ADAS나 차량 기능 시험을 3년 해 봤다면 해당합니다. 신입·전환자는 지원 대상이 아닙니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "acorn-auto-sw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "자율주행 또는 ADAS 시스템의 주요 기능과 동작 원리에 대한 이해가 있으신 분",
+   "short": "기능이 무엇을 보고 언제 개입하는지 알아야 '이상한 동작'과 '설계대로의 동작'을 가를 수 있어서.",
+   "why": "예를 들어 차가 갑자기 감속했을 때 그것이 앞차를 본 정상 반응인지, 없는 물체를 본 오판인지는 기능 원리를 알아야 판단합니다. SER 이벤트 분석도 '왜 감속했나·무엇을 잘못 판단했나'를 묻습니다.[2]",
+   "actually": {
+    "items": [
+     "**자동화 단계** — 운전자가 계속 지켜보는 Level 2와 시스템이 맡는 Level 3 이상의 차이.[12]",
+     "**대표 기능** — 차간 거리 유지(ACC), 차로 유지(LKA), 긴급 제동(AEB), 자동 주차.",
+     "**ODD와 해제 조건** — 언제 기능이 꺼지고 운전자에게 넘기나."
+    ]
+   },
+   "refs": [
+    2,
+    12
+   ],
+   "study": [
+    "sae-j3016",
+    "coursera-sdc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실차 또는 Simulation 환경에서 Test Scenario, Test Procedure 또는 Test Case를 개발하고 평가한 경험이 있으신 분",
+   "short": "남이 쓴 시험을 돌린 것만이 아니라 시나리오·절차를 직접 써 본 경험을 묻는 줄.",
+   "why": "업무 2번(시나리오·절차·평가 기준 수립)을 바로 맡을 수 있는지 보는 요건입니다.[1]",
+   "how_far": "면접에서 '내가 쓴 시나리오 하나'를 기능 → 논리 → 구체 단계로 설명하고, 합격 기준을 왜 그 값으로 정했는지 말할 수 있으면 됩니다.[16] {추론}",
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "menzel-scenarios",
+    "euroncap-aeb"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 도로 및 주행 환경에서 안정적인 차량 운행 능력을 보유하고, 실차 시험·평가 중 발생할 수 있는 돌발 상황에 신속하고 침착하게 대응할 수 있으신 분",
+   "short": "시험 중 자율주행이 잘못 움직이면 운전석의 시험자가 바로 넘겨받아야 해서. 이 자리는 직접 운전한다.",
+   "why": "공공도로 시험에서는 사람이 안전을 책임집니다. 국토교통부 임시운행 고시 개정은 허가받은 쪽이 자율주행 기능을 충분히 아는 사람을 운전자로 지정해 관리하고 충분한 안전 조치를 하도록 했습니다.[25] 42dot도 시연 주행에서 운전자 개입 여부와 다른 도로·날씨 성능은 실차 검증이 더 필요하다고 보도됐습니다.[2]",
+   "how_far": "운전면허와 안정적인 운전 경험은 기본이고, 시험 중 이상 동작을 보면 **먼저 넘겨받고, 그다음 기록하는** 순서를 지킬 수 있어야 합니다 {추론}. 회사의 시험 운전자 교육이 따로 있을 수 있으니 면접에서 확인합니다 {추론}.",
+   "refs": [
+    2,
+    25
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "테스트 결과 및 데이터를 분석하여 시스템의 문제점과 개선사항을 도출한 경험이 있으신 분",
+   "short": "결과를 '통과/실패'로 끝내지 않고 데이터로 원인 후보와 개선 방향까지 적어 본 경험.",
+   "why": "업무 5번(취약 시나리오 발굴·개선사항 도출)과 같은 능력입니다.[1] 팀 메시지도 데이터와 객관적인 근거로 문제를 분석하고 그 결과가 실제 기능 개선으로 이어지는 것을 중요하게 본다고 적었습니다.[1]",
+   "how_far": "\"비 오는 날 차선 이탈이 3배\"처럼 **조건을 나눠 차이를 숫자로 보이는** 수준이면 충분합니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "pandas-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "테스트 과정에서 발생한 이슈의 분석, 재현 및 개선 여부 검증 경험을 보유하신 분",
+   "short": "이슈를 다시 일으키고, 고친 뒤 정말 고쳐졌는지 확인해 닫아 본 경험.",
+   "why": "업무 6번 그대로입니다.[1] 도로 → 실험실 → 도로 순환에서 이슈가 '닫혔다'는 판정을 시험팀이 내립니다.[2] {추론}",
+   "how_far": "이슈 하나를 처음 발견부터 닫힐 때까지 어떻게 따라갔는지(재현 빈도, 확인 횟수, 회귀 확인) 예를 들어 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "jira-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "개발 조직 및 유관부서와 원활하게 소통하고 협업할 수 있는 분",
+   "short": "시험팀의 결과물은 '남이 고칠 일'이라 상대가 바로 움직일 수 있게 전해야 해서.",
+   "why": "팀 메시지가 문제를 투명하게 공유하고 조직의 경계를 넘어 같이 해결책을 찾는 것을 일하는 방식으로 적었습니다.[1] 한국·미국 센터가 시간대를 넘겨 이어 일한다고도 밝혔습니다.[3]",
+   "how_far": "이슈 보고에 재현 조건·영상·로그 구간·기대 동작을 빠짐없이 적는 습관, 그리고 '버그가 아니라 설계'라는 반론에 근거로 답할 수 있는 정도 {추론}.",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "자율주행 시스템의 인지(Perception), 판단(Planning), 제어(Control) 구조 및 동작 원리에 대한 이해가 있으신 분",
+   "short": "문제가 '못 봤다·잘못 정했다·잘못 움직였다' 중 어디인지 짚어 주면 원인 분석이 빨라져서.",
+   "why": "같은 '급정거'라도 원인이 인지(없는 물체를 봄)·판단(멈출 필요 없는데 멈추기로 함)·제어(브레이크를 세게 밟음)로 갈립니다. 42dot은 카메라 중심의 end-to-end(인지부터 주행까지 한 모델) 구조를 쓰는데[3], 그래도 결과를 이 세 단계로 나눠 보는 습관은 분석에 쓸모가 있습니다 {추론}. 세 단계와 end-to-end 주행은 공개 강의로 한 번에 훑을 수 있습니다.[26][27]",
+   "refs": [
+    3,
+    26,
+    27
+   ],
+   "study": [
+    "geiger-sdc",
+    "coursera-sdc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "실차 및 Simulation 환경에서 자율주행 기능을 검증하고, 두 환경의 테스트 결과를 연계하여 분석한 경험이 있으신 분",
+   "short": "도로에서 실패한 장면이 시뮬레이션에서도 실패하는지 맞춰 보는 일 — 시뮬레이션을 믿을 수 있나의 문제.",
+   "why": "시뮬레이션은 도로에서 못 하는 장면을 반복할 수 있지만, 같은 장면에서 같은 결과가 나와야 믿을 수 있습니다. 현대차그룹이 실제 주행을 3D로 되살려 가상 검증하는 이유도 도로 재현이 어렵거나 위험한 장면 때문입니다.[3]",
+   "actually": {
+    "items": [
+     "도로 이슈를 시뮬레이션에 넣었을 때 같은 실패가 나오나(재현율).",
+     "시뮬레이션에서 통과한 수정이 도로에서도 통과하나.",
+     "둘이 다르면 원인이 시뮬레이션 쪽(센서 모델·상대 차 움직임)인지 기능 쪽인지 가른다 {추론}."
+    ]
+   },
+   "refs": [
+    3
+   ],
+   "study": [
+    "carla-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ODD 기반 테스트 설계, 주행 시나리오 개발 및 검증 커버리지 분석 경험이 있으신 분",
+   "short": "ODD 조건을 표로 쪼개 시나리오를 만들고 '몇 칸을 봤나'를 세어 본 경험.",
+   "why": "업무 2번·8번의 깊은 버전입니다.[1] ODD를 적는 표준(ISO 34503)과 시나리오로 안전을 평가하는 표준(ISO 34502)이 이 일의 공통 언어입니다.[13][14]",
+   "refs": [
+    1,
+    13,
+    14
+   ],
+   "study": [
+    "iso34503",
+    "iso34502",
+    "menzel-scenarios"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Simulation 또는 SIL 환경에서 Regression Test Case 개발, 테스트 결과 분석 및 검증 체계 개선 경험이 있으신 분",
+   "short": "SIL(차 없이 소프트웨어만 컴퓨터에서 돌리는 시험)에서 버전마다 자동으로 도는 회귀 시험을 만들어 본 경험.",
+   "why": "업무 7번(실차 결과 → 시뮬레이션·회귀 시험)을 바로 할 수 있는지 봅니다.[1] 42dot은 별도 공고로 CARLA·CarSim·Simulink 같은 시뮬레이션 도구를 다루는 Simulation Engineer도 뽑았습니다[6] — 시뮬레이터를 만드는 쪽과 그 위에서 시험을 만드는 쪽이 나뉘어 있는 것으로 보입니다 {추론}.",
+   "how_far": "시뮬레이터 자체를 만들 필요는 없고, **시나리오 파일을 쓰고 자동 판정 조건을 달아 묶음으로 돌리는** 수준이면 됩니다 {추론}.",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "openscenario",
+    "carla-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Python, SQL 등을 활용한 주행 데이터 분석, 테스트 자동화 또는 성능 지표 개발 경험이 있으신 분",
+   "short": "주행 로그에서 지표를 손이 아니라 코드로 뽑고, 판정·보고를 자동으로 돌려 본 경험.",
+   "why": "시험차 한 대가 하루에 남기는 로그는 사람이 영상으로 다 볼 수 없는 양입니다. 데이터 수집차만 40여 대가 주 80시간 넘게 달린다고 보도됐습니다.[2] {추론}",
+   "level": {
+    "basic": "pandas로 CSV 읽기·필터·그룹별 집계, SQL SELECT·GROUP BY",
+    "work": "시간 동기화(신호마다 주기가 다르다)·구간 자르기·지표 함수(TTC·개입 거리)·그래프",
+    "team": "버전 × 노선 × 시나리오 지표를 자동으로 쌓고 퇴행을 먼저 보고하는 파이프라인 {추론}"
+   },
+   "examples": [
+    {
+     "title": "로그 한 줄마다 TTC 계산",
+     "body": "TTC = 거리 ÷ (내 속도 − 앞차 속도). 가까워지지 않으면 무한대입니다(직접 돌린 출력). 실제 로그에서는 이 값의 최솟값을 시나리오 합격 기준에 씁니다.",
+     "lang": "python",
+     "code": "rows = [(0.0, 40.0, 20.0, 15.0), (1.0, 35.0, 20.0, 15.0), (2.0, 30.0, 19.0, 15.0), (3.0, 27.0, 16.0, 15.0)]\nfor t, gap, v_ego, v_lead in rows:\n    closing = v_ego - v_lead\n    ttc = gap / closing if closing > 0 else float(\"inf\")\n    print(f\"t={t:.1f}s  TTC={ttc:5.1f}s\")\n# t=0.0s  TTC=  8.0s\n# t=1.0s  TTC=  7.0s\n# t=2.0s  TTC=  7.5s\n# t=3.0s  TTC= 27.0s"
+    }
+   ],
+   "refs": [
+    2
+   ],
+   "study": [
+    "pandas-docs",
+    "python-can"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "차량 네트워크(CAN 등) 및 센서(Camera, Radar, LiDAR 등) 데이터 분석 경험이 있으신 분",
+   "short": "차 속도·브레이크 같은 신호(CAN)와 센서 기록을 직접 열어 '그 순간 무슨 일이 있었나'를 볼 줄 알아서.",
+   "why": "42dot 시험차(SDV 테스트베드)는 카메라 8대와 전방 레이더 1개를 달았고, 데이터 수집차는 용도에 따라 카메라 최대 12대·라이다 1대·레이더 5대·초음파 12개를 답니다.[2] 이슈 분석은 결국 이 기록과 차량 신호를 시간으로 맞춰 보는 일입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**CAN** — 제어기끼리 주고받는 짧은 메시지. 메시지 ID와 바이트를 신호표(DBC 파일)로 풀어야 '차속 99.6km/h' 같은 값이 된다.[23]",
+     "**센서** — 카메라 영상, 레이더가 본 물체 목록, 라이다 점 구름. 이벤트 순간의 프레임을 찾아 무엇이 보였는지 확인한다.",
+     "**시간 맞추기** — 신호마다 주기가 달라서(CAN 수십 ms, 카메라 초당 수십 장) 같은 시각으로 맞추는 것이 첫 일이다 {추론}.",
+     "**도구** — 파이썬에서는 python-can 으로 기록을 읽고 보내며[22], cantools 로 신호표를 적용한다.[23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CAN 바이트를 차속으로 풀기",
+     "body": "가상 메시지 ID 0x123의 0~1바이트가 0.01km/h 단위 차속, 2바이트가 브레이크라고 정했습니다(실제 배치는 차마다 신호표가 정한다). 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "import struct\nframes = [(0.00, 0x123, bytes([0x10, 0x27, 0x00, 0, 0, 0, 0, 0])),\n          (0.02, 0x123, bytes([0xE8, 0x26, 0x01, 0, 0, 0, 0, 0])),\n          (0.04, 0x123, bytes([0x58, 0x25, 0x01, 0, 0, 0, 0, 0]))]\nfor t, cid, data in frames:\n    raw, = struct.unpack_from(\"<H\", data, 0)\n    print(f\"t={t:.2f}s id=0x{cid:X} 차속={raw*0.01:.2f}km/h 브레이크={data[2]}\")\n# t=0.00s id=0x123 차속=100.00km/h 브레이크=0\n# t=0.02s id=0x123 차속=99.60km/h 브레이크=1\n# t=0.04s id=0x123 차속=95.60km/h 브레이크=1"
+    }
+   ],
+   "refs": [
+    2,
+    22,
+    23
+   ],
+   "study": [
+    "vector-can",
+    "python-can",
+    "cantools"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "OXTS, RT, Vector(CANoe, CANape) 등 차량 시험 및 데이터 계측 장비 활용 경험이 있으신 분",
+   "short": "차의 위치·속도를 cm 단위로 재는 장비(OXTS RT)와 차량 신호를 기록하는 도구(CANoe·CANape)를 다뤄 봐서.",
+   "why": "'앞차와 몇 m에서 섰나'를 자율주행 시스템 자신의 기록으로 재면 시험이 아니라 자기 채점입니다. 그래서 별도 기준 장비를 답니다 {추론}. OXTS RT3000은 하늘이 트인 곳에서 RTK 보정으로 위치 0.01m 정확도를 내세웁니다.[20] 같은 회사 시험 공고들도 CANoe·CANape를 요구합니다.[5]",
+   "actually": {
+    "items": [
+     "**OXTS RT** — GNSS + 관성 센서 장비. 내 차와 상대 차(타깃)에 달아 두 차의 위치·속도·거리를 기준값으로 기록.[20]",
+     "**CANape** — 차량 신호와 측정값을 시간축으로 함께 기록·보기.[21]",
+     "**CANoe** — 차량 네트워크를 시뮬레이션·분석하는 도구. 같은 회사 시험 공고들에 함께 나온다.[5]"
+    ]
+   },
+   "how_far": "우대사항이라 없어도 지원은 됩니다. 써 본 적이 없다면 '기준 장비가 왜 따로 필요한가'와 'CAN 기록을 어떻게 읽는가'를 설명할 수 있으면 출발선입니다 {추론}.",
+   "refs": [
+    5,
+    20,
+    21
+   ],
+   "study": [
+    "oxts-rt",
+    "vector-canape",
+    "vector-can"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Linux 환경에서의 개발 및 테스트 도구 활용 경험이 있으신 분",
+   "short": "시뮬레이터·로그 분석 도구·차량 컴퓨터가 대부분 리눅스 위에서 돌아서.",
+   "why": "같은 회사 시험 공고들이 Linux 이해를 요건으로 둡니다.[5] 로그 파일을 찾고 자르고 스크립트를 돌리는 일이 터미널에서 이뤄집니다 {추론}.",
+   "how_far": "파일 찾기·파이프·셸 스크립트로 반복 작업 묶기·원격 서버 접속 정도면 충분합니다 {추론}.",
+   "refs": [
+    5
+   ],
+   "study": [
+    "tlcl"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "자율주행 기능의 성능 지표(KPI) 개발, 주행 환경 난이도 정량화 또는 검증 효율 개선 경험이 있으신 분",
+   "short": "\"좋아졌다\"를 한 숫자로 말할 지표를 만들고, 길이 얼마나 어려운지도 숫자로 매겨 본 경험.",
+   "why": "난이도를 모르고 개입 횟수만 보면, 쉬운 길만 달린 버전이 좋아 보입니다. 업무 8번이 노선 난이도 분석을 따로 적은 이유입니다.[1] 공개 지표의 예로 미국 캘리포니아주는 시험 업체에 자율주행 해제(disengagement) 보고를 받아 공개합니다.[24]",
+   "actually": {
+    "items": [
+     "**결과 지표** — 개입 1회당 거리, 시나리오 통과율, 최소 TTC 분포.",
+     "**난이도 보정** — 같은 개입 수라도 어려운 길이면 덜 나쁘게, 쉬운 길이면 더 나쁘게 본다 {추론}.",
+     "**검증 효율** — 실차 1시간당 찾은 새 이슈 수, 시뮬레이션으로 먼저 걸러 아낀 실차 시간 {추론}."
+    ]
+   },
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "ca-dmv",
+    "rand-miles"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "JIRA, Confluence 등 협업 및 이슈 관리 도구 활용 경험이 있으신 분",
+   "short": "이슈는 JIRA, 시험 절차·결과 문서는 Confluence에 남기는 팀이라서.",
+   "why": "공고 기술 태그에도 두 도구가 붙어 있습니다.[1] 이슈 재현·확인 기록을 남들이 찾아볼 수 있게 남기는 곳입니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": [
+    "jira-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "자동차공학, 기계공학, 전기전자공학, 컴퓨터공학, 제어공학 등 관련 분야 학사 학위 이상을 보유하신 분",
+   "short": "학위는 필수가 아니라 우대. 차량 동역학·센서·소프트웨어 중 하나를 배운 배경이면 된다.",
+   "why": "필수 요건이 아니라 우대사항에 들어가 있습니다.[1] 나열된 전공이 기계·전기·컴퓨터·제어로 넓어, 3년 시험 경력이 더 무거운 조건으로 읽힙니다 {추론}.",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "\"왜 여기서만 안 되지?\"를 끝까지 파는 사람",
+   "운전을 좋아하고 돌발 상황에서 차분한 사람[1]",
+   "도로와 사무실(로그 분석)을 오가는 일이 즐거운 사람[2]",
+   "문제를 숨기지 않고 근거와 함께 공유하는 사람 — 팀 메시지가 강조한 방식[1]"
+  ],
+  "hard": [
+   "3년 이상 차량 시험 경력이 필수라 신입·전환자는 지원 대상이 아니다[1]",
+   "실차 시험은 날씨·차량 일정에 묶여 일정이 들쭉날쭉할 수 있다 {추론}",
+   "직접 기능을 만드는 개발 자리가 아니다 — 고치는 사람은 개발 조직이다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "끼어들기 시나리오를 하나 설계해 보세요. 변수와 합격 기준은요?",
+   "a": "기능 → 논리 → 구체 시나리오 세 겹과 TTC 기준.[16][28]"
+  },
+  {
+   "q": "새 버전에서 통과 수는 같은데 무엇을 먼저 보겠어요?",
+   "a": "합계가 아니라 시나리오별 퇴행 — 이 팀이 실차 결과를 회귀 시험에 잇는 이유.[1][3]"
+  },
+  {
+   "q": "도로에서 한 번 난 급감속을 어떻게 재현하고, 고쳐졌다고 언제 말하겠어요?",
+   "a": "SER 앞뒤 15초 기록과 반복 확인.[2]"
+  },
+  {
+   "q": "개입 1회당 거리가 좋아졌는데 정말 좋아진 걸까요?",
+   "a": "노선 난이도·조건 구성이 바뀌었는지 — 업무 8번·우대 KPI 줄.[1]"
+  },
+  {
+   "q": "시험 중 자율주행이 차선을 넘으려 하면 무엇부터 하나요?",
+   "a": "먼저 넘겨받고 그다음 기록 — 실차 운행 능력 요건.[1][25]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "42dot 채용 · Test Engineer (Autonomous Driving)",
+   "url": "https://jobs.ashbyhq.com/42dot/7bc7935d-2925-4a60-bd6e-f2ccfcfc7873",
+   "kind": "posting",
+   "note": "AD Test팀 소개·업무·요건·우대·전형·팀 메시지. 수집 2026-11-25"
+  },
+  {
+   "n": 2,
+   "title": "아이뉴스24 · 사람 눈 대신 카메라가 본다…현대차 SDV 테스트카의 자율주행은[현장]",
+   "url": "https://inews24.com/view/2004893",
+   "kind": "news",
+   "date": "2026-09-13",
+   "note": "자율주행 미디어 데이. 자율주행 테스트팀장(박지열 TL) 발언 — 시험차 20여 대, 워크숍 스모크 테스트, SER 앞뒤 15초, 수집차 40여 대·주 80시간"
+  },
+  {
+   "n": 3,
+   "title": "현대자동차그룹 · AI 데이터 플라이휠로 자율주행 혁신 가속",
+   "url": "https://www.hyundaimotorgroup.com/en/news/hyundai-motor-group-accelerates-autonomous-driving-innovation-with-ai-powered-data-flywheel",
+   "kind": "company",
+   "date": "2026-09-13",
+   "note": "Hard Example Mining·3DGS 가상 검증·Follow-the-Sun·어려운 사례 갈래·도심 영상 열 가지 장면"
+  },
+  {
+   "n": 4,
+   "title": "42dot 블로그 · 42dot Work&Way l Autonomous Driving편",
+   "url": "https://www.42dot.ai/ko/stories/blog-news/workandway4",
+   "kind": "company",
+   "date": "2026-09-07",
+   "note": "Atria AI Group 개발자 — 실도로·시뮬레이션 반복 시험. 본문은 영상이고 영상 주소를 찾지 못해 소개문만 읽음"
+  },
+  {
+   "n": 5,
+   "title": "42dot 채용 · System Test Engineer (SW Update)",
+   "url": "https://jobs.ashbyhq.com/42dot/403e89b4-fdf4-4168-a115-163706830174",
+   "kind": "posting",
+   "note": "같은 회사 V&V 팀 공고 — Linux·CANoe·CANape 요건"
+  },
+  {
+   "n": 6,
+   "title": "인디스워크 · 42dot [집중채용] Simulation Engineer (Autonomous Driving)",
+   "url": "https://inthiswork.com/archives/377122",
+   "kind": "posting",
+   "note": "같은 회사 공고 사본 — 고정밀 시뮬레이션 환경, CARLA·CarSim·Simulink 우대(검색 요약으로 확인)"
+  },
+  {
+   "n": 7,
+   "title": "42dot 채용 · 복리후생 프로그램",
+   "url": "https://42dot.ai/careers/program",
+   "kind": "company",
+   "note": "한국 본사 기준(해외 법인은 다를 수 있음), 하단 회사 주소 — 2026-11-25 확인"
+  },
+  {
+   "n": 8,
+   "title": "원티드 · 포티투닷 회사 정보",
+   "url": "https://www.wanted.co.kr/company/8794",
+   "kind": "reference",
+   "note": "국민연금 기반 평균연봉·가입 사원수, 기준일 표시 없음"
+  },
+  {
+   "n": 9,
+   "title": "뉴스스페이스 · 포티투닷 2025년 감사보고서",
+   "url": "https://www.newsspace.kr/mobile/article.html?no=15231",
+   "kind": "news",
+   "date": "2026-09-14",
+   "note": "급여·상여 총액"
+  },
+  {
+   "n": 10,
+   "title": "CIO Korea · 포티투닷 경력 개발자 채용",
+   "url": "https://www.cio.com/article/4121874/",
+   "kind": "news",
+   "date": "2026-01-26",
+   "note": "임직원 800명 넘음·개발 인력 70% 넘음"
+  },
+  {
+   "n": 11,
+   "title": "판교 제2테크노밸리 소프트웨어드림센터 입주기업 모집 공고",
+   "url": "https://www.venturesquare.net/announcement/1094320",
+   "kind": "reference",
+   "note": "소프트웨어드림센터 주소 — 창업로40번길 20"
+  },
+  {
+   "n": 12,
+   "title": "SAE International · J3016 Levels of Driving Automation (2021)",
+   "url": "https://www.sae.org/standards/content/j3016_202104/",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "ISO 34502:2022 · Test scenarios for automated driving systems — Scenario based safety evaluation framework",
+   "url": "https://www.iso.org/standard/78951.html",
+   "kind": "reference",
+   "date": "2022-11",
+   "note": "위험 요인 → 중요 시나리오 → 구체 시험 → 안전 평가"
+  },
+  {
+   "n": 14,
+   "title": "ISO 34503:2023 · Taxonomy for operational design domain",
+   "url": "https://www.iso.org/standard/78952.html",
+   "kind": "reference",
+   "date": "2023-08",
+   "note": "ODD 계층 분류와 넣을 것·뺄 것·조건부로 적는 형식"
+  },
+  {
+   "n": 15,
+   "title": "ISO 21448:2022 · Safety of the intended functionality (SOTIF)",
+   "url": "https://www.iso.org/standard/77490.html",
+   "kind": "reference",
+   "note": "고장이 아니라 기능의 한계에서 오는 위험 — 알려진·알려지지 않은 위험 시나리오"
+  },
+  {
+   "n": 16,
+   "title": "Menzel · Bagschik · Maurer · Scenarios for Development, Test and Validation of Automated Vehicles",
+   "url": "https://arxiv.org/abs/1801.08598",
+   "kind": "reference",
+   "date": "2018",
+   "note": "기능·논리·구체 시나리오 세 단계"
+  },
+  {
+   "n": 17,
+   "title": "ASAM OpenSCENARIO XML",
+   "url": "https://www.asam.net/standards/detail/openscenario-xml/",
+   "kind": "reference",
+   "note": "시뮬레이터용 시나리오 파일(.xosc) 표준"
+  },
+  {
+   "n": 18,
+   "title": "Euro NCAP · AEB Car-to-Car Test Protocol v3.0.2",
+   "url": "https://cdn.euroncap.com/media/56143/euro-ncap-aeb-c2c-test-protocol-v302.pdf",
+   "kind": "reference",
+   "date": "2019",
+   "note": "CCRs·CCRm·CCRb 세 시나리오"
+  },
+  {
+   "n": 19,
+   "title": "RAND · Driving to Safety (Kalra · Paddock)",
+   "url": "https://www.rand.org/pubs/research_reports/RR1478.html",
+   "kind": "reference",
+   "date": "2016",
+   "note": "도로 주행만으로 안전을 보이려면 수억~수천억 마일"
+  },
+  {
+   "n": 20,
+   "title": "OXTS · RT3000 v4",
+   "url": "https://www.oxts.com/solutions/inertial-navigation-solutions/navigation-hardware/rt3000-v4",
+   "kind": "reference",
+   "note": "위치 0.01m(RTK, 개활지) — 제조사 사양"
+  },
+  {
+   "n": 21,
+   "title": "Vector · CANape",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canape/",
+   "kind": "reference",
+   "note": "측정·보정·기록 도구 제품 페이지"
+  },
+  {
+   "n": 22,
+   "title": "python-can 문서",
+   "url": "https://python-can.readthedocs.io/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "cantools 문서",
+   "url": "https://cantools.readthedocs.io/",
+   "kind": "reference",
+   "note": "DBC 신호표로 CAN 메시지 풀기"
+  },
+  {
+   "n": 24,
+   "title": "California DMV · Disengagement Reports",
+   "url": "https://www.dmv.ca.gov/portal/vehicle-industry-services/autonomous-vehicles/disengagement-reports/",
+   "kind": "reference",
+   "note": "시험 업체가 내는 자율주행 해제 보고 공개"
+  },
+  {
+   "n": 25,
+   "title": "국토교통부 · 자율주행자동차의 안전운행요건 및 시험운행 등에 관한 규정 개정",
+   "url": "https://www.molit.go.kr/USR/I0204/m_45/dtl.jsp?idx=14856",
+   "kind": "reference",
+   "date": "2017",
+   "note": "기능을 충분히 아는 운전자 지정·충분한 안전 조치(검색 요약으로 확인)"
+  },
+  {
+   "n": 26,
+   "title": "Andreas Geiger · Lecture: Self-Driving Cars",
+   "url": "https://www.youtube.com/playlist?list=PL05umP7R6ij321zzKXK6XCQXAaaYjQbzr",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Coursera · Self-Driving Cars Specialization (University of Toronto)",
+   "url": "https://www.coursera.org/specializations/self-driving-cars",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Euro NCAP · AEB Test Protocol v2.0.1",
+   "url": "https://cdn.euroncap.com/media/32278/euro-ncap-aeb-c2c-test-protocol-v201.pdf",
+   "kind": "reference",
+   "note": "CCRs·CCRm 시작 기준점 = 충돌까지 4초(TTC 4s)"
+  }
+ ],
+ "caveat": "AD Test팀의 시나리오 목록·합격 기준·지표·시뮬레이터 이름은 공개되지 않았습니다. 회사 근거는 이 공고, 같은 회사 시험·시뮬레이션 공고, 2026-09 자율주행 미디어 데이 보도와 현대차그룹 발표, 42dot 블로그 소개문입니다(Work&Way 영상은 주소를 찾지 못해 자막을 읽지 못했다). 시나리오·ODD·지표·장비 설명은 ISO 34502·34503·Euro NCAP·OpenSCENARIO 같은 공개 기준으로 '보통 이런 것'을 보였습니다. 2026-11-25 기준.",
+ "resources": [
+  {
+   "id": "acorn-auto-sw",
+   "title": "자동차 임베디드 소프트웨어 개발 프로세스와 기술 입문",
+   "by": "에이콘 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000010184723",
+   "why": "'차량 기능 시험·검증' 요건의 바탕 — 자동차 개발 절차와 차량 네트워크·표준을 한국어로 한 번에 훑습니다."
+  },
+  {
+   "id": "coursera-sdc",
+   "title": "Self-Driving Cars Specialization",
+   "by": "University of Toronto · Coursera",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.coursera.org/specializations/self-driving-cars",
+   "why": "첫 과목이 차량 하드웨어·소프트웨어 구조·안전 체계를 다룹니다. '자율주행·ADAS 동작 원리' 요건과 인지·판단·제어 우대 줄의 전체 그림."
+  },
+  {
+   "id": "geiger-sdc",
+   "title": "Lecture: Self-Driving Cars",
+   "by": "Andreas Geiger · University of Tübingen",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/playlist?list=PL05umP7R6ij321zzKXK6XCQXAaaYjQbzr",
+   "why": "인지·예측·계획·end-to-end 주행을 강의로 — 이슈를 '못 봤나·잘못 정했나'로 가르는 감을 줍니다."
+  },
+  {
+   "id": "sae-j3016",
+   "title": "SAE J3016 — Taxonomy and Definitions for Terms Related to Driving Automation Systems",
+   "by": "SAE International · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.sae.org/standards/content/j3016_202104/",
+   "why": "Level 2와 Level 3 이상에서 운전자와 시스템이 각각 무엇을 맡는지 공식 정의로."
+  },
+  {
+   "id": "menzel-scenarios",
+   "title": "Scenarios for Development, Test and Validation of Automated Vehicles",
+   "by": "Menzel · Bagschik · Maurer · 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1801.08598",
+   "why": "업무 2번의 뼈대 — 기능·논리·구체 시나리오를 어떻게 나누고 이어 쓰는지 짧은 논문 하나로."
+  },
+  {
+   "id": "iso34502",
+   "title": "ISO 34502:2022 Scenario based safety evaluation framework",
+   "by": "ISO",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/78951.html",
+   "why": "위험 요인에서 중요한 시나리오를 뽑아 구체 시험으로 나누는 절차. 유료라 ISO 페이지의 범위·목차부터 봅니다."
+  },
+  {
+   "id": "iso34503",
+   "title": "ISO 34503:2023 Taxonomy for operational design domain",
+   "by": "ISO",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/78952.html",
+   "why": "ODD를 계층으로 나눠 적는 형식 — 우대 'ODD 기반 테스트 설계·커버리지' 줄의 공통 언어."
+  },
+  {
+   "id": "euroncap-aeb",
+   "title": "Euro NCAP AEB Car-to-Car Test Protocol",
+   "by": "Euro NCAP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cdn.euroncap.com/media/56143/euro-ncap-aeb-c2c-test-protocol-v302.pdf",
+   "why": "실제 시험 절차서가 어떻게 생겼는지 — 시나리오 정의·속도 범위·시작 조건·허용 오차. Test Procedure를 쓸 때 본보기."
+  },
+  {
+   "id": "openscenario",
+   "title": "ASAM OpenSCENARIO XML",
+   "by": "ASAM",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.asam.net/standards/detail/openscenario-xml/",
+   "why": "실차 장면을 시뮬레이션 시나리오 파일로 옮길 때 쓰는 표준 형식(업무 7번)."
+  },
+  {
+   "id": "carla-docs",
+   "title": "CARLA Simulator 문서",
+   "by": "CARLA 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://carla.readthedocs.io/",
+   "why": "무료 오픈소스 자율주행 시뮬레이터. 시나리오를 돌리고 결과를 기록하는 회귀 시험을 직접 만들어 볼 수 있습니다."
+  },
+  {
+   "id": "rand-miles",
+   "title": "Driving to Safety",
+   "by": "Kalra · Paddock · RAND · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.rand.org/pubs/research_reports/RR1478.html",
+   "why": "왜 '많이 달리기'만으로는 안 되고 노선·시나리오를 골라야 하는지(업무 8번)를 숫자로."
+  },
+  {
+   "id": "ca-dmv",
+   "title": "California DMV Disengagement Reports",
+   "by": "California DMV",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.dmv.ca.gov/portal/vehicle-industry-services/autonomous-vehicles/disengagement-reports/",
+   "why": "실제 공개된 해제 기록 데이터 — KPI를 만들어 보고 '난이도를 모르면 비교가 왜 위험한가'를 확인하는 연습 재료."
+  },
+  {
+   "id": "pandas-docs",
+   "title": "pandas 공식 문서 · 10 minutes to pandas",
+   "by": "pandas 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://pandas.pydata.org/docs/user_guide/10min.html",
+   "why": "우대 'Python 주행 데이터 분석' — 로그를 읽고 조건별로 나눠 지표를 세는 기본기."
+  },
+  {
+   "id": "vector-can",
+   "title": "Vector E-Learning · CAN",
+   "by": "Vector Informatik",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://elearning.vector.com/course/view.php?id=20",
+   "why": "CAN 메시지·주기·오류를 무료로 — 차량 네트워크 데이터 분석 우대 줄."
+  },
+  {
+   "id": "python-can",
+   "title": "python-can 문서",
+   "by": "python-can 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://python-can.readthedocs.io/",
+   "why": "파이썬으로 CAN 기록을 읽고 가상 버스로 주고받는 자동화를 만들어 봅니다."
+  },
+  {
+   "id": "cantools",
+   "title": "cantools 문서",
+   "by": "cantools 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cantools.readthedocs.io/",
+   "why": "DBC 신호표로 CAN 바이트를 차속·브레이크 같은 값으로 풉니다 — 위 예시를 신호표로 바꿔 보기."
+  },
+  {
+   "id": "oxts-rt",
+   "title": "OXTS RT3000 v4",
+   "by": "OXTS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.oxts.com/solutions/inertial-navigation-solutions/navigation-hardware/rt3000-v4",
+   "why": "기준 계측 장비가 무엇을 얼마나 정확히 재는지 — 장비 우대 줄."
+  },
+  {
+   "id": "vector-canape",
+   "title": "Vector CANape",
+   "by": "Vector Informatik",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.vector.com/int/en/products/products-a-z/software/canape/",
+   "why": "차량 신호·측정값을 시간축으로 함께 기록하는 도구가 무엇을 하는지 — 장비 우대 줄."
+  },
+  {
+   "id": "tlcl",
+   "title": "The Linux Command Line",
+   "by": "William Shotts · 무료 온라인판",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "why": "Linux 우대 줄 — 파일·파이프·셸 스크립트로 로그 처리 반복 작업을 묶는 기본."
+  },
+  {
+   "id": "jira-docs",
+   "title": "Jira 이슈 관리 가이드",
+   "by": "Atlassian",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.atlassian.com/software/jira/guides",
+   "why": "이슈 재현·확인 기록을 남기는 도구 — 이슈 관리 요건·JIRA/Confluence 우대 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "자율주행 기능 감 잡기",
+   "time": "2~3주",
+   "goal": "ACC·LKA·AEB·자동 주차가 무엇을 보고 언제 개입·해제되는지, Level 2와 3의 차이를 설명할 수 있다.",
+   "resources": [
+    "sae-j3016",
+    "coursera-sdc",
+    "geiger-sdc"
+   ],
+   "task": "기능 4개마다 '입력(무엇을 보나) → 판단 → 출력(어떻게 움직이나) → 꺼지는 조건'을 한 장 표로 정리한다."
+  },
+  {
+   "title": "시나리오·절차 쓰기",
+   "time": "2~3주",
+   "goal": "기능·논리·구체 시나리오와 ODD를 나눠 쓰고 합격 기준을 붙일 수 있다.",
+   "resources": [
+    "menzel-scenarios",
+    "euroncap-aeb",
+    "iso34503"
+   ],
+   "task": "가상의 '도심 차간 거리 유지' 기능의 ODD(넣을 것·뺄 것·조건부)를 적고, 끼어들기·정차 차량·급제동 시나리오 3개를 논리 시나리오와 절차서(출발 조건·반복 수·기록 항목·합격 기준)로 쓴다."
+  },
+  {
+   "title": "시뮬레이션 회귀 시험",
+   "time": "3~4주",
+   "goal": "시나리오를 시뮬레이터에서 묶음으로 돌리고 버전별 퇴행을 자동으로 보고한다.",
+   "resources": [
+    "carla-docs",
+    "openscenario"
+   ],
+   "task": "CARLA에서 끼어들기 시나리오의 속도·간격을 바꾼 변형 18개를 돌려 최소 TTC로 자동 판정하고, 설정 하나를 바꾼 두 번째 실행과 비교해 '퇴행 목록'을 출력한다."
+  },
+  {
+   "title": "주행 데이터 분석과 KPI",
+   "time": "2~3주",
+   "goal": "로그에서 지표를 뽑아 조건별로 나누고 약한 조건을 찾아낸다.",
+   "resources": [
+    "pandas-docs",
+    "ca-dmv",
+    "rand-miles"
+   ],
+   "task": "가상 주행 로그(노선·날씨·km·개입 횟수)를 만들어 개입 1회당 거리를 조건별로 계산하고, ODD 칸 커버리지와 빈 칸 목록을 다음 노선 계획으로 낸다. 공개 해제 보고 데이터로 같은 표를 하나 더 만든다."
+  },
+  {
+   "title": "차량 신호·계측 (선택)",
+   "time": "계속",
+   "goal": "CAN 기록을 신호값으로 풀고 기준 계측값과 시간을 맞춰 본다.",
+   "resources": [
+    "vector-can",
+    "python-can",
+    "cantools",
+    "oxts-rt",
+    "vector-canape",
+    "tlcl"
+   ],
+   "task": "가상 DBC 파일과 CAN 로그를 만들어 cantools로 차속·브레이크를 풀고, 별도 '기준 장비' 기록과 시각을 맞춰 제동 시작 시점 차이를 계산하는 셸+파이썬 스크립트를 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 원티드 집계 평균은 **약 6,032만원**(국민연금 기준, 기준일 미표시) — 신입부터 섞인 전 직원 값이라 3년차 이상 경력직 몫과 다르다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계(국민연금)",
+    "note": "원티드 회사 정보의 평균연봉, 국민연금 가입 사원 804명 기준. 기준일이 적혀 있지 않다 [8]"
+   },
+   {
+    "label": "2025년 급여·상여 총액",
+    "value": "급여 891억원 · 상여 472억원",
+    "basis": "감사보고서 · 2025년(기사 인용)",
+    "note": "전년보다 급여 46%·상여 127% 늘었다. 인원이 같이 적혀 있지 않아 1인당 금액은 계산하지 않는다 [9]"
+   }
+  ],
+  "how": "비상장사라 사업보고서의 '직원 1인 평균 급여액'이 없다. 공고의 전형은 서류 → 1차 면접(화상 1시간) → 2차 면접(대면 혹은 화상 3시간) → **처우 협의**라 연봉은 사람마다 정한다 [1]. 임직원은 800명이 넘고 70% 넘게 개발 인력이다 [10]. 3개월 수습기간이 적용될 수 있다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "재량근무·선택적근무, 최고 사양 업무 장비"
+   },
+   {
+    "name": "회복 휴가",
+    "detail": "법정 연차 외에 매달 하루 유급"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진 전액, 단체 상해보험(본인·배우자·자녀·본인 부모), 사내 1:1 PT·GX, 상주 간호사"
+   },
+   {
+    "name": "식사",
+    "detail": "사내 식당에서 하루 세 끼 무료"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 최대 300만원, 설·추석 포인트 별도"
+   },
+   {
+    "name": "장기근속",
+    "detail": "근속 연수에 따라 휴가와 포상금"
+   },
+   {
+    "name": "전기차",
+    "detail": "구매 때 차값의 최대 15%(1,000만원 한도) 지원, 전기차 대여 프로그램"
+   },
+   {
+    "name": "성장",
+    "detail": "국내외 교육·세미나·학회 참가비, 워크숍 비용"
+   },
+   {
+    "name": "주거·생활",
+    "detail": "근속에 따라 1,000만~5,000만원 무이자 대출, 직장 어린이집, 휴양시설 월별 추첨"
+   }
+  ],
+  "note": "42dot 채용 사이트의 복리후생 프로그램. 한국 본사 기준이고 해외 법인은 다를 수 있다고 적혀 있다. 페이지에 날짜가 없어 2026-11-25 에 본 내용이다 [7]"
+ },
+ "location": {
+  "name": "포티투닷 판교 사옥(소프트웨어드림센터 A동)",
+  "address": "경기도 성남시 수정구 창업로40번길 20, A동",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EC%88%98%EC%A0%95%EA%B5%AC%20%EC%B0%BD%EC%97%85%EB%A1%9C40%EB%B2%88%EA%B8%B8%2020",
+  "near": "판교 제2테크노밸리 {추론}",
+  "note": "주소는 42dot 채용 사이트 하단 회사 정보다 [7]. 같은 주소가 소프트웨어드림센터 건물이라 공고의 'Pangyo (Software Dream Center)'와 같은 곳으로 본다 [11]. 사옥 안 비히클 워크숍에서 시험차에 새 소프트웨어를 깔고 점검한다 [2]. 공고 근무지에 '(Remote)'가 붙어 있지만 실차 시험 자리라 출근 범위는 면접에서 확인한다 [1] {추론}."
+ }
+}
