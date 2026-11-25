@@ -1,0 +1,865 @@
+{
+  "id": "coupang-ai-foundations-senior-staff-mle-mtv",
+  "company": "쿠팡 (Coupang)",
+  "role": "Senior Staff Machine Learning Engineer — AI Foundations",
+  "team": "Coupang AI Foundations (마운틴뷰 사무실 출근 근무)",
+  "jobs": [
+    "ats-greenhouse:coupang:7793770"
+  ],
+  "researched_at": "2026-11-25",
+  "tldr": {
+    "what": "쿠팡의 쇼핑 문제에 맞춰 **생각하는 모델(추론 모델)과 다음 낱말을 이어 쓰는 모델(토큰 완성 모델)을 더 빠르고·싸고·정확하게 만드는 방법**을 찾는 자리입니다.[1] 공고가 예로 든 일은 사진으로 상품 정보를 채우기, 모델이 어떻게 생각했는지 들여다보기, 쇼핑에 맞춘 새 모델 구조입니다.[1]",
+    "env": "쿠팡은 3B~20B(파라미터 30억~200억 개) 크기 모델을 즐겨 쓰고, 실시간은 NVIDIA Triton, 대량 처리는 Ray + vLLM 으로 돌립니다. 이미지·글을 같이 다루는 모델로 CLIP 을 골랐다고 밝혔습니다.[4] 공고의 부서 칸은 팀 이름이 아니라 '상시 채용(Evergreen)' 묶음입니다.[1]",
+    "oneline": "남이 만든 모델을 붙여 쓰는 자리가 아니라 **모델 안쪽(추론 비용·구조·생각 기록)을 고치는** 연구형 엔지니어 자리입니다. 공고 문장이 짧아서 같은 채용 번호의 시애틀판 공고[2]와 회사 글[4][6][7]로 빈칸을 읽어야 합니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "We are looking for experienced and innovative ML engineers with an entrepreneurial mindset to be part of the technical team pioneering in advance AI engineering for e-commerce scenarios at Coupang.",
+      "short": "정해진 과제를 받는 게 아니라, 쇼핑에 쓸 AI 기술의 '처음 시도'를 스스로 골라 끌고 가는 사람을 찾는다.",
+      "why": "'창업가 같은 마음가짐(entrepreneurial mindset)'은 쿠팡 회사 소개에도 되풀이되는 말입니다 — 모두가 새 일을 벌일 기회에 둘러싸인 창업가라고 적었습니다.[1] 이 팀은 이미 있는 검색·광고 팀이 아니라 그 밑바닥 기술(Foundations)을 앞서 시도하는 팀으로 소개됩니다.[1]",
+      "actually": {
+        "intro": "쿠팡이 공개한 LLM 쓰임새를 보면 '쇼핑 시나리오'는 이런 것들입니다.",
+        "items": [
+          "**검색 관련성** — 검색어와 상품이 맞는지 판정. 쿠팡은 새 시장(대만 등)처럼 정답 데이터가 거의 없는 곳에서 여러 나라 말 LLM 으로 관련성 모델을 처음부터 세운 경험을 논문으로 냈습니다(CIKM 2025).[7]",
+          "**약한 정답 만들기** — LLM 이 붙인 정답(사람이 단 게 아닌 정답)으로 관련성 모델을 학습시키면 품질이 올랐다고 밝혔습니다.[4]",
+          "**번역** — 범용 LLM 보다 쇼핑 번역을 잘하는 전용 모델을 만들어 검색 품질을 높였다는 팀이 있습니다.[6]",
+          "**리뷰 요약·상품 비교** — 2026년 화면에 'AI 상품 비교'·상품 한눈에 보기 같은 기능이 나왔습니다.[8]",
+          "**이미지 이해** — 비슷한 상품·광고 묶기, 쇼핑 피드의 이미지 품질 개선.[4][5]"
+        ]
+      },
+      "how_far": "직급이 Senior Staff 라 '무엇을 할지'를 스스로 제안해야 합니다 {추론}. 공고가 우대로 '기술 혁신으로 큰 사업 효과를 낸 실적'을 따로 적은 것도 같은 뜻입니다.[1] 최소선은 '이 쇼핑 문제에는 이 모델 기법이 왜 맞나'를 숫자로 설명하는 것입니다 {추론}.",
+      "refs": [1, 4, 5, 6, 7, 8],
+      "study": ["coupang-llm-blog", "csrm-paper", "ai-eng-book"]
+    },
+    {
+      "section": "task",
+      "quote": "We pioneer in innovative optimization techniques for AI reasoning and token completion models.",
+      "short": "생각하는 모델과 이어 쓰는 모델을 더 빠르게·싸게·정확하게 만드는 새 기법을 찾고 실제로 적용한다.",
+      "why": "추론 모델(답 전에 생각을 길게 써 내려가는 모델)은 생각에 쓴 토큰만큼 시간과 돈이 듭니다.[24] 쿠팡은 LLM 을 쓰는 데 GPU 부족과 비용을 큰 어려움으로 꼽았고, H100 의 fp8(8비트 부동소수점) 양자화에서 기회를 본다고 적었습니다.[4] 같은 채용 번호의 시애틀판 공고는 우대에 양자화·CUDA·증류 같은 **모델 최적화**를 직접 적었습니다.[2]",
+      "actually": {
+        "intro": "'최적화'에 들어가는 대표적인 일입니다. 쿠팡이 이 중 무엇을 하는지는 공개되지 않았고, 아래는 공개 문서의 일반론입니다.",
+        "items": [
+          "**서빙 처리량** — KV 캐시(앞에서 계산한 값을 담아 두는 메모리)를 쪽 단위로 나눠 낭비를 줄이는 vLLM. 쿠팡은 vLLM 으로 여러 작업에서 처리량이 약 20배 올랐다고 밝혔습니다.[4][12]",
+          "**추측 디코딩** — 작은 모델이 몇 토큰을 먼저 쓰고 큰 모델이 한 번에 검사해, 결과는 그대로 두고 속도만 올린다.[11]",
+          "**증류** — 큰 모델의 답을 작은 모델에 가르쳐 실시간에 쓴다. 쿠팡은 이 길(또는 LLM 임베딩을 작은 모델에 넘기는 길)로 실제 서비스에 넣는다고 적었습니다.[4][20]",
+          "**생각 길이 조절** — 쉬운 질문엔 짧게, 어려운 질문엔 길게 생각하게 해 같은 비용에서 정답률을 올리는 연구가 있습니다.[24]",
+          "**양자화** — 숫자를 16비트에서 8비트로 줄여 메모리·속도를 얻는다.[2][4]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "추측 디코딩 — 큰 모델 한 번 부를 때 토큰이 몇 개 나오나",
+          "body": "작은 모델의 추측이 맞을 확률 α, 한 번에 추측하는 개수 k 일 때 기댓값은 (1 − α^(k+1)) / (1 − α) 입니다.[11] α 가 0.8 이고 5개를 추측하면 큰 모델 한 번에 약 3.69 토큰 — 쇼핑 문장처럼 뻔한 낱말이 많을수록 α 가 높아 이득이 큽니다 {추론}. 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "def expected_tokens(alpha, k):\n    return (1 - alpha ** (k + 1)) / (1 - alpha)\n\nfor alpha in (0.6, 0.8, 0.9):\n    print(alpha, [round(expected_tokens(alpha, k), 2) for k in (1, 3, 5)])\n# 0.6 [1.6, 2.18, 2.38]\n# 0.8 [1.8, 2.95, 3.69]\n# 0.9 [1.9, 3.44, 4.69]"
+        }
+      ],
+      "how_far": "논문을 읽고 끝나는 게 아니라 **쿠팡 작업에서 몇 배 빨라졌나·정답률이 얼마나 지켜졌나**를 재서 내놓는 데까지입니다 {추론}. 공고가 '독립적으로 설계·구현'과 '빠른 실험'을 우대에 적었습니다.[1]",
+      "refs": [1, 2, 4, 11, 12, 20, 24],
+      "study": ["specdec-paper", "vllm-paper", "lec-cs336-inference", "lec-cs25-serving", "lec-cme295-reasoning"]
+    },
+    {
+      "section": "qualification",
+      "quote": "8+ years of relevant experience",
+      "short": "관련 경력 8년 이상. Senior Staff 직급의 일반적인 문턱이다.",
+      "why": "같은 회사 같은 직급 공고들도 8~10년을 적습니다 — 시애틀 Senior Staff 백엔드 8년, 서울 Senior Staff 백엔드 10년.[25][26] '관련(relevant)'이라 순수 ML 연차만이 아니라 소프트웨어 경력도 셉니다 {추론}. ML 만 따로 5년을 다음 줄에 요구합니다.[1]",
+      "how_far": "연차보다 **혼자 끌고 간 큰 프로젝트**가 몇 개인지가 면접에서 갈린다고 보는 게 맞습니다 {추론}. 전형은 서류 → 직무 적합 면접 → 집중 면접 → 제안입니다.[1]",
+      "refs": [1, 25, 26]
+    },
+    {
+      "section": "qualification",
+      "quote": "Bachelors degree in Computer Science or related fields",
+      "short": "컴퓨터공학 또는 관련 전공 학사. 박사가 필수는 아니다.",
+      "why": "연구형 자리지만 공고는 학사만 적었습니다.[1] 시애틀판도 같은 요건입니다.[2]",
+      "how_far": "수학·통계·전기전자 같은 관련 전공이면 됩니다 {추론}. 석사·박사·논문은 공고에 없는 가산점입니다 {추론}.",
+      "refs": [1, 2]
+    },
+    {
+      "section": "qualification",
+      "quote": "5+ years of experience in AI/ML and familiarity with the latest deep learning techniques",
+      "short": "AI·ML 실무 5년 이상, 그리고 최신 딥러닝 기법(트랜스포머·추론 모델·멀티모달)을 따라가고 있을 것.",
+      "why": "이 팀의 일이 '최적화 기법을 앞서 시도'하는 것이라[1] 최신 논문을 읽고 바로 실험으로 옮길 수 있어야 합니다 {추론}.",
+      "actually": {
+        "intro": "2026년 기준 '최신 딥러닝 기법'으로 공개 문서에서 자주 나오는 것들입니다.",
+        "items": [
+          "**생각의 사슬(chain-of-thought)** — 답 전에 풀이 과정을 쓰게 하면 정답률이 오른다.[17]",
+          "**강화학습으로 기른 추론** — 정답을 확인할 수 있는 문제로 보상을 줘 생각하는 습관을 기른다(DeepSeek-R1).[18]",
+          "**이미지-글 함께 배우기** — 사진과 설명을 같은 공간에 놓는 CLIP. 쿠팡도 썼다.[4][16]",
+          "**서빙 최적화** — vLLM·추측 디코딩·양자화.[11][12]"
+        ]
+      },
+      "level": {
+        "basic": "트랜스포머 구조·학습 루프·손실 함수를 설명하고 PyTorch 로 작은 모델을 학습시킨다",
+        "work": "공개 모델을 미세조정·증류·양자화해 서비스에 넣고 지연·비용을 잰다",
+        "team": "추론 모델의 생각 토큰·서빙 비용·모델 구조를 바꾸는 실험을 설계하고 결과로 방향을 정한다"
+      },
+      "how_far": "'익숙함(familiarity)'이라 모든 기법을 해 봤을 필요는 없습니다. 최근 1~2년 핵심 논문을 읽고 **자기 말로 장단점을 비교**할 수 있으면 됩니다 {추론}.",
+      "refs": [1, 4, 11, 12, 16, 17, 18],
+      "study": ["lec-cme295-reasoning", "lec-cs336-rlvr", "lec-cs336-arch", "deepseek-r1"]
+    },
+    {
+      "section": "preference",
+      "quote": "10+ years of relevant experience in technology companies or organizations",
+      "short": "기술 회사 경력 10년 이상이면 더 좋다. 필수 8년보다 2년 높은 우대선.",
+      "why": "필수(8년)와 우대(10년)를 나눠 적어 8년대 지원자도 받겠다는 뜻입니다.[1] 서울 같은 직급 백엔드 공고는 10년을 필수로 적었습니다.[26]",
+      "how_far": "숫자보다 그 10년 동안 **ML 을 실제 서비스에 넣어 본 횟수**가 중요합니다 {추론}.",
+      "refs": [1, 26]
+    },
+    {
+      "section": "preference",
+      "quote": "Knowledge in e-commerce or eagerness to learn",
+      "short": "쇼핑 도메인(검색·카탈로그·상품 정보)을 알거나, 모르면 빨리 배울 의지.",
+      "why": "쇼핑의 '맞다/틀리다'는 일반 상식과 다릅니다. 쿠팡 논문은 쇼핑 관련성 기준이 분야마다 달라서 기성 LLM 이 정답 없이 바로 쓰면(zero-shot) 잘 못한다고 적었습니다.[7]",
+      "actually": {
+        "items": [
+          "**카탈로그** — 같은 상품이 여러 판매자 이름으로 올라온다. 쿠팡은 이미지·글 임베딩으로 중복 상품을 찾는 일을 했다.[5]",
+          "**검색 관련성** — '무선청소기 필터' 검색에 청소기 본체가 나오면 틀린 결과다 {추론}.",
+          "**한국어·중국어** — 띄어쓰기·글자 단위 표기 때문에 토크나이저(글을 토큰으로 자르는 장치)가 모델 품질에 영향을 준다고 쿠팡이 적었다.[4]",
+          "**규모** — 2025년 4분기 상품 커머스 활성 고객 2,460만 명.[22]"
+        ]
+      },
+      "how_far": "'배울 의지'로 충분하다고 했으니 필수는 아닙니다.[1] 면접 전에 쿠팡 글 두 편[4][5]과 관련성 논문[7]을 읽어 두는 게 최소선입니다 {추론}.",
+      "refs": [1, 4, 5, 7, 22],
+      "study": ["coupang-llm-blog", "coupang-ml-platform", "csrm-paper"]
+    },
+    {
+      "section": "preference",
+      "quote": "Experience applying Large Language Models or Large Image Models in an industry",
+      "short": "LLM 이나 대형 이미지 모델을 연구실 밖 실제 서비스에 적용해 본 경험.",
+      "why": "쿠팡은 언어 쪽은 3B~20B 크기 모델(LLaMA·T5·Phi·Polyglot 계열)을, 이미지-글 쪽은 CLIP·TrOCR(사진 속 글자를 읽는 모델)을 골랐다고 밝혔습니다.[4] '산업에서 적용'은 이 모델들을 지연·비용 제한 안에서 돌려 본 경험입니다 {추론}.",
+      "actually": {
+        "intro": "쿠팡이 적은 '실제 서비스에 넣는 길' 두 가지입니다.[4]",
+        "items": [
+          "**증류** — 학습한 큰 LLM 에서 작은 모델을 뽑아 실시간에 쓴다.",
+          "**임베딩 넘기기** — LLM 이 만든 벡터를 작은 랭킹 모델의 입력으로 쓴다. 랭킹 문제에서 이 방식이 쓰인다고 했다.",
+          "**대량 처리** — 실시간이 아닌 작업(번역·요약·키워드 생성)은 Ray + vLLM 으로 몰아서 돌린다.",
+          "**자주 쓰는 방법** — 프롬프트 예시 넣기(ICL)와 지도 미세조정(SFT)이 가장 많이 쓰인다."
+        ]
+      },
+      "how_far": "API 를 불러 본 경험보다 **모델을 직접 미세조정·서빙해 본 경험**이 이 자리에 맞습니다 — 팀이 모델 최적화를 한다고 했기 때문입니다[1] {추론}.",
+      "refs": [1, 4],
+      "study": ["coupang-llm-blog", "ai-eng-book", "clip-paper"]
+    },
+    {
+      "section": "preference",
+      "quote": "Hands-on with ability to design and implement high-quality algorithms / systems independently",
+      "short": "설계만 하는 리더가 아니라, 알고리즘·시스템을 혼자 직접 짜서 돌아가게 만드는 사람.",
+      "why": "Senior Staff 는 흔히 사람을 이끄는 자리로 오해받지만 이 공고는 '직접 손으로(hands-on)'를 먼저 적었습니다.[1] 쿠팡 회사 소개도 '손을 더럽히며' 직접 일하는 사람을 원한다고 적었습니다.[1]",
+      "how_far": "논문의 기법을 **남의 도움 없이 쿠팡 데이터에 맞게 다시 구현**하고, 품질 좋은 코드(테스트·재현 가능한 실험)로 남기는 수준입니다 {추론}.",
+      "refs": [1],
+      "study": ["ml-design-book"]
+    },
+    {
+      "section": "preference",
+      "quote": "Ability to dive deep into the algorithms / systems and generate ideas of improvements",
+      "short": "모델·시스템 속을 끝까지 파 내려가 '어디가 느리고 왜 틀리나'를 찾고 고칠 생각을 내는 능력.",
+      "why": "최적화 기법을 '앞서 시도'하려면[1] 남의 결과를 따라 하기보다 병목을 스스로 찾아야 합니다 {추론}. 쿠팡은 GPU 사용률·프로파일링을 앞으로 할 일로 꼽았습니다.[4]",
+      "actually": {
+        "items": [
+          "**속도 병목 찾기** — 한 요청의 시간이 '앞부분 읽기(prefill)'와 '한 토큰씩 쓰기(decode)' 중 어디에 몰리는지 잰다.[12]",
+          "**메모리 병목** — KV 캐시가 GPU 메모리를 얼마나 차지해 동시 요청 수를 막는지 본다.[12]",
+          "**틀리는 이유** — 정답률이 떨어진 질문들을 모아 공통점(긴 상품명·외국어·숫자 단위)을 찾는다 {추론}."
+        ]
+      },
+      "how_far": "개선 아이디어를 '해 보자'로 끝내지 않고 **얼마나 나아질지 어림하고 작은 실험으로 확인**하는 것까지입니다 {추론}.",
+      "refs": [1, 4, 12],
+      "study": ["vllm-paper", "lec-cs336-inference"]
+    },
+    {
+      "section": "preference",
+      "quote": "Ability to efficiently run experiments, analyze results, and quickly iterate",
+      "short": "실험을 빨리 돌리고, 결과가 진짜 나아진 건지 통계로 확인하고, 다음 실험으로 넘어가는 능력.",
+      "why": "새 기법을 앞서 시도하는 팀은 실패하는 실험이 많습니다 {추론}. 쿠팡은 모델 탐색 단계에서 70B 넘는 모델과 10B 밑 모델을 견주는 실험을 한다고 적었습니다.[4]",
+      "actually": {
+        "items": [
+          "**오프라인 평가** — 같은 문항 묶음으로 옛 모델·새 모델을 채점하고 차이의 신뢰 구간을 본다.",
+          "**온라인 실험** — 일부 고객에게만 켜고 A/B 실험으로 구매율 같은 지표를 잰다.[21]",
+          "**빠르게 돌리기** — 작은 모델·작은 데이터로 먼저 방향을 보고 큰 실험은 될 것만 한다 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "새 모델이 정말 나은가 — 짝지은 부트스트랩",
+          "body": "500문항에서 옛 모델 412개, 새 모델 431개 정답(가상, 새 모델은 옛 모델이 틀린 19문항을 더 맞히고 맞힌 건 안 틀렸다고 가정). 차이 3.8%p 의 95% 구간이 0.024~0.056 으로 0을 넘지 않으니 우연이 아니라고 볼 수 있습니다. 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "import random\nrandom.seed(7)\na = [1] * 412 + [0] * 88\nb = [1] * 431 + [0] * 69\ndiffs = []\nfor _ in range(2000):\n    idx = [random.randrange(500) for _ in range(500)]\n    diffs.append(sum(b[i] - a[i] for i in idx) / 500)\ndiffs.sort()\nprint(\"차이\", (431 - 412) / 500, \"95% 구간\", round(diffs[50], 3), round(diffs[1949], 3))\n# 차이 0.038 95% 구간 0.024 0.056"
+        }
+      ],
+      "how_far": "실험 하나하나보다 **실험을 빨리 돌리는 판(평가 묶음·자동 채점·기록)을 만드는 것**이 Senior Staff 의 몫입니다 {추론}.",
+      "refs": [4, 21],
+      "study": ["kohavi-book", "lec-cme295-eval"]
+    },
+    {
+      "section": "preference",
+      "quote": "Solid track record of delivering big business impacts via technology innovations",
+      "short": "새 기술로 매출·비용·고객 지표를 크게 바꾼 실적을 숫자로 보여 줄 수 있으면 좋다.",
+      "why": "쿠팡의 CIKM 논문은 기술 결과를 오프라인 점수뿐 아니라 실제 서비스의 결함 비율·구매율 변화로 보고했습니다.[7] 이 회사가 '효과'를 이런 서비스 지표로 잰다는 뜻입니다 {추론}.",
+      "how_far": "이력서에 '모델 정확도 X% 향상'보다 **'서빙 비용 절반·지연 40% 감소·구매율 몇 % 상승'처럼 사업 숫자**로 적는 것이 맞습니다 {추론}.",
+      "refs": [7]
+    },
+    {
+      "section": "preference",
+      "quote": "Excellent communications and collaborations across teams and across functionalities",
+      "short": "검색·카탈로그·광고 팀, 제품·인프라 사람들과 말이 통해야 기술이 실제로 쓰인다.",
+      "why": "밑바닥 기술(Foundations) 팀의 결과는 다른 팀의 서비스에 들어가야 의미가 있습니다 {추론}. 쿠팡은 LLM 을 검색·광고·카탈로그·추천 여러 곳에 쓰고, ML 플랫폼 팀이 그 바탕을 맡는다고 적었습니다.[4]",
+      "how_far": "다른 팀이 쓸 수 있게 **결과를 문서·도구·API 로 내주고, 그 팀의 지표로 효과를 같이 재는 것**까지입니다 {추론}.",
+      "refs": [4]
+    },
+    {
+      "section": "preference",
+      "quote": "Some examples of the related projects:",
+      "short": "아래 세 줄이 이 팀이 실제로 붙잡고 있는 프로젝트 예시다.",
+      "why": "공고 본문이 짧아서 이 예시 세 줄이 일의 내용을 가장 구체적으로 말해 줍니다.[1] 같은 채용 번호의 시애틀판은 다른 예시(사진·글에서 상품 정보 뽑기, 상품 이미지·영상 자동 생성)를 적었습니다.[2]",
+      "how_far": "지원서에 세 예시 중 하나 이상과 맞닿는 경험을 적는 것이 좋습니다 {추론}.",
+      "refs": [1, 2]
+    },
+    {
+      "section": "preference",
+      "quote": "1) Computer vision enabled e-commerce product enablement",
+      "short": "상품 사진을 읽어 상품 정보·분류·품질을 채우고, 사진으로 상품을 찾게 만드는 일.",
+      "why": "쿠팡은 이미지와 글을 함께 배우는 모델이 더 좋은 임베딩을 만든다며 CLIP·TrOCR 을 골랐고, 광고 검색·비슷한 상품 찾기·추천 특징·쇼핑 피드 이미지 품질에 썼다고 밝혔습니다.[4] 시애틀판 공고는 '사진과 정리 안 된 글에서 질 좋은 상품 정보 뽑기'와 '상품 이미지·영상 자동 생성'을 예로 적었습니다.[2]",
+      "actually": {
+        "items": [
+          "**속성 뽑기** — 사진 속 라벨에서 용량·색상·모델명을 읽어 빈 칸을 채운다(TrOCR 같은 글자 읽기).[2][4]",
+          "**분류** — 사진 임베딩을 카테고리 이름 임베딩과 견줘 맞는 분류를 고른다(CLIP 방식).[16]",
+          "**중복 찾기** — 같은 상품의 다른 등록을 사진·글 임베딩으로 묶는다.[5]",
+          "**화면 기능** — 2026년 'AI 인포그래픽'·상품 하이라이트 같은 상품 상세 기능이 나왔다.[8]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "사진 임베딩으로 분류 고르기 (CLIP 방식, 가상 3차원 벡터)",
+          "body": "실제 CLIP 벡터는 수백 차원이지만 원리는 같습니다 — 코사인 유사도가 가장 큰 이름을 고릅니다.[16] 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "import math\ndef cos(u, v):\n    return sum(x * y for x, y in zip(u, v)) / (math.hypot(*u) * math.hypot(*v))\nimage = [0.9, 0.1, 0.3]\nlabels = {\"무선청소기\": [0.8, 0.2, 0.4], \"선풍기\": [0.2, 0.9, 0.1], \"전기포트\": [0.1, 0.3, 0.9]}\nfor name, vec in sorted(labels.items(), key=lambda kv: -cos(image, kv[1])):\n    print(name, round(cos(image, vec), 3))\n# 무선청소기 0.984\n# 전기포트 0.429\n# 선풍기 0.339"
+        }
+      ],
+      "how_far": "모델을 고르는 것보다 **수천만 장의 사진을 싸게 돌리는 길(증류·대량 처리)과 틀린 속성을 잡는 검증**까지 설계하는 것이 이 자리 몫입니다 {추론}.",
+      "refs": [2, 4, 5, 8, 16],
+      "study": ["clip-paper", "lec-cs231n-vl"]
+    },
+    {
+      "section": "preference",
+      "quote": "2) Observability of model reasoning",
+      "short": "모델이 답을 내기까지 무엇을 생각했는지 기록하고 들여다봐, 틀림·낭비·위험을 찾아내는 일.",
+      "why": "추론 모델은 생각 토큰이 비용의 대부분일 수 있어서, 어떤 질문에서 생각이 길어지는지 봐야 비용을 줄일 수 있습니다 {추론}. 시애틀판 공고는 의미 추론·AI 안전·**기계적 해석 가능성(mechanistic interpretability — 모델 내부 회로를 뜯어 보는 연구)**을 같은 팀의 관심사로 적었습니다.[2]",
+      "actually": {
+        "intro": "공개 문서에서 '추론 관찰'은 세 겹으로 나뉩니다. 쿠팡이 어디까지 하는지는 공개되지 않았습니다.",
+        "items": [
+          "**운영 기록** — 호출마다 입력·출력·생각 토큰 수·지연을 남긴다. OpenTelemetry 의 생성형 AI 규약에는 생각에 쓴 출력 토큰 수를 따로 세는 칸이 있다(아직 개발 단계).[15]",
+          "**생각 글 감시** — 모델이 쓴 생각의 사슬을 읽어 이상한 의도를 잡는 방법. 쓸모 있지만 약하고 깨지기 쉽다는 공동 입장문이 있다.[13]",
+          "**내부 들여다보기** — 모델 안의 계산을 추적하면 겉으로 쓴 풀이와 실제 계산이 다른 경우(그럴듯한 풀이를 지어내는 경우)를 잡을 수 있다.[14]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "생각 기록에서 이상한 호출 고르기 (가상 기록)",
+          "body": "생각 토큰이 중앙값의 3배를 넘는 호출과, 답이 카탈로그 정보와 어긋난 호출을 표시합니다. 직접 돌린 출력입니다.",
+          "lang": "python",
+          "code": "traces = [\n    {\"id\": \"q1\", \"reasoning_tokens\": 420,  \"output_tokens\": 60, \"answer_in_catalog\": True},\n    {\"id\": \"q2\", \"reasoning_tokens\": 3900, \"output_tokens\": 55, \"answer_in_catalog\": True},\n    {\"id\": \"q3\", \"reasoning_tokens\": 510,  \"output_tokens\": 70, \"answer_in_catalog\": False},\n    {\"id\": \"q4\", \"reasoning_tokens\": 380,  \"output_tokens\": 48, \"answer_in_catalog\": True},\n]\nmed = sorted(t[\"reasoning_tokens\"] for t in traces)[len(traces) // 2]\nfor t in traces:\n    flags = []\n    if t[\"reasoning_tokens\"] > 3 * med:\n        flags.append(\"생각이 너무 길다\")\n    if not t[\"answer_in_catalog\"]:\n        flags.append(\"답이 카탈로그와 안 맞는다\")\n    share = t[\"reasoning_tokens\"] / (t[\"reasoning_tokens\"] + t[\"output_tokens\"])\n    print(t[\"id\"], f\"생각 비중 {share:.0%}\", flags or \"정상\")\n# q1 생각 비중 88% 정상\n# q2 생각 비중 99% ['생각이 너무 길다']\n# q3 생각 비중 88% ['답이 카탈로그와 안 맞는다']\n# q4 생각 비중 89% 정상"
+        }
+      ],
+      "how_far": "운영 기록(첫 겹)은 기본이고, 이 자리는 **생각 기록으로 '왜 틀렸나·어디서 낭비했나'를 찾아 모델·프롬프트를 고치는 데**까지 가야 합니다 {추론}. 내부 해석 연구(셋째 겹)는 시애틀판에서만 적은 관심사입니다.[2]",
+      "refs": [2, 13, 14, 15],
+      "study": ["cot-monitor", "anthropic-tracing", "otel-genai", "lec-cs230-inside"]
+    },
+    {
+      "section": "preference",
+      "quote": "3) Enabling new model architecture optimized for e-commerce",
+      "short": "범용 LLM 을 그대로 쓰지 않고, 쇼핑 데이터·문제에 맞춘 새 모델 구조를 만들어 실제로 돌게 하는 일.",
+      "why": "쿠팡은 한국어·중국어의 띄어쓰기·글자 표기 때문에 토크나이저가 모델 품질을 흔든다고 적었고[4], 쇼핑 관련성 기준이 분야마다 달라 기성 LLM 이 잘 못한다고 논문에 썼습니다.[7] 범용 구조가 맞지 않는 지점이 있다는 회사 자신의 말입니다.",
+      "actually": {
+        "intro": "'쇼핑에 맞춘 구조'로 공개 문서에 나오는 예입니다. 쿠팡이 무엇을 만드는지는 공개되지 않았습니다.",
+        "items": [
+          "**두 탑(twin-tower) 구조** — 검색어와 상품을 따로 벡터로 만들어 빠르게 견준다. 쿠팡 논문은 큰 LLM(Orion-14B)을 이 구조의 작은 모델(XLM-RoBERTa)로 증류해 실제 서비스에 넣었다.[7]",
+          "**생성형 추천 구조** — 고객의 행동 기록을 문장처럼 다뤄 다음 행동을 예측하는 트랜스포머(Meta 의 HSTU).[19]",
+          "**토크나이저 바꾸기** — 상품명·한국어에 맞게 토큰 자르는 방식을 다시 짠다.[4]",
+          "**멀티모달 구조** — 사진·글·가격을 한 모델이 함께 읽는다.[4][16]"
+        ]
+      },
+      "how_far": "새 구조를 논문 수준으로 제안하는 데서 그치지 않고 **'Enabling'(실제로 쓰이게)** — 학습·서빙 비용 안에 들어오게 만드는 것까지가 일입니다[1] {추론}.",
+      "refs": [1, 4, 7, 16, 19],
+      "study": ["hstu-paper", "csrm-paper", "lec-cs336-arch"]
+    }
+  ],
+  "resources": [
+    {
+      "id": "coupang-llm-blog",
+      "title": "Accelerating Coupang's AI Journey with LLMs",
+      "by": "쿠팡 ML 플랫폼 팀 · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/",
+      "why": "쿠팡이 어떤 크기 모델을 어디에, 어떤 서빙(Triton·vLLM)과 GPU 로 쓰는지. CLIP·TrOCR·fp8 이야기까지 — 지원 전에 가장 먼저 읽을 회사 글."
+    },
+    {
+      "id": "coupang-ml-platform",
+      "title": "Meet Coupang's Machine Learning Platform",
+      "by": "쿠팡 ML 플랫폼 팀 · 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+      "why": "이미지 이해·임베딩 검색·분산 학습 — 이 팀의 실험이 올라설 바닥."
+    },
+    {
+      "id": "csrm-paper",
+      "title": "CSRM-LLM: Embracing Multilingual LLMs for Cold-Start Relevance Matching in Emerging E-commerce Markets",
+      "by": "쿠팡 · CIKM 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2509.01566",
+      "why": "쿠팡이 직접 쓴 논문. 큰 LLM → 작은 두 탑 모델 증류, 번역·검색 보강 — 우대 '쇼핑에 맞춘 모델 구조'와 '사업 효과'를 어떻게 재는지 보인다."
+    },
+    {
+      "id": "ai-eng-book",
+      "title": "AI 엔지니어링 — 기초 모델로 애플리케이션 구축하기",
+      "by": "칩 후옌 · 변성윤 옮김 · 2025",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=AI%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+      "why": "평가·미세조정·추론 최적화를 한 권으로. 우대 'LLM 을 산업에 적용한 경험'의 지도."
+    },
+    {
+      "id": "ml-design-book",
+      "title": "머신러닝 시스템 설계",
+      "by": "칩 후옌 · 한빛미디어",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+      "why": "모델을 서비스로 만드는 설계·배포·감시 — 우대 '혼자 설계하고 구현'의 바탕."
+    },
+    {
+      "id": "specdec-paper",
+      "title": "Fast Inference from Transformers via Speculative Decoding",
+      "by": "Leviathan · Kalman · Matias · ICML 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2211.17192",
+      "why": "결과를 바꾸지 않고 토큰 생성을 빠르게 하는 대표 기법. 업무 '토큰 완성 모델 최적화'의 출발점."
+    },
+    {
+      "id": "vllm-paper",
+      "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+      "by": "Kwon 외 · SOSP 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2309.06180",
+      "why": "쿠팡이 처리량 20배를 얻었다는 vLLM 의 원리. KV 캐시가 왜 병목인지."
+    },
+    {
+      "id": "deepseek-r1",
+      "title": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
+      "by": "DeepSeek-AI · 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2501.12948",
+      "why": "추론 모델이 어떻게 길러지는지(강화학습·긴 생각). '추론 모델'이 무엇인지 원리로 잡는다."
+    },
+    {
+      "id": "cot-monitor",
+      "title": "Chain of Thought Monitorability: A New and Fragile Opportunity for AI Safety",
+      "by": "Korbak 외 · 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://arxiv.org/abs/2507.11473",
+      "why": "생각 글을 감시하는 일이 왜 쓸모 있고 왜 약한지. 예시 프로젝트 '추론 관찰'의 기준선."
+    },
+    {
+      "id": "anthropic-tracing",
+      "title": "Tracing the thoughts of a large language model",
+      "by": "Anthropic · 2025",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.anthropic.com/research/tracing-thoughts-language-model",
+      "why": "모델 안쪽 계산을 추적하면 겉 풀이와 실제 계산이 다른 경우가 보인다 — 시애틀판의 '기계적 해석 가능성' 입문."
+    },
+    {
+      "id": "otel-genai",
+      "title": "Semantic conventions for generative AI spans",
+      "by": "OpenTelemetry",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-spans/",
+      "why": "LLM 호출 기록(토큰 수·생각 토큰·지연)을 무슨 이름으로 남기나. 추론 관찰의 운영 기록 겹."
+    },
+    {
+      "id": "clip-paper",
+      "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+      "by": "Radford 외 · OpenAI · 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2103.00020",
+      "why": "쿠팡이 고른 이미지-글 모델의 원 논문. 예시 프로젝트 '컴퓨터 비전 상품 정보'의 바탕."
+    },
+    {
+      "id": "hstu-paper",
+      "title": "Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations",
+      "by": "Zhai 외 · Meta · ICML 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2402.17152",
+      "why": "쇼핑·추천에 맞춘 새 트랜스포머 구조의 대표 예. 예시 프로젝트 '쇼핑에 맞춘 새 모델 구조'를 생각할 출발점."
+    },
+    {
+      "id": "kohavi-book",
+      "title": "Trustworthy Online Controlled Experiments",
+      "by": "Ron Kohavi · Diane Tang · Ya Xu · Cambridge University Press · 2020",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://experimentguide.com/",
+      "why": "온라인 실험으로 '사업 효과'를 믿을 수 있게 재는 법. 우대 '빠른 실험·결과 분석'."
+    },
+    {
+      "id": "lec-cme295-reasoning",
+      "title": "Stanford CME295 Lecture 6: LLM Reasoning 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/k5Fh-UgTuCo",
+      "why": "추론 모델이 무엇이고 생각 토큰이 왜 늘어나는지 한 강의로."
+    },
+    {
+      "id": "lec-cs336-inference",
+      "title": "Stanford CS336 Lecture 10: Inference 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/EfM546A79aM",
+      "why": "추론의 지연·메모리·KV 캐시·추측 디코딩·양자화. 업무 '토큰 완성 모델 최적화'의 바탕."
+    },
+    {
+      "id": "lec-cs25-serving",
+      "title": "Stanford CS25 V6: Serving Transformers — Lessons from the Trenches 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/ZUdIsRZhWXI",
+      "why": "실제 서빙 현장에서 무엇이 병목인지. 최적화 아이디어를 서비스 숫자로 옮기는 감각."
+    },
+    {
+      "id": "lec-cs336-rlvr",
+      "title": "Stanford CS336 Lecture 16: Post-Training — RLVR 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "심화",
+      "url": "/lectures/dIFAi87Ws4E",
+      "why": "확인 가능한 보상으로 추론을 기르는 강화학습. '최신 딥러닝 기법' 요건."
+    },
+    {
+      "id": "lec-cs336-arch",
+      "title": "Stanford CS336 Lecture 3: Architectures 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/lVynu4bo1rY",
+      "why": "트랜스포머 구조의 선택지(정규화·위치·어텐션 변형). 새 모델 구조를 고민하기 전 기본기."
+    },
+    {
+      "id": "lec-cs231n-vl",
+      "title": "Stanford CS231N Lecture 16: Vision and Language 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/mQOK0Mfyrkk",
+      "why": "CLIP 같은 이미지-글 모델의 원리. 예시 프로젝트 ①."
+    },
+    {
+      "id": "lec-cs230-inside",
+      "title": "Stanford CS230 Lecture 10: What's Going On Inside My Model? 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/Ozb1AR_F5MU",
+      "why": "모델 속을 들여다보는 방법들. 예시 프로젝트 ② '추론 관찰'의 입문."
+    },
+    {
+      "id": "lec-cme295-eval",
+      "title": "Stanford CME295 Lecture 8: LLM Evaluation 강의 노트",
+      "by": "우리 사이트의 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/8fNP4N46RRo",
+      "why": "LLM 을 어떻게 재나 — 실험 결과를 믿을 수 있게 분석하는 법."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "회사 글과 논문으로 쿠팡의 LLM 지도 그리기",
+      "time": "1주",
+      "goal": "쿠팡이 쓰는 모델 크기·서빙·이미지 모델·증류 경로를 한 장 그림으로 설명한다",
+      "task": "쿠팡 글 두 편과 CSRM 논문을 읽고 '큰 모델 → 증류 → 두 탑 모델 → 서비스' 흐름도를 직접 그려 본다",
+      "resources": ["coupang-llm-blog", "coupang-ml-platform", "csrm-paper"]
+    },
+    {
+      "title": "추론 모델과 서빙 원리",
+      "time": "2~3주",
+      "goal": "생각 토큰·KV 캐시·prefill/decode 가 지연과 비용에 어떻게 들어가는지 계산한다",
+      "task": "작은 공개 모델을 vLLM 으로 띄워, 생각을 길게 시킬 때와 짧게 시킬 때의 토큰 수·지연·정답률을 가상 쇼핑 질문 50개로 표로 만든다",
+      "resources": ["lec-cme295-reasoning", "lec-cs336-inference", "vllm-paper", "deepseek-r1"]
+    },
+    {
+      "title": "최적화 기법 하나를 직접 구현",
+      "time": "2~3주",
+      "goal": "추측 디코딩이나 증류로 같은 품질에서 얼마나 빨라지는지 숫자로 보인다",
+      "task": "작은 모델을 초안 모델로 써서 추측 디코딩을 켜고, 수락률 α 와 실제 속도 향상을 공식 값과 견준다",
+      "resources": ["specdec-paper", "lec-cs25-serving", "ai-eng-book"]
+    },
+    {
+      "title": "추론 관찰 판 만들기",
+      "time": "1~2주",
+      "goal": "호출마다 생각 토큰·지연·답의 사실 여부를 남기고 이상한 호출을 자동으로 골라낸다",
+      "task": "OpenTelemetry 규약 이름으로 가상 호출 기록을 쌓고, 생각이 지나치게 긴 호출·카탈로그와 어긋난 답을 표시하는 작은 대시보드를 만든다",
+      "resources": ["otel-genai", "cot-monitor", "anthropic-tracing", "lec-cs230-inside"]
+    },
+    {
+      "title": "이미지·쇼핑 구조와 실험",
+      "time": "2주",
+      "goal": "사진으로 상품 분류를 고르고, 새 방법이 나은지 통계로 판정한다",
+      "task": "공개 CLIP 모델로 가상 상품 사진 100장을 분류하고, 기존 방법과의 정답률 차이를 짝지은 부트스트랩으로 판정한다",
+      "resources": ["clip-paper", "lec-cs231n-vl", "hstu-paper", "kohavi-book", "lec-cme295-eval"]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 **기본급 연 17만 4천 ~ 29만 9천 달러 + 연 보너스 기본급의 0~20%**가 적혀 있다 — 미국 여러 지역 시장을 한 범위에 담은 값이고, 주식 같은 '그 밖의 보상'은 따로다",
+    "rows": [
+      {
+        "label": "공고 표기 기본급 (하한)",
+        "value": "연 $174,000",
+        "basis": "공고 · 2026년",
+        "note": "지역 시장·직무 지식·기술·경력에 따라 달라진다고 적었다 [1]"
+      },
+      {
+        "label": "공고 표기 기본급 (상한)",
+        "value": "연 $299,000",
+        "basis": "공고 · 2026년",
+        "note": "같은 채용 번호의 시애틀판도 같은 범위 [1][2]"
+      },
+      {
+        "label": "연 보너스",
+        "value": "기본급의 0~20%",
+        "basis": "공고 · 2026년",
+        "note": "공고의 Pay & Benefits 칸 [1]"
+      },
+      {
+        "label": "그 밖의 보상",
+        "value": "보너스·주식 등 (금액 표기 없음)",
+        "basis": "공고 · 2026년",
+        "note": "'Other Compensation' 칸 — 급여 범위에 더해 줄 수 있다고만 적었다 [1]"
+      },
+      {
+        "label": "같은 사무실 Senior Staff II AI Engineer (검색)",
+        "value": "연 $171,000 ~ $351,000",
+        "basis": "공고 · 2026년",
+        "peer": true,
+        "note": "마운틴뷰 Search and Discovery 의 한 단계 위 직급(Lv. 7-II) 공고 [23]"
+      }
+    ],
+    "how": "캘리포니아는 직원 15명 이상 회사가 공고에 급여 범위를 적게 한다(2023년부터) — 그래서 숫자가 있다 [10]. 범위가 여러 지역 시장을 넓게 담은 값이라 마운틴뷰에서 실제 제안이 어디쯤일지는 공고만으로 알 수 없다 {추론}. 한국 쿠팡(주)의 평균 급여와는 나라·기준이 달라 나란히 놓지 않았다."
+  },
+  "benefits": {
+    "items": [
+      { "name": "보험", "detail": "의료·치과·안과·생명보험, 상해 사망·장해(AD&D)" },
+      { "name": "의료비 계좌", "detail": "FSA(유연 지출 계좌)·HSA(건강 저축 계좌)" },
+      { "name": "장단기 장애 보장", "detail": "Long-term/Short-term Disability" },
+      { "name": "직원 지원 프로그램", "detail": "EAP(상담 등)" },
+      { "name": "퇴직연금", "detail": "401K, 회사 매칭" },
+      { "name": "유급 휴가", "detail": "근속에 따라 연 18~21일 PTO + 유급 공휴일 12일" },
+      { "name": "육아 휴직", "detail": "유급 최대 6주" },
+      { "name": "출퇴근", "detail": "세전 통근비 혜택" },
+      { "name": "전기차 충전", "detail": "마운틴뷰(MTV) 사무실 무료 충전소" },
+      { "name": "주차", "detail": "사무실 무제한 주차" }
+    ],
+    "note": "주차를 뺀 항목은 이 공고의 'General Description of All Benefits' 칸이다(2026년 공고, 미국 근무자 기준) [1]. 주차는 쿠팡 채용 사이트의 마운틴뷰 안내다 [9]. 한국 쿠팡 공고의 복지와는 다르다."
+  },
+  "location": {
+    "name": "쿠팡 마운틴뷰 오피스",
+    "address": "605 Fairchild Dr, Mountain View, CA 94043, USA",
+    "postal": "94043",
+    "map_url": "https://map.naver.com/p/search/605%20Fairchild%20Dr%20Mountain%20View",
+    "near": "NASA 에임스 연구센터 맞은편, 스탠퍼드·팰로앨토 도심 가까움 [9]",
+    "note": "공고 근무지는 'Mountain View, USA'이고[1] 사본은 사무실 출근 근무로 적었다[3]. 주소는 쿠팡 채용 사이트의 마운틴뷰 안내다 [9]."
+  },
+  "fit": {
+    "good": [
+      "LLM·이미지 모델을 직접 미세조정·증류·서빙해서 지연·비용을 줄여 본 사람 [1][4]",
+      "추론 모델의 생각 토큰·평가·관찰에 관심이 많고 최신 논문을 실험으로 옮기는 것을 즐기는 사람 [1][13]",
+      "정해진 과제보다 스스로 문제를 골라 끝까지 끌고 가는 게 편한 사람 [1]"
+    ],
+    "hard": [
+      "API 를 불러 기능을 붙이는 일이 주 경력인 사람 — 이 자리는 모델 안쪽 최적화다 {추론}",
+      "공고 문장이 짧고 부서 칸이 상시 채용 묶음이라 실제 배치 팀·과제를 면접에서 확인해야 한다 [1]",
+      "사무실 출근 근무라 원격을 원하는 사람 [3]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "추론 모델의 응답 비용을 절반으로 줄이라면 무엇부터 재고, 어떤 기법을 어떤 순서로 시도하겠습니까?",
+      "a": "업무 문장이 '추론·토큰 완성 모델 최적화'이고[1] 쿠팡이 GPU 비용을 큰 어려움으로 꼽았기 때문입니다.[4] prefill/decode·KV 캐시·생각 길이·증류·양자화를 숫자로 고르는지 봅니다 {추론}."
+    },
+    {
+      "q": "모델이 쓴 생각의 사슬을 믿어도 됩니까? 추론 과정을 관찰할 때 무엇을 기록하겠습니까?",
+      "a": "예시 프로젝트 '추론 관찰'[1] — 생각 글이 실제 계산과 다를 수 있다는 연구[13][14]를 알고 운영 기록·감시·내부 분석을 나눠 말하는지 봅니다 {추론}."
+    },
+    {
+      "q": "정답 데이터가 거의 없는 새 시장에서 검색 관련성 모델을 어떻게 세우겠습니까?",
+      "a": "쿠팡이 직접 논문으로 낸 문제입니다.[7] 번역·검색 보강·증류·자기 증류 같은 선택지를 비교하는지 봅니다 {추론}."
+    },
+    {
+      "q": "사진에서 상품 속성을 뽑는 시스템을 수천만 장에 돌린다면 품질과 비용을 어떻게 맞추겠습니까?",
+      "a": "예시 프로젝트 ①[1]과 쿠팡의 CLIP·TrOCR 사용[4], 시애틀판의 '사진·글에서 상품 정보 뽑기'[2]에서 나온 질문입니다 {추론}."
+    },
+    {
+      "q": "본인이 낸 기술로 사업 지표가 바뀐 사례를 숫자로 설명해 주세요.",
+      "a": "우대 '기술 혁신으로 큰 사업 효과'[1] — 오프라인 점수와 서비스 지표를 구분해 말하는지 봅니다 {추론}."
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "Coupang Careers · Senior Staff Machine Learning Engineer (Coupang AI Foundations)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7793770",
+      "kind": "posting",
+      "date": "2026-04-08",
+      "note": "이 공고. 그린하우스 공고 정보로 첫 게시 2026-04-08·갱신 2026-10-30, 부서 칸 'zz-Evergreen Requisition'(상시 채용 묶음), 채용 번호 8845, 근무지 Mountain View. 역할 소개·요건·우대·예시 프로젝트 셋·기본급 범위·보너스 0~20%·복리후생·전형(서류 → 직무 적합 면접 → 집중 면접 → 제안), 회사 소개"
+    },
+    {
+      "n": 2,
+      "title": "Coupang Careers · 같은 제목 시애틀판 공고 (gh_jid 7774291)",
+      "url": "https://www.coupang.jobs/kr/jobs/7774291/senior-staff-machine-learning-engineer-coupang-ai-foundations/",
+      "kind": "posting",
+      "date": "2026-04-08",
+      "note": "같은 채용 번호(8845)·같은 기본급 범위. 역할 소개가 달라 쇼핑 지식 그래프·깊은 AI 추론 기반 의미 이해 시스템, 의미 추론·AI 안전·기계적 해석 가능성을 적었고, 우대에 RAG·그래프/GNN·온톨로지·NER·파운데이션 모델·양자화·CUDA·증류, 예시로 사진·글에서 상품 정보 뽑기와 상품 이미지·영상 자동 생성"
+    },
+    {
+      "n": 3,
+      "title": "Built In SF · Senior Staff Machine Learning Engineer (Coupang AI Foundations)",
+      "url": "https://www.builtinsf.com/job/senior-staff-machine-learning-engineer-coupang-ai-foundations/8995619",
+      "kind": "posting",
+      "note": "같은 채용 번호의 사본 — 사무실 출근(In-Office), 2026-11 기준 '3개월 전 다시 게시'"
+    },
+    {
+      "n": 4,
+      "title": "Coupang Engineering · Accelerating Coupang's AI Journey with LLMs",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/accelerating-coupang-s-ai-journey-with-llms/",
+      "kind": "company",
+      "date": "2024-10-15",
+      "note": "ML 플랫폼 팀 — 검색·광고·카탈로그·추천, ICL·RAG·SFT·CPT 중 ICL·SFT 가장 많이, 3B~20B 선호(LLaMA·T5·Phi·Polyglot), 70B+ 대 10B 밑 비교, 이미지-글은 CLIP·TrOCR(광고 검색·비슷한 상품·추천 특징·피드 이미지 품질), Triton(EKS) 실시간·Ray+vLLM 대량(약 20배), 증류·임베딩 내보내기, LLM 약한 정답이 관련성 모델 품질을 높임, 한국어·중국어 토크나이저 문제, A100/H100·fp8 기회, GPU 부족·비용, 앞으로 할 일로 관찰·프로파일링·사용률"
+    },
+    {
+      "n": 5,
+      "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+      "kind": "company",
+      "date": "2023-09-08",
+      "note": "컴퓨터 비전 이미지 이해로 비슷한 상품·광고 분류, 임베딩 검색, 분산 학습. 중복 상품 찾기(이미지·글 임베딩) 글은 Medium 403 이라 검색 요약으로만 확인"
+    },
+    {
+      "n": 6,
+      "title": "Coupang Careers · Inside Coupang's AI and Knowledge Engineering team",
+      "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/inside-coupang-s-ai-and-knowledge-engineering-team-wowing-customers-and-the-world/",
+      "kind": "company",
+      "date": "2025-04-22",
+      "note": "ML 엔지니어·데이터 과학자·ML 인프라, 지식 그래프·개체명 인식·대화형 에이전트·번역·LLM 전용 추론 엔진, 범용 LLM 보다 나은 쇼핑 번역 모델로 검색 품질 향상"
+    },
+    {
+      "n": 7,
+      "title": "CSRM-LLM: Embracing Multilingual LLMs for Cold-Start Relevance Matching in Emerging E-commerce Markets (arXiv 2509.01566)",
+      "url": "https://arxiv.org/abs/2509.01566",
+      "kind": "company",
+      "date": "2025-09-01",
+      "note": "쿠팡 연구진, CIKM 2025. 새 시장의 정답 없는 관련성 문제 — 기성 LLM 의 zero-shot 한계, 번역 과제·검색 기반 검색어 보강, 여러 번의 자기 증류로 정답 잡음 줄이기, Orion-14B → XLM-RoBERTa 두 탑 모델 증류, 온라인 결함 비율·구매율로 효과 보고"
+    },
+    {
+      "n": 8,
+      "title": "바이라인네트워크 · 쿠팡, 상품 탐색·비교 돕는 AI 기능 도입",
+      "url": "https://byline.network/2026/08/07_2928173/",
+      "kind": "news",
+      "date": "2026-08-07",
+      "note": "올해 5개 넘는 AI 기능 — AI 상품 비교, 상품 한눈에 보기, 상품 하이라이트, AI 인포그래픽"
+    },
+    {
+      "n": 9,
+      "title": "Coupang Careers · Mountain View",
+      "url": "https://www.coupang.jobs/en/locations/mountain-view/",
+      "kind": "company",
+      "note": "605 Fairchild Dr, Mountain View, CA 94043 — NASA 에임스 연구센터 맞은편, 스탠퍼드·팰로앨토 도심 가까움, 주차 무제한"
+    },
+    {
+      "n": 10,
+      "title": "California Labor Code § 432.3 (Justia)",
+      "url": "https://law.justia.com/codes/california/code-lab/division-2/part-1/chapter-3/article-3/section-432-3",
+      "kind": "reference",
+      "note": "직원 15명 이상 고용주는 공고에 급여 범위를 적어야 한다(2023-01-01 시행)"
+    },
+    {
+      "n": 11,
+      "title": "Leviathan · Kalman · Matias · Fast Inference from Transformers via Speculative Decoding (arXiv 2211.17192)",
+      "url": "https://arxiv.org/abs/2211.17192",
+      "kind": "reference",
+      "date": "2022-11",
+      "note": "작은 모델이 추측하고 큰 모델이 병렬로 검사 — 출력 분포를 바꾸지 않고 속도 향상, 수락률 α 와 추측 개수로 기대 토큰 수 계산"
+    },
+    {
+      "n": 12,
+      "title": "Kwon 외 · Efficient Memory Management for LLM Serving with PagedAttention (vLLM, arXiv 2309.06180)",
+      "url": "https://arxiv.org/abs/2309.06180",
+      "kind": "reference",
+      "date": "2023-09",
+      "note": "KV 캐시를 쪽 단위로 나눠 메모리 낭비를 줄이고 처리량을 올린다"
+    },
+    {
+      "n": 13,
+      "title": "Korbak 외 · Chain of Thought Monitorability: A New and Fragile Opportunity for AI Safety (arXiv 2507.11473)",
+      "url": "https://arxiv.org/abs/2507.11473",
+      "kind": "reference",
+      "date": "2025-07",
+      "note": "여러 연구소 공동 입장문 — 생각 글 감시는 불완전하지만 쓸모 있고, 개발 결정에 따라 깨지기 쉽다"
+    },
+    {
+      "n": 14,
+      "title": "Anthropic · Tracing the thoughts of a large language model",
+      "url": "https://www.anthropic.com/research/tracing-thoughts-language-model",
+      "kind": "reference",
+      "date": "2025-03-27",
+      "note": "모델 내부 계산 추적 — 미리 계획하기, 겉으로 쓴 풀이와 다른 계산(그럴듯한 풀이 지어내기)을 잡은 사례, 방법의 한계"
+    },
+    {
+      "n": 15,
+      "title": "OpenTelemetry · Semantic conventions for generative AI spans",
+      "url": "https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-spans/",
+      "kind": "reference",
+      "note": "LLM 호출 기록 규약 — 입력·출력 토큰 수, 생각에 쓴 출력 토큰 수 칸. 아직 개발(Development) 단계"
+    },
+    {
+      "n": 16,
+      "title": "Radford 외 · Learning Transferable Visual Models From Natural Language Supervision (CLIP, arXiv 2103.00020)",
+      "url": "https://arxiv.org/abs/2103.00020",
+      "kind": "reference",
+      "date": "2021-02",
+      "note": "사진과 설명 글을 같은 공간에 놓도록 대조 학습 — 이름 글과 견줘 정답 없이 분류"
+    },
+    {
+      "n": 17,
+      "title": "Wei 외 · Chain-of-Thought Prompting Elicits Reasoning in Large Language Models (arXiv 2201.11903)",
+      "url": "https://arxiv.org/abs/2201.11903",
+      "kind": "reference",
+      "date": "2022-01",
+      "note": "풀이 과정을 쓰게 하면 큰 모델의 추론 정답률이 오른다"
+    },
+    {
+      "n": 18,
+      "title": "DeepSeek-AI · DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning (arXiv 2501.12948)",
+      "url": "https://arxiv.org/abs/2501.12948",
+      "kind": "reference",
+      "date": "2025-01",
+      "note": "확인 가능한 보상의 강화학습으로 긴 생각을 기른 추론 모델, 작은 모델로 증류"
+    },
+    {
+      "n": 19,
+      "title": "Zhai 외 · Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations (arXiv 2402.17152)",
+      "url": "https://arxiv.org/abs/2402.17152",
+      "kind": "reference",
+      "date": "2024-02",
+      "note": "Meta — 고객 행동 기록을 순서열로 다루는 생성형 추천 구조(HSTU)"
+    },
+    {
+      "n": 20,
+      "title": "Hinton · Vinyals · Dean · Distilling the Knowledge in a Neural Network (arXiv 1503.02531)",
+      "url": "https://arxiv.org/abs/1503.02531",
+      "kind": "reference",
+      "date": "2015-03",
+      "note": "큰 모델의 부드러운 출력으로 작은 모델을 가르치는 증류"
+    },
+    {
+      "n": 21,
+      "title": "Kohavi · Tang · Xu · Trustworthy Online Controlled Experiments",
+      "url": "https://experimentguide.com/",
+      "kind": "reference",
+      "date": "2020",
+      "note": "온라인 A/B 실험 교과서 — 지표 설계·함정"
+    },
+    {
+      "n": 22,
+      "title": "Coupang Announces Results for Fourth Quarter 2025",
+      "url": "https://ir.aboutcoupang.com/news-events/news/news-details/2026/Coupang-Announces-Results-for-Fourth-Quarter-2025/default.aspx",
+      "kind": "company",
+      "date": "2026-02",
+      "note": "상품 커머스 활성 고객 2,460만 명 — 같은 회사 다른 풀이에서 읽은 숫자"
+    },
+    {
+      "n": 23,
+      "title": "Coupang Careers · Senior Staff ll, AI Engineer (L7-2)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7834206",
+      "kind": "posting",
+      "note": "같은 마운틴뷰 사무실 Search and Discovery, Lv. 7-II — 기본급 $171,000~$351,000"
+    },
+    {
+      "n": 24,
+      "title": "Snell 외 · Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters (arXiv 2408.03314)",
+      "url": "https://arxiv.org/abs/2408.03314",
+      "kind": "reference",
+      "date": "2024-08",
+      "note": "질문 난이도에 맞춰 추론 시간 계산(생각 토큰)을 나누면 같은 계산량에서 성능이 오른다"
+    },
+    {
+      "n": 25,
+      "title": "Coupang Careers · Senior Staff Cloud Backend Engineer",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8205728",
+      "kind": "posting",
+      "note": "같은 회사 같은 직급(시애틀) — 백엔드 경력 8년"
+    },
+    {
+      "n": 26,
+      "title": "Coupang Careers · Senior Staff Back-end Engineer (eCommerce Engineering;Interstellar)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078707",
+      "kind": "posting",
+      "note": "같은 회사 같은 직급(서울) — 백엔드 경력 10년 이상"
+    }
+  ],
+  "caveat": "공고 본문이 두 문장뿐이고 부서 칸이 상시 채용 묶음이라, 실제 팀·과제는 같은 채용 번호의 시애틀판 공고[2]와 회사 글[4][6]·논문[7]로 짐작했다. 이 팀의 발표 영상·기술 글은 찾지 못했다(받은 영상 없음). 최적화·관찰·구조 설명의 상당 부분은 다른 곳의 공개 논문·문서에서 온 일반론이며 쿠팡이 그대로 한다는 뜻이 아니다. 2026-11-25 기준."
+}

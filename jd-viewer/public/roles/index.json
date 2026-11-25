@@ -12,6 +12,7 @@
   "wanted-395344": "autoever-india-security-expat",
   "wanted-359170": "cj-oliveyoung-data-analyst",
   "ats-greenhouse:coupang:8068982": "coupang-ai-cloud-iam-senior-staff-bengaluru",
+  "ats-greenhouse:coupang:7793770": "coupang-ai-foundations-senior-staff-mle-mtv",
   "ats-greenhouse:coupang:8386063": "coupang-app-infra-director-us",
   "ats-greenhouse:coupang:8398431": "coupang-audit-ai-ops-analyst-bengaluru",
   "ats-greenhouse:coupang:8385253": "coupang-audit-ai-ops-pm-bengaluru",
@@ -443,6 +444,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 27
+  },
+  {
+   "id": "coupang-ai-foundations-senior-staff-mle-mtv",
+   "company": "쿠팡 (Coupang)",
+   "role": "Senior Staff Machine Learning Engineer — AI Foundations",
+   "jobs": [
+    "ats-greenhouse:coupang:7793770"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "coupang-app-infra-director-us",
