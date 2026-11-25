@@ -328,6 +328,7 @@
   "ats-toss:group:7798373003": "toss-call-infra-engineer",
   "ats-toss:group:7997231003": "toss-catalog-mle",
   "ats-toss:group:7989660003": "toss-client-platform-engineer",
+  "ats-toss:group:6960856003": "toss-cloud-security-engineer",
   "ats-toss:group:7784598003": "toss-commerce-ads-mle",
   "ats-toss:group:6545457003": "toss-commerce-ai-engineer",
   "ats-toss:group:7827378003": "toss-commerce-data-graph-mle",
@@ -3243,6 +3244,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 19
+  },
+  {
+   "id": "toss-cloud-security-engineer",
+   "company": "토스",
+   "role": "보안 엔지니어 (클라우드 보안)",
+   "jobs": [
+    "ats-toss:group:6960856003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 13
   },
   {
    "id": "toss-commerce-ads-mle",
