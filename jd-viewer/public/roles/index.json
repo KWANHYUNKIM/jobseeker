@@ -212,6 +212,8 @@
   "ats-skcareers:sk:R262415": "skax-mfg-data-engineer-k8s",
   "wanted-396609": "skax-mfg-data-engineer-k8s",
   "jobkorea-50308626": "skax-mfg-data-engineer-k8s",
+  "ats-skcareers:sk:R262571": "skax-mfg-pt-ai-mes-contract",
+  "dev-583964": "skax-mfg-pt-ai-mes-contract",
   "jobkorea-50340705": "skax-nova-bss-oss-app-dev",
   "wanted-396834": "skax-nova-bss-oss-app-dev",
   "jobkorea-50122605": "skax-plant-energy-chem-ai-dt",
@@ -2248,6 +2250,17 @@
     "jobkorea-50308626"
    ],
    "researched_at": "2026-11-23",
+   "lines": 39
+  },
+  {
+   "id": "skax-mfg-pt-ai-mes-contract",
+   "company": "SK주식회사(AX)",
+   "role": "제조 P&T AI, MES 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262571",
+    "dev-583964"
+   ],
+   "researched_at": "2026-11-25",
    "lines": 39
   },
   {
