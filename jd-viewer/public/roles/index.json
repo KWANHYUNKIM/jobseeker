@@ -9,6 +9,7 @@
   "ats-ashby:42dot:a83b4909-4d4f-41c5-b212-a1db321965a5": "42dot-llm-optimization-engineer",
   "ats-ashby:42dot:810a8fe2-0790-42cf-b973-df16b553fa08": "42dot-mts-foundation-models",
   "ats-ashby:42dot:bcc7a6ab-d770-4220-ace9-4458e0bcba72": "42dot-senior-cv-engineer-ad",
+  "ats-ashby:42dot:08d5a10e-10f6-4821-ba21-66cda54064ef": "42dot-senior-devops-cicd",
   "ats-ashby:42dot:e505b80b-4b42-401c-a36e-eb11fb422931": "42dot-senior-platform-engineer-warsaw",
   "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c": "42dot-senior-release-engineer",
   "ats-ashby:42dot:efbd4971-b841-410f-aa6b-e333c64cfe23": "42dot-sw-test-engineer-diagnostics",
@@ -420,6 +421,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 19
+  },
+  {
+   "id": "42dot-senior-devops-cicd",
+   "company": "포티투닷(42dot)",
+   "role": "Senior DevOps Engineer — 임베디드 소프트웨어 CI/CD 파이프라인",
+   "jobs": [
+    "ats-ashby:42dot:08d5a10e-10f6-4821-ba21-66cda54064ef"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 23
   },
   {
    "id": "42dot-senior-platform-engineer-warsaw",
