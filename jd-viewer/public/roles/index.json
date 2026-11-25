@@ -14,8 +14,11 @@
   "ats-ashby:42dot:08d5a10e-10f6-4821-ba21-66cda54064ef": "42dot-senior-devops-cicd",
   "ats-ashby:42dot:e505b80b-4b42-401c-a36e-eb11fb422931": "42dot-senior-platform-engineer-warsaw",
   "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c": "42dot-senior-release-engineer",
+  "ats-ashby:42dot:406f59e5-d04b-4f9b-a519-19da3b4c895c": "42dot-senior-service-architect-playground",
   "ats-ashby:42dot:6e9418ea-6dfa-4ca2-b419-e564e1479a1b": "42dot-sr-embedded-software-engineer",
+  "ats-ashby:42dot:1cfd36d5-26ce-4928-be2a-712c125d6d71": "42dot-sw-test-engineer-body",
   "ats-ashby:42dot:efbd4971-b841-410f-aa6b-e333c64cfe23": "42dot-sw-test-engineer-diagnostics",
+  "ats-ashby:42dot:2276c44d-d0d6-48d5-ad44-014e8da6fa55": "42dot-system-test-engineer-verification",
   "ats-ashby:42dot:c184cf35-51e2-4e80-87bc-579089f07472": "42dot-tts-deep-learning-engineer",
   "ats-ashby:42dot:beb84dde-9182-4441-a25b-c03644640854": "42dot-vehicle-system-integration",
   "wanted-335089": "aldagram-kanna-web-engineer",
@@ -476,6 +479,16 @@
    "lines": 24
   },
   {
+   "id": "42dot-senior-service-architect-playground",
+   "company": "포티투닷",
+   "role": "Senior Service Architect",
+   "jobs": [
+    "ats-ashby:42dot:406f59e5-d04b-4f9b-a519-19da3b4c895c"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
+  },
+  {
    "id": "42dot-sr-embedded-software-engineer",
    "company": "포티투닷(42dot)",
    "role": "Sr. Embedded Software Engineer",
@@ -486,6 +499,16 @@
    "lines": 21
   },
   {
+   "id": "42dot-sw-test-engineer-body",
+   "company": "포티투닷",
+   "role": "SW 테스트 엔지니어 — 차량 바디·편의",
+   "jobs": [
+    "ats-ashby:42dot:1cfd36d5-26ce-4928-be2a-712c125d6d71"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
+  },
+  {
    "id": "42dot-sw-test-engineer-diagnostics",
    "company": "포티투닷(42dot)",
    "role": "SW 테스트 엔지니어 — 차량 진단",
@@ -494,6 +517,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 29
+  },
+  {
+   "id": "42dot-system-test-engineer-verification",
+   "company": "포티투닷(42dot)",
+   "role": "시스템 테스트 엔지니어 — 시스템 검증",
+   "jobs": [
+    "ats-ashby:42dot:2276c44d-d0d6-48d5-ad44-014e8da6fa55"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
   },
   {
    "id": "42dot-tts-deep-learning-engineer",
