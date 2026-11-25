@@ -1,0 +1,1186 @@
+{
+ "id": "nextsecurities-erp-developer",
+ "company": "넥스트증권",
+ "role": "ERP 개발자 (D365 F&O)",
+ "team": "ERP — 회계 장부 시스템(Microsoft Dynamics 365 Finance & Operations) 개발·운영",
+ "jobs": [
+  "ats-greeting:nextsecurities:245534"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "회사 **회계 장부가 돌아가는 ERP**(Microsoft Dynamics 365 Finance & Operations)를 확장 개발하고, 지급·경비 솔루션과 증권 원장 백오피스에서 받은 데이터로 **회계 전표를 만드는 연동**을 맡습니다.[1]",
+  "env": "언어는 X++(D365 전용 언어)와 C#/.NET, 연동은 Azure Data Factory·OData, DB 는 Azure SQL, 배포는 Azure DevOps 파이프라인입니다. 표준 코드는 고치지 않고 확장으로만 개발하고, 운영 배포는 개발자와 분리된 승인을 거칩니다.[1]",
+  "oneline": "화면보다 **분개 한 줄이 맞는가**가 중심인 개발자. 금융 경험은 없어도 되지만 회계 장부 구조(계정·차원·기간·통화)는 알아야 합니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "D365 F&O 확장 개발(X++): 폼, 클래스, 테이블, 데이터 엔터티, 배치, 보고서",
+   "short": "마이크로소프트가 만든 ERP 위에 이 회사만의 화면·로직·표·연동 창구·야간 작업을 덧붙인다.",
+   "why": "D365 F&O 는 회계·구매·자산 기능이 이미 들어 있는 완제품입니다. 증권사 고유의 전표 규칙과 연동은 없으니 덧붙여야 합니다. 공고는 표준 객체를 직접 고치지 않고 **확장(CoC·이벤트 핸들러)**으로 개발해 마이크로소프트 정기 업데이트에 영향이 없게 한다고 적었습니다.[1] 마이크로소프트도 원본 코드를 덮어쓰는 옛 방식(오버레이)은 지원하지 않고 확장만 허용합니다.[3]",
+   "actually": {
+    "intro": "여섯 가지가 각각 D365 안의 다른 '부품'입니다.",
+    "items": [
+     "**폼** — 사용자가 보는 화면. 표준 화면에 칸·버튼을 더하거나 새 화면을 만든다.",
+     "**클래스** — 업무 로직. 표준 메서드 앞뒤에 코드를 감싸 넣는 **CoC**(Chain of Command, 명령 체인)를 쓴다. 감싼 메서드는 반드시 `next` 로 원래 로직을 불러야 하고, `if` 안에 넣는 등 조건부로 부를 수 없다.[2]",
+     "**테이블** — 표준 표에 칸을 더하거나 이 회사 전용 표를 만든다.",
+     "**데이터 엔터티** — 여러 표를 하나로 묶은 '연동용 창구'. 공개 API 를 켜면 OData 로, 데이터 관리 기능을 켜면 대량 가져오기·내보내기(스테이징 표 경유)로 쓸 수 있다.[5]",
+     "**배치** — 사람이 없는 시간에 도는 작업(월말 처리·전표 생성). 순서·병렬·성공/실패에 따른 분기·반복 일정을 걸 수 있다.[7]",
+     "**보고서** — 회계팀이 보는 출력물."
+    ]
+   },
+   "how_far": "어떤 화면·규칙이 필요한지는 회계팀(현업)이 화면정의서로 정합니다.[1] 개발자는 그걸 **표준을 건드리지 않는 확장으로** 구현합니다. 최소선은 '이 요구를 CoC 로 할지, 이벤트 핸들러로 할지, 새 객체로 할지' 고를 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    7
+   ],
+   "study": [
+    "ms-xpp-path",
+    "ms-coc",
+    "fo-cookbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "현업 요구 분석, 화면정의서(FD) 기반 개발, 개발자 테스트, UAT·현업 테스트 지원, 운영 반영",
+   "short": "회계팀 요구를 문서로 확정하고, 만들고, 직접 시험하고, 회계팀 시험을 돕고, 운영에 올린다.",
+   "why": "이 회사는 개발 전에 **화면정의서(FD, Functional Design)**로 현업과 요구를 확정하고, 구현은 **기술 문서(TD)**로 남긴다고 했습니다.[1] 장부에 직접 영향을 주는 시스템이라 '말로 한 요구'로 개발하면 나중에 숫자가 왜 그렇게 나왔는지 설명할 수 없습니다. {추론}",
+   "flows": [
+    {
+     "caption": "공고가 적은 한 건의 흐름[1]",
+     "steps": [
+      "현업 요구 분석",
+      "화면정의서(FD) 확정",
+      "개발 · 기술 문서(TD)",
+      "개발자 테스트",
+      "UAT(현업이 직접 하는 인수 시험) 지원",
+      "승인 뒤 운영 반영"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "요구를 정하는 건 현업, 승인은 개발자와 분리된 사람입니다.[1] 개발자는 FD 를 읽고 빠진 경우(취소·마이너스 금액·월 경계)를 되묻고, 시험 시나리오를 현업이 돌릴 수 있게 준비하는 데까지입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "외부 시스템 연동과 업체 협의",
+   "short": "ERP 밖의 시스템(지급·결재·원장)과 데이터를 주고받는 길을 만들고, 그 시스템 업체와 사양을 맞춘다.",
+   "why": "공고가 말하는 ERP 는 혼자 돌지 않습니다. 지급·경비 솔루션, 전자결재, 증권 원장 백오피스가 모두 외부 업체 제품이고 그 데이터가 들어와야 전표가 생깁니다.[1]",
+   "actually": {
+    "items": [
+     "**사양 맞추기** — 어떤 칸을 어떤 형식(날짜·금액 자릿수·통화 코드)으로, 언제, 몇 번 다시 보낼지 문서로 합의한다.",
+     "**창구 고르기** — 실시간 한 건씩이면 OData, 대량이면 데이터 관리 패키지 API(파일을 올리고 가져오기 상태를 확인).[6][8]",
+     "**실패 정하기** — 같은 건이 두 번 오면? 일부만 성공하면? 패키지 API 는 성공·부분 성공·실패 상태와 오류 키 파일을 따로 돌려준다.[8]"
+    ]
+   },
+   "how_far": "업체가 자기 시스템을 고치지는 않습니다. 개발자는 **우리 쪽 받는 규칙과 검증**을 정하고 업체와 문서로 합의하는 데까지 맡습니다. {추론}",
+   "refs": [
+    1,
+    6,
+    8
+   ],
+   "study": [
+    "ms-entities"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "지급·경비 처리 솔루션: 업체 협의 지원, 인터페이스 연동과 운영",
+   "short": "직원 경비·거래처 지급이 승인되면 그 금액이 ERP 에 '갚을 돈(채무)' 전표로 들어오게 잇는다.",
+   "why": "공고는 지급·경비 처리 솔루션에서 받은 데이터를 기준으로 회계 전표를 만든다고 적었습니다.[1] D365 의 채무관리(AP)는 거래처 송장을 받아 → 승인하고 → 지급한 뒤 → 송장과 지급을 맞대는(정산) 흐름입니다.[18]",
+   "actually": {
+    "intro": "작은 예 — 직원 경비 두 건이 들어오면 전표 한 장(직접 돌린 출력은 아래 예시).",
+    "items": [
+     "차변 교통비 12,500원 · 차변 식대 38,000원 / 대변 미지급금 50,500원",
+     "지급일에 차변 미지급금 50,500원 / 대변 보통예금 50,500원으로 갚은 것을 기록",
+     "솔루션의 건 번호를 전표에 남겨 나중에 '이 지급이 어느 전표인가'를 찾을 수 있게"
+    ]
+   },
+   "examples": [
+    {
+     "title": "전표 균형 확인 + 일자별 대사(직접 돌린 출력)",
+     "body": "D365 도 전표마다 차변 합계와 대변 합계가 같아야 전기됩니다.[14] 원천 합계와 ERP 합계를 날짜별로 맞대면 어긋난 날이 바로 보입니다.",
+     "lang": "python",
+     "code": "from decimal import Decimal as D\nfrom collections import defaultdict\n\nlines = [(\"비용-교통\", D(\"12500\"), D(0)), (\"비용-식대\", D(\"38000\"), D(0)), (\"미지급금\", D(0), D(\"50500\"))]\ndr = sum(d for _, d, _ in lines)\ncr = sum(c for _, _, c in lines)\nprint(\"차변\", dr, \"대변\", cr, \"균형\" if dr == cr else \"불균형 → 전기 실패\")\n\nsrc = [(\"2026-11-24\", D(\"50500\")), (\"2026-11-25\", D(\"120000\"))]\nerp = [(\"2026-11-24\", D(\"50500\")), (\"2026-11-25\", D(\"100000\"))]\ns, e = defaultdict(D), defaultdict(D)\nfor d, a in src: s[d] += a\nfor d, a in erp: e[d] += a\nfor d in sorted(set(s) | set(e)):\n    if s[d] != e[d]:\n        print(\"차이\", d, \"원천\", s[d], \"ERP\", e[d], \"차액\", s[d] - e[d])\n\n# 차변 50500 대변 50500 균형\n# 차이 2026-11-25 원천 120000 ERP 100000 차액 20000"
+    }
+   ],
+   "how_far": "어떤 경비를 어느 계정에 넣을지는 회계팀이 정합니다. 개발자는 그 **매핑을 코드·설정으로 옮기고 매일 원천과 맞는지 확인**합니다. {추론}",
+   "refs": [
+    1,
+    14,
+    18
+   ],
+   "study": [
+    "mt-accounting",
+    "ms-gl"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전자결재: 업체 협의 지원",
+   "short": "그룹웨어 결재 시스템과 ERP 가 '승인됐다'는 신호를 주고받게 업체와 사양을 맞추는 일을 돕는다.",
+   "why": "이 회사는 모든 변경을 Jira 티켓과 **전자결재**로 요청·승인 근거를 남긴다고 했습니다.[1] 경비·지급도 결재가 끝나야 전표가 확정되니, 결재 시스템은 업무와 변경관리 양쪽에 걸립니다. {추론}",
+   "how_far": "'협의 지원'이라 결재 연동의 주 담당은 아닙니다. ERP 쪽에서 무엇이 필요한지(결재 문서 번호·상태·금액)를 정리해 넘기는 수준입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "증권 원장 백오피스: 회계에 필요한 데이터의 인터페이스 연동",
+   "short": "고객 매매·예탁금·수수료가 쌓인 증권 원장에서 회계에 필요한 합계를 받아 전표로 만든다.",
+   "why": "증권사의 돈은 대부분 고객 거래에서 생깁니다. 그 거래 하나하나는 증권 원장(계좌·체결·잔고 시스템)에 있고, ERP 는 회계에 필요한 데이터만 받아 전표를 만든다고 공고가 적었습니다.[1] 회사는 투자 플랫폼(MTS)을 새로 짓는 중이라 원장 쪽도 바뀌는 단계입니다.[29]",
+   "actually": {
+    "intro": "보통 이렇게 나눈다 — 넥스트증권의 실제 방식은 공개되지 않았습니다. {추론}",
+    "items": [
+     "**건별이 아니라 합계로** — 체결 수만 건을 전표 수만 장으로 만들지 않고, 날짜 × 상품 × 계정 단위로 묶어 받는다.",
+     "**대량은 파일·패키지로** — D365 일반 분개 엔터티는 대량 가져오기용이고, 이미 있는 차원 조합을 쓰면 훨씬 빠르다(3,000줄이 30초 안 대 4분 넘게).[19]",
+     "**전표 번호** — 이 엔터티로 가져올 때 전표 번호 칸을 '자동 생성'으로 두면 가져오기가 실패한다.[19]",
+     "**검증** — 원장 쪽 일 합계와 ERP 전기 합계를 매일 맞댄다(위 대사 예시)."
+    ]
+   },
+   "how_far": "원장 시스템은 다른 팀·업체 몫입니다. 이 자리는 **받은 데이터가 어느 계정·차원으로 가는지 규칙을 구현하고, 숫자가 안 맞을 때 어느 쪽이 틀렸는지 가려내는** 데까지입니다. {추론}",
+   "refs": [
+    1,
+    19,
+    29
+   ],
+   "study": [
+    "ms-entities",
+    "ms-gl"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "연동 기술: Azure Data Factory, OData·데이터 엔터티",
+   "short": "데이터를 옮기는 도구 두 가지 — 예약해 대량으로 나르는 ADF, 한 건씩 묻고 쓰는 OData.",
+   "why": "D365 는 클라우드 서비스라 DB 에 직접 붙을 수 없고, 정해진 창구(데이터 엔터티)로만 들고 납니다.[5] 공고의 연동 스택이 이 둘입니다.[1]",
+   "actually": {
+    "items": [
+     "**OData** — 주소 `…/data/<엔터티 이름>` 로 읽고 쓴다. 기본은 사용자의 기본 회사만 돌려주고 `cross-company=true` 를 붙여야 다른 회사도 보인다. 한 번에 최대 10,000건씩 쪽으로 나눠 준다.[6]",
+     "**Azure Data Factory(ADF)** — 마이크로소프트의 데이터 이동 서비스. Dynamics AX 커넥터가 OData 로 D365 F&O 데이터를 복사해 온다.[9]",
+     "**데이터 관리 패키지** — 파일을 묶어 올리고 비동기로 가져온 뒤 상태를 확인한다. 같은 가져오기를 여러 스레드에서 동시에 부르면 실패한다.[8]"
+    ]
+   },
+   "how_far": "ADF 파이프라인을 설계부터 하는 데이터 엔지니어 수준은 아닙니다. **엔터티를 만들고 노출하고, ADF·OData 로 오가는 데이터가 왜 실패했는지 찾는** 수준이면 됩니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    8,
+    9
+   ],
+   "study": [
+    "ms-entities"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영 이슈 분석: 전기 오류, 인터페이스 실패, 데이터 정합성 확인",
+   "short": "전표가 장부에 안 올라가거나, 연동이 깨지거나, 숫자가 안 맞을 때 원인을 찾아 고친다.",
+   "why": "공고가 자격요건 맨 앞에 '전기 오류·인터페이스 실패처럼 재현이 어려운 문제'를 적을 만큼 이 일의 중심입니다.[1]",
+   "actually": {
+    "intro": "'전기(posting)'는 전표를 장부에 확정해 올리는 것입니다. D365 문서가 꼽는 실패 원인입니다.",
+    "items": [
+     "**전표 불균형** — 전표는 거래 통화·회계 통화·보고 통화에서 각각 차변 = 대변이어야 한다. 줄마다 소수 둘째 자리로 반올림한 뒤 합치고, 허용 한도 안의 1원 차이만 '단수 차이 계정'으로 보낸다.[14]",
+     "**가져오기로만 생기는 오류** — 화면에선 막히는 소수 셋째 자리 금액, 한 전표에 섞인 거래 날짜가 파일로는 들어와 전기 때 터진다.[14]",
+     "**회계 기간** — 회계 달력이 지정되지 않았으면 전기가 실패한다.[12] 기간마다 상태와 전기 가능한 사용자를 따로 정한다.[13]",
+     "**먼저 돌려 보기** — '전기 시뮬레이션'으로 실제로 올리지 않고 전기 로직만 돌려 본다. 전기된 거래는 지울 수 없다.[15]"
+    ]
+   },
+   "how_far": "운영 데이터는 **조회만** 합니다.[1] 고칠 때는 데이터를 손으로 바꾸지 않고, 원인을 찾아 역분개·재처리를 현업에 제안하고 코드 수정은 변경관리 절차로 냅니다. {추론}",
+   "refs": [
+    1,
+    12,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "ms-posting",
+    "ms-gl"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "회사 홈페이지 관리: 홈페이지 구축 지원 및 유지보수",
+   "short": "ERP 와 별개로 회사 홈페이지 구축을 돕고 고장 나면 고친다.",
+   "why": "ERP 자리에 홈페이지가 같이 붙은 건 작은 회사(임직원 약 190명)에서 사내 시스템 담당이 여러 일을 겸하기 때문으로 보입니다.[29] {추론} 우대사항에 '웹 서비스 개발·운영과 보안 취약점 조치 경험'이 있는 것도 이 줄과 짝입니다.[1]",
+   "how_far": "'구축 지원'이라 웹 개발 전담은 아닙니다. 운영 중인 사이트의 수정·배포, 보안 점검에서 나온 취약점 조치 정도로 읽힙니다. {추론}",
+   "refs": [
+    1,
+    29
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "변경관리 절차에 따른 소스·배포 관리: Azure DevOps(Git, PR, Pipeline), Jira, 전자결재",
+   "short": "코드 한 줄을 바꿔도 티켓 → 리뷰 → 승인 → 정해진 파이프라인으로만 운영에 올린다.",
+   "why": "공고는 운영 배포를 **개발자와 분리된 승인**을 거쳐 정해진 파이프라인으로만 한다고 적었습니다.[1] 금융회사는 규정상 프로그램을 바꾸기 전후를 기록하고, 제3자 검증과 책임자 승인을 받고, 운영 등록은 그 프로그램 담당자가 아닌 사람이 해야 합니다.[21]",
+   "actually": {
+    "items": [
+     "**Jira 티켓** — 왜 바꾸나(요청 근거).",
+     "**Git PR** — 무엇을 바꿨나, 누가 리뷰했나.",
+     "**전자결재** — 누가 승인했나.",
+     "**파이프라인** — Azure DevOps 가 X++ 를 컴파일해 '배포 패키지'를 만든다. 마이크로소프트가 빌려주는 빌드 서버로도 돌릴 수 있고, YAML 파이프라인은 Git 저장소에서만 된다.[20]",
+     "**업데이트 일정** — 마이크로소프트가 1년에 네 번(2·4·7·10월) D365 를 올리고, 미룰 수 있는 건 한 번뿐이다. 확장으로만 개발하는 이유가 여기 있다.[4]"
+    ]
+   },
+   "how_far": "파이프라인을 처음부터 짓는 건 아닐 수 있지만, **자기 변경이 어느 단계에서 어떤 증거를 남기는지** 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    4,
+    20,
+    21
+   ],
+   "study": [
+    "ms-alm",
+    "itwiki-29"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "기술 문서(TD)와 운영 매뉴얼 작성",
+   "short": "무엇을 어떻게 만들었는지(TD), 장애 때 무엇을 보면 되는지(매뉴얼)를 글로 남긴다.",
+   "why": "이 회사는 구현을 TD 로 남기고, 중요한 기술 결정은 **ADR(아키텍처 결정 기록)**로 적어 팀이 리뷰한다고 했습니다.[1] ADR 은 '무엇을 왜 골랐고 그 결과 무엇을 감수하나'를 짧게 적는 형식입니다.[23] 감사·점검 때도 이 문서가 변경의 근거가 됩니다. {추론}",
+   "how_far": "길게 쓰는 게 아니라 **다음 사람이 혼자 장애를 풀 수 있게** 쓰는 것이 기준입니다. 연동마다 '정상일 때 숫자, 실패하면 볼 곳, 다시 돌리는 법' 세 가지가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    23
+   ],
+   "study": [
+    "adr-nygard"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "전기 오류·인터페이스 실패처럼 재현이 어려운 문제도 원인을 찾을 때까지 깊이 파고드는 분",
+   "short": "전표가 안 올라간 원인은 데이터·설정·기간·코드 어디에나 있어서, 끝까지 좁혀야 한다.",
+   "why": "전기 오류는 같은 코드라도 그날 들어온 데이터(소수 자릿수·날짜·통화)와 설정(기간 상태·차원 조합)에 따라 생겼다 말았다 합니다.[14] 그래서 개발 환경에서 재현이 안 되는 경우가 많습니다. {추론}",
+   "how_far": "면접에선 '재현 안 되던 문제를 어떻게 좁혔나'를 순서대로 말할 수 있으면 됩니다 — 로그·데이터 비교·가설·확인. {추론}",
+   "refs": [
+    14
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "장애 상황에서도 차분하게 원인을 좁혀가며 판단하고 해결할 수 있는 분",
+   "short": "월말 마감 중 장애가 나면 회계팀이 멈추니, 급해도 원인을 좁혀 가며 판단해야 해서.",
+   "why": "장부 시스템은 마감 일정이 정해져 있고, 운영 데이터는 조회만 하는 규칙이라 '일단 고쳐 놓고 보자'가 안 됩니다.[1] {추론}",
+   "how_far": "장애 때 '무엇을 확인했고, 무엇을 아직 모르고, 언제 다시 알리겠다'를 현업에 말할 수 있는 정도입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "지급 솔루션·전자결재·증권 원장 등 여러 외부 시스템과 연결되는 환경에서 발생 가능한 예외 상황을 미리 예상하고 대응 전략까지 고민하는 분",
+   "short": "연동은 '두 번 옴·일부만 옴·늦게 옴·취소됨'이 반드시 생기니, 미리 처리 규칙을 정해 두라는 것.",
+   "why": "업무 줄의 연동 셋이 모두 외부 업체 시스템입니다.[1] 대량 가져오기 API 만 해도 결과가 성공·부분 성공·실패로 나뉘고 실패한 키를 따로 받아야 합니다.[8]",
+   "actually": {
+    "intro": "미리 정해 둘 예외들 {추론}",
+    "items": [
+     "같은 지급 건이 두 번 들어옴 → 원천 건 번호로 중복을 막는다",
+     "일부 줄만 실패 → 전표 단위로 통째로 되돌릴지, 실패 줄만 다시 받을지",
+     "마감된 기간의 날짜로 들어옴 → 다음 열린 기간으로 넘길지 거절할지",
+     "결재 후 취소 → 역분개 전표로 기록(전기된 거래는 지울 수 없다)[15]"
+    ]
+   },
+   "how_far": "모든 예외를 혼자 정하진 않습니다. **목록을 만들어 현업·업체와 처리 규칙을 합의**하고 그대로 구현하는 것이 기준입니다. {추론}",
+   "refs": [
+    1,
+    8,
+    15
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "금액 하나, 분개 한 줄도 그냥 넘기지 않고 장부의 정확성과 정합성을 중요하게 생각하는 분",
+   "short": "이 시스템의 출력이 곧 회사 재무제표라서, 1원 차이도 원인을 설명해야 한다.",
+   "why": "공고는 이 시스템이 회사의 장부에 직접 영향을 준다고 적고, 데이터 정합성을 최우선으로 둔다고 했습니다.[1] '분개'는 거래 하나를 차변·대변으로 나눠 적는 것입니다.[32]",
+   "how_far": "돈 계산을 부동소수점으로 하지 않고, 반올림 규칙(D365 는 줄마다 소수 둘째 자리)을 알고 맞추는 수준입니다.[14]",
+   "refs": [
+    1,
+    14,
+    32
+   ],
+   "study": [
+    "mt-accounting",
+    "hongdaeri"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기술적 의사결정의 이유를 설명할 수 있고, 동료의 의견에도 열린 자세를 가진 분",
+   "short": "중요한 결정은 ADR 로 적고 팀이 리뷰해서 정하는 방식이라서.",
+   "why": "이 회사는 중요한 기술 결정을 ADR 로 기록하고 팀과 함께 리뷰하며 정합니다.[1]",
+   "how_far": "'왜 이 연동은 OData 대신 패키지로 했나' 같은 결정을 선택지·이유·감수한 것 세 줄로 쓸 수 있으면 됩니다.[23]",
+   "refs": [
+    1,
+    23
+   ],
+   "study": [
+    "adr-nygard"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "당장 동작하는 코드뿐 아니라 오래 유지하고 확장할 수 있는 코드와 구조를 고민하는 분",
+   "short": "D365 는 1년에 네 번 바뀌므로, 표준을 건드린 코드는 업데이트마다 깨질 수 있어서.",
+   "why": "마이크로소프트 업데이트는 1년에 네 번이고 한 번만 미룰 수 있습니다.[4] 확장 모델은 업데이트가 사용자 코드를 덜 깨게 하려고 나왔습니다.[3]",
+   "how_far": "CoC 로 감쌀 때 원래 로직(`next`)을 건너뛰지 않기, 표준 표를 직접 바꾸지 않기 같은 확장 규칙을 지키는 것이 출발선입니다.[2]",
+   "refs": [
+    2,
+    3,
+    4
+   ],
+   "study": [
+    "ms-coc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "증권업 경험이 없더라도 적극적으로 배우며 함께 만들어갈 분",
+   "short": "증권업 경험은 필수가 아니다 — 회계 ERP 경험이 있으면 증권 쪽은 들어와서 배워도 된다는 뜻.",
+   "why": "공고가 직접 적은 문장입니다.[1] 증권 원장 연동은 우대사항에 따로 있어 필수와 구분됩니다.[1]",
+   "how_far": "증권 쪽은 '고객 매매·수수료·예탁금이 회계에서 어떤 계정이 되나' 정도를 입사 뒤 익히면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "아래 개발 경력 중 하나",
+   "short": "다음 두 경력 가운데 하나만 있으면 된다는 뜻 — D365 X++ 3년, 또는 C#/.NET 업무 시스템 3년.",
+   "why": "공고의 필수 자격 첫 줄입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "D365 F&O 또는 Dynamics AX X++ 개발 실무 3년 이상",
+   "short": "같은 제품(또는 그 전신 Dynamics AX)에서 X++ 로 3년 이상 일해 본 사람.",
+   "why": "Dynamics AX 는 D365 F&O 의 이전 이름의 제품이고 같은 X++ 언어를 씁니다. 마이크로소프트의 X++ 학습 과정도 AX 경험자를 독자로 둡니다.[33]",
+   "how_far": "AX 2012 경험만 있다면 '오버레이 대신 확장(CoC)'으로 바뀐 개발 방식에 익숙한지를 볼 것입니다.[3] {추론}",
+   "refs": [
+    3,
+    33
+   ],
+   "study": [
+    "ms-xpp-path",
+    "fo-cookbook"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "C#/.NET 기반 업무 시스템(ERP·회계) 개발 실무 3년 이상, X++를 익혀 개발할 수 있는 분",
+   "short": "X++ 를 안 써 봤어도 C#/.NET 으로 회계·ERP 를 3년 만들었으면, 들어와서 X++ 를 배워도 된다.",
+   "why": "X++ 는 C# 과 비슷한 객체지향 언어이고 Visual Studio 에서 개발합니다.[33] 회계 시스템 경험이 언어보다 중요하다는 뜻으로 읽힙니다. {추론}",
+   "how_far": "'업무 시스템(ERP·회계)'이 붙어 있어 일반 웹 백엔드 3년과는 다릅니다. 전표·정산·마감을 다뤄 본 경험을 보여 줘야 합니다. {추론} 마이크로소프트의 개발자 시험 안내(MB-500)가 X++ 개발자에게 기대하는 범위를 목차로 보여 줍니다.[24]",
+   "refs": [
+    33,
+    24
+   ],
+   "study": [
+    "ms-xpp-path",
+    "ms-build-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "솔루션 ERP(D365, SAP, Oracle 등)의 회계 셋업 이해와 장부 구축 경험",
+   "short": "ERP 를 처음 깔 때 회사 장부의 뼈대(계정·차원·기간·통화)를 설정해 본 경험.",
+   "why": "공고는 ERP 가 받은 데이터로 회계 전표를 만든다고 했습니다.[1] 전표가 어디로 가는지는 이 셋업이 정합니다. D365 에서는 법인마다 '원장' 화면에 계정과목표·계정 구조·회계 달력을 지정하고, 거래가 전기된 뒤에는 계정과목표를 바꿀 수 없습니다.[12]",
+   "how_far": "회계사처럼 정책을 정하는 수준이 아니라, **설정이 전표에 어떤 영향을 주는지 알고 개발할 수 있는** 수준입니다. {추론}",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "ms-gl"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "장부, 계정과목, 계정 구조·재무 차원, 자산대장, 회계 기간·통화 설정",
+   "short": "바로 위 '회계 셋업'의 구체 항목 — D365 원장 설정 화면에 그대로 있는 것들.",
+   "why": "모두 D365 원장 설정의 칸입니다.[12]",
+   "actually": {
+    "items": [
+     "**계정과목(주 계정)** — 현금·미지급금·수수료수익처럼 돈의 종류. 여러 법인이 계정과목표 하나를 같이 쓸 수 있다.[10]",
+     "**재무 차원** — 부서·상품·프로젝트처럼 같은 계정을 쪼개 보는 칸. 직접 값을 넣는 사용자 정의 차원과, 거래처·프로젝트 같은 다른 데이터에서 값을 가져오는 차원이 있다. 직접 넣는 값은 30자까지.[11]",
+     "**계정 구조** — 어느 계정에 어떤 차원 조합을 허용하나. 한 법인에 여러 개를 둘 수 있지만 계정·차원 조합이 겹치면 안 된다.[12]",
+     "**자산대장** — 고정자산의 감가상각 장부. 감가상각 프로필 → 장부 → 전기 프로필 순서로 설정한다.[16]",
+     "**회계 기간** — 회계 연도와 그 안의 기간. 결산용 13번째 기간을 흔히 만든다.[13]",
+     "**통화** — 모든 전표에 찍히는 회계 통화와, 선택인 보고 통화. 환율 유형과 환산 차손익 계정을 정한다.[12]"
+    ]
+   },
+   "how_far": "각 칸이 무엇이고 전표가 그 칸 때문에 실패할 수 있다는 걸 아는 수준이 최소선입니다. 실제 값을 정하는 건 회계팀입니다. {추론}",
+   "refs": [
+    10,
+    11,
+    12,
+    13,
+    16
+   ],
+   "study": [
+    "ms-gl"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "채무관리 · 채권관리 · 고정자산 · 원장 업무에 대한 이해",
+   "short": "갚을 돈(채무)·받을 돈(채권)·자산·총계정원장이 각각 어떻게 흘러 장부에 모이는지 아는 것.",
+   "why": "D365 에서 이 넷은 각각 모듈이고, 채무·채권·자산의 전표가 원장으로 모입니다.[16][17][18]",
+   "actually": {
+    "items": [
+     "**채무관리(AP)** — 거래처 송장 → 검토·승인 → 지급 제안·지급 → 송장과 지급을 맞대는 정산.[18]",
+     "**채권관리(AR)** — 고객 송장 → 입금 → 정산(부분 입금·할인 포함). 전기 프로필을 통해 원장으로 간다.[17]",
+     "**고정자산** — 취득 → 감가상각 → 처분. 처분 손익 계정이 따로 필요하다.[16]",
+     "**원장(GL)** — 위 셋과 일반 분개가 모두 모이는 곳."
+    ]
+   },
+   "how_far": "모듈마다 '어떤 사건이 어떤 전표를 만드나'를 한 문장으로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    16,
+    17,
+    18
+   ],
+   "study": [
+    "ms-gl",
+    "hongdaeri"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "외부 시스템과의 데이터 인터페이스(API·파일·DB) 개발·운영 경험",
+   "short": "다른 시스템과 데이터를 API·파일·DB 로 주고받는 연동을 만들고 운영해 본 경험.",
+   "why": "업무 줄의 연동 셋(지급·결재·원장)이 이 경험을 씁니다.[1] D365 에도 API(OData), 파일(데이터 관리 패키지)이 둘 다 있습니다.[6][8]",
+   "how_far": "'운영'까지라서 만들고 끝이 아니라, 실패를 감지하고 다시 돌린 경험을 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    6,
+    8
+   ],
+   "study": [
+    "ms-entities"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL로 데이터를 조회해 대사·검증할 수 있는 분",
+   "short": "두 시스템의 숫자를 SQL 로 맞대서(대사) 어느 건이 빠지고 어느 금액이 다른지 찾는다.",
+   "why": "'대사'는 두 장부를 맞대 차이를 찾는 일입니다. 원천(지급·원장)과 ERP 전표가 맞는지 확인하는 게 정합성 업무의 중심입니다.[1] DB 는 Azure SQL 입니다.[1]",
+   "level": {
+    "basic": "JOIN · GROUP BY · 합계 비교",
+    "work": "LEFT JOIN / NOT EXISTS 로 한쪽에만 있는 건 찾기 · 날짜·계정별 집계 비교",
+    "team": "원천 건 번호 ↔ 전표 번호 추적 · 통화·반올림 차이 구분"
+   },
+   "examples": [
+    {
+     "title": "한쪽에만 있는 건·금액 다른 건 찾기(SQLite 로 직접 돌린 출력)",
+     "lang": "sql",
+     "code": "-- src: 지급 솔루션 건, gl: ERP 전표 줄\nselect s.ref, s.amt, g.amt,\n  case when g.ref is null then '원천에만' else '금액 다름' end\nfrom src s left join gl g on g.ref = s.ref\nwhere g.ref is null or g.amt <> s.amt\nunion all\nselect g.ref, null, g.amt, 'ERP에만'\nfrom gl g where not exists (select 1 from src s where s.ref = g.ref)\norder by 1;\n\n-- ('PAY-002', 120000, 100000, '금액 다름')\n-- ('PAY-003', 8000, None, '원천에만')\n-- ('PAY-004', None, 3000, 'ERP에만')"
+    }
+   ],
+   "how_far": "운영 데이터는 조회만 하므로 SELECT 로 차이를 찾고 근거를 보여 주는 데까지입니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sql-levelup"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "현업·외부 업체와 요구사항과 인터페이스 사양을 문서로 협의해 본 경험",
+   "short": "말이 아니라 문서(화면정의서·연동 사양서)로 현업·업체와 합의해 본 경험.",
+   "why": "필수 자격의 마지막 줄입니다(수집된 요건 칸에서는 빠졌지만 공고 원문에 있다).[1] 이 회사가 FD·TD·ADR 로 일하는 방식과 짝입니다.[1]",
+   "how_far": "연동 사양서 한 장(칸·형식·주기·실패 처리·담당자)을 직접 써 본 경험을 보여 주면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "D365 F&O에서 장부를 구축하거나 재무 모듈을 셋업한 경험",
+   "short": "필수의 '회계 셋업 이해'를 D365 에서 직접 해 봤다면 더 좋다는 뜻.",
+   "why": "D365 는 원장에 계정과목표·계정 구조·회계 달력을 붙이는 방식이 정해져 있고, 전기 뒤에는 바꾸기 어려운 설정이 있습니다.[12]",
+   "refs": [
+    12
+   ],
+   "study": [
+    "ms-gl"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "증권 원장과 회계 시스템을 연동한 경험",
+   "short": "업무 줄의 '증권 원장 → 회계' 연동을 다른 증권사에서 해 봤다면 바로 쓸 수 있어서.",
+   "why": "업무 줄에 그대로 있는 일입니다.[1] 증권업 경험은 필수가 아니라고 따로 적었으니 여기서만 가산점입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "금융권(증권·은행·보험) ERP 개발·운영 경험",
+   "short": "금융회사의 변경관리·감사 절차 아래서 ERP 를 운영해 봤다면 적응이 빠르다.",
+   "why": "금융회사는 프로그램 변경에 기록·검증·승인·담당 분리가 규정으로 걸립니다.[21] 이 회사의 일하는 방식도 그 위에 있습니다.[1]",
+   "refs": [
+    1,
+    21
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Claude Code · Codex 등 AI 코딩 도구로 분석·개발·테스트·문서화를 해 온 본인만의 개발 노하우가 있는 분",
+   "short": "AI 도구로 분석·코딩·시험·문서 작업을 해 온 자기 방식이 있으면 좋다는 뜻.",
+   "why": "회사의 미션이 'AI 세대를 위한 금융투자 플랫폼'입니다.[1] X++ 는 공개 예제가 적은 언어라 도구 결과를 그대로 믿기 어렵습니다. {추론}",
+   "how_far": "'썼다'보다 **결과를 어떻게 검증했나**(테스트·대사 쿼리로 확인)를 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "그룹웨어 전자결재 연동 경험",
+   "short": "업무 줄의 전자결재 협의를 바로 거들 수 있어서.",
+   "why": "업무 줄에 전자결재 업체 협의 지원이 있고, 변경 승인도 전자결재로 남깁니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "내부회계관리제도와 프로그램 변경관리 절차 아래에서 개발한 경험",
+   "short": "회계 숫자를 만드는 프로그램은 바꿀 때마다 감사받을 증거를 남겨야 하는데, 그걸 해 봤으면 좋다.",
+   "why": "**내부회계관리제도**는 재무제표가 믿을 만하게 만들어지도록 회사가 운영하는 규정·조직으로, 외부감사법 제8조가 정합니다. 대표자가 운영실태를 보고하고 감사인이 검토하거나 감사합니다.[22] 장부를 만드는 ERP 는 이 제도의 IT 통제 대상이고, 금융회사는 전자금융감독규정 제29조의 프로그램 통제도 함께 받습니다.[21]",
+   "actually": {
+    "intro": "변경 한 건이 남겨야 하는 것(제29조 정리본 기준)[21]",
+    "items": [
+     "변경 전후 내용 기록",
+     "제3자의 정당성 검증",
+     "운영이 아니라 개발·테스트 환경에 복사해 수정",
+     "충분한 시험 뒤 책임자 승인",
+     "운영 등록은 그 프로그램 담당자가 아닌 사람이"
+    ]
+   },
+   "how_far": "공고의 '운영 배포는 개발자와 분리된 승인'·'모든 변경은 티켓과 결재로 근거'가 바로 이것입니다.[1] 경험이 없다면 이 다섯 가지를 자기 변경 한 건에 대입해 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    21,
+    22
+   ],
+   "study": [
+    "itwiki-29"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Git 기반 협업과 Azure DevOps 빌드·배포 파이프라인 경험",
+   "short": "이 팀의 소스·배포가 Azure DevOps 의 Git·PR·파이프라인이라서.",
+   "why": "공고의 스택입니다.[1] D365 는 Azure DevOps 에서 X++ 를 컴파일해 배포 패키지를 만들 수 있고, YAML 파이프라인은 Git 저장소에서만 됩니다.[20]",
+   "refs": [
+    1,
+    20
+   ],
+   "study": [
+    "ms-alm"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Azure Data Factory, Power Platform·Dataverse, Power BI 경험",
+   "short": "연동(ADF)·D365 주변 앱(Power Platform·Dataverse)·보고서(Power BI)까지 다루면 더 좋다.",
+   "why": "ADF 는 업무 줄의 연동 기술이고,[1][9] Dataverse 는 공고 기술 스택의 연동 칸에 있습니다.[1] 셋 다 D365 와 같은 마이크로소프트 제품군입니다.",
+   "refs": [
+    1,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "웹 서비스 개발·운영과 보안 취약점(모의해킹·소스코드 점검 결과) 조치 경험",
+   "short": "업무 줄의 회사 홈페이지 유지보수와 짝 — 점검에서 나온 취약점을 고쳐 본 경험.",
+   "why": "업무 줄에 회사 홈페이지 구축 지원·유지보수가 있습니다.[1] 금융회사 웹은 모의해킹·소스 점검 결과를 조치해야 하는 일이 정기적으로 생깁니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Python, PowerShell 등 자동화 스크립트 작성 능력",
+   "short": "대사·배포·데이터 확인 같은 반복 작업을 스크립트로 줄일 수 있으면 좋다.",
+   "why": "공고 기술 태그에 Python 이 있고, 윈도우·Azure 기반 환경이라 PowerShell 이 흔히 쓰입니다.[1] {추론}",
+   "how_far": "위 대사 예시처럼 원천·ERP 합계를 맞대 차이만 알려 주는 스크립트를 짤 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서류접수 → AI Screening→ 1차 인터뷰 → 2차 인터뷰 → 처우논의 → 최종합격",
+   "short": "전형 순서 — 서류 뒤에 AI 면접이 있고, 연봉은 면접이 끝난 뒤 처우논의에서 정한다.",
+   "why": "공고의 합류 과정입니다. 1차 실무 면접 전에 AI 면접이 있고, 직무 역량과 소통 역량을 보는 참고 자료로 쓴다고 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "전형 단계 중 필요 시, 사전 동의 후 레퍼런스 체크 진행",
+   "short": "필요하면 지원자 동의를 받고 전 직장 동료 등에게 평판을 확인한다는 뜻.",
+   "why": "공고의 합류 과정 안내입니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "차변·대변이 1원이라도 어긋나면 원인을 끝까지 찾는 사람[1]",
+   "화면보다 데이터 흐름·연동·정합성을 다루는 게 즐거운 사람",
+   "문서(FD·TD·ADR)로 합의하고 기록하는 방식이 편한 사람[1]",
+   "C#/.NET 회계 시스템 경험이 있고 X++ 로 넘어가고 싶은 사람[1]"
+  ],
+  "hard": [
+   "X++·D365 는 국내 개발자 시장이 작아 다른 회사로 옮길 때 선택지가 좁을 수 있다 {추론}",
+   "배포마다 티켓·리뷰·결재·분리 승인을 거쳐 속도감은 덜하다[1]",
+   "ERP 에 홈페이지 유지보수까지 겹친 자리라 일이 여러 갈래다[1]",
+   "회사는 적자를 내며 인원을 늘리는 단계이고 MTS 출시는 2027년 1분기로 미뤄져 있다[29]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "표준 메서드에 로직을 더할 때 CoC 와 이벤트 핸들러 중 무엇을 고르나요? CoC 에서 하면 안 되는 것은?",
+   "a": "next 를 반드시, 조건 없이 부른다 — 확장 규칙.[2]"
+  },
+  {
+   "q": "외부에서 들어온 전표가 '전표가 균형이 맞지 않음'으로 전기에 실패했어요. 어디부터 보나요?",
+   "a": "통화별 균형·반올림·소수 자릿수·섞인 날짜.[14]"
+  },
+  {
+   "q": "지급 솔루션 합계와 ERP 합계가 2만 원 다릅니다. SQL 로 어떻게 찾나요?",
+   "a": "LEFT JOIN·NOT EXISTS 로 한쪽에만 있는 건·금액 다른 건.[1]"
+  },
+  {
+   "q": "같은 지급 건이 두 번 들어오면 어떻게 막나요? 이미 전기됐다면요?",
+   "a": "원천 건 번호로 중복 차단, 전기 뒤엔 역분개.[15]"
+  },
+  {
+   "q": "운영에 반영된 변경 한 건이 남겨야 하는 증거는 무엇인가요?",
+   "a": "기록·검증·승인·담당 분리 — 프로그램 통제.[21]"
+  },
+  {
+   "q": "계정 구조와 재무 차원은 무엇이고, 전표 실패와 어떻게 이어지나요?",
+   "a": "허용 안 된 차원 조합은 전표에 못 쓴다.[10][12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "넥스트증권 채용 · ERP Developer",
+   "url": "https://nextsecurities.career.greetinghr.com/ko/o/245534",
+   "kind": "posting",
+   "date": "2026-11-25",
+   "note": "직무 요약·일하는 방식(확장 개발·FD/TD·ADR·분리 승인)·업무·기술 스택·자격·전형"
+  },
+  {
+   "n": 2,
+   "title": "Microsoft Learn · Class extension via method wrapping and Chain of Command",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/extensibility/method-wrapping-coc",
+   "kind": "reference",
+   "note": "next 호출 규칙·감쌀 수 없는 메서드·폼 확장"
+  },
+  {
+   "n": 3,
+   "title": "Microsoft Learn · Extensibility home page (finance and operations)",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/extensibility/extensibility-home-page",
+   "kind": "reference",
+   "note": "오버레이 미지원, 확장만 허용하는 이유"
+  },
+  {
+   "n": 4,
+   "title": "Microsoft Learn · One Version service updates overview / FAQ",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/lifecycle-services/oneversion-overview",
+   "kind": "reference",
+   "note": "연 4회 업데이트(2·4·7·10월), 10.0.39 부터 미루기 최대 1회"
+  },
+  {
+   "n": 5,
+   "title": "Microsoft Learn · Data entities overview",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/data-entities/data-entities",
+   "kind": "reference"
+  },
+  {
+   "n": 6,
+   "title": "Microsoft Learn · Open Data Protocol (OData)",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/data-entities/odata",
+   "kind": "reference",
+   "note": "주소 형식·cross-company·쪽 크기 10,000"
+  },
+  {
+   "n": 7,
+   "title": "Microsoft Learn · Batch processing overview",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/sysadmin/batch-processing-overview",
+   "kind": "reference"
+  },
+  {
+   "n": 8,
+   "title": "Microsoft Learn · Data management package REST API",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/data-entities/data-management-api",
+   "kind": "reference",
+   "note": "가져오기 흐름·상태 값·동시 호출 금지"
+  },
+  {
+   "n": 9,
+   "title": "Microsoft Learn · Copy data from Dynamics AX using Azure Data Factory",
+   "url": "https://learn.microsoft.com/en-us/azure/data-factory/connector-dynamics-ax",
+   "kind": "reference",
+   "note": "OData 로 D365 F&O 데이터를 복사하는 커넥터"
+  },
+  {
+   "n": 10,
+   "title": "Microsoft Learn · Plan your chart of accounts",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/plan-chart-of-accounts",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Microsoft Learn · Financial dimensions",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/financial-dimensions",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Microsoft Learn · Configure ledgers",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/configure-ledger",
+   "kind": "reference",
+   "note": "계정과목표·계정 구조·회계 달력·통화"
+  },
+  {
+   "n": 13,
+   "title": "Microsoft Learn · Fiscal calendars, fiscal years, and periods",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/budgeting/fiscal-calendars-fiscal-years-periods",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Microsoft Learn · Posting fails because the voucher doesn't balance",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/posting-fail-imbalance",
+   "kind": "reference",
+   "note": "통화별 균형 검사·반올림·단수 차이·가져오기 오류"
+  },
+  {
+   "n": 15,
+   "title": "Microsoft Learn · General journal processing",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/general-journal-processing",
+   "kind": "reference",
+   "note": "검증·전기 시뮬레이션, 전기된 거래는 삭제 불가"
+  },
+  {
+   "n": 16,
+   "title": "Microsoft Learn · Set up fixed assets",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/fixed-assets/set-up-fixed-assets",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Microsoft Learn · Accounts receivable home page",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/accounts-receivable/accounts-receivable",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Microsoft Learn · Accounts payable home page",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/accounts-payable/accounts-payable",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Microsoft Learn · Importing vouchers by using the General journal entity",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/data-entities/tips-tricks-import-general-journal-entity",
+   "kind": "reference",
+   "note": "대량 가져오기·전표 번호 설정·차원 조합 성능"
+  },
+  {
+   "n": 20,
+   "title": "Microsoft Learn · Build automation that uses Microsoft-hosted agents and Azure Pipelines",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/dev-tools/hosted-build-automation",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "IT위키 · 전자금융감독규정 제29조(프로그램 통제)",
+   "url": "https://itwiki.kr/w/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_%EC%A0%9C29%EC%A1%B0",
+   "kind": "reference",
+   "note": "조문 정리본(2022 편집) — 현행 원문은 국가법령정보센터에서 다시 확인"
+  },
+  {
+   "n": 22,
+   "title": "삼일PwC · 내부회계관리제도의 이해",
+   "url": "https://www.pwc.com/kr/ko/insights/acc/samil-acc_12_understanding-icfr.pdf",
+   "kind": "reference",
+   "note": "외부감사법 제8조 해설 — 규정·조직, 대표자 운영실태 보고, 감사인 검토·감사"
+  },
+  {
+   "n": 23,
+   "title": "Michael Nygard · Documenting Architecture Decisions",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "kind": "reference",
+   "date": "2011-11-15"
+  },
+  {
+   "n": 24,
+   "title": "Microsoft Learn · Study guide for Exam MB-500 (Finance and Operations Apps Developer)",
+   "url": "https://learn.microsoft.com/en-us/certifications/resources/study-guides/mb-500",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "원티드 · 넥스트증권 회사 정보(평균 연봉·인원)",
+   "url": "https://www.wanted.co.kr/company/52490",
+   "kind": "reference",
+   "note": "국민연금 가입 정보로 계산한 집계 — 기준 시점 표기 없음"
+  },
+  {
+   "n": 26,
+   "title": "원티드 · 넥스트증권 Backend Engineer(Internal Platform)",
+   "url": "https://www.wanted.co.kr/wd/400001",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고의 혜택 및 복지 칸(2026-11)"
+  },
+  {
+   "n": 27,
+   "title": "넥스트증권 채용 홈페이지",
+   "url": "https://nextsecurities.career.greetinghr.com/",
+   "kind": "company",
+   "note": "미션, 사이트 하단 주소"
+  },
+  {
+   "n": 28,
+   "title": "SBS Biz · 넥스트증권, 여의도 IFC 오피스 확장…조직·인프라 확대",
+   "url": "https://biz.sbs.co.kr/amp/article/20000250660",
+   "kind": "news",
+   "date": "2025-08-01"
+  },
+  {
+   "n": 29,
+   "title": "이코노미스트 · MTS 세 번 미룬 넥스트증권…미국주식 API 먼저 꺼낸 이유",
+   "url": "https://economist.co.kr/article/view/ecn202611090035",
+   "kind": "news",
+   "date": "2026-11-16",
+   "note": "MTS 2027년 1분기로 연기, 임직원 94명(2024.6) → 189명(2026.6), 상반기 순손실"
+  },
+  {
+   "n": 30,
+   "title": "아시아경제 · SI Securities Changes Company Name to 'Next Securities'",
+   "url": "https://www.asiae.co.kr/en/article/2024123008141004473",
+   "kind": "news",
+   "date": "2024-12-30",
+   "note": "KTB선물(1999) → SI증권(2022) → 넥스트증권"
+  },
+  {
+   "n": 31,
+   "title": "SBS Biz · 김승연 넥스트증권 대표 연임",
+   "url": "https://biz.sbs.co.kr/amp/article/20000343099",
+   "kind": "news",
+   "date": "2026-11",
+   "note": "새 임기 2028년 10월까지"
+  },
+  {
+   "n": 32,
+   "title": "Modern Treasury · Accounting for Developers, Part I",
+   "url": "https://moderntreasury.com/journal/accounting-for-developers-part-i",
+   "kind": "reference",
+   "date": "2022-08-17",
+   "note": "개발자를 위한 복식부기·차변·대변"
+  },
+  {
+   "n": 33,
+   "title": "Microsoft Learn · Develop using X++ for Finance and operations apps (학습 과정)",
+   "url": "https://learn.microsoft.com/en-us/training/paths/develop-x-plus-plus-finance-operations",
+   "kind": "reference",
+   "note": "Visual Studio 에서의 X++ 개발·소스 관리·성능"
+  }
+ ],
+ "caveat": "넥스트증권(1999년 KTB선물 → 2022년 SI증권 → 2024년 12월 넥스트증권)[30]은 기술 블로그·컨퍼런스 발표를 공개하지 않아(2026-11 확인) 회사 근거는 이 공고와 보도뿐입니다.[29][31] D365 의 동작은 마이크로소프트 공식 문서로, 금융회사 변경관리는 규정 정리본·회계법인 해설로 '보통 이런 것'을 보였습니다. 이 회사의 실제 계정 체계·연동 주기·지급 솔루션 제품명은 공개되지 않았습니다.",
+ "resources": [
+  {
+   "id": "ms-xpp-path",
+   "title": "Develop using X++ for Finance and operations apps",
+   "by": "Microsoft Learn 학습 과정",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/training/paths/develop-x-plus-plus-finance-operations",
+   "why": "X++ 문법·객체지향·소스 관리·성능까지 무료로. C#/.NET 경력으로 지원하는 사람이 'X++ 를 익혀 개발'을 증명하는 첫 단계."
+  },
+  {
+   "id": "ms-build-path",
+   "title": "Build finance and operations apps",
+   "by": "Microsoft Learn 학습 과정",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/training/paths/build-finance-operations",
+   "why": "개발 환경·Visual Studio 도구·모델과 패키지 — D365 개발의 바닥을 먼저 잡는다."
+  },
+  {
+   "id": "mb500",
+   "title": "Exam MB-500 Study guide (Finance and Operations Apps Developer)",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/certifications/resources/study-guides/mb-500",
+   "why": "D365 개발자가 알아야 할 범위(확장·보고서·API·테스트·성능)를 목차로 정리했다. 빠진 칸을 점검하는 체크리스트로 쓴다."
+  },
+  {
+   "id": "ms-coc",
+   "title": "Class extension via method wrapping and Chain of Command",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/extensibility/method-wrapping-coc",
+   "why": "공고가 못 박은 '표준은 고치지 않고 CoC 로 확장'의 규칙서. next 규칙과 감쌀 수 없는 메서드를 정확히 익힌다."
+  },
+  {
+   "id": "ms-entities",
+   "title": "Data entities overview · OData · Data management package REST API",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/data-entities/data-entities",
+   "why": "업무의 연동 기술(데이터 엔터티·OData)과 대량 가져오기 흐름. 연동 실패를 읽으려면 여기서 상태 값과 제약을 알아야 한다."
+  },
+  {
+   "id": "ms-gl",
+   "title": "Plan your chart of accounts · Configure ledgers · Financial dimensions",
+   "by": "Microsoft Learn (Dynamics 365 Finance)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/configure-ledger",
+   "why": "필수 요건 '장부·계정과목·계정 구조·재무 차원·회계 기간·통화 설정'이 D365 화면에서 어떻게 생겼는지 그대로 나온다."
+  },
+  {
+   "id": "ms-posting",
+   "title": "Posting fails because the voucher doesn't balance",
+   "by": "Microsoft Learn (Dynamics 365 Finance)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/posting-fail-imbalance",
+   "why": "업무 '전기 오류 분석'의 가장 흔한 원인과 확인 순서. 면접 질문으로도 바로 쓰인다."
+  },
+  {
+   "id": "ms-alm",
+   "title": "Build automation that uses Microsoft-hosted agents and Azure Pipelines",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/dev-tools/hosted-build-automation",
+   "why": "공고의 'Azure DevOps(Git·PR·Pipeline)'로 X++ 를 빌드해 배포 패키지를 만드는 방법."
+  },
+  {
+   "id": "fo-cookbook",
+   "title": "Dynamics 365 for Finance and Operations Development Cookbook (4판)",
+   "by": "Abhimanyu Singh · Deepak Agarwal · Packt · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.packtpub.com/en-us/product/dynamics-365-for-finance-and-operations-development-cookbook-9781786468864",
+   "why": "폼·조회·데이터 처리·연동을 작은 과제 단위로. 2017년 판이라 CoC 이후 확장 방식은 공식 문서로 보충한다."
+  },
+  {
+   "id": "mt-accounting",
+   "title": "Accounting for Developers (Part I~III)",
+   "by": "Modern Treasury",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://moderntreasury.com/journal/accounting-for-developers-part-i",
+   "why": "개발자 눈높이의 복식부기·차변·대변·원장 설계. '분개 한 줄도 그냥 넘기지 않는' 감을 처음 잡기 좋다."
+  },
+  {
+   "id": "hongdaeri",
+   "title": "회계 천재가 된 홍대리 1",
+   "by": "손봉석 · 다산북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%9A%8C%EA%B3%84%20%EC%B2%9C%EC%9E%AC%EA%B0%80%20%EB%90%9C%20%ED%99%8D%EB%8C%80%EB%A6%AC",
+   "why": "소설로 읽는 회계 입문. 채권·채무·자산·결산이 회사에서 실제로 어떻게 움직이는지 한국어로 빠르게 훑는다."
+  },
+  {
+   "id": "itwiki-29",
+   "title": "전자금융감독규정 제29조(프로그램 통제)",
+   "by": "IT위키 정리본",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://itwiki.kr/w/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_%EC%A0%9C29%EC%A1%B0",
+   "why": "금융회사에서 프로그램을 바꿀 때 남겨야 하는 것(기록·검증·승인·담당 분리)의 원문 정리. 우대 '변경관리 절차' 대비."
+  },
+  {
+   "id": "adr-nygard",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · 2011",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "why": "이 팀이 쓰는 ADR 형식의 원전. 짧은 글 하나라 결정 기록을 바로 써 볼 수 있다."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "by": "",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "집합으로 생각하기·CASE·외부 조인 — 두 시스템을 맞대는 대사 쿼리를 반복문 없이 쓰는 연습."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회계 장부의 말 익히기",
+   "time": "1~2주",
+   "goal": "분개·차변·대변·채권·채무·감가상각을 작은 숫자로 설명할 수 있다.",
+   "resources": [
+    "mt-accounting",
+    "hongdaeri"
+   ],
+   "task": "가상 회사의 한 달 거래 10건(경비·거래처 지급·고객 입금·장비 구입)을 직접 분개해 표로 쓰고, 계정별 합계가 차변 = 대변인지 확인한다."
+  },
+  {
+   "title": "D365 의 장부 구조",
+   "time": "1~2주",
+   "goal": "계정과목·재무 차원·계정 구조·회계 기간·통화가 전표에 어떤 영향을 주는지 말할 수 있다.",
+   "resources": [
+    "ms-gl",
+    "ms-posting"
+   ],
+   "task": "1단계 거래에 부서·상품 차원을 붙이고, '이 계정에는 이 차원만 허용' 규칙표를 만든 뒤 규칙을 어긴 전표 3개를 일부러 만들어 왜 실패해야 하는지 적는다."
+  },
+  {
+   "title": "X++ 와 확장 개발",
+   "time": "3~4주",
+   "goal": "표준 메서드를 CoC 로 감싸고, 데이터 엔터티를 만들어 OData 로 노출할 수 있다.",
+   "resources": [
+    "ms-build-path",
+    "ms-xpp-path",
+    "ms-coc",
+    "fo-cookbook",
+    "mb500"
+   ],
+   "task": "Microsoft Learn 의 실습 환경 안내대로 개발 환경을 띄우고, 표준 클래스 하나에 CoC 로 검증 로직을 더한 뒤 사용자 정의 표 + 엔터티를 만들어 OData 로 읽어 본다."
+  },
+  {
+   "title": "연동과 대사",
+   "time": "2주",
+   "goal": "외부 시스템 데이터를 대량으로 받아 전표로 만들고, 원천과 ERP 를 SQL 로 맞댈 수 있다.",
+   "resources": [
+    "ms-entities",
+    "sql-levelup"
+   ],
+   "task": "가상 지급 솔루션 CSV 100건으로 일반 분개 가져오기를 흉내 내는 스크립트를 만들고, 중복·누락·금액 차이를 일부러 섞은 뒤 위 대사 쿼리로 세 가지를 모두 찾아낸다."
+  },
+  {
+   "title": "변경관리 아래서 배포하기",
+   "time": "1주",
+   "goal": "변경 한 건을 티켓 → PR → 승인 → 파이프라인으로 올리고 증거를 남길 수 있다.",
+   "resources": [
+    "ms-alm",
+    "itwiki-29",
+    "adr-nygard"
+   ],
+   "task": "3단계 변경을 Git PR 로 올리고 빌드 파이프라인을 붙인 뒤, 제29조 다섯 가지(기록·검증·개발 환경 수정·승인·담당 분리)가 각각 어디에 남았는지 표로 정리하고 ADR 한 장을 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없고 공시 숫자도 못 찾았다. 집계 사이트의 평균은 **약 6,000만원**이지만 기준 시점이 없고 직군 구분도 없다",
+  "rows": [
+   {
+    "label": "평균 연봉(집계)",
+    "value": "약 6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드 회사 정보의 평균 연봉 — 국민연금 가입 정보로 계산한 값이고 기준 시점 표기가 없다 [25]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고 면접 뒤 **처우논의** 단계에서 사람마다 정한다 [1]. 비상장 증권사라 사업보고서의 직원 평균 급여를 찾지 못했다(공시 숫자 없음). 평균은 경력직·비개발 직군이 섞인 회사 전체 값이라 경력 3년 이상인 이 자리 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "복지카드",
+    "detail": "연 150만원, 사용처 제한 없음(유흥업·택시 제외). 중도 입사는 입사 3개월 뒤부터 연말까지 월할"
+   },
+   {
+    "name": "특별상여",
+    "detail": "연 110만원 — 설·추석 귀성비, 가정의 달 효도비, 연말 지원비"
+   },
+   {
+    "name": "상해보험",
+    "detail": "본인·배우자·자녀 실손 의료비 지원"
+   },
+   {
+    "name": "건강검진",
+    "detail": "매년 종합건강검진"
+   },
+   {
+    "name": "특별휴가",
+    "detail": "1년 이상 재직 시 매년 3일"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10년·20년 근속 시 장려금 400만원"
+   },
+   {
+    "name": "자기개발",
+    "detail": "업무 관련 교육 지원"
+   },
+   {
+    "name": "근무 형태",
+    "detail": "비포괄임금제(초과근로수당 별도) · 오전 7~10시 자율 출근 · 재택 주 1회"
+   }
+  ],
+  "note": "이 공고에는 복지 칸이 없다 [1]. 같은 회사 다른 공고의 혜택 및 복지 칸(2026-11)을 옮겼다 [26]. 직군마다 다를 수 있으니 처우논의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "넥스트증권 여의도 본사",
+  "address": "서울특별시 영등포구 국제금융로 10, Three IFC 12층·15층",
+  "postal": "07326",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%98%81%EB%93%B1%ED%8F%AC%EA%B5%AC%20%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C%2010",
+  "near": "여의도 IFC 단지, 5·9호선 여의도역 가까이 {추론}",
+  "note": "공고의 근무지 표기는 '넥스트증권 여의도 본사'이고 [1], 주소는 채용 홈페이지 하단의 회사 정보다 [27]. 회사는 2025년 8월 이 건물에 사무실을 넓혔다 [28]."
+ }
+}

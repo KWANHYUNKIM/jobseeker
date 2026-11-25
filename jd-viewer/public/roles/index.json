@@ -325,6 +325,7 @@
   "saramin-55282490": "nextsecurities-channel-backend",
   "jobkorea-50357268": "nextsecurities-data-platform-engineer",
   "wanted-388957": "nextsecurities-data-platform-engineer",
+  "ats-greeting:nextsecurities:245534": "nextsecurities-erp-developer",
   "wanted-400000": "nextsecurities-frontend-internal-platform",
   "wanted-400001": "nextsecurities-internal-platform-backend",
   "jobkorea-50356663": "nextsecurities-senior-ai-governance",
@@ -3309,6 +3310,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 28
+  },
+  {
+   "id": "nextsecurities-erp-developer",
+   "company": "넥스트증권",
+   "role": "ERP 개발자 (D365 F&O)",
+   "jobs": [
+    "ats-greeting:nextsecurities:245534"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 39
   },
   {
    "id": "nextsecurities-frontend-internal-platform",
