@@ -1,0 +1,1124 @@
+{
+ "id": "musinsa-product-engineer-personalization",
+ "company": "주식회사 무신사",
+ "role": "Product Engineer",
+ "team": "Core-E Personalization팀",
+ "jobs": [
+  "ats-greeting:musinsa:246073"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사·29CM·글로벌에서 **누구에게 무엇을 보여 주고 보낼지** 정하는 시스템의 백엔드 — 행동 데이터 파이프라인, 고객 묶음을 계산하는 CDP, 배너·상품 추천 API — 를 만들고 A/B 결과로 책임집니다.[1][2][4]",
+  "env": "Java/Kotlin·Spring Boot, Spark·Flink, Kafka·SQS, PostgreSQL·ClickHouse·Elasticsearch·Redis, AWS·Kubernetes 위에서 DE·DS·MLE·프론트와 한 팀으로 일합니다.[1] 1,600만 회원·오디언스 매핑 약 11억 행 규모입니다.[4]",
+  "oneline": "추천 모델을 만드는 사람이 아니라, 모델·데이터를 **빠르고 틀리지 않게 서비스에 닿게 하는** 시니어 백엔드. AI 에이전트 활용과 지표 책임이 함께 요구됩니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "데이터 파이프라인 설계·운영: 실시간 및 배치 방식으로 수집된 데이터를 가공하고 적재하는 파이프라인을 구축합니다.",
+   "short": "클릭·장바구니·구매 이벤트를 흘려 받아(실시간) 또는 모아서(배치) 다듬고, 추천·타겟팅이 읽을 저장소에 넣는 일.",
+   "why": "팀 소개가 '고객 행동 데이터 정의·수집·집계'부터 직접 한다고 적었습니다.[1] 오디언스 엔진은 처음에 Spark 클러스터의 Databricks Auto Loader로 데이터를 받다가 ClickHouse의 수집 기능(ClickPipes)으로 바꿔 실시간 수집을 넓혔다고 발표했습니다.[4] 공고 스택도 Spark·Flink(처리)와 Kafka·SQS(메시지)입니다.[1]",
+   "actually": {
+    "items": [
+     "**실시간 갈래** — 앱 이벤트를 Kafka 토픽(주제별 줄)으로 받아 Flink가 '최근 7일 장바구니' 같은 상태를 들고 집계한다.[13][14]",
+     "**배치 갈래** — 하루치 로그를 Spark로 모아 프로필·세그먼트 표를 새로 굽는다. 29CM 푸시는 매일 약 350만 행을 BigQuery에서 뽑아 Redis에 미리 넣었다.[11]",
+     "**바로 집계해 두기** — ClickHouse는 들어오는 행마다 미리 정한 집계를 갱신하는 뷰(materialized view)로 쿼리 때 할 일을 줄인다. 무신사 오디언스 엔진도 수집 → 이 뷰 → 저장 순서로 바꿨다.[4][15]",
+     "**원천이 여럿** — 회사 데이터 플랫폼은 앱 이벤트 수집기와 DB 변경 기록(CDC, 운영 DB에서 바뀐 행만 흘려보내는 것)을 층(L0 원본 → L1 정제 → L2 활용)으로 쌓는다고 발표했다.[12]",
+     "**운영** — 늦게 온 이벤트·중복 이벤트·스키마가 바뀐 이벤트를 어떻게 다룰지 정하고, 하루 행 수가 갑자기 반토막 나면 알림을 건다 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "오디언스 엔진의 수집 경로 — 바꾸기 전과 뒤[4]",
+     "steps": [
+      "원천 이벤트 · 앱·웹 행동, 회원 정보",
+      "수집 · 전: Spark 위 Auto Loader / 후: ClickPipes",
+      "materialized view · 들어오는 대로 가공",
+      "ClickHouse 저장 · 오디언스 계산이 읽음"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "원천 이벤트 정의(무엇을 언제 남기나)는 데이터 엔지니어·분석가와 같이 정하고, 이 자리는 **서버 개발자로서 파이프라인을 코드로 만들고 깨지지 않게 운영**합니다. 팀 안에 데이터 엔지니어가 따로 있어 Spark·Flink 클러스터 운영까지 혼자 맡지는 않을 것입니다.[1] {추론}",
+   "refs": [
+    1,
+    4,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "ddia-ko",
+    "internal-kafka",
+    "flink-doc",
+    "clickhouse-mv"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 데이터 플랫폼 설계·운영: 고객 행동 및 인적 데이터를 통합하여 프로파일 관리, 세그먼트 정의 및 관리 기능을 제공합니다.",
+   "short": "'30대 남성', '7일 안 장바구니 이탈' 같은 조건을 넣으면 해당 고객 묶음을 돌려주는 시스템(CDP)을 만들고 돌보는 일.",
+   "why": "무신사는 2025년 8월 CDP를 내놓았고, 마케터가 조건으로 오디언스(고객 묶음)를 만들어 광고·푸시로 보냅니다.[4] 발표한 백엔드 엔지니어는 조건을 받아 맞는 고객을 돌려주는 **오디언스 엔진**을 CDP의 가장 중요한 부품이라고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "**프로필** — 나이·성별 같은 인적 데이터와 탐색·장바구니·구매 같은 행동 데이터를 한 고객 단위로 묶는다.[4]",
+     "**세그먼트 정의** — 마케터가 조건을 직접 고르거나, ML로 비슷한 고객까지 넓힌다(유사 확장).[4]",
+     "**펼친 저장** — 고객이 속한 오디언스마다 한 행씩 저장한다. 1,600만 명 × 2,500개 오디언스에서 매핑이 약 11억 행, 오디언스 하나에 최대 1,600만 행이 생길 수 있다.[4]",
+     "**워크로드 나누기** — 한 클러스터에서 서비스 조회와 배치가 자원을 다투다 쿼리 하나가 전체를 느리게 했다. 저장소와 계산을 떼고 용도별 계산 자원을 따로 붙여 저장 비용 86.5%, 총비용 최대 71.4%를 줄였다고 밝혔다.[4]",
+     "**자연어 통계** — 2026년 1월 마케터가 말로 물으면 통계와 계산 기준을 같이 보여 주는 AI 도우미(MAI)를 붙였다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "조건 두 개로 오디언스 만들기 — 펼친 매핑 행",
+     "body": "가상 고객 셋, 조건 둘입니다. u3 의 장바구니는 15일 전이라 '7일 이탈'에서 빠집니다. 마지막 줄은 무신사 규모(1,600만 × 2,500)에서 모든 고객이 모든 오디언스에 들 때의 최악 행 수입니다 — 실제는 약 11억 행이라고 발표했습니다.[4] 출력은 직접 돌린 것입니다.",
+     "lang": "python",
+     "code": "# 오디언스(세그먼트) 계산: 조건 → 유저 집합, 그리고 '펼친(exploded)' 매핑 행\nfrom datetime import date\n\nusers = {  # 유저 프로필(인적 데이터) — 가상\n    \"u1\": {\"gender\": \"M\", \"age\": 34},\n    \"u2\": {\"gender\": \"F\", \"age\": 29},\n    \"u3\": {\"gender\": \"M\", \"age\": 31},\n}\nevents = [  # 행동 데이터 — (유저, 행동, 날짜)\n    (\"u1\", \"cart_add\", date(2026, 11, 20)),\n    (\"u3\", \"cart_add\", date(2026, 11, 10)),\n    (\"u3\", \"purchase\", date(2026, 11, 11)),\n    (\"u2\", \"cart_add\", date(2026, 11, 22)),\n]\ntoday = date(2026, 11, 25)\n\ndef men_30s(u):\n    p = users[u]\n    return p[\"gender\"] == \"M\" and 30 <= p[\"age\"] < 40\n\ndef cart_abandon_7d(u):\n    recent = [e for e in events if e[0] == u and (today - e[2]).days <= 7]\n    return any(a == \"cart_add\" for _, a, _ in recent) and not any(a == \"purchase\" for _, a, _ in recent)\n\naudiences = {\"men_30s\": men_30s, \"cart_abandon_7d\": cart_abandon_7d}\nrows = [(aud, u) for aud, rule in audiences.items() for u in users if rule(u)]\nfor r in rows:\n    print(r)\nprint(\"mapping rows:\", len(rows))\nprint(\"worst case at Musinsa scale:\", 16_000_000 * 2_500)\n# ('men_30s', 'u1')\n# ('men_30s', 'u3')\n# ('cart_abandon_7d', 'u1')\n# ('cart_abandon_7d', 'u2')\n# mapping rows: 4\n# worst case at Musinsa scale: 40000000000"
+    }
+   ],
+   "how_far": "어떤 오디언스를 만들지는 마케터·기획(Customer Growth)이 정합니다.[2] 개발자는 **조건을 정확히 계산하고, 오디언스가 늘어도 응답이 느려지지 않게** 저장 구조와 계산 자원을 설계합니다.[4]",
+   "refs": [
+    4,
+    15,
+    17
+   ],
+   "study": [
+    "clickhouse-mv",
+    "ddia-ko",
+    "clickhouse-blog"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "개인화 서비스 서빙 시스템 설계·운영: 사용자 행동 데이터 기반 실시간 배너/상품 추천 API를 개발하고 A/B 테스트를 통해 성능을 최적화합니다.",
+   "short": "앱이 \"이 사람에게 어떤 배너·상품?\"을 물으면 수십 ms 안에 답하는 API를 만들고, 새 방식이 정말 나은지 A/B로 가리는 일.",
+   "why": "홈 맨 위 배너는 트래픽의 약 97%가 보는 자리라, 여기 추천이 느리거나 틀리면 첫 화면 전체가 영향을 받습니다.[5] 팀은 ML 결과를 서비스에 내보내는 길을 **실시간 API·배치 작업·비동기 작업자** 셋으로 나눴고, 그 위 오케스트레이션 층이 A/B 테스트를 돌리며 여러 모델 결과를 섞어 백엔드에 넘긴다고 밝혔습니다.[3]",
+   "actually": {
+    "items": [
+     "**점수 + 정책** — 배너는 모델 점수 위에 캠페인·긴급 변경을 실시간으로 덧씌우고, 기록이 적은 신규 유저에게는 세그먼트 추천을 낸다.[5]",
+     "**필수 조건 먼저** — 끝난 기획전·수신 미동의 고객은 점수와 상관없이 먼저 거르고, 점수를 매긴 뒤 빈도 상한·중복 노출 정책을 적용한다.[2]",
+     "**미리 굽기 vs 요청 때 계산** — 무거운 점수는 미리 계산해 Redis에 두고 API는 꺼내기만 한다.[11][20] 요청 순간의 행동까지 반영하려면 실시간 피처를 붙인다.[3]",
+     "**A/B** — 같은 지면을 고객 단위로 둘로 나눠 클릭률·거래액을 비교한다. 팀 글들은 모두 기존 방식 대비 A/B 수치로 끝난다(푸시 CTR +21.3%).[6][16]",
+     "**물러설 자리** — 모델 서버가 늦으면 인기순·세그먼트 목록을 내는 기본값을 둔다 {추론}. 팀 플랫폼은 재시도·과부하 차단·롤백 경로를 기본으로 제공한다고 했다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CTR 이 12% 올랐는데 믿어도 되나 — 표본 크기",
+     "body": "같은 '2.00% → 2.24%'라도 지면당 1만 명이면 p≈0.24 로 우연일 수 있고, 100만 명이면 확실합니다(직접 돌린 출력: 기존 CTR, 새 CTR, 상승률 %, z, p).[16]",
+     "lang": "python",
+     "code": "# A/B 테스트: 새 배너 추천 API(B)가 기존(A)보다 CTR 이 정말 높은가 — 두 비율 z 검정\nfrom math import sqrt, erf\n\ndef ab(clicks_a, n_a, clicks_b, n_b):\n    pa, pb = clicks_a / n_a, clicks_b / n_b\n    p = (clicks_a + clicks_b) / (n_a + n_b)\n    se = sqrt(p * (1 - p) * (1 / n_a + 1 / n_b))\n    z = (pb - pa) / se\n    p_value = 2 * (1 - 0.5 * (1 + erf(abs(z) / sqrt(2))))\n    return round(pa, 4), round(pb, 4), round((pb - pa) / pa * 100, 1), round(z, 2), round(p_value, 4)\n\nprint(\"small :\", ab(200, 10_000, 224, 10_000))\nprint(\"large :\", ab(20_000, 1_000_000, 22_400, 1_000_000))\n# small : (0.02, 0.0224, 12.0, 1.18, 0.2388)\n# large : (0.02, 0.0224, 12.0, 11.78, 0.0)"
+    }
+   ],
+   "how_far": "모델은 DS·MLE가 만들고 팀 ML 플랫폼이 서빙 규약을 줍니다.[3] 이 자리는 **그 결과를 앱이 부르는 API로 감싸 지연·장애·캐시를 책임지고, 실험을 붙여 결과를 읽는** 백엔드 몫입니다.[1][3] {추론}",
+   "refs": [
+    3,
+    5,
+    6,
+    10,
+    16,
+    20
+   ],
+   "study": [
+    "kohavi-ko",
+    "rules-of-ml",
+    "redis-doc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 설계 및 모델링: 프로덕트 요구사항을 기반으로 데이터 레이크/이벤트 데이터를 탐색하고, 서빙에 적합한 데이터 모델을 설계합니다.",
+   "short": "분석용으로 쌓인 원본 로그를 뒤져 필요한 값을 찾고, API가 빨리 읽을 수 있는 모양의 표·키로 다시 짜는 일.",
+   "why": "분석용 데이터(레이크)는 '전부 남기기'에 맞춰져 있어 요청마다 읽기엔 느립니다 {추론}. 캠페인 메타엔진은 원천 시스템을 매번 부르지 않고 캠페인 메타 DB를 읽게 해 원천 장애가 타겟팅에 번지지 않게 했다고 밝혔습니다.[2]",
+   "actually": {
+    "items": [
+     "**정체성 / 변경 이력 / 쓰임 / 실행 기록 나누기** — 캠페인 메타엔진은 Campaign Content·Content Snapshot·Campaign Asset·Execution Record 네 모델로 책임을 갈랐다.[2]",
+     "**덮어쓰지 않고 스냅샷** — 기획전 기간·상품이 바뀌어도 지난주 발송이 어떤 상태를 보고 나갔는지 남도록, 원천을 주기적으로 읽어 달라졌을 때만 이력을 쌓는다.[2]",
+     "**어댑터** — 라이브·기획전·매거진마다 다른 원천 형식은 어댑터가 공통 모델로 바꾸고, 엔진 안에 분기를 두지 않는다.[2]",
+     "**서빙용 키** — '유저 → 상위 N개 상품'처럼 API가 한 번에 꺼내는 키로 미리 펼쳐 둔다 {추론}. 학습과 서빙이 같은 값을 보게 시각 기준을 맞춘다.[18][19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "덮어쓰기 대신 스냅샷 — 그날 나간 푸시가 본 기획전",
+     "body": "같은 내용이면 쌓지 않고(same), 바뀌었을 때만 한 줄 더 쌓습니다. 11-21 에 나간 푸시는 기간이 늘기 전 상태를 봤다는 것을 되살릴 수 있습니다.[2] 출력은 직접 돌린 것입니다.",
+     "lang": "python",
+     "code": "# 덮어쓰기 대신 스냅샷: 원천을 주기적으로 읽어 '달라졌을 때만' 이력을 한 줄 더 쌓는다\nimport hashlib, json\n\nsnapshots = []  # (content_id, polled_at, hash, data)\n\ndef poll(content_id, polled_at, data):\n    h = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()[:8]\n    last = next((s for s in reversed(snapshots) if s[0] == content_id), None)\n    if last and last[2] == h:\n        return \"same\"\n    snapshots.append((content_id, polled_at, h, data))\n    return \"new snapshot\"\n\ndef as_of(content_id, t):  # 그 캠페인이 나간 시각의 콘텐츠 상태\n    return [s for s in snapshots if s[0] == content_id and s[1] <= t][-1][3]\n\nprint(poll(\"exhibit-77\", \"11-20 09:00\", {\"end\": \"11-24\", \"items\": [1, 2, 3]}))\nprint(poll(\"exhibit-77\", \"11-20 10:00\", {\"end\": \"11-24\", \"items\": [1, 2, 3]}))\nprint(poll(\"exhibit-77\", \"11-22 09:00\", {\"end\": \"11-30\", \"items\": [1, 2, 9]}))\nprint(\"push sent 11-21 used:\", as_of(\"exhibit-77\", \"11-21 12:00\"))\nprint(\"rows kept:\", len(snapshots))\n# new snapshot\n# same\n# new snapshot\n# push sent 11-21 used: {'end': '11-24', 'items': [1, 2, 3]}\n# rows kept: 2"
+    }
+   ],
+   "how_far": "레이크 자체(층 구조·카탈로그)는 데이터 플랫폼 팀 몫입니다.[12] 이 자리는 **요구사항을 보고 필요한 원본을 찾아 SQL로 확인하고, 서빙 저장소의 키·갱신 주기·이력 방식을 정하는** 데까지입니다. {추론}",
+   "refs": [
+    2,
+    12,
+    17,
+    19
+   ],
+   "study": [
+    "ddia-ko",
+    "feast-pit"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대용량 데이터 처리 아키텍처 설계·운영: 대규모 데이터를 실시간으로 처리하고 빠른 응답을 보장하는 아키텍처를 구축합니다.",
+   "short": "1,600만 회원·월 수억 건 메시지를 다뤄도 느려지지 않게, 저장·계산·캐시를 어디서 나눌지 정하는 일.",
+   "why": "MATCH는 월 수억 건 메시지의 절반 이상을 최적화하고[2], 오디언스 매핑은 약 11억 행입니다.[4] 같은 자원을 여러 일이 나눠 쓰다 무거운 쿼리 하나가 전체를 떨어뜨린 경험이 이미 있습니다.[4]",
+   "actually": {
+    "items": [
+     "**저장과 계산 떼기** — 노드에 디스크가 붙어 있으면 계산을 늘릴 때 필요 없는 저장까지 늘고, 노드를 빼면 데이터가 흔들린다. 공유 저장소 + 용도별 계산으로 바꿨다.[4]",
+     "**쓸 때만 켜기** — 배치용 계산은 쓰지 않을 때 쉬게 하고, 메모리가 더 필요한 쿼리 때만 크기를 키운다.[4]",
+     "**응답 경로 따로** — 실시간 API는 미리 계산된 값과 캐시(Redis)를 읽고, 무거운 계산은 배치·비동기 작업자로 뺀다.[3][20]",
+     "**원천 보호** — 서빙이 원천 시스템을 직접 부르지 않고 자기 DB를 읽게 해 장애 전파를 줄인다.[2]"
+    ]
+   },
+   "how_far": "'빠른 응답 보장'은 숫자로 말해야 합니다 — 지연 p95·p99, 초당 요청, 비용.[17] {추론} 7년 이상 자리라 이 선택을 **트레이드오프와 함께 제안하고 책임지는** 수준을 기대합니다.[1]",
+   "refs": [
+    2,
+    3,
+    4,
+    17,
+    20
+   ],
+   "study": [
+    "ddia-ko",
+    "clickhouse-blog",
+    "redis-doc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "PM·디자이너 및 유관 조직과 함께 해결할 고객 문제와 우선순위를 정의하고, 모호한 요구는 측정 가능한 가설로 바꾸며, 출시 이후 지표로 성과를 확인해 다음 개선으로 연결합니다.",
+   "short": "'푸시를 더 잘 보내자'를 '이 방식이면 발송당 거래액이 N% 는다'로 바꾸고, 출시 뒤 숫자로 확인하는 일.",
+   "why": "무신사는 서버·웹·모바일을 Product Engineer 하나로 묶고, 기능이 왜 필요한지 이해하는 데서 출시 뒤 지표 확인까지 PM과 같이 한다고 소개합니다.[1] 이 팀은 '클릭률은 올랐는데 왜 구매는 그대로인가'를 직접 문제로 꼽았습니다 — 원래 들어올 고객에게 보낸 푸시는 클릭만 만들 수 있기 때문입니다.[3]",
+   "actually": {
+    "items": [
+     "**지표 고르기** — 클릭률 대신 '보냈을 때와 안 보냈을 때의 차이(증분)'를 보자는 것이 팀이 꼽은 다음 과제다.[3]",
+     "**가설로 바꾸기** — 푸시 통합 임베딩은 'DeepFM 대비 CTR'과 함께 발송 수(−26%)·발송당 거래액(+57%)을 같이 봤다.[6]",
+     "**수작업도 지표** — 캠페인 세팅이 건당 약 2시간이던 것을 절반 이하로 줄였다고 숫자로 남겼다.[2]",
+     "**결과로 다음 일** — 메타데이터가 정리되자 예전에 실패한 LLM 푸시 문구 생성('MATIN KIM'을 '마틴김'으로 쓰던 오류)을 다시 시도해 성공했다.[2]"
+    ]
+   },
+   "how_far": "실험 설계 전문가까지는 아니어도 **성공 기준을 출시 전에 숫자로 정하고, 반대 지표(발송 피로도 같은)를 함께 보는** 수준입니다.[16] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    16
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 코딩 에이전트를 설계·구현·테스트·코드 리뷰·운영 전반에 적극 활용하고, 그 경험을 팀과 나눠 개발 생산성과 품질을 높이는 AI 기반 개발 방식을 조직에 만들어 갑니다.",
+   "short": "Codex·Claude Code 같은 에이전트에게 일을 나눠 맡기고, 검증하는 법·지침 문서를 팀이 같이 쓰게 만드는 일.",
+   "why": "이 팀의 ML 플랫폼은 에이전트도 코드·테스트·배포 준비를 하는 주체로 보고, 사람과 같은 규칙으로 검증받고 '왜 그렇게 했는지'를 플랫폼이 읽을 수 있는 형태로 남기게 설계했다고 밝혔습니다.[3] 회사는 2026년 9월 테크 컨퍼런스 주제를 'Shipping With AI'로 잡았습니다.[9]",
+   "actually": {
+    "items": [
+     "**판단 대기 작업 수 제한** — 다른 팀 백엔드 개발자는 에이전트 창이 여럿이어도 '내 판단을 기다리는 작업'을 셋으로 묶었고, 넷부터 앞의 셋까지 흔들렸다고 적었다.[7]",
+     "**맥락을 머리 밖으로** — 반복 규칙·결정·저장소의 함정을 세션 시작 때 에이전트가 읽는 지침·메모리 파일에 적는다.[7][26]",
+     "**1차 검증 자동화** — 변경마다 자동 리뷰와 테스트를 돌리고 결과만 받되, 핵심 변경은 사람이 직접 읽고 승인한다.[7]",
+     "**도메인 지식 공유** — 물류 팀은 표준(Core) 위에 조직 규칙(Overlay)을 얹은 문서를 여러 에이전트가 같이 읽게 하고, 질문 150개로 켰을 때·껐을 때를 비교했다. '현재 동작'은 반드시 코드로 확인한다.[8]"
+    ]
+   },
+   "how_far": "도구를 쓴다는 것보다 **AI 가 낸 결과를 내가 설명할 수 있고, 팀이 따라 할 수 있는 규칙으로 남기는 것**이 요구입니다.[1][7]",
+   "refs": [
+    3,
+    7,
+    8,
+    9,
+    26
+   ],
+   "study": [
+    "claude-code-doc",
+    "musinsa-ai-work"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "7년 이상의 백엔드 시스템 개발 경력 또는 이에 준하는 실무 경험이 있으신 분",
+   "short": "서버를 혼자 설계·운영해 본 시간이 길게 쌓인 사람 — 연수보다 '큰 시스템을 끝까지 책임진 경험'.",
+   "why": "업무에 파이프라인·CDP·서빙·아키텍처 설계가 한꺼번에 들어 있어 방향을 스스로 정할 사람을 찾습니다.[1] 지원서에도 문제 정의·전략·성과와 프로젝트별 기여도를 쓰라고 합니다.[1]",
+   "how_far": "'이에 준하는'이 붙어 연수는 절대 기준이 아닙니다.[1] 1차 면접이 라이브 코딩이라 연차와 별개로 **손으로 짜는 실력**도 봅니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ddia-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java 또는 Kotlin과 Spring Framework를 활용한 웹 서비스 개발에 능숙하신 분",
+   "short": "추천·타겟팅 API와 파이프라인을 Java/Kotlin·Spring Boot로 짜므로, 이 바탕이 몸에 익어 있어야 한다.",
+   "why": "공고의 언어·프레임워크가 Java·Kotlin / Spring Boot 입니다.[1] 캠페인 메타엔진도 원천마다 어댑터를 두고 공통 모델로 바꾸는 구조라 객체 설계·인터페이스 분리가 일상입니다.[2]",
+   "level": {
+    "basic": "Spring Boot 로 REST API · 의존성 주입 · 설정 · 예외 처리",
+    "work": "트랜잭션 경계 · 외부 호출 타임아웃·재시도 · 캐시 · 비동기 처리 · 테스트",
+    "team": "어댑터·전략 패턴으로 원천별 차이를 가두기 · 지연 p99 를 보며 튜닝"
+   },
+   "how_far": "둘 중 하나면 됩니다(\"또는\").[1] Kotlin을 처음 쓰더라도 Java·Spring이 탄탄하면 따라갈 수 있는 수준으로 보입니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "internal-spring-core",
+    "internal-spring-boot",
+    "kotlin-in-action"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 클라우드 환경 또는 Kubernetes 기반 시스템의 개발 및 운영 경험이 있으신 분",
+   "short": "서비스를 AWS·Kubernetes 위에 올리고, 배포·로그·확장을 직접 다뤄 본 경험.",
+   "why": "공고 인프라가 AWS Cloud·Kubernetes·ArgoCD(Git에 적은 설정대로 배포하는 도구)입니다.[1] 오디언스 엔진도 AWS 위 ClickHouse Cloud로 옮겼습니다.[4]",
+   "how_far": "클러스터 구축은 플랫폼 팀 몫이고, 이 자리는 **내 서비스를 컨테이너로 배포하고, 느려지거나 죽었을 때 로그·지표로 원인을 찾는** 수준이면 됩니다. {추론} \"또는\"이라 둘 중 하나의 경험이면 됩니다.[1]",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "internal-k8s",
+    "internal-docker"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 데이터 처리 및 분산 시스템 개발 경험이 있으신 분",
+   "short": "한 대로 안 되는 양을 여러 대에 나눠 처리하고, 그때 생기는 중복·순서·지연 문제를 풀어 본 경험.",
+   "why": "오디언스 매핑 11억 행, 월 수억 건 메시지가 이 자리의 일상입니다.[2][4]",
+   "actually": {
+    "items": [
+     "**나누기** — 고객 ID로 파티션을 나눠 같은 고객 이벤트는 같은 곳에서 순서대로 처리한다.[13]",
+     "**두 번 와도 한 번** — 재시도로 같은 이벤트가 두 번 와도 결과가 같게(멱등) 만든다.[17]",
+     "**늦게 온 데이터** — 집계 창이 닫힌 뒤 온 이벤트를 버릴지 다시 계산할지 정한다.[14]"
+    ]
+   },
+   "how_far": "특정 도구보다 **파티션·복제·재처리를 상황에 맞게 고른 이유**를 설명할 수 있으면 됩니다.[17] {추론}",
+   "refs": [
+    2,
+    4,
+    13,
+    17
+   ],
+   "study": [
+    "ddia-ko",
+    "internal-kafka",
+    "spark-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "주도적으로 문제를 해결하고, 논리적인 커뮤니케이션을 바탕으로 유관 조직과 협업한 경험이 있으신 분",
+   "short": "기획·마케팅·데이터 팀과 '데이터 뜻과 전달 규칙'을 맞춰 가며 일을 끝까지 끌고 간 경험.",
+   "why": "캠페인 메타엔진 팀은 원천 시스템 팀들과 콘텐츠 식별자·유효 기간 해석, 변경·삭제 전달 방식, 정보 책임자를 합의하는 **데이터 계약**을 맺는 중이라고 적었습니다.[2] 팀 자체도 DE·DS·MLE·백엔드·프론트가 한 팀입니다.[1]",
+   "how_far": "다른 팀과 규칙이 어긋났을 때 **문서로 정리해 합의를 끌어낸 사례** 하나면 충분합니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "구현에 머무르지 않고 고객 문제를 함께 정의하고, 출시 이후의 지표로 결과를 확인하며 일해 오신 분",
+   "short": "내가 만든 기능이 고객 숫자를 어떻게 바꿨는지 전·후로 말할 수 있는 사람.",
+   "why": "PE는 전문 영역에서 출발해 고객 경험과 지표가 실제로 바뀌었는지까지 확인한다고 공고가 적었습니다.[1]",
+   "how_far": "'API 를 만들었다'가 아니라 **'이 API 로 발송당 거래액이 몇 % 바뀌었다'**까지 말하는 수준입니다.[6] {추론}",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기술적 의사결정을 트레이드오프와 함께 문서로 정리하고, 이를 비즈니스 맥락에서 설명할 수 있는 분",
+   "short": "'A 대신 B, 얻는 것·잃는 것·비용'을 짧은 문서로 쓰고 비개발자에게도 설명하는 능력.",
+   "why": "팀 글이 그런 문서입니다 — DeciML은 '성격이 다른 워크로드를 폭넓게 받지는 않는다, 그 대가를 감수하고 자주 푸는 문제를 빨리 푼다'고 포기한 것을 같이 적었습니다.[3] CDP 이관도 저장 −86.5%·총비용 −71.4%라는 사업 숫자로 설명했습니다.[4]",
+   "how_far": "결정 기록(ADR — 맥락·결정·결과를 한 쪽으로) 한두 편을 써 본 정도면 됩니다.[27] 에이전트도 그 기록을 읽어야 다음 일을 이어받는다는 것이 팀의 설명입니다.[3]",
+   "refs": [
+    3,
+    4,
+    27
+   ],
+   "study": [
+    "adr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 코딩 에이전트(Codex, Claude Code 등)를 실무에 적극 활용하고, 그 결과물의 품질을 스스로 검증하고 책임질 수 있는 분",
+   "short": "에이전트로 일을 빨리 끝내되, 나온 코드를 테스트·리뷰로 확인하고 '내가 설명할 수 있는 것'만 내보내는 사람.",
+   "why": "지원 서류 안내가 AI 로 문제를 푼 사례와 **결과물을 어떻게 검증했는지**를 같이 쓰라고 합니다.[1] 회사 개발자도 '이해하지 못한 채 승인한 것은 산출이 아니라 부채'라고 적었습니다.[7]",
+   "how_far": "사례 하나 + **검증 방법(테스트·리뷰·비교 실행)**을 구체적으로 말할 수 있으면 됩니다.[1]",
+   "refs": [
+    1,
+    7,
+    26
+   ],
+   "study": [
+    "claude-code-doc",
+    "musinsa-ai-work"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "데이터 파이프라인 구축 및 운영 경험이 있으신 분",
+   "short": "업무①을 이미 해 본 사람 — 수집·가공·적재를 만들고 깨졌을 때 고쳐 본 경험.",
+   "why": "업무 첫 줄이 파이프라인이고 스택이 Spark·Flink·Kafka·SQS입니다.[1] Spark 는 배치에 쓰던 같은 API 로 흐르는 데이터도 처리할 수 있어, 배치와 실시간 갈래의 계산을 맞추기 좋습니다.[28]",
+   "how_far": "배치 하나·스트림 하나를 만들어 재처리(다시 채우기)까지 해 본 경험이면 충분합니다. {추론}",
+   "refs": [
+    1,
+    4,
+    28
+   ],
+   "study": [
+    "spark-guide",
+    "internal-kafka",
+    "flink-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "데이터 기반 서비스 개발에 관심이 많으신 분",
+   "short": "API가 고정 규칙이 아니라 데이터·모델 결과로 답을 바꾸는 서비스를 좋아하는 사람.",
+   "why": "팀이 만드는 것은 모두 데이터가 답을 정하는 서비스입니다 — 배너·푸시·타겟팅.[2][5]",
+   "how_far": "관심이면 됩니다. 추천의 큰 그림(후보 → 점수 → 정책)을 말할 수 있으면 대화가 됩니다. {추론}",
+   "refs": [
+    2,
+    5
+   ],
+   "study": [
+    "google-recsys"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "코드 리뷰, 업무 프로세스 등 기술 문화 발전에 기여한 경험이 있으신 분",
+   "short": "리뷰 규칙·템플릿·자동 점검처럼 팀이 일하는 방식을 바꿔 본 경험.",
+   "why": "업무 마지막 줄이 AI 기반 개발 방식을 '조직에 만들어 가는' 일입니다.[1] 회사 개발자는 개인 산출이 늘면 리뷰 적체가 동료에게 옮겨 간다는 문제를 아직 답이 없는 과제로 남겼습니다.[7]",
+   "how_far": "내가 만든 규칙이 **팀에서 실제로 쓰였다는 흔적**(리뷰 시간·장애 수 변화 등)을 보이면 좋습니다. {추론}",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "musinsa-ai-work"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "확장성과 안정성을 고려한 시스템 설계·고도화 경험이 있으신 분",
+   "short": "늘어날 양을 미리 보고 나눠 놓고, 한 곳이 아파도 전체가 서지 않게 설계해 본 경험.",
+   "why": "CDP는 단일 클러스터에서 용도별 자원으로 다시 짰고[4], 캠페인 엔진은 원천 장애가 번지지 않게 자기 DB를 읽게 했습니다.[2]",
+   "how_far": "고도화 전·후를 **지연·비용·장애 수** 숫자로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    2,
+    3,
+    4
+   ],
+   "study": [
+    "ddia-ko",
+    "release-it"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "단위 테스트 코드를 작성하며 코드 품질을 높이는 데 관심이 있으신 분",
+   "short": "규칙(세그먼트 조건·발송 정책)을 테스트로 묶어, 바꿔도 깨지지 않게 하는 습관.",
+   "why": "세그먼트 조건·필수 조건 필터·빈도 상한은 틀리면 바로 잘못된 고객에게 메시지가 나가는 규칙입니다.[2] 에이전트가 짠 코드를 검증하는 1차 장치도 테스트입니다.[7]",
+   "how_far": "경계값(정확히 7일 전, 수신 동의 철회 직후)을 테스트로 적는 습관이면 충분합니다. {추론}",
+   "refs": [
+    2,
+    7
+   ],
+   "study": [
+    "internal-testing"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "비즈니스 KPI를 기술로 개선하고 수치로 증명해 본 경험이 있으신 분",
+   "short": "기술 변경으로 매출·전환·비용 같은 사업 숫자를 움직이고, 그걸 실험으로 보인 경험.",
+   "why": "팀 글은 늘 사업 숫자로 끝납니다 — 발송당 거래액 +57%, 캠페인 세팅 시간 절반 이하, 총비용 −71.4%.[2][4][6]",
+   "how_far": "전·후 숫자와 **그 숫자를 어떻게 쟀는지**(A/B·기간 비교)를 같이 말하면 됩니다.[16]",
+   "refs": [
+    2,
+    4,
+    6
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "가설 수립 → 실험 → 데이터 검증을 거쳐 제품 의사결정에 참여해 본 경험이 있으신 분",
+   "short": "'이렇게 바꾸면 이 숫자가 바뀐다'를 세우고, A/B로 확인해 출시 여부를 정해 본 경험.",
+   "why": "팀은 A/B 테스트를 오케스트레이션 층에서 돌리고[3], 같은 팀 공고는 사내 A/B 테스트 플랫폼을 스택에 적었습니다.[10]",
+   "how_far": "위 예시처럼 **표본이 충분한지, 반대 지표가 나빠지지 않았는지**까지 본 경험이면 좋습니다.[16]",
+   "refs": [
+    3,
+    10,
+    16
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 개발 프로세스에 도입해 팀 단위 생산성이나 품질을 개선한 경험이 있으신 분",
+   "short": "나 혼자가 아니라 팀이 에이전트를 같이 쓰도록 규칙·지침·자동 점검을 만든 경험.",
+   "why": "팀 플랫폼은 사람과 에이전트가 같은 규칙으로 일하도록 설계됐고[3], 회사는 도메인 지식을 여러 에이전트가 같이 읽는 문서로 만든 사례를 공개했습니다.[8]",
+   "how_far": "도입 전·후를 쟀다면 더 좋습니다 — 물류 팀도 질문 150개로 켰을 때·껐을 때를 비교했습니다.[8]",
+   "refs": [
+    3,
+    8
+   ],
+   "study": [
+    "musinsa-ai-work",
+    "claude-code-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI를 활용해 클라이언트 밖의 영역(서버 API, 데이터 파이프라인 등)까지 직접 문제를 풀어 본 경험이 있으신 분",
+   "short": "프론트·앱 출신이라도 에이전트와 함께 서버 API·파이프라인까지 손대 본 경험.",
+   "why": "PE는 AI 에이전트와 함께 낯선 코드베이스와 인접 영역까지 빠르게 파악해 문제를 처음부터 끝까지 푼다고 공고가 적었습니다.[1] 이 팀엔 프론트 엔지니어도 같이 있습니다.[1]",
+   "how_far": "백엔드 지원자라면 반대로 **처음 보는 영역(예: 데이터 파이프라인·앱 화면)을 에이전트로 파악해 고친 사례**가 이 줄의 답이 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "claude-code-doc"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "API 응답 시간과 비용 숫자를 같이 보는 걸 좋아하는 사람[4]",
+   "모델·마케팅·데이터 팀 사이에서 데이터 뜻을 맞추는 일이 재밌는 사람[2]",
+   "AI 에이전트로 일하는 방식을 팀 규칙으로 만들어 보고 싶은 사람[3][7]"
+  ],
+  "hard": [
+   "경력 7년 이상 기준이고 1차 면접이 라이브 코딩이다[1]",
+   "파이프라인·CDP·서빙·실험까지 범위가 넓어 한 가지만 깊게 파기 어렵다[1]",
+   "AI 활용 사례와 검증 방법을 지원서에 따로 써야 한다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "1,600만 고객 × 2,500개 오디언스를 펼쳐 저장하면 무엇이 문제고, 어떻게 풀겠어요?",
+   "a": "이 팀이 실제로 부딪힌 11억 행과 저장·계산 분리.[4]"
+  },
+  {
+   "q": "예측 점수가 높아도 보내면 안 되는 경우는? 그 규칙은 어디에 두나요?",
+   "a": "필수 조건 → 점수 → 정책 순서.[2]"
+  },
+  {
+   "q": "기획전 내용이 바뀌었을 때 지난주 푸시의 성과를 어떻게 분석하나요?",
+   "a": "덮어쓰기 대신 스냅샷.[2]"
+  },
+  {
+   "q": "추천 모델 서버가 느려졌습니다. 첫 화면을 어떻게 지키나요?",
+   "a": "트래픽 97%가 보는 배너 — 캐시·기본 목록·과부하 차단.[3][5]"
+  },
+  {
+   "q": "푸시 CTR 은 올랐는데 구매는 그대로입니다. 무엇을 의심하나요?",
+   "a": "팀이 꼽은 증분(incrementality) 문제.[3]"
+  },
+  {
+   "q": "AI 에이전트가 짠 코드를 어떻게 검증했나요?",
+   "a": "지원서가 직접 묻는 항목.[1][7]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 · Product Engineer (Personalization)",
+   "url": "https://www.musinsacareers.com/ko/o/246073",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "PE 직군 소개·팀 소개·업무·기술 스택·요건·지원 서류(AI 활용 사례와 검증 방법)·전형(라이브 코딩 포함)"
+  },
+  {
+   "n": 2,
+   "title": "무신사 테크 · 캠페인 메타엔진 — 무진장 많은 콘텐츠를 하나의 캠페인 구조로 통합하다",
+   "url": "https://techblog.musinsa.com/%EC%BA%A0%ED%8E%98%EC%9D%B8-%EB%A9%94%ED%83%80%EC%97%94%EC%A7%84-%EB%AC%B4%EC%A7%84%EC%9E%A5-%EB%A7%8E%EC%9D%80-%EC%BD%98%ED%85%90%EC%B8%A0%EB%A5%BC-%ED%95%98%EB%82%98%EC%9D%98-%EC%BA%A0%ED%8E%98%EC%9D%B8-%EA%B5%AC%EC%A1%B0%EB%A1%9C-%ED%86%B5%ED%95%A9%ED%95%98%EB%8B%A4-a29ece6ae6d9",
+   "kind": "company",
+   "date": "2026-11-09",
+   "note": "Personalization팀 개발자·Customer Growth팀 기획자 공동. MATCH 시리즈 4편 — 블로그 RSS 본문을 전부 읽음(원문 페이지는 403)"
+  },
+  {
+   "n": 3,
+   "title": "무신사 테크 · 예측을 넘어 결정과 발견으로: DeciML과 NeXA를 만든 이유",
+   "url": "https://techblog.musinsa.com/%EC%98%88%EC%B8%A1%EC%9D%84-%EB%84%98%EC%96%B4-%EA%B2%B0%EC%A0%95%EA%B3%BC-%EB%B0%9C%EA%B2%AC%EC%9C%BC%EB%A1%9C-deciml%EA%B3%BC-nexa%EB%A5%BC-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%9C%A0-9313debb2a4f",
+   "kind": "company",
+   "date": "2026-11-03",
+   "note": "Personalization팀 MLE. 이해 → 평가 → 선택, 서빙 셋(Realtime API·Batch·Async), 오케스트레이션 층의 A/B — RSS 본문 전부 읽음"
+  },
+  {
+   "n": 4,
+   "title": "ClickHouse 블로그 · Musinsa가 ClickHouse Cloud로 오디언스 엔진을 확장하고 TCO를 71.4% 절감한 방법",
+   "url": "https://clickhouse.com/ko/blog/musinsa-customer-data-platform-ko",
+   "kind": "company",
+   "date": "2026-08-09",
+   "note": "AWS Summit Seoul 2026 무신사 백엔드·데이터 엔지니어 발표 정리(벤더가 쓴 글). CDP 2025-08 출시, 오디언스 2,500개·매핑 약 11억 행, ClickPipes"
+  },
+  {
+   "n": 5,
+   "title": "GeekNews · 무신사 홈 배너 개인화 추천 이야기(요약)",
+   "url": "https://news.hada.io/topic?id=21282",
+   "kind": "community",
+   "date": "2025-06-05",
+   "note": "무신사 테크 블로그 글의 요약 — 트래픽 약 97%, 매시간 이어 학습, 신규 유저 세그먼트, 정책 덧씌우기"
+  },
+  {
+   "n": 6,
+   "title": "무신사 테크 · 통합임베딩으로 개인화 푸시 CTR +21.3%를 만든 과정",
+   "url": "https://techblog.musinsa.com/%ED%86%B5%ED%95%A9%EC%9E%84%EB%B2%A0%EB%94%A9%EC%9C%BC%EB%A1%9C-%EA%B0%9C%EC%9D%B8%ED%99%94-%ED%91%B8%EC%8B%9C-ctr-21-3-%EB%A5%BC-%EB%A7%8C%EB%93%A0-%EA%B3%BC%EC%A0%95-08bd63623aff",
+   "kind": "company",
+   "date": "2026-08-31",
+   "note": "MATCH 시리즈 3편 — 같은 회사 다른 풀이에서 RSS 로 읽은 내용(DeepFM 대비 A/B, 발송 26% 감소)"
+  },
+  {
+   "n": 7,
+   "title": "무신사 테크 · 대AI시대에 일하는 방식의 변화에 대한 고찰",
+   "url": "https://techblog.musinsa.com/%EB%8C%80ai%EC%8B%9C%EB%8C%80%EC%97%90-%EC%9D%BC%ED%95%98%EB%8A%94-%EB%B0%A9%EC%8B%9D%EC%9D%98-%EB%B3%80%ED%99%94%EC%97%90-%EB%8C%80%ED%95%9C-%EA%B3%A0%EC%B0%B0-6d11e0b1fead",
+   "kind": "company",
+   "date": "2026-10-26",
+   "note": "물류플랫폼팀 백엔드 개발자의 경험담 — 다른 팀. RSS 본문 전부 읽음"
+  },
+  {
+   "n": 8,
+   "title": "무신사 테크 · AI Native 조직은 도메인 지식을 어떻게 공유하는가",
+   "url": "https://techblog.musinsa.com/ai-native-%EC%A1%B0%EC%A7%81%EC%9D%80-%EB%8F%84%EB%A9%94%EC%9D%B8-%EC%A7%80%EC%8B%9D%EC%9D%84-%EC%96%B4%EB%96%BB%EA%B2%8C-%EA%B3%B5%EC%9C%A0%ED%95%98%EB%8A%94%EA%B0%80-f2e3de607df3",
+   "kind": "company",
+   "date": "2026-08-25",
+   "note": "다른 팀(물류 도메인). Core·Overlay 시맨틱 레이어, 질문 150개 ON/OFF 비교"
+  },
+  {
+   "n": 9,
+   "title": "무신사 테크 · MUSINSA PATTERN '26 테크 컨퍼런스 안내",
+   "url": "https://techblog.musinsa.com/%EC%BD%94%EB%94%A9%EB%A7%8C-%EB%B9%A8%EB%9D%BC%EC%A1%8C%EB%8B%A4%EA%B3%A0%EC%9A%94-%EC%95%84%EB%87%A8-%EC%9D%BC%ED%95%98%EB%8A%94-%EB%B0%A9%EC%8B%9D%EC%9D%B4-%EB%8B%A4-%EB%9C%AF%EC%96%B4%EA%B3%A0%EC%B3%90%EC%A1%8C%EC%8A%B5%EB%8B%88%EB%8B%A4-8de60dd4eb4a",
+   "kind": "company",
+   "date": "2026-08-24",
+   "note": "Shipping With AI — Context·Build·Verify·Shipped 네 단계"
+  },
+  {
+   "n": 10,
+   "title": "무신사 채용 · Data Scientist (Personalization)",
+   "url": "https://www.musinsacareers.com/ko/o/240567",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 팀 다른 공고 — 기술 스택(Kafka·Redis·BigQuery·Databricks·Triton·내부 A/B 테스트 플랫폼)"
+  },
+  {
+   "n": 11,
+   "title": "요즘IT · 푸시 클릭률 6배 — 29CM 개인화 푸시 프로젝트",
+   "url": "https://yozm.wishket.com/magazine/detail/2362",
+   "kind": "news",
+   "date": "2023-12-13",
+   "note": "29CM 백엔드 개발자 인터뷰 — 하루 약 350만 행 BigQuery → Redis 미리 집계"
+  },
+  {
+   "n": 12,
+   "title": "Data + AI Summit 2026 · How Musinsa Built a Self-Optimizing Semantic Layer on Databricks",
+   "url": "https://www.databricks.com/dataaisummit/session/beyond-tables-how-musinsa-built-self-optimizing-semantic-layer",
+   "kind": "company",
+   "date": "2026-06",
+   "note": "무신사 데이터 플랫폼 팀 발표 — 같은 회사 다른 풀이에서 슬라이드를 읽은 내용(이벤트 수집 Snowplow·Amplitude, DB 변경 CDC, L0/L1/L2 층)"
+  },
+  {
+   "n": 13,
+   "title": "Apache Kafka Documentation",
+   "url": "https://kafka.apache.org/documentation/",
+   "kind": "reference",
+   "note": "파티션·컨슈머 그룹·전달 보장"
+  },
+  {
+   "n": 14,
+   "title": "Apache Flink Documentation — Stateful Stream Processing",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/",
+   "kind": "reference",
+   "note": "상태 있는 스트림 처리·체크포인트·윈도"
+  },
+  {
+   "n": 15,
+   "title": "ClickHouse Documentation · Materialized views",
+   "url": "https://clickhouse.com/docs/materialized-views",
+   "kind": "reference",
+   "note": "들어오는 행을 받아 미리 집계해 두는 증분 뷰"
+  },
+  {
+   "n": 16,
+   "title": "론 코하비 외 · 신뢰할 수 있는 온라인 종합 대조 실험 (이기홍·김기영 옮김)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "kind": "reference",
+   "note": "실험 단위·표본 크기·가드레일 지표"
+  },
+  {
+   "n": 17,
+   "title": "마틴 클레프만 · 데이터 중심 애플리케이션 설계 (위키북스)",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "kind": "reference",
+   "note": "복제·파티셔닝·스트림·배치·파생 데이터"
+  },
+  {
+   "n": 18,
+   "title": "Google · Rules of Machine Learning",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "kind": "reference",
+   "note": "학습/서빙 어긋남, 서빙 때 쓴 피처를 남겨 학습에 쓰기"
+  },
+  {
+   "n": 19,
+   "title": "Feast · Point-in-time joins",
+   "url": "https://docs.feast.dev/getting-started/concepts/point-in-time-joins",
+   "kind": "reference",
+   "note": "피처 스토어 — 이벤트 시각 기준으로 피처 붙이기"
+  },
+  {
+   "n": 20,
+   "title": "Redis Documentation",
+   "url": "https://redis.io/docs/",
+   "kind": "reference",
+   "note": "만료(TTL)·정렬 집합·파이프라인"
+  },
+  {
+   "n": 21,
+   "title": "무신사 채용 · 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company",
+   "note": "같은 회사 다른 풀이에서 2026-11 확인한 내용"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 · 무신사 기업정보",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "공공데이터 집계 — 같은 회사 다른 풀이에서 옮긴 값(페이지 직접 열람은 403)"
+  },
+  {
+   "n": 23,
+   "title": "원티드 · 무신사 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "평균연봉 6,082만원 표기, 기준 설명 없음"
+  },
+  {
+   "n": 24,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company",
+   "note": "회사 주소 표기 — 같은 회사 다른 풀이에서 확인"
+  },
+  {
+   "n": 25,
+   "title": "일간스포츠 · 무신사, 성수동 캠퍼스 N1 으로 본사 이전",
+   "url": "https://isplus.com/article/view/isp202209260007",
+   "kind": "news",
+   "date": "2022-09",
+   "note": "성수역 도보 6분"
+  },
+  {
+   "n": 26,
+   "title": "Claude Code 문서",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "kind": "reference",
+   "note": "코딩 에이전트의 작업 방식·메모리 파일·권한"
+  },
+  {
+   "n": 27,
+   "title": "Michael Nygard · Documenting Architecture Decisions",
+   "url": "https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "kind": "reference",
+   "date": "2011-11-15",
+   "note": "결정 기록(ADR) — 맥락·결정·결과를 짧은 문서로"
+  },
+  {
+   "n": 28,
+   "title": "Apache Spark · Structured Streaming Programming Guide",
+   "url": "https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html",
+   "kind": "reference",
+   "note": "배치와 같은 API 로 흐르는 데이터 처리"
+  }
+ ],
+ "caveat": "무신사 테크 블로그 원문(techblog.musinsa.com)은 직접 열면 403이라 블로그 RSS 피드의 본문으로 읽었고, 홈 배너 글은 GeekNews 요약으로 확인했습니다. CDP·오디언스 엔진 내용은 ClickHouse가 무신사 발표를 정리한 글이라 벤더 시각이 섞일 수 있습니다. 추천 API 의 내부 구조(지연 목표·캐시 방식)는 공개되지 않아 공식 문서·책으로 '보통 이런 것'을 보였고, 그런 문장에는 {추론} 을 달았습니다. 이 팀 자체의 발표 영상은 찾지 못했습니다.",
+ "resources": [
+  {
+   "id": "musinsa-ai-work",
+   "title": "대AI시대에 일하는 방식의 변화에 대한 고찰",
+   "by": "무신사 테크 블로그 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://techblog.musinsa.com/%EB%8C%80ai%EC%8B%9C%EB%8C%80%EC%97%90-%EC%9D%BC%ED%95%98%EB%8A%94-%EB%B0%A9%EC%8B%9D%EC%9D%98-%EB%B3%80%ED%99%94%EC%97%90-%EB%8C%80%ED%95%9C-%EA%B3%A0%EC%B0%B0-6d11e0b1fead",
+   "why": "같은 회사 개발자가 에이전트 여러 개를 굴리며 어디서 무너졌고 무엇을 바꿨는지 — AI 활용·검증 요건에 대한 회사 쪽 감각."
+  },
+  {
+   "id": "claude-code-doc",
+   "title": "Claude Code 문서",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "why": "에이전트가 실제로 하는 일·지침 파일·권한. 공고가 이름으로 든 도구."
+  },
+  {
+   "id": "adr",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · 2011",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "why": "'트레이드오프를 문서로' 요건 — 결정 기록 한 장의 형식(맥락·결정·결과)."
+  },
+  {
+   "id": "ddia-ko",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "복제·파티셔닝·스트림·배치·파생 데이터 — 업무①④⑤와 분산 시스템 요건의 바탕 책."
+  },
+  {
+   "id": "internal-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "by": "우리 사이트 책 ⑱",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "이벤트를 보냈다는 것과 처리됐다는 것 사이 — 실시간 파이프라인의 중복·재처리를 명령과 출력으로."
+  },
+  {
+   "id": "flink-doc",
+   "title": "Apache Flink Documentation",
+   "by": "Apache Flink 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/",
+   "why": "상태를 들고 흐르는 집계·윈도·체크포인트 — '최근 7일 장바구니' 같은 실시간 조건."
+  },
+  {
+   "id": "spark-guide",
+   "title": "스파크 완벽 가이드",
+   "by": "빌 체임버스 · 마테이 자하리아 · 한빛미디어 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%8C%8C%ED%81%AC%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "배치 가공·조인·집계. 스파크 2 기준이라 최신 기능은 공식 문서로 보충."
+  },
+  {
+   "id": "clickhouse-mv",
+   "title": "Materialized views",
+   "by": "ClickHouse 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://clickhouse.com/docs/materialized-views",
+   "why": "들어오는 대로 미리 집계해 두는 방식 — 무신사 오디언스 엔진이 쓰는 저장소의 핵심 기능."
+  },
+  {
+   "id": "clickhouse-blog",
+   "title": "Musinsa가 ClickHouse Cloud로 오디언스 엔진을 확장하고 TCO를 71.4% 절감한 방법",
+   "by": "ClickHouse 블로그 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://clickhouse.com/ko/blog/musinsa-customer-data-platform-ko",
+   "why": "이 팀 백엔드·데이터 엔지니어의 발표 정리. CDP·오디언스 엔진이 어떻게 생겼는지 지원 전에 읽는다."
+  },
+  {
+   "id": "redis-doc",
+   "title": "Redis Documentation",
+   "by": "Redis 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://redis.io/docs/",
+   "why": "미리 구운 추천 결과를 꺼내는 캐시 — 만료·정렬 집합·파이프라인."
+  },
+  {
+   "id": "rules-of-ml",
+   "title": "Rules of Machine Learning",
+   "by": "Martin Zinkevich · Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "why": "서빙하는 백엔드가 알아야 할 학습/서빙 어긋남과 피처 기록."
+  },
+  {
+   "id": "feast-pit",
+   "title": "Point-in-time joins",
+   "by": "Feast 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.feast.dev/getting-started/concepts/point-in-time-joins",
+   "why": "서빙용 데이터 모델을 짤 때 '그 시각의 값'을 붙이는 법."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "why": "A/B 테스트·가설·KPI 요건 전부 — 실험 단위·표본·반대 지표."
+  },
+  {
+   "id": "google-recsys",
+   "title": "추천 시스템 과정 (Recommendation Systems)",
+   "by": "Google for Developers",
+   "kind": "course",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/recommendation?hl=ko",
+   "why": "후보 → 점수 → 재순위의 큰 그림. 추천 API를 감싸는 백엔드가 모델 쪽과 같은 말을 쓰기 위해."
+  },
+  {
+   "id": "internal-spring-core",
+   "title": "스프링 핵심 원리 (우리 사이트 책)",
+   "by": "우리 사이트 책 ②",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/spring-core",
+   "why": "Spring 요건의 바닥 — 빈·의존관계 주입, 어댑터를 인터페이스로 갈아 끼우는 감각."
+  },
+  {
+   "id": "internal-spring-boot",
+   "title": "스프링 부트 — 핵심 원리와 활용 (우리 사이트 책)",
+   "by": "우리 사이트 책 ⑯",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "공고 스택 Spring Boot — 자동 구성·설정·액추에이터로 서비스 상태 보기."
+  },
+  {
+   "id": "kotlin-in-action",
+   "title": "코틀린 인 액션",
+   "by": "드미트리 제메로프 · 스베트라나 이사코바 · 에이콘출판사",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%BD%94%ED%8B%80%EB%A6%B0%20%EC%9D%B8%20%EC%95%A1%EC%85%98",
+   "why": "Java 개발자가 Kotlin 요건을 채우는 표준 입문서 — 널 안전성·확장 함수·컬렉션."
+  },
+  {
+   "id": "internal-k8s",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책 ⑫",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "AWS/Kubernetes 요건 — 배포·재시작·Pending 읽기를 kubectl 출력으로."
+  },
+  {
+   "id": "internal-docker",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책 ⑪",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "서비스를 컨테이너로 말아 올리는 기본."
+  },
+  {
+   "id": "internal-testing",
+   "title": "Practical Testing — 실용적인 테스트 가이드 (우리 사이트 책)",
+   "by": "우리 사이트 책 ⑨",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/practical-testing",
+   "why": "단위 테스트 우대 — 경계값과 빨간 막대부터 보는 테스트 습관."
+  },
+  {
+   "id": "release-it",
+   "title": "Release It! 2판",
+   "by": "Michael T. Nygard · Pragmatic Bookshelf · 2018",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/",
+   "why": "타임아웃·회로 차단·격벽 — 추천 API가 느려져도 첫 화면을 지키는 안정성 패턴."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 글로 그림 잡기",
+   "time": "1주",
+   "goal": "MATCH·CDP·DeciML/NeXA 가 각각 무엇을 맡고 이 자리가 어디에 서는지 말할 수 있다.",
+   "resources": [
+    "clickhouse-blog",
+    "google-recsys",
+    "musinsa-ai-work"
+   ],
+   "task": "위 풀이의 업무 다섯 줄을 '입력 → 처리 → 출력 → 확인할 지표' 한 줄씩 표로 정리하고, 오디언스 엔진·캠페인 메타엔진·추천 API 를 한 장의 상자 그림으로 잇는다."
+  },
+  {
+   "title": "오디언스 엔진 작게 만들기",
+   "time": "2~3주",
+   "goal": "조건을 받아 고객 묶음을 돌려주는 API 를 Spring Boot 로 만들고, 행 수가 늘 때 무엇이 느려지는지 잰다.",
+   "resources": [
+    "internal-spring-boot",
+    "kotlin-in-action",
+    "clickhouse-mv",
+    "ddia-ko"
+   ],
+   "task": "가상 고객 10만 명·이벤트 500만 건을 ClickHouse(또는 PostgreSQL)에 넣고 '30대 남성'·'7일 장바구니 이탈' 오디언스 10개를 펼친 매핑으로 계산한다. 조건 API 와 materialized view 로 미리 집계한 경우의 응답 시간을 비교한다."
+  },
+  {
+   "title": "실시간으로 바꾸기",
+   "time": "2주",
+   "goal": "이벤트가 들어오는 즉시 오디언스·피처가 갱신되고, 중복·늦은 이벤트에도 같은 결과가 나온다.",
+   "resources": [
+    "internal-kafka",
+    "flink-doc",
+    "redis-doc"
+   ],
+   "task": "가상 장바구니 이벤트를 Kafka 로 흘려 '최근 7일 장바구니' 상태를 갱신하고 Redis 에 쓴다. 같은 이벤트를 두 번 보내도, 10분 늦게 보내도 결과가 같은지 테스트로 확인한다."
+  },
+  {
+   "title": "추천 API 와 A/B",
+   "time": "2주",
+   "goal": "필수 조건 → 점수 → 정책 순서의 추천 API 를 만들고 A/B 결과를 표본 크기까지 따져 읽는다.",
+   "resources": [
+    "kohavi-ko",
+    "rules-of-ml",
+    "release-it",
+    "internal-testing"
+   ],
+   "task": "미리 구운 점수(가상)를 Redis 에서 읽어 끝난 기획전·수신 미동의를 거르고 빈도 상한을 적용하는 API 를 만든다. 모델 서버가 200ms 넘게 늦으면 인기순으로 물러서게 하고, 두 버전의 가상 클릭 로그로 z 검정을 돌려 결과를 한 쪽 결정 기록으로 쓴다."
+  },
+  {
+   "title": "AI 로 일하는 방식 남기기 (계속)",
+   "time": "계속",
+   "goal": "에이전트에게 맡긴 작업을 검증하는 규칙을 문서로 남기고, 지원서에 쓸 사례를 만든다.",
+   "resources": [
+    "claude-code-doc",
+    "musinsa-ai-work",
+    "adr"
+   ],
+   "task": "2~4단계를 에이전트와 함께 하며 지침 파일·테스트 규칙을 적고, '에이전트가 틀린 곳 → 어떻게 잡았나'를 세 건 기록한다. 그중 하나를 지원서의 AI 활용 사례(방식·결과·검증)로 다듬는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 없음 — 집계 사이트 평균은 3,453만원(자소설)과 6,082만원(원티드)으로 기준이 다르고, 7년 이상 경력 자리는 '처우 협의'로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 회사 전체 값이고 연도 표기를 확인하지 못했다 [22]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "3,453만원",
+    "amount": 3453,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계. 경력직이 섞인 회사 전체 평균이다 [22]"
+   },
+   {
+    "label": "직원 평균 연봉(다른 집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기. 위 값과 크게 달라 산출 방식·시점이 다른 것으로 보인다 [23]"
+   }
+  ],
+  "how": "무신사는 비상장이라 공시 평균 급여 숫자를 확인하지 못했습니다(공시 숫자 없음). 위 숫자는 모두 집계이고 **초봉이 아니라 경력직이 섞인 회사 전체 평균**입니다. 이 공고는 경력 7년 이상 자리라 이 평균들과 거리가 멀고, 전형 끝에 '처우 협의' 단계가 따로 있습니다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "월 소정 근로시간 내 유연 근무, 코어타임 11~16시"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원, 복지카드 연동"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당 '모락모락'(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기 근속",
+    "detail": "근속 3년당 리프레시 휴가 7일, 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기마다 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 월 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "장비",
+    "detail": "허먼 밀러 의자 등 업무 장비, 업무 물품 지원"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급"
+   }
+  ],
+  "note": "무신사 채용 사이트 복지 페이지(같은 회사 다른 풀이에서 2026-11 확인)를 옮겼다 [21]. 페이지에 '근무 장소·기간·시점에 따라 일부 변경될 수 있다'는 문구가 있다 [21]. 수습 3개월 급여 100%는 이 공고에도 적혀 있다 [1]."
+ },
+ "location": {
+  "name": "무신사 성수 오피스(캠퍼스 N1)",
+  "address": "서울특별시 성동구 아차산로13길 11",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%B1%EB%8F%99%EA%B5%AC%20%EC%95%84%EC%B0%A8%EC%82%B0%EB%A1%9C13%EA%B8%B8%2011",
+  "near": "2호선 성수역 도보 6분",
+  "note": "이 공고에는 근무지가 적혀 있지 않고, 같은 팀 DS 공고의 근무지가 '무신사 성수 오피스'다 [10]. 주소는 무신사 상품 페이지 하단 사업자 정보 [24], 도보 거리는 2022년 본사 이전 보도 [25]. 팀 자리가 다른 건물일 수 있다 {추론}."
+ }
+}

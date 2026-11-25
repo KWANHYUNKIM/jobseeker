@@ -327,6 +327,7 @@
   "ats-greeting:musinsa:241603": "musinsa-product-engineer-member-serving",
   "ats-greeting:musinsa:241118": "musinsa-product-engineer-partner-ads-growth",
   "ats-greeting:musinsa:246226": "musinsa-product-engineer-partner-platform",
+  "ats-greeting:musinsa:246073": "musinsa-product-engineer-personalization",
   "ats-greeting:musinsa:236337": "musinsa-product-engineer-platform-innovation",
   "ats-greeting:musinsa:235686": "musinsa-product-engineer-scm-platform",
   "ats-greeting:musinsa:172721": "musinsa-product-engineering-manager-core-partner",
@@ -3330,6 +3331,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 30
+  },
+  {
+   "id": "musinsa-product-engineer-personalization",
+   "company": "주식회사 무신사",
+   "role": "Product Engineer",
+   "jobs": [
+    "ats-greeting:musinsa:246073"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 24
   },
   {
    "id": "musinsa-product-engineer-platform-innovation",
