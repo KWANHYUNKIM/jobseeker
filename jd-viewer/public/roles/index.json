@@ -234,6 +234,7 @@
   "wanted-398569": "hyundai-aviation-motor-control-sw",
   "saramin-55604373": "hyundai-energy-tech-market-research",
   "saramin-55605890": "hyundai-group-cyber-threat-detection",
+  "ats-hkmc:hyundai:2026N2395": "hyundai-gso-robotics-ai-strategy",
   "ats-hkmc:hyundai:2026N2419": "hyundai-hydrogen-refueling-infra",
   "saramin-55605963": "hyundai-ict-ax-project-manager",
   "ats-hkmc:hyundai:2026N2415": "hyundai-ict-backend-architecture-owners-app",
@@ -2499,6 +2500,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "hyundai-gso-robotics-ai-strategy",
+   "company": "현대자동차",
+   "role": "로보틱스 및 AI 기술 전략",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2395"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "hyundai-hydrogen-refueling-infra",
