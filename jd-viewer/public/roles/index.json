@@ -166,6 +166,7 @@
   "ats-hkmc:hyundai:2026N2209": "hyundai-npu-dl-compiler",
   "ats-hkmc:hyundai:2026N2329": "hyundai-robotics-joint-robot-mechanism",
   "ats-hkmc:hyundai:2026N2331": "hyundai-robotics-joint-robot-production",
+  "ats-hkmc:hyundai:2026N2326": "hyundai-robotics-joint-robot-system-sw",
   "saramin-55022391": "hyundai-robotics-mobile-robot-ee-system",
   "ats-hkmc:hyundai:2026N2322": "hyundai-robotics-perceptive-ai",
   "wanted-387529": "hyundai-robotics-perceptive-ai",
@@ -1879,6 +1880,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 29
+  },
+  {
+   "id": "hyundai-robotics-joint-robot-system-sw",
+   "company": "현대자동차",
+   "role": "관절로봇 시스템 SW 개발",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2326"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 21
   },
   {
    "id": "hyundai-robotics-mobile-robot-ee-system",

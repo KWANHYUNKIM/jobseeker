@@ -1,0 +1,1273 @@
+{
+ "id": "hyundai-robotics-joint-robot-system-sw",
+ "company": "현대자동차",
+ "role": "관절로봇 시스템 SW 개발",
+ "team": "로보틱스랩",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2326"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "의료·서비스·산업용 **관절형 로봇(팔처럼 관절이 이어진 로봇)** 의 '몸 안 소프트웨어'를 맞추는 자리입니다. 모터 드라이버·센서·제어 컴퓨터·AI 컴퓨터가 서로 제때 말을 주고받게 엮고, 사람이 로봇을 부리는 화면과 작업 관리자를 만들고, 강화학습·모방학습·VLA 로 배운 동작을 실제 로봇에 얹는 틀을 짓습니다.[1]",
+  "env": "현대차·기아 로보틱스랩(의왕). 같은 랩에 관절 로봇의 기구 설계·양산개발·SW 검증 자리와 양팔 조작 AI 모델 자리가 따로 열려 있어[2][3], 이 자리는 그 사이를 잇는 **시스템 통합** 쪽입니다 {추론}. 랩은 로봇 관제·클라이언트 SW·CI/CD 를 직접 만들어 왔습니다.[37][38] 그룹은 NVIDIA 와 로봇 학습·시뮬레이션 협력을 발표했습니다.[8][9]",
+  "oneline": "AI 가 낸 동작 명령이 1 ms 마감을 놓치지 않고 관절 모터까지 내려가게 하는 사람. 모델을 만드는 쪽보다 **실시간 리눅스 · EtherCAT · C++ · 학습 프레임워크를 로봇에 붙이는 일**이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "안정적인 로봇 시스템 운영이라는 목표 달성을 위해 로봇 시스템을 통합·최적화하고 실시간·이기종 통신 기반 소프트웨어를 개발·검증하는 업무를 수행합니다.",
+   "short": "로봇 안의 여러 컴퓨터·드라이버가 제때 맞물려 돌게 엮고, 멈추지 않게 검증하는 일.",
+   "why": "랩장은 로봇을 고객이 계속 쓰게 하려면 성능뿐 아니라 품질·유지보수·AS·인증·통합 엔지니어링 과정까지 갖춰야 한다고 말했습니다.[4] 같은 랩의 SW 검증 공고도 구동부·센서·통신의 통합 동작과 연속 동작 안정성을 따로 검증합니다 — 이 자리가 만든 것을 그 자리가 시험하는 구조입니다.[2] {추론} 랩은 의료용 착용 로봇에서도 SW 아키텍처·모터 드라이버·임베디드 보드를 직접 만들었습니다.[39]",
+   "actually": {
+    "intro": "관절 로봇 한 대 안에는 보통 이런 덩어리들이 있습니다(일반 구성 — 이 랩의 구조는 공개되지 않았습니다).",
+    "items": [
+     "**관절 드라이버** — 관절마다 모터를 돌리는 작은 제어기. 위치·속도·토크를 주고받는다.[12]",
+     "**실시간 제어 컴퓨터** — 1 ms 안팎 주기로 모든 관절에 명령을 보내고 상태를 받는다.[12][15]",
+     "**AI 컴퓨터(GPU)** — 카메라를 보고 다음 동작을 추론한다. 주기가 훨씬 느리다(수십 ms).[23][24]",
+     "**운용 PC·태블릿** — 사람이 작업을 고르고 상태를 보는 화면.[18]",
+     "이 넷을 잇는 통신(EtherCAT·이더넷·DDS)과, 어느 하나가 늦거나 죽었을 때 안전하게 멈추는 규칙을 짜는 것이 '통합'이다 {추론}."
+    ]
+   },
+   "how_far": "제어 알고리즘(어떻게 움직일까)은 제어 연구원이, 모델은 AI 연구원이 만듭니다.[3] 이 자리는 그 둘이 **정해진 주기 안에 실제 기계 위에서 돌게** 하는 쪽입니다 {추론}. 경력 3년 이상·석사 이상 자리라 처음부터 구조를 설계해 본 경험을 봅니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    12,
+    15,
+    18,
+    23,
+    24,
+    39
+   ],
+   "study": [
+    "ros2-docs",
+    "modern-robotics"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 로봇 시스템 통합 및 최적화",
+   "short": "아래 세 줄(통신 구조 · 성능 · 실시간 태스크)의 묶음 제목.",
+   "why": "로봇 한 대의 소프트웨어 바닥을 까는 일입니다. 이 바닥이 흔들리면 위에 얹는 화면·AI 가 모두 흔들립니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 이기종 시스템 간 통신 아키텍처 설계 및 통합",
+   "short": "OS·주기·언어가 다른 컴퓨터들(제어기·AI·화면)이 무엇을 어떤 통로로 주고받을지 정하는 일.",
+   "why": "'이기종'은 서로 다른 종류라는 뜻입니다. 1 ms 마다 도는 실시간 제어기, 수십 ms 마다 추론하는 GPU 컴퓨터, 사람이 쓰는 웹 화면은 시간 감각이 다릅니다. 랩장이 보여 준 통합 관제처럼 로봇 밖 시스템(출입문·엘리베이터·관제)과도 이어집니다.[4]",
+   "actually": {
+    "items": [
+     "**랩의 예** — 랩의 로봇 관제 연구는 웹 관제 화면·로봇 쪽 클라이언트 SW 를 WebRTC·소켓·REST·HTTP/2·메시지 큐로 섞어 이었다. 지하처럼 네트워크가 불안한 곳을 견디려는 구성이다.[38]",
+     "**관절까지(필드버스)** — EtherCAT: 프레임 하나가 줄줄이 이어진 드라이버를 지나가며 각자 자기 칸을 읽고 쓴다. 장치 시계를 맞추는 분산 시계(DC)로 동기 정밀도 1 µs 수준을 노린다.[11][12]",
+     "**드라이버 말투** — 서보 드라이버 공통 규격 CiA 402: 상태 단어·제어 단어, 위치/속도/토크 모드. EtherCAT 서보 드라이버는 거의 다 지원한다.[12]",
+     "**컴퓨터끼리** — ROS 2 토픽(DDS). 메시지마다 '꼭 전달(reliable)'과 '최신 것만(best effort)', 몇 개를 쌓아 둘지(history depth) 같은 QoS 를 고른다.[16]",
+     "**화면까지** — 브라우저는 ROS 2 를 직접 못 읽어서 rosbridge 같은 다리로 JSON 웹소켓에 옮긴다.[18]",
+     "**계약 정하기** — 메시지 형식·단위(rad·N·m)·좌표계·주기·끊겼을 때 동작을 문서로 먼저 정한다 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "명령이 내려가는 길(일반 구성) {추론}",
+     "steps": [
+      "운용 화면 · 작업 고르기(사람)",
+      "작업 관리자 · 순서·재시도",
+      "학습 정책 · GPU, 10~수십 Hz",
+      "실시간 제어기 · 1 kHz 안팎",
+      "EtherCAT · 관절 드라이버",
+      "모터·센서"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "EtherCAT 한 주기에 얼마나 걸리나 (관절 7개, 가상 구성)",
+     "body": "관절마다 받는 값(제어 단어·목표 위치·목표 토크 8바이트)과 보내는 값(상태 단어·위치·속도·토크 12바이트)만 실었다고 치고 100 Mbps 선로 시간을 셉니다. 드라이버 하나 지날 때 1 µs 는 가정입니다. 1 ms 주기의 2% 남짓이라 **병목은 선이 아니라 컴퓨터 쪽 지연**이라는 감을 줍니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "joints = 7\nrx = 2 + 4 + 2        # controlword + target pos + target torque\ntx = 2 + 4 + 4 + 2    # statusword + pos + vel + torque\npayload = joints * (rx + tx)\nframe = payload + (2 + 10 + 2) + (8 + 14 + 4 + 12)\nwire = frame * 8 / 100e6 * 1e6\nprint(payload, frame, round(wire, 1), round(wire + joints * 1.0, 1))\n# 140 192 15.4 22.4   (us)"
+    }
+   ],
+   "how_far": "통신 방식 자체를 새로 만드는 게 아니라 **정해진 표준(EtherCAT·CiA 402·DDS)을 골라 묶고, 메시지 계약과 끊김 처리**를 설계하는 수준입니다 {추론}.",
+   "refs": [
+    4,
+    11,
+    12,
+    16,
+    18,
+    38
+   ],
+   "study": [
+    "ethercat-intro",
+    "beckhoff-dc",
+    "ros2-docs",
+    "ros2-book-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 시스템 전반의 처리 효율성 및 성능 최적화",
+   "short": "CPU·메모리·통신 지연을 재서, 제어 주기와 AI 추론이 서로 밀어내지 않게 줄이는 일.",
+   "why": "같은 랩 검증 공고는 제어 루프 응답 속도, 지연, CPU 사용률, 메모리, 전력, 그리고 시제품과 양산품의 성능 차이를 따로 적었습니다.[2] 그룹은 엣지 기기에서 큰 모델에 가까운 성능을 내도록 모델을 가볍게 만들고 있다고 밝혔습니다.[7]",
+   "actually": {
+    "items": [
+     "**끝에서부터 끝까지 지연 재기** — 카메라 사진 → 추론 → 명령 → 관절이 움직이기까지 각 칸에 시각을 찍는다 {추론}.",
+     "**평균 말고 최악** — 실시간 시스템은 평균이 아니라 가장 늦은 한 번이 문제다. cyclictest 로 깨어나는 지연의 최댓값을 본다.[14]",
+     "**코어 나누기** — 제어 스레드는 전용 CPU 코어에, AI·로그·화면은 다른 코어에 둔다(CPU affinity) {추론}.",
+     "**복사 줄이기** — 큰 이미지를 프로세스끼리 여러 번 복사하지 않게 공유 메모리·제로 카피 통로를 쓴다 {추론}.",
+     "**모델 가볍게** — 랩은 로봇 안에서 도는 VLM 을 가지치기·양자화로 줄였고, 4족 로봇에 얹는 장비에서는 GPU 위 AI 모델 4개 이상을 병렬 추론 파이프라인으로 돌렸다.[37] 그룹도 엣지 기기용 모델 경량화를 밝혔다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균은 같은데 마감을 넘는다 (가상 측정값)",
+     "body": "1 kHz 제어 루프 10만 번을 흉내 냈습니다. 한쪽에만 가끔 긴 지연 40번을 심었습니다. 평균은 거의 같지만 1 ms 마감을 넘은 횟수가 다릅니다 — 그래서 최댓값과 넘긴 횟수를 봅니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import random, statistics\nrandom.seed(7)\ndef loop_us(n, spikes):\n    xs = [random.gauss(120, 15) for _ in range(n)]\n    for i in random.sample(range(n), spikes):\n        xs[i] = random.uniform(1100, 2500)\n    return xs\nfor name, xs in [(\"normal\", loop_us(100_000, 40)), (\"rt\", loop_us(100_000, 0))]:\n    print(name, round(statistics.mean(xs)), round(max(xs)), sum(x > 1000 for x in xs))\n# normal 121 2455 40\n# rt 120 185 0"
+    }
+   ],
+   "how_far": "숫자로 말하면 됩니다 — '느리다'가 아니라 '이 칸이 최악 2.4 ms 라 1 ms 마감을 40번 넘었고, 코어를 나눠 0번이 됐다' 처럼 {추론}.",
+   "refs": [
+    2,
+    7,
+    14,
+    37
+   ],
+   "study": [
+    "rt-linux-wiki",
+    "cpp-concurrency"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Real-time OS Task 관리 및 아키텍처 개발",
+   "short": "실시간 OS 위에서 어떤 작업을 몇 ms 마다, 어떤 우선순위로 돌릴지 짜고 지키는 일.",
+   "why": "모터 제어는 정해진 시각에 꼭 돌아야 합니다. 보통 리눅스는 처리량에 맞춰 조율돼 있어서, ros2_control 문서도 하드웨어 제어에는 실시간 커널을 권합니다.[15] 리눅스의 실시간 패치(PREEMPT_RT)는 2024년 6.12 커널부터 본 줄기에 들어왔습니다.[13]",
+   "actually": {
+    "items": [
+     "**주기 태스크 나누기** — 관절 제어 1 kHz, 안전 감시, 상태 기록, AI 명령 받기처럼 주기와 중요도가 다른 일을 태스크로 나눈다 {추론}.",
+     "**우선순위** — 실시간 스케줄러(SCHED_FIFO)로 제어 태스크를 가장 높게, 나머지는 낮게.[14]",
+     "**마감 지키기** — 제어 주기 안에서 메모리를 새로 잡지 않고(미리 잡아 두기), 잠금(lock)을 오래 쥐지 않는다 {추론}.",
+     "**한 주기의 예산** — ros2_control 은 한 주기에 하드웨어 읽기 → 제어기 계산 → 쓰기를 돈다. 100 Hz 면 셋을 합쳐 10 ms 안에 끝나야 한다.[15]",
+     "**측정** — cyclictest 로 깨어나는 지연의 최댓값을 재고, 부하를 걸어 다시 잰다.[14]"
+    ]
+   },
+   "how_far": "RTOS 를 새로 만드는 일이 아닙니다. **실시간 리눅스(또는 RTOS) 위에서 태스크 구조를 설계하고 마감을 재서 증명**하는 수준입니다 {추론}. 우대사항의 Real-Time Linux 와 이어집니다.[1]",
+   "refs": [
+    1,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "rt-linux-wiki",
+    "ros2-control",
+    "cpp-concurrency"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 통합 어플리케이션 개발",
+   "short": "아래 세 줄(운용 화면 · 운용 환경 · 작업 관리자)의 묶음 제목.",
+   "why": "로봇을 쓰는 사람(작업자·의료진·운영자)이 만지는 부분입니다. 랩장은 사람이 안전한 곳에서 화면으로 로봇을 관리하는 모습을 그렸습니다.[4]",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 로봇 제어용 프론트엔드 어플리케이션 개발",
+   "short": "로봇을 켜고, 동작을 고르고, 관절 상태·오류를 보는 화면을 만드는 일.",
+   "why": "웹 개발의 '프론트엔드'와 같은 말이지만 뒤에 서버 대신 로봇이 있습니다. 화면이 로봇에 명령을 보낼 수 있으니 잘못 누른 버튼이 사고가 될 수 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**상태 보기** — 관절 각도·토크·온도·오류 코드, 카메라 영상, 3D 로봇 모형 {추론}.",
+     "**명령 보내기** — 원점 복귀·작업 시작·일시정지. 위험한 명령은 두 번 확인하고, 화면이 끊기면 로봇이 스스로 멈추게(화면이 안전장치가 아니게) {추론}.",
+     "**랩의 예** — 랩은 여러 로봇의 일정·상태를 보고 부리는 관제를 웹 기반으로 만들었다.[38]",
+     "**연결 방식** — 웹 화면은 rosbridge 로 ROS 2 토픽을 JSON 으로 주고받는 방식이 흔하다.[18]",
+     "**데스크톱 화면** — 지연이 중요하면 Qt 같은 C++ 화면 도구를 쓰기도 한다 {추론}."
+    ]
+   },
+   "how_far": "예쁜 화면보다 **로봇 상태를 틀리지 않게 보여 주고, 명령이 안전 규칙을 거쳐 내려가게** 하는 것이 먼저입니다. 요건에 '로봇용 프론트엔드 개발 경험'이 따로 있어 실제 로봇에 붙여 본 경험을 봅니다.[1]",
+   "refs": [
+    1,
+    18,
+    38
+   ],
+   "study": [
+    "rosbridge",
+    "ros2-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 사용자 인터페이스 기반 로봇 운용 환경 구축",
+   "short": "코드를 모르는 사람도 화면만으로 로봇을 설정·운용·점검할 수 있는 환경을 갖추는 일.",
+   "why": "랩은 로봇을 병원·건물·물류 현장처럼 사람 곁에 두고 있고[6], 랩장은 쓸모 있는 제품이 되려면 유지보수·AS 까지 갖춰야 한다고 했습니다.[4] 현장 사람이 개발자 없이 다룰 수 있어야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**설정** — 작업 위치 가르치기(티칭), 속도 제한, 작업 공간 경계 {추론}.",
+     "**기록** — 언제 무슨 오류가 났는지 남기고, 문제 생긴 순간의 데이터(ROS 2 bag)를 다시 볼 수 있게 {추론}.",
+     "**권한** — 운용자·관리자·개발자가 할 수 있는 일을 나눈다 {추론}.",
+     "**학습 데이터 모으기** — 모방학습은 사람이 보여 준 시연이 재료라, 시연을 녹화하고 고르는 화면도 운용 환경의 일부가 된다.[22][26] {추론}"
+    ]
+   },
+   "refs": [
+    4,
+    6,
+    22,
+    26
+   ],
+   "study": [
+    "ros2-docs",
+    "lerobot"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 로봇 행동/작업 관리자 개발",
+   "short": "'다가가기 → 잡기 → 옮기기, 실패하면 다시, 두 번 실패면 안전 자세'를 짜서 돌리는 두뇌.",
+   "why": "학습된 동작 하나는 한 동작만 압니다. 언제 무엇을 시키고, 실패하면 어떻게 할지는 위에서 정해야 합니다. 같은 랩의 양팔 조작 공고도 오판·예외를 감지해 동작 제한·중지·재시도·안전 복귀를 하는 Fail Safe 를 따로 만듭니다.[3] 그룹은 여러 로봇을 한꺼번에 부리는 관제 기술도 내재화했다고 밝혔습니다.[7] 이 공고의 작업 관리자는 그 가운데 관절 로봇 한 대의 몫입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**랩의 예** — 랩의 로봇 관제 시스템 NARCHON 은 로봇과 관제 양쪽에 BPMN 2.0(업무 흐름을 그림으로 정의하는 표준) 기반 워크플로 엔진을 두었다. 네트워크가 끊겨도 로봇이 하던 시나리오를 이어 가고(사무실 로봇은 대기 자리·벽 쪽으로, 공장 로봇은 마지막 작업을 다시), 연결이 돌아오면 다시 맞춘다.[37]",
+     "**상태 기계·행동 트리** — 작업을 '순서(Sequence)·대안(Fallback)·재시도' 블록으로 조립한다. BehaviorTree.CPP 가 ROS 2 쪽에서 많이 쓰인다.[17]",
+     "**실패 처리** — 잡기 실패, 시간 초과, 관절 한계, 사람 접근 같은 사건마다 무엇을 할지 정한다.[3]",
+     "**학습 정책을 블록으로** — '서랍 열기' 같은 학습 정책 하나를 트리의 한 칸으로 넣고, 끝났는지·실패했는지를 판정하는 조건을 붙인다 {추론}.",
+     "**안전 규칙은 따로** — 관리자가 무엇을 시켜도 속도·힘 한계는 제어기·안전 회로가 따로 지킨다. 협동 로봇 안전 기준(ISO 10218)이 요구하는 방향이다.[29]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "실패 → 재시도 → 안전 복귀 (아주 작은 작업 관리자)",
+     "body": "잡기 결과만 바꿔 세 번 돌렸습니다. 실제로는 이 블록들이 행동 트리 노드가 됩니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "def run_task(results):\n    it = iter(results); log = []\n    for attempt in (1, 2):\n        log.append(f\"approach#{attempt}\")\n        ok = next(it)\n        log.append(f\"grasp#{attempt}={'OK' if ok else 'FAIL'}\")\n        if ok:\n            log.append(\"place\"); return \"SUCCESS\", log\n    log.append(\"go_safe_home\"); return \"ABORTED\", log\n\nfor case in ([True], [False, True], [False, False]):\n    s, log = run_task(case); print(s, \" -> \".join(log))\n# SUCCESS approach#1 -> grasp#1=OK -> place\n# SUCCESS approach#1 -> grasp#1=FAIL -> approach#2 -> grasp#2=OK -> place\n# ABORTED approach#1 -> grasp#1=FAIL -> approach#2 -> grasp#2=FAIL -> go_safe_home"
+    }
+   ],
+   "how_far": "어떤 작업을 할지는 과제·고객이 정합니다. 이 자리는 **작업을 블록으로 조립하는 틀과, 모든 실패에 갈 곳이 있게** 만드는 쪽입니다 {추론}.",
+   "refs": [
+    3,
+    7,
+    17,
+    29,
+    37
+   ],
+   "study": [
+    "behaviortree",
+    "ros2-book-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 학습 기반 제어 프레임워크 개발",
+   "short": "아래 두 줄(강화·모방학습 틀 · VLA 시스템)의 묶음 제목.",
+   "why": "랩장은 인지 AI 에서 강화학습·모방학습, 그리고 여러 작업 동작을 담는 더 큰 신경망으로 기술이 나아가고 있다고 했고, 중량물을 옮기는 공정을 양팔 로봇으로 자동화하는 예를 들었습니다.[4]",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 강화학습·모방학습 기반 로봇 제어 프레임워크 구축",
+   "short": "시뮬레이션에서 배우고(강화학습), 사람 시연을 따라 배운(모방학습) 동작을 실제 로봇에 옮기는 틀을 만드는 일.",
+   "why": "그룹은 NVIDIA Isaac Sim 으로 산업용 로봇을 만들고 학습시키겠다고 발표했고[8], 로봇 학습용 데이터는 메타플랜트 응용 센터(RMAC)에서 모은다고 밝혔습니다.[7] 이 자리는 모델 자체보다 **학습 → 검증 → 로봇 배포가 반복되는 길**을 만듭니다 {추론}.",
+   "actually": {
+    "items": [
+     "**강화학습(시행착오로 배우기)** — GPU 하나로 수천 개 가상 로봇을 동시에 돌리는 Isaac Lab 같은 도구에서 정책을 학습한다.[19]",
+     "**시뮬레이션과 현실의 차이 줄이기** — 마찰·질량·지연을 일부러 흔들어 학습(도메인 랜덤화)[20]하거나, 실제 모터 반응을 신경망으로 배워 시뮬레이터에 넣는다.[21]",
+     "**모방학습(따라 하며 배우기)** — 사람이 조종기로 보여 준 시연을 녹화해 학습한다. ACT 는 양팔 로봇 시연 50개 정도로 정교한 양팔 작업을 배웠다.[22]",
+     "**같은 틀로 재기** — 데이터 형식·학습 설정·평가(성공률)·모델 버전을 한 곳에서 관리한다. LeRobot 이 이런 공개 틀의 예다.[26]",
+     "**로봇에 올리기** — 학습된 정책을 실시간 제어기 앞에 끼우고, 명령 범위·속도 한계를 넘으면 자르는 안전층을 둔다 {추론}."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "학습 기반 제어가 도는 고리(일반 구성) {추론}",
+     "steps": [
+      "데이터 · 시연 녹화 / 시뮬레이션",
+      "학습 · GPU 서버",
+      "시뮬레이션 평가 · 성공률",
+      "로봇 배포 · 안전층 + 실시간 제어",
+      "현장 기록 · 실패 사례 수집"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "요건은 '학습기반 제어 프레임워크 개발 경험'입니다.[1] 새 학습 알고리즘을 내는 연구는 양팔 조작 자리가 맡고[3], 이 자리는 **데이터·학습·평가·배포를 잇는 틀을 짓고 실제 로봇에서 돌려 본** 경험을 봅니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    7,
+    8,
+    19,
+    20,
+    21,
+    22,
+    26
+   ],
+   "study": [
+    "hf-deeprl",
+    "sutton-barto-ko",
+    "isaaclab",
+    "lerobot",
+    "act-paper",
+    "cs231n-robot"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· VLA 등 최신 AI 학습 기반 로봇 제어 기술 적용을 위한 시스템 구축",
+   "short": "카메라 영상과 말로 된 지시를 받아 동작을 내는 큰 모델(VLA)을 로봇에서 돌게 하는 바닥을 까는 일.",
+   "why": "VLA(Vision-Language-Action)는 사진과 문장을 넣으면 로봇 동작을 내는 모델입니다. 같은 랩 양팔 조작 공고는 VLA 모델 개발과 강화학습으로 VLA 성능을 높이는 일을 적었고[3], 그룹은 CES 2026 에서 Google DeepMind 와의 로봇 AI 협력을 밝혔습니다.[10]",
+   "actually": {
+    "items": [
+     "**모델 크기** — OpenVLA 는 70억 개 파라미터 모델이다[23]. 이런 모델을 로봇에 실린 GPU 에서 돌릴지, 옆 서버에서 돌릴지부터 정한다 {추론}.",
+     "**주기 차이 메우기** — π0 는 동작을 한 번에 한 묶음(action chunk)씩 내 최대 50 Hz 로 제어했다.[24] 관절 제어는 1 kHz 안팎이라 그 사이를 이어 주는 층이 필요하다.[15]",
+     "**빠른 머리·느린 머리** — GR00T N1 은 느리게 상황을 해석하는 부분과 빠르게 동작을 만드는 부분을 나눴다.[25] 시스템도 둘의 주기를 따로 설계한다 {추론}.",
+     "**입력 맞추기** — 카메라 여러 대의 시각 맞추기, 관절 상태와 사진의 시각 맞추기 {추론}.",
+     "**엣지 컴퓨터** — 그룹은 NVIDIA 의 로봇용 플랫폼을 쓴다고 했고[9], 요건도 NVIDIA SW 스택을 적었다.[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "정책 10 Hz, 제어 1 kHz — 그냥 들고 있으면 생기는 일",
+     "body": "정책이 0.1 초 뒤 관절 목표를 0 → 0.1 rad 로 바꿨을 때, 1 ms 제어 주기에서 값을 그냥 들고 있다가 바꾸면 한 주기에 0.1 rad 가 뛰어 100 rad/s 짜리 명령이 됩니다. 선으로 이어 주면 1 rad/s 입니다(직접 돌린 출력, 가상 값).",
+     "lang": "python",
+     "code": "a, b, steps = 0.00, 0.10, 100\nhold = [a] * steps + [b]\nlerp = [a + (b - a) * k / steps for k in range(steps + 1)]\njh = max(abs(hold[k+1] - hold[k]) for k in range(steps))\njl = max(abs(lerp[k+1] - lerp[k]) for k in range(steps))\nprint(round(jh * 1000), \"rad/s vs\", round(jl * 1000, 1), \"rad/s\")\n# 100 rad/s vs 1.0 rad/s"
+    }
+   ],
+   "how_far": "VLA 모델을 처음부터 학습하는 자리는 아닙니다.[3] **모델이 내는 동작을 안전하게 실제 관절 명령으로 바꾸고, 추론 지연·끊김에도 로봇이 흔들리지 않게** 하는 시스템이 이 줄의 몫입니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    9,
+    10,
+    15,
+    23,
+    24,
+    25
+   ],
+   "study": [
+    "openvla",
+    "pi0",
+    "gr00t-n1",
+    "cs231n-robot"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 기계공학, 전기· 전자공학, 컴퓨터공학, 로봇공학 관련 분야에서 석사 이상의 학위를 보유하신 분",
+   "short": "석사 이상. 전공은 넓게 열어 두었다 — 로봇 SW 는 기계·전자·컴퓨터가 겹치는 일이라서.",
+   "why": "랩장은 로보틱스를 기계·전자·컴퓨터공학·수학·디자인이 합쳐진 분야라고 설명했습니다.[4] 같은 랩 AI 공고들도 석사 이상을 요구합니다.[3]",
+   "how_far": "전공보다 **로봇 제어·시스템 SW 를 연구나 실무로 다뤄 봤나**가 중요해 보입니다 {추론}. 석사 과정에서 실제 로봇을 실시간으로 돌려 본 경험이 있으면 그 내용을 앞에 씁니다.",
+   "refs": [
+    3,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 3년 이상의 로봇 시스템 소프트웨어 경력을 보유하신 분",
+   "short": "실제 로봇에 소프트웨어를 올리고 고쳐 본 3년 — 시뮬레이션만이 아니라 기계를 만져 본 시간.",
+   "why": "이 자리의 일은 실제 하드웨어에서만 드러나는 문제(통신 끊김·지연·모터 반응 차이)를 다룹니다.[2][21] 시뮬레이션과 현실의 차이를 줄이는 일 자체가 연구 주제일 만큼 둘은 다릅니다.[20]",
+   "how_far": "3년은 최소선입니다. 이력서에는 **어떤 로봇(관절 수·통신 방식), 어떤 주기, 무엇을 맡았나**를 숫자로 씁니다 {추론}.",
+   "refs": [
+    2,
+    20,
+    21
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 비즈니스 영어 커뮤니케이션 및 영어 문서 작성 역량을 보유하신 분",
+   "short": "해외 협력사·부품사와 회의하고, 설계 문서를 영어로 쓸 수 있어야 해서.",
+   "why": "그룹 로보틱스는 Boston Dynamics·Google DeepMind·NVIDIA 같은 해외 회사와 협력합니다.[8][10] 이 자리가 쓰는 도구(ROS 2·Isaac·EtherCAT)의 문서와 커뮤니티도 영어입니다.[15][19] 랩장은 공급망 파트너와 같이 개발하겠다고 했습니다.[4]",
+   "how_far": "통역 없이 기술 회의를 하고 인터페이스 문서를 영어로 쓸 수 있는 정도 {추론}. 공고는 말하기와 문서 작성을 둘 다 적었습니다.[1]",
+   "refs": [
+    1,
+    4,
+    8,
+    10,
+    15,
+    19
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 로봇 시스템 아키텍쳐 개발 경험을 보유하신 분",
+   "short": "로봇 SW 를 어떤 덩어리로 나누고 어떻게 잇는지 처음부터 정해 본 경험.",
+   "why": "업무 첫 묶음(통신 구조·성능·실시간 태스크)이 아키텍처 일입니다.[1] 랩장은 가격을 낮추려면 공용화·모듈화가 필요하다고 했고[4], 부품을 갈아 끼울 수 있는 SW 구조가 그 바탕이 됩니다 {추론}.",
+   "actually": {
+    "items": [
+     "**층 나누기** — 하드웨어 추상화(드라이버) → 실시간 제어 → 작업 관리 → 화면·AI. ros2_control 이 하드웨어 인터페이스와 제어기를 나누는 방식이 표준적인 예다.[15]",
+     "**실시간/비실시간 경계** — 어디까지 마감을 지켜야 하는지 선을 긋고, 그 경계를 넘는 통로를 정한다.[15] {추론}",
+     "**실패 설계** — 한 프로세스가 죽거나 통신이 끊기면 로봇이 어떤 상태로 가나 {추론}."
+    ]
+   },
+   "how_far": "면접에서 그려 볼 수 있게 — 자기가 만든 로봇 SW 구조를 한 장 그림으로, 왜 그렇게 나눴는지와 바꾸고 싶은 점까지 {추론}.",
+   "refs": [
+    1,
+    4,
+    15
+   ],
+   "study": [
+    "ros2-control",
+    "modern-robotics"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 로봇용 프론트엔드 어플리케이션 개발 경험을 보유하신 분",
+   "short": "로봇을 부리는 화면을 실제 로봇에 붙여 만들어 본 경험.",
+   "why": "업무 두 번째 묶음(통합 어플리케이션)이 그대로 요건이 됐습니다.[1] 웹 화면만이 아니라 로봇 상태를 실시간으로 받아 그리는 경험을 봅니다 {추론}.",
+   "level": {
+    "basic": "웹 화면(HTML·JS 또는 React) 또는 Qt 화면 하나 만들기",
+    "work": "rosbridge·웹소켓으로 토픽 구독·명령 발행, 상태 실시간 그리기, 끊김 처리",
+    "team": "운용자가 쓰는 화면 — 티칭·작업 고르기·오류 기록·권한, 위험 명령 확인"
+   },
+   "refs": [
+    1,
+    18
+   ],
+   "study": [
+    "rosbridge"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 학습기반 제어 프레임워크 개발 경험을 보유하신 분",
+   "short": "강화학습·모방학습 정책을 학습시키고 실제 로봇에서 돌려 본 틀을 만들어 본 경험.",
+   "why": "업무 세 번째 묶음이 그대로 요건이 됐습니다.[1] 랩장 발표도 다음 단계를 강화학습·모방학습과 더 큰 신경망으로 짚었습니다.[4]",
+   "how_far": "논문 재현만이 아니라 **실제 로봇(작은 로봇팔이라도)에 배포해 성공률을 재 본** 경험이 강합니다 {추론}. 공개 도구(Isaac Lab·LeRobot)로 만든 개인 과제도 이야깃거리가 됩니다.[19][26]",
+   "refs": [
+    1,
+    4,
+    19,
+    26
+   ],
+   "study": [
+    "isaaclab",
+    "lerobot",
+    "hf-deeprl"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· C, C++, Python, MATLAB 학습 관련 NVIDIA SW 스텍 활용이 가능하신 분",
+   "short": "실시간 쪽은 C/C++, 학습·도구는 Python, 제어 설계·검증은 MATLAB, 학습·배포는 NVIDIA 도구.",
+   "why": "한 사람이 실시간 제어기(C/C++), 학습 파이프라인(Python), 제어 설계(MATLAB)를 오가야 하는 자리라서 언어가 넷입니다 {추론}. 그룹은 NVIDIA Isaac Sim·Omniverse·Cosmos 같은 도구를 로봇에 쓴다고 발표했습니다.[8][9]",
+   "level": {
+    "basic": "C++ 클래스·포인터·빌드(CMake), Python 스크립트, MATLAB 행렬 계산",
+    "work": "C++ 멀티스레드·실시간에서 하면 안 되는 것(동적 할당·긴 잠금), PyTorch 학습 코드, MATLAB/Simulink 제어 모델",
+    "team": "Isaac Sim/Lab 에서 학습 → 모델 변환(ONNX·TensorRT) → Jetson 류 엣지 GPU 배포 {추론}"
+   },
+   "refs": [
+    8,
+    9
+   ],
+   "study": [
+    "cpp-concurrency",
+    "isaaclab",
+    "trt-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 양산 제품의 소프트웨어 배포 경험을 보유하신 분",
+   "short": "연구실 한 대가 아니라 팔리는 수백 대에 같은 SW 를 안전하게 깔고 고쳐 본 경험.",
+   "why": "랩장은 '선행과 양산은 다르다'고 하며 선행 → 양산 흐름으로 제품을 하나씩 내놓겠다고 했고, 자동차 수준의 균일한 품질과 AS 체계를 말했습니다.[5][6] 같은 랩 검증 공고도 시제품과 양산품의 성능 차이를 따로 봅니다.[2]",
+   "actually": {
+    "items": [
+     "**버전 관리** — 어떤 로봇에 어떤 SW·모델·설정이 깔렸는지 기록 {추론}.",
+     "**자동 배포** — 랩의 관제 연구에는 로봇 클라이언트 SW 의 CI/CD(자동 빌드·시험·배포) 파이프라인이 들어 있다.[38]",
+     "**안전한 업데이트** — 두 칸(A/B)에 나눠 깔고 실패하면 이전 칸으로 되돌린다. SWUpdate 같은 공개 도구가 이런 방식을 지원한다.[27]",
+     "**의료용이면 규정** — 의료기기 소프트웨어는 개발·변경 과정 자체를 규격(IEC 62304)에 맞춰 남긴다.[28] 팀 소개에 의료용이 들어 있고[1], 랩은 의료용 착용 로봇의 제어·SW 아키텍처·모터 드라이버·임베디드 보드를 직접 개발했다.[39]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    27,
+    28,
+    38,
+    39
+   ],
+   "study": [
+    "swupdate",
+    "iec62304"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· Real-Time Linux, EtherCAT, Learning Framework, Python or C++ 활용 능력이 뛰어나신 분",
+   "short": "업무 세 묶음의 도구 목록 — 실시간 리눅스·EtherCAT(아래층), 학습 프레임워크(위층), 언어.",
+   "why": "업무의 실시간 태스크·이기종 통신·학습 기반 제어를 그대로 도구 이름으로 적은 줄입니다.[1]",
+   "actually": {
+    "items": [
+     "**Real-Time Linux** — PREEMPT_RT 커널 설정(6.12 부터 본 줄기)[13], cyclictest 로 지연 재기[14].",
+     "**EtherCAT** — 오픈소스 마스터(SOEM 등)나 상용 마스터로 드라이버 묶기, 분산 시계 맞추기, CiA 402 상태 전이 다루기.[11][12][30]",
+     "**Learning Framework** — PyTorch 위의 Isaac Lab(강화학습)·LeRobot(모방학습) 같은 틀.[19][26]"
+    ]
+   },
+   "how_far": "'뛰어나다'는 우대라 다 갖출 필요는 없습니다. 아래층(RT·EtherCAT)과 위층(학습) 중 **한쪽이 깊고 다른 쪽을 말이 통할 만큼** 알면 이 자리의 가운데에 섭니다 {추론}.",
+   "refs": [
+    1,
+    11,
+    12,
+    13,
+    14,
+    19,
+    26,
+    30
+   ],
+   "study": [
+    "rt-linux-wiki",
+    "ethercat-intro",
+    "soem",
+    "isaaclab",
+    "lerobot"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "코드가 화면이 아니라 실제 기계를 움직이는 걸 보고 싶은 사람",
+   "'평균 몇 ms'보다 '최악 몇 ms'가 궁금한 사람",
+   "아래층(실시간·통신)과 위층(AI)을 둘 다 만지고 싶은 사람",
+   "병원·공장 같은 현장에 로봇이 들어가는 과정에 관심 있는 사람[4][6]"
+  ],
+  "hard": [
+   "석사 이상 + 로봇 SW 3년 + 영어 문서 — 문턱이 높다[1]",
+   "하드웨어 탓인지 SW 탓인지 모르는 문제를 오래 붙잡아야 한다 {추론}",
+   "의왕 근무 — 서울 남부·경기 남부가 아니면 출퇴근이 길다 {추론}",
+   "조직이 2026년 AVP 본부로 옮겨 과제가 바뀔 수 있다[31]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "1 kHz 제어 루프가 가끔 2 ms 걸린다면 무엇부터 보겠어요?",
+   "a": "커널·우선순위·코어 고정·메모리 할당·잠금 — 업무 '실시간 태스크' 줄.[13][14][15]"
+  },
+  {
+   "q": "VLA 가 10 Hz 로 동작을 내는데 관절은 1 kHz 로 돌아요. 사이를 어떻게 잇나요? 추론이 늦어지면요?",
+   "a": "동작 묶음·보간·타임아웃 시 정지 — VLA 시스템 줄.[24][25]"
+  },
+  {
+   "q": "EtherCAT 드라이버 하나가 응답하지 않으면 로봇은 어떤 상태로 가야 하나요?",
+   "a": "작업 카운터·안전 정지·복구 순서 — 통신 아키텍처 줄.[11][12]"
+  },
+  {
+   "q": "시뮬레이션에서 95% 성공한 정책이 실제 로봇에서 40% 라면 무엇을 의심하나요?",
+   "a": "모터 반응·지연·마찰 차이와 도메인 랜덤화 — 학습 프레임워크 줄.[20][21]"
+  },
+  {
+   "q": "로봇 100대에 새 모델을 깔다 한 대가 중간에 꺼지면요?",
+   "a": "A/B 업데이트와 되돌리기 — 우대 '양산 배포' 줄.[27]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · [로보틱스랩] 관절로봇 시스템 SW 개발",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=326",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "팀 소개(의료/서비스/산업용 관절형 로봇)·업무 세 묶음·요건·우대 — 의왕, 마감 2026-12-31"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차그룹 [로보틱스랩] 관절로봇 SW 검증/평가",
+   "url": "https://www.wanted.co.kr/wd/387528",
+   "kind": "posting",
+   "date": "2026-09",
+   "note": "같은 랩 — 통합 동작·연속 동작 검증, 제어 루프 지연·CPU·메모리·전력, 시제품 대비 양산 성능"
+  },
+  {
+   "n": 3,
+   "title": "현대자동차 채용 · [로보틱스랩] 학습 기반 Bi-manipulation 모델 개발",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=321",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 랩 — 모방학습·VLA·강화학습, Fail Safe(제한·중지·재시도·안전 복귀)"
+  },
+  {
+   "n": 4,
+   "title": "SBS D포럼 · 현동진 현대차 상무 \"로보틱스, 산업 경쟁력 높이는 핵심 기술\"",
+   "url": "https://www.youtube.com/watch?v=3p7Opcg5TQU",
+   "kind": "company",
+   "date": "2025-11-13",
+   "note": "로보틱스랩장 발표 18분 — 이번 회차에 자막 전부 읽음(재료 지움). 로보틱스 = 기계·전자·컴퓨터·수학·디자인 융합, 엑스블 멕스(의료), 양팔 로봇 중량물 자동화, 인지 AI → 강화·모방학습 → 큰 신경망, 통합 관제, 성능·품질·유지보수·AS·인증·통합 엔지니어링, 공용화·모듈화"
+  },
+  {
+   "n": 5,
+   "title": "시대일보 · 현동진 로보틱스랩장 AW 2026 인터뷰",
+   "url": "https://www.sidae.com/article/2026030414174288159",
+   "kind": "news",
+   "date": "2026-03-04",
+   "note": "'양산과 선행은 다른 면이 있다', 선행 → 양산 흐름으로 하나씩, 살 만한 가격"
+  },
+  {
+   "n": 6,
+   "title": "뉴시스 · [현장] 현동진 현대차 로보틱스랩장 \"비싸서 못 쓰는 로봇은 의미 없다\"",
+   "url": "https://www.newsis.com/view/NISX20260205_0003504286",
+   "kind": "news",
+   "date": "2026-02-05",
+   "note": "병원·건물·물류 현장, 표준화·모듈화, 자동차 수준의 균일한 품질과 AS 체계"
+  },
+  {
+   "n": 7,
+   "title": "딜사이트 · 현대차그룹 로보틱스사업실장 발표",
+   "url": "https://dealsite.co.kr/articles/171087",
+   "kind": "news",
+   "date": "2026-10-23",
+   "note": "피지컬 AI·자율주행·로봇 관제 기술 내재화, 엣지 기기용 모델 경량화, RMAC 데이터로 로봇 학습"
+  },
+  {
+   "n": 8,
+   "title": "NVIDIA 블로그 · Hyundai Motor Group Embraces NVIDIA AI and Omniverse for Next-Gen Mobility",
+   "url": "https://blogs.nvidia.com/blog/hyundai-motor-group-ces",
+   "kind": "reference",
+   "date": "2025-01-09",
+   "note": "CES 2025 — Isaac Sim 으로 산업용 로봇 개발·학습, Omniverse 디지털 트윈(그룹 단위, 랩 이름은 없음)"
+  },
+  {
+   "n": 9,
+   "title": "NVIDIA 뉴스룸 · NVIDIA and Hyundai Motor Group Team on AI Factory to Power AI-Driven Mobility Solutions",
+   "url": "https://nvidianews.nvidia.com/news/hyundai-motor-group-ai-factory",
+   "kind": "reference",
+   "date": "2025-10-31",
+   "note": "약 30억 달러 피지컬 AI 투자, DGX·Omniverse·Cosmos·DRIVE AGX Thor 로 로보틱스까지 잇는다"
+  },
+  {
+   "n": 10,
+   "title": "HMG 저널 · CES 2026 현대자동차그룹 AI 로보틱스",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/hyundai-motor-group-ai-robotics-ces-2026",
+   "kind": "company",
+   "date": "2026-01-06",
+   "note": "Boston Dynamics·Google DeepMind(Gemini Robotics) 협력, 아틀라스 HMGMA 투입 계획"
+  },
+  {
+   "n": 11,
+   "title": "EtherCAT Technology Group · EtherCAT 기술 소개",
+   "url": "https://www.ethercat.org/en/technology.html",
+   "kind": "reference",
+   "note": "프레임이 지나가며 읽고 쓰는 방식, 분산 시계"
+  },
+  {
+   "n": 12,
+   "title": "Beckhoff AX5000 설명서 · EtherCAT as drive bus",
+   "url": "https://infosys.beckhoff.com/content/1033/ax5000_usermanual/13129630859.html",
+   "kind": "reference",
+   "note": "드라이브 주기 보통 1~4 ms(위치 지령 주기), 동기 정밀도 1 µs, 제어 주기는 통신 주기의 정수배. CiA 402 는 Beckhoff 인터뷰(같은 회사 뉴스) 기준"
+  },
+  {
+   "n": 13,
+   "title": "LWN · Kernel prepatch 6.12-rc1",
+   "url": "https://lwn.net/Articles/992185/",
+   "kind": "reference",
+   "date": "2024-09",
+   "note": "6.12 병합 창 — PREEMPT_RT 본 줄기 합류, CONFIG_PREEMPT_RT(EXPERT 필요)"
+  },
+  {
+   "n": 14,
+   "title": "Linux Foundation Real-Time Linux · cyclictest",
+   "url": "https://wiki.linuxfoundation.org/realtime/documentation/howto/tools/cyclictest/start",
+   "kind": "reference",
+   "note": "주기 깨어남 지연 측정, 실시간 우선순위로 실행"
+  },
+  {
+   "n": 15,
+   "title": "ros2_control · Controller Manager (Jazzy)",
+   "url": "https://control.ros.org/jazzy/doc/ros2_control/controller_manager/doc/userdoc.html",
+   "kind": "reference",
+   "note": "update_rate 루프 = 읽기 → 제어기 → 쓰기, 기본 100 Hz(10 ms 예산), 실시간 커널 권장"
+  },
+  {
+   "n": 16,
+   "title": "ROS 2 문서 · Quality of Service settings",
+   "url": "https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Quality-of-Service-Settings.html",
+   "kind": "reference",
+   "note": "reliable / best effort, history depth"
+  },
+  {
+   "n": 17,
+   "title": "BehaviorTree.CPP",
+   "url": "https://www.behaviortree.dev/",
+   "kind": "reference",
+   "note": "C++ 행동 트리 라이브러리, ROS 2 연동"
+  },
+  {
+   "n": 18,
+   "title": "RobotWebTools · rosbridge_suite",
+   "url": "https://github.com/RobotWebTools/rosbridge_suite",
+   "kind": "reference",
+   "note": "ROS ↔ JSON 웹소켓 다리"
+  },
+  {
+   "n": 19,
+   "title": "NVIDIA Isaac Lab 문서",
+   "url": "https://isaac-sim.github.io/IsaacLab/",
+   "kind": "reference",
+   "note": "Isaac Sim 위의 GPU 병렬 로봇 학습 틀(강화·모방학습)"
+  },
+  {
+   "n": 20,
+   "title": "Tobin 외 · Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World (2017)",
+   "url": "https://arxiv.org/abs/1703.06907",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Hwangbo 외 · Learning agile and dynamic motor skills for legged robots (Science Robotics 2019)",
+   "url": "https://arxiv.org/abs/1901.08652",
+   "kind": "reference",
+   "note": "실제 구동기 반응을 신경망으로 배워 시뮬레이터에 넣음"
+  },
+  {
+   "n": 22,
+   "title": "Zhao 외 · Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware (ACT · ALOHA, 2023)",
+   "url": "https://arxiv.org/abs/2304.13705",
+   "kind": "reference",
+   "note": "시연 약 50개, 동작 묶음 예측"
+  },
+  {
+   "n": 23,
+   "title": "Kim 외 · OpenVLA: An Open-Source Vision-Language-Action Model (2024)",
+   "url": "https://arxiv.org/abs/2406.09246",
+   "kind": "reference",
+   "note": "70억 파라미터"
+  },
+  {
+   "n": 24,
+   "title": "Physical Intelligence · π0: A Vision-Language-Action Flow Model for General Robot Control (2024)",
+   "url": "https://arxiv.org/abs/2410.24164",
+   "kind": "reference",
+   "note": "동작 묶음, 최대 50 Hz"
+  },
+  {
+   "n": 25,
+   "title": "NVIDIA · GR00T N1: An Open Foundation Model for Generalist Humanoid Robots (2025)",
+   "url": "https://arxiv.org/abs/2503.14734",
+   "kind": "reference",
+   "note": "느린 해석(System 2)과 빠른 동작 생성(System 1)"
+  },
+  {
+   "n": 26,
+   "title": "Hugging Face · LeRobot",
+   "url": "https://github.com/huggingface/lerobot",
+   "kind": "reference",
+   "note": "데이터셋 형식·학습·평가를 묶은 공개 로봇 학습 틀"
+  },
+  {
+   "n": 27,
+   "title": "SWUpdate 문서",
+   "url": "https://sbabic.github.io/swupdate/",
+   "kind": "reference",
+   "note": "임베디드 리눅스 업데이트 — 이중 칸(A/B)·되돌리기"
+  },
+  {
+   "n": 28,
+   "title": "IEC 62304:2006 Medical device software — Software life cycle processes",
+   "url": "https://www.iso.org/standard/38421.html",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "The Robot Report · ISO 10218 industrial robot safety standard receives major overhaul",
+   "url": "https://www.therobotreport.com/iso-10218-industrial-robot-safety-standard-receives-major-overhaul/",
+   "kind": "reference",
+   "date": "2025-02-18",
+   "note": "협동 운전 요건 통합(옛 ISO/TS 15066)"
+  },
+  {
+   "n": 30,
+   "title": "Open EtherCAT Society · SOEM (Simple Open EtherCAT Master)",
+   "url": "https://github.com/OpenEtherCATsociety/SOEM",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "세계일보 · 현대차 로보틱스랩, 첨단차플랫폼본부로…박민우 사장이 이끈다",
+   "url": "https://www.segye.com/newsView/20260429512286",
+   "kind": "news",
+   "date": "2026-04-29",
+   "note": "R&D 본부 → AVP 본부"
+  },
+  {
+   "n": 32,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 33,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 34,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생"
+  },
+  {
+   "n": 35,
+   "title": "현대자동차 연구개발본부 교육원 · 오시는 길",
+   "url": "https://rnd-edu.hyundai-ngv.com/main/page.jsp?pid=intro.location",
+   "kind": "company",
+   "note": "의왕시 삼동 460-30(지번)"
+  },
+  {
+   "n": 36,
+   "title": "모두의주차장 · 현대자동차 의왕연구소",
+   "url": "https://app.modu.kr/p/258665",
+   "kind": "reference",
+   "note": "도로명 주소 철도박물관로 37"
+  },
+  {
+   "n": 37,
+   "title": "HMG 저널 · 현대차그룹 로보틱스랩, 로봇과 인간이 공존하는 '로봇 지능사회'를 꿈꾸다",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000178954",
+   "kind": "company",
+   "date": "2025-06-20",
+   "note": "NARCHON 관제 — 로봇·관제 양쪽 BPMN 2.0 워크플로 엔진, 네트워크가 끊겨도 시나리오 계속·복구 뒤 재동기화. 기기 안 VLM 가지치기·양자화, SPOT 탑재 장비 GPU 모델 4개 이상 병렬 추론"
+  },
+  {
+   "n": 38,
+   "title": "Robotics LAB · Robot Fleet Management 연구 소개",
+   "url": "https://robotics.hyundai.com/en/projects/research/view.do?seq=41",
+   "kind": "company",
+   "note": "웹 기반 다수 로봇 관제·로봇 클라이언트 SW·CI/CD, WebRTC·소켓·REST·HTTP/2·메시지 큐로 불안한 네트워크 대응, 모놀리식/MSA 연구"
+  },
+  {
+   "n": 39,
+   "title": "Robotics LAB · Medical Exoskeleton Robotic System 연구 소개",
+   "url": "https://robotics.hyundai.com/en/projects/research/view.do?seq=38",
+   "kind": "company",
+   "note": "의료용 착용 로봇 — 임피던스 제어, 로봇 제어·SW 아키텍처·모터 드라이버·임베디드 보드를 직접 개발"
+  }
+ ],
+ "caveat": "로보틱스랩이 관절 로봇의 SW 구조(통신 방식·실시간 OS·화면·학습 틀)를 직접 설명한 발표나 기술 글은 찾지 못했습니다. 회사 쪽 근거는 이 공고, 같은 랩의 검증·양팔 조작 공고, 랩장 발표(자막 전부 읽음)와 인터뷰, 랩 사이트의 관제·의료 착용 로봇 연구 소개와 HMG 저널(관제 NARCHON), 그룹의 NVIDIA·Google DeepMind 협력 발표이고, EtherCAT·실시간 리눅스·ros2_control·VLA 의 '보통 이런 구성'은 표준 문서·공개 논문으로 보였습니다. 이 랩이 ROS 2·EtherCAT·Isaac Lab 을 실제로 쓰는지는 공고의 도구 이름 말고는 확인되지 않았습니다. 코드 예시의 숫자는 모두 가상의 값입니다. 조직이 2026년 5월 AVP 본부로 옮겨 과제가 바뀌었을 수 있습니다.",
+ "resources": [
+  {
+   "id": "sbs-dforum",
+   "title": "현동진 현대차 상무 \"로보틱스, 산업 경쟁력 높이는 핵심 기술\" (SBS D포럼)",
+   "by": "현대차 로보틱스랩장 · 2025 · 18분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=3p7Opcg5TQU",
+   "why": "이 랩이 무엇을 만들고(착용·의료·충전·양팔 로봇) 제품이 되려면 무엇이 필요하다고 보는지 — 지원 전에 볼 18분."
+  },
+  {
+   "id": "ros2-docs",
+   "title": "ROS 2 문서 (Jazzy)",
+   "by": "Open Robotics",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.ros.org/en/jazzy/Tutorials.html",
+   "why": "노드·토픽·서비스·QoS·bag — 이기종 컴퓨터를 잇는 통신과 운용 기록의 기본."
+  },
+  {
+   "id": "ros2-book-ko",
+   "title": "ROS 2로 시작하는 로봇 프로그래밍",
+   "by": "표윤석 · 임태훈",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=ROS%202%EB%A1%9C%20%EC%8B%9C%EC%9E%91%ED%95%98%EB%8A%94%20%EB%A1%9C%EB%B4%87%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+   "why": "TurtleBot3 개발자가 쓴 한국어 ROS 2 입문서 — 노드·토픽·파라미터·패키지 설계(C++)를 한국어로 먼저."
+  },
+  {
+   "id": "ros2-control",
+   "title": "ros2_control 문서",
+   "by": "ros-controls",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://control.ros.org/jazzy/doc/ros2_control/controller_manager/doc/userdoc.html",
+   "why": "하드웨어 인터페이스와 제어기를 나누는 구조, 한 주기의 읽기·계산·쓰기 — '로봇 시스템 아키텍처' 요건의 교과서 같은 예."
+  },
+  {
+   "id": "rt-linux-wiki",
+   "title": "Real-Time Linux 위키 (cyclictest 포함)",
+   "by": "Linux Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://wiki.linuxfoundation.org/realtime/documentation/howto/tools/cyclictest/start",
+   "why": "PREEMPT_RT 설정과 지연 측정 — 업무 'Real-time OS Task' 줄과 우대 Real-Time Linux 줄."
+  },
+  {
+   "id": "ethercat-intro",
+   "title": "EtherCAT 기술 소개",
+   "by": "EtherCAT Technology Group",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.ethercat.org/en/technology.html",
+   "why": "프레임이 장치를 지나가며 읽고 쓰는 방식, 분산 시계, 토폴로지 — 관절 드라이버 통신의 첫 그림."
+  },
+  {
+   "id": "beckhoff-dc",
+   "title": "Beckhoff AX5000 설명서 · EtherCAT as drive bus",
+   "by": "Beckhoff",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://infosys.beckhoff.com/content/1033/ax5000_usermanual/13129630859.html",
+   "why": "드라이브 주기·동기 정밀도·통신 주기와 제어 주기의 관계를 제조사가 숫자로 설명한다."
+  },
+  {
+   "id": "soem",
+   "title": "SOEM (Simple Open EtherCAT Master)",
+   "by": "Open EtherCAT Society",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/OpenEtherCATsociety/SOEM",
+   "why": "C 로 된 공개 EtherCAT 마스터 — 예제로 드라이버 상태 전이와 PDO 를 직접 읽고 써 볼 수 있다(우대 EtherCAT)."
+  },
+  {
+   "id": "cpp-concurrency",
+   "title": "C++ Concurrency in Action (2판)",
+   "by": "Anthony Williams · Manning · 2019",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/c-plus-plus-concurrency-in-action-second-edition",
+   "why": "스레드·잠금·원자 연산·잠금 없는 자료구조 — 실시간 태스크끼리 데이터를 안전하게 넘기는 C++ 기본기."
+  },
+  {
+   "id": "behaviortree",
+   "title": "BehaviorTree.CPP 문서",
+   "by": "BehaviorTree.CPP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.behaviortree.dev/",
+   "why": "순서·대안·재시도 노드로 작업을 조립하는 법 — 업무 '행동/작업 관리자' 줄."
+  },
+  {
+   "id": "rosbridge",
+   "title": "rosbridge_suite",
+   "by": "RobotWebTools",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/RobotWebTools/rosbridge_suite",
+   "why": "웹 화면에서 ROS 토픽을 구독·발행하는 다리 — 업무 '로봇 제어용 프론트엔드' 줄."
+  },
+  {
+   "id": "modern-robotics",
+   "title": "Modern Robotics: Mechanics, Planning, and Control",
+   "by": "Kevin Lynch · Frank Park · Cambridge University Press · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://hades.mech.northwestern.edu/index.php/Modern_Robotics",
+   "why": "관절 로봇의 기구학·동역학·제어 — 시스템 SW 가 다루는 숫자(관절각·토크)가 무슨 뜻인지. 저자가 PDF·강의를 공개했다."
+  },
+  {
+   "id": "hf-deeprl",
+   "title": "Hugging Face Deep Reinforcement Learning Course",
+   "by": "Hugging Face",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://huggingface.co/learn/deep-rl-course/unit0/introduction",
+   "why": "강화학습 개념부터 PPO 까지 손으로 돌려 보는 무료 강좌 — '강화학습 기반 제어 프레임워크' 줄의 출발점."
+  },
+  {
+   "id": "sutton-barto-ko",
+   "title": "단단한 강화학습",
+   "by": "리처드 서튼 · 앤드류 바르토 · 제이펍 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002989801",
+   "why": "강화학습 교과서의 한국어판 — 보상·가치·정책을 원리부터. 필요한 장만 골라 읽는다."
+  },
+  {
+   "id": "isaaclab",
+   "title": "Isaac Lab 문서",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://isaac-sim.github.io/IsaacLab/",
+   "why": "GPU 병렬 시뮬레이션으로 로봇팔 정책을 학습하는 튜토리얼 — 요건의 NVIDIA SW 스택·학습 프레임워크."
+  },
+  {
+   "id": "lerobot",
+   "title": "LeRobot",
+   "by": "Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/huggingface/lerobot",
+   "why": "시연 녹화 → 데이터셋 → ACT·확산 정책 학습 → 실제 저가 로봇팔 배포까지 한 저장소 — 모방학습 틀을 통째로 보기."
+  },
+  {
+   "id": "act-paper",
+   "title": "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware (ACT · ALOHA)",
+   "by": "Tony Zhao 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2304.13705",
+   "why": "양팔 시연을 녹화하는 장치와 동작 묶음 예측 — 같은 랩이 하는 양팔 모방학습의 대표 공개 사례."
+  },
+  {
+   "id": "openvla",
+   "title": "OpenVLA: An Open-Source Vision-Language-Action Model",
+   "by": "Moo Jin Kim 외 · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2406.09246",
+   "why": "공개된 VLA 의 크기·입력·출력·추론 속도 — 'VLA 적용 시스템'을 설계할 때의 기준점."
+  },
+  {
+   "id": "pi0",
+   "title": "π0: A Vision-Language-Action Flow Model for General Robot Control",
+   "by": "Physical Intelligence · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2410.24164",
+   "why": "동작 묶음과 제어 주기 — 느린 모델과 빠른 제어를 잇는 방법."
+  },
+  {
+   "id": "gr00t-n1",
+   "title": "GR00T N1: An Open Foundation Model for Generalist Humanoid Robots",
+   "by": "NVIDIA · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2503.14734",
+   "why": "느린 해석·빠른 동작 두 갈래 구조 — NVIDIA 스택 위 VLA 의 예."
+  },
+  {
+   "id": "cs231n-robot",
+   "title": "Stanford CS231N Lecture 17: Robot Learning (강의 노트)",
+   "by": "우리 사이트의 강의 노트",
+   "kind": "internal",
+   "url": "/lectures/XSfmOH_xVSU",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "강화학습·sim-to-real·모방학습(행동 복제·확산 정책)·VLA·π0 를 우리 말로 한 번에 — 학습 기반 제어 두 줄의 지도."
+  },
+  {
+   "id": "swupdate",
+   "title": "SWUpdate 문서",
+   "by": "Stefano Babic 외",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://sbabic.github.io/swupdate/",
+   "why": "임베디드 리눅스 기기에 A/B 이중 칸으로 업데이트하고 되돌리는 법 — 우대 '양산 SW 배포'."
+  },
+  {
+   "id": "iec62304",
+   "title": "IEC 62304 Medical device software — Software life cycle processes",
+   "by": "IEC · ISO 판매 페이지",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/38421.html",
+   "why": "의료용 로봇 SW 를 낼 때 개발·변경·위험 관리를 어떻게 남기나 — 팀 소개의 '의료용'과 양산 배포."
+  },
+  {
+   "id": "trt-docs",
+   "title": "NVIDIA TensorRT 문서",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/",
+   "why": "학습한 모델을 NVIDIA GPU·엣지 기기에서 빠르게 돌리도록 바꾸는 법 — 요건 'NVIDIA SW 스택'의 배포 쪽."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "로봇 SW 의 바닥 그림",
+   "time": "1~2주",
+   "goal": "관절 로봇 한 대 안의 컴퓨터·통신·주기를 한 장 그림으로 설명할 수 있다.",
+   "resources": [
+    "sbs-dforum",
+    "ros2-book-ko",
+    "ros2-docs",
+    "modern-robotics"
+   ],
+   "task": "ROS 2 로 '가상 관절 6개' 노드(1 kHz 로 관절각 발행)와 '명령' 노드를 만들고, QoS 를 reliable/best effort 로 바꿔 가며 메시지 손실·지연을 bag 으로 기록해 비교한다."
+  },
+  {
+   "title": "실시간으로 재기",
+   "time": "2~3주",
+   "goal": "제어 루프의 최악 지연을 재고, 우선순위·코어 고정으로 줄인 결과를 숫자로 말할 수 있다.",
+   "resources": [
+    "rt-linux-wiki",
+    "cpp-concurrency",
+    "ros2-control"
+   ],
+   "task": "리눅스 PC(가능하면 PREEMPT_RT 커널)에서 cyclictest 를 부하 없이/부하 걸고 돌려 최댓값을 표로 만들고, 1 kHz C++ 루프를 SCHED_FIFO·코어 고정 전후로 재서 마감 넘긴 횟수를 비교한다."
+  },
+  {
+   "title": "관절까지 내려가기",
+   "time": "2~4주",
+   "goal": "EtherCAT 마스터로 서보 드라이버(또는 시뮬레이터)의 상태 전이와 위치 명령을 다룰 수 있다.",
+   "resources": [
+    "ethercat-intro",
+    "beckhoff-dc",
+    "soem"
+   ],
+   "task": "SOEM 예제로 장치를 찾고 PDO 를 읽어 본다(장비가 없으면 CiA 402 상태 기계를 코드로 흉내 내 '꺼짐 → 준비 → 동작 → 고장 → 복구' 전이를 시험). ros2_control 하드웨어 인터페이스로 감싼다."
+  },
+  {
+   "title": "작업 관리자와 화면",
+   "time": "2주",
+   "goal": "행동 트리로 작업을 조립하고, 웹 화면에서 로봇 상태를 보고 명령을 보낼 수 있다.",
+   "resources": [
+    "behaviortree",
+    "rosbridge"
+   ],
+   "task": "'다가가기 → 잡기(실패하면 한 번 더) → 놓기, 두 번 실패하면 안전 자세' 트리를 BehaviorTree.CPP 로 만들고, rosbridge 로 관절 상태 그래프와 시작·정지 버튼이 있는 웹 화면을 붙인다. 화면을 끄면 로봇이 멈추는지 확인한다."
+  },
+  {
+   "title": "학습 정책 얹기",
+   "time": "4주~",
+   "goal": "시뮬레이션에서 학습한 정책을 실시간 제어기 앞에 안전하게 끼울 수 있다.",
+   "resources": [
+    "hf-deeprl",
+    "cs231n-robot",
+    "isaaclab",
+    "lerobot",
+    "act-paper",
+    "openvla",
+    "pi0",
+    "gr00t-n1",
+    "sutton-barto-ko",
+    "trt-docs"
+   ],
+   "task": "Isaac Lab 의 로봇팔 도달 과제를 학습하고, 정책을 10 Hz 로 돌리며 1 kHz 루프에 보간·속도 제한·타임아웃 정지층을 붙인다. LeRobot 의 시뮬레이션 과제로 ACT 를 학습해 성공률을 재 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일 표기가 없고 직군 구분이 없다. 이 자리는 석사 이상·경력 3년 이상이라 그대로 해당하지 않는다 [33]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [33]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [32]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값 [32]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 경력 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [34]. 공고 본문에는 복리후생 칸이 없다 [1]. 어린이집 목록에 의왕이 없어 이 근무지에서 쓸 수 있는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차그룹 의왕연구소",
+  "address": "경기도 의왕시 철도박물관로 37 (삼동)",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%9D%98%EC%99%95%EC%8B%9C%20%EC%B2%A0%EB%8F%84%EB%B0%95%EB%AC%BC%EA%B4%80%EB%A1%9C%2037",
+  "near": "1호선 의왕역 근처 {추론}",
+  "note": "공고 근무지가 의왕이고 [1], 로보틱스랩장 발표에서 서비스 로봇 달이가 '의왕연구소 로보틱스랩에서 태어났다'고 소개됐다 [4]. 도로명 주소는 주차 안내 사이트에서 [36], 지번 삼동 460-30 은 현대차 연구개발본부 교육원 안내에서 확인했다 [35]. 의왕연구소에는 여러 계열사 연구 조직이 같이 있어 팀 건물이 다를 수 있다 {추론}."
+ }
+}
