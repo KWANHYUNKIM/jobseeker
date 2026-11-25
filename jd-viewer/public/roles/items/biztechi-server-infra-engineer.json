@@ -1,0 +1,963 @@
+{
+ "id": "biztechi-server-infra-engineer",
+ "company": "비즈테크아이",
+ "role": "서버 인프라 엔지니어(TA/SM)",
+ "team": "인프라·클라우드 사업 (근무지 경북 구미)",
+ "jobs": [
+  "ats-lg:group:1001678"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "고객사(구미 사업장)의 **서버를 운영 위탁(SM)으로 맡아** 장애·변경·성능·용량·보안·백업을 관리하고, 반복 작업을 자동화합니다.[1][2] 대상은 리눅스·윈도우 서버, VMware 사설 클라우드, 오래된 x86 서버와 IBM AIX 유닉스 서버입니다.[1]",
+  "env": "LG CNS 자회사의 인프라 조직이고, 회사는 사내 서버(레거시)와 AWS·GCP·Azure·NCP 를 섞어 쓰는 하이브리드·멀티 클라우드 구축·운영을 사업으로 내세웁니다.[1][3][4][5] 이 자리는 그중 **온프레미스(회사 건물 안 서버실) 쪽**이 중심입니다.[1]",
+  "oneline": "리눅스·VMware·AIX 서버를 **안 멈추게 지키고, 손으로 하던 일을 줄이는** 3년차 이상 시스템 엔지니어 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "인프라 장애, 구성 변경, 성능, 용량, 보안, 백업, 가용성 등 문제 관리",
+   "short": "서버가 멈추거나 느려지거나 꽉 차기 전에 잡고, 바꿀 때는 절차대로 바꾸는 운영의 모든 일.",
+   "why": "공고는 이 자리를 SM(System Management, 시스템 운영 위탁) 사업으로 적었고, 회사는 인프라 직무를 '서버·스토리지·백업·네트워크를 성능·가용성·운영 편의 기준으로 설계·구축·운영하는 일'로 소개합니다.[1][6] 고객사 공장·사무 시스템이 그 서버 위에서 돌기 때문에, 한 줄에 나열된 일곱 낱말이 곧 운영 계약의 범위입니다.[2] {추론}",
+   "actually": {
+    "intro": "일곱 낱말을 일로 풀면 이렇습니다. 장애 대응·사후 검토는 운영 조직의 공통 틀을 따릅니다.[13][14]",
+    "items": [
+     "**장애** — 감시 경보(서버 다운·디스크 오류·서비스 응답 없음)를 받아 원인을 가르고 복구한 뒤 원인·조치·재발 방지를 보고한다.[13][14]",
+     "**구성 변경** — 패치·커널 매개변수·계정·방화벽 포트 변경을 변경 요청서로 승인받고, 정해진 작업 시간에 하고, 되돌릴 방법을 미리 적어 둔다. {추론}",
+     "**성능** — 느리다는 연락이 오면 CPU·메모리·디스크·네트워크마다 사용률·포화(대기열)·오류를 차례로 본다(USE 방법).[15][16]",
+     "**용량** — 디스크·메모리 사용 추세를 보고 꽉 차기 전에 늘리거나 정리한다(아래 예).",
+     "**보안** — 계정·파일 권한·불필요한 서비스·패치·로그를 점검표대로 확인한다. 국내에서는 KISA 점검 가이드의 유닉스 서버 항목(계정·파일·서비스·패치·로그 관리)이 흔한 기준이다.[18]",
+     "**백업** — 백업이 돌았는지만이 아니라 **되살려지는지**를 주기적으로 시험한다.[17]",
+     "**가용성** — 이중화(한 대가 죽어도 다른 한 대가 받는 구성)가 실제로 넘어가는지 훈련하고, 멈춘 시간을 잰다.[17][31]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "운영 위탁에서 장애 한 건이 흐르는 길[13][14]",
+     "steps": [
+      "감시 · 관제 경보(다운·디스크·응답 시간)",
+      "1차 확인 · 영향 범위와 장애 등급 판단",
+      "복구 · 재기동·이중화 전환·백업 복원, 필요하면 제조사 기술지원",
+      "보고 · 고객사에 원인·조치 보고",
+      "재발 방지 · 사후 검토, 점검표·자동화에 반영"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "examples": [
+    {
+     "title": "디스크가 언제 찰까 — 용량 관리의 가장 작은 계산",
+     "body": "지난 7일 사용량(가상 값)으로 하루 증가량을 구해 경보선(80%)과 가득 찰 날까지 남은 날을 센다. 이 숫자가 '언제 디스크를 늘려 달라고 요청할지'의 근거가 된다.",
+     "lang": "python",
+     "code": "used = [612, 618, 625, 630, 637, 644, 650]  # GB, 가상 값\nsize = 900\nper_day = (used[-1] - used[0]) / (len(used) - 1)\nleft = size - used[-1]\nprint(f\"하루 평균 +{per_day:.1f}GB, 남은 {left}GB\")\nprint(f\"사용률 {used[-1]/size:.0%} → 80% 경보선까지 {(size*0.8-used[-1])/per_day:.1f}일, 꽉 차기까지 {left/per_day:.1f}일\")\n# 출력\n# 하루 평균 +6.3GB, 남은 250GB\n# 사용률 72% → 80% 경보선까지 11.1일, 꽉 차기까지 39.5일"
+    },
+    {
+     "title": "가용성 99.9% 는 한 달에 몇 분 멈춰도 되나",
+     "body": "운영 계약의 가용성 숫자를 멈춤 허용 시간으로 바꾼 것. 서로 상관없이 고장 나는 99% 서버 두 대를 이중화하면 둘 다 멈출 확률이 0.01×0.01 로 줄어든다 — 다만 같은 전원·같은 스토리지를 쓰면 이 가정이 깨진다.[31] {추론}",
+     "lang": "python",
+     "code": "for a in (99.0, 99.9, 99.95, 99.99):\n    down = 1 - a / 100\n    print(f\"{a:>6}% : 월 {down*30*24*60:6.1f}분, 연 {down*365*24:5.2f}시간\")\nprint(f\"99% 두 대 이중화 → {1-(0.01**2):.4%}\")\n# 출력\n#   99.0% : 월  432.0분, 연 87.60시간\n#   99.9% : 월   43.2분, 연  8.76시간\n#  99.95% : 월   21.6분, 연  4.38시간\n#  99.99% : 월    4.3분, 연  0.88시간\n# 99% 두 대 이중화 → 99.9900%"
+    }
+   ],
+   "how_far": "3년차 이상 자리라 혼자 1차 장애조치와 일상 변경을 끝내고, 장애 보고서를 쓸 수 있어야 합니다.[1] 무엇을 얼마나 빨리 복구해야 하는지(가용성 목표·응답 시간)는 고객사와의 계약이 정하고, 엔지니어는 그 목표를 지키는 점검과 기록을 맡습니다.[31] {추론} 야간·주말 작업이나 당직 여부는 공고에 없어 면접에서 확인합니다.[1]",
+   "refs": [
+    1,
+    2,
+    6,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    31
+   ],
+   "study": [
+    "biztechi-infra",
+    "it-infra",
+    "sre-incident",
+    "sre-postmortem",
+    "usem",
+    "nist-80034",
+    "kisa-guide"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영 환경 개선 및 자동화",
+   "short": "매번 손으로 하던 점검·패치·계정 작업을 스크립트와 자동화 도구로 바꾸는 일.",
+   "why": "공고 소개글은 이 자리가 'AI 기반 자동화 도구에 쌓인 운영 노하우를 바탕으로' 인프라 구축·운영·자원관리·최적화를 한다고 적었습니다.[1] 사람이 반복하는 운영 일(토일, toil)은 서버 대수에 비례해 늘어나서, 줄이지 않으면 엔지니어가 개선할 시간이 없어집니다.[19]",
+   "actually": {
+    "intro": "서버 운영에서 흔히 자동화하는 일입니다.[19][20]",
+    "items": [
+     "**정기 점검 스크립트** — 서버 수십 대의 디스크 사용률·서비스 상태·로그 오류를 한 번에 모아 표로 만든다.",
+     "**패치·설정 일괄 적용** — Ansible 같은 도구로 '이 상태여야 한다'를 파일(플레이북)로 적고 여러 서버에 같은 결과를 낸다. 여러 번 돌려도 결과가 같아야 한다(멱등성).[20]",
+     "**계정·권한 정리** — 퇴사자 계정 잠금, 비밀번호 만료 점검 같은 보안 점검 항목을 스크립트로 확인한다.[18]",
+     "**보고서 자동화** — 월간 가용성·용량 보고를 감시 시스템 자료에서 바로 뽑는다.",
+     "**AI 운영 도구** — 회사가 말하는 'AI 기반 자동화 도구'가 무엇인지는 공개되지 않았다. 보통은 경보 묶기·원인 후보 제시·작업 절차 추천 같은 기능이다. {추론}"
+    ]
+   },
+   "how_far": "처음부터 큰 자동화 체계를 만들라는 줄이 아닙니다. 셸 스크립트로 점검을 묶고, Ansible 플레이북 몇 개로 같은 작업을 여러 대에 적용할 수 있으면 출발선입니다.[20] {추론} 회사의 자동화 도구 이름과 쓰는 범위는 면접에서 묻는 것이 좋습니다.[1]",
+   "refs": [
+    1,
+    18,
+    19,
+    20
+   ],
+   "study": [
+    "sre-toil",
+    "ansible-docs",
+    "ex294",
+    "linux-this"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LINUX/WINDOWS OS, Private Cloud(VMware) 운영",
+   "short": "리눅스·윈도우 서버와, VMware 로 서버를 쪼개 쓰는 회사 안 클라우드를 운영하는 일.",
+   "why": "고객사 업무 시스템은 운영체제(OS) 위에서 돌고, 요즘 사내 서버 상당수는 실제 기계 한 대에 가상 서버 여러 대를 올리는 가상화로 운영됩니다.[23] 'Private Cloud(사설 클라우드)'는 이 가상화 환경을 회사 안에서 클라우드처럼 나눠 쓰는 것을 말합니다. 회사는 LG 계열사 클라우드 운영과 데이터센터 이전·재해복구 설계를 사업 범위로 소개합니다.[4]",
+   "actually": {
+    "intro": "운영체제와 VMware 쪽에서 실제로 하는 일입니다.[21][22][23]",
+    "items": [
+     "**리눅스** — 패키지·커널 패치, 서비스(systemd) 관리, 디스크(LVM·파일시스템) 늘리기, 사용자·권한, 로그 확인. 기업에서는 RHEL(레드햇) 계열이 흔하다.[21][30]",
+     "**윈도우 서버** — 정기 보안 업데이트, 액티브 디렉터리(사내 계정 관리) 연동 서버 관리, 이벤트 로그 확인.[22]",
+     "**VMware vSphere** — ESXi(가상화 서버) 여러 대를 vCenter(관리 화면)로 묶어 가상 서버를 만들고 옮기고 지운다.[23]",
+     "**가상 서버 이중화** — 물리 서버가 죽으면 다른 서버에서 가상 서버를 다시 켜는 vSphere HA, 운영 중 옮기는 vMotion 을 설정·점검한다.[23]",
+     "**자원 관리** — 가상 서버마다 CPU·메모리를 과하게 나눠 주지 않았는지, 스냅숏(되돌리기 시점)이 쌓여 디스크를 먹고 있지 않은지 본다.[23] {추론}"
+    ]
+   },
+   "level": {
+    "basic": "리눅스 명령으로 서비스 상태·디스크·로그를 확인하고 패치를 적용한다.",
+    "work": "vCenter 에서 가상 서버를 만들고 HA·vMotion 이 되는지 점검하며, 리눅스 디스크를 서비스 중단 없이 늘린다.",
+    "team": "리눅스·윈도우·VMware 를 한 사람이 1차로 받아 처리하는 수준 — 공고가 셋을 한 줄에 묶었다.[1] {추론}"
+   },
+   "how_far": "3년 경력이면 리눅스 또는 윈도우 중 하나는 혼자 운영할 수 있고, VMware 는 가상 서버 관리와 HA 개념까지 아는 정도가 최소선입니다. {추론} 우대사항의 RHCSA·VCP 가 이 줄의 범위와 겹칩니다.[26][28]",
+   "refs": [
+    1,
+    4,
+    21,
+    22,
+    23,
+    26,
+    28,
+    30
+   ],
+   "study": [
+    "linux-this",
+    "rhel-docs",
+    "win-docs",
+    "vsphere-docs",
+    "ulsah"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "레거시 x86서버, UNIX(AIX) 서버 운영",
+   "short": "가상화로 옮기지 않은 오래된 일반 서버와, IBM 의 유닉스(AIX) 서버를 계속 돌리는 일.",
+   "why": "공장·기간 시스템 중에는 오래전에 IBM Power 서버의 AIX 위에 만들어져 그대로 운영되는 것이 있습니다. {추론} 공고 소개글도 레거시(Legacy, 오래된 사내 시스템)와 클라우드를 잇는 하이브리드 운영을 이 자리의 사업으로 적었습니다.[1] 회사는 데이터센터 이전을 사업 범위에 넣고 있어 레거시 서버를 옮기는 일과도 이어집니다.[4]",
+   "actually": {
+    "intro": "레거시 서버 운영에서 하는 일입니다.[25]",
+    "items": [
+     "**x86 물리 서버** — 하드웨어 경고(디스크·전원·팬)를 보고 제조사에 부품 교체를 요청하고, 펌웨어를 올린다. {추론}",
+     "**AIX** — 리눅스와 명령이 다르다. 디스크는 LVM(볼륨 그룹), 패키지는 installp·SMIT(메뉴형 관리 도구)로 다루고, 정기 패치(TL·SP)를 적용한다.[25]",
+     "**논리 분할(LPAR)** — IBM Power 서버 한 대를 여러 개의 AIX 서버로 쪼개 쓰는 방식이라, 자원 배분을 확인한다.[24][25]",
+     "**지원 종료 관리** — 운영체제·하드웨어 지원 종료 일정을 보고, 옮길지 연장할지를 고객사에 보고한다. {추론}"
+    ]
+   },
+   "how_far": "AIX 를 처음 다뤄도 리눅스 기본기가 있으면 따라갈 수 있는 영역입니다 — 같은 유닉스 계열이라 개념은 같고 도구가 다릅니다.[25] {추론} 공고는 AIX 경험을 우대가 아닌 업무로 적었으니, 경험이 없으면 IBM 문서로 LVM·패치 절차를 먼저 익혀 두면 좋습니다.[1][25]",
+   "refs": [
+    1,
+    4,
+    24,
+    25
+   ],
+   "study": [
+    "aix-docs",
+    "ulsah",
+    "it-infra"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "학력: 4년제 대졸자 또는 학사 학위 보유자",
+   "short": "4년제 대학 졸업 또는 학사 학위(학점은행제 등 포함)가 지원 조건이라는 뜻.",
+   "why": "이 회사의 다른 경력 공고들도 같은 학력 조건을 적었습니다.[1][2] '또는 학사 학위 보유자'를 덧붙인 것은 4년제 졸업이 아니어도 학위가 있으면 된다는 뜻으로 읽힙니다. {추론}",
+   "how_far": "전공 조건은 적혀 있지 않습니다.[1] 학력은 서류 단계의 문턱이고 실제 평가는 경력 내용으로 합니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력: 관련 업무 3년 이상",
+   "short": "서버·인프라 운영을 3년 넘게 해 봐서 혼자 장애와 변경을 처리할 수 있어야 한다는 뜻.",
+   "why": "같은 자리의 이전 회차 공고(근무지 경북 구미)도 경력 3년 이상을 요구했습니다.[2] 운영 위탁은 고객사 현장에서 1차 대응을 맡기 때문에, 첫날부터 혼자 받을 수 있는 사람이 필요합니다.[2] {추론}",
+   "actually": {
+    "intro": "'관련 업무'로 보통 인정받는 경력입니다. {추론}",
+    "items": [
+     "기업·공공 서버(리눅스·윈도우·유닉스) 운영",
+     "VMware 같은 가상화 환경 구축·운영",
+     "데이터센터·전산실 시스템 엔지니어(SE), 서버 기술지원",
+     "클라우드 인프라 운영 — 이 자리의 중심은 온프레미스지만 회사 사업에는 클라우드 운영도 있다[3][4]"
+    ]
+   },
+   "how_far": "경력직 전형은 서류 → LG Way Fit Test(인성·적성 검사) → 면접 → 평판조회 → 처우협의 순서입니다.[11] 면접에서는 직접 겪은 장애 한두 건을 처음부터 끝까지 설명할 수 있게 준비합니다.[13][14] {추론}",
+   "refs": [
+    2,
+    3,
+    4,
+    11,
+    13,
+    14
+   ],
+   "study": [
+    "sre-incident",
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "온프레미스 인프라환경 운영 경험을 보유하신 분",
+   "short": "클라우드가 아니라 회사 건물·데이터센터 안의 실제 서버를 직접 만져 본 경험을 원한다는 뜻.",
+   "why": "업무가 물리 x86 서버·AIX·VMware 처럼 손에 잡히는 장비 중심이라, 클라우드에서만 일한 사람에게는 낯선 일이 많습니다.[1] 회사는 하이브리드 클라우드(사내 서버 + 클라우드)를 내세우는데, 그 한쪽이 온프레미스입니다.[1][4]",
+   "actually": {
+    "intro": "온프레미스에만 있는 일입니다. {추론}",
+    "items": [
+     "랙·전원·케이블을 확인하고 하드웨어 고장 부품을 교체 요청한다.",
+     "RAID(디스크 여러 개를 묶어 한 개가 고장 나도 버티게 하는 구성) 상태를 보고 고장 디스크를 갈아 끼운다.[30]",
+     "콘솔(서버 관리 포트)로 네트워크가 끊긴 서버에 접속해 복구한다.",
+     "정전·공조 점검 같은 전산실 일정에 맞춰 서버를 내리고 올린다."
+    ]
+   },
+   "how_far": "직접 서버실에 들어가 장비를 만져 본 경험이 있으면 충분히 말할 거리가 됩니다. {추론}",
+   "refs": [
+    1,
+    4,
+    30
+   ],
+   "study": [
+    "it-infra",
+    "rhel-storage"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "기본적인 네트워크/스토리지/시스템 구조에 대한 이해도가 있으신 분",
+   "short": "서버 장애가 네트워크·저장장치 쪽 문제인지 가를 수 있을 만큼 전체 구조를 아는 사람.",
+   "why": "회사가 소개하는 인프라 직무는 서버만이 아니라 스토리지·백업·네트워크를 함께 다룹니다.[6] 서버가 느린 원인이 서버가 아니라 스토리지 응답이나 네트워크인 경우가 흔해서, 경계를 알아야 맞는 팀에 넘길 수 있습니다.[15] {추론}",
+   "actually": {
+    "intro": "'기본 구조'로 보통 기대하는 범위입니다.",
+    "items": [
+     "**네트워크** — IP·서브넷·게이트웨이·DNS, 포트가 열렸는지 확인하는 법, 이중 연결(본딩).[21]",
+     "**스토리지** — 서버 안 디스크(DAS)·네트워크 저장소(NAS, 파일 공유)·SAN(블록 저장장치를 전용망으로 붙이기)의 차이, 멀티패스(경로 이중화).[30]",
+     "**시스템 구조** — 웹·WAS(애플리케이션 서버)·DB 로 이어지는 층과 각 층의 이중화.[29]",
+     "**성능 경계 가르기** — CPU 는 한가한데 디스크 대기(iowait)가 높으면 스토리지 쪽을 의심한다.[15][16]"
+    ]
+   },
+   "how_far": "직접 스토리지 장비를 설정할 필요까지는 없고, 서버 쪽에서 보이는 증상으로 '어느 층의 문제인지' 가를 수 있으면 됩니다. {추론}",
+   "refs": [
+    6,
+    15,
+    16,
+    21,
+    29,
+    30
+   ],
+   "study": [
+    "it-infra",
+    "nw-intro",
+    "rhel-storage",
+    "sysperf",
+    "netflix60"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "RHCSA(Red Hat Certified System Administrator) 자격을 보유하신 분",
+   "short": "레드햇 리눅스를 실제 시험 서버에서 관리해 보인 실기 자격이 있으면 좋다는 뜻.",
+   "why": "RHCSA(시험 EX200)는 필기가 아니라 실제 시스템에서 과제를 수행하는 실기 시험입니다 — 저장장치·파일시스템·사용자·서비스·SELinux(보안 정책)·방화벽 설정이 범위입니다.[26] 업무의 리눅스 운영 줄과 범위가 겹칩니다.[1]",
+   "how_far": "리눅스 운영 경험을 증명하는 가장 흔한 자격입니다. 경험이 이미 있다면 자격은 서류에서 기본기를 빨리 보여 주는 수단입니다. {추론}",
+   "refs": [
+    1,
+    26
+   ],
+   "study": [
+    "ex200",
+    "rhcsa-guide",
+    "linux-this",
+    "rhel-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "RHCE(Red Hat Certified Engineer) 자격을 보유하신 분",
+   "short": "RHCSA 다음 단계로, Ansible 로 여러 리눅스 서버를 자동 관리하는 실기 자격.",
+   "why": "RHEL 9 기준 RHCE(시험 EX294)는 Ansible 자동화가 중심이고, RHCSA 가 있어야 RHCE 자격이 주어집니다.[27] 업무의 '운영 환경 개선 및 자동화' 줄과 바로 이어집니다.[1]",
+   "how_far": "RHCSA 를 먼저 따고, 자동화 업무를 겨냥하면 RHCE 로 넘어가는 순서입니다.[27]",
+   "refs": [
+    1,
+    27
+   ],
+   "study": [
+    "ex294",
+    "ansible-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "VCP(VMware Certified Professional) 자격을 보유하신 분",
+   "short": "VMware 가상화(vSphere)를 설치·설정·관리할 수 있음을 보이는 VMware 자격.",
+   "why": "업무에 VMware 사설 클라우드 운영이 들어 있습니다.[1] 서버 가상화 쪽 VCP 는 VCP-DCV(데이터센터 가상화)로, vSphere 환경의 설치·설정·관리를 시험합니다.[28]",
+   "how_far": "VMware 는 Broadcom 에 인수된 뒤 자격·교육 제도가 Broadcom 쪽으로 옮겨 갔으니, 시험 이름·버전은 Broadcom 자격 안내에서 최신으로 확인합니다.[28] 자격이 없어도 vCenter 로 가상 서버를 다루고 HA 를 설명할 수 있으면 이 줄의 뜻을 채웁니다.[23] {추론}",
+   "refs": [
+    1,
+    23,
+    28
+   ],
+   "study": [
+    "vcp",
+    "vsphere-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "리눅스·윈도우·VMware·AIX 를 두루 운영해 보고 싶은 시스템 엔지니어[1]",
+   "반복 점검을 스크립트·Ansible 로 줄이는 일이 재미있는 사람[1][19]",
+   "경북 구미 근처에 살거나 옮길 생각이 있는 3년차 이상[2]",
+   "온프레미스 경험을 바탕으로 하이브리드 클라우드로 영역을 넓히고 싶은 사람[1][4]"
+  ],
+  "hard": [
+   "근무지가 경북 구미라 수도권에서 다니기 어렵다[2]",
+   "고객사 시스템을 맡는 운영 위탁이라 작업 시간·일정을 고객이 정하고, 장애 때 야간 대응이 있을 수 있다 {추론}",
+   "레거시 서버 비중이 있어 최신 클라우드 기술만 다루고 싶은 사람에게는 맞지 않는다[1]",
+   "공공데이터 집계 기준 평균 연봉이 모회사보다 낮다[7][8]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "서버가 느리다는 연락을 받았습니다. 어떤 순서로 보겠어요?",
+   "a": "자원별 사용률·포화·오류를 차례로 보는가 — 성능 업무 줄.[15][16]"
+  },
+  {
+   "q": "운영 중인 리눅스 서버의 /data 가 90% 입니다. 서비스를 멈추지 않고 어떻게 늘리나요?",
+   "a": "LVM 으로 볼륨을 늘리고 파일시스템을 키우는 절차 — 용량·리눅스 운영 줄.[21][30]"
+  },
+  {
+   "q": "백업이 매일 성공으로 뜨는데 그걸 믿어도 되나요?",
+   "a": "복원 시험을 하는가 — 백업 업무 줄.[17]"
+  },
+  {
+   "q": "vSphere HA 가 켜진 클러스터에서 ESXi 한 대가 꺼지면 무슨 일이 일어나나요?",
+   "a": "가상 서버가 다른 호스트에서 다시 켜지는 원리와 한계(재기동이지 무중단이 아님) — VMware 운영 줄.[23]"
+  },
+  {
+   "q": "같은 패치를 서버 50대에 적용해야 합니다. 어떻게 하겠어요?",
+   "a": "자동화 도구·단계적 적용·되돌리기 계획 — 자동화 줄과 RHCE 우대.[20][27]"
+  },
+  {
+   "q": "직접 겪은 장애 하나를 처음부터 끝까지 설명해 주세요.",
+   "a": "감지 → 복구 → 보고 → 재발 방지의 틀 — 문제 관리 줄.[13][14]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "LG Careers · [비즈테크아이] 서버 인프라 엔지니어(TA/SM) 모집 (경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001678",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "업무·요건·우대, 소개글(AI 기반 자동화 도구에 쌓인 운영 노하우, Hybridcloud·MultiCloud(AWS·GCP·AZURE·NCP) 구축·운영·자원관리·최적화 SI/SM), 근무지 경상북도, 마감 2026-12-31 — 우리 수집본으로 읽음(페이지는 스크립트로 그려져 자동으로 안 읽힌다)"
+  },
+  {
+   "n": 2,
+   "title": "캐치 · [비즈테크아이] 서버 인프라 엔지니어(TA/SM) (경력) 채용 — 이전 회차",
+   "url": "https://m.catch.co.kr/NCS/RecruitInfoDetails/549343",
+   "kind": "posting",
+   "date": "2026",
+   "note": "같은 자리의 앞선 공고(마감). 근무지 경북 구미시, 경력 3년 이상, 대졸(4년) 이상"
+  },
+  {
+   "n": 3,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 인프라",
+   "url": "https://www.biztechi.com/business/cloud/03",
+   "kind": "company",
+   "note": "인프라 SM(24시간 365일 장애조치·상태 감시)·정기점검·현장 지원과 시스템/네트워크 TA(SI) — 같은 회사 네트워크 운영 풀이에서 확인한 내용"
+  },
+  {
+   "n": 4,
+   "title": "비즈테크아이 · 사업 소개 — CLOUD · 클라우드",
+   "url": "https://www.biztechi.com/business/cloud/02",
+   "kind": "company",
+   "note": "LG전자·LG화학·LG에너지솔루션 등 클라우드 운영, 하이브리드·멀티 클라우드(AWS·Azure·GCP), 데이터센터 이전·DR 설계 — 같은 회사 네트워크 운영 풀이에서 확인한 내용"
+  },
+  {
+   "n": 5,
+   "title": "비즈테크아이 · Biztechi 소개",
+   "url": "https://www.biztechi.com/about/01",
+   "kind": "company",
+   "note": "LG CNS 자회사, 고객: LG 그룹사·기업·공공"
+  },
+  {
+   "n": 6,
+   "title": "비즈테크아이 · 직무소개",
+   "url": "https://www.biztechi.com/recruit/03",
+   "kind": "company",
+   "note": "인프라 직무: 서버·스토리지·백업·네트워크·미들웨어·클라우드 요구사항 분석 → 성능·가용성·운영 편의 기준 설계·구축·운영"
+  },
+  {
+   "n": 7,
+   "title": "자소설닷컴 · 비즈테크아이 기업정보",
+   "url": "https://jasoseol.com/companies/14512",
+   "kind": "reference",
+   "note": "초봉 3,811만·평균 5,748만, 사원수 945명 — 공공데이터 집계, 초봉 갱신 메모 2026-10-26 (같은 회사 풀이에서 확인한 값)"
+  },
+  {
+   "n": 8,
+   "title": "자소설닷컴 · LG CNS 기업정보",
+   "url": "https://jasoseol.com/companies/57",
+   "kind": "reference",
+   "note": "초봉 5,071만·평균 7,802만 — 같은 집계"
+  },
+  {
+   "n": 9,
+   "title": "비즈테크아이 · 복리후생",
+   "url": "https://www.biztechi.com/culture/03",
+   "kind": "company"
+  },
+  {
+   "n": 10,
+   "title": "비즈테크아이 · 오시는 길",
+   "url": "https://www.biztechi.com/about/05",
+   "kind": "company",
+   "note": "서울 마포구 매봉산로 75, 상암 DDMC 12층"
+  },
+  {
+   "n": 11,
+   "title": "비즈테크아이 · 채용 프로세스",
+   "url": "https://www.biztechi.com/recruit/02",
+   "kind": "company",
+   "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"
+  },
+  {
+   "n": 12,
+   "title": "비즈테크아이 · 인사제도",
+   "url": "https://www.biztechi.com/culture/02",
+   "kind": "company",
+   "note": "리더 Path·전문가 Path, 성과에 걸맞은 대우"
+  },
+  {
+   "n": 13,
+   "title": "Google SRE Book · Managing Incidents",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "kind": "reference",
+   "date": "2016"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Book · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "date": "2016"
+  },
+  {
+   "n": 15,
+   "title": "Brendan Gregg · The USE Method",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "kind": "reference",
+   "note": "자원마다 사용률·포화·오류를 본다"
+  },
+  {
+   "n": 16,
+   "title": "Netflix Technology Blog · Linux Performance Analysis in 60,000 Milliseconds",
+   "url": "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55",
+   "kind": "reference",
+   "date": "2015"
+  },
+  {
+   "n": 17,
+   "title": "NIST SP 800-34 Rev. 1 · Contingency Planning Guide for Federal Information Systems",
+   "url": "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final",
+   "kind": "reference",
+   "date": "2010",
+   "note": "백업·복구 계획과 시험·훈련"
+  },
+  {
+   "n": 18,
+   "title": "KISA · 법령·가이드라인 (주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드)",
+   "url": "https://www.kisa.or.kr/2060204",
+   "kind": "reference",
+   "note": "유닉스 서버 분야: 계정 관리·파일 및 디렉터리 관리·서비스 관리·패치 관리·로그 관리"
+  },
+  {
+   "n": 19,
+   "title": "Google SRE Book · Eliminating Toil",
+   "url": "https://sre.google/sre-book/eliminating-toil/",
+   "kind": "reference",
+   "date": "2016",
+   "note": "손으로 반복하는 운영 일은 서비스 규모에 비례해 늘어난다"
+  },
+  {
+   "n": 20,
+   "title": "Ansible Documentation · Getting started",
+   "url": "https://docs.ansible.com/ansible/latest/getting_started/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Red Hat Enterprise Linux 9 Documentation",
+   "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Microsoft Learn · Windows Server 문서",
+   "url": "https://learn.microsoft.com/ko-kr/windows-server/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Broadcom TechDocs · VMware vSphere",
+   "url": "https://techdocs.broadcom.com/us/en/vmware-cis/vsphere.html",
+   "kind": "reference",
+   "note": "ESXi·vCenter, vSphere HA(호스트 고장 시 가상 서버 재기동)·vMotion"
+  },
+  {
+   "n": 24,
+   "title": "IBM Power · PowerVM 개요",
+   "url": "https://www.ibm.com/products/powervm",
+   "kind": "reference",
+   "note": "Power 서버의 가상화(LPAR)"
+  },
+  {
+   "n": 25,
+   "title": "IBM Documentation · AIX 7.3",
+   "url": "https://www.ibm.com/docs/en/aix/7.3",
+   "kind": "reference",
+   "note": "LVM(볼륨 그룹)·installp·SMIT·TL/SP 패치·LPAR"
+  },
+  {
+   "n": 26,
+   "title": "Red Hat · EX200 Red Hat Certified System Administrator (RHCSA) exam",
+   "url": "https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam",
+   "kind": "reference",
+   "note": "실기 시험 — 저장장치·파일시스템·사용자·서비스·SELinux·방화벽"
+  },
+  {
+   "n": 27,
+   "title": "Red Hat · EX294 Red Hat Certified Engineer (RHCE) exam",
+   "url": "https://www.redhat.com/en/services/training/ex294-red-hat-certified-engineer-rhce-exam-red-hat-enterprise-linux-9",
+   "kind": "reference",
+   "note": "RHEL 9 기준 Ansible 자동화 중심, RHCSA 보유가 전제"
+  },
+  {
+   "n": 28,
+   "title": "Broadcom · VCP-DCV (VMware Certified Professional – Data Center Virtualization)",
+   "url": "https://www.broadcom.com/support/education/vmware/certification/vcp-dcv",
+   "kind": "reference",
+   "note": "vSphere 환경 설치·설정·관리 자격, 인수 뒤 Broadcom 이 운영"
+  },
+  {
+   "n": 29,
+   "title": "Red Hat · Configuring and managing high availability clusters (RHEL 9)",
+   "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_and_managing_high_availability_clusters/index",
+   "kind": "reference",
+   "note": "Pacemaker 로 서비스 이중화"
+  },
+  {
+   "n": 30,
+   "title": "Red Hat · Managing storage devices (RHEL 9)",
+   "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_storage_devices/index",
+   "kind": "reference",
+   "note": "RAID·iSCSI·멀티패스·NFS"
+  },
+  {
+   "n": 31,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "date": "2016"
+  }
+ ],
+ "caveat": "비즈테크아이 서버 운영 팀의 기술 블로그·발표는 찾지 못했습니다. 회사 근거는 이 공고, 같은 자리의 이전 회차(근무지 경북 구미), 회사 사이트의 사업·직무 소개이고, 구미 근무지가 어느 고객사 사업장인지와 공고가 말하는 'AI 기반 자동화 도구'가 무엇인지는 공개되지 않았습니다. 운영 절차·도구의 구체 내용은 Red Hat·IBM·Broadcom·Microsoft 공식 문서와 Google SRE·NIST·KISA 공개 문서로 '보통 이런 것'을 보였습니다. 회사 사이트는 스크립트로 그려져 이번에 직접 읽지 못해, 같은 회사의 다른 풀이에서 확인한 내용을 가져다 썼습니다. 연봉은 공시가 없어 공공데이터 집계값입니다.",
+ "resources": [
+  {
+   "id": "biztechi-infra",
+   "title": "비즈테크아이 사업 소개 — CLOUD · 인프라",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.biztechi.com/business/cloud/03",
+   "why": "이 회사가 고객에게 약속하는 인프라 SM·TA 의 범위 — 면접 전 업무 범위를 맞춰 본다.",
+   "by": "비즈테크아이",
+   "free": true
+  },
+  {
+   "id": "it-infra",
+   "title": "그림으로 공부하는 IT 인프라 구조 (개정판)",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002989804",
+   "why": "서버·스토리지·네트워크가 어떻게 이어지고 이중화되는지 그림으로 — 우대 '네트워크/스토리지/시스템 구조' 줄의 바탕.",
+   "by": "야마자키 야스시 외 · 제이펍"
+  },
+  {
+   "id": "linux-this",
+   "title": "이것이 리눅스다 (with Rocky Linux)",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%9D%B4%EA%B2%83%EC%9D%B4%20%EB%A6%AC%EB%88%85%EC%8A%A4%EB%8B%A4",
+   "why": "RHEL 과 같은 계열인 Rocky Linux 로 설치부터 서버 운영까지 한국어 실습 — 리눅스 운영 줄과 RHCSA 준비.",
+   "by": "우재남 · 한빛미디어"
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "스위치·라우팅·방화벽·로드밸런서를 서버 엔지니어 눈높이로 — 우대 '기본적인 네트워크 구조' 줄.",
+   "by": "고재성 · 이상훈 · 길벗"
+  },
+  {
+   "id": "ulsah",
+   "title": "UNIX and Linux System Administration Handbook (5th ed.)",
+   "kind": "book",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://admin.com/",
+   "why": "리눅스·유닉스 운영 전반(저장장치·백업·보안·자동화)을 실무 순서로 — 리눅스·AIX 운영 줄의 참고서.",
+   "by": "Evi Nemeth 외 · Addison-Wesley · 2017"
+  },
+  {
+   "id": "sysperf",
+   "title": "Systems Performance (2nd ed.)",
+   "kind": "book",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "why": "CPU·메모리·디스크·네트워크 성능 분석 방법의 정본 — 성능·용량 관리 줄을 깊게.",
+   "by": "Brendan Gregg · Addison-Wesley · 2020"
+  },
+  {
+   "id": "usem",
+   "title": "The USE Method",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "why": "'느리다'를 자원별 사용률·포화·오류로 가르는 점검 순서 — 성능 업무 줄.",
+   "by": "Brendan Gregg",
+   "free": true
+  },
+  {
+   "id": "netflix60",
+   "title": "Linux Performance Analysis in 60,000 Milliseconds",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55",
+   "why": "장애 첫 1분에 치는 리눅스 명령 열 개(uptime·vmstat·iostat…)와 읽는 법.",
+   "by": "Netflix Technology Blog",
+   "free": true
+  },
+  {
+   "id": "rhel-docs",
+   "title": "Red Hat Enterprise Linux 9 Documentation",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9",
+   "why": "패치·서비스·보안(SELinux)·방화벽 설정의 공식 절차 — 리눅스 운영 줄과 RHCSA.",
+   "by": "Red Hat",
+   "free": true
+  },
+  {
+   "id": "rhel-storage",
+   "title": "Managing storage devices (RHEL 9)",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_storage_devices/index",
+   "why": "RAID·iSCSI·멀티패스·NFS 를 서버 쪽에서 다루는 법 — 우대 스토리지 구조 줄.",
+   "by": "Red Hat",
+   "free": true
+  },
+  {
+   "id": "win-docs",
+   "title": "Windows Server 문서",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "실무",
+   "url": "https://learn.microsoft.com/ko-kr/windows-server/",
+   "why": "윈도우 서버 업데이트·역할·이벤트 로그 관리 — 업무의 WINDOWS OS 운영.",
+   "by": "Microsoft Learn",
+   "free": true
+  },
+  {
+   "id": "vsphere-docs",
+   "title": "VMware vSphere 문서",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://techdocs.broadcom.com/us/en/vmware-cis/vsphere.html",
+   "why": "ESXi·vCenter·HA·vMotion 의 공식 설명 — 사설 클라우드(VMware) 운영 줄과 VCP.",
+   "by": "Broadcom",
+   "free": true
+  },
+  {
+   "id": "aix-docs",
+   "title": "IBM AIX 7.3 문서",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.ibm.com/docs/en/aix/7.3",
+   "why": "AIX 의 LVM·패키지(installp)·패치(TL/SP) 절차 — 업무의 UNIX(AIX) 운영 줄.",
+   "by": "IBM",
+   "free": true
+  },
+  {
+   "id": "ansible-docs",
+   "title": "Ansible Documentation · Getting started",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://docs.ansible.com/ansible/latest/getting_started/index.html",
+   "why": "인벤토리·플레이북으로 여러 서버에 같은 작업을 적용하는 법 — 자동화 줄과 RHCE.",
+   "by": "Red Hat · Ansible 프로젝트",
+   "free": true
+  },
+  {
+   "id": "ex200",
+   "title": "EX200 RHCSA 시험 안내",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam",
+   "why": "우대 자격 RHCSA 의 출제 범위 확인.",
+   "by": "Red Hat",
+   "free": true
+  },
+  {
+   "id": "ex294",
+   "title": "EX294 RHCE 시험 안내",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.redhat.com/en/services/training/ex294-red-hat-certified-engineer-rhce-exam-red-hat-enterprise-linux-9",
+   "why": "우대 자격 RHCE 의 출제 범위(Ansible) 확인 — 자동화 줄과 함께.",
+   "by": "Red Hat",
+   "free": true
+  },
+  {
+   "id": "rhcsa-guide",
+   "title": "Red Hat RHCSA 9 Cert Guide: EX200",
+   "kind": "book",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://www.oreilly.com/search/?q=Red%20Hat%20RHCSA%209%20Cert%20Guide",
+   "why": "RHCSA 범위를 장별 실습과 모의 과제로 — 우대 RHCSA 준비.",
+   "by": "Sander van Vugt · Pearson IT Certification"
+  },
+  {
+   "id": "vcp",
+   "title": "VCP-DCV 자격 안내",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.broadcom.com/support/education/vmware/certification/vcp-dcv",
+   "why": "우대 자격 VCP 의 최신 시험 이름·범위 확인(인수 뒤 바뀐 제도).",
+   "by": "Broadcom",
+   "free": true
+  },
+  {
+   "id": "sre-incident",
+   "title": "Site Reliability Engineering · Managing Incidents",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "why": "장애 때 역할 나누기·기록·소통 — 문제 관리 줄과 면접의 장애 경험 질문.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Site Reliability Engineering · Postmortem Culture",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "장애 보고서를 비난 없이 쓰는 법 — 고객사에 내는 장애 보고의 뼈대.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "sre-toil",
+   "title": "Site Reliability Engineering · Eliminating Toil",
+   "kind": "doc",
+   "lang": "en",
+   "level": "입문",
+   "url": "https://sre.google/sre-book/eliminating-toil/",
+   "why": "무엇을 먼저 자동화할지 고르는 기준 — '운영 환경 개선 및 자동화' 줄.",
+   "by": "Google",
+   "free": true
+  },
+  {
+   "id": "nist-80034",
+   "title": "NIST SP 800-34 Rev. 1 · Contingency Planning Guide",
+   "kind": "doc",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final",
+   "why": "백업·복구 계획과 복구 시험·훈련의 공공 기준 — 백업·가용성 줄.",
+   "by": "NIST · 2010",
+   "free": true
+  },
+  {
+   "id": "kisa-guide",
+   "title": "주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드",
+   "kind": "doc",
+   "lang": "ko",
+   "level": "실무",
+   "url": "https://www.kisa.or.kr/2060204",
+   "why": "유닉스·윈도우 서버 보안 점검 항목과 판정 기준 — 보안 관리 줄의 국내 점검표.",
+   "by": "한국인터넷진흥원(KISA)",
+   "free": true
+  }
+ ],
+ "study_path": [
+  {
+   "title": "리눅스 서버 기본기",
+   "time": "3~4주",
+   "goal": "서비스·디스크·계정·방화벽을 다루고 RHCSA 범위를 혼자 실습한다.",
+   "resources": [
+    "linux-this",
+    "rhel-docs",
+    "ex200",
+    "rhcsa-guide"
+   ],
+   "task": "가상 머신에 Rocky Linux 를 깔고, 디스크를 하나 더 붙여 LVM 으로 /data 를 만든 뒤 서비스 중단 없이 두 배로 늘리고, 그 과정을 명령과 출력으로 기록한다."
+  },
+  {
+   "title": "성능·용량·장애 대응",
+   "time": "2주",
+   "goal": "'느리다'를 자원별로 가르고, 장애 보고서를 쓴다.",
+   "resources": [
+    "usem",
+    "netflix60",
+    "sysperf",
+    "sre-incident",
+    "sre-postmortem"
+   ],
+   "task": "실습 서버에 stress 도구로 CPU·디스크 부하를 따로 걸고, 60초 점검 명령으로 어느 자원이 병목인지 찾아 한 쪽짜리 장애 보고서(감지·원인·조치·재발 방지)를 쓴다."
+  },
+  {
+   "title": "VMware 가상화",
+   "time": "2~3주",
+   "goal": "vCenter 로 가상 서버를 만들고 HA·vMotion 의 동작을 설명한다.",
+   "resources": [
+    "vsphere-docs",
+    "vcp",
+    "it-infra"
+   ],
+   "task": "중첩 가상화로 ESXi 두 대와 vCenter 를 띄우고 HA 를 켠 뒤, 한 호스트를 끄면 가상 서버가 다른 호스트에서 다시 켜지기까지 걸린 시간을 잰다."
+  },
+  {
+   "title": "보안 점검·백업·스토리지",
+   "time": "2주",
+   "goal": "점검표로 서버 보안을 확인하고, 백업을 복원 시험까지 한다.",
+   "resources": [
+    "kisa-guide",
+    "nist-80034",
+    "rhel-storage",
+    "nw-intro",
+    "aix-docs",
+    "ulsah"
+   ],
+   "task": "KISA 유닉스 서버 항목 중 계정·파일 권한 5개를 골라 실습 서버를 점검한 표를 만들고, /data 를 백업한 뒤 다른 서버에 복원해 파일 수와 체크섬이 같은지 비교한다."
+  },
+  {
+   "title": "자동화",
+   "time": "계속",
+   "goal": "반복 작업을 플레이북으로 바꾸고 RHCE 범위를 정리한다.",
+   "resources": [
+    "sre-toil",
+    "ansible-docs",
+    "ex294",
+    "biztechi-infra"
+   ],
+   "task": "1~4단계에서 손으로 한 일(패키지 패치·계정 잠금·디스크 사용률 점검)을 Ansible 플레이북 세 개로 바꾸고, 두 번 돌려도 바뀌는 것이 없는지(멱등성) 확인한다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원**(둘 다 집계값) — 공시 숫자는 없고, 경력 전형이라 처우 협의가 기준이다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,811만원",
+    "amount": 3811,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없고, 2026-10-26에 초봉을 고쳤다는 메모가 있다 [7]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,748만원",
+    "amount": 5748,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계, 사원수 945명 기준. 경력직이 섞인 회사 전체 값이다 [7]"
+   },
+   {
+    "label": "LG CNS 초봉",
+    "value": "약 5,071만원",
+    "amount": 5071,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [8]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "약 7,802만원",
+    "amount": 7802,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [8]"
+   }
+  ],
+  "how": "공고에는 연봉이 없다 [1]. 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자는 없다. 경력 전형은 평판조회 뒤 **처우협의** 단계에서 연봉을 정하고 [11], 회사는 '성과에 걸맞은 대우'를 인사 원칙으로 적었다 [12]. 평균은 경력직이 섞인 회사 전체 값이라 초봉도 이 자리의 제시액도 아니다. 지방 근무에 따른 수당이 있는지는 공개되지 않았다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "가족",
+    "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진·단체보험, 전문 심리 상담"
+   },
+   {
+    "name": "금융",
+    "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+   },
+   {
+    "name": "배움",
+    "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+   },
+   {
+    "name": "조직 문화",
+    "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"
+   }
+  ],
+  "note": "비즈테크아이 공식 사이트의 복리후생 페이지 내용으로, 같은 회사 네트워크 운영 풀이에서 2026-11 에 확인한 목록이다 [9]. 항목 이름만 있고 금액·조건은 적혀 있지 않다. 우대 자격(RHCSA·RHCE·VCP)을 준비한다면 '자격증 지원'의 범위를 면접에서 확인할 만하다 {추론}."
+ },
+ "location": {
+  "name": "비즈테크아이 본사 (상암 DDMC)",
+  "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+  "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [10]",
+  "note": "회사 사이트 '오시는 길'의 본사 주소다 [10]. **이 자리의 근무지는 본사가 아니라 경북 구미**다 — 공고는 '경상북도', 같은 자리의 이전 회차는 '경북 구미시'로 적었고 상세 주소는 공개되지 않았다 [1][2]. 운영 위탁 자리라 실제 근무지는 구미의 고객사 사업장일 것으로 보인다 {추론}."
+ }
+}
