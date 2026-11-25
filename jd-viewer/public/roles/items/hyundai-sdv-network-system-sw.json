@@ -1,0 +1,1049 @@
+{
+ "id": "hyundai-sdv-network-system-sw",
+ "company": "현대자동차",
+ "role": "네트워크 시스템 소프트웨어 개발",
+ "team": "SDV 핵심 통합제어기 Firmware·System SW 자체 개발 조직",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2409",
+  "wanted-398813"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "차 안의 제어기들을 잇는 **이더넷 망의 밑바닥 SW** — 스위치 칩 드라이버, QNX·Linux·RTOS 의 네트워크 설정, 시간 동기화·우선순위 — 를 만들고, 통신이 끊기거나 늦으면 패킷을 떠서 원인을 찾습니다.[1]",
+  "env": "현대차 SDV 구조는 고성능 중앙 컴퓨터(HPVC)와 구역별 존 제어기를 **고속 이더넷 백본**으로 묶고, 소프트웨어 업데이트(OTA)도 이 망으로 보냅니다.[3][4][5] 팀은 그 통합제어기의 펌웨어·시스템 SW 를 회사 안에서 직접 만듭니다.[1]",
+  "oneline": "앱이 아니라 **스위치 칩과 OS 네트워크 스택 사이**를 맡는 10년 차 이상 임베디드 네트워크 개발자. 회로도와 Wireshark 를 같이 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "임베디드 OS 기반 차량 네트워크 기능과 Ethernet Switch 드라이버를 개발하고, Ethernet/IP 통신 검증 및 패킷 분석을 통해 차량 네트워크의 성능과 안정성을 확보합니다.",
+   "short": "차 안 이더넷 망이 빠르고 안 끊기게, 스위치 드라이버부터 패킷 분석까지 맡는 자리다.",
+   "why": "현대차의 SDV 전기·전자 구조에서 중앙 컴퓨터 HPVC 는 다른 제어기들과 **고속 이더넷 백본**으로 이어진 데이터 관문(gateway) 역할을 합니다.[3] 2025년 발표된 CODA 구조는 제어기를 구역별로 합쳐 제어기 수를 약 66%, 배선을 약 28% 줄였고, OTA 업데이트도 이더넷 통신망으로 보냅니다.[4] 제어기가 줄어든 만큼 남은 이더넷 망 하나가 멈추면 여러 기능이 함께 멈춥니다 {추론}.",
+   "actually": {
+    "intro": "업무는 두 묶음입니다 — 만들기(아래 ■ 첫째)와 지키기(■ 둘째).[1]",
+    "items": [
+     "**만들기** — OS 별 네트워크 설정·드라이버, 스위치 칩 SDK 를 새 보드에 올리기.",
+     "**지키기** — 차에서 통신이 끊기거나 늦을 때 로그·패킷으로 원인을 찾아 고치기.",
+     "팀 소개가 '통합제어기 Firmware 와 System SW 자체 개발, 양산 품질 확보'라서 연구용 시제품이 아니라 **양산 차에 들어갈 코드**입니다.[1]"
+    ]
+   },
+   "how_far": "망 구조(어느 제어기를 어느 포트·VLAN 에 둘지)는 보통 E&E 아키텍처 조직이 정하고, 이 자리는 그 설계가 **칩과 OS 위에서 그대로 돌게** 만드는 쪽입니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    4
+   ],
+   "study": [
+    "hmg-ces-sdv",
+    "matheus-ae"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 임베디드 OS 기반 차량 네트워크 기능 개발",
+   "short": "아래 두 줄의 제목 — OS 쪽 네트워크 설정과 스위치 칩 드라이버를 만드는 일이다.",
+   "why": "HPVC 는 게이트웨이·저장·무선 연결·ADAS·인포테인먼트를 한 기계에서 함께 돌립니다.[3] 한 기계 안에 성격이 다른 OS 가 여럿 있을 수 있어서, OS 마다 네트워크를 따로 맞춥니다 {추론}.",
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· QNX, Linux, RTOS 환경의 네트워크 기능 개발 및 설정·성능 최적화",
+   "short": "OS 마다 다른 네트워크 스택에 VLAN·시간 동기화·우선순위를 설정하고, 지연·처리량을 맞춘다.",
+   "why": "QNX(차량용 실시간 OS) 8.0 의 네트워크 스택 io-sock 은 FreeBSD 코드를 따라 만들어졌고, 예전 스택(io-pkt)에서 넘어오면 앱을 다시 빌드해야 합니다.[8] Linux 는 커널 스택, RTOS 는 보통 lwIP 같은 작은 스택이라 같은 기능도 설정하는 법이 OS 마다 다릅니다 {추론}.",
+   "actually": {
+    "items": [
+     "**인터페이스·VLAN 설정** — 기능별로 망을 나눈 VLAN 마다 가상 인터페이스를 만들고 주소를 단다.[9]",
+     "**시간 동기화** — gPTP(차량용 시간 맞추기 규약) 데몬을 띄운다. Linux 의 linuxptp 는 자동차 프로필용 설정 파일을 따로 두고, 그 프로필에선 누가 기준 시계인지 미리 정해 둔다(BMCA 끔).[13]",
+     "**우선순위·시간표** — Linux 는 `tc taprio` 로 '이 시간 칸에는 이 큐만 보낸다'는 802.1Qbv 시간표를 건다.[31]",
+     "**성능 최적화** — 버퍼 크기·인터럽트 묶기·CPU 고정·하드웨어 타임스탬프 켜기. QNX 는 io-sock 조정값을 sysctl 로 바꾼다.[8]",
+     "**측정** — 바꾸기 전과 후의 지연(평균·최악)·처리량·CPU 사용률을 같은 방법으로 잰다 {추론}."
+    ]
+   },
+   "how_far": "세 OS 를 다 깊게 알 필요는 없습니다. 하나(보통 Linux)는 드라이버·스택 내부까지, 나머지는 **같은 기능을 그 OS 에서 어디서 켜는지** 찾아 설정할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    8,
+    9,
+    13,
+    31
+   ],
+   "study": [
+    "qnx-iosock",
+    "linuxptp",
+    "tc-taprio",
+    "ldd3"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Automotive Ethernet Switch 드라이버 개발과 신규 하드웨어용 SDK 포팅·구성·최적화",
+   "short": "스위치 칩 회사가 준 SDK 를 새 보드·OS 에 올리고, 포트·VLAN·필터를 차에 맞게 설정한다.",
+   "why": "차량용 이더넷 스위치는 칩 안에 시간 동기화·트래픽 시간표·이중 전송 같은 TSN 기능과 잠들기·깨우기(TC10)를 넣어 팔고, 칩 회사가 SDK 와 gPTP 미들웨어를 같이 줍니다.[11] 칩이 바뀌거나 보드가 새로 나오면 그 SDK 를 우리 OS·보드에 다시 맞춰야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**포팅** — SDK 가 기대하는 OS 기능(스레드·타이머·메모리·SPI/MDIO 읽고 쓰기)을 우리 OS 함수로 이어 주는 얇은 층을 짠다 {추론}.",
+     "**구성** — 포트 속도·VLAN 표·주소 학습·필터·대기열 우선순위를 표로 정해 부팅 때 칩에 넣는다. Linux 의 NXP SJA1105 드라이버도 설정 전체를 메모리에 사본으로 들고 있다가 칩에 내려 보낸다.[10]",
+     "**Linux 의 방식** — 커널은 스위치 포트 하나하나를 보통 네트워크 인터페이스처럼 보이게 하는 DSA 구조를 쓴다. 그래서 `ip link`·`bridge vlan` 같은 일반 명령으로 스위치를 설정한다.[9]",
+     "**PHY 다루기** — 선과 칩 사이의 PHY 는 MDIO 라는 관리 버스로 읽고 쓴다. 링크가 붙었나·속도는 얼마인가를 여기서 안다.[21]",
+     "**최적화** — 부팅 뒤 망이 쓸 수 있게 되기까지의 시간, 스위치를 거치는 지연, 재설정 때 끊기는 시간을 줄인다 {추론}."
+    ]
+   },
+   "how_far": "칩 내부 설계는 칩 회사 몫입니다. 이 자리는 **데이터시트·SDK 문서를 읽고 우리 보드에서 돌게 만드는 것**과, 안 될 때 칩 회사에 재현 조건을 정확히 넘기는 것입니다 {추론}.",
+   "refs": [
+    9,
+    10,
+    11,
+    21
+   ],
+   "study": [
+    "linux-dsa",
+    "sja1105-doc",
+    "linux-phy",
+    "ldd3"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 차량 네트워크 통신 검증 및 이슈 대응",
+   "short": "아래 두 줄의 제목 — 차에서 통신 문제가 나면 원인을 찾아 고치는 일이다.",
+   "why": "현대차는 SDV 구조의 안전 요소로 사이버보안과 함께 **이중화된 차량 네트워크**를 들었고, 존 제어기 하나가 고장 나면 다른 존 제어기가 역할을 넘겨받게 설계했다고 밝혔습니다.[3][4] 넘겨받는 동안에도 통신은 이어져야 하니, 망이 실제로 그렇게 도는지 확인하는 일이 따라옵니다 {추론}.",
+   "refs": [
+    3,
+    4
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 차량 네트워크 내 Ethernet/IP 통신 이슈 분석 및 해결",
+   "short": "'가끔 끊긴다·늦다·안 붙는다'를 층별로 좁혀 선·PHY·스위치·스택 중 어디 문제인지 찾는다.",
+   "why": "이더넷 문제는 같은 증상(응답 없음)이 물리 선부터 앱까지 어느 층에서든 생길 수 있어서, 아래층부터 하나씩 지워 가야 합니다.[33] {추론}",
+   "actually": {
+    "intro": "흔한 증상과 의심 순서입니다 {추론}.",
+    "items": [
+     "**링크가 안 붙음** — PHY 의 주인/종(master/slave) 설정이 양쪽 다 같음, 선·커넥터, 전원 순서. MDIO 로 PHY 상태를 읽는다.[21]",
+     "**붙는데 패킷이 안 감** — VLAN 번호·태그 처리가 포트마다 다름, 필터(ACL)에 막힘, 주소 표가 꽉 참.",
+     "**가끔 늦음** — 큰 프레임 뒤에 급한 프레임이 줄 서 기다림, 시간표(Qbv) 칸이 어긋남.",
+     "**시간이 안 맞음** — gPTP 기준 시계가 바뀜, 지연 측정값이 튐, 하드웨어 타임스탬프가 꺼져 있음.",
+     "**자고 나면 안 깨어남** — TC10 잠들기·깨우기 순서에서 한쪽만 깸.[14]"
+    ]
+   },
+   "how_far": "고쳤다는 증거로 **고치기 전·후 같은 조건의 캡처와 수치**를 남기는 데까지입니다 {추론}.",
+   "refs": [
+    14,
+    21,
+    33
+   ],
+   "study": [
+    "ppa3",
+    "tcpip-illustrated",
+    "matheus-ae"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· 통신 로그·패킷 분석 기반 네트워크 안정성 확보",
+   "short": "차에서 뜬 패킷·로그를 읽어 재발 조건을 찾고, 같은 문제가 다시 안 나게 막는다.",
+   "why": "차 안 이더넷은 일반 PC 처럼 아무 데나 랜선을 꽂아 볼 수 없어서, 자동차용 선(100/1000BASE-T1)과 PC 이더넷을 이어 주는 장비로 떠서 봅니다.[20] 떠 온 파일을 읽는 일이 이 줄입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**뜨기** — 장비로 특정 구간을 미러링하거나 사이에 끼워 캡처한다.[20]",
+     "**거르기** — Wireshark 표시 필터로 VLAN·주소·프로토콜만 남긴다(예: `vlan.id == 10 && ptp`).[18]",
+     "**시간 따라 읽기** — 재전송·중복 ACK·빈틈이 언제 몰리는지, 다른 로그(부팅·전원)와 시각을 맞춰 본다.",
+     "**막기** — 원인을 찾으면 같은 조건을 시험대에서 재현하는 자동 시험을 남긴다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "캡처한 바이트에서 VLAN 태그 읽기",
+     "body": "Wireshark 가 보여 주는 VLAN·우선순위는 프레임 13~16번째 바이트입니다. 직접 읽으면 이렇게 됩니다(가상 프레임, 직접 돌린 출력: `{'dst': '01:00:5e:00:00:01', 'src': '02:00:00:00:0a:01', 'pcp': 5, 'dei': 0, 'vid': 10, 'ethertype': '0x800'}`). 0x8100 이 '태그 있음', 그 뒤 2바이트의 위 3비트가 우선순위(PCP), 아래 12비트가 VLAN 번호입니다.",
+     "lang": "python",
+     "code": "import struct\n\ndef parse(frame: bytes):\n    dst, src = frame[0:6].hex(\":\"), frame[6:12].hex(\":\")\n    tpid = struct.unpack(\"!H\", frame[12:14])[0]\n    if tpid == 0x8100:\n        tci, etype = struct.unpack(\"!HH\", frame[14:18])\n        return dict(dst=dst, src=src, pcp=tci >> 13, dei=(tci >> 12) & 1,\n                    vid=tci & 0x0FFF, ethertype=hex(etype))\n    return dict(dst=dst, src=src, vid=None, ethertype=hex(tpid))\n\nf = bytes.fromhex(\"01005e000001\" \"020000000a01\" \"8100\" \"a00a\" \"0800\") + b\"\\x00\" * 46\nprint(parse(f))"
+    }
+   ],
+   "refs": [
+    18,
+    20
+   ],
+   "study": [
+    "wireshark-guide",
+    "ppa3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 전자/전기, 컴퓨터 공학 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "회로와 SW 를 둘 다 읽어야 하는 자리라 전자·전기·컴퓨터 전공 학사를 최소선으로 둔다.",
+   "why": "같은 공고가 회로도 해석을 요건에 넣었습니다.[1] 전공은 그 바탕을 학위로 확인하는 기준입니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 10년 이상의 C/C++ 기반 임베디드 소프트웨어 개발 경험과 OSI 7 레이어 계층 구조에 대한 깊은 이해를 보유하신 분",
+   "short": "드라이버·스택은 C/C++ 로 짜고, 문제를 층별로 좁혀 가야 해서 10년 차 수준을 본다.",
+   "why": "스위치 SDK·드라이버·OS 네트워크 스택은 C/C++ 로 쓰여 있습니다.[10][11] 통신 문제를 찾을 때 '선(1층)·프레임(2층)·IP(3층)·TCP/UDP(4층) 중 어디냐'를 먼저 가르는 데 계층 구조가 쓰입니다.[33] {추론}",
+   "level": {
+    "basic": "포인터·구조체·비트 연산·바이트 순서(빅/리틀 엔디언) · 각 층이 붙이는 헤더 모양",
+    "work": "인터럽트·DMA·메모리 배리어·락 · 드라이버 구조(링 버퍼·NAPI 같은 묶어 받기) · 이더넷/IP/TCP 헤더를 바이트로 읽기",
+    "team": "스택 한 층의 동작을 다른 층 증상으로 추적하기 · 칩 SDK 를 다른 OS 로 옮기기 · 양산 코드 품질(MISRA 같은 규칙) {추론}"
+   },
+   "actually": {
+    "items": [
+     "**바이트를 직접 다루기** — 네트워크는 빅 엔디언, 대부분 CPU 는 리틀 엔디언이라 헤더를 읽을 때마다 바꾼다(위 예시의 `!H`).",
+     "**드라이버의 뼈대** — 칩이 받은 프레임을 메모리 고리(링 버퍼)에 넣고 인터럽트를 주면 드라이버가 꺼내 스택에 올린다.[29]",
+     "**층별로 좁히기** — 링크 표시등(1층) → MAC 카운터의 오류·버림(2층) → ARP·라우팅(3층) → 재전송(4층) 순서로 본다 {추론}."
+    ]
+   },
+   "how_far": "'10년'은 거르는 기준이고, 실제로 보는 건 **드라이버나 스택을 직접 고쳐 양산까지 낸 경험**입니다 {추론}.",
+   "refs": [
+    10,
+    11,
+    29,
+    33
+   ],
+   "study": [
+    "ldd3",
+    "tcpip-illustrated",
+    "moodu-network"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· VLAN, ACL, gPTP 등 L2 프로토콜과 Ethernet MAC/PHY, TCP/IP Stack에 대한 깊은 이해 및 하드웨어 회로도 해석 능력을 보유하신 분",
+   "short": "스위치 설정의 기본(VLAN·필터·시간 동기화)과 칩 구조(MAC·PHY), 회로도를 함께 읽는다.",
+   "why": "차량용 TSN 스위치 칩의 기능 목록이 바로 이 낱말들입니다 — VLAN, 주소·필터 표, 802.1AS(gPTP) 하드웨어 타임스탬프.[11] 그리고 칩과 칩이 어떻게 이어졌는지는 회로도에만 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**VLAN** — 한 선 위에서 기능별 망을 나누는 번호표(12비트, 위 예시의 vid). 포트마다 '태그 붙여 보냄/떼고 보냄'을 정한다.[33]",
+     "**ACL** — '이 주소·이 VLAN·이 포트에서 온 것만 통과' 같은 필터 규칙. 칩의 규칙 표 칸 수가 정해져 있다 {추론}.",
+     "**gPTP** — 모든 장치의 시계를 맞추는 규약. 이웃과 주고받은 네 시각으로 선 지연을 재서 뺀다(아래 예시).[12][13]",
+     "**MAC/PHY** — MAC 은 프레임을 만들고 받는 칩 안쪽, PHY 는 비트를 선의 전기 신호로 바꾸는 바깥쪽. 둘 사이는 RGMII·SGMII 같은 규격의 선으로, 관리는 MDIO 로 한다.[21]",
+     "**회로도** — 어느 MAC 이 어느 PHY 에 어떤 규격으로 붙었나, 리셋·인터럽트 핀이 어느 CPU 핀에 갔나, 클럭은 어디서 오나를 읽어 장치 설정(디바이스 트리 등)에 옮긴다.[10][22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "gPTP 의 선 지연 계산",
+     "body": "A 가 요청을 보낸 시각 t1, B 가 받은 시각 t2, B 가 답을 보낸 시각 t3, A 가 받은 시각 t4(ns, 가상 값). 왕복 시간에서 B 가 붙잡고 있던 시간을 빼고 반으로 나누면 한쪽 선 지연입니다. 직접 돌린 출력: `link delay ns = 660.0`.",
+     "lang": "python",
+     "code": "t1, t2, t3, t4 = 1_000, 1_650, 1_900, 2_570\ndelay = ((t4 - t1) - (t3 - t2)) / 2\nprint(\"link delay ns =\", delay)"
+    }
+   ],
+   "how_far": "회로도는 **설계가 아니라 읽기**입니다 — 핀·신호 이름을 따라가 SW 설정과 맞는지 확인하는 수준 {추론}.",
+   "refs": [
+    10,
+    11,
+    12,
+    13,
+    21,
+    22,
+    33
+   ],
+   "study": [
+    "matheus-ae",
+    "tsn-tg",
+    "linuxptp",
+    "linux-phy",
+    "sparkfun-schematic"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Wireshark, CANoe 등으로 Ethernet/IP 패킷을 분석·디버깅하실 수 있는 분",
+   "short": "PC 용 Wireshark 와 차량 시험용 CANoe 로 패킷을 떠서 읽고, 문제 구간을 찾는다.",
+   "why": "Wireshark 는 캡처를 열어 거르고 프로토콜별로 풀어 보는 도구입니다.[18] CANoe 는 Vector 사의 차량 네트워크 시험·분석 도구이고, 이더넷 옵션은 차량 이더넷 적합성 시험(TC8)까지 다룹니다.[19] 차량 이더넷 선과 PC 를 잇는 Vector 장비도 따로 있습니다.[20]",
+   "level": {
+    "basic": "캡처 열기 · 표시 필터 · 흐름(TCP stream) 따라가기 · 시간 칸 바꿔 보기",
+    "work": "VLAN·gPTP·SOME/IP 같은 차량 프로토콜 풀이 · 입출력 그래프로 몰림 찾기 · tshark 로 여러 파일 한꺼번에 세기",
+    "team": "CANoe 로 시험 시나리오를 돌리며 캡처와 결과를 같이 남기기 · 여러 구간 캡처의 시각 맞추기 {추론}"
+   },
+   "refs": [
+    18,
+    19,
+    20
+   ],
+   "study": [
+    "wireshark-guide",
+    "ppa3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Git·Jira 기반 형상관리와 협업 툴을 실무에서 다룰 수 있는 분",
+   "short": "코드는 Git 으로, 이슈·요구사항은 Jira 로 추적해 '어느 판에서 무엇을 고쳤나'를 남긴다.",
+   "why": "통신 이슈는 차종·SW 판마다 재현 여부가 달라서, 어느 커밋이 어느 이슈를 고쳤는지 이어 둬야 다른 차종에도 같은 수정을 넣을 수 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**브랜치·태그** — 차종·판마다 갈래를 두고, 고친 커밋을 다른 갈래로 옮긴다(cherry-pick).[23]",
+     "**언제 깨졌나 찾기** — `git bisect` 로 정상 판과 고장 판 사이를 반씩 좁힌다.[23]",
+     "**이슈 잇기** — 커밋 메시지에 Jira 이슈 번호를 적어 둘을 묶는다 {추론}."
+    ]
+   },
+   "refs": [
+    23
+   ],
+   "study": [
+    "pro-git-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 전자/전기, 컴퓨터 공학 분야에서 석사 이상의 학위를 보유하신 분",
+   "short": "표준 문서를 읽고 새 기능을 구현해야 할 일이 많아, 관련 연구를 해 본 석사를 더 쳐준다.",
+   "why": "아래 우대 줄의 TSN·10BASE-T1S 는 IEEE 표준을 읽고 시험하는 일이고, 연구실에서 시간 동기화·트래픽 시간표를 다뤄 본 사람이 바로 쓰일 수 있습니다.[12] {추론}",
+   "refs": [
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 비즈니스 영어 커뮤니케이션 및 영어 문서 작성 역량을 보유하신 분",
+   "short": "칩 회사 지원팀·해외 표준 문서와 영어로 일하고, 문제 보고서를 영어로 써서다.",
+   "why": "스위치 칩은 해외 회사 제품이 많고(우대 줄의 Broadcom·Infineon·NXP·Realtek), SDK·데이터시트·표준이 영어입니다.[11][12] 현대차도 Microchip 과 10BASE-T1S 를 같이 검토하며 기술 지원과 시제품을 받고 있습니다.[6]",
+   "how_far": "칩 회사에 **재현 조건·로그·기대 동작을 영어로 정확히 적어 보내는** 수준이면 실무에 충분합니다 {추론}.",
+   "refs": [
+    6,
+    11,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· OPEN TC10, TSN(802.1AS, 802.1CB, 802.1Qbv/Qbu 등), 10BASE-T1S 등 차량 Ethernet 기능 구현·검증 경험을 보유하신 분",
+   "short": "차량 이더넷의 다음 기능들 — 잠들기·깨우기, 시간 보장, 이중 전송, 싸고 느린 다중 연결 — 을 해 봤나.",
+   "why": "현대차그룹은 2026년 2월 Microchip 과 10BASE-T1S(한 쌍의 선에 여러 장치를 매다는 10 Mbps 이더넷)를 미래 차량 플랫폼에 넣는 협력을 발표했습니다.[6] SAE 인터뷰에서는 여러 기술 협력사와 10BASE-T1S 적용성을 검토 중이며 **게이트웨이와 스위치 배치를 줄이는 데** 도움이 되길 기대한다고 했습니다.[7]",
+   "actually": {
+    "items": [
+     "**TC10** — 차가 꺼져 있을 때 이더넷 PHY 를 재우고, 필요하면 선을 통해 깨우는 OPEN Alliance 규격. 10BASE-T1S 판과 전기 인터페이스 판이 따로 있다.[14][15]",
+     "**802.1AS** — gPTP 시간 동기화(앞 요건 줄).[12]",
+     "**802.1CB** — 같은 프레임을 두 길로 보내고 받는 쪽에서 순번으로 중복을 지운다. 한 길이 끊겨도 안 놓친다.[17]",
+     "**802.1Qbv** — 시간표로 큐의 문을 열고 닫아 급한 흐름의 지연 상한을 보장한다.[12][31]",
+     "**802.1Qbu** — 큰 프레임을 중간에 끊고 급한 프레임을 먼저 보낸다(선점). 아래 예시처럼 기다림이 크게 준다.[12]",
+     "**10BASE-T1S** — 802.3cg 로 나온 짧은 거리용 규격. 여럿이 한 선을 쓰고 PLCA 라는 차례 돌기로 충돌을 피한다.[16]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "선점(Qbu)이 왜 필요한가 — 100 Mbps 선",
+     "body": "급한 프레임이 막 출발한 1500바이트 프레임 뒤에 서면, 그 프레임이 다 나갈 때까지 기다립니다. 프리앰블·헤더·VLAN 태그·FCS·프레임 간격까지 세면(직접 돌린 출력) `1500B 한 장 us = 123.36`, 가장 작은 조각은 `7.04` µs 입니다. 선점은 이 기다림을 큰 프레임 한 장에서 작은 조각 하나 수준으로 줄입니다(조각 크기 규칙은 표준을 따릅니다).[12]",
+     "lang": "python",
+     "code": "def wire_us(payload_bytes, mbps=100):\n    # 프리앰블 8 + 헤더 14 + VLAN 4 + 데이터 + FCS 4 + 프레임 간격 12\n    total = 8 + 14 + 4 + max(payload_bytes, 42) + 4 + 12\n    return total * 8 / mbps\n\nprint(\"1500B 한 장 us =\", round(wire_us(1500), 2))\nprint(\"64B 조각 us   =\", round(wire_us(46), 2))"
+    }
+   ],
+   "how_far": "우대 사항이라 다 해 봤을 필요는 없습니다. 하나라도 **칩에서 켜고 캡처로 동작을 증명해 본** 경험이 있으면 이야기할 거리가 됩니다 {추론}.",
+   "refs": [
+    6,
+    7,
+    12,
+    14,
+    15,
+    16,
+    17,
+    31
+   ],
+   "study": [
+    "tsn-tg",
+    "tc10-t1s",
+    "unh-t1s",
+    "frer-paper",
+    "tc-taprio",
+    "matheus-ae"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· IPsec, MACsec, IDS/IPS 등 차량 보안 관련 경험과 Broadcom, Infineon, NXP, Realtek 스위치 개발 경험을 보유하신 분",
+   "short": "망을 암호화·감시하는 보안 기능과, 실제로 차에 쓰이는 스위치 칩을 다뤄 봤나.",
+   "why": "현대차는 SDV 구조의 핵심 요소로 사이버보안을 들고 무단 접근을 막는 통합 보안 솔루션을 개발한다고 밝혔습니다.[3] 차량 사이버보안은 ISO/SAE 21434 같은 국제 기준으로 개발 과정 전체를 관리합니다.[26] 스위치 칩에는 이런 보안 기능이 하드웨어로 들어갑니다.[11]",
+   "actually": {
+    "items": [
+     "**MACsec** — 2층(이더넷 프레임)을 링크마다 암호화·위조 검사. Linux 에서는 `ip link add ... type macsec` 으로 만든다.[24]",
+     "**IPsec** — 3층(IP 패킷)을 암호화. 보호 범위·키 협상 구조는 RFC 4301 이 정의한다.[25]",
+     "**IDS/IPS** — 평소와 다른 통신(낯선 주소·폭주·규칙 밖 포트)을 잡아 알리거나 막는다. 스위치 필터·카운터가 그 재료다 {추론}.",
+     "**칩 경험** — 칩 회사마다 SDK·설정 도구·표 구조가 달라서, 같은 회사 칩을 다뤄 봤으면 바로 이어 할 수 있다 {추론}."
+    ]
+   },
+   "how_far": "보안 정책(무엇을 암호화하나)은 보안 조직이 정하고, 이 자리는 **칩·드라이버에서 그 기능을 켜고 성능 손실을 재는** 쪽입니다 {추론}.",
+   "refs": [
+    3,
+    11,
+    24,
+    25,
+    26
+   ],
+   "study": [
+    "linux-macsec",
+    "rfc4301",
+    "iso21434"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "패킷 한 장에서 원인을 찾아내는 게 즐거운 사람",
+   "회로도·데이터시트·표준 문서를 끝까지 읽는 사람",
+   "드라이버나 네트워크 스택을 직접 고쳐 본 사람",
+   "양산 차에 들어가는 코드를 회사 안에서 직접 만들고 싶은 사람[1]"
+  ],
+  "hard": [
+   "경력 10년 이상이 자격요건이라 문이 좁다[1]",
+   "화면·서비스 개발과 거리가 멀고, 시험대·장비 앞에서 보내는 시간이 길다 {추론}",
+   "OS 세 가지·칩 회사 여럿을 오가야 해서 범위가 넓다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "링크는 붙는데 특정 제어기와만 통신이 안 됩니다. 어디부터 보겠어요?",
+   "a": "층별로 좁히기 — VLAN·필터·주소 표 순서.[21][33]"
+  },
+  {
+   "q": "gPTP 에서 선 지연은 어떻게 재고, 측정값이 튀면 무엇을 의심하나요?",
+   "a": "네 시각 계산과 하드웨어 타임스탬프.[12][13]"
+  },
+  {
+   "q": "급한 제어 프레임의 최악 지연을 줄이려면 Qbv 와 Qbu 중 무엇을, 왜 쓰겠어요?",
+   "a": "시간표와 선점의 차이, 큰 프레임 한 장의 기다림.[12]"
+  },
+  {
+   "q": "새 스위치 칩의 SDK 를 QNX 보드로 옮길 때 무엇부터 하나요?",
+   "a": "OS 기능을 잇는 층·관리 버스·설정 표.[8][10]"
+  },
+  {
+   "q": "10BASE-T1S 를 쓰면 게이트웨이·스위치가 왜 줄어드나요?",
+   "a": "현대차가 직접 밝힌 기대와 다중 연결 구조.[7][16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · 네트워크 시스템 소프트웨어 개발",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=409",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대, 근무지 판교, 마감 2026-11-30"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차그룹 네트워크 시스템 소프트웨어 개발",
+   "url": "https://www.wanted.co.kr/wd/398813",
+   "kind": "posting",
+   "note": "같은 공고 — 근무지역 경기도 성남시 분당구 판교역로 152, 복지는 '홈페이지 참조'"
+  },
+  {
+   "n": 3,
+   "title": "Hyundai · CES 2024: Introducing SDV Exhibits and Unveiling Core Hyundai Technologies",
+   "url": "https://www.hyundai.com/worldwide/en/brand-journal/mobility-solution/sdv",
+   "kind": "company",
+   "date": "2024-01-09",
+   "note": "HPVC + 존 제어기, 고속 이더넷 백본, 존 제어기 고장 대체, 이중화 차량 네트워크·사이버보안"
+  },
+  {
+   "n": 4,
+   "title": "HMG 저널 · 개발자에게 열린 무한한 가능성, Pleos 25 현장에 가다",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000173173",
+   "kind": "company",
+   "date": "2025-04-09",
+   "note": "CODA — 제어기 약 66%·배선 약 28% 감축, 이더넷 통신망으로 OTA, 이중화 설계"
+  },
+  {
+   "n": 5,
+   "title": "Hyundai Motor Group · Launches 'Pleos' Software Brand, Unveiling New SDV Technologies",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000000921",
+   "kind": "company",
+   "date": "2025-03-28",
+   "note": "HPVC + 존 제어기 E&E 아키텍처"
+  },
+  {
+   "n": 6,
+   "title": "Microchip · Microchip Technology and Hyundai Motor Group Collaborate to Explore 10BASE-T1S Single Pair Ethernet",
+   "url": "https://ir.microchip.com/news-events/press-releases/detail/1362/microchip-technology-and-hyundai-motor-group-collaborate-to-explore-10base-t1s-single-pair-ethernet-for-future-automotive-connectivity",
+   "kind": "news",
+   "date": "2026-02-05",
+   "note": "미래 차량 플랫폼에 10BASE-T1S, 기술 지원·초기 시제품"
+  },
+  {
+   "n": 7,
+   "title": "SAE Mobility Engineering · Q&A (Microchip·현대차그룹 10BASE-T1S)",
+   "url": "https://saemobilus.sae.org/articles/qa-26autp04_15",
+   "kind": "news",
+   "date": "2026-04-01",
+   "note": "현대차그룹: 여러 협력사와 적용성 검토, 게이트웨이·스위치 배치 최적화 기대 — 요약문만 확인"
+  },
+  {
+   "n": 8,
+   "title": "QNX SDP 8.0 · High-Performance Networking Stack (io-sock) User's Guide",
+   "url": "https://qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.io_sock/topic/about.html",
+   "kind": "reference",
+   "note": "FreeBSD 기반 스택, io-pkt 에서 옮기기, sysctl 조정값"
+  },
+  {
+   "n": 9,
+   "title": "Linux Kernel Documentation · Distributed Switch Architecture (DSA)",
+   "url": "https://docs.kernel.org/networking/dsa/dsa.html",
+   "kind": "reference",
+   "note": "스위치 포트를 네트워크 인터페이스로 보이게 하는 구조"
+  },
+  {
+   "n": 10,
+   "title": "Linux Kernel Documentation · NXP SJA1105 switch driver",
+   "url": "https://docs.kernel.org/networking/dsa/sja1105.html",
+   "kind": "reference",
+   "note": "차량용 스위치 드라이버 — 설정 사본, VLAN 기반 태그, RGMII 지연·장치 트리"
+  },
+  {
+   "n": 11,
+   "title": "NXP · SJA1110 Multi-Gig Safe and Secure TSN Ethernet Switch",
+   "url": "https://www.nxp.com/products/SJA1110",
+   "kind": "reference",
+   "note": "칩 회사 자료 — 802.1AS·CB·Qbv, TC10 깨우기, SDK·gPTP 미들웨어"
+  },
+  {
+   "n": 12,
+   "title": "IEEE 802.1 · Time-Sensitive Networking (TSN) Task Group",
+   "url": "https://1.ieee802.org/tsn/",
+   "kind": "reference",
+   "note": "802.1AS·CB·Qbv·Qbu 등 TSN 표준 목록"
+  },
+  {
+   "n": 13,
+   "title": "linuxptp · Automotive Master 설정 예",
+   "url": "https://linuxptp.nwtime.org/documentation/configs/automotive-master",
+   "kind": "reference",
+   "note": "자동차 프로필 — BMCA 끔, L2·P2P 지연 측정"
+  },
+  {
+   "n": 14,
+   "title": "OPEN Alliance TC14/TC10 · 10BASE-T1S Sleep/Wake-up Specification 1.0",
+   "url": "https://grouper.ieee.org/groups/802/3/da/public/0723/TC14_TC10_JWG_10BASE-T1S%20Sleep%20Wake-up%20Specification_1.0.pdf",
+   "kind": "reference",
+   "date": "2022-11"
+  },
+  {
+   "n": 15,
+   "title": "OPEN Alliance · Sleep/Wake-up Electrical Interface Specification v1.0",
+   "url": "https://opensig.org/wp-content/uploads/2025/07/Sleep-Wake-up-Electrical-Interface-Specification-v1.0.pdf",
+   "kind": "reference",
+   "date": "2025-07"
+  },
+  {
+   "n": 16,
+   "title": "UNH-IOL · 10BASE-T1S/L Connects sensors in cars and buildings",
+   "url": "https://www.iol.unh.edu/news/2024/06/27/10base-t1s-l-connects-sensors-cars-and-buildings",
+   "kind": "reference",
+   "date": "2024-06-27",
+   "note": "802.3cg 가 10BASE-T1S/T1L 을 더함, PLCA"
+  },
+  {
+   "n": 17,
+   "title": "arXiv · Frame Replication and Elimination for Reliability in Time-Sensitive Networks",
+   "url": "https://arxiv.org/abs/2109.13677",
+   "kind": "reference",
+   "date": "2021",
+   "note": "802.1CB — R-tag 순번으로 중복 제거"
+  },
+  {
+   "n": 18,
+   "title": "Wireshark User's Guide",
+   "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Wikipedia · CANoe",
+   "url": "https://en.wikipedia.org/wiki/CANoe",
+   "kind": "reference",
+   "note": "Vector 의 차량 네트워크 시험·분석 도구, 이더넷 옵션의 TC8 적합성 시험"
+  },
+  {
+   "n": 20,
+   "title": "Vector · VN5430 Automotive Ethernet Network Interface",
+   "url": "https://www.vector.com/en/product/vn5430/",
+   "kind": "reference",
+   "note": "100/1000BASE-T1 과 일반 이더넷을 잇는 시험 장비"
+  },
+  {
+   "n": 21,
+   "title": "Linux Kernel Documentation · PHY Abstraction Layer",
+   "url": "https://docs.kernel.org/networking/phy.html",
+   "kind": "reference",
+   "note": "MAC·PHY·MDIO·RGMII"
+  },
+  {
+   "n": 22,
+   "title": "SparkFun · How to Read a Schematic",
+   "url": "https://learn.sparkfun.com/tutorials/how-to-read-a-schematic",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Pro Git (한국어판)",
+   "url": "https://git-scm.com/book/ko/v2",
+   "kind": "reference",
+   "note": "브랜치·cherry-pick·bisect"
+  },
+  {
+   "n": 24,
+   "title": "Linux Kernel Documentation · MACsec",
+   "url": "https://docs.kernel.org/networking/macsec.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "RFC 4301 · Security Architecture for the Internet Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc4301",
+   "kind": "reference",
+   "date": "2005-12"
+  },
+  {
+   "n": 26,
+   "title": "ISO/SAE 21434:2021 Road vehicles — Cybersecurity engineering",
+   "url": "https://www.iso.org/standard/70918.html",
+   "kind": "reference",
+   "date": "2021-08"
+  },
+  {
+   "n": 27,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 28,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 29,
+   "title": "Linux Device Drivers, 3rd Edition (무료 공개본)",
+   "url": "https://lwn.net/Kernel/LDD3/",
+   "kind": "reference",
+   "date": "2005",
+   "note": "17장 네트워크 드라이버 — 받기·보내기·인터럽트"
+  },
+  {
+   "n": 30,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생"
+  },
+  {
+   "n": 31,
+   "title": "man7.org · tc-taprio(8)",
+   "url": "https://man7.org/linux/man-pages/man8/tc-taprio.8.html",
+   "kind": "reference",
+   "note": "Linux 의 802.1Qbv 시간표 큐"
+  },
+  {
+   "n": 32,
+   "title": "전자신문 · 현대차그룹, 판교 R&D 인력 1000명으로 늘린다",
+   "url": "https://m.etnews.com/20250715000287",
+   "kind": "news",
+   "date": "2025-07-15",
+   "note": "판교테크원·제2테크노밸리 소프트웨어드림센터"
+  },
+  {
+   "n": 33,
+   "title": "Kirsten Matheus · Thomas Königseder · Automotive Ethernet (3판)",
+   "url": "https://doi.org/10.1017/9781108895248",
+   "kind": "reference",
+   "date": "2021",
+   "note": "Cambridge University Press — 차량 이더넷 PHY·프로토콜·시험 전략"
+  }
+ ],
+ "caveat": "이 팀이 쓰는 스위치 칩·OS 조합, 망 구조(VLAN·시간표 설정), 시험 절차는 공개되지 않았습니다. 업무 풀이의 '실제로는'은 칩 회사·Linux·QNX·IEEE·OPEN Alliance 의 공개 문서로 '보통 이런 일'을 보였고, 회사 근거는 CES 2024·Pleos 25 의 SDV 구조 설명과 2026년 Microchip 10BASE-T1S 협력 발표입니다. 현대차 SDV 구조 자료는 2024~2025년 것이라 지금은 달라졌을 수 있습니다.",
+ "resources": [
+  {
+   "id": "hmg-ces-sdv",
+   "title": "CES 2024: Introducing SDV Exhibits and Unveiling Core Hyundai Technologies",
+   "by": "Hyundai · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundai.com/worldwide/en/brand-journal/mobility-solution/sdv",
+   "why": "이 자리가 만드는 망이 어디에 놓이는지(HPVC·존 제어기·이더넷 백본·이중화) 회사 스스로 설명한 글. 지원 전에 먼저 본다."
+  },
+  {
+   "id": "matheus-ae",
+   "title": "Automotive Ethernet (3판)",
+   "by": "Kirsten Matheus · Thomas Königseder · Cambridge University Press · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://doi.org/10.1017/9781108895248",
+   "why": "BMW 에서 차량 이더넷을 들인 저자의 책. 3판에 10BASE-T1S·멀티기가 PHY·절전·시험 전략이 더해져 업무 전반과 우대 TSN·T1S 줄을 한 권으로 잡는다."
+  },
+  {
+   "id": "tcpip-illustrated",
+   "title": "TCP/IP Illustrated, Volume 1: The Protocols (2판)",
+   "by": "Kevin R. Fall · W. Richard Stevens · Addison-Wesley · 2011",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.pearson.com/en-us/subject-catalog/p/tcp-ip-illustrated-volume-1-the-protocols/P200000000242",
+   "why": "링크 층·ARP·IP·TCP 를 실제 캡처로 설명한다. 'TCP/IP Stack 에 대한 깊은 이해' 요건의 기준서."
+  },
+  {
+   "id": "moodu-network",
+   "title": "모두의 네트워크",
+   "by": "미즈구치 가쓰야",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%AA%A8%EB%91%90%EC%9D%98%20%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC",
+   "why": "OSI 7계층을 층마다 장비·개념과 함께 대화체로 푼 입문서. 계층 구조를 처음 정리할 때."
+  },
+  {
+   "id": "ppa3",
+   "title": "Practical Packet Analysis (3판)",
+   "by": "Chris Sanders · No Starch Press · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://nostarch.com/packetanalysis3",
+   "why": "Wireshark 로 실제 네트워크 문제를 푸는 사례집. tcpdump·TShark 장도 있어 '패킷 분석·디버깅' 요건을 손으로 익힌다."
+  },
+  {
+   "id": "wireshark-guide",
+   "title": "Wireshark User's Guide",
+   "by": "Wireshark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+   "why": "캡처·표시 필터·흐름 따라가기·통계 메뉴의 정확한 사용법."
+  },
+  {
+   "id": "ldd3",
+   "title": "Linux Device Drivers (3판)",
+   "by": "Jonathan Corbet · Alessandro Rubini · Greg Kroah-Hartman · O'Reilly · 2005",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://lwn.net/Kernel/LDD3/",
+   "why": "17장 네트워크 드라이버가 받기·보내기·인터럽트 뼈대를 보여 준다. 커널 판은 오래됐지만 드라이버 구조를 잡는 데는 여전히 쓸 만하다."
+  },
+  {
+   "id": "linux-dsa",
+   "title": "Distributed Switch Architecture (DSA)",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/networking/dsa/dsa.html",
+   "why": "Linux 가 스위치 칩을 다루는 방식. 'Ethernet Switch 드라이버 개발' 업무를 Linux 쪽에서 볼 때의 기준."
+  },
+  {
+   "id": "sja1105-doc",
+   "title": "NXP SJA1105 switch driver",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/networking/dsa/sja1105.html",
+   "why": "실제 차량용 스위치 드라이버가 VLAN·RGMII 지연·장치 트리를 어떻게 다루는지. 드라이버 하나를 끝까지 읽어 보는 교재."
+  },
+  {
+   "id": "linux-phy",
+   "title": "PHY Abstraction Layer",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.kernel.org/networking/phy.html",
+   "why": "MAC 과 PHY 사이(MDIO·RGMII·링크 상태)를 SW 쪽에서 보는 법. MAC/PHY 요건용."
+  },
+  {
+   "id": "qnx-iosock",
+   "title": "High-Performance Networking Stack (io-sock) User's Guide",
+   "by": "QNX SDP 8.0 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.io_sock/topic/about.html",
+   "why": "QNX 의 네트워크 스택 구조·드라이버 띄우기·조정값. 업무 첫 줄의 QNX 부분."
+  },
+  {
+   "id": "tsn-tg",
+   "title": "Time-Sensitive Networking (TSN) Task Group",
+   "by": "IEEE 802.1",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://1.ieee802.org/tsn/",
+   "why": "802.1AS·CB·Qbv·Qbu 가 무엇이고 지금 어디까지 왔는지 목록으로 본다. 우대 TSN 줄의 지도."
+  },
+  {
+   "id": "linuxptp",
+   "title": "linuxptp 문서 · Automotive 설정 예",
+   "by": "linuxptp 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://linuxptp.nwtime.org/documentation/configs/automotive-master",
+   "why": "gPTP 를 PC 두 대로 직접 돌려 볼 수 있는 가장 빠른 길. 자동차 프로필 설정이 그대로 있다."
+  },
+  {
+   "id": "tc-taprio",
+   "title": "tc-taprio(8)",
+   "by": "Linux man page",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://man7.org/linux/man-pages/man8/tc-taprio.8.html",
+   "why": "802.1Qbv 시간표를 Linux 에서 거는 명령. 시간 칸을 바꾸며 지연이 어떻게 변하는지 재 볼 수 있다."
+  },
+  {
+   "id": "tc10-t1s",
+   "title": "10BASE-T1S Sleep/Wake-up Specification 1.0",
+   "by": "OPEN Alliance TC14/TC10 · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://grouper.ieee.org/groups/802/3/da/public/0723/TC14_TC10_JWG_10BASE-T1S%20Sleep%20Wake-up%20Specification_1.0.pdf",
+   "why": "우대 줄의 'OPEN TC10' 원문(10BASE-T1S 판). 잠들기·깨우기 상태와 순서."
+  },
+  {
+   "id": "unh-t1s",
+   "title": "10BASE-T1S/L Connects sensors in cars and buildings",
+   "by": "UNH-IOL · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.iol.unh.edu/news/2024/06/27/10base-t1s-l-connects-sensors-cars-and-buildings",
+   "why": "10BASE-T1S·PLCA 가 무엇이고 왜 차에 쓰는지 짧게. 현대차·Microchip 협력 기사를 읽기 전에."
+  },
+  {
+   "id": "frer-paper",
+   "title": "Frame Replication and Elimination for Reliability in Time-Sensitive Networks",
+   "by": "arXiv · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2109.13677",
+   "why": "802.1CB 이중 전송·중복 제거의 동작을 정리한 논문. 표준 원문이 유료라 먼저 본다."
+  },
+  {
+   "id": "sparkfun-schematic",
+   "title": "How to Read a Schematic",
+   "by": "SparkFun",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.sparkfun.com/tutorials/how-to-read-a-schematic",
+   "why": "회로도 기호·이름 붙은 선(net)·참조 번호 읽기. '하드웨어 회로도 해석' 요건의 출발점."
+  },
+  {
+   "id": "pro-git-ko",
+   "title": "Pro Git (한국어판)",
+   "by": "Scott Chacon · Ben Straub",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://git-scm.com/book/ko/v2",
+   "why": "브랜치·cherry-pick·bisect — 차종별 갈래에 수정을 옮기고 깨진 판을 찾는 법."
+  },
+  {
+   "id": "linux-macsec",
+   "title": "MACsec",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/networking/macsec.html",
+   "why": "MACsec 을 Linux 에서 켜고 하드웨어로 넘기는(offload) 방법. 우대 보안 줄용."
+  },
+  {
+   "id": "rfc4301",
+   "title": "RFC 4301 · Security Architecture for the Internet Protocol",
+   "by": "IETF · 2005",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc4301",
+   "why": "IPsec 의 보호 범위·정책 구조 원문."
+  },
+  {
+   "id": "iso21434",
+   "title": "ISO/SAE 21434:2021 Road vehicles — Cybersecurity engineering",
+   "by": "ISO · SAE · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.iso.org/standard/70918.html",
+   "why": "차량 사이버보안 개발 과정의 국제 기준. 보안 기능을 왜 그 순서로 넣는지 설명할 때."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "층과 헤더를 바이트로",
+   "time": "2~3주",
+   "goal": "이더넷·VLAN·IP·TCP 헤더를 바이트로 읽고, 통신 문제를 층별로 나눠 말할 수 있다.",
+   "resources": [
+    "moodu-network",
+    "tcpip-illustrated",
+    "wireshark-guide",
+    "ppa3"
+   ],
+   "task": "PC 두 대(또는 가상 머신 두 대)에 VLAN 10·20 을 만들고 서로 통신시킨 캡처를 뜬다. 위 VLAN 파서로 같은 프레임을 직접 풀어 Wireshark 결과와 맞춰 본다."
+  },
+  {
+   "title": "드라이버와 PHY",
+   "time": "3~4주",
+   "goal": "네트워크 드라이버의 받기·보내기 흐름과 MAC·PHY·MDIO 관계를 설명하고, 회로도에서 그 연결을 찾는다.",
+   "resources": [
+    "ldd3",
+    "linux-phy",
+    "sparkfun-schematic"
+   ],
+   "task": "공개된 개발 보드 회로도 하나에서 이더넷 PHY 의 MDIO·리셋·클럭 핀을 따라가 표로 적고, Linux 에서 `ethtool` 로 같은 PHY 의 링크 상태를 읽어 본다."
+  },
+  {
+   "title": "스위치 드라이버 읽기",
+   "time": "2~3주",
+   "goal": "Linux DSA 구조로 스위치를 설정하고, 실제 차량용 스위치 드라이버가 설정을 칩에 내리는 흐름을 따라간다.",
+   "resources": [
+    "linux-dsa",
+    "sja1105-doc"
+   ],
+   "task": "SJA1105 드라이버 문서를 읽고 '부팅 → 설정 표 만들기 → 칩에 쓰기 → VLAN 바꾸기' 흐름을 그림 한 장으로 그린다. 가능하면 `bridge vlan` 명령이 드라이버의 어느 함수로 가는지 표시한다."
+  },
+  {
+   "title": "시간 동기화와 시간표",
+   "time": "2~4주",
+   "goal": "gPTP 를 돌려 시각을 맞추고, Qbv 시간표·선점이 지연을 어떻게 바꾸는지 숫자로 보인다.",
+   "resources": [
+    "tsn-tg",
+    "linuxptp",
+    "tc-taprio",
+    "frer-paper",
+    "matheus-ae"
+   ],
+   "task": "linuxptp 자동차 설정으로 두 장치를 맞추고 offset 을 10분간 기록한다. 그다음 `tc taprio` 로 시간 칸을 걸고, 큰 트래픽을 섞었을 때 급한 흐름의 최악 지연이 위 계산(123 µs)과 어떻게 맞는지 잰다."
+  },
+  {
+   "title": "차량 이더넷과 보안 (선택)",
+   "time": "계속",
+   "goal": "TC10·10BASE-T1S·MACsec 이 무엇을 풀려고 나왔는지 설명하고, 하나를 켜서 성능 손실을 잰다.",
+   "resources": [
+    "tc10-t1s",
+    "unh-t1s",
+    "linux-macsec",
+    "rfc4301",
+    "iso21434"
+   ],
+   "task": "가상 머신 두 대 사이에 MACsec 을 켜고, 켜기 전·후의 처리량과 지연을 표로 남긴다. 10BASE-T1S 는 PLCA 차례 돌기를 노드 수별 최악 대기 시간 계산표로 만들어 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분이 없다. 이 자리는 경력 10년 이상이라 해당하지 않는다 [28]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [28]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [27]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값, 전년보다 1.5% 줄었다 [27]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 경력 10년 이상 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [30]. 공고 본문에는 복리후생 칸이 없고, 원티드 사본은 '홈페이지 참조'라고만 적었다 [1][2]. 어린이집·피트니스 센터는 판교가 아닌 사업장 목록이라 이 근무지에서 쓸 수 있는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 판교 근무지",
+  "address": "경기도 성남시 분당구 판교역로 152",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 근처 {추론}",
+  "note": "회사 채용 공고의 근무지는 '판교' [1], 같은 공고를 실은 원티드의 근무지역이 판교역로 152 다 [2]. 현대차그룹은 판교에 SW 거점(판교테크원·제2테크노밸리 소프트웨어드림센터)을 두고 있다 [32]. 시험 차량·장비가 있는 연구소로 오갈 수 있다 {추론}."
+ }
+}
