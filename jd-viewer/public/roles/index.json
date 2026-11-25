@@ -215,6 +215,7 @@
   "wanted-353016": "hennge-senior-software-engineer-python",
   "wanted-342854": "henry-senior-sre-japan",
   "saramin-55666564": "hmg-ai-factory-finance-accounting-junior",
+  "saramin-55666735": "hmg-ai-factory-information-security",
   "jobkorea-50301726": "hyundai-autoever-ai-agent-engineer",
   "wanted-385555": "hyundai-autoever-ai-agent-engineer",
   "wanted-385554": "hyundai-autoever-ai-researcher",
@@ -2461,6 +2462,16 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 44
+  },
+  {
+   "id": "hmg-ai-factory-information-security",
+   "company": "현대오토에버",
+   "role": "정보보호 및 IT 보안 관리",
+   "jobs": [
+    "saramin-55666735"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 17
   },
   {
    "id": "hyundai-autoever-ai-agent-engineer",
