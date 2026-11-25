@@ -214,6 +214,7 @@
   "ats-skcareers:sk:R262415": "skax-mfg-data-engineer-k8s",
   "wanted-396609": "skax-mfg-data-engineer-k8s",
   "jobkorea-50308626": "skax-mfg-data-engineer-k8s",
+  "ats-skcareers:sk:R262582": "skax-mfg-ito-quality-itsm",
   "ats-skcareers:sk:R262571": "skax-mfg-pt-ai-mes-contract",
   "dev-583964": "skax-mfg-pt-ai-mes-contract",
   "ats-skcareers:sk:R262586": "skax-mfg-system-ops-mes",
@@ -2268,6 +2269,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 39
+  },
+  {
+   "id": "skax-mfg-ito-quality-itsm",
+   "company": "SK주식회사(AX)",
+   "role": "제조 IT 운영 품질관리 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262582"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 20
   },
   {
    "id": "skax-mfg-pt-ai-mes-contract",
