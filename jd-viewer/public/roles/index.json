@@ -28,8 +28,10 @@
   "ats-ashby:42dot:e505b80b-4b42-401c-a36e-eb11fb422931": "42dot-senior-platform-engineer-warsaw",
   "ats-ashby:42dot:95951bc5-2ccd-4b5a-8134-02ec957aae9c": "42dot-senior-release-engineer",
   "ats-ashby:42dot:406f59e5-d04b-4f9b-a519-19da3b4c895c": "42dot-senior-service-architect-playground",
+  "ats-ashby:42dot:26f79b07-2ffc-44a3-9d92-36111d18fb34": "42dot-software-integration-engineer-autonomy",
   "ats-ashby:42dot:17f5f7af-b165-491b-adcc-0bc64e5cb767": "42dot-software-update-application",
   "ats-ashby:42dot:6e9418ea-6dfa-4ca2-b419-e564e1479a1b": "42dot-sr-embedded-software-engineer",
+  "ats-ashby:42dot:4c80af7e-eda8-4a99-9060-7a8a5d6cccb9": "42dot-sr-software-integration-autonomy",
   "ats-ashby:42dot:3d96a60d-be22-4d72-a50a-320e79d1b21c": "42dot-sr-test-automation-sil-hil",
   "ats-ashby:42dot:a82b98bb-2519-4b69-990b-77300b8d136b": "42dot-staff-embedded-software-engineer",
   "ats-ashby:42dot:17ff2b4f-2d65-47a3-aa6f-39835d39a21a": "42dot-stt-wake-word-engineer",
@@ -638,6 +640,16 @@
    "lines": 21
   },
   {
+   "id": "42dot-software-integration-engineer-autonomy",
+   "company": "포티투닷(42dot)",
+   "role": "Software Integration Engineer — 자율주행(Autonomy)",
+   "jobs": [
+    "ats-ashby:42dot:26f79b07-2ffc-44a3-9d92-36111d18fb34"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
+  },
+  {
    "id": "42dot-software-update-application",
    "company": "포티투닷(42dot)",
    "role": "Software Update Engineer",
@@ -656,6 +668,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 21
+  },
+  {
+   "id": "42dot-sr-software-integration-autonomy",
+   "company": "포티투닷(42dot)",
+   "role": "Sr. Software Integration Engineer, Autonomy",
+   "jobs": [
+    "ats-ashby:42dot:4c80af7e-eda8-4a99-9060-7a8a5d6cccb9"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
   },
   {
    "id": "42dot-sr-test-automation-sil-hil",
