@@ -1,0 +1,806 @@
+{
+ "id": "biztechi-sap-ewm-tm-consultant",
+ "company": "비즈테크아이",
+ "role": "SAP 물류 모듈 컨설턴트",
+ "team": "ERP 혁신팀",
+ "jobs": [
+  "ats-lg:group:1001514"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "LG 그룹사의 SAP 물류 모듈(창고관리 EWM·WM, 운송관리 TM)을 운영하고, S/4HANA 위에 **창고관리 시스템을 새로 구축**합니다. LX 물류사와 LG 제조사가 쓰는 'LG 물류 Singlex 플랫폼'의 운영·구축도 맡습니다.[1]",
+  "env": "S/4HANA 안에 들어간 EWM(Embedded), 따로 띄운 EWM(Decentralized), SAP 클라우드 공용판(Public)의 창고관리 — 세 가지 배치를 다 다룹니다.[1][7][9]",
+  "oneline": "창고에서 **물건이 들어오고·쌓이고·나가는 규칙**을 SAP 설정으로 만드는 5년 차 이상 물류 컨설턴트 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "SAP S/4 HANA 기반의 Embedded, Decentralized, Public 환경 EWM 구축",
+   "short": "같은 창고관리(EWM)를 세 가지 배치 방식으로 깔아 본다 — 고객사 조건마다 고르는 방식이 달라서.",
+   "why": "이 팀은 LG 그룹사의 SAP 물류 모듈을 운영하는 조직입니다.[1] 그룹사마다 ERP 하나에 창고 몇 개를 붙이는 곳도, 여러 ERP가 큰 물류센터 하나를 같이 쓰는 곳도 있어 배치 방식이 갈립니다. SAP 자료는 Embedded는 S/4HANA 안에서 돌고, Decentralized는 별도 시스템에서 돈다고 설명합니다.[7][8]",
+   "actually": {
+    "intro": "SAP 공식 자료가 말하는 세 방식의 차이입니다. 이 팀이 어느 그룹사에 무엇을 깔았는지는 공개되지 않았습니다.",
+    "items": [
+     "**Embedded EWM** — S/4HANA 안에 들어 있어 품목·거래처 같은 기준 정보를 그대로 쓴다. 기본 기능은 S/4HANA 라이선스에 포함된다.[8][10]",
+     "**Decentralized EWM** — 별도 서버에 띄우고 ERP와는 메시지로 주고받는다. **여러 ERP 시스템을 창고 하나에** 붙일 수 있고, ERP가 멈춰도 창고 작업을 계속하고 싶을 때 고른다.[7][8]",
+     "**Public(클라우드 공용판)** — S/4HANA Cloud Public Edition의 창고관리는 이름이 'Warehouse Management'이고 별도 제품이지만 Embedded EWM을 바탕으로 만들었다. 설정 범위가 정해진 표준 업무(scope item) 위주다.[9]",
+     "구축 순서는 보통 창고 구조(창고 번호·저장 유형·구역·칸) → 기준 정보 → 입고·출고·내부 이동 프로세스 설정 → 테스트 → 데이터 이관·오픈이다.[11][12] {추론}"
+    ]
+   },
+   "how_far": "배치 방식은 고객사 시스템 구성과 예산을 보고 PM·아키텍트가 정하는 일이 많습니다. 이 자리는 **세 방식에서 같은 창고 업무를 설정으로 구현할 수 있고, 방식마다 안 되는 기능을 미리 짚어 줄 수 있는** 수준이 기준입니다.[7][8] {추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "sachan-ewm",
+    "sap-ewm-proc-ko",
+    "sap-pe-wm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LG 물류Singlex 플랫폼 운영 및 구축 (LX물류사, LG제조사 운영)",
+   "short": "LG 그룹 물류사·제조사가 같이 쓰는 물류 플랫폼을 운영하고 새 회사를 붙이는 일.",
+   "why": "공고는 이 플랫폼을 LX 물류사와 LG 제조사가 쓴다고 적었습니다.[1] 'SINGLEX'는 모회사 LG CNS의 SaaS(구독형 소프트웨어) 통합 플랫폼 이름이고, LG전자를 포함해 30곳 넘는 기업이 쓴다고 LG가 밝혔습니다.[13][14] 다만 LG CNS가 공개한 SINGLEX 제품 목록에는 물류(창고·운송) 솔루션이 없어, 이 줄의 'LG 물류Singlex'는 그룹 안에서 쓰는 물류용 구성으로 보입니다.[13] {추론}",
+   "actually": {
+    "items": [
+     "**운영** — 여러 회사가 같은 플랫폼을 쓰므로, 한 회사의 요청이 다른 회사 설정을 깨지 않게 변경을 나눠 관리한다. {추론}",
+     "**구축(온보딩)** — 새 그룹사·새 창고를 붙일 때 창고 구조와 프로세스를 표준 틀에 맞춰 설정한다. {추론}",
+     "LG CNS는 LX판토스와 로봇 기반 물류센터 자동화 협약(2026년 6월)을 맺었다 — 창고관리 시스템이 로봇·설비와 맞물리는 일이 늘어나는 흐름이다.[15]"
+    ]
+   },
+   "how_far": "플랫폼 구조는 공개 자료가 없어 입사 후 배우는 부분입니다. 지원 단계에서는 **여러 회사·창고가 한 시스템을 쓸 때 설정·권한·변경을 어떻게 나누는지** 경험으로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "sre-slo"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "학력 : 4년제 정규대학 학사 학위 이상 보유하신 분",
+   "short": "서류 통과 조건이다. 전공 제한은 적혀 있지 않다.",
+   "why": "같은 회사 다른 SAP 공고들도 같은 학력 줄을 둡니다.[2][3] 전공은 적혀 있지 않습니다.[1]",
+   "how_far": "학사 학위가 있으면 이 줄은 끝입니다.",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력: SM운영 및 SI컨설턴트 5년 이상",
+   "short": "운영(SM)과 구축(SI)을 둘 다 해 본 5년 이상 — 이 자리가 두 일을 같이 해서.",
+   "why": "주요업무가 EWM '구축'과 플랫폼 '운영 및 구축'을 같이 적었습니다.[1] SM(System Management)은 이미 돌아가는 시스템의 요청·장애·개선을 맡는 운영 계약이고, SI(System Integration)는 새로 만드는 구축 프로젝트입니다. {추론}",
+   "how_far": "합쳐서 5년이면 됩니다. 둘 중 한쪽만 있다면, 면접에서 **다른 쪽 일의 흐름(구축 단계·운영 요청 처리)** 을 설명할 수 있어야 합니다. 같은 회사의 SAP 운영 공고는 3년 이상을 요구해 이 자리가 한 단계 위입니다.[2] {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "S/4 HANA 기반 eWM 운영 및 구축 경험하신 분",
+   "short": "옛 WM이 아니라 S/4HANA 위의 EWM을 직접 다뤄 봤는지 — 그룹사가 EWM으로 옮기는 중이라서.",
+   "why": "S/4HANA에서 옛 창고관리(WM)는 호환용으로만 남았고, 그 사용권은 2025년 말까지였습니다. 그래서 새 창고관리는 EWM으로 갑니다.[16] 팀 소개도 EWM과 WM을 같이 적어, 옛 WM에서 EWM으로 옮기는 일이 섞여 있는 자리입니다.[1] {추론}",
+   "actually": {
+    "items": [
+     "**입고** — 입고 납품서 → 하차 → 검수 → 적치(창고 칸에 넣기). 단계마다 작업 지시(warehouse task)가 생긴다.[11]",
+     "**출고** — 판매 오더 → 출고 납품서 → 웨이브(묶음) → 피킹 → 포장 → 출하.[11]",
+     "**내부 이동·재고 조사** — 칸 사이 이동, 보충, 실사.[11]",
+     "**모니터** — 창고 모니터(warehouse monitor)로 걸린 작업·오류 메시지를 찾아 푼다(운영의 대부분).[11]"
+    ]
+   },
+   "how_far": "프로젝트 하나 이상을 처음부터 끝까지 했고, 운영 중 걸린 납품서·작업을 모니터에서 찾아 풀 수 있는 수준.[11] {추론}",
+   "refs": [
+    1,
+    11,
+    16
+   ],
+   "study": [
+    "sap-ewm-proc-ko",
+    "sachan-ewm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SAP eWM 환경 및 전략 Configration 경험하신 분",
+   "short": "창고 구조와 '어느 칸에 넣고 어느 칸에서 뺄지' 규칙(전략)을 직접 설정해 봤는지.",
+   "why": "EWM의 핵심은 코드가 아니라 설정(customizing)입니다. 적치 전략은 주로 저장 유형 정의에서 정하고, 출고 전략은 어느 저장 유형에서 뺄지 정한 다음 재고 덩어리(quant)를 기준에 따라 줄 세웁니다.[12][17]",
+   "actually": {
+    "intro": "SAP 교육 과정이 설정 대상으로 꼽는 것들입니다.[12][17][18]",
+    "items": [
+     "**환경(구조)** — 창고 번호 → 저장 유형(선반·바닥·냉장) → 저장 구역 → 저장 칸(bin).",
+     "**창고 프로세스 유형** — 납품서 유형·품목으로 결정되며, 출발·도착 저장 유형과 칸을 고정하거나 다음 규칙에 넘긴다.",
+     "**적치 전략** — 고정 칸·일반 보관·기존 재고에 더하기·빈 칸·바닥 적재.",
+     "**출고 전략** — 저장 유형 검색 순서 + FIFO(먼저 들어온 것부터)·FEFO(유통기한 이른 것부터) 같은 정렬 규칙.",
+     "**다단계 흐름(process-oriented storage control)** — 하차 → 검수 → 적치처럼 중간 칸을 거치는 흐름."
+    ]
+   },
+   "examples": [
+    {
+     "title": "FIFO 출고와 빈 칸 적치를 손으로 따라 하기",
+     "body": "EWM이 설정대로 하는 일을 작게 흉내 낸 것입니다(가상 값, 직접 돌린 출력). 50개 주문에 가장 오래된 칸 25개 → 다음 칸 25개를 고릅니다.",
+     "lang": "python",
+     "code": "from datetime import date\nquants = [(\"A-01-02\", date(2026,10,3), 40),\n          (\"A-02-01\", date(2026,9,28), 25),\n          (\"B-01-01\", date(2026,10,10), 100)]\nneed, picks = 50, []\nfor bin_, gr, qty in sorted(quants, key=lambda q: q[1]):\n    if need == 0: break\n    take = min(qty, need)\n    picks.append((bin_, gr.isoformat(), take)); need -= take\nprint(\"FIFO 피킹:\", picks)\nbins = {\"C-01-01\": \"full\", \"C-01-02\": \"empty\", \"C-02-01\": \"empty\"}\nprint(\"적치 칸:\", sorted(b for b, s in bins.items() if s == \"empty\")[0])\n# FIFO 피킹: [('A-02-01', '2026-09-28', 25), ('A-01-02', '2026-10-03', 25)]\n# 적치 칸: C-01-02"
+    }
+   ],
+   "how_far": "어떤 품목을 어디에 둘지(업무 규칙)는 고객사 창고 담당이 정합니다. 컨설턴트는 그 규칙을 **표준 설정으로 먼저 풀고, 표준이 안 되는 것만 개발 요청(BAdI 같은 확장)으로 넘깁니다**.[12] {추론}",
+   "refs": [
+    12,
+    17,
+    18
+   ],
+   "study": [
+    "sap-ewm-basic-ko",
+    "sap-ewm-core-ko",
+    "sachan-ewm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "창고 관리 업무 입출고 및 재고 프로세스 설계가 가능하신 분",
+   "short": "시스템 설정 전에, 창고 현장이 실제로 어떻게 움직이는지 그림으로 그릴 수 있는지.",
+   "why": "설정은 설계의 결과입니다. 같은 입고라도 검수를 하는지, 반품이 섞이는지, 크로스도킹(받자마자 바로 내보내기)을 하는지에 따라 단계가 달라집니다.[11][12] {추론}",
+   "flows": [
+    {
+     "caption": "입고 흐름의 기본 단계 — 회사마다 단계를 빼거나 더한다[11]",
+     "steps": [
+      "입고 예정 · ERP 구매 오더 → 입고 납품서",
+      "도착·하차 · 문(door)·대기 구역",
+      "검수 · 수량·품질 확인",
+      "적치 · 전략으로 칸 결정 → 작업 지시",
+      "재고 반영 · ERP 재고·회계 전기"
+     ],
+     "mine_from": 1
+    },
+    {
+     "caption": "출고 흐름의 기본 단계[11]",
+     "steps": [
+      "판매 오더 · ERP",
+      "출고 납품서",
+      "웨이브 · 피킹 묶음",
+      "피킹 · 포장",
+      "출하 · 운송(TM)과 연결"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "현장 관찰 → 현재 업무 흐름(As-Is) → 바꿀 흐름(To-Be) → 설정 항목 목록까지 혼자 문서로 낼 수 있는 수준. {추론}",
+   "refs": [
+    11,
+    12
+   ],
+   "study": [
+    "sap-ewm-proc-ko",
+    "apqc-pcf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SAP 기반 SM운영 절차 및 SLA 서비스 제공 경험하신 분",
+   "short": "요청·장애를 접수부터 처리까지 약속한 시간(SLA) 안에 돌리고, 그 실적을 보고해 봤는지.",
+   "why": "팀 소개대로 그룹사 SAP 모듈을 운영·유지보수하는 자리라, 운영 계약의 약속(SLA)이 일의 기준이 됩니다.[1] SLA(서비스 수준 약정)는 응답·해결 시간 같은 목표를 고객과 문서로 정한 것이고, 그 안의 측정 목표를 SLO라고 부릅니다.[19]",
+   "actually": {
+    "items": [
+     "**요청 분류** — 장애·문의·변경 요청을 우선순위(P1·P2…)로 나누고 우선순위마다 응답·해결 목표를 둔다. {추론}",
+     "**변경 관리** — 설정·프로그램 변경은 개발 → 품질 → 운영 시스템 순서로 이관(transport)하고 승인 기록을 남긴다. {추론}",
+     "**월간 보고** — 우선순위별 준수율·반복 장애·개선 건을 고객에게 보고한다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "응답 SLA 준수율 세기 (가상 값, 직접 돌린 출력)",
+     "body": "P1은 30분, P2는 4시간 안에 첫 응답을 약속했다고 칩니다.",
+     "lang": "python",
+     "code": "from datetime import datetime as dt, timedelta as td\ntarget = {\"P1\": td(minutes=30), \"P2\": td(hours=4)}\ntickets = [(\"P1\", dt(2026,11,3,9,0),  dt(2026,11,3,9,20)),\n           (\"P1\", dt(2026,11,7,22,0), dt(2026,11,7,22,45)),\n           (\"P2\", dt(2026,11,10,14,0), dt(2026,11,10,16,0)),\n           (\"P2\", dt(2026,11,12,10,0), dt(2026,11,12,13,30))]\nfor p in target:\n    rows = [t for t in tickets if t[0] == p]\n    ok = sum(1 for _, a, b in rows if b - a <= target[p])\n    print(f\"{p} 응답 SLA 준수율: {ok}/{len(rows)} = {ok/len(rows):.0%}\")\n# P1 응답 SLA 준수율: 1/2 = 50%\n# P2 응답 SLA 준수율: 2/2 = 100%"
+    }
+   ],
+   "how_far": "SLA 숫자는 계약으로 정해집니다. 이 자리는 **그 숫자 안에 처리하고, 못 지킨 건의 원인과 재발 방지를 보고서로 쓰는** 쪽입니다. {추론}",
+   "refs": [
+    1,
+    19
+   ],
+   "study": [
+    "sre-slo"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "제안서 작성 및 고객 커뮤니케이션 역량을 보유하신 분",
+   "short": "새 구축 사업을 따오는 제안서를 쓰고, 현업 담당자와 요구사항을 맞출 수 있는지.",
+   "why": "비즈테크아이는 LG 그룹사와 외부 기업에 SI 컨설팅·구축·운영을 파는 회사입니다.[1][4] 모회사 LG CNS는 2025년 국내 처음으로 SAP 아시아태평양 전략 서비스 파트너에 합류해 S/4HANA 전환 사업을 넓히고 있고[5], SAP 파트너 프로필에 공급망 물류 영역을 올려 두었습니다.[6] 새 EWM 구축은 대개 제안 단계부터 시작합니다. {추론}",
+   "actually": {
+    "items": [
+     "**제안서** — 고객 창고 현황 → 배치 방식(Embedded·Decentralized·Public) 추천과 이유 → 일정·인력 → 위험. {추론}",
+     "**고객 회의** — 창고 현장 담당자의 말을 SAP 용어로, SAP 제약을 현장 말로 바꿔 전한다. {추론}"
+    ]
+   },
+   "how_far": "제안서 전체가 아니라 **물류 모듈 부분(현황 분석·To-Be·일정)을 혼자 쓸 수 있는** 수준이 현실적인 기준입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "PI 및 전략 컨설팅 경험이 있으신 분",
+   "short": "시스템을 깔기 전에 업무 자체를 다시 짜는(PI) 일을 해 봤으면 더 좋다.",
+   "why": "PI(Process Innovation)는 현재 업무 흐름을 분석해 바꿀 흐름을 설계하는 단계입니다. 같은 회사 차세대 ERP 공고도 '단순한 시스템 교체를 넘어 비즈니스 프로세스 최적화'를 목표로 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "업무 분류 체계(예: APQC 프로세스 분류)로 창고 업무를 단계별로 쪼개 빠진 것·겹친 것을 찾는다.[20]",
+     "업무 지표(입고 리드타임·피킹 정확도·재고 회전)로 바꾸기 전후를 비교한다. {추론}"
+    ]
+   },
+   "refs": [
+    3,
+    20
+   ],
+   "study": [
+    "apqc-pcf"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "제조 및 리테일 업종 경험이 있으신 분",
+   "short": "LG 제조사 창고(부품·완제품)와 유통 창고는 흐름이 달라서, 그 업종 물류를 알면 빠르다.",
+   "why": "공고가 운영 대상으로 LG 제조사를 적었습니다.[1] 제조 창고는 생산 라인에 부품을 대 주는 일이 있고, SAP도 생산 연동을 EWM 교육의 별도 과정으로 다룹니다.[21] 리테일은 주문 건수가 많고 작은 단위 피킹이 많습니다. {추론}",
+   "how_far": "그 업종 물류를 시스템으로 지원해 본 경험이 있으면 충분합니다. {추론}",
+   "refs": [
+    1,
+    21
+   ],
+   "study": [
+    "sap-ewm-prod-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "PM/PL 역할 수행 경험이 있으신 분",
+   "short": "물류 모듈 파트를 맡아 일정·인력·이슈를 이끌어 봤으면 더 좋다.",
+   "why": "같은 회사의 다른 SAP 공고들도 PM/PL 경험을 우대사항에 넣었습니다.[2][3] 5년 차 이상이라 모듈 리더 역할이 자연스럽게 붙는 자리입니다. {추론}",
+   "how_far": "프로젝트 전체 PM이 아니라 **모듈(EWM·TM) PL** 경험이면 이 줄에 맞습니다. {추론}",
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "물류회사 eWM 사업 수행 경험이 있으신 분",
+   "short": "남의 물건을 맡아 보관·배송하는 물류회사(3PL)의 EWM을 해 봤으면 특히 좋다.",
+   "why": "공고 운영 대상에 LX 물류사가 들어 있습니다.[1] 물류회사는 화주(물건 주인) 여러 곳의 재고를 한 창고에서 다루고, 운송(TM)과 맞물려 돌아갑니다. TM은 운송할 화물 단위를 차량·운송 수단에 배정해 운송 오더(freight order)를 만드는 모듈입니다.[22][23] 제목에 TM이 들어간 이유입니다. {추론}",
+   "actually": {
+    "items": [
+     "**화주별 재고 분리** — 같은 품목이라도 주인이 다르면 따로 관리한다. {추론}",
+     "**운송 계획** — 화물 단위를 차량에 배정해 운송 오더를 만들고, 수동·지도 기반·자동 최적화로 계획한다.[22][23]",
+     "**창고–운송 연결** — 출고 웨이브와 차량 도착 시간을 맞춘다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    22,
+    23
+   ],
+   "study": [
+    "sap-tm-plan"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SAP 모듈 Certification 자격증 보유하신 분",
+   "short": "SAP 공식 EWM 자격증이 있으면 설정 기초가 검증된 것으로 본다.",
+   "why": "같은 회사의 SAP 공고 전부가 이 줄을 둡니다.[2][3] SAP의 EWM 자격증(C_S4EWM)은 컨설턴트에게 필요한 기본·핵심 지식을 확인하는 시험이고, 프로젝트 경험이 꼭 있어야 하는 것은 아니라고 설명합니다.[24]",
+   "how_far": "판(버전)마다 이름과 코드가 바뀌니 응시할 때 최신판을 확인합니다.[24] 5년 차라면 자격증보다 프로젝트 경험이 먼저 보이는 자리입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    24
+   ],
+   "study": [
+    "sap-ewm-cert",
+    "ewm-cert-guide"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "sap-ewm-proc-ko",
+   "title": "Processes in SAP S/4HANA EWM | KO",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/processes-in-sap-s-4hana-ewm-ko",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "입고·출고·내부 이동·창고 모니터를 한국어로 따라간다. 'S/4HANA 기반 eWM 운영'과 '입출고·재고 프로세스 설계' 요건의 바닥."
+  },
+  {
+   "id": "sap-ewm-basic-ko",
+   "title": "Basic Customizing in SAP S/4HANA EWM | KO",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/basic-customizing-in-sap-s-4hana-ewm-ko",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "적치 규칙·출고 전략·다단계 흐름 설정. '환경 및 전략 Configuration' 요건을 화면 단위로 익힌다."
+  },
+  {
+   "id": "sap-ewm-core-ko",
+   "title": "Customizing Core Processes in SAP S/4HANA EWM | KO",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/customizing-core-processes-in-sap-s-4hana-ewm-ko",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "창고 프로세스 유형·ERP 연동 설정. Embedded와 Decentralized 연결 차이를 설정으로 본다."
+  },
+  {
+   "id": "sap-ewm-prod-ko",
+   "title": "Production Integration with SAP S/4HANA EWM | KO",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/production-integration-with-sap-s-4hana-ewm-ko",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "why": "생산 라인 공급·생산 입고. '제조 업종 경험' 우대를 채울 때 제조 창고 흐름을 익힌다."
+  },
+  {
+   "id": "sap-pe-wm",
+   "title": "Implementing SAP S/4HANA Cloud Public Edition Warehouse Management",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/implementing-sap-s-4hana-cloud-public-edition-warehouse-management",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "주요업무의 'Public 환경' — 클라우드 공용판 창고관리가 Embedded EWM과 무엇이 같고 다른지."
+  },
+  {
+   "id": "sap-tm-plan",
+   "title": "Planning and Execution in SAP S/4HANA Transportation Management",
+   "by": "SAP Learning",
+   "kind": "course",
+   "url": "https://learning.sap.com/courses/planning-and-execution-in-sap-s-4hana-transportation-management",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "제목의 TM — 화물 단위·운송 오더·운송 계획. 물류회사 EWM 사업 우대와 창고–운송 연결을 위해."
+  },
+  {
+   "id": "sachan-ewm",
+   "title": "Warehouse Management with SAP S/4HANA: Embedded and Decentralized EWM (4판)",
+   "by": "Namita Sachan · Aman Jain · SAP PRESS · 2024",
+   "kind": "book",
+   "url": "https://www.sap-press.com/warehouse-management-with-sap-s4hana_5886/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "Embedded·Decentralized 설정을 단계별로 다룬 1,000쪽 참고서. 주요업무 첫 줄의 두 배치를 직접 깔 때 옆에 두는 책."
+  },
+  {
+   "id": "ewm-cert-guide",
+   "title": "Extended Warehouse Management with SAP S/4HANA Certification Guide",
+   "by": "SAP PRESS",
+   "kind": "book",
+   "url": "https://www.sap-press.com/extended-warehouse-management-with-sap-s4hana-certification-guide_5745/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "자격증 시험 구성과 연습 문제. 'SAP 모듈 Certification' 우대를 준비할 때 빈칸 점검용."
+  },
+  {
+   "id": "sap-ewm-cert",
+   "title": "SAP Certified Associate — Extended Warehouse Management with SAP S/4HANA",
+   "by": "SAP Training",
+   "kind": "doc",
+   "url": "https://training.sap.com/certification/C_S4EWM_2020",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "공식 시험 안내(범위·대상). 응시 전에 최신판 코드를 여기서 확인한다."
+  },
+  {
+   "id": "sre-slo",
+   "title": "Site Reliability Engineering — Service Level Objectives",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "SLA·SLO·SLI의 차이와 목표 숫자 정하는 법. 'SM 운영 절차 및 SLA' 요건을 말로 설명할 틀."
+  },
+  {
+   "id": "apqc-pcf",
+   "title": "APQC Process Classification Framework (PCF)",
+   "by": "APQC",
+   "kind": "doc",
+   "url": "https://www.apqc.org/process-frameworks",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "업무를 단계별로 쪼개는 공용 분류표. 'PI 컨설팅'과 '프로세스 설계' 요건에서 As-Is·To-Be를 정리하는 틀."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "창고 업무를 말로 그리기",
+   "time": "1~2주",
+   "goal": "입고·적치·피킹·출하·재고 조사 흐름과 용어(저장 유형·칸·quant·작업 지시)를 설명할 수 있다",
+   "task": "가상 창고(선반 2구역·바닥 1구역, 품목 10개)의 입고·출고 흐름도를 As-Is로 그리고 단계마다 담당자를 적는다",
+   "resources": [
+    "sap-ewm-proc-ko",
+    "apqc-pcf"
+   ]
+  },
+  {
+   "title": "EWM 기본 설정",
+   "time": "3~4주",
+   "goal": "창고 구조·창고 프로세스 유형·적치/출고 전략을 설정으로 만들 수 있다",
+   "task": "1단계 창고에 FIFO 출고·빈 칸 적치·검수 후 적치(2단계) 규칙을 설정 항목 표로 정리하고, 작은 주문 3건이 어느 칸에서 빠지는지 손으로 계산해 맞춰 본다",
+   "resources": [
+    "sap-ewm-basic-ko",
+    "sap-ewm-core-ko"
+   ]
+  },
+  {
+   "title": "세 가지 배치 비교",
+   "time": "2주",
+   "goal": "Embedded·Decentralized·Public의 차이와 고르는 기준을 말할 수 있다",
+   "task": "가상 고객사 둘(ERP 1개·창고 3개 / ERP 3개·물류센터 1개)에 배치 방식을 추천하는 한 장짜리 제안서를 쓴다",
+   "resources": [
+    "sachan-ewm",
+    "sap-pe-wm"
+   ]
+  },
+  {
+   "title": "운송(TM)과 운영(SLA)",
+   "time": "2~3주",
+   "goal": "출고와 운송 오더를 잇고, 운영 요청을 우선순위·SLA로 관리할 수 있다",
+   "task": "가상 출고 20건을 차량 3대에 배정한 운송 계획표와, 한 달치 가상 요청 30건의 우선순위별 SLA 준수율 보고서를 만든다",
+   "resources": [
+    "sap-tm-plan",
+    "sre-slo"
+   ]
+  },
+  {
+   "title": "자격증으로 빈칸 점검",
+   "time": "3~4주",
+   "goal": "EWM 공식 시험 범위의 빈칸을 메운다",
+   "task": "시험 안내의 주제별로 '설명할 수 있다/없다' 표를 만들고, 없는 칸만 교재로 채운다",
+   "resources": [
+    "sap-ewm-cert",
+    "ewm-cert-guide"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 3,811만원**, 전체 평균 **약 5,748만원** — 5년 차 이상 컨설턴트 자리는 처우협의로 따로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 3,811만원",
+    "amount": 3811,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 직군 구분이 없다 [25]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 5,748만원",
+    "amount": 5748,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계, 경력직이 섞인 회사 전체 값이다 [25]"
+   },
+   {
+    "label": "LG CNS 초봉",
+    "value": "약 5,071만원",
+    "amount": 5071,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [26]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "약 7,802만원",
+    "amount": 7802,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "모회사, 같은 집계 사이트 값 [26]"
+   }
+  ],
+  "how": "공고에는 연봉이 없다 [1]. 비즈테크아이는 비상장 자회사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 경력 전형은 평판조회 뒤 **처우협의**에서 연봉을 정한다 [27]. 평균은 신입과 경력이 섞인 값이라 5년 차 이상 자리의 제안 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "가족",
+    "detail": "콘도·호텔 제휴, 출산휴가·육아휴직·자녀 보육, 장례 지원, 경조금·경조 휴가"
+   },
+   {
+    "name": "건강",
+    "detail": "종합건강검진·단체보험, 전문 심리 상담"
+   },
+   {
+    "name": "금융",
+    "detail": "퇴직연금(DC형), 우리은행 임직원 신용대출, 선택적 복지 포인트(복지 카드), LG전자 할인, 과학기술인공제회, 자녀 학자금"
+   },
+   {
+    "name": "배움",
+    "detail": "자격증 지원, 사내·외 교육 지원, 교육 플랫폼 제공, 스포츠 시설 제휴, 사내 동호회"
+   },
+   {
+    "name": "조직 문화",
+    "detail": "공유오피스, 장기근속 포상, 책임 승진·선임 호칭 변경 선물, 간식 행사, LG TWINS 야구 관람 지원"
+   }
+  ],
+  "note": "비즈테크아이 공식 사이트의 복리후생 페이지(2026-11, 같은 회사 다른 풀이에서 확인)다 [28]. 항목 이름만 있고 금액·조건은 없으니 처우협의 때 확인한다 {추론}. 자격증 지원은 'SAP 모듈 Certification' 우대와 맞닿는다."
+ },
+ "location": {
+  "name": "비즈테크아이 본사 (상암 DDMC)",
+  "address": "서울특별시 마포구 매봉산로 75, DDMC 12층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EB%A7%88%ED%8F%AC%EA%B5%AC%20%EB%A7%A4%EB%B4%89%EC%82%B0%EB%A1%9C%2075",
+  "near": "공항철도 디지털미디어시티역 9번 출구에서 걸어서 [29]",
+  "note": "회사 사이트 '오시는 길'의 주소다 [29]. 공고의 근무지는 '서울특별시'로만 적혀 있다 [1]. 그룹사 물류센터 구축 때는 현장(창고)에 나가는 일이 생길 수 있다 {추론}."
+ },
+ "fit": {
+  "good": [
+   "창고 현장을 직접 보고 흐름을 그리는 일이 즐거운 사람",
+   "코드보다 설정 표와 업무 규칙으로 문제를 푸는 데 익숙한 사람",
+   "EWM 구축을 한 번 이상 끝까지 해 보고 다음 단계(PL·제안)로 가고 싶은 사람",
+   "제조·물류 그룹사(LG 제조사·LX 물류사) 창고를 맡아 보고 싶은 사람[1]"
+  ],
+  "hard": [
+   "운영(SLA)과 구축이 같이 돌아 일정이 겹칠 수 있다 {추론}",
+   "물류센터 오픈·재고 마감 때는 야간·주말 대응이 따를 수 있다 {추론}",
+   "제안서·고객 회의처럼 개발 밖의 일이 큰 몫이다[1]",
+   "'LG 물류Singlex' 구조는 공개 자료가 없어 입사 전에 알아보기 어렵다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "ERP 세 개가 물류센터 하나를 같이 쓰는 고객사라면 Embedded와 Decentralized 중 무엇을 추천하나요? 이유는?",
+   "a": "주요업무 첫 줄의 배치 선택을 실제 판단 기준으로 말할 수 있는지.[7][8]"
+  },
+  {
+   "q": "입고 후 적치 칸이 엉뚱하게 잡혔다는 문의가 왔어요. 설정의 어디부터 보나요?",
+   "a": "창고 프로세스 유형 → 저장 유형 검색 순서 → 적치 전략 순서로 원인을 가르는지.[12][17]"
+  },
+  {
+   "q": "옛 WM을 EWM으로 옮긴 경험이 있나요? 가장 어려웠던 데이터는?",
+   "a": "S/4HANA의 WM 호환 범위가 끝나 그룹사 전환이 진행되는 상황.[1][16]"
+  },
+  {
+   "q": "P1 장애 응답 목표를 못 지킨 달이 있었다면 보고서에 무엇을 썼나요?",
+   "a": "'SM 운영 절차 및 SLA' 요건.[19]"
+  },
+  {
+   "q": "출고 웨이브와 운송 차량 도착 시간을 어떻게 맞춰 봤나요?",
+   "a": "제목의 TM과 물류회사 EWM 우대를 함께 본다.[22][23]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "LG Careers · [비즈테크아이] SAP 물류 모듈(eWM, TM) 컨설턴트 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001514",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "업무·요건·우대, 팀 소개(LG그룹사 SAP 모듈을 운영하는 ERP 혁신팀, eWM·WM·TM 운영·유지보수), 마감 2026-12-31 — 우리 수집본으로 읽음"
+  },
+  {
+   "n": 2,
+   "title": "LG Careers · [비즈테크아이] SAP SM 모듈 운영 담당자 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001499",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — SAP 운영 3년 이상, PM/PL·자격증 우대, 국내외 기업·LG 그룹사 대상 SM"
+  },
+  {
+   "n": 3,
+   "title": "LG Careers · [비즈테크아이] SAP 모듈(CO·FI·SD) 컨설턴트 모집(경력)",
+   "url": "https://careers.lg.com/apply/detail?id=1001414",
+   "kind": "posting",
+   "note": "같은 회사 다른 공고 — 차세대ERP팀, '단순한 시스템 교체를 넘어 비즈니스 프로세스 최적화'"
+  },
+  {
+   "n": 4,
+   "title": "비즈테크아이 · Biztechi 소개",
+   "url": "https://www.biztechi.com/about/01",
+   "kind": "company",
+   "note": "LG CNS 자회사, SI 컨설팅·구축·운영(ERP 포함), LG 그룹사·기업·공공 고객. 페이지가 JS 렌더라 이번엔 자동으로 못 읽었고, 같은 회사 다른 풀이(AI 엔지니어)에서 읽은 내용과 공고 회사 소개로 확인"
+  },
+  {
+   "n": 5,
+   "title": "LG CNS · 국내 최초 SAP 아시아태평양지역 전략 서비스 파트너 이니셔티브 합류",
+   "url": "https://www.lg.co.kr/media/release/28636",
+   "kind": "news",
+   "date": "2025-02",
+   "note": "모회사. ECC → S/4HANA 전환·클라우드 ERP 사업 확대"
+  },
+  {
+   "n": 6,
+   "title": "SAP 파트너 프로필 · LG CNS",
+   "url": "https://www.sap.com/partners/profile/lg-cns-co-ltd",
+   "kind": "reference",
+   "note": "모회사의 SAP 솔루션 영역에 Supply chain logistics 포함"
+  },
+  {
+   "n": 7,
+   "title": "SAP Community · SAP EWM Deployment Options: Embedded vs Decentral Warehouse Management",
+   "url": "https://community.sap.com/t5/enterprise-architecture-knowledge-base/sap-ewm-deployment-options-embedded-vs-decentral-warehouse-management/ta-p/13593281",
+   "kind": "reference",
+   "date": "2024-02-13",
+   "note": "Decentral 은 RFC·CIF 로 ERP와 연결, 고급 선택지"
+  },
+  {
+   "n": 8,
+   "title": "SAP Community · Main differences between SAP EWM embedded on SAP S/4HANA and decentralized EWM",
+   "url": "https://community.sap.com/t5/supply-chain-management-blogs-by-sap/main-differences-between-sap-extended-warehouse-management-embedded-on-sap/ba-p/13484206",
+   "kind": "reference",
+   "note": "SAP 직원 블로그 — Embedded 는 S/4HANA 설정을 바로 읽음, Decentral 은 여러 ERP 연결 가능"
+  },
+  {
+   "n": 9,
+   "title": "SAP Learning · Understanding SAP S/4HANA Cloud Public Edition, Warehouse Management",
+   "url": "https://learning.sap.com/courses/implementing-sap-s-4hana-cloud-public-edition-warehouse-management/understanding-sap-s-4hana-cloud-public-edition-warehouse-management_ff02ecf3-9fe0-499d-b96d-8cc0f7f66900",
+   "kind": "reference",
+   "note": "공용판 창고관리는 별도 제품이지만 Embedded EWM 기반"
+  },
+  {
+   "n": 10,
+   "title": "PwC · SAP Warehousing: A Comparison of EWM and Stock Room Management",
+   "url": "https://www.pwc.com/us/en/technology/alliances/sap-implementation/sap-warehousing-comparison-ewm-srm.html",
+   "kind": "reference",
+   "note": "Embedded 기본 EWM 은 S/4HANA 라이선스에 포함"
+  },
+  {
+   "n": 11,
+   "title": "SAP Learning · Processes in SAP S/4HANA EWM | KO",
+   "url": "https://learning.sap.com/courses/processes-in-sap-s-4hana-ewm-ko",
+   "kind": "reference",
+   "note": "입고·출고·내부 이동·창고 모니터 (한국어, 무료)"
+  },
+  {
+   "n": 12,
+   "title": "SAP Learning · Configuring Process-Oriented Storage Control (Basic Customizing in SAP S/4HANA EWM | KO)",
+   "url": "https://learning.sap.com/courses/basic-customizing-in-sap-s-4hana-ewm-ko/configuring-process-oriented-storage-control",
+   "kind": "reference",
+   "note": "다단계 흐름, 납품서로 창고 프로세스 유형 결정"
+  },
+  {
+   "n": 13,
+   "title": "LG CNS · SINGLEX (SaaS)",
+   "url": "https://www.lgcns.com/en/business/cloud/saas",
+   "kind": "company",
+   "note": "모회사 SaaS 통합 플랫폼. 공개 제품 목록은 CRM·구매·인사·경비·R&D/품질·설비관리 — 물류(WMS·TMS) 없음(2026-11 확인)"
+  },
+  {
+   "n": 14,
+   "title": "LG · LG CNS, '싱글렉스(SINGLEX)'로 SaaS 사업 박차",
+   "url": "https://www.lg.co.kr/media/release/27978",
+   "kind": "news",
+   "date": "2024",
+   "note": "LG전자 등 30여 기업에 제공"
+  },
+  {
+   "n": 15,
+   "title": "디지털데일리 · LG CNS-LX판토스, 물류센터 휴머노이드 로봇 도입 시동",
+   "url": "https://www.ddaily.co.kr/page/view/2026061109135006876",
+   "kind": "news",
+   "date": "2026-06-11",
+   "note": "메가와이즈 청라 물류센터 로봇 자동화 협약, 피지컬웍스 플랫폼"
+  },
+  {
+   "n": 16,
+   "title": "Wikipedia · SAP EWM",
+   "url": "https://en.wikipedia.org/wiki/SAP_EWM",
+   "kind": "reference",
+   "note": "옛 WM 지원은 2025년까지, EWM 으로 대체"
+  },
+  {
+   "n": 17,
+   "title": "SAP Learning · Applying Putaway Rules (Basic Customizing in SAP S/4HANA EWM | KO)",
+   "url": "https://learning.sap.com/courses/basic-customizing-in-sap-s-4hana-ewm-ko/applying-putaway-rules",
+   "kind": "reference",
+   "note": "적치 전략은 주로 저장 유형 정의에서 — 고정 칸·일반·추가·빈 칸·바닥 적재"
+  },
+  {
+   "n": 18,
+   "title": "SAP Help · EWM 9.3 Storage Control",
+   "url": "https://help.sap.com/saphelp_ewm93/helpdata/en/48/d220690128581de10000000a42189c/content.htm",
+   "kind": "reference",
+   "note": "출고: 저장 유형 결정 → 출고 규칙이 quant 정렬"
+  },
+  {
+   "n": 19,
+   "title": "Google · Site Reliability Engineering — Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA 정의"
+  },
+  {
+   "n": 20,
+   "title": "APQC · Process Classification Framework",
+   "url": "https://www.apqc.org/process-frameworks",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "SAP Learning · Production Integration with SAP S/4HANA EWM | KO",
+   "url": "https://learning.sap.com/courses/production-integration-with-sap-s-4hana-ewm-ko",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "SAP Learning · Transportation Planning (Planning and Execution in SAP S/4HANA TM)",
+   "url": "https://learning.sap.com/courses/planning-and-execution-in-sap-s-4hana-transportation-management/transportation-planning",
+   "kind": "reference",
+   "note": "화물 단위를 운송 수단에 배정해 운송 오더 생성, 수동·지도·자동 계획"
+  },
+  {
+   "n": 23,
+   "title": "SAP Help · Freight Order (SAP TM 9.4)",
+   "url": "https://help.sap.com/saphelp_tm94/helpdata/en/f0/759d9fb6ab4468b121c16b186cc8a5/content.htm",
+   "kind": "reference",
+   "note": "운송사·화주가 실행을 계획하는 오더 — 언제 어느 차량에 싣는지"
+  },
+  {
+   "n": 24,
+   "title": "SAP Training · C_S4EWM 자격 시험 안내",
+   "url": "https://training.sap.com/certification/C_S4EWM_2020",
+   "kind": "reference",
+   "note": "컨설턴트 프로필의 기본·핵심 지식 확인, 프로젝트 경험이 필수는 아님. 판마다 코드가 바뀜"
+  },
+  {
+   "n": 25,
+   "title": "자소설닷컴 · 비즈테크아이 기업정보",
+   "url": "https://jasoseol.com/companies/14512",
+   "kind": "reference",
+   "note": "초봉 3,811만·평균 5,748만 — 공공데이터 집계(같은 회사 다른 풀이에서 확인한 값)"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 · LG CNS 기업정보",
+   "url": "https://jasoseol.com/companies/57",
+   "kind": "reference",
+   "note": "초봉 5,071만·평균 7,802만 — 같은 집계"
+  },
+  {
+   "n": 27,
+   "title": "비즈테크아이 · 채용 프로세스",
+   "url": "https://www.biztechi.com/recruit/02",
+   "kind": "company",
+   "note": "경력: 서류 → LG Way Fit Test → 면접 → 평판조회 → 채용검진·처우협의"
+  },
+  {
+   "n": 28,
+   "title": "비즈테크아이 · 복리후생",
+   "url": "https://www.biztechi.com/culture/03",
+   "kind": "company"
+  },
+  {
+   "n": 29,
+   "title": "비즈테크아이 · 오시는 길",
+   "url": "https://www.biztechi.com/about/05",
+   "kind": "company"
+  }
+ ],
+ "caveat": "이 팀의 발표·기술 글과 'LG 물류Singlex' 플랫폼의 구조는 공개 자료를 찾지 못했습니다(회사 사이트는 JS 렌더라 자동으로 읽히지 않았고, LG CNS 의 SINGLEX 공개 목록에는 물류 솔루션이 없습니다). 그래서 EWM·TM 은 SAP 공식 교육·도움말로 '보통 이런 일'을 보였습니다. 연봉·복지·위치는 같은 회사의 다른 풀이가 확인한 출처를 다시 썼습니다."
+}
