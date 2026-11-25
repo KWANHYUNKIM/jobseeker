@@ -1,0 +1,911 @@
+{
+ "id": "hyundai-sdv-audio-radio-system-sw",
+ "company": "현대자동차",
+ "role": "오디오/라디오 시스템 소프트웨어 개발",
+ "team": "SDV 핵심 통합제어기 Firmware·System SW 자체 개발 조직",
+ "jobs": [
+  "ats-hkmc:hyundai:2026N2408",
+  "wanted-398807"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "차 안의 **라디오 수신 칩(튜너)과 오디오 칩(DSP·앰프·코덱)** 을 Android·Linux·QNX 가 부릴 수 있게 잇는 드라이버와 HAL(하드웨어를 OS 에 표준 모양으로 보여 주는 층)을 만듭니다.[1]",
+  "env": "현대차그룹의 차세대 인포테인먼트 **플레오스 커넥트는 Android Automotive OS(AAOS) 기반**이고 2026년 5월 그랜저부터 들어갔습니다.[5][6] 팀은 SDV 통합제어기의 펌웨어·시스템 SW 를 회사 안에서 직접 만듭니다.[1]",
+  "oneline": "앱이 아니라 **튜너·오디오 칩과 Android 프레임워크 사이**를 맡는 7년 차 이상 임베디드 오디오 개발자. 데이터시트와 ALSA·AOSP 코드를 같이 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "차량용 라디오 튜너 드라이버를 개발하고, DSP·Amplifier 등 오디오 하드웨어와 Android/Linux 시스템 간 연동을 통해 차량용 오디오 시스템의 안정적인 구현과 성능 개선을 담당합니다.",
+   "short": "라디오 수신 칩과 오디오 칩이 Android·Linux 위에서 끊김 없이 소리 내게 밑바닥을 만드는 자리다.",
+   "why": "현대차그룹은 플레오스 커넥트를 AAOS 기반 차세대 인포테인먼트라고 밝혔고, 외부 개발자에게 AAOS SDK 를 그대로 열었습니다.[5] AAOS 는 미디어·내비·통화 같은 인포테인먼트 소리를 맡고, 그 소리를 차의 실제 칩으로 내보내는 층(Audio HAL)과 라디오 칩을 부리는 층(Broadcast Radio HAL)은 차 회사가 만들어 넣어야 합니다.[9][10] 팀 소개가 '통합제어기 Firmware·System SW 자체 개발, 양산 품질 확보'라서 이 층을 회사 안에서 직접 짭니다.[1]",
+   "actually": {
+    "intro": "업무는 두 묶음입니다 — 라디오(■ 첫째)와 오디오(■ 둘째).[1]",
+    "items": [
+     "**라디오** — 튜너 칩에 '이 주파수로 맞춰라·다음 방송 찾아라'를 보내고, 받은 방송 정보(방송국 이름·노래 제목)를 Android 에 올린다.[9]",
+     "**오디오** — 앱이 낸 소리를 DSP(음향 계산 칩)·앰프·스피커까지 보내는 길, 마이크 소리를 받아 오는 길을 연다.[10][12]",
+     "**성능 개선** — 켜고 나서 소리가 나기까지의 시간, 끊김(버퍼가 비는 것), 지연, 전환할 때 '딱' 소리를 줄인다 {추론}."
+    ]
+   },
+   "how_far": "어떤 칩을 쓸지·스피커를 몇 개 둘지는 보통 하드웨어·음향 조직이 정합니다. 이 자리는 그 칩들이 **OS 위에서 정해진 동작을 그대로 하게** 만드는 쪽입니다 {추론}.",
+   "refs": [
+    1,
+    5,
+    9,
+    10,
+    12
+   ],
+   "study": [
+    "hmg-pleos-25",
+    "aosp-car-audio",
+    "aosp-radio-hal"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 차량용 라디오 튜너 드라이버 개발",
+   "short": "아래 두 줄의 제목 — 라디오 수신 칩을 Android·Linux·QNX 에서 부리는 드라이버를 만드는 일이다.",
+   "why": "현대차는 지역마다 다른 방송을 받습니다. 유럽 차량 설명서에는 DAB(유럽 디지털 라디오)와 FM 을 같은 방송끼리 자동으로 넘나드는 기능이 있고,[7] 미국 차량 설명서에는 HD Radio 기술 사용 표시가 있습니다.[8] 같은 기능을 나라마다 다른 방송 방식·칩에서 내야 하니 튜너 드라이버가 따로 있는 자리입니다 {추론}.",
+   "refs": [
+    7,
+    8
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· AM/FM, DAB, HD Radio 등 Radio Tuner 하드웨어와 Android 시스템 간 디바이스 드라이버 개발",
+   "short": "튜너 칩 명령을 Android 표준 라디오 HAL 모양으로 감싸, 라디오 앱이 칩을 몰라도 돌게 한다.",
+   "why": "Android 는 AM/FM·DAB 같은 방송 라디오를 위해 Broadcast Radio HAL 이라는 표준 틀을 둡니다. 주 인터페이스는 IBroadcastRadio 이고, 결과는 ITunerCallback 으로 프레임워크에 돌려줍니다.[9] 차 회사는 이 틀 안쪽을 자기 튜너 칩에 맞게 채웁니다.[9]",
+   "actually": {
+    "intro": "AOSP 문서가 HAL 구현에 요구하는 일입니다.[9]",
+    "items": [
+     "**맞추기·찾기·한 칸 옮기기(tune·seek·step)** — 바로 상태만 돌려주고, 끝나면 콜백으로 '맞췄다(onCurrentProgramInfoChanged)'나 '실패(onTuneFailed)'를 알린다. 정해진 시간(TUNER_TIMEOUT_MS) 안에 끝나야 한다.",
+     "**방송 목록** — 받을 수 있는 방송을 모아 onProgramListUpdated 로 나눠 보낸다. 한 번에 500 KiB 를 넘지 않게.",
+     "**방송 이름표(ProgramSelector)** — FM 은 주파수, DAB 는 방송 번호(DAB_SID_EXT)에 앙상블·주파수를 덧붙이고, HD Radio 는 방송국 번호(HD_STATION_ID_EXT)로 가리킨다.",
+     "**그림** — 앨범 표지·DAB 슬라이드쇼 그림은 바인더(Android 프로세스 간 통신) 한계로 1 MB 아래여야 한다.",
+     "**알림(announcement)** — 교통 정보·재난 경보가 나오면 등록한 쪽에 알린다. 현대차 유럽 설명서의 TA(교통 안내) 팝업이 이런 기능이다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "FM '다음 방송 찾기'의 뼈대 — 지역마다 칸이 다르다",
+     "body": "유럽식 87.5~108 MHz 를 100 kHz 간격으로 보면 206칸, 미국식 88.1~107.9 MHz 를 200 kHz 간격으로 보면 100칸입니다(흔히 쓰는 대역·간격으로 잡은 가상 설정 {추론}). 아래는 '신호 좋은 칸'을 이미 안다고 치고 위쪽으로 돌아 찾는 부분만 떼어 낸 것입니다(가상 값, 직접 돌린 출력: `206 100` · `101100` · `95900`). 실제로는 칸마다 칩에 신호 세기를 물어 보고 정합니다.",
+     "lang": "python",
+     "code": "def fm_channels(region):\n    if region == \"EU\": lo, hi, step = 87_500, 108_000, 100\n    else:              lo, hi, step = 88_100, 107_900, 200\n    return list(range(lo, hi + 1, step))\n\ndef seek_up(cur, region, good):\n    ch = fm_channels(region); i = ch.index(cur)\n    for f in ch[i + 1:] + ch[:i + 1]:\n        if f in good:\n            return f\n\nprint(len(fm_channels(\"EU\")), len(fm_channels(\"US\")))\nprint(seek_up(98_100, \"US\", {101_100, 95_900}))\nprint(seek_up(107_900, \"US\", {101_100, 95_900}))"
+    }
+   ],
+   "how_far": "라디오 앱 화면은 다른 조직 몫입니다. 이 자리는 **HAL 이 약속대로(비동기·시간 안에·크기 제한 안에) 답하게** 하고, 칩이 이상할 때 HAL 아래에서 원인을 찾는 데까지입니다 {추론}.",
+   "refs": [
+    7,
+    9
+   ],
+   "study": [
+    "aosp-radio-hal",
+    "aosp-aidl-hal",
+    "embedded-android"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· Linux/QNX 커널 기반 Radio Tuner 드라이버 개발 및 최적화",
+   "short": "같은 튜너 칩을 Linux 와 QNX 에서도 부리게 드라이버를 짜고, 켜는 시간·찾는 시간을 줄인다.",
+   "why": "현대차 SDV 구조는 고성능 중앙 컴퓨터(HPVC)가 게이트웨이·인포테인먼트 등을 한 기계에서 함께 돌립니다.[3] 한 기계 안에 Android 와 다른 OS 가 같이 있을 수 있고, 시동을 걸자마자 라디오가 나와야 하는 것처럼 Android 가 다 뜨기 전에 필요한 일은 다른 OS 쪽에 둘 수 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**칩과 말하기** — 튜너 칩은 보통 I2C·SPI 같은 작은 버스로 명령을 받고, 소리는 I2S·TDM 같은 오디오 선으로 내보낸다. 드라이버는 명령 쪽과 소리 쪽을 둘 다 다룬다 {추론}.",
+     "**펌웨어 올리기** — 켤 때 칩에 펌웨어·설정(지역 대역·간격)을 내려 보내고, 준비됐는지 확인한다 {추론}.",
+     "**Linux 쪽** — 소리 길은 ALSA(Linux 오디오 계층)의 녹음 장치로 보이게 하는 방식이 흔하다.[13] 장치 연결(어느 핀·어느 버스)은 디바이스 트리에 적는다.[20]",
+     "**QNX 쪽** — QNX 7.1 은 io-audio 라는 오디오 관리자가 deva-ctrl-*.so 드라이버를 불러 쓴다.[14] QNX 8.0 첫 판에는 오디오 틀이 없다고 QNX 문서가 밝혔다 — 판마다 확인이 필요하다.[15]",
+     "**최적화** — 켠 뒤 첫 소리까지의 시간, 찾기 한 번에 걸리는 시간, 칩을 묻는 횟수(버스가 바쁘면 다른 일이 밀린다)를 잰다 {추론}."
+    ]
+   },
+   "how_far": "두 OS 를 다 깊게 알 필요는 없습니다. 하나(보통 Linux)는 드라이버 내부까지, 다른 하나는 **같은 칩을 그 OS 의 드라이버 틀에 끼우는 법**을 찾을 수 있으면 됩니다 {추론}.",
+   "refs": [
+    3,
+    13,
+    14,
+    15,
+    20
+   ],
+   "study": [
+    "ldd3",
+    "kernel-dt",
+    "qnx-io-audio",
+    "mastering-emb-linux"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 차량용 오디오 시스템 연동 개발",
+   "short": "아래 두 줄의 제목 — 소리 내는 칩들을 OS 와 이어 소리 길을 여는 일이다.",
+   "why": "플레오스 커넥트는 화면을 나눠 내비와 블루투스 음악을 함께 쓰고, 휴대폰 없이 YouTube·Spotify·지니 앱을 돌립니다.[6] 여러 소리가 동시에 나오니, 어느 소리를 어느 스피커로·얼마나 줄여서 낼지를 HAL 과 칩이 같이 처리합니다.[10]",
+   "refs": [
+    6,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· DSP, Amplifier, Codec 등 오디오 하드웨어와 Android/Linux 시스템 연동 개발",
+   "short": "Android 소리 길(오디오 HAL)을 DSP·앰프·코덱 칩에 이어, 소리 종류마다 정한 길로 나가게 한다.",
+   "why": "AAOS 는 차에서 소리를 내보낼 장치를 AUDIO_DEVICE_OUT_BUS 라는 '버스' 출력 하나로 통일하고, 소리 종류(미디어·내비·통화 등, CarAudioContext)마다 버스 포트를 따로 줄 수 있게 했습니다. 섞고 줄이는 일은 HAL 쪽 몫입니다.[10] 안전띠 경고음 같은 차량 소리는 Android 밖에서 내고, Android 11 부터는 HAL 이 그 소리를 위해 Android 에 '잠깐 조용히(audio focus)'를 요청할 수 있습니다.[10]",
+   "actually": {
+    "items": [
+     "**소리 길 표** — car_audio_configuration.xml 에 소리 종류 → 버스 포트를 적는다.[10]",
+     "**Audio HAL** — Android 14 부터 AIDL 판이 기본이고 새 기능은 AIDL 에만 붙는다.[11] 프레임워크의 재생·경로 요청을 받아 커널 드라이버로 넘긴다.",
+     "**AudioControl HAL** — Android 밖 소리(경고음·튜너)가 Android 에 집중 요청·음량 제한을 알리는 길.[10]",
+     "**DSP** — 스피커별 지연·음색 보정·소리 섞기·조용한 구간 줄이기를 칩이 한다. SW 는 칩에 설정값을 내리고 상태를 읽는다 {추론}.",
+     "**앰프** — 켜는 순서(먼저 소리 0 → 앰프 켬 → 소리 올림)를 지켜야 '딱' 소리가 안 난다. Linux ASoC 의 전원 관리(DAPM)가 이 순서를 맞춰 잡음을 줄인다.[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "음량은 dB 로 다룬다",
+     "body": "칩 설정값은 보통 dB 이고 소리 값에는 곱하는 배수로 들어갑니다. −6 dB 는 약 절반, −20 dB 는 10분의 1 입니다(직접 돌린 출력: `0 dB -> 1.0` · `-6 dB -> 0.5012` · `-20 dB -> 0.1` · `-40 dB -> 0.01` · `-6dB sample = 16422`). 내비 안내가 나올 때 음악을 '줄인다(ducking)'는 것도 이 배수를 바꾸는 일입니다 {추론}.",
+     "lang": "python",
+     "code": "def db_to_gain(db):\n    return 10 ** (db / 20)\n\nfor db in (0, -6, -20, -40):\n    print(db, \"dB ->\", round(db_to_gain(db), 4))\nprint(\"-6dB sample =\", int(32767 * db_to_gain(-6)))"
+    }
+   ],
+   "how_far": "음색·음장(소리가 어디서 나는 듯한 느낌) 튜닝은 음향 엔지니어 몫이고, 이 자리는 **그 설정이 칩에 정확히 들어가고 소리 길이 약속대로 바뀌게** 하는 쪽입니다 {추론}.",
+   "refs": [
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "aosp-car-audio",
+    "aosp-audio-hal",
+    "kernel-asoc",
+    "lyons-dsp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "· ALSA 기반 오디오 드라이버 개발 및 기능 개선",
+   "short": "Linux 오디오 표준(ALSA)으로 칩 드라이버를 짜고, 끊김·지연·잡음을 고친다.",
+   "why": "Linux 에서 소리 장치는 ALSA 의 '사운드 카드'와 PCM(소리 데이터 흐름)으로 보입니다.[13] 임베디드 기기는 ASoC 라는 틀로 코덱 드라이버(칩)·플랫폼 드라이버(SoC 의 DMA·I2S)·머신 드라이버(이 보드의 연결)를 나눠 짜고, 그래서 같은 코덱 드라이버를 보드마다 다시 쓰지 않습니다.[12]",
+   "actually": {
+    "items": [
+     "**PCM 흐름** — 열기 → 형식 정하기(hw_params: 샘플 속도·채널·비트) → 준비 → 시작/정지(trigger) → 위치 알리기(pointer). 하드웨어가 한 조각(period)을 끝낼 때마다 드라이버가 snd_pcm_period_elapsed() 를 부른다.[13]",
+     "**지연과 끊김** — 버퍼 전체가 재생 지연을 정하고, 버퍼가 비거나 넘치면 xrun(끊김) 상태가 된다.[13]",
+     "**ASoC 머신 드라이버** — 이 보드에서 어느 I2S 선이 어느 코덱에 붙었고, 언제 앰프를 켜는지 적는다.[12]",
+     "**기능 개선** — 새 샘플 속도 지원, 다채널(TDM) 슬롯 배치, 켜는 시간 줄이기, 잡음 없애기 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "버퍼 크기 → 지연 계산",
+     "body": "48 kHz · 2채널 · 16비트면 한 프레임이 4바이트, 초당 192,000바이트입니다. 조각 256프레임 × 4개 버퍼면 조각 하나 5.33 ms, 버퍼 전체 21.33 ms 가 지연의 바탕입니다(직접 돌린 출력: `frame bytes = 4` · `period ms = 5.33  buffer ms = 21.33` · `bytes per second = 192000`). 줄이면 지연이 줄지만 끊김(xrun) 위험이 커집니다.[13]",
+     "lang": "python",
+     "code": "rate, ch, bits = 48000, 2, 16\nframe = ch * bits // 8\nperiod, periods = 256, 4\nbuf = period * periods\nprint(\"frame bytes =\", frame)\nprint(\"period ms =\", round(period / rate * 1000, 2), \" buffer ms =\", round(buf / rate * 1000, 2))\nprint(\"bytes per second =\", rate * frame)"
+    }
+   ],
+   "how_far": "ALSA 사용자 라이브러리를 쓰는 수준이 아니라 **커널 쪽 드라이버(PCM 콜백·ASoC 코덱/머신)를 직접 고치는** 수준입니다. 고쳤다는 증거로 고치기 전·후의 xrun 횟수·지연을 같은 조건으로 잽니다 {추론}.",
+   "refs": [
+    12,
+    13
+   ],
+   "study": [
+    "alsa-driver-doc",
+    "kernel-asoc",
+    "ldd3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 전자/전기, 컴퓨터 공학 분야에서 학사 이상의 학위를 보유하신 분",
+   "short": "칩 데이터시트·회로와 커널 코드를 둘 다 읽어야 해서 전자·전기·컴퓨터 전공 학사를 최소선으로 둔다.",
+   "why": "같은 공고가 하드웨어 스펙 해석과 저수준 디버깅을 요건에 넣었습니다.[1] 전공은 그 바탕을 학위로 확인하는 기준입니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· 7년 이상의 Android/Linux 기반 오디오 하드웨어 연동 및 ALSA·Audio HAL 개발, 차량용 Radio Tuner(AM/FM, DAB 등) 드라이버 개발 경력을 보유하신 분",
+   "short": "업무 두 묶음(오디오·라디오)을 둘 다 양산에서 해 본 7년 차 이상을 찾는다.",
+   "why": "업무 줄이 그대로 경력 요건이 됐습니다 — ALSA 드라이버, Audio HAL, 튜너 드라이버.[1] 셋은 커널(ALSA)·프레임워크 경계(HAL)·칩(튜너) 세 층에 걸쳐 있습니다.[9][11][13]",
+   "level": {
+    "basic": "PCM·샘플 속도·채널·비트 깊이 · I2S/TDM 이 무엇인가 · AM/FM/DAB 차이",
+    "work": "ALSA PCM 콜백·ASoC 코덱/머신 드라이버 · Audio HAL 스트림 열기·경로 바꾸기 · 튜너 칩 명령 흐름(맞추기·찾기·신호 세기)",
+    "team": "세 층을 한 번에 따라가며 '앱에서 소리가 안 난다'를 칩까지 추적하기 · 지역별 방송 방식·칩 차이를 한 HAL 로 묶기 {추론}"
+   },
+   "how_far": "'7년'은 거르는 기준이고, 실제로 보는 건 **오디오나 튜너 드라이버를 직접 고쳐 양산 차·기기에 낸 경험**입니다 {추론}. 라디오 쪽 경험이 없다면 오디오 쪽을 깊게 보여 주는 편이 낫습니다 {추론}.",
+   "refs": [
+    1,
+    9,
+    11,
+    13
+   ],
+   "study": [
+    "alsa-driver-doc",
+    "aosp-audio-hal",
+    "aosp-radio-hal"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· ARM 기반 SoC에서 Android/Linux 임베디드 시스템 개발 경험을 보유하신 분",
+   "short": "차량용 컴퓨터는 ARM 칩이라, 그 위에서 커널·드라이버를 올리고 부팅해 본 경험을 본다.",
+   "why": "차량 인포테인먼트 SoC(CPU·GPU·오디오 블록이 한 칩에 든 것)는 ARM 계열이 대부분이고, ARM 보드의 장치 연결은 디바이스 트리로 커널에 알립니다.[20] {추론}",
+   "actually": {
+    "items": [
+     "**부팅 흐름** — 부트로더 → 커널 → 디바이스 트리로 장치 발견 → 드라이버 연결 → Android 시작.[19][20]",
+     "**디바이스 트리** — '이 I2C 버스 0x60 주소에 튜너, 이 I2S 에 코덱'을 적는 파일. 회로와 다르면 드라이버가 장치를 못 찾는다.[20]",
+     "**교차 빌드** — PC 에서 ARM 용으로 커널·모듈·AOSP 를 빌드해 보드에 올린다.[19]"
+    ]
+   },
+   "refs": [
+    19,
+    20
+   ],
+   "study": [
+    "mastering-emb-linux",
+    "embedded-android",
+    "kernel-dt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "· Linux 커널·디바이스 드라이버, AOSP 및 HIDL/AIDL 기반 HAL 개발 경험과 하드웨어 스펙 해석·저수준 디버깅 능력을 보유하신 분",
+   "short": "커널 드라이버·Android HAL 을 짜고, 칩 문서를 읽고, 안 될 때 레지스터·신호까지 내려가 본다.",
+   "why": "Android 의 라디오·오디오 HAL 은 예전 HIDL 판과 새 AIDL 판이 함께 있습니다 — 라디오 서비스는 AIDL HAL 이 있으면 그쪽에, 없으면 HIDL 에 붙고,[9] 오디오는 Android 14 부터 AIDL 만 새 기능을 받습니다.[11] 차 한 대의 SW 수명이 길어 두 판을 다 만날 수 있습니다 {추론}.",
+   "level": {
+    "basic": "커널 모듈 빌드·적재 · 문자 장치·I2C 드라이버 뼈대 · AIDL 인터페이스 파일 읽기",
+    "work": "HIDL → AIDL 옮기기 · HAL 서비스를 VINTF(기기 인터페이스 선언)에 등록 · dmesg·ftrace 로 드라이버 흐름 보기",
+    "team": "로직 분석기·오실로스코프로 I2C/I2S 신호를 떠서 데이터시트의 타이밍과 맞춰 보기 · 칩 레지스터를 직접 읽어 상태 확인 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**HIDL vs AIDL** — 라디오 HAL 은 AIDL 로 오면서 튜너 세션 인터페이스(ITunerSession)를 없애고 그 일을 IBroadcastRadio 로 옮겼고, scan 을 seek 로 이름 바꿨다.[9]",
+     "**스펙 해석** — 칩 데이터시트에서 명령 형식·켜는 순서·타이밍 그림을 읽어 코드로 옮긴다 {추론}.",
+     "**저수준 디버깅** — '소리가 안 난다'면 HAL 로그 → ALSA 장치 상태 → I2S 선에 신호가 있나 → 코덱 레지스터 값 순서로 내려간다 {추론}."
+    ]
+   },
+   "refs": [
+    9,
+    11
+   ],
+   "study": [
+    "aosp-aidl-hal",
+    "ldd3",
+    "linux-kernel-debug-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 전자/전기, 컴퓨터 공학 분야에서 석사 이상의 학위를 보유하신 분",
+   "short": "신호 처리·방송 규격을 읽고 구현할 일이 있어, 관련 연구를 해 본 석사를 더 쳐준다.",
+   "why": "우대 줄의 오디오 DSP·신호 처리와 DAB·HD Radio 는 신호 처리 이론과 방송 표준 문서를 읽는 일입니다.[16][17] 연구실에서 이런 것을 다뤄 본 사람이 바로 쓰일 수 있습니다 {추론}.",
+   "refs": [
+    16,
+    17
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 비즈니스 영어 커뮤니케이션 및 영어 문서 작성 역량을 보유하신 분",
+   "short": "칩 회사 지원팀·영어 데이터시트·해외 방송 규격과 일하고, 문제 보고를 영어로 써서다.",
+   "why": "방송 규격(ETSI 의 DAB, ITU 가 정리한 미국 IBOC 방식)과 Android 문서는 영어이고,[9][16][17] HD Radio 는 Xperi 의 라이선스 기술입니다.[8] 칩·라이선스 회사와 오가는 문서도 영어일 가능성이 큽니다 {추론}.",
+   "how_far": "칩 회사에 **재현 조건·로그·기대 동작을 영어로 정확히 적어 보내는** 수준이면 실무에 충분합니다 {추론}.",
+   "refs": [
+    8,
+    9,
+    16,
+    17
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· 차량 인포테인먼트·전장 시스템 양산 경험과 오디오 DSP·신호 처리 및 A2B 등 차량 오디오 네트워크 인터페이스 경험을 보유하신 분",
+   "short": "차에 실제로 나간 인포테인먼트를 해 봤고, 음향 계산 칩과 차 안 오디오 전용 선(A2B)을 다뤄 봤나.",
+   "why": "A2B 는 Analog Devices 의 차량 오디오 버스로, 선 한 가닥(차폐 없는 꼬임선)에 소리·제어 신호·전원을 함께 50 Mbps 로 보내 배선 무게·비용을 줄인다고 회사가 설명합니다.[18] 현대차가 CODA 구조로 배선을 약 28% 줄였다고 밝힌 것처럼,[4] 선을 줄이는 방향과 맞닿은 기술입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**A2B 구조** — 주 노드 하나에 종 노드 여러 개를 줄줄이 잇는다(1세대 칩 AD2435 는 종 노드 16개까지). 어느 위치의 노드든 지연이 정해져 있다(2주기).[18]",
+     "**쓰임** — 마이크 묶음(통화·음성 인식), 소음 줄이기(능동·도로 소음 제거), 차 안 대화 돕기, 긴급 호출.[18]",
+     "**SW 가 할 일** — 부팅 때 버스를 찾고(discovery) 노드마다 설정을 내리고, 소리 슬롯을 SoC 의 TDM 슬롯에 맞춘다 {추론}.",
+     "**DSP·신호 처리** — 필터(음색)·지연(스피커 위치 보정)·리미터(찢어짐 막기)가 무엇을 하는지 알아야 설정값과 증상을 이을 수 있다.[21]",
+     "**양산 경험** — 개발용 보드가 아니라 차종·지역별 변형, 전원 켜고 끄기 수천 번, 진동·온도에서 버티는 코드를 내 본 경험 {추론}."
+    ]
+   },
+   "how_far": "우대 사항이라 다 해 봤을 필요는 없습니다. A2B 는 칩 회사 평가 보드·설계 도구로 익힐 수 있고, DSP 는 **필터·dB·샘플 속도를 숫자로 설명할 수 있으면** 이야기할 거리가 됩니다 {추론}.",
+   "refs": [
+    4,
+    18,
+    21
+   ],
+   "study": [
+    "adi-a2b",
+    "lyons-dsp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "· AM/FM, DAB, HD Radio 등 Radio Tuner 시스템 개발 및 Radio/Tuner HAL 커스터마이징 경험을 보유하신 분",
+   "short": "방송 방식별 수신 동작(자동 전환·교통 안내·방송 목록)을 해 봤고, 라디오 HAL 을 차에 맞게 고쳐 봤나.",
+   "why": "현대차 유럽 차량은 DAB 신호가 약해지면 같은 FM 방송으로, FM 을 듣다 같은 DAB 방송이 잡히면 DAB 로 넘어가고, 교통 안내(TA)·지역 방송 전환·DAB 슬라이드쇼를 지원합니다.[7] 미국 차량은 HD Radio 를 씁니다.[8] 표준 HAL 에 없는 이런 동작은 차 회사가 넓혀 넣습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**DAB** — ETSI EN 300 401 이 기본 규격이고, 여러 방송을 한 '앙상블'에 묶어 보낸다.[16] HAL 은 방송 번호 + 앙상블 + 주파수로 가리킨다.[9]",
+     "**HD Radio** — 미국은 기존 AM/FM 대역 안에 디지털을 얹는 IBOC 방식을 NRSC-5 로 채택했고 ITU 는 이를 'Digital System C' 로 적었다.[17] Android 15 부터 HAL 에 HD 끄기(FORCE_ANALOG_FM/AM)·부채널 표시가 생겼다.[9]",
+     "**자동 전환** — 같은 방송을 다른 방식으로 찾아 소리 끊김 없이 넘기는 일. 두 수신 경로의 소리 시차를 맞춰야 튀지 않는다 {추론}.",
+     "**HAL 넓히기** — 표준 설정 플래그·벤더 확장 칸으로 차 고유 기능(지역 방송 전환 등)을 올린다 {추론}."
+    ]
+   },
+   "how_far": "방송 신호 처리 알고리즘은 칩 안에서 칩 회사가 합니다. 이 자리는 **칩이 준 기능을 HAL·설정으로 꺼내 차 기능으로 엮는** 쪽입니다 {추론}.",
+   "refs": [
+    7,
+    8,
+    9,
+    16,
+    17
+   ],
+   "study": [
+    "aosp-radio-hal",
+    "etsi-dab",
+    "itu-bs1114"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "소리가 안 날 때 앱부터 칩 레지스터까지 따라 내려가는 게 즐거운 사람",
+   "데이터시트·방송 규격·AOSP 문서를 끝까지 읽는 사람",
+   "ALSA·오디오 HAL 이나 튜너 드라이버를 직접 고쳐 본 사람",
+   "양산 차에 들어가는 코드를 회사 안에서 직접 만들고 싶은 사람[1]"
+  ],
+  "hard": [
+   "경력 7년 이상에 오디오·라디오 둘 다가 자격요건이라 문이 좁다[1]",
+   "화면·서비스 개발과 거리가 멀고, 보드·계측 장비 앞에서 보내는 시간이 길다 {추론}",
+   "Android·Linux·QNX 와 방송 방식 여럿을 오가야 해서 범위가 넓다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "앱에서 재생을 눌렀는데 스피커에서 소리가 안 납니다. 어디부터 보겠어요?",
+   "a": "HAL → ALSA PCM 상태 → I2S 신호 → 코덱·앰프 순서로 내려가기.[10][12][13]"
+  },
+  {
+   "q": "버퍼를 줄여 지연을 낮추면 무엇이 나빠지고, 어떻게 확인하나요?",
+   "a": "조각·버퍼와 지연 계산, xrun.[13]"
+  },
+  {
+   "q": "라디오 HAL 의 tune 이 칩 응답을 기다리다 시간 제한을 넘기면 어떻게 처리하나요?",
+   "a": "비동기 응답·onTuneFailed·TUNER_TIMEOUT_MS.[9]"
+  },
+  {
+   "q": "DAB 가 약해질 때 같은 방송의 FM 으로 넘기려면 무엇을 알아야 하나요?",
+   "a": "방송 이름표 연결과 두 경로 소리 시차 맞추기.[7][9]"
+  },
+  {
+   "q": "앰프를 켤 때 '딱' 소리가 납니다. 원인과 고치는 법은요?",
+   "a": "켜는 순서와 ASoC DAPM.[12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "현대자동차 채용 · 오디오/라디오 시스템 소프트웨어 개발",
+   "url": "https://talent.hyundai.com/apply/applyView.hc?recuYy=2026&recuType=N2&recuCls=408",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대, 근무지 판교, 마감 2026-11-30"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대자동차그룹 오디오/라디오 시스템 소프트웨어 개발",
+   "url": "https://www.wanted.co.kr/wd/398807",
+   "kind": "posting",
+   "note": "같은 공고의 원티드 사본"
+  },
+  {
+   "n": 3,
+   "title": "Hyundai · CES 2024: Introducing SDV Exhibits and Unveiling Core Hyundai Technologies",
+   "url": "https://www.hyundai.com/worldwide/en/brand-journal/mobility-solution/sdv",
+   "kind": "company",
+   "date": "2024-01-09",
+   "note": "HPVC + 존 제어기 — HPVC 가 게이트웨이·인포테인먼트 등을 함께 맡음"
+  },
+  {
+   "n": 4,
+   "title": "HMG 저널 · 개발자에게 열린 무한한 가능성, Pleos 25 현장에 가다",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000173173",
+   "kind": "company",
+   "date": "2025-04-09",
+   "note": "CODA — 제어기 약 66%·배선 약 28% 감축"
+  },
+  {
+   "n": 5,
+   "title": "Hyundai Motor Group · Launches 'Pleos' Software Brand, Unveiling New SDV Technologies",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000000921",
+   "kind": "company",
+   "date": "2025-03-28",
+   "note": "플레오스 커넥트는 AAOS 기반, Pleos Playground 가 AAOS SDK 제공"
+  },
+  {
+   "n": 6,
+   "title": "Hyundai Motor Group · Redefines In-Vehicle Experience with 'Pleos Connect'",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/hyundai-motor-group-redefines-in-vehicle-experience-with-%E2%80%98pleos-connect%E2%80%99-next-generation-infotainment-system-0000001168",
+   "kind": "company",
+   "date": "2026-04-30",
+   "note": "2026년 5월 그랜저부터, 내비+블루투스 음악 분할 화면, 앱 마켓(YouTube·Spotify·지니), 2030년 2,000만 대 목표"
+  },
+  {
+   "n": 7,
+   "title": "현대자동차 차량 설명서(유럽, 영문) · Radio",
+   "url": "https://ownersmanual.hyundai.com/ivi/PREM_GEN5/AVN/FE/EUR/English/radio002.html",
+   "kind": "company",
+   "note": "DAB/FM 자동 전환, Regional, TA(교통 안내), DAB 슬라이드쇼·방송 안내"
+  },
+  {
+   "n": 8,
+   "title": "현대자동차 차량 설명서(미국, ccNC) · Trademarks",
+   "url": "https://ownersmanual.hyundai.com/ivi/ccNC/AVNT/USA/English/Appendix_trademarks.html",
+   "kind": "company",
+   "note": "HD Radio 기술(Xperi 라이선스)·SiriusXM 표시"
+  },
+  {
+   "n": 9,
+   "title": "AOSP · Broadcast radio HAL",
+   "url": "https://source.android.com/docs/automotive/radio/broadcast-radio-hal",
+   "kind": "reference",
+   "note": "IBroadcastRadio·ITunerCallback, HIDL 2.0 vs AIDL, 비동기 tune/seek/step, 목록 500 KiB·그림 1 MB, DAB·HD 식별자, Android 15 HD 플래그"
+  },
+  {
+   "n": 10,
+   "title": "AOSP · Automotive audio",
+   "url": "https://source.android.com/docs/automotive/audio",
+   "kind": "reference",
+   "note": "AUDIO_DEVICE_OUT_BUS, CarAudioContext 별 버스 포트, car_audio_configuration.xml, 외부 소리·AudioControl HAL"
+  },
+  {
+   "n": 11,
+   "title": "AOSP · Audio HAL 구현",
+   "url": "https://source.android.com/docs/core/audio/implement",
+   "kind": "reference",
+   "note": "Android 14 부터 AIDL, Core·Effects·Common HAL"
+  },
+  {
+   "n": 12,
+   "title": "Linux Kernel Documentation · ALSA SoC Layer Overview",
+   "url": "https://docs.kernel.org/sound/soc/overview.html",
+   "kind": "reference",
+   "note": "코덱·플랫폼·머신 드라이버, DAPM 으로 잡음 줄이기"
+  },
+  {
+   "n": 13,
+   "title": "Linux Kernel Documentation · Writing an ALSA Driver",
+   "url": "https://docs.kernel.org/sound/kernel-api/writing-an-alsa-driver.html",
+   "kind": "reference",
+   "note": "카드·PCM·hw_params·period·pointer·xrun"
+  },
+  {
+   "n": 14,
+   "title": "QNX SDP 7.1 · io-audio",
+   "url": "https://qnx.com/developers/docs/7.1/com.qnx.doc.neutrino.utilities/topic/i/io-audio.html",
+   "kind": "reference",
+   "note": "오디오 관리자가 deva-ctrl-*.so 드라이버를 불러 씀"
+  },
+  {
+   "n": 15,
+   "title": "QNX SDP 8.0 · Migration — Audio",
+   "url": "https://qnx.com/developers/docs/8.0/com.qnx.doc.qnxsdp.migration/topic/audio.html",
+   "kind": "reference",
+   "note": "8.0 첫 판에는 오디오 틀이 없음(후속 판은 따로 확인)"
+  },
+  {
+   "n": 16,
+   "title": "WorldDAB · DAB Technical Specifications List",
+   "url": "https://worlddab.org/dab/technical-specifications-list",
+   "kind": "reference",
+   "note": "ETSI EN 300 401 이 DAB 기본 규격"
+  },
+  {
+   "n": 17,
+   "title": "ITU-R BS.1114 · Systems for terrestrial digital sound broadcasting",
+   "url": "https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.1114-13-202511-I%21%21PDF-E.pdf",
+   "kind": "reference",
+   "date": "2025-11",
+   "note": "미국 IBOC 방식(Digital System C)을 NRSC-5 로 채택"
+  },
+  {
+   "n": 18,
+   "title": "Analog Devices · A2B Audio Bus",
+   "url": "https://www.analog.com/en/solutions/a2b-audio-bus.html",
+   "kind": "reference",
+   "note": "칩 회사 자료 — 50 Mbps, 소리·제어·전원을 한 선으로, 지연 2주기 고정, AD2435 종 노드 16개 — 검색 요약으로 확인(페이지 직접 열기 실패)"
+  },
+  {
+   "n": 19,
+   "title": "Frank Vasquez · Chris Simmonds · Mastering Embedded Linux Programming (3판)",
+   "url": "https://www.packtpub.com/en-us/product/mastering-embedded-linux-programming-9781789530384",
+   "kind": "reference",
+   "date": "2021",
+   "note": "Packt — 툴체인·부트로더·커널·디바이스 트리"
+  },
+  {
+   "n": 20,
+   "title": "Linux Kernel Documentation · Linux and the Devicetree",
+   "url": "https://docs.kernel.org/devicetree/usage-model.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Richard G. Lyons · Understanding Digital Signal Processing (3판)",
+   "url": "https://www.pearson.com/en-us/subject-catalog/p/understanding-digital-signal-processing/P200000000400",
+   "kind": "reference",
+   "date": "2010",
+   "note": "Pearson — 필터·샘플링·dB"
+  },
+  {
+   "n": 22,
+   "title": "CEO스코어데일리 · 자동차 업종 평균 급여, 완성차는 버텼고 부품사는 갈렸다",
+   "url": "https://www.ceoscoredaily.com/page/view/2026040713313355190",
+   "kind": "news",
+   "date": "2026-04-08",
+   "note": "금융감독원 전자공시 기준 2025년 1인 평균 급여"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 · 현대자동차 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/1472",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 24,
+   "title": "2024 현대자동차 지속가능성 보고서",
+   "url": "https://kind.krx.co.kr/external/2024/06/28/000816/20240628001245/2024%20%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%20%EC%A7%80%EC%86%8D%EA%B0%80%EB%8A%A5%EC%84%B1%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "62쪽 맞춤형 복리후생"
+  },
+  {
+   "n": 25,
+   "title": "원티드 · 현대자동차그룹 네트워크 시스템 소프트웨어 개발(같은 조직 공고)",
+   "url": "https://www.wanted.co.kr/wd/398813",
+   "kind": "posting",
+   "note": "같은 조직 공고의 근무지역 — 경기도 성남시 분당구 판교역로 152"
+  },
+  {
+   "n": 26,
+   "title": "전자신문 · 현대차그룹, 판교 R&D 인력 1000명으로 늘린다",
+   "url": "https://m.etnews.com/20250715000287",
+   "kind": "news",
+   "date": "2025-07-15",
+   "note": "판교테크원·제2테크노밸리 소프트웨어드림센터"
+  }
+ ],
+ "caveat": "이 팀이 쓰는 튜너·DSP·앰프 칩, Android·Linux·QNX 의 나눔, 소리 길 설계는 공개되지 않았습니다. 업무 풀이의 '실제로는'은 AOSP·Linux 커널·QNX·ETSI·ITU·Analog Devices 의 공개 문서로 '보통 이런 일'을 보였고, 회사 근거는 플레오스 커넥트 발표(AAOS 기반, 2025~2026)와 지역별 차량 설명서(DAB/FM 전환·HD Radio)입니다. 플레오스 커넥트가 이 팀의 통합제어기 위에서 도는지는 공고에 적혀 있지 않습니다. A2B 숫자는 칩 회사 페이지의 검색 요약으로만 확인했습니다.",
+ "resources": [
+  {
+   "id": "hmg-pleos-25",
+   "title": "Hyundai Motor Group Launches 'Pleos' Software Brand",
+   "by": "현대자동차그룹 뉴스룸 · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.hyundai.com/worldwide/en/newsroom/detail/0000000921",
+   "why": "이 자리가 만드는 오디오·라디오가 올라갈 인포테인먼트(AAOS 기반 플레오스 커넥트)와 SDV 구조를 회사 스스로 설명한 글. 지원 전에 먼저 본다."
+  },
+  {
+   "id": "aosp-car-audio",
+   "title": "Automotive audio",
+   "by": "Android 오픈소스 프로젝트 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/automotive/audio",
+   "why": "차에서 Android 소리가 버스 포트로 나가는 구조, 소리 종류별 길, 차량 소리와의 집중 요청 — 업무 ■ 둘째의 기준."
+  },
+  {
+   "id": "aosp-radio-hal",
+   "title": "Broadcast radio HAL",
+   "by": "Android 오픈소스 프로젝트 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/automotive/radio/broadcast-radio-hal",
+   "why": "튜너 드라이버가 Android 에 맞춰야 할 약속(비동기 응답·목록·식별자·HIDL↔AIDL 차이) 원문. 라디오 업무·우대 줄 전부의 바탕."
+  },
+  {
+   "id": "aosp-audio-hal",
+   "title": "Audio HAL",
+   "by": "Android 오픈소스 프로젝트 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/core/audio/implement",
+   "why": "Audio HAL 의 구성(Core·Effects)과 Android 14 의 AIDL 전환. 'Audio HAL 개발' 요건의 출발점."
+  },
+  {
+   "id": "aosp-aidl-hal",
+   "title": "AIDL for HALs",
+   "by": "Android 오픈소스 프로젝트 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://source.android.com/docs/core/architecture/aidl/aidl-hals",
+   "why": "HIDL 을 대신하는 AIDL HAL 을 정의하고 서비스로 등록하는 법. 'HIDL/AIDL 기반 HAL' 요건용."
+  },
+  {
+   "id": "alsa-driver-doc",
+   "title": "Writing an ALSA Driver",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/sound/kernel-api/writing-an-alsa-driver.html",
+   "why": "사운드 카드·PCM 콜백·period·xrun 을 처음부터 끝까지. 'ALSA 기반 오디오 드라이버' 업무의 교과서."
+  },
+  {
+   "id": "kernel-asoc",
+   "title": "ALSA SoC Layer",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/sound/soc/overview.html",
+   "why": "임베디드 보드에서 코덱·SoC·보드 연결을 나눠 짜는 틀과 전원 관리(DAPM). DSP·앰프·코덱 연동 줄용."
+  },
+  {
+   "id": "ldd3",
+   "title": "Linux Device Drivers (3판)",
+   "by": "Jonathan Corbet · Alessandro Rubini · Greg Kroah-Hartman · O'Reilly · 2005",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://lwn.net/Kernel/LDD3/",
+   "why": "모듈·문자 장치·인터럽트·DMA 의 뼈대. 커널 판은 오래됐지만 드라이버 구조를 잡는 데는 여전히 쓸 만하다."
+  },
+  {
+   "id": "linux-kernel-debug-ko",
+   "title": "디버깅을 통해 배우는 리눅스 커널의 구조와 원리",
+   "by": "김동현 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%94%94%EB%B2%84%EA%B9%85%EC%9D%84%20%ED%86%B5%ED%95%B4%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%A6%AC%EB%88%85%EC%8A%A4%20%EC%BB%A4%EB%84%90",
+   "why": "ARM 보드(라즈베리 파이)에서 ftrace 로 인터럽트·스케줄링을 직접 추적하며 배우는 한국어 책. '저수준 디버깅' 요건을 손으로 익힌다."
+  },
+  {
+   "id": "mastering-emb-linux",
+   "title": "Mastering Embedded Linux Programming (3판)",
+   "by": "Frank Vasquez · Chris Simmonds · Packt · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.packtpub.com/en-us/product/mastering-embedded-linux-programming-9781789530384",
+   "why": "툴체인·부트로더·커널·디바이스 트리·루트 파일시스템을 ARM 보드로. 'ARM 기반 SoC 임베디드 개발' 요건의 지도."
+  },
+  {
+   "id": "embedded-android",
+   "title": "Embedded Android",
+   "by": "Karim Yaghmour · O'Reilly · 2013",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/embedded-android/9781449327958/",
+   "why": "AOSP 를 보드에 올리는 흐름과 HAL 이 어디에 끼는지. 판은 오래됐으니 HAL 형식(AIDL)은 공식 문서로 보충."
+  },
+  {
+   "id": "kernel-dt",
+   "title": "Linux and the Devicetree",
+   "by": "Linux 커널 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.kernel.org/devicetree/usage-model.html",
+   "why": "튜너·코덱이 어느 버스·주소에 붙었는지 커널에 알리는 법. 회로와 드라이버를 잇는 자리."
+  },
+  {
+   "id": "qnx-io-audio",
+   "title": "io-audio",
+   "by": "QNX SDP 7.1 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://qnx.com/developers/docs/7.1/com.qnx.doc.neutrino.utilities/topic/i/io-audio.html",
+   "why": "QNX 에서 오디오 드라이버(deva)를 띄우는 방식. 'Linux/QNX 커널 기반' 줄의 QNX 쪽. 8.0 은 판별 안내를 따로 본다."
+  },
+  {
+   "id": "lyons-dsp",
+   "title": "Understanding Digital Signal Processing (3판)",
+   "by": "Richard G. Lyons · Pearson · 2010",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.pearson.com/en-us/subject-catalog/p/understanding-digital-signal-processing/P200000000400",
+   "why": "샘플링·필터·dB 를 수식보다 그림과 예로. 우대 줄의 '오디오 DSP·신호 처리'를 설정값과 이어 말할 수 있게 된다."
+  },
+  {
+   "id": "adi-a2b",
+   "title": "A2B Audio Bus",
+   "by": "Analog Devices",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.analog.com/en/solutions/a2b-audio-bus.html",
+   "why": "A2B 가 무엇을 한 선으로 보내고 어디에 쓰이는지, 칩 목록과 평가 보드. 우대 'A2B' 줄의 출발점."
+  },
+  {
+   "id": "etsi-dab",
+   "title": "DAB Technical Specifications List",
+   "by": "WorldDAB",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://worlddab.org/dab/technical-specifications-list",
+   "why": "DAB 기본 규격(ETSI EN 300 401)과 주변 규격(슬라이드쇼·방송 안내)의 목록. 필요한 규격만 골라 ETSI 에서 받는다."
+  },
+  {
+   "id": "itu-bs1114",
+   "title": "ITU-R BS.1114 · Systems for terrestrial digital sound broadcasting",
+   "by": "ITU-R · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.1114-13-202511-I%21%21PDF-E.pdf",
+   "why": "DAB·HD Radio(IBOC) 같은 디지털 라디오 방식을 한 문서에서 비교한다. 방송 방식 차이를 설명할 때."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "소리를 숫자로",
+   "time": "1~2주",
+   "goal": "샘플 속도·채널·비트·dB·버퍼 지연을 숫자로 설명할 수 있다.",
+   "resources": [
+    "lyons-dsp",
+    "alsa-driver-doc"
+   ],
+   "task": "위 버퍼 지연·dB 계산을 손으로 다시 하고, PC 의 Linux 에서 `aplay -l`·`arecord` 로 장치를 보고 period 크기를 바꿔 가며 끊김이 언제 생기는지 기록한다."
+  },
+  {
+   "title": "ALSA·ASoC 드라이버",
+   "time": "3~4주",
+   "goal": "PCM 콜백 흐름과 코덱·플랫폼·머신 드라이버 나눔을 설명하고, 작은 드라이버를 빌드·적재한다.",
+   "resources": [
+    "alsa-driver-doc",
+    "kernel-asoc",
+    "ldd3"
+   ],
+   "task": "커널 예제 드라이버(가상 사운드 카드)를 모듈로 빌드해 올리고, hw_params·trigger·pointer 에 로그를 넣어 `aplay` 한 번에 불리는 순서를 표로 적는다."
+  },
+  {
+   "title": "ARM 보드와 디바이스 트리",
+   "time": "2~3주",
+   "goal": "ARM 보드에 커널을 올리고, I2C·I2S 로 붙은 오디오 칩을 디바이스 트리로 알린다.",
+   "resources": [
+    "mastering-emb-linux",
+    "kernel-dt",
+    "linux-kernel-debug-ko"
+   ],
+   "task": "라즈베리 파이 같은 보드에 I2S 오디오 모듈을 붙이고 디바이스 트리 오버레이로 켠 뒤, 소리가 안 날 때 dmesg·ftrace 로 어디서 막혔는지 찾아 적는다."
+  },
+  {
+   "title": "Android HAL — 오디오와 라디오",
+   "time": "3~4주",
+   "goal": "AAOS 의 버스 포트 소리 구조와 라디오 HAL 의 비동기 약속을 설명하고, 가짜 HAL 을 띄운다.",
+   "resources": [
+    "aosp-car-audio",
+    "aosp-audio-hal",
+    "aosp-radio-hal",
+    "aosp-aidl-hal",
+    "embedded-android"
+   ],
+   "task": "AAOS 에뮬레이터 이미지를 빌드해 기본 라디오 HAL(가짜 튜너)로 라디오 앱을 돌려 보고, tune 응답을 일부러 늦춰 시간 제한을 넘겼을 때 앱이 어떻게 되는지 기록한다."
+  },
+  {
+   "title": "방송 방식과 차량 오디오 버스 (선택)",
+   "time": "계속",
+   "goal": "DAB·HD Radio·A2B 가 무엇을 풀려고 나왔는지 설명하고, DAB↔FM 전환에 필요한 정보를 적는다.",
+   "resources": [
+    "etsi-dab",
+    "itu-bs1114",
+    "adi-a2b",
+    "qnx-io-audio"
+   ],
+   "task": "가상의 DAB 앙상블 표(방송 번호·이름·FM 대체 주파수)를 만들고, '신호 약함 → 같은 방송 FM 으로'를 결정하는 작은 상태 기계를 짜서 경계 상황(둘 다 약함, 되돌아옴)을 시험한다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 초봉 **약 5,010만원**·평균 **약 7,708만원**, 사업보고서 1인 평균 급여는 **1억 3,100만원**(2025) — 기준이 달라 숫자가 크게 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,010만원",
+    "amount": 5010,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분이 없다. 이 자리는 경력 7년 이상이라 해당하지 않는다 [23]"
+   },
+   {
+    "label": "직원 평균(집계)",
+    "value": "약 7,708만원",
+    "amount": 7708,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 연봉. 생산직을 포함한 전체 값이다 [23]"
+   },
+   {
+    "label": "직원 1인 평균 급여",
+    "value": "1억 3,100만원",
+    "amount": 13100,
+    "basis": "사업보고서 · 2025년",
+    "note": "금융감독원 전자공시 기준, 전년보다 5.6% 올랐다 [22]"
+   },
+   {
+    "label": "기아 1인 평균 급여",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2025년",
+    "peer": true,
+    "note": "같은 기사의 같은 공시 값, 전년보다 1.5% 줄었다 [22]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다 [1]. 사업보고서 평균은 성과급까지 들어간 전 직원(생산직 포함) 값이고 집계 사이트 값과 기준이 다르다 — 둘을 섞어 비교하지 않는다. 경력 7년 이상 채용이라 실제 금액은 경력과 직급으로 정해진다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로시간제",
+    "detail": "의무 근무시간 외에는 출퇴근 시각·하루 근로시간을 스스로 선택. 일반직(국내)은 월 소정 근로시간만 지키면 됨"
+   },
+   {
+    "name": "사내 어린이집",
+    "detail": "본사·울산/아산/전주공장·남양연구소·국내사업본부 등 6곳"
+   },
+   {
+    "name": "육아휴직",
+    "detail": "만 8세 이하 또는 초등 2학년 이하 자녀 한 명당 최대 2년(무급, 고용보험 육아휴직 급여 신청 가능)"
+   },
+   {
+    "name": "육아기 근로시간 단축",
+    "detail": "자녀 한 명당 최대 2년, 육아휴직과 합쳐 2년을 쓴 직원은 1년 추가"
+   },
+   {
+    "name": "배우자 출산 휴가",
+    "detail": "출산일로부터 90일 안에 최대 10일"
+   },
+   {
+    "name": "가족돌봄 휴직",
+    "detail": "부모·자녀·배우자·배우자 부모 돌봄에 연간 최대 90일"
+   },
+   {
+    "name": "심리 상담",
+    "detail": "톡톡센터(심리상담센터)·마음챙김 그룹 클래스"
+   },
+   {
+    "name": "피트니스 센터",
+    "detail": "본사·울산/아산/전주공장·남양연구소에 임직원 전용 짐나지움과 운동 프로그램"
+   },
+   {
+    "name": "퇴직연금",
+    "detail": "전 직원 대상, 준비금 사외 적립"
+   }
+  ],
+  "note": "현대자동차 2024 지속가능성 보고서 62쪽(2023년 기준 내용)의 회사 공식 제도다 [24]. 공고 본문에는 복리후생 칸이 없다 [1]. 어린이집·피트니스 센터는 판교가 아닌 사업장 목록이라 이 근무지에서 쓸 수 있는지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대자동차 판교 근무지",
+  "address": "경기도 성남시 분당구 판교역로 152",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 근처 {추론}",
+  "note": "회사 채용 공고의 근무지는 '판교' [1], 같은 공고의 원티드 사본은 '경기 성남시' [2], 같은 조직(SDV 통합제어기 Firmware·System SW)의 네트워크 공고를 실은 원티드 근무지역이 판교역로 152 다 [25]. 이 공고도 같은 자리일 가능성이 크지만 확인은 지원 때 한다 {추론}. 현대차그룹은 판교에 SW 거점(판교테크원·제2테크노밸리 소프트웨어드림센터)을 두고 있다 [26]."
+ }
+}

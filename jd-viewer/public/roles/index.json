@@ -264,6 +264,8 @@
   "wanted-387529": "hyundai-robotics-perceptive-ai",
   "wanted-387536": "hyundai-sdf-data-architect",
   "ats-hkmc:hyundai:2026N2396": "hyundai-sdf-logistics-integrated-ops",
+  "ats-hkmc:hyundai:2026N2408": "hyundai-sdv-audio-radio-system-sw",
+  "wanted-398807": "hyundai-sdv-audio-radio-system-sw",
   "ats-hkmc:hyundai:2026N2387": "hyundai-sdv-controller-sw-integration",
   "wanted-393817": "hyundai-sdv-controller-sw-integration",
   "ats-hkmc:hyundai:2026N2409": "hyundai-sdv-network-system-sw",
@@ -2761,6 +2763,17 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "hyundai-sdv-audio-radio-system-sw",
+   "company": "현대자동차",
+   "role": "오디오/라디오 시스템 소프트웨어 개발",
+   "jobs": [
+    "ats-hkmc:hyundai:2026N2408",
+    "wanted-398807"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 15
   },
   {
    "id": "hyundai-sdv-controller-sw-integration",
