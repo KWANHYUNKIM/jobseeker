@@ -1,0 +1,927 @@
+{
+ "id": "daangn-security-detection-response",
+ "company": "당근",
+ "role": "Security Engineer — 인프라 (Detection & Response)",
+ "team": "보안팀",
+ "jobs": [
+  "ats-greenhouse:daangn:6043519003"
+ ],
+ "researched_at": "2026-11-25",
+ "updated_at": "2026-11-25",
+ "tldr": {
+  "what": "당근 앱(대고객 서비스)과 직원 PC·사내 SaaS(오피스) 양쪽에서 울리는 보안 경보를 분석·대응하고, 사고가 나면 침입 경로와 원인을 쫓아 재발을 막으며, 그 결과로 탐지 룰·자동화·절차를 고칩니다.[1]",
+  "env": "AWS·GCP 를 함께 쓰는 클라우드, SSO·협업 SaaS, MDM 으로 관리하는 PC·원격 접속(ZTNA). 보안팀은 통제를 줄이고 로그 모니터링으로 빈자리를 메우는 원칙으로 일합니다.[2][17][18][19]",
+  "oneline": "경력 3년 이상 사고 대응 엔지니어. **탐지를 설계하고, 사고를 끝까지 쫓고, 다음 사고를 더 빨리 잡게 만드는** 자리입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "대고객 서비스 환경과 내부 오피스 환경 전반에서 발생하는 보안 이벤트를 분석하고 대응해요",
+   "short": "앱 서비스와 직원 PC·사내 SaaS 양쪽에서 울리는 보안 경보를 보고, 진짜면 막는 일.",
+   "why": "보안팀은 외부 공격을 막고 내부 정보가 새지 않게 하는 것을 목표로 둡니다.[1] 당근 보안팀의 CERT(사고 대응 담당)는 보안 제품과 서비스 시스템의 로그를 지켜보다 이상한 점이 보이면 담당 팀과 함께 확인한다고 인터뷰에서 밝혔습니다.[2] 보안팀은 PC 백신·원격 접속(ZTNA, 사내망을 사람·기기 단위로 열어 주는 방식)을 MDM(회사 기기 원격 관리)으로 배포·관리합니다 — '오피스 환경'은 이런 직원 쪽 영역입니다.[2]",
+   "actually": {
+    "items": [
+     "**대고객 쪽** — 앱·웹 서버, 클라우드 계정, 관리자 도구의 이상 접근(낯선 곳의 관리자 로그인, 권한 변경, 대량 조회). {추론}",
+     "**오피스 쪽** — 직원 PC 의 백신·EDR(PC 위 수상한 행동 탐지) 경보, ZTNA 접속 기록, 사내 SaaS 계정의 이상 로그인.[2][3]",
+     "**한 건 처리 순서** — 경보 확인 → 오탐인지 판단 → 진짜면 범위 확인(같은 계정·기기·IP 가 또 어디에) → 격리(세션 끊기·키 폐기·기기 격리) → 담당 팀에 알림.[5]",
+     "계열사 당근페이 보안 공고도 같은 일을 '실시간 모니터링·이상 징후 분석'으로 적었습니다(당근페이는 전자금융 규정을 따로 지킵니다).[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "로그인 기록에서 두 가지 경보 만들기 (가상 값)",
+     "body": "5분 안 실패 5번(무차별 대입)과, 그 직후 성공(탈취 가능성), 1분 만에 나라가 바뀐 성공(불가능한 이동)을 잡습니다. 실제 SIEM 룰도 이런 '기준 시간 · 횟수 · 이어지는 사건'의 조합입니다.[7] (직접 돌린 출력)",
+     "lang": "python",
+     "code": "from collections import defaultdict\n# 가상 로그인 기록: (분, 사용자, 결과, 접속 국가)\nlogs = [(0,\"kim\",\"fail\",\"KR\"),(1,\"kim\",\"fail\",\"KR\"),(1,\"kim\",\"fail\",\"KR\"),(2,\"kim\",\"fail\",\"KR\"),\n        (2,\"kim\",\"fail\",\"KR\"),(3,\"kim\",\"ok\",\"KR\"),(5,\"lee\",\"ok\",\"KR\"),(6,\"lee\",\"ok\",\"US\"),\n        (9,\"park\",\"fail\",\"KR\"),(40,\"park\",\"fail\",\"KR\")]\nWINDOW, LIMIT = 5, 5            # 5분 안에 실패 5번이면\nfails = defaultdict(list)\nlast_country = {}\nfor t, user, result, cc in logs:\n    if result == \"fail\":\n        fails[user] = [x for x in fails[user] if t - x < WINDOW] + [t]\n        if len(fails[user]) >= LIMIT:\n            print(f\"[{t}분] 무차별 대입 의심: {user} 실패 {len(fails[user])}회\")\n    else:\n        if len(fails[user]) >= LIMIT:\n            print(f\"[{t}분] 실패 직후 성공: {user} -> 계정 탈취 가능성, 세션 확인\")\n        if user in last_country and last_country[user][1] != cc and t - last_country[user][0] < 60:\n            print(f\"[{t}분] 불가능한 이동: {user} {last_country[user][1]}->{cc} {t-last_country[user][0]}분\")\n        last_country[user] = (t, cc)\n        fails[user] = []\n# [2분] 무차별 대입 의심: kim 실패 5회\n# [3분] 실패 직후 성공: kim -> 계정 탈취 가능성, 세션 확인\n# [6분] 불가능한 이동: lee KR->US 1분"
+    }
+   ],
+   "how_far": "경보 한 건을 받아 '진짜인가 → 어디까지 번졌나 → 지금 무엇을 끊나'를 혼자 결정하고 기록할 수 있으면 됩니다. 법적 신고·대외 공지는 법무·개인정보 담당과 함께 정합니다.[2]{추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    5
+   ],
+   "study": [
+    "daangn-security-team",
+    "nist-ir"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "침해사고 및 보안 이슈를 효과적으로 탐지하기 위한 탐지 체계와 관련 활동을 설계·운영·고도화해요",
+   "short": "무엇을 모으고 어떤 규칙으로 울릴지 정해, 경보가 '진짜 사고'를 잡게 만드는 일.",
+   "why": "당근 보안팀은 생산성을 해치는 일괄 통제를 줄이고 그 빈자리를 로그 모니터링으로 메우는 쪽을 택했다고 밝혔습니다 — 그만큼 탐지가 방어의 중심입니다.[2] 같은 글에서 많은 로그 속에서 의미 있는 신호를 찾는 것이 어렵다고 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**모을 것 정하기** — 클라우드 감사 로그, 인증(SSO) 로그, PC EDR, SaaS 관리 기록. 없는 로그로는 사고를 못 봅니다.[11]",
+     "**룰 쓰기** — '무엇을 보면 울리나'를 Sigma 같은 형식으로 적고 코드처럼 리뷰·버전 관리합니다.[7]",
+     "**덮은 곳 표시** — 룰마다 ATT&CK 기법 번호를 달아 어느 공격 단계가 비었는지 봅니다.[6]",
+     "**룰마다 문서** — 목적·가정·사각지대·예상 오탐·대응 절차.[12]",
+     "**높은 층을 노린다** — IP·해시는 공격자가 쉽게 바꾸고, 행동(기법)은 바꾸기 어렵습니다. 탐지를 행동 쪽으로 올리는 것이 고도화입니다.[13]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "탐지 룰 하나의 한살이 — 보통 이런 것[7][12]",
+     "steps": [
+      "가설 · 이런 공격이면 이런 흔적이 남는다",
+      "로그 확인 · 그 흔적이 우리 로그에 실제로 있나",
+      "룰 작성 · 조건·문턱·묶음",
+      "시험 · 지난 로그에 돌려 오탐 수 확인",
+      "배포 · 경보 → 담당자·자동 대응",
+      "되먹임 · 오탐·놓침으로 다시 고침"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "examples": [
+    {
+     "title": "문턱 하나가 바꾸는 것 (가상 값)",
+     "body": "같은 룰도 문턱을 낮추면 경보가 쏟아져 사람이 지치고, 높이면 진짜를 놓칩니다. 고도화는 이 표를 실제 로그로 만들어 보고 고르는 일입니다.{추론} (직접 돌린 출력)",
+     "lang": "python",
+     "code": "# 가상 값: 탐지 룰 하나를 한 주 돌린 결과 — 문턱을 바꾸면 경보 수와 놓친 사고가 어떻게 바뀌나\nevents = [3,4,4,5,5,5,6,6,7,8,9,12,15,30]   # 사용자별 5분 실패 횟수\nattack = {12,15,30}                          # 조사해 보니 실제 공격이던 값\nfor limit in (5, 8, 10, 20):\n    alerts = [e for e in events if e >= limit]\n    tp = sum(1 for e in alerts if e in attack)\n    miss = sum(1 for e in attack if e < limit)\n    print(f\"문턱 {limit:>2}: 경보 {len(alerts):>2}건  진짜 {tp}  정밀도 {tp/len(alerts):.0%}  놓침 {miss}\")\n# 문턱  5: 경보 11건  진짜 3  정밀도 27%  놓침 0\n# 문턱  8: 경보  5건  진짜 3  정밀도 60%  놓침 0\n# 문턱 10: 경보  3건  진짜 3  정밀도 100%  놓침 0\n# 문턱 20: 경보  1건  진짜 1  정밀도 100%  놓침 2"
+    }
+   ],
+   "how_far": "룰을 '많이' 쓰는 것보다, 룰마다 왜 있고 몇 건이 울려 몇 건이 진짜였는지 말할 수 있는 것이 기준입니다.[12]{추론}",
+   "refs": [
+    2,
+    6,
+    7,
+    11,
+    12,
+    13
+   ],
+   "study": [
+    "sigma-rules",
+    "mitre-attack",
+    "palantir-ads"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안 이벤트 탐지 또는 침해사고 발생 시 조사를 수행하여 침해 경로와 발생 원인을 분석하고 재발 방지 대책을 수립·이행해요",
+   "short": "사고가 나면 '어디로 들어와 무엇을 했나'를 시간 순으로 맞추고, 같은 길을 막는 일.",
+   "why": "공고가 조사·원인 분석·재발 방지까지를 한 사람의 일로 적었습니다.[1] 국제 기준도 대응을 복구에서 끝내지 않고 '배운 것'을 다음 준비로 돌리는 한 바퀴로 봅니다.[5]",
+   "actually": {
+    "items": [
+     "**증거 먼저** — 로그·디스크·메모리를 지우기 전에 보존합니다(클라우드는 스냅숏, 접근 키 기록).[11][15]",
+     "**타임라인** — 첫 침입 시각부터 마지막 행동까지 사건을 한 줄로 세웁니다. 서로 다른 시스템의 시각(시간대)을 맞추는 것이 일입니다.[15]",
+     "**경로** — 피싱 메일 → 계정 탈취 → SaaS 접근 → 데이터 내려받기처럼 단계마다 증거를 붙입니다. ATT&CK 단계 이름으로 적으면 남과 말이 통합니다.[6]",
+     "**재발 방지** — 원인(설정·권한·패치)을 고치고, 같은 흔적을 잡는 탐지 룰을 새로 넣고, 이행 여부를 확인합니다.[5]"
+    ]
+   },
+   "how_far": "'원인은 무엇이고, 무엇을 바꿨고, 그 뒤 같은 시도가 잡히는가'까지 확인해 문서로 남기면 한 사고가 끝납니다. 직접 고치는 것은 보통 그 시스템을 가진 팀이고, 이 자리는 무엇을 고칠지와 확인을 맡습니다.[2]{추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    11,
+    15
+   ],
+   "study": [
+    "nist-ir",
+    "kisa-ir",
+    "aws-ir-guide",
+    "blueteam-ir-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사고 대응 과정에서 도출된 개선 사항을 바탕으로 탐지 룰, 자동화, 운영 프로세스를 지속적으로 개선해요",
+   "short": "사고 하나가 끝날 때마다 룰·자동 대응·절차를 한 칸씩 고쳐 다음 사고를 더 빨리 잡는 일.",
+   "why": "공고는 개선의 대상을 탐지 룰·자동화·운영 프로세스 셋으로 적었습니다.[1] 계열사 당근페이 보안 공고도 '대응 자동화'를 업무로 꼽았습니다.[3]",
+   "actually": {
+    "items": [
+     "**사후 검토** — 누구 탓이 아니라 무엇이 늦었나를 적는 글(포스트모템). 탐지까지 걸린 시간, 대응까지 걸린 시간을 잽니다.[14]",
+     "**룰** — 놓친 흔적은 새 룰로, 쓸데없이 울린 룰은 예외·문턱 조정으로.[12]",
+     "**자동화** — 반복되는 확인(IP 평판 조회, 계정 최근 로그인, 담당자 묻기)을 스크립트·플레이북으로 돌려 사람은 판단만 하게 합니다.{추론}",
+     "**절차** — 누가 언제 깨우는지, 어떤 경우 법무에 알리는지 같은 연락 순서를 고칩니다.[5]"
+    ]
+   },
+   "how_far": "사고마다 '다음엔 무엇이 달라지나'를 한 줄 이상 남기고 실제로 반영했는지 추적하면 됩니다.[14]{추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    12,
+    14
+   ],
+   "study": [
+    "sre-book",
+    "palantir-ads"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "침해사고 또는 보안 이벤트 대응 실무 경험 3년 이상이신 분",
+   "short": "보안 관제·사고 대응을 실제 업무로 3년 이상 해 본 경력직 자리.",
+   "why": "공고가 정한 최소 조건입니다.[1] 계열사 당근페이 보안 공고도 기업 보안 운영 또는 관제(SOC) 3년 이상을 요구했습니다.[3] 경력 기간에 따라 최대 3개월 계약직으로 역량을 더 확인할 수 있다고 공고가 밝힙니다.[1]",
+   "actually": {
+    "items": [
+     "직접 처리한 사건의 종류(계정 탈취·악성코드·데이터 유출·설정 실수)와 내가 맡은 칸을 말할 수 있어야 합니다.{추론}",
+     "경보를 '보기만' 한 것과 원인까지 쫓아 재발 방지를 낸 것은 다르게 읽힙니다 — 업무 셋째 줄이 뒤쪽을 요구합니다.[1]"
+    ]
+   },
+   "how_far": "이력서에는 사건 수보다 대표 사건 두세 개의 '탐지 → 조사 → 원인 → 바꾼 것'을 적는 편이 공고 문장과 바로 맞닿습니다.{추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "nist-ir"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "멀티 클라우드 및 SaaS 등 복합적인 서비스 환경에서 보안 이벤트 분석과 침해사고 대응을 수행한 경험이 있으신 분",
+   "short": "AWS·GCP 같은 클라우드 여러 곳과 업무용 SaaS 로그를 오가며 사고를 쫓아 본 경험.",
+   "why": "당근은 AWS 와 GCP 를 함께 씁니다 — 데이터는 BigQuery(GCP), 플랫폼 일부는 AWS 에 있습니다.[17][18][19] 직원 쪽은 SSO·협업 SaaS 를 쓰고, 계열 공고는 Okta·Google Workspace·Notion 을 직접 꼽았습니다.[3]",
+   "actually": {
+    "items": [
+     "**클라우드마다 감사 로그 이름이 다르다** — AWS CloudTrail, GCP Cloud Audit Logs. 한 사람의 행동을 두 곳에서 이어 붙이는 것이 일입니다.[11]{추론}",
+     "**SaaS 는 로그를 회사가 다 갖지 못한다** — 관리 콘솔·API 로 받을 수 있는 기간과 항목이 서비스마다 다릅니다.{추론}",
+     "**공격 기법 사전도 칸이 따로 있다** — ATT&CK 은 클라우드·SaaS·오피스 제품군·ID 공급자(IdP) 매트릭스를 따로 둡니다.[6]",
+     "**ID 가 중심** — SSO 계정 하나가 뚫리면 모든 SaaS 가 열립니다. 그래서 조사는 대개 ID 공급자 로그에서 시작합니다.[6]{추론}"
+    ]
+   },
+   "how_far": "두 클라우드 중 하나는 깊게, 다른 하나는 '감사 로그가 어디 있고 무엇이 찍히나'까지 알면 출발선입니다.{추론}",
+   "refs": [
+    17,
+    18,
+    19,
+    3,
+    6,
+    11
+   ],
+   "study": [
+    "aws-ir-guide",
+    "mitre-attack"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "주어진 범위 내의 대응에 그치지 않고, 침해사고 대응과 운영 개선을 주도적으로 추진할 수 있는 분",
+   "short": "시킨 경보만 닫지 않고, 비어 있는 탐지·절차를 스스로 찾아 고치는 사람.",
+   "why": "당근 보안팀은 요구사항을 채우려고 도구나 통제를 더하기보다 다른 방법을 찾는 사람을 원한다고 밝혔습니다.[2] 결정이 빨라 다른 회사에서 1년 걸리던 도입을 약 3개월에 했다는 사례도 들었습니다.[2]",
+   "actually": {
+    "items": [
+     "경보가 없던 영역(새 SaaS, 새 클라우드 계정)을 먼저 찾아 로그를 붙이는 일.{추론}",
+     "사고 뒤 개선안을 내고 해당 팀과 일정을 잡아 끝까지 확인하는 일.[1][14]"
+    ]
+   },
+   "how_far": "면접에서는 '누가 시키지 않았는데 바꾼 것' 하나를 근거와 결과 숫자로 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    1,
+    2,
+    14
+   ],
+   "study": [
+    "daangn-security-team"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 이해관계자와 협업하며 사고 대응 및 개선을 이끌어갈 수 있는 분",
+   "short": "사고 때 개발·인프라·법무·운영팀을 묶어 같이 움직이게 하는 사람.",
+   "why": "당근 보안팀은 법무팀과 여러 제품 팀(PM·엔지니어)과 가까이 일한다고 밝혔고, 감사 자료 요청을 회의 직후 시작해 그날 끝낸 사례를 들었습니다.[2] 고칠 시스템은 대개 다른 팀 것이라 설득이 일의 절반입니다.{추론}",
+   "actually": {
+    "items": [
+     "**사고 중** — 한 채널에 상황·결정·다음 할 일을 모으고, 각 팀에 할 일을 나눠 줍니다.[5]",
+     "**사고 뒤** — 개선안을 담당 팀의 말(일정·비용)로 바꿔 합의합니다.{추론}",
+     "**법·규제** — 개인정보가 얽히면 개인정보 담당·법무와 신고 여부를 정합니다.[2]"
+    ]
+   },
+   "refs": [
+    2,
+    5
+   ],
+   "study": [
+    "daangn-security-team",
+    "nist-ir"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외부 보안 사고 및 보안 이슈에 대해 지속적으로 관심을 가지고, CVE, 보안 동향 리포트 등을 참고하며 업무에 반영해 온 분",
+   "short": "새로 알려진 취약점(CVE)·남의 사고 소식을 보고 우리 쪽에 해당되는지 먼저 확인해 온 사람.",
+   "why": "당근 보안팀은 CrowdStrike 업데이트로 전 세계 PC 가 멈췄을 때 몇 분 안에 1차 대응을 끝내고 제조사 해결책을 적용했다고 밝혔습니다 — 바깥 사건을 바로 우리 일로 바꾸는 예입니다.[2] CVE 는 공개된 취약점마다 붙는 공용 번호입니다.[16]",
+   "actually": {
+    "items": [
+     "**해당되나** — 새 CVE 가 우리 자산(외부 노출 장비·라이브러리)에 있는지 찾습니다.{추론}",
+     "**먼저 볼 것 고르기** — 실제 악용이 확인된 목록(CISA KEV)과 30일 안 악용 확률(EPSS)로 순서를 정합니다. 점수(CVSS)만 높다고 급한 것은 아닙니다.[8][9]",
+     "**탐지로 돌리기** — 남의 사고 보고서에서 기법을 읽고 우리 로그로 그 흔적을 찾는 룰을 씁니다.[6][7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CVSS 순서와 실제 처리 순서가 다르다 (가상 값)",
+     "body": "악용 확인(KEV) → 외부 노출 → 악용 확률(EPSS) → 점수(CVSS) 순으로 세웠더니 9.8점짜리 내부 도구가 맨 뒤로 갔습니다. 실제 기준은 회사마다 정합니다.{추론} (직접 돌린 출력)",
+     "lang": "python",
+     "code": "# 가상 값: 우리 자산에 걸린 취약점 — KEV(실제 악용 확인)·노출 여부·EPSS(30일 안 악용 확률)·CVSS 순으로 줄 세우기\nvulns = [(\"CVE-A\", 9.8, False, 0.02, \"내부 관리도구\"),\n         (\"CVE-B\", 7.5, True,  0.91, \"외부 노출 VPN\"),\n         (\"CVE-C\", 8.8, False, 0.40, \"외부 노출 웹\"),\n         (\"CVE-D\", 5.3, True,  0.12, \"사내 PC\")]\ndef rank(v):\n    cve, cvss, kev, epss, asset = v\n    return (kev, asset.startswith(\"외부\"), epss, cvss)\nfor v in sorted(vulns, key=rank, reverse=True):\n    print(f\"{v[0]}  KEV={'Y' if v[2] else 'N'}  EPSS={v[3]:.2f}  CVSS={v[1]}  {v[4]}\")\n# CVE-B  KEV=Y  EPSS=0.91  CVSS=7.5  외부 노출 VPN\n# CVE-D  KEV=Y  EPSS=0.12  CVSS=5.3  사내 PC\n# CVE-C  KEV=N  EPSS=0.40  CVSS=8.8  외부 노출 웹\n# CVE-A  KEV=N  EPSS=0.02  CVSS=9.8  내부 관리도구"
+    }
+   ],
+   "refs": [
+    2,
+    6,
+    7,
+    8,
+    9,
+    16
+   ],
+   "study": [
+    "kev-epss",
+    "mitre-attack"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "OSINT, CTI, Attack Surface 정보 활용 경험이 있으신 분",
+   "short": "공개 정보(OSINT)·위협 정보(CTI)·우리가 밖에 드러낸 지점(공격 표면)을 대응에 써 본 경험.",
+   "why": "계열사 당근페이 보안 공고가 '위협 인텔리전스 기반 탐지 체계 개선'을 업무로 적었습니다.[3] 이 공고는 쓰는 도구를 밝히지 않았습니다.[1]",
+   "actually": {
+    "items": [
+     "**OSINT** — 유출된 계정 목록·코드 저장소·검색 엔진에 우리 정보(키·도메인·직원 계정)가 떠도는지 찾기.{추론}",
+     "**CTI** — 다른 곳 사고에서 나온 공격 지표(IP·도메인·해시)와 기법을 받아 우리 로그와 맞대기. 지표는 금방 바뀌니 기법 쪽이 오래갑니다.[13]",
+     "**Attack Surface** — 밖에서 보이는 도메인·열린 포트·관리 페이지 목록을 늘 최신으로 두기. 새 서비스가 많은 회사일수록 빨리 늘어납니다.{추론}",
+     "당근 보안팀은 엔지니어 코드에서 회사 민감 정보를 자동으로 찾는 '시크릿 진단' 도구를 만들었습니다 — 새는 지점을 안에서 먼저 찾는 쪽입니다.[2]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    3,
+    13
+   ],
+   "study": [
+    "idir-book",
+    "mitre-attack"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "업무 효율화를 위한 자동화, AI를 활용해 분석·대응 업무를 개선해 본 경험이 있으신 분",
+   "short": "반복 확인은 스크립트로, 경보 요약·분류는 AI 로 돌려 사람 손을 판단에만 쓰게 해 본 경험.",
+   "why": "당근은 사내 공용 AI 플랫폼과 MCP 도구 허브를 갖고 있어 보안 도구도 그 위에 붙일 수 있습니다.[17] 계열사 보안 공고도 Python·셸 자동화와 AI 도구 활용 경험을 요건에 넣었습니다.[3]",
+   "actually": {
+    "items": [
+     "**보강 자동화** — 경보가 오면 IP 평판·계정 최근 로그인·기기 주인을 자동으로 붙여 보여 줍니다.{추론}",
+     "**AI 활용** — 긴 로그를 요약하고 비슷한 지난 사고를 찾아 초안 판단을 내게 합니다. 최종 결정은 사람이 합니다 — 당근의 사기 탐지 에이전트도 위험도를 매기고 사람이 최종 판단합니다.[4]",
+     "**조심할 점** — 로그에 든 개인정보를 외부 모델로 보내도 되는지, 모델이 틀릴 때 무엇이 막아 주는지 먼저 정합니다.{추론}"
+    ]
+   },
+   "refs": [
+    17,
+    3,
+    4
+   ],
+   "study": [
+    "daangn-genai",
+    "building-agents"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "IT기업 또는 대규모 서비스 환경에서의 침해사고 대응 경험이 있으신 분",
+   "short": "사용자 많은 서비스에서 '서비스를 멈추지 않고' 사고를 처리해 본 경험.",
+   "why": "당근 앱 하나에 중고거래·부동산·중고차·알바가 함께 있고, 보안 검토가 기획부터 출시까지 붙는다고 보안팀이 밝혔습니다.[2] 서비스 규모가 크면 격리 한 번이 많은 사용자에게 닿습니다.{추론}",
+   "actually": {
+    "items": [
+     "격리 범위를 좁게 — 서비스 전체를 내리지 않고 키 하나·계정 하나·기능 하나만 끊는 선택.{추론}",
+     "개발팀이 매일 배포하는 환경이라, 사고 조사와 배포 기록(누가 언제 무엇을 바꿨나)을 맞대는 일.{추론}"
+    ]
+   },
+   "refs": [
+    2
+   ],
+   "study": [
+    "aws-ir-guide",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SIEM 또는 오케스트레이션 플랫폼 구축 및 운영 경험이 있으신 분",
+   "short": "로그를 한곳에 모아 검색·경보하는 SIEM, 경보마다 대응을 자동으로 돌리는 SOAR 를 세워 본 경험.",
+   "why": "계열사 당근페이 보안 공고는 EDR·SIEM 운영과 탐지 정책 개선을 업무로 적었습니다.[3] 이 공고가 쓰는 제품 이름은 공개되지 않았습니다.[1]",
+   "actually": {
+    "items": [
+     "**SIEM** — 여러 곳 로그를 한 형식으로 모으고(수집·정규화), 룰로 경보를 내고, 사고 때 검색합니다. 비용은 대개 받는 양으로 오르니 무엇을 받을지가 설계입니다.{추론}",
+     "**오케스트레이션(SOAR)** — 경보 하나에 '정보 붙이기 → 담당자에게 묻기 → 계정 잠금' 같은 순서를 플레이북으로 돌립니다.{추론}",
+     "**룰을 코드로** — 룰을 저장소에 두고 리뷰·시험·배포하면 누가 왜 바꿨는지 남습니다.[7]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    7
+   ],
+   "study": [
+    "sigma-rules",
+    "palantir-ads"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "서비스 어뷰징 대응 경험이 있으신 분",
+   "short": "해킹이 아니라 정상 기능을 나쁘게 쓰는 것(사기·계정 대입·가짜 가입)을 잡아 본 경험.",
+   "why": "당근은 게시글·채팅·동네인증·기기 정보를 함께 보고 사기 위험도를 매기는 AI 에이전트를 두고, 최종 판단은 사람이 한다고 밝혔습니다.[4] 사기 이력이 있는 계좌·전화번호는 채팅에서 자동으로 지우고, 새 기기 로그인 때 계정 대여 경고를 보냅니다.[4] 보안팀의 모의 해킹도 매너온도 조작 같은 서비스 고유 취약점을 찾습니다.[2]",
+   "actually": {
+    "items": [
+     "**자동화 공격의 이름** — 계정 대입·가짜 가입·대량 수집·쿠폰 남용처럼 OWASP 가 나눠 둔 목록으로 말합니다.[10]",
+     "**신호** — 같은 기기·전화번호·계좌가 여러 계정에 묶이는지, 가입 직후 행동 속도.[4]{추론}",
+     "**보안팀과 운영팀의 경계** — 계정 탈취·자동화 공격은 보안, 판매 사기·업자 판별은 운영·ML 쪽이 함께 보는 경우가 많습니다. 당근의 신고 처리 에이전트 사례도 있습니다.[20]{추론}"
+    ]
+   },
+   "refs": [
+    20,
+    2,
+    4,
+    10
+   ],
+   "study": [
+    "owasp-oat"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "참고해 주세요 정규직 채용의 경우 3개월의 수습기간이 있어요 ‘장애인고용촉진 및 직업재활법’, ‘국가유공자 등 예우 및 지원에 관한 법률’에 따라 장애인 및 보훈대상자는 채용 전형 시 우대하고 있어요",
+   "short": "정규직은 입사 뒤 수습 3개월. 장애인·보훈대상자는 법에 따라 전형에서 우대한다.",
+   "why": "공고 안내입니다.[1] 경력 기간에 따라 최대 3개월 계약직으로 먼저 일하며 역량을 더 확인할 수 있고, 수습 평가 결과로 수습이 늘거나 채용이 취소될 수 있다고 공고가 밝힙니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이렇게 합류해요 1. 서류 전형 → 2. 화상 인터뷰 → 3. 직무 인터뷰 → 4. 컬처핏 인터뷰 및 레퍼런스 체크 → 5. 처우협의 → 6. 최종 합격 및 입사",
+   "short": "서류 → 화상 → 직무 → 컬처핏·레퍼런스 → 처우 협의 → 입사, 여섯 단계.",
+   "why": "공고의 전형 순서입니다.[1] 연봉은 공고에 없고 다섯째 단계에서 정해집니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "당근 전형 소개 서류 전형 당근은 자유형식의 지원서를 받고 있어요. 본인의 강점이 잘 드러나는 다양한 정보를 자유롭게 활용해 이력서를 작성해 주세요. 문서 형식은 hwp(한글) 파일을 제외하고 word, pdf, 웹 링크 등 자유롭게 선택해주시면 돼요. 웹 링크(노션, 구글드라이브 등)로 서류를 제출해주실 때는 접근 권한을 꼭 열어주세요. 평가와 상관 없는 사진, 주소 등의 개인정보는 제외해주세요.",
+   "short": "자유 형식 — hwp만 빼고 아무 형식. 링크면 접근 권한을 열고 사진·주소는 빼라.",
+   "why": "공고 안내입니다.[1] 보안 경력은 회사 기밀이 얽혀 그대로 못 쓰는 경우가 많습니다 — 회사·고객 이름과 내부 값은 지우고 '탐지 → 조사 → 원인 → 바꾼 것'의 흐름만 남기는 편이 안전합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "화상 면접 지원해주신 직무와 업무 연관성이 높은 당근 팀원과 화상으로 직무와 관련된 기본적인 지식에 대해 이야기를 나누는 단계예요. 과제 전형 직무에 따라 과제 전형이 있어요. 과제는 직무 능력과 연관된 내용으로 출제돼요. 과제 전형을 별도로 운영하는 직무도 있고, 화상 면접 또는 직무 면접에서 과제가 함께 출제되는 경우도 있어요. 직무 면접 지원하신 직무와 업무 연관성이 높은 당근 팀원들과 직무 역량, 경험에 대해 화상 면접보다 심층적인 이야기를 나누는 단계예요. 과제가 출제되었을 경우 과제에 대한 질문을 드려요. 컬쳐핏 면접(정규직 공통) 당근은 면접을 단순히 회사에 사람을 뽑는 자리로 생각하지 않아요. 당근과 지원자가 서로 추구하는 가치관과 생각을 교환하는 시간이라고 생각하고 있어요. 컬쳐핏 단계는 당근이 추구하는 문화와 일하는 방식과 잘 어울릴 수 있는 분인지 확인하는 단계예요. 또한 포지션에 대한 전문성을 다시금 확인하는 이야기를 나눠요.",
+   "short": "화상(기본 지식) → 과제(직무에 따라) → 직무(경험 심층) → 컬처핏(일하는 방식). 과제가 있으면 직무 면접에서 묻는다.",
+   "why": "공고 안내입니다.[1] 이 자리라면 화상 면접에서 로그·클라우드·공격 기법의 기본을, 직무 면접에서 직접 처리한 사고 하나를 끝까지 깊게 물을 가능성이 큽니다. {추론}",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "경보를 닫는 것보다 '왜 울렸고 무엇이 비었나'가 궁금한 사람[1]",
+   "막기보다 보이게 하는 쪽(로그·탐지)으로 문제를 푸는 게 맞는 사람[2]",
+   "개발·법무·제품 팀에 직접 말을 걸어 일을 끝내는 사람[2]",
+   "반복되는 확인을 스크립트로 바꾸지 않으면 못 견디는 사람[1][3]"
+  ],
+  "hard": [
+   "정해진 관제 절차대로 경보만 처리하길 원하면 맞지 않는다[1]",
+   "보안 제품 운영보다 공격 연구만 하고 싶다면 범위가 다르다{추론}",
+   "서비스 영역이 넓어(중고거래·부동산·중고차·알바) 볼 로그와 법이 많다[2]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "SSO 로그에서 '실패 여러 번 뒤 성공'이 울렸습니다. 다음 10분 동안 무엇을 어떤 순서로 확인하나요?",
+   "a": "업무 첫째·셋째 줄 — 진짜인지, 어디까지 번졌는지, 무엇을 끊는지.[1][5]"
+  },
+  {
+   "q": "경보가 하루 수백 건 울리는데 대부분 오탐입니다. 어떻게 줄이고, 줄인 뒤 놓친 게 없다는 걸 어떻게 보이나요?",
+   "a": "보안팀이 많은 로그 속 신호 찾기를 어려운 점으로 꼽았고, 룰마다 목적·오탐을 적는 방식이 있다.[2][12]"
+  },
+  {
+   "q": "통제를 줄이고 모니터링으로 메운다는 방침에서, 그래도 막아야 하는 것은 무엇인가요?",
+   "a": "당근 보안팀의 '통제보다 모니터링' 원칙.[2]"
+  },
+  {
+   "q": "AWS 와 GCP, SaaS 에 걸친 사고에서 한 사람의 행동을 어떻게 한 줄 타임라인으로 잇나요?",
+   "a": "요건 둘째 줄 — 클라우드마다 다른 감사 로그와 ID 공급자 중심 조사.[1][6][11]"
+  },
+  {
+   "q": "CVSS 9.8 짜리와 KEV 에 오른 7.5 짜리가 같은 날 나왔습니다. 무엇부터 보나요?",
+   "a": "우대 첫째 줄 — 실제 악용 여부와 노출 여부로 순서 정하기.[8][9]"
+  },
+  {
+   "q": "계정 대입 공격과 판매 사기는 누가 맡아야 하나요? 보안팀은 어디까지 하나요?",
+   "a": "우대 마지막 줄 — 당근의 사기 탐지 에이전트와 자동화 위협 분류.[4][10]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "당근 채용 · Security Engineer - 인프라 (보안, Detection & Response)",
+   "url": "https://about.daangn.com?gh_jid=6043519003",
+   "kind": "posting",
+   "note": "보안팀 소개·업무·요건·우대·전형"
+  },
+  {
+   "n": 2,
+   "title": "당근 팀 블로그 · 누구나 안심하고 사용하도록, 당근의 안전을 지키는 보안팀",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EB%B3%B4%EC%95%88%ED%8C%80-%ED%98%91%EC%97%85-%EC%B1%84%EC%9A%A9-%ED%8C%80%EB%AC%B8%ED%99%94/",
+   "kind": "company",
+   "date": "2025-01-06",
+   "note": "보안팀 인터뷰 — 엔지니어(사내 보안 도구·침해 대응)와 매니저(인증·규제) 두 갈래, CERT 의 로그 모니터링, '통제보다 모니터링', 시크릿 진단 도구, CrowdStrike 장애 대응, ISO 27001·ISMS-P. 본문 전부 확인"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · [당근마켓] Security Engineer - 당근페이",
+   "url": "https://www.wanted.co.kr/wd/367033",
+   "kind": "posting",
+   "note": "마감된 계열 공고 — 실시간 이벤트 모니터링, EDR·SIEM 운영, 위협 인텔리전스 기반 탐지 개선과 대응 자동화, Okta·Google Workspace·Notion"
+  },
+  {
+   "n": 4,
+   "title": "디지털인사이트 · 사기 패턴 자동 감지… 당근, 'AI 에이전트' 통해 안전거래 경험 강화",
+   "url": "https://ditoday.com/%ec%82%ac%ea%b8%b0-%ed%8c%a8%ed%84%b4-%ec%9e%90%eb%8f%99-%ea%b0%90%ec%a7%80-%eb%8b%b9%ea%b7%bc-ai-%ec%97%90%ec%9d%b4%ec%a0%84%ed%8a%b8-%ed%86%b5%ed%95%b4-%ec%95%88%ec%a0%84/",
+   "kind": "news",
+   "date": "2025-09-08",
+   "note": "회사 발표 보도 — 게시글·채팅·동네인증·기기 정보로 위험도, 사람이 최종 판단, 사기 이력 번호 자동 삭제, 새 기기 로그인 알림"
+  },
+  {
+   "n": 5,
+   "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "kind": "reference",
+   "date": "2025-04"
+  },
+  {
+   "n": 6,
+   "title": "MITRE ATT&CK (Enterprise — Cloud·SaaS·Office Suite·Identity Provider 매트릭스 포함)",
+   "url": "https://attack.mitre.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 7,
+   "title": "SigmaHQ · Sigma 탐지 규칙 형식과 공개 규칙 모음",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "kind": "reference"
+  },
+  {
+   "n": 8,
+   "title": "CISA · Known Exploited Vulnerabilities Catalog",
+   "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "FIRST · Exploit Prediction Scoring System (EPSS)",
+   "url": "https://www.first.org/epss/",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "OWASP · Automated Threats to Web Applications",
+   "url": "https://owasp.org/www-project-automated-threats-to-web-applications/",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "AWS · Security Incident Response Guide (백서)",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-security-incident-response-guide/welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Palantir · Alerting and Detection Strategy Framework",
+   "url": "https://github.com/palantir/alerting-detection-strategy-framework",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "David Bianco · The Pyramid of Pain",
+   "url": "https://detect-respond.blogspot.com/2013/03/the-pyramid-of-pain.html",
+   "kind": "reference",
+   "date": "2013-03"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Book · Postmortem Culture: Learning from Failure",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "KISA · 침해사고 분석절차 안내서",
+   "url": "https://www.kisa.or.kr/2060204/form?postSeq=11",
+   "kind": "reference",
+   "note": "KISA 지식플랫폼 가이드라인 — 2010년 문서, 2016년 게시"
+  },
+  {
+   "n": 16,
+   "title": "CVE Program · Overview",
+   "url": "https://www.cve.org/About/Overview",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "당근 기술 블로그 · Karrot’s Generative AI Platform (Tommy Park)",
+   "url": "https://medium.com/daangn/karrots-genai-platform-5cf6e813838e",
+   "kind": "company",
+   "date": "2025-12-22",
+   "note": "LLM Router·Prompt Studio·MCP Hub·Agent Builder·KarrotChat·DANA — 본문 전부 확인"
+  },
+  {
+   "n": 18,
+   "title": "당근 기술 블로그 · 당근의 사용자 행동 로그 관리 플랫폼: 이벤트센터 개발기",
+   "url": "https://medium.com/daangn/e3c240945882",
+   "kind": "company",
+   "date": "2026-01-08",
+   "note": "데이터가치화팀 — 수집 흐름(SDK→이벤트 서버→Pub/Sub→Dataflow→GCS·BigQuery, DLQ), 이름 규칙, UI 스키마 등록·CLI 코드 생성. Medium RSS 로 본문 전부 확인"
+  },
+  {
+   "n": 19,
+   "title": "당근 기술 블로그 · 당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
+   "url": "https://medium.com/daangn/65a499b4967a",
+   "kind": "company",
+   "date": "2026-06-04",
+   "note": "한국·일본·캐나다 × alpha/prod, Airbyte 검토, JSON DSL → Airflow 동적 DAG → EMR on EKS Spark, 203개 2주 이관. 본문 전부 확인"
+  },
+  {
+   "n": 20,
+   "title": "바이라인네트워크 · '당근'이 AI 에이전트 활용하는 법",
+   "url": "https://byline.network/2025/11/25_danggn-2/",
+   "kind": "news",
+   "date": "2025-11-28",
+   "note": "당근 AI 에이전트 팀 리더 천재윤의 컨퍼런스 발표 보도 — KAMP, 중고차·신고 에이전트, LLM 심판"
+  },
+  {
+   "n": 21,
+   "title": "당근 채용 · 팀 문화(복지)",
+   "url": "https://careers.daangn.com/culture/",
+   "kind": "company"
+  },
+  {
+   "n": 22,
+   "title": "당근 채용 · 채용공고(사이트 하단 회사 정보)",
+   "url": "https://careers.daangn.com/jobs/",
+   "kind": "company"
+  },
+  {
+   "n": 23,
+   "title": "원티드 · 당근마켓 기업 정보(평균연봉·입사자 평균연봉)",
+   "url": "https://www.wanted.co.kr/company/2826",
+   "kind": "reference",
+   "note": "금감원·국민연금 자료로 계산한 집계 — 기준일 표기 없음, 국민연금 가입 624명"
+  },
+  {
+   "n": 24,
+   "title": "헤럴드경제 · \"신입 초봉 6000만원, 휴가 한달 마음껏\"…",
+   "url": "https://www.heraldk.com/article/2026040404400043838",
+   "kind": "news",
+   "date": "2026-04-04",
+   "note": "개발자 신입 초봉 6000만원 — 기사에 근거 자료 표기 없음"
+  },
+  {
+   "n": 25,
+   "title": "바이라인네트워크 · 당근, 2025년 매출 2707억원···전년 대비 43%↑",
+   "url": "https://byline.network/2026/03/27_192874-2/",
+   "kind": "news",
+   "date": "2026-03-27"
+  }
+ ],
+ "caveat": "당근 보안팀의 탐지 구조·SIEM 제품·사고 통계는 공개되지 않았습니다. 회사 근거는 보안팀 인터뷰(2025-01), 마감된 계열사 당근페이 보안 공고, 사기 탐지 발표 보도이고, 나머지는 NIST·ATT&CK·Sigma·KEV·EPSS 같은 공개 기준으로 '보통 이런 방식'을 보였습니다. 연봉·복지·위치는 같은 회사 다른 풀이(AI Platform)의 출처를 그대로 썼습니다 — 보안팀 자리 층은 다를 수 있습니다. 같은 회사 AI Platform 풀이가 공통 전형 줄을 덮어 '갱신 모드'로 집혔지만, 그 파일은 출처 번호가 99에 닿아 새 출처를 붙일 수 없고 직무도 달라 따로 풀었습니다.",
+ "resources": [
+  {
+   "id": "daangn-genai",
+   "title": "Karrot’s Generative AI Platform",
+   "by": "Tommy Park · 당근 기술 블로그 · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://medium.com/daangn/karrots-genai-platform-5cf6e813838e",
+   "why": "이 자리가 만드는 세 제품이 왜 생겼고 어떻게 생겼는지를 회사가 직접 쓴 글. 지원 전에 꼭 읽는다."
+  },
+  {
+   "id": "building-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "why": "정해진 흐름과 에이전트의 차이, 라우팅 패턴, 도구 설명 잘 쓰기. 에이전트 실행기를 만들기 전 기본 그림."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "과부하·연쇄 장애·재시도 다루기 장. 수억 건이 흐르는 공용 관문을 운영하는 기본기."
+  },
+  {
+   "id": "daangn-security-team",
+   "title": "누구나 안심하고 사용하도록, 당근의 안전을 지키는 보안팀",
+   "by": "당근 팀 블로그 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://careers.daangn.com/blog/post/%EB%8B%B9%EA%B7%BC-%EB%B3%B4%EC%95%88%ED%8C%80-%ED%98%91%EC%97%85-%EC%B1%84%EC%9A%A9-%ED%8C%80%EB%AC%B8%ED%99%94/",
+   "why": "이 자리가 들어갈 보안팀이 무엇을 맡고(CERT·도구·인증) 어떤 원칙으로 일하는지(통제보다 모니터링) 회사가 직접 쓴 글. 지원 전에 꼭 읽는다."
+  },
+  {
+   "id": "nist-ir",
+   "title": "NIST SP 800-61 Rev. 3 — Incident Response Recommendations",
+   "by": "NIST · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "why": "사고 대응을 준비·탐지·대응·복구·개선의 한 바퀴로 보는 국제 기준. 업무 첫째·셋째·넷째 줄의 뼈대."
+  },
+  {
+   "id": "kisa-ir",
+   "title": "침해사고 분석절차 안내서",
+   "by": "한국인터넷진흥원(KISA)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.kisa.or.kr/2060204/form?postSeq=11",
+   "why": "한국어로 된 침해사고 분석 순서(증거 보존·타임라인·원인). 오래된 문서라 도구 이름보다 순서를 읽는다."
+  },
+  {
+   "id": "mitre-attack",
+   "title": "MITRE ATT&CK",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://attack.mitre.org/",
+   "why": "공격자가 쓰는 기법을 단계별로 정리한 공용 사전. 탐지 룰이 무엇을 덮고 무엇이 비었는지 표시하는 기준 — 클라우드·SaaS 매트릭스가 요건 둘째 줄에 맞는다."
+  },
+  {
+   "id": "sigma-rules",
+   "title": "Sigma — Generic Signature Format for SIEM Systems",
+   "by": "SigmaHQ",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "why": "SIEM 종류와 상관없이 탐지 룰을 YAML 로 적는 형식과 공개 룰 수천 개. 탐지 룰을 코드처럼 관리하는 연습에 쓴다."
+  },
+  {
+   "id": "palantir-ads",
+   "title": "Alerting and Detection Strategy Framework",
+   "by": "Palantir",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/palantir/alerting-detection-strategy-framework",
+   "why": "탐지 룰 하나마다 목적·가정·사각지대·오탐·대응 절차를 적는 틀. '탐지 체계를 설계·고도화'를 문서로 보여 주는 방법."
+  },
+  {
+   "id": "kev-epss",
+   "title": "CISA KEV 카탈로그 · FIRST EPSS",
+   "by": "CISA · FIRST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.first.org/epss/",
+   "why": "쏟아지는 CVE 중 '실제로 악용되는 것'(KEV)과 '곧 악용될 확률'(EPSS)으로 먼저 볼 것을 고르는 공개 자료. 우대 첫째 줄을 위해."
+  },
+  {
+   "id": "owasp-oat",
+   "title": "OWASP Automated Threats to Web Applications",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://owasp.org/www-project-automated-threats-to-web-applications/",
+   "why": "계정 대입·가짜 가입·스크래핑 같은 자동화 어뷰징을 이름 붙여 나눈 목록. 우대 '서비스 어뷰징 대응'의 공용 낱말."
+  },
+  {
+   "id": "aws-ir-guide",
+   "title": "AWS Security Incident Response Guide",
+   "by": "AWS 백서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-security-incident-response-guide/welcome.html",
+   "why": "클라우드에서 사고가 나면 무엇을 미리 켜 두고(로그) 어떻게 격리·조사하나. 요건 '멀티 클라우드 환경 대응'의 출발점."
+  },
+  {
+   "id": "idir-book",
+   "title": "Intelligence-Driven Incident Response (2판)",
+   "by": "Rebekah Brown · Scott J. Roberts · O'Reilly",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/search/?q=Intelligence-Driven%20Incident%20Response",
+   "why": "위협 인텔리전스(CTI)를 사고 대응에 묶는 법 — 사고에서 지표를 뽑아 다음 탐지로 돌리는 고리. 우대 'OSINT·CTI'를 위해."
+  },
+  {
+   "id": "blueteam-ir-ko",
+   "title": "블루팀 핸드북: 인시던트 대응",
+   "by": "돈 머독",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/beulrutim-haendeubug-insideonteu/0642572332662/",
+   "why": "사고 대응 현장에서 쓰는 점검표·명령을 짧게 모은 한국어판. 처음 사고 조사를 해 볼 때 옆에 두는 책."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사가 말한 보안팀 읽기",
+   "time": "2~3일",
+   "goal": "당근 보안팀의 일 나눔(CERT·도구·인증)과 '통제보다 모니터링' 원칙을 내 경험과 이어 말할 수 있다.",
+   "task": "보안팀 인터뷰·계열사 보안 공고·사기 탐지 보도를 읽고, 이 공고의 업무 넷을 '서비스 쪽 / 오피스 쪽' 두 칸 표로 나눠 내가 해 본 것과 비어 있는 것을 표시한다.",
+   "resources": [
+    "daangn-security-team",
+    "kisa-ir"
+   ]
+  },
+  {
+   "title": "사고 대응 한 바퀴의 뼈대",
+   "time": "1주",
+   "goal": "준비 → 탐지 → 대응 → 복구 → 개선의 순서와, 클라우드에서 미리 켜 둘 로그를 설명할 수 있다.",
+   "task": "가상 회사(클라우드 둘 · SSO · 협업 SaaS)의 사고 대응 절차 한 장을 쓴다 — 누가 깨우고, 무엇을 먼저 보존하고, 언제 법무에 알리나.",
+   "resources": [
+    "nist-ir",
+    "aws-ir-guide",
+    "blueteam-ir-ko"
+   ]
+  },
+  {
+   "title": "탐지 룰 쓰고 재기",
+   "time": "1~2주",
+   "goal": "ATT&CK 기법에 맞춘 룰을 Sigma 형식으로 쓰고, 지난 로그로 오탐·놓침 표를 낼 수 있다.",
+   "task": "가상 SSO·클라우드 감사 로그 1만 줄에 '피싱 → 계정 탈취 → 키 발급 → 데이터 내려받기'를 숨기고, 룰 세 개(ATT&CK 번호·ADS 문서 포함)로 문턱별 경보 수·정밀도 표를 만든다.",
+   "resources": [
+    "sigma-rules",
+    "mitre-attack",
+    "palantir-ads"
+   ]
+  },
+  {
+   "title": "바깥 정보와 어뷰징",
+   "time": "1~2주",
+   "goal": "새 CVE·위협 정보를 우리 자산에 대 보고 먼저 볼 것을 고르고, 자동화 어뷰징을 이름으로 나눌 수 있다.",
+   "task": "가상 자산 목록 30개에 KEV·EPSS 를 붙여 처리 순서표를 만들고, 가상 가입 로그에서 같은 기기·번호에 묶인 계정 묶음을 찾아 OWASP 자동화 위협 이름을 단다.",
+   "resources": [
+    "kev-epss",
+    "idir-book",
+    "owasp-oat"
+   ]
+  },
+  {
+   "title": "사고 뒤 고치기와 자동화",
+   "time": "계속",
+   "goal": "사후 검토를 쓰고, 반복 확인을 스크립트·AI 로 돌린 뒤 걸린 시간이 줄었는지 잴 수 있다.",
+   "task": "3단계 사고의 사후 검토(탐지까지·대응까지 걸린 시간, 바꿀 것)를 쓰고, 경보마다 IP·계정 정보를 붙이는 작은 스크립트를 만들어 손으로 할 때와 걸린 시간을 비교한다.",
+   "resources": [
+    "sre-book",
+    "building-agents",
+    "daangn-genai"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 평균은 **약 6,032만원**, 올해 입사자 평균은 **약 3,888만원** — 보도는 개발자 신입 초봉을 **6,000만원**으로 적었지만 근거가 없다",
+  "rows": [
+   {
+    "label": "직원 평균 연봉",
+    "value": "6,032만원",
+    "amount": 6032,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 금감원·국민연금 자료로 계산한 값이다. 기준일 표기가 없고 직군 구분이 없어 개발자·비개발자가 섞여 있다 [23]"
+   },
+   {
+    "label": "올해 입사자 평균 연봉",
+    "value": "3,888만원",
+    "amount": 3888,
+    "basis": "공공데이터 집계",
+    "note": "원티드가 국민연금 자료로 계산한 값이다. 신입·경력·인턴, 모든 직군이 섞인 값이라 개발자 초봉으로 읽으면 안 된다 [23]"
+   },
+   {
+    "label": "개발자 신입 초봉(보도)",
+    "value": "6,000만원",
+    "amount": 6000,
+    "basis": "보도 · 2026년",
+    "note": "헤럴드경제 기사가 '개발자 신입 초봉 6000만원에 달한다'고 적었으나 근거 자료를 밝히지 않았다 [24]"
+   }
+  ],
+  "how": "당근마켓은 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다(2025년 연결 매출 2,707억원·영업이익 146억원으로 흑자다 [25]). 위 집계는 국민연금 납부액으로 거꾸로 계산하는 방식이라 소득 상한이 있어 높은 연봉이 낮게 잡히는 경향이 있다 {추론}. 공고에 연봉이 없고, 전형 다섯째 단계 **처우 협의**에서 사람마다 정한다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "업무 환경",
+    "detail": "인체공학 오피스 가구, 최신 사양 업무 기기"
+   },
+   {
+    "name": "식사",
+    "detail": "식사 및 음료비 지원"
+   },
+   {
+    "name": "야근 교통",
+    "detail": "야근 시 택시비 지원"
+   },
+   {
+    "name": "교육",
+    "detail": "업무 관련 교육·어학 교육비, 국내외 컨퍼런스 참가비와 관련 휴가"
+   },
+   {
+    "name": "학습 도구",
+    "detail": "업무 관련 도서·논문·AI Tool 포함"
+   },
+   {
+    "name": "휴가",
+    "detail": "승인 없이 자유롭게 쓰는 휴가, 연간 최대 25일"
+   },
+   {
+    "name": "문화의 날",
+    "detail": "매월 운영"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 종합건강검진, 연 8회 심리 상담"
+   },
+   {
+    "name": "단체 상해보험",
+    "detail": "본인·배우자·자녀·부모님"
+   },
+   {
+    "name": "가족",
+    "detail": "어린이집 자녀 보육 지원, 경조사 및 명절 지원"
+   }
+  ],
+  "note": "당근 채용 사이트의 '팀 문화' 페이지에 적힌 것이다(2026-11 확인) [21]. 금액은 적혀 있지 않고, 계열사·고용 형태별 적용 범위도 밝히지 않았으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "당근 본사 (교보강남타워)",
+  "address": "서울특별시 서초구 강남대로 465, 교보강남타워 11층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20465",
+  "near": "9호선 신논현역 앞 {추론}",
+  "note": "공고 근무지 표기는 'SEOUL'이고, 주소는 당근 채용 사이트 하단의 회사 정보다 [22]. 회사 소개 사이트(about.daangn.com) 하단에는 계열사 당근서비스의 구로구 주소가 따로 적혀 있다. 팀 자리 층은 다를 수 있다 {추론}."
+ }
+}

@@ -179,6 +179,7 @@
   "jobkorea-50227006": "daangn-lessons-tutoring-frontend",
   "ats-greenhouse:daangn:8201152003": "daangn-mydaangn-backend-intern",
   "ats-greenhouse:daangn:7659289003": "daangn-mydaangn-backend-intern",
+  "ats-greenhouse:daangn:6043519003": "daangn-security-detection-response",
   "ats-greenhouse:daangn:8206277003": "daangn-shortform-backend-intern",
   "boards-superookie:it:6afd0847a0717c1c4126d602": "daangn-shortform-backend-intern",
   "wanted-389061": "datachain-senior-sre-stablecoin",
@@ -2073,6 +2074,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 71
+  },
+  {
+   "id": "daangn-security-detection-response",
+   "company": "당근",
+   "role": "Security Engineer — 인프라 (Detection & Response)",
+   "jobs": [
+    "ats-greenhouse:daangn:6043519003"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 18
   },
   {
    "id": "daangn-shortform-backend-intern",
