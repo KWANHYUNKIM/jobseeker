@@ -1,0 +1,1103 @@
+{
+ "id": "coupang-pricing-senior-staff-backend-sg",
+ "company": "쿠팡 (Coupang)",
+ "role": "Senior Staff / Staff 백엔드 엔지니어 (가격) · 싱가포르",
+ "team": "eCommerce Engineering · Pricing 팀 · 싱가포르",
+ "jobs": [
+  "ats-greenhouse:coupang:7981493"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡에서 파는 **모든 상품의 값을 정하는 시스템**(가격 결정 플랫폼)을 다음 세대로 다시 설계하고 직접 만드는 자리입니다. 이 시스템은 하루 **수억 건의 요청**을 받습니다.[1]",
+  "env": "Java·Spring Boot, AWS, Kubernetes·Docker, Kafka·Flink 같은 이벤트·스트림 처리가 우대 기술입니다.[1] 같은 팀이 2025년에 낸 싱가포르 Staff 공고는 AWS(S3·Kafka·EMR)와 **실시간 대규모 서비스** 경험을 적었습니다.[3] 쿠팡은 경쟁 몰보다 비싸지 않게 값을 맞추는 **최저가 매칭**(공정위 자료에서는 Dynamic Pricing)을 운영해 왔고, 이 정책은 두 번 공정위 제재의 쟁점이 됐습니다.[5][7]",
+  "oneline": "**가격이라는 돈 계산을 초당 수천 번, 틀리지 않고, 멈추지 않게** 내는 시스템의 설계 책임자. 경력 8년 이상, 영어로 일하는 **싱가포르 근무** 자리이고 제목에 Senior Staff 와 Staff 두 직급이 함께 적혀 있습니다 — 같은 팀 미국(시애틀) 공고와 업무·자격 줄이 같습니다.[1][18]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Serve as a hands-on engineering leader with deep expertise in open-source technologies and distributed systems",
+   "short": "코드를 직접 짜면서 팀의 기술 방향도 이끄는, 오픈소스·분산 시스템에 밝은 선임 개발자 역할.",
+   "why": "공고는 이 팀이 **다음 세대 가격 결정 플랫폼을 직접 설계하고 구현**하며, 팀이 업계 모범 사례를 받아들이고 엔지니어들의 실력을 끌어올리게 하는 것을 역할로 적었습니다.[1] 'hands-on'(직접 손대는)이 앞에 붙은 건 관리자 자리가 아니라는 뜻입니다 {추론}. 쿠팡은 2013년부터 서비스를 잘게 나눈 마이크로서비스(작은 서비스 여럿이 네트워크로 협력하는 구조)로 옮겼고, 모든 서비스가 그 구조 위에 있다고 소개했습니다.[12]",
+   "actually": {
+    "intro": "쿠팡 엔지니어 소개 글과 같은 직급의 다른 공고에서 보이는 Senior Staff 의 일입니다.",
+    "items": [
+     "**설계·장애 리뷰** — 쿠팡은 펠로(가장 높은 기술 직급)급이 설계 리뷰와 장애 리뷰에 들어오고, 원인을 '왜'를 다섯 번 물어 찾는다고 적었다.[12]",
+     "**어려운 부분은 직접 코드로** — 시제품·핵심 모듈·성능 병목은 직접 짜서 보여 준다 {추론}.",
+     "**오픈소스 고르기** — Kafka·Flink·Redis 같은 오픈소스를 쓸지, 어떤 설정으로 쓸지 근거를 들어 정한다[1] {추론}.",
+     "**기준 올리기** — 코드 리뷰 기준·테스트 자동화·성능 시험 결과 공유 같은 일하는 방식을 정착시킨다.[12]",
+     "**여러 나라 협업** — 공고는 여러 지역 엔지니어와 함께 일한다고 적었다(한국·미국·싱가포르 등).[1][2]"
+    ]
+   },
+   "how_far": "Staff 위 직급이라 '혼자 잘 짜는 사람'으로는 부족하고, **자기 설계를 다른 팀이 따라 쓰게 만드는** 수준입니다 {추론}. 최소선은 분산 시스템의 장애(네트워크 끊김·중복 메시지·느린 노드)를 직접 겪고 고쳐 본 경험을 구체적인 숫자로 설명할 수 있는 것입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    12
+   ],
+   "study": [
+    "ddia",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Design layered applications and drive the highest quality of architecture and design for pricing and commerce systems",
+   "short": "가격 계산을 층(입력·규칙·저장·제공)으로 나눠 설계해, 규칙이 늘어도 서로 엉키지 않게 하는 일.",
+   "why": "가격은 정가·경쟁가 맞추기·쿠폰·하한선처럼 **여러 규칙이 겹쳐서** 나옵니다. 쿠팡은 최저가 매칭을 운영해 경쟁 몰 값이 내려가면 자기 값도 맞췄고[5], 2026년 공정위 자료는 이 과정에서 생기는 이익률 목표(상품당 순마진, PPM)까지 매주·매일 점검했다고 적었습니다.[7] 규칙이 계속 늘어나는 영역이라 층을 나누지 않으면 한 규칙을 고칠 때 다른 계산이 깨집니다 {추론}. 층 나누기(layering)는 화면·업무 규칙·데이터 접근을 갈라 각각 따로 바꾸게 하는 오래된 설계 원칙입니다.[26]",
+   "flows": [
+    {
+     "caption": "가격 플랫폼을 층으로 나누면 — 쿠팡 내부 구조는 공개되지 않았다 {추론}[14]",
+     "steps": [
+      "입력 · 정가·원가·경쟁가·판촉 이벤트(Kafka)",
+      "규칙 · 경쟁가 맞추기 → 하한·상한 → 쿠폰·할인",
+      "저장 · 상품별 최종가 + 버전·이력",
+      "제공 · 검색·상세·장바구니·결제가 읽는 가격 API(캐시)"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "intro": "다른 대형 커머스가 공개한 가격 시스템 구조로 본 '보통 이런 설계'입니다.",
+    "items": [
+     "**쓰기와 읽기 나누기** — 독일 패션 커머스 Zalando 는 상품·가격·재고를 하나로 합쳐 흘리던 이벤트 파이프라인이 대목(사이버 위크)에 가격·재고 변경을 **최대 30분** 늦추자, 받아들이는 쪽과 제공하는 쪽으로 팀과 시스템을 나눴다(CQRS).[14]",
+     "**바뀐 것만 보내기** — 같은 글에서 가격이 바뀔 때마다 보내던 묶음의 90% 넘게가 안 바뀐 상품 정보였다. 가격·재고를 상품 정보와 떼어 따로 흘렸다.[14]",
+     "**규칙 순서 고정** — 경쟁가 맞추기 → 하한(이 밑으로는 손해) → 쿠폰처럼 순서를 코드 한곳에 두고, 순서를 바꾸면 테스트가 깨지게 한다 {추론}.",
+     "**가격 이력** — 언제 어떤 규칙 때문에 그 값이 됐나를 남긴다. 공정위가 쿠팡의 가격·마진 운영을 두 번 조사한 것처럼 가격은 나중에 설명해야 하는 숫자다[5][7] {추론}.",
+     "**돈은 소수 오차 없이** — 원 단위 반올림·내림 규칙을 한곳에서만 쓴다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "규칙 층을 순서대로 — 경쟁가 맞추기 → 하한 → 쿠폰 (직접 돌린 출력)",
+     "body": "숫자는 가상입니다. 경쟁가가 하한보다 낮으면 하한에서 멈추고, 쿠폰은 10원 단위로 내립니다. 처음에 `quantize(D(\"10\"))` 로 짰다가 10원 단위가 아니라 1원 단위로 남는 실수(12255)가 나와 고쳤습니다 — 돈 계산은 반드시 돌려 봐야 합니다.",
+     "lang": "python",
+     "code": "from decimal import Decimal as D, ROUND_DOWN\n\ndef final_price(list_price, competitor, floor, coupon_rate):\n    # 1) 경쟁가 맞추기 — 단, 하한(손해 보지 않는 값) 밑으로는 안 내린다\n    p = min(list_price, competitor) if competitor else list_price\n    p = max(p, floor)\n    # 2) 쿠폰 — 10원 단위 내림\n    p = (p * (1 - coupon_rate) / 10).to_integral_value(rounding=ROUND_DOWN) * 10\n    return p\n\nprint(final_price(D(\"12900\"), D(\"11900\"), D(\"11500\"), D(\"0\")))     # 11900 경쟁가로 내림\nprint(final_price(D(\"12900\"), D(\"10900\"), D(\"11500\"), D(\"0\")))     # 11500 하한에서 멈춤\nprint(final_price(D(\"12900\"), None,       D(\"11500\"), D(\"0.05\")))  # 12250 쿠폰 5%"
+    }
+   ],
+   "how_far": "어떤 규칙을 둘지(경쟁가를 얼마나 따라갈지, 하한을 어디에 둘지)는 사업·가격 운영 조직이 정합니다 — 쿠팡 서울에는 상품 가격 정책과 전략을 세우고 직매입 상품이 시장 가격 사이에서 제때 경쟁력을 갖게 하는 Pricing Operation 부서가 따로 있습니다.[22] 이 자리는 그 규칙을 **빠르게 넣고 빼도 안 깨지는 구조**를 만드는 쪽입니다 {추론}.",
+   "refs": [
+    5,
+    7,
+    14,
+    22,
+    26
+   ],
+   "study": [
+    "peaa",
+    "fowler-layering",
+    "ddd-start",
+    "zalando-prapi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Partner with Product Owners and business stakeholders to understand problems, develop solutions, and lead engineers on mission-critical projects that resolve complex business challenges",
+   "short": "가격 운영·사업 쪽이 겪는 문제를 듣고, 해법을 설계해 개발자들을 이끌고 끝까지 내놓는 일.",
+   "why": "가격 문제는 기술만의 문제가 아닙니다. 쿠팡이 최저가를 맞출 때 생기는 마진 손실을 줄이려고 납품업체에 경쟁 몰 가격 인상을 요구했다는 이유로 2021년 과징금 32억 9,700만원을 받았다가(2024년 서울고법이 전부 취소)[5][6], 2026년에는 최저가 매칭으로 판매가가 떨어져 이익률 목표에 못 미치면 납품단가 인하를 요구했다는 이유로 21억 8,500만원을 다시 받았습니다(쿠팡은 '사실과 다르다'며 법원에서 다툰다고 밝혔다).[7][8] 가격 규칙 하나가 매출·이익·법 위험까지 걸리는 **핵심(mission-critical) 업무**라는 뜻입니다 {추론}.",
+   "actually": {
+    "intro": "보통 이런 문제들이 엔지니어에게 넘어옵니다 {추론}.",
+    "items": [
+     "**'경쟁가가 바뀐 지 몇 분 만에 반영되나'** — 사업 쪽 질문을 지연 시간 목표(예: 99%가 몇 분 안)로 바꾼다.",
+     "**'이 할인은 누구 돈인가'** — 쿠팡 부담 할인·판매자 부담 쿠폰을 가격 계산에서 갈라 정산이 맞게 한다. 공정위는 판촉비를 납품업체에 전부 떠넘긴 일도 문제 삼았다.[5]",
+     "**'값이 잘못 나가면'** — 0원·10배 가격 같은 사고를 막는 상·하한 검사와 즉시 되돌리기.",
+     "**'새 나라에 붙이기'** — 대만처럼 통화·세금·법규가 다른 시장에 같은 플랫폼을 쓰게 한다. 공고는 새 글로벌 시장을 적었다.[1]"
+    ]
+   },
+   "how_far": "Product Owner(제품 책임자)가 '무엇을'을 정하고, 이 자리는 '어떻게·언제까지·무엇을 포기하나'를 정해 여러 개발자에게 나눕니다 {추론}. 영어 문서로 선택지와 위험을 설명하는 일이 많습니다.[1]",
+   "refs": [
+    1,
+    5,
+    6,
+    7,
+    8
+   ],
+   "study": [
+    "sysdesign",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Define roadmaps and a technical vision for the scalable and robust growth of the pricing platform to support business expansion",
+   "short": "사업이 커져도 버티도록 가격 플랫폼이 1~2년 뒤 어떤 모습이어야 하나를 정하고 길을 짜는 일.",
+   "why": "공고는 이 팀이 하루 수억 건 요청을 받으며 확장 가능하고 확장하기 쉬우며, 늘 살아 있고 튼튼한 플랫폼을 만드는 것이 목표라고 적었습니다.[1] 쿠팡 상품 커머스 활성 고객은 2025년 4분기 2,460만 명이고[20], 공고는 새 글로벌 시장에서 커머스 경험을 만든다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**용량 계획** — 요청 수·상품 수·가격 변경 횟수가 몇 배가 되면 어디가 먼저 터지나(저장소 쓰기·캐시 메모리·Kafka 파티션)를 계산한다. Zalando 는 쓰기 병목이 DynamoDB 쓰기 용량이었다.[14]",
+     "**나라·시장별 격리** — Zalando 는 나라 묶음마다 서버 묶음을 따로 둬서 한 나라 장애가 다른 나라로 번지지 않게 하고, 새 버전 시험 트래픽도 그 단위로 나눴다.[14]",
+     "**옛 구조에서 옮기기** — 같은 글에서 옛 형식에 기대던 약 350개 팀을 옮기느라 옛 형식을 요청 헤더로 계속 제공했다.[14]",
+     "**로드맵 문서** — 단계마다 '무엇이 좋아지나(지연·비용·장애 범위)'를 숫자로 적는다 {추론}."
+    ]
+   },
+   "how_far": "로드맵은 혼자 정하지 않습니다 — 사업 계획에 맞춰 매니저·다른 팀과 합의합니다 {추론}. 이 자리의 몫은 **기술적으로 무엇이 가능하고 얼마나 드나**를 근거 있게 내놓는 것입니다 {추론}.",
+   "refs": [
+    1,
+    14,
+    20
+   ],
+   "study": [
+    "ddia",
+    "sysdesign",
+    "zalando-prapi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Collaborate with other Coupang engineering teams to build extensible services that unlock opportunities for innovation",
+   "short": "검색·상세·장바구니·결제 같은 다른 팀이 가격을 쉽게 가져다 쓰고 새 기능을 붙일 수 있게 하는 일.",
+   "why": "가격은 혼자 쓰는 데이터가 아닙니다. 쿠팡 검색 순위는 평점·리뷰와 함께 **가격**도 기준으로 쓰고[23], 같은 상품을 여러 판매자가 팔면 가격 등에서 가장 좋은 조건을 낸 판매자가 대표로 보이는 '아이템위너' 제도가 있습니다.[9] 쿠팡은 공통 업무 논리를 모아 다른 도메인이 틀로 가져다 쓰게 하는 핵심 서빙 층을 두고 있다고 소개했습니다.[10]",
+   "actually": {
+    "intro": "가격을 읽는 쪽이 많을 때 보통 하는 일입니다.",
+    "items": [
+     "**읽기 API 와 이벤트 둘 다** — 지금 값은 API 로, 바뀐 순간은 Kafka 이벤트로 준다(다른 팀이 자기 캐시를 갱신) {추론}.",
+     "**계약(스키마) 지키기** — 필드를 지우거나 뜻을 바꾸지 않고 새 필드로 늘린다. Zalando 는 옛 형식을 계속 제공하며 팀들을 옮겼다.[14]",
+     "**넓게 쓰는 캐시** — 쿠팡의 캐시 층은 층마다 노드 60~100대, 분당 약 1억 요청, 들어오는 트래픽의 약 95%를 받는다고 적었다.[11]",
+     "**규칙 꽂기** — 새 판촉 유형을 가격 팀 배포 없이 다른 팀이 규칙으로 넣을 수 있게(확장 지점) {추론}."
+    ]
+   },
+   "how_far": "다른 팀의 일정·요구를 다 들어줄 수는 없어서, **공통으로 둘 것과 각 팀이 할 것의 경계**를 정하는 게 이 줄의 핵심입니다 {추론}.",
+   "refs": [
+    9,
+    10,
+    11,
+    14,
+    23
+   ],
+   "study": [
+    "kafka-guide",
+    "aws-caching",
+    "zalando-prapi"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "8+ years of professional experience in software design and development",
+   "short": "설계와 개발을 실무로 8년 넘게 해 봤어야 해서 — 큰 시스템의 흥망을 몇 번 본 연차.",
+   "why": "같은 팀의 싱가포르 Staff 공고(2025년)도 알고리즘·시스템 설계·대규모 분산 시스템 8년 이상, Java 같은 언어 5년 이상을 요구했습니다.[3] 이 공고는 제목에 Senior Staff 와 Staff 를 함께 적고 직급·업무는 경력에 따라 바뀔 수 있다고 밝혀, 8년은 아래 직급(Staff)의 문턱으로 보입니다.[1] {추론}",
+   "how_far": "연차보다 **그 기간에 무엇을 설계했고 어떤 결과를 냈나**를 봅니다 {추론}. 큰 트래픽 서비스를 처음부터 끝까지 설계·운영한 사례 두세 개를 숫자(요청 수·지연·장애 횟수)로 말할 수 있어야 합니다 {추론}.",
+   "refs": [
+    3,
+    19
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Strong experience with distributed systems and extensive experience building large-scale enterprise platforms",
+   "short": "가격 서비스가 여러 서버·저장소에 나뉘어 돌기 때문에, 그게 깨지는 방식을 알아야 해서.",
+   "why": "하루 수억 건을 한 대로는 못 받습니다.[1] 쿠팡은 높은 트래픽을 위해 NoSQL 저장소·캐시·실시간 스트리밍·고가용 클러스터로 된 핵심 서빙 층을 만들었다고 소개했고[10], 캐시 운영 교훈으로 일부 노드 고장·빠른 복구·노드 사이 균형을 꼽았습니다.[11]",
+   "actually": {
+    "intro": "가격 서비스에서 분산 시스템 지식이 쓰이는 자리입니다.",
+    "items": [
+     "**순서가 뒤바뀐 이벤트** — 가격 변경 이벤트는 늦게·두 번 올 수 있다. Kafka 는 기본이 '최소 한 번' 전달이라 같은 메시지를 다시 받을 수 있다.[24] 버전을 비교해 옛 값을 버린다(아래 예).",
+     "**캐시가 동시에 비면** — 인기 상품 캐시가 만료되는 순간 요청이 한꺼번에 원본 DB 로 몰린다(thundering herd). 같은 키 요청을 하나로 모은다.[15]",
+     "**낡은 값을 줄까 말까** — 원본이 죽었을 때 조금 낡은 가격이라도 줄지(soft/hard TTL) 정한다.[15] 가격은 결제 직전에는 최신이어야 한다 {추론}.",
+     "**재시도가 장애를 키운다** — 다섯 층이 각각 세 번씩 재시도하면 맨 밑 DB 는 최대 243배 요청을 받는다.[16]",
+     "**핫스팟** — Zalando 는 상품 ID 로 서버를 고정하는 일관 해싱으로 서버마다 카탈로그 일부만 캐시하게 하고, 서버 하나가 평균의 2배를 넘으면 다음 서버로 넘겼다.[14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "늦게 온 옛 가격 이벤트 버리기 (직접 돌린 출력)",
+     "body": "출력은 `버전 · 처리 결과 · 저장된 가격` 입니다. 버전 2가 3보다 늦게 와도, 3이 두 번 와도 최종 값은 11900 그대로입니다.",
+     "lang": "python",
+     "code": "store = {}\n\ndef apply(evt):\n    cur = store.get(evt[\"item\"])\n    if cur and cur[\"version\"] >= evt[\"version\"]:\n        return \"skip\"\n    store[evt[\"item\"]] = evt\n    return \"set\"\n\nevents = [\n    {\"item\": \"A\", \"version\": 1, \"price\": 12900},\n    {\"item\": \"A\", \"version\": 3, \"price\": 11900},\n    {\"item\": \"A\", \"version\": 2, \"price\": 12500},  # 늦게 도착한 옛 이벤트\n    {\"item\": \"A\", \"version\": 3, \"price\": 11900},  # 같은 이벤트 재전송\n]\nfor e in events:\n    print(e[\"version\"], apply(e), store[\"A\"][\"price\"])\n# 1 set 12900\n# 3 set 11900\n# 2 skip 11900\n# 3 skip 11900"
+    }
+   ],
+   "how_far": "'enterprise platform'(여러 팀이 기대는 회사 공용 시스템)을 **만든** 경험을 원합니다 — 쓰기만 한 것과 다릅니다 {추론}. 최소선: 위 다섯 문제 중 셋을 실제로 겪고 어떻게 막았는지 설명할 수 있다 {추론}.",
+   "refs": [
+    1,
+    10,
+    11,
+    14,
+    15,
+    16,
+    24
+   ],
+   "study": [
+    "ddia",
+    "aws-caching",
+    "aws-retries",
+    "kafka-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Exceptional analytical and deep-dive skills; a bar raiser for engineering excellence",
+   "short": "장애·느려짐의 진짜 원인을 끝까지 파고, 팀의 기술 기준을 끌어올리는 사람이어야 해서.",
+   "why": "쿠팡 엔지니어 글은 장애 원인을 '왜'를 다섯 번 물어 찾고, 계획과 성능 시험 결과를 공유한다고 적었습니다.[12] 같은 그룹 주문 시스템 엔지니어들도 증상이 아닌 **근본 원인**을 고치라고 조언했습니다.[13] 'bar raiser'(기준을 올리는 사람)는 이 사람이 들어오면 팀 평균이 올라가야 한다는 뜻입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**지연 꼬리 읽기** — 평균이 아니라 p99·p99.9(가장 느린 1%·0.1%)를 본다. 타임아웃도 아래쪽 서비스의 p99.9 같은 백분위로 정한다.[16]",
+     "**데이터로 따지기** — '느려진 것 같다'가 아니라 어느 배포 뒤 어느 호출이 몇 ms 늘었나 {추론}.",
+     "**재발 막기** — 사후 검토(포스트모템)를 누구 탓이 아니라 구조 탓으로 쓴다.[25]"
+    ]
+   },
+   "how_far": "면접의 '집중 인터뷰'는 기술·문제 해결 역량을 본다고 쿠팡 채용 안내가 적었습니다.[4] 지난 장애 하나를 그래프·숫자와 함께 원인→조치→재발 방지 순서로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    4,
+    12,
+    13,
+    16,
+    25
+   ],
+   "study": [
+    "sre-book",
+    "aws-retries"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bachelor's degree in Computer Science, Engineering, or a related field",
+   "short": "컴퓨터공학·공학이나 가까운 전공의 학사 학위가 필요해서.",
+   "why": "공고의 최소 자격입니다.[1] 같은 팀 싱가포르 공고는 '또는 그에 준하는 경력'을 함께 적었습니다.[3]",
+   "how_far": "전공이 다르면 '관련 분야'를 경력으로 보여 줘야 합니다 {추론}. 싱가포르 근무라 취업 비자(Employment Pass) 심사에 학위·급여가 쓰일 수 있습니다 {추론}. 공고에 비자 지원 여부는 적혀 있지 않고, 같은 팀의 앞선 싱가포르 공고는 싱가포르 취업 자격이 있는 사람을 우선한다고 적었습니다.[2] 지원 전에 확인합니다 {추론}.",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Excellent verbal and written communication skills in English",
+   "short": "회의·설계 문서·코드 리뷰를 영어로 하기 때문에.",
+   "why": "공고는 여러 지역 엔지니어와 가깝게 일한다고 적었고, 근무지는 싱가포르입니다.[1] 같은 업무 줄을 가진 자리가 미국 시애틀에도 열려 있어[18] 나라 사이 회의·문서가 기본이 됩니다 {추론}. 쿠팡 엔지니어 글은 나라 사이 Tech Talk 를 연다고 소개했습니다.[12]",
+   "how_far": "설계 문서를 영어로 써서 다른 팀을 설득할 수 있는 수준 {추론}. 한국 팀과 일할 때는 한국어가 도움이 되지만 공고 요건은 아닙니다 {추론}.",
+   "refs": [
+    1,
+    12
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Ability to thrive in a dynamic, fast-paced environment with shifting priorities and tight deadlines",
+   "short": "가격은 판촉·경쟁·규제에 따라 우선순위가 자주 바뀌고 마감이 촉박해서.",
+   "why": "판촉 행사·경쟁 몰의 가격 변화에 맞춰 값이 움직이는 영역이고[5], 2021·2026년 공정위 제재처럼 바깥 일로 가격 운영 방식이 바뀌어야 할 때도 있습니다.[5][7] 쿠팡 소개 글도 스타트업 문화에 빠른 출시 속도를 강조합니다.[1]",
+   "how_far": "바뀐 우선순위를 그냥 받는 게 아니라, **무엇을 미루고 무엇을 위험으로 남기는지** 정리해 알리는 것까지가 이 자리 몫입니다 {추론}.",
+   "refs": [
+    1,
+    5,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Proficiency in Java or similar JVM-based languages; experience with Spring Boot or equivalent frameworks",
+   "short": "팀의 주 언어가 Java·Spring Boot 라서 — 코드 리뷰·성능 튜닝을 바로 할 수 있어야 해서.",
+   "why": "공고 기술 목록에 Java·Spring·Spring Boot 가 있고[1], 같은 팀 싱가포르 공고는 Java 같은 언어 5년 이상을 적었습니다.[3]",
+   "level": {
+    "basic": "Spring Boot 로 REST API·설정·의존성 주입·테스트",
+    "work": "스레드 풀·커넥션 풀·타임아웃 설정, JVM GC 로그 읽기, 비동기 호출",
+    "team": "초당 수천 건 가격 조회에서 지연 꼬리(p99) 줄이기 — GC·객체 수·직렬화 비용 {추론}[14]"
+   },
+   "actually": {
+    "items": [
+     "**JVM 튜닝** — Zalando 는 캐시에 상품을 객체 덩어리가 아니라 바이트 배열 하나로 넣어 GC 부담을 줄였다.[14]",
+     "**비동기 I/O** — 같은 글은 Netty 이벤트 루프로 블로킹 없이 처리했다.[14]",
+     "**타임아웃 두 겹** — 같은 글은 DB 호출에 10ms 주 클라이언트와 100ms 대체 클라이언트를 두었다.[14]"
+    ]
+   },
+   "how_far": "'similar JVM-based'(Kotlin·Scala)도 된다고 적어, Java 문법보다 **JVM 위에서 큰 서비스를 돌려 본 경험**을 봅니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    14
+   ],
+   "study": [
+    "spring-boot-docs",
+    "wiki-spring-boot",
+    "wiki-jvm"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Hands-on experience with cloud platforms (e.g. AWS) and container orchestration (Kubernetes, Docker)",
+   "short": "가격 서비스가 AWS 위 컨테이너로 돌고, 늘고 줄며 배포되기 때문에.",
+   "why": "공고 기술 목록에 AWS·Docker·Kubernetes 가 있고[1], 같은 팀 싱가포르 공고는 AWS(S3·Kafka·EMR) 경험을 우대로 적었습니다.[3] 쿠팡 ML 플랫폼 글은 Kubernetes 위에서 학습·서빙을 하고, ML 이 가격에도 쓰인다고 적었습니다.[21]",
+   "actually": {
+    "items": [
+     "**자동 늘리기** — 판촉 시작 순간 몰리는 요청에 맞춰 Pod 수를 늘린다. Zalando 는 소비 지연(lag)에 맞춰 갱신기 수를 파티션 수까지 늘렸다.[14]",
+     "**배포 안전** — 새 버전을 일부 트래픽에만 먼저(카나리아) {추론}[14].",
+     "**비용** — 쿠팡은 클라우드 비용 최적화로 비운영 환경을 줄이고 인스턴스 종류를 바꿨다고 소개했다.[27]"
+    ]
+   },
+   "how_far": "클러스터 자체를 짓는 건 인프라 팀 몫이고, 이 자리는 **자기 서비스의 자원·확장·배포 설정을 책임지는** 수준이면 됩니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    14,
+    21,
+    27
+   ],
+   "study": [
+    "k8s-docs",
+    "wiki-docker",
+    "wiki-k8s"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience with event-driven architectures, stream processing (Kafka, Flink), and real-time data pipelines",
+   "short": "경쟁가·원가·판촉이 바뀔 때마다 이벤트로 받아 가격을 곧바로 다시 계산해야 해서.",
+   "why": "최저가 매칭은 경쟁 몰 값이 바뀌면 쿠팡 값도 따라 바뀌는 구조입니다.[5][7] 바뀌는 순간을 흘려 받는 게 이벤트 방식이고, 공고 기술 목록에 Kafka 가 있습니다.[1] 다만 Zalando 는 이벤트만으로 모든 걸 합치던 방식이 대목에 30분 지연을 낳아 **읽기는 API 로** 바꿨습니다 — 이벤트가 만능은 아닙니다.[14]",
+   "actually": {
+    "items": [
+     "**전달 보장** — Kafka 는 최소 한 번·최대 한 번·정확히 한 번(트랜잭션) 중 고른다. 가격은 보통 최소 한 번 + 버전으로 중복을 버린다.[24] {추론}",
+     "**사건 시각 vs 받은 시각** — Flink 는 이벤트가 일어난 시각(event time)과 워터마크(이 시각까지는 다 왔다는 표시)로 늦게 온 이벤트를 다룬다.[28]",
+     "**파티션 키** — 같은 상품의 이벤트는 같은 파티션으로 보내야 순서가 지켜진다.[24]",
+     "**쿠팡의 실시간 파이프라인** — 쿠팡이츠 데이터 플랫폼은 준실시간(30초 안팎)과 1초 미만 실시간 파이프라인을 나눠 Spark 처리 결과를 Kafka 로 낸다고 소개했다.[29]"
+    ]
+   },
+   "how_far": "Kafka 를 '쓴' 정도가 아니라 **중복·순서·지연을 어떻게 다뤘나**를 설명할 수 있어야 우대가 됩니다 {추론}.",
+   "refs": [
+    1,
+    5,
+    7,
+    14,
+    24,
+    28,
+    29
+   ],
+   "study": [
+    "kafka-guide",
+    "kafka-docs",
+    "flink-time",
+    "wiki-kafka"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Familiarity with CI/CD pipelines, infrastructure as code, and DevOps best practices",
+   "short": "가격 코드를 자주, 안전하게 배포하고, 인프라 설정도 코드로 남겨야 해서.",
+   "why": "쿠팡 엔지니어 글은 테스트 자동화와 성능 시험을 일하는 방식으로 꼽았습니다.[12] 가격 규칙이 자주 바뀌는 만큼 배포가 잦고, 잘못된 배포는 곧 잘못된 가격입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**배포 파이프라인** — 테스트 → 카나리아 → 지표 확인 → 전체 배포, 문제면 자동 되돌리기 {추론}.",
+     "**인프라를 코드로** — Terraform 같은 도구로 클러스터·큐·DB 설정을 저장소에 남긴다 {추론}.",
+     "**오류 예산** — 가용성 목표(SLO)를 넘게 장애가 나면 새 기능 배포를 멈추는 규칙.[25]"
+    ]
+   },
+   "refs": [
+    12,
+    25
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience working in e-commerce, marketplace, or high-traffic consumer-facing platforms",
+   "short": "커머스·오픈마켓의 가격 문제(판매자 여럿·판촉·대목 트래픽)를 이미 알면 빨리 적응해서.",
+   "why": "쿠팡은 직접 사서 파는 상품(직매입)과 판매자가 파는 오픈마켓을 함께 운영하고, 오픈마켓에서는 가격 등 가장 좋은 조건의 판매자가 대표로 보이는 아이템위너 제도가 있습니다.[9] 공정위는 직매입 상품의 최저가 매칭과 마진 목표를 문제 삼았습니다.[7] 같은 팀 싱가포르 공고는 이커머스와 가격 시스템 경험을 우대로 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**판매자 여럿, 값 여럿** — 한 상품에 판매자별 값이 있고 대표 값을 골라야 한다.[9]",
+     "**판촉과 대목** — 행사 시작 시각에 가격이 한꺼번에 바뀌고 트래픽이 몰린다. Zalando 는 사이버 위크에 가격 반영이 30분까지 밀렸다.[14]",
+     "**가격 표시 규칙** — 단위 가격·할인 전 가격 표시 같은 나라별 규칙 {추론}."
+    ]
+   },
+   "refs": [
+    3,
+    7,
+    9,
+    14
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Why Join Coupang",
+   "short": "여기부터 세 줄은 요건이 아니라 쿠팡이 내세우는 합류 이유다.",
+   "why": "공고의 우대사항 칸 끝에 붙은 회사 소개입니다.[1] 지원 자격과는 상관없습니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Work on systems that serve hundreds of millions of daily requests, directly impacting tens of millions of users",
+   "short": "하루 수억 건 요청, 수천만 명이 보는 가격을 다룬다는 뜻 — 실수도 그만큼 크게 보인다.",
+   "why": "공고 팀 소개와 같은 숫자입니다.[1] 쿠팡 상품 커머스 활성 고객은 2025년 4분기 2,460만 명입니다.[20] 하루 수억 건은 평균 초당 수천 건이고, 판촉 순간에는 그보다 훨씬 많습니다 {추론}.",
+   "examples": [
+    {
+     "title": "하루 수억 건은 초당 몇 건인가",
+     "body": "하루 3억 건이라면 300,000,000 ÷ 86,400초 ≈ **초당 약 3,470건**(평균). 피크가 평균의 몇 배인지는 공개되지 않았다 {추론}."
+    }
+   ],
+   "refs": [
+    1,
+    20
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Collaborate with world-class engineers across global offices in a culture that values ownership and innovation",
+   "short": "여러 나라 사무실 엔지니어와, 자기가 맡은 걸 끝까지 책임지는 문화에서 일한다는 소개.",
+   "why": "쿠팡은 싱가포르(Suntec Tower 5)와 미국(시애틀·마운틴뷰) 등에 사무실을 두고 있고[17][30], eCommerce Engineering 의 핵심 가치로 고객 중심·주인의식(Ownership)·협업을 적었습니다.[1]",
+   "refs": [
+    1,
+    18,
+    30
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Shape the future of e-commerce in one of the world's most dynamic and tech-forward markets",
+   "short": "변화가 빠른 한국(과 대만) 커머스 시장의 다음 모습을 만든다는 소개.",
+   "why": "쿠팡은 스스로를 한국 커머스의 선두 회사로 소개하고, 쿠팡이츠·쿠팡 프레시 같은 새 사업을 eCommerce Engineering 이 맡는다고 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Recruitment Process\nApplication Review - Job Fit Interview - Focus Interview – Offer\nThe exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.\nInterview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "서류 → 직무 적합 면접 → 집중 면접 → 처우 제안. 일정·결과는 이메일로 온다.",
+   "why": "공고 끝의 전형 안내입니다.[1] 쿠팡 채용 안내는 직무 적합 면접(Job Fit)이 리더십 원칙에 맞는 경험을, 집중 면접(Focus)이 기술·문제 해결을 본다고 설명하고, 직무에 따라 온라인 코딩·과제가 붙는다고 적었습니다.[4] 마지막 단계가 처우 제안(Offer)이라 연봉은 그때 정해집니다.[1] 같은 팀의 앞선 싱가포르 공고는 서류 → 전화 → 대면 → 오퍼 순서였습니다.[2]",
+   "how_far": "Senior Staff 면접이라 집중 면접에서 가격 플랫폼 같은 큰 시스템을 설계하고 선택지를 비교하는 질문이 나올 가능성이 큽니다 {추론}. 아래 면접 질문 여섯 개를 영어로 답해 보는 것이 최소 준비입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to Consider\nThis job posting may be closed prior to the stated end date for application if all openings are filled.\nCoupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.\nThose eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.\nJob titles and responsibilities may be subject to change depending on the candidate’s overall experience, etc. This will be communicated to the candidate at the appropriate time before the offer.\nHiring may be restricted in case the legal qualifications required for hiring and work performance is not met.",
+   "short": "자리가 차면 일찍 닫히고, 직급·업무는 경력에 따라 제안 전에 바뀔 수 있다.",
+   "why": "지원자에게 중요한 줄은 두 가지입니다. 자리가 다 차면 마감일 전에 공고가 닫히고, **직급(Senior Staff 인지 Staff 인지)과 업무는 지원자 경력을 보고 처우 제안 전에 알려 준다**는 것입니다.[1] 제목에 두 직급이 같이 적힌 것도 이 때문으로 보입니다 {추론}. 그 밖에 허위 기재가 드러나면 제안을 거둘 수 있고, 보훈·장애 등 고용 보호 대상은 법에 따라 우대할 수 있으며, 법적 자격이 안 되면 채용이 제한된다고 적었습니다.[1] 앞선 싱가포르 공고와 달리 이 공고에는 '싱가포르 취업 자격자 우선' 줄이 없습니다.[1][2]",
+   "refs": [
+    1,
+    2
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "돈 계산 한 자리 틀리는 걸 못 참으면서, 그걸 초당 수천 번 하는 시스템을 좋아하는 사람",
+   "분산 시스템의 중복·순서·캐시 문제를 직접 겪고 고쳐 본 사람[11][14]",
+   "사업 쪽 질문을 숫자 목표로 바꾸고 여러 팀을 설득하는 게 즐거운 사람[1]",
+   "Java·Spring 으로 큰 서비스를 오래 운영해 본 사람[1][3]"
+  ],
+  "hard": [
+   "근무지가 싱가포르다 — 비자 지원 여부는 공고에 없고, 같은 팀의 앞선 싱가포르 공고는 현지 취업 자격자를 우선했다[1][2]",
+   "경력 8년 이상·영어 소통이 필수다[1]",
+   "가격 운영은 공정위가 두 번 제재한(한 건은 법원이 취소) 민감한 영역이라 규칙 하나에도 설명 책임이 따른다[5][6][7] {추론}",
+   "관리자 자리가 아니라 직접 코드를 짜는 리더 자리다 — 순수 관리 쪽을 원하면 맞지 않는다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "경쟁가가 바뀌면 몇 분 안에 우리 가격에 반영되게 하려면 어떻게 설계하겠어요? 대목에 이벤트가 10배 몰리면요?",
+   "a": "Zalando 가 겪은 30분 지연과 쓰기·읽기 분리.[14]"
+  },
+  {
+   "q": "같은 상품의 가격 이벤트가 두 번, 또는 순서가 뒤바뀌어 오면?",
+   "a": "최소 한 번 전달 + 파티션 키 + 버전 비교.[24]"
+  },
+  {
+   "q": "인기 상품의 가격 캐시가 만료되는 순간 DB 가 버티지 못하면?",
+   "a": "요청 모으기, soft/hard TTL.[15]"
+  },
+  {
+   "q": "가격 서버가 느려졌을 때 호출하는 쪽이 재시도를 걸면 무슨 일이 생기나요?",
+   "a": "재시도 증폭(다섯 층 × 세 번 = 243배), 백오프와 지터.[16]"
+  },
+  {
+   "q": "0원이나 10배 가격이 잘못 나갔다면 어떻게 막고, 어떻게 되돌리겠어요?",
+   "a": "상·하한 검사, 가격 이력·버전, 즉시 되돌리기 {추론}."
+  },
+  {
+   "q": "가장 어려웠던 장애를 원인 → 조치 → 재발 방지 순서로 말해 주세요.",
+   "a": "쿠팡 채용 안내의 집중 인터뷰(기술·문제 해결)와 '왜 다섯 번'.[4][12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Senior Staff / Staff Back-End Engineer (Singapore)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7981493",
+   "kind": "posting",
+   "date": "2026-10-02",
+   "note": "갱신일 기준(요구 ID 8887, 처음 게시 2026-06-05). 팀 소개(Pricing 팀이 쿠팡의 모든 상품 가격을 정함, 하루 수억 건 요청, 다음 세대 가격 결정 플랫폼)·업무·자격·우대·전형. 근무지 Singapore, 연봉·복리후생 칸 없음 — 2026-11-25 확인"
+  },
+  {
+   "n": 2,
+   "title": "Built In Singapore · [Coupang] Senior Staff Back-end Engineer (Pricing Engineering)",
+   "url": "https://builtinsingapore.com/job/senior-staff-back-end-engineer-pricing-engineering/6476991",
+   "kind": "posting",
+   "note": "같은 팀 싱가포르 자리(2025-09-22 내려감) — 업무 다섯 줄이 이 공고와 거의 같다, 싱가포르 취업 자격 우선, 전형 서류 → 전화 → 대면 → 오퍼"
+  },
+  {
+   "n": 3,
+   "title": "Built In · [Coupang] Staff, Back-end Engineer (Pricing Engineering)",
+   "url": "https://builtin.com/job/staff-back-end-engineer-pricing-engineering/6216833",
+   "kind": "posting",
+   "note": "같은 팀 싱가포르 Staff 자리(2025-08-04 내려감) — 알고리즘·시스템 설계·대규모 분산 시스템 8년+, Java 같은 언어 5년+, 대규모 실시간 서비스, 우대 이커머스·가격 시스템, AWS(S3·Kafka·EMR)"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Careers · Recruitment Process",
+   "url": "https://www.coupang.jobs/en/how-we-hire/recruitment-process/",
+   "kind": "company",
+   "note": "전사 공통 — 서류 → 리크루터 통화 → 직무 적합(리더십 원칙)·집중 인터뷰(기술·문제 해결), 직무에 따라 온라인 코딩·과제 → 오퍼"
+  },
+  {
+   "n": 5,
+   "title": "ZDNet Korea · 공정위, 쿠팡에 과징금 33억…\"납품업체에 경쟁사 가격 인상 요구\"",
+   "url": "https://zdnet.co.kr/view/?no=20210819091818",
+   "kind": "news",
+   "date": "2021-08-19",
+   "note": "2017~2020-09, 최저가 매칭으로 생길 마진 손실을 줄이려 납품업체 101곳·상품 360개에 경쟁 몰 판매가 인상 요구, 광고 구매 요구, 판촉비 전가, 과징금 32억 9,700만원"
+  },
+  {
+   "n": 6,
+   "title": "이코노미스트 · 쿠팡, 공정위 과징금 33억 전액 취소 판결…\"법원 결정 존중\"",
+   "url": "https://economist.co.kr/article/view/ecn202402010024",
+   "kind": "news",
+   "date": "2024-02-01",
+   "note": "서울고법이 2021년 시정명령·과징금을 모두 취소. 판결 이유는 기사에 없음"
+  },
+  {
+   "n": 7,
+   "title": "뉴시스 · 쿠팡 최저가 정책의 이면…납품업체 상대 '갑질' 있었나",
+   "url": "https://www.newsis.com/view/NISX20260226_0003527528",
+   "kind": "news",
+   "date": "2026-02-26",
+   "note": "공정위 제재 — 최저가 매칭(Dynamic Pricing)으로 판매가가 떨어져 상품당 순마진(PPM) 목표에 못 미치면 납품단가 인하 요구, 목표 실적을 매주·매일 점검, 대금 지연 지급"
+  },
+  {
+   "n": 8,
+   "title": "바이라인네트워크 · 공정위, 쿠팡에 과징금 21억원…\"납품 단가 후려치기\"",
+   "url": "https://byline.network/2026/02/26_coupang-3/",
+   "kind": "news",
+   "date": "2026-02-26",
+   "note": "과징금 21억 8,500만원, 쿠팡은 '사실과 다르다'며 법원에서 소명하겠다고 밝힘, PPM 목표 보통 20% 후반~30% 초반"
+  },
+  {
+   "n": 9,
+   "title": "ZDNet Korea · 공정위 \"쿠팡 '아이템위너' 약관 불공정...시정하라\"",
+   "url": "https://zdnet.co.kr/view/?no=20210721112742",
+   "kind": "news",
+   "date": "2021-07-21",
+   "note": "같은 상품을 대표 이미지 하나로 묶고 가격 등에서 가장 좋은 조건을 낸 판매자가 대표로 보인다, 약관 시정 내용"
+  },
+  {
+   "n": 10,
+   "title": "Coupang Engineering (Medium) · Our backend strategy to handle massive traffic",
+   "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+   "kind": "company",
+   "note": "공통 업무 논리를 모은 핵심 서빙 층(NoSQL 저장소·캐시·실시간 스트리밍·고가용 클러스터·다른 도메인용 틀). Medium 이 자동 접속을 막아(403) 검색 요약으로만 확인"
+  },
+  {
+   "n": 11,
+   "title": "Coupang Engineering (Medium) · Lessons learned from handling massive traffic with cache",
+   "url": "https://medium.com/coupang-engineering/lessons-learned-from-operating-our-data-serving-layer-4e9e4f68fe85",
+   "kind": "company",
+   "note": "캐시 층마다 노드 60~100대, 분당 약 1억 요청, 트래픽의 약 95%, 교훈(부분 고장·빠른 복구·노드 간 균형·로컬 캐시). 403 이라 검색 요약으로만 확인"
+  },
+  {
+   "n": 12,
+   "title": "Coupang Careers · The way engineers work at Coupang",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/the-way-engineers-work-at-coupang/",
+   "kind": "company",
+   "date": "2021",
+   "note": "모든 서비스가 마이크로서비스, '왜'를 다섯 번, 펠로급의 설계·장애 리뷰 참여, 계획·성능 시험 결과 공유, 테스트 자동화, 나라 사이 Tech Talk"
+  },
+  {
+   "n": 13,
+   "title": "Coupang Careers · Meet back-end engineers in E-commerce Engineering",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/meet-back-end-engineers-in-e-commerce-engineering-daniel-toyo-toby/",
+   "kind": "company",
+   "note": "같은 그룹 주문 시스템 엔지니어 — 고가용성·데이터 유실 방지·비동기 통신, 근본 원인 해결"
+  },
+  {
+   "n": 14,
+   "title": "Zalando Engineering · From Event-Driven Chaos to a Blazingly Fast Serving API",
+   "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+   "kind": "reference",
+   "date": "2025-03-07",
+   "note": "다른 회사 — 가격·재고 이벤트가 대목에 최대 30분 지연, 묶음의 90% 넘게가 안 바뀐 상품 정보, CQRS 로 팀 분리, 나라 묶음 격리, DynamoDB + Caffeine 캐시(60초, 끝 15초는 낡은 값 허용), 일관 해싱·2배 상한, 10ms/100ms 두 겹 타임아웃, 약 350개 팀 이관"
+  },
+  {
+   "n": 15,
+   "title": "Amazon Builders' Library · Caching challenges and strategies",
+   "url": "https://aws.amazon.com/builders-library/caching-challenges-and-strategies/",
+   "kind": "reference",
+   "date": "2019-12-05",
+   "note": "Jas Chhabra — 캐시 정당화, 서버 안·밖 캐시, soft/hard TTL, 부정 응답 캐시, 요청 모으기(thundering herd)"
+  },
+  {
+   "n": 16,
+   "title": "Amazon Builders' Library · Timeouts, retries, and backoff with jitter",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "kind": "reference",
+   "date": "2019-12-05",
+   "note": "Marc Brooker — 백분위로 타임아웃 정하기, 다섯 층 × 세 번 재시도 = 243배, 지수 백오프 + 지터, 토큰 버킷, 멱등성"
+  },
+  {
+   "n": 17,
+   "title": "Coupang Careers · Singapore 근무지",
+   "url": "https://www.coupang.jobs/en/locations/singapore/",
+   "kind": "company",
+   "note": "Suntec Tower 5, 5 Temasek Blvd, 17층 · Suntec City(Downtown Core) · Promenade 역 걸어서 3분. 우편번호 없음"
+  },
+  {
+   "n": 18,
+   "title": "Coupang Careers · Senior Staff Backend Engineer (Pricing, 미국)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8123934",
+   "kind": "posting",
+   "date": "2026-11-16",
+   "note": "같은 Pricing 팀의 미국(시애틀) 자리 — 업무·자격·우대 줄이 이 공고와 같다. 기본급 $174,000~299,000·연 보너스 0~20%(미국 근무지 기준)"
+  },
+  {
+   "n": 19,
+   "title": "Coupang Careers · Senior Staff Backend Engineer - Cloud Infrastructure",
+   "url": "https://www.coupang.jobs/en/jobs/7438944/senior-staff-backend-engineer-cloud-infrastructure/",
+   "kind": "posting",
+   "note": "다른 조직(미국)의 같은 직급 — 기본급 $174,000~299,000, 연 보너스 0~20%"
+  },
+  {
+   "n": 20,
+   "title": "Coupang Announces Results for Fourth Quarter 2025",
+   "url": "https://ir.aboutcoupang.com/news-events/news/news-details/2026/Coupang-Announces-Results-for-Fourth-Quarter-2025/default.aspx",
+   "kind": "company",
+   "note": "상품 커머스 활성 고객 2,460만 명"
+  },
+  {
+   "n": 21,
+   "title": "Coupang Engineering · Meet Coupang's Machine Learning Platform",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/meet-coupang-s-machine-learning-platform/",
+   "kind": "company",
+   "note": "Kubernetes 위 학습·서빙, ML 이 상품 목록·검색·가격·물류에 쓰인다"
+  },
+  {
+   "n": 22,
+   "title": "리멤버 · [쿠팡] 가격 운영 및 개발 기획 PM (Pricing Excellence)",
+   "url": "https://career.rememberapp.co.kr/job/posting/321027",
+   "kind": "posting",
+   "note": "쿠팡(주) 서울 성동구, 경력 5~12년 — PBS(Platform Business Service) 조직의 Pricing Operation 부서가 상품·서비스의 가격 정책과 전략을 세우고, 직매입(Retail) 상품이 시장 가격 사이에서 제때 가격 경쟁력을 갖게 한다"
+  },
+  {
+   "n": 23,
+   "title": "Coupang Engineering (Medium) · Fueling the Coupang search engine",
+   "url": "https://medium.com/coupang-tech/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+   "kind": "company",
+   "note": "검색 순위는 평점·리뷰·가격·브랜드도 본다. 403 이라 검색 요약으로만 확인"
+  },
+  {
+   "n": 24,
+   "title": "Apache Kafka Documentation · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference",
+   "note": "최대 한 번·최소 한 번·정확히 한 번, 파티션 안의 순서"
+  },
+  {
+   "n": 25,
+   "title": "Google · Site Reliability Engineering (온라인 무료판)",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "kind": "reference",
+   "note": "SLO·오류 예산, 탓하지 않는 포스트모템"
+  },
+  {
+   "n": 26,
+   "title": "Martin Fowler · Presentation Domain Data Layering",
+   "url": "https://martinfowler.com/bliki/PresentationDomainDataLayering.html",
+   "kind": "reference",
+   "note": "화면·업무 규칙·데이터 층 나누기"
+  },
+  {
+   "n": 27,
+   "title": "Coupang Engineering · Cloud expenditure optimization for cost efficiency",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/engineering-blog/cloud-expenditure-optimization-for-cost-efficiency/",
+   "kind": "company",
+   "note": "중앙 팀, 비운영 환경 25% 감축, AMD 인스턴스 약 20%, 2021년 수백만 달러 절감"
+  },
+  {
+   "n": 28,
+   "title": "Apache Flink Documentation · Timely Stream Processing",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/time/",
+   "kind": "reference",
+   "note": "event time·processing time·워터마크"
+  },
+  {
+   "n": 29,
+   "title": "Coupang Engineering (Medium) · Eats data platform: Empowering businesses with data",
+   "url": "https://medium.com/coupang-engineering/eats-data-platform-empowering-businesses-with-data-3cc00fa9968d",
+   "kind": "company",
+   "note": "준실시간(30초 안팎)·실시간(1초 미만) 파이프라인, Spark → Kafka. 403 이라 검색 요약으로만 확인"
+  },
+  {
+   "n": 30,
+   "title": "Coupang Careers · Coupang Global Office Tour: The U.S.",
+   "url": "https://www.coupang.jobs/en/life-at-coupang/employee-stories/coupang-global-office-tour-the-us/",
+   "kind": "company",
+   "date": "2022-12-28",
+   "note": "미국 사무실(시애틀·마운틴뷰) 소개"
+  },
+  {
+   "n": 31,
+   "title": "Washington State · RCW 49.58.110 (공고의 급여 표기)",
+   "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=49.58.110",
+   "kind": "reference",
+   "note": "워싱턴주 — 직원 15명 이상 고용주는 공고에 급여 범위와 복리후생을 적는다(2023-01-01 시행)"
+  },
+  {
+   "n": 32,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 중위 보수 — 달러 환산 $33,831 (같은 회사 다른 풀이에서 확인)"
+  },
+  {
+   "n": 33,
+   "title": "Coupang Careers · Why Coupang (Culture and benefits)",
+   "url": "https://www.coupang.jobs/en/why-coupang/",
+   "kind": "company",
+   "note": "전 세계 공통 복리후생 여덟 가지 — 금액 없음, 직무·근무지·자격에 따라 다르다는 단서"
+  }
+ ],
+ "caveat": "쿠팡은 가격 플랫폼의 내부 구조(규칙 엔진·저장소·지연 목표)를 공개한 글이나 발표가 없습니다 — 이번 조사에서 찾은 회사 발표 영상도 없었습니다. 그래서 회사 근거는 공고·같은 팀의 다른 공고·쿠팡 엔지니어링 글(Medium 글은 자동 접속이 막혀 검색 요약으로만)·공정위 자료(보도)로 모았고, 이 싱가포르 공고는 같은 팀 미국 공고와 업무·자격 줄이 같아 줄 풀이를 함께 쓰고, 연봉·복지·위치만 싱가포르 것으로 따로 찾았습니다. 설계는 같은 일을 공개한 Zalando 와 Amazon 의 글로 '보통 이런 것'을 보였습니다. 공정위 2026년 처분은 쿠팡이 법원에서 다투고 있고, 2021년 처분은 2024년 서울고법이 취소했습니다.",
+ "resources": [
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "복제·파티션·일관성·스트림 처리를 한 권에. 요건② '분산 시스템'과 업무④ 확장 계획의 바탕 — 특히 5~6장(복제·파티셔닝)과 11장(스트림)."
+  },
+  {
+   "id": "peaa",
+   "title": "엔터프라이즈 애플리케이션 아키텍처 패턴",
+   "by": "마틴 파울러 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%97%94%ED%84%B0%ED%94%84%EB%9D%BC%EC%9D%B4%EC%A6%88%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98%20%ED%8C%A8%ED%84%B4",
+   "why": "업무② '층으로 나눈 애플리케이션'의 원전. 층 나누기·도메인 모델·돈(Money) 패턴."
+  },
+  {
+   "id": "fowler-layering",
+   "title": "Presentation Domain Data Layering",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/bliki/PresentationDomainDataLayering.html",
+   "why": "층을 왜 나누나를 짧게. 책 전에 먼저 읽는다."
+  },
+  {
+   "id": "ddd-start",
+   "title": "도메인 주도 개발 시작하기",
+   "by": "최범균 · 한빛미디어 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8F%84%EB%A9%94%EC%9D%B8%20%EC%A3%BC%EB%8F%84%20%EA%B0%9C%EB%B0%9C%20%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0",
+   "why": "가격·할인·쿠폰 같은 규칙을 도메인 모델과 경계(바운디드 컨텍스트)로 나누는 법을 Java·Spring 예제로. 업무②⑤."
+  },
+  {
+   "id": "sysdesign",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "why": "규모 추정·캐시·안정 해시·메시지 큐를 면접 형식으로. 설계 면접 준비와 업무④ 용량 계산 연습."
+  },
+  {
+   "id": "kafka-guide",
+   "title": "카프카 핵심 가이드 (2판)",
+   "by": "그웬 샤피라 외 · 제이펍",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%B4%ED%94%84%EC%B9%B4%20%ED%95%B5%EC%8B%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "파티션·순서·전달 보장·정확히 한 번 — 우대③ 이벤트 방식에서 가격 이벤트 중복·순서를 다루는 바탕."
+  },
+  {
+   "id": "kafka-docs",
+   "title": "Apache Kafka Documentation · Message Delivery Semantics",
+   "by": "Apache Kafka 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "why": "최소 한 번·정확히 한 번의 정확한 정의. 요건②의 '두 번 온 이벤트' 문제."
+  },
+  {
+   "id": "flink-time",
+   "title": "Apache Flink · Timely Stream Processing",
+   "by": "Apache Flink 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/time/",
+   "why": "사건 시각과 워터마크로 늦게 온 이벤트를 다루는 법. 우대③ Flink."
+  },
+  {
+   "id": "zalando-prapi",
+   "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+   "by": "Zalando Engineering · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+   "why": "다른 커머스가 가격·재고 제공 구조를 다시 짠 실제 사례. 업무②④⑤를 한 번에 보는 가장 가까운 공개 글."
+  },
+  {
+   "id": "aws-caching",
+   "title": "Caching challenges and strategies",
+   "by": "Amazon Builders' Library",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/builders-library/caching-challenges-and-strategies/",
+   "why": "가격처럼 많이 읽히는 값을 캐시할 때의 함정(동시 만료·낡은 값·캐시 장애)."
+  },
+  {
+   "id": "aws-retries",
+   "title": "Timeouts, retries, and backoff with jitter",
+   "by": "Amazon Builders' Library",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "why": "타임아웃을 백분위로 정하고 재시도 증폭을 막는 법. 요건②③."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly (온라인 무료판)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "SLO·오류 예산·포스트모템 장만 먼저. 요건③ '끝까지 파기'와 우대④ DevOps."
+  },
+  {
+   "id": "spring-boot-docs",
+   "title": "Spring Boot Reference Documentation",
+   "by": "Spring 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "why": "설정·Actuator(지표)·스레드 풀 같은 운영 기능. 우대①."
+  },
+  {
+   "id": "k8s-docs",
+   "title": "쿠버네티스 문서",
+   "by": "Kubernetes 공식 문서(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/ko/docs/home/",
+   "why": "Deployment·HPA(자동 늘리기)·자원 요청. 우대②."
+  },
+  {
+   "id": "wiki-spring-boot",
+   "title": "스프링 부트 — 핵심 원리와 활용",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/spring-boot",
+   "why": "기동 로그와 엔드포인트 응답으로 부트가 대신하는 일을 본다. 우대①."
+  },
+  {
+   "id": "wiki-jvm",
+   "title": "자바 성능 튜닝 — JVM 과 GC",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/jvm-tuning",
+   "why": "GC 로그 읽기 — 가격 조회 지연 꼬리(p99)를 줄이는 바탕. 우대①."
+  },
+  {
+   "id": "wiki-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "보냈다는 것과 처리됐다는 것의 차이를 실제 명령·레코드로. 우대③."
+  },
+  {
+   "id": "wiki-docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "이미지·컨테이너 기본. 우대②."
+  },
+  {
+   "id": "wiki-k8s",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "Pending·CrashLoopBackOff 를 읽는 법. 우대②."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "가격 도메인과 회사 맥락 잡기",
+   "time": "1주",
+   "goal": "쿠팡 가격이 무엇에 따라 움직이고(최저가 매칭·아이템위너·판촉) 어디서 문제가 됐는지 설명할 수 있다.",
+   "resources": [
+    "zalando-prapi",
+    "fowler-layering"
+   ],
+   "task": "위 풀이의 출처 5·7·9 와 Zalando 글을 읽고, '정가 → 경쟁가 맞추기 → 하한 → 쿠폰 → 대표 판매자' 흐름을 한 장 그림으로 그린다."
+  },
+  {
+   "title": "층으로 나눈 가격 규칙 엔진",
+   "time": "2~3주",
+   "goal": "규칙을 넣고 빼도 다른 계산이 안 깨지는 가격 계산 모듈을 만든다.",
+   "resources": [
+    "peaa",
+    "ddd-start",
+    "spring-boot-docs",
+    "wiki-spring-boot"
+   ],
+   "task": "Spring Boot 로 가상 상품 1만 개의 가격 API 를 만든다 — 규칙(경쟁가·하한·쿠폰)을 각각 클래스로, 순서는 설정 한곳에. BigDecimal 로 원 단위 내림, 규칙마다 단위 테스트와 '규칙 순서를 바꾸면 깨지는' 테스트를 붙인다."
+  },
+  {
+   "title": "이벤트로 받고 캐시로 내기",
+   "time": "2~4주",
+   "goal": "가격 변경 이벤트를 중복·순서 뒤바뀜에도 맞게 반영하고, 많은 조회를 캐시로 견딘다.",
+   "resources": [
+    "kafka-guide",
+    "kafka-docs",
+    "wiki-kafka",
+    "aws-caching",
+    "flink-time"
+   ],
+   "task": "로컬 Kafka 에 상품 ID 를 키로 가짜 경쟁가 이벤트를 초당 1,000건 흘리고, 일부러 중복·순서 섞기를 넣는다. 소비자는 버전 비교로 반영, 조회 API 앞에 캐시(soft/hard TTL·요청 모으기)를 둔다. 최종 값이 원본과 같은지 대조 스크립트로 확인한다."
+  },
+  {
+   "title": "부하와 장애를 견디기",
+   "time": "2~3주",
+   "goal": "p99 지연을 재고, 재시도·타임아웃·자동 확장으로 대목 트래픽을 버틴다.",
+   "resources": [
+    "aws-retries",
+    "sre-book",
+    "k8s-docs",
+    "wiki-k8s",
+    "wiki-docker",
+    "wiki-jvm"
+   ],
+   "task": "3단계 서비스를 로컬 Kubernetes 에 올리고 부하 도구로 평소의 10배를 30초간 쏜다. p50·p99 그래프, GC 로그, Pod 수 변화를 남기고, 재시도 설정을 바꿔 가며 아래쪽 DB 요청이 몇 배 되는지 잰다. 결과를 SLO 와 포스트모템 형식 문서로 쓴다."
+  },
+  {
+   "title": "설계 문서와 면접 준비",
+   "time": "1~2주",
+   "goal": "가격 플랫폼 다음 세대 설계를 영어 문서로 설명하고 선택지를 비교할 수 있다.",
+   "resources": [
+    "ddia",
+    "sysdesign"
+   ],
+   "task": "'하루 3억 건, 상품 1억 개, 가격 변경 초당 1만 건'을 가정해 저장소·파티션·캐시 크기를 계산하고, 나라별 격리·이관 계획까지 담은 2쪽짜리 영어 설계 문서를 쓴다. 위 면접 질문 여섯 개에 답해 본다."
+  }
+ ],
+ "pay": {
+  "summary": "싱가포르 공고에는 연봉이 없다. 같은 Pricing 팀 **미국 공고는 기본급 $174,000~299,000**(+연 보너스 0~20%)를 적었지만 미국 근무지 기준이고, 공시로 확인되는 쿠팡 Inc. 전 직원 중위 보수는 **$33,831**(2025년) — 둘 다 이 자리 숫자가 아니다",
+  "rows": [
+   {
+    "label": "같은 팀 미국 공고 기본급",
+    "value": "$174,000 ~ $299,000 / 년",
+    "basis": "공고 · 2026년 (미국)",
+    "peer": true,
+    "note": "업무·자격 줄이 같은 Pricing 팀 시애틀 자리. 기본급만이고 지역 시장·경력에 따라 다르다고 적었다 — 연 보너스 0~20%, 주식 등은 따로 [18]"
+   },
+   {
+    "label": "쿠팡 Inc. 전 직원 중위 보수",
+    "value": "$33,831 / 년",
+    "basis": "공시(미국 위임장) · 2025년",
+    "note": "미국 SEC 위임장 설명서(DEF 14A)의 CEO 보수 배율 공시. 한국 물류·현장 직원이 대부분인 회사 전체의 가운데 값을 달러로 환산한 것이다 [32]"
+   },
+   {
+    "label": "같은 직급 다른 조직 미국 공고 (Cloud Infrastructure)",
+    "value": "$174,000 ~ $299,000 / 년",
+    "basis": "공고 · 2026년 (미국)",
+    "peer": true,
+    "note": "미국 Senior Staff 백엔드 공고 — 같은 범위·같은 보너스라 직급 공통 범위로 보인다 [19] {추론}"
+   }
+  ],
+  "how": "이 공고에 연봉 칸이 없고 전형 마지막이 처우 제안(Offer)이다 [1]. 미국 공고에 숫자가 있는 건 워싱턴주가 공고에 급여 범위를 적게 하기 때문이고[31], 그 범위는 미국 지역 시장을 반영한다고 적혀 있어 싱가포르 금액과 같지 않다 [18]. 쿠팡은 미국 상장사라 국내 사업보고서의 '직원 1인 평균 급여'가 없고, 싱가포르 법인 보수 공시도 찾지 못했다 — **싱가포르 숫자 없음**. 중위 보수는 회사 전체 가운데 값이라 이 자리 연봉으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "의료 보험",
+    "detail": "본인과 직계 가족"
+   },
+   {
+    "name": "가족 휴가",
+    "detail": "경조사 유급 휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "외국어·소프트 스킬 강좌"
+   },
+   {
+    "name": "글로벌 프로젝트",
+    "detail": "직무에 따라 여러 나라 팀과 협업"
+   },
+   {
+    "name": "행사",
+    "detail": "팀·회사 행사"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·차·간식 라운지, 하루 세 끼 카페테리아"
+   },
+   {
+    "name": "유연 근무",
+    "detail": "유연 근무 시간 또는 재택"
+   },
+   {
+    "name": "열린 문화",
+    "detail": "칸막이·직급·직함 대신 열린 협업"
+   }
+  ],
+  "note": "이 공고에는 복리후생 칸이 없어 쿠팡 채용 사이트 'Why Coupang'의 전 세계 공통 소개를 옮겼다(2026-11-25 확인) [33]. 금액은 없고, 직무·근무지·자격에 따라 달라진다고 적었다 [33]. 미국 공고의 401K·PTO 같은 항목은 미국 근무자 기준이라 넣지 않았다 [18]. 사내 식당·라운지가 싱가포르 사무실에 그대로 있는지는 처우 제안 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 싱가포르 사무실 (Suntec Tower 5)",
+  "address": "5 Temasek Boulevard, Suntec Tower 5, 17층, Singapore",
+  "map_url": "https://map.naver.com/p/search/Suntec%20Tower%205%20Temasek%20Boulevard%20Singapore",
+  "near": "Promenade 역 걸어서 약 3분 [17]",
+  "note": "공고 근무지는 'Singapore' [1]. 주소와 가까운 역은 쿠팡 채용 사이트의 싱가포르 근무지 안내(Suntec City, Downtown Core) [17] — 안내에 사무실이 하나만 있어 Pricing 팀도 이곳으로 보았다 {추론}. 우편번호는 안내에 없어 비웠다."
+ }
+}
