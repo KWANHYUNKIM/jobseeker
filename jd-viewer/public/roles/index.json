@@ -232,6 +232,7 @@
   "ats-greeting:musinsa:229966": "musinsa-infra-platform-engineering-manager",
   "ats-greeting:musinsa:242044": "musinsa-network-engineer",
   "wanted-366283": "musinsa-network-security-engineer-sase-casb",
+  "ats-greeting:musinsa:237453": "musinsa-payments-security-engineer",
   "ats-greeting:musinsa:245811": "musinsa-product-engineer-commerce",
   "ats-greeting:musinsa:245407": "musinsa-product-engineer-global-integration-open",
   "ats-greeting:musinsa:245715": "musinsa-product-engineer-global-integration",
@@ -2511,6 +2512,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 22
+  },
+  {
+   "id": "musinsa-payments-security-engineer",
+   "company": "무신사페이먼츠",
+   "role": "Security Engineer",
+   "jobs": [
+    "ats-greeting:musinsa:237453"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 17
   },
   {
    "id": "musinsa-product-engineer-commerce",

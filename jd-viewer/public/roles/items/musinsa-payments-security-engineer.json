@@ -1,0 +1,1027 @@
+{
+ "id": "musinsa-payments-security-engineer",
+ "company": "무신사페이먼츠",
+ "role": "Security Engineer",
+ "team": "무신사페이먼츠 정보보안팀",
+ "jobs": [
+  "ats-greeting:musinsa:237453"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "무신사·29CM·솔드아웃의 결제를 맡는 PG(결제대행) 자회사 **무신사페이먼츠**의 보안 엔지니어 — 보안 장비 운영·침해 대응(CERT)·클라우드 설정 점검·모의해킹·전자금융 규제 점검·자동화를 한 사람이 넓게 맡습니다.[1][6]",
+  "env": "AWS + 사내(on-premise) 혼합 환경, 연 약 5조원 결제, 선불충전금 '무신사머니' 운영.[1][11][12] 직원 약 40명 규모 회사라 보안팀도 작습니다 {추론}.[4]",
+  "oneline": "7년+ 보안 운영 경력자 자리. 장비·관제·사고 대응을 기본으로 하고, 규제 점검·모의해킹·클라우드 보안 셋 중 하나는 깊어야 합니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "AWS Cloud 및 On-premise 환경의 보안 인프라(FW, WAF, IPS/IDS, EDR, DLP 등)를 구성하고 운영합니다.",
+   "short": "클라우드와 사내 서버 양쪽에 방화벽·웹 방화벽·침입 탐지·단말 보안·유출 방지 장비를 깔고 매일 돌리는 일.",
+   "why": "공고가 일하는 환경을 'AWS와 on-premise(회사가 직접 둔 서버)' 둘 다로 적었습니다.[1] 전자금융감독규정은 금융회사·전자금융업자에게 해킹을 막는 정보보호시스템을 설치·운영하고, 시스템마다 책임자를 정해 운영 결과를 1년 이상 남기라고 합니다.[13]",
+   "actually": {
+    "items": [
+     "**FW(방화벽)** — 어느 주소·포트끼리 통신해도 되는지 규칙을 관리. AWS에서는 보안그룹·네트워크 ACL이 같은 역할을 한다.[24]",
+     "**WAF(웹 방화벽)** — 결제 화면·API로 들어오는 SQL 삽입·자동화 공격을 걸러내는 규칙 관리.[19]",
+     "**IPS/IDS(침입 차단·탐지)** — 네트워크에서 알려진 공격 모양을 찾아 막거나 알린다. 오탐(가짜 경보)을 줄이는 튜닝이 일의 대부분이다 {추론}.",
+     "**EDR(단말 탐지·대응)** — 직원 PC·서버에서 수상한 프로세스를 잡고 격리.",
+     "**DLP(유출 방지)** — 카드번호·주민번호 같은 정보가 메일·업로드로 나가는 것을 막는다.",
+     "**운영 기록** — 장비마다 책임자와 운영 결과 1년 이상 보존, 시스템 접속 기록도 1년 이상.[13]"
+    ]
+   },
+   "how_far": "장비를 고르는 것은 팀·회사 결정이고 {추론}, 이 자리는 **규칙을 쓰고, 경보를 보고, 장애·오탐을 고치며 기록을 남기는** 운영 책임까지입니다. 다섯 가지 중 두세 가지는 직접 운영해 본 경험이 있어야 자격요건 첫 줄과 맞습니다.[1]",
+   "refs": [
+    1,
+    13,
+    19,
+    24
+   ],
+   "study": [
+    "fss-rule",
+    "iam-bp",
+    "owasp-wstg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안 이벤트를 모니터링·분석하고 침해사고 대응(CERT) 업무를 수행합니다.",
+   "short": "장비·로그에서 올라온 경보를 보고 진짜 공격인지 가리고, 공격이면 막고 범위를 재고 보고하는 일.",
+   "why": "같은 회사의 CERT/취약점진단 공고는 탐지·대응·원인 규명·재발 방지와 금융권 대응 훈련을 따로 적었습니다.[9] 전자금융업자는 침해사고를 안 때부터 24시간 안에 금융위원회에 보고해야 하고[13], 개인정보가 1천 명 이상 유출되면 72시간 안 신고 규정도 있습니다.[21]",
+   "actually": {
+    "items": [
+     "**분류** — 경보를 보고 오탐·정상 업무·공격 중 무엇인지 판단.",
+     "**막기 전에 증거** — 로그와 서버 이미지를 먼저 보존해야 나중에 범위를 잴 수 있다.[15]",
+     "**범위 재기** — 어떤 계정·어떤 데이터가 얼마나 나갔나. 2026-08 계열사 29CM 사고는 신고 범위가 세 번에 걸쳐 늘었다.[7][8]",
+     "**보고** — 금융위원회 24시간[13], 개인정보 72시간[21].",
+     "**훈련** — 금융회사는 침해사고 대응·복구 훈련 계획을 연 1회 이상 세워 시행한다.[13][9]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "사고 하나의 흐름[15]",
+     "steps": [
+      "탐지 · 경보·제보",
+      "분류 · 오탐인가 공격인가",
+      "막기 · 경로 차단, 계정·키 회수",
+      "범위 재기 · 무엇이 얼마나",
+      "보고 · 금융위 24시간·개인정보 72시간",
+      "재발 방지 · 원인과 개선 과제"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "대외 발표·법적 판단은 회사(법무·CISO) 몫입니다 {추론}. 이 자리는 **경보 분류부터 범위 숫자·원인 보고서까지** 기술 대응 전부를 맡습니다.",
+   "refs": [
+    7,
+    8,
+    9,
+    13,
+    15,
+    21
+   ],
+   "study": [
+    "nist-ir",
+    "idir",
+    "attack"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드 보안 설정(IAM 정책, 보안그룹, CSPM 등)을 점검하고, CloudTrail 등 로그 기반의 위협을 탐지하고 대응합니다.",
+   "short": "AWS 권한·네트워크 설정이 너무 열려 있지 않은지 늘 점검하고, AWS 작업 기록(CloudTrail)에서 수상한 행동을 찾는 일.",
+   "why": "서비스가 AWS 위에 있어서 서버를 뚫지 않아도 **설정 실수 하나**(누구나 읽는 저장소, 인터넷에 열린 관리 포트)로 사고가 납니다 {추론}. 감독규정은 접근권한을 최소한으로 주라고 하고[13], 클라우드를 쓸 때는 업무 중요도 평가와 안전성 확보조치를 정보보호위원회 심의로 거치게 합니다.[13]",
+   "actually": {
+    "items": [
+     "**IAM 정책** — 사람·서비스마다 필요한 만큼만. `\"Action\": \"*\"` 같은 넓은 허용을 찾아 줄인다.[24]",
+     "**보안그룹** — 22(SSH)·3389(원격 데스크톱)·DB 포트가 0.0.0.0/0(인터넷 전체)에 열렸는지.[18]",
+     "**CSPM(클라우드 보안 설정 점검 도구)** — CIS AWS 벤치마크 같은 기준으로 계정 전체 설정을 매일 자동 채점.[18]",
+     "**CloudTrail** — 누가 언제 어떤 API를 불렀나의 기록. 루트 계정 로그인, MFA 없는 콘솔 로그인, 새 액세스 키 발급, 로그 끄기(StopLogging)가 대표 경보다.[17]",
+     "**대응** — 유출된 키 비활성화, 권한 회수, 해당 기간 CloudTrail 다시 훑기.[17][24]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CloudTrail 이벤트에서 경보 뽑기",
+     "body": "CloudTrail 기록의 필드 이름(eventName·userIdentity·additionalEventData.MFAUsed)을 그대로 쓴 가상 이벤트 다섯 개입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "events = [\n    {\"eventName\": \"ConsoleLogin\", \"userIdentity\": {\"type\": \"Root\"}, \"additionalEventData\": {\"MFAUsed\": \"No\"}, \"sourceIPAddress\": \"203.0.113.7\"},\n    {\"eventName\": \"ConsoleLogin\", \"userIdentity\": {\"type\": \"IAMUser\", \"userName\": \"dev1\"}, \"additionalEventData\": {\"MFAUsed\": \"Yes\"}, \"sourceIPAddress\": \"198.51.100.2\"},\n    {\"eventName\": \"CreateAccessKey\", \"userIdentity\": {\"type\": \"IAMUser\", \"userName\": \"ci-bot\"}, \"sourceIPAddress\": \"203.0.113.7\"},\n    {\"eventName\": \"StopLogging\", \"userIdentity\": {\"type\": \"AssumedRole\"}, \"sourceIPAddress\": \"203.0.113.7\"},\n    {\"eventName\": \"GetObject\", \"userIdentity\": {\"type\": \"IAMUser\", \"userName\": \"dev1\"}, \"sourceIPAddress\": \"198.51.100.2\"},\n]\nRULES = [\n    (\"루트 계정 사용\", lambda e: e[\"userIdentity\"][\"type\"] == \"Root\"),\n    (\"MFA 없는 콘솔 로그인\", lambda e: e[\"eventName\"] == \"ConsoleLogin\" and e.get(\"additionalEventData\", {}).get(\"MFAUsed\") == \"No\"),\n    (\"새 액세스 키 발급\", lambda e: e[\"eventName\"] == \"CreateAccessKey\"),\n    (\"감사 로그 끄기 시도\", lambda e: e[\"eventName\"] in {\"StopLogging\", \"DeleteTrail\"}),\n]\nfor e in events:\n    hits = [name for name, rule in RULES if rule(e)]\n    if hits:\n        print(e[\"eventName\"], e[\"sourceIPAddress\"], \"->\", \", \".join(hits))\n# ConsoleLogin 203.0.113.7 -> 루트 계정 사용, MFA 없는 콘솔 로그인\n# CreateAccessKey 203.0.113.7 -> 새 액세스 키 발급\n# StopLogging 203.0.113.7 -> 감사 로그 끄기 시도"
+    },
+    {
+     "title": "넓은 권한·열린 관리 포트 찾기(CSPM 이 하는 일의 축소판)",
+     "body": "가상 IAM 정책 셋과 보안그룹 셋을 채점합니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "policies = {\n    \"app-role\": [{\"Effect\": \"Allow\", \"Action\": [\"s3:GetObject\"], \"Resource\": \"arn:aws:s3:::pay-receipts/*\"}],\n    \"legacy-admin\": [{\"Effect\": \"Allow\", \"Action\": [\"*\"], \"Resource\": \"*\"}],\n    \"batch-role\": [{\"Effect\": \"Allow\", \"Action\": [\"kms:*\"], \"Resource\": \"*\"}],\n}\nsecurity_groups = [\n    {\"id\": \"sg-web\", \"port\": 443, \"cidr\": \"0.0.0.0/0\"},\n    {\"id\": \"sg-bastion\", \"port\": 22, \"cidr\": \"0.0.0.0/0\"},\n    {\"id\": \"sg-db\", \"port\": 3306, \"cidr\": \"10.0.0.0/16\"},\n]\nfor name, stmts in policies.items():\n    for s in stmts:\n        wide = any(a == \"*\" or a.endswith(\":*\") for a in s[\"Action\"])\n        if s[\"Effect\"] == \"Allow\" and (wide or s[\"Resource\"] == \"*\"):\n            print(\"IAM\", name, s[\"Action\"], s[\"Resource\"], \"-> 권한 과다\")\nADMIN_PORTS = {22, 3389, 3306}\nfor g in security_groups:\n    if g[\"cidr\"] == \"0.0.0.0/0\" and g[\"port\"] in ADMIN_PORTS:\n        print(\"SG\", g[\"id\"], g[\"port\"], \"-> 관리 포트가 인터넷 전체에 열림\")\n# IAM legacy-admin ['*'] * -> 권한 과다\n# IAM batch-role ['kms:*'] * -> 권한 과다\n# SG sg-bastion 22 -> 관리 포트가 인터넷 전체에 열림"
+    }
+   ],
+   "how_far": "점검 도구를 새로 짜는 것보다 **AWS 기본 도구(Security Hub·GuardDuty·CloudTrail)의 결과를 읽고, 오탐을 걸러, 고칠 사람에게 넘기고 끝까지 확인하는** 것이 기본입니다 {추론}.[17][18]",
+   "refs": [
+    13,
+    17,
+    18,
+    24
+   ],
+   "study": [
+    "cloudtrail",
+    "cis-aws",
+    "iam-bp",
+    "guardduty"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시스템 및 서비스의 기술적 보안 취약점을 진단(모의해킹 포함)하고 개선 조치를 수행합니다.",
+   "short": "서버 설정을 점검표로 진단하고, 결제 서비스를 공격자처럼 직접 뚫어 보고, 고칠 때까지 따라가는 일.",
+   "why": "같은 회사 CERT/취약점진단 공고도 웹·인프라·클라우드 진단과 모의해킹, 개선 이행 관리를 같이 적었습니다.[9] 결제 API는 남의 주문·결제 내역을 번호만 바꿔 보는 공격(객체 단위 인가 누락)이 가장 흔한 위험입니다.[29]",
+   "actually": {
+    "items": [
+     "**설정 진단** — 서버·DB·네트워크 장비를 항목표(KISA 상세가이드의 U-·W- 같은 항목)로 양호/취약 판정.[16]",
+     "**모의해킹** — 결제·정산 웹·앱을 OWASP 테스트 가이드 순서(인증·세션·인가·입력값·업무 로직)로 직접 공격해 본다.[19]",
+     "**업무 로직** — 결제 금액 바꾸기, 쿠폰 중복 적용, 환불 두 번 받기처럼 장비가 못 잡는 결제 특유의 구멍 {추론}.",
+     "**우선순위** — 점수(CVSS)만이 아니라 실제 악용 가능성(EPSS)과 외부 노출로 순서를 정한다.[27]",
+     "**개선 추적** — 개발팀이 고친 뒤 다시 공격해 확인(재진단)."
+    ]
+   },
+   "how_far": "고치는 코드는 대개 개발팀이 씁니다 {추론}. 이 자리는 **재현 가능한 진단 보고서(재현 순서·영향·고칠 방법)를 쓰고, 조치를 재진단으로 확인하는** 데까지입니다.",
+   "refs": [
+    9,
+    16,
+    19,
+    27,
+    29
+   ],
+   "study": [
+    "kisa-guide",
+    "owasp-wstg",
+    "portswigger",
+    "owasp-api"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전자금융 관련 법령 및 규제 준수를 위한 기술적 보안 점검을 수행합니다.",
+   "short": "전자금융거래법·전자금융감독규정이 요구하는 보안 점검(특히 매년 취약점 분석·평가)을 기술적으로 해내는 일.",
+   "why": "무신사페이먼츠는 전자금융거래법에 따른 전자지급결제대행업(PG)자이고 선불전자지급수단(무신사머니)도 운영합니다.[6][11] 전자금융업자는 전자금융기반시설의 취약점 분석·평가를 연 1회 이상(홈페이지는 6개월에 1회 이상) 해야 합니다.[13]",
+   "actually": {
+    "items": [
+     "**취약점 분석·평가** — 연 1회 이상. 자체 전담반(CISO 포함 5명 이상, 30% 이상 고급 기술인력)이나 평가전문기관(금융보안원 등)이 한다.[13]",
+     "**결과 처리** — 취약점은 없애거나 그에 맞먹는 조치를 하고, 둘 다 안 되면 최고경영자 승인을 받는다. 결과는 금융위원장에게 낸다.[13]",
+     "**해킹 방지 대책** — 긴급 보안 패치 즉시 적용, 내부 업무 시스템과 인터넷 분리(망분리, 예외는 정해진 절차로).[13]",
+     "**로그·권한** — 개인별 인증·최소 권한, 접속 기록 1년 이상 보존.[13]",
+     "**바뀌는 규정** — 금융위는 2026-11 대형 금융회사(총자산 2조·300명 이상)의 평가를 연 2회로 늘리고, 기반시설에 직·간접으로 연결된 시스템을 빠짐없이 넣는 개정을 예고했다(2027년 1분기 시행 목표).[14] 무신사페이먼츠 규모로는 연 2회 대상이 아닐 것으로 보이지만, '연결된 시스템 전부' 원칙은 같이 따라갈 가능성이 크다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "평가 결과를 규정 문구대로 나누기",
+     "body": "감독규정 제37조의2의 '제거 → 상응 조치 → 안 되면 최고경영자 승인' 순서로 가상 결과 네 건을 정리합니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "findings = [\n    {\"id\": \"W-01\", \"target\": \"결제 홈페이지\", \"result\": \"취약\", \"fixed\": True},\n    {\"id\": \"W-07\", \"target\": \"결제 홈페이지\", \"result\": \"취약\", \"fixed\": False, \"alt\": \"WAF 규칙으로 차단\"},\n    {\"id\": \"U-13\", \"target\": \"정산 서버\", \"result\": \"취약\", \"fixed\": False},\n    {\"id\": \"U-02\", \"target\": \"정산 서버\", \"result\": \"양호\", \"fixed\": None},\n]\nfor f in findings:\n    if f[\"result\"] != \"취약\":\n        continue\n    if f[\"fixed\"]:\n        state = \"제거 완료\"\n    elif f.get(\"alt\"):\n        state = \"상응 조치: \" + f[\"alt\"]\n    else:\n        state = \"제거·상응 조치 불가 -> 최고경영자 승인 필요\"\n    print(f[\"id\"], f[\"target\"], \"->\", state)\n# W-01 결제 홈페이지 -> 제거 완료\n# W-07 결제 홈페이지 -> 상응 조치: WAF 규칙으로 차단\n# U-13 정산 서버 -> 제거·상응 조치 불가 -> 최고경영자 승인 필요"
+    }
+   ],
+   "how_far": "법 해석과 감독기관 소통 창구는 CISO·컴플라이언스 쪽입니다 {추론}. 이 자리는 **조문을 점검 항목으로 바꿔 실제로 점검하고, 결과와 증적(캡처·로그·설정 파일)을 남기는** 기술 담당입니다.",
+   "refs": [
+    6,
+    11,
+    13,
+    14
+   ],
+   "study": [
+    "fss-rule",
+    "kisa-guide"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Python, Bash 등 스크립트를 활용하여 보안 운영 자동화 체계를 구축합니다.",
+   "short": "매일·매달 손으로 하던 점검(권한 검토·로그 확인·설정 비교)을 스크립트로 돌게 만드는 일.",
+   "why": "직원 약 40명 규모 회사라[4] 보안 담당자도 몇 명뿐일 것이고, 규정이 요구하는 정기 점검(권한·로그·패치)을 손으로 다 하기 어렵습니다 {추론}. 우대사항도 정기 보안성 검토를 스크립트로 자동화한 경험을 따로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**계정 정기 검토** — 인사 명단과 시스템 계정을 맞대어 퇴사자·장기 미사용·주인 없는 계정 찾기.[13]",
+     "**설정 변화 감시** — 어제와 오늘의 보안그룹·IAM 정책을 비교해 바뀐 것만 알리기 {추론}.",
+     "**경보 정리** — 같은 원인의 경보를 묶고, 이미 확인한 오탐은 자동으로 닫기.",
+     "**탐지 규칙을 코드로** — Sigma 같은 공용 규칙 형식으로 써 두면 SIEM이 바뀌어도 옮길 수 있다.[23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "퇴사자·미사용 계정 찾기",
+     "body": "가상 인사 명단과 계정 목록을 맞대어 봅니다(직접 돌린 출력). 90일 기준은 예시입니다.",
+     "lang": "python",
+     "code": "import csv, io\nhr = io.StringIO(\"emp_id,name,status\\nE01,김가,재직\\nE02,이나,퇴사\\nE03,박다,재직\\n\")\naccounts = io.StringIO(\"account,emp_id,last_login_days\\nkim.ga,E01,1\\nlee.na,E02,40\\npark.da,E03,120\\nsvc-batch,,2\\n\")\nstatus = {r[\"emp_id\"]: r[\"status\"] for r in csv.DictReader(hr)}\nfor a in csv.DictReader(accounts):\n    if not a[\"emp_id\"]:\n        print(a[\"account\"], \"-> 주인 없는 계정(서비스 계정이면 담당자 지정)\")\n    elif status.get(a[\"emp_id\"]) == \"퇴사\":\n        print(a[\"account\"], \"-> 퇴사자 계정, 즉시 잠금\")\n    elif int(a[\"last_login_days\"]) > 90:\n        print(a[\"account\"], \"-> 90일 미사용, 잠금 검토\")\n# lee.na -> 퇴사자 계정, 즉시 잠금\n# park.da -> 90일 미사용, 잠금 검토\n# svc-batch -> 주인 없는 계정(서비스 계정이면 담당자 지정)"
+    }
+   ],
+   "level": {
+    "basic": "CSV·JSON 읽기, 정규식, AWS CLI·boto3 로 목록 뽑기, cron 으로 돌리기",
+    "work": "API 페이지 넘김·재시도, 결과를 메신저·티켓으로 보내기, 스크립트 자체의 비밀값을 안전하게 두기",
+    "team": "Sigma 같은 규칙 형식으로 탐지를 코드로 관리, 점검 결과를 감사 증적으로 남기기 {추론}"
+   },
+   "how_far": "개발자 수준의 서비스 코드는 필요 없습니다 {추론}. **반복 점검 하나를 끝까지 자동화해 매일 돌게 하고, 그 결과를 사람이 확인하는 흐름**을 만들 수 있으면 됩니다.",
+   "refs": [
+    1,
+    4,
+    13,
+    23
+   ],
+   "study": [
+    "cloudtrail",
+    "sigma"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "정보보안 운영 경력 7년 이상으로, 엔드포인트·네트워크·클라우드 보안 솔루션 운영 실무 경험을 보유하신 분",
+   "short": "보안 운영 7년 이상, 그리고 PC·네트워크·클라우드 세 갈래 보안 제품을 모두 돌려 본 경험.",
+   "why": "업무 첫 줄이 FW·WAF·IPS/IDS·EDR·DLP를 클라우드와 사내 양쪽에서 운영하는 일이라 세 갈래가 다 필요합니다.[1] 같은 회사 CERT 공고도 7년 이상입니다.[9]",
+   "actually": {
+    "items": [
+     "**엔드포인트** — EDR·DLP·백신 정책 배포와 예외 관리.",
+     "**네트워크** — 방화벽·IPS·WAF 규칙과 오탐 튜닝.",
+     "**클라우드** — 보안그룹·IAM·AWS 보안 서비스 운영.[18][24]"
+    ]
+   },
+   "how_far": "세 갈래가 같은 깊이일 필요는 없습니다 {추론}. 면접에서 **각 제품의 규칙을 직접 바꿔 본 사례와 그 결과**를 말할 수 있어야 '운영 실무'로 인정됩니다.",
+   "refs": [
+    1,
+    9,
+    18,
+    24
+   ],
+   "study": [
+    "iam-bp",
+    "cis-aws"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안 이벤트 분석 및 침해사고 대응(CERT) 실무 경험을 보유하신 분",
+   "short": "경보를 직접 분석하고, 실제 사고를 막고 보고해 본 경험.",
+   "why": "업무 둘째 줄이 CERT입니다.[1] 전자금융업자는 사고를 24시간 안에 금융위에 보고해야 해서[13] 처음부터 혼자 판단할 수 있는 사람이 필요합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**로그 읽기** — 웹 서버·WAF·CloudTrail·EDR 로그에서 한 공격의 시간 순서표를 만든다.[17]",
+     "**공격 기법 이름 붙이기** — 본 행동을 MITRE ATT&CK 기법으로 적어 빠진 탐지를 찾는다.[20]",
+     "**보고서** — 언제·무엇이·얼마나·왜·무엇을 바꿨나.[15]"
+    ]
+   },
+   "how_far": "큰 사고가 아니어도 됩니다 {추론}. **경보 하나를 사고로 판단하고 끝까지 닫아 본 사례**를 단계별로 설명할 수 있어야 합니다.",
+   "refs": [
+    1,
+    13,
+    15,
+    17,
+    20
+   ],
+   "study": [
+    "nist-ir",
+    "idir",
+    "attack"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "아래 3개 영역 중 1개 이상에서 전문 역량 및 경험을 보유하신 분",
+   "short": "규제 점검·모의해킹·클라우드 보안 중 하나는 '전문'이라 할 만큼 깊어야 한다는 머리줄.",
+   "why": "업무 3~5번 줄(클라우드 점검·진단·규제 점검)에 각각 대응합니다.[1] 작은 팀이라 셋을 나눠 맡을 사람을 찾는 것으로 보입니다 {추론}.",
+   "how_far": "셋 다 할 필요는 없습니다.[1] 하나를 깊게, 나머지 둘은 **무슨 일인지 알고 옆에서 도울 수 있는** 정도면 됩니다 {추론}.",
+   "refs": [
+    1
+   ],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "전자금융기반시설 취약점 분석평가 등 금융 규제 대응을 위한 기술적 보안 점검 수행 역량·경험",
+   "short": "금융회사가 매년 받는 취약점 분석·평가를 직접 수행하거나 받아 내 본 경험.",
+   "why": "전자금융업자는 연 1회 이상 이 평가를 하고 결과를 금융위원장에게 내야 합니다.[13] 2026-11 금융위가 점검 범위를 '연결된 시스템 전부'로 넓히는 개정을 예고해[14] 범위 정리 경험이 더 중요해집니다 {추론}.",
+   "actually": {
+    "items": [
+     "**범위 정하기** — 전자금융기반시설과 거기 연결된 시스템 목록을 만든다. 개정안은 IT 자산 식별·관리 의무도 넣었다.[14]",
+     "**수행** — 서버·네트워크·DB·웹 항목 점검과 모의해킹.[16]",
+     "**이행** — 제거·상응 조치·최고경영자 승인 셋 중 하나로 모든 취약점을 닫는다.[13]"
+    ]
+   },
+   "how_far": "평가전문기관에 맡겨도 **범위를 정하고, 결과를 검토하고, 이행을 끝까지 관리하는** 일은 회사 안 사람이 합니다.[13] 그 한 바퀴를 돌려 본 경험이 기준입니다 {추론}.",
+   "refs": [
+    13,
+    14,
+    16
+   ],
+   "study": [
+    "fss-rule",
+    "kisa-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모의해킹/기술적 취약점 진단 및 개선 조치 수행 역량·경험",
+   "short": "웹·앱·인프라를 직접 공격해 구멍을 찾고, 고치는 방법까지 제시해 본 경험.",
+   "why": "결제 서비스는 금액·주문 번호·쿠폰 같은 값을 조작하는 공격이 곧 돈입니다 {추론}. 같은 회사 CERT 공고는 버그바운티·CVE·해킹대회 실적을 우대합니다.[9]",
+   "actually": {
+    "items": [
+     "**웹·API** — 인증·세션·인가·입력값·업무 로직 순서로 점검.[19][29]",
+     "**인프라** — 서버·DB 설정을 항목표로 진단.[16]",
+     "**보고서** — 재현 순서, 영향, 고칠 방법, 재진단 결과."
+    ]
+   },
+   "how_far": "도구(스캐너) 결과를 옮기는 것으로는 부족합니다 {추론}. **도구가 못 찾는 인가·업무 로직 구멍을 손으로 찾은 사례**가 있어야 '전문'으로 보입니다.",
+   "refs": [
+    9,
+    16,
+    19,
+    29
+   ],
+   "study": [
+    "owasp-wstg",
+    "portswigger",
+    "owasp-api"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 등 클라우드 환경에서 보안 설계·구축·운영(IAM, CSPM, 로그 분석, 자동화 등) 경험",
+   "short": "AWS 계정의 권한 구조·설정 점검·로그 탐지·자동 대응을 처음부터 만들어 운영해 본 경험.",
+   "why": "업무 셋째 줄(클라우드 설정 점검·CloudTrail 탐지)과 여섯째 줄(자동화)을 맡는 사람이 이 영역입니다.[1]",
+   "actually": {
+    "items": [
+     "**설계** — 계정 분리, 사람은 임시 자격증명, 서비스는 역할로.[24]",
+     "**구축** — 모든 계정의 CloudTrail을 한곳에 모으고 끄지 못하게.[17]",
+     "**운영** — CIS 기준 점검 결과·위협 탐지(GuardDuty) 경보를 매일 처리.[18][25]",
+     "**자동화** — 공개된 저장소·열린 포트를 찾으면 자동으로 알리거나 닫기 {추론}."
+    ]
+   },
+   "how_far": "AWS 보안 서비스 이름을 아는 것보다 **'이 계정에서 키가 새면 무엇이 보이고 무엇을 하나'를 순서대로 말할 수 있는** 것이 기준입니다 {추론}.",
+   "refs": [
+    1,
+    17,
+    18,
+    24,
+    25
+   ],
+   "study": [
+    "cloudtrail",
+    "cis-aws",
+    "iam-bp",
+    "guardduty"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "금융·전자금융(간편결제, PG 등) 서비스 도메인에서 보안 운영 경험을 보유하신 분",
+   "short": "간편결제·PG에서 보안을 해 봤으면 규정과 결제 흐름을 처음부터 배우지 않아도 된다.",
+   "why": "무신사페이먼츠는 PG이자 선불충전금 운영사이고[6] 연 약 5조원 결제를 처리합니다.[1] 선불충전금 잔액은 2025년 4분기 약 58억6천만원으로 한 분기에 73% 늘었습니다.[12]",
+   "actually": {
+    "items": [
+     "**결제 흐름** — 주문 → 승인 → 정산 → 환불 사이의 위·변조 지점.",
+     "**카드 정보** — 카드 데이터를 다루면 국제 기준 PCI DSS를 따르는 경우가 많다.[22]",
+     "**충전금** — 선불충전금 충전·인출(1회 최소 5만원 단위, 최대 200만원 보유)의 부정 사용 감시.[11]"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    11,
+    12,
+    22
+   ],
+   "study": [
+    "pci-dss",
+    "fss-rule"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SIEM, CSPM 등 보안 모니터링 도구를 구축하고 운영한 경험을 보유하신 분",
+   "short": "흩어진 로그를 한곳에 모아 탐지하는 SIEM, 클라우드 설정 점검 도구 CSPM 을 직접 세워 본 경험.",
+   "why": "같은 회사 CERT 공고가 보안 솔루션·클라우드 로그를 연계한 SIEM 구축과 탐지 룰 고도화를 업무로 적었습니다.[9] 아직 만드는 중인 체계라는 뜻으로 보입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**SIEM** — FW·WAF·EDR·CloudTrail 로그를 모아 시간·계정·IP로 엮어 탐지.[9][17]",
+     "**탐지 룰** — 공용 형식(Sigma)으로 쓰고 버전 관리.[23]",
+     "**CSPM** — CIS 기준 자동 채점과 예외 관리.[18]"
+    ]
+   },
+   "refs": [
+    9,
+    17,
+    18,
+    23
+   ],
+   "study": [
+    "sigma",
+    "cis-aws"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "신규 라이선스·인가 취득 및 정기검사·점검 등 금융감독원, KISA 등 규제·감독기관 대응 경험을 보유하신 분",
+   "short": "금융업 등록·인증 심사와 감독기관 검사에서 기술 자료를 준비하고 질문에 답해 본 경험.",
+   "why": "무신사페이먼츠는 PG에 더해 2025-07 선불충전금(무신사머니)을 시작했습니다.[11] 2025-11 국회를 통과한 전자금융거래법 개정은 PG의 정산자금 외부 관리를 의무로 하고 PG 정의를 바꿨습니다.[31] 사업이 넓어지거나 법이 바뀔 때마다 등록·심사가 따라옵니다 {추론}.",
+   "actually": {
+    "items": [
+     "**등록·심사** — 사업을 새로 열 때 보안 체계·망분리·권한 관리 증적을 낸다 {추론}.",
+     "**정기 점검** — 취약점 분석·평가 결과 제출, 감독기관 검사 대응.[13]",
+     "**KISA** — 정보보호 관리체계 인증(ISMS·ISMS-P) 심사[26], 정보보호 공시.[28]"
+    ]
+   },
+   "refs": [
+    11,
+    13,
+    26,
+    28,
+    31
+   ],
+   "study": [
+    "isms-p",
+    "fss-rule"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "기술적 보안 정책 및 절차를 수립·개선하고, Python, Bash 등 스크립트를 활용하여 정기 보안성 검토 프로세스를 효율화·자동화한 경험을 보유하신 분",
+   "short": "점검 절차를 문서로 만들고, 그 절차를 스크립트로 자동으로 돌게 바꿔 본 경험.",
+   "why": "업무 마지막 줄(보안 운영 자동화)과 같은 방향입니다.[1] 규정이 요구하는 정기 점검(권한·접속 기록 1년 보존·패치)이 많아 자동화 효과가 큽니다 {추론}.[13]",
+   "actually": {
+    "items": [
+     "**절차서** — 무엇을, 얼마마다, 누가, 무슨 기준으로 보나.",
+     "**자동화** — 계정 검토·설정 변화·패치 현황을 스크립트로 모아 보고서로(업무 6번 줄 예시).",
+     "**증적** — 자동 결과를 날짜별로 남겨 감사·검사 때 그대로 낸다 {추론}."
+    ]
+   },
+   "refs": [
+    1,
+    13
+   ],
+   "study": [
+    "sigma",
+    "cloudtrail"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "긍정적인 태도를 바탕으로 원활하게 소통하며, 협업과 팀워크를 중요하게 생각하시는 분",
+   "short": "보안 요구를 개발·운영팀이 받아들이게 말하는 능력 — 작은 팀이라 혼자 못 고치기 때문.",
+   "why": "취약점을 고치는 코드는 개발팀이, 장비 예외는 운영팀이 결정합니다 {추론}. 같은 회사 CERT 공고도 유관 부서·외부 업체 협업과 분석 결과 문서화를 요건으로 적었습니다.[9] 모회사 무신사의 보안 조직 비전도 보안이 사업을 늦추지 않고 돕는 것을 앞에 둡니다.[10]",
+   "refs": [
+    9,
+    10
+   ],
+   "study": []
+  }
+ ],
+ "resources": [
+  {
+   "id": "fss-rule",
+   "title": "전자금융감독규정",
+   "by": "금융위원회 고시",
+   "kind": "doc",
+   "url": "https://www.law.go.kr/행정규칙/전자금융감독규정",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "제13조(전산자료 보호)·제15조(해킹 방지)·제37조의2~6(취약점 분석·평가, 침해사고 보고) — 규제 점검 줄의 원문."
+  },
+  {
+   "id": "kisa-guide",
+   "title": "주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드",
+   "by": "KISA",
+   "kind": "doc",
+   "url": "https://www.kisa.or.kr/2060204",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "서버·DB·네트워크·웹 진단 항목과 판정 기준 — 설정 진단 줄의 한국어 출발점(KISA 자료실에서 제목으로 찾는다)."
+  },
+  {
+   "id": "nist-ir",
+   "title": "NIST SP 800-61 Rev. 3 — Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+   "by": "NIST · 2025",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "사고 대응의 단계와 역할 — CERT 업무·요건 줄."
+  },
+  {
+   "id": "idir",
+   "title": "Intelligence-Driven Incident Response (2nd Edition)",
+   "by": "Rebekah Brown · Scott J. Roberts · O'Reilly · 2023",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/intelligence-driven-incident-response/9781098120672/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "공격자 관점으로 사고를 분석하고 보고서를 쓰는 법 — 침해사고 대응 줄."
+  },
+  {
+   "id": "attack",
+   "title": "MITRE ATT&CK",
+   "by": "MITRE",
+   "kind": "doc",
+   "url": "https://attack.mitre.org/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "본 공격 행동에 공용 이름을 붙여 빠진 탐지를 찾는 사전 — 이벤트 분석 줄."
+  },
+  {
+   "id": "cloudtrail",
+   "title": "AWS CloudTrail User Guide",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "이벤트 기록의 필드와 여러 계정 로그 모으기 — CloudTrail 탐지·자동화 줄."
+  },
+  {
+   "id": "cis-aws",
+   "title": "AWS Security Hub — CIS AWS Foundations Benchmark",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/securityhub/latest/userguide/cis-aws-foundations-benchmark.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "루트 MFA·열린 관리 포트 같은 설정 점검 기준과 자동 채점 — CSPM 줄."
+  },
+  {
+   "id": "iam-bp",
+   "title": "Security best practices in IAM",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "임시 자격증명·최소 권한·안 쓰는 권한 정리 — IAM 정책 점검 줄."
+  },
+  {
+   "id": "guardduty",
+   "title": "What is Amazon GuardDuty?",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "CloudTrail·네트워크 로그로 위협을 찾아 주는 AWS 기본 탐지 — 클라우드 운영 줄."
+  },
+  {
+   "id": "owasp-wstg",
+   "title": "OWASP Web Security Testing Guide",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://owasp.org/www-project-web-security-testing-guide/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "웹 모의해킹을 빠짐없이 하는 순서(인증·세션·인가·입력값·업무 로직) — 진단·모의해킹 줄."
+  },
+  {
+   "id": "portswigger",
+   "title": "PortSwigger Web Security Academy",
+   "by": "PortSwigger",
+   "kind": "course",
+   "url": "https://portswigger.net/web-security",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "취약한 실습 사이트를 직접 공격해 보는 무료 실습 — 모의해킹 손 연습."
+  },
+  {
+   "id": "owasp-api",
+   "title": "OWASP API Security Top 10 (2023)",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "결제·주문 API의 인가 누락(1위) 같은 API 위험 — 결제 서비스 진단 줄."
+  },
+  {
+   "id": "sigma",
+   "title": "Sigma — Generic Signature Format for SIEM Systems",
+   "by": "SigmaHQ",
+   "kind": "doc",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "탐지 규칙을 제품과 상관없는 형식으로 쓰고 관리 — SIEM·자동화 줄."
+  },
+  {
+   "id": "pci-dss",
+   "title": "PCI DSS — Document Library",
+   "by": "PCI Security Standards Council",
+   "kind": "doc",
+   "url": "https://www.pcisecuritystandards.org/document_library/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "카드 데이터를 다루는 결제 사업자의 국제 보안 기준 — 전자금융 도메인 우대 줄."
+  },
+  {
+   "id": "isms-p",
+   "title": "ISMS-P 인증 제도 안내",
+   "by": "KISA",
+   "kind": "doc",
+   "url": "https://isms.kisa.or.kr/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "인증 기준과 심사 절차 — 감독·인증기관 대응 우대 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "전자금융 규정을 점검표로 바꾸기",
+   "time": "1~2주",
+   "goal": "감독규정 제13·15·37조의2~4가 요구하는 것을 점검 항목으로 말한다.",
+   "task": "가상 PG 회사의 시스템 10개 목록으로 '취약점 분석·평가 범위표'와 항목별 증적(무엇을 캡처할지) 표를 만든다.",
+   "resources": [
+    "fss-rule",
+    "kisa-guide"
+   ]
+  },
+  {
+   "title": "AWS 설정 점검과 CloudTrail 탐지",
+   "time": "2주",
+   "goal": "넓은 권한·열린 포트를 찾고, CloudTrail 에서 위험 이벤트 다섯 가지를 경보로 뽑는다.",
+   "task": "무료 계정에 일부러 잘못된 보안그룹·정책을 만들고 CIS 점검·직접 짠 스크립트로 둘 다 찾아낸 뒤 고친다.",
+   "resources": [
+    "iam-bp",
+    "cis-aws",
+    "cloudtrail",
+    "guardduty"
+   ]
+  },
+  {
+   "title": "결제 서비스 모의해킹",
+   "time": "2~3주",
+   "goal": "인가 누락·금액 변조 같은 업무 로직 구멍을 손으로 찾고 재현 보고서를 쓴다.",
+   "task": "PortSwigger 실습의 접근 제어·업무 로직 과제를 풀고, 직접 만든 가상 결제 API(주문 번호로 조회)에서 남의 주문을 보는 구멍을 재현·수정·재진단한다.",
+   "resources": [
+    "owasp-wstg",
+    "portswigger",
+    "owasp-api"
+   ]
+  },
+  {
+   "title": "침해사고 대응 한 바퀴",
+   "time": "2주",
+   "goal": "경보 → 분류 → 막기 → 범위 → 보고(24시간·72시간) 순서로 사고를 닫는다.",
+   "task": "가상 웹·CloudTrail 로그 수천 줄에 공격 흔적을 심고, ATT&CK 기법으로 시간 순서표와 사고 보고서 한 장을 쓴다.",
+   "resources": [
+    "nist-ir",
+    "idir",
+    "attack"
+   ]
+  },
+  {
+   "title": "SIEM 규칙과 정기 점검 자동화",
+   "time": "1~2주",
+   "goal": "탐지 규칙을 코드로 관리하고, 계정 정기 검토를 매일 도는 스크립트로 만든다.",
+   "task": "Sigma 규칙 세 개(루트 로그인·로그 끄기·새 키 발급)를 쓰고, 인사 명단 대조 스크립트를 cron 으로 돌려 날짜별 결과를 남긴다.",
+   "resources": [
+    "sigma",
+    "cloudtrail"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉 없음(처우 협의). 집계 기준 무신사페이먼츠 평균 5,882만원 — 직원 약 40명 회사 전체 값이라 7년+ 경력직 연봉과는 다를 수 있다.",
+  "rows": [
+   {
+    "label": "무신사페이먼츠 직원 평균 연봉",
+    "value": "5,882만원",
+    "amount": 5882,
+    "basis": "공공데이터 집계",
+    "note": "원티드 기업 정보 표기(국민연금 가입 39명 기준 회사, 연도 미표기).[4]"
+   },
+   {
+    "label": "모회사 무신사 직원 평균 연봉",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "같은 원티드 집계의 무신사 값 — 비교용.[5]",
+    "peer": true
+   },
+   {
+    "label": "모회사 무신사 신입 초봉(전 직군)",
+    "value": "2,313만원",
+    "amount": 2313,
+    "basis": "공공데이터 집계",
+    "note": "자소설닷컴 집계, 연도 미표기. 경력직 자리와 무관한 참고값.[3]",
+    "peer": true
+  }
+  ],
+  "how": "무신사페이먼츠와 무신사 모두 비상장이라 공시로 확인한 직원 평균 급여가 없다(공시 숫자 없음). 위 숫자는 집계이고 **평균은 초봉이 아니며** 경력직이 섞인 회사 전체 값이다. 이 자리 연봉은 전형의 '처우 협의' 단계에서 정해진다.[1]"
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근로 시간제",
+    "detail": "코어타임 11~16시, 휴가 1일·0.5일·0.25일 단위"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 350만원"
+   },
+   {
+    "name": "식당·카페",
+    "detail": "사내 식당(조식·중식·석식), 사내 카페 임직원 55% 할인"
+   },
+   {
+    "name": "장기근속",
+    "detail": "3년마다 리프레시 휴가 7일 + 휴가비 50만원(복지포인트)"
+   },
+   {
+    "name": "자녀 교육비",
+    "detail": "초등 입학 축하금 50만원, 대학 등록금 학기당 150만원"
+   },
+   {
+    "name": "스토어 혜택",
+    "detail": "월 쇼핑 지원금 10만원, 생일 지원금 20만원, 월 할인 쿠폰"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 CLINIC, 단체 상해보험, 연 1회 건강검진(검진휴가 0.5일), 연 10회 심리상담"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월 수습 중 급여 100% 지급(이 공고 기타사항)"
+   }
+  ],
+  "note": "무신사 채용 사이트 복지 페이지(날짜 미표기, 첨부 이미지 2025-07)와 이 공고 기타사항.[2][1] 이 공고도 무신사 채용 사이트로 받지만, 복지 페이지는 무신사 기준이라 자회사 무신사페이먼츠에 전부 같게 적용되는지는 확인하지 못했다 — 면접에서 확인할 것."
+ },
+ "location": {
+  "name": "무신사 성수 오피스(무신사페이먼츠 — 무신사캠퍼스 E1)",
+  "address": "서울특별시 성동구 연무장길 83",
+  "map_url": "https://map.naver.com/p/search/서울특별시 성동구 연무장길 83",
+  "near": "2호선 성수역 인근",
+  "note": "공고 근무지 표기는 '무신사 성수 오피스'.[1] 무신사페이먼츠 등록 주소는 연무장길 83, 3층 일부(무신사캠퍼스 E1)로 기업정보 집계에 나온다.[6] 모회사 무신사 주소는 아차산로13길 11(캠퍼스 N1)이라[30], 실제 자리는 둘 중 어디인지 면접에서 확인할 것."
+ },
+ "fit": {
+  "good": [
+   "방화벽부터 EDR 까지 여러 장비를 혼자 돌려 본 사람[1]",
+   "금융권 취약점 분석·평가를 한 바퀴 돌려 본 사람[13]",
+   "결제 서비스의 업무 로직 구멍을 손으로 찾는 모의해커[9]",
+   "AWS 설정 점검과 CloudTrail 탐지를 스크립트로 자동화해 본 사람[1]"
+  ],
+  "hard": [
+   "직원 약 40명 회사라 한 사람이 맡는 범위가 넓다[4] {추론}",
+   "공고에 연봉 범위가 없고 처우 협의다[1]",
+   "2026-11 감독규정 개정 예고처럼 규제가 계속 바뀌어 따라가야 한다[14]",
+   "무신사페이먼츠 보안팀의 공개 발표·글이 없어 팀 사정은 면접에서 확인해야 한다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "CloudTrail 에서 처음 보는 IP 가 새 액세스 키를 만들었습니다. 첫 30분에 무엇을 하나요?",
+   "a": "CloudTrail 경보와 키 회수·범위 재기.[17][15]"
+  },
+  {
+   "q": "취약점 분석·평가에서 고칠 수 없는 취약점이 나왔습니다. 규정상 어떻게 닫나요?",
+   "a": "상응 조치, 안 되면 최고경영자 승인.[13]"
+  },
+  {
+   "q": "결제 API 에서 남의 결제 내역을 볼 수 있는지 어떻게 점검하나요?",
+   "a": "객체 단위 인가 점검.[29][19]"
+  },
+  {
+   "q": "침해사고를 알았습니다. 금융위·개인정보위 보고는 각각 언제까지인가요?",
+   "a": "24시간과 72시간.[13][21]"
+  },
+  {
+   "q": "손으로 하던 정기 점검 하나를 자동화한 사례와, 그 결과를 어떻게 증적으로 남겼는지 말해 주세요.",
+   "a": "자동화 업무·우대 줄.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "무신사 채용 — Security Engineer (무신사페이먼츠)",
+   "url": "https://www.musinsacareers.com/ko/o/237453",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "회사·팀 소개(연 약 5조원 결제, 정보보안팀), 업무·자격·우대, 전형, 수습 100%"
+  },
+  {
+   "n": 2,
+   "title": "무신사 채용 — 복지",
+   "url": "https://www.musinsacareers.com/ko/benefit",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "같은 회사 기존 풀이에서 확인한 것을 옮김. '일부 변경될 수 있다' 문구"
+  },
+  {
+   "n": 3,
+   "title": "자소설닷컴 — 무신사",
+   "url": "https://jasoseol.com/companies/7882",
+   "kind": "reference",
+   "note": "모회사 초봉 2,313만원(기존 풀이 값)"
+  },
+  {
+   "n": 4,
+   "title": "원티드 — 무신사페이먼츠 기업 정보",
+   "url": "https://www.wanted.co.kr/company/47469",
+   "kind": "reference",
+   "date": "2026-11",
+   "note": "평균연봉 5,882만원, 국민연금 가입 39명·고용보험 20명, 설립 2020. 업종 표기('광고 대행업')는 실제와 다름"
+  },
+  {
+   "n": 5,
+   "title": "원티드 — 무신사 기업 정보",
+   "url": "https://www.wanted.co.kr/company/4248",
+   "kind": "reference",
+   "note": "평균연봉 6,082만원(기존 풀이 값)"
+  },
+  {
+   "n": 6,
+   "title": "혁신의숲 — 무신사페이먼츠",
+   "url": "https://www.innoforest.co.kr/company/CP00020837/%EB%AC%B4%EC%8B%A0%EC%82%AC%ED%8E%98%EC%9D%B4%EB%A8%BC%EC%B8%A0",
+   "kind": "reference",
+   "date": "2026-11",
+   "note": "전자지급결제대행업(PG)·선불전자지급수단(무신사머니)·정산자금 60% 이상 외부 관리, 설립 2020-07-02, 주소 연무장길 83 3층 일부(무신사캠퍼스 E1)"
+  },
+  {
+   "n": 7,
+   "title": "29CM, 지난 27일 약 16만건 개인정보 유출 사고 발생 — CEO스코어데일리",
+   "url": "https://m.ceoscoredaily.com/page/view/2026083116274608712",
+   "kind": "news",
+   "date": "2026-08-31",
+   "note": "계열사 29CM 주문 조회 API 비정상 접근·KISA 신고"
+  },
+  {
+   "n": 8,
+   "title": "무신사 개인정보 유출 신고 — 허프포스트코리아",
+   "url": "https://www.huffingtonpost.kr/article/260875",
+   "kind": "news",
+   "date": "2026-09",
+   "note": "신고 3회에 걸쳐 범위 확대"
+  },
+  {
+   "n": 9,
+   "title": "무신사 채용 — CERT/취약점진단 (무신사페이먼츠)",
+   "url": "https://www.musinsacareers.com/ko/o/242055",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 보안 공고. SIEM 구축·탐지 룰, 금융권 대응 훈련, IOC, 모의해킹, 취약점 분석·평가, 버그바운티·CVE 우대, 7년+"
+  },
+  {
+   "n": 10,
+   "title": "무신사 채용 — Security Engineering Lead (보안기술팀장)",
+   "url": "https://www.musinsacareers.com/ko/o/245270",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "모회사 보안 조직 — 참고"
+  },
+  {
+   "n": 11,
+   "title": "무신사, 선불 충전 '무신사머니·선물하기 상품권' 정식 론칭 — 바이라인네트워크",
+   "url": "https://byline.network/2025/07/02_192883/",
+   "kind": "news",
+   "date": "2025-07-02",
+   "note": "무신사페이먼츠가 발행·관리, 1회 최소 5만원 단위·최대 200만원, 무신사·29CM·솔드아웃"
+  },
+  {
+   "n": 12,
+   "title": "무신사머니 73% 급증 — SBS Biz",
+   "url": "https://biz.sbs.co.kr/amp/article/20000286373",
+   "kind": "news",
+   "date": "2026-01-21",
+   "note": "선불충전금 잔액 2025-09 약 33억8천만원 → 2025-12 58억5,773만원(+73.4%)"
+  },
+  {
+   "n": 13,
+   "title": "전자금융감독규정 (제2025-4호) — 위키문헌 사본",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "date": "2025-02",
+   "note": "제13조(접속 기록 1년)·제14조의2(클라우드)·제15조(정보보호시스템, 운영 결과 1년)·제37조의2(연 1회, 홈페이지 6개월, 전담반 5명·30%, 최고경영자 승인)·제37조의3(결과 금융위원장 제출)·제37조의4(24시간 보고)·제37조의6(훈련 연 1회)"
+  },
+  {
+   "n": 14,
+   "title": "금융위원회 — 전자금융감독규정 개정 예고(全금융권 보안체계 혁신방안 후속)",
+   "url": "https://m.korea.kr/briefing/pressReleaseView.do?newsId=156789689",
+   "kind": "reference",
+   "date": "2026-11-18",
+   "note": "대형사(2조·300명) 연 2회, 연결 시스템 빠짐없이 포함, IT 자산 식별 의무, 2027년 1분기 시행 목표·행정지도 선시행"
+  },
+  {
+   "n": 15,
+   "title": "NIST SP 800-61 Rev. 3 — Incident Response Recommendations",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "kind": "reference",
+   "date": "2025-04"
+  },
+  {
+   "n": 16,
+   "title": "KISA — 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드",
+   "url": "https://www.kisa.or.kr/2060204",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "AWS CloudTrail User Guide",
+   "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+   "kind": "reference",
+   "note": "이벤트 필드(eventName·userIdentity·additionalEventData)"
+  },
+  {
+   "n": 18,
+   "title": "AWS Security Hub — CIS AWS Foundations Benchmark",
+   "url": "https://docs.aws.amazon.com/securityhub/latest/userguide/cis-aws-foundations-benchmark.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "OWASP Web Security Testing Guide",
+   "url": "https://owasp.org/www-project-web-security-testing-guide/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "MITRE ATT&CK",
+   "url": "https://attack.mitre.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "개인정보 보호법 시행령 제39조(개인정보 유출 등의 신고)",
+   "url": "https://www.law.go.kr/법령/개인정보보호법시행령",
+   "kind": "reference",
+   "date": "2023-09",
+   "note": "1천 명 이상 등 72시간 안 신고"
+  },
+  {
+   "n": 22,
+   "title": "PCI Security Standards Council — Document Library",
+   "url": "https://www.pcisecuritystandards.org/document_library/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "SigmaHQ — Sigma rules",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "AWS — Security best practices in IAM",
+   "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Amazon GuardDuty — What is GuardDuty?",
+   "url": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "KISA — ISMS-P 인증",
+   "url": "https://isms.kisa.or.kr/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "FIRST — EPSS",
+   "url": "https://www.first.org/epss/",
+   "kind": "reference",
+   "note": "30일 안 악용 확률"
+  },
+  {
+   "n": 28,
+   "title": "KISA 정보보호 공시 종합 포털",
+   "url": "https://isds.kisa.or.kr/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "OWASP API Security Top 10 2023 — API1 Broken Object Level Authorization",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 30,
+   "title": "무신사 상품 페이지 하단 사업자 정보",
+   "url": "https://www.musinsa.com/products/4033558",
+   "kind": "company",
+   "note": "모회사 주소 아차산로13길 11 — 기존 풀이에서 확인한 것을 옮김"
+  },
+  {
+   "n": 31,
+   "title": "FSC — Revised Rules on Payment Gateway Services to Ensure Safe Protection of Unsettled Funds for Users",
+   "url": "https://fsc.go.kr/eng/pr010101/85760",
+   "kind": "reference",
+   "date": "2025-11-27",
+   "note": "전자금융거래법 개정안 국회 통과 — PG 정산자금 외부 관리 의무화·PG 정의 명확화"
+  }
+ ],
+ "caveat": "무신사페이먼츠 보안팀의 기술 블로그·발표는 찾지 못했다(영상 없음) — 회사 근거는 이 공고·같은 회사 CERT 공고·사업 자료(기업정보 집계·무신사머니 보도)다. 규제 요건은 전자금융감독규정(2025-02 시행판 사본)과 2026-11 금융위 개정 예고로 보였고, 개정안은 아직 시행 전이다. 클라우드 점검·모의해킹·사고 대응은 AWS·OWASP·NIST 같은 다른 곳의 공개 기준으로 '보통 이런 것'을 보였다. 연봉은 집계뿐이고 업종 표기가 틀린 집계라 참고만 할 것."
+}
