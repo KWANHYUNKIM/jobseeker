@@ -1,0 +1,933 @@
+{
+ "id": "coupang-sg-security-infra-director",
+ "company": "쿠팡",
+ "role": "Director Backend Engineering (Security Infrastructure)",
+ "team": "Technical Infrastructure 조직 · Identity, Access and Protection Infrastructure 팀 · 동적 권한(dynamic authorization) · 싱가포르",
+ "jobs": [
+  "ats-greenhouse:coupang:8040145"
+ ],
+ "researched_at": "2026-11-25",
+ "tldr": {
+  "what": "쿠팡의 **모든 API 호출을 지켜보며 위험 신호를 찾고, 필요하면 바로 막거나 되묻는**(동적 권한) 보안 플랫폼을 만드는 백엔드 팀을 이끕니다. 팀이 넓게 맡는 영역은 암호 키 관리 · 서비스 신원 · 사용자 인증 · 동적 권한이고, 목표는 제로 트러스트(네트워크 안이라고 믿지 않고 요청마다 확인하는 구조)입니다.[1]",
+  "env": "Kubernetes · gRPC · Istio(서비스 메시) · 코드로 관리하는 인프라(IaC) 위에서 일합니다.[1] 2025년 퇴사자가 들고 나간 **토큰 서명 키**로 3,367만 계정 정보가 빠져나간 사고 뒤라, 키·토큰·API 감시가 회사 전체의 숙제가 된 때입니다.[5][6][7]",
+  "oneline": "보안을 '정책 문서'가 아니라 **모든 서비스가 올라타는 백엔드 플랫폼**으로 만드는 12년 차 이상 엔지니어링 디렉터 자리. 신입·주니어용이 아니라 경력 이직용 공고입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Help build a great team by hiring the best and actively shaping team culture.",
+   "short": "동적 권한 팀을 채울 사람을 직접 뽑고, 팀이 일하는 방식(설계 리뷰·장애 대응·온콜)을 정하는 일.",
+   "why": "공고는 이 자리가 맡을 일을 '동적 권한 노력(effort)을 이끄는 것'이라 소개하고, 뽑힐 사람의 첫 조건으로 **최고의 사람을 뽑고 붙잡아 효과적인 조직을 만드는 것**을 들었습니다.[1] 싱가포르 근무라 서울·미국·인도에 흩어진 보안 인프라 팀들과 함께 움직여야 합니다 — 같은 회사의 서비스 메시 팀은 인도 벵갈루루에, 보안 백엔드 팀은 미국 마운틴뷰에 공고를 냈습니다.[3][4] 회사 연차보고서 정리에 따르면 쿠팡 보안 조직은 200명이 넘습니다.[8]",
+   "actually": {
+    "items": [
+     "**채용 기준 세우기** — 보안 프로토콜을 직접 만들어 본 사람(우대사항 2)과 대규모 분산 시스템 사람(자격요건 4)을 어떤 비율로 섞을지 정한다. {추론}",
+     "**면접 설계** — 쿠팡 전형은 서류 → 직무 적합 면접 → 집중 면접 → 제안 순서다.[1] 디렉터는 보통 이 면접관 편성과 질문을 정한다. {추론}",
+     "**팀 문화** — 보안 팀은 '막는 팀'으로 보이기 쉽다. 다른 팀이 쓰고 싶은 플랫폼을 만드는 문화(문서·SDK·빠른 답)를 세우는 게 핵심이다. {추론}",
+     "**붙잡기** — 공고는 'hire and retain'을 같이 쓴다. 성장 경로·온콜 부담을 관리해 사람이 떠나지 않게 한다.[1]"
+    ]
+   },
+   "how_far": "공고는 엔지니어 관리 5년 이상을 따로 요구합니다(자격요건 3).[1] 최소선은 '내가 뽑은 사람이 1년 뒤 무엇을 하고 있나'를 예로 들어 말할 수 있는 것입니다. {추론} 매니저가 맡는 단계(팀장 → 매니저의 매니저 → 디렉터)별 일은 관리 입문서가 잘 정리해 두었습니다.[23]",
+   "refs": [
+    1,
+    3,
+    4,
+    23
+   ],
+   "study": [
+    "manager-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Drive the evolution of our platform by overseeing strategy, creating roadmaps, driving execution, and working for company-wide adoption.",
+   "short": "동적 권한 플랫폼이 어디로 갈지 정하고, 회사의 모든 서비스가 실제로 그걸 쓰게 만드는 일.",
+   "why": "팀은 '개발자들이 그 위에 제품을 만드는 보안 플랫폼'을 만든다고 스스로 소개합니다.[1] 플랫폼은 쓰는 팀이 없으면 의미가 없어서, 공고가 **회사 전체 도입(company-wide adoption)**까지 이 자리의 몫으로 적었습니다.[1]",
+   "actually": {
+    "intro": "쿠팡은 동적 권한 플랫폼의 내부 구조를 공개하지 않았습니다. 공개 표준과 다른 회사의 공개 설계로 보면 이런 길을 밟습니다.",
+    "items": [
+     "**정적 권한 → 동적 권한** — '이 역할은 이 API를 부를 수 있다'(정적) 위에 '지금 이 토큰의 행동이 평소와 같은가'(동적)를 더한다. 제로 트러스트의 기본 생각은 네트워크 위치만으로 믿지 않고 요청마다 인증·권한을 따로 확인하는 것이다.[9]",
+     "**판정 지점 두기** — 서비스 앞(게이트웨이)이나 서비스 옆(메시의 사이드카)에서 요청을 잠깐 멈추고 외부 판정 서비스에 '허용?'을 묻는다. Envoy의 ext_authz 필터가 그런 장치이고, 거절이면 403을 돌려준다.[14]",
+     "**신호 모으기** — 토큰 하나의 호출 빈도, 평소와 다른 데이터 양, 세션 철회·자격 변경 같은 사건. OpenID CAEP는 '세션 철회', '자격 증명 변경', '위험 등급 변경' 같은 사건을 서비스끼리 주고받는 형식을 정했다.[15]",
+     "**조치 단계** — 허용 → 추가 인증 요구 → 차단 → 세션 끊기처럼 강도를 나눈다. 공고의 '필요하면 바로잡는 조치(corrective actions)'가 이 부분이다.[1]",
+     "**도입 지표** — 몇 개 서비스·몇 %의 API가 판정을 거치나, 판정 지연(p99), 잘못 막은 비율. {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "API 호출 하나가 동적 권한을 지나는 길 — 공개 표준 기준, 쿠팡 구조는 비공개[9][13][14][15]",
+     "steps": [
+      "클라이언트 · 토큰을 붙여 호출",
+      "게이트웨이·사이드카 · 서명·만료 확인(인증)",
+      "판정 서비스 · 정적 정책 + 지금의 위험 신호",
+      "조치 · 허용 / 추가 인증 / 차단",
+      "기록 · 신호 저장소에 다시 쌓여 다음 판정에 쓰임"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "로드맵은 이 자리가 쓰고 보안 리더·아키텍트와 맞춥니다.[1] 최소선은 '다음 4분기에 어떤 API부터 판정을 거치게 할지, 그 순서의 이유'를 위험(어느 API가 털리면 가장 아픈가)으로 설명하는 것입니다. {추론} 제로 트러스트를 실제로 깔아 가는 순서(신원 → 기기 → 트래픽)는 공개 교재가 단계별로 다룹니다.[21]",
+   "refs": [
+    1,
+    9,
+    13,
+    14,
+    15,
+    21
+   ],
+   "study": [
+    "nist-zta",
+    "zt-networks",
+    "envoy-extauthz"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Drive alignment across key stakeholders on strategic roadmaps and deliverables.",
+   "short": "보안 리더·인프라·제품 팀이 같은 로드맵과 일정에 동의하게 만드는 일.",
+   "why": "동적 권한은 모든 서비스 앞에 끼어들어서, 지연이 늘거나 정상 요청을 막으면 제품 팀이 바로 아픕니다. 그래서 공고는 이 자리가 상급 리더·아키텍트와 전략을 짜고, 동료 리더의 영역에도 손을 보탠다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**제품 팀** — '판정 때문에 응답이 몇 ms 늘어도 되나', '오탐으로 막히면 누가 푸나'를 미리 합의한다. {추론}",
+     "**인프라 팀** — 판정 지점이 메시(Istio)에 붙으면 메시 팀과 같이 바꾼다. 쿠팡 서비스 메시 팀은 mTLS·신원 기반 인증·권한을 메시에서 다룬다고 적었다.[4]",
+     "**보안·감사** — 사고 뒤에는 감독기관·감사 쪽 요구가 일정에 들어온다. 2026-02 조사 발표에서 정부는 시정 명령과 과태료를 내렸다.[6] {추론}",
+     "**문서 한 장** — 무엇을 언제 끝내고 무엇을 하지 않는지를 적은 로드맵 문서로 동의를 남긴다. {추론}"
+    ]
+   },
+   "how_far": "모두를 만족시키는 게 아니라 **반대 의견을 들은 뒤 결정하고 그 이유를 남기는 것**까지입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    6
+   ],
+   "study": [
+    "bsrs",
+    "manager-path"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Partner with teams across the company to proactively identify business and technical opportunities.",
+   "short": "다른 팀을 먼저 찾아가 '어디가 털리면 가장 아픈가, 보안이 무엇을 빨리 해 줄 수 있나'를 찾는 일.",
+   "why": "팀 소개에 '기술과 표준을 넘어 사업 전체의 관점을 본다', '보안 플랫폼으로 사업을 빠르게 한다'는 말이 있습니다.[1] 보안이 기다리기만 하면 사고가 난 뒤에야 일이 옵니다. {추론}",
+   "actually": {
+    "items": [
+     "**위험 지도** — 주문·결제·배송지·쿠폰처럼 털리면 피해가 큰 API를 먼저 고른다. 2025년 사고에서 가장 많이 조회된 것은 '배송지 목록' 페이지로 1억 4,800만 번이었다.[7]",
+     "**사업 흐름 남용** — OWASP API 보안 10대 위험에는 '민감한 사업 흐름에 대한 무제한 접근'(쿠폰·재고를 기계로 쓸어가기 같은)이 따로 있다.[11]",
+     "**편의 기회** — 위험이 낮을 때는 묻지 않고 통과시키면 로그인·결제 단계를 줄일 수 있다. 동적 권한은 막는 일만이 아니다. {추론}"
+    ]
+   },
+   "how_far": "제품 팀이 먼저 '이것도 판정에 넣어 달라'고 찾아오게 만드는 게 목표입니다. {추론}",
+   "refs": [
+    1,
+    7,
+    11
+   ],
+   "study": [
+    "owasp-api"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Drive execution through technical and organizational complexities, balancing strategic goals and immediate impact.",
+   "short": "긴 목표(제로 트러스트)와 당장 막아야 할 구멍(키·토큰) 사이에서 순서를 정해 끝까지 밀고 가는 일.",
+   "why": "2025년 사고의 원인은 정교한 공격이 아니라 관리 실패였습니다 — 정부 조사단은 퇴사자가 가진 서명 키가 교체되지 않았고, 게이트웨이가 서명만 맞으면 토큰을 받아 줬다고 발표했습니다.[6][7] 이런 '당장의 구멍'과 수년짜리 구조 개편을 같이 돌려야 합니다.",
+   "actually": {
+    "items": [
+     "**당장(immediate)** — 코드에 박힌 키를 키 저장소로 옮기고 교체 가능하게. 조사단은 서명 키가 소스코드에 하드코딩돼 바꾸기 번거로웠다고 했다.[6] 일부 개발자는 키를 노트북에 두기도 했다.[7]",
+     "**당장** — 폐기한 키로 서명한 토큰을 거절하고, 한 토큰의 이상한 대량 조회를 잡는다(아래 예시).",
+     "**전략(strategic)** — 서비스마다 다른 권한 검사를 하나의 판정 서비스로 모으고, 모든 서비스를 그 위에 올린다. {추론}",
+     "**조직 복잡도** — 수백 개 팀의 코드를 바꿔야 해서, 메시·게이트웨이처럼 팀 코드를 안 고쳐도 되는 자리부터 붙이는 게 보통이다.[13][14] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "폐기한 키로 서명한 토큰을 거절하기 (직접 돌린 출력)",
+     "body": "토큰 머리에 키 이름(kid)을 적어 두면 키를 여러 개 두고 하나씩 바꿀 수 있습니다. 서명이 맞아도 폐기 목록에 있는 키면 거절합니다 — 2025년 사고는 이 단계가 없었던 경우입니다.[6] 실제로는 HS256 같은 공유 비밀보다 비대칭 키(RS·ES)와 키 관리 서비스를 씁니다. {추론}",
+     "lang": "python",
+     "code": "import hmac, hashlib, json, base64\n\ndef b64(b): return base64.urlsafe_b64encode(b).rstrip(b\"=\").decode()\n\nKEYS = {\"k2024\": b\"old-secret\", \"k2026\": b\"new-secret\"}   # 키 저장소에서 읽는다\nREVOKED = {\"k2024\"}                                        # 퇴사·유출로 폐기한 키\n\ndef sign(kid, claims):\n    h = b64(json.dumps({\"alg\": \"HS256\", \"kid\": kid}).encode())\n    p = b64(json.dumps(claims).encode())\n    s = b64(hmac.new(KEYS[kid], f\"{h}.{p}\".encode(), hashlib.sha256).digest())\n    return f\"{h}.{p}.{s}\"\n\ndef verify(tok):\n    h, p, s = tok.split(\".\")\n    kid = json.loads(base64.urlsafe_b64decode(h + \"==\"))[\"kid\"]\n    if kid in REVOKED:\n        return \"거절: 폐기된 키\"\n    good = b64(hmac.new(KEYS[kid], f\"{h}.{p}\".encode(), hashlib.sha256).digest())\n    return \"통과\" if hmac.compare_digest(good, s) else \"거절: 서명 불일치\"\n\nprint(verify(sign(\"k2026\", {\"sub\": \"u1\"})))  # 통과\nprint(verify(sign(\"k2024\", {\"sub\": \"u1\"})))  # 거절: 폐기된 키"
+    }
+   ],
+   "how_far": "무엇을 먼저 할지를 위험 크기로 설명하고, 당장의 조치가 나중 구조를 막지 않게 하는 데까지입니다. {추론} 보안과 가용성을 같이 설계하는 원칙(최소 권한·키 관리·사고 대응)은 구글이 무료로 공개한 책에 모여 있습니다.[20]",
+   "refs": [
+    6,
+    7,
+    13,
+    14,
+    20
+   ],
+   "study": [
+    "bsrs",
+    "api-sec-action"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Dive deep when necessary to lead by example and help with high priority projects.",
+   "short": "급한 프로젝트·장애 때는 직접 설계 문서·코드·로그를 파고들어 같이 푸는 일.",
+   "why": "공고는 뽑힐 사람을 '필요하면 깊이 파고드는 걸 두려워하지 않는 사람'이라고 다시 적었습니다.[1] 보안 판정은 틀리면 정상 사용자를 막거나 공격자를 통과시키기 때문에, 리더가 구조를 모르면 결정을 못 내립니다. {추론}",
+   "actually": {
+    "items": [
+     "**판정 지연 장애** — 판정 서비스가 느려지면 모든 API가 느려진다. 실패할 때 '열어 줄지(fail-open) 닫을지(fail-closed)'가 Envoy 설정 하나(failure_mode_allow)로 갈린다.[14]",
+     "**오탐 조사** — 정상 사용자가 막혔을 때 어떤 신호가 점수를 올렸는지 로그로 따라간다. {추론}",
+     "**키 교체 작전** — 서명 키를 바꾸는 날은 옛 키와 새 키를 같이 받는 기간을 두고, 다 바뀐 뒤 옛 키를 폐기한다. {추론}"
+    ]
+   },
+   "how_far": "매일 코드를 쓰는 자리는 아니지만, 위 세 가지 상황에서 **무엇을 확인할지 순서를 말할 수 있는** 수준은 필요합니다. {추론}",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "envoy-extauthz",
+    "bsrs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Contribute to the Coupang engineering community through cross-company initiatives.",
+   "short": "팀 밖의 개발자 모두가 쓰는 보안 지침·라이브러리·교육을 만드는 데 손을 보태는 일.",
+   "why": "보안 인프라 팀은 '그 위에서 개발자가 제품을 만드는' 플랫폼을 만듭니다.[1] 쓰는 사람이 수백 팀이라, 좋은 기본값과 사용법을 퍼뜨리는 것도 일입니다. 같은 회사의 보안 백엔드 공고도 설계 리뷰를 이끌고 안전한 개발 절차를 퍼뜨리는 일을 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**안전한 기본값 라이브러리** — 토큰 검증·키 읽기를 팀마다 짜지 않고 공통 SDK로. {추론}",
+     "**설계 리뷰 기준** — 새 API를 만들 때 '객체 단위 권한을 확인했나'(OWASP API1)를 체크리스트로.[11]",
+     "**사고 회고 공유** — 무엇이 왜 뚫렸고 무엇을 바꿨는지를 회사 전체에 공유한다. {추론}"
+    ]
+   },
+   "how_far": "직접 다 쓰는 게 아니라 팀원이 이런 일을 하도록 시간을 내주고 방향을 잡는 데까지입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    11
+   ],
+   "study": [
+    "owasp-api",
+    "bsrs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Inspire teams to raise the bar on design, development and Operational Excellence.",
+   "short": "설계·개발·운영(장애·온콜)의 기준을 높이고, 팀이 그 기준을 스스로 지키게 만드는 일.",
+   "why": "보안 판정은 모든 요청 앞에 있어서 운영 품질이 곧 회사의 가용성입니다. 구글의 권한 시스템 Zanzibar는 초당 수백만 건 판정을 p95 10ms 안에, 3년 동안 99.999% 넘는 가용성으로 돌렸다고 공개했습니다 — 이런 자리가 노리는 숫자의 감입니다.[10]",
+   "actually": {
+    "items": [
+     "**설계** — 판정 서비스의 지연 목표(SLO)와 실패 시 동작을 설계 문서에 먼저 적는다.[10] {추론}",
+     "**개발** — 정책을 코드처럼 리뷰·테스트하고 배포한다(잘못된 정책 하나가 전체를 막는다). {추론}",
+     "**운영** — 대시보드·경보·장애 회고. 2025년 사고는 다섯 달 가까이 이어졌다 — 2025-06-24부터 11-08까지라는 정부 설명이 있다.[5] 탐지 시간을 줄이는 것도 운영 기준이다. {추론}"
+    ]
+   },
+   "how_far": "운영 지표 몇 개를 정하고 분기마다 좋아지는지를 보여 주는 데까지입니다. {추론}",
+   "refs": [
+    5,
+    10
+   ],
+   "study": [
+    "zanzibar",
+    "bsrs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bachelor’s degree in computer science or related technical field.",
+   "short": "컴퓨터공학 또는 관련 기술 전공 학사. 이 자리의 출발선.",
+   "why": "공고의 기본 자격입니다.[1] 암호·네트워크·분산 시스템 기초가 일의 바탕이라 전공을 묻습니다. {추론}",
+   "how_far": "학위 자체가 기준이고, 아래 경력 요건(12년 이상)이 실제로 더 무겁습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "12+ years professional experience working in software engineering teams, or 10+ years’ experience with advanced degree.",
+   "short": "소프트웨어 팀 경력 12년 이상(석·박사면 10년 이상). 경력 이직용 자리라는 뜻.",
+   "why": "디렉터는 팀장 위의 자리라, 직접 만들어 보고 이끌어 본 시간이 길어야 합니다. 같은 회사 보안 쪽 Senior Staff 공고도 12년 이상(IAM·디렉터리·인프라 보안)을 요구합니다.[2]",
+   "how_far": "'소프트웨어 엔지니어링 팀에서'라고 적혀 있어 보안 전담 경력이 12년일 필요는 없습니다. 보안은 아래 '최근 경험' 줄이 따로 봅니다.[1]",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "5+ years’ experience managing engineers.",
+   "short": "엔지니어를 직접 관리한 경력 5년 이상 — 채용·평가·성장을 맡아 본 사람.",
+   "why": "업무 첫 줄이 채용과 팀 문화입니다.[1] 기술 리드(TL)만이 아니라 사람을 맡은 매니저 경험을 묻습니다. {추론}",
+   "how_far": "몇 명을 몇 년 맡았는지, 사람을 뽑고 내보낸 결정, 매니저를 둔 매니저였는지를 구체적으로 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience leading design and development of large scale distributed systems.",
+   "short": "많은 요청을 여러 서버로 나눠 처리하는 큰 시스템의 설계·개발을 이끌어 본 경험.",
+   "why": "동적 권한은 회사의 모든 API 호출 앞에 있습니다.[1] 판정 서비스는 호출 수만큼 불리고, 느려지거나 죽으면 쿠팡 전체가 멈춥니다. 같은 일을 하는 구글 Zanzibar는 초당 수백만 건, 수백 개 서비스를 받습니다.[10]",
+   "actually": {
+    "items": [
+     "**캐시와 최신성** — 권한 판정을 캐시하면 빠르지만, 권한을 뺏은 뒤에도 잠깐 통과될 수 있다. Zanzibar는 이 '새 권한 반영 순서' 문제를 논문의 중심으로 다뤘다.[10]",
+     "**신호 전파** — 한 서비스에서 본 위험(세션 철회 등)을 다른 서비스에 빨리 알리는 사건 흐름.[15]",
+     "**지연 예산** — 판정 한 번이 응답 시간의 몇 ms를 써도 되는지.[10]"
+    ]
+   },
+   "how_far": "직접 이끈 시스템의 규모(초당 요청·서버 수·가용성)를 숫자로, 그리고 무엇이 병목이었는지를 말할 수 있는 수준입니다. {추론}",
+   "refs": [
+    1,
+    10,
+    15
+   ],
+   "study": [
+    "zanzibar",
+    "bsrs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Recent experience with security, IAM or related technologies.",
+   "short": "최근에 보안이나 IAM(누가 누구인지 확인하고 무엇을 할 수 있는지 정하는 기술)을 다뤄 본 경험.",
+   "why": "팀의 영역이 키 관리 · 서비스 신원 · 사용자 인증 · 동적 권한입니다.[1] '최근(recent)'이라고 적은 건, 이 분야 표준이 빠르게 바뀌기 때문으로 보입니다. {추론}",
+   "actually": {
+    "intro": "IAM이 다루는 것을 쿠팡의 다른 공고에서 모으면 이렇습니다.",
+    "items": [
+     "**사용자 인증** — SSO(한 번 로그인), OIDC(로그인 결과를 토큰으로 주고받는 표준).[3]",
+     "**권한 모델** — RBAC(역할 기반)·ABAC(속성 기반 — 시간·장소·기기 같은 조건까지 본다).[3]",
+     "**계정 수명** — SCIM(입사·퇴사 때 계정을 자동으로 만들고 지우는 표준), 디렉터리(Active Directory·Entra).[2][3]",
+     "**키·인증서** — PKI·인증서 관리·키 수명 관리, AWS KMS.[3]",
+     "**서비스 신원** — 사람이 아니라 서비스에 주는 신원. SPIFFE는 `spiffe://<신뢰 도메인>/<워크로드>` 꼴의 이름과, 그걸 담은 짧은 수명의 X.509 인증서·JWT(SVID)를 정했다.[12]"
+    ]
+   },
+   "how_far": "위 다섯 가지 중 두세 가지를 최근 몇 년 안에 실제 시스템으로 다뤄 봤고, 나머지는 원리를 설명할 수 있는 정도입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    12
+   ],
+   "study": [
+    "api-sec-action",
+    "spiffe",
+    "zt-networks"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience in collaborating with cross-functional teams to define mission, vision, and roadmaps.",
+   "short": "제품·보안·인프라처럼 다른 직군과 함께 팀의 임무와 로드맵을 정해 본 경험.",
+   "why": "업무 2·3줄(전략·로드맵, 이해관계자 합의)을 해 본 적이 있는지 묻는 줄입니다.[1] 같은 문장이 우대사항에도 한 번 더 있어 회사가 특히 보는 능력입니다.[1]",
+   "how_far": "'우리 팀은 무엇을 하고 무엇을 안 하나'를 다른 팀과 합의해 문서로 남긴 사례 하나를 처음부터 끝까지 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Experience handling multiple competing priorities in a fast-paced environment and leading the delivery of large-scale services for complex business offerings.",
+   "short": "급한 일이 겹치는 곳에서 우선순위를 정하고, 복잡한 사업을 받치는 큰 서비스를 끝까지 내보낸 경험.",
+   "why": "쿠팡은 커머스·배달·결제·대만 사업처럼 사업이 여러 갈래입니다. 보안 플랫폼은 그 모두를 받쳐야 하고, 사고 대응과 새 기능 요구가 동시에 옵니다.[1][6] {추론}",
+   "how_far": "동시에 들어온 일 셋 중 하나를 미룬 결정과 그 결과를 설명할 수 있는 정도입니다. {추론}",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Masters or PhD degree in computer science or other related technical field.",
+   "short": "컴퓨터공학 석·박사면 더 좋다 — 경력 요건도 10년으로 줄어든다.",
+   "why": "자격요건에서 대학원 학위가 있으면 경력 12년이 10년으로 줄어듭니다.[1] 암호·분산 시스템 연구 경험이 설계에 도움이 되기 때문으로 보입니다. {추론}",
+   "how_far": "있으면 가산점이고 없어도 지원할 수 있습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Hands-on experience building security protocols and/or systems.",
+   "short": "인증·암호 프로토콜이나 보안 시스템을 직접 손으로 만들어 본 경험.",
+   "why": "팀 일은 암호 키 관리부터 서비스 신원·사용자 인증까지 직접 만드는 것입니다.[1] 2025년 사고처럼 '서명은 맞지만 써서는 안 되는 토큰'을 막는 건 프로토콜의 세부를 아는 사람만 설계할 수 있습니다.[6] {추론}",
+   "actually": {
+    "items": [
+     "**토큰 검증 세부** — 서명 알고리즘 고정, 만료, 발급자, 키 이름(kid)과 폐기 목록. {추론}",
+     "**mTLS** — 서비스끼리 서로 인증서를 보여 주는 TLS. 쿠팡 서비스 메시 팀이 메시에서 다룬다.[4] Istio에서는 양쪽 사이드카(Envoy)가 대신 맺는다.[13]",
+     "**gRPC 인증** — gRPC는 채널(TLS)과 호출 단위(토큰) 인증을 따로 붙인다.[24]",
+     "**키 관리** — 키를 코드가 아니라 키 저장소에 두고, 교체를 정기 작업으로. 조사단이 짚은 바로 그 지점이다.[6]"
+    ]
+   },
+   "how_far": "이 중 하나를 실제로 만들어 운영해 봤고, 왜 그 설계를 골랐는지(다른 안은 왜 버렸는지) 말할 수 있으면 됩니다. {추론} 토큰·속도 제한·서비스 간 인증을 Java로 직접 만들어 보는 교재가 있습니다.[22]",
+   "refs": [
+    1,
+    4,
+    6,
+    13,
+    22,
+    24
+   ],
+   "study": [
+    "api-sec-action",
+    "spiffe",
+    "grpc-auth"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience in collaborating with cross-functional teams to define mission, vision, and roadmaps.",
+   "short": "자격요건과 같은 문장 — 다른 직군과 임무·로드맵을 정해 본 경험을 한 번 더 본다.",
+   "why": "자격요건 6번째 줄과 글자까지 같은 문장이 우대사항에도 있습니다.[1] 공고를 만들며 겹친 것일 수도 있지만, 어느 쪽이든 회사가 이 능력을 거듭 확인한다는 뜻입니다. {추론}",
+   "how_far": "자격요건 줄의 풀이와 같습니다 — 합의를 문서로 남긴 사례 하나. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "manager-path"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Experience working with Infrastructure as Code, Kubernetes, gRPC and Istio.",
+   "short": "인프라를 코드로 관리(IaC)하고, Kubernetes·gRPC·Istio 위에서 일해 본 경험.",
+   "why": "동적 권한의 판정 지점은 서비스 사이의 길 위에 놓입니다. Istio는 사이드카(Envoy)로 서비스끼리 mTLS를 맺고, 권한 정책(ALLOW·DENY·CUSTOM)을 겁니다. CUSTOM은 판정을 외부 권한 서비스에 맡기는 동작입니다.[13] 쿠팡 서비스 메시 팀도 Istio/Envoy를 씁니다.[4]",
+   "actually": {
+    "items": [
+     "**Kubernetes** — 서비스가 도는 바탕. 서비스 신원(서비스 계정)이 메시 신원의 뿌리가 된다.[13]",
+     "**gRPC** — 서비스끼리 부르는 방식. 판정 서비스도 Envoy와 gRPC로 이야기한다(ext_authz gRPC).[14][24]",
+     "**Istio** — 메시 정책으로 서비스 코드를 안 고치고 판정을 끼운다.[13]",
+     "**IaC** — 정책·인프라를 코드(Terraform 등)로 적어 리뷰·되돌리기가 되게 한다.[25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 토큰의 대량 조회를 단계별로 다루기 (직접 돌린 출력)",
+     "body": "정적 권한이 '허용'이어도, 1분에 같은 API를 몇 번 불렀는지로 조치를 나눕니다. 숫자 기준은 예시입니다 — 실제로는 평소 분포에서 정합니다. {추론} 2025년 사고에서는 배송지 목록이 1억 4,800만 번 조회됐습니다.[7]",
+     "lang": "python",
+     "code": "from collections import Counter\n\ncalls = [\"t1\"] * 3 + [\"t2\"] * 240 + [\"t3\"] * 45   # 토큰별 1분간 '배송지 목록' 호출 수\nWARN, BLOCK = 30, 120\nfor tok, n in sorted(Counter(calls).items()):\n    act = \"차단\" if n >= BLOCK else \"추가 인증 요구\" if n >= WARN else \"허용\"\n    print(tok, n, act)\n\n# t1 3 허용\n# t2 240 차단\n# t3 45 추가 인증 요구"
+    }
+   ],
+   "how_far": "넷을 다 깊게 할 필요는 없고, 'Istio에 외부 판정을 붙이면 요청이 어디서 멈추고 실패하면 어떻게 되나'를 그림으로 설명할 수 있으면 됩니다.[13][14] {추론}",
+   "refs": [
+    4,
+    7,
+    13,
+    14,
+    24,
+    25
+   ],
+   "study": [
+    "istio-security",
+    "envoy-extauthz",
+    "grpc-auth",
+    "terraform"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Recruitment Process\nApplication Review - Job Fit Interview - Focus Interview – Offer\nThe exact nature of the recruitment process may vary according to the specific job and may be changed due to scheduling or other circumstances.\nInterview schedules and the results will be informed to the applicant via the e-mail address submitted at the application stage.",
+   "short": "전형은 서류 → 직무 적합 면접 → 집중 면접 → 처우 제안이고, 일정·결과는 지원 때 낸 이메일로 온다.",
+   "why": "우대사항이 아니라 공고 끝의 전형 안내입니다.[1] 직무에 따라 절차가 달라질 수 있다고 적혀 있어, 디렉터 자리는 면접이 더 늘 수 있습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Details to Consider\nThis job posting may be closed prior to the stated end date for application if all openings are filled.\nCoupang has the right to rescind an offer of employment if a candidate is found to have submitted false information as part of the application process.\nThose eligible for employment protection (recipients of veteran’s benefits, the disabled, etc.) may receive preferential treatment for employment in accordance with applicable laws.\nJob titles and responsibilities may be subject to change depending on the candidate’s overall experience, etc. This will be communicated to the candidate at the appropriate time before the offer.\nHiring may be restricted in case the legal qualifications required for hiring and work performance is not met.",
+   "short": "자리가 차면 일찍 닫히고, 직급·업무는 경력에 따라 제안 전에 바뀔 수 있다는 안내.",
+   "why": "공고 끝의 유의사항입니다.[1] 지원자에게 실제로 의미 있는 것은 둘입니다 — 마감일 전에도 닫힐 수 있고, **직함과 맡는 범위가 경력에 따라 조정**됩니다(디렉터로 냈어도 다른 직급으로 제안될 수 있다).[1] {추론} 싱가포르 근무라 취업 자격(비자) 요건을 못 채우면 채용이 제한될 수 있다는 줄도 같이 있습니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "보안을 '막는 일'이 아니라 다른 팀이 쓰고 싶어 하는 플랫폼으로 만들고 싶은 사람[1]",
+   "인증·토큰·키처럼 세부가 틀리면 바로 사고가 나는 일을 꼼꼼히 파는 사람",
+   "사고 뒤 구조를 다시 짜는 큰 일을 맡고 싶은 사람[6] {추론}",
+   "매니저가 돼서도 설계와 장애 현장을 놓고 싶지 않은 사람[1]"
+  ],
+  "hard": [
+   "2025년 대규모 사고 뒤라 감독기관·언론의 눈이 쏠려 있다[6][7]",
+   "판정이 모든 API 앞에 있어 지연·오탐 한 번의 무게가 크다 {추론}",
+   "근무지가 싱가포르라 이주·비자 절차가 필요하다[1][16]",
+   "경력 12년 이상·관리 5년 이상 — 주니어가 노릴 자리는 아니다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "퇴사자가 토큰 서명 키를 가지고 나갔다는 걸 알았어요. 첫 24시간 동안 무엇을 하겠어요?",
+   "a": "2025년 사고의 원인이 서명 키 미교체였다.[6][7]"
+  },
+  {
+   "q": "외부 판정 서비스가 느려지거나 죽으면 요청을 통과시킬까요, 막을까요? API마다 다르게 하려면?",
+   "a": "Envoy ext_authz 의 fail-open/closed 설정.[14]"
+  },
+  {
+   "q": "권한을 뺏었는데 캐시 때문에 몇 초 더 통과됐다면, 어떻게 줄이겠어요?",
+   "a": "Zanzibar 가 다룬 새 권한 반영 문제.[10]"
+  },
+  {
+   "q": "정상 사용자를 막지 않으면서 한 토큰의 대량 조회를 잡는 기준은 어떻게 정하나요?",
+   "a": "팀의 일이 모든 API 호출에서 위험 신호를 찾는 것이다.[1][7]"
+  },
+  {
+   "q": "수백 개 팀이 코드를 거의 안 고치고 동적 권한을 쓰게 하려면 어디에 붙이겠어요?",
+   "a": "회사 전체 도입이 업무에 적혀 있고, 메시·게이트웨이가 그 자리다.[1][13]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "Coupang Careers · Director Backend Engineering (Security Infrastructure), Singapore",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8040145",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "Identity, Access and Protection Infrastructure 팀 소개(키 관리·서비스 신원·사용자 인증·동적 권한, 제로 트러스트), 동적 권한 팀 — 모든 API 호출의 위험 신호 감시, 업무·요건·전형. 2026-10-02 갱신, 연봉 없음"
+  },
+  {
+   "n": 2,
+   "title": "Coupang Careers · Senior Staff, Security Engineer (Seoul)",
+   "url": "https://www.coupang.jobs/en/jobs/8124210/principal-security-engineer/",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 IAM — 디렉터리(AD·Entra)·LDAP·Kerberos, 12년 이상. 미국 시장 기준 US$209,000~360,000 표기"
+  },
+  {
+   "n": 3,
+   "title": "Career.com · Coupang Senior Staff Backend Security Engineer (Mountain View)",
+   "url": "https://www.career.com/job/coupang/senior-staff-backend-security-engineer/j202601060417582102743",
+   "kind": "posting",
+   "date": "2026-03",
+   "note": "제3자 공고 사이트에 실린 쿠팡 공고(마감) — Java·Spring Boot·AWS, SSO·OIDC·RBAC/ABAC·SCIM, 메시 API 권한, PKI·KMS, US$159,000~324,000"
+  },
+  {
+   "n": 4,
+   "title": "Coupang Careers · Senior Staff Backend Engineer (Service Mesh), Bengaluru",
+   "url": "https://www.coupang.jobs/jp/jobs/7496873/senior-staff-backend-engineer-service-mesh/",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "Gateway Services 팀 — mTLS·신원 기반 인증·권한, Istio/Envoy, Java·Go"
+  },
+  {
+   "n": 5,
+   "title": "The Korea Times · Gov't says Coupang's electronic signature key exploited in data breach",
+   "url": "https://www.koreatimes.co.kr/southkorea/politics/20251202/govt-says-coupangs-electronic-signature-key-exploited-in-data-breach-attack-lasted-from-june-to-november",
+   "kind": "news",
+   "date": "2025-12-02",
+   "note": "공격 기간 6-24 ~ 11-08(정부 국회 답변), 인증 시스템 개발자 출신 용의자. 2026-02 보도는 4월부터라고 해 기간이 엇갈린다"
+  },
+  {
+   "n": 6,
+   "title": "보안뉴스 · \"서명키 하드코딩 탓에 갱신 못해\"… 과기정통부가 말하는 쿠팡 해킹의 원인",
+   "url": "https://m.boannews.com/html/detail.html?idx=142059",
+   "kind": "news",
+   "date": "2026-02-10",
+   "note": "민관합동조사단 발표 — 서명 키 하드코딩·미교체, 서명만 맞으면 통과시킨 게이트웨이, 시정 명령·과태료"
+  },
+  {
+   "n": 7,
+   "title": "The Korea Times · Korean gov't confirms 33.67 mil. user records leaked in Coupang breach",
+   "url": "https://www.koreatimes.co.kr/business/companies/20260210/korean-govt-confirms-3367-mil-user-records-leaked-in-coupang-breach",
+   "kind": "news",
+   "date": "2026-02-10",
+   "note": "3,367만 계정(이름·이메일), 배송지 목록 1억 4,800만 번 조회, 일부 개발자의 노트북 키 보관, '정교한 공격이 아닌 관리 실패'"
+  },
+  {
+   "n": 8,
+   "title": "Board Cybersecurity · Coupang 10-K(2025 회계연도) 사이버보안 항목 정리",
+   "url": "https://www.board-cybersecurity.com/annual-reports/tracker/20260226-coupang-inc-cybersecurity-10k",
+   "kind": "news",
+   "note": "10-K 원문 대신 정리 페이지 — 보안 조직 200명 이상, ISO 27001·ISMS-P 등"
+  },
+  {
+   "n": 9,
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "kind": "reference",
+   "date": "2020-08",
+   "note": "네트워크 위치만으로 믿지 않고, 세션마다 인증·권한을 따로 확인"
+  },
+  {
+   "n": 10,
+   "title": "Zanzibar: Google's Consistent, Global Authorization System (USENIX ATC '19)",
+   "url": "https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/",
+   "kind": "reference",
+   "date": "2019",
+   "note": "다른 회사 — 수조 개 ACL, 초당 수백만 판정, p95 10ms 미만, 3년간 99.999% 초과, 수백 개 서비스"
+  },
+  {
+   "n": 11,
+   "title": "OWASP API Security Top 10 · 2023",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+   "kind": "reference",
+   "note": "API1 객체 단위 권한 결함 … API6 민감한 사업 흐름 무제한 접근"
+  },
+  {
+   "n": 12,
+   "title": "SPIFFE · Concepts",
+   "url": "https://spiffe.io/docs/latest/spiffe-about/spiffe-concepts/",
+   "kind": "reference",
+   "note": "spiffe://<trust domain>/<workload> 꼴의 ID, X.509·JWT SVID, Workload API"
+  },
+  {
+   "n": 13,
+   "title": "Istio · Security concepts / External Authorization",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "kind": "reference",
+   "note": "사이드카 사이 mTLS, AuthorizationPolicy ALLOW·DENY·CUSTOM, CUSTOM은 외부 권한 서비스에 판정을 맡긴다(authz-custom 작업 문서)"
+  },
+  {
+   "n": 14,
+   "title": "Envoy · External Authorization filter (ext_authz)",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/ext_authz_filter",
+   "kind": "reference",
+   "note": "외부 gRPC/HTTP 판정 서비스 호출, 거절이면 403, failure_mode_allow"
+  },
+  {
+   "n": 15,
+   "title": "OpenID · Continuous Access Evaluation Profile (CAEP) 1.0",
+   "url": "https://openid.net/specs/openid-caep-1_0.html",
+   "kind": "reference",
+   "date": "2025-08-29",
+   "note": "session-revoked·credential-change·risk-level-change 같은 보안 사건 형식(Shared Signals)"
+  },
+  {
+   "n": 16,
+   "title": "Coupang Careers · Singapore 근무지",
+   "url": "https://www.coupang.jobs/en/locations/singapore/",
+   "kind": "company",
+   "note": "Suntec Tower 5 사무실 주소·가까운 역"
+  },
+  {
+   "n": 17,
+   "title": "Coupang, Inc. · 2026 Proxy Statement (DEF 14A, CEO 보수 배율)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0001834584/000114036126017102/ny20063059x1_def14a.htm",
+   "kind": "company",
+   "date": "2026",
+   "note": "2025 회계연도 전 직원 중위 보수 — 달러 환산"
+  },
+  {
+   "n": 18,
+   "title": "Coupang Careers · Why Coupang (Culture and benefits)",
+   "url": "https://www.coupang.jobs/en/why-coupang/",
+   "kind": "company",
+   "note": "전 세계 공통 복리후생 소개 — 금액 없음"
+  },
+  {
+   "n": 19,
+   "title": "Coupang Careers · Director of Backend Engineering (Mountain View · Seattle)",
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8386063",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "다른 조직(Application Infrastructure)의 미국 디렉터 공고 — 기본급 범위·보너스 0~20%"
+  },
+  {
+   "n": 20,
+   "title": "Building Secure and Reliable Systems (Google · O'Reilly, 무료 공개)",
+   "url": "https://sre.google/books/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Zero Trust Networks, 2nd Edition (O'Reilly · 2024)",
+   "url": "https://www.oreilly.com/library/view/zero-trust-networks/9781492096580/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "API Security in Action (Neil Madden · Manning · 2020)",
+   "url": "https://www.manning.com/books/api-security-in-action",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "개발 7년차, 매니저 1일차 (카미유 푸르니에 · 한빛미디어)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "gRPC Docs · Authentication",
+   "url": "https://grpc.io/docs/guides/auth/",
+   "kind": "reference",
+   "note": "채널 인증(TLS)과 호출 인증(토큰)"
+  },
+  {
+   "n": 25,
+   "title": "HashiCorp · What is Terraform",
+   "url": "https://developer.hashicorp.com/terraform/intro",
+   "kind": "reference",
+   "note": "IaC 도구의 예"
+  }
+ ],
+ "caveat": "쿠팡은 동적 권한 플랫폼의 내부 구조를 공개하지 않았고, 회사 발표 영상·기술 블로그 글도 찾지 못했습니다. 업무 풀이의 구조는 공고의 팀 소개[1]와 같은 회사의 다른 공고[2][3][4], 그리고 공개 표준(NIST·OpenID·Istio·Envoy)과 구글 Zanzibar 논문으로 \"보통 이런 것\"을 보인 것입니다. 2025년 사고 내용은 정부 조사 발표를 옮긴 보도 기준이고, 쿠팡은 발표 당시 일부 원인에 대해 공식 확인된 사실이 없다고 했습니다. 싱가포르 공고에는 연봉이 없어 같은 회사 미국 공고의 범위를 참고로 실었습니다.",
+ "resources": [
+  {
+   "id": "nist-zta",
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "by": "NIST · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "why": "팀 목표인 '제로 트러스트'의 표준 정의. 판정 지점(PEP)·판정 엔진(PDP)이라는 말과 구조를 여기서 잡는다."
+  },
+  {
+   "id": "zt-networks",
+   "title": "Zero Trust Networks (2판)",
+   "by": "Razi Rais · Christina Morillo · Evan Gilman · Doug Barth · O'Reilly · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/zero-trust-networks/9781492096580/",
+   "why": "기기·사용자·서비스 신원과 신뢰 관리를 실제 구축 순서로. 업무 2줄의 로드맵을 짤 때의 뼈대."
+  },
+  {
+   "id": "api-sec-action",
+   "title": "API Security in Action",
+   "by": "Neil Madden · Manning · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/api-security-in-action",
+   "why": "토큰·인증·권한·속도 제한·감사 로그·서비스 간 인증을 Java 예제로. '보안 프로토콜을 직접 만들어 본 경험'(우대 2)을 채우는 손 연습."
+  },
+  {
+   "id": "owasp-api",
+   "title": "OWASP API Security Top 10 (2023)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+   "why": "API가 실제로 뚫리는 10가지. 동적 권한이 잡아야 할 위험(객체 권한·사업 흐름 남용)의 목록."
+  },
+  {
+   "id": "zanzibar",
+   "title": "Zanzibar: Google's Consistent, Global Authorization System",
+   "by": "Ruoming Pang 외 · USENIX ATC 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/",
+   "why": "회사 전체 권한 판정을 한 서비스로 모은 공개 설계. 규모·지연·캐시와 최신성 문제(자격요건 4)를 숫자로 본다."
+  },
+  {
+   "id": "spiffe",
+   "title": "SPIFFE Concepts",
+   "by": "SPIFFE 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spiffe.io/docs/latest/spiffe-about/spiffe-concepts/",
+   "why": "팀 영역인 '서비스 신원'의 표준. 서비스마다 짧은 수명의 인증서를 주는 방식."
+  },
+  {
+   "id": "istio-security",
+   "title": "Istio · Security / External Authorization",
+   "by": "Istio 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "why": "우대 4의 Istio에서 mTLS·권한 정책·외부 판정(CUSTOM)을 거는 법. 판정 지점이 메시에 어떻게 붙는지."
+  },
+  {
+   "id": "envoy-extauthz",
+   "title": "Envoy · External Authorization filter",
+   "by": "Envoy 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/ext_authz_filter",
+   "why": "요청을 멈추고 외부 서비스에 '허용?'을 묻는 장치. 실패 시 열지 닫을지(failure_mode_allow)를 여기서 본다."
+  },
+  {
+   "id": "grpc-auth",
+   "title": "gRPC Authentication",
+   "by": "gRPC 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://grpc.io/docs/guides/auth/",
+   "why": "우대 4의 gRPC에서 TLS와 호출 단위 토큰 인증을 붙이는 법."
+  },
+  {
+   "id": "terraform",
+   "title": "What is Terraform",
+   "by": "HashiCorp 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.hashicorp.com/terraform/intro",
+   "why": "우대 4의 IaC. 인프라와 정책을 코드로 적어 리뷰·되돌리기를 하는 감."
+  },
+  {
+   "id": "bsrs",
+   "title": "Building Secure and Reliable Systems",
+   "by": "Heather Adkins 외 · Google · O'Reilly · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://sre.google/books/",
+   "why": "보안과 가용성을 같이 설계하는 법(최소 권한·키 관리·사고 대응·조직). 업무 5~8줄의 리더 관점."
+  },
+  {
+   "id": "manager-path",
+   "title": "개발 7년차, 매니저 1일차",
+   "by": "카미유 푸르니에 · 한빛미디어 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942423",
+   "why": "팀장 → 매니저의 매니저 → 디렉터로 가는 단계별 일. 채용·팀 문화·로드맵 합의(업무 1·3, 자격요건 3·6)를 말로 정리할 때."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "제로 트러스트의 말 익히기",
+   "time": "1주",
+   "goal": "인증·권한·판정 지점·판정 엔진·서비스 신원을 그림 한 장으로 설명할 수 있다.",
+   "resources": [
+    "nist-zta",
+    "owasp-api"
+   ],
+   "task": "가상 쇼핑몰 API 10개(주문·배송지·쿠폰…)를 적고, 각각 OWASP API 10대 위험 중 어디에 약한지 표로 만든다."
+  },
+  {
+   "title": "토큰과 키를 손으로",
+   "time": "2주",
+   "goal": "kid·폐기 목록·만료가 있는 토큰 검증기를 만들고, 키를 무중단으로 교체할 수 있다.",
+   "resources": [
+    "api-sec-action",
+    "spiffe"
+   ],
+   "task": "위 예시 코드를 비대칭 키(ES256)로 바꾸고, 옛 키·새 키를 같이 받는 기간 → 옛 키 폐기까지 테스트로 보인다."
+  },
+  {
+   "title": "메시에 판정 붙이기",
+   "time": "2~3주",
+   "goal": "Kubernetes + Istio에 외부 판정 서비스를 붙여 요청을 허용·거절하고, 판정 서비스가 죽을 때의 동작을 고를 수 있다.",
+   "resources": [
+    "istio-security",
+    "envoy-extauthz",
+    "grpc-auth",
+    "terraform"
+   ],
+   "task": "로컬 클러스터(kind 등)에 서비스 둘과 gRPC 판정 서비스를 올리고 CUSTOM 정책으로 연결한다. 판정 서비스를 끈 채 fail-open/closed를 각각 돌려 결과를 적는다. 설정은 코드로 남긴다."
+  },
+  {
+   "title": "동적 신호 더하기",
+   "time": "2주",
+   "goal": "호출 빈도·세션 철회 같은 신호로 허용 → 추가 인증 → 차단을 나누고, 오탐률을 잴 수 있다.",
+   "resources": [
+    "zanzibar",
+    "zt-networks"
+   ],
+   "task": "가상 호출 로그(토큰 1,000개·1시간)에 대량 조회 토큰 몇 개를 섞고, 3단계 판정기를 붙여 놓친 것·잘못 막은 것을 센다."
+  },
+  {
+   "title": "디렉터로 말하기 (선택)",
+   "time": "계속",
+   "goal": "동적 권한 플랫폼의 4분기 로드맵과 팀 구성을 한 문서로 설명할 수 있다.",
+   "resources": [
+    "bsrs",
+    "manager-path"
+   ],
+   "task": "'어느 API부터 판정을 거치게 할지·지연 예산·실패 시 동작·필요한 사람 역할'을 담은 두 쪽 설계 문서를 쓴다 — 집중 면접 대비용."
+  }
+ ],
+ "pay": {
+  "summary": "싱가포르 공고에는 연봉이 없다. 같은 회사 미국 보안 백엔드 공고는 **US$159,000~324,000**(Senior Staff), 서울 IAM 공고는 미국 기준 **US$209,000~360,000**이 적혀 있다. 회사 전체 중위 보수 **US$33,831**(공시)은 물류 인력이 섞인 값이라 이 자리와 거리가 멀다",
+  "rows": [
+   {
+    "label": "같은 회사 보안 백엔드 Senior Staff 기본급 (미국)",
+    "value": "US$159,000 ~ 324,000 / 년",
+    "basis": "공고 · 2026년 (미국)",
+    "peer": true,
+    "note": "마운틴뷰 Senior Staff Backend Security Engineer 공고(2026-03, 마감). 디렉터보다 아래 직급이다 [3]"
+   },
+   {
+    "label": "같은 회사 IAM Senior Staff 범위",
+    "value": "US$209,000 ~ 360,000 / 년",
+    "basis": "공고 · 2026년",
+    "peer": true,
+    "note": "서울 근무 공고지만 미국 시장 기준으로 적힌 범위라 무엇을 기준으로 한 값인지 분명하지 않다 [2]"
+   },
+   {
+    "label": "다른 조직 미국 디렉터 기본급",
+    "value": "US$159,000 ~ 324,000 / 년",
+    "basis": "공고 · 2026년 (미국)",
+    "peer": true,
+    "note": "Application Infrastructure 조직의 Director of Backend Engineering 공고. 연 보너스 기본급의 0~20% 별도 [19]"
+   },
+   {
+    "label": "쿠팡 Inc. 전 직원 중위 보수",
+    "value": "US$33,831 / 년",
+    "basis": "공시 · 2025년",
+    "note": "미국 SEC 위임장 설명서의 CEO 보수 배율 공시. 한국 물류·현장 직원이 대부분인 회사 전체의 가운데 값이다 [17]"
+   }
+  ],
+  "how": "싱가포르 공고에는 연봉이 적혀 있지 않고, 전형 마지막 단계가 처우 제안(Offer)이다 [1]. 미국 공고 숫자는 미국 시장 기준이라 싱가포르 금액과 같지 않다 {추론}. 중위 보수는 회사 전체 가운데 값이라 디렉터 연봉으로 읽으면 안 된다 {추론}. 직급·직함은 경력에 따라 조정될 수 있다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "의료 보험",
+    "detail": "본인과 직계 가족"
+   },
+   {
+    "name": "가족 휴가",
+    "detail": "경조사 유급 휴가"
+   },
+   {
+    "name": "배움",
+    "detail": "외국어·소프트 스킬 강좌"
+   },
+   {
+    "name": "글로벌 프로젝트",
+    "detail": "직무에 따라 여러 나라 팀과 협업"
+   },
+   {
+    "name": "행사",
+    "detail": "팀·회사 행사"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·차·간식 라운지, 하루 세 끼 카페테리아"
+   },
+   {
+    "name": "유연 근무",
+    "detail": "유연 근무 시간 또는 재택"
+   },
+   {
+    "name": "열린 문화",
+    "detail": "칸막이·직급·직함 대신 열린 협업"
+   }
+  ],
+  "note": "쿠팡 채용 사이트 'Why Coupang'의 전 세계 공통 소개다 [18]. 금액은 적혀 있지 않고, 직무·근무지·자격에 따라 달라진다고 적었다 — 싱가포르 사무실에 어느 항목이 그대로 적용되는지는 처우 제안 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "쿠팡 싱가포르 사무실 (Suntec Tower 5)",
+  "address": "5 Temasek Boulevard, Suntec Tower 5, 17층, Singapore",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=Suntec%20Tower%205%2C%205%20Temasek%20Boulevard%2C%20Singapore",
+  "near": "Promenade 역 걸어서 약 3분 [16]",
+  "note": "공고 근무지는 'Singapore' [1]. 주소와 가까운 역은 쿠팡 채용 사이트의 싱가포르 근무지 안내 [16]. 우편번호는 안내에 없어 비웠다."
+ }
+}
