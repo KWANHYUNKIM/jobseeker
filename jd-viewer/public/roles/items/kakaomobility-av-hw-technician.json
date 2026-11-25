@@ -1,0 +1,388 @@
+{
+ "id": "kakaomobility-av-hw-technician",
+ "company": "카카오모빌리티",
+ "role": "자율주행 HW 테크니션",
+ "team": "자율주행개발팀 · 계약직 6개월",
+ "jobs": ["ats-greeting:kakaomobility:227958"],
+ "researched_at": "2026-11-26",
+ "tldr": {
+  "what": "설계팀이 그리고 외주로 만든 브래킷·하우징·하네스를 받아 **라이다·카메라·레이더·GPS/IMU·컴퓨터를 시험차에 실제로 다는** 사람입니다. 달고, 배선하고, 전기를 확인하고, 안 맞으면 설계팀에 알려 줍니다.[1]",
+  "env": "카카오모빌리티는 지붕에 얹는 모듈형 센서 키트(AV-Kit)를 직접 만들었고, 기아 EV6 시험차에 라이다 3·레이더 5·카메라 7대를 달아 강남 심야 자율주행 택시로 돌리고 있습니다.[2][6] 근무지는 판교, 계약 기간은 6개월입니다.[1]",
+  "oneline": "코드를 쓰는 자리가 아니라 **손으로 차를 만드는 자리**입니다. 자율주행 소프트웨어가 믿고 쓰는 '센서가 제자리에 단단히, 전기가 제대로' 를 책임집니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "자율주행 연구개발 조직에서 기구/전장 설계 엔지니어가 설계하고 외주 제작한 부품 및 조립체를 실차에 장착하여 시제작(프로토타입)을 완성하는 핵심 역할입니다. 설계-제작-검증 사이클을 빠르게 반복하는 환경에서 실차 하드웨어 구현을 책임지게 됩니다.",
+   "short": "설계 → 외주 제작 → 실차 장착 → 시험의 고리에서 '실차 장착'을 맡아, 도면을 진짜 차로 바꾸는 일.",
+   "why": "팀 소개에 따르면 자율주행개발팀은 알고리즘만이 아니라 **설계된 하드웨어를 실차에 구현해 검증하는 단계**까지 직접 다룹니다.[1] 회사는 센서를 묶은 모듈형 키트(AV-Kit)를 독자 개발했고, 센서의 온도·습도를 견디는 구조도 따로 만들었다고 밝혔습니다.[2] 이런 구조물은 한 번에 맞는 일이 드물어 깎고 다시 다는 반복이 생깁니다 {추론}.",
+   "actually": {
+    "intro": "고리 하나가 도는 모습입니다.",
+    "items": [
+     "기구 설계자가 센서 브래킷을 3D로 그리고, 외주 업체가 판금·가공해 보낸다.[1]",
+     "테크니션이 받아서 차에 대 본다 — 구멍 위치·볼트 길이·케이블 지나갈 틈이 맞는지.[1]",
+     "안 맞으면 사진과 치수를 재서 설계자에게 되돌려 준다 → 다음 판 도면이 나온다.[1]",
+     "맞으면 센서·컴퓨터를 달고 배선, 통전 확인 뒤 시험 주행 차로 넘긴다.[1]",
+     "2022년 판교 차는 센서가 20개(라이다 5·레이더 5·카메라 10)였고 2026년 EV6 AV-Kit 는 라이다 3·레이더 5·카메라 7 — 판이 바뀔 때마다 다시 단다.[2][3]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "시제작 한 바퀴",
+     "steps": ["설계 · 기구/전장 엔지니어가 도면", "외주 제작 · 판금·가공·하네스", "실차 장착 · 조립·배선", "점검 · 통전·전압·체결", "시험 주행 · 데이터 수집", "피드백 · 간섭·공차를 설계로"],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "무엇을 어디에 달지는 설계 엔지니어가 정합니다. 테크니션은 **도면대로 정확히 달고, 도면이 틀렸을 때 그걸 근거(사진·치수)와 함께 알려 주는 것**까지가 몫입니다.[1]",
+   "refs": [1, 2, 3],
+   "study": ["kakao-ethics-11031", "book-av"]
+  },
+  {
+   "section": "task",
+   "quote": "1. 외주 제작 부품 실차 장착 : 기구부품(브라켓, 하우징, 마운트 등) 및 전장부품(센서, 케이블 하네스, ECU/컨트롤러 등)의 실차 장착",
+   "short": "센서를 붙잡는 금속 받침(브래킷)·덮개(하우징)와, 전선 묶음·제어기를 차에 고정하는 일.",
+   "why": "센서가 1mm만 움직여도 소프트웨어가 아는 센서 위치와 실제가 어긋납니다. 자율주행 소프트웨어는 센서 위치를 차 기준점(뒤차축 중심을 바닥에 내린 점)에서 잰 값으로 들고 있기 때문입니다.[10] 그래서 **단단히, 도면 위치 그대로** 다는 것이 첫 번째 품질입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**기구부품** — 브래킷(센서 받침대), 하우징(빗물·햇빛을 막는 덮개), 마운트(차 지붕·범퍼에 붙이는 판).",
+     "**전장부품** — 센서 본체, 케이블 하네스(여러 전선을 길이·커넥터까지 맞춰 묶은 것), ECU(차량 제어기)·컨트롤러.",
+     "볼트는 지정 토크로 조인다 — 너무 약하면 진동에 풀리고, 너무 세면 나사산이 망가진다.[18]",
+     "GNSS/IMU 같은 관성 센서는 특히 단단히 — 제조사는 안테나와 IMU 사이 거리·방향이 변하지 않게 고정하라고 한다.[12]"
+    ]
+   },
+   "how_far": "토크 값·위치는 도면과 부품 설명서가 정합니다. 테크니션은 **값대로 조이고, 조였다는 기록을 남기는 것**까지 합니다(업무 7번과 이어진다).[1][12]",
+   "refs": [1, 10, 12, 18],
+   "study": ["autoware-sensor-model", "torque-table", "novatel-mount"]
+  },
+  {
+   "section": "task",
+   "quote": "2. 센서 및 컴퓨팅 장비 탑재 : 라이다, 카메라, 레이더, GPS/IMU 등 자율주행 센서 및 컴퓨팅 장비의 차량 탑재 및 배선 작업",
+   "short": "차의 눈(라이다·카메라·레이더)과 위치 감각(GPS/IMU), 두뇌(컴퓨터)를 달고 전선으로 잇는 일.",
+   "why": "회사 자료는 수집 차량이 카메라·라이다·레이더·GNSS/IMU 를 달고, 데이터를 정밀 위치 기준으로 **시간·공간을 맞춘 뒤(동기화)** 보정·융합한다고 설명합니다.[4] 동기화는 센서마다 같은 시계 신호가 들어가야 되고, 그 선을 꽂는 것이 이 자리입니다 {추론}.",
+   "actually": {
+    "intro": "센서마다 달 때 신경 쓰는 것이 다릅니다.",
+    "items": [
+     "**라이다** — 레이저를 쏴서 거리를 재는 회전 센서. 열이 나서 방열판·바람이 필요하다. 한 제조사는 주행풍 같은 강제 대류가 열을 더 잘 뺀다고 안내한다.[14]",
+     "**카메라** — 렌즈 방향이 조금만 틀어져도 다시 보정해야 한다. 보정은 카메라 내부 값·라이다-카메라 사이 값 등을 따로 맞춘다.[9]",
+     "**레이더** — 범퍼 뒤·앞에 각도를 맞춰 단다.",
+     "**GPS/IMU** — 안테나와 관성 센서 사이 거리(레버암)를 mm 단위로 재서 적어 둔다.[12][13]",
+     "**컴퓨터** — 트렁크 등에 진동을 견디게 고정하고 전원·랜·시간 동기 신호 선을 낸다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "레버암은 목표보다 더 정확히 잰다",
+     "body": "위치를 3cm 정확도로 내고 싶다면 안테나–IMU 거리는 **1cm보다 정확하게** 재야 한다는 것이 제조사 안내입니다. 잰 거리의 오차가 그대로 위치 오차가 되기 때문입니다. 간이 측정은 차를 수평에 두고 다림추와 줄자로 높이(Z)부터 잰다.[13]"
+    }
+   ],
+   "how_far": "어느 센서를 어디에 둘지는 설계팀, 보정 계산은 소프트웨어 쪽 몫입니다.[9] 테크니션은 **달고, 실제로 잰 위치(실측 치수)를 넘겨 주는 것**까지 합니다 — 보정은 그 실측값에서 출발합니다.[10]",
+   "refs": [4, 9, 10, 12, 13, 14],
+   "study": ["autoware-calib", "novatel-leverarm", "ouster-thermal", "book-av"]
+  },
+  {
+   "section": "task",
+   "quote": "3. 도면 기반 조립 및 이슈 대응 : 도면 및 조립도 기반 조립/장착 작업 수행, 현장에서 발생하는 간섭·공차 이슈 파악 및 설계팀 피드백 제공",
+   "short": "도면대로 조립하고, 부품끼리 부딪히거나(간섭) 치수가 조금 어긋나는(공차) 곳을 찾아 설계팀에 알리는 일.",
+   "why": "공고가 '설계-제작-검증을 빠르게 반복한다'고 적었습니다.[1] 반복이 빨라지려면 '안 맞는다'가 아니라 '어디가 몇 mm 안 맞는다'가 돌아가야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**간섭** — 브래킷이 트렁크 문 경첩에 닿는다, 케이블이 문틈에 끼인다.",
+     "**공차** — 도면에 6.0±0.2 처럼 허용 오차가 적혀 있다. 받은 부품이 6.4면 범위 밖이다.",
+     "**조립도** — 부품 번호·순서·볼트 종류가 적힌 그림. 순서를 바꾸면 손이 안 들어가는 곳이 생긴다.",
+     "**피드백** — 사진 + 캘리퍼스로 잰 치수 + 도면의 어느 치수인지를 묶어 보낸다 {추론}."
+    ]
+   },
+   "how_far": "도면을 고치는 것은 설계자입니다. 테크니션은 **도면 기호(치수·공차·단면)를 읽고, 문제를 재서 말로 정확히 전하는 것**까지 합니다 {추론}.",
+   "refs": [1],
+   "study": ["book-drawing", "book-ncs-drawing", "edrawings"]
+  },
+  {
+   "section": "task",
+   "quote": "4. 전장 조립 작업 : 케이블 하네스 제작, 커넥터 결선, 접지/차폐 처리 등",
+   "short": "전선을 길이 맞춰 자르고 커넥터에 물리고(압착), 잡음이 안 끼게 접지·차폐를 하는 일.",
+   "why": "센서 하나에 전원·통신·시간 동기 선이 따로 들어가고 센서가 15~20개라[2][3], 선 하나가 빠지거나 잡음이 끼면 데이터가 끊깁니다 {추론}.",
+   "actually": {
+    "items": [
+     "**압착(크림핑)** — 전용 공구로 단자를 전선에 눌러 붙인다. NASA 작업 표준은 압착·하네스 작업의 검사와 당김 시험 기준을 따로 정해 둔다.[15]",
+     "**결선** — 핀 번호표(핀맵)대로 꽂는다. 한 칸 밀리면 전원이 신호선에 들어간다.",
+     "**접지** — 차체(섀시)에 전기 기준점을 잡는다.",
+     "**차폐(실드)** — 케이블 겉의 금속 그물. 이더넷처럼 빠른 신호선은 **양쪽 끝을** 섀시에 낮은 저항으로 묶어야 잡음이 상쇄되고, 한쪽만 묶는 것은 느린 신호에나 맞다는 해설이 있다.[16]",
+     "**굵기 고르기** — 전선이 가늘고 길수록 전압이 떨어진다(아래 계산)."
+    ]
+   },
+   "examples": [
+    {
+     "title": "12V·2A 센서에 5m 선을 끌 때 전압 강하",
+     "body": "구리 비저항 0.0172Ω·mm²/m, 왕복 10m 로 계산했습니다(직접 돌린 출력). 0.5mm² 면 0.69V(약 6%)가 떨어집니다.",
+     "lang": "python",
+     "code": "rho = 0.0172  # 구리 비저항 Ω·mm²/m (20℃)\ndef drop(I, length_m, area):\n    R = rho * 2 * length_m / area   # 왕복\n    return R, I * R\nfor a in (0.5, 0.75, 1.25, 2.0):\n    R, V = drop(2.0, 5, a)\n    print(f'{a}mm² 왕복10m: 저항 {R:.3f}Ω, 2A에서 전압강하 {V:.2f}V ({V/12*100:.1f}% of 12V)')\n# 0.5mm² 왕복10m: 저항 0.344Ω, 2A에서 전압강하 0.69V (5.7% of 12V)\n# 0.75mm² 왕복10m: 저항 0.229Ω, 2A에서 전압강하 0.46V (3.8% of 12V)\n# 1.25mm² 왕복10m: 저항 0.138Ω, 2A에서 전압강하 0.28V (2.3% of 12V)\n# 2.0mm² 왕복10m: 저항 0.086Ω, 2A에서 전압강하 0.17V (1.4% of 12V)"
+    }
+   ],
+   "how_far": "배선도(어느 핀이 어디로)는 전장 설계자가 줍니다. 테크니션은 **배선도대로 만들고, 압착 불량·핀 밀림이 없게 검사하는 것**까지 합니다.[1][15]",
+   "refs": [1, 2, 3, 15, 16],
+   "study": ["nasa-8739", "sigcon-shield", "book-auto-elec", "candela-wiring"]
+  },
+  {
+   "section": "task",
+   "quote": "5. 시제작 현장 대응 : 치공구 활용, 가공물 핏(fit) 확인, 필요 시 현장 수정 가공(드릴링, 탭핑 등)",
+   "short": "지그(위치 잡는 틀)로 맞춰 보고, 안 맞으면 그 자리에서 구멍을 뚫고 나사산을 내서(탭핑) 맞추는 일.",
+   "why": "외주 부품이 다시 오려면 며칠이 걸리지만 구멍 하나는 현장에서 몇 분이면 됩니다 {추론}. 공고가 '필요 시 현장 수정 가공'을 따로 적은 이유입니다.[1]",
+   "actually": {
+    "items": [
+     "**치공구** — 같은 위치에 반복해서 구멍을 뚫거나 부품을 대도록 잡아 주는 틀.",
+     "**핏 확인** — 끼워 봤을 때 헐겁거나 빡빡하지 않은지.",
+     "**탭핑** — 구멍 안에 나사산을 깎는 것. 먼저 정해진 지름으로 구멍을 뚫어야 한다(아래 표).[17]",
+     "고친 내용은 설계에 알려야 다음 판 도면에 들어간다(업무 3번).[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "탭 구멍 지름 — 나사 지름 − 피치",
+     "body": "미터 보통나사의 탭 드릴 지름은 대개 '나사 지름 − 피치'와 같습니다. 표 값: M4×0.7 → 3.3mm, M5×0.8 → 4.2mm, M6×1.0 → 5.0mm, M8×1.25 → 6.8mm(계산은 6.75).[17]"
+    }
+   ],
+   "how_far": "어디를 고칠지는 설계자와 합의한 범위 안에서입니다 {추론}. 드릴·탭·줄 같은 손 가공을 **안전하게, 치수대로** 할 수 있으면 됩니다.",
+   "refs": [1, 17],
+   "study": ["tap-chart"]
+  },
+  {
+   "section": "task",
+   "quote": "6. 점검 및 정비 : 장착 후 기능/전기적 점검(통전, 전압 확인 등), 시험 주행 전후 차량 점검 및 유지보수",
+   "short": "단 뒤에 전기가 제대로 통하는지 멀티미터로 재고, 시험 주행 전후로 풀린 곳·망가진 곳을 보는 일.",
+   "why": "회사의 시험차는 강남에서 밤 11시부터 새벽 5시까지 실제 승객을 태우고, 2026년 3~8월에만 1만 3천km를 달렸습니다.[2] 매일 달리는 차는 진동으로 볼트·커넥터가 풀립니다 {추론}.",
+   "actually": {
+    "items": [
+     "**통전 시험** — 전원을 넣기 전, 선 양끝이 이어졌는지·엉뚱한 곳과 붙지 않았는지(단락) 멀티미터로 본다.",
+     "**전압 확인** — 전원을 넣고 센서 커넥터에서 정격 전압이 나오는지.",
+     "**주행 전** — 센서 창 닦기, 볼트 표시선(조인 뒤 그은 선)이 돌아갔는지, 커넥터 잠김.",
+     "**주행 후** — 케이블 쓸림, 물 들어간 흔적, 라이다 과열 기록 {추론}."
+    ]
+   },
+   "how_far": "고장 원인이 소프트웨어인지 하드웨어인지 가르는 것까지는 하고, 소프트웨어 문제는 개발자에게 넘깁니다 {추론}. **멀티미터로 저항·전압·통전을 재는 것**이 최소선입니다.[1]",
+   "refs": [1, 2],
+   "study": ["book-auto-elec", "qnet-elec"]
+  },
+  {
+   "section": "task",
+   "quote": "7. 문서화 : 부품 재고 관리, 작업 이력 문서화(장착 사진, 체크리스트 등)",
+   "short": "어느 차에 어느 부품을 언제 어떻게 달았는지 사진·체크리스트로 남기고 부품 재고를 세는 일.",
+   "why": "센서 위치 값은 보정 파일(센서마다 위치·각도를 적은 파일)로 소프트웨어에 들어갑니다.[10] 누가 브래킷을 바꿨는데 기록이 없으면, 소프트웨어 팀은 왜 데이터가 틀어졌는지 알 수 없습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**장착 사진** — 볼트·커넥터가 보이게 앞·옆·위.",
+     "**체크리스트** — 토크 값·통전 결과·담당자·날짜를 칸마다 체크.",
+     "**재고** — 센서 시리얼 번호와 어느 차에 달렸는지, 남은 커넥터·단자 수.",
+     "**변경 이력** — 현장 수정 가공(업무 5번)이 있었으면 그 내용도.[1]"
+    ]
+   },
+   "how_far": "엑셀·공유 문서에 꾸준히 적을 수 있으면 됩니다 {추론}. 개발자 독자라면 이 기록을 표로 정리해 두면 보정 파일과 대조하기 쉽다는 점만 알아 두면 됩니다.",
+   "refs": [1, 10],
+   "study": ["autoware-sensor-model"]
+  },
+  {
+   "section": "task",
+   "quote": "8. 작업장 및 장비 운영 관리 : 시제작 작업장의 공구·장비·부품 배치 체계화 및 안전 작업 환경 유지",
+   "short": "공구·부품이 늘 제자리에 있게 정리하고, 리프트·전동공구·전기를 다루는 작업장을 안전하게 지키는 일.",
+   "why": "빠른 반복(업무 소개)을 하려면 부품과 공구를 찾는 시간이 줄어야 합니다.[1] 차를 들어 올리고 전기를 만지는 곳이라 사고 위험도 큽니다 {추론}.",
+   "actually": {
+    "items": [
+     "공구 벽판·부품함에 이름표, 쓴 뒤 제자리.",
+     "토크렌치·멀티미터 같은 측정 공구의 정기 점검 {추론}.",
+     "배터리·전원 장치 차단 절차, 리프트 작업 수칙 {추론}."
+    ]
+   },
+   "how_far": "규칙을 처음부터 만드는 것보다 **정한 규칙을 매일 지키게 하는 것**입니다 {추론}.",
+   "refs": [1],
+   "study": []
+  },
+  {
+   "section": "qualification",
+   "quote": "자동차, 기계, 전기전자, 메카트로닉스 관련 전공 또는 동등 경력이 있으신 분",
+   "short": "차의 기계와 전기를 둘 다 만지는 일이라, 그 바탕 공부(전공)나 같은 수준의 현장 경력이 필요해서.",
+   "why": "업무가 기구 장착(기계)과 하네스·접지(전기)를 반씩 섞고 있습니다.[1] '또는 동등 경력'이라 전공이 없어도 실차 경력으로 갈음됩니다.[1]",
+   "how_far": "전공 지식 가운데 실제로 쓰는 것은 **도면 읽기, 옴의 법칙·전압 강하, 볼트 체결** 정도입니다 {추론}.",
+   "refs": [1],
+   "study": ["book-auto-elec", "book-drawing"]
+  },
+  {
+   "section": "qualification",
+   "quote": "차량 정비, 튜닝, 개조, 모터스포츠, 프로토타입 제작 등 실차 작업 경험 3년 이상이신 분",
+   "short": "실제 차를 뜯고 다는 손 경험이 3년은 있어야, 시험차를 혼자 맡길 수 있어서.",
+   "why": "시험차는 승객을 태우고 달립니다.[2] 정비·튜닝·개조를 모두 받아 주는 것은 '양산차에 없는 것을 달아 본 경험'을 보려는 것으로 읽힙니다 {추론}.",
+   "how_far": "1차 인터뷰가 이력서·**포트폴리오** 기반이라[1], 작업 사진·전후 비교·만든 하네스를 정리해 가는 것이 좋습니다 {추론}.",
+   "refs": [1, 2],
+   "study": ["candela-wiring", "bosch-handbook"]
+  },
+  {
+   "section": "qualification",
+   "quote": "도면(2D/3D) 및 조립도 해독 능력, 기본 공구(전동공구, 토크렌치 등) 및 측정장비(멀티미터 등) 사용 가능, 전장 배선/하네스 작업 경험이 있으신 분",
+   "short": "업무 1~6번을 하는 데 쓰는 세 가지 손 기술 — 도면 읽기, 공구·측정 장비, 배선 — 을 확인하려고.",
+   "why": "도면 해독은 업무 3번, 토크렌치는 업무 1번, 멀티미터는 업무 6번, 하네스는 업무 4번에 그대로 쓰입니다.[1]",
+   "level": {
+    "basic": "2D 도면의 치수·공차·단면을 읽고, 토크렌치를 지정값에 맞추고, 멀티미터로 전압·통전을 잰다.",
+    "work": "3D 모델을 뷰어로 돌려 보며 간섭을 미리 찾고, 배선도를 보고 하네스를 처음부터 만든다.",
+    "team": "센서 15~20개짜리 시험차의 전원·통신·동기 배선을 맡는다.[2][3]"
+   },
+   "examples": [
+    {
+     "title": "토크 값은 표보다 제조사 지정이 먼저",
+     "body": "한 공학 자료표는 강도 8.8급 볼트의 최대 체결 토크를 M6 11.8Nm, M8 28.8Nm 로 적었습니다. 같은 M6 를 다른 표는 9Nm 로 적기도 해서, 표는 감을 잡는 용도이고 **부품 설명서 값이 우선**입니다.[18] 예컨대 한 IMU 제조사는 M6 나사 4개를 42~45 in-lbs 로 조이라고 따로 정합니다.[12]"
+    }
+   ],
+   "refs": [1, 2, 3, 12, 18],
+   "study": ["book-ncs-drawing", "torque-table", "book-auto-elec"]
+  },
+  {
+   "section": "qualification",
+   "quote": "영입 여정은 이렇게 진행됩니다 서류 → 1차 인터뷰 → 2차 인터뷰 → 처우 협의 서류 전형 1차 인터뷰 1차 인터뷰는 이력서 및 포트폴리오 기반으로 함께 일하는 동료들이 참석하여 진행됩니다. 2차 인터뷰 1Round 는 핵심가치 기반의 HR 인터뷰로 HR담당자가 참석하여 진행됩니다. 2Round 는 조직 문화 인터뷰로 조직장이 참석하여 진행됩니다.",
+   "short": "요건이 아니라 전형 순서다 — 같이 일할 동료가 포트폴리오로 손 기술을 먼저 본다.",
+   "why": "1차는 동료가 이력서·포트폴리오로, 2차는 HR(핵심가치)과 조직장(조직 문화)이 봅니다. 연봉은 마지막 처우 협의에서 정합니다.[1]",
+   "how_far": "이력서는 PDF로 내고, 이력서에 연봉을 적으면 검토되지 않을 수 있다고 공고에 적혀 있습니다.[1]",
+   "refs": [1],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "자율주행/ADAS 관련 센서(라이다, 카메라, 레이더 등) 장착 경험이 있으신 분",
+   "short": "센서는 일반 부품과 달리 '위치·각도가 곧 성능'이라, 달아 본 사람이 덜 틀려서.",
+   "why": "센서 위치 값은 보정의 출발점이고[10], 라이다-카메라·라이다-IMU 처럼 센서끼리의 상대 위치도 따로 보정합니다.[9]",
+   "actually": {
+    "items": [
+     "센서 창 앞에 가리는 것이 없는지(시야).",
+     "센서 축 방향 — 관성 센서는 Z 위·Y 진행 방향이 기본이고, 다르면 회전 값을 따로 넣는다.[12]",
+     "단 뒤 카메라-IMU 보정 같은 작업을 소프트웨어 쪽이 할 수 있게 실측 치수를 넘긴다.[21]"
+    ]
+   },
+   "refs": [9, 10, 12, 21],
+   "study": ["autoware-calib", "kalibr", "book-av"]
+  },
+  {
+   "section": "preference",
+   "quote": "용접, 판금, 3D프린팅 등 기초 제작 경험이 있으신 분",
+   "short": "외주 부품을 기다리지 않고 임시 받침·덮개를 직접 만들 수 있으면 반복이 빨라져서.",
+   "why": "업무 5번의 현장 수정 가공과 이어집니다 — 작은 브래킷·케이블 클립은 3D 프린터로 하루면 나옵니다 {추론}.[1]",
+   "how_far": "양산 수준이 아니라 **시험용 임시 부품**을 만드는 정도면 됩니다 {추론}.",
+   "refs": [1],
+   "study": []
+  },
+  {
+   "section": "preference",
+   "quote": "CAD 도면(SolidWorks, CATIA 등) 열람 가능하신 분",
+   "short": "설계자가 보낸 3D 파일을 직접 돌려 보면 차에 대 보기 전에 간섭을 찾을 수 있어서.",
+   "why": "'그리기'가 아니라 '열람'입니다.[1] SolidWorks 의 무료 뷰어 eDrawings 는 윈도우·맥·모바일에서 돌아갑니다.[20]",
+   "how_far": "모델을 열어 돌리고, 단면을 자르고, 두 점 사이 거리를 재는 정도 {추론}.",
+   "refs": [1, 20],
+   "study": ["edrawings"]
+  },
+  {
+   "section": "preference",
+   "quote": "전기 관련 자격증(전기기능사 등) 보유하신 분",
+   "short": "전기를 안전하게 다룰 바탕 지식이 있다는 것을 국가 자격으로 보여 줄 수 있어서.",
+   "why": "전기기능사는 한국산업인력공단이 시행하는 국가기술자격입니다.[19] 시험차는 큰 배터리를 단 전기차(EV6)라 전기 안전 감각이 중요합니다.[2] {추론}",
+   "how_far": "우대 사항이라 없어도 지원할 수 있습니다.[1]",
+   "refs": [1, 2, 19],
+   "study": ["qnet-elec", "book-elec-exam"]
+  },
+  {
+   "section": "preference",
+   "quote": "시험차량/테스트베드 운영 경험이 있으신 분",
+   "short": "달기만 하는 게 아니라 매일 달리는 시험차를 굴려 본 사람이면 점검·정비(업무 6번)를 바로 맡길 수 있어서.",
+   "why": "회사는 강남 시범운행지구에서 운행 차량을 2대에서 6대로 늘렸고[6], 레벨 3 허가로 안전 운전 관리자가 앞좌석에 탄 채 다닙니다.[2] 자율주행 차는 이중 제동·조향 같은 이중화 장치도 달고 다닙니다.[5] 자율주행 컴퓨터의 명령은 차량 버스 신호로 바뀌어 나가고 차 상태가 되돌아오는데[11], 시험차를 굴리면 이 선이 끊겼을 때 차가 어떻게 되는지도 보게 됩니다 {추론}.",
+   "refs": [2, 5, 6, 11],
+   "study": ["kakao-ethics-11031", "autoware-vehicle-if"]
+  }
+ ],
+ "fit": {
+  "good": ["차를 뜯고 다는 일이 즐거운 사람", "전선 한 가닥까지 깔끔하게 정리해야 직성이 풀리는 사람", "'안 맞는다'를 치수와 사진으로 설명할 줄 아는 사람[1]", "자율주행차가 실제 도로를 달리는 과정을 가까이서 보고 싶은 사람[2]"],
+  "hard": ["계약 기간이 6개월이다[1]", "코드를 쓰는 개발 경력으로는 쌓이지 않는다 {추론}", "실차 작업 3년이 필수라 경험이 없으면 지원이 어렵다[1]"]
+ },
+ "interview": [
+  {"q": "라이다 브래킷 볼트 구멍이 도면보다 2mm 어긋나 왔어요. 어떻게 하겠어요?", "a": "현장 수정 가공과 설계 피드백 사이의 판단.[1]"},
+  {"q": "센서 하나가 가끔 꺼졌다 켜져요. 하드웨어에서 무엇부터 보겠어요?", "a": "커넥터·압착·전압 강하·접지 순서의 점검.[15][16]"},
+  {"q": "이더넷 케이블 실드는 한쪽만 접지해요, 양쪽 다 해요?", "a": "빠른 신호선과 느린 신호선의 차이.[16]"},
+  {"q": "GPS 안테나와 IMU 사이 거리를 어떻게, 얼마나 정확히 재겠어요?", "a": "레버암 측정법과 정확도 기준.[13]"},
+  {"q": "브래킷을 바꿨는데 소프트웨어 팀이 모르면 무슨 일이 생기나요?", "a": "보정 파일과 작업 기록의 관계.[10]"}
+ ],
+ "resources": [
+  {"id": "kakao-ethics-11031", "title": "이용자의 안전과 데이터 보호를 우선하는 자율주행 (Tech Ethics 11호)", "by": "카카오", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.kakaocorp.com/page/detail/11031", "why": "회사가 어느 도시에서 어떤 자율주행 서비스를 해 왔고, 안전 요원·이중 제동/조향을 어떻게 두는지 — 내가 만질 차가 어떤 차인지 먼저 안다."},
+  {"id": "autoware-calib", "title": "Calibrating your sensors", "by": "Autoware Foundation · 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.autoware.org/main/tutorials/integrating-autoware/creating-vehicle-and-sensor-model/calibrating-sensors/", "why": "센서를 단 뒤 어떤 보정(카메라 내부·라이다-카메라·라이다-IMU 등)이 이어지는지 — 장착 위치가 왜 중요한지 본다."},
+  {"id": "autoware-sensor-model", "title": "Creating a sensor model for Autoware", "by": "Autoware Foundation · 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.autoware.org/main/tutorials/integrating-autoware/creating-vehicle-and-sensor-model/creating-sensor-model/", "why": "차 기준점(base_link)과 센서 위치 파일이 어떻게 생겼나 — 내가 잰 치수가 들어가는 자리."},
+  {"id": "autoware-vehicle-if", "title": "Vehicle interface overview", "by": "Autoware Foundation · 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://docs.autoware.org/main/tutorials/integrating-autoware/creating-vehicle-interface-package/vehicle-interface/", "why": "자율주행 컴퓨터의 명령이 차량 신호로 바뀌어 나가는 구조 — 시험차 운영(우대)에서 어느 선이 무엇을 나르는지 알게 된다."},
+  {"id": "novatel-mount", "title": "Mount the IMU (SPAN 설치)", "by": "NovAtel · OEM7 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.novatel.com/OEM7/Content/SPAN_Install/Mount_the_IMU.htm", "why": "업무 1·2번 — IMU 고정 방법·축 방향·체결 토크를 제조사가 정한 예."},
+  {"id": "novatel-leverarm", "title": "Importance of lever arms", "by": "NovAtel · OEM7 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.novatel.com/OEM7/Content/SPAN_Operation/ImportanceOfLeverArm.htm", "why": "안테나-IMU 거리를 왜, 얼마나 정확히, 어떻게(다림추·줄자) 재는지."},
+  {"id": "ouster-thermal", "title": "Thermal Integration Guide", "by": "Ouster · 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.ouster.com/sensor-docs/thermal-integration-guide", "why": "라이다를 차에 넣을 때 방열판·바람을 어떻게 두나 — 하우징을 다룰 때의 기준."},
+  {"id": "kalibr", "title": "Kalibr — Camera IMU calibration", "by": "ETH Zürich ASL · GitHub wiki", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://github.com/ethz-asl/kalibr/wiki/camera-imu-calibration", "why": "센서를 단 다음 소프트웨어 쪽이 하는 보정이 무엇인지 — 우대 '센서 장착 경험'의 다음 단계."},
+  {"id": "nasa-8739", "title": "NASA-STD-8739.4 Workmanship Standard for Crimping, Interconnecting Cables, Harnesses, and Wiring", "by": "NASA · Rev A Change 4 · 2022", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://standards.nasa.gov/standard/nasa/nasa-std-87394", "why": "업무 4번 — 압착·하네스 작업을 어떻게 검사하고 무엇을 불량으로 보는지 정리한 무료 표준. 그림 위주로 본다."},
+  {"id": "sigcon-shield", "title": "Cable Shield Grounding", "by": "Howard Johnson · High-Speed Digital Design 뉴스레터", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.sigcon.com/Pubs/news/2_2.htm", "why": "업무 4번 '접지/차폐' — 실드를 한쪽만 묶을지 양쪽을 묶을지 신호 속도로 가르는 짧은 글."},
+  {"id": "tap-chart", "title": "Metric ISO Screw Thread Tap - Drill Size Chart", "by": "Engineers Edge", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.engineersedge.com/manufacturing/metric-iso-tap-drill-chart.htm", "why": "업무 5번 탭핑 — 나사 크기별로 먼저 뚫을 구멍 지름."},
+  {"id": "torque-table", "title": "Metric Bolts - Maximum Tightening Torque", "by": "Engineering ToolBox", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://engineeringtoolbox.com/metric-bolts-maximum-torque-d_2054.html", "why": "토크렌치 값의 감 잡기. 실제 값은 부품 설명서를 따른다."},
+  {"id": "edrawings", "title": "eDrawings Viewer 내려받기", "by": "Dassault Systèmes SOLIDWORKS", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.edrawingsviewer.com/download-edrawings", "why": "우대 'CAD 도면 열람' — 3D 모델을 돌려 보고 재는 연습을 바로 할 수 있다."},
+  {"id": "qnet-elec", "title": "전기기능사 시험 정보", "by": "한국산업인력공단 · Q-Net", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.q-net.or.kr/crf005.do?id=crf00505&jmCd=7780", "why": "우대 '전기기능사' — 시험 일정·과목의 공식 안내."},
+  {"id": "book-elec-exam", "title": "2026 이기적 전기기능사 필기 이론서+기출문제집", "by": "이재일 · 영진닷컴 · 2025", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000011877146", "why": "전기이론·기기·설비를 시험 범위로 정리 — 자격증을 딸 생각이 있을 때."},
+  {"id": "book-drawing", "title": "기계도면 보는 법", "by": "이국환 · 기전연구사 · 2017", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003084672", "why": "업무 3번·자격 '도면 해독' — 기계도면의 기호·치수를 읽는 법."},
+  {"id": "book-ncs-drawing", "title": "도면해독(기초)", "by": "한국산업인력공단 · 진한엠앤비 · 2015", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003200044", "why": "NCS 학습모듈 교재. 치수와 공차 — '공차 이슈 파악'의 바탕."},
+  {"id": "book-auto-elec", "title": "자동차 전기전자공학 (제3판)", "by": "이찬수·황성일·정중호·유재복 · 복두출판사 · 2023", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005190654", "why": "업무 4·6번 — 차량 전원·전장 회로부터 자율주행차 장까지, 배선과 점검의 바탕."},
+  {"id": "book-av", "title": "자율주행 자동차공학", "by": "정승환 · 골든벨 · 2023", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000007356707", "why": "업무 2번 — 라이다·레이더·카메라·관성 센서·GPS 가 어떻게 동작하나, 왜 그 자리에 다나."},
+  {"id": "candela-wiring", "title": "Automotive Wiring and Electrical Systems", "by": "Tony Candela · CarTech · 2009", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://cartechbooks.com/products/automotive-wiring-and-electrical-systems", "why": "개조차 배선 실무서 — 하네스 설계·압착·진단을 사진으로 따라 한다."},
+  {"id": "bosch-handbook", "title": "Automotive Handbook (11판)", "by": "Robert Bosch GmbH · Konrad Reif 편 · Wiley · 2022", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://blackwells.co.uk/bookshop/product/Automotive-Handbook-by-Konrad-Reif-editor/9781119911906", "why": "차량 기계·전기 전반의 참고 사전. 필요한 장만 찾아 본다."}
+ ],
+ "study_path": [
+  {"title": "내가 만질 차 알기", "time": "3~5일", "goal": "자율주행 시험차에 어떤 센서가 왜 달리고, 단 뒤 무슨 보정이 이어지는지 말로 설명한다.", "resources": ["kakao-ethics-11031", "book-av", "autoware-sensor-model"], "task": "종이에 시험차 윗면도를 그리고 라이다 3·레이더 5·카메라 7대를 놓아 본 뒤, 센서마다 '차 기준점에서 x·y·z 몇 cm' 를 적은 표를 만든다(가상 값)."},
+  {"title": "도면과 측정", "time": "1~2주", "goal": "2D 도면의 치수·공차를 읽고, 3D 모델을 뷰어로 열어 거리를 잰다.", "resources": ["book-drawing", "book-ncs-drawing", "edrawings"], "task": "공개 샘플 3D 모델 하나를 eDrawings 로 열어 구멍 간격 3곳을 재고, 6.0±0.2 처럼 공차를 붙인 간이 도면을 손으로 그려 본다."},
+  {"title": "배선과 전기 점검", "time": "2~3주", "goal": "배선도대로 작은 하네스를 만들고 멀티미터로 통전·전압을 확인한다.", "resources": ["book-auto-elec", "nasa-8739", "sigcon-shield", "candela-wiring"], "task": "12V 어댑터·스위치·LED 2개로 커넥터가 달린 짧은 하네스를 만들고, 압착 단자를 당겨 보는 검사와 통전 표(핀 번호 × 결과)를 남긴다. 위의 전압 강하 계산으로 선 굵기를 고른다."},
+  {"title": "장착·체결과 기록", "time": "1~2주", "goal": "지정 토크로 체결하고, 레버암을 재고, 작업 이력을 남긴다.", "resources": ["novatel-mount", "novatel-leverarm", "torque-table", "tap-chart"], "task": "합판에 M5 탭을 내서 브래킷 하나를 달고(표의 4.2mm 드릴), 두 지점 사이 거리를 줄자·다림추로 세 번 재 평균·오차를 적는다. 사진 3장 + 체크리스트 한 장으로 묶는다."},
+  {"title": "자격증 (선택)", "time": "2~3개월", "goal": "전기기능사 필기·실기를 준비한다.", "resources": ["qnet-elec", "book-elec-exam"], "task": "기출 1회분을 풀고 틀린 문제를 전기이론·기기·설비로 나눠 정리한다."}
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 회사 전체 1인 평균 급여는 **약 9,014만원**(2024년, 보도) — 개발자가 많은 회사 전체 값이라 6개월 계약직 테크니션 처우와는 다르다",
+  "rows": [
+   {"label": "임직원 1인 평균 급여", "value": "약 9,014만원", "amount": 9014, "basis": "보도 · 2024년", "note": "2024년 말 임직원 914명(기간제 포함), 스톡옵션 행사 차익을 뺀 급여 총액 약 831억원 기준. 회사 실적 공시를 다룬 2025년 3월 기사 [7]"}
+  ],
+  "how": "공고에는 연봉이 없고, 인터뷰 뒤 **처우 협의** 단계에서 정한다. 이력서에 연봉을 적으면 검토되지 않을 수 있다고 적혀 있다 [1]. 평균은 개발·사업직 경력자가 섞인 회사 전체 값이라, 6개월 계약직 현장 직무의 금액으로 읽으면 안 된다 {추론}. 신입 초봉 집계 사이트는 접속이 막혀 확인하지 못해 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {"name": "주택 자금", "detail": "주택 관련 대출 최대 3억원 이자 지원"},
+   {"name": "생활 안정 자금", "detail": "최대 5천만원 한도 이자 지원"},
+   {"name": "복지 포인트", "detail": "카카오 T 앱·제휴 가맹점에서 사용"},
+   {"name": "차량 대여", "detail": "추첨으로 3박 4일(기아·현대 등)"},
+   {"name": "휴가", "detail": "연차 최대 25일, 금요일 2시간 조기 퇴근, 선택적 근로시간제"},
+   {"name": "식사", "detail": "점심시간 1시간 30분, 점심 식대 월 20만원, 간식·음료 무제한"},
+   {"name": "건강", "detail": "매년 건강검진(당일 유급휴가, 가족 양도 가능), 상담 지원, 본인·가족·배우자 부모 실손 의료비"},
+   {"name": "육아", "detail": "사내 어린이집, 육아휴직 최대 2년"},
+   {"name": "그 밖에", "detail": "통근버스, 휴양 시설, 사내 마사지·수면실, 동호회, 경조사 지원"}
+  ],
+  "note": "카카오모빌리티 채용 사이트의 복지 페이지(연도 표기 없음) [8]. 6개월 계약직에 같은 범위로 적용되는지는 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "카카오모빌리티 판교 오피스",
+  "address": "경기도 성남시 분당구 판교역로 152, 알파돔타워",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+  "near": "신분당선·경강선 판교역 {추론}",
+  "note": "공고의 근무 조건에 적힌 근무지 [1]. 시험차 작업장이 사무실 건물과 같은 곳인지는 공고에 없다 {추론}."
+ },
+ "sources": [
+  {"n": 1, "title": "카카오모빌리티 채용 · [Contract] 자율주행 HW 테크니션", "url": "https://kakaomobility.career.greetinghr.com/ko/o/227958", "kind": "posting", "note": "팀 소개·업무·요건·전형·근무 조건(계약직 6개월, 판교)"},
+  {"n": 2, "title": "데일리안 · \"불법 유턴, 취객도 자산\"…카카오, '24시간 관제' 얹어 자율주행 승부수", "url": "https://m.dailian.co.kr/news/view/1688235", "kind": "news", "date": "2026-09-09", "note": "AV-Kit(라이다 3·레이더 5·카메라 7), 기아 EV6, 레벨 3·안전 운전 관리자, 강남 심야 운행 1만 3천km"},
+  {"n": 3, "title": "바이라인네트워크 · 카카오모빌리티, 자체 개발한 자율주행차 공개", "url": "https://byline.network/2022/02/10-207", "kind": "news", "date": "2022-02-10", "note": "NEMO 2022 전시 — 판교 차 센서 20개(라이다 5·레이더 5·카메라 10)"},
+  {"n": 4, "title": "카카오 Tech Ethics 19호 · 산학연 협력으로 구축한 데이터 전격 공개", "url": "https://www.kakaocorp.com/page/detail/11509", "kind": "company", "note": "수집 차량 센서 종류, 정밀 위치 기준 시공간 동기화·다중 센서 캘리브레이션"},
+  {"n": 5, "title": "카카오 Tech Ethics 11호 · 이용자의 안전과 데이터 보호를 우선하는 자율주행", "url": "https://www.kakaocorp.com/page/detail/11031", "kind": "company", "note": "세종·판교·강남·대구·제주 서비스, 안전 요원 동승, 이중 제동·조향"},
+  {"n": 6, "title": "블로터 · 자율주행 힘주는 카카오모빌리티…'韓 특화 데이터' 앞세워 빅테크와 경쟁", "url": "https://v.daum.net/v/UIEsECnQHJ", "kind": "news", "date": "2026-09", "note": "서울자율차 운행 차량 2대 → 6대"},
+  {"n": 7, "title": "아이뉴스24 · 카카오모빌리티, 2024년 매출 6750억원⋯류긍선 대표 보수 9.7억원", "url": "https://v.daum.net/v/uTwZAfwMlq", "kind": "news", "date": "2025-03-31", "note": "임직원 914명, 1인 평균 급여 약 9,014만원(스톡옵션 차익 제외)"},
+  {"n": 8, "title": "카카오모빌리티 채용 · 복지", "url": "https://kakaomobility.career.greetinghr.com/ko/benefit", "kind": "company"},
+  {"n": 9, "title": "Autoware 문서 · Calibrating your sensors", "url": "https://docs.autoware.org/main/tutorials/integrating-autoware/creating-vehicle-and-sensor-model/calibrating-sensors/", "kind": "reference", "note": "다른 곳(오픈소스 자율주행 SW) — 센서 보정 종류"},
+  {"n": 10, "title": "Autoware 문서 · Creating a sensor model", "url": "https://docs.autoware.org/main/tutorials/integrating-autoware/creating-vehicle-and-sensor-model/creating-sensor-model/", "kind": "reference", "note": "base_link(뒤차축 중심의 바닥 투영)와 센서 위치 파일"},
+  {"n": 11, "title": "Autoware 문서 · Vehicle interface overview", "url": "https://docs.autoware.org/main/tutorials/integrating-autoware/creating-vehicle-interface-package/vehicle-interface/", "kind": "reference"},
+  {"n": 12, "title": "NovAtel OEM7 · Mount the IMU", "url": "https://docs.novatel.com/OEM7/Content/SPAN_Install/Mount_the_IMU.htm", "kind": "reference", "note": "고정·축 방향·M6 42~45 in-lbs"},
+  {"n": 13, "title": "NovAtel OEM7 · Importance of lever arms", "url": "https://docs.novatel.com/OEM7/Content/SPAN_Operation/ImportanceOfLeverArm.htm", "kind": "reference", "note": "목표 3cm → 1cm보다 정확히, 다림추·줄자 간이 측정"},
+  {"n": 14, "title": "Ouster · Thermal Integration Guide", "url": "https://docs.ouster.com/sensor-docs/thermal-integration-guide", "kind": "reference"},
+  {"n": 15, "title": "NASA-STD-8739.4 · Crimping, Interconnecting Cables, Harnesses, and Wiring", "url": "https://standards.nasa.gov/standard/nasa/nasa-std-87394", "kind": "reference", "date": "2022-04", "note": "Rev A Change 4 — 세부 수치는 원문으로 확인"},
+  {"n": 16, "title": "Howard Johnson · Cable Shield Grounding", "url": "https://www.sigcon.com/Pubs/news/2_2.htm", "kind": "reference"},
+  {"n": 17, "title": "Engineers Edge · Metric ISO Tap Drill Size Chart", "url": "https://www.engineersedge.com/manufacturing/metric-iso-tap-drill-chart.htm", "kind": "reference"},
+  {"n": 18, "title": "Engineering ToolBox · Metric Bolts Maximum Torque", "url": "https://engineeringtoolbox.com/metric-bolts-maximum-torque-d_2054.html", "kind": "reference", "note": "8.8급, 기름 살짝·보증하중 85% 기준"},
+  {"n": 19, "title": "Q-Net · 전기기능사", "url": "https://www.q-net.or.kr/crf005.do?id=crf00505&jmCd=7780", "kind": "reference"},
+  {"n": 20, "title": "eDrawings Viewer 내려받기", "url": "https://www.edrawingsviewer.com/download-edrawings", "kind": "reference"},
+  {"n": 21, "title": "Kalibr · Camera IMU calibration", "url": "https://github.com/ethz-asl/kalibr/wiki/camera-imu-calibration", "kind": "reference"}
+ ],
+ "caveat": "카카오모빌리티는 시험차의 장착 절차·하네스 구조·작업 기준을 공개하지 않았습니다. 회사 자료(보도·Tech Ethics)로 차와 센서 구성을 보이고, 장착·배선·점검의 '보통 이런 것'은 오픈소스 자율주행 문서와 센서·항법 제조사 문서, NASA 작업 표준으로 보였습니다. 센서 구성은 2022년·2026년 보도 기준이라 지금 차와 다를 수 있습니다."
+}
