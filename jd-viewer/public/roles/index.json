@@ -329,6 +329,7 @@
   "ats-greeting:musinsa:246226": "musinsa-product-engineer-partner-platform",
   "ats-greeting:musinsa:246073": "musinsa-product-engineer-personalization",
   "ats-greeting:musinsa:236337": "musinsa-product-engineer-platform-innovation",
+  "ats-greeting:musinsa:245220": "musinsa-product-engineer-retention",
   "ats-greeting:musinsa:235686": "musinsa-product-engineer-scm-platform",
   "ats-greeting:musinsa:172721": "musinsa-product-engineering-manager-core-partner",
   "ats-greeting:musinsa:239873": "musinsa-product-engineering-manager-pricing",
@@ -3353,6 +3354,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 31
+  },
+  {
+   "id": "musinsa-product-engineer-retention",
+   "company": "무신사",
+   "role": "[AI Agent 전형] Product Engineer (Retention)",
+   "jobs": [
+    "ats-greeting:musinsa:245220"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 23
   },
   {
    "id": "musinsa-product-engineer-scm-platform",
