@@ -1,0 +1,582 @@
+{
+  "id": "kakaomobility-geospatial-system-backend",
+  "company": "카카오모빌리티",
+  "role": "백엔드 개발자(공간정보 시스템 개발)",
+  "team": "공간정보 데이터 관리·제공 조직(경로탐색 네트워크·배경 지도·주소·대중교통)",
+  "jobs": [
+    "ats-greeting:kakaomobility:236791",
+    "ats-kakao:group:S-4757",
+    "saramin-55567119"
+  ],
+  "researched_at": "2026-11-26",
+  "tldr": {
+    "what": "카카오내비·카카오 T 같은 서비스가 밑에 깔고 쓰는 **지도 데이터 — 도로망, 배경 지도, 주소, 대중교통 — 를 모으고, 틀린 곳을 잡고, 서비스가 쓰는 꼴로 바꿔 내보내는 백엔드 시스템**을 만듭니다.[1]",
+    "env": "Java·Spring, PostgreSQL·MongoDB가 기술 태그로 붙어 있습니다.[1][2][3] 판교 오피스, 정규직, **경력 무관**이며 전형에 코딩 테스트가 있습니다.[1]",
+    "oneline": "지도를 그리는 자리가 아니라 **지도 데이터가 공장처럼 흘러가게 하는 파이프라인과 저장 구조**를 만드는 백엔드 자리입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "효율적인 데이터 관리를 위한 공간정보 데이터 모델링",
+      "short": "도로·주소·정류장 같은 지도 데이터를 어떤 표·문서·관계로 담을지 정해서, 고치고 꺼내기 쉽게 하는 일.",
+      "why": "팀 소개에 따르면 이 조직은 차량·도보·자전거 경로탐색 네트워크, 배경 지도, 주소, 대중교통처럼 **성격이 다른 데이터를 한꺼번에** 다룹니다.[1] 같은 도로 데이터를 경로 엔진이 쓰고[10], 그 엔진은 카카오내비·카카오맵 차량 길찾기·외부 SDK·차량 화면에 함께 들어갑니다.[11] 데이터 모양이 한 번 정해지면 여러 서비스가 그것에 기대므로, 처음 정한 구조가 오래 갑니다 {추론}.",
+      "actually": {
+        "intro": "회사가 내부 데이터 구조를 공개하지 않아, 같은 종류의 데이터를 다루는 공개 표준으로 '보통 이런 것'을 보입니다.",
+        "items": [
+          "**도로망 = 노드와 링크** — 교차로·분기점은 노드(점), 그 사이 도로 조각은 링크(선)로 둔다. 국내 공공 표준인 표준노드링크도 전국 도로를 이렇게 나눈다.[19] 경로 엔진은 수백만 개 링크에 통행 비용을 매겨 길을 찾는다.[10]",
+          "**링크에 붙는 속성** — 일방통행 방향, 차로 수, 제한 속도, 도로 등급, 회전 제한. 오픈 지도 데이터(OSM)는 점(node)·선(way)과, '여기서 좌회전 금지'처럼 여러 요소의 관계(relation)를 따로 둔다.[13]",
+          "**주소** — 도로명주소와 건물·출입구 좌표. 행정안전부 주소 데이터는 건물 중심점과 출입구 좌표를 따로 준다.[20]",
+          "**대중교통** — 정류장·노선·운행 시각표. 국제 공개 형식(GTFS)은 노선·운행·정차 시각을 서로 다른 파일로 나누고 키로 잇는다.[18]",
+          "**배경 지도** — 건물·하천·녹지 같은 다각형(polygon)과 이름 표기. 화면에 그리는 용도라 경로용 도로와 따로 관리되는 경우가 많다 {추론}.",
+          "**좌표 저장 규칙** — 경도·위도 순서, 기준 좌표계(WGS84) 같은 약속을 정해 둔다. 웹 표준 GeoJSON 은 경도를 먼저 쓴다.[14]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "링크 표 하나를 설계해 보면",
+          "body": "link(id, from_node, to_node, oneway, lanes, speed_limit, road_class, geom LINESTRING, version, updated_at). 회전 제한은 링크 두 개를 잇는 별도 표(turn_restriction: from_link, via_node, to_link)로 뺀다 — 한 링크 행에 넣으면 '어느 링크로 갈 때'를 표현할 수 없다. 버전 칸은 아래 '배포' 줄의 판 비교에 쓴다. {추론}"
+        }
+      ],
+      "how_far": "무엇을 담을지(도로 속성 목록·주소 체계)는 지도 기획·생산 쪽과 경로 엔진 쪽이 요구를 냅니다. 같은 회사의 공간정보기획팀 공고가 SD Map(일반 내비 지도)·ADAS Map·HD Map(정밀 지도)용 공간정보 생산을 따로 맡는 것으로 보아[4], 개발자는 **그 요구를 표·문서·관계와 버전 규칙으로 옮기는** 쪽일 가능성이 큽니다 {추론}. 최소선은 노드·링크·다각형을 손으로 그려 보고, 한 객체가 바뀔 때 어떤 표가 같이 바뀌는지 설명하는 것입니다 {추론}.",
+      "refs": [1, 4, 10, 11, 13, 14, 18, 19, 20],
+      "study": ["osm-elements", "nodelink", "gtfs", "geojson-rfc"]
+    },
+    {
+      "section": "task",
+      "quote": "공간정보 데이터의 수집, 검수, 가공, 배포를 위한 백엔드 시스템 설계 및 개발",
+      "short": "여러 곳에서 들어온 지도 데이터를 받아 틀린 곳을 잡고, 서비스용으로 바꿔 내보내는 흐름 전체를 만드는 일.",
+      "why": "지도 데이터는 한 번 만들고 끝나지 않습니다. 회사는 자체 이동형 측량 장비(MMS, 카메라·라이다·위성 측위를 단 차량) 'ARGOS'로 서울 도심 3,370km를 달려 20TB를 모아 정밀 지도를 만들었다고 발표했고[5], 이 장비는 하루 8시간 넘게 연속 수집한다고 소개됐습니다.[6] 2025년에는 'AI로 구현하는 디지털트윈 자동화 지도 제작'을 시연했습니다.[7] 들어오는 양이 많고 자주 바뀌니 **사람 손을 덜 거치는 수집·검수·배포 시스템**이 필요합니다 {추론}.",
+      "actually": {
+        "intro": "네 단계마다 백엔드가 맡는 일입니다. 회사 내부 흐름은 공개되지 않아, 같은 일을 하는 다른 내비 회사의 공개 글[12]과 공개 표준으로 보였습니다.",
+        "items": [
+          "**수집** — 자체 측량 결과, 공공 데이터(표준노드링크·도로명주소)[19][20], 대중교통 정보처럼 출처마다 형식·좌표계·주기가 다른 데이터를 받아 한 꼴로 맞춘다. 티맵은 기관 데이터의 격자 좌표를 먼저 자기 도로 링크에 잇는다고 공개했다.[12]",
+          "**검수** — 기계 검사: 노드 표에 없는 끝점, 어디서도 못 들어가는 도로 조각, 스스로 꼬인 다각형(PostGIS ST_IsValid 같은 검사)[17]. 사람 검사: 공사·통제 정보는 담당자가 확인한 뒤 반영한다는 사례가 있다.[12]",
+          "**가공** — 같은 사건·같은 지점 중복 합치기, 유효 기간 지난 정보 빼기[12], 경로 엔진용 그래프·화면용 지도 조각처럼 쓰는 곳마다 다른 꼴로 바꾸기.",
+          "**배포** — 이번 판과 지난 판을 비교해 바뀐 것만 내보내고, 너무 많이 바뀌면 멈춘다 {추론}. 같은 데이터를 여러 서비스가 쓰므로[11] 판 번호·되돌리기가 필요하다 {추론}.",
+          "**작업 관리** — 어떤 판이 어느 단계에 있고 누가 검수했는지 기록하는 상태 관리. Spring 이라면 대량 처리는 Spring Batch 같은 일괄 처리 틀로 짠다.[27]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "지도 데이터 한 판이 서비스에 닿기까지(공개 사례로 본 일반형) {추론}[5][12]",
+          "steps": [
+            "측량·공공 데이터 · 원천 수집",
+            "적재 · 형식·좌표계 맞추기",
+            "자동 검수 · 끊긴 링크·꼬인 도형",
+            "사람 검수 · 통제·공사 확인",
+            "가공 · 경로 그래프·지도 조각",
+            "배포 · 판 비교·되돌리기",
+            "서비스 · 내비·맵·SDK"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "examples": [
+        {
+          "title": "검수 — 끊긴 링크와 못 가는 노드 찾기",
+          "body": "노드 표에 없는 끝점을 가진 링크를 먼저 걸러 내고, 한 노드에서 너비 우선 탐색(BFS)으로 닿는 노드를 센다. 일방통행은 한쪽으로만 잇는다.",
+          "lang": "python",
+          "code": "from collections import defaultdict, deque\nnodes = {\"N1\", \"N2\", \"N3\", \"N4\", \"N5\"}\nlinks = [(\"L1\", \"N1\", \"N2\", False), (\"L2\", \"N2\", \"N3\", True),\n         (\"L3\", \"N3\", \"N1\", True), (\"L4\", \"N4\", \"N9\", False)]\nerrors = [l[0] for l in links if l[1] not in nodes or l[2] not in nodes]\ng = defaultdict(list)\nfor lid, a, b, one in links:\n    if lid in errors:\n        continue\n    g[a].append(b)\n    if not one:\n        g[b].append(a)\nseen, q = {\"N1\"}, deque([\"N1\"])\nwhile q:\n    for nx in g[q.popleft()]:\n        if nx not in seen:\n            seen.add(nx)\n            q.append(nx)\nprint(\"노드 없는 링크:\", errors)\nprint(\"N1 에서 못 가는 노드:\", sorted(nodes - seen))\n# 출력\n# 노드 없는 링크: ['L4']\n# N1 에서 못 가는 노드: ['N4', 'N5']"
+        },
+        {
+          "title": "배포 — 판 비교와 멈춤 문턱",
+          "body": "바뀐 링크만 내보내되, 바뀐 비율이 문턱(여기선 30%)을 넘으면 파서가 깨졌을 가능성이 크니 사람에게 넘긴다.",
+          "lang": "python",
+          "code": "old = {\"L1\": 120, \"L2\": 80, \"L3\": 45, \"L4\": 300}\nnew = {\"L1\": 120, \"L2\": 82, \"L4\": 300, \"L5\": 60}\nadded = sorted(new.keys() - old.keys())\nremoved = sorted(old.keys() - new.keys())\nchanged = sorted(k for k in new.keys() & old.keys() if new[k] != old[k])\nratio = (len(added) + len(removed) + len(changed)) / len(old)\nprint(\"추가\", added, \"삭제\", removed, \"변경\", changed)\nprint(f\"바뀐 비율 {ratio:.0%}\", \"-> 배포 보류, 사람 확인\" if ratio > 0.3 else \"-> 배포\")\n# 출력\n# 추가 ['L5'] 삭제 ['L3'] 변경 ['L2']\n# 바뀐 비율 75% -> 배포 보류, 사람 확인"
+        }
+      ],
+      "how_far": "측량 장비 운용과 도화(사진·점구름에서 선을 따는 일)는 지도 생산 조직의 몫이고[4][5], 이 자리는 **그 결과가 흐르는 길(받기·검사·변환·내보내기)과 그 상태를 기록하는 서버**입니다 {추론}. 최소선은 '어디서 틀렸는지 찾을 수 있는' 파이프라인 — 단계마다 입력·출력 건수와 실패 사유를 남기는 것입니다 {추론}.",
+      "refs": [4, 5, 6, 7, 11, 12, 17, 19, 20, 27],
+      "study": ["postgis-workshop", "spring-batch", "ddia-ko"]
+    },
+    {
+      "section": "task",
+      "quote": "공간 데이터 처리 및 안정적인 서비스 운영을 위한 성능 개선",
+      "short": "수백만 개 도로·좌표를 다루는 질의와 일괄 처리가 느려지지 않게, 색인·나눠 처리·캐시로 줄이는 일.",
+      "why": "경로 엔진이 다루는 도로 조각만 전국 수백만 개입니다.[10][22] 서울 정밀 지도 한 판의 원자료가 20TB였습니다.[5] 공간 질의는 '이 점 근처', '이 영역과 겹치는'처럼 일반 숫자 비교보다 계산이 비싸서, 색인 없이 전수로 돌리면 금방 느려집니다.[16]",
+      "actually": {
+        "items": [
+          "**공간 색인** — 도형마다 감싸는 상자(bounding box)를 색인해 두고, 상자가 겹치는 후보만 정밀 계산한다. PostGIS 는 GiST 색인과 상자 겹침 연산자(&&)로 이렇게 한다.[16] MongoDB 는 2dsphere 색인을 쓴다.[15]",
+          "**정밀 계산 줄이기** — 반경 검색은 '거리 함수로 전수 비교' 대신 색인을 타는 함수(ST_DWithin 같은)로 쓴다.[16]",
+          "**나눠 처리** — 전국 데이터를 지역·격자 단위로 쪼개 병렬로 검수·가공하고, 바뀐 지역만 다시 돈다 {추론}.",
+          "**변경분만 배포** — 매번 전체를 다시 만들지 않고 바뀐 링크·건물만 내보낸다 {추론}.",
+          "**경로 그래프 미리 계산** — 도로망 경로 탐색을 빠르게 하는 지름길 전처리(Contraction Hierarchies) 같은 기법은 데이터 판이 바뀔 때마다 다시 돌아야 하므로, 데이터 쪽 처리 시간이 곧 배포 주기가 된다.[21] {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "상자로 먼저 거르고, 진짜 거리로 자르기",
+          "body": "공간 색인이 하는 두 단계를 손으로 흉내 냈다. 300m 상자에 든 정류장만 하버사인(지구 곡률을 넣은 거리)으로 다시 잰다. 좌표는 (경도, 위도) 순서.",
+          "lang": "python",
+          "code": "import math\ndef hav(lon1, lat1, lon2, lat2):\n    R = 6371008.8\n    p1, p2 = math.radians(lat1), math.radians(lat2)\n    dp = p2 - p1\n    dl = math.radians(lon2 - lon1)\n    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2\n    return 2 * R * math.asin(math.sqrt(a))\nhere = (127.1112, 37.3948)\nstops = {\"A\": (127.1120, 37.3952), \"B\": (127.1050, 37.3990), \"C\": (127.1300, 37.3800)}\nr = 300\ndlat = r / 111320\ndlon = r / (111320 * math.cos(math.radians(here[1])))\nbox = {k: v for k, v in stops.items() if abs(v[0] - here[0]) <= dlon and abs(v[1] - here[1]) <= dlat}\nprint(\"상자 통과:\", sorted(box))\nprint({k: round(hav(*here, *v)) for k, v in box.items()}, \"m\")\n# 출력\n# 상자 통과: ['A']\n# {'A': 84} m"
+        }
+      ],
+      "how_far": "'안정적인 서비스 운영'이 함께 적힌 것으로 보아 일괄 처리뿐 아니라 데이터를 내주는 API 의 응답 속도도 이 팀 몫일 수 있습니다[1] {추론}. 최소선은 실행 계획(EXPLAIN)을 읽고 공간 색인이 실제로 쓰였는지 확인하는 것입니다 {추론}.",
+      "refs": [1, 5, 10, 15, 16, 21, 22],
+      "study": ["postgis-workshop", "postgis-in-action", "mongo-geo"]
+    },
+    {
+      "section": "qualification",
+      "quote": "하나 이상의 객체지향 언어를 자신 있게 사용할 수 있으신 분",
+      "short": "Java 가 아니어도 되지만, 클래스·인터페이스로 역할을 나눠 남이 읽을 수 있는 코드를 짜야 한다는 뜻.",
+      "why": "자격요건은 언어를 못 박지 않고, Java/Spring 은 우대사항으로 뺐습니다.[1] 기술 태그는 Java·Spring 이라[1][2] 입사 뒤에는 Java 를 쓰게 될 가능성이 큽니다 {추론}. 지도 데이터는 도로·주소·정류장처럼 종류가 많고 종류마다 검수 규칙이 달라서, **같은 틀에 규칙을 갈아 끼우는** 설계가 자주 필요합니다 {추론}.",
+      "actually": {
+        "items": [
+          "검수 규칙을 인터페이스 하나(검사한다 → 실패 목록)로 두고, '끊긴 링크', '꼬인 다각형', '좌표계 틀림'을 구현체로 늘린다 {추론}.",
+          "출처마다 다른 입력(공공 파일·측량 결과·외부 API)을 같은 내부 객체로 바꾸는 변환기를 따로 둔다 {추론}.",
+          "도로·주소 같은 값은 바뀌지 않는 값 객체로 두어 여러 단계에서 몰래 고쳐지는 일을 막는다 {추론}."
+        ]
+      },
+      "how_far": "경력 무관 공고라[1] 대형 설계 경험보다 **역할을 나누는 이유를 말로 설명하는 힘**을 볼 가능성이 큽니다 {추론}. 1차 인터뷰가 이력서·포트폴리오 기반이니[1] 자기 프로젝트의 클래스 구조를 왜 그렇게 나눴는지 답할 수 있어야 합니다 {추론}.",
+      "refs": [1, 2],
+      "study": ["object-book", "wiki-spring-core"]
+    },
+    {
+      "section": "qualification",
+      "quote": "자료구조·알고리즘·소프트웨어 설계 등 CS 기본기를 바탕으로 문제를 논리적으로 풀어가시는 분",
+      "short": "도로망은 곧 그래프라 탐색·최단 경로를 알아야 하고, 첫 관문인 코딩 테스트도 이걸 본다는 뜻.",
+      "why": "전형이 서류 다음 바로 코딩 테스트이고, 안내를 받은 뒤 7일 안에 끝내야 하며 떨어지면 6개월 동안 같은 자리에 다시 응시하지 못합니다.[1] 업무 쪽에서도 도로망은 노드·링크 그래프이고[19], 경로 엔진은 다익스트라·A* 같은 최단 경로 알고리즘을 씁니다.[10]",
+      "actually": {
+        "items": [
+          "**그래프** — 인접 리스트, 너비 우선 탐색(연결 여부 검수), 다익스트라(가중치 있는 최단 경로).[10]",
+          "**해시·집합** — 판 비교(추가·삭제·변경), 중복 제거.",
+          "**정렬·이분 탐색·우선순위 큐** — 대량 데이터 병합, 가까운 것부터 꺼내기.",
+          "**공간 자료구조 감각** — 상자 겹침으로 후보를 줄이는 R-tree 계열 색인의 원리.[16]",
+          "**설계** — 단계 사이를 느슨하게 잇기, 실패한 건만 다시 돌리기 {추론}."
+        ]
+      },
+      "how_far": "코딩 테스트는 일반 알고리즘 문제일 가능성이 크고 GIS 지식을 묻지는 않을 것입니다 {추론}. 1차 인터뷰에서 사전과제나 라이브 코딩이 붙을 수 있다고 적혀 있습니다.[1]",
+      "refs": [1, 10, 16, 19],
+      "study": ["icote-book", "redblob-astar"]
+    },
+    {
+      "section": "qualification",
+      "quote": "공간정보·지도·이동 데이터에 관심이 있으신 분",
+      "short": "경험은 없어도 되지만, 좌표·지도 데이터를 직접 만져 본 흔적이 있으면 이야기가 쉬워진다는 뜻.",
+      "why": "경험이 아니라 '관심'이라 적은 것은 경력 무관 공고에서 도메인 지식을 입사 뒤에 배운다는 전제로 보입니다[1] {추론}. 다만 이 팀의 데이터는 경로탐색 네트워크·배경 지도·주소·대중교통이라[1] 낯선 낱말이 많습니다.",
+      "actually": {
+        "intro": "관심을 보여 줄 수 있는 작은 것들입니다.",
+        "items": [
+          "공개 지도 데이터(OSM)의 점·선·관계 구조를 내려받아 들여다보기.[13]",
+          "국내 표준노드링크·도로명주소 데이터가 무엇을 담는지 확인하기.[19][20]",
+          "회사가 공개한 길찾기·지오코딩 API 를 불러 보기.[8]",
+          "회사 발표(경로 준수율로 도로 비용을 배우는 강화학습)를 보고 도로 데이터가 어디에 쓰이는지 이해하기.[10][22]"
+        ]
+      },
+      "how_far": "포트폴리오에 좌표 데이터를 하나라도 다룬 결과물(예: 내 동네 정류장 반경 검색)이 있으면 충분히 관심을 증명합니다 {추론}.",
+      "refs": [1, 8, 10, 13, 19, 20, 22],
+      "study": ["talk-mab", "km-dev", "osm-elements"]
+    },
+    {
+      "section": "preference",
+      "quote": "Navigation 또는 GIS 관련 분야의 개발 경험이 있으신 분",
+      "short": "내비·지도 회사나 GIS(지리정보시스템) 일을 해 본 사람은 좌표계·도로 데이터 함정을 이미 안다는 뜻.",
+      "why": "같은 회사 내비 백엔드 공고도 내비·GIS 경험을 우대합니다.[9] 지도 데이터에는 처음 겪으면 시간을 크게 잡아먹는 함정이 있습니다 — 좌표 순서(경도·위도), 좌표계 변환, 도형 유효성 같은 것들입니다.[14][17]",
+      "actually": {
+        "items": [
+          "**좌표 순서** — GeoJSON 과 MongoDB 는 경도를 먼저 쓴다.[14][15] 거꾸로 넣으면 한국 좌표가 엉뚱한 바다로 간다.",
+          "**좌표계** — 위성 좌표(WGS84)와 평면 좌표계를 오가며 거리·면적을 잰다.[14]",
+          "**도형 유효성** — 스스로 꼬인 다각형은 계산을 틀리게 만든다.[17]",
+          "**도로 표현** — 일방통행·회전 제한은 링크 하나가 아니라 링크 사이 관계로 담아야 한다.[13]"
+        ]
+      },
+      "how_far": "우대사항이라 없어도 지원할 수 있습니다.[1] 대신 위 네 가지를 겪어 본 작은 결과물이 있으면 비슷한 효과를 냅니다 {추론}.",
+      "refs": [1, 9, 13, 14, 15, 17],
+      "study": ["postgis-in-action", "geojson-rfc"]
+    },
+    {
+      "section": "preference",
+      "quote": "Java/Spring 기반 백엔드 개발 경험이 있으신 분",
+      "short": "팀 기술 태그가 Java·Spring 이라, 써 본 사람은 입사 첫날부터 코드를 읽을 수 있다는 뜻.",
+      "why": "공고 기술 태그가 Java·Spring·PostgreSQL·MongoDB 입니다.[1][2] 같은 회사 내비 백엔드도 Java/Kotlin Spring 을 요구합니다.[9]",
+      "actually": {
+        "items": [
+          "데이터를 내주는 REST API(Spring Web).",
+          "대량 수집·검수·변환 일괄 처리(Spring Batch 의 단계·청크·재시작)[27] {추론}.",
+          "PostgreSQL 은 JPA·JDBC 로, 공간 칼럼은 도형 라이브러리와 함께 다룬다 {추론}.",
+          "MongoDB 는 Spring Data MongoDB 로 문서 저장·공간 질의 {추론}."
+        ]
+      },
+      "how_far": "Spring Boot 로 API 하나와 일괄 작업 하나를 직접 만들어 본 정도면 출발선입니다 {추론}.",
+      "refs": [1, 2, 9, 27],
+      "study": ["wiki-spring-boot", "wiki-jpa-basic", "spring-batch"]
+    },
+    {
+      "section": "preference",
+      "quote": "PostgreSQL, MongoDB 등을 활용한 데이터베이스 설계 및 개발 경험이 있으신 분",
+      "short": "모양이 정해진 도로·주소는 관계형(PostgreSQL), 모양이 제각각인 속성은 문서형(MongoDB)으로 나눠 담는 일.",
+      "why": "두 DB 모두 기술 태그에 있습니다.[1][2] PostgreSQL 은 PostGIS 확장으로 공간 색인·도형 함수를 갖추고[16][17], MongoDB 는 GeoJSON 을 그대로 저장하고 2dsphere 색인으로 공간 질의를 합니다.[15] 어느 데이터를 어디에 담는지는 공개되지 않았습니다.",
+      "level": {
+        "basic": "정규화·외래 키·복합 색인, MongoDB 문서 내장(embed) vs 참조",
+        "work": "PostGIS 도형 칼럼·GiST 색인·ST_DWithin·ST_IsValid, MongoDB 2dsphere·$near, 실행 계획 읽기",
+        "team": "판(버전)이 있는 데이터 설계 · 대량 적재와 변경분 추출 · 두 저장소 사이 정합성 {추론}"
+      },
+      "actually": {
+        "items": [
+          "**PostgreSQL + PostGIS** — 링크·노드·다각형처럼 서로 참조하고 정합성이 중요한 데이터. 상자 겹침 색인으로 근처·겹침 질의.[16]",
+          "**MongoDB** — 출처마다 속성이 다른 원천 데이터, 검수 결과 기록처럼 모양이 자주 바뀌는 데이터 {추론}. 좌표는 경도·위도 순서의 GeoJSON.[15]",
+          "**설계 질문** — 판이 바뀔 때 행을 덮어쓰나, 새 판을 쌓나. 되돌리기와 비교가 필요하면 쌓는 쪽이 낫다 {추론}."
+        ]
+      },
+      "refs": [1, 2, 15, 16, 17],
+      "study": ["postgis-workshop", "mongo-geo", "mongo-model", "wiki-spring-db-1"]
+    },
+    {
+      "section": "preference",
+      "quote": "영입 여정은 이렇게 진행됩니다 서류 → Coding Test → 1차 인터뷰 → 2차 인터뷰 → 처우 협의 서류 전형 Coding Test 1차 인터뷰 1차 인터뷰는 이력서 및 포트폴리오 기반으로 함께 일하는 동료들이 참석하여 진행됩니다. 2차 인터뷰 1Round 는 핵심가치 기반의 HR 인터뷰로 HR담당자가 참석하여 진행됩니다. 2Round 는 조직 문화 인터뷰로 조직장이 참석하여 진행됩니다.",
+      "short": "우대사항이 아니라 전형 안내 — 서류 → 코딩 테스트 → 동료 면접 → HR·조직장 면접 → 연봉 협의 순서.",
+      "why": "수집 과정에서 전형 안내가 우대사항 칸에 붙어 들어온 줄입니다.[1] 회사 공고 원문에는 지원 전 확인 사항도 있습니다 — 이력서는 PDF, 연봉 정보를 적으면 검토되지 않을 수 있음, 코딩 테스트 7일 안에 완료, 인터뷰에서 떨어지면 1년 동안 같은 직군 재지원 불가.[1]",
+      "how_far": "1차는 함께 일할 동료가 이력서·포트폴리오로 보니, 포트폴리오에 데이터 파이프라인이나 공간 데이터를 다룬 결과물을 앞에 두는 것이 이 자리에 맞습니다 {추론}.",
+      "refs": [1]
+    }
+  ],
+  "resources": [
+    {
+      "id": "talk-mab",
+      "title": "실시간 경로탐색에 Multi-armed Bandit 기반 강화학습 도입하기 (feat. SCI급 논문게재)",
+      "by": "카카오모빌리티 AI연구개발팀 · if(kakao)25 · 18분",
+      "kind": "video",
+      "url": "https://www.youtube.com/watch?v=d9c32iTNqS8",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "이 팀이 만드는 도로 네트워크 데이터가 경로 엔진에서 링크·링크 비용으로 어떻게 쓰이는지 회사 사람의 말로 듣는다."
+    },
+    {
+      "id": "km-dev",
+      "title": "Kakao Mobility Developers",
+      "by": "카카오모빌리티",
+      "kind": "doc",
+      "url": "https://developers.kakaomobility.com/",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "길찾기 API·SDK 를 직접 불러 보며 공간정보 데이터가 최종적으로 어떤 답이 되는지 본다(관심 요건)."
+    },
+    {
+      "id": "osm-elements",
+      "title": "OpenStreetMap Wiki · Elements",
+      "by": "OpenStreetMap",
+      "kind": "doc",
+      "url": "https://wiki.openstreetmap.org/wiki/Elements",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "점·선·관계·태그로 지도를 담는 가장 널리 쓰이는 공개 모델. 데이터 모델링 줄의 출발점이다."
+    },
+    {
+      "id": "nodelink",
+      "title": "국가교통정보센터 · 표준노드링크",
+      "by": "국토교통부 국가교통정보센터",
+      "kind": "doc",
+      "url": "https://www.its.go.kr/nodelink/nodelinkRef",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "국내 도로망을 노드·링크로 나눈 공공 표준. 도로 네트워크 데이터가 실제로 어떤 칸을 갖는지 본다."
+    },
+    {
+      "id": "gtfs",
+      "title": "GTFS Schedule Reference",
+      "by": "MobilityData",
+      "kind": "doc",
+      "url": "https://gtfs.org/documentation/schedule/reference/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "대중교통 데이터를 노선·운행·정차 시각 파일로 나누는 국제 형식. 대중교통 데이터 모델링을 익힌다."
+    },
+    {
+      "id": "geojson-rfc",
+      "title": "RFC 7946 · The GeoJSON Format",
+      "by": "IETF · 2016",
+      "kind": "doc",
+      "url": "https://datatracker.ietf.org/doc/html/rfc7946",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "좌표 순서(경도 먼저)·좌표계(WGS84)·도형 종류의 약속. MongoDB 공간 데이터도 이 꼴을 쓴다."
+    },
+    {
+      "id": "postgis-workshop",
+      "title": "Introduction to PostGIS (워크숍)",
+      "by": "PostGIS Project",
+      "kind": "doc",
+      "url": "https://postgis.net/workshops/postgis-intro/indexing.html",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "공간 색인(상자 겹침·GiST)과 공간 함수를 손으로 따라 해 본다. 성능 개선·DB 설계 줄의 기본기."
+    },
+    {
+      "id": "postgis-in-action",
+      "title": "PostGIS in Action, Third Edition",
+      "by": "Regina O. Obe · Leo S. Hsu · Manning · 2021",
+      "kind": "book",
+      "url": "https://www.manning.com/books/postgis-in-action-third-edition",
+      "lang": "en",
+      "level": "심화",
+      "why": "좌표계 변환·도형 검사·공간 질의 튜닝까지 GIS 개발 경험(우대)에 가까워지는 한 권."
+    },
+    {
+      "id": "mongo-geo",
+      "title": "MongoDB 문서 · 2dsphere Indexes",
+      "by": "MongoDB 공식 문서",
+      "kind": "doc",
+      "url": "https://www.mongodb.com/docs/manual/core/indexes/index-types/geospatial/2dsphere/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "MongoDB 에 GeoJSON 을 담고 공간 색인으로 근처 검색하는 법(DB 설계 우대)."
+    },
+    {
+      "id": "mongo-model",
+      "title": "MongoDB Data Modeling",
+      "by": "MongoDB 공식 문서",
+      "kind": "doc",
+      "url": "https://www.mongodb.com/docs/manual/data-modeling/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "문서 내장 vs 참조를 고르는 기준. 출처마다 속성이 다른 원천 데이터를 어떻게 담을지 연습한다."
+    },
+    {
+      "id": "spring-batch",
+      "title": "Spring Batch 공식 문서",
+      "by": "Spring 공식 문서",
+      "kind": "doc",
+      "url": "https://docs.spring.io/spring-batch/reference/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "수집·검수·가공을 단계(step)로 나누고 실패한 곳부터 다시 돌리는 일괄 처리 틀."
+    },
+    {
+      "id": "ddia-ko",
+      "title": "데이터 중심 애플리케이션 설계",
+      "by": "마틴 클레프만 · 위키북스",
+      "kind": "book",
+      "url": "https://wikibook.co.kr/data-intensive-applications/",
+      "lang": "ko",
+      "level": "심화",
+      "why": "일괄 처리·파생 데이터·저장소 선택을 한 흐름으로 설명한다. 수집→배포 파이프라인 설계 줄에 맞다."
+    },
+    {
+      "id": "object-book",
+      "title": "오브젝트 — 코드로 이해하는 객체지향 설계",
+      "by": "조영호 · 위키북스 · 2019",
+      "kind": "book",
+      "url": "https://wikibook.co.kr/object/",
+      "lang": "ko",
+      "level": "실무",
+      "why": "역할·책임으로 나누는 객체지향 설계를 예제로 익힌다. '객체지향 언어를 자신 있게' 요건."
+    },
+    {
+      "id": "icote-book",
+      "title": "이것이 취업을 위한 코딩 테스트다 with 파이썬",
+      "by": "나동빈 · 한빛미디어 · 2020",
+      "kind": "book",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%EA%B2%83%EC%9D%B4%20%EC%B7%A8%EC%97%85%EC%9D%84%20%EC%9C%84%ED%95%9C%20%EC%BD%94%EB%94%A9%20%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%8B%A4",
+      "lang": "ko",
+      "level": "입문",
+      "why": "BFS·다익스트라·정렬·이분 탐색 등 코딩 테스트 단골 유형. 첫 관문인 코딩 테스트 대비."
+    },
+    {
+      "id": "redblob-astar",
+      "title": "Introduction to the A* Algorithm",
+      "by": "Red Blob Games",
+      "kind": "doc",
+      "url": "https://www.redblobgames.com/pathfinding/a-star/introduction.html",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "BFS → 다익스트라 → A* 를 그림으로 이어 보여 준다. 도로 그래프를 다루는 CS 기본기."
+    },
+    {
+      "id": "wiki-spring-core",
+      "title": "스프링 핵심 원리 — 기본편",
+      "by": "우리 사이트 책",
+      "kind": "internal",
+      "url": "/wiki/spring-core",
+      "lang": "ko",
+      "level": "입문",
+      "why": "인터페이스와 구현을 나누고 스프링이 갈아 끼워 주는 구조. 객체지향 요건과 Java/Spring 우대를 같이 채운다."
+    },
+    {
+      "id": "wiki-spring-boot",
+      "title": "스프링 부트 — 핵심 원리와 활용",
+      "by": "우리 사이트 책",
+      "kind": "internal",
+      "url": "/wiki/spring-boot",
+      "lang": "ko",
+      "level": "실무",
+      "why": "Spring Boot 로 API·설정·운영 엔드포인트를 다룬다(Java/Spring 우대)."
+    },
+    {
+      "id": "wiki-jpa-basic",
+      "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편",
+      "by": "우리 사이트 책",
+      "kind": "internal",
+      "url": "/wiki/jpa-basic",
+      "lang": "ko",
+      "level": "실무",
+      "why": "PostgreSQL 같은 관계형 DB 를 Spring 에서 다룰 때 나가는 SQL 을 보며 익힌다."
+    },
+    {
+      "id": "wiki-spring-db-1",
+      "title": "스프링 DB 1편",
+      "by": "우리 사이트 책",
+      "kind": "internal",
+      "url": "/wiki/spring-db-1",
+      "lang": "ko",
+      "level": "실무",
+      "why": "커넥션·트랜잭션 로그로 대량 적재 때 DB 에서 무슨 일이 생기는지 본다(DB 설계·개발 우대)."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "지도 데이터가 무엇으로 되어 있나",
+      "time": "1주",
+      "goal": "노드·링크·다각형·정류장·주소 좌표를 구분하고, 좌표 순서·좌표계를 설명한다.",
+      "task": "동네 한 블록을 종이에 노드 10개·링크 12개로 그리고, 일방통행 하나와 좌회전 금지 하나를 넣어 링크 표·회전 제한 표로 옮긴다. 같은 것을 GeoJSON 파일로도 만든다.",
+      "resources": ["osm-elements", "nodelink", "geojson-rfc", "talk-mab"]
+    },
+    {
+      "title": "코딩 테스트와 그래프",
+      "time": "2~3주",
+      "goal": "BFS·다익스트라를 30분 안에 짜고, 도로 그래프 검수(연결성)에 응용한다.",
+      "task": "1단계의 도로 표를 읽어 끊긴 링크·못 가는 노드를 찾는 검사기와, 두 노드 사이 최단 경로 함수를 Java 로 만든다. 테스트로 일방통행 반대 방향이 막히는지 확인한다.",
+      "resources": ["icote-book", "redblob-astar", "object-book"]
+    },
+    {
+      "title": "공간 DB 두 개",
+      "time": "2주",
+      "goal": "PostGIS 와 MongoDB 에 같은 데이터를 담고 공간 색인을 걸어 반경·겹침 질의를 한다.",
+      "task": "가상 정류장 1만 개를 PostGIS 에 넣고 색인 전·후 300m 반경 검색의 실행 계획을 비교한다. 같은 데이터를 MongoDB 2dsphere 로 넣어 $near 질의를 해 보고, 꼬인 다각형을 일부러 넣어 ST_IsValid 로 잡는다.",
+      "resources": ["postgis-workshop", "mongo-geo", "mongo-model", "wiki-spring-db-1"]
+    },
+    {
+      "title": "수집→검수→배포 파이프라인",
+      "time": "2~3주",
+      "goal": "Spring Batch 로 단계마다 건수·실패 사유를 남기고, 판 비교로 바뀐 것만 내보낸다.",
+      "task": "가상 공공 데이터 CSV 두 판을 받아 좌표 변환 → 검수(2단계 검사기) → 변경분 추출 → JSON 내보내기를 단계로 만든다. 바뀐 비율이 30%를 넘으면 멈추고, 실패한 단계부터 다시 돈다.",
+      "resources": ["spring-batch", "wiki-spring-boot", "wiki-jpa-basic", "ddia-ko"]
+    },
+    {
+      "title": "GIS 깊게 (선택)",
+      "time": "계속",
+      "goal": "좌표계 변환·도형 단순화·대용량 공간 처리 튜닝을 설명한다.",
+      "task": "4단계 파이프라인을 지역 격자로 쪼개 병렬로 돌리고, 바뀐 격자만 다시 처리하게 고친 뒤 전체 처리 시간 변화를 기록한다.",
+      "resources": ["postgis-in-action", "ddia-ko"]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉이 없다. 회사 전체 1인 평균 급여는 **약 9,014만원**(2024년, 보도) — 경력직이 섞인 회사 전체 값이라 경력 무관인 이 자리의 제안 금액과 다르다",
+    "rows": [
+      {
+        "label": "임직원 1인 평균 급여",
+        "value": "약 9,014만원",
+        "amount": 9014,
+        "basis": "보도 · 2024년",
+        "note": "2024년 말 임직원 914명(기간제 포함), 스톡옵션 행사 차익을 뺀 급여 기준. 회사 실적 공시를 다룬 2025년 3월 기사 [24]"
+      },
+      {
+        "label": "직원 1인 평균 급여(상반기 6개월 치)",
+        "value": "4,718만원",
+        "basis": "보도 · 2025년 상반기",
+        "note": "2025년 6월 말 직원 931명(정규 883·계약 48), 평균 근속 3.8년. 반년 동안 받은 금액이라 연봉과 바로 견주면 안 된다 [25]"
+      }
+    ],
+    "how": "공고에는 연봉이 없고 인터뷰 뒤 **처우 협의** 단계에서 정합니다. 이력서에 연봉 정보를 적으면 검토되지 않을 수 있다고 적혀 있습니다 [1]. 평균은 개발·사업직 경력자가 섞인 회사 전체 값이라, 경력 무관 공고인 이 자리 — 특히 신입으로 지원하는 경우 — 의 금액으로 읽으면 안 됩니다 {추론}. 신입 초봉 공시 숫자는 찾지 못해 싣지 않았습니다."
+  },
+  "benefits": {
+    "items": [
+      { "name": "주택 자금", "detail": "주택 관련 대출 최대 3억원 이자 지원" },
+      { "name": "생활 안정 자금", "detail": "최대 5천만원 한도 이자 지원" },
+      { "name": "복지 포인트", "detail": "카카오 T 앱·제휴 가맹점에서 사용" },
+      { "name": "차량 대여", "detail": "추첨으로 3박 4일(기아·현대 등)" },
+      { "name": "휴가", "detail": "연차 최대 25일, 금요일 2시간 조기 퇴근, 선택적 근로시간제" },
+      { "name": "식사", "detail": "점심시간 1시간 30분, 점심 식대 월 20만원, 간식·음료 무제한" },
+      { "name": "건강", "detail": "매년 건강검진(당일 유급휴가, 가족 양도 가능), 상담 지원, 본인·가족·배우자 부모 실손 의료비" },
+      { "name": "육아", "detail": "사내 어린이집, 육아휴직 최대 2년" },
+      { "name": "그 밖에", "detail": "통근버스, 휴양 시설, 사내 마사지·수면실, 동호회, 경조사 지원" }
+    ],
+    "note": "카카오모빌리티 채용 사이트의 복지 페이지(연도 표기 없음) [26]. 같은 회사 다른 공고 풀이에서 옮긴 목록이며, 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "카카오모빌리티 판교 오피스",
+    "address": "경기도 성남시 분당구 판교역로 152, 알파돔타워 13층",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%8C%90%EA%B5%90%EC%97%AD%EB%A1%9C%20152",
+    "near": "신분당선·경강선 판교역 {추론}",
+    "note": "공고의 근무 조건(판교역로 152, 알파돔타워)[1]과 회사 사이트 하단 주소(13층)[23]."
+  },
+  "fit": {
+    "good": [
+      "화면보다 데이터가 맞는지, 흐름이 안 끊기는지가 더 신경 쓰이는 사람 {추론}",
+      "지도·좌표·도로 데이터를 들여다보는 게 재미있는 사람[1]",
+      "같은 일을 사람 손 대신 검사기와 파이프라인으로 바꾸는 걸 좋아하는 사람[7] {추론}",
+      "경력은 짧지만 그래프·자료구조 기본기가 탄탄한 사람 — 경력 무관 공고다[1]"
+    ],
+    "hard": [
+      "사용자 화면·기능을 직접 만들고 싶다면 내비 서비스 백엔드 같은 자리가 더 맞다[9] {추론}",
+      "데이터 하나 틀리면 여러 서비스 길안내가 함께 틀릴 수 있어, 검수·되돌리기를 늘 신경 써야 한다[11] {추론}",
+      "좌표계·도형 유효성처럼 처음엔 낯선 GIS 지식을 따로 익혀야 한다[14][17]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "도로 링크 표에 일방통행과 좌회전 금지를 어떻게 담겠어요?",
+      "a": "공간정보 데이터 모델링 줄 — 링크 속성과 링크 사이 관계.[1][13]"
+    },
+    {
+      "q": "새로 받은 도로 데이터에서 어디로도 못 들어가는 도로 조각을 어떻게 찾나요?",
+      "a": "검수 줄과 그래프 탐색(BFS) 기본기.[1][19]"
+    },
+    {
+      "q": "이번 판이 지난 판보다 링크가 40% 줄었어요. 그대로 배포하나요?",
+      "a": "배포 단계의 판 비교·멈춤 문턱 {추론}, 여러 서비스가 같은 데이터를 씀.[11]"
+    },
+    {
+      "q": "정류장 1만 개 중 내 위치 300m 안을 빨리 찾으려면 DB 에서 무엇을 하나요?",
+      "a": "성능 개선 줄 — 공간 색인과 상자 겹침.[16]"
+    },
+    {
+      "q": "같은 데이터를 PostgreSQL 과 MongoDB 중 어디에 담을지 무엇으로 정하나요?",
+      "a": "DB 설계 우대 줄과 두 저장소의 공간 기능.[15][16]"
+    },
+    {
+      "q": "MongoDB 에 넣은 서울 좌표로 근처 검색을 했더니 결과가 하나도 안 나와요. 무엇부터 보나요?",
+      "a": "좌표 순서(경도 먼저).[14][15]"
+    }
+  ],
+  "sources": [
+    { "n": 1, "title": "카카오모빌리티 채용 · 백엔드 개발자(공간정보 시스템 개발)", "url": "https://kakaomobility.career.greetinghr.com/ko/o/236791", "kind": "posting", "note": "팀 소개(경로탐색 네트워크·배경 지도·주소·대중교통)·업무·요건·우대·전형·지원 전 확인 사항·근무 조건(정규직, 판교), 경력 무관, 기술 태그 Java·Spring·PostgreSQL·MongoDB" },
+    { "n": 2, "title": "카카오 공동체 채용 · [공동체] 카카오모빌리티 백엔드 개발자(공간정보 시스템 개발)", "url": "https://careers.kakao.com/jobs/S-4757", "kind": "posting", "note": "같은 공고의 카카오 채용 사이트 판" },
+    { "n": 3, "title": "사람인 · [카카오모빌리티] 백엔드 개발자(공간정보 시스템 개발)", "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55567119", "kind": "posting", "note": "같은 공고의 사람인 판" },
+    { "n": 4, "title": "인디스워크 · 카카오모빌리티 [Assistant] 공간정보기획팀 업무 보조", "url": "https://inthiswork.com/archives/398598", "kind": "posting", "note": "같은 회사 다른 공고의 사본 — 3차원 좌표를 포함한 공간데이터로 SD Map·ADAS Map·HD Map 용 공간정보 생산, GIS·측량 전공 우대" },
+    { "n": 5, "title": "산업일보 · 카카오·네이버 힘 쏟는 고정밀지도(HD Map)…자율주행 이끈다", "url": "https://kidd.co.kr/news/226062", "kind": "news", "date": "2022-03-02", "note": "NEMO 2022 홍승환 디지털트윈 테크 리더 — MMS 'ARGOS'(카메라·라이다·GNSS·IMU), 서울 도심 3,370km·20TB 수집, 20cm 정밀도, 센서 보정·측위 분석·점구름 정합" },
+    { "n": 6, "title": "ZDNet Korea · 이동수단 혁신한 카카오모빌리티...\"이제는 자율주행 시대 공략\"", "url": "https://zdnet.co.kr/view/?no=20220210190704", "kind": "news", "date": "2022-02-10", "note": "NEMO 2022 — 자체 MMS 하루 8시간 이상 연속 수집, 차량 부착형·로봇형, 판교 디지털 트윈 완료" },
+    { "n": 7, "title": "CEO스코어데일리 · 카카오모빌리티, '이프 카카오'서 AI 기술 혁신 성과 공유", "url": "https://www.ceoscoredaily.com/page/view/2025092409305905031", "kind": "news", "date": "2025-09-24", "note": "if(kakao)25 데모 부스 'AI로 구현하는 디지털트윈 자동화 지도 제작'(세부 내용 없음)" },
+    { "n": 8, "title": "Kakao Mobility Developers", "url": "https://developers.kakaomobility.com/", "kind": "company", "note": "길찾기 API·길찾기 SDK·TMS·퀵/도보 배송 API, 자전거·도보 길찾기·지오코딩 파트너십 API" },
+    { "n": 9, "title": "카카오모빌리티 채용 · 백엔드 개발자(내비 서비스)", "url": "https://kakaomobility.career.greetinghr.com/ko/o/236686", "kind": "posting", "note": "같은 회사 다른 팀 — Java/Kotlin Spring, RDBMS·NoSQL, 내비/GIS 경험 우대" },
+    { "n": 10, "title": "if(kakao)25 · 실시간 경로탐색에 Multi-armed Bandit 기반 강화학습 도입하기", "url": "https://www.youtube.com/watch?v=d9c32iTNqS8", "kind": "company", "date": "2025-09", "note": "카카오모빌리티 AI연구개발팀 — 수백만 링크, 링크 비용, 다익스트라·A*, 밀리초 응답(같은 회사 내비 백엔드 풀이에서 자막 전부 확인)" },
+    { "n": 11, "title": "테크M · \"출퇴근길 정체 미리 알려준다\"...카카오내비, 홈·주행 화면 전면 개편", "url": "https://www.techm.kr/news/articleView.html?idxno=157216", "kind": "news", "date": "2026-11-11", "note": "같은 길안내 엔진이 카카오내비·카카오맵 차량 길찾기·SDK 외부 플랫폼·차량 인포테인먼트에 적용" },
+    { "n": 12, "title": "티맵모빌리티 테크노트 22편 · 결빙주의! 티맵은 도로 상황 정보를 어떻게 빠르게 알까", "url": "https://brunch.co.kr/@@dsaj/30", "kind": "reference", "date": "2023-10-11", "note": "다른 내비 회사의 공개 글 — 기관 데이터 수집, 격자 좌표 → 자사 링크 매핑, 중복 통합·우선순위, 담당자 검증, 유효 시간 확인, 5분마다 생성" },
+    { "n": 13, "title": "OpenStreetMap Wiki · Elements", "url": "https://wiki.openstreetmap.org/wiki/Elements", "kind": "reference", "note": "node(WGS84 좌표)·way(노드 1~2,000개의 순서 목록)·relation(회전 제한·경로·다중 다각형)·태그" },
+    { "n": 14, "title": "RFC 7946 · The GeoJSON Format", "url": "https://datatracker.ietf.org/doc/html/rfc7946", "kind": "reference", "date": "2016-08", "note": "좌표는 경도·위도 순서, 좌표계 WGS84" },
+    { "n": 15, "title": "MongoDB 문서 · 2dsphere Indexes", "url": "https://www.mongodb.com/docs/manual/core/indexes/index-types/geospatial/2dsphere/", "kind": "reference", "note": "GeoJSON 또는 좌표쌍, 첫 값 경도(-180~180)·둘째 값 위도(-90~90)" },
+    { "n": 16, "title": "Introduction to PostGIS · 15. Spatial Indexing", "url": "https://postgis.net/workshops/postgis-intro/indexing.html", "kind": "reference", "note": "도형을 감싸는 상자를 R-Tree 구조로 색인, GIST 색인 생성, && 상자 겹침 vs ST_Intersects 정밀 계산" },
+    { "n": 17, "title": "PostGIS 문서 · ST_IsValid", "url": "https://postgis.net/docs/ST_IsValid.html", "kind": "reference", "note": "도형이 OGC 규칙대로 2D 에서 올바른지 검사, 스스로 꼬인 다각형 예" },
+    { "n": 18, "title": "GTFS Schedule Reference", "url": "https://gtfs.org/documentation/schedule/reference/", "kind": "reference", "note": "agency·routes·trips·stop_times 필수, stops·calendar 등 조건부 필수" },
+    { "n": 19, "title": "국가교통정보센터 · 표준노드링크", "url": "https://www.its.go.kr/nodelink/nodelinkRef", "kind": "reference", "note": "전국 도로를 노드(교차로)·링크(구간)로 표준화한 데이터 배포" },
+    { "n": 20, "title": "행정안전부 주소정보누리집", "url": "https://www.juso.go.kr/", "kind": "reference", "note": "도로명주소 전자지도·내비게이션용 DB(건물 중심점·출입구 좌표)" },
+    { "n": 21, "title": "Wikipedia · Contraction hierarchies", "url": "https://en.wikipedia.org/wiki/Contraction_hierarchies", "kind": "reference", "note": "도로망 경로 탐색을 빠르게 하는 미리 계산(지름길) 기법의 일반 설명" },
+    { "n": 22, "title": "카카오 · 카카오모빌리티 '운전자 반응 기반 AI 경로 안내 기술', SCI 저널 등재", "url": "https://www.kakaocorp.com/page/detail/11762", "kind": "company", "date": "2025-07-14", "note": "도로별 경로 준수율로 통행 가치 산정, 전국 수백만 세부 도로 구간" },
+    { "n": 23, "title": "카카오모빌리티 · 카카오내비 서비스 소개", "url": "https://www.kakaomobility.com/service-navi", "kind": "company", "note": "사이트 하단 회사 주소" },
+    { "n": 24, "title": "아이뉴스24 · 카카오모빌리티, 2024년 매출 6750억원⋯류긍선 대표 보수 9.7억원", "url": "https://v.daum.net/v/uTwZAfwMlq", "kind": "news", "date": "2025-03-31", "note": "임직원 914명, 1인 평균 급여 약 9,014만원(스톡옵션 차익 제외)" },
+    { "n": 25, "title": "아이뉴스24 · 카카오모빌리티 2025년 상반기 매출 3375억원⋯류긍선 대표 보수 6.5억원", "url": "https://www.inews24.com/view/1876724", "kind": "news", "date": "2025-08-14", "note": "6월 말 직원 931명(정규 883·계약 48), 평균 근속 3.8년, 1인 평균 급여 4,718만원" },
+    { "n": 26, "title": "카카오모빌리티 채용 · 복지", "url": "https://kakaomobility.career.greetinghr.com/ko/benefit", "kind": "company" },
+    { "n": 27, "title": "Spring Batch Reference Documentation", "url": "https://docs.spring.io/spring-batch/reference/", "kind": "reference", "note": "Job·Step·청크 처리·재시작" }
+  ],
+  "caveat": "이 팀이 직접 시스템 구조를 발표한 자료는 찾지 못했습니다. 회사의 정밀 지도·디지털 트윈 발표(2022년 보도)와 경로탐색 발표, 같은 회사 다른 공고, 다른 내비 회사의 공개 글과 공개 표준(OSM·GeoJSON·GTFS·PostGIS)으로 '보통 이런 것'을 보였고, 이 팀이 어느 칸을 맡는지는 {추론}으로 표시했습니다. 3,370km·20TB 는 2022년 숫자입니다."
+}

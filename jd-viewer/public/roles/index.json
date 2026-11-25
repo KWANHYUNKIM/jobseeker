@@ -300,6 +300,9 @@
   "ats-greeting:kakaomobility:227958": "kakaomobility-av-hw-technician",
   "ats-greeting:kakaomobility:230974": "kakaomobility-av-system-engineer",
   "ats-kakao:group:S-4737": "kakaomobility-av-system-engineer",
+  "ats-greeting:kakaomobility:236791": "kakaomobility-geospatial-system-backend",
+  "ats-kakao:group:S-4757": "kakaomobility-geospatial-system-backend",
+  "saramin-55567119": "kakaomobility-geospatial-system-backend",
   "ats-greeting:kakaomobility:242043": "kakaomobility-isms-compliance-manager",
   "ats-kakao:group:S-4771": "kakaomobility-isms-compliance-manager",
   "ats-greeting:kakaomobility:148119": "kakaomobility-ml-research-scientist",
@@ -2994,10 +2997,12 @@
    "role": "자율주행 AI 엔지니어 (E2E·AI 플래닝)",
    "jobs": [
     "ats-greeting:kakaomobility:205613",
-    "ats-kakao:group:S-4680"
+    "ats-kakao:group:S-4680",
+    "ats-greeting:kakaomobility:205618",
+    "ats-kakao:group:S-4681"
    ],
    "researched_at": "2026-11-26",
-   "lines": 13
+   "lines": 18
   },
   {
    "id": "kakaomobility-ad-slam",
@@ -3042,6 +3047,18 @@
    ],
    "researched_at": "2026-11-26",
    "lines": 15
+  },
+  {
+   "id": "kakaomobility-geospatial-system-backend",
+   "company": "카카오모빌리티",
+   "role": "백엔드 개발자(공간정보 시스템 개발)",
+   "jobs": [
+    "ats-greeting:kakaomobility:236791",
+    "ats-kakao:group:S-4757",
+    "saramin-55567119"
+   ],
+   "researched_at": "2026-11-26",
+   "lines": 10
   },
   {
    "id": "kakaomobility-isms-compliance-manager",
