@@ -244,6 +244,7 @@
   "ats-greeting:musinsa:172721": "musinsa-product-engineering-manager-core-partner",
   "ats-greeting:musinsa:239873": "musinsa-product-engineering-manager-pricing",
   "ats-greeting:musinsa:183840": "musinsa-security-compliance-manager",
+  "ats-greeting:musinsa:228188": "musinsa-security-engineer-access-kms",
   "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
   "wanted-394722": "nhn-japan-frontend",
@@ -2633,6 +2634,16 @@
    ],
    "researched_at": "2026-11-25",
    "lines": 17
+  },
+  {
+   "id": "musinsa-security-engineer-access-kms",
+   "company": "무신사",
+   "role": "Security Engineer (접근제어·암호키관리 운영)",
+   "jobs": [
+    "ats-greeting:musinsa:228188"
+   ],
+   "researched_at": "2026-11-25",
+   "lines": 16
   },
   {
    "id": "musinsa-security-engineer-mail-cds",
