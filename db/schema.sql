@@ -1335,3 +1335,62 @@ CREATE TABLE IF NOT EXISTS career_roster (
     updated_at    timestamptz NOT NULL DEFAULT now()
 );
 
+-- 회사 사실·공고 연봉·연차별 시세 — db/migrations/020_company_fact.sql 과 같다(설계 근거는 그쪽 머리말)
+CREATE TABLE IF NOT EXISTS company_fact (
+    company_key         text        PRIMARY KEY,
+    name                text        NOT NULL,              -- 화면에 쓰는 이름(원티드 표기 → 공고 표기)
+    names               text[]      NOT NULL DEFAULT '{}', -- 공고에 나온 표기 전부
+    employees           integer,                           -- 원티드(국민연금 기준) → 없으면 국민연금 가입자 수
+    industry            text,
+    founded             integer,
+    address             text,                              -- 원티드 도로명(번지까지) → 없으면 국민연금(길 이름까지)
+    address_source      text,                              -- 'wanted' | 'nps'
+    benefit_tags        text[]      NOT NULL DEFAULT '{}', -- 원티드 복지 태그(규모·연봉 순위 태그는 뺐다)
+    wanted_url          text,
+    wanted_avg_pay      integer,                           -- 만원, 원티드가 국민연금으로 계산한 회사 평균
+    wanted_pay_updated  date,
+    nps_members         integer,
+    nps_annual_est      integer,                           -- 만원, 고지금액 ÷ 가입자 ÷ 보험료율 × 12
+    nps_month           text,                              -- 'YYYY-MM' 자료 기준월
+    nps_biz6            text,                              -- 사업자등록번호 앞 6자리
+    nps_address         text,
+    content_hash        text        NOT NULL,
+    updated_at          timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS company_posting_salary (
+    job_key       text        PRIMARY KEY,                 -- '<사이트>-<pid>'
+    company_key   text        NOT NULL,
+    title         text,
+    url           text,
+    pay_min       integer     NOT NULL,                    -- 만원
+    pay_max       integer,                                 -- 만원, 범위일 때만
+    kind          text        NOT NULL,                    -- '고정' | '범위' | '이상'
+    career        text,                                    -- '신입' · '3~10년' · 공고의 경력 칸
+    quote         text,                                    -- 공고 원문의 그 구절(100자 안)
+    seen_on       date,
+    content_hash  text        NOT NULL,
+    updated_at    timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS company_posting_salary_company ON company_posting_salary (company_key);
+
+CREATE TABLE IF NOT EXISTS market_wage (
+    year          integer     NOT NULL,
+    occ_code      text        NOT NULL,                    -- 한국표준직업분류 7차(222 = 컴퓨터 시스템 및 소프트웨어 전문가)
+    occ_name      text        NOT NULL,
+    career        text        NOT NULL,                    -- '전경력' · '1년미만' · '1~3년미만' · … · '10년이상'
+    annual_pay    integer,                                 -- 만원, 월임금총액 × 12
+    workers       integer,
+    updated_at    timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (year, occ_code, career)
+);
+
+CREATE TABLE IF NOT EXISTS market_wage_size (
+    year          integer     NOT NULL,
+    size          text        NOT NULL,                    -- '전규모5인이상' · '5~9인' · … · '500인이상'
+    age           text        NOT NULL,                    -- '전체' · '25~29' · …
+    annual_pay    integer,                                 -- 만원, 대졸 이상
+    tenure_years  real,
+    updated_at    timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (year, size, age)
+);

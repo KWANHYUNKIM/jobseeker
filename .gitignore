@@ -104,3 +104,7 @@ jd-viewer/public/guide/auto/
 
 # 기술도서 엔진 예제 작업 폴더(book-engine/run.py)
 book-engine/work/
+
+# 크롤러가 만드는 회사 사실·연차 시세(crawl_company_facts) — DB(viewer_doc)로 옮겨 읽는다, 커밋하지 않는다
+jd-viewer/public/roles/company/
+jd-viewer/public/roles/market_wage.json
