@@ -180,6 +180,43 @@ def _claim_path(key: str) -> Path:
     return CLAIMS / (re.sub(r"[^A-Za-z0-9_.-]", "_", key) + ".claim")
 
 
+# 근거를 못 구해 그만둔 공고(`--block <키> <이유>`). 집기만 풀면 다음 일꾼이 같은 공고를 또 집어 같은 403 에
+# 비용을 쓴다(무신사 — 테크 블로그·자소설 403, 2026-11-25 두 회차 연속). 막힌 지 BLOCK_TTL_DAYS 안이면 건너뛰고,
+# 한 회사에서 BLOCK_COMPANY_N 건 이상 막혔으면 그 회사 전체를 건너뛴다(출처가 회사째 막힌 것).
+BLOCKED = ROOT / "catch_capture" / "var" / "roles" / "blocked.tsv"   # 키 \t 날짜 \t 회사 \t 이유
+BLOCK_TTL_DAYS = 14
+BLOCK_COMPANY_N = 3
+
+
+def blocked() -> tuple[set[str], set[str]]:
+    """(막힌 공고 키, 회사째 막힌 회사) — TTL 이 지난 줄은 무시한다."""
+    keys, per_co = set(), {}
+    try:
+        lines = BLOCKED.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return keys, set()
+    for ln in lines:
+        p = ln.split("\t")
+        if len(p) < 3:
+            continue
+        try:
+            if (date.today() - date.fromisoformat(p[1])).days > BLOCK_TTL_DAYS:
+                continue
+        except ValueError:
+            continue
+        keys.add(p[0])
+        per_co[p[2]] = per_co.get(p[2], 0) + 1
+    return keys, {c for c, n in per_co.items() if n >= BLOCK_COMPANY_N}
+
+
+def block(key: str, reason: str, by_key: dict) -> None:
+    BLOCKED.parent.mkdir(parents=True, exist_ok=True)
+    co = (by_key.get(key) or {}).get("company", "")
+    with BLOCKED.open("a", encoding="utf-8") as f:
+        f.write(f"{key}\t{date.today().isoformat()}\t{co}\t{reason.replace(chr(9), ' ')}\n")
+    _claim_path(key).unlink(missing_ok=True)
+
+
 def claimed() -> set[str]:
     """살아 있는 집기 — 다른 회차가 지금 쓰고 있는 공고 키."""
     import time
@@ -193,33 +230,130 @@ def claimed() -> set[str]:
     return out
 
 
+# ── 비슷한 새 공고는 다시 조사하지 않는다(2026-11-25) ────────────────────────────────────
+# 공고는 내려가고 비슷한 공고가 다시 올라온다. 같은 회사 풀이가 새 공고 줄을 이미 덮으면:
+#   · 전부 덮음 → Claude 없이 기존 풀이의 jobs 에 공고 키만 붙인다(`--relink`, 회차 뒤 러너가 돌린다)
+#   · SIMILAR_MIN 이상 덮음(또는 같은 제목) → '갱신 모드' — 일꾼은 새 줄만 조사해 기존 풀이에 덧붙인다
+#   · 그 밖 → 새로 조사
+SIMILAR_MIN = 0.5
+
+
+def co_norm(s: str | None) -> str:
+    return re.sub(r"\(주\)|㈜|주식회사|\s", "", s or "").lower()
+
+
+def job_lines(j: dict) -> list[tuple[str, str]]:
+    return [(sec, pl) for sec, field in SECTIONS.items() for pl in posting_lines(j.get(field))]
+
+
+def _hit(n: str, quotes: set[str]) -> bool:
+    return any(q in n or n in q for q in quotes)
+
+
+def _items_by_company(items: list[dict], by_key: dict) -> dict[str, list[dict]]:
+    out: dict[str, list[dict]] = {}
+    for d in items:
+        cos = {co_norm(d.get("company"))} | {co_norm((by_key.get(k) or {}).get("company")) for k in d["jobs"]}
+        for c in cos - {""}:
+            out.setdefault(c, []).append(d)
+    return out
+
+
+def best_match(j: dict, by_co: dict[str, list[dict]]) -> tuple[dict | None, list[tuple[str, str]], int]:
+    """같은 회사 풀이 중 이 공고 줄을 가장 많이 덮는 것 → (풀이, 안 덮인 줄, 전체 줄 수)."""
+    lines = job_lines(j)
+    best, best_missing = None, lines
+    for d in by_co.get(co_norm(j.get("company")), []):
+        quotes = {norm(ln["quote"]) for ln in d["lines"] if ln.get("quote")}
+        missing = [(s, pl) for s, pl in lines if not _hit(norm(pl), quotes)]
+        if len(missing) < len(best_missing):
+            best, best_missing = d, missing
+    return best, best_missing, len(lines)
+
+
+def relink(items: list[dict], jobs: list[dict]) -> int:
+    """줄이 전부 기존 풀이에 있는 모집중 공고 → 그 풀이의 jobs 에 키를 붙인다(파일을 고친다). 붙인 수를 돌려준다."""
+    by_key = {f"{j.get('site')}-{j.get('pid')}": j for j in jobs}
+    done = {k for d in items for k in d["jobs"]}
+    by_co = _items_by_company(items, by_key)
+    busy = claimed()
+    touched: dict[str, dict] = {}
+    added = 0
+    for j in jobs:
+        key = f"{j.get('site')}-{j.get('pid')}"
+        if j.get("status") == "closed" or key in done:
+            continue
+        d, missing, total = best_match(j, by_co)
+        if d is None or missing or total < 5 or any(k in busy for k in d["jobs"]):
+            continue   # 쓰는 중인 풀이는 건드리지 않는다(일꾼이 덮어쓴다)
+        d["jobs"].append(key)
+        done.add(key)
+        touched[d["id"]] = d
+        added += 1
+    for d in touched.values():
+        _write_jobs(DIR / f"{d['id']}.json", d["jobs"])
+    return added
+
+
+def _write_jobs(path: Path, keys: list[str]) -> None:
+    """파일의 "jobs" 배열만 갈아 끼운다 — 통째로 다시 쓰면 일꾼마다 다른 들여쓰기가 바뀌어 diff 가 파일 전체가 된다."""
+    raw = path.read_text(encoding="utf-8")
+    m = re.search(r'("jobs"\s*:\s*)\[(.*?)\]', raw, re.S)
+    if not m:
+        d = json.loads(raw)
+        d["jobs"] = keys
+        path.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+        return
+    body = m.group(2)
+    nl = chr(10)
+    if nl in body:   # 여러 줄 꼴 — 첫 원소의 들여쓰기와 닫는 괄호 앞 들여쓰기를 그대로 쓴다
+        ind = (re.search(nl + r"([ \t]*)\S", body) or [None, "  "])[1]
+        close = (re.search(nl + r"([ \t]*)$", body) or [None, ""])[1]
+        arr = "[" + nl + ("," + nl).join(ind + json.dumps(k, ensure_ascii=False) for k in keys) + nl + close + "]"
+    else:
+        arr = "[" + ", ".join(json.dumps(k, ensure_ascii=False) for k in keys) + "]"
+    path.write_text(raw[:m.start()] + m.group(1) + arr + raw[m.end():], encoding="utf-8")
+
+
 def candidates(items: list[dict], jobs: list[dict]) -> list[tuple]:
     """다음 일감 후보: 모집중이고 업무·요건 줄이 충분한 공고, 그 회사 모집중 공고가 많은 곳부터.
-    이미 풀이가 있는 공고와 같은 회사·같은 제목(같은 자리)과 다른 회차가 집어 간 공고는 건너뛴다."""
+    이미 풀이가 있는 공고와 다른 회차가 집어 간 공고는 건너뛴다. 같은 회사 풀이가 줄을 이미 덮는 공고는
+    relink 몫(전부 덮음)이거나 갱신 모드(새 줄만)다 — 튜플 끝의 upd 가 (기존 풀이 id, 안 덮인 줄) 이다."""
     done = {k for d in items for k in d["jobs"]}
     done_titles = {(d["company"], norm(d["role"])) for d in items}
+    by_key_all = {f"{j.get('site')}-{j.get('pid')}": j for j in jobs}
+    by_co = _items_by_company(items, by_key_all)
     busy = claimed()
-    active = [j for j in jobs if j.get("status") != "closed"]
+    blk_keys, blk_cos = blocked()
+    active = [j for j in jobs if j.get("status") != "closed"
+              and f"{j.get('site')}-{j.get('pid')}" not in blk_keys and j.get("company") not in blk_cos]
     # 같은 자리가 여러 사이트에 올라온다(원티드·잡코리아 …) — 집힌 공고와 회사·제목이 같으면 그것도 집힌 것으로 본다.
     # 키만 보다가 두 일꾼이 같은 자리를 잡아 한쪽이 덮어쓴 일이 있었다(현대오토에버, 2026-11-23).
     busy_titles = {(j.get("company"), norm(j.get("title", ""))) for j in jobs if f"{j.get('site')}-{j.get('pid')}" in busy}
-    done_titles |= busy_titles
+    busy_items = {d["id"] for d in items if any(k in busy for k in d["jobs"])}
     per_co: dict[str, int] = {}
     for j in active:
         per_co[j.get("company", "")] = per_co.get(j.get("company", ""), 0) + 1
     cand = []
     for j in active:
         key = f"{j.get('site')}-{j.get('pid')}"
-        if key in done or key in busy or (j.get("company"), norm(j.get("title", ""))) in done_titles:
+        title = (j.get("company"), norm(j.get("title", "")))
+        if key in done or key in busy or title in busy_titles:
             continue
         n = sum(len(posting_lines(j.get(f))) for f in SECTIONS.values())
         if n < 5:
             continue
-        cand.append((per_co.get(j.get("company", ""), 0), n, key, j))
-    # 순서: ① 사람이 먼저 해 달라고 한 공고(PRIORITY, 적힌 순서) ② 국내 회사 ③ 일본 회사(가나·株式会社 — 해외 보드에서
-    # 같이 들어온다) — 그 안에서는 회사 모집중 공고가 많은 곳부터.
+        d, missing, total = best_match(j, by_co)
+        upd = None
+        if d is not None and (title in done_titles or total - len(missing) >= SIMILAR_MIN * total):
+            if not missing or d["id"] in busy_items:
+                continue   # 전부 덮음 → relink 몫 / 그 풀이를 다른 일꾼이 쓰는 중 → 다음에
+            upd = (d["id"], missing)
+        cand.append((per_co.get(j.get("company", ""), 0), n, key, j, upd))
+    # 순서: ① 사람이 먼저 해 달라고 한 공고(PRIORITY, 적힌 순서) ② 갱신 모드(새 줄만 — 싸고 빨리 끝난다) ③ 국내 회사
+    # ④ 일본 회사(가나·株式会社 — 해외 보드에서 같이 들어온다) — 그 안에서는 회사 모집중 공고가 많은 곳부터.
     pri = priority()
-    cand.sort(key=lambda x: (pri.index(x[2]) if x[2] in pri else len(pri), is_japanese(x[3]), -x[0], -x[1]))
+    cand.sort(key=lambda x: (pri.index(x[2]) if x[2] in pri else len(pri), x[4] is None, is_japanese(x[3]), -x[0], -x[1]))
     return cand
 
 
@@ -242,14 +376,34 @@ def claim(items: list[dict], jobs: list[dict]) -> int:
     """맨 위 후보 하나를 집는다(파일을 O_EXCL 로 만들어 두 회차가 같은 공고를 못 잡는다). 집은 키를 찍는다."""
     import os
     CLAIMS.mkdir(parents=True, exist_ok=True)
-    for _, n, key, j in candidates(items, jobs):
+    for _, n, key, j, upd in candidates(items, jobs):
+        p = _claim_path(key)
         try:
-            fd = os.open(_claim_path(key), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            fd = os.open(p, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         except FileExistsError:
-            continue
+            # TTL 이 지난 집기는 죽은 회차가 남긴 것이다(한도에 걸려 멈춘 일꾼 등) — candidates 는 이미 후보로 보는데
+            # 여기서 건너뛰면 그 공고는 영영 안 집히고 목록 맨 위에 남는다(토스 공고들, 2026-11-23 → 11-25).
+            import time
+            try:
+                stale = time.time() - p.stat().st_mtime >= CLAIM_TTL_S
+            except OSError:
+                stale = True
+            if not stale:
+                continue
+            p.unlink(missing_ok=True)
+            try:
+                fd = os.open(p, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            except FileExistsError:
+                continue
         os.write(fd, key.encode("utf-8"))
         os.close(fd)
         print(f"▶ 대상 {key} · {j.get('company')} · {j.get('title')} (줄 {n})")
+        if upd:
+            rid, missing = upd
+            print(f"  ★ 갱신 모드 — 같은 회사의 비슷한 공고 풀이 `{rid}.json` 이 이미 {n - len(missing)}/{n}줄을 덮는다.")
+            print(f"    새로 조사하지 않는다: 그 파일을 열어 `jobs` 에 {key} 를 더하고, 아래 새 줄만 lines 에 덧붙인다(PROMPT '갱신 모드').")
+            for sec, pl in missing:
+                print(f"    + [{sec}] {pl}")
         print(f"  (집기: {_claim_path(key).relative_to(ROOT)} — 커밋하면 validate --release {key} 로 푼다)")
         return 0
     print("[roles] 집을 후보가 없다")
@@ -259,9 +413,12 @@ def claim(items: list[dict], jobs: list[dict]) -> int:
 def gaps(items: list[dict], jobs: list[dict], show: int = 6) -> None:
     cand = candidates(items, jobs)
     print(f"[roles] 풀이 {len(items)}개 · 후보 공고 {len(cand)}건 · 집힌 것 {len(claimed())}건 — 위에서부터")
-    for i, (co_n, n, key, j) in enumerate(cand[:show]):
+    n_upd = sum(1 for c in cand if c[4])
+    print(f"         그중 갱신 모드(비슷한 기존 풀이에 새 줄만) {n_upd}건 · 새로 조사 {len(cand) - n_upd}건")
+    for i, (co_n, n, key, j, upd) in enumerate(cand[:show]):
         mark = "▶ 대상" if i == 0 else "  후보"
-        print(f"  {mark} {key} · {j.get('company')} · {j.get('title')} (줄 {n}, 회사 모집중 {co_n})")
+        tail = f" · 갱신 {upd[0]} 에 새 줄 {len(upd[1])}" if upd else ""
+        print(f"  {mark} {key} · {j.get('company')} · {j.get('title')} (줄 {n}, 회사 모집중 {co_n}){tail}")
 
 
 def main() -> int:
@@ -271,6 +428,17 @@ def main() -> int:
     only = sys.argv[sys.argv.index("--only") + 1] if "--only" in sys.argv else None
     if "--release" in sys.argv:
         _claim_path(sys.argv[sys.argv.index("--release") + 1]).unlink(missing_ok=True)
+        return 0
+    if "--relink" in sys.argv:
+        items = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(DIR.glob("*.json"))]
+        n = relink(items, jobs)
+        print(f"[roles] relink — 기존 풀이가 줄을 전부 덮는 새 공고 {n}건을 이어 붙였다")
+        if n:
+            INDEX.write_text(json.dumps(build_index(items), ensure_ascii=False, indent=1), encoding="utf-8")
+        return 0
+    if "--block" in sys.argv:
+        i = sys.argv.index("--block")
+        block(sys.argv[i + 1], " ".join(sys.argv[i + 2:]) or "근거 부족", by_key)
         return 0
     items, errs, warns = [], [], []
     for p in sorted(DIR.glob("*.json")):

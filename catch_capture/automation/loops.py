@@ -52,7 +52,7 @@ class Loop:
     note: str = ""
     owns: list[str] = field(default_factory=list)      # 이 레인이 고치고 커밋하는 경로(ROOT 기준) — 밖은 안 건드린다
     backlog: str | None = None   # 남은 일감을 세는 함수 이름(BACKLOG) — 대시보드에 뜬다
-    after: list[str] | None = None  # 회차가 ok 로 끝나면 러너가 catch_capture venv python 으로 돌리는 인자(예: -m store.ingest.docs)
+    after: list | None = None  # 회차가 ok 로 끝나면 러너가 catch_capture venv python 으로 돌리는 인자(예: -m store.ingest.docs). 목록의 목록이면 차례로
 
 
 def _engine_prompt(dir_: str, what: str, extra: str = "") -> str:
@@ -189,10 +189,13 @@ REGISTRY: list[Loop] = [
          ["engine/roles/state/LOG.md", "jd-viewer/public/roles/index.json"],
          check="python engine/roles/validate.py --gaps",
          owns=["jd-viewer/public/roles/", "engine/roles/state/"],
-         after=["-m", "store.ingest.docs"], backlog="roles",
+         # 회차 뒤: 줄이 전부 기존 풀이에 있는 새 공고를 Claude 없이 이어 붙이고(relink) → DB 로 옮긴다.
+         after=[["../engine/roles/validate.py", "--relink"], ["-m", "store.ingest.docs"]], backlog="roles",
          prompt=(
              "직무 역설계 한 사이클: engine/roles/PROMPT.md 절차를 그대로 따른다(본보기 jd-viewer/public/roles/items/"
              "tossbank-finance-data-system.json 을 먼저 읽는다). 대상은 `python engine/roles/validate.py --claim` 이 집어 주는 공고 하나(일꾼 여럿이 같이 돈다 — --gaps 맨 위를 직접 고르지 않는다). "
+             "--claim 출력에 '★ 갱신 모드'가 있으면 새로 조사하지 않는다 — 적힌 기존 풀이 파일의 jobs 에 공고 키를 더하고 '+' 로 적힌 새 줄만 "
+             "조사해 lines 에 덧붙인다(PROMPT '갱신 모드'). 커밋 메시지는 feat(roles): <회사> <직무> 새 공고 줄 추가. "
              "공고의 주요업무·자격요건·우대사항 모든 줄에 short·why·actually·how_far 를 쓴다 — 읽는 사람은 그 공고를 보는 개발자다. "
              "공부 자료(resources — 존재를 확인한 책·강의·문서만)·줄마다 study·준비 로드맵(study_path)까지 채운다(PROMPT 4-1). "
              "연봉(초봉·평균 — 기준과 출처를 줄마다)·복지(회사 공식)·회사 위치(도로명 주소)도 찾아 넣는다(PROMPT 4-2). "

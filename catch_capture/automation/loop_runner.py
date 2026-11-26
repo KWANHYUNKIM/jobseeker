@@ -95,8 +95,11 @@ def command(prompt: str) -> list[str]:
     return [exe, "-p", "--output-format", "json", *args]
 
 
-def _after(args: list[str], root) -> str:
-    """회차 뒤처리(DB 옮기기 등) — 무인 세션에 venv 실행 권한을 주지 않고 러너가 직접 돌린다."""
+def _after(args: list, root) -> str:
+    """회차 뒤처리(DB 옮기기 등) — 무인 세션에 venv 실행 권한을 주지 않고 러너가 직접 돌린다.
+    args 가 목록의 목록이면 차례로 돈다(직무 역설계: relink → DB 옮기기)."""
+    if args and isinstance(args[0], list):
+        return " | ".join(_after(a, root) for a in args)
     cc = _Path(root) / "catch_capture"
     py = next((p for p in (cc / ".venv" / "Scripts" / "python.exe", cc / ".venv" / "bin" / "python") if p.exists()), None)
     if not py:

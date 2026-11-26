@@ -99,9 +99,11 @@
   "ats-greenhouse:coupang:8398431": "coupang-audit-ai-ops-analyst-bengaluru",
   "ats-greenhouse:coupang:8385253": "coupang-audit-ai-ops-pm-bengaluru",
   "ats-greenhouse:coupang:8275940": "coupang-catalog-quality-senior-pm",
+  "wanted-398346": "coupang-catalog-quality-senior-pm",
   "wanted-396324": "coupang-catalog-taxonomy-pm",
   "ats-greenhouse:coupang:7912287": "coupang-cic-k8s-senior-staff-bengaluru",
   "ats-greenhouse:coupang:7438944": "coupang-cloud-infra-senior-staff-seattle",
+  "ats-greenhouse:coupang:8338334": "coupang-cloud-infra-senior-staff-seattle",
   "ats-greenhouse:coupang:8316768": "coupang-cls-waterflex-logistics-data-analyst",
   "ats-greenhouse:coupang:8188073": "coupang-dart-taiwan-manager",
   "ats-greenhouse:coupang:8364554": "coupang-data-ingestion-analytics-director-us",
@@ -165,11 +167,13 @@
   "ats-greenhouse:coupang:8040145": "coupang-sg-security-infra-director",
   "ats-greenhouse:coupang:8040140": "coupang-sg-workflow-platform-director",
   "ats-greenhouse:coupang:8078331": "coupang-spir-security-devops-senior",
+  "wanted-375530": "coupang-spir-security-devops-senior",
   "ats-greenhouse:coupang:8094014": "coupang-taiwan-catalog-ai-tpm-director",
   "ats-greenhouse:coupang:8300309": "coupang-taiwan-security-engineering-director",
   "ats-greenhouse:coupang:8188040": "coupang-threat-detection-engineer-seoul",
   "ats-greenhouse:coupang:8076295": "coupang-transportation-backend-senior-manager-bengaluru",
   "ats-greenhouse:coupang:8206706": "coupang-web-security-engineer-detection-ops",
+  "wanted-394615": "coupang-web-security-engineer-detection-ops",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
   "ats-greenhouse:daangn:6640363003": "daangn-ads-backend",
   "ats-greenhouse:daangn:7990084003": "daangn-ai-platform-software-engineer",
@@ -300,6 +304,7 @@
   "ats-kakao:group:S-4731": "kakaomobility-ai-eng-server-contract",
   "boards-superookie:it:6ad1d713b7b3bd5b7431a782": "kakaomobility-ai-eng-server-contract",
   "ats-greeting:kakaomobility:227958": "kakaomobility-av-hw-technician",
+  "ats-kakao:group:S-4730": "kakaomobility-av-hw-technician",
   "ats-greeting:kakaomobility:230974": "kakaomobility-av-system-engineer",
   "ats-kakao:group:S-4737": "kakaomobility-av-system-engineer",
   "ats-greeting:kakaomobility:236791": "kakaomobility-geospatial-system-backend",
@@ -366,6 +371,7 @@
   "ats-greeting:musinsa:239873": "musinsa-product-engineering-manager-pricing",
   "ats-greeting:musinsa:183840": "musinsa-security-compliance-manager",
   "ats-greeting:musinsa:228188": "musinsa-security-engineer-access-kms",
+  "wanted-375793": "musinsa-security-engineer-access-kms",
   "ats-greeting:musinsa:245271": "musinsa-security-engineer-appsec-pentest",
   "ats-greeting:musinsa:245345": "musinsa-security-engineer-mail-cds",
   "ats-greeting:musinsa:245270": "musinsa-security-engineering-lead",
@@ -486,18 +492,21 @@
   "wanted-389900": "technopro-cloud-engineer-aws-japan",
   "wanted-394499": "technopro-lowcode-java-lead-japan",
   "ats-skcareers:sk:R262196": "tmap-ai-agent-engineer",
+  "wanted-391456": "tmap-ai-agent-engineer",
   "wanted-378307": "tmap-android-sdk",
   "ats-skcareers:sk:R261800": "tmap-auto-ai-agent-tpm",
   "wanted-399666": "tmap-auto-android-client",
   "wanted-361653": "tmap-auto-dev-pm",
   "ats-skcareers:sk:R261864": "tmap-automotive-test-manager",
   "ats-skcareers:sk:R262402": "tmap-backend-rp-traffic",
+  "wanted-396108": "tmap-backend-rp-traffic",
   "wanted-393102": "tmap-client-engineer-android",
   "ats-skcareers:sk:R262169": "tmap-data-analytics-lead",
   "wanted-394517": "tmap-data-platform-engineer",
   "wanted-393103": "tmap-mobility-ios-client-engineer",
   "ats-skcareers:sk:R262015": "tmap-mobility-llmops-engineer",
   "ats-skcareers:sk:R262310": "tmap-mobility-service-backend",
+  "saramin-55666768": "tmap-mobility-service-backend",
   "wanted-393106": "tmap-navigation-sdk-engineer",
   "jobkorea-50073105": "tmap-qa-automation-engineer",
   "ats-skcareers:sk:R261959": "tmap-qa-automation-engineer",
@@ -642,6 +651,7 @@
   "wanted-390176": "visasq-data-platform-engineer",
   "ats-greeting:xcena:235024": "xcena-compiler-engineer",
   "ats-greeting:xcena:237698": "xcena-cxl-product-engineer",
+  "ats-greeting:xcena:110601": "xcena-cxl-product-engineer",
   "ats-greeting:xcena:147043": "xcena-cxl-security",
   "ats-greeting:xcena:110622": "xcena-device-runtime-sdk",
   "ats-greeting:xcena:245888": "xcena-dqa-validation-hw-fa",
@@ -1534,7 +1544,8 @@
    "company": "쿠팡",
    "role": "Senior Program Manager (카탈로그 품질 및 데이터 분석)",
    "jobs": [
-    "ats-greenhouse:coupang:8275940"
+    "ats-greenhouse:coupang:8275940",
+    "wanted-398346"
    ],
    "researched_at": "2026-11-25",
    "lines": 27
@@ -1564,7 +1575,8 @@
    "company": "쿠팡 (Coupang)",
    "role": "Senior Staff Backend Engineer - Cloud Infrastructure",
    "jobs": [
-    "ats-greenhouse:coupang:7438944"
+    "ats-greenhouse:coupang:7438944",
+    "ats-greenhouse:coupang:8338334"
    ],
    "researched_at": "2026-11-25",
    "lines": 31
@@ -2122,7 +2134,8 @@
    "company": "쿠팡",
    "role": "시니어 Security DevOps 엔지니어",
    "jobs": [
-    "ats-greenhouse:coupang:8078331"
+    "ats-greenhouse:coupang:8078331",
+    "wanted-375530"
    ],
    "researched_at": "2026-11-25",
    "lines": 21
@@ -2172,7 +2185,8 @@
    "company": "쿠팡",
    "role": "시니어~스태프 웹 보안 엔지니어",
    "jobs": [
-    "ats-greenhouse:coupang:8206706"
+    "ats-greenhouse:coupang:8206706",
+    "wanted-394615"
    ],
    "researched_at": "2026-11-25",
    "lines": 29
@@ -3076,7 +3090,8 @@
    "company": "카카오모빌리티",
    "role": "자율주행 HW 테크니션",
    "jobs": [
-    "ats-greeting:kakaomobility:227958"
+    "ats-greeting:kakaomobility:227958",
+    "ats-kakao:group:S-4730"
    ],
    "researched_at": "2026-11-26",
    "lines": 18
@@ -3646,7 +3661,8 @@
    "company": "무신사",
    "role": "Security Engineer (접근제어·암호키관리 운영)",
    "jobs": [
-    "ats-greeting:musinsa:228188"
+    "ats-greeting:musinsa:228188",
+    "wanted-375793"
    ],
    "researched_at": "2026-11-25",
    "lines": 16
@@ -4560,7 +4576,8 @@
    "company": "티맵모빌리티",
    "role": "AI Agent Engineer",
    "jobs": [
-    "ats-skcareers:sk:R262196"
+    "ats-skcareers:sk:R262196",
+    "wanted-391456"
    ],
    "researched_at": "2026-11-23",
    "lines": 22
@@ -4620,7 +4637,8 @@
    "company": "티맵모빌리티",
    "role": "Backend Engineer - RP/교통",
    "jobs": [
-    "ats-skcareers:sk:R262402"
+    "ats-skcareers:sk:R262402",
+    "wanted-396108"
    ],
    "researched_at": "2026-11-23",
    "lines": 22
@@ -4680,7 +4698,8 @@
    "company": "티맵모빌리티",
    "role": "Backend Engineer – 모빌리티 서비스",
    "jobs": [
-    "ats-skcareers:sk:R262310"
+    "ats-skcareers:sk:R262310",
+    "saramin-55666768"
    ],
    "researched_at": "2026-11-23",
    "lines": 24
@@ -6039,7 +6058,8 @@
    "company": "엑시나",
    "role": "CXL Product Engineer",
    "jobs": [
-    "ats-greeting:xcena:237698"
+    "ats-greeting:xcena:237698",
+    "ats-greeting:xcena:110601"
    ],
    "researched_at": "2026-11-26",
    "lines": 51
