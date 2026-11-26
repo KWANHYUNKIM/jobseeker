@@ -3,7 +3,8 @@
 규칙:
   - MIN_SCORE 아래는 "비슷하다"고 부르기 민망하니 자른다.
   - DUP_SCORE 위는 사실상 같은 공고(재게시·중복)라 추천 가치가 없다.
-  - 한 회사가 추천을 도배하지 않게 MAX_PER_COMPANY 로 막는다.
+  - 한 회사가 추천을 도배하지 않게 MAX_PER_COMPANY 로 막는다(계열 단위, config.COMPANY_GROUPS).
+  - 원래 공고와 같은 계열의 공고는 추천하지 않는다(토스 공고에 토스뱅크·토스증권만 뜨던 것).
   - **마감 공고는 추천하지 않는다.** 색인에는 남지만(지난 공고 통계의 재료)
     추천은 지금 지원할 수 있는 것만 의미가 있다. 지금까지는 meta JSON 에 복사해
     둔 status 를 봤지만 이제 job_state 조인이라 낡을 수가 없다.
@@ -28,18 +29,18 @@ from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))
 
 from store.vectors.config import (  # noqa: E402
-    DUP_SCORE, MAX_PER_COMPANY, MIN_SCORE, SIMILAR_JOBS_JSON, SIMILAR_POSTS_JSON, TOP_K,
+    COMPANY_GROUPS, DUP_SCORE, MAX_PER_COMPANY, MIN_SCORE, SIMILAR_JOBS_JSON, SIMILAR_POSTS_JSON, TOP_K,
 )
 from store.db import conn as store_conn  # noqa: E402
 
 # 후보를 넉넉히 뽑아 놓고 마감 제외·회사 상한을 적용한 뒤 TOP_K 를 남긴다.
 # 지금 데이터는 마감이 57%(9,664/17,067)라 40개를 뽑으면 살아남는 건 17개쯤이고,
-# 거기서 회사 상한까지 걸면 TOP_K 5개가 안 채워질 수 있다. 60이면 여유가 있다.
-CANDIDATES = 60
+# 거기서 회사 상한까지 걸면 TOP_K 5개가 안 채워질 수 있다. 같은 계열까지 빼므로 100 으로 넉넉히 둔다.
+CANDIDATES = 100
 
 # hnsw.ef_search — 클수록 정확하고 느리다. 후보를 40개 뽑으려면 기본값(40)보다
 # 넉넉해야 회사 필터를 거친 뒤에도 TOP_K 가 채워진다.
-EF_SEARCH = 100
+EF_SEARCH = 200
 
 # ── 이 질의의 함정 ────────────────────────────────────────────────────
 # 이웃을 찾는 LATERAL 안에서는 `job_embedding` 을 **직접** 읽어야 한다. 편하다고
@@ -47,14 +48,29 @@ EF_SEARCH = 100
 # HNSW 인덱스가 사라지고, 17,067건 × 17,067건 완전탐색이 된다. 실측으로 그 차이는
 # **1.7ms → 251초** 였다. 그래서 마감 필터·회사 상한은 전부 이웃을 뽑은 **뒤에**
 # 건다. 마감 공고가 절반이 넘으므로 그만큼 넉넉히 뽑아 둔다(CANDIDATES).
+# 계열(grp) — company.norm 의 접두로 COMPANY_GROUPS 에 걸리면 그 이름, 아니면 회사 하나가
+# 한 계열('c' || id). company 표만 읽으니 CTE 로 감싸도 HNSW 와 무관하다.
 _JOB_SQL = f"""
 WITH active AS (
     SELECT job_id FROM job_state WHERE status = 'active'
 ),
+grp AS (
+    SELECT c.id AS company_id,
+           COALESCE((
+               SELECT g.name
+                 FROM unnest(%(g_names)s::text[], %(g_prefixes)s::text[]) AS g(name, prefix)
+                WHERE left(c.norm, length(g.prefix)) = g.prefix
+                ORDER BY length(g.prefix) DESC
+                LIMIT 1
+           ), 'c' || c.id) AS grp
+      FROM company c
+),
 cand AS (
-    SELECT p.job_id, n.similar_id, jn.company_id, n.score
+    SELECT p.job_id, n.similar_id, gn.grp, n.score
       FROM job_embedding p
       JOIN active ap ON ap.job_id = p.job_id
+      JOIN job jp ON jp.id = p.job_id
+      JOIN grp gp ON gp.company_id = jp.company_id
       CROSS JOIN LATERAL (
           -- 여기서 job_embedding 을 직접 읽는다 = HNSW 인덱스 스캔
           SELECT e.job_id AS similar_id,
@@ -66,11 +82,13 @@ cand AS (
       ) n
       JOIN active an ON an.job_id = n.similar_id
       JOIN job jn ON jn.id = n.similar_id
+      JOIN grp gn ON gn.company_id = jn.company_id
      WHERE n.score >= %(min_score)s AND n.score < %(dup_score)s
+       AND gn.grp <> gp.grp          -- 원래 공고와 같은 계열은 추천하지 않는다
 ),
 capped AS (
     SELECT *, row_number() OVER (
-               PARTITION BY job_id, company_id ORDER BY score DESC
+               PARTITION BY job_id, grp ORDER BY score DESC
            ) AS per_company
       FROM cand
 ),
@@ -119,6 +137,10 @@ def compute(kind: str) -> int:
         "min_score": MIN_SCORE, "dup_score": DUP_SCORE,
         "max_per_company": MAX_PER_COMPANY, "top_k": TOP_K,
     }
+    if kind == "job":
+        pairs = [(name, pre) for name, pres in COMPANY_GROUPS.items() for pre in pres]
+        params["g_names"] = [n for n, _ in pairs]
+        params["g_prefixes"] = [p for _, p in pairs]
     t0 = time.time()
     with store_conn.cursor() as cur:
         cur.execute(f"SET LOCAL hnsw.ef_search = {EF_SEARCH}")
