@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { docFetch } from '../../../api/client'
+import { apiGet, docFetch } from '../../../api/client'
 
 // 직무 역설계(공고 한 줄씩 읽기) — engine/roles 가 쓰는 public/roles/{index.json, items/<id>.json}.
 // index 의 jobs 가 공고 키(site-pid) → 풀이 id 다. 같은 자리가 여러 사이트에 올라와도 풀이는 하나.
@@ -128,4 +128,50 @@ export function useRoleReading(jobKey: string | null): RoleReading | null {
     }
   }, [jobKey])
   return state.key === jobKey ? state.data : null
+}
+
+// 회사 사실(크롤러가 AI 없이 모은 것 — catch_capture/crawlers/crawl_company_facts.py → DB company_fact·company_posting_salary).
+// 뷰어 API `/api/company-facts` 가 표에서 화면 모양을 만든다. 정적 파일은 없다(크롤 산출물을 git 에 싣지 않는다) —
+// API 가 안 되면 이 칸만 비운다. 풀이가 없는 공고도 연봉(공고 값·국민연금·원티드 집계)·복지 태그·위치를 보인다.
+export interface CompanyFacts {
+  company: string
+  sources: RoleSource[]
+  employees?: number
+  industry?: string
+  founded?: number
+  pay?: RolePay
+  benefits?: { items: { name: string; detail: string }[]; note?: string }
+  location?: RoleLocation
+}
+
+const factsCache = new Map<string, Promise<CompanyFacts | null>>()
+
+export function useCompanyFacts(company: string | null | undefined): CompanyFacts | null {
+  const key = company?.trim() || null
+  const [state, setState] = useState<{ key: string | null; data: CompanyFacts | null }>({ key: null, data: null })
+  useEffect(() => {
+    if (!key) return
+    let alive = true
+    let p = factsCache.get(key)
+    if (!p) {
+      p = apiGet<CompanyFacts>(`/api/company-facts?name=${encodeURIComponent(key)}`).catch(() => null)
+      factsCache.set(key, p)
+    }
+    p.then((data) => {
+      if (alive) setState({ key, data })
+    })
+    return () => {
+      alive = false
+    }
+  }, [key])
+  return state.key === key ? state.data : null
+}
+
+/** 회사 사실을 RolePayBenefits·RoleLocation 이 그대로 그릴 수 있는 꼴로. */
+export function factsAsReading(f: CompanyFacts): RoleReading {
+  return {
+    id: 'facts', company: f.company, role: '', jobs: [], researched_at: '', lines: [],
+    tldr: { what: '', env: '', oneline: '' },
+    sources: f.sources, pay: f.pay, benefits: f.benefits, location: f.location,
+  }
 }

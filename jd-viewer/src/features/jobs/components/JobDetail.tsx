@@ -21,8 +21,9 @@ import { fetchHome, type HomeCompany } from '../../home/api'
 import { careerOf, ddayLabel } from '../../home/utils'
 import { JobGuide } from './JobGuide'
 import { parseJdText, type JdBlock } from '../utils/jdText'
-import { useRoleReading } from '../hooks/useRoleReading'
+import { factsAsReading, useCompanyFacts, useRoleReading } from '../hooks/useRoleReading'
 import { matchRoleLine } from '../utils/roleText'
+import { MarketWage } from './MarketWage'
 import { RoleAside, RoleLineNote, RoleLocation, RolePayBenefits, RoleStudyPath, RoleSummary } from './RoleReading'
 
 interface Props {
@@ -84,6 +85,9 @@ export function JobDetail({ job, onOpenUrl }: Props) {
 
   // 직무 역설계(공고 한 줄씩 읽기) — 풀이가 있는 공고만. 공고 줄 밑에 한 줄 답이 늘 보이고, 누르면 풀이가 펼쳐진다.
   const reading = useRoleReading(`${job.site}-${job.pid}`)
+  // 풀이가 없으면 크롤러가 모아 둔 회사 사실(연봉·복지 태그·위치)로 같은 칸을 채운다 — AI 없이.
+  const coFacts = useCompanyFacts(job.company)
+  const factsR = useMemo(() => (coFacts && !reading ? factsAsReading(coFacts) : null), [coFacts, reading])
   const [openLines, setOpenLines] = useState<Set<string>>(() => new Set())
   const allOpen = !!reading && openLines.size >= reading.lines.length
   const toggleLine = (q: string) =>
@@ -244,8 +248,12 @@ export function JobDetail({ job, onOpenUrl }: Props) {
               )}
 
               {reading && <RolePayBenefits r={reading} />}
+              {!reading && factsR && <RolePayBenefits r={factsR} />}
+
+              <MarketWage title={job.title || ''} employees={coFacts?.employees} />
 
               {reading && <RoleLocation r={reading} />}
+              {!reading && factsR && <RoleLocation r={factsR} />}
 
               {co && <CompanyInfo co={co} location={job.location} />}
             </div>
