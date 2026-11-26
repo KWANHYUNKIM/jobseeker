@@ -21,6 +21,7 @@ from app.core import exceptions
 from app.core.config import settings
 from app.features.careers.router import router as careers_router
 from app.features.companies.router import router as companies_router
+from app.features.company_facts.router import router as company_facts_router
 from app.features.docs.router import router as docs_router
 from app.features.freelance.router import router as freelance_router
 from app.features.hardware.router import router as hardware_router
@@ -32,7 +33,8 @@ from app.features.home.router import router as home_router
 from app.features.similar.router import router as similar_router
 
 ROUTERS = [health_router, jobs_router, search_router, similar_router, companies_router,
-           posts_router, freelance_router, hardware_router, docs_router, home_router, careers_router]
+           posts_router, freelance_router, hardware_router, docs_router, home_router, careers_router,
+           company_facts_router]
 
 
 def create_app() -> FastAPI:
