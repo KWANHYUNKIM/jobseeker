@@ -343,6 +343,16 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
         print(f"  [db] job_facet 갱신 실패(사이클은 계속): {e}", flush=True)
         stats["facets"] = 0
 
+    # 모집인원(021) — 본문의 "모집인원 : ○명" 문구로 칸이 없는 사이트를 채운다. 잡코리아의 칸은
+    # close_check 가 마감을 물으며 같은 페이지에서 읽는다(여기서는 그 값을 덮지 않는다).
+    # 021 을 안 깐 DB 면 실패하고 넘어간다 — 채용 추이 API 는 자리 수만 비운 채 답한다.
+    try:
+        from store.jobs import headcount
+        stats["headcount"] = headcount.refresh()["대상"]
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [db] 모집인원 갱신 실패(사이클은 계속): {e}", flush=True)
+        stats["headcount"] = 0
+
     return stats
 
 

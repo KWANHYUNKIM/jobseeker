@@ -125,6 +125,12 @@ REGISTRY: list[Loop] = [
     Loop("cycle-closecheck", "마감 재확인(회차 안)", "cycle", "mac", "회차마다 400건", 3,
          "auto_crawl.refresh_closures → pipeline.close_check", ["catch_capture/job_closures.json"],
          note="launchd closecheck 와 원장 잠금을 나눠 쓴다."),
+    Loop("cycle-headcount", "모집인원(몇 자리)", "cycle", "mac", "회차마다(DB 적재 끝, facets 다음)", 3,
+         "store.ingest.crawl → store.jobs.headcount", [],
+         check="python -m store.jobs.headcount --dry-run",
+         note="본문의 '모집인원 : ○명' 문구 → job.headcount_*(021). 잡코리아는 공고 페이지의 모집인원 칸을 "
+              "close_check 가 같은 요청에서 읽는다. ○명 = 1~9, ○○명 = 10~99, 0명 = 밝히지 않음. "
+              "021 을 깐 직후 한 번 `--pages 1500` 으로 모집중 잡코리아 공고를 채운다."),
     Loop("cycle-audit", "마감·수집 점검", "cycle", "mac", "회차 끝(외주 다음)", 3,
          "auto_crawl.refresh_audit → pipeline.close_audit --live 2", ["catch_capture/var/audit/close_audit.json"],
          check="python -m pipeline.close_audit --probe --live 3",

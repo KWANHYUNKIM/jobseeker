@@ -57,6 +57,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import NamedTuple
 
+from core import headcount as _headcount
 from pipeline.job_status import (
     CLOSURES_PATH,
     closure_key,
@@ -95,6 +96,8 @@ class Verdict(NamedTuple):
     reason  사람이 읽는 근거. 화면의 마감 배지에 그대로 나간다.
     deadline 연도까지 확정된 마감일(ISO). 크롤 텍스트의 "06/14" 와 달리 흔들리지 않는다.
     posted  원본이 말한 등록일(ISO). 모르면 None — 그 자리는 first_seen_at 이 맡는다.
+    headcount 공고 페이지의 '모집인원' 칸 원문('○○명'). 마감 판정과는 무관하다 — 어차피 받은
+            페이지라 같이 읽는다(잡코리아만 칸이 있다). 규칙은 core/headcount.py.
 
     튜플이던 것을 이름 붙인 이유: 판정 결과가 3개에서 4개로 늘면서, 위치로
     받는 쪽이 조용히 어긋날 자리가 생겼다.
@@ -103,6 +106,7 @@ class Verdict(NamedTuple):
     reason: str
     deadline: str | None = None
     posted: str | None = None
+    headcount: str | None = None
 
 
 _TRANSIENT = re.compile(r"^(?:확인 실패\(http=(None|403|429|5\d\d)\)|예외: )")
@@ -244,6 +248,11 @@ _ALWAYS_OPEN = re.compile(r"상시\s*채용|수시\s*채용|채용\s*시\s*마�
 
 
 def verdict_jobkorea(html: str, today: date) -> Verdict:
+    """마감 판정 + 같은 페이지의 '모집인원' 칸(몇 자리를 뽑나 — 요청을 더 보내지 않는다)."""
+    return _verdict_jobkorea(html, today)._replace(headcount=_headcount.from_jobkorea_page(html))
+
+
+def _verdict_jobkorea(html: str, today: date) -> Verdict:
     posted, valid = jsonld_dates(html)
     if _GONE.search(html):
         return Verdict("closed", "원본 확인: 마감된 공고", None, posted)
@@ -633,6 +642,11 @@ def record_to_db(verdicts: list[tuple[str, dict]]) -> int:
     try:
         with store_conn.connect() as db:
             with db.cursor() as cur:
+                # 021 을 아직 안 깐 DB 에서 UPDATE 가 터지면 이 회차의 마감 기록까지 통째로 롤백된다 —
+                # 컬럼이 있을 때만 모집인원을 쓴다.
+                cur.execute("SELECT 1 FROM information_schema.columns "
+                            "WHERE table_name = 'job' AND column_name = 'headcount_digits'")
+                has_headcount = cur.fetchone() is not None
                 for key, e in verdicts:
                     site, _, pid = key.partition(":")
                     cur.execute("SELECT id FROM job WHERE site=%s AND pid=%s", (site, pid))
@@ -656,6 +670,16 @@ def record_to_db(verdicts: list[tuple[str, dict]]) -> int:
                         cur.execute(
                             "UPDATE job SET posted_on = COALESCE(posted_on, %s) WHERE id = %s",
                             (posted, row["id"]),
+                        )
+                    # 모집인원도 공고의 속성이다. 페이지 칸(page)이 본문 문구(text)를 이긴다.
+                    # 칸을 못 읽은 회차(NULL)는 지난 값을 지우지 않는다.
+                    hc = _headcount.parse(e.get("headcount")) if has_headcount else None
+                    if hc:
+                        cur.execute(
+                            """UPDATE job SET headcount_raw = %s, headcount_n = %s,
+                                              headcount_digits = %s, headcount_source = 'page'
+                                WHERE id = %s""",
+                            (hc.raw, hc.n, hc.digits, row["id"]),
                         )
                     n += 1
             db.commit()
@@ -937,6 +961,7 @@ def _run(limit: int, *, recheck_days: float | None, sites: set[str] | None,
                 # 원본이 말한 등록일. 없을 수도 있고(saramin), 마감 판정과는 무관하다 —
                 # 여기 실어 두는 이유는 이 페이지를 다시 두드리지 않기 위해서다.
                 "posted": v.posted,
+                "headcount": v.headcount,
                 "checked_at": now.isoformat(timespec="seconds"),
                 "url": job.get("url", ""),
                 "company": job.get("company", ""),
