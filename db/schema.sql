@@ -1394,3 +1394,20 @@ CREATE TABLE IF NOT EXISTS market_wage_size (
     updated_at    timestamptz NOT NULL DEFAULT now(),
     PRIMARY KEY (year, size, age)
 );
+
+-- ════════════════════════════════════════════════════════════════════
+-- 공고의 모집인원 — db/migrations/021_job_headcount.sql 과 같다(설계 근거는 그쪽 머리말)
+-- ════════════════════════════════════════════════════════════════════
+ALTER TABLE job ADD COLUMN IF NOT EXISTS headcount_raw    text;      -- 원문('○○명')
+ALTER TABLE job ADD COLUMN IF NOT EXISTS headcount_n      smallint;  -- 정확한 수. 자릿수 표기면 NULL
+ALTER TABLE job ADD COLUMN IF NOT EXISTS headcount_digits smallint;  -- 자릿수 — 1: 1~9명, 2: 10~99명
+ALTER TABLE job ADD COLUMN IF NOT EXISTS headcount_source text;      -- 'page' | 'text'
+
+DO $$ BEGIN
+    ALTER TABLE job ADD CONSTRAINT job_headcount_sane
+        CHECK ((headcount_n IS NULL OR headcount_n BETWEEN 1 AND 9999)
+           AND (headcount_digits IS NULL OR headcount_digits BETWEEN 1 AND 4)
+           AND (headcount_source IS NULL OR headcount_source IN ('page', 'text')));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+COMMENT ON COLUMN job.headcount_digits IS '모집인원의 자릿수. ○명=1(1~9명), ○○명=2(10~99명). 정확한 수가 있어도 채운다';
